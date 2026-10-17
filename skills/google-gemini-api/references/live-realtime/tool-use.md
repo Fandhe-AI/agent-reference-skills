@@ -87,7 +87,7 @@ Asynchronous function calling (`behavior` on the declaration, `scheduling` on th
 ```python
 # Non-blocking function definitions
 turn_on_the_lights = {"name": "turn_on_the_lights", "behavior": "NON_BLOCKING"} # turn_on_the_lights will run asynchronously
-turn_off_the_lights = {"name": "turn_off_the_lights"} # turn_off_the_lights will still pause all interactions with the model
+turn_off_the_lights = {"name": "turn_off_the_lights", "behavior": "BLOCKING"} # explicit BLOCKING pauses all interactions with the model
 
 # for a non-blocking function definition, apply scheduling in the function response:
 function_response = types.FunctionResponse(
@@ -160,7 +160,9 @@ Scheduling values for a `NON_BLOCKING` function response:
 
 - Dedented the `FunctionResponse` snippet (the source indents it inside an omitted loop over `fc`).
 - Unlike the `generateContent` API, the Live API doesn't support automatic tool response handling; you must handle tool responses manually in client code (`session.send_tool_response` / `sendToolResponse`).
-- Function calling executes sequentially by default (pauses until each result is available). Asynchronous function calling is not yet supported in Gemini 3.1 Flash Live; the model won't start responding until you've sent the tool response.
+- Sequential (blocking) execution is the default on Gemini 2.5 / 3.1 Flash Live (pauses until each result is available); on Gemini 3.8 Live the default is NON_BLOCKING, so set `behavior: BLOCKING` explicitly for synchronous functions (Gemini 3.8 Live Extended Thinking supports NON_BLOCKING only).
+- The source omits `behavior` on the blocking declaration; it is set to `BLOCKING` explicitly because Gemini 3.8 Live defaults to NON_BLOCKING.
+- Asynchronous function calling is not yet supported in Gemini 3.1 Flash Live; the model won't start responding until you've sent the tool response.
 - The official guide nests `scheduling` inside `response`; per the FunctionResponse API reference it is a top-level field, so the examples place it next to `id` / `name` / `response`.
 - From a single prompt, the model can generate multiple function calls and the code necessary to chain their outputs; this code executes in a sandbox, generating subsequent `BidiGenerateContentToolCall` messages.
 - The model may generate and execute Python code to use Search (`executable_code` / `code_execution_result` parts).
