@@ -70,7 +70,7 @@ NSMicrophoneUsageDescription = "Mikrofon Zugriff wird benötigt für WebRTC Funk
 {
   "bundle": {
     "resources": {
-      "infoplist/**": "./"
+      "infoplist/": "./"
     }
   }
 }
@@ -162,6 +162,7 @@ Entitlements are Apple key-value pairs that grant particular capabilities (e.g. 
 - GUI apps on macOS and Linux do not inherit `$PATH` from shell dotfiles (`.bashrc`, `.bash_profile`, `.zshrc`); see the `fix-path-env-rs` crate.
 - Frameworks: reference a system framework by name without the `.framework` extension; system frameworks must exist in `$HOME/Library/Frameworks`, `/Library/Frameworks/` or `/Network/Library/Frameworks/`; local frameworks and dylibs need the full path relative to `src-tauri`.
 - Run `tauri build` on a Mac.
+- The upstream page uses `"infoplist/**": "./"`; changed to `"infoplist/"` because per the Resources guide `"dir/**"` matches only directories (error) and map-form globs flatten paths, which would collide the per-language `InfoPlist.strings`.
 - The source tree places MacOS/Resources/etc. beside Contents; corrected to nest them under Contents per Apple's bundle layout.
 
 ## Related
