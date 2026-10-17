@@ -12,7 +12,7 @@ interface Sandbox {
   readdir(
     path: string,
     opts: { withFileTypes: true },
-  ): Promise<{ name: string; isDirectory(): boolean }[]>;
+  ): Promise<{ name: string }[]>;
   exec(command: string): Promise<{ stdout: string; stderr: string }>;
 }
 ```
@@ -40,8 +40,6 @@ async function discoverSkills(
     }
 
     for (const entry of entries) {
-      if (!entry.isDirectory()) continue;
-
       const skillDir = `${dir}/${entry.name}`;
       const skillFile = `${skillDir}/SKILL.md`;
 
@@ -182,13 +180,16 @@ const agent = new ToolLoopAgent({
 ```
 
 ```ts
+import { homedir } from 'node:os';
+import { join } from 'node:path';
+
 // Create sandbox (your filesystem/execution abstraction)
 const sandbox = createSandbox({ workingDirectory: process.cwd() });
 
 // Discover skills at startup
 const skills = await discoverSkills(sandbox, [
   '.agents/skills',
-  '~/.config/agent/skills',
+  join(homedir(), '.config/agent/skills'),
 ]);
 
 // Run the agent
@@ -203,4 +204,6 @@ const result = await agent.generate({
 - This sample implements Agent Skills (`SKILL.md` folders, progressive disclosure) inside an AI SDK agent at runtime. It is not the Skills API (anthropic-api-tools-mcp) and not Claude Code's skill system (anthropic-claude-code-extend); it is also a different distribution path from the official `npx skills add vercel/ai` skill.
 - `loadSkill` is a standard AI SDK tool, so `execute` can read from any source (filesystem, bundled assets, API, registry). `Sandbox` is the page's generic abstraction (Node.js `fs/promises` and `child_process` work directly); `createSandbox`, `yaml`, `yourModel` and `userMessage` are placeholders.
 - Modified from the official page for v7: the page calls `agent.run`, but `ToolLoopAgent` exposes `generate` / `stream` (`references/agents/tool-loop-agent.md`), so this uses `agent.generate`. The page also passes one shared `context` from `prepareCall` and casts it inside each tool; in v7 each tool declares `contextSchema` and receives its own value from `toolsContext` keyed by tool name.
+- The official page filters entries with `isDirectory()`, but a `Dirent` returns false for a symlink to a directory (the default install mode of `npx skills add`), so the filter is removed and entries without a readable `SKILL.md` are skipped by the existing `catch`.
+- The official page passes `~/.config/agent/skills` as-is, but Node.js fs APIs do not expand `~`, so it is resolved to an absolute path with `homedir()`.
 - Skills load progressively: names and descriptions at startup, full `SKILL.md` on activation, bundled files via the agent's existing `readFile` / `bash` tools. See `references/agents/tool-loop-agent.md` and `references/workflow-harnesses/harness-skills.md`.

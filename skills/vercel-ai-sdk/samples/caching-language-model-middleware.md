@@ -121,6 +121,7 @@ export const createCacheMiddleware = (
 import { createCacheMiddleware } from '@/ai/middleware';
 import {
   convertToModelMessages,
+  gateway,
   wrapLanguageModel,
   streamText,
   tool,
@@ -130,7 +131,7 @@ import {
 import { z } from 'zod';
 
 const wrappedModel = wrapLanguageModel({
-  model: 'openai/gpt-6-luna',
+  model: gateway('openai/gpt-6-luna'),
   middleware: createCacheMiddleware('openai/gpt-6-luna'),
 });
 
@@ -166,5 +167,6 @@ export async function POST(req: Request) {
 - Streams are cached as an array of stream parts and replayed with `simulateReadableStream` (`initialDelayInMs`, `chunkDelayInMs`). The page uses `@upstash/redis`, but any KV store works; Upstash itself is covered by the upstash skill.
 - Modified from the official example: the cookbook keys both `wrapGenerate` and `wrapStream` on `JSON.stringify(params)`, so the stored shapes (result object vs. chunk array) can collide and the model is not part of the key. This version keys on `{ mode, model, params }` via a factory taking the model identifier. It also awaits `redis.set` inside `try` / `catch` with a one-hour TTL, caches a stream only when it reached `finish` without an `error` part (same as `references/operations/caching.md`), and passes `convertToModelMessages(messages)` to `streamText`.
 - The cookbook page omits `specificationVersion: 'v4'` from the middleware object, but the type definition and `docs/advanced/caching` require it (`references/providers/language-model-middleware.md`).
+- The official cookbook passes a model string to `wrapLanguageModel`, but its `model` is a `LanguageModelV4`, so this instantiates it with `gateway()` (`references/providers/wrap-language-model.md`).
 - In serverless environments, let the cache write run to completion with `waitUntil` (or an equivalent mechanism).
 - References: `references/providers/language-model-middleware.md`, `references/providers/wrap-language-model.md`, `references/core/simulate-readable-stream.md`.
