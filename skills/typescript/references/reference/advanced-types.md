@@ -38,7 +38,7 @@ type Tree<T> = {
 };
 ```
 
-- Enum member types: members have types when every member is literal-initialized (see Enums).
+- Enum member types: members have types when every member is literal-initialized (see Enums). Changed (5.0): all enums are union enums, so this condition describes pre-5.0 behavior.
 - Polymorphic `this` types (F-bounded polymorphism, fluent APIs): methods returning `this` keep the subclass type.
 
 ```ts

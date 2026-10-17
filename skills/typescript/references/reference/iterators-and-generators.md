@@ -17,7 +17,7 @@ function toArray<X>(xs: Iterable<X>): X[] {
 ## Notes
 
 - Built-in types such as `Array`, `Map`, `Set`, `String`, `Int32Array`, `Uint32Array` already implement `Symbol.iterator`.
-- `for..in` returns a list of keys; `for..of` returns the values of the numeric properties of the iterated object. `for..in` operates on any object; `for..of` is mainly interested in values of iterable objects.
+- `for..in` returns a list of keys; `for..of` returns the values produced by the object's `Symbol.iterator` iterator (the handbook phrases this as "values of the numeric properties", which only matches the default array iterator). `for..in` operates on any object; `for..of` is mainly interested in values of iterable objects.
 
 ```ts
 let list = [4, 5, 6];

@@ -34,7 +34,7 @@ function isValid(value: string | number, options: any, strictness: "strict" | "l
 | Arbitrary module identifiers | `export { banana as "🍌" }` and `import { "🍌" as banana } from "./foo"` |
 | `--noUncheckedSideEffectImports` | Error if a side-effect `import "x"` cannot be resolved (off by default in 5.6; default `true` in 6.0) |
 | `--noCheck` | Skip type checking for all input files; useful with `--isolatedDeclarations` for fast `.d.ts` emit |
-| `--build` with intermediate errors | Continues building despite errors in dependencies; `--stopOnBuildErrors` stops at first project with errors (as named in the 5.6 notes) |
+| `--build` with intermediate errors | Continues building despite errors in dependencies; `--stopBuildOnErrors` stops at first project with errors |
 | Region-prioritized diagnostics | Editors can request diagnostics for the visible region first (VS Code, 5.6+) |
 | Granular commit characters | Language service provides commit characters per completion item |
 | Auto-import exclude patterns | `typescript.preferences.autoImportSpecifierExcludeRegexes` (and `javascript.preferences...` in VS Code) |
@@ -52,6 +52,7 @@ declare module "*.css" {}
 
 - `--noCheck` workflow: run `tsc --noCheck` while iterating, then `tsc --noEmit` for a thorough check; use separate `--tsBuildInfoFile` paths when running both at once.
 - Behavioral changes: a `.tsbuildinfo` is always written for any project in a `--build` invocation; `.mts` files never emit CommonJS and `.cts` files never emit ESM; module format (`.mts` / `.cts`, `package.json` `"type"` inside `node_modules`) is respected in all `module` modes except `amd`, `umd`, `system`; `override` checks on computed property names are now correct.
+- The 5.6 release notes spell the flag `--stopOnBuildErrors`; the actual option is `--stopBuildOnErrors` (tsconfig reference / Compiler Options).
 - Stricter iterator example: with `--strictBuiltinIteratorReturn`, `iter.next()` on `Iterator<string, BuiltinIteratorReturn>` gives `value` possibly `undefined`.
 
 ## Related

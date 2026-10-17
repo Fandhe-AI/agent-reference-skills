@@ -56,7 +56,7 @@ x = y; // Error
 
 - Function parameter bivariance: assignment succeeds if either the source parameter is assignable to the target parameter, or vice versa; `strictFunctionTypes` raises errors for this.
 - Optional and required parameters are interchangeable; a rest parameter is treated as an infinite series of optional parameters. With overloads, each target overload must be matched by a compatible source signature.
-- Enums are compatible with numbers and vice versa; values from different enum types are incompatible.
+- Enums are compatible with numbers and vice versa; values from different enum types are incompatible. Changed (5.0): assigning a numeric literal outside the enum's domain is an error (see TypeScript 5.0 version notes).
 - Classes: only instance members are compared; static members and constructors do not affect compatibility. A private / protected member in the target requires the source to have a member originating from the same class.
 
 ```ts
@@ -90,7 +90,7 @@ x = y; // Error, because x and y are not compatible
 ```
 
 - Two kinds of compatibility exist: subtype and assignment. Assignment extends subtype compatibility with rules for `any` and for `enum` with corresponding numeric values; practical compatibility, including `implements` / `extends`, is dictated by assignment compatibility.
-- With `strictNullChecks` on, `null` and `undefined` are not assignable to or from anything except `any`, `unknown`, and `void` (`undefined` is always assignable to `void`). `unknown` is assignable only to `any`; `never` is assignable to everything and nothing is assignable to `never`.
+- With `strictNullChecks` on, `null` and `undefined` are not assignable to other types except `any`, `unknown`, and (for `undefined`) `void`; only `any` and `never` are assignable to them. The handbook prose summarizes this as "to or from anything except `any`, `unknown`, and `void`", which is directional shorthand; the assignability table is authoritative. `unknown` is assignable only to `any`; `never` is assignable to everything and nothing is assignable to `never`.
 
 ## Related
 

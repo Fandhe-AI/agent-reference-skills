@@ -49,6 +49,7 @@ enum FileAccess {
 ```
 
 - Union enums: when all members are literal enum members (no initializer, string literal, numeric literal, or unary minus on a numeric literal), enum members become types and the enum type becomes a union of its members.
+- Changed (5.0): all enums are union enums; computed members also get their own unique type, so the literal-member restriction above describes pre-5.0 behavior (see TypeScript 5.0 version notes).
 
 ```ts
 enum ShapeKind {

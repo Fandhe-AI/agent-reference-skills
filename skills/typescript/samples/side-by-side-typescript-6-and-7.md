@@ -19,6 +19,10 @@ npm install -D typescript@npm:@typescript/typescript6
 }
 ```
 
+## Nightly builds (standalone, not part of the side-by-side setup)
+
+Running this replaces the `typescript` -> `@typescript/typescript6` alias; do not combine it with the side-by-side setup above.
+
 ```shell
 npm install -D typescript@next
 ```
