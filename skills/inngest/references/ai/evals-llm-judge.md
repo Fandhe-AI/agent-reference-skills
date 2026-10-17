@@ -17,18 +17,23 @@ type Step = GetStepTools<typeof inngest>;
 // Ask the model to grade against a rubric and reply with
 // {"score": <0-1>, "reason": "..."}. Normalize to { name, value }.
 async function judge(step: Step, name: string, rubric: string) {
-  const text = await step.run(`judge-${name}`, async () => {
+  const value = await step.run(`judge-${name}`, async () => {
     const res = await anthropic.messages.create({
       model: MODEL,
       max_tokens: 512,
       messages: [{ role: "user", content: rubric }],
     });
     const block = res.content.find((b) => b.type === "text");
-    return block?.type === "text" ? block.text : "{}";
+    const text = block?.type === "text" ? block.text : "";
+    const parsed = JSON.parse(text) as { score?: unknown };
+    const score = typeof parsed.score === "number" ? parsed.score : NaN;
+    if (!Number.isFinite(score) || score < 0 || score > 1) {
+      throw new Error(`judge-${name}: invalid score`);
+    }
+    return score;
   });
 
-  const { score } = JSON.parse(text) as { score: number };
-  return { name, value: score };
+  return { name, value };
 }
 ```
 
@@ -71,6 +76,7 @@ export function scoreToolEfficiency(
 - With ground truth, score accuracy directly: exact match for a single label, set overlap (Jaccard) for lists, a tolerance band for numbers. Keep accuracy and judge scores under separate names.
 - Keep judges cheap and fair: judge a sample when costly (choose the sample in code, same rule for every variant); move slow judges to a deferred scorer; keep the rubric and judge model fixed while comparing variants; control provider rate limits on a deferred judge with concurrency or throttling.
 - Python: no `step.score()`; write each score in its own step via `inngest_client.score(name=..., value=..., run_id=ctx.run_id)` (requires the inngest release after 0.5.19).
+- The official example parses the reply outside `step.run()`; here parsing and the finite 0–1 check run inside the step so an invalid reply throws and the retry calls the model again instead of reusing a memoized bad reply.
 - Source: https://www.inngest.com/docs-markdown/agent-evals/guides/llm-judge (fetched 2026-10).
 
 ## Related
