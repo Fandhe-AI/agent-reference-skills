@@ -92,7 +92,7 @@ const spellChecker = require('spellchecker')
 webFrame.setSpellCheckProvider('en-US', {
   spellCheck(words, callback) {
     setTimeout(() => {
-      const misspelled = words.filter((x) => spellchecker.isMisspelled(x))
+      const misspelled = words.filter((x) => spellChecker.isMisspelled(x))
       callback(misspelled)
     }, 0)
   }
@@ -254,6 +254,7 @@ Returns `string[]` - A list of suggested words for a given word. If the word is 
 
 ## Notes
 
+* The upstream example references `spellchecker` (lowercase) inside the callback; corrected to `spellChecker`.
 * Renderer-process API: with context isolation enabled, call it from a preload script and expose it through `contextBridge`.
 * `webFrame.findFrameByRoutingId` and `webFrame.routingId` are _Deprecated_ in favor of `findFrameByToken` and `frameToken`.
 

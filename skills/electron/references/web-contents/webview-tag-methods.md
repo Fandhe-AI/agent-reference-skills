@@ -15,9 +15,9 @@ webview.addEventListener('dom-ready', () => {
 })
 ```
 
-## Navigation and state
+### Navigation and state
 
-### `<webview>.loadURL(url[, options])`
+#### `<webview>.loadURL(url[, options])`
 
 * `url` URL
 * `options` Object (optional)
@@ -31,7 +31,7 @@ Returns `Promise<void>` - The promise will resolve when the page has finished lo
 
 Loads the `url` in the webview, the `url` must contain the protocol prefix, e.g. the `http://` or `file://`.
 
-### `<webview>.downloadURL(url[, options])`
+#### `<webview>.downloadURL(url[, options])`
 
 * `url` string
 * `options` Object (optional)
@@ -62,9 +62,9 @@ Initiates a download of the resource at `url` without navigating.
 | `<webview>.getUserAgent()` | Returns `string` - The user agent for guest page. |
 | `<webview>.getWebContentsId()` | Returns `number` - The WebContents ID of this `webview`. |
 
-## CSS and scripting
+### CSS and scripting
 
-### `<webview>.insertCSS(css)`
+#### `<webview>.insertCSS(css)`
 
 * `css` string
 
@@ -72,7 +72,7 @@ Returns `Promise<string>` - A promise that resolves with a key for the inserted 
 
 Injects CSS into the current web page and returns a unique key for the inserted stylesheet.
 
-### `<webview>.removeInsertedCSS(key)`
+#### `<webview>.removeInsertedCSS(key)`
 
 * `key` string
 
@@ -80,7 +80,7 @@ Returns `Promise<void>` - Resolves if the removal was successful.
 
 Removes the inserted CSS from the current web page. The stylesheet is identified by its key, which is returned from `<webview>.insertCSS(css)`.
 
-### `<webview>.executeJavaScript(code[, userGesture])`
+#### `<webview>.executeJavaScript(code[, userGesture])`
 
 * `code` string
 * `userGesture` boolean (optional) - Default `false`.
@@ -89,7 +89,7 @@ Returns `Promise<any>` - A promise that resolves with the result of the executed
 
 Evaluates `code` in page. If `userGesture` is set, it will create the user gesture context in the page. HTML APIs like `requestFullScreen`, which require user action, can take advantage of this option for automation.
 
-## DevTools, audio and editing
+### DevTools, audio and editing
 
 | Method | Description |
 | --- | --- |
@@ -112,7 +112,7 @@ Evaluates `code` in page. If `userGesture` is set, it will create the user gestu
 | `<webview>.insertText(text)` | (`text` string) Returns `Promise<void>`. Inserts `text` to the focused element. |
 | `<webview>.showDefinitionForSelection()` _macOS_ | Shows pop-up dictionary that searches the selected word on the page. |
 
-### `<webview>.adjustSelection(options)`
+#### `<webview>.adjustSelection(options)`
 
 * `options` Object
   * `start` Number (optional) - Amount to shift the start index of the current selection.
@@ -120,9 +120,9 @@ Evaluates `code` in page. If `userGesture` is set, it will create the user gestu
 
 Adjusts the current text selection starting and ending points in the focused frame by the given amounts. A negative amount moves the selection towards the beginning of the document, and a positive amount moves the selection towards the end of the document. See `webContents.adjustSelection` for examples.
 
-## Find, print, capture
+### Find, print, capture
 
-### `<webview>.findInPage(text[, options])`
+#### `<webview>.findInPage(text[, options])`
 
 * `text` string - Content to be searched, must not be empty.
 * `options` Object (optional)
@@ -134,7 +134,7 @@ Returns `Integer` - The request id used for the request.
 
 Starts a request to find all matches for the `text` in the web page. The result of the request can be obtained by subscribing to `found-in-page` event.
 
-### `<webview>.stopFindInPage(action)`
+#### `<webview>.stopFindInPage(action)`
 
 * `action` string - Specifies the action to take place when ending `<webview>.findInPage` request.
   * `clearSelection` - Clear the selection.
@@ -143,7 +143,7 @@ Starts a request to find all matches for the `text` in the web page. The result 
 
 Stops any `findInPage` request for the `webview` with the provided `action`.
 
-### `<webview>.print([options])`
+#### `<webview>.print([options])`
 
 * `options` Object (optional)
   * `silent` boolean (optional) - Don't ask user for print settings. Default is `false`.
@@ -177,7 +177,7 @@ Returns `Promise<void>`
 
 Prints `webview`'s web page. Same as `webContents.print([options])`.
 
-### `<webview>.printToPDF(options)`
+#### `<webview>.printToPDF(options)`
 
 * `options` PrintToPDFOptions
 
@@ -185,7 +185,7 @@ Returns `Promise<Uint8Array>` - Resolves with the generated PDF data.
 
 Prints `webview`'s web page as PDF, Same as `webContents.printToPDF(options)`.
 
-### `<webview>.capturePage([rect])`
+#### `<webview>.capturePage([rect])`
 
 * `rect` Rectangle (optional) - The area of the page to be captured.
 
@@ -193,9 +193,9 @@ Returns `Promise<NativeImage>` - Resolves with a NativeImage
 
 Captures a snapshot of the page within `rect`. Omitting `rect` will capture the whole visible page.
 
-## IPC and input
+### IPC and input
 
-### `<webview>.send(channel, ...args)`
+#### `<webview>.send(channel, ...args)`
 
 * `channel` string
 * `...args` any[]
@@ -204,7 +204,7 @@ Returns `Promise<void>`
 
 Send an asynchronous message to renderer process via `channel`, you can also send arbitrary arguments. The renderer process can handle the message by listening to the `channel` event with the `ipcRenderer` module. See `webContents.send` for examples.
 
-### `<webview>.sendToFrame(frameId, channel, ...args)`
+#### `<webview>.sendToFrame(frameId, channel, ...args)`
 
 * `frameId` \[number, number] - `[processId, frameId]`
 * `channel` string
@@ -214,7 +214,7 @@ Returns `Promise<void>`
 
 Send an asynchronous message to renderer process via `channel`, you can also send arbitrary arguments. See `webContents.sendToFrame` for examples.
 
-### `<webview>.sendInputEvent(event)`
+#### `<webview>.sendInputEvent(event)`
 
 * `event` MouseInputEvent | MouseWheelInputEvent | KeyboardInputEvent
 
@@ -222,15 +222,15 @@ Returns `Promise<void>`
 
 Sends an input `event` to the page. See `webContents.sendInputEvent` for detailed description of `event` object.
 
-## Zoom
+### Zoom
 
-### `<webview>.setZoomFactor(factor)`
+#### `<webview>.setZoomFactor(factor)`
 
 * `factor` number - Zoom factor.
 
 Changes the zoom factor to the specified factor. Zoom factor is zoom percent divided by 100, so 300% = 3.0.
 
-### `<webview>.setZoomLevel(level)`
+#### `<webview>.setZoomLevel(level)`
 
 * `level` number - Zoom level.
 
@@ -238,15 +238,15 @@ Changes the zoom level to the specified level. The original size is 0 and each i
 
 > The zoom policy at the Chromium level is same-origin, meaning that the zoom level for a specific domain propagates across all instances of windows with the same domain. Differentiating the window URLs will make zoom work per-window.
 
-### `<webview>.getZoomFactor()`
+#### `<webview>.getZoomFactor()`
 
 Returns `number` - the current zoom factor.
 
-### `<webview>.getZoomLevel()`
+#### `<webview>.getZoomLevel()`
 
 Returns `number` - the current zoom level.
 
-### `<webview>.setVisualZoomLevelLimits(minimumLevel, maximumLevel)`
+#### `<webview>.setVisualZoomLevelLimits(minimumLevel, maximumLevel)`
 
 * `minimumLevel` number
 * `maximumLevel` number

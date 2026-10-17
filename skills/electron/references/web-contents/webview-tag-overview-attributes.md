@@ -8,14 +8,6 @@ source: https://www.electronjs.org/docs/latest/api/webview-tag
 
 Process: Renderer. Use the `webview` tag to embed 'guest' content (such as web pages) in your Electron app.
 
-## Warning
-
-Electron's `webview` tag is based on Chromium's `webview`, which is undergoing dramatic architectural changes. This impacts the stability of `webviews`, including rendering, navigation, and event routing. We currently recommend to not use the `webview` tag and to consider alternatives, like `iframe`, a `WebContentsView`, or an architecture that avoids embedded content altogether.
-
-## Enabling
-
-By default the `webview` tag is disabled in Electron >= 5. You need to enable the tag by setting the `webviewTag` webPreferences option when constructing your `BrowserWindow`.
-
 ## Signature / Usage
 
 The guest content is contained within the `webview` container. An embedded page within your app controls how the guest content is laid out and rendered. Unlike an `iframe`, the `webview` runs in a separate process than your app. It doesn't have the same permissions as your web page and all interactions between your app and embedded content will be asynchronous. This keeps your app safe from the embedded content.
@@ -50,7 +42,15 @@ Sample code with two event listeners (loading start / stop) that displays a "loa
 </script>
 ```
 
-## Internal implementation
+### Warning
+
+Electron's `webview` tag is based on Chromium's `webview`, which is undergoing dramatic architectural changes. This impacts the stability of `webviews`, including rendering, navigation, and event routing. We currently recommend to not use the `webview` tag and to consider alternatives, like `iframe`, a `WebContentsView`, or an architecture that avoids embedded content altogether.
+
+### Enabling
+
+By default the `webview` tag is disabled in Electron >= 5. You need to enable the tag by setting the `webviewTag` webPreferences option when constructing your `BrowserWindow`.
+
+### Internal implementation
 
 Under the hood `webview` is implemented with Out-of-Process iframes (OOPIFs). The `webview` tag is essentially a custom element using shadow DOM to wrap an `iframe` element inside it.
 
@@ -60,11 +60,13 @@ So the behavior of `webview` is very similar to a cross-domain `iframe`, as exam
 * You can not add keyboard, mouse, and scroll event listeners to `webview`.
 * All reactions between the embedder frame and `webview` are asynchronous.
 
-## CSS Styling Notes
+### CSS Styling Notes
 
 The `webview` tag's style uses `display:flex;` internally to ensure the child `iframe` element fills the full height and width of its `webview` container when used with traditional and flexbox layouts. Please do not overwrite the default `display:flex;` CSS property, unless specifying `display:inline-flex;` for inline layout.
 
-## Tag Attributes
+## Options / Props
+
+Tag attributes:
 
 | Attribute | Type | Description |
 | --- | --- | --- |

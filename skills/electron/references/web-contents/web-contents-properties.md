@@ -25,14 +25,14 @@ An `IpcMain` scoped to just IPC messages sent from this WebContents.
 IPC messages sent with `ipcRenderer.send`, `ipcRenderer.sendSync` or `ipcRenderer.postMessage` will be delivered in the following order:
 
 1. `contents.on('ipc-message')`
-2. `contents.mainFrame.on(channel)`
+2. `contents.mainFrame.ipc.on(channel)`
 3. `contents.ipc.on(channel)`
 4. `ipcMain.on(channel)`
 
 Handlers registered with `invoke` will be checked in the following order. The first one that is defined will be called, the rest will be ignored.
 
-1. `contents.mainFrame.handle(channel)`
-2. `contents.handle(channel)`
+1. `contents.mainFrame.ipc.handle(channel)`
+2. `contents.ipc.handle(channel)`
 3. `ipcMain.handle(channel)`
 
 A handler or event listener registered on the WebContents will receive IPC messages sent from any frame, including child frames. In most cases, only the main frame can send IPC messages. However, if the `nodeIntegrationInSubFrames` option is enabled, it is possible for child frames to send IPC messages also. In that case, handlers should check the `senderFrame` property of the IPC event to ensure that the message is coming from the expected frame. Alternatively, register handlers on the appropriate frame directly using the `WebFrameMain.ipc` interface.
@@ -59,6 +59,7 @@ A handler or event listener registered on the WebContents will receive IPC messa
 
 ## Notes
 
+* The upstream v44.8.0 docs list these as `contents.mainFrame.on/handle(channel)` and `contents.handle(channel)`; the registration APIs are on the `ipc` property (`contents.ipc`, `WebFrameMain.ipc`).
 * `contents.caretBrowsingEnabled`: when enabled, a movable cursor is placed in the page's text, allowing the user to navigate and select content with the keyboard. Changes apply to the live page without reloading it. A `<webview>` guest inherits this value from its embedder when it is created and then tracks it independently, so disabling caret browsing on the embedder leaves an existing guest enabled. While any `WebContents` in the process has caret browsing enabled, assistive technology is notified process-wide that caret browsing is active, so that screen readers report the caret's position as it moves. That notification is only withdrawn once every `WebContents` that enabled caret browsing has either disabled it or been destroyed.
 * `contents.zoomLevel`: the original size is 0 and each increment above or below represents zooming 20% larger or smaller to default limits of 300% and 50% of original size, respectively. The formula is `scale := 1.2 ^ level`. `contents.zoomFactor` is the zoom percent divided by 100, so 300% = 3.0. See `contents.setZoomMode` for the available `zoomMode` values.
 * `contents.devToolsWebContents`: users should never store this object because it may become `null` when the DevTools has been closed.

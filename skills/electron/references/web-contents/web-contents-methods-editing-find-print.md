@@ -18,7 +18,7 @@ const requestId = win.webContents.findInPage('api')
 console.log(requestId)
 ```
 
-## Editing commands
+### Editing commands
 
 | Method | Description |
 | --- | --- |
@@ -41,7 +41,7 @@ console.log(requestId)
 | `contents.replaceMisspelling(text)` | (`text` string) Executes the editing command `replaceMisspelling` in web page. |
 | `contents.insertText(text)` | (`text` string) Returns `Promise<void>`. Inserts `text` to the focused element. |
 
-### `contents.adjustSelection(options)`
+#### `contents.adjustSelection(options)`
 
 * `options` Object
   * `start` Number (optional) - Amount to shift the start index of the current selection.
@@ -61,9 +61,9 @@ win.webContents.adjustSelection({ start: 1, end: 5 })
 win.webContents.adjustSelection({ start: 2, end: -3 })
 ```
 
-## Find in page
+### Find in page
 
-### `contents.findInPage(text[, options])`
+#### `contents.findInPage(text[, options])`
 
 * `text` string - Content to be searched, must not be empty.
 * `options` Object (optional)
@@ -75,7 +75,7 @@ Returns `Integer` - The request id used for the request.
 
 Starts a request to find all matches for the `text` in the web page. The result of the request can be obtained by subscribing to `found-in-page` event.
 
-### `contents.stopFindInPage(action)`
+#### `contents.stopFindInPage(action)`
 
 * `action` string - Specifies the action to take place when ending `webContents.findInPage` request.
   * `clearSelection` - Clear the selection.
@@ -84,9 +84,9 @@ Starts a request to find all matches for the `text` in the web page. The result 
 
 Stops any `findInPage` request for the `webContents` with the provided `action`.
 
-## Capture
+### Capture
 
-### `contents.capturePage([rect, opts])`
+#### `contents.capturePage([rect, opts])`
 
 * `rect` Rectangle (optional) - The area of the page to be captured.
 * `opts` Object (optional)
@@ -97,19 +97,19 @@ Returns `Promise<NativeImage>` - Resolves with a NativeImage
 
 Captures a snapshot of the page within `rect`. Omitting `rect` will capture the whole visible page. The page is considered visible when its browser window is hidden and the capturer count is non-zero. If you would like the page to stay hidden, you should ensure that `stayHidden` is set to true.
 
-### `contents.isBeingCaptured()`
+#### `contents.isBeingCaptured()`
 
 Returns `boolean` - Whether this page is being captured. It returns true when the capturer count is greater than 0.
 
-## Printing
+### Printing
 
-### `contents.getPrintersAsync()`
+#### `contents.getPrintersAsync()`
 
 Get the system printer list.
 
 Returns `Promise<PrinterInfo[]>` - Resolves with a `PrinterInfo[]`
 
-### `contents.print([options], [callback])`
+#### `contents.print([options], [callback])`
 
 * `options` Object (optional)
   * `silent` boolean (optional) - Don't ask user for print settings. Default is `false`.
@@ -167,7 +167,7 @@ win.webContents.print(options, (success, errorType) => {
 })
 ```
 
-### `contents.printToPDF(options)`
+#### `contents.printToPDF(options)`
 
 * `options` PrintToPDFOptions
 

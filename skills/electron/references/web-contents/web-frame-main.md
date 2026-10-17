@@ -217,14 +217,14 @@ An `IpcMain` instance scoped to the frame.
 IPC messages sent with `ipcRenderer.send`, `ipcRenderer.sendSync` or `ipcRenderer.postMessage` will be delivered in the following order:
 
 1. `contents.on('ipc-message')`
-2. `contents.mainFrame.on(channel)`
+2. `contents.mainFrame.ipc.on(channel)`
 3. `contents.ipc.on(channel)`
 4. `ipcMain.on(channel)`
 
 Handlers registered with `invoke` will be checked in the following order. The first one that is defined will be called, the rest will be ignored.
 
-1. `contents.mainFrame.handle(channel)`
-2. `contents.handle(channel)`
+1. `contents.mainFrame.ipc.handle(channel)`
+2. `contents.ipc.handle(channel)`
 3. `ipcMain.handle(channel)`
 
 In most cases, only the main frame of a WebContents can send or receive IPC messages. However, if the `nodeIntegrationInSubFrames` option is enabled, it is possible for child frames to send and receive IPC messages also. The `WebContents.ipc` interface may be more convenient when `nodeIntegrationInSubFrames` is not enabled.
@@ -248,6 +248,7 @@ In most cases, only the main frame of a WebContents can send or receive IPC mess
 
 ## Notes
 
+* The upstream v44.8.0 docs list these as `contents.mainFrame.on/handle(channel)` and `contents.handle(channel)`; the registration APIs are on the `ipc` property (`contents.ipc`, `WebFrameMain.ipc`).
 * `frame.collectJavaScriptCallStack()` is _Experimental_.
 * `frame.printToPDF()` prints only the frame it is called on, unlike `webContents.printToPDF`.
 

@@ -90,12 +90,14 @@ Returns `WebContents | undefined` - A WebContents instance with the given Target
 When communicating with the Chrome DevTools Protocol, it can be useful to lookup a WebContents instance based on its assigned TargetID.
 
 ```js
+const { webContents } = require('electron')
+
 async function lookupTargetId(browserWindow) {
   const wc = browserWindow.webContents
   await wc.debugger.attach('1.3')
   const { targetInfo } = await wc.debugger.sendCommand('Target.getTargetInfo')
   const { targetId } = targetInfo
-  const targetWebContents = await wc.fromDevToolsTargetId(targetId)
+  const targetWebContents = webContents.fromDevToolsTargetId(targetId)
 }
 ```
 
@@ -108,7 +110,7 @@ Process: Main. This class is not exported from the `'electron'` module. It is on
 ## Notes
 
 * Electron v44.8.0. The `webContents` module is Electron's page-rendering/control object for a window, not a Web framework or browser-automation library; for browser test automation see playwright, for HTTP servers see fastify / hono.
-* The `fromDevToolsTargetId` example in the original calls `wc.fromDevToolsTargetId`; the static method is `webContents.fromDevToolsTargetId` (example reproduced as in the source).
+* The `fromDevToolsTargetId` example in the original calls `wc.fromDevToolsTargetId`; corrected here to the static `webContents.fromDevToolsTargetId`.
 
 ## Related
 
