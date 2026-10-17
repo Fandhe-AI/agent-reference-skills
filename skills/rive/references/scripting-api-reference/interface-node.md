@@ -25,6 +25,7 @@ end
 | `update(self)` | Called when input values change |
 | `draw(self, renderer)` | Renders the node via the provided `Renderer` |
 | `pointerDown/pointerMove/pointerUp/pointerExit(self, event: PointerEvent)` | Pointer interaction handlers; call `event:hit()` |
+| `pointerScroll(self, event: ScrollEvent)` | Mouse wheel and trackpad scroll handler. Call `event:hit()` to claim the scroll; otherwise it passes to whatever lies behind, such as a `ScrollConstraint` view |
 | `gamepadConnected/gamepadEvent/gamepadDisconnected(self, event)` | Gamepad interaction handlers |
 
 ## Related

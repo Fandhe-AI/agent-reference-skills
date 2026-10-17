@@ -22,6 +22,8 @@ pnpm add @rive-app/webgl2
 bun add @rive-app/webgl2
 ```
 
+GPU Canvas（3D・シェーダー描画）は `@rive-app/webgl2` 2.42.0 以降が必要。
+
 ## Web ランタイム（Canvas）
 
 Rive Renderer を使わない Canvas 2D ベースのパッケージ。高度な機能は利用不可。
@@ -115,7 +117,7 @@ HTML に直接 `<script>` タグで読み込む場合。ビルドツールを使
 本番環境ではバージョンを固定することを推奨する。
 
 ```html
-<script src="https://unpkg.com/@rive-app/webgl2@2.36.0"></script>
+<script src="https://unpkg.com/@rive-app/webgl2@2.40.1"></script>
 ```
 
-バージョン番号は npm で最新版を確認して置き換える（`npm show @rive-app/webgl2 version`）。
+公式ドキュメントの例は 2.40.1。npm の `latest` は 2026-10-16 時点で 2.44.2。バージョン番号は npm で最新版を確認して置き換える（`npm show @rive-app/webgl2 version`）。GPU Canvas を使う場合は 2.42.0 以降を指定する。samples で使う `stateMachine`（単数形）は 2.41.0 以降が必要で、公式例の 2.40.1 のままでは使えない。

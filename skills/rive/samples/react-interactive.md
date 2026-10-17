@@ -8,7 +8,7 @@ import { useRive, useStateMachineInput } from "@rive-app/react-canvas";
 export default function InteractiveButton() {
   const { rive, RiveComponent } = useRive({
     src: "button.riv",
-    stateMachines: "Button State",
+    stateMachine: "Button State",
     autoplay: true,
   });
 
@@ -32,7 +32,7 @@ export default function InteractiveButton() {
 
 ## Notes
 
+- `useStateMachineInput` は React v4.33.0 で deprecated（動作はするが、state machine inputs は将来のメジャーで削除予定）。新規は data binding を推奨
+- `stateMachine`（単数形）を使う。複数形 `stateMachines` は deprecated（`stateMachine` に単一名を渡す）
 - `useRive` が返す `RiveComponent` をそのまま JSX に配置すると、canvas のマウント・リサイズ・クリーンアップが自動で管理される
 - `useStateMachineInput` は `rive` が準備完了するまで `null` を返す。操作前に null チェックが必要
-- `rive.play()` / `rive.pause()` を `RiveComponent` の `onMouseEnter` / `onMouseLeave` に直接渡すことで再生制御も可能
-- `useDevicePixelRatio`（デフォルト `true`）により HiDPI 環境での鮮明なレンダリングが自動で有効になる

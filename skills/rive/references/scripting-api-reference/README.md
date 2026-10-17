@@ -2,59 +2,65 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Animation | Represents a named timeline animation retrieved from an Artboard | [artboard-animation.md](./artboard-animation.md) |
-| Artboard | Represents a Rive artboard instance: drawing, advancing, interaction… | [artboard-artboard.md](./artboard-artboard.md) |
-| Artboard Event Types | Event payload types delivered to Artboard interaction handlers and… | [artboard-events.md](./artboard-events.md) |
-| ListenerContext | Provides access to the event context that triggered a state-machine… | [artboard-listener-context.md](./artboard-listener-context.md) |
-| NodeData / NodeReadData | Node types representing a node within an Artboard's hierarchy… | [artboard-node-data.md](./artboard-node-data.md) |
-| TextInput | Represents a text input event (coming soon) | [artboard-text-input.md](./artboard-text-input.md) |
-| ViewModel (artboards namespace) | Represents a view model used for data binding: structured data that… | [artboard-view-model.md](./artboard-view-model.md) |
-| Color | An ARGB-packed color value used throughout the scripting drawing… | [color.md](./color.md) |
-| Configuration (Scripting Editor) | Customize the Rive code editor's appearance and behavior (theme,… | [configuration.md](./configuration.md) |
-| Creating Scripts | How to create and attach a new script asset in the Rive Editor | [creating-scripts.md](./creating-scripts.md) |
-| Data Binding (Scripting) | Scripting allows a script to read, modify, and subscribe to changes… | [data-binding.md](./data-binding.md) |
-| DataValue | Foundational type for storing values passed into scripted… | [data-value.md](./data-value.md) |
-| Debugging (Debug Panel / Unit Testing) | The Debug Panel inspects script console output and lists pre-run… | [debugging.md](./debugging.md) |
-| Scripting Demos | Community/example gallery demonstrating scripting features:… | [demos.md](./demos.md) |
-| Font | An immutable font resource, obtained from a host and assignable… | [font.md](./font.md) |
-| Getting Started (Scripting) | Rive Scripting lets you write code, animation, and interaction… | [getting-started.md](./getting-started.md) |
-| Gradient / GradientStop | Gradient defines a fill/stroke gradient (linear or radial) from a… | [gradient.md](./gradient.md) |
-| GPU Bindings | Resource-binding types that connect buffers, textures, and… | [gpu-bindings.md](./gpu-bindings.md) |
-| GPU Buffers | Vertex, index, and uniform buffer types used with GPUPipeline… | [gpu-buffers.md](./gpu-buffers.md) |
-| GPU Core | Core rendering-target and pipeline types for the WGSL Shaders… | [gpu-core.md](./gpu-core.md) |
-| GPU Pipeline Fixed-Function State | Fixed-function state descriptors and enums used when building a… | [gpu-pipeline-state.md](./gpu-pipeline-state.md) |
-| GPU Textures | Texture resource, sampler, and pixel-format types for the… | [gpu-textures.md](./gpu-textures.md) |
-| Image / ImageSampler / ImageFilter / ImageWrap | Image is a drawable image resource. ImageSampler configures the… | [image.md](./image.md) |
-| Context (interfaces.Context) | Bridges a script and the Rive runtime: view model access, asset… | [interface-context.md](./interface-context.md) |
-| Converter (interfaces.Converter) | The lifecycle-method contract implemented by Converter Scripts.… | [interface-converter.md](./interface-converter.md) |
-| DecodedImage | Pixel data decoded via context:decodeImage(data) | [interface-decoded-image.md](./interface-decoded-image.md) |
-| Input<T> (interfaces.Input) | Generic type wrapper for a typed input value declared on a… | [interface-input.md](./interface-input.md) |
-| Layout (interfaces.Layout) | The lifecycle-method contract implemented by Layout Scripts. A… | [interface-layout.md](./interface-layout.md) |
-| Interfaces (Misc) | Smaller interfaces.* types grouped together: property-accessor… | [interface-misc.md](./interface-misc.md) |
-| Node (interfaces.Node) | The lifecycle-method contract implemented by Node Scripts:… | [interface-node.md](./interface-node.md) |
-| PathEffect (interfaces.PathEffect) | The lifecycle-method contract implemented by Path Effect Scripts… | [interface-path-effect.md](./interface-path-effect.md) |
-| Trigger (interfaces.Trigger) | A function-typed input that triggers an action when invoked | [interface-trigger.md](./interface-trigger.md) |
-| ViewModel (interfaces.ViewModel) | Access to named properties used for data binding between… | [interface-view-model.md](./interface-view-model.md) |
-| Keyboard Shortcuts (Scripting Editor) | Reference for keyboard shortcuts in the Rive script editor… | [keyboard-shortcuts.md](./keyboard-shortcuts.md) |
-| Luau Built-in Types | Built-in Luau standard-library types available inside Rive… | [luau-types.md](./luau-types.md) |
-| Mat2D | A 2D transformation matrix with components for scaling, rotation… | [mat2d.md](./mat2d.md) |
-| Mat4 | A 4x4 column-major transformation matrix for 3D transforms and… | [mat4.md](./mat4.md) |
-| Paint / PaintDefinition | Paint controls how a shape is rendered: fill/stroke styling,… | [paint.md](./paint.md) |
-| PathMeasure / ContourMeasure / PathCommand / PathData / CommandType | Measurement and inspection types for Path geometry. PathData is… | [path-measure.md](./path-measure.md) |
-| Path | A mutable drawing object built from move/line/curve commands… | [path.md](./path.md) |
-| Pointer Events (Scripting) | Scripts can listen for pointer interaction by implementing… | [pointer-events.md](./pointer-events.md) |
-| Promise | A value that will be available in the future. Supports… | [promise.md](./promise.md) |
-| Property / PropertyTrigger / Listener | Property is a mutable, listenable reference to a ViewModel… | [property.md](./property.md) |
-| Converter Scripts | Custom data-binding converters for when built-in options… | [protocol-converter-scripts.md](./protocol-converter-scripts.md) |
-| Layout Scripts | Layout Scripts extend Node Scripts, giving programmatic control… | [protocol-layout-scripts.md](./protocol-layout-scripts.md) |
-| Listener Action Scripts | Run custom logic when a state machine listener fires — side… | [protocol-listener-action-scripts.md](./protocol-listener-action-scripts.md) |
-| Node Scripts | Node scripts render shapes, images, text, artboards, and other… | [protocol-node-scripts.md](./protocol-node-scripts.md) |
-| Protocols (Overview) | Protocols are the structured categories of scripts that tell the… | [protocol-overview.md](./protocol-overview.md) |
-| Path Effect Scripts | Modify and transform path geometry in real-time — warping,… | [protocol-path-effect-scripts.md](./protocol-path-effect-scripts.md) |
-| Test Scripts | Write and run unit tests for Util Scripts directly in the Rive… | [protocol-test-scripts.md](./protocol-test-scripts.md) |
-| Transition Condition Scripts | Custom conditions for state machine transitions when built-in… | [protocol-transition-condition-scripts.md](./protocol-transition-condition-scripts.md) |
-| Util Scripts | Reusable, focused modules that organize shared logic across… | [protocol-util-scripts.md](./protocol-util-scripts.md) |
-| Renderer | Draws paths and images, manages clipping, and applies transforms… | [renderer.md](./renderer.md) |
-| Script Inputs | Scripted Inputs bridge scripts and the Rive editor: fields… | [script-inputs.md](./script-inputs.md) |
-| Vector | A three-component vector (x, y, z; z is 0 for 2D vectors from… | [vector.md](./vector.md) |
-| WGSL Shaders | Rive lets scripts write custom WGSL programs that execute on… | [wgsl-shaders.md](./wgsl-shaders.md) |
+| Animation | Represents a named timeline animation retrieved from an [Artboard](./artboard-artboard.md). | [artboard-animation.md](./artboard-animation.md) |
+| Artboard | Represents a Rive artboard instance: drawing, advancing, interaction handling, and access to named nodes and data. | [artboard-artboard.md](./artboard-artboard.md) |
+| Drawable / DrawableProperty / DrawablePropertyKind / PropertyKey | A `Drawable` carries custom properties and is handed to the visitor of `artboard:draw(renderer, visitor)`. It is only valid inside that visitor call. | [artboard-drawable.md](./artboard-drawable.md) |
+| Artboard Event Types | Event payload types delivered to [Artboard](./artboard-artboard.md) interaction handlers and [ListenerContext](./artboard-listener-context.md) accessors: pointer, scroll, keyboard, focus, gamepad, view-model-change, reported, and none. Several of these are marked "Coming soon" in the official docs (fields listed reflect the current draft API). | [artboard-events.md](./artboard-events.md) |
+| ListenerContext | Provides access to the event context that triggered a state-machine [Listener Action](./protocol-listener-action-scripts.md). Supports pointer, keyboard, text-input, focus, view-model-change, gamepad, and reported events via type-guard + accessor pairs. | [artboard-listener-context.md](./artboard-listener-context.md) |
+| NodeData / NodeReadData | Node types representing a node within an [Artboard](./artboard-artboard.md)'s hierarchy: transform properties and parent-child relationships. `NodeData` is the writable transform-decompose form; `NodeReadData` is the general read/write node returned by `artboard:node(name)`. | [artboard-node-data.md](./artboard-node-data.md) |
+| TextInput | Represents a text input event (coming soon). | [artboard-text-input.md](./artboard-text-input.md) |
+| ViewModel (artboards namespace) | Represents a view model used for data binding: structured data that can be read and modified at runtime so Rive files react to application state. Instantiated via `Data.<ViewModelName>.new()` and bound to an Artboard input. | [artboard-view-model.md](./artboard-view-model.md) |
+| Color | An ARGB-packed color value used throughout the scripting drawing API (Paint, DataValue, gradients). | [color.md](./color.md) |
+| Configuration (Scripting Editor) | Customize the Rive code editor's appearance and behavior (theme, typography, execution settings) via a Lua configuration file, applied across all code editor views for the account. | [configuration.md](./configuration.md) |
+| Creating Scripts | How to create and attach a new script asset in the Rive Editor. | [creating-scripts.md](./creating-scripts.md) |
+| Data Binding (Scripting) | Scripting allows a script to read, modify, and subscribe to changes in View Model properties, and to create new View Model instances at runtime. | [data-binding.md](./data-binding.md) |
+| DataValue | Foundational type for storing values passed into scripted converter/data inputs (`DataInputs`/`DataOutput`), with type-checking helpers. Concrete variants: `DataValueNumber`, `DataValueString`, `DataValueBoolean`, `DataValueColor`. | [data-value.md](./data-value.md) |
+| Debugging (Debug Panel / Unit Testing) | The Debug Panel inspects script console output and lists pre-run problems. Test scripts add unit-testing on top of that for [Util Scripts](./protocol-util-scripts.md). | [debugging.md](./debugging.md) |
+| Scripting Demos | Community/example gallery demonstrating scripting features: particle systems, complete games, path effects, converters, and layout scripts. | [demos.md](./demos.md) |
+| FileFormat / TextFileFormat (editor file-format protocols) | Protocols for adding editor support for custom file formats. `FileFormat` handles custom binary formats (files with a claimed extension import as blobs, keeping raw bytes, with previews from `view`). `TextFileFormat` handles text formats that are editable in the editor, synced across collaborators, with callbacks driving the text editor's intelligence. | [file-format.md](./file-format.md) |
+| Font | An immutable font resource, obtained from a host and assignable to view model font properties. | [font.md](./font.md) |
+| Getting Started (Scripting) | Rive Scripting lets you write code, animation, and interaction together in the Rive Editor. Scripts run on Luau (a typed Lua dialect) with editor-generated type definitions for the engine APIs. | [getting-started.md](./getting-started.md) |
+| GPU Bindings: GPUBindGroup / GPUBindGroupLayout / SamplerEntry / TextureEntry | Resource-binding types that connect buffers, textures, and samplers to a shader's `@group(N)` slots in the scripting GPU surface. | [gpu-bindings.md](./gpu-bindings.md) |
+| GPU Buffers: GPUBuffer / VertexAttribute / VertexBufferLayout / UBOEntry | Vertex, index, and uniform buffer types used with [GPUPipeline](./gpu-core.md) and [GPURenderPass](./gpu-core.md) in the scripting GPU surface. | [gpu-buffers.md](./gpu-buffers.md) |
+| GPU Core: Canvas / GPUCanvas / Shader / GPUPipeline / Render Passes | Core rendering-target and pipeline types for the [WGSL Shaders](./wgsl-shaders.md) scripting surface, obtained through [Context](./interface-context.md) (`context:canvas()`, `context:gpuCanvas()`, `context:shader()`). | [gpu-core.md](./gpu-core.md) |
+| GPU Pipeline Fixed-Function State | Fixed-function state descriptors and enums used when building a [GPUPipeline](./gpu-core.md): blending, depth/stencil, culling, topology, and per-attachment load/store behavior. | [gpu-pipeline-state.md](./gpu-pipeline-state.md) |
+| GPU Textures: GPUTexture / GPUSampler / Formats | Texture resource, sampler, and pixel-format types for the scripting GPU surface. | [gpu-textures.md](./gpu-textures.md) |
+| Gradient / GradientStop | `Gradient` defines a fill/stroke gradient (linear or radial) from a list of `GradientStop` color stops; assigned to `Paint.gradient`. | [gradient.md](./gradient.md) |
+| Image / ImageSampler / ImageFilter / ImageWrap | `Image` is a drawable image resource (obtained via `context:image('name')`). `ImageSampler` configures the wrapping/filtering used when an `Image` is drawn or sampled. | [image.md](./image.md) |
+| Context (interfaces.Context) | Bridges a script and the Rive runtime: view model access, asset retrieval, rendering surfaces, and update scheduling. Passed as the second argument to `init(self, context)` and other lifecycle functions across all protocols. | [interface-context.md](./interface-context.md) |
+| Converter (interfaces.Converter) | The lifecycle-method contract implemented by [Converter Scripts](./protocol-converter-scripts.md). Generic over `T` (converter type), `I`/`O` (input/output types, both must be [DataValue](./data-value.md) types). | [interface-converter.md](./interface-converter.md) |
+| DecodedImage | Pixel data decoded via `context:decodeImage(data)` (see [interface-context.md](./interface-context.md)). | [interface-decoded-image.md](./interface-decoded-image.md) |
+| Input\<T\> (interfaces.Input) | Generic type wrapper for a typed input value declared on a script's data type, exposed to the editor's Inputs panel. | [interface-input.md](./interface-input.md) |
+| Layout (interfaces.Layout) | The lifecycle-method contract implemented by [Layout Scripts](./protocol-layout-scripts.md). A scripted Layout behaves like a Node but can additionally report intrinsic sizing (`measure`) and reacts to size changes (`resize`). | [interface-layout.md](./interface-layout.md) |
+| Interfaces (Misc: Property variants, Protocol contracts, Assets) | Smaller `interfaces.*` types grouped together: property-accessor variants beyond `Property`/`PropertyTrigger`, lifecycle-method contracts for the remaining protocols, and asset/audio handles. | [interface-misc.md](./interface-misc.md) |
+| Node (interfaces.Node) | The lifecycle-method contract implemented by [Node Scripts](./protocol-node-scripts.md): renders shapes, images, text, and content in the node's local transform space. | [interface-node.md](./interface-node.md) |
+| PathEffect (interfaces.PathEffect) | The lifecycle-method contract implemented by [Path Effect Scripts](./protocol-path-effect-scripts.md). A scripted effect applied to a path that can change over time even when the underlying path is static. | [interface-path-effect.md](./interface-path-effect.md) |
+| Trigger (interfaces.Trigger) | A function-typed input that triggers an action when invoked. | [interface-trigger.md](./interface-trigger.md) |
+| ViewModel (interfaces.ViewModel) | Access to named properties used for data binding between application state and a Rive file. Returned by `context:viewModel()` / `context:rootViewModel()` (see [data-binding.md](./data-binding.md)). | [interface-view-model.md](./interface-view-model.md) |
+| Keyboard Shortcuts (Scripting Editor) | Reference for keyboard shortcuts in the Rive script editor, covering editing, navigation, selection, multi-cursor, search, and auto-formatting. | [keyboard-shortcuts.md](./keyboard-shortcuts.md) |
+| Luau Built-in Types (vector, DateTypeArg, DateTypeResult) | Built-in Luau standard-library types available inside Rive scripts, distinct from Rive's own scripting API classes. | [luau-types.md](./luau-types.md) |
+| Mat2D | A 2D transformation matrix with components for scaling, rotation, shear, and translation. | [mat2d.md](./mat2d.md) |
+| Mat4 | A 4x4 column-major transformation matrix for 3D transforms and GPU uniform buffers, used with the [WGSL shader](./wgsl-shaders.md) / [GPU](./gpu-core.md) scripting surface. | [mat4.md](./mat4.md) |
+| MeshInstances / VertexBuffer / TriangleBuffer | Buffers used with image meshes. `VertexBuffer` stores 2D vertex positions, `TriangleBuffer` stores triangle indices, and `MeshInstances` holds per-instance data for `Renderer:drawImageMeshInstanced`. | [mesh.md](./mesh.md) |
+| Paint / PaintDefinition | `Paint` controls how a shape is rendered: fill/stroke styling, color or gradient, stroke thickness/join/cap, feathering, and blend mode. Applied via `renderer:drawPath(path, paint)`. | [paint.md](./paint.md) |
+| PathMeasure / ContourMeasure / PathCommand / PathData / CommandType | Measurement and inspection types for [Path](./path.md) geometry. `PathData` is the indexed collection of `PathCommand`s (also `Path`'s base type, e.g. what a [Path Effect](./protocol-path-effect-scripts.md) receives); `PathMeasure` measures the whole path; `ContourMeasure` measures one contour (a `moveTo`-to-next-`moveTo` sequence). | [path-measure.md](./path-measure.md) |
+| Path | A mutable drawing object built from move/line/curve commands, rendered with `Renderer:drawPath(path, paint)`. | [path.md](./path.md) |
+| Pointer Events (Scripting) | Scripts can listen for pointer interaction by implementing `pointerDown`, `pointerMove`, `pointerUp`, or `pointerExit` lifecycle callbacks. Available in [Node Scripts](./protocol-node-scripts.md) and [Layout Scripts](./protocol-layout-scripts.md). | [pointer-events.md](./pointer-events.md) |
+| Promise | A value that will be available in the future. Supports `andThen`/`catch`/`finally` callbacks, `await` in async contexts, and cancellation. | [promise.md](./promise.md) |
+| Property / PropertyTrigger / Listener | `Property` is a mutable, listenable reference to a ViewModel property value (returned by `ViewModel:getNumber/getString/getBoolean/getColor/...`). `PropertyTrigger` is the trigger-property variant (no persistent value, fires an event). `Listener` is the callback type both use. | [property.md](./property.md) |
+| Converter Scripts | Custom data-binding converters for when built-in options ("Convert to String", "Round", etc.) aren't enough. | [protocol-converter-scripts.md](./protocol-converter-scripts.md) |
+| Layout Scripts | Layout Scripts extend [Node Scripts](./protocol-node-scripts.md), giving programmatic control over Layout components: measurement, sizing, and geometry-change reactions. Useful for masonry grids, carousels, and custom spacing logic. | [protocol-layout-scripts.md](./protocol-layout-scripts.md) |
+| Listener Action Scripts | Run custom logic when a state machine listener fires — side effects such as updating view model values, responding to pointer input, or triggering external behavior, without changing state. | [protocol-listener-action-scripts.md](./protocol-listener-action-scripts.md) |
+| Node Scripts | Node scripts render shapes, images, text, artboards, and other content within Rive scenes. They are added to the scene as a scene-tree Node. | [protocol-node-scripts.md](./protocol-node-scripts.md) |
+| Protocols (Overview) | Protocols are the structured categories of scripts that tell the Editor what you're trying to build. Selecting a protocol generates a typed scaffold defining the surface area you're allowed to operate on (paths, shapes, view models, artboards, state machines, timelines) through the lens of that protocol. | [protocol-overview.md](./protocol-overview.md) |
+| Path Effect Scripts | Modify and transform path geometry in real-time — warping, distortion, and other procedural modifications applied to a stroke. | [protocol-path-effect-scripts.md](./protocol-path-effect-scripts.md) |
+| Test Scripts | Write and run unit tests for [Util Scripts](./protocol-util-scripts.md) directly in the Rive editor. | [protocol-test-scripts.md](./protocol-test-scripts.md) |
+| Transition Condition Scripts | Custom conditions for state machine transitions when built-in comparisons aren't enough — e.g. logic depending on multiple view model properties evaluated together. | [protocol-transition-condition-scripts.md](./protocol-transition-condition-scripts.md) |
+| Util Scripts | Reusable, focused modules that organize shared logic across multiple scripts — mathematical helpers, geometry utilities, color functions, etc. | [protocol-util-scripts.md](./protocol-util-scripts.md) |
+| Renderer | Draws paths and images, manages clipping, and applies transforms during a Node/Layout script's `draw(self, renderer)` call. | [renderer.md](./renderer.md) |
+| Script Inputs | Scripted Inputs bridge scripts and the Rive editor: fields declared on a script's type appear as configurable properties (numbers, colors, booleans, artboards, view models) in the editor's Inputs panel. | [script-inputs.md](./script-inputs.md) |
+| Tester / Expectation / Tests | `Tests` is a function that defines a collection of test cases and receives a `Tester`. `Tester` declares cases and groups; `Expectation` performs assertions on a value. | [testing.md](./testing.md) |
+| Text / TextLine / Glyph / TextRunStyle and text enums | `Text` shapes and lays out styled runs of text with the runtime's shaper (real line breaking and bidirectional ordering). Append runs, set the box, then draw it in one call or walk its lines and glyphs to draw them yourself. Codepoint indices are 1 based like `utf8.offset`. | [text.md](./text.md) |
+| Unit Testing (Scripting) | Test scripts let you write unit tests for helper (Util / Blank) scripts and run them directly in the Rive editor. Use them to verify math helpers, string utilities, or any other pure logic. | [unit-testing.md](./unit-testing.md) |
+| Vector | A three-component vector (`x`, `y`, `z`; `z` is 0 for 2D vectors from `Vector.xy`) used throughout the scripting drawing/geometry API. | [vector.md](./vector.md) |
+| WGSL Shaders | Rive lets scripts write custom WGSL programs that execute on the GPU and render to a GPU canvas within a Rive file, for effects and procedural graphics beyond standard vector rendering. | [wgsl-shaders.md](./wgsl-shaders.md) |

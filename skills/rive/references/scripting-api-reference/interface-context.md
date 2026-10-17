@@ -24,6 +24,8 @@ end
 | `markNeedsUpdate()` | Flags the node for re-evaluation next frame; ignored if called from `update()` |
 | `viewModel() -> ViewModel?` | ViewModel bound to the node's immediate data context |
 | `rootViewModel() -> ViewModel?` | ViewModel attached to the root artboard |
+| `globalViewModel(name: string) -> ViewModel?` | The global ViewModel with the given name, or nil if there is none by that name or none is currently bound. Global view models are shared, singleton-like view models addressed by name rather than through the node's data context |
+| `globalViewModelNames() -> {string}` | Names of all global view models defined in the file; pass any to `globalViewModel` |
 | `dataContext() -> DataContext?` | DataContext for the node, for navigating parent contexts |
 | `image(name) -> Image?` | Fetches a named image asset |
 | `blob(name) -> Blob?` | Fetches a named raw binary data asset |
@@ -31,6 +33,7 @@ end
 | `canvas(desc?) -> Canvas` | Creates a 2D canvas for Renderer drawing |
 | `gpuCanvas(desc?) -> GPUCanvas` | Creates a GPU presentation target for custom render passes / MSAA |
 | `shader(name) -> Shader?` | Fetches a compiled shader asset for a `GPUPipeline` |
+| `gpuTarget() -> GPUTarget?` | Rive's render target: passes into it land under all of Rive's content. Cannot be sampled and starts each frame undefined, so the first pass must clear or cover it; with a sampleCount of 1 it can resolve a script's MSAA texture. On a frame the host hides it, `view` is nil and passes into it drop. Nil where the host can never expose one; keep a `gpuCanvas` and draw its image instead |
 | `features() -> GPUFeatures` | Queries GPU capabilities/limits for the current backend |
 | `decodeImage(data: buffer) -> Promise` | Decodes PNG/JPEG/WebP data into a `DecodedImage` |
 

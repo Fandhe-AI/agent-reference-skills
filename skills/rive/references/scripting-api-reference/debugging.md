@@ -45,6 +45,8 @@ end
 
 ## Notes
 
+- Debug Panel toolbar: switch between Console and Problems using the tabs at the left of the panel; the icons at the right end open and close the panel and toggle fullscreen. Copy and clear options for the console appear when the Console tab is active. Output is logged with the standard Luau `print()`.
+- For `Tester` / `Expectation` details see the Testing and Unit Testing pages (`testing.md`, `unit-testing.md`).
 - Run tests: right-click a Test script in the Assets panel → Run Tests. Results appear both in the Assets Panel (pass/fail per case) and inline in the script editor.
 
 ## Related

@@ -1,15 +1,16 @@
 ---
 name: rive
 description: >
-  Rive アニメーションランタイムリファレンス。
-  Rive クラス、useRive、useStateMachineInput、RiveComponent、
-  State Machine、Data Binding、ViewModel、ViewModelInstance、Events、
-  Layout / Fit / Alignment、.riv ファイル読み込み。
-  @rive-app/canvas、@rive-app/webgl2、@rive-app/react-canvas、@rive-app/react-webgl2。
-  Rive Scripting API (Luau)、Artboard、Property、Path / Paint / Renderer、
-  WGSL Shaders、GPU pipeline、Node / Layout / Converter スクリプト。
+  Rive アニメーションランタイム (Web / React)。
+  useRive, useRiveFile, useStateMachineInput, RiveComponent, State Machine,
+  Data Binding, ViewModel / ViewModelInstance, Events, Layout / Fit / Alignment, .riv。
+  @rive-app/canvas / webgl2 / react-canvas / react-webgl2、enableGPUCanvas、
+  Semantics, Rive CLI。Scripting (Luau), Artboard, Property, Path / Paint / Renderer,
+  WGSL Shaders, GPU pipeline, Node / Layout / Converter スクリプト。
 user-invocable: false
 ---
+
+対象バージョン: Rive docs ([rive.app/docs](https://rive.app/docs/llms.txt)、版数なし) を 2026-10-16 取得。参考版は `@rive-app/webgl2` 2.44.2 / `@rive-app/react-webgl2` 4.36.0。`stateMachine` パラメーターと非推奨化は Web v2.41.0、GPU Canvas (`enableGPUCanvas`) は v2.42.0、`useStateMachineInput` の非推奨化は React v4.33.0。
 
 ## ディレクトリ構成
 
@@ -34,6 +35,8 @@ skills/rive/
       artboards.md
       caching-a-rive-file.md
       canvas-vs-webgl.md
+      semantics.md
+      gpu-canvas.md
       faq.md
       low-level-api-usage.md
       migration-guides.md
@@ -49,6 +52,12 @@ skills/rive/
       caching-a-rive-file.md
       migration-guides.md
       rendering-to-a-bitmap.md
+      loading-assets.md
+      fonts.md
+      semantics.md
+      gpu-canvas.md
+      preloading-wasm.md
+      playing-audio.md
     concepts/
       README.md
       state-machine.md
@@ -79,6 +88,11 @@ skills/rive/
       layout-tools.md
       n-slicing.md
       scrolling.md
+      open-url-events.md
+      component-sizing.md
+      accessibility-semantics.md
+      accessibility-focus.md
+      accessibility-reduced-motion.md
     scripting-api-reference/
       README.md
       getting-started.md
@@ -137,14 +151,22 @@ skills/rive/
       gpu-bindings.md
       gpu-textures.md
       gpu-pipeline-state.md
+      unit-testing.md
+      testing.md
+      text.md
+      mesh.md
+      file-format.md
+      artboard-drawable.md
   samples/
     README.md
     web-basic.md
     react-interactive.md
     state-machine-control.md
+    web-data-binding.md
   scripts/
     README.md
     install.md
+    cli.md
 ```
 
 ## 探索手順
@@ -178,5 +200,11 @@ skills/rive/
 | Rive Scripting（Luau）で Node / Layout / Converter / Path Effect スクリプトを書き、Artboard / ViewModel / Property を操作したい | scripting-api-reference | [references/scripting-api-reference/README.md](references/scripting-api-reference/README.md) |
 | Path / Paint / Renderer / Color / Gradient で描画処理を書きたい | scripting-api-reference | [references/scripting-api-reference/README.md](references/scripting-api-reference/README.md) |
 | WGSL Shaders / GPU Buffers・Textures・Pipeline State を扱いたい | scripting-api-reference | [references/scripting-api-reference/README.md](references/scripting-api-reference/README.md) |
-| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
-| インストール・パッケージ追加コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
+| アクセシビリティ・スクリーンリーダー対応（Semantics / Focus / Reduced Motion）を実装したい | runtimes-web / runtimes-react / concepts | [references/runtimes-web/README.md](references/runtimes-web/README.md) / [references/runtimes-react/README.md](references/runtimes-react/README.md) / [references/concepts/README.md](references/concepts/README.md) |
+| GPU Canvas（3D / シェーダー、enableGPUCanvas）を有効化したい | runtimes-web / runtimes-react | [references/runtimes-web/README.md](references/runtimes-web/README.md) / [references/runtimes-react/README.md](references/runtimes-react/README.md) |
+| Global View Model・Data Binding を Web / 概念面で調べたい | runtimes-web / concepts | [references/runtimes-web/README.md](references/runtimes-web/README.md) / [references/concepts/README.md](references/concepts/README.md) |
+| React でフォント・アセット・WASM・音声を読み込みたい（useRiveFile 含む） | runtimes-react | [references/runtimes-react/README.md](references/runtimes-react/README.md) |
+| Open URL Events・コンポーネントサイズ指定を知りたい | concepts | [references/concepts/README.md](references/concepts/README.md) |
+| Scripting のテキストレイアウト・Mesh インスタンシング・ユニットテスト・独自ファイル形式を扱いたい | scripting-api-reference | [references/scripting-api-reference/README.md](references/scripting-api-reference/README.md) |
+| 典型的な使い方を知りたい（Web Data Binding 含む） | samples | [samples/README.md](samples/README.md) |
+| インストール・パッケージ追加・Rive CLI（create / preview / push / pull）を知りたい | scripts | [scripts/README.md](scripts/README.md) |
