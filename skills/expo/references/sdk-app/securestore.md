@@ -93,7 +93,7 @@ Type `number`, available on Android, iOS, tvOS.
 | `SecureStore.WHEN_UNLOCKED` | Accessible only while the device is unlocked. |
 | `SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY` | Like `WHEN_UNLOCKED`, but not migrated to a new device. |
 
-Android Auto Backup exclusion (when using your own backup configuration, set `configureAndroidBackup` to `false`):
+Android Auto Backup exclusion (when using your own backup configuration, set `configureAndroidBackup` to `false`). When merging into an existing backup configuration, add only the `<exclude domain="sharedpref" path="SecureStore"/>` line and keep your existing `<include>` elements:
 
 ```xml
 <!--  Auto Backup configuration for Android 12 and higher -->
@@ -124,6 +124,7 @@ Android Auto Backup exclusion (when using your own backup configuration, set `co
 - Android: values are stored in `SharedPreferences`, encrypted with the Android Keystore. iOS: stored in keychain services as `kSecClassGenericPassword`.
 - Persistence: on Android data is not preserved after uninstall. On iOS data persists across uninstall when reinstalled with the same bundle ID (Keychain behavior; not guaranteed). Do not use as the single source of truth for irreplaceable data. Data protected with `requireAuthentication: true` becomes inaccessible if the user's biometric settings change (for example a new fingerprint).
 - When `requireAuthentication` is `true`, the biometric prompt can fail independently of the stored value (canceled, no biometrics enrolled, hardware unavailable, locked out, timeout); calls throw / reject with the native error message (for example `"User canceled the authentication"` on Android, `"User canceled the operation."` on iOS). Wrap in `try/catch` and treat it as an auth-flow outcome, not data corruption.
+- Backup rules caveat (not in the official page): any `<include>` element restricts backup to only the listed paths, so the verbatim example above backs up shared preferences only (databases, files, etc. are excluded); when merging into an existing `data_extraction_rules` / `full_backup_content` file, add only the `<exclude domain="sharedpref" path="SecureStore"/>` line and keep your existing includes.
 - Export compliance: set `ios.config.usesNonExemptEncryption` to `false` in the app config to handle the App Store Connect encryption prompt automatically.
 - Existing React Native app: add `NSFaceIDUsageDescription` to `Info.plist`.
 - Source: `sdk-58` branch `packages/expo-secure-store`; modificationDate September 15, 2026.
