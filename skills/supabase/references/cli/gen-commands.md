@@ -1,5 +1,13 @@
 # Supabase CLI: 型生成コマンド
 
+## Signature / Usage
+
+```bash
+supabase gen types typescript [flags]
+```
+
+詳細は以下の節に記載する。
+
 ## supabase gen types typescript
 
 データベーススキーマから TypeScript の型定義ファイルを生成する。
@@ -241,7 +249,7 @@ jobs:
 }
 ```
 
-## 関連
+## Related
 
 - [型生成](../data-api/generating-types.md) — TypeScript 型活用
 - [JS クライアント初期化](../client-js/initialization.md) — 型付きクライアント

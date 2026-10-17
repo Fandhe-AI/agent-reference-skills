@@ -1,5 +1,13 @@
 # Supabase CLI: ローカル開発コマンド
 
+## Signature / Usage
+
+```bash
+supabase <init|start|stop|status|link> [flags]
+```
+
+各コマンドは以下の節に記載する。
+
 ## supabase init
 
 プロジェクトを初期化し、`supabase/` ディレクトリと設定ファイルを生成する。
@@ -201,6 +209,15 @@ supabase link --project-ref abcdefghijklmnop
 - Supabase Dashboard の URL: `https://supabase.com/dashboard/project/<project-ref>`
 - または `supabase projects list` コマンドで確認
 
+## Notes
+
+- 実験的な `supabase stack` コマンド: `config.toml` に `[experimental] stack = true`（または `SUPABASE_EXPERIMENTAL_STACK=1`）を設定すると、`supabase start` / `status` / `stop` が stack コマンドとして動作する。環境変数は設定ファイルより優先され、`SUPABASE_EXPERIMENTAL_STACK=0` で 1 セッションだけ従来コマンドに戻せる
+- 上記設定時は `--stack <name>` で名前付きローカルプロジェクトを指定できる。stack 専用コマンドは `supabase stack list` / `supabase stack destroy` / `supabase stack stop --all`
+- v2.121.0 以降は `supabase stack destroy` で `--stack-id` を複数回指定でき、確認は 1 回
+- stack モードでは `supabase stop --no-backup` / `--project-id`、`-o` / `--output` は使えない（`--output-format` と `--env` を使う）
+- stack コマンドは experimental で、フラグ・出力が変わり得る。CLI の互換性保証の対象外
+- 詳細: [複数ローカルプロジェクトの同時実行](../local-dev/running-multiple-local-projects.md)
+
 ## ワークフロー例
 
 ```bash
@@ -227,7 +244,7 @@ supabase db push
 supabase stop
 ```
 
-## 関連
+## Related
 
 - [ローカル開発概要](../local-dev/overview.md) — ローカル環境
 - [db コマンド](./db-commands.md) — スキーマ管理

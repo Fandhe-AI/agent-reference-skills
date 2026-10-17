@@ -22,6 +22,14 @@ supabase migration up
 supabase migration list
 ```
 
+## マイグレーション履歴テーブルからマイグレーションファイルを取得
+
+```sh
+supabase migration fetch
+```
+
+リモートのマイグレーション履歴テーブルからファイルを取得する（フラグは `supabase migration fetch --help` で確認）。
+
 ## マイグレーションのロールバック
 
 ```sh
@@ -71,6 +79,34 @@ supabase db diff --linked
 ```sh
 supabase db pull
 ```
+
+## リモートスキーマを宣言型スキーマのツリーとして取得
+
+> **警告**: pg-delta を有効化していないプロジェクト（legacy `migra` エンジン）では実行しない。`[db.migrations].schema_paths` が書き出したツリーを指すようになり、次回の `db diff` が依存順序を解決できず失敗する。
+
+```sh
+supabase db pull --declarative
+```
+
+マイグレーションは作成せず、`supabase/schemas`（`experimental.pgdelta.declarative_schema_path` で変更可）のスキーマファイルを置き換える。
+
+## 宣言型スキーマから新規マイグレーションを生成
+
+```sh
+supabase db schema declarative sync -f <name> --no-apply
+```
+
+宣言型スキーマファイルとマイグレーション履歴を比較して生成する（ライブ DB は読まない）。`--experimental` フラグまたは `config.toml` の `[experimental.pgdelta] enabled = true` が必要。
+
+## 既存 DB から宣言型スキーマを生成
+
+> **警告**: `--overwrite` は確認なしで既存の宣言型スキーマファイルを上書きする。
+
+```sh
+supabase db schema declarative generate --linked --overwrite
+```
+
+`--experimental` フラグまたは `[experimental.pgdelta] enabled = true` が必要。スクリプトでは対象（`--local` / `--linked` / `--db-url`）を明示する。
 
 ## ローカルのマイグレーションをリモートに適用
 

@@ -5,9 +5,12 @@
 | 匿名認証 | 匿名ユーザーの作成と、認証済みアカウントへの変換。 | [anonymous-auth.md](./anonymous-auth.md) |
 | Auth Hooks | サーバーサイドで認証フローをカスタマイズする 6 種類のフック。 | [auth-hooks.md](./auth-hooks.md) |
 | CAPTCHA 連携 | hCaptcha と Cloudflare Turnstile による bot 対策。 | [captcha.md](./captcha.md) |
+| サーバー用パッケージの選択 | サーバー上で使う supabase-js / @supabase/ssr / @supabase/server の判断基準。 | [choosing-server-package.md](./choosing-server-package.md) |
+| Custom OAuth/OIDC Providers | 組み込み以外の OAuth2 / OIDC 準拠 IdP を Supabase Auth に追加する。 | [custom-oauth-providers.md](./custom-oauth-providers.md) |
 | メール OTP / Magic Link | メールベースのパスワードレス認証（OTP コードとマジックリンク）。 | [email-passwordless.md](./email-passwordless.md) |
 | Auth エラーコード一覧 | Supabase Auth が返すエラーコードの一覧と対処法。 | [error-codes.md](./error-codes.md) |
 | ID 管理・アカウントリンク | auth.identities テーブルを使った複数プロバイダのアカウントリンク機能。 | [identities.md](./identities.md) |
+| JWT Claims Reference | Supabase Auth が発行する JWT に現れる全クレームのリファレンス。 | [jwt-fields.md](./jwt-fields.md) |
 | JWT 構造 | Supabase Auth が発行する JWT のクレーム構造と RLS での活用。 | [jwts.md](./jwts.md) |
 | 多要素認証（MFA） | TOTP と Phone（SMS）を使った多要素認証の実装。 | [mfa.md](./mfa.md) |
 | Supabase OAuth Server | Supabase プロジェクトを OAuth 2.0 プロバイダとして機能させる。 | [oauth-server.md](./oauth-server.md) |

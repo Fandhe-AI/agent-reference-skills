@@ -11,4 +11,5 @@
 | OAuth Login | Sign in users via third-party OAuth providers such as Google and GitHub. | [oauth-login.md](./oauth-login.md) |
 | Realtime Subscription | Listen to database changes and broadcast messages in real time using Supabase Realtime channels. | [realtime-subscription.md](./realtime-subscription.md) |
 | Row Level Security | Protect table data at the database level so users can only access their own rows. | [row-level-security.md](./row-level-security.md) |
+| Server SDK Endpoint | Protect or serve a Fetch-handler endpoint with `@supabase/server`, and bridge its middleware into Hono. | [server-sdk-endpoint.md](./server-sdk-endpoint.md) |
 | Vector Search and RAG | Store document embeddings in pgvector and build a Retrieval-Augmented Generation pipeline. | [vector-search-rag.md](./vector-search-rag.md) |

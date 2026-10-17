@@ -1,5 +1,13 @@
 # Supabase CLI: Edge Functions コマンド
 
+## Signature / Usage
+
+```bash
+supabase functions <command> [flags]
+```
+
+各コマンドは以下の節に記載する。
+
 ## supabase functions new
 
 新しい Edge Function を作成する。`supabase/functions/<name>/` ディレクトリにテンプレートファイルが生成される。
@@ -269,7 +277,7 @@ JWT 検証有効時に使用可能なトークン:
 - `service_role` キー
 - ユーザーの JWT トークン
 
-## 関連
+## Related
 
 - [Edge Functions デプロイ](../functions/deploy.md) — デプロイ設定
 - [Edge Functions クイックスタート](../functions/quickstart.md) — 入門

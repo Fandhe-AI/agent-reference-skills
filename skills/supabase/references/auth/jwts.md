@@ -2,7 +2,7 @@
 
 Supabase Auth が発行する JWT のクレーム構造と RLS での活用。
 
-## 概要
+## Signature / Usage
 
 Supabase Auth は JWT（JSON Web Token）を使ってユーザーのセッション情報を管理する。JWT はアクセストークンとして使用され、Supabase のサービス（Database, Storage, Edge Functions 等）へのリクエスト時に `Authorization: Bearer <token>` ヘッダーで送信される。
 
@@ -45,7 +45,7 @@ Supabase は **共有秘密鍵（HS256）** と **非対称鍵（RSA / EC / OKP�
 - 非対称鍵を使用しない場合、JWKS エンドポイントはキーを返さない
 - HS256 のローカル検証は推奨されない。代わりに Auth サーバーに問い合わせる（`GET /auth/v1/user`）
 
-## コード例
+### コード例
 
 ```typescript
 // === JWT ペイロードの確認 ===
@@ -173,7 +173,7 @@ async function verifyViaAuthServer(token: string) {
 }
 ```
 
-## 注意点
+## Notes
 
 - JWT はデコード可能であるため、機密情報をカスタムクレームに含めないこと
 - Custom Access Token Hook でクレームを追加する場合、JWT ペイロードのサイズが増加する。HTTP ヘッダーの制限（通常 8KB）に注意
@@ -185,9 +185,10 @@ async function verifyViaAuthServer(token: string) {
 - 非対称鍵への移行は推奨だが、移行後は HS256 を前提としたローカル検証コードをすべて jose 等のライブラリへ置き換えること
 - Supabase は外部 JWT（サードパーティ Auth / 自己発行）も `accessToken` オプション経由で受け付ける
 
-## 関連
+## Related
 
 - [Auth 概要](./overview.md)
 - [セッション管理](./sessions.md)
 - [Auth Hooks](./auth-hooks.md)
 - [多要素認証](./mfa.md)
+- [JWT Claims Reference](./jwt-fields.md) — JWT クレーム一覧

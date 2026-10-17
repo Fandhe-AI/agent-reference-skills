@@ -1,20 +1,41 @@
 # ローカル開発概要
 
-## 概要
+## Signature / Usage
 
 Supabase CLI を使用して、Docker 上で全サービスをローカルに実行できる。リモートプロジェクトに依存せずに開発が可能。
 
 ## 前提条件
 
-- Docker Desktop がインストールされていること
+- Docker API 互換のコンテナマネージャーがインストールされていること
+  - OrbStack (macOS) - macOS で推奨
+  - Docker Desktop (macOS, Windows, Linux) - Windows / Linux で推奨
+  - Rancher Desktop (macOS, Windows, Linux)
+  - Podman (macOS, Windows, Linux)
 - Supabase CLI がインストールされていること
 
 ```bash
-# CLI のインストール（npm）
-npm install -g supabase
+# npm（プロジェクトの dev dependency）
+npm install supabase --save-dev
 
-# CLI のインストール（Homebrew）
+# yarn
+NODE_OPTIONS=--no-experimental-fetch yarn add supabase --dev
+
+# pnpm（pnpm 10 以降は --allow-build=supabase が必須。旧版は省略）
+pnpm add supabase --save-dev --allow-build=supabase
+
+# Homebrew
 brew install supabase/tap/supabase
+```
+
+npm / yarn / pnpm はプロジェクトに dev dependency として入れるため、`npx supabase` / `yarn supabase` / `pnpm supabase` 経由で実行する。Homebrew はグローバルの `supabase` コマンドになる。
+
+### 信頼できないネットワークでの注意
+
+信頼できない公開ネットワークに接続している場合は、起動前に専用の Docker network を作り 127.0.0.1 にバインドする。ローカルスタックを公開してはならない。
+
+```bash
+docker network create -o 'com.docker.network.bridge.host_binding_ipv4=127.0.0.1' local-network
+npx supabase start --network-id local-network
 ```
 
 ## 初期セットアップ
@@ -181,7 +202,12 @@ port = 54332
 supabase db reset
 ```
 
-## 関連
+## Notes
+
+- 既定のポートでは `supabase start` はマシンあたり 1 プロジェクトのみ。実験的な `supabase stack` コマンドで複数のローカルプロジェクトを同時に実行できる（[複数ローカルプロジェクトの同時実行](./running-multiple-local-projects.md)）
+- Linux と Apple silicon の macOS では、`supabase stack` により Docker なしで（プロセスとして）実行できる（[Docker とネイティブランタイム](./docker-and-native-runtimes.md)）
+
+## Related
 
 - [CLI ローカル開発](../cli/local-dev.md) — supabase start/stop コマンド
 - [シードデータ](./seeding.md) — テストデータ管理

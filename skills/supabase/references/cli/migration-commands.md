@@ -1,5 +1,13 @@
 # Supabase CLI: マイグレーションコマンド
 
+## Signature / Usage
+
+```bash
+supabase migration <command> [flags]
+```
+
+各コマンドは以下の節に記載する。
+
 ## supabase migration new
 
 新しいマイグレーションファイルを作成する。タイムスタンプ付きの空の SQL ファイルが生成される。
@@ -142,6 +150,28 @@ supabase migration list
 | LOCAL のみ | ローカルにあるがリモート未適用 |
 | REMOTE のみ | リモートにあるがローカルにない（同期が必要） |
 
+## supabase migration fetch
+
+Fetch migration files from history table.
+
+```bash
+supabase migration fetch [flags]
+```
+
+### フラグ
+
+| フラグ | 説明 |
+|-------|------|
+| `--db-url <url>` | Fetches migrations from the database specified by the connection string (must be percent-encoded). |
+| `--linked` | Fetches migration history from the linked project.（既定: true） |
+| `--local` | Fetches migration history from the local database.（既定: false） |
+| `--project-ref <ref>` | Project ref of the Supabase project.（TS 実装のみの上書きフラグ） |
+
+### Notes
+
+- `--project-ref` は CLI v2.121.0 のソース（`fetch.command.ts`）で "TS-only override of the linked project ref" とコメントされており、公式 CLI リファレンス（llms/cli.txt）にはフラグ表が無い
+- 公式 CLI リファレンスの記載は説明文と `supabase migration fetch [flags]` のみ
+
 ## supabase migration repair
 
 マイグレーション履歴の整合性を修復する。ローカルとリモートでマイグレーションの状態が不一致の場合に使用。
@@ -257,7 +287,7 @@ supabase db pull
 supabase db reset
 ```
 
-## 関連
+## Related
 
 - [db コマンド](./db-commands.md) — db diff / push
 - [マイグレーション戦略](../deployment/database-migrations.md) — マイグレーション運用

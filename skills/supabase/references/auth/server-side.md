@@ -2,7 +2,7 @@
 
 @supabase/ssr パッケージを使ったサーバーサイドでの認証管理。
 
-## 概要
+## Signature / Usage
 
 サーバーサイドレンダリング（SSR）フレームワークでは、`@supabase/ssr` パッケージを使用して Cookie ベースのセッション管理を行う。これにより、サーバーコンポーネントやミドルウェアで安全にユーザー認証を確認できる。
 
@@ -27,7 +27,7 @@
 - Astro
 - Express
 
-## コード例
+### コード例
 
 ```typescript
 // === インストール ===
@@ -204,7 +204,7 @@ export async function signOut() {
 }
 ```
 
-## 注意点
+## Notes
 
 - サーバーサイドでは必ず `getUser()` を使用すること。`getSession()` は Cookie の値をそのまま返すため、改ざんされたトークンを検知できない
 - ミドルウェアで `getUser()` を呼ぶことで、期限切れトークンのリフレッシュが行われる
@@ -214,8 +214,14 @@ export async function signOut() {
 - `@supabase/ssr` は `@supabase/auth-helpers-nextjs` の後継パッケージ。auth-helpers は非推奨
 - Service Role キーはサーバーサイドでのみ使用し、環境変数 `SUPABASE_SERVICE_ROLE_KEY`（`NEXT_PUBLIC_` プレフィックスなし）に設定すること
 
-## 関連
+- `@supabase/ssr` は deprecated ではなく、`@supabase/server` と共存する（互いの置き換えではない）。判断基準はユーザー ID が呼び出しコードへ届く経路: セッションが cookie にある（Next.js / SvelteKit / TanStack Start などの SSR フレームワーク）なら `@supabase/ssr`、リクエストごとに header の Bearer JWT（`Authorization: Bearer <jwt>` + `apikey`）で届く（Edge Functions / Workers / Vercel / Bun / Hono・H3・Elysia・NestJS などのフレームワーク API）なら `@supabase/server`、ベースクライアントだけ要る・自前で認証を扱うなら `@supabase/supabase-js`
+- cookie ベースのフレームワークで両者を組み合わせることも可能（`@supabase/ssr` が cookie セッションのライフサイクルを持ち、解決したトークンを `@supabase/server` に渡す）。設定が増え、公式は first-party 統合を今後の予定としている
 
+## Related
+
+- [サーバーパッケージの選び方](./choosing-server-package.md) — supabase-js / ssr / server の使い分け
+- [Edge Functions 認証](../functions/auth.md) — Edge Functions 側の @supabase/server（withSupabase）
+- [Server SDK](../server-sdk/README.md) — @supabase/server リファレンス
 - [Auth 概要](./overview.md)
 - [セッション管理](./sessions.md)
 - [JWT 構造](./jwts.md)

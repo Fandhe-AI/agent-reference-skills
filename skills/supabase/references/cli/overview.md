@@ -1,6 +1,8 @@
 # Supabase CLI 概要
 
-## インストール
+## Signature / Usage
+
+### インストール
 
 ### npm
 
@@ -110,11 +112,17 @@ DNS 解決に問題がある場合（VPN 環境など）に `https` を指定す
 | `supabase stop` | ローカル環境停止 |
 | `supabase status` | 状態確認 |
 | `supabase link` | リモートプロジェクトリンク |
+| `supabase bootstrap [template]` | スターターテンプレートから Supabase プロジェクトを作成 |
+| `supabase services` | 全 Supabase サービスのバージョン表示 |
+| `supabase completion <bash\|zsh\|fish\|powershell>` | シェル補完スクリプト生成 |
 
 ### データベース
 
 | コマンド | 説明 |
 |---------|------|
+| `supabase db start` | ローカル Postgres 起動 |
+| `supabase db schema declarative sync` | 宣言的スキーマから migration 生成（pg-delta、experimental） |
+| `supabase db schema declarative generate` | DB から宣言的スキーマを export（pg-delta、experimental） |
 | `supabase db diff` | スキーマ差分 |
 | `supabase db dump` | スキーマダンプ |
 | `supabase db lint` | リンティング |
@@ -130,6 +138,7 @@ DNS 解決に問題がある場合（VPN 環境など）に `https` を指定す
 | `supabase migration up` | 適用 |
 | `supabase migration down` | ロールバック |
 | `supabase migration list` | 一覧 |
+| `supabase migration fetch` | history テーブルから migration ファイルを取得 |
 | `supabase migration repair` | 修復 |
 | `supabase migration squash` | 統合 |
 
@@ -153,7 +162,7 @@ DNS 解決に問題がある場合（VPN 環境など）に `https` を指定す
 
 | コマンド | 説明 |
 |---------|------|
-| `supabase inspect db` | DB 検査 |
+| `supabase inspect db` | DB 検査（`index-stats` / `table-stats` / `role-stats` / `traffic-profile` を追加。旧名は deprecated） |
 | `supabase inspect report` | 総合レポート |
 
 ### プロジェクト管理
@@ -200,7 +209,18 @@ DNS 解決に問題がある場合（VPN 環境など）に `https` を指定す
 | `supabase network-restrictions` | ネットワーク制限 |
 | `supabase ssl-enforcement` | SSL 強制設定 |
 | `supabase vanity-subdomains` | Vanity Subdomain 管理 |
+| `supabase domains` | カスタムドメイン管理（activate / create / get / reverify / delete） |
+| `supabase postgres-config` | Postgres 設定の上書き管理（get / update / delete） |
 | `supabase snippets` | SQL スニペット |
+
+### 実験的: supabase stack
+
+`[experimental] stack = true`（`config.toml`）または `SUPABASE_EXPERIMENTAL_STACK=1` で `supabase stack` コマンド群（list / destroy / prepare / start / status / logs / restart / stop）が有効になり、`supabase start` / `status` / `stop` がそのエイリアスになる。不安定で CLI の互換性保証の対象外。詳細は [ローカル開発コマンド](./local-dev.md) を参照。
+
+## Notes
+
+- 本ページのコマンド一覧の対象バージョンは CLI v2.121.0（GitHub リリースタグ `v2.121.0` と公式 CLI リファレンスで確認）
+- 公式 CLI リファレンス（llms/cli.txt）にフラグ表は無いため、新規コマンドのフラグは各コマンド定義（`command.ts`）に記載があるものだけを他ページに掲載
 
 ## 設定ファイル
 
@@ -233,7 +253,7 @@ double_confirm_changes = true
 enable_confirmations = false
 ```
 
-## 関連
+## Related
 
 - [ローカル開発](./local-dev.md) — supabase init / start / stop
 - [project コマンド](./project-commands.md) — プロジェクト管理

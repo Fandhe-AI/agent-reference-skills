@@ -10,7 +10,7 @@
 | Edge Functions 依存関係管理 | Edge Functions での外部モジュールのインポートと依存関係の管理方法。 | [dependencies.md](./dependencies.md) |
 | Edge Functions 実装例一覧 | 主要なユースケースごとの Edge Functions 実装例の概要とコードサンプル。 | [examples.md](./examples.md) |
 | Edge Functions 制限事項 | Edge Functions のリソース制限、実行制限、料金体系。 | [limits.md](./limits.md) |
-| Edge Functions 概要 | Supabase Edge Functions は Deno ランタイム上で動作するサーバーサイド TypeScript 関数であり、グローバル… | [overview.md](./overview.md) |
+| Edge Functions 概要 | Supabase Edge Functions は Deno ランタイム上で動作するサーバーサイド TypeScript 関数であり、グローバルエッジで実行される。 | [overview.md](./overview.md) |
 | Edge Functions クイックスタート | Edge Functions の作成からデプロイまでの基本的な手順。 | [quickstart.md](./quickstart.md) |
 | Edge Functions URL ルーティング | 単一の Edge Function 内での URL パスベースルーティングと HTTP メソッドの処理分岐。 | [routing.md](./routing.md) |
 | Edge Functions スケジュール実行 | pg_cron と pg_net を使った Edge Functions の定期実行。 | [scheduling.md](./scheduling.md) |
