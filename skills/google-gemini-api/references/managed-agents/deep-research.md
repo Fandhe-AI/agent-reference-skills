@@ -30,7 +30,7 @@ while True:
         print(interaction.steps[-1].content[0].text)
         break
     elif interaction.status in ("failed", "cancelled", "incomplete"):
-        print(f"Stopped ({interaction.status}): {interaction.error}")
+        print(f"Stopped ({interaction.status}): {interaction.errors}")
         break
     time.sleep(10)
 ```
@@ -54,7 +54,7 @@ while (true) {
         console.log(result.steps.at(-1).content[0].text);
         break;
     } else if (['failed', 'cancelled', 'incomplete'].includes(result.status)) {
-        console.log(`Stopped (${result.status}): ${result.error}`);
+        console.log(`Stopped (${result.status}): ${JSON.stringify(result.errors)}`);
         break;
     }
     await new Promise(resolve => setTimeout(resolve, 10000));
@@ -98,7 +98,7 @@ refined_plan = client.interactions.create(
 while (result := client.interactions.get(id=refined_plan.id)).status in ("in_progress", "queued"):
     time.sleep(5)
 if result.status != "completed":
-    raise RuntimeError(f"{result.status}: {result.error}")
+    raise RuntimeError(f"{result.status}: {result.errors}")
 print(result.steps[-1].content[0].text)
 
 # Third interaction: approve the plan and kick off research
@@ -117,7 +117,7 @@ final_report = client.interactions.create(
 while (result := client.interactions.get(id=final_report.id)).status in ("in_progress", "queued"):
     time.sleep(5)
 if result.status != "completed":
-    raise RuntimeError(f"{result.status}: {result.error}")
+    raise RuntimeError(f"{result.status}: {result.errors}")
 print(result.steps[-1].content[0].text)
 ```
 
@@ -259,7 +259,7 @@ while not is_complete and interaction_id:
             print(status.steps[-1].content[0].text)
             break
         if status.status not in ("in_progress", "queued"):
-            print(f"Stopped ({status.status}): {status.error}")
+            print(f"Stopped ({status.status}): {status.errors}")
             break
         stream = client.interactions.get(
             id=interaction_id, stream=True, last_event_id=last_event_id,
@@ -338,7 +338,8 @@ Comparison: standard Gemini models answer in seconds (generate then output; chat
 - Preview. The Deep Research agent is exclusively available using the Interactions API; it cannot be accessed through `generate_content`.
 - `background=True` is required (agents run asynchronously). The API returns a partial `Interaction` immediately; status transitions from `in_progress` to `completed` or `failed`. Background execution requires `store=True`.
 - The polling loops (including the collaborative-planning ones) also stop on `cancelled` / `incomplete`; the original page only checks `completed` / `failed` (collaborative-planning loops check only `completed`).
-- The official page's Python/JS samples use `thought` deltas and `interaction.error`; aligned with the streaming guide's `thought_summary` delta and `error` event (also used by the page's Java/Go samples).
+- The official page's Python/JS samples use `thought` deltas; aligned with the streaming guide's `thought_summary` delta and `error` event (also used by the page's Java/Go samples).
+- The official page's Python/JS samples read `interaction.error`; the Interaction resource field is `errors` (array of Error, per the API reference and the page's Java sample), while the singular `error` belongs to the SSE `error` event.
 - The reconnect loop prints the final output when the interaction completed while disconnected; the original sample breaks without reading it.
 - Collaborative planning: step 1 set `collaborative_planning=True` to get a plan instead of a report; step 2 (optional) keep it `True` with `previous_interaction_id` to refine; step 3 set it `False` (or omit) to approve and execute.
 - Visualization: generated images appear in response steps (`step.type == "model_output"` content items of type `image` with base64 `data`) and stream as `image` deltas. Ask for visuals explicitly in the prompt; `"auto"` enables the capability but visuals are generated only when requested.
