@@ -64,6 +64,7 @@ For Antigravity, open the Agent panel and ask: `Summarize the Dart and Flutter t
 ## Notes
 
 - Claude Code plugins discover skills and MCP servers but do not automatically load plugin rules; Codex plugins install skills and MCP servers but do not automatically bundle rules.
+- The source tells Codex users to put rules in `.agent/rules/` or `CODEX.md`, but Codex's default instruction discovery reads only `AGENTS.override.md`, `AGENTS.md`, and file names listed in `project_doc_fallback_filenames` (see the openai-codex skill). Append the Flutter rules to `AGENTS.md`, or add `CODEX.md` to `project_doc_fallback_filenames` in `config.toml`, so they are actually loaded.
 - Third-party `pub.dev` packages can ship their own skills (package skills); see https://dart.dev/ai/package-skills.
 - Next steps listed in the source: Package skills, Ship skills with packages (https://dart.dev/tools/pub/package-skills), the Developer Knowledge MCP server (https://developers.google.com/knowledge/mcp), and the https://github.com/flutter/agent-plugins repository.
 - Distinction: these are Flutter and Dart agent plugins (skills, rules, MCP server, specialized agents) for working on Flutter code. They are not the Claude Code Agent Skills (SKILL.md authoring) documented by the anthropic-claude-code-extend skill, nor MCP concepts of anthropic-api-tools-mcp, openai-agents, openai-apps-sdk or hermes-agent.
