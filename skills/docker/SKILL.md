@@ -2,14 +2,12 @@
 name: docker
 description: >
   Docker (Docker Engine / Dockerfile / Compose / Buildx) の Dockerfile 命令, docker CLI,
-  compose.yaml (Compose Specification), BuildKit, Bake (HCL), マルチステージ, マルチプラットフォーム, ビルドキャッシュ,
-  SBOM / provenance, dockerd, daemon.json, logging driver, rootless, seccomp。
+  compose.yaml (Compose Specification), BuildKit, Bake (HCL), マルチステージ, マルチプラットフォーム,
+  ビルドキャッシュ, SBOM / provenance, dockerd, daemon.json, logging driver, rootless, seccomp。
 user-invocable: false
 ---
 
 # Docker
-
-> 分割 PR の途中段階。現在収録済み: references/{build, build-cache-bake, cli-buildx, cli-container, cli-image-system, cli-network-volume-context, compose-cli, compose-file, dockerfile, engine-containers-security, engine-daemon-logging}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 Docker Engine / Dockerfile / Docker Compose / Buildx (BuildKit) の公式ドキュメントを蒸留したリファレンス。
 
@@ -54,12 +52,25 @@ skills/docker/
     compose-cli/
       README.md
       compose-up.md / compose-down.md / compose-build.md / compose-watch.md / envvars.md ...
+    engine-network-storage/
+      README.md
+      networking-overview.md / driver-bridge.md / port-publishing.md / volumes.md / bind-mounts.md / storage-drivers.md ...
     engine-daemon-logging/
       README.md
       dockerd.md / daemon-overview.md / logging-configure.md / log-driver-json-file.md / live-restore.md ...
     engine-containers-security/
       README.md
       running-containers.md / resource-constraints.md / gpu.md / rootless.md / seccomp.md / security-overview.md ...
+  samples/
+    README.md
+    writing-a-dockerfile.md / multi-stage-builds.md / compose-quickstart.md / compose-gpu-support.md / gha-cache.md ...
+  scripts/
+    README.md
+    install-engine.md
+    install-compose.md
+    cli-cheatsheet.md
+    cleanup-prune.md
+    buildx-bake.md
 ```
 
 ## 探索手順
@@ -69,6 +80,7 @@ skills/docker/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/<category>/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
+4. 使い方の実例は `samples/README.md`、実行コマンドは `scripts/README.md` を参照する
 
 ## タスク → カテゴリ マッピング
 
@@ -90,8 +102,12 @@ skills/docker/
 | Compose の include / merge / extends / interpolation / models を使いたい | compose-file | [references/compose-file/README.md](references/compose-file/README.md) |
 | docker compose up / down / run / watch などのオプションを知りたい | compose-cli | [references/compose-cli/README.md](references/compose-cli/README.md) |
 | COMPOSE_* 環境変数と優先順位を知りたい | compose-cli | [references/compose-cli/README.md](references/compose-cli/README.md) |
+| ネットワークドライバー・ポート公開・iptables / nftables・IPv6 を設定したい | engine-network-storage | [references/engine-network-storage/README.md](references/engine-network-storage/README.md) |
+| volume / bind mount / tmpfs / ストレージドライバー / containerd image store を選びたい | engine-network-storage | [references/engine-network-storage/README.md](references/engine-network-storage/README.md) |
 | dockerd と daemon.json、proxy、live restore、リモートアクセスを設定したい | engine-daemon-logging | [references/engine-daemon-logging/README.md](references/engine-daemon-logging/README.md) |
 | logging driver (json-file / local / syslog / fluentd / awslogs) を設定したい | engine-daemon-logging | [references/engine-daemon-logging/README.md](references/engine-daemon-logging/README.md) |
 | リソース制限・restart policy・GPU・ランタイムメトリクスを設定したい | engine-containers-security | [references/engine-containers-security/README.md](references/engine-containers-security/README.md) |
 | rootless・seccomp・AppArmor・userns-remap・デーモンソケット保護を知りたい | engine-containers-security | [references/engine-containers-security/README.md](references/engine-containers-security/README.md) |
 | CLI の --filter / --format / completion / OpenTelemetry を使いたい | engine-containers-security | [references/engine-containers-security/README.md](references/engine-containers-security/README.md) |
+| 典型的な使い方を知りたい (Dockerfile / Compose / GitHub Actions) | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
