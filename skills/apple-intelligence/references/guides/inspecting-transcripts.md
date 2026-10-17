@@ -107,7 +107,7 @@ let data = session.logFeedbackAttachment(sentiment: .negative,
 
 ## Related
 
-- Transcript
-- LanguageModelFeedback
+- [Transcript](../transcripts/transcript.md)
+- [LanguageModelFeedback](../sessions/language-model-feedback.md)
 - [Managing the context window](./managing-the-context-window.md)
 - [Updating prompts for new model versions](./updating-prompts-for-new-model-versions.md)

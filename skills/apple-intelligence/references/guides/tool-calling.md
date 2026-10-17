@@ -135,8 +135,8 @@ Profile {
 
 ## Related
 
-- Tool
-- GenerationOptions.ToolCallingMode
-- LanguageModelSession.ToolCallError
+- [Tool](../tools/tool.md)
+- [GenerationOptions.ToolCallingMode](../tools/tool-calling-mode.md)
+- [LanguageModelSession.ToolCallError](../tools/tool-call-error.md)
 - [Generating Swift data structures with guided generation](./guided-generation.md)
 - [Managing the context window](./managing-the-context-window.md)

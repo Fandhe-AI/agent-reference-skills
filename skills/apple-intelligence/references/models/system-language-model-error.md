@@ -42,4 +42,4 @@ do {
 
 - [SystemLanguageModel](./system-language-model.md)
 - [LanguageModelError](./language-model-error.md)
-- Session errors
+- [Session errors](../sessions/session-errors.md)
