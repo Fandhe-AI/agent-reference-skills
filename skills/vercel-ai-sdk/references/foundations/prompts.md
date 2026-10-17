@@ -138,7 +138,18 @@ const messages: ModelMessage[] = [
       {
         type: 'text',
         text: 'Describe the image in detail.',
-        providerOptions: { openai: { imageDetail: 'low' } },
+        providerOptions: {
+          openai: { imageDetail: 'low' },
+        },
+      },
+      {
+        type: 'file',
+        mediaType: 'image',
+        data: 'https://github.com/vercel/ai/blob/main/examples/ai-functions/data/comic-cat.png?raw=true',
+        // Sets image detail configuration for image part:
+        providerOptions: {
+          openai: { imageDetail: 'low' },
+        },
       },
     ],
   },

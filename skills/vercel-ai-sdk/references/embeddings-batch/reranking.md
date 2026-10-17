@@ -35,6 +35,22 @@ console.log(ranking);
 Object documents (JSON objects) are supported:
 
 ```tsx
+import { rerank } from 'ai';
+import { cohere } from '@ai-sdk/cohere';
+
+const documents = [
+  {
+    from: 'Paul Doe',
+    subject: 'Follow-up',
+    text: 'We are happy to give you a discount of 20% on your next order.',
+  },
+  {
+    from: 'John McGill',
+    subject: 'Missing Info',
+    text: 'Sorry, but here is the pricing information from Oracle: $5000/month',
+  },
+];
+
 const { ranking, rerankedDocuments } = await rerank({
   model: cohere.reranking('rerank-v4.0-pro'),
   documents,

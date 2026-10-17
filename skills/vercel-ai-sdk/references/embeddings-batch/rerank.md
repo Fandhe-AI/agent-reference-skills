@@ -81,6 +81,22 @@ console.log(rerankedDocuments);
 Object documents:
 
 ```ts
+import { cohere } from '@ai-sdk/cohere';
+import { rerank } from 'ai';
+
+const documents = [
+  {
+    from: 'Paul Doe',
+    subject: 'Follow-up',
+    text: 'We are happy to give you a discount of 20%.',
+  },
+  {
+    from: 'John McGill',
+    subject: 'Missing Info',
+    text: 'Here is the pricing from Oracle: $5000/month',
+  },
+];
+
 const { ranking } = await rerank({
   model: cohere.reranking('rerank-v4.0-pro'),
   documents,
