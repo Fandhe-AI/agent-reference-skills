@@ -29,13 +29,14 @@ Configure Gradle in `[project]/src-tauri/gen/android/app/build.gradle.kts`:
 
 ```kotlin
 import java.io.FileInputStream
+import java.io.InputStreamReader
 
 signingConfigs {
     create("release") {
         val keystorePropertiesFile = rootProject.file("keystore.properties")
         val keystoreProperties = Properties()
         if (keystorePropertiesFile.exists()) {
-            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+            keystoreProperties.load(InputStreamReader(FileInputStream(keystorePropertiesFile), Charsets.UTF_8))
         }
 
         keyAlias = keystoreProperties["keyAlias"] as String
@@ -76,6 +77,7 @@ CI step that generates `keystore.properties` (keystore exported with `base64 -i 
 
 - Secrets are passed via `env` instead of inline `${{ }}` expansion in `run` (differs from source) to avoid shell injection.
 - Values are escaped per java.util.Properties rules (backslashes doubled; spaces, tabs, CR/LF escaped) so leading whitespace and special characters survive Properties.load (upstream writes them unescaped).
+- The Gradle snippet reads keystore.properties through an `InputStreamReader` with UTF-8 (upstream passes a `FileInputStream`, which `Properties.load` decodes as ISO-8859-1), so non-ASCII aliases or passwords written by the CI step survive.
 - Keep the keystore and `keystore.properties` files private; do not check them into public source control.
 - `keytool` may not be on your PATH. It is in the JDK bundled with Android Studio: Linux `/opt/android-studio/jbr/bin/keytool` (path depends on your distribution), macOS `/Applications/Android\ Studio.app/Contents/jbr/Contents/Home/bin/keytool`, Windows `C:\Program Files\Android\Android Studio\jbr\bin\keytool.exe`.
 - A typical Android project has several `build.gradle.kts` files. If there is no `buildTypes` block you are in the wrong file; the right one is in the `app/` directory relative to the keystore file.

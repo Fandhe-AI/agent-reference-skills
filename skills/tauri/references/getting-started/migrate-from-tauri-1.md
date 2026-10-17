@@ -433,7 +433,7 @@ fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_notification::init())
         .setup(|app| {
-            if app.notification().permission_state()? == PermissionState::Unknown {
+            if matches!(app.notification().permission_state()?, PermissionState::Prompt | PermissionState::PromptWithRationale) {
                 app.notification().request_permission()?;
             }
             if app.notification().permission_state()? == PermissionState::Granted {
@@ -859,6 +859,7 @@ To enable permissions for your app, create capability files inside the `src-taur
 
 ## Notes
 
+- The source compares against `PermissionState::Unknown`, which was renamed to `Prompt` (tauri CHANGELOG, #10978); at tauri 2.12.4 the variants are Granted / Denied / Prompt / PromptWithRationale (Android only), so the example matches Prompt | PromptWithRationale.
 - Upstream says `Builder::on_menu_event` was removed, but it exists in tauri 2.12.4 (`Builder::on_menu_event`, desktop only); the text was corrected.
 - The shell `echo` example compares `stdout.trim_end()` because `echo` appends a trailing newline; the source compares the raw output and would panic.
 - The source says to use `scope::ipc::RemoteDomainAccessScope::add_plugin` / `scope::ipc::Scope`, but these were removed in the v2 ACL rework; rewritten to point at capabilities (`remote.urls`) and permissions.
