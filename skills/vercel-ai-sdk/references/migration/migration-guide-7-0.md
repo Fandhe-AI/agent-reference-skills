@@ -41,8 +41,13 @@ const r2 = await generateText({
   },
 });
 
-// fullStream -> stream
-for await (const part of result.stream) {
+// fullStream -> stream (StreamTextResult returned by streamText)
+const streamResult = streamText({
+  model: yourModel,
+  prompt: 'Hello!',
+});
+
+for await (const part of streamResult.stream) {
   console.log(part);
 }
 
