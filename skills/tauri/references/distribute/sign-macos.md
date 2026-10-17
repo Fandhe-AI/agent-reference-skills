@@ -30,7 +30,7 @@ openssl base64 -A -in /path/to/certificate.p12 -out certificate-base64.txt
 4. Locally: configure the signing identity as above.
 5. CI/CD: in Keychain Access (_My Certificates_ tab, _login_ keychain) export the certificate key as `.p12` with a password, convert it to base64 and set `APPLE_CERTIFICATE` and `APPLE_CERTIFICATE_PASSWORD`.
 
-Example GitHub Actions job (required secrets: `APPLE_ID`, `APPLE_PASSWORD`, `APPLE_CERTIFICATE`, `APPLE_CERTIFICATE_PASSWORD`, `KEYCHAIN_PASSWORD`):
+Example GitHub Actions job (required secrets: `APPLE_ID`, `APPLE_PASSWORD`, `APPLE_TEAM_ID`, `APPLE_CERTIFICATE`, `APPLE_CERTIFICATE_PASSWORD`, `KEYCHAIN_PASSWORD`):
 
 ```yaml
 name: 'build'
@@ -53,6 +53,7 @@ jobs:
     env:
       APPLE_ID: ${{ secrets.APPLE_ID }}
       APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -96,6 +97,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_SIGNING_IDENTITY: ${{ env.CERT_ID }}
         with:
           args: ${{ matrix.args }}
@@ -145,6 +147,7 @@ If you do not want to provide an Apple-authenticated identity but still want to 
 - A signing certificate is only valid if associated with your Apple ID; an invalid one is not listed in _Keychain Access > My Certificates_ or the `security find-identity` output. If the certificate does not download to the correct location, select the "login" option under "Default Keychains" in Keychain Access.
 - Notarization is required when using a _Developer ID Application_ certificate.
 - Ad-hoc signing does not prevent macOS from requiring users to allow the app in Privacy & Security settings.
+- The source example omits `APPLE_TEAM_ID`; it is added here because Apple ID notarization requires it (see Notarization).
 - The source example greps "Apple Development"; changed here to match the distribution certificate types created above.
 - Tauri bundler side only; Apple's signing and notarization procedures belong to the apple-distribution skill.
 

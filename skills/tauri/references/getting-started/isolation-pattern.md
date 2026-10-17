@@ -53,8 +53,16 @@ window.__TAURI_ISOLATION_HOOK__ = (payload) => {
 }
 ```
 
+The `tauri` crate's `isolation` feature backs this pattern; it is enabled automatically when `app > security > pattern > use` is `isolation`, or can be set explicitly in `src-tauri/Cargo.toml`:
+
+```toml
+[dependencies]
+tauri = { version = "2", features = ["isolation"] }
+```
+
 ## Notes
 
+- The `isolation` Cargo feature is not mentioned on the source page; per the docs.rs feature list it is enabled by default when the config sets `pattern.use` to `isolation`.
 - Why: protects against unwanted or malicious frontend calls to Tauri Core from untrusted content in the frontend (e.g. deeply nested build-time and bundled dependencies, the Development Threats model).
 - When: highly recommended whenever it can be used. It intercepts all frontend messages, so it also covers always-on APIs such as Events. Use it to validate IPC inputs, e.g. that file read/write paths stay within expected locations, or that an HTTP fetch only sets the Origin header to what the app expects.
 - How: the Isolation application runs in a sandboxed `<iframe>`; Tauri forces all IPC calls to route through it first. When the message is ready, it is encrypted with the browser's SubtleCrypto (AES-GCM, runtime-generated key) and passed back to the main frontend, then to Tauri Core, which decrypts it. New keys are generated each time the app runs.

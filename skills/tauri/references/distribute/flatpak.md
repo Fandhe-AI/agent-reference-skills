@@ -76,7 +76,7 @@ modules:
       # If you bundle files with additional resources, you should copy them:
       - mkdir -p /app/lib/<product_name>
       - cp -r deb-extract/usr/lib/<product_name>/. /app/lib/<product_name>
-      - find /app/lib/<product_name> -type f -exec chmod 644 {} \;
+      - chmod -R u+rwX,go+rX,go-w /app/lib/<product_name>
 
       # Copy desktop file + ensure the right icon is set
       - sed -i 's/^Icon=.*/Icon=<identifier>/' deb-extract/usr/share/applications/<product_name>.desktop
@@ -142,6 +142,7 @@ python3 flatpak-builder-tools/cargo/flatpak-cargo-generator.py -o cargo-sources.
 - The Open Source tab YAML manifest in the original page is garbled (lost indentation, unterminated code fence); only its described structure is summarized above.
 - Added `--install` to the flatpak-builder command: the source only exports to `flatpak-repo` (despite its `# Install the flatpak` comment), so the following `flatpak run` would fail on first use.
 - Step 1 runs the generator install in a subshell so step 2's paths (`flatpak-builder-tools/...`, `src-tauri/Cargo.lock`) resolve from the project root; the source leaves the shell inside `flatpak_node_generator`.
+- The source uses `find ... -exec chmod 644`, which strips execute bits from bundled helper executables; `chmod -R u+rwX,go+rX,go-w` keeps them.
 - The Flatpak card is commented out of the official distribute overview page, but this page exists.
 
 ## Related

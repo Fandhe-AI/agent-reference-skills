@@ -103,6 +103,7 @@ Build, test, release:
 
 ```sh
 sudo snapcraft
+sudo snap install --dangerous ./mysnap_latest_amd64.snap  # install the locally built snap before running it
 snap run your-app
 snapcraft login # Login with your UbuntuOne credentials
 snapcraft upload --release=stable mysnap_latest_amd64.snap
@@ -124,7 +125,7 @@ snapcraft upload --release=stable mysnap_latest_amd64.snap
 ## Notes
 
 - Building automatically: on your app's developer page open the `builds` tab, click `login with github`, then enter your repository's details.
-- The source has a `TODO: This seems to be wrong` comment next to the `snap run your-app` testing step.
+- The source marks the `snap run` step with `TODO: This seems to be wrong`; a `snap install --dangerous` step is added because snapcraft only builds the `.snap` and does not install it.
 - Replace `net_mydomain_MyApp` in the single-instance slot/plug names with your app ID using `_` instead of `.` and `-`.
 
 ## Related
