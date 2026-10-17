@@ -16,6 +16,7 @@ platforms:
       routes:
         github-pr-review:
           secret: "your-webhook-secret-here"
+          toolsets: ["terminal", "web"]   # required for gh pr diff (default hermes-webhook toolset has no terminal)
           events:
             - pull_request
           prompt: |
@@ -76,7 +77,7 @@ filters:
 
 ## Notes
 
-- The payload has PR metadata but not the diff; the prompt must run `gh pr diff`. The default `hermes-webhook` toolset has no terminal, so add `toolsets: ["terminal", "web"]` on the route for `gh`.
+- The payload has PR metadata but not the diff; the prompt must run `gh pr diff`. The default `hermes-webhook` toolset has no terminal, so the example route grants `toolsets: ["terminal", "web"]` (per-route toolsets) for `gh`.
 - Payloads contain attacker-controlled text (PR titles, descriptions); run the gateway sandboxed (Docker, SSH backend) when exposed to the internet.
 - `{field}` / `{nested.field}` are the only substitutions; no Jinja2 or conditionals.
 - Prefer `filters` over prompt-level "stop" instructions: the agent still runs and consumes tokens for every `pull_request` event.

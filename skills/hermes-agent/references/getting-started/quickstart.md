@@ -52,7 +52,7 @@ On a fresh install `hermes setup` offers three modes:
 - **Full Setup**: walk through every provider, tool, and option yourself.
 - **Blank Slate**: everything off except provider and model, the File Operations toolset, and the Terminal toolset. Writes an explicit `platform_toolsets.cli` list plus `agent.disabled_toolsets`. Re-enable with `hermes tools`, seed skills with `hermes skills opt-in --sync`, or tune with `hermes setup agent`.
 
-Models must have at least 64,000 tokens of context (for local models, e.g. `--ctx-size 65536` for llama.cpp or `-c 65536` for Ollama). The full provider catalog with env vars and setup steps is on the Providers page (integrations/providers). You can switch providers at any time with `hermes model` or `/model`.
+Models must have at least 64,000 tokens of context (for local models, e.g. `--ctx-size 65536` for llama.cpp, or an Ollama model created from a Modelfile containing `PARAMETER num_ctx 65536`, see Local Ollama Setup). The full provider catalog with env vars and setup steps is on the Providers page (integrations/providers). You can switch providers at any time with `hermes model` or `/model`.
 
 ### How settings are stored
 
@@ -153,8 +153,10 @@ In order: `hermes doctor`, `hermes model`, `hermes setup`, `hermes sessions list
 
 - Python dependency commands on the upstream page assume a PM-prepared source checkout; after a dependency change, reactivate the checkout and restart Hermes.
 - `hermes backup` migrates your whole setup to another machine (see the FAQ).
+- The upstream quickstart (v0.22.2) says "-c 65536 for Ollama", but Ollama has no such flag; set the context via a Modelfile "PARAMETER num_ctx" as in guides/local-ollama-setup.md.
 
 ## Related
 
+- [Local Ollama Setup](../guides/local-ollama-setup.md)
 - [Installation](./installation.md)
 - [Learning Path](./learning-path.md)
