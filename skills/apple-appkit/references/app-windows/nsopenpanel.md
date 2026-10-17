@@ -7,7 +7,7 @@ A panel that prompts the user to select a file to open.
 ```swift
 class NSOpenPanel : NSSavePanel
 
-class func openPanel() -> NSOpenPanel
+let panel = NSOpenPanel()
 ```
 
 ## Options / Props
@@ -27,6 +27,7 @@ class func openPanel() -> NSOpenPanel
 
 - Inherits from `NSSavePanel`; presenting and modal APIs (`begin`, `beginSheetModal(for:completionHandler:)`, `runModal()`, `allowedContentTypes`, `directoryURL`, `delegate`) are on `NSSavePanel`.
 - In macOS 10.15 and later, the system always draws Open panels in a separate process regardless of sandboxing. When the user chooses a file, macOS adds it to the app's sandbox.
+- ObjC: `+openPanel` (in Swift, create the panel with `NSOpenPanel()`).
 - Source: https://developer.apple.com/documentation/appkit/nsopenpanel
 
 ## Related

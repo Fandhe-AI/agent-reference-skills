@@ -27,7 +27,7 @@ func close()
 | `isShown` | `Bool` | The display state of the popover |
 | `isDetached` | `Bool` | Whether the window created by the popover's detachment is automatically created |
 | `delegate` | `(any NSPopoverDelegate)?` | Delegate for show/close/detach callbacks |
-| `show(relativeTo:ofView:preferredEdge:)` | method | Shows the popover anchored to the specified view (ObjC: `showRelativeToRect:ofView:preferredEdge:`) |
+| `show(relativeTo:of:preferredEdge:)` | method | Shows the popover anchored to the specified view (ObjC: `showRelativeToRect:ofView:preferredEdge:`) |
 | `show(relativeTo: NSToolbarItem)` | method | Shows the popover anchored to the specified toolbar item |
 | `performClose(_:)` | method | Attempts to close the popover |
 | `close()` | method | Forces the popover to close without consulting its delegate |
