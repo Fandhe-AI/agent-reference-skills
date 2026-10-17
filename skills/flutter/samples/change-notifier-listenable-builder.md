@@ -25,12 +25,13 @@ class ArticleViewModel extends ChangeNotifier {
     try {
       summary = await model.getRandomArticleSummary();
       error = null; // Clear any previous errors.
-    } on HttpException catch (e) {
+    } on Exception catch (e) {
       error = e;
       summary = null;
+    } finally {
+      isLoading = false;
+      notifyListeners();
     }
-    isLoading = false;
-    notifyListeners();
   }
 }
 ```
@@ -82,4 +83,5 @@ class _ArticleViewState extends State<ArticleView> {
 - `ArticleModel`, `Summary`, `ArticlePage` and `ArticleWidget` are tutorial classes defined in other steps of the source; only the view model and view are excerpted here.
 - Call `notifyListeners()` after changing state; `ListenableBuilder` rebuilds its `builder` only when the listened `Listenable` notifies.
 - Removed the extra viewModel.fetchArticle() call from initState: the source calls it both in the ArticleViewModel constructor and in initState, which starts two concurrent fetches.
+- Changed the source catch from `on HttpException` to `on Exception` and moved the loading reset into `finally`: the source only catches HttpException, so network (ClientException/SocketException) or JSON (FormatException) failures would leave isLoading true and the spinner showing forever.
 - This is the Model / ViewModel / View split of the Flutter architecture guide; see the architecture-data references and the mvvm-case-study sample.
