@@ -23,7 +23,11 @@ export default function Page() {
 }
 ```
 
-Without the `expo` package in a bare React Native app, switch the entry file:
+If a bare React Native app does not use the `expo` package yet, either install Expo modules (recommended) or install the `expo` package first, then switch the entry file to `registerRootComponent`:
+
+```sh
+npm install expo
+```
 
 ```diff
 - import {AppRegistry} from 'react-native';
@@ -40,6 +44,7 @@ Without the `expo` package in a bare React Native app, switch the entry file:
 - RNW wraps `react-dom` primitives (`<View>`, `<Text>`) and is optional on web, recommended for cross-platform code reuse.
 - Expo SDK libraries support browser and server rendering where applicable; Expo CLI optimizes per platform for production (for example platform shaking).
 - Distinct from Next.js: this is Expo's Metro-based web export with Expo Router (see nextjs-app skill for Next.js).
+- Installing only the `expo` package (without Expo modules) enables web targeting but not Expo SDK support.
 - Pinned: documentation fetched 2026-10-17, Expo SDK 58.
 
 ## Related

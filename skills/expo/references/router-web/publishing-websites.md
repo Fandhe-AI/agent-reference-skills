@@ -34,7 +34,7 @@ npx expo serve
 
 The `server` config shown under Signature / Usage is for SSR-capable hosts such as EAS Hosting. For the static hosts below (Vercel, Netlify, GitHub Pages), set `web.output` to `"single"` (SPA) or `"static"` before running `npx expo export -p web`.
 
-Vercel configuration for a single-page / static export (**vercel.json**; requires `web.output` of `"single"` or `"static"`):
+Vercel configuration for a single-page application (**vercel.json**, `web.output: "single"`):
 
 ```json
 {
@@ -47,6 +47,8 @@ Vercel configuration for a single-page / static export (**vercel.json**; require
 }
 ```
 
+For `web.output: "static"`, omit `rewrites` (it would send every pre-rendered route to the home page) and add dynamic route configuration as needed.
+
 Netlify SPA redirect (**public/_redirects**, for `web.output: "single"`; not needed with `static` rendering): `/*    /index.html   200`. GitHub Pages (requires a `static` or `single` export): set `experiments.baseUrl` to `/repo-name` and use `"deploy": "gh-pages --nojekyll -d dist"`, `"predeploy": "expo export -p web"`.
 
 ## Notes
@@ -57,6 +59,7 @@ Netlify SPA redirect (**public/_redirects**, for `web.output: "single"`; not nee
 - Global HTTP headers for `static` and `server` output are configured through the `expo-router` plugin.
 - Hosts covered in the source: EAS Hosting (recommended), Netlify, Vercel, AWS Amplify Console, Firebase Hosting, GitHub Pages. SDK 49 and earlier webpack builds use an archived guide.
 - Vercel here is a static / SPA deployment of an Expo export; see the vercel skill for the Vercel platform itself, and the API Routes page for the `expo-server/adapter/vercel` server setup.
+- The source labels the Vercel `rewrites` as single-page application redirects; the static-output guidance (omit `rewrites`) is an editorial clarification.
 - Pinned: documentation fetched 2026-10-17, Expo SDK 58.
 
 ## Related
