@@ -2,14 +2,14 @@
 name: flutter
 description: >
   Flutter (Google 製 Dart クロスプラットフォーム UI フレームワーク, 3.47) のリファレンス。
-  StatelessWidget / StatefulWidget / BuildContext, Material / Cupertino, Impeller, DevTools, MVVM,
-  add-to-app, GenUI SDK / AI Toolkit。
+  StatelessWidget / StatefulWidget / BuildContext, Sliver, Material / Cupertino, Impeller, DevTools,
+  MVVM, platform channels / dart:ffi, add-to-app, Flutter Web / Wasm, GenUI SDK / AI Toolkit。
 user-invocable: false
 ---
 
 # Flutter
 
-> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation, fundamentals, interaction-navigation}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -25,6 +25,10 @@ user-invocable: false
 skills/flutter/
   SKILL.md
   references/
+    fundamentals/            # アーキテクチャ概観・ビルドモード・宣言的 UI・対応プラットフォーム（10 ページ）
+      README.md
+    interaction-navigation/  # ジェスチャー・フォーカス・ナビゲーション・ディープリンク・a11y・i18n（14 ページ）
+      README.md
     design-animation/        # Material/Cupertino・テーマ・アニメーション・アセット・シェーダー（17 ページ）
       README.md
     architecture-data/       # アプリアーキテクチャ・状態管理・ネットワーク・永続化・Firebase（21 ページ）
@@ -45,6 +49,11 @@ skills/flutter/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
+| Flutter の仕組み・レイヤー構成・ビルドモード・対応プラットフォームを知りたい | fundamentals | [references/fundamentals/README.md](references/fundamentals/README.md) |
+| 宣言的 UI・dot shorthands・ウィジェットカタログを調べたい | fundamentals | [references/fundamentals/README.md](references/fundamentals/README.md) |
+| タップ・ドラッグ等のジェスチャー、フォーカス、Actions/Shortcuts を扱いたい | interaction-navigation | [references/interaction-navigation/README.md](references/interaction-navigation/README.md) |
+| 画面遷移・ディープリンク・URL 戦略を設定したい | interaction-navigation | [references/interaction-navigation/README.md](references/interaction-navigation/README.md) |
+| アクセシビリティ・国際化（i18n）に対応したい | interaction-navigation | [references/interaction-navigation/README.md](references/interaction-navigation/README.md) |
 | MaterialApp・CupertinoApp・ThemeData・Scaffold を設定したい | design-animation | [references/design-animation/README.md](references/design-animation/README.md) |
 | 暗黙的/明示的アニメーション・Hero・AnimationController を使いたい | design-animation | [references/design-animation/README.md](references/design-animation/README.md) |
 | アセット・フォント・フラグメントシェーダーを扱いたい | design-animation | [references/design-animation/README.md](references/design-animation/README.md) |
