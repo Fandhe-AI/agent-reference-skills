@@ -270,5 +270,5 @@ HTTP error codes returned by the `GenerateContent` API with gRPC status details.
 
 - [Thinking (generateContent)](./thinking.md)
 - [Understand and count tokens (generateContent)](./tokens.md)
-- [Flex inference (platform-ops)](../platform-ops/flex-inference.md)
-- [Priority inference (platform-ops)](../platform-ops/priority-inference.md)
+- Flex inference (platform-ops)
+- Priority inference (platform-ops)

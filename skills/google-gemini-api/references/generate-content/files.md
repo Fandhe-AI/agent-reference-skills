@@ -181,5 +181,5 @@ External URL supported types: text (`text/html`, `text/css`, `text/plain`, `text
 
 - [Multimodal understanding (generateContent)](./multimodal-understanding.md)
 - [Context caching incl. explicit caching (generateContent)](./explicit-caching.md)
-- [Files API (Interactions API tree)](../multimodal-input/files-api.md)
-- [File input methods (Interactions API tree)](../multimodal-input/file-input-methods.md)
+- Files API (Interactions API tree)
+- File input methods (Interactions API tree)

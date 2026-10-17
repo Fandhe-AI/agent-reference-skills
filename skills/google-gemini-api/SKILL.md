@@ -10,6 +10,8 @@ user-invocable: false
 
 # Google Gemini API
 
+> 分割 PR の途中段階。現在収録済み: references/{generate-content, getting-started}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+
 Google Gemini API (Gemini Developer API, `ai.google.dev`) のリファレンススキル。Interactions API を中心に、generateContent・Live API・Managed Agents・各種ツール・メディア生成・運用・移行を収録する。
 
 ## 対象バージョン

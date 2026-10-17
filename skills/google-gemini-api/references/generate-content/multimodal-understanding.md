@@ -255,5 +255,5 @@ Notes:
 
 - [Files API and file input methods (generateContent)](./files.md)
 - [Understand and count tokens (generateContent)](./tokens.md)
-- [Image understanding (Interactions API tree)](../multimodal-input/image-understanding.md)
-- [Media resolution (Interactions API tree)](../multimodal-input/media-resolution.md)
+- Image understanding (Interactions API tree)
+- Media resolution (Interactions API tree)

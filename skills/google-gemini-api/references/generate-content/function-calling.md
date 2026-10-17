@@ -188,6 +188,7 @@ Supported models (function calling, parallel, compositional all supported): Gemi
 - Best practices from the source: keep the active tool set to a maximum of 10-20; use temperature 0 for deterministic calls; validate consequential calls with the user; check `finishReason`. Gemini 3.1 Pro Preview has a separate endpoint `gemini-3.1-pro-preview-customtools` for a mix of bash and custom tools.
 - If a prompt requires structured text before a tool call, the call may fail with `Malformed_Function_Call`; the preferred workaround is an `update()` function call for pre-tool notes.
 - Limitations: do not assume `functionCall` is the last part when combined with built-in tools (parts may include `toolCall` / `toolResponse`); only a subset of OpenAPI schema is supported; `ANY` mode may reject very large or deeply nested schemas.
+- The step 3/4 snippet (verbatim from the source) assumes `parts[0]` holds a `function_call`; declaring tools does not guarantee a call, so in real code iterate `response.candidates[0].content.parts`, handle the part whose `function_call` is set, and treat a response without one as a normal text reply.
 - Distinct from OpenAI function calling in the Responses API (openai-api-core skill), Anthropic tool use (anthropic-api-tools-mcp skill) and Agents SDK tools / MCP (openai-agents skill). The MCP here is the SDK consuming a local MCP server.
 
 ## Related
