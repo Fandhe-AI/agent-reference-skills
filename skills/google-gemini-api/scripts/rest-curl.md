@@ -47,7 +47,7 @@ RESPONSE1=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/in
     "input": "I have 2 dogs in my house."
   }')
 
-INTERACTION_ID=$(printf '%s' "${RESPONSE1}" | jq -r '.id')
+INTERACTION_ID=$(printf '%s' "${RESPONSE1}" | jq -r '.id // empty')
 : "${INTERACTION_ID:?first request failed}"
 
 curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
@@ -83,6 +83,7 @@ curl --request "DELETE" "https://generativelanguage.googleapis.com/v1beta/${name
 
 ## Notes
 
+- `// empty` and the `:?` guard are added here (not in the official sample) so a failed first request stops the chain instead of sending `"null"`.
 - All examples target `v1beta` (the SDK default). For `v1`, see `api-version.md`.
 - Model ID `gemini-3.8-flash` is copied as written in the official pages.
 - Upload (`upload/v1beta/files`), batch, and background-execution curl sequences are multi-step; see `references/multimodal-input/files-api.md`, `references/platform-ops/batch-api.md`, and `references/interactions-core/background-execution.md`.
