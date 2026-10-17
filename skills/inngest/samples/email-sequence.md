@@ -2,7 +2,7 @@
 
 Build a behavior-based drip campaign: welcome email, wait for a click, then send tips or a trial offer.
 
-Adapted (not in the official docs): the `waitForEvent` `if` expression quotes `emailId` as a CEL string, and the destructured `first_name` is unified to `firstName` so the JSX references resolve.
+Adapted (not in the official docs): the `waitForEvent` `if` expression quotes `emailId` as a CEL string, the destructured `first_name` is unified to `firstName` so the JSX references resolve, and the DB read is wrapped in a named `step.run()` so replays branch on the memoized plan.
 
 ```javascript
 const signupDripCampaign = inngest.createFunction(
@@ -47,7 +47,9 @@ const signupDripCampaign = inngest.createFunction(
     }
 
     // check that the user is not already on the pro plan
-    const dbUser = db.users.byEmail(email);
+    const dbUser = await step.run("get-user-plan", async () => {
+      return await db.users.byEmail(email);
+    });
 
     if (dbUser.plan !== "pro") {
       // send them a free trial offer
@@ -69,6 +71,7 @@ const signupDripCampaign = inngest.createFunction(
 
 - `step.waitForEvent()` returns `null` when the timeout elapses without a matching event, so the `if (clickEvent)` branch handles the non-engaged path
 - The `if` expression correlates the incoming `resend/email.clicked` event (`async`) with the email sent in the earlier step
-- The official Email Sequence example leaves `emailId` unquoted in the CEL expression and destructures `first_name` while referencing `firstName`; other official examples quote interpolated values (`== '${...}'`), so the quoted form is used here
+- Code outside steps re-runs on each resume; DB reads belong inside a step
+- The official Email Sequence example leaves `emailId` unquoted in the CEL expression, destructures `first_name` while referencing `firstName`, and reads the DB outside a step (`db.users.byEmail(email)`); other official examples quote interpolated values (`== '${...}'`), so the adapted form is used here
 - Helpers such as `sendEmail` and `db` are not defined in the official snippet
 - Source: https://www.inngest.com/docs-markdown/examples/email-sequence (retrieved 2026-10-16)
