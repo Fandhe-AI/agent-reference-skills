@@ -41,19 +41,21 @@ After (UI): `streamText` in a route handler plus `useChat` on the client.
 
 ```ts
 import {
+  convertToModelMessages,
   createUIMessageStreamResponse,
   streamText,
   toUIMessageStream,
+  type UIMessage,
 } from 'ai';
 import { openai } from '@ai-sdk/openai';
 
 export async function POST(request) {
-  const { messages } = await request.json();
+  const { messages }: { messages: UIMessage[] } = await request.json();
 
   const result = streamText({
     model: __MODEL__,
     instructions: 'you are a friendly assistant!',
-    messages,
+    messages: await convertToModelMessages(messages),
     tools: {
       // tool definitions
     },
@@ -69,20 +71,33 @@ export async function POST(request) {
 'use client';
 
 import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
+import { useState } from 'react';
 
 export default function Page() {
-  const { messages, input, setInput, handleSubmit } = useChat();
+  const [input, setInput] = useState('');
+  const { messages, sendMessage } = useChat({
+    transport: new DefaultChatTransport({ api: '/api/chat' }),
+  });
 
   return (
     <div>
       {messages.map(message => (
         <div key={message.id}>
           <div>{message.role}</div>
-          <div>{message.content}</div>
+          {message.parts.map((part, index) =>
+            part.type === 'text' ? <div key={index}>{part.text}</div> : null,
+          )}
         </div>
       ))}
 
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={event => {
+          event.preventDefault();
+          sendMessage({ text: input });
+          setInput('');
+        }}
+      >
         <input
           type="text"
           value={input}
@@ -97,7 +112,7 @@ export default function Page() {
 }
 ```
 
-## Migration map
+### Migration map
 
 | RSC | UI replacement |
 | --- | --- |
@@ -105,10 +120,10 @@ export default function Page() {
 | Parallel tool calls (needs `streamText` + `createStreamableUI` + `createStreamableValue` in RSC) | Built into `useChat` |
 | Multi-step tool calls (same workaround in RSC) | Built into `useChat`; set `stopWhen` in `streamText` |
 | Tool `generate` yielding React nodes | Tool `execute` returns props; client renders components from tool invocations |
-| `useActions` + `useUIState` to send follow-up messages | A second `useChat` hook with the same `id` as the parent |
+| `useActions` + `useUIState` to send follow-up messages | A shared `Chat` instance passed via the `chat` option (sharing by the same `id` was removed in AI SDK 5) |
 | `initial` parameter of `streamUI` (loading UI) | Tool invocation `state` to show a loading indicator |
 | `createAI` `onSetAIState` (save chat) | `onEnd` callback of `streamText` |
-| `createAI` `onGetUIState` (restore chat) | Load messages server-side and pass them as `initialMessages` to `useChat` |
+| `createAI` `onGetUIState` (restore chat) | Load messages server-side and pass them as the `messages` option of `useChat` (renamed from `initialMessages` in AI SDK 5) |
 | `createStreamableValue` + `readStreamableValue` for object streaming | `useObject` + `streamText` with `Output`, `createTextStreamResponse` / `toTextStream` |
 
 Saving chats (After):
@@ -157,7 +172,7 @@ const { object, submit } = useObject({
 
 - Limitations of AI SDK RSC listed in the guide: a stream cannot be aborted using server actions; components remount on `.done()` with `createStreamableUI` and `streamUI` (flicker); many suspense boundaries can lead to crashes; `createStreamableUI` can lead to quadratic data transfer (use `createStreamableValue` and render client-side instead); closed RSC streams cause update issues.
 - Because of these limitations AI SDK RSC is marked experimental and not recommended for stable production environments.
-- The guide's tool-invocation rendering examples (`message.toolInvocations`, `state === 'result'`) and `useChat` examples (`input`, `handleSubmit`, `append`, `initialMessages`) are transcribed as written in the source page; check the AI SDK UI pages in this skill for the current `useChat` API.
+- The guide's examples were written against the pre-v5 `useChat` API (`input`, `handleSubmit`, `message.content`, `initialMessages`, sharing by `id`, `message.toolInvocations`); the After snippets and migration map on this page are adapted to the current contract (`convertToModelMessages`, `sendMessage`, `message.parts`, shared `Chat` instance, `messages` option) per the AI SDK 5 migration guide. Check the AI SDK UI pages in this skill for the current `useChat` API.
 - Distinction: this page is the AI SDK RSC to AI SDK UI move only. The nextjs-app skill covers Next.js route handlers and Server Actions.
 
 ## Related

@@ -18,7 +18,7 @@ const { text } = await generateText({
 });
 ```
 
-## Provider support
+### Provider support
 
 Excerpt of the official capability table (Image Input / Object Generation / Tool Usage / Tool Streaming). Model IDs are copied as written; the table is not exhaustive.
 

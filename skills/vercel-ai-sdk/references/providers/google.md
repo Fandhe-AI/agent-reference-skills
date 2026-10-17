@@ -62,7 +62,7 @@ Embedding options (`GoogleEmbeddingModelOptions`): `outputDimensionality` (numbe
 
 Interactions options (`GoogleLanguageModelInteractionsOptions`): `previousInteractionId`, `store` (default `true`), `agent`, `agentConfig` (`{ type: 'dynamic' }` or `{ type: 'deep-research', ... }`), `thinkingLevel`, `thinkingSummaries` (`'auto' | 'none'`), `responseFormat` (array of text / image / audio / video entries), `imageConfig` (deprecated), `mediaResolution` (`'low' | 'medium' | 'high' | 'ultra_high'`), `serviceTier`, `systemInstruction`, `background`, `environment` (managed agents sandbox), `pollingTimeoutMs` (default 30 minutes).
 
-## Tools and features
+### Tools and features
 
 ```ts
 const { text, sources, providerMetadata } = await generateText({

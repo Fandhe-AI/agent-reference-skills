@@ -53,7 +53,7 @@ Chat model `providerOptions` (under the camelCase provider name key): `user` (st
 
 Embedding model options: `dimensions` (number), `user` (string). Completion model options: `echo` (boolean), `logitBias` (`Record<string, number>`, -100 to 100), `suffix` (string), `user` (string). Image model options: `size`, `quality`, `output_format`, `output_compression` (0 to 100), `background`; `OpenAICompatibleImageModelOptions` also accepts additional provider-specific options passed through unchanged.
 
-## Capabilities and examples
+### Capabilities and examples
 
 Chat models support: text generation, streaming, tool calling with streaming, structured outputs (when `supportsStructuredOutputs`), reasoning content (e.g. DeepSeek R1), system messages, multi-modal inputs (provider-dependent).
 

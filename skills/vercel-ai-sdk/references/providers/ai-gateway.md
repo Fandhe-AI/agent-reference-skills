@@ -74,14 +74,14 @@ Features: access models from multiple providers without installing extra provide
 
 Conditional fallback conditions: `{ question, confidenceBelow }` (Choice / Score), `{ question, probabilityBetween: [min, max] }` (Boolean, P(true), inclusive bounds within `[0, 1]`), combined with `{ any }`, `{ all }`, `{ atLeast: { count, conditions } }`; 1 to 20 conditions per list, nesting up to 5 levels, question IDs 1 to 256 characters.
 
-## Authentication
+### Authentication
 
 - API key: `AI_GATEWAY_API_KEY` environment variable, or `createGateway({ apiKey })`.
 - Vercel access token for model requests: pass a personal / app access token as `apiKey`, plus `teamIdOrSlug` for multi-team tokens. `apiKey` takes precedence over `AI_GATEWAY_API_KEY` and OIDC.
 - OIDC (Vercel deployments): handled automatically in production / preview. Locally, run `vercel env pull` (or use `vercel dev` for automatic refresh); OIDC tokens expire after 12 hours.
 - Bring Your Own Key (BYOK): add provider credentials in the Vercel team's AI Gateway settings; no code changes needed. Model mappings map gateway slugs to your deployment names (for example Azure).
 
-## Capabilities
+### Capabilities
 
 ```ts
 import { rerank } from 'ai';

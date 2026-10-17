@@ -33,7 +33,7 @@ const wrappedLanguageModel = wrapLanguageModel({
 // applied as: firstMiddleware(secondMiddleware(yourModel))
 ```
 
-## Built-in middleware
+### Built-in middleware
 
 | Name | Description |
 | --- | --- |
@@ -89,7 +89,7 @@ const model = wrapLanguageModel({
 | `format` | function (optional) | Custom formatter for each example (receives the example object and its index). Default: `JSON.stringify(example.input)`. |
 | `remove` | boolean (optional) | Whether to remove `inputExamples` from the tool after adding them to the description. Default: `true`. |
 
-## Implementing language model middleware
+### Implementing language model middleware
 
 Implement any of three functions; every `LanguageModelV4Middleware` object must set `specificationVersion: 'v4'`:
 
@@ -157,7 +157,7 @@ export const yourLogMiddleware: LanguageModelV4Middleware = {
   specificationVersion: 'v4',
 
   wrapGenerate: async ({ doGenerate, params }) => {
-    console.log('METADATA', params?.providerMetadata?.yourLogMiddleware);
+    console.log('METADATA', params?.providerOptions?.yourLogMiddleware);
     const result = await doGenerate();
     return result;
   },
@@ -168,6 +168,7 @@ export const yourLogMiddleware: LanguageModelV4Middleware = {
 
 ## Notes
 
+- The official "Per Request Custom Metadata" example reads `params?.providerMetadata`; the call-options input was renamed to `providerOptions` in AI SDK 5 (`providerMetadata` is only the returned metadata), so this page reads `params?.providerOptions`.
 - Implementing language model middleware is advanced functionality and requires a solid understanding of the language model specification (`packages/provider/src/language-model/v4/language-model-v4.ts`).
 - The official examples (logging, caching, RAG, guardrails) are explicitly "not meant to be used in production". Helper functions in the RAG example (`getLastUserMessageText`, `findSources`) are not part of the AI SDK.
 - Guardrails streaming example buffers each text block until `text-end` so matches split across `text-delta` chunks cannot leak; this delays output and uses memory proportional to the text block size. Do not redact each delta independently.

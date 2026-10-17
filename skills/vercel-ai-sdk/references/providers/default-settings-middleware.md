@@ -22,10 +22,11 @@ const middleware = defaultSettingsMiddleware({
 
 ```ts
 import { streamText, wrapLanguageModel, defaultSettingsMiddleware } from 'ai';
+import { gateway } from '@ai-sdk/gateway';
 
 // Create a model with default settings
 const modelWithDefaults = wrapLanguageModel({
-  model: gateway('anthropic/claude-sonnet-4.5'),
+  model: gateway('openai/gpt-6-astra'),
   middleware: defaultSettingsMiddleware({
     settings: {
       providerOptions: {
@@ -58,6 +59,7 @@ Returns a middleware object that merges the default settings with the parameters
 
 ## Notes
 
+- The official usage example pairs `gateway('anthropic/claude-sonnet-4.5')` with `providerOptions.openai`; provider options are keyed by the actual provider, so this page uses an OpenAI model (as in the Provider Management guide).
 - To apply default system instructions, use `defaultInstructionsMiddleware`.
 
 ## Related

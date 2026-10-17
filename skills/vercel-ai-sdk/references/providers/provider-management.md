@@ -33,7 +33,7 @@ const { text } = await generateText({
 });
 ```
 
-## Custom providers
+### Custom providers
 
 - With custom providers, you can pre-configure model settings, provide model name aliases, and limit the available models.
 - The provider registry lets you mix multiple providers and access them through simple string ids.
@@ -124,7 +124,7 @@ await uploadSkill({
 
 If no `files` or `skills` option is set but a `fallbackProvider` is configured, the custom provider inherits those interfaces from the fallback.
 
-## Provider registry
+### Provider registry
 
 By default, the registry uses `:` as the separator between provider and model IDs. Custom separator:
 
@@ -150,7 +150,7 @@ registry.files('openai'); // provider files interface, use with uploadFile
 registry.skills('anthropic'); // provider skills interface, use with uploadSkill
 ```
 
-## Combining custom providers, registry, and middleware
+### Combining custom providers, registry, and middleware
 
 The official page shows a single `registry.ts` that combines: a pass-through `gateway` and `xai`, an OpenAI-compatible provider (`createOpenAICompatible({ name, apiKey, baseURL })`), `customProvider` aliases with `fallbackProvider: anthropic`, a reasoning alias built with `wrapLanguageModel` + `defaultSettingsMiddleware` (`providerOptions.anthropic.thinking` validated with `satisfies AnthropicLanguageModelOptions`), a `groq` provider limited to two models without fallback, and `{ separator: ' > ' }`. Usage:
 
@@ -158,7 +158,7 @@ The official page shows a single `registry.ts` that combines: a pass-through `ga
 const model = registry.languageModel('anthropic > reasoning');
 ```
 
-## Global provider configuration
+### Global provider configuration
 
 AI SDK 5 introduced a global provider so a model can be a plain model ID string. By default the global provider is the Vercel AI Gateway. Set your own:
 

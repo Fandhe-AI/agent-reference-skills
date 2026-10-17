@@ -70,7 +70,7 @@ const { value: stream } = await streamUI({
 
 `LanguageModelUsage` fields: `inputTokens`, `inputTokenDetails` (`noCacheTokens`, `cacheReadTokens`, `cacheWriteTokens`), `outputTokens`, `outputTokenDetails` (`textTokens`, `reasoningTokens`), `totalTokens`, `raw` (provider's original usage). All are `number | undefined` except the detail objects and `raw` (`object | undefined`).
 
-## Returns
+### Returns
 
 | Name | Type | Description |
 | --- | --- | --- |

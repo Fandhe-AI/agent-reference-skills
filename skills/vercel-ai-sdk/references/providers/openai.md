@@ -90,7 +90,7 @@ Chat provider options (`OpenAILanguageModelChatOptions`): `logitBias`, `logprobs
 
 Responses metadata (`OpenaiResponsesProviderMetadata`): `responseId`, `logprobs`, `serviceTier`, `reasoningContext`.
 
-## Built-in tools (Responses API)
+### Built-in tools (Responses API)
 
 ```ts
 const result = await generateText({
@@ -124,7 +124,7 @@ const result = await generateText({
 | `openai.tools.customTool` | Returns a raw string optionally constrained by `format: { type: 'grammar', syntax: 'regex' \| 'lark', definition }` or `{ type: 'text' }`; optional `execute`. |
 | `openai.tools.programmaticToolCalling` | Hosted JavaScript coordinating client-side function tools; opt functions in with `providerOptions.openai.allowedCallers` (`['direct']`, `['programmatic']`, both) and optional `outputSchema`. |
 
-## Reasoning, caching and compaction
+### Reasoning, caching and compaction
 
 ```ts
 import {
@@ -151,7 +151,7 @@ const result = await generateText({
 - WebSocket transport: `createWebSocketFetch()` from `ai-sdk-openai-websocket-fetch` passed as `createOpenAI({ fetch })`; only streaming `POST /responses` goes over the WebSocket.
 - Image detail: `providerOptions.openai.imageDetail` (`'low' \| 'high' \| 'auto' \| 'original'`) on a file part.
 
-## Other model types
+### Other model types
 
 - Batch (experimental): pass the OpenAI provider to the Batch API; every text request must use the same model; the OpenAI Batch API does not support per-batch webhooks (an unsupported warning is returned when `webhookUrl` is given).
 - Realtime (experimental): `openai.experimental_realtime('gpt-realtime')` or `'gpt-live-1'`; `api: 'live' | 'realtime'` overrides model-ID selection; Realtime tokens via `openai.experimental_realtime.getToken({ model })`; Live does not use client-secret minting (calling `getToken` for Live rejects) and authenticates on a trusted server (browser WSS through an application-owned relay, or WebRTC SDP exchange via `liveModel.doCreateWebRTCSession`). Live options via `sessionConfig.providerOptions.openai` (`Experimental_OpenAIRealtimeModelLiveOptions`: `delegation`, `input`, `voice`, `store`, `client.dataChannel`).

@@ -62,7 +62,7 @@ Provider options (`providerOptions.anthropic`, validate with `AnthropicLanguageM
 | deferLoading / allowedCallers (on tool) | boolean / string[] | Tool search deferral; programmatic tool calling callers such as `['code_execution_20260120']`. |
 | toolChanges / clearAt / effort (on system message) | array / `'next_user_message'` / string | Mid-conversation tool changes and system controls; require `allowSystemInMessages: true`. |
 
-## Provider-defined tools
+### Provider-defined tools
 
 ```ts
 const result = await generateText({
@@ -118,7 +118,7 @@ const result = await generateText({
 
 Built-in skills: `pptx`, `docx`, `pdf`, `xlsx`; custom skills use `type: 'custom'`.
 
-## Reasoning, effort and caching
+### Reasoning, effort and caching
 
 ```ts
 const { text, reasoningText } = await generateText({

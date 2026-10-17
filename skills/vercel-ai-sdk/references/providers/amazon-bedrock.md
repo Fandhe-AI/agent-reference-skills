@@ -78,7 +78,7 @@ Message-part `providerOptions.bedrock`: `cachePoint: { type: 'default', ttl?: '5
 
 Provider metadata `providerMetadata.bedrock`: `trace`, `performanceConfig` (e.g. `{ latency: 'optimized' }`), `serviceTier` (e.g. `{ type: 'on-demand' }`), `usage` (cache token usage: `cacheReadInputTokens`, `cacheWriteInputTokens`, `cacheDetails`), `stopSequence`.
 
-## Capabilities
+### Capabilities
 
 Embedding options (`AmazonBedrockEmbeddingModelOptions`, under `providerOptions.bedrock`):
 

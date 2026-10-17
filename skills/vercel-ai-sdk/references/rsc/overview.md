@@ -22,7 +22,7 @@ import {
 } from '@ai-sdk/rsc';
 ```
 
-## Functions
+### Functions
 
 | Group | Function | Description |
 | --- | --- | --- |
