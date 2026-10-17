@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/search_engine.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/search_engine.rs
 ---
 
 # search_engine
@@ -45,6 +45,23 @@ pub fn hnsw_kind(params: HnswParams) -> Result<SearchEngineKind, SearchEngineErr
 /// `kind` に対応する `SearchProvider` 実装を構築する（infallible）。
 pub fn build(kind: SearchEngineKind) -> Box<dyn SearchProvider>
 
+/// HNSW opt-in（`SearchEngineKind::Hnsw`）時に HNSW 経路を使うテーブルの範囲（Issue #1065・オーナー判断
+/// 2026-09-28。`docs/design/index-declaration-effects.md`「HNSW（テーブル単位）」）。`EngineCore::with_hnsw_scope`
+/// で設定し、`wire-server` の起動時 CLI フラグ `--hnsw-scope`（プロセス全体・1 回限り）から到達する。HNSW opt-in が
+/// 無効な構築（既定エンジン）では参照されず、全テーブル厳密（brute-force）のまま。判定本体は
+/// `crate::catalog::hnsw_targeted_in_txn` で、SQL 表層・Rust API・`EXPLAIN` の全経路がこれを共有する。いずれの値でも
+/// 判定はテーブル単位で、他テーブルの `USING hnsw` 宣言はクエリ対象テーブルの経路・結果に影響しない。
+/// 0.2.0 で追加された公開 enum。
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum HnswScope {
+    /// 全テーブルで HNSW を使う（既定。`USING hnsw` 宣言はカタログへ記録されるだけで経路を変えない）。
+    #[default]
+    All,
+    /// `CREATE INDEX ... USING hnsw` を宣言したテーブルだけ HNSW を使い、未宣言テーブルは厳密（brute-force）。
+    /// `DROP INDEX` で厳密へ戻る。
+    Declared,
+}
+
 /// 既定の検索エンジン種別（`ParallelBruteForce`）。
 pub fn default_kind() -> SearchEngineKind
 
@@ -57,6 +74,7 @@ pub fn default_engine() -> Box<dyn SearchProvider>
 - CPU-SIMD／GPU の実行経路自体を決める決定表は `dispatch.rs::select_execution_path`（TASK-155）が担う。本モジュールが構築する provider はいずれも CPU 実装のため、`EngineCore::search` は provider 実行前に `select_execution_path` を呼び、`ExecutionPath::CpuSimd` の場合のみ本モジュールの provider を実行する。
 - `SearchEngineError::InvalidHnswParams` は TASK-152・ERR-2 の分類リストへの新規登録・`wire_code()` の公開を行わない（wire／SQL 表層への露出を持たないため。`docs/design/hnsw-search-engine-wiring.md` 参照）。
 - `hnsw_kind` を経由して構築された `SearchEngineKind::Hnsw` は、保持する `ValidatedHnswParams` が型で検証済みであることが保証されているため、`build` は常に成功する infallible な関数になる（codex-review P1 是正・Issue #407）。
+- Migration (0.1.0 → 0.2.0): `HnswScope`（`All` / `Declared`）が加わった。`--hnsw-scope all|declared`（既定 `all`）の効果と、起動時 opt-in（`SearchEngineKind::Hnsw`）が索引機構の上位スイッチで、opt-in なしでは `CREATE INDEX` 宣言の有無で挙動を変えない点は ADR `docs/design/index-declaration-effects.md`（Issue #1065・TASK-206・INDEX-7。オーナー判断 2026-09-27・2026-09-28）に記録されている。`wire-server` 側は `wire-server/hnsw-scope-opt` ページを参照。`SearchEngineKind` / `SearchEngineError` / `hnsw_kind` / `build` / `default_kind` / `default_engine` は 0.2.0 のソースでも同じ構成
 - ADR: `docs/design/ann-index-adoption.md`（Accepted・B 案＝条件付き opt-in 採用・自作 HNSW・依存追加なし）。判断根拠は依存最小方針との整合、および `feature_bench` 実測で総当たりが規模線形に残存することの確認。
 
 ## Related

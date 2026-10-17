@@ -57,6 +57,18 @@ skills/fandhe-db/
       explain.md
       plan.md
       scan.md
+      copy.md
+      cursor.md
+      params.md
+      statement-splitter.md
+      transaction.md
+      declarative-predicate.md
+      ddl-column-type.md
+      where-tree.md
+      where-negation.md
+      describe.md
+      cte.md
+      relation.md
     sql-execution/
       README.md
       exec.md
@@ -97,6 +109,7 @@ skills/fandhe-db/
       policy.md
       rls.md
       tenant.md
+      crypto.md
     wire-server/
       README.md
       main-cli.md

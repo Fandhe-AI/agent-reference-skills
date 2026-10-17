@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/sql.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/sql.rs
 ---
 
 # sql (エントリモジュール)
@@ -172,11 +172,112 @@ pub enum SqlOutcome {
 }
 ~~~
 
+### 0.2.0 の差分（`src/sql.rs` の `mod` 宣言・`pub use`・`SqlOutcome` の verbatim 要約）
+
+上のフェンスは 0.1.0 時点のモジュール doc comment と `SqlOutcome` の転記。0.2.0 では次のとおり変わった。
+
+~~~rust,ignore
+pub mod aggregate;
+pub mod allowlist;
+pub(crate) mod arena_cache;
+pub(crate) mod check_constraint;
+pub mod copy;
+pub(crate) mod cte;
+pub mod cursor;
+pub(crate) mod datetime_fn;
+pub mod ddl;
+pub(crate) mod ddl_column_type;
+pub mod declarative_predicate;   // NoSQL filter 語彙拡張（範囲比較・IN・OR。Issue #945・NOSQL-14）の束縛入口
+pub(crate) mod describe;
+pub(crate) mod distinct;         // SELECT DISTINCT・COUNT(DISTINCT <expr>) の正準キー化・予算管理
+pub mod exec;
+pub mod explain;                 // 0.1.0 では pub(crate)
+pub(crate) mod expr_program;
+pub mod generation_key;          // 複数テーブルの (table, generation) 集合 + PolicyContext を鍵とする世代整合キャッシュ
+pub mod group_by;
+pub(crate) mod hnsw_cache;
+pub(crate) mod hnsw_hybrid;
+pub(crate) mod join;             // [INNER|LEFT|RIGHT|FULL] JOIN の束縛・実行本体（SQL-28・RLS-10）
+pub mod lexer;
+pub mod mode;
+pub(crate) mod numeric_fn;
+pub(crate) mod order_value;
+pub mod params;
+pub mod parser;
+pub mod partitioned;
+pub mod plan;
+pub mod relation;                // 複数テーブル参照スコープの束縛（修飾・非修飾列の解決、42702）
+pub mod relation_snapshot;       // テーブル単位の RLS 可視スナップショット
+pub mod returning;
+pub(crate) mod scalar_index;
+pub(crate) mod scalar_plan;
+pub mod scan;
+pub(crate) mod set_op;
+pub(crate) mod sparse_cache;
+pub mod statement_splitter;      // 簡易クエリ 1 メッセージ内のセミコロン区切り複数文の分割・分類（WIRE-16）
+pub(crate) mod string_fn;
+pub(crate) mod subquery;
+pub mod transaction;
+pub mod udf_call;
+pub(crate) mod view;
+pub(crate) mod view_buffered;
+pub(crate) mod visible_cache;
+pub(crate) mod where_negation;
+pub(crate) mod where_tree;
+pub(crate) mod window;
+
+pub use where_tree::BoundOrGroup;
+pub use scalar_index::ScalarIndexCacheStats;
+pub use sparse_cache::SparseIndexCacheStats;
+pub use hnsw_cache::{classify_ann_plan, AnnPlan, AnnShapeInput};
+pub use scalar_plan::{classify_scalar_plan, ScalarPlan, ScalarShapeInput};
+pub mod using_operation_id;
+pub use ddl_column_type::SqlColumnTypeName;
+pub(crate) mod using_plan;
+pub use visible_cache::VisibleBitmapCacheStats;
+
+/// SqlOutcome の 0.2.0 での variant 追加（いずれも「既存の網羅的 match は追随が必要」な BREAKING CHANGE）。
+/// 0.1.0 の Query / SetSearchMode / CreateFunction / Explain / Insert に加え:
+pub enum SqlOutcome {
+    // ...
+    Truncate(exec::TruncateOutcome),          // TASK-193・SQL-22
+    Delete(exec::DeleteOutcome),              // SQL-18・TASK-191・#867
+    Returning(exec::ReturningOutcome),        // RETURNING 句付き INSERT（UPSERT 含む）/ DELETE / UPDATE（Issue #873・#1182・SQL-21）
+    Update(exec::UpdateOutcome),              // 単一行 id 指定形（SQL-17）と述語形（SQL-19）
+    Begin,                                    // BEGIN [WORK|TRANSACTION]（SQL-31・TASK-221。Issue #942）
+    Commit,
+    Rollback,
+    CreateTable(ddl::CreateTableOutcome),     // Issue #899
+    DropTable(ddl::DropTableOutcome),         // Issue #902
+    DeclareCursor,                            // DECLARE <name> CURSOR FOR <SELECT>（WIRE-15・TASK-218）
+    Fetch(exec::QueryResult),                 // FETCH [FORWARD] <n> FROM <name>
+    CloseCursor,                              // CLOSE <name>
+    AlterTable(ddl::AlterTableOutcome),       // Issue #900
+    CreateView(ddl::CreateViewOutcome),       // Issue #909
+    DropView(ddl::DropViewOutcome),
+    CreateIndex(ddl::CreateIndexOutcome),     // Issue #908
+    DropIndex(ddl::DropIndexOutcome),
+    CreateType(ddl::CreateTypeOutcome),       // Issue #1194
+    DropType(ddl::DropTypeOutcome),
+}
+~~~
+
+0.2.0 のモジュール doc comment で更新された下位モジュールの説明:
+
+- `exec`: `exec::execute_insert` は Issue #730 で公開 API へ昇格しており engine クレート外からも呼べる（ファイル形 `exec::execute_file_insert` は `pub(crate)` のまま）
+- `explain`: `EXPLAIN` 応答の構築。Issue #922・SQL-27 で対象を通常検索・集計・広域取得へ拡大した（`allowlist::ExplainTarget`）。`build_explain_result`・`ExplainEngine`・`AnnPlan`・`ScalarPlan`・`classify_ann_plan`・`classify_scalar_plan` は TASK-186（NOSQL-10）の前提として公開 API へ昇格。`ExplainIndexNames`・`build_explain_result_with_indexes`（Issue #1066・TASK-206・INDEX-7）は `ann_plan:`／`scalar_plan:` 行への使用索引名注記用に追加された公開 API
+- `ddl`: `CREATE TABLE`／`DROP TABLE`／`ALTER TABLE ADD COLUMN` の DDL 実行権限ゲート（`require_ddl_permission`。DDL 全般が通る単一の判定点）と実行本体
+- `aggregate`: `bind_aggregate`／`execute_aggregate`／`BoundAggregate` は TASK-186（NOSQL-4・NOSQL-5）で公開 API へ昇格
+- `group_by`: `GROUP BY <列>`（Issue #1185 で `TEXT` 限定を外した）
+- `scan`: `bind_scan`／`execute_scan`／`BoundScan` は TASK-186（NOSQL-3）で公開 API へ昇格
+- Issue #869（SQL-19・TASK-192）: 述語つき `UPDATE ... WHERE` は `allowlist::validate_update_form`（`ValidatedUpdateForm`）と `parser::bind_update_form` で実装。1 文あたりの影響行数上限は `parser::check_dml_affected_rows_with_limit`。Issue #997 のオーナー判断（2026-09-27）により**既定では上限を持たない**（`parser::DmlLimits` の `None`。`wire-server` の `--max-dml-affected-rows` で明示指定した場合のみ有効）
+
 ## Notes
 
 - 本ページ Signature/Usage 中の TASK-166（対象ビヘイビア: SQL-13）段落末尾「`GROUP BY`／`HAVING` は引き続き許可リスト外（`42601`）」は **TASK-166 時点（`group_by` モジュール新設前）の記述をそのまま verbatim 転記したもの**で、0.1.0 時点では旧時点の記述。現行（0.1.0）は同じモジュール doc の直後の下位モジュール一覧（47〜50 行目、TASK-167・SQL-14）が示すとおり `GROUP BY <TEXT 列>` 集計・`HAVING`・`ORDER BY`・`LIMIT` に対応済み（対応範囲: `sql::allowlist::GroupByClause`/`HavingPredicate`/`AggregateOrderBy` による構文受理、`sql::parser::bind_aggregate`/`BoundGroupBy` による束縛、`sql::group_by::execute_grouped_aggregate` による複数行実行——実行本体の詳細は sql-execution scope の `group-by.md` 参照）。ソースの `//!` doc comment は TASK 単位の変更履歴を時系列に積み上げる書き方をしており、後続 TASK が前段の記述を上書き・削除していないため、この矛盾はソース自体に存在する（本ページの転記誤りではない）。
 - 同じ Signature/Usage フェンス内 61 行目「実行は `aggregate::execute_aggregate` が担う」は 0.1.0 ソースの doc comment に残る旧名の verbatim 引用。`Grep 'fn execute_aggregate\b'`（`src/engine/src/sql/aggregate.rs`）で該当なしを確認済みで、現行の実体は `sql::aggregate::execute_aggregate_with_cache`（関数名変更後もコメントが追従していないソース側の記述漏れ。本ページの転記誤りではない）。
-- `pub mod` として公開される下位モジュールは `aggregate` / `allowlist` / `exec` / `group_by` / `lexer` / `mode` / `parser` / `plan` / `scan` / `udf_call`。`arena_cache` / `explain` / `expr_program` / `hnsw_cache` / `hnsw_hybrid` / `scalar_index` / `scalar_plan` / `sparse_cache` / `visible_cache` / `using_plan` は `pub(crate)` — クレート外非公開（`explain` / `using_plan` はモジュール自体は `pub(crate)` だが本 scope の担当ファイルとして個別ページを作成する）。
+- `pub mod` として公開される下位モジュール（0.2.0）は `aggregate` / `allowlist` / `copy` / `cursor` / `ddl` / `declarative_predicate` / `exec` / `explain` / `generation_key` / `group_by` / `lexer` / `mode` / `params` / `parser` / `partitioned` / `plan` / `relation` / `relation_snapshot` / `returning` / `scan` / `statement_splitter` / `transaction` / `udf_call` / `using_operation_id`。`arena_cache` / `check_constraint` / `cte` / `datetime_fn` / `ddl_column_type` / `describe` / `distinct` / `expr_program` / `hnsw_cache` / `hnsw_hybrid` / `join` / `numeric_fn` / `order_value` / `scalar_index` / `scalar_plan` / `set_op` / `sparse_cache` / `string_fn` / `subquery` / `view` / `view_buffered` / `visible_cache` / `where_negation` / `where_tree` / `window` / `using_plan` は `pub(crate)` — クレート外非公開。0.1.0 では `explain` も `pub(crate)` だったが 0.2.0 で `pub` になった。
+- Migration (0.1.0 → 0.2.0): `SqlOutcome` に多数の variant が加わった（上記）。クレート外で `SqlOutcome` を網羅的に `match` するコードは追随が必要。
 - `aggregate` / `group_by` / `exec` / `arena_cache` / `hnsw_cache` / `hnsw_hybrid` / `scalar_index` / `scalar_plan` / `sparse_cache` / `visible_cache` / `udf_call` / `expr_program` の実装内容は sql-execution scope の管轄。本ページはモジュール一覧・`SqlOutcome` 型・re-export のみを扱う。
 - Distinct from `mssql` (node-mssql, T-SQL client) / `drizzle` (TypeScript ORM) / `supabase` (Postgres): this is a subset SQL surface over a PostgreSQL wire-compatible engine, explicitly MVP-scoped per the project README.
 

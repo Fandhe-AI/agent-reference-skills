@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/sql/mode.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/sql/mode.rs
 ---
 
 # sql::mode
@@ -150,6 +150,16 @@ pub fn udfs(&self) -> &crate::sql::udf_call::UdfRegistry
 /// セッションが保持する `&mut UdfRegistry` を貸し出すだけの薄いアクセサ。
 pub fn udfs_mut(&mut self) -> &mut crate::sql::udf_call::UdfRegistry
 
+/// このセッションが DDL 実行権限（SQL-23、TASK-203、Issue #902）を持つか。
+/// [`crate::sql::ddl::require_ddl_permission`] が唯一の判定点として参照する。
+pub fn ddl_allowed(&self) -> bool
+
+/// このセッションへ DDL 実行権限を付与する。wire-server の handshake が
+/// 認証成功直後（`UserStore::is_ddl_allowed` が真の場合）に 1 回だけ呼ぶ
+/// 契約とし、SQL 文経由で呼ばれる経路は持たない（`Self::ddl_allowed`
+/// ドキュメント参照）。
+pub fn allow_ddl(&mut self)
+
 /// TASK-149（対象ビヘイビア: EXT-5, EXT-6）: 検証済みの `Arc<dyn WasmUdfBackend>`
 /// をこのセッションのレジストリへ登録する。名前空間の衝突検査は
 /// `udf_call::define_wasm_function` が担い、登録は宣言的 UDF と同じ
@@ -174,6 +184,7 @@ pub fn set_search_mode(&mut self, mode: SearchMode)
 ## Notes
 
 - 本ページ Signature/Usage 中の module doc（12〜23 行目）「SQL 表層はプランナー推定の結線を持たない（TASK-77/78 の管轄）ため、そちらは引き続き `resolve_mode`（2 引数版）を呼ぶ」、および `resolve_mode` の doc comment（116〜117 行目）「SQL 表層（`sql/parser.rs::bind_with_session` 等。TASK-77/78 が管轄する `USING PLAN`／`EXPLAIN` 結線までは未実装）」は **TASK-161 時点（`sql::using_plan` / `sql::explain` 新設前）の記述をそのまま verbatim 転記したもの**で、0.1.0 時点では旧時点の記述。現行（0.1.0）は `USING PLAN` 経路が実装済みで、`core.rs::EngineCore::plan_query_with_mode` / `plan_using_plan_expansion` が `sql::mode::resolve_mode_with_planner`（3 引数版。クエリ句 > セッション変数 > プランナー推定 `expansion.mode_hint` > 既定の優先順位解決）を実際に呼び出す（`core.rs` 4600〜4820 行台付近、`crates/engine/src/core.rs` 内 `resolve_mode_with_planner` 呼び出し 2 箇所で確認。うち 1 箇所は `USING PLAN` の I/O フェーズ `plan_using_plan_expansion` 内）。`sql::using_plan::bind_expansion`（[using-plan.md](./using-plan.md) 参照）・`sql::explain::build_explain_result`（[explain.md](./explain.md) 参照）は実行時ディスパッチとして実装済みで、SQL 経由で実際の実行結果を返す。ソースの `//!`/`///` doc comment は TASK 単位の変更履歴を時系列に積み上げる書き方をしており、後続 TASK（TASK-77・TASK-78・TASK-164）が前段の記述を更新していないため、この矛盾はソース自体に存在する（本ページの転記誤りではない）。
+- Migration (0.1.0 → 0.2.0): `SessionState` に DDL 実行権限フラグ `ddl_allowed`（既定 `false`、fail-closed）と `ddl_allowed()` / `allow_ddl()` が加わった。`SessionState::default()` は構造上すべての DDL を実行できず、付与は wire-server の handshake が認証成功直後（`UserStore::is_ddl_allowed` が真の場合）に 1 回だけ行う（SQL 文経由で権限を昇格する経路は無い）。`PolicyContext` はテナント ID と可視性のみを運び認証主体を持たないため、DDL 権限はテナント境界とは別軸の権限として本フィールドが担う。`SearchMode` / `ModeSource` / `ResolvedMode` / `resolve_mode*` の公開シグネチャは 0.1.0 と同一。
 - `ModeSource` / `ResolvedMode` はいずれも `#[non_exhaustive]` — TASK-161 で意図した破壊的変更として導入し、クレート外の網羅的 `match` にワイルドカードアームを要求する（PR #188）。
 - `SessionState` は wire-server の接続ハンドラ（wire-server scope の管轄）が所有する値型として設計され、`EngineCore` 等の複数接続で共有される構造体には置かない。
 - `QueryExpansion` / `query_planner.rs` の実体は本 scope 外（search scope）の管轄のため参照のみ記載する。

@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/tenant.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/tenant.rs
 ---
 
 # tenant
@@ -104,6 +104,40 @@ pub enum TenantWriteError {
     /// （TASK-101・RECOVER-10）。commit 済み確定の根拠にしない fail-closed 判定
     /// （`22023`）。行内容・テナント・他テナントの存在情報は含まない。
     OperationIdContentMismatch,
+    // --- 0.2.0 で追加された variant（ソースの doc comment を要約）---
+    /// `RETURNING` 句（Issue #873・SQL-21）向けの捕捉行投影が失敗した（`XX000`）。write トランザクションが
+    /// commit される前にこの `Err` を返すことで abort させ、commit 成功境界違反を防ぐ（PR #991）。
+    ReturningProjectionFailed(String),
+    /// UPSERT の `ON CONFLICT DO UPDATE` の衝突先が、`ctx` が所有するが可視ではない行だった（Issue #1254・
+    /// RLS-10・RLS-11）。文全体を拒否し write トランザクションは破棄する。`42501` へ写像する（id・値は含めない）。
+    ConflictTargetNotVisible,
+    /// `RETURNING` 結果セットのバイト量上限超過（`sql::returning::MAX_RETURNING_RESULT_BYTES`）。`54000`。
+    ReturningProjectionTooLarge(String),
+    /// 削除直前の既存行を捕捉する際のデコード失敗（ストレージ破損等のサーバー内部事象）。`XX000` に固定する。
+    CapturedRowDecodeFailed(String),
+    /// 述語つき `UPDATE`／`DELETE ... WHERE` の候補列挙が、対象テナントの物理キー領域の走査総行数で
+    /// `MAX_SCANNED_ROWS` を超えた（Issue #871）。この上限は他テナントのデータ量に一切依存しない。`54000`。
+    TooManyRowsScanned,
+    /// `PRIMARY KEY`（Issue #903）・UNIQUE 制約（Issue #905。TABLE-16・TASK-204）のテナント内一意性違反
+    /// （`constraint::enforce_unique_keys_in_txn`）。`IdConflict` とは別 variant だが `ErrorClass::UniqueViolation`
+    /// （`23505`）を共有する。`Display`／`Debug` はキー値・行 id・テナント名・テーブル名を含まない固定文言。
+    UniqueViolation,
+    /// `CHECK` 制約（TABLE-16・TASK-204、Issue #906）の述語を書き込む行が満たさない。`constraint` は制約名のみ。
+    CheckViolation { constraint: String },
+    /// `CHECK` 制約の述語評価自体が失敗した（0 除算・`BIGINT` の精度超過等）。PostgreSQL と同様、制約違反ではなく
+    /// 式評価エラーとして扱い、内側の `SqlSurfaceError` をそのまま保持して通常の式評価と同じ `wire_code`
+    /// （0 除算は `22012`、非有限値・`NUMERIC` 関数の桁あふれは `22003` 等）で返す（オーナー判断 2026-09-28・Issue #1075）。
+    CheckEvaluationFailed(SqlSurfaceError),
+    /// `FOREIGN KEY` 制約（TABLE-17・TASK-205、Issue #907）の参照整合性違反（`23503`）。`Display`／`Debug` は
+    /// 参照先の有無の理由（不在なのか他テナント所有なのか）を一切含まない固定文言（RLS-9・RLS-10 (c)）。
+    ForeignKeyViolation,
+    /// `FOREIGN KEY` の参照アクション（`CASCADE`／`SET NULL`／`SET DEFAULT`。Issue #1076）の連鎖が実装既定の
+    /// 上限（連鎖の深さ・1 文あたりの連鎖対象行数）を超えた。`54000`。
+    ReferentialActionLimitExceeded,
+    /// 明示トランザクション（SQL-31・TASK-221）の単一ライタ占有により、書き込みトランザクションの取得が
+    /// ロック待ちの上限を超過した（`55P03`）。`StorageError::WriteLockTimeout` と
+    /// `StorageError::WriteTxnHeldByCurrentSession` がここへ写像される。
+    WriteLockTimeout,
 }
 
 impl TenantWriteError {
@@ -234,8 +268,10 @@ pub(crate) fn replace_typed_rows_by_text_key(
 - rustdoc は抄録（一部段落を省略）。全文は `source:` の docs.rs source view を参照。
 - `insert_row` / `insert_rows` / `insert_typed_row` / `update_row` / `delete_row` はいずれも `ctx: &PolicyContext` を受け取り、書き込み認可は `PolicyContext::is_owner`（テナント一致のみ、可視性ラベルは考慮しない）で判定される（`policy.md` 参照）。読み取り可視性の拡張が書き込み権限の拡張を意味しない。
 - `visible_rows` は `MAX_VISIBLE_ROWS`（100,000）・`MAX_SCANNED_ROWS`（1,000,000）の上限を持ち、超過時は `TenantError::TooManyVisibleRows` / `TooManyRowsScanned` を返す（無制限 `Vec` 確保を避ける fail-closed 設計）。
-- `verify_hits` は検索結果 `hits` の `(tenant_id, id)` 完全一致を独立に再検証する検査器であり、`rls.rs::RlsSafetyNet` とは別経路の防御層。ADR [`plan-rls-boost-interaction`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/plan-rls-boost-interaction.md) はこの `verify_hits`（C5）を、`tenant::visible_rows`（C1）→ `hybrid::hybrid_search_boosted`（C4）の合流点検証における独立検査器として扱う（一部テストに限定）。
+- `verify_hits` は検索結果 `hits` の `(tenant_id, id)` 完全一致を独立に再検証する検査器であり、`rls.rs::RlsSafetyNet` とは別経路の防御層。ADR [`plan-rls-boost-interaction`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/dc888f6ea146d3078153d64a6848f5c8cf044431/docs/design/plan-rls-boost-interaction.md) はこの `verify_hits`（C5）を、`tenant::visible_rows`（C1）→ `hybrid::hybrid_search_boosted`（C4）の合流点検証における独立検査器として扱う（一部テストに限定）。
 - `operation_id`（`OperationId`）の冪等性契約は `TenantWriteError` の variant docstring（上記）で追跡できる範囲を記載した: `MissingOperationId`（台帳あり構成で必須、`wire_code` `23502`）・`DuplicateOperationId`（内容一致の再送、commit 済み確定として `23505`）・`OperationIdContentMismatch`（内容不一致または旧フォーマットへの再送、`22023`）。台帳の実装詳細（`crate::recovery::ledger`）自体は本 scope（security）の対象外。
+- Migration (0.1.0 → 0.2.0): `TenantWriteError` に上記 11 variant が加わった（`#[non_exhaustive]` は付与されていない。ソース doc は「variant の追加は既存の網羅的 `match` を壊す破壊的変更」と明記し、PR 本文の Breaking changes 節と `BREAKING CHANGE:` フッタで明示する方針〔Issue #282・`docs/design/error-enum-non-exhaustive-policy.md`〕）。`wire_code` の写像は 0.2.0 では `error_format::ErrorClass` へ委譲する（`error_format` ページ参照）。新 variant の対応: `ConflictTargetNotVisible` → `ForbiddenTenantMismatch`（`42501`）、`UniqueViolation` → `UniqueViolation`（`23505`）、`CheckViolation` → `CheckViolation`、`CheckEvaluationFailed` → 内側の `SqlSurfaceError` の分類、`ForeignKeyViolation` → `ForeignKeyViolation`（`23503`）、`ReferentialActionLimitExceeded`・`TooManyRowsScanned`・`ReturningProjectionTooLarge` → `PayloadTooLarge`（`54000`）、`ReturningProjectionFailed`・`CapturedRowDecodeFailed` → `InternalError`（`XX000`）、`WriteLockTimeout` → `LockNotAvailable`（`55P03`）。`Debug` は variant 名のみを出力し内部エラーを `<redacted>` にする。`source()` は常に `None`
+- 0.2.0 の `src/tenant.rs` は `pub(crate) mod partitioned_dml;`（`src/tenant/partitioned_dml.rs` と `src/tenant/partitioned_dml/`）を宣言する。分割実行 DML（チャンクごとに commit する非原子の述語形 `UPDATE`／`DELETE`。ADR `partitioned-dml.md`）の実行器の crate 内部モジュールで、公開 API ではない（公開側は `sql-execution/partitioned` と `nosql-surface/partitioned-dml` ページ）。`WriteTarget`（`Autocommit(&Storage)` / `InTxn(&redb::WriteTransaction)`）も `pub(crate)` で、行を書き換える全 `*_unchecked` 経路が明示トランザクション（SQL-31・TASK-221、Issue #1179）と autocommit で共有する入口になった。`insert_typed_rows_unchecked` / `upsert_typed_rows_unchecked` / `update_rows_where_unchecked` / `delete_rows_where_unchecked` / `truncate_table_unchecked` 等の新しい `*_unchecked` は `pub(crate)` で、公開の `pub fn` は `visible_rows` / `verify_hits` / `insert_row` / `insert_rows` / `insert_typed_row` / `update_row` / `delete_row` と `ReplaceOutcome` のまま
 - `ReplaceOutcome` は `pub`（公開応答型）。`ReplaceByTextKey` / `replace_typed_rows_by_text_key` は `pub(crate)`（crate 非公開 API）。
 - `TenantWriteError::IdConflict` の doc「所有者を問わず同一 variant」は、既存行との衝突を他テナントとの衝突とみなす意味ではない。物理キーは `(tenant_id, id)` でテナント毎に名前空間化されており、既存行の照会は**サーバー側導出テナント（`ctx.tenant_id()`）の名前空間内だけ**を対象とするため（`insert_row` の doc「重複検出のスコープ」参照）、`IdConflict` は**同一テナント内の重複のみ**で発生する。「所有者を問わず」は、同一テナント名前空間内で既存行が誰の書き込みで作られたか（先行する同一/別セッションの呼び出し）を区別せず同じ variant に丸めるという意味であり、他テナントが同じ `id` を保持していても衝突しない（本経路は通常どおり成功する）。
 - (English) This crate's tenant isolation (`PolicyContext`-scoped `visible_rows` / `verify_hits` / write ownership checks) is an internal row-visibility mechanism integrated into the engine, distinct from `supabase`'s Postgres `CREATE POLICY`-based RLS and `drizzle`'s `pgPolicy` / rls reference pages.
