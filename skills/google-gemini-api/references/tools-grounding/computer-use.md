@@ -119,6 +119,8 @@ def get_function_responses(page, results):
 Execute function calls (abridged: only `click` and `navigate` shown; the `safety_decision` check is adapted from the source's safety section: `get_safety_confirmation` waits for explicit user input). This page branches on `safety_decision.decision`: only `require_confirmation` prompts the user; blocked or any other value halts without executing (source: "If the action is blocked, your client should halt the execution or handle the interruption"):
 
 ```python
+import time
+
 def get_safety_confirmation(safety_decision):
     # Prompt user for confirmation
     print(f"Safety confirmation required: {safety_decision.get('explanation', '')}")
