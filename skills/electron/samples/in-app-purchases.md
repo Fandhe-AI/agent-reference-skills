@@ -54,10 +54,14 @@ inAppPurchase.on('transactions-updated', (event, transactions) => {
         inAppPurchase.finishTransactionByDate(transaction.transactionDate)
 
         break
-      case 'restored':
+      case 'restored': {
         console.log(`The purchase of ${payment.productIdentifier} has been restored.`)
 
+        // Validate the receipt and re-grant the product, then finish the restored transaction.
+        inAppPurchase.finishTransactionByDate(transaction.transactionDate)
+
         break
+      }
       case 'deferred':
         console.log(`The purchase of ${payment.productIdentifier} has been deferred.`)
 
@@ -104,7 +108,9 @@ inAppPurchase.getProducts(PRODUCT_IDS).then((products) => {
 
 ## Notes
 
-- Requires the Paid Applications Agreement and in-app purchases configured in App Store Connect (iTunes Connect in the page); replace the example product ids with your own (`com.example.app.product1` has the id `product1`).
+- Requires the Paid Applications Agreement and in-app purchases configured in App Store Connect (iTunes Connect in the page); replace the example product ids with the exact product identifiers registered in App Store Connect; `getProducts` / `purchaseProduct` take the full identifier as registered (Electron does not add the bundle id).
+- Differs from the tutorial: its parenthetical "the identifier of com.example.app.product1 is product1" is omitted because the API takes the identifier exactly as registered.
+- Differs from the tutorial: the restored branch also calls `finishTransactionByDate`, because `restoreCompletedTransactions` delivers a new transaction per restored purchase that must be finished.
 - For development testing, change `CFBundleIdentifier` in `node_modules/electron/dist/Electron.app/Contents/Info.plist` from `com.github.electron` to your app's bundle identifier; revert it afterwards, and do this only in a throwaway checkout.
 - Listen for `transactions-updated` as early as possible in the app.
 - Validate receipts on a server before granting the product.
