@@ -2,16 +2,15 @@
 name: electron
 description: >
   Electron (Chromium + Node.js 製クロスプラットフォームデスクトップアプリフレームワーク, v44) の
-  リファレンス。main / renderer / preload / utilityProcess, ipcMain / ipcRenderer / contextBridge,
-  BrowserWindow / BaseWindow / WebContentsView / webContents, Electron Forge, autoUpdater,
-  safeStorage, fuses, ASAR, contextIsolation / sandbox, code signing, MAS, crashReporter,
-  contentTracing, debugging, E2E testing, breaking changes。
+  ipcMain / ipcRenderer / contextBridge, BrowserWindow / BaseWindow / WebContentsView / webContents,
+  Electron Forge, autoUpdater, safeStorage, fuses, ASAR, contextIsolation / sandbox, code signing,
+  MAS, crashReporter, contentTracing, debugging, breaking changes。
 user-invocable: false
 ---
 
 # Electron
 
-> 分割 PR の途中段階。現在収録済み: references/{app, breaking-changes, debugging-testing, distribution-updates, getting-started, ipc-preload, menus-tray}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{app, breaking-changes, debugging-testing, distribution-updates, getting-started, ipc-preload, menus-tray, security-performance}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 対象バージョン Electron v44.8.0: GitHub tag v44.8.0 (electron/electron)。npm latest = 44.8.0（2026-10-16 公開）。原本は 2026-10-17 に `raw.githubusercontent.com/electron/electron/v44.8.0/docs/` から取得。`main` および `44-x-y` ブランチは使用しない。45.0.0-beta は対象外。公式サイトに `llms.txt` / `.md` twin は無い。
 
@@ -52,6 +51,13 @@ skills/electron/
       tray.md
       dock.md
       global-shortcut.md
+    security-performance/   # security checklist / sandbox / fuses / ASAR integrity / performance
+      README.md
+      security-overview.md
+      security-checklist-1-10.md
+      sandbox.md
+      fuses.md
+      performance.md
     distribution-updates/   # packaging / Forge / code signing / autoUpdater / MAS / Microsoft Store / Snap / native modules
       README.md
       application-distribution.md
@@ -92,6 +98,7 @@ skills/electron/
 | app の起動・終了・single instance・パス・ログイン項目・Jump List を扱いたい | app | [references/app/README.md](references/app/README.md) |
 | main / renderer 間 IPC・contextBridge・MessagePort・utilityProcess を実装したい | ipc-preload | [references/ipc-preload/README.md](references/ipc-preload/README.md) |
 | アプリメニュー・コンテキストメニュー・Tray・Dock・グローバルショートカットを作りたい | menus-tray | [references/menus-tray/README.md](references/menus-tray/README.md) |
+| セキュリティチェックリスト・sandbox・fuses・ASAR integrity・性能改善を確認したい | security-performance | [references/security-performance/README.md](references/security-performance/README.md) |
 | パッケージング・Forge・コード署名・autoUpdater・MAS / Microsoft Store 申請をしたい | distribution-updates | [references/distribution-updates/README.md](references/distribution-updates/README.md) |
 | デバッグ・クラッシュレポート・E2E テスト・headless CI を整えたい | debugging-testing | [references/debugging-testing/README.md](references/debugging-testing/README.md) |
 | バージョン更新で削除・変更された API を確認したい | breaking-changes | [references/breaking-changes/README.md](references/breaking-changes/README.md) |
