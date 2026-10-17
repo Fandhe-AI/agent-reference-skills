@@ -91,7 +91,7 @@ Classes, interfaces and types:
 ## Notes
 
 - Runtime APIs can only be called in server-side code, inside the async context of a request handler. A distinct package from the web frameworks fastify / hono / nextjs-app; the runtime is Expo-specific.
-- Needs the Expo Router project to export in `server` mode (see API Routes). Available since SDK 54; older SDKs use `@expo/server`.
+- Needs a server export: `web.output: "server"`, or in SDK 58 and later `web.output: "static"` with `apiRoutes: true` in the `expo-router` config plugin (both produce `dist/server`; see API Routes). The SDK 58 reference page itself only mentions `server` mode. Available since SDK 54; older SDKs use `@expo/server`.
 - This reference imports typed helpers and types from `expo-server`, while the Data loaders / Middleware / Server rendering guides import them from `expo-router/server`.
 - Pinned: Expo SDK 58 (`/versions/v58.0.0/`, source `sdk-58` packages/expo-server), documentation fetched 2026-10-17 (page modificationDate September 17, 2026).
 

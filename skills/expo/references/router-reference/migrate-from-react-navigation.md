@@ -47,7 +47,12 @@ export default function RootLayout() {
 import { Tabs } from 'expo-router/js-tabs';
 
 export default function HomeLayout() {
-  return <Tabs />;
+  return (
+    <Tabs>
+      <Tabs.Screen name="index" />
+      <Tabs.Screen name="feed" />
+    </Tabs>
+  );
 }
 ```
 
@@ -211,6 +216,7 @@ import { Header, HeaderBackButton } from 'expo-router/react-navigation';
 - The `NavigationContainer` is completely managed by Expo Router.
 - The `Text` / `Button` imports from `react-native` are added here; the source snippets omit them.
 - The official reset sample passes only `routes`; `index` and `stale: false` were added here because SDK 58 requires `stale: false` for `CommonActions.reset` (see the SDK 57 to 58 migration).
+- The official guide shows `<Tabs />` with no children; since SDK 58, JavaScript tabs show only screens declared in the layout (Expo Router SDK 57 to 58 migration guide), so the example declares `index` and `feed` explicitly.
 - With groups or shared routes, navigate to specific tabs by the fully qualified route name, for example `/(home)/settings`.
 - Splash screen: import `SplashScreen` from `expo-router` instead of `expo-splash-screen`; Expo Router hides it after navigation mounts and when an unexpected error is caught.
 - Initial routes for deep linking and server navigation: use layout settings (Router settings) instead of `initialRouteName` in the linking configuration.

@@ -102,6 +102,7 @@ router.push('/#my-hash');
 - When a `[user]` route matches, the `user` route parameter is passed to the component and is never nullish. Optional search parameters can be `undefined`.
 - Whenever a route parameter changes, the component re-mounts.
 - Reserved parameters used internally by Expo Router and React Navigation; avoid them as your own parameter names: `screen`, `params`, `initial`, `state`.
+- Differs from the SDK 57 to 58 migration guide: in SDK 57 and earlier React Navigation could interpret `screen`, `params`, and `initial` as nested-state instructions; in SDK 58 they are ordinary user parameters (navigate to a complete href instead). `state` is not mentioned there.
 - Source: https://docs.expo.dev/router/reference/url-parameters/ (unversioned guide, fetched 2026-10-17, modificationDate May 18, 2026).
 
 ## Related
