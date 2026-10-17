@@ -6,6 +6,16 @@ source: https://kotlinlang.org/docs/multiplatform/multiplatform-share-on-platfor
 
 Overview of the code-sharing mechanisms: share across all platforms through the common source set, share among similar platforms through the hierarchical structure, share in libraries, and connect platform-specific libraries. The source page has no code blocks.
 
+## Signature / Usage
+
+```kotlin
+kotlin {
+    android()
+    iosArm64()
+    iosSimulatorArm64()
+}
+```
+
 ## Options / Props
 
 ### Mechanisms
@@ -20,6 +30,7 @@ Overview of the code-sharing mechanisms: share across all platforms through the 
 
 ## Notes
 
+- Snippet taken from https://kotlinlang.org/docs/multiplatform/multiplatform-hierarchy.html; the source page itself has no code. With the default hierarchy template, these targets automatically get the `apple`, `native` and `ios` intermediate source sets.
 - By default, platform-specific source sets (`jvmMain`, `macosArm64Main`, ...) depend on `commonMain` via `dependsOn`; a target's test compilation is associated with its main compilation (for example `androidUnitTest` can see `androidMain`), which is a compilation association, not a source set `dependsOn` edge.
 - The source page describes the main/test link as a default `dependsOn` relation; it is actually a compilation association (see advanced-project-structure.md).
 - Typical case: iOS device (ARM64) and x64 simulator targets have separate platform source sets but rarely need different code, so share iOS code through an intermediate source set.

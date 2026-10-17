@@ -6,6 +6,17 @@ source: https://kotlinlang.org/docs/multiplatform/ios-ci-cd-teamcity.html
 
 Set up TeamCity Cloud for a KMP project with an iOS target: build and test on a hosted macOS agent, configure Apple signing, upload to TestFlight, and trigger builds on every push.
 
+## Signature / Usage
+
+```text
+Commit and push
+  -> Configure CI (generates local, uncommitted pipeline files)
+  -> first build (local project files, hosted macOS agent)
+  -> Publish to TestFlight (configure Apple signing)
+  -> Connect repository (attach GitHub repository and branch)
+  -> commit and push generated files; every push builds, tests, signs, uploads
+```
+
 ## Options / Props
 
 Apple signing credentials entered in the IDE form (stored by TeamCity as secure deployment credentials, not in project source files):
@@ -22,7 +33,7 @@ Apple signing credentials entered in the IDE form (stored by TeamCity as secure 
 
 ## Notes
 
-- The page contains no code. The flow is driven from the Kotlin Multiplatform IDE plugin: after commit and push, click Configure CI; the plugin generates the files needed to build and test the iOS app on a hosted macOS agent, added locally but not committed. The TeamCity plugin (JetBrains Marketplace plugin 25142) is installed if missing.
+- The fenced block summarizes the IDE flow; the page contains no code. The flow is driven from the Kotlin Multiplatform IDE plugin: after commit and push, click Configure CI; the plugin generates the files needed to build and test the iOS app on a hosted macOS agent, added locally but not committed. The TeamCity plugin (JetBrains Marketplace plugin 25142) is installed if missing.
 - A TeamCity Cloud workspace is required (accept Terms of Service, Create free account, Authorize JetBrains). The free tier includes a monthly allowance of build minutes and storage.
 - The first build uses local, uncommitted project files. Then click Publish to TestFlight to configure signing.
 - App Store Connect API key: Users and Access, Keys; download the `.p8` file (only once, store it securely) and note the Issuer ID and Key ID.

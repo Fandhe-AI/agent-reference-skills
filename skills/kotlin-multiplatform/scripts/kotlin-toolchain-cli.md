@@ -16,7 +16,7 @@ sdk install kotlintoolchain
 
 ## Install with the installer script (macOS / Linux)
 
-Adapted (not in the official docs): the official docs pipe the script into the shell; here it is split into download, review, and run.
+Adapted (not in the official docs): the official docs pipe the script into the shell; here it is split into download, review, and run. `$SHELL` is also quoted (`"${SHELL}"`).
 
 ```sh
 curl -fsSLo kotlin-toolchain-install.sh https://kotl.in/install.sh
@@ -25,7 +25,7 @@ sh kotlin-toolchain-install.sh
 
 # Restart your terminal or run this command
 # to make 'kotlin' available
-exec $SHELL
+exec "${SHELL}"
 ```
 
 ## Install with the installer script (Windows)

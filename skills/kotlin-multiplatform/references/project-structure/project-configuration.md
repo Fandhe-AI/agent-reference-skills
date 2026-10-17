@@ -6,6 +6,15 @@ source: https://kotlinlang.org/docs/multiplatform/multiplatform-project-configur
 
 Guidance on structuring a Kotlin Multiplatform setup: how the iOS app consumes the generated framework, single vs several shared modules, repository layout, and local vs remote code-sharing workflow. The source page has no code blocks.
 
+## Signature / Usage
+
+```kotlin
+kotlin {
+    jvm() // Declares a JVM target
+    iosArm64() // Declares a target that corresponds to 64-bit iPhones
+}
+```
+
 ## Options / Props
 
 ### Decision axes
@@ -19,6 +28,7 @@ Guidance on structuring a Kotlin Multiplatform setup: how the iOS app consumes t
 
 ## Notes
 
+- Snippet taken from https://kotlinlang.org/docs/multiplatform/multiplatform-discover-project.html; the source page itself has no code.
 - Single shared module: simple, good starting point, but compilation time grows and apps cannot depend only on features they need.
 - Several shared modules: separation of concerns and scalability, but more complex setup (umbrella module and framework) and dependency management. The iOS app cannot use only some feature modules of an umbrella framework (see KT-42247 and KT-42250). Only some modules may be exported to the umbrella framework, typically for remote consumption, to keep artifact size down.
 - Umbrella framework rationale: multiple Kotlin frameworks in one iOS app make the Kotlin/Native compiler duplicate shared dependencies, inflating app size and breaking state shared through the same dependency; an umbrella framework avoids this. The source recommends against including several separate Kotlin frameworks.

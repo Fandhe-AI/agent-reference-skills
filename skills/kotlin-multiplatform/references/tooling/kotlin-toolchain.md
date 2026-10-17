@@ -18,7 +18,7 @@ kotlin run -m desktopApp
 
 Installer script (macOS or Linux):
 
-Adapted (not in the official docs): the official docs pipe the installer straight into the shell; split into download, review, and run.
+Adapted (not in the official docs): the official docs pipe the installer straight into the shell; split into download, review, and run. `$SHELL` is also quoted (`"${SHELL}"`).
 
 ```shell
 curl -fsSLo kotlin-toolchain-install.sh https://kotl.in/install.sh
@@ -27,7 +27,7 @@ sh kotlin-toolchain-install.sh
 
 # Restart your terminal or run this command
 # to make 'kotlin' available
-exec $SHELL
+exec "${SHELL}"
 ```
 
 Installer script (Windows):

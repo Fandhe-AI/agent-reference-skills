@@ -25,7 +25,7 @@ runs:
       uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
 ```
 
-Workflow base `.github/workflows/build.yml`:
+Workflow base `.github/workflows/build.yml` (Adapted, not in the official docs: adds workflow-level `permissions: contents: read` for a least-privilege `GITHUB_TOKEN`):
 
 ```yaml
 name: Build
@@ -36,6 +36,9 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4096M -Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.caching=true"
