@@ -370,11 +370,18 @@ Source: https://ai.google.dev/gemini-api/docs/robotics-video-progress
 Requires Gemini Robotics ER 2 (`gemini-robotics-er-2-preview`); not available on ER 1.6. Two capabilities: moment finding (timestamp of a key event) and progress classification (five completion brackets: 0-20%, 20-40%, 40-60%, 60-80%, 80-100%).
 
 ```python
+import time
 from google import genai
 
 client = genai.Client()
 
 uploaded_file = client.files.upload(file="task_video.mp4")
+
+while not uploaded_file.state or uploaded_file.state.name != "ACTIVE":
+    if uploaded_file.state and uploaded_file.state.name == "FAILED":
+        raise ValueError("File processing failed.")
+    time.sleep(5)
+    uploaded_file = client.files.get(name=uploaded_file.name)
 
 prompt = """
 At what timestamp (in seconds) does the task reach successful completion?
@@ -407,6 +414,7 @@ Return a JSON object with the progress bracket:
 
 ## Notes
 
+- Added a files.get polling loop (wait for ACTIVE, abort on FAILED) that the source video-progress example omits; uploaded videos may still be PROCESSING (see video-understanding).
 - Preview models: API behavior and model IDs may change; model IDs are transcribed verbatim from the docs fetched 2026-10-16.
 - Page also has Java, Go and REST variants for the overview example; the REST example on the page uses a `parts` / `inlineData` body shape; not reproduced here.
 - This skill treats Robotics ER as multimodal input and function-calling use of the Interactions API (`client.interactions.create`); the streaming endpoint uses the Live API (v1beta only, see the live-realtime category).
