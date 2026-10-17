@@ -2,18 +2,18 @@
 name: typescript
 description: >
   TypeScript (tsc, 6.0 / 7.0 Go 製ネイティブ版) リファレンス。
-  tsconfig.json compilerOptions, strict, moduleResolution, project references (tsc -b),
-  generics, conditional / mapped / template literal types, utility types, narrowing,
-  .d.ts, checkJs, ESM / CJS interop, --checkers / --builders。
+  strict, moduleResolution, project references (tsc -b), generics, narrowing, .d.ts, checkJs,
+  ESM / CJS interop, --checkers / --builders。
 user-invocable: false
 ---
 
 # TypeScript
 
+> 分割 PR の途中段階。現在収録済み: references/{declaration-files, handbook, javascript, modules, project-config}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+
 ## 対象バージョン
 
 - tsc 本体: TypeScript 7.0.2（npm latest、2026-07-08、Go 製ネイティブ移植）。原本は microsoft/typescript-go のタグ `typescript/v7.0.2` の `README.md` / `CHANGES.md` と公式ブログ announcing-typescript-7-0
-- 言語・handbook・tsconfig リファレンス: TypeScript 6.0 記述（サイトは typescript@6.0.2 でビルド）。microsoft/TypeScript-Website の commit `04569788cf46f97e2f16356639bc9635c88c0a61`（v2 ブランチ、docs 用タグ無しのため SHA pin、取得日 2026-10-16）
 - 型・エラーの挙動は 6.0 = 7.0（typescript-go README）
 - 7.1（next、新 API）は未収録
 
