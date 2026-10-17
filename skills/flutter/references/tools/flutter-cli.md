@@ -55,7 +55,7 @@ $ flutter --version
 | downgrade | `flutter downgrade` | Downgrade Flutter to the last active version for the current channel. |
 | drive | `flutter drive` | Runs Flutter Driver tests for the current project. |
 | emulators | `flutter emulators` | List, launch and create emulators. |
-| gen-l10n | `flutter gen-l10n <DIRECTORY>` | Generate localizations for the Flutter project. |
+| gen-l10n | `flutter gen-l10n` (or `flutter gen-l10n --project-dir=<DIRECTORY>`) | Generate localizations for the Flutter project. |
 | install | `flutter install -d <DEVICE_ID>` | Install a Flutter app on an attached device. |
 | logs | `flutter logs` | Show log output for running Flutter apps. |
 | precache | `flutter precache <ARGUMENTS>` | Populates the Flutter tool's cache of binary artifacts. |
@@ -63,12 +63,14 @@ $ flutter --version
 | run | `flutter run <DART_FILE>` | Runs a Flutter program. |
 | screenshot | `flutter screenshot` | Take a screenshot of a Flutter app from a connected device. |
 | symbolize | `flutter symbolize --input=<STACK_TRACK_FILE>` | Symbolize a stack trace from the AOT compiled flutter application. |
-| test | `flutter test [<DIRECTORYDART_FILE>]` | Runs tests in this package. Use instead of `dart test`. |
+| test | `flutter test [<DIRECTORY\|DART_FILE>]` | Runs tests in this package. Use instead of `dart test`. |
 | upgrade | `flutter upgrade` | Upgrade your copy of Flutter. |
 
 ## Notes
 
 - For additional help on any of the commands, enter `flutter help <command>`. You can also get details on `pub` commands, for example `flutter help pub outdated`.
+- The official command table lists `flutter gen-l10n <DIRECTORY>`, but gen-l10n takes no positional directory argument; run it from the project root or pass `--project-dir=<DIRECTORY>` (corrected from the official docs).
+- The official table renders the test usage as `flutter test [<DIRECTORYDART_FILE>]` (separator lost); it is written here as `[<DIRECTORY\|DART_FILE>]`.
 - Dart-related commands (`dart analyze`, `dart format`, `dart pub`, `dart test`) are documented on dart.dev: https://dart.dev/tools/dart-tool
 
 ## Related
