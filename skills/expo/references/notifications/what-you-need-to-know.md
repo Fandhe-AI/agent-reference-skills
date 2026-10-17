@@ -28,6 +28,7 @@ Handlers triggered when the user interacts with the notification (for example, p
 Example (from the `expo-notifications` API reference): respond to a notification tap by opening a URL stored in the notification's `data`.
 
 ```jsx
+import * as React from 'react';
 import * as Notifications from 'expo-notifications';
 import { Linking } from 'react-native';
 
@@ -50,7 +51,7 @@ export default function App() {
 
 ## Notes
 
-- Snippet taken from the expo-notifications API reference; this page itself has no code.
+- Snippet taken from the expo-notifications API reference; this page itself has no code. The `import * as React from 'react';` line was added because the original snippet calls `React.useEffect` without importing React.
 - Remote vs local: push notifications (remote) are sent from a remote server; local notifications (in-app / scheduled) are created and displayed from within the app. `expo-notifications` supports both. A development build is required for push notifications since the capability is not built into Expo Go.
 - Application states: Foreground (interface displayed), Background (minimized), Terminated (killed, usually by swiping away in the app switcher). On Android, if the user force-stops the app from device settings, it must be manually reopened for notifications to start working (an Android limitation).
 - When the app is in the foreground, the app controls how an incoming notification is handled (present it, show custom in-app UI, or ignore it) via `NotificationHandler` (`setNotificationHandler`).
