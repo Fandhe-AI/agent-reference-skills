@@ -155,8 +155,11 @@ function createSdkMcpServer(options: {
   instructions?: string;
   tools?: Array<SdkMcpToolDefinition<any>>;
   alwaysLoad?: boolean;
+  timeout?: number;
 }): McpSdkServerConfigWithInstance;
 ```
+
+`options.timeout`: per-server tool-call timeout in ms, used instead of `MCP_TOOL_TIMEOUT`; a whole number >= 1000, other values ignored. Requires TypeScript Agent SDK v0.3.248+.
 
 ### `listSessions()`
 
@@ -350,7 +353,7 @@ Selected fields (see the source JSDoc for the full description of each — this 
 | `fallbackModel` | `string` | Comma-separated fallback model(s) if the primary is overloaded/unavailable; retried at the start of each user turn |
 | `enableFileCheckpointing` | `boolean` | Enable file change tracking so files can be rewound via `Query.rewindFiles()` |
 | `forkSession` | `boolean` | With `resume`, fork to a new session ID instead of continuing the original |
-| `betas` | `SdkBeta[]` | Beta features, e.g. `'context-1m-2025-08-07'` for the 1M token context window (Sonnet 4/4.5 only) |
+| `betas` | `SdkBeta[]` | Beta features to enable (see `SdkBeta` below; `context-1m-2025-08-07` is retired for Sonnet 4.5 / Sonnet 4) |
 | `hooks` | `Partial<Record<HookEvent, HookCallbackMatcher[]>>` | Hook callbacks for responding to lifecycle events |
 | `persistSession` | `boolean` | When `false`, disables session persistence to disk (default `true`) |
 | `sessionStore` | `SessionStore` | Mirrors session transcripts to an external store via dual-write (alpha). Cannot combine with `persistSession: false` |
@@ -364,7 +367,7 @@ Selected fields (see the source JSDoc for the full description of each — this 
 | `mcpServers` | `Record<string, McpServerConfig>` | MCP server configurations keyed by server name |
 | `model` | `string` | Claude model to use, e.g. `'claude-sonnet-5'` |
 | `outputFormat` | `OutputFormat` | Structured-output schema configuration |
-| `permissionMode` | `PermissionMode` | `'default' \| 'acceptEdits' \| 'bypassPermissions' \| 'plan' \| 'dontAsk'` |
+| `permissionMode` | `PermissionMode` | `'default' \| 'acceptEdits' \| 'bypassPermissions' \| 'plan' \| 'dontAsk' \| 'auto'`. If omitted, the session can start in auto mode |
 | `allowDangerouslySkipPermissions` | `boolean` | Required alongside `permissionMode: 'bypassPermissions'` |
 | `permissionPrompts` | `'host' \| 'none'` | Default `'host'`. Who answers permission prompts: `'host'` routes them to your `canUseTool` callback or the `permissionPromptToolName` tool, and `'none'` denies the calls that would have prompted. Requires Claude Code v2.1.259 or later |
 | `verbatimPrompts` | `boolean` | Default `false`. Deliver every prompt as written: the SDK sends each user message with `client_composed: true`, so Claude Code doesn't expand `@path` / `@server:resource` mentions and doesn't run text starting with `/` as a command. Requires TypeScript Agent SDK v0.3.280+ and Claude Code v2.1.248+ |
@@ -373,7 +376,7 @@ Selected fields (see the source JSDoc for the full description of each — this 
 | `plugins` | `SdkPluginConfig[]` | Local plugins, e.g. `[{ type: 'local', path: './my-plugin' }]` |
 | `resume` | `string` | Session ID to resume |
 | `sessionId` | `string` | Specific UUID to use for a new session; can't combine with `continue`/`resume` unless `forkSession` is also set |
-| `sandbox` | `SandboxSettings` | Sandboxed command-execution isolation; filesystem/network *restrictions* still come from Read/Edit/WebFetch permission rules, not from this option |
+| `sandbox` | `SandboxSettings` | Configure sandbox behavior programmatically. See `SandboxSettings` below |
 | `settings` | `string \| Settings` | Inline settings object or path to a settings JSON file, loaded into the highest-priority "flag settings" layer. Equivalent to `--settings` |
 | `settingSources` | `SettingSource[]` | Which filesystem settings to load (`'user' \| 'project' \| 'local'`). Omit for CLI defaults (all); pass `[]` to disable. Must include `'project'` to load `CLAUDE.md` |
 | `skills` | `string[] \| 'all'` | Skills enabled for the main session — omitted is not "off," it's "CLI defaults." `'all'` enables every discovered skill. Unlisted skills are hidden from the model's listing and the Skill tool but remain readable via Read/Bash — do not store secrets in skill files |
@@ -592,7 +595,7 @@ export declare type AgentDefinition = {
 
 ### `AgentInfo`
 
-Information about an available subagent invokable via the Task tool.
+Information about an available subagent that can be invoked via the Agent tool.
 
 ```typescript
 export declare type AgentInfo = {
@@ -816,15 +819,555 @@ export declare type AccountInfo = {
 
 `apiProvider` is `'gateway'` when the CLI is authenticated against an enterprise gateway; Anthropic OAuth login only applies when `'firstParty'`.
 
+### `SdkMcpToolDefinition`
+
+Return type of `tool()` (see the `tool()` signature above); `createSdkMcpServer()` takes `tools?: Array<SdkMcpToolDefinition<any>>`. The official page has no standalone declaration of this type.
+
+### `GetSessionMessagesOptions` and `SessionMessage`
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `options.dir` | `string` | `undefined` | Project directory to find the session in. When omitted, searches all projects |
+| `options.limit` | `number` | `undefined` | Maximum number of messages to return |
+| `options.offset` | `number` | `undefined` | Number of messages to skip from the start |
+
+| `SessionMessage` property | Type | Description |
+|---|---|---|
+| `type` | `"user" \| "assistant"` | Message role |
+| `uuid` | `string` | Unique message identifier |
+| `session_id` | `string` | Session this message belongs to |
+| `message` | `unknown` | Raw message payload from the transcript |
+| `parent_tool_use_id` | `string \| null` | For subagent messages, the `tool_use_id` of the `Agent` or `Skill` tool call that started the subagent. `null` for main-session messages and older sessions |
+| `parent_agent_id` | `string \| null` | For messages from a nested subagent, the `agentId` of the subagent that spawned it. `null` for main-session messages, top-level subagents, and older sessions. Requires Claude Code v2.1.202 or later |
+
+`GetSessionInfoOptions`: `options.dir` (`string`, project directory path; when omitted, searches all project directories).
+
+### `ToolConfig`
+
+```typescript
+type ToolConfig = {
+  askUserQuestion?: {
+    previewFormat?: "markdown" | "html";
+  };
+};
+```
+
+`askUserQuestion.previewFormat` opts into the `preview` field on `AskUserQuestion` options and sets its content format. When unset, Claude does not emit previews.
+
+### `SdkPluginConfig`
+
+```typescript
+type SdkPluginConfig = {
+  type: "local";
+  path: string;
+  skipMcpDiscovery?: boolean;
+};
+```
+
+`type` must be `'local'` (only local plugins currently supported). `path` is an absolute or relative path to the plugin directory. When `skipMcpDiscovery` is `true`, the SDK loads skills, hooks, agents, and commands from the plugin but does not read its `.mcp.json` or manifest `mcpServers`.
+
+### `SdkBeta`
+
+```typescript
+type SdkBeta = "context-1m-2025-08-07";
+```
+
+On the Claude API, the `context-1m-2025-08-07` beta is retired for Claude Sonnet 4.5 and Claude Sonnet 4. If you still pass it with either model, requests that exceed the standard 200K-token context window return an error, so remove it from `betas`.
+
+### `SlashCommand`
+
+```typescript
+type SlashCommand = {
+  name: string;
+  description: string;
+  argumentHint: string;
+  aliases?: string[];
+  builtin?: boolean;
+};
+```
+
+`builtin` is `true` when the command is Claude Code's own and typing `/name` runs it. Requires Agent SDK v0.3.277 or later.
+
+### `Usage`
+
+Token usage statistics. This is the `BetaUsage` type from `@anthropic-ai/sdk`.
+
+```typescript
+type Usage = {
+  input_tokens: number;
+  output_tokens: number;
+  cache_creation_input_tokens: number | null;
+  cache_read_input_tokens: number | null;
+  cache_creation: {
+    ephemeral_5m_input_tokens: number;
+    ephemeral_1h_input_tokens: number;
+  } | null;
+  server_tool_use: BetaServerToolUsage | null;
+  service_tier: "standard" | "priority" | "batch" | null;
+  speed: "standard" | "fast" | null;
+  inference_geo: string | null;
+  iterations: BetaIterationsUsage | null;
+  output_tokens_details: BetaOutputTokensDetails | null;
+  fallback_credit: BetaFallbackCreditUsage | null;
+};
+```
+
+`output_tokens_details` currently carries `thinking_tokens: number` and requires TypeScript SDK v0.3.228 or later. `output_tokens` stays the authoritative total. Whether `Usage` carries `fallback_credit` depends on your installed `@anthropic-ai/sdk`, which added it in 0.115.0. `NonNullableUsage` is `Usage` with every nullable field made non-nullable except `fallback_credit`.
+
+### `CallToolResult`
+
+MCP tool result type (from `@modelcontextprotocol/sdk/types.js`).
+
+```typescript
+type CallToolResult = {
+  content: Array<{
+    type: "text" | "image" | "audio" | "resource" | "resource_link";
+    // Additional fields vary by type
+  }>;
+  structuredContent?: Record<string, unknown>;
+  isError?: boolean;
+};
+```
+
+### `ThinkingConfig`
+
+Controls Claude's thinking/reasoning behavior. Takes precedence over the deprecated `maxThinkingTokens`.
+
+```typescript
+type ThinkingDisplay = "summarized" | "omitted";
+
+type ThinkingConfig =
+  | { type: "adaptive"; display?: ThinkingDisplay } // The model determines when and how much to reason (Opus 4.6+)
+  | { type: "enabled"; budgetTokens?: number; display?: ThinkingDisplay } // Fixed thinking token budget
+  | { type: "disabled" }; // No extended thinking
+```
+
+`display` defaults to `"omitted"` on Claude Opus 4.7+, so set `"summarized"` to receive thinking text; Claude Code does not forward `display` to some providers (e.g. Amazon Bedrock, Google Cloud Agent Platform), where Opus 4.7+ returns empty `thinking` blocks regardless.
+
+### `SpawnedProcess` and `SpawnOptions`
+
+Used with the `spawnClaudeCodeProcess` option. `ChildProcess` already satisfies `SpawnedProcess`.
+
+```typescript
+interface SpawnedProcess {
+  stdin: Writable;
+  stdout: Readable;
+  readonly killed: boolean;
+  readonly exitCode: number | null;
+  kill(signal: NodeJS.Signals): boolean;
+  on(event: "exit", listener: (code: number | null, signal: NodeJS.Signals | null) => void): void;
+  on(event: "error", listener: (error: Error) => void): void;
+  once(event: "exit", listener: (code: number | null, signal: NodeJS.Signals | null) => void): void;
+  once(event: "error", listener: (error: Error) => void): void;
+  off(event: "exit", listener: (code: number | null, signal: NodeJS.Signals | null) => void): void;
+  off(event: "error", listener: (error: Error) => void): void;
+}
+
+interface SpawnOptions {
+  command: string;
+  args: string[];
+  cwd?: string;
+  env: Record<string, string | undefined>;
+  signal: AbortSignal;
+}
+```
+
+The `signal` does not fire the instant `Options.abortController` aborts. The SDK first closes the process's stdin and waits about two seconds so the CLI can shut down cleanly, then aborts this signal.
+
+### `McpSetServersResult`
+
+```typescript
+type McpSetServersResult = {
+  added: string[];
+  removed: string[];
+  errors: Record<string, string>;
+};
+```
+
+`added` lists the servers added or replaced, whether or not they connected; a server that failed to connect appears in both `added` and `errors`.
+
+### `McpServerStatus`
+
+```typescript
+type McpServerStatus = {
+  name: string;
+  status: "connected" | "failed" | "needs-auth" | "pending" | "disabled";
+  serverInfo?: {
+    name: string;
+    version: string;
+  };
+  error?: string;
+  config?: McpServerStatusConfig;
+  scope?: string;
+  source?: string;
+  tools?: {
+    name: string;
+    description?: string;
+    annotations?: {
+      readOnly?: boolean;
+      destructive?: boolean;
+      openWorld?: boolean;
+    };
+    _meta?: Record<string, unknown>;
+  }[];
+};
+```
+
+`source` requires Agent SDK v0.3.274 or later. `McpServerStatusConfig` is the union `McpStdioServerConfig | McpSSEServerConfig | McpHttpServerConfig | McpSdkServerConfig | McpClaudeAIProxyServerConfig`.
+
+### `RewindFilesResult`
+
+```typescript
+type RewindFilesResult = {
+  canRewind: boolean;
+  error?: string;
+  filesChanged?: string[];
+  insertions?: number;
+  deletions?: number;
+  skippedLinks?: number;
+};
+```
+
+`skippedLinks` counts tracked paths the rewind refused to restore or delete for link safety. Requires Claude Code v2.1.216 or later. A preview call with `rewindFiles(userMessageId, { dryRun: true })` never sets it.
+
+## Message Types
+
+### `SDKMessage`
+
+Union type of all possible messages returned by the query.
+
+```typescript
+type SDKMessage =
+  | SDKAssistantMessage
+  | SDKUserMessage
+  | SDKUserMessageReplay
+  | SDKResultMessage
+  | SDKSystemMessage
+  | SDKPartialAssistantMessage
+  | SDKCompactBoundaryMessage
+  | SDKStatusMessage
+  | SDKLocalCommandOutputMessage
+  | SDKHookStartedMessage
+  | SDKHookProgressMessage
+  | SDKHookResponseMessage
+  | SDKPluginInstallMessage
+  | SDKToolProgressMessage
+  | SDKAuthStatusMessage
+  | SDKTaskNotificationMessage
+  | SDKTaskStartedMessage
+  | SDKTaskProgressMessage
+  | SDKTaskUpdatedMessage
+  | SDKBackgroundTasksChangedMessage
+  | SDKThinkingTokensMessage
+  | SDKSessionStateChangedMessage
+  | SDKWorkerShuttingDownMessage
+  | SDKCommandsChangedMessage
+  | SDKNotificationMessage
+  | SDKFilesPersistedEvent
+  | SDKToolUseSummaryMessage
+  | SDKMemoryRecallMessage
+  | SDKRateLimitEvent
+  | SDKElicitationCompleteMessage
+  | SDKPermissionDeniedMessage
+  | SDKPromptSuggestionMessage
+  | SDKAPIRetryMessage
+  | SDKMirrorErrorMessage
+  | SDKInformationalMessage
+  | SDKConversationResetMessage;
+```
+
+### `SDKUserMessage`
+
+```typescript
+type SDKUserMessage = {
+  type: "user";
+  uuid?: UUID;
+  session_id?: string;
+  agent_id?: string;
+  message: MessageParam; // From Anthropic SDK
+  pasted_content?: MessageParam["content"][];
+  parent_tool_use_id: string | null;
+  isSynthetic?: boolean;
+  shouldQuery?: boolean;
+  client_composed?: true;
+  tool_use_result?: unknown;
+  priority?: "now" | "next" | "later";
+  origin?: SDKMessageOrigin;
+  inline_pastes?: string[];
+};
+```
+
+- `shouldQuery: false` appends the message to the transcript without triggering an assistant turn.
+- `client_composed: true` delivers the message text as written (no `@path` expansion, no `/` command execution). Requires TypeScript Agent SDK v0.3.280 or later and Claude Code v2.1.248 or later.
+- `priority`: `'next'` (or unset) is read in the same turn after running tool calls finish; `'later'` is held until the turn ends and sent as a new turn; `'now'` interrupts the turn (with `origin: { kind: "human" }` on Claude Code v2.1.286 or later, movable background work moves to the background instead).
+- `pasted_content` requires Agent SDK v0.3.277 or later; `inline_pastes` requires TypeScript Agent SDK v0.3.280 or later.
+
+### `SDKResultMessage`
+
+Final result message.
+
+```typescript
+type SDKResultMessage =
+  | {
+      type: "result";
+      subtype: "success";
+      uuid: UUID;
+      session_id: string;
+      duration_ms: number;
+      duration_api_ms: number;
+      is_error: boolean;
+      api_error_status?: number | null;
+      num_turns: number;
+      result: string;
+      stop_reason: string | null;
+      ttft_ms?: number;
+      ttft_stream_ms?: number;
+      user_message_uuid?: string;
+      user_message_uuids?: string[];
+      resume_reason?: string;
+      local_command?: string;
+      request_sent_wall_ms?: number;
+      first_content_frame_ms?: number;
+      total_cost_usd: number;
+      usage: NonNullableUsage;
+      modelUsage: { [modelName: string]: ModelUsage };
+      permission_denials: SDKPermissionDenial[];
+      queued_turn_count?: number;
+      structured_output?: unknown;
+      deferred_tool_use?: { id: string; name: string; input: Record<string, unknown> };
+      terminal_reason?: TerminalReason;
+      result_index?: number;
+      fast_mode_state?: FastModeState;
+      fast_mode_disabled_reason?: FastModeDisabledReason;
+      origin?: SDKMessageOrigin;
+      // plus first_stream_post_* / first_text_post_* timing fields (cloud sessions only)
+    }
+  | {
+      type: "result";
+      subtype:
+        | "error_max_turns"
+        | "error_during_execution"
+        | "error_max_budget_usd"
+        | "error_max_structured_output_retries";
+      uuid: UUID;
+      session_id: string;
+      duration_ms: number;
+      duration_api_ms: number;
+      is_error: boolean;
+      num_turns: number;
+      stop_reason: string | null;
+      total_cost_usd: number;
+      usage: NonNullableUsage;
+      modelUsage: { [modelName: string]: ModelUsage };
+      permission_denials: SDKPermissionDenial[];
+      queued_turn_count?: number;
+      errors: string[];
+      startup_failure_reason?: SDKStartupFailureReason;
+      user_message_uuid?: string;
+      user_message_uuids?: string[];
+      resume_reason?: string;
+      terminal_reason?: TerminalReason;
+      result_index?: number;
+      fast_mode_state?: FastModeState;
+      fast_mode_disabled_reason?: FastModeDisabledReason;
+      origin?: SDKMessageOrigin;
+    };
+```
+
+- `usage`: main agent loop only (excludes subagent and auxiliary calls). Prefer `modelUsage` for token/cost accounting; in streaming-input sessions `modelUsage` is cumulative across turns, so read the latest result rather than summing.
+- `total_cost_usd`: cumulative estimated cost in USD covering the same calls as `modelUsage`. An estimate, not a billing statement.
+- `terminal_reason`: one of `"completed"`, `"max_turns"`, `"tool_deferred"`, `"aborted_streaming"`, `"aborted_tools"`, `"hook_stopped"`, `"stop_hook_prevented"`, `"background_requested"`, `"blocking_limit"`, `"rapid_refill_breaker"`, `"prompt_too_long"`, `"image_error"`, `"model_error"`, `"api_error"`, `"malformed_tool_use_exhausted"`, `"budget_exhausted"`, `"structured_output_retry_exhausted"`, `"tool_deferred_unavailable"`, or `"turn_setup_failed"`.
+- `fast_mode_state`: one of `"on"`, `"off"`, or `"cooldown"`.
+- `result_index` and `local_command` require Agent SDK v0.3.268 or later; `queued_turn_count` requires v0.3.242 or later; `first_content_frame_ms` requires v0.3.260 or later.
+- When a `PreToolUse` hook returns `permissionDecision: "defer"`, the result has `stop_reason: "tool_deferred"` and `deferred_tool_use` carries the pending tool's `id`, `name`, and `input`.
+- `origin` forwards the `SDKMessageOrigin` of the triggering user message; synthetic follow-up turns (e.g. a finished background task) carry `origin: { kind: "task-notification" }`.
+
+### `SDKSystemMessage`
+
+System initialization message.
+
+```typescript
+type SDKSystemMessage = {
+  type: "system";
+  subtype: "init";
+  uuid: UUID;
+  session_id: string;
+  agents?: string[];
+  apiKeySource: ApiKeySource;
+  betas?: string[];
+  claude_code_version: string;
+  cwd: string;
+  tools: string[];
+  mcp_servers: {
+    name: string;
+    status: string;
+    source?: string;
+  }[];
+  model: string;
+  permissionMode: PermissionMode;
+  slash_commands: string[];
+  terminal_slash_commands?: string[];
+  output_style: string;
+  skills: string[];
+  plugins: { name: string; path: string }[];
+  plugin_errors?: {
+    plugin: string;
+    type: string;
+    message: string;
+    path?: string;
+  }[];
+  fast_mode_state?: FastModeState;
+  fast_mode_disabled_reason?: FastModeDisabledReason;
+  effort?: "low" | "medium" | "high" | "xhigh" | "max" | null;
+  capabilities?: string[];
+};
+```
+
+`capabilities` names protocol behaviors the CLI implements (open set; ignore unknown values). Requires Claude Code v2.1.205 or later. `plugin_errors` requires Agent SDK v0.3.283 or later.
+
+`effort` is set only on the init message sent to Remote Control clients and is omitted from the init message your application reads (Agent SDK v0.3.234+).
+
+### `SDKHookStartedMessage`, `SDKHookProgressMessage`, `SDKHookResponseMessage`
+
+```typescript
+type SDKHookStartedMessage = {
+  type: "system";
+  subtype: "hook_started";
+  hook_id: string;
+  hook_name: string;
+  hook_event: string;
+  uuid: UUID;
+  session_id: string;
+};
+
+type SDKHookProgressMessage = {
+  type: "system";
+  subtype: "hook_progress";
+  hook_id: string;
+  hook_name: string;
+  hook_event: string;
+  stdout: string;
+  stderr: string;
+  output: string;
+  uuid: UUID;
+  session_id: string;
+};
+
+type SDKHookResponseMessage = {
+  type: "system";
+  subtype: "hook_response";
+  hook_id: string;
+  hook_name: string;
+  hook_event: string;
+  output: string;
+  stdout: string;
+  stderr: string;
+  exit_code?: number;
+  outcome: "success" | "error" | "cancelled";
+  uuid: UUID;
+  session_id: string;
+};
+```
+
+### `SDKTaskProgressMessage`
+
+Emitted periodically while a subagent or background task is running.
+
+```typescript
+type SDKTaskProgressMessage = {
+  type: "system";
+  subtype: "task_progress";
+  task_id: string;
+  run_id?: string;
+  tool_use_id?: string;
+  description: string;
+  subagent_type?: string;
+  usage: {
+    total_tokens: number;
+    tool_uses: number;
+    duration_ms: number;
+  };
+  last_tool_name?: string;
+  summary?: string;
+  uuid: UUID;
+  session_id: string;
+};
+```
+
+`summary` is populated for subagent tasks only when `agentProgressSummaries` is enabled.
+
+## Sandbox Configuration
+
+### `SandboxSettings`
+
+```typescript
+type SandboxSettings = {
+  enabled?: boolean;
+  failIfUnavailable?: boolean;
+  autoAllowBashIfSandboxed?: boolean;
+  excludedCommands?: string[];
+  allowUnsandboxedCommands?: boolean;
+  network?: SandboxNetworkConfig;
+  filesystem?: SandboxFilesystemConfig;
+  ignoreViolations?: Record<string, string[]>;
+  enableWeakerNestedSandbox?: boolean;
+  ripgrep?: { command: string; args?: string[] };
+};
+```
+
+| Property | Type | Default | Description |
+|---|---|---|---|
+| `enabled` | `boolean` | `false` | Enable sandbox mode for command execution |
+| `failIfUnavailable` | `boolean` | `true` | Stop at startup if `enabled` is `true` but the sandbox can't start. Set `false` to fall back to unsandboxed execution with a warning on stderr |
+| `autoAllowBashIfSandboxed` | `boolean` | `true` | Auto-approve Bash commands when sandbox is enabled |
+| `excludedCommands` | `string[]` | `[]` | Commands that bypass sandbox restrictions, such as `['docker *']`. These run unsandboxed automatically without model involvement (no `canUseTool` fallback) |
+| `allowUnsandboxedCommands` | `boolean` | `true` | Allow the model to request running commands outside the sandbox via `dangerouslyDisableSandbox`, which falls back to the permissions system |
+| `network` | `SandboxNetworkConfig` | `undefined` | Network-specific sandbox configuration |
+| `filesystem` | `SandboxFilesystemConfig` | `undefined` | Filesystem read/write restrictions |
+| `ignoreViolations` | `Record<string, string[]>` | `undefined` | Map of command substrings, or `*` for every command, to substrings of the violation text to ignore |
+| `enableWeakerNestedSandbox` | `boolean` | `false` | Enable a weaker nested sandbox for compatibility |
+| `ripgrep` | `{ command: string; args?: string[] }` | `undefined` | Custom ripgrep binary configuration |
+
+When `enabled` is `true` and the sandbox can't start, `query()` reports a `result` message with `subtype: "error_during_execution"` and the reason in `errors`; for a single-message `query()` call the SDK throws after yielding that result.
+
+### `SandboxNetworkConfig`
+
+```typescript
+type SandboxNetworkConfig = {
+  allowedDomains?: string[];
+  deniedDomains?: string[];
+  strictAllowlist?: boolean;
+  allowManagedDomainsOnly?: boolean;
+  allowLocalBinding?: boolean;
+  allowUnixSockets?: string[];
+  allowAllUnixSockets?: boolean;
+  httpProxyPort?: number;
+  socksProxyPort?: number;
+};
+```
+
+Applies to sandboxed Bash commands only; does not restrict the WebFetch tool. `deniedDomains` takes precedence over `allowedDomains`. `strictAllowlist` requires Claude Code v2.1.219 or later and is honored only from user, managed, or CLI `--settings` settings. `allowUnixSockets` can grant access to system services that reach outside the sandbox (e.g. `/var/run/docker.sock`). The built-in sandbox proxy enforces the allowlist by requested hostname and does not terminate or inspect TLS, so domain fronting can potentially bypass it. `allowManagedDomainsOnly` is managed-settings only: setting it in `sandbox.network` has no effect; from the SDK, pass it through the `managedSettings` option.
+
+### `SandboxFilesystemConfig`
+
+```typescript
+type SandboxFilesystemConfig = {
+  allowWrite?: string[];
+  denyWrite?: string[];
+  denyRead?: string[];
+};
+```
+
 ## Notes
 
-- The rendered docs page and the bundled `sdk.d.ts` type declaration file (`@anthropic-ai/claude-agent-sdk`, ~8,500 lines / ~380 KB) both exceed what WebFetch can hold in a single pass. Two independent narrow re-fetches of the same `SDKResultMessage` section from the rendered docs page returned mutually contradictory field lists — a hallucination, not a truncation — so that content was discarded rather than used. Everything in this file above this Notes section was either (a) captured from the initial full-page fetch before truncation occurred (Functions through `SDKControlInterruptResponse`), or (b) fetched verbatim, character-for-character, directly from the published `sdk.d.ts` source on unpkg (`@anthropic-ai/claude-agent-sdk@0.3.223`), which loads roughly the first half of the file (declarations up to and including the `Query` interface, alphabetically `AbortError` through `Settings`-adjacent names) before truncating — reliably and without fabrication, confirmed by explicit `NOT_PRESENT` responses for names past that point rather than invented content.
-- **Not independently verified and omitted rather than guessed** (declared alphabetically past the reachable window, `S` onward, in `sdk.d.ts`; consult `sdk.d.ts` in the installed package or the rendered docs page directly for these): `SDKMessage` and its variants (`SDKUserMessage`, `SDKAssistantMessage`, `SDKSystemMessage`, `SDKResultMessage`, `SDKTaskProgressMessage`, `SDKControlRequestMessage`, `SDKControlResponseMessage`, `SDKPartialMessage`, `SDKTextDelta`, `SDKThinkingDelta`, `SDKToolUseBlock`, `SDKToolResultBlock`), `Usage`, `SlashCommand`, `RewindFilesResult`, `ResolvedSettings`, `ResolveSettingsOptions`, `Settings`, `SandboxSettings` (TS shape — Python's equivalent is documented in `./python.md`, fields are believed to correspond but were not independently verified for TypeScript), `ThinkingConfig` (full type; the field shape is described inline in the `Options.thinking` JSDoc above), `SdkBeta`, `SdkPluginConfig`, `ToolConfig`, `CallToolResult`, `McpSetServersResult`, `McpServerStatus`, `SdkMcpToolDefinition`, `SDKHookStartedMessage`, `SDKHookProgressMessage`, `SDKHookResponseMessage`, `GetSessionMessagesOptions`, `SessionMessage`, `GetSessionInfoOptions`, `SessionMutationOptions`, `SDKControlGetContextUsageResponse`, `FastModeDisabledReason`, `SpawnOptions`, `SpawnedProcess`.
+- Source: Functions through SDKControlInterruptResponse were transcribed from the first fetch of https://code.claude.com/docs/en/agent-sdk/typescript. Type blocks that existed before 2026-10-16 were originally taken from the `sdk.d.ts` of `@anthropic-ai/claude-agent-sdk@0.3.223` (unpkg); `Options`, `Query` and `AgentDefinition` fields carrying version annotations (e.g. v0.3.248+, v0.3.280+, v0.3.296+) were updated from the official page, so `0.3.223` does not describe them.
+- `SDKResultMessage` omits the nine `first_stream_post_*` / `first_text_post_*` timing fields of the official block (cloud sessions only). `SdkMcpToolDefinition` has no section on the official page; its entry here is only a pointer to `tool()` / `createSdkMcpServer()`.
+- Types added on 2026-10-16 (SdkMcpToolDefinition, GetSessionMessagesOptions, SessionMessage, ToolConfig, SdkPluginConfig, SdkBeta, SlashCommand, Usage, CallToolResult, ThinkingConfig, SpawnedProcess, SpawnOptions, McpSetServersResult, McpServerStatus, RewindFilesResult, SDKMessage, SDKUserMessage, SDKResultMessage, SDKSystemMessage, SDKHook*Message, SDKTaskProgressMessage, SandboxSettings, SandboxNetworkConfig, SandboxFilesystemConfig) were transcribed from the Markdown twin of https://code.claude.com/docs/en/agent-sdk/typescript (fetched 2026-10-16), distinguishing them from the earlier sources above.
+- Not transcribed: SDKControlGetContextUsageResponse (official page section `SDKControlGetContextUsageResponse`) and ResolvedSettings (`resolveSettings()` return type) are documented on the official page but omitted here; FastModeDisabledReason has no type declaration on the page (only the reason-code table under SDKResultMessage).
+- SDKControlReadFileResponse, SDKControlReloadPluginsResponse, SDKControlReloadSkillsResponse, SDKControlReloadOutputStylesResponse and SDKControlMcpReadResourceResponse are listed by name only; their fields are not documented here.
 - `ToolAnnotations` is re-exported from `@modelcontextprotocol/sdk/types.js`, not redeclared in this SDK; see the MCP SDK's own types for its shape (matches the Python SDK's `ToolAnnotations` fields documented in `./python.md`).
 - `startup_failure_reason` on the `error_during_execution` result (Agent SDK v0.3.274+) names why Claude Code refused to start (`SDKStartupFailureReason`). Newer values: `org_config_required_unavailable` (the organization's policies and managed settings are required before start and couldn't be loaded, e.g. network failure or Anthropic server error) and `org_config_refused` (Anthropic refused to provide them for this sign-in, e.g. expired or revoked sign-in, or the organization doesn't allow Claude Code for this account); both require Agent SDK v0.3.293+. Set `CLAUDE_CODE_STARTUP_FAILURE_RESULTS=1` in `env` to receive this result for every reason value.
 - `outputStyle` is not an `Options` field; set it in the inline `settings` object or a settings file (or persist it with `Query.updateSettings('localSettings', ...)`).
-- Fields added to the `Query` methods above are described from the 2026-10-16 rendered docs page; the `sdk.d.ts` declarations of the `SDKControl*Response` types (`SDKControlReadFileResponse`, `SDKControlReloadPluginsResponse`, `SDKControlReloadSkillsResponse`, `SDKControlReloadOutputStylesResponse`, `SDKControlMcpReadResourceResponse`) are listed by name only here.
-- `typescript-v2-preview` (a separate SDK-v2-preview interface page) was out of scope for this pass per the removed-page instruction and was not created.
 
 ## Related
 

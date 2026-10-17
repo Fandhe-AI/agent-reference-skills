@@ -841,7 +841,7 @@ class McpStatusResponse(TypedDict):
 
 ### `SandboxSettings`
 
-Controls how Claude Code sandboxes bash commands for filesystem and network isolation. Filesystem and network *restrictions* are configured via permission rules, not via these settings: filesystem read restrictions use Read deny rules, write restrictions use Edit allow/deny rules, and network restrictions use WebFetch allow/deny rules.
+Configuration for sandbox behavior. Use this to enable command sandboxing and configure network restrictions programmatically.
 
 ```python
 class SandboxSettings(TypedDict, total=False):
@@ -885,6 +885,178 @@ class HookMatcher:
 ```
 
 `SyncHookJSONOutput` (common control fields `continue_`/`suppressOutput`/`stopReason`; decision fields `decision`/`systemMessage`/`reason`; and `hookSpecificOutput` for event-specific controls like `permissionDecision` on `PreToolUse` or `additionalContext` on `PostToolUse`) and `AsyncHookJSONOutput` (`async_: Literal[True]`, `asyncTimeout: NotRequired[int]`) are both `TypedDict`s. Field names without underscores (`async`, `continue`) shown in the CLI documentation must be written with a trailing underscore in Python (`async_`, `continue_`), converted automatically for the CLI wire format.
+
+### `McpServerStatus`
+
+Status of a connected MCP server, contained in `McpStatusResponse`.
+
+```python
+class McpServerStatus(TypedDict):
+    name: str
+    status: McpServerConnectionStatus  # "connected" | "failed" | "needs-auth" | "pending" | "disabled"
+    serverInfo: NotRequired[McpServerInfo]
+    error: NotRequired[str]
+    config: NotRequired[McpServerStatusConfig]
+    scope: NotRequired[str]
+    tools: NotRequired[list[McpToolInfo]]
+```
+
+`config` has the same shape as `McpServerConfig` (stdio, SSE, HTTP, or SDK), plus a `claudeai-proxy` variant for servers connected through claude.ai. `serverInfo` is `{"name": str, "version": str}`; each `tools` entry has `name`, `description`, and `annotations` fields.
+
+### `SdkPluginConfig`
+
+```python
+class SdkPluginConfig(TypedDict):
+    type: Literal["local"]
+    path: str
+```
+
+`type` must be `"local"` (only local plugins currently supported). `path` is an absolute or relative path to the plugin directory.
+
+### `AssistantMessageError`
+
+```python
+AssistantMessageError = Literal[
+    "authentication_failed",
+    "billing_error",
+    "rate_limit",
+    "invalid_request",
+    "server_error",
+    "unknown",
+]
+```
+
+The CLI process can emit error types this Literal doesn't list, such as `max_output_tokens`. The SDK passes the value through unmodified, so treat strings outside this list the way you treat `unknown`.
+
+### `ServerToolUseBlock` and `ServerToolResultBlock`
+
+Members of the `ContentBlock` union above; the official page gives no separate field definitions.
+
+### `TaskNotificationMessage`
+
+Emitted when a background task completes, fails, or is stopped. Background tasks include `run_in_background` Bash commands, Monitor watches, and background subagents.
+
+```python
+@dataclass
+class TaskNotificationMessage(SystemMessage):
+    task_id: str
+    status: TaskNotificationStatus  # "completed" | "failed" | "stopped"
+    output_file: str
+    summary: str
+    uuid: str
+    session_id: str
+    tool_use_id: str | None = None
+    usage: TaskUsage | None = None
+```
+
+When the CLI moves a long MCP tool call to the background, the call's real result arrives in this message. On a `"completed"` notification the CLI adds a `resource_links` key (requires Python Agent SDK 0.2.150 or later and Claude Code v2.1.257 or later). The dataclass has no field for it; read `message.data.get("resource_links")` and match the notification to the call with `tool_use_id`.
+
+### `HookCallback`
+
+```python
+HookCallback = Callable[[HookInput, str | None, HookContext], Awaitable[HookJSONOutput]]
+```
+
+Parameters: `input` (strongly typed hook input, discriminated on `hook_event_name`), `tool_use_id` (optional, for tool-related hooks), `context` (hook context). Returns a `HookJSONOutput`.
+
+### `HookSpecificOutput`
+
+A discriminated union of event-specific `TypedDict` output types. The `hookEventName` field determines which fields are valid.
+
+```python
+class PreToolUseHookSpecificOutput(TypedDict):
+    hookEventName: Literal["PreToolUse"]
+    permissionDecision: NotRequired[Literal["allow", "deny", "ask", "defer"]]
+    permissionDecisionReason: NotRequired[str]
+    updatedInput: NotRequired[dict[str, Any]]
+    additionalContext: NotRequired[str]
+
+
+class PostToolUseHookSpecificOutput(TypedDict):
+    hookEventName: Literal["PostToolUse"]
+    additionalContext: NotRequired[str]
+    updatedToolOutput: NotRequired[Any]
+    updatedMCPToolOutput: NotRequired[Any]  # MCP tools only. Prefer updatedToolOutput, which works for all tools
+
+
+class PostToolUseFailureHookSpecificOutput(TypedDict):
+    hookEventName: Literal["PostToolUseFailure"]
+    additionalContext: NotRequired[str]
+
+
+class UserPromptSubmitHookSpecificOutput(TypedDict):
+    hookEventName: Literal["UserPromptSubmit"]
+    additionalContext: NotRequired[str]
+
+
+class NotificationHookSpecificOutput(TypedDict):
+    hookEventName: Literal["Notification"]
+    additionalContext: NotRequired[str]
+
+
+class SubagentStartHookSpecificOutput(TypedDict):
+    hookEventName: Literal["SubagentStart"]
+    additionalContext: NotRequired[str]
+
+
+class PermissionRequestHookSpecificOutput(TypedDict):
+    hookEventName: Literal["PermissionRequest"]
+    decision: dict[str, Any]
+
+
+HookSpecificOutput = (
+    PreToolUseHookSpecificOutput
+    | PostToolUseHookSpecificOutput
+    | PostToolUseFailureHookSpecificOutput
+    | UserPromptSubmitHookSpecificOutput
+    | NotificationHookSpecificOutput
+    | SubagentStartHookSpecificOutput
+    | PermissionRequestHookSpecificOutput
+)
+```
+
+### `SandboxNetworkConfig`
+
+Applies to sandboxed Bash commands when `enabled` is `True` in `SandboxSettings`. Does not restrict the WebFetch tool.
+
+```python
+class SandboxNetworkConfig(TypedDict, total=False):
+    allowedDomains: list[str]
+    deniedDomains: list[str]
+    allowManagedDomainsOnly: bool
+    allowUnixSockets: list[str]
+    allowAllUnixSockets: bool
+    allowLocalBinding: bool
+    allowMachLookup: list[str]
+    httpProxyPort: int
+    socksProxyPort: int
+```
+
+| Property | Type | Default | Description |
+|---|---|---|---|
+| `allowedDomains` | `list[str]` | `[]` | Domain names that sandboxed processes can access |
+| `deniedDomains` | `list[str]` | `[]` | Domain names that sandboxed processes cannot access. Takes precedence over `allowedDomains` |
+| `allowManagedDomainsOnly` | `bool` | `False` | Managed-settings only. Has no effect when set via SDK options |
+| `allowUnixSockets` | `list[str]` | `[]` | macOS only: Unix socket paths that processes can access. Ignored on Linux |
+| `allowAllUnixSockets` | `bool` | `False` | Allow access to all Unix sockets |
+| `allowLocalBinding` | `bool` | `False` | Allow processes to bind to local ports |
+| `allowMachLookup` | `list[str]` | `[]` | macOS only: XPC/Mach service names to allow. Supports a trailing wildcard |
+| `httpProxyPort` | `int` | `None` | HTTP proxy port for network requests |
+| `socksProxyPort` | `int` | `None` | SOCKS proxy port for network requests |
+
+`allowUnixSockets` can grant access to system services outside the sandbox; allowing `/var/run/docker.sock` effectively grants full host access through the Docker API. Only allow sockets that are strictly necessary.
+
+The built-in sandbox proxy enforces the allowlist by requested hostname and does not terminate or inspect TLS, so domain fronting can potentially bypass it; see Secure deployment for a TLS-terminating proxy.
+
+### `SandboxIgnoreViolations`
+
+```python
+class SandboxIgnoreViolations(TypedDict, total=False):
+    file: list[str]
+    network: list[str]
+```
+
+`file` and `network` (both default `[]`) list file path patterns and network patterns to ignore violations for.
 
 ## Errors
 
@@ -930,8 +1102,8 @@ See `../operations/troubleshooting.md` for the specific `CLINotFoundError` and `
 
 ## Notes
 
-- The rendered docs page (`/docs/en/agent-sdk/python`) exceeds what WebFetch's summarizer can hold in a single pass; content beyond `ThinkingConfig` (message classes, hook types, MCP server config, `SandboxSettings`, `McpStatusResponse`, `TaskBudget`, `DeferredToolUse`, and error classes) was cross-verified against the published SDK source instead of the rendered page (`anthropics/claude-agent-sdk-python`, `src/claude_agent_sdk/types.py` and `_errors.py`, matching the installable `claude-agent-sdk` package). Field names, defaults, and docstrings above are taken verbatim from that source.
-- Not retrieved (present in the SDK but out of scope for this pass — consult the source or rendered docs directly if needed): `ServerToolUseBlock`, `ServerToolResultBlock`, `AssistantMessageError`, `SessionStore` protocol details, `SdkPluginConfig`, `SessionStoreFlushMode`, `SandboxNetworkConfig`, `SandboxIgnoreViolations`, `McpServerStatus`, `HookCallback` signature, `HookSpecificOutput` variants, `TaskNotificationMessage`.
+- Source: the sections from `ThinkingConfig` through `Errors` were cross-checked against `types.py` / `_errors.py` in anthropics/claude-agent-sdk-python. The `Errors` section is placed after the sections added on 2026-10-16.
+- Types added on 2026-10-16 (McpServerStatus, SdkPluginConfig, AssistantMessageError, ServerToolUseBlock, ServerToolResultBlock, TaskNotificationMessage, HookCallback, HookSpecificOutput, SandboxNetworkConfig, SandboxIgnoreViolations) were transcribed from the Markdown twin of https://code.claude.com/docs/en/agent-sdk/python (fetched 2026-10-16). They sit at the end of `## Types`, not next to their related sections. `ClaudeAgentOptions` accepts `session_store` / `session_store_flush`; the `SessionStore` protocol is documented in [Session Storage](../sessions-io/session-storage.md), not on this page.
 - `ContextUsageResponse` (returned by `get_context_usage()`) is a `TypedDict` with `categories`, `totalTokens`, `maxTokens`, `rawMaxTokens`, `percentage`, `model`, `isAutoCompactEnabled`, `memoryFiles`, `mcpTools`, `agents`, `gridRows` plus optional `autoCompactThreshold`, `deferredBuiltinTools`, `systemTools`, `systemPromptSections`, `slashCommands`, `skills`, `messageBreakdown`, `apiUsage`. Each `ContextUsageCategory` carries `name`, `tokens`, `color`, and an optional `isDeferred`. `apiUsage` is the latest API response's usage, not a running total.
 - The WebFetch tool input has an `offset` field (characters to skip from the start of the page; requires Python Agent SDK 0.2.164 or later). Tool input/output types are not otherwise covered on this page.
 - Two-way field-name mismatch: `AgentDefinition` uses camelCase; `ClaudeAgentOptions` uses snake_case. This is intentional (wire-format vs. Python convention) — see the `AgentDefinition` section above.

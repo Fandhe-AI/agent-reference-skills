@@ -6,6 +6,19 @@ Fix Agent SDK errors by the exact message you see, with the cause and fix for ea
 
 Entries on this page are keyed to the error you see. Each names the cause and what to do.
 
+## Signature / Usage
+
+Python options referenced on this page: `cli_path` pins the `claude` executable and `stderr` receives the CLI's stderr output (TypeScript uses `pathToClaudeCodeExecutable` and the `stderr` callback in query options).
+
+```python
+from claude_agent_sdk import ClaudeAgentOptions
+
+options = ClaudeAgentOptions(
+    cli_path="/path/to/claude",
+    stderr=lambda line: print(line),
+)
+```
+
 ## CLI startup
 
 ### CLINotFoundError: Claude Code not found
@@ -97,6 +110,11 @@ Treat this as a failure in application code: check both that `subtype` is `succe
 ## Report a new issue
 
 If your error isn't covered here, check open issues or file a new one in the SDK repositories: `anthropics/claude-agent-sdk-typescript` or `anthropics/claude-agent-sdk-python`. Include the full error text and your SDK version.
+
+## Notes
+
+- The Signature / Usage snippet is composed from the `ClaudeAgentOptions` fields the official page references in prose (`cli_path`, `stderr`); the official troubleshooting page itself contains no code example. TypeScript equivalents: `pathToClaudeCodeExecutable` and `stderr: (data: string) => void` in `Options`.
+- `irm https://claude.ai/install.ps1 | iex` downloads and executes a remote script in one step (quoted verbatim from the official docs); in shared or production environments, download `install.ps1` and review it before running.
 
 ## Related
 

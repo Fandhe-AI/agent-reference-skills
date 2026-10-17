@@ -35,14 +35,14 @@ options = ClaudeAgentOptions(
 
 | Name | Type | Description |
 |------|------|-------------|
-| `skills` | `"all"` \| string[] \| `[]` | Which discovered Skills Claude can invoke; omitted = discovered skills enabled (CLI behavior); `[]` disables all |
-| `settingSources` / `setting_sources` | array | Must include `"user"` and/or `"project"` for Skill discovery |
+| `skills` | `"all"` \| string[] \| `[]` | Which discovered Skills Claude can invoke; omitted = discovered skills enabled (CLI behavior); `[]` = Claude can invoke none (dispatch by `/<name>` still runs user-invocable skills) |
+| `settingSources` / `setting_sources` | array | When set explicitly, include `"project"` (project and added-directory skills) and/or `"user"` (personal skills); defaults load both. Skills can also come from the `plugins` option |
 
 ## Notes
 
 - Skills must be created as filesystem artifacts (`.claude/skills/<name>/SKILL.md`); the SDK has no programmatic API for registering them.
 - `skills` is a context filter, not a sandbox — unlisted Skills are hidden from the model but their files remain reachable via Read/Bash.
-- Pre-approving tools: in SDK sessions you can pre-approve tools for a project or personal skill with the skill's `allowed-tools` frontmatter or with the `allowedTools` option (`allowed_tools` in Python). If managed settings set `allowManagedPermissionRulesOnly`, Claude Code ignores both. (Earlier revisions of this page said `allowed-tools` frontmatter was CLI-only; the current docs no longer say so.)
+- Pre-approving tools: in SDK sessions you can pre-approve tools for a project or personal skill with the skill's `allowed-tools` frontmatter or with the `allowedTools` option (`allowed_tools` in Python). If managed settings set `allowManagedPermissionRulesOnly`, Claude Code ignores both.
 - When you set `skills`, the SDK adds the Skill tool to `allowedTools` automatically. If you also pass an explicit `tools` list, include `"Skill"` in it. When `skills` is omitted, discovered skills are enabled and the Skill tool is available, matching CLI behavior.
 - Names in the `skills` list match the `name` field in `SKILL.md` or the skill's directory name; use `plugin:skill` for plugin-provided skills. Wildcards (a bare `*` or a `:*` suffix) are not allowed; pass `"all"` instead.
 - Invalid names are rejected before the session starts: an empty name, a name containing parentheses, commas, or control characters, a name padded with whitespace, or a wildcard form. TypeScript throws an `Error` (SDK 0.3.221+; earlier versions did not check), e.g. `Invalid skill name "docs:*": wildcard-suffix names are not allowed; list each skill by its exact name.` (empty name: `Skill names must be non-empty strings.`). Python raises `ValueError` (0.2.129+), e.g. `ValueError: Invalid skill name 'docs:*': wildcard-suffix names are not allowed; list each skill by its exact name.` (empty name: `Skill names must be non-empty strings`).

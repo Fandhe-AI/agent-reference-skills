@@ -55,7 +55,7 @@ options = ClaudeAgentOptions(
 
 - Supports standard JSON Schema features: basic types, `enum`, `const`, `required`, nested objects, `$ref` definitions. An invalid schema fails the run at startup with a naming error (before v2.1.205 it was silently ignored). The `format` keyword is accepted as an annotation only, not enforced.
 - Check the `errors` list on the result message to distinguish a validation-retry failure from a model-fallback retraction.
-- Streaming: the structured JSON result only appears in the final `ResultMessage.structured_output`, not as streaming deltas (see streaming-output).
+- Streaming: with partial messages enabled the JSON streams as unvalidated `input_json_delta` chunks; only the validated result is in `ResultMessage.structured_output` (see streaming-output).
 - For single-turn requests without tool use, the Messages API's own `output_config.format` structured outputs (a single call, no agent loop) is documented separately in anthropic-api-core, not here.
 
 ## Related
