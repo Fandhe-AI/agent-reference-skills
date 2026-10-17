@@ -9,7 +9,7 @@ user-invocable: false
 
 # Vercel AI SDK
 
-> 分割 PR の途中段階。現在収録済み: references/{agents, core, embeddings-batch, foundations, media, migration, operations, providers, rsc}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{agents, core, embeddings-batch, foundations, media, migration, operations, providers, rsc, tools-mcp, ui}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 TypeScript 向け LLM アプリ開発ツールキット `ai`（AI SDK Core / UI / RSC）と `@ai-sdk/*` パッケージ群のリファレンス・サンプル・コマンド集。
 
@@ -36,6 +36,12 @@ skills/vercel-ai-sdk/
     agents/             # Agent / ToolLoopAgent・ループ制御・承認・subagents
       README.md
       agent.md, tool-loop-agent.md, loop-control.md, tool-approvals.md, subagents.md ...
+    tools-mcp/          # tool・スキーマ・MCP クライアント・MCP Apps・toolSearch
+      README.md
+      tool.md, dynamic-tool.md, create-mcp-client.md, zod-schema.md, mcp-apps.md ...
+    ui/                 # useChat / UIMessage / stream protocol / transport
+      README.md
+      use-chat.md, ui-message.md, stream-protocol.md, transport.md, create-ui-message-stream.md ...
     rsc/                # @ai-sdk/rsc（streamUI / createStreamableUI / createAI）
       README.md
       overview.md, stream-ui.md, create-ai.md, migrating-to-ui.md ...
@@ -76,6 +82,13 @@ skills/vercel-ai-sdk/
 | ToolLoopAgent でエージェントを構築したい | agents | [references/agents/README.md](references/agents/README.md) |
 | ループ制御（stop condition）・tool 承認・subagents・memory を設定したい | agents | [references/agents/README.md](references/agents/README.md) |
 | Agent の出力を UI メッセージストリームとして返したい | agents | [references/agents/README.md](references/agents/README.md) |
+| tool の定義・tool calling・Zod / Valibot / JSON Schema を使いたい | tools-mcp | [references/tools-mcp/README.md](references/tools-mcp/README.md) |
+| createMCPClient で MCP サーバーに接続したい（MCP Apps / events 含む） | tools-mcp | [references/tools-mcp/README.md](references/tools-mcp/README.md) |
+| toolSearch・Code Mode・runtime context を使いたい | tools-mcp | [references/tools-mcp/README.md](references/tools-mcp/README.md) |
+| useChat でチャット UI を作りたい | ui | [references/ui/README.md](references/ui/README.md) |
+| UIMessage・stream protocol・transport・message metadata を扱いたい | ui | [references/ui/README.md](references/ui/README.md) |
+| UI メッセージストリームのレスポンス生成・検証・変換をしたい | ui | [references/ui/README.md](references/ui/README.md) |
+| useCompletion / useObject / useRealtime を使いたい | ui | [references/ui/README.md](references/ui/README.md) |
 | RSC（streamUI / createStreamableUI / createAI）を使いたい | rsc | [references/rsc/README.md](references/rsc/README.md) |
 | RSC から AI SDK UI へ移行したい | rsc | [references/rsc/README.md](references/rsc/README.md) |
 | embed / embedMany / cosineSimilarity で埋め込みを扱いたい | embeddings-batch | [references/embeddings-batch/README.md](references/embeddings-batch/README.md) |
