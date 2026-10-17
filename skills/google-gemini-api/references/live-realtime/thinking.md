@@ -44,32 +44,29 @@ async def main():
     async with client.aio.live.connect(model=model, config=config) as session:
         print("Session connected with Thinking")
 
-        idle = False
-        while not idle:
-            async for message in session.receive():
-                # Inspect interaction status for server lifecycle tracking
-                status = getattr(message, "interaction_status", None)
-                if status:
-                    print(f"Interaction status: {status}")
+        async for message in session.receive():
+            # Inspect interaction status for server lifecycle tracking
+            status = message.server_content.interaction_status if message.server_content else None
+            if status:
+                print(f"Interaction status: {status}")
 
-                # Handle asynchronous tool call
-                if message.tool_call:
-                    for call in message.tool_call.function_calls:
-                        print(f"Executing tool: {call.name}")
-                        # Simulate function execution
-                        response = types.FunctionResponse(
-                            id=call.id,
-                            name=call.name,
-                            response={"result": "Flight DL 145 ($145)"}
-                        )
-                        await session.send_tool_response(
-                            function_responses=[response]
-                        )
+            # Handle asynchronous tool call
+            if message.tool_call:
+                for call in message.tool_call.function_calls:
+                    print(f"Executing tool: {call.name}")
+                    # Simulate function execution
+                    response = types.FunctionResponse(
+                        id=call.id,
+                        name=call.name,
+                        response={"result": "Flight DL 145 ($145)"}
+                    )
+                    await session.send_tool_response(
+                        function_responses=[response]
+                    )
 
-                # Status is IDLE when reasoning and all turns are complete
-                if status == "IDLE":
-                    print("Session is idle and ready for user input.")
-                    idle = True
+            # Status is IDLE when reasoning and all turns are complete
+            if status == "IDLE":
+                print("Session is idle and ready for user input.")
 ```
 
 JavaScript (status tracking and config):
@@ -153,7 +150,7 @@ Upgrading from Gemini 3.1 Flash Live to `gemini-3.8-live` (omit `thinking_level`
 ## Notes
 
 - Server emits `interaction_status: "IN_PROGRESS"` during background processing and `"IDLE"` when the overall task completes. In Thinking sessions track `interaction_status` instead of `turnComplete`; only return to idle when it is `IDLE`.
-- The source uses a single `async for` over `session.receive()`, which the Python SDK ends at the first `turn_complete` (fillers also carry `turn_complete=true` with `IN_PROGRESS`); the example wraps it in an outer loop until `interaction_status` is `IDLE`.
+- The source reads `getattr(message, "interaction_status", None)`; in google-genai 2.31.0 the field lives on `server_content` (`LiveServerContent`) and `session.receive()` already stops when it is `IDLE` (falling back to `turn_complete` only when the status is unset), so the example reads `message.server_content.interaction_status` in a single loop. The JavaScript fragment is transcribed as in the source; the API reference lists `interactionStatus` under `BidiGenerateContentServerContent` (`message.serverContent?.interactionStatus`).
 - Synchronous blocking tools return an error with the Thinking model; set `"behavior": "NON_BLOCKING"` on all function declarations.
 - Extended Thinking response flow: spoken filler (`turnComplete: true`, `interactionStatus: "IN_PROGRESS"`), asynchronous tool call (still `IN_PROGRESS`), client tool response, final response (`turnComplete: true`, `interactionStatus: "IDLE"`).
 - Upgrading from `gemini-3.1-flash-live-preview` to `gemini-3.8-live`: update the model string and omit `thinking_level` / `thinking_config`; turn lifecycle and `turnComplete` signals remain identical.

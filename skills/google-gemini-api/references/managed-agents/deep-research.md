@@ -187,6 +187,7 @@ interaction = client.interactions.create(
     agent="deep-research-preview-04-2026",
     background=True,
     tools=[
+        {"type": "google_search"},
         {
             "type": "file_search",
             "file_search_store_names": ['fileSearchStores/my-store-name']
@@ -335,6 +336,7 @@ Comparison: standard Gemini models answer in seconds (generate then output; chat
 
 ## Notes
 
+- The official File Search sample passes only `file_search` while asking to compare against current public web news; since explicit `tools` replace the defaults (Google Search / URL Context / Code Execution), the example here adds `google_search` so the web comparison can run.
 - Preview. The Deep Research agent is exclusively available using the Interactions API; it cannot be accessed through `generate_content`.
 - `background=True` is required (agents run asynchronously). The API returns a partial `Interaction` immediately; status transitions from `in_progress` to `completed` or `failed`. Background execution requires `store=True`.
 - The polling loops (including the collaborative-planning ones) also stop on `cancelled` / `incomplete`; the original page only checks `completed` / `failed` (collaborative-planning loops check only `completed`).
