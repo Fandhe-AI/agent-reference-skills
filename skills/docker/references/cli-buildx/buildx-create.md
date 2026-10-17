@@ -37,7 +37,7 @@ $ docker buildx create --name mybuilder --driver docker-container --use
 - `--buildkitd-config FILE`: the config can be overridden by `--buildkitd-flags`. Default lookup when unset: `$BUILDX_CONFIG/buildkitd.default.toml`, `$DOCKER_CONFIG/buildx/buildkitd.default.toml`, `~/.docker/buildx/buildkitd.default.toml`. For a `docker-container` builder, registry certificates referenced in `buildkitd.toml` are copied into the container under `/etc/buildkit/certs`.
 - `--buildkitd-flags FLAGS`: flags added when starting the BuildKit daemon; they take precedence over `--buildkitd-config` (see `buildkitd --help`). Network mode can be set with `worker.oci.networkMode` or `--oci-worker-net`; default `auto`, one of `bridge`, `cni`, `host` (`bridge` is supported since BuildKit v0.13).
 - `--driver`: `docker` (default), `cloud`, `docker-container`, `kubernetes`, `remote`.
-  - `docker`: uses the builder built into the Docker daemon; `--load` is implied on `buildx build`; multi-platform images and cache export are not supported.
+  - `docker`: uses the builder built into the Docker daemon; `--load` is implied on `buildx build`; multi-platform images and cache export are not supported with the classic image store; with the containerd image store (default in Docker Desktop and Docker Engine 29.0+) the docker driver can build and load multi-platform images, and supports only some cache export options.
   - `cloud`: Docker Build Cloud builders; connect with `--driver cloud` and a name `<account>/<builder>` or `cloud://<account>/<builder>`; requires `docker login`. Resolved cloud nodes are a create-time snapshot; recreate the builder to refresh topology.
   - `docker-container`: BuildKit container spawned via Docker; multi-platform images and cache export are supported; images don't appear in `docker images` unless `build --load` is used.
   - `kubernetes`: Kubernetes pods; rootless mode (`--driver-opt rootless=true`) requires Kubernetes v1.30 or later with `securityContext.appArmorProfile` (stable in v1.31).
@@ -45,6 +45,7 @@ $ docker buildx create --name mybuilder --driver docker-container --use
 - `--driver-opt`: driver-specific options are documented per driver. With `BUILDX_DEFAULT_POLICY=1` the `docker-container` driver verifies signed `moby/buildkit` image tags; bypass explicitly with `allow-untrusted-image=true` (only for an image you trust).
 - `--name`: auto-generated if unset. `--node`: defaults to the builder name with an index suffix.
 - `--platform`: comma-separated list of `OS/architecture/variant`; manual values take priority over detected ones.
+- The upstream CLI reference states the docker-driver limitation without distinguishing image stores; see Build drivers.
 - `--use` is equivalent to `docker buildx use $(docker buildx create ...)`.
 
 ### Examples

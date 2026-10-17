@@ -177,7 +177,7 @@ Privilege and security:
 
 Storage and filesystem:
 
-- `-v`: `docker run -v $(pwd):$(pwd) -w $(pwd) -i -t ubuntu pwd`. Since Docker Engine 23 relative host paths work (`-v ./content:/content`). A missing host directory of a bind mount is created automatically on the host.
+- `-v`: `docker run -v "$(pwd):$(pwd)" -w "$(pwd)" -i -t ubuntu pwd` (upstream leaves the expansion unquoted; quoted here to avoid word splitting). Since Docker Engine 23 relative host paths work (`-v ./content:/content`). A missing host directory of a bind mount is created automatically on the host.
 - `--mount` supports most `-v` options with a different syntax; `--volume` is not planned for deprecation, but `--mount` is recommended: `docker run -t -i --mount type=bind,src=/data,dst=/data busybox sh`.
 - `--read-only` mounts the root filesystem read only, so writes go only to specified volumes: `docker run --read-only -v /icanwrite busybox touch /icanwrite/here`.
 - `--tmpfs`: options are identical to `mount -t tmpfs -o`: `docker run -d --tmpfs /run:rw,noexec,nosuid,size=65536k my_image`.

@@ -27,13 +27,14 @@ qsiifiuf1ad9pa9qvppc0z1l3   .dev/2850      Completed  3 days ago        1.3s
 
 ## Notes
 
-- Supported filters: `ref`, `repository`, `status` support `=` and `!=`; `startedAt`, `completedAt`, `duration` support `<` and `>` with time values (e.g. `--filter duration>30s`). Repeat `--filter` to combine.
+- Supported filters: `ref`, `repository`, `status` support `=` and `!=`; `startedAt`, `completedAt`, `duration` support `<` and `>` with time values (e.g. `--filter 'duration>30s'`). Repeat `--filter` to combine.
 - `--format` accepts `json` or a Go template, e.g. `--format '{{.Name}} - {{.Duration}}'`.
+- The upstream example leaves `duration>30s` unquoted; it is quoted here so the shell does not treat `>` as a redirect.
 
 ### Examples
 
 ```console
-docker buildx history ls --filter status=error --filter duration>30s
+docker buildx history ls --filter status=error --filter 'duration>30s'
 docker buildx history ls --local
 docker buildx history ls --format json
 ```

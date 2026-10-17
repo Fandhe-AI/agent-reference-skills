@@ -32,7 +32,8 @@ $ docker buildx prune --filter "until=24h"
 - `--filter` format is `<key><op><value>` with operators `=`, `!=`, `~=` (regular expression). All selectors must match; multiple `--filter` flags are ANDed. Keys: `until` (keep records used within a duration such as `24h` or `2h30m`; units h, m, s), `id`, `parents` (multiple IDs separated by `;`), `description` (substring), `inuse`, `mutable`, `immutable`, `shared`, `private`, `type` (`internal`, `frontend`, `source.local`, `source.git.checkout`, `exec.cachemount`, `regular`).
 - `--max-used-space`: if the cache uses more than this, least recently used records are deleted until total used space is at or below the value.
 - `--min-free-space`: least recently used records are deleted until available free space is at or above the value.
-- `--reserved-space`: amount of disk space always kept for the build cache; if available space is below it, least recently used records are deleted until free space is at or above the value.
+- `--reserved-space`: amount of disk space always kept for the build cache — cache usage below this value is not reclaimed (a lower limit; see Build garbage collection).
+- The upstream CLI reference text for this flag reuses the `--min-free-space` wording (delete until free space is at or above the value); the BuildKit GC docs define `reservedSpace` as the lower limit of cache usage that is never reclaimed.
 - The three space flags take bytes or a human-readable string such as `128mb` or `2gb` (case-insensitive units).
 
 ### Examples

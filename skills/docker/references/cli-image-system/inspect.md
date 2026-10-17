@@ -29,14 +29,16 @@ $ docker inspect [OPTIONS] NAME|ID [NAME|ID...]
 ```console
 $ docker inspect --type=volume myvolume
 $ docker inspect --size mycontainer
-$ docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $INSTANCE_ID
-$ docker inspect --format='{{range .NetworkSettings.Networks}}{{.MacAddress}}{{end}}' $INSTANCE_ID
-$ docker inspect --format='{{.LogPath}}' $INSTANCE_ID
-$ docker inspect --format='{{.Config.Image}}' $INSTANCE_ID
-$ docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}} {{$p}} -> {{with $conf}}{{(index . 0).HostPort}}{{else}}none{{end}} {{end}}' $INSTANCE_ID
-$ docker inspect --format='{{(index (index .NetworkSettings.Ports "8787/tcp") 0).HostPort}}' $INSTANCE_ID
-$ docker inspect --format='{{json .Config}}' $INSTANCE_ID
+$ docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "${INSTANCE_ID}"
+$ docker inspect --format='{{range .NetworkSettings.Networks}}{{.MacAddress}}{{end}}' "${INSTANCE_ID}"
+$ docker inspect --format='{{.LogPath}}' "${INSTANCE_ID}"
+$ docker inspect --format='{{.Config.Image}}' "${INSTANCE_ID}"
+$ docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}} {{$p}} -> {{with $conf}}{{(index . 0).HostPort}}{{else}}none{{end}} {{end}}' "${INSTANCE_ID}"
+$ docker inspect --format='{{(index (index .NetworkSettings.Ports "8787/tcp") 0).HostPort}}' "${INSTANCE_ID}"
+$ docker inspect --format='{{json .Config}}' "${INSTANCE_ID}"
 ```
+
+Upstream examples leave the expansion unquoted; quoted here to avoid word splitting.
 
 ### Other notes
 
