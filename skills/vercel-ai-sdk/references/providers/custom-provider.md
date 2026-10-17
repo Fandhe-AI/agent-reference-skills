@@ -40,7 +40,7 @@ Import: `import { customProvider } from "ai"`
 | Name | Type | Description |
 | --- | --- | --- |
 | languageModels | `Record<string, LanguageModel>` (optional) | Language models, keys are model IDs. |
-| embeddingModels | `Record<string, EmbeddingModel<string>>` (optional) | Text embedding models. |
+| embeddingModels | `Record<string, EmbeddingModel>` (optional) | Text embedding models. |
 | imageModels | `Record<string, ImageModel>` (optional) | Image models. |
 | transcriptionModels | `Record<string, TranscriptionModel>` (optional) | Transcription models. |
 | speechModels | `Record<string, SpeechModel>` (optional) | Speech models. |
@@ -55,7 +55,7 @@ Returns a `Provider` instance with:
 | Name | Type | Description |
 | --- | --- | --- |
 | languageModel | `(id: string) => LanguageModel` | By custom provider model ID. |
-| embeddingModel | `(id: string) => EmbeddingModel<string>` | By custom provider model ID. |
+| embeddingModel | `(id: string) => EmbeddingModel` | By custom provider model ID. |
 | imageModel | `(id: string) => ImageModel` | By custom provider model ID. |
 | transcriptionModel | `(id: string) => TranscriptionModel` | By custom provider model ID. |
 | speechModel | `(id: string) => SpeechModel` | By custom provider model ID. |
@@ -68,6 +68,7 @@ Returns a `Provider` instance with:
 
 - Experimental decision models: pass `decisionModels: Record<string, Experimental_DecisionModel>` to define aliases for decision model instances or string IDs. The returned provider adds `decisionModel(alias): Experimental_DecisionModelV4`. String aliases resolve through Gateway by default, or an explicitly configured default provider with a `decisionModel` method. Unknown aliases use the fallback provider's decision factory when available; model failures and unsupported questions do not trigger substitution.
 - Unavailable decision capabilities or models throw `NoSuchModelError` with `modelType: 'decisionModel'`; these are structural extensions, not added to the stable `ProviderV4` contract.
+- The official reference page still shows `EmbeddingModel<string>`; the generic was removed in AI SDK 6 (see migration guide 6.0), and in ai@7.0.142 `EmbeddingModel` is non-generic (the custom provider / registry return `EmbeddingModelV4`).
 - The official example omits the imports of `wrapLanguageModel` / `defaultSettingsMiddleware` (both exported from `ai`).
 
 ## Related

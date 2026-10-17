@@ -56,7 +56,7 @@ Parameters:
 | Name | Type | Description |
 | --- | --- | --- |
 | languageModel | `(id: string) => LanguageModel` | Returns a language model by its id. |
-| embeddingModel | `(id: string) => EmbeddingModel<string>` | Returns a text embedding model by its id. |
+| embeddingModel | `(id: string) => EmbeddingModel` | Returns a text embedding model by its id. |
 | imageModel | `(id: string) => ImageModel` | Returns an image model by its id. |
 | transcriptionModel | `(id: string) => TranscriptionModel` (optional) | Returns a transcription model by its id. |
 | speechModel | `(id: string) => SpeechModel` (optional) | Returns a speech model by its id. |
@@ -78,7 +78,7 @@ Returns a `Provider` instance with:
 | Name | Type | Description |
 | --- | --- | --- |
 | languageModel | `(id: string) => LanguageModel` | By id (format: providerId:modelId). |
-| embeddingModel | `(id: string) => EmbeddingModel<string>` | By id (format: providerId:modelId). |
+| embeddingModel | `(id: string) => EmbeddingModel` | By id (format: providerId:modelId). |
 | imageModel | `(id: string) => ImageModel` | By id (format: providerId:modelId). |
 | transcriptionModel | `(id: string) => TranscriptionModel` | By id (format: providerId:modelId). |
 | speechModel | `(id: string) => SpeechModel` | By id (format: providerId:modelId). |
@@ -91,6 +91,7 @@ Returns a `Provider` instance with:
 
 - Experimental decision models: the inferred return type also exposes `decisionModel('providerId:modelId')`, returning `Experimental_DecisionModelV4`. The provider must expose a `decisionModel` factory. Language and image middleware do not wrap decision models. `ProviderRegistryProvider` remains a stable interface; use the inferred return type or `Experimental_DecisionProviderRegistry` to retain experimental decision access.
 - Unavailable decision capabilities or models throw `NoSuchModelError` with `modelType: 'decisionModel'`; unknown registry providers throw `NoSuchProviderError`. These are structural extensions, not added to the stable `ProviderV4` contract. Direct decision string IDs default to Gateway when no default provider is configured.
+- The official reference page still shows `EmbeddingModel<string>`; the generic was removed in AI SDK 6 (see migration guide 6.0), and in ai@7.0.142 `EmbeddingModel` is non-generic (the custom provider / registry return `EmbeddingModelV4`).
 - Video models are used with `experimental_generateVideo`.
 
 ## Related
