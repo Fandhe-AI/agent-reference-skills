@@ -341,7 +341,7 @@ export function requestPermissionsAsync() {
 | `cancelScheduledNotificationAsync(identifier: string)` | `Promise<void>` | Cancels one scheduled notification by the identifier returned from `scheduleNotificationAsync`. |
 | `getAllScheduledNotificationsAsync()` | `Promise<NotificationRequest[]>` | Fetches all scheduled notifications. |
 | `getNextTriggerDateAsync(trigger: SchedulableNotificationTriggerInput)` | `Promise<number \| null>` | Next trigger date as Unix timestamp in milliseconds; `null` means it will not trigger. |
-| `scheduleNotificationAsync(request: NotificationRequestInput)` | `Promise<string>` | Schedules a notification; resolves to its identifier. It is presented only if a notification handler (`setNotificationHandler`) returns an appropriate behavior. |
+| `scheduleNotificationAsync(request: NotificationRequestInput)` | `Promise<string>` | Schedules a notification; resolves to its identifier. Scheduling does not by itself decide presentation: while the app is foregrounded, the handler set with `setNotificationHandler` decides. In SDK 58, if no handler is set or it does not respond within 3 seconds, the notification is presented; after `setNotificationHandler(null)` it is not shown in the foreground on Android. When the app is in the background, the OS presents it. |
 
 ```ts
 Notifications.scheduleNotificationAsync({
@@ -553,6 +553,7 @@ Notifications.scheduleNotificationAsync({
 - The upstream manual step names `ios/project-name/Supporting/Expo.plist`, but the same page (and TaskManager docs) state `UIBackgroundModes` must be in the app's Info.plist, which is where iOS reads it.
 - The registration example follows the error handling of the Push notifications setup guide (`handleRegistrationError` throws); the SDK reference page snippet instead returns the stringified error as the token.
 - The official type table renders `sound` as `... | string & undefined`; any custom sound filename string (for example `mySoundFile.wav`) is accepted.
+- The official scheduleNotificationAsync note ("For the notification to be presented you have to set a notification handler") predates the SDK 58 default; in SDK 58 a foreground notification is presented by default when no handler is set (see receiving-notifications.md).
 - This page covers the Expo `expo-notifications` JS API and the Expo Push Service token flow. APNs and FCM native APIs are covered by apple-app-services and android-platform-core; this page is only the Expo wrapper over them.
 
 ## Related
