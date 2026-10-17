@@ -33,3 +33,8 @@ The docs' API Reference defers to Base UI Separator: https://base-ui.com/react/c
 - This is the shadcn/ui copy-in component (source lives in your `components/ui/`), distinct from `@ark-ui/react` (skill ark-ui), `@chakra-ui/react` (skill chakra-ui) and the Rust fandhe-frontend crates (skill fandhe-frontend).
 - Radix variant (https://ui.shadcn.com/docs/components/radix/separator): installs `radix-ui`; same `orientation` usage.
 - React Aria variant: https://ui.shadcn.com/docs/components/aria/separator (installs `react-aria-components`).
+
+## Related
+
+- [Scroll Area](./scroll-area.md)
+- [Resizable](./resizable.md)

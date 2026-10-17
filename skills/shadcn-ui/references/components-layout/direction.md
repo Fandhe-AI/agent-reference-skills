@@ -50,3 +50,8 @@ The docs' API Reference link points to Base UI DirectionProvider: https://base-u
 - Other components' pages carry an RTL section; RTL setup guide is `/docs/rtl`.
 - Radix variant (https://ui.shadcn.com/docs/components/radix/direction): installs `radix-ui`, same `DirectionProvider direction="rtl"` usage.
 - React Aria variant: https://ui.shadcn.com/docs/components/aria/direction (installs `react-aria-components`).
+
+## Related
+
+- [Sidebar](./sidebar.md)
+- [Navigation Menu](./navigation-menu.md)

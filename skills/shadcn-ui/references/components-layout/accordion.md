@@ -49,3 +49,8 @@ The docs' API Reference defers to the Base UI documentation: https://base-ui.com
 - Radix variant (https://ui.shadcn.com/docs/components/radix/accordion): installs `radix-ui` and uses `type="single" collapsible` / `type="multiple"` instead of the Base UI `multiple` prop.
 - React Aria variant (https://ui.shadcn.com/docs/components/aria/accordion): installs `react-aria-components` and uses `defaultExpandedKeys={["item-1"]}` instead of `defaultValue`.
 - Borders: add `border` to `Accordion` and `border-b last:border-b-0` to `AccordionItem`.
+
+## Related
+
+- [Collapsible](./collapsible.md)
+- [Tabs](./tabs.md)

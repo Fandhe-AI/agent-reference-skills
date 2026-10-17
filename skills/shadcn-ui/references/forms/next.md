@@ -18,7 +18,7 @@ Approach: Next.js `<Form />` (from `next/form`) for navigation and progressive e
       <Input
         id="title"
         name="title"
-        defaultValue={formState.values.title}
+        defaultValue={formState.values?.title ?? ""}
         disabled={pending}
         aria-invalid={!!formState.errors?.title?.length}
         placeholder="Login button not working on mobile"
@@ -43,10 +43,6 @@ export const formSchema = z.object({
     .string()
     .min(5, "Bug title must be at least 5 characters.")
     .max(32, "Bug title must be at most 32 characters."),
-  description: z
-    .string()
-    .min(20, "Description must be at least 20 characters.")
-    .max(100, "Description must be at most 100 characters."),
 })
 
 export type FormState = {
@@ -67,7 +63,6 @@ export async function bugReportFormAction(
 ) {
   const values = {
     title: formData.get("title") as string,
-    description: formData.get("description") as string,
   }
 
   const result = formSchema.safeParse(values)
@@ -89,6 +84,8 @@ export async function bugReportFormAction(
 
 ## Notes
 
+- Adapted (not in the official docs): the official snippet reads `formState.values.title`; optional chaining added because `values` is omitted from the success return shown above.
+- Adapted (not in the official docs): the official demo also has a `description` field (Textarea) that is not expanded in the local copy; the snippets here keep only `title` in the schema and action so the schema, action and inputs agree.
 - Client usage: `const [formState, formAction, pending] = React.useActionState<FormState, FormData>(action, { values: {...}, errors: null, success: false })`.
 - Pending states: use `pending` to disable inputs and show a spinner; `<Field data-disabled={pending}>` applies the disabled styling to a field.
 

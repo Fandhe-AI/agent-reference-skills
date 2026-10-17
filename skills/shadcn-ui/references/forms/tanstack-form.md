@@ -20,17 +20,12 @@ const formSchema = z.object({
     .string()
     .min(5, "Bug title must be at least 5 characters.")
     .max(32, "Bug title must be at most 32 characters."),
-  description: z
-    .string()
-    .min(20, "Description must be at least 20 characters.")
-    .max(100, "Description must be at most 100 characters."),
 })
 
 export function BugReportForm() {
   const form = useForm({
     defaultValues: {
       title: "",
-      description: "",
     },
     validators: {
       onSubmit: formSchema,
@@ -112,6 +107,7 @@ Binding per field type (inside `form.Field` with `isInvalid = field.state.meta.i
 
 ## Notes
 
+- Adapted (not in the official docs): the official demo also has a `description` field (Textarea) that is not expanded in the local copy; the first snippet keeps only `title` so the schema, default values and inputs agree.
 - Display errors with `<FieldError />`; add `data-invalid` to `<Field />` and `aria-invalid` to the control.
 - The demos intentionally disable browser validation; the page recommends adding basic browser validation in production code.
 - The page uses `zod v3`; TanStack Form integrates with Zod and other Standard Schema validation libraries through its validators API. Other validation modes are documented at https://tanstack.com/form/latest/docs/framework/react/guides/dynamic-validation.

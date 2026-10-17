@@ -21,11 +21,6 @@ const FormSchema = v.object({
     v.minLength(5, "Bug title must be at least 5 characters."),
     v.maxLength(32, "Bug title must be at most 32 characters.")
   ),
-  description: v.pipe(
-    v.string(),
-    v.minLength(20, "Description must be at least 20 characters."),
-    v.maxLength(100, "Description must be at most 100 characters.")
-  ),
 })
 
 export function BugReportForm() {
@@ -33,7 +28,6 @@ export function BugReportForm() {
     schema: FormSchema,
     initialInput: {
       title: "",
-      description: "",
     },
   })
 
@@ -98,6 +92,7 @@ Binding per element kind:
 
 ## Notes
 
+- Adapted (not in the official docs): the official demo also has a `description` field (Textarea) that is not expanded in the local copy; the snippet above keeps only `title` so the schema, initial input and inputs agree.
 - Form operations are top-level functions; the first parameter is always the form store and the second (if needed) a config object.
 
 ```ts

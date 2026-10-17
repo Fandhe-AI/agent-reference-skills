@@ -12,17 +12,17 @@ CSS variables: move `:root` / `.dark` out of `@layer base`, wrap colors in `hsl(
 
 ```css
 :root {
-  --background: hsl(0 0% 100%); // <-- Wrap in hsl
+  --background: hsl(0 0% 100%); /* <-- Wrap in hsl */
   --foreground: hsl(0 0% 3.9%);
 }
 
 .dark {
-  --background: hsl(0 0% 3.9%); // <-- Wrap in hsl
+  --background: hsl(0 0% 3.9%); /* <-- Wrap in hsl */
   --foreground: hsl(0 0% 98%);
 }
 
 @theme inline {
-  --color-background: var(--background); // <-- Remove hsl
+  --color-background: var(--background); /* <-- Remove hsl */
   --color-foreground: var(--foreground);
 }
 ```
@@ -36,6 +36,7 @@ CSS variables: move `:root` / `.dark` out of `@layer base`, wrap colors in `hsl(
 - Changelog 2025-03-12: new, more accessible dark mode colors. For non-upgraded Tailwind v4 projects, commit changes, run `npx shadcn@latest add --all --overwrite` (overwrites existing components), update dark mode colors in `globals.css` to the new OKLCH values, and review changes.
 - Before upgrading, read the Tailwind v4 Compatibility Docs; Tailwind v4 targets modern browsers.
 - Gatsby guide remains Tailwind v3 only.
+- Adapted (not in the official docs): the official snippet annotates with `//`, which is not valid CSS; converted to block comments.
 
 ## Related
 

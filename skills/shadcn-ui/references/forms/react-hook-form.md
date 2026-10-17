@@ -20,10 +20,6 @@ const formSchema = z.object({
     .string()
     .min(5, "Bug title must be at least 5 characters.")
     .max(32, "Bug title must be at most 32 characters."),
-  description: z
-    .string()
-    .min(20, "Description must be at least 20 characters.")
-    .max(100, "Description must be at most 100 characters."),
 })
 
 export function BugReportForm() {
@@ -31,7 +27,6 @@ export function BugReportForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      description: "",
     },
   })
 
@@ -101,6 +96,7 @@ Binding per field type (all inside `<Controller />` with `<Field data-invalid={f
 
 ## Notes
 
+- Adapted (not in the official docs): the official demo also has a `description` field (Textarea) that is not expanded in the local copy; the snippet above keeps only `title` so the schema, default values and inputs agree.
 - Display errors with `<FieldError />`. For styling and accessibility, add `data-invalid` to `<Field />` and `aria-invalid` to the control (`<Input />`, `<SelectTrigger />`, `<Checkbox />`, etc.).
 - The demos intentionally disable browser validation to show schema validation; the page recommends adding basic browser validation in production code.
 - The page uses `zod v3`; any Standard Schema validation library supported by React Hook Form can replace it.
