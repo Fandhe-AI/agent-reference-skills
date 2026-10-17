@@ -275,6 +275,8 @@ Subfields: `androidX` (optional; whether the module uses AndroidX), `androidPack
 
 ### plugin
 
+Plugin with platform code (`pluginClass`; add `dartPluginClass` next to it for a hybrid implementation):
+
 ```yaml
 flutter:
   plugin:
@@ -282,41 +284,60 @@ flutter:
       android: # Optional
         package: com.example.my_plugin
         pluginClass: MyPlugin
-        dartPluginClass: MyPluginClassName
-        ffiPlugin: true
-        default_package: my_plugin_name
-        fileName: my_file.dart
       ios: # Optional
         pluginClass: MyPlugin
-        dartPluginClass: MyPluginClassName
-        ffiPlugin: true
-        default_package: my_plugin_name
-        fileName: my_file.dart
         sharedDarwinSource: true
       macos: # Optional
         pluginClass: MyPlugin
-        dartPluginClass: MyPluginClassName
-        ffiPlugin: true
-        default_package: my_plugin_name
-        fileName: my_file.dart
         sharedDarwinSource: true
       windows: # Optional
         pluginClass: MyPlugin
         dartPluginClass: MyPluginClassName
-        ffiPlugin: true
-        default_package: my_plugin_name
-        fileName: my_file.dart
       linux: # Optional
         pluginClass: MyPlugin
-        dartPluginClass: MyPluginClassName
-        ffiPlugin: true
-        default_package: my_plugin_name
-        fileName: my_file.dart
       web: # Optional
         pluginClass: MyPlugin
-        default_package: my_plugin_name
         fileName: my_file.dart
-    implements: example_platform_interface # Optional
+```
+
+FFI plugin (not supported on web):
+
+```yaml
+flutter:
+  plugin:
+    platforms:
+      android:
+        ffiPlugin: true
+      ios:
+        ffiPlugin: true
+      macos:
+        ffiPlugin: true
+      windows:
+        ffiPlugin: true
+      linux:
+        ffiPlugin: true
+```
+
+Federated plugin: the app-facing package endorses a default implementation with `default_package`, and the platform implementation package declares `implements` (here with a Dart-only `dartPluginClass`):
+
+```yaml
+# app-facing package (my_plugin)
+flutter:
+  plugin:
+    platforms:
+      windows:
+        default_package: my_plugin_windows
+```
+
+```yaml
+# platform implementation package (my_plugin_windows)
+flutter:
+  plugin:
+    implements: my_plugin
+    platforms:
+      windows:
+        dartPluginClass: MyPluginWindows
+        fileName: my_plugin_windows.dart
 ```
 
 | Subfield | Description |
@@ -374,6 +395,7 @@ dependencies:
 - Corrected from the official docs: the original example lists `material_ui` / `cupertino_ui` without a colon or version constraint (invalid YAML); here they are written as valid entries (`any`) — add them with `flutter pub add material_ui` / `flutter pub add cupertino_ui` to get a pinned constraint.
 - Corrected from the official docs: the original example writes `implements` as a YAML list; the Flutter tool reads it as a single package-name string (as on the official "Developing packages & plugins" page), so it is written as a string here.
 - Corrected from the official docs: the original example gives the `web` platform `ffiPlugin: true` and no `pluginClass`; FFI is unavailable on web and web plugins register through `pluginClass` + `fileName` (as on the official "Developing packages & plugins" page).
+- Corrected from the official docs: the source shows a single `plugin` example that sets `pluginClass`, `dartPluginClass`, `ffiPlugin` and `default_package` together on every platform; these describe different implementation styles, so it is split here into separate platform-code, FFI and federated examples (as on the official "Developing packages & plugins" page).
 - The pubspec can have additional auto-generated Flutter fields that aren't listed here.
 - Version note: in Flutter versions earlier than 3.44, Swift Package Manager isn't enabled by default. Support for disabling Swift Package Manager will be removed in a future Flutter release.
 - Don't list shader files under the `assets` field, either directly or through a directory that contains them; the Flutter tool reports an error if a shader is declared in both places. Like other assets, shaders also support `flavors`, `platforms`, and `transformers`.
