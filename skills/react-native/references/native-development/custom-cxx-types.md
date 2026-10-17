@@ -256,9 +256,17 @@ Add the function prototype:
 Implement in `shared/NativeSampleModule.cpp`:
 
 ```cpp
+#include <cmath>
+#include <limits>
+
 bool NativeSampleModule::validateAddress(jsi::Runtime &rt, jsi::Object input) {
   std::string street = input.getProperty(rt, "street").asString(rt).utf8(rt);
-  int32_t number = input.getProperty(rt, "num").asNumber();
+  double raw = input.getProperty(rt, "num").asNumber();
+  if (!(std::isfinite(raw) && std::trunc(raw) == raw && raw >= 1 &&
+        raw <= std::numeric_limits<int32_t>::max())) {
+    return false;
+  }
+  int32_t number = static_cast<int32_t>(raw);
 
   return !street.empty() && number > 0;
 }
@@ -326,6 +334,7 @@ return (
 - The order of the generics in `NativeSampleModuleAddress<std::string, int32_t, bool>` matters: the first template argument refers to the first data type of the struct, the second to the second, and so on.
 - Naming convention: the first part of the generated name is the type of the module (`NativeSampleModule`); the second part is the name of the JS type defined in the specs (`Address`).
 - In `validateAddress` the `Address` is a `jsi::Object`. JSI accessors: `getProperty()` retrieves a property by name; `asString()` converts to `jsi::String`; `utf8()` converts a `jsi::String` to `std::string`; `asNumber()` converts to a `double`. Functions can also return custom types.
+- Deviation from official docs: added finite/integer/int32 range check before casting asNumber() (double) to int32_t to avoid undefined behavior.
 
 ## Related
 

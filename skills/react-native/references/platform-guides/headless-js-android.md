@@ -89,7 +89,7 @@ class MyTaskService : HeadlessJsTaskService() {
 Then add the service to your `AndroidManifest.xml` file inside the `application` tag:
 
 ```xml
-<service android:name="com.example.MyTaskService" />
+<service android:name="com.your_application_name.MyTaskService" />
 ```
 
 Now, whenever you start your service (see Android `Context.startService`), e.g. as a periodic task or in response to some system event / broadcast, JS will spin up, run your task, then spin down.
@@ -369,6 +369,7 @@ class NetworkChangeReceiver : BroadcastReceiver() {
 
 ## Notes
 
+- Deviation from official docs: Manifest service name aligned with the example package (com.your_application_name) instead of com.example. `com.your_application_name` stands for the app's own package.
 - Corrected: the official snippets used require('SomeTaskName') (package resolution), intent.extras on a nullable Intent, and a single-quoted Java string; missing java.util.List import.
 - By default, your app will crash if you try to run a task while the app is in the foreground. This is to prevent developers from shooting themselves in the foot by doing a lot of work in a task and slowing the UI. You can pass a fourth `boolean` argument to control this behaviour.
 - If you start your service from a `BroadcastReceiver`, make sure to call `HeadlessJsTaskService.acquireWakeLockNow()` before returning from `onReceive()`.
