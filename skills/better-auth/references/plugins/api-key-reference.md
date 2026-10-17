@@ -82,7 +82,7 @@ CREATE INDEX idx_apikey_config_id ON apikey(config_id);
 | `customAPIKeyGetter` | `(ctx: GenericEndpointContext) => string \| null` |
 | `customAPIKeyValidator` | `(options: { ctx; key: string }) => boolean \| Promise<boolean>` |
 | `customKeyGenerator` | `(options: { length: number; prefix?: string }) => string \| Promise<string>` |
-| `customStorage` | Methods `{ get, set, delete }` |
+| `customStorage` | `SecondaryStorage`: the full secondary-storage contract `{ get, getAndDelete, increment(key, ttl), set(key, value, ttl), delete }`. Used instead of `ctx.context.secondaryStorage` and takes precedence over it. `getAndDelete` and `increment` are required (changed in 1.7) |
 
 ### Key generation configuration
 

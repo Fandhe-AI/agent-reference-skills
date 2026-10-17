@@ -43,21 +43,35 @@ export const authClient = createAuthClient({
 ### Generate nonce
 
 ```typescript
-const nonce = await authClient.siwe.nonce({
-    address: walletAddress,
-    chainId: 1  // optional
-})
+const { data } = await authClient.siwe.nonce()
+// data.nonce
 ```
+
+The nonce is not bound to a wallet address or Chain ID (one-step wallet flows may not know either until the wallet signs).
 
 ### Verify signature
 
 ```typescript
 await authClient.siwe.verify({
-    message,
-    signature,
-    address: walletAddress,
-    chainId: 1,  // optional
-    email: "user@example.com"  // optional
+    message,   // a valid ERC-4361 message
+    signature, // "0x..." from the wallet
+    email: "user@example.com"  // optional, required if anonymous is false
+})
+```
+
+Before accepting the signature, the plugin parses the message, consumes the matching server-issued nonce, derives the address and Chain ID from the signed message, requires the signed domain to match the configured `domain`, and honors `Expiration Time` / `Not Before`. Verification fails with a 401 (`UNAUTHORIZED_SIWE_MESSAGE_MISMATCH`) if any signed field is invalid. A SIWE signature proves control of the wallet, not ownership of `email`: the email is stored unverified and bound only when not already in use; when `anonymous` is `false` and the email belongs to another account, a wallet-derived address is used instead.
+
+### Chain-Specific Messages
+
+Chain selection belongs in the ERC-4361 message, not in the verification request body. Build the SIWE message with the wallet address, target Chain ID, and the issued nonce, have the wallet sign that exact message, then verify it. The signed message must include a positive Chain ID or verification fails with a 401.
+
+```typescript
+const nonce = await authClient.siwe.nonce()
+
+const { data, error } = await authClient.siwe.verify({
+  // The signed message contains the wallet address, Chain ID: 137, and Nonce: nonce.data?.nonce
+  message,
+  signature,
 })
 ```
 
@@ -66,10 +80,10 @@ await authClient.siwe.verify({
 | Property | Type | Description |
 |---|---|---|
 | `domain` | string | The application's domain name (required) |
-| `emailDomainName?` | string | Email domain used for non-anonymous accounts |
+| `emailDomainName?` | string | Custom email domain for wallet-derived addresses; if omitted, `{walletAddress}@siwe.placeholder.invalid` |
 | `anonymous?` | boolean | Allow sign-up without an email (default: true) |
-| `getNonce?` | function | Custom nonce generation function |
-| `verifyMessage?` | function | Custom message verification function |
+| `getNonce?` | function | Returns a globally unique ERC-4361 nonce (8-250 alphanumeric characters) as `Promise<string>` |
+| `verifyMessage?` | function | Signature recovery for the supplied address (e.g. viem's `verifyMessage`), returns `Promise<boolean>`; the plugin validates nonce, domain, address, Chain ID, and time bounds itself |
 | `ensLookup?` | function | ENS name/avatar lookup (optional) |
 
 ### DB schema (walletAddress table)
@@ -85,7 +99,8 @@ await authClient.siwe.verify({
 
 ## Notes
 
-- Supported chains: Ethereum mainnet (chainId: 1, default), Polygon (137), Arbitrum (42161), Base (8453)
+- Changed in 1.7: SIWE derives identity from the signed message. Remove wallet address and chain fields from `authClient.siwe.nonce()` and `authClient.siwe.getNonce()` calls. A server-side `getNonce` must return an ERC-4361 nonce of 8 to 250 alphanumeric characters. Better Auth reads the address and chain from the signed SIWE message.
+- Renamed in 1.7 docs: "Chain-Specific Examples" is now "Chain-Specific Messages"; the 1.6 chain list (Ethereum mainnet, Polygon, Arbitrum, Base) is no longer in the page — any positive Chain ID in the signed message is accepted.
 
 ## Related
 

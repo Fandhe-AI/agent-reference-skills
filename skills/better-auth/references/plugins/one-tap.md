@@ -12,10 +12,14 @@ import { oneTap } from "better-auth/plugins"
 
 export const auth = betterAuth({
     plugins: [
-        oneTap(),
+        oneTap({
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+        }),
     ]
 })
 ```
+
+`clientId` is required unless `socialProviders.google.clientId` is configured.
 
 ### Setup (client side)
 
@@ -114,7 +118,9 @@ await authClient.oneTap({
 })
 ```
 
-Automatically retries with exponential backoff. The callback is notified once `maxAttempts` is reached.
+If the prompt is dismissed without a sign-in, the plugin retries with exponential backoff based on `promptOptions`. A prompt your app closes with `google.accounts.id.cancel()` is not retried. A skipped prompt is not retried either (Google does not report why, and holds the prompt back for a cooldown after a user closes it). The callback is notified when the prompt is skipped or once `maxAttempts` is reached.
+
+The plugin passes a listener to Google's `prompt()`, so Google Identity Services logs a FedCM migration warning about prompt UI status methods; under FedCM the plugin only calls the methods FedCM supports, so the warning can be ignored.
 
 ## Options / Props
 
@@ -123,7 +129,7 @@ Automatically retries with exponential backoff. The callback is notified once `m
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `disableSignUp` | boolean | false | Restricts authentication to existing users only |
-| `clientId` | string | - | Google OAuth client ID (optional) |
+| `clientId` | string | - | Google client ID for ID token audience verification. Required unless `socialProviders.google.clientId` is configured |
 
 ### Client configuration options
 
@@ -154,6 +160,9 @@ Automatically retries with exponential backoff. The callback is notified once `m
 
 ## Notes
 
+- Changed in 1.7: Google One Tap requires a client ID: set `clientId` on `oneTap()` or configure the Google social provider with a client ID. One Tap now binds accounts to the verified Google subject (`sub`) instead of matching by email.
+- Hosted domain: One Tap applies `socialProviders.google.hd` like the standard Google flow (a token whose `hd` claim is missing or does not match is rejected; `hd: "*"` allows any Workspace domain but rejects tokens with no `hd`). With only `oneTap({ clientId })` and no `socialProviders.google`, no hosted-domain restriction applies.
+- Profile mapping: when `socialProviders.google` is configured, One Tap builds the user with its `mapProfileToUser` or `getUserInfo`. An extra mapped field (e.g. `given_name`) is saved only if declared in `user.additionalFields` and not `input: false`. With `overrideUserInfoOnSignIn`, a returning user is updated from the mapped profile on every One Tap sign-in. With only `oneTap({ clientId })`, the token's `name`, `email`, `email_verified`, and `picture` claims are used.
 - Requires accurate Authorized JavaScript Origins configuration in Google Cloud Console (e.g. http://localhost:3000, https://example.com)
 - When `promptOptions.fedCM` is enabled (default), `navigator.credentials.preventSilentAccess()` is called on sign-out
 - When FedCM is active, `cancelOnTapOutside` may not work (the browser manages the close behavior)

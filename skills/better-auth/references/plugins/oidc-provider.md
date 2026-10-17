@@ -2,7 +2,7 @@
 
 The OIDC Provider plugin lets you build and manage your own OpenID Connect provider, giving you full control over user authentication without depending on an external service.
 
-**Status**: This plugin is expected to be replaced by the OAuth Provider plugin in the near future.
+**Status**: Removed in 1.7. `oidcProvider` (from `better-auth/plugins`) was deleted; migrate to `oauthProvider` from `@better-auth/oauth-provider`. The content below documents the 1.6 plugin and is kept for migration reference only.
 
 ## Signature / Usage
 
@@ -229,8 +229,8 @@ When `useJWTPlugin: false` (the default), the ID token is signed with HMAC-SHA25
 - Client registration requires authentication by default. Set `allowDynamicClientRegistration: true` to allow public registration
 - Trusted clients with `skipConsent: true` bypass the consent screen entirely
 - For OIDC compliance, disable the `/token` endpoint and use `/oauth2/token` instead
-- This plugin is under active development and may not be suitable for production use
-- Migration to the OAuth Provider plugin is recommended
+- Removed in 1.7: the old `oidcProvider` plugin is removed. Replace `oidcProvider` from `better-auth/plugins` with `oauthProvider` from `@better-auth/oauth-provider` and move your configuration across. The v1.7.10 docs have no `oidc-provider` page and the plugins index no longer lists it.
+- Migrate OAuth client records: copy or re-register each `oauthApplication` as an `oauthClient` (the table is renamed). Map `redirectUrls` to `redirectUris`, convert `metadata` to JSON, and set the client's grant types and token-endpoint authentication method. Expire the old access tokens, then drop or rename the legacy `oauthAccessToken` table before creating the 1.7 token tables. The CLI does not copy these records or rename `oauthAccessToken.accessToken` to `token`.
 
 ## Related
 

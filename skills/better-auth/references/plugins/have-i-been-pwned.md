@@ -38,10 +38,26 @@ haveIBeenPwned({
 })
 ```
 
+### Custom password flows
+
+Use `isPasswordCompromised` to check passwords in server-side flows that do not use Better Auth endpoints.
+
+```typescript
+import { isPasswordCompromised } from "better-auth/plugins/haveibeenpwned"
+
+const compromised = await isPasswordCompromised(password)
+if (compromised) {
+    throw new Error("Please choose a password that has not been compromised")
+}
+```
+
+It sends only the first five characters of the password's SHA-1 hash to Have I Been Pwned and throws an `APIError` if the service cannot complete the check.
+
 ## Options / Props
 
 | Option | Type | Description |
 |---|---|---|
+| `enabled` | boolean | Enable or disable password checks (default `true`); useful to skip checks outside production |
 | `customPasswordCompromisedMessage` | string | Custom error message shown to the user |
 
 ## Notes

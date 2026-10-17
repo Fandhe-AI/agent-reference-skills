@@ -45,6 +45,7 @@ export const authClient = createAuthClient({
 // Client
 const { data, error } = await authClient.twoFactor.enable({
     password: "secure-password",
+    method: "totp", // "otp" | "totp", default "totp"
     issuer: "my-app-name"
 })
 
@@ -59,10 +60,15 @@ const data = await auth.api.enableTwoFactor({
 ```
 
 Parameters:
-- `password` (string, required): the user's password
-- `issuer` (string, optional): custom issuer name for the TOTP URI
+- `password` (string): the user's password; required for email/password accounts
+- `method` (`"otp" | "totp"`, optional, default `"totp"`): the 2FA method to enable
+- `issuer` (string, optional): custom issuer name for the TOTP URI (defaults to the app name)
 
-Unless `skipVerificationOnEnable: true` is set, `twoFactorEnabled` stays `false` until TOTP verification succeeds.
+The response is discriminated by `method`:
+- `"totp"`: returns `{ method: "totp", totpURI, backupCodes }`. Unless `skipVerificationOnEnable: true` is set, `twoFactorEnabled` stays `false` until a TOTP code is verified. Calling enable when the user already has a verified TOTP authenticator returns `TOTP_ALREADY_ENABLED`; disable the current authenticator first.
+- `"otp"`: returns `{ method: "otp" }` and sets `twoFactorEnabled` to `true` immediately. Requires `otpOptions.sendOTP` on the server; codes are sent at sign-in time.
+
+By default, enabling 2FA requires a password: users who signed up via OAuth, passkeys, magic links, or anonymous auth cannot enable 2FA unless `allowPasswordless: true` is set (password is still required if a credential account exists). This option does not change which sign-in methods are challenged for 2FA. Treat the TOTP URI as a secret and render the QR code locally.
 
 ### Disable 2FA
 
@@ -242,8 +248,9 @@ twoFactorClient({
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `twoFactorTable` | string | `"twoFactor"` | Table name for 2FA data |
-| `skipVerificationOnEnable` | boolean | `false` | Skip TOTP verification at enable time |
-| `issuer` | string | app name or "Better Auth" | Display name for the TOTP issuer |
+| `skipVerificationOnEnable` | boolean | `false` | Activate TOTP immediately without verifying an enrollment code |
+| `allowPasswordless` | boolean | `false` | Allow enabling and managing 2FA without a password for users with no credential account |
+| `issuer` | string | app name or "Better Auth" | Custom issuer name for the TOTP URI |
 
 ### TOTP options
 
@@ -296,7 +303,9 @@ twoFactorClient({
 
 ## Notes
 
-- 2FA can currently only be enabled for credential accounts. For social accounts, 2FA is assumed to already be handled by the provider
+- Changed in 1.7: `twoFactor.enable` (`enableTwoFactor`) accepts `method` (`"otp"` or `"totp"`, default `"totp"`) and returns a discriminated response; `totpURI` and backup codes are present only for `"totp"`. Callers that read `totpURI` or backup codes must branch on the returned `method`. `skipVerificationOnEnable` still works.
+- Changed in 1.7: a failed two-factor challenge cleanup returns the error code `FAILED_TO_INVALIDATE_TWO_FACTOR_CHALLENGE`.
+- 2FA is enabled for credential accounts by default; `allowPasswordless: true` allows passwordless users to enable it. For social accounts, 2FA is assumed to already be handled by the provider
 - When using server-side auth methods, response headers/cookies must be forwarded to subsequent 2FA calls to maintain state
 - OTP methods require implementing the `sendOTP` callback in the plugin configuration
 - Trusted devices are remembered for exactly 30 days, and the window resets on each successful login within it

@@ -9,6 +9,8 @@ Plugin integrating Chargebee's subscription management and billing with Better A
 ```bash
 npm install @chargebee/better-auth chargebee
 npx auth migrate
+# or, to write the schema for your own migration tooling
+npx auth generate
 ```
 
 ### Setup (server side)
@@ -100,6 +102,8 @@ Adds 4 tables:
 - `organization`: adds a `chargebeeCustomerId` field (when using the organization plugin)
 - `subscription`: tracks status, period, trial dates, seats, and metadata
 - `subscriptionItem`: stores individual plan/add-on/charge items
+
+- Schema errors (missing columns): run `npx auth generate` to regenerate the schema with the Chargebee plugin fields, then `npx auth migrate` (or your ORM's migration tool). The 1.7 docs use the `auth` CLI (`npx auth ...`) rather than `npx better-auth ...`.
 
 ## Related
 
