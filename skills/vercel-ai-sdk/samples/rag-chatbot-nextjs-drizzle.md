@@ -103,24 +103,26 @@ export const createResource = async (input: NewResourceParams) => {
   try {
     const { content } = insertResourceSchema.parse(input);
 
-    const [resource] = await db
-      .insert(resources)
-      .values({ content })
-      .returning();
-
     const embeddings = await generateEmbeddings(content);
-    await db.insert(embeddingsTable).values(
-      embeddings.map(embedding => ({
-        resourceId: resource.id,
-        ...embedding,
-      })),
-    );
+
+    await db.transaction(async tx => {
+      const [resource] = await tx
+        .insert(resources)
+        .values({ content })
+        .returning();
+
+      await tx.insert(embeddingsTable).values(
+        embeddings.map(embedding => ({
+          resourceId: resource.id,
+          ...embedding,
+        })),
+      );
+    });
 
     return 'Resource successfully created and embedded.';
   } catch (error) {
-    return error instanceof Error && error.message.length > 0
-      ? error.message
-      : 'Error, please try again.';
+    console.error('createResource failed', error);
+    return 'Error, please try again.';
   }
 };
 ```
@@ -184,4 +186,6 @@ export async function POST(req: Request) {
 
 - The guide starts from the `vercel/ai-sdk-rag-starter` repository (Drizzle config in `lib/db`, a `resources` table and the initial migration); `resources`, `insertResourceSchema` and `nanoid` come from that starter and are not shown here. Needs Postgres with the pgvector extension and `AI_GATEWAY_API_KEY`.
 - The UI is a plain `useChat` page that renders `tool-addResource` / `tool-getInformation` parts, same pattern as `quickstart-nextjs-app-router.md`.
+- Embeddings are generated before writing, and both inserts run in one db.transaction so a failure leaves no orphan resource row.
+- The official example returns error.message from the Server Action/tool result, which can leak DB or provider internals to the caller and the model; here the error is logged server-side and a generic message is returned.
 - Embedding calls are covered by `references/embeddings-batch/embed-many.md`. Drizzle schema and queries belong to the drizzle skill; `stopWhen: isStepCount(5)` lets the model answer after tool results.

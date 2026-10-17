@@ -72,6 +72,9 @@ export async function POST(req: Request) {
   // Clear any previous active stream and save the user message
   await saveChat({ id, messages, activeStreamId: null });
 
+  // Fixed once per request; shared by consumeSseStream and onEnd
+  const streamId = generateId();
+
   const result = streamText({
     model: 'openai/gpt-6-luna',
     messages: await convertToModelMessages(messages),
@@ -83,13 +86,13 @@ export async function POST(req: Request) {
       originalMessages: messages,
       generateMessageId: generateId,
       onEnd: async ({ messages }) => {
-        // Clear the active stream when finished
+        // Persist and clear only if this request's stream is still the active one
+        const current = await readChat(id);
+        if (current.activeStreamId !== streamId) return;
         await saveChat({ id, messages, activeStreamId: null });
       },
     }),
     async consumeSseStream({ stream }) {
-      const streamId = generateId();
-
       // Create a resumable stream from the SSE stream
       const streamContext = createResumableStreamContext({ waitUntil: after });
       await streamContext.createNewResumableStream(streamId, () => stream);
@@ -136,5 +139,6 @@ export async function GET(
 
 - You build the storage: a Redis instance for the stream, `resumable-stream`, and a persistence layer that records `activeStreamId` per chat. The SDK supplies the `resume` option, the `consumeSseStream` callback, and the automatic GET request to `/api/chat/[id]/stream` (customizable via `prepareReconnectToStreamRequest`). The `readChat` / `saveChat` store is not defined on the page.
 - The official example does not await `saveChat`; it is awaited here so completion is awaited and failures are not swallowed.
+- onEnd only persists and clears when the chat's activeStreamId still equals this request's streamId, so an older generation finishing late cannot overwrite a newer one; in production make this a compare-and-set in your store (e.g. a conditional UPDATE) so the check and write are atomic.
 - Official warning: in a resumable setup, client-side aborts (closing the tab, refresh, `stop()`) are treated as disconnects and do not cancel generation. Add a dedicated stop endpoint (persist the partial assistant message, cancel the work, clear `activeStreamId` only if it still matches).
 - `DefaultChatTransport` treats resumed streams as full replays; set `resumeStreamIsReplay: false` if your endpoint sends only remaining chunks. Clear `activeStreamId` when starting a new stream to avoid resuming outdated streams, and authenticate both create and resume endpoints.

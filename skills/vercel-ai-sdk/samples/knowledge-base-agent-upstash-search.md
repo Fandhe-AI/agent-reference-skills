@@ -165,7 +165,8 @@ async function main(prompt: string) {
             await index.delete({ ids: [resourceId] });
             return `Successfully deleted resource with ID: ${resourceId}`;
           } catch (error) {
-            return `Failed to delete resource: ${error instanceof Error ? error.message : 'Unknown error'}`;
+            console.error('deleteResource failed', error);
+            return 'Failed to delete resource.';
           }
         },
       }),
@@ -197,4 +198,5 @@ pnpm tsx agent.ts
 
 - Upstash Search provides its own embedding service and reranking, so no separate embedding provider is needed; create the database in the Upstash Console to obtain the REST URL and token. Upstash client details belong to the upstash skill.
 - The "agent" here is plain `generateText` with tools and `stopWhen: isStepCount(5)`, not `ToolLoopAgent`; compare `references/agents/tool-loop-agent.md`.
+- The official example returns error.message in the deleteResource tool result, which can leak provider internals to the model; here the error is logged server-side and a fixed message is returned.
 - A delete tool is exposed to the model; in production gate such tools (see `chatbot-tool-execution-approval.md`).

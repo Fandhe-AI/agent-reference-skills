@@ -55,7 +55,8 @@ Rules:
       const output = await runMemoryCommand(input);
       return { output };
     } catch (error) {
-      return { output: `Memory action failed: ${(error as Error).message}` };
+      console.error('memory tool failed', error);
+      return { output: 'Memory action failed.' };
     }
   },
 });
@@ -111,4 +112,5 @@ console.log(result.text);
 - `runMemoryCommand`, `readCoreMemory` and `appendConversation` are user-defined; the official page's appendix implements them over a `.memory/` directory (`core.md` core memory, `notes.md` archival memory, `conversations.jsonl` recall memory). Add `.memory` to `.gitignore`.
 - `prepareCall` runs once per `agent.generate` / `agent.stream` call, not on every step of the tool loop. A `core.md` update made by the model is reflected in the instructions from the next `generate` call; to pick it up mid-call, re-read it in `prepareStep`. Modified from the official page, which describes `prepareCall` as running on each loop iteration.
 - The page also shows a bash-backed route (`just-bash` with an AST-based command allowlist guard); it is more flexible but needs careful command validation against prompt injection. The structured-actions route only runs the four predefined actions.
+- The official example returns error.message in the memory tool result, which can leak filesystem or internal details to the model; here the error is logged server-side and a fixed message is returned.
 - This is an AI SDK `ToolLoopAgent` pattern. Agent-memory features of other SDKs belong to openai-agents, anthropic-agent-sdk or anthropic-managed-agents; Claude Code memory files belong to anthropic-claude-code.
