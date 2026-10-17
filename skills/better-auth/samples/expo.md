@@ -64,3 +64,5 @@ const makeAuthenticatedRequest = async () => {
 - `storage` is the SecureStore-compatible storage for session data and cookies; reuse the same storage instance across clients that access the same stored data
 - The app's `scheme` from `app.json` must be listed in the server's `trustedOrigins`; during development also trust `exp://` wildcards, but never in production
 - Requires Expo SDK 53+ for default Metro package-exports support; don't set `resolver.unstable_enablePackageExports = false`. On native, `signIn.social` does not navigate automatically — call `router.replace(...)` yourself
+- Official example: github.com/better-auth/examples/tree/main/expo-example
+- Source: https://better-auth.com/docs/integrations/expo (docs: GitHub tag v1.7.10, https://github.com/better-auth/better-auth/blob/v1.7.10/docs/content/docs/integrations/expo.mdx)
