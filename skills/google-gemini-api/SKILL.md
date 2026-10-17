@@ -11,7 +11,7 @@ user-invocable: false
 
 # Google Gemini API
 
-> 分割 PR の途中段階。現在収録済み: references/{generate-content, getting-started, interactions-core, live-realtime, managed-agents}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{generate-content, getting-started, interactions-core, live-realtime, managed-agents, media-generation, migration, models}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 Google Gemini API (Gemini Developer API, `ai.google.dev`) のリファレンススキル。Interactions API を中心に、generateContent・Live API・Managed Agents・各種ツール・メディア生成・運用・移行を収録する。
 
@@ -31,6 +31,7 @@ Google Gemini API (Gemini Developer API, `ai.google.dev`) のリファレンス�
 
 - managed-agents: `anthropic-managed-agents`、`anthropic-agent-sdk`、`openai-agents`、`hermes-agent` とは別物。managed-agents の hooks は `anthropic-claude-code-extend`、`lefthook`、`react-hook-form`、`fastify` の hooks とは別物
 - live-realtime / ephemeral tokens / speech generation: `openai-realtime-audio` とは別物
+- media-generation（Nano Banana, Omni, Veo）: `openai-images-video` とは別物
 - getting-started/coding-agents の `gemini-api-dev` スキルと Gemini Docs MCP は本リポジトリのスキルでも Claude Code の Agent Skills (`anthropic-claude-code-extend`) でもない
 - Gemini CLI（別製品、本リポジトリに担当スキルなし）と Firebase AI Logic は対象外
 
@@ -61,10 +62,24 @@ skills/google-gemini-api/
       overview.md  get-started-sdk.md  get-started-websocket.md  capabilities.md
       tool-use.md  session-management.md  best-practices.md  thinking.md
       live-translate.md  live-transcribe.md  realtime-music-generation.md  ephemeral-tokens.md
+    media-generation/
+      README.md
+      image-generation.md  omni.md  veo.md  speech-generation.md
+      voice-design.md  voice-replication.md  music-generation.md  lyria-prompt-guide.md
     managed-agents/
       README.md
       agents-overview.md  quickstart.md  antigravity-agent.md  custom-agents.md
       deep-research.md  environments.md  credentials.md  hooks.md
+    models/
+      README.md
+      models-catalog.md  gemini-4-3-models.md  gemini-2-models.md  gemini-3-developer-guide.md
+      whats-new-gemini-4-argon.md  whats-new-gemini-3-7.md  whats-new-gemini-3-6.md  whats-new-gemini-3-5.md
+      agent-models.md  audio-live-models.md  image-video-models.md  music-models.md
+      embedding-models.md  specialized-models.md
+    migration/
+      README.md
+      migrate-to-interactions.md  interactions-breaking-changes-may-2026.md  migrate-genai-sdk.md
+      api-versions.md  deprecations.md  openai-compatibility.md  developer-api-vs-platform.md
 ```
 
 ## 探索手順
@@ -74,6 +89,7 @@ skills/google-gemini-api/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
+4. 新規コードは Interactions API（`interactions-core`）を第一候補とし、旧 generateContent は `generate-content`、移行は `migration` を引く
 
 ## タスク → カテゴリ マッピング
 
@@ -84,4 +100,7 @@ skills/google-gemini-api/
 | background 実行・implicit caching・long decode・safety settings・プロンプト設計 | interactions-core | [references/interactions-core/README.md](references/interactions-core/README.md) |
 | 旧 generateContent API の使い方（thought signatures・explicit caching・トークン計数） | generate-content | [references/generate-content/README.md](references/generate-content/README.md) |
 | Live API（WebSocket / SDK）・セッション管理・ephemeral tokens・live translate / transcribe | live-realtime | [references/live-realtime/README.md](references/live-realtime/README.md) |
+| 画像生成 (Nano Banana)・Omni・Veo・TTS・音楽生成 (Lyria)・voice design | media-generation | [references/media-generation/README.md](references/media-generation/README.md) |
 | Managed Agents・Antigravity agent・Deep Research・environments・credentials・hooks | managed-agents | [references/managed-agents/README.md](references/managed-agents/README.md) |
+| モデル一覧・世代別 what's new・埋め込み / 音声 / 画像動画 / agent モデル | models | [references/models/README.md](references/models/README.md) |
+| generateContent から Interactions への移行・SDK 移行・破壊的変更・非推奨・OpenAI 互換 | migration | [references/migration/README.md](references/migration/README.md) |
