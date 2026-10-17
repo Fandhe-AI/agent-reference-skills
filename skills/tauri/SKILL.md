@@ -9,7 +9,7 @@ user-invocable: false
 
 # Tauri v2
 
-> 分割 PR の途中段階。現在収録済み: references/{cli, config, develop, distribute, getting-started, js-api, plugin-js-api-app, plugin-js-api-core, plugins-app, plugins-core}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{cli, config, develop, distribute, getting-started, js-api, plugin-js-api-app, plugin-js-api-core, plugins-app, plugins-core, rust-api, security}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -50,6 +50,14 @@ skills/tauri/
       mobile-plugin-development.md
       mocking.md
       webdriver-overview.md
+    security/               # capabilities / permissions / scope / runtime authority / CSP / ACL スキーマ
+      README.md
+      capabilities.md
+      permissions.md
+      scope.md
+      runtime-authority.md
+      csp.md
+      core-permissions.md
     config/                 # tauri.conf.json の各設定オブジェクト
       README.md
       overview.md
@@ -67,6 +75,17 @@ skills/tauri/
       ios.md
       plugin.md
       signer.md
+    rust-api/               # tauri crate の Rust API
+      README.md
+      crate-overview.md
+      builder.md
+      app-handle.md
+      command-macros.md
+      manager.md
+      state.md
+      events.md
+      plugin-builder.md
+      webview-window.md
     js-api/                 # @tauri-apps/api
       README.md
       overview.md
@@ -124,6 +143,7 @@ skills/tauri/
 
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. 該当ページの `.md` を Read して詳細を確認する
+3. Rust 側 API は `rust-api`、フロントエンド側 API は `js-api` または `plugin-js-api-*`、プラグインの導入・設定・permission はガイド側 `plugins-core` / `plugins-app` を引く
 
 ## タスク → カテゴリ マッピング
 
@@ -134,8 +154,12 @@ skills/tauri/
 | IPC・Process Model・Isolation Pattern・v1 / beta からの移行を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | Rust コマンドをフロントエンドから呼びたい（invoke / Channel） | develop | [references/develop/README.md](references/develop/README.md) |
 | 状態管理・sidecar・resources・アイコン・プラグイン開発・デバッグ・テスト・WebDriver | develop | [references/develop/README.md](references/develop/README.md) |
+| capabilities / permissions / scope (ACL) を設定したい | security | [references/security/README.md](references/security/README.md) |
+| CSP・asset protocol・HTTP headers・コア permission を確認したい | security | [references/security/README.md](references/security/README.md) |
 | tauri.conf.json の window / bundle / build / app / security 設定 | config | [references/config/README.md](references/config/README.md) |
 | tauri dev / build / bundle / android / ios / icon / signer / plugin コマンドのオプション | cli | [references/cli/README.md](references/cli/README.md) |
+| Rust の Builder・App・AppHandle・Manager・State・イベント・メニュー・トレイ | rust-api | [references/rust-api/README.md](references/rust-api/README.md) |
+| `#[command]` / `generate_handler!` / IPC Channel / プラグインビルダー | rust-api | [references/rust-api/README.md](references/rust-api/README.md) |
 | @tauri-apps/api の core / event / window / webview / menu / tray / path | js-api | [references/js-api/README.md](references/js-api/README.md) |
 | fs / http / shell / sql / store / log / opener / os / process プラグインの導入と設定 | plugins-core | [references/plugins-core/README.md](references/plugins-core/README.md) |
 | コアプラグイン (cli / fs / http / log / opener / os / process / shell / sql / store / stronghold / upload / websocket) の JS 関数シグネチャ (@tauri-apps/plugin-*) | plugin-js-api-core | [references/plugin-js-api-core/README.md](references/plugin-js-api-core/README.md) |
