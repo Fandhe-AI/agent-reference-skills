@@ -43,7 +43,10 @@ __tile_global__ void vec_add(float* __restrict__ a, float* __restrict__ b, float
 | `@` operator / `mma` | tile primitive | Matrix multiplication |
 | `sum`, `max`, `cumsum` | tile primitive | Reductions and scans along one or more axes |
 | `where` / `select` | tile primitive | Element selection |
-| `atomic_add`, `atomic_max`, `atomic_min`, `atomic_cas` | tile primitive | Atomic memory operations, for both cross-block and intra-block contention |
+| `atomic_add`, `atomic_sub` (C++ only), `atomic_max`, `atomic_min`, `atomic_xchg`, `atomic_cas` (`atomic_compare_exchange` in C++) | tile primitive | Atomic memory operations, for both cross-block and intra-block contention. `atomic_xchg` writes the value(s) and returns the previous value(s); `atomic_cas` replaces the value in memory with the desired value only where it matches the expected value |
+| `TiledView.atomic_store_add(index, update)` (Python) / `partition_view` / `strided_view` member `atomic_add`, `atomic_sub`, `atomic_and`, `atomic_or`, `atomic_xor`, `atomic_max`, `atomic_min` (C++) | tile primitive | Reduction-style atomics addressed by a tile-space index; return no value and lower to an atomic reduction in PTX. Preferred when the prior value is not needed. C++ `ct::gather_scatter_view` does not provide them |
+| `ct::strided_view` / `traversal_steps` (Python `Array.tiled_view`), `ct::gather_scatter_view` / `ct.load_advanced_indexing`, `ct.store_advanced_indexing` | tile-space | Tile spaces besides the default partition view: fixed-shape chunks separated by a stride (gaps or overlap), and chunks selected along one dimension by a tile of element indices |
+| `check_bounds` (Python `ct.load` / `ct.store` / `ct.gather` / `ct.scatter`, `TiledView.load` / `store`) | keyword | Defaults to `True`. With `check_bounds=False`, an access past the array is undefined behavior (reads or overwrites adjacent memory) |
 | `cutile::hint` (C++) / decorator or call-site keyword (Python) | attribute | Optimization metadata controlling CTAs per cluster, occupancy, latency, and TMA usage |
 
 ## Notes
@@ -51,6 +54,10 @@ __tile_global__ void vec_add(float* __restrict__ a, float* __restrict__ b, float
 - Tile-space loads use a *partition view* (structured indexing over an array conceptually partitioned into equally sized tiles); gather/scatter loads instead use index or pointer tiles for irregular access patterns.
 - Element-wise arithmetic follows NumPy-style broadcasting when combining tiles of different shapes.
 - C++ performance tips: use `__restrict__` pointers, mark 16-byte alignment with `ct::assume_aligned`, prefer `partition_view` over gather/scatter when access is regular, and use `ct::irange` for loops.
+- CPG 13.4: a partition view is one of several tile spaces over an array (partition view is what `Array.tiled_view` produces by default). Others, available in both languages: strided (`ct::strided_view`; Python `traversal_steps` argument to `Array.tiled_view`) and gather/scatter (`ct::gather_scatter_view`; Python `ct.load_advanced_indexing` / `ct.store_advanced_indexing`). See the per-language API references.
+- Out-of-bounds stores: Python `ct.store` bounds-checks by default and silently discards out-of-bounds writes (`check_bounds=False` makes them undefined behavior). `PaddingMode.UNDETERMINED` (the default) leaves out-of-bounds lane values unspecified but the tile is still bounds-checked, so the load never reads outside the array.
+- Atomics (CPG 13.4): in Python the `TiledView` reduction-style atomics use an `atomic_store_` prefix (e.g. `TiledView.atomic_store_add(index, update)`, previously `atomic_add`); the example kernel uses `out.tiled_view((1,)).atomic_store_add((0,), partial)`. In C++, the `ct::partition_view` / `ct::strided_view` member forms instead take the value tile first and the index last, as `.store()` does (Python `TiledView` takes the index first). Exchange is spelled `atomic_xchg` (earlier text said `atomic_xchng`).
+- Explicit rounding / subnormal control is available both for element-wise arithmetic (`ct.add`, `ct::add`) and for transcendentals (e.g. `exp`, `tanh`).
 - See the "Tile Programming in CUDA" section of the Programming Model page for the conceptual relationship between tile programming and SIMT programming, and for the array/tile data-model distinction.
 
 ## Related

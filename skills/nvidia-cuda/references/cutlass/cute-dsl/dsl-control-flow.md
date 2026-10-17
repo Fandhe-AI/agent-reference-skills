@@ -35,6 +35,7 @@ if dynamic_predicate:    # unannotated predicate -> IR branch
 
 ## Notes
 
+- `prefetch_stages` split points (v4.8.0): the compiler recognizes two. (1) A TMA bulk copy: at least one `cute.copy(tma_atom, ..., tma_bar_ptr=...)` paired with an mbarrier wait on the same barrier. (2) A cp.async group: copies with a cp.async atom followed by `cute.arch.cp_async_commit_group()` and `cute.arch.cp_async_wait_group(0)`, in a canonical loop (start 0, step 1) whose circular-buffer slot is indexed as `i % stages`. Loops with neither split point, or outside these shapes, get a warning ("software pipelining ('prefetch_stages') skipped") and are compiled without pipelining. Experimental; sm90 and above.
 - Dynamic control-flow limitations: early-exit constructs (`break`, `continue`, `pass`, `return`, exceptions) are unsupported; values defined inside a control-flow body are unavailable outside it; a variable's type cannot change within a control-flow body; operations trace only while tracing is active in that region.
 
 ## Related

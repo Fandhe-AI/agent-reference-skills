@@ -91,6 +91,10 @@ Each SM has its own register file and shared memory, accessible extremely quickl
 
 GPUs have both L1 and L2 caches. Each SM's L1 cache is part of its unified data cache; a larger L2 cache is shared by all SMs in the GPU. Each SM also has a separate constant cache for global-memory values declared constant over a kernel's life (the compiler may also place kernel parameters here), which can improve performance by caching them separately from the L1 data cache.
 
+#### Locality domains
+
+A locality domain is a subset of a GPU's memory and streaming multiprocessors (SMs). All GPUs have at least one locality domain; larger GPUs may have more than one. On GPUs with more than one locality domain, performance of some kernels can be improved by using localized memory and compute. Localized memory is a memory allocation contained entirely within a single locality domain, and kernels using it can be scheduled on SMs within the same locality domain. Applications benefit when memory and compute are divided between locality domains and work can be issued to each domain in parallel. GPU memory allocated without specifying a locality domain is unlocalized; unlocalized allocations span locality domains, except for very small allocations. On GPUs with only one locality domain, all SMs and memory belong to that domain. Locality domains are a performance feature: CUDA code which does not localize memory or compute still executes correctly.
+
 #### Unified memory
 
 Explicitly allocated CPU or GPU memory is only accessible to code running on that respective device; CUDA APIs are used to explicitly copy data between them at the right time. Unified memory instead allows allocations accessible from both CPU and GPU — the CUDA runtime or hardware relocates or enables access to the data as needed. Even with unified memory, optimal performance still comes from minimizing migration and accessing data from the processor directly attached to where it resides.
@@ -101,3 +105,4 @@ Explicitly allocated CPU or GPU memory is only accessible to code running on tha
 - [Writing SIMT Kernels](./writing-cuda-kernels.md)
 - [Intro to CUDA C++](./intro-to-cuda-cpp.md)
 - [Unified and System Memory](./understanding-memory.md)
+- [Locality Domains](../advanced/features/locality-domains.md)

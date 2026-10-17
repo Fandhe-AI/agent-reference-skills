@@ -25,9 +25,10 @@ nvcc -gencode=arch=compute_90,code=sm_90 \
 
 ## Notes
 
-- Binary compatibility: GPUs guarantee binary compatibility within the same major compute capability version. A cubin compiled for CC 8.6 runs on CC 8.6 or 8.9 GPUs, but not on CC 8.0 (a lower minor version).
+- Binary compatibility: GPUs guarantee binary compatibility within the same major compute capability version. A cubin compiled for CC 8.6 runs on CC 8.6 or 8.9 GPUs, but not on CC 8.0 (a lower minor version). Beginning with CC 10.0 this intra-family compatibility is software-managed by the driver (see Binary Finalization below); cubins for CC 9.x and earlier are not eligible for runtime re-finalization.
 - PTX compatibility: PTX embedded in an executable enables forward compatibility, since the device driver JIT-compiles it at runtime for equal or higher compute capabilities without needing to rebuild the application.
 - Just-in-time compilation: the device driver JIT-compiles PTX to binary at runtime, which increases load time but allows the application to benefit from newer compiler improvements and to execute on future GPUs. The compute cache automatically stores compiled binaries and invalidates them upon driver upgrades.
+- Binary Finalization (CPG 13.4, section 1.3.4.4): a cubin for CC 10.0 or later uses a format that extends the binary representation. A cubin finalized for one target architecture runs directly on that target (on-target), or, when loaded on a different but compatible architecture in the same GPU family, the driver just-in-time re-finalizes it (off-target finalization, enabling off-target execution). This is not PTX JIT compilation: PTX JIT compiles PTX into binary already finalized for the target, whereas off-target finalization re-finalizes an existing cubin. It is significantly cheaper than PTX JIT but can still increase module load time (cost depends on code size, host CPU resources during module load, and the source/target architecture relationship). The driver may cache off-target finalization results, controlled by the same `CUDA_CACHE_*` environment variables as the PTX JIT compute cache.
 
 ## Related
 

@@ -32,7 +32,13 @@ target.is_portable_to(other_target)
 | `ArchPortability.FamilyPortable` | Compatible within the same architecture family (Blackwell+) |
 | `ArchPortability.ArchConditional` | Architecture-specific only (Hopper+) |
 
+## Notes
+
+- For performance ranking and the `heuristic=` parameter of `get_operators`, see API: Heuristics (`api-heuristics.md`). The signature above lists only the parameters shown in the earlier distillation; the rendered 4.8.0 page documents `heuristic` as well.
+
 ## Related
+
+- [API: Heuristics](./api-heuristics.md)
 
 - [API: Operator](./api-operator.md)
 - [API: Metadata](./api-metadata.md)

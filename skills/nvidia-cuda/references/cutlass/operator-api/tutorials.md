@@ -12,14 +12,16 @@ operators/tutorials/
 ├── 003_host_latency_best_practices.html              — host latency best practices
 ├── 004_fake_tensors.html                             — fake tensors for compilation
 ├── 005_grouped_gemm_contiguous_offset.html           — grouped GEMM with contiguous offset
-└── 006_block_scaled_gemm.html                        — block-scaled GEMM (MXFP8)
+├── 006_block_scaled_gemm.html                        — block-scaled GEMM (MXFP8)
+└── 007_heuristics.html                               — heuristics to rank operators
 ```
 
 ## Notes
 
-- This is a navigation/index page; content lives in the seven linked tutorial pages.
+- This is a navigation/index page; content lives in the eight linked tutorial pages (000–007).
 
 ## Related
 
 - [Overview](./overview.md)
 - [Tutorial 000: GEMM](./tutorial-000-gemm.md)
+- [Tutorial 007: Heuristics to Rank Operators](./tutorial-007-heuristics.md)

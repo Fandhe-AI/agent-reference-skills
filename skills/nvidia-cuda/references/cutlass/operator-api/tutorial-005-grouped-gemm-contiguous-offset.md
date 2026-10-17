@@ -14,7 +14,9 @@ def reference_contiguous_offset_grouped_gemm(A, B, offsets, out_dtype):
         start = end
     return out
 
-args = ops.GroupedGemmArguments(A, B, out, accumulator_type=torch.float32, offsets=offsets)
+args = ops.IndexPtrGroupedGemmArguments(
+    A, B, out, accumulator_type=torch.float32, offsets=offsets, offsets_along="m"
+)
 operators = ops.get_operators(args)
 operator = operators[0]
 compiled_artifact = operator.compile(args)
@@ -29,11 +31,12 @@ operator.run(args, compiled_artifact=compiled_artifact)
 | `A` | `(TotalM, K)` — `TotalM = sum(M_i)`; problems packed contiguously along M |
 | `B` | `(G, K, N)` — `B[i, :, :]` is the i-th problem's B operand |
 | `offsets` | Shape `(G,)`; ending M coordinate per problem, e.g. `[M0, M0+M1, M0+M1+M2]` |
-| `GroupedGemmArguments` | Takes `A`, `B`, `out`, `accumulator_type`, `offsets` |
+| `IndexPtrGroupedGemmArguments` | Takes `A`, `B`, `out`, `accumulator_type`, `offsets`, and `offsets_along` (the logical dimension partitioned by `offsets`; `"m"` here) |
 
 ## Notes
 
 - Requires a Blackwell GPU (`sm_100f` family).
+- Renamed in 4.8.0: the earlier `ops.GroupedGemmArguments(A, B, out, accumulator_type=..., offsets=offsets)` is deprecated and will be removed in a future release; the notebook now uses `IndexPtrGroupedGemmArguments(..., offsets_along="m")`. The same operation is performed by `torch._grouped_mm` (torch < 2.10) / `torch.nn.functional.grouped_mm` (torch >= 2.10).
 
 ## Related
 
