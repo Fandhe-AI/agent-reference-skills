@@ -150,6 +150,6 @@ Notes:
 
 - [Thinking (generateContent)](./thinking.md)
 - [Context caching incl. explicit caching (generateContent)](./explicit-caching.md)
-- Gemini 3 developer guide (models)
-- What's new in Gemini 4 Argon (models)
-- What's new in Gemini 3.7 (models)
+- [Gemini 3 developer guide (models)](../models/gemini-3-developer-guide.md)
+- [What's new in Gemini 4 Argon (models)](../models/whats-new-gemini-4-argon.md)
+- [What's new in Gemini 3.7 (models)](../models/whats-new-gemini-3-7.md)
