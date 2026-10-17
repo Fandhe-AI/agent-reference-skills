@@ -11,19 +11,23 @@ There are cases in which you may want to connect the event handlers to another D
 Using the event manager:
 
 ```jsx
-const events => useThree(state => state.events)
+const events = useThree((state) => state.events)
 useEffect(() => {
-  state.events.connect(domNode)
+  events.connect(domNode)
+}, [events])
 ```
 
 Or the `eventSource` shortcut on the canvas (DOM only), which accepts dom-nodes and React.RefObjects to dom-nodes:
 
-```jsx
+```tsx
 function App() {
-  const target = useRef()
+  const target = useRef<HTMLDivElement>(null!)
   return (
     <div ref={target}>
-      <Canvas eventSource={target.current}>
+      <Canvas eventSource={target}>{/* ... */}</Canvas>
+    </div>
+  )
+}
 ```
 
 ### Using a different prefix (DOM only)
@@ -33,12 +37,14 @@ By default Fiber will use offsetX/offsetY to set up the raycaster. You can chang
 ```jsx
 function App() {
   return (
-    <Canvas eventPrefix="client">
+    <Canvas eventPrefix="client">{/* ... */}</Canvas>
+  )
+}
 ```
 
 ## Notes
 
-- Snippets are verbatim from the docs and are partial (unclosed in the original).
+- The docs snippets read `const events =>` with `state.events`, are unclosed, and pass `target.current` (null on first render) to `eventSource`; corrected here to working forms. Pass the RefObject itself, as the docs text says `eventSource` accepts React.RefObjects.
 - `eventSource` and `eventPrefix` are DOM only.
 
 ## Related

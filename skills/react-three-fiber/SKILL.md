@@ -12,7 +12,7 @@ user-invocable: false
 
 対象バージョン: `@react-three/fiber` 9.8.2（GitHub tag `v9.8.2`、commit `d74622ea8ed717f7212d7e19d65ff3e325508389`、npm latest 9.8.2）。同梱: `@react-three/test-renderer` 9.1.1、`@react-three/eslint-plugin` 0.1.2。取得日 2026-10-17。
 
-- tag 時点の `package.json` / CHANGELOG は 9.8.1 のまま。9.8.2 の変更は GitHub Release 本文にのみ記載
+- tag 時点の `package.json` / CHANGELOG は 9.8.1 のまま。9.8.2 の変更は GitHub Release 本文にのみ記載 (https://github.com/pmndrs/react-three-fiber/releases/tag/v9.8.2)
 - 公式ドキュメントサイトのルートは tag と同一。サイトの `/next` は v10 alpha のため参照禁止（v10.0.0-alpha.5 / canary は未収録）
 - three.js 本体のクラス API（geometry / material / loader / renderer）は threejs スキル、`@theatre/r3f` は theatrejs スキルの担当。`@react-three/drei` は別パッケージで未収録
 

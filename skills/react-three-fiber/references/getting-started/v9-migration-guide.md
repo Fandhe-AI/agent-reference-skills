@@ -103,7 +103,7 @@ Recent Three.js now includes a WebGPU renderer. While still a work in progress a
 ```tsx
 import * as THREE from 'three/webgpu'
 import * as TSL from 'three/tsl'
-import { Canvas, extend, useFrame, useThree } from '@react-three/fiber'
+import { Canvas, extend, useFrame, useThree, type ThreeToJSXElements } from '@react-three/fiber'
 
 declare module '@react-three/fiber' {
   interface ThreeElements extends ThreeToJSXElements<typeof THREE> {}
@@ -134,13 +134,13 @@ Automatic sRGB conversion of texture props has been removed. Color textures are 
 
 The handling of Suspense and fallback content has improved in React and R3F. Side-effects like attach and constructor effects (e.g., controls adding event listeners) no longer fire repeatedly without proper cleanup during suspension.
 
-```jsx
-import { ThreeElement, useThree } from '@react-three/fiber'
+```tsx
+import { extend, type ThreeElement, useThree } from '@react-three/fiber'
 import { OrbitControls } from 'three/addons'
 
 declare module '@react-three/fiber' {
   interface ThreeElements {
-    OrbitControls: ThreeElement<typeof OrbitControls>
+    orbitControls: ThreeElement<typeof OrbitControls>
   }
 }
 
@@ -151,7 +151,7 @@ function Controls() {
   const gl = useThree((state) => state.gl)
 
   // Will only initialize when tree is connected to screen
-  return <orbitControls args={[camera, gl.domElement]}>
+  return <orbitControls args={[camera, gl.domElement]} />
 }
 
 <Suspense>
@@ -261,6 +261,7 @@ console.log(store.getState())
 ## Notes
 
 - Verbatim sections above are retained from the official guide; the summary table is added for lookup.
+- The docs WebGPU snippet omits the `ThreeToJSXElements` import; added here. The docs Suspense snippet uses key `OrbitControls` with `<orbitControls>`, lacks the `extend` import and a closing tag; corrected here (key `orbitControls`, `extend` imported, self-closed).
 - WebGPU renderer classes (`WebGPURenderer`) and color management belong to the threejs skill.
 - Other categories carry per-page `Migration (v8 → v9): ...` notes where affected.
 

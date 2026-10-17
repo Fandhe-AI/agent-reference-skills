@@ -9,10 +9,11 @@ Creates a ReactThreeTestRenderer instance from a `three` element such as `<mesh 
 ## Signature / Usage
 
 ```tsx
-const renderer = ReactThreeTestRenderer.create(element, options)
+// create(element: React.ReactNode, options?: Partial<CreateOptions>): Promise<Renderer>
+const renderer = await ReactThreeTestRenderer.create(element, options)
 ```
 
-By default, it won't create an actual `THREE.WebGLRenderer` and there will be no loop. But it will still render the complete scene graph. Returns the properties below.
+By default, it won't create an actual `THREE.WebGLRenderer` and there will be no loop. But it will still render the complete scene graph. Returns a Promise that resolves to an object with the properties below (signature from `packages/test-renderer/src/index.tsx` at v9.8.2).
 
 ## Options / Props
 

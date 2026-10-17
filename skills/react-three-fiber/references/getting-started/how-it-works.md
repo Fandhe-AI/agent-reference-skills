@@ -49,7 +49,7 @@ Our `Canvas` element will create a new scene, and Fiber will instantiate new obj
 
 Additionally, Fiber will:
 
-- Setup a new perspective camera at [0, 0, 0] and set it as default
+- Setup a new perspective camera at [0, 0, 5] and set it as default
 - Setup a **render loop** with automatic render to screen
 - Setup pointer events via raycasting on all meshes with `onPointer` props
 - Setup tone mapping
@@ -148,7 +148,7 @@ mesh.scale.set(3, 4, 5)
 
 Pointer Events are transparently handled by Fiber. On startup, it will create a raycaster for mouse picking.
 
-Every object with `onPointer` props will be added to the array of objects checked every frame by the raycaster:
+Every object with `onPointer` props will be added to the array of objects checked by the raycaster when pointer events occur:
 
 ```jsx
 <mesh onPointerDown={console.log}>...</mesh>
@@ -179,6 +179,8 @@ The loop is setup using `setAnimationLoop`, which will execute its callback ever
 ## Notes
 
 - JSX elements map to three.js classes; the class APIs (`Mesh`, `BoxGeometry`, `Raycaster`, `WebGLRenderer.setAnimationLoop`) belong to the threejs skill.
+- The tutorial text says the default camera is at `[0, 0, 0]`; the Canvas API defaults table (camera position `[0, 0, 5]`) is authoritative.
+- The tutorial says objects are checked every frame; per the Events API, raycasting runs only on user interaction (use `events.update()` otherwise, see raycast-without-interaction.md).
 - `useCamera` is from `@react-three/drei`, a separate package not covered by this skill.
 
 ## Related

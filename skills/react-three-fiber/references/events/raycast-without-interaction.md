@@ -9,10 +9,11 @@ By default Fiber will only raycast when the user is interacting with the canvas.
 ## Signature / Usage
 
 ```jsx
-const events => useThree(state => state.events)
+const events = useThree((state) => state.events)
 useEffect(() => {
   // Will trigger a onPointerMove with the last-known pointer event
-  state.events.update()
+  events.update()
+}, [events])
 ```
 
 You can abstract this into more complex logic:
@@ -32,7 +33,7 @@ function RaycastWhenCameraMoves() {
 
 ## Notes
 
-- Snippets are verbatim from the docs and are partial.
+- The first docs snippet reads `const events =>` and `state.events`; corrected here to a working form. The second snippet is verbatim and partial.
 
 ## Related
 
