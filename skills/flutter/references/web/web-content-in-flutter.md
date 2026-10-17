@@ -105,7 +105,8 @@ PointerInterceptor(
 ## Notes
 
 - When `intercepting` is `false`, `PointerInterceptor` renders its `child` directly without creating an extra platform view in the DOM.
-- To embed a full HTML page inside a Flutter app, the Flutter team offers the plugin `package:webview_flutter`.
+- To embed a full HTML page in a Flutter web app, use an `iframe` through `HtmlElementView.fromTagName(tagName: 'iframe')` (see the Drawer example above). The source points to the Flutter team's `package:webview_flutter`, but that plugin targets Android, iOS, and macOS only; web support exists only in the separate, non-endorsed `package:webview_flutter_web` (iframe-based, limited API).
+- The source recommends `package:webview_flutter` without stating its platforms; the platform scope and the iframe alternative were added here.
 - `HtmlElementView` is a Flutter widget (Dart, web only); the `Scaffold`, `Drawer`, `Icon`, and `ListView` names in the examples are Flutter widgets, distinct from same-named components in android-compose-components, apple-swiftui, and similar skills.
 
 ## Related
