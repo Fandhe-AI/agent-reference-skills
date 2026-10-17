@@ -5,9 +5,9 @@ description: >
   GPT-6 系, Fast / Ultrafast mode, codex exec, スラッシュコマンド, prompting, AGENTS.md, rules, subagents,
   approvals, auto-review, sandbox, permission profiles, profiles, config.toml, 環境変数, roles, MCP 設定,
   GitHub Action, Codex SDK, App Server (JSON-RPC), Agents SDK 連携, Codex skills (.agents/skills), plugins,
-  scheduled tasks, Browser, Computer Use, git worktrees, Record & Replay, cloud 委譲,
+  scheduled tasks, Browser, Computer Use, cloud / local / worktree 環境, git worktrees, Record & Replay, cloud 委譲,
   GitHub / GitLab / Linear / Slack 連携, administration, provisioning, analytics API, compliance API, LLM gateway,
-  Codex Security (SARIF), deep scan, triage, findings, threat model, security hardening。
+  Codex Security 脆弱性スキャン (SARIF), deep scan, triage, findings, threat model, security hardening。
 user-invocable: false
 ---
 
