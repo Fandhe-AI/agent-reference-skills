@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/manage-claude/rate-limits-api / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/manage-claude/rate-limits-api / last verified: 2026-10-16 -->
 
 # Rate Limits API
 
@@ -18,7 +18,9 @@ curl "https://api.anthropic.com/v1/organizations/rate_limits" \
 |------|------|-------------|
 | `/v1/organizations/rate_limits` | endpoint | Organization-level limits; supports `model=` lookup and `group_type=` filter |
 | `/v1/organizations/workspaces/{workspace_id}/rate_limits` | endpoint | Workspace overrides only; missing entries are inherited from the organization |
-| `group_type` | param | `model_group`, `batch`, `token_count`, `files`, `skills`, `web_search` |
+| `group_type` | param | `model_group`, `batch`, `token_count`, `files`, `skills`, `web_search` (query parameter; not deprecated) |
+| `group` | field | Present on every entry: `type` (one of the `group_type` values) and `id` (opaque `rlg_` ID, identical in every organization and on workspace overrides); `model_group` entries also carry `display_name` (display only, may change) |
+| `group_type` | field | Deprecated in favor of `group.type`; still returned, always equal, no removal date |
 | `models` | field | For `model_group` entries, every model ID/alias counting against that group; `null` for other group types |
 | `limits[]` | field | List of `{type, value}` pairs, e.g. `requests_per_minute`, `input_tokens_per_minute`, `output_tokens_per_minute` |
 | `org_limit` | field | On workspace responses, the organization-level value for the same limiter (or `null`) |
@@ -29,6 +31,7 @@ curl "https://api.anthropic.com/v1/organizations/rate_limits" \
 - The Default Workspace cannot have overrides and has no entry on the workspace endpoint; read its limits via the organization endpoint
 - `model` query parameter is supported on the organization endpoint only, not the workspace endpoint
 - Responses are currently always a single page (`next_page: null`); loop on it for forward compatibility
+- The entry's own `id` differs per organization and `models` changes when Anthropic moves a model between groups; neither is a stable group key, use `group.id`
 - Covers Messages API and supporting resources only; does not include Claude Managed Agents limits
 
 ## Related

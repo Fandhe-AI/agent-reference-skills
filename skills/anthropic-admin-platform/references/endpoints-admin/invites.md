@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/invites, https://platform.claude.com/docs/en/api/admin/invites/create, https://platform.claude.com/docs/en/api/admin/invites/list, https://platform.claude.com/docs/en/api/admin/invites/retrieve, https://platform.claude.com/docs/en/api/admin/invites/delete / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/organization/invites, https://platform.claude.com/docs/en/api/organization/invites/create, https://platform.claude.com/docs/en/api/organization/invites/list, https://platform.claude.com/docs/en/api/organization/invites/retrieve, https://platform.claude.com/docs/en/api/organization/invites/delete / last verified: 2026-10-16 -->
 
 # Invites Admin API
 

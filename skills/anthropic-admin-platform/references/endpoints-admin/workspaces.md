@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/workspaces, https://platform.claude.com/docs/en/api/admin/workspaces/list, https://platform.claude.com/docs/en/api/admin/workspaces/retrieve, https://platform.claude.com/docs/en/api/admin/workspaces/create, https://platform.claude.com/docs/en/api/admin/workspaces/update, https://platform.claude.com/docs/en/api/admin/workspaces/archive, https://platform.claude.com/docs/en/api/admin/workspaces/members/create, https://platform.claude.com/docs/en/api/admin/workspaces/members/list, https://platform.claude.com/docs/en/api/admin/workspaces/members/retrieve, https://platform.claude.com/docs/en/api/admin/workspaces/members/update, https://platform.claude.com/docs/en/api/admin/workspaces/members/delete, https://platform.claude.com/docs/en/api/admin/workspaces/rate_limits/list, https://platform.claude.com/docs/en/api/admin/workspaces/service_accounts/list, https://platform.claude.com/docs/en/api/admin/workspaces/service_accounts/retrieve, https://platform.claude.com/docs/en/api/admin/workspaces/service_accounts/create, https://platform.claude.com/docs/en/api/admin/workspaces/service_accounts/update, https://platform.claude.com/docs/en/api/admin/workspaces/service_accounts/delete / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/organization/workspaces, https://platform.claude.com/docs/en/api/organization/workspaces/list, https://platform.claude.com/docs/en/api/organization/workspaces/retrieve, https://platform.claude.com/docs/en/api/organization/workspaces/create, https://platform.claude.com/docs/en/api/organization/workspaces/update, https://platform.claude.com/docs/en/api/organization/workspaces/archive, https://platform.claude.com/docs/en/api/organization/workspaces/members/add, https://platform.claude.com/docs/en/api/organization/workspaces/members/list, https://platform.claude.com/docs/en/api/organization/workspaces/members/retrieve, https://platform.claude.com/docs/en/api/organization/workspaces/members/update, https://platform.claude.com/docs/en/api/organization/workspaces/members/remove, https://platform.claude.com/docs/en/api/organization/workspaces/rate_limits/list, https://platform.claude.com/docs/en/api/organization/workspaces/service_accounts/list, https://platform.claude.com/docs/en/api/organization/workspaces/service_accounts/retrieve, https://platform.claude.com/docs/en/api/organization/workspaces/service_accounts/add, https://platform.claude.com/docs/en/api/organization/workspaces/service_accounts/update, https://platform.claude.com/docs/en/api/organization/workspaces/service_accounts/remove / last verified: 2026-10-16 -->
 
 # Workspaces Admin API
 
@@ -82,25 +82,79 @@ Body Parameters (Create/Update Member):
 | user_id | string | ID of the User (Create only) |
 | workspace_role | `"workspace_admin"` \| `"workspace_developer"` \| `"workspace_restricted_developer"` \| `"workspace_user"` | Role to assign. Cannot be `"workspace_billing"` on create/update |
 
-WorkspaceMember object: `type` (`"workspace_member"`), `user_id`, `workspace_id`, `workspace_role` (adds `"workspace_billing"` as a possible read value).
+WorkspaceMember object:
 
-Delete response: `type` (`"workspace_member_deleted"`), `user_id`, `workspace_id`.
+| Name | Type | Description |
+|------|------|-------------|
+| type | `"workspace_member"` | Object type |
+| user_id | string | User ID |
+| workspace_id | string | Workspace ID |
+| workspace_role | string | Same values as the body parameter; adds `"workspace_billing"` as a possible read value |
+
+Delete response:
+
+| Name | Type | Description |
+|------|------|-------------|
+| type | `"workspace_member_deleted"` | Object type |
+| user_id | string | User ID |
+| workspace_id | string | Workspace ID |
 
 ### Workspace Rate Limits
 
-Query Parameters (List): `group_type` (optional, `"batch"` \| `"files"` \| `"model_group"` \| `"skills"` \| `"token_count"` \| `"web_search"`), `page` (optional cursor).
+Query Parameters (List):
 
-Returns `data: array` of `{ group_type, limits: [{ org_limit, type, value }], models, rate_limit_id, type: "workspace_rate_limit", workspace_id }`, `next_page`. Only overridden groups/limiters are listed; non-overridden groups inherit org limits (see `rate-limits.md`).
+| Name | Type | Description |
+|------|------|-------------|
+| group_type | optional `"batch"` \| `"files"` \| `"model_group"` \| `"skills"` \| `"token_count"` \| `"web_search"` | Filter by group type |
+| include_inherited | optional boolean | Default `false`; also list limiter values inherited from the organization, including groups with no workspace override |
+| limit | optional number | `1`-`1000`; omitted returns all in one page |
+| page | optional string | Cursor |
+
+Returns `data: array` of WorkspaceRateLimit, plus `next_page`.
+
+WorkspaceRateLimit object:
+
+| Name | Type | Description |
+|------|------|-------------|
+| type | `"workspace_rate_limit"` | Object type |
+| group | discriminated union | Same as in `rate-limits.md` (ModelGroup / BatchGroup / TokenCountGroup / FilesGroup / SkillsGroup / WebSearchGroup) |
+| limits | array of `{ type, org_limit, source, value }` | `source` is `{ type: "workspace" }` (override stored) or `{ type: "organization" }` (inherited; listed only with `include_inherited=true`, `value` equals `org_limit`) |
+| models | array | Models in the group |
+| rate_limit_id | string | ID |
+| workspace_id | string | Workspace ID |
+| group_type | string | Deprecated in favor of `group.type` (always the same value) |
+
+By default only overridden groups/limiters are listed (see `rate-limits.md`).
 
 ### Service Account Workspace Members
 
 Path: `workspace_id`, and `service_account_id` for member-scoped operations.
 
-Body Parameters (Create/Update): `service_account_id` (Create only), `workspace_role` (`"workspace_admin"` \| `"workspace_developer"` \| `"workspace_restricted_developer"` \| `"workspace_user"`, service accounts cannot hold `"workspace_billing"`).
+Body Parameters (Create/Update):
 
-Returns `{ created_by_actor_id, implicit, service_account_id, type: "service_account_workspace_member", workspace_id, workspace_role }`.
+| Name | Type | Description |
+|------|------|-------------|
+| service_account_id | string | Create only |
+| workspace_role | `"workspace_admin"` \| `"workspace_developer"` \| `"workspace_restricted_developer"` \| `"workspace_user"` | Service accounts cannot hold `"workspace_billing"` |
 
-Delete response: `{ service_account_id, type: "service_account_workspace_member_deleted", workspace_id }`.
+Returns:
+
+| Name | Type | Description |
+|------|------|-------------|
+| created_by_actor_id | string | Creator actor |
+| implicit | boolean | Implicit membership flag |
+| service_account_id | string | Service account ID |
+| type | `"service_account_workspace_member"` | Object type |
+| workspace_id | string | Workspace ID |
+| workspace_role | string | Role |
+
+Delete response:
+
+| Name | Type | Description |
+|------|------|-------------|
+| service_account_id | string | Service account ID |
+| type | `"service_account_workspace_member_deleted"` | Object type |
+| workspace_id | string | Workspace ID |
 
 ## Notes
 

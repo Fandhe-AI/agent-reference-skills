@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/api_keys, https://platform.claude.com/docs/en/api/admin/api_keys/list, https://platform.claude.com/docs/en/api/admin/api_keys/retrieve, https://platform.claude.com/docs/en/api/admin/api_keys/update / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/organization/api_keys, https://platform.claude.com/docs/en/api/organization/api_keys/list, https://platform.claude.com/docs/en/api/organization/api_keys/retrieve, https://platform.claude.com/docs/en/api/organization/api_keys/update / last verified: 2026-10-16 -->
 
 # API Keys Admin API
 

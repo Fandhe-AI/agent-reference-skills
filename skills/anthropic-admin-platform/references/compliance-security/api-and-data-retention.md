@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/manage-claude/api-and-data-retention / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/manage-claude/api-and-data-retention / last verified: 2026-10-16 -->
 
 # API and data retention
 
@@ -32,7 +32,7 @@ Feature eligibility values: **Yes** (fully eligible), **Yes (qualified)** (promp
 - Claude Fable 5 and Claude Mythos 5 are Covered Models requiring 30-day retention; not available under ZDR. A ZDR org can enable 30-day retention for a single workspace (Console > Workspaces > Privacy controls) to use these models while other workspaces stay ZDR.
 - PHI must not appear in JSON schema definitions (structured outputs / strict tool use) — property names, `enum`/`const` values, and `pattern` regexes are cached separately from message content and do not receive the same protection.
 - Even under ZDR/HIPAA, Anthropic may retain flagged content up to 2 years per automated trust & safety review, or as required by law.
-- Compliance API data (Activity Feed, remote session transcripts) follows its own 6-year retention model, separate from ZDR/HIPAA.
+- Compliance API data follows its own retention model, separate from ZDR/HIPAA: Activity Feed 6 years; chat/file/project content per your claude.ai retention policy unless a user deletes it sooner; local session transcripts (sessions on users' machines, in apps such as Cowork and Claude Code) 6 years by default or your organization's custom conversation retention period when a finite one is set; remote session transcripts (Cowork in the cloud) 6 years unless a user deletes the session sooner. The Compliance API does not capture local sessions for which ZDR is in effect; for HIPAA-readiness organizations it captures Cowork and Claude Code local sessions only and stores their transcripts for 30 days.
 - HIPAA enablement via Console (standard BAA) is permanent once accepted and cannot be disabled by an admin; a negotiated/custom BAA requires contacting sales.
 - Cannot mix HIPAA and non-HIPAA workloads in one organization — HIPAA is enforced org-wide.
 

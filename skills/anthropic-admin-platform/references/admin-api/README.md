@@ -9,5 +9,6 @@
 | Inference hooks | 推論前に AI security server へ prompt を送信、許可/拒否判定を取得 | [inference-hooks.md](./inference-hooks.md) |
 | Configure Inference hooks | Inference hooks エンドポイント・設定・ロールアウト・失敗時処理 | [inference-hooks-configuration.md](./inference-hooks-configuration.md) |
 | Develop an Inference hooks integration | Inference hooks 検証・verdict 返却の AI security server 実装 | [inference-hooks-endpoint.md](./inference-hooks-endpoint.md) |
+| Plugins API (Claude Enterprise plugin inventory, beta) | Claude Enterprise 組織の plugin・version・インストール設定・marketplace を管理するベータ API | [plugins-api.md](./plugins-api.md) |
 | User management | Admin API によるメンバー管理: ユーザー・ロール・招待・グループ管理 | [user-management.md](./user-management.md) |
 | Workspaces | API キー・チームアクセス・コスト管理のためのワークスペース整理 | [workspaces.md](./workspaces.md) |

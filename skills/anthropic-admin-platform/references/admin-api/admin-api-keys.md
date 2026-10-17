@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/manage-claude/admin-api-keys / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/manage-claude/admin-api-keys, https://platform.claude.com/docs/en/manage-claude/compliance-sessions / last verified: 2026-10-16 -->
 
 # Create an Admin API key
 
@@ -30,6 +30,7 @@ https://claude.ai/admin-settings/api-access
 
 - A key created in one organization cannot manage a different organization; create one key per organization if using both Claude Console and Claude Enterprise
 - Claude Console keys have no selectable scopes; Claude Enterprise keys choose scopes at creation and cannot add scopes later (create a new key instead)
+- `read:compliance_user_data` covers the Compliance API chat, file, project, and session endpoints (session transcripts) and organization users; Claude Console Admin API keys (`sk-ant-admin01-...`) cannot call the Compliance API session endpoints (403) and need a Compliance Access Key
 - The full secret is shown only once at creation
 - A call exceeding the key's scopes returns `403 Forbidden` listing the scopes the key has and needs
 

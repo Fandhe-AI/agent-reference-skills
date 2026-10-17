@@ -1,11 +1,11 @@
 ---
 name: anthropic-admin-platform
 description: >
-  Claude API (platform.claude.com) の組織管理・Admin API (sk-ant-admin) リファレンス。
+  Claude API (platform.claude.com) の組織管理・Admin API (sk-ant-admin)。
   users, invites, workspaces, API keys, service accounts, RBAC (groups / roles),
-  Workload Identity Federation (WIF, federation issuers / rules),
-  Usage & Cost API, rate limits / spend limits, Analytics API, Compliance API,
-  CMEK, zero data retention (ZDR), data residency, inference hooks。
+  Workload Identity Federation (WIF, federation issuers / rules), Usage & Cost API, rate / spend limits,
+  Analytics API, Compliance API (transcripts, access transparency log), Plugins API,
+  OpenTelemetry telemetry, CMEK, zero data retention (ZDR), data residency, inference hooks。
 user-invocable: false
 ---
 
@@ -16,9 +16,16 @@ Admin API（sk-ant-admin キー）による users / invites / workspaces / API k
 Workload Identity Federation (WIF) による長期キー不要の認証、Usage & Cost API・rate limits・spend limits・Analytics API
 での利用統計取得、Compliance API・CMEK・zero data retention・data residency・inference hooks によるセキュリティ／コンプライアンス統制を扱う。
 
+出典は platform.claude.com の Markdown twin（URL 末尾 `.md`）、取得日 2026-10-16（Admin API リファレンスの URL は
+`/api/admin/**` から `/api/organization/**`・`/api/beta/organization/**` に移動済み）。
+
 Messages API 本体は `anthropic-api-core`、Managed Agents は `anthropic-managed-agents`、Claude Code の組織管理
 （permissions / enterprise setup）は `anthropic-claude-code-admin`、OpenAI 側の WIF / Administration API は
 `openai-platform-ops` を参照（本スキルは Claude API の組織管理・Admin 系エンドポイントを担当）。
+
+棲み分け: Plugins API（Claude Enterprise 組織の plugin inventory 管理）は Claude Code の plugins 作成・配布
+（`anthropic-claude-code-extend`）とは別。`observability` の OpenTelemetry は Claude API / SDK のトレースで、
+Claude Code の monitoring（`anthropic-claude-code`）・Agent SDK の observability（`anthropic-agent-sdk`）とは別。
 
 ## ディレクトリ構成
 
@@ -43,6 +50,7 @@ skills/anthropic-admin-platform/
       README.md
       admin-api.md
       admin-api-keys.md
+      plugins-api.md
       user-management.md
       workspaces.md
       analytics-api.md
@@ -60,12 +68,14 @@ skills/anthropic-admin-platform/
       compliance-errors.md
       compliance-faq.md
       compliance-integration-patterns.md
+      compliance-sessions.md
       cmek.md
       cmek-aws-kms.md
       cmek-azure-key-vault.md
       cmek-google-cloud-kms.md
       data-residency.md
       access-transparency.md
+      access-transparency-log.md
       app-attest.md
       api-and-data-retention.md
     usage-cost/
@@ -92,6 +102,10 @@ skills/anthropic-admin-platform/
       spend-limits.md
       usage-report.md
       analytics.md
+      compliance-settings.md
+      plugins.md
+      plugin-marketplaces.md
+      telemetry-destinations.md
     endpoints-compliance/
       README.md
       activities.md
@@ -101,6 +115,13 @@ skills/anthropic-admin-platform/
       organizations.md
       apps-chats.md
       apps-projects.md
+      apps-sessions.md
+    observability/
+      README.md
+      opentelemetry.md
+      opentelemetry-api.md
+      opentelemetry-sdk.md
+      spans.md
   scripts/
     README.md
     admin-curl.md
@@ -115,19 +136,22 @@ skills/anthropic-admin-platform/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md`（`scripts/` は直下の README.md）を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
-4. `endpoints-admin`（98 EP・sk-ant-admin キー必須）と `endpoints-compliance`（31 EP・Compliance Access Key 必須）は
+4. `endpoints-admin`（128 EP・sk-ant-admin キー必須）と `endpoints-compliance`（37 EP・Compliance Access Key 必須）は
    エンドポイント個別ページではなく**リソース単位の集約ページ**（1 リソース 1 ファイルに全エンドポイントを表で網羅）なので、
    リソース名（Users / Invites / Workspaces / API Keys / Service Accounts / RBAC Groups・Roles / Federation Issuers・Rules /
-   Activities / Organizations / Groups 等）から直接ページを引く
+   Compliance Settings / Plugins / Plugin Marketplaces / Telemetry Destinations /
+   Activities / Organizations / Groups / Sessions 等）から直接ページを引く。
+   transparency log の 6 EP は API リファレンスページが無いため `compliance-security/access-transparency-log.md` に収録
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | API キー / WIF / App Attest による認証方式・WIF の AWS・Azure・GCP・GitHub Actions・Kubernetes・Okta・SPIFFE 連携を知りたい | auth-access | [references/auth-access/README.md](references/auth-access/README.md) |
-| Admin API（sk-ant-admin キー）でのユーザー・ワークスペース・招待管理、Analytics API・Claude Code Analytics API、inference hooks の概要・設定・実装を知りたい | admin-api | [references/admin-api/README.md](references/admin-api/README.md) |
-| Compliance API（Activity Feed・chats/files/projects の取得削除・組織データ一覧）、CMEK（AWS KMS / Azure Key Vault / Google Cloud KMS）、zero data retention・data residency・access transparency を知りたい | compliance-security | [references/compliance-security/README.md](references/compliance-security/README.md) |
+| Admin API（sk-ant-admin キー）でのユーザー・ワークスペース・招待管理、Analytics API・Claude Code Analytics API、inference hooks の概要・設定・実装、Plugins API（Claude Enterprise の plugin inventory）を知りたい | admin-api | [references/admin-api/README.md](references/admin-api/README.md) |
+| Compliance API（Activity Feed・chats/files/projects の取得削除・組織データ一覧）、CMEK（AWS KMS / Azure Key Vault / Google Cloud KMS）、zero data retention・data residency・access transparency（transparency log）、session transcripts（Cowork / Claude Code の local・remote）を知りたい | compliance-security | [references/compliance-security/README.md](references/compliance-security/README.md) |
 | Usage and Cost API・Rate Limits API・Spend Limits API で組織の利用量・コスト・支出限度額を取得したい | usage-cost | [references/usage-cost/README.md](references/usage-cost/README.md) |
-| Users / Invites / Workspaces / API Keys / Service Accounts / RBAC Groups・Roles / Federation Issuers・Rules / Rate Limits / Spend Limits / Cost Report / Usage Report / Analytics / External Keys（CMEK）/ Organizations の各 Admin API エンドポイント仕様を確認したい | endpoints-admin | [references/endpoints-admin/README.md](references/endpoints-admin/README.md) |
-| Activities / Organizations / Groups / Apps Chats / Apps Projects / Apps Artifacts / Code Artifacts の各 Compliance API エンドポイント仕様を確認したい | endpoints-compliance | [references/endpoints-compliance/README.md](references/endpoints-compliance/README.md) |
-| Admin API・Compliance API の curl コマンド例、WIF のサービスアカウント・issuer・rule 作成とトークン交換手順を知りたい | scripts | [scripts/README.md](scripts/README.md) |
+| Users / Invites / Workspaces / API Keys / Service Accounts / RBAC Groups・Roles / Federation Issuers・Rules / Rate Limits / Spend Limits / Cost Report / Usage Report / Analytics / External Keys（CMEK）/ Organizations / Compliance Settings / Plugins / Plugin Marketplaces / Telemetry Destinations の各 Admin API エンドポイント仕様を確認したい | endpoints-admin | [references/endpoints-admin/README.md](references/endpoints-admin/README.md) |
+| Activities / Organizations / Groups / Apps Chats / Apps Projects / Apps Artifacts / Apps Sessions / Code Artifacts の各 Compliance API エンドポイント仕様を確認したい | endpoints-compliance | [references/endpoints-compliance/README.md](references/endpoints-compliance/README.md) |
+| Claude API / SDK の OpenTelemetry トレース（telemetry destinations・span 属性）を設定したい | observability | [references/observability/README.md](references/observability/README.md) |
+| Admin API・Compliance API の curl コマンド例（session transcript・plugins・spend limits 一覧を含む）、WIF のサービスアカウント・issuer・rule 作成とトークン交換手順を知りたい | scripts | [scripts/README.md](scripts/README.md) |

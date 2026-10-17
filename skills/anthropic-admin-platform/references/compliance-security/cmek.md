@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/manage-claude/cmek / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/manage-claude/cmek / last verified: 2026-10-16 -->
 
 # Customer-managed encryption keys (CMEK)
 
@@ -20,6 +20,7 @@ CMEK is configured per workspace (Claude Platform, via Admin API) or per organiz
 
 - Enabling CMEK is **permanent and irreversible**: once attached, a key cannot be detached or swapped; a new workspace is required to change key or return to zero data retention. Revoking/disabling the key makes all CMEK-protected data permanently inaccessible.
 - Encrypted: message content, files/attachments, MCP/tool config (Claude Platform); chat content including skills/plugins/artifacts, attachments, Claude Code CLI, Cowork in Claude Desktop, Office agents, Claude in Chrome (Claude Enterprise). Backups/snapshots inherit the key.
+- Compliance API local session transcripts (captured from sessions on users' machines) are encrypted under the key: if the key cannot be used, the local session messages endpoint returns 503 instead of transcript content, while session metadata is still listed.
 - Disabled/modified under CMEK: Workbench, raw-content Compliance API endpoints, some beta features (Claude Platform); conversation search, audit log export, signed URLs, personal preferences (Claude Enterprise).
 - Not encrypted regardless: Activity Feed, audit logs, OTEL telemetry (so compliance is maintained even if key is revoked); account data (names, emails, profile pictures).
 - CMEK is allowed with Zero Data Retention (ZDR) on both products.

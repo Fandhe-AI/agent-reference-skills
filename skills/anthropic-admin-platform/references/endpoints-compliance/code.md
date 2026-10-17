@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/compliance/code/artifacts/list, https://platform.claude.com/docs/en/api/compliance/code/artifacts/retrieve_version, https://platform.claude.com/docs/en/api/compliance/code/artifacts/delete / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/compliance/apps/code/artifacts/list, https://platform.claude.com/docs/en/api/compliance/apps/code/artifacts/retrieve_version, https://platform.claude.com/docs/en/api/compliance/apps/code/artifacts/download, https://platform.claude.com/docs/en/api/compliance/apps/code/artifacts/delete / last verified: 2026-10-16 -->
 
 # Code Artifacts Compliance API
 
@@ -10,6 +10,7 @@ Compliance access to Claude Code Artifacts (persistent, potentially publicly-sha
 |--------|------|-------------|
 | GET | `/v1/compliance/apps/code/artifacts` | List Code Artifacts, sorted by identifier (not creation time) |
 | GET | `/v1/compliance/apps/code/artifacts/{artifact_id}/versions/{version_id}` | Stream one version's content as the response body |
+| GET | `/v1/compliance/apps/code/artifacts/{artifact_id}/content` | Download: stream the Artifact's current content as the response body (latest version; for a Claude Doc, a ZIP of Word files, one per text tab) |
 | DELETE | `/v1/compliance/apps/code/artifacts/{artifact_id}` | Permanently delete a Code Artifact and all its versions |
 
 ```bash
@@ -28,6 +29,7 @@ curl https://api.anthropic.com/v1/compliance/apps/code/artifacts \
 | `page` | query, string | Opaque pagination token from `next_page` |
 | `artifact_id` | path, string | Tagged ID, e.g. `cart_abc123` |
 | `version_id` | path, string | Opaque version identifier from the Artifact's `versions[]` list |
+| `multi_file_format` | query, string (Download) | `zip` (its only value). Required to download a Claude Doc; for other Artifacts, a latest version with more than one file comes back as a ZIP with an index `files.json` |
 | `x-api-key` | header, string | API key |
 | **Returns (list)** `data[].id` | string | Artifact ID |
 | `data[].organization_uuid` | string | Owning organization |
@@ -40,7 +42,8 @@ curl https://api.anthropic.com/v1/compliance/apps/code/artifacts \
 
 ## Notes
 
-- Path uses `/v1/compliance/apps/code/artifacts` (nested under `apps`), even though the docs URL slug is `/api/compliance/code/artifacts`.
+- Path uses `/v1/compliance/apps/code/artifacts`; the docs URL slug is now `/api/compliance/apps/code/artifacts/...` (previously `/api/compliance/code/artifacts`).
+- Download returns 404 for missing or unreadable Artifacts, 400 with `error.details.error_code` `cmek_key_disabled` when the organization's customer-managed key can't be used, and 503 when content can't be produced now (wait `Retry-After` seconds, or back off). For a Claude Doc, 422 `error_code` is `multi_file_unavailable` (no `multi_file_format=zip`), `document_unavailable` (no text to export), `document_too_large` (export over 16 MiB) or `cmek_org_unsupported`.
 - Pages may be short or empty while `next_page` is still set — continue until `next_page` is absent.
 - Version retrieval can 404 if the version was rotated out of retained history (re-list), or 503 while content upload is still in flight (retry with backoff).
 - Delete is a destructive, irreversible operation; a 200 means deletion is initiated, content removal completes asynchronously. Repeated delete on an already-deleted artifact returns 404.

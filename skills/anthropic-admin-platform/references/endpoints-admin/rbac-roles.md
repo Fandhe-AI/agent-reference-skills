@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/rbac_roles, https://platform.claude.com/docs/en/api/admin/rbac_roles/list, https://platform.claude.com/docs/en/api/admin/rbac_roles/retrieve, https://platform.claude.com/docs/en/api/admin/rbac_roles/permissions/list / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/beta/organization/rbac_roles, https://platform.claude.com/docs/en/api/beta/organization/rbac_roles/list, https://platform.claude.com/docs/en/api/beta/organization/rbac_roles/retrieve, https://platform.claude.com/docs/en/api/beta/organization/rbac_roles/permissions/list / last verified: 2026-10-16 -->
 
 # RBAC Roles Admin API
 
@@ -9,8 +9,8 @@ Read-only listing of RBAC Roles and the permissions each grants. Beta, Claude En
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/v1/organizations/rbac_roles` | List RBAC Roles |
-| GET | `/v1/organizations/rbac_roles/{role_id}` | Get RBAC Role |
-| GET | `/v1/organizations/rbac_roles/{role_id}/permissions` | List RBAC Role Permissions |
+| GET | `/v1/organizations/rbac_roles/{rbac_role_id}` | Get RBAC Role |
+| GET | `/v1/organizations/rbac_roles/{rbac_role_id}/permissions` | List RBAC Role Permissions |
 
 ```http
 curl https://api.anthropic.com/v1/organizations/rbac_roles \
@@ -40,7 +40,8 @@ curl https://api.anthropic.com/v1/organizations/rbac_roles \
 |------|------|-------------|
 | id | string | ID of the RBAC Role |
 | created_at / updated_at | string | RFC 3339 timestamps |
-| name | string | Role name |
+| display_name | string | Role name. For an Anthropic-created role it can differ from the label claude.ai shows and may change; store `id` for a lasting reference |
+| name | string | Deprecated: use `display_name`; always the same value |
 | type | `"rbac_role"` | Object type |
 
 ### RbacRolePermission object
@@ -54,6 +55,7 @@ curl https://api.anthropic.com/v1/organizations/rbac_roles \
 ## Notes
 
 - Requires the `ce-user-management-2026-07-13` beta header; available only to Claude Enterprise organizations.
+- The role `name` field is deprecated and always equals `display_name`; read the role name from `display_name`.
 - A blanket `capability_access_all` / `capability_access_all_ga` action row grants every covered product-feature entitlement; consumers must expand it rather than treat it as a single entitlement, or under-report effective access. Neither blanket mode grants model-access entitlements.
 - `tool_name` and `scope` values containing characters outside `[a-zA-Z0-9_-]` are server-encoded into a stable `{prefix}_{32-hex}` form; the original value is not recoverable from it.
 
