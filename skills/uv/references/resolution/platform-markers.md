@@ -59,7 +59,7 @@ For quick reference, the most common marker values by platform are:
 | `platform_machine` (ARM64) | `'aarch64'` | `'arm64'` | `'ARM64'` |
 | `os_name` | `'posix'` | `'posix'` | `'nt'` |
 
-You can check the values for your current platform by running:
+Adapted (not in the official docs): the upstream sample prints `sysconfig.get_config_vars()`; this prints the runtime attributes the markers are derived from instead.
 
 ```console
 $ uvx python -c "import sys, platform, os; print(sys.platform, platform.system(), platform.machine(), os.name)"

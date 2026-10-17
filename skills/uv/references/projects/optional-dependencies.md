@@ -65,6 +65,7 @@ name = "torch-gpu"
 url = "https://download.pytorch.org/whl/cu130"
 ```
 
+- Because both extras request `torch` from different indexes, the example only locks when the extras are declared as mutually exclusive: add `[tool.uv]` / `conflicts = [[{ extra = "cpu" }, { extra = "gpu" }]]` (the PyTorch integration guide's equivalent example includes this; see [conflicts-environments.md](./conflicts-environments.md)).
 - `uv sync` does not sync extras by default; use `--extra <name>` or `--all-extras` (see lock-sync.md).
 
 ## Related
