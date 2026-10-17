@@ -99,6 +99,7 @@ export default defineHandler({
 ## Notes
 
 - Changed in the 1.7 docs: the handler is `server/api/auth/[...all].ts` with `export default auth` (the 1.6 page used `defineEventHandler` with `toWebRequest(event)` in `server/routes/api/auth/[...all].ts`); CORS is configured in `nitro.config.ts` `routeRules` (import `defineConfig` from `"nitro"`) instead of a dedicated Nitro plugin; scaffolding uses `npx create-nitro-app`.
+- The upstream example uses `new PrismaClient()` without a driver adapter, which matches Prisma 6 and earlier; Prisma 7 requires a driver adapter (and a generated client output path), so follow the Prisma 7 setup in adapters/prisma.md.
 - Example project: BayBreezy/nitrojs-better-auth-prisma.
 
 ## Related

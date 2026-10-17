@@ -46,4 +46,4 @@ MySQL ダイアレクトオプションの詳細は Kysely の [MySQLDialect ド
 
 - MySQL 統合は Kysely アダプターを通じて動作する — Kysely がサポートする任意のデータベースが互換。
 - `timezone: "Z"` の設定で一貫したタイムゾーン値を確保することが重要。
-- パフォーマンス最適化のガイダンスは [パフォーマンス最適化ガイド](/docs/guides/optimizing-for-performance) を参照。
+- パフォーマンス最適化のガイダンスは パフォーマンス最適化ガイド を参照。
