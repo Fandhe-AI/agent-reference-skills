@@ -34,7 +34,7 @@ Access it with any type implementing `Manager`, e.g. the `App` instance:
 let data = app.state::<AppData>();
 ```
 
-## Mutability
+### Mutability
 
 State shared between threads cannot be mutated directly; use interior mutability such as the standard library `Mutex`.
 
@@ -74,7 +74,7 @@ The mutex unlocks when the `MutexGuard` is dropped.
 - When to use an async mutex: quoting the Tokio docs, the standard library `Mutex` is fine and often preferred in async code; an async mutex is mainly for shared mutable access to IO resources such as a database connection, or when the `MutexGuard` must be held across await points.
 - `Arc` is not needed for things stored in `State`; Tauri does this for you. If lifetime requirements prevent moving state into a thread, move an `AppHandle` (cheap to clone) into the thread and retrieve the state from it.
 
-## Accessing state
+### Accessing state
 
 In commands:
 
@@ -132,7 +132,7 @@ fn main() {
 }
 ```
 
-## Mismatching types
+### Mismatching types
 
 A wrong type in the `State` parameter gives no compile-time error. Invoking the command fails at runtime: the frontend `invoke` is rejected with a `state not managed for field ...` error. `Manager::state()` on an unmanaged type panics. Using a type alias prevents the mistake (do not wrap the alias in a `Mutex` a second time):
 

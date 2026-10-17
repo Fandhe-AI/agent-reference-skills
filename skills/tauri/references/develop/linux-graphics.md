@@ -21,7 +21,7 @@ fn main() {
 }
 ```
 
-## Common symptoms
+### Common symptoms
 
 - The window opens but stays blank or white.
 - The window flickers, especially while resizing.
@@ -31,7 +31,7 @@ fn main() {
 
 Most come from the WebKitGTK DMABUF renderer requesting buffer formats the NVIDIA driver does not provide (see the WebKitGTK bug tracker, bug 261874).
 
-## Workarounds
+### Workarounds
 
 Try in order; the earlier ones keep hardware acceleration.
 
@@ -42,7 +42,7 @@ Try in order; the earlier ones keep hardware acceleration.
 
 Set them in the shell to test, or in `main()` so users do not have to.
 
-## Silent failures: WebGL and canvas
+### Silent failures: WebGL and canvas
 
 - WebGL2 context creation succeeds even when backed by a software rasterizer or a slow presentation path; there is no error to catch.
 - WebKitGTK masks the WebGL renderer string for fingerprinting protection: `WEBGL_debug_renderer_info` reports `Apple GPU` on every Linux machine.

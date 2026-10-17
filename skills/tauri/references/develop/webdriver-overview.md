@@ -30,7 +30,7 @@ export const config: WebdriverIO.Config = {
 };
 ```
 
-## Overview
+### Overview
 
 - The service (maintained under the WebdriverIO project) provides Tauri API access through `browser.tauri.execute()`, command (IPC) mocking, frontend and backend log capture, and multiremote.
 - By default the service runs an embedded WebDriver server inside the app, so no external driver is needed on any platform; this is how macOS is supported. It can also drive the platform's native WebDriver through `tauri-driver` on Windows and Linux, or CrabNebula's cross-platform fork of `tauri-driver` on all platforms (a paid API key is required for macOS). The service detects the application binary, and on the `tauri-driver` route keeps the Edge WebDriver in sync on Windows.
@@ -40,7 +40,7 @@ export const config: WebdriverIO.Config = {
 - Browser mode: fast, renderer-only tests that run the Tauri frontend in plain Chrome against a Vite dev server, with no Tauri binary, driver or plugin required. It intercepts `invoke()` calls so commands can be mocked and their arguments asserted with the same WDIO API.
 - Full setup, configuration and API reference: WebdriverIO Tauri documentation (https://webdriver.io/docs/desktop-testing/tauri). Runnable examples: the WebdriverIO desktop-mobile repository (`fixtures/e2e-apps/tauri`).
 
-## Driving tauri-driver directly
+### Driving tauri-driver directly
 
 For non-Node.js setups, Selenium, or custom test harnesses, drive `tauri-driver` directly instead of using the service. Driven directly, only Windows and Linux are supported on desktop, as macOS has no WKWebView driver tool available (use the service's embedded WebDriver server for macOS). See Manual WebDriver setup.
 

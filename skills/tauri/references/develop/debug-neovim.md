@@ -70,7 +70,7 @@ vim.fn.sign_define('DapBreakpoint',{ text ='🟥', texthl ='', linehl ='', numhl
 vim.fn.sign_define('DapStopped',{ text ='▶️', texthl ='', linehl ='', numhl =''})
 ```
 
-## Starting the dev server
+### Starting the dev server
 
 The Tauri CLI is not used to launch the app, so the development server does not start automatically. Control it from Neovim with `overseer.nvim`, using a VS Code style task configuration in `.vscode/tasks.json`. Example for a project using `trunk`:
 
@@ -104,7 +104,7 @@ The Tauri CLI is not used to launch the app, so the development server does not 
 }
 ```
 
-## Example key bindings
+### Example key bindings
 
 ```lua
 vim.keymap.set('n', '<F5>', function() dap.continue() end)

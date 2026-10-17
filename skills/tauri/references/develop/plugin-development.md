@@ -34,13 +34,13 @@ Use `--no-api` to skip the NPM package; `--android` and/or `--ios` to initialize
 └── package.json        - NPM package metadata
 ```
 
-To add Android or iOS capabilities to an existing plugin, use `plugin android add` and `plugin ios add` to bootstrap the mobile library projects.
+To add Android or iOS capabilities to an existing plugin, use `plugin android init` and `plugin ios init` to bootstrap the mobile library projects.
 
-## Naming convention
+### Naming convention
 
 By default the plugin crate is prefixed `tauri-plugin-`; the name is specified under `tauri.conf.json > plugins`. The generated crate name is `tauri-plugin-{plugin-name}` and the JavaScript NPM package name `tauri-plugin-{plugin-name}-api` (an NPM scope is recommended; the Tauri convention is `@scope-name/plugin-{plugin-name}`).
 
-### Identifier rules
+#### Identifier rules
 
 The `{plugin-name}` portion of a plugin crate, and any permission identifier referenced within capabilities, must:
 
@@ -63,7 +63,7 @@ The `{plugin-name}` portion of a plugin crate, and any permission identifier ref
 
 A violation fails the build with `identifiers can only include lowercase ASCII, hyphens which are not leading or trailing, and a single colon if using a prefix`. The offending value is usually the plugin name in the plugin's `Cargo.toml` or a permission identifier in a `permissions/*.toml` file.
 
-## Declaring platform support
+### Declaring platform support
 
 In the `[package.metadata.platforms.support]` section of the crate's `Cargo.toml`:
 
@@ -83,7 +83,7 @@ ios = { level = "none" }
 
 Keys are `windows`, `linux`, `macos`, `android`, `ios`. The support table and platform filter on the Features & Recipes page are generated from this metadata.
 
-## Plugin configuration
+### Plugin configuration
 
 In the app, the configuration is set in `tauri.conf.json` under `plugins.<plugin-name>`:
 
@@ -128,7 +128,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R, Config> {
 }
 ```
 
-## Lifecycle events
+### Lifecycle events
 
 - `setup`: plugin is being initialized
 - `on_navigation`: web view is attempting to perform navigation
@@ -138,7 +138,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R, Config> {
 
 Mobile plugins have additional lifecycle events (see Mobile Plugin Development).
 
-### setup
+#### setup
 
 When: plugin is being initialized. Why: register mobile plugins, manage state, run background tasks.
 
@@ -164,7 +164,7 @@ Builder::new("<plugin-name>")
   })
 ```
 
-### on_navigation
+#### on_navigation
 
 When: web view is attempting to perform navigation. Why: validate the navigation or track URL changes. Returning `false` cancels the navigation.
 
@@ -179,7 +179,7 @@ Builder::new("<plugin-name>")
   })
 ```
 
-### on_webview_ready
+#### on_webview_ready
 
 When: new window has been created. Why: execute an initialization script for every window.
 
@@ -194,7 +194,7 @@ Builder::new("<plugin-name>")
   })
 ```
 
-### on_event
+#### on_event
 
 When: event loop events. Why: handle core events such as window events, menu events and application exit requested (any `RunEvent`).
 
@@ -232,7 +232,7 @@ Builder::new("<plugin-name>")
   })
 ```
 
-### on_drop
+#### on_drop
 
 When: plugin is being deconstructed. Why: execute code when the plugin has been destroyed (see `Drop`).
 
@@ -245,7 +245,7 @@ Builder::new("<plugin-name>")
   })
 ```
 
-## Exposing Rust APIs
+### Exposing Rust APIs
 
 The APIs defined in `desktop.rs` and `mobile.rs` are exported as a struct with the same name as the plugin (pascal case). On setup an instance is created and managed as state, so users can retrieve it from a `Manager` (`AppHandle`, `App`, `Window`) through the extension trait defined in the plugin. E.g. the global-shortcut plugin defines `GlobalShortcut`, read via the `global_shortcut` method of `GlobalShortcutExt`:
 
@@ -262,7 +262,7 @@ tauri::Builder::default()
   })
 ```
 
-## Adding commands
+### Adding commands
 
 Commands live in `commands.rs` and are regular Tauri application commands (access to `AppHandle`, `Window`, state, input like app commands). This one takes `on_progress` and `url`:
 
@@ -272,7 +272,7 @@ Commands live in `commands.rs` and are regular Tauri application commands (acces
 use tauri::{command, ipc::Channel, AppHandle, Runtime, Window};
 
 #[command]
-async fn upload<R: Runtime>(app: AppHandle<R>, window: Window<R>, on_progress: Channel, url: String) {
+pub async fn upload<R: Runtime>(app: AppHandle<R>, window: Window<R>, on_progress: Channel, url: String) {
   // implement command logic here
   on_progress.send(100).unwrap();
 }
@@ -297,7 +297,7 @@ export async function upload(url: string, onProgressHandler: (progress: number) 
 }
 ```
 
-### Command permissions
+#### Command permissions
 
 By default plugin commands are not accessible by the frontend (a denied error rejection). Define permissions that allow each command.
 
@@ -423,7 +423,7 @@ description = "Allows making HTTP requests"
 permissions = ["allow-request"]
 ```
 
-### Autogenerated permissions
+#### Autogenerated permissions
 
 In `build.rs`, list the commands in snake_case (matching the command function names) in the `COMMANDS` const; Tauri generates `allow-$commandname` and `deny-$commandname` permissions. This generates `allow-upload` and `deny-upload`:
 
@@ -435,14 +435,15 @@ fn main() {
 }
 ```
 
-## Managing state
+### Managing state
 
 A plugin manages state the same way an application does (see State Management).
 
 ## Notes
 
 - Tauri (Rust core + system WebView). A Tauri plugin is not an Electron extension or preload script; see the electron skill for Electron.
-- Source mentions both `plugin android add` / `plugin ios add` (this page) and `plugin android init` / `plugin ios init` (Mobile Plugin Development page) for bootstrapping mobile projects in an existing plugin; check the CLI plugin page for the current subcommand names.
+- Upstream Plugins page says `plugin android add` / `plugin ios add`, but the CLI (2.12.x) only provides `plugin android init` / `plugin ios init`.
+- Upstream `commands.rs` example declares `upload` without `pub`; `pub` added because `generate_handler![commands::upload]` references it from another module.
 - Permissions / capabilities here are Tauri's ACL; see the security category.
 
 ## Related

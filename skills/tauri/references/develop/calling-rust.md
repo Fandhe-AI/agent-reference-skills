@@ -39,7 +39,7 @@ const invoke = window.__TAURI__.core.invoke;
 invoke('my_custom_command');
 ```
 
-## Separate module
+### Separate module
 
 Commands in a separate module must be `pub`; the command name is not scoped to the module, so it must be unique even between modules. The `commands::` prefix is only used in the handler list.
 
@@ -66,7 +66,7 @@ pub fn run() {
 }
 ```
 
-## WASM
+### WASM
 
 With a Rust frontend, `invoke()` without arguments needs a separate binding because Rust has no optional arguments:
 
@@ -85,7 +85,7 @@ extern "C" {
 }
 ```
 
-## Passing arguments
+### Passing arguments
 
 Arguments are passed as a JSON object with camelCase keys and must implement `serde::Deserialize`.
 
@@ -102,7 +102,7 @@ invoke('my_custom_command', { invokeMessage: 'Hello!' });
 
 Use `#[tauri::command(rename_all = "snake_case")]` to keep snake_case keys (`invoke('my_custom_command', { invoke_message: 'Hello!' })`).
 
-## Returning data
+### Returning data
 
 Returned data must implement `serde::Serialize`; `invoke` returns a promise resolving with it.
 
@@ -128,7 +128,7 @@ fn read_file() -> Response {
 }
 ```
 
-## Error handling
+### Error handling
 
 Return a `Result`; `Err` rejects the promise. Everything returned, including errors, must implement `serde::Serialize`.
 
@@ -223,7 +223,7 @@ type ErrorKind = {
 invoke('read').catch((e: ErrorKind) => {});
 ```
 
-## Async commands
+### Async commands
 
 Async commands are preferred for heavy work so the UI does not freeze. They run on a separate async task via `async_runtime::spawn`; commands without the `async` keyword run on the main thread unless defined with `#[tauri::command(async)]`.
 
@@ -249,13 +249,13 @@ async fn my_custom_command(value: &str) -> Result<String, ()> {
 	// Call another async function and wait for it to finish
 	some_async_function().await;
 	// Note that the return value must be wrapped in `Ok()` now.
-	Ok(format!(value))
+	Ok(value.to_owned())
 }
 ```
 
 From JavaScript an async command is invoked like any other (it already returns a promise).
 
-## Channels
+### Channels
 
 The channel is the recommended mechanism for streaming data (e.g. streamed HTTP responses) to the frontend. This reads a file in 4096-byte chunks:
 
@@ -275,14 +275,14 @@ async fn load_image(path: std::path::PathBuf, reader: tauri::ipc::Channel<&[u8]>
       // Length of zero means end of file.
       break;
     }
-    reader.send(&chunk).unwrap();
+    reader.send(&chunk[..len]).unwrap();
   }
 }
 ```
 
 See Calling the Frontend from Rust for the full channel example.
 
-## Accessing WebviewWindow, AppHandle, State and the raw request
+### Accessing WebviewWindow, AppHandle, State and the raw request
 
 ```rust
 #[tauri::command]
@@ -294,9 +294,7 @@ async fn my_custom_command(webview_window: tauri::WebviewWindow) {
 ```rust
 #[tauri::command]
 async fn my_custom_command(app_handle: tauri::AppHandle) {
-	let app_dir = app_handle.path().app_dir();
-	use tauri::GlobalShortcutManager;
-	app_handle.global_shortcut_manager().register("CTRL + U", move || {});
+	let app_data_dir = app_handle.path().app_data_dir();
 }
 ```
 
@@ -349,7 +347,7 @@ await __TAURI__.core.invoke('upload', data, {
 });
 ```
 
-## Multiple commands
+### Multiple commands
 
 Calling `invoke_handler` multiple times keeps only the last call. Pass every command to a single `tauri::generate_handler!`:
 
@@ -360,7 +358,7 @@ tauri::Builder::default()
 	.expect("error while running tauri application");
 ```
 
-## Event system
+### Event system
 
 Events are not type safe, always async, cannot return values and only support JSON payloads.
 
@@ -404,7 +402,7 @@ listen(
 );
 ```
 
-### Listening to events
+#### Listening to events
 
 Global events:
 
@@ -492,6 +490,9 @@ Events emitted in the frontend also trigger listeners registered from Rust.
 - Command names must be unique across all modules.
 - Commands defined in `lib.rs` cannot be marked `pub` (glue code generation limitation); the compiler reports error E0255: the name `__cmd__command_name` is defined multiple times.
 - Events have no strong type support, payloads are JSON strings, and the capabilities system cannot fine-grain control event data and channels.
+- Upstream example (tauri-docs 32f68c5) uses the v1 APIs `path().app_dir()` / `GlobalShortcutManager`; rewritten for v2 using `path().app_data_dir()` (docs.rs tauri 2.12.4) and the global-shortcut registration was dropped.
+- Upstream uses `format!(value)`, which does not compile; replaced with `value.to_owned()`.
+- Upstream Channel example sends the whole 4096-byte buffer; chunk sliced to `len`.
 
 ## Related
 

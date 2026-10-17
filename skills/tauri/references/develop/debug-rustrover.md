@@ -19,18 +19,18 @@ members = ["src-tauri"]
 
 Make sure the project is fully loaded (the Cargo tool window shows all modules and targets of the workspace).
 
-## Setting up Run Configurations
+### Setting up Run Configurations
 
 Two separate Run/Debug configurations are needed: one launching the Tauri app in debugging mode, another running the frontend development server.
 
-### Tauri App
+#### Tauri App
 
 1. Main menu: Run | Edit Configurations.
 2. In Run/Debug Configurations, click `+` on the toolbar and select Cargo.
 3. Configure Cargo to build the app without any default features (the `--no-default-features` flag). This makes Tauri use your development server instead of reading assets from disk. Normally the Tauri CLI passes this flag; since the CLI is sidestepped it must be passed manually.
 4. Optionally rename the configuration (e.g. "Run Tauri App").
 
-### Development server
+#### Development server
 
 The configuration above uses Cargo directly and sidesteps the Tauri CLI, so `beforeDevCommand` and `beforeBuildCommand` are not executed; run the development server manually. Find the one in use in `src-tauri/tauri.conf.json`:
 
@@ -41,7 +41,7 @@ The configuration above uses Cargo directly and sidesteps the Tauri CLI, so `bef
 - For `npm`, `pnpm` or `yarn` use the npm Run Configuration (check the Command, Scripts and Package Manager fields).
 - For `trunk` (Rust-based WebAssembly frontend frameworks) use the generic Shell Script Run Configuration.
 
-## Launching a debugging session
+### Launching a debugging session
 
 Run the development server first, then start debugging the Tauri App with the Debug button next to the Run Configurations Switcher. RustRover recognizes breakpoints in any Rust file of the project and stops on the first one hit; variables, stepping and runtime state can then be explored.
 

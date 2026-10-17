@@ -18,7 +18,7 @@ mockIPC((cmd, args) => {
 });
 ```
 
-## Overview
+### Overview
 
 - Unit and integration testing use a mock runtime; native webview libraries are not executed under it (see Mock Tauri APIs).
 - End-to-end testing uses the WebDriver protocol. WebdriverIO Tauri testing supports Windows, Linux and macOS; the WebDriver protocol can also be driven directly on Windows and Linux, as macOS provides no desktop WebDriver client (see WebDriver).

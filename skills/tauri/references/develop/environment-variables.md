@@ -12,7 +12,7 @@ All environment variables used by the Tauri core crates and the Tauri CLI.
 TAURI_SIGNING_PRIVATE_KEY="<key or path>" TAURI_SIGNING_PRIVATE_KEY_PASSWORD="<password>" npm run tauri build
 ```
 
-## Tauri CLI
+### Tauri CLI
 
 Inputs to the CLI which may have an equivalent CLI flag. If both an environment variable and a CLI flag are used, the CLI flag has priority.
 
@@ -49,7 +49,7 @@ Inputs to the CLI which may have an equivalent CLI flag. If both an environment 
 | `TAURI_ANDROID_PROJECT_PATH` | Path of the tauri android project, usually `<project>/src-tauri/gen/android`. |
 | `TAURI_IOS_PROJECT_PATH` | Path of the tauri iOS project, usually `<project>/src-tauri/gen/ios`. |
 
-## Tauri CLI Hook Commands
+### Tauri CLI Hook Commands
 
 Set for each hook command (`beforeDevCommand`, `beforeBuildCommand`, ...), useful to conditionally build the frontend or run a specific action.
 

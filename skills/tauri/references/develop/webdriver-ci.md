@@ -37,7 +37,7 @@ jobs:
     # the steps our job runs **in order**
     steps:
       # checkout the code on the workflow runner
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       # install system dependencies that Tauri needs to compile on Linux.
       # note the extra dependencies for `tauri-driver` to run which are: `webkit2gtk-driver` and `xvfb`
@@ -61,21 +61,22 @@ jobs:
 
       # install latest stable Rust release
       - name: Setup rust-toolchain stable
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
 
       # setup caching for the Rust target folder
       - name: Setup Rust cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
         with:
           workspaces: src-tauri
 
       # we run our Rust tests before the webdriver tests to avoid testing a broken application
       - name: Cargo test
         run: cargo test
+        working-directory: src-tauri
 
       # install the latest stable node version at the time of writing
       - name: Node 24
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24
           cache: 'yarn'
@@ -113,6 +114,8 @@ jobs:
 ## Notes
 
 - The `tauri-driver` version is independent of other Tauri versions.
+- Actions pinned to commit SHAs (upstream uses the tags `v4` / `v2` / `stable`); SHAs resolved from the GitHub API on 2026-10-17, re-resolve when updating.
+- Upstream runs `cargo test` at the repository root; `working-directory: src-tauri` added to match the stated assumption that the app lives in `src-tauri`.
 - Tauri uses WebDriver via `tauri-driver`. This is not Playwright; see the playwright skill for Playwright. GitHub Actions itself is covered by the github-docs skill.
 
 ## Related

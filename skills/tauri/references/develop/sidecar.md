@@ -60,7 +60,7 @@ fs.renameSync(
 );
 ```
 
-## Running it from Rust
+### Running it from Rust
 
 Set up and initialize the shell plugin first; without it the example does not work. Import the `tauri_plugin_shell::ShellExt` trait and call `shell().sidecar()` on the AppHandle:
 
@@ -103,7 +103,7 @@ call `app.shell().sidecar(name)` where `name` is `"app"`, `"my-sidecar"` or `"si
 
 The code can be placed inside a Tauri command to receive the AppHandle, or a reference to the AppHandle can be stored in the builder script.
 
-## Running it from JavaScript
+### Running it from JavaScript
 
 Grant permission to run `execute` or `spawn` on the child process in `<PROJECT ROOT>/src-tauri/capabilities/default.json`, naming the sidecar according to the relative path:
 
@@ -115,7 +115,7 @@ Grant permission to run `execute` or `spawn` on the child process in `<PROJECT R
       "identifier": "shell:allow-execute",
       "allow": [
         {
-          "name": "binaries/app",
+          "name": "binaries/my-sidecar",
           "sidecar": true
         }
       ]
@@ -134,7 +134,7 @@ const output = await command.execute();
 
 The string passed to `Command.sidecar` must match one of the strings in the `externalBin` array.
 
-## Passing arguments
+### Passing arguments
 
 Arguments are passed like a normal `std::process::Command`. They can be static (e.g. `-o`, `serve`) or dynamic (e.g. `<file_path>`, `localhost:<PORT>`, defined with a regular expression). A value of `true` allows any arguments; `false` disables all arguments. Otherwise define the arguments in the exact order they are called.
 
@@ -200,6 +200,7 @@ const output = await command.execute();
 
 ## Notes
 
+- Upstream capability example allows `binaries/app` while the JavaScript code runs `binaries/my-sidecar`; the name was unified to `binaries/my-sidecar`.
 - Migrating from Tauri v1: the `migrate` command of the Tauri v2 CLI handles the argument configuration conversion.
 - Environment variable `TAURI_SKIP_SIDECAR_SIGNATURE_CHECK` skips signing sidecars (see Environment Variables).
 

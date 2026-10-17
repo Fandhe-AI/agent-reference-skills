@@ -22,15 +22,15 @@ impl<R: Runtime> <plugin-name><R> {
 }
 ```
 
-### Android plugin
+#### Android plugin
 
 A Kotlin class that extends `app.tauri.plugin.Plugin` and is annotated with `app.tauri.annotation.TauriPlugin`. Each method annotated with `app.tauri.annotation.Command` can be called by Rust or JavaScript. Kotlin is the default; to switch to Java, right click the plugin class in Android Studio and select "Convert Kotlin file to Java file".
 
-### iOS plugin
+#### iOS plugin
 
 A Swift class that extends the `Plugin` class from the `Tauri` package. Each function with the `@objc` attribute and the `(_ invoke: Invoke)` parameter (e.g. `@objc private func download(_ invoke: Invoke) { }`) can be called by Rust or JavaScript. The plugin is a Swift package, so its package manager manages dependencies.
 
-## Plugin configuration
+### Plugin configuration
 
 The plugin instance on mobile has a getter for the plugin configuration.
 
@@ -78,7 +78,7 @@ class ExamplePlugin: Plugin {
 }
 ```
 
-## Lifecycle events
+### Lifecycle events
 
 - `load`: when the plugin is loaded into the web view (execute plugin initialization code)
 - `onNewIntent`: Android only, when the activity is re-launched (e.g. a notification is clicked or a deep link is accessed; see `Activity#onNewIntent`)
@@ -125,7 +125,7 @@ class ExamplePlugin(private val activity: Activity): Plugin(activity) {
 }
 ```
 
-## Adding mobile commands
+### Adding mobile commands
 
 Commands defined in the plugin class of the mobile project can be called by Rust.
 
@@ -223,7 +223,7 @@ impl<R: Runtime> <plugin-name;pascal-case><R> {
 }
 ```
 
-## Command arguments
+### Command arguments
 
 Arguments are serialized to commands and parsed on the mobile plugin with `Invoke::parseArgs`, taking a class describing the argument object.
 
@@ -291,11 +291,11 @@ class ExamplePlugin: Plugin {
 - Required: `let <argumentName>: Type`
 - Arguments with default values are NOT supported; use a nullable type and set the default value on the command function instead.
 
-## Calling Rust from mobile plugins
+### Calling Rust from mobile plugins
 
 Tauri provides no direct mechanism, but JNI on Android and FFI on iOS let plugins call shared Rust code, even when the application WebView is suspended.
 
-### Android
+#### Android
 
 `Cargo.toml`
 
@@ -335,6 +335,13 @@ pub extern "system" fn Java_com_example_HelloWorld_helloWorld(
     name: JString,
 ) -> jstring {
     log::debug!("Calling JNI Hello World!");
+    let name: String = match env.get_string(&name) {
+        Ok(s) => s.into(),
+        Err(e) => {
+            log::error!("Failed to read JString: {}", e);
+            return std::ptr::null_mut();
+        }
+    };
     let result = format!("Hello, {}!", name);
 
     match env.new_string(result) {
@@ -347,7 +354,7 @@ pub extern "system" fn Java_com_example_HelloWorld_helloWorld(
 }
 ```
 
-### iOS
+#### iOS
 
 iOS uses standard C FFI and needs no new dependencies. Functions can be named anything valid but must be annotated with `@_silgen_name(FFI_FUNC)`, where `FFI_FUNC` is the function name called from Rust:
 
@@ -360,7 +367,9 @@ private static func freeHelloResult(_ result: UnsafeMutablePointer<CChar>)
 
 static func helloWorld(name: String) -> String? {
   // Call Rust FFI
-  let resultPtr = name.withCString({ helloWorldFFI($0) })
+  guard let resultPtr = name.withCString({ helloWorldFFI($0) }) else {
+    return nil
+  }
 
   // Convert C string to Swift String
   let result = String(cString: resultPtr)
@@ -404,7 +413,7 @@ pub unsafe extern "C" fn free_hello_result_ffi(result: *mut c_char) {
 }
 ```
 
-## Android 16KB memory pages
+### Android 16KB memory pages
 
 Google is moving to make 16KB memory pages a requirement in all new Android app submissions. Building with NDK 28 or higher should automatically generate compliant bundles. If an older NDK must be used or generated files are not 16KB aligned, add to `.cargo/config.toml`:
 
@@ -413,7 +422,7 @@ Google is moving to make 16KB memory pages a requirement in all new Android app 
 rustflags = ["-C", "link-arg=-Wl,-z,max-page-size=16384"]
 ```
 
-## Permissions
+### Permissions
 
 Tauri simplifies checking and requesting end-user permissions.
 
@@ -502,7 +511,7 @@ impl<R: Runtime> Notification<R> {
 }
 ```
 
-## Plugin events
+### Plugin events
 
 Plugins emit events at any time with `trigger`.
 
@@ -576,6 +585,8 @@ export async function onRequest(
 }
 ```
 
+- Upstream JNI example passes a `JString` directly to `format!` (no `Display`); the string is now read with `env.get_string(&name)` first.
+- Upstream Swift FFI example passes the nullable `helloWorldFFI` result straight to `String(cString:)` / `freeHelloResult`; a `guard let` now handles `nil`.
 - The source page has a TODO noting that the Plugin Events section may duplicate Lifecycle Events.
 
 ## Related

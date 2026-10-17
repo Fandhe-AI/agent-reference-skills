@@ -159,7 +159,7 @@ npm run tauri build -- --config src-tauri/tauri.beta.conf.json
 cargo tauri build --config src-tauri/tauri.beta.conf.json
 ```
 
-## Cargo.toml
+### Cargo.toml
 
 Cargo's manifest declares the Rust crates the app depends on and app metadata. Barebones example for a Tauri project:
 
@@ -195,7 +195,7 @@ tauri-build = { version = "=2.0.0" }
 - `tauri dev` and `tauri build` automatically manage which `tauri` features are enabled based on the Tauri configuration.
 - The generated `Cargo.lock` ensures the same dependencies across machines; commit it for consistent builds.
 
-## package.json
+### package.json
 
 Used by Node.js-based frontends to configure dependencies and scripts.
 

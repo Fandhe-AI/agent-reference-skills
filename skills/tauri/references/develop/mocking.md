@@ -38,7 +38,7 @@ test("invoke simple", async () => {
 });
 ```
 
-## IPC requests
+### IPC requests
 
 `mockIPC` intercepts IPC requests, to ensure the correct backend calls are made and to simulate different results from backend functions. The examples use Vitest, but any frontend testing library such as jest works.
 
@@ -80,33 +80,22 @@ test("invoke", async () => {
 });
 ```
 
-To mock IPC requests to a sidecar or shell command, grab the ID of the event handler when `spawn()` or `execute()` is called and use it to emit the events the backend would send back:
+To mock IPC requests to a shell command run with `execute()` (plugin-shell v2), intercept `plugin:shell|execute` and return the `ChildProcess` result directly:
 
 ```javascript
 mockIPC(async (cmd, args) => {
-  if (args.message.cmd === 'execute') {
-    const eventCallbackId = `_${args.message.onEventFn}`;
-    const eventEmitter = window[eventCallbackId];
-
-    // 'Stdout' event can be called multiple times
-    eventEmitter({
-      event: 'Stdout',
-      payload: 'some data sent from the process',
-    });
-
-    // 'Terminated' event must be called at the end to resolve the promise
-    eventEmitter({
-      event: 'Terminated',
-      payload: {
-        code: 0,
-        signal: 'kill',
-      },
-    });
+  if (cmd === 'plugin:shell|execute') {
+    return {
+      code: 0,
+      signal: null,
+      stdout: 'some data sent from the process',
+      stderr: '',
+    };
   }
 });
 ```
 
-### Mocking events (since 2.7.0)
+#### Mocking events (since 2.7.0)
 
 Partial support of the Event System to simulate events emitted by Rust code, via the `shouldMockEvents` option:
 
@@ -131,7 +120,7 @@ test('mocked event', () => {
 
 `emitTo` and `emit_filter` are not supported yet.
 
-## Windows
+### Windows
 
 For window-specific code (e.g. a splash screen), `mockWindows()` creates fake window labels. The first string identifies the "current" window (the window your JavaScript believes itself in); all other strings are additional windows.
 
@@ -156,15 +145,17 @@ beforeAll(() => {
 test('invoke', async () => {
   mockWindows('main', 'second', 'third');
 
-  const { getCurrent, getAll } = await import('@tauri-apps/api/webviewWindow');
+  const { getCurrentWebviewWindow, getAllWebviewWindows } = await import('@tauri-apps/api/webviewWindow');
 
-  expect(getCurrent()).toHaveProperty('label', 'main');
-  expect(getAll().map((w) => w.label)).toEqual(['main', 'second', 'third']);
+  expect(getCurrentWebviewWindow()).toHaveProperty('label', 'main');
+  expect((await getAllWebviewWindows()).map((w) => w.label)).toEqual(['main', 'second', 'third']);
 });
 ```
 
 ## Notes
 
+- Upstream shell example targets the v1 shell IPC (`args.message` / `onEventFn`); rewritten for plugin-shell v2 (`plugin:shell|execute`). Mocking `spawn()` (`plugin:shell|spawn` with a `Channel`) is not shown because it was not verified.
+- Upstream Windows example imports `getCurrent` / `getAll` from `@tauri-apps/api/webviewWindow`; the module (2.12.4) exports `getCurrentWebviewWindow` / `getAllWebviewWindows` (async).
 - Remember to clear mocks after each test run to undo mock state changes between runs; see `clearMocks()` in the JS API reference.
 - `mockWindows()` only fakes the existence of windows, not window properties. To simulate window properties, intercept the corresponding calls with `mockIPC()`.
 - `mockIPC` fakes `invoke` under the mock runtime; no real webview or Rust backend runs. To mock the same commands in end-to-end tests, `@wdio/tauri-service` provides an equivalent `browser.tauri.mock()` (see WebDriver).

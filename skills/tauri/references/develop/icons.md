@@ -50,20 +50,20 @@ Desktop icons are placed in `src-tauri/icons` by default and included in the bui
 
 Mobile icons are placed directly into the Xcode and Android Studio projects.
 
-## Creating icons manually
+### Creating icons manually
 
 - `icon.icns`: macOS. The required layer sizes and names for the `icns` file are described in the Tauri repo (`tooling/cli/src/helpers/icns.json` on the `1.x` branch).
 - `icon.ico`: Windows. Must include layers for 16, 24, 32, 48, 64 and 256 pixels. For optimal display of the ICO image in development, the 32px layer should be the first layer.
 - `*.png`: Linux. Width == height, RGBA (RGB + Transparency), 32 bit per pixel (8 bit per channel). Commonly expected desktop sizes are 32, 128, 256 and 512 pixels. Recommended to at least match the output of `tauri icon`: `32x32.png`, `128x128.png`, `128x128@2x.png` and `icon.png`.
 - `Square*Logo.png` and `StoreLogo.png`: currently unused but intended for AppX / MS Store targets.
 
-### Android
+#### Android
 
 PNG icons with the same requirements in different sizes, placed directly in the Android Studio project under `src-tauri/gen/android/app/src/main/res/`:
 
 | Directory | `ic_launcher.png` and `ic_launcher_round.png` | `ic_launcher_foreground.png` |
 | --- | --- | --- |
-| `mipmap-hdpi/` | 49x49px | 162x162px |
+| `mipmap-hdpi/` | 72x72px | 162x162px |
 | `mipmap-mdpi/` | 48x48px | 108x108px |
 | `mipmap-xhdpi/` | 96x96px | 216x216px |
 | `mipmap-xxhdpi/` | 144x144px | 324x324px |
@@ -71,7 +71,7 @@ PNG icons with the same requirements in different sizes, placed directly in the 
 
 If `tauri icon` cannot be used, Android Studio's Image Asset Studio is recommended.
 
-### iOS
+#### iOS
 
 PNG icons with the same requirements but without transparency, placed in the Xcode project at `src-tauri/gen/apple/Assets.xcassets/AppIcon.appiconset/`. Expected icons:
 
@@ -87,6 +87,7 @@ File names use the format `AppIcon-{size}x{size}@{scaling}{extra}.png`. For the 
 
 ## Notes
 
+- Upstream table lists 49x49px for `mipmap-hdpi`; corrected to 72x72px (1.5x mdpi).
 - Some icon types may be used on platforms other than those listed (especially `png`), so include all icons even if building for a subset of platforms.
 
 ## Related

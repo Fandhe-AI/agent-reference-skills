@@ -47,7 +47,7 @@ npm run tauri [android|ios] dev
 cargo tauri [android|ios] dev
 ```
 
-## Desktop
+### Desktop
 
 - The first `tauri dev` run may need several minutes for Cargo to download and build packages; later builds only rebuild your code.
 - Open the Web Inspector with a right-click on the webview and "Inspect", or `Ctrl + Shift + I` (Windows / Linux) / `Cmd + Option + I` (macOS).
@@ -62,7 +62,7 @@ src/generated/*.rs
 deny.toml
 ```
 
-## Mobile
+### Mobile
 
 - On a physical iOS device the dev server must listen on the address given by the `TAURI_DEV_HOST` environment variable: either a public network address (default) or the iOS device TUN address (more secure, needs Xcode to connect).
 - To use the device TUN address, open Xcode first, make sure the device is connected via network in Window > Devices and Simulators, then run `tauri ios dev --force-ip-prompt` and select the IPv6 address ending with `::2`.
@@ -95,12 +95,12 @@ export default defineConfig({
 - Device selection: by default the command runs on a connected device and falls back to prompting for a simulator. Pass a name to choose upfront: `npm run tauri ios dev 'iPhone 15'`.
 - Use Xcode or Android Studio with `--open`: `npm run tauri [android|ios] dev --open`. For a physical iOS device also pass `--host`: `npm run tauri [android|ios] dev --open --host`. The Tauri CLI process must keep running (cannot be killed) while the IDE is used.
 
-### Web Inspector on mobile
+#### Web Inspector on mobile
 
 - iOS: use Safari. Enable Safari > Settings > Advanced > "Show features for web developers"; on a physical device also enable Web Inspector in Settings > Safari > Advanced. Then pick the device or simulator from Safari's Develop menu and click `localhost`.
 - Android: enabled by default for emulators. For physical devices enable Developer Options (tap Build Number 7 times in Settings > About) and turn on USB Debugging. Open `chrome://inspect` in Chrome and click inspect on the matching device entry.
 
-### Troubleshooting
+#### Troubleshooting
 
 1. Error running build script on Xcode: Tauri adds an Xcode build phase that runs the Tauri CLI to compile the Rust sources as a library. It runs in the Xcode process context and may not see shell modifications such as PATH additions, so Node.js version managers may be incompatible.
 2. Network permission prompt on first iOS run: the dev server must be exposed on the local network for the device to reach it. Click Allow and restart the application.

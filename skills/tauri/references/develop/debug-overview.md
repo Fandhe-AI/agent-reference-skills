@@ -37,7 +37,7 @@ fn main() {
 }
 ```
 
-## Rust console
+### Rust console
 
 The first place to look for errors is the terminal where you ran e.g. `tauri dev`. Print from Rust:
 
@@ -72,11 +72,11 @@ error: aborting due to previous error
 For more information about this error, try `rustc --explain E0425`.
 ```
 
-## WebView console
+### WebView console
 
 Right-click in the WebView and choose `Inspect Element`, or use `Ctrl + Shift + i` on Linux and Windows and `Command + Option + i` on macOS. The inspector is platform-specific: the webkit2gtk WebInspector on Linux, Safari's inspector on macOS and the Microsoft Edge DevTools on Windows.
 
-### Opening devtools programmatically
+#### Opening devtools programmatically
 
 Control the inspector window with `WebviewWindow::open_devtools` and `WebviewWindow::close_devtools`:
 
@@ -93,7 +93,7 @@ tauri::Builder::default()
   });
 ```
 
-### Using the inspector in production
+#### Using the inspector in production
 
 By default the inspector is only enabled in development and debug builds unless enabled with a Cargo feature.
 
@@ -113,7 +113,7 @@ To enable devtools in production builds, enable the `devtools` Cargo feature in 
 tauri = { version = "...", features = ["...", "devtools"] }
 ```
 
-## Debugging the Core process
+### Debugging the Core process
 
 The Core process is powered by Rust, so GDB or LLDB can debug it. See the Debug in VS Code guide for the LLDB VS Code extension.
 

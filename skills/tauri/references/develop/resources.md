@@ -103,7 +103,7 @@ The bundled files are in `$RESOURCE/` with the original directory structure pres
 
 `$RESOURCE` resolves per platform as documented for `PathResolver::resource_dir`.
 
-### Source path syntax
+#### Source path syntax
 
 "Target resource directory" is the value after the colon in the map notation, or a reconstruction of the original file paths in the list notation.
 
@@ -114,7 +114,7 @@ The bundled files are in `$RESOURCE/` with the original directory structure pres
 - `"dir/**/*"`: copies all files in `dir` recursively (including sub-directories).
 - `"dir/**/**`: throws an error because `**` only matches directories and no files can be found.
 
-## Resolve resource file paths
+### Resolve resource file paths
 
 Use the APIs instead of calculating the path manually.
 
@@ -132,8 +132,12 @@ In a command:
 
 ```rust
 #[tauri::command]
-fn hello(handle: tauri::AppHandle) {
-  let resource_path = handle.path().resolve("lang/de.json", BaseDirectory::Resource)?;
+fn hello(handle: tauri::AppHandle) -> Result<(), String> {
+  let resource_path = handle
+    .path()
+    .resolve("lang/de.json", BaseDirectory::Resource)
+    .map_err(|e| e.to_string())?;
+  Ok(())
 }
 ```
 
@@ -144,7 +148,7 @@ import { resolveResource } from '@tauri-apps/api/path';
 const resourcePath = await resolveResource('lang/de.json');
 ```
 
-### Path syntax
+#### Path syntax
 
 The path can be a normal relative path like `folder/json_file.json` (resolves to `$RESOURCE/folder/json_file.json`) or one like `../relative/folder/toml_file.toml` (resolves to `$RESOURCE/_up_/relative/folder/toml_file.toml`). These APIs use the same rules as `tauri.conf.json > bundle > resources`:
 
@@ -161,7 +165,7 @@ let json_path = app.path().resolve("folder/json_file.json", BaseDirectory::Resou
 let toml_path = app.path().resolve("../relative/folder/toml_file.toml", BaseDirectory::Resource)?;
 ```
 
-### Android
+#### Android
 
 Resources are stored in the APK as assets, so the returned values are not normal file system paths. The special URI prefix `asset://localhost/` is used, which works with the `fs` plugin through `FsExt::fs`:
 
@@ -172,7 +176,7 @@ let json = app.fs().read_to_string(&resource_path);
 
 To have resources on a real file system, copy the contents out manually through the `fs` plugin.
 
-## Reading resource files
+### Reading resource files
 
 Example: bundle i18n JSON files.
 
@@ -219,7 +223,7 @@ tauri::Builder::default()
     // Or when dealing with Android, use the file system plugin instead
     // let json = app.fs().read_to_string(&resource_path);
 
-    let lang_de: serde_json::Value = serde_json::from_str(json).unwrap();
+    let lang_de: serde_json::Value = serde_json::from_str(&json).unwrap();
 
     // This will print 'Guten Tag!' to the terminal
     println!("{}", lang_de.get("hello").unwrap());
@@ -230,16 +234,23 @@ tauri::Builder::default()
 
 ```rust
 #[tauri::command]
-fn hello(handle: tauri::AppHandle) -> String {
-    let resource_path = handle.path().resolve("lang/de.json", BaseDirectory::Resource)?;
+fn hello(handle: tauri::AppHandle) -> Result<String, String> {
+    let resource_path = handle
+        .path()
+        .resolve("lang/de.json", BaseDirectory::Resource)
+        .map_err(|e| e.to_string())?;
 
     let json = std::fs::read_to_string(&resource_path).unwrap();
     // Or when dealing with Android, use the file system plugin instead
     // let json = handle.fs().read_to_string(&resource_path);
 
-    let lang_de: serde_json::Value = serde_json::from_str(json).unwrap();
+    let lang_de: serde_json::Value = serde_json::from_str(&json).unwrap();
 
-    lang_de.get("hello").unwrap()
+    lang_de
+        .get("hello")
+        .and_then(|v| v.as_str())
+        .map(str::to_owned)
+        .ok_or_else(|| "missing key".to_string())
 }
 ```
 
@@ -272,7 +283,7 @@ const langDe = JSON.parse(await readTextFile(resourcePath));
 console.log(langDe.hello); // This will print 'Guten Tag!' to the devtools console
 ```
 
-## Permissions
+### Permissions
 
 `../` is replaced with `_up_` in relative paths and the root with `_root_` in absolute paths when using a list, so those files end up in sub folders inside the resource directory. To allow them in the permission system, use `$RESOURCE/**/*` for recursive access.
 
@@ -329,6 +340,10 @@ With the `opener` plugin:
   ]
 }
 ```
+
+## Notes
+
+- Upstream Rust command examples use `?` in functions without a `Result` return type, pass `String` by value to `serde_json::from_str`, and return `&Value` where `String` is declared; corrected here (`Result<_, String>` with `map_err`, `from_str(&json)`, `as_str()`).
 
 ## Related
 

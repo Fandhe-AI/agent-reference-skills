@@ -25,7 +25,7 @@ fn download(app: AppHandle, url: String) {
 }
 ```
 
-## Event system
+### Event system
 
 - Designed for small amounts of data or multi consumer / multi producer patterns (e.g. push notifications). Not designed for low latency or high throughput; use Channels for streaming.
 - Differences from commands: no strong type support, payloads are always JSON strings (unsuitable for big messages), and no capabilities-system control over event data and channels.
@@ -60,7 +60,7 @@ fn open_file(app: AppHandle, path: std::path::PathBuf) {
 
 Webview-specific events are not triggered on regular global listeners; use `listen_any` instead of `listen` to catch any event.
 
-### Event payload
+#### Event payload
 
 Any serializable type that also implements `Clone`:
 
@@ -90,7 +90,7 @@ struct DownloadFinished {
 }
 ```
 
-### Listening on the frontend
+#### Listening on the frontend
 
 ```ts
 import { listen } from '@tauri-apps/api/event';
@@ -148,19 +148,27 @@ appWebview.once('ready', () => {});
 
 Events emitted in the frontend also trigger these listeners.
 
-### Listening on Rust
+#### Listening on Rust
 
 Global events:
 
 ```rust
 use tauri::Listener;
 
+#[derive(Clone, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct DownloadStartedPayload {
+  url: String,
+  download_id: usize,
+  content_length: usize,
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
     .setup(|app| {
       app.listen("download-started", |event| {
-        if let Ok(payload) = serde_json::from_str::<DownloadStarted>(&event.payload()) {
+        if let Ok(payload) = serde_json::from_str::<DownloadStartedPayload>(event.payload()) {
           println!("downloading {}", payload.url);
         }
       });
@@ -182,7 +190,7 @@ pub fn run() {
     .setup(|app| {
       let webview = app.get_webview_window("main").unwrap();
       webview.listen("logged-in", |event| {
-        let session_token = event.data;
+        let session_token = event.payload();
         // save token..
       });
       Ok(())
@@ -201,9 +209,9 @@ app.unlisten(event_id);
 
 // unlisten when some event criteria is matched
 let handle = app.handle().clone();
-app.listen("status-changed", |event| {
-  if event.data == "ready" {
-    handle.unlisten(event.id);
+app.listen("status-changed", move |event| {
+  if serde_json::from_str::<String>(event.payload()).ok().as_deref() == Some("ready") {
+    handle.unlisten(event.id());
   }
 });
 
@@ -212,7 +220,7 @@ app.once("ready", |event| {
 });
 ```
 
-## Channels
+### Channels
 
 Channels are fast and deliver ordered data; used internally for download progress, child process output and WebSocket messages. The event system evaluates JavaScript under the hood, so it is not suitable for large data.
 
@@ -280,7 +288,7 @@ await invoke('download', {
 });
 ```
 
-## Evaluating JavaScript
+### Evaluating JavaScript
 
 Use `WebviewWindow#eval`; for non-trivial scripts using Rust input, the docs recommend the serialize-to-javascript crate.
 
@@ -298,6 +306,8 @@ tauri::Builder::default()
 ## Notes
 
 - Tauri (Rust core + system WebView). This is not Electron's `webContents.send` / `ipcMain` API; see the electron skill for Electron.
+- Upstream snippet accesses `event.data` / `event.id` fields; `tauri::Event` exposes `payload()` / `id()` methods (docs.rs tauri 2.12.4).
+- Upstream decodes the `Serialize`-only `DownloadStarted` with `serde_json::from_str`; a separate `Deserialize` type (`DownloadStartedPayload`) is used here.
 
 ## Related
 
