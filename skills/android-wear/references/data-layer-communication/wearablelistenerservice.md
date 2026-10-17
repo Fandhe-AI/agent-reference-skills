@@ -52,6 +52,8 @@ Register only for the specific event types the service needs, filtering on path:
 | `com.google.android.gms.wearable.DATA_CHANGED` | `onDataChanged` | `android:scheme="wear" android:host="*" android:path="<data item path>"` |
 | `com.google.android.gms.wearable.MESSAGE_RECEIVED` | `onMessageReceived` | `android:scheme="wear" android:host="*" android:path="<message path>"` |
 | `com.google.android.gms.wearable.CAPABILITY_CHANGED` | `onCapabilityChanged` | `android:scheme="wear" android:host="*" android:path="/<capability name>"` |
+| `com.google.android.gms.wearable.NODE_MIGRATED` | `onNodeMigrated(nodeId: String, archive: DataItemBuffer)` | `android:scheme="wear" android:host="*"` (no path; per the transfer-to-new-mobile manifest example) |
+| `com.google.android.gms.wearable.CHANNEL_EVENT` (`ChannelClient.ACTION_CHANNEL_EVENT`) | `ChannelClient.ChannelCallback` events such as `onChannelOpened` | see the GMS `WearableListenerService` / `ChannelClient` reference |
 
 ## Notes
 
@@ -59,8 +61,14 @@ Register only for the specific event types the service needs, filtering on path:
 - Because a `WearableListenerService` instance is not tied to a `Lifecycle`, awaiting a `Task` from `DataClient`/`MessageClient` inside it should use `runBlocking` (or a similar blocking bridge) rather than a coroutine scope tied to an Activity/ViewModel.
 - For listening only while an Activity is in the foreground, register `DataClient.OnDataChangedListener` / `MessageClient.OnMessageReceivedListener` directly instead — it's simpler and avoids waking a service for UI-only concerns; see DataClient and MessageClient.
 
+- `onNodeMigrated()` is invoked on the new mobile device right after the archive from the old device is delivered; the callback stops automatically after 20 seconds of data processing, so avoid power-demanding or time-consuming work in it.
+- In `onCapabilityChanged`, when looking for a nearby node, query `Node.isNearby()` on the nodes provided in the callback.
+- All these events run on a background thread, not the main thread (events guide).
+
 ## Related
 
+- [ChannelClient](./channelclient.md)
+- [Transfer data to a new mobile device](./transfer-to-new-mobile.md)
 - [DataClient](./dataclient.md)
 - [MessageClient](./messageclient.md)
 - [CapabilityClient](./capabilityclient.md)

@@ -33,10 +33,10 @@ Dependencies:
 
 ```kotlin
 dependencies {
-    implementation("androidx.wear.tiles:tiles-tooling-preview:1.6.1")
-    debugImplementation("androidx.wear.tiles:tiles-tooling:1.6.1")
+    implementation("androidx.wear.tiles:tiles-tooling-preview:1.6.2")
+    debugImplementation("androidx.wear.tiles:tiles-tooling:1.6.2")
     implementation("androidx.wear:wear-tooling-preview:1.0.0")
-    testImplementation("androidx.wear.tiles:tiles-testing:1.6.1")
+    testImplementation("androidx.wear.tiles:tiles-testing:1.6.2")
 }
 ```
 
@@ -71,6 +71,7 @@ adb shell am broadcast -a com.google.android.wearable.app.DEBUG_SURFACE \
 - `adb` result codes: `result=0` no receiver (old Wear OS version or debug process not running), `result=1` success, `result>1` error.
 - The `androidx.wear.tiles:tiles-testing` artifact (declared `testImplementation`) supports unit-testing tile-building logic outside the Preview panel.
 - Package/dependency: `androidx.wear.tiles:tiles-tooling-preview`, `androidx.wear.tiles:tiles-tooling`, `androidx.wear:wear-tooling-preview`.
+- This `@Preview` annotation is from a different package than the one used for composable previews. Other `@Preview` options such as `device`, `name`, `group`, `fontScale`, and `locale` work the same for tile previews as for components that use Compose on Wear OS (see wear-compose `screen-sizes.md` and `previews.md`).
 
 ## Related
 

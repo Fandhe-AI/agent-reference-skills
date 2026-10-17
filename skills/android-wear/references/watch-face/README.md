@@ -2,23 +2,26 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Ambient Mode | Ambient mode is the always-on, low-power display state. WFF watch faces adapt appearance in ambient mode using `<Variant mode="AMBIENT">` to change attributes such as `alpha`. | [ambient-mode.md](./ambient-mode.md) |
-| Build, Debug, and Validate | Android Studio and Gradle build WFF watch faces into an AAB/APK; a validator tool checks the XML against the published WFF schema before submission, and logcat surfaces runtime errors. | [build-and-debug.md](./build-and-debug.md) |
-| Complication Slots (ComplicationSlot, Complication) | `<ComplicationSlot>` reserves a region of the watch face where a system or app-provided complication renders; `<Complication>` defines how a given complication data type is drawn within that slot. | [complications.md](./complications.md) |
-| Drawing Shapes (Rectangle, Ellipse, Line, Arc) | `<PartDraw>` hosts drawing primitives — `<Rectangle>`, `<Ellipse>`, `<Line>`, and `<Arc>` — each filled or stroked via a `<Fill>` or `<Stroke>` child. | [shapes.md](./shapes.md) |
-| Expressions and Data Sources | WFF's expression language drives `<Transform>` values, `<Condition>` branches, and `<Template>` string formatting, reacting to data sources wrapped in square brackets (e.g. `[HOUR_0_23]`). | [expressions.md](./expressions.md) |
-| Images (PartImage, Image, Images) | `<PartImage>` renders a single image via `<Image>`, or a set of conditionally-swapped images via `<Images>`. | [images.md](./images.md) |
-| Masks, Blend Modes, and Tints | `Group`, `Part*`, and hand elements support `renderMode` (clipping masks), `blendMode` (compositing), and `tintColor` (color tinting). | [effects.md](./effects.md) |
-| Memory Optimization | Wear OS enforces strict memory limits on WFF watch faces: 10 MB in ambient mode, 100 MB in interactive mode. Only bitmaps, fonts, and XML-derived layers count toward the limit. | [memory-optimization.md](./memory-optimization.md) |
-| Personalization and Photo Support | Personalization spans user configurations (appearance customization) and `<PhotosConfiguration>`/`<Photos>` (letting the user pick their own images for display). | [personalization-and-photos.md](./personalization-and-photos.md) |
-| Scene, Group, and Part Elements | `<Scene>` is the top-level container of drawable content inside `<WatchFace>`. `<Group>` organizes child elements into a logical unit for shared transforms/variants; `<PartDraw>`, `<PartText>`, and `<PartImage>` are the leaf containers that render shapes, text, and images respectively. | [scene-and-parts.md](./scene-and-parts.md) |
-| Text and Fonts (PartText, Text, Font) | `<PartText>` renders non-time text via a `<Text>` (or `<TextCircular>`) child, styled with `<Font>` or `<BitmapFont>`. | [text.md](./text.md) |
-| Time Elements (DigitalClock, AnalogClock, Hands) | Elements for rendering the current time: `<DigitalClock>`/`<TimeText>` for digital displays, `<AnalogClock>` with `<HourHand>`/`<MinuteHand>`/`<SecondHand>` for analog dials. | [time.md](./time.md) |
-| Transform, Animation, and Variant | `<Transform>` dynamically recalculates an attribute of its parent element using an expression, re-evaluating whenever the underlying data source changes. `<Animation>` smooths the resulting value change; `<Variant>` swaps an attribute value based on a device mode (e.g. ambient). | [transform.md](./transform.md) |
-| User Configurations (Boolean, List, Color, Flavors) | `<UserConfigurations>` declares user-adjustable style options edited through the Watch Face Editor: `<BooleanConfiguration>` (toggle), `<ListConfiguration>` (discrete choice), `<ColorConfiguration>` (color theme), and `<Flavors>` (presets bundling multiple configuration values). | [user-configurations.md](./user-configurations.md) |
-| Watch Face Format Overview | Watch Face Format (WFF) is a declarative XML format for building Wear OS watch faces, created in partnership with Samsung. No rendering code is required — the Wear OS platform parses the XML and renders the watch face, pulling in image/font resources as needed. | [overview.md](./overview.md) |
-| Watch Face Push (WatchFacePushManager) | Wear OS 6+ API letting a companion marketplace app install, update, or remove pre-built Watch Face Format APKs directly onto a paired watch into a small number of "slots" — an alternative distribution path to the Play Store, without writing WFF XML on the watch side. | [watch-face-push.md](./watch-face-push.md) |
-| WatchFace (Root Element) | `<WatchFace>` is the required root element of `res/raw/watchface.xml`, defining the coordinate space of the watch face. | [root-element.md](./root-element.md) |
-| WFF Project Setup | Project structure and manifest declarations required for a Watch Face Format project. | [setup.md](./setup.md) |
-| WFF Versions | Each Watch Face Format version aligns with a minimum Wear OS release and unlocks new elements/attributes. Declare the version in the manifest (see [setup](./setup.md)). | [versions.md](./versions.md) |
-| Weather Data Sources ([WEATHER.*]) | `[WEATHER.*]` expressions expose current conditions and hourly/daily forecasts to WFF text, template, and condition elements. Added in WFF v2. | [weather.md](./weather.md) |
+| Ambient Mode | Always-on low-power state adapted with `<Variant mode="AMBIENT">` | [ambient-mode.md](./ambient-mode.md) |
+| Build, Debug, and Validate | Building, debugging, and validating WFF watch faces (AAB/APK) | [build-and-debug.md](./build-and-debug.md) |
+| Complication Slots (ComplicationSlot, Complication) | `<ComplicationSlot>` regions and per-type complication rendering | [complications.md](./complications.md) |
+| Masks, Blend Modes, and Tints | renderMode, blendMode, and tintColor on groups and parts | [effects.md](./effects.md) |
+| Expressions and Data Sources | Expression language and bracketed data sources (e.g. `[HOUR_0_23]`) | [expressions.md](./expressions.md) |
+| Images (PartImage, Image, Images) | `<PartImage>`, `<Image>`, and `<Images>` for rendering images | [images.md](./images.md) |
+| Memory Optimization | Memory limits: 10 MB in ambient mode, 100 MB in interactive mode | [memory-optimization.md](./memory-optimization.md) |
+| Watch Face Format Overview | Declarative XML format for building Wear OS watch faces | [overview.md](./overview.md) |
+| Personalization and Photo Support | User configurations and user-selected photos for watch faces | [personalization-and-photos.md](./personalization-and-photos.md) |
+| WatchFace (Root Element) | `<WatchFace>` root element defining the coordinate space | [root-element.md](./root-element.md) |
+| Scene, Group, and Part Elements | Scene, Group, and Part containers for drawable content | [scene-and-parts.md](./scene-and-parts.md) |
+| WFF Project Setup | Project structure and manifest declarations for WFF projects | [setup.md](./setup.md) |
+| Drawing Shapes (Rectangle, Ellipse, Line, Arc) | Rectangle, Ellipse, Line, and Arc drawing primitives | [shapes.md](./shapes.md) |
+| Text and Fonts (PartText, Text, Font) | PartText with Text, TextCircular, Font, and BitmapFont | [text.md](./text.md) |
+| Time Elements (DigitalClock, AnalogClock, Hands) | DigitalClock and AnalogClock with hour, minute, and second hands | [time.md](./time.md) |
+| Transform, Animation, and Variant | Expression-driven attribute recalculation, animation, and variants | [transform.md](./transform.md) |
+| User Configurations (Boolean, List, Color, Flavors) | Boolean, list, color, and flavor style options | [user-configurations.md](./user-configurations.md) |
+| WFF Versions | WFF versions and their minimum Wear OS releases | [versions.md](./versions.md) |
+| Watch Face Designer advanced usage (subdials, complications, color themes) | Subdials, complication slots, and color themes in Watch Face Designer | [watch-face-designer-advanced.md](./watch-face-designer-advanced.md) |
+| Watch Face Designer export and publishing to Google Play | Export to Google Play (.aab), Android Studio, APK, and more | [watch-face-designer-export.md](./watch-face-designer-export.md) |
+| Watch Face Designer (Figma plugin) basics | Drawing a Figma frame and assigning Designer behaviors to layers | [watch-face-designer.md](./watch-face-designer.md) |
+| Watch Face Push (WatchFacePushManager) | Companion-app install and update of WFF APKs (Wear OS 6+) | [watch-face-push.md](./watch-face-push.md) |
+| Weather Data Sources ([WEATHER.*]) | `[WEATHER.*]` expressions for current conditions and forecasts (WFF v2+) | [weather.md](./weather.md) |

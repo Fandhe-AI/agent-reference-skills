@@ -2,10 +2,10 @@
 name: android-wear
 description: >
   Wear OS (Kotlin) の androidx.wear API・Watch Face Format (WFF) リファレンス。
-  Wear Compose の CurvedLayout, rotary input, ambient mode, ScalingLazyColumn。
-  Tiles / ProtoLayout, ComplicationDataSourceService と ComplicationData 型,
+  Wear Compose の CurvedLayout, rotary input, ambient mode, one-handed gestures, ScalingLazyColumn。
+  Tiles / Material3TileService / ProtoLayout, ComplicationDataSourceService と ComplicationData 型,
   Health Services (MeasureClient, ExerciseClient, PassiveMonitoringClient),
-  WFF の XML 要素・式・コンプリケーションスロット・ユーザー設定。
+  Data Layer (ChannelClient), WFF の XML 要素・式・コンプリケーションスロット・ユーザー設定・Watch Face Designer。
 user-invocable: false
 ---
 
@@ -51,12 +51,16 @@ skills/android-wear/
       swipe-dismissable-nav-host.md
       navigation3.md
       screen-sizes.md
+      one-handed-gestures.md
+      previews.md
       migrate-to-material3.md
       migrate-to-navigation3.md
       performance.md
     tiles/
       README.md
       tile-service.md
+      material3-tile-service.md
+      migrate-tiles.md
       tile-builders.md
       dimensions.md
       color-and-type.md
@@ -123,16 +127,24 @@ skills/android-wear/
       memory-optimization.md
       build-and-debug.md
       watch-face-push.md
+      watch-face-designer.md
+      watch-face-designer-advanced.md
+      watch-face-designer-export.md
     data-layer-communication/
       README.md
+      data-layer-overview.md
       assets.md
       capabilityclient.md
+      channelclient.md
+      cloud-backup-restore.md
       dataclient.md
       messageclient.md
+      network-access.md
       nodeclient.md
       ongoingactivity.md
       remoteactivityhelper.md
       remoteauthclient.md
+      transfer-to-new-mobile.md
       wearablelistenerservice.md
 ```
 
@@ -153,6 +165,9 @@ skills/android-wear/
 | Button / IconButton / SelectionControls / Card / Picker / Dialog を使いたい | wear-compose | [references/wear-compose/README.md](references/wear-compose/README.md) |
 | CurvedLayout / rotary input (クラウン・ベゼル) / ambient mode を実装したい | wear-compose | [references/wear-compose/README.md](references/wear-compose/README.md) |
 | Material 2.5 → Material 3 / Navigation 2 → Navigation 3 へ移行したい、Compose のパフォーマンスを最適化したい | wear-compose | [references/wear-compose/README.md](references/wear-compose/README.md) |
+| One-handed gestures (double pinch / wrist turn, Modifier.oneHandedGesture) を実装したい | wear-compose | [references/wear-compose/README.md](references/wear-compose/README.md) |
+| Wear OS の Compose Preview (@WearPreviewDevices / @WearPreviewFontScales / WearDevices) を設定したい | wear-compose | [references/wear-compose/README.md](references/wear-compose/README.md) |
+| Material3TileService で Tile を作りたい / Tiles 1.5・ProtoLayout 1.3 (Material 3) へ移行したい | tiles | [references/tiles/README.md](references/tiles/README.md) |
 | Tile (TileService) を実装したい | tiles | [references/tiles/README.md](references/tiles/README.md) |
 | ProtoLayout / Material3 タイル部品でレイアウトを組みたい | tiles | [references/tiles/README.md](references/tiles/README.md) |
 | Tile のアクション・更新・プラットフォームデータ連携をしたい | tiles | [references/tiles/README.md](references/tiles/README.md) |
@@ -166,7 +181,10 @@ skills/android-wear/
 | バックグラウンドで身体センサー (心拍数等) にアクセスする権限フローを実装したい | complications-health | [references/complications-health/README.md](references/complications-health/README.md) |
 | Watch Face Format (WFF) の XML 要素・シーン・図形・時刻表示を書きたい | watch-face | [references/watch-face/README.md](references/watch-face/README.md) |
 | WFF の式・データソース・コンプリケーションスロット・ユーザー設定を扱いたい | watch-face | [references/watch-face/README.md](references/watch-face/README.md) |
+| Watch Face Designer (Figma プラグイン) で WFF の文字盤を作成・エクスポート・Google Play に公開したい | watch-face | [references/watch-face/README.md](references/watch-face/README.md) |
 | WFF のビルド・デバッグ・メモリ最適化・バージョン対応を確認したい | watch-face | [references/watch-face/README.md](references/watch-face/README.md) |
+| Data Layer API の全体像・client の選び方・ChannelClient (ストリーム / ファイル転送) を知りたい | data-layer-communication | [references/data-layer-communication/README.md](references/data-layer-communication/README.md) |
+| クラウドバックアップ・新しいスマートフォンへのデータ移行 (onNodeMigrated)・スタンドアロンのネットワーク通信 (Wi-Fi 要求 / FCM) を扱いたい | data-layer-communication | [references/data-layer-communication/README.md](references/data-layer-communication/README.md) |
 | DataClient で端末間 (phone/watch) の DataItem・Asset を同期したい | data-layer-communication | [references/data-layer-communication/README.md](references/data-layer-communication/README.md) |
 | MessageClient で端末間メッセージ (RPC 的な一方向/リクエスト-レスポンス) を送りたい | data-layer-communication | [references/data-layer-communication/README.md](references/data-layer-communication/README.md) |
 | NodeClient / CapabilityClient でノード・アプリ機能を検出したい | data-layer-communication | [references/data-layer-communication/README.md](references/data-layer-communication/README.md) |

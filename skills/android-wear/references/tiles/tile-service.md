@@ -71,13 +71,15 @@ Manifest declaration:
 - `TileService.METADATA_PREVIEW_KEY` (`"androidx.wear.tiles.PREVIEW"`) names the manifest `<meta-data>` drawable used as the carousel preview image.
 - `TileService.getUpdater(context: Context): TileUpdateRequester` — obtains an updater to notify the renderer that new content is available (see `updating-tiles.md`).
 - `TileService.getActiveTilesAsync(context: Context, executor: Executor): ListenableFuture<List<ActiveTileIdentifier>>` — lists tiles from this app currently present in the user's carousel.
-- All `TileService` methods run on the main thread (`@MainThread`); service lifecycle methods (`onCreate`/`onBind`/`onDestroy`) run on a separate thread.
+- `TileService` is a bound service with its own `TileService`-specific lifecycle methods; the `Service` lifecycle methods (`onCreate`/`onBind`/`onUnbind`/`onDestroy`) and the `TileService` lifecycle methods are called on two separate asynchronous threads.
 - For Kotlin coroutines instead of `ListenableFuture`, the Horologist library provides a `SuspendingTileService` wrapper.
 - Package: `androidx.wear.tiles` (class), depends on `androidx.wear.tiles:tiles`, `androidx.wear.protolayout:protolayout`, `androidx.wear.protolayout:protolayout-material3`, `androidx.wear.protolayout:protolayout-expression`.
 - Tiles use ProtoLayout, not Jetpack Compose, to describe UI — do not use `androidx.wear.compose.*` composables inside `onTileRequest`.
+- Since Tiles 1.6.0 (`androidx.wear.tiles:tiles:1.6.0` and higher), the get-started guide recommends extending `Material3TileService` instead of `TileService` (or Horologist's `SuspendingTileService`) when building Material 3 tiles. `Material3TileService` builds on `TileService` and provides: a single suspending `MaterialScope.tileResponse(requestParams: TileRequest): Tile` instead of `ListenableFuture` and `onTileRequest()`; a pre-configured `MaterialScope` receiver (constructor parameters such as `allowDynamicTheme` and `defaultColorScheme`), so no extra `materialScope()` wrapper; and a `ProtoLayoutScope` that registers inline image resources automatically. `onTileResourcesRequest()` is `final` there, so do not override it. See `material3-tile-service.md`.
 
 ## Related
 
+- [material3-tile-service](./material3-tile-service.md)
 - [tile-builders](./tile-builders.md)
 - [material3-layout](./material3-layout.md)
 - [updating-tiles](./updating-tiles.md)

@@ -51,11 +51,16 @@ HorizontalPagerScaffold(pagerState = pagerState) {
 | `gestureInclusion` | `GestureInclusion` | `PagerDefaults.gestureInclusion(state)` | Determines which touch gestures the pager claims; the default excludes a left-edge zone on the first page so system swipe-to-dismiss can take over. |
 | `rotaryScrollableBehavior` | `RotaryScrollableBehavior?` | `null` (Horizontal) / `RotaryScrollableDefaults.snapBehavior(state)` (Vertical) | Enables rotary crown/bezel paging; pass `RotaryScrollableDefaults.snapBehavior(state)` to enable it on `HorizontalPager`. |
 | `content` | `@Composable PagerScope.(page: Int) -> Unit` | — | Per-page content; receives the page index. |
+| `AnimatedPage(pageIndex, pagerState) { ... }` | composable (`androidx.wear.compose.material3`) | — | Wraps each page inside the pager's page content lambda to apply Material 3 transition animations (scaling, rounded corner morphing, and scrim effects) based on the page's offset in `PagerState`. |
+| `PagerScaffoldDefaults.snapWithSpringFlingBehavior(state)` | `TargetedFlingBehavior` | — | Pass as `flingBehavior` to apply Material 3 spring motion physics and responsive page snapping (`HighSnapPositionalThreshold`). |
+| `PagerDefaults.snapFlingBehavior(state, maxFlingPages = 0, snapPositionalThreshold = PagerScaffoldDefaults.LowSnapPositionalThreshold)` | `TargetedFlingBehavior` | — | Low snap sensitivity for workouts; requires a deliberate drag across a larger part of the screen. With rotary snapping, also set `snapSensitivity = RotaryScrollableDefaults.LowSnapSensitivity` in `RotaryScrollableDefaults.snapBehavior`. |
 
 ## Notes
 
 - Package: `androidx.wear.compose.foundation.pager` (artifact `androidx.wear.compose:compose-foundation`) — distinct from the mobile `androidx.compose.foundation.pager` package used inside its implementation, and from `androidx.paging.compose.Pager` (Paging 3).
 - Each page automatically gets `Modifier.hierarchicalFocusGroup(state.currentPage == page)`, so nested `rotaryScrollable` children (e.g. a `ScalingLazyColumn` per page) receive focus correctly without extra wiring.
+- Hierarchy from the pagination guide (2026-09-22), outer to inner: `AppScaffold` (one per app, anchors the global `TimeText`) > `HorizontalPagerScaffold` / `VerticalPagerScaffold` (manages the page indicator) > `HorizontalPager` / `VerticalPager` (`PagerState`, fling behavior) > `AnimatedPage` (scale and scrim per page) > `ScreenScaffold` (one per page: `ScrollIndicator`, `EdgeButton`) > page content. Always pass the `contentPadding` provided by `ScreenScaffold` to the page's content container (such as `TransformingLazyColumn`) to prevent clipping on circular displays.
+- `VerticalPager` enables rotary page snapping by default (`RotaryScrollableDefaults.snapBehavior(state)`); `HorizontalPager` keeps `rotaryScrollableBehavior = null` so crown/bezel input scrolls vertical lists inside the active page.
 - Pair with `HorizontalPagerScaffold` / `VerticalPagerScaffold` (from `androidx.wear.compose.material3`), which take this Wear `PagerState` to coordinate `TimeText` and the page indicator.
 
 ## Related

@@ -56,6 +56,8 @@ val waterIntakeValue = DynamicBuilders.DynamicInt32.from(KEY_WATER_INTAKE)
 
 - Physical-dimension-affecting dynamic values (anything but color) require a matching layout constraint, e.g. `TypeBuilders.StringLayoutConstraint.Builder("000")` reserves space for a 3-digit number; Material3 components set these automatically.
 - Wear OS caps the number of simultaneous dynamic expressions per tile; excess expressions silently fall back to their static value — consolidate related values into a single `State` map rather than many individual expressions.
+- Per the "Dynamic expressions in Wear OS" guide, the system limits how many dynamic expressions it can process simultaneously on a screen and converts any additional ones to static values. Constant expressions count too: `DynamicInt32.constant(1).plus(2).animate()` contains 4 dynamic expressions (`plus`, `animate`, `constant(1)`, and the `constant(2)` implied by the `2` in `plus()`).
+- Supported dynamic types: `DynamicBool`, `DynamicColor`, `DynamicDuration`, `DynamicFloat`, `DynamicInstant`, `DynamicInt32`, `DynamicString`. `DynamicInt32` converts to `DynamicString` with `format()`; `DynamicDuration` lets you extract parts (such as the seconds part) as `DynamicInt32`.
 - Package: `androidx.wear.protolayout.expression.DynamicBuilders`, `androidx.wear.protolayout.expression.PlatformHealthSources`.
 
 ## Related

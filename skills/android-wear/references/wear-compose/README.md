@@ -1,35 +1,37 @@
-# wear-compose
+# Wear Compose
 
 | Name | Description | Path |
 |------|-------------|------|
-| AmbientMode | Sealed model representing whether the device is in interactive or always-on ambient mode. | [ambient-mode.md](./ambient-mode.md) |
-| AnimatedText / Placeholder | AnimatedText and skeleton placeholder animations with shimmer sweep. | [animated-text-placeholder.md](./animated-text-placeholder.md) |
-| ButtonGroup | Material3 button group with shape-morphing row layout. | [button-group.md](./button-group.md) |
-| Button (Wear) | Base level Wear Material3 button; circular/stadium shaped for the wrist. | [button.md](./button.md) |
-| Card (Wear) | Base level container with rounded corners and gradient background. | [card.md](./card.md) |
-| CurvedLayout / curvedText / curvedRow / curvedColumn / CurvedModifier | Low-level building blocks for arranging content along an arc. | [curved-layout.md](./curved-layout.md) |
-| AlertDialog / ConfirmationDialog / OpenOnPhoneDialog | Full-screen dialog family with AlertDialog and auto-dismissing variants. | [dialogs.md](./dialogs.md) |
-| dynamicColorScheme | Dynamic color theming derived from device watch face colors. | [dynamic-color-scheme.md](./dynamic-color-scheme.md) |
-| EdgeButton | High-emphasis button at screen bottom edge, full width. | [edge-button.md](./edge-button.md) |
-| Expandable | Animated expand/collapse of content with ExpandableState. | [expandable.md](./expandable.md) |
-| HierarchicalFocus | Focus tree marking active composition branches for proper focus delegation. | [hierarchical-focus.md](./hierarchical-focus.md) |
-| IconButton / IconToggleButton | Circular, icon-only buttons (stateless and toggle variants). | [icon-button.md](./icon-button.md) |
-| ListHeader | List section header with slot-based layout and padding. | [list-header.md](./list-header.md) |
-| TransformingLazyColumn / ScalingLazyColumn | Wear-specific lazy lists with per-item scale/morph transformations. | [lists.md](./lists.md) |
-| Migrate from Material 2.5 to Material 3 | Guide for migrating from Material 2.5 to Material 3 Expressive. | [migrate-to-material3.md](./migrate-to-material3.md) |
-| Migrate to Navigation 3 | Guide for migrating from Navigation 2 to Navigation 3 type-safe routes. | [migrate-to-navigation3.md](./migrate-to-navigation3.md) |
-| NavDisplay / SwipeDismissableSceneStrategy (Navigation 3) | Navigation 3 integration with type-safe NavKey back stack. | [navigation3.md](./navigation3.md) |
-| Jetpack Compose performance on Wear OS | Performance techniques and validation tooling for Compose apps. | [performance.md](./performance.md) |
-| Picker / PickerGroup / DatePicker / TimePicker | Scrollable columns for selecting from finite sets. | [picker.md](./picker.md) |
-| HorizontalPager / VerticalPager (Wear) | Wear-specific pager with rotary input and swipe-to-dismiss gestures. | [pager.md](./pager.md) |
-| Progress Indicators (Circular / Linear / Arc / Level / Page / Segmented) | Family of Wear Material3 progress/status indicators. | [progress-indicators.md](./progress-indicators.md) |
-| Rotary Input (Modifier.rotaryScrollable / RotaryScrollableDefaults) | Handles physical crown/rotating-bezel input. | [rotary-input.md](./rotary-input.md) |
-| AppScaffold / ScreenScaffold / PagerScaffold | Top-level structural composables for Wear OS screen layout. | [scaffold.md](./scaffold.md) |
-| Developing for different screen sizes | Multi-preview annotations and responsive sizing for round/square devices. | [screen-sizes.md](./screen-sizes.md) |
-| CheckboxButton / SwitchButton / RadioButton | Full-width selection-control rows (checkbox/switch/radio). | [selection-controls.md](./selection-controls.md) |
-| Slider / Stepper | Value-input controls for discrete/continuous ranges. | [slider-stepper.md](./slider-stepper.md) |
-| SplitCheckboxButton / SplitSwitchButton / SplitRadioButton | Two-tappable-area variants of selection controls. | [split-selection-controls.md](./split-selection-controls.md) |
-| SwipeDismissableNavHost | Wear-specific NavHost with swipe-to-dismiss gesture navigation. | [swipe-dismissable-nav-host.md](./swipe-dismissable-nav-host.md) |
-| SwipeToReveal / BasicSwipeToDismissBox | Reveal trailing action buttons on swipe. | [swipe-to-reveal.md](./swipe-to-reveal.md) |
-| MaterialTheme (Wear) | Wear Material3 theming root with ColorScheme and MotionScheme. | [theme.md](./theme.md) |
-| TimeText | Layout showing current time along curved screen edge. | [time-text.md](./time-text.md) |
+| AmbientMode | Sealed model for interactive vs always-on ambient (low-power) display mode, with the constraints ambient rendering must respect. | [ambient-mode.md](./ambient-mode.md) |
+| AnimatedText / Placeholder | `AnimatedText` animates text along font-variation axes and size; `Modifier.placeholder` / `placeholderShimmer` draw loading skeletons that reveal when content is ready. | [animated-text-placeholder.md](./animated-text-placeholder.md) |
+| ButtonGroup | Material3 Expressive row layout where the pressed button grows and its neighbors shrink, keeping the group's total width constant. | [button-group.md](./button-group.md) |
+| Button (Wear) | Base level Wear Material3 circular/stadium button with a single content slot, sized for the wrist; high-emphasis filled variant by default. | [button.md](./button.md) |
+| Card (Wear) | Base level container for content and actions about one subject; rectangular with rounded corners and a gradient background, single content slot. | [card.md](./card.md) |
+| CurvedLayout / curvedText / curvedRow / curvedColumn / CurvedModifier | Low-level building blocks (`CurvedLayout`, `curvedText`, `curvedRow`, `curvedColumn`, `CurvedModifier`) for arranging content along an arc on round screens. | [curved-layout.md](./curved-layout.md) |
+| AlertDialog / ConfirmationDialog / OpenOnPhoneDialog | Full-screen dialog family: `AlertDialog` prompts for a decision; `ConfirmationDialog` / `OpenOnPhoneDialog` are transient, auto-dismissing dialogs with an icon and short curved text. | [dialogs.md](./dialogs.md) |
+| dynamicColorScheme | Material3 Expressive dynamic color theming that derives a `ColorScheme` from the current watch face colors. | [dynamic-color-scheme.md](./dynamic-color-scheme.md) |
+| EdgeButton | High-emphasis full-width button that follows the screen curvature and sits flush with the bottom edge; the single most important action, placed in the `edgeButton` slot. | [edge-button.md](./edge-button.md) |
+| Expandable | Animated expand/collapse of content driven by `ExpandableState` (`expandableItems` / `expandableItem`), typically toggled by `expandableButton`. | [expandable.md](./expandable.md) |
+| HierarchicalFocus | `Modifier.hierarchicalFocusGroup` marks the active branch of a composition to form a focus tree; used by custom components that direct focus to one of several children. | [hierarchical-focus.md](./hierarchical-focus.md) |
+| IconButton / IconToggleButton | Circular icon-only buttons: `IconButton` is a stateless action button; `IconToggleButton` switches between primary and tonal colors via `checked`. | [icon-button.md](./icon-button.md) |
+| ListHeader | Slot-based composable for a list section header, typically a few words on one line, start/end padded. | [list-header.md](./list-header.md) |
+| TransformingLazyColumn / ScalingLazyColumn | Wear vertically scrolling lazy lists: `TransformingLazyColumn` (Material3-era, per-item edge morph) and `ScalingLazyColumn` (scaling/fisheye, auto-centering). | [lists.md](./lists.md) |
+| Migrate from Material 2.5 to Material 3 | Guide to migrating from Material 2.5 (`androidx.wear.compose.material`) to Material 3 Expressive (`androidx.wear.compose.material3`); do not mix both long term. | [migrate-to-material3.md](./migrate-to-material3.md) |
+| Migrate to Navigation 3 | Guide to migrating from `SwipeDismissableNavHost` (Navigation 2, string routes) to `NavDisplay` with `rememberSwipeDismissableSceneStrategy()` (Navigation 3, `NavKey` back stack). | [migrate-to-navigation3.md](./migrate-to-navigation3.md) |
+| NavDisplay / SwipeDismissableSceneStrategy (Navigation 3) | Wear OS integration for Navigation 3: `NavDisplay` renders the top destination of a `NavKey` back stack; `rememberSwipeDismissableSceneStrategy()` adds swipe-to-dismiss. | [navigation3.md](./navigation3.md) |
+| One-handed gestures (Modifier.oneHandedGesture / OneHandedGestureConfiguration) | On Wear OS 7 (API level 37) and higher, touch-free Primary action (double pinch) and Dismiss action (wrist turn) via `Modifier.oneHandedGesture`. | [one-handed-gestures.md](./one-handed-gestures.md) |
+| HorizontalPager / VerticalPager (Wear) | Wear pager composables wrapping the mobile Pager with rotary paging, a left-edge gesture inclusion zone for swipe-to-dismiss, and per-page hierarchical focus. | [pager.md](./pager.md) |
+| Jetpack Compose performance on Wear OS | Performance techniques and validation tooling for Compose on Wear OS, where CPU/GPU budgets are tighter, including baseline profile checks. | [performance.md](./performance.md) |
+| Picker / PickerGroup / DatePicker / TimePicker | Scrollable columns for selecting a value from a finite set: `Picker` (single column), `PickerGroup` (coordinated focus), and `DatePicker` / `TimePicker` (full-screen). | [picker.md](./picker.md) |
+| Preview your UI in Compose for Wear OS (@WearPreview* / WearDevices) | Android Studio Compose Previews for Wear composables across watch sizes, round bezels, and font scales, using `@WearPreview*` annotations and `WearDevices`. | [previews.md](./previews.md) |
+| Progress Indicators (Circular / Linear / Arc / Level / Page / Segmented) | Wear Material3 progress/status indicators: circular, segmented circular, linear, arc, level, and page indicators. | [progress-indicators.md](./progress-indicators.md) |
+| Rotary Input (Modifier.rotaryScrollable / RotaryScrollableDefaults) | Handles physical crown/bezel rotary input for scrollable containers; `rotaryScrollableBehavior` for built-ins, `Modifier.rotaryScrollable` for custom scrollables. | [rotary-input.md](./rotary-input.md) |
+| AppScaffold / ScreenScaffold / PagerScaffold | Top-level structural composables that lay out a Wear screen and coordinate `TimeText`, `ScrollIndicator`, and page indicators. | [scaffold.md](./scaffold.md) |
+| Developing for different screen sizes | Designing for the range of Wear screen shapes and sizes (small round, large round, square) with multi-preview annotations and percentage-based sizing. | [screen-sizes.md](./screen-sizes.md) |
+| CheckboxButton / SwitchButton / RadioButton | Full-width selection rows with icon, label, and secondary label slots plus a trailing checkbox / switch / radio indicator, for settings-style lists. | [selection-controls.md](./selection-controls.md) |
+| Slider / Stepper | Value-input controls: `Slider` is an inline bar with end buttons; `Stepper` is full-screen with the increase button at top and the decrease button at bottom. | [slider-stepper.md](./slider-stepper.md) |
+| SplitCheckboxButton / SplitSwitchButton / SplitRadioButton | Two-tappable-area variants of `CheckboxButton` / `SwitchButton` / `RadioButton`: the label and the control are independently clickable with separate callbacks. | [split-selection-controls.md](./split-selection-controls.md) |
+| SwipeDismissableNavHost | Wear-specific replacement for `NavHost` that adds swipe-to-dismiss gesture navigation; used inside `AppScaffold` with `rememberSwipeDismissableNavController()`. | [swipe-dismissable-nav-host.md](./swipe-dismissable-nav-host.md) |
+| SwipeToReveal / BasicSwipeToDismissBox | `SwipeToReveal` reveals up to two trailing action buttons on swipe; `BasicSwipeToDismissBox` is the lower-level swipe-to-dismiss primitive. | [swipe-to-reveal.md](./swipe-to-reveal.md) |
+| MaterialTheme (Wear) | Wear Material3 theming root defining `colorScheme`, `typography`, `shapes`, and `motionScheme` for all Wear Compose Material3 components. | [theme.md](./theme.md) |
+| TimeText | Layout showing the current time with an optional leading label, drawn along the curved top edge of round screens (straight on rectangular screens). | [time-text.md](./time-text.md) |

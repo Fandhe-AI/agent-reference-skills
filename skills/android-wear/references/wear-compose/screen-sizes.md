@@ -42,8 +42,10 @@ fun MyScreen() {
 - These are `@Preview` multi-preview annotations (compose tooling only); they don't affect runtime behavior. Import from `androidx.wear.compose.ui.tooling.preview` (artifact `androidx.wear.compose:compose-ui-tooling`).
 - At runtime, favor percentage-based/responsive padding (e.g. via `ScreenScaffold`'s resolved `contentPadding`, or a manually computed width breakpoint as above) over hardcoded `dp` paddings, so content doesn't clip or float awkwardly on larger round displays.
 - `TransformingLazyColumn` / `ScalingLazyColumn` already adapt their edge item scaling to the available screen size; combine with a width breakpoint check only for content that needs a structurally different layout on larger screens (e.g. an extra column or larger `Image`).
+- For the full preview guide (dependencies, screen vs component previews, custom `spec:` strings, previewing a scrolled `TransformingLazyColumn`), see `previews.md`. `@WearPreviewSquare` is not listed in the current previews guide.
 
 ## Related
 
+- [Preview your UI in Compose for Wear OS](./previews.md)
 - [AppScaffold / ScreenScaffold / PagerScaffold](./scaffold.md)
 - [TransformingLazyColumn / ScalingLazyColumn](./lists.md)
