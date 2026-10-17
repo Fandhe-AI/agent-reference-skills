@@ -65,7 +65,7 @@ This uses `cargo` directly to build the Rust application in development and prod
       // a background `problemMatcher` is required for a background `preLaunchTask`
       "problemMatcher": {
         "owner": "custom",
-        "pattern": { "regexp": "^$" },
+        "pattern": { "regexp": "^__never_matches__(.+):(\\d+):(.*)$", "file": 1, "line": 2, "message": 3 },
         "background": {
           "activeBegins": true,
           "beginsPattern": ".",
@@ -145,7 +145,7 @@ It does not use the Tauri CLI either. `tasks.json` is the same as with `lldb`, e
       // a background `problemMatcher` is required for a background `preLaunchTask`
       "problemMatcher": {
         "owner": "custom",
-        "pattern": { "regexp": "^$" },
+        "pattern": { "regexp": "^__never_matches__(.+):(\\d+):(.*)$", "file": 1, "line": 2, "message": 3 },
         "background": {
           "activeBegins": true,
           "beginsPattern": ".",
@@ -171,7 +171,7 @@ It does not use the Tauri CLI either. `tasks.json` is the same as with `lldb`, e
 ## Notes
 
 - `custom-protocol` is a feature managed by the Tauri CLI; when invoking cargo directly for a production build, enable `tauri/custom-protocol` or the app keeps using `devUrl` (upstream example omits it).
-- Upstream tasks.json examples set only `isBackground: true`; a background `problemMatcher` (beginsPattern / endsPattern) was added because VS Code needs it to know when a background preLaunchTask is ready. The `endsPattern` value `Local:` is a placeholder assuming Vite output; adjust it to your dev server.
+- Upstream tasks.json examples set only `isBackground: true`; a background `problemMatcher` (beginsPattern / endsPattern) was added because VS Code needs it to know when a background preLaunchTask is ready. Its `pattern` is a never-matching placeholder with explicit file/line/message captures, and `endsPattern` `Local:` assumes Vite output; adjust both to your dev server.
 
 ## Related
 
