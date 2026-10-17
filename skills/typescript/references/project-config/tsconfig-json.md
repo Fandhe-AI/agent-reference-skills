@@ -75,4 +75,4 @@ TSConfig Bases: depending on the JavaScript runtime environment, there may be a 
 - [compiler-options-cli.md](./compiler-options-cli.md)
 - [project-references.md](./project-references.md)
 - [compiler-options-in-msbuild.md](./compiler-options-in-msbuild.md)
-- top-level.md
+- [top-level.md](../tsconfig/top-level.md)

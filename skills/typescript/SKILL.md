@@ -3,13 +3,12 @@ name: typescript
 description: >
   TypeScript (tsc, 6.0 / 7.0 Go 製ネイティブ版) リファレンス。
   tsconfig.json compilerOptions, strict, moduleResolution, project references (tsc -b),
-  generics, narrowing, .d.ts, checkJs, ESM / CJS interop, --checkers / --builders。
+  generics, conditional / mapped / template literal types, utility types, narrowing,
+  .d.ts, checkJs, ESM / CJS interop, --checkers / --builders。
 user-invocable: false
 ---
 
 # TypeScript
-
-> 分割 PR の途中段階。現在収録済み: references/{declaration-files, handbook, javascript, modules, project-config}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -35,6 +34,33 @@ skills/typescript/
       modules.md
       type-declarations.md
       understanding-errors.md
+    type-manipulation/
+      README.md
+      creating-types-from-types.md
+      generics.md
+      keyof-type-operator.md
+      typeof-type-operator.md
+      indexed-access-types.md
+      conditional-types.md
+      mapped-types.md
+      template-literal-types.md
+      utility-types.md
+    reference/
+      README.md
+      advanced-types.md
+      declaration-merging.md
+      decorators.md
+      enums.md
+      iterators-and-generators.md
+      jsx.md
+      mixins.md
+      namespaces.md
+      namespaces-and-modules.md
+      symbols.md
+      triple-slash-directives.md
+      type-compatibility.md
+      type-inference.md
+      variable-declarations.md
     modules/
       README.md
       introduction.md
@@ -69,6 +95,23 @@ skills/typescript/
       jsdoc-classes.md
       jsdoc-documentation-and-other.md
       creating-dts-from-js.md
+    tsconfig/
+      README.md
+      top-level.md
+      type-checking.md
+      modules.md
+      emit.md
+      javascript-support.md
+      editor-support.md
+      interop-constraints.md
+      backwards-compatibility.md
+      language-and-environment.md
+      compiler-diagnostics.md
+      projects.md
+      output-formatting.md
+      completeness.md
+      watch-options.md
+      type-acquisition.md
     project-config/
       README.md
       tsconfig-json.md
@@ -77,6 +120,38 @@ skills/typescript/
       configuring-watch.md
       integrating-with-build-tools.md
       project-references.md
+    versions/
+      README.md
+      typescript-5-0.md
+      typescript-5-1.md
+      typescript-5-2.md
+      typescript-5-3.md
+      typescript-5-4.md
+      typescript-5-5.md
+      typescript-5-6.md
+      typescript-5-7.md
+      typescript-5-8.md
+      typescript-5-9.md
+      typescript-6-0.md
+      typescript-6-0-deprecations.md
+      typescript-7-0.md
+  samples/
+    README.md
+    babel-with-typescript.md
+    dom-manipulation.md
+    migrating-from-javascript.md
+    side-by-side-typescript-6-and-7.md
+    ts-for-functional-programmers.md
+    ts-for-js-programmers.md
+    ts-for-oop-programmers.md
+    typescript-tooling-in-5-minutes.md
+  scripts/
+    README.md
+    install.md
+    nightly-builds.md
+    parallelism-ts7.md
+    tsc-build.md
+    tsc-cli.md
 ```
 
 ## 探索手順
@@ -92,7 +167,13 @@ skills/typescript/
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | 基本型・関数・クラス・オブジェクト型・narrowing を知りたい | handbook | [references/handbook/README.md](references/handbook/README.md) |
+| generics・conditional / mapped / template literal types・utility types を使いたい | type-manipulation | [references/type-manipulation/README.md](references/type-manipulation/README.md) |
+| enum・decorators・declaration merging・JSX・mixins・型の互換性を調べたい | reference | [references/reference/README.md](references/reference/README.md) |
 | ESM / CJS・module / moduleResolution の選び方を知りたい | modules | [references/modules/README.md](references/modules/README.md) |
 | .d.ts の書き方・公開・型パッケージ利用を知りたい | declaration-files | [references/declaration-files/README.md](references/declaration-files/README.md) |
 | JS ファイルの型検査・JSDoc 注釈・.d.ts 生成をしたい | javascript | [references/javascript/README.md](references/javascript/README.md) |
+| compilerOptions（strict・target・outDir・paths 等）を引きたい | tsconfig | [references/tsconfig/README.md](references/tsconfig/README.md) |
 | tsconfig.json の構成・project references・watch・ビルドツール連携を設定したい | project-config | [references/project-config/README.md](references/project-config/README.md) |
+| 各バージョンの新機能・6.0 の非推奨・7.0 ネイティブ版の変更点を知りたい | versions | [references/versions/README.md](references/versions/README.md) |
+| 典型的な使い方・JS からの移行・6.0 と 7.0 の併用を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・tsc CLI・tsc -b・並列化フラグ・nightly を知りたい | scripts | [scripts/README.md](scripts/README.md) |

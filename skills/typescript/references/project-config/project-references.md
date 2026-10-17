@@ -61,4 +61,4 @@ The `path` of each reference can point to a directory containing a `tsconfig.jso
 - [compiler-options-cli.md](./compiler-options-cli.md)
 - [configuring-watch.md](./configuring-watch.md)
 - [tsconfig-json.md](./tsconfig-json.md)
-- projects.md
+- [projects.md](../tsconfig/projects.md)
