@@ -18,7 +18,7 @@ module.exports = {
   ],
   overrides: [
     {
-      test: './src/modern/**/*.{js,jsx,ts,tsx}',
+      test: ['./src/modern/**/*.js', './src/modern/**/*.jsx', './src/modern/**/*.ts', './src/modern/**/*.tsx'],
       plugins: [
         'babel-plugin-react-compiler'
       ]
@@ -37,13 +37,16 @@ module.exports = {
   ],
   overrides: [
     {
-      test: ['./src/modern/**/*.{js,jsx,ts,tsx}', './src/features/**/*.{js,jsx,ts,tsx}'],
+      test: [
+        './src/modern/**/*.js', './src/modern/**/*.jsx', './src/modern/**/*.ts', './src/modern/**/*.tsx',
+        './src/features/**/*.js', './src/features/**/*.jsx', './src/features/**/*.ts', './src/features/**/*.tsx',
+      ],
       plugins: [
         'babel-plugin-react-compiler'
       ]
     },
     {
-      test: './src/legacy/**/*.{js,jsx,ts,tsx}',
+      test: ['./src/legacy/**/*.js', './src/legacy/**/*.jsx', './src/legacy/**/*.ts', './src/legacy/**/*.tsx'],
       plugins: [
         // Different plugins for legacy code
       ]
@@ -60,7 +63,7 @@ module.exports = {
   plugins: [],
   overrides: [
     {
-      test: './src/experimental/**/*.{js,jsx,ts,tsx}',
+      test: ['./src/experimental/**/*.js', './src/experimental/**/*.jsx', './src/experimental/**/*.ts', './src/experimental/**/*.tsx'],
       plugins: [
         ['babel-plugin-react-compiler', {
           // options ...
@@ -136,6 +139,8 @@ export function isCompilerEnabled() {
 - With `compilationMode: 'annotation'` you must add `"use memo"` to every component and every custom hook you want optimized, and remember to add it to new components.
 - Gating: the compiler wraps optimized code in a runtime check. If the gate returns `true`, the optimized version runs; otherwise the original code runs.
 - Troubleshooting adoption: use `"use no memo"` to temporarily exclude problematic components; check the debugging guide; fix Rules of React violations identified by the ESLint plugin; consider `compilationMode: 'annotation'` for more gradual adoption.
+
+- Corrected from the source: react.dev writes `test: './src/**/*.{js,jsx,ts,tsx}'`, but Babel string patterns only support `*`, `**` and single-extension `*.ext` (no brace expansion), so the examples here list each extension explicitly.
 
 ## Related
 
