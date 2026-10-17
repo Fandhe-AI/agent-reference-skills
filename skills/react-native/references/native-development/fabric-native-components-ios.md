@@ -107,7 +107,7 @@ using namespace facebook::react;
   if (oldViewProps.sourceURL != newViewProps.sourceURL) {
     NSString *urlString = [NSString stringWithCString:newViewProps.sourceURL.c_str() encoding:NSUTF8StringEncoding];
     _sourceURL = [NSURL URLWithString:urlString];
-    if ([self urlIsValid:newViewProps.sourceURL]) {
+    if ([self urlIsValid:newViewProps.sourceURL] && _sourceURL) {
       [_webView loadRequest:[NSURLRequest requestWithURL:_sourceURL]];
     }
   }
@@ -185,6 +185,7 @@ To link the WebKit framework in your app:
 ## Notes
 
 - Be careful about committing generated code to your repository. Generated code is specific to each version of React Native. Use npm `peerDependencies` to restrict compatibility with version of React Native.
+- Corrected: the official `updateProps` loads the request whenever `urlIsValid:` returns YES, which includes an empty `sourceURL` where `_sourceURL` is nil; the load is now skipped when `_sourceURL` is nil.
 - The step numbering in the official page skips from "1. Run Codegen" to "3. Write the `RCTWebView`"; the content above follows the original order.
 - 0.88: React Native 0.88 adds iOS SceneDelegate lifecycle support as an additive change (`RCTReactNativeFactory` gains `startReactNativeWithModuleName:inWindow:connectionOptions:` and `startReactNativeWithModuleName:inWindow:initialProperties:connectionOptions:`), keeping backwards compatibility with the `AppDelegate` path; this iOS guide still shows `AppDelegate.swift`.
 - Cross-skill: UIKit / WebKit / Objective-C++ project APIs belong to apple-uikit / apple-swift; this page covers only the React Native native-component boundary.

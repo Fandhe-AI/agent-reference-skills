@@ -23,7 +23,7 @@ Codegen will generate the `ViewManager` interface you need to implement and the 
 
 ### 2. Write the `ReactWebView`
 
-The `ReactWebView` is the component that wraps the Android native view that React Native will render when using the custom Component. Create a `ReactWebView.java` or a `ReactWebView.kt` file in the `android/src/main/java/com/webview` folder.
+The `ReactWebView` is the component that wraps the Android native view that React Native will render when using the custom Component. Create a `ReactWebView.java` or a `ReactWebView.kt` file in the `android/app/src/main/java/com/webview` folder.
 
 **Java**
 
@@ -439,6 +439,7 @@ class MainApplication : Application(), ReactApplication {
 - The Codegen-generated names (`CustomWebViewManagerInterface`, `CustomWebViewManagerDelegate`) derive from the name passed to `codegenNativeComponent` in the spec (`CustomWebView`).
 - Corrected: the official Java snippet referenced an out-of-scope context variable and lacked the EventDispatcher import.
 - Corrected: the official Java package called a non-existent `ReactWebViewManager(reactContext)` constructor; the official package also returned the ViewManager from getModule and registered it as a TurboModule; view managers are registered only via createViewManagers.
+- Corrected: the official page places the files in `android/src/main/java/com/webview`, but the introduction guide creates `android/app/src/main/java/com/webview` (the app module); the path here follows the introduction guide.
 - The manager's `getName` must return the same name used in the spec's `codegenNativeComponent` call.
 - Cross-skill: Android-side APIs (`WebView`, Gradle, Kotlin) belong to android-architecture / android-build-gradle; this page covers only the React Native native-component registration boundary.
 

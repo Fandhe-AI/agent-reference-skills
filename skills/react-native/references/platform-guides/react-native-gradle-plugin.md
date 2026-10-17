@@ -33,7 +33,7 @@ react {
 | `debuggableVariants` | list | `debug` only | Variants that are debuggable. They do not ship a bundle, so Metro is needed to run them. e.g. `debuggableVariants = ["liteDebug", "prodDebug"]` |
 | `nodeExecutableAndArgs` | list | `[node]` | Node command and arguments invoked for all the scripts. e.g. `nodeExecutableAndArgs = ["node"]` |
 | `bundleCommand` | string | `bundle` | Name of the `bundle` command invoked when creating the bundle. Useful for RAM Bundles, e.g. `bundleCommand = "ram-bundle"` |
-| `bundleConfig` | file | empty (no config file) | Path to a configuration file passed to `bundle --config <file>`. e.g. `bundleConfig = file(../rn-cli.config.js)` |
+| `bundleConfig` | file | empty (no config file) | Path to a configuration file passed to `bundle --config <file>`. e.g. `bundleConfig = file("../rn-cli.config.js")` |
 | `bundleAssetName` | string | `index.android.bundle` | Name of the bundle file generated. e.g. `bundleAssetName = "MyApplication.android.bundle"` |
 | `entryFile` | file | `index.android.js` or `index.js` (searched) | Entry file used for bundle generation. e.g. `entryFile = file("../js/MyApplication.android.js")` |
 | `extraPackagerArgs` | list | empty | Extra flags passed to the `bundle` command. e.g. `extraPackagerArgs = []` |
@@ -45,6 +45,7 @@ react {
 
 - `debuggableVariants`: if you have other variants (like `staging`, `lite`, etc.) adjust it accordingly. The plugin skips JS bundling for all `debuggableVariants`, so e.g. a `fullStaging` listed there cannot be published to a store because it will be missing the bundle.
 - `enableBundleCompression`: disabling compression for the `.bundle` allows it to be directly memory-mapped to RAM, improving startup time at the cost of a larger app size on disk. The `.apk` download size is mostly unaffected because `.apk` files are compressed before downloading. Do not turn it on unless you are really concerned about disk space.
+- Corrected: the official `bundleConfig` example writes `file(../rn-cli.config.js)` without quotes, which is not valid Groovy; the path is quoted here.
 - `bundleConfig` / `extraPackagerArgs`: see the React Native community CLI documentation for the `bundle` command flags (linked from the official page).
 - Build variants: by default new apps have two build types (`debug`, `release`) and no custom flavors. The combination of all build types and flavors generates build variants; e.g. `debug`/`staging`/`release` with `full`/`lite` gives 6 variants (`fullDebug`, `fullStaging`, `fullRelease`, ...). With custom variants beyond `debug` and `release`, specify which are debuggable:
 
