@@ -9,7 +9,7 @@ user-invocable: false
 
 # Flutter
 
-> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation, fundamentals, interaction-navigation}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation, fundamentals, interaction-navigation, layout, packages-deployment}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -27,11 +27,15 @@ skills/flutter/
   references/
     fundamentals/            # アーキテクチャ概観・ビルドモード・宣言的 UI・対応プラットフォーム（10 ページ）
       README.md
+    layout/                  # 制約・スクロール・Sliver・アダプティブ/レスポンシブ設計（14 ページ）
+      README.md
     interaction-navigation/  # ジェスチャー・フォーカス・ナビゲーション・ディープリンク・a11y・i18n（14 ページ）
       README.md
     design-animation/        # Material/Cupertino・テーマ・アニメーション・アセット・シェーダー（17 ページ）
       README.md
     architecture-data/       # アプリアーキテクチャ・状態管理・ネットワーク・永続化・Firebase（21 ページ）
+      README.md
+    packages-deployment/     # パッケージ・flavors・各プラットフォーム配布・難読化・SwiftPM（17 ページ）
       README.md
     ai/                      # GenUI SDK・AI Toolkit・AI 開発ツール（10 ページ）
       README.md
@@ -51,6 +55,9 @@ skills/flutter/
 |--------|---------|------------|
 | Flutter の仕組み・レイヤー構成・ビルドモード・対応プラットフォームを知りたい | fundamentals | [references/fundamentals/README.md](references/fundamentals/README.md) |
 | 宣言的 UI・dot shorthands・ウィジェットカタログを調べたい | fundamentals | [references/fundamentals/README.md](references/fundamentals/README.md) |
+| 制約（constraints）・サイズ決定・Row/Column レイアウトを理解したい | layout | [references/layout/README.md](references/layout/README.md) |
+| スクロール・Sliver・SafeArea・MediaQuery を使いたい | layout | [references/layout/README.md](references/layout/README.md) |
+| 大画面・折りたたみ・アダプティブ/レスポンシブ設計をしたい | layout | [references/layout/README.md](references/layout/README.md) |
 | タップ・ドラッグ等のジェスチャー、フォーカス、Actions/Shortcuts を扱いたい | interaction-navigation | [references/interaction-navigation/README.md](references/interaction-navigation/README.md) |
 | 画面遷移・ディープリンク・URL 戦略を設定したい | interaction-navigation | [references/interaction-navigation/README.md](references/interaction-navigation/README.md) |
 | アクセシビリティ・国際化（i18n）に対応したい | interaction-navigation | [references/interaction-navigation/README.md](references/interaction-navigation/README.md) |
@@ -61,4 +68,7 @@ skills/flutter/
 | 状態管理（ephemeral / app state・provider）を選びたい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
 | HTTP 通信・JSON シリアライズ・SQL / key-value 永続化・オフラインファーストを実装したい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
 | Firebase・データベース選定を調べたい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
+| パッケージ・プラグインを使う/開発する | packages-deployment | [references/packages-deployment/README.md](references/packages-deployment/README.md) |
+| Android / iOS / macOS / Linux / Windows 向けにビルド・配布したい | packages-deployment | [references/packages-deployment/README.md](references/packages-deployment/README.md) |
+| flavors・難読化・CD・SwiftPM を設定したい | packages-deployment | [references/packages-deployment/README.md](references/packages-deployment/README.md) |
 | GenUI SDK・AI Toolkit（LlmChatView）・AI 開発ツールを使いたい | ai | [references/ai/README.md](references/ai/README.md) |

@@ -1,0 +1,106 @@
+---
+source: https://docs.flutter.dev/deployment/linux
+---
+
+# Build and release a Linux app to the Snap Store
+
+How to prepare for and release a Flutter Linux app to the Snap Store (or an alternative channel).
+
+## Signature / Usage
+
+```console
+$ snapcraft
+$ snapcraft --use-lxd
+$ snapcraft upload --release=<channel> <file>.snap
+```
+
+### Prerequisites and build environment
+
+Ubuntu OS 18.04 LTS (or higher), the Snapcraft command line tool, and the LXD container manager.
+
+Snapcraft (classic snap) and LXD must be installed and LXD initialized (`lxd init`) beforehand by an administrator; the default answers of `lxd init` suit most use cases. If LXD cannot connect to its socket on first run, an administrator adds your user to the `lxd` group, then log out and back in. See the official page and the Snapcraft / LXD documentation for the steps.
+
+A locally built snap can be installed with `--dangerous` (administrator privileges required) on a disposable test environment.
+
+### snapcraft.yaml
+
+Place at `<project root>/snap/snapcraft.yaml` (YAML is sensitive to white space):
+
+```yaml
+name: super-cool-app
+version: 0.1.0
+summary: Super Cool App
+description: Super Cool App that does everything!
+
+confinement: strict
+base: core22
+grade: stable
+
+slots:
+  dbus-super-cool-app: # adjust accordingly to your app name
+    interface: dbus
+    bus: session
+    name: org.bar.super_cool_app # adjust accordingly to your app name and
+
+apps:
+  super-cool-app:
+    command: super_cool_app
+    extensions: [gnome] # gnome includes the libraries required by flutter
+    plugs:
+    - network
+    slots:
+      - dbus-super-cool-app
+parts:
+  super-cool-app:
+    source: .
+    plugin: flutter
+    flutter-target: lib/main.dart # The main entry-point file of the application
+```
+
+| Key | Description |
+|-----|-------------|
+| `grade` | Quality of the snap; relevant for publication. |
+| `confinement` | Level of system resource access once installed; `strict` limits access to resources defined by plugs. |
+| `base` | Private core root filesystem version providing the minimal set of common libraries. |
+| `command` | Binary, relative to the snap's root, run when the snap is invoked. |
+| `extensions` | Reusable components exposing libraries and tools; `gnome` exposes the GTK 3 libraries to the Flutter snap. |
+| `plugs` | System interfaces required under strict confinement (this snap needs `network`). |
+| DBus interface | The providing snap declares a slot with the well-known DBus name and bus; a snap declaration is needed to claim the name via the Snap Store (upload and request manual review). |
+| `plugin: flutter` | Provides the Flutter SDK tools without manual download; the `nil` plugin performs no action (manual override). |
+
+### Desktop file and icon
+
+Place at `<project root>/snap/gui/super-cool-app.desktop`; the icon and the `.desktop` file name must be the same as the app name in the YAML file. Place the `.png` icon at `<project root>/snap/gui/super-cool-app.png`.
+
+```ini
+[Desktop Entry]
+Name=Super Cool App
+Comment=Super Cool App that does everything
+Exec=super-cool-app
+# Replace name with your app name.
+Icon=${SNAP}/meta/gui/super-cool-app.png
+Terminal=false
+Type=Application
+# Adjust accordingly your snap category.
+Categories=Education;
+```
+
+### Publish
+
+1. Create a developer account at snapcraft.io.
+2. Register the app's name (Snap Store Web UI, or `snapcraft login` then `snapcraft register`).
+3. Upload with `snapcraft upload --release=<channel> <file>.snap`.
+
+Snap Store channels have three components: **Track** (default `latest`), **Risk** (`stable`, `candidate`, `beta`, `edge`) and **Branch** (short-lived sequences to test bug-fixes). The Snap Store runs several automated checks and might also do a manual review.
+
+## Notes
+
+- Additional deployment tools named in the source: fastforge (all-in-one Flutter packaging and distribution tool supporting appimage, deb, pacman, rpm and more) and flatpak-flutter (Flatpak manifest tooling for the offline build of Flutter apps, for publishing on Flathub).
+- Admin-level setup commands (sudo) from the source are omitted; see the official page.
+- Inline comments from the source .desktop example were moved to their own lines (Desktop Entry files do not support trailing comments).
+- The snap is tested with `--dangerous` because it is a locally built, unsigned snap; use a disposable test machine.
+
+## Related
+
+- [Set up Flutter flavors for Linux](./flavors-linux.md)
+- [Continuous delivery with Flutter](./continuous-delivery.md)
