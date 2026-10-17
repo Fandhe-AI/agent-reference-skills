@@ -18,7 +18,7 @@ Show a splashscreen window while frontend and backend setup tasks run, then clos
             },
             {
                 "label": "splashscreen",
-                "url": "/splashscreen"
+                "url": "splashscreen.html"
             }
         ]
     }
@@ -45,6 +45,24 @@ Show a splashscreen window while frontend and backend setup tasks run, then clos
     </div>
 </body>
 </html>
+```
+
+`vite.config.js` (Vite setups; merge into the existing config so `splashscreen.html` is built into `frontendDist`)
+
+```javascript
+import { resolve } from 'node:path';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+    build: {
+        rollupOptions: {
+            input: {
+                main: resolve(__dirname, 'index.html'),
+                splashscreen: resolve(__dirname, 'splashscreen.html'),
+            },
+        },
+    },
+});
 ```
 
 Add Tokio (run where `Cargo.toml` is)
@@ -180,5 +198,6 @@ async fn setup(app: AppHandle) -> Result<(), ()> {
 
 - Do not use `std::thread::sleep` in async functions; it blocks every task scheduled on that thread and freezes the app. Use `tokio::time::sleep`.
 - The official snippet puts `windows` at the top level of tauri.conf.json; in Tauri 2 the array lives under `app.windows`, so it is wrapped in `app` here.
+- The official page only creates splashscreen.html and does not cover bundling; the Vite multi-page input is added here so the page is included in frontendDist, and the window url points at `splashscreen.html` accordingly.
 - The official page notes that a splashscreen is often unnecessary; a spinner in the main window is usually preferable.
 - The official command panics on an unknown task and unwraps window lookups; this sample returns `Err` and skips missing windows. The official `src/main.ts` also omits the `invoke` import and the `await` / `catch`; both are added.

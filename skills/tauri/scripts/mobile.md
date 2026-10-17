@@ -117,12 +117,19 @@ cargo tauri ios build --open
 
 `--export-method` accepts `app-store-connect` / `release-testing` / `debugging`. `-t, --target` accepts `aarch64` (default) / `aarch64-sim` / `x86_64`. Others: `--build-number <BUILD_NUMBER>` / `-d, --debug` / `-f, --features` / `-c, --config` / `-o, --open` / `--ci` / `--ignore-version-mismatches`.
 
-## Run in release mode
+## Run in production mode
 
 ```sh
 cargo tauri android run
 cargo tauri ios run
 ```
+
+```sh
+cargo tauri android run --release
+cargo tauri ios run --release
+```
+
+`run` uses `build.frontendDist` (production frontend); add `--release` to also build the Rust code in release mode.
 
 Accepts `-r, --release` / `-f, --features` / `-c, --config` / `--no-watch` / `--additional-watch-folders` / `-o, --open` / `--ignore-version-mismatches`. The device name is the first argument.
 

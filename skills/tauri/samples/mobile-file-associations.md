@@ -85,21 +85,25 @@ Frontend
 import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/core';
 
-const seen = new Set();
-const handleFresh = (urls) => {
-  const fresh = urls.filter((u) => !seen.has(u));
-  fresh.forEach((u) => seen.add(u));
-  if (fresh.length) handleFiles(fresh);
-};
+let ready = false;
+const pending = [];
 
-// Warm: Rust emits the "opened" event when RunEvent::Opened fires
+// Warm: Rust emits the "opened" event when RunEvent::Opened fires.
+// During startup the payloads are buffered; afterwards every event is handled as is.
 await listen('opened', (event) => {
-  handleFresh(event.payload);
+  if (ready) {
+    handleFiles(event.payload);
+  } else {
+    pending.push(...event.payload);
+  }
 });
 
-// Cold start: URLs may already be in Rust state before the frontend loads
+// Cold start: URLs may already be in Rust state before the frontend loads.
+// De-duplicate stored and buffered URLs once, then switch to direct handling.
 const initialUrls = await invoke('opened_urls');
-handleFresh(initialUrls);
+const startupUrls = [...new Set([...initialUrls, ...pending])];
+if (startupUrls.length) handleFiles(startupUrls);
+ready = true;
 ```
 
 ## Notes
@@ -107,5 +111,5 @@ handleFresh(initialUrls);
 - `RunEvent::Opened` is available on macOS, iOS and Android; handle both the already-running case (event) and the launched-by-file case (stored URLs read through a command).
 - `mimeType` is required on Android for intent filter matching; Tauri infers common MIME types from extensions when omitted.
 - Other options: `role` (`Editor` default, `Viewer`, `Shell`, `QLGenerator`, `None`), `rank` (`Default`, `Owner`, `Alternate`, `None`), `name`, `androidIntentActionFilters` (`Send`, `SendMultiple`, `View`; all three by default).
-- The listener is registered before reading the stored URLs (with de-duplication) so files opened in between are not lost; the official snippet reads first.
+- The listener is registered before reading the stored URLs; events received during startup are buffered and de-duplicated against the stored URLs once, and later open events are always handled (the official snippet reads first).
 - `handleFiles` in the frontend snippet is a placeholder for your own handler and is not defined on the official page.
