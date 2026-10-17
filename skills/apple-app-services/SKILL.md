@@ -3,8 +3,9 @@ name: apple-app-services
 description: >
   Apple アプリサービス。StoreKit 2 / CloudKit / WidgetKit / ActivityKit / User Notifications /
   Core Location / MapKit / HealthKit / Sign in with Apple。
-  Product, Transaction, CKRecord, Widget, TimelineProvider, UNUserNotificationCenter,
-  CLLocationManager, Map, HKHealthStore, ASAuthorizationController。
+  Product, Transaction, RequestReviewAction, CKRecord, CKUserIdentity, Widget, TimelineProvider,
+  UNUserNotificationCenter, CLLocationManager, CLServiceSession, MKGeocodingRequest,
+  HKHealthStore, ASAuthorizationController, AuthorizationController。
 user-invocable: false
 ---
 
@@ -184,7 +185,7 @@ skills/apple-app-services/
 | 現在地の取得・位置情報の許可を管理したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | SwiftUI の Map ビューにマーカー・アノテーションを表示したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | 位置情報の許可を宣言的に要求・診断したい（CLServiceSession / 精度 authorization） | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
-| 座標からジオコーディング・逆ジオコーディングしたい（MKGeocodingRequest / MKReverseGeocodingRequest。CLGeocoder は deprecated） | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
+| 住所と座標を相互変換したい（ジオコーディング・逆ジオコーディング。MKGeocodingRequest / MKReverseGeocodingRequest。CLGeocoder は deprecated） | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | Look Around や地図スタイルを設定したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | ジオフェンス・ビーコン領域や継続的なバックグラウンド位置取得を実装したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | HealthKit でヘルスデータの読み書き権限を要求したい | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |
