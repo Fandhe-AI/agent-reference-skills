@@ -11,7 +11,7 @@ user-invocable: false
 
 # Electron
 
-> 分割 PR の途中段階。現在収録済み: references/{app, breaking-changes, debugging-testing, distribution-updates, getting-started, ipc-preload, menus-tray, security-performance}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{app, breaking-changes, debugging-testing, distribution-updates, getting-started, ipc-preload, menus-tray, security-performance, session-network}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 対象バージョン Electron v44.8.0: GitHub tag v44.8.0 (electron/electron)。npm latest = 44.8.0（2026-10-16 公開）。原本は 2026-10-17 に `raw.githubusercontent.com/electron/electron/v44.8.0/docs/` から取得。`main` および `44-x-y` ブランチは使用しない。45.0.0-beta は対象外。公式サイトに `llms.txt` / `.md` twin は無い。
 
@@ -52,6 +52,13 @@ skills/electron/
       tray.md
       dock.md
       global-shortcut.md
+    session-network/        # session / cookies / net / protocol / webRequest / permission / extensions
+      README.md
+      session-module.md
+      cookies.md
+      net.md
+      protocol-handle.md
+      web-request.md
     security-performance/   # security checklist / sandbox / fuses / ASAR integrity / performance
       README.md
       security-overview.md
