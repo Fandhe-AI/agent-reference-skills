@@ -48,4 +48,4 @@ Utilities for controlling how an element handles content that is too large for t
 ## Related
 
 - [overscroll-behavior](./overscroll-behavior.md)
-- text-overflow
+- [text-overflow](../text/text-overflow.md)

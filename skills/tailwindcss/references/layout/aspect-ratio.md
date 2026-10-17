@@ -34,4 +34,4 @@ Utilities for controlling the aspect ratio of an element.
 ## Related
 
 - [object-fit](./object-fit.md)
-- width
+- [width](../spacing-sizing/width.md)
