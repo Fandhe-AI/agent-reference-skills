@@ -111,6 +111,8 @@ configs:
 
 Long syntax fields: `source` (name of the config on the platform), `target` (path and name of the mounted file; defaults to `/<source>`), `uid` and `gid` (numeric owner), `mode` (octal permissions; default world-readable `0444`; writable bit ignored; executable bit may be set).
 
+When a config's source is a `file`, Docker Compose mounts it with a bind mount (as with file-sourced secrets above), so `uid`, `gid`, and `mode` are not applied and the file keeps the host file's ownership and permissions; the official configs section does not state this explicitly.
+
 ```yml
 services:
   redis:

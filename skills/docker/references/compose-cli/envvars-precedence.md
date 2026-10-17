@@ -59,7 +59,7 @@ Advanced example for `VALUE` (selected rows; `-` = not set; the Host OS environm
 
 ## Notes
 
-- Any `ARG` or `ENV` setting in a `Dockerfile` is evaluated only if there is no Compose entry for `environment`, `env_file`, or `run --env`.
+- The official page states that `ARG` / `ENV` in a `Dockerfile` are evaluated only if there is no Compose entry for `environment`, `env_file`, or `run --env`. In practice the override is per variable: an image `ENV` value is replaced only when the same variable name is set by one of those Compose sources (other image `ENV` variables such as `PATH` remain). `ARG` is a build-time variable and is not part of this runtime precedence.
 - When `--env-file` is not set, Compose may load up to two `.env` files: first from the project directory (`--project-directory` if set, otherwise the directory of the first `-f` file, otherwise `PWD`). If that file sets `COMPOSE_FILE` to a path in a different directory, a second `.env` is loaded from that directory with lower precedence.
 - Row 1: the local environment takes precedence, but the Compose file isn't set to replicate it into the container, so no variable is set. Rows 6 and 8/10/12: a bare `VALUE` replicates the host OS value; rows 7, 9, 11: with no host value, the `.env` file value is used.
 - Docker Compose (container orchestration) is unrelated to Jetpack Compose; see android-compose-ui, android-compose-components, and android-compose-graphics-animation for Jetpack Compose.

@@ -27,7 +27,7 @@ f6e212da9dfd        test2               bridge            local
 
 ## Notes
 
-- Filters are `key=value` pairs; pass multiple flags for multiple filters. Multiple filter flags are combined as an `OR` filter (`-f type=custom -f type=builtin` returns both).
+- Filters are `key=value` pairs; pass multiple flags for multiple filters. Multiple values for the same key are combined as `OR` (`-f type=custom -f type=builtin` returns both); filters with different keys must all match (`AND`, e.g. `-f driver=bridge -f name=app` returns only bridge networks whose name matches `app`).
 - Supported filters: `driver`, `id` (all or part of the ID), `label` (`label=<key>` or `label=<key>=<value>`), `name` (all or part of the name), `scope` (`swarm|global|local`), `type` (`custom|builtin`).
 - `type=builtin` shows predefined networks (`bridge`, `none`, `host`); `type=custom` shows user defined networks. Batch cleanup: `` docker network rm `docker network ls --filter type=custom -q` ``. A warning is issued when removing a network that has containers attached.
 - `--format` Go template placeholders: `.ID`, `.Name`, `.Driver`, `.Scope` (local, global), `.IPv6`, `.Internal`, `.Labels`, `.Label` (for example `{{.Label "project.version"}}`), `.CreatedAt`.
