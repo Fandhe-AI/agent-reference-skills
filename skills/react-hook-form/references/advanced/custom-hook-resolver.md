@@ -65,6 +65,11 @@ export default function App() {
 }
 ```
 
+## Notes
+
+- This hook uses `currentError.path` (e.g. `"user.name"`) as a flat key, so it is intended for flat schemas only. With nested schemas (objects / arrays) `errors` is not hierarchical, which does not satisfy the `useForm` resolver contract (errors keys must be hierarchical).
+- For nested schemas use `yupResolver` from `@hookform/resolvers/yup`, or convert flat errors into a hierarchy with `toNestErrors` from `@hookform/resolvers`.
+
 ## Related
 
 - [useform](../api/useform.md)

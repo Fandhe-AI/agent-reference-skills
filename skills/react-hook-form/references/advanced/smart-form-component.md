@@ -28,7 +28,7 @@ export default function App() {
 `Form`: The `Form` component's responsibility is to inject all `react-hook-form` methods into the child component.
 
 ```javascript
-import { Children, createElement } from "react"
+import { Children, createElement, isValidElement } from "react"
 import { useForm } from "react-hook-form"
 
 export default function Form({ defaultValues, children, onSubmit }) {
@@ -38,7 +38,7 @@ export default function Form({ defaultValues, children, onSubmit }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {Children.map(children, (child) => {
-        return child.props.name
+        return isValidElement(child) && child.props.name
           ? createElement(child.type, {
               ...{
                 ...child.props,
@@ -77,6 +77,7 @@ export function Select({ register, options, name, ...rest }) {
 
 - With the `Form` component injecting `react-hook-form`'s `props` into the child component, you can easily create and compose complex forms in your app.
 - A child element without `name` does not receive an injected `register`.
+- Adapted from the official example: an `isValidElement` guard is added so that null / boolean / string children (e.g. `{show && <Input />}`) are passed through instead of throwing.
 
 ## Related
 

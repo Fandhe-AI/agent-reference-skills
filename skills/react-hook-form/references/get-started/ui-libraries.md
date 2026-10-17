@@ -33,7 +33,9 @@ const App = () => {
       <Controller
         name="firstName"
         control={control}
-        render={({ field }) => <Input {...field} />}
+        render={({ field: { ref, ...field } }) => (
+          <Input inputRef={ref} {...field} />
+        )}
       />
       <Controller
         name="iceCreamType"
@@ -58,7 +60,8 @@ const App = () => {
 ## Notes
 
 - Source: https://react-hook-form.com/get-started#IntegratingwithUIlibraries
-- MUI `Input` / `Select` forward `ref` to the root element. `register`'s ref callback falls back to the first nested `input` / `select` / `textarea`, so `{...register(...)}` still works. `Controller`'s `field.ref` is only used for focus, so pass it via `inputRef={field.ref}` (as in the official MUI `TextField` example) to keep focus-on-error working.
+- MUI `Input` / `Select` forward `ref` to the root element. `register`'s ref callback falls back to the first nested `input` / `select` / `textarea`, so `{...register(...)}` still works. `Controller`'s `field.ref` is only used for focus, so the `Input` example above passes it via `inputRef={ref}` to keep focus-on-error working.
+- Adapted from the official example: `field.ref` is passed via `inputRef` as recommended in the official `useController` / MUI `TextField` example.
 
 ## Related
 

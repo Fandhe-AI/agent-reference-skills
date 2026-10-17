@@ -27,8 +27,8 @@ function App() {
     <form onSubmit={handleSubmit(onSubmit)}>
       {/* Controller's own defaultValue is ignored here — useForm's defaultValues takes precedence for the same field */}
       <Controller
-        render={({ field }) => (
-          <Select {...field}>
+        render={({ field: { ref, ...field } }) => (
+          <Select inputRef={ref} {...field}>
             <MenuItem value={10}>Ten</MenuItem>
             <MenuItem value={20}>Twenty</MenuItem>
           </Select>
@@ -93,7 +93,8 @@ function App() {
 ## Notes
 
 - For the same field, `Controller`'s own `defaultValue` is ignored and `useForm`'s `defaultValues` takes precedence.
-- MUI `Input` / `Select` forward `ref` to the root element, but `register`'s ref callback falls back to the first nested `input` / `select` / `textarea`, so the `{...register(...)}` examples work. When using `Controller` with MUI, pass `field.ref` via `inputRef={field.ref}` to keep focus-on-error working.
+- MUI `Input` / `Select` forward `ref` to the root element, but `register`'s ref callback falls back to the first nested `input` / `select` / `textarea`, so the `{...register(...)}` examples work. The `Controller` example above passes `field.ref` via `inputRef` to keep focus-on-error working.
+- Adapted from the official example: `field.ref` is passed via `inputRef` as recommended in the official `useController` / MUI `TextField` example.
 
 ## Related
 
