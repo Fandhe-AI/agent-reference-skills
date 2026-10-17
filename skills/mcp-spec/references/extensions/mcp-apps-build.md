@@ -90,7 +90,8 @@ getTimeBtn.addEventListener("click", async () => {
 ## Notes
 
 - Source: tag `2026-07-28` raw, retrieved 2026-10-16 (unversioned site path `/extensions/`). Signatures are as shown in the quickstart; the full SDK reference is on the ext-apps docs site and is not reproduced here.
-- Prerequisite: Node.js 18 or higher. The UI is rendered in a secure iframe with a deny-by-default CSP; bundle assets into the HTML (the tutorial uses `vite-plugin-singlefile`) or configure CSP.
+- Prerequisite: Node.js 18 or higher (as stated upstream; see runtime caveat below). The UI is rendered in a secure iframe with a deny-by-default CSP; bundle assets into the HTML (the tutorial uses `vite-plugin-singlefile`) or configure CSP.
+- Runtime caveat: the upstream snippet uses `import.meta.dirname`, which is only available from Node.js 20.11 / 21.2; on Node.js 18 it is `undefined` and `path.join` throws. On older runtimes use `path.dirname(fileURLToPath(import.meta.url))` (from `node:url`) instead. The upstream page states "Node.js 18 or higher" despite this.
 - In the sample, `app.callServerTool()` is called from a user interaction (click) after `app.connect()`; `app.ontoolresult` is registered before the host pushes the initial tool result.
 - The `App` class additionally provides methods for logging, opening URLs, and updating the model's context with structured data.
 - Testing requires a host that supports MCP Apps (e.g., Claude via a custom connector, or the ext-apps `basic-host` example).
