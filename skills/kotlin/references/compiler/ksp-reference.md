@@ -98,7 +98,7 @@ Details (Java member to KSP equivalent):
 | `ExecutableElement.getReturnType` | `ksFunctionDeclaration.returnType` |
 | `ExecutableElement.getThrownTypes` | Not needed in Kotlin |
 | `ExecutableElement.getTypeParameters` | `ksFunctionDeclaration.typeParameters` |
-| `ExecutableElement.isDefault` | `Modifier.JAVA_DEFAULT in ksFunctionDeclaration.modifiers` (Java sources); for Kotlin interfaces, a non-abstract member (`!ksFunctionDeclaration.isAbstract`) whose parent is an interface (`(parentDeclaration as? KSClassDeclaration)?.classKind == ClassKind.INTERFACE`) |
+| `ExecutableElement.isDefault` | `Modifier.JAVA_DEFAULT in ksFunctionDeclaration.modifiers` (Java sources); for Kotlin interfaces, a source-level approximation: `!ksFunctionDeclaration.isAbstract && Modifier.PRIVATE !in ksFunctionDeclaration.modifiers && (ksFunctionDeclaration.parentDeclaration as? KSClassDeclaration)?.classKind == ClassKind.INTERFACE` |
 | `ExecutableElement.isVarArgs` | `ksFunctionDeclaration.parameters.any { it.isVararg }` |
 | `QualifiedNameable.getQualifiedName` | `ksDeclaration.qualifiedName` |
 | `TypeElement.getEnclosedElements` / `getEnclosingElement` | `ksClassDeclaration.declarations` / `ksClassDeclaration.parentDeclaration` |
@@ -108,7 +108,7 @@ Details (Java member to KSP equivalent):
 | `TypeParameterElement.getEnclosingElement` / `getGenericElement` | `ksTypeParameter.parentDeclaration` |
 | `VariableElement.getConstantValue` | To be implemented |
 | `VariableElement.getEnclosingElement` / `getSimpleName` | `ksValueParameter.parent` (a `KSNode?`; cast to `KSFunctionDeclaration` when the declaration is needed) / `ksValueParameter.name?.asString()` (`name` is a nullable `KSName?`) |
-| `ArrayType.getComponentType` | `ksType.arguments.first().type` (`arguments` holds `KSTypeArgument`s; `type` is a `KSTypeReference?`) |
+| `ArrayType.getComponentType` | `ksType.arguments.first().type` for `Array<T>` only (`arguments` holds `KSTypeArgument`s; `type` is a `KSTypeReference?`). Primitive arrays (`IntArray`, `ByteArray`, ... — Java `int[]` etc.) have no type arguments; branch on `ksType.declaration.qualifiedName?.asString()` (`kotlin.IntArray` → `resolver.builtIns.intType`, `kotlin.ByteArray` → `byteType`, etc.) |
 | `DeclaredType.asElement` | `ksType.declaration` |
 | `DeclaredType.getEnclosingType` | `ksType.declaration.parentDeclaration` |
 | `DeclaredType.getTypeArguments` | `ksType.arguments` |
@@ -152,7 +152,8 @@ Details (Java member to KSP equivalent):
 - The official table maps parameter/return types to ksType.declaration.typeParameters and writes FunctionN<R, T1, ..., TN>; this page uses the resolved type arguments / declaration members and Kotlin's FunctionN<P1, ..., PN, R> order.
 - The official table (kotlin-web-site 0b10373) maps overrides to KSFunctionDeclaration.overrides / KSPropertyDeclaration.overrides and asMemberOf to resolver.asMemberOf; in google/ksp 2.3.10 these are Resolver.overrides(overrider, overridee) and KSFunctionDeclaration/KSPropertyDeclaration.asMemberOf(containing: KSType), which this page uses (KSType.starProjection() does exist).
 - The official table (kotlin-web-site 0b10373) maps getReceiverType to ksFunctionDeclaration.parentDeclaration / parentDeclaration.asType(...); parentDeclaration is a nullable KSDeclaration without asType(), so this page casts to KSClassDeclaration and distinguishes extensionReceiver (google/ksp 2.3.10 api).
-- The official table maps isDefault to checking whether the parent declaration is an interface; that also matches abstract / static / private interface methods, so this page checks Modifier.JAVA_DEFAULT (Java) or a non-abstract interface member (Kotlin).
+- The official table maps isDefault to checking whether the parent declaration is an interface; that also matches abstract / static / private interface methods, so this page checks Modifier.JAVA_DEFAULT (Java) or, for Kotlin, a non-abstract, non-private interface member. The Kotlin condition is only a source-level approximation: whether a Kotlin interface member is compiled to a JVM default method depends on the -jvm-default (formerly -Xjvm-default) setting.
+- The official table maps ArrayType.getComponentType to ksType.arguments.first(), which only holds for Array<T>; primitive arrays such as IntArray have empty arguments (first() would throw NoSuchElementException), so this page adds a branch on the declaration's qualified name mapped to the KSBuiltIns properties (intType, byteType, etc., checked against google/ksp api KSBuiltIns).
 - The official table (kotlin-web-site 0b10373) writes ksValueParameter.parentDeclaration / ksValueParameter.simpleName and it.isVarArg; in google/ksp 2.3.10 KSValueParameter is not a KSDeclaration and exposes parent (from KSNode), name: KSName? (nullable) and isVararg, which this page uses.
 - In google/ksp 2.3.10, KSType.arguments is List<KSTypeArgument> (each with a nullable type: KSTypeReference?), so the ArrayType.getComponentType row and the resolved-function-type forms of getParameterTypes / getReturnType read .type from the type arguments.
 - Remaining items marked "To be implemented" / "To be decided" follow the official table (kotlin-web-site 0b10373).
