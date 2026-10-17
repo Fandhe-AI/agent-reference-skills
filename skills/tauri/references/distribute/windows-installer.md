@@ -286,9 +286,12 @@ Installing dependencies with hooks (example: Visual C++ Redistributable from a b
     CopyFiles "$INSTDIR\resources\vc_redist.x64.msi" "$TEMP\vc_redist.x64.msi"
     ExecWait 'msiexec /i "$TEMP\vc_redist.x64.msi" /passive /norestart' $0
 
-    ; Check wether installation process exited successfully (code 0) or not
+    ; Check whether installation process exited successfully (code 0 or 3010; 3010 means a reboot is required) or not
     ${If} $0 == 0
       DetailPrint "Visual C++ Redistributable installed successfully"
+    ${ElseIf} $0 == 3010
+      DetailPrint "Visual C++ Redistributable installed (reboot required)"
+      SetRebootFlag true
     ${Else}
       MessageBox MB_ICONEXCLAMATION "Visual C++ installation failed. Some features may not work."
     ${EndIf}
@@ -352,6 +355,7 @@ The NSIS installer is multi-language: a single installer contains all selected t
 - WebView2 on Windows 7 / 8 / 8.1 stopped at version 109, so a `minimumWebview2Version` above 109 (such as the 110 example) cannot be satisfied there; see webview-versions.
 - Hook dependency guidance: check whether the dependency is installed (registry keys, file existence or the Windows `where` command); use `/passive`, `/quiet` or `/silent` and `/norestart`; clean up temporary files and bundled installers; consider dependencies shared with other applications when uninstalling; provide meaningful error messages.
 - The source heading calls the dependency example "MSI Installer Example" but it is an NSIS hook (`NSIS_HOOK_POSTINSTALL`) that runs a bundled MSI.
+- The source example treats only exit code 0 as success; msiexec returns 3010 (ERROR_SUCCESS_REBOOT_REQUIRED) on a successful install that needs a reboot (likely with /norestart), so 3010 is handled as success here with SetRebootFlag true.
 - The source's `resources` array snippet is missing a closing quote after `another-one.msi`; corrected here.
 - The source config uses the 98.0.1108.50 directory while extracting the 128.0.2739.42 CAB; aligned to 128.0.2739.42 here. Use the folder name of the runtime you extracted.
 - On Windows 10 (April 2018 release or later) and Windows 11 the WebView2 runtime is distributed with the operating system. A fixed runtime adds about 180MB; `skip` means the app WILL NOT work if the runtime is not installed.
