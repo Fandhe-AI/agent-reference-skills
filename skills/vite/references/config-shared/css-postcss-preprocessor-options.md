@@ -52,5 +52,5 @@ export default defineConfig({
 ## Related
 
 - [css.modules](./css-modules-options.md)
-- CSS
-- CSS Pre-processors / Lightning CSS
+- [CSS](../features/css.md)
+- [CSS Pre-processors / Lightning CSS](../features/css-preprocessors-lightningcss.md)

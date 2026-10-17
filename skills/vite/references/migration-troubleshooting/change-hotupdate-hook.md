@@ -108,4 +108,4 @@ hotUpdate() {
 
 - [breaking-changes.md](./breaking-changes.md)
 - [../environment-api/hot-update-hook.md](../environment-api/hot-update-hook.md)
-- ../plugin-api/hook-handle-hot-update.md
+- [../plugin-api/hook-handle-hot-update.md](../plugin-api/hook-handle-hot-update.md)

@@ -19,7 +19,7 @@ import type {
 } from 'lightningcss'
 ```
 
-```js
+```ts
 {
   targets?: Targets
   include?: Features
@@ -50,5 +50,5 @@ import type {
 ## Related
 
 - [css.modules](./css-modules-options.md)
-- CSS Pre-processors / Lightning CSS
+- [CSS Pre-processors / Lightning CSS](../features/css-preprocessors-lightningcss.md)
 - [build.cssMinify](../config-build/build-css-options.md)

@@ -22,5 +22,5 @@ Any property of `import.meta.env` can be used in HTML files with the `%CONST_NAM
 
 - [env-variables.md](./env-variables.md)
 - [built-in-constants.md](./built-in-constants.md)
-- ../plugin-api/hook-transform-index-html.md
-- ../features/html.md
+- [../plugin-api/hook-transform-index-html.md](../plugin-api/hook-transform-index-html.md)
+- [../features/html.md](../features/html.md)

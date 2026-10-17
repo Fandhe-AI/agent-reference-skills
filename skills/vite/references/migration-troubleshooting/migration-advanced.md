@@ -48,4 +48,4 @@ structuredClone({ ...bundle })
 
 - [migration-v7-overview.md](./migration-v7-overview.md)
 - [migration-build-api-changes.md](./migration-build-api-changes.md)
-- ../plugin-api/rolldown-compatibility.md
+- [../plugin-api/rolldown-compatibility.md](../plugin-api/rolldown-compatibility.md)

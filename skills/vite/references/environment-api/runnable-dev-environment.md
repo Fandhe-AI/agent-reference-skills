@@ -109,4 +109,4 @@ if (import.meta.hot) {
 - [FetchableDevEnvironment](./fetchable-dev-environment.md)
 - [raw DevEnvironment](./raw-dev-environment.md)
 - [ModuleRunner](./module-runner.md)
-- Setting Up the SSR Dev Server
+- [Setting Up the SSR Dev Server](../ssr/ssr-dev-server.md)

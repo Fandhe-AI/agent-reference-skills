@@ -30,4 +30,4 @@ export default defineConfig({
 ## Related
 
 - [resolve.* options](./resolve-options.md)
-- TypeScript
+- [TypeScript](../features/typescript.md)

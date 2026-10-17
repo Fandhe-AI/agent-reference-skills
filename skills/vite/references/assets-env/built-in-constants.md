@@ -48,4 +48,4 @@ interface ImportMetaEnv extends Record<ImportMetaEnvFallbackKey, any> {
 - [modes.md](./modes.md)
 - [env-intellisense.md](./env-intellisense.md)
 - [../config-shared/root-base-mode.md](../config-shared/root-base-mode.md)
-- ../ssr/conditional-logic.md
+- [../ssr/conditional-logic.md](../ssr/conditional-logic.md)

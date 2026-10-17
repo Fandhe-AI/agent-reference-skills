@@ -33,6 +33,6 @@ export default defineConfig({
 
 ## Related
 
-- Authoring conventions
+- [Authoring conventions](../plugin-api/authoring-conventions.md)
 - [Public directory](../assets-env/public-directory.md)
-- Dependency caching
+- [Dependency caching](../features/dep-caching.md)

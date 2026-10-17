@@ -31,4 +31,4 @@ Entry ---> (A + C)
 
 - [build.chunkImportMap](../config-build/build-chunk-import-map.md)
 - [build.cssCodeSplit](../config-build/build-css-options.md)
-- Preload directives (SSR)
+- [Preload directives (SSR)](../ssr/preload-directives.md)

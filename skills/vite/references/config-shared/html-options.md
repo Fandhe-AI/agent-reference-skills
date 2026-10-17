@@ -54,5 +54,5 @@ export default defineConfig({
 
 ## Related
 
-- Content Security Policy
-- HTML
+- [Content Security Policy](../features/content-security-policy.md)
+- [HTML](../features/html.md)

@@ -123,5 +123,5 @@ interface ViteDevServer {
 ## Related
 
 - [createServer](./create-server.md)
-- Setting Up the SSR Dev Server
-- configureServer hook
+- [Setting Up the SSR Dev Server](../ssr/ssr-dev-server.md)
+- [configureServer hook](../plugin-api/hook-configure-server.md)
