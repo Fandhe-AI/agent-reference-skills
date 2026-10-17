@@ -90,7 +90,7 @@ Percentage radius type: `number, string (percentage value)`. Color type: color.
 | `borderTopLeftRadius` | number, string (percentage value) | | |
 | `borderTopRightRadius` | number, string (percentage value) | | |
 | `borderTopStartRadius` | number, string (percentage value) | | |
-| `borderTopWidth` | number, string (percentage value) | | |
+| `borderTopWidth` | number | | |
 | `borderWidth` | number | | |
 | `boxShadow` | array of BoxShadowValue objects \| string | | Adds a shadow effect to an element, with the ability to control the position, color, size, and blurriness of the shadow. Spec-compliant implementation of the web style prop of the same name. Shadows can be composed so a single `boxShadow` can comprise multiple shadows. Takes either a string which mimics the web syntax or an array of BoxShadowValue objects. |
 | `cursor` | enum(`'auto'`, `'pointer'`) | iOS | On iOS 17+, setting to `pointer` allows hover effects when a pointer (such as a trackpad or stylus on iOS, or the users' gaze on visionOS) is over the view. |
@@ -170,6 +170,7 @@ style={{
 
 ## Notes
 
+- The official View Style Props page lists `borderTopWidth` as `number, string (percentage value)`, but Layout Props and every other border width (`borderWidth`, `borderBottomWidth`, `borderLeftWidth`, `borderRightWidth`) are `number`; percentage border widths are not supported, so this page uses `number`.
 - `boxShadow`, `filter`, `mixBlendMode`, `outlineColor`, `outlineOffset`, `outlineStyle` and `outlineWidth` are only available on the New Architecture. `boxShadow` outset shadows are only supported on Android 9+; inset shadows only on Android 10+. `mixBlendMode` also requires Android 10+. `blur` and `dropShadow` filter functions are only supported on Android 12+.
 - Due to issues with performance and spec compliance, `brightness` and `opacity` are the only two filter functions available on iOS. There are plans to explore some potential workarounds using SwiftUI instead of UIKit for this implementation.
 - The `experimental_background*` props are Experimental: "This API is experimental. Experimental APIs may contain bugs and are likely to change in a future version of React Native. Don't use them in production."

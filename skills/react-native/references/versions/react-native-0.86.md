@@ -11,7 +11,7 @@ Release blog (dated 2026-06-11): Android 15+ edge-to-edge fixes and React Native
 Create a new project:
 
 ```sh
-npx @react-native-community/cli@latest init MyProject --version latest
+npx @react-native-community/cli@latest init MyProject --version 0.86.0
 ```
 
 ## Options / Props
@@ -56,6 +56,7 @@ Other changes (selected):
 
 ## Notes
 
+- The release post uses `--version latest` (which resolved to 0.86 at the time); this page pins `--version 0.86.0` so the command still creates a 0.86 project now that latest has moved on.
 - Breaking Changes: React Native 0.86 has **no user-facing breaking changes**; upgrading from 0.85 should need no app code changes.
 - 0.86 is the latest stable at the time of the post and 0.83.x moves to unsupported. Expo: available in `expo@canary` at the time of the post.
 - Upgrading existing projects: use the React Native Upgrade Helper and the Upgrading docs; `init` only creates a new project.
