@@ -20,7 +20,9 @@ Add the Reasoning pattern from https://ui.shadcn.com/docs/ai-elements/base/reaso
 
 A Chat is a list of Message turns inside a Message Scroller. The steps an agent takes inside a turn (Reasoning, Tool, Plan) are built on Trace, so every step has the same shape. For a chatbot, start from the chatbot template (`https://github.com/shadcn-ui/chatbot-template`: Next.js, AI SDK, shadcn/ui; streaming chat, tool calls, web search, clarifying questions).
 
-## Patterns
+## Options / Props
+
+Patterns:
 
 | Pattern | Description |
 | --- | --- |
@@ -46,7 +48,9 @@ A Chat is a list of Message turns inside a Message Scroller. The steps an agent 
 | Test Results | A test run by the agent, with its suites and failures. |
 | Tool | A tool call the agent makes, from input to output. |
 
-## Migrating from AI SDK Elements
+## Notes
+
+Migrating from AI SDK Elements:
 
 Existing projects do not need to migrate: code copied from `elements.ai-sdk.dev` is yours and keeps working. To move a wrapper in `components/ai-elements` onto shadcn/ui components, paste the prompt in the "Migrating from AI SDK Elements" section of the pattern page into your coding agent; it keeps every export and its props.
 
@@ -99,8 +103,6 @@ Elements without a replacement (build them from existing components):
 | `speech-input.tsx` | Button and Spinner, with the Web Speech API |
 | `transcription.tsx` | A Button for each segment, to seek to it |
 | `web-preview.tsx` | An `iframe`, with Input Group for the address bar |
-
-## Notes
 
 - AI Elements here are the Base UI variant (the canonical docs). Radix variants live at `https://ui.shadcn.com/docs/ai-elements/radix/<name>` and React Aria variants at `https://ui.shadcn.com/docs/ai-elements/aria/<name>`.
 - This is the shadcn/ui copy-in component set (source lives in your `components/ui/`), distinct from `@ark-ui/react` (skill ark-ui), `@chakra-ui/react` (skill chakra-ui) and the Rust fandhe-frontend crates (skill fandhe-frontend).
