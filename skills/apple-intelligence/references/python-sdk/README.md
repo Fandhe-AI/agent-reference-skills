@@ -10,4 +10,3 @@
 | SystemLanguageModel (Python) | Interface to the on-device foundation model used by Apple Intelligence, with use case and guardrail configuration, availability check, and token counting. | [system-model.md](./system-model.md) |
 | Tool (Python) | Base class for tools that foundation models can invoke during generation; bridges Python async functions to the Foundation Models API. | [tools.md](./tools.md) |
 | Transcript (Python) | Access to a session's history: all user prompts, model responses, and tool invocations, as a dictionary following the Foundation Models Swift transcript structure. | [transcript.md](./transcript.md) |
-</content>

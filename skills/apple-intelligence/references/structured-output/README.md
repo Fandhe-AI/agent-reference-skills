@@ -11,4 +11,3 @@
 | GenerationID | A unique identifier that is stable for the duration of a response, but not across responses. | [generation-id.md](./generation-id.md) |
 | GenerationSchema | A type that describes the properties of an object and any guides on their values. Generation schemas guide the output of a language model to deterministically ensure the output is in the desired format. | [generation-schema.md](./generation-schema.md) |
 | Guide(description:) macro | Peer macro applied to a property of a `@Generable` type to describe it in natural language and, optionally, constrain generated values with a `GenerationGuide` or a `Regex`. | [guide-macro.md](./guide-macro.md) |
-</content>

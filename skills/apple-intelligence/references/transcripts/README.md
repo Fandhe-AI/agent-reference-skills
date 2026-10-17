@@ -10,4 +10,3 @@
 | Transcript.Segment / TextSegment / StructuredSegment / AttachmentSegment | The segment types that may be included in a transcript entry: text, structured content, or an attached file or image. | [transcript-segment.md](./transcript-segment.md) |
 | Transcript.ToolDefinition / ToolCalls / ToolCall / ToolOutput | Transcript types for inspecting tool calling: the tool definitions offered to the model, the calls the model generates, and the outputs provided back. | [transcript-tool-calls.md](./transcript-tool-calls.md) |
 | Transcript | A linear history of entries that reflect an interaction with a session. A `Transcript` is everything exchanged with a `LanguageModelSession`: the instructions that define the model's behavior, the prompts you send, the model's responses and reasoning, and any tool calls made along the way. It is what the session uses as context. | [transcript.md](./transcript.md) |
-</content>

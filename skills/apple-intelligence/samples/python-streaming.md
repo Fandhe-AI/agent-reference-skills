@@ -31,9 +31,11 @@ async def main():
     print(f"User: {prompt}\n")
     print("Assistant: ", end="", flush=True)
 
-    # Iterate through response chunks as they arrive
-    async for chunk in session.stream_response(prompt):
-        print(chunk, end="", flush=True)
+    # Each yielded value is a cumulative snapshot; print only the new suffix
+    previous = ""
+    async for snapshot in session.stream_response(prompt):
+        print(snapshot[len(previous):], end="", flush=True)
+        previous = snapshot
 
     print("\n")
 
@@ -48,20 +50,25 @@ import apple_fm_sdk as fm
 session = fm.LanguageModelSession()
 
 # First streaming response
-async for chunk in session.stream_response(
+previous = ""
+async for snapshot in session.stream_response(
     "What are some differences between Swift and Python?"
 ):
-    print(chunk, end="", flush=True)
+    print(snapshot[len(previous):], end="", flush=True)
+    previous = snapshot
 print("\n")
 
 # Follow-up with context maintained
-async for chunk in session.stream_response("Show me an example"):
-    print(chunk, end="", flush=True)
+previous = ""
+async for snapshot in session.stream_response("Show me an example"):
+    print(snapshot[len(previous):], end="", flush=True)
+    previous = snapshot
 ```
 
 ## Notes
 
 - `session.stream_response` returns an async iterator. Each yielded value is the complete response text generated so far, not the delta from the previous chunk (per the `stream_response` docstring in `session.py`); like `respond`, it keeps session context across calls.
 - Because values are cumulative snapshots, a consumer that needs only the new text must compute the difference from the previous value itself.
+- The upstream example (examples/streaming_example.py v0.2.1) prints each snapshot with `print(chunk, end="")`, which repeats text because snapshots are cumulative; this sample prints only the new suffix.
 - Swift equivalent: streaming responses on `LanguageModelSession`, see `../references/sessions/response-stream.md`.
 - Package `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`).

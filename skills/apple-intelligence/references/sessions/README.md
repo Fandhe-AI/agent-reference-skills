@@ -15,4 +15,3 @@
 | LanguageModelSession.SessionProperty | A property wrapper that provides access to properties from within profiles, dynamic instructions, and tools. | [session-property.md](./session-property.md) |
 | TranscriptErrorHandlingPolicy | Options for controlling how a language model session manages the transcript when errors occur. | [transcript-error-handling-policy.md](./transcript-error-handling-policy.md) |
 | LanguageModelSession.Usage | Information about how many tokens were used by a response. | [usage.md](./usage.md) |
-</content>

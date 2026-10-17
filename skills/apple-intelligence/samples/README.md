@@ -21,7 +21,7 @@
 | Python Basic Usage | Check availability of the on-device model and run a multi-turn session with the Foundation Models SDK for Python. | [python-basic-usage.md](./python-basic-usage.md) |
 | Python Evaluation with Transcripts | Export a Swift session transcript as JSON, then load and analyze it in Python (or produce one directly in Python). | [python-evaluation-transcripts.md](./python-evaluation-transcripts.md) |
 | Python Guided Generation | Constrain output to a Python class with the `@fm.generable` decorator and `fm.guide()` constraints. | [python-guided-generation.md](./python-guided-generation.md) |
-| Python Streaming | Stream text chunks from a session with `stream_response` in the Foundation Models SDK for Python. | [python-streaming.md](./python-streaming.md) |
+| Python Streaming | Stream text snapshots (the complete response text generated so far, not deltas) from a session with `stream_response` in the Foundation Models SDK for Python. | [python-streaming.md](./python-streaming.md) |
 | Python Tools | Subclass `fm.Tool` with generable arguments, register it with a session, and handle `ToolCallError`. | [python-tools.md](./python-tools.md) |
 | Safety Error Handling | Catch `guardrailViolation` and `refusal` errors, constrain input and output, and add safety instructions and a deny list. | [safety-error-handling.md](./safety-error-handling.md) |
 | Stream Partial Responses into SwiftUI | Stream `Itinerary.PartiallyGenerated` values with `streamResponse(generating:...)` and render them as they arrive. | [stream-response-swiftui.md](./stream-response-swiftui.md) |
@@ -29,4 +29,3 @@
 | Tool-Call Evaluation | Check which tools the model calls and with which arguments by attaching a `TrajectoryExpectation` to each sample and scoring with `ToolCallEvaluator`. | [tool-call-evaluation.md](./tool-call-evaluation.md) |
 | Tool Calling | Define a `Tool` with `@Generable` arguments, pass it to a session, control the tool calling mode, and handle `ToolCallError`. | [tool-calling.md](./tool-calling.md) |
 | Transcript Inspection and Feedback | Iterate a session transcript, record it as JSON, and package a response as a feedback attachment with `logFeedbackAttachment`. | [transcript-feedback.md](./transcript-feedback.md) |
-</content>

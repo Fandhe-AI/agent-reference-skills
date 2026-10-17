@@ -54,6 +54,28 @@ let response = try await session.respond(
 ```
 
 ```swift
+extension SessionPropertyValues {
+    @SessionPropertyEntry
+    var toolCallCount: Int = 0
+}
+    
+struct RecipeDynamicProfile: LanguageModelSession.DynamicProfile {
+    @SessionProperty(\.toolCallCount) 
+    var toolCallCount
+
+    var body: some LanguageModelSession.DynamicProfile {
+        Profile {
+            BreadDatabaseTool()
+        }
+        .toolCallingMode(toolCallCount < 1 ? .required : .allowed)
+        .onToolCall {
+            toolCallCount += 1
+        }
+    }
+}
+```
+
+```swift
 do {
     let answer = try await session.respond(to: "Find a recipe for tomato soup.")
 } catch let error as LanguageModelSession.ToolCallError {
@@ -75,6 +97,6 @@ do {
 ## Notes
 
 - Tool output can be a string, a `GeneratedContent` object, or any `@Generable` type. The model can call a tool several times in parallel, and `call(arguments:)` may run concurrently with itself or other tools.
-- With `.required`, define an exit condition (throw from `call(arguments:)` or change the mode dynamically with a `LanguageModelSession.DynamicProfile`); otherwise the model keeps calling the tool. `.disallowed` suppresses tool calls for a request.
+- With `.required`, define an exit condition (throw from `call(arguments:)` or change the mode dynamically with a `LanguageModelSession.DynamicProfile`); the `RecipeDynamicProfile` above is that exit condition, switching to `.allowed` after the first tool call. Otherwise the model keeps calling the tool. `.disallowed` suppresses tool calls for a request.
 - When a tool throws, the framework rolls back the transcript to a previously known valid state; `transcriptErrorHandlingPolicy` controls whether it is preserved.
 - `ToolCallingMode` and `DynamicProfile` usage in the article relies on iOS 27 APIs; see the `tools` and `dynamic-profiles` reference categories.
