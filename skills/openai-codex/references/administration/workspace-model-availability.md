@@ -46,6 +46,7 @@ GPT-5.4 and GPT-5.4 mini retired from Codex for users signed in with ChatGPT on 
 ## Notes
 
 - A permission profile can't grant model access; model access also can't weaken sandbox, approval policy, network controls, or source-system permissions.
+- Source: https://learn.chatgpt.com/docs/enterprise/workspace-model-availability (retrieved 2026-10).
 - To troubleshoot missing models: confirm product surface + sign-in method, confirm workspace/org/project, review current access controls for that boundary, and check client/Codex cloud support for the model.
 
 ## Related

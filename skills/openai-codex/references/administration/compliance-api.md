@@ -15,7 +15,7 @@ Use the Compliance API to export supported records into an audit/investigation s
 
 ## Download logs
 
-Download the Bash script (`download_compliance_files.sh`) or PowerShell script (`download_compliance_files.ps1`) from `developers.openai.com/downloads/compliance-api/`. Both list and download every available log file after a given timestamp, follow pagination, and write JSONL to standard output (errors go to standard error). Set `COMPLIANCE_API_KEY` to your Enterprise Compliance API key; replace `<workspace_or_org_id>` with your ChatGPT workspace ID or API Platform organization ID and `<after>` with an ISO 8601 timestamp that includes a time zone. This example retrieves `AUTH_LOG` files, 100 at a time. On macOS or Linux install Bash, `curl`, and `jq`:
+Download the Bash script (https://developers.openai.com/downloads/compliance-api/download_compliance_files.sh) or PowerShell script (https://developers.openai.com/downloads/compliance-api/download_compliance_files.ps1). Both list and download every available log file after a given timestamp, follow pagination, and write JSONL to standard output (errors go to standard error). Set `COMPLIANCE_API_KEY` to your Enterprise Compliance API key; replace `<workspace_or_org_id>` with your ChatGPT workspace ID or API Platform organization ID and `<after>` with an ISO 8601 timestamp that includes a time zone. This example retrieves `AUTH_LOG` files, 100 at a time. On macOS or Linux install Bash, `curl`, and `jq`:
 
 ```bash
 bash ./download_compliance_files.sh "<workspace_or_org_id>" AUTH_LOG 100 "<after>" > output.jsonl
@@ -30,7 +30,7 @@ The Windows script supports PowerShell 5.1 or later; review the downloaded file,
 
 ## Notes
 
-- The Admin API reference is now at `chatgpt.com/public/admin/api-reference`; a Compliance Platform guide in the Help Center gives an overview of available compliance surfaces and integration patterns. Example uses: stream immutable compliance events into a SIEM for investigations, or route them into an approved electronic discovery workflow.
+- The Admin API reference is now at https://chatgpt.com/public/admin/api-reference; a Compliance Platform guide in the Help Center gives an overview of available compliance surfaces and integration patterns. Example uses: stream immutable compliance events into a SIEM for investigations, or route them into an approved electronic discovery workflow.
 - Audit records for Local computer access with Work Cloud (ChatGPT Work): it has the same Compliance API support as Work Cloud, with records under the `conversation_message` and `codex_log` event types; local execution also generates OpenTelemetry events collected separately through an OTel collector endpoint. These sources don't establish a complete record of every local command, file operation, screenshot, approval, or external action. Confirm retention and deletion behavior and compare exported records with actions performed in a representative task. Policy API support doesn't change Compliance API event coverage; hook-based auditing (admin-defined MCP hooks on the cloud coordinator) should be tested separately.
 
 - The authenticated [Admin API reference](https://chatgpt.com/admin/api-reference) owns current routes, event coverage, schemas, filters, retention behavior, and request mechanics — this page doesn't duplicate that contract.

@@ -12,7 +12,7 @@ Analytics API results are scoped to a single ChatGPT workspace. For the unified 
 
 ## Notes
 
-- The Admin API reference (`chatgpt.com/public/admin/api-reference`) is the source of truth for current access requirements, routes, request and response schemas, metrics, time semantics, and pagination — this page doesn't duplicate that contract.
+- The Admin API reference (https://chatgpt.com/public/admin/api-reference) is the source of truth for current access requirements, routes, request and response schemas, metrics, time semantics, and pagination — this page doesn't duplicate that contract.
 - Earlier revisions of this page described authentication with a Platform organization API key aligned to the workspace's organization; the current official page instead specifies the workspace-scoped Admin key and scope above.
 
 ## Related

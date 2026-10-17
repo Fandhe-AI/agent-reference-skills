@@ -150,6 +150,7 @@ Managed defaults (top overrides bottom): macOS MDM preferences → `managed_conf
 - `[experimental_network]` is experimental — validate on target client versions/OSes before broad rollout; Windows support is limited.
 - Don't deploy managed custom permission profiles until the whole fleet is upgraded to a supporting release.
 - macOS MDM setup: base64-encode TOML into `config_toml_base64` (managed defaults) or `requirements_toml_base64` (requirements) under the `com.openai.codex` preference domain; compatible with Jamf Pro, Fleet, Kandji.
+- Source: https://learn.chatgpt.com/docs/enterprise/managed-configuration (retrieved 2026-10).
 
 ## Related
 
