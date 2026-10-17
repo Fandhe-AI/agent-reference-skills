@@ -128,9 +128,10 @@ val module = SerializersModule {
 
 ## Notes
 
-- Open-polymorphism example with `format.encodeToString(data)` works only on the JVM because of `serializer()` function restrictions. In Kotlin/JS and Kotlin/Native use an explicit serializer: `format.encodeToString(PolymorphicSerializer(Project::class), data)` (tracked in kotlinx.serialization issue 1077). The same applies to interface bases on those platforms.
+- The official docs state this example is JVM-only; issue 1077 actually concerns interface bases and implicitly serializable enums, not `@Serializable abstract class`. The tracked issue (kotlinx.serialization issue 1077) is about `serializer<T>()` lookups for interfaces and implicitly serializable enums; with a `@Serializable abstract class` base such as `Project`, reified `encodeToString<Project>()` works on all targets, and the `serializer()` restriction applies only to interface bases (and implicitly serializable enums).
+- On Kotlin/JS and Kotlin/Native, when the base is an interface, pass an explicit serializer: `format.encodeToString(PolymorphicSerializer(Project::class), data)`.
 - If no `PolymorphicSerializer` is supplied for `Any`, `SerializationException: Serializer for class 'Any' is not found.` is thrown.
-- Sealed base types do not need explicit configuration for generic subtypes because the compiler plugin can infer the subtype serializer.
+- Sealed base types do not need explicit configuration for generic subtypes only when the base type provides the serializer for its type argument (the compiler plugin can then infer the subtype serializer). Registration of the subclasses themselves is automatic for sealed bases; resolving the type-argument serializer is a separate matter, so a subtype type parameter not bound to the base type argument still needs its concrete value types registered in a `SerializersModule`.
 - `subclassesOfSealed()` registers recursively; all subclasses must be concrete or sealed, otherwise `IllegalArgumentException`.
 - An unregistered subtype fails with `SerializationException`; the default deserializer assumes unknown subtypes follow a known structure. For JSON you can combine it with `ignoreUnknownKeys`; for varying structure use a custom serializer.
 - The helper works for both base types because `PolymorphicModuleBuilder` is declared contravariant (`PolymorphicModuleBuilder<in Base : Any>`), so a builder for `BaseProject` is accepted where `PolymorphicModuleBuilder<Project>` is expected when `Project : BaseProject`.
