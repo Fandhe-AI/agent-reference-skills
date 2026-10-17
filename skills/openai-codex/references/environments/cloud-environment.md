@@ -1,6 +1,6 @@
-# Cloud environments
+# Codex Cloud (Legacy)
 
-Control what Codex installs and runs during cloud chats: dependencies, tools (linters, formatters), and environment variables. Configured per repository in [Codex settings](https://chatgpt.com/codex/settings/environments).
+Codex Cloud (Legacy) continues to support environments for Code Review and the Linear and GitHub integrations. For the current web, mobile, and desktop experience, see [Cloud environments](./cloud-environments.md). Use environments to control what Codex installs and runs during cloud chats: dependencies, tools (linters, formatters), and environment variables. Configured in Codex settings (chatgpt.com/codex/settings/environments).
 
 ## Signature / Usage
 
@@ -36,12 +36,16 @@ Codex caches container state for up to 12 hours. When cached, Codex clones the r
 
 ## Notes
 
-- Internet access is available during the setup script phase; during the agent phase it's off by default (see agent internet access settings, `cloud-internet-access.md`).
+- This is the legacy flow (https://learn.chatgpt.com/docs/environments/cloud-environment.md), kept for Code Review and the Linear and GitHub integrations; the current web, mobile, and desktop experience is documented in [Cloud environments](./cloud-environments.md). The earlier getting-started steps based on the environment settings page (chatgpt.com/codex/settings/environments) belong to this legacy flow.
+- Setup scripts can install additional packages on top of the pre-installed `universal` image (`codex-universal`).
+- Internet access is available during the setup script phase and with limited or unrestricted access configured; during the agent phase it's off by default (see agent internet access settings, `../getting-started/cloud-internet-access.md`).
+- Agent Security command-network requirements: on supported managed Codex Cloud execution paths, Agent Security requirements constrain command networking, while Codex Cloud environment internet settings apply separately (an allowed domain in Agent Security does not override a restriction in the environment's internet settings). These controls don't by themselves disable hosted web search, apps, or MCP. ChatGPT Work Cloud has separate capability permissions and doesn't inherit them. A managed command allowlist applies to commands using the managed proxy; approved full sandbox escalation (where policy permits it) can bypass the command proxy. Configure enforced approval and sandbox requirements and test ordinary and escalated commands (see managed-configuration.md).
 - Environments run behind an HTTP/HTTPS network proxy for security and abuse prevention; all outbound traffic passes through it.
 - This page covers cloud environment configuration in depth. For the cloud product overview (getting started, when to use cloud), see `cloud.md` in the getting-started category.
 
 ## Related
 
+- [Cloud environments](./cloud-environments.md)
 - [modes.md](./modes.md)
 - [local-environment.md](./local-environment.md)
 - [Codex cloud](../getting-started/cloud.md)

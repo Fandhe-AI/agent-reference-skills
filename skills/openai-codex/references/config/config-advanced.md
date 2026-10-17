@@ -8,8 +8,8 @@ Profiles are named configuration layers switched from the CLI. `--profile profil
 
 ```toml
 # ~/.codex/deep-review.config.toml
-model = "gpt-5.5"
-model_reasoning_effort = "xhigh"
+model = "gpt-6.1-sol"
+model_reasoning_effort = "medium"
 approval_policy = "on-request"
 model_catalog_json = "/Users/me/.codex/model-catalogs/deep-review.json"
 ```
@@ -19,18 +19,18 @@ codex --profile deep-review
 codex exec --profile deep-review "review this change"
 ```
 
-A profile file only needs the values that differ from the base user config (it sits above user config, below project/CLI config).
+A profile file only needs the values that differ from the base user config (it sits above user config, below project/CLI config). Use top-level keys in the profile file; don't nest them under `[profiles.profile-name]`. Profile files can also override `model_catalog_json`; Codex uses the profile value when both files set it. The example model requires GPT-6.1 Sol access; otherwise choose a model you can use.
 
-In Codex 0.134.0+, `--profile` no longer reads `[profiles.profile-name]` from `config.toml`; move legacy profile settings into `~/.codex/profile-name.config.toml` and drop the top-level `profile = "profile-name"` selector.
+In Codex 0.134.0 and later, `--profile` no longer reads `[profiles.profile-name]` from `config.toml`, and the top-level `profile = "profile-name"` selector is no longer supported; move legacy profile settings into `~/.codex/profile-name.config.toml` and remove the `[profiles.profile-name]` table and `profile` selector from `config.toml`.
 
 ## One-off overrides from the CLI
 
 ```shell
 # Dedicated flag
-codex --model gpt-5.6-terra
+codex --model gpt-6.1-sol
 
 # Generic key/value override (value is TOML, not JSON)
-codex --config model='"gpt-5.6-terra"'
+codex --config model='"gpt-6.1-sol"'
 codex --config sandbox_workspace_write.network_access=true
 codex --config 'shell_environment_policy.include_only=["PATH","HOME"]'
 ```
@@ -46,6 +46,8 @@ codex --config 'shell_environment_policy.include_only=["PATH","HOME"]'
 ```toml
 openai_base_url = "https://us.api.openai.com/v1"
 ```
+
+To point the built-in OpenAI provider at an LLM proxy, router, or data-residency enabled project, set `openai_base_url` instead of defining a new provider; it changes the base URL for the built-in `openai` provider without a separate `model_providers.<id>` entry. See the authentication page for credential storage modes.
 
 ## Project config files (`.codex/config.toml`)
 
@@ -88,14 +90,25 @@ Default marker is `.git`. Set `project_root_markers = []` to skip parent search 
 A provider defines base URL, wire API, auth, and headers. Custom providers cannot reuse reserved IDs `openai`, `ollama`, `lmstudio`.
 
 ```toml
-model = "gpt-5.6-terra"
+model = "gpt-6.1-sol"
 model_provider = "proxy"
 
 [model_providers.proxy]
 name = "OpenAI using LLM proxy"
 base_url = "http://proxy.example.com"
 env_key = "OPENAI_API_KEY"
+
+[model_providers.local_ollama]
+name = "Ollama"
+base_url = "http://localhost:11434/v1"
+
+[model_providers.mistral]
+name = "Mistral"
+base_url = "https://api.mistral.ai/v1"
+env_key = "MISTRAL_API_KEY"
 ```
+
+For organization gateways, see the enterprise pages "Sign in with ChatGPT through a gateway", "Use API/provider credentials" (connect-to-a-gateway), and "Roll out a gateway".
 
 ```toml
 [model_providers.proxy]
@@ -128,9 +141,13 @@ timeout_ms = 5000
 refresh_interval_ms = 300000
 ```
 
-Don't combine `[model_providers.<id>.auth]` with `env_key`, `experimental_bearer_token`, or `requires_openai_auth`.
+The auth command receives no `stdin` and must print the token to stdout. Codex trims surrounding whitespace, treats an empty token as an error, and refreshes proactively at `refresh_interval_ms`; set `refresh_interval_ms = 0` to refresh only after an authentication retry. Don't combine `[model_providers.<id>.auth]` with `env_key`, `experimental_bearer_token`, or `requires_openai_auth`.
+
+`supports_standalone_web_search` defaults to `false` for custom providers. Standalone web search is under development and off by default; setting it to `true` doesn't enable it — the provider must support a compatible endpoint, and the selected model and runtime must support standalone search. The configured `web_search` mode and managed search restrictions still apply.
 
 ### Amazon Bedrock provider
+
+Codex includes a built-in `amazon-bedrock` model provider. Set it directly as `model_provider`; unlike custom providers, it supports only the nested AWS profile and region overrides. If you omit `profile`, Codex uses the standard AWS credential chain. Set `region` to the supported Bedrock region that should handle requests (see amazon-bedrock.md).
 
 ```toml
 model_provider = "amazon-bedrock"
@@ -142,6 +159,8 @@ region = "eu-central-1"
 ```
 
 ### OSS mode (local providers)
+
+Codex can run against a local "open source" provider such as Ollama or LM Studio when you pass `--oss`. Choose one for a single run with `--local-provider`, or set `oss_provider` as the default. If neither is set, the interactive CLI prompts you to choose; `codex exec` exits with an error.
 
 ```toml
 oss_provider = "ollama" # or "lmstudio"
@@ -161,12 +180,39 @@ stream_max_retries = 10
 stream_idle_timeout_ms = 300000
 ```
 
-To change the base URL of the built-in `openai` provider, use `openai_base_url` — don't define `[model_providers.openai]`.
+To change the base URL of the built-in `openai` provider, use `openai_base_url` — don't define `[model_providers.openai]` (built-in provider IDs can't be overridden).
+
+## API organizations using data residency
+
+Projects created with data residency enabled can create a model provider to update the `base_url` with the correct prefix. For ChatGPT workspaces with data residency, a custom provider isn't required; Codex respects workspace residency settings when you sign in with ChatGPT.
+
+```toml
+model_provider = "openaidr"
+[model_providers.openaidr]
+name = "OpenAI Data Residency"
+base_url = "https://us.api.openai.com/v1" # Replace 'us' with domain prefix
+requires_openai_auth = true # per authentication contract; not in the official snippet
+```
+
+## Model reasoning, verbosity, and limits
+
+```toml
+model_reasoning_summary = "none"          # Disable summaries
+model_verbosity = "low"                   # Shorten responses
+model_supports_reasoning_summaries = true # Force reasoning
+model_context_window = 128000             # Context window size
+```
+
+`model_verbosity` applies only to providers using the Responses API; Chat Completions providers ignore it.
 
 ## Approval policies and sandbox modes
 
+Codex and ChatGPT Work no longer support `approval_policy = "untrusted"`; see "Migrate from the retired `untrusted` approval policy" in agent-approvals-security.md. For permission profiles that configure filesystem and network access together, see permission-profiles.md.
+
+Set `approvals_reviewer = "auto_review"` to route eligible interactive approval requests through automatic review; this changes the reviewer, not the sandbox boundary. `[auto_review].policy` holds local reviewer policy instructions; managed `guardian_policy_config` takes precedence.
+
 ```toml
-approval_policy = "untrusted"   # Other options: on-request, never, or { granular = { ... } }
+approval_policy = "on-request"  # Other options: never, or { granular = { ... } }
 approvals_reviewer = "user"     # Or "auto_review" for automatic review
 sandbox_mode = "workspace-write"
 allow_login_shell = false       # Optional hardening: disallow login shells for shell tools
@@ -183,7 +229,15 @@ Use your organization's automatic review policy.
 """
 ```
 
-Granular policy allows/auto-rejects individual prompt categories: `sandbox_approval`, `rules`, `mcp_elicitations`, `request_permissions`, `skill_approval`.
+Example granular approval policy (allows or auto-rejects individual prompt categories, so e.g. `request_permissions` or skill-script prompts fail closed):
+
+```toml
+approval_policy = { granular = { sandbox_approval = true, rules = true, mcp_elicitations = true, request_permissions = false, skill_approval = false } }
+```
+
+The official docs show this as a commented multi-line example; TOML 1.0 inline tables cannot span lines, so it is written on one line here.
+
+In workspace-write mode, some environments keep `.git/`, `.agents/`, `.codex/`, and `.aws/` read-only even when the rest of the workspace is writable, so commands like `git commit` may still need approval outside the sandbox. To skip or block specific commands, use rules (see rules.md).
 
 Disable sandboxing entirely (only if the environment already isolates processes):
 
@@ -191,7 +245,7 @@ Disable sandboxing entirely (only if the environment already isolates processes)
 sandbox_mode = "danger-full-access"
 ```
 
-Named permission profiles (built-ins and custom `[permissions.<name>]` tables) are documented separately under Permissions (security-automation scope in this skill).
+Named permission profiles (built-ins and custom `[permissions.<name>]` tables) are documented separately in permission-profiles.md (security-automation category).
 
 ## Shell environment policy
 
@@ -206,7 +260,7 @@ ignore_default_excludes = false
 "AZURE_*" = "exclude"
 ```
 
-Order: automatic exclusions -> custom exclusions -> `set` values -> include-pattern allowlist. `inherit`: `all` | `core` | `none`. Legacy `exclude`/`include_only` arrays remain supported but cannot combine with `filters` in the same layer.
+Order: automatic exclusions -> custom exclusions -> `set` values -> include-pattern allowlist. `inherit`: `all` | `core` | `none`. Filter patterns are case-insensitive and support `*` and `?`; when any pattern uses `"include"`, only matching variables are kept, and includes don't restore already-excluded variables. Filter keys merge case-insensitively across layers. `set` runs after exclusions so it can restore an excluded variable, but an include allowlist can still remove it. `ignore_default_excludes` defaults to `true`; set `false` to apply the automatic `KEY`/`SECRET`/`TOKEN` exclusions first. Legacy `exclude`/`include_only` arrays remain supported but Codex rejects combining them with `filters` in the same layer.
 
 ## MCP servers
 
@@ -225,6 +279,17 @@ log_user_prompt = false   # redact user prompts unless explicitly enabled
 [otel]
 exporter = { otlp-http = { endpoint = "https://otel.example.com/v1/logs", protocol = "binary", headers = { "x-otlp-api-key" = "${OTLP_TOKEN}" } } }
 ```
+
+```toml
+[otel]
+exporter = { otlp-grpc = { endpoint = "https://otel.example.com:4317", headers = { "x-otlp-meta" = "abc123" } } }
+```
+
+OTel log export is disabled by default. With `exporter = "none"` Codex records events but sends nothing; exporters batch asynchronously and flush on shutdown.
+
+What gets emitted (representative events): `codex.conversation_starts` (model, reasoning settings, sandbox/approval policy), `codex.api_request`, `codex.sse_event`, `codex.websocket_request` / `codex.websocket_event`, `codex.user_prompt` (length; content redacted unless enabled), `codex.tool_decision` (approved/denied; config vs user), `codex.tool_result` (duration, success, output snippet). With the OTel metrics pipeline enabled, Codex also emits counters and duration histograms (e.g. `codex.api_request`, `codex.api_request.duration_ms`, `codex.tool.call`, `codex.tool.call.duration_ms`, `codex.sse_event`, `codex.websocket.request`) tagged with `auth_mode`, `originator`, `session_source`, `model`, `app.version`.
+
+Anonymous usage and health metrics are sent by default, are independent of OTel log/trace export, and contain no PII. `[analytics] enabled = false` disables them (and custom OTLP metrics exporters in Codex CLI).
 
 Disable anonymous usage metrics collection:
 
@@ -302,12 +367,15 @@ args = ["-a", "TextEdit"]
 | `input` | No | `path` \| `json_argument` \| `json_stdin`. Default `path`. |
 | `supports_ssh` | No | Offer handler for files in SSH workspaces. Default `false`. |
 
+Handler ID is the final segment of the table header: 1–64 characters, starting with an ASCII letter or number, otherwise ASCII letters, numbers, periods, underscores, or hyphens; quote an ID containing a period (`[desktop.custom_file_handlers."company.editor"]`). The app exposes it as `custom:<id>`. Save `config.toml` and restart the desktop app. `input = "json_argument"` appends a JSON object with `target`, `path`, `appPath`, and `location` (1-based `line` / `column`, or `null`); `json_stdin` writes it to standard input and also includes `hostConfig`, `remoteWorkspaceRoot`, `remotePath` (`null` when not applicable).
+
 ## TUI options
 
 `[tui]` keys include `notifications`, `notification_method`, `notification_condition`, `animations`, `alternate_screen`, `show_tooltips`. See [Configuration Reference](./config-reference.md) for the full list.
 
 ## Notes
 
+- The official data-residency snippet omits authentication; per the authentication docs a custom provider without `env_key` or `requires_openai_auth = true` is treated as requiring no auth, so this page adds `requires_openai_auth = true` (alternatively set `env_key = "OPENAI_API_KEY"`).
 - For the full config key table (all sections above condensed into one searchable list), see [Configuration Reference](./config-reference.md).
 
 ## Related

@@ -25,6 +25,9 @@ npm start
 
 ## Notes
 
+- Setup scripts: worktrees run in different directories than local chats, so the project may be missing dependencies or files not checked into the repository; setup scripts run automatically when Codex creates a new worktree at the start of a new chat. Define macOS, Windows, or Linux scripts to override the default.
+- Actions: appear in the desktop app top bar for quick access and run within the integrated terminal (use the integrated terminal directly for one-off debugging); choose an icon per action; for platform-specific commands define scripts per OS. Example "Run" action: `npm start`.
+- Built-in Git tools: the diff pane shows changes in the current checkout and supports inline comments for Codex to address; stage or revert individual chunks or entire files, commit, push a branch, and create a pull request. Use the integrated terminal for Git operations not exposed in the app.
 - Local environments are available only in Codex in the ChatGPT desktop app (select **Codex** before configuring or using one).
 - Configured through ChatGPT desktop app settings; if a repository contains more than one project, open the project directory that has the shared `.codex` folder.
 - To isolate concurrent changes from the local checkout, start the task in a worktree (see `git-worktrees.md`).
