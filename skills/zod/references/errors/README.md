@@ -2,5 +2,5 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Error Customization | Customize validation error messages at the schema level, per-parse level, or globally, with full internationalization support. | [./error-customization.md](./error-customization.md) |
-| Error Formatting | Utilities for converting `$ZodError` instances into more useful formats for display, logging, and form validation. | [./error-formatting.md](./error-formatting.md) |
+| Error Customization | Customize validation error messages at the schema level, per-parse level, or globally, with full internationalization support. | [error-customization.md](./error-customization.md) |
+| Error Formatting | Utilities for converting `$ZodError` instances into more useful formats for display, logging, and form validation. | [error-formatting.md](./error-formatting.md) |

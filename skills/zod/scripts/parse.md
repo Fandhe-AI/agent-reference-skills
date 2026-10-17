@@ -1,6 +1,18 @@
+---
+source: https://zod.dev/basics
+---
+
 # Parse
 
 スキーマを使ったデータ検証の実行パターン。
+
+## 前提パッケージのインストール
+
+```sh
+npm install zod
+```
+
+以降のコード例の前提。詳細は `install.md` を参照。
 
 ## 同期パース（失敗時に例外）
 
@@ -8,6 +20,7 @@
 import * as z from "zod";
 
 const schema = z.string();
+const data: unknown = "hello";
 
 const result = schema.parse(data);
 ```
@@ -55,6 +68,7 @@ Zod Core の `$ZodType` にはメソッドがないため、トップレベル�
 ```typescript
 import * as z from "zod/v4/core";
 
+// schema / data は上のブロックで定義したものを使う
 z.parse(schema, data);
 z.safeParse(schema, data);
 await z.parseAsync(schema, data);
@@ -65,6 +79,9 @@ await z.safeParseAsync(schema, data);
 
 ```typescript
 import * as z from "zod";
+
+const schema = z.string();
+const invalidData: unknown = 42;
 
 try {
   schema.parse(invalidData);
@@ -78,7 +95,13 @@ try {
 ## エラーの文字列化
 
 ```typescript
-z.prettifyError(error);
+try {
+  schema.parse(invalidData);
+} catch (error) {
+  if (error instanceof z.ZodError) {
+    z.prettifyError(error);
+  }
+}
 ```
 
-`error.format()` / `error.flatten()` は Zod 4 で非推奨。`z.prettifyError()` を使うか `.issues` を直接イテレートする。
+`error.format()` / `error.flatten()` は Zod 4 で非推奨。代わりにトップレベル関数 `z.treeifyError()`（ネスト構造）または `z.flattenError()`（フラットなフォーム向け）を使う。人間向けの文字列が欲しい場合は `z.prettifyError()`。

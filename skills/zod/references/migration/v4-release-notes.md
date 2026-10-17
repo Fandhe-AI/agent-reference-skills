@@ -1,3 +1,7 @@
+---
+source: https://zod.dev/v4
+---
+
 # Zod 4 Release Notes
 
 New features, performance benchmarks, bundle size improvements, and architectural changes in Zod 4.
@@ -40,10 +44,15 @@ The improvement comes from simplified internal generic types and reduced relianc
 
 ## Bundle Size
 
-| Package   | Minified Size | Reduction vs Zod 3 |
-|-----------|---------------|---------------------|
-| `zod`     | ~13 kB        | ~2x smaller         |
-| `zod/mini` | ~4 kB    | ~6.6x smaller       |
+Measured by bundling a simple `z.boolean()` + `schema.parse(true)` script with `rollup`:
+
+| Package   | Bundle (gzip) |
+|-----------|--------------|
+| Zod 3     |  `12.47kb`      |
+| Zod 4 (regular)     | `5.36kb`       |
+| Zod 4 (mini) | `1.88kb`       |
+
+The core bundle is ~57% smaller in Zod 4 (2.3x). With Zod Mini the gzipped bundle is `1.88kb`, an 85% (6.6x) reduction in core bundle size compared to `zod@3`.
 
 ## Zod Mini
 
@@ -71,107 +80,115 @@ z.array(z.number()).check(
 );
 ```
 
-## Metadata System
+## Metadata
 
-Zod 4 introduces a first-class metadata system using registries.
+Zod 4 introduces a new system for adding strongly-typed metadata to your schemas. Metadata isn't stored inside the schema itself; instead it's stored in a "schema registry" that associates a schema with some typed metadata. To create a registry with `z.registry()`:
 
-### Global Registry
+```ts
+import * as z from "zod";
 
-```typescript
-import { z } from "zod";
-
-const schema = z.string().meta({
-  description: "A user's email address",
-  example: "alice@example.com",
-});
-
-// Read metadata
-schema._zod.meta;
-// => { description: "A user's email address", example: "alice@example.com" }
+const myRegistry = z.registry<{ title: string; description: string }>();
 ```
 
-### Custom Registries
+To add schemas to your registry:
 
-Registries let you associate typed metadata with any schema:
+```ts
+const emailSchema = z.string().email();
 
-```typescript
-import { z } from "zod";
-
-// Create a typed registry
-const myRegistry = z.registry<{
-  title: string;
-  description?: string;
-}>();
-
-const emailSchema = z.string().meta(myRegistry, {
-  title: "Email",
-  description: "A valid email address",
-});
-
-// Read from a specific registry
+myRegistry.add(emailSchema, { title: "Email address", description: "..." });
 myRegistry.get(emailSchema);
-// => { title: "Email", description: "A valid email address" }
+// => { title: "Email address", ... }
 ```
 
-### Global Registry
+Alternatively, you can use the `.register()` method on a schema for convenience:
 
-The `z.globalRegistry` is the default registry used by `.meta()` when no registry is specified:
+```ts
+emailSchema.register(myRegistry, { title: "Email address", description: "..." })
+// => returns emailSchema
+```
 
-```typescript
-import { z } from "zod";
+### The global registry
 
-const schema = z.string().meta({ description: "A name" });
+Zod also exports a global registry `z.globalRegistry` that accepts some common JSON Schema-compatible metadata:
 
-// Equivalent to:
-const schema2 = z.string().meta(z.globalRegistry, { description: "A name" });
+```ts
+z.globalRegistry.add(z.string(), {
+  id: "email_address",
+  title: "Email address",
+  description: "Provide your email",
+  examples: ["naomie@example.com"],
+  extraKey: "Additional properties are also allowed"
+});
+```
 
-z.globalRegistry.get(schema);
-// => { description: "A name" }
+### `.meta()`
+
+To conveniently add a schema to `z.globalRegistry`, use the `.meta()` method.
+
+```ts
+z.string().meta({
+  id: "email_address",
+  title: "Email address",
+  description: "Provide your email",
+  examples: ["naomie@example.com"],
+  // ...
+});
+```
+
+For compatibility with Zod 3, `.describe()` is still available, but `.meta()` is preferred.
+
+```ts
+z.string().describe("An email address");
+
+// equivalent to
+z.string().meta({ description: "An email address" });
 ```
 
 ## JSON Schema Conversion
 
-Zod 4 has built-in JSON Schema generation via `z.toJSONSchema()`:
+Zod 4 introduces first-party JSON Schema conversion via `z.toJSONSchema()`.
 
-```typescript
-import { z } from "zod";
+```ts
+import * as z from "zod";
 
-const User = z.object({
-  name: z.string(),
-  age: z.number().int().min(0),
-  email: z.email().optional(),
-});
+const mySchema = z.object({name: z.string(), points: z.number()});
 
-const jsonSchema = z.toJSONSchema(User);
-// {
+z.toJSONSchema(mySchema);
+// => {
 //   type: "object",
 //   properties: {
-//     name: { type: "string" },
-//     age: { type: "integer", minimum: 0 },
-//     email: { type: "string", format: "email" }
+//     name: {type: "string"},
+//     points: {type: "number"},
 //   },
-//   required: ["name", "age"]
+//   required: ["name", "points"],
 // }
 ```
 
-Metadata from registries can be included in generated JSON Schema:
+Any metadata in `z.globalRegistry` is automatically included in the JSON Schema output.
 
-```typescript
-import { z } from "zod";
-
-const schema = z.string().meta({
-  description: "User's full name",
-  title: "Name",
+```ts
+const mySchema = z.object({
+  firstName: z.string().describe("Your first name"),
+  lastName: z.string().meta({ title: "last_name" }),
+  age: z.number().meta({ examples: [12, 99] }),
 });
 
-z.toJSONSchema(schema);
-// { type: "string", description: "User's full name", title: "Name" }
+z.toJSONSchema(mySchema);
+// => {
+//   type: 'object',
+//   properties: {
+//     firstName: { type: 'string', description: 'Your first name' },
+//     lastName: { type: 'string', title: 'last_name' },
+//     age: { type: 'number', examples: [ 12, 99 ] }
+//   },
+//   required: [ 'firstName', 'lastName', 'age' ]
+// }
 ```
 
 Configure the output with options:
 
 ```typescript
-z.toJSONSchema(schema, {
+z.toJSONSchema(mySchema, {
   target: "draft-2020-12", // or "draft-07", "draft-04", "openapi-3.0"
   unrepresentable: "throw", // or "any" — how to handle schemas that can't be represented
 });
@@ -227,23 +244,41 @@ See the full list of supported locales in [Error Customization](../errors/error-
 
 Format `ZodError` into a human-readable string:
 
-```typescript
-import { z } from "zod";
+```ts
+const myError = new z.ZodError([
+  {
+    code: 'unrecognized_keys',
+    keys: [ 'extraField' ],
+    path: [],
+    message: 'Unrecognized key: "extraField"'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'username' ],
+    message: 'Invalid input: expected string, received number'
+  },
+  {
+    origin: 'number',
+    code: 'too_small',
+    minimum: 0,
+    inclusive: true,
+    path: [ 'favoriteNumbers', 1 ],
+    message: 'Too small: expected number to be >=0'
+  }
+]);
 
-const result = z.object({
-  name: z.string(),
-  age: z.number(),
-}).safeParse({ name: 42, age: "old" });
+z.prettifyError(myError);
+```
 
-if (!result.success) {
-  console.log(z.prettifyError(result.error));
-  // ┌ ZodError
-  // │
-  // ├ name  Invalid input: expected string, received number
-  // ├ age   Invalid input: expected number, received string
-  // │
-  // └
-}
+This returns the following pretty-printable multi-line string:
+
+```text
+✖ Unrecognized key: "extraField"
+✖ Invalid input: expected string, received number
+  → at username
+✖ Too small: expected number to be >=0
+  → at favoriteNumbers[1]
 ```
 
 ## Unified `error` Parameter
@@ -293,7 +328,7 @@ z.cidrv6();         // validates CIDR v6 notation
 z.base64();         // validates base64 strings
 z.base64url();      // validates base64url strings
 z.jwt();            // validates JWTs (structure only)
-z.json();           // validates JSON strings (and parses them)
+z.json();           // validates any JSON-encodable value (string/number/boolean/null/array/record); does not parse strings
 
 // ISO format functions under z.iso namespace
 z.iso.date();       // validates ISO date strings (YYYY-MM-DD)
@@ -302,7 +337,7 @@ z.iso.datetime();   // validates ISO datetime strings
 z.iso.duration();   // validates ISO duration strings
 ```
 
-These are equivalent to `z.string().email()` etc. but more concise and better for tree-shaking.
+The method equivalents (`z.string().email()`, etc.) are still available but deprecated, and will be removed in the next major version. Top-level forms are more concise and more tree-shakable.
 
 ## Template Literals
 
@@ -432,39 +467,15 @@ This is useful for normalization where the type doesn't change, avoiding the typ
 
 ## `zod/v4/core` Architecture
 
-Zod 4 is built on a layered architecture:
+While this will not be relevant to the majority of Zod users, it's worth highlighting. The addition of Zod Mini necessitated the creation of a shared sub-package `zod/v4/core` which contains the core functionality shared between Zod and Zod Mini.
 
-```
-zod/v4/core   ← Internal core (for library authors)
-    ↑
-   zod         ← Full Zod package (method-chaining API)
-    ↑
-zod/mini      ← Zod Mini (functional API, smaller bundle)
-```
+I was resistant to this at first, but now I see it as one of Zod 4's most important features. It lets Zod level up from a simple library to a fast validation "substrate" that can be sprinkled into other libraries.
 
-### `zod/v4/core`
+If you're building a schema library, refer to the implementations of Zod and Zod Mini to see how to build on top of the foundation `zod/v4/core` provides. Don't hesitate to get in touch in GitHub discussions or via [X](https://x.com/colinhacks)/[Bluesky](https://bsky.app/profile/colinhacks.com) for help or feedback.
 
-The core package exposes the internal schema classes and parsing logic. It is intended for library authors building Zod-compatible tools:
+## Notes
 
-```typescript
-import * as core from "zod/v4/core";
-
-// Access internal schema classes
-core.$ZodString;
-core.$ZodNumber;
-core.$ZodObject;
-
-// The base error class
-core.$ZodError;
-
-// Schema internals are accessed via `_zod` property
-const schema = z.string();
-schema._zod.def;      // the schema definition object
-schema._zod.meta;     // attached metadata
-schema._zod.parse(value, ctx); // internal parse method
-```
-
-Both `zod` and `zod/mini` are built on top of `zod/v4/core`, sharing the same internal types and parsing engine. Library authors should depend on `zod/v4/core` to avoid coupling to either API style.
+- In the official zod.dev/v4 example, the last line of the `z.prettifyError()` output is `Invalid input: expected number, received string`, which does not match the `too_small` issue. `z.prettifyError()` prints each issue's `message`, so the output here follows the issue as defined. The `ZodError` definition above is unchanged from the original.
 
 ## Related
 

@@ -6,6 +6,14 @@ source: https://zod.dev/compile
 
 AOT コンパイル（`zod/compile`）をグローバルに有効化するコマンドと設定。
 
+## 前提パッケージのインストール
+
+```sh
+npm install zod@^4.5.0
+```
+
+`z.compile()` / `zod/compile` は zod 4.5 以降が必要（出典: https://zod.dev/blog/introducing-z-compile の Try it 節）。以降のコマンドの前提。詳細は `install.md` を参照。
+
 ## Node.js（ESM）での事前ロード
 
 ```sh
@@ -50,6 +58,8 @@ import 以降に構築されたスキーマが、初回 parse 時に遅延コン
 ## CSP 環境でのグローバルコンパイル無効化
 
 ```ts
+import * as z from "zod";
+
 z.config({ jitless: true });
 ```
 

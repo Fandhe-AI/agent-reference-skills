@@ -1,3 +1,7 @@
+---
+source: https://zod.dev/error-formatting
+---
+
 # Error Formatting
 
 Utilities for converting `$ZodError` instances into more useful formats for display, logging, and form validation.
@@ -92,7 +96,7 @@ const pretty = z.prettifyError(result.error);
 
 Output:
 
-```
+```text
 ✖ Unrecognized key: "extraKey"
 ✖ Invalid input: expected string, received number
   → at username

@@ -1,6 +1,18 @@
+---
+source: https://zod.dev/json-schema
+---
+
 # JSON Schema
 
 Zod スキーマと JSON Schema の相互変換。
+
+## 前提パッケージのインストール
+
+```sh
+npm install zod
+```
+
+以降のコード例の前提。詳細は `install.md` を参照。
 
 ## Zod スキーマを JSON Schema に変換
 
@@ -51,6 +63,21 @@ z.toJSONSchema(z.bigint(), { unrepresentable: "any" });
 
 ```typescript
 import * as z from "zod";
+
+const User = z.object({
+  name: z.string(),
+  get posts(){
+    return z.array(Post);
+  }
+});
+
+const Post = z.object({
+  title: z.string(),
+  content: z.string(),
+  get author(){
+    return User;
+  }
+});
 
 z.globalRegistry.add(User, { id: "User" });
 z.globalRegistry.add(Post, { id: "Post" });
