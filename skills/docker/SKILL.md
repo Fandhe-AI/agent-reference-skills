@@ -9,7 +9,7 @@ user-invocable: false
 
 # Docker
 
-> 分割 PR の途中段階。現在収録済み: references/{build, build-cache-bake, cli-buildx, cli-container, cli-image-system, cli-network-volume-context, compose-cli, compose-file}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{build, build-cache-bake, cli-buildx, cli-container, cli-image-system, cli-network-volume-context, compose-cli, compose-file, dockerfile, engine-containers-security, engine-daemon-logging}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 Docker Engine / Dockerfile / Docker Compose / Buildx (BuildKit) の公式ドキュメントを蒸留したリファレンス。
 
@@ -27,6 +27,9 @@ Docker Engine / Dockerfile / Docker Compose / Buildx (BuildKit) の公式ドキ�
 skills/docker/
   SKILL.md
   references/
+    dockerfile/
+      README.md
+      from.md / run.md / run-mount.md / copy.md / add.md / cmd.md / entrypoint.md / env.md ...
     build/
       README.md
       build-overview.md / build-context.md / multi-stage.md / multi-platform.md / secrets.md / drivers.md ...
@@ -51,6 +54,12 @@ skills/docker/
     compose-cli/
       README.md
       compose-up.md / compose-down.md / compose-build.md / compose-watch.md / envvars.md ...
+    engine-daemon-logging/
+      README.md
+      dockerd.md / daemon-overview.md / logging-configure.md / log-driver-json-file.md / live-restore.md ...
+    engine-containers-security/
+      README.md
+      running-containers.md / resource-constraints.md / gpu.md / rootless.md / seccomp.md / security-overview.md ...
 ```
 
 ## 探索手順
@@ -65,6 +74,8 @@ skills/docker/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
+| Dockerfile 命令 (FROM / RUN / COPY / ENTRYPOINT / HEALTHCHECK) の構文を知りたい | dockerfile | [references/dockerfile/README.md](references/dockerfile/README.md) |
+| parser directive・here-document・build check rules を知りたい | dockerfile | [references/dockerfile/README.md](references/dockerfile/README.md) |
 | ビルドコンテキスト・マルチステージ・マルチプラットフォームを設定したい | build | [references/build/README.md](references/build/README.md) |
 | builder / driver / exporter / BuildKit 設定 (buildkitd.toml) を知りたい | build | [references/build/README.md](references/build/README.md) |
 | SBOM・provenance などの attestations、ビルドシークレットを扱いたい | build | [references/build/README.md](references/build/README.md) |
@@ -79,3 +90,8 @@ skills/docker/
 | Compose の include / merge / extends / interpolation / models を使いたい | compose-file | [references/compose-file/README.md](references/compose-file/README.md) |
 | docker compose up / down / run / watch などのオプションを知りたい | compose-cli | [references/compose-cli/README.md](references/compose-cli/README.md) |
 | COMPOSE_* 環境変数と優先順位を知りたい | compose-cli | [references/compose-cli/README.md](references/compose-cli/README.md) |
+| dockerd と daemon.json、proxy、live restore、リモートアクセスを設定したい | engine-daemon-logging | [references/engine-daemon-logging/README.md](references/engine-daemon-logging/README.md) |
+| logging driver (json-file / local / syslog / fluentd / awslogs) を設定したい | engine-daemon-logging | [references/engine-daemon-logging/README.md](references/engine-daemon-logging/README.md) |
+| リソース制限・restart policy・GPU・ランタイムメトリクスを設定したい | engine-containers-security | [references/engine-containers-security/README.md](references/engine-containers-security/README.md) |
+| rootless・seccomp・AppArmor・userns-remap・デーモンソケット保護を知りたい | engine-containers-security | [references/engine-containers-security/README.md](references/engine-containers-security/README.md) |
+| CLI の --filter / --format / completion / OpenTelemetry を使いたい | engine-containers-security | [references/engine-containers-security/README.md](references/engine-containers-security/README.md) |
