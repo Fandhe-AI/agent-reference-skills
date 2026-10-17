@@ -25,7 +25,9 @@ Rules for adding use-cases ("data access with use-cases"):
 * View models depend on one or more use-cases *and* one or more repositories
 ```
 
-## Components
+## Options / Props
+
+### Components
 
 | Component | Layer | Responsibility |
 |-----------|-------|----------------|

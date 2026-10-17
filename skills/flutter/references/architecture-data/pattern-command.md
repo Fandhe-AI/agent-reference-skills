@@ -215,6 +215,7 @@ final class Command1<T, A> extends Command<T> {
 
 ## Notes
 
+- The `HomeViewModel` snippet is illustrative and is quoted verbatim from the official page: with the full Compass App implementation below, the equivalent declarations are `Command0<void>` / `Command1<void, String>` and the actions must return `Future<Result<void>>` (the simplified `Command` above defines neither `Command0` nor `Command1`).
 - View models are typically implemented by extending `ChangeNotifier` and calling `notifyListeners()` to refresh views. Without commands, each action needs its own `running` / `error` state (e.g. `runningLoad`, `errorLoad`, `runningEdit`, `errorEdit`) and manual listener code to trigger UI actions such as a `SnackBar`.
 - `execute()` sets `running` to `true` and resets `error` and `completed`; when the action finishes `running` becomes `false` and `completed` `true`. While `running` is `true` the command cannot begin executing again, preventing repeated button presses. In the simplified version, thrown `Exception`s are captured into the `error` state.
 - Call `clear()` (simplified) / `clearResult()` (full version) after consuming an error so the UI action doesn't fire on every `notifyListeners()`.
