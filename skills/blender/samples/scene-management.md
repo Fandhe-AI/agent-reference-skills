@@ -142,7 +142,7 @@ print(f"Active camera: {scene.camera.name}")
 - `bpy.data.lights.new(name, type)` creates the light data; a separate `bpy.data.objects.new()` call wraps it into a scene object — same pattern as meshes.
 - Use `ShaderNodeTexEnvironment` (not `ShaderNodeTexImage`) for HDRI environment maps; the mapping is spherical by default, which is correct for HDRIs.
 - `scene.camera` must be set to an Object (not a Camera data-block) for the render camera to work.
-- Blender 5.0+: `world.use_nodes` is deprecated (always `True`, setting it has no effect, removal planned for 6.0) and a new World gets a default node tree. On Blender ≤ 4.4 set `world.use_nodes = True` before accessing `world.node_tree`.
+- Blender 5.0+: `world.use_nodes` is deprecated (always `True`, setting it has no effect, removal planned for 6.0) and a new World gets a default node tree. On Blender ≤ 4.5 set `world.use_nodes = True` before accessing `world.node_tree`.
 
 ## Variations
 

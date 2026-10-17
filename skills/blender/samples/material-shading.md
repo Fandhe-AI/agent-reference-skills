@@ -117,7 +117,7 @@ print("Materials assigned.")
 ## Key Points
 
 - Blender 5.0+: `bpy.data.materials.new()` creates a default node tree, so `mat.node_tree` is available immediately. `mat.use_nodes` is deprecated (always `True`, setting it has no effect, removal planned for 6.0).
-- Blender ≤ 4.4: `mat.use_nodes = True` must be set before accessing `mat.node_tree`; without it the tree does not exist. Setting it is harmless on 5.0+, so scripts targeting both can keep it.
+- Blender ≤ 4.5: `mat.use_nodes = True` must be set before accessing `mat.node_tree`; without it the tree does not exist. Setting it is harmless on 5.0+, so scripts targeting both can keep it.
 - `nodes.clear()` removes the default Principled BSDF + Material Output pair — rebuild both explicitly so their positions and names are predictable.
 - Node input values are set via `node.inputs['Input Name'].default_value`; the value type must match (float, tuple for color, etc.).
 - `bpy.data.images.load()` loads from disk and caches in `bpy.data.images`; if the same path is loaded twice, call `bpy.data.images.load(path, check_existing=True)`.

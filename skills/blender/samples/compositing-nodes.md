@@ -7,7 +7,7 @@ description: Build a compositor node tree from Python — Render Layers, Glare, 
 
 ## Overview
 
-The compositor node tree API changed significantly between versions. Blender ≤ 4.4 used `scene.use_nodes = True` and `scene.node_tree`. Blender 5.0+ deprecated `scene.use_nodes` and replaced `scene.node_tree` with `scene.compositing_node_group`, using a `NodeGroupOutput` node instead of `CompositorNodeComposite`.
+The compositor node tree API changed significantly between versions. Blender ≤ 4.5 used `scene.use_nodes = True` and `scene.node_tree`. Blender 5.0+ deprecated `scene.use_nodes` and replaced `scene.node_tree` with `scene.compositing_node_group`, using a `NodeGroupOutput` node instead of `CompositorNodeComposite`.
 
 The two canonical helpers below encapsulate all version branching. Copy them at the top of any compositor script; the PART A–D examples call these helpers without further branching (except the File Output nodes in PART C/D, which branch on `file_output_items`).
 
@@ -33,7 +33,7 @@ def get_compositor_tree(scene):
             tree = bpy.data.node_groups.new("Compositor", "CompositorNodeTree")
             scene.compositing_node_group = tree
     else:
-        # Blender ≤ 4.4
+        # Blender ≤ 4.5
         scene.use_nodes = True
         tree = scene.node_tree
     return tree, tree.links
@@ -54,7 +54,7 @@ def add_output_node(tree, source_socket, location=(700, 0)):
             )
         tree.links.new(source_socket, out.inputs[0])
     else:
-        # Blender ≤ 4.4: CompositorNodeComposite
+        # Blender ≤ 4.5: CompositorNodeComposite
         out = tree.nodes.new('CompositorNodeComposite')
         tree.links.new(source_socket, out.inputs["Image"])
     out.location = location
@@ -116,7 +116,7 @@ links.new(rl.outputs['Depth'], defocus.inputs['Z'])
 #
 # Blender 5.0+: `file_slots`, `layer_slots`, `base_path` were removed; the node has
 # `directory`, `file_name`, and `file_output_items.new(socket_type, name)`.
-# Blender ≤ 4.4: `base_path` + `file_slots.new(name)` (kept in the else branch).
+# Blender ≤ 4.5: `base_path` + `file_slots.new(name)` (kept in the else branch).
 
 file_out = nodes.new('CompositorNodeOutputFile')
 file_out.location           = (700, 0)
@@ -131,7 +131,7 @@ if hasattr(file_out, 'file_output_items'):
     file_out.file_output_items.new('RGBA', "combined")
     file_out.file_output_items.new('FLOAT', "depth")
 else:
-    # Blender ≤ 4.4
+    # Blender ≤ 4.5
     file_out.base_path = "//comp_output/"
     file_out.file_slots.new("combined")
     file_out.file_slots.new("depth")
@@ -160,7 +160,7 @@ if hasattr(exr_out, 'file_output_items'):
     exr_out.file_output_items.new('RGBA', "Image")
     exr_out.file_output_items.new('FLOAT', "Depth")
 else:
-    # Blender ≤ 4.4
+    # Blender ≤ 4.5
     exr_out.base_path = "//exr_output/"
     exr_out.file_slots.new("Image")
     exr_out.file_slots.new("Depth")
