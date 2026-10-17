@@ -1,6 +1,6 @@
 # BackoffPolicy and Retry
 
-Retry backoff strategy applied when a worker returns `Result.retry()` or throws, configured via `WorkRequest.Builder.setBackoffCriteria`.
+Retry backoff strategy applied when a worker returns `Result.retry()`, configured via `WorkRequest.Builder.setBackoffCriteria`.
 
 ## Signature / Usage
 

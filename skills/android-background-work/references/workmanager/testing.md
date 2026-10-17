@@ -5,18 +5,27 @@ Unit-testing individual workers with `TestWorkerBuilder` / `TestListenableWorker
 ## Signature / Usage
 
 ```kotlin
-// Unit test: TestWorkerBuilder for Worker
+// Unit test: TestWorkerBuilder for Worker (SleepWorker extends Worker)
+import androidx.work.ListenableWorker.Result
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.MatcherAssert.assertThat
+
 val worker = TestWorkerBuilder<SleepWorker>(
     context = context,
     executor = executor,
     inputData = workDataOf("SLEEP_DURATION" to 1000L),
 ).build()
 val result = worker.doWork()
+assertThat(result, `is`(Result.success()))
+```
 
+```kotlin
 // Unit test: TestListenableWorkerBuilder for CoroutineWorker/RxWorker/ListenableWorker
+// (SleepWorker extends CoroutineWorker); same imports as above
 val worker = TestListenableWorkerBuilder<SleepWorker>(context).build()
 runBlocking {
     val result = worker.doWork()
+    assertThat(result, `is`(Result.success()))
 }
 ```
 
@@ -50,7 +59,7 @@ fun testSimpleEchoWorker() {
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `TestWorkerBuilder<W>(context, executor, inputData?)` | builder | — | Builds a `Worker` instance for unit testing; lets you specify the background `Executor` explicitly. |
-| `TestListenableWorkerBuilder<W>(context)` | builder | — | Builds a `ListenableWorker`/`CoroutineWorker`/`RxWorker`/`Worker` instance for unit testing; relies on the worker's own threading logic rather than a supplied executor. Recommended for `CoroutineWorker` since it uses `Dispatchers.Default` rather than the worker's own dispatcher. |
+| `TestListenableWorkerBuilder<W>(context)` | builder | — | Builds a `ListenableWorker`/`CoroutineWorker`/`RxWorker`/`Worker` instance for unit testing; relies on the worker's own threading logic rather than a supplied executor. Recommended for `CoroutineWorker` tests because the `work-testing` artifact uses `Dispatchers.Default` rather than the worker implementation's `CoroutineDispatcher`. |
 | `WorkManagerTestInitHelper.initializeTestWorkManager(context, config)` | function | — | Initializes a test-mode `WorkManager` for instrumentation tests. |
 | `SynchronousExecutor` | class | — | Executes work synchronously, avoiding manual thread/lock/latch coordination in tests. |
 | `WorkManagerTestInitHelper.getTestDriver(context)` | `(Context) -> TestDriver?` | — | Returns a `TestDriver` for simulating constraint/delay/period completion. The no-arg `getTestDriver()` is `@Deprecated`. |
@@ -64,6 +73,7 @@ fun testSimpleEchoWorker() {
 ## Notes
 
 - Distinct from the same-named page in the `android-data` skill's `room` category, which covers Room database testing, not WorkManager worker testing.
+- The two unit-test snippets split the official per-section test classes into separate blocks and add the imports the official examples omit (`androidx.work.ListenableWorker.Result`, Hamcrest `assertThat` / `is`); without the import, `Result` resolves to `kotlin.Result`.
 - Add the dependency: `androidTestImplementation "androidx.work:work-testing:$work_version"`.
 - `TestWorkerBuilder` and `TestListenableWorkerBuilder` let you test worker business logic without initializing WorkManager via `WorkManagerTestInitHelper`.
 - Integration tests run against a real (test) database rather than mocks.
