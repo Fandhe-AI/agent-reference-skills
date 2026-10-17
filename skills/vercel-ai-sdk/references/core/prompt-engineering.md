@@ -12,7 +12,7 @@ Tips for prompts that include tools or structured data schemas, and ways to debu
 const result = await generateText({
   model,
   prompt: 'Hello, world!',
-  include: { requestMessages: true },
+  include: { requestMessages: true, requestBody: true },
 });
 
 console.log(result.warnings);
@@ -78,6 +78,7 @@ Temperature: for tool calls and object generation, `temperature: 0` is recommend
 
 ## Notes
 
+- `finalStep.request.body` and `finalStep.request.messages` are excluded by default; enable `include.requestBody` / `include.requestMessages` to inspect them (request bodies are only exposed by some providers, e.g. OpenAI).
 - Optional-parameter incompatibility is particularly relevant for OpenAI models with structured outputs (strict mode).
 
 ## Related

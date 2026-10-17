@@ -122,7 +122,34 @@ const [securityReview, performanceReview, maintainabilityReview] =
       }),
       prompt: `Review this code: ${code}`,
     }),
-    // ...performance and maintainability reviewers follow the same shape
+
+    generateText({
+      model,
+      instructions:
+        'You are an expert in code performance. Focus on identifying performance bottlenecks, memory leaks, and optimization opportunities.',
+      output: Output.object({
+        schema: z.object({
+          issues: z.array(z.string()),
+          impact: z.enum(['low', 'medium', 'high']),
+          optimizations: z.array(z.string()),
+        }),
+      }),
+      prompt: `Review this code: ${code}`,
+    }),
+
+    generateText({
+      model,
+      instructions:
+        'You are an expert in code quality. Focus on code structure, readability, and adherence to best practices.',
+      output: Output.object({
+        schema: z.object({
+          concerns: z.array(z.string()),
+          qualityScore: z.number().min(1).max(10),
+          recommendations: z.array(z.string()),
+        }),
+      }),
+      prompt: `Review this code: ${code}`,
+    }),
   ]);
 
 const reviews = [

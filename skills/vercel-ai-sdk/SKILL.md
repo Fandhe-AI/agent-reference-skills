@@ -10,6 +10,8 @@ user-invocable: false
 
 # Vercel AI SDK
 
+> 分割 PR の途中段階。現在収録済み: references/{agents, core}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+
 TypeScript 向け LLM アプリ開発ツールキット `ai`（AI SDK Core / UI / RSC）と `@ai-sdk/*` パッケージ群のリファレンス・サンプル・コマンド集。
 
 ## 対象バージョン

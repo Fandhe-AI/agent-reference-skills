@@ -288,15 +288,15 @@ const result = await agent.generate({
 });
 
 // extract answer from done tool call
-const toolCall = result.staticToolCalls[0]; // tool call from final step
-if (toolCall?.toolName === 'done') {
+const toolCall = result.finalStep.staticToolCalls.find(call => call.toolName === 'done');
+if (toolCall) {
   console.log(toolCall.input.answer);
 }
 ```
 
 - **`toolChoice: 'required'`**: Forces the model to call a tool at every step instead of generating text directly.
 - **`done` tool without `execute`**: A tool that has no `execute` function acts as a termination signal.
-- **Accessing results**: The final answer is available in `result.staticToolCalls`, which contains tool calls that weren't executed.
+- **Accessing results**: The final answer is available in `result.finalStep.staticToolCalls` (the static tool calls of the final step, where the `done` call without `execute` ends the loop).
 
 ### Manual Loop Control
 
@@ -331,6 +331,7 @@ while (step < maxSteps) {
 
 ## Notes
 
+- The official example reads `result.staticToolCalls[0]`, but the generateText reference defines result-level `staticToolCalls` as all steps; this page uses `result.finalStep.staticToolCalls` to match that contract.
 - If the default `isStepCount(20)` limit stops a tool loop that could otherwise continue, the SDK logs a warning with guidance on configuring `stopWhen`. Set `stopWhen` explicitly to choose a limit, even if you want to keep `isStepCount(20)`. Explicit stop conditions do not produce this warning.
 - `WorkflowAgent` does not apply a default step limit. It continues until the model stops calling tools or another natural termination condition is met. Configure an explicit condition such as `isStepCount(20)` when you need to bound its model calls.
 - Use `isLoopFinished()` with caution. Without a step limit, the agent could potentially run indefinitely or incur significant costs if the model keeps making tool calls.
