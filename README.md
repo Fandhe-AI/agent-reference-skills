@@ -38,7 +38,7 @@ npx skills add Fandhe-AI/agent-reference-skills --skill react-router -g
 
 詳細なディレクトリ構成（`.claude/` の Agent・Rule・ワークフロースキル、`skills/` のスキル構造）は [CLAUDE.md](CLAUDE.md) の「Repository Structure」を参照。
 
-## スキル一覧（全 121 スキル）
+## スキル一覧（全 141 スキル）
 
 ### Apple プラットフォーム
 
@@ -56,6 +56,8 @@ npx skills add Fandhe-AI/agent-reference-skills --skill react-router -g
 | [apple-media](skills/apple-media/) | AVFoundation 再生 / キャプチャ / オーディオ / PhotoKit |
 | [apple-ml](skills/apple-ml/) | Core ML / Create ML / Vision / Natural Language / Speech — オンデバイス機械学習 |
 | [apple-distribution](skills/apple-distribution/) | App Store Connect API / TestFlight / In-App Purchase |
+| [apple-intelligence](skills/apple-intelligence/) | Apple Intelligence — Foundation Models (LanguageModelSession, Generable, Tool), Private Cloud Compute, Evaluations, Image Playground, apple-fm-sdk (Python) |
+| [apple-app-intents](skills/apple-app-intents/) | App Intents — AppIntent, AppEntity, EntityQuery, App Shortcuts, App Schemas, Spotlight (IndexedEntity), Visual Intelligence, SiriKit 移行 |
 
 ### Android プラットフォーム
 
@@ -128,10 +130,26 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | [openai-codex](skills/openai-codex/) | OpenAI Codex — CLI / IDE / cloud / AGENTS.md / sandbox / administration / Codex Security |
 | [openai-apps-sdk](skills/openai-apps-sdk/) | OpenAI Apps SDK — ChatGPT plugins / window.openai / registerAppTool / ui:// リソース / MCP 公開側 |
 
+### Google プラットフォーム
+
+| スキル | 説明 |
+| -------- | ------ |
+| [google-gemini-api](skills/google-gemini-api/) | Google Gemini API (ai.google.dev) — Interactions API, generateContent, Google GenAI SDK, Live API, Managed Agents, function calling / grounding, Veo / Nano Banana, Batch API |
+
+### AI / LLM 横断
+
+mcp-spec はプロトコル仕様そのもの、ホスト側の MCP 設定・SDK は `anthropic-*` / `openai-*` の各スキルが担当。vercel-ai-sdk はプロバイダー API のアダプター層で、生 API は各プロバイダーのスキルが担当。
+
+| スキル | 説明 |
+| -------- | ------ |
+| [mcp-spec](skills/mcp-spec/) | Model Context Protocol 仕様 (2026-07-28) — JSON-RPC, tools / resources / prompts, Streamable HTTP, authorization, MCP Apps (ui://), MCP Registry |
+| [vercel-ai-sdk](skills/vercel-ai-sdk/) | Vercel AI SDK v7 — generateText / streamText, ToolLoopAgent, createMCPClient, useChat, embed, AI Gateway, `@ai-sdk/*` プロバイダー |
+
 ### フレームワーク / ライブラリ
 
 | スキル | 説明 |
 | -------- | ------ |
+| [react](skills/react/) | React 19.3 — Hooks (useState / useEffect / useActionState / useOptimistic), Suspense, Server Components / Server Functions, react-dom, React Compiler |
 | [nextjs-app](skills/nextjs-app/) | Next.js App Router — Server Components, Server Actions, ルーティング, キャッシュ, Metadata |
 | [react-router](skills/react-router/) | React Router v8 Framework Mode (RR8) — loader, action, middleware, routes.ts, hooks, SSR/SPA, type-safe routing |
 | [tanstack-router](skills/tanstack-router/) | TanStack Router — 型安全 React ルーター, createFileRoute, loader / beforeLoad, validateSearch, file-based routing, tsr CLI |
@@ -143,8 +161,10 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | [react-flow](skills/react-flow/) | React Flow — ノード, エッジ, カスタムノード, レイアウト |
 | [chakra-ui](skills/chakra-ui/) | Chakra UI v3 — コンポーネント, テーマ, レシピ, スタイルプロップ |
 | [ark-ui](skills/ark-ui/) | Ark UI — headless / unstyled コンポーネント (Chakra v3 の Zag.js 基盤), asChild, RootProvider, collections |
+| [tailwindcss](skills/tailwindcss/) | Tailwind CSS v4 — @theme / @utility / @custom-variant, CSS-first 設定, @tailwindcss/vite / postcss / cli, variants, v3 移行 |
+| [shadcn-ui](skills/shadcn-ui/) | shadcn/ui — コピー配布型 React コンポーネント (Base UI / Radix + Tailwind CSS), shadcn CLI, components.json, registry, AI Elements |
 | [fandhe-frontend](skills/fandhe-frontend/) | fandhe-frontend — Rust 製フロントエンドフレームワーク, SSR/SPA/SSG/View Transitions, hydration, Primitives (headless) / Themes (styled), fw CLI |
-| [fandhe-db](skills/fandhe-db/) | fandhe-db — Rust 製ローカルファースト vector 特化クエリ DB (PostgreSQL wire protocol v3 互換), fandhe-vector-db-engine / fandhe-vector-db-wire-server, USING PLAN / USING OPERATION_ID, precision・recall モード, HNSW / BM25 転置索引 / RRF hybrid / rerank, redb 永続化, tenant・RLS, SIMD / wgpu カーネル, wire_code エラー契約 |
+| [fandhe-db](skills/fandhe-db/) | fandhe-db — Rust 製ローカルファースト vector 特化クエリ DB (PostgreSQL wire protocol v3 互換), fandhe-db-engine / fandhe-db-wire-server, USING PLAN / USING OPERATION_ID, precision・recall モード, HNSW / BM25 転置索引 / RRF hybrid / rerank, NoSQL HTTP 表層, redb 永続化, tenant・RLS, SIMD / wgpu カーネル, wire_code エラー契約 |
 | [storybook](skills/storybook/) | Storybook — CSF, args, decorators, play function, autodocs |
 | [better-auth](skills/better-auth/) | Better Auth — 認証, OAuth, passkey, twoFactor, プラグイン |
 | [supabase](skills/supabase/) | Supabase — database, auth, storage, edge-functions, realtime, RLS |
@@ -158,11 +178,25 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | [nuqs](skills/nuqs/) | nuqs — URL search params state manager |
 | [inngest](skills/inngest/) | Inngest — イベント駆動 Durable Execution, createFunction, step, フロー制御 |
 
+### モバイル / デスクトップ
+
+react-native / expo / flutter / kotlin-multiplatform のネイティブ側 API は `android-*` / `apple-*` が担当。tauri と electron は別フレームワーク。
+
+| スキル | 説明 |
+| -------- | ------ |
+| [react-native](skills/react-native/) | React Native 0.87 / 0.88 — View / Text / FlatList / Pressable, Animated, New Architecture (Fabric / TurboModules / Codegen), Hermes, Metro |
+| [expo](skills/expo/) | Expo SDK 58 / EAS — Expo Router, app.json / config plugins, Expo Modules API, `expo-*` SDK, EAS Build / Update / Submit, CNG / prebuild |
+| [flutter](skills/flutter/) | Flutter 3.47 — Widget / BuildContext, Sliver, Material / Cupertino, flutter CLI, pubspec.yaml, platform channels / dart:ffi, Flutter Web |
+| [kotlin-multiplatform](skills/kotlin-multiplatform/) | Kotlin Multiplatform / Compose Multiplatform — expect/actual, source set, Compose Resources, Compose for iOS / Desktop / Web, iOS 統合 |
+| [tauri](skills/tauri/) | Tauri v2 — Rust + WebView, tauri.conf.json, command / invoke, capabilities / permissions, @tauri-apps/api, 公式プラグイン, 署名・配布 |
+| [electron](skills/electron/) | Electron v44 — main / renderer / preload, ipcMain / contextBridge, BrowserWindow / WebContentsView, Electron Forge, autoUpdater, code signing |
+
 ### ビルド / テスト / 品質
 
 | スキル | 説明 |
 | -------- | ------ |
 | [playwright](skills/playwright/) | Playwright — E2E テスト, page, locator, fixtures, trace, auth |
+| [vite](skills/vite/) | Vite v8 (Rolldown) — vite.config, dev server / HMR, build / library mode, import.meta.env / glob, Plugin API, Environment API, SSR |
 | [vitest](skills/vitest/) | Vitest — test, expect, vi.fn, vi.mock, coverage, snapshot |
 | [biome](skills/biome/) | Biome — formatter/linter, ルール設定, ESLint/Prettier 移行 |
 | [turborepo](skills/turborepo/) | Turborepo — turbo.json, キャッシュ, タスク依存, workspaces |
@@ -172,6 +206,7 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | [editorconfig](skills/editorconfig/) | EditorConfig — .editorconfig ファイルフォーマット |
 | [syncpack](skills/syncpack/) | Syncpack — モノレポ依存関係管理, versionGroups, semverGroups |
 | [make](skills/make/) | GNU Make / Makefile — ルール・変数・.PHONY・並列/再帰, Rust / Node / CI 連携設計, 補助 CLI |
+| [uv](skills/uv/) | uv — Astral 製 Python パッケージ / プロジェクトマネージャー, pyproject.toml / uv.lock, uv add / sync / run, uvx, uv python, PEP 723 |
 
 ### コード生成 / ドキュメント
 
@@ -186,6 +221,7 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | スキル | 説明 |
 | -------- | ------ |
 | [threejs](skills/threejs/) | Three.js — WebGL / WebGPU 3D グラフィックス, Scene, Mesh, Material, Loader |
+| [react-three-fiber](skills/react-three-fiber/) | React Three Fiber (R3F) v9 — three.js 用 React レンダラー, Canvas, useFrame / useThree / useLoader, extend, pointer イベント |
 | [blender](skills/blender/) | Blender — Python API (bpy / bmesh), モデリング, レンダリング, add-on, MCP Server |
 | [cadquery](skills/cadquery/) | CadQuery — Python 製 3D CAD スクリプティング, Workplane, Sketch, Assemblies |
 | [motion](skills/motion/) | Motion (旧 Framer Motion) — animate, scroll, gestures, layout, hooks |
@@ -210,6 +246,8 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | スキル | 説明 |
 | -------- | ------ |
 | [rust](skills/rust/) | Rust — 所有権, ライフタイム, トレイト, async/await, Cargo, 標準ライブラリ |
+| [typescript](skills/typescript/) | TypeScript 6.0 / 7.0 (Go 製 tsc) — tsconfig.json, strict, moduleResolution, project references, generics / conditional / mapped types, utility types |
+| [kotlin](skills/kotlin/) | Kotlin 2.4 — null safety, data / sealed class, 拡張関数, スコープ関数, kotlinx.coroutines (Flow), kotlinx.serialization, KGP / KSP |
 
 ### ユーティリティ / インフラ
 
@@ -227,6 +265,7 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | [upstash](skills/upstash/) | Upstash — サーバーレスデータ, @upstash/redis / ratelimit / QStash / vector / workflow |
 | [vercel](skills/vercel/) | Vercel — CLI, vercel.json, Functions, Blob, Edge Config, デプロイメント管理 |
 | [proxmox-ve](skills/proxmox-ve/) | Proxmox VE — KVM/LXC ハイパーバイザー, クラスター, Ceph, HA, SDN, CLI, REST API |
+| [docker](skills/docker/) | Docker — Dockerfile, docker CLI, compose.yaml (Compose Specification), BuildKit / Buildx / Bake, マルチプラットフォーム, daemon.json, rootless |
 
 ### アーキテクチャ
 
