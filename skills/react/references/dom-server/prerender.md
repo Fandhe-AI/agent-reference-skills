@@ -41,13 +41,15 @@ async function renderToString() {
   });
 
   const reader = prelude.getReader();
+  const decoder = new TextDecoder();
   let content = '';
   while (true) {
     const {done, value} = await reader.read();
     if (done) {
+      content += decoder.decode();
       return content;
     }
-    content += Buffer.from(value).toString('utf8');
+    content += decoder.decode(value, {stream: true});
   }
 }
 ```
@@ -90,6 +92,7 @@ async function renderToString() {
 
 ## Notes
 
+- Snippet corrected from the original: uses TextDecoder with stream: true and a final flush instead of Buffer.from(value).toString(), so multibyte characters split across chunks decode correctly and no Node.js Buffer is required.
 - `nonce` is not an available option when prerendering. Nonces must be unique per request and if you use nonces to secure your application with CSP it would be inappropriate and insecure to include the nonce value in the prerender itself.
 - The static `prerender` API is used for static server-side generation (SSG). Unlike `renderToString`, `prerender` waits for all data to load before resolving, which makes it suitable for generating static HTML for a full page, including data fetched using Suspense. To stream content as it loads, use a streaming SSR API like `renderToReadableStream`.
 - `prerender` can be aborted and later either continued with `resumeAndPrerender` or resumed with `resume` to support partial pre-rendering. Any Suspense boundaries with incomplete children are included in the prelude in the fallback state.

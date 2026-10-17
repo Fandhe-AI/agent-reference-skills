@@ -33,7 +33,7 @@ async function Note({id}) {
   return (
     <div>
       <Author id={note.authorId} />
-      <p>{note}</p>
+      <p>{note.content}</p>
     </div>
   );
 }
@@ -89,7 +89,7 @@ async function Notes() {
     <div>
       {notes.map(note => (
         <Expandable key={note.id}>
-          <p note={note} />
+          <p>{note.content}</p>
         </Expandable>
       ))}
     </div>
@@ -132,7 +132,7 @@ async function Page({id}) {
   const commentsPromise = db.comments.get(note.id);
   return (
     <div>
-      {note}
+      <p>{note.content}</p>
       <Suspense fallback={<p>Loading Comments...</p>}>
         <Comments commentsPromise={commentsPromise} />
       </Suspense>
@@ -156,6 +156,7 @@ function Comments({commentsPromise}) {
 
 ## Notes
 
+- Snippets corrected from the original: note is a record object (note.authorId), so the examples render note.content instead of the object itself; the Expandable example passes it as children.
 - While React Server Components in React 19 are stable and will not break between minor versions, the underlying APIs used to implement a React Server Components bundler or framework do not follow semver and may break between minors in React 19.x.
 - To support React Server Components as a bundler or framework, pin to a specific React version, or use the Canary release.
 - Server Components can run once at build time on your CI server, or for each request using a web server; a web server is not required when they run at build time.

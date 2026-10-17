@@ -47,10 +47,11 @@ function handleClick() {
 
 | Name | Type | Description |
 |------|------|-------------|
-| optimisticState | any or function | The value you want the optimistic state to be during an Action. If a `reducer` was provided, this value is passed as the second argument to the reducer. If you pass a function, it is treated as a pure updater function that takes the pending state and returns the next optimistic state. |
+| optimisticState | any or function | The value you want the optimistic state to be during an Action. If a `reducer` was provided, this value is passed as the second argument to the reducer. If no reducer was provided and you pass a function, it is treated as a pure updater function that takes the pending state and returns the next optimistic state. With a reducer, the function itself is passed to the reducer as its second argument. |
 
 ## Notes
 
+- Clarified from the source: the updater-function behavior applies only when no reducer is provided.
 - Call it only at the top level of your component or your own Hooks.
 - The `set` function must be called inside an Action. If you call the setter outside an Action, React will show a warning and the optimistic state will briefly render.
 - `set` functions do not have a return value.
