@@ -47,7 +47,6 @@ Servers send an `InputRequiredResult` containing a `sampling/createMessage` requ
     },
     "temperature": 0.1,
     "systemPrompt": "You are a helpful assistant.",
-    "includeContext": "thisServer",
     "maxTokens": 100
   }
 }
@@ -146,6 +145,7 @@ Model preferences: hints are treated as substrings matching model names flexibly
 
 - Deprecated in 2026-07-28 (earliest removal: first revision on or after 2027-07-28): the Sampling feature is deprecated as of protocol version `2026-07-28` (SEP-2577). New implementations **SHOULD NOT** adopt it; existing implementations **SHOULD** migrate to integrating directly with LLM provider APIs.
 - Deprecated in 2026-07-28: `includeContext` values `"thisServer"` and `"allServers"` (SEP-2596). They will be removed no later than the Sampling feature itself. Servers **SHOULD** avoid them (omit `includeContext`; it defaults to `"none"`) and **SHOULD NOT** use them unless the client declares the `sampling.context` capability (`{"sampling": {"context": {}}}`).
+- The upstream example sets `includeContext: "thisServer"`; it is omitted from the example above because that value is deprecated (defaults to `"none"`).
 - Replaced in 2026-07-28: server-initiated `sampling/createMessage` is delivered via the Multi Round-Trip pattern (`InputRequiredResult.inputRequests` / `inputResponses`) instead of a server-to-client request.
 - There **SHOULD** always be a human in the loop with the ability to deny sampling requests. Applications **SHOULD** provide UI to review requests, allow users to view and edit prompts before sending, and present generated responses for review before delivery.
 - If an error occurs or the user declines, the client does not need to replay the initial call with an error message, as the server is not waiting for a response with the `InputRequiredResult` pattern.

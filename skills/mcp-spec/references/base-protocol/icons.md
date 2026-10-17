@@ -12,7 +12,7 @@ Icons can be attached to `Implementation`, `Tool`, `Prompt`, and `Resource`. Sha
 
 ```text
 Icon {
-  src: string        // HTTP/HTTPS URL or data URI with base64-encoded image data (required)
+  src: string        // HTTP/HTTPS URL or data URI with base64-encoded image data (required); per schema, Security considerations require HTTPS or data: (see Notes)
   mimeType?: string  // if the server's type is missing or generic
   sizes?: string[]   // e.g. ["48x48"], ["any"] for scalable formats, ["48x48", "96x96"]
   theme?: "light" | "dark"  // icon background preference
@@ -23,7 +23,7 @@ Icon {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `src` | URI string (required) | HTTP/HTTPS URL pointing to an image file, or a data URI with base64-encoded image data |
+| `src` | URI string (required) | HTTP/HTTPS URL pointing to an image file, or a data URI with base64-encoded image data (per schema; Security considerations require HTTPS or `data:` — see Notes) |
 | `mimeType` | string | Optional MIME type if the server's type is missing or generic |
 | `sizes` | string[] | Optional size specifications (e.g., `["48x48"]`, `["any"]`, `["48x48", "96x96"]`) |
 | `theme` | `light` \| `dark` | Optional theme preference for the icon background |
@@ -32,7 +32,8 @@ Icon {
 
 - Clients that support rendering icons **MUST** support `image/png` and `image/jpeg` (and `image/jpg`); they **SHOULD** also support `image/svg+xml` and `image/webp`.
 - Consumers **MUST** treat icon metadata and icon bytes as untrusted inputs.
-- Icon URI **MUST** be an HTTPS or `data:` URI. Clients **MUST** reject unsafe schemes and redirects such as `javascript:`, `file:`, `ftp:`, `ws:`, or local app URI schemes. Disallow scheme changes and redirects to hosts on different origins.
+- Ensure that the icon URI is either a HTTPS or `data:` URI. Clients **MUST** reject icon URIs that use unsafe schemes and redirects, such as `javascript:`, `file:`, `ftp:`, `ws:`, or local app URI schemes. Disallow scheme changes and redirects to hosts on different origins.
+- The schema (`Icon.src`) and the Icons section describe `src` as an HTTP/HTTPS URL, while the Security considerations of the same spec require HTTPS or `data:` URIs; implementations should accept only HTTPS or `data:` icon URIs.
 - Be resilient against resource exhaustion (oversized images, large dimensions, excessive frames); consumers **MAY** set limits.
 - Fetch icons without credentials (no cookies, `Authorization` headers, or client credentials).
 - Verify that icon URIs are from the same origin as the server.
