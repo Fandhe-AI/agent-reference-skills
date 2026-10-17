@@ -40,7 +40,7 @@ Serializers call `beginStructure()` for structured values (classes, collections)
 | --- | --- |
 | Basic decoder | `decodeValue()`, `decodeElementIndex()` (return `CompositeDecoder.DECODE_DONE` when complete), `beginStructure()` (new decoder per nested structure) |
 | Sequential decoding | `decodeSequentially(): Boolean = true` (format stores values in declaration order and cannot skip optional elements) |
-| Collections | `beginCollection()` in the encoder (encode the size, return `this`), `decodeCollectionSize()` in the decoder |
+| Collections | `beginCollection()` in the encoder (encode the size, return `this`), `decodeCollectionSize()` in the decoder (also needs `decodeSequentially() = true` and decoder state holding the element count, e.g. `var elementsCount`) |
 | Null support | `encodeNull()`, `encodeNotNullMark()`, `decodeNotNullMark()` |
 | Compact binary | Override each primitive `encodeInt()` / `decodeInt()` etc. with `java.io.DataOutput` / `DataInput` |
 | Format-specific types | Override `encodeSerializableValue()` / `decodeSerializableValue()` and compare `serializer.descriptor` |
@@ -72,22 +72,56 @@ class ListDecoder(val list: ArrayDeque<Any>) : AbstractDecoder() {
 
 Collection support:
 
+The collection-aware decoder replaces the basic `ListDecoder` above: it tracks `elementsCount`, returns `true` from `decodeSequentially()`, and passes `descriptor.elementsCount` to nested decoders.
+
 ```kotlin
-// Stores the collection size before its elements
-override fun beginCollection(descriptor: SerialDescriptor, collectionSize: Int): CompositeEncoder {
-    encodeInt(collectionSize)
-    // Returns the same encoder because no additional collection-specific state is required
-    return this
+@ExperimentalSerializationApi
+class ListEncoder : AbstractEncoder() {
+    val list = mutableListOf<Any>()
+
+    override val serializersModule: SerializersModule = EmptySerializersModule()
+
+    override fun encodeValue(value: Any) {
+        list.add(value)
+    }
+
+    // Stores the collection size before its elements
+    override fun beginCollection(descriptor: SerialDescriptor, collectionSize: Int): CompositeEncoder {
+        encodeInt(collectionSize)
+        // Returns the same encoder because no additional collection-specific state is required
+        return this
+    }
 }
 
-// Decodes and stores the collection size before reading the collection elements
-override fun decodeCollectionSize(descriptor: SerialDescriptor): Int =
-    decodeInt().also { elementsCount = it }
+@ExperimentalSerializationApi
+class ListDecoder(val list: ArrayDeque<Any>, var elementsCount: Int = 0) : AbstractDecoder() {
+    private var elementIndex = 0
+
+    override val serializersModule: SerializersModule = EmptySerializersModule()
+
+    override fun decodeValue(): Any = list.removeFirst()
+
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
+        if (elementIndex == elementsCount) return CompositeDecoder.DECODE_DONE
+        return elementIndex++
+    }
+
+    override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder =
+        ListDecoder(list, descriptor.elementsCount)
+
+    // Signals that values are decoded in order because the collection size is known in advance
+    override fun decodeSequentially(): Boolean = true
+
+    // Decodes and stores the collection size before reading the collection elements
+    override fun decodeCollectionSize(descriptor: SerialDescriptor): Int =
+        decodeInt().also { elementsCount = it }
+}
 ```
 
 Null support:
 
 ```kotlin
+// in ListEncoder (encodeNull, encodeNotNullMark) and ListDecoder (decodeNotNullMark)
 // Represents null values as NULL
 override fun encodeNull() = encodeValue("NULL")
 
@@ -101,6 +135,7 @@ override fun decodeNotNullMark(): Boolean = decodeString() != "NULL"
 Compact binary primitives:
 
 ```kotlin
+// in a DataOutput-backed encoder, where `output` is a java.io.DataOutput
 override fun encodeBoolean(value: Boolean) = output.writeByte(if (value) 1 else 0)
 override fun encodeByte(value: Byte) = output.writeByte(value.toInt())
 override fun encodeShort(value: Short) = output.writeShort(value.toInt())
