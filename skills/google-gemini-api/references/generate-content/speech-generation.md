@@ -281,6 +281,6 @@ Notes:
 
 - [Multimodal understanding (generateContent)](./multimodal-understanding.md)
 - [Music generation (generateContent)](./music-generation.md)
-- Speech generation (media-generation)
-- Voice design (media-generation)
-- Voice replication (media-generation)
+- [Speech generation (media-generation)](../media-generation/speech-generation.md)
+- [Voice design (media-generation)](../media-generation/voice-design.md)
+- [Voice replication (media-generation)](../media-generation/voice-replication.md)

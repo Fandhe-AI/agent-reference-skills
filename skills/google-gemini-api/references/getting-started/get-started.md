@@ -228,7 +228,7 @@ while True:
         print(result.output_text)
         break
     elif result.status in ("failed", "cancelled", "incomplete"):
-        print(f"Stopped ({result.status}): {result.error}")
+        print(f"Stopped ({result.status}): {result.errors}")
         break
     time.sleep(5)
 ```
@@ -253,7 +253,7 @@ while True:
 - The guide states the Interactions API is available through the Python and JavaScript SDKs, as well as REST. Java and Go tabs are also shown on the page.
 - SDK convenience properties: `interaction.output_text` and `interaction.output_image`.
 - Stateful multi-turn is "recommended"; stateless mode requires passing all previous turns, including intermediate model thought and tool steps, in each request.
-- The background polling loop was extended beyond the official snippet to also stop on `cancelled` and `incomplete`, which are terminal `status` values of the Interaction resource (see the Interactions API reference); `requires_action` still needs client input and is not handled here.
+- The background polling loop was extended beyond the official snippet to also stop on `cancelled` and `incomplete`, which are terminal `status` values of the Interaction resource (see the Interactions API reference); `requires_action` still needs client input and is not handled here. The loop also prints `result.errors` (the Interaction resource field in google-genai 2.31.0) instead of the official snippet's `result.error`.
 - Docs fetched 2026-10-16. Examples use the `v1beta` REST path.
 - API availability: Interactions API. The legacy `generateContent` guide is a separate tree (see the generate-content category).
 - Building with an AI coding agent: the page suggests `npx skills add google-gemini/gemini-skills --skill gemini-api-dev`. This is Gemini's own distribution, not this repository's skills.

@@ -10,8 +10,6 @@ user-invocable: false
 
 # Google Gemini API
 
-> 分割 PR の途中段階。現在収録済み: references/{generate-content, getting-started, interactions-core, live-realtime, managed-agents, media-generation, migration, models, multimodal-input, platform-ops, rest-reference, tools-grounding}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
-
 Google Gemini API (Gemini Developer API, `ai.google.dev`) のリファレンススキル。Interactions API を中心に、generateContent・Live API・Managed Agents・各種ツール・メディア生成・運用・移行を収録する。
 
 ## 対象バージョン
@@ -102,6 +100,20 @@ skills/google-gemini-api/
       generate-content.md  models.md  tokens.md  files.md  caching.md  embeddings.md  batch.md
       file-search-stores.md  file-search-documents.md  live.md  live-music.md
       agents.md  environments.md  credentials.md  triggers.md  webhooks.md  voices.md
+  samples/
+    README.md
+    get-started-first-call.md  multi-turn-previous-interaction-id.md
+    structured-output-json-schema.md  function-calling-loop.md
+    google-search-grounding-citations.md  files-api-upload-and-reference.md
+    live-api-websocket-audio-session.md  ephemeral-token-issuance.md
+    managed-agent-quickstart.md  deep-research-background.md
+    batch-api-inline-requests.md  migrate-generate-content-to-interactions.md
+    nano-banana-image-generate-edit.md
+    partner-crewai.md  partner-langgraph.md  partner-llamaindex.md
+    partner-temporal-durable-agent.md  partner-vercel-ai-sdk.md
+  scripts/
+    README.md
+    install.md  api-key-env.md  rest-curl.md  api-version.md  coding-agent-setup.md
 ```
 
 ## 探索手順
@@ -130,3 +142,5 @@ skills/google-gemini-api/
 | モデル一覧・世代別 what's new・埋め込み / 音声 / 画像動画 / agent モデル | models | [references/models/README.md](references/models/README.md) |
 | generateContent から Interactions への移行・SDK 移行・破壊的変更・非推奨・OpenAI 互換 | migration | [references/migration/README.md](references/migration/README.md) |
 | REST エンドポイント・リクエスト / レスポンス仕様 (v1 / v1beta) を確認したい | rest-reference | [references/rest-reference/README.md](references/rest-reference/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・API キー設定・curl・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
