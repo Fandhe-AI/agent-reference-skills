@@ -66,7 +66,7 @@ apps:
 package-repositories:
   - type: apt
     components: [main]
-    suites: [noble]
+    suites: [jammy]
     key-id: 78E1918602959B9C59103100F1831DDAFC42E99D
     url: http://ppa.launchpad.net/snappy-dev/snapcraft-daily/ubuntu
 
@@ -124,6 +124,7 @@ snapcraft upload --release=stable mysnap_latest_amd64.snap
 
 ## Notes
 
+- The source lists `suites: [noble]` under `package-repositories`; changed to `jammy` here to match `base: core22` (Ubuntu 22.04). Drop the extra repository if you do not need it.
 - Shell variables in `override-build` are quoted (`"${VAR}"`) here; the official example leaves them unquoted.
 - Building automatically: on your app's developer page open the `builds` tab, click `login with github`, then enter your repository's details.
 - The source marks the `snap run` step with `TODO: This seems to be wrong`; a `snap install --dangerous` step is added because snapcraft only builds the `.snap` and does not install it.
