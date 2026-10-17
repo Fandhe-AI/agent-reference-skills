@@ -59,6 +59,19 @@ class _BirdState extends State<Bird> {
 }
 ```
 
+## Options / Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| key | Key? | — | Initializes `key` for subclasses. |
+
+Methods:
+
+| Name | Signature | Description |
+| --- | --- | --- |
+| createState | `State<StatefulWidget> createState()` | Creates the mutable state for this widget at a given location in the tree. |
+| createElement | `StatefulElement createElement()` | Creates a `StatefulElement` to manage this widget's location in the tree. (override) |
+
 ## Notes
 
 - Flutter widget API (Dart, `package:flutter/widgets.dart`) — distinct from Jetpack Compose / SwiftUI / WinUI / Ark UI / Chakra UI / fandhe-frontend components of the same name.

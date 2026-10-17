@@ -20,7 +20,7 @@ const StreamBuilder({
 Snapshots the `builder` may receive (as an ordered sub-sequence including the last) for a stream producing the integers 0 through 9:
 
 ```dart
-AsyncSnapshot<int>.withData(ConnectionState.waiting, null)
+AsyncSnapshot<int>.nothing().inState(ConnectionState.waiting)
 AsyncSnapshot<int>.withData(ConnectionState.active, 0)
 AsyncSnapshot<int>.withData(ConnectionState.active, 1)
 // ...
@@ -40,6 +40,7 @@ AsyncSnapshot<int>.withData(ConnectionState.done, 9)
 ## Notes
 
 - Flutter widget API (Dart, `package:flutter/widgets.dart`) — distinct from Jetpack Compose / SwiftUI / WinUI / Ark UI / Chakra UI / fandhe-frontend components of the same name.
+- The official page writes the waiting snapshot as `AsyncSnapshot<int>.withData(ConnectionState.waiting, null)`, which does not type-check for a non-nullable `T` (`withData` takes `T data`); shown here as `AsyncSnapshot<int>.nothing().inState(ConnectionState.waiting)`.
 - Managing the stream: the `stream` must have been obtained earlier, e.g. during `State.initState`, `State.didUpdateWidget`, or `State.didChangeDependencies`. It must not be created during the `State.build` or `StatelessWidget.build` call that constructs the `StreamBuilder`; otherwise every time the parent rebuilds, the asynchronous task restarts. General guideline: assume every `build` method could get called every frame, and treat omitted calls as an optimization.
 - Timing: rebuilding is scheduled by each interaction using `State.setState`, but is otherwise decoupled from the timing of the stream. The `builder` is called at the discretion of the Flutter pipeline and receives a timing-dependent sub-sequence of the snapshots; the actual sequence depends on the relative timing of stream events and the build rate of the pipeline.
 - Changing the configuration to another stream during event generation introduces pairs `AsyncSnapshot<int>.withData(ConnectionState.none, 5)` then `AsyncSnapshot<int>.withData(ConnectionState.waiting, 5)` (the latter only when the new stream is non-null, the former only when the old stream is non-null).
