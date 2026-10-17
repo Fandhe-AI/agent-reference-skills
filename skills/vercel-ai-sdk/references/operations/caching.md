@@ -51,7 +51,11 @@ export const createCacheMiddleware = (
 
     const result = await doGenerate();
 
-    redis.set(cacheKey, result);
+    try {
+      await redis.set(cacheKey, result, { ex: 60 * 60 });
+    } catch (error) {
+      console.error('cache write failed', error);
+    }
 
     return result;
   },
@@ -82,18 +86,27 @@ export const createCacheMiddleware = (
     const { stream, ...rest } = await doStream();
 
     const fullResponse: LanguageModelV4StreamPart[] = [];
+    let hasError = false;
+    let sawFinish = false;
 
     const transformStream = new TransformStream<
       LanguageModelV4StreamPart,
       LanguageModelV4StreamPart
     >({
       transform(chunk, controller) {
+        if (chunk.type === 'error') hasError = true;
+        if (chunk.type === 'finish') sawFinish = true;
         fullResponse.push(chunk);
         controller.enqueue(chunk);
       },
-      flush() {
-        // Store the full response in the cache after streaming is complete
-        redis.set(cacheKey, fullResponse);
+      async flush() {
+        // Store the full response only if the stream completed without errors
+        if (hasError || !sawFinish) return;
+        try {
+          await redis.set(cacheKey, fullResponse, { ex: 60 * 60 });
+        } catch (error) {
+          console.error('cache write failed', error);
+        }
       },
     });
 
@@ -166,7 +179,8 @@ export async function POST(req: Request) {
 - This middleware caches the raw model response before AI SDK validates structured output. With structured output, cache only a response that has passed your schema validation; otherwise an invalid response can be replayed from the cache.
 - Both the cached and fresh responses in the callback example use the text stream protocol, so use `TextStreamChatTransport` when calling this route with `useChat`.
 - Language model middleware is a wrap around the model (not HTTP middleware); see the middleware page. Experimental per the library's versioning policy.
-- Modified from the official example: the official middleware uses `JSON.stringify(params)` as the key in both `wrapGenerate` and `wrapStream`, so the stored shapes (result object vs. chunk array) can collide and the model is not part of the key. This version keys on `{ mode, model, params }` via a factory taking the model identifier.
+- Modified from the official example: the official middleware uses `JSON.stringify(params)` as the key in both `wrapGenerate` and `wrapStream`, so the stored shapes (result object vs. chunk array) can collide and the model is not part of the key. This version keys on `{ mode, model, params }` via a factory taking the model identifier. It also does not store streams that contain an `error` part or never reached `finish`, awaits the write inside try/catch so a cache failure does not break the response, and sets a 1 hour TTL (`ex: 60 * 60`) on both writes.
+- In serverless environments, a cache write may not complete after the response is sent; use the runtime's `waitUntil` (or equivalent) to keep the write alive.
 - In the `onEnd` example the key is `JSON.stringify(messages)` only; if the model or system prompt can vary, include them in the key as well.
 
 ## Related
