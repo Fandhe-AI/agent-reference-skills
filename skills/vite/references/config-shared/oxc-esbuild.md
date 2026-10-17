@@ -48,5 +48,5 @@ export default defineConfig({
 ## Related
 
 - [define](./define.md)
-- [TypeScript](../features/typescript.md)
-- [Migration: Rolldown and Oxc](../migration-troubleshooting/migration-rolldown-oxc.md)
+- TypeScript
+- Migration: Rolldown and Oxc

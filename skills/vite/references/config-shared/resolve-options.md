@@ -43,4 +43,4 @@ export default defineConfig({
 
 - [resolve.alias](./resolve-alias.md)
 - [tsconfig](./tsconfig.md)
-- [SSR options](../ssr/ssr-options.md)
+- SSR options

@@ -50,5 +50,5 @@ import type {
 ## Related
 
 - [css.modules](./css-modules-options.md)
-- [CSS Pre-processors / Lightning CSS](../features/css-preprocessors-lightningcss.md)
+- CSS Pre-processors / Lightning CSS
 - [build.cssMinify](../config-build/build-css-options.md)

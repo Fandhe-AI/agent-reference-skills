@@ -61,4 +61,4 @@ NEW_KEY3=test$KEY   # test123
 - [env-intellisense.md](./env-intellisense.md)
 - [../config-shared/env-dir-prefix.md](../config-shared/env-dir-prefix.md)
 - [../config-shared/env-in-config.md](../config-shared/env-in-config.md)
-- [../javascript-api/load-env.md](../javascript-api/load-env.md)
+- ../javascript-api/load-env.md

@@ -25,5 +25,5 @@ export default defineConfig({
 ## Related
 
 - [server.middlewareMode](../config-dev/server-middleware-mode.md)
-- [SSR dev server](../ssr/ssr-dev-server.md)
+- SSR dev server
 - [Multi-page app](../build-deploy/multi-page-app.md)

@@ -26,4 +26,4 @@ export default defineConfig({
 
 ## Related
 
-- [JSON](../features/json.md)
+- JSON

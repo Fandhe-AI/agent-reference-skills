@@ -29,4 +29,4 @@ export default defineConfig({
 ## Related
 
 - [Asset URL imports](../assets-env/asset-url-imports.md)
-- [Static assets](../features/static-assets.md)
+- Static assets

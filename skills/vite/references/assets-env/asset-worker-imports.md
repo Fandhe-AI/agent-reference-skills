@@ -41,5 +41,5 @@ import InlineWorker from './shader.js?worker&inline'
 ## Related
 
 - [asset-url-imports.md](./asset-url-imports.md)
-- [../features/web-workers.md](../features/web-workers.md)
+- ../features/web-workers.md
 - [../config-build/worker-options.md](../config-build/worker-options.md)

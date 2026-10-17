@@ -57,4 +57,4 @@ interface CSSModulesOptions {
 ## Related
 
 - [css.transformer / css.lightningcss](./css-transformer-lightningcss.md)
-- [CSS Modules](../features/css-modules.md)
+- CSS Modules
