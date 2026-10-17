@@ -11,7 +11,6 @@ How to prepare for and release a Flutter Linux app to the Snap Store (or an alte
 ```console
 $ snapcraft
 $ snapcraft --use-lxd
-$ sudo snap install ./super-cool-app_0.1.0_amd64.snap --dangerous
 $ snapcraft upload --release=<channel> <file>.snap
 ```
 
@@ -19,17 +18,9 @@ $ snapcraft upload --release=<channel> <file>.snap
 
 Ubuntu OS 18.04 LTS (or higher), the Snapcraft command line tool, and the LXD container manager.
 
-```console
-$ sudo snap install snapcraft --classic
-$ sudo snap install lxd
-$ sudo lxd init
-```
+Snapcraft (classic snap) and LXD must be installed and LXD initialized (`lxd init`) beforehand by an administrator; the default answers of `lxd init` suit most use cases. If LXD cannot connect to its socket on first run, an administrator adds your user to the `lxd` group, then log out and back in. See the official page and the Snapcraft / LXD documentation for the steps.
 
-Accept the default answers of `lxd init` for most use cases. If LXD cannot connect to its socket on first run, add your user to the `lxd` group and log out and back in:
-
-```console
-$ sudo usermod -a -G lxd <your username>
-```
+A locally built snap can be installed with `--dangerous` (administrator privileges required) on a disposable test environment.
 
 ### snapcraft.yaml
 
@@ -86,10 +77,12 @@ Place at `<project root>/snap/gui/super-cool-app.desktop`; the icon and the `.de
 Name=Super Cool App
 Comment=Super Cool App that does everything
 Exec=super-cool-app
-Icon=${SNAP}/meta/gui/super-cool-app.png # Replace name with your app name.
+# Replace name with your app name.
+Icon=${SNAP}/meta/gui/super-cool-app.png
 Terminal=false
 Type=Application
-Categories=Education; # Adjust accordingly your snap category.
+# Adjust accordingly your snap category.
+Categories=Education;
 ```
 
 ### Publish
@@ -103,6 +96,8 @@ Snap Store channels have three components: **Track** (default `latest`), **Risk*
 ## Notes
 
 - Additional deployment tools named in the source: fastforge (all-in-one Flutter packaging and distribution tool supporting appimage, deb, pacman, rpm and more) and flatpak-flutter (Flatpak manifest tooling for the offline build of Flutter apps, for publishing on Flathub).
+- Admin-level setup commands (sudo) from the source are omitted; see the official page.
+- Inline comments from the source .desktop example were moved to their own lines (Desktop Entry files do not support trailing comments).
 - The snap is tested with `--dangerous` because it is a locally built, unsigned snap; use a disposable test machine.
 
 ## Related

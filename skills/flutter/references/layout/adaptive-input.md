@@ -162,7 +162,9 @@ bool _handleKey(KeyEvent event) {
     LogicalKeyboardKey.shiftRight,
   });
 
-  if (isShiftDown && event.logicalKey == LogicalKeyboardKey.keyN) {
+  if (event is KeyDownEvent &&
+      isShiftDown &&
+      event.logicalKey == LogicalKeyboardKey.keyN) {
     _createNewItem();
     return true;
   }
@@ -234,6 +236,7 @@ VisualDensity density = Theme.of(context).visualDensity;
 - Material buttons handle basic focus states and cursors by default; an exception is changing the default styling to set `overlayColor` to transparent. Implement focus state for custom buttons or gesture detectors.
 - `VisualDensity` is unit-less; Material generally uses around 4 logical pixels per unit (the page's example uses 6 pixels per unit, which is up to you).
 - The Wonderous app's button code is cited for an outline-on-focus example using `FocusNode.hasFocus`.
+- The Shift+N snippet adds an `event is KeyDownEvent` check (not in the source) so key-up and repeat events do not trigger the action twice.
 - Flutter focus / shortcut handling (Dart) is distinct from Compose focus modifiers (android-compose-ui) and SwiftUI focus (apple-swiftui).
 
 ## Related
