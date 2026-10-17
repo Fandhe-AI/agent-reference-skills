@@ -73,6 +73,7 @@ You should at least follow these steps to improve the security of your applicati
 
 ## Notes
 
+* The "Isolation for untrusted content" sentence predates the current defaults: `nodeIntegration: false`, `contextIsolation: true` (since 12.0.0) and `sandbox: true` (since 20.0.0). Under those defaults, script injected into remote content cannot reach native code without something more: Node.js integration enabled, `contextIsolation` or `sandbox` disabled, a preload that exposes privileged APIs over `contextBridge` or IPC, or a separate Chromium or Electron vulnerability.
 * Items 1-10 are in [security-checklist-1-10.md](./security-checklist-1-10.md); items 11-20 are in [security-checklist-11-20.md](./security-checklist-11-20.md).
 * Source anchors for the checklist items: `#1-only-load-secure-content`, `#11-do-not-use-allowpopups-for-webviews` (rendered-site ids).
 

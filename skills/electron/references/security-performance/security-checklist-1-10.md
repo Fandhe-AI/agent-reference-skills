@@ -295,6 +295,8 @@ const mainWindow = new BrowserWindow()
 ## Notes
 
 * Items 5 and 7 use `session.defaultSession`, which is only available after `app.whenReady`. `ses.setPermissionRequestHandler` and `webRequest.onHeadersReceived` are Electron main-process APIs for the Electron `session` object, not HTTP-server cookie/session handling (see better-auth for auth sessions and cookies, which has an Electron integration).
+* Item 5: the official example does not express a safe policy as written. (1) It calls `callback(true)` for `'notifications'` before the origin check, so any origin is granted notifications. (2) The function does not `return` after `callback(true)`, so it can go on to call the callback a second time. (3) For other permissions from an allowed origin, it never calls the callback. A safe pattern, described in prose (not from the official source): check both the origin (protocol + host) and the permission first, then call `callback` exactly once on every path, approving only allowlisted pairs and denying everything else.
+* Item 3: `contextIsolation` and `nodeIntegration` are independent `webPreferences`; setting `nodeIntegration: true` does not by itself set `contextIsolation: false`. The effects are separate: `contextIsolation: false` makes the preload/Electron context share globals with the page, while `nodeIntegration: true` exposes Node.js to the renderer and turns off the renderer sandbox. The sentence above is kept verbatim from the official text.
 * The `<webview>` snippets above use the Electron `<webview>` tag; for the WebView2 control see windows-winui-controls, and for testing see playwright.
 
 ## Related
