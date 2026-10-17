@@ -9,7 +9,7 @@ user-invocable: false
 
 # Vercel AI SDK
 
-> 分割 PR の途中段階。現在収録済み: references/{agents, core, embeddings-batch, foundations, media}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{agents, core, embeddings-batch, foundations, media, migration, operations}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 TypeScript 向け LLM アプリ開発ツールキット `ai`（AI SDK Core / UI / RSC）と `@ai-sdk/*` パッケージ群のリファレンス・サンプル・コマンド集。
 
@@ -41,6 +41,12 @@ skills/vercel-ai-sdk/
     media/              # 画像・音声・文字起こし・動画・realtime・翻訳
       README.md
       generate-image.md, generate-speech.md, transcribe.md, generate-video.md, realtime.md ...
+    operations/         # エラー・telemetry・testing・DevTools・キャッシュ・デプロイ
+      README.md
+      error-handling.md, telemetry.md, testing.md, devtools.md, vercel-deployment-guide.md ...
+    migration/          # 4.x → 5.0 → 6.0 → 7.0 移行ガイド・versioning
+      README.md
+      migration-guide-7-0.md, migration-guide-6-0.md, migration-guide-5-0.md, versioning.md ...
 ```
 
 ## 探索手順
@@ -49,6 +55,7 @@ skills/vercel-ai-sdk/
 
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. 該当ページの `.md` を Read して詳細を確認する
+3. 版差異が疑われる場合は `references/migration/` を確認する（v4 / v5 / v6 / v7 で API が大きく変わる）
 
 ## タスク → カテゴリ マッピング
 
@@ -65,3 +72,7 @@ skills/vercel-ai-sdk/
 | embed / embedMany / cosineSimilarity で埋め込みを扱いたい | embeddings-batch | [references/embeddings-batch/README.md](references/embeddings-batch/README.md) |
 | rerank・batch API・uploadFile / uploadSkill・experimental_decide を使いたい | embeddings-batch | [references/embeddings-batch/README.md](references/embeddings-batch/README.md) |
 | 画像・音声・動画の生成、文字起こし、翻訳、realtime を使いたい | media | [references/media/README.md](references/media/README.md) |
+| エラー処理・telemetry・テスト・DevTools を設定したい | operations | [references/operations/README.md](references/operations/README.md) |
+| rate limiting・キャッシュ・ストリーム中断・Vercel デプロイを知りたい | operations | [references/operations/README.md](references/operations/README.md) |
+| 旧バージョンから v7 へ移行したい（破壊的変更・codemod） | migration | [references/migration/README.md](references/migration/README.md) |
+| 版管理・API 安定性の方針を知りたい | migration | [references/migration/README.md](references/migration/README.md) |
