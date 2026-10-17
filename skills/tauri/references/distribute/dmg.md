@@ -16,7 +16,7 @@ cargo tauri build --bundles dmg
 
 | Config key (`bundle > macOS > dmg > ...`) | Description |
 | --- | --- |
-| `background` | Custom background image for the installation window |
+| `background` | Custom background image file (png / jpg / gif) for the installation window |
 | `windowSize` | `{ "width", "height" }`; default window size is 660x400 |
 | `windowPosition` | `{ "x", "y" }` initial window position |
 | `appPosition` | `{ "x", "y" }` position of the app icon |
@@ -27,7 +27,7 @@ cargo tauri build --bundles dmg
   "bundle": {
     "macOS": {
       "dmg": {
-        "background": "./images/",
+        "background": "./images/background.png",
         "windowSize": {
           "width": 800,
           "height": 600
@@ -55,6 +55,7 @@ cargo tauri build --bundles dmg
 ## Notes
 
 - Run `tauri build` on a Mac.
+- The official example uses `"./images/"` (a directory); `background` expects an image file path (png / jpg / gif), so a concrete file path is used here.
 - Known issue: icon sizes and positions are not applied when creating DMGs on CI/CD platforms (tauri-apps/tauri#1731).
 - GUI apps on macOS and Linux do not inherit `$PATH` from shell dotfiles; see the `fix-path-env-rs` crate.
 - This page covers only distribution outside the App Store; see the App Bundle and App Store guides for other options.
