@@ -8,8 +8,7 @@ import { Inngest } from "inngest";
 const inngest = new Inngest({ id: "my-app" });
 
 export const processExpenseReport = inngest.createFunction(
-  { id: "process-expense-report" },
-  { event: "expense/submitted" },
+  { id: "process-expense-report", triggers: { event: "expense/submitted" } },
   async ({ event, step }) => {
     // Step 1: Notify the approver
     await step.run("notify-approver", async () => {

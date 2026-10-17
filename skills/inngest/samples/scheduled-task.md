@@ -9,8 +9,10 @@ const inngest = new Inngest({ id: "my-app" });
 
 // Runs every Friday at noon (Paris time)
 export const prepareWeeklyDigest = inngest.createFunction(
-  { id: "prepare-weekly-digest" },
-  { cron: "TZ=Europe/Paris 0 12 * * 5" },
+  {
+    id: "prepare-weekly-digest",
+    triggers: { cron: "TZ=Europe/Paris 0 12 * * 5" },
+  },
   async ({ step }) => {
     const users = await step.run("load-users", async () => {
       return db.query("SELECT * FROM users WHERE digest_enabled = true");
@@ -29,8 +31,10 @@ export const prepareWeeklyDigest = inngest.createFunction(
 
 // With jitter to avoid thundering herd
 export const hourlySync = inngest.createFunction(
-  { id: "hourly-sync" },
-  { cron: "0 * * * *", jitter: "5m" },
+  {
+    id: "hourly-sync",
+    triggers: { cron: "0 * * * *", jitter: "5m" },
+  },
   async ({ step }) => {
     await step.run("sync-data", async () => {
       await syncExternalData();
@@ -45,3 +49,4 @@ export const hourlySync = inngest.createFunction(
 - `jitter` spreads execution randomly within the given window to reduce load spikes
 - `step.sendEvent()` inside a scheduled function is a common fan-out pattern for per-user processing
 - No event payload is available in cron-triggered functions (`event` is an empty object)
+- v4: multiple triggers go in an array, e.g. `triggers: [{ event: "..." }, { cron: "..." }]`

@@ -23,8 +23,7 @@ import { inngest } from "./client";
 import { pipelineChannel } from "./channels";
 
 export const processPipeline = inngest.createFunction(
-  { id: "process-pipeline" },
-  { event: "pipeline/start" },
+  { id: "process-pipeline", triggers: { event: "pipeline/start" } },
   async ({ event, step }) => {
     const ch = pipelineChannel({ contentId: event.data.contentId });
 

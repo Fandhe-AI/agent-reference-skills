@@ -15,8 +15,8 @@ export const syncUserData = inngest.createFunction(
       key: "event.data.user_id",
       mode: "skip",
     },
+    triggers: { event: "user/data.sync.requested" },
   },
-  { event: "user/data.sync.requested" },
   async ({ event, step }) => {
     await step.run("fetch-and-sync", async () => {
       await syncFromSource(event.data.user_id);
@@ -32,8 +32,8 @@ export const generateReport = inngest.createFunction(
       key: "event.data.report_id",
       mode: "cancel",
     },
+    triggers: { event: "report/regenerate.requested" },
   },
-  { event: "report/regenerate.requested" },
   async ({ event, step }) => {
     const data = await step.run("collect-latest-data", async () => {
       return collectReportData(event.data.report_id);

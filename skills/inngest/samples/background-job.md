@@ -9,8 +9,7 @@ const inngest = new Inngest({ id: "my-app" });
 
 // Define the background function
 export const sendSignUpEmail = inngest.createFunction(
-  { id: "send-signup-email" },
-  { event: "app/user.created" },
+  { id: "send-signup-email", triggers: { event: "app/user.created" } },
   async ({ event, step }) => {
     await step.run("send-welcome-email", async () => {
       await emailClient.send({
@@ -33,5 +32,5 @@ await inngest.send({
 
 - `step.run()` wraps each unit of work; failures are retried automatically without re-running earlier steps
 - `inngest.send()` returns immediately — the function runs asynchronously in the background
-- Event `data` is strongly typed when using the typed client (`EventSchemas`)
+- v4 form: the trigger lives in the first-argument options as `triggers`; the v3 three-argument form `createFunction({ id }, { event }, handler)` was replaced
 - The function must be registered via `serve()` (e.g., Next.js API route at `/api/inngest`)

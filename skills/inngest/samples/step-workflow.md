@@ -8,8 +8,7 @@ import { Inngest } from "inngest";
 const inngest = new Inngest({ id: "my-app" });
 
 export const processOrder = inngest.createFunction(
-  { id: "process-order" },
-  { event: "order/created" },
+  { id: "process-order", triggers: { event: "order/created" } },
   async ({ event, step }) => {
     // Step 1: Validate — result is memoized on retry
     const validation = await step.run("validate-order", async () => {
