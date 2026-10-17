@@ -20,7 +20,8 @@ Overview of the code-sharing mechanisms: share across all platforms through the 
 
 ## Notes
 
-- Some `dependsOn` relations are set by default: for all platform-specific source sets that depend on the common source set (`jvmMain`, `macosArm64Main`, ...), and between `main` and `test` source sets of a target (for example `androidMain` and `androidUnitTest`).
+- By default, platform-specific source sets (`jvmMain`, `macosArm64Main`, ...) depend on `commonMain` via `dependsOn`; a target's test compilation is associated with its main compilation (for example `androidUnitTest` can see `androidMain`), which is a compilation association, not a source set `dependsOn` edge.
+- The source page describes the main/test link as a default `dependsOn` relation; it is actually a compilation association (see advanced-project-structure.md).
 - Typical case: iOS device (ARM64) and x64 simulator targets have separate platform source sets but rarely need different code, so share iOS code through an intermediate source set.
 - Libraries: for example the `kotlinx.coroutines` `concurrent` source set declares `runBlocking` and compiles for JVM and native targets, so a source set shared between JVM and native can call it when the library is published with the hierarchical structure.
 - With the Kotlin CocoaPods Gradle plugin you can work with third-party native libraries consumed through the cinterop mechanism.

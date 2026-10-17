@@ -51,7 +51,8 @@ kotlin {
 - With a single target (for example JVM), target-specific symbols can be accessed from common code; once a second target is added, they become unavailable.
 - There is no single `ios` target. Mobile projects usually need a device target (`iosArm64`) and a simulator target (`iosSimulatorArm64` on Apple silicon Macs); `iosArm64Main` / `iosSimulatorArm64Main` are usually empty and code is shared through the `iosMain` intermediate source set. The same applies to `tvosMain`.
 - It is fine for some source sets to have no sources.
-- For multiplatform testing, Kotlin provides the default `kotlin.test` library (`@kotlin.Test`, `assertEquals`, `assertTrue`). Run tests for a target with the `<targetName>Test` task.
+- For multiplatform testing, Kotlin provides the default `kotlin.test` library (`@Test` from `kotlin.test`, i.e. `kotlin.test.Test`, `assertEquals`, `assertTrue`). Run tests for a target with the `<targetName>Test` task.
+- The source page writes the annotation as `@kotlin.Test`; the actual fully qualified name is `kotlin.test.Test`.
 - Targets are also called platforms; the full list is in the Multiplatform Gradle DSL reference (`multiplatform-dsl-reference.html#targets`).
 - Distance line: Kotlin language and stdlib semantics belong to the kotlin skill; Gradle plugin and AGP specifics belong to android-build-gradle.
 

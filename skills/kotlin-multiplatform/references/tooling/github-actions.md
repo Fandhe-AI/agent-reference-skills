@@ -17,12 +17,12 @@ runs:
   using: "composite"
   steps:
     - name: Setup Java
-      uses: actions/setup-java@v4.0.0
+      uses: actions/setup-java@387ac29b308b003ca37ba93a6cab5eb57c8f5f93 # v4.0.0
       with:
         java-version: "17"
         distribution: "temurin"
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v5.0.0
+      uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
 ```
 
 Workflow base `.github/workflows/build.yml`:
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Gradle setup
         uses: ./.github/actions/gradle-setup
@@ -59,7 +59,7 @@ jobs:
         run: ./gradlew jvmTest
 
       - name: Upload test reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: test-reports
           path: "**/build/reports/tests/"
@@ -76,7 +76,7 @@ jobs:
     needs: test
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Gradle setup
         uses: ./.github/actions/gradle-setup
@@ -85,7 +85,7 @@ jobs:
         run: ./gradlew :mobile:assembleDebug
 
       - name: Upload Android debug APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: android-apk
           path: mobile/build/outputs/apk/debug/*.apk
@@ -102,7 +102,7 @@ jobs:
     needs: test
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Gradle setup
         uses: ./.github/actions/gradle-setup
@@ -118,7 +118,7 @@ jobs:
           -verbose
 
       - name: Upload app folder
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: iphonesimulator-app
           path: build/Build/Products/Debug-iphonesimulator/*
@@ -126,6 +126,7 @@ jobs:
 
 ## Notes
 
+- Third-party actions are pinned to commit SHAs here; the source page uses mutable tags.
 - The setup is split into a reusable composite action (Java and Gradle) and a main workflow; reuse the action in every job so all builds share one configuration.
 - Gradle options disable the daemon and enable parallel execution with caching. `workflow_dispatch` allows manual runs (Actions tab, Run workflow).
 - The iOS job targets the iOS Simulator to avoid signing, and uses `xcodebuild` on `macos-latest`. The `-project` / `-scheme` values are from the Jetcaster sample; adapt them to your project.

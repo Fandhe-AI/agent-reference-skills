@@ -18,7 +18,7 @@ jobs:
       - type: gradle
         use-gradle-wrapper: true
         name: Gradle test
-        jdk-home: '%\env.JDK_17_0%'
+        jdk-home: '%env.JDK_17_0%'
         tasks: jvmTest
     files-publication:
       - path: '**/build/reports/tests/**/*'
@@ -48,7 +48,7 @@ jobs:
     name: Build Android
     steps:
       - type: gradle
-        jdk-home: '%\env.JDK_17_0%'
+        jdk-home: '%env.JDK_17_0%'
         tasks: ':mobile:assembleDebug'
         use-gradle-wrapper: true
     files-publication:
@@ -118,6 +118,7 @@ jobs:
 - With build configurations, the Script step for iOS can be replaced with the specialized Xcode Project step.
 - Switching from Any Git URL to a GitHub connection enables run status posting to GitHub and a Pull requests toggle; build configurations additionally enable build chains, composite configurations, Kubernetes agents, issue tracker and secret vault integrations.
 - The official Job 2 snippet nests Job2 inside Job1 by indentation; corrected to a sibling job.
+- The source markdown renders the parameter as `%\env.JDK_17_0%` (escaping artifact); the TeamCity parameter reference is `%env.JDK_17_0%`.
 - `:mobile:assembleDebug` and the Xcode project names are specific to the JetCaster sample.
 
 ## Related
