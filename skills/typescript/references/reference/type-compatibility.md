@@ -37,7 +37,20 @@ pet = new Dog();
 ## Notes
 
 - The table above covers assignability between `any`, `unknown`, `object`, `void`, `undefined`, `null`, `never` (row is assignable to column; "strictNullChecks off" means compatible only when `strictNullChecks` is off).
-- `x` is compatible with `y` if `y` has at least the same members as `x`; only members of the target type are considered, recursively. Object literals may only specify known properties (excess property checks).
+- `x` is compatible with `y` if `y` has at least the same members as `x` — i.e. `y` is assignable to `x` (as in `pet = dog`). To check whether `dog` can be assigned to `pet`, the compiler checks each property of the target `pet` to find a corresponding compatible property in the source `dog`. Only members of the target type are considered, recursively.
+
+```ts
+interface Pet {
+  name: string;
+}
+
+let pet: Pet;
+// dog's inferred type is { name: string; owner: string; }
+let dog = { name: "Lassie", owner: "Rudd Weatherwax" };
+pet = dog; // OK: dog has a string member `name`
+```
+
+- Object literals may only specify known properties (excess property checks).
 
 ```ts
 let dog: Pet = { name: "Lassie", owner: "Rudd Weatherwax" }; // Error

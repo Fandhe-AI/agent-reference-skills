@@ -22,7 +22,7 @@ Finds referenced projects, detects whether they are up to date, and builds out-o
 tsc -b --verbose
 ```
 
-Prints detailed logging. Can be combined with other flags.
+Prints detailed logging. Can be combined with other flags except `--clean` (rejected with TS6370; see Watch mode).
 
 ## Dry run
 
@@ -55,9 +55,10 @@ tsc -b --clean --dry
 
 ```sh
 tsc -b --watch
+tsc -b --watch --preserveWatchOutput
 ```
 
-`--watch` cannot be combined with flags other than `--verbose`.
+The Project References page says `--watch` may not be combined with any flag except `--verbose`; in the compiler, the combinations rejected with TS6370 are `--watch` + `--clean` and `--watch` + `--dry` (and `--clean` with `--force` / `--verbose`). Build-compatible options such as `--preserveWatchOutput` are accepted.
 
 ## Skip downstream projects on upstream errors
 

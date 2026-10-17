@@ -52,6 +52,7 @@ let className = c[getClassNameSymbol](); // "C"
 ## Notes
 
 - `unique symbol` is a subtype of `symbol`, produced only by `Symbol()` / `Symbol.for()` or explicit type annotations. It is only allowed on `const` declarations and `readonly static` properties; reference a specific one with `typeof`. No two `unique symbol` types are assignable or comparable to each other.
+- Supplement from the TypeScript 5.9.3 compiler diagnostics (not from the handbook page): a `unique symbol` type must be `const` on variables (TS1332), `static readonly` on class properties (TS1331), and `readonly` on interface / type-literal properties (TS1330, e.g. `interface Tagged { readonly tag: unique symbol }`).
 
 ```ts
 declare const sym1: unique symbol;
