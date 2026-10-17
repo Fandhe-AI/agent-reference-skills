@@ -16,7 +16,7 @@ PATCH  https://generativelanguage.googleapis.com/v1beta/credentials/{id}
 DELETE https://generativelanguage.googleapis.com/v1beta/credentials/{id}
 ```
 
-REST (the source example uses placeholder values):
+REST (placeholder values as in the source, except `type`, see Notes):
 
 ```sh
 curl -X POST 'https://generativelanguage.googleapis.com/v1beta/credentials' \
@@ -28,7 +28,7 @@ curl -X POST 'https://generativelanguage.googleapis.com/v1beta/credentials' \
   "trusted_domains": [
     "string"
   ],
-  "type": {},
+  "type": "environment_variable",
   "value": "string"
 }'
 ```
@@ -78,6 +78,7 @@ Other methods:
 - Availability: v1beta (the source states "This API is in Beta. Endpoints are under `/v1beta/`."). Credential resources are described as "Server-managed credential resource stored in Secret Manager."
 - Never commit real tokens or client secrets; the examples above use the source's `"string"` placeholders. Secret fields are write-only.
 - The all-methods index also lists these as `CreateCredential` etc. under the interactions resource (see all-methods.md).
+- The source's generated example uses `"type": {}`; it is set to `"environment_variable"` here to match the example's `injection_location` / `trusted_domains` / `value` fields.
 - The `x-goog-api-key` header was added to the curl example (required per the API overview); the source example omits it.
 - Docs fetched 2026-10-16.
 

@@ -105,7 +105,7 @@ FILE_SEARCH_STORE_NAME=$(jq -r ".name" store_res.json)
 
 # 2. Upload directly to File Search store using resumable upload
 NUM_BYTES=$(wc -c < "sample.txt")
-curl "https://generativelanguage.googleapis.com/upload/v1beta/fileSearchStores/${FILE_SEARCH_STORE_NAME}:uploadToFileSearchStore" \
+curl "https://generativelanguage.googleapis.com/upload/v1beta/${FILE_SEARCH_STORE_NAME}:uploadToFileSearchStore" \
     -H "x-goog-api-key: ${GEMINI_API_KEY}" \
     -D upload-header.tmp \
     -H "X-Goog-Upload-Protocol: resumable" \
@@ -123,6 +123,19 @@ curl "${upload_url}" \
     -H "X-Goog-Upload-Offset: 0" \
     -H "X-Goog-Upload-Command: upload, finalize" \
     --data-binary "@sample.txt" 2> /dev/null > upload_response.json
+
+# Wait for the long-running upload Operation to finish
+OPERATION_NAME=$(jq -r '.name' upload_response.json)
+while true; do
+  curl -s "https://generativelanguage.googleapis.com/v1beta/${OPERATION_NAME}" \
+      -H "x-goog-api-key: ${GEMINI_API_KEY}" > op.json
+  [ "$(jq -r '.done' op.json)" = "true" ] && break
+  sleep 5
+done
+if jq -e '.error' op.json > /dev/null; then
+  echo "Upload operation failed" >&2
+  exit 1
+fi
 
 # 3. Query using the File Search store
 curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
@@ -318,6 +331,8 @@ Supported models: Gemini 4 Argon, Gemini 3.8 Flash, Gemini 3.6 Flash, Gemini 3.5
 - Pricing: embeddings charged at indexing time (existing embeddings pricing); storage free; query-time embeddings free; retrieved document tokens charged as regular context tokens.
 - Supported file types include application types (e.g. `application/pdf`, `application/json`, `application/msword`, `application/zip`, `application/vnd.openxmlformats-officedocument.wordprocessingml.document`, `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`) and a long list of `text/*` types (e.g. `text/plain`, `text/markdown`, `text/csv`, `text/html`, `text/x-python`); see the source page for the complete lists.
 - Distinct from `upstash` (Vector / Search) and `fandhe-db` (vector query DB) which you operate yourself, and from `anthropic-api-tools-mcp` / `openai-agents` (OpenAI file search tool). The Gemini embedding model behind it is described in multimodal-input embeddings.
+- The source REST upload URL prepends `fileSearchStores/` to `$FILE_SEARCH_STORE_NAME`, which already holds the full resource name (`fileSearchStores/<id>`); the prefix is removed here per the REST reference path `{fileSearchStoreName=fileSearchStores/*}`.
+- The source REST example queries immediately after upload; a polling step on `fileSearchStores.upload.operations.get` was added because `uploadToFileSearchStore` returns a long-running Operation.
 - REST example: variables are brace-quoted (`${FILE_SEARCH_STORE_NAME}`) unlike the source, because `$VAR:u...` is a zsh history modifier; the API key is sent as an `x-goog-api-key` header instead of `?key=`.
 - The metadata_filter REST example uses the store variable from the create step (quoted) instead of the source's undefined, unquoted `$STORE_NAME`.
 - The management snippet is split into stores and documents blocks; `fileSearchStores/myfilesearchstore123` / `documents/sampletxt123` in the documents block are placeholders from the source (store names get a generated suffix); use the generated `file_search_store.name` and document names. The import snippet's polling loop is added from the source's earlier example.

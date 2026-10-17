@@ -116,13 +116,14 @@ def get_function_responses(page, results):
     return function_responses
 ```
 
-Execute function calls (abridged: only `click` and `navigate` shown; the `safety_decision` check is verbatim from the source's safety section):
+Execute function calls (abridged: only `click` and `navigate` shown; the `safety_decision` check is adapted from the source's safety section: `get_safety_confirmation` waits for explicit user input):
 
 ```python
 def get_safety_confirmation(safety_decision):
     # Prompt user for confirmation
     print(f"Safety confirmation required: {safety_decision.get('explanation', '')}")
-    return "CONTINUE" # Or TERMINATE
+    answer = input("Proceed? [y/N]: ").strip().lower()
+    return "CONTINUE" if answer == "y" else "TERMINATE"
 
 def execute_function_calls(interaction, page, screen_width, screen_height):
     results = []
@@ -305,7 +306,7 @@ Model versions: Gemini 3.8 Flash (`gemini-3.8-flash`, recommended), Gemini 3.5 F
 - Safety best practices: human-in-the-loop confirmation, custom safety system instructions, allowlists/blocklists of sites, logging prompts/screenshots/actions/safety responses, consistent clean GUI environment. Thinking levels can be configured to balance quality and speed; lower levels generally suit standard automation.
 - Computer Use is a client-side tool; in tool combination it uses `function_call` and `function_result` steps for context circulation.
 - The tool-combination source table says `function_response`; the schema and this page's examples use `function_result`.
-- `execute_function_calls` is abridged from the source (only click/navigate shown); the `safety_decision` check is verbatim. The source example excludes the predefined `click` on purpose while its prompt says "Click the submit button"; the model must use another action or call `yield_to_user`.
+- `execute_function_calls` is abridged from the source (only click/navigate shown); the `safety_decision` check is adapted (see next line). The source's `get_safety_confirmation` always returns `CONTINUE`; this page waits for explicit user input and terminates unless the user confirms. The source example excludes the predefined `click` on purpose while its prompt says "Click the submit button"; the model must use another action or call `yield_to_user`.
 - Distinct from `anthropic-api-tools-mcp` (Claude computer use tool) and `openai-agents` (OpenAI computer use); this is Gemini's `computer_use` tool. Playwright itself is covered by the `playwright` skill.
 - API surface: Interactions API, v1beta only per the api-versions table; a generateContent version is under `generate-content/` (grounding-tools). Docs fetched 2026-10-16.
 
