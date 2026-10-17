@@ -13,6 +13,7 @@ npx expo install expo-print
 ```
 
 ```jsx
+import { Platform } from 'react-native';
 import * as Print from 'expo-print';
 import { shareAsync } from 'expo-sharing';
 
@@ -25,7 +26,7 @@ const html = `
 `;
 
 // On iOS/android prints the given html. On web prints the HTML from the current page.
-const printer = await Print.selectPrinterAsync(); // iOS only
+const printer = Platform.OS === 'ios' ? await Print.selectPrinterAsync() : undefined; // iOS only
 await Print.printAsync({ html, printerUrl: printer?.url /* iOS only */ });
 
 const { uri } = await Print.printToFileAsync({ html });
@@ -85,6 +86,7 @@ await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
 - iOS margins: `margins: { left: 20, top: 50, right: 20, bottom: 100 }`. With `useMarkupFormatter: true`, margins may cause a blank last page; use a well-formed document starting with `<!DOCTYPE html>`.
 - Android: margins may be present depending on the WebView engine; override via an `@page { margin: 20px; }` style block.
 - In the source, selectedPrinter is React state set from selectPrinterAsync; the condensed example uses a local variable instead.
+- selectPrinterAsync is iOS-only; the example guards it with Platform.OS (the source calls it from an iOS-only button handler).
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-print
 
 ## Related

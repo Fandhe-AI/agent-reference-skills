@@ -103,7 +103,7 @@ Methods:
 | Name | Returns | Description |
 | --- | --- | --- |
 | `Crypto.digest(algorithm: CryptoDigestAlgorithm, data: BufferSource)` | `Promise<ArrayBuffer>` | Digest of the supplied bytes. On web only from a secure origin (HTTPS), otherwise an error is thrown. |
-| `Crypto.digestStringAsync(algorithm, data: string, options?: CryptoDigestOptions)` | `Promise<string>` | Digest of a string; default format `HEX` (`CryptoDigestOptions.HEX`). On web only from a secure origin. |
+| `Crypto.digestStringAsync(algorithm, data: string, options?: CryptoDigestOptions)` | `Promise<string>` | Digest of a string; default format `HEX` (`{ encoding: CryptoEncoding.HEX }`). On web only from a secure origin. |
 | `Crypto.getRandomBytes(byteCount: number)` | `Uint8Array` | Random bytes from native implementations; `byteCount` must be `0`–`1024` or a `TypeError` is thrown. Falls back to `Math.random` during development to prevent issues with React Native Debugger. |
 | `Crypto.getRandomBytesAsync(byteCount: number)` | `Promise<Uint8Array>` | Same as above, asynchronous. |
 | `Crypto.getRandomValues<T>(typedArray: T)` | `T` | Fills an integer-based `TypedArray` in place with cryptographically secure random values. |
@@ -168,6 +168,7 @@ Error codes:
 ## Notes
 
 - Platforms (frontmatter `platforms`): Android, iOS, tvOS, Web, Included in Expo Go.
+- The source states the `digestStringAsync` default as CryptoDigestOptions.HEX; CryptoDigestOptions is an options type and the actual value is CryptoEncoding.HEX.
 - The source passes an undefined `data` to aesDecryptAsync; the example passes sealedData.
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-crypto
 
