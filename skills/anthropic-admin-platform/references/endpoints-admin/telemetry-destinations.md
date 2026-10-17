@@ -25,7 +25,7 @@ curl https://api.anthropic.com/v1/organizations/telemetry_destinations \
     -H 'anthropic-beta: telemetry-destinations-2026-08-11' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -d '{
-          "endpoint_url": "x",
+          "endpoint_url": "https://gateway.example.com/otlp",
           "workspaces": {
             "type": "all"
           }
@@ -84,6 +84,7 @@ Other objects: Test returns `{ type: "telemetry_destination_test", result: { typ
 
 ## Notes
 
+- The API reference example uses a placeholder `endpoint_url`; replaced with an illustrative https URL that satisfies the documented constraints.
 - Create: the destination starts `enabled`; an organization can have at most 10 destinations, including disabled ones. A workspace's spans go to every enabled destination that covers it.
 - `content` mode: an organization with a data-handling restriction such as HIPAA cannot choose it; the API exports only metadata for such an organization, even to a destination already set to `content`.
 - Update: send at least one field. Omitted fields keep their values, except registered headers, which a change of the endpoint hostname or port removes (send the new headers in the same request; if `traces.endpoint_url` is set, also set it to a URL with the new host and port, or `null`). A request that sets a header value must also include `endpoint_url`. A concurrent change returns 409 `conflict_error`: read again, then retry. Only `display_name`, `traces`, `traces.endpoint_url`, `traces.content_mode`, `traces.max_content_bytes` and individual `headers` values accept `null`.

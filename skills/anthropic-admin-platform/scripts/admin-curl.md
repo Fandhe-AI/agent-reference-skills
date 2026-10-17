@@ -10,7 +10,7 @@ export ANTHROPIC_ADMIN_KEY="sk-ant-admin01-..."
 
 Admin API keys are created in Claude Console → Settings → Admin keys, by an organization admin/owner. New API keys (regular `sk-ant-api03-...` keys) cannot be created through the Admin API — only through Console.
 
-Spend Limits API と Plugins API は Claude Enterprise 専用で、スコープ付き Admin API key（`read:spend_limits` / `write:spend_limits` / `read:plugins` / `write:plugins`）が必要。公式ガイドの例は環境変数名に `ANTHROPIC_API_KEY` を使うが、本ファイルでは `ANTHROPIC_ADMIN_KEY` に統一している。
+Spend Limits API は主に Claude Enterprise 向け（List Spend Limits は Enterprise 専用）。Set Spend Limit は、Claude Console 組織でも organization / workspace の月次限度額を設定できる（早期アクセス preview、Anthropic のアカウントチームへ申請）。Plugins API は Claude Enterprise 専用。いずれもスコープ付き Admin API key（`read:spend_limits` / `write:spend_limits` / `read:plugins` / `write:plugins`）が必要。公式ガイドの例は環境変数名に `ANTHROPIC_API_KEY` を使うが、本ファイルでは `ANTHROPIC_ADMIN_KEY` に統一している。
 
 ## 組織情報の取得
 
@@ -236,7 +236,7 @@ curl -X POST "https://api.anthropic.com/v1/organizations/spend_limits" \
     -d '{"scope": {"type": "user", "user_id": "user_01AbCdEfGh"}, "amount": "75000"}'
 ```
 
-`scope.type` は `user` のみ指定できる。seat tier・group・organization のデフォルトは claude.ai の設定画面で変更する。
+Claude Enterprise 組織が指定できる `scope.type` は `user` のみ（seat tier・group・organization のデフォルトは claude.ai の設定画面で変更する）。Claude Console 組織は早期アクセスで `organization` / `workspace` を指定でき、それ以外の組み合わせは 400 になる。
 
 ## Spend Limits: per-user override の削除
 
