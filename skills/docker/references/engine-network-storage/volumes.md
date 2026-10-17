@@ -39,7 +39,7 @@ $ docker volume prune
 `-v` / `--volume` form `[<volume-name>:]<mount-path>[:opts]`, options: `readonly`/`ro`, `volume-nocopy`.
 
 ```console
-$ docker run --mount type=volume,src=myvolume,dst=/data,ro,volume-subpath=/foo
+$ docker run --mount type=volume,src=myvolume,dst=/data,ro,volume-subpath=foo <image>
 $ docker run -v myvolume:/data:ro
 ```
 
@@ -52,10 +52,12 @@ $ docker run -v myvolume:/data:ro
 - Anonymous volumes get a unique random name, persist after container removal unless the container was created with `--rm` (then the anonymous volume is destroyed; with `--volumes-from` it stays). They aren't reused or shared automatically.
 - Compose: `volumes: - myapp:/home/node/app` plus a top-level `volumes: myapp:`; `external: true` references a volume created outside Compose.
 - Services: with the `local` driver each service container gets its own local volume; removing a service doesn't remove its volumes.
-- Volume drivers (e.g. `docker plugin install --grant-all-permissions rclone/docker-volume-rclone --aliases rclone`; `docker volume create -d rclone --name rclonevolume -o type=sftp ...`) abstract external storage such as NFS or S3. To escape a comma-separated `volume-opt` list, quote the value with double quotes and the whole mount parameter with single quotes.
+- Volume drivers (e.g. `docker plugin install --grant-all-permissions rclone/docker-volume-rclone --alias rclone`; `docker volume create -d rclone --name rclonevolume -o type=sftp ...`) abstract external storage such as NFS or S3. To escape a comma-separated `volume-opt` list, quote the value with double quotes and the whole mount parameter with single quotes.
 - NFS via the `local` driver: `--mount 'type=volume,source=nfsvolume,target=/app,volume-driver=local,volume-opt=type=nfs,volume-opt=device=:/var/docker-nfs,volume-opt=o=addr=10.0.0.10'` (NFSv4 adds `rw,nfsvers=4,async`). CIFS: `docker volume create --driver local --opt type=cifs --opt device=//host/share --opt o=addr=...,username=...,password=...,file_mode=0777,dir_mode=0777 --name cifs-volume` (`addr` is required when using a hostname).
 - Block devices: with the `local` driver `--mount` forwards options unaltered to the Linux `mount` syscall (`mount -t <type> <device> <dst> -o <o>`). The documented loop-device procedure (`fallocate`, `mkfs.ext4`, `losetup`) is only an example, not a recommended general practice.
-- Backup/restore/migrate via `--volumes-from`: `docker run --rm --volumes-from dbstore -v $(pwd):/backup ubuntu tar cvf /backup/backup.tar /dbdata`; restore with `tar xvf /backup/backup.tar --strip 1` in a container from the new volume.
+- Backup/restore/migrate via `--volumes-from`: `docker run --rm --volumes-from dbstore -v "$(pwd)":/backup ubuntu tar cvf /backup/backup.tar /dbdata`; restore with `tar xvf /backup/backup.tar --strip 1` in a container from the new volume. Adapted: `$(pwd)` is quoted (the official example leaves it unquoted).
+- Adapted: the official page writes `docker plugin install ... --aliases rclone`; the CLI flag is `--alias` (docker/cli plugin/install.go), so it is corrected here.
+- Adapted: the official option example uses `volume-subpath=/foo`; the daemon requires a relative path inside the volume (moby rejects non-local subpaths), and the subdirectory must already exist (e.g. `docker run --rm --mount src=myvolume,dst=/v alpine mkdir -p /v/foo`), so `foo` is used here.
 - Prefer volumes to bind mounts for backup/migration, CLI/API management, Linux and Windows containers, safer sharing, pre-populated content, and high-performance I/O. They are a poor choice if you need to access files directly from the host.
 
 ## Related

@@ -22,6 +22,8 @@ services:
 
   db:
     image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?required}
 ```
 
 ```console
@@ -40,6 +42,8 @@ services:
 
   db:
     image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?required}
 
   db-migrations:
     image: backend
@@ -59,3 +63,4 @@ $ docker compose run db-migrations
 - Services without `profiles` are always enabled; keep core services unprofiled.
 - Profile names match `[a-zA-Z0-9][a-zA-Z0-9_.-]+`.
 - A service targeted explicitly on the command line runs regardless of its profile, along with its `depends_on` dependencies; dependencies that are themselves gated by a different profile must be enabled separately.
+- Adapted: the official example omits MYSQL_ROOT_PASSWORD; it is added from a required variable because the mysql image refuses to start without it (or MYSQL_ALLOW_EMPTY_PASSWORD / MYSQL_RANDOM_ROOT_PASSWORD).

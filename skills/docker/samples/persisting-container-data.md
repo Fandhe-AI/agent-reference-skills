@@ -29,4 +29,5 @@ $ docker volume prune
 
 - A volume that does not exist is created automatically by `-v`.
 - `POSTGRES_PASSWORD` is only used when bootstrapping a new database, so the second `docker run` omits it.
-- A volume can only be removed when no container uses it; `docker volume prune` removes all unused volumes.
+- A volume can only be removed when no container uses it. `docker volume prune` removes only unused anonymous volumes by default; add `--all` (API 1.42+) to also remove unused named volumes such as `postgres_data`.
+- Adapted: the Get started page says prune removes "all unused volumes"; the CLI reference (docker volume prune) states only anonymous volumes are removed unless `--all` is given.

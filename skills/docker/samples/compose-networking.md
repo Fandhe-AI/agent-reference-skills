@@ -21,6 +21,8 @@ services:
       - backend
   db:
     image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
     networks:
       - backend
 
@@ -65,3 +67,4 @@ services:
 - Service-to-service traffic uses the container port; the host port is only for access from outside the network.
 - An `external` network must exist before `docker compose up`, otherwise Compose fails with `Network not found`.
 - `internal: true` creates a network with no external connectivity; `docker compose port <service> <port>` shows dynamic host ports.
+- Adapted: the official example omits POSTGRES_PASSWORD (MYSQL_ROOT_PASSWORD for mysql); it is added from a required variable because the image refuses to initialize without it.

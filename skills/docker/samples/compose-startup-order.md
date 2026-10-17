@@ -20,6 +20,8 @@ services:
     image: redis
   db:
     image: postgres:18
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
@@ -33,3 +35,4 @@ services:
 - By default Compose waits only until a dependency is running, not ready. Conditions: `service_started`, `service_healthy`, `service_completed_successfully`.
 - `restart: true` restarts `web` when `db` is restarted or updated by an explicit Compose operation.
 - Shutdown runs in reverse dependency order (`web` is removed before `db` and `redis`).
+- Adapted: the official example omits POSTGRES_PASSWORD (MYSQL_ROOT_PASSWORD for mysql); it is added from a required variable because the image refuses to initialize without it.

@@ -19,7 +19,7 @@ docker run -t -i --rm ubuntu bash
 ```
 
 ```sh
-docker run -p 127.0.0.1:80:8080/tcp nginx:alpine
+docker run -p 127.0.0.1:8080:80/tcp nginx:alpine
 ```
 
 ```sh
@@ -27,6 +27,8 @@ docker run -P nginx:alpine
 ```
 
 `-d` はバックグラウンド実行、`--rm` は終了時にコンテナを自動削除、`-p` はポート公開、`-P` は EXPOSE されたポートをランダムに公開する。
+
+Adapted: the official example maps `127.0.0.1:80:8080/tcp`, but nginx:alpine listens on container port 80, so host 8080 → container 80 is used here.
 
 ## 環境変数・ボリューム・ネットワークの指定
 
@@ -178,11 +180,13 @@ docker load --input fedora.tar
 ```sh
 docker rmi test1:latest
 docker rmi -f fd484f19954f
-docker image rm --platform linux/amd64 --platform linux/ppc64le myimage
+docker image rm --platform linux/amd64 --platform linux/ppc64le --force myimage
 docker rmi $(docker images -f "dangling=true" -q)
 ```
 
-タグが複数ある ID を `-f` なしで指定すると競合エラーになる。`--platform`（API 1.50+）は特定プラットフォームのみを削除し、`--force` が必要（省略すると警告されて削除は中止される）。
+タグが複数ある ID を `-f` なしで指定すると競合エラーになる。`--platform`（API 1.50+）は特定プラットフォームのみを削除し、`--force` が必要（省略すると警告されて削除は中止される）。`--force` 付きで実行すると、その variant を参照する全イメージから content が削除される。
+
+Adapted: `--force` is added to the equivalence example because removing a platform variant is canceled without it.
 
 ## ネットワークの作成
 
