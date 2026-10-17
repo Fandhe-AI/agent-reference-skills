@@ -1,0 +1,1026 @@
+---
+source: https://www.electronjs.org/docs/latest/api/base-window#instance-properties
+---
+
+# BaseWindow instance properties and methods
+
+Instance properties and methods of `BaseWindow`. Process: Main. Some members are only available on specific operating systems and are labeled as such.
+
+## Signature / Usage
+
+```js
+const { BaseWindow } = require('electron')
+// In this example `win` is our instance
+const win = new BaseWindow({ width: 800, height: 600 })
+```
+
+### Instance Properties
+
+#### `win.id` _Readonly_
+
+A `Integer` property representing the unique ID of the window. Each ID is unique among all `BaseWindow` instances of the entire Electron application.
+
+#### `win.contentView`
+
+A `View` property for the content view of the window.
+
+#### `win.tabbingIdentifier` _macOS_ _Readonly_
+
+A `string` (optional) property that is equal to the `tabbingIdentifier` passed to the `BrowserWindow` constructor or `undefined` if none was set.
+
+#### `win.autoHideMenuBar` _Linux_ _Windows_
+
+A `boolean` property that determines whether the window menu bar should hide itself automatically. Once set, the menu bar will only show when users press the single `Alt` key.
+
+If the menu bar is already visible, setting this property to `true` won't hide it immediately.
+
+#### `win.simpleFullScreen`
+
+A `boolean` property that determines whether the window is in simple (pre-Lion) fullscreen mode.
+
+#### `win.fullScreen`
+
+A `boolean` property that determines whether the window is in fullscreen mode.
+
+#### `win.focusable` _Windows_ _macOS_
+
+A `boolean` property that determines whether the window is focusable.
+
+#### `win.visibleOnAllWorkspaces` _macOS_ _Linux_
+
+A `boolean` property that determines whether the window is visible on all workspaces.
+
+Always returns false on Windows.
+
+#### `win.shadow`
+
+A `boolean` property that determines whether the window has a shadow.
+
+#### `win.menuBarVisible` _Windows_ _Linux_
+
+A `boolean` property that determines whether the menu bar should be visible.
+
+If the menu bar is auto-hide, users can still bring up the menu bar by pressing the single `Alt` key.
+
+#### `win.kiosk`
+
+A `boolean` property that determines whether the window is in kiosk mode.
+
+#### `win.documentEdited` _macOS_
+
+A `boolean` property that specifies whether the window's document has been edited.
+
+The icon in title bar will become gray when set to `true`.
+
+#### `win.representedFilename` _macOS_
+
+A `string` property that determines the pathname of the file the window represents, and the icon of the file will show in window's title bar.
+
+#### `win.title`
+
+A `string` property that determines the title of the native window.
+
+The title of the web page can be different from the title of the native window.
+
+#### `win.minimizable` _macOS_ _Windows_
+
+A `boolean` property that determines whether the window can be manually minimized by user.
+
+On Linux the setter is a no-op, although the getter returns `true`.
+
+#### `win.maximizable` _macOS_ _Windows_
+
+A `boolean` property that determines whether the window can be manually maximized by user.
+
+On Linux the setter is a no-op, although the getter returns `true`.
+
+#### `win.fullScreenable`
+
+A `boolean` property that determines whether the maximize/zoom window button toggles fullscreen mode or maximizes the window.
+
+#### `win.resizable`
+
+A `boolean` property that determines whether the window can be manually resized by user.
+
+#### `win.closable` _macOS_ _Windows_
+
+A `boolean` property that determines whether the window can be manually closed by user.
+
+On Linux the setter is a no-op, although the getter returns `true`.
+
+#### `win.movable` _macOS_ _Windows_
+
+A `boolean` property that determines Whether the window can be moved by user.
+
+On Linux the setter is a no-op, although the getter returns `true`.
+
+#### `win.excludedFromShownWindowsMenu` _macOS_
+
+A `boolean` property that determines whether the window is excluded from the application's Windows menu. `false` by default.
+
+```js
+const { Menu, BaseWindow } = require('electron')
+
+const win = new BaseWindow({ height: 600, width: 600 })
+
+const template = [
+  {
+    role: 'windowmenu'
+  }
+]
+
+win.excludedFromShownWindowsMenu = true
+
+const menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu)
+```
+
+#### `win.accessibleTitle`
+
+A `string` property that defines an alternative title provided only to accessibility tools such as screen readers. This string is not directly visible to users.
+
+#### `win.snapped` _Windows_ _Readonly_
+
+A `boolean` property that indicates whether the window is arranged via Snap (https://support.microsoft.com/en-us/windows/snap-your-windows-885a9b1e-a983-a3b1-16cd-c531795e6241).
+
+### Instance Methods
+
+#### `win.setContentView(view)`
+
+* `view` View
+
+Sets the content view of the window.
+
+#### `win.getContentView()`
+
+Returns `View` - The content view of the window.
+
+#### `win.destroy()`
+
+Force closing the window, the `unload` and `beforeunload` event won't be emitted for the web page, and `close` event will also not be emitted for this window, but it guarantees the `closed` event will be emitted.
+
+#### `win.close()`
+
+Try to close the window. This has the same effect as a user manually clicking the close button of the window. The web page may cancel the close though. See the `close` event.
+
+#### `win.focus()`
+
+Focuses on the window.
+
+#### `win.blur()`
+
+Removes focus from the window.
+
+#### `win.isFocused()`
+
+Returns `boolean` - Whether the window is focused.
+
+#### `win.isDestroyed()`
+
+Returns `boolean` - Whether the window is destroyed.
+
+Once a window is destroyed, accessing most of its other properties and methods throws `Object has been destroyed`, so callbacks that may run after the window is gone should guard with `isDestroyed()`.
+
+#### `win.show()`
+
+Shows and gives focus to the window.
+
+#### `win.showInactive()`
+
+Shows the window but doesn't focus on it.
+
+#### `win.hide()`
+
+Hides the window.
+
+#### `win.isVisible()`
+
+Returns `boolean` - Whether the window is visible to the user in the foreground of the app.
+
+#### `win.isModal()`
+
+Returns `boolean` - Whether current window is a modal window.
+
+#### `win.maximize()`
+
+Maximizes the window. This will also show (but not focus) the window if it isn't being displayed already.
+
+#### `win.unmaximize()`
+
+Unmaximizes the window.
+
+#### `win.isMaximized()`
+
+Returns `boolean` - Whether the window is maximized.
+
+#### `win.minimize()`
+
+Minimizes the window. On some platforms the minimized window will be shown in the Dock.
+
+#### `win.restore()`
+
+Restores the window from minimized state to its previous state.
+
+#### `win.isMinimized()`
+
+Returns `boolean` - Whether the window is minimized.
+
+#### `win.setFullScreen(flag)`
+
+* `flag` boolean
+
+Sets whether the window should be in fullscreen mode.
+
+On macOS, fullscreen transitions take place asynchronously. If further actions depend on the fullscreen state, use the 'enter-full-screen' or 'leave-full-screen' events.
+
+#### `win.isFullScreen()`
+
+Returns `boolean` - Whether the window is in fullscreen mode.
+
+#### `win.setSimpleFullScreen(flag)` _macOS_
+
+* `flag` boolean
+
+Enters or leaves simple fullscreen mode.
+
+Simple fullscreen mode emulates the native fullscreen behavior found in versions of macOS prior to Lion (10.7).
+
+#### `win.isSimpleFullScreen()` _macOS_
+
+Returns `boolean` - Whether the window is in simple (pre-Lion) fullscreen mode.
+
+#### `win.isNormal()`
+
+Returns `boolean` - Whether the window is in normal state (not maximized, not minimized, not in fullscreen mode).
+
+#### `win.setAspectRatio(aspectRatio[, extraSize])`
+
+* `aspectRatio` Float - The aspect ratio to maintain for some portion of the content view.
+* `extraSize` Size (optional) _macOS_ - The extra size not to be included while maintaining the aspect ratio.
+
+This will make a window maintain an aspect ratio. The extra size allows a developer to have space, specified in pixels, not included within the aspect ratio calculations. This API already takes into account the difference between a window's size and its content size.
+
+Consider a normal window with an HD video player and associated controls. Perhaps there are 15 pixels of controls on the left edge, 25 pixels of controls on the right edge and 50 pixels of controls below the player. In order to maintain a 16:9 aspect ratio (standard aspect ratio for HD @1920x1080) within the player itself we would call this function with arguments of 16/9 and { width: 40, height: 50 }. The second argument doesn't care where the extra width and height are within the content view--only that they exist. Sum any extra width and height areas you have within the overall content view.
+
+The aspect ratio is not respected when window is resized programmatically with APIs like `win.setSize`.
+
+To reset an aspect ratio, pass 0 as the `aspectRatio` value: `win.setAspectRatio(0)`.
+
+#### `win.setBackgroundColor(backgroundColor)`
+
+* `backgroundColor` string - Color in Hex, RGB, RGBA, HSL, HSLA or named CSS color format. The alpha channel is optional for the hex type.
+
+Examples of valid `backgroundColor` values:
+
+* Hex
+  * #fff (shorthand RGB)
+  * #ffff (shorthand ARGB)
+  * #ffffff (RGB)
+  * #ffffffff (ARGB)
+* RGB
+  * `rgb\(([\d]+),\s*([\d]+),\s*([\d]+)\)`
+    * e.g. rgb(255, 255, 255)
+* RGBA
+  * `rgba\(([\d]+),\s*([\d]+),\s*([\d]+),\s*([\d.]+)\)`
+    * e.g. rgba(255, 255, 255, 1.0)
+* HSL
+  * `hsl\((-?[\d.]+),\s*([\d.]+)%,\s*([\d.]+)%\)`
+    * e.g. hsl(200, 20%, 50%)
+* HSLA
+  * `hsla\((-?[\d.]+),\s*([\d.]+)%,\s*([\d.]+)%,\s*([\d.]+)\)`
+    * e.g. hsla(200, 20%, 50%, 0.5)
+* Color name
+  * Options are listed in SkParseColor.cpp (https://source.chromium.org/chromium/chromium/src/+/main:third_party/skia/src/utils/SkParseColor.cpp;l=11-152;drc=eea4bf52cb0d55e2a39c828b017c80a5ee054148)
+  * Similar to CSS Color Module Level 3 keywords, but case-sensitive.
+    * e.g. `blueviolet` or `red`
+
+Sets the background color of the window. See "Setting the `backgroundColor` property" in [browser-window-overview.md](./browser-window-overview.md).
+
+#### `win.previewFile(path[, displayName])` _macOS_
+
+* `path` string - The absolute path to the file to preview with QuickLook. This is important as Quick Look uses the file name and file extension on the path to determine the content type of the file to open.
+* `displayName` string (optional) - The name of the file to display on the Quick Look modal view. This is purely visual and does not affect the content type of the file. Defaults to `path`.
+
+Uses Quick Look to preview a file at a given path.
+
+#### `win.closeFilePreview()` _macOS_
+
+Closes the currently open Quick Look panel.
+
+#### `win.setBounds(bounds[, animate])`
+
+* `bounds` Partial\<Rectangle\>
+* `animate` boolean (optional) _macOS_
+
+Resizes and moves the window to the supplied bounds. Any properties that are not supplied will default to their current values.
+
+```js
+const { BaseWindow } = require('electron')
+
+const win = new BaseWindow()
+
+// set all bounds properties
+win.setBounds({ x: 440, y: 225, width: 800, height: 600 })
+
+// set a single bounds property
+win.setBounds({ width: 100 })
+
+// { x: 440, y: 225, width: 100, height: 600 }
+console.log(win.getBounds())
+```
+
+On macOS, the y-coordinate value cannot be smaller than the Tray height. The tray height has changed over time and depends on the operating system, but is between 20-40px. Passing a value lower than the tray height will result in a window that is flush to the tray.
+
+#### `win.getBounds()`
+
+Returns `Rectangle` - The `bounds` of the window as `Object`.
+
+On macOS, the y-coordinate value returned will be at minimum the Tray height. For example, calling `win.setBounds({ x: 25, y: 20, width: 800, height: 600 })` with a tray height of 38 means that `win.getBounds()` will return `{ x: 25, y: 38, width: 800, height: 600 }`.
+
+On Wayland, this method will return `{ x: 0, y: 0, ... }` as introspecting or programmatically changing the global window coordinates is prohibited.
+
+#### `win.getBackgroundColor()`
+
+Returns `string` - Gets the background color of the window in Hex (`#RRGGBB`) format.
+
+See "Setting the `backgroundColor` property" in [browser-window-overview.md](./browser-window-overview.md).
+
+The alpha value is _not_ returned alongside the red, green, and blue values.
+
+#### `win.setContentBounds(bounds[, animate])`
+
+* `bounds` Rectangle
+* `animate` boolean (optional) _macOS_
+
+Resizes and moves the window's client area (e.g. the web page) to the supplied bounds.
+
+#### `win.getContentBounds()`
+
+Returns `Rectangle` - The `bounds` of the window's client area as `Object`.
+
+#### `win.getNormalBounds()`
+
+Returns `Rectangle` - Contains the window bounds of the normal state
+
+Whatever the current state of the window : maximized, minimized or in fullscreen, this function always returns the position and size of the window in normal state. In normal state, getBounds and getNormalBounds returns the same `Rectangle`.
+
+#### `win.setEnabled(enable)`
+
+* `enable` boolean
+
+Disable or enable the window.
+
+#### `win.isEnabled()`
+
+Returns `boolean` - whether the window is enabled.
+
+#### `win.setSize(width, height[, animate])`
+
+* `width` Integer
+* `height` Integer
+* `animate` boolean (optional) _macOS_
+
+Resizes the window to `width` and `height`. If `width` or `height` are below any set minimum size constraints the window will snap to its minimum size.
+
+#### `win.getSize()`
+
+Returns `Integer[]` - Contains the window's width and height.
+
+#### `win.setContentSize(width, height[, animate])`
+
+* `width` Integer
+* `height` Integer
+* `animate` boolean (optional) _macOS_
+
+Resizes the window's client area (e.g. the web page) to `width` and `height`.
+
+#### `win.getContentSize()`
+
+Returns `Integer[]` - Contains the window's client area's width and height.
+
+#### `win.setMinimumSize(width, height)`
+
+* `width` Integer
+* `height` Integer
+
+Sets the minimum size of window to `width` and `height`.
+
+#### `win.getMinimumSize()`
+
+Returns `Integer[]` - Contains the window's minimum width and height.
+
+#### `win.setMaximumSize(width, height)`
+
+* `width` Integer
+* `height` Integer
+
+Sets the maximum size of window to `width` and `height`.
+
+#### `win.getMaximumSize()`
+
+Returns `Integer[]` - Contains the window's maximum width and height.
+
+#### `win.setResizable(resizable)`
+
+* `resizable` boolean
+
+Sets whether the window can be manually resized by the user.
+
+#### `win.isResizable()`
+
+Returns `boolean` - Whether the window can be manually resized by the user.
+
+#### `win.setMovable(movable)` _macOS_ _Windows_
+
+* `movable` boolean
+
+Sets whether the window can be moved by user. On Linux does nothing.
+
+#### `win.isMovable()` _macOS_ _Windows_
+
+Returns `boolean` - Whether the window can be moved by user.
+
+On Linux always returns `true`.
+
+#### `win.setMinimizable(minimizable)` _macOS_ _Windows_
+
+* `minimizable` boolean
+
+Sets whether the window can be manually minimized by user. On Linux does nothing.
+
+#### `win.isMinimizable()` _macOS_ _Windows_
+
+Returns `boolean` - Whether the window can be manually minimized by the user.
+
+On Linux always returns `true`.
+
+#### `win.setMaximizable(maximizable)` _macOS_ _Windows_
+
+* `maximizable` boolean
+
+Sets whether the window can be manually maximized by user. On Linux does nothing.
+
+#### `win.isMaximizable()` _macOS_ _Windows_
+
+Returns `boolean` - Whether the window can be manually maximized by user.
+
+On Linux always returns `true`.
+
+#### `win.setFullScreenable(fullscreenable)`
+
+* `fullscreenable` boolean
+
+Sets whether the maximize/zoom window button toggles fullscreen mode or maximizes the window.
+
+#### `win.isFullScreenable()`
+
+Returns `boolean` - Whether the maximize/zoom window button toggles fullscreen mode or maximizes the window.
+
+#### `win.setClosable(closable)` _macOS_ _Windows_
+
+* `closable` boolean
+
+Sets whether the window can be manually closed by user. On Linux does nothing.
+
+#### `win.isClosable()` _macOS_ _Windows_
+
+Returns `boolean` - Whether the window can be manually closed by user.
+
+On Linux always returns `true`.
+
+#### `win.setHiddenInMissionControl(hidden)` _macOS_
+
+* `hidden` boolean
+
+Sets whether the window will be hidden when the user toggles into mission control.
+
+#### `win.isHiddenInMissionControl()` _macOS_
+
+Returns `boolean` - Whether the window will be hidden when the user toggles into mission control.
+
+#### `win.setAlwaysOnTop(flag[, level][, relativeLevel])`
+
+* `flag` boolean
+* `level` string (optional) _macOS_ _Windows_ - Values include `normal`, `floating`, `torn-off-menu`, `modal-panel`, `main-menu`, `status`, `pop-up-menu`, `screen-saver`, and ~~`dock`~~ (Deprecated). The default is `floating` when `flag` is true. The `level` is reset to `normal` when the flag is false. Note that from `floating` to `status` included, the window is placed below the Dock on macOS and below the taskbar on Windows. From `pop-up-menu` to a higher it is shown above the Dock on macOS and above the taskbar on Windows. See the macOS docs (window levels) for more details.
+* `relativeLevel` Integer (optional) _macOS_ - The number of layers higher to set this window relative to the given `level`. The default is `0`. Note that Apple discourages setting levels higher than 1 above `screen-saver`.
+
+Sets whether the window should show always on top of other windows. After setting this, the window is still a normal window, not a toolbox window which can not be focused on.
+
+Not supported on Wayland (Linux).
+
+#### `win.isAlwaysOnTop()`
+
+Returns `boolean` - Whether the window is always on top of other windows.
+
+Not supported on Wayland (Linux).
+
+#### `win.moveAbove(mediaSourceId)`
+
+* `mediaSourceId` string - Window id in the format of DesktopCapturerSource's id. For example "window:1869:0".
+
+Moves window above the source window in the sense of z-order. If the `mediaSourceId` is not of type window or if the window does not exist then this method throws an error.
+
+#### `win.moveTop()`
+
+Moves window to top(z-order) regardless of focus
+
+#### `win.center()`
+
+Moves window to the center of the screen.
+
+#### `win.setPosition(x, y[, animate])`
+
+* `x` Integer
+* `y` Integer
+* `animate` boolean (optional) _macOS_
+
+Moves window to `x` and `y`.
+
+#### `win.getPosition()`
+
+Returns `Integer[]` - Contains the window's current position.
+
+On Wayland, this method will return `[0, 0]` as introspecting or programmatically changing the global window coordinates is prohibited.
+
+#### `win.setTitle(title)`
+
+* `title` string
+
+Changes the title of native window to `title`.
+
+#### `win.getTitle()`
+
+Returns `string` - The title of the native window.
+
+The title of the web page can be different from the title of the native window.
+
+#### `win.setSheetOffset(offsetY[, offsetX])` _macOS_
+
+* `offsetY` Float
+* `offsetX` Float (optional)
+
+Changes the attachment point for sheets on macOS. By default, sheets are attached just below the window frame, but you may want to display them beneath a HTML-rendered toolbar. For example:
+
+```js
+const { BaseWindow } = require('electron')
+
+const win = new BaseWindow()
+
+const toolbarRect = document.getElementById('toolbar').getBoundingClientRect()
+win.setSheetOffset(toolbarRect.height)
+```
+
+#### `win.flashFrame(flag)`
+
+* `flag` boolean
+
+Starts or stops flashing the window to attract user's attention.
+
+#### `win.setSkipTaskbar(skip)` _macOS_ _Windows_
+
+* `skip` boolean
+
+Makes the window not show in the taskbar.
+
+#### `win.setKiosk(flag)`
+
+* `flag` boolean
+
+Enters or leaves kiosk mode.
+
+#### `win.isKiosk()`
+
+Returns `boolean` - Whether the window is in kiosk mode.
+
+#### `win.isTabletMode()` _Windows_
+
+Returns `boolean` - Whether the window is in Windows 10 tablet mode.
+
+Since Windows 10 users can use their PC as tablet (https://support.microsoft.com/en-us/help/17210/windows-10-use-your-pc-like-a-tablet), under this mode apps can choose to optimize their UI for tablets, such as enlarging the titlebar and hiding titlebar buttons.
+
+This API returns whether the window is in tablet mode, and the `resize` event can be used to listen to changes to tablet mode.
+
+#### `win.getMediaSourceId()`
+
+Returns `string` - Window id in the format of DesktopCapturerSource's id. For example "window:1324:0".
+
+More precisely the format is `window:id:other_id` where `id` is `HWND` on Windows, `CGWindowID` (`uint64_t`) on macOS and `Window` (`unsigned long`) on Linux. `other_id` is used to identify web contents (tabs) so within the same top level window.
+
+#### `win.getNativeWindowHandle()`
+
+Returns `Buffer` - The platform-specific handle of the window.
+
+The native type of the handle is `HWND` on Windows, `NSView*` on macOS, and `Window` (`unsigned long`) on Linux.
+
+#### `win.hookWindowMessage(message, callback)` _Windows_
+
+* `message` Integer
+* `callback` Function
+  * `wParam` Buffer - The `wParam` provided to the WndProc
+  * `lParam` Buffer - The `lParam` provided to the WndProc
+
+Hooks a windows message. The `callback` is called when the message is received in the WndProc.
+
+#### `win.isWindowMessageHooked(message)` _Windows_
+
+* `message` Integer
+
+Returns `boolean` - `true` or `false` depending on whether the message is hooked.
+
+#### `win.unhookWindowMessage(message)` _Windows_
+
+* `message` Integer
+
+Unhook the window message.
+
+#### `win.unhookAllWindowMessages()` _Windows_
+
+Unhooks all of the window messages.
+
+#### `win.setRepresentedFilename(filename)` _macOS_
+
+* `filename` string
+
+Sets the pathname of the file the window represents, and the icon of the file will show in window's title bar.
+
+#### `win.getRepresentedFilename()` _macOS_
+
+Returns `string` - The pathname of the file the window represents.
+
+#### `win.setDocumentEdited(edited)` _macOS_
+
+* `edited` boolean
+
+Specifies whether the window's document has been edited, and the icon in title bar will become gray when set to `true`.
+
+#### `win.isDocumentEdited()` _macOS_
+
+Returns `boolean` - Whether the window's document has been edited.
+
+#### `win.setMenu(menu)` _Linux_ _Windows_
+
+* `menu` Menu | null
+
+Sets the `menu` as the window's menu bar.
+
+#### `win.removeMenu()` _Linux_ _Windows_
+
+Remove the window's menu bar.
+
+#### `win.setProgressBar(progress[, options])`
+
+* `progress` Double
+* `options` Object (optional)
+  * `mode` string _Windows_ - Mode for the progress bar. Can be `none`, `normal`, `indeterminate`, `error` or `paused`.
+
+Sets progress value in progress bar. Valid range is [0, 1.0].
+
+Remove progress bar when progress < 0; Change to indeterminate mode when progress > 1.
+
+On Windows, a mode can be passed. Accepted values are `none`, `normal`, `indeterminate`, `error`, and `paused`. If you call `setProgressBar` without a mode set (but with a value within the valid range), `normal` will be assumed.
+
+On Linux, the progress bar shows on docks and taskbars that support the LauncherEntry D-Bus API. It is associated with the app's `.desktop` file, so `app.setDesktopName` must match the name of the app's actual `.desktop` file. Indeterminate mode is not supported.
+
+#### `win.setOverlayIcon(overlay, description)` _Windows_
+
+* `overlay` NativeImage | null - the icon to display on the bottom right corner of the taskbar icon. If this parameter is `null`, the overlay is cleared
+* `description` string - a description that will be provided to Accessibility screen readers
+
+Sets a 16 x 16 pixel overlay onto the current taskbar icon, usually used to convey some sort of application status or to passively notify the user.
+
+#### `win.invalidateShadow()` _macOS_
+
+Invalidates the window shadow so that it is recomputed based on the current window shape.
+
+`BaseWindow`s that are transparent can sometimes leave behind visual artifacts on macOS. This method can be used to clear these artifacts when, for example, performing an animation.
+
+#### `win.setHasShadow(hasShadow)`
+
+* `hasShadow` boolean
+
+Sets whether the window should have a shadow.
+
+#### `win.hasShadow()`
+
+Returns `boolean` - Whether the window has a shadow.
+
+#### `win.setOpacity(opacity)` _Windows_ _macOS_
+
+* `opacity` number - between 0.0 (fully transparent) and 1.0 (fully opaque)
+
+Sets the opacity of the window. On Linux, does nothing. Out of bound number values are clamped to the [0, 1] range.
+
+#### `win.getOpacity()`
+
+Returns `number` - between 0.0 (fully transparent) and 1.0 (fully opaque). On Linux, always returns 1.
+
+#### `win.setShape(rects)` _Windows_ _Linux_ _Experimental_
+
+* `rects` Rectangle[] - Sets a shape on the window. Passing an empty list reverts the window to being rectangular.
+
+Setting a window shape determines the area within the window where the system permits drawing and user interaction. Outside of the given region, no pixels will be drawn and no mouse events will be registered. Mouse events outside of the region will not be received by that window, but will fall through to whatever is behind the window.
+
+#### `win.setThumbarButtons(buttons)` _Windows_
+
+* `buttons` ThumbarButton[]
+
+Returns `boolean` - Whether the buttons were added successfully
+
+Add a thumbnail toolbar with a specified set of buttons to the thumbnail image of a window in a taskbar button layout. Returns a `boolean` object indicates whether the thumbnail has been added successfully.
+
+The number of buttons in thumbnail toolbar should be no greater than 7 due to the limited room. Once you setup the thumbnail toolbar, the toolbar cannot be removed due to the platform's limitation. But you can call the API with an empty array to clean the buttons.
+
+The `buttons` is an array of `Button` objects:
+
+* `Button` Object
+  * `icon` NativeImage - The icon showing in thumbnail toolbar.
+  * `click` Function
+  * `tooltip` string (optional) - The text of the button's tooltip.
+  * `flags` string[] (optional) - Control specific states and behaviors of the button. By default, it is `['enabled']`.
+
+The `flags` is an array that can include following `string`s:
+
+* `enabled` - The button is active and available to the user.
+* `disabled` - The button is disabled. It is present, but has a visual state indicating it will not respond to user action.
+* `dismissonclick` - When the button is clicked, the thumbnail window closes immediately.
+* `nobackground` - Do not draw a button border, use only the image.
+* `hidden` - The button is not shown to the user.
+* `noninteractive` - The button is enabled but not interactive; no pressed button state is drawn. This value is intended for instances where the button is used in a notification.
+
+#### `win.setThumbnailClip(region)` _Windows_
+
+* `region` Rectangle - Region of the window
+
+Sets the region of the window to show as the thumbnail image displayed when hovering over the window in the taskbar. You can reset the thumbnail to be the entire window by specifying an empty region: `{ x: 0, y: 0, width: 0, height: 0 }`.
+
+#### `win.setThumbnailToolTip(toolTip)` _Windows_
+
+* `toolTip` string
+
+Sets the toolTip that is displayed when hovering over the window thumbnail in the taskbar.
+
+#### `win.setAppDetails(options)` _Windows_
+
+* `options` Object
+  * `appId` string (optional) - Window's App User Model ID (https://learn.microsoft.com/en-us/windows/win32/shell/appids). It has to be set, otherwise the other options will have no effect.
+  * `appIconPath` string (optional) - Window's Relaunch Icon (https://learn.microsoft.com/en-us/windows/win32/properties/props-system-appusermodel-relaunchiconresource).
+  * `appIconIndex` Integer (optional) - Index of the icon in `appIconPath`. Ignored when `appIconPath` is not set. Default is `0`.
+  * `relaunchCommand` string (optional) - Window's Relaunch Command (https://learn.microsoft.com/en-us/windows/win32/properties/props-system-appusermodel-relaunchcommand).
+  * `relaunchDisplayName` string (optional) - Window's Relaunch Display Name (https://learn.microsoft.com/en-us/windows/win32/properties/props-system-appusermodel-relaunchdisplaynameresource).
+
+Sets the properties for the window's taskbar button.
+
+`relaunchCommand` and `relaunchDisplayName` must always be set together. If one of those properties is not set, then neither will be used.
+
+#### `win.setAccentColor(accentColor)` _Windows_
+
+* `accentColor` boolean | string | null - The accent color for the window. By default, follows user preference in System Settings. To reset to system default, pass `null`.
+
+Sets the system accent color and highlighting of active window border.
+
+The `accentColor` parameter accepts the following values:
+
+* **Color string** - Like `true`, but sets a custom accent color using standard CSS color formats (Hex, RGB, RGBA, HSL, HSLA, or named colors). Alpha values in RGBA/HSLA formats are ignored and the color is treated as fully opaque.
+* **`true`** - Enable accent color highlighting for the window with the system accent color regardless of whether accent colors are enabled for windows in System `Settings.`
+* **`false`** - Disable accent color highlighting for the window regardless of whether accent colors are currently enabled for windows in System Settings.
+* **`null`** - Reset window accent color behavior to follow behavior set in System Settings.
+
+Examples:
+
+```js
+const win = new BrowserWindow({ frame: false })
+
+// Set red accent color.
+win.setAccentColor('#ff0000')
+
+// RGB format (alpha ignored if present).
+win.setAccentColor('rgba(255,0,0,0.5)')
+
+// Enable accent color, using the color specified in System Settings.
+win.setAccentColor(true)
+
+// Disable accent color.
+win.setAccentColor(false)
+
+// Reset window accent color behavior to follow behavior set in System Settings.
+win.setAccentColor(null)
+```
+
+#### `win.getAccentColor()` _Windows_
+
+Returns `string | boolean` - the system accent color and highlighting of active window border in Hex RGB format.
+
+If a color has been set for the window that differs from the system accent color, the window accent color will be returned. Otherwise, a boolean will be returned, with `true` indicating that the window uses the global system accent color, and `false` indicating that accent color highlighting is disabled for this window.
+
+#### `win.setIcon(icon)` _Windows_ _Linux_
+
+* `icon` NativeImage | string
+
+Changes window icon.
+
+#### `win.setWindowButtonVisibility(visible)` _macOS_
+
+* `visible` boolean
+
+Sets whether the window traffic light buttons should be visible.
+
+#### `win.setAutoHideMenuBar(hide)` _Windows_ _Linux_
+
+* `hide` boolean
+
+Sets whether the window menu bar should hide itself automatically. Once set the menu bar will only show when users press the single `Alt` key.
+
+If the menu bar is already visible, calling `setAutoHideMenuBar(true)` won't hide it immediately.
+
+#### `win.isMenuBarAutoHide()` _Windows_ _Linux_
+
+Returns `boolean` - Whether menu bar automatically hides itself.
+
+#### `win.setMenuBarVisibility(visible)` _Windows_ _Linux_
+
+* `visible` boolean
+
+Sets whether the menu bar should be visible. If the menu bar is auto-hide, users can still bring up the menu bar by pressing the single `Alt` key.
+
+#### `win.isMenuBarVisible()` _Windows_ _Linux_
+
+Returns `boolean` - Whether the menu bar is visible.
+
+#### `win.isSnapped()` _Windows_
+
+Returns `boolean` - whether the window is arranged via Snap (https://support.microsoft.com/en-us/windows/snap-your-windows-885a9b1e-a983-a3b1-16cd-c531795e6241).
+
+The window is snapped via buttons shown when the mouse is hovered over window maximize button, or by dragging it to the edges of the screen.
+
+#### `win.setVisibleOnAllWorkspaces(visible[, options])` _macOS_ _Linux_
+
+* `visible` boolean
+* `options` Object (optional)
+  * `visibleOnFullScreen` boolean (optional) _macOS_ - Sets whether the window should be visible above fullscreen windows.
+  * `skipTransformProcessType` boolean (optional) _macOS_ - Calling setVisibleOnAllWorkspaces will by default transform the process type between UIElementApplication and ForegroundApplication to ensure the correct behavior. However, this will hide the window and dock for a short time every time it is called. If your window is already of type UIElementApplication, you can bypass this transformation by passing true to skipTransformProcessType.
+
+Sets whether the window should be visible on all workspaces.
+
+This API does nothing on Windows.
+
+#### `win.isVisibleOnAllWorkspaces()` _macOS_ _Linux_
+
+Returns `boolean` - Whether the window is visible on all workspaces.
+
+This API always returns false on Windows.
+
+#### `win.setIgnoreMouseEvents(ignore[, options])`
+
+* `ignore` boolean
+* `options` Object (optional)
+  * `forward` boolean (optional) _macOS_ _Windows_ - If true, forwards mouse move messages to Chromium, enabling mouse related events such as `mouseleave`. Only used when `ignore` is true. If `ignore` is false, forwarding is always disabled regardless of this value.
+
+Makes the window ignore all mouse events.
+
+All mouse events happened in this window will be passed to the window below this window, but if this window has focus, it will still receive keyboard events. On Linux this is supported on both X11 and Wayland. On X11 the X server has applied the window's new input shape when the call returns; on Wayland the new input region is applied with the window's next frame.
+
+#### `win.setContentProtection(enable)` _macOS_ _Windows_
+
+* `enable` boolean
+
+Prevents the window contents from being captured by other apps.
+
+On macOS it sets the NSWindow's sharingType to NSWindowSharingNone. On Windows it calls SetWindowDisplayAffinity with `WDA_EXCLUDEFROMCAPTURE`. For Windows 10 version 2004 and up the window will be removed from capture entirely, older Windows versions behave as if `WDA_MONITOR` is applied capturing a black window. The change takes effect with the next desktop composition, not when the call returns, so a capture started immediately afterwards can still contain the window.
+
+Protection also applies in a Windows remote session. A Remote Desktop client still shows the window to the remote user, but remote access software that works by capturing the desktop cannot. To leave windows unprotected in remote sessions instead, disable the `AllowWindowCaptureExclusionInRemoteSessions` Chromium feature at the start of your main script. `win.isContentProtected()` still returns `true` in that case.
+
+```js
+const { app } = require('electron')
+
+app.commandLine.appendSwitch('disable-features', 'AllowWindowCaptureExclusionInRemoteSessions')
+```
+
+#### `win.isContentProtected()` _macOS_ _Windows_
+
+Returns `boolean` - whether or not content protection is currently enabled.
+
+#### `win.setFocusable(focusable)` _macOS_ _Windows_
+
+* `focusable` boolean
+
+Changes whether the window can be focused.
+
+On macOS it does not remove the focus from the window.
+
+#### `win.isFocusable()` _macOS_ _Windows_
+
+Returns `boolean` - Whether the window can be focused.
+
+#### `win.setParentWindow(parent)`
+
+* `parent` BaseWindow | null
+
+Sets `parent` as current window's parent window, passing `null` will turn current window into a top-level window.
+
+#### `win.getParentWindow()`
+
+Returns `BaseWindow | null` - The parent window or `null` if there is no parent.
+
+#### `win.getChildWindows()`
+
+Returns `BaseWindow[]` - All child windows.
+
+#### `win.setAutoHideCursor(autoHide)` _macOS_
+
+* `autoHide` boolean
+
+Controls whether to hide cursor when typing.
+
+#### `win.selectPreviousTab()` _macOS_
+
+Selects the previous tab when native tabs are enabled and there are other tabs in the window.
+
+#### `win.selectNextTab()` _macOS_
+
+Selects the next tab when native tabs are enabled and there are other tabs in the window.
+
+#### `win.showAllTabs()` _macOS_
+
+Shows or hides the tab overview when native tabs are enabled.
+
+#### `win.mergeAllWindows()` _macOS_
+
+Merges all windows into one window with multiple tabs when native tabs are enabled and there is more than one open window.
+
+#### `win.moveTabToNewWindow()` _macOS_
+
+Moves the current tab into a new window if native tabs are enabled and there is more than one tab in the current window.
+
+#### `win.toggleTabBar()` _macOS_
+
+Toggles the visibility of the tab bar if native tabs are enabled and there is only one tab in the current window.
+
+#### `win.addTabbedWindow(baseWindow)` _macOS_
+
+* `baseWindow` BaseWindow
+
+Adds a window as a tab on this window, after the tab for the window instance.
+
+#### `win.setVibrancy(type)` _macOS_
+
+* `type` string | null - Can be `titlebar`, `selection`, `menu`, `popover`, `sidebar`, `header`, `sheet`, `window`, `hud`, `fullscreen-ui`, `tooltip`, `content`, `under-window`, or `under-page`. See the macOS documentation (NSVisualEffectView) for more details.
+
+Adds a vibrancy effect to the window. Passing `null` or an empty string will remove the vibrancy effect on the window.
+
+#### `win.setBackgroundMaterial(material)` _Windows_
+
+* `material` string
+  * `auto` - Let the Desktop Window Manager (DWM) automatically decide the system-drawn backdrop material for this window. This is the default.
+  * `none` - Don't draw any system backdrop.
+  * `mica` - Draw the backdrop material effect corresponding to a long-lived window.
+  * `acrylic` - Draw the backdrop material effect corresponding to a transient window.
+  * `tabbed` - Draw the backdrop material effect corresponding to a window with a tabbed title bar.
+
+This method sets the browser window's system-drawn background material, including behind the non-client area.
+
+See the Windows documentation (https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwm_systembackdrop_type) for more details.
+
+This method is only supported on Windows 11 22H2 and up.
+
+#### `win.setWindowButtonPosition(position)` _macOS_
+
+* `position` Point | null
+
+Set a custom position for the traffic light buttons in frameless window. Passing `null` will reset the position to default.
+
+#### `win.getWindowButtonPosition()` _macOS_
+
+Returns `Point | null` - The custom position for the traffic light buttons in frameless window, `null` will be returned when there is no custom position.
+
+#### `win.setTouchBar(touchBar)` _macOS_
+
+* `touchBar` TouchBar | null
+
+Sets the touchBar layout for the current window. Specifying `null` or `undefined` clears the touch bar. This method only has an effect if the machine has a touch bar.
+
+The TouchBar API is currently experimental and may change or be removed in future Electron releases.
+
+#### `win.setTitleBarOverlay(options)` _Windows_ _Linux_
+
+* `options` Object
+  * `color` String (optional) - The CSS color of the Window Controls Overlay when enabled.
+  * `symbolColor` String (optional) - The CSS color of the symbols on the Window Controls Overlay when enabled.
+  * `height` Integer (optional) - The height of the title bar and Window Controls Overlay in pixels.
+
+On a Window with Window Controls Overlay already enabled, this method updates the style of the title bar overlay.
+
+On Linux, the `symbolColor` is automatically calculated to have minimum accessible contrast to the `color` if not explicitly set.
+
+## Notes
+
+* Taskbar-related (`setProgressBar`, `setOverlayIcon`, `setThumbarButtons`, `setThumbnailClip`, `setThumbnailToolTip`, `setAppDetails`): these configure the taskbar button of an Electron window. For native Windows taskbar, jump list and shell integration outside Electron see windows-platform-integration.
+* `win.setMenu` takes an Electron `Menu` (OS-native menu built in the main process); for Web UI menu components see ark-ui / chakra-ui / fandhe-frontend, for WinUI menus see windows-winui-controls, for NSMenu see apple-appkit.
+* Distinct from native window APIs: this is Electron's main-process `BaseWindow`. For WinUI 3 AppWindow see windows-winui-ui, for NSWindow see apple-appkit.
+* Unlike `BrowserWindow`, `BaseWindow` documents no `webContents`, `loadURL`, `loadFile`, `reload`, `capturePage` or BrowserView methods on this page; compose web content via `contentView` and `WebContentsView` (see [web-contents-view.md](./web-contents-view.md)).
+
+## Related
+
+* [BaseWindow overview](./base-window-overview.md)
+* [BaseWindow constructor, events and static methods](./base-window-events-static.md)
+* [View](./view.md)
+* [Window options](./window-options.md)
