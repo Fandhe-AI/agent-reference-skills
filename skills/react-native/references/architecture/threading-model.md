@@ -15,7 +15,7 @@ The renderer uses two different threads (original text):
 - JavaScript thread: This is where React's render phase, as well as layout, are executed.
 ```
 
-## Render Scenarios
+### Render Scenarios
 
 - **Render in a JS Thread:** the most common scenario where most of the render pipeline happens on the JavaScript thread.
 - **Render in the UI Thread:** when there is a high priority event on the UI Thread, the renderer is able to execute all the render pipeline synchronously on the UI thread.

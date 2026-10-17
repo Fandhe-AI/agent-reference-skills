@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
 - Code quality tips: moving styles out of the render function makes code easier to understand; naming styles adds meaning to low-level components and encourages reuse; in most IDEs `StyleSheet.create()` offers static type checking and suggestions.
 - `setStyleAttributePreprocessor()` is Experimental: "Breaking changes will probably happen a lot and will not be reliably announced. The whole thing might be deleted, who knows? Use at your own risk." Do not use unless you really know what you are doing.
 - `hairlineWidth` is always a round number of pixels (crisp lines) and tries to match the platform's standard thin line, but do not rely on a constant size across platforms/densities. A hairline may not be visible if the simulator is downscaled.
-- Removed in 0.85: `StyleSheet.absoluteFillObject`. Use `StyleSheet.absoluteFill` or define your own absolute positioning styles (0.85 release blog).
+- Removed in 0.85: `StyleSheet.absoluteFillObject`. Use `StyleSheet.absoluteFill` or define your own absolute positioning styles ([0.85 release blog](https://reactnative.dev/blog/2026/04/07/react-native-0.85)).
 
 ## Related
 

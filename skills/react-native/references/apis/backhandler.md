@@ -54,7 +54,7 @@ static exitApp();
 - If your app shows an opened `Modal`, `BackHandler` will not publish any events (see `Modal` `onRequestClose`).
 - `addEventListener` returns an `EventSubscription` which should be cleared with `EventSubscription.remove`.
 - With React Navigation, follow its guide on custom Android back button behaviour. React Native Hooks (community) offers a `useBackHandler` hook.
-- Since 0.86: `hardwareBackPress` events now pass an event object with a `timeStamp` property from the native event (existing callbacks that ignore the argument are unaffected). Fixed: callbacks stopped working after the app resumed from the background on Android API 36+ (0.86 release blog).
+- Since 0.86: `hardwareBackPress` events now pass an event object with a `timeStamp` property from the native event (existing callbacks that ignore the argument are unaffected). Fixed: callbacks stopped working after the app resumed from the background on Android API 36+ ([0.86 release blog](https://reactnative.dev/blog/2026/06/11/react-native-0.86)).
 
 ## Related
 

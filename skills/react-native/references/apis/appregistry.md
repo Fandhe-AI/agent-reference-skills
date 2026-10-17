@@ -9,7 +9,7 @@ source: https://reactnative.dev/docs/0.87/appregistry
 ## Signature / Usage
 
 ```tsx
-import {Text, AppRegistry} from 'react-native';
+import {View, Text, AppRegistry} from 'react-native';
 
 const App = () => (
   <View>
@@ -56,6 +56,7 @@ AppRegistry.registerComponent('Appname', () => App);
 
 ## Notes
 
+- The official example omits `View` from the import; it is added here so the snippet runs as-is.
 - Project with native code required. With the managed Expo workflow there is only one entry component registered with `AppRegistry`, handled automatically (or through Expo's `registerRootComponent`); you do not need this API.
 - To "stop" an application when a view should be destroyed, call `AppRegistry.unmountApplicationComponentAtRootTag` with the tag passed into `runApplication`. These should always be used as a pair.
 - `AppRegistry` should be required early in the `require` sequence to make sure the JS execution environment is set up before other modules are required.

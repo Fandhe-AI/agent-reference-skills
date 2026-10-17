@@ -159,6 +159,7 @@ With 0.76, The New Architecture is enabled by default in all the React Native pr
 
 ## Notes
 
+- Illustrative snippet verbatim from the official page; the adjacent elements in the `ManyTiles` `return` would need a fragment wrapper to run.
 - The page states the New Architecture has been available for experimental opt-in since React Native 0.68 and is enabled by default since 0.76.
 - Source images and "See code" gists of the original page are omitted; the three tooltip / batching / transition examples above are the original code blocks.
 

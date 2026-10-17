@@ -40,7 +40,7 @@ static addChangeListener(
 - Android: the color scheme maps to the user's Light or Dark theme preference on Android 10 (API level 29) and higher.
 - iOS: the color scheme maps to the user's Light or Dark Mode preference on iOS 13 and higher. When taking a screenshot, the color scheme may flicker between light and dark mode by default, because iOS takes snapshots on both color schemes and updating the UI is asynchronous.
 - The API is inspired by the W3C Media Queries draft; the preference is modeled after the `prefers-color-scheme` CSS media feature.
-- Deprecated since 0.87: `Appearance.setColorScheme('unspecified')` -> use `'auto'` (0.87 release blog).
+- Deprecated since 0.87: `Appearance.setColorScheme('unspecified')` -> use `'auto'` ([0.87 release blog](https://reactnative.dev/blog/2026/08/11/react-native-0.87)).
 
 ## Related
 

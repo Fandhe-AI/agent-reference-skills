@@ -52,8 +52,8 @@ static get(dim: string): DisplayMetrics | DisplayMetricsAndroid;
 - `useWindowDimensions` is the preferred API for React components. Unlike `Dimensions`, it updates as the window's dimensions update.
 - Dimensions are available immediately but may change (device rotation, foldable devices, etc.), so rendering logic or styles that depend on them should call `get()` on every render rather than caching the value (e.g. use inline styles rather than a value set in a `StyleSheet`).
 - Android: the `window` dimension is reduced by the size of the status bar (if not translucent) and bottom navigation bar.
-- Since 0.86: `Dimensions` window values are accurate on Android versions prior to 15 when edge-to-edge is enabled (0.86 release blog).
-- 0.88: With the iOS UIScene lifecycle (SceneDelegate support), the app window is resizable; `Dimensions.get()` and `useWindowDimensions()` update with the current values (0.88 release blog).
+- Since 0.86: `Dimensions` window values are accurate on Android versions prior to 15 when edge-to-edge is enabled ([0.86 release blog](https://reactnative.dev/blog/2026/06/11/react-native-0.86)).
+- 0.88: With the iOS UIScene lifecycle (SceneDelegate support), the app window is resizable; `Dimensions.get()` and `useWindowDimensions()` update with the current values ([0.88 release blog](https://reactnative.dev/blog/2026/10/19/react-native-0.88)).
 
 ## Related
 

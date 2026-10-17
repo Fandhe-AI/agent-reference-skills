@@ -29,7 +29,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
 ## Notes
 
-- 0.88: With the iOS UIScene lifecycle (SceneDelegate support), the app window is resizable and `useWindowDimensions()` updates with the current values (0.88 release blog).
+- 0.88: With the iOS UIScene lifecycle (SceneDelegate support), the app window is resizable and `useWindowDimensions()` updates with the current values ([0.88 release blog](https://reactnative.dev/blog/2026/10/19/react-native-0.88)).
 
 ## Related
 

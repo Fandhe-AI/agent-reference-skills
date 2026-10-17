@@ -61,8 +61,8 @@ reduceMotionChangedSubscription.remove();
 
 - Deprecated: `setAccessibilityFocus()`. "Prefer using `sendAccessibilityEvent` with eventType `focus` instead." On Android it calls `UIManager.sendAccessibilityEvent` with the passed `reactTag` and `UIManager.AccessibilityEventTypes.typeViewFocused`.
 - Make sure that any `View` you want to receive the accessibility focus has `accessible={true}` (applies to `setAccessibilityFocus` and `sendAccessibilityEvent`).
-- Since 0.85: `AccessibilityInfo.setAccessibilityFocus` deprecated in favor of `AccessibilityInfo.sendAccessibilityEvent` (0.85 release blog).
-- Since 0.86: `isDarkerSystemColorsEnabled`, `isHighTextContrastEnabled` and `prefersCrossFadeTransitions` previously returned promises that never resolved on unsupported platforms; they now resolve to `false` (0.86 release blog).
+- Since 0.85: `AccessibilityInfo.setAccessibilityFocus` deprecated in favor of `AccessibilityInfo.sendAccessibilityEvent` ([0.85 release blog](https://reactnative.dev/blog/2026/04/07/react-native-0.85)).
+- Since 0.86: `isDarkerSystemColorsEnabled`, `isHighTextContrastEnabled` and `prefersCrossFadeTransitions` previously returned promises that never resolved on unsupported platforms; they now resolve to `false` ([0.86 release blog](https://reactnative.dev/blog/2026/06/11/react-native-0.86)).
 
 ## Related
 
