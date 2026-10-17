@@ -10,7 +10,7 @@ user-invocable: false
 
 # Expo
 
-> 分割 PR の途中段階。現在収録済み: references/{configuration, eas-build, eas-submit-workflows, eas-update, modules-api, notifications, router, router-reference, router-web, sdk-app}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{configuration, eas-build, eas-submit-workflows, eas-update, modules-api, notifications, router, router-reference, router-web, sdk-app, sdk-device-data}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -79,6 +79,12 @@ skills/expo/
       linking.md
       securestore.md
       splash-screen.md
+    sdk-device-data/           # デバイス・データ系 SDK（Location・SQLite・FileSystem 等）
+      README.md
+      filesystem.md
+      sqlite.md
+      location.md
+      auth-session.md
     notifications/             # expo-notifications・push・background task
       README.md
       notifications.md
@@ -130,6 +136,8 @@ skills/expo/
 | 既存ライブラリへの Expo Modules API 統合・autolinking・モック化を知りたい | modules-api | [references/modules-api/README.md](references/modules-api/README.md) |
 | Constants / Linking / Font / SecureStore / SplashScreen / StatusBar を使いたい | sdk-app | [references/sdk-app/README.md](references/sdk-app/README.md) |
 | deep link・Universal Links・App Links を設定したい | sdk-app | [references/sdk-app/README.md](references/sdk-app/README.md) |
+| FileSystem / SQLite / Location / Contacts / Calendar / Sensors を使いたい | sdk-device-data | [references/sdk-device-data/README.md](references/sdk-device-data/README.md) |
+| 認証 (AuthSession / AppleAuthentication / LocalAuthentication)・Clipboard・Sharing を使いたい | sdk-device-data | [references/sdk-device-data/README.md](references/sdk-device-data/README.md) |
 | push 通知の設定・送信・受信ハンドリングをしたい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | FCM / APNs 資格情報・バックグラウンドタスク (TaskManager / BackgroundTask) を設定したい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | EAS Build の設定 (eas.json)・credentials・内部配布・CI ビルドをしたい | eas-build | [references/eas-build/README.md](references/eas-build/README.md) |
