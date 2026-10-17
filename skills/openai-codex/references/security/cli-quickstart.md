@@ -1,90 +1,64 @@
 # Codex Security CLI quickstart
 
-Set up the `@openai/codex-security` CLI, run a local scan, and review the report, findings, and coverage.
+Run a standard scan of a local repository with the standalone Codex Security CLI (`@openai/codex-security`). This quickstart ends with a saved report you can review and revisit. For scans inside a Codex conversation use the Codex Security plugin.
 
 ## Signature / Usage
 
-Requires Node.js 22+ (and Python 3.10+ for scanning/exporting).
+Prerequisites: Node.js 22 (22.13.0 or later), 24, or 26, plus Python 3.10 or later (Python 3.10 also needs `tomli`). Scans using OpenAI inference require Codex Security access; depending on your account and repository, full-repository scans may also require Trusted Access for Cyber. The CLI runs with your operating-system permissions and doesn't pause for approval; scan processes can inherit your environment, so remove unrelated credentials first.
 
 ```bash
-npm install @openai/codex-security
-npx @openai/codex-security --version
+npx @openai/codex-security --version     # prints the installed package version
+npx @openai/codex-security info --json   # bundled plugin version
 npx @openai/codex-security --help
 ```
 
 Sign in:
 
 ```bash
-npx @openai/codex-security login              # interactive ChatGPT login
-npx @openai/codex-security login --device-auth # remote/headless machine
-export OPENAI_API_KEY="<your-api-key>"          # CI / automated workflows
+npx @openai/codex-security login
+npx @openai/codex-security login --device-auth   # machine without a browser
 ```
 
-Run a scan:
+Prepare and run a scan:
 
 ```bash
 REPOSITORY=/path/to/repository
 SCAN_DIR=/path/outside/repository/codex-security-results
 
-npx @openai/codex-security scan "$REPOSITORY" --output-dir "$SCAN_DIR" --dry-run
-npx @openai/codex-security scan "$REPOSITORY" --output-dir "$SCAN_DIR"
-```
-
-Scans default to `gpt-5.6-sol` with `xhigh` reasoning effort:
-
-```bash
-npx @openai/codex-security scan "$REPOSITORY" --model gpt-5.6-terra --effort high
-```
-
-## Results
-
-```text
-codex-security-results/
-├── scan-manifest.json
-├── findings.json
-├── coverage.json
-├── report.md
-├── artifacts/
-└── exports/
-    └── results.sarif       # when produced
-```
-
-Coverage is `complete`, `partial`, or `unknown`.
-
-## Next scans
-
-```bash
-# path scan
-npx @openai/codex-security scan "$REPOSITORY" --path services/billing --path packages/auth
-# committed changes
-npx @openai/codex-security scan "$REPOSITORY" --diff origin/main --head HEAD
-# staged/unstaged changes
-npx @openai/codex-security scan "$REPOSITORY" --working-tree --base HEAD
-# deep mode
-npx @openai/codex-security scan "$REPOSITORY" --mode deep
-```
-
-Add architecture/security context:
-
-```bash
+# Check the target and output location (doesn't start a scan or load credentials)
 npx @openai/codex-security scan "$REPOSITORY" \
-  --knowledge-base /path/to/architecture.md \
-  --knowledge-base /path/to/security-policies
+  --auth chatgpt --output-dir "$SCAN_DIR" --dry-run
+
+# Run the scan
+npx @openai/codex-security scan "$REPOSITORY" \
+  --auth chatgpt --output-dir "$SCAN_DIR"
 ```
 
-Pre-commit hook and bulk scans:
+Revisit a saved scan:
 
 ```bash
-npx @openai/codex-security install-hook
-gh auth login
-npx @openai/codex-security bulk-scan
+npx @openai/codex-security scans list "$REPOSITORY"
+npx @openai/codex-security scans show SCAN_ID
 ```
+
+## Options / Props
+
+| Name | Description |
+|------|-------------|
+| `--auth chatgpt` | Select ChatGPT sign-in even when your environment also contains an API key. For API keys and other providers see "Select scan authentication" in cli-reference.md; for Amazon Bedrock use AWS credentials and model access instead of a ChatGPT sign-in or OpenAI API key. |
+| `--output-dir <dir>` | Results location; choose a private directory outside the repository's Git worktree. If omitted, the CLI uses its persistent state directory. |
+| `--dry-run` | Confirms local inputs only; doesn't start a scan, load credentials, or check the plugin's Python interpreter. |
+| `--headless` | Use progress lines even in an interactive terminal. |
+| `--json` | Machine-readable stdout. |
 
 ## Notes
 
-- Scans are report-only by default; add `--fail-on-severity` when ready to enforce a policy in CI (see [Run Codex Security in CI](./cli-ci.md))
-- If the default state directory isn't writable, set `CODEX_SECURITY_STATE_DIR` to a private directory outside the repository
-- Diff and working-tree scans require the repository argument to be the Git worktree root; deep mode supports repository/path targets only
+- Results can include source excerpts and vulnerability details. An interactive terminal shows a live dashboard (non-interactive terminals show progress lines); the dashboard and saved logs can contain source code or credentials, so review them before sharing. When the scan finishes, stderr includes the report path, finding count, and elapsed time (e.g. `REPORT`, `FINDINGS 2 (2 confirmed this scan; 0 previously found; 1 high, 1 medium)`, `ELAPSED`, `RESULTS`).
+- By default, finding severity doesn't cause a scan to fail; to make findings fail a CI check set a severity policy (see cli-ci.md).
+- Review the results: open `report.md`, confirm the target and revision, then read the coverage before individual findings. Check `scan.status` in `scan-manifest.json` for completion and `coverage.json` for reviewed surfaces, excluded paths, deferred work, and open questions. A completed scan exits `0` unless findings meet a configured severity threshold (`1`); coverage gaps don't change the exit code, so exit `0` doesn't mean every file was reviewed; input, execution, result-integrity, or required-output failures return `2`. For each finding check the affected code, attacker prerequisites, validation evidence, and remaining uncertainty (a source-based finding doesn't necessarily include a successful runtime reproduction). Keep the scan directory together (`scan-manifest.json`, `findings.json`, `coverage.json`, the report, and supporting artifacts).
+- After a complete interactive scan with findings, the CLI also offers a finding browser; for saved findings use the validate and patch commands in cli-reference.md.
+- Choose the next scan: select paths or a diff, configure deep scans, add security context, change the model or reasoning effort, set an estimated cost limit, bulk scans (cli-bulk-scans.md), and CI (cli-ci.md); all flags are in cli-reference.md. For authentication problems, repeat-scan differences, or false-positive feedback see cli-faq.md. Package changes are listed in the CLI and SDK releases on GitHub.
+- Earlier revisions of this page also documented `--base`, `--diff`, `--working-tree`, `--path`, `--mode`, `--effort`, `--model`, `--fail-on-severity`, `--knowledge-base`, and `CODEX_SECURITY_STATE_DIR`; the current quickstart doesn't cover them (see cli-reference.md).
 
 ## Related
 
