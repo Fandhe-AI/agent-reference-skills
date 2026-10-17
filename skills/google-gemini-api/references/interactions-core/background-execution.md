@@ -135,6 +135,7 @@ Parameters and endpoints:
 
 ## Notes
 
+- The execution-states table is the guide's list; the API reference also defines `queued` (waiting for processing) and `incomplete` (stopped after using all of `max_output_tokens` or an agent token budget; see long-decode).
 - The official chaining example passes `environment="remote"`, which provisions a fresh sandbox; this page uses `interaction1.environment_id` so turn 2 sees the files from turn 1 (see the managed agents quickstart).
 
 - Official pages conflict: this page describes `store=False` (24h TTL) with `background=True`, while long-decode and Deep Research state background execution requires `store=True` and returns 400 otherwise; use `store=True` for background runs.

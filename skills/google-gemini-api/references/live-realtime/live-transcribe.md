@@ -34,6 +34,9 @@ async def main():
             server_content = response.server_content
             if server_content and server_content.input_transcription:
                 print("Transcript:", server_content.input_transcription.text)
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
 JavaScript:

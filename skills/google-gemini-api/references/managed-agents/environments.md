@@ -120,7 +120,7 @@ interaction = client.interactions.create(
 Environments API:
 
 ```bash
-curl -X GET "https://generativelanguage.googleapis.com/v1beta/environments?pageSize=10" \
+curl -X GET "https://generativelanguage.googleapis.com/v1beta/environments?page_size=10" \
 -H "x-goog-api-key: $GEMINI_API_KEY"
 
 curl -X GET "https://generativelanguage.googleapis.com/v1beta/environments/YOUR_ENVIRONMENT_ID" \
@@ -152,8 +152,10 @@ with open("local_file.txt", "rb") as f:
 ```
 
 ```bash
+ENV_ID="YOUR_ENVIRONMENT_ID"
+
 # Download a directory as tar
-curl -L -X GET "https://generativelanguage.googleapis.com/v1beta/environments/$ENV_ID/files/config?alt=media&recursive=true" \
+curl --fail -L -X GET "https://generativelanguage.googleapis.com/v1beta/environments/$ENV_ID/files/config?alt=media&recursive=true" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
   -o config.tar
 
@@ -243,6 +245,10 @@ File entry fields: `name`, `path` (relative to environment root), `type` (`FILE`
 - REST uploads use the `/upload/` path prefix (`.../upload/v1beta/environments/{environment_id}/files/{path}`); a `PUT` without it returns `400`. Python and JavaScript clients add it. Archive format (`.tar` / `.tar.gz`) is detected from the payload. Resumable sessions: initiate with `?uploadType=resumable` plus `X-Upload-Content-Type` / `X-Upload-Content-Length`; chunk with `Content-Range`; non-final chunks return `308 Resume Incomplete`; set `extract` / `overwrite` on the initiating request.
 - Overwrite defaults to `false`; existing destination returns `409 Conflict` (`"code": "aborted"`).
 - Deprecated: the legacy `/files/environment-{id}:download` endpoint. Replace with `client.environments.files.download(environment=..., path="workspace")` (Python), `client.environments.files.download({...})` (JavaScript), or `GET /v1beta/environments/$ENV_ID/files?alt=media` (REST). The quickstart page still shows the legacy endpoint.
+- The source's REST migration example downloads `/files?alt=media`, which per the behavior matrix returns root-level files only, not the `workspace` directory the Python/JavaScript examples fetch; use `/files/workspace?alt=media&recursive=true` to match the Python `path="workspace"` call, as the quickstart does.
+- The download/upload REST block adds an `ENV_ID="YOUR_ENVIRONMENT_ID"` assignment; the original page uses `$ENV_ID` without defining it.
+- The list request uses `page_size` as in the API reference (ListEnvironments) and the SDK examples; the guide's REST example writes `pageSize`.
+- `--fail` is added to the download curl so an HTTP error (e.g. 404 for an expired environment ID) is not saved as the tar file; the original example omits it.
 - Limitations: preview (features and schemas may change); provisioning takes up to ~5 seconds; expired or invalid environment ID returns `404 Not Found`; the agent reads text and image files only (binary support not yet available). Environment compute is not billed during preview.
 - Hooks configuration (`.agents/hooks.json`) can be mounted as a source; see `hooks.md`.
 - API surface: managed agents via the Interactions API, REST `v1beta/environments`. Java and Go tabs exist on the official page for the interaction examples.

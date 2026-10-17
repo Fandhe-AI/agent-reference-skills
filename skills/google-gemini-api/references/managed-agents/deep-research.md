@@ -24,15 +24,13 @@ interaction = client.interactions.create(
 
 print(f"Research started: {interaction.id}")
 
-while True:
-    interaction = client.interactions.get(interaction.id)
-    if interaction.status == "completed":
-        print(interaction.steps[-1].content[0].text)
-        break
-    elif interaction.status in ("failed", "cancelled", "incomplete"):
-        print(f"Stopped ({interaction.status}): {interaction.errors}")
-        break
+while (interaction := client.interactions.get(interaction.id)).status in ("in_progress", "queued"):
     time.sleep(10)
+
+if interaction.status == "completed":
+    print(interaction.steps[-1].content[0].text)
+else:
+    print(f"Stopped ({interaction.status}): {interaction.errors}")
 ```
 
 ```javascript
@@ -48,16 +46,17 @@ const interaction = await client.interactions.create({
 
 console.log(`Research started: ${interaction.id}`);
 
+let result;
 while (true) {
-    const result = await client.interactions.get(interaction.id);
-    if (result.status === 'completed') {
-        console.log(result.steps.at(-1).content[0].text);
-        break;
-    } else if (['failed', 'cancelled', 'incomplete'].includes(result.status)) {
-        console.log(`Stopped (${result.status}): ${JSON.stringify(result.errors)}`);
-        break;
-    }
+    result = await client.interactions.get(interaction.id);
+    if (!['in_progress', 'queued'].includes(result.status)) break;
     await new Promise(resolve => setTimeout(resolve, 10000));
+}
+
+if (result.status === 'completed') {
+    console.log(result.steps.at(-1).content[0].text);
+} else {
+    console.log(`Stopped (${result.status}): ${JSON.stringify(result.errors)}`);
 }
 ```
 
@@ -81,6 +80,28 @@ Collaborative planning (request plan, refine, approve):
 
 ```python
 import time
+from google import genai
+
+client = genai.Client()
+
+# First interaction: request a research plan
+plan_interaction = client.interactions.create(
+    agent="deep-research-preview-04-2026",
+    input="Do some research on Google TPUs.",
+    agent_config={
+        "type": "deep-research",
+        "thinking_summaries": "auto",
+        "collaborative_planning": True,
+    },
+    background=True,
+)
+
+# Wait for and retrieve the plan
+while (result := client.interactions.get(id=plan_interaction.id)).status in ("in_progress", "queued"):
+    time.sleep(5)
+if result.status != "completed":
+    raise RuntimeError(f"{result.status}: {result.errors}")
+print(result.steps[-1].content[0].text)
 
 # Second interaction: refine the plan
 refined_plan = client.interactions.create(
@@ -339,7 +360,8 @@ Comparison: standard Gemini models answer in seconds (generate then output; chat
 - The official File Search sample passes only `file_search` while asking to compare against current public web news; since explicit `tools` replace the defaults (Google Search / URL Context / Code Execution), the example here adds `google_search` so the web comparison can run.
 - Preview. The Deep Research agent is exclusively available using the Interactions API; it cannot be accessed through `generate_content`.
 - `background=True` is required (agents run asynchronously). The API returns a partial `Interaction` immediately; status transitions from `in_progress` to `completed` or `failed`. Background execution requires `store=True`.
-- The polling loops (including the collaborative-planning ones) also stop on `cancelled` / `incomplete`; the original page only checks `completed` / `failed` (collaborative-planning loops check only `completed`).
+- The polling loops (including the step-1 plan request and the collaborative-planning ones) wait only while the status is `in_progress` / `queued` and treat every other status (`failed`, `cancelled`, `incomplete`, `budget_exceeded`, `requires_action`) as a stop; the original page only checks `completed` / `failed` (collaborative-planning loops check only `completed`). The Python collaborative-planning block adds the source's step-1 `plan_interaction` request so the example is self-contained.
+- The Antigravity agent page requires `mcp_server.name` to match `^[a-z0-9_-]+$` (uppercase returns 400); this page's example uses the display name "Deployment Tracker" as published, and whether Deep Research enforces the same rule is not documented.
 - The official page's Python/JS samples use `thought` deltas; aligned with the streaming guide's `thought_summary` delta and `error` event (also used by the page's Java/Go samples).
 - The official page's Python/JS samples read `interaction.error`; the Interaction resource field is `errors` (array of Error, per the API reference and the page's Java sample), while the singular `error` belongs to the SSE `error` event.
 - The reconnect loop prints the final output when the interaction completed while disconnected; the original sample breaks without reading it.

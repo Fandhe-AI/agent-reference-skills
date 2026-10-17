@@ -83,12 +83,12 @@ for event in stream:
         print(event.usage)
 ```
 
-Download files from the sandbox (Environments files API; Python SDK: `client.environments.files.download(environment=..., path="workspace")`):
+Download files from the sandbox (Environments files API; the Python SDK equivalent is `client.environments.files.download(environment=..., path="workspace")`, which does not send `recursive`):
 
 ```bash
 ENV_ID="your_environment_id_here"
 
-curl -L -X GET "https://generativelanguage.googleapis.com/v1beta/environments/$ENV_ID/files/workspace?alt=media&recursive=true" \
+curl --fail -L -X GET "https://generativelanguage.googleapis.com/v1beta/environments/$ENV_ID/files/workspace?alt=media&recursive=true" \
 -H "x-goog-api-key: $GEMINI_API_KEY" \
 -o snapshot.tar
 
@@ -151,7 +151,8 @@ print(result.output_text)
 
 ## Notes
 
-- The download curl uses `/files/workspace?alt=media&recursive=true` to match the Python `path="workspace"` call; the source page's migration example downloads the root (`/files?alt=media`), which returns root-level files only.
+- The download curl uses `/files/workspace?alt=media&recursive=true` to fetch the whole workspace tree; the Python `client.environments.files.download(path="workspace")` call sends no `recursive` parameter (google-genai 2.31.0), so it returns only the directory's immediate files. The source page's migration example downloads the root (`/files?alt=media`), which returns root-level files only.
+- `--fail` is added to the download curl so an HTTP error (e.g. 404 for an expired environment ID) is not saved as the tar file; the original example omits it.
 - The response is an `Interaction` object. Store `interaction.id` and `interaction.environment_id` to continue in the same sandbox; `interaction.output_text` is the final response; `interaction.steps` lists each step (reasoning, tool calls, code execution).
 - The API tracks two independent state dimensions: conversation context (`previous_interaction_id`) and environment state (files, installed packages, sandbox state, via `environment`). Clear conversation but keep files: omit `previous_interaction_id`, pass the environment ID. Keep conversation with a new workspace: pass `previous_interaction_id` and `environment="remote"`.
 - Automatic context compaction: a native compaction step happens at around 135k tokens, automatically, to prevent token limit errors and "context rot".

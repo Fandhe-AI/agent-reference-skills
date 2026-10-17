@@ -82,6 +82,7 @@ config = types.LiveConnectConfig(
     response_modalities=["AUDIO"],
     thinking_config=types.ThinkingConfig(
         thinking_level="low",
+        include_thoughts=True,
     )
 )
 ```
@@ -101,6 +102,8 @@ const config = {
   responseModalities: [Modality.AUDIO],
   speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } } }
 };
+
+const model = 'gemini-3.8-live-extended-thinking';
 
 const config = {
   responseModalities: [Modality.AUDIO],

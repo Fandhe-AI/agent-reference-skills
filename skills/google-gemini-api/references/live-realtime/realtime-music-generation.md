@@ -59,8 +59,8 @@ import Speaker from "speaker";
 import { Buffer } from "buffer";
 
 const client = new GoogleGenAI({
-  apiKey: GEMINI_API_KEY,
-    apiVersion: "v1beta" ,
+  apiKey: process.env.GEMINI_API_KEY,
+  apiVersion: "v1beta",
 });
 
 async function main() {
@@ -96,8 +96,6 @@ async function main() {
     musicGenerationConfig: {
       bpm: 90,
       temperature: 1.0,
-      audioFormat: "pcm16",  // important so we know format
-      sampleRateHz: 48000,
     },
   });
 
@@ -125,10 +123,12 @@ await session.set_music_generation_config(
     music_generation_mode=types.MusicGenerationMode.QUALITY
   )
 )
-await session.reset_context();
+await session.reset_context()
 ```
 
 ```javascript
+import { MusicGenerationMode } from "@google/genai";
+
 await session.setWeightedPrompts({
   weightedPrompts: [
     { text: 'Harmonica', weight: 0.3 },
@@ -143,7 +143,7 @@ await session.setMusicGenerationConfig({
     musicGenerationMode: MusicGenerationMode.QUALITY
   },
 });
-await session.reset_context();
+session.resetContext();
 ```
 
 ## Options / Props
@@ -165,7 +165,7 @@ await session.reset_context();
 | `top_k` | int | 1 to 1000, default 40 |
 | `seed` | int | 0 to 2 147 483 647, randomly selected by default |
 
-Playback control: `session.play()`, `session.pause()`, `session.stop()`, `session.reset_context()`.
+Playback control: `session.play()`, `session.pause()`, `session.stop()`, `session.reset_context()` (Python); `session.play()`, `session.pause()`, `session.stop()`, `session.resetContext()` (JavaScript).
 
 `Scale` enum values: `C_MAJOR_A_MINOR`, `D_FLAT_MAJOR_B_FLAT_MINOR`, `D_MAJOR_B_MINOR`, `E_FLAT_MAJOR_C_MINOR`, `E_MAJOR_D_FLAT_MINOR`, `F_MAJOR_D_MINOR`, `G_FLAT_MAJOR_E_FLAT_MINOR`, `G_MAJOR_E_MINOR`, `A_FLAT_MAJOR_F_MINOR`, `A_MAJOR_G_FLAT_MINOR`, `B_FLAT_MAJOR_G_MINOR`, `B_MAJOR_A_FLAT_MINOR`, `SCALE_UNSPECIFIED` (default; the model decides).
 
@@ -175,7 +175,8 @@ Playback control: `session.play()`, `session.pause()`, `session.stop()`, `sessio
 - Lyria RealTime is an experimental model. The model ID in the source examples is `models/lyria-realtime-exp`, used with `api_version` `v1beta`.
 - A `WeightedPrompt` has `text` and `weight`; the weight can be any value except `0` (`1.0` is usually a good starting point). Prompt transitions can be abrupt, so cross-fade by sending intermediate weights.
 - Updating configuration: you can't update a single parameter; set the whole configuration or other fields reset to defaults. Changing bpm or scale also requires `reset_context()` (a hard transition; the stream continues). For `bpm`, `density`, `brightness`, and `scale`, if no value is provided the model decides from the initial prompts.
-- Specifications: output raw 16-bit PCM audio, 48kHz, 2 channels (stereo). The source's JavaScript example uses a 44.1 kHz speaker and `sampleRateHz: 44100`; changed to 48000 to match the 48kHz output specification.
+- Specifications: output raw 16-bit PCM audio, 48kHz, 2 channels (stereo). The source's JavaScript example uses a 44.1 kHz speaker and `sampleRateHz: 44100`; changed to 48000 to match the 48kHz output specification. The source also sets `audioFormat: "pcm16"` / `sampleRateHz` in `musicGenerationConfig`; neither field exists in `LiveMusicGenerationConfig` (@google/genai 2.30.0, google-genai 2.31.0, API reference), so they are omitted.
+- The source's JavaScript examples use an undeclared `GEMINI_API_KEY` (here `process.env.GEMINI_API_KEY`) and call `session.reset_context()`; the @google/genai `LiveMusicSession` method is `resetContext()` (`reset_context()` is the Python name, and the JS method returns void). The JS steering example imports `MusicGenerationMode` from `@google/genai`.
 - Limitations: instrumental only; prompts are checked by safety filters (triggering prompts are ignored, with an explanation in the output's `filtered_prompt` field); output audio is always watermarked.
 - Best practices: implement robust client audio buffering (network jitter, latency variation); be descriptive; iterate and steer gradually; experiment with prompt weights.
 - Non-streaming music generation is covered by the media-generation category (Lyria 3.5). Availability: v1beta only.

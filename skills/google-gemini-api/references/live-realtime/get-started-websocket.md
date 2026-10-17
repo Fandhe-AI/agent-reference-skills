@@ -41,6 +41,20 @@ websocket.onopen = () => {
   websocket.send(JSON.stringify(setupMessage));
   console.log('Configuration sent');
 };
+
+websocket.onmessage = (event) => {
+  const response = JSON.parse(event.data);
+  console.log('Received:', response);
+  // Handle different types of responses here
+};
+
+websocket.onerror = (error) => {
+  console.error('WebSocket Error:', error);
+};
+
+websocket.onclose = () => {
+  console.log('WebSocket Closed');
+};
 ```
 
 Python:
@@ -73,6 +87,12 @@ async def connect_and_configure():
 
         # Keep the session alive for further interactions
         await asyncio.sleep(10) # Example: keep open briefly
+
+async def main():
+    await connect_and_configure()
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
 Sending text, audio and video (JavaScript):
@@ -152,6 +172,7 @@ function handleToolCall(toolCall) {
 ## Notes
 
 - Authentication: API key as the `key` query parameter. With ephemeral tokens, connect to the `v1beta` endpoint `BidiGenerateContentConstrained` and pass the token as the `access_token` query parameter.
+- The `?key=` examples embed a standard API key; for browser (client-to-server) apps in production, the overview recommends minting an ephemeral token on your backend and connecting to `BidiGenerateContentConstrained?access_token=...` instead.
 - Audio is raw 16-bit PCM, 16kHz, little-endian; the `mimeType` (`audio/pcm;rate=16000`) is crucial. Video frames are individual images (e.g., JPEG or PNG).
 - You are responsible for maintaining the WebSocket connection.
 - The official page places `responseModalities` directly under `setup`; per the Live API reference (`BidiGenerateContentSetup`) it belongs in `setup.generationConfig`, so the examples here are corrected.

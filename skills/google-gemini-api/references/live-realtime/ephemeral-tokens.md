@@ -108,6 +108,7 @@ const session = await ai.live.connect({
 ## Notes
 
 - Ephemeral tokens are in Preview and, at this time, only compatible with the Live API, and only with the `v1beta` API version.
+- google-genai 2.31.0 emits an ExperimentalWarning when connecting to Live with an ephemeral token unless the client uses `http_options={"api_version": "v1alpha"}`, while this page and the REST endpoint document `v1beta`.
 - Flow: the client authenticates with your backend, the backend requests a token from the Gemini API provisioning service, and the client uses the token (`token.name`) as if it were an API key.
 - Within the `expireTime` window you need `sessionResumption` to reconnect the call every 10 minutes (the same token can be reused even with `uses: 1`).
 - Without the SDK, pass the token in an `access_token` query parameter, or in an HTTP `Authorization` header prefixed by the auth-scheme `Token`.

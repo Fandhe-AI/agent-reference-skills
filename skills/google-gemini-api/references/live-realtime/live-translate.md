@@ -44,6 +44,9 @@ async def main():
                             audio_data = part.inline_data.data
                             # Play or process the translated audio chunk
                             print(f"Received audio chunk ({len(audio_data)} bytes)")
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
 JavaScript:

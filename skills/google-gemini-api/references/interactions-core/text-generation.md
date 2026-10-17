@@ -121,6 +121,7 @@ interaction2 = client.interactions.create(
 ## Notes
 
 - Availability: Interactions API (REST examples use `v1beta`).
+- The thinking guide states Interactions API signatures appear only on `thought` and built-in tool steps, never on standard `function_call` steps; resend all model-generated steps unchanged regardless.
 - `interaction.output_text` returns the last text blocks; consecutive `TextContent` blocks are joined. It does not include earlier text blocks separated by non-text content (thoughts, images, audio, tool calls). For interleaved multimodal responses, iterate over `steps`.
 - Gemini models often have thinking enabled by default; control it with `generation_config.thinking_level`.
 - Gemini 4 and Gemini 3.6+ models ignore custom values for `temperature`, `top_p`, and `top_k` and return deprecation warning headers. Remove these sampling parameters from requests.

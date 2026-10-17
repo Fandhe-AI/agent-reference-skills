@@ -40,6 +40,7 @@ from google.genai import types
 
 client = genai.Client()
 model = "gemini-3.8-live"
+previous_session_handle = None  # or a handle saved from a previous session
 
 async def main():
     print(f"Connecting to the service with handle {previous_session_handle}...")
@@ -74,6 +75,9 @@ async def main():
                 # the user.
                 if message.server_content and message.server_content.turn_complete:
                     break
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
 JavaScript:
@@ -128,6 +132,7 @@ if (turn.serverContent && turn.serverContent.generationComplete) {
 
 ## Notes
 
+- The source references `previous_session_handle` without defining it; the example initializes it to `None` (start a new session) so the snippet runs.
 - Added a `pass` placeholder to the generation-complete handler so the snippet parses (the source leaves the block body as a comment).
 - Added a `server_content` presence check; messages such as tool calls, GoAway, and session-resumption updates carry no `server_content`.
 - Without compression, audio-only sessions are limited to 15 minutes and audio-video sessions to 2 minutes; exceeding these terminates the session. Context window compression extends sessions to an unlimited amount of time.

@@ -54,6 +54,7 @@ let interaction = await client.interactions.create({
 ```
 
 ```bash
+# 1. Create the background interaction. It returns an ID right away.
 ID=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
   -H "Content-Type: application/json" \
@@ -63,6 +64,20 @@ ID=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/interacti
     "background": true,
     "generation_config": {"max_output_tokens": 262144, "thinking_level": "high"}
   }' | jq -r '.id')
+
+# 2. Poll until the status is no longer in_progress or queued.
+#    The REST response has no output_text field, so join the text of every model_output step.
+while true; do
+  RESP=$(curl -s "https://generativelanguage.googleapis.com/v1beta/interactions/$ID" \
+    -H "x-goog-api-key: $GEMINI_API_KEY")
+  STATUS=$(echo "$RESP" | jq -r '.status')
+  if [[ "$STATUS" != "in_progress" && "$STATUS" != "queued" ]]; then
+    echo "$RESP" | jq -r '[.steps[]? | select(.type == "model_output") | .content[]? | select(.type == "text") | .text] | join("")'
+    echo "$RESP" | jq '{status, usage}'
+    break
+  fi
+  sleep 5
+done
 ```
 
 ## Options / Props

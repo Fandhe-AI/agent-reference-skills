@@ -92,7 +92,8 @@ Gemini 3 core principles:
 - For Gemini 3.x models, keep `temperature`, `top_p`, `top_k` at defaults; changing them (for example temperature below 1.0) can cause looping or degraded performance, particularly in complex math or reasoning tasks.
 - Gemini 2.5 and 3 series generate internal thinking, so it is generally unnecessary to have the model write out its reasoning; "Think very hard before answering" can help at the cost of extra thinking tokens.
 - Break down complex prompts: split instructions, chain prompts, aggregate parallel responses.
-- Fallback responses appear when a safety filter triggers; try increasing the temperature.
+- Fallback responses appear when a safety filter triggers; try increasing the temperature (advice for earlier models only; see the Gemini 4 / 3.6+ note below).
+- Gemini 4 and Gemini 3.6+ models ignore custom `temperature`, `top_p`, and `top_k` values and return deprecation warning headers; remove these parameters for those models (the temperature advice above applies only to earlier models).
 - Enable Grounding with Google Search for obscure or recent facts, and the code execution tool for arithmetic, counting, or calculation.
 - Agentic prompting dimensions: reasoning and strategy (logical decomposition, problem diagnosis, information exhaustiveness), execution and reliability (adaptability, persistence and recovery, risk assessment), interaction and output (ambiguity and permission handling, verbosity, precision and completeness). The guide includes a full system instruction template for agent benchmarks (not reproduced here).
 - Gemini 3 Flash system-instruction clauses in the guide: current-day accuracy (states it is 2026), knowledge cutoff (`Your knowledge cutoff date is January 2025.`), and the grounding clause above.

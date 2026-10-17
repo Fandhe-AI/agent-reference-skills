@@ -173,6 +173,7 @@ Errors:
 - Deleting a credential that is still referenced by an allowlist rule, tool, or env variable makes those references fail to resolve; update them first.
 - REST field names are snake_case; camelCase returns `400` (e.g. `Unknown parameter 'headerName'. Did you mean 'header_name'?`).
 - `credential` and `headers` on an `mcp_server` tool follow the same precedence as `transform`: credential first, explicit header wins.
+- `credential` on an `mcp_server` tool is documented on this page but is not listed in the Interactions OpenAPI `McpServer` schema or the google-genai 2.31.0 types; if the field is rejected, attach the credential to the MCP host on `environment.network.allowlist` instead (as the page's Go tab does).
 - The Go tab of the original page for the MCP example sets `Credential` only on the allowlist entry; see the official page for Go and Java tabs.
 - API surface: managed agents (Interactions API), REST `v1beta/credentials`; Public Preview feature set.
 - Distinct from other skills: anthropic-managed-agents has its own vaults / credentials model; this page covers the Gemini API only.

@@ -44,6 +44,7 @@ Get-started guides: GenAI SDK tutorial (server-to-server, Python backend), WebSo
 
 ## Notes
 
+- The overview states 70 supported languages, while the capabilities guide lists 99 languages for native audio models; see the capabilities page for the current table.
 - Client-to-server generally offers better performance for streaming audio and video, since it bypasses the need to send the stream to your backend first. For production, the source recommends ephemeral tokens instead of standard API keys.
 - Partner integrations listed in the source (WebRTC or WebSockets): LiveKit, Pipecat by Daily, Fishjam by Software Mansion, Vision Agents by Stream, Voximplant, Agora, Firebase AI SDK (Firebase AI Logic is out of scope for this skill).
 - Availability: Live API is v1beta only (per the `api-versions` page of this skill's migration category).

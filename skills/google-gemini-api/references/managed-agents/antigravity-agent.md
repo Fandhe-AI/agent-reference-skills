@@ -64,6 +64,11 @@ interaction = client.interactions.create(
 Multimodal input (text and image only; image as inline base64 `data`):
 
 ```python
+import base64
+
+with open("path/to/chart.png", "rb") as f:
+    image_bytes = f.read()
+
 interaction_inline = client.interactions.create(
     agent="antigravity-preview-09-2026",
     input=[
@@ -185,9 +190,11 @@ print(f"Status: {interaction.status}")  # "incomplete" if budget was hit
 print(f"Tokens used: {interaction.usage.total_tokens}")
 ```
 
-Background execution, polling, cancel:
+Background execution and polling:
 
 ```python
+import time
+
 interaction = client.interactions.create(
     agent="antigravity-preview-09-2026",
     input="Run a complex analysis on the repository.",
@@ -198,7 +205,11 @@ interaction = client.interactions.create(
 while interaction.status in ("in_progress", "queued"):
     time.sleep(5)
     interaction = client.interactions.get(id=interaction.id)
+```
 
+Cancel a running background interaction:
+
+```python
 client.interactions.cancel(id="INTERACTION_ID")
 ```
 

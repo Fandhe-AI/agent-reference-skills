@@ -37,6 +37,7 @@ media_processing: "AGENTIC"    (GenerateContent API)
 
 ## Notes
 
+- The 90% caching discount is the general figure from this guide; the long-decode guide states a 95% discount on repeated input for Gemini 4 Argon during the introductory period.
 - Availability: guide covers both APIs; `processing` is Interactions API, `media_processing` is generateContent.
 - Priority: highest criticality, non-sheddable; when dynamic Priority limits are exceeded the request is downgraded to Standard instead of failing.
 - Flex: 50% of Standard, sheddable (may be preempted), synchronous; suited to multi-step agentic workflows where call N+1 depends on call N, background CRM updates, offline evaluations.
