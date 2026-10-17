@@ -167,6 +167,34 @@ while step_count < max_steps:
 
     # Add model response to conversation history
     contents.append(response.candidates[0].content)
+
+    # Check for function calls
+    function_calls = [part for part in response.candidates[0].content.parts if part.function_call]
+
+    if not function_calls:
+        # Model is done calling functions
+        print("Sequence complete.")
+        print(f"Model Summary: {response.text}")
+        break
+
+    # Execute function calls and collect results
+    function_response_parts = []
+    for part in function_calls:
+        fc = part.function_call
+        if fc.name == "move":
+            move(**fc.args)
+        elif fc.name == "setGripperState":
+            setGripperState(**fc.args)
+
+        function_response_parts.append(
+            types.Part.from_function_response(
+                name=fc.name,
+                response={"status": "success"},
+            )
+        )
+
+    # Send function results back to model
+    contents.append(types.Content(role="user", parts=function_response_parts))
 ```
 
 Notes:
