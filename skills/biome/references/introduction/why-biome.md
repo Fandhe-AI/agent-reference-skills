@@ -2,7 +2,7 @@
 
 Biome is a toolchain for web projects, built to be fast and easy to set up. It started in August 2023 as a fork of Rome, maintained by some of its developers.
 
-## Usage
+## Signature / Usage
 
 ```shell
 biome check --write   # format + lint + assist in one run

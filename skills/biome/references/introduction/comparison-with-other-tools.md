@@ -2,7 +2,7 @@
 
 How Biome compares with Prettier, ESLint, and Oxc in compatibility, performance, and language support.
 
-## Usage
+## Signature / Usage
 
 ```shell
 biome migrate prettier   # Prettier config -> biome.json
