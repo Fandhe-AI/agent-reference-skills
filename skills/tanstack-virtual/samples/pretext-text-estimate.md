@@ -34,8 +34,29 @@ const DEFAULT_VIEWPORT_WIDTH = 760
 
 const preparedCache = new Map<string, ReturnType<typeof prepare>>()
 
-// `messages` is a Message[] (2000 synthetic items in the official example; data construction omitted here)
-declare const messages: Message[]
+const sampleBodies = [
+  'The expensive part of variable-height virtualization is usually discovering the height after the row has already rendered. Pretext lets this example calculate the message height from the text, font, width, and line-height before the DOM node exists.',
+  'This row includes hard breaks.\n\nThe CSS uses white-space: pre-wrap, so the Pretext prepare call uses the same option. Keeping those two in sync is the difference between a stable scroll position and a slow drip of measurement corrections.',
+  'Resize the page and the example reruns layout() for the new content width. It does not rerun prepare() unless the text or font inputs change.',
+]
+
+const messages = Array.from({ length: 2000 }, (_, index): Message => {
+  const body = sampleBodies[index % sampleBodies.length]!
+  const repeatCount = index % 7 === 0 ? 2 : 1
+  const repeatedBody = Array.from({ length: repeatCount }, () => body).join(
+    '\n\n',
+  )
+
+  return {
+    id: `message-${index}`,
+    author: index % 3 === 0 ? 'Support' : index % 3 === 1 ? 'Customer' : 'Ops',
+    body: `${repeatedBody}\n\nMessage ${index + 1}`,
+    time: `${String(8 + (index % 10)).padStart(2, '0')}:${String(
+      (index * 7) % 60,
+    ).padStart(2, '0')}`,
+    type: index % 3 === 1 ? 'user' : 'agent',
+  }
+})
 
 function fallbackTextHeight(text: string, width: number) {
   const averageCharacterWidth = 7
@@ -193,7 +214,7 @@ function App() {
 }
 ```
 
-The rules from `src/index.css` that the layout and the estimate constants depend on (the example's `* { box-sizing: border-box; }` is also required):
+The rules from `src/index.css` that the layout and the estimate constants depend on (including `* { box-sizing: border-box; }`, which the constants assume):
 
 ```css
 * {
@@ -271,6 +292,7 @@ The rules from `src/index.css` that the layout and the estimate constants depend
 - Keep the `prepare` options (here `whiteSpace: 'pre-wrap'`) in sync with the CSS `white-space`, otherwise estimates drift from the rendered height.
 - The CSS must match the constants: `padding: 12px 14px` + 1px border = `BUBBLE_X_PADDING` 28 / `BUBBLE_Y_PADDING` 24 / `BUBBLE_BORDER_WIDTH` 2, `max-width: 680px`, `.message-meta` `height: 18px` + `margin-bottom: 6px`, `.message-body` `14px/20px Arial`, and `.message-row` `padding: 8px 16px` (`ROW_Y_PADDING` 16 / `ROW_X_PADDING` 32).
 - `layout()` reruns on width change; `prepare()` reruns only when text or font inputs change. After `document.fonts.ready`, both caches are cleared and `measure()` recalculates sizes.
-- For rows with media or other non-text content, the official example suggests `measureElement` or `resizeItem` instead.
-- `messages` is declared with `declare const` as the data source: supply your own `Message[]` with unique `id` values. Omitted from the pinned `@tanstack/react-virtual@3.14.21` example: message generation (demo text corpus), the toolbar, and the mount code. The layout constants above are kept as in the example.
+- For rows with media or other non-text content, the Pretext guide recommends `measureElement` or `resizeItem` instead (see `references/getting-started/pretext.md`).
+- `fallbackTextHeight` is the example's approximate estimate (about 7px per character) for runtimes without `Intl.Segmenter`, following the guide's advice to keep a fallback for unsupported runtimes.
+- `messages` is generated as in the pinned `@tanstack/react-virtual@3.14.21` example, but `sampleBodies` is trimmed to the first 3 of its 10 strings; replace it with your own data (unique `id` values). Omitted: the toolbar and the mount code. The layout constants above are kept as in the example.
 - Full stylesheet: `examples/react/pretext/src/index.css` (page, toolbar, button, and media-query rules omitted here).
