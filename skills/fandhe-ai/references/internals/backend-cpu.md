@@ -1,12 +1,12 @@
 ---
-source: https://docs.rs/fandhe-ai-backend-cpu/0.3.0/fandhe_ai_backend_cpu/
+source: https://docs.rs/fandhe-ai-backend-cpu/0.11.0/fandhe_ai_backend_cpu/
 ---
 
 # backend-cpu
 
 `tensor-core` の計算グラフノードを CPU カーネルへ変換して実行するバックエンド。Rayon による並列化を利用する。
 
-- crate 名: `fandhe-ai-backend-cpu`（docs.rs `fandhe-ai-backend-cpu/0.3.0`）
+- crate 名: `fandhe-ai-backend-cpu`（docs.rs `fandhe-ai-backend-cpu/0.11.0`）
 
 ## Signature / Usage
 
@@ -30,8 +30,12 @@ let ops: &dyn BackendOps = &CpuBackendOps;
 | `memory` | CPU メモリ操作（確保・アップロード/ダウンロード・統計） |
 | `reduction` | sum / max / mean の軸指定 reduction 演算 |
 | `rmsnorm` | NEON + Rayon 並列化による融合 RMSNorm forward |
-| `softmax` | NEON + Rayon 並列化による融合 softmax forward |
+| `softmax` | NEON + Rayon 並列化による融合 softmax forward（0.11.0 で `run_log_softmax_f32` も再エクスポート） |
+| `layer_norm` | LayerNorm forward（`LayerNormError` / `run_layer_norm_f32`。0.3.0 には無かった公開モジュール） |
+| `linalg` | 線形代数（`LinalgError`。0.3.0 には無かった公開モジュール） |
 | `parity` | バックエンド間の数値精度検証ユーティリティ |
+
+0.11.0 のクレートルートには、このほか `BatchNormError` / `run_batch_norm_infer_f32` / `run_batch_norm_train_f32`、診断用のレポート型（`Gb10AffinityReport` / `SmallShapeCapReport` / `SmeReport` / `ThreadLimitReport` と対応する `*_report` 関数）が再エクスポートされている。`batch_norm` / `pooling` / `rnn_cell` / `sort_topk` / `unique` / `gather_scatter` などの実装モジュールは非公開。
 
 主要な型:
 
