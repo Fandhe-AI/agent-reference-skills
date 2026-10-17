@@ -9,10 +9,10 @@ Type helper that infers the input and output types of a single tool, for type-sa
 ## Signature / Usage
 
 ```tsx
-import { InferUITool } from 'ai';
+import { InferUITool, tool } from 'ai';
 import { z } from 'zod';
 
-const weatherTool = {
+const weatherTool = tool({
   description: 'Get the current weather',
   inputSchema: z.object({
     location: z.string().describe('The city and state'),
@@ -20,7 +20,7 @@ const weatherTool = {
   execute: async ({ location }) => {
     return `The weather in ${location} is sunny.`;
   },
-};
+});
 
 // Infer the types from the tool
 type WeatherUITool = InferUITool<typeof weatherTool>;
@@ -41,6 +41,10 @@ The resulting type has the shape:
   output: InferToolOutput<TOOL>;
 }
 ```
+
+## Notes
+
+- The official example uses a plain object literal; it is wrapped in `tool()` here so that `execute` arguments are inferred (see tool.md).
 
 ## Related
 

@@ -9,11 +9,11 @@ Type helper that infers the input and output types of a `ToolSet`, for type-safe
 ## Signature / Usage
 
 ```tsx
-import { InferUITools } from 'ai';
+import { InferUITools, tool } from 'ai';
 import { z } from 'zod';
 
 const tools = {
-  weather: {
+  weather: tool({
     description: 'Get the current weather',
     inputSchema: z.object({
       location: z.string().describe('The city and state'),
@@ -21,7 +21,7 @@ const tools = {
     execute: async ({ location }) => {
       return `The weather in ${location} is sunny.`;
     },
-  },
+  }),
 };
 
 // Infer the types from the tool set
@@ -45,6 +45,10 @@ The resulting type has the shape:
   };
 }
 ```
+
+## Notes
+
+- The official example uses plain object literals; each is wrapped in `tool()` here so that `execute` arguments are inferred (see tool.md).
 
 ## Related
 
