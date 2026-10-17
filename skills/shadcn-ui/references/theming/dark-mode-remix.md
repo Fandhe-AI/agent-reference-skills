@@ -24,6 +24,7 @@ npm install remix-themes
 Session storage and resolver (`app/sessions.server.tsx`):
 
 ```tsx
+import { createCookieSessionStorage } from "@remix-run/node"
 import { createThemeSessionResolver } from "remix-themes"
 
 // You can default to 'development' if process.env.NODE_ENV is not set
@@ -49,6 +50,16 @@ export const themeSessionResolver = createThemeSessionResolver(sessionStorage)
 Root layout (`app/root.tsx`):
 
 ```tsx
+import type { LoaderFunctionArgs } from "@remix-run/node"
+import {
+  Links,
+  LiveReload,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+} from "@remix-run/react"
 import clsx from "clsx"
 import { PreventFlashOnWrongTheme, ThemeProvider, useTheme } from "remix-themes"
 
@@ -149,6 +160,7 @@ export function ModeToggle() {
 
 - The `DropdownMenuTrigger asChild` usage in the toggle is the source's Radix-style example as written; with the default Base UI components use the `render` prop instead (e.g. `<DropdownMenuTrigger render={<Button variant="outline" size="icon" />}>`), or install the Radix variant.
 - Adapted (not in the official docs): the official action route imports `./sessions.server`, which does not resolve from `app/routes/`; changed to `../sessions.server`.
+- Adapted (not in the official docs): added the Remix runtime imports (`@remix-run/node`, `@remix-run/react`) that the official snippets omit.
 - The cookie `secrets: ["s3cr3t"]` in the source is a placeholder; supply your own secret from configuration, not a literal.
 - Framework APIs themselves are in skills nextjs-app / react-router / tanstack-start / tanstack-router.
 

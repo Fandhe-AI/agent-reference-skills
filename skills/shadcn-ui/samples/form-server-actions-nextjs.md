@@ -28,6 +28,8 @@ export type FormState = {
 // actions.ts
 "use server"
 
+import { formSchema, type FormState } from "./schema"
+
 export async function bugReportFormAction(
   _prevState: FormState,
   formData: FormData
@@ -114,4 +116,5 @@ export function BugReportForm() {
 - Return `values` on validation errors to preserve user input; omit `values` on success and React resets the form.
 - The `form.tsx` above is assembled from the docs' pending-state and error-display snippets (the docs' full demo imports `./form-next-demo-action` and `./form-next-demo-schema`); `actions.ts` is the docs' "Server-side Validation" snippet, which omits its imports.
 - Adapted (not in the official docs): the official demo also has a `description` field (Textarea) that is not expanded in the docs snippets; the sample keeps only `title` so the schema, action and inputs agree.
+- Adapted (not in the official docs): added the import of `formSchema` / `FormState` from `./schema` to `actions.ts`.
 - Next.js APIs (`next/form`, Server Actions) are in skill nextjs-app, schema API in skill zod.
