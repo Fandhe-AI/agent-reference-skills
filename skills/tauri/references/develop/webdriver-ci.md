@@ -19,6 +19,10 @@ on: [push]
 # the name of our workflow
 name: WebDriver
 
+# least-privilege token: only checkout needs read access
+permissions:
+  contents: read
+
 jobs:
   # a single job named test
   test:
@@ -115,6 +119,7 @@ jobs:
 
 - The `tauri-driver` version is independent of other Tauri versions.
 - Actions pinned to commit SHAs (upstream uses the tags `v4` / `v2` / `stable`); SHAs resolved from the GitHub API on 2026-10-17, re-resolve when updating.
+- `permissions: contents: read` was added to the upstream workflow so the `GITHUB_TOKEN` is least-privilege (only checkout needs read access).
 - Upstream runs `cargo test` at the repository root; `working-directory: src-tauri` added to match the stated assumption that the app lives in `src-tauri`.
 - Tauri uses WebDriver via `tauri-driver`. This is not Playwright; see the playwright skill for Playwright. GitHub Actions itself is covered by the github-docs skill.
 
