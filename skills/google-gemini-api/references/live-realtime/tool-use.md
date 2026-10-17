@@ -163,7 +163,7 @@ Scheduling values for a `NON_BLOCKING` function response:
 - The official guide nests `scheduling` inside `response`; per the FunctionResponse API reference it is a top-level field, so the examples place it next to `id` / `name` / `response`.
 - From a single prompt, the model can generate multiple function calls and the code necessary to chain their outputs; this code executes in a sandbox, generating subsequent `BidiGenerateContentToolCall` messages.
 - The model may generate and execute Python code to use Search (`executable_code` / `code_execution_result` parts).
-- The source's tool table lists Gemini 3.1 Flash Live Preview and Gemini 2.5 Flash Live Preview, while the examples use `gemini-3.8-live`; the capabilities page documents async function calling and scheduling (`SILENT`, `WHEN_IDLE`, `INTERRUPTED`) for Gemini 3.8 Live.
+- The source's tool table lists Gemini 3.1 Flash Live Preview and Gemini 2.5 Flash Live Preview, while the examples use `gemini-3.8-live`; the capabilities page documents async function calling and scheduling (`SILENT`, `WHEN_IDLE`, `INTERRUPT`; the capabilities page spells the last one `INTERRUPTED`, which is not a valid enum value) for Gemini 3.8 Live.
 - Availability: Live API is v1beta only. Tool concepts here relate to the anthropic-api-tools-mcp and openai-agents skills (built-in tools / MCP), which are different APIs.
 
 ## Related

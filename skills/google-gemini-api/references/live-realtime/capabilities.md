@@ -237,7 +237,7 @@ Model comparison (verbatim from the source table, condensed):
 | Thinking | Supported (interleaved reasoning). `thinkingLevel` is not supported (omit from setup). | Supported. Configurable background reasoning (`thinkingLevel`: `low`, `medium`, `high`; `minimal` is not supported). | Uses `thinkingLevel` (`minimal`, `low`, `medium`, `high`). Defaults to `minimal` to optimize for lowest latency. |
 | Receiving response | A single server event can contain multiple content parts simultaneously. | Same; when asynchronous reasoning is active, `turnComplete: true` does not indicate an idle session; use `interaction_status` (`IN_PROGRESS` versus `IDLE`). | A single server event can contain multiple content parts (for example, `inlineData` and transcript); process all parts in each event. |
 | Client content | `send_client_content` supported throughout the session lifecycle with explicit roles (`user` or `model`). `turn_complete=true` unconditionally interrupts generation. | Same | Same |
-| Asynchronous function calling (`behavior: NON_BLOCKING`) | Supported (default). Set `behavior: NON_BLOCKING` or use blocking mode with `behavior: BLOCKING`. Function scheduling (`SILENT`, `WHEN_IDLE`, `INTERRUPTED`) is supported. | Supported (Async only). Only `NON_BLOCKING` is supported. Blocking mode and function scheduling are not supported. | Not supported. Function calling is sequential only. |
+| Asynchronous function calling (`behavior: NON_BLOCKING`) | Supported (default). Set `behavior: NON_BLOCKING` or use blocking mode with `behavior: BLOCKING`. Function scheduling (`SILENT`, `WHEN_IDLE`, `INTERRUPT`) is supported. | Supported (Async only). Only `NON_BLOCKING` is supported. Blocking mode and function scheduling are not supported. | Not supported. Function calling is sequential only. |
 
 VAD parameters:
 
@@ -263,6 +263,7 @@ Limitations:
 - The page opens with a warning: "Preview: The Live API is in preview."
 - Audio formats: Live API audio is always raw, little-endian, 16-bit PCM. Output is always 24kHz. Input is natively 16kHz but the API resamples if needed; set the Blob MIME type like `audio/pcm;rate=16000`.
 - Video frames are sent as individual images at max 1 frame per second.
+- The source capability table lists the scheduling value as `INTERRUPTED`; the FunctionResponse API reference and the live-tools examples use `INTERRUPT`, so this page uses `INTERRUPT`.
 - Native audio output models support any voice available for TTS models and automatically choose the language (explicit language code is not supported). With `generateContent` the set of voices is slightly different.
 - Affective dialog and proactive audio: not supported in Gemini 3.1 Flash Live; set API version to `v1beta`.
 - Automatic VAD: when the audio stream is paused for more than a second, send `audioStreamEnd` to flush cached audio. Hybrid VAD keeps automatic VAD enabled and sends `audio_stream_end` from a client-side VAD for low-latency finalization; with manual VAD, use an end-of-speech silence threshold of at least 500ms. With `send_realtime_input` the API responds to audio automatically based on VAD; `send_client_content` adds messages to context in order while `send_realtime_input` is optimized for responsiveness at the expense of deterministic ordering.
