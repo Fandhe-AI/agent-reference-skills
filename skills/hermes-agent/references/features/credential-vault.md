@@ -12,8 +12,6 @@ hermes vault sources
 hermes vault sources --disable bitwarden
 ```
 
-## Options / Props
-
 ```yaml
 vault:
   onepassword:
@@ -23,6 +21,15 @@ vault:
   bitwarden:
     enabled: false
 ```
+
+## Options / Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `vault.onepassword.enabled` | boolean | on when installed | Set `false` to opt OUT of a detected 1Password manager |
+| `vault.onepassword.account` | string | `""` | `op --account` shorthand; empty = default |
+| `vault.onepassword.service_account_token_env` | string | `OP_SERVICE_ACCOUNT_TOKEN` | — |
+| `vault.bitwarden.enabled` | boolean | on when installed | Set `false` to opt OUT of a detected Bitwarden manager |
 
 ## Behavior
 

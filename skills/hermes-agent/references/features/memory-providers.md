@@ -48,27 +48,75 @@ memory:
 
 Honcho (`$HERMES_HOME/honcho.json` > `~/.hermes/honcho.json` > `~/.honcho/config.json`):
 
-| Key | Default | Description |
-|-----|---------|-------------|
-| `apiKey` / `baseUrl` | — | Cloud key / self-hosted URL |
-| `peerName` / `aiPeer` / `workspace` | — / host key / host key | Peer identities and shared workspace |
-| `contextCadence` | `1` | Min turns between base-layer `context()` calls |
-| `dialecticCadence` | `2` | Min turns between `peer.chat()` LLM calls |
-| `dialecticDepth` | `1` | `.chat()` passes per invocation, clamped 1-3 |
-| `dialecticReasoningLevel` | `'low'` | `minimal` / `low` / `medium` / `high` / `max` |
-| `recallMode` | `'hybrid'` | `hybrid` / `context` / `tools` |
-| `writeFrequency` | `'async'` | `async` / `turn` / `session` / integer N |
-| `observationMode` | `'directional'` | `directional` / `unified` |
-| `sessionStrategy` | `'per-directory'` | `per-directory` / `per-repo` / `per-session` / `global` |
-| `pinUserPeer`, `userPeerAliases`, `runtimePeerPrefix` | `false`, `{}`, `""` | Gateway identity mapping only |
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `apiKey` | string | — | Cloud key |
+| `baseUrl` | string | — | Self-hosted URL |
+| `peerName` | string | — | Peer identity |
+| `aiPeer` | string | host key | Peer identity |
+| `workspace` | string | host key | Shared workspace |
+| `contextCadence` | number | `1` | Min turns between base-layer `context()` calls |
+| `dialecticCadence` | number | `2` | Min turns between `peer.chat()` LLM calls |
+| `dialecticDepth` | number | `1` | `.chat()` passes per invocation, clamped 1-3 |
+| `dialecticReasoningLevel` | string | `'low'` | `minimal` / `low` / `medium` / `high` / `max` |
+| `recallMode` | string | `'hybrid'` | `hybrid` / `context` / `tools` |
+| `writeFrequency` | string or integer | `'async'` | `async` / `turn` / `session` / integer N |
+| `observationMode` | string | `'directional'` | `directional` / `unified` |
+| `sessionStrategy` | string | `'per-directory'` | `per-directory` / `per-repo` / `per-session` / `global` |
+| `pinUserPeer` | boolean | `false` | Gateway identity mapping only |
+| `userPeerAliases` | map | `{}` | Gateway identity mapping only |
+| `runtimePeerPrefix` | string | `""` | Gateway identity mapping only |
 
-Mem0 (`$HERMES_HOME/mem0.json`): `mode` (`platform` / `oss`), `host` (self-hosted server; do not combine with `mode: oss`), `user_id` (`hermes-user`), `agent_id` (`hermes`), `rerank` (`false`, platform only), `sync_max_chars` (`450`). Secret `MEM0_API_KEY` goes in `~/.hermes/.env`.
+Mem0 (`$HERMES_HOME/mem0.json`). Secret `MEM0_API_KEY` goes in `~/.hermes/.env`.
 
-Hindsight (`$HERMES_HOME/hindsight/config.json`): `mode` (`cloud` / `local_embedded` / `local_external`), `bank_id` (`hermes`), `recall_budget` (`mid`), `memory_mode` (`hybrid`), `auto_retain` / `auto_recall` / `retain_async` (`true`), `retain_context`, `retain_tags`, `retain_source`, `retain_user_prefix`, `retain_assistant_prefix`, `recall_tags`.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `mode` | string | — | `platform` / `oss` |
+| `host` | string | — | Self-hosted server; do not combine with `mode: oss` |
+| `user_id` | string | `hermes-user` | — |
+| `agent_id` | string | `hermes` | — |
+| `rerank` | boolean | `false` | Platform only |
+| `sync_max_chars` | number | `450` | — |
 
-Holographic (`plugins.hermes-memory-store` in `config.yaml`): `db_path` (`$HERMES_HOME/memory_store.db`), `auto_extract` (`false`), `default_trust` (`0.5`).
+Hindsight (`$HERMES_HOME/hindsight/config.json`):
 
-Supermemory (`$HERMES_HOME/supermemory.json`): `base_url` (`https://api.supermemory.ai`), `container_tag` (`hermes`, supports `{identity}`), `auto_recall`, `auto_capture`, `max_recall_results` (10), `profile_frequency` (50), `capture_mode` (`all`), `search_mode` (`hybrid` / `memories` / `documents`), `api_timeout` (5.0). Env: `SUPERMEMORY_API_KEY`, `SUPERMEMORY_BASE_URL`, `SUPERMEMORY_CONTAINER_TAG`.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `mode` | string | — | `cloud` / `local_embedded` / `local_external` |
+| `bank_id` | string | `hermes` | — |
+| `recall_budget` | string | `mid` | — |
+| `memory_mode` | string | `hybrid` | — |
+| `auto_retain` | boolean | `true` | — |
+| `auto_recall` | boolean | `true` | — |
+| `retain_async` | boolean | `true` | — |
+| `retain_context` | — | — | — |
+| `retain_tags` | — | — | — |
+| `retain_source` | — | — | — |
+| `retain_user_prefix` | — | — | — |
+| `retain_assistant_prefix` | — | — | — |
+| `recall_tags` | — | — | — |
+
+Holographic (`plugins.hermes-memory-store` in `config.yaml`):
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `db_path` | string | `$HERMES_HOME/memory_store.db` | — |
+| `auto_extract` | boolean | `false` | — |
+| `default_trust` | number | `0.5` | — |
+
+Supermemory (`$HERMES_HOME/supermemory.json`). Env: `SUPERMEMORY_API_KEY`, `SUPERMEMORY_BASE_URL`, `SUPERMEMORY_CONTAINER_TAG`.
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `base_url` | string | `https://api.supermemory.ai` | — |
+| `container_tag` | string | `hermes` | Supports `{identity}` |
+| `auto_recall` | — | — | — |
+| `auto_capture` | — | — | — |
+| `max_recall_results` | number | `10` | — |
+| `profile_frequency` | number | `50` | — |
+| `capture_mode` | string | `all` | — |
+| `search_mode` | string | — | `hybrid` / `memories` / `documents` |
+| `api_timeout` | number | `5.0` | — |
 
 ## Notes
 

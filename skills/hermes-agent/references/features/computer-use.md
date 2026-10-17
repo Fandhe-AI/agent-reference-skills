@@ -32,8 +32,6 @@ computer_use(action="key", keys="return", capture_after=True)
 | Windows | None at install; over SSH use the autostart pattern (Session 0 has no interactive desktop) |
 | Linux | `DISPLAY` for X11 or `XDG_SESSION_TYPE=wayland`; Wayland needs an XWayland bridge for capture; AT-SPI on |
 
-## Options / Props
-
 ```yaml
 computer_use:
   permission_mode: standard        # standard (default) | bounded
@@ -45,6 +43,19 @@ computer_use:
   cua_telemetry: false             # Hermes sets CUA_DRIVER_RS_TELEMETRY_ENABLED=0 unless true
   backend: cua                     # active provider (cua default, or a provider plugin)
 ```
+
+## Options / Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `computer_use.permission_mode` | string | `standard` | `standard` or `bounded` |
+| `computer_use.capability_manifest` | string | `""` | Path, required for `bounded` |
+| `computer_use.native_wayland` | boolean | `true` | Linux opt-in; only passed when `WAYLAND_DISPLAY` is set |
+| `computer_use.autostart` | boolean | `false` | Windows Scheduled Task `cua-driver-serve`; default on-demand |
+| `computer_use.no_overlay` | boolean | `false` | Force the overlay cursor on (`false`) or off (`true`) |
+| `computer_use.allow_unsigned_driver` | boolean | `true` | Local driver development only |
+| `computer_use.cua_telemetry` | boolean | `false` | Hermes sets `CUA_DRIVER_RS_TELEMETRY_ENABLED=0` unless `true` |
+| `computer_use.backend` | string | `cua` | Active provider (`cua` default, or a provider plugin) |
 
 | Env var | Purpose |
 |---|---|

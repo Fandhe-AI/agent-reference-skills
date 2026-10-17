@@ -69,7 +69,7 @@ def register(ctx):
 | Platform actions | `await ctx.platform_actions.add_reaction(...)` / `set_thread_title(...)` (Telegram, Discord; capability-gated) |
 | Memory backend / model provider | Subclass `MemoryProvider` in `plugins/memory/<name>/`; `register_provider(ProviderProfile(...))` in `plugins/model-providers/<name>/` (separate loaders) |
 
-## Options / Props
+## Configuration example
 
 ```yaml
 plugins:
@@ -87,6 +87,23 @@ plugins:
       allow_gateway_injection: true
       mcp_allowlist: ["knowledge_rag", "github"]
 ```
+
+## Options / Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `plugins.enabled` | list | — | Allow-list of plugin names to load |
+| `plugins.disabled` | list | — | Deny-list, always wins |
+| `plugins.clone_timeout_seconds` | number | `300` | Clamped to 3600 |
+| `plugins.hook_callback_timeout` | number | `30` | `0` disables; clamped to 600; timed-out `pre_tool_call` fails closed |
+| `plugins.load_timeout_seconds` | number | `10` | `0` disables; clamped to 600 |
+| `plugins.scan_on_install` | boolean | `true` | — |
+| `plugins.isolation` | string | `in_process` | `in_process` or `host` |
+| `plugins.host.launcher` | list | `[]` | — |
+| `plugins.entries.<name>.allow_gateway_injection` | boolean | — | Required for `ctx.inject_message` in gateway mode |
+| `plugins.entries.<name>.mcp_allowlist` | list | — | Per-server allow-list for `ctx.call_mcp` (no wildcards) |
+
+Plugin sources:
 
 | Source | Path |
 |--------|------|

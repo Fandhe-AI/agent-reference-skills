@@ -13,8 +13,6 @@ hermes computer-use screen install [-y]    # apt/dnf/pacman the packages
 hermes -p research computer-use screen start   # another bot's screen
 ```
 
-## Options / Props
-
 ```yaml
 bot_desktop:
   geometry: "1440x900"      # screen size; the viewer scales to fit the pane
@@ -23,6 +21,16 @@ bot_desktop:
   idle_stop_minutes: 30     # stop a screen nobody used for this long (0 = keep it up)
   placement: auto           # auto | terminal | gateway
 ```
+
+## Options / Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `bot_desktop.geometry` | string | `"1440x900"` | Screen size; the viewer scales to fit the pane |
+| `bot_desktop.auto_start` | boolean | `false` | Set `true` to start on the first `computer_use` call or headed browser use |
+| `bot_desktop.min_free_memory_mb` | number | `1536` | Refuse to start below this much free memory (`0` = never check) |
+| `bot_desktop.idle_stop_minutes` | number | `30` | Stop a screen nobody used for this long (`0` = keep it up) |
+| `bot_desktop.placement` | string | `auto` | `auto`, `terminal` or `gateway` |
 
 | `terminal.backend` | `placement: auto` | Meaning |
 |---|---|---|

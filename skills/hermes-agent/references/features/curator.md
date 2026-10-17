@@ -24,8 +24,6 @@ hermes curator purge [--days N] [--dry-run]
 
 The same subcommands are available as `/curator` inside a running session.
 
-## Options / Props
-
 ```yaml
 curator:
   enabled: true
@@ -48,6 +46,26 @@ skills:
   ledger: true
   ledger_max_bytes: 5242880    # 0 = never auto-maintain
 ```
+
+## Options / Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `curator.enabled` | boolean | `true` | — |
+| `curator.interval_hours` | number | `168` | 7 days |
+| `curator.min_idle_hours` | number | `2` | — |
+| `curator.stale_after_days` | number | `14` | — |
+| `curator.archive_after_days` | number | `30` | — |
+| `curator.consolidate` | boolean | `false` | LLM umbrella-building pass, opt-in |
+| `curator.prune_builtins` | boolean | `false` | Also archive unused bundled built-ins (hub skills always exempt) |
+| `curator.archive_ttl_days` | number | `0` | `0` = never purge |
+| `curator.backup.enabled` | boolean | `true` | — |
+| `curator.backup.keep` | number | `2` | — |
+| `auxiliary.curator.provider` | string | `openrouter` | — |
+| `auxiliary.curator.model` | string | `google/gemini-3-flash-preview` | — |
+| `auxiliary.curator.timeout` | number | `600` | — |
+| `skills.ledger` | boolean | `true` | — |
+| `skills.ledger_max_bytes` | number | `5242880` | `0` = never auto-maintain |
 
 ## Notes
 

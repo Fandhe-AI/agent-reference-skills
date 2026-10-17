@@ -54,27 +54,38 @@ tool_prefix: "▏"
 
 ## Options / Props
 
-`colors:` (hex strings; `default` skin values in parentheses for selected keys):
+Empty `spinner:` values use hardcoded defaults from `display.py`. `colors:` values are hex strings.
 
-| Key | Description |
-|-----|-------------|
-| `banner_border` (`#CD7F32`), `banner_title` (`#FFD700`), `banner_accent` (`#FFBF00`), `banner_dim` (`#B8860B`), `banner_text` (`#FFF8DC`) | Startup banner |
-| `ui_accent`, `ui_label`, `ui_ok` (`#4caf50`), `ui_error` (`#ef5350`), `ui_warn` (`#ffa726`) | General UI indicators |
-| `prompt`, `input_rule`, `response_border`, `session_label`, `session_border` | Prompt and response chrome |
-| `status_bar_bg`, `voice_status_bg`, `selection_bg` | TUI surfaces; `selection_bg` falls back to `completion_menu_current_bg` |
-| `completion_menu_bg`, `completion_menu_current_bg`, `completion_menu_meta_bg`, `completion_menu_meta_current_bg` | Completion menu |
-
-`spinner:` `waiting_faces`, `thinking_faces`, `thinking_verbs` (lists of strings), `wings` (list of `[left, right]` pairs). Empty values use hardcoded defaults from `display.py`.
-
-`branding:` `agent_name`, `welcome`, `goodbye`, `response_label`, `prompt_symbol` (bare token), `help_header`.
-
-| Top-level key | Type | Description |
-|-----|------|-------------|
-| `tool_prefix` | string | Prefix for tool output lines, default `┊` |
-| `tool_emojis` | dict | Per-tool emoji overrides `{tool_name: emoji}` |
-| `banner_logo` | string | Rich-markup ASCII logo replacing the default banner |
-| `banner_hero` | string | Rich-markup hero art replacing the caduceus |
-| `customCSS` | string | Raw CSS for the desktop app and web dashboard only (ignored by CLI/TUI), capped at 32 KiB |
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `colors.banner_border` | string | `#CD7F32` | Startup banner |
+| `colors.banner_title` | string | `#FFD700` | Startup banner |
+| `colors.banner_accent` | string | `#FFBF00` | Startup banner |
+| `colors.banner_dim` | string | `#B8860B` | Startup banner |
+| `colors.banner_text` | string | `#FFF8DC` | Startup banner |
+| `colors.ui_accent` | string | — | General UI indicators |
+| `colors.ui_label` | string | — | General UI indicators |
+| `colors.ui_ok` | string | `#4caf50` | General UI indicators |
+| `colors.ui_error` | string | `#ef5350` | General UI indicators |
+| `colors.ui_warn` | string | `#ffa726` | General UI indicators |
+| `colors.prompt`, `colors.input_rule`, `colors.response_border`, `colors.session_label`, `colors.session_border` | string | — | Prompt and response chrome |
+| `colors.status_bar_bg`, `colors.voice_status_bg`, `colors.selection_bg` | string | — | TUI surfaces; `selection_bg` falls back to `completion_menu_current_bg` |
+| `colors.completion_menu_bg`, `colors.completion_menu_current_bg`, `colors.completion_menu_meta_bg`, `colors.completion_menu_meta_current_bg` | string | — | Completion menu |
+| `spinner.waiting_faces` | list of strings | — | — |
+| `spinner.thinking_faces` | list of strings | — | — |
+| `spinner.thinking_verbs` | list of strings | — | — |
+| `spinner.wings` | list of `[left, right]` pairs | — | — |
+| `branding.agent_name` | string | — | — |
+| `branding.welcome` | string | — | — |
+| `branding.goodbye` | string | — | — |
+| `branding.response_label` | string | — | — |
+| `branding.prompt_symbol` | string | — | Bare token |
+| `branding.help_header` | string | — | — |
+| `tool_prefix` | string | `┊` | Prefix for tool output lines |
+| `tool_emojis` | dict | — | Per-tool emoji overrides `{tool_name: emoji}` |
+| `banner_logo` | string | — | Rich-markup ASCII logo replacing the default banner |
+| `banner_hero` | string | — | Rich-markup hero art replacing the caduceus |
+| `customCSS` | string | — | Raw CSS for the desktop app and web dashboard only (ignored by CLI/TUI), capped at 32 KiB |
 
 ## Notes
 

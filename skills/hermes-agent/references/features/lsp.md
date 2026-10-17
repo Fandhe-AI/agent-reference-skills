@@ -21,8 +21,6 @@ hermes lsp which <id>      # print resolved binary path
 }
 ```
 
-## Options / Props
-
 ```yaml
 lsp:
   enabled: true
@@ -42,6 +40,29 @@ lsp:
       env: { PYRIGHT_LOG_LEVEL: "info" }
       initialization_options: {}
 ```
+
+## Options / Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `lsp.enabled` | boolean | `true` | `false` disables the subsystem |
+| `lsp.wait_mode` | string | `document` | `document` or `full` |
+| `lsp.wait_timeout` | number | `5.0` | Per wait (pre-edit baseline, post-edit re-check) |
+| `lsp.warmup_timeout` | number | `0` | Extra budget for the first request to a cold server |
+| `lsp.broken_retry_seconds` | number | `0` | `0` = broken until `hermes lsp restart` |
+| `lsp.exclude_roots` | list | `[]` | Globs of workspace roots where no server runs |
+| `lsp.trusted_workspaces` | list | `[]` | e.g. `["~/code/my-app"]` |
+| `lsp.install_strategy` | string | `auto` | `auto` or `manual` |
+| `lsp.package_manager` | string | `npm` | `npm`, `pnpm` or `yarn` |
+| `lsp.idle_timeout` | number (seconds) | `600` | `0` disables reaping; values below 30 clamp to 30 |
+| `lsp.servers.<id>.disabled` | boolean | `false` | Disable one language server |
+| `lsp.servers.<id>.command` | list | — | e.g. `["/abs/path/to/pyright-langserver", "--stdio"]` |
+| `lsp.servers.<id>.env` | map | — | e.g. `{ PYRIGHT_LOG_LEVEL: "info" }` |
+| `lsp.servers.<id>.initialization_options` | map | `{}` | — |
+| `lsp.servers.<id>.extensions` | list | — | Custom servers only (required) |
+| `lsp.servers.<id>.root_markers` | list | — | Custom servers only (optional) |
+| `lsp.servers.<id>.language_id` | string | — | Custom servers only (optional) |
+| `lsp.servers.<id>.description` | string | — | Custom servers only (optional) |
 
 Per-server keys: `disabled`, `command`, `env`, `initialization_options`. Custom servers (any non-built-in key under `lsp.servers`) need `command` and `extensions`; optional `root_markers`, `language_id`, `description`, `env`, `initialization_options`. Custom servers are matched before built-ins and never auto-installed.
 
