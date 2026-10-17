@@ -255,7 +255,7 @@ The APIs defined in `desktop.rs` and `mobile.rs` are exported as a struct with t
 use tauri_plugin_global_shortcut::GlobalShortcutExt;
 
 tauri::Builder::default()
-  .plugin(tauri_plugin_global_shortcut::init())
+  .plugin(tauri_plugin_global_shortcut::Builder::new().build())
   .setup(|app| {
     app.global_shortcut().register(...);
     Ok(())
@@ -446,6 +446,7 @@ A plugin manages state the same way an application does (see State Management).
 - Upstream `commands.rs` example declares `upload` without `pub`; `pub` added because `generate_handler![commands::upload]` references it from another module.
 - Upstream Plugins page's tauri.conf.json example still shows the v1 top-level `tauri` key; replaced with the v2 `app` key.
 - Upstream `Entry` scope example derives only `Debug` and `JsonSchema`; `serde::Deserialize` added because `CommandScope` / `GlobalScope` require the scope type to be deserializable.
+- Upstream Plugins page initializes the global-shortcut plugin with `tauri_plugin_global_shortcut::init()`, but the v2 plugin exposes only `Builder`; replaced with `Builder::new().build()` (as on the global-shortcut plugin page).
 - Permissions / capabilities here are Tauri's ACL; see the security category.
 
 ## Related

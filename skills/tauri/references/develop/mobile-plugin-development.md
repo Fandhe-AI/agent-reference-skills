@@ -441,7 +441,7 @@ class ExamplePlugin(private val activity: Activity): Plugin(activity) { }
 
 ```swift
 class ExamplePlugin: Plugin {
-  @objc open func checkPermissions(_ invoke: Invoke) {
+  @objc public override func checkPermissions(_ invoke: Invoke) {
     invoke.resolve(["postNotification": "prompt"])
   }
 
@@ -587,6 +587,7 @@ export async function onRequest(
 
 - Upstream JNI example passes a `JString` directly to `format!` (no `Display`); the string is now read with `env.get_string(&name)` first.
 - Upstream Swift FFI example passes the nullable `helloWorldFFI` result straight to `String(cString:)` / `freeHelloResult`; a `guard let` now handles `nil`.
+- Upstream iOS permissions example declares `checkPermissions` as `@objc open func` without `override`; `public override` added because `Plugin` already defines it (matching `requestPermissions`).
 - The source page has a TODO noting that the Plugin Events section may duplicate Lifecycle Events.
 
 ## Related
