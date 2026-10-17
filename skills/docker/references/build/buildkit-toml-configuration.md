@@ -1,0 +1,254 @@
+---
+source: https://docs.docker.com/build/buildkit/toml-configuration/
+---
+
+# buildkitd.toml
+
+TOML file configuring the buildkitd daemon: a short list of global settings followed by sections for specific areas.
+
+## Signature / Usage
+
+File path: `/etc/buildkit/buildkitd.toml` for rootful mode, `~/.config/buildkit/buildkitd.toml` for rootless mode. Override with the `--config` flag or the `BUILDKITD_CONFIG` environment variable. With Buildx, pass `--buildkitd-config` to `docker buildx create`.
+
+Complete example (some options are only useful in edge cases):
+
+```toml
+# root is where all buildkit state is stored.
+root = "/var/lib/buildkit"
+# insecure-entitlements allows insecure entitlements, disabled by default.
+insecure-entitlements = [ "network.host", "security.insecure", "device" ]
+# proxyNetwork enables proxy network enforcement for all builds, disabled by default.
+# It can also be enabled with buildkitd --proxy-network.
+proxyNetwork = true
+# provenanceEnvDir is the directory where extra config is loaded that is added
+# to the provenance of builds:
+# slsa v0.2: invocation.environment.*
+# slsa v1: buildDefinition.internalParameters.*
+provenanceEnvDir = "/etc/buildkit/provenance.d"
+
+[log]
+  # log formatter: json or text
+  format = "text"
+
+  # log level (error/warn/info/debug/trace)
+  level = "info"
+
+[dns]
+  nameservers=["1.1.1.1","8.8.8.8"]
+  options=["edns0"]
+  searchDomains=["example.com"]
+
+[grpc]
+  address = [ "tcp://0.0.0.0:1234" ]
+  # debugAddress is address for attaching go profiles and debuggers.
+  debugAddress = "127.0.0.1:6060"
+  uid = 0
+  gid = 0
+  [grpc.tls]
+    cert = "/etc/buildkit/tls.crt"
+    key = "/etc/buildkit/tls.key"
+    ca = "/etc/buildkit/tlsca.crt"
+
+[otel]
+  # OTEL collector trace socket path
+  socketPath = "/run/buildkit/otel-grpc.sock"
+
+[cdi]
+  # Disables support of the Container Device Interface (CDI).
+  disabled = true
+  # List of directories to scan for CDI spec files.
+  specDirs = ["/etc/cdi", "/var/run/cdi", "/etc/buildkit/cdi"]
+
+# config for build history API that stores information about completed build commands
+[history]
+  # maxAge is the maximum age of history entries to keep, in seconds.
+  maxAge = 172800
+  # maxEntries is the maximum number of history entries to keep. When the
+  # history section is omitted, the default is 50. If only maxAge is set,
+  # all entries older than maxAge are removed.
+  # Setting this value to 0 prevents recording new build history, including
+  # active-build events. Existing records remain available until normal GC.
+  maxEntries = 50
+
+[compaction]
+  # Opt-in metadata database maintenance, independent of cache GC.
+  enabled = false
+  # Committed write transactions between automatic eligibility checks.
+  writesPerCheck = 10000
+  # Database size is sampled at most every five minutes after committed writes.
+  # Initial minimum database size for growth-triggered eligibility checks.
+  sizeWatermark = 134217728
+  # After compaction, grow the next size watermark from the compacted size by
+  # this percentage.
+  sizeGrowthPercent = 100
+  # Either threshold can trigger compaction, subject to the percentage floor.
+  minReclaimBytes = 268435456
+  # Percentage of the database file estimated to be reclaimable.
+  minReclaimPercent = 30
+  # Minimum reclaimable percentage, even when minReclaimBytes is reached.
+  minReclaimPercentFloor = 10
+  # Wait for no active transactions and this interval without database activity.
+  idleTimeout = "1m"
+  # Cancel this many attempts for arriving writers, then let the next copy finish.
+  # Writers may wait for the full copy duration. Zero forces the first attempt.
+  maxRetry = 3
+
+[worker.oci]
+  enabled = true
+  # platforms is manually configure platforms, detected automatically if unset.
+  platforms = [ "linux/amd64", "linux/arm64" ]
+  snapshotter = "auto" # overlayfs or native, default value is "auto".
+  rootless = false # see docs/rootless.md for the details on rootless mode.
+  # Whether run subprocesses in main pid namespace or not, this is useful for
+  # running rootless buildkit inside a container.
+  noProcessSandbox = false
+  # gc enables/disables garbage collection
+  gc = true
+  # reservedSpace is the minimum amount of disk space guaranteed to be
+  # retained by this buildkit worker - any usage below this threshold will not
+  # be reclaimed during garbage collection.
+  # all disk space parameters can be an integer number of bytes (e.g.
+  # 512000000), a string with a unit (e.g. "512MB"), or a string percentage
+  # of the total disk space (e.g. "10%")
+  reservedSpace = "30%"
+  # maxUsedSpace is the maximum amount of disk space that may be used by
+  # this buildkit worker - any usage above this threshold will be reclaimed
+  # during garbage collection.
+  maxUsedSpace = "60%"
+  # minFreeSpace is the target amount of free disk space that the garbage
+  # collector will attempt to leave - however, it will never be bought below
+  # reservedSpace.
+  minFreeSpace = "20GB"
+  # alternate OCI worker binary name(example 'crun'), by default either
+  # buildkit-runc or runc binary is used
+  binary = ""
+  # name of the apparmor profile that should be used to constrain build containers.
+  # the profile should already be loaded (by a higher level system) before creating a worker.
+  apparmor-profile = ""
+  # limit the number of parallel build steps that can run at the same time
+  max-parallelism = 4
+  # maintain a pool of reusable CNI network namespaces to amortize the overhead
+  # of allocating and releasing the namespaces
+  cniPoolSize = 16
+
+  [worker.oci.labels]
+    "foo" = "bar"
+
+  [[worker.oci.gcpolicy]]
+    reservedSpace = "512MB"
+    maxUsedSpace = "1GB"
+    minFreeSpace = "10GB"
+    # keepDuration can be an integer number of seconds (e.g. 172800), or a
+    # string duration (e.g. "48h")
+    keepDuration = "48h"
+    filters = [ "type==source.local", "type==exec.cachemount", "type==source.git.checkout"]
+  [[worker.oci.gcpolicy]]
+    all = true
+    reservedSpace = 1024000000
+
+[worker.containerd]
+  address = "/run/containerd/containerd.sock"
+  enabled = true
+  platforms = [ "linux/amd64", "linux/arm64" ]
+  namespace = "buildkit"
+
+  # gc enables/disables garbage collection
+  gc = true
+  reservedSpace = "30%"
+  maxUsedSpace = "60%"
+  minFreeSpace = "20GB"
+  # limit the number of parallel build steps that can run at the same time
+  max-parallelism = 4
+  # maintain a pool of reusable CNI network namespaces to amortize the overhead
+  # of allocating and releasing the namespaces
+  cniPoolSize = 16
+  # defaultCgroupParent sets the parent cgroup of all containers.
+  defaultCgroupParent = "buildkit"
+  # hypervIsolation enables Hyper-V isolation for Windows containers.
+  hypervIsolation = false
+
+  [worker.containerd.labels]
+    "foo" = "bar"
+
+  # configure the containerd runtime
+  [worker.containerd.runtime]
+    name = "io.containerd.runc.v2"
+    path = "/path/to/containerd/runc/shim"
+    options = { BinaryName = "runc" }
+
+  [[worker.containerd.gcpolicy]]
+    reservedSpace = 512000000
+    keepDuration = 172800
+    filters = [ "type==source.local", "type==exec.cachemount", "type==source.git.checkout"]
+  [[worker.containerd.gcpolicy]]
+    all = true
+    reservedSpace = 1024000000
+
+# registry configures a new Docker register used for cache import or output.
+[registry."docker.io"]
+  # mirror configuration to handle path in case a mirror registry requires a /project path rather than just a host:port
+  mirrors = ["yourmirror.local:5000", "core.harbor.domain/proxy.docker.io"]
+  # If you use token auth with self-signed certificates,
+  # then buildctl also needs to trust the token provider CA (for example, certificates that are configured for registry)
+  # because buildctl pulls tokens directly without daemon process
+  ca=["/etc/config/myca.pem"]
+  [[registry."docker.io".keypair]]
+    key="/etc/config/key.pem"
+    cert="/etc/config/cert.pem"
+
+# optionally mirror configuration can be done by defining it as a registry.
+[registry."yourmirror.local:5000"]
+  http = true
+
+# Frontend control
+[frontend."dockerfile.v0"]
+  enabled = true
+
+[frontend."gateway.v0"]
+  enabled = true
+  # If allowedRepositories is empty, all gateway sources are allowed.
+  # Otherwise, only the listed repositories are allowed as a gateway source.
+  # NOTE: Only the repository name (without tag) is compared.
+  allowedRepositories = []
+
+[system]
+  # how often buildkit scans for changes in the supported emulated platforms
+  platformsCacheMaxAge = "1h"
+  # maxRegistryConcurrency sets the maximum number of concurrent connections
+  # per registry. If unset, the default concurrency limit is used.
+  maxRegistryConcurrency = 4
+  # sessionAuthTimeout sets the timeout for daemon-side authentication
+  # round-trips with the buildx client session. Can be a duration string
+  # (e.g. "60s") or a bare integer treated as seconds. If unset, the default
+  # timeout of 60s is used. A value of zero or less disables the timeout
+  # entirely.
+  sessionAuthTimeout = "60s"
+
+# optional signed cache configuration for GitHub Actions backend
+# [cache.gha.sign]
+#   # command that signs the payload in stdin and outputs the signature to stdout.
+#   command = ""
+#
+# [cache.gha.verify]
+#   required = false
+#
+# [cache.gha.verify.policy]
+#   timestampThreshold = 1
+#   tlogThreshold = 1
+#   # certificate properties that need to match. Simple wildcards (*) are supported.
+#   certificateIssuer = ""
+#   subjectAlternativeName = ""
+#   buildSignerURI = ""
+```
+
+## Notes
+
+- The upstream example uses `debugAddress = "0.0.0.0:6060"`; this listener is separate from the gRPC address and is not protected by `[grpc.tls]`, so bind it to loopback (or omit it) unless the debug endpoint must be reachable.
+- The official full example also sets `http = true` and `insecure = true` on `docker.io` for illustration; they are mutually exclusive and both disable TLS protection — trust self-signed certificates with `ca` instead, and use `http = true` only for local mirrors.
+- Comments in the code block above were shortened where they repeated an earlier comment (e.g. the `reservedSpace` / `maxUsedSpace` / `minFreeSpace` explanations in `[worker.containerd]` and `[[worker.oci.gcpolicy]]`); keys and values are unchanged. See the official page for full comments.
+- Disk space parameters accept an integer number of bytes, a string with a unit (e.g. `"512MB"`), or a percentage of total disk space (e.g. `"10%"`).
+
+## Related
+
+- [Configure BuildKit](./buildkit-configure.md)
+- [BuildKit](./buildkit.md)
