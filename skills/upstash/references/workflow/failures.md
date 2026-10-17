@@ -41,7 +41,7 @@ async def example(context: AsyncWorkflowContext[str]) -> None: ...
 | `context` | `WorkflowContext` | The workflow context at the time of failure |
 | `failStatus` | `number` | HTTP status code of the failing response |
 | `failResponse` | `string` | Response body of the failing step |
-| `failHeaders` | `Headers` | Response headers of the failing step |
+| `failHeaders` | `Record<string, string[]>` | Response headers of the failing step (type per `@upstash/workflow` v1.4.0 `src/types.ts`) |
 | `failStack` | `string` | Failure stack trace (if available; TypeScript SDK) |
 
 **DLQ recovery actions** (manual recovery of a run in the DLQ goes through the REST API, api-reference/dlq)

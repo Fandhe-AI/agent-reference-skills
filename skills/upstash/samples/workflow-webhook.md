@@ -125,4 +125,4 @@ export const { POST } = serve(async (context) => {
 - Pass a stable `idempotencyKey` to `stripe.customers.create` because `context.run` may retry (at-least-once delivery); the `idempotencyKey` option is an addition to the official snippet
 - Differences from the official snippet: verification is wrapped in `context.run`; outside a step it re-runs on every step invocation with the original `svix-timestamp`, and Svix rejects stale timestamps (default tolerance 5 minutes)
 - `webhookSecret` is a placeholder in the official example; supply the real secret from your webhook provider
-- Source: https://upstash.com/docs/workflow/howto/use-webhooks (example project: https://github.com/upstash/workflow-js/tree/main/examples/nextjs-webhook-stripe)
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/howto/use-webhooks (example project at `@upstash/workflow` v1.4.0: https://github.com/upstash/workflow-js/tree/v1.4.0/examples/nextjs-webhook-stripe)

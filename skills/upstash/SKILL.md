@@ -7,7 +7,8 @@ description: >
   QStash (publishJSON, schedules, queues, URL Groups, flow-control, DLQ)、
   @upstash/vector (upsert, query, ANN, namespace, hybrid/sparse index, embedding models, reranking)、
   @upstash/workflow (serve, durable execution, context.run/sleep/call/invoke, waitForEvent, parallel steps, agents)、
-  @upstash/search、@upstash/box (サンドボックス, filesystem, git, CDP, browser, network policy, snapshots, custom harness)、
+  Upstash Search (@upstash/search, search, upsert, fetch, range, filtering, reranking, algorithm)、
+  @upstash/box (サンドボックス, filesystem, git, CDP, browser, network policy, snapshots, custom harness)、
   upstash CLI。Rust 製 fandhe-db とは別。
 user-invocable: false
 ---

@@ -35,10 +35,11 @@ export const { POST } = serve<string>(
 
 | Name | Type | Description |
 |------|------|-------------|
-| `context` | object | Workflow context exposing run properties (below) |
+| `context` | object | Workflow context exposing run properties (below; methods such as `run` are omitted) |
 | `failStatus` | number | HTTP status code returned by the failed workflow step |
-| `failResponse` | number (as documented) | Response body returned by the failed workflow step |
-| `failHeaders` | number (as documented) | Response headers returned by the failed workflow step |
+| `failResponse` | string | Response body returned by the failed workflow step |
+| `failHeaders` | `Record<string, string[]>` | Response headers returned by the failed workflow step |
+| `failStack` | string | Failure stack trace (TypeScript SDK) |
 
 ### context fields
 
@@ -46,9 +47,9 @@ export const { POST } = serve<string>(
 |------|------|-------------|
 | `workflowRunId` | string | ID of the failed workflow run |
 | `url` | string | Publicly accessible workflow endpoint URL |
-| `requestPayload` | string | Original request payload that triggered the workflow |
-| `headers` | string | Original request headers |
-| `env` | string | Environment variables |
+| `requestPayload` | `TInitialPayload` | Original request payload that triggered the workflow |
+| `headers` | `Headers` | Original request headers |
+| `env` | `Record<string, string \| undefined>` | Environment variables |
 
 ### failureUrl (advanced)
 
@@ -92,9 +93,9 @@ const response = await client.dlq.retryFailureFunction({
 - If you secure the workflow endpoint with custom authorization, add authorization to `failureFunction` too; otherwise anyone could invoke it
 - `failureFunction` and `failureUrl` are mutually exclusive. `failureFunction` is the better choice for most users: it runs alongside the workflow with the same context and dependencies, is retried automatically on failure, and can be retried manually via the DLQ
 - The official pages disagree on the Python argument name: this page's source (`workflow/features/failureFunction/advanced`) writes `failure_url=`, while `workflow/basics/serve/advanced` and `workflow/howto/failures` write `failureUrl=`. Which one the Python SDK accepts is not confirmed here
-- The `failResponse` / `failHeaders` types are listed as `number` in the original parameter docs; this appears to be a documentation typo (body and headers)
+- Types in the tables follow the `@upstash/workflow` v1.4.0 SDK sources (`src/types.ts` `failureFunction`, `src/context/context.ts`). The official parameter docs list `failResponse` / `failHeaders` as `number` and `requestPayload` / `headers` / `env` as `string`, which do not match the SDK
 - The original `failureUrl` example omits the comma after the `url` property; added here so the snippet is valid
-- Source: fetched 2026-10 from https://upstash.com/docs/workflow/features/failure-callback (also `features/failureFunction/advanced` and `features/failureFunction/reliability`)
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/features/failure-callback (also `features/failureFunction/advanced` and `features/failureFunction/reliability`); types from https://github.com/upstash/workflow-js/blob/v1.4.0/src/types.ts and https://github.com/upstash/workflow-js/blob/v1.4.0/src/context/context.ts
 
 ## Related
 

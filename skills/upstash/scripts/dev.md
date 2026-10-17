@@ -100,3 +100,7 @@ curl -XPOST \
 ```
 
 `XXX` は QStash トークン、`<FORWARDING_HOST>` は ngrok の Forwarding ホストに置き換える。トンネルより開発サーバーの利用が公式の推奨。
+
+## Notes
+
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/howto/local-development/development-server; https://upstash.com/docs/qstash/howto/local-development; https://upstash.com/docs/workflow/howto/local-development/local-tunnel; https://upstash.com/docs/qstash/howto/local-tunnel
