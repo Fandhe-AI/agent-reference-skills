@@ -44,4 +44,4 @@ struct NavigateToCaptureModeIntent: OpenIntent {
 - [AppIntent(schema:)](./appintent-schema-macro.md)
 - [AppEnum(schema:)](./appenum-schema-macro.md)
 - [Photos domain](./domain-photos.md)
-- [CameraCaptureIntent](../intent-types/cameracaptureintent.md)
+- CameraCaptureIntent

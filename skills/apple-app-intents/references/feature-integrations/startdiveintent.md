@@ -38,4 +38,4 @@ struct MyStartDiveIntent: StartDiveIntent {
 ## Related
 
 - [StartWorkoutIntent](./startworkoutintent.md)
-- [SystemIntent](../intent-types/systemintent.md)
+- SystemIntent

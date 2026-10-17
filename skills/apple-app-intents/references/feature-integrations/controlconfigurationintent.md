@@ -42,4 +42,4 @@ struct SelectFocusIntent: ControlConfigurationIntent {
 
 - [WidgetConfigurationIntent](./widgetconfigurationintent.md)
 - [LiveActivityIntent](./liveactivityintent.md)
-- [DynamicOptionsProvider](../parameters-results/dynamicoptionsprovider.md)
+- DynamicOptionsProvider

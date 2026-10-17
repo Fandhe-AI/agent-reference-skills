@@ -43,4 +43,4 @@ static func custom(
 ## Related
 
 - [StartWorkoutIntent](./startworkoutintent.md)
-- [IntentDialog](../parameters-results/intentdialog.md)
+- IntentDialog

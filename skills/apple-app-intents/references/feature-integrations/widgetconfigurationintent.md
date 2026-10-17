@@ -74,4 +74,4 @@ struct FavoriteSoup: WidgetConfigurationIntent {
 - [ControlConfigurationIntent](./controlconfigurationintent.md)
 - [LiveActivityIntent](./liveactivityintent.md)
 - [RunSystemShortcutIntent](./runsystemshortcutintent.md)
-- [AppIntent](../intents/appintent.md)
+- AppIntent

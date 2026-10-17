@@ -43,4 +43,4 @@ static func invalidateFocusFilterAppContext()
 - [FocusFilterAppContext](./focusfilterappcontext.md)
 - [FocusFilterSuggestionContext](./focusfiltersuggestioncontext.md)
 - [SetFocusFilterIntentError](./setfocusfilterintenterror.md)
-- [AppIntent](../intents/appintent.md)
+- AppIntent

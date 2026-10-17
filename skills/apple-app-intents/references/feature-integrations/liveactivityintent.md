@@ -39,4 +39,4 @@ struct StartActivityIntent: LiveActivityIntent {
 
 - [LiveActivityStartingIntent](./liveactivitystartingintent.md)
 - [ControlConfigurationIntent](./controlconfigurationintent.md)
-- [SystemIntent](../intent-types/systemintent.md)
+- SystemIntent

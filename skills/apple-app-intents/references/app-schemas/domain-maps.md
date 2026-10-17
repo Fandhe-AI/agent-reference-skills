@@ -38,5 +38,5 @@ var startNavigation: some AppSchemaIntent
 
 - [AppIntent(schema:)](./appintent-schema-macro.md)
 - [AppEntity(schema:)](./appentity-schema-macro.md)
-- [IntentValueQuery](../visual-intelligence/intentvaluequery.md)
+- IntentValueQuery
 - [System and in-app search domain](./domain-system-and-in-app-search.md)
