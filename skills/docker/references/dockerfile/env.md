@@ -33,8 +33,10 @@ ENV MY_NAME="John Doe" MY_DOG=Rex\ The\ Dog \
 - Persistence can cause side effects, e.g. `ENV DEBIAN_FRONTEND=noninteractive` changes `apt-get` behavior and may confuse users of your image. If a variable is only needed during build, set it for a single command or use `ARG` (not persisted in the final image):
 
   ```dockerfile
-  RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ...
+  RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y ...
   ```
+
+  Adapted: the official example prefixes `apt-get update` with `DEBIAN_FRONTEND=noninteractive`; a per-command assignment applies only to that command, so it is moved to `apt-get install` here.
 
   ```dockerfile
   ARG DEBIAN_FRONTEND=noninteractive
