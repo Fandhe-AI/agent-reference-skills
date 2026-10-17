@@ -75,8 +75,11 @@ async function main() {
         },
       }),
     },
-    prepareStep: ({ messages, model }) => ({
-      messages: addCacheControlToMessages({ messages, model }),
+    prepareStep: ({ initialMessages, responseMessages, model }) => ({
+      messages: addCacheControlToMessages({
+        messages: [...initialMessages, ...responseMessages],
+        model,
+      }),
     }),
   });
 
@@ -88,6 +91,7 @@ main().catch(console.error);
 
 ## Notes
 
+- Modified from the official cookbook example: in AI SDK 7, `messages` returned from `prepareStep` carry forward to later steps, so the cookbook's `({ messages, model })` form would accumulate `cacheControl` breakpoints on earlier messages and exceed Anthropic's limit of 4 per request. This version rebuilds from the cacheControl-free `initialMessages` + `responseMessages` each step so only the last message is marked. If you also set `cacheControl` on `tools` / `system`, those count toward the same 4.
 - Message-level `providerOptions` are translated by the SDK to block-level `cache_control` on the last content block; `providerOptions` on individual content parts take priority over message-level settings. Non-Anthropic models pass through unchanged.
 - Considerations from the page: Anthropic requires a minimum token threshold before caching activates, the ephemeral cache has a 5-minute TTL, and cached tokens cost 10% of input tokens while cache writes cost 25% more.
 - This is the AI SDK wrapper over Anthropic prompt caching; the raw API feature belongs to anthropic-api-core. See `references/providers/anthropic.md` and `references/foundations/provider-options.md`.

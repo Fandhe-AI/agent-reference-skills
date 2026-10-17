@@ -248,6 +248,7 @@ export async function POST(req: Request) {
 ```tsx
 // app/api/chat/route.ts (consume the stream so saving survives a client disconnect)
 import {
+  consumeStream,
   convertToModelMessages,
   createUIMessageStreamResponse,
   streamText,
@@ -265,10 +266,6 @@ export async function POST(req: Request) {
     messages: await convertToModelMessages(messages),
   });
 
-  // consume the stream to ensure it runs to completion & triggers onEnd
-  // even when the client response is aborted:
-  result.consumeStream(); // no await
-
   return createUIMessageStreamResponse({
     stream: toUIMessageStream({
       stream: result.stream,
@@ -277,6 +274,9 @@ export async function POST(req: Request) {
         await saveChat({ chatId: id, messages });
       },
     }),
+    // consume the UI message stream to completion so onEnd (saving) runs
+    // even when the client response is aborted:
+    consumeSseStream: consumeStream,
   });
 }
 ```
@@ -285,6 +285,7 @@ export async function POST(req: Request) {
 
 - The official guide does not cover authorization or error handling; the file store is illustrative (use a database in production). Validate chat IDs as opaque tokens before using them in file paths. `@util/chat-store` is a path alias from the page.
 - Modified from the official example: the page's routes read `chatId` from the request body, but the default `DefaultChatTransport` sends the chat ID as `id` (as the `prepareSendMessagesRequest` example on the same page also uses). This version reads `id` and calls `saveChat({ chatId: id, messages })`.
+- Modified from the official example: the page uses `result.consumeStream()`, but `onEnd` runs on the UI message stream, so this version passes `consumeSseStream: consumeStream` to `createUIMessageStreamResponse`, following `references/operations/troubleshooting.md` (stream-abort-handling) and `references/operations/stopping-streams.md`.
 - The official examples do not await `saveChat` in `onEnd`; it is awaited here so completion is awaited and failures are not swallowed.
 - Store messages in the `UIMessage` (`useChat`) format, not `ModelMessage`; saving happens in the `onEnd` callback of `toUIMessageStream`. On load, validate with `validateUIMessages` and handle `TypeValidationError` for stale schemas.
 - Server-side assistant message IDs: `generateMessageId: createIdGenerator({ prefix: 'msg', size: 16 })` in `toUIMessageStream`, or write a `start` part with `messageId` via `createUIMessageStream`.
