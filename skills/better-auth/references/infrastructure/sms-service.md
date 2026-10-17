@@ -80,6 +80,7 @@ export const auth = betterAuth({
   ],
 });
 ```
+- Source: https://www.better-auth.com/docs/infrastructure/services/sms (better-auth v1.7.10 docs)
 
 ## Related
 

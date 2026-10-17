@@ -2,8 +2,8 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Email & Password | Built-in authenticator that does not require… | [email-password.md](./email-password.md) |
-| Other Social Providers (Generic OAuth) | Better Auth supports any social provider that… | [other-social-providers.md](./other-social-providers.md) |
+| Email & Password | Built-in authenticator that does not require external provider credentials. | [email-password.md](./email-password.md) |
+| Other Social Providers (Generic OAuth) | Better Auth supports any social provider that implements OAuth 2.0 or OpenID Connect (OIDC) through the Generic OAuth Plugin. | [other-social-providers.md](./other-social-providers.md) |
 | Apple |  | [social-apple.md](./social-apple.md) |
 | Atlassian |  | [social-atlassian.md](./social-atlassian.md) |
 | Cloudflare |  | [social-cloudflare.md](./social-cloudflare.md) |
@@ -16,9 +16,9 @@
 | GitLab |  | [social-gitlab.md](./social-gitlab.md) |
 | Google |  | [social-google.md](./social-google.md) |
 | Hugging Face |  | [social-huggingface.md](./social-huggingface.md) |
-| Kakao | A social authentication provider for East Asian… | [social-kakao.md](./social-kakao.md) |
+| Kakao | A social authentication provider for East Asian users, particularly popular in South Korea. | [social-kakao.md](./social-kakao.md) |
 | Kick |  | [social-kick.md](./social-kick.md) |
-| LINE | A messaging platform popular in Asia for social… | [social-line.md](./social-line.md) |
+| LINE | A messaging platform popular in Asia for social authentication. | [social-line.md](./social-line.md) |
 | Linear |  | [social-linear.md](./social-linear.md) |
 | LinkedIn |  | [social-linkedin.md](./social-linkedin.md) |
 | Microsoft | Via Azure Entra ID (formerly Active Directory). | [social-microsoft.md](./social-microsoft.md) |

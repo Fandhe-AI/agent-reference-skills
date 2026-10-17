@@ -98,6 +98,7 @@ Dashboard endpoints registered by the plugin (method path):
 - The dash plugin automatically tracks user, session, account, verification, and (with the organization plugin) organization events; see Audit Logs for the full event list.
 - Best practices: always set an API key; use a longer `updateInterval` for high-traffic apps; check audit log retention for your plan; secure dashboard endpoints with appropriate permissions.
 - On Expo / React Native import `dashClient` from `@better-auth/infra/native` (same API).
+- Source: https://www.better-auth.com/docs/infrastructure/plugins/dashboard (better-auth v1.7.10 docs)
 
 ## Related
 

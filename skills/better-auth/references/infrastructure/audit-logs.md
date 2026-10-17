@@ -98,6 +98,7 @@ async function fetchAllAuditLogs() {
   return allEvents;
 }
 ```
+- Source: https://www.better-auth.com/docs/infrastructure/plugins/audit-logs (better-auth v1.7.10 docs)
 
 ## Related
 

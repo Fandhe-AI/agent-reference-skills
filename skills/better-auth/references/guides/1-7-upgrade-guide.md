@@ -1,6 +1,6 @@
 # Upgrading to Better Auth 1.7
 
-Upgrade guide from Better Auth 1.6 to 1.7. Most changes are additive; OAuth, OpenID Connect, SAML, SCIM, two-factor, MCP, custom storage, and proxy setups need care. Source: v1.7.10 docs.
+Upgrade guide from Better Auth 1.6 to 1.7. Most changes are additive; OAuth, OpenID Connect, SAML, SCIM, two-factor, MCP, custom storage, and proxy setups need care.
 
 ## Signature / Usage
 
@@ -58,7 +58,7 @@ Which section applies:
 
 ### As a login client
 
-- Account identity: 1.7.0 through 1.7.2 added a required `issuer` column and a unique index on `issuer` + `accountId`; 1.7.3 removes the requirement. Accounts are recognized by `providerId` + `accountId` as in 1.6. Databases that ran 1.7.0-1.7.2 must relax the constraint (drop index `account_issuer_accountId_uidx` before dropping the column; Postgres: `ALTER COLUMN issuer DROP NOT NULL`; MySQL/SQL Server: `MODIFY issuer VARCHAR(255) NULL`; SQLite: drop index then column; Prisma/Drizzle: `npx auth@latest generate`; MongoDB: `db.account.dropIndex("account_issuer_accountId_uidx")`).
+- Account identity: 1.7.0 through 1.7.2 added a required `issuer` column and a unique index on `issuer` + `accountId`; 1.7.3 removes the requirement. Accounts are recognized by `providerId` + `accountId` as in 1.6. Databases that ran 1.7.0-1.7.2 must relax the constraint (drop index `account_issuer_accountId_uidx` before dropping the column; Postgres: `ALTER COLUMN issuer DROP NOT NULL`; MySQL: `ALTER TABLE account MODIFY issuer VARCHAR(255) NULL` then `DROP INDEX account_issuer_accountId_uidx ON account` (non-strict MySQL fills `issuer` with an empty string instead of rejecting inserts, so the unique index silently becomes a constraint on `accountId` alone; relax the column there too); SQL Server: `ALTER TABLE account ALTER COLUMN issuer <existing column type> NULL` (keep the existing type) then `DROP INDEX account_issuer_accountId_uidx ON account` (the upstream tab shows the MySQL `MODIFY` form for both MySQL and SQL Server, but T-SQL has no `MODIFY`; use `ALTER COLUMN`); SQLite: drop index then column; Prisma/Drizzle: `npx auth@latest generate`; MongoDB: `db.account.dropIndex("account_issuer_accountId_uidx")`).
 - Account selectors: `unlinkAccount` takes `accountId` (the `id` from `listAccounts`). `getAccessToken`, `refreshToken`, `accountInfo` take exactly one of `{ accountId: account.id, userId? }` or `{ useAccountCookie: true, userId? }`. Remove `providerId` from selectors.
 - Custom OAuth providers: OIDC discovery providers use verified `sub`, plain OAuth providers use `id`; set `accountSubject` if neither is immutable. `getUserInfo().user` holds only mutable local-user fields; `mapProfileToUser` can no longer return `id`; `accountInfo` exposes `account.accountId` instead of `user.id`.
 - Microsoft accounts use the stable `oid` claim instead of pairwise `sub`; migrate `providerId: "microsoft"` and `"microsoft-entra-id"` rows before production traffic. Generic OAuth `microsoftEntraId` helper requires a concrete tenant GUID (not `common` / `organizations` / `consumers`).
@@ -136,6 +136,8 @@ Which section applies:
 ### Other behavior changes
 
 - Token/introspection/userinfo/registration/device responses send `Cache-Control: no-store`; userinfo returns `401 invalid_token`; code-redemption failures return `400 invalid_grant`; Drizzle adapter throws on invalid affected-row count; `organization.updateTeam` no longer accepts `id` / `createdAt` / `updatedAt`; cookie cache is bound to the `session_token` cookie; `session.delete` hooks run on sign-out with `secondaryStorage` + `preserveSessionInDatabase`; failed two-factor challenge cleanup returns `FAILED_TO_INVALIDATE_TWO_FACTOR_CHALLENGE`.
+
+- Source: https://www.better-auth.com/docs/guides/1-7-upgrade-guide (better-auth v1.7.10 docs)
 
 ## Related
 

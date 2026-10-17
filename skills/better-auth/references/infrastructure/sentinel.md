@@ -115,6 +115,7 @@ Feature options shown in the docs:
 - Best practices: start with "log" actions, tune thresholds, prefer challenges before blocks, enable client auto-solve, monitor security events.
 - Troubleshooting: warning `[Sentinel] Missing BETTER_AUTH_API_KEY. Security checks may fall back to allow mode.` means the API key is not set. If challenges are not solved, verify the correct client plugin (`sentinelClient()` web / `sentinelNativeClient()` native), `autoSolveChallenge` is `true`, and the client can reach the server.
 - Pro plan or above is required for `sentinel()` (per Getting Started).
+- Source: https://www.better-auth.com/docs/infrastructure/plugins/sentinel (better-auth v1.7.10 docs)
 
 ## Related
 

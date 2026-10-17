@@ -116,6 +116,8 @@ consumeOne: async ({ model, where }) => {
 };
 ```
 
+The upstream example is illustrative: a plain `DELETE ... WHERE ... RETURNING` affects every matching row, so a real adapter must target exactly one row (e.g. pick one row by primary/unique key within the same atomic statement or transaction) to honor the at-most-one-row contract.
+
 `consumeOne` is optional: without it, Better Auth uses a conditional delete and returns the record only when exactly one row was deleted.
 
 #### `incrementOne`
@@ -135,6 +137,8 @@ incrementOne: async ({ model, where, increment, set }) => {
   return row ?? null;
 };
 ```
+
+The upstream example is illustrative: a plain `UPDATE ... WHERE ... RETURNING` affects every matching row, so a real adapter must target exactly one row (e.g. pick one row by primary/unique key within the same atomic statement or transaction) to honor the at-most-one-row contract. The example only maps `count`; a real implementation must apply every key in `increment` atomically (e.g. build `field = field + delta` for each entry) and leave other fields to `set`.
 
 `incrementOne` is optional: without it, Better Auth uses conditional updates with bounded retries; if retries are exhausted, the operation throws and the increment is not recorded. Use native increments for heavily contended counters and security controls such as failed-attempt limits. Fallbacks reuse your adapter's CRUD methods and need complete, stable row snapshots with mapped IDs, atomic conditional writes, exact affected-row counts, and null comparisons that also match absent nullable fields.
 
@@ -248,5 +252,6 @@ Return custom configuration passed to your adapter for later use.
 - "All `model` values are already transformed into the correct model name for the database"
 - "We will automatically fill in any missing fields you return based on the user's `schema` configuration"
 - `consumeOne` and `incrementOne` were required for custom database adapters in 1.7.0 through 1.7.2 and are optional again from 1.7.3 (1.7 upgrade guide). Built-in adapters use their native implementations. Make sure your adapter provides atomic conditional writes and accurate affected-row counts; the factory fallbacks check the stored values before writing and reject unsafe snapshots or exhausted retries. The `debugLogs` object accepts the keys `create`, `update`, `updateMany`, `findOne`, `findMany`, `delete`, `deleteMany`, `consumeOne`, `incrementOne`, `count`.
+- Fallback counters (when `incrementOne` is not implemented) must be finite numbers, with null or missing values starting at zero. Use native methods for `bigint` counters, OR predicates on structured values, or trigger-generated return values. Fields not updated by the increment fallback reflect the initial read.
 - The `select` parameter optimizes queries but doesn't restrict returned data — the framework handles filtering
 - This architecture minimizes boilerplate while maintaining flexibility for diverse database systems and custom requirements

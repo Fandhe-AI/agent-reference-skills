@@ -89,6 +89,7 @@ cloudflare: {
 - Refresh tokens: configure the OAuth client with both `authorization_code` and `refresh_token` grant types, then request `offline_access` explicitly. Keep it opt-in when Cloudflare access is only needed during sign-in
 - Profile: `/user` returns `id` and `email`, with optional `first_name` and `last_name`. The name is composed from the available name fields and falls back to the email. No profile picture is provided, so `image` is empty
 - `/user` does not expose an email-verification status, so `emailVerified` is `false` by default
+- Source: https://www.better-auth.com/docs/authentication/cloudflare (better-auth v1.7.10 docs)
 
 ## Related
 

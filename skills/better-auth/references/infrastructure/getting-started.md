@@ -83,6 +83,7 @@ export const authClient = createAuthClient({
 - Add `BETTER_AUTH_API_KEY` to your production environment variables. The key is obtained by signing up and creating a project in the Better Auth Infrastructure dashboard.
 - `dash()` enables analytics tracking, audit logging, dashboard admin APIs, and more. `sentinel()` enables security checks and abuse protection. Either can be used independently; using both gives the full experience.
 - The native entry provides `dashClient` (same audit log APIs as the web client) and `sentinelNativeClient`.
+- Source: https://www.better-auth.com/docs/infrastructure/getting-started (better-auth v1.7.10 docs)
 
 ## Related
 

@@ -17,6 +17,7 @@ export const auth = betterAuth({
 
 - Key features: Dashboard (manage users, organizations, sessions, view analytics), Security (credential stuffing, bots, disposable emails, impossible travel), Email & SMS (verification emails, password resets, OTP codes with pre-built templates), Enterprise (SSO/SAML, directory sync (SCIM), log drains, role-based dashboard access).
 - Paid service; packages are published as `@better-auth/infra`.
+- Source: https://www.better-auth.com/docs/infrastructure/introduction (better-auth v1.7.10 docs)
 
 ## Related
 
