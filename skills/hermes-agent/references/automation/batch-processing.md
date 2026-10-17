@@ -56,6 +56,7 @@ Dataset: JSONL, each entry needs `prompt`; optional `image` / `docker_image` (co
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/batch-processing (pinned to v0.22.2)
 - Toolset distributions assign a probability to each individual toolset; the sampler flips each independently and guarantees at least one is enabled.
 - Output in `data/<run_name>/`: `trajectories.jsonl` (merged), `batch_N.jsonl`, `checkpoint.json`, `statistics.json`. Each trajectory line has `prompt_index`, `conversations` (`from`/`value`, ShareGPT-like), `metadata`, `completed`, `partial`, `api_calls`, `toolsets_used`, `tool_stats`, `tool_error_counts`; tool stats are normalized with zero defaults for HuggingFace dataset compatibility.
 - Resume is content-based (matches completed prompts by text, not index); only successfully completed prompts are marked done, failed ones retry; all batch files are merged on completion.

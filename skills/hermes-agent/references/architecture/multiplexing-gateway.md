@@ -49,6 +49,7 @@ Control-plane RPC methods (`tui_gateway/methods_profiles.py`): `profiles.list`, 
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/multiplexing-gateway (pinned to v0.22.2)
 - Secret scope (`agent/secret_scope.py`): `build_profile_secret_scope(home)`, `set_secret_scope(mapping)`, `get_secret(name)` resolves global allowlist -> active scope -> fallback. Fallback with multiplexing off reads `os.environ`; with multiplexing on and no scope it raises `UnscopedSecretError`. Allowlist (`HERMES_HOME`, `HERMES_PROFILE`, proxy settings, `API_SERVER_*` listener settings except `API_SERVER_KEY`) stays global.
 - `GatewayRunner.__init__` calls `agent.secret_scope.set_multiplex_active(...)` once; `_MULTIPLEX_ACTIVE` is a module global.
 - The HERMES_HOME override is context-local in `hermes_constants.py`; `get_process_hermes_home()` is for machine-level assets; `hermes_home_key()` gives per-home registry keys.

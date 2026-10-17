@@ -22,6 +22,7 @@ Or set the env var: `HERMES_KANBAN_DISPATCH_IN_GATEWAY=false`
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban-multi-gateway (pinned to v0.22.2)
 - The dispatching owner (typically `default`) needs no change. Dispatch is single-owner so gateways do not race to spawn the same work.
 - Each gateway polls only subscriptions for profiles whose platform adapters it hosts; an atomic event claim prevents duplicate delivery across watcher processes. Non-dispatch gateways still deliver for their own adapters and skip boards with no subscriptions owned by their profiles.
 - A `changes_requested` review event is delivered as an actionable review-BLOCK notification. Subscriptions using `notify+wake` also wake the exact originating chat/thread/session; `notify` is passive-only and `wake` wake-only. Review feedback never creates, unblocks, requeues or otherwise mutates a task.

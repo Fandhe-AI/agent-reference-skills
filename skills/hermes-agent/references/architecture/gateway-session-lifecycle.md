@@ -72,6 +72,7 @@ Config keys:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/gateway-session-lifecycle (pinned to v0.22.2)
 - `get_or_create_session()` priority: `suspended=True` -> new `session_id`; `resume_pending=True` -> keep existing; otherwise return existing and bump `updated_at`.
 - `session_id` format: `YYYYMMDD_HHMMSS_<8hex>`. `sessions.json` maps `session_key` -> entry metadata; SQLite (`SessionDB`) is the canonical transcript store.
 - Key rules: DMs always include `chat_id` when present; group sessions append `participant_id` (`user_id_alt` or `user_id`) when `group_sessions_per_user`; threads are shared by default. WhatsApp identifiers are canonicalized (`canonical_whatsapp_identifier()`).

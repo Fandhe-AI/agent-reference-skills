@@ -31,6 +31,7 @@ auxiliary:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/micro-compaction (pinned to v0.22.2)
 - Per pass: `finalize_turn` finds the oldest un-summarized exchange (an assistant message with its tool results and follow-ups, up to the next user message), sends it plus the running summary to the auxiliary model, and replaces those messages with a single summary marker.
 - User messages are never compacted; head (system prompt and opening messages) and tail (token-budgeted recent window) are protected. Only the middle is touched.
 - A cursor tracks the first un-absorbed message; if missing it is recovered by scanning for the last summary marker. Only the newest summary marker is kept; adjacent user turns are joined into a row flagged `display_metadata.model_only`.

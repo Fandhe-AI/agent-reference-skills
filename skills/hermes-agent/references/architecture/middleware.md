@@ -50,6 +50,7 @@ Execution order:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/middleware (pinned to v0.22.2)
 - Middleware only runs for enabled plugins: `hermes plugins enable <plugin-name>`. For isolated testing use one `HERMES_HOME` for enablement and the run:
 
 ```bash

@@ -89,6 +89,7 @@ ShareGPT role mapping:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/trajectory-format (pinned to v0.22.2)
 - Reasoning is normalized into `<think>` tags: native `msg["reasoning"]` is wrapped as `<think>\n{reasoning}\n</think>\n`; `<REASONING_SCRATCHPAD>` is converted via `convert_scratchpad_to_think()`; every `gpt` turn gets a `<think>` block (empty `<think>\n</think>\n` if none).
 - Tool calls become XML-wrapped JSON (`<tool_call>\n{"name": "terminal", "arguments": {...}}\n</tool_call>`); arguments are parsed back to objects (`{}` plus a warning on parse failure); multiple calls yield multiple blocks in one `gpt` message.
 - Tool results after an assistant message are grouped into one `tool` turn of `<tool_response>` blocks (`{"tool_call_id", "name", "content"}`); JSON-looking content is parsed; results are matched to the parent `tool_calls` by position.

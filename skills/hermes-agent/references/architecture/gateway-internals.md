@@ -66,6 +66,7 @@ Gateway: "Paired! You're now authorized."
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/gateway-internals (pinned to v0.22.2)
 - Two-level message guard: Level 1 base adapter (`_active_sessions` -> queue in `_pending_messages` + interrupt event); Level 2 gateway runner (`_running_agents`; intercepts `/stop`, `/new`, `/queue`, `/status`, `/approve`, `/deny`, everything else triggers `running_agent.interrupt()`). `/approve` etc. dispatch inline to avoid races.
 - Slash commands resolve via `resolve_command()` (`hermes_cli/commands.py`), `GATEWAY_KNOWN_COMMANDS`, and handler lookup `_handle_<name>_command`; busy handling via `CommandDef.busy_policy` / `busy_handler`.
 - Config sources: `~/.hermes/.env`, `~/.hermes/config.yaml`, environment variables. The gateway reads `config.yaml` directly, unlike the CLI's `load_cli_config()` defaults.

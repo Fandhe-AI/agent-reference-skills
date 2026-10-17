@@ -78,6 +78,7 @@ _CHECKPOINT_EVERY_N_WRITES = 50
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/session-storage (pinned to v0.22.2)
 - Path: `get_hermes_home() / "state.db"` (context override, then `HERMES_HOME`, then `~/.hermes` / `%LOCALAPPDATA%/hermes`). Named profiles use `<root>/profiles/<name>/state.db`. Subprocess spawners must pass `HERMES_HOME` explicitly; changing `HOME` does not select a profile. Use `display_hermes_home()` only for user-facing text.
 - Test isolation guard raises before tests open a production `state.db`; `HERMES_STATE_DB_GUARD_BYPASS=1` / `@pytest.mark.live_system_guard_bypass` are test-only escape hatches.
 - In-place compaction archives old rows `active=0` and inserts retained context `active=1`; do not delete archive rows as duplicates.

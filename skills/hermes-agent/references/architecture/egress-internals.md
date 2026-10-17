@@ -61,6 +61,7 @@ Filesystem permissions under `~/.hermes/proxy/`: directory `0o700`; `ca.key`, `p
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/egress-internals (pinned to v0.22.2)
 - Write paths use `os.open(O_WRONLY | O_CREAT | O_NOFOLLOW, 0o600)` plus an `os.fstat().st_uid` check; `shutil.copy2` + `os.chmod` is forbidden (default-umask window).
 - `_build_proxy_subprocess_env` must not use `os.environ.copy()`; it uses `_PROXY_SUBPROCESS_ENV_ALLOWLIST` plus env names referenced by `load_mappings()`.
 - Bind policy (`_default_http_listen`): Docker bridge gateway IP on Linux, loopback on macOS/Windows Docker Desktop, loopback fallback with a warning; never `0.0.0.0` or `:PORT`. On the pinned iron-proxy v0.39 schema `tunnel_listen` (CONNECT + MITM) binds `tunnel_port` and `http_listen` binds `tunnel_port + 1`; the Docker backend sets `HTTPS_PROXY` to `tunnel_port` and `HTTP_PROXY` to `tunnel_port + 1`. Liveness probes use the configured bind host.

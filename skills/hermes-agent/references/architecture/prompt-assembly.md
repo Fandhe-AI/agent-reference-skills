@@ -57,6 +57,7 @@ platform_hints:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/prompt-assembly (pinned to v0.22.2)
 - API-call-time-only layers (not in the cached prompt): `ephemeral_system_prompt`, prefill messages, gateway-derived session context overlays, later-turn Honcho/external recall injected into the current-turn user message. `pre_llm_call` plugin context is appended to the current turn's user message.
 - Memory/profile snapshots live in the volatile tier; mid-session writes update disk but not the built prompt until a rebuild (new session or compression-triggered rebuild).
 - Inside the context tier shared project files come before worktree-specific text so sessions of one project in different git worktrees share a prompt prefix.

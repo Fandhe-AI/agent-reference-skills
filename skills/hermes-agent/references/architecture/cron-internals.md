@@ -52,8 +52,8 @@ Schedule formats:
 
 | Format | Example | Behavior |
 |--------|---------|----------|
-| Relative delay | `30m`, `2h`, `1d` | One-shot after the duration |
-| Interval | `every 2h`, `every 30m` | Recurring |
+| Relative delay | `in 30m`, `in 2h`, `in 1d` | One-shot after the duration |
+| Interval | `every 2h`, `every 30m`, bare `30m` | Recurring |
 | Cron expression | `0 9 * * *` | Standard 5-field cron |
 | ISO timestamp | `2025-01-15T09:00:00` | One-shot at the exact time |
 
@@ -65,6 +65,8 @@ Delivery targets: `origin`, `local` (saves to `~/.hermes/cron/output/`), `telegr
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/cron-internals (pinned to v0.22.2)
+- The developer-guide cron-internals page (v0.22.2) still lists bare 30m/2h/1d as one-shot; the user-guide Cron page states bare durations are recurring and one-shots need the in prefix — this table follows the user guide.
 - Tick cycle (default every 60 s): acquire scheduler lock, load jobs, filter due (`next_run <= now` and `state == "scheduled"`), run each in a fresh `AIAgent` session with attached skills injected, deliver, update `run_count` / `next_run`, write back, release lock. The model-facing tool is `cronjob_manage` with `create`, `list`, `update`, `pause`, `resume`, `run`, `remove`. Older jobs with a single `skill` field are normalized to `skills: [skill]`.
 - Missed-occurrence contract: at-most-once per occurrence with every occurrence accounted for. `tick()` advances `next_run_at` before dispatch and stamps a provisional `pending_slot`; a lost slot is restored once; an occurrence already `completed` in the executions ledger never re-fires; late within grace (half the period clamped to 120 s - 2 h) fires late (`last_dispatch.kind = late`); past grace the backlog collapses to one `catch_up` run, or is skipped with a log when `cron.catch_up_missed: false`. Paused jobs never fire; `resume_job` keeps a past stored `next_run_at` as the due instant.
 - Fire-claim lease: `fire_claim = {at, by}` refreshed by a heartbeat every 60 s (lease 300 s).

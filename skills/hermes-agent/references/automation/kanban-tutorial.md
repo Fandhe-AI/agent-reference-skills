@@ -89,6 +89,7 @@ Because the parent is `done`, the child is created straight into `ready` and inh
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban-tutorial (pinned to v0.22.2)
 - Board columns: Triage, Todo, Ready, In progress, Blocked, Done. Triage tasks are auto-decomposed by default (`auxiliary.kanban_decomposer`, roster-aware; parent task kept alive so `kanban.orchestrator_profile` or the default profile judges completion). Orchestration Auto/Manual pill; in Manual mode use Decompose (`hermes kanban decompose <id>` / `/kanban decompose <id>`). Specify (`auxiliary.triage_specifier`) rewrites a single task into a spec and promotes it to `todo`. Dashboard has filters, a `Lanes by profile` toggle and a `Nudge dispatcher` button (one dispatch tick now; default tick 60s).
 - Structured handoff: `kanban_show()` returns `worker_context` with prior attempts (outcome, summary, error, metadata) and each parent's most recent completed run summary and metadata. `hermes kanban complete a b c --summary X` (bulk with a shared summary) is refused; `kanban_complete` is single-task only.
 - Worker tool-call blocks are what the worker's model emits, not commands for you to run.

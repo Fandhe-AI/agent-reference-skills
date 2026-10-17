@@ -22,8 +22,17 @@ Resolution precedence:
 3. environment variables
 4. provider-specific defaults or auto resolution
 
+Fallback chain consumed by the resolver (`config.yaml`):
+
+```yaml
+fallback_providers:
+  - provider: openrouter
+    model: anthropic/claude-sonnet-4
+```
+
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/provider-runtime (pinned to v0.22.2). The fallback YAML above is from https://hermes-agent.nousresearch.com/docs/user-guide/features/fallback-providers.
 - A plugin under `plugins/model-providers/<your-provider>/` that calls `register_provider()` is enough; no branch is needed in the resolver. See Adding Providers and the Model Provider Plugin guide for first-class providers.
 - Provider families include AI Gateway (Vercel), OpenRouter, Nous Portal, OpenAI Codex, Copilot / Copilot ACP, Anthropic (native), Google / Gemini, Alibaba / DashScope, DeepSeek, Z.AI, Kimi / Moonshot, MiniMax, Kilo Code, Hugging Face, OpenCode Zen / Go, AWS Bedrock, Azure Foundry, NVIDIA NIM, xAI (Grok), Arcee, GMI Cloud, StepFun, Qwen OAuth, Xiaomi, Ollama Cloud, LM Studio, Tencent TokenHub, Custom (`provider: custom`), and named custom providers (`providers:` dict in `config.yaml`; legacy `custom_providers` list still read). See `plugins/model-providers/` for the complete set.
 - The saved model/provider choice is the source of truth, so a stale shell export cannot silently override the endpoint last chosen in `hermes model`.

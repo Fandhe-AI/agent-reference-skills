@@ -38,6 +38,7 @@ Gateway adapter seam (override on `BasePlatformAdapter`): `supports_streaming_tt
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/streaming-tts (pinned to v0.22.2)
 - Pipeline: LLM text deltas -> `tools.tts_streaming.SentenceChunker` (strips `<think>` blocks even when split across deltas, flushes complete sentences) -> registered `StreamingTTSProvider` (raw PCM, int16 mono at the declared `sample_rate`) -> audio sink (`sounddevice.OutputStream` via `tools.tts_tool_speaker.stream_tts_to_speaker`, or the adapter's `write_streaming_tts` through `gateway/streaming_tts_consumer.py`).
 - Providers without a chunked API still get per-sentence playback via the sync `text_to_speech_tool` path. All spoken text goes through `tools.tts_text_normalize.prepare_spoken_text`.
 - By default the dispatcher streams with the configured `tts.provider` when it has a chunked API; `tts.streaming.provider` pins a provider (`elevenlabs`, `gemini`, `openai`, `xai`) or `auto` walks `elevenlabs -> gemini -> openai -> xai` and takes the first with resolvable credentials.

@@ -31,6 +31,7 @@ The marker query should return no row, expected FTS triggers should be present, 
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/state-db-recovery (pinned to v0.22.2)
 - Live FTS corruption: `SessionDB` records the durable `fts_stale` marker, removes FTS sync triggers in the same transaction, retries canonical writes without derived-index sinks, and serves searches via a `LIKE` fallback. The failing live operation never runs `FTS5('rebuild')`; a later `SessionDB` open may rebuild under the cross-process admission lock. If the guarded rebuild cannot run, `hermes doctor` reports the explicit repair command.
 - Live file corruption (bare `SQLITE_CORRUPT` / `SQLITE_NOTADB` with no FTS provenance): the handle is quarantined (`StateDbCorruptError`): the failing write propagates, later writes fail immediately, the handle never reopens after `close()`, and `close()` skips its explicit WAL checkpoint. On Python 3.12+ SQLite's last-connection checkpoint is also disabled (`SQLITE_DBCONFIG_NO_CKPT_ON_CLOSE`); on 3.11 copy `state.db`, `state.db-wal` and `state.db-shm` together before restarting anything.
 - Gateway and agent flush paths send pending transcripts to `sessions/<id>.jsonl` and the gateway `pending_messages/` spool instead of the retry queue. The quarantine is per process. Do not run `hermes doctor --fix` while the gateway is up.

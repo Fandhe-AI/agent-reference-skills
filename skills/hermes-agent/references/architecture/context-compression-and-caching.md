@@ -61,6 +61,7 @@ prompt_caching:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/context-compression-and-caching (pinned to v0.22.2)
 - Two layers: gateway session hygiene (fixed 85% of context, pre-agent safety net, only when `len(history) >= 4`) and agent `ContextCompressor` (50% default, in-loop with real token counts). Hygiene is higher on purpose: 50% caused premature compression on every turn.
 - Token accounting uses a usage anchor (`agent/usage_anchor.py`): provider's last prompt/completion tokens plus a rough estimate of only newly appended messages. Not an exact-count-only policy; several local-estimate fallbacks remain.
 - Failure cooldown after a failed or stalled summary escalates 60s -> 300s -> 900s (persisted in `state.db`). Manual `/compress` clears it; provider-proven context overflow ignores it for one bounded attempt.

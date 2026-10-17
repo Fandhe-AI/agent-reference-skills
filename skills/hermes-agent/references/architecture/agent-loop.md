@@ -93,8 +93,10 @@ Agent-level tools intercepted by `agent/tool_executor.py` before `handle_functio
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/agent-loop (pinned to v0.22.2)
+- The developer-guide Agent Loop page (v0.22.2) says default 50; the Delegation feature page and Delegation Patterns guide both state 250, which is used here.
 - Interruptible calls: `_interruptible_api_call()` runs the HTTP call in a background thread while the main thread waits on response / interrupt event / timeout. On interrupt the API thread is abandoned and no partial response enters history.
-- Iteration budget: default 500 (`agent.max_turns`); subagents get independent budgets capped at `delegation.max_iterations` (default 50). At 100% the agent stops and returns a summary.
+- Iteration budget: default 500 (`agent.max_turns`); subagents get independent budgets capped at `delegation.max_iterations` (default 250). At 100% the agent stops and returns a summary.
 - Fallback: on 429 / 5xx / 401 / 403 the agent tries `fallback_providers` in order (401/403 attempt credential refresh first). A Codex Responses turn stalled on reasoning-only output (three consecutive continuations) fails over with reason `incomplete_response`. Auxiliary tasks (vision, compression, web extraction) have independent chains under `auxiliary.*`.
 - Compression triggers: preflight at >50% of context; gateway auto-compression at 85%. Memory is flushed first, `compression.protect_last_n` (default 20) recent messages are kept, tool call/result pairs are never split.
 - After each turn messages are saved to SQLite via `hermes_state.py` and memory changes flushed to `MEMORY.md` / `USER.md`.

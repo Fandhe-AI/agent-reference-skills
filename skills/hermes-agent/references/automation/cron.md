@@ -125,6 +125,7 @@ The agent's final response is delivered automatically; the agent does not send m
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/cron (pinned to v0.22.2)
 - Cron-run sessions cannot create more cron jobs unless `cron.allow_agent_scheduling: true`; then `deliver: origin` is resolved at create time to the creating job's concrete target.
 - Each run model: per-job pin, `cron.model`, main model at fire time. Per-job reasoning effort (`none` ... `ultra`) via `--reasoning-effort`; not exposed on the agent tool. A pinned job never falls back to `fallback_providers`; credential-pool rotation applies to all jobs.
 - No-agent example: `hermes cron create "every 5m" --no-agent --script memory-watchdog.sh --deliver telegram --name "memory-watchdog"`. Empty stdout = silent tick; non-zero exit or timeout = error alert; `{"wakeAgent": false}` on the last stdout line skips the agent (default `true`). `.sh`/`.bash` run under bash, others under the current Python interpreter; subprocess env is sanitized. Credentials go through `terminal.env_passthrough` (Hermes-managed provider credentials cannot be declared).

@@ -68,6 +68,7 @@ Backend support:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/browser-supervisor (pinned to v0.22.2)
 - Browserbase's CDP proxy auto-dismisses native dialogs within ~10 ms, so the supervisor injects a bridge script (`Page.addScriptToEvaluateOnNewDocument`) overriding `window.alert` / `confirm` / `prompt` with a synchronous XHR to `hermes-dialog-bridge.invalid`; `Fetch.enable` intercepts it and `respond_to_dialog` fulfills via `Fetch.fulfillRequest`. `pending_dialogs` is empty on Browserbase; use `recent_dialogs` (`closed_by`: `agent`, `auto_policy`, `watchdog`, `remote`; ring buffer of 20).
 - `CDPSupervisor` is one `asyncio.Task` in a background daemon thread per `task_id`, tracking a dialog queue, frame tree, session map and the last 50 console errors. It subscribes to `Page.enable`, `Runtime.enable` and `Target.setAutoAttach {autoAttach: true, flatten: true}`.
 - Lifecycle: `SupervisorRegistry.get_or_start(task_id, cdp_url)` (idempotent) from `browser_navigate`, Browserbase session create, `/browser connect`; stopped on session teardown or `/browser disconnect`; reconnects with backoff (<=10 s) and gives up after `MAX_POST_ATTACH_RECONNECT_FAILURES`; a changed CDP URL replaces the supervisor.

@@ -126,6 +126,7 @@ def verify(body: bytes, header: str, secret: str) -> bool:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/hooks (pinned to v0.22.2)
 - Gateway hooks are trusted-by-placement: loaded once at gateway startup (per served profile on first event under multi-profile gateways) from every `<profile home>/hooks/*/` containing both `HOOK.yaml` (non-empty `events` list) and `handler.py`. `handler.py` is imported in-process with no sandbox or prompt; `HERMES_SAFE_MODE` does not skip it; CLI, TUI, Desktop and cron never load gateway hooks. Handler must be named `handle`, sync or async.
 - Hermes ships no built-in `BOOT.md` hook; the documented pattern is a user hook on `gateway:startup` that spawns a one-shot `AIAgent` using `_resolve_gateway_model()` / `_resolve_runtime_agent_kwargs()` and a `[SILENT]` convention.
 - Plugin-hook general rules: callbacks receive keyword arguments (always accept `**kwargs`); exceptions are logged and skipped; timeout-bounded hooks (`plugins.hook_callback_timeout`, default 30s, 0 disables, max 600) are abandoned on timeout, with `pre_tool_call` failing closed and others failing open; `PluginManager` adds `telemetry_schema_version="hermes.observer.v1"` to every callback; valid event names come from `hermes_cli.plugins.VALID_HOOKS`.

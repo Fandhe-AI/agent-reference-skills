@@ -42,6 +42,7 @@ code_execution:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/code-execution (pinned to v0.22.2)
 - Use it for 3+ tool calls with processing logic between them, bulk filtering, loops. Use `terminal` for simple shell commands, builds, test suites, interactive/background processes.
 - Persistent session kernel (local backend): variables, imports and loaded data persist between calls for the same session, mode, interpreter, working directory and tool set. A timeout or interrupt kills the kernel; idle timeout and `max_session_kernels` eviction also end it. Subagents get their own kernel (disposed when the subagent finishes). The kernel environment is frozen at spawn, so use `reset: true` to pick up new passthrough variables. `code_execution.kernel_mode` is no longer a separate switch. Remote backends (Docker, SSH, Modal) use a remote session kernel, falling back to standalone scripts when it cannot spawn.
 - Security: child env is scrubbed (names containing `KEY`, `TOKEN`, `SECRET`, `PASSWORD`, `CREDENTIAL`, `PASSWD`, `AUTH` excluded). Only `HERMES_HOME`, `HERMES_PROFILE`, `HERMES_CONFIG`, `HERMES_ENV` (plus RPC vars, `TZ`, `HOME`) pass by exact name; the former broad `HERMES_*` prefix passthrough was removed. Opt back in via `terminal.env_passthrough` or a skill's `required_environment_variables`. Debug log: `execute_code: dropped N non-allowlisted HERMES_* var(s)`.

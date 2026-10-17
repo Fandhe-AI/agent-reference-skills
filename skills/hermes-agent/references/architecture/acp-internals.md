@@ -50,6 +50,7 @@ Key files: `acp_adapter/entry.py`, `server.py`, `session.py`, `events.py`, `perm
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/acp-internals (pinned to v0.22.2)
 - Stdout is reserved for ACP JSON-RPC; logs go to stderr.
 - `thinking_callback` is `None` in the ACP bridge; reasoning is forwarded through `step_callback`. Every ACP tool call reaches a terminal status; calls still open at turn end are marked `failed`.
 - A turn ending in terminal failure is closed with a Hermes-authored assistant row so the transcript never ends on an open `user` row (context-overflow failures are exempt).

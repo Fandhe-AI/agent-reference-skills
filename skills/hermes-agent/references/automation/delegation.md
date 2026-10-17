@@ -61,6 +61,7 @@ delegation:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/delegation (pinned to v0.22.2)
 - Subagents know nothing: pass everything needed in `goal` / `context`. If the parent has a workspace, the child's system prompt embeds project context files (`.hermes.md` > AGENTS.md chain > CLAUDE.md > `.cursorrules`; SOUL.md excluded).
 - `output_schema`: child gets one bounded correction turn on validation failure; result gains `schema_valid` and, on failure, `schema_errors` / `schema_note` while keeping `status: completed` with the raw text in `summary`.
 - Blocked for leaf subagents: `delegate_task`, `clarify`, `memory`, `send_message`, `cronjob`. Orchestrators keep `delegate_task`. Both roles keep `execute_code`.

@@ -61,6 +61,7 @@ Terminal backends: local, docker, ssh, singularity, modal, daytona, vercel_sandb
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/tools-runtime (pinned to v0.22.2)
 - Discovery: `discover_builtin_tools()` scans `tools/*.py` with AST parsing for top-level `registry.register()` calls (skipping `__init__.py`, `registry.py`, `mcp_tool.py`) and imports them. MCP tools (`discover_mcp_tools()`) and plugin tools (`hermes_cli.plugins.discover_plugins()`) are discovered afterwards.
 - A registration shadowing a tool from a different toolset is rejected unless `override=True`; plugin overrides of built-ins also need `plugins.entries.<plugin_id>.allow_tool_override: true`.
 - `schema["description"]` is the authoritative model-facing description; `description=` only populates `ToolEntry.description`.

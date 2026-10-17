@@ -24,6 +24,7 @@ The shared renderer is `tools/process_registry_notifications.py::ProcessNotifica
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/completion-backlog-delivery (pinned to v0.22.2)
 - No delay is added and no promise is made to combine jobs that finish at different times. Failures and successful outputs both stay in the batch; a single completion keeps its original text.
 - Process identity remains available until dispatch, so explicit `process_manage` wait/log/kill consumption can suppress a CLI completion even after it entered the input queue. A fully consumed batch starts no turn.
 - Watch-output and async-delegation results remain separate notifications in original order and are not folded into completion batches. Delegation delivery uses its durable claim/complete ledger, once per delegation.

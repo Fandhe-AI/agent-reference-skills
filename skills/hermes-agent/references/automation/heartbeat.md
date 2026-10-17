@@ -29,6 +29,7 @@
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/heartbeat (pinned to v0.22.2)
 - Idle-only: never interrupts a running turn; fires at the next idle poll. A queued user message always takes priority.
 - Missed ticks coalesce into one heartbeat turn; the timer re-anchors on every fire.
 - Owned by the surface that set it: a heartbeat set from a messaging chat fires from the gateway even if the session is open in the TUI / Desktop app.

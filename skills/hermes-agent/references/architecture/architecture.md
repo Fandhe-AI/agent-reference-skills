@@ -125,7 +125,9 @@ Tool registration happens at import time, before any agent instance exists; any 
 
 ## Notes
 
-- v0.22.0 simplified the codebase with no behavior change (source about 1.06M to 698K lines; `gateway/run.py` 34,847 to 5,512 lines per the release notes), which is why `run_agent.py`, `cli.py`, `gateway/run.py`, `hermes_state.py`, and tool modules are now facades with sibling modules.
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/architecture (pinned to v0.22.2)
+- Release notes: https://github.com/NousResearch/hermes-agent/releases/tag/v0.22.0
+- v0.22.0 simplified the codebase with no behavior change (source about 1.06M to 698K lines; `gateway/run.py` 34,847 to 5,512 lines, per the v0.22.0 release notes linked above), which is why `run_agent.py`, `cli.py`, `gateway/run.py`, `hermes_state.py`, and tool modules are now facades with sibling modules.
 - Counts such as "70+ tools across ~28 toolsets" are as printed on this page; the Built-in Tools Reference lists ~100 tools.
 - Messaging platform adapters mostly live as bundled plugins under `plugins/platforms/` rather than `gateway/platforms/`.
 

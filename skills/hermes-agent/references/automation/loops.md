@@ -49,6 +49,7 @@ loops:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/loops (pinned to v0.22.2)
 - Works on the CLI, TUI (`hermes --tui`), web dashboard chat, desktop app and every gateway platform. On messaging platforms the gateway fires wakeups between your messages.
 - Desktop/dashboard: a session with an active `/loop` (or `/heartbeat`) is exempt from the disconnected-session reaper; the backend process itself must keep running.
 - An active `/goal` owns the session: loop wakeups defer while a goal is driving, and resume when the goal finishes, pauses, or parks on a wait barrier. A real user message always wins.

@@ -58,6 +58,7 @@ auxiliary:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/goals (pinned to v0.22.2)
 - Judge sees the goal text, the agent's last final response (last ~4 KB) and live background processes; replies with one-line JSON `{"verdict": "done" | "blocked" | "continue" | "wait", "reason": "..."}` (wait verdicts add `wait_on_session` / `wait_on_pid` / `wait_for_seconds`; legacy `{"done": <bool>, "reason": "..."}` still accepted). `blocked` pauses the goal with the reason. Judge errors are treated as `continue` (fail-open); the turn budget (`goals.max_turns`, default 20) is the backstop.
 - Wait barriers: pid/session waits capped at 30 minutes; persisted with the goal; cleared by pause / resume / clear.
 - Quality gates run before the judge; a failing gate skips the judge and its exit code plus output tail (~3 KB) become the continuation prompt. Defaults: 3 retries and 5-minute timeout per gate; exhausted gate auto-pauses the goal. On messaging platforms `/goal gate add` requires an explicitly configured gateway admin.

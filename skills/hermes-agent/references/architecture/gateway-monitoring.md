@@ -65,6 +65,7 @@ increase(hermes_cron_scheduler_catch_up_occurrences[15m]) > 0
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/gateway-monitoring (pinned to v0.22.2)
 - Never exported: prompts, messages, tool arguments/results, job names, destinations, schedules, raw errors, session history, usage analytics, audit logs, detailed traces. Trajectory capture is a separate plane (NeMo Relay SDK integration).
 - `active_agents` counts foreground turns + in-flight cron + API runs; `background_work` counts detached work (task-granular); `background_delegations` counts async delegation units (alert against `delegation.max_concurrent_children`).
 - The OpenTelemetry SDK belongs to the `otlp` extra and installs on first use when policy permits. If the SDK or endpoint is missing the gateway runs unaffected; terminal cron events make one bounded fail-open flush of up to one second.

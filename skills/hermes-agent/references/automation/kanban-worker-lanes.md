@@ -37,6 +37,7 @@ Env vars set for a spawned Hermes profile worker:
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban-worker-lanes (pinned to v0.22.2)
 - The kernel enforces exactly one terminator per run; a worker that calls none and exits normally is treated as crashed.
 - Review models: same-card review via `kanban_request_review` (status `review`; dispatcher loads bundled `sdlc-review` skill unless `kanban.review_dispatch` is disabled; reviewer approves with `kanban_complete`, returns rework with `kanban_request_changes`, or escalates with `kanban_block`); a pre-created downstream review/QA/release card (complete the implementation phase; do not also request same-card review and never sticky-block the parent with `review-required:`); human-only boards with `kanban.review_dispatch: false`. Do not put secrets or raw PII in `summary` / `metadata`; run rows are durable.
 - Descendant processes (shells, execution kernels, cron deliveries, hooks, language servers, stdio MCP servers) carry a non-owner fence: CLI/tool mutations are rejected even if a script strips the inherited task ID. `unblock` stays orchestrator-only. Integration authors should spawn with `agent.delegation_context.delegated_child_subprocess_env`. This is cooperative scoping, not OS confinement.

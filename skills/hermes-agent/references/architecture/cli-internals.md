@@ -29,6 +29,7 @@ Built-in skins: `default`, `ares`, `mono`, `slate`.
 
 ## Notes
 
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/cli-internals (pinned to v0.22.2)
 - Plan (`update_inventory.py`, `hermes update --plan`): read-only inventory of install kind, profiles and live gateways. `git` updates in place; `docker` / `nix` / `apt` are not in-place-updatable and the updater reports the external command.
 - Snapshot (`backup.py`): pre-update quick snapshot for every profile into its own `state-snapshots/`, identical file set, 1 GiB per-file cap, keep=1. Never add a partial/tiered snapshot set. Quick snapshots are file-loss recovery, not code rollback; `--backup` full mode owns rollback.
 - Apply: git pull, or the Windows ZIP fallback which fires only when git itself failed, refuses a dirty working tree, and grafts live nested build outputs (`_ZIP_PRESERVED_NESTED`).
