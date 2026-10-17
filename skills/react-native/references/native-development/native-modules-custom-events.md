@@ -95,6 +95,7 @@ Framework build type is static library
 Step 3: update the app code (`App.tsx`).
 
 ```diff
++import React from 'react';
 import {
 + Alert,
 + EventSubscription,
@@ -284,6 +285,7 @@ NS_ASSUME_NONNULL_END
 
 ## Notes
 
+- React import added; the official snippet uses React.* at runtime without importing it.
 - Changing the value of an existing key does not emit the event, adding a new key does (as described on the page).
 - Corrected: the official Android snippet emitted when getItem(key) != null (existing key); the condition is inverted here to match the described new-key behavior and the iOS code.
 - Corrected: the official Android snippet returned username.toString(), which yields the string "null" for missing keys.

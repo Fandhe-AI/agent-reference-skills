@@ -84,6 +84,7 @@ These changes require you to:
 ### 2. Update the App code to use the new command
 
 ```diff
++import React from 'react';
 -import {Alert, StyleSheet, View} from 'react-native';
 -import WebView from '../specs/WebViewNativeComponent';
 +import {Alert, StyleSheet, Pressable, Text, View} from 'react-native';
@@ -279,6 +280,7 @@ Run your app with the usual commands. Tap the refresh button to see the page get
 
 ## Notes
 
+- React import added; the official snippet uses React.* at runtime without importing it.
 - In TypeScript, `React.ElementRef` is deprecated; the correct type is `React.ComponentRef`. However, due to a bug in Codegen, using `ComponentRef` will crash the app (per the official page; the fix needs a new React Native release).
 - All Native Commands must have a first parameter of type `React.ElementRef`.
 - Cross-skill: Android `WebView` / WebKit `WKWebView` APIs belong to android-architecture / apple-uikit; this page covers only the React Native native-command boundary.

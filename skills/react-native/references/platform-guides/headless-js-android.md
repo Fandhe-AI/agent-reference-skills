@@ -103,6 +103,7 @@ Bundle bundle = new Bundle();
 bundle.putString("foo", "bar");
 service.putExtras(bundle);
 
+// MyTaskService must call startForeground() with a notification (and declare android:foregroundServiceType on API 34+), otherwise use startService when the app is allowed to start background services
 getApplicationContext().startForegroundService(service);
 ```
 
@@ -116,19 +117,22 @@ bundle.putString("foo", "bar")
 
 service.putExtras(bundle)
 
+// MyTaskService must call startForeground() with a notification (and declare android:foregroundServiceType on API 34+), otherwise use startService when the app is allowed to start background services
 applicationContext.startForegroundService(service)
 ```
 
 ### Retries
 
-By default, the headless JS task will not perform any retries. In order to do so, you need to create a `HeadlessJsRetryPolicy` and throw a specific `Error`.
+By default, the headless JS task will not perform any retries. In order to do so, you need to create a `HeadlessJsTaskRetryPolicy` and throw a specific `Error`.
 
-`LinearCountingRetryPolicy` is an implementation of `HeadlessJsRetryPolicy` that allows you to specify a maximum number of retries with a fixed delay between each attempt. If that does not suit your needs then you can implement your own `HeadlessJsRetryPolicy`. These policies can be passed as an extra argument to the `HeadlessJsTaskConfig` constructor.
+`LinearCountingRetryPolicy` is an implementation of `HeadlessJsTaskRetryPolicy` that allows you to specify a maximum number of retries with a fixed delay between each attempt. If that does not suit your needs then you can implement your own `HeadlessJsTaskRetryPolicy`. These policies can be passed as an extra argument to the `HeadlessJsTaskConfig` constructor.
 
 **Java**
 
 ```java
-HeadlessJsRetryPolicy retryPolicy = new LinearCountingRetryPolicy(
+// import com.facebook.react.jstasks.HeadlessJsTaskRetryPolicy;
+// import com.facebook.react.jstasks.LinearCountingRetryPolicy;
+HeadlessJsTaskRetryPolicy retryPolicy = new LinearCountingRetryPolicy(
   3, // Max number of retry attempts
   1000 // Delay between each retry attempt
 );
@@ -157,7 +161,7 @@ return HeadlessJsTaskConfig("SomeTaskName", Arguments.fromBundle(extras), 5000, 
 A retry attempt will only be made when a specific `Error` is thrown. Inside a headless JS task, you can import the error and throw it when a retry attempt is required.
 
 ```tsx
-import {HeadlessJsTaskError} from 'HeadlessJsTask';
+import HeadlessJsTaskError from 'react-native/Libraries/ReactNative/HeadlessJsTaskError';
 
 module.exports = async taskData => {
   const condition = ...;
@@ -174,6 +178,7 @@ If you wish all errors to cause a retry attempt, you will need to catch them and
 Service can be started from Java API. First you need to decide when the service should be started and implement your solution accordingly. The example reacts to network connection change. Register the broadcast receiver in the Android manifest:
 
 ```xml
+<!-- Not delivered to manifest-declared receivers when targetSdk >= 24 -->
 <receiver android:name=".NetworkChangeReceiver" >
   <intent-filter>
     <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -214,6 +219,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             boolean hasInternet = isNetworkAvailable(context);
             Intent serviceIntent = new Intent(context, MyTaskService.class);
             serviceIntent.putExtra("hasInternet", hasInternet);
+            // MyTaskService must call startForeground() with a notification (and declare android:foregroundServiceType on API 34+), otherwise use startService when the app is allowed to start background services
             context.startForegroundService(serviceIntent);
             HeadlessJsTaskService.acquireWakeLockNow(context);
         }
@@ -296,6 +302,7 @@ class NetworkChangeReceiver : BroadcastReceiver() {
             val hasInternet = isNetworkAvailable(context)
             val serviceIntent = Intent(context, MyTaskService::class.java)
             serviceIntent.putExtra("hasInternet", hasInternet)
+            // MyTaskService must call startForeground() with a notification (and declare android:foregroundServiceType on API 34+), otherwise use startService when the app is allowed to start background services
             context.startForegroundService(serviceIntent)
             HeadlessJsTaskService.acquireWakeLockNow(context)
         }
@@ -363,7 +370,10 @@ class NetworkChangeReceiver : BroadcastReceiver() {
 - Corrected: the official snippets used require('SomeTaskName') (package resolution), intent.extras on a nullable Intent, and a single-quoted Java string.
 - By default, your app will crash if you try to run a task while the app is in the foreground. This is to prevent developers from shooting themselves in the foot by doing a lot of work in a task and slowing the UI. You can pass a fourth `boolean` argument to control this behaviour.
 - If you start your service from a `BroadcastReceiver`, make sure to call `HeadlessJsTaskService.acquireWakeLockNow()` before returning from `onReceive()`.
-- The Kotlin retry example in the official page declares the type `HeadlessJsTaskRetryPolicy` while the Java example uses `HeadlessJsRetryPolicy`; both are reproduced as written in the source.
+- The official page's Java example uses the non-existent type HeadlessJsRetryPolicy; corrected here to HeadlessJsTaskRetryPolicy (com.facebook.react.jstasks, as of v0.87.0).
+- The official page imports {HeadlessJsTaskError} from 'HeadlessJsTask' (a Haste module name that does not resolve); corrected to the default export at react-native/Libraries/ReactNative/HeadlessJsTaskError (deep import, v0.87.0).
+- HeadlessJsTaskService does not call startForeground(); when started via startForegroundService the subclass must post a notification with startForeground() within the system deadline and declare a foregroundServiceType (Android 14+), which the official page omits.
+- Since Android 7.0 (API 24) CONNECTIVITY_CHANGE is not delivered to manifest-declared receivers; register the receiver at runtime with Context.registerReceiver or use ConnectivityManager.NetworkCallback / WorkManager network constraints instead (the official example predates this).
 - Android only. The native side (Service, BroadcastReceiver, manifest) is plain Android; see the android-architecture skill for Android components in general. This is the React Native `HeadlessJsTaskService` API, not a Kotlin or Compose API.
 
 ## Related

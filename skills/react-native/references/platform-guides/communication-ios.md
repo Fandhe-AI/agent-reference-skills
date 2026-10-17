@@ -22,6 +22,7 @@ RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
 ```
 
 ```tsx
+import React from 'react';
 import {View, Image} from 'react-native';
 
 export default class ImageBrowserApp extends React.Component {
@@ -54,7 +55,7 @@ Fixed size root view: set RCTRootView's frame explicitly.
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:appName
                                             initialProperties:props];
-  rootView.frame = CGRectMake(0, 0, self.view.width, 200);
+  rootView.frame = CGRectMake(0, 0, self.view.bounds.size.width, 200);
   [self.view addSubview:rootView];
 }
 ```
@@ -100,6 +101,8 @@ Setting the mode to `RCTRootViewSizeFlexibilityHeight` means `rootViewDidChangeI
 
 ## Notes
 
+- The official page uses self.view.width (not a UIView property); corrected to self.view.bounds.size.width.
+- React import added; the official snippet uses React.* at runtime without importing it.
 - Property updates may be done at any time but must be performed on the main thread; the getter can be used on any thread. There is no way to update only a few properties at a time; build that into your own wrapper.
 - Known issue (as stated in the docs): setting `appProperties` during the bridge startup, the change can be lost (react-native issue 20115).
 - Passing properties from React Native to native: export properties with the `RCT_CUSTOM_VIEW_PROPERTY` macro in your custom native component (see the Legacy Native UI Components iOS guide).

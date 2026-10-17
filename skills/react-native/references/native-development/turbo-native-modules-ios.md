@@ -37,6 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface RCTNativeLocalStorage : NSObject <NativeLocalStorageSpec>
 
 @end
+
+NS_ASSUME_NONNULL_END
 ```
 
 Then update the implementation (`NativeLocalStorage/RCTNativeLocalStorage.mm`) to use `NSUserDefaults` with a custom suite name:
@@ -146,6 +148,7 @@ yarn run ios
 - The last step updates `package.json` to tell React Native about the link between the JS specs of the Native Module and the concrete implementation of those specs in native code (`ios.modulesProvider`).
 - If you now build your application from Xcode, you should be able to build successfully.
 - Cross-skill: UIKit / Foundation APIs and Swift belong to apple-uikit / apple-swift; this page covers only the React Native module boundary.
+- NS_ASSUME_NONNULL_END added; the official header snippet leaves the nonnull region open.
 
 ## Related
 

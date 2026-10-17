@@ -49,6 +49,7 @@ class MainActivity : ReactActivity() {
 ```
 
 ```tsx
+import React from 'react';
 import {View, Image} from 'react-native';
 
 export default class ImageBrowserApp extends React.Component {
@@ -100,6 +101,7 @@ Native modules are Java/Kotlin classes that are available in JS. Typically one i
 
 ## Notes
 
+- React import added; the official snippet uses React.* at runtime without importing it.
 - Updating `appProperties` is fine at any time, but updates have to be performed on the main thread. The getter can be used on any thread.
 - There is no way to update only a few properties at a time. Build it into your own wrapper instead.
 - After an appProperties update the root component re-renders with the new props; handle them in render, componentDidUpdate, or a useEffect that depends on the props (componentDidMount runs only on the initial mount).

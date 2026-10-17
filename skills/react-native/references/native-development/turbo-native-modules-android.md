@@ -208,6 +208,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactHost;
 import com.facebook.react.defaults.DefaultReactNativeHost;
+import com.facebook.react.soloader.OpenSourceMergedSoMapping;
 import com.facebook.soloader.SoLoader;
 import com.nativelocalstorage.NativeLocalStoragePackage;
 
@@ -255,7 +256,7 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
-    SoLoader.init(this, false);
+    SoLoader.init(this, OpenSourceMergedSoMapping.INSTANCE);
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
       DefaultNewArchitectureEntryPoint.load();
@@ -278,6 +279,7 @@ import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
+import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
 import com.nativelocalstorage.NativeLocalStoragePackage
 
@@ -305,7 +307,7 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
-    SoLoader.init(this, false)
+    SoLoader.init(this, OpenSourceMergedSoMapping)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
       load()
@@ -331,6 +333,7 @@ yarn run android
 ## Notes
 
 - Corrected: the official snippet returned username.toString(), which yields the string "null" for missing keys.
+- The official page initializes SoLoader with (this, false); updated to OpenSourceMergedSoMapping as required since RN 0.76 merged native libraries.
 - Docusaurus highlight markers from the official page are removed; snippets show the final code.
 - Registering the package means telling React Native in the main application how to find this `Package`; here it is added to the list returned by the `getPackages` method.
 - Later you learn how to distribute Native Modules as npm packages, which the build tooling autolinks (see "Create a Library for Your Module").

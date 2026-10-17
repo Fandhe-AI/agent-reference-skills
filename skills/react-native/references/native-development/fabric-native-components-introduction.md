@@ -51,7 +51,7 @@ export default codegenNativeComponent<NativeProps>(
 ) as HostComponent<NativeProps>;
 ```
 
-**Flow** (`Demo/RCTWebView/js/RCTWebViewNativeComponent.js`)
+**Flow** (`Demo/specs/WebViewNativeComponent.js`)
 
 ```ts
 // @flow strict-local
@@ -146,6 +146,7 @@ yarn run ios
 
 ## Notes
 
+- The official page places the Flow spec at Demo/RCTWebView/js/RCTWebViewNativeComponent.js; aligned with jsSrcsDir specs and the ./specs/WebViewNativeComponent import.
 - Folder layout: `android/app/src/main/java/com/webview` holds the Android code, `ios` holds the iOS code, `specs` holds the Codegen specification file.
 - The suffix `NativeComponent` is not only a convention: Codegen uses it to detect a spec file. The spec is used by Codegen to generate the C++, Objective-C++ and Java that connect platform code to the JavaScript runtime.
 - The spec has three main parts: `WebViewScriptLoadedEvent` (supporting data type for the event data passed from native to JavaScript), `NativeProps` (the props that can be set on the component), and the `codegenNativeComponent` statement (generates code for the custom component and defines a name used to match the native implementations). As with Native Modules, multiple specification files can live in `specs/`. Supported types and platform mappings are in the Appendix (Codegen typings).
