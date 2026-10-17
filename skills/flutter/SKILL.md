@@ -3,14 +3,14 @@ name: flutter
 description: >
   Flutter (Google 製 Dart クロスプラットフォーム UI フレームワーク, 3.47) のリファレンス。
   StatelessWidget / StatefulWidget / BuildContext, Sliver, Material / Cupertino, Impeller,
-  flutter CLI, pubspec.yaml, hot reload, flutter fix / dart fix, DevTools, Widget Previewer, MVVM,
-  platform channels / dart:ffi, add-to-app, Flutter Web / Wasm, GenUI SDK / AI Toolkit。
+  flutter CLI, pubspec.yaml, hot reload, flutter fix / dart fix, DevTools, Widget Previewer,
+  MVVM, platform channels / dart:ffi, add-to-app, Flutter Web / Wasm, GenUI SDK / AI Toolkit。
 user-invocable: false
 ---
 
 # Flutter
 
-> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation, fundamentals, interaction-navigation, layout, packages-deployment, platform-integration, release, testing-performance, tools, web}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation, fundamentals, interaction-navigation, layout, packages-deployment, platform-integration, release, testing-performance, tools, web, widgets-api}、samples。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -32,6 +32,8 @@ skills/flutter/
       README.md
     interaction-navigation/  # ジェスチャー・フォーカス・ナビゲーション・ディープリンク・a11y・i18n（14 ページ）
       README.md
+    widgets-api/             # 主要ウィジェット/クラス API（25 ページ）
+      README.md
     design-animation/        # Material/Cupertino・テーマ・アニメーション・アセット・シェーダー（17 ページ）
       README.md
     architecture-data/       # アプリアーキテクチャ・状態管理・ネットワーク・永続化・Firebase（21 ページ）
@@ -50,6 +52,9 @@ skills/flutter/
       README.md
     release/                 # リリースノート・breaking changes・移行ガイド（21 ページ）
       README.md
+  samples/                   # 動く実例（23 件）
+    README.md
+    <use-case>.md
 ```
 
 ## 探索手順
@@ -72,6 +77,8 @@ skills/flutter/
 | タップ・ドラッグ等のジェスチャー、フォーカス、Actions/Shortcuts を扱いたい | interaction-navigation | [references/interaction-navigation/README.md](references/interaction-navigation/README.md) |
 | 画面遷移・ディープリンク・URL 戦略を設定したい | interaction-navigation | [references/interaction-navigation/README.md](references/interaction-navigation/README.md) |
 | アクセシビリティ・国際化（i18n）に対応したい | interaction-navigation | [references/interaction-navigation/README.md](references/interaction-navigation/README.md) |
+| Widget / State / BuildContext / Key / InheritedWidget の API を調べたい | widgets-api | [references/widgets-api/README.md](references/widgets-api/README.md) |
+| ListView・Stack・Image・FutureBuilder・StreamBuilder 等の API を調べたい | widgets-api | [references/widgets-api/README.md](references/widgets-api/README.md) |
 | MaterialApp・CupertinoApp・ThemeData・Scaffold を設定したい | design-animation | [references/design-animation/README.md](references/design-animation/README.md) |
 | 暗黙的/明示的アニメーション・Hero・AnimationController を使いたい | design-animation | [references/design-animation/README.md](references/design-animation/README.md) |
 | アセット・フォント・フラグメントシェーダーを扱いたい | design-animation | [references/design-animation/README.md](references/design-animation/README.md) |
@@ -92,3 +99,4 @@ skills/flutter/
 | Flutter Web のビルド・Wasm・初期化・埋め込み・デプロイを行いたい | web | [references/web/README.md](references/web/README.md) |
 | GenUI SDK・AI Toolkit（LlmChatView）・AI 開発ツールを使いたい | ai | [references/ai/README.md](references/ai/README.md) |
 | 3.47 の新機能・breaking changes・移行ガイド（material_ui opt-in 含む）を確認したい | release | [references/release/README.md](references/release/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
