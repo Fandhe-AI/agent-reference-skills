@@ -2,14 +2,14 @@
 name: vercel-ai-sdk
 description: >
   Vercel AI SDK (TypeScript LLM ツールキット, ai / @ai-sdk/*, v7)。
-  generateText, streamText, Output, ToolLoopAgent, useChat, UIMessage, embed, generateImage,
-  wrapLanguageModel, WorkflowAgent, HarnessAgent, AI Gateway。
+  generateText, streamText, Output, ToolLoopAgent, createMCPClient, useChat, UIMessage, embed,
+  generateImage, wrapLanguageModel, WorkflowAgent, HarnessAgent, AI Gateway。
 user-invocable: false
 ---
 
 # Vercel AI SDK
 
-> 分割 PR の途中段階。現在収録済み: references/{agents, core, embeddings-batch, foundations, media, migration, operations}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{agents, core, embeddings-batch, foundations, media, migration, operations, providers, rsc}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 TypeScript 向け LLM アプリ開発ツールキット `ai`（AI SDK Core / UI / RSC）と `@ai-sdk/*` パッケージ群のリファレンス・サンプル・コマンド集。
 
@@ -17,6 +17,7 @@ TypeScript 向け LLM アプリ開発ツールキット `ai`（AI SDK Core / UI 
 
 - `ai` **7.0.142**（npm latest、2026-10-15 公開）
 - GitHub タグ `vercel/ai` の `ai@7.0.142`（lightweight tag、commit `6e14ffaa7e66594b926891583a4dab61910743d0`）
+- 原本: `raw.githubusercontent.com/vercel/ai/ai@7.0.142/` 配下の `content/{docs,providers,cookbook}/**/*.mdx`
 - 同タグ時点の関連パッケージ: `@ai-sdk/react` 4.0.146 / `@ai-sdk/rsc` 3.0.142 / `@ai-sdk/workflow` 2.0.74 / `@ai-sdk/harness` 1.0.153 / `@ai-sdk/tui` 1.0.143 / `@ai-sdk/mcp` 2.0.77 / `@ai-sdk/devtools` 1.0.45 / `@ai-sdk/provider` 4.0.28 / `@ai-sdk/provider-utils` 5.0.61 / `@ai-sdk/gateway` 4.0.115 / `@ai-sdk/openai` 4.0.95 / `@ai-sdk/anthropic` 4.0.81 / `@ai-sdk/google` 4.0.97 / `@ai-sdk/amazon-bedrock` 5.0.117 / `@ai-sdk/openai-compatible` 3.0.70
 - サイト URL（`ai-sdk.dev`）に版指定は無い。取得日 2026-10-16。各ページの `source:` は版なしの `ai-sdk.dev` パス
 
@@ -35,12 +36,18 @@ skills/vercel-ai-sdk/
     agents/             # Agent / ToolLoopAgent・ループ制御・承認・subagents
       README.md
       agent.md, tool-loop-agent.md, loop-control.md, tool-approvals.md, subagents.md ...
+    rsc/                # @ai-sdk/rsc（streamUI / createStreamableUI / createAI）
+      README.md
+      overview.md, stream-ui.md, create-ai.md, migrating-to-ui.md ...
     embeddings-batch/   # embed / rerank / batch / uploadFile / uploadSkill / decide
       README.md
       embed.md, embed-many.md, rerank.md, start-batch.md, upload-file.md ...
     media/              # 画像・音声・文字起こし・動画・realtime・翻訳
       README.md
       generate-image.md, generate-speech.md, transcribe.md, generate-video.md, realtime.md ...
+    providers/          # プロバイダー・AI Gateway・registry・language model middleware
+      README.md
+      ai-gateway.md, openai.md, anthropic.md, google.md, amazon-bedrock.md, wrap-language-model.md ...
     operations/         # エラー・telemetry・testing・DevTools・キャッシュ・デプロイ
       README.md
       error-handling.md, telemetry.md, testing.md, devtools.md, vercel-deployment-guide.md ...
@@ -69,9 +76,14 @@ skills/vercel-ai-sdk/
 | ToolLoopAgent でエージェントを構築したい | agents | [references/agents/README.md](references/agents/README.md) |
 | ループ制御（stop condition）・tool 承認・subagents・memory を設定したい | agents | [references/agents/README.md](references/agents/README.md) |
 | Agent の出力を UI メッセージストリームとして返したい | agents | [references/agents/README.md](references/agents/README.md) |
+| RSC（streamUI / createStreamableUI / createAI）を使いたい | rsc | [references/rsc/README.md](references/rsc/README.md) |
+| RSC から AI SDK UI へ移行したい | rsc | [references/rsc/README.md](references/rsc/README.md) |
 | embed / embedMany / cosineSimilarity で埋め込みを扱いたい | embeddings-batch | [references/embeddings-batch/README.md](references/embeddings-batch/README.md) |
 | rerank・batch API・uploadFile / uploadSkill・experimental_decide を使いたい | embeddings-batch | [references/embeddings-batch/README.md](references/embeddings-batch/README.md) |
 | 画像・音声・動画の生成、文字起こし、翻訳、realtime を使いたい | media | [references/media/README.md](references/media/README.md) |
+| OpenAI / Anthropic / Google / Amazon Bedrock プロバイダーを設定したい | providers | [references/providers/README.md](references/providers/README.md) |
+| AI Gateway・provider registry・customProvider・OpenAI 互換プロバイダーを使いたい | providers | [references/providers/README.md](references/providers/README.md) |
+| wrapLanguageModel と language model middleware を使いたい | providers | [references/providers/README.md](references/providers/README.md) |
 | エラー処理・telemetry・テスト・DevTools を設定したい | operations | [references/operations/README.md](references/operations/README.md) |
 | rate limiting・キャッシュ・ストリーム中断・Vercel デプロイを知りたい | operations | [references/operations/README.md](references/operations/README.md) |
 | 旧バージョンから v7 へ移行したい（破壊的変更・codemod） | migration | [references/migration/README.md](references/migration/README.md) |
