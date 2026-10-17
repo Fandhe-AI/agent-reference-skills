@@ -11,6 +11,9 @@ Change the update URL and request headers at runtime to load a specific update b
 ```js
 import * as Updates from 'expo-updates';
 
+// Where you call this method depends on your use case - it may make sense to
+// have a menu in your preview builds that allows testers to pick from available channels,
+// for example:
 Updates.setUpdateRequestHeadersOverride({ 'expo-channel-name': 'preview' });
 
 // You can fetch and reload the update immediately, or wait for the next launch

@@ -107,6 +107,7 @@ Treat as key rotation to a `null` key: back up the old key and certificate, remo
 
 ## Notes
 
+- The official procedure only mentions removing `updates.codeSigningMetadata`; per the app config reference, `updates.codeSigningCertificate` also makes all updates require a signature, so remove it as well (and the corresponding native config in non-CNG projects) before building the new runtime version.
 - XML entity form (`&quot;`) in the AndroidManifest.xml JSON follows docs/pages/eas-update/*.mdx at expo@58.0.12.
 - The official guide example omits `--environment`; it is required for SDK 55+ (EAS CLI reference).
 - EAS Update Code Signing is only available to accounts subscribed to the EAS Production or Enterprise plans.

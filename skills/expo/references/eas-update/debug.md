@@ -77,7 +77,7 @@ eas channel:create production
 ### General strategies
 
 - Use `expo-dev-client` to preview published updates inside a problematic build.
-- In-app debugging: print `Updates.Constants` to verify configuration, examine log entries with `Updates.readLogEntriesAsync()`, and fetch/load updates manually.
+- In-app debugging: print the constants from the expo-updates Constants section (for example `Updates.channel`, `Updates.runtimeVersion`, `Updates.isEnabled`; see [Updates](./updates.md)) to verify configuration, examine log entries with `Updates.readLogEntriesAsync()`, and fetch/load updates manually.
 
 ### Configuration issues
 

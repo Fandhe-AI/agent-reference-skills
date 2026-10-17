@@ -39,7 +39,7 @@ Teams may first roll out an update to a small set of internal users in productio
 
 ## Notes
 
-- This page contains no fenced code in the official source; the snippet above is quoted verbatim from [Override update configuration at runtime](./override.md).
+- This page contains no fenced code in the official source; the snippet above is quoted verbatim from the official override page (https://docs.expo.dev/eas-update/override/); see also [Override update configuration at runtime](./override.md).
 - Source modificationDate: September 17, 2026 (fetched 2026-10-17).
 
 ## Related
