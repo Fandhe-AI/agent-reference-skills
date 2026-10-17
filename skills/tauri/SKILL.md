@@ -2,8 +2,8 @@
 name: tauri
 description: >
   Tauri v2 (Rust + WebView のデスクトップ / モバイルアプリフレームワーク、Electron とは別) リファレンス。
-  tauri.conf.json, tauri CLI, command / invoke / Channel, AppHandle,
-  Tauri capabilities / permissions (ACL), @tauri-apps/api, sidecar, WebDriver。
+  tauri.conf.json, tauri CLI, command / invoke / Channel, AppHandle, Tauri capabilities / permissions (ACL),
+  @tauri-apps/api, 公式プラグイン (fs, dialog, updater, store, sql), sidecar, 署名・配布, WebDriver。
 user-invocable: false
 ---
 

@@ -110,7 +110,7 @@ Requires the asset protocol enabled with the files in its scope, and the origins
 
 ### Resource
 
-A rust-backed resource stored through `tauri::Manager::resources_table`. It is not cleaned up automatically except on application exit; call `close()` or use `await using` (only `Symbol.asyncDispose` is implemented; synchronous `using` does not work). `Menu`, `TrayIcon`, `Image`, `Webview` and the menu item classes are resources.
+A rust-backed resource stored through `tauri::Manager::resources_table`. It is not cleaned up automatically except on application exit; call `close()` or use `await using` (only `Symbol.asyncDispose` is implemented; synchronous `using` does not work). `Menu`, `TrayIcon`, `Image` and the menu item classes (`MenuItemBase` subclasses) are resources. `Webview` / `WebviewWindow` are not resources (no `rid` / `Symbol.asyncDispose`); their `close()` closes the webview itself rather than releasing a resource handle.
 
 ```typescript
 import { Resource, invoke } from '@tauri-apps/api/core';
