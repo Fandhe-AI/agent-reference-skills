@@ -118,6 +118,7 @@ flutter:
 - `generated_config.cmake` is included from `windows/flutter/CMakeLists.txt`, so `FLUTTER_APP_FLAVOR` only becomes visible in your top-level `CMakeLists.txt` **after** the `add_subdirectory(${FLUTTER_MANAGED_DIR})` line. Any `if(DEFINED FLUTTER_APP_FLAVOR)` block placed before that line is silently skipped. `windows/runner/CMakeLists.txt` is evaluated after the variable is defined.
 - `appFlavor` matches the string passed to `--flavor`; if omitted it matches the `default-flavor` in `pubspec.yaml`; if neither is specified it is `null`.
 - Because `configure_file` generates `main.cpp` and `Runner.rc` in the source directory at build time, add both to `.gitignore`.
+- The official CMake example only sets `RUNNER_APP_ICON` / `WINDOW_TITLE` for `staging` and `production`; any other `--flavor` value leaves them empty and breaks resource generation, so set the defaults (`app_icon.ico`, `${BINARY_NAME}`) before the `if(DEFINED FLUTTER_APP_FLAVOR)` block and override only for known flavors.
 - Flutter build configuration only; MSIX and Microsoft Store packaging is covered by windows-packaging-publish.
 
 ## Related

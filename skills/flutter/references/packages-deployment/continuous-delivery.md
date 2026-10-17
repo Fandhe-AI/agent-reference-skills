@@ -61,7 +61,7 @@ source "https://rubygems.org"
 gem "fastlane"
 ```
 
-Run `bundle update` in both `[project]/android` and `[project]/ios`, commit `Gemfile` and `Gemfile.lock`, and use `bundle exec fastlane` locally. In the CI script (`.travis.yml`, `.cirrus.yml`): shard across Linux and macOS; in setup, ensure Bundler (`gem install bundler`), run `bundle install`, make the Flutter SDK available in `PATH`, set `ANDROID_SDK_ROOT` for Android, and specify an Xcode version supported by the target Flutter release for iOS (see supported-platforms / iOS setup requirements); in the script phase run `flutter build appbundle` or `flutter build ios --release --no-codesign --config-only`, then `cd android` or `cd ios` and `bundle exec fastlane [name of the lane]`.
+Run `bundle update` in both `[project]/android` and `[project]/ios`, commit `Gemfile` and `Gemfile.lock`, and use `bundle exec fastlane` locally. In the CI script (`.travis.yml`, `.cirrus.yml`): shard across Linux and macOS; in setup, ensure Bundler (`gem install bundler`), run `bundle install`, make the Flutter SDK available in `PATH`, set `ANDROID_SDK_ROOT` for Android, and specify an Xcode version supported by the target Flutter release for iOS (see supported-platforms / iOS setup requirements); in the script phase run `flutter build appbundle` or `flutter build ios --release --no-codesign --config-only` (the official CI outline; `--config-only` does not produce `build/ios/archive/Runner.xcarchive`, so either run `flutter build ipa` with signing configured before the lane, or drop `skip_build_archive: true` and let fastlane `build_app` build the archive), then `cd android` or `cd ios` and `bundle exec fastlane [name of the lane]`.
 
 ### Xcode Cloud
 
@@ -111,7 +111,8 @@ Create a workflow with **Product > Xcode Cloud > Create Workflow**, select the p
 - The official page's example `osx_image: xcode9.2` is outdated and is omitted; pick the Xcode image that the pinned Flutter release supports.
 - Shell expansions are quoted here (the official snippet leaves them unquoted).
 - Treat the Play Store service account `.json` file like a password; do not check it into any public source control.
-- Take precaution not to re-echo secret variable values onto the console in test scripts. CI secrets are not available in pull requests until merged, so malicious pull requests cannot print them; be careful with how secrets are used in pull requests you accept and merge.
+- The official CI outline pairs `flutter build ios --config-only` with a lane using `skip_build_archive: true`; in a clean CI checkout no archive exists, so build it with `flutter build ipa` (signing configured) or let `build_app` archive instead.
+- Take precaution not to re-echo secret variable values onto the console in test scripts. The official page says secrets are not available in pull requests until merged; that only holds for some CI setups (for example GitHub Actions withholds secrets from fork `pull_request` runs, but same-repository branches and `pull_request_target` do receive them), so never run untrusted pull request code in a job that has store credentials or signing keys.
 - The Xcode Cloud post-clone script uses `git clone` of the Flutter `stable` branch and Homebrew on an ephemeral Xcode Cloud build environment; run such scripts only in disposable CI environments. The environment includes macOS and Xcode tools (for example Python) plus Homebrew.
 - The Xcode Cloud project must already be initialized with Git and linked to a remote repository.
 - This is the Flutter-specific delivery guidance; GitHub Actions and general Gradle/Xcode CI are covered by github-docs, android-build-gradle and apple-distribution.
