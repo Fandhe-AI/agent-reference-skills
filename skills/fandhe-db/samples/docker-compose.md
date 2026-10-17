@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/compose.yaml
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/dc888f6ea146d3078153d64a6848f5c8cf044431/compose.yaml
 ---
 
 # Docker development container
@@ -39,6 +39,7 @@ volumes:
 
 - Linux ホストでは `HOST_UID=$(id -u) docker compose build` で所有権を合わせる（`UID` は Bash の読み取り専用変数のため `HOST_UID` という別名を使う）
 - `cargo-registry` / `target-cache` は named volume でキャッシュされ、再ビルドを高速化する
+- 開発コンテナには実クライアント（psql 等）が無いため、`make e2e-three-client` 系は含まれない（`#[ignore]` テスト）
 
 ## Related
 

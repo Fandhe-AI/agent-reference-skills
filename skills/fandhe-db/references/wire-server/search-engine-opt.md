@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-wire-server/0.1.0/source/src/search_engine_opt.rs
+source: https://docs.rs/crate/fandhe-db-wire-server/0.2.0/source/src/search_engine_opt.rs
 ---
 
 # search_engine_opt
