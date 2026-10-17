@@ -40,9 +40,11 @@ const MyWidget = (props: MyWidgetProps, environment: WidgetEnvironment) => {
 export default createWidget('MyWidget', MyWidget, { count: 0 });
 ```
 
-The widget name must match `name` in the app config plugin entry. Update it:
+The widget name must match `name` in the app config plugin entry. Update it from another file (default import of the `createWidget` return value):
 
 ```tsx
+import MyWidget from './MyWidget';
+
 MyWidget.updateSnapshot({ count: 5 });
 
 MyWidget.updateTimeline([
@@ -223,7 +225,7 @@ Factory: `name`, `post(props, options?)` (replaces an active notification with t
 ## Notes
 
 - Platforms: Android, iOS. Not available in Expo Go; use development builds. Source package `expo-widgets` (Expo SDK 58 docs, modificationDate October 14, 2026).
-- The `'widget'` directive compiles a component into a separate JS bundle running in an isolated runtime inside the widget extension. It can only render `@expo/ui/swift-ui` components and modifiers (not `react-native` components), cannot use React hooks, state, or context, cannot do async work, import other modules, or access app runtime/in-memory state, and cannot reference anything declared outside the component function (even top-level `const`s in the same file; declare constants and helpers inside the function or pass via props). Data comes via props (`updateSnapshot`, `updateTimeline`, Live Activity `start` / `update`) and the `environment` argument; share images by writing them to `widgetsDirectory`.
+- The `'widget'` directive compiles a component into a separate JS bundle running in an isolated runtime inside the widget extension. For iOS widgets and Live Activities (`createWidget` / `createLiveActivity`) it can only render `@expo/ui/swift-ui` components and modifiers; for Android custom notifications (`createCustomNotification`) the layout must use `@expo/ui/jetpack-compose` components. `react-native` components are not usable in either case. The directive section of the source describes the iOS usage. The layout cannot use React hooks, state, or context, cannot do async work, import other modules, or access app runtime/in-memory state, and cannot reference anything declared outside the component function (even top-level `const`s in the same file; declare constants and helpers inside the function or pass via props). Data comes via props (`updateSnapshot`, `updateTimeline`, Live Activity `start` / `update`) and the `environment` argument; share images by writing them to `widgetsDirectory`.
 - `createLiveActivity` registers entirely at runtime; do not add a `widgets[]` entry for it in app config (an entry without `supportedFamilies` generates an invalid widget target that fails the build).
 - The top-level `supportedFamilies` and `contentMarginsDisabled` plugin options are deprecated aliases of `ios.supportedFamilies` and `ios.contentMarginsDisabled`.
 - Interactive and configurable widgets require iOS 17 or later. `onPress` return value updates the widget without a running app; `addUserInteractionListener` only fires while the app process is alive.

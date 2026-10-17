@@ -26,13 +26,6 @@ export default function ImagePickerExample() {
     // and `videoExportPreset` is `'Passthrough'` (the default), ideally before launching the picker
     // so the app users aren't surprised by a system dialog after picking a video.
     // See "Invoke permissions for videos" sub section for more details.
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (!permissionResult.granted) {
-      Alert.alert('Permission required', 'Permission to access the media library is required.');
-      return;
-    }
-
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images', 'videos'],
       allowsEditing: true,
@@ -241,6 +234,7 @@ Enums:
 - SDK 54 and later: defaults are `allowsEditing: false` and `videoExportPreset: 'Passthrough'`, which return the original asset (including HEIC and AVIF) instantly, but iOS then needs media library permission and shows a permission dialog right after a video is selected. Request media library permission before opening the picker (`requestMediaLibraryPermissionsAsync` or `useMediaLibraryPermissions`).
 - Animated GIFs on Android: the result stays animated only if `quality` is explicitly `1.0` and `allowsEditing` is `false`; otherwise the first frame is returned as PNG. On iOS both quality and cropping are supported.
 - On Web, the picker UI can only be shown after user activation (such as a button press); calling it from `componentDidMount` does not work, and the `cancelled` event is not returned in the browser.
+- The official example also calls `requestMediaLibraryPermissionsAsync()` before `launchImageLibraryAsync`; it is omitted here because launching the library needs no permission (request it only for iOS videos with `allowsEditing: false` and the `Passthrough` preset).
 - Handle `MainActivity` destruction on Android with `getPendingResultAsync`.
 - Official examples exist for AWS S3 (`expo/examples` with-aws-storage-upload) and Firebase (with-firebase-storage-upload).
 
