@@ -72,8 +72,11 @@ These options appear on (nearly) every uv command. They are listed once here (tr
 - Not every command accepts every global option; the CLI reference lists them per command. This page is the single place they are described for the project-commands pages.
 - `uv auth`, `uv tool`, `uv python`, `uv pip`, `uv cache` and `uv self` are command groups documented in other categories (indexes-auth, tools, python, pip-interface, configuration).
 
+- Preview features are toggled with `--preview` (or `UV_PREVIEW`; enables all), `--preview-features <feature>[,...]` (or `UV_PREVIEW_FEATURES`; enables specific features) and `--no-preview` (disables them). These flags are not listed in the CLI reference's per-command options; see [Preview features](../configuration/preview-features.md).
+
 ## Related
 
+- [Preview features](../configuration/preview-features.md)
 - [uv run](./uv-run.md)
 - [uv init](./uv-init.md)
 - [uv sync](./uv-sync.md)
