@@ -37,6 +37,7 @@ extension MusicItemID: EntityIdentifierConvertible {
 - Every entity provides a stable, unique identifier that the framework uses as a concrete reference to the entity; `AppEntity` inherits `Identifiable` to enforce this.
 - Wherever possible use `String`, `Int`, or `UUID` for an identifier's type. For other types (for example `MusicItemID` from MusicKit), extend the type with this protocol.
 - Keep `entityIdentifierString` to 4096 characters or fewer. Otherwise the framework truncates the value, and you might not be able to convert the truncated value back to its originating type.
+- The usage example above is quoted verbatim from the official page; it implements `init?(entityIdentifierString:)`, but the protocol's required members are `entityIdentifierString` and `static func entityIdentifier(for: String) -> Self?` — a conforming type must implement `entityIdentifier(for:)` (the initializer alone does not satisfy the requirement).
 - Conforming types listed on the page: `FileEntityIdentifier`, `SyncableEntityIdentifier`.
 
 ## Related
