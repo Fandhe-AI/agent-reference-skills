@@ -12,7 +12,7 @@ const plugin = {
   configResolved(config) {
     console.log('options', config.optimizeDeps.rolldownOptions)
   },
-},
+}
 ```
 
 ```js
@@ -21,7 +21,7 @@ const plugin = {
   configResolved(config) {
     console.log('options', config.oxc)
   },
-},
+}
 ```
 
 Automatic conversions documented for `optimizeDeps.esbuildOptions` to `optimizeDeps.rolldownOptions`:
@@ -61,6 +61,7 @@ esbuild.banner / footer  -> custom plugin using transform hook
 ## Notes
 
 - The migration guide gives the mappings as lists, not before/after config files; the two `configResolved` snippets are the docs' way to view what the compatibility layer produced.
+- The official migration guide ends both snippets with a trailing `},` (a fragment from a plugins array); it is written here as `}` so the standalone `const` declaration is valid.
 - `optimizeDeps.esbuildOptions`, `esbuild`, `transformWithEsbuild` and `build.minify: 'esbuild'` are deprecated and planned for removal; `esbuild` is now an optional dependency (install it as a devDependency if a plugin still needs it).
 - `esbuild.supported` is not supported by Oxc, and the Oxc transformer does not lower native decorators; the docs show Babel and SWC workarounds.
 - Replacement for `esbuild.minify*` is `build.rolldownOptions.output.minify`; for `esbuild.drop` use `build.rolldownOptions.output.minify.compress.drop*`.
