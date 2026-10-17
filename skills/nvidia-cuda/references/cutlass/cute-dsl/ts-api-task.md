@@ -50,6 +50,7 @@ Other members: `domain_getter` (explicit `Task` subclass method captured from th
 - `init_variables` creates resource variables outside dynamic control flow (called by `TaskManager.run()` for every task before the dispatch chain). `make_task_cache()` returns an optional task-defined payload captured into `StageInfo`.
 - `run()`: initialises function-level and role-level variables on every resource, gates on `is_selected()`, sets the register budget via `_set_max_register`, then dispatches to the persistent or non-persistent body.
 - Module path is `cutlass.experimental.task_scheduling` (experimental).
+- Document version: CUTLASS v4.8.0 — [task](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_api/task.html)（原本: [ts_api/task.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_api/task.rst)）
 
 ## Related
 

@@ -65,6 +65,7 @@ Also in this module: `DependencyGraphEdge(upstream, downstream, backing_tasks, e
 - `print_and_verify()` false-positive caveat: when a task `domain` or `domain_start` is a runtime value (not a Python `int`), the deadlock simulation falls back to `domain=1` and `domain_start=0`, which can produce false-positive deadlock reports; use validate-only mode with realistic Python `int` domains for accurate verification.
 - `get_marmaid_string_dependency_graph` (spelling as in the official page) returns a Mermaid flowchart string; edge labels identify the realizing task(s) and edge kind: `data`, `ordering`, `ping-pong`, or `work-queue`; with `collapse_work_queue_edges=True` WorkQueue control-token dependencies collapse into one edge to all persistent tasks.
 - Module path is `cutlass.experimental.task_scheduling` (experimental).
+- Document version: CUTLASS v4.8.0 — [task_manager](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_api/task_manager.html)（原本: [ts_api/task_manager.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_api/task_manager.rst)）
 
 ## Related
 

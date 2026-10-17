@@ -112,6 +112,7 @@ task = Task(..., schedule=schedule_fn(input_gmem_res, output_gmem_res))
 - Forwarding contextual information: declare a keyword-only `cutlass.Constexpr[...]` parameter (a default is allowed) on the work method and pass a literal at the call site, e.g. `smem.load(slot_index=1)`; each call records its own entry bound to that value.
 - Runtime structure is expressed only with `with` context managers (`domain_loop`, `work_tile_loop`, `wtwl.skippable()`, `d.first_iter()`, `d.last_iter()`). Plain Python `for` / `if` inside a `@schedule` is trace-time metaprogramming: it must be compile-time known and is unrolled into the recorded schedule.
 - Three scheduling shapes: non-persistent (no `WorkQueue`; the launch grid maps to logical tiles); static persistent (no dedicated scheduler task; every task ends each work-tile iteration with the queue epilogue); dynamic persistent (a dedicated scheduler task runs `wq.try_acquire(); wq.acquire(); wq.fetch_work_tile(); wq.commit();` and then the same wait / advance / release epilogue). Data-task bodies are identical for static and CLC dynamic queues.
+- Document version: CUTLASS v4.8.0 — [Schedules](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_schedules.html)（原本: [ts_schedules.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_schedules.rst)）
 
 ## Related
 

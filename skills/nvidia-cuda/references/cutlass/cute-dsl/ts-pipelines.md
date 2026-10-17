@@ -52,6 +52,7 @@ Common configuration fields:
 - Interleaving lets several warps share one set of `num_stages` barriers (e.g. `num_stages=4`, `interleave_stride=2`: warp 0 visits stages 0, 2, ...; warp 1 visits 1, 3, ...). Different acquire/commit strides require `advance_on_acquire=True` and separate tasks; different wait/release strides require `advance_on_wait=True` and separate tasks. Supported by `AsyncAsync`, `TmaAsync` (single-CTA only), `TmaUmma`, `UmmaAsync` (consumer side only), `AsyncUmma` (producer side only). `UmmaUmma` and `ClcFetchAsync` do not support interleaving.
 - Do not build `PipelineConfig` directly; call a factory. TS allocates barrier storage and patches `barrier_ptr` during setup, so it is normally left unset.
 - Names such as `TmaAsync` / `TmaUmma` here are TS `PipelineType` values; they correspond to, but are distinct from, the `cutlass.pipeline` classes (`PipelineTmaAsync`, `PipelineTmaUmma`, ...) documented in the CuTe DSL pipeline API page. The TS pipeline module subclasses those.
+- Document version: CUTLASS v4.8.0 — [Pipeline Types](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_pipelines.html)（原本: [ts_pipelines.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_pipelines.rst)）
 
 ## Related
 

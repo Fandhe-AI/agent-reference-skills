@@ -89,6 +89,7 @@ Valid heterogeneous combinations:
   ```
 
 - Hard rules: do not call `group.member.release()` on the collapsed Merge/FusedMerge consumer side, `group.member.commit()` on the collapsed Fork producer side, or `group.member.wait()` on the collapsed FusedMerge consumer side; TS rejects those schedules.
+- Document version: CUTLASS v4.8.0 — [Pipeline Groups](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_pipeline_groups.html)（原本: [ts_pipeline_groups.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_pipeline_groups.rst)）
 
 ## Related
 

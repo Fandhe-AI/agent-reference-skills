@@ -78,6 +78,7 @@ TSPipelineAsyncUmma.create(
 - These classes subclass the `cutlass.pipeline` classes documented in the CuTe DSL pipeline API page and are distinct implementations used by the TS framework; the `PipelineType` names (`TmaAsync`, `TmaUmma`, ...) in TS configs correspond to them.
 - The module also exposes `dsl_user_op(fn=None, *args, **kwargs)` (no docstring on the official page).
 - Module path is `cutlass.experimental.task_scheduling` (experimental).
+- Document version: CUTLASS v4.8.0 — [pipeline](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_api/pipeline.html)（原本: [ts_api/pipeline.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_api/pipeline.rst)）
 
 ## Related
 

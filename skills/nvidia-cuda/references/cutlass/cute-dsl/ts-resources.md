@@ -121,6 +121,7 @@ def schedule_fn(input_gmem: InputGmemResource,
           gmem_d.store(t2r_rmem=t2r_rmem, subtile_idx=subtile_idx)
       tmem_c.release()
   ```
+- Document version: CUTLASS v4.8.0 — [Resources](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_resources.html)（原本: [ts_resources.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_resources.rst)）
 
 ## Related
 

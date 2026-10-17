@@ -119,6 +119,7 @@ The module also exports `consumer_work` and `producer_work` decorators (same sig
 - The official page renders several dataclass fields with `_MockObject` types (a documentation-build artifact); types above are taken from attribute docstrings where available.
 - The prose guide describes `TmaAsync` and other TS `PipelineType` values; these correspond to (and are implemented via) the `cutlass.pipeline` classes in the CuTe DSL pipeline API.
 - Module path is `cutlass.experimental.task_scheduling` (experimental).
+- Document version: CUTLASS v4.8.0 — [resources](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_api/resources.html)（原本: [ts_api/resources.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_api/resources.rst)）
 
 ## Related
 

@@ -162,6 +162,7 @@ task_manager = TaskManager(
 
   TS checks that `num_bytes` equals `num_bytes_per_warp_per_cta` scaled by the number of producing warps and CTAs in the cluster. It cannot check the bytes against the TMA instructions actually issued inside the work body.
 - Each pattern is optional; reach for it only when the simpler shapes in the schedules page do not fit.
+- Document version: CUTLASS v4.8.0 — [Scheduling Patterns](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_patterns.html)（原本: [ts_patterns.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_patterns.rst)）
 
 ## Related
 

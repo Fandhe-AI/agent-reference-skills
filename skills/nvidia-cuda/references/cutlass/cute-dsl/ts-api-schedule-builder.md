@@ -22,6 +22,7 @@ cutlass.experimental.task_scheduling.schedule_builder.schedule(
 - The decorated function receives `ResourceProxy` wrappers for each `MemoryResource`. Method calls on the proxies record schedule entries and routing edges. `with work_tile_loop(wq):` and `with domain_loop(start, end, step):` mark the structural boundaries. Plain Python control flow inside the function executes at trace time.
 - The same decorator is re-exported as `cutlass.experimental.task_scheduling.schedule`.
 - Module path is `cutlass.experimental.task_scheduling` (experimental).
+- Document version: CUTLASS v4.8.0 — [schedule_builder](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_api/schedule_builder.html)（原本: [ts_api/schedule_builder.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_api/schedule_builder.rst)）
 
 ## Related
 

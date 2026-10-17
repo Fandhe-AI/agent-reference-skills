@@ -44,6 +44,7 @@ Guard helpers: `BlockGuard` (marker base for conditional block guards; subclasse
 - `OpaqueCondition.negated` is `True` for `when_false()` blocks.
 - The `PipelineType` list here has seven members; the `pipeline_group` page says "All six public `PipelineType` values".
 - Module path is `cutlass.experimental.task_scheduling` (experimental).
+- Document version: CUTLASS v4.8.0 — [enums](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_api/enums.html)（原本: [ts_api/enums.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_api/enums.rst)）
 
 ## Related
 
