@@ -64,20 +64,20 @@ For iOS tests, you might need to first open `Runner.xcworkspace` in Xcode to con
 To run the tests from the command line, use the following command in the example directory, replacing "my_plugin" with your plugin project name:
 
 ```sh
-build/linux/plugins/x64/debug/my_plugin/my_plugin_test
+build/linux/x64/debug/plugins/my_plugin/my_plugin_test
 ```
 
-If you built the example app in release mode rather than debug, replace "debug" with "release".
+Replace "x64" with "arm64" when building on arm64. If you built the example app in release mode rather than debug, replace "debug" with "release".
 
 **Windows GoogleTest**
 
 If you have the example app opened in Visual Studio, you can run the unit tests using the Visual Studio test UI. To run the tests from the command line, use the following command in the example directory, replacing "my_plugin" with your plugin project name:
 
 ```sh
-build/windows/plugins/my_plugin/Debug/my_plugin_test.exe
+build/windows/x64/plugins/my_plugin/Debug/my_plugin_test.exe
 ```
 
-If you built the example app in release mode rather than debug, replace "Debug" with "Release".
+Replace "x64" with "arm64" when building on arm64. If you built the example app in release mode rather than debug, replace "Debug" with "Release".
 
 ## What types of tests to add
 
@@ -90,6 +90,7 @@ The general advice for testing Flutter projects applies to plugins as well. Some
 
 ## Notes
 
+- Corrected: the official page lists `build/linux/plugins/x64/debug/...` and `build/windows/plugins/...`; actual output paths are `build/linux/<arch>/<mode>/plugins/<plugin>/` and `build/windows/<arch>/plugins/<plugin>/<Config>/`.
 - To learn how to avoid crashes from a plugin when testing your Flutter app, check out "Plugins in Flutter tests".
 - Distance line: JUnit / XCTest / GoogleTest here only test the native half of a Flutter plugin. Android instrumented testing in general belongs to android-testing.
 

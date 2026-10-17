@@ -189,7 +189,7 @@ Installing `url_launcher` added config files and code files for all target platf
 
 ## Debug Dart and native language code at the same time
 
-This allows you to leverage Flutter's hot reload when editing native code. All sections use the `url_launcher` app above. The sample app has two buttons: **Launch in browser** opens the page in the default browser; **Launch in app** opens the page within your app (iOS or Android only; desktop apps launch a browser).
+This allows you to keep using Flutter's hot reload for Dart changes while debugging native code; changes to native (Kotlin/Java/Swift/Objective-C/C++) code still require stopping and rebuilding the app. All sections use the `url_launcher` app above. The sample app has two buttons: **Launch in browser** opens the page in the default browser; **Launch in app** opens the page within your app (iOS or Android only; desktop apps launch a browser).
 
 Starting VS Code first (all platforms): open the app directory (**File** > **Open Folder...**), open `lib/main.dart`, select the device with the command palette **Flutter: Select Device** if you can build for more than one device, then click the debug icon and wait for the debug pane to indicate **Connected**.
 
@@ -279,6 +279,7 @@ C:\> flutter build windows --debug
 
 ## Notes
 
+- Clarified: the official page says this lets you use hot reload when editing native code; hot reload applies only to Dart, and native edits need a rebuild.
 - The guide presumes you understand general debugging, have installed Flutter and git, and have familiarity with the Dart language as well as one of Java, Kotlin, Swift, or Objective-C.
 - Distance line: this page covers attaching Xcode / Android Studio / Visual Studio to a Flutter app. The native IDEs and platform APIs themselves belong to the `android-*` and `apple-*` skills and the Windows skills; here only the Flutter attach procedure is described.
 

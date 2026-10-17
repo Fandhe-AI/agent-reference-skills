@@ -112,7 +112,7 @@ While Flutter supports deferred loading on Android and the web, the implementati
    (The third method also adds the Flutter compatibility code from `FlutterApplication` to your application class.) Provide a `PlayStoreDeferredComponentManager` into the Flutter embedder by adding the following to your app initialization:
 
    ```java
-   import io.flutter.embedding.engine.dynamicfeatures.PlayStoreDeferredComponentManager;
+   import io.flutter.embedding.engine.deferredcomponents.PlayStoreDeferredComponentManager;
    import io.flutter.FlutterInjector;
    ...
    PlayStoreDeferredComponentManager deferredComponentManager = new
@@ -174,13 +174,13 @@ This command validates that your project is properly set up to build deferred co
   ```
 
 - `<projectDir>/android/<componentName>`: an Android dynamic feature module for each deferred component, containing a `build.gradle` and `src/main/AndroidManifest.xml`. Only existence is checked; if missing, a default recommended one is generated.
-- `<projectDir>/android/app/src/main/res/values/AndroidManifest.xml`: contains a meta-data entry that encodes the mapping between loading units and component name:
+- `<projectDir>/android/app/src/main/AndroidManifest.xml`: contains a meta-data entry that encodes the mapping between loading units and component name:
 
   ```xml
   ...
   <application
       android:label="MyApp"
-      android:name="io.flutter.app.FlutterPlayStoreSplitApplication"
+      android:name="io.flutter.embedding.android.FlutterPlayStoreSplitApplication"
       android:icon="@mipmap/ic_launcher">
       ...
       <meta-data android:name="io.flutter.embedding.engine.deferredcomponents.DeferredComponentManager.loadingUnitMapping" android:value="2:boxComponent"/>
@@ -277,7 +277,9 @@ The built AAB file can be uploaded directly to the Play store as normal. When `l
 
 ## Notes
 
-- `io.flutter.embedding.android.FlutterPlayStoreSplitApplication` is used in the manifest snippet in step 1.2, while the prose and the later meta-data sample mention `io.flutter.app.FlutterPlayStoreSplitApplication`; both spellings appear in the official page as written.
+- Corrected: the official page imports `io.flutter.embedding.engine.dynamicfeatures.PlayStoreDeferredComponentManager`; the class lives in `io.flutter.embedding.engine.deferredcomponents`.
+- Corrected: the official page mixes `io.flutter.app.FlutterPlayStoreSplitApplication` with `io.flutter.embedding.android.FlutterPlayStoreSplitApplication`; this page uses the latter consistently.
+- Corrected: the official page lists the loadingUnitMapping file as `android/app/src/main/res/values/AndroidManifest.xml`; the meta-data belongs in the app manifest `android/app/src/main/AndroidManifest.xml`.
 - The sample snippets import `package:material_ui/material_ui.dart` as written in the official page. Per the Flutter 3.47 notes, `material_ui` / `cupertino_ui` are standalone packages you can opt in to; the in-framework `package:flutter/material.dart` is not yet deprecated in 3.47.7.
 - The official page title covers Android and web, but its step-by-step setup is Android-only; the web is covered by one sentence (deferred components become separate `*.js` files).
 - Distance line: this page covers Flutter's deferred-component build flow. Gradle, Play Core, and Play Console details belong to android-build-gradle and android-platform-core.

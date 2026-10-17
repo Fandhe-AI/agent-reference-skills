@@ -43,7 +43,7 @@ An exception: when an isolate exits while sending a message using `Isolate.exit`
 
 ## Short-lived isolates
 
-The easiest way is `Isolate.run`. It spawns an isolate, passes a callback to the spawned isolate to start some computation, returns a value from the computation, and shuts the isolate down when the computation is complete, all concurrently with the main isolate. It requires a single argument, a callback function, whose signature must have exactly one required, unnamed argument. For a complete walkthrough of using isolates to parse JSON in the background, see the cookbook recipe `/cookbook/networking/background-parsing`.
+The easiest way is `Isolate.run`. It spawns an isolate, passes a callback to the spawned isolate to start some computation, returns a value from the computation, and shuts the isolate down when the computation is complete, all concurrently with the main isolate. It requires a single argument, a callback function that takes no arguments (`FutureOr<R> Function()`). For a complete walkthrough of using isolates to parse JSON in the background, see the cookbook recipe `/cookbook/networking/background-parsing`.
 
 ## Stateful, longer-lived isolates
 
@@ -102,6 +102,7 @@ Isolates have their own global fields, and can only communicate with message pas
 
 ## Notes
 
+- Corrected: the official page states the `Isolate.run` callback must have exactly one required, unnamed argument; the actual signature is `Isolate.run<R>(FutureOr<R> computation())`, a zero-argument callback (the one-argument form applies to `compute()`).
 - Dart language-level concurrency (event loop, isolates, Actor model) is specified on dart.dev, which is out of scope for this skill; only the Flutter-side usage is covered here.
 
 ## Related
