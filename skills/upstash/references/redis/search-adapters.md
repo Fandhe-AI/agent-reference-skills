@@ -38,8 +38,20 @@ await search.createIndex({ name: "products", dataType: "json", prefix: "product:
 const index = search.index({ name: "products", schema });
 
 // add data with raw commands
-await client.sendCommand(["JSON.SET", "product:1", "$", JSON.stringify({ name: "Wireless Headphones", price: 199.99 })]); // node-redis
-await ioredis.call("JSON.SET", "product:1", "$", JSON.stringify({ name: "Wireless Headphones", price: 199.99 })); // ioredis
+await client.sendCommand(["JSON.SET", "product:1", "$", JSON.stringify({
+  name: "Wireless Headphones",
+  description: "Premium noise-cancelling wireless headphones with 30-hour battery life",
+  category: "electronics",
+  price: 199.99,
+  inStock: true,
+})]); // node-redis
+await ioredis.call("JSON.SET", "product:1", "$", JSON.stringify({
+  name: "Wireless Headphones",
+  description: "Premium noise-cancelling wireless headphones with 30-hour battery life",
+  category: "electronics",
+  price: 199.99,
+  inStock: true,
+})); // ioredis
 
 await index.waitIndexing();
 const results = await index.query({ filter: { description: "wireless" } });
