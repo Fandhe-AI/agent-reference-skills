@@ -45,3 +45,4 @@ hermes mcp serve
 - Prefer whitelists (`tools.include`) for financial or destructive operations.
 - Set `enabled: false` to preserve a config block without connecting.
 - Ensure `npx` (JS servers) and `uvx` (Python servers) are available in `$PATH`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp (pinned to v0.22.2)

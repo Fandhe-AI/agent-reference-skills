@@ -63,5 +63,5 @@ Directory of major capability areas (each has dedicated documentation):
 
 - [Installation](./installation.md)
 - [Quickstart](./quickstart.md)
-- Bot Mode
+- [Bot Mode](../user-guide/bot-mode.md)
 - [Slash Commands](../cli/slash-commands.md)
