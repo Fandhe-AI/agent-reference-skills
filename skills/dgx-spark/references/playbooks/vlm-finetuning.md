@@ -36,7 +36,7 @@ streamlit run Image_VLM.py
 
 - Requires DGX Spark (DGX OS, 128 GB Unified Memory), NVIDIA Container Toolkit, Hugging Face access token (used with `hf auth login`); Weights & Biases optional
 - The same `vlm_demo` Docker image serves both image and video recipes; stop Streamlit or Jupyter and free memory before switching workloads
-- The official playbook passes HF_TOKEN via `--build-arg` at build time; this page instead authenticates at runtime with `hf auth login` inside the container (also listed in the playbook's troubleshooting table), because build arguments can persist in image history/provenance.
+- The official playbook passes HF_TOKEN via `--build-arg` at build time (`docker build --build-arg HF_TOKEN=$HF_TOKEN -t vlm_demo .`); this page instead authenticates at runtime with `hf auth login` inside the container (also listed in the playbook's troubleshooting table), because build arguments can persist in image history/provenance.
 - Image recipe: first access starts vLLM servers for the base model (up to about 15 minutes); LoRA weights are merged into the base model after training (about 5 minutes). **Stop Finetuning** does not guarantee checkpoints are stored or adapters merged
 - Image dataset: Kaggle Wildfire Prediction Dataset (Kaggle login and accepted terms required for the cURL download)
 - Video recipe: dataset layout is `dataset/videos/*.mp4` plus `metadata.jsonl` (one structured JSON record per video); usable quality often needs a day or more of training
