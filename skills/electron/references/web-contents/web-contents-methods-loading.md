@@ -14,9 +14,9 @@ const options = { extraHeaders: 'pragma: no-cache\n' }
 win.webContents.loadURL('https://github.com', options)
 ```
 
-## Instance Methods
+### Instance Methods
 
-### `contents.loadURL(url[, options])`
+#### `contents.loadURL(url[, options])`
 
 * `url` string
 * `options` Object (optional)
@@ -30,7 +30,7 @@ Returns `Promise<void>` - the promise will resolve when the page has finished lo
 
 Loads the `url` in the window. The `url` must contain the protocol prefix, e.g. the `http://` or `file://`. If the load should bypass http cache then use the `pragma` header to achieve it.
 
-### `contents.loadFile(filePath[, options])`
+#### `contents.loadFile(filePath[, options])`
 
 * `filePath` string
 * `options` Object (optional)
@@ -57,7 +57,7 @@ const win = new BrowserWindow()
 win.loadFile('src/index.html')
 ```
 
-### `contents.downloadURL(url[, options])`
+#### `contents.downloadURL(url[, options])`
 
 * `url` string
 * `options` Object (optional)
@@ -65,7 +65,7 @@ win.loadFile('src/index.html')
 
 Initiates a download of the resource at `url` without navigating. The `will-download` event of `session` will be triggered.
 
-### `contents.getURL()`
+#### `contents.getURL()`
 
 Returns `string` - The URL of the current web page.
 
@@ -79,15 +79,15 @@ win.loadURL('https://github.com').then(() => {
 })
 ```
 
-### `contents.getTitle()`
+#### `contents.getTitle()`
 
 Returns `string` - The title of the current web page.
 
-### `contents.isDestroyed()`
+#### `contents.isDestroyed()`
 
 Returns `boolean` - Whether the web page is destroyed.
 
-### `contents.close([opts])`
+#### `contents.close([opts])`
 
 * `opts` Object (optional)
   * `waitForBeforeUnload` boolean - if true, fire the `beforeunload` event before closing the page. If the page prevents the unload, the WebContents will not be closed. The `will-prevent-unload` will be fired if the page requests prevention of unload.
@@ -96,39 +96,39 @@ Closes the page, as if the web content had called `window.close()`.
 
 If the page is successfully closed (i.e. the unload is not prevented by the page, or `waitForBeforeUnload` is false or unspecified), the WebContents will be destroyed and no longer usable. The `destroyed` event will be emitted.
 
-### `contents.focus()`
+#### `contents.focus()`
 
 Focuses the web page.
 
-### `contents.isFocused()`
+#### `contents.isFocused()`
 
 Returns `boolean` - Whether the web page is focused.
 
-### `contents.isLoading()`
+#### `contents.isLoading()`
 
 Returns `boolean` - Whether web page is still loading resources.
 
-### `contents.isLoadingMainFrame()`
+#### `contents.isLoadingMainFrame()`
 
 Returns `boolean` - Whether the main frame (and not just iframes or frames within it) is still loading.
 
-### `contents.isWaitingForResponse()`
+#### `contents.isWaitingForResponse()`
 
 Returns `boolean` - Whether the web page is waiting for a first-response from the main resource of the page.
 
-### `contents.stop()`
+#### `contents.stop()`
 
 Stops any pending navigation.
 
-### `contents.reload()`
+#### `contents.reload()`
 
 Reloads the current web page.
 
-### `contents.reloadIgnoringCache()`
+#### `contents.reloadIgnoringCache()`
 
 Reloads current page and ignores cache.
 
-### Deprecated navigation methods
+#### Deprecated navigation methods
 
 Each of the following is marked _Deprecated_ and should use the corresponding `contents.navigationHistory` API.
 
@@ -143,11 +143,11 @@ Each of the following is marked _Deprecated_ and should use the corresponding `c
 | `contents.goToIndex(index)` | Navigates browser to the specified absolute web page index (`index` Integer). | `contents.navigationHistory.goToIndex` |
 | `contents.goToOffset(offset)` | Navigates to the specified offset from the "current entry" (`offset` Integer). | `contents.navigationHistory.goToOffset` |
 
-### `contents.isCrashed()`
+#### `contents.isCrashed()`
 
 Returns `boolean` - Whether the renderer process has crashed.
 
-### `contents.forcefullyCrashRenderer()`
+#### `contents.forcefullyCrashRenderer()`
 
 Forcefully terminates the renderer process that is currently hosting this `webContents`. This will cause the `render-process-gone` event to be emitted with the `reason=killed || reason=crashed`. Please note that some webContents share renderer processes and therefore calling this method may also crash the host process for other webContents as well.
 
@@ -170,15 +170,41 @@ win.webContents.on('unresponsive', async () => {
 })
 ```
 
-### `contents.setUserAgent(userAgent)`
+#### `contents.setUserAgent(userAgent)`
 
 * `userAgent` string
 
 Overrides the user agent for this web page.
 
-### `contents.getUserAgent()`
+#### `contents.getUserAgent()`
 
 Returns `string` - The user agent for this web page.
+
+## Options / Props
+
+`contents.loadURL(url[, options])`:
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `httpReferrer` | (string \| Referrer) (optional) | — | An HTTP Referrer url. |
+| `userAgent` | string (optional) | — | A user agent originating the request. |
+| `extraHeaders` | string (optional) | — | Extra headers separated by "\n". |
+| `postData` | (UploadRawData \| UploadFile)[] (optional) | — | |
+| `baseURLForDataURL` | string (optional) | — | Base url (with trailing path separator) for files to be loaded by the data url. This is needed only if the specified `url` is a data url and needs to load other files. |
+
+`contents.loadFile(filePath[, options])`:
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `query` | Record\<string, string\> (optional) | — | Passed to `url.format()`. |
+| `search` | string (optional) | — | Passed to `url.format()`. |
+| `hash` | string (optional) | — | Passed to `url.format()`. |
+
+`contents.downloadURL(url[, options])`:
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `headers` | Record\<string, string\> (optional) | — | HTTP request headers. |
 
 ## Notes
 

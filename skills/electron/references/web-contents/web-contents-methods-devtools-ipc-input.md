@@ -23,9 +23,9 @@ app.whenReady().then(() => {
 })
 ```
 
-## Instance Methods
+### Instance Methods
 
-### `contents.addWorkSpace(path)`
+#### `contents.addWorkSpace(path)`
 
 * `path` string
 
@@ -40,13 +40,13 @@ win.webContents.on('devtools-opened', () => {
 })
 ```
 
-### `contents.removeWorkSpace(path)`
+#### `contents.removeWorkSpace(path)`
 
 * `path` string
 
 Removes the specified path from DevTools workspace.
 
-### `contents.setDevToolsWebContents(devToolsWebContents)`
+#### `contents.setDevToolsWebContents(devToolsWebContents)`
 
 * `devToolsWebContents` WebContents
 
@@ -58,7 +58,7 @@ By default, Electron manages the DevTools by creating an internal `WebContents` 
 
 Note that closing the DevTools does not destroy the `devToolsWebContents`, it is the caller's responsibility to destroy `devToolsWebContents` manually.
 
-### `contents.openDevTools([options])`
+#### `contents.openDevTools([options])`
 
 * `options` Object (optional)
   * `mode` string - Opens the DevTools with specified dock state, can be `left`, `right`, `bottom`, `undocked`, `detach`. Defaults to last used dock state. In `undocked` mode it's possible to dock back. In `detach` mode it's not.
@@ -71,58 +71,58 @@ When `contents` is a `<webview>` tag, the `mode` would be `detach` by default, e
 
 On Windows, if Window Control Overlay is enabled, DevTools will be opened with `mode: 'detach'`.
 
-### `contents.closeDevTools()`
+#### `contents.closeDevTools()`
 
 Closes the DevTools view.
 
-### `contents.isDevToolsOpened()`
+#### `contents.isDevToolsOpened()`
 
 Returns `boolean` - Whether the DevTools view is opened.
 
-### `contents.isDevToolsFocused()`
+#### `contents.isDevToolsFocused()`
 
 Returns `boolean` - Whether the DevTools view is focused .
 
-### `contents.getDevToolsTitle()`
+#### `contents.getDevToolsTitle()`
 
 Returns `string` - the current title of the DevTools window. This will only be visible if DevTools is opened in `undocked` or `detach` mode.
 
-### `contents.setDevToolsTitle(title)`
+#### `contents.setDevToolsTitle(title)`
 
 * `title` string
 
 Changes the title of the DevTools window to `title`. This will only be visible if DevTools is opened in `undocked` or `detach` mode.
 
-### `contents.toggleDevTools()`
+#### `contents.toggleDevTools()`
 
 Toggles the developer tools.
 
-### `contents.inspectElement(x, y)`
+#### `contents.inspectElement(x, y)`
 
 * `x` Integer
 * `y` Integer
 
 Starts inspecting element at position (`x`, `y`).
 
-### `contents.inspectSharedWorker()`
+#### `contents.inspectSharedWorker()`
 
 Opens the developer tools for the shared worker context.
 
-### `contents.inspectSharedWorkerById(workerId)`
+#### `contents.inspectSharedWorkerById(workerId)`
 
 * `workerId` string
 
 Inspects the shared worker based on its ID.
 
-### `contents.getAllSharedWorkers()`
+#### `contents.getAllSharedWorkers()`
 
 Returns `SharedWorkerInfo[]` - Information about all Shared Workers.
 
-### `contents.inspectServiceWorker()`
+#### `contents.inspectServiceWorker()`
 
 Opens the developer tools for the service worker context.
 
-### `contents.send(channel, ...args)`
+#### `contents.send(channel, ...args)`
 
 * `channel` string
 * `...args` any[]
@@ -133,7 +133,7 @@ Warning: Sending non-standard JavaScript types such as DOM objects or special El
 
 For additional reading, refer to Electron's IPC guide.
 
-### `contents.sendToFrame(frameId, channel, ...args)`
+#### `contents.sendToFrame(frameId, channel, ...args)`
 
 * `frameId` Integer | \[number, number] - the ID of the frame to send to, or a pair of `[processId, frameId]` if the frame is in a different process to the main frame.
 * `channel` string
@@ -161,7 +161,7 @@ ipcMain.on('ping', (event) => {
 })
 ```
 
-### `contents.postMessage(channel, message, [transfer])`
+#### `contents.postMessage(channel, message, [transfer])`
 
 * `channel` string
 * `message` any
@@ -184,7 +184,7 @@ ipcRenderer.on('port', (e, msg) => {
 })
 ```
 
-### `contents.enableDeviceEmulation(parameters)`
+#### `contents.enableDeviceEmulation(parameters)`
 
 * `parameters` Object
   * `screenPosition` string - Specify the screen type to emulate (default: `desktop`):
@@ -198,11 +198,11 @@ ipcRenderer.on('port', (e, msg) => {
 
 Enable device emulation with the given parameters.
 
-### `contents.disableDeviceEmulation()`
+#### `contents.disableDeviceEmulation()`
 
 Disable device emulation enabled by `webContents.enableDeviceEmulation`.
 
-### `contents.sendInputEvent(inputEvent)`
+#### `contents.sendInputEvent(inputEvent)`
 
 * `inputEvent` MouseInputEvent | MouseWheelInputEvent | KeyboardInputEvent
 

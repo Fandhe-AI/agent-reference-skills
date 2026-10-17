@@ -16,9 +16,9 @@ win.webContents.audioMuted = true
 console.log(win.webContents.id, win.webContents.mainFrame.url)
 ```
 
-## Instance Properties
+### Instance Properties
 
-### `contents.ipc` _Readonly_
+#### `contents.ipc` _Readonly_
 
 An `IpcMain` scoped to just IPC messages sent from this WebContents.
 

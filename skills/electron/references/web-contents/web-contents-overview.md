@@ -22,11 +22,11 @@ const contents = win.webContents
 console.log(contents)
 ```
 
-## Navigation Events
+### Navigation Events
 
 Several events can be used to monitor navigations as they occur within a `webContents`.
 
-### Document Navigations
+#### Document Navigations
 
 When a `webContents` navigates to another page (as opposed to an in-page navigation), the following events will be fired.
 
@@ -40,18 +40,18 @@ When a `webContents` navigates to another page (as opposed to an in-page navigat
 
 Subsequent events will not fire if `event.preventDefault()` is called on any of the cancellable events.
 
-### In-page Navigation
+#### In-page Navigation
 
 In-page navigations don't cause the page to reload, but instead navigate to a location within the current page. These events are not cancellable. For an in-page navigations, the following events will fire in this order:
 
 * `did-start-navigation`
 * `did-navigate-in-page`
 
-### Frame Navigation
+#### Frame Navigation
 
 The `will-navigate` and `did-navigate` events only fire when the `mainFrame` navigates. If you want to also observe navigations in `<iframe>`s, use `will-frame-navigate` and `did-frame-navigate` events.
 
-## Static Methods
+### Static Methods
 
 These methods can be accessed from the `webContents` module:
 
@@ -61,27 +61,27 @@ const { webContents } = require('electron')
 console.log(webContents)
 ```
 
-### `webContents.getAllWebContents()`
+#### `webContents.getAllWebContents()`
 
 Returns `WebContents[]` - An array of all `WebContents` instances. This will contain web contents for all windows, webviews, opened DevTools, and DevTools extension background pages.
 
-### `webContents.getFocusedWebContents()`
+#### `webContents.getFocusedWebContents()`
 
 Returns `WebContents | null` - The web contents that is focused in this application, otherwise returns `null`.
 
-### `webContents.fromId(id)`
+#### `webContents.fromId(id)`
 
 * `id` Integer
 
 Returns `WebContents | undefined` - A WebContents instance with the given ID, or `undefined` if there is no WebContents associated with the given ID.
 
-### `webContents.fromFrame(frame)`
+#### `webContents.fromFrame(frame)`
 
 * `frame` WebFrameMain
 
 Returns `WebContents | undefined` - A WebContents instance with the given WebFrameMain, or `undefined` if there is no WebContents associated with the given WebFrameMain.
 
-### `webContents.fromDevToolsTargetId(targetId)`
+#### `webContents.fromDevToolsTargetId(targetId)`
 
 * `targetId` string - The Chrome DevTools Protocol TargetID associated with the WebContents instance.
 
@@ -101,7 +101,7 @@ async function lookupTargetId(browserWindow) {
 }
 ```
 
-## Class: WebContents
+### Class: WebContents
 
 > Render and control the contents of a BrowserWindow instance.
 

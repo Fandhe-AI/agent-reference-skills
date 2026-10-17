@@ -21,15 +21,15 @@ app.whenReady().then(() => {
 })
 ```
 
-## Instance Events
+### Instance Events
 
-### Event: 'input-event'
+#### Event: 'input-event'
 
 Returns: `event` Event, `inputEvent` InputEvent.
 
 Emitted when an input event is sent to the WebContents. See InputEvent for details.
 
-### Event: 'before-input-event'
+#### Event: 'before-input-event'
 
 Returns:
 
@@ -49,7 +49,7 @@ Returns:
 
 Emitted before dispatching the `keydown` and `keyup` events in the page. Calling `event.preventDefault` will prevent the page `keydown`/`keyup` events and the menu shortcuts. To only prevent the menu shortcuts, use `setIgnoreMenuShortcuts` (example above).
 
-### Event: 'before-mouse-event'
+#### Event: 'before-mouse-event'
 
 Returns: `event` Event, `mouse` MouseInputEvent.
 
@@ -84,65 +84,65 @@ app.whenReady().then(() => {
 })
 ```
 
-### Event: 'enter-html-full-screen'
+#### Event: 'enter-html-full-screen'
 
 Emitted when the window enters a full-screen state triggered by HTML API.
 
-### Event: 'leave-html-full-screen'
+#### Event: 'leave-html-full-screen'
 
 Emitted when the window leaves a full-screen state triggered by HTML API.
 
-### Event: 'zoom-changed'
+#### Event: 'zoom-changed'
 
 Returns: `event` Event, `zoomDirection` string - Can be `in` or `out`.
 
 Emitted when the user is requesting to change the zoom level using the mouse wheel.
 
-### Event: 'blur'
+#### Event: 'blur'
 
 Emitted when the `WebContents` loses focus. The `blur` event is also emitted when switching between windows or apps for the `WebContents` that has focus within its window.
 
-### Event: 'focus'
+#### Event: 'focus'
 
 Emitted when the `WebContents` gains focus. The `focus` event is also emitted when switching between windows or apps for the `WebContents` that has focus within its window.
 
-### Event: 'devtools-open-url'
+#### Event: 'devtools-open-url'
 
 Returns: `event` Event, `url` string - URL of the link that was clicked or selected.
 
 Emitted when a link is clicked in DevTools or 'Open in new tab' is selected for a link in its context menu.
 
-### Event: 'devtools-search-query'
+#### Event: 'devtools-search-query'
 
 Returns: `event` Event, `query` string - text to query for.
 
 Emitted when 'Search' is selected for text in its context menu.
 
-### Event: 'devtools-opened'
+#### Event: 'devtools-opened'
 
 Emitted when DevTools is opened.
 
-### Event: 'devtools-closed'
+#### Event: 'devtools-closed'
 
 Emitted when DevTools is closed.
 
-### Event: 'devtools-focused'
+#### Event: 'devtools-focused'
 
 Emitted when DevTools is focused / opened.
 
-### Event: 'certificate-error'
+#### Event: 'certificate-error'
 
 Returns: `event` Event, `url` string, `error` string - The error code., `certificate` Certificate, `callback` Function (`isTrusted` boolean - Indicates whether the certificate can be considered trusted.), `isMainFrame` boolean.
 
 Emitted when failed to verify the `certificate` for `url`. The usage is the same with the `certificate-error` event of `app`.
 
-### Event: 'select-client-certificate'
+#### Event: 'select-client-certificate'
 
 Returns: `event` Event, `url` URL, `certificateList` Certificate[], `callback` Function (`certificate` Certificate - Must be a certificate from the given list.).
 
 Emitted when a client certificate is requested. The usage is the same with the `select-client-certificate` event of `app`.
 
-### Event: 'login'
+#### Event: 'login'
 
 Returns:
 
@@ -165,27 +165,27 @@ Returns:
 
 Emitted when `webContents` wants to do basic auth. The usage is the same with the `login` event of `app`.
 
-### Event: 'found-in-page'
+#### Event: 'found-in-page'
 
 Returns: `event` Event, `result` Object (`requestId` Integer, `activeMatchOrdinal` Integer - Position of the active match., `matches` Integer - Number of Matches., `selectionArea` Rectangle - Coordinates of first match region., `finalUpdate` boolean).
 
 Emitted when a result is available for `webContents.findInPage` request.
 
-### Event: 'media-started-playing'
+#### Event: 'media-started-playing'
 
 Emitted when media starts playing.
 
-### Event: 'media-paused'
+#### Event: 'media-paused'
 
 Emitted when media is paused or done playing.
 
-### Event: 'audio-state-changed'
+#### Event: 'audio-state-changed'
 
 Returns: `event` Event\<\> (`audible` boolean - True if one or more frames or child `webContents` are emitting audio.).
 
 Emitted when media becomes audible or inaudible.
 
-### Event: 'did-change-theme-color'
+#### Event: 'did-change-theme-color'
 
 Returns: `event` Event, `color` (string | null) - Theme color is in format of '#rrggbb'. It is `null` when no theme color is set.
 
@@ -195,13 +195,13 @@ Emitted when a page's theme color changes. This is usually due to encountering a
 <meta name='theme-color' content='#ff0000'>
 ```
 
-### Event: 'update-target-url'
+#### Event: 'update-target-url'
 
 Returns: `event` Event, `url` string.
 
 Emitted when mouse moves over a link or the keyboard moves the focus to a link.
 
-### Event: 'cursor-changed'
+#### Event: 'cursor-changed'
 
 Returns: `event` Event, `type` string, `image` NativeImage (optional), `scale` Float (optional) - scaling factor for the custom cursor., `size` Size (optional) - the size of the `image`., `hotspot` Point (optional) - coordinates of the custom cursor's hotspot.
 
@@ -209,7 +209,7 @@ Emitted when the cursor's type changes. The `type` parameter can be `pointer`, `
 
 If the `type` parameter is `custom`, the `image` parameter will hold the custom cursor image in a `NativeImage`, and `scale`, `size` and `hotspot` will hold additional information about the custom cursor.
 
-### Event: 'context-menu'
+#### Event: 'context-menu'
 
 Returns:
 
@@ -265,7 +265,7 @@ Returns:
 
 Emitted when there is a new context menu that needs to be handled.
 
-### Event: 'select-bluetooth-device'
+#### Event: 'select-bluetooth-device'
 
 Returns: `event` Event, `devices` BluetoothDevice[], `callback` Function (`deviceId` string).
 
@@ -301,7 +301,7 @@ app.whenReady().then(() => {
 })
 ```
 
-### Event: 'paint'
+#### Event: 'paint'
 
 Returns:
 
@@ -349,11 +349,11 @@ win.webContents.on('paint', async (e, dirty, image) => {
 win.loadURL('https://github.com')
 ```
 
-### Event: 'devtools-reload-page'
+#### Event: 'devtools-reload-page'
 
 Emitted when the DevTools window instructs the webContents to reload
 
-### Event: 'will-attach-webview'
+#### Event: 'will-attach-webview'
 
 Returns:
 
@@ -365,13 +365,13 @@ Emitted when a `<webview>`'s web contents is being attached to this web contents
 
 This event can be used to configure `webPreferences` for the `webContents` of a `<webview>` before it's loaded, and provides the ability to set settings that can't be set via `<webview>` attributes.
 
-### Event: 'did-attach-webview'
+#### Event: 'did-attach-webview'
 
 Returns: `event` Event, `webContents` WebContents - The guest web contents that is used by the `<webview>`.
 
 Emitted when a `<webview>` has been attached to this web contents.
 
-### Event: 'console-message'
+#### Event: 'console-message'
 
 Returns:
 
@@ -388,31 +388,31 @@ Returns:
 
 Emitted when the associated window logs a console message.
 
-### Event: 'preload-error'
+#### Event: 'preload-error'
 
 Returns: `event` Event, `preloadPath` string, `error` Error.
 
 Emitted when the preload script `preloadPath` throws an unhandled exception `error`.
 
-### Event: 'ipc-message'
+#### Event: 'ipc-message'
 
 Returns: `event` IpcMainEvent, `channel` string, `...args` any[].
 
 Emitted when the renderer process sends an asynchronous message via `ipcRenderer.send()`. See also `webContents.ipc`, which provides an `IpcMain`-like interface for responding to IPC messages specifically from this WebContents.
 
-### Event: 'ipc-message-sync'
+#### Event: 'ipc-message-sync'
 
 Returns: `event` IpcMainEvent, `channel` string, `...args` any[].
 
 Emitted when the renderer process sends a synchronous message via `ipcRenderer.sendSync()`. See also `webContents.ipc`.
 
-### Event: 'preferred-size-changed'
+#### Event: 'preferred-size-changed'
 
 Returns: `event` Event, `preferredSize` Size - The minimum size needed to contain the layout of the document—without requiring scrolling.
 
 Emitted when the `WebContents` preferred size has changed. This event will only be emitted when `enablePreferredSizeMode` is set to `true` in `webPreferences`.
 
-### Event: 'frame-created'
+#### Event: 'frame-created'
 
 Returns: `event` Event, `details` Object (`frame` WebFrameMain | null - The created frame. May be `null` if accessed after the frame has either navigated or been destroyed.).
 

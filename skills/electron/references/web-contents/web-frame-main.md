@@ -54,35 +54,35 @@ async function main() {
 main()
 ```
 
-## Methods
+### Methods
 
-### `webFrameMain.fromId(processId, routingId)`
+#### `webFrameMain.fromId(processId, routingId)`
 
 * `processId` Integer - An `Integer` representing the internal ID of the process which owns the frame.
 * `routingId` Integer - An `Integer` representing the unique frame ID in the current renderer process. Routing IDs can be retrieved from `WebFrameMain` instances (`frame.routingId`) and are also passed by frame specific `WebContents` navigation events (e.g. `did-frame-navigate`).
 
 Returns `WebFrameMain | undefined` - A frame with the given process and routing IDs, or `undefined` if there is no WebFrameMain associated with the given IDs.
 
-### `webFrameMain.fromFrameToken(processId, frameToken)`
+#### `webFrameMain.fromFrameToken(processId, frameToken)`
 
 * `processId` Integer - An `Integer` representing the internal ID of the process which owns the frame.
 * `frameToken` string - A `string` token identifying the unique frame. Can also be retrieved in the renderer process via `webFrame.frameToken`.
 
 Returns `WebFrameMain | null` - A frame with the given process and frame token, or `null` if there is no WebFrameMain associated with the given IDs.
 
-## Class: WebFrameMain
+### Class: WebFrameMain
 
 Process: Main. This class is not exported from the `'electron'` module. It is only available as a return value of other methods in the Electron API.
 
-### Instance Events
+#### Instance Events
 
-#### Event: 'dom-ready'
+##### Event: 'dom-ready'
 
 Emitted when the document is loaded.
 
-### Instance Methods
+#### Instance Methods
 
-#### `frame.executeJavaScript(code[, userGesture])`
+##### `frame.executeJavaScript(code[, userGesture])`
 
 * `code` string
 * `userGesture` boolean (optional) - Default is `false`.
@@ -91,15 +91,15 @@ Returns `Promise<unknown>` - A promise that resolves with the result of the exec
 
 Evaluates `code` in page. In the browser window some HTML APIs like `requestFullScreen` can only be invoked by a gesture from the user. Setting `userGesture` to `true` will remove this limitation.
 
-#### `frame.reload()`
+##### `frame.reload()`
 
 Returns `boolean` - Whether the reload was initiated successfully. Only results in `false` when the frame has no history.
 
-#### `frame.isDestroyed()`
+##### `frame.isDestroyed()`
 
 Returns `boolean` - Whether the frame is destroyed.
 
-#### `frame.send(channel, ...args)`
+##### `frame.send(channel, ...args)`
 
 * `channel` string
 * `...args` any[]
@@ -108,7 +108,7 @@ Send an asynchronous message to the renderer process via `channel`, along with a
 
 The renderer process can handle the message by listening to `channel` with the `ipcRenderer` module.
 
-#### `frame.postMessage(channel, message, [transfer])`
+##### `frame.postMessage(channel, message, [transfer])`
 
 * `channel` string
 * `message` any
@@ -131,7 +131,7 @@ ipcRenderer.on('port', (e, msg) => {
 })
 ```
 
-#### `frame.collectJavaScriptCallStack()` _Experimental_
+##### `frame.collectJavaScriptCallStack()` _Experimental_
 
 Returns `Promise<string> | Promise<void>` - A promise that resolves with the currently running JavaScript call stack. If no JavaScript runs in the frame, the promise will never resolve. In cases where the call stack is otherwise unable to be collected, it will return `undefined`.
 
@@ -151,21 +151,21 @@ app.on('web-contents-created', (_, webContents) => {
 })
 ```
 
-#### `frame.copyVideoFrameAt(x, y)`
+##### `frame.copyVideoFrameAt(x, y)`
 
 * `x` Integer
 * `y` Integer
 
 When executed on a video media element, copies the frame at (x, y) to the clipboard.
 
-#### `frame.saveVideoFrameAs(x, y)`
+##### `frame.saveVideoFrameAs(x, y)`
 
 * `x` Integer
 * `y` Integer
 
 When executed on a video media element, shows a save dialog and saves the frame at (x, y) to disk.
 
-#### `frame.printToPDF(options)`
+##### `frame.printToPDF(options)`
 
 * `options` PrintToPDFOptions
 
@@ -208,9 +208,9 @@ app.whenReady().then(() => {
 
 See Chrome DevTools Protocol `Page.printToPDF` for more information.
 
-### Instance Properties
+#### Instance Properties
 
-#### `frame.ipc` _Readonly_
+##### `frame.ipc` _Readonly_
 
 An `IpcMain` instance scoped to the frame.
 

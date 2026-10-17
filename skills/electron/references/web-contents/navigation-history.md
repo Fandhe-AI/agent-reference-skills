@@ -24,61 +24,61 @@ const history = win.webContents.navigationHistory
 if (history.canGoBack()) history.goBack()
 ```
 
-## Instance Methods
+### Instance Methods
 
-### `navigationHistory.canGoBack()`
+#### `navigationHistory.canGoBack()`
 
 Returns `boolean` - Whether the browser can go back to previous web page.
 
-### `navigationHistory.canGoForward()`
+#### `navigationHistory.canGoForward()`
 
 Returns `boolean` - Whether the browser can go forward to next web page.
 
-### `navigationHistory.canGoToOffset(offset)`
+#### `navigationHistory.canGoToOffset(offset)`
 
 * `offset` Integer
 
 Returns `boolean` - Whether the web page can go to the specified relative `offset` from the current entry.
 
-### `navigationHistory.clear()`
+#### `navigationHistory.clear()`
 
 Clears the navigation history.
 
-### `navigationHistory.getActiveIndex()`
+#### `navigationHistory.getActiveIndex()`
 
 Returns `Integer` - The index of the current page, from which we would go back/forward or reload.
 
-### `navigationHistory.getEntryAtIndex(index)`
+#### `navigationHistory.getEntryAtIndex(index)`
 
 * `index` Integer
 
 Returns `NavigationEntry` - Navigation entry at the given index. If index is out of bounds (greater than history length or less than 0), null will be returned.
 
-### `navigationHistory.goBack()`
+#### `navigationHistory.goBack()`
 
 Makes the browser go back a web page.
 
-### `navigationHistory.goForward()`
+#### `navigationHistory.goForward()`
 
 Makes the browser go forward a web page.
 
-### `navigationHistory.goToIndex(index)`
+#### `navigationHistory.goToIndex(index)`
 
 * `index` Integer
 
 Navigates browser to the specified absolute web page index.
 
-### `navigationHistory.goToOffset(offset)`
+#### `navigationHistory.goToOffset(offset)`
 
 * `offset` Integer
 
 Navigates to the specified relative offset from the current entry.
 
-### `navigationHistory.length()`
+#### `navigationHistory.length()`
 
 Returns `Integer` - History length.
 
-### `navigationHistory.removeEntryAtIndex(index)`
+#### `navigationHistory.removeEntryAtIndex(index)`
 
 * `index` Integer
 
@@ -86,11 +86,11 @@ Removes the navigation entry at the given index. Can't remove entry at the "curr
 
 Returns `boolean` - Whether the navigation entry was removed from the webContents history.
 
-### `navigationHistory.getAllEntries()`
+#### `navigationHistory.getAllEntries()`
 
 Returns `NavigationEntry[]` - WebContents complete history.
 
-### `navigationHistory.restore(options)`
+#### `navigationHistory.restore(options)`
 
 Restores navigation history and loads the given entry in the in stack. Will make a best effort to restore not just the navigation stack but also the state of the individual pages - for instance including HTML form values or the scroll position. It's recommended to call this API before any navigation entries are created, so ideally before you call `loadURL()` or `loadFile()` on the `webContents` object.
 
@@ -102,13 +102,22 @@ This API allows you to create common flows that aim to restore, recreate, or clo
 
 Returns `Promise<void>` - the promise will resolve when the page has finished loading the selected navigation entry (see `did-finish-load`), and rejects if the page fails to load (see `did-fail-load`). A noop rejection handler is already attached, which avoids unhandled rejection errors.
 
-## NavigationEntry Object
+### NavigationEntry Object
 
 | Name | Type | Description |
 | --- | --- | --- |
 | `url` | string | |
 | `title` | string | |
 | `pageState` | string (optional) | A base64 encoded data string containing Chromium page state including information like the current scroll position or form values. It is committed by Chromium before a navigation event and on a regular interval. |
+
+## Options / Props
+
+`navigationHistory.restore(options)`:
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `entries` | NavigationEntry[] | — | Result of a prior `getAllEntries()` call |
+| `index` | Integer (optional) | — | Index of the stack that should be loaded. If you set it to `0`, the webContents will load the first (oldest) entry. If you leave it undefined, Electron will automatically load the last (newest) entry. |
 
 ## Notes
 

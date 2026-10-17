@@ -17,7 +17,7 @@ const data = await win.webContents.printToPDF({
 })
 ```
 
-## PrinterInfo Object
+### PrinterInfo Object
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -62,7 +62,7 @@ Below is an example of some of the additional options that may be set which may 
 }
 ```
 
-## PrintToPDFMargins Object
+### PrintToPDFMargins Object
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -71,7 +71,7 @@ Below is an example of some of the additional options that may be set which may 
 | `left` | number (optional) | Left margin in inches. Defaults to 1cm (~0.4 inches). |
 | `right` | number (optional) | Right margin in inches. Defaults to 1cm (~0.4 inches). |
 
-## PrintToPDFOptions Object
+### PrintToPDFOptions Object
 
 | Name | Type | Description |
 | --- | --- | --- |

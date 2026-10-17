@@ -15,9 +15,9 @@ win.webContents.on('did-finish-load', () => {
 })
 ```
 
-## Instance Methods
+### Instance Methods
 
-### `contents.insertCSS(css[, options])`
+#### `contents.insertCSS(css[, options])`
 
 * `css` string
 * `options` Object (optional)
@@ -27,7 +27,7 @@ Returns `Promise<string>` - A promise that resolves with a key for the inserted 
 
 Injects CSS into the current web page and returns a unique key for the inserted stylesheet.
 
-### `contents.removeInsertedCSS(key)`
+#### `contents.removeInsertedCSS(key)`
 
 * `key` string
 
@@ -44,7 +44,7 @@ win.webContents.on('did-finish-load', async () => {
 })
 ```
 
-### `contents.executeJavaScript(code[, userGesture])`
+#### `contents.executeJavaScript(code[, userGesture])`
 
 * `code` string
 * `userGesture` boolean (optional) - Default is `false`.
@@ -67,7 +67,7 @@ win.webContents
   })
 ```
 
-### `contents.executeJavaScriptInIsolatedWorld(worldId, scripts[, userGesture])`
+#### `contents.executeJavaScriptInIsolatedWorld(worldId, scripts[, userGesture])`
 
 * `worldId` Integer - The ID of the world to run the javascript in, `0` is the default world, `999` is the world used by Electron's `contextIsolation` feature. You can provide any integer here.
 * `scripts` WebSource[]
@@ -77,13 +77,13 @@ Returns `Promise<any>` - A promise that resolves with the result of the executed
 
 Works like `executeJavaScript` but evaluates `scripts` in an isolated context.
 
-### `contents.setIgnoreMenuShortcuts(ignore)`
+#### `contents.setIgnoreMenuShortcuts(ignore)`
 
 * `ignore` boolean
 
 Ignore application menu shortcuts while this web contents is focused.
 
-### `contents.setWindowOpenHandler(handler)`
+#### `contents.setWindowOpenHandler(handler)`
 
 * `handler` Function\<WindowOpenHandlerResponse\>
   * `details` Object
@@ -128,31 +128,31 @@ mainWindow.webContents.setWindowOpenHandler((details) => {
 })
 ```
 
-### `contents.setAudioMuted(muted)`
+#### `contents.setAudioMuted(muted)`
 
 * `muted` boolean
 
 Mute the audio on the current web page.
 
-### `contents.isAudioMuted()`
+#### `contents.isAudioMuted()`
 
 Returns `boolean` - Whether this page has been muted.
 
-### `contents.isCurrentlyAudible()`
+#### `contents.isCurrentlyAudible()`
 
 Returns `boolean` - Whether audio is currently playing.
 
-### `contents.setCaretBrowsingEnabled(enabled)`
+#### `contents.setCaretBrowsingEnabled(enabled)`
 
 * `enabled` boolean
 
 Sets whether caret browsing is enabled on the current web page.
 
-### `contents.isCaretBrowsingEnabled()`
+#### `contents.isCaretBrowsingEnabled()`
 
 Returns `boolean` - Whether caret browsing is enabled for this page.
 
-### `contents.setZoomFactor(factor)`
+#### `contents.setZoomFactor(factor)`
 
 * `factor` Double - Zoom factor; default is 1.0.
 
@@ -160,11 +160,11 @@ Changes the zoom factor to the specified factor. Zoom factor is zoom percent div
 
 The factor must be greater than 0.0. Values outside the range Chromium can display (0.25 to 5.0) are clamped to it.
 
-### `contents.getZoomFactor()`
+#### `contents.getZoomFactor()`
 
 Returns `number` - the current zoom factor.
 
-### `contents.setZoomLevel(level)`
+#### `contents.setZoomLevel(level)`
 
 * `level` number - Zoom level.
 
@@ -172,11 +172,11 @@ Changes the zoom level to the specified level. The original size is 0 and each i
 
 > The zoom policy at the Chromium level is same-origin by default, meaning that the zoom level for a specific domain propagates across all instances of windows with the same domain. To use per-webContents zoom instead, set the zoom mode to `'isolated'` via `contents.setZoomMode('isolated')`.
 
-### `contents.getZoomLevel()`
+#### `contents.getZoomLevel()`
 
 Returns `number` - the current zoom level.
 
-### `contents.setZoomMode(mode)`
+#### `contents.setZoomMode(mode)`
 
 * `mode` string - Can be `default`, `isolated`, `manual`, or `disabled`.
 
@@ -189,11 +189,11 @@ Sets the zoom mode for this web contents.
 
 The `isolated` and `manual` zoom modes persist across navigations.
 
-### `contents.getZoomMode()`
+#### `contents.getZoomMode()`
 
 Returns `string` - The current zoom mode. Can be `default`, `isolated`, `manual`, or `disabled`.
 
-### `contents.setVisualZoomLevelLimits(minimumLevel, maximumLevel)`
+#### `contents.setVisualZoomLevelLimits(minimumLevel, maximumLevel)`
 
 * `minimumLevel` number
 * `maximumLevel` number

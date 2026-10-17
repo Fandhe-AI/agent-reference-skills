@@ -38,15 +38,15 @@ win.webContents.debugger.on('message', (event, method, params) => {
 win.webContents.debugger.sendCommand('Network.enable')
 ```
 
-## Instance Events
+### Instance Events
 
-### Event: 'detach'
+#### Event: 'detach'
 
 Returns: `event` Event, `reason` string - Reason for detaching debugger.
 
 Emitted when the debugging session is terminated. This happens either when `webContents` is closed or DevTools is invoked for the attached `webContents`.
 
-### Event: 'message'
+#### Event: 'message'
 
 Returns:
 
@@ -57,23 +57,23 @@ Returns:
 
 Emitted whenever the debugging target issues an instrumentation event.
 
-## Instance Methods
+### Instance Methods
 
-### `debugger.attach([protocolVersion])`
+#### `debugger.attach([protocolVersion])`
 
 * `protocolVersion` string (optional) - Requested debugging protocol version.
 
 Attaches the debugger to the `webContents`.
 
-### `debugger.isAttached()`
+#### `debugger.isAttached()`
 
 Returns `boolean` - Whether a debugger is attached to the `webContents`.
 
-### `debugger.detach()`
+#### `debugger.detach()`
 
 Detaches the debugger from the `webContents`.
 
-### `debugger.sendCommand(method[, commandParams, sessionId])`
+#### `debugger.sendCommand(method[, commandParams, sessionId])`
 
 * `method` string - Method name, should be one of the methods defined by the remote debugging protocol.
 * `commandParams` any (optional) - JSON object with request parameters.
@@ -82,6 +82,15 @@ Detaches the debugger from the `webContents`.
 Returns `Promise<any>` - A promise that resolves with the response defined by the 'returns' attribute of the command description in the remote debugging protocol or is rejected indicating the failure of the command.
 
 Send given command to the debugging target.
+
+## Options / Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `protocolVersion` (`debugger.attach`) | string (optional) | — | Requested debugging protocol version. |
+| `method` (`debugger.sendCommand`) | string | — | Method name, should be one of the methods defined by the remote debugging protocol. |
+| `commandParams` (`debugger.sendCommand`) | any (optional) | — | JSON object with request parameters. |
+| `sessionId` (`debugger.sendCommand`) | string (optional) | — | send command to the target with associated debugging session id. The initial value can be obtained by sending `Target.attachToTarget` message. |
 
 ## Notes
 

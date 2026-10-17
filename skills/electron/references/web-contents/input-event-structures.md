@@ -13,21 +13,21 @@ Object structures used by `webContents` `input-event` / `before-input-event` / `
 win.webContents.sendInputEvent({ type: 'keyDown', keyCode: 'A', modifiers: ['shift'] })
 ```
 
-## InputEvent Object
+### InputEvent Object
 
 | Name | Type | Description |
 | --- | --- | --- |
 | `type` | string | Can be `undefined`, `mouseDown`, `mouseUp`, `mouseMove`, `mouseEnter`, `mouseLeave`, `contextMenu`, `mouseWheel`, `rawKeyDown`, `keyDown`, `keyUp`, `char`, `gestureScrollBegin`, `gestureScrollEnd`, `gestureScrollUpdate`, `gestureFlingStart`, `gestureFlingCancel`, `gesturePinchBegin`, `gesturePinchEnd`, `gesturePinchUpdate`, `gestureTapDown`, `gestureShowPress`, `gestureTap`, `gestureTapCancel`, `gestureShortPress`, `gestureLongPress`, `gestureLongTap`, `gestureTwoFingerTap`, `gestureTapUnconfirmed`, `gestureDoubleTap`, `touchStart`, `touchMove`, `touchEnd`, `touchCancel`, `touchScrollStarted`, `pointerDown`, `pointerUp`, `pointerMove`, `pointerRawUpdate`, `pointerCancel` or `pointerCausedUaAction`. |
 | `modifiers` | string[] (optional) | An array of modifiers of the event, can be `shift`, `control`, `ctrl`, `alt`, `meta`, `command`, `cmd`, `iskeypad`, `isautorepeat`, `leftbuttondown`, `middlebuttondown`, `rightbuttondown`, `capslock`, `numlock`, `left`, `right`. |
 
-## KeyboardInputEvent Object extends `InputEvent`
+### KeyboardInputEvent Object extends `InputEvent`
 
 | Name | Type | Description |
 | --- | --- | --- |
 | `type` | string | The type of the event, can be `rawKeyDown`, `keyDown`, `keyUp` or `char`. |
 | `keyCode` | string | The character that will be sent as the keyboard event. Should only use valid Accelerator key codes. |
 
-## MouseInputEvent Object extends `InputEvent`
+### MouseInputEvent Object extends `InputEvent`
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -41,7 +41,7 @@ win.webContents.sendInputEvent({ type: 'keyDown', keyCode: 'A', modifiers: ['shi
 | `movementY` | Integer (optional) | |
 | `clickCount` | Integer (optional) | |
 
-## MouseWheelInputEvent Object extends `MouseInputEvent`
+### MouseWheelInputEvent Object extends `MouseInputEvent`
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -55,7 +55,7 @@ win.webContents.sendInputEvent({ type: 'keyDown', keyCode: 'A', modifiers: ['shi
 | `hasPreciseScrollingDeltas` | boolean (optional) | |
 | `canScroll` | boolean (optional) | |
 
-## KeyboardEvent Object
+### KeyboardEvent Object
 
 | Name | Type | Description |
 | --- | --- | --- |
