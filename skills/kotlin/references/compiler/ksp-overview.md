@@ -39,8 +39,8 @@ Supported libraries (status):
 | --- | --- |
 | Room, Moshi, RxHttp, Kotshi, Lyricist, Lich SavedState, gRPC Dekorator, EasyAdapter, Koin Annotations, Glide, Micronaut, Epoxy, Paris, Auto Dagger, SealedX, Ktorfit, Mockative, Kotest | Officially supported |
 | DeeplinkDispatch | Supported via airbnb/DeepLinkDispatch#323 |
-| Dagger, Motif | Alpha |
-| Hilt | In progress |
+| Dagger, Hilt | Stable as of Dagger 2.60+ with KSP 2.3.9+ (dagger.dev/dev-guide/ksp) |
+| Motif | Alpha |
 | Auto Factory | Not yet supported |
 
 ## Notes
@@ -48,6 +48,7 @@ Supported libraries (status):
 - The official pages render kotlinVersion 2.4.21 with kspVersion 2.3.10 while the KSP requirements table lists KGP 2.2.10–2.3.x; the google/ksp 2.3.10 release notes state no KGP range, so this page keeps the official table unchanged and the discrepancy is unconfirmed.
 - KSP hides compiler changes behind a well-defined API, so processors need less maintenance; trade-off: KSP-based processors can't examine expressions or statements, and can't modify source code. KSP models declarations and type information, not function bodies.
 - Compilation flow: processors analyze source code and resources, generate source files or other outputs, then the Kotlin compiler compiles the original source together with the generated code.
+- The official page (kotlin-web-site 0b10373) lists Dagger as Alpha and Hilt as In progress; dagger.dev/dev-guide/ksp states Dagger's KSP support (including hilt-compiler) is stable as of Dagger 2.60+ and KSP 2.3.9+, so this page follows dagger.dev.
 - Typical use cases: dependency injection (Dagger), serialization (Moshi), database management (Room).
 - Distinction from kapt: use KSP for Gradle projects whose processors support KSP and for writing your own processors (see `kapt`).
 - This page covers the KSP API in general. Android-specific KSP / Room / Hilt configuration is in android-build-gradle, android-data and android-architecture.

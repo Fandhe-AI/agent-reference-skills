@@ -33,7 +33,7 @@ kotlin.build.report.output=file
 - Smaller changes are listed by subject area (Type inference, Generics, Resolution, Visibility, Annotations, Null safety, Java interoperability, Properties, Control flow, Enum classes, Functional (SAM) interfaces, Companion object, Miscellaneous) with YouTrack issue IDs in the official page.
 - K2 stability by release: 2.0.0-2.4.21 Stable; 1.9.20-1.9.25 Beta; 1.9.0-1.9.10 JVM is Beta; 1.7.0-1.8.22 Alpha.
 - Library compatibility: Kotlin/JVM works with libraries compiled with any Kotlin version; Kotlin Multiplatform is guaranteed with libraries compiled with 1.9.20 and onwards.
-- Compiler plugins supported by K2: all-open, AtomicFU, jvm-abi-gen, js-plain-objects, kapt, Lombok, no-arg, Parcelize, Power-assert, SAM with receiver, Serialization; also the Jetpack Compose 1.5.0 compiler plugin and later, and KSP since KSP2. Check the documentation of other plugins for K2 support.
+- Compiler plugins supported by K2: all-open, AtomicFU, jvm-abi-gen, js-plain-objects, kapt, Lombok, no-arg, Parcelize, Power-assert, SAM with receiver, Serialization; also Jetpack Compose (the official page says "1.5.0 compiler plugin and later"; Compose compiler 1.5.x targets Kotlin 1.9 — with Kotlin 2.0.0+ apply the Compose compiler Gradle plugin `org.jetbrains.kotlin.plugin.compose` at the same version as Kotlin, see compose-compiler-migration-guide), and KSP since KSP2. Check the documentation of other plugins for K2 support.
 - Custom plugins: the plugin API is Experimental. Backend-only plugins (`IrGenerationExtension` only) need only API-change checks; plugins using frontend extension points must be rewritten with the K2 (FIR Plugin) API.
 - Android Studio / IntelliJ IDEA use K2 by default for code analysis.
 
