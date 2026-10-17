@@ -32,7 +32,7 @@ Output directory: `sharedUI/build/dist/wasmJs/productionExecutable`.
 
 ## Related
 
-- iOS CI/CD with TeamCity
-- CocoaPods overview
-- Privacy manifest
+- [iOS CI/CD with TeamCity](../tooling/ios-ci-cd-teamcity.md)
+- [CocoaPods overview](../ios-integration/cocoapods-overview.md)
+- [Privacy manifest](../ios-integration/privacy-manifest.md)
 - [Build final native binaries](./native-binaries.md)

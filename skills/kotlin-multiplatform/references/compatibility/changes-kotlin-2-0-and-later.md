@@ -208,5 +208,5 @@ Deprecated in the public API of the Kotlin Gradle plugin: the `presets` property
 - [Compatibility guide for Kotlin Multiplatform — Kotlin 1.9.0−1.9.25](./changes-kotlin-1-9.md)
 - [Updating multiplatform projects with Android apps to use AGP 9](./agp-9-migration.md)
 - [Android source set layout](./android-source-set-layout.md)
-- Multiplatform Gradle DSL reference — Targets
-- Source set hierarchy
+- [Multiplatform Gradle DSL reference — Targets](../gradle-dsl/dsl-targets.md)
+- [Source set hierarchy](../project-structure/hierarchy.md)

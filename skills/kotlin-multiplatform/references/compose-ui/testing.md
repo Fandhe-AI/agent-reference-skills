@@ -105,4 +105,4 @@ dependencies {
 - [Testing Compose Multiplatform UI with JUnit](../compose-desktop/ui-testing-junit.md)
 - [Localization tests](../compose-resources/localization-tests.md)
 - [Test your multiplatform app - tutorial](../build-test-publish/run-tests.md)
-- The basics of Kotlin Multiplatform project structure
+- [The basics of Kotlin Multiplatform project structure](../project-structure/targets-and-source-sets.md)

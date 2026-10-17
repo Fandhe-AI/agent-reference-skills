@@ -79,5 +79,5 @@ Jetpack Compose artifact versions used by each Compose Multiplatform version (la
 
 - [Compatibility guide for Kotlin Multiplatform — Version compatibility](./version-compatibility.md)
 - [What's new in Compose Multiplatform 1.12.2](./whats-new-compose-1-12.md)
-- Updating Compose compiler
-- How multiplatform Jetpack libraries are packaged
+- [Updating Compose compiler](../gradle-dsl/compose-compiler.md)
+- [How multiplatform Jetpack libraries are packaged](../getting-started/jetpack-libraries.md)

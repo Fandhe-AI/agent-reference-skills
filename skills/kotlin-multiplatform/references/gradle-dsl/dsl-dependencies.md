@@ -57,4 +57,4 @@ kotlin {
 ## Related
 
 - [Source sets](./dsl-source-sets.md)
-- Add dependencies
+- [Add dependencies](../project-structure/add-dependencies.md)

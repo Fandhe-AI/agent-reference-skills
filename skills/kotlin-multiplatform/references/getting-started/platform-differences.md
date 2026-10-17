@@ -58,5 +58,5 @@ fun main() = application {
 - [Integration with the UIKit framework](../compose-ios/uikit-integration.md)
 - [Swing interoperability](../compose-desktop/swing-interoperability.md)
 - [Compose UI previews](../compose-ui/previews.md)
-- Compose Hot Reload
+- [Compose Hot Reload](../tooling/compose-hot-reload.md)
 - [Navigation in Compose](../compose-architecture/navigation.md)

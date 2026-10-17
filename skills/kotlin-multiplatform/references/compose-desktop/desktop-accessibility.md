@@ -59,5 +59,5 @@ Current accessibility status on desktop:
 ## Related
 
 - [Native distributions](./native-distribution.md)
-- Accessibility
-- Support for iOS accessibility features
+- [Accessibility](../compose-ui/accessibility.md)
+- [Support for iOS accessibility features](../compose-ios/ios-accessibility.md)

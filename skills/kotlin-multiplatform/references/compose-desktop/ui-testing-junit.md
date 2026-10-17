@@ -75,5 +75,5 @@ Run the test from the gutter icon or:
 
 ## Related
 
-- Testing Compose Multiplatform UI
+- [Testing Compose Multiplatform UI](../compose-ui/testing.md)
 - [Test your multiplatform app - tutorial](../build-test-publish/run-tests.md)
