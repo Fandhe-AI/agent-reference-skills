@@ -77,11 +77,12 @@ Preview the app the agent builds, and use the box without a harness:
 ```typescript
 import { upstashBoxSandbox } from "@tanstack/ai-sandbox-upstash-box";
 
-const handle = await upstashBoxSandbox({ runtime: "node" }).create({});
+const handle = await upstashBoxSandbox({
+  runtime: "node",
+  publicUrlAuth: { bearerToken: true }, // gate preview URLs
+}).create({});
 const channel = await handle.ports.connect(3000);
 console.log(channel.url);
-
-upstashBoxSandbox({ publicUrlAuth: { bearerToken: true } }); // gate preview URLs
 ```
 
 ## Options / Props
@@ -106,7 +107,8 @@ Provider capabilities: `fs` (native Box file API), `exec` (separate stdout / std
 - Official guide replaced: the URL was renamed from `/box/guides/tanstack-ai-file-editor` to `/box/guides/tanstack-setup` (this file keeps its original name); the old EphemeralBox file-editor tool recipe is no longer in the official guide
 - TanStack AI itself is outside the scope of the tanstack-* skills in this repository; only the Upstash Box provider side is covered here
 - Clone the repo in a `setup` step rather than `source: githubRepo(...)`: the box home directory already contains agent dotfiles (`.claude`, `.codex`, `.cursor`, `.local`), `git clone` into a non-empty target exits `128` and the bootstrap does not surface the failure. Clone into `/tmp` and copy across
-- The `node` runtime already ships `claude`, `codex`, and `opencode` in `/usr/local/bin`. For other CLIs install with `sudo -n` (the box runs as non-root `boxuser`; a plain `npm install -g` fails with `EACCES`) and run the CLI in the same step to surface broken optional-dependency installs
+- The `node` runtime already ships `claude`, `codex`, and `opencode` in `/usr/local/bin`. For other CLIs prefer a user-space install such as `npm install -g --prefix /home/boxuser/.local <pkg>` or `uv tool install` (the box runs as non-root `boxuser`; a plain `npm install -g` fails with `EACCES`; system-wide installs inside the disposable box require elevated install). Original docs use `sudo -n` inside the box; this page rewrites it to a user-space install. Run the CLI in the same step to surface broken optional-dependency installs
+- Preview URLs are public by default; pass `publicUrlAuth` on the same provider that creates the handle
 - Secrets are injected into the box environment on create and resume; never written to snapshots, the sandbox store, or the event log
 - TanStack AI's `/workspace` virtual root maps to the box home `/workspace/home`
 - The `threadId` keys the box; two runs on the same thread reuse it. When the run finishes the adapter emits a `CUSTOM` `file.changed` chunk with the working tree `git diff`

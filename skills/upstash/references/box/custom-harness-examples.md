@@ -49,16 +49,17 @@ try {
 | Example | Runtime | Install in box | Auth env | Model format | Sessions |
 |---|---|---|---|---|---|
 | Pi (`custom-pi-agent.ts`) | node | `npm install @earendil-works/pi-coding-agent@0.99.2` | `ANTHROPIC_API_KEY` / `GEMINI_API_KEY` / `OPENAI_API_KEY` | `<provider>/<model-id>` | per-session agentDir under `.pi-sessions` |
-| Gemini CLI (`custom-gemini-agent.ts`) | node | `sudo -n npm install -g @google/gemini-cli` | `GEMINI_API_KEY` | model id; provider prefix stripped | `--resume` / `--session-id` |
-| Copilot CLI (`custom-copilot-agent.ts`) | node | `sudo -n npm install -g @github/copilot` | `COPILOT_PROVIDER_TYPE` / `COPILOT_PROVIDER_BASE_URL` / `COPILOT_PROVIDER_API_KEY`, or `COPILOT_GITHUB_TOKEN` (fine-grained, "Copilot Requests") | provider model id, or Copilot model id / `auto` | `--resume` / `--session-id` |
+| Gemini CLI (`custom-gemini-agent.ts`) | node | `npm install -g --prefix /home/boxuser/.local @google/gemini-cli` | `GEMINI_API_KEY` | model id; provider prefix stripped | `--resume` / `--session-id` |
+| Copilot CLI (`custom-copilot-agent.ts`) | node | `npm install -g --prefix /home/boxuser/.local @github/copilot` | `COPILOT_PROVIDER_TYPE` / `COPILOT_PROVIDER_BASE_URL` / `COPILOT_PROVIDER_API_KEY`, or `COPILOT_GITHUB_TOKEN` (fine-grained, "Copilot Requests") | provider model id, or Copilot model id / `auto` | `--resume` / `--session-id` |
 | Aider (`custom-aider-agent.ts`) | python | uv + `uv tool install aider-chat --python 3.12` | `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` | model id | per-session history files under `.aider-sessions` |
 | Goose (`custom-goose-agent.ts`) | node | release tarball of `aaif-goose/goose` into `/home/boxuser/.local/bin` | `ANTHROPIC_API_KEY`, `GOOSE_PROVIDER` | provider prefix stripped | named sessions (`--name`, `--resume`) |
-| Amp (`custom-amp-agent.ts`) | node | `sudo -n npm install -g @sourcegraph/amp` | `AMP_API_KEY` (starts with `sgamp_`) | Amp mode: `low` / `medium` / `high` / `ultra` | sessions map to Amp threads |
+| Amp (`custom-amp-agent.ts`) | node | `npm install -g --prefix /home/boxuser/.local @sourcegraph/amp` | `AMP_API_KEY` (starts with `sgamp_`) | Amp mode: `low` / `medium` / `high` / `ultra` | sessions map to Amp threads |
 | CrewAI (`custom_crewai_agent.py`) | python | `pip install 'crewai[anthropic]' 'crewai-tools[mcp]' upstash-box` | provider keys | `<provider>/<model-id>` (LiteLLM) | single-turn; one `text` event |
 | Pydantic AI (`custom_pydantic_ai_agent.py`) | python | `pip install 'pydantic-ai-slim[anthropic,mcp]' upstash-box` | provider keys | `<provider>:<model-id>` | multi-turn via `--session`, history JSON under `.pydantic-ai-sessions` |
 
 ## Notes
 
+- Original examples use `sudo -n npm install -g <pkg>` inside the box for Gemini CLI / Copilot CLI / Amp; this page rewrites it to a user-space install (`--prefix /home/boxuser/.local`, matching the Goose row)
 - Harness inputs from the box: `-p` / `--model` / `--session` args plus env `PROMPT_FILES_PATH` (attached files), `JSON_SCHEMA`, `AGENT_OPTIONS`, and `/workspace/home/.box-internal/mcp-config.json` (configured MCP servers)
 - The Python harnesses use `run_custom_harness` and `CustomHarnessDone` from `upstash-box`; CrewAI and Pydantic AI honor structured output (`response_schema`), files, options, and MCP
 - Cost is reported as 0 for Amp, Gemini CLI, and Copilot CLI (no price in their output); Aider parses cost from its output; Goose and Pi report their own cost

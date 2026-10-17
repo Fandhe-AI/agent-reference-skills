@@ -43,7 +43,7 @@ session.wait(30)
 ## Notes
 
 - Pass a full shell expression; pipes, redirects, and chained commands work (`cd /work && npm install && npm test`)
-- Install system tools with `sudo apt-get install <package>` inside the box
+- System-wide installs inside the disposable box require elevated privileges (the box runs as non-root `boxuser`); prefer user-space installs (`npm install -g --prefix /home/boxuser/.local <pkg>`, `uv tool install`). Original docs show `sudo apt-get install <package>`; this page does not recommend it as the default procedure
 - `exec.command` runs to completion. To write stdin, drive a terminal, or signal a process, use `box.exec.session` (see Live Sessions)
 - Typical flow: `box.git.clone(...)`, `box.exec.command("npm install")`, then `box.agent.run({ prompt })`; build artifacts via `box.files.upload([...])` and `box.files.download({ folder: "/work/dist" })`
 - The docs' shell page shows `output` / `exit_code` for `exec.code`, but the SDK `Run` (@upstash/box 0.7.9 client.ts) exposes `result` / `exitCode` (number)

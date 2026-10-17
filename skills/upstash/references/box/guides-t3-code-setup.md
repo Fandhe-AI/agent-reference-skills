@@ -7,7 +7,8 @@ Run T3 Code inside an Upstash Box and open it from any browser or phone. The age
 ```bash
 ssh <box-id>@us-east-1.box.upstash.com   # Box API key as password
 
-sudo npm install -g t3
+npm install -g --prefix /home/boxuser/.local t3
+export PATH="/home/boxuser/.local/bin:$PATH"
 claude auth login      # or: codex login
 
 setsid nohup t3 serve --host 0.0.0.0 --port 3773 --base-dir /workspace/home/.t3 > /tmp/t3.log 2>&1 < /dev/null &
@@ -36,6 +37,7 @@ t3 pair --base-dir /workspace/home/.t3
 - Projects, threads, and browser pairing live under `/workspace/home/.t3` on persistent storage and are captured by snapshots; keep existing project folders under `/workspace` too
 - After a reset, reinstall T3 Code (step 3); a snapshot restore brings projects and pairing back
 - If a thread says "Claude could not authenticate", the step 4 sign-in is missing
+- Original docs use `sudo npm install -g t3` inside the box; this page rewrites it to a user-space install (`--prefix /home/boxuser/.local`)
 - Source: https://upstash.com/docs/box/guides/t3-code-setup (fetched 2026-10-17; no version pin on the site).
 
 ## Related
