@@ -3,13 +3,12 @@ name: mcp-spec
 description: >
   Model Context Protocol (MCP 仕様 2026-07-28, modelcontextprotocol.io) リファレンス。
   JSON-RPC, server/discover, tools/call, subscriptions/listen, MRTR (InputRequiredResult),
-  CacheableResult, Streamable HTTP, CIMD, MCP Apps (ui://), MCP Registry (server.json, MCPB)。
+  CacheableResult, Streamable HTTP, CIMD, MCP Apps (ui://),
+  MCP Registry (server.json, MCPB), tasks 拡張。ホスト設定・SDK は別スキル。
 user-invocable: false
 ---
 
 # mcp-spec
-
-> 分割 PR の途中段階。現在収録済み: references/{authorization, base-protocol, client-features, extensions, overview, patterns, registry, schema, security, server-features}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -47,6 +46,15 @@ skills/mcp-spec/
       protocol-version-negotiation.md
       extension-negotiation.md
       backward-compatibility.md
+    transports/           # stdio / Streamable HTTP / ヘッダー
+      README.md
+      transports-overview.md
+      stdio.md
+      streamable-http.md
+      http-request-headers.md
+      custom-headers.md
+      server-validation.md
+      transport-backward-compatibility.md
     authorization/        # OAuth ベースの認可フロー・CIMD・スコープ
       README.md
       authorization-overview.md
@@ -120,6 +128,13 @@ skills/mcp-spec/
       local-server-compromise.md
       scope-minimization.md
       authorization-tutorial.md
+    tooling/              # SDK・Inspector・デバッグ・クライアント実装指針
+      README.md
+      sdks.md
+      inspector.md
+      debugging.md
+      client-best-practices.md
+      build-with-agent-skills.md
     schema/               # スキーマ型定義（メソッド別）
       README.md
       json-rpc.md
@@ -137,6 +152,32 @@ skills/mcp-spec/
       mrtr-types.md
       subscriptions-types.md
       notifications-types.md
+  samples/
+    README.md
+    discover-exchange.md
+    tools-list-and-call.md
+    structured-tool-output.md
+    error-responses.md
+    streamable-http-exchange.md
+    mrtr-input-required-flow.md
+    subscriptions-listen.md
+    elicitation-requests.md
+    tasks-extension.md
+    mcp-app.md
+    authorization-server-setup.md
+    oauth-client-credentials-sdk.md
+    registry-publish-github-actions.md
+    claude-desktop-local-server.md
+    build-server-typescript.md
+    build-server-python.md
+    build-client-typescript.md
+    build-client-python.md
+  scripts/
+    README.md
+    install-sdks.md
+    inspector.md
+    debugging-logs.md
+    mcp-publisher.md
 ```
 
 ## 探索手順
@@ -146,7 +187,8 @@ skills/mcp-spec/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
-4. 型の正確なフィールドは `references/schema/` を参照する
+4. 実際のメッセージ例は `samples/README.md`、コマンドは `scripts/README.md` から引く
+5. 型の正確なフィールドは `references/schema/` を参照する
 
 ## タスク → カテゴリ マッピング
 
@@ -154,6 +196,7 @@ skills/mcp-spec/
 | --- | --- | --- |
 | 仕様全体像・Host / Client / Server 構成・バージョン管理・主要変更・非推奨機能を知りたい | overview | [references/overview/README.md](references/overview/README.md) |
 | JSON-RPC メッセージ・エラー・`_meta`・版ネゴシエーション・拡張ネゴシエーション・statelessness を知りたい | base-protocol | [references/base-protocol/README.md](references/base-protocol/README.md) |
+| stdio / Streamable HTTP のトランスポート・必須 HTTP ヘッダー・後方互換を知りたい | transports | [references/transports/README.md](references/transports/README.md) |
 | OAuth 認可フロー・CIMD・スコープ選択・認可サーバー探索・トークン利用を実装したい | authorization | [references/authorization/README.md](references/authorization/README.md) |
 | `server/discover`・tools・resources・prompts・completion・logging・pagination・caching を実装したい | server-features | [references/server-features/README.md](references/server-features/README.md) |
 | sampling・elicitation（form / URL）・roots を実装したい | client-features | [references/client-features/README.md](references/client-features/README.md) |
@@ -161,4 +204,7 @@ skills/mcp-spec/
 | MCP Apps・Tasks 拡張・認可拡張・拡張の対応クライアントを知りたい | extensions | [references/extensions/README.md](references/extensions/README.md) |
 | MCP Registry への公開・`server.json`・package types・認証・バージョニングを知りたい | registry | [references/registry/README.md](references/registry/README.md) |
 | confused deputy・token passthrough・SSRF・ローカルサーバー侵害などの対策を知りたい | security | [references/security/README.md](references/security/README.md) |
+| SDK 一覧・Inspector・デバッグ・クライアント実装指針・コーディングアシスタント向け Agent Skills を知りたい | tooling | [references/tooling/README.md](references/tooling/README.md) |
 | メソッド別のスキーマ型（フィールド・必須性）を確認したい | schema | [references/schema/README.md](references/schema/README.md) |
+| 典型的な使い方・メッセージ交換例・サーバー / クライアント構築例を知りたい | samples | [samples/README.md](samples/README.md) |
+| SDK セットアップ・Inspector・mcp-publisher・ログ確認のコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
