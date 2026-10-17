@@ -64,6 +64,7 @@ All cards also list Code execution, Function calling, Search grounding, Structur
 
 ## Notes
 
+- Source pages (one per section): https://ai.google.dev/gemini-api/docs/models/gemini-4-argon, https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash, https://ai.google.dev/gemini-api/docs/models/gemini-3.7-flash, https://ai.google.dev/gemini-api/docs/models/gemini-3.6-flash, https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash, https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite, https://ai.google.dev/gemini-api/docs/models/gemini-3.1-pro-preview, https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite, https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite-preview, https://ai.google.dev/gemini-api/docs/models/gemini-3-flash-preview, https://ai.google.dev/gemini-api/docs/models/gemini-3-pro-preview
 - `gemini-3.1-pro-preview-customtools`: separate endpoint better at prioritizing custom tools (for example `view_file` or `search_code`) when mixing bash and custom tools; quality may fluctuate in use cases that do not benefit from such tools.
 - `gemini-3.1-flash-lite-preview`: source warning says it "has been shut down on May 25, 2026"; migrate to `gemini-3.1-flash-lite`. `gemini-3-pro-preview`: "shut down March 9, 2026"; migrate to `gemini-3.1-pro-preview`.
 - Gemini 3.1 Flash-Lite developer-guide use cases (card): translation, transcription, lightweight agentic tasks and data extraction with structured JSON, document processing and summarization, model routing, thinking.

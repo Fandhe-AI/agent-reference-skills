@@ -55,13 +55,14 @@ interaction = client.interactions.create(
 | Gemini 3.6 Flash | `gemini-3.6-flash` | `medium` | $1.50/1M input tokens and $7.50/1M output tokens | Balances speed with intelligence for agentic and multimodal tasks. |
 | Gemini 3.5 Flash-Lite | `gemini-3.5-flash-lite` | `minimal` | $0.30/1M input tokens and $2.50/1M output tokens | The fastest, lowest-cost 3.5 model for high-throughput execution. |
 
-| Model | Primary use cases | Recommended migration target |
+| Model | Primary use cases | Recommended to migrate from |
 | --- | --- | --- |
 | Gemini 3.6 Flash | Code generation, spatial/multimodal reasoning, multi-step agentic workflows | Gemini 3.5 Flash, Gemini 3 Flash (Preview), or Gemini 3.1 Pro |
 | Gemini 3.5 Flash-Lite | Autonomous subagent execution, high-volume data analysis and document extraction, structured JSON parsing | Gemini 3.1 Flash-Lite or Gemini 2.5 Flash |
 
 ## Notes
 
+- The source table header reads 'Recommended migration target', but the listed models are the ones to migrate from (the deprecations page routes gemini-3.5-flash to gemini-3.6-flash); the header is renamed here.
 - The source JS sample reads `interaction.outputText`; @google/genai exposes `output_text`, used here.
 - Both models support the 1M token context window, 64k max output tokens, thinking, and the full suite of built-in tools including Computer Use.
 - API changes starting with these models, applying to all future Gemini model releases: `temperature`, `top_p`, `top_k` are deprecated; the API ignores them and returns an HTTP 400 error in future model generations. Prefilled model turns are no longer supported: if the last non-empty turn is a `model` turn, the API returns a `400` error (use `system_instruction` or structured outputs instead).

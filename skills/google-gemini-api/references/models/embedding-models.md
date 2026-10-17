@@ -26,6 +26,7 @@ gemini-embedding-001
 
 ## Notes
 
+- Source pages (one per section): https://ai.google.dev/gemini-api/docs/models/gemini-embedding-2, https://ai.google.dev/gemini-api/docs/models/gemini-embedding-2-preview, https://ai.google.dev/gemini-api/docs/models/gemini-embedding-001
 - The deprecations page lists `embedding-2-preview` (released March 10, 2026) with shutdown August 10, 2026 and replacement `gemini-embedding-2`; the ID spelling differs from the card and the preview card carries no warning, so prefer `gemini-embedding-2` for new work.
 - Gemini Embedding 2 is described as the first multimodal embedding model, mapping text, images, video, audio and PDFs into a single unified embedding space; best for cross-modal semantic search, document retrieval and recommendation systems.
 - `gemini-embedding-001` is described as an engine for high-dimensional vector representation of text and images (the card's Supported data types row lists text input only).

@@ -34,6 +34,7 @@ On all non-realtime Lyria cards: Audio generation Supported; Caching, Code execu
 
 ## Notes
 
+- Source pages (one per section): https://ai.google.dev/gemini-api/docs/models/lyria-3.5, https://ai.google.dev/gemini-api/docs/models/lyria-3.5-pro-preview, https://ai.google.dev/gemini-api/docs/models/lyria-3.5-clip-preview, https://ai.google.dev/gemini-api/docs/models/lyria-3-pro-preview, https://ai.google.dev/gemini-api/docs/models/lyria-3-clip-preview, https://ai.google.dev/gemini-api/docs/models/lyria-realtime-exp
 - Source inconsistencies (reproduced from the pages): the `lyria-3.5-clip-preview` card's Model code row reads `lyria-3.5-pro-preview`, and the `lyria-3-pro-preview` card's Model code row reads `lyria-3-clip-preview`; the page titles and Versions rows list both preview codes. Use the page/endpoint names above, not the mislabelled Model code rows.
 - The catalog page lists Lyria 3.5, Lyria 3 Clip, Lyria 3 Pro and Lyria RealTime under "Music generation models"; `lyria-3.5-pro-preview` and `lyria-3.5-clip-preview` appear only as card pages.
 - Lyria RealTime is documented under "Realtime music generation" (Live API, v1beta only per the api-versions table).

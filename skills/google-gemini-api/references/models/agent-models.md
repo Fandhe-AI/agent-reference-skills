@@ -40,6 +40,7 @@ print(interaction.output_text)
 
 ## Notes
 
+- Source pages (one per section): https://ai.google.dev/gemini-api/docs/models/antigravity-preview-05-2026, https://ai.google.dev/gemini-api/docs/models/antigravity-preview-09-2026, https://ai.google.dev/gemini-api/docs/models/deep-research-preview-04-2026, https://ai.google.dev/gemini-api/docs/models/deep-research-max-preview-04-2026, https://ai.google.dev/gemini-api/docs/models/deep-research-pro-preview-12-2025
 - Antigravity: "a powerful general-purpose managed agent designed for autonomous, multi-step workflows" that plans, reasons, runs code, manages files and searches the web inside a secure, isolated Linux sandbox hosted by Google. The September 2026 release upgrades the runtime harness with improved prompt caching, native code search tools and efficient line-range file editing.
 - Deep Research: autonomous multi-step investigations synthesizing hundreds of public web sources (and private workspace data such as Gmail and Drive for the 12-2025 version, powered by Gemini 3.1 Pro) into cited reports; supports collaborative planning, visualization, MCP servers and File Search. Deep Research is for speed and efficiency; Deep Research Max for maximum comprehensiveness.
 - Per the Gemini 4 Argon guide, the Antigravity agent supports `gemini-4-argon` via `agent_config.model`; the 3.6 and 3.7 guides say Gemini 3.6 / 3.7 Flash introduced Antigravity agent support.

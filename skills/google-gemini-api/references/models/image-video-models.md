@@ -57,6 +57,7 @@ Imagen and video models:
 
 ## Notes
 
+- Source pages (one per section): https://ai.google.dev/gemini-api/docs/models/gemini-nano-banana-2.1, https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-image, https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite-image, https://ai.google.dev/gemini-api/docs/models/gemini-3-pro-image, https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-image, https://ai.google.dev/gemini-api/docs/models/imagen, https://ai.google.dev/gemini-api/docs/models/gemini-omni-flash, https://ai.google.dev/gemini-api/docs/models/veo-3.1-generate-preview, https://ai.google.dev/gemini-api/docs/models/veo-3.1-lite-generate-preview, https://ai.google.dev/gemini-api/docs/models/veo-2.0-generate-001
 - Imagen 4 warning (source): "The Imagen 4 standard, ultra, and fast endpoints are deprecated and will be shut down on August 17, 2026; migrate to Gemini 3.1 Flash Image". The models catalog lists "Imagen 4 (Shut down)" as of the fetch date.
 - Veo 3.1 Lite Preview does not support 4K outputs or Extension. Veo 2.0 shutdown warning: migrate to Veo 3.1 Preview or the GA models available through the Gemini Enterprise Agent Platform (Google Cloud side, out of scope for this skill).
 - Gemini Omni Flash: fast conversational video generation and editing through the Interactions API, with video extension, resolution upscaling and interpolation. The video hub page's content is folded into the omni and veo guides.

@@ -43,6 +43,7 @@ On every card: Audio generation, Image generation and Live API are Not supported
 
 ## Notes
 
+- Source pages (one per section): https://ai.google.dev/gemini-api/docs/models/gemini-2.5-pro, https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash, https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-preview-09-2025, https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-lite, https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-lite-preview-09-2025, https://ai.google.dev/gemini-api/docs/models/gemini-2.0-flash, https://ai.google.dev/gemini-api/docs/models/gemini-2.0-flash-lite
 - The deprecations table lists `gemini-3.6-flash` as the replacement for both `gemini-2.0-flash` and the 2.5 Flash 09 preview, while the cards recommend Gemini 3.8 Flash and Gemini 2.5 Flash respectively (see migration/deprecations.md).
 - Source note on stable 2.5 models: "we are limiting access to the 2.5 models to users who have actively used them in the past. These models are not deprecated and will continue to be served until further notice through the API. For any new projects, use our latest models: 3.5 Flash-Lite or 3.8 Flash."
 - Gemini 2.0 Flash and 2.0 Flash-Lite warnings: "deprecated and has been shut down June 1, 2026."

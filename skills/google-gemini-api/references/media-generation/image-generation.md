@@ -94,7 +94,7 @@ const interaction2 = await ai.interactions.create({
   previous_interaction_id: interaction.id,
   response_format: {
     type: "image",
-    mime_type: "image/png",
+    mime_type: "image/jpeg",
     aspect_ratio: "16:9",
     image_size: "2K"
   },
@@ -229,7 +229,7 @@ Nano Banana 2.1 resolutions (aspect ratio: 1K / 2K / 4K; tokens 1120 / 1680 / 25
 
 - Availability: Interactions API (`v1beta` endpoint in the examples). A separate generateContent-based version of this guide exists in generate-content/image-generation.
 - Convenience properties `interaction.output_image` / `output_text` return the last block; for interleaved or video-to-image output, iterate `steps` manually.
-- The guide prose writes 512px for `image_size`; the API reference enum value is `"512"`. The guide JS sample sets `image/png` in `response_format`; the API reference enum lists only `image/jpeg`.
+- The guide prose writes 512px for `image_size`; the API reference enum value is `"512"`. The guide JS sample sets `image/png` in `response_format`; the API reference enum lists only `image/jpeg`, used here.
 - For Gemini 3 image models (Nano Banana 2.1 / 2 / 2 Lite / Pro), Thinking is on by default and cannot be disabled; Nano Banana (`gemini-2.5-flash-image`) does not support Thinking. The model generates up to two interim images, and the last image within Thinking is the final image; thinking tokens are billed by default.
 - Google Search grounding: image-based search results are not passed to the generation model and are excluded from the response; the response includes `google_search_call` and `google_search_result` steps and `url_citation` annotations. When using Image Search you must display `search_suggestions` from the `google_search_result` step. Real-world images of people from web search are not supported.
 - Video input is only supported by Gemini Nano Banana 2.1, Gemini 3.1 Flash Image, and Gemini 3.1 Flash Lite Image; audio inputs are not supported.

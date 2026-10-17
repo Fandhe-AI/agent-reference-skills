@@ -41,6 +41,7 @@ Capabilities (as listed):
 
 ## Notes
 
+- Source pages (one per section): https://ai.google.dev/gemini-api/docs/models/gemini-2.5-computer-use-preview-10-2025, https://ai.google.dev/gemini-api/docs/models/gemini-robotics-er-2-preview, https://ai.google.dev/gemini-api/docs/models/gemini-robotics-er-2-streaming-preview, https://ai.google.dev/gemini-api/docs/models/gemini-robotics-er-1.6-preview, https://ai.google.dev/gemini-api/docs/models/gemini-robotics-er-1.5-preview
 - The model cards still show ER 1.6 / 1.5 as Preview, but the deprecations page lists shutdown dates of August 31, 2026 (ER 1.6, replacement `gemini-robotics-er-2-preview`) and April 30, 2026 (ER 1.5); see migration/deprecations.md.
 - Gemini 2.5 Computer Use warning: "This model was shut down on July 28, 2026; migrate to Gemini 3.8 Flash or other Gemini 3 models with built-in computer use support". Gemini 3.x models support Computer Use as a built-in tool (labelled Supported (Preview) on several 3.x cards).
 - Gemini Robotics ER 2: vision-language model for robotics accepting text, image, video and audio input; spatial reasoning, video understanding, agentic code execution, multi-step tool orchestration and multi-robot coordination. ER 2 Streaming is optimized for real-time text streaming using the Live API with bidirectional streaming and function calling (guide: "Live API for robotics"). ER 1.6 / 1.5: bring Gemini's agentic capabilities to robotics; interpret visual data, spatial reasoning, plan actions from natural language commands.
