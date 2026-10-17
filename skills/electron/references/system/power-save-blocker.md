@@ -17,9 +17,9 @@ console.log(powerSaveBlocker.isStarted(id))
 powerSaveBlocker.stop(id)
 ```
 
-## Methods
+### Methods
 
-### `powerSaveBlocker.start(type)`
+#### `powerSaveBlocker.start(type)`
 
 * `type` string - Power save blocker type.
   * `prevent-app-suspension` - Prevent the application from being suspended. Keeps system active but allows screen to be turned off. Example use cases: downloading a file or playing audio.
@@ -34,7 +34,7 @@ Starts preventing the system from entering lower-power mode. Returns an integer 
 
 For example, an API calling A requests for `prevent-app-suspension`, and another calling B requests for `prevent-display-sleep`. `prevent-display-sleep` will be used until B stops its request. After that, `prevent-app-suspension` is used.
 
-### `powerSaveBlocker.stop(id)`
+#### `powerSaveBlocker.stop(id)`
 
 * `id` Integer - The power save blocker id returned by `powerSaveBlocker.start`.
 
@@ -42,7 +42,7 @@ Stops the specified power save blocker.
 
 Returns `boolean` - Whether the specified `powerSaveBlocker` has been stopped.
 
-### `powerSaveBlocker.isStarted(id)`
+#### `powerSaveBlocker.isStarted(id)`
 
 * `id` Integer - The power save blocker id returned by `powerSaveBlocker.start`.
 

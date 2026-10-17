@@ -23,18 +23,18 @@ inAppPurchase.getProducts(['com.example.product']).then((products) => {
 })
 ```
 
-## Events
+### Events
 
-### Event: 'transactions-updated'
+#### Event: 'transactions-updated'
 
 * `event` Event
 * `transactions` Transaction[] - Array of `Transaction` objects.
 
 Emitted when one or more transactions have been updated.
 
-## Methods
+### Methods
 
-### `inAppPurchase.purchaseProduct(productID[, opts])`
+#### `inAppPurchase.purchaseProduct(productID[, opts])`
 
 * `productID` string
 * `opts` Integer | Object (optional) - If specified as an integer, defines the quantity.
@@ -45,7 +45,7 @@ Returns `Promise<boolean>` - Returns `true` if the product is valid and added to
 
 You should listen for the `transactions-updated` event as soon as possible and certainly before you call `purchaseProduct`.
 
-### `inAppPurchase.getProducts(productIDs)`
+#### `inAppPurchase.getProducts(productIDs)`
 
 * `productIDs` string[] - The identifiers of the products to get.
 
@@ -53,25 +53,25 @@ Returns `Promise<Product[]>` - Resolves with an array of `Product` objects.
 
 Retrieves the product descriptions.
 
-### `inAppPurchase.canMakePayments()`
+#### `inAppPurchase.canMakePayments()`
 
 Returns `boolean` - whether a user can make a payment.
 
-### `inAppPurchase.restoreCompletedTransactions()`
+#### `inAppPurchase.restoreCompletedTransactions()`
 
 Restores finished transactions. This method can be called either to install purchases on additional devices, or to restore purchases for an application that the user deleted and reinstalled.
 
 The payment queue (SKPaymentQueue) delivers a new transaction for each previously completed transaction that can be restored. Each transaction includes a copy of the original transaction.
 
-### `inAppPurchase.getReceiptURL()`
+#### `inAppPurchase.getReceiptURL()`
 
 Returns `string` - the path to the receipt.
 
-### `inAppPurchase.finishAllTransactions()`
+#### `inAppPurchase.finishAllTransactions()`
 
 Completes all pending transactions.
 
-### `inAppPurchase.finishTransactionByDate(date)`
+#### `inAppPurchase.finishTransactionByDate(date)`
 
 * `date` string - The ISO formatted date of the transaction to finish.
 

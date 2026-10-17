@@ -17,7 +17,7 @@ const received = sharedTexture.subtle.finishTransferSharedTexture(transfer) // S
 const frame = received.getVideoFrame()
 ```
 
-## SharedTextureHandle Object
+### SharedTextureHandle Object
 
 * `ntHandle` Buffer (optional) _Windows_ - NT HANDLE holds the shared texture. Note that this NT HANDLE is local to current process. Output textures of `rgba`, `bgra`, `rgbaf16` formats don't have a keyed mutex on the texture handle, but `nv12` format texture handles do have a keyed mutex.
 * `ioSurface` Buffer (optional) _macOS_ - IOSurfaceRef holds the shared texture. Note that this IOSurface is local to current process (not global).
@@ -30,7 +30,7 @@ const frame = received.getVideoFrame()
   * `modifier` string _Linux_ - The modifier is retrieved from GBM library and passed to EGL driver.
   * `supportsZeroCopyWebGpuImport` boolean _Linux_ - Indicates whether supports zero copy import to WebGPU.
 
-## SharedTextureImportTextureInfo Object
+### SharedTextureImportTextureInfo Object
 
 * `pixelFormat` string - The pixel format of the texture.
   * `bgra` - 32bpp BGRA (byte-order), 1 plane.
@@ -45,14 +45,14 @@ const frame = received.getVideoFrame()
 * `timestamp` number (optional) - A timestamp in microseconds that will be reflected to `VideoFrame`.
 * `handle` SharedTextureHandle - The shared texture handle.
 
-## SharedTextureImported Object
+### SharedTextureImported Object
 
 * `textureId` string - The unique identifier of the imported shared texture.
 * `getVideoFrame` Function<VideoFrame> - Create a `VideoFrame` that uses the imported shared texture in the current process. You can call `VideoFrame.close()` once you've finished using the object. The underlying resources will wait for GPU finish internally.
 * `release` Function - Release this object's reference of the imported shared texture. The underlying resource will be alive until every reference is released.
 * `subtle` SharedTextureImportedSubtle - Provides subtle APIs to interact with the imported shared texture for advanced users.
 
-## SharedTextureImportedSubtle Object
+### SharedTextureImportedSubtle Object
 
 * `getVideoFrame` Function<VideoFrame> - Create a `VideoFrame` that uses the imported shared texture in the current process. You can call `VideoFrame.close()` once you've finished using the object. The underlying resources will wait for GPU finish internally.
 * `release` Function - Release the resources. If you transferred and get multiple `SharedTextureImported` objects, you have to `release` every one of them. The resource on the GPU process will be destroyed when the last one is released.
@@ -62,18 +62,18 @@ const frame = received.getVideoFrame()
 * `setReleaseSyncToken` Function - This method is for advanced users. If used, this object's underlying resource will not be released until the set sync token is fulfilled at gpu process. By using sync tokens, users are not required to use release callbacks for lifetime management.
   * `syncToken` SharedTextureSyncToken - The sync token to set.
 
-## SharedTextureSubtle Object
+### SharedTextureSubtle Object
 
 * `importSharedTexture` Function<SharedTextureImportedSubtle> - Imports the shared texture from the given options. Returns the imported shared texture.
   * `textureInfo` SharedTextureImportTextureInfo - The information of shared texture to import.
 * `finishTransferSharedTexture` Function<SharedTextureImportedSubtle> - Finishes the transfer of the shared texture and gets the transferred shared texture. Returns the imported shared texture from the transfer object.
   * `transfer` SharedTextureTransfer - The transfer object of the shared texture.
 
-## SharedTextureSyncToken Object
+### SharedTextureSyncToken Object
 
 * `syncToken` string - The opaque data for sync token.
 
-## SharedTextureTransfer Object
+### SharedTextureTransfer Object
 
 * `transfer` string _Readonly_ - The opaque transfer data of the shared texture. This can be transferred across Electron processes.
 * `syncToken` string _Readonly_ - The opaque sync token data for frame creation.
@@ -84,7 +84,7 @@ const frame = received.getVideoFrame()
 
 Use `sharedTexture.subtle.finishTransferSharedTexture` to get `SharedTextureImportedSubtle` back.
 
-## OffscreenSharedTexture Object
+### OffscreenSharedTexture Object
 
 * `textureInfo` Object - The shared texture info.
   * `widgetType` string - The widget type of the texture. Can be `popup` or `frame`.

@@ -67,6 +67,8 @@ startButton.addEventListener('click', () => {
 
 stopButton.addEventListener('click', () => {
   video.pause()
+  video.srcObject?.getTracks().forEach((t) => t.stop())
+  video.srcObject = null
 })
 ```
 
@@ -88,9 +90,9 @@ See `navigator.mediaDevices.getDisplayMedia` (MDN) for more information.
 > [!NOTE]
 > `navigator.mediaDevices.getDisplayMedia` does not permit the use of `deviceId` for selection of a source - see the W3C specification constraints.
 
-## Methods
+### Methods
 
-### `desktopCapturer.getSources(options)`
+#### `desktopCapturer.getSources(options)`
 
 * `options` Object
   * `types` string[] - An array of strings that lists the types of desktop sources to be captured, available types can be `screen` and `window`.
@@ -103,7 +105,7 @@ Returns `Promise<DesktopCapturerSource[]>` - Resolves with an array of `DesktopC
 > * Capturing audio requires `NSAudioCaptureUsageDescription` Info.plist key on macOS 14.2 Sonoma and higher - see "macOS versions 14.2 or higher" below.
 > * Capturing the screen contents requires user consent on macOS 10.15 Catalina or higher, which can detected by `systemPreferences.getMediaAccessStatus`.
 
-## DesktopCapturerSource Object
+### DesktopCapturerSource Object
 
 * `id` string - The identifier of a window or screen that can be used as a `chromeMediaSourceId` constraint when calling `navigator.getUserMedia`. The format of the identifier will be `window:XX:YY` or `screen:ZZ:0`. XX is the windowID/handle. YY is 1 for the current process, and 0 for all others. ZZ is a sequential number that represents the screen, and it does not equal to the index in the source's name.
 * `name` string - A screen source will be named either `Entire Screen` or `Screen <index>`, while the name of a window source will match the window title.
@@ -111,15 +113,15 @@ Returns `Promise<DesktopCapturerSource[]>` - Resolves with an array of `DesktopC
 * `display_id` string - A unique identifier that will correspond to the `id` of the matching Display returned by the Screen API. On some platforms, this is equivalent to the `XX` portion of the `id` field above and on others it will differ. It will be an empty string if not available.
 * `appIcon` NativeImage - An icon image of the application that owns the window or null if the source has a type screen. The size of the icon is not known in advance and depends on what the application provides.
 
-## Caveats
+### Caveats
 
-### Linux
+#### Linux
 
 `desktopCapturer.getSources(options)` only returns a single source on Linux when using Pipewire.
 
 PipeWire supports a single capture for both screens and windows. If you request the window and screen type, the selected source will be returned as a window capture.
 
-### macOS versions 14.2 or higher
+#### macOS versions 14.2 or higher
 
 `NSAudioCaptureUsageDescription` Info.plist key must be added in order for audio to be captured by `desktopCapturer`. If instead you are running Electron from another program like a terminal or IDE then that parent program must contain the Info.plist key.
 
@@ -137,14 +139,25 @@ If you need to continue using `Screen & System Audio Recording` permissions for 
 app.commandLine.appendSwitch('disable-features', 'MacCatapLoopbackAudioForScreenShare')
 ```
 
-### macOS versions 12.7.6 or lower
+#### macOS versions 12.7.6 or lower
 
 `navigator.mediaDevices.getUserMedia` does not work on macOS versions 12.7.6 and prior for audio capture due to a fundamental limitation whereby apps that want to access the system's audio require a signed kernel extension. Chromium, and by extension Electron, does not provide this. Only in macOS 13 and onwards does Apple provide APIs to capture desktop audio without the need for a signed kernel extension.
 
 It is possible to circumvent this limitation by capturing system audio with another macOS app like BlackHole or Soundflower and passing it through a virtual audio input device. This virtual device can then be queried with `navigator.mediaDevices.getUserMedia`.
 
+## Options / Props
+
+`desktopCapturer.getSources(options)`:
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| types | string[] | — | Types of desktop sources to be captured, available types can be `screen` and `window`. |
+| thumbnailSize | Size (optional) | `150` x `150` | The size that the media source thumbnail should be scaled to. Set width or height to 0 when you do not need the thumbnails. |
+| fetchWindowIcons | boolean (optional) | `false` | Set to true to enable fetching window icons. When false the `appIcon` property of the sources return null. |
+
 ## Notes
 
+* The official sample only calls `video.pause()`; the tracks are stopped here so screen capture actually ends.
 * Past breaking change: `desktopCapturer.getSources` returns a Promise instead of using a callback (see the breaking-changes category).
 * Structure page: https://www.electronjs.org/docs/latest/api/structures/desktop-capturer-source
 

@@ -17,19 +17,19 @@ nativeTheme.on('updated', () => {
 })
 ```
 
-## Events
+### Events
 
-### Event: 'updated'
+#### Event: 'updated'
 
 Emitted when something in the underlying NativeTheme has changed. This normally means that either the value of `shouldUseDarkColors`, `shouldUseHighContrastColors` or `shouldUseInvertedColorScheme` has changed. You will have to check them to determine which one has changed.
 
-## Properties
+### Properties
 
-### `nativeTheme.shouldUseDarkColors` _Readonly_
+#### `nativeTheme.shouldUseDarkColors` _Readonly_
 
 A `boolean` for if the OS / Chromium currently has a dark mode enabled or is being instructed to show a dark-style UI. If you want to modify this value you should use `themeSource` below.
 
-### `nativeTheme.themeSource`
+#### `nativeTheme.themeSource`
 
 A `string` property that can be `system`, `light` or `dark`. It is used to override and supersede the value that Chromium has chosen to use internally.
 
@@ -59,29 +59,29 @@ The usage of this property should align with a classic "dark mode" state machine
 
 Your application should then always use `shouldUseDarkColors` to determine what CSS to apply.
 
-### `nativeTheme.shouldUseHighContrastColors` _macOS_ _Windows_ _Readonly_
+#### `nativeTheme.shouldUseHighContrastColors` _macOS_ _Windows_ _Readonly_
 
 A `boolean` for if the OS / Chromium currently has high-contrast mode enabled or is being instructed to show a high-contrast UI.
 
-### `nativeTheme.shouldUseDarkColorsForSystemIntegratedUI` _macOS_ _Windows_ _Readonly_
+#### `nativeTheme.shouldUseDarkColorsForSystemIntegratedUI` _macOS_ _Windows_ _Readonly_
 
 A `boolean` property indicating whether or not the system theme has been set to dark or light.
 
 On Windows this property distinguishes between system and app light/dark theme, returning `true` if the system theme is set to dark theme and `false` otherwise. On macOS the return value will be the same as `nativeTheme.shouldUseDarkColors`.
 
-### `nativeTheme.shouldUseInvertedColorScheme` _macOS_ _Windows_ _Readonly_
+#### `nativeTheme.shouldUseInvertedColorScheme` _macOS_ _Windows_ _Readonly_
 
 A `boolean` for if the OS / Chromium currently has an inverted color scheme or is being instructed to use an inverted color scheme.
 
-### `nativeTheme.inForcedColorsMode` _Windows_ _Readonly_
+#### `nativeTheme.inForcedColorsMode` _Windows_ _Readonly_
 
 A `boolean` indicating whether Chromium is in forced colors mode, controlled by system accessibility settings. Currently, Windows high contrast is the only system setting that triggers forced colors mode.
 
-### `nativeTheme.prefersReducedTransparency` _Readonly_
+#### `nativeTheme.prefersReducedTransparency` _Readonly_
 
 A `boolean` that indicates whether the user has chosen via system accessibility settings to reduce transparency at the OS level.
 
-### `nativeTheme.shouldDifferentiateWithoutColor` _macOS_ _Readonly_
+#### `nativeTheme.shouldDifferentiateWithoutColor` _macOS_ _Readonly_
 
 A `boolean` that indicates whether the user prefers UI that differentiates items using something other than color alone (e.g. shapes or labels). This maps to NSWorkspace.accessibilityDisplayShouldDifferentiateWithoutColor.
 

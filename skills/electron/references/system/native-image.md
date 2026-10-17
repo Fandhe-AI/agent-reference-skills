@@ -33,7 +33,7 @@ const tray = new Tray('/Users/somebody/images/icon.png')
 const win = new BrowserWindow({ icon: '/Users/somebody/images/window.png' })
 ```
 
-## Supported Formats
+### Supported Formats
 
 Currently, `PNG` and `JPEG` image formats are supported across all platforms. `PNG` is recommended because of its support for transparency and lossless compression.
 
@@ -55,7 +55,7 @@ Check the _Icon Scaling_ section in the Windows App Icon Construction reference.
 
 EXIF metadata is currently not supported and will not be taken into account during image encoding and decoding.
 
-## High Resolution Image
+### High Resolution Image
 
 On platforms that support high pixel density displays (such as Apple Retina), you can append `@2x` after image's base filename to mark it as a 2x scale high resolution image.
 
@@ -78,7 +78,7 @@ const appTray = new Tray('/Users/somebody/images/icon.png')
 
 The following suffixes for DPI are also supported: `@1x`, `@1.25x`, `@1.33x`, `@1.4x`, `@1.5x`, `@1.8x`, `@2x`, `@2.5x`, `@3x`, `@4x`, `@5x`.
 
-## Template Image _macOS_
+### Template Image _macOS_
 
 On macOS, template images consist of black and an alpha channel. Template images are not intended to be used as standalone images and are usually mixed with other content to create the desired final appearance.
 
@@ -86,15 +86,15 @@ The most common case is to use template images for a menu bar (Tray) icon, so it
 
 To mark an image as a template image, its base filename should end with the word `Template` (e.g. `xxxTemplate.png`). You can also specify template images at different DPI densities (e.g. `xxxTemplate@2x.png`).
 
-## Methods
+### Methods
 
 The `nativeImage` module has the following methods, all of which return an instance of the `NativeImage` class:
 
-### `nativeImage.createEmpty()`
+#### `nativeImage.createEmpty()`
 
 Returns `NativeImage`. Creates an empty `NativeImage` instance.
 
-### `nativeImage.createThumbnailFromPath(path, size)` _macOS_ _Windows_
+#### `nativeImage.createThumbnailFromPath(path, size)` _macOS_ _Windows_
 
 * `path` string - path to a file that we intend to construct a thumbnail out of.
 * `size` Size - the desired width and height (positive numbers) of the thumbnail.
@@ -104,13 +104,13 @@ Returns `Promise<NativeImage>` - fulfilled with the file's thumbnail preview ima
 > [!NOTE]
 > Windows implementation will ignore `size.height` and scale the height according to `size.width`.
 
-### `nativeImage.createFromPath(path)`
+#### `nativeImage.createFromPath(path)`
 
 * `path` string - path to a file that we intend to construct an image out of.
 
 Returns `NativeImage`. Creates a new `NativeImage` instance from an image file (e.g., PNG or JPEG) located at `path`. This method returns an empty image if the `path` does not exist, cannot be read, or is not a valid image.
 
-### `nativeImage.createFromBitmap(buffer, options)`
+#### `nativeImage.createFromBitmap(buffer, options)`
 
 * `buffer` Buffer
 * `options` Object
@@ -120,7 +120,7 @@ Returns `NativeImage`. Creates a new `NativeImage` instance from an image file (
 
 Returns `NativeImage`. Creates a new `NativeImage` instance from `buffer` that contains the raw bitmap pixel data returned by `toBitmap()`. The specific format is platform-dependent.
 
-### `nativeImage.createFromBuffer(buffer[, options])`
+#### `nativeImage.createFromBuffer(buffer[, options])`
 
 * `buffer` Buffer
 * `options` Object (optional)
@@ -130,13 +130,13 @@ Returns `NativeImage`. Creates a new `NativeImage` instance from `buffer` that c
 
 Returns `NativeImage`. Creates a new `NativeImage` instance from `buffer`. Tries to decode as PNG or JPEG first.
 
-### `nativeImage.createFromDataURL(dataURL)`
+#### `nativeImage.createFromDataURL(dataURL)`
 
 * `dataURL` string
 
 Returns `NativeImage`. Creates a new `NativeImage` instance from `dataUrl`, a base 64 encoded Data URL string.
 
-### `nativeImage.createFromNamedImage(imageName[, options])` _macOS_
+#### `nativeImage.createFromNamedImage(imageName[, options])` _macOS_
 
 * `imageName` string
 * `options` Object | number[] (optional) - If `options` is a number array (_Deprecated_), it is interpreted as `hslShift`. If it is an object, the following properties can be specified:
@@ -171,7 +171,7 @@ const image = nativeImage.createFromNamedImage('square.and.pencil')
 
 where `'square.and.pencil'` is the symbol name from the SF Symbols app.
 
-### `nativeImage.createMenuSymbol(imageName)` _macOS_
+#### `nativeImage.createMenuSymbol(imageName)` _macOS_
 
 * `imageName` string
 
@@ -186,29 +186,29 @@ const item = new MenuItem({
 })
 ```
 
-## Class: NativeImage
+### Class: NativeImage
 
 Natively wrap images such as tray, dock, and application icons. Process: Main, Renderer. _This class is not exported from the `'electron'` module. It is only available as a return value of other methods in the Electron API._
 
-### Instance Methods
+#### Instance Methods
 
 > [!NOTE]
 > The methods that return a `Buffer` throw an error when called from a context without a Node.js environment, such as a sandboxed preload script. `image.toDataURL()` works in every context.
 
-#### `image.toPNG([options])`
+##### `image.toPNG([options])`
 
 * `options` Object (optional)
   * `scaleFactor` Number (optional) - Defaults to 1.0.
 
 Returns `Buffer` - A Buffer that contains the image's `PNG` encoded data.
 
-#### `image.toJPEG(quality)`
+##### `image.toJPEG(quality)`
 
 * `quality` Integer - Between 0 - 100.
 
 Returns `Buffer` - A Buffer that contains the image's `JPEG` encoded data.
 
-#### `image.toBitmap([options])`
+##### `image.toBitmap([options])`
 
 * `options` Object (optional)
   * `scaleFactor` Number (optional) - Defaults to 1.0.
@@ -216,14 +216,14 @@ Returns `Buffer` - A Buffer that contains the image's `JPEG` encoded data.
 
 Returns `Buffer` - A Buffer that contains a copy of the image's raw bitmap pixel data.
 
-#### `image.toDataURL([options])`
+##### `image.toDataURL([options])`
 
 * `options` Object (optional)
   * `scaleFactor` Number (optional) - Defaults to 1.0.
 
 Returns `string` - The Data URL of the image.
 
-#### `image.getBitmap([options])` _Deprecated_
+##### `image.getBitmap([options])` _Deprecated_
 
 * `options` Object (optional)
   * `scaleFactor` Number (optional) - Defaults to 1.0.
@@ -231,39 +231,39 @@ Returns `string` - The Data URL of the image.
 
 Legacy alias for `image.toBitmap()`.
 
-#### `image.getNativeHandle()` _macOS_
+##### `image.getNativeHandle()` _macOS_
 
 Returns `Buffer` - A Buffer that stores C pointer to underlying native handle of the image. On macOS, a pointer to `NSImage` instance is returned.
 
 Notice that the returned pointer is a weak pointer to the underlying native image instead of a copy, so you _must_ ensure that the associated `nativeImage` instance is kept around.
 
-#### `image.isEmpty()`
+##### `image.isEmpty()`
 
 Returns `boolean` - Whether the image is empty.
 
-#### `image.getSize([scaleFactor])`
+##### `image.getSize([scaleFactor])`
 
 * `scaleFactor` Number (optional) - Defaults to 1.0.
 
 Returns `Size`. If `scaleFactor` is passed, this will return the size corresponding to the image representation most closely matching the passed value.
 
-#### `image.setTemplateImage(option)`
+##### `image.setTemplateImage(option)`
 
 * `option` boolean
 
 Marks the image as a macOS template image.
 
-#### `image.isTemplateImage()`
+##### `image.isTemplateImage()`
 
 Returns `boolean` - Whether the image is a macOS template image.
 
-#### `image.crop(rect)`
+##### `image.crop(rect)`
 
 * `rect` Rectangle - The area of the image to crop.
 
 Returns `NativeImage` - The cropped image.
 
-#### `image.resize(options)`
+##### `image.resize(options)`
 
 * `options` Object
   * `width` Integer (optional) - Defaults to the image's width.
@@ -274,17 +274,17 @@ Returns `NativeImage` - The resized image.
 
 If only the `height` or the `width` are specified then the current aspect ratio will be preserved in the resized image.
 
-#### `image.getAspectRatio([scaleFactor])`
+##### `image.getAspectRatio([scaleFactor])`
 
 * `scaleFactor` Number (optional) - Defaults to 1.0.
 
 Returns `Number` - The image's aspect ratio (width divided by height). If `scaleFactor` is passed, this will return the aspect ratio corresponding to the image representation most closely matching the passed value.
 
-#### `image.getScaleFactors()`
+##### `image.getScaleFactors()`
 
 Returns `Number[]` - An array of all scale factors corresponding to representations for a given `NativeImage`.
 
-#### `image.addRepresentation(options)`
+##### `image.addRepresentation(options)`
 
 * `options` Object
   * `scaleFactor` Number (optional) - The scale factor to add the image representation for.
@@ -295,20 +295,20 @@ Returns `Number[]` - An array of all scale factors corresponding to representati
 
 Add an image representation for a specific scale factor. This can be used to programmatically add different scale factor representations to an image. This can be called on empty images.
 
-### Instance Properties
+#### Instance Properties
 
-#### `nativeImage.isMacTemplateImage` _macOS_
+##### `nativeImage.isMacTemplateImage` _macOS_
 
 A `boolean` property that determines whether the image is considered a template image. Please note that this property only has an effect on macOS.
 
-## ColorSpace Object
+### ColorSpace Object
 
 * `primaries` string - The color primaries of the color space. One of: `bt709` (also used for sRGB), `bt470m`, `bt470bg`, `smpte170m`, `smpte240m`, `film`, `bt2020`, `smptest428-1`, `smptest431-2`, `p3`, `xyz-d50`, `adobe-rgb`, `apple-generic-rgb`, `wide-gamut-color-spin`, `ebu-3213-e`, `custom`, `invalid`.
 * `transfer` string - The transfer function of the color space. One of: `bt709`, `bt709-apple`, `gamma18`, `gamma22`, `gamma24`, `gamma28`, `smpte170m`, `smpte240m`, `linear`, `log`, `log-sqrt`, `iec61966-2-4`, `bt1361-ecg`, `srgb`, `bt2020-10`, `bt2020-12`, `pq`, `smptest428-1`, `hlg`, `srgb-hdr`, `linear-hdr`, `custom`, `custom-hdr`, `scrgb-linear-80-nits`, `invalid`.
 * `matrix` string - The color matrix of the color space. One of: `rgb`, `bt709`, `fcc`, `bt470bg`, `smpte170m`, `smpte240m`, `ycocg`, `bt2020-ncl`, `ydzdx`, `gbr`, `invalid`.
 * `range` string - The color range of the color space. One of: `limited` (RGB values ranging from 16 to 235), `full` (RGB values from 0 to 255), `derived` (range defined by the transfer function and matrix), `invalid`.
 
-### Common `ColorSpace` definitions
+#### Common `ColorSpace` definitions
 
 **sRGB**:
 

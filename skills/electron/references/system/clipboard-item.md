@@ -31,14 +31,14 @@ clipboard.write([
 ])
 ```
 
-## Class: ClipboardItem
+### Class: ClipboardItem
 
 Construct a clipboard entry for `clipboard.write()` or inspect an entry returned from `clipboard.read()`.
 
 > [!WARNING]
 > Electron's built-in classes cannot be subclassed in user code.
 
-### `new ClipboardItem(items)`
+#### `new ClipboardItem(items)`
 
 * `items` Record<string, string | ClipboardBookmark | Blob | Promise<Blob | string>> - An object whose keys are MIME types and whose values are the payload for that type. Mirrors the W3C `ClipboardItem(items)` constructor's `items` parameter. Every MIME type accepts either a `string` or a `Blob`: a `string` is UTF-8 encoded into the payload bytes (as the W3C spec requires), and a `Blob` supplies the raw payload bytes. The `electron application/bookmark` custom format is the one exception — it accepts a ClipboardBookmark object. Any non-bookmark value may also be a `Promise` that resolves to a `Blob` or `string`; it is awaited when `clipboard.write()` is called.
 
@@ -47,7 +47,7 @@ Creates a new `ClipboardItem` describing one clipboard entry with one or more MI
 > [!WARNING]
 > Do not construct a `ClipboardItem` directly from an untrusted object (for example, a payload received from a renderer over IPC). The MIME keys are a capability surface: `text/uri-list` places real file references on the OS clipboard (letting a file be pasted into another application), and the `electron application/osclipboard;format=...` and `web`-prefixed (e.g. `web application/x.my-format`) formats write raw platform data. Validate and allowlist the MIME types — and the shape of each payload — before building a `ClipboardItem` from data you did not author.
 
-### Files: the `text/uri-list` MIME type
+#### Files: the `text/uri-list` MIME type
 
 The `text/uri-list` MIME type is mapped to the operating system's native "copied files" clipboard format (`CF_HDROP` on Windows, `NSFilenamesPboardType` on macOS, and `text/uri-list` on Linux) rather than being stored as a generic text payload. This lets clipboard entries written by Electron be pasted as files into native applications such as Finder, Explorer, or a file manager, and lets Electron read files that were copied from those applications.
 
@@ -70,7 +70,7 @@ clipboard.write([
 // Read the files currently on the clipboard.
 async function readFiles() {
   const [item] = await clipboard.read()
-  if (item.types.includes('text/uri-list')) {
+  if (item?.types.includes('text/uri-list')) {
     const blob = await item.getType('text/uri-list')
     const uriList = await blob.text()
     return uriList.split(/\r?\n/).filter(Boolean)
@@ -79,15 +79,15 @@ async function readFiles() {
 }
 ```
 
-### Instance Properties
+#### Instance Properties
 
-#### `clipboardItem.types` _Readonly_
+##### `clipboardItem.types` _Readonly_
 
 A `string[]` property — the MIME types of the data carried by this entry. For a constructed `ClipboardItem` these are the keys passed to the constructor; for an item returned by `clipboard.read()` these are the MIME types the platform clipboard currently makes available.
 
-### Instance Methods
+#### Instance Methods
 
-#### `clipboardItem.getType<T extends string>(type)`
+##### `clipboardItem.getType<T extends string>(type)`
 
 * `type` T - mime type to retrieve.
 
@@ -107,7 +107,7 @@ async function dumpClipboard() {
 }
 ```
 
-#### `clipboardItem.getType(bookmark)`
+##### `clipboardItem.getType(bookmark)`
 
 * `bookmark` 'electron application/bookmark'
 
@@ -132,6 +132,7 @@ async function dumpClipboard() {
 
 ## Notes
 
+* The official `readFiles()` sample omits the empty-clipboard guard; `item?.` is added here.
 * Distinction: Electron's main-process clipboard entry class modeled on the W3C `ClipboardItem`; not a Web UI component (ark-ui / chakra-ui / fandhe-frontend).
 
 ## Related

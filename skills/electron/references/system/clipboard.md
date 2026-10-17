@@ -47,9 +47,9 @@ async function run() {
 run()
 ```
 
-## Methods
+### Methods
 
-### `clipboard.readText()`
+#### `clipboard.readText()`
 
 Returns `Promise<string>` - A promise that resolves with the content of the clipboard as plain text. Modeled after the W3C `navigator.clipboard.readText` API.
 
@@ -66,13 +66,13 @@ async function readText() {
 readText()
 ```
 
-### `clipboard.writeText(text)`
+#### `clipboard.writeText(text)`
 
 * `text` string
 
 Returns `Promise<void>` - A promise that resolves once the text has been written to the clipboard. Modeled after the W3C `navigator.clipboard.writeText` API.
 
-### `clipboard.read()`
+#### `clipboard.read()`
 
 Returns `Promise<ClipboardItem[]>` - A promise that resolves with an array of ClipboardItem objects containing the clipboard's contents.
 
@@ -92,7 +92,7 @@ async function dumpClipboard() {
 dumpClipboard()
 ```
 
-### `clipboard.write(data)`
+#### `clipboard.write(data)`
 
 * `data` ClipboardItem[] - An array of `ClipboardItem` instances constructed via `new ClipboardItem({ [mime]: payload })`.
 
@@ -120,7 +120,7 @@ async function writeClipboard() {
 writeClipboard()
 ```
 
-### `clipboard.has(mimetype)`
+#### `clipboard.has(mimetype)`
 
 * `mimetype` string - MIME type to check
 
@@ -140,17 +140,17 @@ async function check() {
 check()
 ```
 
-### `clipboard.clear()`
+#### `clipboard.clear()`
 
 Clears the clipboard content.
 
-## Properties
+### Properties
 
-### `clipboard.selection` _Linux_ _Readonly_
+#### `clipboard.selection` _Linux_ _Readonly_
 
 A `Clipboard` property — a `Clipboard` object on Linux that operates against the selection clipboard instead of the system clipboard, and `undefined` on all other platforms. It exposes the same `read`, `write`, `readText`, `writeText`, `has`, and `clear` methods as the top-level `clipboard` module.
 
-## ClipboardBookmark Object
+### ClipboardBookmark Object
 
 * `title` string - The title of the bookmark.
 * `url` string - The URL of the bookmark.

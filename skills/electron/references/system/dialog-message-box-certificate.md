@@ -14,9 +14,9 @@ const { dialog } = require('electron')
 dialog.showErrorBox('Startup error', 'Could not read configuration')
 ```
 
-## Methods
+### Methods
 
-### `dialog.showMessageBoxSync([window, ]options)`
+#### `dialog.showMessageBoxSync([window, ]options)`
 
 * `window` BaseWindow (optional)
 * `options` Object
@@ -38,7 +38,7 @@ Shows a message box, it will block the process until the message box is closed. 
 
 The `window` argument allows the dialog to attach itself to a parent window, making it modal. If `window` is not shown dialog will not be attached to it. In such case it will be displayed as an independent window.
 
-### `dialog.showMessageBox([window, ]options)`
+#### `dialog.showMessageBox([window, ]options)`
 
 * `window` BaseWindow (optional)
 * `options` Object
@@ -66,7 +66,7 @@ Shows a message box.
 
 The `window` argument allows the dialog to attach itself to a parent window, making it modal.
 
-### `dialog.showErrorBox(title, content)`
+#### `dialog.showErrorBox(title, content)`
 
 * `title` string - The title to display in the error box.
 * `content` string - The text content to display in the error box.
@@ -75,7 +75,7 @@ Displays a modal dialog that shows an error message.
 
 This API can be called safely before the `ready` event the `app` module emits, it is usually used to report errors in early stage of startup. If called before the app `ready` event on Linux, the message will be emitted to stderr, and no GUI dialog will appear.
 
-### `dialog.showCertificateTrustDialog([window, ]options)` _macOS_ _Windows_
+#### `dialog.showCertificateTrustDialog([window, ]options)` _macOS_ _Windows_
 
 * `window` BaseWindow (optional)
 * `options` Object
@@ -91,7 +91,7 @@ On Windows the options are more limited, due to the Win32 APIs used:
 * The `message` argument is not used, as the OS provides its own confirmation dialog.
 * The `window` argument is ignored since it is not possible to make this confirmation dialog modal.
 
-## Bookmarks array
+### Bookmarks array
 
 `showOpenDialog` and `showSaveDialog` resolve to an object with a `bookmarks` field. This field is an array of Base64 encoded strings that contain the security scoped bookmark data for the saved file. The `securityScopedBookmarks` option must be enabled for this to be present.
 
@@ -102,14 +102,33 @@ On Windows the options are more limited, due to the Win32 APIs used:
 | macOS mas  | False                           |      NA     | `[]` (empty array)             |
 | non mas    | any                             |      NA     | `[]` (empty array)             |
 
-## Sheets
+### Sheets
 
 On macOS, dialogs are presented as sheets attached to a window if you provide a BaseWindow reference in the `window` parameter, or modals if no window is provided.
 
-You can call `BaseWindow.getCurrentWindow().setSheetOffset(offset)` to change the offset from the window frame where sheets are attached.
+You can call `win.setSheetOffset(offsetY[, offsetX])` on the parent BaseWindow instance to change the offset from the window frame where sheets are attached.
+
+## Options / Props
+
+Main `options` of `dialog.showMessageBox` (see the method above for the full list):
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| message | string | — | Content of the message box. |
+| type | string (optional) | — | `none`, `info`, `error`, `question` or `warning`. |
+| buttons | string[] (optional) | — | Array of texts for buttons. On Windows, an empty array will result in one button labeled "OK". |
+| defaultId | Integer (optional) | — | Index of the button selected by default when the message box opens. |
+| signal | AbortSignal (optional) | — | Closes the message box as if cancelled by the user. |
+| title | string (optional) | — | Title of the message box, some platforms will not show it. |
+| detail | string (optional) | — | Extra information of the message. |
+| checkboxLabel | string (optional) | — | If provided, the message box will include a checkbox with the given label. |
+| checkboxChecked | boolean (optional) | `false` | Initial checked state of the checkbox. |
+| cancelId | Integer (optional) | — | Index of the button used to cancel the dialog via `Esc`. |
+| noLink | boolean (optional) | — | On Windows, set `true` to avoid command-link style buttons. |
 
 ## Notes
 
+* The official dialog docs reference `BaseWindow.getCurrentWindow()` for sheet offsets, which does not exist on BaseWindow; use the instance method `win.setSheetOffset()` (see BaseWindow docs).
 * `dialog.showMessageBox` returning a Promise instead of using a callback is a past breaking change; the `signal` and `textWidth` options were added in later releases.
 * Distinction: these are OS-native message boxes created from the main process by Electron's `dialog` module. Web UI dialog/modal components belong to ark-ui / chakra-ui / fandhe-frontend; native counterparts on other platforms are in android-compose-components, windows-winui-controls and apple-appkit.
 

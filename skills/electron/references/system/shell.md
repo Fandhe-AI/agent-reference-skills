@@ -19,15 +19,15 @@ const { shell } = require('electron')
 shell.openExternal('https://github.com')
 ```
 
-## Methods
+### Methods
 
-### `shell.showItemInFolder(fullPath)`
+#### `shell.showItemInFolder(fullPath)`
 
 * `fullPath` string
 
 Show the given file in a file manager. If possible, select the file.
 
-### `shell.openPath(path)`
+#### `shell.openPath(path)`
 
 * `path` string
 
@@ -35,7 +35,7 @@ Returns `Promise<string>` - Resolves with a string containing the error message 
 
 Open the given file in the desktop's default manner.
 
-### `shell.openExternal(url[, options])`
+#### `shell.openExternal(url[, options])`
 
 * `url` string - Max 2081 characters on Windows.
 * `options` Object (optional)
@@ -47,7 +47,7 @@ Returns `Promise<void>`
 
 Open the given external protocol URL in the desktop's default manner. (For example, mailto: URLs in the user's default mail agent).
 
-### `shell.trashItem(path)`
+#### `shell.trashItem(path)`
 
 * `path` string - path to the item to be moved to the trash.
 
@@ -57,11 +57,11 @@ This moves a path to the OS-specific trash location (Trash on macOS, Recycle Bin
 
 The path must use the default path separator for the platform (backslash on Windows). Use `path.resolve()` from the `node:path` module to ensure correct handling on all filesystems.
 
-### `shell.beep()`
+#### `shell.beep()`
 
 Play the beep sound.
 
-### `shell.writeShortcutLink(shortcutPath[, operation], options)` _Windows_
+#### `shell.writeShortcutLink(shortcutPath[, operation], options)` _Windows_
 
 * `shortcutPath` string
 * `operation` string (optional) - Default is `create`, can be one of following:
@@ -74,7 +74,7 @@ Returns `boolean` - Whether the shortcut was created successfully.
 
 Creates or updates a shortcut link at `shortcutPath`.
 
-### `shell.readShortcutLink(shortcutPath)` _Windows_
+#### `shell.readShortcutLink(shortcutPath)` _Windows_
 
 * `shortcutPath` string
 
@@ -84,7 +84,7 @@ Resolves the shortcut link at `shortcutPath`.
 
 An exception will be thrown when any error happens.
 
-## ShortcutDetails Object
+### ShortcutDetails Object
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -96,6 +96,16 @@ An exception will be thrown when any error happens.
 | iconIndex | number (optional) | The resource ID of icon when `icon` is a DLL or EXE. Default is 0. |
 | appUserModelId | string (optional) | The Application User Model ID. Default is empty. |
 | toastActivatorClsid | string (optional) | The Application Toast Activator CLSID. Needed for participating in Action Center. |
+
+## Options / Props
+
+`shell.openExternal(url[, options])`:
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| activate | boolean (optional) _macOS_ | `true` | `true` to bring the opened application to the foreground. |
+| workingDirectory | string (optional) _Windows_ | — | The working directory. |
+| logUsage | boolean (optional) _Windows_ | `false` | Indicates a user initiated launch that enables tracking of frequently used programs and other behaviors. |
 
 ## Notes
 

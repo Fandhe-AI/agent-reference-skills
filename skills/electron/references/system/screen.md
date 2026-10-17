@@ -64,23 +64,23 @@ app.whenReady().then(() => {
 > * **Physical screen points** are raw hardware pixels on a display.
 > * **Device-independent pixel (DIP) points** are virtualized screen points scaled based on the DPI (dots per inch) of the display.
 
-## Events
+### Events
 
-### Event: 'display-added'
+#### Event: 'display-added'
 
 * `event` Event
 * `newDisplay` Display
 
 Emitted when `newDisplay` has been added.
 
-### Event: 'display-removed'
+#### Event: 'display-removed'
 
 * `event` Event
 * `oldDisplay` Display
 
 Emitted when `oldDisplay` has been removed.
 
-### Event: 'display-metrics-changed'
+#### Event: 'display-metrics-changed'
 
 * `event` Event
 * `display` Display
@@ -88,9 +88,9 @@ Emitted when `oldDisplay` has been removed.
 
 Emitted when one or more metrics change in a `display`. The `changedMetrics` is an array of strings that describe the changes. Possible changes are `bounds`, `workArea`, `scaleFactor` and `rotation`.
 
-## Methods
+### Methods
 
-### `screen.getCursorScreenPoint()`
+#### `screen.getCursorScreenPoint()`
 
 Returns `Point`
 
@@ -101,27 +101,27 @@ Not supported on Wayland (Linux).
 > [!NOTE]
 > The return value is a DIP point, not a screen physical point.
 
-### `screen.getPrimaryDisplay()`
+#### `screen.getPrimaryDisplay()`
 
 Returns `Display` - The primary display.
 
-### `screen.getAllDisplays()`
+#### `screen.getAllDisplays()`
 
 Returns `Display[]` - An array of displays that are currently available.
 
-### `screen.getDisplayNearestPoint(point)`
+#### `screen.getDisplayNearestPoint(point)`
 
 * `point` Point
 
 Returns `Display` - The display nearest the specified point.
 
-### `screen.getDisplayMatching(rect)`
+#### `screen.getDisplayMatching(rect)`
 
 * `rect` Rectangle
 
 Returns `Display` - The display that most closely intersects the provided bounds.
 
-### `screen.screenToDipPoint(point)` _Windows_ _Linux_
+#### `screen.screenToDipPoint(point)` _Windows_ _Linux_
 
 * `point` Point
 
@@ -131,7 +131,7 @@ Converts a screen physical point to a screen DIP point. The DPI scale is perform
 
 Not currently supported on Wayland - if used there it will return the point passed in with no changes.
 
-### `screen.dipToScreenPoint(point)` _Windows_ _Linux_
+#### `screen.dipToScreenPoint(point)` _Windows_ _Linux_
 
 * `point` Point
 
@@ -141,7 +141,7 @@ Converts a screen DIP point to a screen physical point. The DPI scale is perform
 
 Not currently supported on Wayland.
 
-### `screen.screenToDipRect(window, rect)` _Windows_
+#### `screen.screenToDipRect(window, rect)` _Windows_
 
 * `window` BrowserWindow | null
 * `rect` Rectangle
@@ -150,7 +150,7 @@ Returns `Rectangle`
 
 Converts a screen physical rect to a screen DIP rect. The DPI scale is performed relative to the display nearest to `window`. If `window` is null, scaling will be performed to the display nearest to `rect`.
 
-### `screen.dipToScreenRect(window, rect)` _Windows_
+#### `screen.dipToScreenRect(window, rect)` _Windows_
 
 * `window` BrowserWindow | null
 * `rect` Rectangle

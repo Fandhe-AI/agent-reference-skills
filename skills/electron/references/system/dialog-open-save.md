@@ -14,9 +14,9 @@ const { dialog } = require('electron')
 console.log(dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] }))
 ```
 
-## Methods
+### Methods
 
-### `dialog.showOpenDialogSync([window, ]options)`
+#### `dialog.showOpenDialogSync([window, ]options)`
 
 * `window` BaseWindow (optional)
 * `options` Object
@@ -68,7 +68,7 @@ dialog.showOpenDialogSync(mainWindow, {
 > [!NOTE]
 > On Linux `defaultPath` is not supported when using portal file chooser dialogs unless the portal backend is version 4 or higher. You can use `--xdg-portal-required-version` command-line switch to force gtk or kde dialogs.
 
-### `dialog.showOpenDialog([window, ]options)`
+#### `dialog.showOpenDialog([window, ]options)`
 
 Takes the same `window` and `options` as `dialog.showOpenDialogSync`.
 
@@ -92,7 +92,7 @@ dialog
   })
 ```
 
-### `dialog.showSaveDialogSync([window, ]options)`
+#### `dialog.showSaveDialogSync([window, ]options)`
 
 * `window` BaseWindow (optional)
 * `options` Object
@@ -117,7 +117,7 @@ The `window` argument allows the dialog to attach itself to a parent window, mak
 
 The `filters` specifies an array of file types that can be displayed, see `dialog.showOpenDialog` for an example.
 
-### `dialog.showSaveDialog([window, ]options)`
+#### `dialog.showSaveDialog([window, ]options)`
 
 Takes the same `window` and `options` as `dialog.showSaveDialogSync`.
 
@@ -130,10 +130,24 @@ Returns `Promise<Object>` - Resolve with an object containing the following:
 > [!NOTE]
 > On macOS, using the asynchronous version is recommended to avoid issues when expanding and collapsing the dialog.
 
-## FileFilter Object
+### FileFilter Object
 
 * `name` string
 * `extensions` string[]
+
+## Options / Props
+
+Common `options` of `showOpenDialog` / `showOpenDialogSync` (full list per method above):
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| title | string (optional) | — | Dialog title. |
+| defaultPath | string (optional) | Downloads folder, or home directory if Downloads doesn't exist | Absolute directory path, absolute file path, or file name to use by default. |
+| buttonLabel | string (optional) | — | Custom label for the confirmation button, when left empty the default label will be used. |
+| filters | FileFilter[] (optional) | — | File type filters. |
+| properties | string[] (optional) | — | Features the dialog should use: `openFile`, `openDirectory`, `multiSelections`, `showHiddenFiles`, `createDirectory`, `promptToCreate`, `noResolveAliases`, `treatPackageAsDirectory`, `dontAddToRecent`. |
+| message | string (optional) _macOS_ | — | Message to display above input boxes. |
+| securityScopedBookmarks | boolean (optional) _macOS_ _mas_ | — | Create security scoped bookmarks when packaged for the Mac App Store. |
 
 ## Notes
 

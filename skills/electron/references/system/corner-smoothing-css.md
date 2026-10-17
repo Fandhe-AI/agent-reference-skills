@@ -28,7 +28,7 @@ The following example shows the effect of corner smoothing at different percents
 
 Documented comparison values: 0%, 30%, 60%, 100% (illustrated in the original page).
 
-### Matching the system UI
+#### Matching the system UI
 
 Use the `system-ui` keyword to match the smoothness to the OS design language.
 
@@ -46,7 +46,7 @@ Use the `system-ui` keyword to match the smoothness to the OS design language.
 | --- | --- | --- |
 | Value: | `60%` | `0%` |
 
-### Controlling availability
+#### Controlling availability
 
 This CSS rule can be disabled using the Blink feature flag `ElectronCSSCornerSmoothing`.
 
@@ -59,7 +59,7 @@ const myWindow = new BrowserWindow({
 })
 ```
 
-## Formal reference
+### Formal reference
 
 * **Initial value**: `0%`
 * **Inherited**: No

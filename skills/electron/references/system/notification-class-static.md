@@ -12,15 +12,17 @@ Create OS desktop notifications. Process: Main. `Notification` is an EventEmitte
 const { Notification, app } = require('electron')
 
 app.whenReady().then(() => {
-  // Register handler for all notification activations
-  Notification.handleActivation((details) => {
-    console.log('Notification activated:', details.type)
-    if (details.type === 'reply') {
-      console.log('User reply:', details.reply)
-    } else if (details.type === 'action') {
-      console.log('Action index:', details.actionIndex)
-    }
-  })
+  // Windows only: register handler for all notification activations
+  if (process.platform === 'win32') {
+    Notification.handleActivation((details) => {
+      console.log('Notification activated:', details.type)
+      if (details.type === 'reply') {
+        console.log('User reply:', details.reply)
+      } else if (details.type === 'action') {
+        console.log('Action index:', details.actionIndex)
+      }
+    })
+  }
 })
 ```
 

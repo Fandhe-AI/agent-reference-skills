@@ -18,7 +18,7 @@ inAppPurchase.getProducts(['com.example.product']).then((products) => {
 })
 ```
 
-## Product Object
+### Product Object
 
 * `productIdentifier` string - The string that identifies the product to the Apple App Store.
 * `localizedDescription` string - A description of the product.
@@ -34,7 +34,7 @@ inAppPurchase.getProducts(['com.example.product']).then((products) => {
 * `downloadContentVersion` string - A string that identifies the version of the content.
 * `downloadContentLengths` number[] - The total size of the content, in bytes.
 
-## ProductDiscount Object
+### ProductDiscount Object
 
 * `identifier` string - A string used to uniquely identify a discount offer for a product.
 * `type` number - The type of discount offer.
@@ -44,12 +44,12 @@ inAppPurchase.getProducts(['com.example.product']).then((products) => {
 * `numberOfPeriods` number - An integer that indicates the number of periods the product discount is available.
 * `subscriptionPeriod` ProductSubscriptionPeriod (optional) - An object that defines the period for the product discount.
 
-## ProductSubscriptionPeriod Object
+### ProductSubscriptionPeriod Object
 
 * `numberOfUnits` number - The number of units per subscription period.
 * `unit` string - The increment of time that a subscription period is specified in. Can be `day`, `week`, `month`, `year`.
 
-## PaymentDiscount Object
+### PaymentDiscount Object
 
 * `identifier` string - A string used to uniquely identify a discount offer for a product.
 * `keyIdentifier` string - A string that identifies the key used to generate the signature.
@@ -57,7 +57,7 @@ inAppPurchase.getProducts(['com.example.product']).then((products) => {
 * `signature` string - A UTF-8 string representing the properties of a specific discount offer, cryptographically signed.
 * `timestamp` number - The date and time of the signature's creation in milliseconds, formatted in Unix epoch time.
 
-## Transaction Object
+### Transaction Object
 
 * `transactionIdentifier` string - A string that uniquely identifies a successful payment transaction.
 * `transactionDate` string - The date the transaction was added to the App Store's payment queue.

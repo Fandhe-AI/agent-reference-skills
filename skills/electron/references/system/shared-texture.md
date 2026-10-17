@@ -23,6 +23,7 @@ const imported = sharedTexture.importSharedTexture({
   }
 })
 await sharedTexture.sendSharedTexture({ frame: win.webContents.mainFrame, importedSharedTexture: imported })
+imported.release() // release the main-process reference once sent
 
 // renderer process
 sharedTexture.setSharedTextureReceiver(async ({ importedSharedTexture }) => {
@@ -32,9 +33,9 @@ sharedTexture.setSharedTextureReceiver(async ({ importedSharedTexture }) => {
 })
 ```
 
-## Methods
+### Methods
 
-### `sharedTexture.importSharedTexture(options)` _Experimental_
+#### `sharedTexture.importSharedTexture(options)` _Experimental_
 
 * `options` Object - Options for importing shared textures.
   * `textureInfo` SharedTextureImportTextureInfo - The information of the shared texture to import.
@@ -47,7 +48,7 @@ Imports the shared texture from the given options.
 
 Returns `SharedTextureImported` - The imported shared texture.
 
-### `sharedTexture.sendSharedTexture(options, ...args)` _Experimental_
+#### `sharedTexture.sendSharedTexture(options, ...args)` _Experimental_
 
 * `options` Object - Options for sending shared texture.
   * `frame` WebFrameMain - The target frame to transfer the shared texture to. For `WebContents`, you can pass `webContents.mainFrame`. If you provide a `webFrameMain` that is not a main frame, you'll need to enable `webPreferences.nodeIntegrationInSubFrames` for this, since this feature requires IPC between main and the frame.
@@ -61,7 +62,7 @@ Send the imported shared texture to a renderer process. You must register a rece
 
 Returns `Promise<void>` - Resolves when the transfer is complete.
 
-### `sharedTexture.setSharedTextureReceiver(callback)` _Experimental_
+#### `sharedTexture.setSharedTextureReceiver(callback)` _Experimental_
 
 * `callback` Function<Promise<void>> - The function to receive the imported shared texture.
   * `receivedSharedTextureData` Object - The data received from the main process.
@@ -73,9 +74,9 @@ Set a callback to receive imported shared textures from the main process.
 > [!NOTE]
 > This method is only available in the renderer process.
 
-## Properties
+### Properties
 
-### `sharedTexture.subtle` _Experimental_
+#### `sharedTexture.subtle` _Experimental_
 
 A `SharedTextureSubtle` property, provides subtle APIs for interacting with shared texture for advanced users.
 

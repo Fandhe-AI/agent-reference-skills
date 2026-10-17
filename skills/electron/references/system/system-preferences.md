@@ -14,24 +14,24 @@ const { systemPreferences } = require('electron')
 console.log(systemPreferences.getEffectiveAppearance())
 ```
 
-## Events
+### Events
 
-### Event: 'accent-color-changed' _Windows_ _Linux_
+#### Event: 'accent-color-changed' _Windows_ _Linux_
 
 * `event` Event
 * `newColor` string - The new RGBA color the user assigned to be their system accent color.
 
-### Event: 'color-changed' _Windows_
+#### Event: 'color-changed' _Windows_
 
 * `event` Event
 
-## Methods
+### Methods
 
-### `systemPreferences.isSwipeTrackingFromScrollEventsEnabled()` _macOS_
+#### `systemPreferences.isSwipeTrackingFromScrollEventsEnabled()` _macOS_
 
 Returns `boolean` - Whether the Swipe between pages setting is on.
 
-### `systemPreferences.postNotification(event, userInfo[, deliverImmediately])` _macOS_
+#### `systemPreferences.postNotification(event, userInfo[, deliverImmediately])` _macOS_
 
 * `event` string
 * `userInfo` Record<string, any>
@@ -39,21 +39,21 @@ Returns `boolean` - Whether the Swipe between pages setting is on.
 
 Posts `event` as native notifications of macOS. The `userInfo` is an Object that contains the user information dictionary sent along with the notification.
 
-### `systemPreferences.postLocalNotification(event, userInfo)` _macOS_
+#### `systemPreferences.postLocalNotification(event, userInfo)` _macOS_
 
 * `event` string
 * `userInfo` Record<string, any>
 
 Posts `event` as native notifications of macOS. The `userInfo` is an Object that contains the user information dictionary sent along with the notification.
 
-### `systemPreferences.postWorkspaceNotification(event, userInfo)` _macOS_
+#### `systemPreferences.postWorkspaceNotification(event, userInfo)` _macOS_
 
 * `event` string
 * `userInfo` Record<string, any>
 
 Posts `event` as native notifications of macOS. The `userInfo` is an Object that contains the user information dictionary sent along with the notification.
 
-### `systemPreferences.subscribeNotification(event, callback)` _macOS_
+#### `systemPreferences.subscribeNotification(event, callback)` _macOS_
 
 * `event` string | null
 * `callback` Function
@@ -76,7 +76,7 @@ Under the hood this API subscribes to `NSDistributedNotificationCenter`, example
 
 If `event` is null, the `NSDistributedNotificationCenter` doesn't use it as criteria for delivery to the observer.
 
-### `systemPreferences.subscribeLocalNotification(event, callback)` _macOS_
+#### `systemPreferences.subscribeLocalNotification(event, callback)` _macOS_
 
 * `event` string | null
 * `callback` Function
@@ -90,7 +90,7 @@ Same as `subscribeNotification`, but uses `NSNotificationCenter` for local defau
 
 If `event` is null, the `NSNotificationCenter` doesn't use it as criteria for delivery to the observer.
 
-### `systemPreferences.subscribeWorkspaceNotification(event, callback)` _macOS_
+#### `systemPreferences.subscribeWorkspaceNotification(event, callback)` _macOS_
 
 * `event` string | null
 * `callback` Function
@@ -104,31 +104,31 @@ Same as `subscribeNotification`, but uses `NSWorkspace.sharedWorkspace.notificat
 
 If `event` is null, the `NSWorkspaceNotificationCenter` doesn't use it as criteria for delivery to the observer.
 
-### `systemPreferences.unsubscribeNotification(id)` _macOS_
+#### `systemPreferences.unsubscribeNotification(id)` _macOS_
 
 * `id` Integer
 
 Removes the subscriber with `id`.
 
-### `systemPreferences.unsubscribeLocalNotification(id)` _macOS_
+#### `systemPreferences.unsubscribeLocalNotification(id)` _macOS_
 
 * `id` Integer
 
 Same as `unsubscribeNotification`, but removes the subscriber from `NSNotificationCenter`.
 
-### `systemPreferences.unsubscribeWorkspaceNotification(id)` _macOS_
+#### `systemPreferences.unsubscribeWorkspaceNotification(id)` _macOS_
 
 * `id` Integer
 
 Same as `unsubscribeNotification`, but removes the subscriber from `NSWorkspace.sharedWorkspace.notificationCenter`.
 
-### `systemPreferences.registerDefaults(defaults)` _macOS_
+#### `systemPreferences.registerDefaults(defaults)` _macOS_
 
 * `defaults` Record<string, string | boolean | number> - a dictionary of (`key: value`) user defaults
 
 Add the specified defaults to your application's `NSUserDefaults`.
 
-### `systemPreferences.getUserDefault<Type extends keyof UserDefaultTypes>(key, type)` _macOS_
+#### `systemPreferences.getUserDefault<Type extends keyof UserDefaultTypes>(key, type)` _macOS_
 
 * `key` string
 * `type` Type - Can be `string`, `boolean`, `integer`, `float`, `double`, `url`, `array` or `dictionary`.
@@ -145,7 +145,7 @@ Some popular `key` and `type`s are:
 * `NSPreferredWebServices`: `dictionary`
 * `NSUserDictionaryReplacementItems`: `array`
 
-### `systemPreferences.setUserDefault<Type extends keyof UserDefaultTypes>(key, type, value)` _macOS_
+#### `systemPreferences.setUserDefault<Type extends keyof UserDefaultTypes>(key, type, value)` _macOS_
 
 * `key` string
 * `type` Type - Can be `string`, `boolean`, `integer`, `float`, `double`, `url`, `array` or `dictionary`.
@@ -159,13 +159,13 @@ Some popular `key` and `type`s are:
 
 * `ApplePressAndHoldEnabled`: `boolean`
 
-### `systemPreferences.removeUserDefault(key)` _macOS_
+#### `systemPreferences.removeUserDefault(key)` _macOS_
 
 * `key` string
 
 Removes the `key` in `NSUserDefaults`. This can be used to restore the default or global value of a `key` previously set with `setUserDefault`.
 
-### `systemPreferences.getAccentColor()`
+#### `systemPreferences.getAccentColor()`
 
 Returns `string` - The users current system wide accent color preference in RGBA hexadecimal form.
 
@@ -179,7 +179,7 @@ const alpha = color.substr(6, 2) // "dd"
 
 This API is only available on macOS 10.14 Mojave or newer.
 
-### `systemPreferences.getColor(color)` _Windows_ _macOS_
+#### `systemPreferences.getColor(color)` _Windows_ _macOS_
 
 * `color` string - One of the following values:
   * On **Windows**: `3d-dark-shadow` (dark shadow for three-dimensional display elements), `3d-face` (face color for three-dimensional display elements and for dialog box backgrounds), `3d-highlight`, `3d-light`, `3d-shadow`, `active-border`, `active-caption` (active window title bar; left side color in the gradient if enabled), `active-caption-gradient` (right side color), `app-workspace` (background color of MDI applications), `button-text`, `caption-text`, `desktop`, `disabled-text`, `highlight` (item(s) selected in a control), `highlight-text`, `hotlight` (color for a hyperlink or hot-tracked item), `inactive-border`, `inactive-caption`, `inactive-caption-gradient`, `inactive-caption-text`, `info-background` (tooltip background), `info-text` (tooltip text), `menu`, `menu-highlight`, `menubar`, `menu-text`, `scrollbar`, `window`, `window-frame`, `window-text`.
@@ -189,7 +189,7 @@ Returns `string` - The system color setting in RGBA hexadecimal form (`#RRGGBBAA
 
 The following colors are only available on macOS 10.14: `find-highlight`, `selected-content-background`, `separator`, `unemphasized-selected-content-background`, `unemphasized-selected-text-background`, and `unemphasized-selected-text`.
 
-### `systemPreferences.getSystemColor(color)` _macOS_
+#### `systemPreferences.getSystemColor(color)` _macOS_
 
 * `color` string - One of the following values: `blue`, `brown`, `gray`, `green`, `orange`, `pink`, `purple`, `red`, `yellow`.
 
@@ -197,17 +197,17 @@ Returns `string` - The standard system color formatted as `#RRGGBBAA`.
 
 Returns one of several standard system colors that automatically adapt to vibrancy and changes in accessibility settings like 'Increase contrast' and 'Reduce transparency'.
 
-### `systemPreferences.getEffectiveAppearance()` _macOS_
+#### `systemPreferences.getEffectiveAppearance()` _macOS_
 
 Returns `string` - Can be `dark`, `light` or `unknown`.
 
 Gets the macOS appearance setting that is currently applied to your application, maps to NSApplication.effectiveAppearance
 
-### `systemPreferences.canPromptTouchID()` _macOS_
+#### `systemPreferences.canPromptTouchID()` _macOS_
 
 Returns `boolean` - whether or not this device has the ability to use Touch ID.
 
-### `systemPreferences.promptTouchID(reason)` _macOS_
+#### `systemPreferences.promptTouchID(reason)` _macOS_
 
 * `reason` string - The reason you are asking for Touch ID authentication
 
@@ -228,13 +228,13 @@ systemPreferences
 
 This API itself will not protect your user data; rather, it is a mechanism to allow you to do so. Native apps will need to set Access Control Constants like `kSecAccessControlUserPresence` on their keychain entry so that reading it would auto-prompt for Touch ID biometric consent. This could be done with `node-keytar`, such that one would store an encryption key with `node-keytar` and only fetch it if `promptTouchID()` resolves.
 
-### `systemPreferences.isTrustedAccessibilityClient(prompt)` _macOS_
+#### `systemPreferences.isTrustedAccessibilityClient(prompt)` _macOS_
 
 * `prompt` boolean - whether or not the user will be informed via prompt if the current process is untrusted.
 
 Returns `boolean` - `true` if the current process is a trusted accessibility client and `false` if it is not.
 
-### `systemPreferences.getMediaAccessStatus(mediaType)` _Windows_ _macOS_
+#### `systemPreferences.getMediaAccessStatus(mediaType)` _Windows_ _macOS_
 
 * `mediaType` string - Can be `microphone`, `camera` or `screen`.
 
@@ -244,7 +244,7 @@ This user consent was not required on macOS 10.13 High Sierra so this method wil
 
 Windows 10 has a global setting controlling `microphone` and `camera` access for all win32 applications. It will always return `granted` for `screen` and for all media types on older versions of Windows.
 
-### `systemPreferences.askForMediaAccess(mediaType)` _macOS_
+#### `systemPreferences.askForMediaAccess(mediaType)` _macOS_
 
 * `mediaType` string - the type of media being requested; can be `microphone`, `camera`.
 
@@ -254,7 +254,7 @@ Returns `Promise<boolean>` - A promise that resolves with `true` if consent was 
 
 This user consent was not required until macOS 10.14 Mojave, so this method will always return `true` if your system is running 10.13 High Sierra.
 
-### `systemPreferences.getAnimationSettings()`
+#### `systemPreferences.getAnimationSettings()`
 
 Returns `Object`:
 
@@ -264,21 +264,21 @@ Returns `Object`:
 
 Returns an object with system animation settings.
 
-## Properties
+### Properties
 
-### `systemPreferences.accessibilityDisplayShouldReduceTransparency` _macOS_ _Deprecated_
+#### `systemPreferences.accessibilityDisplayShouldReduceTransparency` _macOS_ _Deprecated_
 
 A `boolean` property which determines whether the app avoids using semitransparent backgrounds. This maps to NSWorkspace.accessibilityDisplayShouldReduceTransparency
 
 **Deprecated:** Use the new `nativeTheme.prefersReducedTransparency` API.
 
-### `systemPreferences.effectiveAppearance` _macOS_ _Readonly_
+#### `systemPreferences.effectiveAppearance` _macOS_ _Readonly_
 
 A `string` property that can be `dark`, `light` or `unknown`.
 
 Returns the macOS appearance setting that is currently applied to your application, maps to NSApplication.effectiveAppearance
 
-## UserDefaultTypes Object
+### UserDefaultTypes Object
 
 Helper alias for `getUserDefault` / `setUserDefault`; no object will ever exist of this type.
 

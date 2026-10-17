@@ -15,7 +15,7 @@ const { bounds, workArea, scaleFactor } = screen.getPrimaryDisplay()
 const cursor = screen.getCursorScreenPoint() // { x, y }
 ```
 
-## Display Object
+### Display Object
 
 The `Display` object represents a physical display connected to the system. A fake `Display` may exist on a headless system, or a `Display` may correspond to a remote, virtual display.
 
@@ -41,7 +41,7 @@ The `Display` object represents a physical display connected to the system. A fa
 | workArea | Rectangle | the work area of the display in DIP points. |
 | workAreaSize | Size | The size of the work area. |
 
-## Point Object
+### Point Object
 
 * `x` number
 * `y` number
@@ -49,14 +49,14 @@ The `Display` object represents a physical display connected to the system. A fa
 > [!NOTE]
 > Both `x` and `y` must be whole integers, when providing a point object as input to an Electron API we will automatically round your `x` and `y` values to the nearest whole integer.
 
-## Rectangle Object
+### Rectangle Object
 
 * `x` number - The x coordinate of the origin of the rectangle (must be an integer).
 * `y` number - The y coordinate of the origin of the rectangle (must be an integer).
 * `width` number - The width of the rectangle (must be an integer).
 * `height` number - The height of the rectangle (must be an integer).
 
-## Size Object
+### Size Object
 
 * `width` number
 * `height` number
