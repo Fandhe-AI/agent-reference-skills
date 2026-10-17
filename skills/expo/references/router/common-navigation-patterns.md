@@ -127,7 +127,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 
 export default function Layout() {
-  const isAuthenticated = /* check for valid auth token / session */
+  const isAuthenticated: boolean = false; // replace with a check for a valid auth token / session
 
   return (
     <SafeAreaView>
@@ -144,6 +144,7 @@ export default function Layout() {
 - Shared routes: when focused on a tab, navigating to the shared page stays in that tab's group. A deep link from outside picks the first group alphabetically (here the Feed tab).
 - Protected routes: when `guard={false}` the screen is inaccessible and the next available screen opens. Guards are also checked on deep links. When the guard value changes the layout re-renders and the app navigates to the root of the accessible group.
 - You can also nest tabs inside an outer stack navigator, often more useful for modals over the tabs.
+- The official login-modal example leaves isAuthenticated as a comment-only placeholder; here it is a boolean literal so the snippet is valid TSX. Wire it to your app's own auth state.
 - Expo Router is file-based and built on React Navigation; its `Stack` / `Tabs` / `Link` differ from same-named APIs in react-router and tanstack-router.
 
 ## Related

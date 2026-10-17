@@ -155,6 +155,7 @@ Custom web layout with a platform-specific component (`app-tabs.tsx` and `app-ta
 
 ```tsx
 import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
+import { StyleSheet } from 'react-native';
 
 export default function AppTabs() {
   return (
@@ -171,6 +172,18 @@ export default function AppTabs() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  tabList: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 16,
+    padding: 16,
+  },
+  tab: {
+    padding: 8,
+  },
+});
 ```
 
 ## Options / Props

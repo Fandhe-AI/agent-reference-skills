@@ -50,6 +50,14 @@ export default function Modal() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 ```
 
 iOS status bar appearance inside the modal:
