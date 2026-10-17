@@ -2,14 +2,15 @@
 name: vercel-ai-sdk
 description: >
   Vercel AI SDK (TypeScript LLM ツールキット, ai / @ai-sdk/*, v7)。
-  generateText, streamText, Output, ToolLoopAgent, createMCPClient, useChat, UIMessage, embed,
-  generateImage, wrapLanguageModel, WorkflowAgent, HarnessAgent, AI Gateway。
+  generateText, streamText, Output, ToolLoopAgent, createMCPClient, useChat, UIMessage,
+  embed, generateImage, wrapLanguageModel, WorkflowAgent, HarnessAgent, AI Gateway, @ai-sdk/rsc、
+  v4 から v7 への移行。
 user-invocable: false
 ---
 
 # Vercel AI SDK
 
-> 分割 PR の途中段階。現在収録済み: references/{agents, core, embeddings-batch, foundations, media, migration, operations, providers, rsc, tools-mcp, ui}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{agents, core, embeddings-batch, foundations, media, migration, operations, providers, rsc, tools-mcp, ui, workflow-harnesses}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 TypeScript 向け LLM アプリ開発ツールキット `ai`（AI SDK Core / UI / RSC）と `@ai-sdk/*` パッケージ群のリファレンス・サンプル・コマンド集。
 
@@ -54,6 +55,9 @@ skills/vercel-ai-sdk/
     providers/          # プロバイダー・AI Gateway・registry・language model middleware
       README.md
       ai-gateway.md, openai.md, anthropic.md, google.md, amazon-bedrock.md, wrap-language-model.md ...
+    workflow-harnesses/ # HarnessAgent・Claude Code / Codex harness・WorkflowAgent・Terminal UI
+      README.md
+      harness-agent.md, claude-code-harness.md, codex-harness.md, workflow-agent.md, terminal-ui.md ...
     operations/         # エラー・telemetry・testing・DevTools・キャッシュ・デプロイ
       README.md
       error-handling.md, telemetry.md, testing.md, devtools.md, vercel-deployment-guide.md ...
@@ -97,6 +101,9 @@ skills/vercel-ai-sdk/
 | OpenAI / Anthropic / Google / Amazon Bedrock プロバイダーを設定したい | providers | [references/providers/README.md](references/providers/README.md) |
 | AI Gateway・provider registry・customProvider・OpenAI 互換プロバイダーを使いたい | providers | [references/providers/README.md](references/providers/README.md) |
 | wrapLanguageModel と language model middleware を使いたい | providers | [references/providers/README.md](references/providers/README.md) |
+| HarnessAgent で Claude Code / Codex を駆動したい | workflow-harnesses | [references/workflow-harnesses/README.md](references/workflow-harnesses/README.md) |
+| WorkflowAgent で durable なエージェントを作りたい | workflow-harnesses | [references/workflow-harnesses/README.md](references/workflow-harnesses/README.md) |
+| @ai-sdk/tui のターミナル UI を使いたい | workflow-harnesses | [references/workflow-harnesses/README.md](references/workflow-harnesses/README.md) |
 | エラー処理・telemetry・テスト・DevTools を設定したい | operations | [references/operations/README.md](references/operations/README.md) |
 | rate limiting・キャッシュ・ストリーム中断・Vercel デプロイを知りたい | operations | [references/operations/README.md](references/operations/README.md) |
 | 旧バージョンから v7 へ移行したい（破壊的変更・codemod） | migration | [references/migration/README.md](references/migration/README.md) |
