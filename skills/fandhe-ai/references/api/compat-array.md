@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.3.0/fandhe_ai/compat/fn.array.html
+source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/compat/fn.array.html
 ---
 
 # compat::array
@@ -38,5 +38,5 @@ println!("2-D shape: {:?}", m.shape()); // [2, 2]
 
 ## Related
 
-- `Tensor`
-- compat::Sequential
+- [tensor](./tensor.md)
+- [compat-sequential](./compat-sequential.md)
