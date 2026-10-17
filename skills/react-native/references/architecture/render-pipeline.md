@@ -92,7 +92,7 @@ After the first nested `<View>` changes from `'red'` to `'yellow'`:
 
 #### Phase 1. Render
 
-The renderer uses structural sharing: every React Element on the path up to the root is cloned. **React will only clone a React Element if it requires an update to its props, style, or children.** Unchanged elements are shared by the old and new trees. For the example, React creates the new tree using these operations:
+The C++ renderer uses structural sharing: every React Shadow Node on the path up to the root is cloned. **The renderer only clones a React Shadow Node if it requires an update to its props, style, or children.** Unchanged React Shadow Nodes are shared by the old and new trees. For the example, React creates the new tree using these operations:
 
 ```text
 1. CloneNode(Node 3, {backgroundColor: 'yellow'}) → Node 3'
@@ -130,6 +130,7 @@ When performing a C++ State update, a block of code requests an update of a `Sha
 - The page is marked in the source with the caution: "This document refers to the New Architecture, that is in active roll-out."
 - Phases may occur on different threads; see Threading Model.
 - Diagrams of the source page are omitted.
+- The source paragraph says "React Element" in the Phase 1 structural-sharing paragraph; the CloneNode / AppendChild operations act on React Shadow Nodes in the C++ renderer, consistent with the rest of the source page (e.g. shared React Shadow Nodes cloned during layout calculation).
 
 ## Related
 
