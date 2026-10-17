@@ -91,6 +91,9 @@ using namespace facebook::react;
 -(instancetype)init
 {
   if(self = [super init]) {
+    static const auto defaultProps = std::make_shared<const CustomWebViewProps>();
+    _props = defaultProps;
+
     _webView = [WKWebView new];
     _webView.navigationDelegate = self;
     [self addSubview:_webView];
@@ -186,6 +189,7 @@ To link the WebKit framework in your app:
 
 - Be careful about committing generated code to your repository. Generated code is specific to each version of React Native. Use npm `peerDependencies` to restrict compatibility with version of React Native.
 - Corrected: the official `updateProps` loads the request whenever `urlIsValid:` returns YES, which includes an empty `sourceURL` where `_sourceURL` is nil; the load is now skipped when `_sourceURL` is nil.
+- Corrected: the official init does not initialize _props with CustomWebViewProps, so the first updateProps static_pointer_casts the base ViewProps; a default CustomWebViewProps instance is now assigned in init.
 - The step numbering in the official page skips from "1. Run Codegen" to "3. Write the `RCTWebView`"; the content above follows the original order.
 - 0.88: React Native 0.88 adds iOS SceneDelegate lifecycle support as an additive change (`RCTReactNativeFactory` gains `startReactNativeWithModuleName:inWindow:connectionOptions:` and `startReactNativeWithModuleName:inWindow:initialProperties:connectionOptions:`), keeping backwards compatibility with the `AppDelegate` path; this iOS guide still shows `AppDelegate.swift`.
 - Cross-skill: UIKit / WebKit / Objective-C++ project APIs belong to apple-uikit / apple-swift; this page covers only the React Native native-component boundary.

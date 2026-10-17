@@ -25,9 +25,9 @@ RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
 import React from 'react';
 import {View, Image} from 'react-native';
 
-export default class ImageBrowserApp extends React.Component {
-  renderImage(imgURI) {
-    return <Image source={{uri: imgURI}} />;
+export default class ImageBrowserApp extends React.Component<{images: string[]}> {
+  renderImage(imgURI: string) {
+    return <Image key={imgURI} source={{uri: imgURI}} style={{width: 300, height: 200}} />;
   }
   render() {
     return <View>{this.props.images.map(this.renderImage)}</View>;
@@ -102,6 +102,7 @@ Setting the mode to `RCTRootViewSizeFlexibilityHeight` means `rootViewDidChangeI
 ## Notes
 
 - The official page uses self.view.width (not a UIView property); corrected to self.view.bounds.size.width.
+- Corrected: the official tsx snippet omits the props type and the image size; typed props ({images: string[]}) and a fixed width/height style were added.
 - React import added; the official snippet uses React.* at runtime without importing it.
 - Property updates may be done at any time but must be performed on the main thread; the getter can be used on any thread. There is no way to update only a few properties at a time; build that into your own wrapper.
 - Known issue (as stated in the docs): setting `appProperties` during the bridge startup, the change can be lost (react-native issue 20115).

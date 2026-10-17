@@ -52,9 +52,9 @@ class MainActivity : ReactActivity() {
 import React from 'react';
 import {View, Image} from 'react-native';
 
-export default class ImageBrowserApp extends React.Component {
-  renderImage(imgURI) {
-    return <Image source={{uri: imgURI}} />;
+export default class ImageBrowserApp extends React.Component<{images: string[]}> {
+  renderImage(imgURI: string) {
+    return <Image key={imgURI} source={{uri: imgURI}} style={{width: 300, height: 200}} />;
   }
   render() {
     return <View>{this.props.images.map(this.renderImage)}</View>;
@@ -101,6 +101,7 @@ Native modules are Java/Kotlin classes that are available in JS. Typically one i
 
 ## Notes
 
+- Corrected: the official tsx snippet omits the props type and the image size; typed props ({images: string[]}) and a fixed width/height style were added.
 - React import added; the official snippet uses React.* at runtime without importing it.
 - Updating `appProperties` is fine at any time, but updates have to be performed on the main thread. The getter can be used on any thread.
 - There is no way to update only a few properties at a time. Build it into your own wrapper instead.

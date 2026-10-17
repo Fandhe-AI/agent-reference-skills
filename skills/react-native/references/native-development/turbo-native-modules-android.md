@@ -243,7 +243,7 @@ public class MainApplication extends Application implements ReactApplication {
     }
 
     @Override
-    public boolean isHermesEnabled() {
+    public Boolean isHermesEnabled() {
       return BuildConfig.IS_HERMES_ENABLED;
     }
   };
@@ -335,6 +335,7 @@ yarn run android
 - Deviation from the official page: the official MainApplication snippets use package com.inappmodule and path com/turobmoduleexample; they are aligned here with the TurboModuleExample app created in the introduction (com.turbomoduleexample).
 - Corrected: the official snippet returned username.toString(), which yields the string "null" for missing keys.
 - The official page initializes SoLoader with (this, false); updated to OpenSourceMergedSoMapping as required since RN 0.76 merged native libraries.
+- Corrected: the official Java snippet overrides isHermesEnabled() with a primitive boolean; DefaultReactNativeHost declares it as a nullable Boolean (java.lang.Boolean), so the return type is Boolean.
 - Docusaurus highlight markers from the official page are removed; snippets show the final code.
 - Registering the package means telling React Native in the main application how to find this `Package`; here it is added to the list returned by the `getPackages` method.
 - Later you learn how to distribute Native Modules as npm packages, which the build tooling autolinks (see "Create a Library for Your Module").
