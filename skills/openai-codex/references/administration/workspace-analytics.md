@@ -15,6 +15,10 @@ Use ChatGPT workspace analytics for broad workspace adoption, Codex analytics fo
 | Analytics API | Programmatic, aggregated Codex reporting | Authenticated Codex Analytics API reference |
 | Compliance API | Audit, security, legal, and investigation records | Authenticated Admin API reference |
 
+## Review Codex analytics
+
+The authenticated Codex analytics dashboard (`admin.openai.com/analytics/codex`) focuses on Codex reporting; use it for interactive exploration, not as a stable schema contract. For a walkthrough of the Insights dashboard (explore Use cases and Tasks, compare activity with consumption and reach, open a category for details) see Usage Insights on the official site. For automated reporting use the Analytics API (the Codex Analytics API reference is tag "Codex Enterprise Analytics" in the Admin API reference); for auditable records use the Compliance API. ChatGPT workspace analytics and Codex analytics cover different product scopes; availability, roles, dashboard sections, freshness, privacy behavior, and export formats can change, so use the Workspace analytics Help Center guidance for current procedures.
+
 ## Notes
 
 - Treat downloaded reports as identifiable organizational data; apply the organization's access/storage/retention policy rather than assuming export privacy matches an aggregated dashboard.
