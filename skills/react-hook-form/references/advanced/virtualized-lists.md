@@ -111,6 +111,10 @@ function App() {
 }
 ```
 
+## Notes
+
+- Both examples use the react-window v1 API (`VariableSizeList` / `FixedSizeList`), which is not available in react-window v2; install `react-window@1` (plus `react-virtualized-auto-sizer` for the first example) to run them as written.
+
 ## Related
 
 - [usefieldarray](../api/usefieldarray.md)

@@ -78,6 +78,7 @@ export default function Result() {
 
 - Following the above pattern, you should be able to build a wizard form/funnel to collect user input data from multiple pages.
 - The official example uses `react-router-dom` and `little-state-machine`; the implementation of `updateAction` is not shown in the source.
+- The official Step1 does not read the store on mount, so navigating back shows empty fields and re-submitting overwrites the stored values; to restore them, also take `state` from `useStateMachine({ actions: { updateAction } })` and pass `state.data` as `useForm({ defaultValues: state.data })` (not shown in the source).
 
 ## Related
 
