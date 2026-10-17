@@ -67,4 +67,4 @@ fun RegionalFormatExample() {
 
 - [Manage local resource environment](./resource-environment.md)
 - [Localizing strings](./localize-strings.md)
-- [Setup and configuration for multiplatform resources](./resources-setup.md#language-and-regional-qualifiers)
+- [Setup and configuration for multiplatform resources](./resources-setup.md#qualifiers)

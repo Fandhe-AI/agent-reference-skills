@@ -96,7 +96,8 @@ pod install
 ## Notes
 
 - Warning in the source: the CocoaPods approach cannot be used together with the `embedAndSignAppleFrameworkForXcode` mechanism of direct integration.
-- Install CocoaPods through RVM (`rvm install ruby 4.0.6` then `sudo gem install -n /usr/local/bin cocoapods`), rbenv (`rbenv install 4.0.6`, `rbenv global 4.0.6`, same gem install), default Ruby (`sudo gem install cocoapods`; does not work on Apple M chips) or Homebrew (`brew install cocoapods`; may cause Xcodeproj gem compatibility issues). The Ruby version 4.0.6 is the docs' `rubyVersion` variable.
+- Install CocoaPods through Homebrew (`brew install cocoapods`; may cause Xcodeproj gem compatibility issues), RVM (`rvm install ruby 4.0.6`, then `gem install cocoapods`) or rbenv (`rbenv install 4.0.6`, `rbenv global 4.0.6`, then `gem install cocoapods`). The Ruby version 4.0.6 is the docs' `rubyVersion` variable.
+- The source uses `sudo gem install -n /usr/local/bin cocoapods` even for RVM/rbenv Rubies; with a user-managed Ruby, install without sudo. Installing into the default (system) Ruby with sudo is not recommended here (the source notes it does not work on Apple M chips).
 - When applied, the plugin adds `debug` and `release` frameworks as output binaries for all macOS, iOS, tvOS, and watchOS targets, and creates a `podspec` task generating a Podspec with script phases that build the framework in an Xcode build.
 - Generate the Gradle wrapper to avoid compatibility issues during an Xcode build. Re-import the project after changes (Reload All Gradle Projects / Sync Project with Gradle Files).
 - After running `pod install` for the first time, close `.xcodeproj` and open the generated `.xcworkspace`. Without the Podfile changes the `podInstall` task fails.

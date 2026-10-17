@@ -28,11 +28,11 @@ Android-only API (Android-specific, usually uses `android.*` classes; best kept 
 
 | API |
 | --- |
-| `android.context.Context` class |
+| `android.content.Context` class |
 | `LocalContext` and `LocalConfiguration` variables |
 | `android.graphics.BitmapFactory` and `android.graphics.Bitmap` classes |
 | `ImageBitmap.asAndroidBitmap()` function |
-| `android.app.Activity` class and `android.app.Activity.setContent()` function |
+| `android.app.Activity` class and `ComponentActivity.setContent()` extension function (`androidx.activity.compose`) |
 | `ComposeView` class |
 | `LocalView` variable |
 | `Modifier.pointerInteropFilter()` function |
@@ -63,7 +63,9 @@ API without Android classes in signatures, not available in `commonMain` in Comp
 
 ## Notes
 
-- Snippet quoted from the Native application entry points page (Android entry point using the Android-only `Activity.setContent()`); the source page itself has no code.
+- Snippet quoted from the Native application entry points page (Android entry point using the Android-only `ComponentActivity.setContent()`); the source page itself has no code.
+- The source page labels this class `android.context.Context`, but its link targets `android.content.Context`, the actual class name.
+- The source page labels it `android.app.Activity.setContent()`, but it links to the `ComponentActivity.setContent()` extension from androidx.activity.compose.
 - Permissions, devices (Bluetooth, GPS, Camera) and IO (network, files, databases) are out of scope of Compose Multiplatform.
 - APIs in the last group are normally ported after they are introduced in Jetpack Compose for Android.
 - For each API that can be ported there is an open issue in the Compose Multiplatform YouTrack project (CMP); if none exists you can create one.

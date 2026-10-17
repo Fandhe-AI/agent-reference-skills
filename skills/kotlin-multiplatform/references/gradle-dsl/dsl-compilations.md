@@ -36,12 +36,12 @@ kotlin {
                         /* ... */
                     }
                 }
+            }
 
-                // Create a test task to run the tests produced by this compilation
-                testRuns.create("integration") {
-                    // Configure the test task
-                    setExecutionSourceFrom(integrationTest)
-                }
+            // Create a test task to run the tests produced by this compilation
+            testRuns.create("integration") {
+                // Configure the test task
+                setExecutionSourceFrom(integrationTest)
             }
         }
     }
@@ -102,6 +102,7 @@ Compilation parameters:
 ## Notes
 
 - By associating compilations, you add the main compilation output as a dependency and establish `internal` visibility between compilations.
+- The DSL reference page nests `testRuns.create` inside the `integrationTest` initializer; it is moved after the declaration here, as in the Configure compilations page.
 - Groovy forms exist in the original page (for example `compilations.main.output`, `compilations.create('integrationTest') { ... }`).
 - The list of available compiler options is on the Kotlin Gradle compiler options page (kotlin skill).
 

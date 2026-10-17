@@ -62,7 +62,7 @@ fun MyApp() {
 
 ## Related
 
-- [Setup and configuration for multiplatform resources](./resources-setup.md#language-and-regional-qualifiers)
+- [Setup and configuration for multiplatform resources](./resources-setup.md#qualifiers)
 - [Using multiplatform resources in your app](./resources-usage.md)
 - [Manage regional formats](./regional-format.md)
 - [Working with RTL languages](./rtl-languages.md)

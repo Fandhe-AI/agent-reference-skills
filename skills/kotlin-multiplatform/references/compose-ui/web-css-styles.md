@@ -18,7 +18,14 @@ html, body {
     padding: 0;
     overflow: hidden;
 }
+
+#webApp {
+    width: 100%;
+    height: 100%;
+}
 ```
+
+The HTML page must contain the container, for example `<div id="webApp"></div>`.
 
 Initialize the entry point in the `main` function of the web source set:
 
@@ -34,6 +41,7 @@ fun main() {
 ## Notes
 
 - Deprecated: `CanvasBasedWindow` automatically inserted CSS styles into the page's HTML elements to force the canvas to fill the browser window; `ComposeViewport` instead relies on standard CSS-based layout management, which makes embedding Compose into existing web layouts easier.
+- The source example styles only `html, body`; the container passed as `viewportContainerId` also needs an explicit size.
 - The web entry point requires the `ExperimentalComposeUiApi` opt-in.
 - Distance line: Kotlin/Wasm and Kotlin/JS language and tooling topics belong to the kotlin skill; this page covers only the Compose Multiplatform viewport setup.
 
