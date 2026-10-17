@@ -267,7 +267,7 @@ Common channels and codecs:
 
 | Name | Description |
 | --- | --- |
-| `MethodChannel` | Named channel for asynchronous method calls with platform plugins; default codec `StandardMessageCodec`. Not type safe. |
+| `MethodChannel` | Named channel for asynchronous method calls with platform plugins; default codec `StandardMethodCodec` (a `MethodCodec` that encodes arguments and results with `StandardMessageCodec`). Not type safe. |
 | `BasicMessageChannel` | Named channel for basic asynchronous message passing with a supported message codec. Not type safe. |
 | `StandardMessageCodec` | Encodes and decodes a wide range of data types into a platform-agnostic binary format. |
 | `BinaryCodec` | Passes raw binary data between Dart and the native side without higher-level encoding. |
@@ -276,6 +276,8 @@ Common channels and codecs:
 | `FirestoreMessageCodec` | Handles messages between the app and the native Firebase Firestore SDKs (Android and iOS). |
 
 ## Notes
+
+- Corrected from the official docs: the source says MethodChannel uses `StandardMessageCodec` by default; the API default is `StandardMethodCodec`, which wraps `StandardMessageCodec`.
 
 - Messages and responses are passed asynchronously through channels so the UI stays responsive. Whenever you invoke a channel method, you must invoke it on the platform's main thread.
 - Method calls can also be sent in the reverse direction (platform as client, Dart implements the method); the source points to the `quick_actions` plugin.

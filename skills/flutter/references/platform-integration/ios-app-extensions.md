@@ -52,7 +52,7 @@ class ShareViewController: UIViewController {
 }
 ```
 
-Register plugins for the extension (Swift: add at the top of `showFlutter()`; Objective-C: import `GeneratedPluginRegistrant.h` and call after `[flutterEngine run]`):
+Register plugins for the extension (Swift: add inside `showFlutter()` after `flutterEngine.run()`; Objective-C: import `GeneratedPluginRegistrant.h` and call after `[flutterEngine run]`):
 
 ```swift
 GeneratedPluginRegistrant.register(with: flutterEngine)
@@ -84,6 +84,8 @@ Ways to interact with an extension:
 Build settings needed to show a Flutter app in the extension: **User Script Sandboxing** = **No** on the **ShareExtension** target; in **PROJECT** > **Runner** > **Info** > **Configuration**, set **ShareExtension** values for **Debug**, **Profile**, and **Release** to match **Runner**; optionally delete `NSExtensionMainStoryboard` and add `NSExtensionPrincipalClass` (`ShareExtension.ShareViewController` for Swift, `ShareViewController` for Objective-C). For plugin registration add `GeneratedPluginRegistrant.m` under **Compile Sources** of the extension target and (Swift only) set the **Objective-C Bridging Header** to `Runner/Runner-Bridging-Header.h`.
 
 ## Notes
+
+- Corrected from the official docs: the source says to add the Swift registration at the top of `showFlutter()`, but `flutterEngine` is declared later in that function, so this page places it after `flutterEngine.run()` (matching the Objective-C instruction).
 
 - Constraints: you must use an iOS simulator to test your extension in debug mode. Flutter does not fully support running app extensions in debug mode on physical devices when used to build extension UIs, because a physical device might run out of memory. iOS app extensions have limited memory; only modify an extension's UI if it supports at least 100MB of memory.
 - The containing app and the extension do not communicate directly, and the containing app might not be running while the user interacts with the extension.

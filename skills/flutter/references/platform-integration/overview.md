@@ -25,7 +25,9 @@ Setup pages per target (each page is "set up your development environment to bui
 | macOS | On macOS only | `/platform-integration/macos/setup` |
 | Linux | On Linux only | `/platform-integration/linux/setup` |
 
-## Integration guides per platform
+## Options / Props
+
+### Integration guides per platform
 
 | Platform | Guides listed on the page |
 | --- | --- |

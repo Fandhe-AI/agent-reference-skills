@@ -47,16 +47,21 @@ class MainActivity: FlutterActivity() {
                     // Note: This must match the first parameter passed to
                     // `platformMethodChannel.invokeMethod` in your Dart code.
                     "launchActivity" -> {
-                        try {
-                            // Takes an object, in this case a String.
-                            val message = call.arguments
-                            val intent = Intent(this@MainActivity, SecondActivity::class.java)
-                            intent.putExtra("message", message.toString())
-                            startActivity(intent)
-                        } catch (e: Exception){}
-                            result.success(true)
+                        val message = call.argument<String>("message")
+                        if (message == null) {
+                            result.error("INVALID_ARGUMENT", "message is required", null)
+                            return@setMethodCallHandler
                         }
-                        else -> {}
+                        try {
+                            val intent = Intent(this@MainActivity, SecondActivity::class.java)
+                            intent.putExtra("message", message)
+                            startActivity(intent)
+                            result.success(true)
+                        } catch (e: Exception) {
+                            result.error("LAUNCH_FAILED", e.message, null)
+                        }
+                    }
+                    else -> result.notImplemented()
                 }
         }
     }
@@ -103,6 +108,7 @@ Three values must match across Dart and Kotlin: the channel name (`com.example.f
 
 ## Notes
 
+- Corrected from the official docs: the source sample passes `call.arguments.toString()` (the whole map, so `SecondActivity` would show `{message=Hello from Flutter}`); this page extracts the `message` key with `call.argument<String>("message")`. `result.success(true)` is returned only after `startActivity` succeeds and failures return `result.error` (source: empty `catch`, then `success`). The `else` branch calls `result.notImplemented()` (source: empty `else -> {}`).
 - Dependency snippet from the source (Kotlin DSL): `implementation(platform("androidx.compose:compose-bom:2024.06.00"))`, `implementation("androidx.compose.material3:material3")`, `implementation("androidx.activity:activity-compose")`, among others. The Groovy tab uses `compose-bom:2023.08.00` for `androidTestImplementation`.
 - Adjust `kotlinCompilerExtensionVersion` (see the Compose-Kotlin compatibility map on developer.android.com) only if `flutter run` errors tell you which versions are installed.
 - Imports may vary if library versions change or you use different Compose classes; follow your IDE's hints.

@@ -14,11 +14,16 @@ Upgrade and the commands the post introduces:
 flutter upgrade
 dart fix --apply --code=migrate_design_widgets
 flutter build web --release --wasm
-flutter build web --release --wasm --enable-wasm-deferred-loading
 flutter config --enable-macos-arm64-only
 flutter config --enable-swift-package-manager
 flutter build windows --flavor flavor_a
 flutter build linux --flavor flavor_a
+```
+
+Experimental, main channel only (not available on stable 3.47.7):
+
+```bash
+flutter build web --release --wasm --enable-wasm-deferred-loading
 ```
 
 Flavor-specific assets on desktop in `pubspec.yaml` (verbatim from the post):
@@ -36,6 +41,7 @@ flutter:
 
 ## Notes
 
+- The source lists the deferred-loading flag alongside the other commands; this page separates it because it requires the main channel.
 - Design libraries: the core SDK still includes Material and Cupertino in 3.47; you can opt in to the standalone packages (1.0 on pub.dev, planned weekly releases). The in-framework libraries "are scheduled for formal deprecation in the upcoming Fall stable release in November". Treat package migration as a major release if you maintain an ecosystem package. `flutter_localizations` is unbundled: `GlobalMaterialLocalizations.delegates` includes the Cupertino and Widgets delegates. `MaterialUiCompatibilityBridge` bridges dependencies still using legacy imports.
 - Apple: Xcode 27 minimum OS bump: iOS 13 to 15, macOS 10.15 to 12 (Flutter 3.47+). The iOS 27 SDK mandates the `UIScene` lifecycle; apps built with Xcode 27 that don't adopt it fail to launch; the CLI migrates most apps automatically, manual migration is needed for custom `AppDelegate` code or plugins relying on the legacy lifecycle. Intel Macs: warnings in the CLI now, errors in a future release. SwiftPM: 92 of the top 100 iOS plugins migrated; CocoaPods is in maintenance mode.
 - Web: Wasm needs `package:web` JS interop (the legacy `dart:html` is not supported). Deferred loading on Wasm is experimental and available under a flag on the main channel.
