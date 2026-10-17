@@ -96,6 +96,8 @@ Path / query parameters:
 
 ## Notes
 
+- `antigravity-preview-05-2026` was shut down on October 5, 2026 (replacement: `antigravity-preview-09-2026`, see migration/deprecations); the source still lists it.
+
 - Availability: Interactions API, `v1beta` (beta). The source page states: "Beta: You are viewing the beta version of the Interactions API. Endpoints are under `/v1beta/`. The stable v1 version is also available."
 - The `Retrieval` tool's `exa_ai_search_config.api_key` is described as "Required. The API key for ExaAiSearch." Never hard-code such keys; use placeholders.
 - The Create examples (Simple Request, Multi-turn, Image Input, Function Calling, Deep Research, Antigravity Agent, Reuse Environment, With Sources, Custom Agent) are embedded frames not present in the stored text; only the JSON responses are verbatim.

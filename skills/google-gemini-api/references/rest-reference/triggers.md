@@ -67,6 +67,8 @@ Other methods:
 
 ## Notes
 
+- `antigravity-preview-05-2026` was shut down on October 5, 2026 (replacement: `antigravity-preview-09-2026`, see migration/deprecations); the source still lists it.
+
 - Availability: v1beta (the source states "This API is in Beta. Endpoints are under `/v1beta/`.").
 - The per-method request examples are embedded frames not present in the stored text; endpoint lines and JSON responses are verbatim.
 - Cron-schedule triggers invoke a Gemini agent (see agents.md); not related to anthropic-claude-code-extend routines or inngest scheduled functions.

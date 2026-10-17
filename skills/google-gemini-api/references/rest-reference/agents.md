@@ -105,6 +105,8 @@ Other methods:
 
 ## Notes
 
+- `antigravity-preview-05-2026` was shut down on October 5, 2026 (replacement: `antigravity-preview-09-2026`, see migration/deprecations); the source still lists it.
+
 - Availability: v1beta (the source states "This API is in Beta. Endpoints are under `/v1beta/`.").
 - The source shows Python, JavaScript, Java, Go and REST examples for each method; the SDK calls are `client.agents.create` / `ai.agents.create`.
 - Agents here are Gemini-hosted (compare anthropic-managed-agents), not a local agent framework (compare anthropic-agent-sdk, openai-agents, hermes-agent).

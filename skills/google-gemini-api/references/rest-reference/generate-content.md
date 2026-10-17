@@ -145,6 +145,8 @@ JSON representation of the response:
 
 ## Notes
 
+- The source examples use `gemini-2.0-flash`, which was shut down on June 1, 2026 (replacement: `gemini-3.6-flash`, see migration/deprecations); substitute a current model ID when running.
+
 - The `tools[]` field description above still says only `Function` and `codeExecution` are supported, but the same source defines `GoogleSearch`, `UrlContext`, `FileSearch`, `McpServer`, `GoogleMaps`, and `ComputerUse` tools, and the generateContent tool guides use them.
 - Availability: generateContent (v1beta). `streamGenerateContent` returns "a stream of `GenerateContentResponse` instances"; use `?alt=sse` for SSE. The source page also documents `Tool`, `FunctionDeclaration`, `Schema`, `CodeExecution`, `GoogleSearch`, `UrlContext`, `FileSearch`, `McpServer`, `GoogleMaps`, `ComputerUse`, `ThinkingConfig`, `SpeechConfig`, `ImageConfig`, Live `BidiGenerateContentSetup`, `RealtimeInputConfig`, and `auth_tokens.create` data models; consult the source for those.
 - The first shell example in the source uses `gemini-2.0-flash` with `?key=` as written; the overview page uses the `x-goog-api-key` header instead.

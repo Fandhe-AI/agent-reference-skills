@@ -173,6 +173,8 @@ Supported models (Grounding with Google Search):
 
 ## Notes
 
+- Gemini 3.1 Flash Image Preview and Gemini 3 Pro Image Preview were shut down on June 25, 2026 (replacements: `gemini-nano-banana-2.1` / `gemini-3-pro-image`, see migration/deprecations); the source table still lists them.
+
 - Flow: the model analyzes the prompt, automatically generates one or more search queries when it decides search helps, processes the results, and returns a grounded response with inline `annotations` plus `google_search_call` / `google_search_result` steps.
 - Pricing (Gemini 3 and newer): billed for each search query the model executes; 5,000 free search requests per month shared across all Gemini 3 and newer models, then $14 per 1,000 search requests. Multiple queries in one call count as multiple billable uses; empty web search queries are ignored. Gemini 2.5 or older models are billed per prompt.
 - The source JS example reads `annotation.startIndex` / `annotation.endIndex`; changed to `start_index` / `end_index` to match the response JSON and the `URLCitation` type in `@google/genai` 2.30.0 (`startIndex` would be undefined and `slice` would silently return the whole text).

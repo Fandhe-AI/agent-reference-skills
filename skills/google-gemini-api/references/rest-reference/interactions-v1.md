@@ -180,6 +180,8 @@ Text output with a JSON Schema (`response_format`):
 
 ## Notes
 
+- `antigravity-preview-05-2026` was shut down on October 5, 2026 (replacement: `antigravity-preview-09-2026`, see migration/deprecations); the source still lists it.
+
 - Availability: Interactions API, stable `v1` (endpoints under `/v1/`). The beta surface under `/v1beta/` is documented in interactions-v1beta.md.
 - v1 versus v1beta (differences read from the two fetched pages): v1 `model` values are `models/`-prefixed and fewer; v1 `agent_config` is only `DynamicAgentConfig`; v1 `generation_config` has no `speech_config`, `transcription_config`, or `video_config`; the v1 request body has no `agent_config`-adjacent `environment`, `labels`, `service_tier`, or `webhook_config`; the v1 `Tool` list has no `ComputerUse`, `McpServer`, or `Retrieval`; v1 `SafetySetting.threshold` has no `block_none`; v1 `HarmCategory` has no `image_*` values. Whether these are unsupported or merely undocumented in v1 is not stated.
 - The "Create" code examples (Simple Request, Multi-turn, Image Input, Function Calling, Deep Research, Antigravity, Reuse Env, With Sources, Custom Agent) are embedded frames in the source and are not available in the stored text; only the JSON responses above are verbatim.

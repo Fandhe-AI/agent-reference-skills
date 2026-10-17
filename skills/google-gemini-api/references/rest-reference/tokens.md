@@ -73,6 +73,8 @@ Response body (`CountTokensResponse`):
 
 ## Notes
 
+- The source examples use `gemini-2.0-flash`, which was shut down on June 1, 2026 (replacement: `gemini-3.6-flash`, see migration/deprecations); substitute a current model ID when running.
+
 - Availability: v1beta. The source page also shows example requests for Text, Chat, Inline media, Video, PDF, Cache, System Instruction, and Tools.
 - For how images, audio and video are counted, see the Token counting guide referenced from the source page.
 - The REST example quotes the URL, sends the key as a header, and removes the trailing commas that the source's JSON body contains.
