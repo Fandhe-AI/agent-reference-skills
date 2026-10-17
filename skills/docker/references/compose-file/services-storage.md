@@ -51,10 +51,12 @@ Long syntax fields:
 | `target` | Path in the container where the volume is mounted. |
 | `read_only` | Flag to set the volume as read-only. |
 | `bind` | `propagation` (propagation mode), `create_host_path` (creates a directory at the source path on host if nothing is present; default `true`), `selinux` (`z` shared or `Z` private). |
-| `volume` | `nocopy` (disable copying data from a container when a volume is created), `subpath` (path inside a volume to mount instead of the volume root). |
+| `volume` | `nocopy` (disable copying data from a container when a volume is created), `subpath` (path inside a volume to mount instead of the volume root; the subdirectory must already exist in the volume). |
 | `tmpfs` | `size` (bytes, numeric or bytes unit), `mode` (Unix permission bits as octal; introduced in Docker Compose 2.14.0). |
 | `image` | `subpath` (path inside the source image to mount instead of the image root; available in Docker Compose 2.35.0). |
 | `consistency` | Consistency requirements of the mount; values are platform specific. |
+
+`volume.subpath` requires the subdirectory to already exist in the volume before it is mounted (see https://docs.docker.com/engine/storage/volumes/ , `volume-subpath`). With a freshly created empty volume such as `db-data` in the example above, mounting `sub` fails unless it is created first, and `nocopy: true` additionally disables copying image content into the new volume.
 
 ### `volumes_from`
 
