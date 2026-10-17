@@ -2,6 +2,8 @@
 
 The Device Authorization plugin implements the code issuance and approval flow from the RFC 8628 OAuth 2.0 Device Authorization Grant for limited-input devices such as smart TVs, CLI applications, IoT devices, and game consoles. Use it on its own for Better Auth session tokens, or compose it with the OAuth Provider to issue OAuth access tokens.
 
+## Signature / Usage
+
 ### Production security requirements
 
 RFC 8628 requires the device to make outbound HTTPS requests and the user to authenticate at the verification URI in a TLS-protected session. In production, serve the verification and approval UI, device-code requests, and token polling over HTTPS (HTTP only for explicitly local development). The approval UI is part of the security boundary. It must:
@@ -42,6 +44,8 @@ export const auth = betterAuth({
 ```
 
 Register the CLI as a public native client linked to the API resource (`token_endpoint_auth_method: "none"`):
+
+Adapted (not in the official docs): the official v1.7.10 example passes `type: "native"`; 1.7 removed `type`, so this snippet uses `application_type: "native"`.
 
 ```typescript
 import { DEVICE_CODE_GRANT_TYPE } from "@better-auth/oauth-provider";
@@ -88,8 +92,6 @@ The access token is a signed JWT whose `aud` identifies the API; verify signatur
 ### First-party session flow
 
 The rest of this page describes the first-party path, where `/device/token` returns a Better Auth session token.
-
-## Signature / Usage
 
 ### Setup (server side)
 
