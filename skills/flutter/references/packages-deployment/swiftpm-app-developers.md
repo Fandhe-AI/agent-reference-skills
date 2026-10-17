@@ -54,18 +54,26 @@ macOS: the same with `cd macos`; delete `macos/Podfile`, `macos/Pods/`, `macos/.
 
 ### Add SwiftPM integration manually
 
-Only needed if automatic migration failed (file an issue and include `ios/Runner.xcodeproj/project.pbxproj` and `ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme`). Steps for iOS (use `macos/` paths for macOS):
+Only needed if automatic migration failed (file an issue and include `ios/Runner.xcodeproj/project.pbxproj` and `ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme`). Steps for iOS (use `macos/` paths and the macOS script in Step 2 for macOS):
 
 1. Step 1: in Xcode open `ios/Runner.xcworkspace` > **Package Dependencies** > **+** > **Add Local...** > `ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage` > **Add Package**; ensure it is added to the `Runner` target and appears in **Frameworks, Libraries, and Embedded Content**.
 2. Step 2 (for each flavor): **Product > Scheme > Edit Scheme** > **Build** > **Pre-actions** > **New Run Script Action**, titled `Run Prepare Flutter Framework Script`, **Provide build settings from** the `Runner` app, with the script:
+
+iOS:
 
 ```sh
 "$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh" prepare
 ```
 
+macOS:
+
+```sh
+"$FLUTTER_ROOT"/packages/flutter_tools/bin/macos_assemble.sh prepare
+```
+
 3. Step 3: run the app in Xcode, confirm the pre-action runs and `FlutterGeneratedPluginSwiftPackage` is a target dependency, and confirm `flutter run` works.
 
-For a custom Xcode target, follow the same steps but use your custom target instead of the `Flutter` target in list item 6 of Steps 1 and 2. For add-to-app, see the iOS and macOS project-setup pages.
+For a custom Xcode target, follow the same steps but use your custom target instead of the Flutter target when adding the package (Step 1) and the pre-action (Step 2). For add-to-app, see the iOS and macOS project-setup pages.
 
 ### Remove SwiftPM integration
 

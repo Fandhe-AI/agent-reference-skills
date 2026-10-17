@@ -31,7 +31,7 @@ Run `open ios/Runner.xcworkspace` and select the **Runner** target.
 | `Bundle Identifier` | General > Identity | The App ID you registered on App Store Connect. |
 | `Automatically manage signing` | Signing & Capabilities | Whether Xcode manages app signing and provisioning; `true` by default. |
 | `Team` | Signing & Capabilities | Team associated with your Apple Developer account. |
-| `iOS Deployment Target` | Build Settings > Deployment | Minimum iOS version. Flutter supports iOS 13 and later; raise it if your app or plugins use newer APIs. |
+| `iOS Deployment Target` | Build Settings > Deployment | Minimum iOS version. Flutter supports iOS 15 and later (per the supported-platforms reference); raise it if your app or plugins use newer APIs. |
 
 ### App icon and launch image
 
@@ -104,6 +104,8 @@ An App Store Connect API Key with App Manager access is required. `export_option
 
 ## Notes
 
+- The deployment/ios page still says iOS 13; the supported-platforms reference lists iOS 15–27 as supported and 14 and earlier as unsupported.
+- The Codemagic samples use unquoted $(pwd) in find; quote it ("$(pwd)") if the project path can contain spaces.
 - After running `keychain initialize` you **must** run `keychain use-login` to set your login keychain as the default and avoid authentication issues with other apps.
 - On versions of Flutter where `flutter build ipa --export-method` is unavailable, open `build/ios/archive/MyApp.xcarchive` and validate/distribute from Xcode.
 - The Codemagic CLI procedure creates a temporary keychain isolated from your login keychain; handle API keys and certificate private keys as secrets and run it only on a disposable or trusted build machine.

@@ -132,7 +132,7 @@ dart run skills@ get
 
 ## Notes
 
-- As of Flutter 3.47, the stylized widget libraries have been moved out of core Flutter to packages that you can import (the examples above import `package:material_ui/material_ui.dart`).
+- As of Flutter 3.47 the stylized widget libraries are available as standalone packages (opt-in; in-framework package:flutter/material.dart is not yet deprecated). The examples import package:material_ui/material_ui.dart, which requires adding material_ui as a dependency (e.g. flutter pub add material_ui); otherwise use package:flutter/material.dart.
 - If a package brings platform-specific code (Kotlin/Java for Android, Swift/Objective-C for iOS), that code must be built into your app. Hot reload and hot restart only update the Dart code, so a full restart might be required to avoid errors like `MissingPluginException`.
 - To upgrade a package, run `flutter pub upgrade`: it retrieves the highest version allowed by the constraint in `pubspec.yaml` and records it in `pubspec.lock`. This is a different command from `flutter upgrade` or `flutter update-packages`, which both update Flutter itself.
 - CocoaPods doesn't currently offer dependency override functionality.

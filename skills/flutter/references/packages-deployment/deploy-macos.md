@@ -113,6 +113,7 @@ Requires an App Store Connect API Key with App Manager access, and Mac App Distr
 
 ## Notes
 
+- The Codemagic samples use unquoted $(pwd) in find; quote it ("$(pwd)") if the project path can contain spaces.
 - After `keychain initialize` you **must** run `keychain use-login` to avoid authentication issues with apps on your machine.
 - Consider obfuscating your Dart code (build flags) before shipping a release archive.
 - The Codemagic CLI procedure handles API keys and certificate private keys as secrets; run it only on a disposable or trusted build machine.

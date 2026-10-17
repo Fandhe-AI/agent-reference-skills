@@ -43,7 +43,7 @@ Dart packages use Semantic Versioning (`major.minor.patch`).
 |--------|---------|
 | `^1.2.3` | `>=1.2.3 <2.0.0` (stable versions: no major change) |
 | `^0.8.0` | `>=0.8.0 <0.9.0` (pre-1.0.0: more restrictive) |
-| `^0.0.3` | `>=0.0.3 <0.0.4` |
+| `^0.0.3` | `>=0.0.3 <0.1.0` |
 | `'>=5.4.0 <6.0.0'` | Traditional range |
 | `any` | Any version (not recommended) |
 
@@ -78,6 +78,7 @@ dependencies:
 
 ## Notes
 
+- The Flutter docs page states ^0.0.3 means >=0.0.3 <0.0.4, but pub_semver's caret uses nextBreaking (minor bump for 0.x), so ^0.0.3 resolves to >=0.0.3 <0.1.0.
 - Use version ranges, not exact versions, in `pubspec.yaml` (`pubspec.lock` pins exact versions); this lets the solver find compatible transitive versions and lets you update safely with `flutter pub upgrade`.
 - Use dependency overrides only as a temporary fix. If the packages aren't actually compatible, bypassing the solver can cause compilation errors or runtime crashes (such as `NoSuchMethodError`); test thoroughly.
 - Dependency overrides only apply to the root package. Don't include `dependency_overrides` in a package you publish to pub.dev; other projects ignore them.

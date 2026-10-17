@@ -106,6 +106,7 @@ Create a workflow with **Product > Xcode Cloud > Create Workflow**, select the p
 
 ## Notes
 
+- Values passed with --dart-define are compiled into the app binary and can be extracted; keep store credentials (json_key_data, FASTLANE_PASSWORD, signing keys) in CI encrypted env vars consumed only by fastlane/the build scripts, and use --dart-define only for non-secret app configuration.
 - Treat the Play Store service account `.json` file like a password; do not check it into any public source control.
 - Take precaution not to re-echo secret variable values onto the console in test scripts. CI secrets are not available in pull requests until merged, so malicious pull requests cannot print them; be careful with how secrets are used in pull requests you accept and merge.
 - The Xcode Cloud post-clone script uses `git clone` of the Flutter `stable` branch and Homebrew on an ephemeral Xcode Cloud build environment; run such scripts only in disposable CI environments. The environment includes macOS and Xcode tools (for example Python) plus Homebrew.

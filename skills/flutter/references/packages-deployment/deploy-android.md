@@ -151,7 +151,7 @@ Android 17 introduces the v3.2 APK Signature Scheme, combining classical signatu
 
 ### Shrink your code with R8
 
-R8 is enabled by default when you build a release APK or AAB. To disable R8, pass `--no-shrink` to `flutter build apk` or `flutter build appbundle`.
+R8 is enabled by default when you build a release APK or AAB. The `--[no-]shrink` flag has no effect; code shrinking is always enabled in release builds.
 
 ### Enable multidex support
 
