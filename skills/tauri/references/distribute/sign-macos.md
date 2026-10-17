@@ -54,13 +54,29 @@ jobs:
       APPLE_ID: ${{ secrets.APPLE_ID }}
       APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: setup node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: lts/*
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          toolchain: stable
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - name: install frontend dependencies
+        run: npm install # change this to npm, yarn or pnpm depending on which one you use.
+
       - name: Import Apple Developer Certificate
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
-          echo $APPLE_CERTIFICATE | base64 --decode > certificate.p12
+          echo "$APPLE_CERTIFICATE" | base64 --decode > certificate.p12
           security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
           security default-keychain -s build.keychain
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
@@ -74,7 +90,7 @@ jobs:
           CERT_ID=$(echo "$CERT_INFO" | awk -F'"' '{print $2}')
           echo "CERT_ID=$CERT_ID" >> $GITHUB_ENV
           echo "Certificate imported."
-      - uses: tauri-apps/tauri-action@v0
+      - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
@@ -121,7 +137,8 @@ If you do not want to provide an Apple-authenticated identity but still want to 
 
 ## Notes
 
-- `needs: prepare` from the source is removed because the excerpt defines no `prepare` job.
+- `needs: prepare` from the source is removed because the excerpt defines no `prepare` job. Checkout / Node / Rust target setup steps added so the workflow runs standalone (the source relies on a prepare job).
+- Third-party actions pinned to commit SHAs (upstream uses tags); SHAs resolved from the GitHub API on 2026-10-17, re-resolve when updating.
 - Requires an Apple Developer account, paid (99$ per year) or free (testing and development only), and an Apple device for signing. With a free account you cannot notarize and the app still shows as not verified.
 - Only the Apple Developer `Account Holder` can create _Developer ID Application_ certificates (it can be associated with a different Apple ID via a CSR with a different user email).
 - A signing certificate is only valid if associated with your Apple ID; an invalid one is not listed in _Keychain Access > My Certificates_ or the `security find-identity` output. If the certificate does not download to the correct location, select the "login" option under "Default Keychains" in Keychain Access.

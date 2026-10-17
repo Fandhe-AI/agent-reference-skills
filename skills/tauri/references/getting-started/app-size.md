@@ -23,10 +23,12 @@ panic = "abort" # Higher performance by disabling panic handlers.
 strip = true # Ensures debug symbols are removed.
 ```
 
-Nightly toolchain:
+Nightly toolchain (run with `cargo +nightly build`; `cargo-features` must be a top-level key of the package manifest, placed before `[package]`):
 
 ```toml
 # src-tauri/Cargo.toml
+cargo-features = ["profile-rustflags", "trim-paths"]
+
 [profile.dev]
 incremental = true # Compile your binary in smaller steps.
 rustflags = ["-Zthreads=8"] # Better compile performance.
@@ -73,6 +75,7 @@ Cargo profile options highlighted by the page (not a complete reference):
 - Requires `tauri@2.4`, `tauri-build@2.1`, `tauri-plugin@2.1` and `tauri-cli@2.4`.
 - It does not account for ACLs added dynamically at runtime.
 - Under the hood, `tauri-cli` communicates with `tauri-build` and the build scripts of `tauri` and `tauri-plugin` through the environment variable `REMOVE_UNUSED_COMMANDS` (set to the project directory, usually `src-tauri`) so they generate a list of allowed commands from the ACL, which the `generate_handler` macro uses. This is an implementation detail with no stability guarantee.
+- The source omits the `cargo-features = ["profile-rustflags", "trim-paths"]` declaration that nightly Cargo requires for these profile keys.
 - Tauri capabilities / permissions (ACL) are Tauri's own system, unrelated to Claude Code permissions (anthropic-claude-code-admin) or MCP capabilities (mcp-spec). Cargo profiles themselves are covered by the rust skill.
 
 ## Related

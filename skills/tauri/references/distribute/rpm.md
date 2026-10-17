@@ -117,9 +117,9 @@ Scripts setup (create `src-tauri/scripts` with the four script files):
 ```bash
 mkdir src-tauri/scripts
 touch src-tauri/scripts/postinstall.sh \
-touch src-tauri/scripts/preinstall.sh \
-touch src-tauri/scripts/preremove.sh \
-touch src-tauri/scripts/postremove.sh
+  src-tauri/scripts/preinstall.sh \
+  src-tauri/scripts/preremove.sh \
+  src-tauri/scripts/postremove.sh
 ```
 
 Example `preinstall.sh` (the others follow the same pattern with `This is post`, `This is preun`, `This is postun`):
@@ -159,6 +159,7 @@ license = "MIT" # add the license here
 - Limitations: build with the oldest base system you intend to support that also provides Tauri v2's required WebKitGTK 4.1 packages (Ubuntu 22.04 and Debian 12 are suitable baselines). Newer bases can raise the minimum glibc and cause runtime errors like `/usr/lib/libc.so.6: version 'GLIBC_2.33' not found`. Use Docker or GitHub Actions.
 - `epoch` is not recommended unless necessary, as it alters how the package manager compares package versions.
 - The source's `scripts` example sets `preInstallScript`/`preRemoveScript` and `postInstallScript`/`postRemoveScript` to the same `prescript.sh` / `postscript.sh` paths; use your own script file names.
+- The source repeats `touch` on backslash-continued lines (creating a stray `touch` file); merged into one command.
 - GUI apps on Linux do not inherit `$PATH` from shell dotfiles; see the `fix-path-env-rs` crate.
 
 ## Related

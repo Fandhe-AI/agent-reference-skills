@@ -178,10 +178,10 @@ SDK Manager packages to install:
 ```sh
 # Linux
 export ANDROID_HOME="$HOME/Android/Sdk"
-export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
+export NDK_HOME="$ANDROID_HOME/ndk/<ndk-version>"  # e.g. the version directory you installed
 # macOS
 export ANDROID_HOME="$HOME/Library/Android/sdk"
-export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
+export NDK_HOME="$ANDROID_HOME/ndk/<ndk-version>"  # e.g. the version directory you installed
 ```
 
 ```powershell
@@ -219,6 +219,7 @@ less install.sh
 - Alpine: containers include no fonts by default; install at least one font package (for example `font-dejavu`). Alpine targets musl, so Rust builds link several system libraries statically; if linking fails with symbols from libraries `pkg-config` reports as present, install the matching `*-static` packages (`openssl-libs-static cairo-static harfbuzz-static glib-static wayland-static zlib-static`). Not every dependency is packaged as `*-static`; some may need building from source.
 - Restart the terminal (and in some cases the system) after installing Rust or Node.js. Package managers other than npm can be enabled with `corepack enable`.
 - Android: "Show Package Details" in the SDK Manager allows older package versions; install older versions only if necessary (compatibility/security risks). On Windows, apps do not refresh environment variables automatically; restart the terminal and IDE.
+- The source derives NDK_HOME from `ls` of the ndk directory, which breaks with multiple side-by-side NDKs; pick one version explicitly.
 - The source pipes the rustup installer script directly into the shell; it is split into download / inspect / run here. The page itself advises reading the script (https://sh.rustup.rs/) before running it.
 - Rust itself (language, Cargo) is covered by the rust skill; Android Studio / Xcode specifics by the `android-*` and `apple-*` skills.
 
