@@ -9,7 +9,7 @@ user-invocable: false
 
 # Docker
 
-> 分割 PR の途中段階。現在収録済み: references/{build, build-cache-bake, cli-buildx, cli-container, cli-image-system}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{build, build-cache-bake, cli-buildx, cli-container, cli-image-system, cli-network-volume-context, compose-cli, compose-file}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 Docker Engine / Dockerfile / Docker Compose / Buildx (BuildKit) の公式ドキュメントを蒸留したリファレンス。
 
@@ -42,6 +42,15 @@ skills/docker/
     cli-image-system/
       README.md
       docker.md / image-pull.md / image-push.md / login.md / system-prune.md ...
+    cli-network-volume-context/
+      README.md
+      network-create.md / volume-create.md / context-create.md ...
+    compose-file/
+      README.md
+      overview.md / services-image-command.md / services-lifecycle.md / networks.md / volumes.md / profiles.md ...
+    compose-cli/
+      README.md
+      compose-up.md / compose-down.md / compose-build.md / compose-watch.md / envvars.md ...
 ```
 
 ## 探索手順
@@ -65,3 +74,8 @@ skills/docker/
 | buildx imagetools・build history を使いたい | cli-buildx | [references/cli-buildx/README.md](references/cli-buildx/README.md) |
 | docker container run / exec / logs / cp などのオプションを知りたい | cli-container | [references/cli-container/README.md](references/cli-container/README.md) |
 | docker image / login / search / system prune / docker init を使いたい | cli-image-system | [references/cli-image-system/README.md](references/cli-image-system/README.md) |
+| docker network / volume / context コマンドを使いたい | cli-network-volume-context | [references/cli-network-volume-context/README.md](references/cli-network-volume-context/README.md) |
+| Compose ファイルの services / networks / volumes / secrets / profiles を書きたい | compose-file | [references/compose-file/README.md](references/compose-file/README.md) |
+| Compose の include / merge / extends / interpolation / models を使いたい | compose-file | [references/compose-file/README.md](references/compose-file/README.md) |
+| docker compose up / down / run / watch などのオプションを知りたい | compose-cli | [references/compose-cli/README.md](references/compose-cli/README.md) |
+| COMPOSE_* 環境変数と優先順位を知りたい | compose-cli | [references/compose-cli/README.md](references/compose-cli/README.md) |
