@@ -267,7 +267,7 @@ export default defineConfig({
 
 ## Notes
 
-- Source: `examples/advanced` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`configs/kubb.config.ts`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@5.5.15/examples/advanced — `examples/advanced` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`configs/kubb.config.ts`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
 - Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14, `@kubb/plugin-axios` 5.6.5, `@kubb/plugin-cypress` 5.0.14, `@kubb/plugin-faker` 5.1.9, `@kubb/plugin-mcp` 5.2.3, `@kubb/plugin-msw` 5.1.3, `@kubb/plugin-react-query` 5.5.3, `@kubb/plugin-redoc` 5.0.12, `@kubb/plugin-zod` 5.4.12; `typescript`: use your project's version
 - Uses the v5 config shape (`kubb/config`, `adapterOas`, `output.postGenerate`, `barrel`). The `query.importPath` `'../../../../tanstack-query-hook'` and the `override` entries are specific to the example repository layout
 - `package.json` declares `node >=22.12`. Its scripts include `generate` (`KUBB_DISABLE_TELEMETRY=1 kubb generate`), `validate`, `mcp`, `studio`, and `typecheck` (`tsc`)

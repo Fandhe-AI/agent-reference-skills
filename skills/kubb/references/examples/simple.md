@@ -88,7 +88,7 @@ npx kubb generate --config kubb.config.js
 
 ## Notes
 
-- Source: `examples/simple-single` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.js`, `package.json`). The official example is named `simple-single`. `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@5.5.15/examples/simple-single — `examples/simple-single` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.js`, `package.json`). The official example is named `simple-single`. `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
 - Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14, `@kubb/plugin-fetch` 5.6.5, `@kubb/plugin-react-query` 5.5.3, `@kubb/plugin-redoc` 5.0.12, `@kubb/plugin-zod` 5.4.12; `@kubb/parser-ts` (no pinned version recorded) and `typescript`: use your project's version
 - Replaces the earlier minimal v3/v4 shape (`@kubb/core`, `pluginOas()`, `input: { path }`)
 - Single-file outputs (`mode: 'file'`) get no barrel of their own; the root barrel re-exports the file directly. The explicit `parsers` array replaces the default set

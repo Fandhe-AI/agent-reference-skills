@@ -141,7 +141,7 @@ export async function toEventStream<TData = unknown>(_result: Promise<{ data: un
 
 ## Notes
 
-- Source: `examples/client` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.ts`, `src/client.ts`). The previous page titled "Axios Client Example" used the v3/v4 shape (`@kubb/core`, `pluginOas`, `pluginClient({ client: 'axios' })`); that content moved to the Axios example ([axios.md](./axios.md))
+- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@5.5.15/examples/client — `examples/client` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.ts`, `src/client.ts`). The previous page titled "Axios Client Example" used the v3/v4 shape (`@kubb/core`, `pluginOas`, `pluginClient({ client: 'axios' })`); that content moved to the Axios example ([axios.md](./axios.md))
 - In v5, `@kubb/plugin-client` is a typed function generator for a client module you write (`importPath` is required). For a ready-made client use `@kubb/plugin-axios` or `@kubb/plugin-fetch`
 - `importPath` is written into every generated import as given, so it must resolve from the generated file
 

@@ -83,7 +83,7 @@ export default defineConfig([
 
 ## Notes
 
-- Source: `examples/cypress` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.js`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@5.5.15/examples/cypress — `examples/cypress` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.js`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
 - Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14, `@kubb/plugin-cypress` 5.0.14; `typescript`: use your project's version
 - The package declares `node >=22.12`. `generate` runs `KUBB_DISABLE_TELEMETRY=1 kubb generate`
 - Replaces the v3/v4 shape (`@kubb/core`, `pluginOas`, `input: { path }`)

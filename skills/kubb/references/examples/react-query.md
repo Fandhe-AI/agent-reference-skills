@@ -66,7 +66,7 @@ export default defineConfig(() => {
 
 ## Notes
 
-- Source: `examples/react-query` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.ts`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@5.5.15/examples/react-query — `examples/react-query` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.ts`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
 - Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14, `@kubb/plugin-fetch` 5.6.5, `@kubb/plugin-react-query` 5.5.3; `@types/react` and `typescript`: use your project's version
 - This config does not set `hooks: true`, so only the `queryOptions` / `mutationOptions` factories and keys are generated (the v5 default `hooks: false`). Set `hooks: true` to also get `use*` hooks (see [../plugins/plugin-react-query.md](../plugins/plugin-react-query.md))
 - Replaces the v3/v4 shape (`client: { bundle: true }`, `paramsType`, `transformers.name`, `QueryKey.getTransformer`). The package declares `node >=22.12`
