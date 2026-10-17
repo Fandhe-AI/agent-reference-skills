@@ -1,7 +1,7 @@
 ---
 name: tauri
 description: >
-  Tauri (Rust + WebView のデスクトップ / モバイルアプリフレームワーク, v2) の Electron とは別リファレンス。
+  Tauri v2 (Rust + WebView のデスクトップ / モバイルアプリフレームワーク、Electron とは別) リファレンス。
   tauri.conf.json, tauri CLI, command / invoke / Channel, AppHandle, Tauri capabilities / permissions (ACL),
   @tauri-apps/api, 公式プラグイン (fs, dialog, updater, store, sql), sidecar, 署名・配布, WebDriver。
 user-invocable: false
@@ -9,7 +9,7 @@ user-invocable: false
 
 # Tauri v2
 
-> 分割 PR の途中段階。現在収録済み: references/{cli, config, develop, distribute, getting-started}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{cli, config, develop, distribute, getting-started, js-api, plugin-js-api-app, plugin-js-api-core}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -67,6 +67,30 @@ skills/tauri/
       ios.md
       plugin.md
       signer.md
+    js-api/                 # @tauri-apps/api
+      README.md
+      overview.md
+      core.md
+      event.md
+      window.md
+      webview-window.md
+      menu.md
+      tray.md
+      path.md
+    plugin-js-api-core/     # 同 JS API (@tauri-apps/plugin-*)
+      README.md
+      fs.md
+      http.md
+      shell.md
+      sql.md
+      store.md
+    plugin-js-api-app/      # 同 JS API (@tauri-apps/plugin-*)
+      README.md
+      dialog.md
+      updater.md
+      notification.md
+      deep-link.md
+      clipboard-manager.md
     distribute/             # バンドル形式・署名・ストア・CI 配布
       README.md
       overview.md
@@ -97,4 +121,7 @@ skills/tauri/
 | 状態管理・sidecar・resources・アイコン・プラグイン開発・デバッグ・テスト・WebDriver | develop | [references/develop/README.md](references/develop/README.md) |
 | tauri.conf.json の window / bundle / build / app / security 設定 | config | [references/config/README.md](references/config/README.md) |
 | tauri dev / build / bundle / android / ios / icon / signer / plugin コマンドのオプション | cli | [references/cli/README.md](references/cli/README.md) |
+| @tauri-apps/api の core / event / window / webview / menu / tray / path | js-api | [references/js-api/README.md](references/js-api/README.md) |
+| コアプラグイン (cli / fs / http / log / opener / os / process / shell / sql / store / stronghold / upload / websocket) の JS 関数シグネチャ (@tauri-apps/plugin-*) | plugin-js-api-core | [references/plugin-js-api-core/README.md](references/plugin-js-api-core/README.md) |
+| アプリ機能プラグイン (autostart / barcode-scanner / biometric / clipboard-manager / deep-link / dialog / geolocation / global-shortcut / haptics / nfc / notification / positioner / updater / window-state) の JS 関数シグネチャ (@tauri-apps/plugin-*) | plugin-js-api-app | [references/plugin-js-api-app/README.md](references/plugin-js-api-app/README.md) |
 | 署名・MSI / NSIS / DMG / AppImage / deb / rpm・各ストア・CI 配布 | distribute | [references/distribute/README.md](references/distribute/README.md) |
