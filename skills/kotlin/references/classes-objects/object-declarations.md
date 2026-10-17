@@ -125,7 +125,7 @@ Anonymous objects returned from a local or `private` function or property expose
 - Object declarations are not expressions (`val myObject = object MySingleton { ... }` is a syntax error) and can't be local (nested directly inside a function); they can be nested in other object declarations or non-inner classes.
 - Compare `data object` instances only with `==` (structural), never `===`: a second instance can appear through platform reflection or a JVM serialization library.
 - Initialization differences: object expressions are executed (initialized) immediately where used; object declarations are initialized lazily on first access; a companion object is initialized when the corresponding class is loaded (resolved), matching the semantics of a Java static initializer.
-- Companion object members look like statics but are instance members of the companion object. On the JVM, `@JvmStatic` generates real static methods and fields.
+- Companion object members look like statics but are instance members of the companion object. On the JVM, `@JvmStatic` generates real static methods (for properties, static getters/setters); static fields come from `@JvmField`, `lateinit`, or `const` (see Java to Kotlin interop).
 - A class name used by itself acts as a reference to the class's companion object, whether named or not. Class members can access `private` members of their companion object.
 
 ## Related

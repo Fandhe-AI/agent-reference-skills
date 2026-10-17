@@ -36,11 +36,14 @@ when (x) {
     else   -> ...
 }
 
-// Read-only list and map; access a map entry
+// Read-only list and map
 val list = listOf("a", "b", "c")
 val map = mapOf("a" to 1, "b" to 2, "c" to 3)
-println(map["key"])
-map["key"] = value
+
+// Access a map entry (assignment requires a MutableMap)
+val mutableMap = mutableMapOf("a" to 1)
+println(mutableMap["key"])
+mutableMap["key"] = value
 
 // Traverse a map or a list of pairs
 for ((k, v) in map) {
@@ -213,7 +216,7 @@ fun calcTaxes(): BigDecimal = TODO("Waiting for feedback from accounting")
 
 ## Notes
 
-- A `data class` provides `equals()`, `hashCode()`, `toString()`, `copy()`, and `component1()`, `component2()`, ... for all properties.
+- A `data class` provides `equals()`, `hashCode()`, `toString()`, `copy()`, and `component1()`, `component2()`, ... for all properties declared in the primary constructor (see [Data classes](../classes-objects/data-classes.md)).
 - Mixing up `EmployeeId` and `CustomerId` value classes triggers a compilation error; `@JvmInline` is only needed for JVM backends.
 - `TODO()` always throws `NotImplementedError`; its return type is `Nothing`, so it can be used regardless of expected type. There is also an overload that accepts a reason parameter.
 

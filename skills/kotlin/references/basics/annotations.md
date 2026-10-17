@@ -119,7 +119,7 @@ fun @receiver:Fancy String.myExtension() { ... }
 
 ### Defaults when no use-site target is specified
 
-The compiler chooses according to `@Target`, in this order: constructor parameter (`param`), property (`property`), field (`field`, if applicable and `property` isn't). If none applies, the annotation is invalid and a use-site target must be given.
+If there are multiple applicable targets, the compiler chooses one or more of them according to `@Target`, in this order: constructor parameter (`param`), property (`property`), field (`field`). If none applies, the annotation is invalid and a use-site target must be given.
 
 ```kotlin
 data class User(val username: String,
@@ -129,6 +129,8 @@ data class User(val username: String,
     @Email val secondaryEmail: String? = null
 }
 ```
+
+`email` is declared in the primary constructor and has a backing field, so `@Email` applies to both `param` and `field`. `secondaryEmail` is not a constructor parameter, so `@Email` applies to `field` only.
 
 ### `all` meta-target
 

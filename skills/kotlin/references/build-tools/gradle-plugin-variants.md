@@ -11,23 +11,21 @@ Gradle 7.0 introduced plugins with variants. The Kotlin team ships different Kot
 Check the variant in use by running with `--info` and finding a line starting with `Using Kotlin Gradle plugin`, for example `Using Kotlin Gradle plugin main variant`.
 
 ```kotlin
-configurations {
-    customConfiguration {
-        attributes {
-            attribute(
-                Usage.USAGE_ATTRIBUTE,
-                project.objects.named(Usage.class, Usage.JAVA_RUNTIME)
-            )
-            attribute(
-                Category.CATEGORY_ATTRIBUTE,
-                project.objects.named(Category.class, Category.LIBRARY)
-            )
-            // If you want to depend on a specific KGP variant:
-            attribute(
-                GradlePluginApiVersion.GRADLE_PLUGIN_API_VERSION_ATTRIBUTE,
-                project.objects.named("7.0")
-            )
-        }
+configurations.register("customConfiguration") {
+    attributes {
+        attribute(
+            Usage.USAGE_ATTRIBUTE,
+            project.objects.named(Usage::class.java, Usage.JAVA_RUNTIME)
+        )
+        attribute(
+            Category.CATEGORY_ATTRIBUTE,
+            project.objects.named(Category::class.java, Category.LIBRARY)
+        )
+        // If you want to depend on a specific KGP variant:
+        attribute(
+            GradlePluginApiVersion.GRADLE_PLUGIN_API_VERSION_ATTRIBUTE,
+            project.objects.named("7.0")
+        )
     }
 }
 ```
@@ -51,6 +49,7 @@ configurations {
 
 - Gradle cannot select a KGP variant in a custom configuration (expected). When a custom configuration depends on `org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.21`, add the attributes shown above, otherwise resolution fails with `Cannot choose between the following variants of org.jetbrains.kotlin:kotlin-gradle-plugin:...`.
 - Known Gradle issues with variant selection: `ResolutionStrategy` in `pluginManagement` does not work for multivariant plugins (gradle/gradle#20545); plugin variants are ignored when a plugin is added as the `buildSrc` common dependency (gradle/gradle#20847).
+- The official page's Kotlin tab uses the Groovy-style `Usage.class` / `Category.class`; corrected to `Usage::class.java` / `Category::class.java` for Kotlin DSL.
 - More variants will be added in future Kotlin releases.
 
 ## Related

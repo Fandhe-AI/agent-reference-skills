@@ -62,6 +62,12 @@ class Rectangle2(override val vertexCount: Int = 4) : Shape2 // Always has 4 ver
 ### Calling the superclass implementation
 
 ```kotlin
+open class Rectangle {
+    open fun draw() { println("Drawing a rectangle") }
+
+    val borderColor: String get() = "black"
+}
+
 class FilledRectangle : Rectangle() {
     override fun draw() {
         super.draw()
