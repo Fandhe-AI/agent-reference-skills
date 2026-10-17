@@ -14,13 +14,14 @@ override fun process(resolver: Resolver): List<KSAnnotated> {
     val result = symbols.filter { !it.validate() }
     symbols
         .filter { it is KSClassDeclaration && it.validate() }
-        .map { it.accept(BuilderVisitor(), Unit) }
-    return result
+        .forEach { it.accept(BuilderVisitor(), Unit) }
+    return result.toList()
 }
 ```
 
 ## Notes
 
+- The official snippet (kotlin-web-site 0b10373) returns the Sequence and uses map for side effects; getSymbolsWithAnnotation returns Sequence<KSAnnotated>, so this page converts with toList() and uses forEach.
 - Processing ends when a round generates no new files. If deferred symbols remain unprocessed, KSP logs an error for each processor with remaining deferred symbols.
 - Defer only when additional information is required and the symbol originates from source code. Never defer classpath symbols (KSP filters them out automatically).
 - Validation: `KSAnnotated.validate()` determines whether to defer. It can be expensive (type resolution); check only what's required. Customize with `KSValidateVisitor` and a `predicate` lambda; use `KSType.isError` (true means KSP could not resolve the type).

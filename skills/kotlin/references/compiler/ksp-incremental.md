@@ -26,7 +26,7 @@ open class B
 
 // Example1Processor.kt
 class Example1Processor : SymbolProcessor {
-   override fun process(resolver: Resolver) {
+   override fun process(resolver: Resolver): List<KSAnnotated> {
        val declA = resolver.getSymbolsWithAnnotation("Interesting").first() as KSClassDeclaration
        val declB = declA.superTypes.first().resolve().declaration
        // B.kt isn't required, because it can be deduced as a dependency by KSP
@@ -37,6 +37,7 @@ class Example1Processor : SymbolProcessor {
        val output = codeGenerator.createNewFile(dependencies, "com.example", outputName, "kt")
        output.write("// $declA : $declB\n".toByteArray())
        output.close()
+       return emptyList()
    }
    // ...
 }
@@ -53,6 +54,7 @@ CLI equivalent: `-incremental-log=true -incremental-log.graph.origin=<fully-qual
 
 ## Notes
 
+- The official snippet (kotlin-web-site 0b10373) omits the return type; SymbolProcessor.process must return List<KSAnnotated>, so this page adds it and returns emptyList().
 - Dirty file: directly modified, or indirectly affected by other dirty files. Processors associate generated outputs with input sources (`CodeGenerator`); KSP uses this to find sources to reprocess.
 - Root sources are files whose symbols come directly from `Resolver.getAllFiles()`, `Resolver.getSymbolsWithAnnotation()`, `Resolver.getClassDeclarationByName()`, or `Resolver.getDeclarationsFromPackage()`. Other symbols resolved from a root source are tracked automatically.
 - Outputs are classified per output (not per processor): aggregating (can be affected by any source file change except removals that don't impact other files; any input change rebuilds all aggregating outputs, e.g. collecting all symbols with an annotation) and isolating (depend only on specified sources, e.g. a class dedicated to an interface it implements).

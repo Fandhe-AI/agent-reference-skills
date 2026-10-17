@@ -32,7 +32,7 @@ Program elements:
 | Java | Closest facility in KSP | Notes |
 | --- | --- | --- |
 | `AnnotationMirror` | `KSAnnotation` | |
-| `AnnotationValue` | `KSValueArguments` | |
+| `AnnotationValue` | `KSValueArgument` | |
 | `Element` | `KSDeclaration` / `KSDeclarationContainer` | |
 | `ExecutableElement` | `KSFunctionDeclaration` | |
 | `PackageElement` | `KSFile` | KSP doesn't model packages as program elements |
@@ -112,16 +112,16 @@ Details (Java member to KSP equivalent):
 | `DeclaredType.asElement` | `ksType.declaration` |
 | `DeclaredType.getEnclosingType` | `ksType.declaration.parentDeclaration` |
 | `DeclaredType.getTypeArguments` | `ksType.arguments` |
-| `ExecutableType.getParameterTypes` | `ksType.declaration.typeParameters`, `ksFunctionDeclaration.parameters.map { it.type }` |
+| `ExecutableType.getParameterTypes` | `ksFunctionDeclaration.parameters.map { it.type }` (resolved function type: `ksType.arguments.dropLast(1)`) |
 | `ExecutableType.getReceiverType` | `ksFunctionDeclaration.parentDeclaration.asType(...)` |
-| `ExecutableType.getReturnType` | `ksType.declaration.typeParameters.last()` |
+| `ExecutableType.getReturnType` | `ksFunctionDeclaration.returnType` (resolved function type: `ksType.arguments.last()`) |
 | `ExecutableType.getTypeVariables` | `ksFunctionDeclaration.typeParameters` |
 | `TypeMirror.getKind` | Compare with types in `KSBuiltIns` for primitive types, `Unit` type, otherwise declared types |
 | `TypeVariable.asElement` / `getUpperBound` | `ksType.declaration` / `ksTypeParameter.bounds` |
 | `TypeVariable.getLowerBound` | To be decided |
 | `WildcardType.getExtendsBound` | `if (ksTypeArgument.variance == Variance.COVARIANT) ksTypeArgument.type else null` |
 | `WildcardType.getSuperBound` | `if (ksTypeArgument.variance == Variance.CONTRAVARIANT) ksTypeArgument.type else null` |
-| `Elements.getAllAnnotationMirrors` | `KSDeclarations.annotations` |
+| `Elements.getAllAnnotationMirrors` | `KSAnnotated.annotations` (`KSDeclaration.annotations`) |
 | `Elements.getAllMembers` | `getAllFunctions`, `getAllProperties` is to be implemented |
 | `Elements.getBinaryName` / `getDocComment` / `getElementValuesWithDefaults` / `hides` | To be decided / to be implemented |
 | `Elements.getConstantExpression` | There is constant value, not expression |
@@ -140,14 +140,16 @@ Details (Java member to KSP equivalent):
 | `Types.getArrayType` | `ksBuiltIns.arrayType.replace(...)` |
 | `Types.getDeclaredType` | `ksClassDeclaration.asType` |
 | `Types.getNoType` | `ksBuiltIns.nothingType` / `null` |
-| `Types.getNullType` | Depending on context, `KSType.markNullable` could be useful |
+| `Types.getNullType` | Depending on context, `KSType.makeNullable()` could be useful |
 | `Types.getWildcardType` | Use `Variance` in places expecting `KSTypeArgument` |
 | `Types.isSameType` | `ksType.equals` |
 | `Types.isSubsignature` | `functionTypeA == functionTypeB` / `functionTypeA == functionTypeB.starProjection()` |
 
 ## Notes
 
-- A `KSType` for a function is just a signature represented by the `FunctionN<R, T1, T2, ..., TN>` family.
+- A `KSType` for a function is just a signature represented by the `FunctionN<P1, ..., PN, R>` family.
+- The official table (kotlin-web-site 0b10373) writes KSValueArguments, KSDeclarations.annotations and KSType.markNullable; the KSP API names are KSValueArgument, KSAnnotated.annotations and KSType.makeNullable() (checked against google/ksp 2.3.10 api sources), which this page uses.
+- The official table maps parameter/return types to ksType.declaration.typeParameters and writes FunctionN<R, T1, ..., TN>; this page uses the resolved type arguments / declaration members and Kotlin's FunctionN<P1, ..., PN, R> order.
 - Items marked "To be implemented" / "To be decided" are unimplemented or undecided in KSP at the time of the page.
 
 ## Related

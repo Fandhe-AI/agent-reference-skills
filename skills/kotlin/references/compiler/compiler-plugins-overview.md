@@ -8,6 +8,14 @@ Compiler plugins hook into the compilation process to analyze or change code whi
 
 ## Signature / Usage
 
+Applying a plugin (All-open, via Gradle):
+
+```kotlin
+plugins {
+    kotlin("plugin.allopen") version "2.4.21"
+}
+```
+
 Plugins maintained by the Kotlin team:
 
 | Plugin | Description |
@@ -33,6 +41,7 @@ Maintained by the Android team at Google:
 
 ## Notes
 
+- The Gradle snippet is taken verbatim from the all-open page (all-open-plugin.md).
 - If no plugin fits, first check whether the Kotlin Symbol Processing (KSP) API or an external linter such as Android lint works.
 - A custom compiler plugin is a last resort: the plugin API is unstable and each new compiler release introduces breaking changes.
 

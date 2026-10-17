@@ -25,17 +25,17 @@ kotlinc @compiler.options @classes
 kotlinc @options/compiler.options hello.kt
 ```
 
-Warning severity (`-Xwarning-level`):
+Warning severity (`-Xwarning-level`); the value is one of `error`, `warning`, `disabled`:
 
 ```bash
-kotlinc -Xwarning-level=DIAGNOSTIC_NAME:(error|warning|disabled)
+kotlinc -Xwarning-level=DIAGNOSTIC_NAME:error
 ```
 
 Plugin ordering (`-Xcompiler-plugin-order`):
 
 ```bash
-kotlinc -Xcompiler-plugin-order=plugin.first>plugin.middle
-kotlinc -Xcompiler-plugin-order=plugin.middle>plugin.last
+kotlinc '-Xcompiler-plugin-order=plugin.first>plugin.middle'
+kotlinc '-Xcompiler-plugin-order=plugin.middle>plugin.last'
 ```
 
 ## Options / Props
@@ -178,6 +178,7 @@ Plugin IDs for `-Xcompiler-plugin-order`:
 - A common schema of all compiler options is published as the JAR `org.jetbrains.kotlin:kotlin-compiler-arguments-description` (code representation and JSON, with the version in which each option was introduced or stabilized).
 - On Windows, surround arguments containing delimiters (whitespace, `=`, `;`, `,`) with double quotes.
 - `-X` options are unstable and may change without notice.
+- Arguments containing `>` or `|` are quoted here so the shell does not treat them as redirection/pipes (the official page shows them unquoted).
 - Kotlin/JS and Kotlin/Native options are listed here only as an option catalog; those targets are outside the scope of this skill.
 - The Gradle `compilerOptions` DSL and Maven configuration are covered under `build-tools`.
 

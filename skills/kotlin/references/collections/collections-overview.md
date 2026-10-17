@@ -17,16 +17,6 @@ fun main() {
 }
 ```
 
-## Collection types
-
-| Type | Description |
-|------|-------------|
-| `Collection<T>` | Root of the hierarchy (inherits `Iterable<T>`); common read-only behavior: size, membership. `MutableCollection<T>` adds `add` / `remove` |
-| `List<T>` | Ordered, indexed access (indices `0..lastIndex`), duplicates allowed. Equal if same size and structurally equal elements at the same positions. `MutableList<T>` default implementation: `ArrayList` |
-| `Set<T>` | Unique elements, order generally undefined; only one `null`. `MutableSet` default implementation: `LinkedHashSet` (preserves insertion order); alternative `HashSet` (no order guarantee, less memory) |
-| `Map<K, V>` | Key-value pairs; unique keys, values may repeat. Not an inheritor of `Collection`. Maps with equal pairs are equal regardless of order. `MutableMap` default: `LinkedHashMap`; alternative `HashMap` |
-| `ArrayDeque<T>` | Double-ended queue (resizable array); also serves as Stack and Queue |
-
 Each collection type is a pair of interfaces: a read-only interface for accessing elements, and a mutable interface that extends it with add / remove / update.
 
 ```kotlin
@@ -60,6 +50,18 @@ fun main() {
     println(deque) // [1, 2, 3]
 }
 ```
+
+## Options / Props
+
+Collection types:
+
+| Type | Description |
+|------|-------------|
+| `Collection<T>` | Root of the hierarchy (inherits `Iterable<T>`); common read-only behavior: size, membership. `MutableCollection<T>` adds `add` / `remove` |
+| `List<T>` | Ordered, indexed access (indices `0..lastIndex`), duplicates allowed. Equal if same size and structurally equal elements at the same positions. `MutableList<T>` default implementation: `ArrayList` |
+| `Set<T>` | Unique elements, order generally undefined; only one `null`. `MutableSet` default implementation: `LinkedHashSet` (preserves insertion order); alternative `HashSet` (no order guarantee, less memory) |
+| `Map<K, V>` | Key-value pairs; unique keys, values may repeat. Not an inheritor of `Collection`. Maps with equal pairs are equal regardless of order. `MutableMap` default: `LinkedHashMap`; alternative `HashMap` |
+| `ArrayDeque<T>` | Double-ended queue (resizable array); also serves as Stack and Queue |
 
 ## Notes
 

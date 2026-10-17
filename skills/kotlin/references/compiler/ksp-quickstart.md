@@ -153,6 +153,7 @@ fun main() {
 ## Notes
 
 - `ksp(...)` applies the processor to application sources only; use `kspTest(...)` for test sources. `ksp(...)` is available only in single-platform projects (see `ksp-multiplatform`).
+- The official pages render kotlinVersion 2.4.21 with kspVersion 2.3.10 while the KSP requirements table (see ksp-overview) lists KGP 2.2.10–2.3.x; the google/ksp 2.3.10 release notes state no KGP range, so the official values are kept and the discrepancy is unconfirmed.
 - In the example project, the root `build.gradle.kts` declares `id("com.google.devtools.ksp") version "2.3.10" apply false`, and `settings.gradle.kts` includes `annotations`, `app`, `processor`.
 - `process()` returns the list of unprocessed symbols for a later round (here `emptyList()`); imports needed: `com.google.devtools.ksp.processing.{CodeGenerator, Dependencies, Resolver, SymbolProcessor}`, `com.google.devtools.ksp.symbol.{KSAnnotated, KSFunctionDeclaration, KSVisitorVoid}`, `com.google.devtools.ksp.validate`, `java.io.OutputStream`.
 - The IDE flags `helloWorld()` as undefined until the build; KSP generates it at `app/build/generated/ksp/main/kotlin/GeneratedHelloWorld.kt`.
