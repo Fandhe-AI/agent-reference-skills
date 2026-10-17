@@ -8,10 +8,16 @@ Install, authentication, and publish commands for the `mcp-publisher` CLI, which
 
 ## Install mcp-publisher (macOS / Linux)
 
-> **Warning**: This downloads a release binary, extracts it, and moves it to `/usr/local/bin/` with `sudo`. Review the download URL before running, and run it in a disposable or trusted environment.
+> **Warning**: This downloads a release binary and extracts it into the current directory. Review the download URL before running. Homebrew (below) is the simpler option.
 
 ```bash
-curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher && sudo mv mcp-publisher /usr/local/bin/
+curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+```
+
+Place the binary in a user-owned directory on your PATH (assumes `${HOME}/.local/bin` is in PATH).
+
+```bash
+mkdir -p "${HOME}/.local/bin" && mv mcp-publisher "${HOME}/.local/bin/"
 ```
 
 ## Install mcp-publisher (Windows)
@@ -119,8 +125,7 @@ curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.my-
 ## Notes
 
 - Source: `registry/quickstart.mdx` / `registry/authentication.mdx` (tag `2026-07-28` raw); the unversioned site path `registry/` was fetched 2026-10-16.
-- The `curl ... | tar xz ... && sudo mv ...` line is transcribed verbatim from the source. Check the download URL and the `sudo` move to `/usr/local/bin/` before running it.
+- The source moves the binary to `/usr/local/bin/` with `sudo mv`; this skill replaces that step with a move into the user-owned `${HOME}/.local/bin/`.
 - The MCP Registry is in preview; breaking changes or data resets may occur before GA (per the source).
 - DNS / HTTP authentication via Google KMS / Azure Key Vault (using `gcloud` / `az`) is long and not included. See `registry/authentication.mdx` in the source.
 - Publishing the package to npm (`npm adduser` / `npm publish --access public`) follows npm's procedure and is listed in the source as a prerequisite for `mcp-publisher`.
-- For automated publishing with GitHub Actions, see [registry-publish-github-actions.md](../samples/registry-publish-github-actions.md) (source: `registry/github-actions.mdx`).
