@@ -60,6 +60,7 @@ Methods to implement in a `BaseSerializerMiddleware` subclass: `serialize`, `des
 - `BaseSerializerMiddleware` will eventually become a first-class SDK part; for now it is a pattern to copy into your codebase (abstract class that recursively walks records and arrays and calls the four methods, implementing the hooks above).
 - Register at client level (`middleware: [...]` on `new Inngest`) for all functions, or at function level (`middleware: [...]` in `createFunction` options) for specific functions.
 - Multiple serializers can be registered together; each uses a unique marker key so they do not conflict. The official page shows a `Set` serializer following the same pattern (`__set__` marker).
+- Source: https://www.inngest.com/docs-markdown/reference/typescript/v4/middleware/serialization (fetched 2026-10).
 
 ## Related
 

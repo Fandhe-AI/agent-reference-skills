@@ -66,6 +66,7 @@ await step.sleepUntil("wait-for-timestamp", event.data.run_at);
 - A future `ts` does not delay a waiting run that matches the event; the delay happens before the run, not inside it.
 - Choose: cron to repeat on a calendar schedule; future `ts` to start new work once; sleep step to continue the same run later. Sleeps outlast serverless timeouts, restarts, and redeploys.
 - Check the Limits page for current delay allowances.
+- Source: https://www.inngest.com/docs-markdown/durable-execution/guides-and-advanced/events-and-triggers/schedules-and-delayed-starts (fetched 2026-10).
 
 ## Related
 

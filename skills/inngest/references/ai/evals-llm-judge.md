@@ -71,6 +71,7 @@ export function scoreToolEfficiency(
 - With ground truth, score accuracy directly: exact match for a single label, set overlap (Jaccard) for lists, a tolerance band for numbers. Keep accuracy and judge scores under separate names.
 - Keep judges cheap and fair: judge a sample when costly (choose the sample in code, same rule for every variant); move slow judges to a deferred scorer; keep the rubric and judge model fixed while comparing variants; control provider rate limits on a deferred judge with concurrency or throttling.
 - Python: no `step.score()`; write each score in its own step via `inngest_client.score(name=..., value=..., run_id=ctx.run_id)` (requires the inngest release after 0.5.19).
+- Source: https://www.inngest.com/docs-markdown/agent-evals/guides/llm-judge (fetched 2026-10).
 
 ## Related
 

@@ -36,6 +36,7 @@ if (shouldJudge(event.data)) {
 - Concurrency or throttling keeps scorer runs within provider rate limits but does not reduce runs, scores, or model calls. To reduce usage, narrow eligibility, avoid duplicate work, or stop sending traffic to a costly variant.
 - Estimate per cohort: monthly original runs, average steps per run, experiment selections, scores per scored run, deferred scorer runs and steps, model/API calls. Recheck after rollout.
 - Agent Evals does not sample scores or cap score spend for you.
+- Source: https://www.inngest.com/docs-markdown/agent-evals/guides/cost-management (fetched 2026-10).
 
 ## Related
 

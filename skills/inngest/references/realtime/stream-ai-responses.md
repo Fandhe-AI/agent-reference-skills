@@ -181,6 +181,7 @@ await inngest.send({
 - Each token counts as one Realtime message; check the plan's daily message allowance before streaming long responses at high volume.
 - Run `message.kind === "run"` check before `message.topic`: run lifecycle messages share the list and carry an untyped payload, so skipping them lets TypeScript narrow `message.data`.
 - `historyLimit: null` keeps every token (default is 100); `bufferInterval: 50` batches renders.
+- Source: https://www.inngest.com/docs-markdown/realtime/guides/stream-ai-responses (fetched 2026-10).
 
 ## Related
 

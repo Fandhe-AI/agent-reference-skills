@@ -22,17 +22,6 @@ const inngest = new Inngest({
 });
 ```
 
-## Options / Props
-
-| Name (`extendedTracesMiddleware({ behaviour })`) | Type | Description |
-|------|------|-------------|
-| behaviour | `"auto"` (default) | Extend a provider if one exists. For backward compatibility may create a provider if none exists, but provider creation is deprecated in favor of `@inngest/otel`. |
-| behaviour | `"extendProvider"` | Only extend a provider; fails if none exists. |
-| behaviour | `"createProvider"` | Deprecated. Only create a provider. Use `@inngest/otel` instead. |
-| behaviour | `"off"` | Do nothing. |
-
-## Examples
-
 Bootstrap file when `--import` is unavailable (keep the dynamic import):
 
 ```ts
@@ -54,6 +43,15 @@ const provider = new BasicTracerProvider({
 provider.register();
 ```
 
+## Options / Props
+
+| Name (`extendedTracesMiddleware({ behaviour })`) | Type | Description |
+|------|------|-------------|
+| behaviour | `"auto"` (default) | Extend a provider if one exists. For backward compatibility may create a provider if none exists, but provider creation is deprecated in favor of `@inngest/otel`. |
+| behaviour | `"extendProvider"` | Only extend a provider; fails if none exists. |
+| behaviour | `"createProvider"` | Deprecated. Only create a provider. Use `@inngest/otel` instead. |
+| behaviour | `"off"` | Do nothing. |
+
 ## Notes
 
 - Load `@inngest/otel/node` before importing code that uses libraries you want instrumented; loading later can miss instrumentation patches. A static `import "./app.js"` in the bootstrap file can load app modules before instrumentation is registered.
@@ -62,6 +60,7 @@ provider.register();
 - `@inngest/otel` instruments common Node packages, OpenAI, Anthropic and Google Generative AI. If you configure OpenTelemetry yourself, manage your own instrumentation list and add `InngestSpanProcessor` (with `behaviour: "off"`).
 - AI metadata extraction is configured separately: set `aiMetadata: false` on the Inngest client to disable it; Extended Traces keeps exporting spans.
 - The middleware is imported from `inngest/experimental`.
+- Source: https://www.inngest.com/docs-markdown/reference/typescript/v4/extended-traces (fetched 2026-10).
 
 ## Related
 

@@ -27,6 +27,7 @@ await inngest.score.experiment({
 - The selected variant stays the same on retries and replays. Change weights gradually, keep a safe path available, and inspect errors, latency, and the outcome score while increasing traffic.
 - Compare the same population: count assignments as well as scored outcomes, check how many runs still await feedback, and use the same time period and outcome definition. Inspect the session and trace behind surprising scores before declaring a winner.
 - Control score volume in application code; apply the same selection rule to every variant and keep the sample and total assignment counts.
+- Source: https://www.inngest.com/docs-markdown/agent-evals/best-practices (fetched 2026-10).
 
 ## Related
 

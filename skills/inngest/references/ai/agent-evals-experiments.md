@@ -90,6 +90,7 @@ await inngest.score.experiment({
 - A score written without the ref (for example plain `step.score()`) still appears on the run and in function score trends but does not count toward a variant.
 - `group.experiment()` saves the selection as one durable step; steps in the selected callback count separately. Place a body-level `inngest.score.experiment()` after your last step so a replay does not send it again.
 - Python (release after 0.5.19): `ctx.group.experiment()` with `experiment.bucket(ctx.run_id, weights={...})` (no weighted selector) and `inngest_client.score_experiment(..., run_id=...)`.
+- Source: https://www.inngest.com/docs-markdown/agent-evals/experiments (fetched 2026-10).
 
 ## Related
 

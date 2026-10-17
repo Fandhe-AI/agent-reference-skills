@@ -24,6 +24,7 @@ Dashboard → Functions → <function> → All actions → Resume
 - Events received during the pause do not run automatically after Resume. To process them, create a Replay for the paused time range and include the **Skipped** status. Include **Canceled** as well to recover runs canceled during the pause.
 - Available history depends on your plan's retention.
 - To stop a particular run rather than the entire function, use run cancellation.
+- Source: https://www.inngest.com/docs-markdown/platform-and-operations/pause-and-resume-functions (fetched 2026-10).
 
 ## Related
 

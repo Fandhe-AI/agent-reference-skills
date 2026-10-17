@@ -73,6 +73,7 @@ await inngest.score.experiment({
 - Ramp by deploying new weights in stages: `{ current: 90, rewrite: 10 }`, then `50:50`, then `0:100`. Runs that already selected a variant keep it on retries and replays; new runs use the new weights. Roll back by setting the rewrite's weight to `0`, or read the split from a flag with `experiment.custom()` to roll back without a deploy.
 - When the old path is no longer needed, pin the winner with `experiment.fixed("rewrite")` or remove the experiment and keep only the rewrite's steps.
 - Python (release after 0.5.19): no weighted selector; `experiment.bucket(ctx.run_id, weights={"current": 99, "rewrite": 1})` approximates the split. Store `res.experiment_ref.model_dump()` and restore it with `ExperimentRef.model_validate(...)` from `inngest.experimental.experiment`.
+- Source: https://www.inngest.com/docs-markdown/agent-evals/guides/workflow-rewrite (fetched 2026-10).
 
 ## Related
 

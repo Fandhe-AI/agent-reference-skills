@@ -26,15 +26,7 @@ Or configure rules manually:
 }
 ```
 
-## Options / Props
-
-| Name | Recommended | Description |
-|------|-------------|-------------|
-| @inngest/await-inngest-send | warn | Use `await` or `return` before `inngest.send()`. |
-| @inngest/no-nested-steps | error | `step.*` inside a `step.run()` function is not allowed. |
-| @inngest/no-variable-mutation-in-step | error | Do not mutate variables inside `step.run()`; return the result instead. |
-
-## Examples
+Rule examples:
 
 ```ts
 // await-inngest-send
@@ -51,12 +43,21 @@ await step.run("get-user", async () => { userId = await getRandomUserId(); });
 const userId = await step.run("get-user", () => getRandomUserId());
 ```
 
+## Options / Props
+
+| Name | Recommended | Description |
+|------|-------------|-------------|
+| @inngest/await-inngest-send | warn | Use `await` or `return` before `inngest.send()`. |
+| @inngest/no-nested-steps | error | `step.*` inside a `step.run()` function is not allowed. |
+| @inngest/no-variable-mutation-in-step | error | Do not mutate variables inside `step.run()`; return the result instead. |
+
 ## Notes
 
 - `await-inngest-send`: in serverless environments runtimes are often killed once the handler resolves, cancelling pending promises. Turn it off only if you control the runtime or `await` the send later.
 - `no-nested-steps`: nesting `step.run()` is not supported and errors at runtime. If steps depend on each other, extract them into a separate function that runs them in sequence.
 - `no-variable-mutation-in-step`: Inngest executes the function multiple times per run and memoizes step state, so code inside `step.run()` is not run on every execution.
 - The config uses the `plugin:@inngest/recommended` name (the official page also shows a `recommend` typo in prose).
+- Source: https://www.inngest.com/docs-markdown/sdk/eslint (fetched 2026-10).
 
 ## Related
 

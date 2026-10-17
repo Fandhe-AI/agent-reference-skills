@@ -100,6 +100,7 @@ func readJobUpdates(ctx context.Context, token string) error {
 - Close every subscription when its consumer finishes so the connection does not stay open. In Go, canceling the context closes the connection and the channel.
 - Authorize the caller in an SSE route as you would before minting a token: the route reads with the signing key, so it can read any channel.
 - The stream also offers `getJsonStream()` for parsed messages and `close()` to end the subscription.
+- Source: https://www.inngest.com/docs-markdown/realtime/guides/server-side-subscriptions (fetched 2026-10).
 
 ## Related
 

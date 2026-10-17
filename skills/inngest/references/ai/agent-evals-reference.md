@@ -46,6 +46,7 @@ Other signatures:
 - `group.experiment()` selection is memoized; experiments require TypeScript SDK v4.8.0 or later. When a later function writes a variant score, pass the original `runId`.
 - Availability: signatures describe TypeScript SDK v4. The Python SDK release after 0.5.19 adds `meta={"sessions": ...}`, `inngest_client.score()` and `score_experiment()` (both take `run_id`), `ctx.group.experiment()` with `experiment.bucket()` / `experiment.fixed()`, and `create_defer()` / `ctx.defer()`; it has no `step.score()`, `createScorer()`, `experiment.weighted()`, or `experiment.custom()`. The Go SDK does not support Agent Evals.
 - Application code decides which runs to score; Agent Evals does not sample scores or cap score spend.
+- Source: https://www.inngest.com/docs-markdown/agent-evals/reference (fetched 2026-10).
 
 ## Related
 

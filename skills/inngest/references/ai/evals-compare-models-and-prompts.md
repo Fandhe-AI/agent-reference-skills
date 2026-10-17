@@ -12,7 +12,7 @@ import { feedbackScorer } from "./scorers";
 export const answerTicket = inngest.createFunction(
   { id: "answer-ticket", triggers: { event: "support/ticket.created" } },
   async ({ event, step, group, defer }) => {
-    const { result: answer, experimentRef } = await group.experiment(
+    const { result: answerText, experimentRef } = await group.experiment(
       "answer-style",
       {
         variants: {
@@ -31,12 +31,12 @@ export const answerTicket = inngest.createFunction(
       }
     );
 
-    await step.run("send-answer", () => sendReply(event.data.ticketId, answer));
+    await step.run("send-answer", () => sendReply(event.data.ticketId, answerText));
 
     // Immediate check, credited to the variant.
     await inngest.score.experiment({
       name: "answer-valid",
-      value: isValidAnswer(answer),
+      value: isValidAnswer(answerText),
       experiment: experimentRef,
     });
 
@@ -47,7 +47,7 @@ export const answerTicket = inngest.createFunction(
       experiment: experimentRef,
     });
 
-    return answer;
+    return answerText;
   }
 );
 ```
@@ -62,7 +62,7 @@ export const feedbackScorer = createScorer(
     const feedback = await step.waitForEvent("wait-for-feedback", {
       event: "support/feedback.received",
       timeout: "7d",
-      if: `async.data.ticketId == '${event.data.ticketId}'`,
+      if: "async.data.ticketId == event.data.ticketId",
     });
     if (!feedback) return null;
     return { name: "customer-helpful", value: feedback.data.helpful };
@@ -77,6 +77,9 @@ export const feedbackScorer = createScorer(
 - Compare in the dashboard experiment view (run counts and score aggregates per variant) or with the `get_experiment` tool in the Inngest MCP server. Compare `customer-helpful` only after both variants have had the same seven days to collect feedback, and keep the count of runs still waiting beside every average.
 - Ramp in stages, for example `{ concise: 20, detailed: 80 }` then `{ concise: 0, detailed: 100 }`. Changing bucket weights can move an account to the other variant; store assignments in your database and select them with `experiment.custom()` if an account must never switch back. Pin the safe variant quickly with `experiment.fixed("concise")`.
 - Python (release after 0.5.19): `ctx.group.experiment()` with `experiment.bucket(str(ticket["accountId"]), weights={...})`; `inngest_client.score_experiment(..., run_id=ctx.run_id)`; scorer via `create_defer()` reading `ctx.parents[0]`.
+- The official TypeScript example binds the result to `answer`, shadowing the `answer()` generator (TDZ ReferenceError); this page renames the result to `answerText`, matching the Python example's `reply`.
+- The official example interpolates the ID into the `if` expression; compare `async.data.X == event.data.X` instead so IDs containing quotes cannot alter the expression.
+- Source: https://www.inngest.com/docs-markdown/agent-evals/guides/compare-models-and-prompts (fetched 2026-10).
 
 ## Related
 

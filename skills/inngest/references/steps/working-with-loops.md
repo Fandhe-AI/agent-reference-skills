@@ -56,6 +56,7 @@ export const importPages = inngest.createFunction(
 - Keep each step's return value within plan limits; store large payloads outside run state and return an ID or cursor instead.
 - For many independent items that can run and fail separately, use fan-out. For parallel steps in one run, use `Promise.all()` (`group.Parallel` in Go, `ctx.group.parallel` in Python) with stable step IDs.
 - The source page also provides Python and Go versions of both examples.
+- Source: https://www.inngest.com/docs-markdown/durable-execution/guides-and-advanced/patterns/working-with-loops (fetched 2026-10).
 
 ## Related
 

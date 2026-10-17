@@ -38,6 +38,7 @@ const { messages } = useRealtime({
 - Every publish counts as one message. Streaming model output token by token can publish thousands of messages per answer; multiply by expected runs per day and compare with the plan.
 - To reduce volume, publish meaningful state changes rather than every small tick, or batch several tokens into one message before publishing.
 - The hook settings run in the browser; they do not change plan limits or add server-side replay.
+- Source: https://www.inngest.com/docs-markdown/realtime/limits (fetched 2026-10).
 
 ## Related
 

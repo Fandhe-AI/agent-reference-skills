@@ -64,6 +64,7 @@ inngestgo.FunctionOpts{
 - If a step fails and needs to retry, execution falls back to standard orchestration.
 - Parallel steps switch execution to standard orchestration; the SDK usually switches back afterwards. With the deprecated `optimizeParallelism: false`, checkpointing does not resume after parallel execution.
 - Supported on local development, self-hosted Inngest, and Inngest Cloud.
+- Source: https://www.inngest.com/docs-markdown/durable-execution/guides-and-advanced/checkpointing (fetched 2026-10).
 
 ## Related
 

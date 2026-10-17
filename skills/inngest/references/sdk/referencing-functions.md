@@ -44,6 +44,7 @@ const square = await step.invoke("compute-square-value", {
 - If `schemas` is not provided and no local function type is passed as a generic, schemas are inferred as `unknown`.
 - Schemas only provide typing for now; validation of input and output is planned for the future.
 - Within the same app, use `referenceFunction<typeof fn>()` with a type-only import to avoid pulling one function's dependencies into another (useful for Next.js, where edge and serverless logic can be colocated).
+- Source: https://www.inngest.com/docs-markdown/reference/typescript/v4/functions/references (fetched 2026-10).
 
 ## Related
 

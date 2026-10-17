@@ -24,6 +24,7 @@ const { messages, connectionStatus, error } = useRealtime({
 - **Repeated progress or tokens**: `inngest.realtime.publish()` is not memoized, so it publishes again when surrounding work retries; a call outside any step can also repeat when the function resumes after a wait. Use `step.realtime.publish(id, topic, data)` with a stable, unique step ID for state changes and final results, move immediate publishes inside `step.run()`, and for token streams let the UI tolerate repeats (for example reset streamed text when the step restarts).
 - **Server-side subscriber receives nothing**: check `channel` and `topics` passed to `subscribe({ app: inngest, ... })` or `inngest.realtime.subscribe()`. Read the returned stream or pass `onMessage`; creating a subscription alone does not process messages. Pass `onError` to see connection errors, and subscribe before the work publishes.
 - **When asking for help**, include the resolved channel name, topic, function run ID, publish method, `connectionStatus`, `error`, the token route's response status, and whether the tab was hidden. Do not include token keys or signing keys.
+- Source: https://www.inngest.com/docs-markdown/realtime/troubleshooting (fetched 2026-10).
 
 ## Related
 

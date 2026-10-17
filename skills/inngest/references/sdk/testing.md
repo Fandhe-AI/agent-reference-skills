@@ -25,24 +25,7 @@ test("runs one step", async () => {
 });
 ```
 
-## Options / Props
-
-| Name (return value of `t.execute()` / `t.executeStep()`) | Description |
-|------|-------------|
-| result | Output of the run or step. |
-| error | Serialized error, returned instead of `result` if the function threw. |
-| ctx | Input used for the run; `ctx.step.*` are Jest-compatible spies. |
-| state | View into the outputs of all steps (promises; use `.resolves` / `.rejects`). |
-
-Mocks (set on `new InngestTestEngine({...})`, `t.execute({...})` or `t.executeStep(id, {...})`):
-
-| Name | Description |
-|------|-------------|
-| events | Array of mocked incoming events (arrays allow batches). |
-| steps | Array of `{ id, handler() }` step mocks; handlers run lazily when the step is reached. |
-| transformCtx | Function `(ctx) => ctx` to supply custom input mocks. |
-
-## Examples
+Mocking events, steps and context:
 
 ```ts
 t.execute({
@@ -64,6 +47,23 @@ import { mockCtx } from "@inngest/test";
 new InngestTestEngine({ function: helloWorld, transformCtx: (ctx) => ({ ...mockCtx(ctx), event: someCustomThing }) });
 ```
 
+## Options / Props
+
+| Name (return value of `t.execute()` / `t.executeStep()`) | Description |
+|------|-------------|
+| result | Output of the run or step. |
+| error | Serialized error, returned instead of `result` if the function threw. |
+| ctx | Input used for the run; `ctx.step.*` are Jest-compatible spies. |
+| state | View into the outputs of all steps (promises; use `.resolves` / `.rejects`). |
+
+Mocks (set on `new InngestTestEngine({...})`, `t.execute({...})` or `t.executeStep(id, {...})`):
+
+| Name | Description |
+|------|-------------|
+| events | Array of mocked incoming events (arrays allow batches). |
+| steps | Array of `{ id, handler() }` step mocks; handlers run lazily when the step is reached. |
+| transformCtx | Function `(ctx) => ctx` to supply custom input mocks. |
+
 ## Notes
 
 - Requires `inngest@>=4.0.0`. Works with jest, vitest, `bun:test`, `@std/expect` (Deno) and chai/expect.
@@ -71,6 +71,7 @@ new InngestTestEngine({ function: helloWorld, transformCtx: (ctx) => ({ ...mockC
 - If no event mocks are given (or `events: undefined`), an `inngest/function.invoked` event is mocked.
 - Mocking of modules/imports outside Inngest must be done with your testing framework.
 - Beyond unit tests: use the Dev Server to exercise durable behavior (retries, timed-out waits, cancellation) and verify idempotency of one-time effects before launch.
+- Source: https://www.inngest.com/docs-markdown/reference/typescript/v4/testing (fetched 2026-10).
 
 ## Related
 

@@ -113,6 +113,7 @@ Size limits (enforced server-side):
 - TypeScript SDK only; Python and Go support is planned but not yet available.
 - Automatic extraction of AI metadata from OpenTelemetry spans is on by default; set `aiMetadata: false` on the Inngest client to opt out.
 - Imported from `inngest/experimental` (v4 reference).
+- Source: https://www.inngest.com/docs-markdown/reference/typescript/v4/functions/metadata (fetched 2026-10).
 
 ## Related
 

@@ -22,6 +22,7 @@ const inngest = new Inngest({ id: "support-agent", middleware: [scoreMiddleware(
 - Variant did not run or split looks wrong: only the selected callback runs; each callback must call at least one `step.*` tool or the SDK raises `NonRetriableError`. `weighted()` splits can look uneven in small cohorts; `bucket()` needs a present, stable key (a missing key hashes an empty string and adds a warning). Changing weights affects only future assignments.
 - Results look late or incomplete: separate assigned runs, scored runs, and runs awaiting outcomes; a score average covers only runs with a score. Compare variants over the same assignment window.
 - Score usage rises faster than expected: count score writes separately from runs, experiment selection steps, deferred scorer runs, and model/API calls. Apply a consistent eligibility rule in application code; the monthly allowance does not reject additional score writes.
+- Source: https://www.inngest.com/docs-markdown/agent-evals/troubleshooting (fetched 2026-10).
 
 ## Related
 

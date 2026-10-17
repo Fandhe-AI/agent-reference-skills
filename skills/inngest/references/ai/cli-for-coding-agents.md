@@ -45,6 +45,7 @@ npx inngest-cli@latest api get-event-runs <event_id> --include-output
 - Credentials are stored in the OS credential store and access tokens refresh automatically. Check with `npx inngest-cli@latest auth status`; revoke with `npx inngest-cli@latest logout`; for a terminal without a browser use `login --no-browser` and open the displayed URL yourself.
 - API keys remain an option for CI or unattended agents via `INNGEST_API_KEY`; an API key overrides the stored OAuth login, so unset it when switching to OAuth. Local Dev Server commands do not require Cloud authentication.
 - Without the CLI an agent must guess from code alone; with it, the agent reads which steps ran, which failed, the error, and the output.
+- Source: https://www.inngest.com/docs-markdown/ai-patterns/cli-for-coding-agents (fetched 2026-10).
 
 ## Related
 

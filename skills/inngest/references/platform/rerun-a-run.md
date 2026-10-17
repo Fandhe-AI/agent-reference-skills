@@ -21,6 +21,7 @@ Dashboard → Runs → <original run>
 - Cron-triggered runs cannot be rerun.
 - For CLI or API rerun-from-step, a step ID must identify exactly one step in the original run.
 - For many runs from one incident, use bulk Replay instead.
+- Source: https://www.inngest.com/docs-markdown/platform-and-operations/rerun-a-run (fetched 2026-10).
 
 ## Related
 

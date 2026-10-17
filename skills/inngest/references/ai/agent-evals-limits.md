@@ -42,6 +42,7 @@ Field limits:
 - Deferred scorers are experimental, independent function runs with their own retries, concurrency, and steps; `onFailure` and event batching are not supported. Each `defer()` call needs an ID unique within its parent run. There is no separate Agent Evals quota for deferred scorers; normal function and plan limits apply.
 - `group.experiment()` selects one variant per run, memoized across retries; each variant callback must call at least one `step.*` tool.
 - Scoring is in beta. Agent Evals does not sample scores or cap score spend.
+- Source: https://www.inngest.com/docs-markdown/agent-evals/limits (fetched 2026-10).
 
 ## Related
 

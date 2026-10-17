@@ -47,7 +47,7 @@ export const triageScorer = createScorer(
     const fix = await step.waitForEvent("wait-for-fix", {
       event: "incident/fix.shipped",
       timeout: "30d",
-      if: `async.data.incidentId == '${event.data.incidentId}'`,
+      if: "async.data.incidentId == event.data.incidentId",
     });
 
     if (!fix) return null; // No fix yet: the outcome is unknown.
@@ -73,6 +73,8 @@ defer("score-localization", {
 - Scores attach to a run or step, not to a session. To score a conversation outcome, score the run that produced the final answer and add a session to every event in the conversation.
 - Tips: score the outcome, not a proxy; returning `null` on timeout records nothing while `0` records a failure (treat silence as unknown); keep names and ranges stable (pass/fail as `1`/`0`, graded results as a fraction); credit experiment variants with `experiment: experimentRef` on `defer()` or `inngest.score.experiment()`.
 - Python (release after 0.5.19): `inngest_client.score(name=..., value=..., run_id=...)`, `create_defer()` and `ctx.defer()`; the scorer reads `ctx.parents[0].run_id`.
+- The official example interpolates the ID into the `if` expression; compare `async.data.X == event.data.X` instead so IDs containing quotes cannot alter the expression.
+- Source: https://www.inngest.com/docs-markdown/agent-evals/guides/user-feedback (fetched 2026-10).
 
 ## Related
 

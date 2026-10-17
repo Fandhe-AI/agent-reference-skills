@@ -23,6 +23,39 @@ inngest.createFunction(
 );
 ```
 
+More patterns:
+
+```ts
+// Combine with an `if` filter
+triggers: [{ event: orderPlaced, if: "event.data.total > 100" }]
+
+// Typed waitForEvent
+const approval = await step.waitForEvent("wait-for-approval", {
+  event: approvalReceived,
+  timeout: "7d",
+  match: "data.orderId",
+});
+
+// Typed send
+await inngest.send(orderPlaced.create({ orderId: "order_123", total: 99.99 }));
+
+// Multiple event triggers: narrow with event.name
+if (event.name === "app/user.created") { /* event.data typed for that event */ }
+
+// Wildcard (no schema allowed)
+const anyUserEvent = eventType("user/*");
+
+// Cron with timezone / with jitter
+triggers: [cron("TZ=America/New_York 0 9 * * 1-5")]
+triggers: [{ cron: "0 * * * *", jitter: "5m" }]
+
+// invoke() schema on the target function
+triggers: [
+  { event: "image/uploaded" },
+  invoke({ schema: z.object({ imageUrl: z.string().url(), width: z.number() }) }),
+]
+```
+
 ## Options / Props
 
 ### eventType(name, options?)
@@ -60,39 +93,6 @@ Object form `{ cron, jitter }`:
 |------|------|-------------|
 | T | type | TypeScript type of the event data. Compile-time checking only; no runtime validation. |
 
-## Examples
-
-```ts
-// Combine with an `if` filter
-triggers: [{ event: orderPlaced, if: "event.data.total > 100" }]
-
-// Typed waitForEvent
-const approval = await step.waitForEvent("wait-for-approval", {
-  event: approvalReceived,
-  timeout: "7d",
-  match: "data.orderId",
-});
-
-// Typed send
-await inngest.send(orderPlaced.create({ orderId: "order_123", total: 99.99 }));
-
-// Multiple event triggers: narrow with event.name
-if (event.name === "app/user.created") { /* event.data typed for that event */ }
-
-// Wildcard (no schema allowed)
-const anyUserEvent = eventType("user/*");
-
-// Cron with timezone / with jitter
-triggers: [cron("TZ=America/New_York 0 9 * * 1-5")]
-triggers: [{ cron: "0 * * * *", jitter: "5m" }]
-
-// invoke() schema on the target function
-triggers: [
-  { event: "image/uploaded" },
-  invoke({ schema: z.object({ imageUrl: z.string().url(), width: z.number() }) }),
-]
-```
-
 ## Notes
 
 - `cron()` accepts a schedule string only; use the object form `{ cron, jitter }` for jitter.
@@ -100,6 +100,7 @@ triggers: [
 - Schema transforms (e.g. Zod `.transform()`) are not supported with `eventType()`: only the input shape can be validated. Transform inside the function handler instead.
 - All functions can be invoked regardless of whether `invoke()` is used; the helper only defines the schema so callers get type checking.
 - Use `staticSchema()` when runtime validation is not needed; use a Standard Schema library when it is.
+- Source: https://www.inngest.com/docs-markdown/reference/typescript/v4/functions/triggers (fetched 2026-10).
 
 ## Related
 

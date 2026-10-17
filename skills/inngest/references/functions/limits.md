@@ -57,6 +57,7 @@ const ref = await step.run("store-result", async () => {
 - Only active resources count toward workspace, app, and function limits. Functions-per-workspace is the app limit multiplied by the function limit, not a separate limit.
 - Concurrent steps bound active work; rate limiting and throttling settings control how a function handles incoming work and do not add plan capacity.
 - Inngest's 2-hour step ceiling does not extend a shorter host timeout. Confirm current host numbers (request size, concurrency, memory, timeout) with your provider, and ensure your framework's body parser accepts the expected payload and run state.
+- Source: https://www.inngest.com/docs-markdown/durable-execution/limits (fetched 2026-10).
 
 ## Related
 

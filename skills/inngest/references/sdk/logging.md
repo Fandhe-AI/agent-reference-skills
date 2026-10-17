@@ -70,6 +70,7 @@ new Inngest({
 - `ConsoleLogger` is intended for local development; use a structured logger such as Pino in production.
 - Include business identifiers (order / customer / request ID) in structured fields; do not log secrets or full sensitive payloads.
 - Use middleware for shared logging behavior across functions.
+- Source: https://www.inngest.com/docs-markdown/reference/typescript/v4/logging (fetched 2026-10).
 
 ## Related
 

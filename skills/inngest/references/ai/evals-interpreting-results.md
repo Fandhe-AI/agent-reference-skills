@@ -36,6 +36,7 @@ Compare these facts per variant for the same function, experiment, eligible audi
 - Decide the outcome, operational limits, and required evidence before inspecting the comparison; there is no universal run count that makes a result conclusive. A small canary proves the path runs but may give too little outcome data.
 - Roll out in stages while watching new runs and later scores. Runs that already selected a variant keep it on retries and replays; changing bucket weights can change a user's future assignment (use `experiment.custom()` with stored assignment to prevent it). On quality regression, route new runs to the safe variant via the existing assignment strategy.
 - If the comparison looks wrong: few or no scores (scorer waiting, timed out, or missed the event); wrong run or outside the experiment (check saved `experimentRef` and original `runId`); uneven split (check assigned counts and strategy); missing session runs (check environment, session key/ID, indexing delay).
+- Source: https://www.inngest.com/docs-markdown/agent-evals/guides/interpreting-results (fetched 2026-10).
 
 ## Related
 
