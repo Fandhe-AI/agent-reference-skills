@@ -108,10 +108,11 @@ When you encounter calls to `saveLayer`, ask yourself:
 
 #### Checking for non-cached images
 
-Caching an image with `RepaintBoundary` is good, _when it makes sense_. One of the most expensive operations, from a resource perspective, is rendering a texture using an image file. First, the compressed image is fetched from persistent storage. The image is decompressed into host memory (GPU memory), and transferred to device memory (RAM). Image I/O can be expensive. The cache provides snapshots of complex hierarchies so they are easier to render in subsequent frames. _Because raster cache entries are expensive to construct and take up loads of GPU memory, cache images only where absolutely necessary._
+Caching an image with `RepaintBoundary` is good, _when it makes sense_. One of the most expensive operations, from a resource perspective, is rendering a texture using an image file. First, the compressed image is fetched from persistent storage. The image is decompressed into host memory (system RAM), and transferred to device memory (GPU memory). On shared-memory devices (such as Apple Silicon or mobile SoCs) the two are not necessarily physically separate. Image I/O can be expensive. The cache provides snapshots of complex hierarchies so they are easier to render in subsequent frames. _Because raster cache entries are expensive to construct and take up loads of GPU memory, cache images only where absolutely necessary._
 
 ## Notes
 
+- Corrected from the official page, which swaps host memory (GPU memory) and device memory (RAM).
 - Dart/Flutter DevTools can't connect to a Flutter web app running in profile mode. Use Chrome DevTools to generate timeline events for a web app.
 - Other resources linked by the page: Debugging, Performance view, Flutter inspector, DevTools, and the `PerformanceOverlay` class and `dart:developer` package in the Flutter API docs.
 

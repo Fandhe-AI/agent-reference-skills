@@ -23,7 +23,7 @@ void main() {
 
 You can view your logs in DevTools' Logging view or in your system console.
 
-- `print()`: prints a `stdout` message. Part of the `dart:io` library.
+- `print()`: prints a `stdout` message. Part of `dart:core` (no import needed; only `stderr` requires `dart:io`).
 - `stderr.method_to_invoke()`: prints a `stderr` message. Replace `method_to_invoke()` with a method supported by `stderr`, such as `writeln()` or `write()`. Often used in a `try...catch` block. Part of `dart:io`.
 - `log()`: includes greater granularity and more information in the logging output. Part of `dart:developer`.
 - `debugPrint()`: if too much output results in discarded log lines, use this to keep those lines. Will print messages in release mode unless part of a debug mode check or an assert. Part of the `foundations` library.
@@ -430,7 +430,7 @@ When enabled, Flutter displays: all boxes in a bright teal border; all padding a
 - `debugPaintLayerBordersEnabled`: finds the boundaries of each layer; each layer's bounds are outlined in orange.
 - `debugRepaintRainbowEnabled`: displays a repainted layer; whenever a layer repaints, it overlays with a rotating set of colors.
 
-Any function or method in the Flutter framework that starts with `debug...` only works in debug mode.
+The `debug...` painting/repaint flags (such as `debugPaint*` and `debugRepaint*`) and the dump functions (such as `debugDumpApp()`) only work in debug mode. `debugPrint()` is an exception: it still prints in release mode, so wrap it in a `kDebugMode` check or an `assert`.
 
 ## Debug animation issues
 
@@ -496,7 +496,8 @@ To add an overlay to a Material Design baseline grid on your app to help verify 
 
 ## Notes
 
-- Use the dump functions only in debug mode; `debug...` flags and functions don't work in other modes. `debugDumpApp()` cannot be called inside `build()` while the app is building, and `debugDumpRenderTree()` cannot be called during a layout or paint phase.
+- Corrected from the official page: it says every `debug...` function only works in debug mode, and lists print() as part of dart:io; debugPrint still prints in release mode, and print() is in dart:core.
+- Use the dump functions only in debug mode; the `debugPaint*`/`debugRepaint*` flags and dump functions don't work in other modes (`debugPrint` is the exception). `debugDumpApp()` cannot be called inside `build()` while the app is building, and `debugDumpRenderTree()` cannot be called during a layout or paint phase.
 - The full widget, render, focus, and layer tree dumps are long; only excerpts of the widget, render, and focus trees are reproduced here. See the official page for the full output.
 - The snippets import `package:material_ui/material_ui.dart` as written in the official page. Per the Flutter 3.47 notes, `material_ui` / `cupertino_ui` are standalone packages you can opt in to; the in-framework `package:flutter/material.dart` is not yet deprecated in 3.47.7.
 - Distance line: `Timeline`, `debugger()`, and the dumps here are Dart / Flutter tooling. The `showPerformanceOverlay` and `MaterialApp` entries are Flutter widgets, not Compose or SwiftUI components of the same name.

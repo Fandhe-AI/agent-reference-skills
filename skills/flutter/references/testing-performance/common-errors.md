@@ -74,7 +74,7 @@ return const Row(
 );
 ```
 
-Another way is to wrap the `Column` in a `Flexible` widget and specify a `flex` factor. The `Expanded` widget is equivalent to the `Flexible` widget with a `flex` factor of 1.0.
+Another way is to wrap the `Column` in a `Flexible` widget and specify a `flex` factor. The `Expanded` widget is equivalent to a `Flexible` widget with `fit: FlexFit.tight` (`flex` defaults to 1). `Flexible` defaults to `fit: FlexFit.loose`, so it lets the child be smaller than the allotted space.
 
 ## 'RenderBox was not laid out'
 
@@ -279,6 +279,7 @@ This error can occur when multiple scrolling widgets (such as `ListView`) appear
 
 ## Notes
 
+- Corrected from the official page, which says Expanded equals Flexible with a flex factor of 1.0; Expanded is Flexible with fit: FlexFit.tight, and flex is an int.
 - Constraints flow down the render tree and sizes flow up; most layout errors above are box-constraint violations. See the "Understanding constraints" page for the underlying model.
 - Distance line: `Row` / `Column` / `Expanded` / `ListView` / `Text` here are Flutter widgets (Dart), not same-named components in Jetpack Compose, SwiftUI, Ark UI, Chakra UI, or fandhe-frontend.
 - The sample snippets use `Scaffold` / `MaterialApp` from the Material library; see the `material_ui` opt-in note for Flutter 3.47 in design-animation pages.

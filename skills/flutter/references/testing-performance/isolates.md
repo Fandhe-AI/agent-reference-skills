@@ -67,9 +67,11 @@ You can use platform plugins in background isolates, via the `BackgroundIsolateB
 import 'dart:isolate';
 
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   // Identify the root isolate to pass to the background isolate.
   RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
   Isolate.spawn(_isolateMain, rootIsolateToken);
@@ -102,6 +104,7 @@ Isolates have their own global fields, and can only communicate with message pas
 
 ## Notes
 
+- Added WidgetsFlutterBinding.ensureInitialized() and the widgets import to the official snippet so the root isolate is initialized before spawning.
 - Corrected: the official page states the `Isolate.run` callback must have exactly one required, unnamed argument; the actual signature is `Isolate.run<R>(FutureOr<R> computation())`, a zero-argument callback (the one-argument form applies to `compute()`).
 - Dart language-level concurrency (event loop, isolates, Actor model) is specified on dart.dev, which is out of scope for this skill; only the Flutter-side usage is covered here.
 

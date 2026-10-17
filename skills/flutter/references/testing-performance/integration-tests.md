@@ -215,9 +215,7 @@ To test a Linux app on a CI system, the CI system must invoke an X server first.
 
 ```yaml
       - name: Run Integration Tests
-        uses: username/xvfb-action@v1.1.2
-        with:
-          run: flutter test integration_test -d linux -r github
+        run: xvfb-run flutter test integration_test -d linux -r github
 ```
 
 If you don't configure your integration in this way, Flutter returns an error:
@@ -348,6 +346,7 @@ Follow the iOS Device Testing instructions in the `integration_test` README. Cre
 
 ## Notes
 
+- Changed from the official page, which uses a placeholder action username/xvfb-action@v1.1.2; replaced with a direct xvfb-run call.
 - Corrected: the official page imports `package:how_to/main.dart` (left over from its code-excerpt source); the package name matches the app created with `flutter create counter_app`.
 - The sample app and test import `package:material_ui/material_ui.dart` as written in the official page. Per the Flutter 3.47 notes, `material_ui` / `cupertino_ui` are standalone packages you can opt in to; the in-framework `package:flutter/material.dart` is not yet deprecated in 3.47.7.
 - A standard `--release` build will not include `package:integration_test`, so use `--debug` when building the APK for Firebase Test Lab.

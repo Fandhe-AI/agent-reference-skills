@@ -85,7 +85,7 @@ While Flutter supports deferred loading on Android and the web, the implementati
    </manifest>
    ```
 
-   If your Android application is large or complex, you might want to separately support `SplitCompat` and provide the `PlayStoreDynamicFeatureManager` manually. To support `SplitCompat`, any of three methods are valid:
+   If your Android application is large or complex, you might want to separately support `SplitCompat` and provide the `PlayStoreDeferredComponentManager` manually. To support `SplitCompat`, any of three methods are valid:
 
    ```java
    public class MyApplication extends SplitCompatApplication {
@@ -277,6 +277,7 @@ The built AAB file can be uploaded directly to the Play store as normal. When `l
 
 ## Notes
 
+- Corrected from the official page, which names the class PlayStoreDynamicFeatureManager; the actual class is PlayStoreDeferredComponentManager.
 - Corrected: the official page imports `io.flutter.embedding.engine.dynamicfeatures.PlayStoreDeferredComponentManager`; the class lives in `io.flutter.embedding.engine.deferredcomponents`.
 - Corrected: the official page mixes `io.flutter.app.FlutterPlayStoreSplitApplication` with `io.flutter.embedding.android.FlutterPlayStoreSplitApplication`; this page uses the latter consistently.
 - Corrected: the official page lists the loadingUnitMapping file as `android/app/src/main/res/values/AndroidManifest.xml`; the meta-data belongs in the app manifest `android/app/src/main/AndroidManifest.xml`.
