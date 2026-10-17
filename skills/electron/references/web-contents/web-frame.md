@@ -256,6 +256,7 @@ Returns `string[]` - A list of suggested words for a given word. If the word is 
 
 * The upstream example references `spellchecker` (lowercase) inside the callback; corrected to `spellChecker`.
 * Renderer-process API: with context isolation enabled, call it from a preload script and expose it through `contextBridge`.
+* `webFrame.setZoomLevel`: the upstream webFrame docs give no explicit clamp range. The WebContents docs define `setZoomLevel` / `setZoomFactor` as clamped to the range Chromium can display (25% to 500%); see [WebContents methods: scripting, zoom](./web-contents-methods-scripting-zoom.md). The older "300% and 50%" wording is not a current limit there.
 * `webFrame.findFrameByRoutingId` and `webFrame.routingId` are _Deprecated_ in favor of `findFrameByToken` and `frameToken`.
 
 ## Related

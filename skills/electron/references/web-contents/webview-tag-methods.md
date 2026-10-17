@@ -258,6 +258,7 @@ Sets the maximum and minimum pinch-to-zoom level.
 ## Notes
 
 * Electron `<webview>` is distinct from the Windows WebView2 control (windows-winui-controls) and from browser test drivers (playwright).
+* `<webview>.setZoomLevel`: the upstream webview docs give no explicit clamp range. The WebContents docs define `setZoomLevel` / `setZoomFactor` as clamped to the range Chromium can display (25% to 500%); see [WebContents methods: scripting, zoom](./web-contents-methods-scripting-zoom.md). The older "300% and 50%" wording is not a current limit there.
 * The upstream page recommends not using the `webview` tag; see the overview page.
 
 ## Related

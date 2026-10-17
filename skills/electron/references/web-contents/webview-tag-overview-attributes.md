@@ -97,6 +97,7 @@ Attribute examples:
 ## Notes
 
 * Security-critical preferences cannot be used to make the guest less secure than its embedder. When the embedder has any of `contextIsolation`, `javascript`, `nodeIntegration`, `nodeIntegrationInWorker`, `sandbox`, `nodeIntegrationInSubFrames` or `enableWebSQL` set to its more secure value, the guest inherits that value and the corresponding `webpreferences` entry is ignored.
+* The upstream wording for `preload` ("access to all Node APIs") only holds when the guest is not sandboxed. Since Electron 20, renderers are sandboxed by default, and a sandboxed preload can only use a limited set of Electron and Node.js APIs (a polyfilled `require`); see security-performance/sandbox.md. Full Node.js access requires `sandbox: false`, which can be set via the `webpreferences` attribute but cannot be weaker than the embedder's setting.
 * Electron `<webview>` is a Chromium-based guest-embedding tag, not the Windows WebView2 control (see windows-winui-controls) and not a browser test driver (see playwright).
 
 ## Related
