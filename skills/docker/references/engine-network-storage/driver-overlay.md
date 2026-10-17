@@ -10,6 +10,13 @@ The `overlay` driver creates a distributed network among multiple Docker daemon 
 
 ```console
 $ docker network create -d overlay --attachable my-attachable-overlay
+```
+
+A prerequisite for doing this is that the hosts have joined the same Swarm.
+
+To join an overlay network named `multi-host-network` with a `busybox` container:
+
+```console
 $ docker run --network multi-host-network busybox sh
 ```
 

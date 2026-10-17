@@ -43,10 +43,12 @@ Only prints the resolved target as JSON; no build is started.
 ## Load the build result into the local Docker
 
 ```sh
-docker buildx bake --load --metadata-file metadata.json .
+docker buildx bake --load --metadata-file metadata.json
 ```
 
 `--load` is shorthand for `--set=*.output=type=docker` and does not override the output when it is `local` / `tar` (conditional). `--metadata-file` writes the per-target result metadata.
+
+Adapted: the official example appends a trailing ".", which Bake parses as a target name ("failed to find target"); it is removed here.
 
 ## Push to a registry
 
