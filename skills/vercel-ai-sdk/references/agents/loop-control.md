@@ -220,7 +220,6 @@ const agent = new ToolLoopAgent({
   tools: {
     runCommand,
   },
-  experimental_sandbox: defaultSandbox,
   prepareStep: async ({ stepNumber }) => {
     if (stepNumber === 0) {
       return {
@@ -230,6 +229,11 @@ const agent = new ToolLoopAgent({
 
     return {};
   },
+});
+
+const result = await agent.generate({
+  prompt: '...',
+  experimental_sandbox: defaultSandbox,
 });
 ```
 
@@ -335,7 +339,8 @@ while (step < maxSteps) {
 - If the default `isStepCount(20)` limit stops a tool loop that could otherwise continue, the SDK logs a warning with guidance on configuring `stopWhen`. Set `stopWhen` explicitly to choose a limit, even if you want to keep `isStepCount(20)`. Explicit stop conditions do not produce this warning.
 - `WorkflowAgent` does not apply a default step limit. It continues until the model stops calling tools or another natural termination condition is met. Configure an explicit condition such as `isStepCount(20)` when you need to bound its model calls.
 - Use `isLoopFinished()` with caution. Without a step limit, the agent could potentially run indefinitely or incur significant costs if the model keeps making tool calls.
-- An experimental sandbox returned from `prepareStep` only applies to tool execution in that step. Later steps use the top-level `experimental_sandbox` unless they return their own override. Unlike `runtimeContext` and `toolsContext`, it is not persisted.
+- An experimental sandbox returned from `prepareStep` only applies to tool execution in that step. Later steps use the `experimental_sandbox` passed at call time unless they return their own override. Unlike `runtimeContext` and `toolsContext`, it is not persisted.
+- The official loop-control guide passes `experimental_sandbox` to the `ToolLoopAgent` constructor, but `ToolLoopAgentSettings` at ai@7.0.142 has no `experimental_sandbox`; it is accepted only by `generate()` / `stream()` and in the `prepareStep` return value. See [tool-loop-agent-settings.ts](https://github.com/vercel/ai/blob/ai@7.0.142/packages/ai/src/agent/tool-loop-agent-settings.ts) and the [ToolLoopAgent reference](https://ai-sdk.dev/docs/reference/ai-sdk-core/tool-loop-agent).
 - The `messages` pruning pattern works with `generateText` and `streamText` too. The token estimator shown is intentionally simple.
 
 ## Related

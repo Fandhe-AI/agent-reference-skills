@@ -120,7 +120,7 @@ type ActiveTools<TOOLS extends ToolSet> =
 
 ## Notes
 
-- The official generateText reference describes `messages` as automatically converting useChat UI messages, but the parameter type is `ModelMessage[]`; per the convertToModelMessages reference, UI messages must be converted explicitly.
+- The official generateText reference describes `messages` as automatically converting useChat UI messages, but the parameter type is `ModelMessage[]`; per the [convertToModelMessages reference](https://ai-sdk.dev/docs/reference/ai-sdk-ui/convert-to-model-messages), UI messages must be converted explicitly.
 - Several result properties (`reasoning`, `reasoningText`, `request`, `response`, `providerMetadata`, `totalUsage`) and callbacks (`onStepFinish`, `onFinish`, `experimental_onToolCallStart`, `experimental_onToolCallFinish`) are deprecated; replacements are listed above.
 - `experimental_*` options (`experimental_toolCallers`, `experimental_refineToolInput`, `experimental_sandbox`, `experimental_download`) are experimental and may change in incremental package releases.
 - For `runtimeContext`, `toolsContext`, tool `context`, and sensitive context filtering, see the Runtime and Tool Context guide.

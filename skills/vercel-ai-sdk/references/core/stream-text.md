@@ -87,7 +87,7 @@ Result values on the result object (promises resolve when the stream finishes; m
 | sendFinish | `boolean` (Optional) | Send the finish event. Defaults to true. |
 | sendStart | `boolean` (Optional) | Send the message start event; set false when using additional `streamText` calls and the start event has already been sent. Defaults to true. |
 | onError | `(error: unknown) => string` (Optional) | Process an error and return the message to include in the data stream. Defaults to `() => "An error occurred."`. Tool execution errors marked `providerExecuted: true` bypass this callback (strings pass through unchanged, other values JSON-stringified). Stream errors and invalid tool calls still use it. |
-| consumeSseStream | `(stream: ReadableStream) => Promise<void>` (Optional) | Consume the SSE stream. Required for proper abort handling in UI message streams; use the AI SDK `consumeStream` function. |
+| consumeSseStream | `(options: { stream: ReadableStream<string> }) => PromiseLike<void> \| void` (Optional) | Consume the SSE stream. Required for proper abort handling in UI message streams; use the AI SDK `consumeStream` function. |
 
 `ResponseInit` fields for the response helpers: `status`, `statusText`, `headers`.
 
@@ -103,6 +103,7 @@ type ActiveTools<TOOLS extends ToolSet> =
 
 - `streamText` starts streaming immediately; errors become part of the stream and are not thrown. Use `onError` to log them.
 - Deprecated: `fullStream` (use `stream`), `includeRawChunks` (use `include.rawChunks`), `totalUsage`, `onFinish`, `onStepFinish`, `experimental_onToolCallStart`, `experimental_onToolCallFinish`.
+- The official streamText reference types `consumeSseStream` as `(stream: ReadableStream) => Promise<void>`, but the published type at ai@7.0.142 takes an object argument `{ stream }`, same as createAgentUIStreamResponse. See [ui-message-stream-response-init.ts](https://github.com/vercel/ai/blob/ai@7.0.142/packages/ai/src/ui-message-stream/ui-message-stream-response-init.ts).
 - `experimental_*` options may change in incremental package releases.
 - `result.toUIMessageStreamResponse` / `pipeUIMessageStreamToResponse` produce HTTP responses; this page covers the AI SDK helper. Server-framework specifics (Hono, Fastify, Next.js route handlers, TanStack Start) are covered by the hono, fastify, nextjs-app and tanstack-start skills.
 

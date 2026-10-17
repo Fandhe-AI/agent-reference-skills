@@ -116,7 +116,7 @@ Union of: `{ type: 'text'; value: string }`, `{ type: 'json'; value: JSONValue }
 
 - Use the top-level `instructions` property instead of a system message for system instructions. AI SDK functions reject system messages in `prompt` or `messages` by default unless `allowSystemInMessages` is set to `true`. Opting in can create a prompt injection risk if users can inject system messages.
 - `ImagePart` is deprecated. Use `FilePart` with `mediaType: 'image'` (or a more specific `image/*` subtype) instead.
-- The official ModelMessage reference page still shows the pre-v5 field name `args`; the published type at ai@7.0.142 (packages/provider-utils/src/types/content-part.ts) uses `input` (renamed in v5, see migration guide 5.0 'Tool Property Changes').
+- The official ModelMessage reference page still shows the pre-v5 field name `args`; the published type at ai@7.0.142 ([packages/provider-utils/src/types/content-part.ts](https://github.com/vercel/ai/blob/ai@7.0.142/packages/provider-utils/src/types/content-part.ts)) uses `input` (renamed in v5, see [Migration Guide 5.0 - Tool Property Changes](https://ai-sdk.dev/docs/migration-guides/migration-guide-5-0)).
 
 ## Related
 
