@@ -99,7 +99,7 @@ Details (Java member to KSP equivalent):
 | `ExecutableElement.getThrownTypes` | Not needed in Kotlin |
 | `ExecutableElement.getTypeParameters` | `ksFunctionDeclaration.typeParameters` |
 | `ExecutableElement.isDefault` | `Modifier.JAVA_DEFAULT in ksFunctionDeclaration.modifiers` (Java sources); for Kotlin interfaces, a non-abstract member (`!ksFunctionDeclaration.isAbstract`) whose parent is an interface (`(parentDeclaration as? KSClassDeclaration)?.classKind == ClassKind.INTERFACE`) |
-| `ExecutableElement.isVarArgs` | `ksFunctionDeclaration.parameters.any { it.isVarArg }` |
+| `ExecutableElement.isVarArgs` | `ksFunctionDeclaration.parameters.any { it.isVararg }` |
 | `QualifiedNameable.getQualifiedName` | `ksDeclaration.qualifiedName` |
 | `TypeElement.getEnclosedElements` / `getEnclosingElement` | `ksClassDeclaration.declarations` / `ksClassDeclaration.parentDeclaration` |
 | `TypeElement.getNestingKind` | Check `KSClassDeclaration.parentDeclaration` and `inner` modifier |
@@ -107,14 +107,14 @@ Details (Java member to KSP equivalent):
 | `TypeParameterElement.getBounds` | `ksTypeParameter.bounds` |
 | `TypeParameterElement.getEnclosingElement` / `getGenericElement` | `ksTypeParameter.parentDeclaration` |
 | `VariableElement.getConstantValue` | To be implemented |
-| `VariableElement.getEnclosingElement` / `getSimpleName` | `ksValueParameter.parentDeclaration` / `ksValueParameter.simpleName` |
-| `ArrayType.getComponentType` | `ksType.arguments.first()` |
+| `VariableElement.getEnclosingElement` / `getSimpleName` | `ksValueParameter.parent` (a `KSNode?`; cast to `KSFunctionDeclaration` when the declaration is needed) / `ksValueParameter.name?.asString()` (`name` is a nullable `KSName?`) |
+| `ArrayType.getComponentType` | `ksType.arguments.first().type` (`arguments` holds `KSTypeArgument`s; `type` is a `KSTypeReference?`) |
 | `DeclaredType.asElement` | `ksType.declaration` |
 | `DeclaredType.getEnclosingType` | `ksType.declaration.parentDeclaration` |
 | `DeclaredType.getTypeArguments` | `ksType.arguments` |
-| `ExecutableType.getParameterTypes` | `ksFunctionDeclaration.parameters.map { it.type }` (resolved function type: `ksType.arguments.dropLast(1)`) |
+| `ExecutableType.getParameterTypes` | `ksFunctionDeclaration.parameters.map { it.type }` (resolved function type: `ksType.arguments.dropLast(1).map { it.type }`) |
 | `ExecutableType.getReceiverType` | `ksFunctionDeclaration.extensionReceiver?.resolve()`, or `(ksFunctionDeclaration.parentDeclaration as? KSClassDeclaration)?.asType(typeArguments)` for member functions (no receiver for top-level / `Modifier.JAVA_STATIC`) |
-| `ExecutableType.getReturnType` | `ksFunctionDeclaration.returnType` (resolved function type: `ksType.arguments.last()`) |
+| `ExecutableType.getReturnType` | `ksFunctionDeclaration.returnType` (resolved function type: `ksType.arguments.last().type`) |
 | `ExecutableType.getTypeVariables` | `ksFunctionDeclaration.typeParameters` |
 | `TypeMirror.getKind` | Compare with types in `KSBuiltIns` for primitive types, `Unit` type, otherwise declared types |
 | `TypeVariable.asElement` / `getUpperBound` | `ksType.declaration` / `ksTypeParameter.bounds` |
@@ -153,6 +153,8 @@ Details (Java member to KSP equivalent):
 - The official table (kotlin-web-site 0b10373) maps overrides to KSFunctionDeclaration.overrides / KSPropertyDeclaration.overrides and asMemberOf to resolver.asMemberOf; in google/ksp 2.3.10 these are Resolver.overrides(overrider, overridee) and KSFunctionDeclaration/KSPropertyDeclaration.asMemberOf(containing: KSType), which this page uses (KSType.starProjection() does exist).
 - The official table (kotlin-web-site 0b10373) maps getReceiverType to ksFunctionDeclaration.parentDeclaration / parentDeclaration.asType(...); parentDeclaration is a nullable KSDeclaration without asType(), so this page casts to KSClassDeclaration and distinguishes extensionReceiver (google/ksp 2.3.10 api).
 - The official table maps isDefault to checking whether the parent declaration is an interface; that also matches abstract / static / private interface methods, so this page checks Modifier.JAVA_DEFAULT (Java) or a non-abstract interface member (Kotlin).
+- The official table (kotlin-web-site 0b10373) writes ksValueParameter.parentDeclaration / ksValueParameter.simpleName and it.isVarArg; in google/ksp 2.3.10 KSValueParameter is not a KSDeclaration and exposes parent (from KSNode), name: KSName? (nullable) and isVararg, which this page uses.
+- In google/ksp 2.3.10, KSType.arguments is List<KSTypeArgument> (each with a nullable type: KSTypeReference?), so the ArrayType.getComponentType row and the resolved-function-type forms of getParameterTypes / getReturnType read .type from the type arguments.
 - Remaining items marked "To be implemented" / "To be decided" follow the official table (kotlin-web-site 0b10373).
 - The official table (kotlin-web-site 0b10373) says getAllFunctions / getAllProperties are "to be implemented"; google/ksp 2.3.10 api declares KSClassDeclaration.getAllFunctions(): Sequence<KSFunctionDeclaration> and getAllProperties(): Sequence<KSPropertyDeclaration> (declared and inherited), which this page uses.
 
