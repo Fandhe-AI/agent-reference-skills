@@ -9,7 +9,7 @@ user-invocable: false
 
 # uv
 
-> 分割 PR の途中段階。現在収録済み: references/{build-publish, configuration, getting-started, indexes-auth, integrations, pip-interface, project-commands}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{build-publish, configuration, getting-started, indexes-auth, integrations, pip-interface, project-commands, projects, python, resolution}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 uv (Astral 製 高速 Python パッケージ / プロジェクトマネージャー) のリファレンススキル。
 
@@ -35,6 +35,25 @@ skills/uv/
       platform-support.md
       reproducible-examples.md
       versioning-policy.md
+    projects/
+      README.md
+      build-editable-virtual-dependencies.md
+      build-isolation.md
+      build.md
+      config.md
+      conflicts-environments.md
+      dependencies.md
+      dependency-groups.md
+      dependency-sources.md
+      export.md
+      init.md
+      layout.md
+      lock-sync.md
+      optional-dependencies.md
+      run.md
+      scripts.md
+      workspace-metadata.md
+      workspaces.md
     project-commands/
       README.md
       uv.md
@@ -51,6 +70,23 @@ skills/uv/
       uv-tree.md
       uv-version.md
       uv-workspace.md
+    python/
+      README.md
+      installing-python.md
+      managed-distributions.md
+      python-discovery.md
+      python-preferences.md
+      python-support-policy.md
+      python-variants.md
+      python-versions.md
+      uv-python-dir.md
+      uv-python-find.md
+      uv-python-install.md
+      uv-python-list.md
+      uv-python-pin.md
+      uv-python-uninstall.md
+      uv-python-update-shell.md
+      uv-python-upgrade.md
     pip-interface/
       README.md
       compatibility-options.md
@@ -80,6 +116,20 @@ skills/uv/
       build-failures.md
       uv-build.md
       uv-publish.md
+    resolution/
+      README.md
+      conflicting-dependencies.md
+      constraints-overrides-exclusions.md
+      dependency-metadata.md
+      multi-version-resolution.md
+      platform-markers.md
+      prereleases.md
+      reproducible-resolutions.md
+      resolution-environments.md
+      resolution-overview.md
+      resolution-strategy.md
+      resolver-internals.md
+      sdist-lockfile-versioning.md
     indexes-auth/
       README.md
       auth-cli.md
@@ -141,9 +191,12 @@ skills/uv/
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | uv のインストール・初回起動・バージョニング・0.13 の破壊的変更を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| プロジェクト作成、依存関係、dependency groups、workspace、lock / sync、PEP 723 スクリプトを扱いたい | projects | [references/projects/README.md](references/projects/README.md) |
 | `uv add` / `uv run` / `uv sync` / `uv lock` / `uv export` 等のコマンドオプションを調べたい | project-commands | [references/project-commands/README.md](references/project-commands/README.md) |
+| Python のインストール・探索・pin・アップグレード、free-threaded 版を扱いたい | python | [references/python/README.md](references/python/README.md) |
 | `uv pip` / `uv venv` で pip・pip-tools 互換のワークフローを使いたい | pip-interface | [references/pip-interface/README.md](references/pip-interface/README.md) |
 | `uv build` / `uv publish` / `uv_build` バックエンドでパッケージを配布したい | build-publish | [references/build-publish/README.md](references/build-publish/README.md) |
+| resolution 戦略、constraints / overrides、platform markers、exclude-newer を調整したい | resolution | [references/resolution/README.md](references/resolution/README.md) |
 | 外部 index・レジストリ認証・証明書・`uv auth` を設定したい | indexes-auth | [references/indexes-auth/README.md](references/indexes-auth/README.md) |
 | `uv.toml` / `[tool.uv]` 設定、`UV_*` 環境変数、キャッシュ、preview features、`uv self` を調べたい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | Docker / GitHub Actions / GitLab CI / pre-commit / PyTorch / Jupyter / AWS Lambda と組み合わせたい | integrations | [references/integrations/README.md](references/integrations/README.md) |
