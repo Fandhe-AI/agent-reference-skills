@@ -139,6 +139,7 @@ pub fn is_effectively_empty(sql: &str) -> bool
 
 - `USING` / `SET` / `LIKE` は字句レベルでは非予約語（`Ident` のまま）。キーワード化は `allowlist::Parser` が文脈的に行う。
 - Migration (0.1.0 → 0.2.0): `Token` に `QualifiedIdent { qualifier, name }` / `Param(u16)` が加わった（`Token` を網羅 `match` するコードは追随が必要）。`Keyword` は 0.2.0 でも `Select` / `From` / `Where` / `And` / `Order` / `By` / `Limit` の 7 語のままで、DDL・JOIN・`WITH`・`OVER` などの語は字句レベルでは `Ident` のまま `allowlist` 側が文脈的に照合する。`INSERT` / `INTO` / `VALUES` / `USING` / `OPERATION_ID` も同様に `Keyword` へ含めない（PR #189 レビュー指摘対応）。
+- `Token::QualifiedIdent` の doc comment は「`EXCLUDED.<col>` 専用」「`ON CONFLICT ... SET` の右辺以外は `42601`」と記すが、これは SQL-20・TASK-193 導入時点の記述で 0.2.0 のソースでは更新されていない。0.2.0 では `allowlist::Parser::parse_join_colref`（`colref := <ident> | <qualifier>.<ident>`、JOIN の列参照解決へ再利用）も同トークンを `ColumnRef::qualified` として受理する（[relation](./relation.md)・[allowlist](./allowlist.md)）。
 - `render_tokens`（`pub(crate)`）は検証済みトークン列を再トークン化で元と同一のトークン列に戻る正規化 SQL へ描画する（`CREATE VIEW` 本文の永続化用。Issue #1192）。`Token::Param` は DDL では `None`（fail-closed）。
 - `MAX_INPUT_LEN` (1 MiB) / `MAX_TOKEN_COUNT` (20,000) は untrusted 入力に対する防御的上限。
 - Distinct from `mssql` (node-mssql, T-SQL client) / `drizzle` (TypeScript ORM) / `supabase` (Postgres): this lexer implements a bespoke, intentionally minimal grammar, not general PostgreSQL SQL.
