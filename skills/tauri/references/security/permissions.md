@@ -58,7 +58,8 @@ const MAX_LEN_IDENTIFIER: usize = MAX_LEN_PREFIX + 1 + MAX_LEN_BASE;
 
 - Despite the `[a-z]` wording, official identifiers also use `-` within names and `:` as the plugin separator (e.g. `fs:allow-mkdir`).
 - Plugin layout: `permissions/<identifier>.json/toml` and `permissions/default.json/toml`. The default permission is added automatically to the application configuration when plugins are added via the Tauri CLI.
-- Application layout: `src-tauri/permissions/<identifier>.toml` and `src-tauri/capabilities/<identifier>.json/.toml`. Capability files can be `json`/`json5` or `toml`; permissions can only be defined in `toml`.
+- Application layout: `src-tauri/permissions/<identifier>.toml` and `src-tauri/capabilities/<identifier>.json/.toml`. Capability files can be `json`/`json5` or `toml`; the official page states that application permissions can only be defined in `toml` (the plugin layout above accepts `.json/toml`).
+- The official page restricts application permission files to TOML while allowing JSON/TOML for plugins; TOML is the documented format for app permissions.
 - Plugin permission examples (File System plugin): `scope-home` (`[[permission.scope.allow]] path = "$HOME/*"`), `read-files` (`commands.allow = ["read_file", "read", "open", "read_text_file", "read_text_file_lines", "read_text_file_lines_next"]`), `allow-mkdir` (`commands.allow = ["mkdir"]`).
 - Distinct from other tools' permissions: this is Tauri's ACL for commands exposed to the WebView, unrelated to anthropic-claude-code-admin / anthropic-claude-code-extend permissions or mcp-spec capabilities.
 

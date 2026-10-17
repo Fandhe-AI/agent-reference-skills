@@ -17,7 +17,7 @@ A grouping and boundary mechanism developers can use to isolate access to the IP
   ],
   "permissions": [
     "core:default",
-    "dialog:open",
+    "dialog:allow-open",
     {
       "identifier": "fs:allow-write-text-file",
       "allow": [{ "path": "$HOME/test.txt" }]
@@ -56,6 +56,7 @@ Definitions:
 
 - If a webview or its window does not match any capability it has no access to the IPC layer at all. Windows can be added by exact name (e.g. `main-window`) or glob patterns like `*` or `admin-*`; a window can have none, one or multiple capabilities.
 - Tauri capabilities / permissions (ACL) for the WebView IPC layer; unrelated to anthropic-claude-code-admin permissions or mcp-spec capabilities.
+- The official example uses `dialog:open`, which is not a permission defined by the dialog plugin (v2.8.3); `dialog:allow-open` is used here.
 - Source: `tauri-apps/tauri@tauri-v2.12.4` `crates/tauri-schema-generator/schemas/capability.schema.json`
 
 - The Capabilities guide states that app commands registered with `Builder::invoke_handler` are allowed for all windows and webviews unless `AppManifest::commands` is set in build.rs; see Capabilities.

@@ -171,7 +171,7 @@ Webview attributes:
 - `background_throttling`: iOS 17.0+ and macOS 14.0+ only; Linux / Windows / Android unsupported.
 - `scroll_bar_style`: Windows `ScrollBarStyle::FluentOverlay` requires WebView2 Runtime 125.0.2535.41 or higher and must be the same for all webviews targeting the same data directory; other platforms support only `Default`.
 - `zoom_hotkeys_enabled`: Windows controls WebView2 `IsZoomControlEnabled`; macOS / Linux inject a polyfill (20% steps from 20% to 1000%) requiring the `core:webview:allow-set-webview-zoom` permission; Android / iOS unsupported.
-- `limit_navigations_to_app_bound_domains` with `true`: add `localhost` and any registrable domains to `tauri-src/Info.ios.plist` under `WKAppBoundDomains`. iOS 14.0+ only.
+- `limit_navigations_to_app_bound_domains` with `true`: add `localhost` and any registrable domains to `src-tauri/Info.ios.plist` under `WKAppBoundDomains` (the rustdoc says `tauri-src/`, a typo; the config schema uses `src-tauri/`). iOS 14.0+ only.
 - Custom protocol Origin: macOS, iOS and Linux use `<scheme>://localhost/<path>`; Windows and Android use `http://<scheme>.localhost/<path>` by default.
 - Tauri `WebviewWindow` builder (Rust core), not Electron's `BrowserWindow`; see the electron skill. Tauri capabilities / permissions (ACL) for window APIs are documented in the security category.
 
