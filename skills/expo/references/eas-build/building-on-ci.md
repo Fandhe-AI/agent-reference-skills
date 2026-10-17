@@ -53,13 +53,13 @@ jobs:
     name: Install and build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: 24
           cache: npm
       - name: Setup Expo and EAS
-        uses: expo/expo-github-action@v8
+        uses: expo/expo-github-action@c7b66a9c327a43a8fa7c0158e7f30d6040d2481e # 8.2.1
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
@@ -83,6 +83,7 @@ Optional environment variables for repairing iOS credentials on CI (ASC API key)
 
 ## Notes
 
+- Third-party actions are pinned to full commit SHAs here; the official example uses major tags (`@v5` / `@v6` / `@v8`).
 - Prerequisite: run `eas build -p [all|android|ios]` locally first so interactive configuration (projectId, **eas.json**, `android.packageName` / `ios.bundleIdentifier`, credentials) is available for non-interactive runs.
 - `--no-wait` exits the step once the build is triggered; you are not billed for CI time while EAS builds. CI passes only if triggering succeeds. Remove the flag if another CI step must run after build completion.
 - For internal distribution builds with ad hoc provisioning on CI, refresh the profile with `--refresh-ad-hoc-provisioning-profile` and `--non-interactive` (`eas build`), or `refresh_ad_hoc_provisioning_profile: true` in the Workflows build job `params`.

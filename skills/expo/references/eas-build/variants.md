@@ -57,7 +57,7 @@ Local builds (set the variable on the `expo run` command):
 APP_VARIANT=development npx expo run:ios
 ```
 
-Switching variants locally requires regenerating native directories, with `APP_VARIANT` set on both commands:
+Switching variants locally requires regenerating native directories, with `APP_VARIANT` set on both commands. The official example switches from `development` to another debug variant `test`; `test` needs its own branch in **app.config.js** (the config above only distinguishes `development`), otherwise it builds with production identifiers:
 
 ```sh
 APP_VARIANT=test npx expo prebuild --clean

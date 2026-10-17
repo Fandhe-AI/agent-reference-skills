@@ -62,7 +62,8 @@ export default withIosPlugin;
 Accepting parameters (update both plugins to read `options.message`). Android (**withAndroidPlugin.ts**):
 
 ```ts
-...
+import { ConfigPlugin, withAndroidManifest } from 'expo/config-plugins';
+
 type AndroidProps = {
   message?: string;
 };
@@ -73,7 +74,22 @@ const withAndroidPlugin: ConfigPlugin<AndroidProps> = (
 ) => {
   const message = options.message || 'Hello world, from Expo plugin!';
   return withAndroidManifest(config, config => {
-   ... rest of the example remains unchanged 
+    const mainApplication = config?.modResults?.manifest?.application?.[0];
+
+    if (mainApplication) {
+      if (!mainApplication['meta-data']) {
+        mainApplication['meta-data'] = [];
+      }
+
+      mainApplication['meta-data'].push({
+        $: {
+          'android:name': 'HelloWorldMessage',
+          'android:value': message,
+        },
+      });
+    }
+
+    return config;
   });
 };
 
@@ -83,14 +99,19 @@ export default withAndroidPlugin;
 iOS (**withIosPlugin.ts**):
 
 ```ts
-...
+import { ConfigPlugin, withInfoPlist } from 'expo/config-plugins';
+
 type IosProps = {
   message?: string;
 };
 
 const withIosPlugin: ConfigPlugin<IosProps> = (config, options = {}) => {
-   const message = options.message || 'Hello world, from Expo plugin!';
-  ... rest of the example remains unchanged
+  const message = options.message || 'Hello world, from Expo plugin!';
+
+  return withInfoPlist(config, config => {
+    config.modResults.HelloWorldMessage = message;
+    return config;
+  });
 };
 
 export default withIosPlugin;
@@ -153,6 +174,7 @@ Using a library plugin:
 
 ## Notes
 
+- The parameter examples are assembled from the official snippets, which elide the unchanged body with `...`.
 - Install `tsx` (`npm install --save-dev tsx`) to write plugins in TypeScript; rename **app.json** to **app.config.ts** and add `import 'tsx/cjs'` at the top.
 - Plugins in the `plugins` array run in order; the output of one is the input to the next. The array uses `withPlugins` under the hood. Chaining is also supported in **app.json**.
 - Library plugins are installed like any library (`npx expo install expo-camera`); each Expo library with a plugin documents its options in its API reference.
