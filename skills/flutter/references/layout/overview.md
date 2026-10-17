@@ -398,8 +398,8 @@ Widget _buildCard() {
 - [Understanding constraints](./constraints.md)
 - [Scrolling](./scrolling.md)
 - [Adaptive and responsive design](./adaptive-responsive.md)
-- Row
-- Column
-- Stack
-- Container
-- ListView
+- [Row](../widgets-api/Row.md)
+- [Column](../widgets-api/Column.md)
+- [Stack](../widgets-api/Stack.md)
+- [Container](../widgets-api/Container.md)
+- [ListView](../widgets-api/ListView.md)

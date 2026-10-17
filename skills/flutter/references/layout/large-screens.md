@@ -70,4 +70,4 @@ Generally switch between a `BottomNavigationBar` and a `NavigationRail` dependin
 - [SafeArea & MediaQuery](./safearea-mediaquery.md)
 - [User input & accessibility](./adaptive-input.md)
 - [Best practices for adaptive design](./adaptive-best-practices.md)
-- Large screen orientation and resizability restrictions ignored on Android 17
+- [Large screen orientation and resizability restrictions ignored on Android 17](../release/android-large-screens-restrictions-ignored.md)

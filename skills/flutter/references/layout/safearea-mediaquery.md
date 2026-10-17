@@ -39,4 +39,4 @@ Scaffold
 
 - [General approach to adaptive apps](./adaptive-general.md)
 - [Large screen devices](./large-screens.md)
-- MediaQuery
+- [MediaQuery](../widgets-api/MediaQuery.md)

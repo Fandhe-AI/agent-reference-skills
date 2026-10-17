@@ -56,5 +56,5 @@ Decide what breakpoints to use. The Material layout guidelines suggest a bottom 
 - [SafeArea & MediaQuery](./safearea-mediaquery.md)
 - [Large screen devices](./large-screens.md)
 - [Best practices for adaptive design](./adaptive-best-practices.md)
-- MediaQuery
-- LayoutBuilder
+- [MediaQuery](../widgets-api/MediaQuery.md)
+- [LayoutBuilder](../widgets-api/LayoutBuilder.md)

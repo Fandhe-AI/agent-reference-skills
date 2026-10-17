@@ -170,4 +170,4 @@ Text editing: both Material and Cupertino text fields support spellcheck configu
 
 - [Platform idioms](./platform-idioms.md)
 - [General approach to adaptive apps](./adaptive-general.md)
-- Navigator
+- [Navigator](../widgets-api/Navigator.md)
