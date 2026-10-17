@@ -26,16 +26,16 @@ react {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `root` | file | `..` | Root folder of your React Native project, i.e. where `package.json` lives. e.g. `root = file("../")` |
-| `reactNativeDir` | file | `../node_modules/react-native` | Folder where the `react-native` package lives. Adjust for monorepos or other package managers. |
-| `codegenDir` | file | `../node_modules/react-native-codegen` | Folder where the `react-native-codegen` package lives. e.g. `codegenDir = file("../node_modules/@react-native/codegen")` |
-| `cliFile` | file | `../node_modules/react-native/cli.js` | Entrypoint file for the React Native CLI; the plugin invokes the CLI for bundling and creating your app. |
+| `root` | file | `../..` | Root folder of your React Native project, i.e. where `package.json` lives. e.g. `root = file("../../")` |
+| `reactNativeDir` | file | `../../node_modules/react-native` | Folder where the `react-native` package lives. Adjust for monorepos or other package managers. |
+| `codegenDir` | file | `../../node_modules/react-native-codegen` | Folder where the `react-native-codegen` package lives. e.g. `codegenDir = file("../../node_modules/@react-native/codegen")` |
+| `cliFile` | file | `../../node_modules/react-native/cli.js` | Entrypoint file for the React Native CLI; the plugin invokes the CLI for bundling and creating your app. |
 | `debuggableVariants` | list | `debug` only | Variants that are debuggable. They do not ship a bundle, so Metro is needed to run them. e.g. `debuggableVariants = ["liteDebug", "prodDebug"]` |
 | `nodeExecutableAndArgs` | list | `[node]` | Node command and arguments invoked for all the scripts. e.g. `nodeExecutableAndArgs = ["node"]` |
 | `bundleCommand` | string | `bundle` | Name of the `bundle` command invoked when creating the bundle. Useful for RAM Bundles, e.g. `bundleCommand = "ram-bundle"` |
-| `bundleConfig` | file | empty (no config file) | Path to a configuration file passed to `bundle --config <file>`. e.g. `bundleConfig = file("../rn-cli.config.js")` |
+| `bundleConfig` | file | empty (no config file) | Path to a configuration file passed to `bundle --config <file>`. e.g. `bundleConfig = file("../../rn-cli.config.js")` |
 | `bundleAssetName` | string | `index.android.bundle` | Name of the bundle file generated. e.g. `bundleAssetName = "MyApplication.android.bundle"` |
-| `entryFile` | file | `index.android.js` or `index.js` (searched) | Entry file used for bundle generation. e.g. `entryFile = file("../js/MyApplication.android.js")` |
+| `entryFile` | file | `index.android.js` or `index.js` (searched) | Entry file used for bundle generation. e.g. `entryFile = file("../../js/MyApplication.android.js")` |
 | `extraPackagerArgs` | list | empty | Extra flags passed to the `bundle` command. e.g. `extraPackagerArgs = []` |
 | `hermesCommand` | path | bundled `hermesc` | Path to the `hermesc` command (the Hermes Compiler). The plugin uses the correct compiler for your system by default, so you generally won't need to customize this. |
 | `hermesFlags` | list | `["-O", "-output-source-map"]` | Flags passed to `hermesc`. e.g. `hermesFlags = ["-O", "-output-source-map"]` |
@@ -46,6 +46,7 @@ react {
 - `debuggableVariants`: if you have other variants (like `staging`, `lite`, etc.) adjust it accordingly. The plugin skips JS bundling for all `debuggableVariants`, so e.g. a `fullStaging` listed there cannot be published to a store because it will be missing the bundle.
 - `enableBundleCompression`: disabling compression for the `.bundle` allows it to be directly memory-mapped to RAM, improving startup time at the cost of a larger app size on disk. The `.apk` download size is mostly unaffected because `.apk` files are compressed before downloading. Do not turn it on unless you are really concerned about disk space.
 - Corrected: the official `bundleConfig` example writes `file(../rn-cli.config.js)` without quotes, which is not valid Groovy; the path is quoted here.
+- Corrected: the official page writes paths as file("../..."), but file() in android/app/build.gradle resolves against android/app, so the app root is ../../ (as in the React Native template).
 - `bundleConfig` / `extraPackagerArgs`: see the React Native community CLI documentation for the `bundle` command flags (linked from the official page).
 - Build variants: by default new apps have two build types (`debug`, `release`) and no custom flavors. The combination of all build types and flavors generates build variants; e.g. `debug`/`staging`/`release` with `full`/`lite` gives 6 variants (`fullDebug`, `fullStaging`, `fullRelease`, ...). With custom variants beyond `debug` and `release`, specify which are debuggable:
 

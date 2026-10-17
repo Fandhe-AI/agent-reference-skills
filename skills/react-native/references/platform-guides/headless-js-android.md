@@ -89,7 +89,15 @@ class MyTaskService : HeadlessJsTaskService() {
 Then add the service to your `AndroidManifest.xml` file inside the `application` tag:
 
 ```xml
-<service android:name="com.your_application_name.MyTaskService" />
+<!-- outside <application>; the service is started as a foreground service -->
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<!-- type-specific permission (API 34+); choose the type that matches your use case -->
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
+<!-- inside <application> -->
+<service
+  android:name="com.your_application_name.MyTaskService"
+  android:foregroundServiceType="dataSync" />
 ```
 
 Now, whenever you start your service (see Android `Context.startService`), e.g. as a periodic task or in response to some system event / broadcast, JS will spin up, run your task, then spin down.
@@ -104,7 +112,8 @@ bundle.putString("foo", "bar");
 service.putExtras(bundle);
 
 // MyTaskService must call startForeground() with a notification (and declare android:foregroundServiceType on API 34+), otherwise use startService when the app is allowed to start background services
-getApplicationContext().startForegroundService(service);
+// import androidx.core.content.ContextCompat;
+ContextCompat.startForegroundService(getApplicationContext(), service);
 ```
 
 **Kotlin**
@@ -118,7 +127,8 @@ bundle.putString("foo", "bar")
 service.putExtras(bundle)
 
 // MyTaskService must call startForeground() with a notification (and declare android:foregroundServiceType on API 34+), otherwise use startService when the app is allowed to start background services
-applicationContext.startForegroundService(service)
+// import androidx.core.content.ContextCompat
+ContextCompat.startForegroundService(applicationContext, service)
 ```
 
 ### Retries
@@ -204,6 +214,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 
+import androidx.core.content.ContextCompat;
 import com.facebook.react.HeadlessJsTaskService;
 
 import java.util.List;
@@ -226,7 +237,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             serviceIntent.putExtra("hasInternet", hasInternet);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 // MyTaskService must call startForeground() with a notification (and declare android:foregroundServiceType on API 34+), otherwise use startService when the app is allowed to start background services
-                context.startForegroundService(serviceIntent);
+                ContextCompat.startForegroundService(context, serviceIntent);
                 HeadlessJsTaskService.acquireWakeLockNow(context);
             } else {
                 // Android 12+: background foreground-service starts are disallowed; schedule work with WorkManager (NetworkType.CONNECTED constraint) instead
@@ -298,6 +309,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import androidx.core.content.ContextCompat
 import com.facebook.react.HeadlessJsTaskService
 
 class NetworkChangeReceiver : BroadcastReceiver() {
@@ -313,7 +325,7 @@ class NetworkChangeReceiver : BroadcastReceiver() {
             serviceIntent.putExtra("hasInternet", hasInternet)
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 // MyTaskService must call startForeground() with a notification (and declare android:foregroundServiceType on API 34+), otherwise use startService when the app is allowed to start background services
-                context.startForegroundService(serviceIntent)
+                ContextCompat.startForegroundService(context, serviceIntent)
                 HeadlessJsTaskService.acquireWakeLockNow(context)
             } else {
                 // Android 12+: background foreground-service starts are disallowed; schedule work with WorkManager (NetworkType.CONNECTED constraint) instead
@@ -391,6 +403,8 @@ class NetworkChangeReceiver : BroadcastReceiver() {
 - Since Android 7.0 (API 24) CONNECTIVITY_CHANGE is not delivered to manifest-declared receivers; register the receiver at runtime with Context.registerReceiver or use ConnectivityManager.NetworkCallback / WorkManager network constraints instead (the official example predates this).
 - Deviation from the official page: android:exported="false" is added to the receiver (required when targeting Android 12+).
 - Deviation from the official page: the service start is limited to API < 31 because Android 12+ forbids starting foreground services from the background (ForegroundServiceStartNotAllowedException); use WorkManager with a network constraint instead.
+- Deviation from the official page: ContextCompat.startForegroundService is used because Context.startForegroundService requires API 26 while React Native supports minSdk 24.
+- Deviation from the official page: FOREGROUND_SERVICE (API 28+) and the type-specific FOREGROUND_SERVICE_<TYPE> permission plus android:foregroundServiceType (API 34+) are declared because the service is started as a foreground service.
 - Android only. The native side (Service, BroadcastReceiver, manifest) is plain Android; see the android-architecture skill for Android components in general. This is the React Native `HeadlessJsTaskService` API, not a Kotlin or Compose API.
 
 ## Related
