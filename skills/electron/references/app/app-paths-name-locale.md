@@ -11,12 +11,12 @@ Methods of `app` for application directories, name, version, Linux desktop name 
 ```js
 const { app } = require('electron')
 
-const path = require('node:path')
-
-app.getPath('userData')
-app.getLocale() // 'de'
-app.getSystemLocale() // 'fi-FI'
-app.getPreferredSystemLanguages() // ['fr-CA', 'en-US', 'zh-Hans-CN', 'fi', 'es-419']
+app.whenReady().then(() => {
+  app.getPath('userData')
+  app.getLocale() // 'de'
+  app.getSystemLocale() // 'fi-FI'
+  app.getPreferredSystemLanguages() // ['fr-CA', 'en-US', 'zh-Hans-CN', 'fi', 'es-419']
+})
 ```
 
 (The three locale calls above are the documented Windows example: application locale German, regional format Finnish (Finland), preferred system languages French (Canada), English (US), Simplified Chinese (China), Finnish, Spanish (Latin America).)
@@ -101,7 +101,7 @@ The name (without the `.desktop` suffix) is the app's identity for Linux desktop
 
 Portals increasingly enforce this identity. If the name is not a valid reverse-DNS ID or does not match an installed `.desktop` file:
 
-* GNOME 50.0/50.1 (Ubuntu 26.04) rejects `globalShortcut` binds with `org.freedesktop.portal.Error.NotAllowed` with no error surfaced to the app (electron/electron issue #52218).
+* GNOME 50.0/50.1 (Ubuntu 26.04) rejects `globalShortcut` binds with `org.freedesktop.portal.Error.NotAllowed` with no error surfaced to the app ([electron/electron#52218](https://github.com/electron/electron/issues/52218)).
 * `xdg-desktop-portal` 1.21 and later refuses portal sessions for app IDs it cannot resolve to a `.desktop` file.
 
 If this value is not set and `desktopName` is not present in `package.json`, Electron falls back to a lowercased, hyphenated slug of the app's name (e.g. `My App` -> `my-app.desktop`), which is unlikely to be a valid portal identity; packaged apps should always set it explicitly.

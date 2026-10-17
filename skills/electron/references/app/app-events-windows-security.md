@@ -11,9 +11,11 @@ Events of `app` for BrowserWindow / WebContents creation and focus, certificate 
 ```js
 const { app } = require('electron')
 
+// Pre-trusted certificate fingerprint (placeholder; replace with your pinned value)
+const TRUSTED_FINGERPRINT = 'sha256/...'
+
 app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
-  if (url === 'https://github.com') {
-    // Verification logic.
+  if (url.startsWith('https://example.com/') && certificate.fingerprint === TRUSTED_FINGERPRINT) {
     event.preventDefault()
     callback(true)
   } else {
@@ -182,6 +184,7 @@ This event is guaranteed to be emitted after the `ready` event of `app` gets emi
 * `argv` will not be exactly the same list of arguments as those passed to the second instance. The order might change and additional arguments might be appended. If you need to maintain the exact same arguments, use `additionalData` instead.
 * If the second instance is started by a different user than the first, the `argv` array will not include the arguments.
 * Extra command line arguments might be added by Chromium, such as `--original-process-start-time`.
+* The official `certificate-error` example decides on the URL alone; the snippet above instead checks the certificate's `fingerprint` (a documented `Certificate` field) against a pre-trusted value. Calling `callback(true)` without verifying the certificate allows man-in-the-middle attacks.
 * `login` here is HTTP basic auth for Electron web contents / utility processes, not application user authentication. For app-level sign-in with Electron see better-auth; for server-side Request handling see fastify / hono.
 
 ## Related

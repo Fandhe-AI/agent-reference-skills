@@ -273,7 +273,7 @@ app.setClientCertRequestPasswordHandler(async ({ hostname, tokenName, isRetry })
 ## Notes
 
 * On macOS, your app should be code signed and notarized for login item settings to work reliably. When an app isn't packaged, code signed, and notarized, `openAtLogin` may silently fail to take effect. See apple-distribution for signing and notarization.
-* Per the history comments in the v44.8.0 docs source (PR 52351): the `openAsHidden` option was removed from `app.setLoginItemSettings`, and `openAsHidden`, `wasOpenedAsHidden` and `restoreState` were removed from the `app.getLoginItemSettings` return value.
+* Per the history comments in the v44.8.0 docs source ([PR 52351](https://github.com/electron/electron/pull/52351)): the `openAsHidden` option was removed from `app.setLoginItemSettings`, and `openAsHidden`, `wasOpenedAsHidden` and `restoreState` were removed from the `app.getLoginItemSettings` return value.
 * `app.setAccessibilitySupportEnabled`: rendering the accessibility tree can significantly affect the performance of your app. It should not be enabled by default. Calling it enables the features `nativeAPIs`, `webContents`, `inlineTextBoxes`, and `extendedProperties`.
 * Enable `Secure Keyboard Entry` only when it is needed and disable it when it is no longer needed.
 * `startAccessingSecurityScopedResource` applies to Mac App Store builds (`mas`). See apple-distribution for App Store packaging.
