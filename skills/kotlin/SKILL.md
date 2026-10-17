@@ -2,13 +2,14 @@
 name: kotlin
 description: >
   Kotlin (JetBrains 製プログラミング言語, kotlinlang.org) の言語仕様・標準ライブラリ・ツールチェーン。
-  null safety, data class, sealed class, context parameters, KGP, Maven, KSP, kapt, K2, KDoc。
+  null safety, data class, sealed class, context parameters, kotlinx.serialization (@Serializable),
+  KGP, Maven, KSP, kapt, K2, KDoc。
 user-invocable: false
 ---
 
 # Kotlin
 
-> 分割 PR の途中段階。現在収録済み: references/{basics, build-tools, classes-objects}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{basics, build-tools, classes-objects, collections, compiler}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -38,9 +39,15 @@ skills/kotlin/
       README.md
       classes.md  data-classes.md  sealed-classes.md  interfaces.md  extensions.md
       delegated-properties.md  object-declarations.md  inline-classes.md ...
+    collections/            # コレクション・シーケンス・Range（18 ページ）
+      README.md
+      collections-overview.md  collection-operations.md  sequences.md  ranges.md ...
     build-tools/            # Gradle・Maven・Kotlin daemon（14 ページ）
       README.md
       gradle-configure-project.md  gradle-compiler-options.md  maven-configure-project.md ...
+    compiler/               # コンパイラ・K2・コンパイラプラグイン・KSP・kapt（23 ページ）
+      README.md
+      compiler-reference.md  k2-compiler-migration-guide.md  ksp-overview.md  ksp-quickstart.md  kapt.md ...
 ```
 
 ## 探索手順
@@ -57,4 +64,6 @@ skills/kotlin/
 | --- | --- | --- |
 | 基本構文・null safety・if / when / for・例外処理・可視性・KDoc を知りたい | basics | [references/basics/README.md](references/basics/README.md) |
 | class・data class・sealed class・interface・拡張・委譲・object を知りたい | classes-objects | [references/classes-objects/README.md](references/classes-objects/README.md) |
+| List / Set / Map の操作・変換・フィルタ・Sequence・Range | collections | [references/collections/README.md](references/collections/README.md) |
 | Gradle / Maven 設定・コンパイラオプション・Kotlin daemon | build-tools | [references/build-tools/README.md](references/build-tools/README.md) |
+| コンパイラオプション・K2 移行・KSP・kapt・all-open / no-arg 等のプラグイン | compiler | [references/compiler/README.md](references/compiler/README.md) |
