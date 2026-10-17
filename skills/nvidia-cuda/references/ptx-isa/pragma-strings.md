@@ -20,7 +20,7 @@ The `.pragma` directive attaches a string-literal hint to a scope (module, kerne
 
 ## Notes
 
-- PTX ISA 9.3 — Chapter 12
+- PTX ISA 9.4 — Chapter 12
 - Pragma strings are specified as string literals passed to the `.pragma` directive and are architecture/compiler-version specific; unrecognized strings are ignored rather than causing an error.
 
 ## Related

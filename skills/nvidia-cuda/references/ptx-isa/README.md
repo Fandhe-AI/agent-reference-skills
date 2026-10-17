@@ -11,14 +11,14 @@
 | abi | Function calls, .func/.callprototype, .param passing, variadic functions, alloca | [abi.md](./abi.md) |
 | memory-consistency-model | Scopes (.cta/.cluster/.gpu/.sys), morally strong ops, fence/acquire/release | [memory-consistency-model.md](./memory-consistency-model.md) |
 | instruction-set-overview | Instruction description format, general syntax, predicated execution, divergence, semantics (9.1–9.6) | [instruction-set-overview.md](./instruction-set-overview.md) |
-| instructions-arithmetic | Integer / Extended-Precision Integer / Floating-Point / Half Precision Floating-Point / Mixed Precision Floating-Point (9.7.1–9.7.5) | [instructions-arithmetic.md](./instructions-arithmetic.md) |
-| instructions-comparison-logic | Comparison and Selection / Half Precision Comparison / Logic and Shift (9.7.6–9.7.8) | [instructions-comparison-logic.md](./instructions-comparison-logic.md) |
-| instructions-data-movement | Data Movement and Conversion / Fabric (9.7.9–9.7.10) | [instructions-data-movement.md](./instructions-data-movement.md) |
-| instructions-texture-surface | Texture / Surface (9.7.11–9.7.12) | [instructions-texture-surface.md](./instructions-texture-surface.md) |
-| instructions-control-flow | Control Flow / Stack Manipulation (9.7.13, 9.7.18) | [instructions-control-flow.md](./instructions-control-flow.md) |
-| instructions-sync-communication | Parallel Synchronization and Communication (9.7.14) | [instructions-sync-communication.md](./instructions-sync-communication.md) |
-| instructions-matrix-multiply | Warp Level MMA / Async Warpgroup Level MMA / TensorCore 5th Generation Family (9.7.15–9.7.17) | [instructions-matrix-multiply.md](./instructions-matrix-multiply.md) |
-| instructions-video-misc | Video / Miscellaneous Instructions (9.7.19–9.7.20) | [instructions-video-misc.md](./instructions-video-misc.md) |
+| instructions-arithmetic | Integer / Extended-Precision Integer / Floating-Point / Half Precision Floating-Point / Mixed Precision Floating-Point / Alternate Floating-Point (9.7.1–9.7.6) | [instructions-arithmetic.md](./instructions-arithmetic.md) |
+| instructions-comparison-logic | Comparison and Selection / Half Precision Comparison / Logic and Shift (9.7.7–9.7.9) | [instructions-comparison-logic.md](./instructions-comparison-logic.md) |
+| instructions-data-movement | Data Movement and Conversion / Fabric (9.7.10–9.7.11) | [instructions-data-movement.md](./instructions-data-movement.md) |
+| instructions-texture-surface | Texture / Surface (9.7.12–9.7.13) | [instructions-texture-surface.md](./instructions-texture-surface.md) |
+| instructions-control-flow | Control Flow / Stack Manipulation (9.7.14, 9.7.19) | [instructions-control-flow.md](./instructions-control-flow.md) |
+| instructions-sync-communication | Parallel Synchronization and Communication (9.7.15) | [instructions-sync-communication.md](./instructions-sync-communication.md) |
+| instructions-matrix-multiply | Warp Level MMA / Async Warpgroup Level MMA / TensorCore 5th Generation Family (9.7.16–9.7.18) | [instructions-matrix-multiply.md](./instructions-matrix-multiply.md) |
+| instructions-video-misc | Video / Miscellaneous Instructions (9.7.20–9.7.21) | [instructions-video-misc.md](./instructions-video-misc.md) |
 | special-registers | %tid, %ntid, %ctaid, %laneid, %clock64, %lanemask_*, cluster registers | [special-registers.md](./special-registers.md) |
 | directives | Module / kernel-function / performance-tuning / debugging / linking / cluster directives | [directives.md](./directives.md) |
 | pragma-strings | .pragma string hints (nounroll, mma_throughput, etc.) | [pragma-strings.md](./pragma-strings.md) |

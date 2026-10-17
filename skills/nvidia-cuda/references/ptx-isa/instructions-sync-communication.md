@@ -1,6 +1,6 @@
 # Parallel Synchronization and Communication Instructions
 
-Barrier, memory fence, atomic/reduction, warp-vote, and asynchronous mbarrier instructions for cross-thread synchronization and communication (PTX ISA 9.3 §9.7.14).
+Barrier, memory fence, atomic/reduction, warp-vote, and asynchronous mbarrier instructions for cross-thread synchronization and communication (PTX ISA 9.4 §9.7.15).
 
 ## Signature / Usage
 
@@ -26,7 +26,8 @@ mbarrier.init{.layout}{.shared{::cta}}.b64 [addr], count;
 
 ## Notes
 
-- PTX ISA 9.3 — Chapter 9.7.14
+- PTX ISA 9.4 — Chapter 9.7.15 (section number shifted by one from 9.3)
+- PTX ISA 9.4 additions (Release Notes wording): `.multicast::cluster::32b` qualifier for `mbarrier.expect_tx`, `mbarrier.complete_tx`, `mbarrier.arrive`, `mbarrier.arrive_drop`; `.sync_restrict::shared::cluster::read` qualifier for `fence.proxy.async::generic`; `.acquire` and `.release` qualifiers with `.alias` for `fence.proxy`; `.noftz` qualifier with `.f32` type for `atom` and `red`.
 - `bar.sync` synchronizes all threads of a CTA at a barrier; `barrier.cluster` extends this to cluster scope (sm_90+).
 - `mbarrier` provides an asynchronous barrier object (initialized in shared memory) used to track completion of async-copy and other asynchronous operations without a blocking `bar.sync`.
 - See memory-consistency-model for the scope (`.cta`/`.cluster`/`.gpu`/`.sys`) and ordering semantics that these instructions rely on.

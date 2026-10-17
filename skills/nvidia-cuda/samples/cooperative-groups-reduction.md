@@ -63,4 +63,4 @@ int main(void)
 - `cg::this_thread_block()` wraps the implicit block group in the same `thread_group` interface that `tiled_partition` returns, so generic device functions like `sumReduction` work unmodified on either.
 - `g.sync()` on a cooperative group is the group-scoped equivalent of `__syncthreads()`, but also correctly synchronizes a `thread_block_tile` smaller than the full block.
 - Tiles created by `cg::tiled_partition<16>(block)` each need a disjoint region of the shared workspace (`workspace + offset`); reusing the same base pointer across tiles corrupts other tiles' intermediate values.
-- Derived from the official NVIDIA/cuda-samples sample "simpleCooperativeGroups" (cpp/0_Introduction), tag `v13.3`.
+- Derived from the official NVIDIA/cuda-samples sample "simpleCooperativeGroups" (cpp/0_Introduction), tag `v13.4`.

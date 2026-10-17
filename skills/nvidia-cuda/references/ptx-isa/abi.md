@@ -22,7 +22,7 @@ call.uni g, (a);  // call function 'g' with parameter 'a'
 
 ## Notes
 
-- PTX ISA 9.3 — Chapter 7
+- PTX ISA 9.4 — Chapter 7
 - Kernel-entry parameter passing (`.entry`) and device-function parameter passing (`.func`) are handled differently, reflecting the two distinct call boundaries (host launch vs. device call).
 
 ## Related

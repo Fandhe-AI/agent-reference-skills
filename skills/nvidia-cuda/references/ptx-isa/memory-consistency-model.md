@@ -26,7 +26,7 @@ st.release [M];
 
 ## Notes
 
-- PTX ISA 9.3 — Chapter 8
+- PTX ISA 9.4 — Chapter 8
 - Atomic operations (`atom`) guarantee an indivisible read-modify-write; volatile operations prevent compiler optimizations that would violate consistency requirements.
 - "Morally strong" operations are those using acquire/release or fence semantics that provide predictable ordering across the thread hierarchy.
 

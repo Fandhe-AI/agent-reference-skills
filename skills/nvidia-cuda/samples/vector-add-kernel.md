@@ -66,4 +66,5 @@ int main(void)
 - `blockDim.x * blockIdx.x + threadIdx.x` is the canonical 1D global thread index; the `if (i < numElements)` guard is required whenever `numElements` is not an exact multiple of `threadsPerBlock`.
 - `blocksPerGrid` uses ceiling division (`(numElements + threadsPerBlock - 1) / threadsPerBlock`) so the last block still covers the remainder without leaving elements unprocessed.
 - Kernel launches (`<<<...>>>`) do not return an error code directly; call `cudaGetLastError()` immediately after the launch to catch configuration failures.
+- This page follows the v13.3 `vectorAdd.cu`. In v13.4 upstream rewrote `vectorAdd.cu` into a unified-memory version (`vecAdd` kernel with `cudaMallocManaged` buffers); see the `unified-memory` sample for managed memory.
 - Derived from the official NVIDIA/cuda-samples sample "vectorAdd" (cpp/0_Introduction), tag `v13.3`.

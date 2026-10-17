@@ -54,4 +54,4 @@ __global__ void matrixMulTiled(float *C, const float *A, const float *B, int wA,
 - `__shared__` arrays are allocated per thread block and shared by all threads in that block; they persist only for the block's lifetime and must be re-declared (and reloaded) each loop iteration when reused as a rolling tile buffer.
 - The first `__syncthreads()` prevents a read-before-write race (a thread reading `As`/`Bs` before another thread in the block has written its element); the second prevents a write-after-read race on the next iteration's load.
 - `BLOCK_SIZE` must evenly divide `wA` and `wB` in this simplified form; production kernels add boundary handling for non-aligned matrix dimensions.
-- Derived from the official NVIDIA/cuda-samples sample "matrixMul" (cpp/0_Introduction), tag `v13.3`.
+- Derived from the official NVIDIA/cuda-samples sample "matrixMul" (cpp/0_Introduction), tag `v13.4`. The v13.3 to v13.4 changes in upstream (a `flags` argument `0` on `cudaMallocHost` and a `__has_include` guard around `cuda_profiler_api.h`) do not affect this kernel.
