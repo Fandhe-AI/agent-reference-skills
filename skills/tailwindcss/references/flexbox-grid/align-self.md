@@ -51,6 +51,7 @@ Utilities for controlling how an individual flex or grid item is positioned alon
 </div>
 ```
 
+- The official snippet places `self-baseline-last` on a `<p>` nested inside the left `<div>`, which is not a grid item, so `align-self` has no effect there; put the class on direct children of the grid container (as the official live demo does with the `<p>` and `<a>` in a `grid-cols-[auto_1fr_auto]` row).
 - Responsive design: prefix an `align-self` utility with a breakpoint variant like `md:` to only apply the utility at that breakpoint and above:
 
 ```html
