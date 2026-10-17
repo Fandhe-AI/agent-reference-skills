@@ -238,6 +238,8 @@ dependencies:
   url_launcher: ^6.3.2
 ```
 
+If `hello` is a plugin whose platform-specific code needs the platform-specific APIs of another plugin, also declare the dependency in the platform build files. The snippets below are the official page's illustrative pattern: `url_launcher` 6.x is a federated plugin whose native code lives in separate implementation packages (for example `url_launcher_android` / `url_launcher_ios`), so replace the project, path, product and pod names with those of the package that actually contains the native code.
+
 Platform-specific build files, Android (`hello/android/build.gradle`):
 
 ```groovy
@@ -282,6 +284,7 @@ To distribute skills with your package: create a `skills/` directory in the pack
 - Windows: after changing plugin code, select **Build > Build Solution** before running again, otherwise an outdated copy of the built plugin runs.
 - Migration (Flutter 3.44): Android plugins that apply the Kotlin Gradle Plugin (KGP) must migrate to built-in Kotlin for Android Gradle Plugin 9 and later; Flutter 3.44 added temporary support for legacy KGP with `android.builtInKotlin=false`, and Flutter 3.47 added support for enabling built-in Kotlin (`android.builtInKotlin=true`) once an app and all its plugins have migrated. See the built-in Kotlin migration guide for plugin authors in the release category. Flutter plans to remove KGP support in a future version.
 - Migration (Flutter 3.44): native Darwin dependencies default to Swift Package Manager; CocoaPods is legacy (see Swift Package Manager for plugin authors).
+- The source page uses `url_launcher` as the native dependency in the Gradle / SwiftPM / CocoaPods snippets; because `url_launcher` 6.x is federated (native code in `url_launcher_android` / `url_launcher_ios`), those snippets are kept as an illustrative pattern only and the note above them was added here.
 - Shell expansions are quoted here (the official snippet leaves them unquoted).
 - This page covers Flutter packages and plugins (Dart); the android-build-gradle, apple-distribution and rust skills cover Gradle, App Store distribution and Rust respectively. Package skills here are the pub.dev mechanism, distinct from Claude Code Agent Skills documented by anthropic-claude-code-extend.
 

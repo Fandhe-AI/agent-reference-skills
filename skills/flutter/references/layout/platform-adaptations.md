@@ -135,7 +135,7 @@ Two cases of platform adaptiveness exist:
 | Navigation transition | Default `Navigator.push()` is modeled after `startActivity()` (bottom-up); uses `ZoomPageTransitionsBuilder` | `Navigator.push()` produces an end-to-start push transition (RTL-aware) with parallax of the page behind; `PageRoute.fullscreenDialog` true gives a bottom-up present transition; `CupertinoNavigationBar` and `CupertinoSliverNavigationBar` animate subcomponents between pages |
 | Back navigation | OS back button pops the top route of the `WidgetsApp`'s Navigator | Edge swipe gesture pops the top route |
 | Scroll physics | More static friction | More weight and dynamic friction: gains speed more gradually, stops less abruptly, slipperier at slow speeds |
-| Overscroll | Glow indicator (`GlowingOverscrollIndicator`, based on the Material theme color) | Overscrolls with increasing resistance and snaps back (`BouncingScrollPhysics`) |
+| Overscroll | Material 3 (default): stretch effect (`StretchingOverscrollIndicator`); Material 2 (`useMaterial3: false`): glow indicator (`GlowingOverscrollIndicator`, based on the Material theme color) | Overscrolls with increasing resistance and snaps back (`BouncingScrollPhysics`) |
 | Scrollbars | Material-based platforms (Android, web): typically visible during scrolling | Cupertino-based: minimal, appear briefly while scrolling and fade out |
 | Momentum | No equivalent | Repeated flings in the same direction stack momentum |
 | Return to top | No equivalent | Tapping the status bar scrolls the primary scroll controller to top |
@@ -161,6 +161,7 @@ Text editing: both Material and Cupertino text fields support spellcheck configu
 - Since Android 12 the default UI for top app bars, bottom navigation bars, and text fields follows Material 3; iOS equivalents are "Navigation Bars", "Tab Bars", and text fields in Apple's Human Interface Guidelines. App bar system icons and page transitions are already adapted by Material `AppBar` and `SliverAppBar`.
 - Only adapt styling of app bars if it stays cohesive with the rest of the app; tab bars persist across the app, so they should match your own branding.
 - The page notes that preliminary guides for case 2 are being added to the UI components section, and feedback is requested on issue #8427 (Flutter website repository).
+- The source page describes only the Android glow indicator (`GlowingOverscrollIndicator`); with Material 3, the default since Flutter 3.16, `MaterialScrollBehavior` uses `StretchingOverscrollIndicator` instead, so the Overscroll row was updated here.
 - The code snippets are verbatim from the page and partly abbreviated with `...`.
 - This is Flutter's cross-platform adaptation layer (Dart); native iOS and Android behavior is documented in apple-uikit / apple-swiftui and the android-* skills. Flutter's Material / Cupertino widget libraries are distinct from Compose Material3 (android-compose-components) and UIKit / SwiftUI components.
 - Flutter 3.47 allows opting in to the standalone material_ui / cupertino_ui packages (the page's API links point at them); in-framework Material and Cupertino are not yet deprecated in 3.47.7. See the release category.
