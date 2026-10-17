@@ -122,6 +122,6 @@ skills/tauri/
 | tauri.conf.json の window / bundle / build / app / security 設定 | config | [references/config/README.md](references/config/README.md) |
 | tauri dev / build / bundle / android / ios / icon / signer / plugin コマンドのオプション | cli | [references/cli/README.md](references/cli/README.md) |
 | @tauri-apps/api の core / event / window / webview / menu / tray / path | js-api | [references/js-api/README.md](references/js-api/README.md) |
-| 上記コアプラグインの JS 関数シグネチャ | plugin-js-api-core | [references/plugin-js-api-core/README.md](references/plugin-js-api-core/README.md) |
-| 上記アプリ機能プラグインの JS 関数シグネチャ | plugin-js-api-app | [references/plugin-js-api-app/README.md](references/plugin-js-api-app/README.md) |
+| コアプラグイン (cli / fs / http / log / opener / os / process / shell / sql / store / stronghold / upload / websocket) の JS 関数シグネチャ (@tauri-apps/plugin-*) | plugin-js-api-core | [references/plugin-js-api-core/README.md](references/plugin-js-api-core/README.md) |
+| アプリ機能プラグイン (autostart / barcode-scanner / biometric / clipboard-manager / deep-link / dialog / geolocation / global-shortcut / haptics / nfc / notification / positioner / updater / window-state) の JS 関数シグネチャ (@tauri-apps/plugin-*) | plugin-js-api-app | [references/plugin-js-api-app/README.md](references/plugin-js-api-app/README.md) |
 | 署名・MSI / NSIS / DMG / AppImage / deb / rpm・各ストア・CI 配布 | distribute | [references/distribute/README.md](references/distribute/README.md) |
