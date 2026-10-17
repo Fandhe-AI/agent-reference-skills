@@ -10,9 +10,11 @@ Strategies for downloading and launching updates so users adopt the latest versi
 
 Check for updates in the foreground, download, and reload:
 
+Adapted (not verbatim): also handles rollback directives (`isRollBackToEmbedded`); the official example checks only `isAvailable`.
+
 ```ts
 const update = await Updates.checkForUpdateAsync();
-if (update.isAvailable) {
+if (update.isAvailable || update.isRollBackToEmbedded) {
   await Updates.fetchUpdateAsync();
   await Updates.reloadAsync();
 }
@@ -26,7 +28,7 @@ The strategies are not mutually exclusive.
 - **Foreground**: `Updates.checkForUpdateAsync()` resolves to an `UpdateCheckResult` with `isAvailable` and `manifest`; then `Updates.fetchUpdateAsync()` and `Updates.reloadAsync()`. The `useUpdates()` hook monitors library state from a component. Check when the app is foregrounded or at an interval, or at launch with a custom loading screen.
 - **Background**: use `expo-background-task` to run the same check and fetch methods inside a background task. Register the task at startup by calling `setupBackgroundUpdates` in the top-level component:
 
-Adapted (not verbatim): returns `BackgroundTaskResult` as required by the expo-background-task reference; the official guide returns `Promise.resolve()`.
+Adapted (not verbatim): returns `BackgroundTaskResult` as required by the expo-background-task reference; the official guide returns `Promise.resolve()`. Also handles rollback directives (`isRollBackToEmbedded`); the official example checks only `isAvailable`.
 
 ```ts
 import * as TaskManager from 'expo-task-manager';
@@ -39,7 +41,7 @@ export const setupBackgroundUpdates = async () => {
   TaskManager.defineTask(BACKGROUND_TASK_NAME, async () => {
     try {
       const update = await Updates.checkForUpdateAsync();
-      if (update.isAvailable) {
+      if (update.isAvailable || update.isRollBackToEmbedded) {
         await Updates.fetchUpdateAsync();
         await Updates.reloadAsync();
       }
@@ -67,6 +69,7 @@ setupBackgroundUpdates();
 - All information applies only to release builds and debug builds with `EX_UPDATES_NATIVE_DEBUG` enabled.
 - Support for calling `Updates.reloadAsync()` while the app is backgrounded is experimental; monitor for crashes when first enabled. Downloading an update in the background is safe. Unless you persist and restore state, the user will experience a cold boot on reopening.
 - The background task example is adapted: the official guide returns `Promise.resolve()`, while the expo-background-task reference requires tasks to return `BackgroundTaskResult.Success` or `Failed`.
+- A rollback directive is returned from `checkForUpdateAsync()` with `isAvailable: false` and `isRollBackToEmbedded: true` (`UpdateCheckResultRollBack`). `fetchUpdateAsync()` then returns `UpdateFetchResultRollBackToEmbedded`, and `reloadAsync()` applies the rollback. The official example checks only `isAvailable`.
 - Source modificationDate: July 21, 2026 (fetched 2026-10-17).
 
 ## Related

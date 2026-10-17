@@ -22,6 +22,8 @@ By default, `expo-updates` checks for updates when the app launches and applies 
 
 Example: check for updates manually (first set `checkAutomatically` to `ON_ERROR_RECOVERY` or `NEVER`):
 
+Adapted (not verbatim): also handles rollback directives (`isRollBackToEmbedded`); the official example checks only `isAvailable`.
+
 ```jsx
 import { View, Button } from 'react-native';
 import * as Updates from 'expo-updates';
@@ -31,7 +33,7 @@ function App() {
     try {
       const update = await Updates.checkForUpdateAsync();
 
-      if (update.isAvailable) {
+      if (update.isAvailable || update.isRollBackToEmbedded) {
         await Updates.fetchUpdateAsync();
         await Updates.reloadAsync();
       }
@@ -236,6 +238,7 @@ All methods: Android, iOS, tvOS.
 - Most methods and constants can be used or tested only in release builds; in debug builds the latest JavaScript always loads from a development server. A debug build with release-like updates behavior can be created (see [Debugging](./debug.md)).
 - In a development build or Expo Go, `eas update` content can be browsed to simulate an update, but most of the Updates API is unavailable. Expo Go supports only updates using Expo Go-compatible libraries. The full API is available in a release build (`.apk`, simulator build, `npx expo run:android --variant release`, or `npx expo run:ios --configuration Release`).
 - The `UpdatesModuleInterface` interface (common interface for native module implementations on android, ios, web) and `UpdatesEvents` (`Expo.nativeUpdatesStateChangeEvent`) are documented in the source but not reproduced here.
+- A rollback directive is returned from `checkForUpdateAsync()` with `isAvailable: false` and `isRollBackToEmbedded: true` (`UpdateCheckResultRollBack`). `fetchUpdateAsync()` returns `UpdateFetchResultRollBackToEmbedded`, and `reloadAsync()` then applies the rollback. The official example checks only `isAvailable`.
 - Source modificationDate: October 02, 2026 (SDK 58, `/versions/v58.0.0/`; fetched 2026-10-17).
 
 ## Related
