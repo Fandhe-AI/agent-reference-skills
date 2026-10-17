@@ -17,6 +17,7 @@ router.navigate({ to: '/posts' })
 
 | Name | Type | Description |
 |------|------|-------------|
+| `update` | `(newOptions: Omit<RouterOptions, 'pathParamsAllowedCharacters'>) => void` | Updates the router instance with new options |
 | `state` | `RouterState` | Current router state; non-reactive (use `useRouterState` for reactivity) |
 | `navigate` | `(options: NavigateOptions) => Promise<void>` | Navigates to a new location |
 | `matchRoute` | `(dest: ToOptions, matchOpts?: MatchRouteOptions) => RouteMatch['params'] \| false` | Matches pathname/search against the route tree |
@@ -30,6 +31,11 @@ router.navigate({ to: '/posts' })
 | `clearCache` | `(opts?) => void` | Removes cached route matches and preloads |
 | `dehydrate` | `() => DehydratedRouter` | Serializes router state for SSR |
 | `hydrate` | `(dehydrated: DehydratedRouter) => void` | Restores router state from a dehydrated object |
+
+## Notes
+
+- Initialization-only options such as `pathParamsAllowedCharacters` cannot be updated via `update`; create a new router instance to change them.
+- On the server, `router.navigate()` and `router.commitLocation()` are no-ops: their promises resolve without changing the request location or running another load. Use `throw redirect({ to: '/login' })` in `beforeLoad` or a loader to redirect a request.
 
 ## Related
 

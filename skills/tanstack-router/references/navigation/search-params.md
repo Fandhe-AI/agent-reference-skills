@@ -44,6 +44,7 @@ function ProductList() {
 - `fallback()` from `@tanstack/zod-adapter` retains typed defaults on validation failure (Zod v3 `catch` loses type info; Zod v4 `catch` does not).
 - Read via `Route.useSearch()` inside the route component, `getRouteApi(id).useSearch()` or `useSearch({ from })` outside it, or `useSearch({ strict: false })` for a loosely-typed optional search object.
 - Write via `<Link search />`, `navigate({ search })`, `router.navigate({ search })`, or `<Navigate search />`; `search` can be an object or a function of the previous search state.
+- `validateSearch` is built into TanStack Router and differs from the `nuqs` library's search param handling.
 
 ## Related
 

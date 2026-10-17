@@ -37,5 +37,5 @@ function PostIdComponent() {
 
 - `Await` triggers the nearest suspense boundary until the promise resolves; a rejection throws the serialized error to the nearest error boundary.
 - In React 19, `use(deferredSlowData)` can replace `<Await>`.
-- With an external cache like TanStack Query, prefer `queryClient.prefetchQuery` (fire-and-forget) plus `useSuspenseQuery` instead of `defer`/`Await` — see the `query-integration.md` sample.
-- Streaming SSR of deferred promises requires the streaming server entry described in the `basic-ssr.md` sample.
+- With an external cache like TanStack Query, prefer `void queryClient.query(opts).catch(noop)` (fire-and-forget; `prefetchQuery` is deprecated in TanStack Query) plus `useSuspenseQuery` instead of `defer`/`Await` — see the `query-integration.md` sample.
+- Streaming SSR of deferred promises requires the streaming server entry (`defaultStreamHandler`) shown in `references/data-rendering/ssr.md`.

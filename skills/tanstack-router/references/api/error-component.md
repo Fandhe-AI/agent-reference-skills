@@ -4,7 +4,7 @@ source: https://tanstack.com/router/latest/docs/api/router/errorComponentCompone
 
 # ErrorComponent
 
-Renders an error message, and optionally the error's message, for use as a route's `errorComponent`.
+Renders an error notice and optional details about the thrown value, for use as a route's `errorComponent`.
 
 ## Signature / Usage
 
@@ -20,13 +20,15 @@ export const Route = createFileRoute('/posts/$postId')({
 
 | Name | Type | Description |
 |------|------|-------------|
-| `error` | `TError` (defaults `Error`) | The error thrown by the component's children |
+| `error` | `unknown` (React / Vue); `Error` (Solid) | The caught error. Solid normalizes non-`Error` values, including SSR loader errors, into an `Error` with the original value in `cause` |
 | `info` | `{ componentStack: string }` | React component stack trace info (optional) |
 | `reset` | `() => void` | Function to programmatically reset the error state |
 
 ## Notes
 
-- The error's message is shown behind a "Show Error" toggle; visible by default in development.
+- Details are displayed when the thrown value has a nonempty `message`; values without a message still display the error notice.
+- The error message is shown behind a "Show Error" toggle; visible by default in development.
+- `error` is `unknown` in React, so a custom error component must narrow it, e.g. `error instanceof Error ? error.message : String(error)`.
 
 ## Related
 

@@ -35,6 +35,7 @@ const navigate = useNavigate(options?: { from?: string })
 
 - The returned `navigate` function accepts `NavigateOptions` and returns a `Promise` that resolves when navigation completes.
 - Supports changes to pathname, search params, hash, and location state.
+- Not the same as React Router's `useNavigate`; the signature and options are TanStack Router's own.
 
 ## Related
 

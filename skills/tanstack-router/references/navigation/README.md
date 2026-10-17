@@ -13,6 +13,6 @@
 | Custom Search Param Serialization | `parseSearch`/`stringifySearch`, `parseSearchWith`/`stringifySearchWith`, alternative serializers | [custom-search-param-serialization.md](./custom-search-param-serialization.md) |
 | Route Masking | Masking the displayed URL (`mask` option, `routeMasks`, `createRouteMask`) | [route-masking.md](./route-masking.md) |
 | Navigation Blocking | `useBlocker`, `<Block>`, `shouldBlockFn`, `beforeunload` handling | [navigation-blocking.md](./navigation-blocking.md) |
-| History Types | `createBrowserHistory`, `createHashHistory`, `createMemoryHistory` | [history-types.md](./history-types.md) |
+| History Types | `createBrowserHistory`, `createHashHistory`, `createMemoryHistory`, `createServerHistory` | [history-types.md](./history-types.md) |
 | Scroll Restoration | `scrollRestoration`, `scrollToTopSelectors`, `getScrollRestorationKey`, manual restoration | [scroll-restoration.md](./scroll-restoration.md) |
 | Internationalization (i18n) | Locale-prefix routing via optional path params, Paraglide integration | [internationalization-i18n.md](./internationalization-i18n.md) |

@@ -32,6 +32,7 @@ const router = createRouter({
 ## Notes
 
 - Returns a factory function with the same argument signature as `createRootRoute`.
+- `rootRouteWithContext` is a deprecated alias of this function and will be removed in the next major version of TanStack Router.
 
 ## Related
 

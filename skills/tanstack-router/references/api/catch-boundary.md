@@ -30,7 +30,11 @@ function Component() {
 | `getResetKey` | `() => string` | Yes | Returns a key used to reset the boundary's state when it changes |
 | `children` | `React.ReactNode` | Yes | Rendered when there is no error |
 | `errorComponent` | `React.ReactNode` | No | Rendered on error; defaults to `ErrorComponent` |
-| `onCatch` | `(error: any) => void` | No | Called with the caught error |
+| `onCatch` | `(error: unknown, errorInfo: ErrorInfo) => void` | No | Called with the caught error |
+
+## Notes
+
+- The `onCatch` type above is for React; Vue uses `(error: unknown) => void` and Solid uses `(error: Error) => void`.
 
 ## Related
 
