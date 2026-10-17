@@ -1,0 +1,195 @@
+---
+source: https://ai.google.dev/gemini-api/docs/generate-content/files, https://ai.google.dev/gemini-api/docs/generate-content/file-input-methods
+---
+
+# Files API and file input methods (generateContent)
+
+Use the Files API to upload media files (audio, images, video, documents) for `generateContent`. This page aggregates two sources: `generate-content/files` (Files API operations and multimodal prompting guidance) and `generate-content/file-input-methods` (inline data, File API upload, GCS registration, external URLs).
+
+## Signature / Usage
+
+### Files API (generate-content/files)
+
+```python
+from google import genai
+
+client = genai.Client()
+
+myfile = client.files.upload(file="path/to/sample.mp3")
+
+response = client.models.generate_content(
+    model="gemini-3.8-flash", contents=["Describe this audio clip", myfile]
+)
+
+print(response.text)
+```
+
+```javascript
+import {
+  GoogleGenAI,
+  createUserContent,
+  createPartFromUri,
+} from "@google/genai";
+
+const ai = new GoogleGenAI({});
+
+async function main() {
+  const myfile = await ai.files.upload({
+    file: "path/to/sample.mp3",
+    config: { mimeType: "audio/mpeg" },
+  });
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3.8-flash",
+    contents: createUserContent([
+      createPartFromUri(myfile.uri, myfile.mimeType),
+      "Describe this audio clip",
+    ]),
+  });
+  console.log(response.text);
+}
+
+await main();
+```
+
+Metadata, list, delete:
+
+```python
+myfile = client.files.upload(file='path/to/sample.mp3')
+file_name = myfile.name
+myfile = client.files.get(name=file_name)
+print(myfile)
+
+print('My files:')
+for f in client.files.list():
+    print(' ', f.name)
+
+client.files.delete(name=myfile.name)
+```
+
+```bash
+curl "https://generativelanguage.googleapis.com/v1beta/files" \
+  -H "x-goog-api-key: $GEMINI_API_KEY"
+
+curl --request "DELETE" "https://generativelanguage.googleapis.com/v1beta/files/${name}" \
+  -H "x-goog-api-key: $GEMINI_API_KEY"
+```
+
+### File input methods (generate-content/file-input-methods)
+
+Inline data from a local file:
+
+```python
+from google import genai
+from google.genai import types
+import pathlib
+
+client = genai.Client()
+
+filepath = pathlib.Path('my_local_file.pdf')
+
+prompt = "Summarize this document"
+response = client.models.generate_content(
+  model="gemini-3.8-flash",
+  contents=[
+      types.Part.from_bytes(
+        data=filepath.read_bytes(),
+        mime_type='application/pdf',
+      ),
+      prompt
+  ]
+)
+print(response.text)
+```
+
+Register Google Cloud Storage files:
+
+```python
+import google.auth
+from google import genai
+from google.genai.types import Part
+
+GCS_READ_SCOPES = [
+  'https://www.googleapis.com/auth/devstorage.read_only',
+  'https://www.googleapis.com/auth/cloud-platform'
+]
+
+credentials, project = google.auth.default(scopes=GCS_READ_SCOPES)
+
+client = genai.Client()
+
+registered_gcs_files = client.files.register_files(
+    uris=["gs://my_bucket/some_object.pdf", "gs://bucket2/object2.txt"],
+    # Use the credentials obtained in the previous step.
+    auth=credentials
+)
+```
+
+```bash
+access_token=$(gcloud auth application-default print-access-token)
+project_id=$(gcloud config get-value project)
+curl -X POST https://generativelanguage.googleapis.com/v1beta/files:register \
+    -H 'Content-Type: application/json' \
+    -H "Authorization: Bearer ${access_token}" \
+    -H "x-goog-user-project: ${project_id}" \
+    -d '{"uris": ["gs://bucket/object1", "gs://bucket/object2"]}'
+```
+
+External HTTP / signed URL:
+
+```python
+from google import genai
+from google.genai.types import Part
+
+uri = "https://ontheline.trincoll.edu/images/bookdown/sample-local-pdf.pdf"
+prompt = "Summarize this file"
+
+client = genai.Client()
+
+response = client.models.generate_content(
+    model="gemini-3.8-flash",
+    contents=[
+        Part.from_uri(
+            file_uri=uri,
+            mime_type="application/pdf",
+        ),
+        prompt
+    ],
+)
+print(response.text)
+```
+
+## Options / Props
+
+Input method comparison:
+
+| Method | Best for | Max file size | Persistence |
+| --- | --- | --- | --- |
+| Inline data | Quick testing, small files, real-time applications | 100 MB per request/payload (50 MB for PDFs) | None (sent with every request) |
+| File API upload | Large files, files used multiple times | 2 GB per file, up to 20GB per project | 48 Hours |
+| File API GCS URI registration | Large files already in Google Cloud Storage, files used multiple times | 2 GB per file, no overall storage limits | None (fetched per request). One time registration can give access for up to 30 days |
+| External URLs | Public data or data in cloud buckets (AWS, Azure, GCS) without re-uploading | 15 MB per file | None (fetched per request) |
+
+External URL supported types: text (`text/html`, `text/css`, `text/plain`, `text/xml`, `text/csv`, `text/rtf`, `text/javascript`), application (`application/json`, `application/pdf`), image (`image/bmp`, `image/jpeg`, `image/png`, `image/webp`), video (`video/mp4`, `video/mpeg`, `video/quicktime`, `video/avi`, `video/x-flv`, `video/mpg`, `video/webm`, `video/wmv`, `video/3gpp`).
+
+## Notes
+
+- Shell variables in REST examples are quoted per repository policy; the official snippet leaves them unquoted.
+- Sources: <https://ai.google.dev/gemini-api/docs/generate-content/files> (Files API), <https://ai.google.dev/gemini-api/docs/generate-content/file-input-methods> (File input methods).
+- Files API: API surface is the generateContent tree (Files API itself is shared; REST under `v1beta/files`).
+- Files API: always use the Files API when the total request size (files, text prompt, system instructions, etc.) is larger than 100 MB; for PDF files the limit is 50 MB.
+- Files API: store up to 20 GB per project, per-file maximum 2 GB, stored for 48 hours (automatically deleted after 48 hours). You can get metadata but cannot download user-uploaded files; files generated by models (such as videos) can be downloaded with `files.download`. The Files API is available at no cost in all regions where the Gemini API is available.
+- Files API: prompting strategies (from the source): be specific in instructions; add few-shot examples; break the task down step by step; specify the output format (markdown, JSON, HTML); put the image first for single-image prompts. Troubleshooting: hint at which part of the image to use, ask the model to describe the image first, ask it to explain its reasoning, lower temperature or ask for shorter descriptions to reduce hallucination, tune temperature and top-k.
+- File input methods: Source: "The new methods are supported in all of the Gemini API endpoints, including Batch, Interactions and Live API."
+- File input methods: GCS registration: enable the Gemini API, create the Service Agent with `gcloud beta services identity create --service=generativelanguage.googleapis.com --project=<your_project>`, grant it the `Storage Object Viewer` IAM role on the specific buckets, authenticate with scopes `https://www.googleapis.com/auth/devstorage.read_only` and `https://www.googleapis.com/auth/cloud-platform`. An API key in `GEMINI_API_KEY` must exist but is unused for the registration endpoint.
+- File input methods: the GCS registration snippet merges the official "obtain credentials" step (`google.auth.default(scopes=GCS_READ_SCOPES)`, for environments with Application Default Credentials such as Cloud Run or Compute Engine) so that `credentials` is defined; the client itself still uses the API key, and `credentials` is passed only via `auth=`.
+- File input methods: External URLs: Gemini 2.0 family models are not supported; URLs must be public or signed (compatible with S3 presigned URLs and Azure SAS) without login or paywall; a failing safety check yields `url_retrieval_status` of `URL_RETRIEVAL_STATUS_UNSAFE`.
+- File input methods: limitations: inline data increases payload size; File API uploads expire after 48 hours; external URL fetching limited to 15 MB per file and listed content types. Always provide the correct MIME type.
+- Distinct from OpenAI Files API (openai-api-core skill) and Anthropic Files API (anthropic-api-core skill).
+
+## Related
+
+- [Multimodal understanding (generateContent)](./multimodal-understanding.md)
+- [Context caching incl. explicit caching (generateContent)](./explicit-caching.md)
+- Files API (Interactions API tree)
+- File input methods (Interactions API tree)
