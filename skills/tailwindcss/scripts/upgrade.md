@@ -4,21 +4,21 @@ source: https://tailwindcss.com/docs/upgrade-guide
 
 # Upgrade
 
-v3 から v4 への移行ツール `@tailwindcss/upgrade`。
+`@tailwindcss/upgrade`, the migration tool from v3 to v4.
 
-## アップグレードツールの実行
+## Run the upgrade tool
 
-> **警告**: ファイルを書き換える。公式は「新しいブランチで実行し、差分を精査してブラウザで動作確認する」ことを推奨。使い捨てブランチ・クリーンな作業ツリーを前提にする。
+> **Warning**: This rewrites files. The docs recommend running it in a new branch, reviewing the diff, and testing in the browser. Assume a throwaway branch and a clean working tree.
 
 ```sh
 npx @tailwindcss/upgrade
 ```
 
-依存関係の更新・設定ファイルの CSS 移行・テンプレートファイルの変更を自動化する（公式記載）。Node.js 20 以上が必須。
+Automates updating dependencies, migrating the config file to CSS, and changing template files (as stated in the docs). Requires Node.js 20 or later.
 
-## フラグ
+## Flags
 
-出典: `tailwindlabs/tailwindcss@v4.3.3` `packages/@tailwindcss-upgrade/src/index.ts`（docs サイトには記載なし）
+Source: `tailwindlabs/tailwindcss@v4.3.3` `packages/@tailwindcss-upgrade/src/index.ts` (not covered by the docs site)
 
 | Flag | Alias | Description |
 | --- | --- | --- |
@@ -31,4 +31,4 @@ npx @tailwindcss/upgrade
 npx @tailwindcss/upgrade --help
 ```
 
-位置引数でファイルを渡すと対象 CSS を限定でき、省略時はカレント以下の `**/*.css` を探索する（ソース実装による）。`--force` なしでは git の作業ツリーが dirty だとエラー終了する（同ソース）。
+Passing files as positional arguments limits the target CSS; when omitted, `**/*.css` under the current directory is searched (per the source implementation). Without `--force`, the tool exits with an error if the git working tree is dirty (same source).
