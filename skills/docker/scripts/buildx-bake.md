@@ -4,19 +4,19 @@ source: https://docs.docker.com/reference/cli/docker/buildx/bake/
 
 # Buildx Bake
 
-`docker buildx bake` の実行コマンド集。出典は `docker buildx bake` の CLI リファレンス Examples（取得日 2026-10-16 JST、Buildx v0.38.0 相当）。bake ファイルの書式は `references/build-cache-bake/` を参照。
+Commands for running `docker buildx bake`. Source: the Examples in the `docker buildx bake` CLI reference (retrieved 2026-10-16 JST, equivalent to Buildx v0.38.0). For the bake file syntax, see `references/build-cache-bake/`.
 
-> **警告**: `--push` は結果をレジストリへ公開し、`--allow fs.write` / `fs=*` はホストのファイルシステム書き込みや広範な読み取りを許可する。使い捨ての検証環境・検証用レジストリで試してから使うこと。
+> **Warning**: `--push` publishes the result to a registry, and `--allow fs.write` / `fs=*` permit writing to the host filesystem or broad reads. Try these in a disposable verification environment and a test registry first.
 
-## 指定した bake ファイルからターゲットをビルド
+## Build targets from a specified bake file
 
 ```sh
 docker buildx bake -f docker-bake.dev.hcl db webapp-release
 ```
 
-`-f` / `--file` は HCL / JSON / Compose ファイルを受け付け、複数指定すると設定が結合される。ターゲット名を渡すと指定ターゲットのみビルドする。環境変数 `BUILDX_BAKE_FILE` でも指定できる（`-f` と同時指定時は環境変数が無視される）。
+`-f` / `--file` accepts HCL / JSON / Compose files, and multiple files are merged. Passing target names builds only those targets. The file can also be set with the environment variable `BUILDX_BAKE_FILE` (the environment variable is ignored when `-f` is also given).
 
-## ターゲットと変数の一覧
+## List targets and variables
 
 ```sh
 docker buildx bake --list=targets
@@ -30,35 +30,35 @@ docker buildx bake --list=variables
 docker buildx bake --list=type=targets,format=json
 ```
 
-説明は bake ファイルの `description` プロパティから表示される。既定は表形式で、長形式 CSV 構文の `format` で JSON にできる。
+Descriptions come from the `description` property in the bake file. The default output is a table; the long-form CSV syntax `format` switches it to JSON.
 
-## ビルドせずに解決後のオプションを表示
+## Print resolved options without building
 
 ```sh
 docker buildx bake -f docker-bake.hcl --print db
 ```
 
-ターゲットの解決結果を JSON で出力するだけで、ビルドは開始しない。
+Only prints the resolved target as JSON; no build is started.
 
-## ビルド結果をローカルの Docker へロード
+## Load the build result into the local Docker
 
 ```sh
 docker buildx bake --load --metadata-file metadata.json .
 ```
 
-`--load` は `--set=*.output=type=docker` の簡易指定で、出力が `local` / `tar` の場合は上書きしない（条件付き）。`--metadata-file` はターゲットごとの結果メタデータを書き出す。
+`--load` is shorthand for `--set=*.output=type=docker` and does not override the output when it is `local` / `tar` (conditional). `--metadata-file` writes the per-target result metadata.
 
-## レジストリへ push
+## Push to a registry
 
-> **警告**: イメージをレジストリへ公開する。ログイン済みの本番レジストリで誤実行しないこと。
+> **Warning**: Publishes the image to a registry. Do not run it by mistake against a logged-in production registry.
 
 ```sh
 docker buildx bake --push
 ```
 
-`--push` は出力未定義なら `type=image,push=true` を追加する。出力が `local` / `tar` の場合は上書きしない。
+`--push` adds `type=image,push=true` when no output is defined. It does not override the output when it is `local` / `tar`.
 
-## ターゲット実行の並列度と失敗時の挙動
+## Target execution parallelism and failure behavior
 
 ```sh
 docker buildx bake --jobs=defer-output # wait for all build results before exporting
@@ -71,9 +71,9 @@ docker buildx bake --jobs=parallel=1             # run targets sequentially
 docker buildx bake --jobs=defer-error,parallel=2 # limit concurrency and let independent targets finish after a failure
 ```
 
-既定の mode は `fail-fast`。`--jobs` を繰り返すと前の値が置き換わるため、mode と上限は同じフラグ値に指定する。
+The default mode is `fail-fast`. Repeating `--jobs` replaces the earlier value, so specify the mode and the limit in the same flag value.
 
-## コマンドラインからターゲット設定を上書き
+## Override target settings from the command line
 
 ```sh
 docker buildx bake --set target.arg.mybuildarg=value
@@ -88,9 +88,9 @@ docker buildx bake --set target.secret.aws=env=AWS    # overrides source for an 
 docker buildx bake --set target.tag=                  # clears all tag values
 ```
 
-`--set` は繰り返し指定できる。配列フィールド（`tag` 等）は繰り返しか `+=` で複数値を渡し、`--set target.tag=[a,b]` の配列リテラルは非対応。パターンは Go の `path.Match` 構文。
+`--set` can be repeated. For array fields (such as `tag`), pass multiple values by repeating the flag or using `+=`; the array literal `--set target.tag=[a,b]` is not supported. Patterns use Go `path.Match` syntax.
 
-## SSH エージェントソケットまたは鍵の指定
+## Specify an SSH agent socket or key
 
 ```sh
 docker buildx bake --set "*.ssh=default=$HOME/.ssh/id_ed25519"
@@ -100,13 +100,13 @@ docker buildx bake --set "*.ssh=default=$HOME/.ssh/id_ed25519"
 docker buildx bake --set "*.ssh=default=$HOME/.ssh/id_ed25519,$HOME/.ssh/id_rsa"
 ```
 
-同じ `id` に複数パスを渡す場合はカンマで区切る。`$HOME` は buildx に渡る前にシェルが展開する。
+Separate multiple paths for the same `id` with commas. `$HOME` is expanded by the shell before it reaches buildx.
 
-## bake ファイル外のファイルシステムへのアクセス許可
+## Allow access to the filesystem outside the bake file
 
-> **警告**: `--allow` は buildx / BuildKit の制限を緩める。必要な最小のパスだけを許可し、ワイルドカード（`*`）は使い捨ての検証環境でのみ使うこと。
+> **Warning**: `--allow` relaxes buildx / BuildKit restrictions. Allow only the minimum paths required, and use the wildcard (`*`) only in disposable verification environments.
 
-bake ファイルが `context = "../src"` のようにワーキングディレクトリ外を読む場合:
+When the bake file reads outside the working directory, as with `context = "../src"`:
 
 ```sh
 docker buildx bake --allow fs.read=* app
@@ -114,7 +114,7 @@ docker buildx bake --allow fs.read=../src app
 docker buildx bake --allow fs=* app
 ```
 
-`output = "/tmp"` のようにワーキングディレクトリ外へ書き込む場合:
+When it writes outside the working directory, as with `output = "/tmp"`:
 
 ```sh
 docker buildx bake --allow fs=/tmp app
@@ -122,4 +122,4 @@ docker buildx bake --allow fs.write=/tmp app
 docker buildx bake --allow fs.write=* app
 ```
 
-`fs` は読み書き、`fs.read` は読み取り、`fs.write` は書き込みを許可する。`--allow=buildx.local.delete` は `mode=delete` 設定時にローカル出力が古いファイルを削除する権限を与える（原文）。
+`fs` allows read and write, `fs.read` allows read, and `fs.write` allows write. `--allow=buildx.local.delete` grants the permission for local output to delete stale files when `mode=delete` is set (from the original).

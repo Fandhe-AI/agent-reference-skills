@@ -4,23 +4,23 @@ source: https://docs.docker.com/compose/install/linux/
 
 # Install Compose
 
-Docker Compose の Linux 向けインストール手順（plugin / standalone）。出典は `https://docs.docker.com/compose/install/{linux,standalone}/`（取得日 2026-10-16 JST、原文の Compose バージョンは v5.6.0）。
+Docker Compose installation steps for Linux (plugin / standalone). Source: `https://docs.docker.com/compose/install/{linux,standalone}/` (retrieved 2026-10-16 JST, Compose version in the original: v5.6.0).
 
-> **警告**: システム全体へのインストールは root 権限でパッケージやバイナリを配置する。使い捨ての検証環境で実行してから適用すること。Docker Desktop のインストールは収録しない。
+> **Warning**: A system-wide installation places packages or binaries with root privileges. Run it in a disposable verification environment before applying it. Installing Docker Desktop is not covered.
 
-## リポジトリ経由での plugin インストール
+## Install the plugin via the repository
 
-Docker の apt / dnf リポジトリを先に設定しておく（`install-engine.md` を参照）。`docker-compose-plugin` を apt（Ubuntu / Debian）または yum（RPM 系）でインストールする。root 権限が必要なため、手順は公式 https://docs.docker.com/compose/install/linux/ を参照する。Docker Engine と Docker CLI が導入済みである前提。更新も同じ手順で行う。
+Set up the Docker apt / dnf repository first (see `install-engine.md`). Install `docker-compose-plugin` with apt (Ubuntu / Debian) or yum (RPM-based). Root privileges are required, so refer to the official page https://docs.docker.com/compose/install/linux/ for the steps. Docker Engine and the Docker CLI must already be installed. Updates use the same steps.
 
-## インストール確認
+## Verify the installation
 
 ```sh
 docker compose version
 ```
 
-## plugin の手動インストール (現在のユーザーのみ)
+## Manual plugin installation (current user only)
 
-> **警告**: 原文によると手動インストールは自動更新されない。保守性のためにはリポジトリ経由を使うこと。
+> **Warning**: According to the original, a manual installation is not updated automatically. Use the repository method for maintainability.
 
 ```sh
 DOCKER_CONFIG="${DOCKER_CONFIG:-${HOME}/.docker}"
@@ -32,13 +32,13 @@ curl -SL https://github.com/docker/compose/releases/download/v5.6.0/docker-compo
 chmod +x "${DOCKER_CONFIG}/cli-plugins/docker-compose"
 ```
 
-アクティブユーザーの `$HOME` 配下へのインストール。別バージョンは `v5.6.0` を差し替え、別アーキテクチャは `x86_64` を差し替える（原文）。全ユーザー向けにする場合のインストール先は `/usr/local/lib/docker/cli-plugins` で、配置と実行権限の付与に root 権限が必要なため公式 https://docs.docker.com/compose/install/linux/ を参照する。
+This installs under the active user's `$HOME`. To use another version, replace `v5.6.0`; for another architecture, replace `x86_64` (from the original). To make it available to all users, the install location is `/usr/local/lib/docker/cli-plugins`; placing the file and setting the execute permission require root privileges, so refer to the official page https://docs.docker.com/compose/install/linux/.
 
-## standalone のインストール (Linux, レガシー)
+## Install standalone (Linux, legacy)
 
-> **警告**: 原文はこの方法を非推奨とし、後方互換のためだけにサポートされると明記している。Docker Desktop または Compose plugin を使えない場合にのみ使う。コマンドは `docker compose` ではなく `docker-compose` になる。
+> **Warning**: The original deprecates this method and states it is supported only for backward compatibility. Use it only when neither Docker Desktop nor the Compose plugin can be used. The command is `docker-compose`, not `docker compose`.
 
-インストール先は `/usr/local/bin/docker-compose` で、実行権限の付与を含め root 権限が必要。手順は公式 https://docs.docker.com/compose/install/standalone/ を参照する。インストール後に `docker-compose` が失敗する場合は PATH を確認する（原文は `/usr/bin/docker-compose` へのシンボリックリンク作成を例示している）。
+The install location is `/usr/local/bin/docker-compose`, and root privileges are required, including for setting the execute permission. Refer to the official page https://docs.docker.com/compose/install/standalone/ for the steps. If `docker-compose` fails after installation, check the PATH (the original gives creating a symbolic link to `/usr/bin/docker-compose` as an example).
 
 ```sh
 docker-compose version

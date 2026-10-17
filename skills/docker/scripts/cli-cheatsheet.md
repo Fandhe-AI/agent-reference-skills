@@ -4,11 +4,11 @@ source: https://docs.docker.com/reference/cli/docker/container/run/
 
 # CLI Cheatsheet
 
-`docker` CLI の日常操作コマンド集（コンテナ実行・確認・イメージ操作・ネットワーク・ボリューム）。出典は各 CLI リファレンス（`container/{run,ls,logs,exec,start,stop,restart,kill,rm,cp}` / `image/{ls,pull,tag,push,save,load,rm}` / `login` / `search` / `network/create` / `volume/{create,ls,rm}`）の Examples（取得日 2026-10-16 JST、docker/cli v29.8.2 相当）。
+Everyday `docker` CLI commands (running containers, inspecting, image operations, networks, volumes). Source: the Examples in the CLI references (`container/{run,ls,logs,exec,start,stop,restart,kill,rm,cp}` / `image/{ls,pull,tag,push,save,load,rm}` / `login` / `search` / `network/create` / `volume/{create,ls,rm}`) (retrieved 2026-10-16 JST, equivalent to docker/cli v29.8.2).
 
-> **警告**: 本ファイルのコマンドはコンテナ・イメージ・ボリュームの作成や削除を行う。使い捨ての検証環境で実行し、本番ホストや重要なデータのあるボリュームには使わないこと。一括削除は `cleanup-prune.md` を参照。
+> **Warning**: The commands in this file create or delete containers, images, and volumes. Run them in a disposable verification environment, and do not use them on production hosts or on volumes holding important data. For bulk deletion, see `cleanup-prune.md`.
 
-## コンテナの起動
+## Start a container
 
 ```sh
 docker run --name test -d nginx:alpine
@@ -26,11 +26,11 @@ docker run -p 127.0.0.1:8080:80/tcp nginx:alpine
 docker run -P nginx:alpine
 ```
 
-`-d` はバックグラウンド実行、`--rm` は終了時にコンテナを自動削除、`-p` はポート公開、`-P` は EXPOSE されたポートをランダムに公開する。
+`-d` runs in the background, `--rm` removes the container automatically on exit, `-p` publishes a port, and `-P` publishes EXPOSEd ports randomly.
 
 Adapted: the official example maps `127.0.0.1:80:8080/tcp`, but nginx:alpine listens on container port 80, so host 8080 → container 80 is used here.
 
-## 環境変数・ボリューム・ネットワークの指定
+## Specify environment variables, volumes, and networks
 
 ```sh
 docker run -e MYVAR1 --env MYVAR2=foo --env-file ./env.list ubuntu bash
@@ -52,9 +52,9 @@ docker run -itd --network=my-net busybox
 docker run --restart=on-failure:10 redis
 ```
 
-`--restart` のポリシーの詳細（`always` 等）は原文の Restart policies 節を参照。
+For details of `--restart` policies (such as `always`), see the Restart policies section of the original.
 
-## コンテナの一覧とフィルタ
+## List and filter containers
 
 ```sh
 docker ps
@@ -67,9 +67,9 @@ docker ps --filter ancestor=ubuntu
 docker ps -a --filter 'exited=0'
 ```
 
-`-a` は停止中を含む。
+`-a` includes stopped containers.
 
-## ログ・コンテナ内での実行・ファイルコピー
+## Logs, running commands in a container, and copying files
 
 ```sh
 docker logs -f --until=2s test
@@ -87,9 +87,9 @@ docker cp ./some_file CONTAINER:/work
 docker cp CONTAINER:/var/logs/ /tmp/app_logs
 ```
 
-`CONTAINER` はコンテナ名または ID に置き換える。
+Replace `CONTAINER` with the container name or ID.
 
-## コンテナのライフサイクル
+## Container lifecycle
 
 ```sh
 docker start my_container
@@ -97,16 +97,16 @@ docker stop my_container
 docker restart my_container
 ```
 
-> **警告**: `docker kill` はコンテナのメインプロセスへ即座にシグナルを送る。データ保存が必要なアプリでは `docker stop` を優先すること。
+> **Warning**: `docker kill` immediately sends a signal to the container's main process. Prefer `docker stop` for applications that need to save data.
 
 ```sh
 docker kill my_container
 docker kill --signal=SIGHUP my_container
 ```
 
-## コンテナの削除
+## Remove containers
 
-> **警告**: コンテナの削除は不可逆。`--force` は実行中のコンテナのメインプロセスへ SIGKILL を送って削除し、`-v` / `--volumes` は関連する匿名ボリュームも削除する。
+> **Warning**: Removing a container is irreversible. `--force` sends SIGKILL to the main process of a running container and removes it, and `-v` / `--volumes` also removes the associated anonymous volumes.
 
 ```sh
 docker rm --force redis
@@ -114,9 +114,9 @@ docker rm --volumes redis
 docker rm $(docker ps --filter status=exited -q)
 ```
 
-名前付きボリュームは `-v` では削除されない（原文の例: `docker create -v awesome:/foo -v /bar --name hello redis` の後に `docker rm -v hello` を実行すると `/foo` は残り `/bar` のみ削除される）。
+Named volumes are not removed by `-v` (example from the original: after `docker create -v awesome:/foo -v /bar --name hello redis`, running `docker rm -v hello` keeps `/foo` and removes only `/bar`).
 
-## イメージの取得・一覧・タグ付け
+## Pull, list, and tag images
 
 ```sh
 docker image pull debian
@@ -136,9 +136,9 @@ docker tag httpd fedora/httpd:version1.0
 docker image tag rhel-httpd:latest registry-host:5000/myadmin/rhel-httpd:latest
 ```
 
-## レジストリへのログインと push
+## Log in to a registry and push
 
-> **警告**: `docker push` は外部レジストリへイメージを公開する。検証用レジストリで試し、認証情報はコマンドラインや履歴に残さないこと。
+> **Warning**: `docker push` publishes an image to an external registry. Try it against a test registry, and do not leave credentials on the command line or in shell history.
 
 ```sh
 docker login
@@ -151,7 +151,7 @@ docker image push registry-host:5000/myadmin/rhel-httpd:latest
 docker image push --all-tags registry-host:5000/myname/myimage
 ```
 
-## イメージの検索
+## Search images
 
 ```sh
 docker search busybox
@@ -160,7 +160,7 @@ docker search --filter is-official=true --filter stars=3 busybox
 docker search --format "{{.Name}}: {{.StarCount}}" nginx
 ```
 
-## イメージのエクスポートとインポート
+## Export and import images
 
 ```sh
 docker save busybox > busybox.tar
@@ -173,9 +173,9 @@ docker load < busybox.tar.gz
 docker load --input fedora.tar
 ```
 
-## イメージの削除
+## Remove images
 
-> **警告**: イメージの削除は不可逆。`-f` はタグが複数ある ID を指定した場合に一致するすべてのイメージを untag して削除する。
+> **Warning**: Removing an image is irreversible. When an ID with multiple tags is given, `-f` untags and removes all matching images.
 
 ```sh
 docker rmi test1:latest
@@ -184,11 +184,11 @@ docker image rm --platform linux/amd64 --platform linux/ppc64le --force myimage
 docker rmi $(docker images -f "dangling=true" -q)
 ```
 
-タグが複数ある ID を `-f` なしで指定すると競合エラーになる。`--platform`（API 1.50+）は特定プラットフォームのみを削除し、`--force` が必要（省略すると警告されて削除は中止される）。`--force` 付きで実行すると、その variant を参照する全イメージから content が削除される。
+Specifying an ID with multiple tags without `-f` causes a conflict error. `--platform` (API 1.50+) removes only the given platform and requires `--force` (without it, a warning is shown and the removal is canceled). When run with `--force`, the content is removed from all images that reference that variant.
 
 Adapted: `--force` is added to the equivalence example because removing a platform variant is canceled without it.
 
-## ネットワークの作成
+## Create a network
 
 ```sh
 docker network create -d bridge my-bridge-network
@@ -198,7 +198,7 @@ docker network create -d bridge my-bridge-network
 docker network create --driver=bridge --subnet=192.168.0.0/16 br0
 ```
 
-## ボリュームの作成・一覧・削除
+## Create, list, and remove volumes
 
 ```sh
 docker volume create hello
@@ -209,7 +209,7 @@ docker volume ls --filter label=is-timelord=yes
 docker volume ls --format "{{.Name}}: {{.Driver}}"
 ```
 
-> **警告**: ボリュームの削除は不可逆で、中のデータは復元できない。
+> **Warning**: Removing a volume is irreversible, and the data in it cannot be recovered.
 
 ```sh
 docker volume rm hello

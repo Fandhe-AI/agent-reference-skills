@@ -21,6 +21,8 @@ services:
   db:
     image: postgres:18
     environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
@@ -36,3 +38,4 @@ services:
 - `restart: true` restarts `web` when `db` is restarted or updated by an explicit Compose operation.
 - Shutdown runs in reverse dependency order (`web` is removed before `db` and `redis`).
 - Adapted: the official example omits POSTGRES_PASSWORD (MYSQL_ROOT_PASSWORD for mysql); it is added from a required variable because the image refuses to initialize without it.
+- Adapted: `POSTGRES_USER` and `POSTGRES_DB` are set explicitly because the healthcheck runs in a separate process and does not inherit the entrypoint defaults.

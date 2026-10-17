@@ -19,6 +19,8 @@ services:
   db:
     image: postgres:18
     environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
@@ -62,6 +64,8 @@ services:
   db:
     image: postgres:18
     environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
@@ -79,3 +83,4 @@ services:
 - For static files and secrets use the `configs` and `secrets` elements instead.
 - Adapted: the official example omits POSTGRES_PASSWORD (MYSQL_ROOT_PASSWORD for mysql); it is added from a required variable because the image refuses to initialize without it.
 - Adapted: the official chained pre_start example omits the db healthcheck; it is added because `service_healthy` requires one and the postgres image defines none.
+- Adapted: `POSTGRES_USER` and `POSTGRES_DB` are set explicitly in the db blocks because the healthcheck runs in a separate process and does not inherit the entrypoint defaults.

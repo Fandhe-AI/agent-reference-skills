@@ -44,6 +44,21 @@ jobs:
 Secret from a runner environment variable (`secret-envs`):
 
 ```yaml
+name: ci
+
+on:
+  push:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
       - name: Build
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         env:
@@ -67,6 +82,8 @@ RUN --mount=type=secret,id=npmrc,target=/home/node/.npmrc,uid=1000,gid=1000 \
     npm ci
 ```
 
+The `Build` step needs a preceding Checkout step (as above) so that `./.npmrc` and the build context exist.
+
 ```yaml
           secret-files: |
             npmrc=./.npmrc
@@ -80,3 +97,4 @@ RUN --mount=type=secret,id=npmrc,target=/home/node/.npmrc,uid=1000,gid=1000 \
 - Multi-line values must be wrapped in quotes (`"MYSECRET=..."`), with doubled quotes for literal quote signs.
 - The page also covers SSH mounts (`ssh: default` with a private-key setup step), not reproduced here.
 - Adapted: the official example references actions by major tag (`@vN`); third-party actions are pinned to the commit SHA of the current release here (tag in the trailing comment).
+- Adapted: the `secret-envs` example is expanded into a full workflow with an `actions/checkout` step, because `context: .` and `./.npmrc` cannot be resolved without a checked-out repository.

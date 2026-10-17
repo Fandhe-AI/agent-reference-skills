@@ -4,11 +4,11 @@ source: https://docs.docker.com/reference/cli/docker/system/prune/
 
 # Cleanup Prune
 
-未使用のコンテナ・イメージ・ボリューム・ネットワーク・ビルドキャッシュの確認と削除コマンド集。出典は `docker system df` / `system prune` / `container prune` / `image prune` / `volume prune` / `network prune` / `buildx prune` の CLI リファレンス Examples（取得日 2026-10-16 JST、docker/cli v29.8.2 / buildx v0.38.0 相当）。
+Commands to inspect and delete unused containers, images, volumes, networks, and build cache. Source: the Examples in the CLI references for `docker system df` / `system prune` / `container prune` / `image prune` / `volume prune` / `network prune` / `buildx prune` (retrieved 2026-10-16 JST, equivalent to docker/cli v29.8.2 / buildx v0.38.0).
 
-> **警告**: 本ファイルの prune 系コマンドはいずれも不可逆の削除を行う。削除前に `docker system df` で対象を確認し、使い捨ての検証環境で挙動を確かめてから実行すること。`-f` / `--force` は確認プロンプトを省略するため、スクリプトや CI 以外では付けない。
+> **Warning**: Every prune command in this file performs an irreversible deletion. Check the targets with `docker system df` before deleting, and verify the behavior in a disposable verification environment before running. `-f` / `--force` skips the confirmation prompt, so do not add it outside scripts or CI.
 
-## ディスク使用量の確認
+## Check disk usage
 
 ```sh
 docker system df
@@ -18,39 +18,39 @@ docker system df
 docker system df -v
 ```
 
-`-v` で詳細（イメージ別の `SHARED SIZE` / `UNIQUE SIZE` 等）を表示する。ネットワークはディスクを消費しないため表示されない。
+`-v` shows details (such as `SHARED SIZE` / `UNIQUE SIZE` per image). Networks are not shown because they do not consume disk.
 
-## 未使用データの一括削除
+## Delete all unused data
 
-> **警告**: 停止中のコンテナ、未使用ネットワーク、dangling イメージ、未使用のビルドキャッシュを削除する。ビルドキャッシュは常に対象（`RUN --mount=type=cache` のキャッシュマウントを含む）。
+> **Warning**: Deletes stopped containers, unused networks, dangling images, and unused build cache. Build cache is always a target (including `RUN --mount=type=cache` cache mounts).
 
 ```sh
 docker system prune
 ```
 
-原文の確認プロンプトは `WARNING! This will remove: all stopped containers / all networks not used by at least one container / all dangling images / unused build cache`。ボリュームは既定で削除されない。
+The confirmation prompt in the original reads `WARNING! This will remove: all stopped containers / all networks not used by at least one container / all dangling images / unused build cache`. Volumes are not deleted by default.
 
-## 未使用イメージとボリュームを含む一括削除
+## Delete everything including unused images and volumes
 
-> **警告**: `-a` は少なくとも 1 つのコンテナに紐づかないすべてのイメージとビルドキャッシュ全体を削除し、`--volumes` は少なくとも 1 つのコンテナに使われていない匿名ボリュームを削除する。ボリューム内のデータは復元できない。
+> **Warning**: `-a` deletes all images not associated with at least one container and the entire build cache, and `--volumes` deletes anonymous volumes not used by at least one container. Data in volumes cannot be recovered.
 
 ```sh
 docker system prune -a --volumes
 ```
 
-## フィルタ付き一括削除
+## Delete with filters
 
-> **警告**: フィルタに一致する対象が不可逆で削除される。
+> **Warning**: Objects matching the filters are deleted irreversibly.
 
 ```sh
 docker system prune --filter "label=foo" --filter "until=24h"
 ```
 
-異なるキーのフィルタは AND、同一キーは OR で結合される。`until` は Unix タイムスタンプ・日付形式・Go の duration（例: `10m`、`1h30m`）で、デーモンのマシン時刻基準。
+Filters with different keys are combined with AND, and filters with the same key with OR. `until` takes a Unix timestamp, a date format, or a Go duration (for example `10m`, `1h30m`), based on the daemon machine's time.
 
-## 停止中コンテナの削除
+## Delete stopped containers
 
-> **警告**: すべての停止中コンテナを削除する。
+> **Warning**: Deletes all stopped containers.
 
 ```sh
 docker container prune
@@ -64,11 +64,11 @@ docker container prune --force --filter "until=5m"
 docker container prune --force --filter "until=2017-01-04T13:10:00"
 ```
 
-2 つ目は 5 分より前に作成されたコンテナ、3 つ目は指定日時より前に作成されたコンテナのみ削除する（原文の例）。
+The second deletes only containers created more than 5 minutes ago, and the third only containers created before the given date and time (examples from the original).
 
-## 未使用イメージの削除
+## Delete unused images
 
-> **警告**: 既定では dangling イメージを削除する。`-a` はコンテナから参照されないすべてのイメージを削除する。確認プロンプトは一覧を表示せず、否定フィルタ（`label!=`）は `docker image ls` で対象を予測できない。
+> **Warning**: By default deletes dangling images. `-a` deletes all images not referenced by a container. The confirmation prompt does not list the targets, and negative filters (`label!=`) cannot be previewed with `docker image ls`.
 
 ```sh
 docker image prune -a
@@ -94,11 +94,11 @@ docker image prune --filter="label!=maintainer"
 docker image prune --filter="label!=maintainer=john"
 ```
 
-`until=240h` は 10 日より前に作成されたイメージが対象。肯定フィルタの対象は同じ構文の `docker image ls` で事前確認できる。
+`until=240h` targets images created more than 10 days ago. The targets of positive filters can be previewed with `docker image ls` using the same syntax.
 
-## 未使用ボリュームの削除
+## Delete unused volumes
 
-> **警告**: ボリューム内のデータは復元できない。既定では匿名ボリュームのみ削除し、`-a`（API 1.42+）は未使用の名前付きボリュームも削除する。
+> **Warning**: Data in volumes cannot be recovered. By default only anonymous volumes are deleted; `-a` (API 1.42+) also deletes unused named volumes.
 
 ```sh
 docker volume prune
@@ -108,11 +108,11 @@ docker volume prune
 docker volume prune --all
 ```
 
-`--filter` は `label=<key>` / `label!=<key>` 形式（原文）。
+`--filter` takes the `label=<key>` / `label!=<key>` form (from the original).
 
-## 未使用ネットワークの削除
+## Delete unused networks
 
-> **警告**: コンテナから参照されないユーザー定義ネットワークを削除する。`bridge` / `host` / `none` の既定ネットワークは削除されない。
+> **Warning**: Deletes user-defined networks not referenced by any container. The default `bridge` / `host` / `none` networks are not deleted.
 
 ```sh
 docker network prune
@@ -122,9 +122,9 @@ docker network prune
 docker network prune --force --filter until=5m
 ```
 
-## ビルドキャッシュの削除 (buildx)
+## Delete build cache (buildx)
 
-> **警告**: 選択中の builder のビルドキャッシュを削除する。キャッシュを失うと次回ビルドが遅くなる。
+> **Warning**: Deletes the build cache of the selected builder. Losing the cache makes the next build slower.
 
 ```sh
 docker buildx prune --filter "until=24h"
@@ -134,4 +134,4 @@ docker buildx prune --filter "type=source.local"
 docker buildx prune --filter "type!=exec.cachemount"
 ```
 
-複数の `--filter` は AND で結合される。`--max-used-space` / `--min-free-space` / `--reserved-space` は容量基準で最近最も使われていないレコードから削除する（値は `128mb` / `2gb` 等、大文字小文字非区別）。`--all` で内部 helper イメージと `#syntax=` / `BUILDKIT_SYNTAX` のフロントエンドイメージも対象になる。
+Multiple `--filter` flags are combined with AND. `--max-used-space` / `--min-free-space` / `--reserved-space` are capacity-based and delete the least recently used records first (values such as `128mb` / `2gb`, case-insensitive). `--all` also targets internal helper images and frontend images used by `#syntax=` / `BUILDKIT_SYNTAX`.

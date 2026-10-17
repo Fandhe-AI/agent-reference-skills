@@ -20,7 +20,7 @@ Read-only bind mount and read-write flag:
 
 ```console
 $ docker run --mount type=bind,source=/HOST/PATH,target=/CONTAINER/PATH,readonly nginx
-$ docker run -v HOST-DIRECTORY:/CONTAINER-DIRECTORY:rw nginx
+$ docker run -v /HOST/DIRECTORY:/CONTAINER/DIRECTORY:rw nginx
 ```
 
 ## Notes
@@ -28,3 +28,4 @@ $ docker run -v HOST-DIRECTORY:/CONTAINER-DIRECTORY:rw nginx
 - `-v` creates a missing host directory; `--mount` errors instead. Docker recommends `--mount`.
 - In Windows PowerShell, give an absolute path rather than `./`.
 - Use a volume for data that must outlive the container, a bind mount for host files you want to share live (config, development code).
+- Adapted: the official example writes `HOST-DIRECTORY` without a path separator, which `-v` interprets as a named volume; it is shown here as the absolute-path placeholders `/HOST/DIRECTORY` and `/CONTAINER/DIRECTORY`.
