@@ -51,6 +51,16 @@ export async function GET(request: NextRequest) {
   const limit = Number(searchParams.get("limit") ?? 100)
   const offset = Number(searchParams.get("offset") ?? 0)
 
+  if (
+    !Number.isInteger(limit) ||
+    !Number.isInteger(offset) ||
+    offset < 0 ||
+    limit < 1 ||
+    limit > 100
+  ) {
+    return NextResponse.json({ error: "Invalid pagination" }, { status: 400 })
+  }
+
   const { items, total } = await searchItems({ query, types, limit, offset })
 
   return NextResponse.json({
@@ -94,6 +104,7 @@ Query parameters sent by the CLI (all optional; a request without `q` or `type` 
 - Multiple registries (`shadcn search @acme @lib`): a global offset cannot be split, so the CLI forwards `q`, `type` and a `limit` of `offset + limit` to each registry, then merges and paginates locally. If a registry caps items below the requested `limit`, the CLI treats it as exhausted for deeper pages.
 - Works with all authentication patterns: configured headers and params are sent with the search request.
 - Backwards compatible: static registries ignore query parameters; older CLI versions ignore `pagination`, so return a sensible default (e.g. first page) for parameterless requests.
+- Adapted (not in the official docs): limit / offset validation (finite integers, offset >= 0, 1 <= limit <= 100, otherwise 400) added; the official handler passes Number() results straight to searchItems.
 - Test with `curl "https://acme.com/r/registry.json?q=button&limit=10"`.
 
 ## Related

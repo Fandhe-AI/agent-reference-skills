@@ -35,7 +35,7 @@ Wrap the root layout and add `suppressHydrationWarning` to the `html` tag:
 // app/layout.tsx
 import { ThemeProvider } from "@/components/theme-provider"
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <html lang="en" suppressHydrationWarning>
@@ -103,6 +103,7 @@ export function ModeToggle() {
 
 ## Notes
 
+- Adapted (not in the official docs): the official snippet types props as RootLayoutProps, which is neither defined nor imported; replaced with { children: React.ReactNode }.
 - Framework APIs themselves are in skills nextjs-app / react-router / tanstack-start / tanstack-router.
 - The `asChild` usage in the toggle is the source's example as written; adapt it to the `DropdownMenuTrigger` API of the base (Base UI / Radix) you installed.
 
