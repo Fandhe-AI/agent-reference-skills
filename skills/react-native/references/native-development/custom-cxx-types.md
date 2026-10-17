@@ -99,7 +99,7 @@ public:
   NativeSampleModule(std::shared_ptr<CallInvoker> jsInvoker);
 
   std::string reverseString(jsi::Runtime& rt, std::string input);
-+ int32_t cubicRoot(jsi::Runtime& rt, int64_t input);
++ double cubicRoot(jsi::Runtime& rt, int64_t input);
 };
 
 } // namespace facebook::react
@@ -121,8 +121,8 @@ std::string NativeSampleModule::reverseString(jsi::Runtime& rt, std::string inpu
   return std::string(input.rbegin(), input.rend());
 }
 
-+int32_t NativeSampleModule::cubicRoot(jsi::Runtime& rt, int64_t input) {
-+    return std::cbrt(input);
++double NativeSampleModule::cubicRoot(jsi::Runtime& rt, int64_t input) {
++    return std::cbrt(static_cast<double>(input));
 +}
 
 } // namespace facebook::react
@@ -335,6 +335,7 @@ return (
 - The order of the generics in `NativeSampleModuleAddress<std::string, int32_t, bool>` matters: the first template argument refers to the first data type of the struct, the second to the second, and so on.
 - Naming convention: the first part of the generated name is the type of the module (`NativeSampleModule`); the second part is the name of the JS type defined in the specs (`Address`).
 - In `validateAddress` the `Address` is a `jsi::Object`. JSI accessors: `getProperty()` retrieves a property by name; `asString()` converts to `jsi::String`; `utf8()` converts a `jsi::String` to `std::string`; `asNumber()` converts to a `double`. Functions can also return custom types.
+- Deviation from official docs: the official sample declares `cubicRoot` as returning `int32_t`, which truncates the fractional part of `std::cbrt` (e.g. `cubicRoot("2")` would return 1); this page returns `double` to match the JS spec's `number` return type.
 - Deviation from official docs: added finite/integer/int32 range check before casting asNumber() (double) to int32_t to avoid undefined behavior.
 - The reverseString sample reverses bytes, not characters: it is correct only for ASCII input; non-ASCII UTF-8 input (e.g. Japanese, emoji) produces an invalid byte sequence, so use a code-point-aware reversal (or restrict input to ASCII) in real code.
 
