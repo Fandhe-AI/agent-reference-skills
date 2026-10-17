@@ -14,6 +14,10 @@ Explains the coordinate system, item types, and design model used by the Drawing
 
 Repeated text accepts an increment value for labels, meaningful only when the text is a single letter or digit.
 
+Poly-polygons are created by the Image Converter tool and cannot be built by hand inside the Drawing Sheet Editor.
+
+The 10.0 manual is inconsistent on bitmaps: one sentence lists text, poly-polygons and bitmaps as rotatable, while the Rotation section lists only text and poly-polygons. The table above follows the Rotation section.
+
 ## Coordinates Definition
 
 Every position (start point, end point) is defined **relative to a page corner**. This makes drawing sheets independent of paper size — changing the paper size does not shift items relative to their reference corner.

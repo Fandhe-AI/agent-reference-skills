@@ -5,7 +5,8 @@ Global preferences for KiCad covering graphics, user interface, file management,
 ## Signature / Usage
 
 ```
-Preferences → Preferences…    Open the preferences dialog
+Preferences → Preferences…    Open the preferences dialog (default hotkey Ctrl+,)
+KiCad → Settings…             macOS
 ```
 
 ## Common Preferences
@@ -31,9 +32,18 @@ Preferences → Preferences…    Open the preferences dialog
 | Show icons in menus | Enables icons in menus (OS-dependent availability) |
 | Show scrollbars in editors | Toggles scrollbar visibility in editing canvases |
 | Focus follows mouse between schematic and PCB editors | Auto-focuses the window under the cursor |
+| Show popup indicator when toggling settings with hotkeys | Briefly shows a popup when a hotkey cycles between settings |
+| Use alternating row colors in tables | Alternating row colors in tables such as library tables and the Symbol Fields table |
+| Disable custom cursors | Uses system cursors instead of custom context-specific cursors |
 | Icon scale | Adjusts menu and button icon sizes; **Automatic** option available |
-| Icon theme | Light or dark background icon theme; **Automatic** selection option |
+| Icon theme | Light or dark background icon theme; default **Automatic** chooses by OS window theme lightness |
 | High-contrast mode dimming factor | Controls how much non-focused items are dimmed |
+
+### Scaling
+
+| Setting | Description |
+|---------|-------------|
+| Display PPI | Pixel density so objects are life sized at 100% zoom; **Detect** button uses the display-reported density |
 
 ### Interaction Behavior
 
@@ -47,20 +57,21 @@ Preferences → Preferences…    Open the preferences dialog
 | Setting | Description |
 |---------|-------------|
 | Remember open files for next project launch | Auto-reopens previously open files on next launch |
-| Auto save | Interval for automatic saving; set to 0 to disable |
-| File history size | Configures the length of the recent files list |
+| Auto save | Interval for automatic saving; set to 0 to disable (not found in the 10.0 manual) |
+| File history size | Configures the length of the recent files list (not found in the 10.0 manual) |
 
-### 3D Cache and Backups
+### Project Backup
 
 | Setting | Description |
 |---------|-------------|
-| 3D cache file duration | Retention period for the 3D model cache |
-| Automatically backup projects | Creates periodic ZIP archives of the project |
-| Create backups when auto save occurs | Triggers a backup alongside each auto-save event |
-| Maximum backups to keep | Limits the total number of backup files |
-| Maximum backups per day | Restricts the number of backups created per day |
-| Minimum time between backups | Prevents excessively frequent backup creation |
-| Maximum total backup size | Controls the total size of the backup directory |
+| Automatically backup projects | Makes backups and autosaves of the current project; an autosave is written after a few seconds of inactivity with unsaved changes, and a backup is made on each manual save |
+| Format | **Incremental** (snapshots in a Git repository in a hidden `.history` folder, shown in View → Panels → Local History; restore with right-click → Restore Commit) or **Zip archive** (restore with the Unarchive tool or manual extraction) |
+| Location | Project directory or KiCad user data (configuration) directory |
+| Maximum total backup size | Oldest backups are deleted to keep the backup directory below this limit |
+| Create backups when auto save occurs | Not found in the 10.0 manual |
+| Maximum backups to keep / Maximum backups per day / Minimum time between backups | Not found in the 10.0 manual |
+
+3D cache file duration is documented under Maintenance Preferences below.
 
 ## Mouse and Touchpad Preferences
 
@@ -83,8 +94,9 @@ Preferences → Preferences…    Open the preferences dialog
 
 | Setting | Description |
 |---------|-------------|
-| Middle mouse button | Configurable for zoom, pan, or inactive |
-| Right mouse button | Configurable for zoom, pan, or inactive |
+| Middle mouse button | Drag behavior: zoom, pan, or no effect |
+| Right mouse button | Drag behavior: zoom, pan, or no effect |
+| Left mouse button | Drag behavior depends on whether objects are already selected; the left button always selects and manipulates objects |
 | Pan on mouse movement with key | Enables panning with a designated key combination |
 
 ### Scrolling
@@ -110,10 +122,11 @@ Preferences → Preferences…    Open the preferences dialog
 All KiCad commands can be assigned custom keyboard shortcuts.
 
 - Common hotkeys apply across all editors; program-specific hotkeys appear when the respective application is active
+- The same hotkey can be assigned to different actions in different programs, but not to more than one action in the same program
 - Double-click a command to assign a hotkey
-- Conflict detection warns when reusing an existing hotkey
-- Changes marked with asterisks can be individually undone; "Undo All" reverts all changes
-- Hotkey configurations can be exported/imported as `.hotkeys` files from the KiCad settings directory
+- If the chosen hotkey is already used, you may reassign it, which removes it from the conflicting command
+- Changed commands are marked with a trailing `*`; right-click → Undo Changes reverts one command, the button below the list reverts all
+- Hotkeys are stored in `.hotkeys` files in the KiCad settings directory; import them with the Import Hotkeys… button
 
 ## Version Control Preferences
 
@@ -129,9 +142,9 @@ All KiCad commands can be assigned custom keyboard shortcuts.
 
 | Setting | Description |
 |---------|-------------|
-| Anonymous crash reports | Enables diagnostic data transmission to KiCad developers |
-| Unique identifier | Random ID linking reports from the same computer |
-| Reset Unique Id | Regenerates the identifier at user discretion |
+| I agree to provide anonymous reports | Sends anonymous reports to KiCad developers on crashes; disabled by default; reports do not contain design files |
+| Unique identifier | Random ID linking reports from the same computer; no PII stored |
+| Reset Unique Id | Regenerates the identifier |
 
 > Crash reporting is only supported on Windows and macOS platforms.
 
@@ -141,8 +154,8 @@ All KiCad commands can be assigned custom keyboard shortcuts.
 |---------|-------------|
 | Check for KiCad updates on startup | Notifies of application updates |
 | Check for package updates on startup | Alerts to available package versions |
-| Automatically add installed libraries | Adds PCM libraries to library tables |
-| Library nickname prefix | Customizable designation for installed libraries |
+| Automatically add installed libraries to global library table | Adds PCM libraries to library tables |
+| Library nickname prefix | Prefix used for the nickname of installed libraries |
 | Automatically remove uninstalled libraries | Deletes PCM libraries from tables upon uninstallation |
 
 ## Plugins Preferences
@@ -165,8 +178,8 @@ All KiCad commands can be assigned custom keyboard shortcuts.
 
 ## Notes
 
-- Hotkey configurations are **not** imported automatically when upgrading to a new major version; use the import function in the Preferences dialog
-- Auto-save interval of 0 disables automatic saving entirely
+- Hotkey configurations are **not** imported from previous versions; use Import Hotkeys… on the Hotkeys page of Preferences
+- Auto save interval and File history size are not found in the 10.0 manual (autosave is described under Project backup)
 - Crash reporting (Data Collection) is supported on Windows and macOS only
 
 ## Related

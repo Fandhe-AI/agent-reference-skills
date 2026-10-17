@@ -4,11 +4,11 @@ Drawing sheet items support constraints that control visibility and text sizing.
 
 ## Page 1 Constraint
 
-Individual items can be restricted to specific pages in multi-page schematics. The properties panel provides three visibility options:
+Individual items can be restricted to specific pages in multi-page schematics. The dropdown in the item's Item Properties panel provides three visibility options (items are usually shown on all pages):
 
 | Option | Behavior |
 |--------|----------|
-| Show on all pages | Item appears on every sheet page (default) |
+| Show on all pages | Item appears on every sheet page |
 | First page only | Item appears only on the first page |
 | Subsequent pages only | Item appears on all pages except the first |
 

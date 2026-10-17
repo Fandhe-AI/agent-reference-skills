@@ -15,10 +15,10 @@ Default hotkeys and action descriptions for the KiCad Project Manager.
 | Footprint Editor | `Ctrl+F` | Create, delete, and edit PCB footprints |
 | Gerber Viewer | `Ctrl+G` | Preview Gerber output files |
 | Image Converter | `Ctrl+B` | Convert bitmap images to schematic or PCB components |
-| Launch preferred text editor | — | Open the configured text editor |
+| Open Text Editor | — | Launch preferred text editor |
 | Local History | — | Display or conceal the local history panel |
 | New Jobset File… | — | Create a new jobset file |
-| New Project… | `Ctrl+N` | Create a new project (optionally from a template) |
+| New Project… | `Ctrl+N` | Create a new project based on an existing project (template) |
 | Open Demo Project… | — | Open a demonstration project |
 | Open Jobset File… | — | Open an existing jobset file |
 | Open Project… | `Ctrl+O` | Open an existing KiCad project |
@@ -31,7 +31,7 @@ Default hotkeys and action descriptions for the KiCad Project Manager.
 
 ## Notes
 
-- Actions without a default hotkey (`—`) can be assigned custom shortcuts via **Preferences → Preferences… → Hotkeys**
+- Actions without a default hotkey (`—`) can be assigned custom shortcuts via the Hotkeys section of **Preferences → Preferences…**
 - Hotkeys shown are defaults and may differ if customized
 
 ## Related

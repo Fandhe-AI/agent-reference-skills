@@ -19,15 +19,21 @@ Built-in path variables available in KiCad 10.0:
 
 Path variables are configured via **Preferences → Configure Paths…**
 
+Example: `${KICAD10_FOOTPRINT_DIR}/connect.pretty`, `${KIPRJMOD}/connect.pretty`.
+
+Versioned variables from older KiCad versions resolve to the current version's value if not explicitly defined (e.g. `${KICAD9_FOOTPRINT_DIR}` resolves to `${KICAD10_FOOTPRINT_DIR}`).
+
+Paths set in Configure Paths are internal to KiCad (stored in user configuration files). A system environment variable set outside KiCad overrides them and is shown read-only in the dialog. Restart KiCad after changing path configuration.
+
 ## Advanced Environment Variables
 
-These variables customize file locations but are not displayed in the Configure Paths dialog. Set them as OS-level environment variables before launching KiCad.
+These variables customize file locations but are not displayed in the Configure Paths dialog and cannot be used in path substitutions. Set them as OS-level environment variables before launching KiCad. Changing them does not move existing files; copy settings manually.
 
 | Variable | Description |
 |----------|-------------|
-| `KICAD_CONFIG_HOME` | Base directory for configuration files; version-specific subdirectories are created automatically |
-| `KICAD_DOCUMENTS_HOME` | Base path for user-modifiable documents such as projects and templates |
-| `KICAD_STOCK_DATA_HOME` | Base path for stock data managed by the installer or package manager |
+| `KICAD_CONFIG_HOME` | Base directory for configuration files; subdirectories are created per KiCad minor version |
+| `KICAD_DOCUMENTS_HOME` | Base path for user-modifiable documents such as projects, templates, Python scripts, libraries; per-minor-version subdirectories; a suggested location, need not be used |
+| `KICAD_STOCK_DATA_HOME` | Base path for stock data including default libraries, managed by the installer or package manager (not for user-writeable data) |
 
 ## Libraries Configuration
 
@@ -36,7 +42,7 @@ KiCad maintains separate library tables for symbols and footprints at two levels
 | Level | Location | Scope |
 |-------|----------|-------|
 | Global | User configuration directory | All projects |
-| Project | Individual project folder | That project only |
+| Project (optional) | Project directory | That project only |
 
 ### Accessing Library Tables
 
@@ -45,13 +51,13 @@ KiCad maintains separate library tables for symbols and footprints at two levels
 
 ### Plugin and Content Manager Libraries
 
-Libraries installed via the Plugin and Content Manager are automatically added to the appropriate library tables upon installation.
+Libraries installed via the Plugin and Content Manager are added to the library tables automatically only if "Automatically add installed libraries to global library table" is enabled in Preferences (see KiCad Preferences); otherwise add them manually.
 
 ## Notes
 
 - `KIPRJMOD` is automatically set to the active project directory and cannot be overridden
 - `SPICE_LIB_DIR` is not defined by default; create it manually if needed for simulation model libraries
-- Project-level library tables override global library tables for the same library nickname
+- Project-level library tables override global library tables for the same library nickname (stated in the PCB Editor and Schematic Editor manuals' library table sections; not in the KiCad manual's chapter)
 
 ## Related
 

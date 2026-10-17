@@ -12,7 +12,7 @@ Selected actions (the full table contains roughly 330 rows; not all are reproduc
 | Align to Horizontal / Vertical Center | — | Aligns selected items to the horizontal/vertical center of the item under the cursor |
 | Distribute Horizontally/Vertically by Centers | — | Distributes selected items so item centers are equally spaced |
 | Distribute Horizontally/Vertically with Even Gaps | — | Distributes selected items so gaps between items are equal |
-| Create Array… | `Ctrl+T` | Creates an array of the selected item(s) |
+| Create Array… | `Ctrl+T` | — |
 | Place Off-Board Footprints | — | Performs automatic placement of components outside board area |
 | Place Selected Footprints | — | Performs automatic placement of selected components |
 | Switch Track to Next/Previous Layer | `Ctrl++` / `Ctrl+-` | Switch track to next/previous enabled copper layer |
@@ -26,7 +26,7 @@ Selected actions (the full table contains roughly 330 rows; not all are reproduc
 | Router Highlight/Shove/Walkaround Mode | — | Switches the interactive router to highlight/shove/walkaround mode |
 | Drag 45 Degree Mode | `D` | Drags the track segment while keeping connected tracks at 45 degrees |
 | Drag Free Angle | `G` | Drags the nearest joint in the track without restricting the track angle |
-| Draw Filled Zones | `Ctrl+Shift+Z` | Fills all zones on the board |
+| Draw Filled Zones | `Ctrl+Shift+Z` | — |
 | Add a Zone Cutout | `Shift+C` | Adds a cutout to an existing zone or rule area |
 | Add a Similar Zone | `Ctrl+Shift+.` | Adds a zone with the same settings as an existing zone |
 | Toggle Zone Display | — | Cycle between showing zone fills and just their outlines |
@@ -42,7 +42,7 @@ Selected actions (the full table contains roughly 330 rows; not all are reproduc
 | Create Arc/Lines/Polygon/Tracks from Selection | — | Converts selected graphic lines into an arc, graphic lines, a graphic polygon, or tracks respectively |
 | Create Rule Area from Selection... | — | Creates a rule area from the selection |
 | Flip Board View | — | View board from the opposite side |
-| Automatic zoom | — | Automatic zoom on footprint change |
+| Automatic zoom | — | Automatic Zoom on footprint change |
 
 ## 3D Viewer
 
@@ -60,7 +60,7 @@ Selected actions (the full table contains roughly 50 rows):
 | Set Pivot | `Space` | Place point around which the board will be rotated (middle mouse click) |
 | Reload board | — | Reload board and refresh 3D view |
 | Move Board Up/Down/Left/Right | `Up` / `Down` / `Left` / `Right` | Pans the 3D view |
-| Rotate X/Y/Z Clockwise/Counterclockwise | `Shift+R` (Z clockwise) | Rotates the 3D model around the given axis |
+| Rotate X/Y/Z Clockwise/Counterclockwise | `Shift+R` (Z clockwise) / `R` (Z counterclockwise) | Rotates the 3D model around the given axis |
 | Render CAD Colors | — | Use a CAD color style based on the diffuse color of the material |
 | Render Solid Colors | — | Use only the diffuse color property from 3D model file |
 | Render Realistic Materials | — | Use all material properties from each 3D model file |
@@ -102,9 +102,10 @@ Selected actions shared across KiCad applications (the full table contains rough
 
 ## Notes
 
-- These tables are excerpts; the official manual's full Actions Reference chapter lists all ~530 default hotkey bindings across the three sections. Hotkeys are user-configurable via **Preferences → Preferences… → Hotkeys**
+- These tables are excerpts; the official manual's full Actions Reference chapter lists all actions (~530) across the three sections, most without a default hotkey. Hotkeys are user-configurable via **Preferences → Preferences… → Hotkeys**
 - Many actions have no default hotkey assigned (shown as `—`) and are accessible only via menus, toolbars, or after custom hotkey assignment
 - Descriptions left blank in the source table are shown as `—`
+- Excerpt rows were re-checked against the KiCad 10.0.7 PCB Editor manual (PCB Editor, 3D Viewer, and Common tables). `Draw Filled Zones` (`Ctrl+Shift+Z`) has no description in the manual; it is a separate action from `Fill All Zones` (`B`) and `Unfill All Zones` (`Ctrl+B`), which are not reproduced in the excerpt
 
 ## Related
 

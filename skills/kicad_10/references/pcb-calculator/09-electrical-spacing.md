@@ -10,10 +10,10 @@ Provides a reference table of minimum recommended clearances between PCB conduct
 
 ## Notes
 
-- Clearance values are minimum recommendations; actual design clearances should also account for PCB material, coating, altitude, and applicable safety standards (e.g., IPC-2221, IEC 60950, UL 60950).
+- Clearance values are minimum recommendations; actual design clearances should also account for PCB material, coating, altitude, and applicable safety standards (e.g., IPC-2221, IEC 60950, UL 60950) (not found in the 10.0 manual).
 - The table covers DC and AC peak voltages; use the AC peak value (not RMS) for AC circuits.
-- For voltages exceeding 500 V, the interactive field extrapolates clearance from the underlying formula.
-- These are layout guidance values; creepage distances (along surfaces) are separate and typically larger than clearance (through air).
+- For voltages exceeding 500 V, the manual only says to enter the value in the box in the left corner and press **Update Values**. It does not describe how the clearance is computed.
+- These are layout guidance values; creepage distances (along surfaces) are separate and typically larger than clearance (through air) (not found in the 10.0 manual).
 
 ## Related
 

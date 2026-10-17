@@ -9,7 +9,7 @@ Drawing sheets can contain the following item types:
 - **Lines** — borders and dividers
 - **Rectangles** — structured layout areas
 - **Text** — static strings or keyword-based dynamic text (e.g., date, page number)
-- **Poly-polygons** — primarily for logos and special graphic shapes
+- **Poly-polygons** — primarily for logos and special graphic shapes (created by the Image Converter tool, not by hand in this editor)
 - **Bitmaps** — image-based logos (plotted only by PDF and PS plotters; other formats render a bounding box only)
 
 ## Capabilities

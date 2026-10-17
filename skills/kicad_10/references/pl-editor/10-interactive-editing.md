@@ -7,7 +7,7 @@ Describes how to select, create, and edit items on the drawing sheet canvas.
 Items can be selected by:
 
 - Left-clicking directly on the canvas
-- Right-clicking the canvas and using the context menu
+- Right-clicking an item (a pop-up menu is shown; its contents depend on the item type)
 - Selecting an item in the Design Inspector window
 
 Selected items appear in a lighter color and their properties open in the Properties Editor panel.
@@ -31,22 +31,22 @@ Available item types via toolbar:
 ## Adding Lines, Rectangles, and Text
 
 - Items can be repositioned by dragging or using the **Move** command (`M` key)
-- For lines and rectangles, each endpoint can be adjusted independently
-- Recommendation: use the same reference corner for both the start and end points to ensure consistent geometry across different paper sizes
+- Lines and rectangles can be moved as a shape, or their points moved individually
+- Lines and rectangles typically use the same reference corner for both start and end points; otherwise the geometry changes when the sheet size or margins change
 
 ## Adding Logos
 
 Logos must be prepared with the **Image Converter** tool before use:
 
-1. Use the Image Converter tool to generate a `.kicad_wks` file containing a poly-polygon representation of the logo
-2. Use **Append Existing Drawing Sheet** to insert the poly-polygon into the current design
+1. Use the Image Converter tool (in the KiCad Project Manager) to generate a drawing sheet file containing one item, a poly-polygon of the source image (polygons cannot be created by hand)
+2. Use **Append Existing Drawing Sheet** to insert it into the current design (this command appends all items of any drawing sheet file)
 3. The poly-polygon can then be moved and its parameters modified in the Properties Editor
 
 ## Adding Image Bitmaps
 
-- Supported formats: PNG, JPEG, BMP
-- On import, the bitmap PPI (pixels per inch) is set to **300 PPI** by default
-- Adjust PPI in the Properties Editor to control the final rendered size
+- Supported formats: many common bitmap formats (PNG, JPEG, BMP, etc.)
+- On import, the bitmap PPI (pixels per inch) is set to **300 PPI**
+- Adjust PPI in the Properties Editor to control the final rendered size; higher values give larger output files and can affect draw/plot time
 - Bitmaps support repetition but **do not support rotation**
 
 ## Notes
