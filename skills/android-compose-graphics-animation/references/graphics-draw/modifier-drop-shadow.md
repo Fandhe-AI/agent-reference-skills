@@ -71,7 +71,7 @@ Box(
 |------|------|---------|-------------|
 | `shape` | `Shape` | — | Outline the shadow is cast/inset against. |
 | `shadow` | `Shadow` | — (required) | Shadow configuration; see fields below. No default — must be constructed explicitly. |
-| `block` | `DropShadowScope.() -> Unit` / `InnerShadowScope.() -> Unit` | — | Alternate overload; configures the shadow via mutable `var` properties (`radius`, `spread`, `color`, `brush`, `alpha`, `blendMode`, `offset`) on the scope instead of building a `Shadow` value. |
+| `block` | `DropShadowScope.() -> Unit` / `InnerShadowScope.() -> Unit` | — | Alternate overload; configures the shadow via mutable `var` properties (`radius`, `spread`, `color`, `brush`, `alpha`, `blendMode`, `offset`) on the scope instead of building a `Shadow` value. In the scope, `radius` / `spread` are `Float` (px), `offset` is `Offset` (px), and `brush` is `Brush?`. |
 | `radius` | `Dp` | — (required) | Blur softness/diffusion of the shadow edge. No default in either `Shadow` constructor. |
 | `spread` | `Dp` | `0.dp` | Expands (`dropShadow`) or contracts (`innerShadow`) the shadow geometry relative to `shape`. |
 | `offset` | `DpOffset` | `DpOffset.Zero` | Shadow displacement along the x/y axes. |
