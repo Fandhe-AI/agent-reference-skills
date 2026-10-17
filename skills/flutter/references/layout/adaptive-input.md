@@ -208,7 +208,7 @@ return MouseRegion(
 
 ### Visual density
 
-`VisualDensity` adjusts the density of views across the application (for example, larger hit areas on touch devices). `MaterialApp` components that support it animate their densities to match. Horizontal and vertical densities default to 0.0 and can be any negative or positive value.
+`VisualDensity` adjusts the density of views across the application (for example, larger hit areas on touch devices). `MaterialApp` components that support it animate their densities to match. Horizontal and vertical densities default to 0.0 and must be between VisualDensity.minimumDensity (-4.0) and VisualDensity.maximumDensity (4.0).
 
 ```dart
 double densityAmt = touchMode ? 0.0 : -1.0;
@@ -232,6 +232,7 @@ VisualDensity density = Theme.of(context).visualDensity;
 ## Notes
 
 - The source page says `TraversalPolicy`; the SDK base class is `FocusTraversalPolicy`.
+- Corrected from the source page, which says densities can be any negative or positive value; the SDK constructor asserts -4.0 (minimumDensity) <= value <= 4.0 (maximumDensity).
 
 - `ScrollView` / `ListView` support the scroll wheel by default.
 - Unlike `Shortcuts` or `KeyboardListener`, the static `HardwareKeyboard` listener must be disabled by you when the user is typing in a field or the associated widget is hidden (important when binding Delete/Backspace while child `TextField`s exist).
