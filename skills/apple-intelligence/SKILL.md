@@ -10,17 +10,19 @@ user-invocable: false
 
 # Apple Intelligence
 
+> 分割 PR の途中段階。現在収録済み: references/{attachments, dynamic-profiles, evaluations, evaluators}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+
 Apple Intelligence の開発者向け API を扱うリファレンススキル。Foundation Models フレームワーク（オンデバイス / Private Cloud Compute の言語モデル）、Evaluations フレームワーク、Image Playground、Foundation Models SDK for Python を収録する。
 
 ## 対象バージョン
 
-- 出典: developer.apple.com DocC JSON (`/tutorials/data/documentation/<path>.json`)、取得日 2026-10-16（URL に版数なし）
+- 出典: https://developer.apple.com/documentation/foundationmodels 、https://developer.apple.com/documentation/evaluations 。取得経路は DocC JSON (`/tutorials/data/documentation/<path>.json`)、取得日 2026-10-16（URL に版数なし）
 - 現行 SDK は iOS 27。27.0 のシンボルに beta フラグなし
 - Foundation Models: iOS / iPadOS / macOS / Mac Catalyst / visionOS 26.0+、watchOS 27.0+
 - Evaluations: 27.0+（Xcode 27.0+）
 - `Data*Representable`: Beta（iOS 27.2+）
 - `ImageCreator`: 27.0 で deprecated
-- Foundation Models SDK for Python: GitHub タグ v0.2.1（2026-06-29 リリース）。PyPI 最新 `apple-fm-sdk` 0.2.1 と一致
+- Foundation Models SDK for Python: https://github.com/apple/python-apple-fm-sdk のタグ v0.2.1（https://github.com/apple/python-apple-fm-sdk/releases/tag/v0.2.1 、2026-06-29 リリース）。PyPI 最新 `apple-fm-sdk` 0.2.1（https://pypi.org/project/apple-fm-sdk/ ）と一致
 - `foundation-models-utilities` は beta タグのみのため未収録
 
 ## ディレクトリ構成

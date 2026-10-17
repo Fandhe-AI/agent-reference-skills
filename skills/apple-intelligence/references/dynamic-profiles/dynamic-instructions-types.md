@@ -16,11 +16,6 @@ A dynamic instructions type that's type-erased.
 struct AnyDynamicInstructions
 ```
 
-| Member | Description |
-| --- | --- |
-| `init(_:)` | Creates an instance from the dynamic instructions you specify. |
-| `init(erasing:)` | Creates an instance from the dynamic instructions you specify. |
-
 ### ConditionalDynamicInstructions
 
 A dynamic instructions type that conditionally selects between two conditions.
@@ -28,11 +23,6 @@ A dynamic instructions type that conditionally selects between two conditions.
 ```swift
 struct ConditionalDynamicInstructions<TrueContent, FalseContent> where TrueContent : DynamicInstructions, FalseContent : DynamicInstructions
 ```
-
-| Member | Description |
-| --- | --- |
-| `init(_:)` | Creates a dynamic instructions instance that selects between two conditions. |
-| `ConditionalDynamicInstructions.Branch` | An enumeration that represents a condition to evaluate. |
 
 ### EmptyDynamicInstructions
 
@@ -42,10 +32,6 @@ An empty dynamic instructions type.
 struct EmptyDynamicInstructions
 ```
 
-| Member | Description |
-| --- | --- |
-| `init()` | Creates an empty instance. |
-
 ### TupleDynamicInstructions
 
 A dynamic instructions type that represents a tuple.
@@ -53,6 +39,30 @@ A dynamic instructions type that represents a tuple.
 ```swift
 struct TupleDynamicInstructions<each Content> where repeat each Content : DynamicInstructions
 ```
+
+## Options / Props
+
+### AnyDynamicInstructions
+
+| Member | Description |
+| --- | --- |
+| `init(_:)` | Creates an instance from the dynamic instructions you specify. |
+| `init(erasing:)` | Creates an instance from the dynamic instructions you specify. |
+
+### ConditionalDynamicInstructions
+
+| Member | Description |
+| --- | --- |
+| `init(_:)` | Creates a dynamic instructions instance that selects between two conditions. |
+| `ConditionalDynamicInstructions.Branch` | An enumeration that represents a condition to evaluate. |
+
+### EmptyDynamicInstructions
+
+| Member | Description |
+| --- | --- |
+| `init()` | Creates an empty instance. |
+
+### TupleDynamicInstructions
 
 | Member | Description |
 | --- | --- |

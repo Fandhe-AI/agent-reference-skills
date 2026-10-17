@@ -42,7 +42,17 @@ Profile {
 }
 ```
 
-### Members
+### LanguageModelSession.DynamicProfileBuilder
+
+```swift
+@resultBuilder struct DynamicProfileBuilder
+```
+
+A type that represents a dynamic profile builder.
+
+## Options / Props
+
+### DynamicProfile Members
 
 | Name | Declaration | Description |
 | --- | --- | --- |
@@ -68,13 +78,7 @@ Profile {
 | modifier(_:) | `func modifier<Modifier>(_ modifier: Modifier) -> some LanguageModelSession.DynamicProfile where Modifier : LanguageModelSession.DynamicProfileModifier` | Applies a modifier to the dynamic profile. |
 | transcriptErrorHandlingPolicy(_:) | `func transcriptErrorHandlingPolicy(_ transcriptErrorHandlingPolicy: TranscriptErrorHandlingPolicy?) -> some LanguageModelSession.DynamicProfile` | Sets the policy for managing the transcript when errors occur. |
 
-### LanguageModelSession.DynamicProfileBuilder
-
-```swift
-@resultBuilder struct DynamicProfileBuilder
-```
-
-A type that represents a dynamic profile builder.
+### DynamicProfileBuilder Methods
 
 | Method | Description |
 | --- | --- |

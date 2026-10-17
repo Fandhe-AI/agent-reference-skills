@@ -34,7 +34,17 @@ struct PresentationInstructions: DynamicInstructions {
 }
 ```
 
-### Members
+### DynamicInstructionsBuilder
+
+```swift
+@resultBuilder struct DynamicInstructionsBuilder
+```
+
+A result builder that combines tools and other content into dynamic instructions.
+
+## Options / Props
+
+### DynamicInstructions Members
 
 | Name | Declaration | Description |
 | --- | --- | --- |
@@ -43,13 +53,7 @@ struct PresentationInstructions: DynamicInstructions {
 | DynamicInstructions.ForEach | `typealias ForEach = DynamicInstructionsForEach` | A shorthand for producing content for each element of a collection. |
 | DynamicInstructions.SessionProperty | `typealias SessionProperty = LanguageModelSession.SessionProperty` | A property wrapper that provides access to a session property within dynamic instructions. |
 
-### DynamicInstructionsBuilder
-
-```swift
-@resultBuilder struct DynamicInstructionsBuilder
-```
-
-A result builder that combines tools and other content into dynamic instructions.
+### DynamicInstructionsBuilder Methods
 
 | Method | Description |
 | --- | --- |

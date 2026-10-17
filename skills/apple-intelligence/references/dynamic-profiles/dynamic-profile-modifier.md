@@ -12,16 +12,6 @@ A protocol for creating reusable wrappers around dynamic profile content.
 protocol DynamicProfileModifier
 ```
 
-### Members
-
-| Name | Declaration | Description |
-| --- | --- | --- |
-| body(content:) | `@LanguageModelSession.DynamicProfileBuilder func body(content: Self.Content) -> Self.Body` | The content of the dynamic profile modifier. |
-| Content | `typealias Content = LanguageModelSession.DynamicProfileModifierContent<Self>` | The type of dynamic profile content that this modifier wraps. |
-| Body | `associatedtype Body : LanguageModelSession.DynamicProfile` | The type of dynamic profile modifier that represents this modifier. |
-| SessionProperty | `typealias SessionProperty = LanguageModelSession.SessionProperty` | A property wrapper that provides access to a session property from within a dynamic profile modifier. |
-| DynamicProfile | `typealias DynamicProfile = LanguageModelSession.DynamicProfile` | The dynamic profile type that a modifier's body returns. |
-
 ### LanguageModelSession.DynamicProfileModifierContent
 
 A type that represents the dynamic profile a modifier applies to.
@@ -37,6 +27,18 @@ A dynamic profile with a modifier applied to it.
 ```swift
 struct ModifiedDynamicProfile<Content, Modifier> where Content : LanguageModelSession.DynamicProfile, Modifier : LanguageModelSession.DynamicProfileModifier
 ```
+
+## Options / Props
+
+### DynamicProfileModifier Members
+
+| Name | Declaration | Description |
+| --- | --- | --- |
+| body(content:) | `@LanguageModelSession.DynamicProfileBuilder func body(content: Self.Content) -> Self.Body` | The content of the dynamic profile modifier. |
+| Content | `typealias Content = LanguageModelSession.DynamicProfileModifierContent<Self>` | The type of dynamic profile content that this modifier wraps. |
+| Body | `associatedtype Body : LanguageModelSession.DynamicProfile` | The type of dynamic profile modifier that represents this modifier. |
+| SessionProperty | `typealias SessionProperty = LanguageModelSession.SessionProperty` | A property wrapper that provides access to a session property from within a dynamic profile modifier. |
+| DynamicProfile | `typealias DynamicProfile = LanguageModelSession.DynamicProfile` | The dynamic profile type that a modifier's body returns. |
 
 ## Notes
 

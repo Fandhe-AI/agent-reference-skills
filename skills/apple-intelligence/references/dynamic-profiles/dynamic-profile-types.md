@@ -16,11 +16,6 @@ A type-erased dynamic profile.
 struct AnyDynamicProfile
 ```
 
-| Member | Description |
-| --- | --- |
-| `init(_:)` | Creates an instance from the dynamic profile you specify. |
-| `init(erasing:)` | Creates an instance from the dynamic profile you specify. |
-
 ### LanguageModelSession.ConditionalDynamicProfile
 
 A dynamic profile that resolves to one of two profiles, depending on a condition.
@@ -28,6 +23,15 @@ A dynamic profile that resolves to one of two profiles, depending on a condition
 ```swift
 struct ConditionalDynamicProfile<TrueContent, FalseContent> where TrueContent : LanguageModelSession.DynamicProfile, FalseContent : LanguageModelSession.DynamicProfile
 ```
+
+## Options / Props
+
+### LanguageModelSession.AnyDynamicProfile
+
+| Member | Description |
+| --- | --- |
+| `init(_:)` | Creates an instance from the dynamic profile you specify. |
+| `init(erasing:)` | Creates an instance from the dynamic profile you specify. |
 
 ## Notes
 
