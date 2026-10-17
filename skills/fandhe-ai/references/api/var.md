@@ -60,7 +60,7 @@ let loss = output.mse_loss(&target_var)?;
 | `var-losses.md` | 損失関数（`loss_ops` / `elementwise_loss_ops` / `margin_focal_loss_ops`、`huber_loss` / `kl_div_loss` / `nll_loss` / `ctc_loss` など） |
 | `var-signal.md` | FFT / STFT 系（`fft_ops`: `fft` / `ifft` / `rfft` / `irfft` / `stft` / `istft`） |
 
-## VarHostView
+### VarHostView
 
 `host_view()` が返す所有型のビュー。`Deref<Target = [f32]>` を実装し、contiguous 化済みの値をスライスとして読める。`Tape` の借用を一切保持しない。`fandhe_ai::VarHostView` として再エクスポートされる。
 

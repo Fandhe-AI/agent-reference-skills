@@ -109,7 +109,7 @@ let tape = match tape_for(Device::Cuda(0)) {
 | --- | --- | --- |
 | `typed_ops_f64` / `typed_ops_f16` / `typed_ops_bf16` | メソッド | バックエンドの dtype 別演算（`gemm` / `add` / `mul` / `relu` / `exp` / `tanh` / `sum` / `max` の 8 演算限定）への `Option<&dyn TypedOps<T>>`。`Var` / autograd を経由せず勾配は付かない。非対応は `None` |
 
-## TapeRef
+### TapeRef
 
 `nn::Module::forward` の第 1 引数となる借用ハンドル（`#[derive(Clone, Copy)]`）。公開メソッドは `var` / `var_from` / `var_no_grad` の 3 件のみで、`backward` 等は持たない。crate 外からの構築は `From<&Tape>` のみ。
 

@@ -20,7 +20,7 @@ let tape = fandhe_ai::tape_for(Device::Cuda(0))?;
 | `Cuda(usize)` | バリアント | CUDA GPU バックエンド。`usize` は `cudarc` のデバイス ordinal（`CudaContext::new(ordinal)` と対応）。CUDA ドライバ不在時は実行時に `BackendError::CudaUnavailable` を返す。全 OS でバリアント自体は存在するが、CUDA インストール済みの環境でのみ機能する |
 | `Metal` | バリアント | macOS 限定の Metal バックエンド。feature flag ではなく条件付きコンパイルで制御される |
 
-## Device 関連の関数
+### Device 関連の関数
 
 `fandhe_ai` クレートルートの自由関数（`Device` は外部型のため inherent メソッドを追加できず、`tape_for` と同型の自由関数として公開される）。
 
@@ -30,7 +30,7 @@ let tape = fandhe_ai::tape_for(Device::Cuda(0))?;
 | `release_cached_memory(device: Device) -> Result<(), BackendError>` | 関数 | `device` のデバイスメモリプールがアイドル保持している分を即座に実解放する。プールを持たないバックエンド（CPU 等）は何もせず `Ok(())`。存在しないデバイス・範囲外 ordinal・driver 不在は `BackendError`（`tape_for` と同じ fail-fast） |
 | `memory_pool_stats(device: Device) -> Result<Option<PoolStats>, BackendError>` | 関数 | デバイスメモリプールの統計スナップショット（診断用）。プールを持たないバックエンドは `Ok(None)` |
 
-### PoolStats
+#### PoolStats
 
 `#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]` の POD。全フィールド `pub u64`。単発の呼び出し内で全フィールドが厳密に同一時刻の値であることは要求されない（診断用）。
 
