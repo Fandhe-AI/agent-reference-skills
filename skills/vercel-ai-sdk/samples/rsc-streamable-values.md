@@ -33,7 +33,7 @@ export const runThread = async () => {
 'use client';
 
 import { readStreamableValue } from '@ai-sdk/rsc';
-import { runThread } from '@/actions';
+import { runThread } from './actions';
 
 export default function Page() {
   return (
@@ -74,7 +74,7 @@ export async function getWeather() {
 ## Notes
 
 - Official warning: AI SDK RSC is experimental; AI SDK UI is recommended for production.
-- Modified from the official example: the first `app/page.tsx` on the page lacks `'use client'` although it uses `onClick`; the directive is added here.
+- Modified from the official example: the first `app/page.tsx` on the page lacks `'use client'` although it uses `onClick`; the directive is added here, and the official `@/actions` import is changed to `./actions` to match the `app/actions.ts` placement.
 - `createStreamableValue` carries serializable values (strings, numbers, objects, arrays) such as LLM text, image/audio buffers or progress updates; `createStreamableUI` holds a React component but does not call a model by itself.
 - `.update()` pushes intermediate values, `.done()` closes the stream; the `.value` property is what is returned to the client. Both can be paired with Core functions like `streamText`.
 - On the client, a streamable UI is rendered like any other node: `setWeather(await getWeather())`.
