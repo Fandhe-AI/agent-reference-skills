@@ -86,7 +86,7 @@ Unstructured content types (in `content`):
 | `image` | `{ "type": "image", "data": "<base64>", "mimeType": "image/png" }` | Image (may carry `annotations`) |
 | `audio` | `{ "type": "audio", "data": "<base64>", "mimeType": "audio/wav" }` | Audio |
 | `resource_link` | `{ "type": "resource_link", "uri", "name", "description", "mimeType" }` | Link to a resource; not guaranteed to appear in `resources/list` |
-| `resource` | `{ "type": "resource", "resource": { "uri", "mimeType", "text", "annotations" } }` | Embedded resource |
+| `resource` | `{ "type": "resource", "resource": { "uri", "mimeType", "text" / "blob" }, "annotations" }` | Embedded resource |
 
 ## Notes
 
@@ -96,6 +96,7 @@ Unstructured content types (in `content`):
 - Servers that use embedded resources **SHOULD** implement the `resources` capability.
 - Servers **MAY** respond to `tools/call` with an `InputRequiredResult`. When retrying, clients include `inputResponses` and, if provided by the server, `requestState`. The JSON-RPC `id` **MUST** be different between the initial request and the retry.
 - Replaced in 2026-07-28: server-initiated requests (sampling / elicitation / roots) are replaced by multi round-trip requests (`resultType: "input_required"`); all results carry a required `resultType`.
+- schema.ts defines `annotations` on `EmbeddedResource` itself (sibling of `type` / `resource`); the prose example in tools.mdx nests it inside `resource`, which does not match the schema (`ResourceContents` has no `annotations`).
 - Source: tag `2026-07-28` raw (`docs/specification/2026-07-28/server/tools.mdx`, Input Required Tool Results and Tool Result).
 
 ## Related
