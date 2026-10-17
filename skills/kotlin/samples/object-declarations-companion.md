@@ -81,6 +81,6 @@ fun main() {
 ## Notes
 
 - The official tour example logs a password; replaced with the credential-free singleton example from https://kotlinlang.org/docs/object-declarations.html.
-- Objects are lazy and thread-safe, and cannot have constructors.
+- Object initialization is lazy (done on first access) and thread-safe, but access to mutable members (e.g. `var` properties, `MutableList`) is not synchronized; guard shared mutable state separately. Objects cannot have constructors.
 - A `data object` gets `toString()` and `equals()` but not `copy()`.
 - A class can have only one companion object; if unnamed, it is called `Companion`.

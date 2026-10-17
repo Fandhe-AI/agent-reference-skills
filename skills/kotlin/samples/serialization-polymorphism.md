@@ -72,6 +72,6 @@ fun main() {
 ## Notes
 
 - Serialization is static: only properties of the declared static type are encoded, and the `type` discriminator appears only when the base type is the static type. Force it with `Json.encodeToString<Project>(data)`.
-- Each `@SerialName` must be unique, even across separate hierarchies; reuse in one hierarchy throws `IllegalStateException`.
-- The open-polymorphism example works only on the JVM; on Kotlin/JS and Kotlin/Native use `format.encodeToString(PolymorphicSerializer(Project::class), data)`.
+- Reusing the same `@SerialName` within one polymorphic hierarchy throws `IllegalStateException`; reuse across separate hierarchies is allowed but discouraged by the official docs because it can cause subtle serialization issues.
+- The official docs describe the open-polymorphism example as JVM-only, but with a `@Serializable abstract class` base such as `Project`, `encodeToString<Project>()` works on all targets. An explicit `format.encodeToString(PolymorphicSerializer(Project::class), data)` on Kotlin/JS and Kotlin/Native is needed only when the base type is an interface (and for implicitly serializable enums) (kotlinx.serialization issue 1077).
 - In open polymorphism, a non-sealed interface is not annotated with `@Serializable`; it uses `PolymorphicSerializer` by default (sealed interfaces can be `@Serializable` bases for closed polymorphism).
