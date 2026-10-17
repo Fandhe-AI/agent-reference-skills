@@ -2,15 +2,14 @@
 name: vercel-ai-sdk
 description: >
   Vercel AI SDK (TypeScript LLM ツールキット, ai / @ai-sdk/*, v7)。
-  generateText, streamText, Output, ToolLoopAgent, createMCPClient, useChat, UIMessage,
-  embed, generateImage, wrapLanguageModel, WorkflowAgent, HarnessAgent, AI Gateway, @ai-sdk/rsc、
-  v4 から v7 への移行。
+  generateText, streamText, Output, ToolLoopAgent, useChat, UIMessage, embed, wrapLanguageModel,
+  WorkflowAgent, HarnessAgent, AI Gateway。
 user-invocable: false
 ---
 
 # Vercel AI SDK
 
-> 分割 PR の途中段階。現在収録済み: references/{agents, core}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{agents, core}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 TypeScript 向け LLM アプリ開発ツールキット `ai`（AI SDK Core / UI / RSC）と `@ai-sdk/*` パッケージ群のリファレンス・サンプル・コマンド集。
 
@@ -18,7 +17,6 @@ TypeScript 向け LLM アプリ開発ツールキット `ai`（AI SDK Core / UI 
 
 - `ai` **7.0.142**（npm latest、2026-10-15 公開）
 - GitHub タグ `vercel/ai` の `ai@7.0.142`（lightweight tag、commit `6e14ffaa7e66594b926891583a4dab61910743d0`）
-- 原本: `raw.githubusercontent.com/vercel/ai/ai@7.0.142/` 配下の `content/{docs,providers,cookbook}/**/*.mdx`
 - 同タグ時点の関連パッケージ: `@ai-sdk/react` 4.0.146 / `@ai-sdk/rsc` 3.0.142 / `@ai-sdk/workflow` 2.0.74 / `@ai-sdk/harness` 1.0.153 / `@ai-sdk/tui` 1.0.143 / `@ai-sdk/mcp` 2.0.77 / `@ai-sdk/devtools` 1.0.45 / `@ai-sdk/provider` 4.0.28 / `@ai-sdk/provider-utils` 5.0.61 / `@ai-sdk/gateway` 4.0.115 / `@ai-sdk/openai` 4.0.95 / `@ai-sdk/anthropic` 4.0.81 / `@ai-sdk/google` 4.0.97 / `@ai-sdk/amazon-bedrock` 5.0.117 / `@ai-sdk/openai-compatible` 3.0.70
 - サイト URL（`ai-sdk.dev`）に版指定は無い。取得日 2026-10-16。各ページの `source:` は版なしの `ai-sdk.dev` パス
 
