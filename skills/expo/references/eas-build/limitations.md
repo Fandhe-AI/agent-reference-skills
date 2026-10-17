@@ -22,7 +22,7 @@ EAS Build is designed to work for any React Native project. Use a larger resourc
 
 The `large` resource class is referenced in the source as `resourceClass` in **eas.json** (see Android-specific and iOS-specific resource class sections of the Server infrastructure reference, which is not included in this skill).
 
-## Limitations
+### Limitations
 
 | Limitation | Details |
 | --- | --- |

@@ -14,11 +14,11 @@ Expo automates signing for Android and iOS, and you can provide your own overrid
 eas credentials
 ```
 
-## Android
+### Android
 
 Google requires all Android apps to be digitally signed with a certificate. A private key and its public certificate are usually stored in a keystore. With App Signing by Google Play you upload an APK/AAB signed with an **upload certificate** and Google Play replaces it with the **app signing certificate**. From the build process's perspective there is no difference: `eas build` generates an **.apk** or **.aab** signed with the keystore currently associated with your application.
 
-### Lost your keystore? Reset your upload key on Google Play
+#### Lost your keystore? Reset your upload key on Google Play
 
 1. Download credentials: run `eas credentials`, select `Android` and the profile, choose `credentials.json: Upload/Download credentials between EAS servers and your local json`, then `Download credentials from EAS to credentials.json`.
 2. Export keystore to `pem`: find the key alias under `keyAlias` in **credentials.json**, then:
@@ -29,7 +29,7 @@ keytool -export -rfc -alias alias_from_step_1 -file certificate_for_google.pem -
 
 3. Contact Google Support with the `pem` file via the Google Play key reset support form.
 
-## iOS
+### iOS
 
 The 3 primary iOS credentials, all associated with your Apple Developer account:
 
@@ -43,7 +43,7 @@ The 3 primary iOS credentials, all associated with your Apple Developer account:
 | Push Notification Key | 2 | No | No | Run time |
 | Provisioning Profile | Unlimited | Yes | Yes | Build time |
 
-### Re-signing new credentials
+#### Re-signing new credentials
 
 ```sh
 eas build:resign

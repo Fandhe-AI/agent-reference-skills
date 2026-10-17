@@ -47,7 +47,10 @@ config.transformer.getTransformOptions = async () => ({
 module.exports = config;
 ```
 
+In **.env** (production mode only):
+
 ```sh
+# .env
 EXPO_UNSTABLE_METRO_OPTIMIZE_GRAPH=1
 EXPO_UNSTABLE_TREE_SHAKING=1
 ```
@@ -60,9 +63,9 @@ npx expo export
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `EXPO_UNSTABLE_METRO_OPTIMIZE_GRAPH` | `1` | Keep modules until the entire graph is created. Production only. |
-| `EXPO_UNSTABLE_TREE_SHAKING` | `1` | Enable tree shaking. Production only. |
-| `minifyTypeofWindow` | boolean (`babel-preset-expo` option) | Transform `typeof window === 'undefined'` to `true` for client web bundles. Disabled by default (web workers have no `window`). |
+| `EXPO_UNSTABLE_METRO_OPTIMIZE_GRAPH` | `1` | Keep modules until the entire graph is created. Production only. Set in .env. |
+| `EXPO_UNSTABLE_TREE_SHAKING` | `1` | Enable tree shaking. Production only. Set in .env. |
+| `minifyTypeofWindow` | boolean (`babel-preset-expo` option) | Enable the `typeof window` transform for web client bundles too (server bundles always transform it to `true`; client web/native bundles leave it unchanged by default). Disabled by default because web workers have no `window` global, so enabling it is unsafe for worker code. |
 | `sideEffects` | string[] / boolean (package.json) | Mark modules with side-effects (Webpack convention). |
 
 ## Notes

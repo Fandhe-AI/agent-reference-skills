@@ -43,9 +43,9 @@ The default file format used when building Android apps with EAS Build is an And
 eas build -p android --profile preview
 ```
 
-## Installing your build
+### Installing your build
 
-### Emulator (virtual device)
+#### Emulator (virtual device)
 
 After the build completes, the CLI prompts to download and install it on the Android Emulator (press Y). To pick a specific build at any time:
 
@@ -61,7 +61,7 @@ Install the latest build:
 eas build:run -p android --latest
 ```
 
-### Physical device
+#### Physical device
 
 - Download directly: copy the APK URL from the build details page (or the link printed when `eas build` is done), open it on the device, install and run.
 - Install with `adb`: install adb, connect the device and enable adb debugging, download the APK, then run `adb install path/to/the/file.apk`.

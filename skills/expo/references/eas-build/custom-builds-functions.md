@@ -88,6 +88,7 @@ outputs.sum.set(sum.toString()); // Currently, outputs must be strings.
 ## Notes
 
 - Run `npm run build` after every change; **build/index.js** must be uploaded as part of the project archive and not excluded by **.gitignore** or **.easignore**.
+- The input type is written `type: number` here, while the schema reference lists `string`, `num` or `json` (example uses `type: num`); the official docs are inconsistent and which spelling is accepted is not confirmed here.
 - Assumes a custom build workflow is already configured in **eas.json**.
 - Most built-in functions are open-source and can be used as references; an example repository (expo/eas-custom-builds-example) shows functions, env vars and artifact uploads.
 - Source modificationDate: July 28, 2026 (fetched 2026-10-17).

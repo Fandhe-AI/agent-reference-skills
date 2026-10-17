@@ -59,6 +59,43 @@ const withIosPlugin: ConfigPlugin = config => {
 export default withIosPlugin;
 ```
 
+Accepting parameters (update both plugins to read `options.message`). Android (**withAndroidPlugin.ts**):
+
+```ts
+...
+type AndroidProps = {
+  message?: string;
+};
+
+const withAndroidPlugin: ConfigPlugin<AndroidProps> = (
+  config,
+  options = {}
+) => {
+  const message = options.message || 'Hello world, from Expo plugin!';
+  return withAndroidManifest(config, config => {
+   ... rest of the example remains unchanged 
+  });
+};
+
+export default withAndroidPlugin;
+```
+
+iOS (**withIosPlugin.ts**):
+
+```ts
+...
+type IosProps = {
+  message?: string;
+};
+
+const withIosPlugin: ConfigPlugin<IosProps> = (config, options = {}) => {
+   const message = options.message || 'Hello world, from Expo plugin!';
+  ... rest of the example remains unchanged
+};
+
+export default withIosPlugin;
+```
+
 Combined plugin and parameters:
 
 ```ts
