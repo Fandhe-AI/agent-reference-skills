@@ -3,7 +3,7 @@
 #
 # 使い方（通常は run-verified.sh 経由。ホストが nonce 入りのコマンドを組み立てる）:
 #   bash observe-pr.sh --nonce N --mode MODE --pr NUM [--repo OWNER/REPO] [--base BRANCH] [--branch BRANCH]
-#                      [--issue NUM] [--slug APP] [--until review|settled|started] [--thread-id ID] [--wait --attempt K]
+#                      [--issue NUM] [--slug APP] [--until review|settled|started] [--thread-id ID] [--peers N,N,…] [--wait --attempt K]
 #
 # 役割: monitor エージェントのプロンプトに書いていた gh / jq の観測コマンド列と、その分類規則を持つ（Issue #603
 #       第 2 弾）。入力と出力を定義できる部分だけを切り出したもので、「ready にしてよいか」の判断は呼び出し側
@@ -39,6 +39,15 @@
 #             （本文の書き手は nonce を知らないため区切りを偽装できない）。body は 1 スレッド 6000 文字まで。超えたら
 #             truncated:true と元の長さ bodyLength を示す。--thread-id ID を付けると、そのスレッド 1 件の全文を返す。
 #             件数の判断には使わない（件数は threads の封筒）
+#   added-files
+#             PR が新規に追加したファイル（changeType ADDED）と、--peers の PR（ホストが渡す同じランの先行 PR）の新規追加ファイル・
+#             base（--base 必須）の同じディレクトリの既存ファイルとの衝突を数える（Issue #658）。GraphQL を 2 回だけ呼ぶ: 1 回目は
+#             自分と peers の state と files（エイリアスで 1 回。PR ごとに先頭 100 件まで。超えた PR は truncated に数え、先頭 100 件
+#             だけで比べる = 衝突を見逃す側に倒れる）、2 回目は自分の連番ファイルのディレクトリの base の木（object(expression:
+#             "<base>:<dir>")。式はパスを GraphQL 変数で渡し、クエリへ埋め込まない。ディレクトリは 20 個まで。超えたら取得失敗）。
+#             判定は lib/added-files-lib.sh（連番 = basename 先頭の 3 桁以上の数字 + - / _、幹 = 最初の . の前。同じディレクトリで
+#             連番が同じで幹が違えば衝突）。payload はパスの文字列を含めず、件数と peers の番号だけ。--peers は 30 個まで・自分と
+#             重複は不可。--wait は取らない
 # 出力: 標準出力に 1 行の封筒 {nonce, payload, sha256}（lib/signed-output.sh）。payload は整数と ASCII の固定語彙・
 #       40 桁 16 進だけで、PR のコメント本文・チェック名・context 名のような外部由来の文字列は含めない。共通キー:
 #       - mode         実行したモード
@@ -110,9 +119,12 @@ script_dir=$(cd "$(dirname "$0")" && pwd -P) || exit 2
 # checks_classify（checks --until settled の分類。純関数）
 # shellcheck source=lib/observe-checks-lib.sh
 . "${script_dir}/lib/observe-checks-lib.sh" || exit 3
+# added_files_numbered_dirs / added_files_classify（added-files の判定。純関数）
+# shellcheck source=lib/added-files-lib.sh
+. "${script_dir}/lib/added-files-lib.sh" || exit 3
 
 usage() {
-  echo "使い方: observe-pr.sh --nonce N --mode pr|checks|required|reviews|threads|threads-detail|push --pr NUM [--repo O/R] [--base B] [--branch B] [--issue N] [--slug S] [--until review|settled|started] [--thread-id ID] [--wait --attempt K]" >&2
+  echo "使い方: observe-pr.sh --nonce N --mode pr|checks|required|reviews|threads|threads-detail|push|added-files --pr NUM [--repo O/R] [--base B] [--branch B] [--issue N] [--slug S] [--until review|settled|started] [--thread-id ID] [--peers N,N,…] [--wait --attempt K]" >&2
   [ $# -eq 0 ] || echo "observe-pr: $1" >&2
   exit 2
 }
@@ -162,12 +174,14 @@ issue=""
 slug=""
 until_cond=""
 thread_id=""
+peers=""
+peers_set=0
 wait=0
 attempt=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --wait) wait=1; shift ;;
-    --nonce | --mode | --pr | --repo | --base | --branch | --issue | --slug | --until | --thread-id | --attempt)
+    --nonce | --mode | --pr | --repo | --base | --branch | --issue | --slug | --until | --thread-id | --peers | --attempt)
       [ $# -ge 2 ] || usage "$1 に値が無い"
       case "$1" in
         --nonce) nonce=$2 ;;
@@ -180,6 +194,7 @@ while [ $# -gt 0 ]; do
         --slug) slug=$2 ;;
         --until) until_cond=$2 ;;
         --thread-id) thread_id=$2 ;;
+        --peers) peers=$2; peers_set=1 ;;
         --attempt) attempt=$2 ;;
       esac
       shift 2
@@ -190,7 +205,7 @@ done
 
 so_valid_nonce "${nonce}" || usage "--nonce は小文字英数字 1〜64 文字で指定する"
 case "${mode}" in
-  pr | checks | required | reviews | threads | threads-detail | push) ;;
+  pr | checks | required | reviews | threads | threads-detail | push | added-files) ;;
   *) usage "--mode が不正: ${mode}" ;;
 esac
 is_uint "${pr}" || usage "--pr は正の整数で指定する"
@@ -200,6 +215,28 @@ is_uint "${pr}" || usage "--pr は正の整数で指定する"
 [ -z "${issue}" ] || is_uint "${issue}" || usage "--issue は正の整数で指定する"
 [ -z "${slug}" ] || valid_slug "${slug}" || usage "--slug の形式が不正"
 [ -z "${thread_id}" ] || { [ "${mode}" = threads-detail ] && valid_thread_id "${thread_id}"; } || usage "--thread-id は threads-detail だけが取り、英数字・_・- のスレッド ID で指定する"
+# --peers: 正の整数をカンマで区切った並び（added-files だけが取る）。30 個まで・自分と同じ番号・重複は不可
+if [ "${peers_set}" -eq 1 ]; then
+  [ "${mode}" = added-files ] || usage "--peers は added-files だけが取る"
+  peer_count=0
+  peer_seen=","
+  if [ -n "${peers}" ]; then
+    case "${peers}" in ,* | *, | *,,*) usage "--peers の形式が不正" ;; esac
+    old_ifs=${IFS}
+    IFS=,
+    # shellcheck disable=SC2086
+    set -- ${peers}
+    IFS=${old_ifs}
+    for p in "$@"; do
+      is_uint "${p}" || usage "--peers は正の整数をカンマで区切って指定する"
+      [ "${p}" != "${pr}" ] || usage "--peers に自分の PR 番号を含めない"
+      case "${peer_seen}" in *",${p},"*) usage "--peers に重複がある" ;; esac
+      peer_seen="${peer_seen}${p},"
+      peer_count=$((peer_count + 1))
+    done
+    [ "${peer_count}" -le 30 ] || usage "--peers は 30 個まで"
+  fi
+fi
 case "${until_cond}" in
   '' | review | settled | started) ;;
   *) usage "--until が不正: ${until_cond}" ;;
@@ -209,6 +246,7 @@ case "${mode}" in
   pr) [ -n "${base}" ] && [ -n "${branch}" ] && [ -n "${issue}" ] || usage "pr には --base --branch --issue が必要" ;;
   required) [ -n "${base}" ] || usage "required には --base が必要" ;;
   push) [ -n "${base}" ] && [ -n "${branch}" ] || usage "push には --base --branch が必要" ;;
+  added-files) [ -n "${base}" ] || usage "added-files には --base が必要" ;;
   reviews)
     [ -n "${slug}" ] || usage "reviews には --slug が必要"
     [ "${wait}" -eq 0 ] || [ -n "${until_cond}" ] || usage "reviews の --wait には --until が必要"
@@ -256,6 +294,8 @@ fi
 nl='
 '
 input_text="observe-pr${nl}${mode}${nl}${pr}${nl}${repo}${nl}${base}${nl}${branch}${nl}${issue}${nl}${slug}${nl}${until_cond}"
+# added-files だけ peers の並び（引数の文字列そのもの）を最後の行に足す（他のモードの入力の定義は変えない）
+[ "${mode}" != added-files ] || input_text="${input_text}${nl}${peers}"
 input_sha=$(printf '%s' "${input_text}" | so_sha256) || {
   echo "observe-pr: 入力のハッシュを計算できなかった（sha256sum / shasum が無い等）" >&2
   exit 3
@@ -613,6 +653,86 @@ observe_threads() {
   done
 }
 
+# added-files: 自分と peers の新規追加ファイル、自分の連番ファイルのディレクトリの base の木を取り、lib の純関数で数える。
+# 取得・解析のどれかが失敗したら件数を信用せず return 1（取得失敗を「衝突 0 件」に畳まない。0 件扱いにするかは呼び出し側が決める）
+O_AF_STATE=""; O_AF_ADDED=0; O_AF_NUMBERED=0; O_AF_SAMEPATH=0; O_AF_SEQPEER=0; O_AF_SEQBASE=0; O_AF_TRUNC=0
+O_AF_PATHPEERS='[]'; O_AF_SEQPEERS='[]'
+AF_FILES_FIELDS='number state files(first:100){nodes{path changeType}pageInfo{hasNextPage}}'
+AF_DIRS_MAX=20
+observe_added_files() {
+  O_AF_STATE=""; O_AF_ADDED=0; O_AF_NUMBERED=0; O_AF_SAMEPATH=0; O_AF_SEQPEER=0; O_AF_SEQBASE=0; O_AF_TRUNC=0
+  O_AF_PATHPEERS='[]'; O_AF_SEQPEERS='[]'
+  local owner name q n files dirs ndirs i d vars sel res base_map row old_ifs
+  if [ -n "${repo}" ]; then
+    owner=${repo%%/*}
+    name=${repo#*/}
+  else
+    owner='{owner}'
+    name='{repo}'
+  fi
+  # 番号は検証済みの正の整数だけなので、エイリアスとしてクエリへ埋め込んでよい（パスは埋め込まない）
+  q="query(\$owner:String!,\$name:String!){repository(owner:\$owner,name:\$name){p${pr}:pullRequest(number:${pr}){${AF_FILES_FIELDS}}"
+  old_ifs=${IFS}
+  IFS=,
+  # shellcheck disable=SC2086
+  set -- ${peers}
+  IFS=${old_ifs}
+  for n in "$@"; do
+    q="${q} p${n}:pullRequest(number:${n}){${AF_FILES_FIELDS}}"
+  done
+  q="${q}}}"
+  gh_api graphql -f query="${q}" -F owner="${owner}" -F name="${name}" || { fail "pullRequest files"; return 1; }
+  files=$(printf '%s' "${OUT}" | jq -ec --argjson self "${pr}" --arg peers "${peers}" '
+    def one($n): .data.repository["p\($n)"]
+      | if type == "object" and .number == $n and ((.state | type) == "string")
+          and ((.files.nodes | type) == "array") and ((.files.pageInfo.hasNextPage | type) == "boolean")
+          and all(.files.nodes[]; (.path | type) == "string" and (.changeType | type) == "string")
+        then {pr: $n, state, added: [.files.nodes[] | select(.changeType == "ADDED") | .path],
+              deleted: [.files.nodes[] | select(.changeType == "DELETED") | .path],
+              truncated: (if .files.pageInfo.hasNextPage then 1 else 0 end)}
+        else error("shape") end;
+    {self: one($self), peers: [($peers | if . == "" then empty else split(",")[] | tonumber end) as $p | one($p)]}' 2>/dev/null) || { fail "pullRequest files の形式"; return 1; }
+  dirs=$(printf '%s' "${files}" | added_files_numbered_dirs) || { fail "連番ファイルのディレクトリの算出"; return 1; }
+  ndirs=$(printf '%s' "${dirs}" | jq 'length') || { fail "ディレクトリ数"; return 1; }
+  case "${ndirs}" in '' | *[!0-9]*) fail "ディレクトリ数の形式"; return 1 ;; esac
+  [ "${ndirs}" -le "${AF_DIRS_MAX}" ] || { fail "連番ファイルのディレクトリが ${AF_DIRS_MAX} を超える"; return 1; }
+  base_map='{}'
+  if [ "${ndirs}" -gt 0 ]; then
+    # パスは GraphQL 変数（-f は文字列のまま渡す。@ で始まってもファイルとして読まない）で渡し、クエリの文字列へ入れない
+    vars=""
+    sel=""
+    set --
+    i=0
+    while [ "${i}" -lt "${ndirs}" ]; do
+      d=$(printf '%s' "${dirs}" | jq -r --argjson i "${i}" '.[$i]') || { fail "ディレクトリの取り出し"; return 1; }
+      vars="${vars},\$e${i}:String!"
+      sel="${sel} d${i}:object(expression:\$e${i}){...on Tree{entries{name}}}"
+      set -- "$@" -f "e${i}=${base}:${d}"
+      i=$((i + 1))
+    done
+    gh_api graphql -f query="query(\$owner:String!,\$name:String!${vars}){repository(owner:\$owner,name:\$name){${sel}}}" -F owner="${owner}" -F name="${name}" "$@" || { fail "base の木"; return 1; }
+    base_map=$(printf '%s' "${OUT}" | jq -ec --argjson dirs "${dirs}" '
+      .data.repository as $r
+      | if ($r | type) != "object" then error("shape") else . end
+      | reduce range(0; $dirs | length) as $i ({};
+          ($r["d\($i)"]) as $o
+          | if $o == null or ($o | type) != "object" or ($o.entries == null) then .
+            elif ($o.entries | type) == "array" and all($o.entries[]; (.name | type) == "string") then .[$dirs[$i]] = [$o.entries[].name]
+            else error("shape") end)' 2>/dev/null) || { fail "base の木の形式"; return 1; }
+  fi
+  # 集約した一覧は引数ではなく標準入力で渡す（30 本 × 100 件のパスは Linux の 1 引数 128 KiB を超え得る。E2BIG で jq が起動できない）
+  res=$(printf '%s\n%s\n' "${files}" "${base_map}" | jq -sc '{files: .[0], base: .[1]}' | added_files_classify) || { fail "衝突の判定"; return 1; }
+  row=$(printf '%s\n%s\n' "${files}" "${res}" | jq -rs '.[0].self.state as $st | .[1] | [$st, .added, .numbered, .samePath, .seqPeer, .seqBase, .truncated] | map(tostring) | join(" ")') || { fail "判定結果の形式"; return 1; }
+  # shellcheck disable=SC2086
+  set -- ${row}
+  [ $# -eq 7 ] || { fail "判定結果の形式"; return 1; }
+  case "$1" in OPEN | MERGED | CLOSED) O_AF_STATE=$1 ;; *) fail "state の語彙"; return 1 ;; esac
+  case "$2$3$4$5$6$7" in '' | *[!0-9]*) fail "件数の形式"; return 1 ;; esac
+  O_AF_ADDED=$2; O_AF_NUMBERED=$3; O_AF_SAMEPATH=$4; O_AF_SEQPEER=$5; O_AF_SEQBASE=$6; O_AF_TRUNC=$7
+  O_AF_PATHPEERS=$(printf '%s' "${res}" | jq -c '.pathPeers') || { fail "pathPeers"; return 1; }
+  O_AF_SEQPEERS=$(printf '%s' "${res}" | jq -c '.seqPeers') || { fail "seqPeers"; return 1; }
+}
+
 # ---- 観測ループ。--wait なしは 1 回だけ観測する ----
 run_observe() {
   case "${mode}" in
@@ -622,6 +742,7 @@ run_observe() {
     required) observe_required ;;
     reviews) observe_reviews ;;
     threads | threads-detail) observe_threads ;;
+    added-files) observe_added_files ;;
   esac
 }
 run_met() {
@@ -715,6 +836,8 @@ if [ "${err}" -ne 0 ] || [ "${inconclusive}" -eq 1 ]; then
   O_STATE=""; O_MERGEABLE=""; O_BOUND=-1; O_RUNS=0; O_STATUSES=0; O_TOTAL=0; O_MISSING=0; O_REQTOTAL=0; O_PASSED=0; O_PENDING=0; O_FAILED=0
   O_APPROVED=0; O_CHANGES=0; O_COMMENTED=0; O_PENDINGREV=0; O_DISMISSED=0; O_REVIEWS=0
   O_CR_TOTAL=0; O_CR_PASSED=0; O_CR_RUNNING=0; O_CR_FAILED=0; O_THREADS=0; O_UNRESOLVED=0
+  O_AF_STATE=""; O_AF_ADDED=0; O_AF_NUMBERED=0; O_AF_SAMEPATH=0; O_AF_SEQPEER=0; O_AF_SEQBASE=0; O_AF_TRUNC=0
+  O_AF_PATHPEERS='[]'; O_AF_SEQPEERS='[]'
 fi
 
 case "${mode}" in
@@ -756,6 +879,14 @@ case "${mode}" in
     payload=$(jq -cnS --arg m "${mode}" --arg is "${input_sha}" --arg oc "${outcome}" \
       --argjson e "${err}" --argjson a "${attempt}" --argjson ma "${max_attempts}" --argjson t "${O_THREADS}" --argjson u "${O_UNRESOLVED}" \
       '{mode: $m, inputSha256: $is, outcome: $oc, err: $e, attempt: $a, maxAttempts: $ma, threads: $t, unresolved: $u}')
+    ;;
+  added-files)
+    payload=$(jq -cnS --arg m "${mode}" --arg is "${input_sha}" --arg oc "${outcome}" --arg st "${O_AF_STATE}" \
+      --argjson e "${err}" --argjson a "${attempt}" --argjson ma "${max_attempts}" \
+      --argjson ad "${O_AF_ADDED}" --argjson nu "${O_AF_NUMBERED}" --argjson sp "${O_AF_SAMEPATH}" --argjson sq "${O_AF_SEQPEER}" \
+      --argjson sb "${O_AF_SEQBASE}" --argjson tr "${O_AF_TRUNC}" --argjson pp "${O_AF_PATHPEERS}" --argjson qp "${O_AF_SEQPEERS}" \
+      '{mode: $m, inputSha256: $is, outcome: $oc, err: $e, attempt: $a, maxAttempts: $ma, state: $st, added: $ad, numbered: $nu,
+        samePath: $sp, seqPeer: $sq, seqBase: $sb, truncated: $tr, pathPeers: $pp, seqPeers: $qp}')
     ;;
 esac
 [ -n "${payload:-}" ] || { echo "observe-pr: payload を組み立てられなかった" >&2; exit 3; }
