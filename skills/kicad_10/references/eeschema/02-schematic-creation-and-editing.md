@@ -7,16 +7,20 @@ Complete workflow for creating and editing schematics: symbol placement, electri
 The right toolbar contains primary editing tools. Tools stay active until you press Escape or select another tool. Key tools:
 
 - **Selection tool** — default mode
-- **Add Symbol** (A) — open symbol chooser
-- **Add Power Symbol** — place power connections
-- **Add Wire** (W) — draw wire connections
-- **Add Bus** — draw buses and wire-to-bus entries
-- **Add Label / Global Label / Hierarchical Label** — place nets labels
-- **Add Junction** — connect crossing wires
-- **Add No-Connect Flag** — mark intentionally unconnected pins
-- **Add Text / Text Box** — annotations
-- **Add Hierarchical Subsheet** — multi-sheet organization
-- **Interactive Delete** — remove clicked items
+- **Highlight Net** (`` ` ``) — highlight a net; clear with `~`
+- **Place Symbols** (A) — open symbol chooser
+- **Place Power Symbols** (P) — place power connections
+- **Draw Wires** (W) — draw wire connections
+- **Draw Buses** (B) and **Place Wire to Bus Entries** (Z) — buses and graphical entries
+- **Place Net Labels** (L) / **Place Global Labels** (Ctrl+L) / **Place Hierarchical Labels** (H) / **Place Directive Labels** — place labels
+- **Place Junctions** (J) — connect crossing wires
+- **Place No Connect Flags** (Q) — mark intentionally unconnected pins
+- **Draw Text** (T) / **Draw Text Boxes** / **Draw Tables** — annotations
+- **Draw Rule Areas**, **Draw Hierarchical Sheets** (S), sheet pin and Sync Sheet Pins tools — multi-sheet organization
+- **Draw Lines** (I), rectangles, circles, arcs, Bezier curves, **Place Images** — graphics
+- **Interactive Delete Tool** — remove clicked items
+
+Rectangular / lasso selection modes share a palette in the right toolbar. Other editing hotkeys: Move `M`, Drag `G`, Rotate `R` (Shift+R clockwise), Mirror `X` / `Y`, Properties `E`, Repeat Last Item `Ins`, Autoplace Fields `O`, Edit Reference `U`, Edit Value `V`, Edit Footprint `F`, Swap `Alt+S`.
 
 ## Grids and Snapping
 
@@ -29,7 +33,7 @@ The right toolbar contains primary editing tools. Tools stay active until you pr
 | Ctrl | Disable grid snapping |
 | Shift | Disable connected-object snapping |
 
-Configure grid via right-click menu or **Preferences** → **Grids** pane. Grid overrides per object type are toggled via the left toolbar button.
+Default grid 50 mil. Select a grid from the right-click **Grid** submenu, cycle with `n` / `N`, or edit grids in the **Grids** pane of Preferences (right-click the grid button on the left toolbar → **Edit Grids…**). Two "Fast Grids" are selectable with `Alt+1` / `Alt+2`. Grid overrides per object type are toggled with the left toolbar button (`Ctrl+Shift+G`). **Align Elements to Grid** (right-click) snaps misaligned items back.
 
 ## Editing Object Properties
 
@@ -43,7 +47,7 @@ Only one object type can be edited at a time via the Properties dialog. Symbol p
 
 ### Properties Manager
 
-A docked panel for real-time editing of multiple selected items (including mixed types). Access via **View → Panels → Properties** or the properties button on the left toolbar.
+A docked panel for real-time editing of multiple selected items (including mixed types). Access via **View** → **Panels** → **Properties** or the properties button on the left toolbar. The Properties dialog opens only when all selected items are of the same type; the Edit Text and Graphics tool (**Edit** → **Edit Text and Graphic Properties…**) and the Symbol Fields Table edit text/fields in bulk.
 
 - When multiple object types are selected, only shared properties appear
 - Changes apply immediately and individually (e.g., rotating multiple objects rotates each around its own center)
@@ -63,14 +67,14 @@ Supports `+`, `-`, `*`, `/`, parentheses, and unit suffixes with automatic conve
 
 ### Placing Symbols
 
-Press **A** or click the add-symbol button. The chooser dialog filters by name, keywords, description, and custom fields.
+Press **A** or click the add-symbol button. The Choose Symbol dialog filters by name, keywords, description, and all additional fields (extra columns via right-click header → **Select Columns**; sort alphabetically or by best match).
 
 Filtering syntax:
 - Wildcards: `*` (any chars), `?` (single char)
-- Key-value: `Key>123`, `Key<123` with metric suffixes
+- Key-value: `Key>123`, `Key<123` against `Key:123` tags, with case-insensitive suffixes p, n, u, m, k, meg, g, t, ki, mi, gi, ti
 - Regex: wxWidgets Advanced Regular Expression style
 
-After selection, the symbol attaches to the cursor. Before placing: rotate, mirror, and edit fields via hotkeys or right-click menu.
+A default footprint is previewed at lower right; filtered alternates appear in the footprint dropdown. After selection, the symbol attaches to the cursor. Before placing: rotate, mirror, and edit fields via hotkeys or right-click menu. Options: **Place repeated copies**, **Place all units**.
 
 ### Symbol Properties (E or double-click)
 
@@ -81,24 +85,30 @@ Fields are shown in a table. Reserved field name prefix: `ki_` (do not use).
 | Reference | Designator (R1, U3, etc.) |
 | Value | Component value or type |
 | Footprint | PCB footprint (`library:footprint_name`) |
-| Datasheet | URL or file path; supports embedding |
+| Datasheet | URL or file path; supports embedding (`Embed File`); **Show Datasheet** (D) |
 
 **Symbol Attributes:**
-- Exclude from simulation
+- Exclude from simulation (grey outline plus waveform icon; hide with **View** → **Mark items which are excluded from simulation**)
 - Exclude from bill of materials
 - Exclude from board
-- Do Not Populate (DNP)
+- Do Not Populate (DNP) (red X)
 
 ### Editing Symbol Definitions
 
-- **Edit Symbol…** — opens the schematic instance only (affects this copy)
-- **Edit Library Symbol…** — opens the library master (does not update existing instances)
-- **Update Symbol from Library…** — syncs instance with library
-- **Change Symbol…** — swap to a different symbol
+- **Edit Symbol…** — opens the schematic instance only (affects this copy); also right-click → **Edit with symbol editor** (`Ctrl+E`)
+- **Edit Library Symbol…** — opens the library master (`Ctrl+Shift+E`; does not update existing instances)
+- **Update Symbol from Library…** — syncs instance with library (**Tools** → **Update Symbols from Library…**, or right-click → **Update Symbol…**); the dialog selects scope (all, selected, by reference / value / library identifier) and which fields, visibilities, attributes, and alternate pin functions are reset
+- **Change Symbol…** — swap to a different symbol (**Edit** → **Change Symbols…**, or right-click → **Change Symbol…**)
+- **Tools** → **Edit Symbol Library Links…** — repoint all instances of a symbol to another library symbol; **Map Orphans** remaps orphaned symbols
+- **Inspect** → **Compare Symbol With Library** — Summary and Visual tabs for schematic-vs-library differences
 
 ### Alternate Pin Functions
 
-Access the **Pin Functions** tab in Symbol Properties. Right-click a pin for the **Pin Function** context menu.
+Select in the **Pin Functions** tab of Symbol Properties (Alternate Assignment column), or right-click a pin → **Pin Function**. **View** → **Show Pin Alternate Icons** toggles the indicator.
+
+### Symbol Fields Table
+
+Opens from the top-toolbar button (the manual's menu label varies between **Edit Symbol Fields…** and **Bulk Edit Symbol Fields…**). Spreadsheet of all symbol fields (Include checkboxes, add / rename / delete fields, column labels, virtual fields such as Quantity and Item Number); also the BOM export tool. Show only the current sheet, current sheet plus subsheets, or the whole project.
 
 ## Reference Designators and Annotation
 
@@ -108,18 +118,21 @@ Reference designators consist of a type letter + number (e.g., R1, C5, U10). Mul
 
 Enable via **Preferences** → **Schematic Editor** → **Editing Options** or the toolbar toggle.
 
-Configure in **Schematic Setup** → **Annotation**:
+Enable by checking **Automatically annotate symbols** in Preferences or with the left-toolbar toggle. Configure in **Schematic Setup** → **Annotation**:
+- **Symbol unit notation**: letter or number, with separator `.`, `-`, `_`, or none (default `U1B`)
 - **Order**: Sort by X or Y position
-- **Numbering**: Lowest available or sheet-number-based
-- **Allow reference reuse**: Permit reassigning numbers
+- **Numbering**: Lowest available, or starting from sheet number × 100 / × 1000
+- **Allow reference reuse**: Permit reassigning numbers not currently used
 
 ### Annotation Tool (top toolbar)
 
 Options:
-- **Scope**: Entire schematic, current sheet, or selection
+- **Scope**: Entire schematic, current sheet, or selection only
 - **Recurse into subsheets**: Include child sheets
-- **Options**: All symbols or unannotated only; reset symbol units
+- **Options**: All symbols (reset existing) or unannotated only; **Reset symbol units** reannotates units individually
 - **Order**: Left-to-right (X) or top-to-bottom (Y)
+- **Numbering**: Starting point
+- **Clear Annotation** button; messages can be saved with **Save…**
 
 ## Electrical Connections
 
@@ -173,18 +186,23 @@ Visual indicator for non-connected crossings. Configure hop-over size in **Schem
 |------|-------|-----------------|
 | Local label | Same sheet only | L |
 | Global label | Entire schematic | Ctrl+L |
-| Hierarchical label | Connects to parent sheet pins | — |
+| Hierarchical label | Connects to parent sheet pins | H |
+| Directive label | Assigns net / component classes; cannot name a net | — |
+
+Labels with the same name connect within a sheet regardless of type. Convert with the **Change To** tools. **View** → **Show Directive Labels** toggles directive visibility.
 
 ### Label Properties
 
-- **Label name**: Supports markup (overbars, subscripts), variable substitution
-- **Shape** (global/hierarchical): Input, Output, Bidirectional, Tri-state, Passive
-- **Multiple label input mode**: Place several labels in sequence
-- **Font, size, color, orientation**
+- **Label name**: Supports markup (overbars, subscripts), variable substitution; any character allowed; dropdown of existing nets
+- **Shape** (global/hierarchical): Input, Output, Bidirectional, Tri-state, Passive (visual only); **Auto** orientation
+- **Multiple label input**: one label per line, placed in sequence
+- **Font, size, color, orientation**, bold / italic
+- **Fields**: `Net Class` (default field name; assigns a net class) and `Sheet References` (`${INTERSHEET_REFS}`, global labels only)
+- `Ins` repeats the last label with an incremented name (pitch and increment in Preferences → Editing Options)
 
 ### Inter-Sheet References
 
-Global labels can show page numbers of matching labels elsewhere. Configure in **Schematic Setup** → **Formatting** (optional prefix/suffix). Click a reference to navigate.
+Global labels can show page numbers of matching labels elsewhere. Configure in **Schematic Setup** → **Formatting**: Show inter-sheet references, Show own page reference, Standard / abbreviated, prefix and suffix. Click a reference to navigate.
 
 ## Buses
 
@@ -226,34 +244,34 @@ Define in **Schematic Setup** → **Bus Alias Definitions**. Example: alias `USB
 
 ## Power Symbols
 
-Power symbols represent global nets (VCC, GND, etc.). The **Value** field determines the net name. Two power symbols with the same value connect anywhere in the schematic regardless of sheet.
+Power symbols represent global nets (VCC, GND, etc.). The **Value** field determines the net name. Two (global) power symbols with the same value connect anywhere in the schematic regardless of sheet; symbols marked as local power symbols (KiCad 10.0) do not connect between sheets.
 
-**PWR_FLAG**: Add to nets that connect to a power source to prevent ERC warnings about undriven power input pins.
+**PWR_FLAG**: Add to nets that connect to a power source to prevent the ERC error "Input Power pin not driven by any Output Power pins" (equivalent to connecting any Output Power pin). PWR_FLAG is in the `power` symbol library.
 
-**Hidden power pins**: Legacy feature — invisible Power Input pins that implicitly connect to global nets by name. Enable visibility via **Preferences** → **Display Options** → **Show hidden pins**.
+**Hidden power pins**: Legacy feature (not recommended) — invisible Power Input pins connect to a global net with the same name as the pin. Show hidden pins via **Preferences** → **Schematic Editor** → **Display Options** → **Show hidden pins**, **View** → **Show hidden pins**, or the left-toolbar toggle.
 
 ## No-Connection Flags
 
-Mark intentionally unconnected pins with the no-connect tool (X marker) to suppress ERC warnings. Stacked pins with no-connect flags get separate nets.
+Mark intentionally unconnected pins with the no-connect tool (`Q`) to suppress "unconnected pin" ERC errors. Stacked pins with no-connect flags get separate nets. Distinct from the "Unconnected" pin type.
 
 ## Net Classes
 
 Group nets for PCB design rules and schematic graphical properties. Create/edit in **Schematic Setup** or **Board Setup**.
 
 Assignment methods:
-- Pattern-based matching
-- Graphical net class directives
+- Pattern-based matching (Net Classes panel; wildcards `*` / `?` and regular expressions; right-click a net → **Assign Netclass…**; names include the sheet path, e.g. `/`)
+- Graphical net class directives (directive labels, optionally attached to rule areas)
 - Net class fields on labels
 
-Multiple net classes can apply to one net; `Default` class is the fallback. The resolved net class appears in the status bar when a wire or label is selected.
+Multiple net classes can apply to one net; the highest-priority class supplies each property (order set in Schematic or Board Setup) and `Default` is the fallback. The resolved net class appears in the message panel when a wire or label is selected. Wire / bus width, color, and line style are set per net class; **Highlight netclass colors** (Display Options) draws the class color as a highlight instead.
 
 ## Component Classes
 
-Group symbols for PCB layout rules. Assign via graphical markers or symbol field filtering.
+Group symbols (and their footprints) for multichannel designs and custom DRC rules. Assign with a symbol field named `Component Class`, or with directive labels plus rule areas.
 
 ## Rule Areas
 
-Apply local design rules to enclosed schematic elements. Right-click → **Add Rule Area**, then configure rules within the boundary.
+Rule Area tool (right toolbar): click corners, double-click to finish; obeys the current line mode. Rule areas apply attributes (Exclude from simulation / BOM / board, Do not populate; set with `E`) to symbols fully or partially inside, and with directive labels on the border assign net classes and component classes.
 
 ## Graphics and Text
 
@@ -265,7 +283,7 @@ Apply local design rules to enclosed schematic elements. Right-click → **Add R
 | Circle | — | Graphical only |
 | Arc | — | Graphical only |
 | Bezier curve | — | Graphical only |
-| Line segment | — | Graphical only |
+| Line segment | I | Graphical only (not a wire) |
 | Table | — | Structured data display |
 | Bitmap image | — | Documentation/reference |
 
@@ -273,31 +291,37 @@ Graphical elements do not create electrical connections.
 
 ## Groups
 
-Select objects → right-click → **Group**. Groups move, rotate, and delete as a unit.
+Select objects → right-click → **Grouping** → **Group Items** (or the top-toolbar button); **Ungroup Items**, **Enter Group** (double-click), **Leave Group**, **Remove Items**. Groups move, rotate, and delete as a unit; properties (`E`) include a name and a **Library link** (`<library>:<block>`, for design blocks).
 
 ## Aligning Objects
 
-Select multiple objects → **Align** tools for left/right/top/bottom/center alignment and horizontal/vertical distribution.
+Select multiple objects → right-click → **Align/Distribute** → **Align to Left** (or another edge / center). The object under the cursor is the reference; otherwise the furthest object in that direction.
 
 ## Schematic Setup
 
-Access via **File** → **Schematic Setup**:
+Access via **File** → **Schematic Setup…** or the top-toolbar button:
 
-| Tab | Contents |
-|-----|----------|
-| General | Sheet size, title block, formatting |
-| Formatting | Grid, junction dots, text sizes, margins, inter-sheet references |
-| Annotation | Auto-annotation behavior, numbering style |
-| Net Classes | Net class names and properties |
-| Component Classes | Component class groups |
-| Bus Aliases | Shortcuts for bus definitions |
+| Panel | Contents |
+|-------|----------|
+| Formatting | Symbol unit notation, default text size, overbar / label offset ratios, global label margin, default line width, pin symbol size, hop-over size, junction dot size, connection width (default 50 mil), operating point overlay, inter-sheet references, dashed line lengths |
+| Annotation | Order, numbering, allow reference reuse |
+| Field Name Templates | Empty fields added to every symbol (project-wide; global ones in Preferences) |
+| BOM Presets | List / delete saved BOM and BOM formatting presets |
+| Violation Severity / Pin Conflicts Map | ERC severities and pin-type conflict matrix |
+| Net Classes | Net class names, properties, and pattern assignments |
+| Bus Alias Definitions | Shortcuts for bus definitions |
 | Text Variables | Project-wide substitution variables |
+| Embedded Files | Files embedded in the schematic |
 
 ## Notes
 
+- The 10.0 manual spells the global-label sheet-reference variable `${INTERSHEET_REFS}` in the Labels chapter but `INTERSHEETREFS` in the Advanced Topics label-field list; both spellings appear in the source.
+- The 10.0 Schematic Editor power-symbol section still says power symbols connect regardless of sheet, while the 10.0 Introduction (What's New) states local power symbols do not connect between sheets.
 - Use 50 mil grid for all pins and wires to ensure compatibility with the KiCad standard symbol library
 - Wires connect only at endpoints — crossing wires require an explicit junction to connect
 - The `ki_` field name prefix is reserved by KiCad
+- Not found in the 10.0 manual: a separate "General" or "Component Classes" tab in Schematic Setup (component classes are field / directive based), an "Add Hierarchical Subsheet" tool name (the action is **Draw Hierarchical Sheets**), and horizontal / vertical distribute options in the align section.
+- The Schematic Setup "General → Formatting" path appears in the junction-size text; the dialog itself lists panels as above.
 
 ## Related
 

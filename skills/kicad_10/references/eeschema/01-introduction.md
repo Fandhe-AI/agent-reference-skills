@@ -6,7 +6,7 @@ The KiCad Schematic Editor (Eeschema) is a schematic capture application for Lin
 
 - Electrical rules checking (ERC)
 - Circuit simulation via ngspice
-- Plot file export in multiple formats (PDF, SVG, DXF, HPGL, PostScript)
+- Plot file export in multiple formats (PostScript, PDF, HPGL, SVG per the feature list; see Notes)
 - Bill of materials generation via Python or XSLT scripts
 - Multi-sheet schematics (flat, simple hierarchical, and complex hierarchical)
 
@@ -36,7 +36,7 @@ The status bar shows cursor position (X, Y), zoom (Z), relative offset (dx, dy, 
 ## Hotkeys
 
 - **Ctrl+F1**: Show full hotkey list (use Cmd on macOS)
-- Configure custom hotkeys via **Preferences** → **Hotkeys**
+- Configure custom hotkeys via **Preferences** → **Preferences…** → **Hotkeys**
 - Hotkey files are stored at:
   - Windows: `%APPDATA%\kicad\10.0\user.hotkeys`
   - Linux: `~/.config/kicad/10.0/user.hotkeys`
@@ -56,7 +56,9 @@ The status bar shows cursor position (X, Y), zoom (Z), relative offset (dx, dy, 
 | Ctrl / Cmd | Toggle item selection |
 | Shift | Add to selection |
 | Ctrl+Shift / Cmd+Shift | Remove from selection |
-| Long click / Alt | Clarify from pop-up menu |
+| Long click (Windows); long click or Alt (Linux); long click or Option (macOS) | Clarify from pop-up menu |
+
+Modifiers cannot be used with lasso selections.
 
 The **Selection Filter** panel (lower left) controls which object types are selectable. Use the "All items" checkbox for a quick toggle.
 
@@ -78,6 +80,8 @@ The **Selection Filter** panel (lower left) controls which object types are sele
 
 - Context menus (right-click) expose additional actions based on selection
 - Many actions have no default hotkey but can be assigned via Preferences
+- The 10.0 manual's feature list names PostScript, PDF, HPGL, and SVG plot formats; DXF is not listed there (not found in the introduction). The feature list (including the HPGL entry above) is the source's wording only: the 10.0 Plot dialog offers just PostScript, PDF, SVG, and DXF, and `kicad-cli sch export hpgl` is non-functional (see [Generating Outputs](./07-generating-outputs.md)).
+- Default zoom/pan: middle or right drag pans, wheel zooms (configurable in the Mouse and Touchpad preferences). `Esc` cancels the current tool and, with the selection tool active, clears the selection. Toolbar contents are editable in the Toolbar page of the Schematic Editor Preferences.
 
 ## Related
 

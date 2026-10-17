@@ -26,9 +26,9 @@ After creation, the Project Files pane shows three files (all sharing the projec
 
 ## Backups
 
-KiCad automatically creates backups in a `-backups` directory when you save, and optionally at fixed time intervals.
+A `-backups` directory may appear: KiCad can automatically create backups of the project when you save and when there are unsaved changes after several seconds of inactivity.
 
-Configure backup frequency: **Preferences** → **Preferences** → **Common** → **Project Backup**.
+Configure backups: **Preferences** → **Preferences** → **Common** → **Project Backup** (macOS: the Preferences dialog is in the KiCad menu → Settings…). Opening Preferences may trigger a library table configuration dialog.
 
 ## Project Manager Interface
 

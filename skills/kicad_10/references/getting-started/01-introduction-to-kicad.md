@@ -21,14 +21,15 @@ The suite includes several integrated utilities:
 
 ## Downloading and Installing
 
-Download KiCad from https://www.kicad.org/download/. The download page includes system-specific instructions and a list of known issues per platform.
+Download KiCad from https://www.kicad.org/download/ (instructions are kept off the manual as they change with OS updates). Known system-related issues and workarounds: https://www.kicad.org/help/known-system-related-issues/. Nightly builds of the development branch are available for testing but may introduce bugs such as file corruption or bad Gerbers.
 
 ## Support
 
 Community support is available via:
 
-- Official forum at https://forum.kicad.info/
+- Official KiCad user forum (https://forum.kicad.info/; URL not given in the 10.0 manual)
 - Discord and IRC channels
+- Learning resources by the community on the KiCad website
 - Documentation at https://docs.kicad.org/
 
 ## Notes

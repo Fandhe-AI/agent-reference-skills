@@ -8,7 +8,7 @@ KiCad 10.0 introduces the following enhancements:
 
 - Customizable toolbars
 - Lasso selection modes
-- Design imports from Allegro, PADS, and gEDA
+- Design imports from Allegro, PADS, and gEDA/Lepton EDA
 - Design variants functionality
 - Jumpered pins support
 - Schematic grouping
@@ -30,8 +30,8 @@ KiCad 10.0 introduces the following enhancements:
 | Documentation portal | https://docs.kicad.org — latest manuals in multiple languages and previous versions |
 | Community resources | https://www.kicad.org (Community section) — endorsed forums and chat platforms |
 | Developer documentation | https://dev-docs.kicad.org — build instructions, contribution policies, and technical information |
-| Forum | https://forum.kicad.info/ |
-| GitLab repository | https://gitlab.com/kicad |
+| Forum | https://forum.kicad.info/ (not found in the 10.0 manual) |
+| GitLab repository | https://gitlab.com/kicad (not found in the 10.0 manual) |
 
 ## Related
 

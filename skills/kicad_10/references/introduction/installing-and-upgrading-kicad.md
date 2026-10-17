@@ -9,10 +9,10 @@ KiCad uses a `major.minor.point` release format:
 | Level | Purpose |
 |-------|---------|
 | Major | New features and significant code changes |
-| Minor | Complex bugfixes |
+| Minor | Relatively rare; bug fixes too complicated for a point release |
 | Point | Bugfixes only |
 
-Users are encouraged to update to the latest point release within their version branch as soon as it is available.
+Users are encouraged to update to the latest point release of their major.minor version promptly; point releases do not break file compatibility. Major releases almost always change file formats. KiCad may run on unsupported platforms, but with no guarantees (see https://www.kicad.org/help/system-requirements/).
 
 ## Migrating from Previous Versions
 
@@ -26,7 +26,7 @@ To migrate a design to a new major version of KiCad:
 ### Important Notes
 
 - Once a design is saved in a new major version, it **cannot be opened by previous major versions**.
-- Newer major versions can still read files saved by older major versions (forward-read, backward-incompatible write).
+- In general, newer major versions can read files saved by older major versions (backwards compatible), but not the reverse.
 - The symbol library format changed in **KiCad 6.0**. Libraries created before version 6.0 require migration before they can be edited; they remain readable in read-only mode without migration.
 
 ## Related

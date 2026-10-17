@@ -4,11 +4,11 @@ The Schematic Editor can export schematics in multiple formats for documentation
 
 ## Printing
 
-Print directly to a printer or PDF via **File** → **Print**. Configure page orientation, scaling, and color/black-and-white output.
+Print directly to a printer via **File** → **Print…**. Options: Print drawing sheet, Output mode, Print background color, Use a different color theme for printing, Page Setup…. The manual recommends Plotting instead when writing to a file.
 
 ## Plotting
 
-**File** → **Plot** (or the plot toolbar button)
+**File** → **Plot…** (buttons: Plot Current Page, Plot All Pages)
 
 ### Supported Formats
 
@@ -17,20 +17,15 @@ Print directly to a printer or PDF via **File** → **Print**. Configure page or
 | PDF | Archival, sharing, review |
 | SVG | Web display, vector editing applications |
 | DXF | Import into CAD software |
-| HPGL | Legacy plotters |
 | PostScript | Professional printing |
 
-**Configuration options:**
-- Color mode (color or black-and-white)
-- Page size and orientation
-- Line width overrides
-- Output directory
+**Configuration options:** Output directory, Design variant, Output Format, Page size, Plot drawing sheet, Output mode, Color theme, Plot background color, Minimum line width, Export units (DXF), Open file after plot. PDF only: Generate property popups, Generate clickable links for hierarchical elements, Generate metadata from AUTHOR and SUBJECT variables.
 
 ## Generating a Bill of Materials (BOM)
 
 ### Symbol Fields Table
 
-**Tools** → **Edit Symbol Fields** opens a spreadsheet-style editor that also functions as a BOM export tool.
+**Tools** → **Generate Bill of Materials…** (or the BOM button on the top toolbar) opens the Symbol Fields Table, a spreadsheet-style editor that also functions as a BOM export tool. Bulk field editing is also available as **Bulk Edit Symbol Fields…** (see the actions reference); the 10.0 manual also calls the same entry **Tools** → **Edit Symbol Fields…** in some chapters (footprint assignment, import) and **Bulk Edit Symbol Fields…** in others (design variants, actions reference); the table also opens from a top-toolbar button.
 
 Features:
 - View and edit all component fields across the entire design
@@ -39,7 +34,7 @@ Features:
 - Define virtual fields with dynamic content (e.g., quantity)
 - **Export** tab: save to CSV or other formats
 
-BOM generation uses Python or XSLT scripts, allowing flexible output formats. Scripts can be selected in the **Generate BOM** dialog (**Tools** → **Generate BOM**).
+Legacy script-based BOMs (bom_csv_grouped_extra, bom_csv_grouped_by_value, bom_csv_grouped_by_value_with_fp) are run via **Tools** → **Generate Legacy Bill of Materials…**. The PCB Editor's **File → Fabrication Outputs → BOM…** exporter is also available, but the manual recommends the schematic BOM tool.
 
 ### Excluding Components from BOM
 
@@ -47,22 +42,25 @@ In symbol properties, check **Exclude from bill of materials** to omit a compone
 
 ## Generating a Netlist
 
-**File** → **Export** → **Netlist**
+**File** → **Export** → **Netlist…** (buttons: Export Netlist, Add Generator…)
 
 ### Supported Netlist Formats
 
 | Format | Description |
 |--------|-------------|
 | KiCad | Native format for internal use |
-| Orcad PCB 2 | Compatible with Orcad-based flows |
+| OrcadPCB2 | Compatible with Orcad-based flows |
+| Allegro | For Allegro-based flows |
+| PADS | For PADS-based flows |
 | CADSTAR | For CADSTAR PCB design tools |
 | Spice | For ngspice and other SPICE simulators |
-| Custom | Via Python or XSLT scripting |
+| Spice Model | Hierarchical labels become subcircuit pins |
 
-Custom netlist scripts can be added and configured to integrate with specialized downstream tools.
+Additional generators can be added with **Add Generator…**.
 
 ## Notes
 
+- HPGL plot output is not offered in the 10.0 Plot dialog (formats: PostScript, PDF, SVG, DXF); `kicad-cli sch export hpgl` is non-functional.
 - Symbols marked **Exclude from board** will not appear in netlists used for PCB updates.
 - The Symbol Fields Table is the recommended approach for BOM generation; it shows the live state of the design and allows real-time editing.
 - Plot output respects the current net class graphical settings (wire color/width) if configured.

@@ -6,8 +6,8 @@ The `sym` subcommand manages symbol operations — exporting symbol libraries to
 
 | Command | Purpose | Main Options |
 |---------|---------|--------------|
-| `sym export svg` | Export symbols to SVG | `--output`, `--layers`, `--theme`, `--symbol`, `--black-and-white` |
-| `sym export kicad_sym` | Export symbols to native KiCad format | `--output` |
+| `sym export svg` | Export symbols to SVG | `--output`, `--theme`, `--symbol`, `--black-and-white`, `--include-hidden-pins`, `--include-hidden-fields` |
+| `sym export kicad_sym` | Export symbols to native KiCad format (not listed in the 10.0 manual; unverified) | `--output` |
 | `sym upgrade` | Upgrade symbol libraries to current format | `--output`, `--force` |
 
 ---
@@ -19,22 +19,22 @@ Converts symbol libraries to SVG format files.
 ### Signature / Usage
 
 ```
-kicad-cli sym export svg [options] INPUT_FILE_OR_DIR
+kicad-cli sym export svg [options] INPUT_FILE
 ```
 
-**INPUT_FILE_OR_DIR**: Symbol file (`.kicad_sym`) or directory to export.
+**INPUT_FILE**: Symbol library file (`.kicad_sym`) to export.
 
 ### Options
 
 | Option | Short | Description |
 |--------|-------|-------------|
 | `--help` | `-h` | Show help |
-| `--output <dir>` | `-o` | Export destination folder; defaults to current directory |
-| `--layers <layer list>` | `-l` | Comma-separated layer names to include |
-| `--define-var <key>=<value>` | `-D` | Define/override project variables (repeatable) |
-| `--theme <theme name>` | `-t` | Theme for export; uses current theme if omitted |
-| `--symbol <symbol>` | `--sym` | Export a single named symbol only |
+| `--output <dir>` | `-o` | Export destination folder; defaults to current directory (one file per symbol) |
+| `--theme <theme name>` | `-t` | Theme for export; uses the symbol editor's current theme if omitted |
+| `--symbol <symbol>` | `-s` | Export a single named symbol only; all symbols in the library if omitted |
 | `--black-and-white` | | Monochrome output |
+| `--include-hidden-pins` | | Include hidden pins in the export |
+| `--include-hidden-fields` | | Include hidden fields in the export |
 
 ---
 
@@ -55,7 +55,7 @@ kicad-cli sym export kicad_sym [options] INPUT_FILE
 | Option | Short | Description |
 |--------|-------|-------------|
 | `--help` | `-h` | Show help |
-| `--output <filename>` | `-o` | Output filename; defaults to input filename with `.kicad_sym` extension |
+| `--output <filename>` | `-o` | Output filename; defaults to input filename with `.kicad_sym` extension (unverified) |
 
 ---
 
@@ -74,8 +74,10 @@ kicad-cli sym upgrade [options] INPUT_FILE_OR_DIR
 ### Supported Input Formats
 
 - KiCad symbol libraries (`.kicad_sym`)
-- KiCad legacy pre-5.0 symbol libraries (`.lib`, `.dcm`)
+- KiCad pre-6.0 symbol libraries (`.lib`)
+- Altium schematic libraries (`.SchLib`)
 - Altium integrated libraries (`.IntLib`)
+- CADSTAR parts libraries (`.lib`)
 - EAGLE XML libraries (`.lbr`)
 - EasyEDA (JLCEDA) Standard files (`.json`)
 - EasyEDA (JLCEDA) Pro files (`.elibz`, `.epro`, `.zip`)
@@ -85,8 +87,12 @@ kicad-cli sym upgrade [options] INPUT_FILE_OR_DIR
 | Option | Short | Description |
 |--------|-------|-------------|
 | `--help` | `-h` | Show help |
-| `--output <dir>` | `-o` | Output directory; overwrites original files if omitted |
+| `--output <file or dir>` | `-o` | Overwrites the original library if omitted; a file path produces a packed `.kicad_sym`, a folder path produces one `.kicad_sym` per symbol |
 | `--force` | | Re-save even if already in current format |
+
+## Notes
+
+- sym export kicad_sym: not found in the 10.0 manual (only `sym export svg` and `sym upgrade` are documented); its option table, including the `.kicad_sym` default output name, is unverified. Verify with `kicad-cli sym export -h` before use.
 
 ## Related
 
