@@ -26,7 +26,7 @@ export const { POST } = serve<string>(async (context) => {
 
 | Rule | Detail |
 |------|--------|
-| Execute business logic in `context.run` | The endpoint runs many times per workflow run; only code inside a step runs exactly once. Code outside `context.run` only connects steps |
+| Execute business logic in `context.run` | The endpoint runs many times per workflow run; only code inside a step runs exactly once (its successful result is reused on later calls, but a step can still be retried before its result is saved; see the idempotency row). Code outside `context.run` only connects steps |
 | Return results from `context.run` | A variable assigned inside a step is uninitialized on the next call. Return the value and use the returned result |
 | Avoid non-deterministic code outside `context.run` | Database reads, `Date.now()`, and randomness outside a step can cause `Failed to authenticate Workflow request.` if you `return` based on them before any step. Wrap them in `context.run` |
 | Ensure idempotency in `context.run` | Steps can be retried (e.g. connection lost before the response). Running a step twice must have the same effect as running it once |
@@ -74,6 +74,7 @@ export const { POST } = serveMany({
 
 ## Notes
 
+- "This log will appear just once" in the example refers to normal execution; a step may run again if it is retried (e.g. connection lost before the result is saved), so side effects must be idempotent
 - Non-idempotent code outside a step (e.g. `getResultFromDb(entryId)`) must move inside `context.run("get-result-from-db", ...)` before branching or returning on its result
 - Since 1.0.0 the `context.invoke` `body` is a string (`stringifyBody` was removed; use `JSON.stringify()`, see migrations); the original workflow-limits example passes the object directly (old form)
 - Source: fetched 2026-10 from https://upstash.com/docs/workflow/basics/best-practices/overview (and sibling pages under `basics/best-practices/`)

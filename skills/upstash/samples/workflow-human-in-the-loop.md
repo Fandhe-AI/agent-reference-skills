@@ -206,3 +206,4 @@ QSTASH_TOKEN=...
 - The original guide's notify handler has no authentication or authorization; the session check, `canApprove` check, and `approved` type check are added here (`getSession` / `canApprove` are your own placeholders, not Upstash APIs)
 - To trigger a workflow and notify it immediately, pass `workflowRunId` to `client.notify()` to enable lookback so the event is delivered even if sent before `waitForEvent`
 - Requires a QStash project for workflows and a Redis database for Realtime; the frontend hook (`useRealtime` with `workflow.waitingForInput` / `workflow.inputResolved` events) and the basic real-time setup are in the official guide and the `upstash/workflow-js` `examples/upstash-realtime` example
+- Source: https://upstash.com/docs/workflow/howto/realtime/human-in-the-loop (example project: https://github.com/upstash/workflow-js/tree/main/examples/upstash-realtime)
