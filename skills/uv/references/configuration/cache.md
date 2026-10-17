@@ -92,7 +92,7 @@ By default, cache cleanup estimates the disk space reclaimed. Enable the `cache-
 $ uv cache clean --preview-features cache-physical-space
 ```
 
-uv blocks cache-modifying operations while other uv commands are running. `uv cache` commands wait 5 min by default for other uv processes to terminate; change with `UV_LOCK_TIMEOUT`. `--force` ignores the lock when no other uv process is using the cache.
+uv blocks cache-modifying operations while other uv commands are running. By default, those `uv cache` commands have a 5 min timeout waiting for other uv processes to terminate to avoid deadlocks. This timeout can be changed with `UV_LOCK_TIMEOUT`. In cases where it is known that no other uv processes are reading or writing from the cache, `--force` can be used to ignore the lock (it skips in-use checks and proceeds without taking a lock).
 
 ## Caching in continuous integration
 
