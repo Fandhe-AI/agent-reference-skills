@@ -285,7 +285,7 @@ Builder::new("<plugin-name>")
     .invoke_handler(tauri::generate_handler![commands::upload])
 ```
 
-Define a binding in `webview-src/index.ts` (build the TypeScript before testing):
+Define a binding in `guest-js/index.ts` (build the TypeScript before testing):
 
 ```typescript
 import { invoke, Channel } from '@tauri-apps/api/core'
@@ -449,7 +449,8 @@ A plugin manages state the same way an application does (see State Management).
 - Upstream Plugins page's tauri.conf.json example still shows the v1 top-level `tauri` key; replaced with the v2 `app` key.
 - Upstream `Entry` scope example derives only `Debug` and `JsonSchema`; `serde::Deserialize` added because `CommandScope` / `GlobalScope` require the scope type to be deserializable.
 - `serde` (derive) added to `[dependencies]` and `[build-dependencies]` (not in upstream) because `build.rs` includes `src/scope.rs`, which derives `serde::Deserialize`.
-- The `webview-src/index.ts` snippet fence changed from `js` to `typescript` because it uses TypeScript-only syntax.
+- The `guest-js/index.ts` snippet fence changed from `js` to `typescript` because it uses TypeScript-only syntax.
+- Upstream says `webview-src/index.ts` for the binding, which contradicts the generated layout above; `guest-js/index.ts` is used here.
 - Upstream Plugins page initializes the global-shortcut plugin with `tauri_plugin_global_shortcut::init()`, but the v2 plugin exposes only `Builder`; replaced with `Builder::new().build()` (as on the global-shortcut plugin page).
 - Upstream example declares `on_progress: Channel` (default `TSend = InvokeResponseBody`), which does not accept `send(100)`; the type parameter `Channel<u32>` was added.
 - Permissions / capabilities here are Tauri's ACL; see the security category.

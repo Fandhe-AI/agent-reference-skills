@@ -67,7 +67,7 @@ This uses `cargo` directly to build the Rust application in development and prod
         "owner": "custom",
         "pattern": { "regexp": "^__never_matches__(.+):(\\d+):(.*)$", "file": 1, "line": 2, "message": 3 },
         "background": {
-          "activeBegins": true,
+          "activeOnStart": true,
           "beginsPattern": ".",
           // replace with a regex matching your dev server's ready output (e.g. Vite's `Local:` line)
           "endsPattern": "Local:"
@@ -147,7 +147,7 @@ It does not use the Tauri CLI either. `tasks.json` is the same as with `lldb`, e
         "owner": "custom",
         "pattern": { "regexp": "^__never_matches__(.+):(\\d+):(.*)$", "file": 1, "line": 2, "message": 3 },
         "background": {
-          "activeBegins": true,
+          "activeOnStart": true,
           "beginsPattern": ".",
           // replace with a regex matching your dev server's ready output (e.g. Vite's `Local:` line)
           "endsPattern": "Local:"

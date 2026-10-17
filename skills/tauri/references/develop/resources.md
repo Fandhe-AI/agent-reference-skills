@@ -38,7 +38,7 @@ Behavior of each entry in list form:
       "/absolute/path/to/textfile.txt",
 
       // `..` in a relative path will be replaced by `_up_`,
-      // so `jsonfile.json` will be placed to `$RESOURCE/_up_/relative/path/to/textfile.txt`,
+      // so `jsonfile.json` will be placed to `$RESOURCE/_up_/relative/path/to/jsonfile.json`,
       "../relative/path/to/jsonfile.json",
 
       // If the path is a directory, the entire directory will be copied to the `$RESOURCE` directory,
@@ -359,6 +359,7 @@ With the `opener` plugin:
 ## Notes
 
 - Upstream Rust command examples use `?` in functions without a `Result` return type, pass `String` by value to `serde_json::from_str`, and return `&Value` where `String` is declared; corrected here (`Result<_, String>` with `map_err`, `from_str(&json)`, `as_str()`).
+- Upstream comment gives the `_up_` output as `textfile.txt`; corrected to `jsonfile.json` (the file name is preserved).
 - The Android `FsExt` variants (`app.fs()` / `handle.fs()`) return a `Result`; upstream assigns it directly, here it is unwrapped with `?` / `map_err` in the commented-out alternatives.
 
 ## Related
