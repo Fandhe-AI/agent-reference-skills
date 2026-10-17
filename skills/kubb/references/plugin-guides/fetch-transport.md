@@ -58,6 +58,7 @@ const { data } = await getPetById({ path: { petId: 1 }, client: testClient })
 - 設定場所: 共有は `client.setConfig({ transport })`、独立インスタンスは `createClient({ transport })`、1 呼び出しだけの上書きは operation に `transport` を渡す
 - 独立クライアントは operation 単位、またはクエリ系プラグインに渡せる
 - plugin-axios では transport は `AxiosInstance`（別ページ参照）
+- In Node.js `new Request()` requires an absolute URL and the spec's `servers` URL is not applied automatically (see [fetch-base-url](./fetch-base-url.md)), so pass a dummy absolute `baseURL` such as `createClient({ baseURL: 'https://example.test', transport })` when using the mock above outside your normal config
 - Source: https://kubb.dev/extensions/kubb-labs/plugin-fetch/guides/transport （`@kubb/plugin-fetch@5.6.5`）
 
 ## Related

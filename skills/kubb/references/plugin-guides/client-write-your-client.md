@@ -99,6 +99,7 @@ export async function client(config: RequestConfig) {
 - 相対 `importPath` の場合、フックは生成 operation ファイルから解決するため、1 つのパスで両方に通用する
 - client は `method`・`{param}` プレースホルダー付きの `url` テンプレート・`security`・グループ化された `path` / `query` / `headers` / `body`・`throwOnError` を受け取り、promise を返す
 - 上記の型は最小のスケッチ。status 対応のレスポンス型が必要なら追加する。base URL setter・query 処理・async auth hook を備えた完全版は公式 example project（`https://github.com/kubb-labs/plugins/tree/main/examples/client`）にある
+- The sketch's `RequestResult` types `data` as `TResponses[keyof TResponses]`, which includes error responses and the raw `{ contentType, data }` definitions, while the client returns only the parsed body; for a correct contract select the 2xx responses and unwrap the body as in [examples/client.md](../examples/client.md) (`SuccessOf` / `DataOf`)
 - Kubb は retry・interceptor・リクエスト署名に依存しない。必要なら `client` に追加する
 - Source: https://kubb.dev/extensions/kubb-labs/plugin-client/guides/write-your-client （`@kubb/plugin-client@5.5.15`）
 

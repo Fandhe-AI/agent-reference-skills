@@ -40,6 +40,7 @@ await getPetById({ path: { petId: 2n }, client: tenantClient })
 
 ## Notes
 
+- With the example client, a non-2xx response with an empty body yields both `data` and `error` as `undefined`, so checking `result.error === undefined` is not a success check; branch on `result.response.ok` (or add a success discriminator to your client)
 - Source: https://kubb.dev/extensions/kubb-labs/plugin-client/guides/calling-operations （`@kubb/plugin-client@5.5.15`）
 
 ## Related
