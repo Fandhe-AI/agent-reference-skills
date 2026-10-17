@@ -107,6 +107,9 @@ The Tauri CLI is not used to launch the app, so the development server does not 
 ### Example key bindings
 
 ```lua
+local overseer = require("overseer")
+overseer.setup()
+
 vim.keymap.set('n', '<F5>', function() dap.continue() end)
 vim.keymap.set('n', '<F6>', function() dap.disconnect({ terminateDebuggee = true }) end)
 vim.keymap.set('n', '<F10>', function() dap.step_over() end)
@@ -116,6 +119,10 @@ vim.keymap.set('n', '<Leader>b', function() dap.toggle_breakpoint() end)
 vim.keymap.set('n', '<Leader>o', function() overseer.toggle() end)
 vim.keymap.set('n', '<Leader>R', function() overseer.run_template() end)
 ```
+
+## Notes
+
+- The official page omits `require("overseer")`; it is added here so the key bindings work.
 
 ## Related
 
