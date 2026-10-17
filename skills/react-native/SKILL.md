@@ -2,14 +2,14 @@
 name: react-native
 description: >
   React Native (Meta 製クロスプラットフォームネイティブアプリフレームワーク, react-native 0.87 / 0.88) の
-  Text, TextInput, StyleSheet, Flexbox, Platform, Linking, New Architecture (Fabric, TurboModules,
-  Codegen), Hermes。
+  Text, FlatList, Pressable, TextInput, Animated, StyleSheet, Flexbox, Platform, Linking,
+  New Architecture (Fabric, TurboModules, Codegen), Hermes。
 user-invocable: false
 ---
 
 # React Native
 
-> 分割 PR の途中段階。現在収録済み: references/{apis, architecture}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{apis, architecture, components}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -23,6 +23,9 @@ npm の latest は 0.88.0（2026-10-15）だが 0.88 の docs は未 cut（`vers
 skills/react-native/
   SKILL.md
   references/
+    components/            # Core Components 26 ページ
+      README.md
+      view.md, text.md, textinput.md, flatlist.md, pressable.md, ...
     apis/                  # Core APIs
       README.md
       stylesheet.md, platform.md, linking.md, appstate.md, dimensions.md, ...
@@ -43,5 +46,6 @@ skills/react-native/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
+| View / Text / TextInput / FlatList / Pressable 等のコンポーネント props を調べたい | components | [references/components/README.md](references/components/README.md) |
 | StyleSheet / Platform / Linking / AppState / Dimensions 等の API を使いたい | apis | [references/apis/README.md](references/apis/README.md) |
 | New Architecture・Fabric・レンダーパイプライン・スレッドモデル・Bundled Hermes を理解したい | architecture | [references/architecture/README.md](references/architecture/README.md) |
