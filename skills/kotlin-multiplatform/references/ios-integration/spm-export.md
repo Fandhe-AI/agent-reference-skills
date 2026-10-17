@@ -41,7 +41,8 @@ Assemble, checksum, validate:
 
 ```shell
 ./gradlew :shared:assembleSharedXCFramework
-swift package compute-checksum Shared.xcframework.zip
+(cd shared/build/XCFrameworks/release && zip -r Shared.xcframework.zip Shared.xcframework)
+swift package compute-checksum shared/build/XCFrameworks/release/Shared.xcframework.zip
 swift package reset && swift package show-dependencies --format json
 ```
 
@@ -105,7 +106,7 @@ kotlin {
 ## Notes
 
 - Two files must be published: a ZIP archive with the XCFramework (any storage with direct access, e.g. a GitHub release, Amazon S3 or Maven) and `Package.swift`, pushed to a Git repository with a Git tag carrying the semantic version.
-- The resulting framework is created at `shared/build/XCFrameworks/release/Shared.xcframework`.
+- The resulting framework is created at `shared/build/XCFrameworks/release/Shared.xcframework` (a folder). The official page says to compress this folder into a ZIP file and calculate the checksum; the `zip` line in the shell block performs that step. Upload the ZIP and set its URL and the checksum in `Package.swift` (`url` / `checksum`).
 - Recommended repository layout: keep `Package.swift` and the code to be packaged in separate Git repositories, so the manifest is versioned separately. Alternatives (manifest next to the KMP code, or in the consumer repo) have versioning (SwiftPM uses Git tags) and CI-automation drawbacks described on the source page.
 - If the project consumes SwiftPM dependencies, starting with Kotlin 2.5.0-Beta1 (the docs' `kotlinEapVersion`; the latest stable in the pinned docs is 2.4.21) the assemble task also generates SwiftPM-related files, including a `Package.swift`, next to the XCFramework, so a manifest need not be written from scratch.
 - Export of KMP modules that use SwiftPM import as a Swift package is not yet supported and might not work (YouTrack KT-84420); see spm-import.md.

@@ -329,13 +329,14 @@ internal fun rememberSvgResource(path: String): Painter {
 
 private object ResourceLoader
 private fun readResourceBytes(resourcePath: String) =
-    ResourceLoader.javaClass.classLoader.getResourceAsStream(resourcePath).readAllBytes()
+    ResourceLoader.javaClass.classLoader.getResourceAsStream(resourcePath).use { it.readAllBytes() }
 ```
 
 ## Notes
 
 - The Kotlin Multiplatform IDE plugin supports Emmet-like shorthand in string XML (for example `test{Example}` expands to `<string name="test">Example</string>`; `1s` / `2d` expand to `%1$s` / `%2$d`; `string-array` / `sa` / `p.test` generate arrays and plurals).
 - Android Studio previews of multiplatform composables work only in Android source sets and require one of AGP 8.5.2, 8.6.0-rc01, or 8.7.0-alpha04 (as stated by the docs for 1.7.0). This is the CMP 1.7.0-era statement; since CMP 1.10 the AndroidX `@Preview` works in common code too (an Android target is still required), see previews.md.
+- The official snippet calls readAllBytes() without closing the stream; it is wrapped in use { } here so the InputStream is closed even on exceptions.
 - Preloading, automatic font fallback, and caching for web targets are covered in the web-resources page.
 - `painterResource` here is the `org.jetbrains.compose.resources` function taking a `DrawableResource`; it is not the androidx `painterResource(id: Int)` documented in android-compose-ui (common `androidx.compose` API belongs to that skill).
 
