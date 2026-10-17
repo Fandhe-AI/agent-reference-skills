@@ -8,8 +8,9 @@ Hermes connects to Yuanbao, Tencent's enterprise messaging platform, over a WebS
 # ~/.hermes/.env
 YUANBAO_APP_ID=your-app-id
 YUANBAO_APP_SECRET=your-app-secret
-YUANBAO_WS_URL=wss://api.yuanbao.example.com/ws
-YUANBAO_API_DOMAIN=https://api.yuanbao.example.com
+# Optional: override built-in endpoints only if Yuanbao support gives you different ones
+# YUANBAO_WS_URL=wss://...
+# YUANBAO_API_DOMAIN=https://...
 YUANBAO_HOME_CHANNEL=direct:bot_account_id
 ```
 
@@ -44,6 +45,7 @@ Built-in connection parameters (not configurable): WS connect timeout 15 s, hear
 - Auto-sethome: the first user to message the bot becomes the home channel owner (a first DM upgrades a group home channel to direct). `/sethome` sets it manually.
 - Sends a waiting message on slow responses; message dedup; typing indicator. `hermes gateway run -vv` enables verbose logging.
 - Core dependencies `websockets` and `httpx` can be repaired with `hermes pm repair`.
+- Adapted: the Hermes page lists YUANBAO_WS_URL / YUANBAO_API_DOMAIN with example.com placeholders, but the same page states both have built-in defaults; they are shown here as commented optional overrides.
 - Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/yuanbao (pinned to v0.22.2)
 
 ## Related
