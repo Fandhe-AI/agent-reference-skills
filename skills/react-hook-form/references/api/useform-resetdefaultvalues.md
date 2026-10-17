@@ -65,6 +65,7 @@ resetDefaultValues(serverValues, {
 - Useful when a form disables submission while `!isDirty`: after a successful async submission, advance the baseline so only post-submit edits are dirty.
 - Current form values (what the user typed) are never modified by this method; only the internal baseline used to compute dirty state changes.
 - `dirtyFields` and `isDirty` are recomputed against the new baseline unless `keepDirty` is set.
+- Do not call `resetDefaultValues` inside a `subscribe` callback; it updates subscribed state and can re-trigger the callback in an infinite loop (carried over from the previous version of this page; not stated in the official docs).
 
 ## Related
 

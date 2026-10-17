@@ -30,7 +30,7 @@ export default function App() {
     return () => callback()
 
     // You can also just return the subscribe
-    // return subscribe();
+    // return subscribe({ formState: { values: true }, callback: ({ values }) => console.log(values) })
   }, [subscribe])
 
   return (
@@ -59,6 +59,8 @@ export default function App() {
 
 - Shares the same functionality as `createFormControl.subscribe`; the key difference is that `createFormControl` can be initialized outside of a React component.
 - `callback` is required by the `UseFormSubscribe` type (`payload.callback`); the bare `subscribe()` forms in the official table only illustrate the `name` option.
+- The official commented example reads `return subscribe();`, which omits the required `callback`; it is shown here with a `callback` added.
+- Do not call state-updating methods such as `setValue` or `reset` inside the subscribe callback; updating subscribed state re-triggers the callback and can cause an infinite loop (carried over from the previous version of this page; not stated in the official docs).
 - Dedicated to subscribing to form state without render; use it instead of the `watch` callback function.
 
 ## Related

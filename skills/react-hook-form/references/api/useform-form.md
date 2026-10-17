@@ -36,6 +36,7 @@ function App() {
       </Form>
       {/* Manual form submission */}
       <Form
+        control={control}
         onSubmit={async ({ formData, data, formDataJson, event }) => {
           await fetch("api", {
             method: "post",
@@ -86,7 +87,7 @@ React Native:
 
 ## Notes
 
-- Outside `FormProvider`, pass `control={control}` to every `Form` (the official manual-submission example omits it).
+- Outside `FormProvider`, pass `control={control}` to every `Form`. The official manual-submission example omits `control`; it is added to that example here because it is required outside `FormProvider`.
 - By default a POST request is sent with the form submission data as `FormData`.
 - Progressively enhanced form; supports both React Web and React Native.
 - To prepare or omit submission data, use `handleSubmit` or `onSubmit`.
