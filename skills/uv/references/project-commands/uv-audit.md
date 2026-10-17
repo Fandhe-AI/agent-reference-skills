@@ -73,7 +73,7 @@ $ uv audit --output-format json
 
 ## Notes
 
-- Preview feature `audit-command`: `uv audit` and `uv tool audit` check project and installed-tool dependencies for known vulnerabilities; a preview warning is displayed unless the feature is enabled (see the preview features page). The preview feature `malware-check` is separate: it checks packages for malware using OSV before installing.
+- Preview feature `audit-command`: `uv audit` and `uv tool audit` check project and installed-tool dependencies for known vulnerabilities; a preview warning is displayed unless the feature is enabled (see the preview features page). The preview feature `malware-check` is separate: it checks packages for known malware using OSV. Its timing is inconsistent in the official docs (the preview-features list says before installing; the `UV_MALWARE_CHECK` environment-variable reference says after `uv sync` / after every lockfile sync), so do not rely on it as a pre-install gate until verified against the pinned 0.13.1 release.
 - Global options are listed in uv.md (project-commands).
 
 ## Related

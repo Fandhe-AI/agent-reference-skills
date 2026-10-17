@@ -45,6 +45,7 @@ uv init [OPTIONS] [PATH]
 
 ## Notes
 
+- Packaged-by-default applications: the CLI reference and concepts/projects/init.md (0.13.1) describe packaged applications as the default since v0.12 ("Prior to v0.12, uv did not define a build system for applications by default"), but the generated preview-features list still includes `packaged-init` ("`uv init` creates a packaged application by default"). The official docs are inconsistent; verify with the pinned 0.13.1 release (e.g. `uv init` with and without `--preview-features packaged-init`) before relying on either.
 - Global options are listed in uv.md (project-commands).
 
 ## Related

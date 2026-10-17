@@ -95,6 +95,7 @@ $ uv run --python 3.12 -- python
 
 ## Notes
 
+- Script-relative discovery: the CLI reference states that the project/workspace is discovered from the script's directory when running a script, but the preview-features list describes starting discovery from the directory containing a local `uv run` target as the preview feature `target-workspace-discovery`, which takes effect before configuration is loaded and so must be enabled on the command line (`--preview-features target-workspace-discovery`) or via an environment variable (`UV_PREVIEW_FEATURES`), not in `uv.toml`/`pyproject.toml`. The official docs are inconsistent; verify against the pinned 0.13.1 release when running a script that belongs to a different project.
 - Global options are listed in uv.md (project-commands).
 - Distinct from task runners such as make: `uv run` executes a command or script inside a Python environment managed by uv (creating and syncing the project environment first); it does not read a Makefile or define targets.
 
