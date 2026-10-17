@@ -18,7 +18,7 @@ Runtime versions guarantee compatibility between a build's native code and an up
 }
 ```
 
-## Setting `"runtimeVersion"`
+### Setting `"runtimeVersion"`
 
 - **Policies**: derive the runtime version from other project information. The available policies (`appVersion`, `nativeVersion`, `fingerprint`) are documented in the `expo-updates` library documentation (see [Updates](./updates.md)).
 - **Custom runtime version**: set a string manually to control which updates are compatible with which builds. It must meet the runtime version formatting requirements in app config.
@@ -46,7 +46,7 @@ Runtime versions guarantee compatibility between a build's native code and an up
 }
 ```
 
-## Avoiding incompatible updates
+### Avoiding incompatible updates
 
 An update may rely on native code that the build does not support (for example, a newly installed `expo-camera` without a changed `"runtimeVersion"`). `expo-updates` may detect an error and attempt to roll back to the previously working update (see [Error recovery](./error-recovery.md)). Strategies:
 

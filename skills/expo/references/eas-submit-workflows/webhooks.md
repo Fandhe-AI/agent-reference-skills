@@ -49,7 +49,7 @@ app.post('/webhook', (req, res) => {
 app.listen(8080, () => console.log('Listening on port 8080'));
 ```
 
-Build webhook payload (abridged from the official example):
+Adapted (not in the official docs): abridged from the official build webhook payload example; see the Options / Props table for the full field list.
 
 ```json
 {

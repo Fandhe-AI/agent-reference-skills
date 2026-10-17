@@ -15,9 +15,9 @@ eas update:configure
 eas update --channel [channel-name] --message "[message]" --environment [environment-name]
 ```
 
-## Steps
+### Steps
 
-### Prerequisites
+#### Prerequisites
 
 - An Expo account (EAS Update is available regardless of plan; paid subscribers can publish updates to more users and use more bandwidth and storage).
 - A React Native project, for example:
@@ -29,11 +29,11 @@ npx create-expo-app@latest my-app --template default@sdk-58
 - Expo CLI and the Expo Metro Config. If the `expo` package is not installed, run `npx install-expo-modules@latest`.
 - Use Expo's `registerRootComponent` instead of React Native's `registerApplication` (not needed when created with `create-expo-app` or when Expo Router handles it). This ensures Expo can configure React Native to load assets included in updates; otherwise assets may not be available in release builds. After the change, update `MainActivity` and `AppDelegate` to use the module name `"main"` instead of your app name.
 
-### Install EAS CLI and log in
+#### Install EAS CLI and log in
 
 EAS CLI is the command-line app for EAS services. `npx eas-cli@latest` may be used instead of `eas`. Check login with `eas whoami`.
 
-### Configure your project
+#### Configure your project
 
 `eas update:configure` updates app.json with `runtimeVersion` and `updates.url`, and adds `extra.eas.projectId` if the project did not use EAS services previously. In a project that does not use CNG, it also changes native projects:
 
@@ -55,7 +55,7 @@ Android also gets an `expo_runtime_version` string entry in **android/app/src/ma
 
 If you use Xcode to create builds, make sure `Expo.plist` is added to your Xcode project.
 
-### Configure the update channel
+#### Configure the update channel
 
 With EAS Build, `eas update:configure` sets the `channel` property on the `preview` and `production` profiles in **eas.json** (set manually if you use different profile names):
 
@@ -89,7 +89,7 @@ Without EAS Build and with CNG, configure the channel with `updates.requestHeade
 Without CNG, in an Android native project (**AndroidManifest.xml**):
 
 ```xml
-<meta-data android:name="expo.modules.updates.UPDATES_CONFIGURATION_REQUEST_HEADERS_KEY" android:value="{"expo-channel-name":"your-channel-name"}"/>
+<meta-data android:name="expo.modules.updates.UPDATES_CONFIGURATION_REQUEST_HEADERS_KEY" android:value="{&quot;expo-channel-name&quot;:&quot;your-channel-name&quot;}"/>
 ```
 
 and in an iOS native project (**Expo.plist**):
@@ -102,13 +102,13 @@ and in an iOS native project (**Expo.plist**):
 </dict>
 ```
 
-### Create a build, make changes, publish
+#### Create a build, make changes, publish
 
 Create a build for Android or iOS (a `preview` profile build is recommended first). Iterate locally with `npx expo start`, then publish with `eas update`, specifying a channel, a `message`, and the `--environment` flag to select which EAS environment variables to use (required in SDK 55 and later).
 
 Publishing generates a new update bundle and uploads it to EAS servers. The channel name is used to locate the correct branch. For a build pulling from the `preview` channel, `eas update --channel preview` creates a branch (called `preview` by default) on the `preview` channel. Behind the scenes it runs `npx expo export` to generate a **dist** directory and a local update bundle.
 
-### Test the update
+#### Test the update
 
 - Use the Extensions tab in a development build to load the update.
 - Use Expo Orbit to install and launch the update in a development build.

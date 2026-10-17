@@ -16,20 +16,20 @@ eas update:republish --group [update-group-id]
 
 If no older update is safe to roll back to (for example, the broken update modified persistent state such as AsyncStorage or the file system in a non-backwards-compatible way), fix forward.
 
-## Error recovery flow
+### Error recovery flow
 
 The flow is lightweight, not a full safety net; users may still see a crash. Its purpose is to prevent updates from "bricking" the app (a crash on launch before the app can check for updates) so the app has the opportunity to download a new update.
 
-### Catching an error
+#### Catching an error
 
 `expo-updates` catches a fatal JS error early enough in the lifecycle that it may prevent further downloads. If more than 10 seconds have elapsed between the app's first render and the fatal error, the error is not caught and no recovery code runs; check for updates very shortly after launching. What happens next depends on whether React Native has fired the native "content appeared" event (`ReactMarkerConstants.CONTENT_APPEARED` on Android or `RCTContentDidAppearNotification` on iOS) for this update, on this launch or a previous one. If the error occurs before the first view has rendered, no state-modifying code is assumed to have run, so rolling back is safe; afterwards `expo-updates` only fixes forward.
 
-### If content has appeared
+#### If content has appeared
 
 - A 5 second timer starts, and (unless `EXUpdatesCheckOnLaunch`/`expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH` is `NEVER`) the app checks for and downloads a new update.
 - When there is no new update, the download finishes, or the timer runs out (whichever is first), the app throws the original error and crashes. A downloaded update launches the next time the user opens the app.
 
-### If content has not appeared
+#### If content has not appeared
 
 On the first launch of the current update on this device:
 
@@ -39,7 +39,7 @@ On the first launch of the current update on this device:
 - If that update also throws a fatal error, or there is no new update, or the timer runs out, the app reloads by rolling back to the most recently successfully launched older update.
 - If that also fails or there is none, the app throws the original error and crashes.
 
-## Error stacktraces
+### Error stacktraces
 
 When recovery fails, the original exception is rethrown. On Android the original stacktrace is preserved:
 

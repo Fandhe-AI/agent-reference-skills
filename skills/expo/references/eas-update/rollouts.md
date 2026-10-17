@@ -8,13 +8,15 @@ Roll out a change to a portion of your users to catch bugs before releasing to a
 
 ## Signature / Usage
 
+Adapted (not in the official docs): adds `--environment`, which the EAS CLI reference marks as required for Expo SDK 55 or greater.
+
 ```sh
-eas update --rollout-percentage=10
+eas update --rollout-percentage=10 --environment production
 ```
 
 In this example the update is only available to 10% of your end users when published. EAS provides per-update and branch-based rollout mechanisms.
 
-## Per-update rollouts
+### Per-update rollouts
 
 Specify a percentage of users that should receive a new update on publish, then increase it gradually.
 
@@ -35,7 +37,7 @@ Additional notes:
 - Reverting a rollout created on a branch with an existing update republishes the control update.
 - A rollout can be started on a branch with no current update; when reverted, a rollback-to-embedded update is created.
 
-## Branch-based rollouts
+### Branch-based rollouts
 
 Incrementally roll out a set of updates on a new branch to a percentage of end users while the rest stay on the current branch.
 
@@ -52,11 +54,12 @@ Additional notes:
 
 - Only one branch can be rolled out on a channel at a time.
 - View state with `eas channel:rollout`.
-- During a rollout you can publish to both branches with `eas update --branch [branch]`.
-- `eas update --channel [channel]` cannot be used while a rollout is in progress.
+- During a rollout you can publish to both branches with `eas update --branch [branch] --environment [environment-name]`.
+- `eas update --channel [channel] --environment [environment-name]` cannot be used while a rollout is in progress.
 
 ## Notes
 
+- The official guide examples omit `--environment`; it is required for SDK 55+ (EAS CLI reference). Added here as an adaptation.
 - Source modificationDate: July 07, 2025 (fetched 2026-10-17).
 
 ## Related

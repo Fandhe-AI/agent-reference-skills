@@ -14,7 +14,7 @@ eas update:rollback
 
 In the terminal, an interactive guide helps you select the type of rollback and perform it.
 
-## Rollback types
+### Rollback types
 
 - **Roll back to a previously-published update**: the command re-publishes a previously-published update to functionally roll back clients to that update.
 - **Roll back to the update embedded in the build**: the command instructs the client to run the update embedded in the build.

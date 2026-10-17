@@ -20,7 +20,7 @@ With bundle diffing, EAS Update delivers a **bundle patch** when possible: a sma
 }
 ```
 
-## Enable bundle diffing
+### Enable bundle diffing
 
 Devices already running a published update get a patch when a newer one is available (enabled by default in SDK 56 and later). Devices on a fresh install can also get a patch on the first update check when the embedded bundle from the build has been uploaded (enabled by default in SDK 58 and later).
 
@@ -59,7 +59,7 @@ EAS Build uploads the bundle only when EAS Update is configured and the build pr
 eas update:embedded:upload --platform [platform] --bundle [path] --manifest [path] --channel [name]
 ```
 
-## Manage uploaded embedded bundles
+### Manage uploaded embedded bundles
 
 ```sh
 eas update:embedded:list
@@ -69,7 +69,7 @@ eas update:embedded:delete [id]
 
 Find ids with `eas update:embedded:list`, then pass them to view or delete. The delete command is safe to retry.
 
-## Verify bundle diffs are being served
+### Verify bundle diffs are being served
 
 - Expo website: the Update Details page for the Update Group and platform.
 - Updates API: inspect `Updates.readLogEntriesAsync()`; a received patch shows an entry such as "patch successfully applied".

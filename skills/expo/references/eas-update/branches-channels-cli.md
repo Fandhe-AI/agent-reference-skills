@@ -19,7 +19,7 @@ eas branch:view [branch-name]
 eas update:view [update-group-id]
 ```
 
-## Commands
+### Commands
 
 | Command | Description |
 | --- | --- |
@@ -29,8 +29,8 @@ eas update:view [update-group-id]
 | `eas branch:list` | See all branches |
 | `eas branch:view [branch-name]` | See a branch and a list of its updates |
 | `eas update:view [update-group-id]` | View a specific update |
-| `eas update --branch [branch-name] --message "..."` | Create a new update and publish it |
-| `eas update --auto` | Auto-fill branch name (current Git branch) and message (latest Git commit message) |
+| `eas update --branch [branch-name] --message "..." --environment [environment-name]` | Create a new update and publish it |
+| `eas update --auto --environment [environment-name]` | Auto-fill branch name (current Git branch) and message (latest Git commit message) |
 | `eas branch:delete [branch-name]` | Delete a branch |
 | `eas branch:rename --from [branch-name] --to [branch-name]` | Rename a branch |
 | `eas update:republish --group [update-group-id]` / `--branch [branch-name]` | Republish a previous update within a branch |
@@ -38,13 +38,13 @@ eas update:view [update-group-id]
 | `eas channel:resume [channel-name]` | Resume updates on a channel |
 | `eas channel:protect [channel-name]` / `eas channel:unprotect [channel-name]` | Protect or unprotect a channel |
 
-## Details
+### Details
 
-### Rename a branch
+#### Rename a branch
 
 Renaming does not disconnect channel-branch links. If channel "production" linked to "version-1.0" and the branch is renamed to "version-1.0-new", "production" is linked to "version-1.0-new".
 
-### Republish a previous update
+#### Republish a previous update
 
 Takes the previous update and publishes it again so that it becomes the most current update on the branch. Similar to a Git reversion. If you do not know the update group ID, `--branch` shows a list of recent updates on the branch to select from.
 
@@ -53,7 +53,7 @@ eas update:republish --group dbfd479f-d981-44ce-8774-f2fbcc386aa
 eas update:republish --branch version-1.0
 ```
 
-### Pause updates on a channel
+#### Pause updates on a channel
 
 Pausing stops EAS Update from serving updates to builds that check for updates on that channel. It is reversible; the channel's updates and any rollout in progress resume when unpaused.
 
@@ -74,7 +74,7 @@ While a channel is paused:
 
 Pausing vs rollback: pausing keeps clients on their current update and publishes nothing; `eas update:rollback` and `eas update:republish` publish a previous update again as the newest on the branch. `eas update:rollback` with the embedded option (also `eas update:roll-back-to-embedded`) publishes a directive telling clients to run the update embedded in the build.
 
-### Resume updates on a channel
+#### Resume updates on a channel
 
 ```sh
 eas channel:resume production
@@ -82,7 +82,7 @@ eas channel:resume production
 
 The channel starts serving updates from its associated branch again; any rollout on the channel resumes.
 
-### Protect a channel
+#### Protect a channel
 
 ```sh
 eas channel:protect production
@@ -92,6 +92,7 @@ Only members with the Release Manager, Admin, or Owner role can publish updates 
 
 ## Notes
 
+- The official guide examples omit `--environment`; it is required for SDK 55+ (EAS CLI reference). Added in the command table as an adaptation.
 - Source modificationDate: October 13, 2026 (fetched 2026-10-17).
 
 ## Related

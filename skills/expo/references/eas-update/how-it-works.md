@@ -14,9 +14,9 @@ Builds consist of two layers: a native layer built into the app's binary, and an
 eas channel:edit production --branch version-2.0
 ```
 
-## Conceptual overview
+### Conceptual overview
 
-### Distributing builds
+#### Distributing builds
 
 `eas build` includes properties inside the build that are important for updates:
 
@@ -24,11 +24,11 @@ eas channel:edit production --branch version-2.0
 - **Runtime version**: describes the JS-native interface defined by the native code layer that runs the update layer. Defined in the project's app config. Update it whenever native code changes alter the JS-native interface.
 - **Platform**: every build has a platform, such as "Android" or "iOS".
 
-### Publishing an update
+#### Publishing an update
 
-`eas update --auto` creates a local update bundle inside the **dist** directory, then uploads it to EAS servers into a _branch_. A branch has a name and contains a list of updates, where the most recent update is the active update on the branch. EAS branches are like Git branches: Git branches contain commits, EAS branches contain updates.
+`eas update --auto --environment [environment-name]` creates a local update bundle inside the **dist** directory, then uploads it to EAS servers into a _branch_. A branch has a name and contains a list of updates, where the most recent update is the active update on the branch. EAS branches are like Git branches: Git branches contain commits, EAS branches contain updates.
 
-### Matching updates and builds
+#### Matching updates and builds
 
 Every update on a branch includes a target runtime version and target platform. EAS' update policy:
 
@@ -44,7 +44,7 @@ Alternatively, name branches like "version-1.0", "version-2.0", "version-3.0" an
 eas channel:edit staging --branch version-3.0
 ```
 
-## Practical overview
+### Practical overview
 
 - When an Expo project that includes `expo-updates` is built, the included native Android and iOS code manages, fetches, parses, and validates updates.
 - By default, the library checks for an update when it is opened. If a newer update is found, it downloads and runs it. If not, it runs the newest downloaded update, falling back to the update embedded at build time if none have been downloaded. Timing is configurable through app config.
@@ -53,6 +53,7 @@ eas channel:edit staging --branch version-3.0
 
 ## Notes
 
+- The official guide examples omit `--environment`; it is required for SDK 55+ (EAS CLI reference). Added here as an adaptation.
 - A build's runtime version, platform, and channel together determine which updates it can receive.
 - Source modificationDate: February 18, 2025 (fetched 2026-10-17).
 

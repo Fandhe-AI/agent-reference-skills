@@ -18,13 +18,13 @@ await Updates.fetchUpdateAsync();
 await Updates.reloadAsync();
 ```
 
-## Override request headers
+### Override request headers
 
 Available in Expo SDK 54 with `expo-updates` 0.29.0 and later. The primary use case is channel surfing: switching the `expo-channel-name` request header at runtime. For example, override it to point a production build at a `preview` channel. Another use case is giving different updates to different users (for example employees first).
 
 Call `Updates.setUpdateRequestHeadersOverride`, then `fetchUpdateAsync()` and `reloadAsync()` (or wait for the next launch). To override `expo-channel-name`, the native build must include it: a build profile in **eas.json** that defines `channel` sets it automatically, while builds created outside EAS Build (for example `npx expo run:android`) must declare it in `updates.requestHeaders` in app config and be rebuilt. Any other header you override must also be declared in `updates.requestHeaders`. The object passed replaces all custom request headers from the build, so include every header the app still needs.
 
-## Override both update URL and request headers
+### Override both update URL and request headers
 
 Available in Expo SDK 52 with `expo-updates` 0.27.0 and later.
 

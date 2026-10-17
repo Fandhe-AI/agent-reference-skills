@@ -8,7 +8,9 @@ Reference for the environment variables available inside EAS Workflows jobs, inc
 
 ## Signature / Usage
 
-Read variables with `${{ env.NAME }}` interpolation, or as shell variables (`$NAME`) or `process.env.NAME` from a `run` step:
+Read variables with `${{ env.NAME }}` interpolation, or as shell variables (`$NAME`) or `process.env.NAME` from a `run` step.
+
+Adapted (not in the official docs): `run` uses a block scalar because the official one-line form contains ': ' inside a plain scalar, which YAML parsers reject.
 
 ```yaml
 name: Print environment
@@ -17,9 +19,11 @@ jobs:
   print:
     steps:
       # Interpolated before the command runs.
-      - run: echo "Project: ${{ env.EAS_BUILD_PROJECT_ID }}"
+      - run: |
+          echo "Project: ${{ env.EAS_BUILD_PROJECT_ID }}"
       # Read from the shell environment at runtime.
-      - run: echo "Project: $EAS_BUILD_PROJECT_ID"
+      - run: |
+          echo "Project: $EAS_BUILD_PROJECT_ID"
 ```
 
 Define variables on a job and share a value with later steps:
@@ -62,12 +66,15 @@ jobs:
 
 Examples:
 
+Adapted (not in the official docs): `run` uses a block scalar because the official one-line form contains ': ' inside a plain scalar, which YAML parsers reject.
+
 ```yaml
 jobs:
   notify:
     needs: [build]
     steps:
-      - run: echo "Build status: ${{ needs.build.status }}"
+      - run: |
+          echo "Build status: ${{ needs.build.status }}"
 ```
 
 ```yaml
@@ -81,6 +88,7 @@ jobs:
 
 ## Notes
 
+- The official examples write these `run` values unquoted.
 - The job environment decides which EAS environment variables a job can read: `build` jobs infer it from the build profile's `environment` in eas.json; `submit` jobs inherit it from the submitted build; `maestro` and `maestro-cloud` jobs default to `preview`; other jobs default to `production`. Override with `jobs.<job_id>.environment`.
 - Job configuration (`params`, `if`, `outputs`, and the value of `env`) is interpolated before dispatch to a worker, where `env` contains only the EAS environment variables for the resolved environment. `run` commands are interpolated on the worker, where `env` reflects the full runtime environment. Read variables like `EAS_BUILD_ID` inside a `run` step, not in `params`.
 - Values from secret or sensitive EAS environment variables are redacted in workflow logs.

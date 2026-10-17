@@ -38,7 +38,7 @@ In SDK versions below 52, use `extra.updates.assetPatternsToBeBundled` instead:
 
 After adding this configuration all **.png** files in all subdirectories of **app/images** are included in updates. These assets must also be required in your JavaScript code. If `assetPatternsToBeBundled` is not included, all assets resolved by the bundler are included in updates (SDK 49 and earlier behavior).
 
-## Verifying that an update includes all required app assets
+### Verifying that an update includes all required app assets
 
 Assets that do not match any pattern still resolve in Metro but are not uploaded to the updates server, so they must be built into the native build. If you build locally or have the correct build for publishing updates (same runtime version), check with:
 

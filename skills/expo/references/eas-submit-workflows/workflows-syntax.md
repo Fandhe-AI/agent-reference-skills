@@ -181,7 +181,9 @@ set-output <name> <value>
 set-env <name> <value>
 ```
 
-`set-output` sets an output readable by other steps (`steps.<id>.outputs.<name>`) or, via the job's `outputs`, by other jobs. `set-env` exposes an environment variable to subsequent steps in the same job only (not the current step; call `export` yourself if needed). To share a value between jobs, use job `outputs` and pass it via `env` on the receiving job:
+`set-output` sets an output readable by other steps (`steps.<id>.outputs.<name>`) or, via the job's `outputs`, by other jobs. `set-env` exposes an environment variable to subsequent steps in the same job only (not the current step; call `export` yourself if needed). To share a value between jobs, use job `outputs` and pass it via `env` on the receiving job.
+
+Adapted (not in the official docs): `run` uses a block scalar because the official one-line form contains ': ' inside a plain scalar, which YAML parsers reject.
 
 ```yaml
 jobs:
@@ -197,11 +199,13 @@ jobs:
     env:
       MY_VALUE: ${{ needs.job_1.outputs.my_value }}
     steps:
-      - run: echo "MY_VALUE: $MY_VALUE"  # prints: value from job_1
+      - run: |
+          echo "MY_VALUE: $MY_VALUE"  # prints: value from job_1
 ```
 
 ## Notes
 
+- The official examples write these `run` values unquoted.
 - Distinct from GitHub Actions: this syntax is specific to EAS Workflows. The `github` context exists to ease migration from GitHub Actions. See github-docs for GitHub Actions workflow syntax.
 - Skip `push` and `pull_request` triggered runs by including `[eas skip]`, `[skip eas]`, or `[no eas]` in the commit message.
 - Custom function call steps accept `id`, `name`, `with`, `if`, `env`; the path must be a static literal without `${{ }}` or backslashes; do not set `working_directory` on the call step.

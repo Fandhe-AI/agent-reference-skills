@@ -20,19 +20,21 @@ eas update:configure
 
 You need to create a new build for Android or iOS to include the `expo-updates` library in your build. After that, you can push an update to the production channel:
 
+Adapted (not in the official docs): adds `--environment`, which the EAS CLI reference marks as required for Expo SDK 55 or greater.
+
 ```sh
-eas update --channel production --message "Fix login button alignment"
+eas update --channel production --environment production --message "Fix login button alignment"
 ```
 
 This command publishes your JavaScript bundle and assets so users receive the new version on their next app launch.
 
-## Key features
+### Key features
 
 - **JS API for update management**: the `expo-updates` JavaScript API includes a React hook `useUpdates()` that provides information about the currently running update and any available or downloaded updates, including errors. Methods such as `checkForUpdateAsync()` and `fetchUpdateAsync()` control when the app checks for and downloads updates.
 - **Insight tracking**: a deployments dashboard visualizes which updates are sent to builds. Updates work with EAS Insights to provide adoption data.
 - **Republish for reverting mistakes**: republish a previous, stable version on top of the problematic one, much like a new "commit" in version control systems.
 
-## When to use EAS Update
+### When to use EAS Update
 
 | Scenario | Recommendation |
 | --- | --- |
@@ -48,7 +50,7 @@ This command publishes your JavaScript bundle and assets so users receive the ne
 
 For scenarios marked with ✗, use EAS Build to create and submit a new app binary.
 
-## FAQ
+### FAQ
 
 - **Publishing guidelines**: updates must follow App Store and Play Store guidelines, including the content of the updates and how you use them.
 - **Monthly active users**: 1 monthly active user equals 1 unique installation of an app that downloads at least 1 update during your billing cycle. An install that downloads no update counts as 0; uninstalling and reinstalling (and downloading updates in each) counts as 2; one device with two apps owned by a single Expo account, both using updates, counts as 2 for the account.
@@ -72,6 +74,7 @@ jobs:
 
 ## Notes
 
+- The official guide examples omit `--environment`; it is required for SDK 55+ (EAS CLI reference).
 - Source modificationDate: July 22, 2026 (fetched 2026-10-17).
 - The `eas-update-insights` agent-skill promotion on the official page is not reproduced.
 

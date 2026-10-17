@@ -8,7 +8,9 @@ Current limitations of EAS Workflows that could affect a workflow automation str
 
 ## Signature / Usage
 
-Custom functions reuse sequences of custom steps across jobs or hooks (not whole jobs or workflows), called with `uses` and a relative path:
+Custom functions reuse sequences of custom steps across jobs or hooks (not whole jobs or workflows), called with `uses` and a relative path.
+
+From [Custom functions in EAS Workflows](./workflows-custom-functions.md) (official snippet, verbatim):
 
 ```yaml
 jobs:

@@ -101,7 +101,7 @@ Without Continuous Native Generation, options can be set in native files. On And
 #import "EXUpdates-Swift.h"
 ```
 
-## Constants
+### Constants
 
 All constants: Android, iOS, tvOS.
 
@@ -120,9 +120,9 @@ All constants: Android, iOS, tvOS.
 | `Updates.runtimeVersion` | `string \| null` | Runtime version of the current build. |
 | `Updates.updateId` | `string \| null` | UUID (canonical lowercase string) of the running update; `null` when disabled. |
 
-## Hooks
+### Hooks
 
-### `useUpdates()`
+#### `useUpdates()`
 
 Hook that obtains information on available updates and on the currently running update. Returns `UseUpdatesReturnType`.
 
@@ -142,7 +142,7 @@ useEffect(() => {
 
 `UseUpdatesReturnType` properties: `availableUpdate?` (`UpdateInfo`), `checkError?` (`Error`), `currentlyRunning` (`CurrentlyRunningInfo`), `downloadedUpdate?` (`UpdateInfo`), `downloadError?` (`Error`), `downloadProgress?` (`number`, 0 to 1 while `isDownloading`), `isChecking` (`boolean`), `isDownloading` (`boolean`), `isRestarting` (`boolean`), `isStartupProcedureRunning` (`boolean`), `isUpdateAvailable` (`boolean`), `isUpdatePending` (`boolean`), `lastCheckForUpdateTimeSinceRestart?` (`Date`), `restartCount` (`number`).
 
-## Methods
+### Methods
 
 All methods: Android, iOS, tvOS.
 
@@ -160,7 +160,7 @@ All methods: Android, iOS, tvOS.
 
 `ExpoUpdatesModule` (class extends `NativeModule<UpdatesEvents>`) also exposes `hideReloadScreen: () => Promise<void>`, `showReloadScreen: (options?: ReloadScreenOptions | null) => Promise<void>`, `setUpdateRequestHeadersOverride` and `setUpdateURLAndRequestHeadersOverride`.
 
-## Types
+### Types
 
 | Type | Shape |
 | --- | --- |
@@ -182,7 +182,7 @@ All methods: Android, iOS, tvOS.
 | `ReloadScreenOptions` | `backgroundColor?` (default `'#ffffff'`), `fade?` (default `false`), `image?` (`string \| number \| ReloadScreenImageSource`), `imageFullScreen?` (default `false`), `imageResizeMode?` (`'cover' \| 'contain' \| 'center' \| 'stretch'`, default `'contain'`), `spinner?` (`{ color: string, enabled: boolean, size: 'small' \| 'medium' \| 'large' }`) |
 | `ReloadScreenImageSource` | `height?`, `scale?`, `url?`, `width?` |
 
-### Enums
+#### Enums
 
 | Enum | Values |
 | --- | --- |
@@ -192,7 +192,7 @@ All methods: Android, iOS, tvOS.
 | `UpdatesLogEntryCode` | `ASSETS_FAILED_TO_LOAD = "AssetsFailedToLoad"`, `INITIALIZATION_ERROR = "InitializationError"`, `JS_RUNTIME_ERROR = "JSRuntimeError"`, `NONE = "None"`, `NO_UPDATES_AVAILABLE = "NoUpdatesAvailable"`, `UNKNOWN = "Unknown"`, `UPDATE_ASSETS_NOT_AVAILABLE = "UpdateAssetsNotAvailable"`, `UPDATE_CODE_SIGNING_ERROR = "UpdateCodeSigningError"`, `UPDATE_FAILED_TO_LOAD = "UpdateFailedToLoad"`, `UPDATE_HAS_INVALID_SIGNATURE = "UpdateHasInvalidSignature"`, `UPDATE_SERVER_UNREACHABLE = "UpdateServerUnreachable"` |
 | `UpdatesLogEntryLevel` | `DEBUG = "debug"`, `ERROR = "error"`, `FATAL = "fatal"`, `INFO = "info"`, `TRACE = "trace"`, `WARN = "warn"` |
 
-## Error codes
+### Error codes
 
 | Code | Description |
 | --- | --- |

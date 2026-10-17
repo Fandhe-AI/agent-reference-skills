@@ -10,13 +10,15 @@ Learn how to use basic debugging techniques to fix an update issue.
 
 Verify which updates run on which builds, starting at the EAS website Deployments page (a _deployment_ is a group of builds and their corresponding updates). If you do not use EAS Build, the Deployments page is empty; see "Configuration without EAS Build" below.
 
+Adapted (not in the official docs): adds `--environment`, which the EAS CLI reference marks as required for Expo SDK 55 or greater.
+
 ```sh
-eas update
+eas update --environment production
 ```
 
 After publishing, the output displays the branch and the runtime version.
 
-## Common problems
+### Common problems
 
 | Problem | Fix |
 | --- | --- |
@@ -27,15 +29,15 @@ After publishing, the output displays the branch and the runtime version.
 | Missing branch | Channel is correct but not linked; map it to the branch |
 | Missing deployment | Build is not configured for EAS Update; configure channel and runtime version, verify general configuration, and rebuild |
 
-### Automatic roll back when an update crashes
+#### Automatic roll back when an update crashes
 
 If everything looks correct but the app shows the previous update or embedded code, the new update may crash before the root component renders. EAS Update automatically rolls back to the previous update when it detects such a crash (see [Error recovery](./error-recovery.md)). Identify the error, then publish a fixing update. A common cause is a missing environment variable.
 
-### Failed to load all assets
+#### Failed to load all assets
 
 The app downloaded the manifest but not all assets (those not present in the original build). Common reasons: many large assets added, poor connection, or the user is in a country that blocks or throttles Cloudflare IP addresses (used by EAS Update to serve assets). Inspect the asset list, reproduce on your own device and examine `expo-updates` log entries, and check the IP of affected users in error services such as Sentry.
 
-## Solutions
+### Solutions
 
 Configure the channel in **eas.json**:
 
@@ -72,12 +74,12 @@ eas channel:edit production --branch release-1.0
 eas channel:create production
 ```
 
-## General strategies
+### General strategies
 
 - Use `expo-dev-client` to preview published updates inside a problematic build.
 - In-app debugging: print `Updates.Constants` to verify configuration, examine log entries with `Updates.readLogEntriesAsync()`, and fetch/load updates manually.
 
-## Configuration issues
+### Configuration issues
 
 Fields expected after `eas update:configure`:
 
@@ -93,13 +95,13 @@ Fields expected after `eas update:configure`:
 <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="https://u.expo.dev/your-project-id-here"/>
 ```
 
-### Configuration without EAS Build
+#### Configuration without EAS Build
 
 Configure the channel and runtime version manually (see [Using EAS Update without other EAS services](./standalone-service.md)). Verify on the website: the Channels page shows channel names and channel-branch mapping; the Branches page lists each branch's updates with runtime versions and platforms. A build and an update are compatible when they share the same runtime version and platform, and the most recent compatible update on the linked branch is served.
 
-## Debugging EAS Update
+### Debugging EAS Update
 
-### Inspecting a build manually
+#### Inspecting a build manually
 
 Create an iOS Simulator build with `"ios": { "simulator": true }` in a build profile, unzip the result, use "Show Package Contents", and open **Expo.plist**:
 
@@ -115,7 +117,7 @@ Create an iOS Simulator build with `"ios": { "simulator": true }` in a build pro
 <string>https://u.expo.dev/your-project-id</string>
 ```
 
-### Inspecting manifests manually
+#### Inspecting manifests manually
 
 The `updates.url` (the `https://u.expo.dev` domain plus project ID) shows an error about a missing header when opened directly. Add three query parameters to view a manifest:
 
@@ -123,13 +125,13 @@ The `updates.url` (the `https://u.expo.dev` domain plus project ID) shows an err
 https://u.expo.dev/your-project-id?runtime-version=1.0.0&channel-name=production&platform=android
 ```
 
-### Viewing network requests
+#### Viewing network requests
 
 Use a proxy such as Proxyman or Charles Proxy (install their SSL certificate). Watch requests to `https://u.expo.dev` (update manifest) and `https://assets.eascdn.net` (assets). Expected request headers: `Expo-Runtime-Version`, `expo-channel-name`, `Expo-Platform` ("android" or "ios"). Expect `200` responses, or `304` if nothing has changed.
 
-## Runtime issues
+### Runtime issues
 
-### Debugging native code while loading the app through expo-updates
+#### Debugging native code while loading the app through expo-updates
 
 By default a release build is required for `expo-updates` to be enabled; debug builds behave like normal React Native debug builds. To enable `expo-updates` in a debug build:
 
@@ -164,11 +166,11 @@ sed -i '' 's/SKIP_BUNDLING/FORCE_BUNDLING/g;' ios/<project name>.xcodeproj/proje
 }
 ```
 
-## Publishing issues
+### Publishing issues
 
 Publishing creates a local **/dist** directory with the uploaded assets. View included assets on the Updates Detail page or locally with `npx expo export`.
 
-## Mitigation steps
+### Mitigation steps
 
 Re-publish a known good update to "undo" a bad publish. Given branch "production" with update 2 (id: xyz2, bad) above update 1 (id: abc1, good):
 

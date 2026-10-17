@@ -18,7 +18,7 @@ if (update.isAvailable) {
 }
 ```
 
-## Strategies
+### Strategies
 
 The strategies are not mutually exclusive.
 

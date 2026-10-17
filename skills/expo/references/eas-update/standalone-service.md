@@ -14,7 +14,7 @@ Use EAS Update independently of other EAS services, such as EAS Build.
 eas channel:create production
 ```
 
-## Using EAS Update without EAS Build
+### Using EAS Update without EAS Build
 
 Most installation and configuration steps are identical whether or not you use EAS Build. The primary difference is how the update channel is configured. With EAS Build, the channel from **eas.json** is added to your build's **AndroidManifest.xml** and **Expo.plist** at build time. Without it, set the request header in the app config (`updates.requestHeaders`, see [Get started with EAS Update](./getting-started.md)), then create the channel on the server manually.
 
