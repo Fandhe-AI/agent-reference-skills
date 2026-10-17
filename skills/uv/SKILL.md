@@ -3,14 +3,13 @@ name: uv
 description: >
   uv (Astral 製 高速 Python パッケージ / プロジェクトマネージャー) のリファレンス。
   pyproject.toml, uv.lock, uv init / add / sync / run / lock, uv pip, uv venv, uvx / uv tool,
-  uv python install / pin, PEP 723, tool.uv.sources, uv build / publish, uv_build,
-  uv.toml, UV_* 環境変数, uv auth, Docker / GitHub Actions / PyTorch 連携。
+  uv python install / pin, PEP 723, tool.uv.sources, uv build / publish, uv_build, uv.toml, uv auth。
 user-invocable: false
 ---
 
 # uv
 
-> 分割 PR の途中段階。現在収録済み: references/{build-publish, configuration, getting-started, indexes-auth}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{build-publish, configuration, getting-started, indexes-auth}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 uv (Astral 製 高速 Python パッケージ / プロジェクトマネージャー) のリファレンススキル。
 
