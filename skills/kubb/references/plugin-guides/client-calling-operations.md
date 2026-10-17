@@ -30,6 +30,18 @@ if (result.error !== undefined) {
 }
 ```
 
+Adapted (not in the official docs): safer branching with the example client
+
+```typescript
+const result = await getPetById({ path: { petId: 1n }, throwOnError: false })
+
+if (result.response.ok) {
+  console.log('pet', result.data)
+} else {
+  console.log('failed', result.response.status, result.error)
+}
+```
+
 ### Use a different client for one call
 
 `client` を渡すと、1 呼び出しだけ別の関数で送信する:
@@ -40,7 +52,7 @@ await getPetById({ path: { petId: 2n }, client: tenantClient })
 
 ## Notes
 
-- With the example client, a non-2xx response with an empty body yields both `data` and `error` as `undefined`, so checking `result.error === undefined` is not a success check; branch on `result.response.ok` (or add a success discriminator to your client)
+- With the example client, a non-2xx response with an empty body yields both `data` and `error` as `undefined`, so checking `result.error === undefined` is not a success check; branch on `result.response.ok` (or add a success discriminator to your client); see the adapted snippet above
 - Source: https://kubb.dev/extensions/kubb-labs/plugin-client/guides/calling-operations （`@kubb/plugin-client@5.5.15`）
 
 ## Related
