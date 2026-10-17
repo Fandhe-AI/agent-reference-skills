@@ -44,7 +44,7 @@ To nest a scrolling widget inside another without hurting scrolling performance,
 ## Related
 
 - [Using slivers to achieve fancy scrolling](./slivers.md)
-- ListView
-- CustomScrollView
+- [ListView](../widgets-api/ListView.md)
+- [CustomScrollView](../widgets-api/CustomScrollView.md)
 - [Layouts in Flutter](./overview.md)
-- Deprecated cacheExtent and cacheExtentStyle
+- [Deprecated cacheExtent and cacheExtentStyle](../release/scroll-cache-extent.md)

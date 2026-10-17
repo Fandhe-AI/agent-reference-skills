@@ -34,5 +34,5 @@ SliverList
 ## Related
 
 - [Scrolling](./scrolling.md)
-- CustomScrollView
-- Deprecated cacheExtent and cacheExtentStyle
+- [CustomScrollView](../widgets-api/CustomScrollView.md)
+- [Deprecated cacheExtent and cacheExtentStyle](../release/scroll-cache-extent.md)

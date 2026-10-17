@@ -495,5 +495,5 @@ Each widget has a lot of freedom in applying the general rule, so read its docum
 
 - [Layouts in Flutter](./overview.md)
 - [Scrolling](./scrolling.md)
-- LayoutBuilder
-- Common errors
+- [LayoutBuilder](../widgets-api/LayoutBuilder.md)
+- [Common errors](../testing-performance/common-errors.md)

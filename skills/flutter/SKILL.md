@@ -10,8 +10,6 @@ user-invocable: false
 
 # Flutter
 
-> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation, fundamentals, interaction-navigation, layout, packages-deployment, platform-integration, release, testing-performance, tools, web, widgets-api}、samples。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
-
 ## 対象バージョン
 
 - Flutter 3.47.7 stable / Dart 3.13.5（[`releases_macos.json`](https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json) の `current_release.stable` = `abaf9c523780a608bd46686fd5e53740a07077f8` = flutter/flutter tag [`3.47.7`](https://github.com/flutter/flutter/releases/tag/3.47.7)、2026-10-08 リリース）
@@ -55,6 +53,9 @@ skills/flutter/
   samples/                   # 動く実例（23 件）
     README.md
     <use-case>.md
+  scripts/                   # 実行可能コマンド集（8 件）
+    README.md
+    <category>.md
 ```
 
 ## 探索手順
@@ -64,6 +65,7 @@ skills/flutter/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
+4. 実装例は `samples/README.md`、コマンドは `scripts/README.md` から引く
 
 ## タスク → カテゴリ マッピング
 
@@ -100,3 +102,4 @@ skills/flutter/
 | GenUI SDK・AI Toolkit（LlmChatView）・AI 開発ツールを使いたい | ai | [references/ai/README.md](references/ai/README.md) |
 | 3.47 の新機能・breaking changes・移行ガイド（material_ui opt-in 含む）を確認したい | release | [references/release/README.md](references/release/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

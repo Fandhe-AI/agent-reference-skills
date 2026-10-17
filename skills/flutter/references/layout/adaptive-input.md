@@ -247,7 +247,7 @@ VisualDensity density = Theme.of(context).visualDensity;
 - [Platform idioms](./platform-idioms.md)
 - [Best practices for adaptive design](./adaptive-best-practices.md)
 - [Large screen devices](./large-screens.md)
-- GestureDetector
+- [GestureDetector](../widgets-api/GestureDetector.md)
 - [Focus](../interaction-navigation/focus.md)
 - [Actions and shortcuts](../interaction-navigation/actions-and-shortcuts.md)
 - [Accessibility](../interaction-navigation/accessibility.md)
