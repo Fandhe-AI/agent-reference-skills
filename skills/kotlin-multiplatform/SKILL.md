@@ -2,7 +2,9 @@
 name: kotlin-multiplatform
 description: >
   Kotlin Multiplatform (KMP) / Compose Multiplatform (JetBrains, Kotlin) の公式リファレンス。
-  source set hierarchy, Multiplatform Gradle DSL, org.jetbrains.compose, Compose Hot Reload。
+  source set hierarchy, Multiplatform Gradle DSL, org.jetbrains.compose,
+  Compose Desktop (Window, Tray, MenuBar, nativeDistributions), Navigation / ViewModel / Lifecycle,
+  Compose Hot Reload, Maven Central / npm 公開, AGP 9 移行, 互換性表。
 user-invocable: false
 ---
 
