@@ -16,7 +16,7 @@ ksp.incremental=false
 
 Declare dependencies when generating output with `Dependencies`:
 
-Adapted (not in the official docs): adds the `List<KSAnnotated>` return type and returns `emptyList()`.
+Adapted (not in the official docs): adds the `List<KSAnnotated>` return type, returns `emptyList()`, and uses `firstOrNull()` so later rounds with no matching symbols do not throw.
 
 ```kotlin
 // A.kt
@@ -29,7 +29,7 @@ open class B
 // Example1Processor.kt
 class Example1Processor : SymbolProcessor {
    override fun process(resolver: Resolver): List<KSAnnotated> {
-       val declA = resolver.getSymbolsWithAnnotation("Interesting").first() as KSClassDeclaration
+       val declA = resolver.getSymbolsWithAnnotation("Interesting").firstOrNull() as? KSClassDeclaration ?: return emptyList()
        val declB = declA.superTypes.first().resolve().declaration
        // B.kt isn't required, because it can be deduced as a dependency by KSP
        val dependencies = Dependencies(aggregating = true, declA.containingFile!!)
@@ -56,6 +56,7 @@ CLI equivalent: `-incremental-log=true -incremental-log.graph.origin=<fully-qual
 
 ## Notes
 
+- The official snippet uses first(), which throws NoSuchElementException in the next round (generated files carry no @Interesting and nothing is deferred); this page uses firstOrNull() instead.
 - The official snippet (kotlin-web-site 0b10373) omits the return type; SymbolProcessor.process must return List<KSAnnotated>, so this page adds it and returns emptyList().
 - Dirty file: directly modified, or indirectly affected by other dirty files. Processors associate generated outputs with input sources (`CodeGenerator`); KSP uses this to find sources to reprocess.
 - Root sources are files whose symbols come directly from `Resolver.getAllFiles()`, `Resolver.getSymbolsWithAnnotation()`, `Resolver.getClassDeclarationByName()`, or `Resolver.getDeclarationsFromPackage()`. Other symbols resolved from a root source are tracked automatically.
