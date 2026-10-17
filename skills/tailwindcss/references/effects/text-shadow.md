@@ -37,6 +37,7 @@ Utilities for controlling the shadow of a text element.
 ## Notes
 
 - Table is transcribed as published, including the missing colons in the `--tw-shadow-color` rows.
+- The official docs custom value example is `rgb(0, 0, 0 / 0.25)`, which is invalid because it mixes comma and slash syntax. This page corrects it to the space-separated `rgb(0 0 0 / 0.25)`.
 - Basic example: `text-shadow-2xs`, `text-shadow-xs`, `text-shadow-sm`, `text-shadow-md`, `text-shadow-lg`.
 - Changing the opacity: use the opacity modifier, e.g. `text-shadow-lg/20`, `text-shadow-lg/30`. The default text shadow opacities are quite low (20% or less), so increasing the opacity (to like 50%) will make the text shadows more pronounced.
 - Setting the shadow color: `text-shadow-indigo-500`, `text-shadow-cyan-500/50`. By default colored shadows have an opacity of 100% but you can adjust this using the opacity modifier.
@@ -79,7 +80,7 @@ Use the `--text-shadow-*` theme variables to customize the text shadow utilities
 
 ```css
 @theme {
-  --text-shadow-xl: 0 35px 35px rgb(0, 0, 0 / 0.25);
+  --text-shadow-xl: 0 35px 35px rgb(0 0 0 / 0.25);
 }
 ```
 

@@ -57,6 +57,7 @@ Theme variable namespaces (each maps to utilities or variants):
 - Theme variables are special CSS variables defined with `@theme` that influence which utility classes exist. Tailwind also generates regular CSS variables for them.
 - Use `@theme` when a token should map to a utility class; use `:root` for regular CSS variables that should not have utilities. Theme variables must be defined top-level, not nested under selectors or media queries.
 - Some utilities are static (`flex`, `object-cover`); many exist only because of theme variables. `--font-poppins` makes `font-poppins` available; `--breakpoint-3xl: 120rem` makes the `3xl:*` variant available.
+- The official docs typography example writes `font-size: var(--text-2xl--line-height);`, a typo since that variable is a unitless line-height (`calc(2 / 1.5)`). This page corrects it to `font-size: var(--text-2xl);`; use `line-height: var(--text-2xl--line-height);` when a line height is needed.
 
 ### Default theme variables
 
@@ -177,7 +178,7 @@ Put theme variables in their own CSS file and `@import` it (a monorepo package o
     }
 
     h1 {
-      font-size: var(--text-2xl--line-height);
+      font-size: var(--text-2xl);
       font-weight: var(--font-weight-semibold);
       color: var(--color-gray-950);
     }
