@@ -9,7 +9,7 @@ user-invocable: false
 
 # uv
 
-> 分割 PR の途中段階。現在収録済み: references/{build-publish, configuration, getting-started, indexes-auth, integrations, pip-interface}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{build-publish, configuration, getting-started, indexes-auth, integrations, pip-interface, project-commands}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 uv (Astral 製 高速 Python パッケージ / プロジェクトマネージャー) のリファレンススキル。
 
@@ -35,6 +35,22 @@ skills/uv/
       platform-support.md
       reproducible-examples.md
       versioning-policy.md
+    project-commands/
+      README.md
+      uv.md
+      uv-add.md
+      uv-audit.md
+      uv-check.md
+      uv-export.md
+      uv-format.md
+      uv-init.md
+      uv-lock.md
+      uv-remove.md
+      uv-run.md
+      uv-sync.md
+      uv-tree.md
+      uv-version.md
+      uv-workspace.md
     pip-interface/
       README.md
       compatibility-options.md
@@ -125,6 +141,7 @@ skills/uv/
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | uv のインストール・初回起動・バージョニング・0.13 の破壊的変更を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| `uv add` / `uv run` / `uv sync` / `uv lock` / `uv export` 等のコマンドオプションを調べたい | project-commands | [references/project-commands/README.md](references/project-commands/README.md) |
 | `uv pip` / `uv venv` で pip・pip-tools 互換のワークフローを使いたい | pip-interface | [references/pip-interface/README.md](references/pip-interface/README.md) |
 | `uv build` / `uv publish` / `uv_build` バックエンドでパッケージを配布したい | build-publish | [references/build-publish/README.md](references/build-publish/README.md) |
 | 外部 index・レジストリ認証・証明書・`uv auth` を設定したい | indexes-auth | [references/indexes-auth/README.md](references/indexes-auth/README.md) |

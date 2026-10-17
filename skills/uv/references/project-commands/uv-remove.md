@@ -1,0 +1,85 @@
+---
+source: https://docs.astral.sh/uv/reference/cli/#uv-remove
+---
+
+# uv remove
+
+Remove dependencies from the project. Dependencies are removed from the project's `pyproject.toml` file.
+
+## Signature / Usage
+
+```
+uv remove [OPTIONS] <PACKAGES>...
+```
+
+- If multiple entries exist for a given dependency, i.e., each with different markers, all of the entries will be removed.
+- The lockfile and project environment will be updated to reflect the removed dependencies. To skip updating the lockfile, use `--frozen`. To skip updating the environment, use `--no-sync`.
+- If any of the requested dependencies are not present in the project, uv will exit with an error.
+- If a package has been manually installed in the environment, i.e., with `uv pip install`, it will not be removed by `uv remove`.
+- uv will search for a project in the current directory or any parent directory. If a project cannot be found, uv will exit with an error.
+
+## Arguments
+
+| Name | Description |
+| --- | --- |
+| `PACKAGES` | The names of the dependencies to remove (e.g., `ruff`) |
+
+## Options / Props
+
+| Name | Value | Description |
+| --- | --- | --- |
+| `--active` | | Prefer the active virtual environment over the project's virtual environment. If the project virtual environment is active or no virtual environment is active, this has no effect. |
+| `--compile-bytecode`, `--compile` | | Compile Python files to bytecode after installation. By default, uv does not compile Python (`.py`) files to bytecode (`__pycache__/*.pyc`); instead, compilation is performed lazily the first time a module is imported. May also be set with the `UV_COMPILE_BYTECODE` environment variable. |
+| `--config-setting`, `--config-settings`, `-C` | `config-setting` | Settings to pass to the PEP 517 build backend, specified as `KEY=VALUE` pairs |
+| `--config-settings-package` | `config-settings-package` | Settings to pass to the PEP 517 build backend for a specific package, specified as `PACKAGE:KEY=VALUE` pairs |
+| `--default-index` | `default-index` | The default package index (by default: <https://pypi.org/simple>). The index given by this flag is given lower priority than all other indexes specified via the `--index` flag. Indexes configured in `uv.toml` or `pyproject.toml` may be selected by name. Enable the `index-by-name` preview feature to prefer index names over relative paths. May also be set with the `UV_DEFAULT_INDEX` environment variable. |
+| `--dev` | | Remove the packages from the development dependency group [env: UV_DEV=]. This option is an alias for `--group dev`. |
+| `--exclude-newer` | `exclude-newer` | Limit candidate packages to those that were uploaded prior to the given date. The date is compared against the upload time of each individual distribution artifact, not the release date of the package version. Accepts RFC 3339 timestamps (e.g., `2006-12-02T02:07:43Z`), local dates (e.g., `2006-12-02`), a "friendly" duration (e.g., `24 hours`, `1 week`, `30 days`), or an ISO 8601 duration (e.g., `PT24H`, `P7D`, `P30D`). Calendar units such as months and years are not allowed. Use `false` to disable `exclude-newer`. May also be set with the `UV_EXCLUDE_NEWER` environment variable. |
+| `--exclude-newer-package` | `exclude-newer-package` | Limit candidate packages for specific packages to those that were uploaded prior to the given date. Accepts package-date pairs in the format `PACKAGE=DATE`. Can be provided multiple times for different packages. |
+| `--extra-index-url` | `extra-index-url` | (Deprecated: use `--index` instead) Extra URLs of package indexes to use, in addition to `--index-url`. All indexes provided via this flag take priority over the index specified by `--index-url` (which defaults to PyPI). When multiple `--extra-index-url` flags are provided, earlier values take priority. May also be set with the `UV_EXTRA_INDEX_URL` environment variable. |
+| `--find-links`, `-f` | `find-links` | Locations to search for candidate distributions, in addition to those found in the registry indexes. If a path, the target must be a directory that contains packages as wheel files (`.whl`) or source distributions (e.g., `.tar.gz` or `.zip`) at the top level. If a URL, the page must contain a flat list of links to package files. May also be set with the `UV_FIND_LINKS` environment variable. |
+| `--fork-strategy` | `fork-strategy` | The strategy to use when selecting multiple versions of a given package across Python versions and platforms. Under `fewest`, uv will minimize the number of selected versions for each package, preferring older versions that are compatible with a wider range of supported Python versions or platforms. May also be set with the `UV_FORK_STRATEGY` environment variable. Possible values: `fewest`, `requires-python`. |
+| `--frozen` | | Remove dependencies without re-locking the project [env: UV_FROZEN=]. The project environment will not be synced. |
+| `--group` | `group` | Remove the packages from the specified dependency group |
+| `--index` | `index` | The indexes to use when resolving dependencies, in addition to the default index. All indexes provided via this flag take priority over the index specified by `--default-index` (which defaults to PyPI). When multiple `--index` flags are provided, earlier values take priority. Relative paths can be disambiguated from index names with `./` or `../` on Unix or `.\\`, `..\\`, `./` or `../` on Windows. May also be set with the `UV_INDEX` environment variable. |
+| `--index-strategy` | `index-strategy` | The strategy to use when resolving against multiple index URLs. By default, uv will stop at the first index on which a given package is available, and limit resolutions to those present on that first index (`first-index`). This prevents "dependency confusion" attacks. May also be set with the `UV_INDEX_STRATEGY` environment variable. Possible values: `first-index`, `unsafe-first-match`, `unsafe-best-match`. |
+| `--index-url`, `-i` | `index-url` | (Deprecated: use `--default-index` instead) The URL of the Python package index (by default: <https://pypi.org/simple>). May also be set with the `UV_INDEX_URL` environment variable. |
+| `--keyring-provider` | `keyring-provider` | Attempt to use `keyring` for authentication for index URLs. At present, only `--keyring-provider subprocess` is supported. Defaults to `disabled`. May also be set with the `UV_KEYRING_PROVIDER` environment variable. Possible values: `disabled`, `subprocess`. |
+| `--link-mode` | `link-mode` | The method to use when installing packages from the global cache. Defaults to `clone` (also known as Copy-on-Write) on macOS and Linux, and `hardlink` on Windows. WARNING: The use of symlink link mode is discouraged. May also be set with the `UV_LINK_MODE` environment variable. Possible values: `clone`, `copy`, `hardlink`, `symlink`. |
+| `--locked` | | Assert that the `uv.lock` will remain unchanged [env: UV_LOCKED=]. Requires that the lockfile is up-to-date. If the lockfile is missing or needs to be updated, uv will exit with an error. |
+| `--no-binary` | | Don't install pre-built wheels. The given packages will be built and installed from source. The resolver will still use pre-built wheels to extract package metadata, if available. May also be set with the `UV_NO_BINARY` environment variable. |
+| `--no-binary-package` | `no-binary-package` | Don't install pre-built wheels for a specific package [env: UV_NO_BINARY_PACKAGE=] |
+| `--no-build` | | Don't build source distributions. First-party packages, such as projects in the workspace, will still be built. uv will also still build editable requirements, and their build backends may run arbitrary Python code. May also be set with the `UV_NO_BUILD` environment variable. |
+| `--no-build-isolation` | | Disable isolation when building source distributions. Assumes that build dependencies specified by PEP 518 are already installed. May also be set with the `UV_NO_BUILD_ISOLATION` environment variable. |
+| `--no-build-isolation-package` | `no-build-isolation-package` | Disable isolation when building source distributions for a specific package. Assumes that the packages' build dependencies specified by PEP 518 are already installed. |
+| `--no-build-package` | `no-build-package` | Don't build source distributions for a specific package [env: UV_NO_BUILD_PACKAGE=]. First-party packages, such as projects in the workspace, will still be built. |
+| `--no-index` | | Ignore the registry index (e.g., PyPI), instead relying on direct URL dependencies and those provided via `--find-links` |
+| `--no-require-build-hashes` | | Do not require hashes for every build dependency |
+| `--no-sources` | | Ignore the `tool.uv.sources` table when resolving dependencies. Used to lock against the standards-compliant, publishable package metadata, as opposed to using any workspace, Git, URL, or local path sources. May also be set with the `UV_NO_SOURCES` environment variable. |
+| `--no-sources-package` | `no-sources-package` | Don't use sources from the `tool.uv.sources` table for the specified packages [env: UV_NO_SOURCES_PACKAGE=] |
+| `--no-sync` | | Avoid syncing the virtual environment after re-locking the project [env: UV_NO_SYNC=] |
+| `--optional` | `optional` | Remove the packages from the project's optional dependencies for the specified extra |
+| `--package` | `package` | Remove the dependencies from a specific package in the workspace |
+| `--prerelease` | `prerelease` | The strategy to use when considering pre-release versions. By default, uv will prefer stable candidates, falling back to pre-releases only after every stable candidate that satisfies the active constraints is rejected (`if-necessary`). May also be set with the `UV_PRERELEASE` environment variable. Possible values: `disallow`, `allow`, `if-necessary`, `explicit`, `if-necessary-or-explicit` (deprecated alias for `if-necessary`). |
+| `--prerelease-package` | `prerelease-package` | The strategy to use when considering pre-release versions for a specific package. Accepts package-mode pairs in the format `PACKAGE=MODE`, where `MODE` is any value accepted by `--prerelease`. May be provided multiple times for different packages. |
+| `--python`, `-p` | `python` | The Python interpreter to use for resolving and syncing. See `uv python` for details on Python discovery and supported request formats. May also be set with the `UV_PYTHON` environment variable. |
+| `--refresh` | | Refresh all cached data |
+| `--refresh-package` | `refresh-package` | Refresh cached data for a specific package |
+| `--reinstall`, `--force-reinstall` | | Reinstall all packages, regardless of whether they're already installed. Implies `--refresh` |
+| `--reinstall-package` | `reinstall-package` | Reinstall a specific package, regardless of whether it's already installed. Implies `--refresh-package` |
+| `--require-build-hashes` | | Require hashes for all build dependencies. Hashes can be provided in `tool.uv.build-constraint-dependencies` or URL fragments (e.g., `#sha256=...`) in `build-system.requires`. This does not require hashes for runtime dependencies. No hash is required when uv uses its bundled `uv_build` backend, since it is part of the uv executable. When build isolation is disabled, build dependencies must already be installed and their hashes are not checked. |
+| `--resolution` | `resolution` | The strategy to use when selecting between the different compatible versions for a given package requirement. By default, uv will use the latest compatible version of each package (`highest`). May also be set with the `UV_RESOLUTION` environment variable. Possible values: `highest`, `lowest`, `lowest-direct`. |
+| `--script` | `script` | Remove the dependency from the specified Python script, rather than from a project. If provided, uv will remove the dependency from the script's inline metadata table, in adherence with PEP 723. |
+| `--upgrade`, `-U` | | Allow package upgrades, ignoring pinned versions in any existing output file. Implies `--refresh` |
+| `--upgrade-group` | `upgrade-group` | Allow upgrades for all packages in a dependency group, ignoring pinned versions in any existing output file |
+| `--upgrade-package`, `-P` | `upgrade-package` | Allow upgrades for a specific package, ignoring pinned versions in any existing output file. Implies `--refresh-package` |
+
+## Notes
+
+- Global options are listed in uv.md (project-commands).
+
+## Related
+
+- [uv add](./uv-add.md)
+- [uv lock](./uv-lock.md)
+- [uv sync](./uv-sync.md)
