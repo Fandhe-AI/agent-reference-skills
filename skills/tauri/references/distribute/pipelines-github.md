@@ -163,10 +163,10 @@ jobs:
             apt-get update -y --allow-releaseinfo-change
             apt-get autoremove -y
             apt-get install -y --no-install-recommends --no-install-suggests curl libwebkit2gtk-4.1-dev build-essential libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf libfuse2 file
-            curl -sSf https://sh.rustup.rs -o rustup-init.sh
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o rustup-init.sh
             sh rustup-init.sh -y
             . "$HOME/.cargo/env"
-            curl -fsSL https://deb.nodesource.com/setup_lts.x -o nodesource_setup.sh
+            curl --proto '=https' --tlsv1.2 -fsSL https://deb.nodesource.com/setup_lts.x -o nodesource_setup.sh
             bash nodesource_setup.sh
             apt-get install -y nodejs
 
@@ -213,7 +213,7 @@ env:
 - `ubuntu-22.04-arm` / `ubuntu-24.04-arm` runners are publicly available (since August 2025) in public repositories, so the standard workflow can build Arm64 there.
 - `arm-runner-action` is much slower than standard runners; an uncached build for a fresh `create-tauri-app` project needs about 1 hour. Be careful in private repositories where build minutes are invoiced.
 - Read GitHub's usage limits, billing and administration documentation for Actions. GitHub Actions itself is covered by the github-docs skill.
-- The source pipes the rustup and NodeSource installer scripts directly into the shell; they are split into download / run here. Review those scripts before running them on a persistent machine.
+- The source pipes the rustup and NodeSource installer scripts directly into the shell; they are split into download / run here and are fetched with `--proto '=https' --tlsv1.2`. Review those scripts before running them on a persistent machine.
 - Third-party actions pinned to commit SHAs (upstream uses tags); SHAs resolved from the GitHub API on 2026-10-17, re-resolve when updating.
 - The source suggests switching the repository-wide Workflow permissions to Read and write; this page scopes contents: write to the release job instead (least privilege).
 - The source uses `deb: armhfp` / `rpm: arm`; changed to `armhf` / `armhfp`, the architecture names tauri-bundler emits for ARMv7 (debian.rs / rpm.rs).

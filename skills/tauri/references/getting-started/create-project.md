@@ -56,7 +56,7 @@ cargo tauri dev
 
 ### Manual Setup (Tauri CLI)
 
-1. Create the frontend (example with Vite): `npm create vite@latest .` (pnpm: `pnpm create vite .`; yarn: `yarn create vite .`; deno: `deno run -A npm:create-vite .`; bun: `bun create vite`).
+1. Create the frontend (example with Vite): `mkdir tauri-app && cd tauri-app`, then `npm create vite@latest .` (pnpm: `pnpm create vite .`; yarn: `yarn create vite .`; deno: `deno run -A npm:create-vite .`; bun: `bun create vite .`).
 2. Install the Tauri CLI (if using `cargo`, it must be installed globally):
 
 ```sh
@@ -78,7 +78,7 @@ Prompts:
 ```sh
 ✔ What is your app name? tauri-app
 ✔ What should the window title be? tauri-app
-✔ Where are your web assets located? ..
+✔ Where are your web assets located? ../dist
 ✔ What is the url of your dev server? http://localhost:5173
 ✔ What is your frontend dev command? pnpm run dev
 ✔ What is your frontend build command? pnpm run build
@@ -107,6 +107,8 @@ export default defineConfig({
 ## Notes
 
 - The source also lists shell one-liners (Bash, PowerShell, Fish) that pipe `https://create.tauri.app/sh` / `/ps` into the shell; they are omitted here in favor of the package-manager commands above. If you use them, save the script first, inspect it, then run it.
+- The source's bun tab runs `bun create vite` without `.` (scaffolds into a new subdirectory); `mkdir`/`cd` and `.` are made explicit so the following steps run in the same directory.
+- The source's prompt transcript answers `..` for the web assets location; `../dist` (Vite's build output) is shown here because `..` would make the whole project root, including `node_modules` and `src-tauri`, the frontendDist.
 - The page recommends starting with the vanilla template (language `TypeScript / JavaScript`, package manager `pnpm`, UI template `Vanilla`, flavor `TypeScript`); a framework can be integrated later.
 - If `create-tauri-app` detects missing dependencies it prints a list of packages and how to install them.
 - If you already initialized the frontend, skip manual-setup step 1.

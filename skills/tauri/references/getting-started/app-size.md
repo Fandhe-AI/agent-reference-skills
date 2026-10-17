@@ -71,6 +71,7 @@ Cargo profile options highlighted by the page (not a complete reference):
 
 ## Notes
 
+- The snippet's comment calls `"s"` small-size focused while the table calls `"z"` the size-optimized level; `"z"` usually yields the smallest binary, `"s"` trades some size for speed.
 - `removeUnusedCommands` (added in PR #12890) removes commands never allowed in your capability files (ACL). To maximize the benefit, include only the commands you use in the ACL instead of using `default`s.
 - Requires `tauri@2.4`, `tauri-build@2.1`, `tauri-plugin@2.1` and `tauri-cli@2.4`.
 - It does not account for ACLs added dynamically at runtime.

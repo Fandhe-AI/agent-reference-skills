@@ -31,8 +31,9 @@ npm run tauri init
 
 Tauri configuration:
 
+`src-tauri/tauri.conf.json`:
+
 ```json
-// tauri.conf.json
 {
   "build": {
     "devUrl": "http://localhost:5173",
@@ -51,6 +52,7 @@ npm run tauri dev
 
 ## Notes
 
+- The source's `// tauri.conf.json` first line is a docs code-block title, not part of the file; it is moved out of the fence so the JSON parses.
 - Added the `tauri` script step; the source runs `npm run tauri` without defining it.
 - The page source omits the comma after the `devUrl` line in its JSON example; it is added above so the snippet is valid JSON.
 - Tauri-side integration settings only; Qwik itself has no dedicated skill here. Vite: vite skill.

@@ -51,6 +51,7 @@ Certificate type per export method:
 
 ## Notes
 
+- The source says only the Integrations tab; Team Keys is specified because `APPLE_API_ISSUER` (Issuer ID) exists only for Team API keys.
 - Tauri bundler side only; Apple's signing procedures belong to the apple-distribution skill.
 
 ## Related

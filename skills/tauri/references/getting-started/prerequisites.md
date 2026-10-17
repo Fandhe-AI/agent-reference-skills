@@ -187,7 +187,7 @@ export NDK_HOME="$ANDROID_HOME/ndk/<ndk-version>"  # e.g. the version directory 
 ```powershell
 # Windows
 [System.Environment]::SetEnvironmentVariable("ANDROID_HOME", "$env:LocalAppData\Android\Sdk", "User")
-$VERSION = Get-ChildItem -Name "$env:LocalAppData\Android\Sdk\ndk" | Select-Object -Last 1
+$VERSION = '<ndk-version>'  # the NDK version directory you installed
 [System.Environment]::SetEnvironmentVariable("NDK_HOME", "$env:LocalAppData\Android\Sdk\ndk\$VERSION", "User")
 ```
 
@@ -212,14 +212,14 @@ less install.sh
 
 ## Notes
 
-- Supported OS floor stated by the page: macOS Catalina (10.15) and later, Windows 7 and later; Linux requires distribution-specific packages (above). If a distribution is not listed, the page points to Awesome Tauri guides.
+- Development host floor stated by the page: macOS Catalina (10.15) and later, Windows 7 and later. This is the build machine requirement, not the app's runtime minimum (macOS apps default to 10.13, see macos-application-bundle; on Windows 7 / 8 / 8.1 WebView2 stopped at 109, see webview-versions). Linux requires distribution-specific packages (above). If a distribution is not listed, the page points to Awesome Tauri guides.
 - Windows: WebView2 is already installed on Windows 10 (from version 1803 onward) and later; skip the manual install there.
 - Windows, MSI only: building MSI packages (`"targets": "msi"` or `"targets": "all"` in `tauri.conf.json`) requires the VBSCRIPT optional feature (Settings > Apps > Optional features > More Windows features). If you see errors like `failed to run light.exe`, enable it. VBSCRIPT is enabled by default on most installations but is being deprecated by Microsoft and may be disabled in future Windows versions.
 - Windows: for full support of Tauri and tools like `trunk`, the MSVC Rust toolchain must be the selected `default host triple` (`x86_64-pc-windows-msvc`, `i686-pc-windows-msvc`, or `aarch64-pc-windows-msvc`).
 - Alpine: containers include no fonts by default; install at least one font package (for example `font-dejavu`). Alpine targets musl, so Rust builds link several system libraries statically; if linking fails with symbols from libraries `pkg-config` reports as present, install the matching `*-static` packages (`openssl-libs-static cairo-static harfbuzz-static glib-static wayland-static zlib-static`). Not every dependency is packaged as `*-static`; some may need building from source.
 - Restart the terminal (and in some cases the system) after installing Rust or Node.js. Package managers other than npm can be enabled with `corepack enable`.
 - Android: "Show Package Details" in the SDK Manager allows older package versions; install older versions only if necessary (compatibility/security risks). On Windows, apps do not refresh environment variables automatically; restart the terminal and IDE.
-- The source derives NDK_HOME from `ls` of the ndk directory, which breaks with multiple side-by-side NDKs; pick one version explicitly.
+- The source derives NDK_HOME from the last entry of the ndk directory (`ls` / `Get-ChildItem | Select-Object -Last 1`), which breaks with multiple side-by-side NDKs; pick one version explicitly on all platforms.
 - The source pipes the rustup installer script directly into the shell; it is split into download / inspect / run here. The page itself advises reading the script (https://sh.rustup.rs/) before running it.
 - Rust itself (language, Cargo) is covered by the rust skill; Android Studio / Xcode specifics by the `android-*` and `apple-*` skills.
 

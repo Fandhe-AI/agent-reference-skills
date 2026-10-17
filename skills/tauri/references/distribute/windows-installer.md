@@ -315,9 +315,9 @@ Bundle dependency installers in `src-tauri/resources` and list them so they are 
 }
 ```
 
-### Install Modes
+### NSIS Install Modes
 
-By default the installer installs for the current user only (no Administrator privileges, installed under `%LOCALAPPDATA%`). Set `installMode` to `perMachine` for system-wide installs (needs Administrator), or `both` to let the user choose (installer requires Administrator privileges):
+By default the NSIS installer installs for the current user only (no Administrator privileges, installed under `%LOCALAPPDATA%`). Set `installMode` to `perMachine` for system-wide installs (needs Administrator), or `both` to let the user choose (installer requires Administrator privileges):
 
 ```json
 {
@@ -349,6 +349,7 @@ The NSIS installer is multi-language: a single installer contains all selected t
 
 ## Notes
 
+- WebView2 on Windows 7 / 8 / 8.1 stopped at version 109, so a `minimumWebview2Version` above 109 (such as the 110 example) cannot be satisfied there; see webview-versions.
 - Hook dependency guidance: check whether the dependency is installed (registry keys, file existence or the Windows `where` command); use `/passive`, `/quiet` or `/silent` and `/norestart`; clean up temporary files and bundled installers; consider dependencies shared with other applications when uninstalling; provide meaningful error messages.
 - The source heading calls the dependency example "MSI Installer Example" but it is an NSIS hook (`NSIS_HOOK_POSTINSTALL`) that runs a bundled MSI.
 - The source's `resources` array snippet is missing a closing quote after `another-one.msi`; corrected here.

@@ -16,8 +16,9 @@ Checklist:
 
 Tauri configuration:
 
+`src-tauri/tauri.conf.json`:
+
 ```json
-// src-tauri/tauri.conf.json
 {
   "build": {
     "beforeDevCommand": "trunk serve",
@@ -48,6 +49,7 @@ ws_protocol = "ws"
 
 ## Notes
 
+- File-name comments are moved out of the JSON block so it stays valid JSON.
 - Tauri-side integration settings only. This is the Rust web framework Leptos, not a Tauri API; Rust itself is covered by the rust skill. The fandhe-frontend skill is a different Rust frontend framework.
 
 ## Related

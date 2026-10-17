@@ -28,8 +28,9 @@ Assuming these `package.json` scripts:
 
 Tauri configuration (npm; for yarn / pnpm replace the commands with `yarn dev` / `yarn build` / `pnpm dev` / `pnpm build`, for deno with `deno task dev` / `deno task build`):
 
+`src-tauri/tauri.conf.json`:
+
 ```json
-// tauri.conf.json
 {
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -88,6 +89,7 @@ export default defineConfig({
 
 ## Notes
 
+- File-name comments are moved out of the JSON block so it stays valid JSON.
 - The source uses `'TAURI_ENV_*'`; Vite's envPrefix is a plain prefix match, so the wildcard is dropped.
 - Tauri-side integration settings only; Vite itself is covered by the vite skill (Next.js: nextjs-app, TanStack Start: tanstack-start).
 - The page recommends Vite as the default choice for SPA frameworks.

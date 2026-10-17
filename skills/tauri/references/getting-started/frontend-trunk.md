@@ -16,8 +16,9 @@ Checklist:
 
 Tauri configuration:
 
+`src-tauri/tauri.conf.json`:
+
 ```json
-// tauri.conf.json
 {
   "build": {
     "beforeDevCommand": "trunk serve",
@@ -43,6 +44,7 @@ ws_protocol = "ws"
 
 ## Notes
 
+- File-name comments are moved out of the JSON block so it stays valid JSON.
 - Tauri-side integration settings only; Rust itself is covered by the rust skill. The fandhe-frontend skill is a different Rust frontend framework.
 
 ## Related

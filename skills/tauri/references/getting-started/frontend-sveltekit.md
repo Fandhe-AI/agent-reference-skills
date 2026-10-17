@@ -25,8 +25,9 @@ npm install --save-dev @sveltejs/adapter-static
 
 2. Update Tauri configuration (npm; others use the matching `dev` / `build` commands):
 
+`src-tauri/tauri.conf.json`:
+
 ```json
-// tauri.conf.json
 {
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -68,6 +69,7 @@ export const ssr = false;
 
 ## Notes
 
+- File-name comments are moved out of the JSON block so it stays valid JSON.
 - `static-adapter` doesn't require disabling SSR for the whole app, but doing so makes it possible to use APIs that depend on the global window object (like Tauri's API) without client-side checks.
 - If you prefer Static Site Generation (SSG) over SPA mode, change the adapter configuration and `+layout.ts` according to the SvelteKit adapter-static docs.
 - Tauri-side integration settings only; Svelte/SvelteKit itself has no dedicated skill here. Vite: vite skill.

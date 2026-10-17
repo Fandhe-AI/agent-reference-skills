@@ -20,8 +20,9 @@ Tauri signs the package with a GPG key during the build.
 
 ```bash
 gpg --gen-key
-export TAURI_SIGNING_RPM_KEY=$(cat /home/johndoe/my_super_private.key)
-export TAURI_SIGNING_RPM_KEY_PASSPHRASE=password   # if the key has a passphrase
+gpg --export-secret-keys --armor 'Tauri-App' > /home/johndoe/my_super_private.key
+export TAURI_SIGNING_RPM_KEY="$(cat /home/johndoe/my_super_private.key)"
+export TAURI_SIGNING_RPM_KEY_PASSPHRASE='<passphrase>'   # if the key has a passphrase
 cargo tauri build
 ```
 
@@ -157,6 +158,7 @@ license = "MIT" # add the license here
 - The source's `scripts` example sets `preInstallScript`/`preRemoveScript` and `postInstallScript`/`postRemoveScript` to the same `prescript.sh` / `postscript.sh` paths; use your own script file names.
 - The source repeats `touch` on backslash-continued lines (creating a stray `touch` file); merged into one command.
 - The source also shows a ~/.rpmmacros %__gpg_sign_cmd forcing --digest-algo=sha1 / --force-v3-sigs; it is omitted here because SHA-1 signatures are weak and rejected by modern rpm.
+- The command substitution is quoted (`"$(cat ...)"`), the passphrase is a placeholder instead of the literal `password`, and an explicit `gpg --export-secret-keys --armor` step is added; the source leaves the substitution unquoted and does not show how the key file is produced.
 - GUI apps on Linux do not inherit `$PATH` from shell dotfiles; see the `fix-path-env-rs` crate.
 
 ## Related

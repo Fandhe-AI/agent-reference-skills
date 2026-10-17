@@ -93,6 +93,7 @@ parts:
     source: .
     override-build: |
       set -eu
+      rustup default stable
       npm install
       npm run tauri build -- --bundles deb
       dpkg -x src-tauri/target/release/bundle/deb/*.deb "${SNAPCRAFT_PART_INSTALL}/"
@@ -102,11 +103,11 @@ parts:
 Build, test, release:
 
 ```sh
-sudo snapcraft
-sudo snap install --dangerous ./mysnap_latest_amd64.snap  # install the locally built snap before running it
-snap run your-app
+snapcraft
+sudo snap install --dangerous ./appname_0.1.0_amd64.snap  # install the locally built snap before running it
+snap run appname
 snapcraft login # Login with your UbuntuOne credentials
-snapcraft upload --release=stable mysnap_latest_amd64.snap
+snapcraft upload --release=stable appname_0.1.0_amd64.snap
 ```
 
 ## Options / Props
@@ -126,6 +127,8 @@ snapcraft upload --release=stable mysnap_latest_amd64.snap
 
 - The source lists `suites: [noble]` under `package-repositories`; changed to `jammy` here to match `base: core22` (Ubuntu 22.04). Drop the extra repository if you do not need it.
 - Shell variables in `override-build` are quoted (`"${VAR}"`) here; the official example leaves them unquoted.
+- Added `rustup default stable` to `override-build` (not in source): the `rustup` build-snap ships without a default toolchain, so `tauri build` (cargo) would fail under `set -eu`.
+- The source uses `sudo snapcraft`, `snap run your-app` and `mysnap_latest_amd64.snap`; aligned here to the example `snapcraft.yaml` (`appname`, `0.1.0`, output `<name>_<version>_<arch>.snap`), and snapcraft is run without sudo.
 - Building automatically: on your app's developer page open the `builds` tab, click `login with github`, then enter your repository's details.
 - The source marks the `snap run` step with `TODO: This seems to be wrong`; a `snap install --dangerous` step is added because snapcraft only builds the `.snap` and does not install it.
 - Replace `net_mydomain_MyApp` in the single-instance slot/plug names with your app ID using `_` instead of `.` and `-`.

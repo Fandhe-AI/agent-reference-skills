@@ -25,8 +25,9 @@ Conceptually Tauri acts as a static web host: provide a folder containing a mix 
 
 Minimal build configuration:
 
+`src-tauri/tauri.conf.json`:
+
 ```json
-// tauri.conf.json
 {
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -39,6 +40,7 @@ Minimal build configuration:
 
 ## Notes
 
+- File-name comments are moved out of the JSON block so it stays valid JSON.
 - The overview page has no code; the snippet is the minimal build config shared by the framework guides.
 - If a framework is not listed it may work with no additional configuration, or may not have been documented yet.
 - Tauri-side integration settings only; the frameworks themselves are covered by vite, nextjs-app and tanstack-start skills.

@@ -60,7 +60,7 @@ info: "Done Adding Additional Store\r\nSuccessfully signed: APPLICATION FILE PAT
 
 ### GitHub Actions
 
-Secrets: `WINDOWS_CERTIFICATE` (base64 `.pfx`, e.g. `certutil -encode certificate.pfx base64cert.txt`) and `WINDOWS_CERTIFICATE_PASSWORD` (export password). Add this step right above the "install app dependencies and build it" step of the `tauri-action` publish template:
+Secrets: `WINDOWS_CERTIFICATE` (base64 `.pfx`, e.g. `certutil -encode certificate.pfx base64cert.txt`) and `WINDOWS_CERTIFICATE_PASSWORD` (export password). Add this step before the `tauri-apps/tauri-action` step of the publish workflow on the GitHub pipelines page:
 
 ```yml
 - name: import windows certificate
@@ -72,11 +72,12 @@ Secrets: `WINDOWS_CERTIFICATE` (base64 `.pfx`, e.g. `certutil -encode certificat
     New-Item -ItemType directory -Path certificate
     Set-Content -Path certificate/tempCert.txt -Value $env:WINDOWS_CERTIFICATE
     certutil -decode certificate/tempCert.txt certificate/certificate.pfx
-    Remove-Item -path certificate -include tempCert.txt
+    Remove-Item -Path certificate/tempCert.txt
     Import-PfxCertificate -FilePath certificate/certificate.pfx -CertStoreLocation Cert:\CurrentUser\My -Password (ConvertTo-SecureString -String $env:WINDOWS_CERTIFICATE_PASSWORD -Force -AsPlainText)
+    Remove-Item -Path certificate -Recurse -Force
 ```
 
-The step assigns secrets to env variables, creates a `certificate` directory, writes the secret to `tempCert.txt`, decodes it with `certutil` into a `.pfx`, removes `tempCert.txt`, and imports the `.pfx` into the Windows cert store with the password as a secure string.
+The step assigns secrets to env variables, creates a `certificate` directory, writes the secret to `tempCert.txt`, decodes it with `certutil` into a `.pfx`, removes `tempCert.txt`, imports the `.pfx` into the Windows cert store with the password as a secure string, and then removes the `certificate` directory.
 
 ### Azure Key Vault
 
@@ -134,6 +135,8 @@ Set `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET` and `AZURE_TENANT_ID` (from your Ap
 - When cross compiling Windows installers from Linux and macOS you **must** use a custom sign command, as the default implementation only works on Windows.
 - The source's `tauri.conf.json` instructions say to look for `tauri` -> `bundle` -> `windows`; in Tauri v2 the section is `bundle > windows` at the top level of the config.
 - The OV GitHub Actions template in the source uses old action versions (`actions/checkout@v2`, `actions/setup-node@v1`, `actions-rs/toolchain@v1`) and `webkit2gtk-4.0`; adapt them to the current workflow in the GitHub pipelines page.
+- The source's `Remove-Item -path certificate -include tempCert.txt` deletes nothing (`-Include` only applies to a path's contents); replaced with explicit paths, and the decoded `.pfx` is removed after import.
+- The source places the step above an "install app dependencies and build it" step of its old template; that step name does not exist in the current workflow.
 - Tauri bundler side only; Windows signing and Microsoft Store procedures belong to the windows-packaging-publish skill.
 
 ## Related

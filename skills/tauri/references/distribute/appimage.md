@@ -40,7 +40,7 @@ chmod a+x MyProject.AppImage
 - Limitations: build with the oldest base system you intend to support that also provides Tauri v2's required WebKitGTK 4.1 packages (Ubuntu 22.04 and Debian 12 are suitable baselines). A newer base can raise the minimum glibc, causing runtime errors like `/usr/lib/libc.so.6: version 'GLIBC_2.33' not found`. Use Docker or GitHub Actions to build for Linux.
 - Make sure the build system has all the GStreamer plugins your app needs at runtime; plugins in the `ugly` package are licensed in a way that may make them hard to distribute.
 - `files` destination paths must currently begin with `/usr/`. Use Tauri's resources feature for other files.
-- ARM: `linuxdeploy`, the AppImage tooling Tauri uses, does not support cross-compiling ARM AppImages, so they can only be built on ARM devices or emulators. Since August 2025 GitHub provides public `ubuntu-22.04-arm` and `ubuntu-24.04-arm` runners (typical build ~10 minutes). A QEMU based workflow exists but is extremely slow; see the GitHub pipelines page.
+- ARM: `linuxdeploy`, the AppImage tooling Tauri uses, does not support cross-compiling ARM AppImages, so they can only be built on ARM devices or emulators. Since August 2025 GitHub provides `ubuntu-22.04-arm` and `ubuntu-24.04-arm` runners for public repositories (typical build ~10 minutes). A QEMU based workflow exists but is extremely slow and only recommended in public repositories where build minutes are free; in private repositories GitHub's ARM runners are more cost-efficient. See the GitHub pipelines page.
 - GUI apps on Linux do not inherit `$PATH` from shell dotfiles; see the `fix-path-env-rs` crate.
 
 ## Related

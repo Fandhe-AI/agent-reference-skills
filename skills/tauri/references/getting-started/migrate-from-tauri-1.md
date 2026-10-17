@@ -100,8 +100,8 @@ cargo tauri migrate
 - `api::dialog` module removed. Use `tauri-plugin-dialog` instead.
 - `api::file` module removed. Use Rust's `std::fs` instead.
 - `api::http` module removed. Use `tauri-plugin-http` instead.
-- `api::ip` module rewritten and moved to `tauri::ipc`. Check out the new APIs, specially `tauri::ipc::Channel`.
-- `api::path` module functions and `tauri::PathResolved` moved to `tauri::Manager::path`.
+- `api::ipc` module rewritten and moved to `tauri::ipc`. Check out the new APIs, specially `tauri::ipc::Channel`.
+- `api::path` module functions and `tauri::PathResolver` moved to `tauri::Manager::path`.
 - `api::process::Command`, `tauri::api::shell` and `tauri::Manager::shell_scope` APIs removed. Use `tauri-plugin-shell` instead.
 - `api::process::current_binary` and `tauri::api::process::restart` moved to `tauri::process`.
 - `api::version` module has been removed. Use the semver crate instead.
@@ -121,7 +121,7 @@ cargo tauri migrate
 
 ### JavaScript API Changes
 
-The `@tauri-apps/api` package no longer provides non-core modules. Only the previous `tauri` (now `core`), `path`, `event` and `window` modules are exported. All others have been moved to plugins.
+The `@tauri-apps/api` package no longer provides the non-core v1 modules (cli, clipboard, dialog, fs, global-shortcut, http, notification, os, process, shell, updater); they moved to plugins.
 
 - `@tauri-apps/api/tauri` module renamed to `@tauri-apps/api/core`.
 - `@tauri-apps/api/cli` module removed. Use `@tauri-apps/plugin-cli` instead.
@@ -135,7 +135,7 @@ The `@tauri-apps/api` package no longer provides non-core modules. Only the prev
 - `@tauri-apps/api/process` module removed. Use `@tauri-apps/plugin-process` instead.
 - `@tauri-apps/api/shell` module removed. Use `@tauri-apps/plugin-shell` instead.
 - `@tauri-apps/api/updater` module removed. Use `@tauri-apps/plugin-updater` instead.
-- `@tauri-apps/api/window` module renamed to `@tauri-apps/api/webviewWindow`.
+- The `WebviewWindow` class moved from `@tauri-apps/api/window` to `@tauri-apps/api/webviewWindow` (the `window` module still exists for the `Window` class).
 
 The v1 plugins are now published as `@tauri-apps/plugin-<plugin-name>`. Previously they were available from git as `tauri-plugin-<plugin-name>-api`.
 
@@ -242,7 +242,7 @@ tauri-plugin-clipboard-manager = "2"
 ```javascript
 import { writeText, readText } from '@tauri-apps/plugin-clipboard-manager';
 await writeText('Tauri is awesome!');
-assert(await readText(), 'Tauri is awesome!');
+console.assert((await readText()) === 'Tauri is awesome!');
 ```
 
 Rust side:
@@ -288,7 +288,7 @@ tauri::Builder::default()
             // the file path is `None` if the user closed the dialog
         });
 
-        app.dialog().message("Tauri is Awesome!").blocking_show();
+        app.dialog().message("Tauri is Awesome!").show(|_| {});
         Ok(())
      })
 ```
@@ -311,8 +311,9 @@ fn main() {
 }
 ```
 
+`package.json`:
+
 ```json
-// package.json
 {
   "dependencies": {
     "@tauri-apps/plugin-fs": "^2.0.0"
@@ -863,7 +864,13 @@ To enable permissions for your app, create capability files inside the `src-taur
 - The source says to use `scope::ipc::RemoteDomainAccessScope::add_plugin` / `scope::ipc::Scope`, but these were removed in the v2 ACL rework; rewritten to point at capabilities (`remote.urls`) and permissions.
 - Tauri capabilities / permissions (ACL) here are Tauri's own access-control system, unrelated to Claude Code permissions (anthropic-claude-code-admin) or MCP capabilities (mcp-spec).
 - Tauri (Rust core + system WebView). Not Electron's API; see the electron skill for Electron.
-- Snippets adjusted from the source to compile on v2: dialog `blocking_show()`, `set_menu(menu)?`, cloned `AppHandle` in updater, `Manager` import in tray.
+- The source calls `.show()` without the required callback; `show(|_| {})` is used because `blocking_show()` must not run on the main thread, where `setup` executes (tauri-plugin-dialog docs).
+- The source's `assert(await readText(), '...')` uses an undefined global in the webview and does not compare values; replaced with `console.assert(... === ...)`.
+- The source summary says only core/path/event/window are exported and that `window` was renamed to `webviewWindow`; at `@tauri-apps/api` 2.12.4 `packages/api/src/index.ts` also exports app, dpi, image, menu, mocks, tray, webview and webviewWindow, only the `WebviewWindow` class moved, and `window` remains.
+- The source summary misspells `api::ipc` as `api::ip` and `PathResolver` as `PathResolved`; corrected.
+- The fs permission sentence (`fs:allow-mkdir`, `fs:scope-applocaldata-recursive`) is not in the source; identifiers taken from the fs plugin 2.7.1 permission reference.
+- The `// package.json` file-name comment is moved out of the JSON block so it stays valid JSON.
+- Snippets adjusted from the source to compile on v2: dialog `show(|_| {})`, `set_menu(menu)?`, cloned `AppHandle` in updater, `Manager` import in tray.
 - Plugin snippets in the source page register the plugin in Rust and add the npm package.
 - Differs from the source so the snippets compile on v2: the clipboard example uses `tauri_plugin_clipboard_manager::ClipboardExt` / `write_text` (the source shows a nonexistent `tauri_plugin_clipboard` / `ClipKind` API), `SubmenuBuilder::text` / `check` take `(id, text)`, `fn main()` examples end with `.run(tauri::generate_context!())`, and `updater()` (which returns a `Result`) is unwrapped before `check()`.
 - Also differs from the source: the summary lines name `tauri-plugin-clipboard-manager` / `@tauri-apps/plugin-clipboard-manager` (the source summary says `tauri-plugin-clipboard` / `@tauri-apps/plugin-clipboard`, contradicting its own detailed section); `PredefinedMenuItem::copy` takes `(app, None)`; `global_shortcut::Builder::with_handler` takes `(app, shortcut, event)`.

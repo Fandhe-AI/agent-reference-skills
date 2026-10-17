@@ -77,22 +77,23 @@ jobs:
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
-          echo "$APPLE_CERTIFICATE" | base64 --decode > certificate.p12
-          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          echo "${APPLE_CERTIFICATE}" | base64 --decode > "${RUNNER_TEMP}/certificate.p12"
+          security create-keychain -p "${KEYCHAIN_PASSWORD}" build.keychain
           security default-keychain -s build.keychain
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security unlock-keychain -p "${KEYCHAIN_PASSWORD}" build.keychain
           security set-keychain-settings -t 3600 -u build.keychain
-          security import certificate.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" build.keychain
+          security import "${RUNNER_TEMP}/certificate.p12" -k build.keychain -P "${APPLE_CERTIFICATE_PASSWORD}" -T /usr/bin/codesign
+          rm -f "${RUNNER_TEMP}/certificate.p12"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "${KEYCHAIN_PASSWORD}" build.keychain
           security find-identity -v -p codesigning build.keychain
       - name: Verify Certificate
         run: |
           CERT_INFO=$(security find-identity -v -p codesigning build.keychain | grep -E "Developer ID Application|Apple Distribution")
-          CERT_ID=$(echo "$CERT_INFO" | awk -F'"' '{print $2}')
+          CERT_ID=$(echo "${CERT_INFO}" | awk -F'"' 'NR==1{print $2}')
           if [ -z "$CERT_ID" ]; then echo "No matching signing certificate found"; exit 1; fi
           echo "CERT_ID=${CERT_ID}" >> "${GITHUB_ENV}"
           echo "Certificate imported."
-      - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0
+      - uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f # v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
@@ -140,7 +141,10 @@ If you do not want to provide an Apple-authenticated identity but still want to 
 
 ## Notes
 
-- The `$GITHUB_ENV` redirect target and `CERT_ID` are quoted and braced (`"${VAR}"`) here; the official example leaves them unquoted.
+- All shell variables are quoted and braced (`"${VAR}"`) and the decoded `.p12` is written to `RUNNER_TEMP` and removed after import; the official example leaves some unquoted and keeps the file in the workspace.
+- Only the first matching identity is used (`NR==1`) so a keychain holding both certificate types does not write a multi-line value to `GITHUB_ENV`.
+- The source pins `tauri-apps/tauri-action@v0`; aligned to v1 as used on the GitHub pipelines page (only the `args` input is used).
+- The source says only "the Integrations tab"; Team Keys is specified because `APPLE_API_ISSUER` (Issuer ID) exists only for Team API keys.
 - `needs: prepare` from the source is removed because the excerpt defines no `prepare` job. Checkout / Node / Rust target setup steps added so the workflow runs standalone (the source relies on a prepare job).
 - Third-party actions pinned to commit SHAs (upstream uses tags); SHAs resolved from the GitHub API on 2026-10-17, re-resolve when updating.
 - Requires an Apple Developer account, paid (99$ per year) or free (testing and development only), and an Apple device for signing. With a free account you cannot notarize and the app still shows as not verified.

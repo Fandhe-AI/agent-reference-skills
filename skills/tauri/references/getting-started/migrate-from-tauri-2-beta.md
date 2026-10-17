@@ -29,7 +29,7 @@ Core plugin permission identifiers now need the `core:` prefix:
     "core:image:default",
     "core:resources:default",
     "core:menu:default",
-    "core:tray:default",
+    "core:tray:default"
 ]
 ```
 
@@ -72,7 +72,6 @@ Vite configuration, 2.0.0:
 
 ```js
 import { defineConfig } from 'vite';
-import Unocss from 'unocss/vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 
 const host = process.env.TAURI_DEV_HOST;
@@ -101,6 +100,8 @@ export default defineConfig({
 - The built-in mobile development server (PR #10437, PR #10456) no longer exposes network wide and tunnels traffic from the local machine directly to the device.
 - This improvement does not automatically apply on iOS devices (directly or from Xcode); the public network address is the default. Workaround: open Xcode to start a connection between your macOS machine and the connected iOS device, then run `tauri ios dev --force-ip-prompt` and select the iOS device's TUN address (ends with `::2`).
 - Instead of checking whether `TAURI_ENV_PLATFORM` matches `android` or `ios`, check the `TAURI_DEV_HOST` environment variable. The `internal-ip` npm package is no longer required.
+- The source's permissions array ends with a trailing comma; removed so the snippet is valid JSON.
+- Removed the unused `unocss/vite` import from the source's 2.0.0 example; it is unrelated to the migration and fails without unocss installed.
 - Tauri capabilities / permissions (ACL) are Tauri's own system, unrelated to Claude Code permissions (anthropic-claude-code-admin) or MCP capabilities (mcp-spec). The Vite config is Tauri-side integration only; Vite itself is covered by the vite skill.
 
 ## Related

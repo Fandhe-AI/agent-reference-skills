@@ -17,8 +17,9 @@ Checklist:
 
 Tauri configuration (npm; yarn / pnpm / deno use `yarn dev` / `yarn generate`, `pnpm dev` / `pnpm generate`, `deno task dev` / `deno task generate`):
 
+`src-tauri/tauri.conf.json`:
+
 ```json
-// tauri.conf.json
 {
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -48,7 +49,7 @@ export default defineNuxtConfig({
     // Enable environment variables
     // Additional environment variables can be found at
     // https://v2.tauri.app/reference/environment-variables/
-    envPrefix: ['VITE_', 'TAURI_'],
+    envPrefix: ['VITE_', 'TAURI_ENV_'],
     server: {
       // Tauri requires a consistent port
       strictPort: true,
@@ -63,6 +64,8 @@ export default defineNuxtConfig({
 
 - `nuxi generate` writes static output to `.output/public` and links `<rootDir>/dist` to it (Nuxt's `linkStaticDist`), so `frontendDist: ../dist` resolves to the generated assets.
 - The source checklist says nuxi build, but its config runs the generate script; aligned to nuxi generate for static output. Scripts in package.json: `"dev": "nuxi dev"`, `"generate": "nuxi generate"`.
+- The source uses `envPrefix: ['VITE_', 'TAURI_']`; narrowed to `TAURI_ENV_` here (as in the Vite guide) because the `TAURI_` prefix would also expose build-time secrets such as `TAURI_SIGNING_PRIVATE_KEY` / `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` to the client bundle.
+- File-name comments are moved out of the JSON block so it stays valid JSON.
 - Tauri-side integration settings only; Nuxt itself has no dedicated skill here. Vite: vite skill.
 
 ## Related

@@ -71,7 +71,7 @@ modules:
       - tar -C deb-extract -xf deb-extract/data.tar.gz
 
       # Copy binary
-      - 'install -Dm755 deb-extract/usr/bin/<executable_name> /app/bin/<executable_name>'
+      - 'install -Dm755 deb-extract/usr/bin/<main_binary_name> /app/bin/<main_binary_name>'
 
       # Copy additional resources only if the deb contains them:
       - 'if [ -d deb-extract/usr/lib/<product_name> ]; then mkdir -p /app/lib/<product_name> && cp -r deb-extract/usr/lib/<product_name>/. /app/lib/<product_name> && chmod -R u+rwX,go+rX,go-w /app/lib/<product_name>; fi'
@@ -142,6 +142,8 @@ python3 flatpak-builder-tools/cargo/flatpak-cargo-generator.py -o cargo-sources.
 - Added `--install` to the flatpak-builder command: the source only exports to `flatpak-repo` (despite its `# Install the flatpak` comment), so the following `flatpak run` would fail on first use.
 - Step 1 runs the generator install in a subshell so step 2's paths (`flatpak-builder-tools/...`, `src-tauri/Cargo.lock`) resolve from the project root; the source leaves the shell inside `flatpak_node_generator`.
 - The source uses `find ... -exec chmod 644`, which strips execute bits from bundled helper executables; `chmod -R u+rwX,go+rX,go-w` keeps them.
+- Runtime 47 (and the `node20` SDK extension) is what the source uses; GNOME runtimes are supported for about a year, so check the currently supported version with `flatpak remote-info flathub org.gnome.Platform//<version>` and bump `runtime-version` / the install command before submitting to Flathub.
+- The source names the binary `<executable_name>` in the install line but `<main_binary_name>` elsewhere; unified to `<main_binary_name>` so `command` resolves.
 - The Flatpak card is commented out of the official distribute overview page, but this page exists.
 
 ## Related

@@ -15,8 +15,9 @@ Checklist:
 
 Tauri configuration (npm; yarn / pnpm / deno use `yarn dev` / `pnpm dev` / `deno task dev` and the matching `build` command):
 
+`src-tauri/tauri.conf.json`:
+
 ```json
-// src-tauri/tauri.conf.json
 {
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -66,6 +67,7 @@ export default nextConfig;
 
 ## Notes
 
+- File-name comments are moved out of the JSON block so it stays valid JSON.
 - Tauri-side integration settings only; the framework itself is covered by the nextjs-app skill (Vite: vite, TanStack Start: tanstack-start).
 
 ## Related
