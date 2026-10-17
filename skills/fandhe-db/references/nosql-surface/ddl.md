@@ -63,11 +63,12 @@ NOSQL-13・TASK-207（Issue #910）で `op` 語彙へ加わった DDL 3 op。SQL
 | `columns`（`create_table`） | ○ | object[] | `{"name","type","dim"?,"precision"?,"scale"?,"enum_type"?,"element_type"?,"max_len"?,"nullable"?,"default"?}`。`default` は文字列・数値・真偽値（配列の既定値は文字列 `"{1,2}"` 形）。予約列名（`id`／`tenant_id`／`visibility`／`check`／`constraint`）は `42601` |
 | `constraints`（`create_table`） | △ | object[] | `{"kind":"primary_key"｜"unique"｜"foreign_key"｜"check","columns"?,"references"?,"name"?,"predicate"?}`。`references`＝`{"table","columns"?,"on_delete"?,"on_update"?}`。下記 Notes 参照 |
 | `add_column`（`alter_table`） | △ | object | `{"name","type","dim"?,"precision"?,"scale"?,"enum_type"?,"element_type"?,"max_len"?,"not_null"?,"default"?}`。`drop_column` と排他必須（両方・双方欠落は `42601`）。`not_null` は bool（`true` のとき `default` が必須で、無ければ engine が `42601`。`false`・省略は nullable 列）、`default` は文字列・数値・真偽値（Issue #1338。SQL の `NOT NULL`／`DEFAULT <literal>` と同じ実行器・エラー契約）。DATE／TIMESTAMP／UUID／JSON／JSONB／ENUM の DEFAULT は文字列で渡す。`default` の `null`・配列・オブジェクト、`not_null` の非 bool、`nullable` などの未知キーは `42601`。`create_table` の `nullable` に対し `add_column` は `not_null` を使う（`nullable` は受け付けない） |
-| `drop_column`（`alter_table`） | ○ | object | `{"name"}`。SQL 表層の `ALTER TABLE ... DROP COLUMN` と同じ入口へ結線（Issue #1167。エラー契約は SQL 表層と同一）。`add_column` と排他必須 |
+| `drop_column`（`alter_table`） | △ | object | `{"name"}`。SQL 表層の `ALTER TABLE ... DROP COLUMN` と同じ入口へ結線（Issue #1167。エラー契約は SQL 表層と同一）。`add_column` と排他必須 |
 
 ## Notes
 
 - DDL 実行権限: `--ddl-allowed-users` に列挙したユーザーのみ実行できる（`POST /v1/session` のログイン成功直後に確定し、以後そのセッションの寿命中固定される）。権限の無いセッションは、対象テーブルの有無にかかわらず常に `42501`（`403`）のみを返す（存在オラクル非公開。テナント境界とは別軸の判定）。
+- `alter_table` は `add_column`／`drop_column` のどちらか一方が必須（排他）。原文の表は `drop_column` を ○ と表記しているが、同じ表の備考の排他必須の記述に合わせて △ とした。
 - 成功応答は 3 op 共通で `{"ok":true}`（行数・件数を返さない）。
 - `create_table.columns[].type` と `alter_table.add_column.type` は SQL 表層と同じ型集合（Issue #1409）: `text`／`integer`／`bigint`／`real`／`double`（`DOUBLE PRECISION`）／`boolean`／`date`／`timestamp`／`bytea`／`json`／`jsonb`／`uuid`／`numeric`（`precision`／`scale` 必須）／`vector`（`dim` 必須。`add_column` では構文は通るが実行段で `0A000`）／`enum`（`enum_type` 必須）／`array`。大文字小文字は区別しない。
 - 配列は `{"type":"array","element_type":"<要素型>","max_len":N}` で宣言する（SQL の `<要素型>[N]`。`max_len` 省略は `[]`）。`element_type` は上記のうち `array` 以外の型名で、要素型のパラメータ（`precision`／`scale`／`enum_type`）は通常の型と同じキーで渡す。`max_len` が 0・1024 超、要素型が `vector`、入れ子配列、未登録の ENUM 型名は `42601`。型と無関係なパラメータ（配列でない型への `element_type`／`max_len` 等）も黙って無視せず `42601`。配列要素数の上限超過の書き込みは `54000`（HTTP 413）。
