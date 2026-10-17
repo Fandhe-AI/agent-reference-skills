@@ -36,7 +36,7 @@ await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
 });
 ```
 
-## Methods
+## Options / Props
 
 | Method | Returns | Description |
 | --- | --- | --- |

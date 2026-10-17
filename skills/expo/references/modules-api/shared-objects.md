@@ -243,6 +243,9 @@ Class(MySharedObject::class) {
 - In the JS example, `ImagePicker` (`expo-image-picker`) returns a plain file URI; the native module lifts it into a shared object.
 - Expo libraries using shared objects: `expo-image`, `expo-image-manipulator`, `expo-sqlite` (database, session and statement handles), and `expo/fetch` (request/response lifecycles).
 - Kotlin snippet note: the official Android example code is reproduced as published; its first snippet declares `ImageRef` with `SharedRef` while importing only `SharedObject`.
+- The upstream Kotlin example is abbreviated: `class ImageRef : SharedRef<Bitmap>()` declares no constructor, yet `render()` calls `ImageRef(current, runtimeContext)`; a real implementation must declare a constructor taking the `Bitmap` and `RuntimeContext` and pass them to `SharedRef`.
+- `UIImage.rotated(degrees:)` is not a UIKit API; the upstream Swift example assumes a custom helper extension that is not shown and must be implemented separately.
+- In the upstream example `pickImageAsync` returns a `file://` URI, while the native `createContextAsync` treats its argument as a filesystem path (`BitmapFactory.decodeFile` / `URL(fileURLWithPath:)`); strip the `file://` scheme or resolve the URI natively before decoding.
 - Distinct from apple-swift / android-architecture.
 - Source modificationDate: March 03, 2026 (unversioned guide page, fetched 2026-10-17).
 

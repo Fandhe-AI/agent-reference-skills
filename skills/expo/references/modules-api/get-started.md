@@ -20,7 +20,7 @@ Standalone module with example project:
 npx create-expo-module@latest my-module
 ```
 
-## Flow 1: add a module to an existing application
+### Flow 1: add a module to an existing application
 
 1. Run the command above. A **modules** directory is created: `modules/my-module/{android, ios, src, expo-module.config.json, index.ts}`.
 2. If the project has no native projects (**android** / **ios**), run `npx expo prebuild --clean`. If an **ios** directory created by `npx expo prebuild` already exists, reinstall pods with `npx pod-install`.
@@ -42,7 +42,7 @@ export default function HomeScreen() {
    - Android: open the generated **android** directory in Android Studio, edit **modules/my-module/android/src/main/java/expo/modules/mymodule/MyModule.kt**, click Run 'app'.
    - iOS: open **ios** in Xcode (`xed ios`), edit **MyModule.swift** under Pods > Development Pods > MyModule, run (Cmd + R).
 
-## Flow 2: standalone module with an example project
+### Flow 2: standalone module with an example project
 
 1. Run `npx create-expo-module@latest my-module` (generates the module and an example app for Android and iOS).
 2. `cd my-module`, then `npm run open:android` / `npm run open:ios`.
@@ -51,6 +51,7 @@ export default function HomeScreen() {
 
 ## Notes
 
+- Per the create-expo-module reference, local modules do not generate an `index.ts` barrel by default; pass `--barrel` (with `--local`) to import from the module directory as shown, or import directly from the module's `src` files.
 - Repeat the native build every time native code changes.
 - Use `npx pod-install` after adding new native files to the module or modifying **expo-module.config.json**.
 - On Windows the example Android project can be opened in Android Studio but the iOS project files cannot be opened.

@@ -40,7 +40,7 @@ async function unregisterBackgroundTaskAsync() {
 }
 ```
 
-## Configuration (iOS Info.plist)
+### Configuration (iOS Info.plist)
 
 To run background tasks on iOS, add the `processing` value to the `UIBackgroundModes` array and the `BGTaskSchedulerPermittedIdentifiers` array with the `com.expo.modules.backgroundtask.processing` identifier. With CNG, prebuild applies both automatically. Without CNG:
 
@@ -55,7 +55,7 @@ To run background tasks on iOS, add the `processing` value to the `UIBackgroundM
 </array>
 ```
 
-## Methods
+## Options / Props
 
 | Method | Platforms | Returns | Description |
 | --- | --- | --- | --- |

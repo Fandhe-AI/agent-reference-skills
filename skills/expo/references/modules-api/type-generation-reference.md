@@ -15,9 +15,11 @@ brew install sourcekitten
 
 The package consists of: a Swift parser based on `sourcekitten`, a type abstraction (`FileTypeInformation`), a TypeScript AST emitter, and a CLI.
 
-## CLI reference
+## Options / Props
 
-### Common CLI options
+### CLI reference
+
+#### Common CLI options
 
 Every CLI command uses these options (the exception is `inline-modules-interface`, which has slightly different options).
 
@@ -30,7 +32,7 @@ Every CLI command uses these options (the exception is `inline-modules-interface
 | `-s, --skip-unicode-character-mapping` | Skip mapping all non-ASCII characters in a file to ASCII strings. By default the mapping is performed because SourceKitten is inconsistent when calculating offsets of non-ASCII characters. | |
 | `-w --watcher` | Starts a watcher that checks for changes in input-path file. | |
 
-### Main commands
+#### Main commands
 
 | Command | Description |
 | --- | --- |
@@ -47,7 +49,7 @@ Options of `inline-modules-interface`:
 | `-w --watcher` | Starts a watcher that checks for changes in inline modules files. | |
 | `-t, --type-inference <typeInference>` | Level of type inference (same values as above). | `SIMPLE_INFERENCE` |
 
-### Other commands
+#### Other commands
 
 Internal or very specific; all accept the common options.
 
@@ -59,9 +61,7 @@ Internal or very specific; all accept the common options.
 | `other generate-jsx-intrinsics` | Generates a declaration file for a View, updates JSX intrinsics with the View props. |
 | `other preprocess-file` | Prints the preprocessed file(s) right before parsing with `sourcekitten`; helps check how `--module-path`, `--input-path`, and `--type-inference` affect the parsed file. |
 
-## Options / Props
-
-Programmatic API.
+### Programmatic API
 
 | Function | Parameters | Returns | Description |
 | --- | --- | --- | --- |
@@ -77,7 +77,7 @@ Programmatic API.
 | `getAllExpoModulesInWorkingDirectory()` | none | `Promise<FileTypeInformation[]>` | |
 | `withPreparedSingleFile` (component) | `GetFileTypeInformationOptions` | React element | |
 
-### Types
+#### Types
 
 | Type | Shape |
 | --- | --- |
@@ -109,7 +109,7 @@ Programmatic API.
 | `TypeIdentifierDefinitionMap` | `Map<string, IdentifierDefinition>` |
 | `OutputFile` | `content: string`, `name: string` |
 
-### Enums
+#### Enums
 
 | Enum | Values |
 | --- | --- |

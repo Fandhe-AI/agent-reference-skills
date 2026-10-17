@@ -94,14 +94,7 @@ public class MyLibPackage implements Package {
 }
 ```
 
-## Supported callbacks
-
-| Listener | Factory method on `Package` | Supported callbacks |
-| --- | --- | --- |
-| `ReactActivityLifecycleListener` | `createReactActivityLifecycleListeners` | `onCreate`, `onResume`, `onPause`, `onDestroy`, `onNewIntent`, `onBackPressed` |
-| `ApplicationLifecycleListener` | `createApplicationLifecycleListeners` | `onCreate`, `onConfigurationChanged` |
-
-## Lifecycle listeners to JavaScript event flow
+### Lifecycle listeners to JavaScript event flow
 
 Lifecycle listeners are singleton classes that exist independently of module instances. To forward a system event (for example an inbound deep link) to JavaScript, the module observes events and the listener notifies the observers. The official example (based on `expo-linking`) uses a listener that stores the URL and notifies observers, a module that registers/removes an observer in `OnStartObserving` / `OnStopObserving` and sends an event, and a weak reference to avoid memory leaks.
 
@@ -206,6 +199,15 @@ export default DeepLinkHandler;
   }
 }
 ```
+
+## Options / Props
+
+### Supported callbacks
+
+| Listener | Factory method on `Package` | Supported callbacks |
+| --- | --- | --- |
+| `ReactActivityLifecycleListener` | `createReactActivityLifecycleListeners` | `onCreate`, `onResume`, `onPause`, `onDestroy`, `onNewIntent`, `onBackPressed` |
+| `ApplicationLifecycleListener` | `createApplicationLifecycleListeners` | `onCreate`, `onConfigurationChanged` |
 
 ## Notes
 

@@ -34,6 +34,22 @@ class MyModule : Module() {
 }
 ```
 
+Calling a function from JavaScript (module named "MyModule"), with the native `Function("mySyncFunction")` definitions:
+
+```swift
+// Swift
+Function("mySyncFunction") { (message: String) in
+  return message
+}
+```
+
+```kotlin
+// Kotlin
+Function("mySyncFunction") { message: String ->
+  return@Function message
+}
+```
+
 ```js
 import { requireNativeModule } from 'expo-modules-core';
 
@@ -45,7 +61,9 @@ function getMessage() {
 }
 ```
 
-## Definition components (module level)
+## Options / Props
+
+### Definition components (module level)
 
 | Component | Platforms | Description |
 | --- | --- | --- |
@@ -82,7 +100,7 @@ AsyncFunction("suspendFunction") Coroutine { message: String ->
 
 Prefer `AsyncFunction` over `Function` when the function does I/O-bound work, must run on another thread (for example the main UI thread), or is long-running.
 
-## Lifecycle listeners (module level)
+### Lifecycle listeners (module level)
 
 | Component | Platforms | When it is called |
 | --- | --- | --- |
@@ -122,7 +140,7 @@ class ImagePickerModule : Module() {
 }
 ```
 
-## View definition components
+### View definition components
 
 Usable only within a `View` closure.
 
@@ -148,7 +166,7 @@ Prop("background", Color.BLACK) { view: View, @ColorInt color: Int ->
 }
 ```
 
-### View groups (Android)
+#### View groups (Android)
 
 `GroupView<ViewGroup> { ... }` makes the view usable as a view group (class must inherit from Android `ViewGroup`; only inside `View`). It accepts:
 
@@ -171,7 +189,7 @@ GroupView<ViewGroup> {
 }
 ```
 
-## Argument types
+### Argument types
 
 Only primitive and serializable data can be passed between runtimes; the API provides typed conversion with automatic validation.
 
@@ -210,7 +228,7 @@ enum class FileEncoding(val value: String) : Enumerable {
 }
 ```
 
-### Built-in Convertibles
+#### Built-in Convertibles
 
 iOS (CoreGraphics / UIKit):
 
@@ -241,7 +259,7 @@ Android:
 
 On Android, primitive arrays should be used whenever possible.
 
-## Native classes
+### Native classes
 
 | Class | Members |
 | --- | --- |
@@ -264,7 +282,7 @@ class LinearGradientModule : Module() {
 }
 ```
 
-## Sending events
+### Sending events
 
 Declare names with `Events`, then call `sendEvent(eventName, payload)` on the module instance.
 
@@ -309,7 +327,7 @@ Clipboard.addListener('onClipboardChanged', (event: ClipboardChangeEvent) => {
 
 Native modules extend the built-in `EventEmitter` class; the `useEvent` and `useEventListener` hooks (documented in the Expo SDK `expo` package page) are alternatives to `addListener`.
 
-## View callbacks
+### View callbacks
 
 View-bound events (for example a touch on one specific view) cannot use `sendEvent`. Declare the event name with `Events` inside `View`, then declare a property of type `EventDispatcher` in the view class with the same name as the exported event, and call it with a payload (`[String: Any?]` on iOS, `Map<String, Any?>` on Android).
 

@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
 
 ## Notes
 
+- Per the create-expo-module reference, local modules do not generate an `index.ts` barrel by default; pass `--barrel` (with `--local`) to import from the module directory as shown, or import directly from the module's `src` files.
 - Native dependencies are added by editing **android/build.gradle** and **ios/ExpoRadialChart.podspec** (the published page shows the exact dependency lines in code tabs that are not preserved in the Markdown source; the lines are not reproduced here).
 - `.aar` dependency, SDK 52 and later: place the **.aar** inside **android/libs** and add the file as a Gradle project from autolinking; then add the dependency to the `dependencies` list in **android/build.gradle** using the dependency's specified name with the `${project.name}$` prefix.
 - `.aar` dependency, SDK 51 and earlier: place the **.aar** inside **android/libs**, add the directory as a repository, and in `dependencies` use the package path ending in `@aar` instead of the filename.
