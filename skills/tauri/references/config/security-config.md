@@ -16,6 +16,7 @@ Security configuration (`app.security`), plus `Csp`, `CspDirectiveSources`, `Dis
         "main-window",
         {
           "identifier": "drag-window",
+          "windows": ["main"],
           "permissions": ["core:window:allow-start-dragging"]
         }
       ]
@@ -73,6 +74,7 @@ Required: `identifier`, `permissions`.
 ## Notes
 
 - Tauri capabilities / permissions (ACL) detail pages live in the security category; this page covers only the config-file surface. Not related to Claude Code permissions or MCP capabilities.
+- The `"windows": ["main"]` line in the inline capability example above was added to the official config reference example, which omits it; an inline capability with neither `windows` nor `webviews` matches no window.
 - A webview or window not matching any capability has no access to the IPC layer at all.
 - `remote` capabilities: make sure you understand the security implications of providing remote sources with local system access.
 - Isolation pattern: see the isolation reference in the getting-started category.
