@@ -73,13 +73,13 @@ WebSocket setup message:
       "responseModalities": [
         "AUDIO"
       ],
-      "inputAudioTranscription": {},
-      "outputAudioTranscription": {},
       "translationConfig": {
         "targetLanguageCode": "pl",
         "echoTargetLanguage": true
       }
-    }
+    },
+    "inputAudioTranscription": {},
+    "outputAudioTranscription": {}
 }
 ```
 
@@ -116,7 +116,7 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/auth_tokens" \
 | `targetLanguageCode` | string | BCP-47 language code to translate into (e.g., `"pl"`, `"es"`). Defaults to `"en"`. |
 | `echoTargetLanguage` | boolean | If `true`, echoes (parrots) input audio already in the target language; if `false`, stays silent for such input. Defaults to `false`. |
 
-`generationConfig` transcript fields:
+Setup-level transcript fields (`setup.inputAudioTranscription` / `setup.outputAudioTranscription`):
 
 | Name | Description |
 |------|-------------|
@@ -132,6 +132,7 @@ Live Agent vs. Live Translation (from the source table): translation behaves as 
 - Limitations: voice replication can be inconsistent; language detection struggles with heavy accents, similar languages (e.g., Spanish vs. Portuguese), or rapid switches (only impacts the input transcript); not all background audio may be ignored; with `echoTargetLanguage: true` background noise or music may introduce artifacts.
 - The page lists the supported languages with BCP-47 codes (e.g. `af`, `ja`, `zh-Hans`, `pt-BR`); see the official page for the full table.
 - Availability: Live API is v1beta only.
+- The guide's WebSocket example nests the transcription fields inside generationConfig; this page follows the API reference (BidiGenerateContentSetup), where they are top-level setup fields.
 
 ## Related
 

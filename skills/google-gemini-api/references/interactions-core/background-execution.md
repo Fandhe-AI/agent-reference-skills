@@ -128,7 +128,7 @@ Parameters and endpoints:
 | Name | Type | Description |
 |------|------|-------------|
 | background | boolean | `true` runs asynchronously; supported for standard Gemini models (such as `gemini-4-argon`, `gemini-3.8-flash`) and Managed Agents (such as `antigravity-preview-09-2026`) |
-| store | boolean | `true` (default): stored for 7 days; `false`: stored for 24 hours (TTL) so results can be retrieved with GET |
+| store | boolean | `true` (default): stored for 7 days. This page also lists `false` (stored for 24 hours, TTL), but the long-decode and Deep Research pages state that background execution requires `store=true` (`false` returns 400 "store=true is required for background interactions") |
 | last_event_id | string | With `stream=true` on get; resumes from the last received event (each delta carries a unique `event_id`) |
 | POST /interactions/{id}/cancel | endpoint | Stops the running task; status becomes `cancelled` (clean-up may delay the status update) |
 | DELETE /interactions/{id} | endpoint | Removes the interaction; later GET returns `404 Not Found` |
@@ -137,6 +137,7 @@ Parameters and endpoints:
 
 - The official chaining example passes `environment="remote"`, which provisions a fresh sandbox; this page uses `interaction1.environment_id` so turn 2 sees the files from turn 1 (see the managed agents quickstart).
 
+- Official pages conflict: this page describes `store=False` (24h TTL) with `background=True`, while long-decode and Deep Research state background execution requires `store=True` and returns 400 otherwise; use `store=True` for background runs.
 - Availability: Interactions API (REST examples use `v1beta` with `Api-Revision: 2026-05-20`).
 - The polling loop also waits while `queued` (an Interaction status in the API reference); the original example checks only `in_progress`.
 - Use for agent executions, Deep Research (`deep-research-preview-04-2026`, `deep-research-max-preview-04-2026`), long reasoning, and long decode on Gemini 4.

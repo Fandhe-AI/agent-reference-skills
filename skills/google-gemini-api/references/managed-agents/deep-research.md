@@ -95,7 +95,7 @@ refined_plan = client.interactions.create(
     background=True,
 )
 
-while (result := client.interactions.get(id=refined_plan.id)).status == "in_progress":
+while (result := client.interactions.get(id=refined_plan.id)).status in ("in_progress", "queued"):
     time.sleep(5)
 if result.status != "completed":
     raise RuntimeError(f"{result.status}: {result.error}")
@@ -114,7 +114,7 @@ final_report = client.interactions.create(
     background=True,
 )
 
-while (result := client.interactions.get(id=final_report.id)).status == "in_progress":
+while (result := client.interactions.get(id=final_report.id)).status in ("in_progress", "queued"):
     time.sleep(5)
 if result.status != "completed":
     raise RuntimeError(f"{result.status}: {result.error}")
@@ -214,6 +214,8 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
 Streaming with reconnection (`stream=True` and `background=True`):
 
 ```python
+import time
+
 interaction_id = None
 last_event_id = None
 is_complete = False
@@ -233,6 +235,12 @@ def process_stream(stream):
         elif event.event_type in ("interaction.completed", "error"):
             is_complete = True
 
+def safe_process(stream):
+    try:
+        process_stream(stream)
+    except Exception as e:
+        print(f"Stream interrupted: {e}")
+
 stream = client.interactions.create(
     input="Research the history of Google TPUs.",
     agent="deep-research-preview-04-2026",
@@ -240,21 +248,25 @@ stream = client.interactions.create(
     stream=True,
     agent_config={"type": "deep-research", "thinking_summaries": "auto"},
 )
-process_stream(stream)
+safe_process(stream)
 
 # Reconnect if the connection drops
 while not is_complete and interaction_id:
-    status = client.interactions.get(interaction_id)
-    if status.status == "completed":
-        print(status.steps[-1].content[0].text)
-        break
-    if status.status != "in_progress":
-        print(f"Stopped ({status.status}): {status.error}")
-        break
-    stream = client.interactions.get(
-        id=interaction_id, stream=True, last_event_id=last_event_id,
-    )
-    process_stream(stream)
+    time.sleep(2)
+    try:
+        status = client.interactions.get(id=interaction_id)
+        if status.status == "completed":
+            print(status.steps[-1].content[0].text)
+            break
+        if status.status not in ("in_progress", "queued"):
+            print(f"Stopped ({status.status}): {status.error}")
+            break
+        stream = client.interactions.get(
+            id=interaction_id, stream=True, last_event_id=last_event_id,
+        )
+        safe_process(stream)
+    except Exception as e:
+        print(f"Reconnect failed: {e}")
 ```
 
 Reconnect over REST: `GET /v1beta/interactions/INTERACTION_ID?stream=true&last_event_id=LAST_EVENT_ID`.
@@ -338,6 +350,8 @@ Comparison: standard Gemini models answer in seconds (generate then output; chat
 - The follow-up example on the official page passes `model="gemini-4-argon"` rather than the agent ID; model IDs are transcribed from the source as-is.
 - API surface: Interactions API only (REST `v1beta`). Java and Go tabs exist on the official page.
 - Distinct from other skills: Deep Research here is a Google-hosted agent; Claude and OpenAI equivalents live in anthropic-managed-agents / openai-agents. Its File Search tool relates to upstash and fandhe-db only as vector stores, not APIs.
+- Polling and reconnect loops also treat `queued` (an Interaction status in the API reference) as non-terminal; the original examples check only `in_progress`.
+- The reconnect example catches stream exceptions and waits before reconnecting; the original example only resumes after a stream ends normally.
 - Docs fetched 2026-10-16.
 
 ## Related
