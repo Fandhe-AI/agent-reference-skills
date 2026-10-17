@@ -75,6 +75,7 @@ impl CompiledChecks {
 ## Notes
 
 - 出典は `fandhe-db-engine` 0.2.0（git SHA `dc888f6ea146d3078153d64a6848f5c8cf044431`）の `src/sql/check_constraint.rs`（全1522行、テスト除く先頭 829 行）。公開・`pub(crate)` アイテムのシグネチャと主要 doc comment の抜粋で、private ヘルパー（`render_expr` / `reject_forbidden_elements` / `referenced_column_names` 等）と本体は掲載していない
+- 訂正: 上記 Signature 引用のモジュールコメント「TEXT/BOOLEAN/DATE/NUMERIC 等の他の列型は引き続き拒否される」は 0.2.0 の実装と一致しない（原文に残った古い記述）。`bind_check_predicates` は WHERE と共通の `bind_where_predicates_recursive` → `udf_call::bind_expr_in` を通り、式内で参照できるのは疑似列 `id`・`VECTOR` 列・INTEGER/BIGINT/REAL/DOUBLE・TEXT・DATE・TIMESTAMP 列。BOOLEAN・NUMERIC・UUID・ENUM・ARRAY・BYTEA・JSON/JSONB 列は `22000` で拒否される（`src/sql/udf_call.rs` の `bind_expr_in`、Issue #1183 で CHECK 専用 opt-in を撤廃）
 - 三値論理（SQL 標準）: 連言の参照列・参照ベクトルが NULL なら UNKNOWN としてスキップし、非 NULL で不一致のときのみ違反。AND 連結のため「いずれかの連言が FALSE なら違反」
 - `enforce` は台帳照合・行の書き込みの後、テーブル世代 bump・commit の前に呼ばれ、違反時は `write_txn` を commit しない
 - `visible()`・セッション UDF・WASM UDF・未知関数・組み込み以外の関数呼び出しは `42601` で拒否。他の CHECK を参照する CHECK も不可
