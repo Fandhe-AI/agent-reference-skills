@@ -79,6 +79,7 @@ Plan requirements: Transactional Email is not available on Starter; available on
 - Environment variables read automatically: `BETTER_AUTH_API_KEY`, and optionally `BETTER_AUTH_API_URL=https://api.betterauth.com`. This is the value shown in the Email/SMS service docs; the `dash()` / `sentinel()` plugin option `apiUrl` is a separate setting whose documented default is `https://dash.better-auth.com`.
 - Overview lists multiple provider support (AWS SES, SendGrid, Resend), type-safe template variables, and deliverability optimization.
 - Avoid awaiting the email sending in production to prevent timing attacks. On serverless platforms, use `waitUntil` or similar to ensure the email is sent without blocking the response. (Integration section note.)
+- The official integration example awaits `sendEmail`; it is shown here with `void` (the pattern used in the email-password docs) per the official warning, so the response does not wait for delivery. On serverless platforms pass the promise to `waitUntil` or similar. (https://www.better-auth.com/docs/authentication/email-password)
 - Source: https://www.better-auth.com/docs/infrastructure/services/email (better-auth v1.7.10 docs)
 - Integration with Better Auth flows:
 
@@ -90,7 +91,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     async sendResetPassword({ user, url }) {
-      await sendEmail({
+      void sendEmail({
         template: "reset-password",
         to: user.email,
         variables: {
