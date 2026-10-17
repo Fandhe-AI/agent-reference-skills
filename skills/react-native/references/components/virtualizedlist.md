@@ -197,7 +197,7 @@ scrollToOffset(params: {
 - By default, the list looks for a `key` prop on each item and uses that for the React key; alternatively provide a custom `keyExtractor`.
 - `removeClippedSubviews`: using this property may lead to bugs (missing content) in some circumstances - use at your own risk.
 - `disableVirtualization` is marked Deprecated in the original docs.
-- 0.88: TypeScript declarations are added for `FlatList`'s `strictMode` prop and `VirtualizedList`'s `ListItemComponent` (the 0.88 release blog states only that declarations were added).
+- 0.88: TypeScript declarations are added for `FlatList`'s `strictMode` prop and `VirtualizedList`'s `ListItemComponent` (the [0.88 release blog](https://reactnative.dev/blog/2026/10/19/react-native-0.88) states only that declarations were added).
 - The official example derives `id` from `Math.random()` inside `getItem`, which changes keys on every access; the snippet here uses an index-derived id so `keyExtractor` returns stable keys.
 - This is a React Native core component (imported from `react-native`, rendered as native views). It is distinct from web virtual-scroll libraries (tanstack-virtual) and Compose Lazy layouts (android-compose-ui LazyColumn), and from same-named UI parts in apple-swiftui / apple-uikit, android-compose-components, windows-winui-controls, and ark-ui / chakra-ui / fandhe-frontend.
 

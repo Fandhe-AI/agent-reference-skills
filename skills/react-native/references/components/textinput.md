@@ -194,7 +194,7 @@ isFocused(): boolean;
 - `textContentType` and `autoComplete` provide the same functionality (`autoComplete` is available on all platforms). Avoid using both; for backwards compatibility `textContentType` takes precedence when both are set.
 - If the iOS password generation dialog doesn't appear, make sure AutoFill Passwords is enabled (Settings, Passwords & Accounts) and iCloud Keychain is used.
 - Known issues: react-native#19096 (doesn't support Android's `onKeyPreIme`); react-native#19366 (calling `.focus()` after closing Android's keyboard via back button doesn't bring the keyboard up again); react-native#26799 (doesn't support Android's `secureTextEntry` when `keyboardType="email-address"` or `"phone-pad"`).
-- 0.88: `fontVariationSettings` is now supported on both `<Text>` and `<TextInput>`, on Android and iOS (see the Text Style Props page).
+- 0.88: `fontVariationSettings` is now supported on both `<Text>` and `<TextInput>`, on Android and iOS (see the Text Style Props page) ([0.88 release blog](https://reactnative.dev/blog/2026/10/19/react-native-0.88)).
 - This is the React Native core `TextInput` (imported from `react-native`, rendered as a native view). It is distinct from same-named parts in apple-swiftui / apple-uikit, android-compose-components / android-compose-ui, windows-winui-controls, and the web UI libraries ark-ui / chakra-ui / fandhe-frontend.
 
 ## Related

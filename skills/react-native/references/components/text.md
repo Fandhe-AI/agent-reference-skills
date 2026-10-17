@@ -260,7 +260,7 @@ Returned in the callback as a result of a component layout change. Contains `lin
 
 - On Android, when `numberOfLines` is set to a value higher than `1`, only the `tail` value of `ellipsizeMode` will work correctly.
 - `Text` components don't provide text nodes, the same way paragraph elements (`<p>`) on Web are element nodes instead of text nodes. Text nodes can be found as their child nodes instead.
-- 0.88: `fontVariationSettings` is now supported on both `<Text>` and `<TextInput>`, on Android and iOS, in both CSS string form and object form (see the Text Style Props page).
+- 0.88: `fontVariationSettings` is now supported on both `<Text>` and `<TextInput>`, on Android and iOS, in both CSS string form and object form (see the Text Style Props page) ([0.88 release blog](https://reactnative.dev/blog/2026/10/19/react-native-0.88)).
 - This is the React Native core `Text` (imported from `react-native`, rendered as a native view). It is distinct from same-named parts in apple-swiftui / apple-uikit, android-compose-components / android-compose-ui, windows-winui-controls, and the web UI libraries ark-ui / chakra-ui / fandhe-frontend.
 
 ## Related

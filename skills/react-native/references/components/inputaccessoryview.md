@@ -75,7 +75,7 @@ export default App;
 
 - iOS only. This component can also be used to create sticky text inputs (anchored to the top of the keyboard): wrap a `TextInput` with `InputAccessoryView` and don't set a `nativeID`.
 - Known issues: react-native#18997 (doesn't support multiline `TextInput`); react-native#20157 (can't use with a bottom tab bar).
-- 0.88: `InputAccessoryView` (iOS only) is deprecated as part of keeping core lean; `react-native-keyboard-controller`'s `KeyboardStickyView` is a cross-platform replacement. Nothing changes in 0.88 beyond a JSDoc tag and a one-time warning on import.
+- 0.88: `InputAccessoryView` (iOS only) is deprecated as part of keeping core lean; `react-native-keyboard-controller`'s `KeyboardStickyView` is a cross-platform replacement. Nothing changes in 0.88 beyond a JSDoc tag and a one-time warning on import ([0.88 release blog](https://reactnative.dev/blog/2026/10/19/react-native-0.88)).
 - This is a React Native core component (imported from `react-native`, rendered as a native view). It is distinct from same-named UI parts in apple-swiftui / apple-uikit, android-compose-components / android-compose-ui, windows-winui-controls, and the web UI libraries ark-ui / chakra-ui / fandhe-frontend.
 
 ## Related

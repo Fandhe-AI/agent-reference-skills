@@ -319,7 +319,7 @@ scrollToOffset(params: {
 - Content is rendered asynchronously offscreen, so it is possible to scroll faster than the fill rate and momentarily see blank content.
 - By default, the list looks for a `key` prop on each item and uses that for the React key; alternatively provide a custom `keyExtractor`.
 - `removeClippedSubviews`: using this property may lead to bugs (missing content) in some circumstances - use at your own risk.
-- 0.88: TypeScript declarations are added for `FlatList`'s `strictMode` prop (the 0.88 release blog states only that the declaration was added).
+- 0.88: TypeScript declarations are added for `FlatList`'s `strictMode` prop (the [0.88 release blog](https://reactnative.dev/blog/2026/10/19/react-native-0.88) states only that the declaration was added).
 - This is a React Native core component (imported from `react-native`, rendered as native views). It is distinct from web virtual-scroll libraries (tanstack-virtual) and Compose Lazy layouts (android-compose-ui LazyColumn), and from same-named UI parts in apple-swiftui / apple-uikit, android-compose-components, windows-winui-controls, and ark-ui / chakra-ui / fandhe-frontend.
 
 ## Related

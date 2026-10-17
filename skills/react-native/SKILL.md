@@ -15,7 +15,7 @@ user-invocable: false
 
 React Native 0.87 docs（`react/react-native-website` の `website/versioned_docs/version-0.87`、commit `1ec3a68e4c80a97d05fdd5134d42c03597a46b93`、2026-10-16 時点。サイトリポジトリにリリースタグは無い。取得日 2026-10-17）。出典 URL は `https://reactnative.dev/docs/0.87/<id>` に pin している（`/docs/next` 相当の root `docs/` は使用しない）。
 
-npm の latest は 0.88.0（2026-10-15）だが 0.88 の docs は未 cut（`versions.json` の先頭は 0.87）。0.88 の差分は 0.88 リリースブログ（ユーザー向け breaking change なし）のみを根拠とし、各ページ `## Notes` に `0.88: ...` 形式で記載する。
+npm の latest は 0.88.0（2026-10-15）だが 0.88 の docs は未 cut（`versions.json` の先頭は 0.87）。0.88 の差分は [0.88 リリースブログ](https://reactnative.dev/blog/2026/10/19/react-native-0.88)（ユーザー向け breaking change なし）のみを根拠とし、各ページ `## Notes` に `0.88: ...` 形式で記載する。
 
 ## ディレクトリ構成
 
