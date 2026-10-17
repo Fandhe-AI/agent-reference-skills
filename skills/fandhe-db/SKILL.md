@@ -83,6 +83,21 @@ skills/fandhe-db/
       hnsw-hybrid.md
       sparse-cache.md
       visible-cache.md
+      ddl.md
+      check-constraint.md
+      view-buffered.md
+      join.md
+      set-op.md
+      subquery.md
+      partitioned.md
+      returning.md
+      relation-snapshot.md
+      generation-key.md
+      order-value.md
+      distinct.md
+      string-fn.md
+      numeric-fn.md
+      datetime-fn.md
     search/
       README.md
       search-engine.md

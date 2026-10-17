@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/sql/arena_cache.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/sql/arena_cache.rs
 ---
 
 # sql::arena_cache
@@ -32,6 +32,14 @@ pub struct SqlArenaCacheStats {
     pub capacity_evictions: u64,
     /// 現在キャッシュが保持しているエントリ数。
     pub entries: usize,
+    /// キャッシュヒット後に SCALAR 段が恒等写像と判定でき、`VectorArena` を一切複製せずキャッシュ済み
+    /// スナップショットを借用したまま実行できた回数（`sql::exec::execute_statement_with_cache` の高速経路。
+    /// Issue #363・hybrid への拡張は Issue #660 の改善候補 P1）。
+    pub fast_path_borrows: u64,
+    /// キャッシュヒットにもかかわらず、SCALAR 段に実質的な処理があるため可視全行を
+    /// `VectorArena::build_from_cached_rls_rows` で複製し直した回数。hybrid 経路が高速経路へ載ったことの
+    /// 非 vacuous な証跡（＝この値が増えないこと）として `tests/sql_arena_cache.rs` が固定する。
+    pub full_rebuild_copies: u64,
 }
 
 /// `sql::exec::execute_statement_with_cache` が `SqlArenaCache` に格納・再利用する
@@ -69,6 +77,14 @@ pub(crate) fn built_table_generation_for_index(&self) -> u64;
 pub(crate) struct SqlArenaCache { /* ... */ }
 
 pub(crate) fn new() -> Self;
+
+/// キャッシュヒット後に借用高速経路（複製なし）を選んだことを記録する。呼び出し元は
+/// `sql::exec::execute_statement_with_cache` のみ。
+pub(crate) fn record_fast_path_borrow(&self);
+
+/// キャッシュヒット後に可視全行の複製（`build_from_cached_rls_rows`）へ落ちたことを記録する。呼び出し元は
+/// `sql::exec::execute_statement_with_cache` のみ。
+pub(crate) fn record_full_rebuild_copy(&self);
 
 /// `(table, ctx)` に一致し、`read_txn` のスナップショットにおけるテーブル世代と
 /// 整合するエントリを探す。ロック毒化・世代読み取り失敗はいずれも「見つから
@@ -122,9 +138,10 @@ pub(crate) struct ArenaCacheAccess<'a> { /* ... */ }
 
 ## Notes
 
-- `SqlArenaCacheStats` のみ `pub`（`EngineCore::sql_arena_cache_stats` の固有 API として公開）。`SqlArenaSnapshot` / `SqlArenaCache` / `ArenaCacheAccess` はすべて `pub(crate)` であり `fandhe-vector-db-engine` の公開 API（`fandhe-db` crate）からは到達しない
+- `SqlArenaCacheStats` のみ `pub`（`EngineCore::sql_arena_cache_stats` の固有 API として公開）。`SqlArenaSnapshot` / `SqlArenaCache` / `ArenaCacheAccess` はすべて `pub(crate)` であり `fandhe-db-engine` の公開 API からは到達しない
+- Migration (0.1.0 → 0.2.0): `SqlArenaCacheStats`（pub）に `fast_path_borrows` / `full_rebuild_copies` が加わった（構造体リテラル構築・網羅分解は追随が必要）。`SqlArenaCache` に `record_fast_path_borrow` / `record_full_rebuild_copy`（`pub(crate)`）が加わった。`SqlArenaSnapshot::built_ctx_for_index` / `built_table_generation_for_index` は 0.2.0 でも存在する（doc comment が参照する `ScalarIndex::build` は 0.2.0 では `build_targeted`。`scalar-index.md` 参照）
 - `insert` の戻り値が常に `Arc<SqlArenaSnapshot>`（`Option` ではない）である fail-closed 契約は `sql::sparse_cache::SparseIndexCache::insert` と同型
-- 関連 ADR: [`sql-arena-generation-cache`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/sql-arena-generation-cache.md)（Issue #363・Accepted。SQL 表層 `VectorArena` のテーブル世代整合キャッシュ化 = 本モジュールそのものの設計 ADR。`core.rs::PrefilterCache`〔TASK-169〕を前提とする）
+- 関連 ADR: [`sql-arena-generation-cache`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/dc888f6ea146d3078153d64a6848f5c8cf044431/docs/design/sql-arena-generation-cache.md)（Issue #363・Accepted。SQL 表層 `VectorArena` のテーブル世代整合キャッシュ化 = 本モジュールそのものの設計 ADR。`core.rs::PrefilterCache`〔TASK-169〕を前提とする）
 - Distinct from `mssql` / `drizzle` / `supabase` connection pools / arena management: not a DB client pool, but a query-scoped table-generation-consistent cache for an RLS-applied arena internal to the engine.
 
 ## Related

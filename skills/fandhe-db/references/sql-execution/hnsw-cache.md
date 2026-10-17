@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/sql/hnsw_cache.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/sql/hnsw_cache.rs
 ---
 
 # sql::hnsw_cache
@@ -199,8 +199,12 @@ pub(crate) enum PreparedHnswSearch {
     PlainScanBelowRatio,
 }
 
-/// `classify_ann_plan` の分類結果。
-pub(crate) enum AnnPlan {
+/// `classify_ann_plan` の分類結果。TASK-186・NOSQL-10 の前提として Issue #730 で公開 API へ昇格した
+/// （`sql::explain::build_explain_result` を engine クレート外から実際に呼ぶには入力である本 enum も構築できる
+/// 必要があるため）。`#[non_exhaustive]` を付けクレート外からの網羅 `match` を禁止する。0.1.0 では `pub(crate)`。
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum AnnPlan {
     /// エンジンが `SearchEngineKind::Hnsw` でない（`hnsw_cache` が `None`）ため
     /// 常に全件 brute-force。
     PlainScanEngine,
@@ -212,8 +216,11 @@ pub(crate) enum AnnPlan {
     /// 索引経路・`Subset` 形状（SCALAR 事前フィルタ付き。per-query 写像・
     /// キャッシュ非登録）。
     HnswSubset,
-    /// `EngineCore::search_engine_kind()` が `None`（カスタム `SearchProvider` を
-    /// 直接注入した構築経路）のため、実際に ANN か brute-force かを判別できない。
+    /// `EngineCore::search_engine_kind()` が `None`（`with_provider`／`from_storage` 経由でカスタム
+    /// `SearchProvider` を直接注入した構築経路）のため、実際に ANN か brute-force かを `EngineCore` 側からは
+    /// 判別できない（codex-review P1 指摘・PR #437。`hnsw_enabled == false` を「厳密 brute-force と確定している」
+    /// `PlainScanEngine` へ丸めてしまうと、カスタム provider が内部で ANN 相当の近似探索を行っていても
+    /// `EXPLAIN` が plain scan と誤断定する）。
     UnknownCustomProvider,
 }
 
@@ -223,32 +230,55 @@ pub(crate) fn search_prepared(/* シグネチャ未転記 */);
 pub(crate) fn search_or_fallback(/* シグネチャ未転記 */);
 pub(crate) fn search_subset_or_fallback(/* シグネチャ未転記 */);
 
+// 0.2.0 で確認した追加の crate 内部項目（シグネチャ・doc comment は未転記）:
+//   pub(crate) fn traversal_regime_for(/* ... */) -> TraversalRegime;
+//   pub(crate) fn search_prepared_resumable(/* ... */);   // hybrid 密側の再開型探索（Issue #505）
+//   pub(crate) struct HnswResumeState { /* ... */ }
+//   pub(crate) fn prepare_subset_from_slots(/* ... */);
+//   pub(crate) enum SubsetSlotPlan { /* ... */ }
+//   pub(crate) enum OverlaySuccessStat { /* ... */ }
+//   impl HnswIndexCache {
+//       pub(crate) fn new() -> Self;
+//       pub(crate) fn stats(&self) -> HnswIndexCacheStats;
+//       pub(crate) fn record_subset_mask_scan(&self);
+//       pub(crate) fn record_subset_arena_copy(&self);
+//       pub(crate) fn record_hybrid_dense_search(&self);
+//       pub(crate) fn record_hybrid_query_rounds(&self, rounds: u64);
+//   }
+
 /// `sql::exec` の DISTANCE 段適用条件判定（`Ranking::Distance` の `FullVisible`／
 /// `Subset` 判定、hybrid 密側の対称条件）を集約する純粋関数。`sql::explain` の
 /// `EXPLAIN` の `ann_plan:` 行も同じ関数を呼ぶ（モジュールドキュメント参照）。
 /// `sql::exec` の現行 4 式と同値であることはテストで固定する。
-pub(crate) struct AnnShapeInput {
+/// 0.2.0 では Issue #730 で公開 API へ昇格した（`pub struct`。フィールドはすべて `pub bool` でテナント存在情報を
+/// 持たないため `#[non_exhaustive]` は付けず、クレート外が構造体リテラルで直接組み立てられる）。
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct AnnShapeInput {
     /// `hnsw_cache.is_some()`（`SearchEngineKind::Hnsw` opt-in 構築時のみ `true`）。
-    pub(crate) hnsw_enabled: bool,
-    /// カスタム provider を直接注入した構築経路かどうか。
-    pub(crate) engine_kind_unknown: bool,
-    /// `Ranking::Hybrid` かどうか。
-    pub(crate) is_hybrid: bool,
-    /// `bound.mode` が `precision` か。
-    pub(crate) is_precision: bool,
+    pub hnsw_enabled: bool,
+    /// カスタム provider を直接注入した構築経路かどうか（`hnsw_enabled == false` の場合のみ参照し、`true` を
+    /// `AnnPlan::UnknownCustomProvider`、`false` を `PlainScanEngine` に振り分ける）。
+    pub engine_kind_unknown: bool,
+    /// `Ranking::Hybrid` かどうか（分類本体は参照しない。`sql::exec` 側の 4 boolean 導出・判別テスト用）。
+    pub is_hybrid: bool,
+    /// `bound.mode`（`USING PLAN` 経由の推定を含む）が `precision` か。
+    pub is_precision: bool,
     /// `bound.metadata_filters` と `bound.expr_filters` がともに空か。
-    pub(crate) filters_empty: bool,
+    pub filters_empty: bool,
     /// SCALAR 段が DISTANCE 段より先に評価されるか。
-    pub(crate) scalar_prefilter: bool,
+    pub scalar_prefilter: bool,
 }
 
-pub(crate) fn classify_ann_plan(input: AnnShapeInput) -> AnnPlan;
+/// `AnnShapeInput` から `AnnPlan` を決定する（純粋関数・副作用なし）。Issue #730 で公開 API へ昇格した
+/// （`sql::explain::build_explain_result` が `EXPLAIN` と同じ `ann_plan:` 値を返すための単一情報源を、engine クレート外からも共有できるようにするため）。
+pub fn classify_ann_plan(input: AnnShapeInput) -> AnnPlan;
 ```
 
 ## Notes
 
 - ファイルサイズが大きい（約212KB、この scope で最大のファイル）。`HnswIndexCacheStats` / `IndexedBase` / `TraversalRegime` / `Overlay` / `HnswCacheAccess` / `PreparedHnswSearch` / `AnnPlan` / `AnnShapeInput` の全フィールド・全バリアント、および `classify_ann_plan` のシグネチャは main が保存したソースから Read で verbatim 転記した。`HnswIndexCache` のフィールド・`prepare_full_visible` / `prepare_subset` / `search_prepared` / `search_or_fallback` / `search_subset_or_fallback` の詳細シグネチャは転記範囲を絞った（未転記。取得不能ではない）
-- 関連 ADR: [`hnsw-generation-cache`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/hnsw-generation-cache.md)（Issue #408・実装済み。HNSW 索引のテーブル世代整合キャッシュと未索引分 brute-force 併用 = 本モジュールそのものの設計 ADR。親 #402・前提 #404〜#407）、[`scalar-index-mask-search`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/scalar-index-mask-search.md)（Issue #654・実装済み。候補集合を id マスクで直接探索し arena 複製を回避する設計 = `subset_mask_scans`/`subset_arena_copies` 統計の設計背景）
+- 関連 ADR: [`hnsw-generation-cache`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/dc888f6ea146d3078153d64a6848f5c8cf044431/docs/design/hnsw-generation-cache.md)（Issue #408・実装済み。HNSW 索引のテーブル世代整合キャッシュと未索引分 brute-force 併用 = 本モジュールそのものの設計 ADR。親 #402・前提 #404〜#407）、[`scalar-index-mask-search`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/dc888f6ea146d3078153d64a6848f5c8cf044431/docs/design/scalar-index-mask-search.md)（Issue #654・実装済み。候補集合を id マスクで直接探索し arena 複製を回避する設計 = `subset_mask_scans`/`subset_arena_copies` 統計の設計背景）
+- Migration (0.1.0 → 0.2.0): `AnnPlan`（`#[non_exhaustive]`）・`AnnShapeInput`・`classify_ann_plan` が公開 API になった（`sql` モジュールから `pub use hnsw_cache::{classify_ann_plan, AnnPlan, AnnShapeInput};` で再エクスポート。`hnsw_cache` モジュール自体は `pub(crate)` のまま）。`HnswIndexCacheStats`（pub）のフィールド一覧は 0.1.0 から変化なし。`TraversalRegime::PlainScan / OneHop / TwoHop`・`PreparedHnswSearch::{Indexed, FullScan, PlainScanBelowRatio}` も変化なし
 - spec ポインタ（CORE-9, CORE-10, TASK-132）は本文非公開のため未記載
 - Distinct from `nvidia-cuda` / `apple-silicon` / `amd-rocm`: not a GPU kernel/language layer, but a query-scoped table-generation-consistent cache for the HNSW index.
 - Distinct from `upstash`: not the @upstash/vector ANN search SaaS client API, but the engine's internal HNSW cache implementation.
