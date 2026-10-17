@@ -59,4 +59,4 @@ exit={{
 
 - [startTransition](./startTransition.md)
 - [ViewTransition](../components/ViewTransition.md)
-- React 19.3
+- [React 19.3](../versions/react-19-3.md)

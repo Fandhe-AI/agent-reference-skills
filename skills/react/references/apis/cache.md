@@ -66,4 +66,4 @@ function Page({id}) {
 - [cacheSignal](./cacheSignal.md)
 - [memo](./memo.md)
 - [use](./use.md)
-- useMemo
+- [useMemo](../hooks/useMemo.md)

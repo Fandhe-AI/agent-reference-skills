@@ -2,15 +2,13 @@
 name: react
 description: >
   React (UI ライブラリ本体, react / react-dom 19.3) の公式リファレンス。
-  Hooks (useState, useEffect, useActionState, useOptimistic, useEffectEvent), use, cache, Suspense,
-  Activity, ViewTransition, createRoot, hydrateRoot, createPortal, flushSync, react-dom/server,
-  Server Components / Server Functions, React Compiler, eslint-plugin-react-hooks, DevTools。
+  Hooks (useState, useEffect, useActionState, useOptimistic, useEffectEvent), use, cache, Suspense, Activity, ViewTransition,
+  createRoot, hydrateRoot, createPortal, flushSync, react-dom/server, Server Components / Server Functions,
+  React Compiler, eslint-plugin-react-hooks, DevTools, Rules of React。React Router・Next.js・TanStack 系・RHF とは別。
 user-invocable: false
 ---
 
 # React
-
-> 分割 PR の途中段階。現在収録済み: references/{apis, compiler, components, dom-apis, dom-components, dom-server, hooks, legacy, rules-of-react, server-components}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 対象バージョン: React 19.3.1 (npm `react` / `react-dom` latest、2026-10-14 公開。versions.md の表記は "Latest version: 19.3")。
 関連パッケージ: babel-plugin-react-compiler 1.0.0 / eslint-plugin-react-hooks 7.1.1 / @types/react 19.3.0 / react-devtools 8.0.0。
@@ -29,6 +27,7 @@ skills/react/
       useEffect.md
       useActionState.md
       useOptimistic.md
+      ...
     apis/                   # react パッケージの組み込み API
       README.md
       overview.md
@@ -37,6 +36,7 @@ skills/react/
       cache.md
       memo.md
       startTransition.md
+      ...
     components/             # 組み込みコンポーネント
       README.md
       Suspense.md
@@ -51,6 +51,7 @@ skills/react/
       common.md
       form.md
       link.md
+      ...
     dom-apis/               # react-dom の API・クライアント API・フォーム状態
       README.md
       createRoot.md
@@ -59,12 +60,14 @@ skills/react/
       flushSync.md
       useFormStatus.md
       preload.md
+      ...
     dom-server/             # react-dom/server・static
       README.md
       renderToPipeableStream.md
       renderToReadableStream.md
       prerender.md
       resume.md
+      ...
     server-components/      # RSC・Server Functions・ディレクティブ
       README.md
       server-components.md
@@ -86,12 +89,49 @@ skills/react/
       compilationMode.md
       incremental-adoption.md
       debugging.md
+      ...
+    tooling/                # ESLint プラグイン・DevTools・TypeScript・Performance tracks
+      README.md
+      eslint-plugin-react-hooks.md
+      lint-exhaustive-deps.md
+      lint-rules-of-hooks.md
+      react-developer-tools.md
+      typescript.md
+      react-performance-tracks.md
+      ...
     legacy/                 # レガシー API
       README.md
       overview.md
       Component.md
       forwardRef.md
       createElement.md
+      ...
+    versions/               # リリースノート・アップグレード・脆弱性告知
+      README.md
+      versions.md
+      versioning-policy.md
+      react-19.md
+      react-19-2.md
+      react-19-3.md
+      react-19-upgrade-guide.md
+      react-compiler-1.md
+      ...
+  samples/
+    README.md
+    thinking-in-react.md
+    state-and-events.md
+    form-actions.md
+    optimistic-updates.md
+    suspense-data-fetching.md
+    view-transitions.md
+    server-rendering-streaming.md
+    ...
+  scripts/
+    README.md
+    install.md
+    create-app.md
+    compiler.md
+    devtools.md
 ```
 
 ## 探索手順
@@ -119,4 +159,9 @@ skills/react/
 | Hooks のルール・純粋性など Rules of React を確認する | rules-of-react | [references/rules-of-react/README.md](references/rules-of-react/README.md) |
 | React Compiler の導入・設定・段階的導入・デバッグ | compiler | [references/compiler/README.md](references/compiler/README.md) |
 | `"use memo"` / `"use no memo"` / compilationMode / gating を調べる | compiler | [references/compiler/README.md](references/compiler/README.md) |
+| eslint-plugin-react-hooks のルール・設定を調べる | tooling | [references/tooling/README.md](references/tooling/README.md) |
+| React DevTools・TypeScript 型・Performance tracks を使う | tooling | [references/tooling/README.md](references/tooling/README.md) |
 | クラスコンポーネント・`forwardRef`・`createElement` などレガシー API を調べる | legacy | [references/legacy/README.md](references/legacy/README.md) |
+| 19.x のリリースノート・アップグレード手順・脆弱性告知を確認する | versions | [references/versions/README.md](references/versions/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・アプリ作成・Compiler 導入コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

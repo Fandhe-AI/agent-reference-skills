@@ -195,7 +195,7 @@ When the permalink is provided to `useActionState`, React will redirect to the p
 - Until September 2024, all Server Functions were referred to as "Server Actions". If a Server Function is passed to an action prop or called from inside an action then it is a Server Action, but not all Server Functions are Server Actions.
 - When a Server Function is defined with the `"use server"` directive, your framework automatically creates a reference to it and passes that reference to the Client Component. When called on the client, React sends a request to the server to execute the function and return the result.
 - While Server Functions in React 19 are stable and will not break between minor versions, the underlying APIs used to implement them in a bundler or framework do not follow semver and may break between minors in React 19.x. Pin to a specific React version, or use the Canary release.
-- Arguments are client-controlled; see the security considerations in [use server](./use-server.md). For security advisories affecting React Server Components packages, see rsc-critical-security-vulnerability and rsc-dos-and-source-code-exposure.
+- Arguments are client-controlled; see the security considerations in [use server](./use-server.md). For security advisories affecting React Server Components packages, see [rsc-critical-security-vulnerability](../versions/rsc-critical-security-vulnerability.md) and [rsc-dos-and-source-code-exposure](../versions/rsc-dos-and-source-code-exposure.md).
 - Scope: this page is React's own Server Functions specification. Next.js Server Actions behavior belongs to nextjs-app, TanStack's `createServerFn` to tanstack-start, and React Router's actions to react-router.
 
 ## Related

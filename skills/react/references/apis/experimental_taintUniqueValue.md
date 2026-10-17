@@ -62,5 +62,5 @@ export async function getUser(id) {
 ## Related
 
 - [experimental_taintObjectReference](./experimental_taintObjectReference.md)
-- Server Functions
-- use client
+- [Server Functions](../server-components/server-functions.md)
+- [use client](../server-components/use-client.md)

@@ -69,6 +69,6 @@ Exported from the `react` package, but not recommended for use in newly written 
 ## Related
 
 - [Built-in React APIs](./overview.md)
-- Hooks
+- [Hooks](../hooks/overview.md)
 - [Components](../components/overview.md)
-- Legacy APIs
+- [Legacy APIs](../legacy/overview.md)

@@ -59,6 +59,6 @@ function arePropsEqual(oldProps, newProps) {
 ## Related
 
 - [cache](./cache.md)
-- useMemo
-- useCallback
-- forwardRef
+- [useMemo](../hooks/useMemo.md)
+- [useCallback](../hooks/useCallback.md)
+- [forwardRef](../legacy/forwardRef.md)
