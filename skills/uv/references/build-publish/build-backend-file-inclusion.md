@@ -53,6 +53,8 @@ There are no specific wheel includes. There must only be one top level module, a
 - For performance and reproducibility, avoid patterns without an anchor such as `**/sample.csv`.
 - When using the uv build backend through a frontend that is not uv, such as pip or `python -m build`, debug logging can be enabled with `RUST_LOG=uv=debug` or `RUST_LOG=uv=verbose`. When used through uv, the uv build backend shares the verbosity level of uv.
 
+- The TOML 1.0 rewrite of `pyproject.toml` (with the original kept as `pyproject.toml.orig`) is listed on the preview-features page as the `toml-backwards-compatibility` preview feature, while the build-backend page lists it without condition; the docs disagree on whether it applies when preview is not enabled. See [Preview features](../configuration/preview-features.md).
+
 ## Related
 
 - [Build backend](./build-backend.md)

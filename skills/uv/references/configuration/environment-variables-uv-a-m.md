@@ -77,6 +77,7 @@ $ UV_INDEX_FOO_USERNAME=user UV_INDEX_FOO_PASSWORD=pass uv sync
 ## Notes
 
 - `UV_INDEX_{name}_USERNAME` / `UV_INDEX_{name}_PASSWORD` provide registry credentials for named indexes; this is package-registry authentication, not application authentication (see better-auth, supabase for app auth).
+- The timing of the malware check is inconsistent in the official docs: the environment-variable reference says it runs after `uv sync` (after every lockfile sync), while the preview-features page (`malware-check`) says installation commands check packages before installing. The check is a preview feature; verify the behavior against the pinned 0.13.1 release before relying on it as a pre-install gate.
 - Changed in 0.13.0: `UV_LEGACY_TAR_BACKEND` was added as the compatibility fallback for the new default tar backend (`tar-codec`).
 
 ## Related
