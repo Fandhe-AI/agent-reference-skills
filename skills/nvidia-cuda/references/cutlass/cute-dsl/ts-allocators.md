@@ -25,7 +25,7 @@ task_manager.setup_resources_and_tasks()
 | `TmemAllocation` / `get_tmem_requirements()` | Declare TMEM columns, e.g. `TmemAllocation("tmem_acc", mma_tiler_mnk[1] * acc_stages)`. |
 | `SmemAllocator` | `add_resource`, `compute_layout`, `add_alias_group(phases)`, `add_tmem_ptr`, `add_pipeline_group`. |
 | `TmemAllocator` | Column-based, no alignment; computes column offsets only, emits no allocation intrinsics. |
-| `BarrierAllocator` | Coalesces every pipeline's `full` / `empty` mbarriers into one array and initializes it in one vectorized pass. |
+| `BarrierAllocator` | Coalesces every pipeline's `full` / `empty` mbarriers into one array and initializes it in one vectorized pass. (Appears only in the Allocators / Pipeline Groups guides; not listed in the rendered API reference.) |
 
 ## Notes
 
@@ -78,6 +78,7 @@ task_manager.setup_resources_and_tasks()
   allocator.compute_layout()
   ```
 
+- `BarrierAllocator` and the `TaskManager(barrier_allocator=...)` keyword appear only in the Allocators guide (and Pipeline Groups guide); they are absent from the rendered API reference (docs.nvidia.com/cutlass/latest, fetched 2026-10) — the `TaskManager.__init__` signature in [task_manager](./ts-api-task-manager.md) lists only `smem_allocator` / `tmem_allocator`, and [memory](./ts-api-memory.md) documents no `BarrierAllocator`. Without a `BarrierAllocator`, `SmemAllocator` accounts for pipeline barrier storage itself (`barrier_smem_bytes`) and patches it with `assign_barrier_ptrs()`. Verify the keyword against the installed `cutlass.experimental.task_scheduling` before relying on it.
 - Default SMEM alignment is 128 bytes. Pipeline mbarrier storage is accounted separately as 16 bytes per stage and patched by `assign_barrier_ptrs()`.
 - Checker coupling: if two aliased resources are accessed at the same time by different tasks and one writes, the checker reports an `aliasing race` (e.g. a writer re-acquires and overwrites `tmem_sp` after the reader released it while the reader still reads the aliased `tmem_vec`).
 - Document version: CUTLASS v4.8.0 — [Allocators](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_allocators.html) (source: [ts_allocators.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_allocators.rst))
