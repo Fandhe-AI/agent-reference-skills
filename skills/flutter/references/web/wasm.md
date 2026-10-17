@@ -19,7 +19,7 @@ Steps to try Wasm:
 
 - Switch to Flutter 3.24 or higher (`flutter upgrade`).
 - Use the default template sample app or an app migrated to be compatible with Wasm.
-- Make sure `web/index.html` uses the latest Flutter web app initialization (Flutter 3.22 and later). To regenerate: delete the contents of `web/` and run `flutter create . --platforms web`.
+- Make sure `web/index.html` uses the latest Flutter web app initialization (Flutter 3.22 and later). To get the latest template without losing custom files, commit or back up `web/` first, generate a fresh web template in a separate directory (for example `flutter create --platforms web /tmp/web_template`), and merge only the needed parts of its `web/index.html` (and `flutter_bootstrap.js` if used) into your project's `web/`.
 
 ## Production debugging
 
@@ -108,6 +108,7 @@ import 'fallback.dart'
 
 ## Notes
 
+- The source suggests deleting the contents of `web/` and running `flutter create . --platforms web`; this page instead regenerates the template in a separate directory and merges it, so custom bootstrap code, JavaScript, icons and uncommitted changes in `web/` are not lost.
 - The source describes WebKit WasmGC status inconsistently (iOS Chrome entry vs. Safari entry); both are kept with their linked bugs.
 - Flutter web compiled to Wasm cannot run on the iOS version of any browser: all browsers on iOS must use WebKit.
 - Wasm compilation does not use deferred loading by default. Deferred loading in Wasm is experimental, enabled with `--enable-wasm-deferred-loading`. The source states it is available on the Flutter main branch and "will become generally available later this year in the 3.50 flutter stable release"; it is not part of Flutter 3.47.7 stable.
