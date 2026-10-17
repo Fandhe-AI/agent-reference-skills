@@ -9,7 +9,7 @@ Build wrapper CLIs that extend the Hermes TUI with custom widgets, keybindings a
 """my_cli.py — Example wrapper CLI that extends Hermes."""
 
 from cli import HermesCLI
-from prompt_toolkit.layout import FormattedTextControl, Window
+from prompt_toolkit.layout import ConditionalContainer, FormattedTextControl, Window
 from prompt_toolkit.filters import Condition
 
 
@@ -23,9 +23,11 @@ class MyCLI(HermesCLI):
         """Add a toggleable info panel above the status bar."""
         cli_ref = self
         return [
-            Window(
-                FormattedTextControl(lambda: "My custom panel content"),
-                height=1,
+            ConditionalContainer(
+                Window(
+                    FormattedTextControl(lambda: "My custom panel content"),
+                    height=1,
+                ),
                 filter=Condition(lambda: cli_ref._panel_visible),
             ),
         ]
@@ -74,7 +76,8 @@ Default layout top to bottom: output area, spacer, extra widgets, status bar, im
 - The first three hooks are new protected hooks; the last two already existed.
 - Avoid conflicts with built-in keybindings: `Enter` (submit), `Escape Enter` (newline), `Ctrl-C` (interrupt), `Ctrl-D` (exit), `Tab` (auto-suggest accept). Function keys F2+ and Ctrl-combinations are generally safe.
 - Call `self._invalidate()` after state changes to trigger a redraw; `self.agent`, `self.model`, `self.conversation_history` are available.
-- Use `ConditionalContainer` or `filter=Condition(...)` to make widgets toggleable.
+- Wrap widgets in `ConditionalContainer(..., filter=Condition(...))` to make them toggleable (`Window` itself has no `filter` argument).
+- The first example on the official page passes `filter=` directly to `Window`; it was changed here to match the `ConditionalContainer` example on the same page (v0.22.2).
 - Do not override `run()` unless absolutely necessary.
 - Source: https://hermes-agent.nousresearch.com/docs/developer-guide/extending-the-cli (pinned to v0.22.2)
 

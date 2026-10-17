@@ -41,7 +41,7 @@ class MyBackendWebSearchProvider(WebSearchProvider):
             {"title": "...", "url": "...", "description": "...", "position": 1}]}}
 
 # __init__.py
-from plugins.web.my_backend.provider import MyBackendWebSearchProvider
+from .provider import MyBackendWebSearchProvider
 
 
 def register(ctx) -> None:
@@ -100,6 +100,7 @@ Response envelope: search success `{"success": True, "data": {"web": [{"title", 
 - `search()` / `extract()` may be `async def`; the dispatcher detects coroutines.
 - `is_available()` must not make network calls (runs on every `hermes tools` paint). Use `pm.available("extra-name")` there and `pm.ensure_import("extra-name")` in the operation; report `InstallError`. Third-party plugins declare their own dependencies in manifest or `pyproject.toml`.
 - Reference implementations: `brave_free/` (API-key search-only template), `ddgs/` (no-key, lazy-installs SDK), `firecrawl/` (search + extract + crawl), `searxng/` (self-hosted, no auth), `xai/` (LLM-backed search reusing existing credentials).
+- The official example uses `from plugins.web.my_backend.provider import ...`, which only resolves for bundled directories with an underscore name (same shape as bundled `brave_free`). User plugins in `~/.hermes/plugins/web/<name>/` are loaded under the `hermes_plugins` namespace, so use the relative import (v0.22.2).
 - Source: https://hermes-agent.nousresearch.com/docs/developer-guide/web-search-provider-plugin (pinned to v0.22.2)
 
 ## Related

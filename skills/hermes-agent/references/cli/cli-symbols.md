@@ -11,7 +11,9 @@ Decoder for the symbols in the Hermes terminal UI: transcript markers, status-ba
 
 Glyphs marked *themeable* are brand defaults that a skin can override (e.g. `tool_prefix`, the prompt symbol). Everything else is fixed in the renderer.
 
-## Transcript symbols
+## Options / Props
+
+### Transcript symbols
 
 | Symbol | Meaning |
 |--------|---------|
@@ -28,7 +30,7 @@ Glyphs marked *themeable* are brand defaults that a skin can override (e.g. `too
 | `☐` / `☑` / `•` | Markdown task-list items (open / done) and plain bullets. |
 | `▶` | Collapsed `<details>` summary in rendered markdown. |
 
-## Status-bar symbols
+### Status-bar symbols
 
 Segments appear only when relevant and drop off first on narrow terminals.
 
@@ -52,7 +54,7 @@ Segments appear only when relevant and drop off first on narrow terminals.
 | `N bg` | N background terminal processes tracked. |
 | `N live sessions` | Open TUI sessions in this process; click to open the switcher. |
 
-## Notices
+### Notices
 
 | Symbol | Meaning |
 |--------|---------|
@@ -61,7 +63,7 @@ Segments appear only when relevant and drop off first on narrow terminals.
 | `⚠` | Warning (also credit warnings). |
 | `✕` | Error. |
 
-## Approval and confirmation prompts
+### Approval and confirmation prompts
 
 | Symbol | Meaning |
 |--------|---------|
@@ -70,7 +72,7 @@ Segments appear only when relevant and drop off first on narrow terminals.
 | `🔐` | Sudo password prompt (masked). |
 | `🔑` | Credential/secret input prompt (masked). |
 
-## Subagents overlay (`/agents`)
+### Subagents overlay (`/agents`)
 
 | Symbol | Meaning |
 |--------|---------|
@@ -84,7 +86,7 @@ Segments appear only when relevant and drop off first on narrow terminals.
 | `⚡N` | N currently-active agents in a rollup row. |
 | `▁▂▃▄▅▆▇█` | Activity sparkline per branch. |
 
-## Session switcher (`Ctrl+X`)
+### Session switcher (`Ctrl+X`)
 
 | Symbol | Meaning |
 |--------|---------|
@@ -94,7 +96,7 @@ Segments appear only when relevant and drop off first on narrow terminals.
 | `▶` | Working. |
 | `✎ draft` | Unsent draft in that session's composer. |
 
-## Pickers and hubs
+### Pickers and hubs
 
 | Symbol | Meaning |
 |--------|---------|
@@ -105,7 +107,7 @@ Segments appear only when relevant and drop off first on narrow terminals.
 | `↑ N more` / `↓ N more` | More rows above/below the visible window. |
 | `┃` | Scrollbar thumb. |
 
-## Goals
+### Goals
 
 | Symbol | Meaning |
 |--------|---------|

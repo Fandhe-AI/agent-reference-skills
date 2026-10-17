@@ -17,9 +17,11 @@ quick_commands:
 
 Type `/` in the CLI to open the autocomplete menu. Built-in commands are case-insensitive. Prefix matching applies (`/h` -> `/help`, `/mod` -> `/model`); on ambiguity the first match in registry order wins, and full names / registered aliases always beat prefix matches.
 
-## Interactive CLI commands
+## Options / Props
 
-### Session
+### Interactive CLI commands
+
+#### Session
 
 | Command | Description |
 |---------|-------------|
@@ -59,7 +61,7 @@ Type `/` in the CLI to open the autocomplete menu. Built-in commands are case-in
 | `/handoff <platform>` | CLI only. Hand the session off to a messaging platform (requires running gateway and a home channel) |
 | `/journey [list\|delete <id>\|edit <id>]` (aliases `/learning`, `/memory-graph`) | Learning journey timeline of learned skills and memories |
 
-### Configuration
+#### Configuration
 
 | Command | Description |
 |---------|-------------|
@@ -85,7 +87,7 @@ Type `/` in the CLI to open the autocomplete menu. Built-in commands are case-in
 | `/timestamps [on\|off\|status]` | CLI-only: `[HH:MM]` timestamps |
 | `/wake [on\|off\|status]` | CLI-only: "Hey Hermes" wake word |
 
-### Tools and Skills
+#### Tools and Skills
 
 | Command | Description |
 |---------|-------------|
@@ -111,7 +113,7 @@ Type `/` in the CLI to open the autocomplete menu. Built-in commands are case-in
 | `/pet [list\|<slug>]` | Toggle or adopt a petdex mascot |
 | `/hatch <description>` (alias `/generate-pet`) | Generate a new petdex pet from a description |
 
-### Info and Exit
+#### Info and Exit
 
 | Command | Description |
 |---------|-------------|
@@ -133,14 +135,14 @@ Type `/` in the CLI to open the autocomplete menu. Built-in commands are case-in
 | `/profile` | Show active profile name and home directory |
 | `/quit` (also `/exit`) | Exit the CLI |
 
-### Dynamic commands
+#### Dynamic commands
 
 | Command | Description |
 |---------|-------------|
 | `/<skill-name>` | Load an installed skill on demand (e.g. `/gif-search`) |
 | `/skills ...` | Search, browse, inspect, install, audit, publish, configure skills |
 
-## Messaging commands
+### Messaging commands
 
 Supported inside Telegram, Discord, Slack, WhatsApp, Signal, Email, Home Assistant, and Teams. On Slack, native slash commands are blocked inside threads; use the `!` prefix instead (`!stop`, `!new`, `!status`).
 
@@ -162,7 +164,7 @@ Supported inside Telegram, Discord, Slack, WhatsApp, Signal, Email, Home Assista
 | `/update`, `/restart`, `/debug`, `/help` | Maintenance |
 | `/<skill-name>` | Invoke an installed skill |
 
-## Custom model aliases
+### Custom model aliases
 
 ```yaml
 model_aliases:

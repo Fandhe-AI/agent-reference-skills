@@ -30,6 +30,38 @@ Running `hermes profile` without a subcommand shows help.
 | `update <name> [--force-config] [--yes]` | Re-pull a distribution-managed profile and re-apply its bundle. |
 | `info <name>` | Show distribution metadata (origin URL, commit, last update). |
 
+### Examples
+
+```bash
+hermes profile create work --clone
+hermes profile create work2 --clone-from work
+hermes profile describe researcher --text "Reads source code and writes findings."
+hermes profile export work -o ./work-2026-03-29.tar.gz
+hermes profile import ./work-2026-03-29.tar.gz --name work-restored
+hermes profile install github.com/kyle/telemetry-distribution --alias
+hermes -p work chat -q "Check the server status"
+hermes completion zsh >> ~/.zshrc
+```
+
+Distribution manifest (`distribution.yaml` at repository root):
+
+```yaml
+name: telemetry
+version: 0.1.0
+description: "Compliance monitoring harness"
+hermes_requires: ">=0.12.0"
+author: "Your Name"
+license: "MIT"
+env_requires:
+  - name: OPENAI_API_KEY
+    description: "OpenAI API key"
+    required: true
+distribution_owned:   # optional
+  - SOUL.md
+  - skills/compliance/
+  - cron/
+```
+
 ## Options / Props
 
 ### `hermes profile create`
@@ -63,38 +95,6 @@ Running `hermes profile` without a subcommand shows help.
 | `--alias` | Also create a shell wrapper. |
 | `--force` | Overwrite an existing profile of the same name (user data preserved). |
 | `-y`, `--yes` | Skip the manifest-preview confirmation. |
-
-## Examples
-
-```bash
-hermes profile create work --clone
-hermes profile create work2 --clone-from work
-hermes profile describe researcher --text "Reads source code and writes findings."
-hermes profile export work -o ./work-2026-03-29.tar.gz
-hermes profile import ./work-2026-03-29.tar.gz --name work-restored
-hermes profile install github.com/kyle/telemetry-distribution --alias
-hermes -p work chat -q "Check the server status"
-hermes completion zsh >> ~/.zshrc
-```
-
-Distribution manifest (`distribution.yaml` at repository root):
-
-```yaml
-name: telemetry
-version: 0.1.0
-description: "Compliance monitoring harness"
-hermes_requires: ">=0.12.0"
-author: "Your Name"
-license: "MIT"
-env_requires:
-  - name: OPENAI_API_KEY
-    description: "OpenAI API key"
-    required: true
-distribution_owned:   # optional
-  - SOUL.md
-  - skills/compliance/
-  - cron/
-```
 
 ## Notes
 
