@@ -26,6 +26,6 @@ app.listen(3005);
 ## Notes
 
 - CommonJS is not supported; set `"type": "module"` in `package.json` or configure ESM in `tsconfig.json`
-- Never call `express.json()` before the Better Auth handler — the client API gets stuck on "pending" if you do
+- Mount the Better Auth handler before body-parsing middleware such as `express.json()`; body parsers consume the request stream before passing control to the next handler
 - Express v4 uses `"/api/auth/*"`; Express v5 uses `"/api/auth/*splat"`
-- After setup, `GET /api/auth/ok` returns 200 when the handler is mounted correctly
+- After setup, `GET /api/auth/ok` verifies the server is running

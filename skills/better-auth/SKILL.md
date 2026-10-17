@@ -1,18 +1,18 @@
 ---
 name: better-auth
 description: >
-  Better Auth (TypeScript 認証フレームワーク) リファレンス。
-  認証・認可、サインアップ・サインイン、セッション管理、OAuth、パスキー、
-  二要素認証 (TOTP)、プラグイン (organization, admin, magic-link, anonymous 等)。
-  betterAuth, createAuthClient, signUp, signIn, getSession。
-  フレームワーク統合 (Next.js, Nuxt, SvelteKit, Hono, Express, Expo, TanStack 等)。
+  Better Auth (TypeScript 認証フレームワーク) v1.7 リファレンス。
+  認証・認可、サインアップ・サインイン、セッション管理、OAuth、パスキー、二要素認証 (2FA / TOTP)、SSO / SAML、SCIM、
+  OAuth Provider (OAuth 2.1 / OIDC)、MCP 認可 (@better-auth/mcp)、Infrastructure (dash / sentinel)、
+  プラグイン (organization, admin, magic-link, anonymous 等)。betterAuth, createAuthClient, signUp, signIn, getSession。
+  Next.js, Nuxt, SvelteKit, Hono, Express, Expo, TanStack, Effect 統合。
 user-invocable: false
-model: sonnet
 ---
 
 # Better Auth API リファレンス
 
 Better Auth — TypeScript 向けフレームワーク非依存の認証・認可フレームワーク。
+対象 Better Auth v1.7.10（docs: GitHub tag v1.7.10、取得 2026-10-17）。1.6 からの移行は `references/guides/1-7-upgrade-guide.md`。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
@@ -73,6 +73,7 @@ skills/better-auth/
       svelte-kit.md
       tanstack.md
       waku.md
+      effect.md
     examples/
       README.md
       astro.md
@@ -87,6 +88,7 @@ skills/better-auth/
       other-social-providers.md
       social-apple.md
       social-atlassian.md
+      social-cloudflare.md
       social-cognito.md
       social-discord.md
       social-dropbox.md
@@ -132,6 +134,7 @@ skills/better-auth/
       bearer.md
       captcha.md
       chargebee.md
+      cimd.md
       commet.md
       community-plugins.md
       creem.md
@@ -158,12 +161,23 @@ skills/better-auth/
       phone-number.md
       polar.md
       scim.md
+      scim-groups-and-roles.md
+      scim-reference.md
       siwe.md
       sso.md
       stripe.md
       test-utils.md
       two-factor.md
       username.md
+    infrastructure/
+      README.md
+      introduction.md
+      getting-started.md
+      dashboard.md
+      audit-logs.md
+      sentinel.md
+      email-service.md
+      sms-service.md
     reference/
       README.md
       contributing.md
@@ -195,6 +209,7 @@ skills/better-auth/
       error-unknown.md
     guides/
       README.md
+      1-7-upgrade-guide.md
       auth0-migration.md
       browser-extension.md
       clerk-migration.md
@@ -222,6 +237,7 @@ skills/better-auth/
     hono.md
     hooks.md
     lynx.md
+    mcp-server.md
     nestjs.md
     next.md
     nitro.md
@@ -273,9 +289,14 @@ skills/better-auth/
 | Stripe / Chargebee / Polar / Autumn 等の課金・サブスクリプション統合 | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | MCP 認証・エージェント認証・SIWE・キャプチャ・パスワード漏洩チェック | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | コミュニティ製プラグイン一覧を確認したい | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| OAuth 2.1 / OIDC プロバイダー構築・CIMD・DPoP | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| SCIM の groups・roles・reference | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| Effect HTTP server 統合 | integrations | [references/integrations/README.md](references/integrations/README.md) |
+| Better Auth Infrastructure（有料。@better-auth/infra の dash / sentinel、audit logs、managed email / SMS） | infrastructure | [references/infrastructure/README.md](references/infrastructure/README.md) |
 | 設定オプション一覧・セキュリティガイド・FAQ | reference | [references/reference/README.md](references/reference/README.md) |
 | エラーコード調査・OpenTelemetry・テレメトリー | reference | [references/reference/README.md](references/reference/README.md) |
 | コントリビューションガイド・コミュニティ動画/ブログ等のリソース集 | reference | [references/reference/README.md](references/reference/README.md) |
+| 1.6 → 1.7 アップグレード・破壊的変更（npx auth upgrade） | guides | [references/guides/README.md](references/guides/README.md) |
 | Auth.js (NextAuth) / Auth0 / Clerk / Supabase / WorkOS からの移行 | guides | [references/guides/README.md](references/guides/README.md) |
 | カスタムプラグイン作成・カスタム DB アダプター作成・パフォーマンス最適化 | guides | [references/guides/README.md](references/guides/README.md) |
 | SAML SSO (Okta)・ブラウザ拡張機能統合・動的ベース URL 詳細 | guides | [references/guides/README.md](references/guides/README.md) |

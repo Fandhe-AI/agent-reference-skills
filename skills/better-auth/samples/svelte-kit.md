@@ -3,10 +3,10 @@
 Mount the handler in `hooks.server.ts` via `svelteKitHandler`, populate `event.locals`, and add `sveltekitCookies` for server actions.
 
 ```ts
-// hooks.server.ts
-import { auth } from "$lib/auth";
+// hooks.server.ts (SvelteKit 3 imports)
+import { auth } from "#lib/auth.js";
 import { svelteKitHandler } from "better-auth/svelte-kit";
-import { building } from "$app/environment";
+import { building } from "$app/env";
 
 export async function handle({ event, resolve }) {
   const session = await auth.api.getSession({ headers: event.request.headers });
@@ -26,14 +26,14 @@ import { getRequestEvent } from "$app/server";
 
 export const auth = betterAuth({
   // ...your config
-  plugins: [sveltekitCookies(getRequestEvent)], // must be last in the array
+  plugins: [sveltekitCookies(getRequestEvent)], // make sure this is the last plugin in the array
 });
 ```
 
 ```svelte
 <!-- +page.svelte -->
 <script lang="ts">
-  import { authClient } from "$lib/client";
+  import { authClient } from "#lib/client.js";
   const session = authClient.useSession();
 </script>
 
@@ -49,6 +49,7 @@ export const auth = betterAuth({
 
 ## Notes
 
+- The examples use SvelteKit 3 imports; on SvelteKit 2, import from `$lib/...` instead of `#lib/...` and `building` from `$app/environment` instead of `$app/env`
 - `svelteKitHandler` alone does not populate `event.locals.user`/`session` — fetch and assign it yourself in `handle` if server code needs it
 - Create the client with `createAuthClient` from `better-auth/svelte` (see `samples/client-setup.md`)
 - `getRequestEvent` requires SvelteKit `2.20.0+`

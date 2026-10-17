@@ -13,12 +13,13 @@
 | Expo Integration | Add the Expo server plugin and the matching client plugin so React Native apps get secure-storage sessions and deep-link OAuth. | [expo.md](./expo.md) |
 | Express Integration | Mount the handler with `toNodeHandler` on a catch-all route, and retrieve sessions with `fromNodeHeaders`. | [express.md](./express.md) |
 | Fastify Integration | Bridge Fastify's request/reply to the Fetch API `Request`/`Response` that `auth.handler` expects. | [fastify.md](./fastify.md) |
-| Hono Integration | Mount the handler on a Hono catch-all route and stash `user`/`session` in context via middleware. | [hono.md](./hono.md) |
+| Hono Integration | Mount the handler on a Hono catch-all route, add CORS, and expose the session through middleware. | [hono.md](./hono.md) |
 | Hooks | Run custom logic before or after auth endpoints using server-side middleware hooks. | [hooks.md](./hooks.md) |
 | Lynx Integration | Create a Lynx client with `better-auth/lynx` for cross-platform (Android/iOS/Web) apps built on the Lynx rendering framework. | [lynx.md](./lynx.md) |
+| MCP Server | Turn a Better Auth server into an OAuth provider for MCP clients and protect an MCP route with `requireMcpAuth`. | [mcp-server.md](./mcp-server.md) |
 | NestJS Integration | Wire Better Auth into NestJS with the community `@thallesp/nestjs-better-auth` module; routes are protected globally by default. | [nestjs.md](./nestjs.md) |
 | Next.js Integration | Add the `nextCookies` plugin for server actions and protect routes with `getSessionCookie` in `proxy.ts` (Next.js 16) or `middleware.ts`. | [next.md](./next.md) |
-| Nitro Integration | Mount the handler on a Nitro catch-all event handler and protect routes with an `onRequest` guard. | [nitro.md](./nitro.md) |
+| Nitro Integration | Mount the handler on a Nitro catch-all route, configure CORS via `routeRules`, and protect routes with a guard. | [nitro.md](./nitro.md) |
 | Nuxt Integration | Mount the handler on a Nitro catch-all route, use `authClient.useSession(useFetch)` for SSR-hydrated session state, and gate pages with route middleware. | [nuxt.md](./nuxt.md) |
 | Password Reset | Implement a forgot-password flow: request a reset link and apply the new password. | [password-reset.md](./password-reset.md) |
 | React Router v7 Integration | Mount the handler on a resource route and call it from both `loader` and `action`. | [react-router.md](./react-router.md) |

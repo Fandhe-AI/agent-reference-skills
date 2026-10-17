@@ -40,10 +40,14 @@ export const authClient = createAuthClient({
 ```
 
 ```typescript
-// Enable 2FA and get TOTP URI
+// Enable 2FA: method "totp" (default) returns { method, totpURI, backupCodes }
 const { data } = await authClient.twoFactor.enable({ password: "user-password" });
+// data.totpURI → pass to a QR code library
+
+// method "otp" returns { method } and enables 2FA immediately (requires otpOptions.sendOTP)
+await authClient.twoFactor.enable({ password: "user-password", method: "otp" });
+
 const { data: qrData } = await authClient.twoFactor.getTotpUri({ password: "user-password" });
-// qrData.totpURI → pass to a QR code library
 
 // Verify TOTP code after sign-in
 await authClient.twoFactor.verifyTotp({ code: "012345", trustDevice: true });
@@ -58,7 +62,7 @@ await authClient.twoFactor.disable({ password: "user-password" });
 
 ## Notes
 
+- `twoFactor.enable` returns a discriminated response: `{ method: "totp", totpURI, backupCodes }` for `totp`, `{ method: "otp" }` for `otp`
+- With `totp`, `twoFactorEnabled` stays `false` until the user verifies a TOTP code (unless the server plugin sets `skipVerificationOnEnable: true`); with `otp` it becomes `true` immediately
 - `twoFactor` plugin adds 1 field to the user table and 1 additional table; run `migrate` after adding it
-- `trustDevice: true` skips 2FA on subsequent logins from the same device for the configured period
-- `otpOptions.sendOTP` is required to support OTP-via-email as a second factor alternative to TOTP
-- `twoFactorPage` in the client plugin is the route shown when 2FA is required during sign-in
+- `trustDevice: true` skips 2FA on subsequent logins from the same device; `twoFactorPage` is the route shown when 2FA is required during sign-in

@@ -23,7 +23,19 @@ Complete reference for all configuration options available in `betterAuth({...})
 | `baseURL` | `string` | inferred from request | Base URL where your application server is hosted. Always set explicitly in production. Fallback: `BETTER_AUTH_URL` env var |
 | `basePath` | `string` | `/api/auth` | Path where Better Auth routes are mounted. Overridden if path component exists in `baseURL` |
 | `secret` | `string` | `"better-auth-secret-..."` | Secret used for encryption, signing, and hashing. Fallback: `BETTER_AUTH_SECRET` or `AUTH_SECRET` env vars. Generate with `openssl rand -base64 32` |
-| `secrets` | `Array<{ version: number; value: string }>` | — | Versioned secrets for non-destructive rotation. First entry is current key; remaining are decryption-only. Env: `BETTER_AUTH_SECRETS=2:key,1:key` |
+| `secrets` | `Array<{ version: number; value: string }>` | — | Versioned secrets for non-destructive rotation within the same encryption format and purpose. First entry is current key; remaining are decryption-only. Data encrypted for a purpose stays valid while its key remains configured. Env: `BETTER_AUTH_SECRETS=2:key,1:key`. When set, `secret` (singular) is only a fallback for decrypting legacy pre-envelope data within the same purpose; retaining it does not preserve pending OAuth or SAML state cookies or OAuth Proxy payloads when upgrading from shared keys to purpose-specific keys (see security.md) |
+
+#### Dynamic Base URL (`baseURL` object form)
+
+```typescript
+baseURL: {
+  allowedHosts: ["myapp.com", "preview-*.myapp.com"],
+  protocol: "https",
+  fallback: "https://myapp.com",
+}
+```
+
+Better Auth derives the host from the `Host` header and then the request URL, validates it against `allowedHosts`, and builds the request-specific base URL. Forwarded host and protocol headers are ignored unless you set `advanced.trustedProxyHeaders: true` (changed in 1.7). `allowedHosts` supports exact matches, wildcards (`*.vercel.app`, `preview-*.myapp.com`) and port wildcards (`localhost:*`), and is added to `trustedOrigins` (localhost entries get both `http` and `https`). Because `allowedHosts` entries become trusted origins, avoid wildcards over shared hosting suffixes such as `*.vercel.app` (they match deployments you do not control); restrict patterns to domains you own. `protocol`: `"http"`, `"https"`, or `"auto"` (default); `"auto"` uses `x-forwarded-proto` only when `advanced.trustedProxyHeaders` is `true`, then the request URL, then HTTP for local loopback hosts, otherwise HTTPS; it also affects the cookie `Secure` flag (override with `advanced.useSecureCookies`). `fallback`: used when no request host is available or the host does not match; without it, unresolved or unknown hosts throw (fail closed). Its origin is added to `trustedOrigins`. Use `fallback` carefully; it can hide misconfiguration.
 
 ### `emailVerification`
 
@@ -47,8 +59,8 @@ Complete reference for all configuration options available in `betterAuth({...})
 | `autoSignIn` | `boolean` | — | Auto sign in after registration |
 | `sendResetPassword` | `function` | — | Function to send password reset email |
 | `resetPasswordTokenExpiresIn` | `number` (seconds) | `3600` | Password reset token expiry |
-| `onPasswordReset` | `function` | — | Callback after password reset |
-| `revokeSessionsOnPasswordReset` | `boolean` | `false` | Revoke all sessions on password reset |
+| `onPasswordReset` | `function` | — | Callback triggered after a user's password is reset. Runs after the new password is saved and, when `revokeSessionsOnPasswordReset` is enabled, after sessions are revoked |
+| `revokeSessionsOnPasswordReset` | `boolean` | `false` | Revoke all of the user's sessions when resetting the password. For database sessions, revocation and the password change run in one transaction when transactions are enabled for the adapter; secondary-storage sessions are removed after commit on a best-effort basis |
 | `onExistingUserSignUp` | `function` | — | Callback when existing user signs up again |
 | `password` | `object` | — | Custom `hash` and `verify` functions |
 
@@ -64,6 +76,7 @@ Complete reference for all configuration options available in `betterAuth({...})
 | `preserveSessionInDatabase` | `boolean` | `false` | Keep session in DB after expiry |
 | `cookieCache.enabled` | `boolean` | — | Enable short-lived signed cookie cache |
 | `cookieCache.maxAge` | `number` (seconds) | — | Cookie cache duration |
+| `cookieCache.strategy` | `"compact" \| "jwt" \| "jwe"` | `"compact"` | Cookie cache encoding; `"jwt"` uses HS256 by default, or the JWT plugin's keys with `sessionCookieCache: true` |
 
 ### `account`
 
@@ -72,7 +85,7 @@ Complete reference for all configuration options available in `betterAuth({...})
 | `modelName` | `string` | `"accounts"` | Database model/table name |
 | `encryptOAuthTokens` | `boolean` | `false` | Encrypt stored OAuth tokens |
 | `updateAccountOnSignIn` | `boolean` | — | Update account data on each sign in |
-| `storeAccountCookie` | `boolean` | `false` (auto-true if no DB) | Store account in cookie |
+| `storeAccountCookie` | `boolean` | `false` (auto-true if no DB) | Store account in cookie (five-minute max age, refreshed when provider account data is rewritten; forward the returned `Set-Cookie` in server-side code). `getAccessToken`, `refreshToken`, and `accountInfo` require an explicit `accountId` or `useAccountCookie: true` |
 | `accountLinking.enabled` | `boolean` | `true` | Allow linking multiple providers |
 | `accountLinking.trustedProviders` | `string[] \| async function` | — | Providers allowed for automatic linking |
 | `accountLinking.allowDifferentEmails` | `boolean` | — | Allow linking accounts with different emails |
@@ -97,7 +110,9 @@ Secondary storage for session data, verification records, and rate limit data. S
 |--------|------|---------|-------------|
 | `disableCleanup` | `boolean` | `false` | Disable automatic cleanup of expired records |
 | `storeIdentifier` | `"plain" \| "hashed" \| function` | `"hashed"` | How to store the identifier |
-| `storeInDatabase` | `boolean` | `false` | Store verification records in database |
+| `storeInDatabase` | `boolean` | `false` | Store verification records in database even when `secondaryStorage` is configured |
+
+With `storeIdentifier.overrides`, Magic Link identifiers start with `magic-link:` and database-backed OAuth and SAML relay-state identifiers start with `auth-state:`. Overrides match these purpose prefixes before the identifier is stored or hashed; the token sent in a Magic Link and the state sent to an OAuth / SAML provider are unchanged. Custom `storeIdentifier` hashers should hash the complete identifier including its prefix. When upgrading, update overrides targeting these flows, upgrade servers sharing verification storage together, expect previously issued Magic Links to stop redeeming, and restart OAuth / SAML sign-ins using Better Auth-generated state that began before the upgrade. No verification table schema or user/account migration is required.
 
 ### `socialProviders`
 
@@ -114,6 +129,7 @@ Object with provider names as keys. Per-provider options:
 | `disableSignUp` | `boolean` | Disable new account creation via this provider |
 | `disableImplicitSignUp` | `boolean` | Disable implicit sign up |
 | `overrideUserInfoOnSignIn` | `boolean` | Update user info from provider on each sign in |
+| `requireEmailVerification` | `boolean` | Require this provider's email to be verified before a session is created. Opt-in per provider, independent of `emailAndPassword.requireEmailVerification`; only for providers with a trustworthy `email_verified` signal |
 | `prompt` | `"select_account" \| "consent" \| "login" \| "none" \| "select_account consent"` | OAuth prompt parameter |
 | `responseMode` | `"query" \| "form_post"` | OAuth response mode |
 | `getUserInfo` | `function` | Custom user info retrieval |
@@ -142,6 +158,8 @@ trustedOrigins: [
   "chrome-extension://EXTENSION_ID",
 ]
 ```
+
+For `http://` and `https://` URLs, patterns match the full origin (paths and query strings ignored). For custom schemes (like `exp://` or `myapp://`), wildcard patterns match against the full URL including paths. A non-wildcard pattern matches by scheme and authority: a host-less entry such as `myapp://` or `exp://` trusts every host of that scheme, while a host-bearing entry such as `myapp://callback` must match that host exactly (not `myapp://callback.attacker.tld`). The separator is `/`, so `http://*.example.com` matches both `http://api.example.com` and `http://api.app.example.com` (changed in 1.7).
 
 ### `user`
 
@@ -186,10 +204,11 @@ trustedOrigins: [
 | `cookiePrefix` | `string` | — | Custom prefix for cookie names |
 | `database.generateId` | `function \| false \| "serial" \| "uuid"` | — | Custom ID generation strategy |
 | `database.defaultFindManyLimit` | `number` | `100` | Default limit for findMany queries |
-| `database.experimentalJoins` | `boolean` | — | Enable experimental JOIN queries |
+| `database.joins` | `boolean` | `false` | Enable database joins for adapters that support them; when disabled, related data is fetched via separate queries. Renamed in 1.7 from `database.experimentalJoins` (and `experimental.joins`) |
+| `database.validateSchema` | `boolean` | `true` outside production | Compare the schema with the tables Better Auth writes before the first request and report every difference with its fix |
 | `backgroundTasks.handler` | `function` | — | Handler for background tasks (e.g., `waitUntil` in serverless) |
 | `skipTrailingSlashes` | `boolean` | `false` | Normalize trailing slashes in routes |
-| `trustedProxyHeaders` | `boolean` | — | Derive base URL from `X-Forwarded-Host` / `X-Forwarded-Proto` headers |
+| `trustedProxyHeaders` | `boolean` | — | Trust `X-Forwarded-Host` / `X-Forwarded-Proto` when resolving a dynamic base URL (`baseURL` with `allowedHosts`); they are ignored otherwise (changed in 1.7) |
 
 ### `logger`
 
@@ -256,6 +275,7 @@ plugins: [myPlugin(), anotherPlugin()]
 - Most string options support environment variable fallbacks
 - Options marked with warnings disable security checks — use with caution
 - For `baseURL`, always set explicitly rather than relying on request inference
+- The official example uses `*.vercel.app`; this page substitutes a self-owned domain pattern because shared-suffix wildcards also trust third-party deployments.
 - Background tasks enable optimistic responses in serverless environments
 
 ## Related

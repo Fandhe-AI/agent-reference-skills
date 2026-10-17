@@ -71,4 +71,4 @@ export const auth = betterAuth({
 - **動作の仕組み**: `search_path` 使用時、Better Auth CLI は設定された `search_path` を検出し、マイグレーションで指定スキーマ内のテーブルのみを検査し、他のスキーマを無視して競合を防止。
 - **トラブルシューティング**: マイグレーション中に「relation does not exist」エラーが出た場合、スキーマが存在しロールが適切な権限を持っているか確認する。`SHOW search_path;` で Better Auth が使用するスキーマを検証できる。
 - PostgreSQL サポートは Kysely アダプター経由で実装される。Kysely がサポートする任意のデータベースが Better Auth と互換。
-- パフォーマンス改善については パフォーマンス最適化ガイド を参照。
+- パフォーマンス改善については [パフォーマンス最適化ガイド](../guides/optimizing-for-performance.md) を参照。
