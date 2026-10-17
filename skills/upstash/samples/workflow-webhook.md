@@ -21,18 +21,20 @@ export const { POST } = serve(
 ```typescript
 // Validate and parse inside the workflow (Clerk webhook verified with Svix)
 export const { POST } = serve<string>(async (context) => {
-	const payloadString = context.requestPayload;
-	const headerPayload = context.headers;
+  const payloadString = context.requestPayload;
+  const headerPayload = context.headers;
 
-    let event: WebhookEvent;
+  // Verify inside a step so the result is recorded and not re-verified on re-entry
+  const event = await context.run("validate-webhook", async () => {
     try {
-    	event = await validateRequest(payloadString, headerPayload);
+      return await validateRequest(payloadString, headerPayload);
     } catch {
-    	return
+      return null;
     }
+  });
+  if (!event) return;
 
-    // Next steps based on the event
-
+  // Next steps based on the event
 }, {
   // Keep the raw body string so the Svix signature can be verified
   initialPayloadParser: (payload) => payload,
@@ -121,5 +123,6 @@ export const { POST } = serve(async (context) => {
 - The snippets are fragments of one route (`// ...` marks code from the previous snippet); `UserPayload` and the `stripe` client are not defined in the official guide (your `UserPayload` needs a `lastName` field)
 - Differences from the original guide: it uses `=` (assignment) in the `find` callback, corrected to `===`; it omits `last_name` from the extraction but uses `user.lastName`, so `lastName` is added to the extraction and the Stripe name is built from the non-empty parts
 - Pass a stable `idempotencyKey` to `stripe.customers.create` because `context.run` may retry (at-least-once delivery); the `idempotencyKey` option is an addition to the official snippet
+- Differences from the official snippet: verification is wrapped in `context.run`; outside a step it re-runs on every step invocation with the original `svix-timestamp`, and Svix rejects stale timestamps (default tolerance 5 minutes)
 - `webhookSecret` is a placeholder in the official example; supply the real secret from your webhook provider
 - Official example project: `upstash/workflow-js` `examples/nextjs-webhook-stripe`

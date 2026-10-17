@@ -49,7 +49,9 @@ No serverless function stays running while waiting.
 Wait for the same webhook repeatedly until a final signal arrives:
 
 ```typescript
+let stepCount = 0;
 while (true) {
+  stepCount++;
   const webhookResponse = await context.waitForWebhook(
     `wait for progress update ${stepCount}`,
     webhook,
@@ -90,12 +92,15 @@ export const { POST } = serve<string>(async (context) => {
   const payloadString = context.requestPayload;
   const headerPayload = context.headers;
 
-  let event: WebhookEvent;
-  try {
-    event = await validateRequest(payloadString, headerPayload);
-  } catch {
-    return
-  }
+  // Verify inside a step so the result is recorded and not re-verified on re-entry
+  const event = await context.run("validate-webhook", async () => {
+    try {
+      return await validateRequest(payloadString, headerPayload);
+    } catch {
+      return null;
+    }
+  });
+  if (!event) return;
 
   // Next steps based on the event
 }, {
@@ -128,6 +133,7 @@ Process events in discrete steps with `context.run` (e.g. `handle-webhook-event`
 - Built-in lookback: if the external service calls the webhook URL before `waitForWebhook` executes, the call is stored and returned when `waitForWebhook` is reached
 - Use webhooks for third-party callback-based APIs or when race-condition protection is needed without knowing the workflow run ID; use Wait for Event when you control notification and can use the Workflow Client. Passing `workflowRunId` to `notify` enables lookback for Wait for Event
 - Keep the raw body string with `initialPayloadParser` so the Svix signature can be verified (by default the initial payload is JSON-parsed)
+- Differences from the official snippet: signature verification is wrapped in `context.run` because a call outside a step re-runs on every step invocation with the original `svix-timestamp`, and Svix rejects stale timestamps (default tolerance 5 minutes); `stepCount` is declared and incremented here (undefined in the official loop) so step names change per iteration
 - Source: fetched 2026-10 from https://upstash.com/docs/workflow/features/webhooks
 
 ## Related

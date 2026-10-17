@@ -57,6 +57,7 @@ export const { POST } = serve<{ prompt: string }>(async (context) => {
 - By default tool `execute` / `invoke` is wrapped in `context.run` as a step; pass `executeAsStep: false` to `WorkflowTool` to use `context.call` etc. inside the tool
 - Migration (0.x → 1.0.0): `context.agents.*` moved to the separate `@upstash/workflow-agents` package (`const agents = agentWorkflow(context)`), removing the AI SDK dependency from the core package
 - Agent steps use the same `context.run()`, `context.call()`, and `context.invoke()` primitives as standard workflows
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/agents/overview (and sibling pages getting-started, features, patterns/* under agents/)
 
 ## Related
 
