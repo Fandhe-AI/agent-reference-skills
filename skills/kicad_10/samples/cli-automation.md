@@ -19,7 +19,7 @@ kicad-cli sch export pdf \
 # Export Bill of Materials (CSV, grouped by value)
 kicad-cli sch export bom \
   --output bom.csv \
-  --fields "Reference,Value,Footprint,Quantity" \
+  --fields "Reference,Value,Footprint,QUANTITY" \
   --group-by Value \
   --exclude-dnp \
   my-board.kicad_sch
@@ -55,7 +55,8 @@ kicad-cli pcb render \
 
 ## Notes
 
-- `--exit-code-violations` returns exit code 5 when violations exist, enabling CI pipeline gates (`if [ $? -ne 0 ]; then ...`).
-- `--refill-zones` on `pcb drc` fills zones before checking — equivalent to pressing B in the GUI.
+- `--exit-code-violations` returns exit code 5 when violations exist; other non-zero codes indicate a run failure. CI gate: `rc=0; kicad-cli pcb drc --exit-code-violations my-board.kicad_pcb || rc=$?; if [ "${rc}" -eq 5 ]; then echo 'DRC violations'; exit 1; elif [ "${rc}" -ne 0 ]; then echo "kicad-cli failed (exit ${rc})"; exit "${rc}"; fi`. In a multi-command script, add `set -e` or check each command this way so a failure stops the run.
+- `--refill-zones` on `pcb drc` fills zones before checking — equivalent to pressing B in the GUI. The board is not saved unless `--save-board` is also given.
+- In `sch export bom --fields`, the quantity column is the virtual field `QUANTITY` (default `Reference,Value,Footprint,QUANTITY,DNP`).
 - On macOS the binary path is `/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli`; add it to `PATH` or use the full path.
 - Use `kicad-cli <subcommand> --help` for the full option list of any command.
