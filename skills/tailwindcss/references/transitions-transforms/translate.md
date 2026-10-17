@@ -71,6 +71,7 @@ Utilities for translating elements.
 </div>
 ```
 
+- Caution: the `translate-z-1/2` line above is reproduced as written in the official example, but the z component of CSS `translate` accepts only a `<length>` (no percentage), so fraction values do not work on the z-axis; use `translate-z-<number>` (e.g. `translate-z-4`) or an arbitrary length such as `translate-z-[2rem]`.
 - Custom value: use `translate-[<value>]`; for CSS variables use `translate-(<custom-property>)`, shorthand for `translate-[var(<custom-property>)]`.
 
 ```html
@@ -78,6 +79,7 @@ Utilities for translating elements.
 <img class="translate-(--my-translation) ..." src="/img/mountains.jpg" />
 ```
 
+- Caution: `3.142rad` above is reproduced as written in the official example, but `translate` accepts only lengths and percentages, so an angle value produces an invalid declaration; use a length such as `translate-[3.142rem]`.
 - Responsive design: prefix with a breakpoint variant like `md:`:
 
 ```html

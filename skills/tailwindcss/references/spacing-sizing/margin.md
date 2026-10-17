@@ -73,7 +73,7 @@ Space-between utilities (`space-x` uses `margin-inline`, `space-y` uses `margin-
 - Custom value: `m-[5px]`, `mx-[5px]`, `mb-[5px]`; for CSS variables use `m-(--my-margin)` (shorthand for `m-[var(--my-margin)]`).
 - Responsive: prefix with a breakpoint variant like `md:` (`mt-4 md:mt-8`).
 - Theme: `m-<number>` etc. are driven by the `--spacing` theme variable (`@theme { --spacing: 1px; }`).
-- Transcribed from `tailwindlabs/tailwindcss.com@7f92c22` `src/docs/margin.mdx` (fetched 2026-10-16). The two `space-*-reverse` style cells are transcribed as written in the source, including the extra `)`.
+- Transcribed from `tailwindlabs/tailwindcss.com@7f92c22` `src/docs/margin.mdx` (fetched 2026-10-16). The two `space-*-reverse` style cells are reproduced as written in the source, which contains an extra `)`; that selector is invalid CSS — the actual selector is `& > :not(:last-child)` (same as the other space rows).
 
 ```html
 <div class="flex flex-row-reverse space-x-4 space-x-reverse ...">
