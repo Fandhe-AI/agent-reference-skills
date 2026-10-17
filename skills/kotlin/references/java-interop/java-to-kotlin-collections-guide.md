@@ -85,9 +85,9 @@ Lists:
 - `slice()`, `chunked()`, `windowed()` - retrieve collection parts.
 - Plus (`+`) and minus (`-`) operators - add or remove elements.
 
-## Specific cases
+### Specific cases
 
-### Mutability
+#### Mutability
 
 In Java you can't tell from the type whether a collection is mutable (`Arrays.asList` and `Collections.unmodifiableList` fail at runtime with `UnsupportedOperationException`). In Kotlin you explicitly declare mutable or read-only collections; modifying a read-only one doesn't compile (see snippet above).
 
@@ -224,7 +224,7 @@ fun main() {
 
 ### Filter elements
 
-Filtering is built into collections; `filter()` returns the same collection type.
+Filtering is built into collections; `filter()` on a List or Set returns a `List`, and on a `Map` returns a `Map` (no `stream()`/`collect()` needed).
 
 ```kotlin
 val numbers = mapOf("key1" to 1, "key2" to 2, "key3" to 3, "key11" to 11)
@@ -267,6 +267,10 @@ println(colors.zip(animals) { color, animal ->
 val numbers = listOf("one", "two", "three", "four")
 println(numbers.associateWith { it.length })
 ```
+
+## Notes
+
+- The official guide says `filter()` returns the same collection type; actually `Iterable.filter()` (List/Set) returns `List` and `Map.filter()` returns `Map`.
 
 ## Related
 

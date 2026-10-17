@@ -44,7 +44,7 @@ The annotation enables generating the record components in the class file and pr
 
 Requires JVM bytecode target `16` or higher; set the `jvmTarget` compiler option in Gradle (`gradle-compiler-options`, attributes specific to JVM) or Maven (`maven-kotlin-compiler`).
 
-## Annotate record components
+### Annotate record components
 
 In Java, annotations on a record component propagate to the backing field, getter, setter, and constructor parameter. Replicate with the `all` use-site target:
 

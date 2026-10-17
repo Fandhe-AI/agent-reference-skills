@@ -77,7 +77,7 @@ A Java `void` method returns `Unit` in Kotlin. Java identifiers that are Kotlin 
 foo.`is`(bar)
 ```
 
-## Null-safety and platform types
+### Null-safety and platform types
 
 Java declaration types are treated as non-denotable platform types. A platform value can be assigned to a nullable or non-nullable Kotlin type; null-checks are relaxed, so safety is the same as in Java.
 
@@ -95,7 +95,7 @@ val notNull: String = item // allowed, may fail at runtime
 
 If you choose a non-nullable type, the compiler emits an assertion upon assignment (also when platform values are passed to Kotlin functions expecting non-null values).
 
-### Notation for platform types
+#### Notation for platform types
 
 | Notation | Meaning |
 | --- | --- |
@@ -103,7 +103,7 @@ If you choose a non-nullable type, the compiler emits an assertion upon assignme
 | `(Mutable)Collection<T>!` | Java collection of `T` may be mutable or not, may be nullable or not |
 | `Array<(out) T>!` | Java array of `T` (or a subtype of `T`), nullable or not |
 
-### Nullability annotations
+#### Nullability annotations
 
 Java types with nullability annotations are represented as actual nullable / non-nullable Kotlin types, not platform types. Supported flavors include: JetBrains (`org.jetbrains.annotations`), JSpecify (`org.jspecify.annotations`), Android (`com.android.annotations`, `android.support.annotations`), JSR-305 (`javax.annotation`), FindBugs (`edu.umd.cs.findbugs.annotations`), Eclipse (`org.eclipse.jdt.annotation`), Lombok (`lombok.NonNull`), RxJava 3 (`io.reactivex.rxjava3.annotations`), Vert.x (`io.vertx.codegen.annotations`).
 
@@ -115,11 +115,11 @@ Report level per annotation package:
 
 `<report-level>` is `ignore`, `warn`, or `strict`. JSpecify is the only supported flavor that uses `strict` by default.
 
-### Mutability annotations
+#### Mutability annotations
 
 Annotate a Java declaration to say whether a returned collection is read-only or mutable in Kotlin; a mismatching assignment is reported as a type mismatch. Supported include `kotlin.annotations.jvm.ReadOnly`, `kotlin.annotations.jvm.Mutable`, `org.jetbrains.annotations.Unmodifiable`, `org.jetbrains.annotations.UnmodifiableView`.
 
-### Annotating type arguments and type parameters
+#### Annotating type arguments and type parameters
 
 ```java
 @NotNull
@@ -142,7 +142,7 @@ public class BaseWithBound<T extends @NotNull Number> {}
 
 is seen as `class BaseWithBound<T : Number> {}`. Annotating type arguments and type parameters works with the Java 8 target or higher and requires annotations that support `TYPE_USE` (`org.jetbrains.annotations` version 15 and above). If an annotation supports other targets in addition to `TYPE_USE`, `TYPE_USE` takes priority: `@Nullable String[] f()` becomes `fun f(): Array<String?>!`.
 
-### JSpecify support
+#### JSpecify support
 
 Supported in `org.jspecify.annotations`: `@Nullable`, `@NonNull`, `@NullMarked` (scope default non-null; does not apply to local variables and type variables), `@NullUnmarked` (reverts to platform types).
 
@@ -175,7 +175,7 @@ fun test(inventory: InventoryService) {
 | `warn` | Reports warnings. |
 | `ignore` | Ignores nullability mismatches. |
 
-### JSR-305 support
+#### JSR-305 support
 
 `@Nonnull(when = ...)`: `When.ALWAYS` = non-nullable; `When.MAYBE` / `When.NEVER` = nullable; `When.UNKNOWN` = platform type. The annotations artifact (e.g. `jsr305.jar`) need not be a compile dependency of library consumers. Custom nullability qualifiers (KEEP-79) are supported:
 
@@ -224,7 +224,7 @@ JSR-305 compiler flags (`-Xjsr305`):
 
 Example: `-Xjsr305=ignore -Xjsr305=under-migration:ignore -Xjsr305=@org.library.MyNullable:warn`. The default is the same as `-Xjsr305=warn`; the `strict` value should be considered experimental. Built-in JSR-305 `@Nonnull`, `@Nullable` and `@CheckForNull` are always enabled regardless of `-Xjsr305`.
 
-## Mapped types
+### Mapped types
 
 The mapping only matters at compile time; the runtime representation remains unchanged.
 
@@ -261,7 +261,7 @@ Collections (Kotlin types in package `kotlin.collections`):
 
 Static members of mapped Java types are not on the Kotlin types' companion objects; use the Java type's fully qualified name, e.g. `java.lang.Integer.toHexString(foo)`.
 
-## Java generics in Kotlin
+### Java generics in Kotlin
 
 - Wildcards become type projections: `Foo<? extends Bar>` -> `Foo<out Bar!>!`, `Foo<? super Bar>` -> `Foo<in Bar!>!`.
 - Raw types become star projections: `List` -> `List<*>!` (that is `List<out Any?>!`).
@@ -274,7 +274,7 @@ if (a is List<Int>) // Error: cannot check if it is really a List of Ints
 if (a is List<*>) // OK: no guarantees about the contents of the list
 ```
 
-## Java arrays
+### Java arrays
 
 Kotlin arrays are invariant; Java methods may accept `Array<(out) String>!`. Use specialized classes (`IntArray`, `DoubleArray`, `CharArray`, ...) for Java primitive arrays; they are not related to `Array` and compile to Java primitive arrays.
 
@@ -286,7 +286,7 @@ javaObj.removeIndices(array)  // passes int[] to method
 
 Array access, `for (x in array)`, `array.indices` iteration and `i in array.indices` checks compile without overhead (no `get()` / `set()` calls, no iterator).
 
-## Java varargs
+### Java varargs
 
 Use the spread operator `*` to pass an array to a Java varargs parameter:
 
@@ -296,11 +296,11 @@ val array = intArrayOf(0, 1, 2, 3)
 javaObj.removeIndicesVarArg(*array)
 ```
 
-## Operators
+### Operators
 
 Any Java method with the right name and signature can be used as an operator overload and other conventions (`invoke()` etc.). Calling Java methods using infix call syntax is not allowed.
 
-## Checked exceptions
+### Checked exceptions
 
 All exceptions are unchecked in Kotlin; calling a Java method that declares a checked exception requires nothing.
 
@@ -312,7 +312,7 @@ fun render(list: List<*>, to: Appendable) {
 }
 ```
 
-## Object methods
+### Object methods
 
 References of type `java.lang.Object` become `Any`, which declares only `toString()`, `hashCode()` and `equals()`; other members are available via extension functions.
 
@@ -335,7 +335,7 @@ class C {
 }
 ```
 
-## Inheritance from Java classes and static members
+### Inheritance from Java classes and static members
 
 At most one Java class (and any number of Java interfaces) can be a supertype of a Kotlin class. Static members of Java classes form "companion objects" for these classes; they can't be passed as a value but members are accessible explicitly:
 
@@ -345,11 +345,11 @@ if (Character.isLetter(a)) { ... }
 
 For Java types mapped to Kotlin types use the fully qualified name: `java.lang.Integer.bitCount(foo)`.
 
-## Java reflection
+### Java reflection
 
 Use `instance::class.java`, `ClassName::class.java` or `instance.javaClass` to enter Java reflection. Do not use `ClassName.javaClass` (it refers to the companion object class, same as `ClassName.Companion::class.java`). `Int::class.java` is the primitive class (`Integer.TYPE`); `Int::class.javaObjectType` is the wrapper type (`Integer.class`).
 
-## SAM conversions
+### SAM conversions
 
 Kotlin function literals convert automatically to implementations of Java interfaces with a single non-default method, and also work for Kotlin fun interfaces.
 
@@ -364,7 +364,7 @@ executor.execute { println("This runs in a thread pool") }
 executor.execute(Runnable { println("This runs in a thread pool") })
 ```
 
-## Using JNI with Kotlin
+### Using JNI with Kotlin
 
 Mark natively implemented functions `external`; property accessors can be `external` too (creating `getMyProperty` / `setMyProperty`).
 

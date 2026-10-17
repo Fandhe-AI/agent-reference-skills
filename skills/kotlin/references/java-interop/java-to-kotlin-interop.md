@@ -219,7 +219,7 @@ class Circle @JvmOverloads constructor(centerX: Int, centerY: Int, radius: Doubl
 }
 ```
 
-For every parameter with a default value, one overload is generated with that parameter and all parameters to its right removed:
+For each parameter with a default value, one overload is generated: default-valued parameters are dropped one by one starting from the last one, while parameters without defaults are always kept:
 
 ```java
 // Constructors:
@@ -316,6 +316,7 @@ MyInt output = ExampleKt.timesTwoBoxed(input);
 
 ## Notes
 
+- The official docs say each overload removes the parameter and all parameters to its right; in fact only default-valued parameters are dropped (from the right) and required parameters stay, e.g. `@JvmOverloads fun f(a: Int = 0, b: String)` yields `f(String)`.
 - `@IntroducedAt` is Experimental (opt in with `ExperimentalVersionOverloading`).
 - Java-side usage of `@JvmStatic` on interface companion functions: they compile to static methods in interfaces.
 

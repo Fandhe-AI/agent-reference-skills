@@ -9,8 +9,10 @@ Differences between Java's and Kotlin's approaches to possibly nullable variable
 ## Signature / Usage
 
 ```kotlin
-fun stringLength(a: String) = a.length          // non-nullable: null is a compile-time error
-fun stringLength(a: String?): Int = a?.length ?: 0  // nullable with safe call + Elvis
+// Alternative 1: non-nullable parameter
+fun stringLengthNonNull(a: String) = a.length  // non-nullable: null is a compile-time error
+// Alternative 2: nullable parameter
+fun stringLengthOrZero(a: String?): Int = a?.length ?: 0  // nullable with safe call + Elvis
 ```
 
 ### Support for nullable types
@@ -54,9 +56,9 @@ To override a Java method with `@NotNull` argument you need definitely non-nulla
 import org.jetbrains.annotations.*;
 
 public interface Game<T> {
-  public T save(T x) {}
+  public T save(T x);
   @NotNull
-  public T load(@NotNull T x) {}
+  public T load(@NotNull T x);
 }
 ```
 
@@ -147,6 +149,7 @@ fun getUsername(profile: UserProfile?): String? =
 
 ## Notes
 
+- The official docs show `Game<T>` methods with `{}` bodies, which is invalid Java for non-default interface methods; they are written here as abstract declarations.
 - In the Java `getStringLength()` example the result is primitive `int`; making it return `null` needs boxed `Integer`, but returning a negative value and checking it avoids boxing.
 
 ## Related
