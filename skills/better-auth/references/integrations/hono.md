@@ -115,10 +115,27 @@ const client = hc<AppType>("http://localhost:8787", {
 const response = await client.hello.$get();
 ```
 
+Server (`src/server.ts`) — chain the route so its type can be exported:
+
+```typescript
+import { Hono } from "hono";
+
+// Assume this route requires an authenticated session.
+const app = new Hono().get("/hello", (c) => {
+  return c.json({ message: "Hello!" });
+});
+
+export type AppType = typeof app;
+export default app;
+```
+
+This configuration is only required for cross-origin requests. For more information, see Hono's [RPC cookies guide](https://hono.dev/docs/guides/rpc#cookies).
+
 ## Notes
 
 - Changed in the 1.7 docs: the page was restructured (Setup / CORS / Middleware / Hono RPC). The 1.6 "Cross-Domain Cookies" and "Client-Side Configuration" sections no longer appear; see cookies.md for cross-subdomain and cross-origin cookie settings (`crossSubDomainCookies`, `SameSite=None` + `Secure`).
 - CORS middleware must be registered before the auth route.
+- The CORS example above only covers `/api/auth/*`. For cross-origin Hono RPC calls with `credentials: "include"`, the RPC target routes (e.g. `/hello`) also need the `cors()` middleware with the same explicit `origin` and `credentials: true` (for example by registering it on a broader path such as `"*"`); otherwise the browser cannot read the response. This is not stated in the upstream page.
 
 ## Related
 
