@@ -31,5 +31,5 @@ if systemContext.currentMode == .background {
 ## Notes
 
 - Source article: "Configuring the runtime behavior of your app intents" (https://developer.apple.com/documentation/appintents/configuring-the-runtime-behavior-of-your-app-intents).
-- Target OS: `AppIntentsPackage` is part of App Intents (iOS 16.0+ framework); `IntentModes` / `IntentSystemContext` availability is on their reference pages (references/intents/intentmodes.md, references/intents/intentsystemcontext.md). SDK 27.0, Xcode 27.0.
+- Target OS: `AppIntentsPackage` requires iOS 17.0+ / iPadOS 17.0+ / Mac Catalyst 17.0+ / macOS 14.0+ / tvOS 17.0+ / watchOS 10.0+ (see references/intents/appintentspackage.md); the App Intents framework itself is iOS 16.0+. `IntentModes` / `IntentSystemContext` availability is on their reference pages (references/intents/intentmodes.md, references/intents/intentsystemcontext.md). SDK 27.0, Xcode 27.0.
 - The article lists the third listing as a fragment from `perform()`; `systemContext` is the intent's `IntentSystemContext`.
