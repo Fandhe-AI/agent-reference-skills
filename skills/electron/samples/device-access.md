@@ -15,6 +15,24 @@ const path = require('node:path')
 let bluetoothPinCallback
 let selectBluetoothCallback
 
+// Register IPC listeners once, outside createWindow
+ipcMain.on('cancel-bluetooth-request', () => {
+  if (selectBluetoothCallback) {
+    const cb = selectBluetoothCallback
+    selectBluetoothCallback = undefined
+    cb('')
+  }
+})
+
+// Listen for a message from the renderer to get the response for the Bluetooth pairing.
+ipcMain.on('bluetooth-pairing-response', (event, response) => {
+  if (bluetoothPinCallback) {
+    const cb = bluetoothPinCallback
+    bluetoothPinCallback = undefined
+    cb(response)
+  }
+})
+
 function createWindow () {
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -32,19 +50,11 @@ function createWindow () {
     })
     if (result) {
       callback(result.deviceId)
+      selectBluetoothCallback = undefined
     } else {
       // The device wasn't found so we need to either wait longer (eg until the
       // device is turned on) or until the user cancels the request
     }
-  })
-
-  ipcMain.on('cancel-bluetooth-request', () => {
-    selectBluetoothCallback('')
-  })
-
-  // Listen for a message from the renderer to get the response for the Bluetooth pairing.
-  ipcMain.on('bluetooth-pairing-response', (event, response) => {
-    bluetoothPinCallback(response)
   })
 
   mainWindow.webContents.session.setBluetoothPairingHandler((details, callback) => {
@@ -75,19 +85,25 @@ WebHID (session events and handlers):
 mainWindow.webContents.session.on('select-hid-device', (event, details, callback) => {
   // Add events to handle devices being added or removed before the callback on
   // `select-hid-device` is called.
-  mainWindow.webContents.session.on('hid-device-added', (event, device) => {
+  const onAdded = (event, device) => {
     console.log('hid-device-added FIRED WITH', device)
     // Optionally update details.deviceList
-  })
-
-  mainWindow.webContents.session.on('hid-device-removed', (event, device) => {
+  }
+  const onRemoved = (event, device) => {
     console.log('hid-device-removed FIRED WITH', device)
     // Optionally update details.deviceList
-  })
+  }
+  mainWindow.webContents.session.on('hid-device-added', onAdded)
+  mainWindow.webContents.session.on('hid-device-removed', onRemoved)
 
   event.preventDefault()
+  // Stop listening once the request is finished
+  mainWindow.webContents.session.removeListener('hid-device-added', onAdded)
+  mainWindow.webContents.session.removeListener('hid-device-removed', onRemoved)
   if (details.deviceList && details.deviceList.length > 0) {
     callback(details.deviceList[0].deviceId)
+  } else {
+    callback('') // Could not find any matching devices
   }
 })
 
@@ -140,6 +156,8 @@ mainWindow.webContents.session.on('select-usb-device', (event, details, callback
   event.preventDefault()
   if (details.deviceList && details.deviceList.length > 0) {
     callback(details.deviceList[0].deviceId)
+  } else {
+    callback('') // Could not find any matching devices
   }
 })
 
@@ -160,6 +178,8 @@ mainWindow.webContents.session.setUSBProtectedClassesHandler((details) => {
 ## Notes
 
 - Source fiddles: `docs/fiddles/features/web-{bluetooth,hid,serial,usb}`; the HID / Serial / USB blocks are trimmed to the Electron-specific calls (the fiddles also register `*-added` / `*-removed` listeners and a `setDevicePermissionHandler` for USB).
+- Changed from the official Bluetooth fiddle: `ipcMain.on` listeners are registered once outside `createWindow`, and each stored callback is checked for existence, cleared, then called at most once.
+- Changed from the official HID / USB fiddles: when the device list is empty, `callback('')` ends the request so `requestDevice()` does not stay pending (same as the Serial block); the HID `hid-device-added` / `hid-device-removed` listeners are removed before the callback so they do not accumulate across requests.
 - In a browser the user picks a device from a popup; in Electron the developer must pick the device or show their own UI from the selection event, and call `event.preventDefault()` plus the callback.
 - `*-added` / `*-removed` events only fire until the selection callback is called; they are not generic device listeners.
 - Granted device permission is stored for the lifetime of the `WebContents`; persist it yourself and read it back in `setDevicePermissionHandler` for longer storage.

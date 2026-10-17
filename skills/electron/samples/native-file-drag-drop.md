@@ -39,7 +39,6 @@ document.getElementById('drag2').ondragstart = (event) => {
 const { app, BrowserWindow, ipcMain } = require('electron/main')
 const path = require('node:path')
 const fs = require('node:fs')
-const https = require('node:https')
 
 function createWindow () {
   const win = new BrowserWindow({
@@ -53,16 +52,12 @@ function createWindow () {
   win.loadFile('index.html')
 }
 
+// iconForDragAndDrop.png is assumed to be bundled with the app
 const iconName = path.join(__dirname, 'iconForDragAndDrop.png')
-const icon = fs.createWriteStream(iconName)
 
 // Create a new file to copy - you can also copy existing files.
 fs.writeFileSync(path.join(__dirname, 'drag-and-drop-1.md'), '# First file to test drag and drop')
 fs.writeFileSync(path.join(__dirname, 'drag-and-drop-2.md'), '# Second file to test drag and drop')
-
-https.get('https://img.icons8.com/ios/452/drag-and-drop.png', (response) => {
-  response.pipe(icon)
-})
 
 app.whenReady().then(createWindow)
 
@@ -96,5 +91,5 @@ app.on('activate', () => {
 - Source fiddle: `docs/fiddles/features/drag-and-drop`. Call `webContents.startDrag(item)` in response to the DOM `ondragstart` event, relayed over IPC.
 - The official code passes the renderer-supplied value straight to `path.join`. This sample adds an allowlist check in main (`allowedFiles`) so a renderer cannot drag arbitrary paths, and follows the fiddle's `drag-and-drop-1.md` / `drag-and-drop-2.md` renderer.
 - The renderer must call `event.preventDefault()` so the browser's own drag does not start.
-- The fiddle downloads its drag icon over HTTPS at startup; replace that with a local icon file in real apps.
+- The official fiddle downloads its drag icon over HTTPS at startup; this sample uses a bundled local icon instead to avoid an unhandled network fetch without error handling.
 - Dragging files into the app uses the standard HTML Drag and Drop web API.
