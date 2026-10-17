@@ -115,6 +115,7 @@ export NODE_BINARY=node
 - Avoid module side effects (e.g. assigning `global.logger` at module top level) in lazy-loaded modules; they change app behavior when code is deferred.
 - Advanced: with the React Native CLI, `require` calls (not `import`s) are automatically inlined, including in `node_modules`. Some frameworks disable this; in Expo projects `require` calls are not inlined by default, enable it with `inlineRequires: true` in the Metro config `getTransformOptions`.
 - Inlining changes module evaluation order and can cause some modules to never be evaluated; exclude modules with side effects via `inlineRequires.blockList` / `nonInlinedRequires`, or disable it entirely.
+- Legacy: the Android RAM bundle snippet above is copied as is from the 0.87 page and targets the old `react.gradle` script. Projects using the React Native Gradle Plugin set the same options in the `react { ... }` block of `android/app/build.gradle`: `bundleCommand = "ram-bundle"` and `extraPackagerArgs = ["--indexed-ram-bundle"]` (see https://reactnative.dev/docs/0.87/react-native-gradle-plugin).
 - RAM bundles are not supported when using Hermes (bytecode is not compatible with the RAM bundle format and performs the same or better).
 - Metro is the React Native bundler (distinct from vite).
 

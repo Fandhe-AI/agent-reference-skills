@@ -127,7 +127,7 @@ public class MainActivity : AppCompatActivity(), DefaultHardwareBackBtnHandler {
     }
 
    override fun invokeDefaultOnBackPressed() {
-       super.onBackPressed()
+       onBackPressedDispatcher.onBackPressed()
    }
 }
 ```
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements DefaultHardwareBa
 
     @Override
     public void invokeDefaultOnBackPressed() {
-        super.onBackPressed();
+        getOnBackPressedDispatcher().onBackPressed();
     }
 }
 ```
@@ -187,6 +187,7 @@ Run `yarn start` to run the bundler, then run your Android app in Android Studio
 ## Notes
 
 - Adapted (not in the official docs): in the Kotlin diff of step 3 the old class declaration is marked as a removed (-) line; the official diff lists both declarations as added.
+- Adapted: the official step 4 snippets still call `super.onBackPressed()`; aligned here with step 3 (`OnBackPressedDispatcher`).
 - Deprecated (original warning on `Activity.onBackPressed()`): it has been deprecated since API level 33. On Android 16 devices with apps targeting API level 36 it will no longer be called (https://developer.android.com/about/versions/16/behavior-changes-16#predictive-back) and `OnBackPressedDispatcher` (https://developer.android.com/reference/androidx/activity/OnBackPressedDispatcher) should be used instead.
 - Distance: the Activity / Fragment / `FragmentManager` APIs themselves are native Android, see android-architecture; Gradle setup is in android-build-gradle. `ReactFragment` and `DefaultHardwareBackBtnHandler` are React Native APIs.
 

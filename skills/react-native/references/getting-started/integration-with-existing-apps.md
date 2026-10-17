@@ -264,7 +264,7 @@ import android.app.Application;
   @Override
   public void onCreate() {
     super.onCreate();
-+   SoLoader.init(this, OpenSourceMergedSoMapping);
++   SoLoader.init(this, OpenSourceMergedSoMapping.INSTANCE);
 +   if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
 +     DefaultNewArchitectureEntryPoint.load();
 +   }
@@ -701,6 +701,7 @@ Use the `initialProperties` parameter of the `view(withModuleName:initialPropert
 ## Notes
 
 - Adapted (not in the official docs): (1) the Java `MainApplication` diff gained the missing semicolon on `import com.facebook.react.soloader.OpenSourceMergedSoMapping;`; (2) the Objective-C call is `presentViewController:animated:completion:` with `completion:nil` added (the official text omits `completion:`); (3) the Swift initial-props example gained the missing comma after `withModuleName: "HelloWorld"`; (4) the release-build script passes each path as a separately quoted argument, `/bin/sh "$WITH_ENVIRONMENT" "$REACT_NATIVE_XCODE"`, so paths containing spaces work; the official script uses `/bin/sh -c "$WITH_ENVIRONMENT $REACT_NATIVE_XCODE"`.
+- Corrected (differs from the official docs): the official Java snippet passes `OpenSourceMergedSoMapping` directly; because it is a Kotlin `object`, Java must use `OpenSourceMergedSoMapping.INSTANCE`.
 - Requirements: React Native can be added as a single view or user flow to an existing app; the template `package.json` / `Gemfile` / `Podfile` are fetched from the React Native Community Template branch matching the docs version.
 - The userID / token above are placeholders from the docs; never ship real secrets in initial properties.
 - 0.88: the iOS SceneDelegate lifecycle is supported (additive; the `AppDelegate` path stays compatible). Starting with the iOS 27 SDK, Apple requires the UIScene lifecycle (UIKit apps built with Xcode 27 fail to launch). `RCTReactNativeFactory` gains `startReactNativeWithModuleName:inWindow:connectionOptions:` and `startReactNativeWithModuleName:inWindow:initialProperties:connectionOptions:`. Support is limited to a single scene (keep `UIApplicationSupportsMultipleScenes` set to `false`). Migration: move the React Native entry point from `AppDelegate` to a `SceneDelegate`, forward the scene's URL and user-activity callbacks to `RCTLinkingManager`, and add a `UIApplicationSceneManifest` key to `Info.plist`. Source: React Native 0.88 release blog.
