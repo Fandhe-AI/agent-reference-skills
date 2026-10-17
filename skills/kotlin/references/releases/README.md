@@ -1,0 +1,14 @@
+# releases
+
+| Name | Description | Path |
+| --- | --- | --- |
+| Compatibility guide for Kotlin 2.3.x | Summary of incompatible changes (source, binary, behavioral) for migrating from Kotlin 2.2 to Kotlin 2.3, including tool-related changes. | [compatibility-guide-23.md](./compatibility-guide-23.md) |
+| Compatibility guide for Kotlin 2.4.x | Summary of incompatible changes (source, binary, behavioral) for migrating from Kotlin 2.3 to Kotlin 2.4, including tool-related changes. | [compatibility-guide-24.md](./compatibility-guide-24.md) |
+| Stability of Kotlin components | Stability levels (Experimental, Alpha, Beta, Stable) of Kotlin compilers, plugins, libraries, and tools, with the version each status applies since. | [components-stability.md](./components-stability.md) |
+| Kotlin evolution principles | How Kotlin evolves: pragmatic principles, incompatible change handling, decision making, language feature statuses, library and binary compatibility, and the compatibility options `-language-version` / `-api-version`. | [kotlin-evolution-principles.md](./kotlin-evolution-principles.md) |
+| Kotlin language features and proposals | Status list of Kotlin language feature proposals (listed from Kotlin 1.7.0), grouped by status: exploration and design, KEEP discussion, in preview, stable, revoked. | [kotlin-language-features-and-proposals.md](./kotlin-language-features-and-proposals.md) |
+| Kotlin release process | Release types and cadence, upcoming releases, how to update the Kotlin version in Gradle or Maven, standard library security support window, and the release history table. | [releases.md](./releases.md) |
+| What's new in Kotlin 2.3.0 | Kotlin 2.3.0 (language release, released December 16, 2025) stabilizes nested type aliases and data-flow-based exhaustiveness checks. | [whatsnew23.md](./whatsnew23.md) |
+| What's new in Kotlin 2.3.20 | Kotlin 2.3.20 (tooling release, released March 16, 2026) adds name-based destructuring (Experimental), Lombok in Alpha, simplified Maven setup, JPA plugin improvements, Kotlin/JVM compilation through the Build tools API by default, and Gradle 9.3.0 compatibility. | [whatsnew2320.md](./whatsnew2320.md) |
+| What's new in Kotlin 2.4.0 | Kotlin 2.4.0 is a language release: stable context parameters, explicit backing fields and annotation use-site target rules, collection literals (Experimental), a stable `Uuid` API, Java 26 support, Swift export in Alpha, and Maven / Gradle improvements. | [whatsnew24.md](./whatsnew24.md) |
+| What's new in Kotlin 2.4.20 | Kotlin 2.4.20 (tooling release, released September 7, 2026) adds stdlib APIs (coroutine stack trace recovery, collection equality / uniqueness checks, lazy `kotlin.test` messages), Swift export and Wasm / JS updates, Gradle 9.7.0 support, and the `kotlinr` runner. | [whatsnew2420.md](./whatsnew2420.md) |
