@@ -65,6 +65,6 @@ pub(crate) fn apply_outer(
 
 ## Related
 
-- view
-- window
+- [view](./view.md)
+- [window](./window.md)
 - [group-by](./group-by.md)

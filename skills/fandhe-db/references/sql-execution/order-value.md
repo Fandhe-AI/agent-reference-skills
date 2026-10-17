@@ -106,5 +106,5 @@ pub(crate) fn expr_value_to_key_ref<'v>(
 ## Related
 
 - [group-by](./group-by.md)
-- window
+- [window](./window.md)
 - [distinct](./distinct.md)

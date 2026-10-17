@@ -86,4 +86,4 @@ pub(crate) fn merge_scalar_projection_items(
 
 - [exec](./exec.md)
 - [aggregate](./aggregate.md)
-- window
+- [window](./window.md)

@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-wire-server/0.1.0/source/src/response_buffer.rs
+source: https://docs.rs/crate/fandhe-db-wire-server/0.2.0/source/src/response_buffer.rs
 ---
 
 # response_buffer

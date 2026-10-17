@@ -98,4 +98,4 @@ pub(crate) fn execute_alter_table(
 
 - [exec](./exec.md)
 - [scalar-index](./scalar-index.md)
-- view
+- [view](./view.md)

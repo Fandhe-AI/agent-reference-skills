@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-wire-server/0.1.0/source/src/framing.rs
+source: https://docs.rs/crate/fandhe-db-wire-server/0.2.0/source/src/framing.rs
 ---
 
 # framing
@@ -64,6 +64,26 @@ pub fn validate_typed_message_length_prefix<R: Read>(
     max_total: usize,
 ) -> Result<usize, FrameError>
 
+/// 指定バイト数だけ読み捨てる（アロケーションせず `io::copy` で `io::sink()` へ流す）。
+/// 拡張クエリプロトコルのエラー後の同期回復（Issue #934・WIRE-11。`handshake::post_auth_loop`
+/// の `ignore_till_sync` モード）が、後続メッセージの本文を解釈せず読み飛ばすために使う。
+/// `len` は呼び出し元が `MAX_MESSAGE_LEN` 以内と確認済みの値であること（本関数自身は上限を
+/// 検証しない）。実コピー長が `len` と一致しなければ `FrameError::Truncated` へ fail-closed に写像する。
+pub fn discard_body<R: Read>(reader: &mut R, len: usize) -> Result<(), FrameError>
+
+/// フレーム（長さフィールド・本文）の受信全体に期限を課すガード（SQL-31・TASK-221。PR #1041 レビュー指摘）。
+/// `handshake::post_auth_loop` が、明示トランザクションが `Active`（単一ライタを保持中）の間だけ、型バイトを
+/// 受信した直後に「持続時間上限（と接続の読み取りタイムアウト）」までの期限で設定する。期限が設定されている間、
+/// 本モジュールの長さ・本文の読み取りは期限を過ぎた時点で `TimedOut` の I/O エラーを返す（呼び出し元は応答を送らずに
+/// 接続を閉じ、`SessionTransaction` の drop でライタを解放する）。本文を少しずつ送り続けて期限後もライタを保持させる経路を
+/// 塞ぐためのもの。wire-server は 1 接続 1 スレッドのため、スレッドローカルで接続単位の期限になる。drop で直前の値へ戻す。
+/// `pub(crate)`（0.2.0 で追加）。
+pub(crate) struct FrameDeadlineGuard { /* previous: Option<Instant> */ }
+
+impl FrameDeadlineGuard {
+    pub(crate) fn set(deadline: Instant) -> Self
+}
+
 pub fn read_startup_frame<R: Read>(reader: &mut R) -> Result<Vec<u8>, FrameError>
 
 pub fn read_typed_frame_header<R: Read>(reader: &mut R) -> Result<Option<u8>, FrameError>
@@ -73,6 +93,7 @@ pub fn read_typed_frame_header<R: Read>(reader: &mut R) -> Result<Option<u8>, Fr
 
 - 対応: TASK-68（WIRE-4, WIRE-10）。エラーコード写像は `docs/spec/04-behavior/error-format.md`（private）ERR-2。
 - `read_length_prefixed_body` は「検証を通過するまでアロケーションしない」契約（宣言長が `MAX_MESSAGE_LEN` 超過時は length の 4 バイトのみ消費して打ち切る）。
+- Migration (0.1.0 → 0.2.0): 新規 pub `discard_body`。フレーム受信期限（`FRAME_DEADLINE`。`read_exact_within_deadline` 経由。非公開）が設定されている間は、`discard_body` は期限を確認しながら固定長のスタックバッファ（8192 バイト）で読み捨てる。`FrameError` の variant・既存関数のシグネチャは不変（`SQLSTATE_*` 定数・長さ定数の値も同一）。
 - `max_total` を `MAX_MESSAGE_LEN` 超で指定しても `MAX_MESSAGE_LEN` に丸められる（呼び出し側誤用で全体上限が緩まない fail-closed）。
 
 ## Related
