@@ -82,14 +82,14 @@ stream = client.interactions.get(
 )
 ```
 
-Chaining a managed agent turn (needs both `previous_interaction_id` and `environment`):
+Chaining a managed agent turn after interaction1 completes (needs both `previous_interaction_id` and `environment`):
 
 ```python
 interaction2 = client.interactions.create(
     agent=agent_model,
     input="List all files in the project/ directory.",
     previous_interaction_id=interaction1.id,
-    environment="remote",
+    environment=interaction1.environment_id,
     background=True
 )
 ```
@@ -134,6 +134,8 @@ Parameters and endpoints:
 | DELETE /interactions/{id} | endpoint | Removes the interaction; later GET returns `404 Not Found` |
 
 ## Notes
+
+- The official chaining example passes `environment="remote"`, which provisions a fresh sandbox; this page uses `interaction1.environment_id` so turn 2 sees the files from turn 1 (see the managed agents quickstart).
 
 - Availability: Interactions API (REST examples use `v1beta` with `Api-Revision: 2026-05-20`).
 - The polling loop also waits while `queued` (an Interaction status in the API reference); the original example checks only `in_progress`.

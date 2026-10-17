@@ -80,6 +80,8 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
 Collaborative planning (request plan, refine, approve):
 
 ```python
+import time
+
 # Second interaction: refine the plan
 refined_plan = client.interactions.create(
     agent="deep-research-preview-04-2026",
@@ -93,6 +95,10 @@ refined_plan = client.interactions.create(
     background=True,
 )
 
+while (result := client.interactions.get(id=refined_plan.id)).status != "completed":
+    time.sleep(5)
+print(result.steps[-1].content[0].text)
+
 # Third interaction: approve the plan and kick off research
 final_report = client.interactions.create(
     agent="deep-research-preview-04-2026",
@@ -105,6 +111,10 @@ final_report = client.interactions.create(
     previous_interaction_id=refined_plan.id,
     background=True,
 )
+
+while (result := client.interactions.get(id=final_report.id)).status != "completed":
+    time.sleep(5)
+print(result.steps[-1].content[0].text)
 ```
 
 REST for the first step (plan request):

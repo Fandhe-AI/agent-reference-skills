@@ -119,6 +119,12 @@ agent = client.agents.create(
         "network": {
             "allowlist": [
                 {
+                    "domain": "github.com",
+                    "transform": {
+                        "Authorization": "Basic YOUR_BASE64_TOKEN"
+                    },
+                },
+                {
                     "domain": "api.github.com",
                     "transform": {
                         "Authorization": "Basic YOUR_BASE64_TOKEN"
@@ -168,6 +174,8 @@ Agent definition reference:
 Reserved `id` prefixes (case-insensitive; creation fails): `antigravity-`, `veo-`, `omni-`, `lyria-`, `imagen-`, `gemma-`, `gemini-`, `google-`, `youtube-`, `android-`, `chrome-`, `pixel-`, `waze-`, `fitbit-`, `nest-`, `kaggle-`.
 
 ## Notes
+
+- The official example allowlists only `api.github.com` and `pypi.org`; since an allowlist permits only listed domains and source downloads authenticate via the network config, `github.com` is added here so the repository source can be cloned.
 
 - Ways to extend: model selection via `agent_config` (defaults to Gemini 3.8 Flash), inline `system_instruction`, tools (override defaults, register remote MCP servers, define custom functions), and mounted files such as `AGENTS.md` and `SKILL.md`.
 - `system_instruction` and `AGENTS.md` are additive; both apply when present.

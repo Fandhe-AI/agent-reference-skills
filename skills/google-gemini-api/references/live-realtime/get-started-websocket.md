@@ -32,7 +32,7 @@ websocket.onopen = () => {
   const setupMessage = {
     setup: {
       model: `models/${MODEL_NAME}`,
-      responseModalities: ['AUDIO'],
+      generationConfig: { responseModalities: ['AUDIO'] },
       systemInstruction: {
         parts: [{ text: 'You are a helpful assistant.' }]
       }
@@ -62,7 +62,7 @@ async def connect_and_configure():
         setup_message = {
             "setup": {
                 "model": f"models/{MODEL_NAME}",
-                "responseModalities": ["AUDIO"],
+                "generationConfig": {"responseModalities": ["AUDIO"]},
                 "systemInstruction": {
                     "parts": [{"text": "You are a helpful assistant."}]
                 }
@@ -72,7 +72,7 @@ async def connect_and_configure():
         print("Configuration sent")
 
         # Keep the session alive for further interactions
-        await asyncio.sleep(3600) # Example: keep open for an hour
+        await asyncio.sleep(10) # Example: keep open briefly
 ```
 
 Sending text, audio and video (JavaScript):
@@ -154,6 +154,8 @@ function handleToolCall(toolCall) {
 - Authentication: API key as the `key` query parameter. With ephemeral tokens, connect to the `v1beta` endpoint `BidiGenerateContentConstrained` and pass the token as the `access_token` query parameter.
 - Audio is raw 16-bit PCM, 16kHz, little-endian; the `mimeType` (`audio/pcm;rate=16000`) is crucial. Video frames are individual images (e.g., JPEG or PNG).
 - You are responsible for maintaining the WebSocket connection.
+- The official page places `responseModalities` directly under `setup`; per the Live API reference (`BidiGenerateContentSetup`) it belongs in `setup.generationConfig`, so the examples here are corrected.
+- The official Python example keeps the connection open with `asyncio.sleep(3600)` (one hour); shortened to 10 seconds here so the snippet does not block an agent.
 - Availability: Live API is v1beta only. Distinct from the OpenAI Realtime API (see the openai-realtime-audio skill).
 
 ## Related
