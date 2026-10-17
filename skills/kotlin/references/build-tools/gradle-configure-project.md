@@ -179,9 +179,9 @@ Put `module-info.java` in `src/main/java`; the package name in Kotlin files must
 - Since Kotlin 1.8.20 the plugin registers all tasks and does not configure them on a dry run (lazy task creation).
 - If you override `destinationDirectory` of `KotlinJvmCompile` / `KotlinCompile`, add `sourceSets.main.kotlin.classesDirectories` to the JAR:
 
-```kotlin
+```groovy
 tasks.jar(type: Jar) {
-    from sourceSets.main.outputs
+    from sourceSets.main.output
     from sourceSets.main.kotlin.classesDirectories
 }
 ```
@@ -342,6 +342,7 @@ kotlin.sourceSets.getByName("main").generatedKotlin.srcDir(generatorTask)
 ## Notes
 
 - Do not commit the `.kotlin` directory; add it to `.gitignore`.
+- The official page (kotlin-web-site 0b10373, gradle-configure-project.md L596) shows the JAR example with a `kotlin` label although it is Groovy DSL, and writes `sourceSets.main.outputs`; here it is shown as Groovy and corrected to `sourceSets.main.output` (Gradle `SourceSet#getOutput`).
 - Distinct from the Android Gradle plugin `android {}` block, `kotlinOptions`, and version catalogs, which are covered by the android-build-gradle skill. This page covers the Kotlin Gradle plugin only.
 - Kotlin 2.0.20–2.0.21 and 2.1.0–2.1.10 are fully compatible with Gradle up to 8.6 (rows marked `*`); Gradle 8.7–8.10 are supported except that Multiplatform projects calling `withJava()` in the JVM target may see deprecation warnings.
 - Newer Gradle/AGP versions than the listed maximum can be used but may cause deprecation warnings or non-working new features.
