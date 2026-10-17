@@ -61,9 +61,21 @@ $ docker buildx create \
   tcp://localhost:1234
 ```
 
-Or use the `docker-container://` URL scheme (no port needed):
+Alternatively, connect with the `docker-container://` URL scheme (no port needed). This scheme runs `buildctl dial-stdio` inside the container, which uses the default Unix socket, so the container must also listen on it:
 
 ```console
+$ docker run -d --rm \
+  --name=remote-buildkitd \
+  --privileged \
+  -p 1234:1234 \
+  -v "${PWD}/.certs:/etc/buildkit/certs" \
+  moby/buildkit:latest \
+  --addr unix:///run/buildkit/buildkitd.sock \
+  --addr tcp://0.0.0.0:1234 \
+  --tlscacert /etc/buildkit/certs/daemon/ca.pem \
+  --tlscert /etc/buildkit/certs/daemon/cert.pem \
+  --tlskey /etc/buildkit/certs/daemon/key.pem
+
 $ docker buildx create \
   --name remote-container \
   --driver remote \
@@ -96,6 +108,7 @@ $ kubectl port-forward svc/buildkitd 1234:1234
 - Use `--load` to load the build result into the Docker daemon.
 - The Kubernetes example only works inside the cluster (`ClusterIP` service). Remote access needs an ingress (out of scope of the guide).
 - The official page's `docker-container://` example writes `docker-container://remote-container`, but the URL must contain the container name (`remote-buildkitd`, set with `--name` in the `docker run` above), not the builder name; this reference uses the container name.
+- The official page connects `docker-container://` to the TCP/TLS-only container from the previous step; `buildctl dial-stdio` needs the in-container Unix socket, so this example also passes `--addr unix:///run/buildkit/buildkitd.sock`.
 - Switch the default with `docker buildx use remote-unix`, or per build with `--builder`.
 
 ## Related
