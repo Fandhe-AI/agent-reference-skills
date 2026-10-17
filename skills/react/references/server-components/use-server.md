@@ -68,7 +68,7 @@ import { useActionState } from 'react';
 import requestUsername from './requestUsername';
 
 function UsernameForm() {
-  const [state, action] = useActionState(requestUsername, null, 'n/a');
+  const [state, action] = useActionState(requestUsername, null);
 
   return (
     <>
@@ -132,6 +132,7 @@ To read a Server Function return value, `await` the returned promise.
 - `'use server'` can only be used in server-side files. The resulting Server Functions can be passed to Client Components through props.
 - To import a Server Function from client code, the directive must be used at module level.
 - Because the underlying network calls are always asynchronous, `'use server'` can only be used on async functions.
+- The original passes the dummy permalink `'n/a'` as the third argument of `useActionState`; it is omitted here because a submission before JavaScript loads would navigate to `n/a`. For progressive enhancement, pass a real URL that renders the same form (see [Server Functions](./server-functions.md)).
 - Snippet adjusted: the original `requestUsername(formData)` is passed to `useActionState`, which calls the action as `(previousState, formData)`; the `requestUsername.js` snippet takes `(previousState, formData)`.
 - Always treat arguments to Server Functions as untrusted input and authorize any mutations. Arguments are fully client-controlled: validate and escape them as appropriate, and validate that the logged-in user is allowed to perform the action.
 - Server Functions should be called in a Transition. Server Functions passed to `<form action>` or `formAction` are automatically called in a transition.

@@ -84,6 +84,7 @@ export async function updateNameAction(previousState, formData) {
 ```js
 "use client";
 
+import {useState, useTransition} from 'react';
 import {updateName} from './actions';
 
 function UpdateName() {
@@ -139,6 +140,7 @@ When the Form submission succeeds, React will automatically reset the form. Add 
 ```js
 "use client";
 
+import {useActionState} from 'react';
 import {updateNameAction} from './actions';
 
 function UpdateName() {
@@ -165,6 +167,7 @@ Server Functions support progressive enhancement with the third argument of `use
 ```js
 "use client";
 
+import {useActionState} from 'react';
 import {updateNameAction} from './actions';
 
 function UpdateName() {
@@ -188,6 +191,7 @@ When the permalink is provided to `useActionState`, React will redirect to the p
 
 - Server Functions are for use in React Server Components.
 - Snippets corrected from the original: `EmptyNote` returns the button; `updateName` returns `{error: null}` on success; the input is bound to `name` state; the form action and `useActionState` examples adapt `updateName(name)` to the FormData / `(previousState, formData)` argument contract by adding the Server Functions `updateNameFromForm` and `updateNameAction(previousState, formData)` to `actions.js`; the `useActionState` examples pass `updateNameAction` directly (not a client-side wrapper) so it stays a Server Function reference and the permalink and replay before hydration work.
+- The `import` lines from `react` (`useState`, `useTransition`, `useActionState`) in the Client Component snippets are added; the original omits them.
 - Until September 2024, all Server Functions were referred to as "Server Actions". If a Server Function is passed to an action prop or called from inside an action then it is a Server Action, but not all Server Functions are Server Actions.
 - When a Server Function is defined with the `"use server"` directive, your framework automatically creates a reference to it and passes that reference to the Client Component. When called on the client, React sends a request to the server to execute the function and return the result.
 - While Server Functions in React 19 are stable and will not break between minor versions, the underlying APIs used to implement them in a bundler or framework do not follow semver and may break between minors in React 19.x. Pin to a specific React version, or use the Canary release.

@@ -100,6 +100,7 @@ async function Notes() {
 ```js
 // Client Component
 "use client"
+import {useState} from 'react';
 
 export default function Expandable({children}) {
   const [expanded, setExpanded] = useState(false);
@@ -155,6 +156,8 @@ function Comments({commentsPromise}) {
 ```
 
 ## Notes
+
+- The `import {useState} from 'react';` line in the `Expandable` Client Component snippet is added; the original omits it.
 
 - Snippets corrected from the original: note is a record object (note.authorId), so the examples render note.content instead of the object itself; the Expandable example passes it as children.
 - While React Server Components in React 19 are stable and will not break between minor versions, the underlying APIs used to implement a React Server Components bundler or framework do not follow semver and may break between minors in React 19.x.
