@@ -38,13 +38,15 @@ export const authClient = createAuthClient({
 })
 ```
 
-### Anonymous sign-in
+### Sign In Anonymously
+
+`POST /sign-in/anonymous` (no body)
 
 ```typescript
 const user = await authClient.signIn.anonymous()
 ```
 
-Authenticates a user without credentials or PII.
+Creates a new user with a generated email and the configured or default name, then establishes a session, without credentials or PII. If the current session already belongs to an anonymous user, calling `signIn.anonymous()` again returns an error; link the current account using another authentication method, or sign out before starting a new anonymous session.
 
 ### Account linking
 
@@ -97,7 +99,7 @@ Must return a unique, valid email.
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `emailDomainName` | string | Generated as `temp@{id}.com` | Custom domain for the temporary email address |
+| `emailDomainName` | string | Generated as `{id}@anonymous.placeholder.invalid` | Custom domain for the generated email address |
 | `generateRandomEmail` | () => string \| Promise<string> | - | Custom email generation function. Overrides `emailDomainName` |
 | `onLinkAccount` | async ({ anonymousUser, newUser }) => void | - | Callback fired on account linking |
 | `disableDeleteAnonymousUser` | boolean | false | Disable the anonymous user deletion endpoint |
@@ -109,6 +111,7 @@ Must return a unique, valid email.
 - `disableDeleteAnonymousUser` prevents endpoint access but does not affect automatic deletion on linking
 - Ensuring uniqueness of custom email generation is the developer's responsibility
 - No PII is required or stored during anonymous sign-up
+- Changed in 1.7 docs: with `emailDomainName` omitted the generated email is `{id}@anonymous.placeholder.invalid` (1.6 docs: `temp@{id}.com`).
 
 ### DB schema
 

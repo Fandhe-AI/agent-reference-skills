@@ -83,7 +83,8 @@ const member = await test.addMember({
 
 ```typescript
 const { session, user, headers, cookies, token } = await test.login({
-    userId: user.id
+    userId: user.id,
+    session: { providerToken: "test-token" } // optional additional fields
 })
 // session - session object
 // user - user object
@@ -216,3 +217,5 @@ test("dashboard shows user name", async ({ context, page }) => {
 - Each test should clean up the data it created to avoid test pollution
 - Do not enable the OTP capture feature in production
 - Tokens created by test helpers are valid only in the test environment
+- All three auth helpers (`login`, `getAuthHeaders`, `getCookies`) accept an optional `session` object for fields configured through `session.additionalFields` or a plugin's session schema. Supplied values override defaults, omitted fields keep their defaults, and standard session fields (`id`, `userId`, `token`, timestamps) are ignored.
+- `testUtils()` registers no HTTP routes, but adds privileged server-side helpers on `ctx.test` (create sessions, persist and delete records); with `captureOTP: true` it also installs a verification hook and stores OTPs in memory. Keep it out of the production auth config and add it from a separate test-only auth instance.

@@ -118,6 +118,8 @@ Creates a new `subscription` table:
 - **Organization billing**: `organization: { enabled: true }` bills the organization instead of the user
 - **Trial management**: automatically enforces one trial per account
 - **Scheduled changes**: `scheduleAtPeriodEnd: true` defers plan changes to the end of the period (uses Stripe's Subscription Schedules API)
+- Changed in 1.7: `referenceMiddleware` rejects organization-scoped subscriptions unless `organization: { enabled: true }` is set in the `stripe()` options. The organization plugin is still needed separately to resolve the active organization.
+- Changed in 1.7: the `event` parameter of the `onSubscriptionCancel` callback is now required (non-optional).
 
 ## Related
 

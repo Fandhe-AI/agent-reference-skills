@@ -167,6 +167,7 @@ console.log(session?.user.lastLoginMethod)
 
 ## Notes
 
-- Default method resolution: **Email** resolves to `"email"` (`/sign-in/email` and `/sign-up/email`), **OAuth providers** resolve to the provider ID (e.g. `"google"`, `"github"`), **OAuth callbacks** extract the provider ID from `/callback/:id` or `/oauth2/callback/:id`
+- Default method resolution: **Email** resolves to `"email"` (`/sign-in/email` and `/sign-up/email`), **OAuth providers** resolve to the provider ID (e.g. `"google"`, `"github"`), **OAuth callbacks** extract the provider ID from `/callback/:id` (the `/oauth2/callback/:id` entry is gone from the 1.7 docs; Generic OAuth now uses `/callback/:id`)
+- Other endpoints detected automatically: `/one-tap/callback` (recorded as `"google"`), `/siwe/verify` (`"siwe"`), `/passkey/verify-authentication` (`"passkey"`), `/magic-link/verify` (`"magic-link"`), `/sign-in/email-otp` (`"email-otp"`)
 - The cookie uses `httpOnly: false` so it is accessible from client-side JavaScript
 - Automatically inherits Better Auth's `crossSubDomainCookies` and `crossOriginCookies` settings

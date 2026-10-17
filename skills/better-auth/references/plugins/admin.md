@@ -38,6 +38,16 @@ export const authClient = createAuthClient({
 })
 ```
 
+### Create the first admin (CLI)
+
+After adding the Admin plugin and applying the schema, create the first admin user from the CLI:
+
+```bash
+npx auth@latest create-admin --email admin@example.com --name "Admin" --role admin
+```
+
+If users already exist, the CLI asks for confirmation before creating another admin; `--force` or `--yes` skips the prompt. The CLI marks the admin email as verified by default; pass `--no-email-verified` to disable that.
+
 ### Create user
 
 `POST /admin/create-user`
@@ -384,7 +394,7 @@ export const client = createAuthClient({
 | `impersonationSessionDuration` | number | 3600 (1 hour) | Impersonation session duration (seconds) |
 | `defaultBanReason` | string | `"No reason"` | Default ban reason |
 | `defaultBanExpiresIn` | number | undefined (permanent) | Default ban expiration (seconds) |
-| `bannedUserMessage` | string | `"You have been banned..."` | Message shown to banned users |
+| `bannedUserMessage` | string \| (user) => string \| Promise<string> | `"You have been banned..."` | Message shown to banned users |
 
 ## Notes
 

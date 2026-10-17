@@ -81,6 +81,8 @@ const { data, error } = await authClient.magicLink.verify({
     query: {
         token: "123456",
         callbackURL: "/dashboard",
+        newUserCallbackURL: "/welcome",
+        errorCallbackURL: "/error",
     },
 })
 
@@ -89,10 +91,14 @@ const data = await auth.api.magicLinkVerify({
     query: {
         token: "123456",
         callbackURL: "/dashboard",
+        newUserCallbackURL: "/welcome",
+        errorCallbackURL: "/error",
     },
     headers: await headers(),
 })
 ```
+
+`newUserCallbackURL` is the redirect after new user sign-up; `errorCallbackURL` is the redirect if verification fails (with only `callbackURL`, the user is redirected there with an `error` query parameter).
 
 Unless `disableSignUp` is enabled, users without an existing account are signed up automatically.
 
@@ -104,8 +110,9 @@ Unless `disableSignUp` is enabled, users without an existing account are signed 
 | `expiresIn` | number | 300 (5 minutes) | Token expiration (seconds) |
 | `allowedAttempts` | number \| Infinity | 1 | Maximum verification attempts before the token is deleted |
 | `disableSignUp` | boolean | false | Prevents new user sign-up via magic link |
+| `rateLimit` | { window: number, max: number } | `{ window: 60, max: 5 }` | Rate limit for `/sign-in/magic-link` and `/magic-link/verify` |
 | `generateToken` | (email: string) => string | - | Custom token generation function |
-| `storeToken` | "plain" \| "hashed" \| { type: "custom-hasher", hash: ... } | "plain" | How the token is stored |
+| `storeToken` | "plain" \| "hashed" \| { type: "custom-hasher", hash: ... } | "plain" | How the token is transformed before the verification identifier is created |
 
 ### Custom token generation
 
@@ -126,7 +133,7 @@ magicLink({
 })
 ```
 
-The storage backend is determined by the global `verification` setting. Redis can be used via `secondaryStorage`.
+Better Auth adds the `magic-link:` prefix to the transformed token before applying the global `verification.storeIdentifier` setting; the token sent in the link and to `sendMagicLink` is unchanged, and custom hashers receive the original token. The storage backend is determined by the global `verification` setting. Redis can be used via `secondaryStorage`.
 
 ## Notes
 
@@ -135,3 +142,4 @@ The storage backend is determined by the global `verification` setting. Redis ca
 - `storeToken: "hashed"` is recommended in production
 - Unless `disableSignUp: true`, unregistered users are automatically created when requesting a magic link
 - On error, the user is redirected to `errorCallbackURL` or `callbackURL` with an error query parameter
+- Changed in 1.7: magic-link (and email-OTP) sign-in treats proven mailbox control as the source of truth for an account whose email had never been confirmed. If that account had an unproven password or other linked accounts, Better Auth removes all of them and revokes existing sessions before signing the user in. A user who signed up with email and password but first signs in through a magic link instead of confirming the verification email must set a new password through password reset.

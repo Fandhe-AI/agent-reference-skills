@@ -115,6 +115,18 @@ async function validateToken(token: string) {
 }
 ```
 
+### Session cookie cache
+
+Set `sessionCookieCache` to `true` to sign JWT session cookie cache values with the plugin's locally managed keys. This requires `session.cookieCache.strategy` to be `"jwt"`.
+
+```typescript
+jwt({
+    sessionCookieCache: true
+})
+```
+
+The `/token` endpoint and `set-auth-jwt` header produce JWKS-verifiable JWTs for external services and are separate from Better Auth's primary `session_token` cookie. With `session.cookieCache.strategy = "jwt"`, the `session_data` cookie still uses HS256 with your Better Auth secret by default; `sessionCookieCache: true` makes that cookie-cache JWT verifiable with the plugin's JWKS too.
+
 ### Algorithm selection
 
 ```typescript
@@ -254,6 +266,8 @@ jwks table:
 | id | string | PK | Unique identifier |
 | publicKey | string | - | Public part of the Web Key |
 | privateKey | string | - | Private part of the Web Key |
+| alg | string | ? | The JWS algorithm this web key signs with |
+| crv | string | ? | The elliptic curve this web key was generated on |
 | createdAt | Date | - | Creation timestamp |
 | expiresAt | Date | ? | Expiration date |
 

@@ -88,6 +88,21 @@ Parameters:
 - `disableSession` (boolean, optional): prevent session creation after verification
 - `updatePhoneNumber` (boolean, optional): update the logged-in user's phone number (requires an active session)
 
+### Consume an OTP on the Server
+
+For custom sign-up or account-linking flows, consume an OTP without creating or updating a user or session. This server-only API is exposed through `auth.api`; it registers no HTTP route and generates no `authClient` method.
+
+```typescript
+const result = await auth.api.consumePhoneNumberOTP({
+    body: {
+        phoneNumber: "+1234567890",
+        code: "123456"
+    }
+})
+```
+
+It uses the same validation and consumption behavior as `verifyPhoneNumber` and does not add a stronger concurrency guarantee; if parallel redemption attempts must be strictly single-use, configure `verifyOTP` with a provider that atomically consumes accepted codes. Call it inside the server-side flow that uses the result (it returns no session or reusable proof of verification), validate inputs that do not depend on OTP verification first, and apply rate limiting if you expose it through your own public endpoint.
+
 ### Sign in with phone number
 
 `POST /sign-in/phone-number`

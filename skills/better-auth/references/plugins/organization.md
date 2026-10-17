@@ -84,6 +84,19 @@ const { data, error } = await authClient.organization.setActive({
 const { data: activeOrganization } = authClient.useActiveOrganization()
 ```
 
+**Get organization**
+
+`GET /organization/get-organization`. Returns organization metadata without members or invitations (`id`, `name`, `slug`, `logo`, `metadata`); prefer it over `getFullOrganization` when you need only those fields. Defaults to the active organization.
+
+```typescript
+const { data, error } = await authClient.organization.getOrganization({
+    query: {
+        organizationId: "org-id", // optional
+        organizationSlug: "org-slug", // optional
+    },
+})
+```
+
 **Get full organization details**
 
 ```typescript
@@ -294,8 +307,12 @@ const { data, error } = await authClient.organization.setActiveTeam({
 **List user's teams**
 
 ```typescript
-const { data, error } = await authClient.organization.listUserTeams()
+const { data, error } = await authClient.organization.listUserTeams({
+    query: { userId: "user-id", organizationId: "organization-id" }, // both optional
+})
 ```
+
+Lists teams a user is part of; defaults to the current user and returns teams across every organization the user belongs to. `userId` lists another member's teams (gated behind the `member:update` permission in the target organization). `organizationId` scopes the result to one organization without switching the active organization; when omitted for another user's query, the session's active organization is used.
 
 **List team members**
 
@@ -526,6 +543,7 @@ organizationHooks: {
 |---|---|---|---|
 | id | string | PK | Unique identifier |
 | name | string | - | Team name |
+| memberCount | number | - | Durable member count used to enforce team capacity |
 | organizationId | string | FK | Organization reference |
 | createdAt | Date | - | Creation timestamp |
 | updatedAt | Date | ? | Update timestamp |
@@ -537,6 +555,7 @@ organizationHooks: {
 | id | string | PK | Unique identifier |
 | teamId | string | FK | Team reference |
 | userId | string | FK | User reference |
+| membershipKey | string | ? | Internal unique key for the team and user membership pair |
 | createdAt | Date | ? | Date added |
 
 ## Notes
@@ -547,4 +566,6 @@ organizationHooks: {
 - Role-based access control prevents unauthorized operations
 - Invitations expire after the configured period (48 hours by default)
 - Multiple roles are supported as a comma-separated string
+- Changed in 1.7: `team.memberCount` (durable member count for team capacity) and `teamMember.membershipKey` (internal unique team+user key) columns are added; no manual preparation. `maximumMembersPerTeam` is enforced when accepting team invitations, adding an existing organization member to a team, and adding a new organization member with a `teamId`.
+- Changed in 1.7: `organization.updateTeam` no longer accepts `id`, `createdAt`, and `updatedAt` in the request body (remove `createdAt` / `updatedAt` from `data`); `updateMemberRole` validates role existence after authorization checks.
 - Dynamic roles cannot be checked client-side; use the `hasPermission` API for verification

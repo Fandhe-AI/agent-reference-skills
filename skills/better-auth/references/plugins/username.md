@@ -128,6 +128,8 @@ const response = await auth.api.isUsernameAvailable({
 | `usernameNormalization` | function \| false | lowercase | Normalization function |
 | `displayUsernameNormalization` | function \| false | none | Normalization for the display username |
 | `validationOrder` | object | pre-normalization | Validation order |
+| `displayUsername` | boolean | true | Set `false` to skip the separate `displayUsername` field (see Disable Display Username) |
+| `immutableUsername` | boolean | false | Prevent users from changing their username after it has been set |
 
 ### Custom validation
 
@@ -164,6 +166,25 @@ username({
 })
 ```
 
+### Disable Display Username
+
+Set `displayUsername: false` when the app does not need the non-normalized `displayUsername` field. When disabled, the field is not added to the user schema (no extra column or migration), is never written during sign-up or update, inferred user/session types exclude it, and normalization continues to work. Pass the same option to the client plugin so inferred types match.
+
+```typescript
+username({ displayUsername: false })
+
+// client
+usernameClient({ displayUsername: false })
+```
+
+### Immutable Username
+
+Set `immutableUsername: true` to prevent users from changing their username after it has been set. Users can still set a username during sign-up, or on a later profile update if they have none yet; updating other profile fields stays allowed.
+
+```typescript
+username({ immutableUsername: true })
+```
+
 ### Disabling the username availability check
 
 ```typescript
@@ -179,7 +200,7 @@ betterAuth({
 | Field | Type | Optional | Description |
 |---|---|---|---|
 | `username` | string | Yes | The normalized username used for authentication |
-| `displayUsername` | string | Yes | The pre-normalization username used for display |
+| `displayUsername` | string | Yes | The pre-normalization username used for display (omitted when `displayUsername: false`) |
 
 ## Notes
 

@@ -97,6 +97,34 @@ await authClient.signIn.passkey({
 Parameters:
 - `autoFill` (boolean): enables browser autofill (Conditional UI)
 
+### Passkey-first registration (pre-auth)
+
+When `registration.requireSession` is `false` (default `true`), passkey registration can start without a session. Pass an opaque `context` to the registration options endpoint; it is forwarded to `registration.resolveUser` (required when `requireSession` is false and no session exists).
+
+```typescript
+passkey({
+  registration: {
+    requireSession: false,
+    resolveUser: async ({ ctx, context }) => {
+      // Validate context (e.g., a signed token), then create or load a user.
+      return { id: "user-id", name: "user@example.com" }
+    },
+    extensions: { credProps: true }, // optional server-defined extensions
+  },
+  authentication: { extensions: { credProps: true } },
+})
+
+await auth.api.generatePasskeyRegistrationOptions({ context: "signed-registration-token" })
+
+await authClient.passkey.addPasskey({
+  name: "Primary passkey",
+  context: "signed-registration-token",
+  createSession: true,
+})
+```
+
+`createSession` (boolean, optional): when `true`, successful verification sets the session cookie and returns the `session` and `user` with the registered passkey. To avoid creating a user before the WebAuthn ceremony succeeds, create or load the user in `registration.afterVerification` and return its `userId`. `registration.afterVerification` can also return a default `name` (e.g. `getAuthenticatorName(verification.registrationInfo?.aaguid)` from `@better-auth/passkey`); a client-supplied name always takes precedence.
+
 ### List passkeys
 
 `GET /passkey/list-user-passkeys`
