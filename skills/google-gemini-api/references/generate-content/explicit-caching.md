@@ -98,7 +98,7 @@ client.caches.update(
   )
 )
 
-client.caches.delete(cache.name)
+client.caches.delete(name=cache.name)
 ```
 
 ```bash
@@ -138,6 +138,7 @@ Implicit caching minimum input token counts:
 - Only `ttl` or `expire_time` can be updated.
 - Billing: cached token count (reduced rate on reuse), storage duration (TTL), plus non-cached input and output tokens. Cached content is a prefix to the prompt; no special rate limits; token limits include cached tokens. The minimum varies by model, the maximum equals the model maximum.
 - With an OpenAI library, enable explicit caching via the `cached_content` property in `extra_body`.
+- The caching guide shows `client.caches.delete(cache.name)`; the API reference uses `name=` and the Python SDK's `delete` takes `name` as keyword-only, so the keyword form is used here.
 - The trailing comma after the last `contents` element in the official REST sample is removed here so the JSON is valid.
 - Distinct from Anthropic prompt caching (anthropic-api-core skill) and OpenAI prompt caching (openai-api-core skill).
 

@@ -188,6 +188,7 @@ while step_count < max_steps:
 
         function_response_parts.append(
             types.Part.from_function_response(
+                id=fc.id,
                 name=fc.name,
                 response={"status": "success"},
             )
@@ -200,6 +201,7 @@ while step_count < max_steps:
 Notes:
 
 - The loop executes returned function calls (`move`, `setGripperState`), appends `Part.from_function_response(...)` results, and repeats until no function call or the step limit. The mock robot API and output are illustrative.
+- The source snippet omits `id`; it is added here so each function response carries the matching call `id`, as required on the function-calling page.
 
 ### Video progress (robotics-video-progress)
 
