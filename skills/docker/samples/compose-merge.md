@@ -39,7 +39,7 @@ services:
       DEBUG: 'true'
 
   db:
-    command: '-d'
+    command: '-d 1'
     ports:
      - 5432:5432
 
@@ -73,3 +73,4 @@ $ docker compose -f compose.yaml -f compose.prod.yaml up -d
 - Relative paths resolve against the base (first) file, not the override's location; use `include` when each file's paths must resolve to its own directory.
 - `docker compose config` shows the merged result. `-f -` reads from stdin; `COMPOSE_FILE` is an alternative to `-f`.
 - Adapted: the official example omits POSTGRES_PASSWORD (MYSQL_ROOT_PASSWORD for mysql); it is added from a required variable because the image refuses to initialize without it.
+- Adapted: the official override uses command: '-d', but postgres requires a debug level after -d and fails to start; '-d 1' is used here.

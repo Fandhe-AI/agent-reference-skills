@@ -32,7 +32,7 @@ EXPOSE 8080
 RUN useradd app
 USER app
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "app.main:app", "--app-dir", "src", "--host", "0.0.0.0", "--port", "8080"]
 ```
 
 ## Notes
@@ -40,3 +40,4 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
 - The `Dockerfile` has no file extension.
 - The Node.js Dockerfile is intentionally not production-ready (no build-cache ordering, runs as root, single stage); see the build cache and multi-stage samples.
 - Typical order: determine base image, install dependencies, copy source, configure the final image.
+- Adapted: the official CMD omits --app-dir; since the source is copied to ./src, --app-dir src is added so uvicorn can import app.main (assumes src/app/main.py).
