@@ -4,6 +4,7 @@
 
 ```yaml
 # .github/workflows/deploy.yml — main への push を 1 件ずつ順に処理
+name: deploy
 on:
   push:
     branches:
@@ -12,16 +13,41 @@ on:
 concurrency:
   group: production-deploy
   queue: max
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "deploy ${GITHUB_SHA}"
 ```
 
 ```yaml
 # .github/workflows/ci.yml — 同一 PR の古い実行をキャンセル
+name: ci
 on:
   pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Test
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "test ${GITHUB_SHA}"
 ```
 
 ## Notes
