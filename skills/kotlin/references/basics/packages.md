@@ -60,7 +60,7 @@ import org.example.printMessage           // Top-level function
 import org.example.VERSION                // Top-level property
 import org.example.Config.DEFAULT_TIMEOUT // Property from an object
 import org.example.Config.loadSettings    // Function from an object
-import org.example.MyClass.create         // Refers to MyClass.Companion.create
+import org.example.MyClass.Companion.create // Function from a companion object
 import org.example.Color.RED              // Enum constant
 import org.example.Outer.Nested           // Nested class
 ```
@@ -79,7 +79,6 @@ import org.example.Outer.Nested           // Nested class
 | `kotlin.ranges.*` | all |
 | `kotlin.sequences.*` | all |
 | `kotlin.text.*` | all |
-| `kotlin.math.*` | all |
 | `java.lang.*`, `kotlin.jvm.*` | JVM |
 | `kotlin.js.*` | JS |
 
@@ -92,6 +91,10 @@ import org.example.Outer.Nested           // Nested class
 | `protected` | cannot be imported |
 | top-level `private` | only accessible within its declaring file |
 | other `private` | cannot be imported |
+
+## Notes
+
+- The official page ([kotlin-web-site 0b10373](https://github.com/JetBrains/kotlin-web-site/blob/0b10373a150997e9fbcd730a7e00ae8444cc8606/docs/topics/packages.md#L96-L98)) shows `import org.example.MyClass.create` and lists `kotlin.math.*` among default imports; kotlinc 2.4.21 rejects both (unresolved reference), so this page follows the compiler behavior.
 
 ## Related
 
