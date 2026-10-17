@@ -11,7 +11,7 @@ A handle to the location of a widget in the widget tree. (abstract class)
 ```dart
 @override
 Widget build(BuildContext context) {
-  // here, Scaffold.of(context) returns null
+  // here, Scaffold.of(context) throws because no Scaffold is an ancestor of this context (Scaffold.maybeOf returns null)
   return Scaffold(
     appBar: AppBar(title: const Text('Demo')),
     body: Builder(
@@ -101,6 +101,7 @@ Methods:
 - Each widget has its own `BuildContext`, which becomes the parent of the widget returned by `build`. Within a build method, the context of the widget that has the build method is not the same as the context of the widgets it returns (e.g., `Theme.of(context)` will not find a `Theme` the build method itself returns). Use a `Builder` widget to obtain a context for a subpart of the returned tree.
 - A widget's `BuildContext` can change location over time as the widget moves around the tree, so values returned from its methods should not be cached beyond the execution of a single synchronous function.
 - Avoid storing `BuildContext` instances: they may become invalid if the widget is unmounted. If a context is used across an asynchronous gap, check `mounted` before interacting with it.
+- The official sample comment says Scaffold.of(context) returns null; it actually throws, and only Scaffold.maybeOf returns null.
 - `BuildContext` objects are actually `Element` objects; the interface is used to discourage direct manipulation of `Element` objects.
 
 ## Related

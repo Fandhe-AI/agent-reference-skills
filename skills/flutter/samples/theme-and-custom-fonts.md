@@ -121,7 +121,7 @@ MaterialApp(
   title: 'Custom Fonts',
   // Set Raleway as the default app font.
   theme: ThemeData(fontFamily: 'Raleway'),
-  home: const MyHomePage(),
+  home: const MyHomePage(title: 'Custom Fonts'),
 );
 
 Text(
@@ -137,4 +137,5 @@ Text(
 - Supported font formats are `.ttc`, `.ttf`, `.otf`; `.woff` / `.woff2` are not supported on desktop platforms.
 - Flutter does not infer weight or style from file names; declare `weight` / `style` in `pubspec.yaml`, otherwise the engine only simulates them. `google_fonts` is a pub.dev package that requires `flutter pub add google_fonts`.
 - Flutter `ThemeData` / `MaterialApp` (`package:flutter/material.dart`, Dart) is distinct from Compose Material3 `MaterialTheme` and SwiftUI / UIKit theming. `package:material_ui/material_ui.dart` is the standalone opt-in package in Flutter 3.47.
+- Passed title: to MyHomePage in the fonts snippet; the official fonts recipe uses a different MyHomePage without a title parameter.
 - Migration (Flutter 3.44): see the decouple-page-transition-builders breaking change for `ThemeData` page transitions.

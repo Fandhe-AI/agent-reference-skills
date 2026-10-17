@@ -140,13 +140,18 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('HomeViewModel tests', () {
-    test('Load bookings', () {
+    test('Load bookings', () async {
       // HomeViewModel._load is called in the constructor of HomeViewModel.
       final viewModel = HomeViewModel(
         bookingRepository: FakeBookingRepository()
           ..createBooking(kBooking),
         userRepository: FakeUserRepository(),
       );
+
+      // Wait for the load command started by the constructor to finish.
+      while (viewModel.load.running) {
+        await Future<void>.delayed(Duration.zero);
+      }
 
       expect(viewModel.bookings.isNotEmpty, true);
     });
@@ -169,6 +174,7 @@ class FakeBookingRepository implements BookingRepository {
 
 - Excerpts only: `BookingRepository`, `UserRepository`, `Result` / `Ok` / `Error`, `Command0` / `Command1` and the rest are defined in the Compass app (https://github.com/flutter/samples/tree/main/compass_app), not in this page.
 - The `import 'package:flutter_test/flutter_test.dart';` line in the test excerpt was added (not in the source snippet) because `group` / `test` / `expect` come from `package:flutter_test`; `kBooking` is a Compass app test fixture.
+- Made the test async and wait for the constructor-started load command to finish before asserting; the official snippet asserts synchronously, before _load completes.
 - Each view has exactly one view model; repositories stay private members of the view model so views cannot reach the data layer. A view is only aware of one view model, a repository can serve many view models, and a service can serve many repositories.
 - The guide notes alternatives to `ChangeNotifier` such as `package:riverpod`, `package:flutter_bloc`, and `package:signals`; Flutter teams recommend `package:provider` for dependency injection in this case study.
 - This is the Flutter app architecture guide (UI layer / data layer, MVVM, Dart); it parallels but is distinct from Android's architecture guidance (`ViewModel`, `Repository`) covered by the android-architecture skill.

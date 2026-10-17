@@ -69,6 +69,12 @@ class _MyAppState extends State<MyApp> {
   Future<Album>? _futureAlbum;
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Create Data Example',
@@ -175,4 +181,5 @@ Future<Album> deleteAlbum(String id) async {
 - `deleteAlbum` relies on the delete-data recipe's `Album` class, which has nullable fields and an `Album.empty()` constructor; the `Album` above (non-nullable fields) is from the send-data recipe.
 - `POST` expects status 201; `PUT` and `DELETE` expect 200. Throw on any other status instead of returning `null`.
 - Added `flutter pub add material_ui`: the official recipe imports package:material_ui but never adds the dependency; alternatively import package:flutter/material.dart.
+- Added dispose() for the TextEditingController (omitted in the official recipe).
 - Add the `http` package with `flutter pub add http`; platform network permissions are listed in fetch-and-parse-json.

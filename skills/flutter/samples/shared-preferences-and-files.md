@@ -50,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// or fallback to 0 if it doesn't exist.
   Future<void> _loadCounter() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     setState(() {
       _counter = prefs.getInt('counter') ?? 0;
     });
@@ -59,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// asynchronously save it to persistent storage.
   Future<void> _incrementCounter() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     setState(() {
       _counter = (prefs.getInt('counter') ?? 0) + 1;
       prefs.setInt('counter', _counter);
@@ -140,5 +142,6 @@ class CounterStorage {
 - In tests, call `SharedPreferences.setMockInitialValues(<String, Object>{'counter': 2});` in `setUpAll()` to use the in-memory mock.
 - The file recipe does not work with web apps at this time (flutter/flutter issue #45296). The documents directory is cleared only when the app is deleted; the temporary directory can be cleared by the system at any time.
 - Added `flutter pub add material_ui`: the official recipe imports package:material_ui but never adds the dependency; alternatively import package:flutter/material.dart.
+- Added `if (!mounted) return;` after awaiting SharedPreferences.getInstance() (not in the official recipe) to avoid setState after dispose.
 - Added `flutter pub add path_provider`: the official file recipe imports it but shows no install step.
 - To compare storage options, see the choose-a-database reference page.

@@ -49,12 +49,6 @@ class _ArticleViewState extends State<ArticleView> {
   final ArticleViewModel viewModel = ArticleViewModel(ArticleModel());
 
   @override
-  void initState() {
-    super.initState();
-    viewModel.fetchArticle();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Wikipedia Flutter')),
@@ -87,5 +81,5 @@ class _ArticleViewState extends State<ArticleView> {
 
 - `ArticleModel`, `Summary`, `ArticlePage` and `ArticleWidget` are tutorial classes defined in other steps of the source; only the view model and view are excerpted here.
 - Call `notifyListeners()` after changing state; `ListenableBuilder` rebuilds its `builder` only when the listened `Listenable` notifies.
-- The tutorial's `ArticleViewModel` constructor calls `fetchArticle()` and the `ArticleView` calls it again in `initState()`, as written in the source steps.
+- Removed the extra viewModel.fetchArticle() call from initState: the source calls it both in the ArticleViewModel constructor and in initState, which starts two concurrent fetches.
 - This is the Model / ViewModel / View split of the Flutter architecture guide; see the architecture-data references and the mvvm-case-study sample.

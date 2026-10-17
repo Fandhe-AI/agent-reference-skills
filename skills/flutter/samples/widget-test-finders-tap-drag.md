@@ -55,6 +55,12 @@ class _TodoListState extends State<TodoList> {
   final controller = TextEditingController();
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _appTitle,
@@ -71,7 +77,7 @@ class _TodoListState extends State<TodoList> {
 
                   return Dismissible(
                     key: Key('$todo$index'),
-                    onDismissed: (direction) => todos.removeAt(index),
+                    onDismissed: (direction) => setState(() => todos.removeAt(index)),
                     background: Container(color: Colors.red),
                     child: ListTile(title: Text(todo)),
                   );
@@ -124,5 +130,7 @@ testWidgets('finds a specific instance', (tester) async {
 
 - The test environment does not rebuild automatically after state changes; call `pump()` for one frame or `pumpAndSettle()` to rebuild until animations finish.
 - Added `flutter pub add material_ui`: the official recipe imports package:material_ui but never adds the dependency; alternatively import package:flutter/material.dart.
+- Changed onDismissed to wrap todos.removeAt in setState (the official tap-drag recipe omits it; the dismissible recipe uses setState) so the list rebuilds after removal.
+- Added dispose() for the TextEditingController (omitted in the official recipe).
 - `find.text`, `find.byType`, `find.byKey`, `find.byWidget` come from `flutter_test`; see `CommonFinders` for the full list.
 - This is `flutter_test` (Dart) widget testing run with `flutter test`, distinct from Playwright, Vitest, and Android instrumented/Compose testing.
