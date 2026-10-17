@@ -61,6 +61,7 @@ onKeyDown={(event) => {
 }}
 ```
 
+- IME caveat (not in upstream snippet): the handler above also fires on the Enter that commits IME composition (Japanese/Chinese/Korean input). Guard with `if (event.nativeEvent.isComposing) return` (and `event.keyCode === 229` for older Safari) before the Enter check.
 - AI SDK: send the text and the `FileList` from the file input with `sendMessage({ text, files })`. The route streams the reply with `result.toUIMessageStreamResponse()`.
 - Migration from AI SDK Elements `prompt-input.tsx`: `PromptInput` already renders an Input Group (keep the form, provider, attachment state and command parts); `PromptInputTextarea` -> `InputGroupTextarea className="p-3"`; `PromptInputActionMenuTrigger` -> `InputGroupButton size="icon-sm" variant="outline"` rounded-full; `PromptInputSubmit` -> `InputGroupButton size="icon-sm" variant="default"` rounded-full; `PromptInputHeader` shows each attachment as an `Attachment size="sm"`.
 - Base UI variant is canonical (`DropdownMenuTrigger` takes `render`). Radix variant: `https://ui.shadcn.com/docs/ai-elements/radix/prompt-input`; React Aria variant: `https://ui.shadcn.com/docs/ai-elements/aria/prompt-input`.
