@@ -65,7 +65,7 @@ export const config = {
   // ensure the rust project is built since we expect this binary to exist for the webdriver sessions
   onPrepare: () => {
     // Remove the extra `--` if you're not using npm!
-    spawnSync(
+    const result = spawnSync(
       'npm',
       ['run', 'tauri', 'build', '--', '--debug', '--no-bundle'],
       {
@@ -74,6 +74,10 @@ export const config = {
         shell: true,
       }
     );
+    if (result.error) throw result.error;
+    if (result.status !== 0) {
+      throw new Error(`tauri build failed with exit code ${result.status}`);
+    }
   },
 
   // ensure we are running `tauri-driver` before the session starts so that we can proxy the webdriver requests
@@ -178,4 +182,5 @@ npm test
 - Tauri apps are tested through `tauri-driver` (WebDriver server), not through Playwright; see the playwright skill for Playwright.
 - The official page says most projects should use `@wdio/tauri-service` instead, which automates this wiring and supports macOS; this sample wires WebdriverIO to `tauri-driver` by hand.
 - The official snippets have a missing quote in package.json and specs set to ./develop/tests/specs; both are corrected here.
+- Unlike the official snippet, the build step's spawnSync result is checked so a failed build aborts the run instead of testing a stale binary.
 - Remove the extra `--` in `onPrepare` if you do not use npm.

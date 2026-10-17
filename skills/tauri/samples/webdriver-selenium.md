@@ -60,11 +60,15 @@ before(async function () {
   this.timeout(120000);
 
   // ensure the app has been built
-  spawnSync('yarn', ['tauri', 'build', '--debug', '--no-bundle'], {
+  const result = spawnSync('yarn', ['tauri', 'build', '--debug', '--no-bundle'], {
     cwd: path.resolve(__dirname, '../..'),
     stdio: 'inherit',
     shell: true,
   });
+  if (result.error) throw result.error;
+  if (result.status !== 0) {
+    throw new Error(`tauri build failed with exit code ${result.status}`);
+  }
 
   // start tauri-driver
   tauriDriver = spawn(
@@ -136,24 +140,27 @@ async function closeTauriDriver() {
 }
 
 function onShutdown(fn) {
-  const cleanup = () => {
+  // signal handlers can await the async cleanup before exiting
+  const cleanup = async () => {
     try {
-      fn();
+      await fn();
     } finally {
       process.exit();
     }
   };
 
-  process.on('exit', cleanup);
+  // the 'exit' event cannot wait for async work, so only kill tauri-driver synchronously
+  process.on('exit', () => {
+    exit = true;
+    tauriDriver?.kill();
+  });
   process.on('SIGINT', cleanup);
   process.on('SIGTERM', cleanup);
   process.on('SIGHUP', cleanup);
   process.on('SIGBREAK', cleanup);
 }
 
-onShutdown(() => {
-  closeTauriDriver();
-});
+onShutdown(() => closeTauriDriver());
 ```
 
 Run
@@ -168,4 +175,6 @@ npm test
 - Complete the WebDriver prerequisites (manual setup) first; the app binary must exist at `src-tauri/target/debug/tauri-app` and `tauri-driver` at `~/.cargo/bin/tauri-driver`.
 - Selenium has no bundled test suite, so Mocha plus manual `tauri-driver` start / stop hooks are needed; the capability `tauri:options.application` points at the binary and the browser name is `wry`.
 - The official snippet kills tauri-driver before driver.quit(); the order is swapped so the session is deleted first.
+- The official shutdown hook exits without awaiting the async cleanup; signal handlers here await closeTauriDriver() and the exit handler kills tauri-driver synchronously.
+- Unlike the official snippet, the build step's spawnSync result is checked so a failed build aborts the run instead of testing a stale binary.
 - The `before` hook runs `yarn tauri build --debug --no-bundle`; change `yarn` if you use another package manager.
