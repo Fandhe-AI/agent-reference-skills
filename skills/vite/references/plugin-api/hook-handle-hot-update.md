@@ -74,10 +74,12 @@ if (import.meta.hot) {
 
 ## Notes
 
-- Kind: `async`, `sequential`. Scope: Per-environment. See also: HMR API.
+- Kind: `async`, `sequential`. Called once for all environments (modules mix Client and SSR info). See also: HMR API.
+- The api-plugin page labels this hook `Scope: Per-environment`, but the hotUpdate-hook change page states it is called once for all environments; the per-environment variant is `hotUpdate` (Environment API). Deprecation of `handleHotUpdate` is planned for a future major.
 - The hook can filter and narrow the affected module list for more accurate HMR, return an empty array and do a full reload, or return an empty array and do fully custom HMR handling via custom events.
 
 ## Related
 
 - [HMR API (import.meta.hot)](./hmr-api-overview.md)
 - [Client-server Communication](./client-server-communication.md)
+- [hotUpdate hook change](../migration-troubleshooting/change-hotupdate-hook.md)

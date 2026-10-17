@@ -10,7 +10,7 @@ Vite-specific hooks (ignored by Rollup) to modify the user config before resolut
 
 ```ts
 // config
-(config: UserConfig, env: { mode: 'build' | 'serve', command: string, isSsrBuild?: boolean, isPreview?: boolean }) => UserConfig | null | void
+(config: UserConfig, env: { mode: string, command: 'build' | 'serve', isSsrBuild?: boolean, isPreview?: boolean }) => UserConfig | null | void
 
 // configResolved
 (config: ResolvedConfig) => void | Promise<void>
@@ -74,6 +74,7 @@ const examplePlugin = () => {
 ## Notes
 
 - `config` receives the raw user config (CLI options merged with config file) and the config env exposing `mode` and `command`. It can return a partial config that is deeply merged, or mutate the config directly if default merging cannot achieve the result.
+- The upstream api-plugin page (v8.3.4) lists `mode: 'build' | 'serve', command: string`, which is swapped; corrected per api-environment-plugins (configEnvironment env) and api-javascript (resolveConfig command / loadEnv mode).
 - User plugins are resolved before `config` runs, so injecting other plugins inside the `config` hook has no effect.
 - `configResolved` is useful to store the final config and to branch on the command being run. The `command` value is `serve` in dev (in the CLI, `vite`, `vite dev`, and `vite serve` are aliases).
 
