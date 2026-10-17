@@ -9,7 +9,7 @@ user-invocable: false
 
 # Tauri v2
 
-> 分割 PR の途中段階。現在収録済み: references/{cli, config}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{cli, config, develop}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -31,6 +31,16 @@ Tauri v2。版 pin は次のとおり。
 skills/tauri/
   SKILL.md
   references/
+    develop/                # コマンド呼び出し・状態管理・sidecar・resources・プラグイン開発・デバッグ・テスト・WebDriver
+      README.md
+      calling-rust.md
+      calling-frontend.md
+      state-management.md
+      sidecar.md
+      plugin-development.md
+      mobile-plugin-development.md
+      mocking.md
+      webdriver-overview.md
     config/                 # tauri.conf.json の各設定オブジェクト
       README.md
       overview.md
@@ -56,11 +66,12 @@ skills/tauri/
 
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. 該当ページの `.md` を Read して詳細を確認する
-3. Rust 側 API は `rust-api`、フロントエンド側 API は `js-api` または `plugin-js-api-*`、プラグインの導入・設定・permission はガイド側 `plugins-core` / `plugins-app` を引く
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
+| Rust コマンドをフロントエンドから呼びたい（invoke / Channel） | develop | [references/develop/README.md](references/develop/README.md) |
+| 状態管理・sidecar・resources・アイコン・プラグイン開発・デバッグ・テスト・WebDriver | develop | [references/develop/README.md](references/develop/README.md) |
 | tauri.conf.json の window / bundle / build / app / security 設定 | config | [references/config/README.md](references/config/README.md) |
 | tauri dev / build / bundle / android / ios / icon / signer / plugin コマンドのオプション | cli | [references/cli/README.md](references/cli/README.md) |
