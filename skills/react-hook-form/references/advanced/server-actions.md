@@ -16,13 +16,21 @@ import { z } from "zod"
 const profileSchema = z.object({ name: z.string().min(1) })
 
 export async function updateProfile(previousState, data) {
+  // replace with your app's auth/session lookup
+  const user = await getCurrentUser()
+  if (!user) {
+    return { success: false, error: "Unauthorized." }
+  }
   const parsed = profileSchema.safeParse(data)
   if (!parsed.success) {
     return { success: false, error: "Invalid input." }
   }
   try {
-    // persist only the explicitly allowed fields
-    await db.user.update({ data: { name: parsed.data.name } })
+    // persist only the explicitly allowed fields, scoped to the authenticated user
+    await db.user.update({
+      where: { id: user.id },
+      data: { name: parsed.data.name },
+    })
     return { success: true }
   } catch {
     return { success: false, error: "Something went wrong. Please try again." }
@@ -77,9 +85,9 @@ useEffect(() => {
 
 ## Notes
 
-- Adapted from the official example (advanced-usage#ServerActionsuseActionState): server-side validation (zod `safeParse`), explicit field selection, and `startTransition` wrapping added.
+- Adapted from the official example (advanced-usage#ServerActionsuseActionState): server-side validation (zod `safeParse`), explicit field selection, authentication / authorization check and server-derived `where: { id }` added, and `startTransition` wrapping added.
 - `isPending` and `state` come straight from `useActionState` and are read directly in the JSX, so there's nothing to synchronize: `isPending` replaces a manual loading `useState`, and `state.success` / `state.error` replace a manual result `useState`. The client calls the Server Action only once `handleSubmit` has confirmed the form is valid, but that check is a UX aid and does not protect the server; validate again inside the action.
-- Server Actions can be invoked directly, so validate again on the server (e.g. `schema.safeParse`) and persist only explicitly selected fields.
+- Server Actions can be invoked directly, so validate again on the server (e.g. `schema.safeParse`) and persist only explicitly selected fields. Also authenticate the caller and scope the update to the authenticated user's record (use the server-side ID, never one sent by the client).
 - Calling the `useActionState` dispatch outside a transition does not update `isPending`; wrap it as `startTransition(() => submitAction(data))`.
 - If you don't need `useActionState`'s pending/result state at all, React Hook Form's own `Form` component can submit directly to a Server Action through its `action` prop, with progressive enhancement handled for you.
 

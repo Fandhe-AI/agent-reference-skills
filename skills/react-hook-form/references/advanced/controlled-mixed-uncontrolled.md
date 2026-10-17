@@ -93,6 +93,7 @@ function App() {
 ## Notes
 
 - For the same field, `Controller`'s own `defaultValue` is ignored and `useForm`'s `defaultValues` takes precedence.
+- MUI `Input` / `Select` forward `ref` to the root element, but `register`'s ref callback falls back to the first nested `input` / `select` / `textarea`, so the `{...register(...)}` examples work. When using `Controller` with MUI, pass `field.ref` via `inputRef={field.ref}` to keep focus-on-error working.
 
 ## Related
 
