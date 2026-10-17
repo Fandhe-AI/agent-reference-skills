@@ -4,55 +4,55 @@ source: https://kotlinlang.org/docs/kotlin-daemon.html
 
 # Kotlin Daemon
 
-Kotlin daemon のメモリとライフタイムの設定（Gradle / Maven、Kotlin 2.4.21）。daemon 自体に直接のユーザー向けインターフェースはなく、ビルドシステムまたは Build tools API 経由で使う。
+Memory and lifetime settings for the Kotlin daemon (Gradle / Maven, Kotlin 2.4.21). The daemon has no direct user-facing interface; use it through a build system or the Build tools API.
 
-## メモリ上限の設定（Gradle）
+## Set the memory limit (Gradle)
 
 ```properties
 kotlin.daemon.jvmargs=-Xmx1500m
 ```
 
-`gradle.properties` に書く。
+Write it in `gradle.properties`.
 
-## メモリ上限の設定（Maven）
+## Set the memory limit (Maven)
 
 ```xml
 <kotlin.compiler.daemon.jvmArgs>-Xmx1500m</kotlin.compiler.daemon.jvmArgs>
 ```
 
-`pom.xml` のプロパティとして書く。
+Write it as a property in `pom.xml`.
 
-## Attached daemon（Gradle）
+## Attached daemon (Gradle)
 
 ```properties
 org.gradle.jvmargs=-Dkotlin.daemon.jvm.options=autoshutdownIdleSeconds=7200,shutdownDelayMilliseconds=1000
 ```
 
-`gradle.properties` に追加する。クライアントが長時間動作する場合向け。`autoshutdownIdleSeconds` を大きく、`shutdownDelayMilliseconds` を小さくする。
+Add it to `gradle.properties`. For long-running clients: increase `autoshutdownIdleSeconds` and decrease `shutdownDelayMilliseconds`.
 
-## Attached daemon（Maven）
+## Attached daemon (Maven)
 
 ```sh
 mvn package -Dkotlin.daemon.options=autoshutdownIdleSeconds=7200,shutdownDelayMilliseconds=1000
 ```
 
-## Detached daemon（Gradle）
+## Detached daemon (Gradle)
 
 ```properties
 org.gradle.jvmargs=-Dkotlin.daemon.jvm.options=shutdownDelayMilliseconds=7200
 ```
 
-`gradle.properties` に追加する。クライアントが短命な場合向け。`shutdownDelayMilliseconds` を大きくする。
+Add it to `gradle.properties`. For short-lived clients: increase `shutdownDelayMilliseconds`.
 
-## Detached daemon（Maven）
+## Detached daemon (Maven)
 
 ```xml
 <kotlin.compiler.daemon.shutdownDelayMs>7200</kotlin.compiler.daemon.shutdownDelayMs>
 ```
 
-`pom.xml` に追加する。
+Add it to `pom.xml`.
 
-## Maven で Kotlin daemon を無効化
+## Disable the Kotlin daemon in Maven
 
 ```xml
 <properties>
@@ -60,4 +60,4 @@ org.gradle.jvmargs=-Dkotlin.daemon.jvm.options=shutdownDelayMilliseconds=7200
 </properties>
 ```
 
-実行戦略の詳細は https://kotlinlang.org/docs/compiler-execution-strategy.html を参照（出典: https://kotlinlang.org/docs/maven-kotlin-compiler.html）。
+For details on execution strategies, see https://kotlinlang.org/docs/compiler-execution-strategy.html (source: https://kotlinlang.org/docs/maven-kotlin-compiler.html).

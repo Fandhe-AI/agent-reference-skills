@@ -39,6 +39,10 @@ plugins {
     kotlin("jvm") version "2.4.21"
     application
 }
+
+application {
+    mainClass.set("MainKt")
+}
 ```
 
 ```kotlin
@@ -52,5 +56,5 @@ fun main() {
 ## Notes
 
 - `kotlin("jvm")` sets the Kotlin version for the project; `jvmToolchain(...)` should match the JDK you use.
-- The entry point file is `src/main/kotlin/Main.kt`; the run configuration is `MainKt`.
+- The entry point file is `src/main/kotlin/Main.kt`. The `application` plugin requires `mainClass` to be set explicitly (`MainKt` for `Main.kt`); the official tutorial relies on the IDE run configuration and omits it.
 - AGP `android {}` blocks, `kotlinOptions`, and Android version catalogs belong to android-build-gradle; this sample is the plain Kotlin/JVM plugin.

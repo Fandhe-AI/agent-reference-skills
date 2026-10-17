@@ -2,10 +2,10 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Compiler Plugins | コマンドラインから kapt および各コンパイラプラグイン（all-open / no-arg / SAM with receiver / Lombok）を使うためのオプション（Kotlin 2.4.21）。 | [compiler-plugins.md](./compiler-plugins.md) |
-| Gradle | Kotlin Gradle plugin（KGP）のコマンドラインから使うタスク・プロパティ（Kotlin 2.4.21、取得日 2026-10-16）。 | [gradle.md](./gradle.md) |
-| Install | Kotlin コマンドラインコンパイラのインストール手順。IDE 利用時はコンパイラ単体のインストールは不要（取得日 2026-10-16、Kotlin 2.4.21）。 | [install.md](./install.md) |
-| Kotlin Daemon | Kotlin daemon のメモリとライフタイムの設定（Gradle / Maven、Kotlin 2.4.21）。daemon 自体に直接のユーザー向けインターフェースはなく、ビルドシステムまたは Build tools API 経由で使う。 | [kotlin-daemon.md](./kotlin-daemon.md) |
-| kotlinc | `kotlinc` / `kotlinr` によるコンパイル・実行・REPL・スクリプト実行とコンパイラオプション指定（Kotlin 2.4.21）。 | [kotlinc.md](./kotlinc.md) |
-| KSP | Kotlin Symbol Processing（KSP 2.3.10）をコマンドラインから実行するコマンドと関連オプション。 | [ksp.md](./ksp.md) |
-| Maven | kotlin-maven-plugin 利用時のコマンドと、パッケージング後の実行（Kotlin 2.4.21）。 | [maven.md](./maven.md) |
+| Compiler Plugins | Command-line options for kapt and the all-open / no-arg / SAM with receiver / Lombok compiler plugins (Kotlin 2.4.21). | [compiler-plugins.md](./compiler-plugins.md) |
+| Gradle | Tasks and properties for the Kotlin Gradle plugin (KGP) used from the command line (Kotlin 2.4.21, retrieved 2026-10-16). | [gradle.md](./gradle.md) |
+| Install | How to install the Kotlin command-line compiler; not needed when using an IDE (retrieved 2026-10-16, Kotlin 2.4.21). | [install.md](./install.md) |
+| Kotlin Daemon | Memory and lifetime settings for the Kotlin daemon via Gradle / Maven (Kotlin 2.4.21). | [kotlin-daemon.md](./kotlin-daemon.md) |
+| kotlinc | Compile, run, REPL, script execution, and compiler options with `kotlinc` / `kotlinr` (Kotlin 2.4.21). | [kotlinc.md](./kotlinc.md) |
+| KSP | Commands and options for running Kotlin Symbol Processing (KSP 2.3.10) from the command line. | [ksp.md](./ksp.md) |
+| Maven | Commands for kotlin-maven-plugin and running the packaged output (Kotlin 2.4.21). | [maven.md](./maven.md) |

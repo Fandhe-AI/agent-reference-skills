@@ -4,17 +4,17 @@ source: https://kotlinlang.org/docs/kapt.html
 
 # Compiler Plugins
 
-コマンドラインから kapt および各コンパイラプラグイン（all-open / no-arg / SAM with receiver / Lombok）を使うためのオプション（Kotlin 2.4.21）。
+Command-line options for kapt and the compiler plugins (all-open, no-arg, SAM with receiver, Lombok) (Kotlin 2.4.21).
 
-## kapt の CLI 実行
+## Run kapt from the CLI
 
 ```sh
 kapt <options> <source files>
 ```
 
-kapt は Kotlin コンパイラのバイナリ配布物に含まれるスタンドアロン CLI。出典: https://kotlinlang.org/docs/kapt.html
+kapt is a standalone CLI included in the Kotlin compiler binary distribution. Source: https://kotlinlang.org/docs/kapt.html
 
-## kapt の実行例
+## kapt example
 
 ```sh
 kapt -Kapt-mode=stubsAndApt \
@@ -26,9 +26,9 @@ kapt -Kapt-mode=stubsAndApt \
   src/main/kotlin
 ```
 
-有効な Kotlin コンパイラオプションもすべて渡せる（`kotlinc -help` で確認）。
+All valid Kotlin compiler options can also be passed (see `kotlinc -help`).
 
-## all-open プラグインの指定
+## Specify the all-open plugin
 
 ```sh
 -Xplugin="${KOTLIN_HOME}/lib/allopen-compiler-plugin.jar"
@@ -42,9 +42,9 @@ kapt -Kapt-mode=stubsAndApt \
 -P plugin:org.jetbrains.kotlin.allopen:preset=spring
 ```
 
-`kotlinc` の引数として渡すオプション片。出典: https://kotlinlang.org/docs/all-open-plugin.html
+Option fragments passed as `kotlinc` arguments. Source: https://kotlinlang.org/docs/all-open-plugin.html
 
-## no-arg プラグインの指定
+## Specify the no-arg plugin
 
 ```sh
 -Xplugin="${KOTLIN_HOME}/lib/noarg-compiler-plugin.jar"
@@ -52,24 +52,24 @@ kapt -Kapt-mode=stubsAndApt \
 -P plugin:org.jetbrains.kotlin.noarg:preset=jpa
 ```
 
-`kotlinc` の引数として渡すオプション片。出典: https://kotlinlang.org/docs/no-arg-plugin.html
+Option fragments passed as `kotlinc` arguments. Source: https://kotlinlang.org/docs/no-arg-plugin.html
 
-## SAM with receiver プラグインの指定
+## Specify the SAM with receiver plugin
 
 ```sh
 -Xplugin="${KOTLIN_HOME}/lib/sam-with-receiver-compiler-plugin.jar"
 -P plugin:org.jetbrains.kotlin.samWithReceiver:annotation=com.my.SamWithReceiver
 ```
 
-`kotlinc` の引数として渡すオプション片。出典: https://kotlinlang.org/docs/sam-with-receiver-plugin.html
+Option fragments passed as `kotlinc` arguments. Source: https://kotlinlang.org/docs/sam-with-receiver-plugin.html
 
-## Lombok プラグインの指定
+## Specify the Lombok plugin
 
 ```sh
 -Xplugin="${KOTLIN_HOME}/lib/lombok-compiler-plugin.jar"
 ```
 
-`lombok.config` を使う場合:
+To use `lombok.config`:
 
 ```sh
 # The plugin option format is: "-P plugin:<plugin id>:<key>=<value>". 
@@ -78,4 +78,4 @@ kapt -Kapt-mode=stubsAndApt \
 -P plugin:org.jetbrains.kotlin.lombok:config=<PATH_TO_CONFIG_FILE>
 ```
 
-`<PATH_TO_CONFIG_FILE>` は `lombok.config` のパスに置換する。出典: https://kotlinlang.org/docs/lombok.html
+Replace `<PATH_TO_CONFIG_FILE>` with the path to `lombok.config`. Source: https://kotlinlang.org/docs/lombok.html

@@ -4,17 +4,17 @@ source: https://kotlinlang.org/docs/maven-kotlin-compiler.html
 
 # Maven
 
-kotlin-maven-plugin 利用時のコマンドと、パッケージング後の実行（Kotlin 2.4.21）。
+Commands for using kotlin-maven-plugin, and running the packaged output (Kotlin 2.4.21).
 
-## インクリメンタルコンパイルの有効化
+## Enable incremental compilation
 
 ```sh
 mvn package -Dkotlin.compiler.incremental=true
 ```
 
-`pom.xml` の `<properties>` に `<kotlin.compiler.incremental>true</kotlin.compiler.incremental>` を書く方法もある。公式ページはビルド時に `-Dkotlin.compiler.incremental=true` を付けると案内しており、`mvn package` は例としての組み合わせ。
+You can instead write `<kotlin.compiler.incremental>true</kotlin.compiler.incremental>` in `<properties>` of `pom.xml`. The official page says to add `-Dkotlin.compiler.incremental=true` to the build; `mvn package` is only an example combination.
 
-## プラグインのゴールとパラメーターの一覧
+## List plugin goals and parameters
 
 ```sh
 mvn help:describe \
@@ -22,9 +22,9 @@ mvn help:describe \
   -Ddetail=true
 ```
 
-`pom.xml` のあるディレクトリで実行する。全ゴールとパラメーターの詳細が出力される。
+Run it in the directory containing `pom.xml`. It prints details of all goals and parameters.
 
-## 特定ゴールの説明
+## Describe a specific goal
 
 ```sh
 mvn help:describe \
@@ -33,21 +33,21 @@ mvn help:describe \
   -Dgoal=compile
 ```
 
-`compile` ゴールの例。
+Example for the `compile` goal.
 
-## 自己完結 JAR の実行
+## Run a self-contained JAR
 
 ```sh
 java -jar target/mymodule-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
-`maven-assembly-plugin`（`jar-with-dependencies`）で作成した JAR を JRE へ直接渡す。`pom.xml` のプラグイン設定は https://kotlinlang.org/docs/maven-compile-package.html を参照。
+Pass a JAR built with `maven-assembly-plugin` (`jar-with-dependencies`) directly to the JRE. For the plugin configuration in `pom.xml`, see https://kotlinlang.org/docs/maven-compile-package.html.
 
-## Maven でのコンパイル（Kotlin コンパイラ呼び出し）
+## Compile with Maven (invoke the Kotlin compiler)
 
 ```sh
 mvn compile
 mvn test-compile
 ```
 
-Kotlin コンパイラは Maven の `mvn compile` / `mvn test-compile` から呼び出される（出典: https://kotlinlang.org/docs/gradle-compiler-options.html の冒頭）。
+The Kotlin compiler is invoked from Maven's `mvn compile` / `mvn test-compile` (source: the beginning of https://kotlinlang.org/docs/gradle-compiler-options.html).
