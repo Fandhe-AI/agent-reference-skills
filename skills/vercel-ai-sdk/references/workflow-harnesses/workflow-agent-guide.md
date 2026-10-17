@@ -67,19 +67,6 @@ export async function POST(request: Request) {
 }
 ```
 
-## ToolLoopAgent vs WorkflowAgent
-
-| | ToolLoopAgent | WorkflowAgent |
-| --- | --- | --- |
-| Package | `ai` | `@ai-sdk/workflow` |
-| Runtime | In-memory | Workflow |
-| Durability | Lost on crash | Survives restarts |
-| Tool retries | Manual | Automatic (via workflow steps) |
-| Human approval | Built-in | Built-in + survives suspension |
-| `generate()` method | Available | Available with durable non-streaming model calls |
-| `stream()` method | Available | Primary API |
-| Stream output | `streamText` return value | `writable` parameter with `ModelCallStreamPart` |
-
 ## Options / Props
 
 Key integration points described by the guide:
@@ -118,6 +105,19 @@ Lifecycle callbacks (constructor or `stream()`; both fire, constructor first): `
 - `timeout` sets an absolute deadline for model calls (checked before dispatch, before SDK retries, and after the provider returns) and persists across suspension. It does not cancel a tool waiting on a Workflow hook; use `run.cancel()`. Completed-step replay does not guarantee exactly-once effects for an interrupted attempt; put side effects inside steps and use idempotency.
 - Migrating from `DurableAgent` (`workflow/ai`): import `WorkflowAgent` from `@ai-sdk/workflow`; write `ModelCallStreamPart` not `UIMessageChunk`; replace `maxSteps` with `stopWhen: isStepCount(n)`; replace `experimental_output` with `output` (`result.output`); use `needsApproval` instead of a Hook inside `execute`; `uiMessages` / `collectUIMessages` is gone (use `result.messages`); replace `experimental_context` with `runtimeContext` / `toolsContext`. New: `prepareCall`, `onToolExecutionStart` / `onToolExecutionEnd`.
 - Distance: this is the AI SDK's durable agent class for the Workflow DevKit. Vercel platform and Workflow product settings are covered by the vercel skill. Other durable-step engines with their own `step.ai.wrap` style APIs are covered by the inngest skill. Provider-agnostic agent SDKs from model vendors are covered by openai-agents and anthropic-agent-sdk.
+
+### ToolLoopAgent vs WorkflowAgent
+
+| | ToolLoopAgent | WorkflowAgent |
+| --- | --- | --- |
+| Package | `ai` | `@ai-sdk/workflow` |
+| Runtime | In-memory | Workflow |
+| Durability | Lost on crash | Survives restarts |
+| Tool retries | Manual | Automatic (via workflow steps) |
+| Human approval | Built-in | Built-in + survives suspension |
+| `generate()` method | Available | Available with durable non-streaming model calls |
+| `stream()` method | Available | Primary API |
+| Stream output | `streamText` return value | `writable` parameter with `ModelCallStreamPart` |
 
 ## Related
 
