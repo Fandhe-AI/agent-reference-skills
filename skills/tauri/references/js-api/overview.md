@@ -18,7 +18,9 @@ Vanilla JS (requires the `app.withGlobalTauri` configuration option enabled):
 const { event, window: tauriWindow, path } = window.__TAURI__;
 ```
 
-## Modules
+## Options / Props
+
+### Modules
 
 | Module | Page |
 | --- | --- |

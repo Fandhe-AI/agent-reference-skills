@@ -13,7 +13,9 @@ import { getVersion } from '@tauri-apps/api/app';
 const appVersion = await getVersion();
 ```
 
-## Functions
+## Options / Props
+
+### Functions
 
 | Function | Signature | Since | Permission (beyond `core:app:default`) |
 | --- | --- | --- | --- |
@@ -33,7 +35,7 @@ const appVersion = await getVersion();
 | setDockVisibility | `setDockVisibility(visible: boolean): Promise<void>` (macOS) | 2.5.0 | `core:app:allow-set-dock-visibility` |
 | exit | `exit(code = 0): Promise<void>` | 2.12.0 | `core:app:allow-exit` |
 
-## Types
+### Types
 
 ```typescript
 type DataStoreIdentifier = [number, number, number, number, number, number, number, number,
@@ -53,7 +55,7 @@ type OnBackButtonPressPayload = {
 }
 ```
 
-## Examples
+### Examples
 
 ```typescript
 import { onBackButtonPress, exit } from '@tauri-apps/api/app';

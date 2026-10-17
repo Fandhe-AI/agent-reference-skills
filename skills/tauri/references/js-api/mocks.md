@@ -28,7 +28,9 @@ test('greet', async () => {
 });
 ```
 
-## Functions
+## Options / Props
+
+### Functions
 
 | Function | Signature | Since |
 | --- | --- | --- |
@@ -37,7 +39,7 @@ test('greet', async () => {
 | mockConvertFileSrc | `mockConvertFileSrc(osName: string): void` (`linux`, `macos` or `windows`) | 1.6.0 |
 | clearMocks | `clearMocks(): void` | 1.0.0 |
 
-## Options / Props
+### Option types
 
 `interface MockIPCOptions` (since 2.7.0):
 
@@ -45,7 +47,7 @@ test('greet', async () => {
 | --- | --- | --- |
 | shouldMockEvents | `boolean` | If true, `listen` and `emit` are mocked so event handling can be tested without a backend. This consumes any events emitted with the `plugin:event` prefix |
 
-## Examples
+### Examples
 
 Async callback:
 

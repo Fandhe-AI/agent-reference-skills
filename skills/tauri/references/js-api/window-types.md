@@ -18,7 +18,9 @@ await getCurrentWindow().setEffects({
 });
 ```
 
-## Type aliases
+## Options / Props
+
+### Type aliases
 
 ```typescript
 type Theme = 'light' | 'dark'
@@ -37,7 +39,7 @@ type CursorIcon = 'default' | 'crosshair' | 'hand' | 'arrow' | 'move' | 'text' |
 
 `TitleBarStyle`: `visible` standard title bar; `transparent` transparent title bar with traffic lights in place; `overlay` content extends under a transparent title bar, leaving only the traffic lights. `CursorIcon` names mirror CSS `cursor` keywords in camelCase; unsupported values fall back to the default arrow. `DragDropEvent` is re-exported from the webview module (see [webview](./webview.md)).
 
-## Enums
+### Enums
 
 | Enum | Members |
 | --- | --- |
@@ -61,7 +63,7 @@ type CursorIcon = 'default' | 'crosshair' | 'hand' | 'arrow' | 'move' | 'text' |
 | Acrylic | `acrylic` | Windows 10/11; bad performance when resizing/dragging on Windows 10 v1903+ and Windows 11 build 22000 |
 | Tabbed, TabbedDark, TabbedLight | `tabbed`, `tabbedDark`, `tabbedLight` | Windows 11 only (matches system dark preference / dark only if system dark enabled / light) |
 
-## Interfaces
+### Interfaces
 
 ### Effects (2.0.0)
 

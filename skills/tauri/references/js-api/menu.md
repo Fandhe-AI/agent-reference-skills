@@ -25,7 +25,9 @@ const menu = await Menu.new({
 });
 ```
 
-## Menu
+## Options / Props
+
+### Menu
 
 `class Menu extends MenuItemBase` (base: `id: string`, `rid`, `close()` from `Resource`). Constructor is protected; use the statics.
 
@@ -76,7 +78,7 @@ const previous = await menu.setAsAppMenu();
 await previous?.close();
 ```
 
-## Submenu
+### Submenu
 
 `class Submenu extends MenuItemBase`. `Submenu.new(opts: SubmenuOptions): Promise<Submenu>`.
 

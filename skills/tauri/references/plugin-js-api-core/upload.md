@@ -15,7 +15,7 @@ await upload(
   'https://example.com/file-upload',
   './path/to/my/file.txt',
   ({ progressTotal, total }) => console.log(`Uploaded ${progressTotal} of ${total} bytes`),
-  { 'Content-Type': 'text/plain' }
+  { 'Content-Type': 'text/plain' } as unknown as Map<string, string>
 );
 ```
 
@@ -81,7 +81,7 @@ interface ProgressPayload {
 
 ## Notes
 
-- `headers` is typed `Map<string, string>` but is forwarded to `invoke` unchanged (`headers ?? {}`); the official example passes a plain object, which in TypeScript needs a cast.
+- `headers` is typed `Map<string, string>` but is forwarded to `invoke` unchanged (`headers ?? {}`); the official example passes a plain object, which in TypeScript needs a cast. The example above adds an `as unknown as Map<string, string>` cast; the upstream JavaScript example passes the plain object without a cast. Keep it a plain object, since a `new Map` would not be sent correctly.
 - The upstream example logs `progress` (last chunk size); this page uses `progressTotal` for the cumulative count.
 - The source has a `TODO: V3` to combine `headers` and `method` into one `options` object.
 - Tauri plugin guest-js binding (Rust core + system WebView). Not Electron's API; see the electron skill for Electron.

@@ -27,7 +27,9 @@ const unlisten = await appWindow.listen("event-name", e => {});
 unlisten();
 ```
 
-## Module functions
+## Options / Props
+
+### Module functions
 
 | Function | Signature | Since |
 | --- | --- | --- |
@@ -41,7 +43,7 @@ unlisten();
 
 Also exported: `Window`, `CloseRequestedEvent`, `LogicalSize`, `PhysicalSize`, `LogicalPosition`, `PhysicalPosition`, `UserAttentionType`, `Effect`, `EffectState`, and the types listed in window-types.
 
-## Window class: construction and lookup
+### Window class: construction and lookup
 
 | Member | Signature |
 | --- | --- |
@@ -52,7 +54,7 @@ Also exported: `Window`, `CloseRequestedEvent`, `LogicalSize`, `PhysicalSize`, `
 | Window.getFocusedWindow | `static getFocusedWindow(): Promise<Window \| null>` |
 | label | `label: WindowLabel` (alphanumeric `a-zA-Z` plus `-`, `/`, `:`, `_`) |
 
-## Window class: events
+### Window class: events
 
 | Member | Signature |
 | --- | --- |
@@ -83,7 +85,7 @@ const unlisten = await getCurrentWindow().onCloseRequested(async (event) => {
 
 `CloseRequestedEvent`: `event: EventName`, `id: number`, `preventDefault(): void` (must be called before the handler returns), `isPreventDefault(): boolean`.
 
-## Window class: getters (in `core:window:default`)
+### Window class: getters (in `core:window:default`)
 
 | Method | Signature |
 | --- | --- |
@@ -98,7 +100,7 @@ const unlisten = await getCurrentWindow().onCloseRequested(async (event) => {
 | activityName | `activityName(): Promise<string>` (2.11.0; Android only, others reject; `core:window:allow-activity-name` in default) |
 | sceneIdentifier | `sceneIdentifier(): Promise<string>` (2.11.0; iOS only, others reject; `core:window:allow-scene-identifier` in default) |
 
-## Window class: setters and actions
+### Window class: setters and actions
 
 Each requires `core:window:allow-<kebab-name>` (not in `core:window:default`), e.g. `setTitle` needs `core:window:allow-set-title`; `clearEffects` uses `allow-set-effects`; `toggleMaximize` uses `allow-toggle-maximize`.
 

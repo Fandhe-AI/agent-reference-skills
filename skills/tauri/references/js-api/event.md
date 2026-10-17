@@ -18,7 +18,9 @@ const unlisten = await listen<string>('error', (event) => {
 unlisten();
 ```
 
-## Functions
+## Options / Props
+
+### Functions
 
 | Function | Signature | Since |
 | --- | --- | --- |
@@ -27,7 +29,7 @@ unlisten();
 | emit | `emit<T>(event: string, payload?: T): Promise<void>` | 1.0.0 |
 | emitTo | `emitTo<T>(target: EventTarget \| string, event: string, payload?: T): Promise<void>` | 2.0.0 |
 
-## Types
+### Types
 
 ```typescript
 type EventTarget =
@@ -53,7 +55,7 @@ interface Options {
 }
 ```
 
-## TauriEvent
+### TauriEvent
 
 Built-in event names emitted by Tauri (since 1.1.0). Prefer the `on*` helpers of `Window` / `Webview` when one exists, since they also decode the payload.
 
@@ -83,7 +85,7 @@ const unlisten = await listen(TauriEvent.WINDOW_DESTROYED, (event) => {
 });
 ```
 
-## emit / emitTo
+### emit / emitTo
 
 ```typescript
 import { emit, emitTo } from '@tauri-apps/api/event';

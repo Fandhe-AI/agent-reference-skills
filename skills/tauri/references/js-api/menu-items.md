@@ -16,7 +16,9 @@ await MenuItem.new({ text: 'Command palette', accelerator: 'CmdOrCtrl+Shift+P' }
 await MenuItem.new({ text: 'Refresh', accelerator: 'F5' });
 ```
 
-## MenuItem
+## Options / Props
+
+### MenuItem
 
 A menu item that contains only text. `static new(opts: MenuItemOptions): Promise<MenuItem>`.
 
@@ -49,7 +51,7 @@ A list of zero or more modifiers followed by exactly one key, joined with `+`. C
 - Modifiers: `Shift`; `Control`, `Ctrl`; `Alt`, `Option`; `Command`, `Cmd`, `Super`; `CmdOrCtrl`, `CmdOrControl`, `CommandOrCtrl`, `CommandOrControl` (`Command` on macOS and `Control` everywhere else).
 - Keys: letters `A`-`Z` (also `KeyA`-`KeyZ`), digits `0`-`9` (also `Digit0`-`Digit9`); punctuation as the character or by name (`` ` ``/`Backquote`, `\`/`Backslash`, `[`/`BracketLeft`, `]`/`BracketRight`, `,`/`Comma`, `=`/`Equal`, `-`/`Minus`, `.`/`Period`, `'`/`Quote`, `;`/`Semicolon`, `/`/`Slash`); `Backspace`, `CapsLock`, `Enter`, `Space`, `Tab`, `Delete`, `End`, `Home`, `Insert`, `PageDown`, `PageUp`, `PrintScreen`, `ScrollLock`, `NumLock`, `Escape` (`Esc`); arrows `ArrowUp`/`ArrowDown`/`ArrowLeft`/`ArrowRight` (also `Up`, `Down`, `Left`, `Right`); `F1`-`F24`; numpad `Numpad0`-`Numpad9` (`Num0`-`Num9`), `NumpadAdd`, `NumpadSubtract`, `NumpadMultiply`, `NumpadDivide`, `NumpadDecimal`, `NumpadEnter`, `NumpadEqual` (also with `Num` prefix); media `AudioVolumeUp`, `AudioVolumeDown`, `AudioVolumeMute` (`VolumeUp`, `VolumeDown`, `VolumeMute`).
 
-## CheckMenuItem
+### CheckMenuItem
 
 Contains text and a check mark or similar toggle. `static new(opts: CheckMenuItemOptions): Promise<CheckMenuItem>`.
 
@@ -60,7 +62,7 @@ Contains text and a check mark or similar toggle. `static new(opts: CheckMenuIte
 
 Extra methods: `isChecked(): Promise<boolean>`, `setChecked(checked: boolean): Promise<void>`.
 
-## IconMenuItem
+### IconMenuItem
 
 Usually contains an icon and a text. `static new(opts: IconMenuItemOptions): Promise<IconMenuItem>`.
 
@@ -75,7 +77,7 @@ Extra method: `setIcon(icon: MenuIcon | null): Promise<void>`.
 
 Windows / Linux: unsupported. Members (value equals name): `Add`, `Advanced`, `Bluetooth`, `Bookmarks`, `Caution`, `ColorPanel`, `ColumnView`, `Computer`, `EnterFullScreen`, `Everyone`, `ExitFullScreen`, `FlowView`, `Folder`, `FolderBurnable`, `FolderSmart`, `FollowLinkFreestanding`, `FontPanel`, `GoLeft`, `GoRight`, `Home`, `IChatTheater`, `IconView`, `Info`, `InvalidDataFreestanding`, `LeftFacingTriangle`, `ListView`, `LockLocked`, `LockUnlocked`, `MenuMixedState`, `MenuOnState`, `MobileMe`, `MultipleDocuments`, `Network`, `Path`, `PreferencesGeneral`, `QuickLook`, `RefreshFreestanding`, `Refresh`, `Remove`, `RevealFreestanding`, `RightFacingTriangle`, `Share`, `Slideshow`, `SmartBadge`, `StatusAvailable`, `StatusNone`, `StatusPartiallyAvailable`, `StatusUnavailable`, `StopProgressFreestanding`, `StopProgress`, `TrashEmpty`, `TrashFull`, `User`, `UserAccounts`, `UserGroup`, `UserGuest`.
 
-## PredefinedMenuItem
+### PredefinedMenuItem
 
 A native menu item whose behavior is implemented by the OS or Tauri. `static new(opts?: PredefinedMenuItemOptions): Promise<PredefinedMenuItem>`.
 

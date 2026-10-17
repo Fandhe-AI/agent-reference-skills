@@ -14,7 +14,9 @@ const appDataDirPath = await appDataDir();
 const path = await join(appDataDirPath, 'users', 'tauri', 'avatar.png');
 ```
 
-## Directory functions
+## Options / Props
+
+### Directory functions
 
 All are `(): Promise<string>`, call `plugin:path|resolve_directory` with the matching `BaseDirectory`.
 
@@ -46,7 +48,7 @@ All are `(): Promise<string>`, call `plugin:path|resolve_directory` with the mat
 
 `BaseDirectory` is an `enum` (since 2.0.0) with members `Audio`, `Cache`, `Config`, `Data`, `LocalData`, `Document`, `Download`, `Picture`, `Public`, `Video`, `Resource`, `Temp`, `AppConfig`, `AppData`, `AppLocalData`, `AppCache`, `AppLog`, `Desktop`, `Executable`, `Font`, `Home`, `Runtime`, `Template` (values as above).
 
-## Path functions
+### Path functions
 
 | Function | Signature | Description |
 | --- | --- | --- |

@@ -17,7 +17,9 @@ await invoke('login', { user: 'tauri', password: '<password>' });
 async function invoke<T>(cmd: string, args: InvokeArgs = {}, options?: InvokeOptions): Promise<T>
 ```
 
-## Exports
+## Options / Props
+
+### Exports
 
 | Name | Signature | Since |
 | --- | --- | --- |
@@ -36,7 +38,7 @@ async function invoke<T>(cmd: string, args: InvokeArgs = {}, options?: InvokeOpt
 | InvokeArgs | `type InvokeArgs = Record<string, unknown> \| number[] \| ArrayBuffer \| Uint8Array` | 1.0.0 |
 | InvokeOptions | `interface InvokeOptions { headers: HeadersInit }` | 2.0.0 |
 
-## Channel
+### Channel
 
 A message channel used to stream values from Rust to the frontend; the JavaScript counterpart of `tauri::ipc::Channel`.
 
@@ -62,7 +64,7 @@ async fn download(url: String, on_event: tauri::ipc::Channel<String>) -> tauri::
 }
 ```
 
-## InvokeArgs and raw payloads
+### InvokeArgs and raw payloads
 
 An object is the usual form (each key becomes a command parameter, JSON). `ArrayBuffer`, `Uint8Array` and `number[]` send the whole body as `application/octet-stream`; the command then has a single `tauri::ipc::Request` parameter:
 
@@ -83,7 +85,7 @@ await invoke('upload', new Uint8Array([1, 2, 3]), {
 });
 ```
 
-## convertFileSrc
+### convertFileSrc
 
 ```typescript
 import { downloadDir, join } from '@tauri-apps/api/path';
@@ -106,7 +108,7 @@ Requires the asset protocol enabled with the files in its scope, and the origins
 }
 ```
 
-## Resource
+### Resource
 
 A rust-backed resource stored through `tauri::Manager::resources_table`. It is not cleaned up automatically except on application exit; call `close()` or use `await using` (only `Symbol.asyncDispose` is implemented; synchronous `using` does not work). `Menu`, `TrayIcon`, `Image`, `Webview` and the menu item classes are resources.
 

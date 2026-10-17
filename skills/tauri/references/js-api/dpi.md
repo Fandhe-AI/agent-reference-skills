@@ -16,7 +16,9 @@ const size = await appWindow.innerSize(); // PhysicalSize
 const logical = size.toLogical(await appWindow.scaleFactor());
 ```
 
-## Classes
+## Options / Props
+
+### Classes
 
 | Class | Members | Since |
 | --- | --- | --- |
@@ -27,7 +29,7 @@ const logical = size.toLogical(await appWindow.scaleFactor());
 | PhysicalPosition | `type = 'Physical'`; `x`; `y`; same constructor forms; `toLogical(scaleFactor): LogicalPosition` | 2.0.0 |
 | Position | `position: LogicalPosition \| PhysicalPosition`; `constructor(position)`; `toLogical(scaleFactor)`; `toPhysical(scaleFactor)` | 2.1.0 |
 
-## Passing to Rust commands
+### Passing to Rust commands
 
 `Size` and `Position` serialize into the shape `tauri::Size` / `tauri::Position` expect (`{ Logical: { width, height } }` / `{ Physical: { ... } }`).
 

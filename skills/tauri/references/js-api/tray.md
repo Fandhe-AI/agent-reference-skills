@@ -30,7 +30,9 @@ const tray = await TrayIcon.new({
 });
 ```
 
-## TrayIcon
+## Options / Props
+
+### TrayIcon
 
 `public id: string`. The constructor is private; use `TrayIcon.new`.
 
@@ -50,7 +52,7 @@ const tray = await TrayIcon.new({
 | setShowMenuOnLeftClick | `setShowMenuOnLeftClick(onLeft: boolean): Promise<void>` (since 2.2.0; Linux unsupported) |
 | setMenuOnLeftClick | `setMenuOnLeftClick(onLeft: boolean): Promise<void>` (deprecated; use `setShowMenuOnLeftClick`) |
 
-## Options / Props
+### TrayIconOptions
 
 `TrayIconOptions`:
 
@@ -67,7 +69,7 @@ const tray = await TrayIcon.new({
 | showMenuOnLeftClick | `boolean` | Show the tray menu on left click, default `true` (since 2.2.0); Linux unsupported |
 | action | `(event: TrayIconEvent) => void` | Handler for an event on the tray icon |
 
-## Event types
+### Event types
 
 ```typescript
 type MouseButtonState = 'Up' | 'Down'

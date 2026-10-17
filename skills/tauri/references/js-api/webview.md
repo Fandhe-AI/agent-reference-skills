@@ -13,14 +13,16 @@ import { getCurrentWebview } from "@tauri-apps/api/webview";
 getCurrentWebview().listen("my-webview-event", ({ event, payload }) => { });
 ```
 
-## Functions
+## Options / Props
+
+### Functions
 
 | Function | Signature | Since |
 | --- | --- | --- |
 | getCurrentWebview | `getCurrentWebview(): Webview` | 2.0.0 |
 | getAllWebviews | `getAllWebviews(): Promise<Webview[]>` (permission `core:webview:allow-get-all-webviews`, in default) | 2.0.0 |
 
-## Webview class
+### Webview class
 
 `class Webview` with `label: WebviewLabel` (string), `window: Window`, `listeners`.
 
@@ -77,7 +79,7 @@ type DragDropEvent =
 
 Positions are in physical pixels, relative to the webview's top-left corner.
 
-## Creating a child webview
+### Creating a child webview
 
 ```typescript
 import { Window } from "@tauri-apps/api/window"
@@ -100,7 +102,7 @@ appWindow.once('tauri://created', async function () {
 });
 ```
 
-## WebviewOptions
+### WebviewOptions
 
 | Name | Type | Description |
 | --- | --- | --- |

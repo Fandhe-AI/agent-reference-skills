@@ -19,7 +19,9 @@ settings.once('tauri://created', () => console.log('window created'));
 settings.once('tauri://error', (e) => console.error(e));
 ```
 
-## Exports
+## Options / Props
+
+### Exports
 
 | Name | Signature | Since |
 | --- | --- | --- |

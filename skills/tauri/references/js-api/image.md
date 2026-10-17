@@ -18,7 +18,9 @@ await getCurrentWindow().setIcon(icon);
 await icon.close();
 ```
 
-## Exports
+## Options / Props
+
+### Exports
 
 | Name | Signature | Since |
 | --- | --- | --- |
@@ -34,7 +36,7 @@ await icon.close();
 
 `JsImage` variants map to `tauri::image::JsImage`: `string` is `Path`, bytes are `Bytes`, `Image` is `Resource`. The Rust `Rgba` variant is not exposed; use `Image.new`.
 
-## Cargo features
+### Cargo features
 
 `Image.fromPath` and `Image.fromBytes` decode PNG / ICO and need the `image-png` and/or `image-ico` features of the `tauri` crate:
 
