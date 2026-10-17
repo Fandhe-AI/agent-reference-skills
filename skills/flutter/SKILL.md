@@ -9,7 +9,7 @@ user-invocable: false
 
 # Flutter
 
-> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation, fundamentals, interaction-navigation, layout, packages-deployment}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation, fundamentals, interaction-navigation, layout, packages-deployment, platform-integration, release}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -35,9 +35,13 @@ skills/flutter/
       README.md
     architecture-data/       # アプリアーキテクチャ・状態管理・ネットワーク・永続化・Firebase（21 ページ）
       README.md
+    platform-integration/    # プラットフォームチャネル・FFI・add-to-app・Android/iOS/macOS/Windows 統合（23 ページ）
+      README.md
     packages-deployment/     # パッケージ・flavors・各プラットフォーム配布・難読化・SwiftPM（17 ページ）
       README.md
     ai/                      # GenUI SDK・AI Toolkit・AI 開発ツール（10 ページ）
+      README.md
+    release/                 # リリースノート・breaking changes・移行ガイド（21 ページ）
       README.md
 ```
 
@@ -68,7 +72,11 @@ skills/flutter/
 | 状態管理（ephemeral / app state・provider）を選びたい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
 | HTTP 通信・JSON シリアライズ・SQL / key-value 永続化・オフラインファーストを実装したい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
 | Firebase・データベース選定を調べたい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
+| platform channels・dart:ffi でネイティブコードを呼びたい | platform-integration | [references/platform-integration/README.md](references/platform-integration/README.md) |
+| 既存アプリへ Flutter を組み込みたい（add-to-app）・Platform Views を使いたい | platform-integration | [references/platform-integration/README.md](references/platform-integration/README.md) |
+| Android（predictive back・スプラッシュ）/ iOS（拡張・起動画面）/ デスクトップ固有機能を扱いたい | platform-integration | [references/platform-integration/README.md](references/platform-integration/README.md) |
 | パッケージ・プラグインを使う/開発する | packages-deployment | [references/packages-deployment/README.md](references/packages-deployment/README.md) |
 | Android / iOS / macOS / Linux / Windows 向けにビルド・配布したい | packages-deployment | [references/packages-deployment/README.md](references/packages-deployment/README.md) |
 | flavors・難読化・CD・SwiftPM を設定したい | packages-deployment | [references/packages-deployment/README.md](references/packages-deployment/README.md) |
 | GenUI SDK・AI Toolkit（LlmChatView）・AI 開発ツールを使いたい | ai | [references/ai/README.md](references/ai/README.md) |
+| 3.47 の新機能・breaking changes・移行ガイド（material_ui opt-in 含む）を確認したい | release | [references/release/README.md](references/release/README.md) |
