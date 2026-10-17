@@ -81,13 +81,13 @@ Both controlled and uncontrolled:
 | formAction | string or function | Overrides the parent `<form action>` for `type="submit"` and `type="image"`. When a URL is passed, the form behaves like a standard HTML form. When a function is passed, the function handles the form submission. |
 | formEnctype | string | Overrides the parent `<form enctype>` for `type="submit"` and `type="image"`. |
 | formMethod | string | Overrides the parent `<form method>` for `type="submit"` and `type="image"`. |
-| formNoValidate | string | Overrides the parent `<form noValidate>` for `type="submit"` and `type="image"`. |
+| formNoValidate | boolean | Overrides the parent `<form noValidate>` for `type="submit"` and `type="image"`. |
 | formTarget | string | Overrides the parent `<form target>` for `type="submit"` and `type="image"`. |
 | height | string | Specifies the image height for `type="image"`. |
 | list | string | Specifies the `id` of the `<datalist>` with the autocomplete options. |
-| max | number | Specifies the maximum value of numerical and datetime inputs. |
+| max | number or string | Specifies the maximum value of numerical and datetime inputs. |
 | maxLength | number | Specifies the maximum length of text and other inputs. |
-| min | number | Specifies the minimum value of numerical and datetime inputs. |
+| min | number or string | Specifies the minimum value of numerical and datetime inputs. |
 | minLength | number | Specifies the minimum length of text and other inputs. |
 | multiple | boolean | Specifies whether multiple values are allowed for `type="file"` and `type="email"`. |
 | name | string | Specifies the name for this input that's submitted with the form. |
@@ -111,6 +111,7 @@ Both controlled and uncontrolled:
 
 ## Notes
 
+- Type column corrected: the source docs say 'A string' for formNoValidate / 'A number' for max/min, but these are boolean HTML attributes and max/min also accept date/time strings (matches @types/react).
 - Checkboxes need `checked` (or `defaultChecked`), not `value` (or `defaultValue`). Read `e.target.checked` rather than `e.target.value` for checkboxes.
 - If a text input receives a string `value` prop, it will be treated as controlled. If a checkbox or a radio button receives a boolean `checked` prop, it will be treated as controlled.
 - An input can't be both controlled and uncontrolled at the same time, and cannot switch between being controlled or uncontrolled over its lifetime.

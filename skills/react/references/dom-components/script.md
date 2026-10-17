@@ -45,10 +45,11 @@ function Map({lat, long}) {
 | onError | function | Called when the script fails to load. Disables React's special treatment of scripts. |
 | onLoad | function | Called when the script finishes being loaded. Disables React's special treatment of scripts. |
 | blocking | string | Not recommended. If set to `"render"`, instructs the browser not to render the page until the scriptsheet is loaded. React provides more fine-grained control using Suspense. |
-| defer | string | Not recommended. Prevents the browser from executing the script until the document is done loading. Not compatible with streaming server-rendered components. Use the `async` prop instead. |
+| defer | boolean | Not recommended. Prevents the browser from executing the script until the document is done loading. Not compatible with streaming server-rendered components. Use the `async` prop instead. |
 
 ## Notes
 
+- `defer` is a boolean attribute (the source docs say 'a string').
 - Special rendering behavior: React can move `<script>` components to the document's `<head>` and de-duplicate identical scripts. To opt in, provide the `src` and `async={true}` props. React de-duplicates scripts if they have the same `src`. The `async` prop must be true to allow scripts to be safely moved.
 - React will ignore changes to props after the script has been rendered (React issues a warning in development if this happens).
 - React may leave the script in the DOM even after the component that rendered it has been unmounted. (This has no effect as scripts just execute once when they are inserted into the DOM.)
