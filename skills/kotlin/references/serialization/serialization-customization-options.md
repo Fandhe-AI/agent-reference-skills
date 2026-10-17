@@ -11,7 +11,6 @@ source: https://kotlinlang.org/docs/serialization-customization-options.html
 ```kotlin
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
-import kotlinx.serialization.EncodeDefault.Mode.NEVER
 
 @Serializable
 class Project(
@@ -81,6 +80,9 @@ fun main() {
 `@EncodeDefault` example:
 
 ```kotlin
+import kotlinx.serialization.*
+import kotlinx.serialization.EncodeDefault.Mode.NEVER
+
 @Serializable
 data class Project(
     val name: String,
