@@ -44,7 +44,7 @@ Nine options for debugging a compilation: which files are included and why, modu
 - `noCheck` and `generateTrace` have no body beyond their one-line description in the option page.
 - Changed (7.0): the Go-based compiler is documented to keep the same errors, locations and messages as 6.0; parallelism flags (`--checkers`, `--builders`, `--singleThreaded`) are CLI-level and are described in the TypeScript 7.0 announcement, not in the tsconfig reference.
 
-`explainFiles` example from the official page:
+`explainFiles` example from the official page (version caveat: the example uses `target: es5`, which is deprecated in 6.0 (silence with `"ignoreDeprecations": "6.0"`) and not supported in 7.0; use `es2015` or later when copying it):
 
 ```json
 {
