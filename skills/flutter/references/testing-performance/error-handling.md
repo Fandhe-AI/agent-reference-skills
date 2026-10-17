@@ -32,6 +32,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // Keep your app's existing home/routes; without them builder receives null.
+      home: const Scaffold(body: Center(child: Text('Home'))),
       builder: (context, widget) {
         Widget error = const Text('...rendering error...');
         if (widget is Scaffold || widget is Navigator) {
@@ -89,6 +91,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // Keep your app's existing home/routes; without them builder receives null.
+      home: const Scaffold(body: Center(child: Text('Home'))),
       builder: (context, widget) {
         Widget error = const Text('...rendering error...');
         if (widget is Scaffold || widget is Navigator) {
@@ -138,6 +142,7 @@ void main() {
 
 - You can customize these behaviors, typically by setting them to values in your `void main()` function.
 - The snippets import `package:material_ui/material_ui.dart` as written in the official page. Per the Flutter 3.47 notes, `material_ui` / `cupertino_ui` are standalone packages you can opt in to; the in-framework `package:flutter/material.dart` is not yet deprecated in 3.47.7.
+- Correction to the official snippet: the official `MaterialApp` examples set only `builder`, so `widget` is null (no Navigator is built) and the `StateError` is thrown on every normal launch; a minimal `home` was added here — keep your app's existing `home`/`routes` in real code.
 - `myErrorsHandler`, `myBackend`, and `MyBackend` are placeholders in the official snippets, not Flutter APIs.
 
 ## Related
