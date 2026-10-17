@@ -55,6 +55,7 @@ pub fn encode_error_response(sqlstate: &str, message: &str) -> Result<Vec<u8>, E
 ## Notes
 
 - `encode_ready_for_query` は簡易クエリ（`simple_query`）・COPY・拡張クエリ（`extended_query`）の各経路から呼ばれる（`txn.status()` を渡す）。
+- doc コメント中の「COPY サブプロトコル。COPY は明示トランザクション中には到達しない……`TransactionStatus::Idle` を渡す」は原文のまま残した古い記述。0.2.0 の `copy.rs` は明示トランザクション中の COPY も受理し、ReadyForQuery には `txn.status()` を渡す（失敗時は Failed = `'E'`。[copy.md](./copy.md) 参照）。`Idle` 固定で渡すのはハンドシェイク直後だけ。
 - バージョン差異: 0.1.0 では引数なしで常に `'I'` を返していた。0.2.0 で `TransactionStatus`（Idle → `'I'` / InTransaction → `'T'` / Failed → `'E'`）を受け取る形に変わった。
 - サイズ安全: モジュール doc は「フレーム長は `i32::try_from`/`checked_add` で算出し、超過は `Err(EncodeError::FrameTooLarge)` とする」と記す（原文どおり引用）。ただし実際の `EncodeError` は `pub struct EncodeError;`（フィールドなしの unit struct）であり `FrameTooLarge` という variant は存在しない。超過時は単に `Err(EncodeError)` が返る（doc コメントの表現が実装と乖離した古い記述と見られる）。
 - `push_s_c_m_fields` は本モジュールと [error-response.md](./error-response.md) が共有する唯一のレイアウト実体（S/C/M フィールド書き込み、PR #101）。

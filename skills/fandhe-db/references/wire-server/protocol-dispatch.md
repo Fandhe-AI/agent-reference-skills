@@ -4,7 +4,7 @@ source: https://docs.rs/crate/fandhe-db-wire-server/0.2.0/source/src/protocol_di
 
 # protocol_dispatch
 
-認証後に届くフロントエンドメッセージの型バイト分類と、未対応の拡張クエリプロトコル系メッセージ（Bind/Execute/Sync/Close/Flush）に対する fail-closed な拒否応答＋切断を担う（TASK-71・WIRE-8）。WIRE-11（Issue #933）で Parse（'P'）・Describe（'D'）は `crate::extended_query` が受理する経路へ切り替わった。`handshake::post_auth_loop` から呼ばれる。フレーミング（長さ検証）は `handshake` モジュール、接続数・タイムアウトは `server` モジュールの管轄のままで、本モジュールはどちらにも触れない。
+認証後に届くフロントエンドメッセージの型バイト分類と、engine 未接続（`engine: None`）の経路で拡張クエリ系・COPY 系・未知メッセージを fail-closed に拒否して切断する処理を担う（TASK-71・WIRE-8）。engine 接続時は Parse/Bind/Describe（statement・portal）/Execute/Sync/Close/Flush をすべて `crate::extended_query`（`handle_*`）が受理する（`handshake::post_auth_loop` の分岐による）。`handshake::post_auth_loop` から呼ばれる。フレーミング（長さ検証）は `handshake` モジュール、接続数・タイムアウトは `server` モジュールの管轄のままで、本モジュールはどちらにも触れない。
 
 ## Signature / Usage
 
@@ -56,7 +56,8 @@ pub(crate) fn reject_and_close<S: WireStream>(
 
 - 対応: TASK-71（WIRE-8）。SQLSTATE `0A000` の応答契約は `docs/spec/04-behavior/error-format.md`（private）を参照。
 - `ExtendedQuery` / `UnsupportedFeature` / `Unknown` はいずれも SQLSTATE `0A000` に統一されるが、メッセージ文言は分類ごとに事実に即した表現へ分ける。
-- WIRE-11 で Parse/Describe（statement）は `extended_query` が受理する。Describe portal は `0A000` + 切断のまま（0.2.0 の doc どおり）。Bind/Execute/Sync/Close/Flush は `FrontendMessageKind::ExtendedQuery` に分類される。
+- `classify` は Bind/Execute/Sync/Close/Flush を `FrontendMessageKind::ExtendedQuery` に分類する。engine 接続時（engine と txn がともに `Some`）、`handshake::post_auth_loop` は Parse/Describe/Bind/Execute/Sync/Close/Flush を `extended_query::handle_parse` / `handle_describe` / `handle_bind` / `handle_execute` / `handle_sync` / `handle_close` / `handle_flush` へ委譲する。`reject_and_close`（`0A000` + 切断）に到達するのは `engine: None` の経路だけ。
+- `Describe` / `ExtendedQuery` の doc コメント（portal は `0A000` + 切断、Bind/Execute/Sync/Close/Flush は WIRE-8 の主対象）は原文のまま残した古い記述。0.2.0 の `extended_query.rs` のモジュール doc は statement・portal 両対象の Describe を受理するとしている。
 - バージョン差異: 0.1.0 では拡張クエリプロトコル全系列（Parse/Bind/Describe/Execute/Sync/Close/Flush）が未対応で、すべて拒否応答＋切断だった。`reject_and_close` も `TcpStream` 固定から `<S: WireStream>` ジェネリクスに変わった。
 - モジュール自体は `pub mod protocol_dispatch`（`lib.rs` 参照）で crate 外にも公開されているが、内部の処理用アイテム（`FrontendMessageKind`・`classify`・`LINGER_DRAIN_TIMEOUT`・`LINGER_DRAIN_MAX_BYTES`・`reject_and_close`）はすべて `pub(crate)`（crate 外非公開）。
 
