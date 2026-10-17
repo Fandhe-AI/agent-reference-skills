@@ -122,7 +122,7 @@ Details (Java member to KSP equivalent):
 | `WildcardType.getExtendsBound` | `if (ksTypeArgument.variance == Variance.COVARIANT) ksTypeArgument.type else null` |
 | `WildcardType.getSuperBound` | `if (ksTypeArgument.variance == Variance.CONTRAVARIANT) ksTypeArgument.type else null` |
 | `Elements.getAllAnnotationMirrors` | `KSAnnotated.annotations` (`KSDeclaration.annotations`) |
-| `Elements.getAllMembers` | `getAllFunctions`, `getAllProperties` is to be implemented |
+| `Elements.getAllMembers` | `ksClassDeclaration.getAllFunctions()` / `ksClassDeclaration.getAllProperties()` (declared and inherited members; requires type resolution) |
 | `Elements.getBinaryName` / `getDocComment` / `getElementValuesWithDefaults` / `hides` | To be decided / to be implemented |
 | `Elements.getConstantExpression` | There is constant value, not expression |
 | `Elements.getName` | `resolver.getKSNameFromString` |
@@ -153,7 +153,8 @@ Details (Java member to KSP equivalent):
 - The official table (kotlin-web-site 0b10373) maps overrides to KSFunctionDeclaration.overrides / KSPropertyDeclaration.overrides and asMemberOf to resolver.asMemberOf; in google/ksp 2.3.10 these are Resolver.overrides(overrider, overridee) and KSFunctionDeclaration/KSPropertyDeclaration.asMemberOf(containing: KSType), which this page uses (KSType.starProjection() does exist).
 - The official table (kotlin-web-site 0b10373) maps getReceiverType to ksFunctionDeclaration.parentDeclaration / parentDeclaration.asType(...); parentDeclaration is a nullable KSDeclaration without asType(), so this page casts to KSClassDeclaration and distinguishes extensionReceiver (google/ksp 2.3.10 api).
 - The official table maps isDefault to checking whether the parent declaration is an interface; that also matches abstract / static / private interface methods, so this page checks Modifier.JAVA_DEFAULT (Java) or a non-abstract interface member (Kotlin).
-- Items marked "To be implemented" / "To be decided" are unimplemented or undecided in KSP at the time of the page.
+- Remaining items marked "To be implemented" / "To be decided" follow the official table (kotlin-web-site 0b10373).
+- The official table (kotlin-web-site 0b10373) says getAllFunctions / getAllProperties are "to be implemented"; google/ksp 2.3.10 api declares KSClassDeclaration.getAllFunctions(): Sequence<KSFunctionDeclaration> and getAllProperties(): Sequence<KSPropertyDeclaration> (declared and inherited), which this page uses.
 
 ## Related
 

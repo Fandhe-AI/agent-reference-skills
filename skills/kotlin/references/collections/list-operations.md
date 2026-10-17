@@ -89,7 +89,7 @@ fun main() {
 ## Notes
 
 - `get()` / `[]` throws if the index is out of bounds; `getOrElse()` computes a default, `getOrNull()` returns `null`.
-- `subList()` returns a view: changes to the original are reflected in sublists and vice versa.
+- `subList()` returns a view: if an element of the original collection changes (e.g. `set()`), it also changes in previously created sublists and vice versa. Structural changes to the original list made outside the sublist (add / remove) make the view undefined; on JVM `ArrayList` a later access throws `ConcurrentModificationException`.
 - Binary search requires the list to be sorted ascending (by natural order, the given `Comparator`, or the comparison function); otherwise the result is undefined. It returns the index if found, else `(-insertionPoint - 1)`. With duplicate values, any matching index may be returned. When elements aren't `Comparable`, pass a `Comparator`; comparison binary search takes a function mapping elements to `Int` and finds where it returns zero (return values must grow along the list). Comparator and comparison searches also work on ranges.
 - In-place sort names drop the `ed` / `d` suffix of the read-only functions (`sort*` vs `sorted*`, `shuffle()` vs `shuffled()`, `reverse()` vs `reversed()`). `asReversed()` on a mutable list returns a reversed mutable view; changes are reflected in the original.
 - `set()` / `[]` doesn't change the indexes of other elements; `removeAt()` decreases indices of subsequent elements by one; `add(index, ...)` shifts subsequent elements right.
