@@ -8,7 +8,7 @@ Since 2018, the React Native team has been redesigning the core internals of Rea
 
 ## Signature / Usage
 
-Opt out of the New Architecture (Android): in `android/gradle.properties`, toggle `newArchEnabled` from `true` to `false`.
+(React Native 0.76–0.81 only) Opt out of the New Architecture (Android): in `android/gradle.properties`, toggle `newArchEnabled` from `true` to `false`.
 
 ```diff
 # Use this property to enable support to the new architecture.
@@ -94,7 +94,7 @@ function ViewWithTooltip() {
 
 The New Architecture supports concurrent rendering and features that have shipped in React 18 and beyond: Suspense for data-fetching, Transitions, and other new React APIs. The concurrent renderer also brings out-of-the-box improvements like automatic batching, which reduces re-renders in React. State updates from native event handlers (for example a native Slider) are now batched.
 
-Transitions let you express the priority of UI updates; marking an update as lower priority tells React it can "interrupt" rendering to handle higher priority updates. `startTransition` also provides an `isPending` flag.
+Transitions let you express the priority of UI updates; marking an update as lower priority tells React it can "interrupt" rendering to handle higher priority updates. The `useTransition` hook returns both the `isPending` flag and `startTransition`.
 
 ```jsx
 function TileSlider({value, onValueChange}) {
@@ -159,6 +159,8 @@ With 0.76, The New Architecture is enabled by default in all the React Native pr
 
 ## Notes
 
+- Version scope: the opt-out steps in Signature / Usage apply only to React Native 0.76–0.81. React Native 0.82 is the first release that runs entirely on the New Architecture (https://reactnative.dev/blog/2025/10/08/react-native-0.82), so on 0.82+ (including 0.87 covered by this skill) these flags no longer restore the legacy architecture.
+- The original page says `startTransition` provides `isPending`; per the snippet it is `useTransition` that returns `[isPending, startTransition]`.
 - Illustrative snippet verbatim from the official page; the adjacent elements in the `ManyTiles` `return` would need a fragment wrapper to run.
 - The page states the New Architecture has been available for experimental opt-in since React Native 0.68 and is enabled by default since 0.76.
 - Source images and "See code" gists of the original page are omitted; the three tooltip / batching / transition examples above are the original code blocks.
