@@ -71,7 +71,7 @@ return Column(
 );
 ```
 
-The default is `ReadingOrderTraversalPolicy`; modify it with another predefined `TraversalPolicy` or a custom policy.
+The default is `ReadingOrderTraversalPolicy`; modify it with another predefined `FocusTraversalPolicy` subclass (for example `OrderedTraversalPolicy`) or a custom policy.
 
 ### Keyboard accelerators
 
@@ -230,6 +230,8 @@ VisualDensity density = Theme.of(context).visualDensity;
 ```
 
 ## Notes
+
+- The source page says `TraversalPolicy`; the SDK base class is `FocusTraversalPolicy`.
 
 - `ScrollView` / `ListView` support the scroll wheel by default.
 - Unlike `Shortcuts` or `KeyboardListener`, the static `HardwareKeyboard` listener must be disabled by you when the user is typing in a field or the associated widget is hidden (important when binding Delete/Backspace while child `TextField`s exist).

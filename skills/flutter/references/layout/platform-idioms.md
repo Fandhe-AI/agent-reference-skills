@@ -111,10 +111,10 @@ return Row(
 | Scrollbar | Mobile: smaller scrollbars that appear only while scrolling; desktop: larger omnipresent scrollbars users click or drag. The built-in `Scrollbar` adapts colors and sizes per platform. |
 | Multi-select | Desktop: Shift for span select, Control (or Command on macOS) for multi-select, `Control+A` for Select All. Touch: single tap selects/deselects, plus a Select All or Clear button. |
 | Selectable text | Web (and to a lesser extent desktop) users expect visible text to be selectable; use `SelectableText` / `SelectableText.rich`. |
-| Title bars | Not directly supported in Flutter; the `bits_dojo` package can disable native title bars and replace them with pure Flutter widgets. |
+| Title bars | Not directly supported in Flutter; the `bitsdojo_window` package (https://pub.dev/packages/bitsdojo_window) can disable native title bars and replace them with pure Flutter widgets. |
 | Context menus and tooltips | Context menu: right-click, near the mouse. Tooltip: hover for 200-400ms, anchored to a widget, dismissed when the cursor leaves. Popup panel (flyout): anchored, shown on tap, dismissed by clicking outside or Close/Submit. Use `Tooltip` for basic tooltips; for advanced ones build with `Stack` or `Overlay` or use a package (`context_menus`, `anchored_popups`, `flutter_portal`, `super_tooltip`, `custom_pop_up_menu`). |
 | Horizontal button order | Windows: confirmation button at the start (left); other platforms: at the end (right). Handle with `Row.textDirection`. |
-| Menu bar | Windows and Linux: part of the Chrome title bar; macOS: along the top of the primary screen. Custom entries are possible via a prototype plugin, expected to be integrated into the SDK eventually. On Windows and Linux you can't combine a custom title bar with a native menu bar; implement both in Flutter. |
+| Menu bar | Windows and Linux: part of the Chrome title bar; macOS: along the top of the primary screen. On macOS, build native menus with the SDK's `PlatformMenuBar` / `PlatformMenu` / `PlatformMenuItem` widgets; on Windows and Linux there is no native platform menu support, so implement menus in Flutter (for example `MenuBar`). On Windows and Linux you can't combine a custom title bar with a native menu bar; implement both in Flutter. |
 | Drag and drop | Touch users expect drag handles or long press to start a drag (one finger for both scroll and drag); mouse users can just select and drag. Options: `Draggable` and `DragTarget`, `onPan` gesture events within a `Stack`, or pre-made list packages on pub.dev. |
 
 ## Notes
@@ -122,6 +122,8 @@ return Row(
 - Find a platform advocate for each platform (combine roles, for example Windows and Android, Linux and web, Mac and iOS); advocates may be designers, stakeholders, or external testers.
 - Stay unique: conforming to platform norms doesn't require default components or styling.
 - The `DeviceType`, `Insets`, `DialogButton`, and `Logo` identifiers in the snippets come from the page's demo project, not from the Flutter SDK.
+- The source page labels the title-bar package `bits_dojo`; its pub.dev name is `bitsdojo_window`.
+- The source page still describes custom menu entries as a prototype plugin; `PlatformMenuBar` is now part of the widgets library (macOS only).
 - Platform-specific interaction conventions for Android, Apple, and Windows themselves are covered by the android-*, apple-*, and windows-* skills; this page is the Flutter-side approach.
 
 ## Related
