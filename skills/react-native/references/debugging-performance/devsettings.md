@@ -16,7 +16,7 @@ DevSettings.addMenuItem('Show Secret Dev Screen', () => {
 <Button title="Reload" onPress={() => DevSettings.reload()} />;
 ```
 
-### Methods
+## Options / Props
 
 | Name | Signature | Description |
 | --- | --- | --- |

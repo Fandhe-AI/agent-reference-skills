@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
 export default App;
 ```
 
-### Methods
+## Options / Props
 
 | Name | Signature | Description |
 | --- | --- | --- |

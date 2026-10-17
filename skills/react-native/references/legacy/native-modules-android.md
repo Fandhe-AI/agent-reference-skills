@@ -244,7 +244,7 @@ public void removeListeners(Integer count) {
 import {NativeEventEmitter, NativeModules} from 'react-native';
 
 useEffect(() => {
-  const eventEmitter = new NativeEventEmitter(NativeModules.ToastExample);
+  const eventEmitter = new NativeEventEmitter(NativeModules.CalendarModule);
   let eventListener = eventEmitter.addListener('EventReminder', event => {
     console.log(event.eventProperty); // "someValue"
   });
@@ -284,6 +284,7 @@ public void onHostDestroy() {
 - A callback or promise can be invoked/settled at most once; a module may store it and invoke it later. Callbacks currently allow at most two function arguments (success and failure).
 - Threading: all native module async methods run on one thread on Android; do not assume a thread. Dispatch blocking work to an internally managed worker thread.
 - Android-side platform APIs (Fragments, Gradle, Kotlin/Java): see android-architecture and android-build-gradle. This page covers only the React Native bridge surface.
+- The official event-subscription example passes `NativeModules.ToastExample` to `NativeEventEmitter`; this page changes it to `CalendarModule` to match the module it implements.
 - Intended New Architecture replacement: `native-development/turbo-native-modules-android.md`.
 
 ## Related
