@@ -10,7 +10,7 @@ user-invocable: false
 
 # React
 
-> 分割 PR の途中段階。現在収録済み: references/{apis, compiler, components, dom-apis, dom-components, dom-server, hooks, legacy, rules-of-react, server-components}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{apis, compiler, components, dom-apis, dom-components, dom-server, hooks, legacy, rules-of-react, server-components}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 対象バージョン: React 19.3.1 (npm `react` / `react-dom` latest、2026-10-14 公開。versions.md の表記は "Latest version: 19.3")。
 関連パッケージ: babel-plugin-react-compiler 1.0.0 / eslint-plugin-react-hooks 7.1.1 / @types/react 19.3.0 / react-devtools 8.0.0。

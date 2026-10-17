@@ -73,7 +73,9 @@ class ErrorBoundary extends React.Component {
       error,
       info.componentStack,
       // Warning: `captureOwnerStack` is not available in production.
-      React.captureOwnerStack(),
+      process.env.NODE_ENV !== 'production'
+        ? React.captureOwnerStack()
+        : undefined,
     );
   }
 
@@ -88,6 +90,7 @@ class ErrorBoundary extends React.Component {
 
 ## Notes
 
+- The Error Boundary example is adapted from the official one to guard `captureOwnerStack`, which is only exported in development builds (undefined in production).
 - Legacy: define components as functions instead of classes. Hooks (functions starting with `use`) are not supported inside class components.
 - `componentWillMount`, `componentWillReceiveProps`, `componentWillUpdate` are deprecated names, renamed to the `UNSAFE_` variants; "In a future major version of React, only the new name will work." Codemod: `rename-unsafe-lifecycles` (reactjs/react-codemod).
 - `UNSAFE_*` methods are not called if the component implements `static getDerivedStateFromProps` or `getSnapshotBeforeUpdate`. They are "unsafe" because with Suspense a render attempt can be thrown away and restarted.

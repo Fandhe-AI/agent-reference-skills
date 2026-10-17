@@ -30,7 +30,7 @@ const MyInput = forwardRef(function MyInput(props, ref) {
 | `props` (render arg) | object | The props passed by the parent component. |
 | `ref` (render arg) | object or function | The `ref` attribute passed by the parent. `null` if the parent has not passed a ref. Pass it to another component, or to `useImperativeHandle`. |
 
-Returns a React component that you can render in JSX; unlike plain function components, it is able to receive a `ref` prop.
+Returns a React component that you can render in JSX. React passes the `ref` it receives to your render function as the second argument. (Before React 19, plain function components could not receive a `ref` prop; in React 19 `ref` is a regular prop for function components too.)
 
 ## Notes
 
