@@ -52,6 +52,7 @@ class CustomSliderCell: NSSliderCell {
 - macOS 15: the system does not enable automatic observation tracking by default. Add the `NSObservationTrackingEnabled` key to the app's information property list and set it to `true`.
 - Related documentation on the source page: `NSViewController.viewWillLayout()`, `NSViewController.updateViewConstraints()`, `NSView.draw(_:)`, `NSView.layout()`, `NSView.updateConstraints()`, `NSView.updateLayer()`.
 - Distinct from SwiftUI's built-in observation of `@Observable` models (see apple-swiftui).
+- The code listings above are verbatim excerpts from the source article and omit initialization: in real code, give the stored properties of `MessageModel` / `SliderAppearance` default values or an initializer, and initialize `CustomSliderCell.appearance` (for example in `init` or as a default value).
 - Source: https://developer.apple.com/documentation/appkit/updating-views-automatically-with-observation-tracking-in-appkit
 
 ## Related
