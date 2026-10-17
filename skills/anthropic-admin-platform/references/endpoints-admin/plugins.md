@@ -71,7 +71,7 @@ curl https://api.anthropic.com/v1/organizations/plugins \
 | Name | Type | Description |
 |------|------|-------------|
 | plugin_id | string | `plugin_` prefixed ID |
-| version | string | `pluginver_` prefixed ID (`latest` is not accepted on Get Version / Download) |
+| version | string | `pluginver_` prefixed ID, or `latest` for the newest version on Get Version; Download (`/content`) requires a version ID (`latest` is not accepted) |
 | target | string | Literal `organization`, or an RBAC Group ID (`rbac_group_` prefix) |
 
 ### Query Parameters

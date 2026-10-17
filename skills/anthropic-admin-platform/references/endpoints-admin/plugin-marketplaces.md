@@ -15,7 +15,7 @@ List and read the plugin marketplaces Plugins live in (the organization's own an
 | POST | `/v1/organizations/plugin_marketplaces/validate_archive` | Validate Plugin Marketplace Archive |
 
 ```bash
-curl https://api.anthropic.com/v1/organizations/plugin_marketplaces/$MARKETPLACE_ID \
+curl "https://api.anthropic.com/v1/organizations/plugin_marketplaces/${MARKETPLACE_ID}" \
     -H 'Content-Type: application/json' \
     -H 'anthropic-version: 2023-06-01' \
     -H 'anthropic-beta: ce-plugins-2026-09-01' \

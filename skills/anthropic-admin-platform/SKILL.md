@@ -2,9 +2,10 @@
 name: anthropic-admin-platform
 description: >
   Claude API (platform.claude.com) の組織管理・Admin API (sk-ant-admin)。
-  users, invites, workspaces, API keys, service accounts, RBAC, Workload Identity Federation (WIF),
-  Usage & Cost API, rate / spend limits, Analytics API, Compliance API (transcripts, access transparency log),
-  Plugins API, OpenTelemetry telemetry, CMEK, ZDR, data residency, inference hooks。
+  users, invites, workspaces, API keys, service accounts, RBAC (groups / roles),
+  Workload Identity Federation (WIF, federation issuers / rules), Usage & Cost API, rate / spend limits,
+  Analytics API, Compliance API (transcripts, access transparency log), Plugins API,
+  OpenTelemetry telemetry, CMEK, zero data retention (ZDR), data residency, inference hooks。
 user-invocable: false
 ---
 

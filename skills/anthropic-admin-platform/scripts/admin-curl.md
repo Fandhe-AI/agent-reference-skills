@@ -338,7 +338,7 @@ curl -X POST "https://api.anthropic.com/v1/organizations/plugins/plugin_01Hq3vX8
 
 ## Plugins: プラグインの削除
 
-> **警告**: プラグインと全 version を完全に削除し、取り消せない（version 単位の削除はない）。可逆的に配信を止めるには組織全体の installation setting を `not_available` にする。`write:plugins` スコープが必要。
+> **警告**: プラグインと全 version を完全に削除し、取り消せない（version 単位の削除はない）。`write:plugins` スコープが必要。organization-owned プラグインを可逆的に止めるには、次の 2 点を行う。(1) 組織全体の installation setting を `not_available` にする。(2) `GET /v1/organizations/plugins/{plugin_id}/installation_settings` が返すグループ設定をすべて削除するか `not_available` にする（グループ設定はそのメンバーに対して組織全体の値を上書きするため）。これらの書き込みは並列にせず 1 件ずつ送る。member-owned プラグインは、この API では manual marketplace での削除以外に止める方法がない。
 
 ```bash
 curl -X DELETE "https://api.anthropic.com/v1/organizations/plugins/plugin_01Hq3vX8kZcN2mB7pR4tY9wL" \
@@ -499,7 +499,7 @@ beta ヘッダー `anthropic-beta: telemetry-destinations-2026-08-11` が必要�
 ## Telemetry Destinations: 一覧の取得
 
 ```bash
-curl https://api.anthropic.com/v1/organizations/telemetry_destinations \
+curl "https://api.anthropic.com/v1/organizations/telemetry_destinations" \
     -H 'anthropic-version: 2023-06-01' \
     -H 'anthropic-beta: telemetry-destinations-2026-08-11' \
     -H "X-Api-Key: $ANTHROPIC_ADMIN_KEY"
@@ -508,7 +508,7 @@ curl https://api.anthropic.com/v1/organizations/telemetry_destinations \
 ## Telemetry Destinations: 取得
 
 ```bash
-curl https://api.anthropic.com/v1/organizations/telemetry_destinations/$DESTINATION_ID \
+curl "https://api.anthropic.com/v1/organizations/telemetry_destinations/${DESTINATION_ID}" \
     -H 'anthropic-version: 2023-06-01' \
     -H 'anthropic-beta: telemetry-destinations-2026-08-11' \
     -H "X-Api-Key: $ANTHROPIC_ADMIN_KEY"
@@ -517,7 +517,7 @@ curl https://api.anthropic.com/v1/organizations/telemetry_destinations/$DESTINAT
 ## Telemetry Destinations: テストスパンの送信
 
 ```bash
-curl https://api.anthropic.com/v1/organizations/telemetry_destinations/$DESTINATION_ID/test \
+curl "https://api.anthropic.com/v1/organizations/telemetry_destinations/${DESTINATION_ID}/test" \
     -X POST \
     -H 'anthropic-version: 2023-06-01' \
     -H 'anthropic-beta: telemetry-destinations-2026-08-11' \
@@ -529,7 +529,7 @@ curl https://api.anthropic.com/v1/organizations/telemetry_destinations/$DESTINAT
 ## Telemetry Destinations: 対象 workspace の一覧取得
 
 ```bash
-curl https://api.anthropic.com/v1/organizations/telemetry_destinations/$DESTINATION_ID/workspaces \
+curl "https://api.anthropic.com/v1/organizations/telemetry_destinations/${DESTINATION_ID}/workspaces" \
     -H 'anthropic-version: 2023-06-01' \
     -H 'anthropic-beta: telemetry-destinations-2026-08-11' \
     -H "X-Api-Key: $ANTHROPIC_ADMIN_KEY"
@@ -538,7 +538,7 @@ curl https://api.anthropic.com/v1/organizations/telemetry_destinations/$DESTINAT
 ## Telemetry Destinations: workspace の追加
 
 ```bash
-curl https://api.anthropic.com/v1/organizations/telemetry_destinations/$DESTINATION_ID/workspaces/$WORKSPACE_ID \
+curl "https://api.anthropic.com/v1/organizations/telemetry_destinations/${DESTINATION_ID}/workspaces/${WORKSPACE_ID}" \
     -X POST \
     -H 'anthropic-version: 2023-06-01' \
     -H 'anthropic-beta: telemetry-destinations-2026-08-11' \
@@ -550,7 +550,7 @@ OpenTelemetry ガイドでは、個別 workspace の追加・削除は Workspace
 ## Telemetry Destinations: workspace の削除
 
 ```bash
-curl https://api.anthropic.com/v1/organizations/telemetry_destinations/$DESTINATION_ID/workspaces/$WORKSPACE_ID \
+curl "https://api.anthropic.com/v1/organizations/telemetry_destinations/${DESTINATION_ID}/workspaces/${WORKSPACE_ID}" \
     -X DELETE \
     -H 'anthropic-version: 2023-06-01' \
     -H 'anthropic-beta: telemetry-destinations-2026-08-11' \
@@ -562,7 +562,7 @@ curl https://api.anthropic.com/v1/organizations/telemetry_destinations/$DESTINAT
 > **警告**: destination を削除するとスパンの送信が止まる。取り消せるかは公式ドキュメントに明記がないため、再作成が必要になる前提で実施すること。
 
 ```bash
-curl https://api.anthropic.com/v1/organizations/telemetry_destinations/$DESTINATION_ID \
+curl "https://api.anthropic.com/v1/organizations/telemetry_destinations/${DESTINATION_ID}" \
     -X DELETE \
     -H 'anthropic-version: 2023-06-01' \
     -H 'anthropic-beta: telemetry-destinations-2026-08-11' \

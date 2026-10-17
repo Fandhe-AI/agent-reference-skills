@@ -34,7 +34,7 @@ curl --fail-with-body -sS \
 
 ```bash
 curl --fail-with-body -sS \
-  "https://api.anthropic.com/v1/compliance/organizations/$ORGANIZATION_ID/settings" \
+  "https://api.anthropic.com/v1/compliance/organizations/${ORGANIZATION_ID}/settings" \
   --header "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY"
 ```
 
@@ -42,7 +42,7 @@ curl --fail-with-body -sS \
 
 ```bash
 curl --fail-with-body -sS \
-  "https://api.anthropic.com/v1/compliance/organizations/$ORG_UUID/users" \
+  "https://api.anthropic.com/v1/compliance/organizations/${ORG_UUID}/users" \
   --header "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY"
 ```
 
@@ -50,7 +50,7 @@ curl --fail-with-body -sS \
 
 ```bash
 curl --fail-with-body -sS \
-  "https://api.anthropic.com/v1/compliance/organizations/$ORG_UUID/roles" \
+  "https://api.anthropic.com/v1/compliance/organizations/${ORG_UUID}/roles" \
   --header "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY"
 ```
 
@@ -71,3 +71,84 @@ curl --fail-with-body -sS \
   "https://api.anthropic.com/v1/compliance/apps/chats" \
   --header "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY"
 ```
+
+`organization_ids[]` / `user_ids[]`（最大 10 件）/ `created_at.gt/gte/lt/lte` / `updated_at.*`（組織全体の照会では `order_by=updated_at` が必要）/ `limit`（既定 100、最大 1000）/ `after_id` / `before_id` でフィルタ・ページネーションできる。
+
+## Chat メッセージ履歴の取得
+
+```bash
+curl --fail-with-body -sS \
+  "https://api.anthropic.com/v1/compliance/apps/chats/$CLAUDE_CHAT_ID/messages" \
+  --header "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY"
+```
+
+## Chat の削除
+
+> **警告**: 破壊的かつ不可逆な操作。チャットと関連する全メッセージ・ファイルをハード削除する。`delete:compliance_user_data` スコープが必要。
+
+```bash
+curl --fail-with-body -sS \
+  "https://api.anthropic.com/v1/compliance/apps/chats/$CLAUDE_CHAT_ID" \
+  -X DELETE \
+  --header "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY"
+```
+
+## Projects 一覧の取得
+
+```bash
+curl --fail-with-body -sS \
+  "https://api.anthropic.com/v1/compliance/apps/projects" \
+  --header "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY"
+```
+
+## Project の削除
+
+> **警告**: 破壊的かつ不可逆な操作。プロジェクト配下のドキュメント・ロール・ナレッジベース・同期ソースを全てハード削除する。関連する chats が残っている場合は 409 を返す（先に apps/chats/delete で削除する）。
+
+```bash
+curl --fail-with-body -sS \
+  "https://api.anthropic.com/v1/compliance/apps/projects/$PROJECT_ID" \
+  -X DELETE \
+  --header "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY"
+```
+
+## Code Artifacts 一覧の取得
+
+```bash
+curl --fail-with-body -sS \
+  "https://api.anthropic.com/v1/compliance/apps/code/artifacts" \
+  --header "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY"
+```
+
+チャット内 Artifact（`apps/artifacts`）とは別リソース。作成時刻ではなく識別子順にソートされる。
+
+## Code Artifact の削除
+
+> **警告**: 破壊的かつ不可逆な操作。Code Artifact とその全バージョンを永久に削除する。200 は削除開始を意味し、コンテンツ除去は非同期に完了する。
+
+```bash
+curl --fail-with-body -sS \
+  "https://api.anthropic.com/v1/compliance/apps/code/artifacts/$ARTIFACT_ID" \
+  -X DELETE \
+  --header "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY"
+```
+
+## Local sessions 一覧の取得
+
+```bash
+curl --fail-with-body -sS \
+  "https://api.anthropic.com/v1/compliance/apps/sessions/local" \
+  --header "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY"
+```
+
+`created_at` 降順・forward-only のページネーション（`next_page` を `page` に渡す）。`created_at.gt/gte/lt/lte` と `updated_at.gte`（RFC 3339、UTC オフセット必須）、`limit`（既定 100、最大 500）で絞り込める。
+
+## Remote sessions 一覧の取得
+
+```bash
+curl --fail-with-body -sS \
+  "https://api.anthropic.com/v1/compliance/apps/sessions/remote" \
+  --header "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY"
+```
+
+メタデータのみを新しい順に返す。`organization_ids[]`（最大 500）/ `user_ids[]`（最大 10）/ `created_at.*` / `limit`（既定 100、最大 500）/ `page` で絞り込める。
