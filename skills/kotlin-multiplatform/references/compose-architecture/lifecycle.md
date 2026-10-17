@@ -30,6 +30,7 @@ kotlin {
 - By default, all composables created by Compose Multiplatform share the same lifecycle. The `LifecycleOwner` object is provided as a `CompositionLocal`; to manage a lifecycle separately for a particular composable subtree, create your own `LifecycleOwner` implementation.
 - `Lifecycle.coroutineScope` is tied to `Dispatchers.Main.immediate`, which might be unavailable on desktop targets by default. Add the `kotlinx-coroutines-swing` dependency so coroutines and flows in lifecycles work correctly.
 - Each back stack entry in Navigation implements `LifecycleOwner`; see [navigation-routing.md](./navigation-routing.md).
+- Web: the official page says lifecycles skip `CREATED`, yet its own event table lists `visibilitychange` transitions to and from `CREATED`; both are reproduced as published. Do not rely on `CREATED` being observable (or on reaching `DESTROYED`) on Web; release resources on `ON_STOP` instead.
 - Distinct from Android-only coverage: the common `androidx.lifecycle` API is covered by android-architecture; this page covers the `org.jetbrains.androidx.lifecycle` artifact and platform event mapping.
 
 ### Mapping Android lifecycle to other platforms

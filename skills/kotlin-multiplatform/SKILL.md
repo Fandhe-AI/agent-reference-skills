@@ -2,15 +2,13 @@
 name: kotlin-multiplatform
 description: >
   Kotlin Multiplatform (KMP) / Compose Multiplatform (JetBrains, Kotlin) の公式リファレンス。
-  expect/actual, source set hierarchy, Multiplatform Gradle DSL, org.jetbrains.compose, Compose Resources (Res),
-  Compose for iOS / Desktop / Web, iOS 統合 (SwiftPM export, CocoaPods), Compose Hot Reload,
-  Kotlin Toolchain, Maven Central / npm 公開, AGP 9 移行, 互換性表。
+  source set hierarchy, Multiplatform Gradle DSL, org.jetbrains.compose, Compose Hot Reload。
 user-invocable: false
 ---
 
 # Kotlin Multiplatform / Compose Multiplatform
 
-> 分割 PR の途中段階。現在収録済み: references/{build-test-publish, compatibility, compose-architecture, compose-desktop}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{build-test-publish, compatibility, compose-architecture, compose-desktop}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 JetBrains の `kotlin-multiplatform-dev-docs`（`kotlinlang.org/docs/multiplatform/**` と Compose Multiplatform ドキュメント）を蒸留したリファレンススキル。`kotlinlang.org/docs/**` のうち `multiplatform/` 以外は kotlin スキルの担当。
 

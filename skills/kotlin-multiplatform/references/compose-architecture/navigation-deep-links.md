@@ -99,7 +99,15 @@ Generated URI pattern rules for a route type: required parameters become path pa
 
 - The official snippet omits the `backStackEntry ->` lambda parameter; it is added here so the example compiles.
 - The docs pin `navigation-compose` to `2.10.0-rc01` (pre-release). Setup versions in the page's catalog example (`agp = "8.9.0"`, `kotlin = "2.1.0"`, `kotlinx-serialization = "1.7.3"`) are the page's own example values.
-- Outside input can be malicious; follow Android's security guidelines for unsafe deep link use.
+- Outside input can be malicious; follow Android's [security guidelines for unsafe deep link use](https://developer.android.com/privacy-and-security/risks/unsafe-use-of-deeplinks).
+- `navController.navigate(NavUri(uri))` throws `IllegalArgumentException` when no destination matches the URI (for example an unknown path or a missing required argument). In production, validate the scheme/host against an allowlist and catch the exception with a safe fallback; this guard is not part of the official snippet. Not in official docs:
+
+```kotlin
+ExternalUriHandler.listener = { uri ->
+    runCatching { navController.navigate(NavUri(uri)) }
+        .onFailure { /* ignore or navigate to a fallback */ }
+}
+```
 - URIs without a scheme are assumed to start with `http://` or `https://`. `{placeholder}` matches one or more characters (use `{.*}` for zero or more). Path placeholders are required; query placeholders are optional; extra query parameters do not affect matching. If several composables match the same URI, behavior is indeterminate.
 - Web: put all parameters of the deep link URI pattern in the URL fragment (after `#`) and URL-encode them, for example `navDeepLink { uriPattern = "localhost:8080/#dlscreen%2F{name}" }`.
 - Desktop JVM: on macOS use `Desktop.getDesktop().setOpenURIHandler { uri -> ExternalUriHandler.onNewUri(uri.uri.toString()) }`; on other systems pass `args.getOrNull(0)`. iOS: add an `application(_:open:options:)` that calls `ExternalUriHandler.shared.onNewUri(uri: uri.absoluteString)`.
