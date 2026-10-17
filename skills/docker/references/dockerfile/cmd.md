@@ -9,9 +9,12 @@ Sets the command to be executed when running a container from an image.
 ## Signature / Usage
 
 ```dockerfile
-CMD ["executable","param1","param2"]   # exec form
-CMD ["param1","param2"]                # exec form, as default parameters to ENTRYPOINT
-CMD command param1 param2              # shell form
+# exec form
+CMD ["executable","param1","param2"]
+# exec form, as default parameters to ENTRYPOINT
+CMD ["param1","param2"]
+# shell form
+CMD command param1 param2
 ```
 
 ## Notes

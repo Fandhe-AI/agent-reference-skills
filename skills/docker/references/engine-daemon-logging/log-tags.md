@@ -9,7 +9,7 @@ The `tag` log option formats the tag that identifies a container's log messages 
 ## Signature / Usage
 
 ```console
-$ docker run --log-driver=fluentd --log-opt fluentd-address=myhost.local:24224 --log-opt tag="mailer"
+$ docker run --log-driver=fluentd --log-opt fluentd-address=myhost.local:24224 --log-opt tag="mailer" alpine echo hello
 ```
 
 `--log-opt tag="{{.ImageName}}/{{.Name}}/{{.ID}}"` yields `syslog` lines like:
@@ -32,6 +32,7 @@ Aug  7 18:33:19 HOSTNAME hello-world/foobar/5790672ab6a0[9103]: Hello from Docke
 
 ## Notes
 
+- Adapted: an image and command were added to the official `docker run` example.
 - The `container_name` field and `{{.Name}}` are set at startup; `docker rename` is not reflected in log messages.
 
 ## Related

@@ -9,8 +9,10 @@ Configures a container that runs as an executable.
 ## Signature / Usage
 
 ```dockerfile
-ENTRYPOINT ["executable", "param1", "param2"]   # exec form (preferred)
-ENTRYPOINT command param1 param2                 # shell form
+# exec form (preferred)
+ENTRYPOINT ["executable", "param1", "param2"]
+# shell form
+ENTRYPOINT command param1 param2
 ```
 
 ```dockerfile
@@ -29,12 +31,13 @@ CMD ["-c"]
 
   ```dockerfile
   FROM debian:stable
-  RUN apt-get update && apt-get install -y --force-yes apache2
+  RUN apt-get update && apt-get install -y apache2
   EXPOSE 80 443
   VOLUME ["/var/www", "/var/log/apache2", "/etc/apache2"]
   ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
   ```
 
+- Adapted: `--force-yes` from the official example is omitted because it bypasses apt's package authentication checks.
 - A starter script ensures the final executable receives Unix signals by using `exec` and `gosu`:
 
   ```bash

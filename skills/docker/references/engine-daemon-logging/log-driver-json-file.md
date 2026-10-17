@@ -41,9 +41,9 @@ Log line format:
 | `max-size` | Maximum size of the log before it is rolled. Positive integer plus unit (`k`, `m`, `g`). Defaults to -1 (unlimited). | `--log-opt max-size=10m` |
 | `max-file` | Maximum number of log files; the oldest is removed when rolling creates excess. Only effective when `max-size` is also set. Defaults to 1. | `--log-opt max-file=3` |
 | `labels` | Applies when starting the daemon. Comma-separated list of logging-related labels this daemon accepts. | `--log-opt labels=production_status,geo` |
-| `labels-regex` | Regular expression to match logging-related labels. | `--log-opt labels-regex=^(production_status\|geo)` |
+| `labels-regex` | Regular expression to match logging-related labels. | `--log-opt 'labels-regex=^(production_status\|geo)'` |
 | `env` | Applies when starting the daemon. Comma-separated list of logging-related environment variables this daemon accepts. | `--log-opt env=os,customer` |
-| `env-regex` | Regular expression to match logging-related environment variables. | `--log-opt env-regex=^(os\|customer)` |
+| `env-regex` | Regular expression to match logging-related environment variables. | `--log-opt 'env-regex=^(os\|customer)'` |
 | `compress` | Toggles compression for rotated logs. Defaults to `false`. | `--log-opt compress=true` |
 
 ## Notes

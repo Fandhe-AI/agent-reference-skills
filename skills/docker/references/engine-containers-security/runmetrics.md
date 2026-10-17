@@ -57,11 +57,11 @@ Network metrics can be gathered from iptables counters or from within the contai
 $ iptables -I OUTPUT -p tcp --sport 80
 $ iptables -nxvL OUTPUT
 
-$ TASKS=/sys/fs/cgroup/devices/docker/$CID*/tasks
-$ PID=$(head -n 1 $TASKS)
+$ for TASKS in /sys/fs/cgroup/devices/docker/"${CID}"*/tasks; do break; done
+$ PID="$(head -n 1 "${TASKS}")"
 $ mkdir -p /var/run/netns
-$ ln -sf /proc/$PID/ns/net /var/run/netns/$CID
-$ ip netns exec $CID netstat -i
+$ ln -sf "/proc/${PID}/ns/net" "/var/run/netns/${CID}"
+$ ip netns exec "${CID}" netstat -i
 ```
 
 ## Notes
@@ -71,6 +71,7 @@ $ ip netns exec $CID netstat -i
 - Changing the cgroup version requires a reboot. On systemd hosts add `systemd.unified_cgroup_hierarchy=1` (v2) or `=0` (v1) to the kernel command line, e.g. `sudo grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=1"`.
 - Docker supports cgroup v2 since Docker 20.10; it requires containerd v1.4+, runc v1.0.0-rc91+, kernel v4.15+ (v5.2+ recommended). Differences on v2: default cgroup driver (`dockerd --exec-opt native.cgroupdriver`) is `systemd` (v1: `cgroupfs`); default `docker run --cgroupns` is `private` (v1: `host`); `--oom-kill-disable` is discarded.
 - The memory cgroup adds overhead, so some distributions don't enable it by default; enable with kernel parameters `cgroup_enable=memory swapaccount=1`.
+- Adapted: quoting was added to the shell variable expansions in the network-namespace example; the `TASKS=...$CID*/tasks` glob assignment is rewritten as a `for` loop so the glob expands safely.
 - Network metrics aren't exposed by cgroups because network interfaces live in network namespaces.
 - For high-resolution collection use the `setns()` system call, but don't keep the namespace file descriptor open (the namespace and its virtual interface would never be destroyed).
 - To collect metrics when a container exits, start a collection process per container, move it into the cgroups via the `tasks` file, wait until it is the last process, collect, move back to the root cgroup, and `rmdir` the container cgroup.

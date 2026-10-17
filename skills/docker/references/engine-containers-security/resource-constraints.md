@@ -31,7 +31,7 @@ Memory (values take a positive integer with suffix `b`, `k`, `m`, `g`):
 | Option | Description |
 | --- | --- |
 | `-m` or `--memory=` | The maximum amount of memory the container can use. Minimum allowed value is `6m`. |
-| `--memory-swap` | The amount of memory this container is allowed to swap to disk. |
+| `--memory-swap` | The amount of memory this container is allowed to swap to disk. A positive value is the total of memory plus swap and requires `--memory` (e.g. `--memory=300m --memory-swap=1g` allows 700m of swap). `0` is ignored; `-1` allows unlimited swap. |
 | `--memory-swappiness` | Value between 0 and 100 to tune the percentage of anonymous pages the kernel can swap out. |
 | `--memory-reservation` | Soft limit smaller than `--memory`, activated when Docker detects contention or low memory. Must be lower than `--memory` to take precedence; doesn't guarantee the limit isn't exceeded. |
 | `--oom-kill-disable` | Disable the kernel OOM killer for the container. Only use together with `-m/--memory`. |

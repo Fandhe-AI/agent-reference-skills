@@ -36,9 +36,9 @@ $ docker run \
 | `tag` | String appended to `APP-NAME`. Defaults to the first 12 characters of the container ID. | `--log-opt tag=mailer` |
 | `syslog-format` | Message format: unset (local Unix syslog format, no hostname), `rfc3164`, `rfc5424`, or `rfc5424micro` (microsecond timestamps). | `--log-opt syslog-format=rfc5424micro` |
 | `labels` | Applies when starting the daemon. Comma-separated labels this daemon accepts. | `--log-opt labels=production_status,geo` |
-| `labels-regex` | Regular expression matching logging-related labels. | `--log-opt labels-regex=^(production_status\|geo)` |
+| `labels-regex` | Regular expression matching logging-related labels. | `--log-opt 'labels-regex=^(production_status\|geo)'` |
 | `env` | Applies when starting the daemon. Comma-separated environment variables this daemon accepts. | `--log-opt env=os,customer` |
-| `env-regex` | Regular expression matching logging-related environment variables. | `--log-opt env-regex=^(os\|customer)` |
+| `env-regex` | Regular expression matching logging-related environment variables. | `--log-opt 'env-regex=^(os\|customer)'` |
 
 ## Notes
 

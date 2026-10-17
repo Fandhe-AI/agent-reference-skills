@@ -18,7 +18,7 @@ Sends container logs to a Fluentd collector as structured log data.
 ```
 
 ```console
-$ docker run --log-driver=fluentd --log-opt fluentd-address=unix:///path/to/fluentd.sock
+$ docker run --log-driver=fluentd --log-opt fluentd-address=unix:///path/to/fluentd.sock alpine echo hello
 ```
 
 Test collector (`test.conf`) and container:
@@ -56,6 +56,7 @@ Metadata fields sent: `container_id` (full 64-char ID), `container_name` (name a
 
 ## Notes
 
+- Adapted: an image and command were added to the official `docker run` example.
 - If the container cannot connect to the Fluentd daemon, it stops immediately unless `fluentd-async` is used.
 - Start a Fluentd daemon before using the driver (the `fluent/fluentd` image is recommended).
 - `log-opts` values in `daemon.json` must be strings (quote `fluentd-async`, `fluentd-max-retries`). Restart Docker for changes.

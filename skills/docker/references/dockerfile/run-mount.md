@@ -106,7 +106,7 @@ Mount as an environment variable:
 # syntax=docker/dockerfile:1
 FROM alpine
 RUN --mount=type=secret,id=API_KEY,env=API_KEY \
-    some-command --token-from-env $API_KEY
+    some-command --token-from-env "${API_KEY}"
 ```
 
 ```console
@@ -134,16 +134,17 @@ RUN --mount=type=ssh \
 ```
 
 ```console
-$ eval $(ssh-agent)
+$ eval "$(ssh-agent)"
 $ ssh-add ~/.ssh/id_rsa
 (Input your passphrase here)
-$ docker buildx build --ssh default=$SSH_AUTH_SOCK .
+$ docker buildx build --ssh "default=${SSH_AUTH_SOCK}" .
 ```
 
 You can also specify a path to a `*.pem` file on the host instead of `$SSH_AUTH_SOCK`; pem files with passphrases are not supported.
 
 ## Notes
 
+- Adapted: shell variable expansions in the examples (`"${API_KEY}"`, `"${SSH_AUTH_SOCK}"`, `eval "$(ssh-agent)"`) are quoted; quoting was added to the official examples.
 - Cache mount contents persist between builder invocations without invalidating the instruction cache. Use cache mounts only for better performance; your build must work with any contents of the cache directory, since another build may overwrite the files or GC may clean it.
 - Cache mounts are stored in the builder's local storage. They are not included in exported build cache (`--cache-to`) and are not restored by `--cache-from`. If each build runs on a new builder (e.g. fresh CI runners), cache mounts start empty on every build.
 - Windows containers (secret): the secret is delivered as a single-file, read-only bind mount (no `tmpfs`). An explicit `target` is required (e.g. `--mount=type=secret,id=mysecret,target=C:/path/to/secret`); use forward slashes because the escape character consumes backslashes. `mode`, `uid`, and `gid` are not supported and are ignored. The secret file is restricted via ACL to SYSTEM, Administrators, and the BuildKit daemon account, then removed after the step; it is written in clear text. The `RUN` step must execute as an administrator (e.g. `USER ContainerAdministrator`) to read it. An empty placeholder directory may remain at the `target` path in the resulting layer.

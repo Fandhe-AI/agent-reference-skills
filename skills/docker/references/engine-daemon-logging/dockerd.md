@@ -125,7 +125,7 @@ $ echo $?
 Socket options (`-H` accepts `tcp://[host]:[port][path]` or `unix://path`; `fd://` for systemd socket activation):
 
 ```console
-$ sudo dockerd -H unix:///var/run/docker.sock -H tcp://192.168.59.106 -H tcp://10.10.10.2
+$ sudo dockerd -H unix:///var/run/docker.sock -H tcp://192.168.59.106:2376 --tlsverify --tlscacert=ca.pem --tlscert=server-cert.pem --tlskey=server-key.pem
 ```
 
 ## Options / Props
@@ -170,7 +170,8 @@ Options that can be reconfigured at runtime (reload via `SIGHUP` on Linux, globa
 - A TCP socket gives un-encrypted, un-authenticated access to the daemon by default. Conventional ports: `2375` (un-encrypted), `2376` (encrypted). Only TLS 1.0 and higher is supported for HTTPS sockets.
 - The Docker client honors `DOCKER_HOST` and can connect over SSH (`docker -H ssh://me@example.com ps`); public key authentication is required, password authentication is not supported.
 - Proxy: command-line and `daemon.json` options (`http-proxy`, `https-proxy`, `no-proxy`; Docker Engine 23.0 or later) take precedence over environment variables.
-- Storage drivers on Linux: `overlay2` (preferred, default), `fuse-overlayfs`, `btrfs`, `zfs`; Windows supports only `windowsfilter`. Per-driver `--storage-opt` options: `zfs.fsname`, `btrfs.min_space`, `overlay2.size` (xfs with `pquota` only), `size` (windowsfilter, default 20G).
+- Adapted: the official socket example listens on TCP without TLS client authentication; mutual TLS (`--tlsverify`) is shown instead (see Protect the Docker daemon socket).
+- Storage drivers on Linux: `overlay2` (preferred; default among the classic drivers and for upgraded installations; with Docker Engine 29.0+ fresh installations the containerd image store is the default, per the daemon overview page), `fuse-overlayfs`, `btrfs`, `zfs`; Windows supports only `windowsfilter`. Per-driver `--storage-opt` options: `zfs.fsname`, `btrfs.min_space`, `overlay2.size` (xfs with `pquota` only), `size` (windowsfilter, default 20G).
 - Runtimes: default is runc. Shims on `PATH` can be used directly (`docker run --runtime io.containerd.kata.v2`). Register others under `runtimes` with `runtimeType` (+ optional `options`) for containerd shims, or `path` (+ optional `runtimeArgs`) for runc drop-in replacements; `--add-runtime <runtime>=<path>` does not support runtime args. `--containerd /run/containerd/containerd.sock` runs against a standalone containerd.
 - cgroup driver: `--exec-opt native.cgroupdriver=systemd|cgroupfs`; omitted means `cgroupfs` on cgroup v1 hosts and `systemd` on cgroup v2 hosts with systemd available. Windows isolation: `--exec-opt isolation=hyperv` (default `hyperv` on Windows client, `process` on Windows server).
 - `--default-stop-timeout` default is `10` seconds on Linux and `30` on Windows; `0` terminates immediately, negative is invalid. It can be reloaded without restart.

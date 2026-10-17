@@ -9,8 +9,10 @@ source: https://docs.docker.com/reference/dockerfile/#shell-and-exec-form
 ## Signature / Usage
 
 ```dockerfile
-INSTRUCTION ["executable","param1","param2"]   # exec form
-INSTRUCTION command param1 param2               # shell form
+# exec form
+INSTRUCTION ["executable","param1","param2"]
+# shell form
+INSTRUCTION command param1 param2
 ```
 
 ```dockerfile

@@ -35,9 +35,9 @@ $ docker run -dit \
 | `gelf-tcp-reconnect-delay` | optional | TCP only. Seconds between reconnection attempts. Default 1. | `--log-opt gelf-tcp-reconnect-delay=1` |
 | `tag` | optional | String appended to `APP-NAME`; default first 12 characters of the container ID. | `--log-opt tag=mailer` |
 | `labels` | optional | Comma-separated label keys; adds keys to `extra` fields prefixed by `_`. | `--log-opt labels=production_status,geo` |
-| `labels-regex` | optional | Regular expression matching logging-related labels. | `--log-opt labels-regex=^(production_status\|geo)` |
+| `labels-regex` | optional | Regular expression matching logging-related labels. | `--log-opt 'labels-regex=^(production_status\|geo)'` |
 | `env` | optional | Comma-separated environment variable keys; adds keys to `extra` fields prefixed by `_`. | `--log-opt env=os,customer` |
-| `env-regex` | optional | Regular expression matching logging-related environment variables. | `--log-opt env-regex=^(os\|customer)` |
+| `env-regex` | optional | Regular expression matching logging-related environment variables. | `--log-opt 'env-regex=^(os\|customer)'` |
 
 ## Notes
 

@@ -9,8 +9,10 @@ Tells Docker how to test a container to check that it's still working (e.g. dete
 ## Signature / Usage
 
 ```dockerfile
-HEALTHCHECK [OPTIONS] CMD command   # check health by running a command inside the container
-HEALTHCHECK NONE                     # disable any healthcheck inherited from the base image
+# check health by running a command inside the container
+HEALTHCHECK [OPTIONS] CMD command
+# disable any healthcheck inherited from the base image
+HEALTHCHECK NONE
 ```
 
 ```dockerfile

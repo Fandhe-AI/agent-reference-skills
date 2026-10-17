@@ -39,7 +39,7 @@ $ docker --tlsverify \
     --tlscacert=ca.pem \
     --tlscert=cert.pem \
     --tlskey=key.pem \
-    -H=$HOST:2376 version
+    -H="${HOST}:2376" version
 ```
 
 Secure by default for the client:
@@ -47,7 +47,7 @@ Secure by default for the client:
 ```console
 $ mkdir -pv ~/.docker
 $ cp -v {ca,cert,key}.pem ~/.docker
-$ export DOCKER_HOST=tcp://$HOST:2376 DOCKER_TLS_VERIFY=1
+$ export DOCKER_HOST="tcp://${HOST}:2376" DOCKER_TLS_VERIFY=1
 ```
 
 ## Options / Props
@@ -74,9 +74,10 @@ Client TLS modes:
 - Recommended `~/.ssh/config` for connection reuse: `ControlMaster auto`, `ControlPath ~/.ssh/control-%C`, `ControlPersist yes`.
 - TLS and CA management is an advanced topic; learn OpenSSL, x509 and TLS before production use. Key setup: create a CA (`openssl genrsa -aes256 -out ca-key.pem 4096`, `openssl req -new -x509 -days 365 -key ca-key.pem -sha256 -out ca.pem`), a server key and CSR (Common Name must match the hostname), sign with `extfile.cnf` containing `subjectAltName = DNS:$HOST,IP:10.10.10.20,IP:127.0.0.1` and `extendedKeyUsage = serverAuth`, then a client key signed with `extendedKeyUsage = clientAuth`. Remove CSRs and extension files afterwards; `chmod -v 0400` private keys and `chmod -v 0444` certificates.
 - Docker over TLS should run on TCP port 2376.
+- Adapted: `$HOST` expansions in the examples are quoted (`"${HOST}"`); quoting was added to the official examples.
 - Anyone with the client keys has root access to the daemon host; guard them like a root password. Authorization plugins can supplement mutual TLS and receive client certificate information.
 - If client certificates are in `~/.docker/{ca,cert,key}.pem` the client sends them; use `DOCKER_CERT_PATH` for another location.
-- Test the API with curl: `curl https://$HOST:2376/images/json --cert ~/.docker/cert.pem --key ~/.docker/key.pem --cacert ~/.docker/ca.pem`.
+- Test the API with curl: `curl "https://${HOST}:2376/images/json" --cert ~/.docker/cert.pem --key ~/.docker/key.pem --cacert ~/.docker/ca.pem`.
 
 ## Related
 
