@@ -3,13 +3,12 @@ name: uv
 description: >
   uv (Astral 製 高速 Python パッケージ / プロジェクトマネージャー) のリファレンス。
   pyproject.toml, uv.lock, uv init / add / sync / run / lock, uv pip, uv venv, uvx / uv tool,
-  uv python install / pin, PEP 723, tool.uv.sources, uv build / publish, uv_build, uv.toml, uv auth。
+  uv python install / pin, PEP 723, tool.uv.sources, uv build / publish, uv_build,
+  uv.toml, UV_* 環境変数, uv auth, Docker / GitHub Actions / PyTorch 連携。
 user-invocable: false
 ---
 
 # uv
-
-> 分割 PR の途中段階。現在収録済み: references/{build-publish, configuration, getting-started, indexes-auth, integrations, pip-interface, project-commands, projects, python, resolution}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 uv (Astral 製 高速 Python パッケージ / プロジェクトマネージャー) のリファレンススキル。
 
@@ -70,6 +69,17 @@ skills/uv/
       uv-tree.md
       uv-version.md
       uv-workspace.md
+    tools/
+      README.md
+      tools.md
+      uv-tool-audit.md
+      uv-tool-dir.md
+      uv-tool-install.md
+      uv-tool-list.md
+      uv-tool-run.md
+      uv-tool-uninstall.md
+      uv-tool-update-shell.md
+      uv-tool-upgrade.md
     python/
       README.md
       installing-python.md
@@ -176,6 +186,30 @@ skills/uv/
       jupyter.md
       pre-commit.md
       pytorch.md
+  samples/
+    README.md
+    build-and-publish.md
+    coiled.md
+    docker-multistage.md
+    fastapi.md
+    github-actions-workflow.md
+    inline-script.md
+    install-python.md
+    marimo.md
+    migrate-pip-to-project.md
+    project-workflow.md
+    pytorch-cpu-cuda.md
+    tools-uvx.md
+  scripts/
+    README.md
+    cache.md
+    install.md
+    pip-interface.md
+    project.md
+    python.md
+    self-update-uninstall.md
+    shell-completion.md
+    tools.md
 ```
 
 ## 探索手順
@@ -185,6 +219,7 @@ skills/uv/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
+4. 典型的な使い方は `samples/README.md`、実行コマンドは `scripts/README.md` を引く
 
 ## タスク → カテゴリ マッピング
 
@@ -193,6 +228,7 @@ skills/uv/
 | uv のインストール・初回起動・バージョニング・0.13 の破壊的変更を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | プロジェクト作成、依存関係、dependency groups、workspace、lock / sync、PEP 723 スクリプトを扱いたい | projects | [references/projects/README.md](references/projects/README.md) |
 | `uv add` / `uv run` / `uv sync` / `uv lock` / `uv export` 等のコマンドオプションを調べたい | project-commands | [references/project-commands/README.md](references/project-commands/README.md) |
+| `uvx` / `uv tool install` でコマンドラインツールを実行・管理したい | tools | [references/tools/README.md](references/tools/README.md) |
 | Python のインストール・探索・pin・アップグレード、free-threaded 版を扱いたい | python | [references/python/README.md](references/python/README.md) |
 | `uv pip` / `uv venv` で pip・pip-tools 互換のワークフローを使いたい | pip-interface | [references/pip-interface/README.md](references/pip-interface/README.md) |
 | `uv build` / `uv publish` / `uv_build` バックエンドでパッケージを配布したい | build-publish | [references/build-publish/README.md](references/build-publish/README.md) |
@@ -200,3 +236,5 @@ skills/uv/
 | 外部 index・レジストリ認証・証明書・`uv auth` を設定したい | indexes-auth | [references/indexes-auth/README.md](references/indexes-auth/README.md) |
 | `uv.toml` / `[tool.uv]` 設定、`UV_*` 環境変数、キャッシュ、preview features、`uv self` を調べたい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | Docker / GitHub Actions / GitLab CI / pre-commit / PyTorch / Jupyter / AWS Lambda と組み合わせたい | integrations | [references/integrations/README.md](references/integrations/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
