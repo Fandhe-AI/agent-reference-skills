@@ -21,7 +21,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
-    tailwindcss()
+    tailwindcss(),
     tanstackStart(),
     tsConfigPaths(),
   ]
@@ -71,6 +71,6 @@ function App() {
 ## Notes
 
 - Import the stylesheet in `__root.tsx` with the `?url` query and register it via `links`.
-- The `vite.config.ts` snippet is verbatim from the official guide, including the missing comma after `tailwindcss()`; add it when copying.
+- The `vite.config.ts` snippet follows the official guide, except that the comma after `tailwindcss()` (missing in the original) has been added here.
 - Framework APIs live in the tanstack-start skill; this sample covers only Tailwind setup.
 - Transcribed from `tailwindlabs/tailwindcss.com@7f92c22` `src/app/(docs)/docs/installation/framework-guides/tanstack-start.tsx` (fetched 2026-10-16).
