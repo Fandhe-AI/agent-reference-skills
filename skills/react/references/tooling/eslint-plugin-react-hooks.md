@@ -31,7 +31,7 @@ use-memo
 
 This plugin helps you catch violations of React's rules at build time, ensuring your components and hooks follow React's rules for correctness and performance. The lints cover both fundamental React patterns (exhaustive-deps and rules-of-hooks) and issues flagged by React Compiler. React Compiler diagnostics are automatically surfaced by this ESLint plugin, and can be used even if your app hasn't adopted the compiler yet.
 
-## Recommended Rules
+## Options / Props
 
 These rules are included in the `recommended` preset in `eslint-plugin-react-hooks`:
 

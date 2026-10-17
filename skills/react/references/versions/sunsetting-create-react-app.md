@@ -35,7 +35,7 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <RouterProvider value={router} />
+    <RouterProvider router={router} />
   )
 }
 ```
@@ -55,6 +55,7 @@ export default function App() {
 - Recommended frameworks for new projects: Next.js, React Router, Expo. A rule of thumb: if your app needs routing, you would probably benefit from a framework.
 - Server rendering is optional in the recommended frameworks (CSR is supported), and server rendering is not just for SEO: it also reduces the JavaScript the user must download and parse.
 - Recommended frameworks include support for React Server Components, which do not require a server (they can run at build time on CI for SSG or at runtime for SSR).
+- The original post's snippet passes `value={router}`; corrected to the `router` prop that React Router's `RouterProvider` requires.
 - This post mentions React Router and TanStack Router as routing libraries; for those libraries use the react-router and tanstack-router skills. Next.js is covered by nextjs-app.
 
 ## Related

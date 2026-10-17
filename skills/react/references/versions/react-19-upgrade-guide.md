@@ -93,10 +93,11 @@ const root = createRoot(container, {
 | `useRef` requires an argument | `useRef()` errors; `useRef(undefined)` passes; all refs are mutable; `MutableRef` deprecated in favor of `RefObject<T>` (`refobject-defaults`) |
 | `ReactElement["props"]` defaults to `unknown` instead of `any` | Pass a type argument to `ReactElement` (`react-element-default-any-props`) |
 | Global `JSX` namespace removed in favor of `React.JSX` | Wrap JSX namespace augmentation in `declare module "react"` (module specifier depends on `tsconfig` `jsx`: `react-jsx` -> `react/jsx-runtime`, `react-jsxdev` -> `react/jsx-dev-runtime`, `react`/`preserve` -> `react`) (`scoped-jsx`) |
-| `useReducer` typings | Do not pass `React.Reducer<State, Action>` as a type argument; use `useReducer(reducer)` or `useReducer<State, [Action]>(reducer)` |
+| `useReducer` typings | Do not pass `React.Reducer<State, Action>` as a type argument; use `useReducer(reducer, initialArg)` or `useReducer<State, [Action]>(reducer, initialArg)` |
 
 ## Notes
 
+- The upgrade guide abbreviates these calls as `useReducer(reducer)`; the initial-state argument is still required.
 - New JSX transform is now required: if not enabled, React warns "Your app (or one of its dependencies) is using an outdated JSX transform. Update to the modern JSX transform for faster performance: https://react.dev/link/new-jsx-transform".
 - Errors in render are not re-thrown: uncaught errors (not caught by an Error Boundary) are reported to `window.reportError`; caught errors are reported to `console.error`.
 - Strict Mode: when double rendering in development, `useMemo` and `useCallback` reuse the memoized results from the first render during the second render. Strict Mode double-invokes ref callbacks on initial mount.
