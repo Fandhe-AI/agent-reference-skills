@@ -32,23 +32,31 @@ Output at `$TMPDIR/codex-security-scans/<repository>/<scan-id>/`: `report.md`, `
 
 ## Options / Props
 
-Key `findings.json` fields (schema at `github.com/openai/plugins` → `plugins/codex-security/schemas/findings.schema.json`):
+Scan output files (`$TMPDIR/codex-security-scans/<repository>/<scan-id>/`):
 
-| Name | Type | Description |
-|------|------|-------------|
-| `documentType` | String | `codex-security.findings` |
-| `schemaVersion` | String | Findings schema version |
-| `scanId` | String | Scan that produced the findings |
-| `findings[].findingId` | String | Stable identifier derived from the finding fingerprint |
-| `findings[].occurrenceId` | String | Identifies this occurrence in a specific scan |
-| `findings[].ruleId` | String | Vulnerability family |
-| `findings[].severity` | Object | Severity level and optional scoring |
-| `findings[].confidence` | Object | Confidence level and rationale |
-| `findings[].taxonomy` | Object | Vulnerability category and CWE identifiers |
-| `findings[].locations` | Array | Affected files, line numbers, location roles |
-| `findings[].remediation` | String | Recommended fix |
+| Name | Description |
+|------|-------------|
+| `report.md` | Primary readable entry point to the complete scan directory |
+| `findings/<slug>/` | Detailed vulnerability reports and supporting proof-of-concept files, when requested |
+| `hardening/` | Structural hardening guidance and supporting proposals, when requested |
+| `findings.json` | Findings with stable identifiers, severity, confidence, source locations, and remediation; use `findingId` to identify the finding and `occurrenceId` for its occurrence in this scan (field definitions: the findings schema in `github.com/openai/plugins`, `plugins/codex-security/schemas/findings.schema.json`) |
+| `scan-manifest.json` | Sealed scan receipt with the reviewed target, revisions, and artifact hashes |
+| `coverage.json` | Reviewed and deferred surfaces, exclusions, and coverage completeness |
+
+```bash
+jq -r '
+  .findings[] |
+  [.findingId, .severity.level, .confidence.level, .locations[0].path, .locations[0].startLine, .title] |
+  @tsv
+' findings.json
+```
 
 ## Notes
+
+- Confirm the change in setup: select **Changes**, confirm the checked-out repository, current branch, and latest commit; under **Changes to review** choose `Uncommitted changes`, the latest commit, or a base and head revision (branch or pull-request range); confirm the summary, then **Start scan**. Codex doesn't check out another branch or switch the selected working tree; if a requested revision isn't available locally, fetch it first or provide a locally available base and head. You can also name a pull request when its base and head revisions are in the local checkout.
+- CI/CD requirements: a trusted Linux runner with Node.js and `npm` (writable global prefix), Git, Python 3, `jq`, and the provider's command-line tools. Install the CLI without exposing the scan credential (`npm install --global @openai/codex`), install the plugin from the public Codex CLI plugin marketplace (`codex plugin add codex-security@openai-curated`; see plugin-changelog.md for version-specific requirements), provide `CODEX_SECURITY_API_KEY` from your CI secret store and expose it only for the scan (`CODEX_API_KEY="$CODEX_SECURITY_API_KEY" codex exec ...`). Set `CODEX_HOME` and `TMPDIR` to job-local directories and archive `codex-security-scans` (structured findings, manifest, coverage, `report.md`, and any `findings/` or `hardening/` outputs). The official page gives examples for GitHub Actions, GitLab CI/CD (masked `CODEX_SECURITY_API_KEY` variable, `CI_MERGE_REQUEST_DIFF_BASE_SHA` as base), Azure Pipelines (Build validation branch policy for Azure Repos), and Jenkins (`withCredentials`).
+- The examples skip forked pull requests; run credentialed jobs only from a protected pipeline definition and only for contributors trusted with the scan credential. Scan results can include sensitive vulnerability details, so keep artifacts private and review the destination before publishing findings. Start with advisory results and review coverage and runtime before making the job a required check.
+- If your organization permits the Codex GitHub Action, it can install the CLI at runtime, but you must still install the plugin first and point the action's `codex-home` input at the same `CODEX_HOME`. For API-key handling and sandbox controls see non-interactive-mode.md.
 
 - For a beta standalone CLI with structured JSON, severity policy, and SARIF upload, see [Run Codex Security in CI](./cli-ci.md); this page's CI section instead invokes the installed plugin skill via `codex exec`
 - Requires `--sandbox workspace-write` so the scan can create temporary artifacts, but the prompt must still require leaving the checkout unchanged
