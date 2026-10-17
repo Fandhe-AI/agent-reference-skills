@@ -24,13 +24,13 @@ type AssistantModelMessage = {
   role: 'assistant';
   content: AssistantContent;
 };
-type AssistantContent = string | Array<TextPart | CustomPart | ToolCallPart>;
+type AssistantContent = string | Array<TextPart | CustomPart | FilePart | ReasoningPart | ReasoningFilePart | ToolCallPart | ToolResultPart | ToolApprovalRequest>;
 
 type ToolModelMessage = {
   role: 'tool';
   content: ToolContent;
 };
-type ToolContent = Array<ToolResultPart>;
+type ToolContent = Array<ToolResultPart | ToolApprovalResponse>;
 ```
 
 Zod schema exports: `systemModelMessageSchema`, `userModelMessageSchema`, `assistantModelMessageSchema`, `toolModelMessageSchema`.
@@ -90,6 +90,38 @@ export interface ToolResultPart {
   output: ToolResultOutput;
   providerOptions?: ProviderOptions;
 }
+
+export interface ReasoningPart {
+  type: 'reasoning';
+  text: string;
+  providerOptions?: ProviderOptions;
+}
+
+export interface ReasoningFilePart {
+  type: 'reasoning-file';
+  // Raw bytes or fetchable URL only (no `reference` / `text` shapes)
+  data: FileDataData | FileDataUrl | DataContent | URL;
+  mediaType: string; // IANA media type
+  providerOptions?: ProviderOptions;
+}
+
+export type ToolApprovalRequest = {
+  type: 'tool-approval-request';
+  approvalId: string;
+  toolCallId: string;
+  reason?: string;
+  isAutomatic?: boolean;
+  signature?: string;
+  inputSchemaInput?: unknown;
+};
+
+export type ToolApprovalResponse = {
+  type: 'tool-approval-response';
+  approvalId: string;
+  approved: boolean;
+  reason?: string;
+  providerExecuted?: boolean;
+};
 ```
 
 #### ToolResultOutput
@@ -117,6 +149,7 @@ Union of: `{ type: 'text'; value: string }`, `{ type: 'json'; value: JSONValue }
 - Use the top-level `instructions` property instead of a system message for system instructions. AI SDK functions reject system messages in `prompt` or `messages` by default unless `allowSystemInMessages` is set to `true`. Opting in can create a prompt injection risk if users can inject system messages.
 - `ImagePart` is deprecated. Use `FilePart` with `mediaType: 'image'` (or a more specific `image/*` subtype) instead.
 - The official ModelMessage reference page still shows the pre-v5 field name `args`; the published type at ai@7.0.142 ([packages/provider-utils/src/types/content-part.ts](https://github.com/vercel/ai/blob/ai@7.0.142/packages/provider-utils/src/types/content-part.ts)) uses `input` (renamed in v5, see [Migration Guide 5.0 - Tool Property Changes](https://ai-sdk.dev/docs/migration-guides/migration-guide-5-0)).
+- The official page's `ToolContent` / `AssistantContent` omit the approval parts (and some assistant parts); the types above follow the published types at ai@7.0.142 ([tool-model-message.ts](https://github.com/vercel/ai/blob/ai@7.0.142/packages/provider-utils/src/types/tool-model-message.ts), [assistant-model-message.ts](https://github.com/vercel/ai/blob/ai@7.0.142/packages/provider-utils/src/types/assistant-model-message.ts)). `ReasoningPart` / `ReasoningFilePart` are from `content-part.ts` (doc comments trimmed).
 
 ## Related
 

@@ -58,19 +58,19 @@ package agent.call
 default decision := { "decision": "not-applicable" }
 
 # Hard deny: pushes are never allowed automatically.
-decision := { "decision": "deny", "reason": "pushes require human review" } {
+decision := { "decision": "deny", "reason": "pushes require human review" } if {
   input.tool.name == "git"
   input.args.args[0] == "push"
 }
 
 # Auto-allow: read-only git operations.
-decision := { "decision": "allow" } {
+decision := { "decision": "allow" } if {
   input.tool.name == "git"
   input.args.args[0] in {"status", "log", "diff", "show"}
 }
 
 # Human-in-the-loop: kubectl by oncall.
-decision := { "decision": "requires-approval", "reason": "kubectl by oncall" } {
+decision := { "decision": "requires-approval", "reason": "kubectl by oncall" } if {
   input.tool.name == "kubectl"
   input.runtimeContext.role == "sre-oncall"
 }
@@ -176,6 +176,7 @@ await generateText({ model, tools, toolApproval, prompt });
 - `toolApproval` only fires when the model calls a tool directly; a coarse dispatcher tool (e.g. a `bash` tool) can bypass per-action rules. Parse the dispatcher input in its own `toolApproval` entry and deny anything you cannot reduce to a clean invocation. This gates dispatch only; for untrusted execution use an out-of-band sandbox as the trust boundary.
 - `optionalOpaPolicy` returns `undefined` when no client is given, which is the same as not passing `toolApproval` (the SDK approves every call); use `opaPolicy` directly to refuse startup without a policy.
 - Test policies in CI with `opa test policy.rego policy_test.rego`.
+- The official page's Rego example uses the older OPA 0.x syntax (no `if` before the rule body). `if` was added here for OPA 1.x (Rego v1 default). A v1-syntax example is in the package README: https://github.com/vercel/ai/blob/ai@7.0.142/packages/policy-opa/README.md
 - Worked examples (SQL, HTTP, MCP, browser, shell dispatchers) live in the package README (`packages/policy-opa` in `vercel/ai`).
 
 ## Related
