@@ -23,7 +23,7 @@ llama-server -m ~/models/Qwen3.5-9B-Q4_K_M.gguf \
   -fa on \
   --cache-type-k q4_0 \
   --cache-type-v q4_0 \
-  --host 0.0.0.0
+  --host 127.0.0.1
 ```
 
 Connect to Hermes:
@@ -46,7 +46,7 @@ llama-server flags:
 | `-fa on` | flag | Flash attention |
 | `--cache-type-k q4_0` | string | Quantize key cache to 4-bit (big memory saver) |
 | `--cache-type-v q4_0` | string | Quantize value cache to 4-bit |
-| `--host 0.0.0.0` | string | Listen on all interfaces; use `127.0.0.1` if no network access needed |
+| `--host 127.0.0.1` | string | Listen on loopback only (Hermes on the same machine). The official guide uses `0.0.0.0` (all interfaces); expose it only behind authentication / firewall rules |
 
 KV cache memory at 128K context, 9B model:
 
@@ -72,6 +72,7 @@ Timeouts:
 - Benchmark (Apple M5 Max, 128 GB, Qwen3.5-9B): llama.cpp TTFT avg 67 ms, 70 tok/s; MLX TTFT avg 289 ms, 96 tok/s; 512 tokens total 7.3s vs 5.5s.
 - Desktop app: Settings -> Providers -> Local Models installs and manages a local llama.cpp server (this guide is for manual setup).
 - Hermes auto-detects local endpoints and relaxes streaming timeouts. A silent first turn is usually prefill (system prompt and tool schemas sent each call), not a hang.
+- The official example binds `--host 0.0.0.0`; this page defaults to `127.0.0.1` because llama-server has no authentication by default.
 - Gated Hugging Face models need `huggingface-cli login` first.
 - Source: https://hermes-agent.nousresearch.com/docs/guides/local-llm-on-mac (pinned to v0.22.2)
 

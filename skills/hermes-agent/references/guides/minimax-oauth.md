@@ -47,7 +47,7 @@ model:
 
 - Flow: Hermes generates a PKCE verifier/challenge and state, POSTs to `{base_url}/oauth/code` to get `user_code` and `verification_uri`, polls `{base_url}/oauth/token`, and stores `access_token`, `refresh_token`, and expiry in `~/.hermes/auth.json` under `minimax-oauth`. Tokens refresh at session start when within 60 seconds of expiry.
 - China-platform accounts use the API-key `minimax-cn` provider (`echo 'MINIMAX_CN_API_KEY=your-key' >> ~/.hermes/.env`); `minimax-cn` has no OAuth flow.
-- Needs Python 3.9+ and a MiniMax account.
+- Needs a MiniMax account. The official guide lists "Python 3.9+", but current first-party Hermes installations run on Python 3.14 (see installation.md); follow the installation guide's runtime requirement.
 - `MiniMax-M2.7` is also used automatically as the auxiliary model for vision and delegation when `minimax-oauth` is primary.
 - Terminal refresh failure (HTTP 4xx, `invalid_grant`, `refresh_token_reused`, revoked) quarantines the refresh token locally; run `hermes auth add minimax-oauth` again.
 - Authorization timeout: re-run the login. State mismatch (possible CSRF): re-run, check for proxies modifying the response.
@@ -58,3 +58,4 @@ model:
 
 - [oauth-over-ssh](./oauth-over-ssh.md)
 - [xai-grok-oauth](./xai-grok-oauth.md)
+- [installation](../getting-started/installation.md)

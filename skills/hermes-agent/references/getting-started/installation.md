@@ -38,6 +38,8 @@ hermes desktop
 - The default browser driver (browser-harness) is a regular Python dependency, so every install already has it.
 - Creates a launcher and prepares the data directory. Interactive runs also invoke setup and gateway configuration.
 
+## Options / Props
+
 | Flag (POSIX / Windows) | Effect |
 |------------------------|--------|
 | `--skip-browser` / `-SkipBrowser` | Leave browser tools out |
