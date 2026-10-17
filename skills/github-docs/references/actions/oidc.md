@@ -51,11 +51,7 @@ permissions:
 | `ACTIONS_ID_TOKEN_REQUEST_URL` | GitHub の OIDC プロバイダーの URL |
 | `ACTIONS_ID_TOKEN_REQUEST_TOKEN` | OIDC プロバイダーへのリクエスト用 Bearer トークン |
 
-```bash
-curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
-```
-
-レスポンスには OIDC JWT（`.value`）が含まれる。Actions のステップでは標準出力へ出さずに変数で受け、`::add-mask::` で登録してから使う（マスク付きの例）:
+レスポンスには OIDC JWT（`.value`）が含まれる。Actions のステップでは標準出力へ出さずに変数で受け、`::add-mask::` で登録してから使う:
 
 ```bash
 IDTOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq -r '.value')
