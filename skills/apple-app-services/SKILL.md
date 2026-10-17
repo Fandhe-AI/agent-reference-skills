@@ -4,7 +4,7 @@ description: >
   Apple アプリサービス。StoreKit 2 / CloudKit / WidgetKit / ActivityKit / User Notifications /
   Core Location / MapKit / HealthKit / Sign in with Apple。
   Product, Transaction, RequestReviewAction, CKRecord, CKUserIdentity, Widget, TimelineProvider,
-  UNUserNotificationCenter, CLLocationManager, CLServiceSession, MKGeocodingRequest,
+  UNUserNotificationCenter, CLLocationManager, CLServiceSession, Map, MKGeocodingRequest,
   HKHealthStore, ASAuthorizationController, AuthorizationController。
 user-invocable: false
 ---
