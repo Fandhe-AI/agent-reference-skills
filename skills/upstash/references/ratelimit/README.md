@@ -9,3 +9,4 @@
 | Traffic Protection | Deny-list blocking by IP, user agent, country; auto IP deny list | [traffic-protection.md](./traffic-protection.md) |
 | Redis Command Costs | Commands consumed per algorithm and feature for billing estimation | [costs.md](./costs.md) |
 | Strapi Integration | `@upstash/strapi-plugin-upstash-ratelimit` setup and configuration | [integrations-strapi.md](./integrations-strapi.md) |
+| Python SDK | `upstash-ratelimit` Python SDK: connectionless rate limiting with `FixedWindow` / `SlidingWindow` / `TokenBucket`, `limit()`, `block_until_ready()` | [python-sdk.md](./python-sdk.md) |

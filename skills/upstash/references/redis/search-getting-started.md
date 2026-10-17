@@ -55,7 +55,7 @@ const count = await index.count({
 | `name` | `string` | Unique index name |
 | `dataType` | `"json" \| "hash"` | Redis data type being indexed |
 | `prefix` | `string` | Key prefix; only matching keys are indexed |
-| `schema` | `s.object({...})` | Schema definition for indexed fields |
+| `schema` | `s.object` (field definitions) | Schema definition for indexed fields |
 
 | Schema field type | Description |
 |-------------------|-------------|

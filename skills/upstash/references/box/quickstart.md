@@ -34,6 +34,12 @@ await box.exec.command("node --version")
 await box.agent.run({
   prompt: "create an index.txt saying 'hello world'",
 })
+
+// startup script, runs once per container start (create / resume / snapshot restore)
+const withInit = await Box.create({
+  runtime: "node",
+  initCommand: `node -e 'require("http").createServer((_, res) => res.end("Hello from Box!")).listen(3000)'`,
+})
 ```
 
 ```python
@@ -62,13 +68,18 @@ box.agent.run(prompt="create an index.txt saying 'hello world'")
 | `agent.model` | `string` | Provider-prefixed model id, e.g. `"anthropic/claude-opus-4-6"` |
 | `agent.apiKey` | `string` | API key for the agent's provider |
 | `keepAlive` | `boolean` | Keeps the box on between sessions and can run an `initCommand` at startup |
+| `initCommand` | `string` (Python: `init_command`) | Startup script run from `/workspace/home` once per container start: on create, on resume, and after a snapshot restore. Use it to start a server that should come back with the box |
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/quickstart (fetched 2026-10-17; no version pin on the site).
 - Python SDK ships both a synchronous `Box` and an asynchronous `AsyncBox` (`await AsyncBox.create(...)`)
 - A box is usable standalone (shell/git/filesystem) even without configuring an `agent`
 - Direct SSH shell access is available: `ssh <box-id>@us-east-1.box.upstash.com`, using the Box API key as the SSH password
 - Core use cases: agent servers (one box per user with durable state), multi-agent orchestration (fan out to parallel boxes), parallel testing/model comparison
+
+- Init command management: `getInitCommand`, `setInitCommand`, `deleteInitCommand` (Python: `get_init_command`, `set_init_command`, `delete_init_command`) read, change, or remove it later, on any box including a paused one
+- A box restored from a snapshot does not inherit the snapshot's init command; pass it again on the restore
 
 ## Related
 

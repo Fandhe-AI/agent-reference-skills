@@ -46,7 +46,10 @@ const results = await index.query({
 
 - Indexing is **automatic and asynchronous** — once an index is created, all matching write operations are tracked
 - Create index once (typically at app startup or migration); re-creating throws an error
-- Supports JSON, Hash, and String data types
+- Supports JSON, Hash, String, and Stream data types (searchable Redis streams added September 2026: individual stream entries are searched by their field values)
+- September 2026 expansion also added multi-value text and keyword fields and composite aggregations (see Aggregations); only the changelog states multi-value fields, so see Schema Definition for field details
+- Available through `@upstash/redis` and `upstash-redis` SDKs; for `node-redis` / `ioredis` the `@upstash/search-redis` and `@upstash/search-ioredis` wrappers avoid switching clients
+- `SEARCH.*` commands are separate from, and incompatible with, RediSearch `FT.*` commands
 - The Tantivy engine provides boolean operators, fuzzy matching, phrase queries, and regex support
 - This is Upstash's first extension beyond the standard Redis spec
 
@@ -55,4 +58,9 @@ const results = await index.query({
 - [Redis Search: Getting Started](./search-getting-started.md)
 - [Redis Search: Query Operators](./search-query-operators.md)
 - [Redis Search: Aggregations](./search-aggregations.md)
+- [Redis Search: Schema Definition](./search-schema-definition.md)
+- [Redis Search: Querying](./search-querying.md)
+- [Redis Search: Index Management](./search-index-management.md)
+- [Redis Search: Searching Streams](./search-streams.md)
+- [Redis Search: Adapters](./search-adapters.md)
 - [Commands: JSON](./commands-json.md)
