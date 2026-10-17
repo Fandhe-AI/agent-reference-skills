@@ -13,26 +13,23 @@ Commands for signing, release builds and publishing. Other sources: https://reac
 > **警告**: 署名用の秘密鍵を生成する。生成した keystore は非公開に保ち、紛失・漏洩時は Google Play の手順で upload key をリセットする。
 
 ```sh
-keytool -genkeypair -v -storetype PKCS12 -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+"C:\Program Files\Java\jdkx.x.x_x\bin\keytool.exe" -genkeypair -v -storetype PKCS12 -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
 
-The docs say to run it from `C:\Program Files\Java\jdkx.x.x_x\bin` as administrator. The command prompts for keystore and key passwords and Distinguished Name fields.
-
-## Find the JDK bin folder (macOS)
-
-```sh
-/usr/libexec/java_home
-```
-
-Navigate to the printed directory with `cd /your/jdk/path` before running `keytool`.
+Run from a writable directory such as the project's android\app, without administrator rights; keytool is called by full path. The official page runs it as administrator from the JDK bin folder, which is not required. The command prompts for keystore and key passwords and Distinguished Name fields.
 
 ## Generate an upload key (macOS)
 
-> **警告**: 署名用の秘密鍵を生成する。`sudo` で実行する手順のため、出力先と keystore の取り扱いに注意する。
+> **警告**: 署名用の秘密鍵を生成する。生成した keystore は非公開に保ち、コミットしない。
 
 ```sh
-sudo keytool -genkey -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+cd android/app
+"$(/usr/libexec/java_home)/bin/keytool" -genkey -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
+
+Run from android/app without sudo; `/usr/libexec/java_home` prints the JDK home used to locate keytool.
+
+Corrected: the official page uses sudo (macOS) / administrator (Windows); neither is required and both create a privileged keystore.
 
 ## Gradle signing variables
 
@@ -44,6 +41,35 @@ MYAPP_UPLOAD_KEY_PASSWORD=*****
 ```
 
 Place `my-upload-key.keystore` under `android/app`, then add these lines to `~/.gradle/gradle.properties` or `android/gradle.properties`. Replace `*****` with the real values locally only. Using `~/.gradle/gradle.properties` keeps them out of git.
+
+## Add signing config to android/app/build.gradle
+
+Required before building the release AAB.
+
+```groovy
+...
+android {
+    ...
+    defaultConfig { ... }
+    signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                storeFile file(MYAPP_UPLOAD_STORE_FILE)
+                storePassword MYAPP_UPLOAD_STORE_PASSWORD
+                keyAlias MYAPP_UPLOAD_KEY_ALIAS
+                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+            }
+        }
+    }
+    buildTypes {
+        release {
+            ...
+            signingConfig signingConfigs.release
+        }
+    }
+}
+...
+```
 
 ## Generate the release AAB
 

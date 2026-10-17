@@ -36,7 +36,7 @@ Not needed when integrating React Native into an existing app or when Expo is al
 npx @react-native-community/cli@X.XX.X init AwesomeProject --version X.XX.X
 ```
 
-Replace `X.XX.X` with the target React Native version. A custom template can be passed with `--template` (see the React Native Community CLI `init` docs; flag usage is not shown in the React Native docs, so confirm there).
+`--version` takes the target React Native version; the `@react-native-community/cli@X.XX.X` part is the CLI's own version, which is versioned independently of React Native — use `@latest` (as the other official examples do) or the CLI version matching that React Native release. A custom template can be passed with `--template` (see the React Native Community CLI `init` docs; flag usage is not shown in the React Native docs, so confirm there).
 
 ## Reinstall iOS dependencies
 
@@ -96,4 +96,5 @@ Run from an Administrator Command Prompt. Requires Chocolatey.
 
 ## Notes
 
+- Clarified: the official page uses the same X.XX.X placeholder for both, but the CLI version differs from the React Native version.
 - The setup guides write the Android exports unquoted; quoted here in `"${VAR}"` form.

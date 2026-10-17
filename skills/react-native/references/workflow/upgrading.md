@@ -24,11 +24,11 @@ yarn add react-native@{{VERSION}}
 yarn add react@{{REACT_VERSION}}
 ```
 
-## Expo projects
+### Expo projects
 
 Upgrading your Expo project to a new version of React Native requires updating the `react-native`, `react`, and `expo` package versions in your `package.json` file. Expo recommends upgrading SDK versions incrementally, one at a time. Doing so will help you pinpoint breakages and issues that arise during the upgrade process. See the [Upgrading Expo SDK Walkthrough](https://docs.expo.dev/workflow/upgrading-expo-sdk-walkthrough/) for up-to-date information.
 
-## React Native projects
+### React Native projects
 
 Because typical React Native projects are essentially made up of an Android project, an iOS project, and a JavaScript project, upgrading can be rather tricky. The [Upgrade Helper](https://react-native-community.github.io/upgrade-helper/) is a web tool to help you out when upgrading your apps by providing the full set of changes happening between any two versions. It also shows comments on specific files to help understanding why that change is needed.
 
@@ -36,7 +36,7 @@ Because typical React Native projects are essentially made up of an Android proj
 2. **Upgrade dependencies.** The first file shown is `package.json`; update the dependencies showing there (commands above).
 3. **Upgrade your project files.** The new release may contain updates to other files that are generated when you run `npx react-native init`; those files are listed after the `package.json` in the Upgrade Helper page. If there aren't other changes then you only need to rebuild the project to continue developing. In case there are changes you need to manually apply them into your project.
 
-### Troubleshooting
+#### Troubleshooting
 
 **I have done all the changes but my app is still using an old version.** These sort of errors are usually related to caching, it's recommended to install [react-native-clean-project](https://github.com/pmadruga/react-native-clean-project) to clear all your project's cache and then you can run it again.
 

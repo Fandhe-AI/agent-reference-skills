@@ -2,9 +2,9 @@
 name: react-native
 description: >
   React Native (Meta 製クロスプラットフォームネイティブアプリフレームワーク, react-native 0.87 / 0.88) の
-  リファレンス。View, Text, FlatList, Pressable, TextInput, Animated, StyleSheet, Flexbox, Platform, Linking,
-  New Architecture (Fabric, TurboModules, Codegen), Hermes, Metro, React Native DevTools,
-  Android / iOS 統合、0.84〜0.88 差分。
+  リファレンス。View, Text, FlatList, Pressable, TextInput, Animated, StyleSheet, Flexbox, Platform,
+  New Architecture (Fabric, TurboModules, Codegen), Hermes, Metro, Fast Refresh, TypeScript,
+  React Native DevTools, Android / iOS 統合、upgrade (Upgrade Helper)・0.84〜0.88 差分。
 user-invocable: false
 ---
 

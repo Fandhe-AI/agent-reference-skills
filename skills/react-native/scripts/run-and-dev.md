@@ -173,12 +173,14 @@ For `ShellCommandUnresponsiveException` during `:app:installDebug`.
 
 ## Fix npm locking error
 
-> **警告**: `sudo chown -R` でグローバルの npm ディレクトリの所有者を変更する。対象パスを確認し、共有マシンでは実行しない。
+> **警告**: `~/.npm` の所有者が誤っている場合のみ所有者を修復する。`ls -ld` で確認してから実行し、共有マシンでは実行しない。
 
 ```sh
-sudo chown -R "${USER}" "${HOME}/.npm"
-sudo chown -R "${USER}" /usr/local/lib/node_modules
+ls -ld ~/.npm
+sudo chown -R "$(id -u):$(id -g)" ~/.npm
 ```
+
+Run chown only if the owner shown by ls is wrong. The official docs also chown /usr/local/lib/node_modules unconditionally; that is not reproduced — use a Node version manager or a user-level npm prefix for global packages.
 
 For `npm WARN locking Error: EACCES`.
 
@@ -203,5 +205,5 @@ For `spawnSync ./gradlew EACCES`, which the docs describe for macOS.
 ## Notes
 
 - The troubleshooting page prefixes `lsof -i :8081` and `chmod +x android/gradlew` with `sudo`; dropped here because both normally act on files and processes the user owns.
-- The troubleshooting page writes `$USER` and `~/.npm` unquoted; quoted here as `"${USER}"` and `"${HOME}/.npm"`.
+- The troubleshooting page writes `$USER` and `~/.npm` unquoted; this page uses `"$(id -u):$(id -g)"` and `~/.npm` instead.
 - The source writes these placeholders as `<device name>` and `<PID>`; replaced here with quoted shell variables because `<` is a redirection.

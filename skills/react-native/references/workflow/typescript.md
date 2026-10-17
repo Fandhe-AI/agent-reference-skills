@@ -35,7 +35,7 @@ yarn add --dev typescript @react-native/typescript-config @types/jest @types/rea
 3. Rename a JavaScript file to be `*.tsx`.
 4. Run `tsc` to type-check your new TypeScript files (`npx tsc` / `yarn tsc`).
 
-## Getting Started with TypeScript
+### Getting Started with TypeScript
 
 New projects created by the React Native CLI or popular templates like [Ignite](https://github.com/infinitered/ignite) will use TypeScript by default. TypeScript may also be used with Expo, which maintains TypeScript templates, or will prompt you to automatically install and configure TypeScript when a `.ts` or `.tsx` file is added to your project.
 
@@ -43,15 +43,15 @@ New projects created by the React Native CLI or popular templates like [Ignite](
 npx create-expo-app --template
 ```
 
-## Using JavaScript Instead of TypeScript
+### Using JavaScript Instead of TypeScript
 
 React Native defaults new applications to TypeScript, but JavaScript may still be used. Files with a `.jsx` extension are treated as JavaScript instead of TypeScript, and will not be typechecked. JavaScript modules may still be imported by TypeScript modules, along with the reverse.
 
-## How TypeScript and React Native works
+### How TypeScript and React Native works
 
 Out of the box, TypeScript sources are transformed by Babel during bundling. We recommend that you use the TypeScript compiler only for type checking. This is the default behavior of `tsc` for newly created applications. If you have existing TypeScript code being ported to React Native, there are [one or two caveats](https://babeljs.io/docs/en/next/babel-plugin-transform-typescript) to using Babel instead of TypeScript.
 
-## What does React Native + TypeScript look like
+### What does React Native + TypeScript look like
 
 You can provide an interface for a React Component's Props and State via `React.Component<Props, State>` which will provide type-checking and editor auto-completing when working with that component in JSX.
 
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
 export default Hello;
 ```
 
-## Using Custom Path Aliases with TypeScript
+### Using Custom Path Aliases with TypeScript
 
 To use custom path aliases with TypeScript, you need to set the path aliases to work from both Babel and TypeScript.
 
@@ -162,7 +162,7 @@ To use custom path aliases with TypeScript, you need to set the path aliases to 
 }
 ```
 
-## Where to Find Useful Advice
+### Where to Find Useful Advice
 
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
 - [React's documentation on TypeScript](https://react.dev/learn/typescript)

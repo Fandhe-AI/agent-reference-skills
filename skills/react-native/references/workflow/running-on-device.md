@@ -24,15 +24,15 @@ yarn android
 
 **iOS** (macOS only): open the `.xcodeproj` (or `.xcworkspace` if using CocoaPods) under the `ios` folder in Xcode, then press **Build and run** (<kbd>Cmd ⌘</kbd> + <kbd>R</kbd>) or select **Run** from the **Product** menu.
 
-## Running your app on Android devices
+### Running your app on Android devices
 
-### 1. Enable Debugging over USB
+#### 1. Enable Debugging over USB
 
 Most Android devices can only install and run apps downloaded from Google Play, by default. You will need to enable USB Debugging on your device in order to install your app during development.
 
 To enable USB debugging on your device, you will first need to enable the "Developer options" menu by going to **Settings** → **About phone** → **Software information** and then tapping the `Build number` row at the bottom seven times. You can then go back to **Settings** → **Developer options** to enable "USB debugging".
 
-### 2. Plug in your device via USB
+#### 2. Plug in your device via USB
 
 Plug in your device via USB to your development machine.
 
@@ -55,15 +55,15 @@ emulator-5554 offline   # Google emulator
 
 Seeing `device` in the right column means the device is connected. You must have **only one device connected** at a time.
 
-### 3. Run your app
+#### 3. Run your app
 
 From the root of your project, run `npm run android` / `yarn android` (see Signature / Usage) to install and launch your app on the device.
 
-### Connecting to the development server
+#### Connecting to the development server
 
 You can also iterate quickly on a device by connecting to the development server running on your development machine. There are several ways of accomplishing this, depending on whether you have access to a USB cable or a Wi-Fi network.
 
-#### Method 1: Using adb reverse (recommended)
+##### Method 1: Using adb reverse (recommended)
 
 You can use this method if your device is running Android 5.0 (Lollipop) or newer, it has USB debugging enabled, and it is connected via USB to your development machine.
 
@@ -79,7 +79,7 @@ $ adb devices
 
 You can now enable Fast Refresh from the Dev Menu. Your app will reload whenever your JavaScript code has changed.
 
-#### Method 2: Connect via Wi-Fi
+##### Method 2: Connect via Wi-Fi
 
 You can also connect to the development server over Wi-Fi. You'll first need to install the app on your device using a USB cable, but once that has been done you can debug wirelessly by following these instructions. You'll need your development machine's current IP address before proceeding.
 
@@ -99,21 +99,21 @@ Find the IP address:
 
 You can now enable Fast Refresh from the Dev Menu. Your app will reload whenever your JavaScript code has changed.
 
-### Building your app for production
+#### Building your app for production
 
 You have built a great app using React Native, and you are now itching to release it in the Play Store. The process is the same as any other native Android app, with some additional considerations to take into account. Follow the guide for generating a signed APK (see `signed-apk-android` in platform-guides) to learn more.
 
-## Running your app on iOS devices
+### Running your app on iOS devices
 
-### macOS
+#### macOS
 
-#### 1. Plug in your device via USB
+##### 1. Plug in your device via USB
 
 Connect your iOS device to your Mac using a USB to Lightning or USB-C cable. Navigate to the `ios` folder in your project, then open the `.xcodeproj` file, or if you are using CocoaPods open `.xcworkspace`, within it using Xcode.
 
 If this is your first time running an app on your iOS device, you may need to register your device for development. Open the **Product** menu from Xcode's menubar, then go to **Destination**. Look for and select your device from the list. Xcode will then register your device for development.
 
-#### 2. Configure code signing
+##### 2. Configure code signing
 
 Register for an [Apple Developer account](https://developer.apple.com/) if you don't have one yet.
 
@@ -121,17 +121,17 @@ Select your project in the Xcode Project Navigator, then select your main target
 
 **Repeat** this step for the **Tests** target in your project.
 
-#### 3. Build and Run your app
+##### 3. Build and Run your app
 
 If everything is set up correctly, your device will be listed as the build target in the Xcode toolbar, and it will also appear in the Devices pane (<kbd>Shift ⇧</kbd> + <kbd>Cmd ⌘</kbd> + <kbd>2</kbd>). You can now press the **Build and run** button (<kbd>Cmd ⌘</kbd> + <kbd>R</kbd>) or select **Run** from the **Product** menu. Your app will launch on your device shortly.
 
 If you run into any issues, please take a look at Apple's [Launching Your App on a Device](https://developer.apple.com/library/content/documentation/IDEs/Conceptual/AppDistributionGuide/LaunchingYourApponDevices/LaunchingYourApponDevices.html#//apple_ref/doc/uid/TP40012582-CH27-SW4) docs.
 
-#### Connecting to the development server
+##### Connecting to the development server
 
 You can also iterate quickly on a device using the development server. You only have to be on the same Wi-Fi network as your computer. Shake your device to open the Dev Menu, then enable Fast Refresh. Your app will reload whenever your JavaScript code has changed.
 
-#### Troubleshooting
+##### Troubleshooting
 
 If you have any issues, ensure that your Mac and device are on the same network and can reach each other. Many open wireless networks with captive portals are configured to prevent devices from reaching other devices on the network. You may use your device's Personal Hotspot feature in this case. You may also share your internet (Wi-Fi/Ethernet) connection from your Mac to your device via USB and connect to the bundler through this tunnel for very high transfer speeds.
 
@@ -144,11 +144,11 @@ To solve this issue check the following points.
 1. **Wi-Fi network.** Make sure your laptop and your phone are on the **same** Wi-Fi network.
 2. **IP address.** Make sure that the build script detected the IP address of your machine correctly (e.g. `10.0.1.123`). Open the **Report navigator** tab, select the last **Build** and search for `IP=` followed by an IP address. The IP address which gets embedded in the app should match your machines IP address.
 
-#### Building your app for production
+##### Building your app for production
 
 You have built a great app using React Native, and you are now itching to release it in the App Store. The process is the same as any other native iOS app, with some additional considerations to take into account. Follow the guide for publishing to the Apple App Store (see `publishing-to-app-store` in platform-guides) to learn more.
 
-### Windows / Linux
+#### Windows / Linux
 
 A Mac is required in order to build your app for iOS devices. Alternatively, you can refer to the environment setup guide to learn how to build your app using Expo CLI, which will allow you to run your app using the Expo client app.
 

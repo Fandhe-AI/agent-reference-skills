@@ -65,7 +65,8 @@ export default Bananas;
 
 ## Notes
 
-- `props` are set by the parent and fixed for the component's lifetime; data that changes belongs in state.
+- `props` are read-only inputs passed by the parent; the component must not change them, but they can change on each render when the parent re-renders. `state` is data the component itself holds and updates.
+- Corrected: the official state page says props are "fixed throughout the lifetime of a component"; they are read-only for the child but not constant.
 - Calling the state setter re-renders the component.
 - The effect returns `clearInterval` as cleanup.
-- Sources: `props` (https://reactnative.dev/docs/0.87/props) for the `Image` example.
+- Sources: `state` (https://reactnative.dev/docs/0.87/state) for the `Blink` example, `props` (https://reactnative.dev/docs/0.87/props) for the `Image` example.

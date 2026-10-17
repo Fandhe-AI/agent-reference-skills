@@ -44,12 +44,12 @@ function MyComponent() {
 }
 ```
 
-## Key changes (breaking)
+### Key changes (breaking)
 
 1. **No deep imports.** The API is restricted to `react-native`'s index file. This is a tighter and more intentional public API contract. It also ensures that internal file path changes in React Native's source code won't be breaking.
 2. **Generated directly from source.** Previously, React Native used separately maintained manual types. Generating from source now means we improve coverage, correctness, and compatibility guarantees.
 
-## Migration guide
+### Migration guide
 
 Use the [/migrate-to-strict-api](https://www.skills.sh/react-native-community/skills/migrate-to-strict-api) skill to migrate your codebase via an agent:
 
@@ -57,7 +57,7 @@ Use the [/migrate-to-strict-api](https://www.skills.sh/react-native-community/sk
 npx skills add react-native-community/skills --skill migrate-to-strict-api
 ```
 
-### Before you start
+#### Before you start
 
 Enabling the Strict API — by upgrading to 0.87, or by opting in on an earlier release — affects TypeScript analysis of your own project only, scoped by its `tsconfig.json`. In most cases, codebases can migrate independently.
 
@@ -80,7 +80,7 @@ declare const anyExport: unknown;
 export default anyExport;
 ```
 
-### New `CodegenTypes` namespace
+#### New `CodegenTypes` namespace
 
 Types used for codegen, like `Int32`, `Double`, `WithDefault` etc. are now available under a single `CodegenTypes` namespace. Similarly, `codegenNativeComponent` and `codegenNativeCommands` are now available to import from the react-native package instead of using the deep import. Namespaced `CodegenTypes` as well as `codegenNativeCommands` and `codegenNativeComponent` are also available from `react-native` when the Strict API is not enabled to make the adoption easier for third-party libraries.
 
@@ -123,7 +123,7 @@ export default codegenNativeComponent<NativeProps>(
 );
 ```
 
-### Refs now use `*Instance` types (Since 0.87)
+#### Refs now use `*Instance` types (Since 0.87)
 
 Each built-in component now has a dedicated `*Instance` type for use with refs — for example, `ViewInstance`, `TextInputInstance`, `ScrollViewInstance`. These are the **recommended way to type refs** under the Strict TypeScript API. Previously, `useRef<View>` worked because `View` and other components were typed as a class. Under the Strict API, built-in components are typed as functions, so `View` refers to the function itself — **component type names no longer work as ref types**.
 
@@ -183,7 +183,7 @@ Components without ref support (`InputAccessoryView`, `TouchableWithoutFeedback`
 
 `React.ComponentRef<typeof View>` remains valid and produces the same type as `ViewInstance`. The `*Instance` types are convenient aliases — both approaches work.
 
-### Removal of `*Static` types
+#### Removal of `*Static` types
 
 Before:
 
@@ -205,7 +205,7 @@ foo(Linking);
 
 The following APIs were previously named as `*Static` plus a variable declaration of said type. In most cases there was an alias so that value and the type were exported under the same identifier, but some were missing: `AlertStatic`, `ActionSheetIOSStatic`, `ToastAndroidStatic`, `InteractionManagerStatic` (no `InteractionManager` type alias), `UIManagerStatic`, `PlatformStatic`, `SectionListStatic`, `PixelRatioStatic` (no `PixelRatio` alias), `AppStateStatic`, `AccessibilityInfoStatic`, `ImageResizeModeStatic`, `BackHandlerStatic`, `DevMenuStatic` (no `DevMenu` alias), `ClipboardStatic`, `PermissionsAndroidStatic`, `ShareStatic`, `DeviceEventEmitterStatic`, `LayoutAnimationStatic`, `KeyboardStatic` (no `Keyboard` alias), `DevSettingsStatic` (no `DevSettings` alias), `I18nManagerStatic`, `EasingStatic`, `PanResponderStatic`, `NativeModulesStatic` (no `NativeModules` alias), `LogBoxStatic`, `PushNotificationIOSStatic`, `SettingsStatic`, `VibrationStatic`.
 
-### Updating test mocks
+#### Updating test mocks
 
 In most projects, no changes are needed here. Existing `jest.mock()` calls against `react-native/*` paths keep working — the Strict API doesn't change how module paths resolve in Jest or Metro, and a `jest.mock()` path string isn't type-checked. If a test file imports a deep path as a module (for example, to wrap the real implementation from `jest.requireActual()`), TypeScript will report the import as untyped. Where no root export covers the use case, you can keep the import and quiet the error:
 
@@ -214,9 +214,9 @@ In most projects, no changes are needed here. Existing `jest.mock()` calls again
 import NativeAppState from 'react-native/Libraries/AppState/NativeAppState';
 ```
 
-## Other breaking changes
+### Other breaking changes
 
-### `InitializeCore` is now `react-native/setup-env` (Since 0.87)
+#### `InitializeCore` is now `react-native/setup-env` (Since 0.87)
 
 Unlike other deep imports, this module is a side-effect entry point with no root `react-native` equivalent. `InitializeCore` is deprecated since 0.87. Most apps never import this directly — it's typically found in Jest setup files and custom entry points.
 
@@ -225,27 +225,27 @@ Unlike other deep imports, this module is a side-effect entry point with no root
 + import 'react-native/setup-env';
 ```
 
-### Changes to Animated types
+#### Changes to Animated types
 
 Animated nodes were previously generic types based on their interpolation output. Now, they are non-generic types with a generic `interpolate` method. `Animated.LegacyRef` is no longer available. Use the appropriate `*Instance` type instead (e.g. `ViewInstance` for `Animated.View`).
 
-### Unified types for optional props
+#### Unified types for optional props
 
 In the new types, every optional prop will be typed as `type | undefined`.
 
-### Removal of some deprecated types
+#### Removal of some deprecated types
 
 The long-deprecated `*Properties` aliases are inaccessible under the Strict API. Each alias has a direct replacement: `ViewProperties` becomes `ViewProps`, `TextInputProperties` becomes `TextInputProps`, and so on (plus `ImagePropertiesSourceOptions`, which becomes `ImageSourcePropType`). The full list is in `packages/react-native/types/public/DeprecatedPropertiesAlias.d.ts` in the React Native repository.
 
-### Removal of leftover component props
+#### Removal of leftover component props
 
 Some properties that were defined in type definitions but were not used by the component or were lacking a definition were removed (for example: `lineBreakMode` on `Text`, `scrollWithoutAnimationTo` on `ScrollView`, transform styles defined outside of transform array).
 
-### Removal of internal-only helper types
+#### Removal of internal-only helper types
 
 Due to the configuration of the previous type definitions, every defined type was accessible from the `react-native` package, including helper types only supposed to be used internally. Notable examples: StyleSheet-related types (`RecursiveArray`, `RegisteredStyle`, `Falsy`) and Animated types (`WithAnimatedArray`, `WithAnimatedObject`).
 
-## FAQs
+### FAQs
 
 - **Does this change anything at runtime?** No. The Strict API changes which type definitions TypeScript resolves — both modes resolve the same JavaScript, and your bundle is unaffected. Note that 0.87 separately removes `react-native/src/private/*` from the package's exports, which does affect runtime. That change is independent of the Strict API.
 - **I maintain a library. Do I need to migrate before my users can upgrade?** No — libraries and apps should be able to migrate independently. The Strict API is enabled per project, through each project's own `tsconfig.json`. Any raw TypeScript source you ship for consumers to import (such as a Jest mock entry point) is typechecked inside their projects, so it must not rely on deep imports — ship compiled output with `.d.ts` files instead. You should still plan to migrate your own source: the legacy types opt-out is temporary.
