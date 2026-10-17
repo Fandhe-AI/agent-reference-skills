@@ -40,6 +40,11 @@ const SLICE_EXPORTS = [
   'mapBounded',
   'parseRateLimit',
   'extractDeclaredDeps',
+  'declaredDepsJq',
+  'titleTaskId',
+  'buildSiblingTaskTable',
+  'siblingTaskTableFor',
+  'SIBLING_TASK_IDS_MAX_PER_PARENT',
 ]
 // 修正前の実装には新規宣言が無い。RED 確認時に import 自体は成功させ、各テストの失敗で示すため typeof で包む。
 const optionalExports = SLICE_EXPORTS.map((n) => `const __opt_${n} = typeof ${n} === 'undefined' ? undefined : ${n}`).join('\n')
@@ -61,6 +66,11 @@ const {
   mapBounded,
   parseRateLimit,
   extractDeclaredDeps,
+  declaredDepsJq,
+  titleTaskId,
+  buildSiblingTaskTable,
+  siblingTaskTableFor,
+  SIBLING_TASK_IDS_MAX_PER_PARENT,
 } = await import(pathToFileURL(slicePath).href)
 
 // プロンプトに埋め込むのと同じ形（{number, deps}）で jq を実行する。
@@ -274,7 +284,7 @@ test('駆動部は Tree 検証後・byParent 構築前に抽出結果を取り�
   const mergeIdx = driverPart.indexOf('mergeDeclaredDeps(tree.nodes, declaredByNumber)')
   const byParentIdx = driverPart.indexOf('const byParent = new Map()')
   assert.ok(mergeIdx > 0 && byParentIdx > mergeIdx, 'depsMap の元になる byParent 構築より前に取り込むこと')
-  assert.ok(driverPart.includes('await extractDeclaredDeps(chunks)'), '駆動部は有界並列の抽出関数を呼ぶ')
+  assert.ok(driverPart.includes('await extractDeclaredDeps(chunks,'), '駆動部は有界並列の抽出関数を呼ぶ')
   assert.ok(!driverPart.includes('Promise.all(chunks.map(runChunk))'), '全チャンクを無制限に同時起動しない')
   assert.ok(definitionPart.includes('本文の依存宣言を抽出できなかったイシューがある'), '欠落時の fail-closed 停止')
 })
@@ -563,4 +573,186 @@ test('extractDeclaredDeps: 他チャンクが失敗した後、実行中だっ�
   release()
   await new Promise((r) => setTimeout(r, 10))
   assert.deepEqual(labels.filter((l) => l.startsWith('plan:declared-deps-1')), ['plan:declared-deps-1'], 'チャンク 1 の再試行は起動しない')
+})
+
+// ---------------------------------------------------------------------------
+// Issue #657: 兄弟イシューを工程・タスク ID で指す先行記述（「前の工程（TASK-97-5）の結果を踏まえている」）
+// ---------------------------------------------------------------------------
+
+// 下流（Fandhe-AI/ai-development-service）の親 #753 の子と同じ形のタイトル。#760 は #759 と同じ ID（曖昧）。
+const SIBLINGS = [
+  { number: 753, parent: 1, title: 'feat: TASK-97 金額の「未設定」「不明」の表示と保存' },
+  { number: 754, parent: 753, title: 'feat: TASK-97-1 金額の項目の洗い出し' },
+  { number: 757, parent: 753, title: 'feat: TASK-97-4 不明な記録を 0 円と区別して表示する' },
+  { number: 758, parent: 753, title: 'feat: TASK-97-5 0 円・無料・仮の金額として扱われないことの試験' },
+  { number: 759, parent: 753, title: 'docs: TASK-97-6 見積もりの金額欄（EST-2）との境界の記録' },
+  { number: 761, parent: 753, title: 'docs: TASK-97-8 重複 A' },
+  { number: 762, parent: 753, title: 'docs: TASK-97-8 重複 B' },
+  { number: 763, parent: 753, title: 'docs: TASK-97-9 ID の後ろが重複の工程' },
+  { number: 764, parent: 753, title: 'docs: ID の無いタイトル' },
+  { number: 801, parent: 800, title: 'feat: TASK-97-5 別の親の同じ ID' },
+  { number: 901, parent: 900, title: 'docs: ID の無いタイトルだけの親' },
+]
+const SIB_BUILT = buildSiblingTaskTable(SIBLINGS)
+
+// 兄弟の表を埋め込んだフィルタで jq を実行する（declaredDepsPrompt と同じ形）。
+function runSib(number, body, numbers = [number]) {
+  const f = `{number: .number, deps: (${declaredDepsJq(siblingTaskTableFor(numbers, SIB_BUILT))})}`
+  return JSON.parse(execFileSync('jq', ['-c', f], { input: JSON.stringify({ number, body }) }).toString()).deps
+}
+
+test('titleTaskId: タイトル先頭のタスク ID だけを取り出す (#657)', () => {
+  const cases = [
+    ['docs: TASK-97-6 見積もりの金額欄（EST-2）との境界の記録', 'TASK-97-6'],
+    ['feat(core)!: TASK-101-2 決済方式', 'TASK-101-2'],
+    ['TASK-97 金額', 'TASK-97'],
+    ['[TASK-1-2] 角括弧', 'TASK-1-2'],
+    ['【TASK-1-3】 全角括弧', 'TASK-1-3'],
+    ['feat: TASK-97-6: コロン', 'TASK-97-6'],
+    ['feat: 概要 TASK-97-6', ''], // 先頭でない
+    ['feat: TASK-97-6a 別の語', ''],
+    ['feat: task-97-6 小文字', ''],
+    ['feat: TASK 番号なし', ''],
+    ['feat: TASK-97-6\'; rm 引用符', ''],
+    [null, ''],
+  ]
+  for (const [title, want] of cases) assert.equal(titleTaskId(title), want, String(title))
+})
+
+test('buildSiblingTaskTable: 親ごとに ID → 番号を作り、重複 ID は落とし、前の工程を工程番号から解決する (#657)', () => {
+  assert.deepEqual(SIB_BUILT.families.get(753), [
+    ['TASK-97-1', 754], ['TASK-97-4', 757], ['TASK-97-5', 758], ['TASK-97-6', 759], ['TASK-97-9', 763],
+  ])
+  assert.deepEqual(SIB_BUILT.nodes.get(759), { parent: 753, prev: 758 })
+  assert.deepEqual(SIB_BUILT.nodes.get(758), { parent: 753, prev: 757 })
+  assert.deepEqual(SIB_BUILT.nodes.get(757), { parent: 753, prev: 0 }, 'TASK-97-3 の兄弟が無ければ前の工程は無い')
+  assert.deepEqual(SIB_BUILT.nodes.get(763), { parent: 753, prev: 0 }, '重複で落とした TASK-97-8 へは解決しない')
+  assert.deepEqual(SIB_BUILT.nodes.get(753), { parent: 1, prev: 0 }, '工程番号が 1 段の ID は前の工程を持たない')
+  assert.deepEqual(SIB_BUILT.nodes.get(761), { parent: 753, prev: 0 }, '自分の ID が重複していても兄弟の明示 ID は解決できるよう載せる')
+  assert.deepEqual(SIB_BUILT.nodes.get(764), { parent: 753, prev: 0 }, 'タイトルに ID が無いノードも載せる')
+  assert.equal(SIB_BUILT.nodes.get(901), undefined, '兄弟の ID が 1 件も無い親のノードは載せない')
+  assert.deepEqual(SIB_BUILT.families.get(800), [['TASK-97-5', 801]], '別の親の同じ ID は別の表')
+  const many = Array.from({ length: SIBLING_TASK_IDS_MAX_PER_PARENT + 1 }, (_, i) => ({ number: 10 + i, parent: 5, title: `feat: X-1-${i + 1} t` }))
+  const big = buildSiblingTaskTable(many)
+  assert.deepEqual(big.skipped, [5])
+  assert.equal(big.families.size, 0)
+})
+
+test('siblingTaskTableFor: 依頼する番号の分だけを埋め込み、表に単一引用符を含めない (#657)', () => {
+  const t = siblingTaskTableFor([759, 999], SIB_BUILT)
+  assert.deepEqual(t.n, { 759: ['753', 758] })
+  assert.deepEqual(Object.keys(t.f), ['753'])
+  assert.ok(!declaredDepsJq(t).includes("'"))
+  assert.throws(() => declaredDepsJq({ f: { 1: [["X-1'", 2]] }, n: {} }), /埋め込めない/)
+})
+
+test('兄弟の前の工程を指す受け入れ条件（下流 #759・#758 の形）を番号へ解決する (#657)', () => {
+  const body759 = [
+    '## 受け入れ条件', '',
+    '- [ ] 「見積もりの金額欄（EST-2）との境界の記録」が完了し、結果が成果物（金額の型）に反映・記録されている',
+    '- [ ] 前の工程（TASK-97-5）の結果を踏まえている', '',
+    '> 分解は仕様外（推測）。正は TASK-97 と対象ビヘイビア UNSET-1',
+  ].join('\n')
+  assert.deepEqual(runSib(759, body759), [758])
+  assert.deepEqual(runSib(758, '- [ ] 前の工程（TASK-97-4）の結果を踏まえている\n'), [757])
+})
+
+test('ID の直後に先行を表す語が続く形・英語の前置詞・依存節の行頭の ID を依存にする (#657)', () => {
+  const positives = [
+    'TASK-97-5 の後に着手する',
+    'TASK-97-5 の完了後',
+    'TASK-97-5 完了後に行う',
+    'TASK-97-5 がマージされてから',
+    'TASK-97-5 が完了してから',
+    'TASK-97-5 の成果物を前提とする',
+    'TASK-97-5 を踏まえる',
+    '（TASK-97-5）の結果を受けて',
+    'This starts after TASK-97-5.',
+    'Depends on TASK-97-5',
+    'builds on TASK-97-5',
+    '前工程（TASK-97-5）を見る',
+  ]
+  for (const line of positives) assert.deepEqual(runSib(759, `${line}\n`), [758], line)
+  assert.deepEqual(runSib(759, '## 依存\n- TASK-97-5\n- [ ] TASK-97-1（確認）\n'), [754, 758].sort((a, b) => a - b))
+})
+
+test('ID を書かない「前の工程」は自分の工程番号を 1 つ戻した兄弟に解決する (#657)', () => {
+  assert.deepEqual(runSib(759, '- [ ] 前の工程の結果を踏まえている\n'), [758])
+  assert.deepEqual(runSib(759, '前工程\n'), [758])
+  assert.deepEqual(runSib(757, '前の工程の結果を踏まえている\n'), [], '前の工程の兄弟が無い')
+  assert.deepEqual(runSib(759, '前の工程（TASK-97-77）の結果を踏まえている\n'), [], '表に無い ID を書いたときは前の工程へ読み替えない')
+  assert.deepEqual(runSib(759, 'TASK-97-1 の後、前の工程の結果を踏まえる\n'), [754, 758], '明示 ID と ID を書かない前の工程は和集合')
+})
+
+test('タイトルに ID が無い・自分の ID が重複するイシューの本文でも、兄弟の明示 ID は解決する (#657)', () => {
+  assert.deepEqual(runSib(764, 'Depends on TASK-97-5\n'), [758])
+  assert.deepEqual(runSib(764, '前の工程の結果を踏まえる\n'), [], '自分の ID が無ければ ID を書かない前の工程は解決しない')
+  assert.deepEqual(runSib(761, 'TASK-97-6 の後\n'), [759])
+  assert.deepEqual(runSib(901, 'TASK-97-5 の後\n'), [], '別の親の ID は解決しない')
+})
+
+test('ID だけの言及・関連 / 参考・否定・表に無い ID・曖昧な ID・自分自身は依存にしない (#657)', () => {
+  const negatives = [
+    '親 TASK-97「金額の表示」の工程 6/6: 境界の記録',
+    '親 issue: TASK-97 (#753)',
+    'TASK-97-5 と同じ形式で書く',
+    '関連: TASK-97-5 の後の作業',
+    '参考: 前の工程（TASK-97-5）の結果',
+    '前の工程（TASK-97-5）は不要',
+    'TASK-97-8 の後', // 曖昧（兄弟 2 件が同じ ID）
+    'TASK-97-6 の後', // 自分自身
+    'TASK-98-1 の後', // 表に無い
+    '## 概要\n- TASK-97-5', // 依存節の外の行頭の ID
+  ]
+  for (const body of negatives) assert.deepEqual(runSib(759, `${body}\n`), [], body)
+})
+
+test('ID の前後の境界: 長い ID・別の語の一部としては読まない (#657)', () => {
+  for (const line of ['TASK-97-50 の後', 'TASK-97-5-1 の後', 'SUBTASK-97-5 の後', 'XTASK-97-5 の後', 'after TASK-97-55', 'after TASK-97-5a']) {
+    assert.deepEqual(runSib(759, `${line}\n`), [], line)
+  }
+})
+
+test('コードフェンス・引用・インラインコードの中の先行記述は依存にしない (#657)', () => {
+  const body = ['```', '前の工程（TASK-97-5）の結果を踏まえている', '```', '> TASK-97-5 の後', '`TASK-97-5 の後` は例'].join('\n')
+  assert.deepEqual(runSib(759, body), [])
+})
+
+test('兄弟の表は親ごとに分かれ、別の親の同じ ID へは解決しない (#657)', () => {
+  assert.deepEqual(runSib(801, 'TASK-97-5 の後\n'), [], '自分自身')
+  assert.deepEqual(runSib(801, '前の工程の結果を踏まえる\n'), [], '#801 の親に TASK-97-4 は無い')
+})
+
+test('兄弟の表を埋め込んでも従来の宣言の抽出は変わらず、sig はホストの再計算と一致する (#657)', () => {
+  const f = `{number: .number, deps: (${declaredDepsJq(siblingTaskTableFor([759], SIB_BUILT))})} | ${DECLARED_DEPS_SIG_JQ}`
+  const body = '## 依存\n- #78\n前の工程（TASK-97-5）の結果を踏まえている\nDepends on #12\n'
+  const out = JSON.parse(execFileSync('jq', ['-c', f], { input: JSON.stringify({ number: 759, body }) }).toString())
+  assert.deepEqual(out.deps, [12, 78, 758])
+  assert.equal(out.sig, declaredDepsChecksum(759, out.deps))
+  assert.deepEqual(runFilter('前の工程（TASK-97-5）の結果を踏まえている\nTASK-97-5 の後\n'), [], '表なしのフィルタは従来どおり')
+})
+
+test('declaredDepsPrompt は兄弟の表を埋め込んだフィルタを使い、extractDeclaredDeps は再試行でも依頼番号の表を渡す (#657)', async () => {
+  const table = siblingTaskTableFor([759], SIB_BUILT)
+  const p = declaredDepsPrompt([759], table)
+  assert.ok(p.includes(declaredDepsJq(table)))
+  assert.ok(p.includes('"759":["753",758]'))
+  const seen = []
+  let n = 0
+  globalThis.agent = async (prompt) => {
+    n++
+    seen.push(prompt)
+    if (n === 1) return { entries: [e(759, [758])] } // #758 が欠落 → 再試行
+    return okEntries(prompt)
+  }
+  const m = await extractDeclaredDeps([[759, 758]], NO_SLEEP, (pending) => siblingTaskTableFor(pending, SIB_BUILT))
+  assert.deepEqual([...m.get(759)], [758])
+  assert.ok(seen[0].includes('"759":["753",758]') && seen[0].includes('"758":["753",757]'))
+  assert.ok(seen[1].includes('"758":["753",757]') && !seen[1].includes('"759":'), '再試行は残りの番号の表だけ')
+})
+
+test('駆動部はタイトルから兄弟の表を作って抽出へ渡す (#657)', () => {
+  assert.ok(driverPart.includes('const siblingTasks = buildSiblingTaskTable(tree.nodes)'))
+  assert.ok(driverPart.includes('await extractDeclaredDeps(chunks, undefined, (pending) => siblingTaskTableFor(pending, siblingTasks))'))
+  assert.match(driverPart, /前の工程（TASK-x-y）の結果を踏まえている/, 'Tree エージェントの手順 4 にも書く')
 })
