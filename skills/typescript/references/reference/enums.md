@@ -86,7 +86,7 @@ const enum Enum {
 }
 ```
 
-- Const enum pitfalls (ambient const enums, i.e. in `.d.ts` files): incompatible with `isolatedModules`; values can be inlined from one dependency version while another is imported at runtime; `importsNotUsedAsValues: "preserve"` does not elide imports and type-only imports do not allow const enum values. Avoid by not using const enums, or by not publishing ambient const enums using `preserveConstEnums` and stripping `const` from `.d.ts` files in a build step.
+- Const enum pitfalls (ambient const enums, i.e. in `.d.ts` files): incompatible with `isolatedModules`; values can be inlined from one dependency version while another is imported at runtime; (TypeScript 5.4 and earlier) `importsNotUsedAsValues: "preserve"` does not elide imports and type-only imports do not allow const enum values — this option was deprecated in 5.0, stopped having any effect in 5.5 (5.5 release notes), and its successor is `verbatimModuleSyntax`. Avoid by not using const enums, or by not publishing ambient const enums using `preserveConstEnums` and stripping `const` from `.d.ts` files in a build step.
 - Ambient enums (`declare enum`) describe existing enums. An ambient (non-const) member without an initializer is always considered computed.
 
 ```ts

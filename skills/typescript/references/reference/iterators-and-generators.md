@@ -31,7 +31,7 @@ for (let i of list) {
 }
 ```
 
-- Targeting ES5: iterators are only allowed on values of `Array` type; `for..of` on a non-Array value is an error even if it implements `Symbol.iterator`. The compiler generates a simple `for` loop:
+- Targeting ES5 (without `downlevelIteration`): iterators are only allowed on values of `Array` type; `for..of` on a non-Array value is an error even if it implements `Symbol.iterator`. With `downlevelIteration` enabled (TypeScript 6.0 and earlier only), non-Array iterables that implement `Symbol.iterator` are also downleveled. The compiler generates a simple `for` loop (without `downlevelIteration`):
 
 ```js
 var numbers = [1, 2, 3];
