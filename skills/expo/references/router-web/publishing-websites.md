@@ -32,7 +32,9 @@ npx expo serve
 | `server` | Yes | Enabled by default | **client** and **server** directories. SDK 58 and later: HTML rendered on each request. Requires a deployed server. |
 | `static` | Yes | Opt-in | Separate HTML file for every route in the **app** directory. |
 
-Vercel configuration for a single-page / static export (**vercel.json**):
+The `server` config shown under Signature / Usage is for SSR-capable hosts such as EAS Hosting. For the static hosts below (Vercel, Netlify, GitHub Pages), set `web.output` to `"single"` (SPA) or `"static"` before running `npx expo export -p web`.
+
+Vercel configuration for a single-page / static export (**vercel.json**; requires `web.output` of `"single"` or `"static"`):
 
 ```json
 {
@@ -45,7 +47,7 @@ Vercel configuration for a single-page / static export (**vercel.json**):
 }
 ```
 
-Netlify SPA redirect (**public/_redirects**): `/*    /index.html   200`. GitHub Pages: set `experiments.baseUrl` to `/repo-name` and use `"deploy": "gh-pages --nojekyll -d dist"`, `"predeploy": "expo export -p web"`.
+Netlify SPA redirect (**public/_redirects**, for `web.output: "single"`; not needed with `static` rendering): `/*    /index.html   200`. GitHub Pages (requires a `static` or `single` export): set `experiments.baseUrl` to `/repo-name` and use `"deploy": "gh-pages --nojekyll -d dist"`, `"predeploy": "expo export -p web"`.
 
 ## Notes
 

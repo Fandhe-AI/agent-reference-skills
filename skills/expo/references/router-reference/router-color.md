@@ -32,8 +32,8 @@ export default function MyComponent() {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `android` | `AndroidBaseColorSDK1 & AndroidBaseColorSDK14 & AndroidBaseColorSDK31 & AndroidBaseColorSDK34 & AndroidBaseColorSDK35 & AndroidDeprecatedColor & undefined & { attr: AndroidBaseColorAttr, dynamic: AndroidDynamicMaterialColor, material: AndroidMaterialColor }` | Android colors. |
-| `ios` | `IOSBaseColor & undefined` | iOS colors. |
+| `android` | `AndroidBaseColor & { attr: AndroidBaseColorAttr, material: AndroidMaterialColor, dynamic: AndroidDynamicMaterialColor }`, where `AndroidBaseColor` = `AndroidBaseColorSDK1 & AndroidBaseColorSDK14 & AndroidBaseColorSDK31 & AndroidBaseColorSDK34 & AndroidBaseColorSDK35 & AndroidDeprecatedColor & { [key: string]: ColorValue }` | Android colors. |
+| `ios` | `IOSBaseColor & { [key: string]: ColorValue }` | iOS colors. |
 
 On Android it provides:
 
@@ -74,6 +74,7 @@ Color.android.dynamic.primary; // Access Android Material Design 3 dynamic color
 ## Notes
 
 - Platforms: android, ios.
+- The docs page renders the index signature `{ [key: string]: ColorValue }` as `undefined`; types here follow expo-router 58.0.23 build/color/index.d.ts.
 - The color types list the known color names to enable autocomplete. They also accept any string, so TypeScript does not reject misspelled or unsupported color names.
 - To ensure the colors align with the system theme on Android, use them within a component that responds to theme changes, such as by using the `useColorScheme` hook from React Native. This is especially important when using React Compiler, which can memoize components.
 - Source: https://docs.expo.dev/versions/v58.0.0/sdk/router/color/ (modificationDate September 15, 2026).
