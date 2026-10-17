@@ -167,6 +167,7 @@ Notes:
 - Custom `responseFormat` overrides on `generateContent` are supported via REST until the Python and JavaScript SDKs expose `response_format` on `GenerateContentConfig` (use the Interactions API for SDK support).
 - Limitations: `multiSpeakerVoiceConfig` supports up to 2 speakers using prebuilt voices; to combine custom voices in dialogue, synthesize each turn separately and strip the 44-byte WAV header or request `AUDIO_L16` before concatenating. Custom voices: stateful (`store=True`) 200 voices per project shared across prompted and replicated, TTL 1 year from last use; stateless `voicekey_...` TTL 7 days.
 - Migration from `gemini-3.1-flash-tts-preview` / `gemini-2.5-pro-preview-tts`: move style out of the transcript into `speech_metadata.style`, use `speech_metadata.speaker` per turn instead of `Speaker:` prefixes, use angle-bracket vocal tags, and drop manual WAV header wrapping because 3.8 returns `AUDIO_WAV` by default.
+- Source inconsistency: the official speech-generation page says SDKs do not yet expose `response_format` on `GenerateContentConfig` (use REST or the Interactions API for audio format overrides), while the official structured-output and image-generation pages pass `response_format` / `responseFormat` through the SDK config in their samples; for TTS audio `mimeType` overrides follow this page and use REST.
 - Differs from Live API speech generation (interactive, unstructured). The Extended Voice Library is listed with `client.voices.list()` (`GET /v1beta/voices`).
 
 ### Voice design (voice-design)

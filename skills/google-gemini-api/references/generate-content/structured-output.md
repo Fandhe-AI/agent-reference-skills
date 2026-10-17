@@ -126,6 +126,7 @@ Model support (per source table, all marked supported): Gemini 4 Argon, 3.8 Flas
 - API surface: generateContent. The `response_format` / `responseFormat` / `generationConfig.responseFormat.text` field with `mime_type` and `schema` is the shape used on this page.
 - The model produces outputs in the same order as the keys in the schema; only a subset of JSON Schema is supported and the model ignores unsupported properties. Very large or deeply nested schemas may be rejected.
 - Structured outputs with tools is a Preview feature "available only to Gemini 4 and Gemini 3 series models" (Google Search, URL Context, Code Execution, File Search, Function Calling).
+- Source inconsistency: the official speech-generation page says audio `responseFormat` overrides on `generateContent` are REST-only until the SDKs expose `response_format` on `GenerateContentConfig`, while this page's samples pass `response_format` through the SDK config. The contradiction originates in the official docs.
 - Structured outputs format the final response; function calling takes action during the conversation.
 - Valid JSON syntax does not guarantee semantically correct values; validate in application code.
 - Distinct from OpenAI structured outputs and Responses API (openai-api-core skill) and Anthropic structured outputs / Messages API (anthropic-api-core skill). Pydantic and Zod here are only used to produce a JSON Schema for the Gemini request; the zod skill covers Zod itself.
