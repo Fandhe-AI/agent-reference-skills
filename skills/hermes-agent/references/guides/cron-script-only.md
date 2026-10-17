@@ -93,7 +93,8 @@ Comparison:
 
 - Scripts must resolve inside `~/.hermes/scripts/`; traversal and symlink escapes are rejected. Shebangs are not honored. Cron scripts do not inherit provider credentials from the Hermes process environment.
 - `--interpreter` must be absolute or `~`-prefixed, must be a Python executable, applies only to Python scripts (and `monitor_script`), is user-owned (set via `hermes cron create/edit`, not the agent's `cronjob` tool), and is validated at run time. Hermes does not manage the venv.
-- Schedule syntax is the same as LLM jobs: `every 5m`, `every 2h`, `0 9 * * *`, `30m` (one-shot).
+- Schedule syntax is the same as LLM jobs: `every 5m`, `every 2h`, `0 9 * * *`, `in 30m` (one-shot).
+- The upstream guide (v0.22.2) lists bare `30m`/`1d` as one-shot (and says natural language is unsupported); the user-guide Cron page states bare durations are recurring and one-shots need the `in` prefix — this page follows the user guide.
 - No running gateway is required at script-run time for bot-token platforms (Telegram, Discord, Slack, Signal, SMS, WhatsApp).
 - Agents choose `no_agent=True` when the script's stdout already is the message.
 - Source: https://hermes-agent.nousresearch.com/docs/guides/cron-script-only (pinned to v0.22.2)

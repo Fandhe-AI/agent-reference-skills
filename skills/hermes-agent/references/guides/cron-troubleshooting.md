@@ -35,7 +35,8 @@ Schedule expressions:
 | `0 9 * * *` | 9:00 AM every day |
 | `0 9 * * 1` | 9:00 AM every Monday |
 | `every 2h` | Every 2 hours from now |
-| `30m` | 30 minutes from now (one-shot) |
+| `in 30m` | 30 minutes from now (one-shot) |
+| `30m` | Every 30 minutes (recurring) |
 | `2025-06-01T09:00:00` | June 1, 2025 at 9:00 AM UTC |
 
 Delivery target requirements:
@@ -54,7 +55,8 @@ Delivery target requirements:
 ## Notes
 
 - Jobs fire from the gateway's ticker (every 60 s); a plain CLI chat session does not fire cron jobs. Desktop's primary backend ticks every local profile's cron store.
-- State `[completed]` may mean the repeat count is exhausted; one-shot schedules (`30m`, `1d`, ISO timestamps) disappear after firing.
+- State `[completed]` may mean the repeat count is exhausted; one-shot schedules (`in 30m`, `in 1d`, ISO timestamps) disappear after firing.
+- The upstream guide (v0.22.2) lists bare `30m`/`1d` as one-shot (and says natural language is unsupported); the user-guide Cron page states bare durations are recurring and one-shots need the `in` prefix — this page follows the user guide.
 - Jobs use the local timezone.
 - Delivery targets are case-sensitive; misconfigured targets silently drop output (job still runs). Bot needs permissions: Telegram admin in group/channel, Discord send permission, Slack `chat:write`.
 - Empty output or a response containing `[SILENT]` suppresses delivery; use prompts like "respond with only [SILENT] if nothing changed".

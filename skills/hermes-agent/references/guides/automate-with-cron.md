@@ -73,7 +73,8 @@ Job management:
 - Hard failures post a `⚠️ Cron 'X' failed…` notice to the delivery target; `--failure-deliver local` suppresses it, `--failure-deliver slack:C_OPS` redirects it. Omit to follow `--deliver`.
 - Zero-token alternatives: script-only cron jobs (no LLM) and `hermes send` for one-shot piping.
 - Bot Chat delivery is machine-local (profile must exist, `hermes profile list`), costs a full bot turn per delivery, is combinable (`--deliver bot-chat,telegram`), and `all` never expands to bot-chat targets.
-- Schedule formats: relative delays (`30m`), intervals (`every 2h`), cron expressions (`0 9 * * *`), ISO timestamps (`2025-06-15T09:00:00`). Natural language like `daily at 9am` is not supported.
+- Schedule formats: relative delays (`in 30m`), intervals (`30m`, `every 2h`), natural day/time (`daily at 7am`, `weekdays at 9am`), cron expressions (`0 9 * * *`), ISO timestamps (`2025-06-15T09:00:00`).
+- The upstream guide (v0.22.2) lists bare `30m`/`1d` as one-shot (and says natural language is unsupported); the user-guide Cron page states bare durations are recurring and one-shots need the `in` prefix — this page follows the user guide.
 - Skills load in the order given before the prompt runs.
 - Test with `/cron run <job_id>` before waiting for the schedule.
 - Source: https://hermes-agent.nousresearch.com/docs/guides/automate-with-cron (pinned to v0.22.2)

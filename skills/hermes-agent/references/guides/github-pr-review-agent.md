@@ -67,7 +67,8 @@ To post directly to GitHub, add to the prompt: `gh pr review NUMBER --repo REPO 
 - If a job does not run: `hermes gateway status`, `hermes cron list`.
 - GitHub allows 5,000 authenticated API requests/hour; each review uses ~3-5.
 - For real-time reviews use the webhook approach (requires a public endpoint).
-- The upstream table (v0.22.2) lists `30m` as "Every 30 minutes"; `30m` is actually a one-shot relative delay (see cron-troubleshooting), so the table above uses `every 30m`.
+- The upstream table (v0.22.2) lists `30m` as Every 30 minutes, matching the user-guide Cron page (bare durations are recurring); the table above uses the explicit `every 30m`.
+- The upstream guide (v0.22.2) lists bare `30m`/`1d` as one-shot elsewhere (and says natural language is unsupported); the user-guide Cron page states bare durations are recurring and one-shots need the `in` prefix — this page follows the user guide.
 - Adapted: the upstream prompt (v0.22.2) fetches only createdAt; updatedAt and sort:updated-desc were added so PRs updated in the window are not missed.
 - Source: https://hermes-agent.nousresearch.com/docs/guides/github-pr-review-agent (pinned to v0.22.2)
 
