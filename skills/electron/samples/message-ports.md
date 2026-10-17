@@ -14,8 +14,18 @@ const { ipcRenderer } = require('electron')
 
 // MessagePorts cannot cross contextBridge, so the page posts them with
 // window.postMessage and the preload forwards them to the main process.
+// Only allow-listed channels are forwarded.
+const ALLOWED = new Set(['port', 'give-me-a-stream'])
+
 window.addEventListener('message', (e) => {
-  if (e.source !== window || !e.data || !e.data.channel) return
+  if (e.source !== window || !e.data || !ALLOWED.has(e.data.channel)) return
+  if (e.ports.length !== 1) return
+
+  if (e.data.channel === 'give-me-a-stream') {
+    const p = e.data.payload
+    if (!p || !Number.isInteger(p.count) || p.count < 1 || p.count > 100) return
+  }
+
   ipcRenderer.postMessage(e.data.channel, e.data.payload, e.ports)
 })
 ```
@@ -108,6 +118,12 @@ ipcMain.on('give-me-a-stream', (event, msg) => {
   // response over.
   const [replyPort] = event.ports
 
+  // Validate the payload again in the main process.
+  if (!replyPort || !msg || !Number.isInteger(msg.count) || msg.count < 1 || msg.count > 100) {
+    if (replyPort) replyPort.close()
+    return
+  }
+
   // Here we send the messages synchronously, but we could just as easily store
   // the port somewhere and send messages asynchronously.
   for (let i = 0; i < msg.count; i++) {
@@ -125,6 +141,7 @@ ipcMain.on('give-me-a-stream', (event, msg) => {
 ## Notes
 
 - The official snippets call `ipcRenderer.postMessage` directly and are excerpts; this sample adds a preload forwarder (based on the official preload and `window.postMessage` pattern for context-isolated pages) so it runs with the default `contextIsolation: true`.
+- The preload forwards only allow-listed channels (port, give-me-a-stream) and validates the payload; never forward arbitrary channel names from the page. The `count` check in the preload and main process is an addition to the official snippet.
 - The main process has no `MessagePort` / `MessageChannel`; it uses `MessagePortMain` and `MessageChannelMain`, which use the Node.js-style `.on('message')` events API and need `.start()`.
 - Only the `postMessage` methods (`ipcRenderer.postMessage`, `WebContents.postMessage`) can transfer ports; `send` and `invoke` cannot.
 - Electron adds a `close` event on ports, emitted when the other end closes (or is garbage-collected).

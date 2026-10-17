@@ -35,7 +35,7 @@ let name = CommandLine.arguments.count >= 2 ? CommandLine.arguments[1] : "Electr
 let pid = NSWorkspace.shared.runningApplications.first(where: {$0.localizedName == name})!.processIdentifier
 let axApp = AXUIElementCreateApplication(pid)
 let result = AXUIElementSetAttributeValue(axApp, "AXManualAccessibility" as CFString, true as CFTypeRef)
-print("Setting 'AXManualAccessibility' \(error.rawValue == 0 ? "succeeded" : "failed")")
+print("Setting 'AXManualAccessibility' \(result.rawValue == 0 ? "succeeded" : "failed")")
 ```
 
 ## Notes
@@ -43,5 +43,5 @@ print("Setting 'AXManualAccessibility' \(error.rawValue == 0 ? "succeeded" : "fa
 - Electron enables accessibility features automatically when assistive technology (JAWS on Windows, VoiceOver on macOS) is present; the user's system utilities take priority over `app.setAccessibilitySupportEnabled`.
 - `app.setAccessibilitySupportEnabled(enabled)` is macOS and Windows; the first line above is the call form from the page, not a full program.
 - Accessibility concerns are those of websites, since the UI is HTML.
-- The Swift snippet is reproduced verbatim from the official page; it references `error`, which is not declared in the snippet.
+- Changed from the official Swift snippet: it printed `error.rawValue`, which is undeclared; this sample uses `result.rawValue` (the `AXError` returned by `AXUIElementSetAttributeValue`).
 - Distance: native accessibility frameworks are in apple-appkit and windows-winui-ui; the Objective-C / Swift code here is for external tools, not for the Electron app itself.

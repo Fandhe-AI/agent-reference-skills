@@ -57,7 +57,7 @@ app.on('activate', () => {
 
 ## Notes
 
-- Pass a number between `0` and `1`; a negative value (e.g. `-1`) removes the bar; a value greater than `1` is indeterminate on Windows and clamps to 100% elsewhere.
-- Windows: one progress bar per window. macOS: a single progress bar for the application. Linux: not supported.
+- Pass a number between `0` and `1`; a negative value (e.g. `-1`) removes the bar; a value greater than `1` is indeterminate on Windows and clamps to 100% elsewhere (Linux has no indeterminate mode).
+- Windows: one progress bar per window. macOS: a single progress bar for the application. Linux: shown on docks/taskbars that support the LauncherEntry D-Bus API; `app.setDesktopName` must match the app's actual `.desktop` file name, and indeterminate mode is not supported (the tutorial page still says Linux is unsupported; the `BrowserWindow.setProgressBar` API reference documents Linux support).
 - Source fiddle: `docs/fiddles/features/progress-bar`. Changed from the original: the timer is local to `createWindow` and stopped on the window's `closed` event instead of `before-quit`.
 - Distance: for Windows taskbar-specific features (thumbnail toolbar, overlay icon) see the `windows-taskbar` sample here; native taskbar APIs live in windows-platform-integration.
