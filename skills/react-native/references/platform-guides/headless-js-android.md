@@ -203,6 +203,8 @@ import android.os.Build;
 
 import com.facebook.react.HeadlessJsTaskService;
 
+import java.util.List;
+
 public class NetworkChangeReceiver extends BroadcastReceiver {
 
     @Override
@@ -367,7 +369,7 @@ class NetworkChangeReceiver : BroadcastReceiver() {
 
 ## Notes
 
-- Corrected: the official snippets used require('SomeTaskName') (package resolution), intent.extras on a nullable Intent, and a single-quoted Java string.
+- Corrected: the official snippets used require('SomeTaskName') (package resolution), intent.extras on a nullable Intent, and a single-quoted Java string; missing java.util.List import.
 - By default, your app will crash if you try to run a task while the app is in the foreground. This is to prevent developers from shooting themselves in the foot by doing a lot of work in a task and slowing the UI. You can pass a fourth `boolean` argument to control this behaviour.
 - If you start your service from a `BroadcastReceiver`, make sure to call `HeadlessJsTaskService.acquireWakeLockNow()` before returning from `onReceive()`.
 - The official page's Java example uses the non-existent type HeadlessJsRetryPolicy; corrected here to HeadlessJsTaskRetryPolicy (com.facebook.react.jstasks, as of v0.87.0).

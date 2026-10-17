@@ -39,11 +39,10 @@ export default TurboModuleRegistry.getEnforcing<Spec>(
 **Flow** (`NativeLocalStorage.js`)
 
 ```diff
-
 // @flow
+-import type {TurboModule} from 'react-native';
 +import type {TurboModule, CodegenTypes} from 'react-native';
--import {TurboModule, TurboModuleRegistry} from 'react-native';
-+import {TurboModuleRegistry} from 'react-native';
+import {TurboModuleRegistry} from 'react-native';
 
 +export type KeyValuePair = {
 +  key: string,
@@ -57,9 +56,9 @@ export interface Spec extends TurboModule {
   clear(): void;
 + onKeyAdded: CodegenTypes.EventEmitter<KeyValuePair>
 }
-export default (TurboModuleRegistry.get<Spec>(
-  'NativeLocalStorage'
-): ?Spec);
+export default (TurboModuleRegistry.getEnforcing<Spec>(
+  'NativeLocalStorage',
+): Spec);
 ```
 
 Step 2: rerun Codegen. Android:
@@ -294,6 +293,7 @@ NS_ASSUME_NONNULL_END
 - Corrected: the official Android snippet emitted when getItem(key) != null (existing key); the condition is inverted here to match the described new-key behavior and the iOS code.
 - Corrected: the official Android snippet returned username.toString(), which yields the string "null" for missing keys.
 - Corrected: the official Flow diff added a type import of TurboModule but kept the original TurboModule import, declaring it twice; the original import line is now replaced in the diff.
+- Flow diff aligned with the corrected Turbo Native Modules introduction spec (separate type import, getEnforcing); the official diff removes a combined import and uses get/?Spec.
 - Corrected: the official TypeScript diff added `import type {TurboModule, CodegenTypes}` without removing the existing `import type {TurboModule}` from the Native Modules guide spec; the diff now replaces that line.
 - `CodegenTypes.EventEmitter<KeyValuePair>` is imported from `react-native`; the property `onKeyAdded` emits a payload of type `KeyValuePair`.
 - App code: import the `EventSubscription` type from `react-native`; use a `useRef` to keep the `EventSubscription` reference; register the listener in a `useEffect` (`onKeyAdded` takes a callback receiving an object of type `KeyValuePair`, executed every time the event is emitted from native to JS); in the cleanup function `remove` the subscription and set the ref to `null`.

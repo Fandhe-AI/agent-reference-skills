@@ -15,10 +15,9 @@ Starts from the Fabric Native Components guide (web view example) and assumes fa
 Update `WebViewNativeComponent.ts` (TypeScript):
 
 ```diff
-import type {HostComponent, ViewProps} from 'react-native';
-import type {BubblingEventHandler} from 'react-native/Libraries/Types/CodegenTypes';
-import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
-+import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
+import type {CodegenTypes, HostComponent, ViewProps} from 'react-native';
+-import {codegenNativeComponent} from 'react-native';
++import {codegenNativeCommands, codegenNativeComponent} from 'react-native';
 
 type WebViewScriptLoadedEvent = {
   result: 'success' | 'error';
@@ -26,7 +25,7 @@ type WebViewScriptLoadedEvent = {
 
 export interface NativeProps extends ViewProps {
   sourceURL?: string;
-  onScriptLoaded?: BubblingEventHandler<WebViewScriptLoadedEvent> | null;
+  onScriptLoaded?: CodegenTypes.BubblingEventHandler<WebViewScriptLoadedEvent> | null;
 }
 
 +interface NativeCommands {
@@ -47,10 +46,9 @@ Flow variant (`WebViewNativeComponent.js`):
 ```diff
 // @flow strict-local
 
-import type {HostComponent, ViewProps} from 'react-native';
-import type {BubblingEventHandler} from 'react-native/Libraries/Types/CodegenTypes';
-import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
-+import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
+import type {CodegenTypes, HostComponent, ViewProps} from 'react-native';
+-import {codegenNativeComponent} from 'react-native';
++import {codegenNativeCommands, codegenNativeComponent} from 'react-native';
 
 type WebViewScriptLoadedEvent = $ReadOnly<{|
   result: "success" | "error",
@@ -59,7 +57,7 @@ type WebViewScriptLoadedEvent = $ReadOnly<{|
 type NativeProps = $ReadOnly<{|
   ...ViewProps,
   sourceURL?: string;
-  onScriptLoaded?: BubblingEventHandler<WebViewScriptLoadedEvent>?;
+  onScriptLoaded?: CodegenTypes.BubblingEventHandler<WebViewScriptLoadedEvent>?;
 |}>;
 
 +interface NativeCommands {
@@ -280,6 +278,7 @@ Run your app with the usual commands. Tap the refresh button to see the page get
 
 ## Notes
 
+- Diff context aligned with the Fabric Native Components introduction spec (root react-native imports, CodegenTypes namespace); the official page uses deep imports from react-native/Libraries/...
 - React import added; the official snippet uses React.* at runtime without importing it.
 - In TypeScript, `React.ElementRef` is deprecated; the correct type is `React.ComponentRef`. However, due to a bug in Codegen, using `ComponentRef` will crash the app (per the official page; the fix needs a new React Native release).
 - Corrected: the official App diff imports `../specs/WebViewNativeComponent`, but the introduction guide places `App.tsx` and `specs/` side by side in `Demo/`; the import path is `./specs/WebViewNativeComponent` here.

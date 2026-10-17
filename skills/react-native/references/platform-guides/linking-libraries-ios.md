@@ -14,7 +14,13 @@ Automatic linking: install a library with native dependencies.
 npm install "<library-with-native-dependencies>" --save
 ```
 
-Next time you build your app the native code will be linked thanks to the autolinking mechanism of the React Native community CLI.
+Install the CocoaPods dependencies:
+
+```shell
+cd ios && bundle exec pod install
+```
+
+After installing pods, the next build links the native code thanks to the autolinking mechanism of the React Native community CLI.
 
 ### Manual linking
 
@@ -26,6 +32,7 @@ Next time you build your app the native code will be linked thanks to the autoli
 
 ## Notes
 
+- Added the CocoaPods install step (bundle exec pod install in ios/); the official page omits it although iOS autolinking runs through the Podfile.
 - Placeholder quoted here; the official page shows it unquoted.
 - All the libraries shipped with React Native live in the `Libraries` folder in the root of the repository. Some are pure JavaScript and you only need to `require` them. Others rely on native code; in that case you have to add those files to your app, otherwise the app throws an error as soon as you try to use the library.
 - The `--save` or `--save-dev` flag is very important for automatic linking: React Native links your libs based on `dependencies` and `devDependencies` in your `package.json` file.
