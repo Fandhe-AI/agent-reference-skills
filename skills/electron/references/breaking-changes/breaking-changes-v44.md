@@ -211,7 +211,7 @@ now reached through a new `clipboard.selection` sub-namespace.
 
 #### Example migration code
 
-Adapted (not in the official docs): added `nativeImage` to the require, which the official snippet omits (`readImage` uses it).
+Adapted (not in the official docs): added `nativeImage` to the require, which the official snippet omits (`readImage` uses it). Also, readBuffer / writeBuffer wrap the raw OS format name in the `electron application/osclipboard;format="..."` custom format, which the official snippet omits although the migration table requires it.
 
 ```js
 const { clipboard, ClipboardItem, nativeImage } = require('electron')
@@ -247,23 +247,25 @@ async function writeClipboard(format, text, clipboardType) {
 }
 
 async function readBuffer(format, clipboardType) {
+  const mimeType = `electron application/osclipboard;format="${format}"`
   const clipboardToUse = getClipboardToUse(clipboardType)
   const clipboardItems = await clipboardToUse.read()
   const foundItem = clipboardItems.find((clipboardItem) => {
-    return clipboardItem.types.includes(format)
+    return clipboardItem.types.includes(mimeType)
   })
   if (foundItem) {
     // getType() resolves to a Blob; convert it to a Buffer.
-    const blob = await foundItem.getType(format)
+    const blob = await foundItem.getType(mimeType)
     return Buffer.from(await blob.arrayBuffer())
   }
 }
 
 async function writeBuffer(format, buffer, clipboardType) {
+  const mimeType = `electron application/osclipboard;format="${format}"`
   const clipboardToUse = getClipboardToUse(clipboardType)
   return clipboardToUse.write([
     new ClipboardItem({
-      [format]: new Blob([buffer])
+      [mimeType]: new Blob([buffer])
     })
   ])
 }
@@ -386,7 +388,7 @@ These only worked on macOS 12 and below. Support for macOS 12 has been dropped.
 ## Notes
 
 - Affected API areas (for cross-reference): `webPreferences.nodeIntegrationInWorker` / `nodeIntegrationInSubFrames`; preload scripts (window and session); app `select-client-certificate` event; `net.request`; utility process `respondToAuthRequestsFromMainProcess`; `app.isUnityRunning()` (removed); `app.setBadgeCount` / `app.badgeCount`; `setProgressBar`; `clipboard` / `ClipboardItem` (removed from renderer, Promise-based); `app.setLoginItemSettings` / `app.getLoginItemSettings`; platform support (macOS 12, win32-ia32, linux-armv7l); ANGLE linking.
-- Adapted (not in the official docs): the clipboard example migration code adds `nativeImage` to the `require('electron')` destructuring; the official snippet omits it although `readImage` calls `nativeImage.createFromBuffer`.
+- Adapted (not in the official docs): the clipboard example migration code adds `nativeImage` to the `require('electron')` destructuring; the official snippet omits it although `readImage` calls `nativeImage.createFromBuffer`. Likewise, `readBuffer` / `writeBuffer` wrap the raw OS format name in the `electron application/osclipboard;format="..."` custom format, which the official snippet omits although the migration table requires it.
 - The `clipboard` entries describe the Electron main-process OS clipboard API. For Web UI component libraries use ark-ui or chakra-ui; native clipboard APIs of other platforms are covered by apple-appkit, android-platform-core and windows-app-sdk.
 - The `net.request` / `select-client-certificate` entries concern Electron's client-side `net` module; server-side HTTP request handling is covered by fastify and hono.
 - Anchor note: the `Deprecated: clipboard API access from renderer processes` entry referenced above is in the 40.0 section (see [v41-v40](./breaking-changes-v41-v40.md)).
