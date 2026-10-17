@@ -11,7 +11,9 @@ Compose Multiplatform is a cross-platform UI toolkit developed by JetBrains. It 
 | Platforms | Android, iOS, desktop, web | Android |
 | Supported by | JetBrains | Google |
 
-## Dependency mapping
+## Signature / Usage
+
+### Dependency mapping
 
 ```text
 compose.material3
@@ -21,7 +23,9 @@ compose.material3
 
 This is chosen automatically from Gradle Module Metadata in the multiplatform artifacts (the mapping above restates the source's `compose.material3` example).
 
-## Availability of components and APIs
+## Options / Props
+
+### Availability of components and APIs
 
 | Component / API | Compose Multiplatform | Jetpack Compose |
 |-----------------|-----------------------|-----------------|

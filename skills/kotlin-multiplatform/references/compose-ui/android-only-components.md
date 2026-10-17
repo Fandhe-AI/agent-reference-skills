@@ -6,6 +6,22 @@ source: https://kotlinlang.org/docs/multiplatform/compose-android-only-component
 
 Compose Multiplatform builds on Jetpack Compose. Most functionality is available on all platforms, but some APIs and libraries only work in the Android target, because they are Android-specific or have not been ported yet. Using them in `commonMain` makes the IDE report the API as unavailable.
 
+## Signature / Usage
+
+```kotlin
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
+
+        setContent {
+            // Calling the common App() composable
+            App()
+        }
+    }
+}
+```
+
 ## Options / Props
 
 Android-only API (Android-specific, usually uses `android.*` classes; best kept in `androidMain`):
@@ -47,6 +63,7 @@ API without Android classes in signatures, not available in `commonMain` in Comp
 
 ## Notes
 
+- Snippet quoted from the Native application entry points page (Android entry point using the Android-only `Activity.setContent()`); the source page itself has no code.
 - Permissions, devices (Bluetooth, GPS, Camera) and IO (network, files, databases) are out of scope of Compose Multiplatform.
 - APIs in the last group are normally ported after they are introduced in Jetpack Compose for Android.
 - For each API that can be ported there is an open issue in the Compose Multiplatform YouTrack project (CMP); if none exists you can create one.

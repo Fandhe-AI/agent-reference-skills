@@ -87,7 +87,9 @@ kotlin {
 }
 ```
 
-## Qualifiers
+## Options / Props
+
+### Qualifiers
 
 Qualifiers present the same resource differently by locale, screen density, or interface theme. All resource types except raw files in `files` support qualifiers, added to directory names with a hyphen. Priority order: language, theme, density.
 
@@ -102,7 +104,7 @@ Qualifiers present the same resource differently by locale, screen density, or i
 | Theme | `light`, `dark` (selected by current system theme) |
 | Density | `ldpi` 120 DPI 0.75x; `mdpi` 160 DPI 1x; `hdpi` 240 DPI 1.5x; `xhdpi` 320 DPI 2x; `xxhdpi` 480 DPI 3x; `xxxhdpi` 640dpi 4x |
 
-### Fallback for languages with multiple scripts
+#### Fallback for languages with multiple scripts
 
 On Android and desktop, the system may request a locale with an empty script (for example `zh` instead of `zh-Hans` / `zh-Hant`). If only script-specific resources exist, all of them match such a request and the resource cannot be resolved, so the app throws an exception. Add a script-less directory for every language that has script-specific resources:
 

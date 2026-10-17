@@ -150,13 +150,13 @@ binaries {
         runTask?.dependsOn(prepareForRun)
     }
 
-    framework("my_framework" listOf(RELEASE)) {
+    framework("my_framework", listOf(RELEASE)) {
         // Include a static library instead of a dynamic one into the framework.
         isStatic = true
 
         // Disable compilation cache for this binary
         disableNativeCache(
-            version = DisableCacheInKotlinVersion.2_3_0,
+            version = DisableCacheInKotlinVersion.`2_4_20`,
             reason = "Cache bug",
             issue = URI("https://youtrack.com/YY-1111")
         )
@@ -222,7 +222,7 @@ kotlin {
 - A target that is not supported by the current host is ignored during building and, therefore, not published.
 - The `android` configuration inside the `kotlin {}` block doesn't replace the build configuration of any Android project; Android Gradle Plugin build scripts belong to android-build-gradle.
 - Kotlin/Native target details, `wasmWasi`, and Kotlin/JS execution environments are documented on the Kotlin site and belong to the kotlin skill.
-- Groovy variants of the binaries and cinterops examples exist in the original page (`compilations.test`, `compilations.main { cinterops { myInterop { ... } } }`); the Kotlin DSL form is shown here. The `framework(...)` example is reproduced verbatim from the source, including its missing comma after the name.
+- Groovy variants of the binaries and cinterops examples exist in the original page (`compilations.test`, `compilations.main { cinterops { myInterop { ... } } }`); the Kotlin DSL form is shown here. The source `framework(...)` example lacks the comma after the name and writes the numeric entry unquoted as `DisableCacheInKotlinVersion.2_3_0`; both are corrected here. In the Kotlin Gradle plugin source at tag v2.4.21, `DisableCacheInKotlinVersion` is a sealed class whose backticked objects are `2_3_20` (deprecated, ERROR), `2_4_0` (deprecated, WARNING) and `2_4_20`; there is no `2_3_0`, so the example uses the non-deprecated `2_4_20`.
 - Migration (Kotlin 1.9 -> 2.2): the target presets API (`presets`, `KotlinTargetPreset`, `fromPreset`) was deprecated from 1.9.20 and removed in 2.2.0; the Apple target shortcuts `ios()`, `watchos()` and `tvos()` were warned about in 1.9.20, errored in 2.1.0 and removed in 2.2.0. Declare the individual targets (for example `iosArm64()`) instead. See the compatibility category for details.
 
 ## Related

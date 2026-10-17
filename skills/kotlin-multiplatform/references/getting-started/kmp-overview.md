@@ -6,7 +6,16 @@ source: https://kotlinlang.org/docs/multiplatform/kmp-overview.html
 
 Kotlin Multiplatform (KMP) is an open-source technology from JetBrains that enables sharing code across Android, iOS, desktop, web, and server while retaining the advantages of native development. With Compose Multiplatform, you can also share UI code across multiple platforms.
 
-## Key points
+## Signature / Usage
+
+```kotlin
+kotlin {
+    jvm() // Declares a JVM target
+    iosArm64() // Declares a target that corresponds to 64-bit iPhones
+}
+```
+
+### Key points
 
 - Code sharing is incremental: share isolated modules (networking, storage), share all business logic while keeping the UI native, or share logic and UI with Compose Multiplatform.
 - iOS UI can be built entirely with SwiftUI or UIKit, uniformly with Compose Multiplatform, or by mixing native and shared UI code.
@@ -14,7 +23,7 @@ Kotlin Multiplatform (KMP) is an open-source technology from JetBrains that enab
 - IntelliJ IDEA and Android Studio support KMP through the Kotlin Multiplatform IDE plugin, which includes common UI previews and Compose Hot Reload.
 - Multiplatform libraries (networking, storage, dependency injection, testing, UI, serialization, and more) can be browsed on klibs.io, a search platform maintained by JetBrains.
 
-## Where to start (as listed in the source)
+### Where to start (as listed in the source)
 
 | Goal | Page |
 |------|------|
@@ -32,7 +41,7 @@ Kotlin Multiplatform (KMP) is an open-source technology from JetBrains that enab
 ## Notes
 
 - The page also contains survey figures, a company adoption list, and links to case studies and team-adoption articles; these are marketing content and are not reproduced here.
-- This page has no code blocks in the source.
+- Snippet quoted from the project-structure "Discover your project" page (target declaration in the `kotlin {}` block); the source page itself has no code.
 - Distance line: this skill covers Kotlin Multiplatform and Compose Multiplatform from kotlinlang.org/docs/multiplatform; Kotlin language and stdlib pages belong to the kotlin skill, and native SwiftUI / UIKit APIs belong to apple-swiftui / apple-uikit.
 
 ## Related

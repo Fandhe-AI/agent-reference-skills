@@ -25,7 +25,7 @@ kotlin {
         summary = "CocoaPods test library"
         homepage = "https://github.com/JetBrains/kotlin"
         
-        extraSpecAttributes["vendored_frameworks"] = 'CustomFramework.xcframework'
+        extraSpecAttributes["vendored_frameworks"] = "CustomFramework.xcframework"
         license = "{ :type => 'MIT', :text => 'License text'}"
         source = "{ :git => 'git@github.com:vkormushkin/kmmpodlibrary.git', :tag => '$version' }"
         authors = "Kotlin Dev"
@@ -128,6 +128,7 @@ Targets (use `deploymentTarget` per target for the minimum version of the Pod li
 
 ## Notes
 
+- The source writes `'CustomFramework.xcframework'` with single quotes, which is not a valid Kotlin string literal; double quotes are used here.
 - Plugin versions match the Kotlin release versions; the latest stable in the pinned docs is 2.4.21.
 - When applied, CocoaPods adds both `debug` and `release` frameworks as output binaries for all targets.
 - The source points to `CocoapodsExtension.kt` in the Kotlin Gradle plugin repository for the full DSL syntax.

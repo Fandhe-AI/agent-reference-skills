@@ -6,7 +6,20 @@ source: https://kotlinlang.org/docs/multiplatform/supported-platforms.html
 
 Platforms have varying stability levels depending on support by core Kotlin Multiplatform (code sharing) and by the Compose Multiplatform UI framework.
 
-## Core Kotlin Multiplatform platform stability
+## Signature / Usage
+
+```kotlin
+kotlin {
+    jvm()
+    iosArm64()
+    macosArm64()
+    js().browser()
+}
+```
+
+## Options / Props
+
+### Core Kotlin Multiplatform platform stability
 
 | Platform | Stability level |
 |----------|-----------------|
@@ -19,7 +32,7 @@ Platforms have varying stability levels depending on support by core Kotlin Mult
 | watchOS | Beta |
 | tvOS | Beta |
 
-## Compose Multiplatform platform stability
+### Compose Multiplatform platform stability
 
 | Platform | Stability level |
 |----------|-----------------|
@@ -28,7 +41,7 @@ Platforms have varying stability levels depending on support by core Kotlin Mult
 | Desktop (JVM) | Stable |
 | Web based on Kotlin/Wasm | Beta |
 
-## Stability level meanings
+### Stability level meanings
 
 Kotlin (core):
 
@@ -54,7 +67,7 @@ Experimental, Alpha and Beta are collectively called pre-stable levels.
 
 - KMP supports more native platforms than the core table lists; see Kotlin/Native target support (kotlinlang.org/docs/native-target-support.html) for each.
 - The source recommends the Recommended IDEs page to pick an IDE for a given platform combination.
-- This page has no code blocks in the source; the tables above are the verbatim data.
+- Snippet quoted from the Gradle DSL reference targets section (target declarations); the source page itself has no code, and the tables above are the verbatim data.
 - Distance line: Kotlin component stability and Kotlin/Native target tiers on kotlinlang.org/docs (outside /docs/multiplatform) belong to the kotlin skill.
 
 ## Related

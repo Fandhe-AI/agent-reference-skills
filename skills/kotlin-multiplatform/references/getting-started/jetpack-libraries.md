@@ -6,7 +6,9 @@ source: https://kotlinlang.org/docs/multiplatform/compose-multiplatform-jetpack-
 
 Many Jetpack libraries (like `androidx.annotation`) are published fully multiplatform by the Android team. Others, such as Compose itself, Navigation, Lifecycle, and ViewModel, need additional support to work in common code: the Compose Multiplatform team builds artifacts for non-Android platforms and publishes them together with the original Android artifacts under a single group ID. The Android distribution uses the Android artifact; other targets use artifacts built for their platforms. The Compose Multiplatform Gradle plugin maps platform-specific artifacts to distributions.
 
-## Example: Navigation artifacts for iOS
+## Signature / Usage
+
+### Example: Navigation artifacts for iOS
 
 ```text
 org.jetbrains.androidx.navigation.navigation-compose-uikitarm64
@@ -17,7 +19,9 @@ org.jetbrains.androidx.navigation.navigation-runtime-iossimulatorarm64
 
 These, plus artifacts for other platforms and a reference to the original Android library (`androidx.navigation.navigation-compose`), are published as a group and accessed through the unifying `org.jetbrains.androidx.navigation.navigation-compose` dependency.
 
-## Compose packages for multiplatform projects
+## Options / Props
+
+### Compose packages for multiplatform projects
 
 | androidx library | Multiplatform artifact |
 |------------------|------------------------|
@@ -28,7 +32,7 @@ These, plus artifacts for other platforms and a reference to the original Androi
 | `androidx.compose.material` | `org.jetbrains.compose.material` |
 | Material 3 adaptive | `org.jetbrains.compose.material3.adaptive:adaptive*` (standalone artifacts) |
 
-## Additional libraries bundled with Compose Multiplatform
+### Additional libraries bundled with Compose Multiplatform
 
 | Artifact / component | Purpose |
 |----------------------|---------|

@@ -6,7 +6,9 @@ source: https://kotlinlang.org/docs/multiplatform/compose-platform-specifics.htm
 
 Compose Multiplatform aims for apps that behave as similarly as possible across platforms. This page lists unavoidable differences and temporary compromises when writing shared UI code.
 
-## Entry points per platform
+## Signature / Usage
+
+### Entry points per platform
 
 | Platform | Entry point |
 |----------|-------------|
@@ -15,7 +17,20 @@ Compose Multiplatform aims for apps that behave as similarly as possible across 
 | JVM | `main()` function that launches the main common composable |
 | Kotlin/JS, Kotlin/Wasm | `main()` function that attaches the main common composable to the web page |
 
-## Differences
+```kotlin
+fun main() = application {
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "ComposeDemo"
+    ) {
+        App()
+    }
+}
+```
+
+## Options / Props
+
+### Differences
 
 | Area | Behavior |
 |------|----------|
@@ -32,7 +47,7 @@ Compose Multiplatform aims for apps that behave as similarly as possible across 
 ## Notes
 
 - Platform-specific APIs without multiplatform support must be called from platform-specific source sets; the source suggests checking klibs.io first.
-- This page has no code blocks in the source.
+- Snippet (the JVM entry point) quoted from the Native application entry points page; the source page itself has no code.
 - Distance line: common Compose API behavior (androidx.compose.*, insets, text, gestures) belongs to android-compose-ui / android-compose-components; this page covers only multiplatform differences.
 - Distance line: SwiftUI and UIKit APIs belong to apple-swiftui / apple-uikit.
 

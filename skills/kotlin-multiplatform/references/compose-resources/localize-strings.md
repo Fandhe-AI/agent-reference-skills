@@ -27,7 +27,7 @@ commonMain/composeResources/
 <resources>
     <string name="app_name">My Application</string>
     <string name="greeting">Hello, world!</string>
-    <string name="welcome_message">Welcome, %s!</string>
+    <string name="welcome_message">Welcome, %1$s!</string>
 </resources>
 ```
 
@@ -37,7 +37,7 @@ commonMain/composeResources/
 <resources>
     <string name="app_name">Mi Aplicación</string>
     <string name="greeting">¡Hola mundo!</string>
-    <string name="welcome_message">¡Bienvenido, %s!</string>
+    <string name="welcome_message">¡Bienvenido, %1$s!</string>
 </resources>
 ```
 
@@ -48,16 +48,17 @@ import project.shared.generated.resources.Res
 
 @Composable
 fun MyApp() {
-    Text(stringResource(Res.strings.app_name))
-    Text(stringResource(Res.strings.greeting))
-    Text(stringResource(Res.strings.welcome_message, "User"))
+    Text(stringResource(Res.string.app_name))
+    Text(stringResource(Res.string.greeting))
+    Text(stringResource(Res.string.welcome_message, "User"))
 }
 ```
 
 ## Notes
 
 - If a language has more than one script (for example Chinese or Serbian), add a script-less directory (`values-zh`) in addition to the script-specific ones (`values-b+zh+Hans`, `values-b+zh+Hant`); otherwise the resource cannot be resolved when the system reports the locale without a script.
-- The source page writes the accessor as `Res.strings.app_name`; the resources usage page writes `Res.string.app_name` for the same kind of accessor. Both are quoted verbatim from their respective pages; this page is not reconciled with the usage page.
+- The source page writes `Res.strings.*`, which the resource generator does not produce; the generated accessor object is `Res.string` (as on the resources usage page), so the example uses `Res.string`.
+- The source page uses `%s`; Compose Multiplatform resources substitute only numbered placeholders (`%1$s`, `%1$d`), per the resources usage page.
 
 ## Related
 

@@ -35,7 +35,7 @@ kotlin {
 Compilation unit level (a specific task):
 
 ```kotlin
-task.named<KotlinJvmCompile>("compileKotlinJvm") {
+tasks.named<KotlinJvmCompile>("compileKotlinJvm") {
     compilerOptions {
         allWarningsAsErrors.set(true)
     }
@@ -69,6 +69,7 @@ kotlin {
 
 ## Notes
 
+- The source writes `task.named<...>`; the Gradle API is `tasks.named<...>`.
 - Settings at a higher level work as defaults for the level below; configurations made at a lower level override similar settings at higher levels.
 - For the list of possible compiler options, see All compiler options on the Kotlin Gradle compiler options page (kotlin skill).
 - Migration (Kotlin 2.1 -> 2.2): the `kotlinOptions {}` block is deprecated in Kotlin 2.2.0; use `compilerOptions {}` in build scripts instead. See Migrate from `kotlinOptions{}` to `compilerOptions{}` in the Kotlin docs.

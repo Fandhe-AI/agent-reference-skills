@@ -6,6 +6,25 @@ source: https://kotlinlang.org/docs/multiplatform/multiplatform-ios-integration-
 
 A Kotlin Multiplatform shared module is integrated into an iOS app by generating an iOS framework from the shared module and adding it as a dependency to the iOS project. The framework can be consumed as a local or remote dependency.
 
+## Signature / Usage
+
+```kotlin
+// shared/build.gradle.kts
+kotlin {
+    listOf(
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "Shared"
+
+            // Set this property to "true"
+            isStatic = true
+        }
+    }
+}
+```
+
 ## Options / Props
 
 | Method | Scope | Fits when | Details |
@@ -20,7 +39,7 @@ A Kotlin Multiplatform shared module is integrated into an iOS app by generating
 
 - Choose local integration for full control over the entire codebase and instant updates to final applications when common code changes.
 - Choose remote integration to explicitly separate the code base of the final application from the common code base; the shared code is then integrated like a regular third-party dependency.
-- This overview page has no code in the source.
+- Snippet quoted from the Swift package import page (framework declaration with `baseName` and `isStatic`); the source overview page itself has no code.
 - Distinct from apple-swift (Swift Package Manager itself) and apple-distribution (App Store delivery): this page covers only how a Kotlin framework is wired into an Xcode project.
 
 ## Related

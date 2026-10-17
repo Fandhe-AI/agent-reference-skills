@@ -56,7 +56,7 @@ actual object LocalAppLocale {
 
         val new = when(value) {
             null -> default!!
-            else -> Locale(value)
+            else -> Locale.forLanguageTag(value)
         }
         Locale.setDefault(new)
         configuration.setLocale(new)
@@ -107,7 +107,7 @@ actual object LocalAppLocale {
         }
         val new = when(value) {
             null -> default!!
-            else -> Locale(value)
+            else -> Locale.forLanguageTag(value)
         }
         Locale.setDefault(new)
         return LocalAppLocale.provides(new.toString())
@@ -251,6 +251,7 @@ object LocalAppDensity {
 
 ## Notes
 
+- The source passes the tag to the single-argument `Locale(String)` constructor, which does not parse region or script subtags, so the Android and desktop `actual` examples use `Locale.forLanguageTag`.
 - The locale and theme patterns are described by the docs as a temporary workaround until a common public API is implemented.
 - The theme `actual` uses `InternalComposeUiApi` (`LocalSystemTheme`), hence the `@OptIn`.
 - The `expect` / `actual` mechanism itself is the Kotlin language feature covered by the kotlin skill and in this skill's project-structure expect-actual page.

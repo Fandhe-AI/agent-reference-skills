@@ -35,7 +35,7 @@ app.launchArguments = [
 The JVM locale typically defaults to the OS locale. Set the default in test setup or the entry point before the UI is initialized:
 
 ```java
-java.util.Locale.setDefault(java.util.Locale("es_ES"))
+java.util.Locale.setDefault(java.util.Locale.forLanguageTag("es-ES"))
 ```
 
 ### Web
@@ -44,6 +44,7 @@ Change language in browser preferences for a quick check; use browser automation
 
 ## Notes
 
+- The source passes `"es_ES"` to the single-argument `Locale(String)` constructor, which does not parse region or script subtags, so `Locale.forLanguageTag("es-ES")` is used here.
 - Key scenarios: custom locale (override programmatically and assert UI, formatted strings, and layouts, including RTL); default resources (set an unsupported locale and verify fallback to the default resources); locale-specific cases (formatting such as `MM/dd/yyyy` vs. `dd/MM/yyyy`, RTL/LTR behavior, and multi-script languages: set the locale to `zh-Hans`, `zh-Hant`, and `zh` and verify each resolves to a resource).
 - These are locale-switching techniques per platform, not the Compose UI test API; for `runComposeUiTest` and common Compose testing see this skill's compose-ui testing page and android-testing.
 
