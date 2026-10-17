@@ -62,6 +62,17 @@ This uses `cargo` directly to build the Rust application in development and prod
       // ideally you should also configure a `problemMatcher`
       // see https://code.visualstudio.com/docs/editor/tasks#_can-a-background-task-be-used-as-a-prelaunchtask-in-launchjson
       "isBackground": true,
+      // a background `problemMatcher` is required for a background `preLaunchTask`
+      "problemMatcher": {
+        "owner": "custom",
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activeBegins": true,
+          "beginsPattern": ".",
+          // replace with a regex matching your dev server's ready output (e.g. Vite's `Local:` line)
+          "endsPattern": "Local:"
+        }
+      },
       // change this to your `beforeDevCommand`:
       "command": "yarn",
       "args": ["dev"]
@@ -131,6 +142,17 @@ It does not use the Tauri CLI either. `tasks.json` is the same as with `lldb`, e
       // ideally you should also configure a `problemMatcher`
       // see https://code.visualstudio.com/docs/editor/tasks#_can-a-background-task-be-used-as-a-prelaunchtask-in-launchjson
       "isBackground": true,
+      // a background `problemMatcher` is required for a background `preLaunchTask`
+      "problemMatcher": {
+        "owner": "custom",
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activeBegins": true,
+          "beginsPattern": ".",
+          // replace with a regex matching your dev server's ready output (e.g. Vite's `Local:` line)
+          "endsPattern": "Local:"
+        }
+      },
       // change this to your `beforeDevCommand`:
       "command": "yarn",
       "args": ["dev"]
@@ -149,6 +171,7 @@ It does not use the Tauri CLI either. `tasks.json` is the same as with `lldb`, e
 ## Notes
 
 - `custom-protocol` is a feature managed by the Tauri CLI; when invoking cargo directly for a production build, enable `tauri/custom-protocol` or the app keeps using `devUrl` (upstream example omits it).
+- Upstream tasks.json examples set only `isBackground: true`; a background `problemMatcher` (beginsPattern / endsPattern) was added because VS Code needs it to know when a background preLaunchTask is ready. The `endsPattern` value `Local:` is a placeholder assuming Vite output; adjust it to your dev server.
 
 ## Related
 
