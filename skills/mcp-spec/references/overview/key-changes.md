@@ -24,7 +24,7 @@ Changes in the 2026-07-28 revision relative to the previous revision 2025-11-25.
 
 (Illustrative `server/discover` result from the concepts walkthrough; shows `resultType`, `ttlMs` and `cacheScope` introduced below.)
 
-## Major changes
+### Major changes
 
 1. Remove protocol-level sessions and the `Mcp-Session-Id` header from Streamable HTTP. List endpoints (`tools/list`, `resources/list`, `prompts/list`) no longer vary per-connection. Servers needing cross-call state use explicit, server-minted handles passed as ordinary tool arguments (SEP-2567).
 2. Make MCP stateless: remove the `initialize` / `notifications/initialized` handshake. Every request carries its protocol version and client capabilities in `_meta` (`io.modelcontextprotocol/protocolVersion`, `io.modelcontextprotocol/clientCapabilities`). Clients SHOULD identify themselves on each request (`io.modelcontextprotocol/clientInfo`), and servers SHOULD identify themselves in each result's `_meta` (`io.modelcontextprotocol/serverInfo`). Version mismatches return `UnsupportedProtocolVersionError` (SEP-2575).
@@ -36,7 +36,7 @@ Changes in the 2026-07-28 revision relative to the previous revision 2025-11-25.
 8. All results carry a required `resultType`: `"complete"` for ordinary results and `"input_required"` for interim MRTR results. Clients **MUST** treat results from earlier-protocol servers that omit the field as `"complete"` (SEP-2322).
 9. Remove SSE stream resumability and message redelivery (`Last-Event-ID` header, SSE event IDs) from Streamable HTTP. A broken response stream loses the in-flight request; clients **MUST** re-issue it as a new request with a new request ID (SEP-2575).
 
-## Minor changes
+### Minor changes
 
 1. Add `extensions` field to `ClientCapabilities` and `ServerCapabilities`.
 2. Document OpenTelemetry trace context propagation conventions for `_meta` keys (`traceparent`, `tracestate`, `baggage`) (SEP-414).
@@ -51,18 +51,18 @@ Changes in the 2026-07-28 revision relative to the previous revision 2025-11-25.
 11. Remove `notifications/elicitation/complete` and the `elicitationId` field of URL mode elicitation requests (both from 2025-11-25). Servers needing correlation across retries encode their own identifier in `requestState`.
 12. Define an error code allocation policy: `-32000` to `-32019` remains implementation-defined, `-32020` to `-32099` is reserved for the MCP specification. Renumber: `HeaderMismatch` `-32001` -> `-32020`, `MissingRequiredClientCapability` `-32003` -> `-32021`, `UnsupportedProtocolVersion` `-32004` -> `-32022`; add `HeaderMismatchError` to the schema.
 
-## Deprecated
+### Deprecated
 
 1. Roots, Sampling, and Logging (SEP-2577). Migrate: tool parameters / resource URIs / server configuration instead of Roots; direct LLM provider APIs instead of Sampling; `stderr` (stdio) or OpenTelemetry instead of Logging.
 2. HTTP+SSE transport (deprecated since `2025-03-26`) reclassified as Deprecated (SEP-2596). Migrate to Streamable HTTP.
 3. `includeContext` values `"thisServer"` and `"allServers"` reclassified as Deprecated (SEP-2596). Omit the field or use `"none"`.
 4. OAuth 2.0 Dynamic Client Registration (RFC 7591) deprecated in favor of Client ID Metadata Documents (PR #2858); remains for backwards compatibility.
 
-## Other schema changes
+### Other schema changes
 
 - `schema.json` now reflects that TypeScript `minimum` / `maximum` / `default` are `number`s, not just `integers` (PR #2710).
 
-## Governance and process
+### Governance and process
 
 - Adopt the feature lifecycle and deprecation policy (Active, Deprecated, Removed; minimum twelve-month window; registry of deprecated features) (SEP-2596).
 - Formalize the PR-based SEP workflow with markdown files in `seps/` (SEP-1850).

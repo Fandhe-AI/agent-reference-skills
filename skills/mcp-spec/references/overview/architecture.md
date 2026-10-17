@@ -41,7 +41,7 @@ sequenceDiagram
     end
 ```
 
-## Core Components
+### Core Components
 
 **Host** (container and coordinator):
 
@@ -68,14 +68,14 @@ sequenceDiagram
 - Must respect security constraints
 - Can be local processes or remote services
 
-## Design Principles
+### Design Principles
 
 1. Servers should be extremely easy to build (hosts handle complex orchestration)
 2. Servers should be highly composable
 3. Servers should not be able to read the whole conversation, nor "see into" other servers (full conversation history stays with the host; cross-server interactions are controlled by the host)
 4. Features can be added to servers and clients progressively (capabilities negotiated as needed; backwards compatibility is maintained)
 
-## Capability Negotiation
+### Capability Negotiation
 
 Clients and servers declare supported features on each request.
 

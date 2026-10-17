@@ -22,7 +22,7 @@ Declare support in the `extensions` field of the `io.modelcontextprotocol/client
 }
 ```
 
-## Extension identifiers
+### Extension identifiers
 
 | Extension | Identifier | Description |
 | --- | --- | --- |
@@ -30,7 +30,7 @@ Declare support in the `extensions` field of the `io.modelcontextprotocol/client
 | OAuth Client Credentials | `io.modelcontextprotocol/oauth-client-credentials` | Machine-to-machine auth without interactive user login |
 | Enterprise-Managed Authorization | `io.modelcontextprotocol/enterprise-managed-authorization` | Centralized access control via enterprise IdP |
 
-## Support matrix
+### Support matrix
 
 | Client | MCP Apps | OAuth Client Credentials | Enterprise Auth |
 | --- | :---: | :---: | :---: |

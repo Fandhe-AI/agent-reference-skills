@@ -67,7 +67,7 @@ Servers advertise extension support in the `server/discover` response:
 
 Each extension specifies the schema of its settings object; an empty object indicates no settings.
 
-## Official extensions
+### Official extensions
 
 | Extension | Repository | Description |
 | --- | --- | --- |

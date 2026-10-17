@@ -22,7 +22,7 @@ Both extensions use standard extension negotiation: clients declare support in t
 }
 ```
 
-## Choosing the right extension
+### Choosing the right extension
 
 | Scenario | Recommended extension |
 | --- | --- |

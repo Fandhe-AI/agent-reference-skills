@@ -8,20 +8,21 @@ MCP is a stateless protocol: all the information needed to process a request is 
 
 ## Signature / Usage
 
-Every request supplies version, identity, and capabilities in `_meta` (no prior handshake):
+Every request supplies version, identity, and capabilities in `_meta` (no prior handshake). Example `server/discover` request:
 
 ```json
 {
   "jsonrpc": "2.0",
-  "id": 2,
-  "method": "tools/call",
+  "id": "discover-1",
+  "method": "server/discover",
   "params": {
-    "name": "get_weather",
-    "arguments": {
-      "location": "New York"
-    },
     "_meta": {
-      "traceparent": "00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01"
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientInfo": {
+        "name": "ExampleClient",
+        "version": "1.0.0"
+      },
+      "io.modelcontextprotocol/clientCapabilities": {}
     }
   }
 }

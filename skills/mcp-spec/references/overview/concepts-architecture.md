@@ -57,11 +57,11 @@ Discovery request and response (step 1 of the walkthrough):
 }
 ```
 
-## Scope
+### Scope
 
 The Model Context Protocol includes: the MCP Specification; MCP SDKs; MCP Development Tools (including the MCP Inspector); MCP Reference Server Implementations. MCP focuses solely on the protocol for context exchange; it does not dictate how AI applications use LLMs or manage the provided context.
 
-## Participants
+### Participants
 
 - **MCP Host**: the AI application that coordinates and manages one or multiple MCP clients
 - **MCP Client**: a component that maintains a connection to an MCP server and obtains context for the host
@@ -69,14 +69,14 @@ The Model Context Protocol includes: the MCP Specification; MCP SDKs; MCP Develo
 
 The host creates one MCP client per MCP server; each client maintains a dedicated connection. Local servers using STDIO typically serve a single client; remote servers using Streamable HTTP typically serve many clients. "MCP server" refers to the program serving context data regardless of where it runs.
 
-## Layers
+### Layers
 
 | Layer | Contents |
 |-------|----------|
 | Data layer | JSON-RPC 2.0 based protocol: discovery (`server/discover`), server features (tools, resources, prompts), client features (elicitation; sampling is deprecated as of `2026-07-28`), utility features (notifications, progress tracking) |
 | Transport layer | Connection establishment, message framing, authorization. Two mechanisms: **stdio** (standard I/O between local processes) and **Streamable HTTP** (HTTP POST for client-to-server messages, optional SSE for streaming; supports bearer tokens, API keys, custom headers; MCP recommends OAuth) |
 
-## Primitives
+### Primitives
 
 Server primitives: **Tools** (executable functions), **Resources** (data sources providing context), **Prompts** (reusable interaction templates). Each has methods for discovery (`*/list`), retrieval (`*/get`), and in some cases execution (`tools/call`).
 
@@ -86,11 +86,11 @@ Deprecated as of `2026-07-28`: **Sampling** (`sampling/createMessage`, also deli
 
 Optional extensions build on the core protocol, for example the Tasks extension.
 
-## Statelessness and discovery
+### Statelessness and discovery
 
 MCP is a stateless protocol. Every request carries the protocol version and relevant capabilities in `_meta`; clients should also identify themselves there. Servers advertise supported versions and capabilities through the mandatory `server/discover` request, which clients may send before any other request. Calling it is optional; the response is typically cacheable. Unsupported versions are rejected with `UnsupportedProtocolVersionError` listing supported versions.
 
-## Notifications
+### Notifications
 
 Change notifications are opt-in: the client opens a long-lived `subscriptions/listen` stream naming the notification types it wants.
 
@@ -100,7 +100,11 @@ Change notifications are opt-in: the client opens a long-lived `subscriptions/li
   "id": 4,
   "method": "subscriptions/listen",
   "params": {
-    "_meta": { "io.modelcontextprotocol/protocolVersion": "2026-07-28" },
+    "_meta": {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientInfo": { "name": "example-client", "version": "1.0.0" },
+      "io.modelcontextprotocol/clientCapabilities": { "elicitation": {} }
+    },
     "notifications": { "toolsListChanged": true }
   }
 }

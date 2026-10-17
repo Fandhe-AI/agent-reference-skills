@@ -49,6 +49,7 @@ The server **MAY** then send progress notifications:
 
 ## Notes
 
+- The example is the spec's non-normative excerpt focused on one key; a real client request must also carry the required `io.modelcontextprotocol/protocolVersion` and `io.modelcontextprotocol/clientCapabilities` (use `{}` when no capabilities apply).
 - Progress tokens **MUST** be a string or integer value and can be chosen by the client using any means.
 - Progress notifications **MUST** only reference tokens that were provided in an active request and are associated with an in-progress operation.
 - Servers receiving a progress token **MAY** choose not to send any progress notifications, send them at whatever frequency they deem appropriate, and omit the total if unknown.

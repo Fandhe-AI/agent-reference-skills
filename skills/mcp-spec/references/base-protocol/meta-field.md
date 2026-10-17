@@ -58,6 +58,7 @@ Per-response protocol field (result `_meta`):
 
 ## Notes
 
+- The example is the spec's non-normative excerpt focused on one key; a real client request must also carry the required `io.modelcontextprotocol/protocolVersion` and `io.modelcontextprotocol/clientCapabilities` (use `{}` when no capabilities apply).
 - Key name format: an optional **prefix** and a **name**. A prefix, if specified, **MUST** be a series of labels separated by dots (`.`), followed by a slash (`/`). Labels **MUST** start with a letter and end with a letter or digit; interior characters can be letters, digits, or hyphens. Implementations **SHOULD** use reverse DNS notation (e.g., `com.example/`).
 - Any prefix where the second label is `modelcontextprotocol` or `mcp` is reserved for MCP use (e.g. `io.modelcontextprotocol/`, `dev.mcp/`, `org.modelcontextprotocol.api/`, `com.mcp.tools/`); `com.example.mcp/` is NOT reserved.
 - Name: unless empty, **MUST** begin and end with an alphanumeric character (`[a-z0-9A-Z]`); **MAY** contain hyphens, underscores, dots, and alphanumerics in between.

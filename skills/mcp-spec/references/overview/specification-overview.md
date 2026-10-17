@@ -15,7 +15,9 @@ Top page of the MCP specification 2026-07-28: JSON-RPC 2.0 messages between host
   "method": "server/discover",
   "params": {
     "_meta": {
-      "io.modelcontextprotocol/protocolVersion": "2026-07-28"
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientInfo": { "name": "example-client", "version": "1.0.0" },
+      "io.modelcontextprotocol/clientCapabilities": { "elicitation": {} }
     }
   }
 }
@@ -39,7 +41,7 @@ The protocol uses JSON-RPC 2.0 messages to establish communication between:
 
 MCP takes some inspiration from the Language Server Protocol.
 
-## Key Details
+### Key Details
 
 | Area | Contents |
 |------|----------|
@@ -48,7 +50,7 @@ MCP takes some inspiration from the Language Server Protocol.
 | Client features | **Elicitation** (server-initiated requests for additional information from users) |
 | Additional utilities | Configuration, progress tracking, cancellation, error reporting |
 
-### Extensions
+#### Extensions
 
 Beyond the core protocol, MCP defines optional extensions that add modular, specialized, or experimental functionality. Extensions are always opt-in and require explicit support from both client and server, negotiated during initialization. Notable extensions:
 
@@ -56,7 +58,7 @@ Beyond the core protocol, MCP defines optional extensions that add modular, spec
 - **Skills over MCP**: rich, structured instructions for agent workflows, discovered and consumed through MCP
 - **MCP Apps**: interactive UI elements (charts, forms, video players) rendered inline within conversations
 
-## Security and Trust & Safety
+### Security and Trust & Safety
 
 Key principles:
 
