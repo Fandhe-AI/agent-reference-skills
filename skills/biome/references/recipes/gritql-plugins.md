@@ -105,7 +105,7 @@ or {
 
 Match Biome CST nodes (`PascalCase`, e.g. `JsConditionalExpression`) directly. `contains` searches the whole subtree, but it also matches the node itself, so bind the child fields (`consequent` / `alternate`) and search only inside them.
 
-Adapted (not in the official docs): consequent / alternate を束縛して単独の三項演算子を検出しないようにした。詳細は Notes。
+Adapted (not in the official docs): binds `consequent` / `alternate` so that a single, non-nested ternary is not reported. See Notes.
 
 ```grit
 engine biome(1.0)
