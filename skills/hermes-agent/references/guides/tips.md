@@ -1,5 +1,7 @@
 # Tips & Best Practices
 
+Not sure which model to pick? `hermes setup --portal` gives 300+ models under one Nous Portal subscription.
+
 Practical guidance for getting the most out of Hermes Agent across prompting, CLI usage, context files, memory/skills, performance, messaging, and security.
 
 ## Prompting
@@ -24,7 +26,7 @@ Practical guidance for getting the most out of Hermes Agent across prompting, CL
 
 ## Context Files
 
-**`AGENTS.md` (project-level):** Store architecture decisions, coding conventions, and project-specific rules. Injected automatically into every session. In monorepos, all `AGENTS.md` files at every directory level are discovered and concatenated.
+**`AGENTS.md` (project-level):** Store architecture decisions, coding conventions, and project-specific rules. The top-level file in the working directory is injected at session start; subdirectory `AGENTS.md` files are discovered lazily during tool calls and injected into tool results, not loaded upfront. Keep context files concise: they are injected into every message.
 
 **`SOUL.md` (global, `~/.hermes/SOUL.md`):** Customize the agent's default behavior globally — communication style, technical preferences, response patterns.
 
@@ -40,7 +42,8 @@ Practical guidance for getting the most out of Hermes Agent across prompting, CL
 
 ## Performance & Cost
 
-- **Prompt cache stability**: Keep system prompts and context files consistent within sessions to maximize provider cache hits.
+- **Prompt cache stability**: Keep system prompts and context files consistent within sessions to maximize provider cache hits. The cache is keyed to the model and account, so an explicit `/model` switch, an automatic provider fallback, or a credential-pool rotation forces the next turn to re-read the whole conversation at full input price; on long sessions it is often cheaper to start a fresh session on the other model than to bounce back and forth.
+- **Fixed per-message cost**: `hermes prompt-size` shows the system prompt, skills index, memory, and tool schema byte breakdown offline.
 - **Compress history**: Use `/compress` to summarize conversation history when token accumulation slows responses.
 - **Parallel delegation**: Use `delegate_task` for concurrent subtasks — each subagent maintains independent context and returns only final summaries.
 - **Batch operations**: Write scripts executing multiple operations atomically rather than running terminal commands sequentially.
@@ -53,10 +56,12 @@ Practical guidance for getting the most out of Hermes Agent across prompting, CL
 - **Session naming**: Use `/title` to name sessions descriptively (e.g., "auth-refactor") for easy discovery via `hermes sessions list` and resumption via `hermes -r "name"`.
 - **Team DM pairing**: Enable DM pairing to allow teammates to self-serve with one-time pairing codes (approve via `hermes pairing approve telegram XKGH5N7P`).
 - **Verbose mode**: Use `/verbose` to cycle display modes — `all` for comprehensive live output in CLI, `new` for messaging platforms to minimize noise.
+- **Session continuity**: Messaging sessions persist until an explicit `/new` or `/reset`; context compression manages long conversations without an idle or daily reset.
 
 ## Security
 
-- **Docker for untrusted code**: Set `TERMINAL_BACKEND=docker` in `.env` when handling unfamiliar repositories to contain destructive commands.
+- **Docker for untrusted code**: Use Docker or Daytona as the terminal backend for unfamiliar repositories (`TERMINAL_ENV=docker` in `.env` per the v0.22.2 tips page; `hermes config set terminal.backend docker` is the config route) to contain destructive commands.
+- **Windows encoding**: On Windows, default encodings such as `cp125x` can raise `UnicodeEncodeError`; open files with `encoding="utf-8"` and in PowerShell run `$OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)`.
 - **Command approval caution**: When dangerous commands trigger approval prompts, choose "session" scope before considering "always" allowlisting.
 - **Command safety checks**: Hermes validates commands against dangerous patterns (recursive deletes, SQL drops, shell piping). Never disable in production.
 - **Container security exception**: Dangerous command checks are skipped in container backends (Docker, Singularity, Modal) since the container provides the security boundary.
