@@ -33,7 +33,7 @@ ls ~/.hermes/memories/
 
 ```bash
 # Optional external memory provider (one active at a time; built-in memory stays active)
-hermes plugins install honcho   # catalog plugin; RetainDB / ByteRover are bundled
+hermes plugins install honcho   # catalog plugin; RetainDB / ByteRover are bundled but leave core on 2026-10-15 (see Notes)
 hermes memory setup             # select the provider
 ```
 
@@ -44,3 +44,4 @@ hermes memory setup             # select the provider
 - When either file exceeds its character limit, the agent must consolidate before adding new entries; consolidate proactively at ~80% capacity.
 - Avoid storing large code blocks, temporary paths, or data already present in context files.
 - External memory providers such as Honcho, Hindsight, Supermemory and Holographic are installed from the plugin catalog (`hermes plugins install <name>`) before setting `memory.provider`; Honcho is no longer bundled. Memory pays off at session boundaries, so run `/new` at natural breakpoints.
+- Deprecation (v0.22.2): RetainDB and ByteRover leave core on October 15, 2026, and their standalone repositories are unmaintained; prefer a catalog provider (e.g. honcho) for new setups. See references/features/memory-providers.md and references/features/memory.md.
