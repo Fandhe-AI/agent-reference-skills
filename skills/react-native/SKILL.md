@@ -2,13 +2,14 @@
 name: react-native
 description: >
   React Native (Meta 製クロスプラットフォームネイティブアプリフレームワーク, react-native 0.87 / 0.88) の
-  リファレンス。View, Text, FlatList, Pressable, TextInput, Animated, StyleSheet, Flexbox, Platform, Linking,
-  New Architecture (Fabric, TurboModules, Codegen), Hermes, Metro, React Native DevTools,
-  Android / iOS 統合、0.84〜0.88 差分。
+  Text, TextInput, StyleSheet, Flexbox, Platform, Linking, New Architecture (Fabric, TurboModules,
+  Codegen), Hermes。
 user-invocable: false
 ---
 
 # React Native
+
+> 分割 PR の途中段階。現在収録済み: references/{apis, architecture}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 

@@ -170,4 +170,4 @@ With 0.76, The New Architecture is enabled by default in all the React Native pr
 - [Architecture Overview](./overview.md)
 - [Fabric](./fabric-renderer.md)
 - [Glossary](./glossary.md)
-- [Turbo Native Modules Introduction](../native-development/turbo-native-modules-introduction.md)
+- Turbo Native Modules Introduction

@@ -80,6 +80,6 @@ Users are free to enable/disable Hermes (with the `enableHermes` variable on And
 
 ## Related
 
-- [Hermes](../workflow/hermes.md)
-- [Build Speed](../debugging-performance/build-speed.md)
+- Hermes
+- Build Speed
 - [Glossary](./glossary.md)
