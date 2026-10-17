@@ -73,3 +73,5 @@ end)
 - [protocol-test-scripts.md](./protocol-test-scripts.md)
 - [protocol-util-scripts.md](./protocol-util-scripts.md)
 - [debugging.md](./debugging.md)
+
+Source: https://rive.app/docs/scripting/debugging/unit-testing (fetched 2026-10)

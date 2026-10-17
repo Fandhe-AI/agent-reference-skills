@@ -109,3 +109,5 @@ end
 - [renderer.md](./renderer.md)
 - [pointer-events.md](./pointer-events.md)
 - [font.md](./font.md)
+
+Source: https://rive.app/docs/scripting/api-reference/file-format/file-format, https://rive.app/docs/scripting/api-reference/file-format/text-file-format, https://rive.app/docs/scripting/api-reference/file-format/format-document, https://rive.app/docs/scripting/api-reference/file-format/format-view, https://rive.app/docs/scripting/api-reference/file-format/format-scope, https://rive.app/docs/scripting/api-reference/file-format/format-surface, https://rive.app/docs/scripting/api-reference/file-format/format-token, https://rive.app/docs/scripting/api-reference/file-format/format-completion, https://rive.app/docs/scripting/api-reference/file-format/format-diagnostic, https://rive.app/docs/scripting/api-reference/file-format/format-hover, https://rive.app/docs/scripting/api-reference/file-format/editor-context, https://rive.app/docs/scripting/api-reference/file-format/editor-scroll, https://rive.app/docs/scripting/api-reference/file-format/editor-theme, https://rive.app/docs/scripting/api-reference/file-format/editor-theme-style (fetched 2026-10)

@@ -2,14 +2,15 @@
 name: rive
 description: >
   Rive アニメーションランタイム (Web / React)。
-  useRive, useRiveFile, RiveComponent, State Machine, Data Binding, ViewModel,
-  Events, Layout / Fit / Alignment, .riv。
+  useRive, useRiveFile, useStateMachineInput, RiveComponent, State Machine,
+  Data Binding, ViewModel / ViewModelInstance, Events, Layout / Fit / Alignment, .riv。
   @rive-app/canvas / webgl2 / react-canvas / react-webgl2、enableGPUCanvas、
-  Semantics, Rive CLI。Scripting (Luau), Artboard, Path / Paint, WGSL Shaders。
+  Semantics, Rive CLI。Scripting (Luau), Artboard, Property, Path / Paint / Renderer,
+  WGSL Shaders, GPU pipeline, Node / Layout / Converter スクリプト。
 user-invocable: false
 ---
 
-対象バージョン: Rive docs (rive.app/docs、版数なし) を 2026-10-16 取得。参考版は `@rive-app/webgl2` 2.44.2 / `@rive-app/react-webgl2` 4.36.0。`stateMachine` パラメーターと非推奨化は Web v2.41.0、GPU Canvas (`enableGPUCanvas`) は v2.42.0、`useStateMachineInput` の非推奨化は React v4.33.0。
+対象バージョン: Rive docs ([rive.app/docs](https://rive.app/docs/llms.txt)、版数なし) を 2026-10-16 取得。参考版は `@rive-app/webgl2` 2.44.2 / `@rive-app/react-webgl2` 4.36.0。`stateMachine` パラメーターと非推奨化は Web v2.41.0、GPU Canvas (`enableGPUCanvas`) は v2.42.0、`useStateMachineInput` の非推奨化は React v4.33.0。
 
 ## ディレクトリ構成
 

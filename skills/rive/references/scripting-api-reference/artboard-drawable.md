@@ -45,3 +45,5 @@ Related types:
 - [artboard-artboard.md](./artboard-artboard.md)
 - [renderer.md](./renderer.md)
 - [color.md](./color.md)
+
+Source: https://rive.app/docs/scripting/api-reference/artboards/drawable, https://rive.app/docs/scripting/api-reference/artboards/drawable-property, https://rive.app/docs/scripting/api-reference/artboards/drawable-property-kind (fetched 2026-10)

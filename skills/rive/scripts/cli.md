@@ -289,3 +289,5 @@ rive analytics          # on | off を表示・設定
 ```sh
 RIVE_NO_TUI=1 rive samples
 ```
+
+Source: https://rive.app/docs/cli/getting-started, https://rive.app/docs/cli/reference/commands, https://rive.app/docs/cli/reference/project-config, https://rive.app/docs/cli/examples (fetched 2026-10)

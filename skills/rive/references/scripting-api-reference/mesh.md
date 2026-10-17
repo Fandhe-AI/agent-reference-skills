@@ -38,3 +38,5 @@ mi:set(1, Mat2D.identity(), 0.5, 0, Vector.xy(0, 0), Vector.xy(0.5, 0.5))
 - [image.md](./image.md)
 - [mat2d.md](./mat2d.md)
 - [vector.md](./vector.md)
+
+Source: https://rive.app/docs/scripting/api-reference/mesh/mesh-instances, https://rive.app/docs/scripting/api-reference/mesh/vertex-buffer, https://rive.app/docs/scripting/api-reference/mesh/triangle-buffer (fetched 2026-10)

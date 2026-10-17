@@ -143,3 +143,5 @@ A variable axis of a Font, such as weight or width.
 - [renderer.md](./renderer.md)
 - [path.md](./path.md)
 - [paint.md](./paint.md)
+
+Source: https://rive.app/docs/scripting/api-reference/text/text, https://rive.app/docs/scripting/api-reference/text/font, https://rive.app/docs/scripting/api-reference/text/font-axis, https://rive.app/docs/scripting/api-reference/text/glyph, https://rive.app/docs/scripting/api-reference/text/text-line, https://rive.app/docs/scripting/api-reference/text/text-run-style, https://rive.app/docs/scripting/api-reference/text/text-align, https://rive.app/docs/scripting/api-reference/text/text-direction, https://rive.app/docs/scripting/api-reference/text/text-origin, https://rive.app/docs/scripting/api-reference/text/text-overflow, https://rive.app/docs/scripting/api-reference/text/text-sizing, https://rive.app/docs/scripting/api-reference/text/text-word-break, https://rive.app/docs/scripting/api-reference/text/text-wrap (fetched 2026-10)

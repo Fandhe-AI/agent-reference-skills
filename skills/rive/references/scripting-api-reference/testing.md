@@ -59,3 +59,5 @@ expect(6).greaterThanOrEqual(5)
 
 - [unit-testing.md](./unit-testing.md)
 - [protocol-test-scripts.md](./protocol-test-scripts.md)
+
+Source: https://rive.app/docs/scripting/api-reference/testing/tests, https://rive.app/docs/scripting/api-reference/testing/tester, https://rive.app/docs/scripting/api-reference/testing/expectation (fetched 2026-10)
