@@ -37,6 +37,8 @@ if (ssrEnvironment instanceof CustomDevEnvironment) {
 // -------------------------------------
 // virtual:entrypoint
 const { createHandler } = await import('./entrypoint.js')
+// `input` is embedded by the virtual-module plugin
+const input = /* embedded by plugin */ {}
 const handler = createHandler(input)
 const response = handler(new Request('http://example.com/'))
 
@@ -111,19 +113,24 @@ if (ssrEnvironment instanceof RunnableDevEnvironment) {
 const req = new Request('http://example.com/')
 
 const uniqueId = 'a-unique-id'
-ssrEnvironment.hot.send('request', serialize({ req, uniqueId }))
 const response = await new Promise((resolve) => {
-  ssrEnvironment.hot.on('response', (data) => {
+  const onResponse = (data) => {
     data = deserialize(data)
     if (data.uniqueId === uniqueId) {
+      ssrEnvironment.hot.off('response', onResponse)
       resolve(data.res)
     }
-  })
+  }
+  // register the listener before sending the request
+  ssrEnvironment.hot.on('response', onResponse)
+  ssrEnvironment.hot.send('request', serialize({ req, uniqueId }))
 })
 
 // -------------------------------------
 // virtual:entrypoint
 const { createHandler } = await import('./entrypoint.js')
+// `input` is embedded by the virtual-module plugin
+const input = /* embedded by plugin */ {}
 const handler = createHandler(input)
 
 import.meta.hot.on('request', (data) => {
@@ -148,6 +155,8 @@ export function createHandler(input) {
 - The virtual-module approach removes the need to access the value from code using Vite's APIs.
 - The `hot.send` approach may not work the same way after the build process.
 - `CustomDevEnvironment` and `runEntrypoint` in the examples are placeholders for what a given environment factory exposes; check what each environment factory provides. `serialize` / `deserialize` are likewise illustrative helpers.
+- Upstream snippet registers the 'response' listener after `hot.send`; adjusted here to register before sending and remove it (`hot.off`) after the matching response.
+- Upstream snippet references the host-side `input` from inside `virtual:entrypoint`; modules do not share lexical scope, so the value must be embedded by the virtual-module plugin (or passed via the environment's init/communication channel).
 - Release Candidate: the Environment API is generally in the release candidate phase.
 
 ## Related
