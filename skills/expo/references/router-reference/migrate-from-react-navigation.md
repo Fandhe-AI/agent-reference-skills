@@ -103,7 +103,7 @@ navigation.navigate('Account', {
 router.push({ pathname: '/account/settings', params: { user: 'jane' } });
 ```
 
-Reset the app to its initial route (`resetRoot`):
+Navigate to the initial route (replacement for `resetRoot`); `router.replace('/')` replaces only the current entry and does not clear earlier history. To reset the whole navigation state use `CommonActions.reset` with complete state (see Notes):
 
 ```jsx
 import { Text } from 'react-native';
@@ -188,7 +188,7 @@ import { Header, HeaderBackButton } from 'expo-router/react-navigation';
 | React Navigation | Expo Router |
 | --- | --- |
 | `ref` | Use `useNavigationContainerRef()`. Do not access the container ref directly. |
-| `resetRoot` | `router.replace('/')` (navigate to the initial route). |
+| `resetRoot` | `router.replace('/')` navigates to the initial route but does not clear history; for a full reset dispatch `CommonActions.reset` with complete state (`stale: false`, SDK 58+). |
 | `getRootState` | `useRootNavigationState()`. |
 | `getCurrentRoute` | `usePathname()` or `useSegments()` (any route is representable as a string). |
 | `getCurrentOptions` | `useLocalSearchParams()`. |
@@ -208,6 +208,7 @@ import { Header, HeaderBackButton } from 'expo-router/react-navigation';
 
 ## Notes
 
+- The official resetRoot example uses router.replace('/') only; the note that it does not clear history and the pointer to CommonActions.reset (per the SDK 57 to 58 migration table) were added here.
 - Pitch: automatic deep linking, type safety, deferred bundling, static rendering on web. Anti-pitch: a custom `getPathFromState` or `getStateFromPath` may not fit Expo Router (fine if used to support shared routes, which Expo Router supports built in).
 - Recommended before migrating: split screen components into individual files; convert to TypeScript; convert relative imports to typed aliases (for example `@/components/button`); migrate away from `resetRoot`; rename the initial route to `index`; use kebab-case lowercase filenames.
 - Search parameters can only serialize top-level values such as `number`, `boolean`, `string`. React Navigation params may contain Functions, Objects, Maps; restructure so a function is accessed from the destination screen (for example push from the "followers" screen via the router).

@@ -72,7 +72,8 @@ Supported platforms:
 - `generateStaticParams` is not needed; if exported it is handled dynamically. Pages render at request time with the actual URL params.
 - **+html.tsx** runs on the server only via `expo-server`; spread all `useServerDocumentContext()` values (`htmlAttributes`, `bodyAttributes`, `headNodes`, `bodyNodes`) or the page may break or fail to hydrate (omitting `bodyNodes` prevents hydration). No global CSS, no `window` / `document`, must render `children`; receives `pathname` and `params` in SDK 58 and later.
 - `generateMetadata` runs on the server and is stripped from the client bundle; `<Head>` from `expo-router/head` can co-exist but only updates tags after hydration.
-- Server rendering cannot be deployed to static hosts such as GitHub Pages. Static and server rendering cannot be mixed in one project. Response caching is handled at the server or CDN level. API routes work in any rendering mode. Data loaders run per request.
+- Server rendering cannot be deployed to static hosts such as GitHub Pages. Static and server rendering cannot be mixed in one project. Response caching is handled at the server or CDN level. API routes run on the server independently of the page rendering mode, but require `web.output: "server"` (enabled by default in SDK 58+) or `web.output: "static"` with `apiRoutes: true` in the `expo-router` plugin; they are not available with `single` output. Data loaders run per request.
+- The official FAQ says API routes work independently of the rendering mode; the output-mode requirement was added from the API Routes page (static or server output required).
 - EAS Hosting deploy: `npx expo export --platform web` then `npx eas-cli@latest hosting:deploy dist`.
 - Pinned: documentation fetched 2026-10-17, Expo SDK 58.
 
