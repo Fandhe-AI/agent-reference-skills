@@ -11,6 +11,7 @@ Streamable HTTP mirrors selected JSON-RPC body fields into HTTP headers so inter
 ```http
 POST /mcp HTTP/1.1
 Content-Type: application/json
+Accept: application/json, text/event-stream
 MCP-Protocol-Version: 2026-07-28
 Mcp-Method: resources/read
 Mcp-Name: file:///projects/myapp/config.json
@@ -41,6 +42,7 @@ Standard request headers (**REQUIRED** for compliance):
 
 ## Notes
 
+- `Accept` in the example is added to match the MUST requirement in the Sending Messages section (omitted in the original example).
 - `MCP-Protocol-Version`: every POST to the MCP endpoint **MUST** include it (e.g. `MCP-Protocol-Version: 2026-07-28`). The value **MUST** match `_meta` `io.modelcontextprotocol/protocolVersion` in the body; otherwise the server **MUST** reject with `400 Bad Request` and a `HeaderMismatch` JSON-RPC error.
 - Unsupported version (unknown, or known but not supported): server **MUST** respond `400 Bad Request` with an `UnsupportedProtocolVersionError` listing its supported versions.
 - Unimplemented RPC method: server **MUST** respond `404 Not Found` with JSON-RPC error `-32601` (`Method not found`); the JSON-RPC body distinguishes this from a `404` returned by a legacy HTTP+SSE server.

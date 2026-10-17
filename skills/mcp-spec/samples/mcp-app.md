@@ -77,7 +77,18 @@ registerAppResource(
 
 // Expose the MCP server over HTTP
 const expressApp = express();
-expressApp.use(cors());
+// Replace with the host's Origin in production
+const allowedOrigins = ["http://localhost:3001"];
+expressApp.use(cors({ origin: allowedOrigins }));
+// Reject requests whose Origin is present but not allowed (DNS rebinding protection)
+expressApp.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && !allowedOrigins.includes(origin)) {
+    res.status(403).end();
+    return;
+  }
+  next();
+});
 expressApp.use(express.json());
 
 expressApp.post("/mcp", async (req, res) => {
@@ -90,7 +101,7 @@ expressApp.post("/mcp", async (req, res) => {
   await transport.handleRequest(req, res, req.body);
 });
 
-expressApp.listen(3001, (err) => {
+expressApp.listen(3001, "127.0.0.1", (err) => {
   if (err) {
     console.error("Error starting server:", err);
     process.exit(1);
@@ -133,6 +144,7 @@ getTimeBtn.addEventListener("click", async () => {
 ## Notes
 
 - Source: tag `2026-07-28` raw `docs/extensions/apps/build.mdx`, retrieved 2026-10-16 (the site path is unversioned). The tutorial also shows `mcp-app.html`, `package.json`, `tsconfig.json` and `vite.config.ts` (Vite with `vite-plugin-singlefile` bundles the UI into one HTML file); see the source URL.
+- Change from the official tutorial: an Origin allowlist (403 on mismatch) and a `127.0.0.1` bind were added to match the Origin-validation MUST and localhost-bind SHOULD in the spec (basic/transports/streamable-http, Security Warning).
 - The UI resource is rendered in a secure iframe with a deny-by-default CSP; unbundled assets require CSP configuration.
 - MCP Apps (official extension: `ui://` resources, `_meta.ui.resourceUri`, `@modelcontextprotocol/ext-apps`) is distinct from the OpenAI Apps SDK (`window.openai`, ChatGPT-specific `_meta`), covered by openai-apps-sdk.
-- Tutorial code is reproduced as published; SDK protocol-version support is not stated in the source.
+- Tutorial code is otherwise reproduced as published; SDK protocol-version support is not stated in the source.

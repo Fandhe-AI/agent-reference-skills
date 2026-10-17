@@ -11,6 +11,7 @@ HTTP POST requests to the MCP endpoint with the required `MCP-Protocol-Version`,
 ```http
 POST /mcp HTTP/1.1
 Content-Type: application/json
+Accept: application/json, text/event-stream
 MCP-Protocol-Version: 2026-07-28
 Mcp-Method: tools/call
 Mcp-Name: get_weather
@@ -41,6 +42,7 @@ Mcp-Name: get_weather
 ```http
 POST /mcp HTTP/1.1
 Content-Type: application/json
+Accept: application/json, text/event-stream
 MCP-Protocol-Version: 2026-07-28
 Mcp-Method: resources/read
 Mcp-Name: file:///projects/myapp/config.json
@@ -65,7 +67,7 @@ Mcp-Name: file:///projects/myapp/config.json
 
 ## Notes
 
-- Reproduced from `basic/transports/streamable-http.mdx` (tag `2026-07-28`).
+- Reproduced from `basic/transports/streamable-http.mdx` (tag `2026-07-28`). `Accept` is added to match the MUST requirement in the Sending Messages section (omitted in the original examples).
 - The `MCP-Protocol-Version` value MUST match `io.modelcontextprotocol/protocolVersion` in the body `_meta`; a mismatch is rejected with `400 Bad Request` and a `HeaderMismatch` error.
 - `Mcp-Method` is required on all requests; `Mcp-Name` on `tools/call`, `resources/read` and `prompts/get`.
 - Removed in 2026-07-28: `Mcp-Session-Id` and `Last-Event-ID` resumability.

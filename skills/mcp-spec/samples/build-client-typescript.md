@@ -24,6 +24,7 @@ import { Anthropic } from "@anthropic-ai/sdk";
 import {
   MessageParam,
   Tool,
+  ToolResultBlockParam,
 } from "@anthropic-ai/sdk/resources/messages/messages.mjs";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
@@ -94,7 +95,7 @@ async connectToServer(serverScriptPath: string) {
 }
 ```
 
-`processQuery` method:
+`processQuery` method (returns the assistant turn and `tool_use_id`-linked `tool_result` blocks, as in the Python example):
 
 ```typescript
 async processQuery(query: string) {
@@ -113,6 +114,7 @@ async processQuery(query: string) {
   });
 
   const finalText = [];
+  const toolResults: ToolResultBlockParam[] = [];
 
   for (const content of response.content) {
     if (content.type === "text") {
@@ -129,23 +131,33 @@ async processQuery(query: string) {
         `[Calling tool ${toolName} with args ${JSON.stringify(toolArgs)}]`
       );
 
-      messages.push({
-        role: "user",
+      toolResults.push({
+        type: "tool_result",
+        tool_use_id: content.id,
         content: result.content
           .filter((block) => block.type === "text")
           .map((block) => block.text)
           .join("\n"),
+        is_error: result.isError === true,
       });
+    }
+  }
 
-      const response = await this.anthropic.messages.create({
-        model: "claude-opus-5",
-        max_tokens: 1000,
-        messages,
-      });
+  if (toolResults.length > 0) {
+    messages.push({ role: "assistant", content: response.content });
+    messages.push({ role: "user", content: toolResults });
 
-      finalText.push(
-        response.content[0].type === "text" ? response.content[0].text : ""
-      );
+    const nextResponse = await this.anthropic.messages.create({
+      model: "claude-opus-5",
+      max_tokens: 1000,
+      messages,
+      tools: this.tools,
+    });
+
+    for (const content of nextResponse.content) {
+      if (content.type === "text") {
+        finalText.push(content.text);
+      }
     }
   }
 
@@ -164,6 +176,7 @@ node build/index.js path/to/build/index.js # node server
 ## Notes
 
 - Abridged from the official tutorial: `chatLoop`, `cleanup` and `main()` are omitted; the tutorial's methods go inside the `MCPClient` class where `// methods will go here` appears. See the source URL for the full file.
+- Change from the official TS example: `processQuery` returns the assistant response and `tool_use_id`-linked `tool_result` blocks, matching the Python example (the original pushed plain user text).
 - Requires `"type": "module"` and a `build` script (`tsc && chmod 755 build/index.js`) in `package.json` plus the tutorial's `tsconfig.json`.
-- Tutorial code is reproduced as published; SDK protocol-version support is not stated in the source.
+- Tutorial code is otherwise reproduced as published; SDK protocol-version support is not stated in the source.
 - The tutorial uses the Anthropic SDK for the LLM call; Claude API usage itself belongs to the Anthropic API skills.

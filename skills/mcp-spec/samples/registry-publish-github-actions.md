@@ -24,14 +24,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       ### Publish underlying npm package:
 
       - name: Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: "lts/*"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
         run: npm ci
@@ -76,6 +77,7 @@ git push origin v1.0.0
 ## Notes
 
 - Source: tag `2026-07-28` raw `docs/registry/github-actions.mdx`, retrieved 2026-10-16 (the site path is unversioned). The source also has PAT (`./mcp-publisher login github --token ${{ secrets.MCP_GITHUB_TOKEN }}`) and DNS (`./mcp-publisher login dns --domain example.com --private-key ${{ secrets.MCP_PRIVATE_KEY }}`) variants; only the recommended OIDC workflow is reproduced.
+- Changes from the official example: `registry-url` added to `setup-node` so that `NODE_AUTH_TOKEN` is written into `.npmrc`; third-party actions pinned to commit SHAs (`# v5` marks the tag).
 - The install step downloads a release binary with `curl ... | tar xz`; review it before running. The MCP Registry is marked as preview in the source.
 - The package registry secret (`NPM_TOKEN` here) is separate from MCP Registry authentication; OIDC needs `id-token: write` and no dedicated secret.
 - Package verification requirements are in the registry package-types page of this skill.
