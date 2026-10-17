@@ -11,7 +11,13 @@ wsl --set-version Ubuntu 2
 wsl --set-default-version 2
 ```
 
-Enable systemd inside the distro, then `wsl --shutdown` from PowerShell:
+Enable systemd inside the distro, then `wsl --shutdown` from PowerShell. First check for an existing file and back it up:
+
+```bash
+[ -f /etc/wsl.conf ] && sudo cp /etc/wsl.conf /etc/wsl.conf.bak && cat /etc/wsl.conf
+```
+
+If `/etc/wsl.conf` already exists, do not overwrite it: edit it with `sudoedit /etc/wsl.conf` and add or adjust only the keys shown below (`[boot] systemd=true`, `[interop]`, `[automount]`). Only if the file does not exist, create it with:
 
 ```bash
 sudo tee /etc/wsl.conf >/dev/null <<'EOF'
@@ -68,6 +74,7 @@ New-NetFirewallRule -DisplayName "Hermes WSL 8080" `
 - Long-running: with systemd, `hermes gateway setup` can install a systemd user unit. To keep the VM alive at Windows login, add a Task Scheduler task running `C:\Windows\System32\wsl.exe` with arguments `-d Ubuntu --exec /bin/sh -c "sleep infinity"`. A launcher shortcut target: `wt.exe -w 0 -p "Ubuntu" wsl.exe -d Ubuntu --cd ~ -- bash -ic "hermes"`.
 - GPU: NVIDIA passthrough works with the standard Windows driver (do not install a Linux NVIDIA driver in WSL; `nvidia-smi` should see the GPU). AMD ROCm and Intel Arc in WSL2 are outside Hermes's test matrix.
 - Pitfalls: clock drift after sleep (`sudo hwclock -s`); DNS broken in mirrored mode or on VPN (set `generateResolvConf=false` in `/etc/wsl.conf` and write your own `/etc/resolv.conf`); `hermes` not found after install (`source ~/.bashrc`); VHDX does not auto-shrink (`wsl --shutdown`, then `Optimize-VHD -Path <ext4.vhdx> -Mode Full`); Defender slows access to `\\wsl$\...`.
+- Adapted: the official guide overwrites /etc/wsl.conf with `sudo tee`; this version backs up and edits only the listed keys so existing [user]/[network]/[automount] settings are preserved.
 - Adapted: official docs pipe the installer straight into the shell; this page downloads and reviews it first.
 - Source: https://hermes-agent.nousresearch.com/docs/user-guide/windows-wsl-quickstart (pinned to v0.22.2)
 

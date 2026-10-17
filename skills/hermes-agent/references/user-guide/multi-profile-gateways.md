@@ -7,9 +7,12 @@ Operating multiple profiles (each with its own bot tokens, sessions, memory) as 
 ```bash
 hermes profile create coder
 coder setup
-coder gateway install
-coder gateway start
+hermes gateway install      # register the default-profile host gateway
+hermes gateway start        # the host serves coder too
+hermes -p coder gateway run # optional: attaches to the live host and exits 0
 ```
+
+A gateway of its own for a named profile (`hermes -p coder gateway install --force`, or `gateway.standalone: true` in `profiles/coder/config.yaml`) is needed only when a boundary blocks the fold: a different UNIX user, a `HERMES_HOME` outside `profiles/`, or port-binding platforms.
 
 Multiplexing control:
 
@@ -61,6 +64,7 @@ gateway:
 
 ## Notes
 
+- Adapted: the official Quick start shows per-profile `coder gateway install/start` (pre-multiplex topology); under the default multiplexing those commands exit 78, so this page starts the default-profile host gateway instead.
 - Named profiles do not get their own gateway by default: `hermes -p <name> gateway install|start|run` refuses with exit 78 (attach to the host instead; under a supervisor the attach exits 75 so the unit retries). `hermes -p <name> gateway run` while a host is live attaches and exits 0.
 - HTTP-inbound platforms for secondary profiles use the default listener under a prefix `/p/<profile>/` (for example `POST http://host:8644/p/coder/webhooks/<route>`); `api_server` and `webhook` are mirrored and must not be enabled on the secondary; Twilio SMS, LINE, Teams, BlueBubbles, Microsoft Graph, WhatsApp Cloud, WeCom callback, and Feishu webhook run in shared-listener mode. WhatsApp bridge runs per paired profile (`hermes -p work whatsapp`); Relay is owned by the default profile. API-server requests use the named profile's `API_SERVER_KEY`; webhook routes bind to a profile with `profile: <name>` (or `hermes webhook subscribe <name> --route-profile coder`).
 - One bot token per profile per platform; a duplicate `(platform, token)` parks the duplicate adapter (`fatal / duplicate_credential`). Audit without printing token values (adapted; duplicate hashes in the first column indicate a shared token):
