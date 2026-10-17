@@ -55,11 +55,16 @@ function createWindow () {
 // iconForDragAndDrop.png is assumed to be bundled with the app
 const iconName = path.join(__dirname, 'iconForDragAndDrop.png')
 
-// Create a new file to copy - you can also copy existing files.
-fs.writeFileSync(path.join(__dirname, 'drag-and-drop-1.md'), '# First file to test drag and drop')
-fs.writeFileSync(path.join(__dirname, 'drag-and-drop-2.md'), '# Second file to test drag and drop')
+// Writable location for the files to drag (__dirname is read-only inside app.asar)
+const dragDir = () => path.join(app.getPath('userData'), 'drag-and-drop')
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  // Create new files to copy - you can also copy existing files.
+  fs.mkdirSync(dragDir(), { recursive: true })
+  fs.writeFileSync(path.join(dragDir(), 'drag-and-drop-1.md'), '# First file to test drag and drop')
+  fs.writeFileSync(path.join(dragDir(), 'drag-and-drop-2.md'), '# Second file to test drag and drop')
+  createWindow()
+})
 
 const allowedFiles = new Set(['drag-and-drop-1.md', 'drag-and-drop-2.md'])
 
@@ -68,7 +73,7 @@ ipcMain.on('ondragstart', (event, fileName) => {
   if (!allowedFiles.has(fileName)) return
 
   event.sender.startDrag({
-    file: path.join(__dirname, fileName),
+    file: path.join(dragDir(), fileName),
     icon: iconName
   })
 })
@@ -92,4 +97,5 @@ app.on('activate', () => {
 - The official code passes the renderer-supplied value straight to `path.join`. This sample adds an allowlist check in main (`allowedFiles`) so a renderer cannot drag arbitrary paths, and follows the fiddle's `drag-and-drop-1.md` / `drag-and-drop-2.md` renderer.
 - The renderer must call `event.preventDefault()` so the browser's own drag does not start.
 - The official fiddle downloads its drag icon over HTTPS at startup; this sample uses a bundled local icon instead to avoid an unhandled network fetch without error handling.
+- The official fiddle writes the drag files next to main.js (`__dirname`); this sample writes them under `app.getPath('userData')` after `app.whenReady()` because `__dirname` is inside the read-only `app.asar` once packaged, and `startDrag` needs a real file on disk.
 - Dragging files into the app uses the standard HTML Drag and Drop web API.
