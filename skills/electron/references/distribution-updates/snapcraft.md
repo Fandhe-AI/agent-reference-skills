@@ -65,7 +65,7 @@ parts:
         npx electron-packager . --overwrite --platform=linux --output=release-build --prune=true
         cp -rv ./my-app-linux-* "${SNAPCRAFT_PART_INSTALL}/my-app"
     build-snaps:
-    - node/14/stable
+    - node/22/stable
     build-packages:
     - unzip
     stage-packages:
@@ -129,7 +129,7 @@ Then configure the environment:
 
 ## Notes
 
-- The snapcraft.yaml examples use `node/14/stable` as the build snap, as in the original page.
+- Adapted (not in the official docs): the official snapcraft.yaml uses `node/14/stable`, which current `@electron/packager` does not support; this version uses `node/22/stable`. Check the `engines.node` of the installed @electron/packager version.
 - The official example adds `--no-sandbox` to the `command`; this disables the Chromium sandbox, so it is omitted here and should not be built into distributed builds (testing only; see the command-line switches page in getting-started).
 - In `override-build`, `${SNAPCRAFT_PART_INSTALL}` is quoted (the original is unquoted); the glob part is intentionally left unquoted.
 - Multiple solutions exist for creating Debian packages: Electron Forge, `electron-builder`, or `electron-installer-debian`.

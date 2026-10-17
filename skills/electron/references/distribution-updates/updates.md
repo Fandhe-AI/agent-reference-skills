@@ -14,8 +14,11 @@ Using update.electronjs.org via `update-electron-app` (macOS or Windows; public 
 npm install update-electron-app
 ```
 
+Adapted (not in the official docs): the official page calls the legacy default export `require('update-electron-app')()`; current versions of update-electron-app expose the named export `updateElectronApp`, matching the static-storage example below.
+
 ```js
-require('update-electron-app')()
+const { updateElectronApp } = require('update-electron-app')
+updateElectronApp()
 ```
 
 By default it checks for updates at app startup, then every ten minutes. When an update is found it downloads in the background; when the download completes a dialog lets the user restart the app.
