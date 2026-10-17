@@ -70,6 +70,7 @@ export default defineConfig({
 - Vite does not check the origin of WebSocket requests before proxying. The proxy target is expected to check the `Origin` header or do other checks. `rewriteWsOrigin` rewrites the origin to the target origin and causes the origin check to be bypassed.
 - If a WebSocket proxy is set up in middleware mode, `server.middlewareMode.server` should be provided to bind the proxy correctly.
 - `preview.proxy` defaults to `server.proxy`.
+- The official example reuses the `'/api'` key for both the `rewrite` and the `configure` entries; in a real object literal the later key overwrites the earlier one, so treat them as separate alternatives (or merge `configure` into the first `'/api'` entry) when copying.
 
 ## Related
 
