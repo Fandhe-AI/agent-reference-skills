@@ -68,6 +68,7 @@ eas build:run -p android --latest
 
 ## Notes
 
+- The **default** marker on `developmentClient` refers to the `development` profile that `eas build:configure` generates with `"developmentClient": true`; the field itself defaults to `false` (see build-eas-json.md).
 - Profile names are arbitrary (`preview`, `local`, `emulator`, ...).
 - Production builds are `.aab` by default and recommended for store submission; see build-eas-json.md.
 - Source modificationDate: October 08, 2025 (fetched 2026-10-17).
