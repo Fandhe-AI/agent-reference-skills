@@ -70,8 +70,36 @@ function createWorkerdDevEnvironment(
   context: DevEnvironmentContext
 ) {
   const connection = /* ... */
+  const handlerToListener = new WeakMap()
+  const client = { send: (payload) => connection.send(payload) }
   const transport: HotChannel = {
-    on: (listener) => { connection.on('message', listener) },
+    on: (event, handler) => {
+      // client is already connected
+      if (event === 'vite:client:connect') return
+      if (event === 'vite:client:disconnect') {
+        const listener = () => {
+          handler(undefined, client)
+        }
+        handlerToListener.set(handler, listener)
+        connection.on('close', listener)
+        return
+      }
+
+      const listener = (value) => {
+        if (value.type === 'custom' && value.event === event) {
+          handler(value.data, client)
+        }
+      }
+      handlerToListener.set(handler, listener)
+      connection.on('message', listener)
+    },
+    off: (event, handler) => {
+      if (event === 'vite:client:connect') return
+      const listener = handlerToListener.get(handler)
+      if (!listener) return
+      connection.off(event === 'vite:client:disconnect' ? 'close' : 'message', listener)
+      handlerToListener.delete(handler)
+    },
     send: (data) => connection.send(data),
   }
 
@@ -106,6 +134,7 @@ new DevEnvironment(name, config, {
 - By default `HotChannel` transports have `server.fs` restrictions applied. If the transport is not exposed over the network (worker threads, in-process calls), set `skipFsCheck: true` on the `HotChannel` to bypass them.
 - To ease runtime-agnostic framework code, implement the most flexible communication level possible (Runnable > Fetchable > raw).
 - The `createWorkerd*` names are illustrative examples from the docs, not Vite exports.
+- Upstream v8.3.4 snippet passes the listener as the first argument (`on: (listener) => ...`), which does not match the `HotChannel` `on(event, handler)` contract; the example above follows the `workerHotChannel` pattern from the ModuleRunnerTransport page (`connection` is an illustrative placeholder; its `close` event name is an assumption of this example).
 - Release Candidate: the Environment API is generally in the release candidate phase.
 
 ## Related

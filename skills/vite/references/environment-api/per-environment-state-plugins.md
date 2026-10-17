@@ -39,7 +39,7 @@ const UnoCssPlugin = () => {
 
 Per-environment state:
 
-```js
+```ts
 function PerEnvironmentCountTransformedModulesPlugin() {
   const state = new Map<Environment, { count: number }>()
   return {
@@ -96,6 +96,7 @@ export default defineConfig({
 - If `applyToEnvironment` is not used, the plugin is active in all environments.
 - The plugin returned from `applyToEnvironment` or `perEnvironmentPlugin` should not use Vite-specific hooks.
 - `applyToEnvironment` is called at config time, currently after `configResolved` because ecosystem projects modify plugins in it. Environment plugin resolution may move before `configResolved` in the future.
+- Upstream marks the per-environment state block as `js` although it uses TypeScript generics (`new Map<Environment, ...>()`); it is shown as `ts` here.
 - Release Candidate: the Environment API is generally in the release candidate phase.
 
 ## Related

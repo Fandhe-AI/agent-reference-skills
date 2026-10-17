@@ -8,10 +8,10 @@ Design principles of Vite: lean extendable core, modern web, pragmatic performan
 
 ## Signature / Usage
 
-The page has no code examples. Its commands and options, as named in the text:
+The page has no code examples. It recommends the standard `new Worker` syntax (see the Web Workers section of features):
 
-```bash
-new Worker
+```js
+const worker = new Worker(new URL('./worker.js', import.meta.url))
 ```
 
 Web workers are encouraged to be written with the `new Worker` syntax to follow modern standards.
