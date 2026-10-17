@@ -106,6 +106,8 @@ The possible values and behaviors of the `type` option are platform dependent. P
 * Distinct from native window APIs: these are Electron's main-process window options. For WinUI 3 AppWindow / title bar see windows-winui-ui, for NSWindow see apple-appkit.
 * `backgroundMaterial` (Mica / Acrylic) is Electron's passthrough to the Windows DWM backdrop; WinUI 3 backdrop APIs are in windows-winui-ui.
 
+* Size constraints vs. `setSize`: the paragraph on `minWidth`/`maxWidth`/`minHeight`/`maxHeight` (from BaseWindowConstructorOptions) says they only constrain the user and do not stop `setBounds`/`setSize`, but the `win.setSize` reference states that a `width`/`height` below the minimum size constraints makes the window snap to its minimum size. The official docs disagree; do not rely on `setSize` to bypass the minimum size, and call `win.setMinimumSize()` first if a smaller size is needed.
+
 ## Related
 
 * [BrowserWindow overview](./browser-window-overview.md)
