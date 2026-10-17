@@ -78,6 +78,7 @@ interface UIMessage<
 | `approval-responded` | `input`, `approval: { id: string; approved: boolean; descriptor?: unknown; requestReason?: string; reason?: string; isAutomatic?: boolean; signature?: string }` |
 | `output-available` | `input`, `output: TOOLS[NAME]['output']`, `providerExecuted?` |
 | `output-error` | `input`, `errorText: string`, `providerExecuted?` |
+| `output-denied` | Fields not listed in the upstream UIMessage type reference; the state is part of the tool UI part `state` union since AI SDK 6 (render a denial message) |
 
 Rendering a failed tool part with the type guard:
 
@@ -98,6 +99,7 @@ function ToolError({ part }: { part: UIMessage['parts'][number] }) {
 - The upstream type example uses `tool({})`; here `tool({ inputSchema: z.object({}) })` is used because `inputSchema` is required by `tool()`.
 - The tool part type is based on the tool name (`tool-someTool` for a tool named `someTool`); the data part type is based on the data part name (`data-someDataPart`).
 - `approval.descriptor` is optional opaque metadata supplied as `approvalDescriptor` on the approval request stream chunk. It is preserved from `approval-requested` to `approval-responded` and in later approval-bearing output states.
+- `output-denied` is not shown in the upstream UIMessage type listing, but the AI SDK 6 migration guide and the chatbot tool usage guide add it to the tool UI part `state` union; include it in exhaustive `switch (part.state)` handling (approval denied).
 - `isToolOutputErrorUIPart` avoids checking the tool state discriminator directly; the generic `ToolOutputErrorUIPart<TOOLS>` preserves static tool input types and also includes dynamic tool errors.
 
 ## Related
