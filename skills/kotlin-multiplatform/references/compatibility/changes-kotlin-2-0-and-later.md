@@ -199,6 +199,7 @@ Deprecated in the public API of the Kotlin Gradle plugin: the `presets` property
 - The official snippet writes a bare `project(":shared")`, which does not register a dependency in Kotlin DSL; `implementation(...)` is used here.
 - The official page labels the target presets "Before" snippet as Kotlin but uses Groovy syntax.
 - Migration (Kotlin 1.9 → 2.0): the removed APIs here are target presets, Apple target shortcuts (`ios()` / `watchos()` / `tvos()`), legacy hierarchical-structure Gradle properties, and `embedBitcode`; see also dsl-targets, android-source-set-layout and agp-9-migration.
+- Android target DSL naming: for the `com.android.kotlin.multiplatform.library` plugin, the official Kotlin Multiplatform docs use two block names: the compatibility guide (Kotlin 2.3.0 deprecation of `androidTarget`) says to rename it to `android {}`, while the AGP 9 migration, library publishing and integrate-in-existing-app pages use `androidLibrary {}`. The JetBrains docs do not state which plugin/AGP version uses which name, so check Google's migration guide (https://developer.android.com/kotlin/multiplatform/plugin#migrate) for the AGP version in use before renaming.
 - Android Gradle plugin, `com.android.kotlin.multiplatform.library` and Gradle Java plugin handling belong to android-build-gradle for the Android-side details; this page covers only the Kotlin Multiplatform plugin's behavior.
 
 ## Related

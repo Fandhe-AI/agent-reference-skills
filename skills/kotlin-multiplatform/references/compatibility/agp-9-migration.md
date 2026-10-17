@@ -128,7 +128,8 @@ Update the Android Gradle plugin version:
 - Android Studio supports AGP 9.0.0 starting with Otter 3 Feature Drop 2025.2.3; IntelliJ IDEA support for AGP 9.0.0 was expected in Q1 2026 (per the source).
 - Library migration steps are in Google's Android documentation (developer.android.com/kotlin/multiplatform/plugin#migrate). The source links a prepared AI-agent skill for the migration (Kotlin/kotlin-agent-skills); results of AI processing are not entirely predictable.
 - The sample is the Compose Multiplatform app from the new-project tutorial, in the `kotlin-hands-on/get-started-with-cm` repository branches `main`, `new-project-structure` and `old-project-structure`.
-- Migration (Kotlin 1.9 → 2.0): in Kotlin 2.3.0 the `androidTarget` name is deprecated in favor of `android` with the new plugin (see changes-kotlin-2-0-and-later).
+- Migration (Kotlin 1.9 → 2.0): in Kotlin 2.3.0 the `androidTarget` name is deprecated in favor of `android` with the new plugin (see changes-kotlin-2-0-and-later); this page's official steps use `androidLibrary {}` — see the naming note below.
+- Android target DSL naming: for the `com.android.kotlin.multiplatform.library` plugin, the official Kotlin Multiplatform docs use two block names: the compatibility guide (Kotlin 2.3.0 deprecation of `androidTarget`) says to rename it to `android {}`, while the AGP 9 migration, library publishing and integrate-in-existing-app pages use `androidLibrary {}`. The JetBrains docs do not state which plugin/AGP version uses which name, so check Google's migration guide (https://developer.android.com/kotlin/multiplatform/plugin#migrate) for the AGP version in use before renaming.
 - Distance line: AGP versions, `android {}` build configuration and built-in Kotlin belong to android-build-gradle; this page covers the Kotlin Multiplatform project restructuring.
 
 ## Related
