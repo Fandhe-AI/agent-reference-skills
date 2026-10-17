@@ -44,6 +44,7 @@ Manual install: download `kotlin-compiler-2.4.21.zip` from GitHub Releases, unzi
 
 - Compile a library without the runtime: `kotlinc hello.kt -d hello.jar`. Binaries then depend on the Kotlin runtime being in the classpath. Run with `kotlinr -classpath hello.jar HelloKt` (`HelloKt` is the main class generated for `hello.kt`).
 - Scripts: `kotlinc -script list_folders.kts -- -d <path_to_folder_to_inspect>`. Script customization (script definitions) is experimental; `kotlinc -script-templates org.example.CustomScriptDefinition -script custom.script1.kts`.
+- `kotlinr` replaced `kotlin` as the runner command in Kotlin 2.4.20; `kotlin` still works but warns.
 - On Windows, manual install is recommended.
 - For Kotlin/Native applications and libraries use the Kotlin/Native compiler (not covered by this skill).
 
