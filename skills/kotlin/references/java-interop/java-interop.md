@@ -354,14 +354,17 @@ Use `instance::class.java`, `ClassName::class.java` or `instance.javaClass` to e
 Kotlin function literals convert automatically to implementations of Java interfaces with a single non-default method, and also work for Kotlin fun interfaces.
 
 ```kotlin
+import java.util.concurrent.Executors
+
 val runnable = Runnable { println("This runs in a runnable") }
 
-val executor = ThreadPoolExecutor()
+val executor = Executors.newSingleThreadExecutor()
 // Java signature: void execute(Runnable command)
 executor.execute { println("This runs in a thread pool") }
 
 // Adapter function to pick a specific SAM type:
 executor.execute(Runnable { println("This runs in a thread pool") })
+executor.shutdown()
 ```
 
 ### Using JNI with Kotlin
@@ -382,6 +385,7 @@ var myProperty: String
 - Java synthetic property references (`Person::age`) were introduced as Experimental. Prior to Kotlin 1.9.0 the option was `-language-version 1.9`.
 - The official page still says to enable this with -language-version 2.1, but kotlin-language-features-and-proposals lists Java synthetic property references as Revoked, and in the Kotlin 2.4.21 compiler the ReferencesToSyntheticJavaProperties feature has no since-version, so no -language-version value enables it.
 - SAM conversions work only for interfaces, not abstract classes.
+- The official SAM conversion example uses ThreadPoolExecutor(), which has no no-arg constructor; replaced with Executors.newSingleThreadExecutor() and added shutdown().
 - Lombok-generated declarations: usable in Kotlin code; to generate and use them in the same mixed Java/Kotlin module see the Lombok compiler plugin page (`../compiler/lombok.md`). Calling them from another module needs no plugin.
 - Full lists of supported nullability / mutability annotations are in the Kotlin compiler source (`JvmAnnotationNames.kt`).
 
