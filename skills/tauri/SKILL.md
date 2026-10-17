@@ -9,6 +9,8 @@ user-invocable: false
 
 # Tauri v2
 
+> 分割 PR の途中段階。現在収録済み: references/{cli, config}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+
 ## 対象バージョン
 
 Tauri v2。版 pin は次のとおり。
@@ -53,8 +55,8 @@ skills/tauri/
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
 1. 下記マッピング表でタスクに対応するカテゴリを探す
-3. 該当ページの `.md` を Read して詳細を確認する
-4. Rust 側 API は `rust-api`、フロントエンド側 API は `js-api` または `plugin-js-api-*`、プラグインの導入・設定・permission はガイド側 `plugins-core` / `plugins-app` を引く
+2. 該当ページの `.md` を Read して詳細を確認する
+3. Rust 側 API は `rust-api`、フロントエンド側 API は `js-api` または `plugin-js-api-*`、プラグインの導入・設定・permission はガイド側 `plugins-core` / `plugins-app` を引く
 
 ## タスク → カテゴリ マッピング
 
