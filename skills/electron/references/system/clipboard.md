@@ -159,7 +159,7 @@ A `ClipboardBookmark` is the payload used by the `electron application/bookmark`
 
 ## Notes
 
-* Deprecated: using the `clipboard` API directly in the renderer process is deprecated (see the breaking-changes category, "Deprecated: clipboard API access from renderer processes").
+* Removed (v44): the clipboard module is no longer exposed to renderer processes (previously deprecated; see the breaking-changes category, "Removed: clipboard module is no longer available in the renderer process"). Renderers should use navigator.clipboard, or expose only the necessary helpers from a preload script via contextBridge without exposing the clipboard API to untrusted content.
 * The `selection` clipboard does not support the W3C web custom format.
 * Structure page: https://www.electronjs.org/docs/latest/api/structures/clipboard-bookmark
 * Distinction: this is the Electron main-process module for the OS clipboard. Web UI components are in ark-ui / chakra-ui / fandhe-frontend; native clipboard APIs of other platforms are in apple-appkit, windows-winui-controls and android-compose-components.

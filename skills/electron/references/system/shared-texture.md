@@ -16,14 +16,16 @@ The original page has no code example; this usage only combines the documented s
 // main process
 const { sharedTexture } = require('electron')
 
-const imported = sharedTexture.importSharedTexture({
-  textureInfo, // SharedTextureImportTextureInfo
-  allReferencesReleased: () => {
-    // safe to free the original texture
-  }
-})
-await sharedTexture.sendSharedTexture({ frame: win.webContents.mainFrame, importedSharedTexture: imported })
-imported.release() // release the main-process reference once sent
+async function sendTexture (win, textureInfo) {
+  const imported = sharedTexture.importSharedTexture({
+    textureInfo, // SharedTextureImportTextureInfo
+    allReferencesReleased: () => {
+      // safe to free the original texture
+    }
+  })
+  await sharedTexture.sendSharedTexture({ frame: win.webContents.mainFrame, importedSharedTexture: imported })
+  imported.release() // release the main-process reference once sent
+}
 
 // renderer process
 sharedTexture.setSharedTextureReceiver(async ({ importedSharedTexture }) => {
