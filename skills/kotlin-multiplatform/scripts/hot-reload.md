@@ -4,24 +4,24 @@ source: https://kotlinlang.org/docs/multiplatform/compose-hot-reload.html
 
 # Hot Reload
 
-Compose Hot Reload の Gradle 関連コマンド。Compose Multiplatform 1.10.0 以降は desktop ターゲットを持つプロジェクトでプラグインが同梱・既定有効。
+Gradle-related commands for Compose Hot Reload. From Compose Multiplatform 1.10.0, the plugin is bundled and enabled by default in projects with a desktop target.
 
-## MCP サーバーの起動
+## Start the MCP server
 
 ```sh
 ./gradlew --no-daemon --quiet --console=plain hotMcpServer
 ```
 
-Compose Multiplatform 1.12.0 以降で Compose Hot Reload に組み込まれた MCP サーバー（Experimental）。MCP クライアントは `.mcp.json` の `command` に `./gradlew`、`args` に上記オプションと `hotMcpServer` を指定してこのタスクを起動する。
+MCP server built into Compose Hot Reload from Compose Multiplatform 1.12.0 (Experimental). An MCP client starts this task by setting `command` to `./gradlew` and `args` to the options above plus `hotMcpServer` in `.mcp.json`.
 
-## ターゲットを限定した MCP サーバーの起動
+## Start the MCP server for a specific target
 
 ```sh
 ./gradlew :<module>:hotMcpServer<Target>
 ```
 
-複数の JVM ターゲットを持つモジュールでは完全修飾名で曖昧さを避ける。原文の例は `:app:hotMcpServerDesktop` と `:composeApp:hotMcpServerJvm`。
+In modules with multiple JVM targets, use the fully qualified name to avoid ambiguity. The official examples are `:app:hotMcpServerDesktop` and `:composeApp:hotMcpServerJvm`.
 
-## 補足
+## Notes
 
-- Hot Reload の実行自体は IDE の **Run 'desktopApp' with Compose Hot Reload** で行う手順のみが原文にあり、対応する Gradle コマンド行は記載が無いため収録しない。
+- Running Hot Reload itself is documented only as the IDE action **Run 'desktopApp' with Compose Hot Reload**; no matching Gradle command line is given, so none is included.

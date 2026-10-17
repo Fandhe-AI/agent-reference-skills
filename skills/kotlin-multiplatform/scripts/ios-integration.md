@@ -8,15 +8,15 @@ Commands documented for iOS integration (CocoaPods, SwiftPM export / import, dir
 
 > **警告**: Do not run `gem install` with administrator privileges against the system Ruby. Use Homebrew or a version-managed Ruby (rbenv / RVM).
 
-## CocoaPods のインストール（Homebrew、推奨）
+## Install CocoaPods (Homebrew, recommended)
 
 ```sh
 brew install cocoapods
 ```
 
-Xcodeproj gem が最新の Xcode に未対応だと Pod インストールでエラーになる場合がある（原文警告）。
+Pod installation may fail if the Xcodeproj gem does not support the latest Xcode (warning in the official docs).
 
-## CocoaPods のインストール（RVM / rbenv）
+## Install CocoaPods (RVM / rbenv)
 
 Adapted (not in the official docs): the official docs use `sudo gem install -n /usr/local/bin cocoapods`; sudo is removed here (a version-managed Ruby installs into its own bin).
 
@@ -24,38 +24,38 @@ Adapted (not in the official docs): the official docs use `sudo gem install -n /
 gem install cocoapods
 ```
 
-事前に `rvm install ruby <version>` または `rbenv install <version>` と `rbenv global <version>` で Ruby を用意する（バージョンは原文の変数 `rubyVersion` で、本スキルの固定値は無い）。
+First prepare Ruby with `rvm install ruby <version>` or `rbenv install <version>` and `rbenv global <version>` (the version is the variable `rubyVersion` in the official docs; this skill fixes no value).
 
-## CocoaPods のインストール（既定の Ruby）
+## Install CocoaPods (default Ruby)
 
 Adapted (not in the official docs): the official docs use `sudo gem install cocoapods`; it is not included here because it modifies the system Ruby with administrator privileges. Use Homebrew or a version-managed Ruby instead. The official docs note this route does not work on Apple M chips.
 
-## Pods のインストール
+## Install Pods
 
 ```sh
 pod install
 ```
 
-初回実行で `.xcworkspace` が生成される。以降は `.xcodeproj` ではなく `.xcworkspace` を開く。複数の Xcode プロジェクトと依存する場合は各プロジェクトで手動実行が必要（出典: `multiplatform-cocoapods-xcode`）。
+The first run generates `.xcworkspace`. From then on, open the `.xcworkspace` instead of the `.xcodeproj`. If you depend on multiple Xcode projects, run it manually in each project (source: `multiplatform-cocoapods-xcode`).
 
-## Gradle による Pods のインストール
+## Install Pods with Gradle
 
 ```sh
 ./gradlew podInstall
 open iosApp/iosApp.xcworkspace
 ```
 
-リソース欠落（フォント・画像が `.ipa` に入らない）を避けるため、クリーンな環境・CI では `pod install` 直接実行ではなく `podInstall` を使う。
+To avoid missing resources (fonts and images not included in the `.ipa`), use `podInstall` instead of running `pod install` directly in clean environments and CI.
 
-## CocoaPods パスの明示
+## Specify the CocoaPods path explicitly
 
 ```sh
 echo -e "kotlin.apple.cocoapods.bin=$(which pod)" >> local.properties
 ```
 
-Xcode でのビルドエラー対策。`local.properties` に追記される。
+Workaround for build errors in Xcode. Appends to `local.properties`.
 
-## CocoaPods ツールの更新（RVM / rbenv / Homebrew）
+## Update CocoaPods tooling (RVM / rbenv / Homebrew)
 
 ```sh
 rvm get stable
@@ -75,75 +75,75 @@ brew update
 brew upgrade
 ```
 
-`module 'SomeSDK' not found` 等のエラー対策（それぞれ RVM / rbenv / Homebrew 用）。
+Workaround for errors such as `module 'SomeSDK' not found` (for RVM / rbenv / Homebrew respectively).
 
-## SwiftPM export の XCFramework 生成
+## Generate the XCFramework for SwiftPM export
 
 ```sh
 ./gradlew :shared:assembleSharedXCFramework
 ```
 
-`shared/build/XCFrameworks/release/Shared.xcframework` が生成される。複数モジュールをまとめる場合は `./gradlew :together:assembleTogetherReleaseXCFramework`（原文の umbrella モジュール例）。
+Generates `shared/build/XCFrameworks/release/Shared.xcframework`. To combine multiple modules, use `./gradlew :together:assembleTogetherReleaseXCFramework` (the official umbrella-module example).
 
-## XCFramework のチェックサム計算
+## Compute the XCFramework checksum
 
 ```sh
 swift package compute-checksum Shared.xcframework.zip
 ```
 
-`Shared.xcframework` を ZIP 化した後に実行する。
+Run it after zipping `Shared.xcframework`.
 
-## アップロード済み ZIP の確認
+## Check the uploaded ZIP
 
 ```sh
 curl <downloadable link to the uploaded XCFramework ZIP file>
 ```
 
-`<...>` は原文のプレースホルダ。
+`<...>` is an official placeholder.
 
-## Package.swift マニフェストの検証
+## Validate the Package.swift manifest
 
 ```sh
 swift package reset && swift package show-dependencies --format json
 ```
 
-`Package.swift` のあるディレクトリで実行する。
+Run in the directory containing `Package.swift`.
 
-## SwiftPM import の統合タスク
+## SwiftPM import integration task
 
 ```sh
 XCODEPROJ_PATH='/path/to/project/iosApp/iosApp.xcodeproj' ./gradlew :kotlin-library:integrateLinkagePackage
 ```
 
-SwiftPM 依存を初めて追加した際、生成された中間パッケージと Xcode プロジェクトを連携させる。生成パッケージと更新された Xcode プロジェクトはコミットする。
+When SwiftPM dependencies are first added, links the generated intermediate package with the Xcode project. Commit the generated package and the updated Xcode project.
 
-## SwiftPM 依存の解決（ロックファイルの強制更新）
+## Resolve SwiftPM dependencies (force a lockfile refresh)
 
 ```sh
 ./gradlew :yourModuleName:fetchSyntheticImportProjectPackages
 ```
 
-事前に対象サブプロジェクトの `build` ディレクトリと既存の `Package.resolved`（`.swiftpm-locks/default/` 等）を削除する（出典: `multiplatform-spm-import`）。
+First delete the `build` directory of the target subproject and any existing `Package.resolved` (such as in `.swiftpm-locks/default/`) (source: `multiplatform-spm-import`).
 
-## CocoaPods から SwiftPM import への再設定
+## Reconfigure from CocoaPods to SwiftPM import
 
 ```sh
 XCODEPROJ_PATH='/path/to/project/iosApp/iosApp.xcodeproj' GRADLE_PROJECT_PATH=':kotlin-library' '/path/to/project/gradlew' -p '/path/to/project' ':kotlin-library:integrateEmbedAndSign' ':kotlin-library:integrateLinkagePackage'
 ```
 
-Xcode のビルドエラーに表示されるコマンドの例（実際のパスは各プロジェクト固有）。`iosApp` ディレクトリで実行し、`.xcodeproj` を書き換える（出典: `multiplatform-cocoapods-spm-migration`）。
+Example of the command shown in an Xcode build error (actual paths are project-specific). Run it in the `iosApp` directory; it rewrites the `.xcodeproj` (source: `multiplatform-cocoapods-spm-migration`).
 
-## CocoaPods の統合解除
+## Remove the CocoaPods integration
 
-> **警告**: `pod deintegrate` は Xcode プロジェクトから CocoaPods の統合を削除する。コミット済みの状態、または使い捨てのコピーで実行する。
+> **警告**: `pod deintegrate` removes the CocoaPods integration from the Xcode project. Run it from a committed state or on a disposable copy.
 
 ```sh
 pod deintegrate
 ```
 
-Podfile のあるディレクトリで実行する。この後 `cocoapods {}` ブロック、`.podspec`、Podfile を削除する（出典: `multiplatform-cocoapods-spm-migration` / `multiplatform-spm-local-integration`）。
+Run in the directory containing the Podfile. Afterwards, delete the `cocoapods {}` block, the `.podspec`, and the Podfile (source: `multiplatform-cocoapods-spm-migration` / `multiplatform-spm-local-integration`).
 
-## Xcode Run Script での Kotlin フレームワーク埋め込み
+## Embed the Kotlin framework from an Xcode Run Script
 
 ```sh
 if [ "YES" = "$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED" ]; then
@@ -154,13 +154,13 @@ cd "<Path to the root of the multiplatform project>"
 ./gradlew :<Shared module name>:embedAndSignAppleFrameworkForXcode
 ```
 
-direct integration で Xcode の Run Script phase に貼るスクリプト（出典: `multiplatform-direct-integration`）。`<...>` は原文のプレースホルダで、例は `$SRCROOT/..` と `:shared` / `:sharedUI`。`embedAndSignAppleFrameworkForXcode` は CocoaPods 統合とは併用できない。
+Script to paste into the Xcode Run Script phase for direct integration (source: `multiplatform-direct-integration`). `<...>` are official placeholders; examples are `$SRCROOT/..` and `:shared` / `:sharedUI`. `embedAndSignAppleFrameworkForXcode` cannot be used together with the CocoaPods integration.
 
-## ローカル Swift パッケージ連携の Pre-action スクリプト
+## Pre-action script for local Swift package integration
 
 ```sh
 cd "<Path to the root of the multiplatform project>"
 ./gradlew :<Shared module name>:embedAndSignAppleFrameworkForXcode
 ```
 
-Xcode の scheme の **Build | Pre-actions** に追加する **New Run Script Action**（出典: `multiplatform-spm-local-integration`）。`swift build` への統合は未対応。
+Add as a **New Run Script Action** under **Build | Pre-actions** of the Xcode scheme (source: `multiplatform-spm-local-integration`). Integration with `swift build` is not supported.

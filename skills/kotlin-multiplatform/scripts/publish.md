@@ -4,55 +4,55 @@ source: https://kotlinlang.org/docs/multiplatform/multiplatform-publish-librarie
 
 # Publish
 
-ライブラリの Maven Central / Maven Local / npm への公開に関するコマンド。出典は `multiplatform-publish-libraries-to-maven` / `multiplatform-publish-lib-setup` / `multiplatform-publish-libraries-to-npm`。
+Commands for publishing libraries to Maven Central / Maven Local / npm. Sources: `multiplatform-publish-libraries-to-maven` / `multiplatform-publish-lib-setup` / `multiplatform-publish-libraries-to-npm`.
 
-> **警告**: 本ページの公開系コマンドは外部レジストリへ成果物を公開する（取り消し困難）。認証情報・署名鍵は原文のプレースホルダ（`example-password` / `YOUR_ACCESS_TOKEN` / `<...>` 等）を実値に置き換えて環境変数やシークレットストアで渡し、スクリプトやリポジトリに書かない。使い捨てのテスト用ライブラリで試してから実行する。
+> **警告**: The publishing commands on this page push artifacts to external registries (hard to undo). Replace the official placeholders (`example-password` / `YOUR_ACCESS_TOKEN` / `<...>` etc.) with real values passed through environment variables or a secret store, and never write them into scripts or the repository. Try a disposable test library first.
 
-## Maven Local への公開
+## Publish to Maven Local
 
 ```sh
 ./gradlew publishToMavenLocal
 ```
 
-ターゲット別と root の全 publication をまとめて Maven Local に公開する。
+Publishes all per-target publications and the root publication to Maven Local.
 
-## 完全なライブラリの公開（任意の Maven リポジトリ）
+## Publish the complete library (any Maven repository)
 
 ```sh
 ./gradlew publishAllPublicationsToGithubPackagesRepository
 ```
 
-`publishAllPublicationsTo<MavenRepositoryName>Repository` の例（原文は `GithubPackages` リポジトリ）。
+Example of `publishAllPublicationsTo<MavenRepositoryName>Repository` (the official docs use the `GithubPackages` repository).
 
-## root publication の個別公開
+## Publish the root publication only
 
 ```sh
 ./gradlew publishKotlinMultiplatformPublicationToMavenLocal
 ```
 
-`*.module` ファイルのみを公開し、ターゲット別 publication は別途必要。
+Publishes only the `*.module` file; per-target publications must be published separately.
 
-## ターゲット別 publication の個別公開
+## Publish a single target publication
 
 ```sh
 ./gradlew publish<TargetName>PublicationToMavenLocal
 ```
 
-## PGP 鍵ペアの生成（Kotlin Gradle プラグイン）
+## Generate a PGP key pair (Kotlin Gradle plugin)
 
 ```sh
 ./gradlew -Psigning.password=example-password generatePgpKeys --name "John Smith <john@example.com>"
 ```
 
-鍵ペアは `build/pgp` に保存される。安全な場所へ移し、`example-password` は実際のパスワードに置き換える。
+The key pair is saved to `build/pgp`. Move it to a safe location and replace `example-password` with a real password.
 
-## 公開鍵のアップロード（Kotlin Gradle プラグイン）
+## Upload the public key (Kotlin Gradle plugin)
 
 ```sh
 ./gradlew uploadPublicPgpKey --keyring /path_to/build/pgp/public_KEY_ID.asc
 ```
 
-## PGP 鍵ペアの生成（gpg）
+## Generate a PGP key pair (gpg)
 
 ```sh
 brew install gpg
@@ -60,70 +60,70 @@ gpg --full-generate-key
 gpg --list-keys
 ```
 
-## 公開鍵のアップロード（gpg）
+## Upload the public key (gpg)
 
 ```sh
 gpg --keyserver keyserver.ubuntu.com --send-keys F175482952A225BFC4A07A715EE6B5F76620B385CE
 ```
 
-鍵 ID は原文の例。自分の鍵 ID に置き換える。
+The key ID is the official example. Replace it with your own key ID.
 
-## 秘密鍵のエクスポート
+## Export the private key
 
-> **警告**: `key.gpg` は秘密鍵そのもの。他者と共有せず、リポジトリにコミットしない。
+> **警告**: `key.gpg` is the private key itself. Do not share it and do not commit it to the repository.
 
 ```sh
 gpg --armor --export-secret-keys F175482952A225BFC4A07A715EE6B5F76620B385CE > key.gpg
 ```
 
-## 署名設定のローカル検証
+## Verify the signing configuration locally
 
 ```sh
 ./gradlew checkSigningConfiguration
 ```
 
-公開鍵が `keyserver.ubuntu.com` または `keys.openpgp.org` にアップロード済みかを確認する。
+Checks whether the public key has been uploaded to `keyserver.ubuntu.com` or `keys.openpgp.org`.
 
-## pom.xml のローカル検証
+## Verify pom.xml locally
 
 ```sh
 ./gradlew checkPomFileFor<PUBLICATION_NAME>Publication
 ```
 
-vanniktech の gradle-maven-publish-plugin では publication 名が通常 `Maven` のため、次のコマンドになる。
+With the vanniktech gradle-maven-publish-plugin the publication name is normally `Maven`, so the command becomes:
 
 ```sh
 ./gradlew checkPomFileForMavenPublication
 ```
 
-## Maven Central への公開（手動リリース）
+## Publish to Maven Central (manual release)
 
 ```sh
 ./gradlew publishToMavenCentral --no-configuration-cache
 ```
 
-認証情報は環境変数 `ORG_GRADLE_PROJECT_mavenCentralUsername` / `ORG_GRADLE_PROJECT_mavenCentralPassword` / `ORG_GRADLE_PROJECT_signingInMemoryKeyId` / `ORG_GRADLE_PROJECT_signingInMemoryKeyPassword` / `ORG_GRADLE_PROJECT_signingInMemoryKey` で渡す（原文は GitHub Actions のシークレットから設定）。デプロイメントは Maven Central のサイトで確認し手動で **Publish** する。`--no-configuration-cache` は公開プラグインが configuration cache 非対応のため。
+Credentials are passed through the environment variables `ORG_GRADLE_PROJECT_mavenCentralUsername` / `ORG_GRADLE_PROJECT_mavenCentralPassword` / `ORG_GRADLE_PROJECT_signingInMemoryKeyId` / `ORG_GRADLE_PROJECT_signingInMemoryKeyPassword` / `ORG_GRADLE_PROJECT_signingInMemoryKey` (the official docs set them from GitHub Actions secrets). Check the deployment on the Maven Central site and **Publish** it manually. `--no-configuration-cache` is needed because the publishing plugin does not support the configuration cache.
 
-## Maven Central への公開（自動リリース）
+## Publish to Maven Central (automatic release)
 
 ```sh
 ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
 ```
 
-検証完了後に自動でリリースまで行う。`--no-configuration-cache` の扱いは上記と同じ（原文は `publishToMavenCentral` のワークフローの例のみで、このフラグ付きの完全な行は `publishAndReleaseToMavenCentral` への置換から導出）。
+Releases automatically once validation completes. `--no-configuration-cache` is handled as above (the official docs only show the `publishToMavenCentral` workflow example; the full line with this flag is derived by substituting `publishAndReleaseToMavenCentral`).
 
-## npm への手動公開
+## Publish to npm manually
 
 ```sh
 NPM_TOKEN=YOUR_ACCESS_TOKEN ./gradlew :shared:publishJsPackageToNpmjsRegistry
 ```
 
-`YOUR_ACCESS_TOKEN` は原文のプレースホルダ。`build.gradle.kts` の `authToken = System.getenv("NPM_TOKEN")` を前提とする。同一または古い `version` では npm が公開を拒否する。
+`YOUR_ACCESS_TOKEN` is the official placeholder. Assumes `authToken = System.getenv("NPM_TOKEN")` in `build.gradle.kts`. npm rejects publishing the same or an older `version`.
 
-## npm への公開（Trusted Publisher の CI）
+## Publish to npm (Trusted Publisher CI)
 
 ```sh
 ./gradlew :shared:publishJsPackageToNpmjsRegistry
 ```
 
-GitHub Actions のワークフロー内で実行する（`permissions: id-token: write` と npm 側の Trusted Publisher 設定が必要）。トークンは不要。
+Run inside a GitHub Actions workflow (requires `permissions: id-token: write` and a Trusted Publisher setting on the npm side). No token is needed.

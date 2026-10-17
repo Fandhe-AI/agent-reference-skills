@@ -2,10 +2,10 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| CI | GitHub Actions と TeamCity の CI で実行されるコマンド。ワークフロー YAML 本体は `references/tooling/github-actions.md` / `references/tooling/teamcity.md` を参照。 | [ci.md](./ci.md) |
-| Gradle Tasks | KMP プロジェクトで公式ドキュメントに記載された Gradle タスク（web 配布物・テスト・XCFramework）。 | [gradle-tasks.md](./gradle-tasks.md) |
-| Hot Reload | Compose Hot Reload の Gradle 関連コマンド。Compose Multiplatform 1.10.0 以降は desktop ターゲットを持つプロジェクトでプラグインが同梱・既定有効。 | [hot-reload.md](./hot-reload.md) |
-| iOS Integration | iOS 統合（CocoaPods・SwiftPM export / import・direct integration）で公式ドキュメントに記載されたコマンド。いずれも macOS と Xcode が前提。 | [ios-integration.md](./ios-integration.md) |
-| Kotlin Toolchain CLI | Kotlin Toolchain（Alpha、`kotlinToolchainVersion` 0.13）の CLI によるインストール・プロジェクト作成・実行コマンド。 | [kotlin-toolchain-cli.md](./kotlin-toolchain-cli.md) |
-| Native Distribution | Compose Multiplatform Gradle プラグイン（`org.jetbrains.compose`）の desktop パッケージング・実行・notarization タスク。出力は `${project.buildDir}/compose/binaries`。 | [native-distribution.md](./native-distribution.md) |
-| Publish | ライブラリの Maven Central / Maven Local / npm への公開に関するコマンド。公開系は外部レジストリへ成果物を出すため取り消し困難。 | [publish.md](./publish.md) |
+| CI | Commands run by GitHub Actions and TeamCity CI. For the workflow YAML itself, see `references/tooling/github-actions.md` / `references/tooling/teamcity.md`. | [ci.md](./ci.md) |
+| Gradle Tasks | Gradle tasks documented for KMP projects (web distributions, tests, XCFramework). | [gradle-tasks.md](./gradle-tasks.md) |
+| Hot Reload | Gradle-related commands for Compose Hot Reload. From Compose Multiplatform 1.10.0, the plugin is bundled and enabled by default in projects with a desktop target. | [hot-reload.md](./hot-reload.md) |
+| iOS Integration | Commands documented for iOS integration (CocoaPods, SwiftPM export / import, direct integration). macOS and Xcode are required for all of them. | [ios-integration.md](./ios-integration.md) |
+| Kotlin Toolchain CLI | Install, project creation, and run commands for the Kotlin Toolchain CLI (Alpha, `kotlinToolchainVersion` 0.13). | [kotlin-toolchain-cli.md](./kotlin-toolchain-cli.md) |
+| Native Distribution | Desktop packaging, run, and notarization tasks of the Compose Multiplatform Gradle plugin (`org.jetbrains.compose`). Output goes to `${project.buildDir}/compose/binaries`. | [native-distribution.md](./native-distribution.md) |
+| Publish | Commands for publishing libraries to Maven Central / Maven Local / npm. Publishing pushes artifacts to external registries and is hard to undo. | [publish.md](./publish.md) |

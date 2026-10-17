@@ -4,65 +4,67 @@ source: https://kotlinlang.org/docs/multiplatform/compose-native-distribution.ht
 
 # Native Distribution
 
-Compose Multiplatform Gradle プラグイン（`org.jetbrains.compose`）の desktop パッケージング・実行・notarization タスク。出力は `${project.buildDir}/compose/binaries`。
+Desktop packaging, run, and notarization tasks of the Compose Multiplatform Gradle plugin (`org.jetbrains.compose`). Output goes to `${project.buildDir}/compose/binaries`.
 
-> 注記: 原文で `./gradlew` 形式の完全なコマンド行が載っているのは `runDistributable` のみ。他はタスク名の表で、`./gradlew <task>` はタスク名からの組み立て。
+> Note: In the official docs, only `runDistributable` is shown as a full `./gradlew` command line. The others are task names in a table; `./gradlew <task>` is assembled from the task name.
 
-> **警告**: `notarize*` タスクは Apple の notarization サービスへアプリイメージをアップロードする。署名・notarization の認証情報は原文の手順（Signing and notarization on macOS チュートリアル）に従い、実値をスクリプトやリポジトリに書かない。
+> **警告**: The `notarize*` tasks upload the app image to Apple's notarization service. Follow the official procedure (the "Signing and notarization on macOS" tutorial) for signing and notarization credentials, and never write real values into scripts or the repository.
 
-## 配布イメージの実行
+## Run the distributable image
 
 ```sh
 ./gradlew runDistributable
 ```
 
-パッケージ済みアプリケーションイメージ（JDK 同梱）を実行する。
+Runs the packaged application image (with a bundled JDK).
 
-## 非パッケージ JVM アプリの実行
+## Run the non-packaged JVM application
 
 ```sh
 ./gradlew run
 ```
 
-`mainClass` を起点に、Gradle JDK で非パッケージのアプリケーションを実行する。
+Runs the non-packaged application with the Gradle JDK, starting from `mainClass`.
 
-## 配布イメージの作成（インストーラーなし）
+## Create the distributable image (no installer)
 
 ```sh
 ./gradlew createDistributable
 ```
 
-## 形式を指定したパッケージ化
+## Package in a specific format
 
 ```sh
 ./gradlew package<FormatName>
 ```
 
-例: `packageDmg`。クロスコンパイル非対応のため、各形式は対応する OS 上でのみ作成できる（`.dmg` / `.pkg` は macOS、`.exe` / `.msi` は Windows、`.deb` / `.rpm` は Linux）。
+Example: `packageDmg`. Cross-compilation is not supported, so each format can only be created on the matching OS (`.dmg` / `.pkg` on macOS, `.exe` / `.msi` on Windows, `.deb` / `.rpm` on Linux).
 
-## 現在の OS 向けパッケージ化
+## Package for the current OS
 
 ```sh
 ./gradlew packageDistributionForCurrentOS
 ```
 
-## uber JAR の作成
+## Create an uber JAR
 
 ```sh
 ./gradlew packageUberJarForCurrentOS
 ```
 
-`compose.desktop.currentOS` が `compile` / `implementation` / `runtime` 依存として使われていることが前提。
+Requires `compose.desktop.currentOs` to be used as a `compile` / `implementation` / `runtime` dependency.
 
-## 不足 JDK モジュールの推定
+The official task table writes `compose.desktop.currentOS`; the actual Gradle accessor used in all official code samples is `compose.desktop.currentOs`.
+
+## Suggest missing JDK modules
 
 ```sh
 ./gradlew suggestModules
 ```
 
-`jdeps` による静的解析で不足モジュールを推定する。出力は不完全、または不要なモジュールを含む場合がある。
+Suggests missing modules by static analysis with `jdeps`. The output may be incomplete or include unnecessary modules.
 
-## ProGuard を適用する release 系タスク
+## Release tasks with ProGuard applied
 
 ```sh
 ./gradlew createReleaseDistributable
@@ -73,13 +75,13 @@ Compose Multiplatform Gradle プラグイン（`org.jetbrains.compose`）の des
 ./gradlew packageReleaseUberJarForCurrentOS
 ```
 
-各既定タスクに対応する ProGuard 適用版（`createDistributable` → `createReleaseDistributable` の対応）。
+Each is the ProGuard-enabled counterpart of a default task (for example `createDistributable` maps to `createReleaseDistributable`).
 
-## notarization（macOS のみ）
+## Notarization (macOS only)
 
 ```sh
 ./gradlew notarize<FORMAT_NAME>
 ./gradlew checkNotarizationStatus
 ```
 
-release 版は `notarizeRelease<FORMAT_NAME>` / `checkReleaseNotarizationStatus`。`notarize<FORMAT_NAME>` は application image のアップロード、`checkNotarizationStatus` は notarization の成否確認。
+The release variants are `notarizeRelease<FORMAT_NAME>` / `checkReleaseNotarizationStatus`. `notarize<FORMAT_NAME>` uploads the application image; `checkNotarizationStatus` checks whether notarization succeeded.

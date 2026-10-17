@@ -4,25 +4,25 @@ source: https://kotlinlang.org/docs/multiplatform/github-actions-for-kmp.html
 
 # CI
 
-GitHub Actions と TeamCity の CI で実行されるコマンド。ワークフロー YAML 本体は `references/tooling/github-actions.md` / `references/tooling/teamcity.md` を参照。出典は `github-actions-for-kmp` / `configure-teamcity-for-kmp`（`https://kotlinlang.org/docs/multiplatform/configure-teamcity-for-kmp.html`）。
+Commands run by GitHub Actions and TeamCity CI. For the workflow YAML itself, see `references/tooling/github-actions.md` / `references/tooling/teamcity.md`. Sources: `github-actions-for-kmp` / `configure-teamcity-for-kmp` (`https://kotlinlang.org/docs/multiplatform/configure-teamcity-for-kmp.html`).
 
-## 共有テストの実行
+## Run shared tests
 
 ```sh
 ./gradlew jvmTest
 ```
 
-テストレポートは `**/build/reports/tests/` に出力される（GitHub Actions / TeamCity とも同じタスク）。
+Test reports are written to `**/build/reports/tests/` (same task for GitHub Actions and TeamCity).
 
-## Android debug APK のビルド
+## Build the Android debug APK
 
 ```sh
 ./gradlew :mobile:assembleDebug
 ```
 
-APK は `mobile/build/outputs/apk/debug/` に出力される。`:mobile` は原文サンプル（Jetcaster KMP）のモジュール名。
+The APK is written to `mobile/build/outputs/apk/debug/`. `:mobile` is the module name in the official sample (Jetcaster KMP).
 
-## iOS シミュレーター向けアプリのビルド
+## Build the app for the iOS simulator
 
 ```sh
 xcodebuild build \
@@ -34,12 +34,12 @@ xcodebuild build \
   -verbose
 ```
 
-macOS ランナー（`macos-latest`）と Xcode が前提。署名を避けるため iOS Simulator を対象にする。プロジェクト名・scheme は原文サンプルの値で、自身のプロジェクトに置き換える。成果物は `build/Build/Products/Debug-iphonesimulator/*`。
+Requires a macOS runner (`macos-latest`) and Xcode. The iOS Simulator is targeted to avoid code signing. The project name and scheme are values from the official sample; replace them with your own. Artifacts are under `build/Build/Products/Debug-iphonesimulator/*`.
 
-## Gradle 実行オプション（GitHub Actions の GRADLE_OPTS）
+## Gradle options (GRADLE_OPTS in GitHub Actions)
 
 ```sh
 export GRADLE_OPTS="-Dorg.gradle.jvmargs=-Xmx4096M -Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.caching=true"
 ```
 
-原文はワークフローの `env: GRADLE_OPTS:` として設定している。ローカルで同等の設定を使う場合の書き方で、`export` 形式は原文の値からの組み立て。
+The official docs set this as `env: GRADLE_OPTS:` in the workflow. This is how to use the same settings locally; the `export` form is assembled from the official values.

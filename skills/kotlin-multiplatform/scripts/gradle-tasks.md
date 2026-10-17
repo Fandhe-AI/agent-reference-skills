@@ -4,59 +4,59 @@ source: https://kotlinlang.org/docs/multiplatform/multiplatform-build-native-bin
 
 # Gradle Tasks
 
-KMP プロジェクトで公式ドキュメントに記載された Gradle タスク（web 配布物・テスト・XCFramework）。出典は `build-and-run-kmp` / `multiplatform-run-tests` / `multiplatform-build-native-binaries`（docs SHA `3ad4b02`）。
+Gradle tasks documented for KMP projects (web distributions, tests, XCFramework). Sources: `build-and-run-kmp` / `multiplatform-run-tests` / `multiplatform-build-native-binaries` (docs SHA `3ad4b02`).
 
-> 注記: 原文がタスク名のみを示し `./gradlew` 形式の完全なコマンド行を載せていないものは、各項目に明記する。
+> Note: Where the official docs show only a task name and no full `./gradlew` command line, the item says so.
 
-## Web 互換モードの配布物生成
+## Generate the web compatibility-mode distribution
 
 ```sh
 ./gradlew composeCompatibilityBrowserDistribution
 ```
 
-`js` と `wasmJs` の両ターゲットに対応する成果物を生成する。出力例は `webApp/build/dist/composeWebCompatibility/productionExecutable`。Gradle JVM は Java 11 以上必須、Compose Multiplatform では Java 17 以上を推奨（出典: `build-and-run-kmp`）。
+Produces artifacts for both the `js` and `wasmJs` targets. Example output: `webApp/build/dist/composeWebCompatibility/productionExecutable`. The Gradle JVM must be Java 11 or later; Java 17 or later is recommended for Compose Multiplatform (source: `build-and-run-kmp`).
 
-## Wasm ブラウザ配布物の生成
+## Generate the Wasm browser distribution
 
 ```sh
 ./gradlew wasmJsBrowserDistribution
 ```
 
-原文は IDE の Gradle run configuration の **Tasks and arguments** に `wasmJsBrowserDistribution` を貼る手順（出典: `multiplatform-publish-apps`）。`./gradlew` 形式は同ページに無く、タスク名のみが原文由来。
+The official docs paste `wasmJsBrowserDistribution` into **Tasks and arguments** of an IDE Gradle run configuration (source: `multiplatform-publish-apps`). The `./gradlew` form does not appear on that page; only the task name comes from the docs.
 
-## 全テストの実行
+## Run all tests
 
 ```sh
 ./gradlew allTests
 ```
 
-プロジェクト内の全テストを対応するテストランナーで実行する。HTML レポートは `sharedLogic/build/reports/tests` に生成される（出典: `multiplatform-run-tests`）。原文は「`allTests` Gradle タスクを実行」と記述しており、`./gradlew` 形式はタスク名からの組み立て。
+Runs all tests in the project with the corresponding test runners. The HTML report is generated in `sharedLogic/build/reports/tests` (source: `multiplatform-run-tests`). The docs say "run the `allTests` Gradle task"; the `./gradlew` form is assembled from the task name.
 
-## XCFramework の組み立て
+## Assemble an XCFramework
 
 ```sh
 ./gradlew assembleXCFramework
 ```
 
-`XCFramework()` を宣言すると Kotlin Gradle プラグインが `assembleXCFramework` / `assemble<Framework name>DebugXCFramework` / `assemble<Framework name>ReleaseXCFramework` を登録する（出典: `multiplatform-build-native-binaries`）。`./gradlew` 形式はタスク名からの組み立て。
+Declaring `XCFramework()` makes the Kotlin Gradle plugin register `assembleXCFramework` / `assemble<Framework name>DebugXCFramework` / `assemble<Framework name>ReleaseXCFramework` (source: `multiplatform-build-native-binaries`). The `./gradlew` form is assembled from the task name.
 
-## CocoaPods プラグインによる XCFramework の組み立て
+## Assemble an XCFramework with the CocoaPods plugin
 
 ```sh
 ./gradlew podPublishXCFramework
 ```
 
-CocoaPods Gradle プラグイン使用時のタスク。`podPublishReleaseXCFramework`（release のみ）/ `podPublishDebugXCFramework`（debug のみ）/ `podPublishXCFramework`（両方）が podspec とともに XCFramework を生成する（出典: `multiplatform-build-native-binaries`）。`./gradlew` 形式はタスク名からの組み立て。
+Tasks when the CocoaPods Gradle plugin is used. `podPublishReleaseXCFramework` (release only) / `podPublishDebugXCFramework` (debug only) / `podPublishXCFramework` (both) generate the XCFramework together with a podspec (source: `multiplatform-build-native-binaries`). The `./gradlew` form is assembled from the task name.
 
-## Gradle デーモンの停止
+## Stop the Gradle daemon
 
 ```sh
 ./gradlew --stop
 ```
 
-Xcode の User Script Sandboxing を無効化した後、サンドボックス下で起動された可能性のある Gradle デーモンを止める（出典: `multiplatform-cocoapods-overview` / `multiplatform-direct-integration`）。
+After disabling Xcode's User Script Sandboxing, stops Gradle daemons that may have been started under the sandbox (source: `multiplatform-cocoapods-overview` / `multiplatform-direct-integration`).
 
-## Gradle のその他の注記
+## Other Gradle notes
 
-- `build-and-run-kmp` は「既定の Gradle build タスクは全ターゲットの debug / release を常にビルドする」と記すのみで、`./gradlew build` のコマンド行は原文に無いため収録しない。
-- `link*` タスク（`linkDebugExecutable*` 等）の名称・使い方は対象ページに記載が無いため収録しない。
+- `build-and-run-kmp` only states that "the default Gradle build task always builds debug and release for all targets"; the `./gradlew build` command line is not in the docs, so it is not included.
+- The names and usage of `link*` tasks (such as `linkDebugExecutable*`) are not documented on the target pages, so they are not included.
