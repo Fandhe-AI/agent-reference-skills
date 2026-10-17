@@ -52,15 +52,22 @@ Electron adds a `close` event to `MessagePort`, emitted when the other end of th
 ```js
 // main.js (Main Process)
 const { BrowserWindow, app, MessageChannelMain } = require('electron')
+const path = require('node:path')
 
 app.whenReady().then(async () => {
   const mainWindow = new BrowserWindow({
     show: false,
-    webPreferences: { contextIsolation: false, preload: 'preloadMain.js' }
+    webPreferences: {
+      contextIsolation: false,
+      preload: path.join(__dirname, 'preloadMain.js')
+    }
   })
   const secondaryWindow = new BrowserWindow({
     show: false,
-    webPreferences: { contextIsolation: false, preload: 'preloadSecondary.js' }
+    webPreferences: {
+      contextIsolation: false,
+      preload: path.join(__dirname, 'preloadSecondary.js')
+    }
   })
 
   const { port1, port2 } = new MessageChannelMain()
@@ -71,6 +78,9 @@ app.whenReady().then(async () => {
   secondaryWindow.once('ready-to-show', () => {
     secondaryWindow.webContents.postMessage('port', null, [port2])
   })
+
+  mainWindow.loadFile('main.html')
+  secondaryWindow.loadFile('secondary.html')
 })
 ```
 
@@ -83,12 +93,19 @@ ipcRenderer.on('port', (e) => {
   window.electronMessagePort.onmessage = (messageEvent) => {
     // handle message
   }
+  window.dispatchEvent(new Event('electron-port-ready'))
 })
 ```
 
 ```js
 // renderer.js (Renderer Process)
-window.electronMessagePort.postMessage('ping')
+// The port arrives after 'ready-to-show', so wait for it before use.
+const sendPing = () => window.electronMessagePort.postMessage('ping')
+if (window.electronMessagePort) {
+  sendPing()
+} else {
+  window.addEventListener('electron-port-ready', sendPing, { once: true })
+}
 ```
 
 The example binds the port to `window` directly for simplicity; the docs say it is better to use `contextIsolation` with specific `contextBridge` calls.
@@ -104,12 +121,12 @@ const { BrowserWindow, app, ipcMain, MessageChannelMain } = require('electron')
 app.whenReady().then(async () => {
   const worker = new BrowserWindow({
     show: false,
-    webPreferences: { nodeIntegration: true }
+    webPreferences: { nodeIntegration: true, contextIsolation: false }
   })
   await worker.loadFile('worker.html')
 
   const mainWindow = new BrowserWindow({
-    webPreferences: { nodeIntegration: true }
+    webPreferences: { nodeIntegration: true, contextIsolation: false }
   })
   mainWindow.loadFile('app.html')
 
@@ -212,7 +229,7 @@ app.whenReady().then(async () => {
       preload: path.join(__dirname, 'preload.js')
     }
   })
-  bw.loadURL('index.html')
+  await bw.loadFile('index.html')
 
   const { port1, port2 } = new MessageChannelMain()
 
@@ -259,6 +276,10 @@ window.onmessage = (event) => {
 
 ## Notes
 
+- `webPreferences.preload` requires an absolute path; the original page writes bare file names (`preloadMain.js`) as shorthand, so this page uses `path.join(__dirname, ...)`.
+- Corrections to the original excerpts: the two-renderer example adds `loadFile` calls (the original omits page loading) and has `renderer.js` wait for the port (via a preload-dispatched `electron-port-ready` event) before calling `postMessage`, since the port arrives only after `ready-to-show`.
+- The hidden-window worker example uses `nodeIntegration: true, contextIsolation: false` so that `require('electron')` works in the page (the original sets only `nodeIntegration: true`, and `contextIsolation` defaults to `true`). This is a demo-only, discouraged setting; production code should use a preload script with `contextBridge` to expose limited APIs.
+- In the main-world example, `bw.loadURL('index.html')` in the original is replaced by `await bw.loadFile('index.html')`, and the port is posted only after the page has loaded, so the preload listener is registered.
 - Only `postMessage` methods (`ipcRenderer.postMessage`, `WebContents.postMessage`) can transfer `MessagePort`s.
 - `MessagePortMain` uses `port.on('message', ...)` and requires `port.start()`; renderer ports use the web `onmessage` API.
 

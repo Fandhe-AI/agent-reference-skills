@@ -47,14 +47,17 @@ Preload scripts contain code that executes in a renderer process before its web 
 
 ```js
 const { BrowserWindow } = require('electron')
+const path = require('node:path')
 // ...
 const win = new BrowserWindow({
   webPreferences: {
-    preload: 'path/to/preload.js'
+    preload: path.join(__dirname, 'preload.js')
   }
 })
 // ...
 ```
+
+`webPreferences.preload` requires an absolute path; the original page writes the placeholder `'path/to/preload.js'`, which this page expands with `path.join(__dirname, ...)`.
 
 Because of the `contextIsolation` default, you cannot directly attach variables from the preload script to `window` (`window.myAPI = { desktop: true }` in preload yields `undefined` in the renderer). Use `contextBridge`:
 

@@ -68,7 +68,7 @@ For developers on Linux or macOS, `jsign` can sign Windows apps via Azure Artifa
 ```bash
 jsign --storetype TRUSTEDSIGNING \
       --keystore https://eus.codesigning.azure.net/ \
-      --storepass $AZURE_ACCESS_TOKEN \
+      --storepass "${AZURE_ACCESS_TOKEN}" \
       --alias trusted-sign-acct/AppName \
       --tsaurl http://timestamp.acs.microsoft.com/ \
       --tsmode RFC3161 \

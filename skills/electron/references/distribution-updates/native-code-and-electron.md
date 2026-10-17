@@ -80,6 +80,22 @@ namespace cpp_code {
 } // namespace cpp_code
 ```
 
+`src/cpp_code.cc`:
+
+```cpp
+#include <string>
+#include "../include/cpp_code.h"
+
+namespace cpp_code {
+    std::string hello_world(const std::string& input) {
+        // Simply concatenate strings and return
+        return "Hello from C++! You said: " + input;
+    }
+} // namespace cpp_code
+```
+
+`src/my_addon.cc`:
+
 ```cpp
 #include <napi.h>
 #include <string>
@@ -138,6 +154,47 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
 
 // Register the initialization function
 NODE_API_MODULE(my_addon, Init)
+```
+
+`js/index.js` (JavaScript wrapper loaded via `main`):
+
+```js
+const EventEmitter = require('node:events')
+
+// Load the native addon using the 'bindings' module
+// This will look for the compiled .node file in various places
+const bindings = require('bindings')
+const native = bindings('my_addon')
+
+// Create a nice JavaScript wrapper
+class MyNativeAddon extends EventEmitter {
+  constructor() {
+    super()
+
+    // Create an instance of our C++ class
+    this.addon = new native.MyAddon()
+  }
+
+  // Wrap the C++ method with a nicer JavaScript API
+  helloWorld(input = '') {
+    if (typeof input !== 'string') {
+      throw new TypeError('Input must be a string')
+    }
+    return this.addon.helloWorld(input)
+  }
+}
+
+// Export a singleton instance
+if (process.platform === 'win32' || process.platform === 'darwin' || process.platform === 'linux') {
+  module.exports = new MyNativeAddon()
+} else {
+  // Provide a fallback for unsupported platforms
+  console.warn('Native addon not supported on this platform')
+
+  module.exports = {
+    helloWorld: (input) => `Hello from JS! You said: ${input}`
+  }
+}
 ```
 
 Using the addon in the main process:

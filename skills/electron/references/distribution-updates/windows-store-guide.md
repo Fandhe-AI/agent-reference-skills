@@ -44,10 +44,15 @@ Optional: convert using container virtualization. Set up the "Windows Desktop Ap
 .\DesktopAppConverter.ps1 -Setup -BaseImage .\BaseImage-14316.wim
 ```
 
-Before that, from an elevated PowerShell, ensure `Set-ExecutionPolicy bypass`; reboot and rerun if prompted.
+Before that, from an elevated PowerShell, run the following for the current session only; reboot and rerun if prompted.
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
 
 ## Notes
 
+- The original page says `Set-ExecutionPolicy bypass` (which persists at the default LocalMachine scope); this page limits it to the Process scope for the duration of the conversion work.
 - Limitation: the compiled AppX package still contains a win32 executable, so it will not run on Xbox, HoloLens, or Phones.
 - The Desktop App Converter reference and Windows 10 Anniversary Update era requirements are as stated in the original page for this version.
 - Distance line: Electron-specific AppX packaging via `electron-windows-store` only. General MSIX packaging and Microsoft Store publishing are covered by windows-packaging-publish.

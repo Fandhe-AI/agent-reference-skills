@@ -128,6 +128,7 @@ contextBridge.exposeInMainWorld('nodeCrypto', {
 
 ## Notes
 
+- The `node:crypto` example above assumes an unsandboxed preload (`webPreferences.sandbox: false`); in the default sandboxed preload (sandbox is on by default since Electron 20) `require` is limited and `node:crypto` cannot be loaded. If you keep the sandbox, run the hashing in the main process and call it through `ipcRenderer.invoke`.
 - Behavior change: `ipcRenderer` can no longer be sent over the `contextBridge` (PR #40330).
 - `executeInMainWorld` is marked _Experimental_.
 

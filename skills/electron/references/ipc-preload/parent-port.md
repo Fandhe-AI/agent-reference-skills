@@ -20,7 +20,7 @@ child.on('message', (data) => {
 
 // Child process
 process.parentPort.on('message', (e) => {
-  process.parentPort.postMessage(`${e.data} world!`)
+  process.parentPort.postMessage(`${e.data.message} world!`)
 })
 ```
 
@@ -35,6 +35,10 @@ process.parentPort.on('message', (e) => {
 | Method | Params | Description |
 | --- | --- | --- |
 | `parentPort.postMessage(message)` | `message` any | Sends a message from the process to its parent. |
+
+## Notes
+
+- The original example interpolates `e.data` directly, which yields `[object Object] world!` because the parent sends `{ message: 'hello' }`; this page uses `e.data.message`.
 
 ## Related
 

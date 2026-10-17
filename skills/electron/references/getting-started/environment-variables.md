@@ -13,10 +13,17 @@ $ export ELECTRON_ENABLE_LOGGING=true
 $ electron
 ```
 
-```powershell
+```bat
 > set ELECTRON_ENABLE_LOGGING=true
 > electron
 ```
+
+```powershell
+$env:ELECTRON_ENABLE_LOGGING = 'true'
+electron
+```
+
+The original page labels the `set` (cmd.exe) syntax as `powershell`; the first block is cmd.exe, the second is PowerShell.
 
 ## Production Variables
 

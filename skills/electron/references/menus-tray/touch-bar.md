@@ -63,7 +63,7 @@ Instance property: `touchBar.escapeItem` - a `TouchBarItem` that will replace th
 
 - Use `BrowserWindow.setTouchBar` to add the `TouchBar` to a window.
 - The TouchBar API is currently experimental and may change or be removed in future Electron releases.
-- To run the example: save it as `touchbar.js`, install Electron via `npm install electron`, then run `./node_modules/.bin/electron touchbar.js`; the app appears in your touch bar (or touch bar emulator).
+- The excerpt above omits the `spin` / `reel1`-`reel3` / `result` definitions and cannot run on its own. To run the complete slot machine example from the "Examples" section of the official page: save it as `touchbar.js`, install Electron via `npm install electron`, then run `./node_modules/.bin/electron touchbar.js`; the app appears in your touch bar (or touch bar emulator).
 - Electron's built-in classes cannot be subclassed in user code.
 - Distinction: macOS-only Electron API; native AppKit NSTouchBar belongs to apple-appkit.
 
