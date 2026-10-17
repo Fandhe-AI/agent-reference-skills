@@ -334,6 +334,8 @@ View-bound events (for example a touch on one specific view) cannot use `sendEve
 ```swift
 class CameraViewModule: Module {
   public func definition() -> ModuleDefinition {
+    Name("CameraView")
+
     View(CameraView.self) {
       Events(
         "onCameraReady"
@@ -370,6 +372,7 @@ export default function MainView() {
 ## Notes
 
 - `Constants` is deprecated; use `Constant`.
+- In the view-callback example, `Name("CameraView")` is added so the module name matches `requireNativeViewManager('CameraView')`; without it the name is inferred from the class name (`CameraViewModule`).
 - `Formatter` and `ValueOrUndefined` are marked experimental in the source page.
 - On Android, for `Promise` import the class from `expo.modules.kotlin` instead of `expo.modules.core`.
 - On Android the view-callback payload type can be specified; for types that do not convert into objects the payload is wrapped as `{ payload: <provided value> }`. The payload is available under the `nativeEvent` key in JavaScript.

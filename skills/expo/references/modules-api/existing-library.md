@@ -74,7 +74,8 @@ public class MyModule: Module {
 
 ```json
 {
-  "ios": {
+  "platforms": ["apple", "android"],
+  "apple": {
     "modules": ["MyModule"]
   },
   "android": {
@@ -96,6 +97,7 @@ export default requireNativeModule('MyModule');
 - Use `*` as the `expo` peer-dependency range to avoid duplicated packages in the user's node_modules. `expo-modules-core` is only a dev dependency because the `expo` package provides a compatible core.
 - Android: the module class is linked automatically as part of the Gradle build task. iOS: run `pod install` to link the new class.
 - Putting `requireNativeModule` in a separate file that exports the module is recommended.
+- The source page's step-5 example omits `platforms` and uses the legacy `ios` key; autolinking skips platforms not listed in `platforms`, so it is added here (see expo-module.config.json / Autolinking).
 - Distinct from apple-swift and android-architecture.
 - Source modificationDate: May 23, 2026 (unversioned guide page, fetched 2026-10-17).
 
