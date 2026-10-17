@@ -25,12 +25,11 @@ const html = `
 `;
 
 // On iOS/android prints the given html. On web prints the HTML from the current page.
-await Print.printAsync({ html, printerUrl: selectedPrinter?.url /* iOS only */ });
+const printer = await Print.selectPrinterAsync(); // iOS only
+await Print.printAsync({ html, printerUrl: printer?.url /* iOS only */ });
 
 const { uri } = await Print.printToFileAsync({ html });
 await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
-
-const printer = await Print.selectPrinterAsync(); // iOS only
 ```
 
 ## Options / Props
@@ -85,6 +84,7 @@ const printer = await Print.selectPrinterAsync(); // iOS only
 - iOS: without `printerUrl`, the `printAsync` promise resolves once printing starts in the native print window and rejects if the window is closed without printing. Android resolves immediately after showing the native print window and does not reject on close.
 - iOS margins: `margins: { left: 20, top: 50, right: 20, bottom: 100 }`. With `useMarkupFormatter: true`, margins may cause a blank last page; use a well-formed document starting with `<!DOCTYPE html>`.
 - Android: margins may be present depending on the WebView engine; override via an `@page { margin: 20px; }` style block.
+- In the source, selectedPrinter is React state set from selectPrinterAsync; the condensed example uses a local variable instead.
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-print
 
 ## Related

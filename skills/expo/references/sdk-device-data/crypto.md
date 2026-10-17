@@ -89,7 +89,7 @@ async function loadAndDecryptData(): Promise<Uint8Array | null> {
   const sealedData = AESSealedData.fromCombined(encryptedBytes);
 
   // Decrypt data
-  const plaintextBytes = await aesDecryptAsync(data, encryptionKey);
+  const plaintextBytes = await aesDecryptAsync(sealedData, encryptionKey);
   return plaintextBytes;
 }
 ```
@@ -168,7 +168,7 @@ Error codes:
 ## Notes
 
 - Platforms (frontmatter `platforms`): Android, iOS, tvOS, Web, Included in Expo Go.
-- The final example in the source calls `aesDecryptAsync(data, encryptionKey)` although the variable is named `sealedData`; the snippet is reproduced as published.
+- The source passes an undefined `data` to aesDecryptAsync; the example passes sealedData.
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-crypto
 
 ## Related

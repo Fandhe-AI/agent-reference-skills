@@ -46,8 +46,8 @@ Methods (Android, iOS, Web):
 
 | Name | Returns | Description |
 | --- | --- | --- |
-| `getBatteryLevelAsync()` | `Promise<number>` | Level between `0` and `1` inclusive; `-1` if the device does not provide it. On web always `1`. |
-| `getBatteryStateAsync()` | `Promise<BatteryState>` | Current battery state. On web always `BatteryState.UNKNOWN`. |
+| `getBatteryLevelAsync()` | `Promise<number>` | Level between `0` and `1` inclusive; `-1` if the device does not provide it. On web relies on the Battery Status API: real value in Chromium-based browsers, `-1` in unsupported browsers (see Notes). |
+| `getBatteryStateAsync()` | `Promise<BatteryState>` | Current battery state. On web relies on the Battery Status API: real state in Chromium-based browsers, `BatteryState.UNKNOWN` in unsupported browsers. |
 | `getPowerStateAsync()` | `Promise<PowerState>` | Battery level, state and Power Saver (Android) / Low Power (iOS) mode. Re-throws any error raised while retrieving the power-state information. |
 | `isAvailableAsync()` | `Promise<boolean>` | `true` on Android and physical iOS devices, `false` on iOS simulators. On web depends on browser support of the Battery Status API. |
 | `isBatteryOptimizationEnabledAsync()` | `Promise<boolean>` | Whether battery optimization is enabled for the app (Android 6.0 or later; Android only). Background tasks might be affected in doze mode. |
@@ -84,6 +84,7 @@ Types:
 
 - Platforms (frontmatter `platforms`): Android, iOS (device only), Web, Included in Expo Go.
 - On web, `expo-battery` relies on the Battery Status API, implemented only in Chromium-based browsers (Chrome, Edge, Opera). On unsupported browsers `getBatteryLevelAsync()` resolves to `-1` and `getBatteryStateAsync()` resolves to `BatteryState.UNKNOWN`.
+- The source method descriptions say web always returns 1 / UNKNOWN, contradicting its Battery Status API note; this page follows the note.
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-battery
 
 ## Related

@@ -72,11 +72,13 @@ import * as TaskManager from 'expo-task-manager';
 
 const LOCATION_TASK_NAME = 'background-location-task';
 
-TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
+TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
   if (error) {
     // check `error.message` for more details.
     return;
   }
+  if (!data) return;
+  const { locations } = data;
   console.log('Received new locations', locations);
 });
 ```
@@ -89,11 +91,13 @@ import * as TaskManager from 'expo-task-manager';
 
 const GEOFENCING_TASK_NAME = 'geofencing-task';
 
-TaskManager.defineTask(GEOFENCING_TASK_NAME, ({ data: { eventType, region }, error }) => {
+TaskManager.defineTask(GEOFENCING_TASK_NAME, ({ data, error }) => {
   if (error) {
     // check `error.message` for more details.
     return;
   }
+  if (!data) return;
+  const { eventType, region } = data;
   if (eventType === GeofencingEventType.Enter) {
     console.log("You've entered region:", region);
   } else if (eventType === GeofencingEventType.Exit) {
@@ -220,6 +224,7 @@ Permissions:
 - Emulators: Android Emulator needs Settings > Location > Use location (and possibly Improve Location Accuracy turned off); iOS Simulator needs a location option other than None in Device Hub (Device > Location).
 - Existing React Native apps (no CNG): add `NSLocationAlwaysAndWhenInUseUsageDescription`, `NSLocationAlwaysUsageDescription` and `NSLocationWhenInUseUsageDescription` to `ios/[app]/Info.plist`.
 - The official example uses an undefined YOUR_TASK_NAME placeholder; constants are declared here for completeness.
+- The source destructures data in the task parameters before checking error; the examples check error and data first.
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-location
 
 ## Related

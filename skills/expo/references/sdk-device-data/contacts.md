@@ -176,7 +176,7 @@ Event subscriptions:
 | `Contacts.removeAllContactsChangeListeners()` | Android, iOS | `void` | Removes all listeners registered with `addContactsChangeListener`. |
 
 ```jsx
-const subscription = Contacts.addContactChangeListener(() => {
+const subscription = Contacts.addContactsChangeListener(() => {
   console.log('Contacts changed - refreshing contact list');
   loadContacts();
 });
@@ -223,10 +223,12 @@ Permissions: Android `READ_CONTACTS` and `WRITE_CONTACTS` are added automaticall
 ## Notes
 
 - Platforms (frontmatter `platforms`): Android, iOS, Included in Expo Go.
-- The old promise-based module functions are deprecated and "will throw in runtime"; import them from `expo-contacts/legacy` instead. Replacement mapping from the source: `addContactAsync` -> `Contact.create()`; `addExistingContactToGroupAsync` -> `group.addContact()`; `addExistingGroupToContainerAsync` -> `container.addGroup()`; `createGroupAsync` -> `Group.create()`; `getContactByIdAsync` -> `new Contact(id).getDetails()`; `getContactsAsync` -> `Contact.getAll()`; `getContainersAsync` -> `Container.getAll()`; `getDefaultContainerIdAsync` -> `Container.getDefault()`; `getGroupsAsync` -> `Group.getAll()`; `getPagedContactsAsync` -> `Contact.getAll()`; `hasContactsAsync` -> `Contact.hasAny()`; `presentAccessPickerAsync` -> `Contact.presentAccessPicker()`; `presentContactPickerAsync` -> `Contact.presentPicker()`; `presentFormAsync` -> `contact.editWithForm()` or `Contact.presentCreateForm()`; `removeContactAsync` -> `contact.delete()`; `removeContactFromGroupAsync` -> `group.removeContact()`; `removeGroupAsync` -> `group.delete()`; `updateContactAsync` -> `contact.update()` or `contact.patch()`; `updateGroupNameAsync` -> `group.setName()`. `isAvailableAsync`, `shareContactAsync` and `writeContactToFileAsync` are deprecated with "import from `expo-contacts/legacy`" only.
+- The old promise-based module functions are deprecated and "will throw in runtime"; import them from `expo-contacts/legacy` instead. Replacement mapping from the source: `addContactAsync` -> `Contact.create()`; `addExistingContactToGroupAsync` -> `group.addContact()`; `addExistingGroupToContainerAsync` -> `container.addGroup()`; `createGroupAsync` -> `Group.create()`; `getContactByIdAsync` -> `new Contact(id).getDetails()`; `getContactsAsync` -> `Contact.getAll()`; `getContainersAsync` -> `Container.getAll()`; `getDefaultContainerIdAsync` -> `Container.getDefault()`; `getGroupsAsync` -> `Group.getAll()`; `hasContactsAsync` -> `Contact.hasAny()`; `presentAccessPickerAsync` -> `Contact.presentAccessPicker()`; `presentContactPickerAsync` -> `Contact.presentPicker()`; `presentFormAsync` -> `contact.editWithForm()` or `Contact.presentCreateForm()`; `removeContactAsync` -> `contact.delete()`; `removeContactFromGroupAsync` -> `group.removeContact()`; `removeGroupAsync` -> `group.delete()`; `updateContactAsync` -> `contact.update()` or `contact.patch()`; `updateGroupNameAsync` -> `group.setName()`. `isAvailableAsync`, `shareContactAsync` and `writeContactToFileAsync` are deprecated with "import from `expo-contacts/legacy`" only.
 - iOS `note` field requires additional entitlements (`com.apple.developer.contacts.notes`). Expo Go does not contain them: request the entitlement from Apple, set `ios.accessesContactNotes` to `true` in app config, and create a development build.
 - `addContactsChangeListener` platform differences: Android uses `ContentObserver`, which may delay notifications by 5-7 seconds (the system provider batches notifications) and, because it observes both `RawContacts` and `Contacts`, some changes may emit two events; consider refreshing contacts when the app returns to the foreground. iOS uses `CNContactStoreDidChangeNotification` and emits immediately.
 - Existing React Native apps (no CNG): add `android.permission.READ_CONTACTS` and `android.permission.WRITE_CONTACTS` to `android/app/src/main/AndroidManifest.xml`, and `NSContactsUsageDescription` to `ios/[app]/Info.plist`.
+- The source example uses addContactChangeListener (singular); the API is addContactsChangeListener.
+- getPagedContactsAsync has no deprecation notice in the SDK 58 source, though its ContactQuery/ContactResponse types are listed as legacy.
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-contacts
 
 ## Related

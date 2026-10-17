@@ -61,8 +61,8 @@ const result = await request.promptAsync(discovery);
 // Get the URL to invoke
 const url = await request.makeAuthUrlAsync(discovery);
 
-// Get the URL to invoke
-const parsed = await request.parseReturnUrlAsync("<URL From Server>");
+// Parse the URL returned from the server
+const parsed = request.parseReturnUrl("<URL From Server>");
 ```
 
 Deep-link scheme in app config (required to deep link back into the app; build a new standalone app after adding it):
@@ -199,6 +199,7 @@ Enums:
 - Allowlist redirect URLs at the provider to prevent malicious actors from pretending to be your application. Never put secret keys inside application code: store them on a server and expose an endpoint that calls the provider API for your client.
 - Linking handlers: `AuthSession` adds `+expo-auth-session` to the default `returnUrl`; in your own `Linking.addEventListener` handlers ignore URLs containing it (add a similar identifier if you provide your own `returnUrl`). With React Navigation, add a custom `getStateFromPath` function to the linking configuration and filter by URL in the same way.
 - Distinct from authentication backends: this page is the client-side OAuth / OpenID Connect API of Expo. Server-side auth platforms and their Expo integrations are covered by the better-auth and supabase skills.
+- The source usage example calls parseReturnUrlAsync, but the API section defines only the synchronous parseReturnUrl(url); the example uses the latter.
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-auth-session
 
 ## Related

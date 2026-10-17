@@ -67,8 +67,9 @@ export default function App() {
   };
 
   useEffect(() => {
-    _subscribe();
-    return () => _unsubscribe();
+    const sub = Accelerometer.addListener(setData);
+    setSubscription(sub);
+    return () => sub.remove();
   }, []);
   // render x, y, z (in gs where 1g = 9.81 m/s^2)
 }
@@ -77,15 +78,21 @@ export default function App() {
 Pedometer:
 
 ```jsx
+import { Platform } from 'react-native';
+import { Pedometer } from 'expo-sensors';
+
 const isAvailable = await Pedometer.isAvailableAsync();
 if (isAvailable) {
   const end = new Date();
   const start = new Date();
   start.setDate(end.getDate() - 1);
 
-  const pastStepCountResult = await Pedometer.getStepCountAsync(start, end);
-  if (pastStepCountResult) {
-    setPastStepCount(pastStepCountResult.steps);
+  if (Platform.OS === 'ios') {
+    // getStepCountAsync is iOS only
+    const pastStepCountResult = await Pedometer.getStepCountAsync(start, end);
+    if (pastStepCountResult) {
+      setPastStepCount(pastStepCountResult.steps);
+    }
   }
 
   const subscription = Pedometer.watchStepCount(result => {
@@ -177,6 +184,8 @@ Permissions:
 - Barometer: `isAvailableAsync()` requires at least Android 2.3 (API Level 9) and iOS 8. Providers: iOS `CMAltimeter` (altitude events reflect the change in current altitude, not absolute altitude); Android `Sensor.TYPE_PRESSURE`; not available on web.
 - Magnetometer: `isAvailableAsync()` requires at least Android 2.3 (API Level 9) and iOS 8. LightSensor: requires at least Android 2.3 (API Level 9). The `MagnetometerUncalibrated` export gives raw uncalibrated values.
 - Pedometer updates are not delivered while the app is in the background. As an alternative on Android use a solution based on the Health Connect API; on iOS use `getStepCountAsync` to get the step count between two dates.
+- The source effect cleanup captures a stale subscription (null); the example removes the listener returned inside the effect.
+- getStepCountAsync is iOS only; the example guards it with Platform.OS, unlike the source.
 - Sources (8 pages aggregated): https://docs.expo.dev/versions/v58.0.0/sdk/sensors/ , https://docs.expo.dev/versions/v58.0.0/sdk/accelerometer/ , https://docs.expo.dev/versions/v58.0.0/sdk/barometer/ , https://docs.expo.dev/versions/v58.0.0/sdk/devicemotion/ , https://docs.expo.dev/versions/v58.0.0/sdk/gyroscope/ , https://docs.expo.dev/versions/v58.0.0/sdk/light-sensor/ , https://docs.expo.dev/versions/v58.0.0/sdk/magnetometer/ , https://docs.expo.dev/versions/v58.0.0/sdk/pedometer/
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-sensors
 

@@ -143,7 +143,7 @@ await db.withTransactionAsync(async () => {
   console.log('Count:', result['COUNT(*)']);
 });
 
-db.withExclusiveTransactionAsync(async (txn) => {
+await db.withExclusiveTransactionAsync(async (txn) => {
   await txn.execAsync('UPDATE test SET name = "aaa"');
 });
 ```
@@ -361,6 +361,7 @@ Common API cheatsheet:
 - SQLCipher is supported on Android, iOS and macOS, and is not supported in Expo Go.
 - Dev tools: `expo-sqlite` includes a DevTools inspector plugin enabled automatically in development (press Shift + M in the Expo CLI terminal and select Open expo-sqlite); the `drizzle-studio-expo` plugin is an alternative.
 - The Provider example omits `onInit` and adds import lines relative to the official snippet; the Suspense example is a fragment with imports added.
+- The source example calls withExclusiveTransactionAsync without await; await was added because it returns a Promise.
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-sqlite
 
 ## Related

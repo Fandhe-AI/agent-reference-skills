@@ -16,6 +16,7 @@ npx expo install expo-web-browser
 import { useState } from 'react';
 import { Button, Text, View, StyleSheet } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
+import Constants from 'expo-constants';
 
 export default function App() {
   const [result, setResult] = useState(null);
@@ -69,7 +70,7 @@ Methods:
 | dismissButtonStyle | `'done' \| 'close' \| 'cancel'` | iOS | Dismiss button style. |
 | enableBarCollapsing | `boolean` | all | Hide the toolbar when the user scrolls. |
 | enableDefaultShareMenuItem | `boolean` | Android | Add a default share item to the menu. |
-| presentationStyle | `WebBrowserPresentationStyle` | iOS | Modal presentation style. Default: `WebBrowser.WebBrowserPresentationStyle.OverFullScreen` |
+| presentationStyle | `WebBrowserPresentationStyle` | iOS | Modal presentation style. Default: `WebBrowser.WebBrowserPresentationStyle.OVER_FULL_SCREEN` |
 | readerMode | `boolean` | iOS | Enter Reader mode if available. |
 | secondaryToolbarColor | `string` | Android | Secondary toolbar color. |
 | showInRecents | `boolean` | Android | Show the site as a separate recents entry; requires `createTask` `true`. Default: `false` |
@@ -113,11 +114,14 @@ Error codes (Web only):
 
 - Platforms (frontmatter `platforms`): Android, iOS, Web, Included in Expo Go.
 - As of iOS 11, `SFSafariViewController` no longer shares cookies with Safari: use `openAuthSessionAsync` for authentication and `openBrowserAsync` for just opening a page (e.g. a privacy policy).
-- iOS auth session: the redirect URI set in the authentication server must use the scheme from `expo.scheme` in app.json (e.g. `demo://`, not `https://`). Using `Linking.addEventListener` is not needed and can have side effects.
+- iOS auth session: the redirect URI set in the authentication server must use the scheme from `expo.scheme` in app.json (e.g. `demo://`) by default (`preferUniversalLinks: false`, legacy `callbackURLScheme`). On iOS 17.4+ with `preferUniversalLinks: true` and the Associated Domains entitlement configured for the redirect host, an HTTPS universal link can be used instead. Using `Linking.addEventListener` is not needed and can have side effects.
 - Web auth session needs a secure environment (run `npx expo start --https`); a crypto state is stored in `localStorage`, so `maybeCompleteAuthSession` must be invoked from the same origin that started the session. A 1000 ms timer detects a user-closed window and resolves `{ type: 'dismiss' }`. Mobile web browsers block `window.open()` that fires too long after a user interaction.
 - Deep links from the browser: with Expo Router they are handled automatically. Without it, add a `Linking.addEventListener` handler before opening the browser and call `dismissBrowser` when it fires (it is not dismissed automatically).
 - `maybeCompleteAuthSession` failure messages: `Not supported on this platform` (Android, iOS), `Cannot use expo-web-browser in a non-browser environment` (SSR / node), `No auth session is currently in progress`, `Current URL "<URL>" and original redirect URL "<URL>" do not match` (skip in development with `{ skipRedirectCheck: true }`).
 - The package ships a config plugin (CNG); settings that cannot be set at runtime need a new app binary.
+- The source gives the default presentationStyle as WebBrowserPresentationStyle.OverFullScreen; the enum member is OVER_FULL_SCREEN.
+- The source example references Constants without importing it; the import from expo-constants was added.
+- The source states https:// cannot be used as the iOS redirect URI, which applies to the legacy callbackURLScheme path only.
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-web-browser
 
 ## Related
