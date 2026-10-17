@@ -64,15 +64,17 @@ CI step that generates `keystore.properties` (keystore exported with `base64 -i 
     ANDROID_KEY_BASE64: ${{ secrets.ANDROID_KEY_BASE64 }}
   run: |
     cd src-tauri/gen/android
-    printf 'keyAlias=%s\n' "${ANDROID_KEY_ALIAS}" > keystore.properties
-    printf 'password=%s\n' "${ANDROID_KEY_PASSWORD}" >> keystore.properties
-    printf '%s' "${ANDROID_KEY_BASE64}" | base64 -d > "${RUNNER_TEMP}/keystore.jks"
-    printf 'storeFile=%s\n' "${RUNNER_TEMP}/keystore.jks" >> keystore.properties
+    KEYSTORE_PATH="${RUNNER_TEMP}/keystore.jks"
+    printf 'keyAlias=%s\n' "${ANDROID_KEY_ALIAS//\\/\\\\}" > keystore.properties
+    printf 'password=%s\n' "${ANDROID_KEY_PASSWORD//\\/\\\\}" >> keystore.properties
+    printf '%s' "${ANDROID_KEY_BASE64}" | base64 -d > "${KEYSTORE_PATH}"
+    printf 'storeFile=%s\n' "${KEYSTORE_PATH//\\/\\\\}" >> keystore.properties
 ```
 
 ## Notes
 
 - Secrets are passed via `env` instead of inline `${{ }}` expansion in `run` (differs from source) to avoid shell injection.
+- Values are written with backslashes doubled because `java.util.Properties.load` treats `\` as an escape character (upstream writes them unescaped).
 - Keep the keystore and `keystore.properties` files private; do not check them into public source control.
 - `keytool` may not be on your PATH. It is in the JDK bundled with Android Studio: Linux `/opt/android-studio/jbr/bin/keytool` (path depends on your distribution), macOS `/Applications/Android\ Studio.app/Contents/jbr/Contents/Home/bin/keytool`, Windows `C:\Program Files\Android\Android Studio\jbr\bin\keytool.exe`.
 - A typical Android project has several `build.gradle.kts` files. If there is no `buildTypes` block you are in the wrong file; the right one is in the `app/` directory relative to the keystore file.

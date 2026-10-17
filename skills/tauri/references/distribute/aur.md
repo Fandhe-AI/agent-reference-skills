@@ -11,7 +11,7 @@ Publishing to the Arch User Repository (AUR).
 Create an account at `https://aur.archlinux.org`, add the proper ssh keys, clone an empty repository and add a `PKGBUILD`:
 
 ```sh
-git clone https://aur.archlinux.org/your-repo-name
+git clone ssh://aur@aur.archlinux.org/<pkgname>.git
 ```
 
 ```ini
@@ -120,6 +120,7 @@ package() {
 
 ## Notes
 
+- Upstream clones via `https://aur.archlinux.org/your-repo-name`; AUR HTTPS access is read-only, so the SSH URL `ssh://aur@aur.archlinux.org/<pkgname>.git` is used to allow `git push`.
 - Only the changed fields of the two examples are shown; the remaining `PKGBUILD` fields are the same as in the first snippet.
 - The source page ends with stray link definitions for `async_runtime::spawn`, `serde` and `thiserror` unrelated to AUR; they are not carried over.
 

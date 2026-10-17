@@ -116,7 +116,7 @@ cargo tauri migrate
 - `scope::FsScope`, `scope::GlobPattern` and `scope::FsScopeEvent` removed, use `scope::fs::Scope`, `scope::fs::Pattern` and `scope::fs::Event` respectively.
 - `updater` module removed. Use `tauri-plugin-updater` instead.
 - `Env.args` field has been removed, use `Env.args_os` field instead.
-- `Menu`, `MenuEvent`, `CustomMenuItem`, `Submenu`, `WindowMenuEvent`, `MenuItem` and `Builder::on_menu_event` APIs removed. See Migrate to Menu Module.
+- `Menu`, `MenuEvent`, `CustomMenuItem`, `Submenu`, `WindowMenuEvent` and `MenuItem` APIs removed. See Migrate to Menu Module.
 - `SystemTray`, `SystemTrayHandle`, `SystemTrayMenu`, `SystemTrayMenuItemHandle`, `SystemTraySubmenu`, `MenuEntry` and `SystemTrayMenuItem` APIs removed. See Migrate to Tray Icon Module.
 
 ### JavaScript API Changes
@@ -519,7 +519,7 @@ tauri::Builder::default()
 
 `tauri::Builder::menu` now takes a closure because the menu needs a Manager instance to be built.
 
-Menu events: the Rust `tauri::Builder::on_menu_event` API was removed. Use `tauri::App::on_menu_event` or `tauri::AppHandle::on_menu_event`:
+Menu events: register a handler with `tauri::Builder::on_menu_event` (desktop only, signature `Fn(&AppHandle<R>, MenuEvent)`), or with `tauri::App::on_menu_event` / `tauri::AppHandle::on_menu_event`:
 
 ```rust
 use tauri::menu::{CheckMenuItemBuilder, MenuBuilder, MenuItemBuilder};
@@ -858,6 +858,7 @@ To enable permissions for your app, create capability files inside the `src-taur
 
 ## Notes
 
+- Upstream says `Builder::on_menu_event` was removed, but it exists in tauri 2.12.4 (`Builder::on_menu_event`, desktop only); the text was corrected.
 - The shell `echo` example compares `stdout.trim_end()` because `echo` appends a trailing newline; the source compares the raw output and would panic.
 - Tauri capabilities / permissions (ACL) here are Tauri's own access-control system, unrelated to Claude Code permissions (anthropic-claude-code-admin) or MCP capabilities (mcp-spec).
 - Tauri (Rust core + system WebView). Not Electron's API; see the electron skill for Electron.
