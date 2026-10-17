@@ -29,6 +29,7 @@ Set the add-on toggle to **Disabled** under **Billing** > **Add-Ons**. The next 
 - Delegating `_acme-challenge` to Vercel can prevent other hosting providers from issuing certificates needing the same challenge name; keep the delegation in place for renewals.
 - Broken Preview Deployment Suffix error: ensure the domain is active (not deleted), available within the team, and backed by an active wildcard certificate. Adding the domain to a project in the same team (with a single `index.html` at the root) satisfies these.
 - Pricing: see the plan add-ons documentation.
+- Source: https://vercel.com/docs/deployments/preview-deployment-suffix
 
 ## Related
 

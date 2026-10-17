@@ -25,6 +25,7 @@ vercel setup --dry-run
 
 - Step 1 installs the Vercel plugin for Claude Code and Codex. Step 2 runs the same flow as `vercel ai-gateway setup`.
 - The command prompts before each step and skips agents it does not find on your machine.
+- Source: https://vercel.com/docs/cli/setup
 
 ## Related
 

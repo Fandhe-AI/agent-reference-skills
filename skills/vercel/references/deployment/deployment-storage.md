@@ -42,7 +42,8 @@ For each metric, Vercel records the maximum stored amount per project on each bi
 - Enterprise rates follow your contract; plans or contracts may include an allowance. Confirm allowance, rate, and charge in **Usage** and your invoice.
 - Shorter retention reduces storage over time but also reduces history available for inspection, promotion, and rollback. Team policy sets the default for new projects; a project policy changes only that project.
 - A change to one storage product does not always change usage of another.
-- Optimization guide: `/docs/deployment-storage/optimize`.
+- Optimization guide: https://vercel.com/docs/deployment-storage/optimize
+- Source: https://vercel.com/docs/deployment-storage , https://vercel.com/docs/deployment-storage/optimize
 
 ## Related
 

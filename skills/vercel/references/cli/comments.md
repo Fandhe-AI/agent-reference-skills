@@ -79,6 +79,7 @@ JSON output shapes:
 - Bulk operations continue after an individual failure and exit nonzero if any operation fails.
 - JSON mode never prompts; errors return an `error` object with `code` and `message` and a nonzero exit status.
 - When another page is available, JSON output returns the cursor as `pagination.nextCursor`.
+- Source: https://vercel.com/docs/cli/comments
 
 ## Related
 

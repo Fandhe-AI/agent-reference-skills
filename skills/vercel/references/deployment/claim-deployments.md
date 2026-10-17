@@ -32,6 +32,7 @@ Flow for an automated AI-generated deployment:
 - When transferring a project between two teams owned by the same user, the Project Transfer flow is recommended instead of Claim Deployments.
 - Use cases: team restructuring, migrating personal projects to a company account.
 - Templates: `https://github.com/vercel/claim-deployments-demo` (demo: `https://claim-deployments-demo.vercel.app`).
+- Source: https://vercel.com/docs/deployments/claim-deployments
 
 ## Related
 

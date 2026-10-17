@@ -34,6 +34,7 @@ Share (Toolbar menu or deployment row in dashboard)
 - Two link types: branch links (latest commit) and commit links (up to a specific commit). The dashboard Share modal defaults to the branch link; the toolbar shares the current link.
 - Without deployment protection, anyone with the link can view. With **Authentication**, only team members, individually added users, requesters, or sharable-link holders can view. With **Password Protection**, only users with the password (or the same exceptions) can view.
 - Scope access to the fewest people possible.
+- Source: https://vercel.com/docs/deployments/sharing-deployments
 
 ## Related
 

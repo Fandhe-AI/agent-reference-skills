@@ -66,6 +66,7 @@ Check status values:
 - In non-interactive environments the JSON report is written to stdout automatically, and every error path emits a structured JSON payload with a machine-readable `reason` and suggested follow-up commands.
 - Exit code `0`: report produced, even when checks are failing or muted. Exit code `1`: unknown slug, invalid flag, missing team scope, or failed API request. Gate CI on the report contents, not the exit code.
 - The report can contain member emails, token names, and project settings. Treat output as sensitive and do not write it to shared or public logs.
+- Source: https://vercel.com/docs/cli/security
 
 ## Related
 

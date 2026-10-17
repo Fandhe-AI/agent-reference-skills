@@ -48,7 +48,10 @@ Project **Settings** > **Security** > **Recently Deleted** > dropdown **Restore*
 - After the retention limit, a background job typically marks the deployment for deletion within 48 hours. Deployments protected by an exception when first evaluated are re-evaluated after the exception ends, which can take up to 30 days.
 - Expired deployments enter a recovery period and return HTTP 410. Recovery is 30 days for successfully built deployments; unsuccessful deployments may be garbage collected sooner.
 - Retained deployment output counts toward Deployment Storage.
-- Error reference: `/docs/errors/deployment_deleted`.
+- The "Pro and Enterprise" row above reflects the docs table (last updated 2026-09-16), i.e. the defaults before 2026-10-09.
+- Changelog 2026-10-09 (newer than this docs table): new Pro teams default to a 30-day deployment retention period (a longer period can be chosen in team settings); for existing Pro teams the retention window also changes to 30 days, and deployments older than 30 days are deleted starting October 23 unless you opt out in retention settings (settings already at 30 days or shorter are unchanged). The changelog does not mention Enterprise. Sources: https://vercel.com/changelog/new-pro-teams-now-default-to-30-day-deployment-retention , https://vercel.com/changelog/deployment-storage-pricing-expands-to-existing-teams
+- Error reference: https://vercel.com/docs/errors/deployment_deleted
+- Source: https://vercel.com/docs/deployment-retention
 
 ## Related
 

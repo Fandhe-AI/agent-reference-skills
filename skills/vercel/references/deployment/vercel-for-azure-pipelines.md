@@ -50,16 +50,6 @@ steps:
     deploymentTaskMessage: $(Deploy.deploymentTaskMessage)
 ```
 
-## Setup steps
-
-1. Create an **empty** Vercel Project with no Git integration: `vercel project add <project-name>` (or create in the dashboard and disconnect Git).
-2. Create a Vercel Personal Access Token scoped to the team that owns the project.
-3. Store it as a secret pipeline variable `VERCEL_TOKEN`.
-4. Install the Vercel Deployment Extension from the Visual Studio marketplace into the Azure DevOps organization.
-5. Add the pipeline YAML. `vercelProjectId` is the **Project ID** in **Project Settings > General**; `vercelTeamId` is **Your ID** (Hobby, personal account Settings) or **Team ID** (**Team Settings > General**).
-
-For PR deployments and comments, also create an Azure DevOps Personal Access Token (custom scopes, **Pull Request Threads** Read & Write), store it as secret `AZURE_TOKEN`, and add a **Build Validation** branch policy (Required) on `main`.
-
 ## Options / Props
 
 ### `vercel-deployment-task` inputs
@@ -93,11 +83,22 @@ For PR deployments and comments, also create an Azure DevOps Personal Access Tok
 | `azureToken` | string (required) | Azure Personal Access Token with `PullRequestContribute` permission |
 | `deploymentTaskMessage` | string (required) | Comment text added to the pull request, normally produced by the deployment task |
 
+## Setup steps
+
+1. Create an **empty** Vercel Project with no Git integration: `vercel project add <project-name>` (or create in the dashboard and disconnect Git).
+2. Create a Vercel Personal Access Token scoped to the team that owns the project.
+3. Store it as a secret pipeline variable `VERCEL_TOKEN`.
+4. Install the Vercel Deployment Extension from the Visual Studio marketplace into the Azure DevOps organization.
+5. Add the pipeline YAML. `vercelProjectId` is the **Project ID** in **Project Settings > General**; `vercelTeamId` is **Your ID** (Hobby, personal account Settings) or **Team ID** (**Team Settings > General**).
+
+For PR deployments and comments, also create an Azure DevOps Personal Access Token (custom scopes, **Pull Request Threads** Read & Write), store it as secret `AZURE_TOKEN`, and add a **Build Validation** branch policy (Required) on `main`.
+
 ## Notes
 
 - The step must have `name: 'Deploy'` (or similar) so `$(Deploy.deploymentTaskMessage)` can be referenced by the comment task.
 - The Vercel project must have no Git integration; deployments are triggered by Azure Pipelines instead.
 - Use secret variables (variable group or Azure Key Vault also possible) for tokens.
+- Source: https://vercel.com/docs/git/vercel-for-azure-pipelines
 
 ## Related
 

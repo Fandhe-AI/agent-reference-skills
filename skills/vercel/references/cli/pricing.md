@@ -22,6 +22,7 @@ vercel pricing firewall --json
 
 - The command fetches the public table each time it runs.
 - JSON output includes the query, source URL, feature groups, and a summary of matches. When the CLI can resolve your current team or account, it also includes plan information and feature availability for that plan.
+- Source: https://vercel.com/docs/cli/pricing
 
 ## Related
 
