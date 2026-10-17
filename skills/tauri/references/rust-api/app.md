@@ -25,7 +25,9 @@ app.run(|_app_handle, event| match event {
 });
 ```
 
-## Methods
+## Options / Props
+
+### Methods
 
 | Method | Signature | Description |
 | --- | --- | --- |

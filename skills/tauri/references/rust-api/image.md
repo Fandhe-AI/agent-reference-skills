@@ -14,7 +14,9 @@ pub struct Image<'a> { /* private fields */ }
 
 The `include_image!` macro converts a `.png` or `.ico` icon to an `Image` at compile time (relative paths are resolved from `CARGO_MANIFEST_DIR`).
 
-## Methods
+## Options / Props
+
+### Methods
 
 | Method | Signature | Description |
 | --- | --- | --- |

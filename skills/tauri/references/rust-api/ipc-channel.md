@@ -72,7 +72,9 @@ let channel = Channel::new(|message: InvokeResponseBody| {
 channel.send("hello").unwrap();
 ```
 
-## Methods
+## Options / Props
+
+### Methods
 
 | Method | Signature | Description |
 | --- | --- | --- |

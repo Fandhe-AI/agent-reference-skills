@@ -20,7 +20,7 @@ Access to core application commands from the WebView is configured and restricte
 }
 ```
 
-## Trust Boundaries
+### Trust Boundaries
 
 - Tauri's security model differentiates between Rust code written for the application's core and frontend code written in any framework or language understood by the system WebView.
 - The IPC layer is the bridge for communication between these two trust groups and ensures that boundaries are not broken.
@@ -28,13 +28,13 @@ Access to core application commands from the WebView is configured and restricte
 - Any code executed in the WebView has only access to exposed system resources via the well-defined IPC layer. Access to core application commands is configured and restricted by capabilities; individual command implementations enforce the optional fine-grained access levels (scopes) also defined in the capabilities configuration.
 - Components: Permissions, Scopes, Capabilities, Runtime Authority. Generic attack-surface controls: Content Security Policy (CSP), Isolation Pattern.
 
-## (Not) Bundling WebViews
+### (Not) Bundling WebViews
 
 - Tauri relies on the operating system WebView and does not bundle it into the application binary.
 - Main security reason: the average time from publication of a security-patched WebView version to rollout to the end user is shorter when the OS / WebView package maintainers ship it than when application developers bundle the WebView.
 - Bundling is not considered inherently insecure; the current design is a trade-off that significantly reduces known vulnerabilities in the wild.
 
-## Coordinated Disclosure
+### Coordinated Disclosure
 
 - Do not publicly comment on findings; contact the security team directly.
 - Preferred method: GitHub Vulnerability Disclosure on the affected repository (if in doubt, the Tauri repository: `https://github.com/tauri-apps/tauri/security/advisories/new`).

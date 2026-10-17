@@ -66,7 +66,9 @@ async fn open_window_multiple(app: tauri::AppHandle) {
 }
 ```
 
-## Methods
+## Options / Props
+
+### Methods
 
 Construction and hooks:
 

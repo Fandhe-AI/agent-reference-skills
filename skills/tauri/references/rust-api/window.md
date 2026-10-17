@@ -59,7 +59,9 @@ tauri::Builder::default()
   });
 ```
 
-## Methods
+## Options / Props
+
+### Methods
 
 `WindowBuilder` (constructors, hooks, and all window / desktop options also present on [WebviewWindowBuilder](./webview-window-builder.md)):
 

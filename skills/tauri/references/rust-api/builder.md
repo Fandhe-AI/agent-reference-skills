@@ -21,7 +21,9 @@ tauri::Builder::default()
 
 `impl Default for Builder<Wry>` (feature `wry`): makes `Wry` the default `Runtime` for `Builder`.
 
-## Methods
+## Options / Props
+
+### Methods
 
 | Method | Signature | Description |
 | --- | --- | --- |
@@ -100,22 +102,23 @@ tauri::Builder::default()
   });
 ```
 
-Custom URI scheme protocol:
+Custom URI scheme protocol (adapted from the docs.rs example; adds base-directory confinement):
 
 ```rust
+use tauri::{http, Manager};
 tauri::Builder::default()
-  .register_uri_scheme_protocol("app-files", |_ctx, request| {
-    // skip leading `/`
-    if let Ok(data) = std::fs::read(&request.uri().path()[1..]) {
-      http::Response::builder()
-        .body(data)
-        .unwrap()
-    } else {
-      http::Response::builder()
-        .status(http::StatusCode::BAD_REQUEST)
-        .header(http::header::CONTENT_TYPE, mime::TEXT_PLAIN.essence_str())
-        .body("failed to read file".as_bytes().to_vec())
-        .unwrap()
+  .register_uri_scheme_protocol("app-files", |ctx, request| {
+    let deny = |status: http::StatusCode| http::Response::builder().status(status).body(Vec::new()).unwrap();
+    let Some(base) = ctx.app_handle().path().resource_dir().ok().and_then(|d| d.canonicalize().ok()) else {
+      return deny(http::StatusCode::INTERNAL_SERVER_ERROR);
+    };
+    let rel = request.uri().path().trim_start_matches('/');
+    match base.join(rel).canonicalize() {
+      Ok(path) if path.starts_with(&base) => match std::fs::read(&path) {
+        Ok(data) => http::Response::builder().body(data).unwrap(),
+        Err(_) => deny(http::StatusCode::NOT_FOUND),
+      },
+      _ => deny(http::StatusCode::FORBIDDEN),
     }
   });
 ```
@@ -142,8 +145,8 @@ tauri::Builder::default()
 - Custom URI scheme origin differs by platform: macOS, iOS and Linux use `<scheme_name>://localhost/<path>`; Windows and Android use `http://<scheme_name>.localhost/<path>` by default (use `WebviewBuilder::use_https_scheme` for `https`). Servers enforcing CORS must allow the exact Origin (or `*`) for native `fetch` / `XmlHttpRequest`.
 - `device_event_filter`: `tao` ignores device events for unfocused windows by default on Windows (high CPU otherwise). Linux / macOS / iOS / Android: unsupported.
 - `build`: creates the underlying webview runtime (event loop), registers the core plugins and initializes everything on the builder, but does not start the app; call `App::run` / `App::run_return`, or use `Builder::run`. Errors include: the event loop cannot be created (e.g. outside the main thread, display server unreachable, WebView2 runtime missing on Windows); invalid `app > security > assetProtocol > scope` patterns; the app menu from `menu` cannot be created; the configured tray icon cannot be created; a plugin fails to initialize (also when a plugin is registered twice).
-- The `register_uri_scheme_protocol` example reads `request.uri().path()` directly with `std::fs::read` and performs no validation (the path is relative to the process working directory); in a real app, resolve the path against a fixed base directory (e.g. `app.path().resource_dir()`), reject `..` / absolute paths, and canonicalize before reading, otherwise any webview content can read arbitrary files.
-- The example uses the `http` crate (re-exported as `tauri::http`) and the external `mime` crate, which must be added to `Cargo.toml`.
+- The docs.rs original reads `&request.uri().path()[1..]` directly with `std::fs::read` (no validation, relative to the working directory); the example above confines reads to the canonicalized resource directory and rejects paths outside it. Percent-decoding of the URI path is not handled.
+- The example uses `tauri::http` (the re-exported `http` crate).
 - `Builder` is `!Sync`, `!RefUnwindSafe`, `!UnwindSafe`, `!Freeze`.
 - Rust language and Cargo themselves are covered by the rust skill; this is the Tauri app `Builder`, unrelated to Electron (see the electron skill) and to the fandhe-backend / fandhe-frontend Rust frameworks.
 

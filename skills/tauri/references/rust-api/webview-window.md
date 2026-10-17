@@ -51,7 +51,9 @@ tauri::Builder::default()
   });
 ```
 
-## Methods
+## Options / Props
+
+### Methods
 
 Base:
 

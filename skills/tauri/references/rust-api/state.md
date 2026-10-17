@@ -45,7 +45,9 @@ tauri::Builder::default()
   .expect("error while running tauri application");
 ```
 
-## Methods
+## Options / Props
+
+### Methods
 
 | Method | Signature | Description |
 | --- | --- | --- |

@@ -30,7 +30,9 @@ tauri::Builder::default()
   });
 ```
 
-## Methods
+## Options / Props
+
+### Methods
 
 | Method | Signature | Description |
 | --- | --- | --- |

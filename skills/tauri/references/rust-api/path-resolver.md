@@ -12,12 +12,14 @@ The path resolver is a helper class for general and application-specific path AP
 pub struct PathResolver<R: Runtime>(/* private fields */);
 ```
 
+Adapted from docs.rs (expected values built from `config_dir()` / `home_dir()`):
+
 ```rust
 use tauri::{path::BaseDirectory, Manager};
 tauri::Builder::default()
   .setup(|app| {
     let path = app.path().resolve("path/to/something", BaseDirectory::Config)?;
-    assert_eq!(path.to_str().unwrap(), "/home/${whoami}/.config/path/to/something");
+    assert_eq!(path, app.path().config_dir()?.join("path/to/something"));
     Ok(())
   });
 ```
@@ -27,12 +29,14 @@ use tauri::Manager;
 tauri::Builder::default()
   .setup(|app| {
     let path = app.path().parse("$HOME/.bashrc")?;
-    assert_eq!(path.to_str().unwrap(), "/home/${whoami}/.bashrc");
+    assert_eq!(path, app.path().home_dir()?.join(".bashrc"));
     Ok(())
   });
 ```
 
-## Methods
+## Options / Props
+
+### Methods
 
 All return `Result<PathBuf>` unless noted.
 
@@ -104,6 +108,7 @@ Each variant resolves to the `PathResolver` method of the same name (`Audio` to 
 
 ## Notes
 
+- The docs.rs originals compare against the literal strings `/home/${whoami}/.config/path/to/something` and `/home/${whoami}/.bashrc`, where `${whoami}` is a placeholder (not expanded in Rust strings) and the paths assume Linux with default XDG directories.
 - docs.rs renders the non-Android definition of `PathResolver` ("Available on non-Android only"); Android has its own implementation with the same methods, as the `file_name` and `resource_dir` notes show.
 - `resource_dir`: the exact path is not a contract and may change. Windows: directory containing the main executable. Linux in an AppImage: `${APPDIR}/usr/lib/${exe_name}`; otherwise `/usr/lib/${exe_name}`; when running from `src-tauri/target/(debug|release)/`: `${exe_dir}/../lib/${exe_name}`. macOS: `${exe_dir}/../Resources` (inside .app). iOS: `${exe_dir}/assets`. Android: resources are APK assets, so a special URI prefix `asset://localhost/` is returned, usable with the file system plugin, e.g. `app.fs().read_to_string(app.path().resource_dir().unwrap().join("resource"));`.
 - `home_dir` on iOS cannot be written to directly; use one of the app paths.

@@ -54,7 +54,7 @@ tauri::Builder::default()
 #[tauri::command]
 fn send_message(message_body: String) {}
 
-// called from JavaScript with `invoke("send_message", { message_body: "Hello" })`
+// called from JavaScript with `invoke("send_message_snake", { message_body: "Hello" })`
 #[tauri::command(rename_all = "snake_case")]
 fn send_message_snake(message_body: String) {}
 ```

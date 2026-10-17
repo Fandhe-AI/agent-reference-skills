@@ -99,7 +99,9 @@ Builder::new("example")
 }
 ```
 
-## Methods
+## Options / Props
+
+### Methods
 
 | Method | Signature | Description |
 | --- | --- | --- |

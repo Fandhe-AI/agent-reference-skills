@@ -43,7 +43,9 @@ pub struct TrayIconBuilder<R: Runtime> { /* private fields */ }
 }
 ```
 
-## Methods
+## Options / Props
+
+### Methods
 
 `TrayIconBuilder`:
 
