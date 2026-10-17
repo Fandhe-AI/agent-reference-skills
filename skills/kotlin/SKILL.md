@@ -10,8 +10,6 @@ user-invocable: false
 
 # Kotlin
 
-> 分割 PR の途中段階。現在収録済み: references/{basics, build-tools, classes-objects, collections, compiler, coroutines, functions, java-interop, releases, serialization, stdlib}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
-
 ## 対象バージョン
 
 | 対象 | 版 | 備考 |
@@ -39,6 +37,9 @@ skills/kotlin/
       README.md
       basic-syntax.md  null-safety.md  control-flow.md  exceptions.md
       idioms.md  kotlin-doc.md  annotations.md  visibility-modifiers.md ...
+    types/                  # 型システム（10 ページ）
+      README.md
+      numbers.md  strings.md  arrays.md  generics.md  typecasts.md  type-aliases.md ...
     classes-objects/        # クラス・オブジェクト（15 ページ）
       README.md
       classes.md  data-classes.md  sealed-classes.md  interfaces.md  extensions.md
@@ -72,6 +73,14 @@ skills/kotlin/
     releases/               # リリース・互換性・What's new（10 ページ）
       README.md
       whatsnew24.md  whatsnew2420.md  compatibility-guide-24.md  components-stability.md ...
+  samples/                  # 動く実例 22 件
+    README.md
+    null-safety-patterns.md  sealed-class-when.md  scope-functions.md
+    coroutines-structured-concurrency.md  flow-collect-and-cancel.md
+    serialization-json-roundtrip.md  gradle-jvm-project.md ...
+  scripts/                  # コマンド集 7 件
+    README.md
+    install.md  kotlinc.md  gradle.md  maven.md  kotlin-daemon.md  ksp.md  compiler-plugins.md
 ```
 
 ## 探索手順
@@ -81,12 +90,14 @@ skills/kotlin/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
+4. 動く例が必要なら `samples/README.md`、実行コマンドが必要なら `scripts/README.md` を引く
 
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | 基本構文・null safety・if / when / for・例外処理・可視性・KDoc を知りたい | basics | [references/basics/README.md](references/basics/README.md) |
+| 数値・String・Array・ジェネリクス・型キャスト・typealias を知りたい | types | [references/types/README.md](references/types/README.md) |
 | class・data class・sealed class・interface・拡張・委譲・object を知りたい | classes-objects | [references/classes-objects/README.md](references/classes-objects/README.md) |
 | 関数・ラムダ・inline・context parameters・DSL ビルダー・演算子オーバーロード | functions | [references/functions/README.md](references/functions/README.md) |
 | List / Set / Map の操作・変換・フィルタ・Sequence・Range | collections | [references/collections/README.md](references/collections/README.md) |
@@ -97,3 +108,5 @@ skills/kotlin/
 | Gradle / Maven 設定・コンパイラオプション・Kotlin daemon | build-tools | [references/build-tools/README.md](references/build-tools/README.md) |
 | コンパイラオプション・K2 移行・KSP・kapt・all-open / no-arg 等のプラグイン | compiler | [references/compiler/README.md](references/compiler/README.md) |
 | 新バージョンの変更点・互換性ガイド・コンポーネント安定性 | releases | [references/releases/README.md](references/releases/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

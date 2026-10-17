@@ -135,4 +135,4 @@ The official page also shows payment-method handling (`Payment` with `CreditCard
 - [Data classes](./data-classes.md)
 - [Inheritance](./inheritance.md)
 - [Control flow](../basics/control-flow.md)
-- Reflection
+- [Reflection](../stdlib/reflection.md)

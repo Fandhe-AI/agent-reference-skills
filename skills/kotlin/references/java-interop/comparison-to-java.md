@@ -21,9 +21,9 @@ class C {
 
 - Null references are controlled by the type system ([null-safety](../basics/null-safety.md)).
 - No raw types ([Java generics in Kotlin](./java-interop.md)).
-- Arrays in Kotlin are invariant (arrays).
+- Arrays in Kotlin are invariant ([arrays](../types/arrays.md)).
 - Kotlin has proper function types ([lambdas](../functions/lambdas.md)), as opposed to Java's SAM-conversions.
-- Use-site variance without wildcards (generics).
+- Use-site variance without wildcards ([generics](../types/generics.md)).
 - Kotlin does not have checked exceptions ([exceptions](../basics/exceptions.md)).
 - Separate interfaces for read-only and mutable collections ([collections overview](../collections/collections-overview.md)).
 - A performant and ergonomic replacement for `Enum.values()` ([enum classes](../classes-objects/enum-classes.md)).
@@ -38,20 +38,20 @@ class C {
 - Records (see [Using Java records in Kotlin](./jvm-records.md)).
 - Package-private visibility modifier ([visibility modifiers](../basics/visibility-modifiers.md)).
 
-Kotlin doesn't have pattern matching, but smart casts (typecasts) provide similar functionality to pattern matching in Java.
+Kotlin doesn't have pattern matching, but smart casts ([typecasts](../types/typecasts.md)) provide similar functionality to pattern matching in Java.
 
 ### What Kotlin has that Java does not
 
 - Lambda expressions + inline functions = performant custom control structures ([inline functions](../functions/inline-functions.md))
 - Extension functions ([extensions](../classes-objects/extensions.md))
 - Null-safety
-- String templates (strings)
+- String templates ([strings](../types/strings.md))
 - Properties ([properties](../classes-objects/properties.md))
 - Primary constructors ([classes](../classes-objects/classes.md))
 - First-class delegation ([delegation](../classes-objects/delegation.md))
 - Type inference for variable and property types (Java 10: Local-Variable Type Inference)
 - Singletons ([object declarations](../classes-objects/object-declarations.md))
-- Declaration-site variance and type projections (generics)
+- Declaration-site variance and type projections ([generics](../types/generics.md))
 - Range expressions ([ranges](../collections/ranges.md))
 - Operator overloading ([operator overloading](../functions/operator-overloading.md))
 - Companion objects
@@ -60,7 +60,7 @@ Kotlin doesn't have pattern matching, but smart casts (typecasts) provide simila
 - Top-level functions
 - Parameters with default values, named parameters, infix functions ([functions](../functions/functions.md))
 - Expect and actual declarations
-- Explicit API mode and better control of API surface (opt-in requirements)
+- Explicit API mode and better control of API surface ([opt-in requirements](../stdlib/opt-in-requirements.md))
 
 Java doesn't have smart casts, but pattern matching provides similar functionality to smart casts in Kotlin.
 

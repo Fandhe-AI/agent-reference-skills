@@ -177,6 +177,6 @@ enum class IntArithmetics : BinaryOperator<Int>, IntBinaryOperator {
 
 - [Sealed classes and interfaces](./sealed-classes.md)
 - [Object declarations and expressions](./object-declarations.md)
-- Inline functions
-- Operator overloading
-- Ordering
+- [Inline functions](../functions/inline-functions.md)
+- [Operator overloading](../functions/operator-overloading.md)
+- [Ordering](../collections/collection-ordering.md)

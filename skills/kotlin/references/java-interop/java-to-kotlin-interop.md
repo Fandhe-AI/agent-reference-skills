@@ -327,4 +327,4 @@ MyInt output = ExampleKt.timesTwoBoxed(input);
 - [Inline value classes](../classes-objects/inline-classes.md)
 - [Properties](../classes-objects/properties.md)
 - [Inheritance](../classes-objects/inheritance.md)
-- Generics
+- [Generics](../types/generics.md)

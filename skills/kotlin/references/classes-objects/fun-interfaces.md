@@ -96,6 +96,6 @@ val isEven: IntPredicate = { it % 2 == 0 }
 ## Related
 
 - [Interfaces](./interfaces.md)
-- Lambdas
-- Type aliases
-- Java interop
+- [Lambdas](../functions/lambdas.md)
+- [Type aliases](../types/type-aliases.md)
+- [Java interop](../java-interop/java-interop.md)
