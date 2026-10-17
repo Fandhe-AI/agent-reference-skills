@@ -67,5 +67,5 @@ return result.toUIMessageStreamResponse()
 ## Related
 
 - [Prompt Input](./prompt-input.md)
-- [Dropdown Menu](../components-overlay/dropdown-menu.md)
-- [Input Group](../components-form/input-group.md)
+- Dropdown Menu
+- Input Group

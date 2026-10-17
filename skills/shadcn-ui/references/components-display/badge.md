@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/badge"
 <Badge variant="default | outline | secondary | destructive">Badge</Badge>
 ```
 
-Adapted (pass one value):
+Adapted (not in the official docs): pass one `variant` value instead of the placeholder list:
 
 ```tsx
 <Badge variant="default">Badge</Badge>

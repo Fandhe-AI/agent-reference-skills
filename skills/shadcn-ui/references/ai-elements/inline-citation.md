@@ -55,4 +55,4 @@ const sources = message.parts.filter((part) => part.type === "source-url")
 ## Related
 
 - [Sources](./sources.md)
-- [Hover Card](../components-overlay/hover-card.md)
+- Hover Card

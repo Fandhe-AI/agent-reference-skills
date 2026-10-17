@@ -61,5 +61,5 @@ A file:
 
 ## Related
 
-- [Collapsible](../components-layout/collapsible.md)
+- Collapsible
 - [Tool](./tool.md)
