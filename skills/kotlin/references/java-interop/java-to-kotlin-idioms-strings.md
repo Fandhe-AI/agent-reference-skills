@@ -133,7 +133,7 @@ println(result)
 
 ## Related
 
-- Strings
+- [Strings](../types/strings.md)
 - [Idioms](../basics/idioms.md)
 - [Coding conventions](../basics/coding-conventions.md)
 - [Collection transformations](../collections/collection-transformations.md)

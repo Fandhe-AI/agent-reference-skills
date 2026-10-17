@@ -199,5 +199,5 @@ import org.example.declarations.getLongestString
 - [This expressions](./this-expressions.md)
 - [Properties](./properties.md)
 - [Object declarations and expressions](./object-declarations.md)
-- Lambdas
-- Generics
+- [Lambdas](../functions/lambdas.md)
+- [Generics](../types/generics.md)

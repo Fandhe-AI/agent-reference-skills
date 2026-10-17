@@ -110,7 +110,7 @@ Maven: add `<arg>-Xexplicit-context-arguments</arg>` under `kotlin-maven-plugin`
 
 ## Notes
 
-- Explicit context arguments are marked Experimental on the official page (requires `-Xexplicit-context-arguments`).
+- Explicit context arguments are marked [Experimental](../releases/components-stability.md) on the official page (requires `-Xexplicit-context-arguments`).
 - Context parameters replace the older experimental context receivers; the official page points to the context parameters design document (KEEP) and an IntelliJ IDEA assisted migration.
 - Restrictions: constructors can't declare context parameters; properties with context parameters can't have backing fields or initializers; they can't use delegation.
 

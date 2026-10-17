@@ -126,5 +126,5 @@ acceptString(nameInlineClass) // Not OK: can't pass inline class instead of unde
 - [Delegation](./delegation.md)
 - [Classes](./classes.md)
 - [Properties](./properties.md)
-- Type aliases
-- Java to Kotlin interop
+- [Type aliases](../types/type-aliases.md)
+- [Java to Kotlin interop](../java-interop/java-to-kotlin-interop.md)

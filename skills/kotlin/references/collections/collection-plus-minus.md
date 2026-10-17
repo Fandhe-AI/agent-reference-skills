@@ -32,4 +32,4 @@ fun main() {
 
 - [Collection write operations](./collection-write.md)
 - [Map-specific operations](./map-operations.md)
-- Operator overloading
+- [Operator overloading](../functions/operator-overloading.md)

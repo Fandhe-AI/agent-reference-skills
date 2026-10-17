@@ -75,5 +75,5 @@ Collection types:
 - [Constructing collections](./constructing-collections.md)
 - [Collection operations overview](./collection-operations.md)
 - [Iterators](./iterators.md)
-- Arrays
-- Generics (variance)
+- [Arrays](../types/arrays.md)
+- [Generics (variance)](../types/generics.md)

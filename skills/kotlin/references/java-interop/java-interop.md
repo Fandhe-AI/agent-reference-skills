@@ -395,4 +395,4 @@ var myProperty: String
 - [Nullability in Java and Kotlin](./java-to-kotlin-nullability-guide.md)
 - [Lombok compiler plugin](../compiler/lombok.md)
 - [Null safety](../basics/null-safety.md)
-- Generics
+- [Generics](../types/generics.md)
