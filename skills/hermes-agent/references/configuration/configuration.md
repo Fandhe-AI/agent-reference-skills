@@ -102,7 +102,7 @@ Containerized execution with security hardening.
 ```yaml
 terminal:
   backend: docker
-  docker_image: "nikolaik/python-nodejs:python3.11-nodejs20"
+  docker_image: "nousresearch/hermes-sandbox:desktop"
   docker_mount_cwd_to_workspace: false  # Mount launch dir to /workspace
   docker_forward_env:                   # Env vars to forward into container
     - "GITHUB_TOKEN"
@@ -112,10 +112,17 @@ terminal:
   container_cpu: 1                      # CPU cores (0 = unlimited)
   container_memory: 5120               # MB (0 = unlimited)
   container_disk: 51200                # MB (requires overlay2 on XFS+pquota)
-  container_persistent: true           # Persist /workspace and /root across sessions
+  container_persistent: true           # true = persist /workspace + /root, shared container; false = fresh container per session
+  docker_persist_across_processes: true   # Reuse container across Hermes restarts
+  docker_shared_container_key: ""         # Opt in trusted profiles to one container identity
+  docker_orphan_reaper: true              # Sweep abandoned Exited containers at startup
+  docker_network: true                    # false = --network=none
+  docker_extra_args: []                   # Extra flags appended verbatim to `docker run`
 ```
 
 Security hardening applied automatically: `--cap-drop ALL` with only `DAC_OVERRIDE`, `CHOWN`, `FOWNER` re-added; `--security-opt no-new-privileges`; `--pids-limit 256`; sized tmpfs mounts.
+
+Container lifecycle (v0.22.x docs): Hermes starts one long-lived container shared across processes and sessions, found again by label (`hermes-agent`, `hermes-task-id`, `hermes-profile`, `hermes-environment`). Default cleanup on exit is a no-op. The container is torn down only with `docker_persist_across_processes: false`, by the idle reaper (`lifetime_seconds`, default 300, non-persist envs only), by the orphan reaper (Exited hermes-labeled containers older than `2 × lifetime_seconds`, profile-scoped; running containers never touched), or by direct user action. `docker_shared_container_key` lets trusted profiles share one container; the profile that creates it fixes its image and mounts. Every `terminal:` key has a `TERMINAL_<KEY_UPPERCASE>` env override (e.g. `TERMINAL_DOCKER_PERSIST_ACROSS_PROCESSES`, `TERMINAL_DOCKER_SHARED_CONTAINER_KEY`, `TERMINAL_DOCKER_ORPHAN_REAPER`); `HERMES_DOCKER_BINARY=podman` forces Podman.
 
 ### SSH
 
@@ -151,7 +158,7 @@ Cloud sandbox execution.
 ```yaml
 terminal:
   backend: modal
-  modal_image: "nikolaik/python-nodejs:python3.11-nodejs20"
+  modal_image: "nousresearch/hermes-sandbox:desktop"
   container_cpu: 1
   container_memory: 5120   # MB
   container_disk: 51200    # MB
@@ -167,7 +174,7 @@ Managed workspace execution.
 ```yaml
 terminal:
   backend: daytona
-  daytona_image: "nikolaik/python-nodejs:python3.11-nodejs20"
+  daytona_image: "nousresearch/hermes-sandbox:desktop"
   container_cpu: 1
   container_memory: 5120   # MB, converted to GiB
   container_disk: 10240    # MB, max 10 GiB enforced
@@ -183,7 +190,7 @@ HPC-friendly containerization.
 ```yaml
 terminal:
   backend: singularity
-  singularity_image: "docker://nikolaik/python-nodejs:python3.11-nodejs20"
+  singularity_image: "docker://nousresearch/hermes-sandbox:desktop"
   container_cpu: 1
   container_memory: 5120   # MB
   container_persistent: true  # Writable overlay persists
@@ -610,10 +617,6 @@ DMs always work without a mention. Free-response channels bypass the mention req
 ```yaml
 security:
   redact_secrets: true           # Redact API key patterns in tool output and logs
-  tirith_enabled: true           # Enable Tirith command scanning
-  tirith_path: "tirith"          # Path to tirith binary (default: "tirith" in $PATH)
-  tirith_timeout: 5              # Seconds to wait before timing out
-  tirith_fail_open: true         # Allow execution if tirith is unavailable
   website_blocklist:
     enabled: false
     domains: []                  # Exact or wildcard domain rules
@@ -621,6 +624,31 @@ security:
 ```
 
 Blocklist supports: exact domains (`admin.example.com`), wildcard subdomains (`*.internal.company.com`), TLD wildcards (`*.local`). Policy cached for 30 seconds.
+
+Removed in v0.22.0: the `security.tirith_*` keys (`tirith_enabled`, `tirith_path`, `tirith_timeout`, `tirith_fail_open`) for the bundled command scanner. Upgrading drops those keys; content-level command checks are described in the Security page.
+
+## Prompt Caching
+
+Cross-session prompt caching is automatic when the provider supports it (Claude on native Anthropic, OpenRouter, and Nous Portal get `cache_control` breakpoints with the 1-hour TTL by default; Qwen Cloud caps at 5 minutes). The one explicit knob:
+
+```yaml
+prompt_caching:
+  cache_ttl: "5m"   # "5m", "1h" (Anthropic-supported tiers) or "auto"; other values are ignored
+```
+
+`"auto"` picks `1h` for human-paced sessions (CLI, TUI, Desktop, messaging platforms) and `5m` for machine-paced ones (subagents, cron, `hermes -q` one-shots, webhooks, Kanban workers, API server, batch runs). The 1h tier writes at 2x the base input price (5m at 1.25x). Delegated subagents are always clamped to `5m`.
+
+## Sessions: auto-prune and reset
+
+```yaml
+sessions:
+  auto_prune: true       # default true since v0.22.0; false keeps all history
+  retention_days: 90     # whole number >= 0
+```
+
+- Ended sessions inactive for `retention_days` (default 90) are pruned at CLI / gateway / cron startup; pinned and open sessions are never touched. A negative or missing `retention_days` skips the sweep with a warning.
+- Retired in v0.22.0: `session_reset` idle / daily modes. Core ignores legacy `session_reset` settings, reset-policy overrides, and reset-timer environment variables (a config that still sets them logs a warning); `/new` or `/reset` starts a fresh session explicitly. To keep time-based resets, install the catalog plugin that reads the same block: `hermes plugins install hermes-session-reset-policy`.
+- One multiplexed messaging gateway and desktop backend per machine serves all profiles by default; `hermes update` folds existing per-profile gateways into it when nothing conflicts.
 
 ## Smart Approvals
 

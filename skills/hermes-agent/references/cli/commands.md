@@ -21,7 +21,30 @@ hermes [global-options] <command> [subcommand/options]
 | `--pass-session-id` | | Embed session ID in system prompt |
 | `--tui` | | Launch terminal UI mode |
 | `--ignore-user-config` | | Skip personal config loading |
-| `--ignore-rules` | | Skip auto-injection of context files |
+| `--ignore-rules` | | Skip auto-injection of `AGENTS.md`, `SOUL.md`, `.cursorrules`, memory, and preloaded skills |
+| `--cli` | | Force the classic prompt_toolkit REPL (overrides `display.interface: tui` for one invocation) |
+| `--in <dir>` | | Change into `<dir>` before starting or resuming; scopes `--resume latest` / `-c` lookups to that workspace |
+| `--dev` | | With `--tui`: run TypeScript sources via `tsx` instead of the prebuilt bundle |
+
+`--resume latest` resumes the most recent session (workspace-scoped, same lookup as `-c`). `--tui` is equivalent to `HERMES_TUI=1` and always wins over `display.interface`.
+
+## `hermes -z <prompt>` (scripted one-shot)
+
+Single prompt in, final response text out, nothing else on stdout or stderr (no banner, spinner, tool previews, or `Session:` line). Same agent, tools, and skills; use `hermes chat --oneshot -q` if tool output is wanted too.
+
+```bash
+hermes -z "What's the capital of France?"
+hermes -z "What's the capital of France?" --provider openrouter --model openai/gpt-5.5
+hermes -z "summarize this repo" --usage-file ~/.hermes/cache/scratch/usage.json
+```
+
+| Flag | Equivalent env var | Purpose |
+|------|--------------------|---------|
+| `-m` / `--model <model>` | `HERMES_INFERENCE_MODEL` | Override the model for this run |
+| `--provider <provider>` | (none) | Override the provider for this run |
+| `--usage-file <path>` | (none) | Write a JSON usage report after the run (written even when the run fails; auxiliary calls reported under `auxiliary`, grand total in `total_including_auxiliary`) |
+
+Exit codes: `0` turn completed; `2` failed or stopped partway (also usage errors); `130` interrupted; `1` completed turn produced no text. These differ from `chat -q` / `-Q`, which exit `1` for failed/partial/budget.
 
 ## Top-Level Commands
 
@@ -29,10 +52,22 @@ hermes [global-options] <command> [subcommand/options]
 |---------|---------|
 | `hermes chat` | Interactive or scripted agent conversation |
 | `hermes model` | Interactive provider/model selection |
+| `hermes moa` | Configure named Mixture of Agents presets |
 | `hermes gateway` | Run or manage messaging gateway service |
+| `hermes egress` | Outbound credential-injection firewall for remote terminal sandboxes (iron-proxy; disabled by default) |
 | `hermes setup` | Configuration wizard |
 | `hermes whatsapp` | WhatsApp bridge configuration |
-| `hermes login` / `logout` | OAuth authentication management |
+| `hermes login` / `logout` | Deprecated: removed, use `hermes auth` |
+| `hermes peer` | Register peer Hermes gateways and DM their agents' Bot Chats |
+| `hermes codex-runtime` | Noninteractive `/codex-runtime` migration of `~/.codex/config.toml` |
+| `hermes usage` | Show account rate-limit windows without a session |
+| `hermes project` | Named multi-folder workspaces (projects) |
+| `hermes connectors` | List, connect, rename, disconnect hosted connector accounts |
+| `hermes pets` | Browse, install, select petdex animated pets |
+| `hermes import-agent` | Import a Claude Code or Codex CLI setup |
+| `hermes serve` | Headless Hermes backend server (powers desktop and remote backends) |
+| `hermes pm` | Manage pinned tools, Python environments, diagnostics |
+| `hermes desktop` (alias `gui`) | Build and launch the native Electron desktop app |
 | `hermes auth` | Credential pool administration |
 | `hermes status` | Display system/platform status |
 | `hermes cron` | Scheduler inspection/management |
@@ -176,21 +211,18 @@ Initiates WhatsApp pairing/setup flow including mode selection and QR-code pairi
 
 ---
 
-## `hermes login` / `hermes logout`
+## `hermes login` / `hermes logout` (Deprecated)
+
+`hermes login` has been removed. Use `hermes auth` to manage OAuth credentials, `hermes model` to select a provider, or `hermes setup` for full interactive setup.
 
 ```bash
-hermes login [--provider nous|openai-codex] [--portal-url ...] [--inference-url ...]
-hermes logout [--provider nous|openai-codex]
+hermes auth logout anthropic    # replacement for logout
 ```
 
-**Supported methods:** Nous Portal OAuth/device flow, OpenAI Codex OAuth/device flow.
+## Notes on removed commands
 
-| Flag | Description |
-|------|-------------|
-| `--no-browser` | Disable browser opening |
-| `--timeout <seconds>` | Connection timeout |
-| `--ca-bundle <pem>` | Custom certificate bundle |
-| `--insecure` | Skip certificate validation |
+- `hermes sync` (Skill Sync) was removed in v0.22.0.
+- `hermes honcho`: since v0.22.0 Honcho is a catalog plugin; install it with `hermes plugins install honcho`, and `hermes honcho` is registered only while it is the active memory provider (see the `hermes honcho` section below).
 
 ---
 
@@ -209,8 +241,15 @@ Manages credential rotation pools and key lifecycle.
 | `list <provider>` | Show specific provider credentials |
 | `add <provider> --api-key <key>` | Insert API key |
 | `add <provider> --type oauth` | Add OAuth credential |
+| `add openai-codex --browser` | Codex browser auth-code + PKCE on localhost:1455 instead of device code |
 | `remove <provider> <index>` | Delete credential by position |
-| `reset <provider>` | Clear cooldown timers |
+| `priority <provider> <target> <index>` | Move a credential to the front of fill_first order |
+| `reset <provider> [index]` | Clear cooldown timers (all or one credential) |
+| `refresh <provider> <label>` | Refresh one OAuth credential and clear its cooldown |
+| `status <provider>` | Show auth status for a provider |
+| `logout <provider>` | Log out and clear stored auth state |
+
+Spotify login moved to the `spotify` catalog plugin's `hermes spotify login`.
 
 ---
 
@@ -345,6 +384,9 @@ hermes skills <subcommand>
 | `audit` | Re-scan hub skills |
 | `uninstall` | Remove hub skill |
 | `publish` | Publish to registry |
+| `reset` | Un-stick a bundled skill flagged `user_modified`; with `--restore`, replace the user copy with the bundled version |
+| `opt-out` | Stop bundled skills being seeded into the active profile (writes `.no-bundled-skills`); with `--remove`, also delete unmodified bundled skills (`--yes` skips confirm) |
+| `opt-in` | Undo `opt-out`; with `--sync`, re-seed immediately |
 | `snapshot` | Export/import configurations |
 | `tap` | Custom source management |
 | `config` | Interactive per-platform enablement |
@@ -365,6 +407,8 @@ hermes honcho [--target-profile NAME] <subcommand>
 ```
 
 Manages Honcho cross-session memory integration.
+
+Note: since v0.22.0 Honcho is a plugin-catalog memory provider, not bundled. Run `hermes plugins install honcho`; the `hermes honcho` command is registered only while Honcho is the active memory provider (inactive providers do not expose subcommands). The v0.22.2 CLI reference no longer has a dedicated section for it; the subcommand table below is retained from earlier docs.
 
 | Subcommand | Description |
 |------------|-------------|
@@ -392,7 +436,7 @@ hermes memory <subcommand>
 
 External memory provider management.
 
-**Supported providers:** `honcho` `openviking` `mem0` `hindsight` `holographic` `retaindb` `byterover`
+**Supported providers:** `honcho` `openviking` `mem0` `hindsight` `holographic` `supermemory` `retaindb` `byterover`. Bundled: `retaindb`, `byterover`. The others are plugin-catalog providers (v0.22.0) installed with `hermes plugins install <name>` (`hermes update` does this automatically for a provider already named in `memory.provider`). Only one external provider is active at a time; built-in MEMORY.md/USER.md is always active.
 
 | Subcommand | Description |
 |------------|-------------|
@@ -415,8 +459,8 @@ Launches Hermes as an ACP (Agent Client Protocol) stdio server.
 hermes-acp
 python -m acp_adapter
 
-# Installation
-pip install -e '.[acp]'
+# Installation (if ACP support is missing)
+cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['acp'], explicit=True)"
 ```
 
 ---
@@ -431,6 +475,10 @@ MCP (Model Context Protocol) server management and operation.
 
 | Subcommand | Alias | Description |
 |------------|-------|-------------|
+| (none) / `picker` | | Interactive catalog picker for Nous-approved MCPs |
+| `catalog` | | List Nous-approved MCPs (plain text) |
+| `install <name>` | | Install a catalog entry (e.g. `hermes mcp install deepwiki`) |
+| `login <name>` | | Force re-authentication for an OAuth-based MCP server |
 | `serve [-v]` | | Operate as MCP server |
 | `add <name>` | | Register MCP server (`--url`, `--command`, `--args`, `--auth oauth|header`) |
 | `remove <name>` | `rm` | Deregister server |
@@ -591,9 +639,21 @@ Launches a web-based configuration UI (default port: 9119).
 | `--port <n>` | Listen port |
 | `--host <host>` | Bind host |
 | `--no-open` | Do not auto-open browser |
-| `--insecure` | Allow insecure connections |
+| `--insecure` | Deprecated / no-op (since the June 2026 hardening a public bind always requires an auth provider; bind `127.0.0.1` and tunnel to keep it local) |
+| `--skip-build` | Skip the web UI build and serve existing `dist` |
+| `--isolated` | From a named profile, run a dedicated per-profile server instead of routing to the machine dashboard |
+| `--stop` | Stop the running dashboard / serve backend of this Hermes home |
+| `--status` | List running `hermes dashboard` processes |
 
-`register` integrates with Nous Portal OAuth.
+`register` integrates with Nous Portal OAuth (`--name`, `--redirect-uri`, `--portal-url`).
+
+## `hermes serve`
+
+```bash
+hermes serve [options]
+```
+
+Headless Hermes backend server (JSON-RPC/WebSocket gateway for the desktop app and remote clients); same server as `hermes dashboard` without the browser UI, with the same `--host` / `--port` / `--insecure` / `--skip-build` / `--stop` / `--status` options. If the port (default 9119) is taken it prints `BACKEND_PORT_IN_USE port=<port>` and exits with code 75; `--port 0` binds a free port.
 
 ---
 
@@ -877,8 +937,9 @@ External secret manager integration (Bitwarden currently supported). Pulls API k
 |------------|-------------|
 | `setup` | Configure secret manager |
 | `status` | Show current configuration |
-| `sync` | Pull latest secrets |
-| `install` | Install dependencies |
+| `token` | Rotate the access token (validated before storing; `--access-token`, `--no-verify`) |
+| `sync` | Fetch secrets now and report changes; `--apply` exports them into the current shell environment (default is dry-run) |
+| `install` | Install or repair the PM-pinned `bws` binary |
 | `disable` | Disable integration |
 
 ---
@@ -927,6 +988,112 @@ Manages the Computer Use backend (macOS only, via cua-driver).
 |------------|-------------|
 | `install` | Install cua-driver |
 | `status` | Show installation status |
+| `doctor [--include CHECK] [--skip CHECK] [--json]` | Run cua-driver's health report |
+| `permissions status [--json]` / `permissions grant` | Report / request macOS Accessibility and Screen Recording grants |
+
+Now supported on macOS, Windows, and Linux.
+
+---
+
+## `hermes peer`
+
+```bash
+hermes peer add <name> --url http://host:port --key <API_SERVER_KEY>
+hermes peer list
+hermes peer dm <peer>[/<agent>] "message"
+hermes peer run <peer>[/<agent>] --idempotency-key <key> "message"
+hermes peer status <peer>[/<agent>] <run_id>
+hermes peer stop <peer>[/<agent>] <run_id>
+hermes peer remove <name>
+```
+
+Bot-to-bot DMs across machines: register another Hermes gateway (running the `api_server` platform) as a peer, then message its agents. `<peer>` targets the main agent; `<peer>/<agent>` a named profile on a multiplexed peer. `add` stores the URL in `config.yaml` (`bot_peers`) and the key as `HERMES_PEER_<NAME>_KEY` in `~/.hermes/.env`. `dm`, `run`, `status`, `stop` support `--json`. Exit codes: 0 success, 1 delivery/peer failure, 2 usage error.
+
+## `hermes codex-runtime`
+
+```bash
+hermes codex-runtime migrate [--dry-run] [--json]
+```
+
+Regenerates the Hermes-managed block in `~/.codex/config.toml` (projects `mcp_servers`, installed codex plugins, and the `default_permissions` default). User text outside the block is kept verbatim; exit code is 1 when the report contains errors.
+
+## `hermes usage`
+
+```bash
+hermes usage [--provider NAME] [--json]
+```
+
+Account rate-limit windows (the `/usage` block) without a session. Supported providers: `openai-codex`, `anthropic`, `openrouter`. Exit code 1 when no credential, no usage endpoint, or fetch fails.
+
+## `hermes egress`
+
+```bash
+hermes egress install [--force]
+hermes egress setup [--tunnel-port N] [--from-bitwarden | --no-bitwarden] [--rotate-tokens]
+hermes egress start | stop | restart | reload
+hermes egress status [--show-tokens]
+hermes egress disable | config
+```
+
+Wraps the iron-proxy daemon, a TLS-intercepting proxy that swaps opaque proxy tokens for real upstream credentials so sandboxes never hold real keys. Disabled by default.
+
+## `hermes project`
+
+```bash
+hermes project <create|list|show|add-folder|remove-folder|rename|set-primary|use|archive|restore|bind-board>
+```
+
+Human-named workspaces spanning multiple folders/repos; anchors desktop session grouping and, bound to a kanban board, gives tasks a worktree + branch convention. State is per-profile.
+
+## `hermes import`
+
+```bash
+hermes import <zipfile> [-f|--force]
+```
+
+Restores a backup into the Hermes home (all archive files overwrite existing ones; `--force` only skips the confirmation prompt). Stop the gateway first. Exits 1 when the archive is damaged (CRC checked before anything is written) or any file could not be restored. `.db` members are written into the existing database file.
+
+## `hermes moa`
+
+```bash
+hermes moa list
+hermes moa configure [name]
+hermes moa delete <name>
+```
+
+Named Mixture of Agents presets, selectable under a `Mixture of Agents` provider in every model picker; `/moa <prompt>` runs a prompt through the default preset.
+
+## `hermes connectors`
+
+```bash
+hermes connectors <list|accounts|connect|rename|disconnect>
+```
+
+Hosted connector accounts (apps such as Gmail via the Nous tool gateway; needs a Nous Portal sign-in). `connect <app> [--alias NAME] [--reconnect [--force]]`, `accounts [app] [--all]`, `rename <app> <name-or-label> --to <new>`, `disconnect <app> [--alias NAME] [--yes]`.
+
+## `hermes pets`
+
+```bash
+hermes pets <list|install|select|show|off|scale|remove|doctor>
+```
+
+Petdex animated pets shown in the CLI, TUI, and desktop app; `/hatch` generates a new pet.
+
+## `hermes import-agent`
+
+```bash
+hermes import-agent [claude-code|codex] [--source <path>] [--dry-run] [--overwrite] [--yes] [--sync]
+```
+
+Imports a Claude Code (`~/.claude`) or Codex CLI (`~/.codex`) setup: instructions to memory entries, `Bash(...)` rules to `command_allowlist` / `approvals.deny`, MCP servers to `mcp_servers`, skills to `~/.hermes/skills/`. Previews first; credentials are never imported. Each import registers its source in `~/.hermes/import-sync.json`; `--sync` re-imports changed sources.
+
+## `hermes pm`
+
+```bash
+hermes pm doctor | status | repair | install [name] | lock | gc
+```
+
+Manages pinned tools, Python dependency environments, and diagnostics; does not update the Hermes application itself (see reference/package-management).
 
 ---
 
@@ -934,9 +1101,28 @@ Manages the Computer Use backend (macOS only, via cua-driver).
 
 | Command | Description |
 |---------|-------------|
-| `hermes version` | Version information display |
-| `hermes update` | Pull latest code and reinstall |
-| `hermes uninstall [--full] [--yes]` | System removal (optionally delete data) |
+| `hermes --version` | Version information display |
+| `hermes update` | Update to the latest stable release (or selected channel) and reinstall dependencies |
+| `hermes uninstall [--full] [--gui] [--data] [--dry-run] [--yes]` | Remove owned source-install files; `--gui` removes source-built desktop, `--full` also data, `--data` user data only |
+
+### `hermes update`
+
+```bash
+hermes update [--gateway] [--check] [--plan] [--no-backup] [--backup] [--yes]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--set-channel main\|stable` | Persist the update channel (`stable` = latest published `vX.Y.Z` release; `main` = every commit). Bundled apps refuse channel changes |
+| `--channel CHANNEL` | Select a channel for this invocation only |
+| `--branch NAME` | Select a source branch for this invocation |
+| `--check` | Check for an update without applying |
+| `--plan` | Print the update plan (install kind, running services, restart method) and exit |
+| `--backup` / `--no-backup` | Force a full pre-update backup / skip all backups (default `updates.pre_update_backup: quick`) |
+| `--install-id` | Print installation identity and path |
+| `--yes`, `-y` | Assume yes for prompts |
+
+Source checkouts of the official repo default to `stable`; forks and mirrors default to `main`. Desktop bundles, Docker, Nix, and Termux packages keep their external update owner. Exit codes: 0 success, 1 pull/install errors, 2 unexpected working-tree changes.
 
 ## Related
 
