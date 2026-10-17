@@ -48,6 +48,8 @@ on:
   push:
     branches:
       - main
+permissions:
+  contents: read
 jobs:
   build:
     name: Install and build
@@ -84,6 +86,7 @@ Optional environment variables for repairing iOS credentials on CI (ASC API key)
 ## Notes
 
 - Third-party actions are pinned to full commit SHAs here; the official example uses major tags (`@v5` / `@v6` / `@v8`).
+- `permissions: contents: read` is added for least privilege; the official example omits `permissions`.
 - Prerequisite: run `eas build -p [all|android|ios]` locally first so interactive configuration (projectId, **eas.json**, `android.packageName` / `ios.bundleIdentifier`, credentials) is available for non-interactive runs.
 - `--no-wait` exits the step once the build is triggered; you are not billed for CI time while EAS builds. CI passes only if triggering succeeds. Remove the flag if another CI step must run after build completion.
 - For internal distribution builds with ad hoc provisioning on CI, refresh the profile with `--refresh-ad-hoc-provisioning-profile` and `--non-interactive` (`eas build`), or `refresh_ad_hoc_provisioning_profile: true` in the Workflows build job `params`.

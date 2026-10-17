@@ -25,7 +25,7 @@ module.exports = config;
 | `getDefaultConfig(__dirname, { isCSSEnabled })` | boolean | CSS support is enabled by default. Set `isCSSEnabled: false` to disable it. |
 | `config.resolver.resolveRequest` | function `(context, moduleName, platform)` | Chain to customize resolution. Return `{ filePath, type: 'sourceFile' }` to redirect, `{ type: 'empty' }` to make a module empty for a platform, or call `context.resolveRequest(context, moduleName, platform)` for the default resolver. |
 | `config.resolver.unstable_enablePackageExports` | boolean | Set to `false` to stop Metro from using `package.json:exports` maps. |
-| `transformer.babelTransformerPath` | string | Set by Expo's Metro config so `expo-babel-preset` is always used. Extend via `@expo/metro-config/babel-transformer`. |
+| `transformer.babelTransformerPath` | string | Set by Expo's Metro config so `babel-preset-expo` is always used. Extend via `@expo/metro-config/babel-transformer`. |
 | `experiments.onDemandFilesystem` (app config) | boolean | Enabled by default. Set to `false` to disable lazy file-map reads outside `watchFolders`. |
 
 | Environment variable | Description |
@@ -44,6 +44,7 @@ module.exports = config;
 - SASS: partial support. Install `sass`; extensionless modules resolve in the order `scss`, `sass`, `css`; importing other files from inside scss/sass is not currently supported.
 - Tailwind CSS (standard) supports web only; NativeWind or Uniwind give universal support.
 - Custom transforming: transformations are heavily cached; use `--clear`. Prefer implementing logic in the resolver over the transformer. Always use `babel-preset-expo`.
+- The official page writes `expo-babel-preset` in the `babelTransformerPath` paragraph; the package name is `babel-preset-expo`.
 - Virtual modules are not supported by Metro; the documented technique writes a module to `node_modules/.cache/...` and redirects resolution to it.
 - On-demand filesystem uses `@expo/metro-file-map` (fork of `metro-file-map`) and enables Global Virtual Store support for Bun and pnpm.
 - Node.js built-ins are externalized automatically for server bundling; for browser bundling a locally installed module is used, otherwise an empty shim.
