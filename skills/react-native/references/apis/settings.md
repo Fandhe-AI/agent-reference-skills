@@ -11,8 +11,13 @@ A wrapper for `NSUserDefaults`, a persistent key-value store available only on i
 ```tsx
 const [data, setData] = useState(() => Settings.get('data'));
 
-Settings.set({data: 'React'});
-setData(Settings.get('data'));
+<Button
+  onPress={() => {
+    Settings.set({data: 'React'});
+    setData(Settings.get('data'));
+  }}
+  title="Store 'React'"
+/>
 ```
 
 ```tsx
