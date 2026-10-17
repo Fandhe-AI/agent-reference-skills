@@ -116,7 +116,7 @@ Option A (recommended for development): the simulated DevTools environment, enab
 or from the command line:
 
 ```console
-flutter run -d chrome -dart-define=use_simulated_environment=true
+flutter run -d chrome --dart-define=use_simulated_environment=true
 ```
 
 Option B: a real DevTools environment. Build and copy assets, then validate:
@@ -142,6 +142,7 @@ flutter pub publish
 
 ## Notes
 
+- Corrected from the official docs: the original command-line example uses `-dart-define` (single hyphen); the flag is `--dart-define`, as in the launch.json example above.
 - The `extension/devtools/` structure must be created exactly as shown, or the extension might fail to load.
 - For the up-to-date `config.yaml` spec see `extension_config_spec.md` in `flutter/devtools` (`packages/devtools_extensions`).
 - This DevTools extensions framework (Flutter web, pub packages) is unrelated to Claude Code plugins and Agent Skills.

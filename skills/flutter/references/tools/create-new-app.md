@@ -9,13 +9,12 @@ Step-by-step instructions to bootstrap a new Flutter app from VS Code, Android S
 ## Signature / Usage
 
 ```console
-$ flutter create --empty
-$ flutter create my_app
+$ flutter create --empty my_app
 $ cd my_app
 $ flutter run
 ```
 
-`--empty` creates an app with a minimal `main.dart` file. Run `flutter create --help` to learn about the available creation options.
+`--empty` creates an app with a minimal `main.dart` file; the project name (the only non-option argument) sets the directory and default app name. Run `flutter create --help` to learn about the available creation options.
 
 ## Steps by environment
 
@@ -29,6 +28,7 @@ $ flutter run
 
 ## Notes
 
+- The official page shows `flutter create --empty` and the project name in separate steps; they are combined here into one runnable command (`flutter create` requires the output directory argument).
 - Name the app using the `lowercase_with_underscores` convention, following the Effective Dart guidelines.
 - To create a Flutter module to embed in an existing app, use the Add to app flow instead.
 - Antigravity: the agent asks for permission before running terminal commands or accessing the browser/emulator. The agent here is Antigravity's coding agent, unrelated to Claude Code Agent Skills.

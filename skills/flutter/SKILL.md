@@ -2,9 +2,9 @@
 name: flutter
 description: >
   Flutter (Google 製 Dart クロスプラットフォーム UI フレームワーク, 3.47) のリファレンス。
-  StatelessWidget / StatefulWidget / BuildContext, Sliver, Material / Cupertino, Impeller, DevTools,
-  Widget Previewer, MVVM, platform channels / dart:ffi, add-to-app, Flutter Web / Wasm,
-  GenUI SDK / AI Toolkit。
+  StatelessWidget / StatefulWidget / BuildContext, Sliver, Material / Cupertino, Impeller,
+  flutter CLI, pubspec.yaml, hot reload, flutter fix / dart fix, DevTools, Widget Previewer, MVVM,
+  platform channels / dart:ffi, add-to-app, Flutter Web / Wasm, GenUI SDK / AI Toolkit。
 user-invocable: false
 ---
 

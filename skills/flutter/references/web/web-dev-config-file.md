@@ -55,9 +55,9 @@ server:
 server:
   proxy:
     - target: "http://localhost:5000/"
-      regex: "/users/(\d+)/$" # Path <string> matches requests like /users/123/
+      regex: '/users/(\d+)/$' # Path <string> matches requests like /users/123/
     - target: "http://localhost:4000/"
-      regex: "^/api/(v\d+)/(.*)" # Matches requests like /api/v1/users
+      regex: '^/api/(v\d+)/(.*)' # Matches requests like /api/v1/users
       replace: "/$2?apiVersion=$1" # Allows capture groups (optional)
 ```
 
@@ -80,6 +80,7 @@ server:
 
 ## Notes
 
+- Corrected from the official docs: the original regex examples use double-quoted YAML strings containing `\d`, which is an invalid YAML escape; they are single-quoted here so the backslash is kept literally.
 - Added in Flutter 3.38.
 - Precedence: 1. command-line arguments (such as `--web-hostname`, `--web-port`), 2. `web_dev_config.yaml` settings, 3. built-in defaults.
 - This configures the Flutter web dev server only; it is distinct from Vite / Next.js dev-server proxy configuration (nextjs-app skill) and Vercel config (vercel skill).

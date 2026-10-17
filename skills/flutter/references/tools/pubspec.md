@@ -24,8 +24,8 @@ dependencies:
   flutter_localizations: # Required to enable localization
     sdk: flutter         # Required to enable localization
 
-  material_ui    # Required for projects that use the Material components pkg
-  cupertino_ui   # Required for projects that use the Cupertino components pkg
+  material_ui: any  # Required for projects that use the Material components pkg
+  cupertino_ui: any # Required for projects that use the Cupertino components pkg
   cupertino_icons: ^1.0.8 # Only required if you use Cupertino (iOS style) icons
 
 dev_dependencies:
@@ -372,6 +372,7 @@ dependencies:
 
 ## Notes
 
+- Corrected from the official docs: the original example lists `material_ui` / `cupertino_ui` without a colon or version constraint (invalid YAML); here they are written as valid entries (`any`) — add them with `flutter pub add material_ui` / `flutter pub add cupertino_ui` to get a pinned constraint.
 - The pubspec can have additional auto-generated Flutter fields that aren't listed here.
 - Version note: in Flutter versions earlier than 3.44, Swift Package Manager isn't enabled by default. Support for disabling Swift Package Manager will be removed in a future Flutter release.
 - Don't list shader files under the `assets` field, either directly or through a directory that contains them; the Flutter tool reports an error if a shader is declared in both places. Like other assets, shaders also support `flavors`, `platforms`, and `transformers`.
