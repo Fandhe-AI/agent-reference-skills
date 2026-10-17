@@ -11,7 +11,7 @@ Built-in YAML anchors and aliases let you create reusable blocks in a Compose fi
 ```yml
 volumes:
   db-data: &default-volume
-    driver: default
+    driver: local
   metrics: *default-volume
 ```
 
@@ -43,7 +43,7 @@ services:
       - metrics:/var/lib/metrics
 volumes:
   db-data: &default-volume
-    driver: default
+    driver: local
     name: "data"
   metrics:
     <<: *default-volume
@@ -69,7 +69,7 @@ services:
 ## Notes
 
 - The official Example 3 lists `db-data` / `metrics` without a container path, which Compose would treat as relative anonymous-volume targets; container paths are added here.
-
+- The official examples use `driver: default`; there is no volume driver named `default` (the built-in volume driver is `local`), so `local` is used here.
 - Anchor resolution takes place before variable interpolation, so variables can't be used to set anchors or aliases.
 - YAML merge (`<<`) only applies to mappings and can't be used with sequences. When fragments are involved, declare environment variables with the `FOO: BAR` mapping syntax; the sequence syntax `- FOO=BAR` is only valid when no fragments are involved.
 - For an anchor used in more than one service, combine it with an extension to make the file easier to maintain.
