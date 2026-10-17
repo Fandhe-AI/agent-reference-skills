@@ -16,7 +16,7 @@ public fun rememberDateRangePickerState(
 ): DateRangePickerState
 ```
 
-Usage (the guide's `DateRangePickerModal` example; the only change is `initialDisplayMode = DisplayMode.Input` in the state):
+Adapted (not in the official docs): the guide's `DateRangePickerModal` example with `initialDisplayMode = DisplayMode.Input` added to the state and `@OptIn(ExperimentalMaterial3Api::class)` removed (see Notes).
 
 ```kotlin
 @Composable
@@ -76,11 +76,12 @@ fun DateRangePickerModal(
 
 ## Notes
 
+- Source: https://developer.android.com/develop/ui/compose/components/datepickers (Input modal date picker / Date range picker sections)
 - There is no `DateRangeInput` composable in Material 3, and the official guide shows `DisplayMode.Input` only for the single-date modal picker. This page is a derived usage note.
 - Deviation from source: only `initialDisplayMode = DisplayMode.Input` was added to the guide's `DateRangePickerModal` example; with the guide's `showModeToggle = false` the picker stays in input mode.
-- Deviation from source: the guide snippet is annotated `@OptIn(ExperimentalMaterial3Api::class)`; it is omitted here because the Long-based `DatePicker` / `DateRangePicker` / `rememberDatePickerState` / `rememberDateRangePickerState` / `DatePickerDialog` are not experimental in material3 1.4.0 (api/1.4.0-beta03.txt). Only the `java.time` `LocalDate` overloads remain `@ExperimentalMaterial3Api`.
+- Deviation from source: the guide snippet is annotated `@OptIn(ExperimentalMaterial3Api::class)`; it is omitted here because the Long-based `DatePicker` / `DateRangePicker` / `rememberDatePickerState` / `rememberDateRangePickerState` / `DatePickerDialog` are not experimental in material3 1.4.0 (api/1.4.0-beta03.txt: https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/material3/material3/api/1.4.0-beta03.txt). Only the `java.time` `LocalDate` overloads remain `@ExperimentalMaterial3Api`.
 - Selected values are `selectedStartDateMillis` / `selectedEndDateMillis` (`Long?`, epoch milliseconds); the guide suggests a `Pair<Long?, Long?>` or data class to capture them.
-- Signature verified against the material3 1.4.0 sources jar (DateRangePicker.kt); identical to androidx-main except that 1.4.0 omits the explicit `public` modifier.
+- Signature verified against the material3 1.4.0 sources jar (DateRangePicker.kt; https://dl.google.com/android/maven2/androidx/compose/material3/material3-android/1.4.0/material3-android-1.4.0-sources.jar); identical to androidx-main (https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/DateRangePicker.kt) except that 1.4.0 omits the explicit `public` modifier.
 - Package: `androidx.compose.material3`.
 - This is the Jetpack Compose (Kotlin) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
 
