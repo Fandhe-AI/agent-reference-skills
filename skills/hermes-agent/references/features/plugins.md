@@ -38,7 +38,7 @@ def register(ctx):
 
     ctx.register_tool(name="hello_world", toolset="hello_world", schema=schema, handler=handle_hello)
 
-    def on_tool_call(tool_name, params, result):
+    def on_tool_call(tool_name, args, result, task_id, **kwargs):
         print(f"[hello-world] tool called: {tool_name}")
 
     ctx.register_hook("post_tool_call", on_tool_call)
@@ -122,6 +122,7 @@ hermes plugins pack show|install|export ./hermes-pack.yaml
 - Approval transports change where a prompt is shown, not whether approval is needed; select with `security.approval.transport` and `transport_fallback: deny` (default) or `builtin`.
 - `plugins.isolation: host` runs user plugins in a separate per-profile process; platform adapters, approval transports, `create_client` provider profiles, streaming dashboard endpoints and monkeypatching plugins need `in_process`.
 - Config-driven surfaces are not Python plugins: MCP `mcp_servers`, TTS/STT `type: command` providers, shell `hooks:`, skill taps.
+- The official plugins guide example declares `on_tool_call(tool_name, params, result)`; this page follows the hook contract in the v0.22.2 hooks reference (keyword args `tool_name`, `args`, `result`, `task_id`, `duration_ms`; callbacks must accept `**kwargs`), since a callback naming a field the hook does not send fails on every call. Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/hooks (pinned to v0.22.2)
 - Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins (pinned to v0.22.2)
 
 ## Related
