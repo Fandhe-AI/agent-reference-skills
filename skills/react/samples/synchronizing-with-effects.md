@@ -39,5 +39,5 @@ export function createConnection() {
 ## Notes
 
 - An empty dependency array `[]` runs the Effect only on mount; omitting the array re-runs it after every render.
-- In development React remounts every component once right after its initial mount, so without the cleanup `"✅ Connecting..."` is logged twice. That surfaces the missing disconnect.
+- In development with Strict Mode on, React remounts each component once right after its initial mount (state and DOM are preserved), running an extra setup → cleanup → setup of the Effect. Without the cleanup, `"✅ Connecting..."` is logged twice, which surfaces the missing disconnect. This does not happen in production or with Strict Mode off.
 - React calls the cleanup function before the Effect runs again and one final time when the component unmounts.

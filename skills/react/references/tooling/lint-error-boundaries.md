@@ -31,16 +31,17 @@ function Parent() {
 ## Notes
 
 - Try/catch blocks can't catch errors that happen during React's rendering process. Errors thrown in rendering methods or hooks bubble up through the component tree. Only Error Boundaries can catch these errors.
-- Why is the linter telling me not to wrap `use` in `try`/`catch`? The `use` hook doesn't throw errors in the traditional sense, it suspends component execution. When `use` encounters a pending promise, it suspends the component and lets React show a fallback. Only Suspense and Error Boundaries can handle these cases. The linter warns against `try`/`catch` around `use` to prevent confusion as the `catch` block would never run.
+- Why is the linter telling me not to wrap `use` in `try`/`catch`? When `use` reads a pending promise it throws an internal Suspense signal, and a rejected promise throws its reason. A surrounding `catch` intercepts these, which breaks Suspense (React reports "Suspense Exception: This is not a real error!") and hides the rejection from Error Boundaries. Let Suspense and Error Boundaries handle them.
+- The source says the catch block would never run; corrected here — the catch can run and swallow React's suspension signal (see `use`).
 
 ```js
 // ❌ Try/catch around `use` hook
 function Component({promise}) {
   try {
-    const data = use(promise); // Won't catch - `use` suspends, not throws
+    const data = use(promise); // ❌ catch intercepts the Suspense signal / rejection meant for React
     return <div>{data}</div>;
   } catch (error) {
-    return <div>Failed to load</div>; // Unreachable
+    return <div>Failed to load</div>; // Breaks Suspense; use an Error Boundary instead
   }
 }
 

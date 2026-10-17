@@ -40,7 +40,7 @@ function Component({ items }) {
 
 - Calling `setState` during render unconditionally triggers another render before the current one finishes. This creates an infinite loop that crashes your app.
 - Other valid patterns: set state in an event handler; derive from props instead of setting state (`const name = user?.name || '';`).
-- Syncing state to a prop: clamping during render (`if (count > max) { setCount(max); }`) triggers an infinite loop once `count` exceeds `max`. Move the logic to the event where the state is first set:
+- Syncing state to a prop: clamping during render (`if (count > max) { setCount(max); }`) forces an extra render before the current one finishes; it converges here, but an unconditional or non-converging update loops infinitely. Prefer moving the logic to the event where the state is first set:
 
 ```js
 // ✅ Clamp when updating
@@ -55,6 +55,7 @@ function Counter({max}) {
 }
 ```
 
+- The source page says this clamp triggers an infinite loop; corrected here because the conditional update converges on the next render (`count === max`).
 - In rare cases, you may need to adjust state based on information from previous renders. For those, follow the "storing information from previous renders" pattern on the `useState` page of setting state conditionally.
 
 ## Related

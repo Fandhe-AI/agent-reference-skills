@@ -39,13 +39,14 @@ npm install react@latest react-dom@latest react-server-dom-webpack@latest
 
 | Package | Affected versions | Fixed versions |
 | --- | --- | --- |
-| `react-server-dom-webpack`, `react-server-dom-parcel`, `react-server-dom-turbopack` | 19.0.0, 19.0.1, 19.0.2, 19.0.3, 19.1.0, 19.1.1, 19.1.2, 19.1.3, 19.2.0, 19.2.1, 19.2.2, 19.2.3 | 19.0.4, 19.1.5, 19.2.4 |
+| `react-server-dom-webpack`, `react-server-dom-parcel`, `react-server-dom-turbopack` | 19.0.0, 19.0.1, 19.0.2, 19.0.3, 19.1.0, 19.1.1, 19.1.2, 19.1.3, 19.1.4, 19.2.0, 19.2.1, 19.2.2, 19.2.3 | 19.0.4, 19.1.5, 19.2.4 |
 
 Affected frameworks and bundlers: next, react-router, waku, @parcel/rsc, @vite/rsc-plugin (`@vitejs/plugin-rsc`), rwsdk.
 
 ## Notes
 
 - The patches published earlier are vulnerable: 19.0.3, 19.1.4 and 19.2.3 are incomplete (the original fix for CVE-2025-55184 was incomplete); if you already updated, update again. Versions 19.0.4, 19.1.5, 19.2.4 are safe.
+- The official affected-versions list omits 19.1.4, but the same post states 19.1.4 is an incomplete fix; it is added here for consistency.
 - Upgrade steps are in the previous advisory (Critical Security Vulnerability in React Server Components, update instructions).
 - Only secrets hardcoded in source code may be exposed; runtime secrets such as `process.env.SECRET` are not affected. The exposed scope is the code inside the Server Function, which may include other functions depending on bundler inlining. Always verify against production bundles. The patches prevent stringifying the Server Function source code.
 - As before, apps whose React code does not use a server, or that do not use a framework, bundler or bundler plugin supporting React Server Components, are not affected. Hosting provider mitigations should not be relied upon.
