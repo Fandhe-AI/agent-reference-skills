@@ -10,7 +10,7 @@ user-invocable: false
 
 # Expo
 
-> 分割 PR の途中段階。現在収録済み: references/{configuration, eas-build, eas-submit-workflows, eas-update}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{configuration, eas-build, eas-submit-workflows, eas-update, modules-api, notifications}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -35,6 +35,19 @@ skills/expo/
       metro-config.md
       environment-variables.md
       new-architecture.md
+    modules-api/               # Expo Modules API（Swift / Kotlin）
+      README.md
+      overview.md
+      get-started.md
+      module-api.md
+      module-config.md
+      autolinking.md
+    notifications/             # expo-notifications・push・background task
+      README.md
+      notifications.md
+      push-overview.md
+      push-notifications-setup.md
+      sending-notifications.md
     eas-build/                 # EAS Build・eas.json・credentials
       README.md
       build-introduction.md
@@ -70,6 +83,10 @@ skills/expo/
 |--------|---------|------------|
 | app.json / app.config・環境変数・Metro・Babel・TypeScript を設定したい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | config plugin・mods を作りたい、モノレポ・New Architecture・React Compiler を設定したい | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| Swift / Kotlin でネイティブモジュールを書きたい (Expo Modules API) | modules-api | [references/modules-api/README.md](references/modules-api/README.md) |
+| 既存ライブラリへの Expo Modules API 統合・autolinking・モック化を知りたい | modules-api | [references/modules-api/README.md](references/modules-api/README.md) |
+| push 通知の設定・送信・受信ハンドリングをしたい | notifications | [references/notifications/README.md](references/notifications/README.md) |
+| FCM / APNs 資格情報・バックグラウンドタスク (TaskManager / BackgroundTask) を設定したい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | EAS Build の設定 (eas.json)・credentials・内部配布・CI ビルドをしたい | eas-build | [references/eas-build/README.md](references/eas-build/README.md) |
 | シミュレーター / APK ビルド・ローカルビルド・キャッシュ・カスタムビルドを知りたい | eas-build | [references/eas-build/README.md](references/eas-build/README.md) |
 | OTA アップデート (EAS Update / expo-updates)・runtime version・ロールバックを扱いたい | eas-update | [references/eas-update/README.md](references/eas-update/README.md) |
