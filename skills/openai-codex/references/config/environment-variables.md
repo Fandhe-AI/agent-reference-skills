@@ -11,7 +11,9 @@ codex exec "summarize this repo"
 ```
 
 ```bash
-curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh
+curl -fsSL -o install.sh https://chatgpt.com/codex/install.sh
+less install.sh   # review the contents and origin first
+CODEX_NON_INTERACTIVE=1 sh install.sh
 ```
 
 ```bash
@@ -58,7 +60,8 @@ Diagnostics:
 - `CODEX_HOME` is the base for most other config/state locations documented in [Advanced Configuration](./config-advanced.md).
 - For provider API keys, set `env_key` in the model provider configuration; Codex reads the variable named there, so the name isn't a fixed Codex variable.
 - The interactive CLI records diagnostics in bounded local stores by default; the plaintext `codex-tui.log` is opt-in via an explicit `log_dir`. In non-interactive mode, `codex exec` prints messages inline instead of writing a TUI log file.
-- Run installers with `CODEX_NON_INTERACTIVE=1` on the shell that runs the downloaded installer; PowerShell: `$env:CODEX_NON_INTERACTIVE=1; irm https://chatgpt.com/codex/install.ps1 | iex`.
+- Run installers with `CODEX_NON_INTERACTIVE=1` on the shell that runs the downloaded installer; PowerShell: `irm https://chatgpt.com/codex/install.ps1 -OutFile install.ps1`, review the file, then `$env:CODEX_NON_INTERACTIVE=1; ./install.ps1`.
+- The official docs show the installers piped straight into the shell; this page instead downloads, reviews, then runs the installer as separate steps for safety.
 - For automation secret handling and access token setup, see the non-interactive mode and access-tokens pages.
 
 ## Related

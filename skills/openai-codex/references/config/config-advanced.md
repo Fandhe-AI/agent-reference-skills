@@ -232,14 +232,10 @@ Use your organization's automatic review policy.
 Example granular approval policy (allows or auto-rejects individual prompt categories, so e.g. `request_permissions` or skill-script prompts fail closed):
 
 ```toml
-approval_policy = { granular = {
-  sandbox_approval = true,
-  rules = true,
-  mcp_elicitations = true,
-  request_permissions = false,
-  skill_approval = false
-} }
+approval_policy = { granular = { sandbox_approval = true, rules = true, mcp_elicitations = true, request_permissions = false, skill_approval = false } }
 ```
+
+The official docs show this as a commented multi-line example; TOML 1.0 inline tables cannot span lines, so it is written on one line here.
 
 In workspace-write mode, some environments keep `.git/`, `.agents/`, `.codex/`, and `.aws/` read-only even when the rest of the workspace is writable, so commands like `git commit` may still need approval outside the sandbox. To skip or block specific commands, use rules (see rules.md).
 

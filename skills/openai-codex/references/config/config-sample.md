@@ -453,6 +453,7 @@ sandbox = "elevated"
 
 - The official sample leaves the `[[skills.config]]` header uncommented with its keys commented out; it is commented out here so copying the sample does not create an entry without `path`.
 - Root keys must appear before tables in TOML.
+- In the official sample, the commented `model_provider = "amazon-bedrock"` / `model = "<bedrock-model-id>"` lines sit under `[model_providers]`; if uncommented there they become keys of that table, so move them to the root (Core Model Selection section, before any table header) and keep only `[model_providers.amazon-bedrock.aws]` under the providers section.
 - Optional keys that default to "unset" are shown commented out with notes.
 - MCP servers, profile files, and model providers in the sample are illustrative — remove or edit for your setup.
 - Web search `cached` serves results from an OpenAI-maintained index; `indexed` gates external web access through the search index; `live` fetches the most recent data.
