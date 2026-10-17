@@ -5,7 +5,9 @@ Run Hermes Agent entirely on your own machine with Ollama and open-weight models
 ## Signature / Usage
 
 ```bash
-curl -fsSL https://ollama.com/install.sh | sh
+curl -fsSLo ollama-install.sh https://ollama.com/install.sh
+less ollama-install.sh   # review before running
+sh ollama-install.sh
 ollama pull gemma4:31b
 hermes setup     # Custom Endpoint: http://localhost:11434/v1, key empty or "no-key"
 hermes
@@ -74,7 +76,7 @@ providers:
 - Gateway bots (Telegram / Discord) work with `platforms.telegram.enabled` / `token` config and `hermes gateway`.
 - Desktop app: Settings -> Providers -> Local Models manages a local llama.cpp server instead.
 - The guide's cost comparison (~$0.80 Claude Sonnet vs $0 local per ~100K-in / 20K-out session) is illustrative.
-- The piped remote-installer line (`curl` into `sh`) is copied verbatim from the official guide; it executes a remote script — download and review it first (e.g. `curl -fsSLo install.sh <url>` then inspect and run) rather than piping it straight to a shell.
+- Adapted: the official guide pipes the installer straight into sh; this page splits it into download, review and run steps.
 - Source: https://hermes-agent.nousresearch.com/docs/guides/local-ollama-setup (pinned to v0.22.2)
 
 ## Related

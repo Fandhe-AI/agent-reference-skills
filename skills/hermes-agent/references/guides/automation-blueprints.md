@@ -41,6 +41,10 @@ platforms:
           secret: "github-webhook-secret"
           prompt: |
             Review PR #{pull_request.number}: {pull_request.title}
+            Repository: {repository.full_name}
+            Author: {pull_request.user.login}
+            Diff URL: {pull_request.diff_url}
+            Review for security, performance, and code quality.
           skills: ["github-code-review"]
           deliver: "github_comment"
           deliver_extra:
@@ -56,6 +60,7 @@ API-call trigger (CI/CD POSTs to the route):
 hermes webhook subscribe deploy-verify --events "deployment" --prompt "A deployment just completed: Service: {service} ..." --deliver telegram
 curl -X POST http://your-server:8644/webhooks/deploy-verify \
   -H "Content-Type: application/json" \
+  -H "X-GitHub-Event: deployment" \
   -H "X-Hub-Signature-256: sha256=<hmac>" \
   -d '{"service":"api","environment":"prod","version":"2.1.0"}'
 ```
@@ -102,6 +107,8 @@ Cron schedule syntax: `every 30m`, `every 2h`, `0 2 * * *` (daily 2:00), `0 9 * 
 - All three triggers can deliver to Telegram, Discord, Slack, SMS, email, GitHub comments, or local files; blueprints work with any model.
 - A response containing `[SILENT]` suppresses delivery.
 - Dependency audit blueprint: do not activate or mutate Hermes's dependency environment; use an independently installed scanner and distinguish findings from failed scans.
+- The default `hermes-webhook` toolset has no terminal; the static PR-review route relies on fetching `{pull_request.diff_url}` with web tools. To run `gh pr diff` instead, grant `toolsets: ["terminal", "web"]` on the route (see webhook-github-pr-review).
+- Adapted: the upstream curl example sends no event type, so a route subscribed with `--events "deployment"` would ignore it; the event type is read from `X-GitHub-Event`, `X-GitLab-Event`, or `event_type` in the payload (user-guide/messaging/webhooks).
 - A parameterized form-based catalog exists in the reference docs (Automation Blueprints Catalog).
 - Source: https://hermes-agent.nousresearch.com/docs/guides/automation-blueprints (pinned to v0.22.2)
 
