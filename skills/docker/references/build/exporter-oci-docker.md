@@ -38,7 +38,7 @@ $ docker buildx build \
 
 ### Other notes
 
-- The `docker` build driver does not support these exporters; use `docker-container` or another driver.
+- The `docker` build driver doesn't support these exporters for tarball / OCI-layout file output (see the "Tarball output" row of the drivers comparison); use `docker-container` or another driver to generate these outputs. Loading into the local image store still works with the `docker` driver: it loads automatically, and `--load` is shorthand for `--output type=docker`.
 
 ## Related
 

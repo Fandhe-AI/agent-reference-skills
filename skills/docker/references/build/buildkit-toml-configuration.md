@@ -41,7 +41,7 @@ provenanceEnvDir = "/etc/buildkit/provenance.d"
 [grpc]
   address = [ "tcp://0.0.0.0:1234" ]
   # debugAddress is address for attaching go profiles and debuggers.
-  debugAddress = "0.0.0.0:6060"
+  debugAddress = "127.0.0.1:6060"
   uid = 0
   gid = 0
   [grpc.tls]
@@ -243,6 +243,7 @@ provenanceEnvDir = "/etc/buildkit/provenance.d"
 
 ## Notes
 
+- The upstream example uses `debugAddress = "0.0.0.0:6060"`; this listener is separate from the gRPC address and is not protected by `[grpc.tls]`, so bind it to loopback (or omit it) unless the debug endpoint must be reachable.
 - The official full example also sets `http = true` and `insecure = true` on `docker.io` for illustration; they are mutually exclusive and both disable TLS protection — trust self-signed certificates with `ca` instead, and use `http = true` only for local mirrors.
 - Comments in the code block above were shortened where they repeated an earlier comment (e.g. the `reservedSpace` / `maxUsedSpace` / `minFreeSpace` explanations in `[worker.containerd]` and `[[worker.oci.gcpolicy]]`); keys and values are unchanged. See the official page for full comments.
 - Disk space parameters accept an integer number of bytes, a string with a unit (e.g. `"512MB"`), or a percentage of total disk space (e.g. `"10%"`).
