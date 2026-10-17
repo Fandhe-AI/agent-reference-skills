@@ -62,14 +62,16 @@ Usage documented in api/environment-variables. `ELECTRON_INSTALL_ARCH` does not 
 ## Specify a mirror
 
 ```sh
-ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
+export ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
+npm install
 ```
 
-Example of the China CDN mirror. `ELECTRON_CUSTOM_DIR` changes the path format (`{{ version }}` placeholder).
+Example of the China CDN mirror. `ELECTRON_CUSTOM_DIR` changes the path format (`{{ version }}` placeholder). The variable must be exported (or prefixed to the command) so that `npm install` and its install script receive it.
 
 ```sh
-ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
-ELECTRON_CUSTOM_DIR="{{ version }}"
+export ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
+export ELECTRON_CUSTOM_DIR="{{ version }}"
+npm install
 ```
 
 Example of the China non-CDN mirror. If the mirror's checksums differ from the official ones, set `electron_use_remote_checksums=1` directly or in `.npmrc` (per the official docs).

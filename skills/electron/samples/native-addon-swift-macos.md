@@ -130,7 +130,10 @@ The `actions` array, replaced with the Swift compile and copy steps:
       "action": [
         "sh",
         "-c",
-        "cp -f <(module_root_dir)/build_swift/libSwiftCode.a <(PRODUCT_DIR)/libSwiftCode.a && install_name_tool -id @rpath/libSwiftCode.a <(PRODUCT_DIR)/libSwiftCode.a"
+        "cp -f \"$1\" \"$2\" && install_name_tool -id @rpath/libSwiftCode.a \"$2\"",
+        "sh",
+        "<(module_root_dir)/build_swift/libSwiftCode.a",
+        "<(PRODUCT_DIR)/libSwiftCode.a"
       ]
     }
   ]
@@ -202,7 +205,8 @@ npm run build
 ## Notes
 
 - Excerpted for size: the official page also contains `src/SwiftCode.swift` (a SwiftUI todo UI), `src/swift_addon.mm` (the Node-API bridge), and `js/index.js` (an `EventEmitter` wrapper like the Objective-C sample, loading `bindings('swift_addon')`), omitted here. See the source URL for the full walkthrough.
-- Swift does not integrate with node-gyp directly: Swift is compiled to a static library `libSwiftCode.a` by `swiftc` (the `build_swift` action), copied with `install_name_tool`, then linked into the addon.
+- Swift does not integrate with node-gyp directly: `swiftc` compiles it into `libSwiftCode.a` (the `build_swift` action), which is copied with an `@rpath` install name set via `install_name_tool`, then linked into the addon. The official page calls this a "static library", but `swiftc -emit-library` without `-static` produces a dynamic library despite the `.a` name, so ship it alongside the addon (`PRODUCT_DIR`) when distributing.
+- The `copy_swift_lib` action passes paths as positional arguments (`$1`, `$2`) instead of the official unquoted interpolation inside the `sh -c` string, so paths with spaces or shell metacharacters do not break or get interpreted.
 - You cannot call the built addon from plain Node.js; test it from Electron.
 - Call `destroy()` before the app quits (e.g. in `will-quit` / `before-quit`) or Electron hangs on quit.
 - Distance: Swift / SwiftUI language and UI details are in apple-swift and apple-swiftui; this sample covers the Electron / Node-API wiring only.

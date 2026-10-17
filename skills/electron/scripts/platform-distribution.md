@@ -77,11 +77,13 @@ Source: https://www.electronjs.org/docs/latest/tutorial/snapcraft
 
 ```sh
 npx create-electron-app@latest my-app
+cd my-app
+# Create snap/snapcraft.yaml in the project root first (see the YAML example on the snapcraft page)
 snapcraft
 sudo snap install electron-packager-hello-world_0.1_amd64.snap --dangerous
 electron-packager-hello-world
 ```
 
-Requires `snap/snapcraft.yaml` (see the YAML example on the snapcraft page). That example uses `command: my-app/my-app --no-sandbox`, but `--no-sandbox` is for testing only (api/command-line-switches).
+Before running `snapcraft`, create `snap/snapcraft.yaml` in the project root (`my-app`); see the YAML example on the snapcraft page. That example uses `command: my-app/my-app --no-sandbox`, but `--no-sandbox` is for testing only (api/command-line-switches).
 
 Source: https://www.electronjs.org/docs/latest/tutorial/snapcraft

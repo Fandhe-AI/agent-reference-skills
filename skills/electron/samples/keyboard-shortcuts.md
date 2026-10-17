@@ -36,17 +36,17 @@ Menu.setApplicationMenu(menu)
 Global (works when the app is not focused):
 
 ```js
-const { dialog, globalShortcut } = require('electron/main')
+const { app, dialog, globalShortcut } = require('electron/main')
 
-globalShortcut.register('CommandOrControl+Alt+R', () => {
-  dialog.showMessageBox({ message: 'Hello World!' })
+app.whenReady().then(() => {
+  globalShortcut.register('CommandOrControl+Alt+R', () => {
+    dialog.showMessageBox({ message: 'Hello World!' })
+  })
 })
-```
 
-```js
-const { globalShortcut } = require('electron/main')
-
-globalShortcut.unregister('CommandOrControl+Alt+R')
+app.on('will-quit', () => {
+  globalShortcut.unregister('CommandOrControl+Alt+R')
+})
 ```
 
 Intercept from the main process before the renderer sees the event:
@@ -71,6 +71,7 @@ app.whenReady().then(() => {
 
 - Accelerators are case-insensitive strings of modifiers and one key joined with `+`. Prefer `CommandOrControl` over `Command`, and `Alt` over `Option`, for cross-platform code.
 - Accelerators on menu items keep working when the item is hidden (macOS: set `acceleratorWorksWhenHidden: false` to disable); on Windows/Linux `registerAccelerator: false` shows but disables it.
+- The official global snippets are excerpts; `globalShortcut.register` must be called after the app is ready, so this sample wraps it in `app.whenReady()` and unregisters in `will-quit`.
 - On macOS, `globalShortcut` has a long-standing bug with non-QWERTY keyboard layouts (electron/electron#19747). Unregister globals on `will-quit` with `globalShortcut.unregisterAll()` as the `docs/fiddles/menus/shortcuts` fiddle does.
 - Renderer-side shortcuts use the DOM `keyup` / `keydown` events (fiddle `docs/fiddles/features/keyboard-shortcuts/web-apis`).
 - Distance: `dialog` / `Menu` here are Electron main-process native APIs, not Web UI components (ark-ui / chakra-ui).

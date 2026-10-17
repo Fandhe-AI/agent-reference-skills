@@ -4,7 +4,29 @@ source: https://www.electronjs.org/docs/latest/tutorial/message-ports
 
 # MessagePorts: Transfer a Port and Stream Replies
 
-Create a `MessageChannel` in the renderer, transfer one port to the main process with `ipcRenderer.postMessage`, and use it for a reply stream.
+Create a `MessageChannel` in the renderer, transfer one port to the main process, and use it for a reply stream.
+
+Setup (default `contextIsolation: true`): the renderer page cannot see `ipcRenderer`, so a preload script forwards ports posted from the page.
+
+```js
+// preload.js (Preload Script)
+const { ipcRenderer } = require('electron')
+
+// MessagePorts cannot cross contextBridge, so the page posts them with
+// window.postMessage and the preload forwards them to the main process.
+window.addEventListener('message', (e) => {
+  if (e.source !== window || !e.data || !e.data.channel) return
+  ipcRenderer.postMessage(e.data.channel, e.data.payload, e.ports)
+})
+```
+
+```js
+// main.js (Main Process), window creation
+const path = require('node:path')
+const win = new BrowserWindow({
+  webPreferences: { preload: path.join(__dirname, 'preload.js') }
+})
+```
 
 ```js
 // renderer.js (Renderer Process)
@@ -23,7 +45,8 @@ port2.postMessage({ answer: 42 })
 
 // Here we send the other end of the channel, port1, to the main process. It's
 // also possible to send MessagePorts to other frames, or to Web Workers, etc.
-ipcRenderer.postMessage('port', null, [port1])
+// (ipcRenderer is not available in the page; the preload above forwards it.)
+window.postMessage({ channel: 'port', payload: null }, '*', [port1])
 ```
 
 ```js
@@ -56,7 +79,11 @@ const makeStreamingRequest = (element, callback) => {
   const { port1, port2 } = new MessageChannel()
 
   // We send one end of the port to the main process ...
-  ipcRenderer.postMessage('give-me-a-stream', { element, count: 10 }, [port2])
+  window.postMessage(
+    { channel: 'give-me-a-stream', payload: { element, count: 10 } },
+    '*',
+    [port2]
+  )
 
   // ... and we hang on to the other end. The main process will send messages
   // to its end of the port, and close it when it's finished.
@@ -97,6 +124,7 @@ ipcMain.on('give-me-a-stream', (event, msg) => {
 
 ## Notes
 
+- The official snippets call `ipcRenderer.postMessage` directly and are excerpts; this sample adds a preload forwarder (based on the official preload and `window.postMessage` pattern for context-isolated pages) so it runs with the default `contextIsolation: true`.
 - The main process has no `MessagePort` / `MessageChannel`; it uses `MessagePortMain` and `MessageChannelMain`, which use the Node.js-style `.on('message')` events API and need `.start()`.
 - Only the `postMessage` methods (`ipcRenderer.postMessage`, `WebContents.postMessage`) can transfer ports; `send` and `invoke` cannot.
 - Electron adds a `close` event on ports, emitted when the other end closes (or is garbage-collected).
