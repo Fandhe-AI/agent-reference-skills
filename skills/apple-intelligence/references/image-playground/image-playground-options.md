@@ -34,7 +34,7 @@ var sizeSpecification: ImagePlaygroundOptions.SizeSpecification
 ## Notes
 
 - Availability: iOS 26.4+, iPadOS 26.4+, Mac Catalyst 26.4+, macOS 26.4+, visionOS 26.4+. `CreationStrategy` and `SizeSpecification`: 27.0+ on the same platforms; `CreationVariety` and `Personalization`: 26.4+.
-- Apply options to a SwiftUI sheet with the `imagePlaygroundOptions(_:)` modifier, or assign them to the `options` property of `ImagePlaygroundViewController` or `ImageCreator` before generating images.
+- Apply options to a SwiftUI sheet with the `imagePlaygroundOptions(_:)` modifier, assign them to the `options` property of `ImagePlaygroundViewController`, or pass them as the `options` argument of `ImageCreator.images(for:style:options:limit:)` (deprecated) before generating images.
 - Personalization lets the system derive the appearance of people from additional sources such as the Photos library; disabled, the system uses only the provided prompts and starting image.
 - The framework supports a finite set of image sizes and aspect ratios.
 

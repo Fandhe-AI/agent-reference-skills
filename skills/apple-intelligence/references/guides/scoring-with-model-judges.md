@@ -23,7 +23,10 @@ struct BookTagEvaluation: Evaluation {
     // Book reviews for the model to generate tags from.
     let dataset = ArrayLoader(samples: [
             ModelSample(prompt: "An absolutely breathtaking novel. The characters are richly drawn, the plot twists kept me guessing, and the prose is lyrical without being overwrought.", expected: BookTags(tags: [])),
-            // Add more review samples.
+            ModelSample(prompt: "Honestly a slog. It's a dystopian novel about a totalitarian surveillance state but the characters are paper-thin and the romance subplot felt forced.", expected: BookTags(tags: [])),
+            ModelSample(prompt: "A fun, twisty murder mystery set on a private island. Classic whodunit vibes with an eccentric cast of suspects and a storm that cuts them off from the mainland.", expected: BookTags(tags: [])),
+            ModelSample(prompt: "This book completely changed how I think about habits. The idea that tiny changes compound over time really stuck with me. Very practical.", expected: BookTags(tags: [])),
+            ModelSample(prompt: "A devastating, beautiful novel about a family torn apart by war. The way the author writes about memory and loss had me in tears.", expected: BookTags(tags: [])),
         ])
 
     // Run the intelligent feature under test.
@@ -162,8 +165,7 @@ struct BookTagTests {
 
 ## Notes
 
-- Article in the Evaluations framework (iOS 27.0+, iPadOS 27.0+, macOS 27.0+, Mac Catalyst 27.0+, visionOS 27.0+, watchOS 27.0+; Xcode 27.0+). Dataset shortened from five samples in the source article.
-- `ModelJudgeEvaluator` uses a language model to score another model's output with a scoring scale and, optionally, a `ModelJudgePrompt`. Each response gets a score and a written rationale; the result is a `Metric` you aggregate like any other. The framework supports two modes (pointwise and pairwise; the official page lists them in a term list not reproduced here).
+- Article in the Evaluations framework (iOS 27.0+, iPadOS 27.0+, macOS 27.0+, Mac Catalyst 27.0+, visionOS 27.0+, watchOS 27.0+; Xcode 27.0+).- `ModelJudgeEvaluator` uses a language model to score another model's output with a scoring scale and, optionally, a `ModelJudgePrompt`. Each response gets a score and a written rationale; the result is a `Metric` you aggregate like any other. The framework supports two modes (pointwise and pairwise; the official page lists them in a term list not reproduced here).
 - The first parameter ("TagQuality") names the metric; use the same string in `aggregateMetrics(using:)`. Each scale level should describe observable features.
 - `ScoreDimension` splits concerns into separate questions with separate scales; the evaluator scores all dimensions in a single judge call (no extra latency) via the `dimensions:` parameter and exposes `.metric` per dimension.
 - `ModelJudgePrompt` has three components (instructions, `evaluationTarget`, `reference`). Instructions should include a role, criteria, and evaluation steps; omitting the prompt uses default instructions. Embed scored examples (prompt, response, score, rationale) spanning the scale, ending with "Use these examples to calibrate your scoring." By default the judge receives a JSON-serialized result; `evaluationTarget` formats it as readable text. The `reference` closure receives the input sample and response and returns `[String: String]`; each pair becomes a labeled section of the judge prompt.

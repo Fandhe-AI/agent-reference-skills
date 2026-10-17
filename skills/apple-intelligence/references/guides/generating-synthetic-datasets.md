@@ -36,7 +36,30 @@ let dataset: [ModelSample<TaskItem>] = [
         expected: TaskItem(title: "Schedule dentist appointment",
                            dueOn: "04/07/2026", category: .health, isUrgent: false)
     ),
-    // Add more samples.
+    // This is an errands task that is urgent and due today.
+    ModelSample(
+        prompt: "Buy groceries for dinner party tonight",
+        expected: TaskItem(title: "Buy groceries for dinner party",
+                           dueOn: "03/30/2026", category: .errands, isUrgent: true)
+    ),
+    // Here's a work task that's urgent and has a due date.
+    ModelSample(
+        prompt: "Finish quarterly report by end of week",
+        expected: TaskItem(title: "Finish quarterly report",
+                           dueOn: "04/03/2026", category: .work, isUrgent: true)
+    ),
+    // This is a home task that's non-urgent and has a due date.
+    ModelSample(
+        prompt: "Fix the leaky kitchen faucet this weekend",
+        expected: TaskItem(title: "Fix leaky kitchen faucet",
+                           dueOn: "04/05/2026", category: .home, isUrgent: false)
+    ),
+    // Here's a personal task that's non-urgent with no due date.
+    ModelSample(
+        prompt: "Learn to cook Thai food",
+        expected: TaskItem(title: "Learn to cook Thai food",
+                           dueOn: nil, category: .personal, isUrgent: false)
+    ),
 ]
 ```
 
@@ -120,8 +143,7 @@ let rejected = await generator.invalidSamples
 
 ## Notes
 
-- Article in the Evaluations framework (iOS 27.0+, iPadOS 27.0+, macOS 27.0+, Mac Catalyst 27.0+, visionOS 27.0+, watchOS 27.0+; Xcode 27.0+). The dataset in the snippet above is shortened from five samples in the source article.
-- The framework adds `makeSamples(_:targetCount:sessionProvider:validator:)` to any array of `ModelSample` values; it returns an `AsyncThrowingStream` yielding each new sample as the model generates it, and handles prompt construction, deduplication, and batch grouping.
+- Article in the Evaluations framework (iOS 27.0+, iPadOS 27.0+, macOS 27.0+, Mac Catalyst 27.0+, visionOS 27.0+, watchOS 27.0+; Xcode 27.0+).- The framework adds `makeSamples(_:targetCount:sessionProvider:validator:)` to any array of `ModelSample` values; it returns an `AsyncThrowingStream` yielding each new sample as the model generates it, and handles prompt construction, deduplication, and batch grouping.
 - Include an optional `expected` value only when comparing against a known answer; for model-judge assessments of tone or fluency omit it and generate prompt-only samples.
 - `targetCount` is the total size including initial samples (5 initial and a target of 20 yields up to 15 new samples).
 - When generating from a non-test target (for example a command-line tool writing the dataset to disk), set `ENABLE_TESTING_SEARCH_PATHS` ("Enable Testing Search Paths") to `YES` and add `$(DEVELOPER_DIR)/..` to `LD_RUNPATH_SEARCH_PATHS` ("Runpath Search Paths").

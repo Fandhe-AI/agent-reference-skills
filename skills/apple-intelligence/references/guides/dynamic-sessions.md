@@ -185,6 +185,7 @@ Life cycle modifiers (callbacks accumulate across nested profiles; when both a p
 - Modifier precedence (highest to lowest): call-site arguments passed to `respond(to:options:)`; innermost dynamic profile or profile modifier (closest to the subprofile declaration); dynamic profile modifiers as defaults for all subprofiles.
 - Throwing an error inside a life cycle callback propagates to the caller's `respond(to:options:)` or `streamResponse(to:options:)`.
 - `@SessionProperty(\.history)` accesses session history (transcript entries after instructions; excludes `DynamicInstructions` segments), allowing compaction and summarization. History is read-only inside `DynamicInstructions` and `Tool`, because model output influences their evaluation.
+- The life cycle snippets above are verbatim from the article, but they disagree with the declared API: `onToolCall(perform:)` and `onResponse(perform:)` take a `() async throws -> Void` closure with no parameter (see the dynamic-profiles category). The `toolCall in` / `response in` forms do not match these declarations; check the tool-call information against the shipping SDK.
 - Define custom session properties with the `SessionPropertyEntry()` macro in an extension on `SessionPropertyValues`.
 - `historyTransform(_:)` filters entries sent for a request without changing the global transcript; each profile can manage its own view of the history (for example compress for a small on-device model while a server model with a larger context gets the full history).
 

@@ -2,15 +2,16 @@
 name: apple-intelligence
 description: >
   Apple Intelligence (Foundation Models / Evaluations / Image Playground) の API リファレンス。
-  LanguageModelSession, SystemLanguageModel, PrivateCloudComputeLanguageModel (PCC), Generable, GenerationSchema,
-  Tool, OCRTool, Transcript, DynamicInstructions, Attachment, Evaluation, ModelJudgeEvaluator, ToolCallEvaluator,
-  ImagePlaygroundSheet, ImageCreator, Foundation Models SDK for Python (apple-fm-sdk)。
+  LanguageModelSession, SystemLanguageModel, PrivateCloudComputeLanguageModel (PCC), Generable,
+  GenerationSchema, Tool, OCRTool, Transcript, DynamicInstructions, Attachment, Evaluation,
+  ModelJudgeEvaluator, ToolCallEvaluator, ImagePlaygroundSheet, ImageCreator,
+  Foundation Models SDK for Python (apple-fm-sdk)。
 user-invocable: false
 ---
 
 # Apple Intelligence
 
-> 分割 PR の途中段階。現在収録済み: references/{attachments, dynamic-profiles, evaluations, evaluators}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{attachments, dynamic-profiles, evaluations, evaluators, guides, image-playground, models}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 Apple Intelligence の開発者向け API を扱うリファレンススキル。Foundation Models フレームワーク（オンデバイス / Private Cloud Compute の言語モデル）、Evaluations フレームワーク、Image Playground、Foundation Models SDK for Python を収録する。
 
@@ -35,9 +36,15 @@ skills/apple-intelligence/
       README.md
     attachments/          # Attachment, ImageReference (5 ページ)
       README.md
+    models/               # SystemLanguageModel, PrivateCloudComputeLanguageModel, LanguageModel (14 ページ)
+      README.md
     evaluators/           # Evaluator, ModelJudgeEvaluator, ToolCallEvaluator, Metric (10 ページ)
       README.md
     evaluations/          # Evaluation, EvaluationTrait, Loader, SampleGenerator (10 ページ)
+      README.md
+    image-playground/     # ImagePlaygroundSheet, ViewController, Options, ImageCreator (7 ページ)
+      README.md
+    guides/               # 公式ガイド記事 (25 ページ)
       README.md
 ```
 
@@ -55,5 +62,8 @@ skills/apple-intelligence/
 | --- | --- | --- |
 | 実行時に instructions / profile を切り替える動的セッション | dynamic-profiles | [references/dynamic-profiles/README.md](references/dynamic-profiles/README.md) |
 | 画像など添付アセットをプロンプトへ渡す | attachments | [references/attachments/README.md](references/attachments/README.md) |
+| モデルの可用性確認・Private Cloud Compute・ガードレール・独自 LanguageModel 実装 | models | [references/models/README.md](references/models/README.md) |
 | Evaluator 実装・モデル判定による採点・ツール呼び出し検証・メトリクス集計 | evaluators | [references/evaluators/README.md](references/evaluators/README.md) |
 | Evaluation 定義・データセット読込・評価結果・合成サンプル生成・テスト実行 | evaluations | [references/evaluations/README.md](references/evaluations/README.md) |
+| Image Playground シート・ViewController・スタイル・コンセプト指定 | image-playground | [references/image-playground/README.md](references/image-playground/README.md) |
+| プロンプト設計・コンテキストウィンドウ管理・安全性・性能・評価設計の公式ガイド | guides | [references/guides/README.md](references/guides/README.md) |

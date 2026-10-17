@@ -43,6 +43,15 @@ struct LightControlEvaluation: Evaluation {
                     ]
                 )
             ),
+            ModelSample(
+                prompt: "Set the bedroom lights to full brightness.",
+                expectations: TrajectoryExpectation(
+                    expected: "set_lights", arguments: [
+                        .exact(argumentName: "room", value: .string("bedroom")),
+                        .exact(argumentName: "brightness", value: .int(100)),
+                    ]
+                )
+            ),
         ])
 
     func subject(from sample: ModelSample<String>) async throws -> ModelSubject<String> {
@@ -181,8 +190,7 @@ struct LightControlTests {
 
 ## Notes
 
-- Article in the Evaluations framework (iOS 27.0+, iPadOS 27.0+, macOS 27.0+, Mac Catalyst 27.0+, visionOS 27.0+, watchOS 27.0+; Xcode 27.0+). Dataset shortened from two samples in the source article.
-- Tool-calling evaluation measures whether the model selects the right tool with the right arguments, not what the tool does; simple stubs returning a string work. Capture `session.transcript.structuredTranscript` in the `ModelSubject` so the evaluator can inspect tool calls.
+- Article in the Evaluations framework (iOS 27.0+, iPadOS 27.0+, macOS 27.0+, Mac Catalyst 27.0+, visionOS 27.0+, watchOS 27.0+; Xcode 27.0+).- Tool-calling evaluation measures whether the model selects the right tool with the right arguments, not what the tool does; simple stubs returning a string work. Capture `session.transcript.structuredTranscript` in the `ModelSubject` so the evaluator can inspect tool calls.
 - `TrajectoryExpectation` describes expected tool calls for a prompt; each argument matcher controls how strictly a value is compared. `ArgumentMatcher.exact(argumentName:value:)` requires a precise match; `oneOf(argumentName:allowedValues:)` accepts any value from a set; `range(argumentName:minimum:maximum:)` accepts numeric values in a range; `contains(argumentName:substring:)` is also used. `ArgumentMatcher` provides nine validation strategies (the list is in the official page, not reproduced here).
 - `init(ordered:unordered:allowsAdditionalToolCalls:)`: ordered expectations are matched sequentially in the transcript (each after the previous); `init(unordered:)` matches each expectation against the entire transcript regardless of position; both can be mixed and the model must satisfy both for the strict metric to pass. `disallowed` defines negative constraints; with argument matchers only calls matching those arguments are flagged, omit matchers to disallow a tool entirely. `ToolExpectation.anyOrder(_:)` groups tools in any order at a single position in an ordered sequence.
 - By default unmatched tool calls are allowed; set `allowsAdditionalCalls` to `false` to fail any unmatched call. In that case unexpected calls inflate the `ToolsPercentagePass` denominator (2 expected + 1 unexpected reports 0.67 rather than 1.0).
