@@ -4,6 +4,8 @@ The Drawing Sheet Editor can be launched in two ways.
 
 ## From the Command Line
 
+Adapted (not in the official docs): concrete example of the manual's syntax `pl_editor <*.kicad_wks file to open>`.
+
 ```sh
 pl_editor "path/to/sheet.kicad_wks"
 ```

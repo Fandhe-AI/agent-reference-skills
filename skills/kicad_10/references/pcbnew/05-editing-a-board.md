@@ -16,7 +16,7 @@ Tools stay active until cancelled with `Esc`. Tools with multiple variants show 
 | Add vias | Standalone ("free") via without routing (`Ctrl+Shift+X`) |
 | Add filled zone | Draw a filled copper area (`Ctrl+Shift+Z`) |
 | Add rule area | Rule areas (formerly keepouts) (`Ctrl+Shift+K`) |
-| Graphical shapes | Lines, arcs, rectangles, circles, polygons, bezier curves (shapes are not tracks; graphic polygons cannot be assigned a net and keep no clearance) |
+| Graphical shapes | Lines, arcs, rectangles, circles, polygons, bezier curves (shapes are not tracks; copper-layer shapes can be assigned a net in their properties but, unlike zones, keep no clearance) |
 | Reference image | Bitmap for reference; not included in fabrication outputs |
 | Text / textbox / table | Add text, textbox, or table |
 | Dimension | Add dimensions (palette of dimension types) |
@@ -215,6 +215,7 @@ Exchange nets between pads of one footprint (right-click → **Swap Pad Nets**) 
 
 - `B` fills all zones; `Ctrl+B` unfills all zones
 - Locking does not affect whether an item is included in outputs
+- The 10.0 manual is self-contradictory here: the toolbar note for the polygon tool says graphical polygons cannot be assigned to a net, while the Graphics section says graphical shapes on copper layers can have a net assigned in their properties dialog; both state that shapes keep no clearance unlike zones
 
 ## Related
 

@@ -93,7 +93,7 @@ Remove the following before sharing a template:
 
 - Template names should be concise; lengthy names are truncated in the selection interface
 - It is not advisable to create templates with multiple project files
-- `.gitignore` and `.gitattributes` are copied despite being dotfiles; files they ignore are not copied
+- `.gitignore` and `.gitattributes` are copied despite being dotfiles; files ignored by `.gitignore` are not copied
 
 ## Related
 
