@@ -13,7 +13,7 @@ user-invocable: false
 
 # fandhe-db
 
-> 分割 PR の途中段階。現在収録済み: references/{extensions, getting-started, nosql-surface, performance, search, security, sql, sql-execution, storage, wire-server}、samples, scripts。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{extensions, getting-started, nosql-surface, performance, search, security, sql, sql-execution, storage, wire-server}、samples, scripts。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 fandhe-db は Rust 製のローカルファースト vector 特化クエリ DB。`fandhe-db-engine`（コアエンジン、SQL 表層・HNSW/BM25/hybrid 検索・redb 永続化・RLS）と `fandhe-db-wire-server`（PostgreSQL wire protocol v3 互換のバイナリ）の 2 crate workspace で構成され、無改造の `psql` / `psycopg` / `pg` クライアントから接続し、`USING PLAN` / `USING OPERATION_ID` 拡張構文を含む SQL を実行できる。0.2.0 の表層は次のとおり。
 

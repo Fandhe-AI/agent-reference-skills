@@ -56,8 +56,10 @@ pub(crate) enum ExprStep {
     PushDateColumn(usize),
     /// 行の `TIMESTAMP` 列参照を push する。
     PushTimestampColumn(usize),
-    /// 行の数値列（INTEGER/BIGINT/REAL/DOUBLE）参照を push する（Issue #1075・TABLE-16 ポインタ。
-    /// `CHECK` 制約の式述語束縛でのみ生成される）。
+    /// 行の数値列（INTEGER/BIGINT/REAL/DOUBLE）参照を push する（Issue #1075・
+    /// TABLE-16 ポインタ。`CHECK` 制約の式述語束縛でのみ生成される。
+    /// [`ExprStep::PushTextColumn`] と同じ「借用は行ループの外の引数から都度
+    /// 復元する」設計）。
     PushNumericColumn(usize),
     /// 組み込み関数呼び出し。arity 分（`udf_call::builtin_signature`）をスタックから pop し、
     /// `apply_builtin` へ渡す。
@@ -159,6 +161,7 @@ impl ExprProgram {
 - Migration (0.1.0 → 0.2.0): `ExprProgram::eval` に `row_scalars: &'a [Option<ScalarRef<'a>>]` 引数が加わった（`compile` / `eval` はいずれも `impl ExprProgram` のメソッド）。`ExprStep` / `StackValue` に上記の variant が加わった。いずれも crate 内部のため外部コードへの影響はない
 - 上記は `fandhe-db-engine` 0.2.0（git SHA `dc888f6ea146d3078153d64a6848f5c8cf044431`）の `src/sql/expr_program.rs` から `ExprStep` / `StackValue` の全 variant と `compile` / `eval` のシグネチャ・doc comment を更新した（`ExprProgram::eval` の本体、`compile_node` 等の private ヘルパー、`PartialEq` 実装は未転記）
 - 上記 doc comment の空スライス条件は TextColumnRef だけに言及しているが、0.2.0 の `stack_to_expr_value`（同ファイル 251-293 行）は DateColumnRef / TimestampColumnRef / NumericColumnRef も `row_scalars` から解決し、範囲外なら `SqlSurfaceError::Internal` を返す。実際に空スライスで呼べるのは、行スカラー列参照（Text / Date / Timestamp / Numeric の各 ColumnRef）を一切含まない式に限られる（`udf_call::eval_with_scalars` の契約と同じ）
+- `PushNumericColumn` の doc comment にある「`CHECK` 制約の式述語束縛でのみ生成される」は旧い記述。0.2.0 の `compile_node`（同ファイル 526-530 行）は `BoundExpr::ColumnRef` を常に `PushNumericColumn` へ変換し、`BoundExpr::ColumnRef` は `WHERE`／投影／`CHECK` の式束縛で共通に生成される（`udf_call.rs` 365-368 行、Issue #1183）
 - 関連 ADR: [`expr-step-compilation`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/dc888f6ea146d3078153d64a6848f5c8cf044431/docs/design/expr-step-compilation.md)（Issue #353。`sql::udf_call::eval` の再帰ツリーウォーク評価をステップ列コンパイル化する設計 = 本モジュールそのものの根拠 ADR）
 - Distinct from `mssql` / `drizzle` expression evaluation: not a SQL dialect expression compiler, but the engine's internal non-recursive expression execution representation.
 
