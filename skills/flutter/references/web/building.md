@@ -10,6 +10,7 @@ Overview of how to configure, run, and build a web application using Flutter. Re
 
 ```console
 $ flutter create my_app
+$ cd my_app
 $ flutter create . --platforms web
 $ flutter run -d chrome
 $ flutter run -d chrome --wasm
@@ -67,6 +68,7 @@ Hot reload is also enabled in DartPad with a "Reload" button. The feature is onl
 
 ## Notes
 
+- The source shows these commands in separate sections; `cd my_app` was added here so the combined sequence runs in the created project.
 - Hot reload on the web: as of the Flutter 3.35 release, hot reload is enabled by default on the web. Hot restart is still available. Issues are filed with the Web Hot Reload issue template in the Dart SDK repository.
 - For Wasm compile errors, see "Diagnosing Wasm compilation errors" in the Wasm page.
 - Flutter web (Dart) build and dev-server workflow is distinct from the Next.js / React toolchains (nextjs-app, react skills) and from Vercel deployment (vercel skill).

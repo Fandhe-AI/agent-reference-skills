@@ -61,7 +61,7 @@ Flutter web WebAssembly can use multiple threads, which requires specific HTTP r
 
 ## Browser compatibility
 
-A browser that supports WasmGC is required. Chromium and V8 support WasmGC since version 119. Chrome on iOS uses WebKit, which does not yet support WasmGC.
+A browser that supports WasmGC is required. Chromium and V8 support WasmGC since version 119. Chrome on iOS uses WebKit, which does not yet support WasmGC. The source links WebKit bug 247394 for WasmGC support, while the Safari entry below states WasmGC is now supported but blocked by WebKit bug 267291 (Flutter Wasm renderer compatibility).
 
 - Firefox: versions 120 and later were previously able to run Flutter/Wasm but have a bug blocking compatibility with Flutter's Wasm renderer.
 - Safari: now supports WasmGC but has a similar bug blocking compatibility with Flutter's Wasm renderer.
@@ -108,6 +108,7 @@ import 'fallback.dart'
 
 ## Notes
 
+- The source describes WebKit WasmGC status inconsistently (iOS Chrome entry vs. Safari entry); both are kept with their linked bugs.
 - Flutter web compiled to Wasm cannot run on the iOS version of any browser: all browsers on iOS must use WebKit.
 - Wasm compilation does not use deferred loading by default. Deferred loading in Wasm is experimental, enabled with `--enable-wasm-deferred-loading`. The source states it is available on the Flutter main branch and "will become generally available later this year in the 3.50 flutter stable release"; it is not part of Flutter 3.47.7 stable.
 - Flutter Wasm here means Dart compiled with dart2wasm for Flutter web; it is distinct from Rust-to-Wasm toolchains (see the rust skill).

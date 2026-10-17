@@ -73,6 +73,7 @@ foo/  # formerly the repository root of your pub package
 
 ```console
 flutter create --template app --platforms web foo_devtools_extension
+cd foo_devtools_extension
 flutter pub add devtools_extensions
 flutter pub add devtools_app_shared
 ```
@@ -142,6 +143,7 @@ flutter pub publish
 
 ## Notes
 
+- The source shows `flutter create` and `flutter pub add` in separate sections; `cd foo_devtools_extension` was added here so the combined sequence runs in the created project.
 - Corrected from the official docs: the original command-line example uses `-dart-define` (single hyphen); the flag is `--dart-define`, as in the launch.json example above.
 - The `extension/devtools/` structure must be created exactly as shown, or the extension might fail to load.
 - For the up-to-date `config.yaml` spec see `extension_config_spec.md` in `flutter/devtools` (`packages/devtools_extensions`).
