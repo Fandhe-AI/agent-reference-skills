@@ -27,6 +27,8 @@ fake_a = cute.runtime.make_fake_compact_tensor(shape, dtype)  # compile-time-onl
 ## Notes
 
 - TVM FFI speeds up JIT function invocation and improves framework interop (e.g. PyTorch); recommended pattern: compile with TVM FFI enabled, declare shapes via fake tensors, pass real PyTorch tensors directly, use environment streams (avoid explicit stream params), and rely on compiled argument validation.
+- Calling from C++ (v4.8.0 wording): the object returned by `cute.compile(..., options="--enable-tvm-ffi")` is itself a `tvm_ffi.Function`. Publish it in TVM FFI's process-global function registry with `tvm_ffi.register_global_func(func_name, f=None, override=False)` (e.g. `tvm_ffi.register_global_func("CuTeDSL_add", compiled, override=True)`); C++ then looks it up with `tvm::ffi::Function::GetGlobal` (or `GetGlobalRequired`, which throws if not found), bypassing the Python interpreter at call time.
+- Host cross-compilation is not supported on the TVM FFI path: `--host-target` cannot be combined with `--enable-tvm-ffi` (raises an error). Use the low-level CuTe ABI AOT path for AArch64 cross-compilation.
 
 ## Related
 

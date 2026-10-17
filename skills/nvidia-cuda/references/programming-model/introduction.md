@@ -26,7 +26,7 @@ int main() {
   - AI frameworks that frequently offer GPU-accelerated components, often built on the specialized libraries above.
   - Domain-specific languages (DSLs) such as NVIDIA's Warp or OpenAI's Triton, which compile to run directly on the CUDA platform and provide a higher-level GPU programming abstraction than conventional high-level languages.
   - The [NVIDIA Accelerated Computing Hub](https://github.com/NVIDIA/accelerated-computing-hub) contains resources, examples, and tutorials for GPU and CUDA computing.
-- Document version: CUDA Programming Guide v13.3 (`https://docs.nvidia.com/cuda/cuda-programming-guide/`).
+- Document version: CUDA Programming Guide v13.4.2 (`https://docs.nvidia.com/cuda/archive/13.4.2/cuda-programming-guide/`).
 - Scope boundary with the `dgx-spark` skill: GB10-based hardware, DGX OS, and operational playbooks are covered by the `dgx-spark` skill's hardware / software categories. This `nvidia-cuda` skill covers CUDA the programming model and how to write CUDA C++ / Python code, independent of any specific hardware SKU.
 
 ## Related

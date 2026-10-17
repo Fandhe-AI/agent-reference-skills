@@ -9,6 +9,7 @@ operators/api_reference/
 ├── operator.html    → Operator interface
 ├── arguments.html   → Arguments and Operands
 ├── discovery.html   → Kernel discovery
+├── heuristics.html  → Heuristics
 ├── metadata.html    → Metadata
 └── misc.html        → Miscellaneous
 ```
@@ -22,5 +23,6 @@ operators/api_reference/
 - [API: Operator](./api-operator.md)
 - [API: Arguments](./api-arguments.md)
 - [API: Discovery](./api-discovery.md)
+- [API: Heuristics](./api-heuristics.md)
 - [API: Metadata](./api-metadata.md)
 - [API: Misc](./api-misc.md)

@@ -43,6 +43,7 @@ run-iket profile --postprocess perfetto -- python kernel.py
 
 - Warp-level payload semantics: if threads diverge on payload evaluation, the first active thread's value is recorded.
 - 64-bit payloads cost more than 32-bit or no-payload events; avoid high-frequency instrumentation in innermost loops; IKET changes generated code and can affect compiler optimizations.
+- CHANGELOG 4.8.0: Rubin (SM107) kernels can now be profiled. Timing data can be dumped for a specific cluster only (previously all clusters were profiled), which reduces profiling overhead. Task Scheduling can instrument the schedule with IKET ranges when constructing `TaskManager` objects with `iket_enable_profiling=True`: task execution generates an IKET range, and individual pipeline stages in a schedule may generate separate ranges via `iket_profiling_stages`. The protobuf requirement of the IKET profiler was reduced from 6.30 to 4.21. The CHANGELOG states SM107 profiling support, while the supported-architecture list in the table above (IKET documentation) does not mention SM107; the two sources are not reconciled here.
 - Trace timestamps use a trace-local timebase (32 ns granularity) — compare only within one trace, not across traces.
 
 ## Related
