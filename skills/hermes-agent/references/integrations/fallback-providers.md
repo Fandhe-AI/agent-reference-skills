@@ -52,7 +52,7 @@ Supported provider values (primary fallback): `ai-gateway`, `openrouter`, `nous`
 ```yaml
 auxiliary:
   vision:
-    provider: glm
+    provider: glm   # per Hermes docs example; see Notes
     model: glm-4v-flash
     fallback_chain:
       - provider: openrouter
@@ -75,6 +75,7 @@ Auto chain with `provider: auto`: main provider + main model, then `auxiliary.<t
 - Legacy migration: `compression.summary_model` / `summary_provider` / `summary_base_url` migrate to `auxiliary.compression.*` (config version 17). If no provider is available for compression, middle turns are dropped without a summary.
 - Cron: unpinned jobs inherit the chain; a job with its own provider/model/base_url never falls back to it. Subagents inherit the parent chain unless pinned.
 - A custom provider entry naming a `providers.<name>` block inherits its `transport` / `api_mode` unless the entry sets `api_mode` (alias `transport`).
+- The upstream example uses `provider: glm`, which is not in the documented auxiliary provider values above; the main-provider ID for z.ai / GLM is `zai` (integrations/providers.md). Prefer a documented value (e.g. `openrouter` with its model ID), or set an explicit `base_url` + `api_key` for GLM.
 - Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/fallback-providers (pinned to v0.22.2)
 
 ## Related

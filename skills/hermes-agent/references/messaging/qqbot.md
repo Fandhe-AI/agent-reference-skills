@@ -12,7 +12,7 @@ QQ_CLIENT_SECRET=your-app-secret
 
 ```bash
 hermes gateway setup    # select QQ Bot
-python -c "import pm; pm.sync_venv(['messaging'], explicit=True)"
+cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['messaging'], explicit=True)"
 ```
 
 ```yaml
@@ -51,6 +51,7 @@ platforms:
 - Enable the C2C, Group @-messages and Guild messages intents at q.qq.com; sandbox bots only receive from the sandbox test channel.
 - Voice: QQ's built-in ASR (`asr_refer_text`) is tried first, then an OpenAI-compatible STT provider (Zhipu GLM `zai` default, or OpenAI Whisper).
 - Group messages need an @mention; check `QQ_ALLOWED_USERS` when DMs are restricted.
+- Adapted: prefixed `cd ~/.hermes/hermes-agent &&` (as in the upstream ACP / DingTalk / SMS pages) because `pm` lives in the Hermes install checkout.
 - Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/qqbot (pinned to v0.22.2)
 
 ## Related
