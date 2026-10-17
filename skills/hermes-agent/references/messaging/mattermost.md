@@ -40,6 +40,7 @@ Setup: enable bot accounts (System Console -> Integrations -> Bot Accounts -> En
 - WebSocket reconnects with exponential backoff 2s to 60s; nginx needs `Upgrade` / `Connection: upgrade` headers on `/api/v4/websocket`.
 - Validate a token with `curl -H "Authorization: Bearer YOUR_TOKEN" https://your-server/api/v4/users/me`.
 - Always set `MATTERMOST_ALLOWED_USERS`; without it the gateway denies all users.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/mattermost (pinned to v0.22.2)
 
 ## Related
 

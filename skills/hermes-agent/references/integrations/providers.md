@@ -170,6 +170,7 @@ Hermes requires at least 64,000 tokens of context for agent use; smaller windows
 - WSL2: mirrored networking (`networkingMode=mirrored` in `.wslconfig`, Windows 11 22H2+) or the Windows host IP; NAT mode needs servers bound to `0.0.0.0` (Ollama `OLLAMA_HOST=0.0.0.0`, llama-server/SGLang `--host 0.0.0.0`, LM Studio "Serve on Network") and a firewall rule.
 - Optional API keys: `FIRECRAWL_API_KEY` / `FIRECRAWL_API_URL`, `BROWSERBASE_API_KEY` / `BROWSERBASE_PROJECT_ID`, `FAL_KEY`, `ELEVENLABS_API_KEY`, `VOICE_TOOLS_OPENAI_KEY`, `MISTRAL_API_KEY`, `HONCHO_API_KEY`, `SUPERMEMORY_API_KEY`. Self-hosted Firecrawl: `hermes config set FIRECRAWL_API_URL http://localhost:3002`.
 - Model examples in this page (model IDs such as `claude-sonnet-4-6`, `glm-5`) are copied from upstream v0.22.2 docs verbatim and are not verified against provider catalogs.
+- Source: https://hermes-agent.nousresearch.com/docs/integrations/providers (pinned to v0.22.2)
 
 ## Related
 

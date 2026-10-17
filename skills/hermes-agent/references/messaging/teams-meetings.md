@@ -46,6 +46,7 @@ CLI subcommands: `hermes teams-pipeline validate | list | subscribe | subscripti
 - The `teams-pipeline` subcommand is registered by the `teams_pipeline` plugin (`hermes plugins enable teams_pipeline` or `plugins.enabled: [teams_pipeline]`).
 - Needs a public HTTPS URL for Graph, Graph application credentials, and `ffmpeg` for recording fallback. Non-loopback listener binds require `allowed_source_cidrs`.
 - Bind host is config-only (`extra.host`); there is no `MSGRAPH_WEBHOOK_HOST` env var.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/teams-meetings (pinned to v0.22.2)
 
 ## Related
 

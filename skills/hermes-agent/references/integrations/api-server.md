@@ -114,6 +114,7 @@ Per-request model selection (accepted on `/v1/chat/completions`, `/v1/responses`
 - CORS is off by default. When enabled: preflight `Access-Control-Max-Age: 600`; `X-Hermes-Session-Id` and `Idempotency-Key` are allowed request headers. Responses include `X-Content-Type-Options: nosniff` and `Referrer-Policy: no-referrer`.
 - Limitations: stored responses persist in SQLite (max 100, LRU eviction); no file upload; `/v1/models` advertises a stable alias.
 - Proxy mode: another gateway with `GATEWAY_PROXY_URL` pointing here forwards all messages to this server's agent.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/api-server (pinned to v0.22.2)
 
 ## Related
 

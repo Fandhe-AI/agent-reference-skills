@@ -41,6 +41,7 @@ hermes pairing approve simplex <CODE>
 - Inbound images, voice notes and files use the daemon's XFTP flow; outbound uses structured `/_send` with `filePath`; `MEDIA:/path` tags are sent as voice note (audio) or document.
 - `hermes send` needs only the daemon running (not the gateway) for plain text; channel directory refreshes every 5 minutes while the gateway runs.
 - Connection to the daemon is local (`ws://127.0.0.1:5225`); messages are end-to-end encrypted by the SimpleX protocol.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/simplex (pinned to v0.22.2)
 
 ## Related
 

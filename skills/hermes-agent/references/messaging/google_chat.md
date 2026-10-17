@@ -41,6 +41,7 @@ Setup: GCP project, enable Google Chat API and Cloud Pub/Sub API, create a servi
 - Native attachments need per-user OAuth because `media.upload` rejects service accounts: register an OAuth Desktop client once per profile (`python -m plugins.platforms.google_chat.oauth --client-secret /path/to/client_secret.json`), then each user runs `/setup-files`, `/setup-files start`, `/setup-files <PASTED_URL>` (revoke with `/setup-files revoke`). Only the `chat.messages.create` scope is requested; tokens in `~/.hermes/google_chat_user_tokens/<sanitized_email>.json`.
 - Under multi-profile gateways every `GOOGLE_CHAT_*` is read from the routed profile's `.env`; no fallback to Application Default Credentials across profiles.
 - Silent bot: check undelivered messages in the subscription, then the topic IAM binding. Default quota is 60 messages per space per minute. Bearer tokens attach only to Google-owned hosts (SSRF protection).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/google_chat (pinned to v0.22.2)
 
 ## Related
 

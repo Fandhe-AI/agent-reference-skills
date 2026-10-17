@@ -56,6 +56,7 @@ Env: `WECOM_BOT_ID`, `WECOM_SECRET`, `WECOM_ALLOWED_USERS`, `WECOM_HOME_CHANNEL`
 - Inbound AES-256-CBC media is decrypted automatically (needs `cryptography`; `hermes pm repair`).
 - Reply mode (`aibot_respond_msg`) correlates responses to the inbound request; falls back to proactive `aibot_send_msg` when the context has expired.
 - Heartbeat ping every 30 s; reconnect backoff 2, 5, 10, 30, 60 s; dedup window 5 minutes (max 1000 IDs).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/wecom (pinned to v0.22.2)
 
 ## Related
 

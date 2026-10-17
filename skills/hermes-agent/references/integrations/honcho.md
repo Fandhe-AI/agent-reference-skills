@@ -104,6 +104,7 @@ hermes honcho migrate         # Migration guide from openclaw-honcho
 - Migrating from the standalone `hermes honcho setup`: existing `honcho.json` / `~/.honcho/config.json` and server-side data are preserved; set `memory.provider: honcho`.
 - Homes upgraded from a release that bundled Honcho get the plugin installed automatically.
 - `X-Hermes-Session-Key` on the API Server scopes Honcho's long-term memory per channel.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/honcho (pinned to v0.22.2)
 
 ## Related
 

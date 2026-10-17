@@ -47,6 +47,7 @@ Status codes: 202 accepted / deduped, 200 validation handshake (echoes token), 4
 - Needs Microsoft Graph application credentials and a public HTTPS URL (Graph does not call private endpoints); terminate TLS at a reverse proxy since the listener speaks plain HTTP.
 - Binding `0.0.0.0`, `::` or a LAN IP without `allowed_source_cidrs` is refused at startup; review Microsoft's published IP ranges quarterly.
 - Distinct from the `teams` platform (a chat bot users type to).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/msgraph-webhook (pinned to v0.22.2)
 
 ## Related
 

@@ -47,6 +47,7 @@ hermes gateway
 - Media goes through an AES-128-ECB encrypted CDN (needs `cryptography`); outbound uploads use `getuploadurl`. Messages up to 4000 characters stay one bubble; Markdown is preserved.
 - `context_token` per peer is persisted in `<account_id>.context-tokens.json`. Proactive sends with a stale token are retried once without it; fresh pairs need the user to message first.
 - Long-poll `getupdates` with a 35 s timeout; session expired `errcode=-14` pauses 10 minutes (re-run setup). Only one gateway can use a token at a time. Dedup window 5 minutes. Outbound media URLs are SSRF-checked.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/weixin (pinned to v0.22.2)
 
 ## Related
 

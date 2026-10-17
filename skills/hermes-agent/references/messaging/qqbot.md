@@ -51,6 +51,7 @@ platforms:
 - Enable the C2C, Group @-messages and Guild messages intents at q.qq.com; sandbox bots only receive from the sandbox test channel.
 - Voice: QQ's built-in ASR (`asr_refer_text`) is tried first, then an OpenAI-compatible STT provider (Zhipu GLM `zai` default, or OpenAI Whisper).
 - Group messages need an @mention; check `QQ_ALLOWED_USERS` when DMs are restricted.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/qqbot (pinned to v0.22.2)
 
 ## Related
 

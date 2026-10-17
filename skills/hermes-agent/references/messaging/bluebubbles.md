@@ -41,6 +41,7 @@ hermes pairing approve bluebubbles <CODE>
 - Private API helper is required for tapback reactions, typing indicators, read receipts and creating chats by address; basic text and media work without it unless the Mac is at the login screen or on another user session.
 - Markdown is stripped to plain text. Chats can be addressed by email or phone number.
 - Home channel set during unreliable sending can cause "Recovered reply" repeats; leave empty until sending is reliable.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/bluebubbles (pinned to v0.22.2)
 
 ## Related
 

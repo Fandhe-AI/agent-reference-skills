@@ -60,6 +60,7 @@ Setup: create the app (from the generated manifest, or from scratch), add bot to
 - Cron `deliver:` targets: `slack`, `slack:C0123456789`, `slack:U0123456789` (DM, needs `im:write`).
 - For Codex-backed peer-agent channels prefer `agent.reasoning_effort: high` or lower; `xhigh` can spend the whole turn in hidden reasoning.
 - Always set `SLACK_ALLOWED_USERS`; without it the gateway denies all messages.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/slack (pinned to v0.22.2)
 
 ## Related
 

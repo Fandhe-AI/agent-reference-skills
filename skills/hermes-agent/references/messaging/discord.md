@@ -61,6 +61,7 @@ Setup: create an application in the Developer Portal, create the bot, enable **S
 - Forum channels: each send creates a new thread; thread name from the first line (max 100 chars).
 - Bot loop guard: 20 bot messages in 5 minutes per channel drops further bot messages for 10 minutes.
 - Mention control: `@everyone` / `@here` / role pings blocked by default.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/discord (pinned to v0.22.2)
 
 ## Related
 

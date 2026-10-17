@@ -40,6 +40,7 @@ SIGNAL_HOME_CHANNEL=+1234567890
 - Note to Self works when `SIGNAL_ACCOUNT` is your own number (linked secondary device); echo-back is filtered.
 - SSE reconnect with exponential backoff 2s to 60s; pings after 120s of silence. Phone numbers redacted in logs.
 - Only one signal-cli instance may listen on a number (duplicate messages otherwise). Session data in `~/.local/share/signal-cli/` is credentials.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/signal (pinned to v0.22.2)
 
 ## Related
 

@@ -45,6 +45,7 @@ platforms:
 - `enroll` refuses to run in managed/hosted installs. Explicit `enabled: false` wins over any relay URL.
 - 401 at enroll: re-login (`hermes auth add nous`); 403: token invalid / expired / used / other tenant. WebSocket close 4401 after a successful handshake means the secret was revoked and relay is disabled.
 - Use native adapters (Telegram, Discord, ...) if you run your own bots directly.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/relay (pinned to v0.22.2)
 
 ## Related
 

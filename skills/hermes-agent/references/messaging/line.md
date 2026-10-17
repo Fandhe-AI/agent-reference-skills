@@ -46,6 +46,7 @@ Webhook URL in the LINE console: `https://<your-tunnel>/line/webhook` (verify, t
 - LINE accepts no binary uploads: media is served from `/line/media/<token>/<filename>` via `LINE_PUBLIC_URL`.
 - Limits: 5000 characters per bubble (chunked at ~4500, max 5 bubbles per call), no message editing, no markdown rendering (stripped), loading indicator DM-only.
 - "already in use by another profile" means the token is bound to another running profile.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/line (pinned to v0.22.2)
 
 ## Related
 

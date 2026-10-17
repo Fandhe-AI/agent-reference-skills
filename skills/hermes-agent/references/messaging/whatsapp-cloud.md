@@ -46,6 +46,7 @@ In Meta's dashboard (WhatsApp -> Configuration) set Callback URL `https://<tunne
 - Native interactive messages for clarify (buttons for 1-3 choices, list for 4+), approvals and slash-command confirmations; read receipts and typing indicator; voice notes need ffmpeg (else MP3 attachment); messages split at 4096 chars.
 - Errors: `graph error 100` means a phone number was pasted into the Phone Number ID field; `190` subcode 463 token expired, 467 invalidated. `/health` reports `ffmpeg_present`, `verify_token_configured`, `app_secret_configured`.
 - Both Baileys (`whatsapp`) and Cloud (`whatsapp_cloud`) adapters can run simultaneously on different numbers.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/whatsapp-cloud (pinned to v0.22.2)
 
 ## Related
 

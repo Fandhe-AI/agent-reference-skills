@@ -42,6 +42,8 @@ docker run -d -p 3000:8080 \
 - API Type: Chat Completions (default, recommended) or Responses (experimental, structured `function_call` / `function_call_output` SSE items; Open WebUI still sends full history client-side).
 - Multi-user: one profile per user with its own `.env` (`API_SERVER_ENABLED=true`, `API_SERVER_PORT=8650+`, `API_SERVER_KEY`), ports outside 8644 (webhook), 8645 (wecom-callback), 8646 (msgraph-webhook); add one connection per profile.
 - "No models": check the `/v1` suffix and Docker networking (`host.docker.internal`, `--network=host`, or `172.17.0.1` on Linux).
+- Adapted: On Linux without Docker Desktop, `host-gateway` resolves to the bridge address, so the default loopback bind (`API_SERVER_HOST=127.0.0.1`) is not reachable from the container. Use the upstream Option 2 (`docker run --network=host -e OPENAI_API_BASE_URL=http://localhost:8642/v1 ...`), or bind `API_SERVER_HOST` to an address the container can reach and restrict access (firewall), keeping `API_SERVER_KEY` set (required for every deployment).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/open-webui (pinned to v0.22.2)
 
 ## Related
 

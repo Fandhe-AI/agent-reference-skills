@@ -38,9 +38,11 @@ The bundled `buzz` platform plugin makes Buzz a normal Hermes messaging platform
 
 - Which one to use: Buzz Desktop users exploring, use path 1; running a community relay with an agent identity managed by Buzz, use path 2; already running Hermes and want Buzz as another channel, use path 3 (deepest integration, keeps every Hermes feature).
 - Paths 1/2 and path 3 use different identities and transports; run path 3 with its own dedicated Nostr keypair. The adapter takes a scoped lock on the relay+pubkey pair, so two Hermes profiles cannot accidentally drive one Buzz identity.
-- Full setup, troubleshooting and the security posture for paths 1 and 2 are in the ACP page (Buzz Desktop, Buzz channels sections). The configuration reference for path 3 lives on the upstream "Messaging, Buzz" page (not included in this skill).
+- Full setup, troubleshooting and the security posture for paths 1 and 2 are in the ACP page (Buzz Desktop, Buzz channels sections). The configuration reference for path 3 is in [Messaging: Buzz](../messaging/buzz.md).
+- Source: https://hermes-agent.nousresearch.com/docs/integrations/buzz (pinned to v0.22.2)
 
 ## Related
 
 - [ACP](./acp.md)
+- [Messaging: Buzz](../messaging/buzz.md)
 - [Integrations Overview](./overview.md)

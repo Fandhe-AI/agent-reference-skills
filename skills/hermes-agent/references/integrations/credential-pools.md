@@ -105,6 +105,7 @@ Pool state lives in `~/.hermes/auth.json` under `credential_pool`; strategies in
 - Env-borrowed secrets are reference-only at the `auth.json` boundary (metadata and a non-reversible fingerprint persisted, not the raw key); manual and Hermes-owned OAuth entries keep durable tokens. Auto-seeded entries are pruned when the env var is removed; manual entries are never auto-pruned.
 - OAuth refreshes across processes are serialized through a file lock on `auth.json`.
 - Implementation modules: `agent/credential_pool.py`, `agent/credential_pool_admin.py`, `agent/credential_pool_model_cooldowns.py`, `hermes_cli/auth_commands.py`, `hermes_cli/runtime_provider.py`, `agent/turn_api_error.py`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/credential-pools (pinned to v0.22.2)
 
 ## Related
 

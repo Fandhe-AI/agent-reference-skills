@@ -70,6 +70,7 @@ Setup flow: create a bot with @BotFather (`/newbot`), find your numeric user ID 
 - Slash command split: `allow_admin_from` + `user_allowed_commands` (plus `group_allow_admin_from` / `group_user_allowed_commands`); `/help` and `/whoami` always allowed; unset admin list disables gating for that scope.
 - Do not reuse one bot token across running gateways (Telegram rejects concurrent polling).
 - Always set `TELEGRAM_ALLOWED_USERS`; without it the gateway denies all users.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/telegram (pinned to v0.22.2)
 
 ## Related
 

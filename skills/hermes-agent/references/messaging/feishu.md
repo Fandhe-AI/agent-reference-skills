@@ -51,6 +51,7 @@ hermes gateway
 - Meeting invitations: subscribe `vc.bot.meeting_invited_v1`; the inviter must pass normal allowlist / pairing.
 - Webhook mode: 120 requests per 60 s per (app_id, path, IP), 1 MB body, `application/json` only. Under multiplexed gateways each profile reads its own `.env`.
 - Only one Hermes gateway may use the same `app_id` at a time. Outbound markdown is sent as a post message with `md` tag, falling back to plain text.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/feishu (pinned to v0.22.2)
 
 ## Related
 

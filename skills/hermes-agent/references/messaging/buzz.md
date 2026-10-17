@@ -51,6 +51,7 @@ hermes gateway start
 - Replies are threaded (NIP-10 aware: reply to the thread root); inbound attachments (NIP-94 `imeta`) are downloaded only after authorization, must be HTTPS with declared size and SHA-256, and redirects / URL credentials are rejected.
 - WebSocket watchdog reconnects after five quiet minutes; gateway health reports `retrying` meanwhile. Channel history is not replayed on reconnect; the private key never appears in argv or logs.
 - `BUZZ_*` env vars are passed to terminal subprocesses only for Buzz sessions or Buzz Desktop managed agents.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/buzz (pinned to v0.22.2)
 
 ## Related
 

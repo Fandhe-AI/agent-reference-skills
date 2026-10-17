@@ -78,6 +78,7 @@ hermes webhook test github-issues --payload '{"issue": {"number": 42, "title": "
 - Dynamic subscriptions live in `~/.hermes/webhook_subscriptions.json`, hot-reloaded without restart; static `config.yaml` routes take precedence. `hermes webhook subscribe` deliberately has no toolsets flag.
 - Webhook runs default to a constrained toolset (`web_search`, `web_extract`, `vision_analyze`, `clarify`). HMAC authenticates the sender, not the content: sandbox the runtime, scope toolsets, keep approvals on, template narrowly.
 - Every route needs a secret or the adapter fails at startup; `github_comment` needs an authenticated `gh` CLI on the gateway host.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/webhooks (pinned to v0.22.2)
 
 ## Related
 

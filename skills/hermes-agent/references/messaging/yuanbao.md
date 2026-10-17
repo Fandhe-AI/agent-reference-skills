@@ -44,6 +44,7 @@ Built-in connection parameters (not configurable): WS connect timeout 15 s, hear
 - Auto-sethome: the first user to message the bot becomes the home channel owner (a first DM upgrades a group home channel to direct). `/sethome` sets it manually.
 - Sends a waiting message on slow responses; message dedup; typing indicator. `hermes gateway run -vv` enables verbose logging.
 - Core dependencies `websockets` and `httpx` can be repaired with `hermes pm repair`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/yuanbao (pinned to v0.22.2)
 
 ## Related
 

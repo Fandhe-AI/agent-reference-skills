@@ -113,6 +113,7 @@ On timeout or error the approval bridge denies the request. The wait is `approva
 - Buzz Desktop: discovery resolves `hermes-acp` (`command -v hermes-acp || command -v hermes`); manual fallback is agent command `hermes` with args `["acp"]`. Buzz Desktop v0.5.1+ renders Hermes' full model menu; entry IDs are `provider:model` or `custom:<name>:<model>`.
 - Security: Buzz creates agents as "Owner only"; keep it. The `hermes-acp` toolset includes `terminal` and `execute_code`, and Buzz's ACP bridge answers permission requests itself with `allow_once`, so shell commands run without prompting. `approvals.mode: manual` does not help; narrow the toolset via `platform_toolsets.acp` or `agent.disabled_toolsets` instead. Even `platform_toolsets.acp: []` still adds enabled plugin toolsets. `!shutdown` from the owner stops the agent.
 - Troubleshooting: check that the host command points at `hermes acp`, Hermes is on PATH, and the ACP extra is installed; run `hermes acp --version`, `hermes acp --check`, `hermes doctor`, `hermes status`; configure credentials with `hermes model`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/acp (pinned to v0.22.2)
 
 ## Related
 

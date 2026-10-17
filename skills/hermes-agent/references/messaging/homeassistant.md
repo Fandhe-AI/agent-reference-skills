@@ -56,6 +56,7 @@ Tools (`homeassistant` toolset):
 - HA events are always authorized (no allowlist or pairing). WebSocket heartbeat 30s; reconnect backoff 5s, 10s, 30s, 60s.
 - Blocked service domains: `shell_command`, `command_line`, `python_script`, `pyscript`, `hassio`, `rest_command`. Entity IDs must match `^[a-z_][a-z0-9_]*\.[a-z0-9_]+$`.
 - Releases that bundled Home Assistant: `hermes update` auto-installs the plugin per profile; the old `hermes-agent[homeassistant]` extra is removed. `ha_*` tools sit behind Tool Search when it is on.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/homeassistant (pinned to v0.22.2)
 
 ## Related
 

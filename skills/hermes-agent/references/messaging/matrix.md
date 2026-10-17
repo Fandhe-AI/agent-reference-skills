@@ -58,6 +58,7 @@ hermes gateway
 - `/resume` will not resume a named session from another room unless `/resume --cross-room <session name>`.
 - Outgoing voice is tagged `org.matrix.msc3245.voice`; an audio file attached via `MEDIA:` without `[[audio_as_voice]]` is sent as a plain `m.audio`.
 - Set both user and room allowlists for private deployments; without them anyone reaching the bot in a joined room can trigger an agent turn.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/matrix (pinned to v0.22.2)
 
 ## Related
 

@@ -45,6 +45,7 @@ hermes gateway
 - Responses split at 4,096 characters; Markdown converted (`**bold**` -> `*bold*`, `# Heading` -> `*Heading*`, links -> `text (url)`).
 - Voice in: `.ogg` opus transcribed by STT; voice out: MP3 attachments. Native polls (clarify-as-poll; never for approvals) and location pins supported in bot mode.
 - For a stable business bot see the Cloud API page (official Meta path, needs a public webhook URL).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/whatsapp (pinned to v0.22.2)
 
 ## Related
 

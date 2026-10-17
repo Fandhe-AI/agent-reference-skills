@@ -29,6 +29,7 @@ Agent -> raft message send -> Raft Server (replies)
 - Division of labor: the bridge owns wake-hint consumption, dedup, backoff, reconnection and at-least-once delivery; the adapter owns the localhost wake endpoint; the agent owns pulling and sending messages via the CLI. The adapter holds no Raft credentials, only a per-session shared token.
 - Wake payloads are content-free by contract (metadata only); payloads with content-shaped fields (`text`, `body`, `content`, `messages`) are rejected.
 - The bridge gets Hermes' scrubbed child environment plus `RAFT_PROFILE` and the token, never gateway tokens or provider API keys, and ends with the gateway.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/raft (pinned to v0.22.2)
 
 ## Related
 

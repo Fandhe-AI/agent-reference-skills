@@ -262,6 +262,7 @@ The task runs `wscript.exe` on a generated `.vbs` launcher under `%USERPROFILE%\
 - Background tasks inherit the model/provider of the session that spawned them but run in fully isolated storage.
 - On macOS, `hermes gateway install` writes a launchd plist; on Linux without `--system` it installs a systemd user unit.
 - Circuit breakers automatically pause platform adapters during sustained outages and resume when the platform recovers.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging (pinned to v0.22.2)
 
 ## Related
 

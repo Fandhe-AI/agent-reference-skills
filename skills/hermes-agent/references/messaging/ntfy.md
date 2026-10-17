@@ -37,6 +37,7 @@ hermes send ntfy:alerts-channel "Done!"
 - Cron delivery: `cronjob(action="create", schedule="every 1h", deliver="ntfy", prompt="...")`; works out-of-process via a standalone sender.
 - Limits: 4096-character message bodies (truncated with warning), no typing indicator, no threads or attachments.
 - 401 halts the reconnect loop (`fatal: ntfy_unauthorized`); 404 halts with `fatal: ntfy_topic_not_found`; reconnect backoff 2, 5, 10, 30, 60 s.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/ntfy (pinned to v0.22.2)
 
 ## Related
 

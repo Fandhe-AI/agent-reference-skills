@@ -69,6 +69,7 @@ Speech-to-text supports eight providers: local faster-whisper (free, on-device),
 - The page recommends Nous Portal first: a single OAuth login covers 300+ models plus the four Tool Gateway tools (web search, image generation, TTS, browser automation).
 - The Web Search table lists seven backends while the prose says eight; the `config.yaml` comment enumerates `firecrawl | searxng | brave-free | ddgs | tavily | perplexity | keenable | exa | parallel | xai`. Treat the comment line as the accepted values.
 - Messaging platforms listed: Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Mattermost, Email, SMS, DingTalk, Feishu/Lark, WeCom, WeCom Callback, Weixin, BlueBubbles, Buzz, QQ Bot, Yuanbao, Home Assistant (plugin), Microsoft Teams, Microsoft Teams Meetings, Microsoft Graph Webhook, Google Chat, LINE, ntfy, SimpleX, Open WebUI, Webhooks.
+- Source: https://hermes-agent.nousresearch.com/docs/integrations (pinned to v0.22.2)
 
 ## Related
 

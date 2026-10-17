@@ -36,6 +36,7 @@ hermes pairing approve photon <CODE>
 - Inbound attachments are metadata-only; outbound images, voice, video, documents, native polls and message effects are supported.
 - Cron / `hermes send` reuse the gateway's sidecar via `<hermes-home>/runtime/photon-sidecar.json`, so the gateway must be running.
 - Same mention-gating model as BlueBubbles; the iMessage alternative that needs your own Mac is the BlueBubbles page.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/photon (pinned to v0.22.2)
 
 ## Related
 

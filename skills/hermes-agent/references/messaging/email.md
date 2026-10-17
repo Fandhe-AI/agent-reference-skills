@@ -48,6 +48,7 @@ hermes gateway
 - Proton Mail Bridge / local relays: use `imap_security: starttls`, `imap_tls_verify: false`, `EMAIL_IMAP_PORT=1143`, `EMAIL_SMTP_PORT=1025`.
 - Outgoing files: put `MEDIA:/path/to/file` in the reply. Replies are plain UTF-8 text.
 - Distinct from the bundled Himalaya email skill (terminal CLI mailbox management).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/email (pinned to v0.22.2)
 
 ## Related
 

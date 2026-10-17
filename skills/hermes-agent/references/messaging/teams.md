@@ -46,6 +46,7 @@ curl http://localhost:3978/health   # ok
 - `incoming_webhook` mode has no threading / reactions; `graph` mode needs `ChannelMessage.Send` (channel) or `Chat.ReadWrite.All` (chat) application permissions (per Hermes docs; see Microsoft Graph caveat below).
 - Microsoft Graph caveat: app-only (application permission) posting to channels / chats is limited to migration scenarios (Teamwork.Migrate.All); see https://learn.microsoft.com/en-us/graph/api/channel-post-messages.
 - Always set `TEAMS_ALLOWED_USERS`; unauthorized messages are silently dropped.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/teams (pinned to v0.22.2)
 
 ## Related
 

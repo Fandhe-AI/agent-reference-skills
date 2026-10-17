@@ -106,6 +106,7 @@ Hermes mints a short-lived JWT from the stored refresh token on each inference c
 - A note on Hermes 4: Hermes-4-70B and Hermes-4-405B are available at heavily discounted rates but are frontier hybrid-reasoning chat models and are **not recommended inside Hermes Agent**; they are tuned for chat and reasoning, not the rapid-fire tool-calling loop. Use a frontier agentic model (`anthropic/claude-sonnet-4.6`, `openai/gpt-5.5-pro`, `google/gemini-3-pro-preview`, `deepseek/deepseek-v4-pro`) for agent work. The Portal's own model info page carries the same warning.
 - Subscription management: `portal.nousresearch.com/manage-subscription` or `hermes portal open`.
 - The Tool Gateway feature page has the full per-tool configuration matrix; the Subscription Proxy lets non-Hermes tools use your Portal subscription.
+- Source: https://hermes-agent.nousresearch.com/docs/integrations/nous-portal (pinned to v0.22.2)
 
 ## Related
 

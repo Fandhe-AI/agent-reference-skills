@@ -45,6 +45,7 @@ Create the app in the DingTalk Developer Console, add the Robot capability, and 
 - Reactions: 🤔Thinking then 🥳Done. Message dedup window 5 minutes; responses capped at 20,000 characters per message.
 - "No session_webhook available" means the webhook expired; send a new message (each inbound message provides a fresh webhook).
 - Stream reconnect backoff 2s, 5s, 10s, 30s, 60s. Always set `DINGTALK_ALLOWED_USERS`; without it all users are denied.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/dingtalk (pinned to v0.22.2)
 
 ## Related
 

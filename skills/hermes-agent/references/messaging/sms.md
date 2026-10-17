@@ -37,6 +37,7 @@ In the Twilio Console set **Messaging -> A MESSAGE COMES IN** to the webhook URL
 - Plain text only (Markdown stripped); 1600-character limit, longer replies split at newlines then spaces; messages from your own Twilio number are ignored.
 - The gateway denies all users by default. SMS has no built-in encryption; prefer Signal or Telegram for sensitive work.
 - Shares credentials with the optional telephony skill.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/sms (pinned to v0.22.2)
 
 ## Related
 

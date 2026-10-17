@@ -75,6 +75,7 @@ curl -X POST http://your-host:9900/ \
        "params":{"message":{"messageId":"m1","role":"ROLE_USER",
                  "parts":[{"text":"What tools do you have?"}]}}}'
 ```
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/a2a (pinned to v0.22.2)
 
 ## Related
 

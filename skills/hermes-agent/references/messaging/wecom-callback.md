@@ -53,6 +53,7 @@ Endpoints: `GET /wecom/callback` (URL verification), `POST /wecom/callback` (enc
 - Payloads use AES-CBC with SHA1 signature verification, compatible with Tencent's WXBizMsgCrypt SDK; replies go through the proactive API, not the callback response.
 - Limitations: no streaming, no typing indicators, text-only input, agent sessions take 3 to 30 minutes, text messages keep only the first 2048 bytes (replies split; CJK about 680 characters per message).
 - Signature failures are usually a Token / EncodingAESKey copy error or whitespace around `=` in `.env`. Loopback-bound listeners are unreachable by WeCom: leave `extra.host` unset or front it with a tunnel / reverse proxy.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/wecom-callback (pinned to v0.22.2)
 
 ## Related
 

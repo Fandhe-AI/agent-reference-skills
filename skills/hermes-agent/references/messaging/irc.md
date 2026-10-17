@@ -46,6 +46,7 @@ hermes gateway start
 - IRC nicks are not authenticated unless the network enforces NickServ; avoid allow-all on public networks.
 - Long replies are split into multiple `PRIVMSG` lines (`max_message_length`, default 450 bytes).
 - A scoped credential lock per server+nick prevents two profiles from fighting over one IRC identity.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/irc (pinned to v0.22.2)
 
 ## Related
 
