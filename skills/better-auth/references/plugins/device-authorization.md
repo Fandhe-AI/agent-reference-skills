@@ -50,7 +50,7 @@ await auth.api.adminCreateOAuthClient({
   headers,
   body: {
     token_endpoint_auth_method: "none",
-    type: "native",
+    application_type: "native",
     grant_types: [DEVICE_CODE_GRANT_TYPE, "refresh_token"],
     scope: "openid profile offline_access api:read",
     resources: ["https://api.example.com"],
@@ -236,6 +236,7 @@ deviceAuthorization({
 - With the OAuth Provider integration, `GET /device` also returns the approved resource context to the owning authenticated user, and an unknown OAuth client ID reaches the standalone flow only when `validateClient` accepts it (otherwise `invalid_client`). Standalone Device Authorization does not expose the RFC 8707 `resource` parameter.
 - Changed in 1.7: `deviceCode` and `userCode` have unique indexes and values are limited to 191 characters. Resolve duplicate values on every adapter before migrating; MySQL and SQL Server must also convert both columns to bounded strings and clean up values longer than 191 characters. Custom generators must stay within 191 characters.
 - Changed in 1.7: the OAuth device grant is opt-in. `oauthDeviceAuthorization` is provided by `@better-auth/oauth-provider`; it adds nullable `oauthClientId` and `resources` fields to `deviceCode`, validates the OAuth client, scopes and resources at creation, advertises the device authorization endpoint in discovery, and exchanges approved codes at `/oauth2/token`. Existing 1.6 rows need no backfill and stay on the session-token path; let pending 1.6 clients finish polling `/device/token` or expire before moving them to the OAuth flow. The client type exposes the RFC 8707 `resource` field only with `oauthDeviceAuthorizationClient()` from `@better-auth/oauth-provider/client`.
+- The official v1.7.10 device-authorization example still shows `type: "native"`; 1.7 removed `type` (see oauth-provider: removed `type` and `public` fields are not accepted), so the snippet here uses `application_type`.
 
 ### Error codes
 

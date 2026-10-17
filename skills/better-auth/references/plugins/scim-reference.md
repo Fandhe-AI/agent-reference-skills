@@ -270,6 +270,7 @@ Schema models: `scimConnectionBinding`, `scimUser`, `scimGroup`, `scimGroupMembe
 - Unsupported: custom schema extensions, `User.groups`, passwords / IM / photos / X.509, nested Groups, Bulk, POST search, `/Me`, ETags, cursors, sorting, operators other than `eq` and `and`, built-in OAuth token endpoint, Basic auth, mutual TLS, HTTP management endpoints, audit records, webhooks. The package is server-only (no client plugin).
 - Use `auth generate` to create the exact schema for your database adapter. `scimUser.serializedAttributes` is the required canonical profile source with no default.
 - Legacy cutover (1.7): legacy `scimProvider` connections, credentials, and SCIM-created `account` rows are not converted. Pause provisioning, back up, clear legacy SCIM-owned rows while the old schema is active, apply the new schema, issue new credentials, and run a complete User and Group reprovisioning cycle. Never import legacy token hashes or accept the legacy bearer syntax. See the 1.7 SCIM upgrade guide in the official docs.
+- Source: https://www.better-auth.com/docs/plugins/scim/reference (better-auth v1.7.10 docs)
 
 ## Related
 

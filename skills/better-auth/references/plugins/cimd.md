@@ -123,6 +123,7 @@ Example metadata document (`https://client.example.com/client-metadata.json`):
 - Discovered clients are stored in `oauthClient` with `clientDiscoveryId: "cimd"`, preventing takeover of managed or DCR clients whose IDs begin with `https://`.
 - Cache semantics are shared-cache: `s-maxage` over `max-age` and `Expires`; `no-store`, `private`, and `Vary: *` prevent caching. Refresh is fail closed: a network, validation, or persistence failure preserves previous state but rejects the current OAuth request.
 - Limits: five-second timeout, streaming 5 KB metadata-document limit, 64 KiB discovery-owned JWKS limit, JSON / `application/*+json` media types, redirects rejected. Loopback Client Identifier URLs are not supported.
+- Source: https://www.better-auth.com/docs/plugins/cimd (better-auth v1.7.10 docs)
 
 ## Related
 

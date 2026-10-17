@@ -135,6 +135,7 @@ Projection callbacks:
 - SCIM requests reconcile affected users immediately. `reconcileSCIMProjection` invokes `projection.reconcileUser` for every linked user in the domain. Keep `reconcileUser` configured until the replay finishes; to remove all mapped roles, remove `projection.roles` or make `map` return none, replay, then remove the remaining projection config.
 - Credential rotation: an expired credential receives `401 Unauthorized`; tokens must be unique across all configured connections.
 - Decommissioning is irreversible. Decommission a connection that has authenticated at least once before removing it from `connections`; a never-used connection has no persisted binding and can be removed directly. The method is server API only. If the result is `reconciling`, call again at or after `retryAfter` until it returns `complete`, then remove the connection from configuration. The connection's SCIM Users, Groups, and memberships are retained. Keep identity and projection callbacks idempotent.
+- Source: https://www.better-auth.com/docs/plugins/scim/groups-and-roles (better-auth v1.7.10 docs)
 
 ## Related
 
