@@ -400,4 +400,4 @@ ProGuard options (`buildTypes.release.proguard`):
 - [Images and in-app icons](./images.md)
 - [Support for desktop accessibility features](./desktop-accessibility.md)
 - [Tray and notifications](./tray.md)
-- [Multiplatform Gradle DSL reference — Targets](../gradle-dsl/dsl-targets.md)
+- Multiplatform Gradle DSL reference — Targets

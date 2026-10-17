@@ -74,5 +74,5 @@ Dependencies for this release:
 ## Related
 
 - [Compatibility and versions](./compose-compatibility-and-versioning.md)
-- [Compose Hot Reload](../tooling/compose-hot-reload.md)
+- Compose Hot Reload
 - [Top-level windows management](../compose-desktop/windows-management.md)

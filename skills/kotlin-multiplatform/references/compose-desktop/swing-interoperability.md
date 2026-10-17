@@ -155,4 +155,4 @@ Experimental switches:
 - [Top-level windows management](./windows-management.md)
 - [Context menus](./context-menus.md)
 - [Mouse event listeners](./mouse-events.md)
-- [Native application entry points](../compose-ui/entry-points.md)
+- Native application entry points

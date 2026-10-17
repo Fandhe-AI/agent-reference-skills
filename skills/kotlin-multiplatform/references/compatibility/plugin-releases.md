@@ -56,5 +56,5 @@ Release history (from the source table):
 ## Related
 
 - [Compatibility guide for Kotlin Multiplatform — Version compatibility](./version-compatibility.md)
-- [Compose Hot Reload](../tooling/compose-hot-reload.md)
-- [Build and run a Kotlin Multiplatform application](../tooling/build-and-run.md)
+- Compose Hot Reload
+- Build and run a Kotlin Multiplatform application

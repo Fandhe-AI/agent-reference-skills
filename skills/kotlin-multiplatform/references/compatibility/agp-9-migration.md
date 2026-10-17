@@ -32,7 +32,7 @@ Version catalog entry for the new plugin:
 androidMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 ```
 
-## Steps
+### Steps
 
 Android app entry point module (`androidApp`):
 
@@ -136,5 +136,5 @@ Update the Android Gradle plugin version:
 - [Compatibility guide for Kotlin Multiplatform — Kotlin 2.0.0 and later](./changes-kotlin-2-0-and-later.md)
 - [Android source set layout](./android-source-set-layout.md)
 - [Compatibility guide for Kotlin Multiplatform — Version compatibility](./version-compatibility.md)
-- [Adding Android dependencies](../project-structure/android-dependencies.md)
-- [Recommended Kotlin Multiplatform project structure](../project-structure/recommended-structure.md)
+- Adding Android dependencies
+- Recommended Kotlin Multiplatform project structure

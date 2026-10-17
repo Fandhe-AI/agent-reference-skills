@@ -44,15 +44,15 @@ kotlin {
 }
 ```
 
-## Changes
+### Changes
 
-### Removed API for adding Kotlin source sets directly to the Kotlin compilation
+#### Removed API for adding Kotlin source sets directly to the Kotlin compilation
 
 - `KotlinCompilation.source` access is removed. Unsupported: `targets["jvm"].compilations["main"].source(myCustomIntermediateSourceSet)`.
 - Replace with `.srcDir()` on the appropriate source set, a `dependsOn` from the default source set of the compilation, source set conventions (IDE-friendly, most robust), or `KotlinCompilation.defaultSourceSet.dependsOn(someSourceSet)` (works in all cases).
 - Cycle: 1.9.0 warning; 1.9.20 error; 2.3.0 `KotlinCompilation.source` removed ("unresolved reference" during buildscript compilation).
 
-### Migration from `kotlin-js` Gradle plugin to `kotlin-multiplatform` Gradle plugin
+#### Migration from `kotlin-js` Gradle plugin to `kotlin-multiplatform` Gradle plugin
 
 The `kotlin-js` plugin is deprecated since Kotlin 1.9.0; use `kotlin-multiplatform` with the `js()` target.
 
@@ -107,24 +107,24 @@ The `kotlin-js` plugin is deprecated since Kotlin 1.9.0; use `kotlin-multiplatfo
 
 - Cycle: 1.9.0 deprecation warning for `kotlin-js`; 2.4.0 warning raised to error (KT-59305).
 
-### Deprecated `jvmWithJava` preset
+#### Deprecated `jvmWithJava` preset
 
 `targetPresets.jvmWithJava` is deprecated. Use `jvm { withJava() }`; Java source paths change (for the default target name `jvm`): `src/main/java` to `src/jvmMain/java`, `src/test/java` to `src/jvmTest/java`.
 
 - Cycle: 1.3.40 warning; 1.9.20 error; >1.9.20 API removed (buildscript compilation failure). This has a different timeline than the rest of the deprecated `targetPresets` API.
 
-### Deprecated legacy Android source set layout
+#### Deprecated legacy Android source set layout
 
 - The new Android source set layout is the default since Kotlin 1.9.0; use of the `kotlin.mpp.androidSourceSetLayoutVersion` Gradle property triggers a deprecation diagnostic.
 - Cycle: <=1.9.0 warning when `kotlin.mpp.androidSourceSetLayoutVersion=1` is used (suppressible with `kotlin.mpp.androidSourceSetLayoutVersion1.nowarn=true`); 1.9.20 error that cannot be suppressed; 2.4.0 legacy layout support and the property removed (KT-82265).
 
-### Deprecated `commonMain` and `commonTest` with custom `dependsOn`
+#### Deprecated `commonMain` and `commonTest` with custom `dependsOn`
 
 - `commonMain` and `commonTest` are the roots of the `main` / `test` source set hierarchies; accessing `dependsOn` on them is deprecated.
 - To migrate `customCommonMain` (with `commonMain.dependsOn(customCommonMain)`): copy its sources, dependencies and compiler option settings into `commonMain`. In the rare case it participates in more compilations than `commonMain`, "swap" the two source sets' sources and settings.
 - Cycle: 1.9.0 warning on `dependsOn` in `commonMain`; >=1.9.20 error for `commonMain` or `commonTest`.
 
-### New approach to forward declarations
+#### New approach to forward declarations
 
 - Forward declarations can only be imported via the `cnames` or `objcnames` packages, and you must explicitly cast to and from the corresponding C / Objective-C forward declaration.
 - Example: a C library `library.package` declaring `cstructName` was previously imported with `import library.package.cstructName`; now use `import cnames.structs.cstructName` (same for `objcnames`).

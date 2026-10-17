@@ -97,6 +97,6 @@ actual fun determineCurrentRuntime(): CurrentRuntime {
 
 ## Related
 
-- [Compose UI testing](../compose-ui/testing.md)
-- [Targets and source sets](../project-structure/targets-and-source-sets.md)
-- [Platform-specific APIs](../project-structure/platform-specific-apis.md)
+- Compose UI testing
+- Targets and source sets
+- Platform-specific APIs

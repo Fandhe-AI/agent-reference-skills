@@ -352,4 +352,4 @@ Window v2 size providers (`WindowSizeProvider`):
 - [Menu bar](./menu-bar.md)
 - [Swing interoperability](./swing-interoperability.md)
 - [Keyboard events](./keyboard.md)
-- [Popups](../compose-ui/popups.md)
+- Popups

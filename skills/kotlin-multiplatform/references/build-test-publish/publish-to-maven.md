@@ -76,9 +76,9 @@ jobs:
     runs-on: macOS-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3  # v4
         with:
           distribution: 'zulu'
           java-version: 21
@@ -115,6 +115,7 @@ GitHub repository secrets used by the workflow:
 - `publishToMavenCentral` requires releasing the deployment manually on the Maven Central Deployments dashboard (after it reaches the validated state, click Publish). `publishAndReleaseToMavenCentral` fully automates the release. Artifacts usually become public in about 15-30 minutes but can take several hours; indexing can take longer.
 - `--no-configuration-cache` is used because the publication plugin does not support Gradle configuration cache (open Gradle issue). The workflow can also trigger on tag push.
 - Plugin version 0.37.0 is the value pinned by the docs at the time of capture; check the plugin's Releases page for the latest.
+- The official tutorial references actions/checkout@v4 and actions/setup-java@v4; this page pins them to the commit SHAs those tags resolved to (2026-10-17) per this repository's third-party action pinning rule.
 - Gradle publishing mechanics and Maven POM requirements overlap the `android-build-gradle` skill (publish-library); this page is the KMP-specific Maven Central tutorial.
 
 ## Related

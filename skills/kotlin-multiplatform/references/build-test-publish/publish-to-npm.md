@@ -89,11 +89,11 @@ jobs:
     steps:
       # Check out the triggering branch
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
 
       # Set up the JDK to run the Gradle task
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3  # v4
         with:
           distribution: 'zulu'
           java-version: 21
@@ -113,6 +113,7 @@ jobs:
 - CI: the npm Trusted Publisher mechanism uses OpenID Connect, avoiding tokens. The workflow needs `permissions: id-token: write` and `contents: read`. After publishing the package once, open the package page, Settings, Trusted Publisher, choose GitHub Actions, and enter the GitHub user or organization, repository name, and workflow file name (`publish.yml`), then click Setup connection. npm does not verify the provided coordinates, so enter them correctly.
 - The workflow can also trigger on tag push. Keep the tag aligned with the module version.
 - Plugin version 3.7.0 is the value pinned by the docs at the time of capture; check the plugin's Releases page for the latest.
+- The official tutorial references actions/checkout@v4 and actions/setup-java@v4; this page pins them to the commit SHAs those tags resolved to (2026-10-17) per this repository's third-party action pinning rule.
 - Gradle publishing in general overlaps the `android-build-gradle` skill; this page is the KMP / Kotlin JS npm-specific tutorial.
 
 ## Related

@@ -110,4 +110,4 @@ kotlin {
 - [Publish your library to Maven Central](./publish-to-maven.md)
 - [Publish your library to npm](./publish-to-npm.md)
 - [Configure compilations](./configure-compilations.md)
-- [Add dependencies](../project-structure/add-dependencies.md)
+- Add dependencies

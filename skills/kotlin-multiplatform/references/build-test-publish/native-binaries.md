@@ -148,6 +148,6 @@ Build types: `DEBUG` (non-optimized, extra metadata for debugger tools) and `REL
 
 ## Related
 
-- [Native targets DSL](../gradle-dsl/dsl-targets.md)
+- Native targets DSL
 - [Configure compilations](./configure-compilations.md)
 - [Publish your application](./publish-apps.md)

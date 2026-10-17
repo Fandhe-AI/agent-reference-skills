@@ -160,6 +160,6 @@ Native interop support:
 
 ## Related
 
-- [Compilations DSL](../gradle-dsl/dsl-compilations.md)
-- [Source set hierarchy](../project-structure/hierarchy.md)
+- Compilations DSL
+- Source set hierarchy
 - [Build final native binaries](./native-binaries.md)

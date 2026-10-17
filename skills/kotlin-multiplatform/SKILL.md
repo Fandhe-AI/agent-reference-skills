@@ -10,6 +10,8 @@ user-invocable: false
 
 # Kotlin Multiplatform / Compose Multiplatform
 
+> 分割 PR の途中段階。現在収録済み: references/{build-test-publish, compatibility, compose-architecture, compose-desktop}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+
 JetBrains の `kotlin-multiplatform-dev-docs`（`kotlinlang.org/docs/multiplatform/**` と Compose Multiplatform ドキュメント）を蒸留したリファレンススキル。`kotlinlang.org/docs/**` のうち `multiplatform/` 以外は kotlin スキルの担当。
 
 ## 対象バージョン

@@ -94,5 +94,5 @@ Decoding functions for images that are not application resources (read the bytes
 - [Tray and notifications](./tray.md)
 - [Native distributions](./native-distribution.md)
 - [Top-level windows management](./windows-management.md)
-- [Setup and configuration for multiplatform resources](../compose-resources/resources-setup.md)
-- [Using multiplatform resources in your app](../compose-resources/resources-usage.md)
+- Setup and configuration for multiplatform resources
+- Using multiplatform resources in your app
