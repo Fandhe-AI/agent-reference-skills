@@ -22,7 +22,7 @@ setp.eq.f32  p,y,0;     // is y zero?
 
 ## Notes
 
-- PTX ISA 9.3 — Chapter 9 (sections 9.1–9.6)
+- PTX ISA 9.4 — Chapter 9 (sections 9.1–9.6)
 - Predicated execution allows data-dependent control flow within a warp without explicit branching, reducing divergence.
 - The instruction categories themselves (9.7.x) are split across `instructions-*.md` pages by official subsection grouping.
 

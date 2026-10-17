@@ -35,7 +35,7 @@ PTX defines named state spaces for organizing memory and register access, and a 
 
 ## Notes
 
-- PTX ISA 9.3 — Chapter 5
+- PTX ISA 9.4 — Chapter 5 (9.4 added `.im2col_no_offs::w` to the §5.5.5 heading "im2col::w, im2col_no_offs::w and im2col::w::128 modes")
 - Variable declarations combine a state space, a type, a name, and an optional array size: `.[state-space] .[type] name[size];`.
 
 ## Related

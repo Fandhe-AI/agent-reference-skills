@@ -63,4 +63,4 @@ int main(void)
 - Peer access is directional and must be enabled from both sides for a bidirectional copy: `cudaSetDevice(gpuid0); cudaDeviceEnablePeerAccess(gpuid1, 0)` only allows GPU0 to access GPU1's memory, not the reverse.
 - Once peer access is enabled, `cudaMemcpy(..., cudaMemcpyDefault)` (or `cudaMemcpyPeerAsync` for explicit stream ordering) transfers directly device-to-device over PCIe/NVLink, without allocating or copying through a host staging buffer.
 - Always pair `cudaDeviceEnablePeerAccess` with `cudaDeviceDisablePeerAccess` during cleanup, and call it on the device that originally enabled access (the current device at the time of the call, via `cudaSetDevice`).
-- Derived from the official NVIDIA/cuda-samples sample "simpleP2P" (cpp/0_Introduction), tag `v13.3`.
+- Derived from the official NVIDIA/cuda-samples sample "simpleP2P" (cpp/0_Introduction), tag `v13.4`.

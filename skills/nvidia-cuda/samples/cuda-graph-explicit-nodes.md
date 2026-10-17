@@ -1,167 +1,201 @@
 # CUDA Graph via Explicit Node Construction
 
-Build a `cudaGraph_t` node-by-node with `cudaGraphAddKernelNode` / `cudaGraphAddMemcpyNode` / `cudaGraphAddHostNode`, wiring dependencies explicitly instead of inferring them from stream-capture order.
+Build a `cudaGraph_t` node-by-node with the unified `cudaGraphAddNode` and a `cudaGraphNodeParams` struct, wiring dependencies explicitly instead of inferring them from stream-capture order.
 
 ```cpp
+#include <cub/cub.cuh>
 #include <cuda_runtime.h>
-#include <stdio.h>
+#include <cstdio>
+#include <cstdlib>
 #include <vector>
 
-// Each block reduces its slice of input into one partial sum in output[blockIdx.x].
-// The grid-stride loop lets a fixed-size grid cover an input of any length,
-// since numBlocks * blockDim can be far smaller than n.
-__global__ void reduce(const float *input, double *output, size_t n)
+#define THREADS_PER_BLOCK 512
+
+typedef struct callBackData
 {
-    extern __shared__ double sdata[];
-    size_t tid = threadIdx.x;
-    double sum = 0.0;
-    for (size_t i = blockIdx.x * blockDim.x + tid; i < n; i += (size_t)blockDim.x * gridDim.x) {
-        sum += (double)input[i];
-    }
-    sdata[tid] = sum;
-    __syncthreads();
-    for (size_t s = blockDim.x / 2; s > 0; s >>= 1) {
-        if (tid < s) {
-            sdata[tid] += sdata[tid + s];
-        }
-        __syncthreads();
-    }
-    if (tid == 0) {
-        output[blockIdx.x] = sdata[0];
-    }
+    const char *fn_name;
+    double     *data;
+} callBackData_t;
+
+// Host-callback node body: prints the reduced result, then resets it for the next launch.
+inline void CUDART_CB myHostNodeCallback(void *data)
+{
+    callBackData_t *tmp    = (callBackData_t *)(data);
+    double         *result = (double *)(tmp->data);
+    printf("[%s] Host callback final reduced sum = %lf\n", tmp->fn_name, *result);
+    *result = 0.0;
 }
 
-// Single-block final reduction of the per-block partial sums into one scalar.
-__global__ void reduceFinal(const double *partials, double *result, size_t n)
+// Pass 1: reduce the input float vector to one partial sum per block.
+__global__ void reduce(float *inputVec, double *outputVec, size_t inputSize, size_t outputSize)
 {
-    extern __shared__ double sdata[];
-    size_t tid = threadIdx.x;
-    sdata[tid] = (tid < n) ? partials[tid] : 0.0;
-    __syncthreads();
-    for (size_t s = blockDim.x / 2; s > 0; s >>= 1) {
-        if (tid < s) {
-            sdata[tid] += sdata[tid + s];
-        }
-        __syncthreads();
-    }
-    if (tid == 0) {
-        *result = sdata[0];
-    }
+    typedef cub::BlockReduce<double, THREADS_PER_BLOCK> BlockReduceT;
+    __shared__ typename BlockReduceT::TempStorage temp_storage;
+
+    size_t globaltid = blockIdx.x * blockDim.x + threadIdx.x;
+    double temp_sum = 0.0;
+    for (size_t i = globaltid; i < inputSize; i += (size_t)gridDim.x * blockDim.x)
+        temp_sum += (double)inputVec[i];
+
+    double block_sum = BlockReduceT(temp_storage).Sum(temp_sum);
+    if (threadIdx.x == 0 && blockIdx.x < outputSize)
+        outputVec[blockIdx.x] = block_sum;
 }
 
-void CUDART_CB hostCallback(void *userData)
+// Pass 2: reduce the per-block partial sums to a single scalar result.
+__global__ void reduceFinal(double *inputVec, double *result, size_t inputSize)
 {
-    double *result = (double *)userData;
-    printf("host node saw result = %f\n", *result);
+    typedef cub::BlockReduce<double, THREADS_PER_BLOCK> BlockReduceT;
+    __shared__ typename BlockReduceT::TempStorage temp_storage;
+
+    size_t globaltid = blockIdx.x * blockDim.x + threadIdx.x;
+    double temp_sum = 0.0;
+    for (size_t i = globaltid; i < inputSize; i += (size_t)gridDim.x * blockDim.x)
+        temp_sum += (double)inputVec[i];
+
+    double block_sum = BlockReduceT(temp_storage).Sum(temp_sum);
+    if (threadIdx.x == 0)
+        result[0] = block_sum;
 }
 
-int main(void)
+void cudaGraphsManual(float *inputVec_h, float *inputVec_d, double *outputVec_d,
+                      double *result_d, size_t inputSize, size_t numOfBlocks)
 {
-    const size_t inputSize = 1 << 20;
-    const size_t numBlocks = 256;
+    cudaStream_t                 streamForGraph;
+    cudaGraph_t                  graph;
+    std::vector<cudaGraphNode_t> nodeDependencies;
+    cudaGraphNode_t              memcpyNode, kernelNode;
+    double                       result_h = 0.0;
 
-    float *inputVec_d;
-    double *outputVec_d, *result_d;
-    cudaMalloc(&inputVec_d, sizeof(float) * inputSize);
-    cudaMalloc(&outputVec_d, sizeof(double) * numBlocks);
-    cudaMalloc(&result_d, sizeof(double));
+    cudaStreamCreate(&streamForGraph);
 
-    float *inputVec_h;
-    cudaMallocHost(&inputVec_h, sizeof(float) * inputSize);
-    // Pinned like inputVec_h: graph memcpy nodes require device or
-    // pinned/device-mapped host memory, not pageable stack memory.
-    double *result_h;
-    cudaMallocHost(&result_h, sizeof(double));
-    *result_h = 0.0;
+    // cudaGraphAddNode is the unified node-creation API: one call for every node type,
+    // driven by a cudaGraphNodeParams struct (a .type tag + a union of per-type params).
+    // The struct has reserved fields that must be zero, so re-zero it with "= {}" per node.
+    cudaGraphNodeParams nodeParams   = {};
+    cudaMemcpy3DParms   memcpyParams = {0};
 
-    cudaGraph_t graph;
-    cudaGraphCreate(&graph, 0);
-
-    cudaMemcpy3DParms memcpyParams = {0};
     memcpyParams.srcPtr = make_cudaPitchedPtr(inputVec_h, sizeof(float) * inputSize, inputSize, 1);
     memcpyParams.dstPtr = make_cudaPitchedPtr(inputVec_d, sizeof(float) * inputSize, inputSize, 1);
     memcpyParams.extent = make_cudaExtent(sizeof(float) * inputSize, 1, 1);
     memcpyParams.kind   = cudaMemcpyHostToDevice;
 
-    cudaGraphNode_t memcpyNode;
-    // No dependency array (NULL, 0): this node has no predecessors, so it
-    // can run as soon as the graph is launched.
-    cudaGraphAddMemcpyNode(&memcpyNode, graph, NULL, 0, &memcpyParams);
+    cudaGraphCreate(&graph, 0);
 
-    void *kernelArgs[3] = {(void *)&inputVec_d, (void *)&outputVec_d, (void *)&inputSize};
-    cudaKernelNodeParams reduceParams = {0};
-    reduceParams.func           = (void *)reduce;
-    reduceParams.gridDim        = dim3((unsigned int)numBlocks, 1, 1);
-    reduceParams.blockDim       = dim3(256, 1, 1);
-    reduceParams.sharedMemBytes = 256 * sizeof(double);
-    reduceParams.kernelParams   = kernelArgs;
+    // Node 1: H2D memcpy — no dependencies (NULL, 0). The copy descriptor
+    // nests in nodeParams.memcpy.copyParams.
+    nodeParams                   = {};
+    nodeParams.type              = cudaGraphNodeTypeMemcpy;
+    nodeParams.memcpy.copyParams = memcpyParams;
+    cudaGraphAddNode(&memcpyNode, graph, NULL, /*dependencyData=*/NULL, 0, &nodeParams);
+    nodeDependencies.push_back(memcpyNode);
 
-    cudaGraphNode_t reduceNode;
-    cudaGraphNode_t reduceDeps[] = {memcpyNode};
-    // Explicitly declares "reduceNode depends on memcpyNode" — the graph
-    // scheduler will not start it until memcpyNode has completed.
-    cudaGraphAddKernelNode(&reduceNode, graph, reduceDeps, 1, &reduceParams);
+    void *kernelArgs[4] = {(void *)&inputVec_d, (void *)&outputVec_d, &inputSize, &numOfBlocks};
 
-    void *finalArgs[3] = {(void *)&outputVec_d, (void *)&result_d, (void *)&numBlocks};
-    cudaKernelNodeParams finalParams = {0};
-    finalParams.func           = (void *)reduceFinal;
-    finalParams.gridDim        = dim3(1, 1, 1);
-    finalParams.blockDim       = dim3(256, 1, 1);
-    finalParams.sharedMemBytes = 256 * sizeof(double);
-    finalParams.kernelParams   = finalArgs;
+    // Node 2: first reduction kernel — depends on the H2D memcpy.
+    nodeParams                       = {};
+    nodeParams.type                  = cudaGraphNodeTypeKernel;
+    nodeParams.kernel.func           = (void *)reduce;
+    nodeParams.kernel.gridDim        = dim3(numOfBlocks, 1, 1);
+    nodeParams.kernel.blockDim       = dim3(THREADS_PER_BLOCK, 1, 1);
+    nodeParams.kernel.sharedMemBytes = 0;
+    nodeParams.kernel.kernelParams   = (void **)kernelArgs;
+    nodeParams.kernel.extra          = NULL;
+    cudaGraphAddNode(&kernelNode, graph, nodeDependencies.data(), /*dependencyData=*/NULL,
+                     nodeDependencies.size(), &nodeParams);
+    nodeDependencies.clear();
+    nodeDependencies.push_back(kernelNode);
 
-    cudaGraphNode_t finalNode;
-    cudaGraphNode_t finalDeps[] = {reduceNode};
-    cudaGraphAddKernelNode(&finalNode, graph, finalDeps, 1, &finalParams);
+    void *kernelArgs2[3] = {(void *)&outputVec_d, (void *)&result_d, &numOfBlocks};
 
-    cudaMemcpy3DParms resultCopyParams = {0};
-    resultCopyParams.srcPtr = make_cudaPitchedPtr(result_d, sizeof(double), 1, 1);
-    resultCopyParams.dstPtr = make_cudaPitchedPtr(result_h, sizeof(double), 1, 1);
-    resultCopyParams.extent = make_cudaExtent(sizeof(double), 1, 1);
-    resultCopyParams.kind   = cudaMemcpyDeviceToHost;
+    // Node 3: final reduction kernel — depends on Node 2.
+    nodeParams                       = {};
+    nodeParams.type                  = cudaGraphNodeTypeKernel;
+    nodeParams.kernel.func           = (void *)reduceFinal;
+    nodeParams.kernel.gridDim        = dim3(1, 1, 1);
+    nodeParams.kernel.blockDim       = dim3(THREADS_PER_BLOCK, 1, 1);
+    nodeParams.kernel.sharedMemBytes = 0;
+    nodeParams.kernel.kernelParams   = kernelArgs2;
+    nodeParams.kernel.extra          = NULL;
+    cudaGraphAddNode(&kernelNode, graph, nodeDependencies.data(), /*dependencyData=*/NULL,
+                     nodeDependencies.size(), &nodeParams);
+    nodeDependencies.clear();
+    nodeDependencies.push_back(kernelNode);
 
-    cudaGraphNode_t resultCopyNode;
-    cudaGraphNode_t resultCopyDeps[] = {finalNode};
-    // Copies the device-side scalar back to result_h before the host node
-    // runs — without this D2H copy, the callback below only ever observes
-    // the initial value of result_h.
-    cudaGraphAddMemcpyNode(&resultCopyNode, graph, resultCopyDeps, 1, &resultCopyParams);
+    memset(&memcpyParams, 0, sizeof(memcpyParams));
+    memcpyParams.srcPtr = make_cudaPitchedPtr(result_d, sizeof(double), 1, 1);
+    memcpyParams.dstPtr = make_cudaPitchedPtr(&result_h, sizeof(double), 1, 1);
+    memcpyParams.extent = make_cudaExtent(sizeof(double), 1, 1);
+    memcpyParams.kind   = cudaMemcpyDeviceToHost;
 
-    cudaHostNodeParams hostParams = {0};
-    hostParams.fn       = hostCallback;
-    hostParams.userData = result_h;
+    // Node 4: D2H memcpy — copies the scalar result back to the host.
+    nodeParams                   = {};
+    nodeParams.type              = cudaGraphNodeTypeMemcpy;
+    nodeParams.memcpy.copyParams = memcpyParams;
+    cudaGraphAddNode(&memcpyNode, graph, nodeDependencies.data(), /*dependencyData=*/NULL,
+                     nodeDependencies.size(), &nodeParams);
+    nodeDependencies.clear();
+    nodeDependencies.push_back(memcpyNode);
 
     cudaGraphNode_t hostNode;
-    cudaGraphNode_t hostDeps[] = {resultCopyNode};
-    cudaGraphAddHostNode(&hostNode, graph, hostDeps, 1, &hostParams);
+    callBackData_t  hostFnData;
+    hostFnData.data    = &result_h;
+    hostFnData.fn_name = "cudaGraphsManual";
+
+    // Node 5: host callback — runs on the CPU after the D2H copy completes.
+    // The .host member is cudaHostNodeParamsV2 (fn + userData, plus a syncMode field
+    // left at 0 by the zero-init above).
+    nodeParams               = {};
+    nodeParams.type          = cudaGraphNodeTypeHost;
+    nodeParams.host.fn       = myHostNodeCallback;
+    nodeParams.host.userData = &hostFnData;
+    cudaGraphAddNode(&hostNode, graph, nodeDependencies.data(), /*dependencyData=*/NULL,
+                     nodeDependencies.size(), &nodeParams);
 
     cudaGraphExec_t graphExec;
     cudaGraphInstantiate(&graphExec, graph, NULL, NULL, 0);
 
-    cudaStream_t streamForGraph;
-    cudaStreamCreate(&streamForGraph);
-    cudaGraphLaunch(graphExec, streamForGraph);
-    cudaStreamSynchronize(streamForGraph);
+    // Refill the host input before each launch so the H2D copy node processes new data.
+    for (int i = 0; i < 3; i++) {
+        for (size_t j = 0; j < inputSize; j++)
+            inputVec_h[j] = (rand() & 0xFF) / (float)RAND_MAX;
+        cudaGraphLaunch(graphExec, streamForGraph);
+        cudaStreamSynchronize(streamForGraph);
+    }
 
     cudaGraphExecDestroy(graphExec);
     cudaGraphDestroy(graph);
     cudaStreamDestroy(streamForGraph);
+}
+
+int main()
+{
+    size_t size      = 1 << 24;
+    size_t maxBlocks = 512;
+
+    float  *inputVec_h = NULL, *inputVec_d = NULL;
+    double *outputVec_d = NULL, *result_d = NULL;
+
+    cudaMallocHost(&inputVec_h, sizeof(float) * size);
+    cudaMalloc(&inputVec_d, sizeof(float) * size);
+    cudaMalloc(&outputVec_d, sizeof(double) * maxBlocks);
+    cudaMalloc(&result_d, sizeof(double));
+
+    cudaGraphsManual(inputVec_h, inputVec_d, outputVec_d, result_d, size, maxBlocks);
+
     cudaFree(inputVec_d);
     cudaFree(outputVec_d);
     cudaFree(result_d);
     cudaFreeHost(inputVec_h);
-    cudaFreeHost(result_h);
-    return 0;
+    return EXIT_SUCCESS;
 }
 ```
 
 ## Notes
 
-- Each `cudaGraphAdd*Node` call takes an explicit dependency array (e.g. `reduceDeps = {memcpyNode}`); the graph scheduler only starts a node once every node in its dependency array has completed, independent of the order nodes were added.
-- A node with an empty dependency array (`NULL, 0`) has no predecessors and is eligible to run immediately when the graph launches, so multiple independent root nodes execute concurrently if hardware resources allow.
-- `cudaGraphAddHostNode` reads whatever is in its `userData` pointer at the time it runs; a D2H `cudaGraphAddMemcpyNode` (`resultCopyNode`) must depend on the producing kernel node and the host node must in turn depend on that copy, or the callback observes stale/initial host memory instead of the computed value.
-- Graph memcpy nodes only accept device memory or pinned/device-mapped host memory — a plain stack/heap (pageable) destination can fail at node creation or graph instantiation. `result_h` is therefore allocated with `cudaMallocHost` (and freed with `cudaFreeHost`), mirroring the H2D path's `inputVec_h`, instead of being an ordinary stack variable.
-- `cudaGraphAddHostNode` runs its callback on a CPU thread once its GPU-side dependencies complete — useful for triggering host-side bookkeeping (logging, moving to the next batch) synchronized to graph progress without a blocking `cudaStreamSynchronize`.
-- `reduce`'s grid-stride loop (`i += blockDim.x * gridDim.x`) is required because `numBlocks * blockDim.x` (256 * 256 = 65,536) is far smaller than `inputSize` (1 << 20 = 1,048,576); a single `i = blockIdx.x * blockDim.x + tid` load per thread would silently drop most of the input from the sum.
-- Rebuilding node parameters and calling `cudaGraphAddKernelNode` again for a changed launch configuration is possible via `cudaGraphExecKernelNodeSetParams` for cheap re-instantiation, avoiding a full graph rebuild when only e.g. kernel arguments change between launches.
-- Derived from the official NVIDIA/cuda-samples sample "simpleCudaGraphs" (`cudaGraphsManual`, cpp/3_CUDA_Features), tag `v13.3`.
+- Every node is created with the same `cudaGraphAddNode(&node, graph, dependencies, /*dependencyData=*/NULL, numDependencies, &nodeParams)` call; the node kind is selected by `nodeParams.type` (`cudaGraphNodeTypeMemcpy` / `cudaGraphNodeTypeKernel` / `cudaGraphNodeTypeHost`) and the per-type fields live in the matching union member (`.memcpy.copyParams`, `.kernel`, `.host`).
+- Migration: v13.3 of this sample used the per-type calls `cudaGraphAddMemcpyNode` / `cudaGraphAddKernelNode` / `cudaGraphAddHostNode`; v13.4 replaces them with `cudaGraphAddNode`. Reset `nodeParams` with `= {}` before each node because the struct has reserved fields that must be zero.
+- A node waits for every node in its dependency array; an empty array (`NULL, 0`) makes it a root that can start as soon as the graph launches.
+- Host-callback state: `myHostNodeCallback` resets `*result` to `0.0` after printing, and the host input is refilled before each `cudaGraphLaunch`, so one instantiated graph processes new data on every launch.
+- In v13.4 the original `simpleCudaGraphs.cu` is split into `simpleCudaGraphs_capture.cu` and `simpleCudaGraphs_explicit.cu`, sharing the kernels, callback and `THREADS_PER_BLOCK` via `simpleCudaGraphs.cuh`; this page inlines the shared pieces to stay self-contained. The upstream explicit sample also demonstrates `cudaGraphClone` (omitted here).
+- Derived from the official NVIDIA/cuda-samples sample "simpleCudaGraphs_explicit.cu" (`cudaGraphsManual`, cpp/3_CUDA_Features), tag `v13.4`.

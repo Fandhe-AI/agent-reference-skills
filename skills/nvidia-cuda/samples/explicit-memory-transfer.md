@@ -51,4 +51,5 @@ int main(void)
 - `cudaMemcpyAsync` only behaves asynchronously with respect to the host when the host buffer is page-locked (`cudaHostAlloc` / `cudaMallocHost`); passing regular `malloc`'d memory silently falls back to a synchronous copy.
 - Pinned memory is a limited system resource — over-allocating it can degrade overall system performance, so pin only the buffers that are actually on the hot transfer path.
 - Always pair `cudaHostAlloc` with `cudaFreeHost` (not `free`) and `cudaMalloc` with `cudaFree`.
+- This page follows the v13.3 `simpleStreams.cu`. In v13.4 upstream rewrote it with `NUM_STREAMS 4` and a `square_kernel`, allocating the host buffers with `cudaMallocHost`.
 - Derived from the official NVIDIA/cuda-samples sample "simpleStreams" (cpp/0_Introduction), tag `v13.3`.

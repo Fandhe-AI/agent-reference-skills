@@ -25,7 +25,7 @@ PTX source modules are ASCII text. A module begins with directive statements (`.
 
 ## Notes
 
-- PTX ISA 9.3 — Chapter 4
+- PTX ISA 9.4 — Chapter 4
 - Reserved keywords include state-space specifiers (`.reg`, `.global`, `.shared`, `.local`, `.const`), type specifiers (`.u32`, `.f32`, `.b64`, ...), and instruction mnemonics (`add`, `mul`, `ld`, `st`, ...).
 - Integer constants may be written in decimal, hexadecimal, or binary form; floating-point constants use standard decimal or scientific notation.
 

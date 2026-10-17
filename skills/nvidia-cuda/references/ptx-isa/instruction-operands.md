@@ -21,7 +21,7 @@ mov.v4.f32 {a,b,c,d}, V;   // vector operand (brace notation)
 
 ## Notes
 
-- PTX ISA 9.3 — Chapter 6
+- PTX ISA 9.4 — Chapter 6
 - Operand size may exceed instruction-type size; the ISA defines rounding modifiers and conversion rules for such cases.
 - Address operands support generic addressing across state spaces, resolved via `cvta`.
 

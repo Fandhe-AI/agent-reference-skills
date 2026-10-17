@@ -72,4 +72,4 @@ int main(void)
 - `ct::partition_view{span, ct::shape{1024_ic}}` splits a tensor into fixed 1024-element chunks; `idx = ct::bid().x` selects which chunk the current tile block processes.
 - `load_masked` / `store_masked` clip accesses to the tensor's declared extent, so the last chunk (`n=8000` over 1024-element tiles leaves a 704-element remainder) is handled without a separate bounds-check code path.
 - `ct::assume_aligned(ptr, 16_ic)` (omitted here for brevity) tells the compiler the pointer is 16-byte aligned, enabling wider vectorized tile loads — add it when the underlying allocation is guaranteed to be aligned.
-- Derived from the official NVIDIA/cuda-samples sample "tileVectorAdd" (cpp/9_CUDA_Tile), tag `v13.3`.
+- Derived from the official NVIDIA/cuda-samples sample "tileVectorAdd" (cpp/9_CUDA_Tile), tag `v13.4`.

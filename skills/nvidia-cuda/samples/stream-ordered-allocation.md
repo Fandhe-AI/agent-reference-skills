@@ -76,4 +76,4 @@ int main(void)
 - `cudaMallocAsync`/`cudaFreeAsync` enqueue the allocation and free as stream operations — no explicit synchronization is needed between the alloc, the kernel that uses it, and the matching free as long as they are all issued on the same stream in that order.
 - The default memory pool's release threshold is `0`, meaning the driver may return freed memory to the OS immediately; setting `cudaMemPoolAttrReleaseThreshold` to `ULONG_MAX` keeps the pool's high-water mark resident, which pays off for allocate/free patterns repeated many times in a loop.
 - `cudaMallocAsync` calls are still ordered relative to each other and to kernel launches on the same stream, so `d_a`/`d_b`/`d_c` can be safely consumed by `vectorAddGPU` without an extra `cudaStreamSynchronize` in between.
-- Derived from the official NVIDIA/cuda-samples sample "streamOrderedAllocation" (cpp/2_Concepts_and_Techniques), tag `v13.3`.
+- Derived from the official NVIDIA/cuda-samples sample "streamOrderedAllocation" (cpp/2_Concepts_and_Techniques), tag `v13.4`.

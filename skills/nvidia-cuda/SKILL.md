@@ -3,11 +3,12 @@ name: nvidia-cuda
 description: >
   NVIDIA CUDA GPU 並列コンピューティングリファレンス。
   CUDA C++ / CUDA Python, kernel, nvcc, Unified Memory, CUDA Graphs,
-  Cooperative Groups, Driver API, マルチ GPU。
+  Cooperative Groups, Green Contexts, Driver API, マルチ GPU。
   PTX ISA 命令セット, state space, MMA 命令。
-  Blackwell チューニング, Streaming Multiprocessor, NVLink。
-  CUTLASS / CuTe DSL / CuTe C++ GEMM, Tensor Core, tcgen05,
-  Operator API, nsight-compute, compute-sanitizer。
+  Blackwell チューニング, Streaming Multiprocessor, NVLink,
+  Locality Domains, Compute Fabric Transport。
+  CUTLASS / CuTe DSL / CuTe C++ GEMM, Tensor Core, tcgen05, Task Scheduling,
+  Operator API, nvMatmulHeuristics, nsight-compute, compute-sanitizer。
 user-invocable: false
 ---
 
@@ -52,6 +53,8 @@ skills/nvidia-cuda/
         cooperative-groups.md
         programmatic-dependent-launch.md
         green-contexts.md
+        locality-domains.md
+        compute-fabric-transport.md
         lazy-loading.md
         error-log-management.md
         async-barriers.md
@@ -126,6 +129,27 @@ skills/nvidia-cuda/
         framework-integration.md
         debugging.md
         iket-profiling.md
+        primitives-api.md
+        task-scheduling.md
+        ts-introduction.md
+        ts-resources.md
+        ts-pipelines.md
+        ts-schedules.md
+        ts-patterns.md
+        ts-validation.md
+        ts-printout.md
+        ts-allocators.md
+        ts-pipeline-groups.md
+        ts-pdl.md
+        ts-api-task-scheduling.md
+        ts-api-resources.md
+        ts-api-task.md
+        ts-api-task-manager.md
+        ts-api-schedule-builder.md
+        ts-api-memory.md
+        ts-api-pipeline-group.md
+        ts-api-pipeline.md
+        ts-api-enums.md
         autotuning-gemm.md
         compile-with-tvm-ffi.md
         dsl-ahead-of-time-compilation.md
@@ -162,10 +186,12 @@ skills/nvidia-cuda/
         tutorial-004-fake-tensors.md
         tutorial-005-grouped-gemm-contiguous-offset.md
         tutorial-006-block-scaled-gemm.md
+        tutorial-007-heuristics.md
         api-reference.md
         api-operator.md
         api-arguments.md
         api-discovery.md
+        api-heuristics.md
         api-metadata.md
         api-misc.md
       cpp/
@@ -262,13 +288,13 @@ GB10 Grace Blackwell 実機のハードウェア仕様・DGX OS・PXE/fleet 運�
 | CUDA C++/Python でカーネルを書く、nvcc でビルドする、非同期実行・ストリームを扱う | programming-model | [references/programming-model/README.md](references/programming-model/README.md) |
 | advanced カテゴリ全体の構成（core / features / appendices）を確認したい | advanced | [references/advanced/README.md](references/advanced/README.md) |
 | Driver API・マルチ GPU・advanced host/kernel programming を調べたい | advanced/core | [references/advanced/core/README.md](references/advanced/core/README.md) |
-| CUDA Graphs / Cooperative Groups / Unified Memory / VMM / IPC 等の機能 API を調べたい | advanced/features | [references/advanced/features/README.md](references/advanced/features/README.md) |
+| CUDA Graphs / Cooperative Groups / Unified Memory / VMM / IPC / Green Contexts / Locality Domains / Compute Fabric Transport 等の機能 API を調べたい | advanced/features | [references/advanced/features/README.md](references/advanced/features/README.md) |
 | Compute Capability・環境変数・C++ 言語拡張・メモリ/実行モデルの技術付録を調べたい | advanced/appendices | [references/advanced/appendices/README.md](references/advanced/appendices/README.md) |
 | PTX 命令セット・state space・レジスタ・memory consistency model を調べたい | ptx-isa | [references/ptx-isa/README.md](references/ptx-isa/README.md) |
 | Blackwell アーキテクチャ・SM occupancy・NVLink・メモリシステムのチューニングを知りたい | blackwell-tuning | [references/blackwell-tuning/README.md](references/blackwell-tuning/README.md) |
 | CUTLASS/CuTe 全体のカテゴリ構成（CuTe DSL / Operator API / C++）を確認したい | cutlass | [references/cutlass/README.md](references/cutlass/README.md) |
-| CuTe DSL (Python) で GEMM・MMA・レイアウトを書きたい | cutlass/cute-dsl | [references/cutlass/cute-dsl/README.md](references/cutlass/cute-dsl/README.md) |
-| CUTLASS Operator API（Python、コンパイル済みカーネル呼び出し）を使いたい | cutlass/operator-api | [references/cutlass/operator-api/README.md](references/cutlass/operator-api/README.md) |
+| CuTe DSL (Python) で GEMM・MMA・レイアウト・Task Scheduling (TS) を書きたい | cutlass/cute-dsl | [references/cutlass/cute-dsl/README.md](references/cutlass/cute-dsl/README.md) |
+| CUTLASS Operator API（Python、コンパイル済みカーネル呼び出し・nvMatmulHeuristics による operator ランキング）を使いたい | cutlass/operator-api | [references/cutlass/operator-api/README.md](references/cutlass/operator-api/README.md) |
 | CUTLASS C++ / CuTe C++ でテンプレートベースの GEMM カーネルを実装したい | cutlass/cpp | [references/cutlass/cpp/README.md](references/cutlass/cpp/README.md) |
 | 典型的な使い方を知りたい（vector add, tiled matmul, GEMM, CUDA Graphs 等） | samples | [samples/README.md](samples/README.md) |
 | インストール・nvcc ビルド・nsight プロファイリング・compute-sanitizer コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

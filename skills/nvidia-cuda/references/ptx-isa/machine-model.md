@@ -22,7 +22,7 @@ The target GPU is modeled as a scalable array of multithreaded Streaming Multipr
 
 ## Notes
 
-- PTX ISA 9.3 — Chapter 3
+- PTX ISA 9.4 — Chapter 3
 - The module-header example above is the doc's illustrative directive-placement example (`.version`/`.target` values are the example's own, see directives for current option lists).
 - A warp executes one common instruction at a time; full efficiency is realized when all threads of a warp agree on their execution path.
 - If threads of a warp diverge via a data-dependent conditional branch, the warp serially executes each branch path taken, disabling threads not on that path; divergence occurs only within a warp, and different warps execute independently.

@@ -30,10 +30,13 @@ mov.u64  r1,%clock64;
 | `%pm0`–`%pm7` | Performance-monitoring counters |
 | `%globaltimer` | Global nanosecond timer value |
 | `%dynamic_smem_size` | Dynamic shared-memory size in bytes |
+| `%perctamemoryoffset` (10.34) | `.sreg .u64`: 64-bit address of the current CTA's slice of the per-CTA global memory region (PTX ISA 9.4, `sm_80`+); valid only in entry functions that also specify `.minperctamemory` |
+| `%perctamemorysize` (10.35) | `.sreg .u32`: size in bytes of the per-CTA global memory slice (pitch between consecutive CTA regions), a multiple of 1024; 0 on drivers that do not support per-CTA global memory allocation, otherwise at least the `.minperctamemory` size (PTX ISA 9.4, `sm_80`+) |
 
 ## Notes
 
-- PTX ISA 9.3 — Chapter 10
+- PTX ISA 9.4 — Chapter 10
+- `%perctamemoryoffset` / `%perctamemorysize` are new in PTX ISA 9.4. Example: `mov.u64 %rd0, %perctamemoryoffset;` / `mov.u32 %r0, %perctamemorysize;`.
 - Special registers are read via `mov` and cannot be written to.
 
 ## Related

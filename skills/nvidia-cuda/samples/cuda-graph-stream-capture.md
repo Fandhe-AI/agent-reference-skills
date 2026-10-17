@@ -112,4 +112,4 @@ int main(void)
 - `cudaGraphInstantiate` performs the one-time validation and resource setup; the returned `cudaGraphExec_t` is what `cudaGraphLaunch` replays, and it can be relaunched an arbitrary number of times without re-instantiating.
 - The graph and its instantiated executable are independent objects — destroying `graph` after instantiation is safe and does not invalidate `graphExec`.
 - `reduce`'s grid-stride loop (`i += blockDim.x * gridDim.x`) is required because `numBlocks * blockDim.x` (256 * 256 = 65,536) is far smaller than `inputSize` (1 << 20 = 1,048,576); a single `i = blockIdx.x * blockDim.x + tid` load per thread would silently drop most of the input from the sum.
-- Derived from the official NVIDIA/cuda-samples sample "simpleCudaGraphs" (`cudaGraphsUsingStreamCapture`, cpp/3_CUDA_Features), tag `v13.3`.
+- Derived from the official NVIDIA/cuda-samples sample "simpleCudaGraphs_capture.cu" (`cudaGraphsUsingStreamCapture`, cpp/3_CUDA_Features), tag `v13.4`. The 5-argument `cudaGraphInstantiate` is unchanged from v13.3; the upstream file was split out of `simpleCudaGraphs.cu` in v13.4.

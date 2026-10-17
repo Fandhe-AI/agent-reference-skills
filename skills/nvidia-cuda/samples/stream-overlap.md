@@ -70,4 +70,5 @@ int main(void)
 - `cudaEventRecord(event, 0)` records into the default (legacy) stream; timing spans that include multiple non-default streams still work because `cudaEventSynchronize` waits for the event regardless of which stream recorded it, as long as the recorded event is after all the work of interest.
 - `cudaEventElapsedTime` requires both events to have completed — call `cudaEventSynchronize(stop)` (or a device sync) before reading the elapsed time, otherwise the result is undefined.
 - The host array must be pinned (`cudaHostAlloc`) for the `cudaMemcpyAsync` calls to actually overlap with kernel execution across streams; a pageable host pointer forces an implicit synchronous copy.
+- This page follows the v13.3 `simpleStreams.cu`. In v13.4 upstream rewrote it with `NUM_STREAMS 4` and a `square_kernel` over per-stream device buffers, with host buffers from `cudaMallocHost`.
 - Derived from the official NVIDIA/cuda-samples sample "simpleStreams" (cpp/0_Introduction), tag `v13.3`.

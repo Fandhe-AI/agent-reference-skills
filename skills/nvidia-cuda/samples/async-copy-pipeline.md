@@ -57,4 +57,4 @@ __global__ void matMulAsyncCopy(float *C, const float *A, const float *B, int wA
 - `pipe.consumer_release()` must be called once the stage's consumer work (`__syncthreads()` + accumulation, above) is done, before starting the next stage's `producer_acquire()` — it signals the buffer slot is free to be reused for the next stage's data.
 - A multi-stage `cuda::pipeline` (more than one buffer slot) overlaps the async copy of stage N+1 with the compute of stage N; this single-stage form only overlaps the copy with the copy engine's own latency, and is the simplest correct starting point before adding pipelining depth.
 - Requires compute capability 8.0+ (Ampere) for hardware-accelerated `cuda::memcpy_async`; on earlier architectures the same code compiles but falls back to a synchronous copy.
-- Derived from the official NVIDIA/cuda-samples sample "globalToShmemAsyncCopy" (`MatrixMulAsyncCopySingleStage`, cpp/3_CUDA_Features), tag `v13.3`.
+- Derived from the official NVIDIA/cuda-samples sample "globalToShmemAsyncCopy" (`MatrixMulAsyncCopySingleStage`, cpp/3_CUDA_Features), tag `v13.4`.
