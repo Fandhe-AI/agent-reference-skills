@@ -43,7 +43,7 @@ source: https://docs.rs/crate/fandhe-db-wire-server/0.2.0/source/docs/nosql-api.
 - 完了時の応答本文は原子実行と同じ形（`{"updated":<n>,"operation_id":"..."}`・`{"deleted":<n>,"operation_id":"..."}`。`n` は累計件数）。
 - 1 チャンク以上 commit した後に止まると `409`・`VD001`（`PARTIAL_COMPLETION`）、取り消し済みジョブへの再送・取り消しで止まった文は `409`・`VD002`（`PARTITIONED_DML_CANCELLED`）を返す。本文の `error.data` に `committed`（自テナントで commit 済みの件数）と `operation_id`（クライアントが指定した値）が入る（[error-response.md](./error-response.md) 参照）。同じ要求を再送するとカーソルから再開する。
 - `explain: true` は引き続き未知キーとして `42601`（`EXPLAIN ... PARTITIONED` の NoSQL 版は未対応）。
-- 多列 `set` は JSON パース時点でキーがアルファベット順へ正規化される。分割実行の内容照合ハッシュは SQL の記述順に依存するため、SQL 表層が非アルファベット順で書いた多列 `SET` と同一内容でも表層を跨ぐと `22023` になる（原子的な述語形にもある非対称。単一列、またはアルファベット順で書けば一致する）。
+- 多列 `set` は JSON パース時点でキーがアルファベット順へ正規化される。分割実行の内容照合ハッシュは SQL の記述順に依存するため、SQL 表層が非アルファベット順で書いた多列 `SET` と同一内容でも表層を跨ぐと `22023` になる（単一列、またはアルファベット順で書けば一致する）。この順序依存は述語形（`filter` 形。`mode` なしの原子実行も同じ `push_dml_assignments` を通る）のハッシュのもの。単一行 `where`（`id` 完全一致）形の `update` は PR #992 でスキーマ列順へ正規化済みで、この非対称はない（[op-update-delete.md](./op-update-delete.md) 参照）。根拠（engine 0.2.0 `recovery/content_hash.rs`）: `for_update_where` ／ `for_update_where_partitioned` は `push_dml_assignments` で `SET` 割当を渡された順のまま連結し並べ替えない。スキーマ列順への正規化を述べるのは `for_update_columns`（`id` 指定の部分更新）のコメント側のみ。
 - 長時間要求の注意: 分割実行は 1 つの HTTP 要求の中でチャンクを最後まで進める。クライアントが切断してもサーバー側のジョブは止まらない。実行中のジョブへの再送は `55P03`（503）、中断（`VD001`）後の再送で再開する。クライアント側のタイムアウトは余裕を持って設定すること。
 
 `show_partitioned_dml`／`cancel_partitioned_dml`:

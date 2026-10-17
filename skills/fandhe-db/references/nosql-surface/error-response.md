@@ -66,22 +66,22 @@ Date: <IMF-fixdate>
 | `25001` | `ACTIVE_SQL_TRANSACTION` | 400 | Bad Request | NoSQL 表層の実要求からは到達不能（同上） |
 | `25P01` | `NO_ACTIVE_SQL_TRANSACTION` | 400 | Bad Request | NoSQL 表層の実要求からは到達不能（同上） |
 | `25P02` | `IN_FAILED_SQL_TRANSACTION` | 400 | Bad Request | NoSQL 表層の実要求からは到達不能（同上） |
-| `2BP01` | `DEPENDENT_OBJECTS_STILL_EXIST` | 400 | Bad Request | NoSQL 表層の実要求からは到達不能（`DROP TABLE`／`DROP VIEW` は SQL 表層専用の DDL） |
+| `2BP01` | `DEPENDENT_OBJECTS_STILL_EXIST` | 400 | Bad Request | NoSQL `drop_table` 経由の到達性は未確認（原文は `DROP TABLE`／`DROP VIEW` を SQL 表層専用と記述するが DDL op 追加前の記述） |
 | `42601` | `UNSUPPORTED_SQL_SYNTAX` | 400 | Bad Request | JSON 構文エラー、`op` 別スキーマ違反、`tenant_id` 相当値の自己申告 |
-| `42701` | `DUPLICATE_COLUMN` | 400 | Bad Request | NoSQL 表層の実要求からは到達不能（`CREATE TABLE`・`ALTER TABLE ADD COLUMN` は op 許可リスト外） |
+| `42701` | `DUPLICATE_COLUMN` | 400 | Bad Request | `alter_table` の `add_column` での重複列（CREATE VIEW／CREATE INDEX は引き続き op 許可リスト外） |
 | `42702` | `AMBIGUOUS_COLUMN` | 400 | Bad Request | `aggregate.sort` が複数一致する出力名を参照したとき到達可能（Issue #1270）。`INNER JOIN`〔SQL-28・RLS-10、Issue #925〕は NoSQL 表層の op 語彙に無い |
 | `42703` | `UNDEFINED_COLUMN` | 400 | Bad Request | NoSQL 表層の実要求からは到達不能（`CREATE INDEX` は op 許可リスト外） |
 | `42704` | `UNDEFINED_OBJECT` | 400 | Bad Request | NoSQL 表層の実要求からは到達不能（`DROP INDEX` は op 許可リスト外） |
 | `42710` | `DUPLICATE_OBJECT` | 400 | Bad Request | NoSQL 表層の実要求からは到達不能（`ALTER TABLE ... ADD CONSTRAINT` は SQL 表層専用） |
 | `42723` | `DUPLICATE_FUNCTION` | 400 | Bad Request | NoSQL 表層の実要求からは到達不能（`CREATE FUNCTION` は SQL 表層専用） |
 | `42804` | `DATATYPE_MISMATCH` | 400 | Bad Request | NoSQL 表層の実要求からは到達不能（`CASE`／`COALESCE`／`NULLIF`・集合演算・`INNER JOIN` の結合キー型不一致〔SQL-28・RLS-10、Issue #925〕・式層の演算子／関数引数の型不一致〔Issue #1186〕のいずれも SQL 表層専用） |
-| `42809` | `WRONG_OBJECT_TYPE` | 400 | Bad Request | NoSQL 表層の実要求からは到達不能（`DROP TABLE`／`DROP VIEW`・ビューへの書き込みは SQL 表層専用の DDL） |
+| `42809` | `WRONG_OBJECT_TYPE` | 400 | Bad Request | NoSQL `drop_table` 経由の到達性は未確認（原文は `DROP TABLE`／`DROP VIEW`・ビューへの書き込みを SQL 表層専用と記述するが DDL op 追加前の記述） |
 | `42830` | `INVALID_FOREIGN_KEY` | 400 | Bad Request | `create_table.constraints[kind=foreign_key].references.on_delete`／`on_update`（Issue #1148）が宣言時に常に失敗する組み合わせ（`NOT NULL` 列への `set_null`・DEFAULT の無い `NOT NULL` 列への `set_default` 等） |
 | `42883` | `UNDEFINED_FUNCTION` | 400 | Bad Request | `aggregate` の `sum`／`avg` を `DATE`／`TIMESTAMP` 列に指定した場合（SQL-26、Issue #1186）、または `sum`／`avg`（TEXT 以外は `min`／`max` も）を非数値型（TEXT・BOOLEAN・BYTEA・JSON・ARRAY・UUID・ENUM・VECTOR）の列に指定した場合（Issue #1349。未知関数・非決定的関数の呼び出しは SQL 表層専用で到達しない） |
 | `42P16` | `INVALID_TABLE_DEFINITION` | 400 | Bad Request | `create_table.constraints` に `primary_key` を 2 個以上指定した場合（名前付きを含む。TABLE-22 (d)、Issue #1412・#1437。`ALTER TABLE ... ADD PRIMARY KEY` の重複宣言は SQL 表層専用） |
-| `28000` | `AUTH_REQUIRED` | 401 | Unauthorized | `Authorization` ヘッダ欠落 |
-| `28P01` | `AUTH_INVALID` | 401 | Unauthorized | トークン形式不正・失効・セッション未存在 |
-| `42501` | `FORBIDDEN_TENANT_MISMATCH` | 403 | Forbidden | NoSQL 表層の実要求からは到達不能（射影のみ production エンコーダで固定） |
+| `28000` | `AUTH_REQUIRED` | 401 | Unauthorized | `Authorization` ヘッダ欠落・スキーム不一致・トークン不正・未知・期限切れ・close 済み（`/v1/query` 共通。`/v1/session/close` の二重 close・未知トークンも含む） |
+| `28P01` | `AUTH_INVALID` | 401 | Unauthorized | `POST /v1/session` の資格情報照合失敗・未知ユーザー |
+| `42501` | `FORBIDDEN_TENANT_MISMATCH` | 403 | Forbidden | `--ddl-allowed-users` に含まれないセッションの `create_table`／`alter_table`／`drop_table`（対象テーブルの有無にかかわらず。[ddl.md](./ddl.md) 参照） |
 | `34000` | `INVALID_CURSOR_NAME` | 404 | Not Found | NoSQL 表層の実要求からは到達不能（カーソル〔`DECLARE`／`FETCH`／`CLOSE`〕は SQL 表層専用で op 許可リストに無い） |
 | `42P01` | `TABLE_NOT_FOUND` | 404 | Not Found | 未定義テーブルへの `search`／`scan`／`aggregate`／`insert` |
 | `P0002` | `ROW_NOT_FOUND` | 404 | Not Found | NoSQL 表層の実要求からは到達不能（対応する op が許可リストに無い） |
@@ -89,7 +89,7 @@ Date: <IMF-fixdate>
 | `23505` | `UNIQUE_VIOLATION` | 409 | Conflict | 行 `id` の重複、`PRIMARY KEY`／UNIQUE 制約のテナント内一意性違反（`insert`／`update`）。行制約由来のため commit 済みの根拠にならない |
 | `23505` | `DUPLICATE_OPERATION_ID` | 409 | Conflict | 台帳照合で内容一致と判定された `operation_id` の再送（`insert`／`update`／`delete`。`wire_code` は `UNIQUE_VIOLATION` と共有し `code` で区別。commit 済み確定の根拠。Issue #1180） |
 | `23514` | `CHECK_VIOLATION` | 409 | Conflict | `insert`／`update` が書き込む行が `CHECK` 制約（TABLE-16・TASK-204）を満たさない |
-| `42P07` | `DUPLICATE_TABLE` | 409 | Conflict | NoSQL 表層の実要求からは到達不能（`CREATE TABLE`／`CREATE VIEW`／`CREATE INDEX` は op 許可リスト外） |
+| `42P07` | `DUPLICATE_TABLE` | 409 | Conflict | `create_table` のテーブル名衝突（CREATE VIEW／CREATE INDEX は引き続き op 許可リスト外） |
 | `VD001` | `PARTIAL_COMPLETION` | 409 | Conflict | 分割実行 DML（`update`／`delete` の `mode: "partitioned"`。SQL 表層は `... PARTITIONED`）が 1 チャンク以上 commit した後に止まった（Issue #1130。本文に `data` が付く） |
 | `VD002` | `PARTITIONED_DML_CANCELLED` | 409 | Conflict | `cancel_partitioned_dml`（SQL 表層は `CANCEL PARTITIONED DML`）で取り消された分割実行 DML、または取り消し済みジョブへの再送（Issue #1130。本文に `data` が付く） |
 | `54000` | `PAYLOAD_TOO_LARGE` | 413 | Content Too Large | 要求本文サイズ超過、`filter` 件数超過、INDEX-4 バッチ上限超過、`FOREIGN KEY` 参照アクション連鎖（`ON DELETE CASCADE` 等。Issue #1148）の深さ・行数上限超過（副作用ゼロ） |
@@ -100,18 +100,19 @@ Date: <IMF-fixdate>
 
 **緊急応答の data**
 
-`data` キーは緊急応答（ERR-5・`RECOVER-5` (3) ポインタ。commit 成功境界を跨いだ panic 時に「commit は成功しているかもしれない」ことを伝える契約）にのみ付き、通常応答の直後の 3 キーに加えて `"data":{"state":"may_be_committed"}` を追加する。SQL 表層側（`ErrorResponse` の `D` フィールド `state=may_be_committed`）と状態語を共有しており、両表層で乖離しないことをテストで固定している。
+`data.state == "may_be_committed"` は緊急応答（ERR-5・`RECOVER-5` (3) ポインタ。commit 成功境界を跨いだ panic 時に「commit は成功しているかもしれない」ことを伝える契約）にのみ付き、通常応答の直後の 3 キーに加えて `"data":{"state":"may_be_committed"}` を追加する（分割実行の `VD001`／`VD002` が付ける `{committed, operation_id}` の `data` は別扱い。上記「本文仕様」参照）。SQL 表層側（`ErrorResponse` の `D` フィールド `state=may_be_committed`）と状態語を共有しており、両表層で乖離しないことをテストで固定している。
 
-現状の到達性: `http::response::encode_error_may_be_committed` を呼び出す production 経路は原文時点で `http/` 配下にまだ存在せず、commit 成功境界を跨いだ panic は RECOVER-8 の panic hook が既にプロセス abort へ倒すため、NoSQL 表層の実要求からは `data` 付き応答は現時点で観測できない。エンコーダの契約としては予約済み。
+現状の到達性: `http::response::encode_error_may_be_committed` を呼び出す production 経路は原文時点で `http/` 配下にまだ存在せず、commit 成功境界を跨いだ panic は RECOVER-8 の panic hook が既にプロセス abort へ倒すため、NoSQL 表層の実要求からは `may_be_committed` の緊急応答は現時点で観測できない。エンコーダの契約としては予約済み。
 
 利用者向け指針（接続され次第有効になる契約。現時点では観測不能）: `data.state == "may_be_committed"` を受け取った場合、同一 `operation_id` で `insert` を再送し、台帳照合の結果（内容一致なら `23505`・不一致なら `22023`）で確定させる。これは `insert` の既存の再送契約をそのまま使うもので、`data` 付き応答専用の新たな再送契約を追加するものではない。
 
 ## Notes
 
 - 本ページは NoSQL 表層（HTTP）の応答。SQL 表層（pg wire）の `ErrorResponse` バイト列整形は wire-server の error-response ページ（`../wire-server/error-response.md`）で、`ErrorClass` 自体は getting-started の error-format ページで扱う。
-- 到達不能な 17 分類（`21000`・`42501`・`34000`・`P0002`・`42701`・`42P07`・`2BP01`・`42809`・`42703`・`42704`・`42804`・`42710`・`42723`・`25000`・`25001`・`25P01`・`25P02`）の理由（原文要約）: テナントはセッション（`SessionPrincipal::policy_context()`）からのみ導出し、クライアント自己申告の `tenant_id` 相当値は JSON／ヘッダ／パスいずれの位置でも `42601` で先に拒否するため `42501` を誘発する経路が構造的に無い。`P0002` に対応する op、カーソル操作（`34000`）、明示トランザクション制御（`25xxx`）、ビュー／インデックス DDL・`CREATE FUNCTION`・`ALTER TABLE ... ADD CONSTRAINT`・`CASE`／`COALESCE`／`NULLIF`・集合演算・スカラーサブクエリ・`CREATE TYPE` は NoSQL `op` 許可リストに無い。参照先が他テナントにだけ存在する場合と、どのテナントにも存在しない場合の応答は区別できない（RLS-9・RLS-10）。
-- 原文の到達性説明のうち `42701`／`42P07` の行は「`CREATE TABLE`・`ALTER TABLE ADD COLUMN` は op 許可リスト外」と記述しているが、同原文は DDL 3 op（`create_table`／`alter_table`／`drop_table`。NOSQL-13）を許可リストに含めており、記述が DDL 追加前のまま残っている可能性がある（原文内で矛盾。どちらが正かは未確認のため上表は原文のまま転記）。
-- 到達可能へ移った分類（原文の記載）: `42702`（`aggregate.sort` 曖昧参照。Issue #1270）・`42P16`（`primary_key` 重複宣言。Issue #1412）・`VD001`／`VD002`（分割実行 DML。Issue #1130）・`42830`／`23503`／`54000`（`FOREIGN KEY` 参照アクション。Issue #1148）。
+- 原文が到達不能とする分類のうち、本ページが到達不能と扱うのは 12 分類（`21000`・`34000`・`P0002`・`42703`・`42704`・`42804`・`42710`・`42723`・`25000`・`25001`・`25P01`・`25P02`。原文の `2BP01`／`42809` は上記のとおり未確認）。理由（原文要約）: テナントはセッション（`SessionPrincipal::policy_context()`）からのみ導出し、クライアント自己申告の `tenant_id` 相当値は JSON／ヘッダ／パスいずれの位置でも `42601` で先に拒否する（DDL 権限なしによる `42501` は別経路で到達可能）。`P0002` に対応する op、カーソル操作（`34000`）、明示トランザクション制御（`25xxx`）、ビュー／インデックス DDL・`CREATE FUNCTION`・`ALTER TABLE ... ADD CONSTRAINT`・`CASE`／`COALESCE`／`NULLIF`・集合演算・スカラーサブクエリ・`CREATE TYPE` は NoSQL `op` 許可リストに無い。参照先が他テナントにだけ存在する場合と、どのテナントにも存在しない場合の応答は区別できない（RLS-9・RLS-10）。
+- 原文の射影表は `42501`／`42701`／`42P07`（および `2BP01`／`42809`）を到達不能と記述するが DDL 追加前の記述（同原文の DDL 節は権限なしセッションを常に `42501`・403 とする）。`ddl.md` と 0.2.0 ソース（`http/query/ddl.rs` の `run_ddl` → engine `sql/allowlist.rs` の `ForbiddenTenantMismatch`）に従った。`2BP01`／`42809` は一次ソースで確認できていないため「未確認」とした。
+- 認証系: 原文の射影表は `28P01` を Bearer 失敗としているが、同原文のセッション節と 0.2.0 ソース（`http/session/bearer.rs`・`middleware.rs`・`close.rs` → `AuthRequired`／`28000`、`issue.rs` → `AuthInvalid`／`28P01`）に従った。
+- 到達可能へ移った分類（原文の記載に加え、上記 DDL 経由の `42501`／`42701`／`42P07`）: `42702`（`aggregate.sort` 曖昧参照。Issue #1270）・`42P16`（`primary_key` 重複宣言。Issue #1412）・`VD001`／`VD002`（分割実行 DML。Issue #1130）・`42830`／`23503`／`54000`（`FOREIGN KEY` 参照アクション。Issue #1148）。
 - テナント境界の検査を緩める・バイパスする production 経路をこれらの分類のために新設することはせず（`.claude/rules/security.md` P0）、射影表としての一致のみを production の応答エンコーダ経由で固定する。
 - 各 op スキーマ節では引き続き `wire_code` のみを示す。HTTP ステータスを引く際は本表を参照する。
 

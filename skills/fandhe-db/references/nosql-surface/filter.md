@@ -4,7 +4,7 @@ source: https://docs.rs/crate/fandhe-db-wire-server/0.2.0/source/docs/nosql-api.
 
 # filter 配列 (leaf / not / or / 上限)
 
-`search`／`scan`／`aggregate` 共通で使える事前フィルタ配列。要素は「葉」（`column`／`op`／`value`）または「グループ」（`or`／`not`）のいずれかで、配列自体・グループ内の分岐は暗黙に `AND` 結合として扱う（Issue #945・NOSQL-14 で範囲比較・`IN`・`OR` へ拡張。それ以前は `eq`／`prefix` の 2 語彙・`AND` のみ。Issue #1197 で `ne`・`between`・`like`・`is_null`／`not_null`・`not` グループを追加）。`update`／`delete` の述語形（Issue #1062）でも同じ配列表現を使い、Issue #1356 以降は `search` と同じ語彙を受理する。
+`search`／`scan`／`aggregate` 共通で使える事前フィルタ配列。要素は「葉」（`column`／`op`／`value`）または「グループ」（`or`／`not`）のいずれかで、トップレベル配列の要素同士は暗黙に `AND` 結合、`or` グループ配下の分岐は `OR` 結合、`not` は単一要素（葉または `or` グループ）の否定として扱う（Issue #945・NOSQL-14 で範囲比較・`IN`・`OR` へ拡張。それ以前は `eq`／`prefix` の 2 語彙・`AND` のみ。Issue #1197 で `ne`・`between`・`like`・`is_null`／`not_null`・`not` グループを追加）。`update`／`delete` の述語形（Issue #1062）でも同じ配列表現を使い、Issue #1356 以降は `search` と同じ語彙を受理する。
 
 ## Signature / Usage
 
@@ -64,6 +64,7 @@ source: https://docs.rs/crate/fandhe-db-wire-server/0.2.0/source/docs/nosql-api.
 
 ## Notes
 
+- 原文は「配列自体・グループ内の分岐はいずれも暗黙に `AND` 結合」と記述しているが、`or` グループの意味論（原文の例・NOSQL-14 の `OR` 拡張。wire-server `http/query/filter.rs` は `or` を `FilterNode::Or` へ束縛する）に合わせて書き分けた。
 - `column` にサーバー側 RLS 述語名相当（`visible`／`visible()`。大文字小文字非区別）を指定する経路は `42601`（`or` 分岐の内側を含め再帰的に検査する。RLS はサーバー側暗黙適用のみで、クライアントは述語を書けない）。
 - `eq` は対象列の型に応じたレーンへ振り分ける（Issue #896・NOSQL-17）: `TEXT`（旧来型。値・型不一致は `42601`。insert/update の「TEXT は旧来型 = `22000`」非対称は filter には適用しない）／`ENUM`（`42601`。語彙外は `22P02`）／`BOOLEAN`（`42601`）／`DATE`・`TIMESTAMP`・`UUID`（`42601`。形式・範囲は engine 側で検証）／`BYTEA`（base64 の JSON string。`42601`／`54000`。復号後 4 MiB 超で `54000`）／`NUMERIC`（数値または数値文字列。`42601`）。
 - 範囲比較は `DATE`・`TIMESTAMP`・`UUID`（文字列）・`NUMERIC`（数値または数値文字列）・`BYTEA`（base64 の JSON string）・`TEXT`（文字列。バイト順の式レーン比較。Issue #1183）・`INTEGER`／`BIGINT`／`REAL`／`DOUBLE PRECISION`（JSON 数値）を受理する。`ENUM`／`BOOLEAN`／`VECTOR`／`ARRAY`／`JSON`／`JSONB` 列は engine 側の「範囲比較非対応列」判定（`22000`）へ委譲する。
