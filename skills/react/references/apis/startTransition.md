@@ -47,6 +47,6 @@ Returns: `startTransition` does not return anything.
 
 ## Related
 
-- useTransition
+- [useTransition](../hooks/useTransition.md)
 - [addTransitionType](./addTransitionType.md)
-- useDeferredValue
+- [useDeferredValue](../hooks/useDeferredValue.md)

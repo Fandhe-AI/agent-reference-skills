@@ -37,5 +37,5 @@ function Button() {
 ## Related
 
 - [useFormStatus](./useFormStatus.md)
-- useActionState
-- Built-in React Hooks
+- [useActionState](../hooks/useActionState.md)
+- [Built-in React Hooks](../hooks/overview.md)

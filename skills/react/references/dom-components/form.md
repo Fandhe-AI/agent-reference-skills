@@ -104,5 +104,5 @@ Multiple submission types via `formAction`:
 - [textarea](./textarea.md)
 - [select](./select.md)
 - [useFormStatus](../dom-apis/useFormStatus.md)
-- useActionState
-- useOptimistic
+- [useActionState](../hooks/useActionState.md)
+- [useOptimistic](../hooks/useOptimistic.md)

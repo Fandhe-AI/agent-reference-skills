@@ -47,4 +47,4 @@ Returns: a React component you can render in your tree. While the code for the l
 
 - [Suspense](../components/Suspense.md)
 - [memo](./memo.md)
-- forwardRef
+- [forwardRef](../legacy/forwardRef.md)

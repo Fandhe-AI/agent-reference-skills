@@ -141,7 +141,7 @@ To read a Server Function return value, `await` the returned promise.
 - Supported argument types: primitives (string, number, bigint, boolean, undefined, null, symbols registered via `Symbol.for`); iterables of serializable values (String, Array, Map, Set, TypedArray and ArrayBuffer); Date; FormData instances; plain objects with serializable properties; Server Functions; Promises.
 - Not supported: React elements or JSX; functions that are not Server Functions (including component functions); classes; instances of any class other than the built-ins, or objects with a null prototype; symbols not registered globally; events from event handlers.
 - Serializable return values are the same as the serializable props for a boundary Client Component (see [use client](./use-client.md)).
-- For security advisories affecting React Server Components packages, see rsc-critical-security-vulnerability and rsc-dos-and-source-code-exposure.
+- For security advisories affecting React Server Components packages, see [rsc-critical-security-vulnerability](../versions/rsc-critical-security-vulnerability.md) and [rsc-dos-and-source-code-exposure](../versions/rsc-dos-and-source-code-exposure.md).
 - Scope: React's own directive. Next.js Server Actions behavior belongs to nextjs-app, TanStack's `createServerFn` to tanstack-start, and React Router's actions to react-router.
 
 ## Related
