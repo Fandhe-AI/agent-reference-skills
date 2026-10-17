@@ -4,17 +4,17 @@ source: https://vite.dev/guide/cli#vite-build
 
 # Build
 
-本番ビルド `vite build` のコマンド集。
+Commands for the production build `vite build`.
 
-## 本番ビルド
+## Production build
 
 ```sh
 vite build [root]
 ```
 
-scaffold 済みプロジェクトでは `npm run build`（`"build": "vite build"`）。出力先の既定は `dist`。
+In a scaffolded project, run `npm run build` (`"build": "vite build"`). The default output directory is `dist`.
 
-## 主なオプション付きビルド
+## Build with common options
 
 ```sh
 vite build --outDir out
@@ -28,23 +28,23 @@ vite build --base /sub/
 vite build -m staging
 ```
 
-## ファイル変更で再ビルド（watch）
+## Rebuild on file changes (watch)
 
 ```sh
 vite build --watch
 ```
 
-`-w, --watch` で Rolldown watcher が有効になり、バンドル対象のファイル変更で再ビルドする。設定ファイルとその依存の変更はビルドコマンドの再起動が必要。`build.watch` で `WatcherOptions` を直接調整することもできる。
+`-w, --watch` enables the Rolldown watcher, which rebuilds when bundled files change. Changes to the config file and its dependencies require restarting the build command. `WatcherOptions` can also be adjusted directly with `build.watch`.
 
-## SSR ビルド
+## SSR build
 
 ```sh
 vite build --ssr [entry]
 ```
 
-指定エントリーをサーバーサイドレンダリング用にビルドする。`--ssrManifest [name]` で SSR manifest json を出力できる。
+Builds the specified entry for server-side rendering. `--ssrManifest [name]` emits an SSR manifest json.
 
-## オプション一覧
+## Options
 
 | Options | Description |
 | --- | --- |
@@ -71,4 +71,4 @@ vite build --ssr [entry]
 | `-h, --help` | Display available CLI options |
 | `--app` | Build all environments, same as `builder: {}` (experimental) |
 
-> **警告**: `--emptyOutDir` は root 外の outDir を強制的に空にする。`--outDir` に意図しないディレクトリを指定すると内容が削除されるため、対象パスを確認してから実行する。`--app` は experimental。
+> **Warning**: `--emptyOutDir` forcibly empties an outDir located outside of root. If `--outDir` points to an unintended directory, its contents are deleted, so verify the target path before running. `--app` is experimental.

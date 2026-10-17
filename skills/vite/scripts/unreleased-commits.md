@@ -4,11 +4,11 @@ source: https://vite.dev/guide/#using-unreleased-commits
 
 # Unreleased Commits
 
-未リリースの Vite コミットを試すためのコマンド集。
+Commands for trying unreleased Vite commits.
 
-> **警告**: 未リリースのコミットは安定性が保証されない。使い捨てのブランチ・環境で検証する。pkg.pr.new 経由のリリースは直近 1 か月以内のコミットのみ有効で、古いものは purge される。
+> **Warning**: Unreleased commits come with no stability guarantee. Verify in a throwaway branch or environment. Releases via pkg.pr.new are valid only for commits within the last month; older ones are purged.
 
-## pkg.pr.new から特定コミットをインストール
+## Install a specific commit from pkg.pr.new
 
 ```sh
 npm install -D https://pkg.pr.new/vite@SHA
@@ -26,9 +26,9 @@ pnpm add -D https://pkg.pr.new/vite@SHA
 bun add -D https://pkg.pr.new/vite@SHA
 ```
 
-`SHA` は Vite リポジトリの任意のコミット SHA に置き換える。
+Replace `SHA` with any commit SHA from the Vite repository.
 
-## ローカルに clone して link
+## Clone locally and link
 
 ```sh
 git clone https://github.com/vitejs/vite.git
@@ -39,12 +39,12 @@ pnpm run build
 pnpm link # use your preferred package manager for this step
 ```
 
-pnpm が必須。続いて Vite を使うプロジェクトで `pnpm link vite`（または global link に使ったパッケージマネージャーの同等コマンド）を実行し、開発サーバーを再起動する。
+pnpm is required. Then, in the project that uses Vite, run `pnpm link vite` (or the equivalent command of the package manager used for the global link) and restart the dev server.
 
 ```sh
 pnpm link vite
 ```
 
-## 依存パッケージが使う Vite のバージョンを置き換える
+## Replace the Vite version used by dependent packages
 
-公式は、依存経由の Vite を置き換えるには npm overrides または pnpm overrides を使うよう案内している（コマンドではなく `package.json` / pnpm 設定による。詳細は公式の overrides ドキュメントを参照）。
+The official docs advise using npm overrides or pnpm overrides to replace the Vite version used through dependencies (this is done via `package.json` / pnpm settings, not a command; see the official overrides documentation for details).

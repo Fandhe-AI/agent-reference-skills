@@ -4,20 +4,20 @@ source: https://vite.dev/guide/cli#vite-preview
 
 # Preview and Optimize
 
-`vite preview`（ビルド成果物のローカル確認）と `vite optimize`（依存の pre-bundle、deprecated）のコマンド集。
+Commands for `vite preview` (locally preview the build output) and `vite optimize` (dependency pre-bundling, deprecated).
 
-## 本番ビルドのローカルプレビュー
+## Preview the production build locally
 
 ```sh
 vite build
 vite preview [root]
 ```
 
-ビルドディレクトリ（既定 `dist`）で配信する。事前に `vite build` で最新化しておく。既定では `http://localhost:4173`。`appType` の設定に応じて一部の middleware が使われる。
+Serves the build directory (default `dist`). Refresh it beforehand with `vite build`. Defaults to `http://localhost:4173`. Some middleware are used depending on the `appType` setting.
 
-> **警告**: `vite preview` は本番サーバーとして使わない（公式に「not designed for it」と明記）。
+> **Warning**: Do not use `vite preview` as a production server (the official docs state it is "not designed for it").
 
-## プレビューのポート指定
+## Specify the preview port
 
 ```sh
 vite preview --port 8080
@@ -31,7 +31,7 @@ vite preview --port 8080
 }
 ```
 
-## preview のオプション
+## Preview options
 
 ```sh
 vite preview --host
@@ -57,13 +57,13 @@ vite preview --outDir dist
 | `-m, --mode <mode>` | Set env mode |
 | `-h, --help` | Display available CLI options |
 
-## 依存の pre-bundle（deprecated）
+## Pre-bundle dependencies (deprecated)
 
 ```sh
 vite optimize [root]
 vite optimize --force
 ```
 
-> **警告**: 公式に「Deprecated: the pre-bundle process runs automatically and does not need to be called」と明記されている。通常は実行不要。`--force` はキャッシュを無視して再バンドルする。
+> **Warning**: The official docs state "Deprecated: the pre-bundle process runs automatically and does not need to be called". It normally does not need to be run. `--force` ignores the cache and re-bundles.
 
-`vite optimize` のオプションは `--force` / `-c, --config` / `--base` / `-l, --logLevel` / `--clearScreen` / `--configLoader` / `-d, --debug` / `-f, --filter` / `-m, --mode` / `-h, --help`。
+The options of `vite optimize` are `--force` / `-c, --config` / `--base` / `-l, --logLevel` / `--clearScreen` / `--configLoader` / `-d, --debug` / `-f, --filter` / `-m, --mode` / `-h, --help`.

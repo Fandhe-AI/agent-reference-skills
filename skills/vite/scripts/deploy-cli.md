@@ -4,18 +4,18 @@ source: https://vite.dev/guide/static-deploy
 
 # Deploy CLI
 
-Static Deploy ガイドに記載された、各ホストの CLI コマンド集。前提: 出力先は既定の `dist`、`package.json` に `"build": "vite build"` と `"preview": "vite preview"` がある。
+Host-specific CLI commands from the Static Deploy guide. Assumptions: the output directory is the default `dist`, and `package.json` has `"build": "vite build"` and `"preview": "vite preview"`.
 
-> **警告**: 以下は実際にデプロイ（外部サービスへの公開）を行うコマンドを含む。アカウント・プロジェクトを確認し、検証は使い捨てのプロジェクトで行う。`--prod` 付きの Netlify デプロイは本番に反映される。
+> **Warning**: The commands below include ones that actually deploy (publish to an external service). Check the account and project, and test with a throwaway project. A Netlify deploy with `--prod` goes to production.
 
-## ビルドとローカル確認
+## Build and preview locally
 
 ```sh
 npm run build
 npm run preview
 ```
 
-`vite preview` は `dist` を `http://localhost:4173` で配信する。ポートは `--port` で変更できる。
+`vite preview` serves `dist` at `http://localhost:4173`. The port can be changed with `--port`.
 
 ## Netlify CLI
 
@@ -25,7 +25,7 @@ netlify init
 netlify deploy
 ```
 
-プレビュー URL が発行される。本番へ反映する場合は次を実行する。
+A preview URL is issued. To deploy to production, run the following.
 
 ```sh
 netlify deploy --prod
@@ -38,7 +38,7 @@ npm i -g vercel
 vercel
 ```
 
-Vite が自動検出され、適切な設定でデプロイされる。
+Vite is detected automatically and deployed with appropriate settings.
 
 ## Cloudflare Workers
 
@@ -46,14 +46,14 @@ Vite が自動検出され、適切な設定でデプロイされる。
 npm install --save-dev @cloudflare/vite-plugin
 ```
 
-`vite.config.js` に `cloudflare()` プラグインを追加し、`wrangler.jsonc` に `name` を設定した上でビルドする。
+Add the `cloudflare()` plugin to `vite.config.js`, set `name` in `wrangler.jsonc`, then build.
 
 ```sh
 npm run build
 npx wrangler deploy
 ```
 
-設定ファイルの全文は `references/build-deploy/deploy-cloudflare-firebase.md` を参照。
+For the full config files, see `references/build-deploy/deploy-cloudflare-firebase.md`.
 
 ## Google Firebase
 
@@ -61,7 +61,7 @@ npx wrangler deploy
 npm i -g firebase-tools
 ```
 
-プロジェクト root に `firebase.json`（hosting.public を `dist`、rewrites で `**` を `/index.html`）と `.firebaserc`（`projects.default` に Firebase ID）を作成する。
+In the project root, create `firebase.json` (hosting.public set to `dist`, rewrites `**` to `/index.html`) and `.firebaserc` (the Firebase ID in `projects.default`).
 
 ```sh
 npm run build
@@ -76,12 +76,12 @@ npm run build
 surge dist
 ```
 
-カスタムドメインを使う場合は次のとおり。
+To use a custom domain:
 
 ```sh
 surge dist yourdomain.com
 ```
 
-## CLI コマンドの記載がないホスト
+## Hosts without CLI commands
 
-GitHub Pages・GitLab Pages・Netlify / Vercel / Cloudflare Pages の Git 連携・Azure Static Web Apps・Render・Flightcontrol・xmit・Zephyr Cloud・EdgeOne Pages は、公式ガイド上では設定ファイルやダッシュボード操作、または外部ガイドへのリンクのみで、CLI コマンドの記載がないため本ファイルには収録しない。Render のビルド設定は Build Command `npm install && npm run build`、Publish Directory `dist`。
+GitHub Pages, GitLab Pages, Git integration for Netlify / Vercel / Cloudflare Pages, Azure Static Web Apps, Render, Flightcontrol, xmit, Zephyr Cloud, and EdgeOne Pages are described in the official guide only through config files, dashboard operations, or links to external guides, with no CLI commands, so they are not included in this file. Render's build settings are Build Command `npm install && npm run build` and Publish Directory `dist`.

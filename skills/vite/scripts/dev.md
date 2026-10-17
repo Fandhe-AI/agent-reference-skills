@@ -4,9 +4,9 @@ source: https://vite.dev/guide/cli#vite
 
 # Dev
 
-開発サーバー `vite` の起動とオプション。`vite dev` / `vite serve` は `vite` の alias。
+Start the dev server `vite` and its options. `vite dev` / `vite serve` are aliases of `vite`.
 
-## 開発サーバーの起動
+## Start the dev server
 
 ```sh
 vite [root]
@@ -16,9 +16,9 @@ vite [root]
 vite serve some/sub/dir
 ```
 
-root を変更した場合、設定ファイル（`vite.config.js`）もプロジェクト root 内で解決されるため移動が必要。scaffold 済みプロジェクトでは `npm run dev`（`"dev": "vite"`）で起動できる。
+When root is changed, the config file (`vite.config.js`) is also resolved inside the project root, so it must be moved there. In a scaffolded project, start the server with `npm run dev` (`"dev": "vite"`).
 
-## 主なオプション付き起動
+## Start with common options
 
 ```sh
 vite --host
@@ -32,9 +32,9 @@ vite --base /sub/
 vite -m staging
 ```
 
-`--force` はオプティマイザーのキャッシュを無視して再バンドルする。依存を link / unlink した場合の再最適化にも使う（troubleshooting 記載）。
+`--force` ignores the optimizer cache and re-bundles. It is also used to re-optimize after linking / unlinking a dependency (described in troubleshooting).
 
-## オプション一覧
+## Options
 
 | Options | Description |
 | --- | --- |
@@ -57,9 +57,9 @@ vite -m staging
 | `-h, --help` | Display available CLI options |
 | `-v, --version` | Display version number |
 
-> **警告**: `--experimentalBundle` は公式 CLI 表で「highly experimental」と明記されている。本番プロジェクトでの利用は使い捨て環境での検証後に限る。`--configLoader runner` / `native` も experimental。
+> **Warning**: The official CLI table marks `--experimentalBundle` as "highly experimental". Use it in a production project only after verifying in a throwaway environment. `--configLoader runner` / `native` are also experimental.
 
-## ヘルプとバージョンの確認
+## Check help and version
 
 ```sh
 npx vite --help

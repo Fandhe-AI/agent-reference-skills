@@ -4,50 +4,50 @@ source: https://vite.dev/guide/troubleshooting#performance-bottlenecks
 
 # Debug and Profile
 
-デバッグログと CPU プロファイルの取得コマンド集。
+Commands for debug logs and CPU profiles.
 
-## デバッグログの表示
+## Show debug logs
 
 ```sh
 vite --debug
 vite build --debug
 ```
 
-`-d, --debug [feat]` でデバッグログを表示、`-f, --filter <filter>` でログを絞り込む。`feat` と `filter` に指定できる具体的な値は CLI ページに記載がない（要確認）。
+`-d, --debug [feat]` shows debug logs, and `-f, --filter <filter>` filters them. The CLI page does not document concrete values for `feat` and `filter` (needs confirmation).
 
 ```sh
 vite --debug [feat] --filter <filter>
 ```
 
-上記は CLI 表の書式。`[feat]` `<filter>` は置き換えて使う。
+The above follows the notation of the CLI table. Replace `[feat]` and `<filter>` before use.
 
-## 開発サーバーの CPU プロファイル
+## CPU profile of the dev server
 
 ```sh
 vite --profile --open
 ```
 
-アプリがブラウザーで読み込み終わったらターミナルに戻り、`p` キーで Node.js inspector を停止し、`q` キーで開発サーバーを停止する。
+After the app has finished loading in the browser, go back to the terminal, press `p` to stop the Node.js inspector, then press `q` to stop the dev server.
 
-## ビルドの CPU プロファイル
+## CPU profile of the build
 
 ```sh
 vite build --profile
 ```
 
-## プロファイルのファイル名指定
+## Name the profile file
 
 ```sh
 vite --profile my-profile
 vite build --profile=my-profile
 ```
 
-既定では root に `vite-profile-0.cpuprofile` が生成される。`--profile <name>`（または `--profile=<name>`）で `<name>.cpuprofile` に変わる。生成した CPU プロファイルは https://www.speedscope.app/ の `BROWSE` ボタンからアップロードして確認する。
+By default, `vite-profile-0.cpuprofile` is generated in the root. `--profile <name>` (or `--profile=<name>`) changes it to `<name>.cpuprofile`. Inspect the generated CPU profile by uploading it with the `BROWSE` button at https://www.speedscope.app/.
 
-## プラグインの中間状態の確認
+## Inspect intermediate plugin state
 
 ```sh
 npm install -D vite-plugin-inspect
 ```
 
-公式 troubleshooting が紹介するサードパーティ製プラグイン vite-plugin-inspect。dev / build の両方で使え、ボトルネックとなるプラグインや middleware の特定に役立つ。vite.config への追加方法は同プラグインの README を参照（本 docs には記載なし）。
+vite-plugin-inspect is a third-party plugin introduced by the official troubleshooting guide. It works in both dev and build, and helps identify plugins or middleware that are bottlenecks. For how to add it to vite.config, see the plugin's README (not described in these docs).

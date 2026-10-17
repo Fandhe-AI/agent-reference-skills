@@ -4,9 +4,9 @@ source: https://vite.dev/guide/#scaffolding-your-first-vite-project
 
 # Install
 
-Vite プロジェクトの scaffold と手動インストールのコマンド集。Vite は Node.js 20.19+ / 22.12+ が必要（一部テンプレートはさらに新しい Node.js を要求）。
+Commands for scaffolding a Vite project and installing it manually. Vite requires Node.js 20.19+ / 22.12+ (some templates require an even newer Node.js).
 
-## プロジェクトの scaffold（対話式）
+## Scaffold a project (interactive)
 
 ```sh
 npm create vite@latest
@@ -28,12 +28,12 @@ bun create vite
 deno init --npm vite
 ```
 
-プロンプトに従って進める。create-vite のテンプレート選択はプロンプト内で行う。
+Follow the prompts. The create-vite template is selected within the prompts.
 
-## テンプレート指定での scaffold
+## Scaffold with a specified template
 
 ```sh
-# npm 7+ は余分な -- が必要
+# npm 7+ requires an extra --
 npm create vite@latest my-vue-app -- --template vue
 ```
 
@@ -53,12 +53,12 @@ bun create vite my-vue-app --template vue
 deno init --npm vite my-vue-app --template vue
 ```
 
-プロジェクト名に `.` を指定すると現在のディレクトリに scaffold する。対話プロンプトなしで作る場合は `--no-interactive` を付ける。
+Specify `.` as the project name to scaffold into the current directory. Add `--no-interactive` to create a project without interactive prompts.
 
-## 利用可能なテンプレート一覧
+## Available templates
 
 ```sh
-# --template に指定できる値（create-vite README 記載の 18 種）
+# Values accepted by --template (18 listed in the create-vite README)
 vanilla
 vanilla-ts
 vue
@@ -79,9 +79,9 @@ qwik
 qwik-ts
 ```
 
-上記は `--template <name>` に渡す値の列挙であり、単体で実行するコマンドではない。
+The above lists values to pass to `--template <name>`; it is not a command to run by itself.
 
-## コミュニティテンプレートの利用（tiged）
+## Use a community template (tiged)
 
 ```sh
 npx tiged user/project my-project
@@ -91,9 +91,9 @@ npm install
 npm run dev
 ```
 
-GitHub 上でデフォルトブランチが `main` のテンプレートが前提。tiged は外部ツールで、コミュニティ製テンプレートは Awesome Vite に一覧がある。
+Assumes a template on GitHub whose default branch is `main`. tiged is an external tool, and community templates are listed in Awesome Vite.
 
-## 既存プロジェクトへの手動インストール
+## Manual install into an existing project
 
 ```sh
 npm install -D vite
@@ -115,7 +115,7 @@ bun add -D vite
 deno add -D npm:vite
 ```
 
-`index.html`（例: `<p>Hello Vite!</p>`）を作成してから起動する。
+Create `index.html` (for example `<p>Hello Vite!</p>`), then start the server.
 
 ```sh
 npx vite
@@ -137,4 +137,4 @@ bunx vite
 deno run -A npm:vite
 ```
 
-`index.html` は `http://localhost:5173` で配信される。
+`index.html` is served at `http://localhost:5173`.

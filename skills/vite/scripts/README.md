@@ -2,10 +2,10 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Build | 本番ビルド `vite build` のコマンド集。 | [build.md](./build.md) |
-| Debug and Profile | デバッグログと CPU プロファイルの取得コマンド集。 | [debug-profile.md](./debug-profile.md) |
-| Deploy CLI | Static Deploy ガイドに記載された、各ホストの CLI コマンド集。 | [deploy-cli.md](./deploy-cli.md) |
-| Dev | 開発サーバー `vite` の起動とオプション。`vite dev` / `vite serve` は `vite` の alias。 | [dev.md](./dev.md) |
-| Install | Vite プロジェクトの scaffold と手動インストールのコマンド集。 | [install.md](./install.md) |
-| Preview and Optimize | `vite preview`（ビルド成果物のローカル確認）と `vite optimize`（依存の pre-bundle、deprecated）のコマンド集。 | [preview-optimize.md](./preview-optimize.md) |
-| Unreleased Commits | 未リリースの Vite コミットを試すためのコマンド集。 | [unreleased-commits.md](./unreleased-commits.md) |
+| Build | Commands for the production build `vite build`. | [build.md](./build.md) |
+| Debug and Profile | Commands for debug logs and CPU profiles. | [debug-profile.md](./debug-profile.md) |
+| Deploy CLI | Host-specific CLI commands from the Static Deploy guide. | [deploy-cli.md](./deploy-cli.md) |
+| Dev | Start the dev server `vite` and its options. `vite dev` / `vite serve` are aliases of `vite`. | [dev.md](./dev.md) |
+| Install | Commands for scaffolding a Vite project and installing it manually. | [install.md](./install.md) |
+| Preview and Optimize | Commands for `vite preview` (locally preview the build output) and `vite optimize` (dependency pre-bundling, deprecated). | [preview-optimize.md](./preview-optimize.md) |
+| Unreleased Commits | Commands for trying unreleased Vite commits. | [unreleased-commits.md](./unreleased-commits.md) |
