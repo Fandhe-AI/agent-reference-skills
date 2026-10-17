@@ -83,12 +83,12 @@ for event in stream:
         print(event.usage)
 ```
 
-Download files from the sandbox (Files API, direct HTTP request, no SDK method yet):
+Download files from the sandbox (Environments files API; Python SDK: `client.environments.files.download(environment=..., path="workspace")`):
 
 ```bash
 ENV_ID="your_environment_id_here"
 
-curl -L -X GET "https://generativelanguage.googleapis.com/v1beta/files/environment-$ENV_ID:download?alt=media" \
+curl -L -X GET "https://generativelanguage.googleapis.com/v1beta/environments/$ENV_ID/files?alt=media" \
 -H "x-goog-api-key: $GEMINI_API_KEY" \
 -o snapshot.tar
 
@@ -155,7 +155,7 @@ print(result.output_text)
 - The API tracks two independent state dimensions: conversation context (`previous_interaction_id`) and environment state (files, installed packages, sandbox state, via `environment`). Clear conversation but keep files: omit `previous_interaction_id`, pass the environment ID. Keep conversation with a new workspace: pass `previous_interaction_id` and `environment="remote"`.
 - Automatic context compaction: a native compaction step happens at around 135k tokens, automatically, to prevent token limit errors and "context rot".
 - Each invocation of a saved managed agent forks the base environment, so every run starts clean.
-- Environment files download shown on this page: `files/environment-{env_id}:download?alt=media`. The environments page (fetched the same day) marks this legacy endpoint as deprecated and replaces it with `GET /v1beta/environments/$ENV_ID/files?alt=media`.
+- The quickstart page shows the legacy `files/environment-{env_id}:download` endpoint and says no SDK method exists; the environments page marks it deprecated and documents `client.environments.files.download` and `GET /v1beta/environments/$ENV_ID/files?alt=media` (root-level files only; see the environments page for `recursive`), so the current method is shown here.
 - The Java and Go tabs of the original page use SDK types under `com.google.genai.gaos.models.*` and `google.golang.org/genai/interactions/models/*`; see the official page for them.
 - API surface: Interactions API (`v1beta` in the REST examples). Managed agents are in Public Preview.
 - Distinct from other skills: anthropic-managed-agents (Claude sessions / environments), anthropic-agent-sdk, openai-agents, hermes-agent.

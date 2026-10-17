@@ -104,19 +104,29 @@ interaction = client.interactions.create(
     tools=[{"type": "code_execution"}, get_weather_tool],
 )
 
-final_interaction = client.interactions.create(
-    agent="antigravity-preview-09-2026",
-    previous_interaction_id=interaction.id,
-    environment=interaction.environment_id,
-    input=[
-        {
-            "type": "function_result",
-            "name": fc_step.name,
-            "call_id": fc_step.id,
-            "result": {"temperature": 23, "unit": "celsius"},
-        }
-    ],
-)
+if interaction.status == "requires_action":
+    # Find function calls that do not have a matching function result.
+    # Filesystem tools (like write_to_file) are also represented as function calls
+    # but are executed automatically by the environment.
+    executed_calls = {step.call_id for step in interaction.steps if step.type == "function_result"}
+    pending_calls = [step for step in interaction.steps if step.type == "function_call" and step.id not in executed_calls]
+
+    if pending_calls:
+        fc_step = pending_calls[0]
+
+        final_interaction = client.interactions.create(
+            agent="antigravity-preview-09-2026",
+            previous_interaction_id=interaction.id,
+            environment=interaction.environment_id,
+            input=[
+                {
+                    "type": "function_result",
+                    "name": fc_step.name,
+                    "call_id": fc_step.id,
+                    "result": {"temperature": 23, "unit": "celsius"},
+                }
+            ],
+        )
 ```
 
 Remote MCP server:
