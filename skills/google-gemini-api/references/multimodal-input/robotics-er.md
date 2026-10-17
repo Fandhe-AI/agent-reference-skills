@@ -309,29 +309,30 @@ def send_audio(session, audio_chunk: bytes):
 
 # ── Receive loop ─────────────────────────────────────────────────────────────
 async def receive_loop(session):
-   """Print model text and handle tool calls until the session ends."""
-   async for message in session.receive():
-       if message.server_content:
-           sc = message.server_content
-           if sc.model_turn and sc.model_turn.parts:
-               for part in sc.model_turn.parts:
-                   if part.text:
-                       print(f"Model: {part.text}", end="", flush=True)
-           if sc.turn_complete:
-               print("\n[Turn Complete]")
-       elif message.tool_call:
-           responses = []
-           for call in message.tool_call.function_calls:
-               print(f"\n[Tool Call] {call.name}({call.args})")
-               result = execute_tool(call.name, call.args)
-               responses.append(
-                   types.FunctionResponse(
-                       name=call.name,
-                       response=result,
-                       id=call.id,
+   """Print model text and handle tool calls for every turn until cancelled."""
+   while True:
+       async for message in session.receive():
+           if message.server_content:
+               sc = message.server_content
+               if sc.model_turn and sc.model_turn.parts:
+                   for part in sc.model_turn.parts:
+                       if part.text:
+                           print(f"Model: {part.text}", end="", flush=True)
+               if sc.turn_complete:
+                   print("\n[Turn Complete]")
+           elif message.tool_call:
+               responses = []
+               for call in message.tool_call.function_calls:
+                   print(f"\n[Tool Call] {call.name}({call.args})")
+                   result = execute_tool(call.name, call.args)
+                   responses.append(
+                       types.FunctionResponse(
+                           name=call.name,
+                           response=result,
+                           id=call.id,
+                       )
                    )
-               )
-           await session.send_tool_response(function_responses=responses)
+               await session.send_tool_response(function_responses=responses)
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 async def main():
@@ -356,7 +357,7 @@ asyncio.run(main())
 ```
 
 - Added `import os`, which the source page's streaming example omits although `main()` reads `os.environ`. `execute_tool` is a stub to replace with a real robot SDK, as on the source page.
-- The source page's main() cancels recv_task immediately after create_task (a skeleton); this page awaits the receive task inside try/finally so the session stays open.
+- The source page's receive_loop iterates session.receive() once (it ends after one turn) and main() cancels it right away; this page re-calls session.receive() in an outer while loop and awaits the task inside try/finally so the session keeps receiving across turns.
 - Only blocking function calls are supported when using the Live API for robotics.
 - Video frames alone do not trigger a new reasoning turn; to enable proactive reasoning implement a heartbeat that periodically sends the latest camera frame followed by a short text prompt (video input is rate-limited to one frame per second). Sending a new prompt while the model is generating acts as an interruption (barge-in) that cancels in-flight reasoning and tool calls; wait for the previous turn to complete (`er_turn_done`).
 - Gemini Robotics ER 2 returns text; route completed responses to a separate TTS provider (such as Gemini TTS) via a callback, or declare TTS as a tool.
