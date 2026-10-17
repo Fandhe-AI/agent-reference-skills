@@ -38,7 +38,7 @@ cargo run -p fandhe-db-wire-server -- --users <ユーザーストアのパス> -
 - `--auth-method scram-sha-256` は全ユーザーの SCRAM 検証子（`wire-server hash-password --with-scram-sha-256` で生成）と `--scram-mock-key-file`（32 バイト以上）が必須で、`--surface nosql` とは併用できない
 - `--tls-cert` / `--tls-key` は両方揃って初めて有効。`--tls-mode` は未指定時 `require`（平文 StartupMessage を `08P01` で拒否）、`allow` は平文も受理するため loopback 限定のまま。`--tls-scram-channel-binding` の既定は `disable`
 - `--ddl-allowed-users` 未指定では全ユーザーの DDL（`CREATE TABLE` 等）が `42501` で拒否される
-- `--search-engine` 未指定または `default` は brute-force のまま不変。`--hnsw-*` 系フラグは `hnsw` / `hnsw_f16` / `hnsw_i8` のときのみ指定できる
+- `--search-engine` 未指定または `default` は brute-force のまま不変。`--hnsw-full-scan-ratio` / `--hnsw-acorn-max-visible-ratio` / `--hnsw-sparse-visited-max` は `hnsw` / `hnsw_f16` / `hnsw_i8` のときのみ指定できる。`--hnsw-scope`（`all` 既定 / `declared`）は HNSW opt-in が無効な構成では参照されず、起動エラーにもならない
 - 本サンプルは `fandhe-db-wire-server` の起動手順。`upstash`（@upstash/vector の SaaS クライアント）・`supabase`（pgvector 拡張）とは別物
 - バージョン差異: 0.1.0 では crate 名が `fandhe-vector-db-wire-server` で、`--surface` / `--auth-method` / `--tls-*` / `--ddl-allowed-users` 等は README の Usage に無かった
 
