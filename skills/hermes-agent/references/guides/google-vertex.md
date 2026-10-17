@@ -54,6 +54,7 @@ Models (require the `google/` prefix): `google/gemini-3.8-flash`, `google/gemini
 - `/model` switches among configured models; it does not collect credentials.
 - Distinct from the AI Studio provider (`gemini`, static API key). Express-mode keys belong to the Gemini provider with `GEMINI_BASE_URL`.
 - Troubleshooting: "Vertex AI credentials could not be resolved" (set a path or run ADC login; set `vertex.project_id`); 404 on Gemini 3.x (use `global`); 403 (role / API not enabled).
+- Source: https://hermes-agent.nousresearch.com/docs/guides/google-vertex (pinned to v0.22.2)
 
 ## Related
 

@@ -67,6 +67,8 @@ To post directly to GitHub, add to the prompt: `gh pr review NUMBER --repo REPO 
 - If a job does not run: `hermes gateway status`, `hermes cron list`.
 - GitHub allows 5,000 authenticated API requests/hour; each review uses ~3-5.
 - For real-time reviews use the webhook approach (requires a public endpoint).
+- The official table lists `30m` as "Every 30 minutes", but per the official cron-troubleshooting / automate-with-cron guides `30m` is a one-shot relative delay (fires once, then the job is removed); use `every 30m` for a recurring 30-minute review.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/github-pr-review-agent (pinned to v0.22.2)
 
 ## Related
 

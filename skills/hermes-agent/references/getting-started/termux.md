@@ -68,6 +68,7 @@ nohup hermes gateway run >> "${HERMES_HOME:-$HOME/.hermes}/logs/gateway.log" 2>&
 - Android can suspend or terminate background Termux processes; battery-optimization exemptions and `termux-wake-lock` help but do not guarantee persistence.
 - Troubleshooting: package not found, verify the repository entry and run `pkg update`; missing command, check `$PREFIX/bin` is on `PATH` or reinstall; for general diagnostics run `hermes doctor`.
 - Android/Termux is a Tier 2 platform (see platform-support.md).
+- Source: https://hermes-agent.nousresearch.com/docs/getting-started/termux (pinned to v0.22.2)
 
 ## Related
 

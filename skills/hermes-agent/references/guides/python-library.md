@@ -75,6 +75,7 @@ Key constructor parameters:
 - Not thread-safe: create one `AIAgent` per thread or task.
 - Consider lowering `max_iterations` (e.g. 10) for simple Q&A.
 - Use `skip_memory=True` for stateless API endpoints.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/python-library (pinned to v0.22.2)
 
 ## Related
 

@@ -73,6 +73,7 @@ Timeouts:
 - Desktop app: Settings -> Providers -> Local Models installs and manages a local llama.cpp server (this guide is for manual setup).
 - Hermes auto-detects local endpoints and relaxes streaming timeouts. A silent first turn is usually prefill (system prompt and tool schemas sent each call), not a hang.
 - Gated Hugging Face models need `huggingface-cli login` first.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/local-llm-on-mac (pinned to v0.22.2)
 
 ## Related
 

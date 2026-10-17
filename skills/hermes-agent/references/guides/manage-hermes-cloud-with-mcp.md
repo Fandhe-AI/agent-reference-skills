@@ -51,6 +51,7 @@ mcp_servers:
 - "invalid_client" / "unknown client": `hermes mcp remove hermes-cloud`, `rm -f ~/.hermes/mcp-tokens/hermes-cloud.*`, re-add.
 - Tools missing: `/reload-mcp`, then `hermes mcp test hermes-cloud`. Asked to log in again: re-run the `hermes mcp add` command.
 - Remote / SSH hosts: forward the loopback OAuth callback port.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/manage-hermes-cloud-with-mcp (pinned to v0.22.2)
 
 ## Related
 

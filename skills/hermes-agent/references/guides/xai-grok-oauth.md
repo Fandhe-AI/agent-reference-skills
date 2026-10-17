@@ -62,6 +62,7 @@ hermes config set model.provider xai
 - Terminal refresh failure (`invalid_grant`, revoked, HTTP 4xx) quarantines the refresh token locally; run `hermes auth add xai-oauth` again. A timed-out device-code approval needs a re-run.
 - "No xAI credentials found": log in or set `XAI_API_KEY`.
 - Logout clears the singleton OAuth entry in `auth.json` and credential-pool rows for `xai-oauth`.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/xai-grok-oauth (pinned to v0.22.2)
 
 ## Related
 

@@ -84,6 +84,7 @@ filters:
 - GitLab: uses `X-Gitlab-Token` (plain match); filter with `X-GitLab-Event` values like `Merge Request Hook`; payload fields differ (`{object_attributes.title}`, `{object_attributes.iid}`).
 - Never use `INSECURE_NO_AUTH` in production. Duplicate deliveries are deduplicated by a 1-hour idempotency cache keyed on `X-GitHub-Delivery`, then `X-Request-ID`.
 - Troubleshooting: `401 Invalid signature` (secret mismatch), `404 Unknown route` (route key vs URL), `429` (rate limit), no comment (`gh` missing or unauthenticated). GitHub's Recent Deliveries tab shows exact requests and responses. Ignored events (e.g. `ping`) log only at DEBUG.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/webhook-github-pr-review (pinned to v0.22.2)
 
 ## Related
 

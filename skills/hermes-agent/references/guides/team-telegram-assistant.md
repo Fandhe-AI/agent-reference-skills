@@ -67,6 +67,7 @@ Log and data locations:
 - Use the Docker terminal backend on shared bots so commands run in a container. Config form: `terminal.backend: docker`, `container_cpu: 1`, `container_memory: 5120`, `container_persistent: true`.
 - `/update` from Telegram pulls the latest version and restarts; or `hermes update`.
 - Cron prompts run in fresh sessions; include all context.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/team-telegram-assistant (pinned to v0.22.2)
 
 ## Related
 

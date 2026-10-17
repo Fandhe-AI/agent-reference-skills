@@ -40,6 +40,7 @@ Edit with `nano ~/.hermes/SOUL.md`, then restart Hermes or start a new session.
 - Missing, empty, or unloadable file falls back to the built-in default identity.
 - `/personality` is for temporary mode switches layered over the durable SOUL.md baseline.
 - Troubleshooting: check you edited the global file (not a repo-local one), the file is non-empty, the session restarted, no `/personality` overlay dominates, the file is not conflicting or truncated.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/use-soul-with-hermes (pinned to v0.22.2)
 
 ## Related
 

@@ -54,6 +54,7 @@ ssh -N \
 - `bind [127.0.0.1]:43827: Address already in use`: find the process with `lsof -iTCP:43827 -sTCP:LISTEN` and kill it.
 - Callback timeout: confirm the tunnel is alive and the port matches the latest `Waiting for callback on ...` line (Hermes may auto-bump).
 - Tokens are written under the Linux user that ran `hermes auth add ...`; authenticate as the user that runs the gateway / service (`sudo -u hermes -i`).
+- Source: https://hermes-agent.nousresearch.com/docs/guides/oauth-over-ssh (pinned to v0.22.2)
 
 ## Related
 

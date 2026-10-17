@@ -95,6 +95,7 @@ providers:
 - Azure exposes no API-key endpoint to list deployments; v1 endpoints expose `GET /models` (the available catalog) used for the pickers. You can type any deployment name.
 - `hermes doctor` runs a 10 s `DefaultAzureCredential` probe in Entra mode; `hermes auth` shows status.
 - Troubleshooting: stale `model.entra.scope` causes 401 on Claude routes (delete the line); run `az login`; verify role with `az role assignment list --assignee <id>`; check `AZURE_CLIENT_ID` for user-assigned identities.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/azure-foundry (pinned to v0.22.2)
 
 ## Related
 

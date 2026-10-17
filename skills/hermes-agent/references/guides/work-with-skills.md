@@ -91,6 +91,7 @@ Skills vs memory:
 - Skill config values are prompted on first load and stored in `config.yaml` under `skills.config.*`.
 - A dropped-in skill needs no registration. The agent can create/update skills itself via `skill_manage`.
 - Keep skills focused; organize with category subdirectories; update stale skills.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/work-with-skills (pinned to v0.22.2)
 
 ## Related
 

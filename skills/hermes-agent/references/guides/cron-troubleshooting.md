@@ -66,6 +66,7 @@ Delivery target requirements:
 - File-based locking: duplicate gateway processes cause delayed or skipped jobs. Jobs live in `~/.hermes/cron/jobs.json` (`chmod 600`, user-owned).
 - Logs: `~/.hermes/logs/agent.log`, `~/.hermes/logs/errors.log`.
 - Jobs due in the same tick run sequentially; stagger schedules. Filter large script output at the script level.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/cron-troubleshooting (pinned to v0.22.2)
 
 ## Related
 

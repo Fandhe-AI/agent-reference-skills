@@ -96,6 +96,7 @@ Comparison:
 - Schedule syntax is the same as LLM jobs: `every 5m`, `every 2h`, `0 9 * * *`, `30m` (one-shot).
 - No running gateway is required at script-run time for bot-token platforms (Telegram, Discord, Slack, Signal, SMS, WhatsApp).
 - Agents choose `no_agent=True` when the script's stdout already is the message.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/cron-script-only (pinned to v0.22.2)
 
 ## Related
 

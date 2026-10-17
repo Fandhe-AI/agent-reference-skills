@@ -61,6 +61,7 @@ Gemini 4 Argon reasoning effort mapping:
 - Long decode (`xhigh` / `max`) uses `continuationToken` resends on `finishReason: CONTINUATION`; only on native endpoints (AI Studio and Vertex express). Without it, one request stops at 65,536 output tokens streaming (32,768 non-streaming).
 - Troubleshooting: "Gemini native client requires an API key" (set a key), "This Google API key is on the free tier" (enable billing, rerun `hermes model`), "404 model not found" (pick another model), "429 quota exceeded" on Gemma, schema errors (upgrade Hermes).
 - Model availability changes over time; rerun `hermes model` for the current list.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/google-gemini (pinned to v0.22.2)
 
 ## Related
 

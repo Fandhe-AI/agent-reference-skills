@@ -69,6 +69,7 @@ Rollback commands:
 - Gateway default is deny-all when no allowlists are set; never set `GATEWAY_ALLOW_ALL_USERS=true`.
 - Checkpoints are opt-in, stored as shadow git snapshots in `~/.hermes/checkpoints/store/`; the real project `.git` is untouched.
 - Threat model: guardrails against an honest-but-wrong agent, not a sandbox against an adversarial process; the `terminal` tool runs as the same OS user. For containment use an isolated backend (Docker, Modal).
+- Source: https://hermes-agent.nousresearch.com/docs/guides/secure-hermes-on-a-work-machine (pinned to v0.22.2)
 
 ## Related
 

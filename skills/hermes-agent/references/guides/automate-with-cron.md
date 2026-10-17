@@ -76,6 +76,7 @@ Job management:
 - Schedule formats: relative delays (`30m`), intervals (`every 2h`), cron expressions (`0 9 * * *`), ISO timestamps (`2025-06-15T09:00:00`). Natural language like `daily at 9am` is not supported.
 - Skills load in the order given before the prompt runs.
 - Test with `/cron run <job_id>` before waiting for the schedule.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/automate-with-cron (pinned to v0.22.2)
 
 ## Related
 

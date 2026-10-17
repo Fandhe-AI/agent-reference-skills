@@ -52,6 +52,7 @@ delegation:
 - Top-level delegation is asynchronous but process-local: session closure, `/stop`, `/new`, or restart can cancel in-progress work.
 - Failed subagents are reported as `⚠️ Subagent failed — "your goal": <reason>`.
 - Verify subagent summaries yourself.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/delegation-patterns (pinned to v0.22.2)
 
 ## Related
 

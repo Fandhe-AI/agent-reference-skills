@@ -53,6 +53,7 @@ hermes cron create "0 9 * * *" \
 - Each profile is an independent credential island and fails closed without its own sign-in (`hermes -p <name> portal`; offers to import an existing shared session). Separate users have separate `~/.hermes/auth.json`.
 - Troubleshooting: "not logged in" (run `hermes portal`); provider drift (`hermes config set model.provider nous` or `hermes model`); partner names in routing (`hermes tools`); "Re-authentication required" (refresh token quarantined locally; `hermes auth add nous`); missing model (type the OpenRouter-style slug); billing missing (check `model.provider`, OAuth fallback, `hermes profile list`); start clean with `hermes auth logout nous`.
 - The model catalog draws on OpenRouter's 300+ models plus models served via proprietary or secondary providers.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/run-hermes-with-nous-portal (pinned to v0.22.2)
 
 ## Related
 

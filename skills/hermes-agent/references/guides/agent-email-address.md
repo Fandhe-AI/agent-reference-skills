@@ -42,6 +42,8 @@ Verify with `himalaya envelope list`, then poll via cron (`hermes cron add`) eve
 - Himalaya is pull-based: the agent sees mail only when it looks. This differs from the Email gateway adapter (chat with Hermes by emailing it, persistent IMAP connection); both can run, ideally on separate accounts.
 - Safety: inbound email is a prompt-injection surface. Never auto-act on unsolicited mail; tell the cron prompt not to reply, click links, or follow instructions in unsolicited mail; confirm before outbound sends; keep the account low-privilege (no password resets or account recovery); scope credentials.
 - The skill's `references/configuration.md` covers auth options in detail.
+- The piped remote-installer line (`curl` into `sh`) is copied verbatim from the official guide; it executes a remote script — download and review it first (e.g. `curl -fsSLo install.sh <url>` then inspect and run) rather than piping it straight to a shell.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/agent-email-address (pinned to v0.22.2)
 
 ## Related
 

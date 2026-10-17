@@ -44,6 +44,7 @@ Endpoints (public, pre-auth bootstrap):
 - PKCE (RFC 7636) protects the loopback hop; the one-time gateway code is single-use, short-lived, and useless without the verifier.
 - Token lifecycle: short-lived access token; rotating refresh token via `/auth/native/refresh`; terminal expiry (expired / revoked / reuse-detected) clears tokens and prompts sign-in; sign out clears native tokens and any legacy cookie.
 - Operators: available automatically on any gated gateway with an interactive session provider; no configuration. OAuth providers (bundled Nous) broker the upstream redirect; password providers (bundled basic-auth) land the browser on the gateway `/login` form (OS password managers can autofill). Token-only credentials (e.g. drain) do not advertise `native_pkce`.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/desktop-native-signin (pinned to v0.22.2)
 
 ## Related
 

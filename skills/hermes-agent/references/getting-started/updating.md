@@ -80,6 +80,7 @@ For an admitted source checkout, `hermes update` runs:
 - Nix is best-effort only; update with `nix flake update hermes-agent` or `nix profile upgrade hermes-agent`, roll back with `nix profile rollback`.
 - Uninstall: review `hermes uninstall --dry-run` for source installs. Default removal can preserve config and data; `--full` also removes data; `--data` removes user data without deleting package-owned code. These are destructive, so back up first (`hermes backup`; `hermes profile export` packs one profile without credentials). MSIX/Store use Windows Settings, macOS moves the app to Trash, and Docker / Nix / Termux use their own package manager.
 - If you installed the gateway as a system service, stop it first: `hermes gateway stop` (Linux: `systemctl --user disable hermes-gateway`; macOS: `launchctl remove ai.hermes.gateway`). Manual uninstall: `rm -f ~/.local/bin/hermes`, `rm -rf /path/to/hermes-agent`, optionally `rm -rf ~/.hermes`.
+- Source: https://hermes-agent.nousresearch.com/docs/getting-started/updating (pinned to v0.22.2)
 
 ## Related
 

@@ -67,6 +67,7 @@ Secret formats the migration resolves:
 - "OpenClaw directory not found": checks `~/.openclaw/`, `~/.clawdbot/`, `~/.moltbot/`; else use `--source`.
 - If TTS voice not migrated: `hermes config set tts.elevenlabs.voice_id YOUR_VOICE_ID`.
 - `hermes setup --portal` collapses a multi-provider setup into one OAuth.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/migrate-from-openclaw (pinned to v0.22.2)
 
 ## Related
 

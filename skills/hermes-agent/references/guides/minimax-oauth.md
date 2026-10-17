@@ -52,6 +52,7 @@ model:
 - Terminal refresh failure (HTTP 4xx, `invalid_grant`, `refresh_token_reused`, revoked) quarantines the refresh token locally; run `hermes auth add minimax-oauth` again.
 - Authorization timeout: re-run the login. State mismatch (possible CSRF): re-run, check for proxies modifying the response.
 - "Provider 'minimax-oauth' is set in config.yaml but no credentials were found": log in, or switch to `minimax` with an API key.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/minimax-oauth (pinned to v0.22.2)
 
 ## Related
 

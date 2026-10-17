@@ -56,6 +56,7 @@ Or a systemd timer (`hermes-teams-pipeline-maintain.service` oneshot running `/u
 - Triage: no jobs created (check `msgraph_webhook` enabled, URL points to `/msgraph/webhook`, `MSGRAPH_WEBHOOK_CLIENT_STATE` matches, subscriptions not expired); retries or failures before summarization (transcript / recording permissions, `ffmpeg` for recording fallback, token health); not delivered to Teams (`platforms.teams.enabled: true`, `delivery_mode`, `incoming_webhook_url`, `chat_id` or `team_id` + `channel_id`); duplicate replays (manual `run`, existing sink record).
 - Go-live checklist: Graph credentials, `msgraph_webhook` reachable, client state set, transcript subscription (recording subscription if STT fallback), `ffmpeg`, Teams delivery target verified, Notion / Linear sinks only if needed, `validate` OK, `token-health --force-refresh` OK, renewal scheduled, end-to-end job stored, summary delivered.
 - The source also includes blank operator and change-review worksheets (notification URL, tenant ID, client ID, client state, subscriptions, delivery mode, chat/team/channel, Notion database ID, Linear team ID, store path override, owner).
+- Source: https://hermes-agent.nousresearch.com/docs/guides/operate-teams-meeting-pipeline (pinned to v0.22.2)
 
 ## Related
 

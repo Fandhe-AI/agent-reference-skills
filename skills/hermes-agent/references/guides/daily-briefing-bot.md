@@ -47,6 +47,7 @@ hermes cron status
 - For parallel research, tell the prompt to delegate each topic to a sub-agent and combine the results.
 - Personal context (role, interests, what to skip) must be baked into the prompt because cron sessions have no conversational memory.
 - If the gateway is not running, jobs do not execute.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/daily-briefing-bot (pinned to v0.22.2)
 
 ## Related
 

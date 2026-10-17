@@ -74,6 +74,7 @@ Common errors:
 - Without an Application Access Policy, every user's meetings are readable; propagation can take up to 30 minutes. The policy is PowerShell-only (MicrosoftTeams module, `Connect-MicrosoftTeams`).
 - Secret rotation: create a second secret, update `MSGRAPH_CLIENT_SECRET`, `hermes gateway restart`, verify, then delete the old secret.
 - Follow-up pages (webhook listener, pipeline configuration, outbound delivery) were described in the source as landing with later PRs.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/microsoft-graph-app-registration (pinned to v0.22.2)
 
 ## Related
 

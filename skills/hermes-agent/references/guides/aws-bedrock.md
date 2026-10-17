@@ -77,6 +77,7 @@ IAM permissions: `bedrock:InvokeModel`, `bedrock:InvokeModelWithResponseStream`,
 - Error "Invocation of model ID ... with on-demand throughput isn't supported": use an inference profile ID (`us.` / `global.`) instead of the bare model ID. `ThrottlingException` is retried with backoff; request quota increases in Service Quotas.
 - Works with all gateway platforms (`hermes gateway setup`, `hermes gateway start`).
 - One-click CloudFormation sample: JiaDe-Wu/sample-hermes-agent-on-aws-with-bedrock.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/aws-bedrock (pinned to v0.22.2)
 
 ## Related
 

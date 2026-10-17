@@ -119,6 +119,7 @@ Used with `extraDependencyGroups` (the table lists common groups; `pyproject.tom
 - Update with `nix flake update hermes-agent` then `sudo nixos-rebuild switch` (NixOS) or `home-manager switch` (Home Manager). In container mode only the `current-package` symlink changes.
 - Dev shell: `nix develop` provides an editable Python environment; `HERMES_PYTHON` points to its interpreter. `nix flake check` runs the flake checks.
 - `services.hermes-agent.installPackage` was removed in favor of `programs.hermes-agent` (Home Manager).
+- Source: https://hermes-agent.nousresearch.com/docs/getting-started/nix-setup (pinned to v0.22.2)
 
 ## Related
 

@@ -52,6 +52,7 @@ providers:
 - Memory is bounded: MEMORY.md 2,200 chars (~800 tokens), USER.md 1,375 chars (~500 tokens). The header shows usage (e.g. `[67% — 1,474/2,200 chars]`); `hermes journey list` shows entries. `session_search` queries all past sessions (SQLite FTS).
 - Compression: last 20 messages protected (`protect_last_n`), opening exchange pinned (`protect_first_n: 3`); default `compression.in_place: true` soft-archives pre-compaction turns (still searchable); `in_place: false` rotates to a linked new session ("my project" to "my project #2").
 - A toolset trimmed at start (`hermes chat -t "terminal"`) or `/tools disable` leaves the agent with fewer capabilities for that session.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/troubleshooting-agent-quality (pinned to v0.22.2)
 
 ## Related
 

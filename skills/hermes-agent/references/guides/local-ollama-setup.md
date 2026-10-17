@@ -16,7 +16,11 @@ model:
   default: "gemma4:31b"
   provider: "custom"
   base_url: "http://localhost:11434/v1"
+```
 
+Optional cloud fallback (only activates when the local model fails; sends conversations to OpenRouter and incurs paid API usage):
+
+```yaml
 fallback_providers:
   - provider: openrouter
     model: anthropic/claude-sonnet-4
@@ -31,6 +35,8 @@ PARAMETER num_ctx 64000
 EOF
 ollama create gemma4-64k -f ~/.hermes/cache/scratch/Modelfile
 ```
+
+Then update your Hermes config to use `gemma4-64k` as the model name (`model.default: "gemma4-64k"`).
 
 Keep the model loaded: `curl http://localhost:11434/api/generate -d '{"model": "gemma4:31b", "keep_alive": "24h"}'` or `Environment="OLLAMA_KEEP_ALIVE=24h"` in `/etc/systemd/system/ollama.service.d/override.conf`.
 
@@ -60,7 +66,7 @@ providers:
 
 ## Notes
 
-- Models without tool-call support can only chat; of the listed models only `gemma4:31b` has reliable tool calling. Hermes auto-repairs malformed tool calls and falls back to a cloud provider after 3 local failures. Raw tool JSON in replies usually means the server is not parsing tool calls (llama.cpp needs `--jinja`, vLLM needs `--enable-auto-tool-choice --tool-call-parser hermes`).
+- Models without tool-call support can only chat; of the listed models only `gemma4:31b` has reliable tool calling. Hermes auto-repairs malformed tool calls and, only if `fallback_providers` is configured (optional, see above), falls back to a cloud provider after 3 local failures. Raw tool JSON in replies usually means the server is not parsing tool calls (llama.cpp needs `--jinja`, vLLM needs `--enable-auto-tool-choice --tool-call-parser hermes`).
 - CPU-only: set `HERMES_API_TIMEOUT=1800` in `~/.hermes/.env` (it is an env var, not a `config.yaml` key).
 - Slow first response is prefill of the system prompt plus tool schemas; mitigate with keep-alive, a wider timeout, `hermes prompt-size` plus `hermes tools` / `hermes skills` to trim, and GPU offload (`ollama ps`). Hermes raises the stream read timeout from 120s to 1800s for local endpoints (`HERMES_STREAM_READ_TIMEOUT`).
 - "provider 'ollama' has no endpoint configured": Hermes refuses to fall back to OpenRouter with a stray cloud key; add the endpoint.
@@ -68,6 +74,8 @@ providers:
 - Gateway bots (Telegram / Discord) work with `platforms.telegram.enabled` / `token` config and `hermes gateway`.
 - Desktop app: Settings -> Providers -> Local Models manages a local llama.cpp server instead.
 - The guide's cost comparison (~$0.80 Claude Sonnet vs $0 local per ~100K-in / 20K-out session) is illustrative.
+- The piped remote-installer line (`curl` into `sh`) is copied verbatim from the official guide; it executes a remote script — download and review it first (e.g. `curl -fsSLo install.sh <url>` then inspect and run) rather than piping it straight to a shell.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/local-ollama-setup (pinned to v0.22.2)
 
 ## Related
 

@@ -103,6 +103,7 @@ Cron schedule syntax: `every 30m`, `every 2h`, `0 2 * * *` (daily 2:00), `0 9 * 
 - A response containing `[SILENT]` suppresses delivery.
 - Dependency audit blueprint: do not activate or mutate Hermes's dependency environment; use an independently installed scanner and distinguish findings from failed scans.
 - A parameterized form-based catalog exists in the reference docs (Automation Blueprints Catalog).
+- Source: https://hermes-agent.nousresearch.com/docs/guides/automation-blueprints (pinned to v0.22.2)
 
 ## Related
 

@@ -50,6 +50,7 @@ Exit codes: `0` success, `1` platform-level delivery failure, `2` usage / argume
 - `--list` reads `~/.hermes/channel_directory.json`, refreshed by a running gateway; start the gateway once if "no channels discovered yet". Human-friendly names resolve against it.
 - For OOM / disk-full watchdogs that may fire when the host is struggling, keep a minimal `curl` instead of `hermes send`.
 - If an agent must decide what to say, schedule a cron job with `deliver=`; `hermes send` is for raw strings.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/pipe-script-output (pinned to v0.22.2)
 
 ## Related
 
