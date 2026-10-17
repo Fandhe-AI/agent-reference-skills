@@ -41,4 +41,4 @@ import { Button } from "@/components/ui/button"
 ## Related
 
 - [Prompt Input](./prompt-input.md)
-- Button
+- [Button](../components-form/button.md)

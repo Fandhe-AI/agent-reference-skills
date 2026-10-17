@@ -60,5 +60,5 @@ const percent = Math.round((used / limit) * 100)
 
 ## Related
 
-- Hover Card
+- [Hover Card](../components-overlay/hover-card.md)
 - [Progress](../components-display/progress.md)
