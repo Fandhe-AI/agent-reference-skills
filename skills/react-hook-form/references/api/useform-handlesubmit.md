@@ -1,93 +1,87 @@
 # useForm — handleSubmit
 
-`handleSubmit` メソッドはフォーム送信を処理する。バリデーションを実行し、成功時とエラー時のコールバックを呼び分ける。
+Receives the form data if form validation is successful.
 
-## シグネチャ
-
-```typescript
-handleSubmit: (
-  onValid: SubmitHandler<TFieldValues>,
-  onInvalid?: SubmitErrorHandler<TFieldValues>
-) => (e?: React.BaseSyntheticEvent) => Promise<void>
-```
-
-### 型定義
-
-```typescript
-type SubmitHandler<TFieldValues> = (
-  data: TFieldValues,
-  event?: React.BaseSyntheticEvent
-) => void | Promise<void>;
-
-type SubmitErrorHandler<TFieldValues> = (
-  errors: FieldErrors<TFieldValues>,
-  event?: React.BaseSyntheticEvent
-) => void | Promise<void>;
-```
-
-## 引数
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `onValid` | `SubmitHandler` | Yes | バリデーション成功時に呼ばれるコールバック。バリデーション済みのフォームデータを受け取る。 |
-| `onInvalid` | `SubmitErrorHandler` | No | バリデーション失敗時に呼ばれるコールバック。エラーオブジェクトを受け取る。 |
-
-## コード例
-
-### 基本的な使い方
+## Signature / Usage
 
 ```tsx
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler, SubmitErrorHandler } from "react-hook-form"
 
-function App() {
-  const { register, handleSubmit } = useForm();
+type FormValues = {
+  firstName: string
+  lastName: string
+  email: string
+}
 
-  const onSubmit = (data: any, e?: React.BaseSyntheticEvent) => {
-    console.log("送信データ:", data);
-  };
-
-  const onError = (errors: any, e?: React.BaseSyntheticEvent) => {
-    console.log("バリデーションエラー:", errors);
-  };
+export default function App() {
+  const { register, handleSubmit } = useForm<FormValues>()
+  const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data)
+  const onError: SubmitErrorHandler<FormValues> = (errors) =>
+    console.log(errors)
 
   return (
     <form onSubmit={handleSubmit(onSubmit, onError)}>
-      <input {...register("firstName", { required: true })} />
+      <input {...register("firstName")} />
+      <input {...register("lastName")} />
+      <input type="email" {...register("email")} />
+
       <input type="submit" />
     </form>
-  );
+  )
 }
 ```
 
-### 非同期送信と try-catch
+Resolver with transformed values (use `useForm`'s third generic `TTransformedValues`):
 
 ```tsx
-const onSubmit = async (data: FormValues) => {
-  try {
-    const response = await fetch("/api/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) throw new Error("送信失敗");
-  } catch (error) {
-    // エラーハンドリングを実装すること
-    console.error(error);
+const { register, handleSubmit } = useForm<FormInput, unknown, FormOutput>({
+  resolver: zodResolver(schema),
+})
+
+const onSubmit: SubmitHandler<FormOutput> = (data) => {
+  console.log(data.isEmail, data.isPhone, data.value)
+}
+```
+
+## Options / Props
+
+`handleSubmit: UseFormHandleSubmit`
+
+| Name | Type | Description |
+|------|------|-------------|
+| SubmitHandler | `(data: TFieldValues, e?: BaseSyntheticEvent) => TResult \| Promise<TResult>` | A successful callback. |
+| SubmitErrorHandler | `(errors: FieldErrors, e?: BaseSyntheticEvent) => unknown \| Promise<unknown>` | An error callback. |
+
+## Notes
+
+- Since 7.84.0, the promise returned by `handleSubmit(onValid)(event)` resolves with whatever `onValid` returns, instead of discarding it.
+
+  ```javascript
+  const onValid = (data) => ({ id: data.id })
+  const result = await handleSubmit(onValid)() // result: { id: string } | undefined
+  ```
+
+- `disabled` inputs appear as `undefined` values in form values. To prevent edits and retain the value, use `readOnly` or disable the entire `<fieldset />`.
+- `handleSubmit` does not swallow errors that occur inside your `onSubmit` callback. Use try/catch inside async requests and `setError` in the catch block to register a server-side error; this also ensures `formState.isSubmitSuccessful` is set to `false`.
+
+  ```javascript
+  const onSubmit = async (data) => {
+    try {
+      // await fetch()
+    } catch (e) {
+      setError("root.serverError", {
+        type: e.status,
+        message: e.message,
+      })
+    }
   }
-};
 
-return <form onSubmit={handleSubmit(onSubmit)}>...</form>;
-```
+  return <form onSubmit={handleSubmit(onSubmit)} />
+  ```
 
-### ボタンクリックでの呼び出し
+- Without the third generic, the callback is typed as the field input type, causing errors when accessing properties transformed by a resolver (Zod, Yup, Joi, custom).
 
-```tsx
-<button onClick={handleSubmit(onSubmit)}>送信</button>
-```
+## Related
 
-## 重要なルール / 注意事項
-
-- `handleSubmit` は非同期コールバックをサポートする。`async/await` が使用可能。
-- `handleSubmit` は内部で発生したエラーを飲み込まない。`onSubmit` コールバック内で非同期リクエストを行う場合は、必ず `try-catch` でエラーハンドリングすること。
-- `disabled` な input のフォームデータ値は `undefined` になる。値を保持したい場合は `disabled` ではなく `readOnly` を使用するか、`<fieldset disabled>` で囲む。
-- `handleSubmit` の戻り値は `Promise<void>` であるため、`event.preventDefault()` は自動的に呼ばれる。
+- [useForm — setError](./useform-seterror.md)
+- [useForm](./useform.md)

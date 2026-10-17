@@ -1,130 +1,84 @@
 # useWatch
 
-フォームフィールドの値を購読し、変更を検知するためのカスタムフック。カスタムフックレベルで再レンダリングを分離し、親コンポーネントの再レンダリングを回避できる。
+Behaves similarly to the `watch` API, but isolates re-rendering at the custom hook level, which can improve performance.
 
-## シグネチャ
-
-```typescript
-useWatch(props?: UseWatchProps): unknown | unknown[] | { [key: string]: unknown }
-```
-
-## Props
-
-| Name | Type | Required | Default | Description |
-|------|------|----------|---------|-------------|
-| `name` | `string \| string[] \| undefined` | いいえ | - | 監視するフィールド名。省略時はフォーム全体を監視 |
-| `control` | `Control` | いいえ | - | `useForm` の制御オブジェクト。`FormProvider` 使用時は省略可 |
-| `compute` | `Function` | いいえ | - | 監視した値を変換する関数。フォームデータを受け取り、計算結果を返す |
-| `defaultValue` | `unknown` | いいえ | - | 初回レンダリング時に返される初期値 |
-| `disabled` | `boolean` | いいえ | `false` | `true` にすると購読を一時停止する |
-| `exact` | `boolean` | いいえ | `false` | フィールド名の完全一致を有効にする |
-
-## Return パターン
-
-返り値は `name` の指定方法によって変わる。
-
-```typescript
-// 単一フィールド → 単一値
-const value = useWatch({ name: "fieldName" });
-// => unknown
-
-// 複数フィールド → 配列
-const [firstName, lastName] = useWatch({ name: ["firstName", "lastName"] });
-// => unknown[]
-
-// フォーム全体（name 省略） → オブジェクト
-const formValues = useWatch();
-// => { [key: string]: unknown }
-```
-
-## コード例
-
-### 基本的な使い方
+## Signature / Usage
 
 ```tsx
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, Control } from "react-hook-form"
+
+interface FormInputs {
+  firstName: string
+  lastName: string
+}
+
+function FirstNameWatched({ control }: { control: Control<FormInputs> }) {
+  const firstName = useWatch({
+    control,
+    name: "firstName", // without name will watch the entire form, or ['firstName', 'lastName'] to watch both
+    defaultValue: "default", // default value before the render
+  })
+
+  return <p>Watch: {firstName}</p> // only re-render at the custom hook level, when firstName changes
+}
 
 function App() {
-  const { register, control } = useForm({
-    defaultValues: { firstName: "", lastName: "" },
-  });
+  const { register, control, handleSubmit } = useForm<FormInputs>()
 
   return (
-    <form>
+    <form onSubmit={handleSubmit((data) => console.log(data))}>
       <input {...register("firstName")} />
       <input {...register("lastName")} />
-      <Preview control={control} />
+      <input type="submit" />
+
+      <FirstNameWatched control={control} />
     </form>
-  );
-}
-
-function Preview({ control }) {
-  const firstName = useWatch({ control, name: "firstName" });
-  const lastName = useWatch({ control, name: "lastName" });
-
-  return (
-    <p>
-      プレビュー: {firstName} {lastName}
-    </p>
-  );
+  )
 }
 ```
 
-### compute を使った値の変換
+## Options / Props
 
-```tsx
-function TotalPrice({ control }) {
-  const total = useWatch({
-    control,
-    name: ["price", "quantity"],
-    compute: ([price, quantity]) => price * quantity,
-  });
+`useWatch: (UseWatchProps) => object`
 
-  return <p>合計: {total}円</p>;
-}
-```
+| Name | Type | Description |
+|------|------|-------------|
+| `name` | `string \| string[] \| undefined` | Name of the field. Reactive: changing it updates the subscription. |
+| `control` | `Object` | `control` object from `useForm`. Optional with `FormProvider`. |
+| `compute` | `function` | Since 7.61.0. Subscribe to selective and computed form values, e.g. `useWatch({ name: 'test', compute: (data: string) => data.length ? data : '' })`, or `useWatch({ compute: (data: FormValue) => data.test?.length ? data.test : '' })` for the entire form. |
+| `defaultValue` | `unknown` | Fallback value returned before the form has mounted and no current value exists yet. Once mounted, the actual current form value takes precedence. |
+| `disabled` | `boolean = false` | Since 7.13.0. Option to disable the subscription. |
+| `exact` | `boolean = false` | Since 7.20.0. Exact name matching. When `false`, fires when the subscribed name is a prefix of the changed field name or vice versa. Since 7.81.0, when `true`, fires when the subscribed field or an ancestor path is updated, but not when a nested child path changes. |
 
-### FormProvider との併用
+Return:
 
-```tsx
-function WatchedField() {
-  // FormProvider 内では control 不要
-  const email = useWatch({ name: "email" });
-  return <p>入力中のメール: {email}</p>;
-}
-```
+| Example | Return |
+|---------|--------|
+| `useWatch({ name: 'inputName' })` | `unknown` |
+| `useWatch({ name: ['inputName1'] })` | `unknown[]` |
+| `useWatch()` | `{[key:string]: unknown}` |
 
-### setValue との組み合わせ（タイミング問題の解決）
+## Notes
 
-```tsx
-function Component({ control, setValue }) {
-  const watchedValue = useWatch({ control, name: "field" });
+- On initial render, `useWatch` returns the current form value if available. `defaultValue` (or `defaultValues` from `useForm`) is only a fallback before the form has mounted.
+- The only difference between `useWatch` and `watch` is at the root (`useForm`) level or the custom hook level.
+- Execution order matters: updating a form value before the subscription is in place means the update is ignored (`setValue("test", "data")` before `useWatch({ name: "test" })` is not received). Workaround custom hook:
 
-  // useWatch の購読前に setValue された値を取得するため
-  // getValues と組み合わせる
-  const currentValue = watchedValue ?? getValues("field");
+  ```javascript
+  const useFormValues = () => {
+    const { getValues } = useFormContext()
 
-  return <p>{currentValue}</p>;
-}
-```
+    return {
+      ...useWatch(), // subscribe to form value updates
+      ...getValues(), // always merge with latest form values
+    }
+  }
+  ```
 
-## 重要なルール
+- The result is optimized for the render phase instead of `useEffect` dependencies; use an external custom hook for value comparison to detect updates.
 
-1. **初回レンダリングでは defaultValue を返す**: `useWatch` は初回レンダリング時に `defaultValue`（または `useForm` の `defaultValues`）を返す。フォーム値の購読が確立される前の値であることに注意。
+## Related
 
-2. **実行順序に注意**: 購読が確立される前に `setValue` で値を更新しても、その値は `useWatch` に反映されない。更新は購読確立後に行うこと。
-
-3. **render 用に最適化**: `useWatch` の返り値はレンダリングフェーズに最適化されており、`useEffect` の依存配列で変更検知に使うには外部の比較フックが推奨される。
-
-```tsx
-// useEffect 依存には直接使わない方がよい
-// render 内で直接使用することを推奨
-function Display({ control }) {
-  const value = useWatch({ control, name: "field" });
-  return <span>{value}</span>; // render で直接使用
-}
-```
-
-4. **パフォーマンスの利点**: カスタムフックレベルで再レンダリングが分離されるため、`useWatch` を使用するコンポーネントのみが再レンダリングされ、親コンポーネントには影響しない。
-
-5. **`watch` メソッドとの違い**: `useForm` の `watch` メソッドはフォームコンポーネント全体を再レンダリングするが、`useWatch` はフックを使用するコンポーネントのみを再レンダリングする。
+- [Watch](./watch-component.md)
+- [useForm — watch](./useform-watch.md)
+- [useForm — control](./useform-control.md)

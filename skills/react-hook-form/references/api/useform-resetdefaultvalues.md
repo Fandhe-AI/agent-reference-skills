@@ -1,128 +1,73 @@
 # useForm — resetDefaultValues
 
-`resetDefaultValues` メソッドはフォームのデフォルト値を更新し、それに伴い dirty/valid 状態を再計算する。v7.77.0 以降で利用可能。`reset()` と異なり、ユーザーが入力した値には影響せず、デフォルト値の基準線のみを更新する。v7.82.0 以降は `useFormContext()` 経由の form context からも公開される。
+Updates `defaultValues` and recomputes `dirtyFields`/`isDirty` against the new baseline without modifying the current form values (Since 7.77.0).
 
-## バージョン要件
-
-- v7.77.0+（`useForm` から直接取得）
-- v7.82.0+（`useFormContext()` の form context 経由でも取得可能）
-
-## シグネチャ
-
-```typescript
-resetDefaultValues: (
-  values: DefaultValues<TFieldValues> | TFieldValues,
-  options?: {
-    keepDirty?: boolean;
-    keepIsValid?: boolean;
-  }
-) => void
-```
-
-## 引数
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `values` | `DefaultValues<TFieldValues> \| TFieldValues` | Yes | 新しいデフォルト値として設定するオブジェクト。 |
-| `options` | `Object` | No | 状態保持オプション。 |
-
-## オプション
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `keepDirty` | `boolean` | `false` | `true` にすると、現在の `dirtyFields` 状態を保持する。デフォルト値更新後の dirty 状態再計算をスキップする。 |
-| `keepIsValid` | `boolean` | `false` | `true` にすると、現在の `isValid` 状態を保持する。 |
-
-## reset() との違い
-
-| | `resetDefaultValues` | `reset` |
-|---|---|---|
-| ユーザー入力値への影響 | なし（値はそのまま） | あり（デフォルト値に戻す） |
-| デフォルト値の更新 | あり | あり（値を渡した場合） |
-| dirty 状態の再計算 | あり（新しいデフォルト値基準） | あり |
-| isSubmitted のリセット | なし | あり |
-
-## コード例
-
-### サーバーデータでデフォルト値を更新
+## Signature / Usage
 
 ```tsx
-import { useForm } from "react-hook-form";
+import { useForm } from "react-hook-form"
 
-type FormValues = {
-  firstName: string;
-  lastName: string;
-  email: string;
-};
+interface FormValues {
+  firstName: string
+  lastName: string
+}
 
-function UserProfileForm({ userId }: { userId: string }) {
-  const { register, handleSubmit, resetDefaultValues } = useForm<FormValues>({
-    defaultValues: { firstName: "", lastName: "", email: "" },
-  });
+export default function App() {
+  const {
+    register,
+    handleSubmit,
+    resetDefaultValues,
+    formState: { isDirty },
+  } = useForm<FormValues>({
+    defaultValues: { firstName: "", lastName: "" },
+  })
 
-  // 保存成功後にデフォルト値を現在の値に更新（dirty 状態をクリア）
   const onSubmit = async (data: FormValues) => {
-    await saveUser(userId, data);
-    // ユーザーが入力した値はそのままに、デフォルト値を更新
-    resetDefaultValues(data);
-  };
+    await saveToServer(data)
+    // Advance the baseline to the submitted values.
+    // isDirty will now only be true if the user edits after this point.
+    resetDefaultValues(data)
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <input {...register("firstName")} />
       <input {...register("lastName")} />
-      <input {...register("email")} />
-      <button type="submit">保存</button>
+      <button type="submit" disabled={!isDirty}>
+        Save
+      </button>
     </form>
-  );
+  )
 }
 ```
 
-### keepDirty オプションで状態を保持
+With options:
 
-```tsx
-// デフォルト値は更新するが、dirty 状態は現在のまま保持
-resetDefaultValues(newDefaults, { keepDirty: true });
+```javascript
+resetDefaultValues(serverValues, {
+  keepDirty: true, // preserve existing dirty tracking
+  keepIsValid: true, // skip re-validation
+})
 ```
 
-### useFormContext 経由での利用（v7.82.0+）
+## Options / Props
 
-```tsx
-import { useFormContext } from "react-hook-form";
+`resetDefaultValues: UseFormResetDefaultValues`
 
-function SaveButton() {
-  const { resetDefaultValues, getValues } = useFormContext();
+| Name | Type | Description |
+|------|------|-------------|
+| `values` | `object` | The new default values to establish as the baseline. Recommended to provide the full object. |
+| `options.keepDirty` | `boolean` | When `true`, existing `dirtyFields` state is preserved as-is rather than recomputed against the new baseline. |
+| `options.keepIsValid` | `boolean` | When `true`, validation is not re-run after the baseline update and `isValid` remains unchanged. |
 
-  const handleSave = async () => {
-    await saveUser(getValues());
-    resetDefaultValues(getValues());
-  };
+## Notes
 
-  return <button onClick={handleSave}>保存</button>;
-}
-```
-
-### subscribe との組み合わせ
-
-```tsx
-const { subscribe, resetDefaultValues } = useForm({
-  defaultValues: { name: "" },
-});
-
-// サブスクリプション内で resetDefaultValues は呼ばないこと（無限ループの原因）
-```
-
-## 重要なルール / 注意事項
-
-- `resetDefaultValues` はユーザーの入力済み値を変更しない。デフォルト値の基準線のみを更新する。
-- 呼び出し後、`isDirty` は新しいデフォルト値と現在の入力値の差分で再計算される。
-- `subscribe` のコールバック内で呼び出すと無限ループになるため禁止。
-- v7.77.0 以前は `reset(values)` でデフォルト値と入力値を同時に更新する必要があったが、`resetDefaultValues` により分離が可能になった。
-- v7.82.0 以降は `FormProvider` 配下のコンポーネントで `useFormContext()` からも `resetDefaultValues` を取得できる（`useForm` を直接呼び出す必要がない）。
+- Useful when a form disables submission while `!isDirty`: after a successful async submission, advance the baseline so only post-submit edits are dirty.
+- Current form values (what the user typed) are never modified by this method; only the internal baseline used to compute dirty state changes.
+- `dirtyFields` and `isDirty` are recomputed against the new baseline unless `keepDirty` is set.
+- Do not call `resetDefaultValues` inside a `subscribe` callback; it updates subscribed state and can re-trigger the callback in an infinite loop (carried over from the previous version of this page; not stated in the official docs).
 
 ## Related
 
-- [reset](./useform-reset.md)
-- [resetField](./useform-resetfield.md)
-- [formState](./useform-formstate.md)
-- [useForm](./useform.md)
+- [useForm — reset](./useform-reset.md)
+- [useForm — resetField](./useform-resetfield.md)

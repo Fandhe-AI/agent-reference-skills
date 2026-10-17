@@ -1,77 +1,79 @@
 # useForm — unregister
 
-`unregister` メソッドは、登録済みの input フィールドの登録を解除し、対応するバリデーションルールと値を削除する。単一または複数のフィールドを一度に解除可能。
+Unregisters a single input or an array of inputs. Since 7.0.0 it takes a second optional argument to keep state after unregistering.
 
-## シグネチャ
-
-```typescript
-unregister: (name: string | string[], options?: UnregisterOptions) => void
-```
-
-## 引数
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `name` | `string \| string[]` | Yes | 登録解除するフィールド名。配列で複数指定可能。 |
-| `options` | `UnregisterOptions` | No | 状態保持オプション。 |
-
-## オプション
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `keepDirty` | `boolean` | `false` | `isDirty` と `dirtyFields` の状態を保持する。ただし後続の入力操作が `defaultValues` との比較で状態を更新する可能性がある。 |
-| `keepTouched` | `boolean` | `false` | `touchedFields` から入力を削除しない。 |
-| `keepIsValid` | `boolean` | `false` | `isValid` の状態を保持する。ただしスキーマバリデーションの場合は更新される可能性がある。 |
-| `keepError` | `boolean` | `false` | エラー状態のクリアを防止する。 |
-| `keepValue` | `boolean` | `false` | 入力の現在の値を保持する。 |
-| `keepDefaultValue` | `boolean` | `false` | `useForm` で定義された `defaultValue` を保持する。 |
-
-## コード例
-
-### 基本的な使い方
+## Signature / Usage
 
 ```tsx
-import { useForm } from "react-hook-form";
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
 
-function App() {
-  const { register, unregister, handleSubmit } = useForm<{
-    firstName: string;
-    lastName: string;
-  }>();
+interface IFormInputs {
+  firstName: string
+  lastName?: string
+}
+
+export default function App() {
+  const { register, handleSubmit, unregister } = useForm<IFormInputs>()
+  const onSubmit = (data: IFormInputs) => console.log(data)
+
+  useEffect(() => {
+    register("lastName")
+  }, [register])
 
   return (
-    <form onSubmit={handleSubmit(console.log)}>
-      <input {...register("firstName")} />
-      <input {...register("lastName")} />
-
+    <form onSubmit={handleSubmit(onSubmit)}>
       <button type="button" onClick={() => unregister("lastName")}>
-        lastName を解除
+        unregister
       </button>
-
       <input type="submit" />
     </form>
-  );
+  )
 }
 ```
 
-### 複数フィールドの解除
+## Options / Props
 
-```tsx
-unregister(["firstName", "lastName"]);
-```
+`unregister: UseFormUnregister`
 
-### オプション付き
+With `register('yourDetails.firstName')` and `register('yourDetails.lastName')`:
 
-```tsx
-unregister("lastName", {
-  keepDirty: true,
-  keepError: true,
-});
-```
+| Type | Call | Resulting value |
+|------|------|-----------------|
+| `string` | `unregister("yourDetails")` | `{}` |
+| `string` | `unregister("yourDetails.firstName")` | `{ lastName: '' }` |
+| `string[]` | `unregister(["yourDetails.lastName"])` | `{ firstName: '' }` |
 
-## 重要なルール / 注意事項
+Options:
 
-- 組み込みバリデーションは削除される。`register` で設定したバリデーションルールは、登録解除と同時に無効になる。
-- スキーマバリデーション（Yup, Zod など）は影響を受けない。スキーマ定義は登録解除後も残るため、スキーマ側も適宜調整する必要がある。
-- 登録解除後は対応する input コンポーネントをアンマウントすること。アンマウントしない場合、`register` のコールバックが再度フィールドを登録してしまう。
-- 動的フォームで条件付きフィールドを削除する場合に特に有用。
+| Name | Type | Description |
+|------|------|-------------|
+| `keepDirty` | `boolean` | `isDirty` and `dirtyFields` remain during this action. Does not guarantee the next user input will not update `isDirty`, because `isDirty` is measured against `defaultValues`. |
+| `keepTouched` | `boolean` | `touchedFields` no longer removes that input after unregister. |
+| `keepIsValid` | `boolean` | `isValid` remains during this action. For schema validation, adjust the schema according to the unregister. |
+| `keepError` | `boolean` | `errors` will not be updated. |
+| `keepValue` | `boolean` | Input's current `value` will not be updated. |
+| `keepDefaultValue` | `boolean` | Input's `defaultValue` defined in `useForm` remains. Only has an effect when the form's top-level `shouldUnregister` is `false` (the default); no-op when `shouldUnregister: true`. |
+| `keepIsValidating` | `boolean` | Since 7.51.0. `validatingFields`/`isValidating` state for the unregistered field is retained rather than cleared. |
+
+## Notes
+
+- This method removes the input reference and its value, so built-in validation rules are removed as well.
+- Unregistering an input does not affect schema validation (e.g. a yup `firstName: yup.string().required()` still applies).
+- Make sure to unmount the input that has the `register` callback, or it will be registered again:
+
+  ```javascript
+  const [show, setShow] = useState(true)
+
+  const onClick = () => {
+    unregister("test")
+    setShow(false) // make sure to unmount that input so register not invoked again.
+  }
+
+  {show && <input {...register("test")} />}
+  ```
+
+## Related
+
+- [useForm — register](./useform-register.md)
+- [useForm](./useform.md)

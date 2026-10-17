@@ -1,117 +1,84 @@
 # useForm — getFieldState
 
-`getFieldState` メソッドは個別フィールドの状態（dirty, touched, エラー）を取得する。v7.25.0 以降で利用可能。
+Returns individual field state (Since 7.25.0). Useful for retrieving nested field state in a type-safe way.
 
-## シグネチャ
+## Signature / Usage
 
-```typescript
-getFieldState: (
-  name: string,
-  formState?: FormState
-) => {
-  isDirty: boolean;
-  isTouched: boolean;
-  invalid: boolean;
-  error: FieldError | undefined;
-}
-```
+```javascript
+import { useForm } from "react-hook-form"
 
-## 引数
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `name` | `string` | Yes | 状態を取得するフィールド名。 |
-| `formState` | `FormState` | No | `formState` オブジェクト。フォーム状態の購読が別途行われていない場合に必要。 |
-
-## 戻り値
-
-| Name | Type | Description |
-|------|------|-------------|
-| `isDirty` | `boolean` | フィールドが `defaultValues` から変更されたかどうか。`dirtyFields` の購読が前提。 |
-| `isTouched` | `boolean` | フィールドがフォーカス→ブラーされたかどうか。`touchedFields` の購読が前提。 |
-| `invalid` | `boolean` | フィールドが有効でないかどうか。`errors` の購読が前提。 |
-| `error` | `FieldError \| undefined` | フィールドのエラーオブジェクト。`errors` の購読が前提。 |
-
-## コード例
-
-### useForm と組み合わせた使用
-
-```tsx
-import { useForm } from "react-hook-form";
-
-function App() {
+export default function App() {
   const {
     register,
     getFieldState,
-    formState,
-    formState: { isDirty, errors },
+    formState: { isDirty, isValid },
   } = useForm({
     mode: "onChange",
-    defaultValues: { firstName: "" },
-  });
+    defaultValues: {
+      firstName: "",
+    },
+  })
 
-  // formState を購読済みなので第2引数は不要
-  const fieldState = getFieldState("firstName");
+  // you can invoke before render or within the render function
+  const fieldState = getFieldState("firstName")
 
   return (
     <form>
-      <input {...register("firstName", { required: true })} />
-      <p>isDirty: {fieldState.isDirty ? "はい" : "いいえ"}</p>
-      <p>isTouched: {fieldState.isTouched ? "はい" : "いいえ"}</p>
-      <p>invalid: {fieldState.invalid ? "はい" : "いいえ"}</p>
-      {fieldState.error && <p>エラー: {fieldState.error.message}</p>}
+      <input {...register("firstName", { required: true })} />{" "}
+      <p>{getFieldState("firstName").isDirty && "dirty"}</p>{" "}
+      <p>{getFieldState("firstName").isTouched && "touched"}</p>
+      <button
+        type="button"
+        onClick={() => console.log(getFieldState("firstName"))}
+      >
+        field state
+      </button>
     </form>
-  );
+  )
 }
 ```
 
-### formState を明示的に渡す
+## Options / Props
 
-```tsx
-const { getFieldState, formState } = useForm();
+`getFieldState: UseFormGetFieldState`
 
-// formState を第2引数に渡す
-const fieldState = getFieldState("firstName", formState);
-```
+| Name | Type | Description |
+|------|------|-------------|
+| `name` | `string` | Registered field name. |
+| `formState` | `object` | Optional. Only required if `formState` has not been read from or subscribed to via `useForm`, `useFormContext` or `useFormState`. |
 
-### useFormContext と組み合わせた使用
+Return:
 
-```tsx
-import { useFormContext } from "react-hook-form";
+| Name | Type | Description |
+|------|------|-------------|
+| `isDirty` | `boolean` | Field is modified. Condition: subscribe to `dirtyFields`. |
+| `isTouched` | `boolean` | Field has received a focus and blur event. Condition: subscribe to `touchedFields`. |
+| `invalid` | `boolean` | Field is not valid. Condition: subscribe to `errors`. |
+| `isValidating` | `boolean` | Since 7.51.0. Field is currently being validated. Condition: subscribe to `isValidating`. |
+| `error` | `undefined \| FieldError` | Field error object. Condition: subscribe to `errors`. |
 
-function FieldInfo({ name }: { name: string }) {
-  const { getFieldState, formState } = useFormContext();
-  const { isDirty, error } = getFieldState(name, formState);
+## Notes
 
-  return (
-    <div>
-      {isDirty && <span>変更あり</span>}
-      {error && <span>{error.message}</span>}
-    </div>
-  );
-}
-```
+- The name must match a registered field name: `getFieldState("test")` after `register("test")` returns state; `getFieldState("non-existent-name")` returns default/false state.
+- `getFieldState` works by subscribing to form state updates. Subscribe at `useForm`, `useFormContext` or `useFormState` and the second argument is no longer required:
 
-### useFormState と組み合わせた使用
+  ```javascript
+  const { register, formState: { isDirty } } = useForm()
+  register("test")
+  getFieldState("test") // ✅
+  ```
 
-```tsx
-import { useForm, useFormState } from "react-hook-form";
+- When form state subscription is not set up, pass the entire `formState` as the second argument:
 
-function App() {
-  const { register, control, getFieldState } = useForm();
-  const formState = useFormState({ control });
+  ```javascript
+  const { register } = useForm()
+  register("test")
+  const { isDirty } = getFieldState("test") // ❌ formState isDirty is not subscribed at useForm
+  const { register, formState } = useForm()
+  const { isDirty } = getFieldState("test", formState) // ✅ formState.isDirty subscribed
+  ```
 
-  const { isDirty, isTouched } = getFieldState("firstName", formState);
-}
-```
+## Related
 
-## 重要なルール / 注意事項
-
-- v7.25.0 以降で利用可能。
-- フィールド名が登録済みのフィールドに一致しない場合、`isDirty: false`、`isTouched: false`、`invalid: false`、`error: undefined` が返される。
-- `formState` の購読が前提条件。以下のいずれかの方法で購読が必要:
-  - `useForm()` から `formState` をデストラクチャリング
-  - `useFormContext()` で `formState` を取得
-  - `useFormState()` で `formState` を取得
-  - 第2引数に `formState` を直接渡す
-- 購読されていない `formState` プロパティに対応する戻り値は正確でない場合がある。
+- [useForm — formState](./useform-formstate.md)
+- [useFormState](./useformstate.md)

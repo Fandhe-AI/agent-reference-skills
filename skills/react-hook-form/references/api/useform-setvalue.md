@@ -1,127 +1,93 @@
 # useForm — setValue
 
-`setValue` メソッドは登録済みフィールドの値をプログラム的に設定する。バリデーションや dirty 状態の更新もオプションで制御可能。
+Dynamically sets the value of a registered field and provides options to validate and update the form state, while attempting to avoid unnecessary re-renders.
 
-## シグネチャ
+## Signature / Usage
 
-```typescript
-setValue: (
-  name: string,
-  value: unknown,
-  config?: {
-    shouldValidate?: boolean;
-    shouldDirty?: boolean;
-    shouldTouch?: boolean;
-    delayError?: boolean;
-  }
-) => void
-```
+```javascript
+import { useForm } from "react-hook-form"
 
-## 引数
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `name` | `string` | Yes | 対象フィールド名。ドット記法でネストフィールドを指定。 |
-| `value` | `unknown` | Yes | 設定する値。`undefined` は不可。 |
-| `config` | `SetValueConfig` | No | 状態更新オプション。 |
-
-## オプション
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `shouldValidate` | `boolean` | `false` | `true` にすると、値の設定後にバリデーションを実行する。`errors` と `isValid` が更新される。フィールドレベルでのみ `touchedFields` が更新される。 |
-| `shouldDirty` | `boolean` | `false` | `true` にすると、`defaultValues` と比較して `dirtyFields` と `isDirty` を更新する。フィールドレベルでのみ更新。 |
-| `shouldTouch` | `boolean` | `false` | `true` にすると、フィールドを touched 状態にする。 |
-| `delayError` | `boolean` | `false` | `true` にすると、`useForm` のトップレベルオプション `delayError`（ミリ秒）で設定した遅延をこの呼び出しにも適用する（v7.82.0+）。`shouldValidate: true` と併用した場合のみ有効。UI のちらつき抑制に有効。 |
-
-## コード例
-
-### 基本的な使い方
-
-```tsx
-import { useForm } from "react-hook-form";
-
-function App() {
-  const { register, setValue, handleSubmit } = useForm({
-    defaultValues: { firstName: "", lastName: "" },
-  });
+const App = () => {
+  const { register, setValue } = useForm({
+    defaultValues: { firstName: "" },
+  })
 
   return (
-    <form onSubmit={handleSubmit(console.log)}>
-      <input {...register("firstName")} />
-      <input {...register("lastName")} />
-
-      <button type="button" onClick={() => setValue("firstName", "太郎")}>
-        名前を設定
+    <form>
+      <input {...register("firstName", { required: true })} />
+      <button type="button" onClick={() => setValue("firstName", "Bill")}>setValue</button>
+      <button
+        type="button"
+        onClick={() =>
+          setValue("firstName", "Luo", {
+            shouldValidate: true,
+            shouldDirty: true,
+          })
+        }
+      >
+        setValue options
       </button>
-
-      <input type="submit" />
     </form>
-  );
+  )
 }
 ```
 
-### バリデーション付き
+Delay error:
 
-```tsx
-setValue("firstName", "太郎", { shouldValidate: true });
-```
+```javascript
+const { setValue } = useForm({ delayError: 500 })
 
-### dirty 状態の更新付き
-
-```tsx
-setValue("firstName", "太郎", { shouldDirty: true });
-```
-
-### 複数オプション
-
-```tsx
-setValue("firstName", "太郎", {
+setValue("firstName", "Bill", {
+  delayError: true, // opt in to the 500ms delay configured above
   shouldValidate: true,
-  shouldDirty: true,
-  shouldTouch: true,
-});
+})
 ```
 
-### エラー反映の遅延（delayError）
+## Options / Props
 
-```tsx
-// useForm 側で delayError（ミリ秒）を設定しておく
-const { setValue } = useForm({ delayError: 500 });
+`setValue: UseFormSetValue`
 
-// setValue 呼び出し時に delayError: true でその遅延を適用し、UIのちらつきを抑える
-setValue("firstName", "太郎", { shouldValidate: true, delayError: true });
-```
+| Name | Type | Description |
+|------|------|-------------|
+| `name` | `string` | Target a single field or field array by name. |
+| `value` | `unknown` | The value for the field. Required and cannot be `undefined`. |
+| `options.shouldValidate` | `boolean` | Whether to compute if the input is valid (subscribed to `errors`) and if the entire form is valid (subscribed to `isValid`). Only recomputes validity for the specified field, not the entire form's `errors`. |
+| `options.shouldDirty` | `boolean` | Whether to compute if the input is dirty against `defaultValues` (subscribed to `dirtyFields`) and the entire form (`isDirty`). Updates `dirtyFields` at the specified field level. |
+| `options.shouldTouch` | `boolean` | Since 7.8.0. Whether to set the input itself to be touched. |
+| `options.delayError` | `boolean` | Since 7.82.0. Opt-in flag that delays display of the resulting validation error, using the delay (ms) configured via `useForm({ delayError })`. Only takes effect when `shouldValidate` is also `true`. |
 
-### ドット記法によるネストフィールド
+## Notes
 
-```tsx
-// 推奨: ドット記法で個別指定
-setValue("user.firstName", "太郎");
-setValue("user.lastName", "山田");
+- Adapted from the official example: initial value moved into `defaultValues` (the official example passes `firstName` directly to `useForm`, which is not a `useForm` option).
+- Adapted from the official example: `type="button"` added to the buttons, since buttons inside a form default to `type="submit"`.
+- `shouldDirty` only guarantees that the target field is marked in `dirtyFields` immediately. Because `isDirty` compares current values against `defaultValues`, a later update to any field can trigger a `dirtyFields` recompute that also surfaces other fields whose value already differs from their default, including ones last written with `shouldDirty: false`.
+- `replace` / `update` from `useFieldArray` unmount and remount the targeted field array; `setValue("array.0.test1", "1")` directly updates the input value.
+- Target the field's name rather than a nested object as the second argument:
 
-// 非推奨: オブジェクトをまとめて渡す（パフォーマンスが低下する可能性）
-setValue("user", { firstName: "太郎", lastName: "山田" });
-```
+  ```javascript
+  setValue("yourDetails.firstName", "value") // performant
+  setValue("yourDetails", { firstName: "value" }) // less performant
 
-### 依存フィールドの自動計算
+  register("nestedValue", { value: { test: "data" } }) // register a nested value input
+  setValue("nestedValue.test", "updatedData") // failed to find the relevant field
+  setValue("nestedValue", { test: "updatedData" }) // setValue finds the input and updates it
+  ```
 
-```tsx
-const { watch, setValue, formState } = useForm();
-const [a, b] = watch(["a", "b"]);
+- Register the input's name before invoking `setValue`. To update an entire `FieldArray`, make sure the `useFieldArray` hook executes first. Prefer `replace` from `useFieldArray` for updating an entire field array; this `setValue` usage may become discouraged in a future version.
 
-useEffect(() => {
-  if (formState.touchedFields.a && formState.touchedFields.b) {
-    setValue("c", `${a} ${b}`);
-  }
-}, [setValue, a, b, formState]);
-```
+  ```javascript
+  setValue("fieldArray", [{ test: "1" }, { test: "2" }]) // works, but prefer replace()
+  setValue("notRegisteredInput", "value") // works on unregistered input; prefer registering
+  // implicitly registers a single input (without register being invoked)
+  setValue("resultSingleNestedField", { test: "1", test2: "2" })
 
-## 重要なルール / 注意事項
+  register("notRegisteredInput.test")
+  register("notRegisteredInput.test2")
+  setValue("notRegisteredInput", { test: "1", test2: "2" }) // sugar syntax to setValue twice
+  ```
 
-- ドット記法でフィールドを個別に指定するのがパフォーマンス面で推奨される。ネストオブジェクトをまとめて渡すより効率的。
-- フィールド配列を更新する場合は、`setValue` よりも `useFieldArray` の `replace` や `update` メソッドを使用することを推奨。
-- 再レンダリングはエラーの修正/発生時、または `dirty`/`touched` 状態が変化した場合にのみ発生する。
-- 未登録フィールドに `setValue` を使用しても新しいフィールドは作成されない。
-- `setValue` を使用する前にフィールドを `register` で登録すること。
-- `value` に `undefined` を渡すことはできない。
+## Related
+
+- [useForm — setValues](./useform-setvalues.md)
+- [useForm — register](./useform-register.md)
+- [useFieldArray](./usefieldarray.md)

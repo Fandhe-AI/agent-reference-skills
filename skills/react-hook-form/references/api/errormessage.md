@@ -1,150 +1,68 @@
 # ErrorMessage
 
-React Hook Form のエラーメッセージを表示するためのコンポーネント。`@hookform/error-message` パッケージとして提供される。
+Simple component (Since 7.88.0) to render the associated input's error message. Reads from the `control` prop when supplied, otherwise from the nearest `FormProvider`.
 
-## インストール
-
-```bash
-npm install @hookform/error-message
-```
-
-## シグネチャ
+## Signature / Usage
 
 ```tsx
-import { ErrorMessage } from "@hookform/error-message";
+import { useForm, ErrorMessage } from "react-hook-form"
 
-<ErrorMessage
-  name={string}           // 必須
-  errors={object}
-  message={string | ReactElement}
-  as={ReactElementType | string}
-  render={Function}
-/>
-```
-
-## Props
-
-| Name | Type | Required | Default | Description |
-|------|------|----------|---------|-------------|
-| `name` | `string` | はい | - | 対象のフォームフィールド名 |
-| `errors` | `object` | いいえ | - | `useForm` の `formState.errors` オブジェクト。`FormProvider` 使用時は省略可 |
-| `message` | `string \| React.ReactElement` | いいえ | - | インラインで表示するエラーメッセージ |
-| `as` | `React.ElementType \| string` | いいえ | - | ラッパー要素（例: `"span"`, `"p"`, カスタムコンポーネント） |
-| `render` | `Function` | いいえ | - | エラー表示をカスタマイズする render 関数 |
-
-## コード例
-
-### 基本的な使い方（単一エラー）
-
-```tsx
-import { useForm } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
-
-function App() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    defaultValues: { name: "" },
-  });
-
-  return (
-    <form onSubmit={handleSubmit(console.log)}>
-      <input
-        {...register("name", { required: "名前は必須です" })}
-      />
-      <ErrorMessage errors={errors} name="name" />
-      <button type="submit">送信</button>
-    </form>
-  );
+interface FormInputs {
+  singleErrorInput: string
 }
-```
 
-### render prop でカスタム表示
-
-```tsx
-<ErrorMessage
-  errors={errors}
-  name="email"
-  render={({ message }) => <p className="error">{message}</p>}
-/>
-```
-
-### as prop でラッパー要素を指定
-
-```tsx
-<ErrorMessage
-  errors={errors}
-  name="email"
-  as="span"
-/>
-```
-
-### message prop でインラインメッセージ
-
-```tsx
-<input {...register("name", { required: true })} />
-<ErrorMessage
-  errors={errors}
-  name="name"
-  message="このフィールドは必須です"
-/>
-```
-
-### 複数エラーモード（criteriaMode: "all"）
-
-`useForm` の `criteriaMode` を `"all"` に設定すると、1 つのフィールドに対する複数のバリデーションエラーを同時に表示できる。
-
-```tsx
-import { useForm } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
-
-function App() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    criteriaMode: "all", // 全エラーを収集
-  });
+export default function App() {
+  const { register, control, handleSubmit } = useForm<FormInputs>()
+  const onSubmit = (data: FormInputs) => console.log(data)
 
   return (
-    <form onSubmit={handleSubmit(console.log)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <input
-        {...register("password", {
-          required: "パスワードは必須です",
-          minLength: {
-            value: 8,
-            message: "8文字以上で入力してください",
-          },
-          pattern: {
-            value: /[A-Z]/,
-            message: "大文字を1文字以上含めてください",
-          },
-        })}
+        {...register("singleErrorInput", { required: "This is required." })}
       />
+      <ErrorMessage control={control} name="singleErrorInput" />
+
       <ErrorMessage
-        errors={errors}
-        name="password"
-        render={({ messages }) =>
-          messages &&
-          Object.entries(messages).map(([type, message]) => (
-            <p key={type} className="error">
-              {message}
-            </p>
-          ))
-        }
+        control={control}
+        name="singleErrorInput"
+        render={({ message }) => <p>{message}</p>}
       />
-      <button type="submit">送信</button>
+
+      <input type="submit" />
     </form>
-  );
+  )
 }
 ```
 
-## 重要なルール
+Multiple messages (`criteriaMode: "all"`):
 
-1. **criteriaMode の設定**: 複数エラーを同時表示するには `useForm` で `criteriaMode: "all"` を設定する必要がある。デフォルトの `"firstError"` では最初のエラーのみ返される。
-2. **render の引数**: 単一エラーモードでは `{ message }` を受け取り、複数エラーモードでは `{ messages }` オブジェクトを受け取る。`messages` は `{ [validationType]: message }` の形式。
-3. **FormProvider との併用**: `FormProvider` 使用時は `errors` prop を省略できる。コンテキストから自動的にエラー情報を取得する。
-4. **エラーが存在しない場合**: 対象フィールドにエラーがない場合、コンポーネントは何もレンダリングしない。
+```tsx
+<ErrorMessage
+  control={control}
+  name="multipleErrorInput"
+  render={({ messages }) =>
+    messages &&
+    Object.entries(messages).map(([type, message]) => (
+      <p key={type}>{message}</p>
+    ))
+  }
+/>
+```
+
+## Options / Props
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `name` | `string` | Yes | Name of the field, or a global error path (`root` or `root.*`). |
+| `control` | `Control` | No | `control` object from `useForm`. Optional with `FormProvider`. |
+| `as` | `React.ElementType` | No | Wrapper component or HTML tag, e.g. `as="span"` or `as={Text}`. |
+| `render` | `({ message: string, messages?: Object}) => React.ReactNode` | No | Render prop for rendering the error message or messages. Set `criteriaMode` to `'all'` to use `messages`. |
+
+## Notes
+
+- Inside a `FormProvider` tree, `control` can be omitted: `<ErrorMessage name="singleErrorInput" />`.
+
+## Related
+
+- [useForm — formState](./useform-formstate.md)
+- [FormProvider](./formprovider.md)

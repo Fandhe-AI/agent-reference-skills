@@ -1,109 +1,62 @@
 # useForm — watch
 
-`watch` メソッドは指定したフィールドの値の変更を監視し、条件付きレンダリングや値の表示に使用する。値が変更されると再レンダリングがトリガーされる。
+Watches specified inputs and returns their values. Useful for rendering input values and determining what to render based on conditions.
 
-## シグネチャ（オーバーロード）
-
-### 単一フィールド監視
-
-```typescript
-watch(name: string, defaultValue?: unknown): unknown
-```
-
-### 複数フィールド監視
-
-```typescript
-watch(names: string[], defaultValue?: Record<string, unknown>): unknown[]
-```
-
-### 全フィールド監視
-
-```typescript
-watch(): Record<string, unknown>
-```
-
-### コールバック監視（非推奨）
-
-```typescript
-watch(
-  callback: (data: Record<string, unknown>, info: { name?: string; type?: string }) => void,
-  defaultValues?: Record<string, unknown>
-): { unsubscribe: () => void }
-```
-
-> コールバック形式は非推奨。代わりに `subscribe()` メソッドを使用すること。
-
-## 引数
-
-| Name | Type | Description |
-|------|------|-------------|
-| `name` | `string` | 監視する単一フィールド名。 |
-| `names` | `string[]` | 監視する複数フィールド名の配列。 |
-| `defaultValue` | `unknown \| Record<string, unknown>` | `register` 前に返されるデフォルト値。 |
-| `callback` | `Function` | （非推奨）値の変更時に呼ばれるコールバック関数。 |
-
-## 戻り値
-
-| 呼び出し方 | 戻り値 |
-|------------|--------|
-| `watch("name")` | フィールドの現在の値 |
-| `watch(["name", "email"])` | 値の配列 `[nameValue, emailValue]` |
-| `watch()` | 全フィールドのオブジェクト `{ name: value, ... }` |
-| `watch(callback)` | `{ unsubscribe: () => void }` |
-
-## コード例
-
-### 単一フィールドの監視
+## Signature / Usage
 
 ```tsx
-const { register, watch } = useForm({ defaultValues: { name: "" } });
-const nameValue = watch("name");
+import { useForm } from "react-hook-form"
 
-return (
-  <div>
-    <input {...register("name")} />
-    <p>入力値: {nameValue}</p>
-  </div>
-);
+interface IFormInputs {
+  name: string
+  showAge: boolean
+  age: number
+}
+
+function App() {
+  const { register, watch, handleSubmit } = useForm<IFormInputs>()
+  const watchShowAge = watch("showAge", false) // you can supply default value as second argument
+  const watchAllFields = watch() // when you pass nothing as an argument, you are watching everything
+  const watchFields = watch(["showAge", "age"]) // you can also target specific fields by their names
+
+  const onSubmit = (data: IFormInputs) => console.log(data)
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register("name", { required: true, maxLength: 50 })} />
+      <input type="checkbox" {...register("showAge")} />
+      {/* based on yes selection to display Age Input*/}
+      {watchShowAge && <input type="number" {...register("age", { min: 50 })} />}
+      <input type="submit" />
+    </form>
+  )
+}
 ```
 
-### 複数フィールドの監視
+## Options / Props
 
-```tsx
-const [firstName, lastName] = watch(["firstName", "lastName"]);
+`watch: UseFormWatch` has four overloads:
 
-return (
-  <p>
-    フルネーム: {firstName} {lastName}
-  </p>
-);
-```
+| Overload | Returns | Description |
+|----------|---------|-------------|
+| `watch(name: string, defaultValue?: unknown)` | `unknown` | Subscribe to a single field's value and re-render when it changes. `defaultValue` is optional. |
+| `watch(names: string[], defaultValue?: {[key:string]: unknown})` | `unknown[]` | Subscribe to an array of fields; e.g. `const [name, name1] = watch(["name", "name1"])`. |
+| `watch()` | `{[key:string]: unknown}` | Watch the entire form based on `onChange`, triggering re-renders at the `useForm` level. |
+| `watch(callback: (data, { name, type }) => void, defaultValues?: {[key:string]: unknown})` | `{ unsubscribe: () => void }` | Deprecated: consider `subscribe`. Subscribe to field updates without triggering a re-render. |
 
-### 条件付きレンダリング
+Callback arguments: `type` indicates the originating DOM event (typed as `EventType`); it is `'change'` when a user updates a field and `undefined` when triggered programmatically (e.g. `setValue`, `reset`, after `unregister`).
 
-```tsx
-const { register, watch } = useForm();
-const showEmail = watch("hasEmail");
+## Notes
 
-return (
-  <form>
-    <input type="checkbox" {...register("hasEmail")} />
-    {showEmail && <input {...register("email")} />}
-  </form>
-);
-```
+- Callback overload `watch(callback)` is deprecated since subscribe is available; consider using or migrating to `subscribe`.
+- When `defaultValue` is not defined, the first render of `watch` returns `undefined` because it is called before `register`. Provide `defaultValues` to `useForm` to avoid this, or set an inline `defaultValue` as the second argument.
+- When both `defaultValue` and `defaultValues` are supplied, `defaultValues` takes precedence; the inline `defaultValue` is only a fallback when no value exists for that field.
+- This API triggers a re-render at the root of your application or form. Consider using a callback or `useWatch` if you experience performance issues.
+- The `watch` result is optimized for the render phase rather than `useEffect` dependencies. To detect value updates, use an external custom hook for value comparison.
+- With `useFieldArray`, `watch("test")` returns the array of field values.
 
-### 全フィールドの監視
+## Related
 
-```tsx
-const formValues = watch();
-console.log(formValues); // { firstName: "...", lastName: "...", ... }
-```
-
-## 重要なルール / 注意事項
-
-- `defaultValue` を指定しない場合、`register` 前の初回レンダリングでは `undefined` が返される。`useForm` の `defaultValues` 指定を推奨。
-- `defaultValue` と `useForm` の `defaultValues` の両方が設定されている場合、`defaultValue` が優先される。
-- `watch` はルートレベルの再レンダリングをトリガーする。パフォーマンスが重要な場合は `useWatch` フックを検討すること。
-- `watch` の結果はレンダリングフェーズ用に最適化されており、`useEffect` の依存配列には適さない。値の変更検知には外部の比較フックを使用すること。
-- コールバック形式の `watch` は非推奨。代わりに `subscribe()` を使用すること。
+- [useWatch](./usewatch.md)
+- [useForm — subscribe](./useform-subscribe.md)
+- [useForm — getValues](./useform-getvalues.md)

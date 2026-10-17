@@ -1,131 +1,80 @@
 # useForm
 
-`useForm` は React Hook Form の中核となるカスタムフックで、フォーム全体の管理を担う。オプションを受け取り、フォーム操作用のメソッド群を返す。
+Custom hook for managing forms with ease. Takes one optional object argument (`UseFormProps`).
 
-## シグネチャ
-
-```typescript
-useForm<TFieldValues extends FieldValues = FieldValues>(
-  props?: UseFormProps<TFieldValues>
-): UseFormReturn<TFieldValues>
-```
-
-## オプション
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `mode` | `'onSubmit' \| 'onBlur' \| 'onChange' \| 'onTouched' \| 'all'` | `'onSubmit'` | バリデーション実行タイミングの戦略。`onSubmit`: 送信時のみ。`onBlur`: blur イベント時。`onChange`: change イベント毎（パフォーマンスに注意）。`onTouched`: 初回 blur 後は change 毎。`all`: blur と change の両方。 |
-| `reValidateMode` | `'onChange' \| 'onBlur' \| 'onSubmit'` | `'onChange'` | 送信後の再バリデーション戦略。`mode` が `onSubmit` の場合に特に有効。 |
-| `defaultValues` | `FieldValues \| () => Promise<FieldValues>` | `{}` | フォームのデフォルト値。非同期関数も指定可能。キャッシュされるため、リセットには `reset` API を使用する。`undefined` は避け、各フィールドに適切なデフォルト値を指定すること。 |
-| `values` | `FieldValues` | — | 外部ソースからリアクティブにフォーム値を更新する。外部の状態管理やサーバーデータとの連携に使用。 |
-| `errors` | `FieldErrors` | — | サーバーから返されたエラーでフォームを更新する。 |
-| `resetOptions` | `KeepStateOptions` | — | `values` や `defaultValues` が更新された際の状態保持動作を設定する。 |
-| `resolver` | `Resolver` | — | 外部スキーマバリデーションライブラリ（Yup, Zod, Joi, Vest, Ajv など）との統合用。`values` と `errors` プロパティを持つオブジェクトを返す必要がある。 |
-| `context` | `object` | — | `resolver` に注入されるコンテキストオブジェクト。バリデーション時に追加情報を渡す場合に使用。 |
-| `shouldFocusError` | `boolean` | `true` | バリデーションエラー発生時に最初のエラーフィールドに自動フォーカスするかどうか。 |
-| `shouldUnregister` | `boolean` | `false` | `true` にするとアンマウント時にフィールドを自動登録解除し、ネイティブフォームに近い動作になる。値は input 自体に保持される。 |
-| `shouldUseNativeValidation` | `boolean` | `false` | ブラウザのネイティブ制約バリデーション API を使用する。`true` の場合、ブラウザ標準のエラーメッセージが表示される。 |
-| `progressive` | `boolean` | `false` | SSR フレームワークでのプログレッシブエンハンスメントを有効にする。 |
-| `delayError` | `number` | — | エラー表示を遅延させるミリ秒数。ユーザーが入力中にエラーが即座に表示されるのを防ぐ。 |
-| `disabled` | `boolean` | `false` | フォーム全体と全入力フィールドを無効にする。 |
-| `criteriaMode` | `'firstError' \| 'all'` | `'firstError'` | エラーレポートの制御。`firstError`: 各フィールド最初のエラーのみ。`all`: 全エラーを収集（`types` オブジェクトで取得）。 |
-
-## 戻り値
-
-| Name | Type | Description |
-|------|------|-------------|
-| `register` | `Function` | input 要素をフォームに登録する |
-| `unregister` | `Function` | input の登録を解除する |
-| `formState` | `Object` | フォーム全体の状態（dirty, errors, isValid など） |
-| `watch` | `Function` | フィールド値の変更を監視する |
-| `handleSubmit` | `Function` | フォーム送信を処理する |
-| `reset` | `Function` | フォーム全体をリセットする |
-| `resetField` | `Function` | 個別フィールドをリセットする |
-| `setError` | `Function` | エラーを手動で設定する |
-| `clearErrors` | `Function` | エラーをクリアする |
-| `setValue` | `Function` | 単一フィールドの値をプログラム的に設定する |
-| `setValues` | `Function` | 複数フィールドの値を一括で更新する（v7.74+） |
-| `setFocus` | `Function` | 特定フィールドにフォーカスする |
-| `getValues` | `Function` | フォーム値を取得する（再レンダリングなし） |
-| `getFieldState` | `Function` | 個別フィールドの状態を取得する |
-| `trigger` | `Function` | バリデーションを手動で実行する |
-| `resetDefaultValues` | `Function` | デフォルト値を更新し dirty/valid 状態を再計算する（v7.77+） |
-| `control` | `Object` | Controller や useWatch に渡す制御オブジェクト |
-| `Form` | `Component` | フォーム送信を管理するコンポーネント（Beta） |
-| `subscribe` | `Function` | 再レンダリングなしでフォーム状態を購読する |
-
-## コード例
+## Signature / Usage
 
 ```tsx
-import { useForm } from "react-hook-form";
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 
-type FormValues = {
-  firstName: string;
-  lastName: string;
-  email: string;
-};
+const schema = z.object({
+  name: z.string(),
+  age: z.number(),
+})
 
-function App() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>({
-    mode: "onBlur",
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-    },
-  });
-
-  const onSubmit = (data: FormValues) => console.log(data);
+const App = () => {
+  const { register, handleSubmit } = useForm({
+    defaultValues: { name: "", age: 0 },
+    resolver: zodResolver(schema),
+  })
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register("firstName", { required: true })} />
-      {errors.firstName && <span>名前は必須です</span>}
-
-      <input {...register("email", { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ })} />
-      {errors.email && <span>有効なメールアドレスを入力してください</span>}
-
+    <form onSubmit={handleSubmit((data) => console.log(data))}>
+      <input {...register("name")} />
+      <input {...register("age", { valueAsNumber: true })} type="number" />
       <input type="submit" />
     </form>
-  );
+  )
 }
 ```
 
-### 非同期デフォルト値
+Return values: `register`, `unregister`, `formState`, `watch`, `subscribe`, `handleSubmit`, `reset`, `resetField`, `resetDefaultValues`, `setError`, `clearErrors`, `setValue`, `setValues`, `setFocus`, `getValues`, `getErrors`, `getFieldState`, `trigger`, `control`, `Form`.
 
-```tsx
-const { register, handleSubmit } = useForm({
-  defaultValues: async () => {
-    const response = await fetch("/api/user");
-    return await response.json();
-  },
-});
-```
+## Options / Props
 
-### resolver（Zod）
+| Name | Type | Description |
+|------|------|-------------|
+| `mode` | `onChange \| onBlur \| onSubmit \| onTouched \| all = 'onSubmit'` | Validation strategy before submission. `onSubmit`: on submit, inputs then attach `onChange` listeners to re-validate. `onBlur`: on blur. `onChange`: on every change (multiple re-renders, significant performance impact). `onTouched`: first on blur, then on every change (with `Controller`, wire up `onBlur` in `render`). `all`: on both blur and change. |
+| `reValidateMode` | `onChange \| onBlur \| onSubmit = 'onChange'` | Validation strategy after submission. Since 7.56.0, both `mode` and `reValidateMode` are reactive. |
+| `defaultValues` | `FieldValues \| () => Promise<FieldValues>` | Default values for the entire form (sync or async). Cached; use `reset` to change. |
+| `values` | `FieldValues` | Since 7.41.0. Reactive values that update the form; overwrites `defaultValues` unless `resetOptions: { keepDefaultValues: true }`. |
+| `errors` | `FieldErrors` | Since 7.49.0. Server-returned errors to update the form. Keep the errors object reference-stable to avoid infinite re-renders. |
+| `resetOptions` | `KeepStateOptions` | Since 7.41.0. Behavior when `values`/`defaultValues` update (same options as `reset`). |
+| `context` | `object` | Mutable context object injected into the `resolver`'s second argument (or Yup's context). |
+| `criteriaMode` | `firstError \| all` | `firstError` (default) gathers the first error per field; `all` gathers all errors. |
+| `shouldFocusError` | `boolean = true` | Focus the first field with an error after failed submit. Requires `ref` attached to a DOM element; focus order follows `register` order. |
+| `delayError` | `number` | Since 7.12.0. Delay (ms) before displaying error states; correcting the input removes the error instantly. |
+| `validate` | `Function` | Since 7.72.0. Form-level validation. Receives `{ formValues, formState, eventType, name }`; returns `true`, a `string` (surfaced at `formState.errors.form`), or `{ [fieldName]: { type, message } }`. Does not run when a `resolver` is configured. |
+| `shouldUnregister` | `boolean = false` | Unregister inputs on unmount. Global setting overriding child-level configuration. |
+| `shouldUseNativeValidation` | `boolean = false` | Since 7.9.0. Enables browser native validation and `:valid`/`:invalid` CSS selectors. |
+| `progressive` | `boolean = false` | Since 7.44.0. Forwards validation rules (`required`, `min`, `max`, `minLength`, `maxLength`, `pattern`) from `register` as native HTML attributes; enables progressive enhancement for `Form`. |
+| `disabled` | `boolean = false` | Since 7.48.0. Disables the entire form and all associated inputs. |
+| `formControl` | `object` | Supply a pre-created form control object (from `createFormControl`) instead of letting `useForm` create one internally. |
+| `resolver` | `Resolver` | Integrates a schema validation library (Yup, Zod, Joi, Vest, Ajv, etc.) via `@hookform/resolvers`. |
 
-```tsx
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+Resolver arguments:
 
-const schema = z.object({
-  name: z.string().min(1, "名前は必須です"),
-  age: z.number().min(18, "18歳以上である必要があります"),
-});
+| Name | Type | Description |
+|------|------|-------------|
+| `values` | `object` | The entire form values. |
+| `context` | `object` | The `context` object given to `useForm`; mutable and can change on each re-render. |
+| `options` | `{ criteriaMode: string, fields: object, names: string[] }` | Information about the validated fields, names and `criteriaMode`. |
 
-const { register, handleSubmit } = useForm({
-  resolver: zodResolver(schema),
-});
-```
+## Notes
 
-## 重要なルール / 注意事項
+- Avoid `undefined` as a default value; it conflicts with the default state of a controlled component. `defaultValues` are included in the submission result by default. Avoid custom objects with prototype methods (e.g. `Moment`, `Luxon`) as `defaultValues`.
+- Async `defaultValues` or `values` updates call `reset` internally; use `resetOptions` (e.g. `{ keepDirtyValues: true, keepErrors: true }`) to configure behavior.
+- `shouldUnregister: false` means unmounted fields are not validated by built-in validation; `true` means `defaultValues` are not merged into the submission result, values live in inputs, and unmounted inputs must be notified at `useForm` or `useWatch`'s `useEffect`.
+- `shouldUseNativeValidation` only works with `onSubmit` and `onChange` modes, requires string validation messages, and only works with `register` and `useController`/`Controller` connected to actual DOM references. It works independently of `progressive`.
+- A resolver cannot be used with the built-in validators (required, min, etc.). Schema validation focuses on field-level error reporting; re-validation occurs one field at a time. A custom resolver must return `{ values, errors }` (default `{}`), and `errors` keys must be hierarchical (`{ participants: [null, { name: someErr }] }`, not `"participants.1.name"`).
+- Custom resolver example returns `{ values: error ? {} : values, errors: error ? ... : {} }` from `resolver: async (data) => ...`.
+- In a future major release the `useForm` return value will be memoized; do not depend on the entire return in `useEffect`. Destructure instead: `const { reset } = useForm(); useEffect(() => { reset({ ... }) }, [reset])`.
 
-- `defaultValues` に `undefined` を含めないこと。コントロールドコンポーネントのデフォルトと競合する。
-- `defaultValues` はキャッシュされる。リセットするには `reset` API を使用する。
-- `shouldUnregister: true` の場合、`useEffect` でのフォーム値購読はできない。
-- `resolver` は `{ values: {}, errors: {} }` の形式でオブジェクトを返す必要がある。
-- `mode: 'onChange'` はパフォーマンスに影響するため、必要な場合のみ使用する。
+## Related
+
+- [useForm — register](./useform-register.md)
+- [useForm — handleSubmit](./useform-handlesubmit.md)
+- [useForm — formState](./useform-formstate.md)
+- [createFormControl](./createformcontrol.md)

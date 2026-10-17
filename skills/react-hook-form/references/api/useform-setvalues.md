@@ -1,105 +1,71 @@
 # useForm — setValues
 
-`setValues` メソッドは複数のフォームフィールドの値を一括で更新する。v7.74.0 以降で利用可能。個別フィールドを順番に `setValue` で更新するよりも効率的で、冗長な深いクローンをスキップしてパフォーマンスを向上させる。
+Dynamically sets multiple field values at once (Since 7.74.0). Also accepts a callback that receives the current form values.
 
-## バージョン要件
+## Signature / Usage
 
-- v7.74.0+
+```javascript
+import { useForm } from "react-hook-form"
 
-## シグネチャ
-
-```typescript
-setValues: (
-  value: Partial<TFieldValues> | ((current: TFieldValues) => Partial<TFieldValues>),
-  options?: {
-    shouldValidate?: boolean;
-    shouldDirty?: boolean;
-    shouldTouch?: boolean;
-  }
-) => void
-```
-
-## 引数
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `value` | `Partial<TFieldValues> \| ResetAction<TFieldValues>` | Yes | 設定するフィールド値のオブジェクト、または現在の値を引数に取りパーシャルオブジェクトを返す関数。 |
-| `options` | `SetValueConfig` | No | 状態更新オプション。 |
-
-## オプション
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `shouldValidate` | `boolean` | `false` | `true` にすると、値の設定後にバリデーションを実行する。 |
-| `shouldDirty` | `boolean` | `false` | `true` にすると、`dirtyFields` と `isDirty` を更新する。 |
-| `shouldTouch` | `boolean` | `false` | `true` にすると、対象フィールドを touched 状態にする。 |
-
-## コード例
-
-### オブジェクトで一括設定
-
-```tsx
-import { useForm } from "react-hook-form";
-
-type FormValues = {
-  firstName: string;
-  lastName: string;
-  email: string;
-};
-
-function App() {
-  const { register, setValues } = useForm<FormValues>({
-    defaultValues: { firstName: "", lastName: "", email: "" },
-  });
-
-  const fillForm = () => {
-    setValues({
-      firstName: "太郎",
-      lastName: "山田",
-      email: "taro@example.com",
-    });
-  };
+const App = () => {
+  const { register, setValues } = useForm({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+    },
+  })
 
   return (
     <form>
-      <input {...register("firstName")} />
-      <input {...register("lastName")} />
-      <input {...register("email")} />
-      <button type="button" onClick={fillForm}>
-        フォームを埋める
+      <input {...register("firstName", { required: true })} />
+      <input {...register("lastName", { required: true })} />
+      <button
+        type="button"
+        onClick={() => setValues({ firstName: "Bill", lastName: "Luo" })}
+      >
+        setValues
+      </button>
+      <button
+        type="button"
+        onClick={() =>
+          setValues(
+            { firstName: "Bill", lastName: "Luo" },
+            { shouldValidate: true, shouldDirty: true, shouldTouch: true }
+          )
+        }
+      >
+        setValues with validation
+      </button>
+      <button
+        type="button"
+        onClick={() => setValues((data) => ({ ...data, firstName: "test" }))}
+      >
+        setValues with callback
       </button>
     </form>
-  );
+  )
 }
 ```
 
-### コールバック関数で更新
+## Options / Props
 
-```tsx
-// 現在の値を元に一部のフィールドを更新
-setValues((currentValues) => ({
-  ...currentValues,
-  firstName: "更新後の名前",
-}));
-```
+`setValues: UseFormSetValues`
 
-### バリデーション付きで設定
+| Name | Type | Description |
+|------|------|-------------|
+| `value` | `Partial<TFieldValues> \| (formValues: TFieldValues) => TFieldValues` | An object containing the field values to update, or a callback receiving the current form values and returning the next form values. Required. |
+| `options.shouldValidate` | `boolean` | Whether to compute if the input is valid (subscribed to `errors`) and if the entire form is valid (subscribed to `isValid`). |
+| `options.shouldDirty` | `boolean` | Whether to compute if the input is dirty against `defaultValues` (subscribed to `dirtyFields`) and the entire form (`isDirty`). |
+| `options.shouldTouch` | `boolean` | Whether to set the updated inputs to be touched. |
+| `options.delayError` | `boolean` | Since 7.82.0. Opt-in flag that delays display of the resulting validation error, using the delay (ms) configured via `useForm({ delayError })`. Only takes effect when `shouldValidate` is also `true`. |
 
-```tsx
-setValues(
-  { firstName: "太郎", email: "taro@example.com" },
-  { shouldValidate: true, shouldDirty: true }
-);
-```
+## Notes
 
-## 重要なルール / 注意事項
-
-- `setValue` の一括版として設計されており、複数フィールドを効率的に更新する。各フィールドで個別の `setValue` を呼ぶよりパフォーマンスが高い。
-- `undefined` の値を含むフィールドは更新されない。
-- フィールド配列の操作には `useFieldArray` の `replace` や `update` メソッドを使用すること。
+- With the callback form, the function receives a snapshot of the current form values and should return the next form values.
+- This method does not reset the form. Use `reset` to reinitialize `defaultValues`.
+- Unlike calling `setValue` multiple times in sequence, `setValues` batches all updates into a single re-render.
 
 ## Related
 
-- [setValue](./useform-setvalue.md)
-- [reset](./useform-reset.md)
-- [useForm](./useform.md)
+- [useForm — setValue](./useform-setvalue.md)
+- [useForm — reset](./useform-reset.md)
