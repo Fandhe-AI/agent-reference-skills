@@ -71,7 +71,7 @@ Migrate file extension / protocol associations (manifest):
 ```xml
 <Extensions>
   <uap:Extension Category="windows.fileTypeAssociation">
-    <uap3:FileTypeAssociation Name=".foo">
+    <uap3:FileTypeAssociation Name="foo">
       <rescap3:MigrationProgIds>
         <rescap3:MigrationProgId>Foo.Bar.1</rescap3:MigrationProgId>
       </rescap3:MigrationProgIds>
@@ -104,6 +104,7 @@ Migrate file extension / protocol associations (manifest):
 - This flexibility does not apply to games: in-app purchases of digital goods/services in games (and on Xbox) must use the Microsoft Store in-product purchase API per Store Policy 10.8.1; see Microsoft Store Policies.
 - Paid users of the unpackaged app shouldn't pay again: offer a free/demo version unlockable by license sign-in or key, or set the app paid and distribute promotional (coupon) codes through your own channels.
 - After install, pins in the taskbar / Start menu (and Windows 10 tiles) launch the Store app; the system migrates listed ProgIds to the packaged app after installation.
+- The source page's sample uses `Name=".foo"`; per the uap/uap3 FileTypeAssociation schema, `Name` is a lowercase grouping name (no spaces), and the extension `.foo` belongs in `SupportedFileTypes/FileType`, so it is written as `Name="foo"` here.
 - Source: https://learn.microsoft.com/en-us/windows/apps/distribute-through-store/how-to-transition-users-from-your-web-unpackaged-app-to-store-packaged-app, last updated 2024-02-15 (ms.date).
 
 ## Related
