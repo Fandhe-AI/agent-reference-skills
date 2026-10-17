@@ -62,12 +62,13 @@ For quick reference, the most common marker values by platform are:
 You can check the values for your current platform by running:
 
 ```console
-$ uvx python -c "import sysconfig; print(sysconfig.get_config_vars())"
+$ uvx python -c "import sys, platform, os; print(sys.platform, platform.system(), platform.machine(), os.name)"
 ```
 
 ## Notes
 
 - On Windows, `sys_platform` is always `'win32'`, even on 64-bit systems.
+- The upstream docs show `uvx python -c "import sysconfig; print(sysconfig.get_config_vars())"` here; that prints build-time config variables rather than the PEP 508 marker values, so this page prints the runtime attributes the markers are derived from.
 
 ## Related
 

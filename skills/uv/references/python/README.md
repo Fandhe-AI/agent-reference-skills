@@ -17,4 +17,3 @@
 | uv python uninstall | Uninstall Python versions. | [uv-python-uninstall.md](./uv-python-uninstall.md) |
 | uv python update-shell | Ensure that the Python executable directory is on the `PATH`. | [uv-python-update-shell.md](./uv-python-update-shell.md) |
 | uv python upgrade | Upgrade installed Python versions to the latest supported patch release. | [uv-python-upgrade.md](./uv-python-upgrade.md) |
-</content>

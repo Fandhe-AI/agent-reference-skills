@@ -14,7 +14,7 @@ $ uv pip compile --resolution lowest requirements.in -o requirements.txt
 
 ## Resolution strategy
 
-By default, uv tries to use the latest version of each package. For example, `uv pip install flask>=2.0.0` will install the latest version of Flask, e.g., 3.0.0. If `flask>=2.0.0` is a dependency of the project, only `flask` 3.0.0 will be used. This is important, for example, because running tests will not check that the project is actually compatible with its stated lower bound of `flask` 2.0.0.
+By default, uv tries to use the latest version of each package. For example, `uv pip install "flask>=2.0.0"` will install the latest version of Flask, e.g., 3.0.0. If `flask>=2.0.0` is a dependency of the project, only `flask` 3.0.0 will be used. This is important, for example, because running tests will not check that the project is actually compatible with its stated lower bound of `flask` 2.0.0.
 
 With `--resolution lowest`, uv will install the lowest possible version for all dependencies, both direct and indirect (transitive). Alternatively, `--resolution lowest-direct` will use the lowest compatible versions for all direct dependencies, while using the latest compatible versions for all other dependencies. uv will always use the latest versions for build dependencies.
 
@@ -73,6 +73,10 @@ By default, `uv add` adds lower bounds to dependencies and, when using uv to man
 Lower bounds are not critical in the "happy path", but they are important for cases where there are dependency conflicts. For example, consider a project that requires two packages and those packages have conflicting dependencies. The resolver needs to check all combinations of all versions within the constraints for the two packages — if all of them conflict, an error is reported because the dependencies are not satisfiable. If there are no lower bounds, the resolver can (and often will) backtrack down to the oldest version of a package. This isn't only problematic because it's slow, the old version of the package often fails to build, or the resolver can end up picking a version that's old enough that it doesn't depend on the conflicting package, but also doesn't work with your code.
 
 Lower bounds are particularly critical when writing a library. It's important to declare the lowest version for each dependency that your library works with, and to validate that the bounds are correct — testing with `--resolution lowest` or `--resolution lowest-direct`. Otherwise, a user may receive an old, incompatible version of one of your library's dependencies and the library will fail with an unexpected error.
+
+## Notes
+
+- The upstream prose shows the specifier unquoted; quote it in a shell so `>` is not treated as a redirect.
 
 ## Related
 

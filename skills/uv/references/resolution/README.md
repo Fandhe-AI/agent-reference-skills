@@ -14,4 +14,3 @@
 | Resolution strategy and lower bounds | By default uv selects the latest version of each package; `--resolution` changes this, which is useful for verifying declared lower bounds. | [resolution-strategy.md](./resolution-strategy.md) |
 | Resolver internals | How uv's PubGrub-based forking resolver works: prioritization, forking, wheel tags, metadata consistency, `requires-python` and URL dependencies. | [resolver-internals.md](./resolver-internals.md) |
 | Source distributions and lockfile versioning | uv rejects non-conforming source distribution archive formats (as of 0.12), and `uv.lock` uses a versioned schema. | [sdist-lockfile-versioning.md](./sdist-lockfile-versioning.md) |
-</content>

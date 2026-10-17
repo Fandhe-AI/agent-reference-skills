@@ -19,4 +19,3 @@
 | Scripts (PEP 723 inline metadata) | Run standalone Python scripts with uv; dependencies and the Python version can be declared in the script itself using PEP 723 inline script metadata. | [scripts.md](./scripts.md) |
 | Workspace metadata | `uv workspace metadata` exports the information uv has about a workspace or PEP 723 script as JSON for other tools. | [workspace-metadata.md](./workspace-metadata.md) |
 | Using workspaces | A workspace is a collection of one or more packages (workspace members) managed together, sharing a single lockfile; defined by a `tool.uv.workspace` table. | [workspaces.md](./workspaces.md) |
-</content>
