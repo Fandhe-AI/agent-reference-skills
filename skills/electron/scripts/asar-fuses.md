@@ -4,28 +4,28 @@ source: https://www.electronjs.org/docs/latest/tutorial/asar-archives
 
 # ASAR and Fuses
 
-ASAR アーカイブの操作と Fuses の確認。出典は asar-archives と fuses（`https://www.electronjs.org/docs/latest/tutorial/fuses`）。
+Working with ASAR archives and inspecting Fuses. Sources: asar-archives and fuses (`https://www.electronjs.org/docs/latest/tutorial/fuses`).
 
-## ASAR アーカイブの内容一覧
+## List the contents of an ASAR archive
 
 ```sh
 asar list /path/to/example.asar
 ```
 
-`asar` CLI は公式 `electron/asar` のツール（インストール方法は asar-archives ページに記載なし）。
+The `asar` CLI is the official `electron/asar` tool (the asar-archives page does not document how to install it).
 
-## ASAR アーカイブの作成（ネイティブモジュールを unpack）
+## Create an ASAR archive (unpack native modules)
 
 ```sh
-asar pack app app.asar --unpack *.node
+asar pack app app.asar --unpack '*.node'
 ```
 
-`app.asar.unpacked` フォルダーが `app.asar` と同時に生成され、同梱して配布する。
+An `app.asar.unpacked` folder is created alongside `app.asar`; ship it together. Differs from the official text: `'*.node'` is quoted here so the shell does not expand the glob against the current directory.
 
-## Fuses の状態確認
+## Check Fuse state
 
 ```sh
 npx @electron/fuses read --app /Applications/Foo.app
 ```
 
-任意の Electron アプリの Fuse 状態を確認する。読み取りのみで書き換えは行わない。Fuses を反転する場合は `@electron/fuses` の `flipFuses` をパッケージング時に呼ぶ（fuses ページ記載）。署名前に行うこと。
+Reads the Fuse state of any Electron app; it does not modify anything. To flip Fuses, call `flipFuses` from `@electron/fuses` at packaging time (per the fuses page), before code signing.

@@ -4,9 +4,9 @@ source: https://www.electronjs.org/docs/latest/tutorial/using-native-node-module
 
 # Native Modules
 
-ネイティブ Node モジュールの Electron 向け再ビルド。出典は using-native-node-modules と windows-arm（`https://www.electronjs.org/docs/latest/tutorial/windows-arm`）。
+Rebuilding native Node modules for Electron. Sources: using-native-node-modules and windows-arm (`https://www.electronjs.org/docs/latest/tutorial/windows-arm`).
 
-## @electron/rebuild による再ビルド
+## Rebuild with @electron/rebuild
 
 ```sh
 npm install --save-dev @electron/rebuild
@@ -18,9 +18,9 @@ npm install --save-dev @electron/rebuild
 .\node_modules\.bin\electron-rebuild.cmd
 ```
 
-Electron の ABI は Node.js と異なるため再ビルドが必要。Electron Forge 使用時は開発モードと配布物作成時に自動で使われる。
+A rebuild is needed because Electron's ABI differs from Node.js. Electron Forge uses it automatically in development mode and when creating distributables.
 
-## npm の環境変数による直接インストール
+## Install directly with npm environment variables
 
 ```sh
 # Electron's version.
@@ -38,28 +38,28 @@ export npm_config_build_from_source=true
 HOME=~/.electron-gyp npm install
 ```
 
-`1.2.3` は使用する Electron のバージョンに置き換える。
+Replace `1.2.3` with the Electron version you use.
 
-## node-gyp による手動ビルド
+## Manual build with node-gyp
 
 ```sh
 cd /path-to-module/
 HOME=~/.electron-gyp node-gyp rebuild --target=1.2.3 --arch=x64 --dist-url=https://electronjs.org/headers
 ```
 
-## カスタムビルドの Electron 向けビルド
+## Build for a custom Electron build
 
 ```sh
 npm rebuild --nodedir=/path/to/src/out/Default/gen/node_headers
 ```
 
-公開リリースと一致しないカスタムビルド用。
+For custom builds that do not match a public release.
 
-## Windows on ARM 向けの arm64 インストール
+## Install for arm64 on Windows on ARM
 
 ```bat
 set npm_config_arch=arm64
 npm install
 ```
 
-`node_modules` を空にしてから実行する（Command Prompt）。ネイティブモジュールがある場合は追加手順があり、公式 windows-arm ページを参照。
+Empty `node_modules` first (Command Prompt). With native modules there are extra steps; see the official windows-arm page.

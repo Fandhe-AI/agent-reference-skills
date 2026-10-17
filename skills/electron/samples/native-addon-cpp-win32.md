@@ -27,7 +27,7 @@ my-native-win32-addon/
   "main": "js/index.js",
   "author": "Your Name",
   "scripts": {
-    "clean": "rm -rf build_swift && rm -rf build",
+    "clean": "node -e \"const fs=require('node:fs');for (const d of ['build_swift','build']) fs.rmSync(d,{recursive:true,force:true})\"",
     "build-electron": "electron-rebuild",
     "build": "node-gyp configure && node-gyp build"
   },
@@ -166,7 +166,7 @@ npm run build
 ## Notes
 
 - Excerpted for size: the official page also contains `src/cpp_code.cc` (the Win32 GUI) and `src/cpp_addon.cc` (the Node-API bridge), both long and omitted here. Read the full walkthrough at the source URL.
-- The `package.json` `clean` script uses `rm -rf` (a Unix command) as written on the official page.
+- The official `clean` script uses `rm -rf` (a Unix command); it is replaced here with `fs.rmSync` so it also runs on Windows.
 - You must call `destroy()` before the app quits (e.g. in `will-quit` / `before-quit`), otherwise persistent callback references keep the native destructor from running and Electron hangs on quit.
 - `WINVER` / `_WIN32_WINNT` set to `0x0A00` target Windows 10; use the lowest Windows version you support.
 - Distance: Win32 API details are in windows-interop-modernize and windows-platform-integration; this sample only shows how a native addon is wired into an Electron app.

@@ -86,6 +86,8 @@ ipcMain.on('set-ignore-mouse-events', (event, ignore, options) => {
 
 ```js
 // preload.js
+const { ipcRenderer } = require('electron')
+
 window.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('clickThroughElement')
   el.addEventListener('mouseenter', () => {
@@ -100,6 +102,7 @@ window.addEventListener('DOMContentLoaded', () => {
 ## Notes
 
 - Source fiddles: `docs/fiddles/features/window-customization/custom-window-styles/{frameless-windows,transparent-windows}`; the click-through and drag-region snippets come from the Custom Window Interactions page.
+- The official preload.js snippet omits the `ipcRenderer` import; `const { ipcRenderer } = require('electron')` is added here.
 - Transparent windows: no click-through on transparent areas, not resizable, not transparent while DevTools is open; on Windows they cannot be maximized via system menu or title-bar double-click; on macOS the native shadow is not shown.
 - On Wayland, frameless windows get GTK shadows by default; set `hasShadow: false` for no decorations.
 - Draggable areas ignore all pointer events; mark buttons `app-region: no-drag`, and avoid custom context menus on draggable areas.

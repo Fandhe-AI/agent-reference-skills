@@ -4,64 +4,64 @@ source: https://www.electronjs.org/docs/latest/tutorial/debugging-main-process
 
 # Debugging
 
-メインプロセスのデバッグ・REPL・Chromium ログ。出典は debugging-main-process、repl、api/command-line-switches、api/environment-variables。
+Main-process debugging, REPL, and Chromium logging. Sources: debugging-main-process, repl, api/command-line-switches, api/environment-variables.
 
-> **警告**: `--inspect` / `--remote-debugging-port` はデバッガ用ポートを開く。開発マシンまたは使い捨て環境でのみ使用し、製品ビルドや共有ネットワークで有効にしない。
+> **Warning**: `--inspect` / `--remote-debugging-port` open a debugger port. Use them only on a development machine or a disposable environment, and never enable them in production builds or on shared networks.
 
-## メインプロセスのインスペクタ有効化
+## Enable the main-process inspector
 
 ```sh
 electron --inspect=9229 your/app
 ```
 
-既定ポートは `9229`。Chrome の `chrome://inspect` から接続できる。
+The default port is `9229`. Connect from `chrome://inspect` in Chrome.
 
-## 最初の行で停止して起動
+## Start paused on the first line
 
 ```sh
 electron --inspect-brk=9229 your/app
 ```
 
-`--inspect-brk[=port]` は最初の JavaScript 行で実行を一時停止する（debugging-main-process に例コマンドは無く、`--inspect` と同形で記載）。
+`--inspect-brk[=port]` pauses execution on the first JavaScript line (debugging-main-process has no example command; it is documented in the same form as `--inspect`).
 
-## メインプロセスの REPL
+## Main-process REPL
 
 ```sh
 ./node_modules/.bin/electron --interactive
 ```
 
-Windows では `electron --interactive` は利用不可（公式記載）。
+`electron --interactive` is not available on Windows (per the official docs).
 
-## レンダラーのリモートデバッグ用ポート
+## Remote debugging port for the renderer
 
 ```sh
 electron . --remote-debugging-port=9222
 ```
 
-VS Code 用の launch 構成（tutorial-first-app 記載）でも `"args": [".", "--remote-debugging-port=9222"]` として使われる。
+The VS Code launch configuration in tutorial-first-app also uses it as `"args": [".", "--remote-debugging-port=9222"]`.
 
-## Chromium ログの出力（環境変数）
+## Chromium logging (environment variable)
 
 ```sh
 export ELECTRON_ENABLE_LOGGING=true
 electron
 ```
 
-`--enable-logging` と同等。出力先は `ELECTRON_LOG_FILE` または `--log-file=path`（親ディレクトリは存在すること）で指定する。Windows のコンソールでは `set ELECTRON_ENABLE_LOGGING=true`。
+Equivalent to `--enable-logging`. Set the output destination with `ELECTRON_LOG_FILE` or `--log-file=path` (the parent directory must exist). In a Windows console, use `set ELECTRON_ENABLE_LOGGING=true`.
 
-## クラッシュ時のスタックトレース表示
+## Print stack traces on crash
 
 ```sh
 export ELECTRON_ENABLE_STACK_DUMPING=true
 electron
 ```
 
-`crashReporter` を開始している場合は無効（公式記載）。
+Disabled when `crashReporter` has been started (per the official docs).
 
-## 指定ビルドの Electron で起動
+## Launch with a specific Electron build
 
 ```sh
 export ELECTRON_OVERRIDE_DIST_PATH=/Users/username/projects/electron/out/Testing
 ```
 
-`npm install` で取得したものの代わりに指定ビルドを使う（環境変数ページ記載の例）。
+Uses the specified build instead of the one fetched by `npm install` (example from the environment-variables page).

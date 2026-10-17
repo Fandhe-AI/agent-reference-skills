@@ -22,20 +22,20 @@ const createWindow = () => {
   })
 
   win.loadFile('index.html')
-
-  ipcMain.handle('dark-mode:toggle', () => {
-    if (nativeTheme.shouldUseDarkColors) {
-      nativeTheme.themeSource = 'light'
-    } else {
-      nativeTheme.themeSource = 'dark'
-    }
-    return nativeTheme.shouldUseDarkColors
-  })
-
-  ipcMain.handle('dark-mode:system', () => {
-    nativeTheme.themeSource = 'system'
-  })
 }
+
+ipcMain.handle('dark-mode:toggle', () => {
+  if (nativeTheme.shouldUseDarkColors) {
+    nativeTheme.themeSource = 'light'
+  } else {
+    nativeTheme.themeSource = 'dark'
+  }
+  return nativeTheme.shouldUseDarkColors
+})
+
+ipcMain.handle('dark-mode:system', () => {
+  nativeTheme.themeSource = 'system'
+})
 
 app.whenReady().then(() => {
   createWindow()
@@ -114,4 +114,4 @@ document.getElementById('reset-to-system').addEventListener('click', async () =>
 
 - Native interfaces (file picker, window border, dialogs, context menus) follow the OS theme by default; your own UI follows it through the `prefers-color-scheme` CSS media query.
 - Setting `nativeTheme.themeSource` is propagated to renderers, so `prefers-color-scheme` rules update accordingly.
-- Source fiddle: `docs/fiddles/features/dark-mode` (the code above is the tutorial's walk-through of it).
+- Source fiddle: `docs/fiddles/features/dark-mode`. Handler registration position follows the fiddle (top level, registered once), so re-creating the window on macOS `activate` does not register `ipcMain.handle` twice.

@@ -4,47 +4,47 @@ source: https://www.electronjs.org/docs/latest/tutorial/tutorial-packaging
 
 # Electron Forge
 
-Electron Forge によるパッケージング・公開・自動更新。出典は tutorial-packaging と tutorial-publishing-updating（`https://www.electronjs.org/docs/latest/tutorial/tutorial-publishing-updating`）の v44.8.0 tag 原文。44-x-y ブランチでは Forge import 手順の文面が更新済み（未リリース）で、本ファイルは v44.8.0 tag の記述に従う。
+Packaging, publishing, and auto-update with Electron Forge. Sources: tutorial-packaging and tutorial-publishing-updating (`https://www.electronjs.org/docs/latest/tutorial/tutorial-publishing-updating`), taken from the original text at tag v44.8.0. The Forge import instructions have been reworded on the 44-x-y branch (unreleased); this file follows the v44.8.0 tag.
 
-## Forge CLI のインストールとプロジェクトの import
+## Install the Forge CLI and import the project
 
 ```sh
 npm install --save-dev @electron-forge/cli
 npx electron-forge import
 ```
 
-Yarn の場合は `yarn add --dev @electron-forge/cli` と `yarn electron-forge import`。import 後に `start` / `package` / `make` スクリプトと `forge.config.js` が追加される。
+With Yarn: `yarn add --dev @electron-forge/cli` and `yarn electron-forge import`. After import, `start` / `package` / `make` scripts and `forge.config.js` are added.
 
-## 配布物の作成
+## Create distributables
 
 ```sh
 npm run make
 ```
 
-`electron-forge package` の後、設定済み maker ごとに配布物を `out/make` に生成する。
+Runs `electron-forge package`, then produces distributables for each configured maker in `out/make`.
 
-## GitHub Publisher の追加
+## Add the GitHub Publisher
 
 ```sh
 npm install --save-dev @electron-forge/publisher-github
 ```
 
-`forge.config.js` の `publishers` に設定する。認証トークンは既定で環境変数 `GITHUB_TOKEN` から読まれる。トークンは秘密にし、コマンドやファイルへ直書きしない。
+Configure it under `publishers` in `forge.config.js`. The auth token is read from the `GITHUB_TOKEN` environment variable by default. Keep the token secret and never write it directly into commands or files.
 
-## GitHub Releases への公開
+## Publish to GitHub Releases
 
-> **警告**: 設定した maker の成果物を GitHub のリリースへ実際にアップロードする。公式の設定例は `draft: true`（下書き公開）。実リポジトリで試す前に使い捨てのリポジトリで確認すること。
+> **Warning**: This actually uploads the artifacts of the configured makers to a GitHub release. The official config example uses `draft: true` (draft release). Try it on a disposable repository before a real one.
 
 ```sh
 npm run publish
 ```
 
-`package.json` に `"publish": "electron-forge publish"` を追加しておく。既定ではホスト OS・アーキテクチャ向けのみ公開される。
+Add `"publish": "electron-forge publish"` to `package.json` first. By default only the host OS and architecture are published.
 
-## 自動更新モジュールのインストール
+## Install the auto-update module
 
 ```sh
 npm install update-electron-app
 ```
 
-main プロセスで `require('update-electron-app')()` を呼ぶ。update.electronjs.org の条件は macOS または Windows・公開 GitHub リポジトリ・GitHub Releases への公開（macOS はコード署名必須）。
+Call `require('update-electron-app')()` in the main process. Requirements for update.electronjs.org: macOS or Windows, a public GitHub repository, and publishing to GitHub Releases (code signing is required on macOS).

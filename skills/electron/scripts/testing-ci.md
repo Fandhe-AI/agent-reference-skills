@@ -4,9 +4,9 @@ source: https://www.electronjs.org/docs/latest/tutorial/automated-testing
 
 # Testing and CI
 
-E2E テストとヘッドレス CI の実行。出典は automated-testing と testing-on-headless-ci（`https://www.electronjs.org/docs/latest/tutorial/testing-on-headless-ci`）。
+Running E2E tests and headless CI. Sources: automated-testing and testing-on-headless-ci (`https://www.electronjs.org/docs/latest/tutorial/testing-on-headless-ci`).
 
-## ヘッドレス CI での実行
+## Run in headless CI
 
 ```sh
 ## On Windows or macOS, this invokes electron-mocha
@@ -15,38 +15,38 @@ E2E テストとヘッドレス CI の実行。出典は automated-testing と t
 xvfb-maybe electron-mocha ./test/*.js
 ```
 
-Linux ではディスプレイドライバが必要。`xvfb-maybe` が必要なら Xvfb を自動設定し、Windows / macOS では何もしない。
+Linux needs a display driver. `xvfb-maybe` sets up Xvfb automatically when needed and does nothing on Windows / macOS.
 
-## WebdriverIO のセットアップ
+## Set up WebdriverIO
 
 ```sh
 npm init wdio@latest ./
 ```
 
-ウィザードで "Desktop Testing - of Electron Applications" を選択する。`wdio.conf.js` が生成される。
+Choose "Desktop Testing - of Electron Applications" in the wizard. It generates `wdio.conf.js`.
 
-## WebdriverIO テストの実行
+## Run WebdriverIO tests
 
 ```sh
 npx wdio run wdio.conf.js
 ```
 
-アプリの起動・終了は WebdriverIO が行う。
+WebdriverIO launches and closes the app.
 
-## Selenium 用 ChromeDriver のインストールと起動
+## Install and start ChromeDriver for Selenium
 
 ```sh
 npm install --save-dev electron-chromedriver
 ./node_modules/.bin/chromedriver
 ```
 
-ポート `9515` で待ち受ける（公式出力例）。続けて `npm install --save-dev selenium-webdriver` を実行する。
+Listens on port `9515` (official sample output). Then run `npm install --save-dev selenium-webdriver`.
 
-## Playwright のインストールと実行
+## Install and run Playwright
 
 ```sh
 npm install --save-dev @playwright/test
 npx playwright test
 ```
 
-公式は `@playwright/test@1.52.0` で執筆された旨を注記している。Electron サポートは experimental。
+The official page notes it was written against `@playwright/test@1.52.0`. Electron support is experimental.

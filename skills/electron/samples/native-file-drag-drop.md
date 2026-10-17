@@ -16,15 +16,21 @@ contextBridge.exposeInMainWorld('electron', {
 ```
 
 ```html
-<div style="border:2px solid black;border-radius:3px;padding:5px;display:inline-block" draggable="true" id="drag">Drag me</div>
+<div style="border:2px solid black;border-radius:3px;padding:5px;display:inline-block" draggable="true" id="drag1">Drag me 1</div>
+<div style="border:2px solid black;border-radius:3px;padding:5px;display:inline-block" draggable="true" id="drag2">Drag me 2</div>
 <script src="renderer.js"></script>
 ```
 
 ```js
 // renderer.js
-document.getElementById('drag').ondragstart = (event) => {
+document.getElementById('drag1').ondragstart = (event) => {
   event.preventDefault()
-  window.electron.startDrag('drag-and-drop.md')
+  window.electron.startDrag('drag-and-drop-1.md')
+}
+
+document.getElementById('drag2').ondragstart = (event) => {
+  event.preventDefault()
+  window.electron.startDrag('drag-and-drop-2.md')
 }
 ```
 
@@ -60,9 +66,14 @@ https.get('https://img.icons8.com/ios/452/drag-and-drop.png', (response) => {
 
 app.whenReady().then(createWindow)
 
-ipcMain.on('ondragstart', (event, filePath) => {
+const allowedFiles = new Set(['drag-and-drop-1.md', 'drag-and-drop-2.md'])
+
+ipcMain.on('ondragstart', (event, fileName) => {
+  // Ignore anything the renderer sends that is not in the allowlist
+  if (!allowedFiles.has(fileName)) return
+
   event.sender.startDrag({
-    file: path.join(__dirname, filePath),
+    file: path.join(__dirname, fileName),
     icon: iconName
   })
 })
@@ -83,6 +94,7 @@ app.on('activate', () => {
 ## Notes
 
 - Source fiddle: `docs/fiddles/features/drag-and-drop`. Call `webContents.startDrag(item)` in response to the DOM `ondragstart` event, relayed over IPC.
+- The official code passes the renderer-supplied value straight to `path.join`. This sample adds an allowlist check in main (`allowedFiles`) so a renderer cannot drag arbitrary paths, and follows the fiddle's `drag-and-drop-1.md` / `drag-and-drop-2.md` renderer.
 - The renderer must call `event.preventDefault()` so the browser's own drag does not start.
 - The fiddle downloads its drag icon over HTTPS at startup; replace that with a local icon file in real apps.
 - Dragging files into the app uses the standard HTML Drag and Drop web API.

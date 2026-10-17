@@ -4,24 +4,24 @@ source: https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app
 
 # Create and Run
 
-最小アプリの作成と開発モード実行。出典は tutorial-first-app と tutorial/installation。
+Create a minimal app and run it in development mode. Sources: tutorial-first-app and tutorial/installation.
 
-## npm プロジェクトの初期化
+## Initialize an npm project
 
 ```sh
 mkdir my-electron-app && cd my-electron-app
 npm init
 ```
 
-entry point は `main.js` にする。author / license / description はパッケージング時に必要。Yarn Berry は `nodeLinker: node-modules`、pnpm は `nodeLinker: hoisted` の設定が必要（`node_modules` を実体として配置するため）。
+Set the entry point to `main.js`. Author / license / description are required for packaging. Yarn Berry needs `nodeLinker: node-modules` and pnpm needs `nodeLinker: hoisted` (so that `node_modules` is materialized on disk).
 
-## Electron のインストール
+## Install Electron
 
 ```sh
 npm install electron --save-dev
 ```
 
-## start スクリプトの追加
+## Add a start script
 
 ```json
 {
@@ -31,20 +31,20 @@ npm install electron --save-dev
 }
 ```
 
-`package.json` の `scripts` に追記する。
+Add it to `scripts` in `package.json`.
 
-## 開発モードでの実行
+## Run in development mode
 
 ```sh
 npm run start
 ```
 
-`main` に指定したスクリプトを開発モードで実行する。
+Runs the script specified in `main` in development mode.
 
-## npx による直接実行
+## Run directly with npx
 
 ```sh
 npx electron .
 ```
 
-プロジェクトへ `npm install` せずカレントディレクトリを実行する（依存関係は入らない）。出典は tutorial/installation。
+Runs the current directory without `npm install` into the project (dependencies are not installed). Source: tutorial/installation.
