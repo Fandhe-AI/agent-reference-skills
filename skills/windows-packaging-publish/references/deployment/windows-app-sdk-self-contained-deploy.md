@@ -15,7 +15,7 @@ Switches a Windows App SDK project from the default framework-dependent model to
 | Setting | Applies to | Description |
 | --- | --- | --- |
 | `<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>` | App project (and Windows Application Packaging Project, if used) | Extracts the Windows App SDK Framework package contents into the build output and deploys them with the app. Should **not** be set in library projects. |
-| .NET self-contained publish | C# apps | Must also [publish as self-contained](https://learn.microsoft.com/en-us/dotnet/core/deploying/#publish-self-contained) to be fully self-contained; `dotnet publish` cannot produce a single-file EXE for WinUI 3 apps (native runtime files stay separate). |
+| .NET self-contained publish | C# apps | Must also [publish as self-contained](https://learn.microsoft.com/en-us/dotnet/core/deploying/#publish-self-contained) to be fully self-contained; `dotnet publish` alone bundles managed assemblies but cannot produce a single-file EXE for WinUI 3 apps (native runtime files stay separate); a single-file EXE is supported only for unpackaged, self-contained apps on Windows App SDK 1.5+ with the required MSBuild properties — see [Unpackage a WinUI App](./unpackage-winui-app.md). |
 | Hybrid CRT | C++ apps | Must use the hybrid CRT (import `HybridCRT.props`) to be fully self-contained; packaged apps must also set `<UseCrtSDKReferenceStaticWarning>false</UseCrtSDKReferenceStaticWarning>`. |
 | `WindowsAppSdkUndockedRegFreeWinRTInitialize` | Unpackaged self-contained apps | Controls automatic *UndockedRegFreeWinRT* support; defaults to `true` when self-contained, `WindowsPackageType=None`, and `OutputType` is `Exe`/`WinExe`. |
 
@@ -29,3 +29,4 @@ Switches a Windows App SDK project from the default framework-dependent model to
 
 - [Windows App SDK deployment architecture](./windows-app-sdk-deployment-architecture.md)
 - [.NET deployment models](./dotnet-deployment-models.md)
+- [Unpackage a WinUI App](./unpackage-winui-app.md)
