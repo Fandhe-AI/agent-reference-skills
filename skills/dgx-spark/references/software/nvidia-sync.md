@@ -4,18 +4,20 @@ System tray utility for Windows, macOS, and Ubuntu that lets users manage DGX Sp
 
 Streamlines SSH connections, port forwarding, and tunnel management, letting local applications target remote systems without manual configuration.
 
-## Key Features
+## Signature / Usage
 
-- One-click application launching for supported IDEs and tools including VS Code, Cursor, and NVIDIA AI Workbench
-- Direct DGX Dashboard access without manual tunnel setup
-- Tailscale integration option for secure remote access outside the local network
+```text
+1. Install NVIDIA Sync on your laptop.
+2. Add your DGX Spark to NVIDIA Sync.
+3. Launch an application on your DGX Spark through NVIDIA Sync.
+```
 
-## Getting Started
+Official "Key Capabilities":
 
-1. Install NVIDIA Sync on your local computer
-2. Add your DGX Spark via device discovery or manual entry (hostname/IP and credentials)
-3. Establish a connection to the device
-4. Launch applications or access the DGX Dashboard through the Sync menu
+- Direct connections: add a device on your local network using device discovery, a hostname or IP address, or an imported SSH alias.
+- Tailscale connections: access your DGX Spark when you are not on the same network.
+- Applications: launch supported IDEs, tools, and custom scripts on your DGX Spark with a click.
+- Cluster Assistant: cluster your DGX Spark systems without manually running commands in a terminal. For physical cable requirements and ConnectX-7 network background, see ConnectX-7 Networking.
 
 ## Notes
 
@@ -27,7 +29,5 @@ Streamlines SSH connections, port forwarding, and tunnel management, letting loc
 
 - [Software Overview](./software-overview.md)
 - [DGX Dashboard](./dgx-dashboard.md)
-- [nvidia-sync skill — Getting Started](../../../nvidia-sync/references/getting-started/README.md)
-- [nvidia-sync skill — Connections](../../../nvidia-sync/references/connections/README.md)
-- [nvidia-sync skill — Cluster Assistant / ConnectX-7](../../../nvidia-sync/references/cluster/README.md)
-- [nvidia-sync skill — Applications](../../../nvidia-sync/references/applications/README.md)
+- [Spark Stacking (ConnectX-7 Networking)](../system-config/spark-stacking.md)
+- The `nvidia-sync` skill (categories: getting-started / connections / cluster / applications)

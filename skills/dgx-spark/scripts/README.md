@@ -2,7 +2,7 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
-| Install & Update | apt / fwupdmgr による手動 OS・コンポーネント更新コマンド。 | [install-update.md](./install-update.md) |
-| PXE Provisioning | PXE boot 用 TFTP / HTTP / DHCP 構築、GRUB netboot 設定、cloud-init によるカスタムインストール（ミラー構築・ISO repack・OEMDATA USB）。 | [pxe-provisioning.md](./pxe-provisioning.md) |
-| Container Runtime | NVIDIA Container Runtime for Docker のセットアップ、GPU コンテナ実行、NGC からの pull。 | [container-runtime.md](./container-runtime.md) |
-| Recovery | リカバリー USB によるシステム復旧手順、field diagnostic software のインストールと実行。 | [recovery.md](./recovery.md) |
+| container-runtime | NVIDIA Container Runtime for Docker setup, GPU-enabled container execution, and pulling images from NGC. | [container-runtime.md](./container-runtime.md) |
+| install-update | Manual OS and component (driver, firmware) update commands for DGX Spark. | [install-update.md](./install-update.md) |
+| pxe-provisioning | PXE boot server setup (TFTP / HTTP / DHCP), GRUB netboot configuration, and cloud-init based custom install (mirror repos, ISO repack, FastOS repack, OEMDATA USB provisioning) for DGX Spark. | [pxe-provisioning.md](./pxe-provisioning.md) |
+| recovery | System recovery via bootable USB media, and installation and execution of the field diagnostic software. | [recovery.md](./recovery.md) |

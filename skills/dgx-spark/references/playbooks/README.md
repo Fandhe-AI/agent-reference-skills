@@ -2,49 +2,53 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| CLI Coding Agent | Build local CLI coding agents (Claude Code, OpenCode, Codex CLI)… | [cli-coding-agent.md](./cli-coding-agent.md) |
-| Comfy UI | Install and run ComfyUI, a node-based web UI for diffusion… | [comfy-ui.md](./comfy-ui.md) |
-| Connect Three DGX Spark in a Ring Topology | Configure three DGX Spark systems in a 200GbE QSFP ring… | [connect-three-sparks.md](./connect-three-sparks.md) |
-| Set Up Local Network Access | Enable secure remote access to a DGX Spark device from… | [connect-to-your-spark.md](./connect-to-your-spark.md) |
-| Connect Two Sparks | Physically connect two DGX Spark systems with a QSFP… | [connect-two-sparks.md](./connect-two-sparks.md) |
-| CUDA-X Data Science | Accelerate pandas and scikit-learn workloads on DGX Spark… | [cuda-x-data-science.md](./cuda-x-data-science.md) |
-| cuTile Kernels | Run cuTile kernel benchmarks, a Flash Multi-Head Attention… | [cutile-kernels.md](./cutile-kernels.md) |
-| DGX Dashboard (Playbook) | Monitor system resources and launch JupyterLab from the… | [dgx-dashboard-playbook.md](./dgx-dashboard-playbook.md) |
-| Ollama | Configure secure remote access to Ollama on DGX Spark via… | [ollama.md](./ollama.md) |
-| vLLM for Inference | Deploy vLLM, a high-throughput LLM inference engine… | [vllm.md](./vllm.md) |
-| FLUX.1 Dreambooth LoRA Fine-tuning | Fine-tune FLUX.1-dev 12B with multi-concept Dreambooth… | [flux-finetuning.md](./flux-finetuning.md) |
-| Run Hermes Agent with Local Models | Run the self-improving Hermes Agent on DGX Spark against… | [hermes-agent.md](./hermes-agent.md) |
-| Install and Use Isaac Sim and Isaac Lab | Build Isaac Sim (Omniverse-based robotics simulation) and… | [isaac.md](./isaac.md) |
-| Optimized JAX | Set up and optimize JAX (NumPy-style GPU code via… | [jax.md](./jax.md) |
-| Live VLM WebUI | Stream webcam video via WebRTC to a Vision Language Model… | [live-vlm-webui.md](./live-vlm-webui.md) |
-| Run models with llama.cpp on DGX Spark | Build llama.cpp with CUDA support for the GB10 GPU and… | [llama-cpp.md](./llama-cpp.md) |
-| LLaMA Factory | Install LLaMA Factory and fine-tune models (LoRA, QLoRA,… | [llama-factory.md](./llama-factory.md) |
-| LM Studio on DGX Spark | Deploy `llmster` (LM Studio's headless server) on DGX… | [lm-studio.md](./lm-studio.md) |
-| Build and Deploy a Multi-Agent Chatbot | Prototype and deploy a fully local multi-agent system on… | [multi-agent-chatbot.md](./multi-agent-chatbot.md) |
-| Multi-modal Inference | Set up multi-modal (text/image/audio) inference with… | [multi-modal-inference.md](./multi-modal-inference.md) |
-| Connect Multiple DGX Spark through a Switch | Connect four or more DGX Spark systems via a QSFP switch… | [multi-sparks-through-switch.md](./multi-sparks-through-switch.md) |
-| NCCL for Two Sparks | Build and validate NVIDIA Collective Communication Library… | [nccl.md](./nccl.md) |
-| Fine-tune with NeMo | Fine-tune 1-70B parameter language and vision-language… | [nemo-fine-tune.md](./nemo-fine-tune.md) |
-| Set Up Example NemoClaw Agents | Deploy four ready-to-run NemoClaw sandbox applications:… | [nemoclaw-applications.md](./nemoclaw-applications.md) |
-| Run NemoClaw with a Local LLM | Install NemoClaw, NVIDIA's open-source OpenClaw reference… | [nemoclaw.md](./nemoclaw.md) |
-| Nemotron Model Family on DGX Spark | Deploy the Nemotron 3 model family (Nano Omni or Super)… | [nemotron.md](./nemotron.md) |
-| NIM on Spark | Deploy an NVIDIA NIM microservice for fast, reliable LLM… | [nim-llm.md](./nim-llm.md) |
-| NVFP4 Quantization | Quantize a model (DeepSeek-R1-Distill-Llama-8B) to NVFP4,… | [nvfp4-quantization.md](./nvfp4-quantization.md) |
-| Open WebUI with Ollama | Deploy the self-hosted Open WebUI chat interface with… | [open-webui.md](./open-webui.md) |
-| OpenClaw | Install OpenClaw, a local-first AI agent that remembers… | [openclaw.md](./openclaw.md) |
-| Secure Long Running AI Agents with OpenShell | Run OpenClaw inside NVIDIA OpenShell, a kernel-level… | [openshell.md](./openshell.md) |
-| Portfolio Optimization | Run a GPU-accelerated Mean-CVaR portfolio optimization… | [portfolio-optimization.md](./portfolio-optimization.md) |
-| Fine-tune with PyTorch | Fine-tune 1-70B parameter LLMs locally with PyTorch on… | [pytorch-fine-tune.md](./pytorch-fine-tune.md) |
-| RAG Application in AI Workbench | Deploy a pre-built agentic RAG application in NVIDIA AI… | [rag-ai-workbench.md](./rag-ai-workbench.md) |
-| Register DGX Spark to Brev | Register a DGX Spark device to NVIDIA Brev, making it… | [register-to-brev.md](./register-to-brev.md) |
-| SGLang for Inference | Deploy SGLang, a fast serving framework for LLMs and… | [sglang.md](./sglang.md) |
-| Single-cell RNA Sequencing | Run an end-to-end GPU-accelerated single-cell RNA-seq… | [single-cell.md](./single-cell.md) |
-| Spark & Reachy Photo Booth | Build an AI-augmented photo booth combining DGX Spark with… | [spark-reachy-photo-booth.md](./spark-reachy-photo-booth.md) |
-| Speculative Decoding | Accelerate LLM inference on DGX Spark with TensorRT-LLM… | [speculative-decoding.md](./speculative-decoding.md) |
-| Set up Tailscale on Your Spark | Establish an encrypted peer-to-peer mesh network… | [tailscale.md](./tailscale.md) |
-| TRT-LLM for Inference | Install and serve LLMs with TensorRT-LLM on DGX Spark,… | [trt-llm.md](./trt-llm.md) |
-| Text to Knowledge Graph on DGX Spark | Transform unstructured documents into structured,… | [txt2kg.md](./txt2kg.md) |
-| Unsloth on DGX Spark | Run optimized fine-tuning with Unsloth (custom kernels,… | [unsloth.md](./unsloth.md) |
-| Vibe Coding in VS Code | Configure DGX Spark as a local or remote coding assistant… | [vibe-coding.md](./vibe-coding.md) |
-| VS Code | Install VS Code directly on DGX Spark (ARM64) for local… | [vscode.md](./vscode.md) |
-| Build a Video Search and Summarization (VSS) Agent | Deploy NVIDIA's VSS blueprint on DGX Spark combining VLM,… | [vss.md](./vss.md) |
+| CLI Coding Agent | Build local CLI coding agents (Claude Code, OpenCode, Codex CLI) backed by a local Qwen3.6 model served through Ollama on DGX Spark, without cloud APIs. | [cli-coding-agent.md](./cli-coding-agent.md) |
+| Comfy UI | Install and run ComfyUI, a node-based web UI for diffusion image generation (SDXL, Flux), leveraging the DGX Spark unified memory architecture. | [comfy-ui.md](./comfy-ui.md) |
+| Connect Multiple DGX Sparks for Distributed Workloads | Cable two to four DGX Sparks (direct, three-device ring, or through a 200 Gbit/s switch) and configure the ConnectX-7 network and inter-device SSH via NVIDIA Sync Cluster Assistant or NVIDIA helper scripts. | [connect-multiple-sparks.md](./connect-multiple-sparks.md) |
+| Connect Three DGX Spark in a Ring Topology | Configure three DGX Spark systems in a 200GbE QSFP ring topology for high-speed inter-node communication and passwordless SSH cluster operations. | [connect-three-sparks.md](./connect-three-sparks.md) |
+| Set Up Local Network Access | Enable secure remote access to a DGX Spark device from another machine via NVIDIA Sync or manual SSH, including port forwarding for web apps. | [connect-to-your-spark.md](./connect-to-your-spark.md) |
+| Connect Two Sparks | Physically connect two DGX Spark systems with a QSFP cable and configure 200GbE direct-connect networking with passwordless SSH for distributed computing. | [connect-two-sparks.md](./connect-two-sparks.md) |
+| CUDA-X Data Science | Accelerate pandas and scikit-learn workloads on DGX Spark with zero code changes using NVIDIA cuDF and cuML (RAPIDS) via two demonstration notebooks. | [cuda-x-data-science.md](./cuda-x-data-science.md) |
+| cuTile Kernels | Run cuTile kernel benchmarks, a Flash Multi-Head Attention (FMHA) build tutorial, and LLM inference on DGX Spark (sm_121) and B300 (sm_103) using NVIDIA's cuTile Python DSL. | [cutile-kernels.md](./cutile-kernels.md) |
+| DGX Dashboard (Playbook) | Monitor system resources and launch JupyterLab from the locally-running DGX Dashboard web app, accessible via desktop shortcut, NVIDIA Sync, or SSH tunnel. | [dgx-dashboard-playbook.md](./dgx-dashboard-playbook.md) |
+| FLUX.1 Dreambooth LoRA Fine-tuning | Fine-tune FLUX.1-dev 12B with multi-concept Dreambooth LoRA on DGX Spark, then use the trained weights in ComfyUI for custom high-resolution (up to 1024px) image generation. | [flux-finetuning.md](./flux-finetuning.md) |
+| Run Hermes Agent with Local Models | Run the self-improving Hermes Agent on DGX Spark against a locally served vLLM model, reachable via terminal or Telegram, keeping conversations off the cloud. | [hermes-agent.md](./hermes-agent.md) |
+| Install and Use Isaac Sim and Isaac Lab | Build Isaac Sim (Omniverse-based robotics simulation) and Isaac Lab (RL framework on top of Isaac Sim) from source on DGX Spark for robotics development and testing. | [isaac.md](./isaac.md) |
+| Optimized JAX | Set up and optimize JAX (NumPy-style GPU code via `jit`/`grad`/`vmap`/`pmap` and the XLA compiler) on DGX Spark's Blackwell architecture using a marimo notebook walkthrough. | [jax.md](./jax.md) |
+| Live VLM WebUI | Stream webcam video via WebRTC to a Vision Language Model backend (Ollama, vLLM, SGLang, NIM, or cloud APIs) for real-time VLM analysis, with GPU monitoring and customizable prompts. | [live-vlm-webui.md](./live-vlm-webui.md) |
+| Run models with llama.cpp on DGX Spark | Build llama.cpp with CUDA support for the GB10 GPU and serve LLMs via an OpenAI-compatible API, demonstrated with Qwen3.6-35B-A3B and MTP speculative decoding. | [llama-cpp.md](./llama-cpp.md) |
+| LLaMA Factory | Install LLaMA Factory and fine-tune models (LoRA, QLoRA, full fine-tuning; SFT/RLHF) such as LLaMA, Mistral, and Qwen3 on DGX Spark's Blackwell architecture. | [llama-factory.md](./llama-factory.md) |
+| LM Studio on DGX Spark | Deploy `llmster` (LM Studio's headless server) on DGX Spark for GPU-accelerated local LLM inference, with optional encrypted remote access via LM Link. | [lm-studio.md](./lm-studio.md) |
+| Build and Deploy a Multi-Agent Chatbot | Prototype and deploy a fully local multi-agent system on DGX Spark: a gpt-oss-120B supervisor coordinates specialized coding, RAG, and image-analysis agents using the 128GB unified memory. | [multi-agent-chatbot.md](./multi-agent-chatbot.md) |
+| Multi-modal Inference | Set up multi-modal (text/image/audio) inference with TensorRT on DGX Spark, testing text-to-image and vision-language pipelines across BF16/FP16/FP8/FP4 precisions. | [multi-modal-inference.md](./multi-modal-inference.md) |
+| Connect Multiple DGX Spark through a Switch | Connect four or more DGX Spark systems via a QSFP switch for 200Gbps inter-node communication and passwordless SSH cluster setup. | [multi-sparks-through-switch.md](./multi-sparks-through-switch.md) |
+| NCCL for Two Sparks | Build and validate NVIDIA Collective Communication Library (NCCL) v2.31.2-1 with Blackwell support (`sm_121`) for high-bandwidth GPU communication across DGX Spark systems (two, three, or four nodes). | [nccl.md](./nccl.md) |
+| Fine-tune with NeMo | Fine-tune 1-70B parameter language and vision-language models locally using NVIDIA NeMo AutoModel, supporting PEFT/LoRA/QLoRA/SFT with FP8 precision and full HuggingFace compatibility. | [nemo-fine-tune.md](./nemo-fine-tune.md) |
+| Run NemoClaw with a Local LLM | Install NemoClaw, NVIDIA's open-source OpenClaw reference stack, connecting OpenShell sandboxed agents to a local vLLM (Qwen3.6 35B) inference endpoint on DGX Spark. | [nemoclaw.md](./nemoclaw.md) |
+| Set Up Example NemoClaw Agents | Deploy four ready-to-run NemoClaw sandbox applications: daily news digest, software development agent, deck reviewer, and calendar negotiator. | [nemoclaw-applications.md](./nemoclaw-applications.md) |
+| Nemotron Model Family on DGX Spark | Deploy the Nemotron 3 model family (Nano Omni or Super) on a single DGX Spark as an OpenAI-compatible inference endpoint, via vLLM or TensorRT-LLM. | [nemotron.md](./nemotron.md) |
+| NIM on Spark | Deploy an NVIDIA NIM microservice for fast, reliable LLM serving on DGX Spark using a containerized inference service with GPU acceleration. | [nim-llm.md](./nim-llm.md) |
+| NVFP4 Quantization | Quantize a model (DeepSeek-R1-Distill-Llama-8B) to NVFP4, a 4-bit floating-point format for Blackwell GPUs, using TensorRT Model Optimizer for ~3.5x memory reduction versus FP16. | [nvfp4-quantization.md](./nvfp4-quantization.md) |
+| Ollama | Configure secure remote access to Ollama on DGX Spark via an SSH tunnel through NVIDIA Sync, exposing the local LLM API without opening network ports. | [ollama.md](./ollama.md) |
+| Open WebUI with Ollama | Deploy the self-hosted Open WebUI chat interface with integrated Ollama on DGX Spark, accessible from a local browser with GPU-accelerated inference and persistent storage. | [open-webui.md](./open-webui.md) |
+| OpenClaw | Install OpenClaw, a local-first AI agent that remembers conversations and runs continuously, backed by a vLLM-served Qwen3.6-35B model on DGX Spark. | [openclaw.md](./openclaw.md) |
+| Secure Long Running AI Agents with OpenShell | Run OpenClaw inside NVIDIA OpenShell, a kernel-level sandbox runtime with declarative YAML policies, to isolate filesystem, network, process, and inference access on DGX Spark. | [openshell.md](./openshell.md) |
+| Install and Use NVIDIA PAIR with llama.cpp | NVIDIA PAIR (Personal AI Router) 1.0.0 connects computers on a local network and exposes Ollama-compatible and OpenAI-compatible proxy endpoints, routing each inference request to one eligible system (llama.cpp, Ollama, or LM Studio). | [pair.md](./pair.md) |
+| Portfolio Optimization | Run a GPU-accelerated Mean-CVaR portfolio optimization workflow using NVIDIA cuOpt (LP/MILP solvers) and cuML (KDE for return distributions) on DGX Spark. | [portfolio-optimization.md](./portfolio-optimization.md) |
+| Fine-tune with PyTorch | Fine-tune 1-70B parameter LLMs locally with PyTorch on DGX Spark using PEFT/LoRA/QLoRA/full-SFT, in single-node or multi-node (Docker Swarm) configurations. | [pytorch-fine-tune.md](./pytorch-fine-tune.md) |
+| RAG Application in AI Workbench | Deploy a pre-built agentic RAG application in NVIDIA AI Workbench that routes queries, evaluates relevancy and hallucination, and iterates generation cycles via a Gradio UI. | [rag-ai-workbench.md](./rag-ai-workbench.md) |
+| Register DGX Spark to Brev | Register a DGX Spark device to NVIDIA Brev, making it visible and remotely accessible as a managed GPU environment via Brev's Launchables. | [register-to-brev.md](./register-to-brev.md) |
+| SGLang for Inference | Deploy SGLang, a fast serving framework for LLMs and vision-language models, on DGX Spark for text generation, chat completion, and VLM tasks. | [sglang.md](./sglang.md) |
+| Single-cell RNA Sequencing | Run an end-to-end GPU-accelerated single-cell RNA-seq (scRNA-seq) workflow using RAPIDS-singlecell (Scanpy-compatible API) for preprocessing, clustering, batch correction, and differential expression. | [single-cell.md](./single-cell.md) |
+| Spark & Reachy Photo Booth | Build an AI-augmented photo booth combining DGX Spark with the Reachy Mini robot: local ReAct LLM loop, voice interaction, image generation, and person tracking, without cloud dependencies. | [spark-reachy-photo-booth.md](./spark-reachy-photo-booth.md) |
+| Speculative Decoding | Accelerate LLM inference on DGX Spark with TensorRT-LLM speculative decoding, using EAGLE-3 (built-in drafting head) or Draft-Target (separate draft model) methods. | [speculative-decoding.md](./speculative-decoding.md) |
+| Set up Tailscale on Your Spark | Establish an encrypted peer-to-peer mesh network (Tailscale) to remotely SSH into a DGX Spark device without manual firewall configuration. | [tailscale.md](./tailscale.md) |
+| TRT-LLM for Inference | Install and serve LLMs with TensorRT-LLM on DGX Spark, single-node or multi-node, exposing an OpenAI-compatible API with optional Open WebUI integration. | [trt-llm.md](./trt-llm.md) |
+| Text to Knowledge Graph on DGX Spark | Transform unstructured documents into structured, interactively visualized knowledge graphs using local LLM inference (Ollama), ArangoDB, and a Three.js WebGPU frontend. | [txt2kg.md](./txt2kg.md) |
+| Unsloth on DGX Spark | Run optimized fine-tuning with Unsloth (custom kernels, up to 2x faster training, reduced memory via LoRA/QLoRA) on DGX Spark, exporting to GGUF, Ollama, or vLLM formats. | [unsloth.md](./unsloth.md) |
+| Vibe Coding in VS Code | Configure DGX Spark as a local or remote coding assistant for VS Code using Ollama (GPT-OSS 120B/20B) and the Continue.dev extension. | [vibe-coding.md](./vibe-coding.md) |
+| Serve LLMs with vLLM Across DGX Sparks | Guided and configurable model serving across a DGX Spark cluster, with three paths: Beginner (NVIDIA Sync, fixed model, two to four Sparks), Intermediate (NVIDIA Sync plus the spark-vllm-docker recipe, two Sparks), and Advanced (manual launch, two Sparks). | [vllm-cluster.md](./vllm-cluster.md) |
+| vLLM for Inference | Serve LLMs with vLLM on one DGX Spark (64 GB or 128 GB unified memory) or one DGX Station, exposing a locally accessible model API. | [vllm.md](./vllm.md) |
+| Fine-Tune Vision Language Models | Fine-tune Vision-Language Models for image and video understanding with LoRA, GRPO preference optimization, and Streamlit UIs for training and side-by-side base vs fine-tuned inference. Two recipes: Qwen2.5-VL-7B and InternVL3-8B. | [vlm-finetuning.md](./vlm-finetuning.md) |
+| VS Code | Install VS Code directly on DGX Spark (ARM64) for local development, or use NVIDIA Sync to launch a local VS Code connected remotely over SSH. | [vscode.md](./vscode.md) |
+| Build a Video Search and Summarization (VSS) Agent | Deploy NVIDIA's VSS blueprint on DGX Spark combining VLM, LLM, and RAG for real-time video summarization, Q&A, and alerts, in local or hybrid deployment modes. | [vss.md](./vss.md) |

@@ -16,9 +16,11 @@ netplan apply
 - Network interfaces configurable via DHCP, link-local, or manual netplan
 - Verify with NCCL tests after setup
 - Duration: 2 hours; Risk: Medium
+- Recommended for two to four DGX Spark systems: NVIDIA Sync Cluster Assistant configures and validates the switch-connected cluster. If it reports success, skip the manual network and SSH steps. For more than four systems, use the manual setup.
 
 ## Related
 
+- [Connect Multiple DGX Sparks for Distributed Workloads](./connect-multiple-sparks.md)
 - [Connect Three Sparks](./connect-three-sparks.md)
 - [NCCL for Two Sparks](./nccl.md)
 - [vLLM for Inference](./vllm.md)
