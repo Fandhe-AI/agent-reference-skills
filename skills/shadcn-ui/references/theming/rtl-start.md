@@ -25,6 +25,8 @@ This writes `components.json` with `rtl: true`:
 Set `dir` / `lang` on `html` and wrap the app with `DirectionProvider` in `src/routes/__root.tsx` (change `lang="ar"` to your language):
 
 ```tsx
+import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router"
+
 import { DirectionProvider } from "@/components/ui/direction"
 
 export const Route = createRootRoute({
@@ -35,10 +37,12 @@ function RootComponent() {
   return (
     <html lang="ar" dir="rtl">
       <head>
-        <Meta />
+        <HeadContent />
       </head>
       <body>
-        <DirectionProvider direction="rtl">{children}</DirectionProvider>
+        <DirectionProvider direction="rtl">
+          <Outlet />
+        </DirectionProvider>
         <Scripts />
       </body>
     </html>
@@ -72,6 +76,7 @@ npx shadcn@latest add item
 
 ## Notes
 
+- Adapted (not in the official docs): the official snippet references undefined `children` and `Meta` and omits imports; aligned with the Dark Mode: TanStack Start root route (`HeadContent`, `Outlet`, `Scripts`).
 - For Hebrew, use `@fontsource-variable/noto-sans-hebrew`.
 - Framework APIs themselves are in skills nextjs-app / react-router / tanstack-start / tanstack-router.
 

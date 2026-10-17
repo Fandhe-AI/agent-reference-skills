@@ -5,7 +5,7 @@
 | API Reference | Programmatic APIs exposed by the `shadcn` package… | [api-reference.md](./api-reference.md) |
 | Authentication | Secure a registry for private, team-specific or… | [authentication.md](./authentication.md) |
 | Registry Directory | Browse page for community registries built into… | [directory.md](./directory.md) |
-| Dynamic Search | Opt-in server-side search for large registries. B… | [dynamic-search.md](./dynamic-search.md) |
+| Dynamic Search | Opt-in server-side search for large registries. | [dynamic-search.md](./dynamic-search.md) |
 | Examples | Example registry items by type: `registry:style`,… | [examples.md](./examples.md) |
 | Getting Started | Set up, build, serve, test and publish your own… | [getting-started.md](./getting-started.md) |
 | GitHub Registries | Any `github.com` repository with a root `registry.json`… | [github.md](./github.md) |

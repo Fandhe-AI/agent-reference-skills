@@ -19,7 +19,7 @@ export function OpenInV0Button({ url }: { url: string }) {
       asChild
     >
       <a
-        href={`https://v0.dev/chat/api/open?url=${url}`}
+        href={`https://v0.dev/chat/api/open?url=${encodeURIComponent(url)}`}
         target="_blank"
         rel="noreferrer"
       >
@@ -59,6 +59,7 @@ export async function GET(request: NextRequest) {
 - `Open in v0` does not support `cssVars`, `css`, `envVars`, namespaced registries, or advanced authentication methods. Only a `token` query parameter is supported (`https://registry.company.com/r/hello-world.json?token=your_secure_token_here`); return `401 Unauthorized` for a missing or invalid token. Both the shadcn CLI and Open in v0 handle 401 and show a message.
 - Example endpoint: `https://v0.dev/chat/api/open?url=https://ui.shadcn.com/r/styles/new-york/login-01.json`. The SVG logo in the source button example is abbreviated here ("Open in v0" text); the official page links "Build your Open in v0 button" at `https://v0.dev/chat/button`.
 - The button example uses `asChild` on the copied `Button` component as written in the source docs; the page does not discuss Base UI `render` versus Radix `asChild`.
+- Adapted (not in the official docs): the official button interpolates `url` without encoding; `encodeURIComponent(url)` added so registry URLs with their own query string (for example `?token=...`) are passed through intact.
 - Encrypt and expire tokens; never expose production tokens in docs or examples.
 - v0 / Vercel platform details are covered by skill vercel.
 

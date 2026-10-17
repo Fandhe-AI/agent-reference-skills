@@ -33,21 +33,23 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { name: string } }
+  { params }: { params: Promise<{ name: string }> }
 ) {
+  const { name } = await params
   const authHeader = request.headers.get("authorization")
   const token = authHeader?.replace("Bearer ", "")
   const queryToken = request.nextUrl.searchParams.get("token")
+  const resolvedToken = token || queryToken
 
-  if (!isValidToken(token || queryToken)) {
+  if (!isValidToken(resolvedToken)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  if (!hasAccessToComponent(token, params.name)) {
+  if (!hasAccessToComponent(resolvedToken, name)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
-  const component = await getComponent(params.name)
+  const component = await getComponent(name)
   return NextResponse.json(component)
 }
 ```
@@ -55,6 +57,7 @@ export async function GET(
 ## Notes
 
 - Patterns: Bearer token / API key headers (`X-API-Key`, `X-Workspace-Id`), query-parameter auth (`"params": { "token": "${ACCESS_TOKEN}" }` yields `https://registry.company.com/button.json?token=your_token`), and mixing public and per-registry authenticated namespaces (`@public`, `@internal`, `@premium` with `X-License-Key`).
+- Adapted (not in the official docs): the official handler passes `token || queryToken` to `isValidToken` but only `token` to `hasAccessToComponent`, which breaks query-parameter auth; the snippet resolves the token once and uses it for both checks. `params` is typed as a `Promise` and awaited to match the current Next.js Route Handler contract (the official snippet uses a synchronous `params.name`).
 - Advanced server patterns shown: team-based access, user-personalized registries, temporary expiring tokens, Express.js handler. The helper functions in the samples (`isValidToken`, `hasAccessToComponent`, `getTeamFromToken`, ...) are illustrative placeholders.
 - Best practices: environment variables, HTTPS, rate limiting (express-rate-limit example), token rotation, access logging.
 - CLI handles `401 Unauthorized` (invalid or missing token), `403 Forbidden` (lacks permission) and `429 Too Many Requests`. A response body with `error` and `message` is displayed to the user (for example `"message": "Your subscription has expired. Please renew at company.com/billing"`).

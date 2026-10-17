@@ -101,7 +101,7 @@ Action route (`app/routes/action.set-theme.ts`); the filename must match the `th
 ```tsx
 import { createThemeAction } from "remix-themes"
 
-import { themeSessionResolver } from "./sessions.server"
+import { themeSessionResolver } from "../sessions.server"
 
 export const action = createThemeAction(themeSessionResolver)
 ```
@@ -147,6 +147,7 @@ export function ModeToggle() {
 
 ## Notes
 
+- Adapted (not in the official docs): the official action route imports `./sessions.server`, which does not resolve from `app/routes/`; changed to `../sessions.server`.
 - The cookie `secrets: ["s3cr3t"]` in the source is a placeholder; supply your own secret from configuration, not a literal.
 - Framework APIs themselves are in skills nextjs-app / react-router / tanstack-start / tanstack-router.
 
