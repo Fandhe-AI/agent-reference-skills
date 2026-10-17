@@ -4,11 +4,11 @@ source: https://v2.tauri.app/develop/
 
 # Mobile
 
-Android / iOS 向け `tauri android` / `tauri ios` の初期化・開発・ビルド・実行コマンド集。
+Commands for initializing, developing, building, and running with `tauri android` / `tauri ios`.
 
-> **警告**: `tauri ios` の各コマンドは macOS ホストでのみ動作する。物理デバイス向けの `--host` は dev server を公開ネットワークアドレスに晒す（公式は dev server に相互認証・暗号化が無い点を注意している）。信頼できるネットワークでのみ使う。
+> **WARNING**: Every `tauri ios` command works only on a macOS host. `--host`, used for physical devices, exposes the dev server on a public network address (the official docs note that the dev server has no mutual authentication or encryption). Use it only on trusted networks.
 
-## Android プロジェクトの初期化
+## Initialize an Android project
 
 ```sh
 npm run tauri android init
@@ -18,9 +18,9 @@ npm run tauri android init
 cargo tauri android init
 ```
 
-オプション: `--ci` / `--skip-targets-install`（rustup によるツールチェーン導入を省く）/ `--config <CONFIG>`。
+Options: `--ci` / `--skip-targets-install` (skip installing toolchains via rustup) / `--config <CONFIG>`.
 
-## iOS プロジェクトの初期化
+## Initialize an iOS project
 
 ```sh
 npm run tauri ios init
@@ -30,9 +30,9 @@ npm run tauri ios init
 cargo tauri ios init
 ```
 
-オプション: `--ci` / `-r, --reinstall-deps` / `--skip-targets-install` / `--config <CONFIG>`。
+Options: `--ci` / `-r, --reinstall-deps` / `--skip-targets-install` / `--config <CONFIG>`.
 
-## 開発モードで起動
+## Run in development mode
 
 ```sh
 npm run tauri android dev
@@ -44,52 +44,52 @@ cargo tauri android dev
 cargo tauri ios dev
 ```
 
-接続中のデバイスで実行し、無ければシミュレーター/エミュレーターの選択を求める。デバイス名を引数で先に指定できる。
+Runs on a connected device, or prompts you to choose a simulator / emulator if none is connected. You can pass the device name as an argument.
 
 ```sh
 cargo tauri ios dev 'iPhone 15'
 ```
 
-## Xcode / Android Studio を開く
+## Open Xcode / Android Studio
 
 ```sh
 cargo tauri android dev --open
 cargo tauri ios dev --open
 ```
 
-物理 iOS デバイスで実行する場合は `--host` も付け、dev server 側で `TAURI_DEV_HOST` を待受ホストに使う。
+To run on a physical iOS device, also pass `--host`; the dev server uses `TAURI_DEV_HOST` as its listening host.
 
 ```sh
 cargo tauri ios dev --open --host
 ```
 
-iOS デバイスのアドレスを選ぶ場合（Xcode の Window > Devices and Simulators でデバイスをネットワーク接続しておく）。
+To choose the iOS device address (connect the device over the network first via Window > Devices and Simulators in Xcode).
 
 ```sh
 cargo tauri ios dev --force-ip-prompt
 ```
 
-Xcode / Android Studio を使う間も Tauri CLI のプロセスは終了させない。
+Do not terminate the Tauri CLI process while you work in Xcode / Android Studio.
 
-## dev の主なオプション
+## Main dev options
 
-| Option | 説明 |
+| Option | Description |
 | --- | --- |
-| `-f, --features [<FEATURES>...]` | 有効にする cargo features |
-| `-e, --exit-on-panic` | panic で終了 |
-| `-c, --config <CONFIG>` | 設定のマージ（JSON 文字列または JSON / JSON5 / TOML のパス） |
-| `--release` | リリースモードで実行 |
-| `--no-dev-server-wait` | dev server の起動待ちを省く |
-| `--no-watch` | ファイル監視を無効化 |
-| `--additional-watch-folders <ADDITIONAL_WATCH_FOLDERS>` | 追加の監視パス |
-| `-o, --open` | Android Studio / Xcode を開く |
-| `--force-ip-prompt` | dev server への接続 IP を毎回尋ねる |
-| `--host [<HOST>]` | 公開ネットワークアドレスで dev server に接続（Windows では既定） |
-| `--no-dev-server` | 組み込み静的 dev server を無効化 |
-| `--port <PORT>` | 組み込み dev server のポート（既定 1430） |
-| `--root-certificate-path <ROOT_CERTIFICATE_PATH>` | HTTPS dev server の証明書（環境変数 `TAURI_DEV_ROOT_CERTIFICATE_PATH`） |
+| `-f, --features [<FEATURES>...]` | Cargo features to enable |
+| `-e, --exit-on-panic` | Exit on panic |
+| `-c, --config <CONFIG>` | Merge config (JSON string or JSON / JSON5 / TOML path) |
+| `--release` | Run in release mode |
+| `--no-dev-server-wait` | Do not wait for the dev server to start |
+| `--no-watch` | Disable file watching |
+| `--additional-watch-folders <ADDITIONAL_WATCH_FOLDERS>` | Extra paths to watch |
+| `-o, --open` | Open Android Studio / Xcode |
+| `--force-ip-prompt` | Ask for the IP used to reach the dev server every time |
+| `--host [<HOST>]` | Reach the dev server over a public network address (default on Windows) |
+| `--no-dev-server` | Disable the built-in static dev server |
+| `--port <PORT>` | Port of the built-in dev server (default 1430) |
+| `--root-certificate-path <ROOT_CERTIFICATE_PATH>` | Certificate for an HTTPS dev server (env `TAURI_DEV_ROOT_CERTIFICATE_PATH`) |
 
-## Android リリースビルド
+## Android release build
 
 ```sh
 npm run tauri android build
@@ -102,9 +102,9 @@ cargo tauri android build --apk --split-per-abi
 cargo tauri android build --aab --target aarch64 --target armv7
 ```
 
-`-t, --target` の候補は `aarch64` / `armv7` / `i686` / `x86_64`（既定は全て）。その他のオプション: `-d, --debug` / `-f, --features` / `-c, --config` / `-o, --open` / `--ci` / `--ignore-version-mismatches`。
+`-t, --target` accepts `aarch64` / `armv7` / `i686` / `x86_64` (default is all). Other options: `-d, --debug` / `-f, --features` / `-c, --config` / `-o, --open` / `--ci` / `--ignore-version-mismatches`.
 
-## iOS リリースビルド
+## iOS release build
 
 ```sh
 npm run tauri ios build
@@ -115,20 +115,20 @@ cargo tauri ios build --export-method app-store-connect
 cargo tauri ios build --open
 ```
 
-`--export-method` の候補は `app-store-connect` / `release-testing` / `debugging`。`-t, --target` の候補は `aarch64`（既定）/ `aarch64-sim` / `x86_64`。その他: `--build-number <BUILD_NUMBER>` / `-d, --debug` / `-f, --features` / `-c, --config` / `-o, --open` / `--ci` / `--ignore-version-mismatches`。
+`--export-method` accepts `app-store-connect` / `release-testing` / `debugging`. `-t, --target` accepts `aarch64` (default) / `aarch64-sim` / `x86_64`. Others: `--build-number <BUILD_NUMBER>` / `-d, --debug` / `-f, --features` / `-c, --config` / `-o, --open` / `--ci` / `--ignore-version-mismatches`.
 
-## リリースモードで実行
+## Run in release mode
 
 ```sh
 cargo tauri android run
 cargo tauri ios run
 ```
 
-`-r, --release` / `-f, --features` / `-c, --config` / `--no-watch` / `--additional-watch-folders` / `-o, --open` / `--ignore-version-mismatches` を取る。デバイス名は第 1 引数。
+Accepts `-r, --release` / `-f, --features` / `-c, --config` / `--no-watch` / `--additional-watch-folders` / `-o, --open` / `--ignore-version-mismatches`. The device name is the first argument.
 
-## 参考: Vite の dev server 設定
+## Reference: Vite dev server config
 
-物理 iOS デバイスで使うには dev server が `TAURI_DEV_HOST` を待受ホストにする必要がある。公式の Vite 例。
+To use a physical iOS device, the dev server must listen on `TAURI_DEV_HOST`. The official Vite example.
 
 ```js
 import { defineConfig } from 'vite';

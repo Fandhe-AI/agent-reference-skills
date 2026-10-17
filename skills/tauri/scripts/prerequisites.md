@@ -4,11 +4,11 @@ source: https://v2.tauri.app/start/prerequisites/
 
 # Prerequisites
 
-Tauri v2 の開発前提（OS 別システム依存・Rust・Node.js・モバイルターゲット）のセットアップコマンド集。
+Setup commands for Tauri v2 development prerequisites (per-OS system dependencies, Rust, Node.js, mobile targets).
 
-> **警告**: 本ファイルのコマンドは `sudo` によるシステムパッケージ導入、インストーラスクリプトの実行、環境変数の永続変更を含む。使い捨ての環境（VM・コンテナ・検証用マシン）で実行することを前提にする。インストーラスクリプトはダウンロード → 内容確認 → 実行の順で扱う。
+> **WARNING**: The commands in this file install system packages via `sudo`, run installer scripts, and persistently change environment variables. Run them only in a disposable environment (VM, container, throwaway machine). Installer scripts are handled as download, inspect, then run.
 
-## Linux のシステム依存（Debian）
+## Linux system dependencies (Debian)
 
 ```sh
 sudo apt update
@@ -23,10 +23,9 @@ sudo apt install libwebkit2gtk-4.1-dev \
   librsvg2-dev
 ```
 
-## Linux のシステム依存（Arch）
+## Linux system dependencies (Arch)
 
 ```sh
-sudo pacman -Syu
 sudo pacman -S --needed \
   webkit2gtk-4.1 \
   base-devel \
@@ -40,7 +39,11 @@ sudo pacman -S --needed \
   xdotool
 ```
 
-## Linux のシステム依存（Fedora）
+A system-wide upgrade (`sudo pacman -Syu`) is a separate, optional step and is not part of this block.
+
+> Notes: The official page also runs `sudo pacman -Syu` before the install; it is left out of the copyable block.
+
+## Linux system dependencies (Fedora)
 
 ```sh
 sudo dnf check-update
@@ -55,7 +58,7 @@ sudo dnf install webkit2gtk4.1-devel \
 sudo dnf group install "c-development"
 ```
 
-## Linux のシステム依存（Gentoo）
+## Linux system dependencies (Gentoo)
 
 ```sh
 sudo emerge --ask \
@@ -66,7 +69,7 @@ sudo emerge --ask \
   sys-apps/file
 ```
 
-## Linux のシステム依存（OSTree）
+## Linux system dependencies (OSTree)
 
 ```sh
 sudo rpm-ostree install webkit2gtk4.1-devel \
@@ -80,15 +83,15 @@ sudo rpm-ostree install webkit2gtk4.1-devel \
   gcc \
   gcc-c++ \
   make
-sudo systemctl reboot
 ```
 
-> **警告**: 末尾の `sudo systemctl reboot` はシステムを再起動する。
+rpm-ostree changes take effect after a reboot; reboot the host yourself when convenient.
 
-## Linux のシステム依存（openSUSE）
+> Notes: The official page ends this block with `sudo systemctl reboot`; it is left out of the copyable block.
+
+## Linux system dependencies (openSUSE)
 
 ```sh
-sudo zypper up
 sudo zypper in webkit2gtk3-devel \
   libopenssl-devel \
   curl \
@@ -99,7 +102,11 @@ sudo zypper in webkit2gtk3-devel \
 sudo zypper in -t pattern devel_basis
 ```
 
-## Linux のシステム依存（Alpine）
+A system-wide update (`sudo zypper up`) is a separate, optional step and is not part of this block.
+
+> Notes: The official page also runs `sudo zypper up` before the install; it is left out of the copyable block.
+
+## Linux system dependencies (Alpine)
 
 ```sh
 sudo apk add \
@@ -113,7 +120,7 @@ sudo apk add \
   librsvg
 ```
 
-公式注記: Alpine コンテナにはフォントが無いため、テキスト描画にはフォントパッケージ（例: `font-dejavu`）を 1 つ以上導入する。musl 向けビルドでリンカーエラーが出る場合は、対応する `*-static` パッケージを追加する。
+Official note: Alpine containers ship no fonts, so install at least one font package (for example `font-dejavu`) to render text. If linker errors occur when building for musl, add the matching `*-static` packages.
 
 ```sh
 sudo apk add --no-cache \
@@ -125,21 +132,21 @@ sudo apk add --no-cache \
   zlib-static
 ```
 
-NixOS の手順はコマンドを持たず、公式は NixOS Wiki（https://wiki.nixos.org/wiki/Tauri）を案内している。
+The NixOS procedure has no commands; the official page points to the NixOS Wiki (https://wiki.nixos.org/wiki/Tauri).
 
-## macOS のシステム依存
+## macOS system dependencies
 
-Xcode を Mac App Store または Apple Developer サイトから導入し、導入後に一度起動する（iOS も対象にする場合は Xcode 本体が必要）。デスクトップのみが対象なら Command Line Tools で足りる。
+Install Xcode from the Mac App Store or the Apple Developer site and launch it once after installing (full Xcode is required if iOS is also a target). For desktop only, Command Line Tools are enough.
 
 ```sh
 xcode-select --install
 ```
 
-## Windows のシステム依存
+## Windows system dependencies
 
-Microsoft C++ Build Tools（インストーラーで "Desktop development with C++" を選択）と WebView2 が必要。コマンドラインで行う操作は Rust の導入のみ（下記）。MSI を作る場合は VBSCRIPT のオプション機能が有効である必要がある（Settings > Apps > Optional features > More Windows features）。
+Microsoft C++ Build Tools (select "Desktop development with C++" in the installer) and WebView2 are required. The only command-line step is installing Rust (below). To build an MSI, the VBSCRIPT optional feature must be enabled (Settings > Apps > Optional features > More Windows features).
 
-## Rust の導入（Linux / macOS）
+## Install Rust (Linux / macOS)
 
 ```sh
 # download
@@ -150,36 +157,36 @@ less rustup-init.sh
 sh rustup-init.sh
 ```
 
-公式の rustup インストーラ。公式は「実行前にスクリプトを確認する」ことを推奨している（https://sh.rustup.rs/）。導入後はターミナルを再起動する。
+The official rustup installer. The official page recommends reviewing the script before running it (https://sh.rustup.rs/). Restart the terminal afterwards.
 
 > Notes: The source pipes the installer directly into sh; it is split into download / inspect / run here.
 
-## Rust の導入（Windows）
+## Install Rust (Windows)
 
 ```powershell
 winget install --id Rustlang.Rustup
 ```
 
-MSVC ツールチェーンを `default host triple` にする。既に Rust がある場合は次で揃える。
+Make the MSVC toolchain the `default host triple`. If Rust is already installed, align it with the following.
 
 ```powershell
 rustup default stable-msvc
 ```
 
-## Node.js の確認
+## Check Node.js
 
 ```sh
 node -v
 npm -v
 ```
 
-JavaScript フロントエンドを使う場合のみ必要。npm 以外のパッケージマネージャー（pnpm / yarn）を使うなら次を実行する（任意）。
+Required only when using a JavaScript frontend. If you use a package manager other than npm (pnpm / yarn), run the following (optional).
 
 ```sh
 corepack enable
 ```
 
-## Android 向け環境変数（Linux）
+## Android environment variables (Linux)
 
 ```sh
 export JAVA_HOME=/opt/android-studio/jbr
@@ -187,11 +194,11 @@ export ANDROID_HOME="$HOME/Android/Sdk"
 export NDK_HOME="$ANDROID_HOME/ndk/<ndk-version>"
 ```
 
-Android Studio の SDK Manager で Android SDK Platform / Platform-Tools / NDK (Side by side) / Build-Tools / Command-line Tools を導入しておく。`<ndk-version>` は導入済みの NDK バージョンのディレクトリ名。
+Install Android SDK Platform / Platform-Tools / NDK (Side by side) / Build-Tools / Command-line Tools from Android Studio's SDK Manager beforehand. `<ndk-version>` is the directory name of the installed NDK version.
 
 > Notes: The source derives NDK_HOME from the last entry of the ndk directory (`ls`), which breaks with multiple side-by-side NDKs; the version is specified explicitly here (same as references/getting-started/prerequisites.md).
 
-## Android 向け環境変数（macOS）
+## Android environment variables (macOS)
 
 ```sh
 export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
@@ -199,34 +206,34 @@ export ANDROID_HOME="$HOME/Library/Android/sdk"
 export NDK_HOME="$ANDROID_HOME/ndk/<ndk-version>"
 ```
 
-## Android 向け環境変数（Windows）
+## Android environment variables (Windows)
 
 ```powershell
 [System.Environment]::SetEnvironmentVariable("JAVA_HOME", "C:\Program Files\Android\Android Studio\jbr", "User")
 [System.Environment]::SetEnvironmentVariable("ANDROID_HOME", "$env:LocalAppData\Android\Sdk", "User")
-$VERSION = '<ndk-version>'  # 導入済みの NDK バージョンのディレクトリ名
+$VERSION = '<ndk-version>'  # directory name of the installed NDK version
 [System.Environment]::SetEnvironmentVariable("NDK_HOME", "$env:LocalAppData\Android\Sdk\ndk\$VERSION", "User")
 ```
 
-ユーザー環境変数を永続的に書き換える。現在の PowerShell セッションに反映するには次を実行する。
+This persistently rewrites user environment variables. To apply them to the current PowerShell session, run the following.
 
 ```powershell
 [System.Environment]::GetEnvironmentVariables("User").GetEnumerator() | % { Set-Item -Path "Env:\$($_.key)" -Value $_.value }
 ```
 
-## Android ターゲットの追加
+## Add Android targets
 
 ```sh
 rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
 ```
 
-## iOS ターゲットの追加と CocoaPods
+## Add iOS targets and CocoaPods
 
 ```sh
 rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim
 ```
 
-iOS 開発は macOS のみ。Homebrew 未導入の場合、公式はインストールスクリプトを案内している（ダウンロード → 確認 → 実行に分割）。
+iOS development is macOS only. If Homebrew is not installed, the official page points to an install script (split here into download, inspect, run).
 
 ```sh
 curl -fsSL -o install.sh https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh

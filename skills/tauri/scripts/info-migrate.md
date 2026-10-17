@@ -4,11 +4,11 @@ source: https://v2.tauri.app/reference/cli/
 
 # Info and Migrate
 
-環境診断（`tauri info`）、v1 / v2 beta からの移行（`tauri migrate`）、シェル補完、WiX Upgrade Code の確認、依存更新のコマンド集。
+Commands for environment diagnostics (`tauri info`), migration from v1 / v2 beta (`tauri migrate`), shell completions, checking the WiX Upgrade Code, and updating dependencies.
 
-> **警告**: `tauri migrate` はプロジェクトの設定・コードを v2 形式へ書き換える。必ずバージョン管理下で実行し、差分を確認する。
+> **WARNING**: `tauri migrate` rewrites the project's config and code to the v2 format. Always run it under version control and review the diff.
 
-## 環境情報の表示
+## Show environment information
 
 ```sh
 npm run tauri info
@@ -18,9 +18,9 @@ npm run tauri info
 cargo tauri info
 ```
 
-OS・Rust・Node.js とそのバージョン、関連するプロジェクト設定を簡潔に表示する。オプション: `--interactive`（自動修正を適用する対話モード）。
+Prints a concise summary of the OS, Rust, Node.js and their versions, and the relevant project config. Option: `--interactive` (interactive mode that applies automatic fixes).
 
-## v1 / v2 beta からの移行
+## Migrate from v1 / v2 beta
 
 ```sh
 npm run tauri migrate
@@ -34,26 +34,26 @@ pnpm tauri migrate
 cargo tauri migrate
 ```
 
-Tauri v1 から v2 への移行、および v2 beta から v2 安定版への移行ページで案内されているコマンド。
+The command documented on the Tauri v1 to v2 and v2 beta to v2 stable migration pages.
 
-## シェル補完の生成
+## Generate shell completions
 
 ```sh
 cargo tauri completions --shell zsh
 cargo tauri completions --shell bash --output <OUTPUT>
 ```
 
-`-s, --shell` は `bash` / `elvish` / `fish` / `powershell` / `zsh`。`-o, --output` を省略すると標準出力に出る。
+`-s, --shell` accepts `bash` / `elvish` / `fish` / `powershell` / `zsh`. Without `-o, --output`, the script is printed to stdout.
 
-## MSI の Upgrade Code の確認
+## Check the MSI Upgrade Code
 
 ```sh
 cargo tauri inspect wix-upgrade-code
 ```
 
-`productName` から導出される MSI インストーラーの既定 Upgrade Code を表示する。
+Prints the default Upgrade Code of the MSI installer, derived from `productName`.
 
-## npm パッケージの更新
+## Update npm packages
 
 ```sh
 npm install @tauri-apps/cli@latest @tauri-apps/api@latest
@@ -67,7 +67,7 @@ yarn up @tauri-apps/cli @tauri-apps/api
 pnpm update @tauri-apps/cli @tauri-apps/api --latest
 ```
 
-## 最新バージョンの確認
+## Check the latest version
 
 ```sh
 npm outdated @tauri-apps/cli
@@ -81,23 +81,23 @@ yarn outdated @tauri-apps/cli
 pnpm outdated @tauri-apps/cli
 ```
 
-## Cargo パッケージの更新
+## Update Cargo packages
 
-`src-tauri/Cargo.toml` の `tauri` と `tauri-build` のバージョンを書き換えた後に実行する。
+Run after changing the `tauri` and `tauri-build` versions in `src-tauri/Cargo.toml`.
 
 ```sh
 cd src-tauri
 cargo update
 ```
 
-公式は `cargo outdated` や cargo-edit の `cargo upgrade` でも更新できるとしている（コマンド詳細は各ツールの README）。
+The official docs say `cargo outdated` or cargo-edit's `cargo upgrade` can also be used (see each tool's README for command details).
 
-## バージョン同期の注意
+## Keeping versions in sync
 
-- npm の `@tauri-apps/api` と cargo の `tauri` は同じ minor に揃える。
-- プラグインは patch リリースでも変更が入りうるため、`@tauri-apps/plugin-fs` と `tauri-plugin-fs` のように npm パッケージと crate の完全なバージョン（例: `2.2.1`）を揃える。
+- Keep the npm `@tauri-apps/api` and the cargo `tauri` on the same minor version.
+- Plugins can change even in patch releases, so match the full version (for example `2.2.1`) of the npm package and the crate, such as `@tauri-apps/plugin-fs` and `tauri-plugin-fs`.
 
-## CLI の導入
+## Install the CLI
 
 ```sh
 npm install --save-dev @tauri-apps/cli@latest
@@ -115,7 +115,7 @@ deno add -D npm:@tauri-apps/cli@latest
 cargo install tauri-cli --version "^2.0.0" --locked
 ```
 
-## 注記
+## Notes
 
-- 呼び出し形は導入方法で異なる（`dev-build.md` の表を参照）。
-- 出典の `--help` 出力の `Usage: pnpm-native run build ...` は公式 docs の生成環境由来で、実際は `tauri ...`。
+- The invocation form depends on how the CLI is installed (see the table in `dev-build.md`).
+- `Usage: pnpm-native run build ...` in the source `--help` output comes from the environment that generated the official docs; the actual form is `tauri ...`.

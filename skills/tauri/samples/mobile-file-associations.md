@@ -85,16 +85,21 @@ Frontend
 import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/core';
 
-// Cold start: URLs may already be in Rust state before the frontend loads
-const initialUrls = await invoke('opened_urls');
-if (initialUrls.length > 0) {
-  handleFiles(initialUrls);
-}
+const seen = new Set();
+const handleFresh = (urls) => {
+  const fresh = urls.filter((u) => !seen.has(u));
+  fresh.forEach((u) => seen.add(u));
+  if (fresh.length) handleFiles(fresh);
+};
 
 // Warm: Rust emits the "opened" event when RunEvent::Opened fires
 await listen('opened', (event) => {
-  handleFiles(event.payload);
+  handleFresh(event.payload);
 });
+
+// Cold start: URLs may already be in Rust state before the frontend loads
+const initialUrls = await invoke('opened_urls');
+handleFresh(initialUrls);
 ```
 
 ## Notes
@@ -102,4 +107,5 @@ await listen('opened', (event) => {
 - `RunEvent::Opened` is available on macOS, iOS and Android; handle both the already-running case (event) and the launched-by-file case (stored URLs read through a command).
 - `mimeType` is required on Android for intent filter matching; Tauri infers common MIME types from extensions when omitted.
 - Other options: `role` (`Editor` default, `Viewer`, `Shell`, `QLGenerator`, `None`), `rank` (`Default`, `Owner`, `Alternate`, `None`), `name`, `androidIntentActionFilters` (`Send`, `SendMultiple`, `View`; all three by default).
+- The listener is registered before reading the stored URLs (with de-duplication) so files opened in between are not lost; the official snippet reads first.
 - `handleFiles` in the frontend snippet is a placeholder for your own handler and is not defined on the official page.

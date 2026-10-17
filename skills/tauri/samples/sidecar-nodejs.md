@@ -32,7 +32,7 @@ npm add @yao-pkg/pkg --save-dev
 {
   "type": "module",
   "scripts": {
-    "build": "pkg index.ts --output my-sidecar"
+    "build": "pkg index.js --output my-sidecar"
   }
 }
 ```
@@ -66,6 +66,10 @@ fs.renameSync(
 
 ```json
 {
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window",
+  "windows": ["main"],
   "permissions": [
     "core:default",
     "opener:default",
@@ -137,6 +141,7 @@ console.log(await invoke("hello", { cmd: 'hello', message }))
 - `rename.js` does not create `src-tauri/binaries`; the official page marks this with a TODO comment (omitted above), so create the directory first (see the `mkdir` step).
 - The binary in `src-tauri/binaries/` must be named `my-sidecar-<target-triple>` (with `.exe` on Windows) for the CLI to bundle it.
 - `rustc --print host-tuple` needs Rust 1.84.0+; for older versions the official page parses the output of `rustc -vV` instead.
-- The `build` script shown on the official page runs `pkg index.ts` while the file created is `index.js`; adjust the entry file name to match yours.
+- The official build script runs `pkg index.ts`; it is changed to `index.js` here to match the file created above.
+- The official snippet shows only the permissions array; identifier and windows are added so the file loads as a complete capability.
 - The official `rename.js` continues after a failed triple lookup and relies on ESM without setting it up; this sample exits on failure and sets `"type": "module"` in `package.json`.
 - Each alternative IPC approach (localhost server, stdin/stdout, local sockets) has its own drawbacks and security concerns; this example is a short-lived process reading `process.argv`.

@@ -95,5 +95,5 @@ tauri::Builder::default()
 
 - Tauri capabilities / permissions (ACL), not Claude Code or MCP permissions.
 - JSON files in `src-tauri/capabilities/` are all taken into account; separating them per category of action is recommended.
-- `platforms` accepts `linux`, `windows`, `macos`, `android`, and `ios`.
+- `platforms` accepts `linux`, `windows`, `macOS`, `android`, and `iOS`.
 - Trailing commas, the truncated tauri.conf.json excerpt and the undefined context variable from the official snippets are fixed here; the `greet` handler registration is also omitted because `greet` is not defined.

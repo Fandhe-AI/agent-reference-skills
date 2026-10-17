@@ -126,10 +126,13 @@ describe('Hello Tauri', () => {
 
 async function closeTauriDriver() {
   exit = true;
-  // kill the tauri-driver process
-  tauriDriver.kill();
-  // stop the webdriver session
-  await driver.quit();
+  try {
+    // stop the webdriver session first
+    await driver?.quit();
+  } finally {
+    // then kill the tauri-driver process
+    tauriDriver?.kill();
+  }
 }
 
 function onShutdown(fn) {
@@ -164,4 +167,5 @@ npm test
 - Tauri apps are tested through `tauri-driver` (WebDriver server), not through Playwright; see the playwright skill for Playwright.
 - Complete the WebDriver prerequisites (manual setup) first; the app binary must exist at `src-tauri/target/debug/tauri-app` and `tauri-driver` at `~/.cargo/bin/tauri-driver`.
 - Selenium has no bundled test suite, so Mocha plus manual `tauri-driver` start / stop hooks are needed; the capability `tauri:options.application` points at the binary and the browser name is `wry`.
+- The official snippet kills tauri-driver before driver.quit(); the order is swapped so the session is deleted first.
 - The `before` hook runs `yarn tauri build --debug --no-bundle`; change `yarn` if you use another package manager.

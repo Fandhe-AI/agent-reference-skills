@@ -4,11 +4,11 @@ source: https://v2.tauri.app/develop/icons/
 
 # Icons and Signer
 
-アプリアイコンの生成（`tauri icon`）と、アップデーター用署名鍵の生成・署名（`tauri signer`）のコマンド集。
+Commands for generating app icons (`tauri icon`) and for generating updater signing keys and signing files (`tauri signer`).
 
-> **警告**: `tauri signer generate` が出力する秘密鍵は絶対に共有・コミットしない。公式は「鍵を失うと、既にアプリを導入済みのユーザーへ新しいアップデートを配布できなくなる」としている。`-f, --force` は既存の秘密鍵ファイルを上書きする。
+> **WARNING**: Never share or commit the private key printed by `tauri signer generate`. The official docs say that if you lose the key you can no longer publish new updates to users who already installed the app. `-f, --force` overwrites an existing private key file.
 
-## アイコンの生成
+## Generate icons
 
 ```sh
 npm run tauri icon
@@ -18,9 +18,9 @@ npm run tauri icon
 cargo tauri icon
 ```
 
-入力は既定で `./app-icon.png`。デスクトップ用アイコンは既定で `src-tauri/icons` に出力され、モバイル用は Xcode / Android Studio プロジェクトへ直接配置される。
+The input defaults to `./app-icon.png`. Desktop icons are written to `src-tauri/icons` by default; mobile icons are placed directly into the Xcode / Android Studio projects.
 
-## 入力ファイルと出力先の指定
+## Specify the input file and output location
 
 ```sh
 cargo tauri icon /path/to/app-icon.png
@@ -30,17 +30,17 @@ cargo tauri icon --png <PNG>
 cargo tauri icon --fit contain
 ```
 
-| Option | 説明 |
+| Option | Description |
 | --- | --- |
-| `[INPUT]` | 正方形の PNG / SVG（透過あり）またはマニフェスト JSON（既定 `./app-icon.png`） |
-| `-o, --output <OUTPUT>` | 出力先（既定は `tauri.conf.json` と同階層の `icons`） |
-| `-p, --png <PNG>` | 生成する PNG のサイズを指定（指定時は既定アイコンを生成しない） |
-| `--ios-color <IOS_COLOR>` | iOS アイコンの背景色（CSS Color Module Level 4、既定 `#fff`） |
-| `--fit <FIT>` | 非正方形ソースの収め方（`cover` / `contain`。未指定だと非正方形は拒否） |
+| `[INPUT]` | Square PNG / SVG (with transparency) or manifest JSON (default `./app-icon.png`) |
+| `-o, --output <OUTPUT>` | Output directory (default is `icons` next to `tauri.conf.json`) |
+| `-p, --png <PNG>` | PNG sizes to generate (when given, the default icons are not generated) |
+| `--ios-color <IOS_COLOR>` | Background color for iOS icons (CSS Color Module Level 4, default `#fff`) |
+| `--fit <FIT>` | How to fit a non-square source (`cover` / `contain`; non-square sources are rejected if unset) |
 
-`tauri ios init` / `tauri android init` の後に実行するとモバイルアイコンを更新できる。
+Run it after `tauri ios init` / `tauri android init` to update the mobile icons.
 
-## アップデーター署名鍵の生成
+## Generate an updater signing key
 
 ```sh
 npm run tauri signer generate -- -w ~/.tauri/myapp.key
@@ -50,11 +50,11 @@ npm run tauri signer generate -- -w ~/.tauri/myapp.key
 cargo tauri signer generate -w ~/.tauri/myapp.key
 ```
 
-公開鍵は `tauri.conf.json` に設定してアーティファクトの検証に使う。オプション: `-p, --password <PASSWORD>` / `-w, --write-keys <WRITE_KEYS>` / `-f, --force` / `--ci`。
+Set the public key in `tauri.conf.json`; it is used to verify artifacts. Options: `-p, --password <PASSWORD>` / `-w, --write-keys <WRITE_KEYS>` / `-f, --force` / `--ci`.
 
-## 署名付きビルドの環境変数
+## Environment variables for signed builds
 
-公式は「`.env` ファイルは機能しない」としている。
+The official docs say `.env` files do not work.
 
 ```sh
 export TAURI_SIGNING_PRIVATE_KEY="Path or content of your private key"
@@ -68,27 +68,27 @@ $env:TAURI_SIGNING_PRIVATE_KEY="Path or content of your private key"
 $env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD=""
 ```
 
-設定後に `tauri build` を実行すると更新バンドルと署名が生成される（`createUpdaterArtifacts` 設定が前提）。
+After setting them, running `tauri build` produces the update bundle and its signature (requires the `createUpdaterArtifacts` setting).
 
-## ファイルへの手動署名
+## Sign a file manually
 
 ```sh
 cargo tauri signer sign <FILE>
 cargo tauri signer sign --private-key-path <PRIVATE_KEY_PATH> --app-version <APP_VERSION> <FILE>
 ```
 
-パスワードは事前に環境変数 `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` へ設定しておく。
+Set the password beforehand in the `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` environment variable.
 
-| Option | 説明 |
+| Option | Description |
 | --- | --- |
-| `-k, --private-key <PRIVATE_KEY>` | 秘密鍵の文字列（環境変数 `TAURI_SIGNING_PRIVATE_KEY`） |
-| `-f, --private-key-path <PRIVATE_KEY_PATH>` | 秘密鍵ファイル（環境変数 `TAURI_SIGNING_PRIVATE_KEY_PATH`） |
-| `-p, --password <PASSWORD>` | 秘密鍵のパスワード（環境変数 `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`） |
-| `--app-version <APP_VERSION>` | 署名をアプリのバージョンに紐付ける（`requireSignedVersion` を設定したアップデーター向け。`tauri build` は自動設定、手動署名時に指定） |
+| `-k, --private-key <PRIVATE_KEY>` | Private key string (env `TAURI_SIGNING_PRIVATE_KEY`) |
+| `-f, --private-key-path <PRIVATE_KEY_PATH>` | Private key file (env `TAURI_SIGNING_PRIVATE_KEY_PATH`) |
+| `-p, --password <PASSWORD>` | Private key password (env `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`) |
+| `--app-version <APP_VERSION>` | Bind the signature to the app version (for updaters configured with `requireSignedVersion`; `tauri build` sets it automatically, specify it when signing manually) |
 
-## 注記
+## Notes
 
-- 呼び出し形は導入方法で異なる（`dev-build.md` の表を参照）。npm は追加フラグの前に `--` が必要。
-- `--password` / `-p` を引数で渡すとシェル履歴・プロセス一覧に残るため、環境変数 `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` で渡す。
-- 出典の `--help` 出力の `Usage: pnpm-native run build ...` は公式 docs の生成環境由来で、実際は `tauri ...`。
-- 手動でアイコンを作る場合の要件（`icon.ico` の層サイズ、PNG は RGBA 32bit など）は references の `develop/icons.md` を参照。
+- The invocation form depends on how the CLI is installed (see the table in `dev-build.md`). npm needs `--` before extra flags.
+- Passing `--password` / `-p` as an argument leaves it in shell history and the process list; pass it through the `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` environment variable instead.
+- `Usage: pnpm-native run build ...` in the source `--help` output comes from the environment that generated the official docs; the actual form is `tauri ...`.
+- For the requirements when creating icons manually (layer sizes in `icon.ico`, RGBA 32-bit PNGs, etc.), see `develop/icons.md` in references.

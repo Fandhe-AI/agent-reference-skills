@@ -24,7 +24,8 @@ fn increase_counter(state: State<'_, Mutex<AppState>>) -> u32 {
   state.counter
 }
 
-fn main() {
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
   Builder::default()
     .setup(|app| {
       app.manage(Mutex::new(AppState::default()));
@@ -32,7 +33,7 @@ fn main() {
     })
     .invoke_handler(tauri::generate_handler![increase_counter])
     .run(tauri::generate_context!())
-    .unwrap();
+    .expect("error while running tauri application");
 }
 ```
 
@@ -183,4 +184,5 @@ await invoke('download', {
 - Using the wrong type for `State<'_, T>` compiles but fails at runtime (`state not managed for field ...`); if the managed value is `Mutex<AppState>`, the parameter must be `State<'_, Mutex<AppState>>`.
 - Async commands cannot take borrowed arguments such as `&str` or `State<'_, T>` directly; either convert them to owned types (`String`) or return a `Result`.
 - Channels are the recommended mechanism for streaming ordered data; plain events are simpler but not type safe and unsuitable for large data.
+- The official snippet uses fn main(); it is changed to pub fn run() with the mobile entry point so it fits src-tauri/src/lib.rs.
 - The `Database` command in the second snippet is the official "Complete Example"; the state snippet combines the official state-management examples with an `invoke_handler` registration.

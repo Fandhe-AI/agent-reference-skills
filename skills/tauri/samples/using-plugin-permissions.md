@@ -30,7 +30,7 @@ pub fn run() {
 }
 ```
 
-The plugin's `permissions/default.toml` (shows how the `default` set is declared)
+The plugin's `permissions/default.toml` as shown on the official docs page (shows how the `default` set is declared)
 
 ```toml
 "$schema" = "schemas/schema.json"
@@ -75,7 +75,6 @@ permissions = ["read-all", "scope-app-recursive", "deny-default"]
   ],
   "permissions": [
     "core:default",
-    "shell:allow-open",
     {
       "identifier": "fs:allow-write-text-file",
       "allow": [{ "path": "$HOME/test.txt" }]
@@ -115,4 +114,6 @@ window.addEventListener("DOMContentLoaded", () => {
 - Without the right permission the call is rejected with `fs.write_text_file not allowed. Permissions associated with this command: ...`.
 - The official page first shows `"fs:default"` and `"fs:allow-write-text-file"` (diff markers `del` / `ins`), then the scoped form above.
 - The official snippet uses the pre-2.0 core identifiers (path:default, event:default, ...); they are replaced with core:default here, and the unscoped fs:allow-write-text-file line removed by the official diff (del={18}) is dropped.
+- shell:allow-open from the official snippet is dropped because this sample registers only the fs plugin.
+- This default.toml excerpt is from the docs page and predates fs-v2.7.1, whose fs:default is create-app-specific-dirs + read-app-specific-dirs-recursive + deny-default (the app dirs are created by the plugin).
 - The official snippet declares run() without pub; it is made pub so main.rs and the mobile entry point can call it.

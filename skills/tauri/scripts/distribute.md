@@ -4,11 +4,11 @@ source: https://v2.tauri.app/distribute/
 
 # Distribute
 
-配布形式別（macOS / Windows / Linux / Android / iOS / ストア）のバンドル生成とアップロードのコマンド集。各ストア・署名の公式手順そのものは対象外で、Tauri CLI 側の操作と各ページが示す補助コマンドのみ収録する。
+Commands for producing bundles and uploading them per distribution target (macOS / Windows / Linux / Android / iOS / stores). Official store and signing procedures themselves are out of scope; only Tauri CLI operations and the helper commands shown on each page are included.
 
-> **警告**: `sudo` によるパッケージ導入・`cargo install`・`git push`・ストアへのアップロード（`altool` / `snapcraft upload`）を含む。使い捨てのビルド環境（コンテナ・CI・検証 VM）で実行することを前提にし、`$APPLE_API_KEY_ID` などの認証情報は環境変数から渡してコミットしない。呼び出し形は導入方法で異なる（`dev-build.md` の表を参照）。
+> **WARNING**: Includes package installation via `sudo`, `cargo install`, `git push`, and store uploads (`altool` / `snapcraft upload`). Run these only in a disposable build environment (container, CI, throwaway VM), pass credentials such as `$APPLE_API_KEY_ID` through environment variables, and never commit them. The invocation form depends on how the CLI is installed (see the table in `dev-build.md`).
 
-## macOS アプリバンドル（.app）
+## macOS app bundle (.app)
 
 ```sh
 npm run tauri build -- --bundles app
@@ -18,7 +18,7 @@ npm run tauri build -- --bundles app
 cargo tauri build --bundles app
 ```
 
-macOS 上で実行する。
+Run on macOS.
 
 ## macOS DMG
 
@@ -30,7 +30,7 @@ npm run tauri build -- --bundles dmg
 cargo tauri build --bundles dmg
 ```
 
-## Windows インストーラー（MSI / NSIS）
+## Windows installers (MSI / NSIS)
 
 ```sh
 npm run tauri build
@@ -40,9 +40,9 @@ npm run tauri build
 cargo tauri build
 ```
 
-Windows 上で実行する。`.msi` は Windows でのみ生成できる。
+Run on Windows. `.msi` can only be produced on Windows.
 
-## Windows 向け 32bit / ARM64 ビルド
+## 32-bit / ARM64 builds for Windows
 
 ```sh
 rustup target add i686-pc-windows-msvc
@@ -54,11 +54,11 @@ rustup target add aarch64-pc-windows-msvc
 cargo tauri build --target aarch64-pc-windows-msvc
 ```
 
-ARM64 は Visual Studio Installer の "C++ ARM64 build tools" が先に必要。
+ARM64 first requires "C++ ARM64 build tools" from the Visual Studio Installer.
 
-## Linux / macOS から Windows 向け NSIS をクロスビルド
+## Cross-build a Windows NSIS installer from Linux / macOS
 
-公式は「最後の手段」としている。
+The official page calls this a last resort.
 
 ```sh
 sudo apt install nsis
@@ -79,21 +79,21 @@ cargo install --locked cargo-xwin
 cargo tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc
 ```
 
-出力は `target/x86_64-pc-windows-msvc/release/bundle/nsis/`。macOS では Homebrew の指示に従い `/opt/homebrew/opt/llvm/bin` を `$PATH` に追加する。署名には外部ツールが必要。
+Output goes to `target/x86_64-pc-windows-msvc/release/bundle/nsis/`. On macOS, add `/opt/homebrew/opt/llvm/bin` to `$PATH` as Homebrew instructs. Signing requires external tooling.
 
-## WebView2 固定ランタイムの展開
+## Expand the WebView2 fixed runtime
 
 ```powershell
 Expand .\Microsoft.WebView2.FixedVersionRuntime.128.0.2739.42.x64.cab -F:* ./src-tauri
 ```
 
-## MSI を FIPS 準拠にする
+## Make the MSI FIPS compliant
 
 ```powershell
 $env:TAURI_BUNDLER_WIX_FIPS_COMPLIANT="true"
 ```
 
-## Microsoft Store 向け（別設定をマージ）
+## Microsoft Store (merge a separate config)
 
 ```sh
 npm run tauri build -- --no-bundle
@@ -105,27 +105,27 @@ cargo tauri build --no-bundle
 cargo tauri bundle --config src-tauri/tauri.microsoftstore.conf.json
 ```
 
-NSIS の `-setup.exe` のサイレントインストール引数は `/S`（大文字）、MSI は `msiexec` の `/quiet`。
+The silent-install argument for an NSIS `-setup.exe` is `/S` (uppercase); for MSI use `msiexec` with `/quiet`.
 
 ```sh
 MyApp_x64-setup.exe /S
 ```
 
-## Debian パッケージ
+## Debian package
 
 ```sh
 cargo tauri build --bundles deb
 ```
 
-## ARM 向け Debian クロスコンパイル
+## Cross-compile a Debian package for ARM
 
-Debian / Ubuntu 系ホストでの手動手順。
+Manual procedure on a Debian / Ubuntu host.
 
 ```sh
 rustup target add armv7-unknown-linux-gnueabihf
 sudo apt install gcc-arm-linux-gnueabihf
 sudo dpkg --add-architecture armhf
-sudo apt-get update && sudo apt-get upgrade -y
+sudo apt-get update
 sudo apt install libwebkit2gtk-4.1-dev:armhf
 sudo apt install libssl-dev:armhf
 export PKG_CONFIG_SYSROOT_DIR=/usr/arm-linux-gnueabihf/
@@ -136,14 +136,16 @@ cargo tauri build --target armv7-unknown-linux-gnueabihf
 rustup target add aarch64-unknown-linux-gnu
 sudo apt install gcc-aarch64-linux-gnu
 sudo dpkg --add-architecture arm64
-sudo apt-get update && sudo apt-get upgrade -y
+sudo apt-get update
 sudo apt install libwebkit2gtk-4.1-dev:arm64
 sudo apt install libssl-dev:arm64
 export PKG_CONFIG_SYSROOT_DIR=/usr/aarch64-linux-gnu/
 cargo tauri build --target aarch64-unknown-linux-gnu
 ```
 
-事前に `<project-root>/.cargo/config.toml` に linker（`arm-linux-gnueabihf-gcc` / `aarch64-linux-gnu-gcc`）を設定する。Ubuntu では `/etc/apt/sources.list` に ports.ubuntu.com の ARM 行を追加する必要がある（詳細は references の `distribute/debian.md`）。`libssl-dev` は OpenSSL ヘッダーが見つからないエラーが出た場合のみ必要。
+Beforehand, set the linker (`arm-linux-gnueabihf-gcc` / `aarch64-linux-gnu-gcc`) in `<project-root>/.cargo/config.toml`. On Ubuntu, the ports.ubuntu.com ARM lines must be added to `/etc/apt/sources.list` (details in references `distribute/debian.md`). `libssl-dev` is only needed if an OpenSSL header-not-found error occurs. System-wide upgrade (`sudo apt-get upgrade`) is a separate, optional step and is not part of these blocks.
+
+> Notes: The official page also runs a full system upgrade (`sudo apt-get upgrade -y`) after `apt-get update`; it is left out of the copyable blocks.
 
 ## AppImage
 
@@ -151,14 +153,14 @@ cargo tauri build --target aarch64-unknown-linux-gnu
 cargo tauri build --bundles appimage
 ```
 
-利用者側の起動手順。
+End-user launch steps.
 
 ```sh
 chmod a+x MyProject.AppImage
 ./MyProject.AppImage
 ```
 
-ARM の AppImage は ARM 実機またはエミュレーター上でのみビルドできる（`linuxdeploy` がクロスコンパイル非対応）。
+ARM AppImages can only be built on ARM hardware or an emulator (`linuxdeploy` does not support cross-compilation).
 
 ## RPM
 
@@ -166,9 +168,9 @@ ARM の AppImage は ARM 実機またはエミュレーター上でのみビル�
 cargo tauri build --bundles rpm
 ```
 
-RPM のスクリプトファイル置き場は `mkdir src-tauri/scripts`（公式例）。
+The official example puts RPM script files in `mkdir src-tauri/scripts`.
 
-## Flatpak のビルドツール導入
+## Install Flatpak build tools
 
 ```sh
 sudo apt install flatpak flatpak-builder
@@ -188,7 +190,7 @@ flatpak install flathub org.gnome.Platform//47 org.gnome.Sdk//47
 
 > Notes: The source installs runtime 46 while its manifest uses runtime-version '47'; aligned to 47 here (check the currently supported GNOME runtime before submitting to Flathub).
 
-## Flatpak のローカルビルドと実行
+## Build and run a Flatpak locally
 
 ```sh
 flatpak-builder --force-clean --user --install --disable-cache --repo flatpak-repo flatpak flatpak-builder.yaml
@@ -196,11 +198,11 @@ flatpak run <your flatpak id>
 flatpak -y --user update <your flatpak id>
 ```
 
-`flatpak-builder.yaml` は deb バンドルを展開する形の公式マニフェスト（詳細は references の `distribute/flatpak.md`）。
+`flatpak-builder.yaml` is the official manifest that unpacks the deb bundle (details in references `distribute/flatpak.md`).
 
 > Notes: Aligned with references distribute/flatpak.md: `--install` is added because the source omits it before `flatpak run`, which fails on the first run.
 
-## Flatpak（Flathub 向けソース生成、オープンソース用）
+## Flatpak (generate sources for Flathub, open source)
 
 ```sh
 git submodule add https://github.com/flatpak/flatpak-builder-tools.git
@@ -212,11 +214,11 @@ flatpak-node-generator --no-requests-cache -o node-sources.json npm /path/to/you
 python3 flatpak-builder-tools/cargo/flatpak-cargo-generator.py -o cargo-sources.json src-tauri/Cargo.lock
 ```
 
-yarn の場合は `flatpak-node-generator ... yarn /path/to/your/lock/file/yarn.lock`。
+For yarn: `flatpak-node-generator ... yarn /path/to/your/lock/file/yarn.lock`.
 
 > Notes: The source runs a bare cd before pipx install; it is wrapped in a subshell here so the following commands still run from the project root.
 
-## Flathub への申請
+## Submit to Flathub
 
 ```sh
 git clone --branch=new-pr git@github.com:your_github_username/flathub.git
@@ -224,7 +226,7 @@ cd flathub
 git checkout -b your_app_name
 ```
 
-その後 `new-pr` ブランチ宛てに Pull Request を作成する。
+Then open a Pull Request against the `new-pr` branch.
 
 ## Snapcraft
 
@@ -240,7 +242,7 @@ sudo snap install --dangerous ./appname_0.1.0_amd64.snap
 snap run appname
 ```
 
-> **警告**: `snapcraft upload` は公開リリースを作る。公式例は `--release=stable` を指定している。
+> **WARNING**: `snapcraft upload` creates a public release. The official example specifies `--release=stable`.
 
 ```sh
 snapcraft login
@@ -254,7 +256,7 @@ snapcraft upload --release=stable appname_0.1.0_amd64.snap
 ```sh
 git clone ssh://aur@aur.archlinux.org/<pkgname>.git
 cd <pkgname>
-# ここに PKGBUILD を置く
+# place the PKGBUILD here
 makepkg --printsrcinfo > .SRCINFO
 makepkg
 ```
@@ -265,11 +267,11 @@ git commit -m "Initial Commit"
 git push
 ```
 
-clone したディレクトリに `PKGBUILD` を置いてから実行する。
+Place the `PKGBUILD` in the cloned directory before running.
 
 > Notes: The source clones via the read-only HTTPS URL and does not cd into it; the SSH URL and a cd step are used here so makepkg and git push work.
 
-## Google Play（Android）
+## Google Play (Android)
 
 ```sh
 npm run tauri android build -- --aab
@@ -282,40 +284,40 @@ cargo tauri android build --apk --split-per-abi
 cargo tauri android build --aab --target aarch64 --target armv7
 ```
 
-AAB の出力先は `gen/android/app/build/outputs/bundle/universalRelease/app-universal-release.aab`。初回アップロードは Play Console から手動で行う。
+The AAB is written to `gen/android/app/build/outputs/bundle/universalRelease/app-universal-release.aab`. The first upload is done manually from the Play Console.
 
-## App Store（iOS）
+## App Store (iOS)
 
 ```sh
 cargo tauri ios build --export-method app-store-connect
 cargo tauri ios build --open
 ```
 
-IPA は `src-tauri/gen/apple/build/arm64/${APPNAME}.ipa`。
+The IPA is at `src-tauri/gen/apple/build/arm64/${APPNAME}.ipa`.
 
 ```sh
 xcrun altool --upload-app --type ios --file "src-tauri/gen/apple/build/arm64/${APPNAME}.ipa" --apiKey "${APPLE_API_KEY_ID}" --apiIssuer "${APPLE_API_ISSUER}"
 ```
 
-`altool` は App Store Connect API キーで認証する。
+`altool` authenticates with an App Store Connect API key.
 
-## App Store（macOS）
+## App Store (macOS)
 
 ```sh
 cargo tauri build --no-bundle --target universal-apple-darwin
 cargo tauri bundle --bundles app --target universal-apple-darwin --config src-tauri/tauri.appstore.conf.json
 ```
 
-Apple Silicon のみを対象にする場合は `tauri.conf.json` の `bundle > macOS > minimumSystemVersion` を `"12.0"` にする。ホスト別の変更点は次のとおり。
+To target Apple Silicon only, set `bundle > macOS > minimumSystemVersion` in `tauri.conf.json` to `"12.0"`. Host-specific changes follow.
 
-- Apple Silicon ホスト: `--target universal-apple-darwin` を外し、パスは `src-tauri/target/release` を使う。
+- Apple Silicon host: drop `--target universal-apple-darwin` and use the path `src-tauri/target/release`.
 
 ```sh
 cargo tauri build --no-bundle
 cargo tauri bundle --bundles app --config src-tauri/tauri.appstore.conf.json
 ```
 
-- Intel ホスト: `rustup target add aarch64-apple-darwin` のうえで `universal-apple-darwin` を `aarch64-apple-darwin` に置き換え、パスは `src-tauri/target/aarch64-apple-darwin/release` を使う。
+- Intel host: run `rustup target add aarch64-apple-darwin`, replace `universal-apple-darwin` with `aarch64-apple-darwin`, and use the path `src-tauri/target/aarch64-apple-darwin/release`.
 
 ```sh
 rustup target add aarch64-apple-darwin
@@ -323,18 +325,18 @@ cargo tauri build --no-bundle --target aarch64-apple-darwin
 cargo tauri bundle --bundles app --target aarch64-apple-darwin --config src-tauri/tauri.appstore.conf.json
 ```
 
-`.pkg` の作成とアップロード（universal の場合）。
+Create and upload the `.pkg` (universal case).
 
 ```sh
 xcrun productbuild --sign "<certificate signing identity>" --component "src-tauri/target/universal-apple-darwin/release/bundle/macos/${APPNAME}.app" /Applications "${APPNAME}.pkg"
 xcrun altool --upload-app --type macos --file "${APPNAME}.pkg" --apiKey "${APPLE_API_KEY_ID}" --apiIssuer "${APPLE_API_ISSUER}"
 ```
 
-Apple Silicon ホスト向けは `--component` を `src-tauri/target/release/bundle/macos/${APPNAME}.app`、Intel ホスト向けは `src-tauri/target/aarch64-apple-darwin/release/bundle/macos/${APPNAME}.app` にする。`.pkg` の署名には Mac Installer Distribution 証明書が必要。
+For an Apple Silicon host, set `--component` to `src-tauri/target/release/bundle/macos/${APPNAME}.app`; for an Intel host, `src-tauri/target/aarch64-apple-darwin/release/bundle/macos/${APPNAME}.app`. Signing the `.pkg` requires a Mac Installer Distribution certificate.
 
 > Notes: The source omits --target on the build step and uses target/... paths; --target universal-apple-darwin is added so the bundle step finds the binary, and paths assume the project root with the default src-tauri/target.
 
-## 注記
+## Notes
 
-- ストア・署名・公証の各プラットフォーム公式手順は apple-distribution / windows-packaging-publish / android-build-gradle の各スキルが担当し、ここでは Tauri CLI 側の操作のみ扱う。
-- 署名関連のコマンド（`distribute/sign/*` ページ）は本ファイルでは未収録。references の `distribute/sign-*.md` を参照する。
+- Store, signing, and notarization procedures per platform are covered by the apple-distribution / windows-packaging-publish / android-build-gradle skills; this file covers only Tauri CLI operations.
+- Signing commands (the `distribute/sign/*` pages) are not included here. See `distribute/sign-*.md` in references.

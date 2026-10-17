@@ -145,6 +145,16 @@ iOS: `src-tauri/Info.ios.plist`
 </plist>
 ```
 
+Empty `app.windows` so the main window is created only in setup (`src-tauri/tauri.conf.json`)
+
+```json
+{
+  "app": {
+    "windows": []
+  }
+}
+```
+
 iOS: handle scene requests in `src-tauri/src/lib.rs`
 
 ```rust
@@ -221,4 +231,5 @@ let window = builder.build()?;
 - On phones the system usually does not show two windows side by side: Android pushes the new activity onto the back stack, and iPhone often replaces the current UI; true concurrent windows are an iPad / large-screen experience.
 - Use a browser-history based frontend router (not a hash router) so each window can navigate to a distinct URL path.
 - Platform window options: Android `activityName` / `createdByActivityName`, iOS `requestedBySceneIdentifier`; read back with `window.activityName()` / `window.sceneIdentifier()` (Rust: `activity_name()` / `scene_identifier()`).
+- app.windows must be empty when setup builds the main window, otherwise the label main is created twice.
 - The official snippet passes `main_window` by value; `WebviewWindowBuilder::new` takes `&M`, so a reference is passed here.
