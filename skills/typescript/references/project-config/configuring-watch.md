@@ -61,6 +61,6 @@ The suggested method is the `watchOptions` section of `tsconfig.json`:
 
 ## Related
 
-- watch-options.md
+- [watch-options.md](../tsconfig/watch-options.md)
 - [compiler-options-cli.md](./compiler-options-cli.md)
 - [project-references.md](./project-references.md)
