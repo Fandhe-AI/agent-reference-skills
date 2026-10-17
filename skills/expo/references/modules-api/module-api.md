@@ -28,7 +28,7 @@ class MyModule : Module() {
     Name("MyFirstExpoModule")
 
     Function("hello") { name: String ->
-      return "Hello $name!"
+      return@Function "Hello $name!"
     }
   }
 }
@@ -372,6 +372,7 @@ export default function MainView() {
 ## Notes
 
 - `Constants` is deprecated; use `Constant`.
+- The official Kotlin example uses a bare `return` inside the `Function` lambda, which does not compile; this page uses `return@Function` as in the official tutorials.
 - In the view-callback example, `Name("CameraView")` is added so the module name matches `requireNativeViewManager('CameraView')`; without it the name is inferred from the class name (`CameraViewModule`).
 - `Formatter` and `ValueOrUndefined` are marked experimental in the source page.
 - On Android, for `Promise` import the class from `expo.modules.kotlin` instead of `expo.modules.core`.
