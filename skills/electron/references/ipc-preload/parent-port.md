@@ -10,6 +10,8 @@ Interface for communication with the parent process. Process: Utility.
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the child reads e.data.message instead of interpolating e.data, so the reply matches the 'hello world!' comment.
+
 ```js
 // Main process
 const child = utilityProcess.fork(path.join(__dirname, 'test.js'))

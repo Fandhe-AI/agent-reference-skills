@@ -45,6 +45,8 @@ app.on('window-all-closed', () => {
 
 Preload scripts contain code that executes in a renderer process before its web content begins loading. They run within the renderer context but have access to Node.js APIs. Attach one with the `preload` option of `webPreferences`:
 
+Adapted (not in the official docs): the official placeholder 'path/to/preload.js' is expanded to path.join(__dirname, 'preload.js').
+
 ```js
 const { BrowserWindow } = require('electron')
 const path = require('node:path')

@@ -10,16 +10,20 @@ With Web Workers, it is possible to run JavaScript in OS-level threads. Node.js 
 
 Set `nodeIntegrationInWorker` to `true` in `webPreferences`:
 
+Adapted (not in the official docs): the official example sets only nodeIntegrationInWorker; renderers are sandboxed by default since Electron 20, so sandbox: false is added. Disabling the sandbox weakens security; prefer utilityProcess when sandboxing must be kept.
+
 ```js
 const win = new BrowserWindow({
   webPreferences: {
-    nodeIntegrationInWorker: true
+    nodeIntegrationInWorker: true,
+    sandbox: false
   }
 })
 ```
 
 ## Notes
 
+- Adapted (not in the official docs): `sandbox: false` is added to the example because renderers are sandboxed by default since Electron 20 (see the sandbox tutorial). If the sandbox must stay enabled, use [utilityProcess](./utility-process.md) instead.
 - Workers created by an `<iframe>` only get Node.js integration when the frame itself has it, i.e. when `nodeIntegrationInSubFrames` is also enabled.
 - `nodeIntegrationInWorker` can be used independent of `nodeIntegration`, but `sandbox` must not be set to `true`.
 - The option is not available in `SharedWorker`s or `Service Worker`s owing to incompatibilities in sandboxing policies.

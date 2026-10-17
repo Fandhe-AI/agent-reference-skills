@@ -49,6 +49,8 @@ Electron adds a `close` event to `MessagePort`, emitted when the other end of th
 
 ## Example: MessageChannel between two renderers
 
+Adapted (not in the official docs): preload paths use path.join(__dirname, ...) instead of bare file names, loadFile calls are added, and an electron-port-ready event is added so renderer.js waits for the port before posting 'ping'.
+
 ```js
 // main.js (Main Process)
 const { BrowserWindow, app, MessageChannelMain } = require('electron')
@@ -113,6 +115,8 @@ The example binds the port to `window` directly for simplicity; the docs say it 
 ## Example: Worker process (hidden window)
 
 The page talks to a worker process implemented as a hidden `BrowserWindow` without relaying through main.
+
+Adapted (not in the official docs): contextIsolation: false is added next to the official nodeIntegration: true so that require('electron') works in the pages (demo-only setting).
 
 ```js
 // main.js (Main Process)
@@ -216,6 +220,8 @@ ipcMain.on('give-me-a-stream', (event, msg) => {
 ## Example: Main process to the main world of a context-isolated page
 
 With context isolation enabled, IPC messages from main are delivered to the isolated world, not the main world. To reach the main world directly, transfer a port through the preload script with `window.postMessage`.
+
+Adapted (not in the official docs): loadURL('index.html') is replaced by await loadFile('index.html'), and the port is posted only after the page has loaded.
 
 ```js
 // main.js (Main Process)

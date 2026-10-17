@@ -86,9 +86,13 @@ Cache locations (`@electron/get` caches downloaded binaries):
 ## Troubleshooting
 
 - Errors like `ELIFECYCLE`, `EAI_AGAIN`, `ECONNRESET`, and `ETIMEDOUT` indicate network problems; switch networks or retry. You can also download Electron directly from electron/electron/releases.
-- `EACCESS` error: fix your npm permissions; if it persists the `unsafe-perm` flag may need to be set to true (`sudo npm install electron --unsafe-perm=true`).
+- `EACCESS` error: fix your npm permissions (use a user-level Node.js install such as nvm, or point the npm global prefix at a user-owned directory). Avoid installing with `sudo`.
 - On slow networks use `npm install --verbose electron`.
 - To force a re-download of the asset and the SHASUM file set the `force_no_cache` environment variable to `true`.
+
+## Notes
+
+- Adapted (not in the official docs): the official EACCESS entry suggests `sudo npm install electron --unsafe-perm=true`; it is intentionally omitted here because it runs package install scripts as root.
 
 ## Related
 
