@@ -37,7 +37,7 @@ void setUp(ui.FragmentShader shader) {
 - Desktop: Canonical becomes lead maintainer and Strategic Steward for Flutter Desktop; experimental windowing APIs (main channel only) add tooltip windows, macOS popups, and a Material `showDialog` that creates a separate child dialog window; Windows stylus support.
 - Embedded: 2026 Toyota RAV4 multimedia system; LG webOS SDK announced.
 - Graphics: Impeller Vulkan memory and synchronization improvements, SDF circles, shadow and perspective fixes; shader compiler warns on shaders incompatible with Skia.
-- Framework: Material and Cupertino libraries are frozen as of this release; by the next stable release the in-framework versions will be deprecated in favor of `material_ui` and `cupertino_ui`. New `CupertinoMenuAnchor`, animated `MenuAnchor` (set `animated` to true; new `SubmenuButton.hoverOpenDelay`), `CupertinoSheetRoute.scrollableBuilder`, `CarouselView` infinite scrolling, `ShapedInputBorder`.
+- Framework: Material and Cupertino libraries are frozen as of this release; by the next stable release the in-framework versions will be deprecated in favor of `material_ui` and `cupertino_ui` (plan as announced for 3.44; in 3.47 / 3.47.7 the in-framework libraries are still not deprecated: the standalone packages are opt-in only and formal deprecation is scheduled for a later stable release, see What's new in Flutter 3.47 and material_ui and cupertino_ui). New `CupertinoMenuAnchor`, animated `MenuAnchor` (set `animated` to true; new `SubmenuButton.hoverOpenDelay`), `CupertinoSheetRoute.scrollableBuilder`, `CarouselView` infinite scrolling, `ShapedInputBorder`.
 - Breaking changes and deprecations called out: `RawMenuAnchor` callback order; `showCupertinoSheet` / `CupertinoSheetRoute` `builder` and `pageBuilder` deprecated in favor of `scrollableBuilder`; `ReorderableListView` `onReorder` to `onReorderItem`; the `--web-hot-reload` flag deprecated; the `plugin_ffi` template deprecated.
 
 ## Related
@@ -46,5 +46,6 @@ void setUp(ui.FragmentShader shader) {
 - [Migrating Flutter Android projects to built-in Kotlin](./migrate-to-built-in-kotlin.md)
 - [Changing RawMenuAnchor close order](./raw-menu-anchor-close-order.md)
 - [Deprecate onReorder callback](./deprecate-onreorder-callback.md)
+- [material_ui and cupertino_ui](./material-ui-and-cupertino-ui.md)
 - [Breaking changes and migration guides](./breaking-changes.md)
 - [Swift Package Manager for app developers](../packages-deployment/swiftpm-app-developers.md)
