@@ -30,6 +30,7 @@ Then follow the quickstart (`learn.chatgpt.com/docs/quickstart?setup=app`) to si
 - PowerShell execution-policy errors (`... cannot be loaded because running scripts is disabled ...`) are commonly fixed with `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned`.
 - Uses the same Codex home directory as native Windows Codex CLI: `%USERPROFILE%\.codex`. The CLI inside WSL uses the Linux home directory by default, so it doesn't share configuration, cached auth, or session history automatically; to share, sync WSL `~/.codex` with `%USERPROFILE%\.codex` or set `export CODEX_HOME=/mnt/c/Users/<windows-user>/.codex` in the WSL shell profile (`~/.bashrc` / `~/.zshrc`). See also [WSL](../security-automation/windows-wsl.md).
 - Opening a project from `\\wsl$\...` with the Windows-native agent is unreliable — prefer storing the project on the native Windows drive and accessing it from WSL via `/mnt/<drive>/...`.
+- Source: https://learn.chatgpt.com/docs/windows/windows-app (retrieved 2026-10).
 
 ## Related
 

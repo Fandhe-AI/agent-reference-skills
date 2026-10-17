@@ -26,6 +26,7 @@ Open ChatGPT on the web, mobile, or in the desktop app and sign in; or run `code
 - Next steps: configure cloud environments, internet access (Connect to services), environment variables and network secrets, saved state (Reuse and update saved state), and ChatGPT in Slack (see `../environments/cloud-environments.md` and `../third-party/slack.md`).
 - From the CLI, `codex cloud` starts a task from your terminal, or lists recent cloud chats and checks their status.
 - Legacy flow: the earlier environment-settings / secrets wording (chatgpt.com/codex/settings/environments) is the "Codex Cloud (Legacy)" experience, documented in `../environments/cloud-environment.md`; legacy internet access settings are in [cloud-internet-access.md](./cloud-internet-access.md).
+- Source: https://learn.chatgpt.com/docs/cloud (retrieved 2026-10).
 
 ## Related
 

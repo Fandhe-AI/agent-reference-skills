@@ -34,6 +34,7 @@ Install links: Visual Studio Code, Cursor, and Windsurf (`openai.chatgpt` extens
 - The IDE extension can reference open files, selections, and recent chats directly from the composer as editor context.
 - Longer tasks can be delegated to Codex cloud from the same editor workflow and the chat stays available when you return to review the result.
 - IDE-specific keyboard shortcuts/commands and settings (`chatgpt.*` keys) are documented on the separate pages `../commands/ide-commands.md`, `../commands/ide-slash-commands.md`, and `../commands/ide-settings.md`.
+- Source: https://learn.chatgpt.com/docs/codex/ide (retrieved 2026-10).
 
 ## Related
 

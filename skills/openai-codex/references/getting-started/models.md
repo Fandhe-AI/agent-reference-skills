@@ -50,6 +50,7 @@ Retired / deprecated models:
 - `gpt-5.4` / `gpt-5.4-mini`: in Enterprise and Edu, an administrator must enable Luna first. The OpenAI API and Codex authenticated with your own API key aren't affected.
 - Custom model provider or gateway: use a compatible Responses API endpoint. Current Codex releases don't support `wire_api = "chat"` or a Chat Completions-only endpoint.
 - With API-key authentication, model availability follows your API organization and project; GPT-5.5 remains available through the OpenAI API and in API-key Codex sessions.
+- Source: https://learn.chatgpt.com/docs/models (retrieved 2026-10).
 
 ### Reasoning effort
 

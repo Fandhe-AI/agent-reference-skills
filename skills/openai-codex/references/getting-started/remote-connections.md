@@ -40,6 +40,7 @@ ssh devbox   # confirm connectivity before adding the host in Settings > Connect
 - Uses SSH to start/manage the remote Codex app server — don't expose app-server transports directly on a shared or public network; use a VPN/mesh tool to reach a remote machine outside the current network.
 - Signing out of ChatGPT turns off Remote Control but keeps existing device pairings; sign back in and re-enable it to restore the connection.
 - Workspace admins may need to enable Remote Control access before a user can connect from their phone.
+- Source: https://learn.chatgpt.com/docs/remote-connections (retrieved 2026-10).
 
 ## Related
 

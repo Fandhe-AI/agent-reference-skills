@@ -65,6 +65,7 @@ codex completion             # generate shell completions
 - `codex exec` runs Codex non-interactively for scripts and CI — the flag/option reference for automation belongs to a different scope (see the automation-focused reference); this page covers only the interactive CLI entry point.
 - Codex CLI can delegate work to Codex cloud (`codex cloud`) and browse/apply results from the terminal.
 - Full command/flag/slash-command reference and IDE/config surfaces are documented on separate pages outside this category.
+- Source: https://learn.chatgpt.com/docs/codex/cli (retrieved 2026-10).
 
 ## Related
 

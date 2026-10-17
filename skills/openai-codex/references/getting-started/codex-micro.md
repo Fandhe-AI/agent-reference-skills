@@ -30,6 +30,7 @@ Press the rear button once to turn the device on, connect via USB-C or Bluetooth
 - macOS requires granting **Input Monitoring** to ChatGPT (System Settings > Privacy & Security > Input Monitoring) for key presses to register.
 - Mic key uses the host computer's microphone; the device has no microphone of its own.
 - Support for Bluetooth/cable/power issues comes from Work Louder (`hello@worklouder.cc`), not OpenAI Support.
+- Source: https://learn.chatgpt.com/docs/features/codex-micro (retrieved 2026-10).
 
 ## Related
 
