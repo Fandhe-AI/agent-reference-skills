@@ -1,5 +1,3 @@
-> OpenAI Codex (learn.chatgpt.com) のドキュメント。
-
 # CLI customization
 
 Terminal-specific options for how interactive Codex CLI sessions look and how you enter commands and prompts: syntax-highlight themes, shell completions, and an external prompt editor.
@@ -28,7 +26,9 @@ eval "$(codex completion zsh)"
 ## Notes
 
 - If the Z shell reports `command not found: compdef`, run `autoload -Uz compinit && compinit` before `eval "$(codex completion zsh)"`.
+- The TUI syntax-highlights fenced Markdown code blocks and file diffs. Load completions from your shell configuration, restart the shell, type `codex`, and press Tab to verify.
 - For the full interactive keyboard shortcut and command/option list, see the CLI reference page (`/docs/developer-commands`).
+- Source: https://learn.chatgpt.com/docs/cli-customization (retrieved 2026-10).
 
 ## Related
 

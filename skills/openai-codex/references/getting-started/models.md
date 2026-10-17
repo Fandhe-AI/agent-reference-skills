@@ -1,5 +1,3 @@
-> OpenAI Codex (learn.chatgpt.com) のドキュメント.
-
 # Models
 
 Meet the AI models that power ChatGPT Work and Codex, and how to choose between them across the desktop app, ChatGPT Work on the web, Codex CLI, and the IDE extension.
@@ -8,39 +6,61 @@ Meet the AI models that power ChatGPT Work and Codex, and how to choose between 
 
 ```bash
 # Choose a model / reasoning effort for a CLI run
-codex --model gpt-5.6
-codex exec -m gpt-5.6 "Review the current changes"
+codex --model gpt-6.1-sol
+codex exec -m gpt-6.1-sol "Review the current changes"
 ```
 
-In an interactive CLI session, use `/model` to switch models or adjust reasoning effort. In the desktop app, ChatGPT Work on the web, and the IDE extension, use the model/reasoning control beneath the composer.
+In an interactive CLI session, use `/model` to switch models or adjust reasoning effort. In the desktop app, ChatGPT Work on the web, and the IDE extension, use the model and reasoning control beneath the composer.
 
 To set a default model for the desktop app, CLI, and IDE extension (they share one `config.toml`):
 
 ```toml
-model = "gpt-5.6"
+model = "gpt-6.1-sol"
 ```
 
 ## Options / Props
 
-| Name | Capability | Speed | Desktop app | Web | CLI | IDE extension | Cloud |
-|------|-----------|-------|-------------|-----|-----|----------------|-------|
-| `gpt-5.6-sol` | 5/5 | 2/5 | Yes | Yes | Yes | Yes | Yes |
-| `gpt-5.6-terra` | 4/5 | 3/5 | Yes | Yes | Yes | Yes | No |
-| `gpt-5.6-luna` | 3/5 | 4/5 | Yes | Yes | Yes | Yes | No |
-| `gpt-5.3-codex-spark` | 2/5 | 5/5 | Yes | No | Yes | Yes | No |
-| `gpt-5.5` (previous gen) | 4/5 | 3/5 | Yes | Yes | Yes | Yes | No |
-| `gpt-5.4` (deprecated) | 3/5 | 3/5 | Yes | Yes | Yes | Yes | No |
-| `gpt-5.4-mini` (deprecated) | 2/5 | 4/5 | Yes | Yes | Yes | Yes | No |
+Recommended models. Capability and Speed are out of 5 (the number of icons on the official model cards).
+
+| Name | Capability | Speed | Desktop app | Web | CLI | IDE extension | Credits | API |
+|------|-----------|-------|-------------|-----|-----|----------------|---------|-----|
+| `gpt-6-astra` (most capable model for complex work across code, apps, and research) | 5 | 2 | Yes | Yes | Yes | Yes | Yes | Yes |
+| `gpt-6.1-sol` (near-Astra performance at a lower cost; repeated, long-running work) | 5 | 3 | Yes (Work and Codex) | Yes (ChatGPT Work) | Yes | Yes | Yes | Yes |
+| `gpt-6-luna` (most efficient; focused, high-volume tasks) | 3 | 4 | Yes (Work and Codex) | Yes (ChatGPT Work) | Yes | Yes | Yes | Yes |
+
+Retired / deprecated models:
+
+| Name | Status | Replacement |
+|------|--------|-------------|
+| `gpt-5.5` | Retires from Codex with ChatGPT sign-in on 2026-10-14, noon PDT (19:00 UTC) | Paid plans: `gpt-6.1-sol`; Free and Go: `gpt-6-luna` |
+| `gpt-5.4` | Retired 2026-08-31 | `gpt-6-sol` |
+| `gpt-5.4-mini` | Retired 2026-08-31 | `gpt-6-luna` |
+| `gpt-5.3-codex-spark` | Retired 2026-09-14 | An available model |
+| `gpt-5.2`, `gpt-5.3-codex` | Already deprecated (ChatGPT sign-in) | An available model |
 
 ## Notes
 
-- Recommended default is **Sol** (`gpt-5.6-sol`) for complex, open-ended work; **Terra** for pragmatic everyday work; **Luna** for clear, repeatable/high-volume tasks.
-- Reasoning effort levels: Light/Low (quick well-scoped tasks) -> Medium (balanced) -> High/Extra High (difficult, multi-step work). There is no exact mapping from GPT-5.5 to GPT-5.6 reasoning efforts.
-- **Max** gives the selected model more time on a single task. **Ultra** uses [subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents) to parallelize a divisible task; enable via Settings > Configuration > "Ultra in model picker slider" if not shown by default.
-- `gpt-5.4` and `gpt-5.4-mini` retire from Codex (ChatGPT sign-in) on August 31, 2026 — replace with `gpt-5.6-terra` and `gpt-5.6-luna` respectively in saved configs, custom agents, and scheduled tasks. `gpt-5.2` and `gpt-5.3-codex` are already deprecated. The OpenAI API and Codex authenticated with your own API key are unaffected.
-- Codex also supports any model/provider compatible with the Chat Completions or Responses APIs; Chat Completions support is deprecated and will be removed in a future release.
-- Currently you cannot change the default model for Codex cloud chats.
-- `subagents` (referenced by Ultra mode) belongs to a different scope's reference page, not this category.
+- Recommended: use GPT-6.1 Sol when available to your account and client for complex coding and agentic workflows; Luna for focused, repeatable tasks; Astra when a task needs the strongest capability across steps and tools.
+- In ChatGPT, GPT-6.1 Sol, GPT-6 Sol, and GPT-6 Luna are available in Work and Codex. They aren't available in Chat.
+- GPT-5.6 Sol, GPT-5.6 Terra, and GPT-5.6 Luna remain available during the rollout. Selecting a new model doesn't change workspace permissions or grant access to it.
+- `gpt-6-sol` has no model card on the page; it appears only as the replacement for `gpt-5.4`.
+- GPT-6.1 Sol launch rollout: Plus, Pro, Business, Enterprise, and Edu in Codex in the desktop app and CLI, and ChatGPT Work on the web and mobile. Enterprise and Edu keep it off by default until an administrator enables it. Free and Go are not included at launch.
+- Standard and Fast modes are available where supported. Ultrafast is available on Pro $500 and eligible Enterprise and Edu plans (see speed.md).
+- GPT-5.5 retirement: the OpenAI API and Codex sessions authenticated with an API key aren't affected. Replace `gpt-5.5` in workspace defaults, saved model settings, managed configurations, custom agents, scheduled tasks, and scripts that select a model.
+- `gpt-5.4` / `gpt-5.4-mini`: in Enterprise and Edu, an administrator must enable Luna first. The OpenAI API and Codex authenticated with your own API key aren't affected.
+- Custom model provider or gateway: use a compatible Responses API endpoint. Current Codex releases don't support `wire_api = "chat"` or a Chat Completions-only endpoint.
+- With API-key authentication, model availability follows your API organization and project; GPT-5.5 remains available through the OpenAI API and in API-key Codex sessions.
+- Source: https://learn.chatgpt.com/docs/models (retrieved 2026-10).
+
+### Reasoning effort
+
+- For GPT-6.1 Sol, start with the reasoning effort available by default in your client. Start with **High** for Luna or **Light** for Astra. In configuration, Astra's Light setting is `low`.
+- **Light** (desktop app, ChatGPT Work on the web, IDE extension) or **Low** (CLI) suits quick, well-scoped tasks. **Medium** balances speed and depth. **High** and **Extra High** suit difficult work with multiple steps, sources, or tradeoffs.
+- Reasoning efforts don't map exactly between model generations.
+- **Max** gives the selected model more time to reason about a single task. **Ultra** uses subagents to handle separate parts of a complex task in parallel. Most tasks do not need Max or Ultra.
+- GPT-6 Luna supports reasoning efforts up to **Max**, but not **Ultra**.
+- In the CLI, use `/model`, choose a model, then select **More reasoning…** to see its supported Max or Ultra options.
+- If a model supports Ultra but it doesn't appear in the desktop app's model slider, go to **Settings** > **Configuration**, then turn on **Ultra in model picker slider**.
 
 ## Related
 
