@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/incremental.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/incremental.rs
 ---
 
 # incremental
@@ -86,7 +86,8 @@ pub struct BoundFileIndexInput<'a> {
 
 - 公開関数 `index_file` / `index_file_batch` は `pub(crate)` のためクレート外非公開（docs.rs source 実測）。`sql/exec.rs::execute_file_insert` が唯一の入口。
 - `index_file` は内部的に副作用ゼロ区間の `chunk_phase`（チャンク化〜総バイト数上限判定まで）と、外部 I/O・write トランザクションを含む `embed_and_write_phase`（埋め込み〜置換書き込み）の 2 フェーズへ分割されている（TASK-122・INDEX-4）。`index_file_batch` はこの分割を利用し、バッチ内の全ファイルの `chunk_phase` を先に完走させてから全判定通過時のみ `embed_and_write_phase` を実行する。
-- 同一パス再送時の置換セマンティクスは TASK-123 の決定に従う（`docs/design/resend-semantics.md`、`https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/resend-semantics.md`）。
+- 同一パス再送時の置換セマンティクスは TASK-123 の決定に従う（`docs/design/resend-semantics.md`、`https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/dc888f6ea146d3078153d64a6848f5c8cf044431/docs/design/resend-semantics.md`）。
+- 0.2.0 の追加: 埋め込みを write トランザクションの外で行うのは autocommit 経路（`index_file_batch` を含む）の話で、明示トランザクション内（`WriteTarget::InTxn`。Issue #1353）では `BEGIN` の時点で単一ライタを既に保持しており、`max_duration` の範囲内で埋め込みを行う。文の途中で期限を超えても、次の要求の期限解放と `COMMIT` 時の期限検査が abort させるため正しさは崩れない（モジュール doc comment）。pub 項目（定数・`IncrementalConfig` / `IndexTiming` / `IndexOutcome` / `IncrementalError` / `BoundFileIndexInput`）のシグネチャは 0.1.0 と同一。
 
 ## Related
 

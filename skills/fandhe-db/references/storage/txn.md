@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/txn.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/txn.rs
 ---
 
 # txn
@@ -55,7 +55,7 @@ impl ReadSnapshot {
 
 ```rust,ignore
 pub struct WriteTxn {
-    txn: redb::WriteTransaction,
+    txn: crate::storage::GatedWriteTxn,
     has_writes: bool,
 }
 
@@ -83,7 +83,7 @@ commit・abort のどちらも呼ばずに drop した場合、内部の `redb::
 
 ```rust,ignore
 pub struct BatchWriteTxn {
-    txn: redb::WriteTransaction,
+    txn: crate::storage::GatedWriteTxn,
     pending_row_count: u64,
     has_writes: bool,
 }
@@ -115,7 +115,8 @@ impl BatchWriteTxn {
 
 - `WriteTxn`・`BatchWriteTxn` は commit 成功を choke point とする世代管理・応答一意性保証（TASK-96・RECOVER-5）と統合されている（`commit_write_txn_guarded` 経由）。詳細は本カテゴリ `recovery.md` の `commit_boundary` を参照。
 - `BatchWriteTxn` の row_count 契約は 5 件の codex レビュー指摘（PR #129）を経て確定した設計であり、`put`/`log_batch`/`commit` いずれも公開 API だけでは不変条件を破れないよう構成されている。
-- 型分離の経緯・適用範囲の検討は `docs/design/batch-ledger-scope.md`（`https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/batch-ledger-scope.md`）を出典とする。
+- 型分離の経緯・適用範囲の検討は `docs/design/batch-ledger-scope.md`（`https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/dc888f6ea146d3078153d64a6848f5c8cf044431/docs/design/batch-ledger-scope.md`）を出典とする。
+- Migration (0.1.0 → 0.2.0): `WriteTxn` / `BatchWriteTxn` の内部フィールド `txn` の型が `redb::WriteTransaction` から `crate::storage::GatedWriteTxn` に変わった（非公開フィールドで公開シグネチャは不変）。`begin_write` / `begin_batch_write` の排他ロック待ちは `WriteLockTimeout` / `WriteTxnHeldByCurrentSession` 系のエラーと連動する（`storage.md` 参照。本ファイルの設計メモにはなおタイムアウトなしの旨があり、0.2.0 では `Storage::with_write_lock_wait` が追加されている）。`ReadSnapshot::raw_txn` は `pub(crate)` で追加（`catalog` / `constraint` が `user_rows/{table}`・`user_uniq/{table}` を読み取り専用で開くため）。
 - Distinct from `mssql` / `drizzle` / `upstash` / `stripe` transactions — this is redb's single-writer, in-process embedded transaction inside the engine crate, not a client-server SQL transaction or a payment/API transaction.
 
 ## Related

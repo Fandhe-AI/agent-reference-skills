@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/recovery.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/recovery.rs
 ---
 
 # recovery
@@ -15,6 +15,9 @@ pub mod fail_fast;
 pub mod ledger;
 pub mod panic_hook;
 pub mod required_op_id;
+pub mod stderr_log;
+// 0.2.0 で追加。#[allow(dead_code)] 付きの crate 内部モジュール（分割実行 DML のジョブ状態の永続化層）
+pub(crate) mod partitioned_job;
 ```
 
 ### recovery/commit_boundary
@@ -95,6 +98,33 @@ impl EmergencyResponseRegistration {
 pub fn install_panic_hook() { /* ... */ }
 ```
 
+### recovery/stderr_log
+
+`fail_fast`（RECOVER-8）の例外として、診断用 stderr 出力の書き込み失敗（読み手が閉じた後の `EPIPE` 等）を無視するヘルパ（Issue #1081、判断の記録: `docs/design/stderr-log-write-failure.md`）。`eprintln!` は書き込み失敗で panic し、その panic が `panic_hook`・`fail_fast` のフックを経て `std::process::abort()` まで進むため、ログの受け手が閉じただけでプロセス全体が落ちる。本モジュールの範囲は診断ログの書き込みそのものに限り、`fail_fast` 本体の abort 契約と `commit_boundary` の abort 条件（RECOVER-5）は変えない。panic は一切捕捉しない。
+
+```rust,ignore
+/// 診断用 stderr への 1 行書き込み。書き込みが失敗しても（EPIPE に限らず
+/// io::ErrorKind を問わず）プロセスを継続し、エラーは握りつぶす。
+pub fn write_line(args: std::fmt::Arguments<'_>) {
+    let mut err = std::io::stderr().lock();
+    let _ = writeln!(err, "{args}");
+}
+
+/// eprintln! と同じ書式引数を受け付ける、書き込み失敗を無視する診断ログマクロ。
+/// #[macro_export] により crate root に置かれ、wire-server からは
+/// engine::log_stderr!(...) として呼ぶ。
+#[macro_export]
+macro_rules! log_stderr {
+    ($($arg:tt)*) => {
+        $crate::recovery::stderr_log::write_line(::core::format_args!($($arg)*))
+    };
+}
+```
+
+### recovery/partitioned_job（crate 内部）
+
+分割実行 DML（チャンクごとに commit する非原子の述語形 `UPDATE`／`DELETE`）のジョブ状態・再開位置の永続化と、プロセス内の実行中ジョブ登録簿（Issue #1127。ADR `docs/design/partitioned-dml.md`・RECOVER-11）。`pub(crate)` のためクレート外非公開。永続化する状態は `JobRecord` の 3 状態（`Running`・`Cancelled`・`Completed`）のみで、照会時の見かけの状態（実行中／中断）は `derive_status` が「`Running` 記録かつ `JobRegistry` に登録あり＝実行中、登録なし＝中断」と導出する。再起動後は中断とみなし自動再開しない（ADR §9.2）。公開側の SQL・NoSQL 表層は `sql-execution/partitioned` と `nosql-surface/partitioned-dml` を参照。
+
 ### recovery/required_op_id
 
 TASK-92（RECOVER-1・ERR-2・SQL-10）。`operation_id` 必須化ガード。呼び出し元は `sql::allowlist::validate_insert`・`EngineCore::insert_row`/`update_row`/`delete_row`。台帳への永続化・重複拒否・内容不一致は本モジュールの管轄外。
@@ -135,7 +165,8 @@ impl LedgerMode {
 - `MissingOperationId` の `Display`/`Debug` は固定文言のみを返す設計（テナント間の情報漏洩防止、`.claude/rules/security.md` P0 相当の方針が rustdoc に明記されている）。
 - `ledger.rs` の `record_in_txn`・`delete_table_in_txn`・`contains_in_read_txn`・`last_operation_in_read_txn` および `LedgerWrite`・`RecordOutcome`・`LedgerRecordError`・`LastOperationRaw` は `pub(crate)` のため未掲載（クレート外非公開）。
 - `commit_boundary.rs` の `PostCommitResult`・`PostCommitPanicGuard`・関連関数群は `pub(crate)` のため未掲載。
-- 出典 ADR: `ingest-write-path`（`https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/ingest-write-path.md`）・`crash-tolerance-reverification`（同 `crash-tolerance-reverification.md`）が recovery 系の設計文脈を扱うが、本ページの記述はいずれも公開ソースの rustdoc から直接確認できる範囲のみで、ADR固有の追加事実は引用していない。
+- 出典 ADR: `ingest-write-path`（`https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/dc888f6ea146d3078153d64a6848f5c8cf044431/docs/design/ingest-write-path.md`）・`crash-tolerance-reverification`（同 `crash-tolerance-reverification.md`）が recovery 系の設計文脈を扱うが、本ページの記述はいずれも公開ソースの rustdoc から直接確認できる範囲のみで、ADR固有の追加事実は引用していない。
+- 0.2.0 の追加: `stderr_log`（`write_line` と `log_stderr!` マクロ。ADR `stderr-log-write-failure.md`）、crate 内部の `partitioned_job`（ADR `partitioned-dml.md`）。`commit_boundary` / `fail_fast` / `ledger` / `panic_hook` / `required_op_id` の pub 項目（`ResponseBoundaryGuard::new` / `install` / `LedgerLookup` / `LastOperationLookup` / `EmergencyResponseRegistration::register` / `install_panic_hook` / `LedgerMode` / `MissingOperationId`）は 0.2.0 のソースでもシグネチャが同一であることを確認した。
 - private spec（`docs/spec/05-tasks.md` TASK-92〜101、`docs/spec/04-behavior/recovery.md` RECOVER-1〜10）への参照 ID が rustdoc 中に多数出現するが、spec 本体は非公開のため個々の behavior ID の定義内容は未記載（ID の存在のみ rustdoc から転記）。
 
 ## Related
