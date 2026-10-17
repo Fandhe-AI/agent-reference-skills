@@ -89,7 +89,7 @@ export function load(app: Application) {
       ["value1", "Value 1"],
       ["value2", "Value 2"],
     ]),
-    defaultValue: "value1",
+    defaultValue: "Value 1",
   });
 }
 ```
@@ -99,7 +99,7 @@ export function load(app: Application) {
 You can add a resolver that links symbols from third-party libraries:
 
 ```typescript
-import { Application, Converter } from "typedoc";
+import { Application } from "typedoc";
 
 export function load(app: Application) {
   app.converter.addUnknownSymbolResolver((ref, refl, part, symbolId) => {
@@ -163,13 +163,13 @@ export function load(app: Application) {
       if (page.contents) {
         page.contents = page.contents.replace(
           "</body>",
-          '<script src="custom.js"></script></body>'
+          "<!-- generated with a custom plugin --></body>"
         );
       }
     }
   );
 
-  // Generate extra files after rendering completes
+  // Run extra processing after rendering completes
   app.renderer.postRenderAsyncJobs.push(async (output: RendererEvent) => {
     // Additional output processing
   });
@@ -179,7 +179,7 @@ export function load(app: Application) {
 ### typedoc-plugin-mdn-links pattern
 
 ```typescript
-import { Application, Converter, ReferenceType } from "typedoc";
+import { Application } from "typedoc";
 
 export function load(app: Application) {
   app.converter.addUnknownSymbolResolver((ref) => {
@@ -189,14 +189,14 @@ export function load(app: Application) {
     if (!name) return;
 
     // Return a link to MDN documentation
-    const mdnTypes: Record<string, string> = {
-      Array: "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array",
-      Map: "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map",
-      Set: "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set",
-      Promise: "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise",
-    };
+    const mdnTypes = new Map<string, string>([
+      ["Array", "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array"],
+      ["Map", "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map"],
+      ["Set", "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set"],
+      ["Promise", "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise"],
+    ]);
 
-    return mdnTypes[name];
+    return mdnTypes.get(name);
   });
 }
 ```
@@ -236,6 +236,8 @@ export function load(app: Application) {
 | `Application.EVENT_BOOTSTRAP_END` | Fired after plugins have been loaded and options have been read, but before they have been frozen |
 | `Application.EVENT_PROJECT_REVIVE` | Fired after JSON deserialization |
 | `Application.EVENT_VALIDATE_PROJECT` | Fired during validation |
+| `Application.EVENT_GENERATE_OUTPUTS_BEGIN` (v0.28.20+) | Fired immediately before output generation (`generateOutputs`, `generateDocs`, `generateJson`). Receives `ProjectReflection` |
+| `Application.EVENT_GENERATE_OUTPUTS_END` (v0.28.20+) | Fired immediately after output generation (`generateOutputs`, `generateDocs`, `generateJson`). Receives `ProjectReflection`. Not emitted if writing outputs throws (no try/finally in `generateOutputs` / `generateDocs` / `generateJson`) |
 
 ## Notes
 
@@ -243,6 +245,8 @@ export function load(app: Application) {
 - ESM plugins are recommended (CommonJS may emit experimental-feature warnings)
 - `this` in event listeners is bound to `undefined`
 - `Converter.EVENT_RESOLVE` fires individually for each Reflection
+- `EVENT_GENERATE_OUTPUTS_BEGIN` / `END` (v0.28.20+) are intended for plugins that write auxiliary output files, so they can skip output when validation warnings occur with `treatWarningsAsErrors` (per the docstring in src/lib/application.ts)
+- The rendering example does not write or link external asset files; it only appends an HTML comment (not an official example)
 - Custom options are read with `app.options.getValue("option-name")`
 - Plugins are specified via the `plugin` array in `typedoc.json`, or imported directly in a JS config file
 
