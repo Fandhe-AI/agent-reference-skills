@@ -9,7 +9,7 @@ user-invocable: false
 
 # Tailwind CSS
 
-> 分割 PR の途中段階。現在収録済み: references/{backgrounds-borders, core-concepts, effects, filters, flexbox-grid, getting-started, interactivity, layout}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{backgrounds-borders, core-concepts, effects, filters, flexbox-grid, getting-started, interactivity, layout, spacing-sizing, text, transitions-transforms}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 対象バージョン: Tailwind CSS v4.3.3 (npm latest, GitHub tag `tailwindlabs/tailwindcss@v4.3.3`, 2026-07-16 リリース)。
 
@@ -29,6 +29,10 @@ skills/tailwindcss/
       README.md
     flexbox-grid/            # 24 ページ: flex, gap, grid-template-columns, justify-*, align-*, place-* 等
       README.md
+    spacing-sizing/          # 14 ページ: padding, margin, width, height, min/max-*, inline-size, block-size
+      README.md
+    text/                    # 18 ページ: color, text-align, text-decoration-*, text-wrap, white-space, word-break 等
+      README.md
     backgrounds-borders/     # 16 ページ: background-*, border-*, outline-*
       README.md
     effects/                 # 14 ページ: box-shadow, text-shadow, opacity, mask-*, mix-blend-mode
@@ -36,6 +40,8 @@ skills/tailwindcss/
     filters/                 # 20 ページ: filter-*, backdrop-filter-*
       README.md
     interactivity/           # 24 ページ: cursor, scroll-*, scrollbar-*, user-select, fill, stroke, touch-action 等
+      README.md
+    transitions-transforms/  # 17 ページ: transition-*, animation, transform, rotate, scale, translate, perspective 等
       README.md
 ```
 
@@ -56,7 +62,10 @@ skills/tailwindcss/
 | `@source` によるクラス検出、`@utility` / `@apply` / `@variant` 等のディレクティブ、カスタム CSS の追加 | core-concepts | [references/core-concepts/README.md](references/core-concepts/README.md) |
 | display / position / overflow / aspect-ratio / columns / z-index / object-fit | layout | [references/layout/README.md](references/layout/README.md) |
 | flex / grid / gap / justify / align / place / order | flexbox-grid | [references/flexbox-grid/README.md](references/flexbox-grid/README.md) |
+| padding / margin / width / height / min-max / logical size | spacing-sizing | [references/spacing-sizing/README.md](references/spacing-sizing/README.md) |
+| text color / text-align / text-decoration / text-overflow / white-space / word-break / content | text | [references/text/README.md](references/text/README.md) |
 | background / border / border-radius / outline | backgrounds-borders | [references/backgrounds-borders/README.md](references/backgrounds-borders/README.md) |
 | box-shadow / text-shadow / opacity / mask / blend mode | effects | [references/effects/README.md](references/effects/README.md) |
 | filter / backdrop-filter（blur, brightness, grayscale 等） | filters | [references/filters/README.md](references/filters/README.md) |
 | cursor / pointer-events / scroll-snap / scrollbar / user-select / SVG fill・stroke / accent-color | interactivity | [references/interactivity/README.md](references/interactivity/README.md) |
+| transition / animation / transform / rotate / scale / translate / perspective | transitions-transforms | [references/transitions-transforms/README.md](references/transitions-transforms/README.md) |
