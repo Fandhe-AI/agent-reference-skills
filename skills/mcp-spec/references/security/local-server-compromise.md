@@ -24,9 +24,16 @@ Example malicious startup commands that could be embedded in a client configurat
 
 ## Options / Props
 
-Attack vectors: malicious "startup" command in a client configuration; malicious payload inside the server itself; insecure local server left running on localhost reached via DNS rebinding.
-
-Risks: arbitrary code execution (with MCP client privileges), no visibility, command obfuscation, data exfiltration (via compromised JavaScript), data loss.
+| Category | Item | Description |
+|----------|------|-------------|
+| Attack vector | malicious startup command in client configuration | malicious "startup" command in a client configuration |
+| Attack vector | malicious payload inside the server | malicious payload inside the server itself |
+| Attack vector | insecure localhost server reached via DNS rebinding | insecure local server left running on localhost reached via DNS rebinding |
+| Risk | arbitrary code execution | with MCP client privileges |
+| Risk | no visibility | no visibility |
+| Risk | command obfuscation | command obfuscation |
+| Risk | data exfiltration | via compromised JavaScript |
+| Risk | data loss | data loss |
 
 ## Notes
 

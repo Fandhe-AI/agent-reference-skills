@@ -56,6 +56,7 @@ Operations supporting pagination:
 - Invalid cursors **SHOULD** result in an error with code `-32602` (Invalid params).
 - Each page is independently cacheable; see Caching.
 - Every request **MUST** include the required `_meta` fields; the examples omit them for brevity.
+- The cursor values in the two examples above are taken verbatim from the source and do not match; in practice the client MUST send back the exact `nextCursor` string it received, unmodified.
 - Source: tag `2026-07-28` raw (`docs/specification/2026-07-28/server/utilities/pagination.mdx`).
 
 ## Related

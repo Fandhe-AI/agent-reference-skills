@@ -141,6 +141,11 @@ export interface PaginatedRequestParams extends RequestParams {
 }
 
 /** @internal */
+export interface PaginatedRequest extends JSONRPCRequest {
+  params: PaginatedRequestParams;
+}
+
+/** @internal */
 export interface PaginatedResult extends Result {
   /**
    * An opaque token representing the pagination position after the last returned result.
