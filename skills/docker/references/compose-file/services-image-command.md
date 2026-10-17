@@ -20,6 +20,7 @@ services:
   db:
     image: postgres:18
     environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
       POSTGRES_USER: example
       POSTGRES_DB: exampledb
 ```
@@ -47,6 +48,8 @@ services:
 ```
 
 ## Notes
+
+- The official example omits POSTGRES_PASSWORD; it is added here (from a required variable) because the postgres image refuses to initialize without it.
 
 ### `image`
 

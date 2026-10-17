@@ -39,8 +39,8 @@ services:
   backend:
     image: example/database
     volumes:
-      - db-data
-      - metrics
+      - db-data:/var/lib/data
+      - metrics:/var/lib/metrics
 volumes:
   db-data: &default-volume
     driver: default
@@ -67,6 +67,8 @@ services:
 ```
 
 ## Notes
+
+- The official Example 3 lists `db-data` / `metrics` without a container path, which Compose would treat as relative anonymous-volume targets; container paths are added here.
 
 - Anchor resolution takes place before variable interpolation, so variables can't be used to set anchors or aliases.
 - YAML merge (`<<`) only applies to mappings and can't be used with sequences. When fragments are involved, declare environment variables with the `FOO: BAR` mapping syntax; the sequence syntax `- FOO=BAR` is only valid when no fragments are involved.

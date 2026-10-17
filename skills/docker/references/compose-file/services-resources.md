@@ -33,6 +33,8 @@ services:
 
 ## Notes
 
+- The official memswap_limit text refers to the memory limit as `memory`; there is no `memory` service attribute, so this page uses `mem_limit` (or `deploy.resources.limits.memory`).
+
 ### `blkio_config`
 
 Block I/O limits for a service.
@@ -65,16 +67,16 @@ Block I/O limits for a service.
 | `mem_limit` | Limit on memory a container can allocate, as a byte-value string. Must be consistent with `limits.memory` in the Deploy Specification. |
 | `mem_reservation` | Reservation on memory, as a byte-value string. Must be consistent with `reservations.memory` in the Deploy Specification. |
 | `mem_swappiness` | Percentage 0 to 100 for the host kernel to swap out anonymous memory pages. `0` turns off swapping, `100` makes all anonymous pages swappable. Default is platform specific. |
-| `memswap_limit` | Amount of memory the container may swap to disk; only meaningful if `memory` is also set. |
+| `memswap_limit` | Amount of memory the container may swap to disk; only meaningful if `mem_limit` is also set. |
 | `oom_kill_disable` | If set, Compose configures the platform so it won't kill the container on memory starvation. |
 | `oom_score_adj` | Tunes the preference for containers to be killed on memory starvation; within -1000 to 1000. |
 
 `memswap_limit` rules:
 
-- Positive integer: both `memory` and `memswap_limit` must be set; `memswap_limit` is the total of memory and swap. With `memory`="300m" and `memswap_limit`="1g", the container can use 300m of memory and 700m swap.
+- Positive integer: both `mem_limit` and `memswap_limit` must be set; `memswap_limit` is the total of memory and swap. With `mem_limit`="300m" and `memswap_limit`="1g", the container can use 300m of memory and 700m swap.
 - `0`: the setting is ignored (treated as unset).
-- Same value as `memory` (positive): the container has no access to swap.
-- Unset with `memory` set: the container can use as much swap as the `memory` setting if the host has swap (`memory`="300m" gives 600m total).
+- Same value as `mem_limit` (positive): the container has no access to swap.
+- Unset with `mem_limit` set: the container can use as much swap as the `mem_limit` setting if the host has swap (`mem_limit`="300m" gives 600m total).
 - `-1`: unlimited swap, up to the amount available on the host.
 
 ### Other limits

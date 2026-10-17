@@ -20,6 +20,7 @@ services:
   db:
     image: postgres:18
     environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
       POSTGRES_USER: example
       POSTGRES_DB: exampledb
 ```
@@ -41,6 +42,8 @@ Top-level elements documented in this category:
 Service sub-specifications: [build.md](./build.md), [deploy.md](./deploy.md), [develop.md](./develop.md). Cross-cutting rules: [interpolation.md](./interpolation.md), [merge.md](./merge.md), [fragments.md](./fragments.md), [profiles.md](./profiles.md).
 
 ## Notes
+
+- The official example omits POSTGRES_PASSWORD; it is added here (from a required variable) because the postgres image refuses to initialize without it.
 
 - Legacy versions 2.x and 3.x of the Compose file format were merged into the Compose Specification. It is implemented in versions 1.27.0 and above (also known as Compose v2) of the Docker Compose CLI.
 - The Compose Specification on Docker Docs is the Docker Compose implementation. To implement your own version of the Compose Specification, see the Compose Specification repository (`github.com/compose-spec/compose-spec`).

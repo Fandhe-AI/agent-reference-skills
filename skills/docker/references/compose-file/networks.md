@@ -21,6 +21,8 @@ services:
       - backend
   db:
     image: postgres:18
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
     networks:
       - backend
 
@@ -88,6 +90,8 @@ networks:
 ```
 
 ## Notes
+
+- The official example omits POSTGRES_PASSWORD; it is added here (from a required variable) because the postgres image refuses to initialize without it.
 
 - Default network: when a Compose file doesn't declare explicit networks, Compose uses an implicit `default` network; services without explicit `networks` are connected to it. You can customize it:
 

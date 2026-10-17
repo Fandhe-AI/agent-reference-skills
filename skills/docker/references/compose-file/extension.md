@@ -40,7 +40,7 @@ services:
 ```
 
 ```yml
-service:
+services:
   backend:
     deploy:
       placement:
@@ -66,6 +66,8 @@ services:
 ```
 
 ## Notes
+
+- The official example uses the top-level key `service:`; corrected to `services:`.
 
 - Compose uses such keys to enable experimental features, the way browsers add support for custom CSS features.
 - YAML merge only applies to mappings and can't be used with sequences; the sequence syntax `- FOO=BAR` is only valid when no fragments are involved.

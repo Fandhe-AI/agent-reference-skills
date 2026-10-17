@@ -22,9 +22,18 @@ services:
     image: redis
   db:
     image: postgres:18
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
 ```
 
 ## Notes
+
+- The official depends_on / pre_start examples omit a healthcheck on db; one is added here because service_healthy requires it and the postgres image defines none.
+- The official examples omit POSTGRES_PASSWORD; it is added here (from a required variable) because the postgres image refuses to initialize without it.
 
 ### `depends_on`
 
@@ -43,6 +52,8 @@ services:
     image: redis
   db:
     image: postgres:18
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
 ```
 
 Long syntax fields:
@@ -167,6 +178,12 @@ services:
 
   db:
     image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
 
 volumes:
   data:

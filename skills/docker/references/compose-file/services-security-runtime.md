@@ -17,6 +17,9 @@ security_opt:
 
 ## Notes
 
+- The official gMSA example defines `my_credentials_spec` but references `my_credential_spec`; the names are aligned here.
+- The official runtime example writes `command: true`, which YAML parses as a boolean; quoted here as a command list.
+
 ### `cap_add`
 
 Additional container capabilities, as strings.
@@ -120,7 +123,7 @@ services:
       config: my_credential_spec
 
 configs:
-  my_credentials_spec:
+  my_credential_spec:
     file: ./my-credential-spec.json
 ```
 
@@ -135,7 +138,7 @@ Specifies which runtime to use for the service's containers, for example the nam
 ```yml
 web:
   image: busybox:latest
-  command: true
+  command: ["true"]
   runtime: runc
 ```
 

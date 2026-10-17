@@ -22,9 +22,9 @@ $ docker run -d -v hello:/world busybox ls /world
 | `-d`, `--driver` | `local` | Specify volume driver name |
 | `--group` |  | API 1.42+ **Swarm** Cluster Volume group (cluster volumes) |
 | `--label` |  | Set metadata for a volume |
-| `--limit-bytes` |  | API 1.42+ **Swarm** Minimum size of the Cluster Volume in bytes |
+| `--limit-bytes` |  | API 1.42+ **Swarm** Maximum size of the Cluster Volume in bytes |
 | `-o`, `--opt` |  | Set driver specific options |
-| `--required-bytes` |  | API 1.42+ **Swarm** Maximum size of the Cluster Volume in bytes |
+| `--required-bytes` |  | API 1.42+ **Swarm** Minimum size of the Cluster Volume in bytes |
 | `--scope` | `single` | API 1.42+ **Swarm** Cluster Volume access scope (`single`, `multi`) |
 | `--secret` |  | API 1.42+ **Swarm** Cluster Volume secrets |
 | `--sharing` | `none` | API 1.42+ **Swarm** Cluster Volume access sharing (`none`, `readonly`, `onewriter`, `all`) |
@@ -34,6 +34,7 @@ $ docker run -d -v hello:/world busybox ls /world
 
 ## Notes
 
+- The official CLI help text (docker/cli v29.8.2 cli/command/volume/create.go) labels --limit-bytes as Minimum and --required-bytes as Maximum, but the values are passed to the CSI CapacityRange LimitBytes (upper bound) and RequiredBytes (lower bound); the descriptions here follow the actual mapping.
 - Docker doesn't support relative paths for mount points inside the container. Multiple containers can use the same volume.
 - Volume names must be unique among drivers: the same name cannot be used with two different drivers (error: `A volume named "hello" already exists with the "some-other" driver. Choose a different volume name.`). Reusing a name on the same driver reuses the existing volume without error.
 - `-o` / `--opt` options are passed directly to the volume driver; their meaning differs per driver.
