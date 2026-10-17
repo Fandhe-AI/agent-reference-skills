@@ -93,7 +93,9 @@ On Windows the options are more limited, due to the Win32 APIs used:
 
 ### Bookmarks array
 
-`showOpenDialog` and `showSaveDialog` resolve to an object with a `bookmarks` field. This field is an array of Base64 encoded strings that contain the security scoped bookmark data for the saved file. The `securityScopedBookmarks` option must be enabled for this to be present.
+`showOpenDialog` resolves to an object with a `bookmarks` field (an array matching `filePaths`) of Base64 encoded strings that contain the security scoped bookmark data. `showSaveDialog` instead resolves to a single `bookmark` string (see dialog-open-save). The `securityScopedBookmarks` option must be enabled for this to be present.
+
+For `showOpenDialog`:
 
 | Build Type | securityScopedBookmarks boolean | Return Type | Return Value                   |
 |------------|---------------------------------|:-----------:|--------------------------------|
@@ -129,6 +131,7 @@ Main `options` of `dialog.showMessageBox` (see the method above for the full lis
 ## Notes
 
 * The official dialog docs reference `BaseWindow.getCurrentWindow()` for sheet offsets, which does not exist on BaseWindow; use the instance method `win.setSheetOffset()` (see BaseWindow docs).
+* The official dialog docs' Bookmarks array section mentions both `showOpenDialog` and `showSaveDialog`, but `showSaveDialog`'s return value is defined as a singular `bookmark` string; this page scopes the array description to `showOpenDialog`.
 * `dialog.showMessageBox` returning a Promise instead of using a callback is a past breaking change; the `signal` and `textWidth` options were added in later releases.
 * Distinction: these are OS-native message boxes created from the main process by Electron's `dialog` module. Web UI dialog/modal components belong to ark-ui / chakra-ui / fandhe-frontend; native counterparts on other platforms are in android-compose-components, windows-winui-controls and apple-appkit.
 
