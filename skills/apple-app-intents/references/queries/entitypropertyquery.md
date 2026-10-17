@@ -24,8 +24,8 @@ class MyPhoto: AppEntity {
 struct MyPhotoQuery: EntityPropertyQuery {
    static var properties = QueryProperties {
        Property(\.$takenAt) {
-           LessThanMapping { URLQueryItem(name: "takenBefore", value: $0) }
-           GreaterThanMapping { URLQueryItem(name: "takenAfter": value: $0) }
+           LessThanComparator { URLQueryItem(name: "takenBefore", value: $0) }
+           GreaterThanComparator { URLQueryItem(name: "takenAfter", value: $0) }
        }
        Property(\.$tags) {
            ContainsComparator { URLQueryItem(name: "tagsContains", value: $0) }
@@ -38,7 +38,7 @@ struct MyPhotoQuery: EntityPropertyQuery {
        sortedBy: [Sort<MyPhoto>],
        limit: Int?
    ) async throws -> [MyPhoto] {
-       let components = URLComponents()
+       var components = URLComponents()
        components.queryItems = comparators
        let url = components.url(relativeTo: "https://myphotosbackend.com/photos")
 
@@ -70,7 +70,7 @@ struct MyPhotoQuery: EntityPropertyQuery {
 - Provides an `EntityQuery` with the ability to query instances according to their traits as modeled through query properties and corresponding comparators.
 - At runtime, `entities(matching:mode:sortedBy:limit:)` receives an array of `ComparatorMappingType` instances (a type of your choice representing the comparator mappings given by the user) and fetches entities matching them. The `properties` static property contains the set of `EntityQueryProperty` objects the query accepts; for each property's supported `EntityQueryComparator`s you supply a closure that transforms a runtime user-supplied value into a `ComparatorMappingType`.
 - The App Intents runtime invokes the mapping closures for each comparator in the user request, gathers their `ComparatorMappingType` outputs, then invokes `entities`. Use whichever backend suits your app (in-memory lookup, Core Data, remote network call, and so on).
-- The code listing is reproduced verbatim from the official page, including its source quirks: `GreaterThanMapping { ... }` and `LessThanMapping { ... }` are used where the other pages in this skill name `GreaterThanComparator` / `LessThanComparator`, and `URLQueryItem(name: "takenAfter": value: $0)` contains a colon where a comma belongs. Treat it as illustrative, not compilable.
+- The code listing is corrected from the official page, which writes `LessThanMapping` / `GreaterThanMapping` (the API names are `LessThanComparator` / `GreaterThanComparator`), `URLQueryItem(name: "takenAfter": value: $0)` (colon instead of comma), and `let components` (mutated afterwards).
 - Per the `EnumerableEntityQuery` page, use `EntityPropertyQuery` when there may be many thousands of entities or individual entities may become large in memory, so only entities matching the criteria are fetched.
 
 ## Related

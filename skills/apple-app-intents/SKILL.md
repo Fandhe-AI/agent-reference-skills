@@ -10,7 +10,7 @@ user-invocable: false
 
 # Apple App Intents
 
-> 分割 PR の途中段階。現在収録済み: references/{app-schemas, app-shortcuts, data-types, entities, feature-integrations}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{app-schemas, app-shortcuts, data-types, entities, feature-integrations, intent-types, intents, parameters-results, queries, shortcuts-schema-domains}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 Apple の App Intents フレームワーク（アプリの機能とデータを Siri・Shortcuts・Spotlight・Apple Intelligence・Visual Intelligence 等のシステム体験へ公開する Swift API）のリファレンス・サンプル集。
 
@@ -30,12 +30,33 @@ Apple の App Intents フレームワーク（アプリの機能とデータを 
 skills/apple-app-intents/
   SKILL.md
   references/
+    intents/                    # AppIntent 本体・実行制御・依存管理
+      README.md
+      appintent.md
+      appintentsextension.md
+      appintentspackage.md
+      appdependency.md
+      intentmodes.md
+      longrunningintent.md
+    intent-types/               # システム定義の Intent 種別 (OpenIntent / DeleteIntent / URLRepresentableIntent 等)
+      README.md
+      openintent.md
+      customintentmigratedappintent.md
     entities/                   # AppEntity / AppEnum / EntityProperty / DisplayRepresentation
       README.md
       appentity.md
       appenum.md
       entityproperty.md
       indexedentity.md
+    queries/                    # EntityQuery 系・ソート・比較演算子
+      README.md
+      entityquery.md
+      entitypropertyquery.md
+    parameters-results/         # IntentParameter / ParameterSummary / IntentResult / IntentDialog
+      README.md
+      intentparameter.md
+      parametersummary.md
+      intentresult.md
     data-types/                 # IntentFile / IntentPerson / IntentItemCollection / IntentValue 系
       README.md
       intentfile.md
@@ -47,6 +68,9 @@ skills/apple-app-intents/
       README.md
       appintent-schema-macro.md
       app-schema-base-types.md
+      domain-*.md
+    shortcuts-schema-domains/   # Shortcuts 向け schema ドメイン (Books / Browser / Files 等)
+      README.md
       domain-*.md
     feature-integrations/       # Widget / Control / Live Activity / Focus Filter / Workout
       README.md
@@ -66,10 +90,18 @@ skills/apple-app-intents/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
+| AppIntent を宣言し perform() を実装する、実行モード・長時間実行・取り消し・Undo を設定する | intents | [references/intents/README.md](references/intents/README.md) |
+| 依存の登録・注入 (AppDependency)、AppIntentsPackage でターゲット間共有する | intents | [references/intents/README.md](references/intents/README.md) |
+| OpenIntent / DeleteIntent / URLRepresentableIntent 等システム定義の Intent 種別を使う | intent-types | [references/intent-types/README.md](references/intent-types/README.md) |
+| SiriKit カスタム Intent から移行する | intent-types | [references/intent-types/README.md](references/intent-types/README.md) |
 | アプリのデータを AppEntity / AppEnum としてモデル化する | entities | [references/entities/README.md](references/entities/README.md) |
 | DisplayRepresentation、EntityProperty、ComputedProperty、Spotlight 用 IndexedEntity を定義する | entities | [references/entities/README.md](references/entities/README.md) |
+| EntityQuery で Entity を検索・列挙する、ソートや比較演算子を指定する | queries | [references/queries/README.md](references/queries/README.md) |
+| IntentParameter・ParameterSummary・IntentDialog・IntentResult を定義する | parameters-results | [references/parameters-results/README.md](references/parameters-results/README.md) |
+| パラメーター解決 (Resolvers)、確認、ダイナミック選択肢を扱う | parameters-results | [references/parameters-results/README.md](references/parameters-results/README.md) |
 | IntentFile・IntentPerson・IntentItemCollection 等の値型を使う | data-types | [references/data-types/README.md](references/data-types/README.md) |
 | App Shortcuts (AppShortcutsProvider・発話フレーズ) を提供する、SiriTipView を表示する | app-shortcuts | [references/app-shortcuts/README.md](references/app-shortcuts/README.md) |
 | App Schemas で Apple Intelligence・Siri にアプリの機能を公開する | app-schemas | [references/app-schemas/README.md](references/app-schemas/README.md) |
 | メール・写真・メッセージ・メモ等のドメイン別 schema を確認する | app-schemas | [references/app-schemas/README.md](references/app-schemas/README.md) |
+| ブラウザー・ドキュメント・表計算・ホワイトボード等 Shortcuts 向け schema ドメインを確認する | shortcuts-schema-domains | [references/shortcuts-schema-domains/README.md](references/shortcuts-schema-domains/README.md) |
 | Widget / Control / Live Activity / Focus Filter / Workout の Intent を実装する | feature-integrations | [references/feature-integrations/README.md](references/feature-integrations/README.md) |
