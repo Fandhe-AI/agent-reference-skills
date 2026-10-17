@@ -12,6 +12,12 @@ Peer macro applied to a property of a `@Generable` type to describe it in natura
 @attached(peer) macro Guide(description: String)
 ```
 
+Overload with generation guides:
+
+```swift
+@attached(peer) macro Guide<T>(description: String? = nil, _ guides: GenerationGuide<T>...) where T : Generable
+```
+
 Overload with a regular expression:
 
 ```swift
@@ -33,12 +39,14 @@ struct SearchSuggestions {
 | Name | Type | Description |
 | --- | --- | --- |
 | description | String | Required in the first overload. |
-| description | String? | Optional (default `nil`) in the `Regex` overload. |
+| description | String? | Optional (default `nil`) in the `GenerationGuide` and `Regex` overloads. |
+| guides | GenerationGuide<T>... | Variadic unlabeled argument of the `GenerationGuide` overload (`T : Generable`). |
 | guides | Regex<RegexOutput> | Unlabeled argument of the `Regex` overload. |
 
 ## Notes
 
-- Availability (both overloads): iOS 26.0+, iPadOS 26.0+, Mac Catalyst 26.0+, macOS 26.0+, visionOS 26.0+, watchOS 27.0+.
+- Availability (all overloads): iOS 26.0+, iPadOS 26.0+, Mac Catalyst 26.0+, macOS 26.0+, visionOS 26.0+, watchOS 27.0+.
+- The `GenerationGuide` overload is listed under `otherDeclarations` of the same DocC page (`Guide(description:_:)`). The usage example's `.count(4)` is a `GenerationGuide` value, so it resolves to this overload.
 - The macro pages carry no abstract or prose in the source.
 - The `Generable` page advises using `Guide(description:)` only when it improves response quality, because every `Generable` type's schema counts against the context window.
 - Source fetched 2026-10-16 (no version in URL).

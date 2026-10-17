@@ -76,6 +76,16 @@ struct RecipeDynamicProfile: LanguageModelSession.DynamicProfile {
 ```
 
 ```swift
+let session = LanguageModelSession(
+    profile: RecipeDynamicProfile()
+)
+
+let response = try await session.respond(
+    to: "What's a good sourdough recipe?"
+)
+```
+
+```swift
 do {
     let answer = try await session.respond(to: "Find a recipe for tomato soup.")
 } catch let error as LanguageModelSession.ToolCallError {
@@ -97,6 +107,8 @@ do {
 ## Notes
 
 - Tool output can be a string, a `GeneratedContent` object, or any `@Generable` type. The model can call a tool several times in parallel, and `call(arguments:)` may run concurrently with itself or other tools.
-- With `.required`, define an exit condition (throw from `call(arguments:)` or change the mode dynamically with a `LanguageModelSession.DynamicProfile`); the `RecipeDynamicProfile` above is that exit condition, switching to `.allowed` after the first tool call. Otherwise the model keeps calling the tool. `.disallowed` suppresses tool calls for a request.
+- With `.required`, define an exit condition (throw from `call(arguments:)` or change the mode dynamically with a `LanguageModelSession.DynamicProfile`). Otherwise the model keeps calling the tool. `.disallowed` suppresses tool calls for a request.
+- The `.required` call-site snippet on a session created with `tools:` has no exit condition by itself. Call-site `GenerationOptions` override profile and dynamic profile modifiers (see "Apply modifier precedence rules" in composing-dynamic-sessions-with-instructions-and-profiles). To use `RecipeDynamicProfile` as the exit condition (switching to `.allowed` after the first tool call), pass it via `LanguageModelSession(profile:)` and do not specify `toolCallingMode` in `respond`.
+- The `LanguageModelSession(profile:)` snippet is combined from the `init(profile:)` example in the composing-dynamic-sessions article; the official tool-calling snippets are unchanged.
 - When a tool throws, the framework rolls back the transcript to a previously known valid state; `transcriptErrorHandlingPolicy` controls whether it is preserved.
 - `ToolCallingMode` and `DynamicProfile` usage in the article relies on iOS 27 APIs; see the `tools` and `dynamic-profiles` reference categories.
