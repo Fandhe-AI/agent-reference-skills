@@ -20,8 +20,8 @@ biome lint --write --unsafe ./src
 ```
 
 ### CLI オプション
-- `--skip=<GROUP|RULE>`: 特定ルール/グループ除外
-- `--only=<GROUP|RULE>`: 特定ルール/グループのみ実行（例: `--only=correctness/noUnusedVariables`）
+- `--skip=<GROUP|RULE|DOMAIN|PLUGIN>`: 特定ルール/グループ/ドメイン/プラグイン除外
+- `--only=<GROUP|RULE|DOMAIN|PLUGIN>`: 特定ルール/グループ/ドメイン/プラグインのみ実行（例: `--only=correctness/noUnusedVariables`）
 - `--write`: 安全な修正を適用
 
 glob は shell が展開する（Biome は glob 非対応）。`./src/**/*.test.{js,ts}` のような指定は避け、`includes` 設定を使う。

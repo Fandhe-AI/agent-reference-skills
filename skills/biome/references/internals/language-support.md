@@ -44,7 +44,7 @@
 
 `html.experimentalFullSupportEnabled` が false のまま `.svelte` / `.astro` / `.vue` を lint する場合、誤検知を避けるため `overrides` で `style/useConst`・`style/useImportType`・`correctness/noUnusedVariables`・`correctness/noUnusedImports` を off にすることが推奨される。
 
-## Embedded languages support（実験的）
+## 埋め込み言語のサポート（実験的）
 
 JavaScript のテンプレートリテラル内の CSS（`css` / `styled` タグ）と GraphQL（`gql` / `graphql` タグ）をサポート。既定で無効。
 
@@ -56,7 +56,7 @@ JavaScript のテンプレートリテラル内の CSS（`css` / `styled` タグ
 }
 ```
 
-## Formatting with different settings
+## 言語ごとに異なる設定でのフォーマット
 
 複数言語を含むファイル（HTML 系で JavaScript と CSS を含む場合等）で、言語ごとに `indentStyle` 等が異なる設定だと、タブとスペースが混在するリスクがある。公式は GitHub discussion #7754 で議論中。このセクションは古くなる可能性があるため playground で確認すること。
 

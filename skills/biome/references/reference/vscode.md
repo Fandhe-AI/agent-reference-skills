@@ -17,7 +17,7 @@ Visual Studio Marketplace から公式 Biome VS Code 拡張機能をインスト
 | 設定 | デフォルト | 説明 |
 |------|-----------|------|
 | `biome.enabled` | true | LSP セッション作成の制御 |
-| `biome.requireConfiguration` | false | When `true`, registers as formatter / diagnostics provider only if the workspace folder contains a biome.json (`biome.enabled` must also be true at the same scope) |
+| `biome.requireConfiguration` | false | `true` の場合、ワークスペースフォルダーに biome.json がある場合のみフォーマッター / 診断プロバイダーとして登録される（同じスコープで `biome.enabled` も true が必要） |
 | `biome.configurationPath` | null | カスタム設定ファイルパス（Biome v2 のみ有効） |
 | `biome.inlineConfig` | — | インライン設定で上書き（ディスク上の biome.json より優先） |
 | `biome.gotoDefinition` | false | Go-to definition 機能を有効化（LSP） |

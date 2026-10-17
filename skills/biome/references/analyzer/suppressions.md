@@ -54,7 +54,7 @@ f == g;  // 抑制されない
 
 ### プラグイン抑制（Plugin suppressions）
 
-Suppresses diagnostics from linter plugins (GritQL). Use `lint/plugin` for all plugins, or `lint/plugin/<plugin-name>` for a specific one (`<plugin-name>` is the file name without the `.grit` extension).
+リンタープラグイン（GritQL）の診断を抑制する。全プラグインは `lint/plugin`、特定のプラグインは `lint/plugin/<plugin-name>` で指定（`<plugin-name>` は `.grit` 拡張子を除いたファイル名）。
 
 ```javascript
 // biome-ignore lint/plugin/preferObjectSpread: reason

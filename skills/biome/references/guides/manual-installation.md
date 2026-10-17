@@ -56,8 +56,8 @@ pacman -S biome
 公式イメージは `amd64` / `arm64`。タグはメジャー・マイナー・パッチごとに存在: `ghcr.io/biomejs/biome:{major}` / `:{major}.{minor}` / `:{major}.{minor}.{patch}`。作業ディレクトリは `/code`。
 
 ```bash
-docker run -v $(pwd):/code ghcr.io/biomejs/biome check
-docker run -v $(pwd):/code ghcr.io/biomejs/biome check --write
+docker run -v "$(pwd)":/code ghcr.io/biomejs/biome check
+docker run -v "$(pwd)":/code ghcr.io/biomejs/biome check --write
 ```
 
 ### GitHub release
@@ -87,3 +87,4 @@ npm i -D -E @biomejs/biome@latest
 ## Notes
 
 - 公式の `/guides/manual-installation` は `/installation/install-biome` へリダイレクトされる
+- パスに空白を含む場合に備えて `$(pwd)` をクォートする（`"$(pwd)"`）

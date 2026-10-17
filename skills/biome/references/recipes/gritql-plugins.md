@@ -1,10 +1,8 @@
 # GritQL Plugin Recipes
 
-## Overview
+## Signature / Usage
 
 Practical GritQL plugin examples. Save each example in a `.grit` file and register it in the `plugins` field of `biome.json`. For an introduction to the syntax, see Linter Plugins and the GritQL reference.
-
-## Registration
 
 ```json
 {
@@ -12,9 +10,11 @@ Practical GritQL plugin examples. Save each example in a `.grit` file and regist
 }
 ```
 
-## JavaScript / TypeScript
+## Recipes
 
-### Ban `==` (except comparisons against `null`)
+### JavaScript / TypeScript
+
+#### Ban `==` (except comparisons against `null`)
 
 `where` adds conditions. `<:` is the match operator and `not` negates. Comma-separated conditions must all be true for a match.
 
@@ -30,7 +30,7 @@ Practical GritQL plugin examples. Save each example in a `.grit` file and regist
 }
 ```
 
-### Ban `forEach`
+#### Ban `forEach`
 
 The spread metavariable `$...` matches zero or more arguments (without binding them). `as $call` binds the whole node.
 
@@ -43,7 +43,7 @@ The spread metavariable `$...` matches zero or more arguments (without binding t
 }
 ```
 
-### Ban specific imports
+#### Ban specific imports
 
 `or` matches if any child pattern matches. `$_` is an anonymous metavariable that creates no binding.
 
@@ -72,7 +72,7 @@ or {
 }
 ```
 
-### Ban `new Date()` calls with arguments
+#### Ban `new Date()` calls with arguments
 
 `$...` alone matches zero or more arguments; `$first, $...` requires at least one. `new Date()` is allowed, while `new Date("2024-01-15")` and similar are reported.
 
@@ -85,7 +85,7 @@ or {
 }
 ```
 
-### Ban `eval()` / `Function()`
+#### Ban `eval()` / `Function()`
 
 Use the same `as $match` variable name in each arm of the top-level `or` so the arms share one `where`.
 
@@ -101,7 +101,7 @@ or {
 }
 ```
 
-### Ban nested ternary expressions
+#### Ban nested ternary expressions
 
 Match Biome CST nodes (`PascalCase`, e.g. `JsConditionalExpression`) directly. `contains` searches the whole subtree.
 
@@ -118,7 +118,7 @@ JsConditionalExpression() as $outer where {
 }
 ```
 
-### Limit the number of function parameters
+#### Limit the number of function parameters
 
 Use `JsParameters()` with a regex to detect three or more commas (four or more parameters).
 
@@ -136,7 +136,7 @@ JsParameters() as $params where {
 }
 ```
 
-### Ban empty catch blocks
+#### Ban empty catch blocks
 
 CST nodes can be nested by specifying fields.
 
@@ -152,7 +152,7 @@ JsCatchClause(body = JsBlockStatement(statements = [])) as $catch where {
 }
 ```
 
-### Ban `any` type annotations
+#### Ban `any` type annotations
 
 `TsAnyType` is a TypeScript-specific node.
 
@@ -169,7 +169,7 @@ TsAnyType() as $any where {
 }
 ```
 
-### Prefer `const` over `let`
+#### Prefer `const` over `let`
 
 `let` is a keyword, not a node, so narrow `JsVariableStatement()` with a regex.
 
@@ -187,7 +187,7 @@ JsVariableStatement() as $stmt where {
 }
 ```
 
-### Ban `dangerouslySetInnerHTML`
+#### Ban `dangerouslySetInnerHTML`
 
 Snippet patterns also work inside JSX.
 
@@ -200,7 +200,7 @@ Snippet patterns also work inside JSX.
 }
 ```
 
-### Ban the inline `style` prop
+#### Ban the inline `style` prop
 
 ```grit
 `style=$value` as $attr where {
@@ -212,9 +212,9 @@ Snippet patterns also work inside JSX.
 }
 ```
 
-## CSS
+### CSS
 
-### Ban `!important`
+#### Ban `!important`
 
 `engine biome(1.0)` and `language css` at the top of the `.grit` file switch to the CSS syntax tree.
 
@@ -231,7 +231,7 @@ CssDeclarationWithSemicolon() as $decl where {
 }
 ```
 
-### Ban hardcoded colors
+#### Ban hardcoded colors
 
 Regexes use the `r"..."` syntax and match against the node's text.
 
@@ -267,7 +267,7 @@ language css;
 }
 ```
 
-### Ban specific properties
+#### Ban specific properties
 
 ```grit
 language css;
@@ -283,9 +283,9 @@ or {
 }
 ```
 
-## JSON
+### JSON
 
-### Key naming convention (camelCase)
+#### Key naming convention (camelCase)
 
 Use `language json` and `engine biome(1.0)`. Snippets with metavariables are not available for JSON, so use the CST node `JsonMemberName()`.
 
@@ -303,9 +303,9 @@ JsonMemberName() as $name where {
 }
 ```
 
-## Advanced Patterns
+### Advanced Patterns
 
-### Combine multiple rules in one file
+#### Combine multiple rules in one file
 
 Give each arm of the top-level `or` its own `where`, severity, and message.
 
@@ -334,13 +334,13 @@ or {
 }
 ```
 
-## Finding CST node names
+### Finding CST node names
 
 1. Open the Biome Playground and paste the target code.
 2. Check the node name on the **Syntax** tab of the output panel.
 3. Use it in a pattern as `NodeName()` or `NodeName(field = ...)`.
 
-### Common JavaScript / TypeScript nodes
+#### Common JavaScript / TypeScript nodes
 
 | Node Name | Matches |
 | --- | --- |
@@ -364,14 +364,14 @@ or {
 | `JsxSelfClosingElement` | `<img />` |
 | `JsxAttribute` | `className="test"`, `disabled` |
 
-### CSS
+#### CSS nodes
 
 | Node Name | Matches |
 | --- | --- |
 | `CssDeclarationWithSemicolon` | `property: value;` |
 | `CssComplexSelector` | `div > .class` |
 
-### Header directives
+#### Header directives
 
 ```grit
 engine biome(1.0)

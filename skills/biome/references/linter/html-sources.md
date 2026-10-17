@@ -1,8 +1,24 @@
 # HTML Rule Sources
 
-Biome rules for HTML (including Vue / Svelte / Astro templates) mapped to the rules of other tools.
+## Signature / Usage
 
-## Biome exclusive rules
+Biome rules for HTML (including Vue / Svelte / Astro templates) mapped to the rules of other tools. Enable a rule under `linter.rules` in `biome.json`:
+
+```json
+{
+  "linter": {
+    "rules": {
+      "a11y": {
+        "useAltText": "error"
+      }
+    }
+  }
+}
+```
+
+## Sources by tool
+
+### Biome exclusive rules
 
 ```text
 noExcessiveLinesPerFile
@@ -15,7 +31,7 @@ useIframeSandbox
 useVueVapor
 ```
 
-## Rules from @eslint-react/eslint-plugin
+### Rules from @eslint-react/eslint-plugin
 
 | @eslint-react/eslint-plugin rule | Biome rule |
 |-----------------------------------|-------------|
@@ -23,7 +39,7 @@ useVueVapor
 | dom-no-script-url | noScriptUrl |
 | dom-no-unsafe-iframe-sandbox | noUnsafeIframeSandbox (inspired) |
 
-## Rules from @html-eslint/eslint-plugin
+### Rules from @html-eslint/eslint-plugin
 
 | @html-eslint/eslint-plugin rule | Biome rule |
 |----------------------------------|-------------|
@@ -43,25 +59,25 @@ useVueVapor
 | require-lang | useHtmlLang |
 | require-li-container | noMisplacedListElements (inspired) |
 
-## Rules from @next/eslint-plugin-next
+### Rules from @next/eslint-plugin-next
 
 | @next/eslint-plugin-next rule | Biome rule |
 |-------------------------------|-------------|
 | no-sync-scripts | noSyncScripts |
 
-## Rules from @shadcn/lint
+### Rules from @shadcn/lint
 
 | @shadcn/lint rule | Biome rule |
 |--------------------|-------------|
 | no-raw-colors | noTailwindRawColors (inspired) |
 
-## Rules from ESLint
+### Rules from ESLint
 
 | ESLint rule | Biome rule |
 |--------------|-------------|
 | no-script-url | noScriptUrl |
 
-## Rules from eslint-plugin-astro
+### Rules from eslint-plugin-astro
 
 | eslint-plugin-astro rule | Biome rule |
 |--------------------------|-------------|
@@ -69,13 +85,13 @@ useVueVapor
 | no-conflict-set-directives | noAstroConflictingSetDirectives |
 | no-set-html-directive | noAstroSetHtmlDirective |
 
-## Rules from eslint-plugin-better-tailwindcss
+### Rules from eslint-plugin-better-tailwindcss
 
 | eslint-plugin-better-tailwindcss rule | Biome rule |
 |----------------------------------------|-------------|
 | enforce-shorthand-classes | useTailwindShorthandClasses (inspired) |
 
-## Rules from eslint-plugin-jsx-a11y
+### Rules from eslint-plugin-jsx-a11y
 
 | eslint-plugin-jsx-a11y rule | Biome rule |
 |-----------------------------|-------------|
@@ -116,21 +132,21 @@ useVueVapor
 | scope | noHeaderScope (inspired) |
 | tabindex-no-positive | noPositiveTabindex (inspired) |
 
-## Rules from eslint-plugin-qwik
+### Rules from eslint-plugin-qwik
 
 | eslint-plugin-qwik rule | Biome rule |
 |-------------------------|-------------|
 | jsx-a | useValidAnchor (inspired) |
 | jsx-no-script-url | noScriptUrl |
 
-## Rules from eslint-plugin-react
+### Rules from eslint-plugin-react
 
 | eslint-plugin-react rule | Biome rule |
 |--------------------------|-------------|
 | button-has-type | useButtonType (inspired) |
 | jsx-no-script-url | noScriptUrl |
 
-## Rules from eslint-plugin-react-dom
+### Rules from eslint-plugin-react-dom
 
 | eslint-plugin-react-dom rule | Biome rule |
 |------------------------------|-------------|
@@ -138,13 +154,13 @@ useVueVapor
 | no-script-url | noScriptUrl |
 | no-unsafe-iframe-sandbox | noUnsafeIframeSandbox (inspired) |
 
-## Rules from eslint-plugin-solid
+### Rules from eslint-plugin-solid
 
 | eslint-plugin-solid rule | Biome rule |
 |--------------------------|-------------|
 | jsx-no-script-url | noScriptUrl |
 
-## Rules from eslint-plugin-svelte
+### Rules from eslint-plugin-svelte
 
 | eslint-plugin-svelte rule | Biome rule |
 |---------------------------|-------------|
@@ -152,19 +168,19 @@ useVueVapor
 | no-at-html-tags | noSvelteAtHtmlTags |
 | require-each-key | useSvelteRequireEachKey |
 
-## Rules from eslint-plugin-tailwindcss
+### Rules from eslint-plugin-tailwindcss
 
 | eslint-plugin-tailwindcss rule | Biome rule |
 |--------------------------------|-------------|
 | no-arbitrary-value | noTailwindArbitraryValue |
 
-## Rules from eslint-plugin-unicorn
+### Rules from eslint-plugin-unicorn
 
 | eslint-plugin-unicorn rule | Biome rule |
 |----------------------------|-------------|
 | no-invalid-file-input-accept | noInvalidFileInputAccept |
 
-## Rules from eslint-plugin-vue
+### Rules from eslint-plugin-vue
 
 | eslint-plugin-vue rule | Biome rule |
 |-------------------------|-------------|

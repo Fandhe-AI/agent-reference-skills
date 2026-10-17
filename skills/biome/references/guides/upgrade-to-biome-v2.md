@@ -52,5 +52,5 @@ package.json は常に複数行でフォーマットされるようになった�
 
 ## Notes
 
-- The official `/guides/upgrade-to-biome-v2` page moved to `/installation/upgrade-to-biome-v2` (content unchanged).
-- In the original text, the `--config-path` removal applies to the `biome lsp-proxy` and `biome start` commands. The 2.5.15 CLI reference still lists `--config-path=<PATH>` (`BIOME_CONFIG_PATH`) as a global flag.
+- 公式の `/guides/upgrade-to-biome-v2` ページは `/installation/upgrade-to-biome-v2` へ移動した（内容は同一）
+- 原文では `--config-path` の削除は `biome lsp-proxy` と `biome start` コマンドに対するもの。2.5.15 の CLI リファレンスでは `--config-path=<PATH>`（`BIOME_CONFIG_PATH`）が引き続きグローバルフラグとして記載されている
