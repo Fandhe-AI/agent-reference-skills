@@ -23,7 +23,7 @@ Review the local branch without the GitHub App (see `code-review-local.md`):
 |------|------|-------------|
 | Find / Verify / Rank / Post | pipeline stages | Several agents examine the diff and surrounding code in parallel; a verification step filters false positives; remaining findings are deduplicated and ranked by severity; results are posted on the pull request |
 | Findings | output | Inline comments on the lines concerned, with a summary in the review body |
-| `Claude Code Review` | check run | Lists the findings in its details; doesn't conclude as a failure (neutral) |
+| `Claude Code Review` | check run | Lists the findings in its details; concludes as neutral, or as skipped when an automatic review didn't run because a push changed no files; never concludes as a failure |
 | `Code review found no issues` | check run title | Shown when nothing is found; Claude posts the same short note on the pull request |
 | Quick | review level | Lighter pass; fastest and lowest cost |
 | Standard | review level | Balanced depth, speed, and cost; the default |
@@ -40,7 +40,7 @@ Review the local branch without the GitHub App (see `code-review-local.md`):
 - Default focus is correctness: bugs that would break production, not formatting preferences or missing test coverage.
 - Code Review chooses the Claude models; its admin settings don't offer a model choice. Change the review level instead. An Owner chooses one level for the organization and can give an individual repository its own.
 - What a review can access: runs on Anthropic infrastructure in a managed environment (not in self-hosted environments); repository access inside a review is read-only and it doesn't push commits; it posts comments and the check run, resolves its own earlier comment threads, and can react to a comment command with 👀; it reads the diff and surrounding code without building or running your code.
-- Who controls a review: automatic reviews start on opening or pushing to a pull request except on drafts and forks; a comment command starts one only when it comes from a person with write access; `REVIEW.md` is read from the base or default branch and never from the pull request's own changes.
+- Who controls a review: where reviews run automatically, opening or pushing to a pull request starts a review, except on drafts and forks; a comment command starts one only when it comes from a person with write access; `REVIEW.md` is read from the base or default branch and never from the pull request's own changes.
 - `CLAUDE.md` violations become findings at whichever severity level fits the issue. `REVIEW.md` content goes to the agents that find and verify issues alongside the default review guidance, and the step that writes the final review consults it before settling severity and the summary.
 - Interrupted review sessions are retried once automatically; **Re-run** in GitHub's Checks tab works for pull requests not from a fork. See `code-review-troubleshooting.md`.
 - Billing: there is no flat per-review price; spend depends on each review's cost and how many reviews run. See `code-review-costs.md`.
