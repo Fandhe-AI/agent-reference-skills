@@ -10,7 +10,7 @@ user-invocable: false
 
 # Expo
 
-> 分割 PR の途中段階。現在収録済み: references/{configuration, eas-build, eas-submit-workflows, eas-update, modules-api, notifications, router, router-reference, router-web, sdk-app, sdk-device-data}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{configuration, eas-build, eas-submit-workflows, eas-update, modules-api, notifications, router, router-reference, router-web, sdk-app, sdk-device-data, sdk-media-ui}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -85,6 +85,13 @@ skills/expo/
       sqlite.md
       location.md
       auth-session.md
+    sdk-media-ui/              # メディア・UI 系 SDK（Camera・Image・Video・Expo UI 等）
+      README.md
+      camera.md
+      image.md
+      video.md
+      audio.md
+      expo-ui.md
     notifications/             # expo-notifications・push・background task
       README.md
       notifications.md
@@ -138,6 +145,8 @@ skills/expo/
 | deep link・Universal Links・App Links を設定したい | sdk-app | [references/sdk-app/README.md](references/sdk-app/README.md) |
 | FileSystem / SQLite / Location / Contacts / Calendar / Sensors を使いたい | sdk-device-data | [references/sdk-device-data/README.md](references/sdk-device-data/README.md) |
 | 認証 (AuthSession / AppleAuthentication / LocalAuthentication)・Clipboard・Sharing を使いたい | sdk-device-data | [references/sdk-device-data/README.md](references/sdk-device-data/README.md) |
+| Camera / Image / ImagePicker / Video / Audio / MediaLibrary を使いたい | sdk-media-ui | [references/sdk-media-ui/README.md](references/sdk-media-ui/README.md) |
+| Expo UI・BlurView・LinearGradient・Symbols・Maps・Widgets を使いたい | sdk-media-ui | [references/sdk-media-ui/README.md](references/sdk-media-ui/README.md) |
 | push 通知の設定・送信・受信ハンドリングをしたい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | FCM / APNs 資格情報・バックグラウンドタスク (TaskManager / BackgroundTask) を設定したい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | EAS Build の設定 (eas.json)・credentials・内部配布・CI ビルドをしたい | eas-build | [references/eas-build/README.md](references/eas-build/README.md) |
