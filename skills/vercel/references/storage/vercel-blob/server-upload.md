@@ -13,7 +13,8 @@ Upload files to Vercel Blob from a server-side Function or Server Action.
 npm i @vercel/blob
 # Create a store from your linked project directory and connect it
 # (--yes connects all environments, incl. Development which `vercel env pull` reads)
-vercel blob create-store Images --access private --environment production --environment development --yes
+vercel blob create-store Images --access private --yes
+# or: vercel blob create-store Images --access private --environment production --environment development
 vercel env pull  # pulls BLOB_STORE_ID + VERCEL_OIDC_TOKEN (OIDC default) and BLOB_READ_WRITE_TOKEN (fallback)
 ```
 

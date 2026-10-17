@@ -138,18 +138,15 @@ Server-side route helper imported from `@vercel/blob/client`; the presigned coun
 | `onUploadCompleted` | No | Same shape as in `handleUpload`. |
 
 ```ts
-// app/api/upload-presigned/route.ts
+// app/api/upload-presigned/route.ts — adapted from the official example (stub authenticate() replaced with an app auth helper)
 import { issueSignedToken } from '@vercel/blob';
 import {
   type HandleUploadPresignedBody,
   handleUploadPresigned,
 } from '@vercel/blob/client';
 import { NextResponse } from 'next/server';
-
-async function authenticate(request: Request): Promise<{ id: string, plan: 'hobby' | 'pro' } | null> {
-  // Replace with your real auth check.
-  return { id: 'user_123', plan: 'pro' };
-}
+// App-specific auth helper (e.g. Auth.js `auth()`); not part of @vercel/blob
+import { getSession } from '@/lib/auth';
 
 export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadPresignedBody;
@@ -159,8 +156,8 @@ export async function POST(request: Request): Promise<NextResponse> {
       body,
       request,
       getSignedToken: async (pathname) => {
-        const user = await authenticate(request);
-        if (!user) throw new Error('Not authorized');
+        const session = await getSession();
+        if (!session) throw new Error('Not authorized');
 
         // You can cache this token until validUntil
         const token = await issueSignedToken({
@@ -172,8 +169,8 @@ export async function POST(request: Request): Promise<NextResponse> {
         });
 
         // Give tighter restrictions to hobby users.
-        const allowedContentTypes = user.plan === 'hobby' ? ['image/png', 'image/jpeg'] : undefined;
-        const maximumSizeInBytes = user.plan === 'hobby' ? 5 * 1024 * 1024 : undefined;
+        const allowedContentTypes = session.user.plan === 'hobby' ? ['image/png', 'image/jpeg'] : undefined;
+        const maximumSizeInBytes = session.user.plan === 'hobby' ? 5 * 1024 * 1024 : undefined;
 
         return {
           token,
@@ -220,6 +217,7 @@ const result = await uploadPresigned(file.name, file, {
 - Upgrading from `handleUpload`: swap to `handleUploadPresigned`, mint the token inside `getSignedToken`, move constraints from `onBeforeGenerateToken` into `urlOptions`; replace client `upload` with `uploadPresigned` and point `handleUploadUrl` at the new route; the result type is `PutBlobResult` (not `BlobResult`).
 - Set `BLOB_WEBHOOK_PUBLIC_KEY` in the project environment so `handleUploadPresigned` can verify the upload-completed callback. Existing connections can opt in from the store's connection menu.
 - Production: also authorize the requested pathname inside getSignedToken (e.g. require a per-user prefix and have the browser send the same prefixed pathname); the official example only authenticates the user.
+- Adapted: the official example ships a stub authenticate() that always returns a user; this page replaces it with an app-specific helper that rejects unauthenticated requests.
 - Python SDK does not support Signed URLs.
 - Source: https://vercel.com/docs/vercel-blob/vercel-signed-urls
 
