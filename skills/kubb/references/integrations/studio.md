@@ -63,7 +63,7 @@ codex plugin marketplace add https://kubb.studio/plugins/<organization>.git
 ## Notes
 
 - 出典: https://kubb.dev/docs/5.x/integrations/studio （kubb@5.11.0 の docs/5.x/integrations/studio.md）
-- The official integrations page still describes the old behavior; per the changelog (#4320) and reference/commands/studio, `--allow-read-ast` is a separate permission and `--allow-read` now covers only generated files. See [commands/studio.md](../commands/studio.md)
+- The official integrations page still describes the old behavior; per the changelog ([#4320](https://github.com/kubb-labs/kubb/pull/4320)) and reference/commands/studio, `--allow-read-ast` is a separate permission and `--allow-read` now covers only generated files. See [commands/studio.md](../commands/studio.md)
 - `kubb studio` は Kubb 5.6.1 以降が必要（Studio は古い Agent を拒否）。`kubb studio snapshot` は Kubb 5.6.2 以降
 - 手元の設定なしの試用には Studio の共有サンドボックスを使える（仕様を環境外へ渡してよい場合のみ）。チーム常設接続にはインフラ上の Docker agent（https://hub.docker.com/r/kubblabs/kubb-agent）を使い、ペアリングコードは組織管理者が承認する
 - CLI / Docker Agent では生成は自環境で実行される。Studio が受け取るのはプラグイン設定・プロジェクトパス・進捗・生成ファイルのパス・各ファイルのハッシュ。ローカル仕様はアップロードされない。`--allow-read` を付けると生成ファイルの内容を、`--allow-read-ast` を付けると解析済み仕様を Studio が読める。書き込みは `--allow-write`、`kubb.config.ts` の編集は `--allow-config-edit` が必要

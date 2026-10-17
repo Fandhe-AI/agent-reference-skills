@@ -123,7 +123,7 @@ KUBB_REGISTRY=https://registry.example.com kubb add acme/plugin-graphql
 - 公式 version のうち manifest 導入前のものは manifest を持たず、manifest 付きバージョンが pin されるまで index から除外される
 - `KUBB_REGISTRY` は `http://` または `https://` で始まる必要があり、末尾スラッシュは除去される。独自 index は `version: 1` を設定し未知 id に 404 を返す。Studio は常に kubb.dev の index を読むため、private registry は CLI の install 先のみ変える
 - タイムスタンプは UTC・秒単位（例 `2026-10-12T20:00:00Z`）
-- 出典: Kubb docs 5.x（kubb@5.11.0 pin）
+- 出典: https://kubb.dev/docs/5.x/reference/registry （kubb@5.11.0 の docs/5.x/reference/registry.md）
 
 ## Related
 
