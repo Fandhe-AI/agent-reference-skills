@@ -46,7 +46,7 @@ $ docker buildx build --output type=oci,dest=./image.tar .
 $ docker buildx build --output type=local,dest=<path/to/output> .
 
 # Cache only
-$ docker buildx build --output type=cacheonly
+$ docker buildx build --output type=cacheonly .
 ```
 
 - Without an exporter or shorthand, Buildx defaults to `cacheonly` (with a warning), except with the `docker` driver, which uses the `docker` exporter.
@@ -58,7 +58,7 @@ Repeat `--output`. Requires both Buildx and BuildKit 0.13.0 or later.
 
 ```console
 $ docker buildx build \
-  --output type=registry,tag=<registry>/<image> \
+  --output type=registry,name=<registry>/<image> \
   --output type=local,dest=<path/to/output> \
   --load .
 ```
@@ -83,7 +83,7 @@ $ docker buildx build \
 | 7-8 | Better | ~7 | Better compression, slower |
 | 9-22 | Best | ~11 | Best compression, slowest |
 
-OCI media types: `image`, `registry`, `oci`, and `docker` exporters use Docker media types by default; enable OCI media types with `oci-mediatypes`:
+OCI media types: `image`, `registry`, and `docker` exporters use Docker media types by default, while `oci` defaults to OCI media types (`oci-mediatypes=true`); set `oci-mediatypes` to override:
 
 ```console
 $ docker buildx build \

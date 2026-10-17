@@ -93,7 +93,7 @@ Keep `.git`: BuildKit drops the `.git` directory by default; set the `BUILDKIT_C
 
 ```console
 $ docker build \
-  --build-arg BUILDKIT_CONTEXT_KEEP_GIT_DIR=1
+  --build-arg BUILDKIT_CONTEXT_KEEP_GIT_DIR=1 \
   https://github.com/user/myrepo.git#main
 ```
 

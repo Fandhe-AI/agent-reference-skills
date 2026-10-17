@@ -12,7 +12,7 @@ Docker reuses image layers from the build cache when the same image is built mul
 # syntax=docker/dockerfile:1
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get install -y build-essentials
+RUN apt-get update && apt-get install -y build-essential
 COPY main.c Makefile /src/
 WORKDIR /src/
 RUN make build
@@ -22,6 +22,7 @@ Each instruction translates to a layer in the final image. Image layers form a s
 
 ## Notes
 
+- The official example misspells the package as `build-essentials`; the Ubuntu package is `build-essential`.
 - Whenever a layer changes, that layer must be re-built (Docker invalidates the cache for the layer). For example, changing `main.c` forces the `COPY` command to run again.
 - If a layer changes, all layers after it are also affected. When the `COPY` layer is invalidated, all following layers run again, even if they would not build anything differently.
 

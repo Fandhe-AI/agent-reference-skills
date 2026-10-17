@@ -57,8 +57,8 @@ target "webapp-dev" {
 | `formatdate` | Deprecated: use formattimestamp instead. Formats a timestamp given in RFC 3339 syntax into another timestamp in some other machine-oriented time syntax, as described in the format string. |
 | `formatlist` | Constructs a list of strings by applying formatting verbs to a series of arguments, using a similar syntax to the C function "printf". |
 | `formattimestamp` | Formats a timestamp string in RFC 3339 syntax or a unix timestamp integer into another timestamp in some other machine-oriented time syntax, as described in the format string. The special format string "X" returns the unix timestamp in seconds. |
-| `greaterthan` | Returns true if and only if the second number is greater than the first. |
-| `greaterthanorequalto` | Returns true if and only if the second number is greater than or equal to the first. |
+| `greaterthan` | Returns true if and only if the first number is greater than the second. |
+| `greaterthanorequalto` | Returns true if and only if the first number is greater than or equal to the second. |
 | `hasindex` | Returns true if if the given collection can be indexed with the given key without producing an error, or false otherwise. |
 | `homedir` | Returns the current user's home directory. |
 | `indent` | Adds a given number of spaces after each newline character in the given string. |
@@ -70,8 +70,8 @@ target "webapp-dev" {
 | `jsonencode` | Returns a string containing a JSON representation of the given value. |
 | `keys` | Returns a list of the keys of the given map in lexicographical order. |
 | `length` | Returns the number of elements in the given collection. |
-| `lessthan` | Returns true if and only if the second number is less than the first. |
-| `lessthanorequalto` | Returns true if and only if the second number is less than or equal to the first. |
+| `lessthan` | Returns true if and only if the first number is less than the second. |
+| `lessthanorequalto` | Returns true if and only if the first number is less than or equal to the second. |
 | `log` | Returns the logarithm of the given number in the given base. |
 | `lookup` | Returns the value of the element with the given key from the given map, or returns the default value if there is no such element. |
 | `lower` | Returns the given string with all Unicode letters translated to their lowercase equivalents. |
@@ -131,6 +131,7 @@ target "webapp-dev" {
 
 ## Notes
 
+- The official function table describes the comparison functions relative to the second argument; they compare the first argument against the second (e.g. `lessthan(10, 3)` is `false`).
 - `formatdate` is deprecated: use `formattimestamp` instead; `formatdate` only accepts RFC3339 timestamp strings.
 - `formattimestamp` formats either an RFC3339 timestamp string or a unix timestamp integer; format `X` returns the unix timestamp in seconds.
 - `semvercmp` checks a semantic version against constraints (see Masterminds/semver "Checking Version Constraints").

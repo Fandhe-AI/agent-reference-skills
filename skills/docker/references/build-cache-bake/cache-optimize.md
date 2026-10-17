@@ -14,10 +14,14 @@ Order layers so that expensive, rarely-changing steps come first:
 # syntax=docker/dockerfile:1
 FROM node
 WORKDIR /app
-COPY package.json yarn.lock .    # Copy package management files
-RUN npm install                  # Install dependencies
-COPY . .                         # Copy over project files
-RUN npm build                    # Run build
+# Copy package management files
+COPY package.json yarn.lock .
+# Install dependencies
+RUN npm install
+# Copy over project files
+COPY . .
+# Run build
+RUN npm run build
 ```
 
 Cache mount for a package manager:
@@ -44,6 +48,7 @@ Cache mount examples by build tool (from the page):
 
 ## Notes
 
+- The official example puts trailing `#` comments on instruction lines; Dockerfile only treats `#` at the start of a line as a comment, so they are moved to their own lines here. The official example also uses `npm build`, corrected to `npm run build`.
 - Keep the context small: create a `.dockerignore` in the root of the build context (works like `.gitignore`, applies to the entire context including subdirectories).
 
 ```plaintext

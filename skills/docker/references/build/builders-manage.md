@@ -26,7 +26,7 @@ $ docker buildx rm <builder-name>
 ### Inspect
 
 - `docker buildx inspect <name>` works only if the builder is active; add `--bootstrap` to start it. Output includes Name, Driver, Last Activity, and per-node Name / Endpoint / Status / Buildkit / Platforms.
-- `docker buildx du` shows disk usage for all builders by default; use `--builder` for one builder (columns: ID, RECLAIMABLE, SIZE, LAST ACCESSED; totals Reclaimable / Total).
+- `docker buildx du` shows disk usage for the currently selected builder; use `--builder` to target another builder (columns: ID, RECLAIMABLE, SIZE, LAST ACCESSED; totals Reclaimable / Total).
 
 ### Remove
 
@@ -35,6 +35,7 @@ $ docker buildx rm <builder-name>
 
 ### Other notes
 
+- The Manage builders page says `du` covers all builders; the `docker buildx du` CLI reference says it targets the currently selected builder.
 - If the Docker Desktop Builds view is turned on, builders can also be inspected in Docker Desktop settings.
 
 ## Related
