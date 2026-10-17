@@ -4,7 +4,7 @@ source: https://modelcontextprotocol.io/specification/2026-07-28/server/tools#to
 
 # Tool Definition (Tool data type)
 
-A tool definition: `name`, optional `title`, `description`, optional `icons`, `inputSchema`, optional `outputSchema`, and optional `annotations`.
+A tool definition: `name`, optional `title`, optional `description`, optional `icons`, `inputSchema`, optional `outputSchema`, and optional `annotations`.
 
 ## Signature / Usage
 
@@ -69,7 +69,7 @@ Tool with explicit draft-07 schema:
 |------|------|-------------|
 | `name` | string | Unique identifier for the tool |
 | `title` | string (optional) | Human-readable name for display |
-| `description` | string | Human-readable description of functionality |
+| `description` | string (optional) | Human-readable description of functionality |
 | `icons` | array (optional) | Icons for display in user interfaces |
 | `inputSchema` | JSON Schema object | Expected parameters. Defaults to 2020-12 if no `$schema`. **MUST** be a valid JSON Schema object (not `null`). |
 | `outputSchema` | JSON Schema (optional) | Expected output structure. Defaults to 2020-12 if no `$schema`. |
@@ -77,6 +77,7 @@ Tool with explicit draft-07 schema:
 
 ## Notes
 
+- `description` is optional per schema.ts (`description?: string`); the prose page lists it without the Optional marker.
 - For tools with no parameters: `{ "type": "object", "additionalProperties": false }` is **Recommended** (accepts only empty objects); `{ "type": "object" }` accepts any object.
 - Clients **MUST** consider tool annotations untrusted unless they come from trusted servers.
 - Tool names: **SHOULD** be 1 to 128 characters (inclusive), case-sensitive, using only A-Z, a-z, 0-9, underscore, hyphen, and dot; **SHOULD NOT** contain spaces, commas, or other special characters; **SHOULD** be unique within a server. Valid examples: `getUser`, `DATA_EXPORT_v2`, `admin.tools.list`.

@@ -1,9 +1,9 @@
 ---
 name: mcp-spec
 description: >
-  Model Context Protocol (MCP 仕様 2026-07-28) リファレンス。
-  JSON-RPC, tools/call, server/discover, Streamable HTTP, MRTR, CIMD, MCP Apps (ui://),
-  MCP Registry (server.json, MCPB)。
+  Model Context Protocol (MCP 仕様 2026-07-28, modelcontextprotocol.io) リファレンス。
+  JSON-RPC, server/discover, tools/call, subscriptions/listen, MRTR (InputRequiredResult),
+  CacheableResult, Streamable HTTP, CIMD, MCP Apps (ui://), MCP Registry (server.json, MCPB)。
 user-invocable: false
 ---
 

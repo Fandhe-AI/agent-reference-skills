@@ -106,9 +106,21 @@ PromptMessage:
 
 - Servers that support prompts **MUST** declare the `prompts` capability. `listChanged` indicates whether the server will emit notifications when the list changes.
 - `prompts/list` results **MAY** be empty and **MAY** change over time, but **MUST NOT** vary per-connection or as a side effect of other requests. The set **MAY** vary by the authorization presented on the request.
-- Every request **MUST** include the required `_meta` fields (`io.modelcontextprotocol/protocolVersion`, `clientInfo`, `clientCapabilities`); the examples omit them for brevity.
+- Request examples omit the `_meta` request metadata (`io.modelcontextprotocol/protocolVersion`, `io.modelcontextprotocol/clientInfo`, `io.modelcontextprotocol/clientCapabilities`); every request **MUST** include the required `_meta` fields (`io.modelcontextprotocol/protocolVersion`, `io.modelcontextprotocol/clientCapabilities`). `io.modelcontextprotocol/clientInfo` is optional per schema.ts.
 - Servers **MAY** respond to `prompts/get` with an `InputRequiredResult` (multi round-trip requests). On retry, clients include `inputResponses` and, if provided, `requestState`.
-- `notifications/prompts/list_changed` (`{"jsonrpc":"2.0","method":"notifications/prompts/list_changed"}`) is sent to clients that opened a `subscriptions/listen` stream with `promptsListChanged: true`.
+- `notifications/prompts/list_changed` is sent to clients that opened a `subscriptions/listen` stream with `promptsListChanged: true`. Example (source: `schema/2026-07-28/examples/PromptListChangedNotification/prompts-list-changed.json`; `subscriptionId` is the ID of the `subscriptions/listen` request):
+
+  ```json
+  {
+    "jsonrpc": "2.0",
+    "method": "notifications/prompts/list_changed",
+    "params": {
+      "_meta": {
+        "io.modelcontextprotocol/subscriptionId": "listen-1"
+      }
+    }
+  }
+  ```
 - Image and audio data **MUST** be base64-encoded and include a valid MIME type. All content types support optional annotations (`audience`, `priority`, `lastModified`).
 - Embedded resources **MUST** include a valid resource URI, the appropriate MIME type, and either text content or base64-encoded blob data.
 - Errors: invalid prompt name `-32602`, missing required arguments `-32602`, internal errors `-32603` (servers **SHOULD** return these).

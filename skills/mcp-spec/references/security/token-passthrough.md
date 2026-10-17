@@ -20,6 +20,25 @@ A server-side audience check (from the Keycloak tutorial token verifier, see aut
 if (!data.aud) {
   throw new Error("Resource indicator (aud) missing");
 }
+
+const audiences: string[] = Array.isArray(data.aud) ? data.aud : [data.aud];
+const allowed = audiences.some((a) => {
+  try {
+    return checkResourceAllowed({
+      requestedResource: a,
+      configuredResource: mcpServerUrl,
+    });
+  } catch {
+    // Keycloak tokens include non-URL audiences (e.g. "account", "test-client").
+    // Those are never our resource, so treat them as "no match" instead of crashing.
+    return false;
+  }
+});
+if (!allowed) {
+  throw new Error(
+    `None of the provided audiences are allowed. Expected ${mcpServerUrl}, got: ${audiences.join(", ")}`,
+  );
+}
 ```
 
 ## Options / Props

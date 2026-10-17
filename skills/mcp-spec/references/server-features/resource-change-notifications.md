@@ -13,7 +13,12 @@ List changed notification (servers that declared `listChanged` **SHOULD** send i
 ```json
 {
   "jsonrpc": "2.0",
-  "method": "notifications/resources/list_changed"
+  "method": "notifications/resources/list_changed",
+  "params": {
+    "_meta": {
+      "io.modelcontextprotocol/subscriptionId": "listen-1"
+    }
+  }
 }
 ```
 
@@ -54,6 +59,7 @@ Resources capability features:
 
 ## Notes
 
+- The list-changed example follows `schema/2026-07-28/examples/ResourceListChangedNotification/resources-list-changed.json`; `subscriptionId` is the ID of the `subscriptions/listen` request.
 - See the Subscriptions pattern page for the full mechanics (acknowledgment, `subscriptionId` correlation, cancellation).
 - Replaced in 2026-07-28: `resources/subscribe` / `resources/unsubscribe` were removed in favor of `subscriptions/listen`; the HTTP GET endpoint was likewise replaced.
 - Source: tag `2026-07-28` raw (`docs/specification/2026-07-28/server/resources.mdx`, sections List Changed Notification and Subscriptions).

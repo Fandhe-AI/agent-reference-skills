@@ -97,7 +97,12 @@ List changed notification (sent to clients with a `subscriptions/listen` stream 
 ```json
 {
   "jsonrpc": "2.0",
-  "method": "notifications/tools/list_changed"
+  "method": "notifications/tools/list_changed",
+  "params": {
+    "_meta": {
+      "io.modelcontextprotocol/subscriptionId": "listen-1"
+    }
+  }
 }
 ```
 
@@ -130,6 +135,7 @@ sequenceDiagram
 - Servers **SHOULD** return tools in a deterministic order (enables reliable client caching and improves LLM prompt cache hit rates).
 - For trust and safety, there **SHOULD** always be a human in the loop with the ability to deny tool invocations. Applications **SHOULD** provide UI that makes clear which tools are exposed, insert visual indicators when tools are invoked, and present confirmation prompts.
 - Every request **MUST** include the required `_meta` fields; the examples omit them for brevity.
+- The list-changed example follows `schema/2026-07-28/examples/ToolListChangedNotification/tools-list-changed.json`; `subscriptionId` is the ID of the `subscriptions/listen` request.
 - Replaced in 2026-07-28: the list-changed notification is delivered through `subscriptions/listen` (`toolsListChanged`); results require `resultType` and cache hints.
 - Source: tag `2026-07-28` raw (`docs/specification/2026-07-28/server/tools.mdx`).
 
