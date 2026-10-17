@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/core.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/core.rs
 ---
 
 # core
@@ -41,6 +41,9 @@ pub struct EngineCore {
     incremental_config: crate::incremental::IncrementalConfig,
     ledger_mode: LedgerMode,
     batch_limits: crate::batch_limits::BatchLimits,
+    transaction_limits: crate::sql::transaction::TransactionLimits,
+    dml_limits: crate::sql::parser::DmlLimits,
+    partitioned_dml_limits: crate::sql::parser::PartitionedDmlLimits,
     dictionary_cache: DictionaryCache,
     dictionary_config: crate::dictionary::DictionaryConfig,
     sparse_index_cache: crate::sql::sparse_cache::SparseIndexCache,
@@ -48,32 +51,48 @@ pub struct EngineCore {
     scalar_index_cache: crate::sql::scalar_index::ScalarIndexCache,
     visible_bitmap_cache: crate::sql::visible_cache::VisibleBitmapCache,
     search_engine_kind: Option<crate::search_engine::SearchEngineKind>,
+    hnsw_state: Option<HnswEngineState>,
+    index_catalog_gate_cache: crate::catalog::IndexCatalogGateCache,
+    hnsw_scope: crate::search_engine::HnswScope,
+    explain_index_name_scans: std::sync::atomic::AtomicU64,
 }
 ~~~
 
 `EngineCore` の公開メソッド（シグネチャのみ）:
 
 ~~~rust,ignore
-/// `VectorCore` の製品実装。永続化・カタログ・アリーナ構築・検索 provider を束ねる。
-pub fn open<P: AsRef<Path>>(db_path: P) -> Result<Self, OpenWithEngineError>
+/// 指定パスの `redb` データベースを開き、既定の検索エンジン
+/// （[`crate::search_engine::default_engine`]）を注入した `EngineCore` を構築する。
+pub fn open(path: impl AsRef<Path>) -> Result<Self, CoreError>
 
-/// [`Self::open`] と同じ初期化、ただし既に開かれた [`Storage`] から構築する。
-pub fn from_storage(storage: Storage) -> Self
+/// [`Self::open`] の durability 版（Issue #849・構築時オプション）。既定値
+/// （[`crate::storage::WriteDurability::default`]）を渡した場合は [`Self::open`] と同一の挙動。
+pub fn open_with_durability(
+    path: impl AsRef<Path>,
+    durability: crate::storage::WriteDurability,
+) -> Result<Self, CoreError>
 
-/// `db_path` を開き、指定 [`crate::search_engine::SearchEngineKind`] で検索 provider を初期化する。
-pub fn open_with_engine<P: AsRef<Path>>(
-    db_path: P,
+/// 検索 provider を差し替えて構築する（テスト・将来の GPU/ANN provider 導入用）。
+/// [`Self::search_engine_kind`] は常に `None`。
+pub fn with_provider(
+    path: impl AsRef<Path>,
+    provider: Box<dyn SearchProvider>,
+) -> Result<Self, CoreError>
+
+/// 指定パスの `redb` データベースを開き、`kind` が構築する検索エンジンを注入して構築する（Issue #407・opt-in 経路）。
+pub fn open_with_engine(
+    path: impl AsRef<Path>,
     kind: crate::search_engine::SearchEngineKind,
 ) -> Result<Self, OpenWithEngineError>
 
-/// [`Self::open_with_engine`] と同じ初期化、ただし既に開かれた [`Storage`] から構築する。
+/// 既に開いた `Storage` の所有権を受け取って構築する。`search_engine_kind` は常に `None`。
+pub fn from_storage(storage: Storage, provider: Box<dyn SearchProvider>) -> Self
+
+/// [`Self::from_storage`] の `kind` 版（Issue #407）。infallible。
 pub fn from_storage_with_engine(
     storage: Storage,
     kind: crate::search_engine::SearchEngineKind,
-) -> Result<Self, OpenWithEngineError>
-
-/// 検索 provider を差し替える（CORE-13。[`Self::open`] の既定 provider 以外を使う場合）。
-pub fn with_provider(mut self, provider: Box<dyn SearchProvider>) -> Self
+) -> Self
 
 /// ファイル形 `INSERT` のベクトル埋め込み（TASK-120）注入点を設定する。
 pub fn with_embedder(mut self, embedder: Box<dyn crate::embedding::Embedder>) -> Self
@@ -99,6 +118,42 @@ pub fn with_precision_policy(mut self, policy: crate::precision::PrecisionPolicy
 /// 辞書的情報源抽出の設定（TASK-109・PLAN-5）を差し替える。
 pub fn with_dictionary_config(mut self, config: crate::dictionary::DictionaryConfig) -> Self
 
+/// 明示トランザクション（SQL-31・TASK-221）の持続時間・文数の上限を差し替える。
+pub fn with_transaction_limits(
+    mut self,
+    limits: crate::sql::transaction::TransactionLimits,
+) -> Self
+
+/// 述語形 UPDATE/DELETE の 1 文あたり影響行数上限・複数行 `VALUES` の行数上限を差し替える（Issue #997）。
+pub fn with_dml_limits(mut self, limits: crate::sql::parser::DmlLimits) -> Self
+
+/// 分割実行 DML の設定（チャンク幅・走査予算・writer 保持時間など。Issue #1128）を差し替える。
+pub fn with_partitioned_dml_limits(
+    mut self,
+    limits: crate::sql::parser::PartitionedDmlLimits,
+) -> Self
+pub fn partitioned_dml_limits(&self) -> crate::sql::parser::PartitionedDmlLimits
+
+/// HNSW opt-in 時に HNSW 経路を使うテーブルの範囲を差し替える（Issue #1065。既定 `HnswScope::All`）。
+pub fn with_hnsw_scope(mut self, scope: crate::search_engine::HnswScope) -> Self
+pub fn hnsw_scope(&self) -> crate::search_engine::HnswScope
+
+/// 辞書スナップショット（世代整合キャッシュ経由）を取得する。
+pub fn dictionary_snapshot(
+    &self,
+    ctx: &PolicyContext,
+    table: &str,
+) -> Result<Arc<crate::dictionary::Dictionary>, CoreError>
+
+/// 観測用統計（テナント ID・行 ID 等の機微情報は含まない。`VectorCore` trait には載せない固有メソッド）。
+pub fn sparse_index_cache_stats(&self) -> crate::sql::sparse_cache::SparseIndexCacheStats
+pub fn sql_arena_cache_stats(&self) -> crate::sql::arena_cache::SqlArenaCacheStats
+pub fn scalar_index_cache_stats(&self) -> crate::sql::scalar_index::ScalarIndexCacheStats
+pub fn visible_bitmap_cache_stats(&self) -> crate::sql::visible_cache::VisibleBitmapCacheStats
+pub fn hnsw_index_cache_stats(&self) -> crate::sql::hnsw_cache::HnswIndexCacheStats
+pub fn index_catalog_gate_cache_stats(&self) -> crate::catalog::IndexCatalogGateCacheStats
+pub fn explain_index_name_scan_stats(&self) -> ExplainIndexNameScanStats
+
 /// `table` に対して `query` の Top-k 検索を行う（CORE-2・CORE-10）。
 pub fn search(
     &self,
@@ -117,8 +172,37 @@ pub fn plan_and_embed_query(
     k: usize,
 ) -> Result<Vec<SearchHit>, CoreError>
 
-/// クエリテキストを LLM で展開する（TASK-110・PLAN-1）。
-pub fn plan_query(&self, query_text: &str) -> Result<crate::query_planner::QueryExpansion, CoreError>
+/// 自然言語 `question` を LLM クエリプランニングで展開する（TASK-110・PLAN-1）。
+pub fn plan_query(
+    &self,
+    ctx: &PolicyContext,
+    table: &str,
+    question: &str,
+) -> Result<crate::query_planner::QueryExpansion, CoreError>
+
+/// `plan_query` に加え、`PlannerBinding::Tiered` 構成では質問類型・ティア（TASK-115・PLAN-8）も返す。
+pub fn plan_query_with_classification(
+    &self,
+    ctx: &PolicyContext,
+    table: &str,
+    question: &str,
+) -> Result<
+    (
+        crate::query_planner::QueryExpansion,
+        Option<crate::tiering::Classification>,
+    ),
+    CoreError,
+>
+
+/// 明示指定（`query_mode`・`session_mode`）とプランナー推定から実効モードまで解決して返す（TASK-164・PLAN-11）。
+pub fn plan_query_with_mode(
+    &self,
+    ctx: &PolicyContext,
+    table: &str,
+    question: &str,
+    query_mode: Option<crate::sql::mode::SearchMode>,
+    session_mode: Option<crate::sql::mode::SearchMode>,
+) -> Result<crate::query_planner::PlannedQuery, CoreError>
 
 /// `USING PLAN` 展開をパース・LLM 展開・再埋め込みまで実行する（TASK-114・PLAN-10）。
 pub fn plan_using_plan_expansion(
@@ -200,9 +284,11 @@ pub fn execute_insert_sql(
 
 /// SQL 表層のバッチ INSERT 実行エントリポイント（TASK-122、対象ビヘイビア:
 /// INDEX-4）。[`Self::execute_insert_sql`] の複数ファイル版で、複数ファイルを
-/// 1 バッチとして受け取る engine ローカル API の入口（SQL 表層に複数文・複数行
-/// VALUES の構文拡張は導入しない。1 文 = 1 ファイルの検証済み `INSERT` 文の列
-/// （`sqls`）を 1 バッチとして受け取る）。`VectorCore` trait への昇格は行わない
+/// 1 バッチとして受け取る engine ローカル API の入口（1 文 = 1 ファイルの
+/// 検証済み `INSERT` 文の列（`sqls`）を 1 バッチとして受け取る。行形の
+/// 複数行 `VALUES`（SQL-16、TASK-190）はこの API とは別経路——`sql::parser::
+/// BoundInsertForm::RowBatch` を経由し、ファイル形が混在した場合と同じく
+/// 本メソッドは行形を一切受理しない）。`VectorCore` trait への昇格は行わない
 /// （`execute_insert_sql` と同じ理由）。
 ///
 /// 手順:
@@ -228,6 +314,205 @@ pub fn execute_insert_sql_batch(
     ctx: &PolicyContext,
     sqls: &[&str],
 ) -> Result<Vec<crate::sql::exec::InsertOutcome>, crate::sql::allowlist::SqlSurfaceError>
+~~~
+
+0.2.0 で追加された SQL 実行系の `EngineCore` メソッド（シグネチャのみ。0.1.0 に無いもの）:
+
+~~~rust,ignore
+// 拡張クエリプロトコル（Parse / Bind / Describe / Execute。WIRE-11・WIRE-12）用の 2 段階 API
+pub fn parse_sql(&self, sql: &str) -> Result<ParsedSql, crate::sql::allowlist::SqlSurfaceError>
+pub fn parse_sql_prepared(&self, sql: &str) -> Result<PreparedSql, crate::sql::allowlist::SqlSurfaceError>
+pub fn bind_prepared(
+    &self,
+    prepared: &PreparedSql,
+    values: &[Option<Vec<u8>>],
+) -> Result<ParsedSql, crate::sql::allowlist::SqlSurfaceError>
+pub fn describe_parsed_in_session(
+    &self,
+    session: &crate::sql::mode::SessionState,
+    parsed: &ParsedSql,
+) -> Result<Option<Vec<crate::sql::exec::ColumnMeta>>, crate::sql::allowlist::SqlSurfaceError>
+pub fn describe_parsed_in_txn(
+    &self,
+    session: &crate::sql::mode::SessionState,
+    txn: &crate::sql::transaction::SessionTransaction<'_>,
+    parsed: &ParsedSql,
+) -> Result<Option<Vec<crate::sql::exec::ColumnMeta>>, crate::sql::allowlist::SqlSurfaceError>
+pub fn describe_prepared_in_session(
+    &self,
+    session: &crate::sql::mode::SessionState,
+    prepared: &PreparedSql,
+) -> Result<Option<Vec<crate::sql::exec::ColumnMeta>>, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_parsed_in_session(
+    &self,
+    ctx: &PolicyContext,
+    session: &mut crate::sql::mode::SessionState,
+    parsed: &ParsedSql,
+) -> Result<crate::sql::SqlOutcome, crate::sql::allowlist::SqlSurfaceError>
+
+// 明示・暗黙トランザクション（SQL-31・TASK-221・WIRE-16）
+pub fn new_session_transaction(&self) -> crate::sql::transaction::SessionTransaction<'_>
+pub fn begin_implicit_transaction<'e>(
+    &'e self,
+    txn: &mut crate::sql::transaction::SessionTransaction<'e>,
+    session: &crate::sql::mode::SessionState,
+) -> Result<(), crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_sql_in_txn<'e>(
+    &'e self,
+    ctx: &PolicyContext,
+    session: &mut crate::sql::mode::SessionState,
+    txn: &mut crate::sql::transaction::SessionTransaction<'e>,
+    sql: &str,
+) -> Result<crate::sql::SqlOutcome, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_parsed_in_txn<'e>(
+    &'e self,
+    ctx: &PolicyContext,
+    session: &mut crate::sql::mode::SessionState,
+    txn: &mut crate::sql::transaction::SessionTransaction<'e>,
+    parsed: &ParsedSql,
+) -> Result<crate::sql::SqlOutcome, crate::sql::allowlist::SqlSurfaceError>
+
+// COPY（Issue #939・WIRE-17）
+pub fn begin_copy(
+    &self,
+    ctx: &PolicyContext,
+    session: &crate::sql::mode::SessionState,
+    sql: &str,
+) -> Result<CopyPlan, crate::sql::allowlist::SqlSurfaceError>
+pub fn begin_copy_in_txn<'e>(
+    &'e self,
+    ctx: &PolicyContext,
+    session: &crate::sql::mode::SessionState,
+    txn: &mut crate::sql::transaction::SessionTransaction<'e>,
+    sql: &str,
+) -> Result<CopyPlan, crate::sql::allowlist::SqlSurfaceError>
+pub fn commit_copy_in(
+    &self,
+    ctx: &PolicyContext,
+    batch: crate::sql::copy::CopyInBatch,
+) -> Result<crate::sql::exec::InsertOutcome, crate::sql::allowlist::SqlSurfaceError>
+pub fn commit_copy_in_txn<'e>(
+    &'e self,
+    ctx: &PolicyContext,
+    txn: &mut crate::sql::transaction::SessionTransaction<'e>,
+    batch: crate::sql::copy::CopyInBatch,
+) -> Result<crate::sql::exec::InsertOutcome, crate::sql::allowlist::SqlSurfaceError>
+
+// SQL テキスト経由の DML / DDL 入口（INSERT 以外）
+pub fn execute_update_sql(&self, ctx: &PolicyContext, sql: &str)
+    -> Result<crate::sql::exec::UpdateOutcome, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_delete_sql(&self, ctx: &PolicyContext, sql: &str)
+    -> Result<crate::sql::exec::DeleteOutcome, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_truncate_sql(&self, ctx: &PolicyContext, sql: &str)
+    -> Result<crate::sql::exec::TruncateOutcome, crate::sql::allowlist::SqlSurfaceError>
+
+// 分割実行 DML（Issue #1129）の進捗照会・取り消し
+pub fn show_partitioned_dml_in_session(
+    &self,
+    ctx: &PolicyContext,
+    table: &str,
+    operation_id: &crate::recovery::required_op_id::OperationId,
+) -> Result<crate::sql::exec::QueryResult, crate::sql::allowlist::SqlSurfaceError>
+pub fn cancel_partitioned_dml_in_session(
+    &self,
+    ctx: &PolicyContext,
+    table: &str,
+    operation_id: &crate::recovery::required_op_id::OperationId,
+) -> Result<crate::sql::exec::QueryResult, crate::sql::allowlist::SqlSurfaceError>
+
+// 整合性検査（読み取り専用）
+pub fn verify_unique_index_read_only(
+    &self,
+    ctx: &PolicyContext,
+    table: &str,
+) -> Result<(), crate::tenant::TenantWriteError>
+
+// NoSQL 表層（HTTP）向けの束縛済み入口。`bind` クロージャで SQL テキストを組み立てずに束縛する
+pub fn execute_bound_search_in_session<F>(&self, ctx: &PolicyContext, session: &crate::sql::mode::SessionState, table: &str, bind: F) -> Result<crate::sql::exec::QueryResult, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_bound_plan_search_in_session<F>(&self, ctx: &PolicyContext, session: &crate::sql::mode::SessionState, table: &str, question: &str, mode_literal: Option<&str>, limit: u32, bind: F) -> Result<crate::sql::exec::QueryResult, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_bound_scan_in_session<F>(&self, ctx: &PolicyContext, session: &crate::sql::mode::SessionState, table: &str, bind: F) -> Result<crate::sql::exec::QueryResult, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_bound_aggregate_in_session<F>(&self, ctx: &PolicyContext, session: &crate::sql::mode::SessionState, table: &str, bind: F) -> Result<crate::sql::exec::QueryResult, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_bound_insert_in_session<F>(&self, ctx: &PolicyContext, table: &str, row_count: usize, operation_id: Option<&crate::recovery::required_op_id::OperationId>, bind: F) -> Result<crate::sql::exec::InsertOutcome, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_bound_update_in_session<F>(&self, ctx: &PolicyContext, table: &str, operation_id: Option<&crate::recovery::required_op_id::OperationId>, bind: F) -> Result<crate::sql::exec::UpdateOutcome, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_bound_delete_in_session(&self, ctx: &PolicyContext, bound: &crate::sql::parser::BoundDelete) -> Result<crate::sql::exec::DeleteOutcome, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_bound_predicate_update_in_session<F>(&self, ctx: &PolicyContext, table: &str, operation_id: Option<&crate::recovery::required_op_id::OperationId>, bind: F) -> Result<crate::sql::exec::UpdateOutcome, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_bound_predicate_delete_in_session<F>(&self, ctx: &PolicyContext, table: &str, operation_id: Option<&crate::recovery::required_op_id::OperationId>, bind: F) -> Result<crate::sql::exec::DeleteOutcome, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_bound_partitioned_update_in_session<F>(&self, ctx: &PolicyContext, table: &str, operation_id: Option<&crate::recovery::required_op_id::OperationId>, chunk_rows: Option<std::num::NonZeroUsize>, bind: F) -> Result<crate::sql::exec::UpdateOutcome, crate::sql::allowlist::SqlSurfaceError>
+pub fn execute_bound_partitioned_delete_in_session<F>(&self, ctx: &PolicyContext, table: &str, operation_id: Option<&crate::recovery::required_op_id::OperationId>, chunk_rows: Option<std::num::NonZeroUsize>, bind: F) -> Result<crate::sql::exec::DeleteOutcome, crate::sql::allowlist::SqlSurfaceError>
+pub fn explain_bound_search_in_session<F>(&self, _ctx: &PolicyContext, session: &crate::sql::mode::SessionState, table: &str, bind: F) -> Result<crate::sql::exec::QueryResult, crate::sql::allowlist::SqlSurfaceError>
+pub fn explain_bound_scan_in_session<F>(&self, _ctx: &PolicyContext, session: &crate::sql::mode::SessionState, table: &str, bind: F) -> Result<crate::sql::exec::QueryResult, crate::sql::allowlist::SqlSurfaceError>
+pub fn explain_bound_aggregate_in_session<F>(&self, _ctx: &PolicyContext, session: &crate::sql::mode::SessionState, table: &str, bind: F) -> Result<crate::sql::exec::QueryResult, crate::sql::allowlist::SqlSurfaceError>
+pub fn explain_bound_plan_in_session<F, E>(&self, ctx: &PolicyContext, session: &crate::sql::mode::SessionState, table: &str, question: &str, mode_literal: Option<&str>, bind: F) -> Result<crate::sql::exec::QueryResult, E>
+~~~
+
+0.2.0 で追加された `pub` 型:
+
+~~~rust,ignore
+/// [`EngineCore::begin_copy`]（Issue #939・WIRE-17）の戻り値。
+#[derive(Debug)]
+pub enum CopyPlan {
+    From(crate::sql::copy::CopyInSession),
+    To(crate::sql::allowlist::CopyFormat, crate::sql::exec::QueryResult),
+}
+
+/// [`EngineCore::parse_sql`] の結果（束縛前の検証済み構文形）。
+#[derive(Debug, Clone, PartialEq)]
+#[non_exhaustive]
+pub enum ParsedSql {
+    Statement(crate::sql::allowlist::Statement),
+    Insert(crate::sql::allowlist::ValidatedInsert),
+    Truncate(crate::sql::allowlist::ValidatedTruncate),
+    Delete(crate::sql::allowlist::DeleteStatement),
+    Update(crate::sql::allowlist::ValidatedUpdateForm),
+    Transaction(crate::sql::transaction::TxnControl),
+    DropTable(crate::sql::allowlist::ValidatedDropTable),
+    CreateTable(crate::sql::allowlist::ValidatedCreateTable),
+    Cursor(crate::sql::cursor::CursorStatement),
+    Partitioned(crate::sql::partitioned::PartitionedControl),
+    AlterTable(crate::sql::allowlist::ValidatedAlterTable),
+    CreateView(crate::sql::allowlist::ValidatedCreateView),
+    DropView(crate::sql::allowlist::ValidatedDropView),
+    CreateIndex(crate::sql::allowlist::ValidatedCreateIndex),
+    DropIndex(crate::sql::allowlist::ValidatedDropIndex),
+    CreateType(crate::sql::allowlist::ValidatedCreateType),
+    DropType(crate::sql::allowlist::ValidatedDropType),
+}
+
+/// [`EngineCore::parse_sql_prepared`] の結果（`$n` を含む SQL の束縛前テンプレート。Issue #935・WIRE-12）。
+/// フィールドは非公開。
+#[derive(Debug, Clone)]
+pub struct PreparedSql { /* private */ }
+
+impl PreparedSql {
+    pub fn param_types(&self) -> &[crate::sql::params::PreparedParamType]
+    pub fn parsed_if_unparameterized(&self) -> Option<&ParsedSql>
+    pub fn expanded_bound_bytes(&self, values: &[Option<Vec<u8>>]) -> usize
+    pub fn param_count(&self) -> u16
+}
+
+/// NoSQL 表層 `plan` 検索の束縛済み部品（TASK-186・NOSQL-2）。
+#[derive(Debug, Clone, PartialEq)]
+#[non_exhaustive]
+pub struct PlanSearchBinding { /* private */ }
+
+impl PlanSearchBinding {
+    pub fn new(
+        projection: Vec<crate::sql::parser::ProjectedColumn>,
+        metadata_filters: Vec<crate::declarative_filter::MetadataFilter>,
+    ) -> Self
+    #[must_use]
+    pub fn with_where_filters(
+        mut self,
+        expr_filters: Vec<crate::sql::udf_call::BoundExpr>,
+        or_filters: Vec<crate::sql::where_tree::BoundOrGroup>,
+    ) -> Self
+}
+
+/// `catalog::explain_index_names_in_txn` によるカタログ全件走査の累計回数（観測用。機微情報なし）。
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ExplainIndexNameScanStats {
+    pub scans: u64,
+}
 ~~~
 
 エラー型:
@@ -264,7 +549,7 @@ pub enum OpenWithEngineError {
 
 | Name (`EngineCore` builder method) | Purpose |
 |------|------|
-| `with_provider` | 検索 provider の差し替え（CORE-13） |
+| `with_provider`（`path` を取る関連コンストラクタ。`self` ビルダーではない） | 検索 provider を直接注入して構築（CORE-13。`open_with_engine` / `from_storage` と同じ構築系） |
 | `with_embedder` | ファイル形 `INSERT` のベクトル埋め込み注入 |
 | `with_query_planner` / `with_tiered_query_planner` | LLM クエリ展開クライアントの注入（単一 / ティア別） |
 | `with_incremental_config` | ファイル形 `INSERT` のチャンク化設定 |
@@ -272,6 +557,10 @@ pub enum OpenWithEngineError {
 | `with_batch_limits` | 一括投入の処理量上限 |
 | `with_precision_policy` | `precision` モード実行契約のサーバー側設定 |
 | `with_dictionary_config` | 辞書的情報源抽出の設定 |
+| `with_transaction_limits` | 明示トランザクション（SQL-31）の持続時間・文数の上限 |
+| `with_dml_limits` | 述語形 UPDATE/DELETE の影響行数上限・複数行 `VALUES` の行数上限（Issue #997。CLI `--max-dml-affected-rows` / `--max-insert-rows`） |
+| `with_partitioned_dml_limits` | 分割実行 DML の資源上限（Issue #1128。CLI `--partitioned-dml-*`） |
+| `with_hnsw_scope` | HNSW opt-in 時に HNSW を使うテーブルの範囲（`HnswScope::All` / `Declared`。CLI `--hnsw-scope`） |
 
 | Name (`EngineCore` SQL 実行メソッド) | Purpose |
 |------|------|
@@ -279,6 +568,13 @@ pub enum OpenWithEngineError {
 | `execute_sql_in_session` | セッション（`SessionState`）を伴う SQL 実行エントリポイント（TASK-82, SQL-10）。`INSERT` を検出した場合は `execute_insert_sql` 相当の経路へ委譲 |
 | `execute_insert_sql` | 単一 `INSERT` 文実行エントリポイント（TASK-80, SQL-10） |
 | `execute_insert_sql_batch` | 複数ファイルを 1 バッチとする `INSERT` 実行エントリポイント（TASK-122, INDEX-4） |
+| `execute_update_sql` / `execute_delete_sql` / `execute_truncate_sql` | SQL テキストによる `UPDATE` / `DELETE` / `TRUNCATE` の入口（0.2.0 追加） |
+| `parse_sql` → `execute_parsed_in_session` / `describe_parsed_in_session` | 拡張クエリプロトコル用の 2 段階 API（Parse と Execute / Describe を分離。0.2.0 追加） |
+| `parse_sql_prepared` → `bind_prepared` / `describe_prepared_in_session` | `$n` パラメータ付き SQL の Parse / Bind / Describe（WIRE-12。0.2.0 追加） |
+| `new_session_transaction` / `begin_implicit_transaction` / `execute_sql_in_txn` / `execute_parsed_in_txn` | 明示・暗黙トランザクション（SQL-31・WIRE-16。0.2.0 追加） |
+| `begin_copy` / `commit_copy_in`（`_in_txn` 版あり） | `COPY FROM STDIN` / `TO STDOUT`（WIRE-17。0.2.0 追加） |
+| `execute_bound_*_in_session` / `explain_bound_*_in_session` | NoSQL 表層（HTTP）向けの束縛済み実行・EXPLAIN 入口（0.2.0 追加） |
+| `show_partitioned_dml_in_session` / `cancel_partitioned_dml_in_session` | 分割実行 DML の進捗照会・取り消し（0.2.0 追加） |
 
 ## Notes
 
@@ -286,7 +582,12 @@ pub enum OpenWithEngineError {
 - `execute_sql` は TASK-75（SQL-1〜4）由来の後方互換 API で、セッション変数を持たないため `SET search_mode` 等セッションを要する statement は受理しない。`execute_sql_in_session` は TASK-82（SQL-10）で `INSERT` 実行経路（`execute_insert_sql` への委譲）をセッション経由の SQL 実行に接続したエントリポイントで、直前に doc comment を持たない（private ヘルパー `read_txn_with_schema` の直後に定義されている）。
 - `execute_insert_sql` / `execute_insert_sql_batch` はいずれも `execute_sql` とは独立した固有メソッドで、`VectorCore` trait へは昇格しない（`crates/engine/api/core_api.snapshot` の対象は `VectorCore` trait 本体のみのため、コア API シグネチャ安定性チェックに影響しない）。`execute_insert_sql_batch` は全文がファイル形であることを要求し、行形が 1 件でも混在すると `22000` で拒否する。一括投入上限超過時は redb・インメモリ索引・`operation_id` 台帳のいずれも変更されない（副作用ゼロ契約）。
 - これら 4 メソッドの詳細な実行順序契約（`sql-execution` カテゴリで扱う `sql::exec::execute_statement` / `sql::parser::bind` 等の内部処理）はこのページの対象外。
-- `CacheEntry` / `CacheState` / `DictCacheEntry` / `DictCacheState` / `PlannerBinding` / `UsingPlanExpansionResult` はいずれも非公開（`pub` なし）の内部型。
+- `CacheEntry` / `CacheState` / `DictCacheEntry` / `DictCacheState` / `PlannerBinding` / `UsingPlanExpansionResult` / `HnswEngineState` はいずれも非公開（`pub` なし）の内部型。
+- `ParsedSql` は `#[non_exhaustive]` （0.2.0 時点で 17 variant）。クレート外の `match` にはワイルドカードアーム（`_ =>`）が必須のため、variant 追加で外部の正しい `match` は壊れない（原文 doc: 「variant を増やしても、クレート外の網羅 `match` を破壊的変更にしないため」）。DDL 系 variant（`DropTable` / `CreateTable` / `AlterTable` / `CreateView` / `DropView` / `CreateIndex` / `DropIndex` / `CreateType` / `DropType`）・`Cursor`・`Partitioned` の doc にある BREAKING CHANGE 注記（Issue #902 / #899 / WIRE-15・TASK-218 / #1129）は、クレート内の網羅 `match`（`EngineCore`）を更新したことの記録。`execute_parsed_in_session` はトランザクション文脈を持たないため `Transaction` / `Cursor` variant を拒否し、トランザクション対応の入口は `execute_sql_in_txn` / `execute_parsed_in_txn`。
+- DDL（`CREATE TABLE` / `DROP TABLE` / `ALTER TABLE` / `CREATE VIEW` / `DROP VIEW` / `CREATE INDEX` / `DROP INDEX` / `CREATE TYPE` / `DROP TYPE`）の実行権限ゲートは `execute_parsed_in_session` が担う（wire-server CLI `--ddl-allowed-users`。未指定は全ユーザー拒否）。
+- 0.1.0 のページでは `open` / `from_storage` / `from_storage_with_engine` / `with_provider` / `plan_query` のシグネチャを実際のソースと異なる形で転記していた。0.2.0 のソース（上記ブロック）で修正済み: `from_storage` は `provider` 引数を取り、`from_storage_with_engine` は infallible（戻り値 `Self`）、`with_provider` は `path` を取る関連関数（`Result<Self, CoreError>`）、`plan_query` は `ctx` / `table` / `question` を取る。`open` の戻り値は `CoreError`（`OpenWithEngineError` を返すのは `open_with_engine` のみ）。
+- Migration (0.1.0 → 0.2.0): 新規 `open_with_durability`（`WriteDurability` を受ける構築時オプション）。`ParsedSql` / `CopyPlan` / `PreparedSql` / `PlanSearchBinding` は新規型。`plan_query_with_classification` / `plan_query_with_mode` / `dictionary_snapshot` / `hnsw_index_cache_stats` は 0.1.0 のソースにも存在したが 0.1.0 のページには未掲載だった（0.2.0 で `index_catalog_gate_cache_stats` / `explain_index_name_scan_stats` が新規）。API の追加差分は `crates/engine/api/core_api.snapshot`（`make core-api-check` の対象）で確認できる。
+- `StorageError` の新 variant は `core.rs` ではなく `storage.rs` で定義される。storage ページを参照。
 - `EngineCore` のフィールドは全て非公開（private）。フィールドへの直接アクセスはできず、`with_*` ビルダーメソッドと公開メソッドのみが公開 API。
 - `PrefilterCache` は `pub(crate)`（クレート内部限定）。
 

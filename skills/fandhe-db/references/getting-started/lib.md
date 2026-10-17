@@ -1,29 +1,36 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/lib.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/lib.rs
 ---
 
 # lib (engine crate root)
 
-`engine` crate（crates.io 公開名 `fandhe-vector-db-engine`）のクレートルート。データロード・検索カーネル・認証・RLS 相当のテナント境界・`redb` ベースの永続化を担う。クエリの受付・応答整形など wire プロトコルの詳細は持たない。
+`engine` crate（crates.io 公開名 `fandhe-db-engine`）のクレートルート。データロード・検索カーネル・認証・RLS 相当のテナント境界・`redb` ベースの永続化を担う。クエリの受付・応答整形など wire プロトコルの詳細は持たない。
 
 ## Signature / Usage
 
 ~~~rust,ignore
-//! engine クレート: vector-db のコアロジック層。
+//! engine クレート: fandhe-db のコアロジック層。
 //!
 //! 責務境界: データロード・検索カーネル・認証・RLS 相当のテナント境界・redb ベースの
 //! 永続化を担う（クエリの受付・応答整形など wire プロトコルの詳細は持たない）。
 //! `wire-server`（バイナリクレート）から呼び出されるライブラリで、
 //! ワークスペース内での相互参照は path 依存に限る。
 
+#![cfg_attr(not(test), deny(clippy::print_stderr))]
+
 pub mod arena;
 pub mod batch_fallback;
 pub mod batch_limits;
 pub mod batch_search;
 pub mod buffer_pool;
+pub mod bytea;
 pub mod catalog;
 pub mod chunking;
+pub(crate) mod column_rewrite;
+pub(crate) mod constraint;
 pub mod core;
+pub mod crypto;
+pub mod datetime;
 pub mod declarative_filter;
 pub mod dictionary;
 pub mod dispatch;
@@ -35,7 +42,10 @@ pub mod hnsw;
 pub mod hybrid;
 pub mod incremental;
 pub mod isa;
+pub mod json;
 pub mod kernel;
+pub(crate) mod key_index;
+pub mod numeric;
 pub mod parallel_search;
 pub mod policy;
 pub mod precision;
@@ -44,6 +54,7 @@ pub mod recovery;
 pub mod rerank;
 pub mod rls;
 pub mod row_codec;
+pub mod scalar_float;
 pub mod scoring_boost;
 pub mod search_engine;
 pub mod sparse;
@@ -51,8 +62,11 @@ pub(crate) mod sq8;
 pub mod sql;
 pub mod storage;
 pub mod tenant;
+#[cfg(feature = "test-sync-points")]
+pub mod test_sync;
 pub mod tiering;
 pub mod txn;
+pub mod uuid;
 pub mod wasm_udf;
 
 /// engine クレートの識別子。
@@ -64,7 +78,10 @@ pub const ENGINE_NAME: &str = "engine";
 
 ## Notes
 
-- `f16` と `sq8` のみ `pub(crate)`（クレート内部限定）で、他は全て `pub mod`。公開 API サーフェスの中心は `core`（`VectorCore` trait / `EngineCore`）。
+- `f16`・`sq8`・`column_rewrite`・`constraint`・`key_index` が `pub(crate)`（クレート内部限定）で、他は全て `pub mod`。公開 API サーフェスの中心は `core`（`VectorCore` trait / `EngineCore`）。
+- 0.2.0 で追加された `pub mod`: `bytea` / `crypto` / `datetime` / `json` / `numeric` / `scalar_float` / `uuid`、および feature `test-sync-points` 限定の `test_sync`（既定ビルドには存在しない）。`pub(crate)` の新モジュール: `column_rewrite` / `constraint` / `key_index`。
+- `recovery::stderr_log::write_line` / `log_stderr!` への stderr 出力一本化（Issue #1081）に伴い、通常ビルドでは `#![cfg_attr(not(test), deny(clippy::print_stderr))]` で `eprintln!` を lint 禁止している。
+- 上記コードブロックは `//!` の長い対応タスク解説（TASK-66〜TASK-148 ほか）を省略し、モジュール宣言のみを 0.2.0 の `lib.rs` から転記している。
 - `#[cfg(test)] mod test_util;` はテスト専用の非公開モジュールで、公開 API には含まれない。
 - `ENGINE_NAME` 定数はドキュメント上「TASK-66 時点の雛形」と明記されており、実運用上の意味を持つ値ではない。
 - 各モジュールの割当先はカテゴリ別に分割している: `sql` は `sql` カテゴリ、`hnsw` / `hybrid` / `search_engine` / `sparse` / `rerank` / `scoring_boost` / `precision` / `query_planner` / `tiering` は `search` カテゴリ、`storage` / `row_codec` / `catalog` / `txn` / `recovery` / `incremental` / `arena` / `buffer_pool` は `storage` カテゴリ、`rls` / `tenant` / `policy` は `security` カテゴリ、`kernel` / `isa` / `dispatch` / `gpu_batch` / `batch_search` / `batch_fallback` / `batch_limits` / `parallel_search` は `performance` カテゴリ、`wasm_udf` / `declarative_filter` / `embedding` / `chunking` / `dictionary` は `extensions` カテゴリで別途収録（本 getting-started scope では扱わない）。
