@@ -1,5 +1,7 @@
 # samples
 
+`ark-ui` / `chakra-ui` のスタイル付き Table とは別物（ヘッドレス）の実例。
+
 | Name | Description | Path |
 |------|-------------|------|
 | Dynamic Columns | Derive columns, sort fns and filter fns at runtime from the data keys | [basic-dynamic-columns.md](./basic-dynamic-columns.md) |

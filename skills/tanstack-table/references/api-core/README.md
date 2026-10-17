@@ -1,5 +1,7 @@
 # api-core
 
+TanStack Table (ヘッドレス、JSX を生成しない) のコア API。`ark-ui` / `chakra-ui` / Android Compose / WinUI の `Table` `Column` `Row` `Cell` とは別物。
+
 | Name | Description | Path |
 |------|-------------|------|
 | AccessorFn / DeepKeys / DeepValue | Type utilities for reading cell values through an accessor and deep key paths | [accessor-fn-deep-keys.md](./accessor-fn-deep-keys.md) |
