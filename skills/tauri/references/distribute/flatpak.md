@@ -73,10 +73,8 @@ modules:
       # Copy binary
       - 'install -Dm755 deb-extract/usr/bin/<executable_name> /app/bin/<executable_name>'
 
-      # If you bundle files with additional resources, you should copy them:
-      - mkdir -p /app/lib/<product_name>
-      - cp -r deb-extract/usr/lib/<product_name>/. /app/lib/<product_name>
-      - chmod -R u+rwX,go+rX,go-w /app/lib/<product_name>
+      # Copy additional resources only if the deb contains them:
+      - 'if [ -d deb-extract/usr/lib/<product_name> ]; then mkdir -p /app/lib/<product_name> && cp -r deb-extract/usr/lib/<product_name>/. /app/lib/<product_name> && chmod -R u+rwX,go+rX,go-w /app/lib/<product_name>; fi'
 
       # Copy desktop file + ensure the right icon is set
       - sed -i 's/^Icon=.*/Icon=<identifier>/' deb-extract/usr/share/applications/<product_name>.desktop
@@ -136,6 +134,7 @@ python3 flatpak-builder-tools/cargo/flatpak-cargo-generator.py -o cargo-sources.
 
 ## Notes
 
+- The additional-resources copy is wrapped in an `if [ -d ... ]` guard (upstream copies unconditionally, which fails for apps without bundled resources).
 - The tray snippet is adjusted from the source to compile on v2: added `use tauri::{tray::TrayIconBuilder, Manager};` and `.build(app)` (the source calls `.build()` without the manager argument).
 - The source installs runtime 46 but its manifest uses runtime-version `'47'`; the install command is aligned to 47 here. The Gnome runtime includes all dependencies of the standard Tauri app with their correct versions.
 - If your binary needs more libraries than the default tauri app, add them to the manifest. Including a locally built `.so` is only suitable for fast local development; build the library from source inside the flatpak for the final build.
