@@ -1,6 +1,6 @@
 # JS ゼロ SSG 利用ガイド（`fandhe-frontend-server`）
 
-クライアント JavaScript を一切読み込まない静的サイト構成での制約と代替パターンを扱うガイド。イシュー #1118（styled Accordion が JS ゼロ SSG で常時閉のまま）を契機に作成された。
+クライアント JavaScript を一切読み込まない静的サイト構成での制約と代替パターンを扱うガイド（styled Accordion などの開閉状態がビルド時の初期状態に固定され、クリックで切り替わらない）。
 
 ## Signature / Usage
 
@@ -39,7 +39,7 @@ fn disclosure_panel(summary_text: &str, body_text: &str) -> Node {
 ## Notes
 
 - 部品の開閉状態は SSR/SSG ビルド時に Rust コード側が渡した引数でそのまま出力される。`data-state`（`open`/`closed` 等）属性の書き換えは `fandhe-frontend-wasm-full` のクライアント側ハイドレーションが担当するため、JS ゼロ構成ではハイドレーション自体が読み込まれず初期状態が固定される
-- クリック配線対象部品は `crates/wasm-full/src/headless.rs` の `MAPPING_TABLE` に `(scope, part)` → アクション文字列として登録済み: collapsible / dialog / popover / tooltip / menu / tabs / radio-group / select / signature-pad / combobox / toggle-group / tree-view / calendar / accordion。Accordion は `scope: "accordion"`, `part: "item-trigger"`, `action: "toggle"`, `requires_value: true` の 1 エントリのみで、`item-trigger` パーツのクリックが `toggle` 操作へ写像される（fandhe-frontend-headless-ui 0.27.0 以降が前提）。マッピング表にない組は `None` を返す fail-closed 契約
+- クリック配線対象部品は `crates/wasm-full/src/headless.rs` の `MAPPING_TABLE` に `(scope, part)` → アクション文字列として登録済み（`fandhe-frontend-wasm-full` 0.48.1 の `headless.rs` で確認した 18 scope）: collapsible / dialog / popover / tooltip / menu / tabs / radio-group / select / signature-pad / combobox / toggle-group / tree-view / calendar / accordion / menubar / navigation-menu / sidebar / pin-input。公式ガイドの列挙は執筆時点のスナップショットで前半 14 件のみ（後半 4 件は 0.48.1 で追加確認）。Accordion は `scope: "accordion"`, `part: "item-trigger"`, `action: "toggle"`, `requires_value: true` の 1 エントリのみで、`item-trigger` パーツのクリックが `toggle` 操作へ写像される（fandhe-frontend-headless-ui 0.27.0 以降が前提）。マッピング表にない組は `None` を返す fail-closed 契約
 - 開閉インタラクションが必要で JS を読み込まない場合はブラウザネイティブの `<details>`/`<summary>` 要素を使う。`fandhe-frontend-core` は details/summary 専用のタグ関数を持たないため汎用 `el()` を使う。Theme トークンで CSS を別途定義すれば既存部品との見た目統一が可能
 - 排他制御が必要な場合は `<details name="...">` で同じ `name` を持つ要素どうしが排他的に開閉する（HTML Living Standard の比較的新しい機能。古いブラウザでは無視され各要素が独立して開閉する）
 - `generate_assets` は `Node` 木・`render()` を経由しないため既定エスケープ（REQ-1）は適用されない。コンテンツは書き込み前に呼び出し側で処理する必要がある（XML エスケープ等）。HTML ページ生成には別途 `generate_pages(pages: &[(String, Node)], out_dir: &Path) -> Result<Vec<PathBuf>, SsgError>` を使う
