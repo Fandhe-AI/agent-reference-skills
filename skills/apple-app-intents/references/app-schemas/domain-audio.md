@@ -76,5 +76,5 @@ enum AudioItem {
 - [AppIntent(schema:)](./appintent-schema-macro.md)
 - [App schema base types](./app-schema-base-types.md)
 - [Clock domain](./domain-clock.md)
-- IntentValueQuery
-- AudioPlaybackIntent
+- [IntentValueQuery](../visual-intelligence/intentvaluequery.md)
+- [AudioPlaybackIntent](../intent-types/audioplaybackintent.md)

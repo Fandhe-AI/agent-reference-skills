@@ -33,4 +33,4 @@ var activate: some AppSchemaIntent
 - [AppIntent(schema:)](./appintent-schema-macro.md)
 - [App schema base types](./app-schema-base-types.md)
 - [Previous schema types](./assistant-schemas-legacy.md)
-- Visual intelligence schema domain
+- [Visual intelligence schema domain](../visual-intelligence/domain-visual-intelligence.md)

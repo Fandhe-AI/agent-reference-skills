@@ -76,4 +76,4 @@ struct MyStartWorkoutIntent: StartWorkoutIntent {
 - [PauseWorkoutIntent](./pauseworkoutintent.md)
 - [ResumeWorkoutIntent](./resumeworkoutintent.md)
 - [StartDiveIntent](./startdiveintent.md)
-- SystemIntent
+- [SystemIntent](../intent-types/systemintent.md)
