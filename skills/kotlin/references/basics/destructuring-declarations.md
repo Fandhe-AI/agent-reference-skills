@@ -45,9 +45,9 @@ for ((key, value) in map) {
 The standard library provides:
 
 ```kotlin
-operator fun <K, V> Map<K, V>.iterator(): Iterator<Map.Entry<K, V>> = entrySet().iterator()
-operator fun <K, V> Map.Entry<K, V>.component1() = getKey()
-operator fun <K, V> Map.Entry<K, V>.component2() = getValue()
+operator fun <K, V> Map<K, V>.iterator(): Iterator<Map.Entry<K, V>> = entries.iterator()
+operator fun <K, V> Map.Entry<K, V>.component1() = key
+operator fun <K, V> Map.Entry<K, V>.component2() = value
 ```
 
 ### Underscore for unused variables
@@ -136,6 +136,7 @@ Maven:
 ## Notes
 
 - Name-based destructuring is Experimental (see components stability levels). Review and resolve warnings reported in `name-mismatch` mode before enabling `complete`; they show which declarations the compiler interprets differently.
+- The official page (kotlin-web-site 0b10373) writes the `Map` operators with `entrySet()` / `getKey()` / `getValue()`; kotlinc 2.4.21 rejects them (unresolved reference), so this page uses the Kotlin `entries` / `key` / `value` properties.
 - You could also return a `Pair<Int, Status>`, but a named data class is often better.
 
 ## Related

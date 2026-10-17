@@ -26,13 +26,13 @@ dependencies {
 }
 ```
 
-## Organize
+### Organize
 
 - **Use Kotlin DSL** instead of the Groovy DSL: no second language to learn, strict typing gives better IDE refactoring and auto-completion.
 - **Use a version catalog** (`libs.versions.toml`) to centralize versions, libraries, and plugins.
 - **Use convention plugins** to encapsulate and reuse common build logic across build files.
 
-## Optimize
+### Optimize
 
 - **Local build cache**: reuse outputs produced by earlier builds.
 - **Configuration cache**: caches the result of the configuration phase and skips it when nothing changed. Also enables parallel execution of independent tasks within a project, and implicitly enables `org.gradle.parallel`. It doesn't support all core Gradle plugins yet.

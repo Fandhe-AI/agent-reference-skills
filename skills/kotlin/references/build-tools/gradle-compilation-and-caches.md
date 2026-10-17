@@ -14,19 +14,19 @@ Enable build reports in `gradle.properties`:
 kotlin.build.report.output=file
 ```
 
-## Incremental compilation
+### Incremental compilation
 
 - Enabled by default for Kotlin/JVM and Kotlin/JS. Tracks classpath changes between builds so only affected files are compiled; works with the Gradle build cache and compilation avoidance.
 - Kotlin/JVM uses classpath snapshots: fine-grained snapshots (class member details; coarse-grained snapshots are created for `.jar` files in the Gradle cache) and coarse-grained snapshots (class ABI hash only; all dependent classes recompile when ABI changes).
 - Kotlin/JS uses a different approach based on history files.
 - Disable: `kotlin.incremental=false` (JVM), `kotlin.incremental.js=false` (JS), or `-Pkotlin.incremental=false` / `-Pkotlin.incremental.js=false` on every build. After disabling, incremental caches become invalid and the first build is never incremental.
 
-## Build and configuration cache
+### Build and configuration cache
 
 - Build cache: disable for all Kotlin tasks with `-Dkotlin.caching.enabled=false`.
 - Configuration cache: the Kotlin plugin uses it automatically once you enable it in Gradle.
 
-## Kotlin daemon with Gradle
+### Kotlin daemon with Gradle
 
 - Runs with the Gradle daemon; runs separately from it when compiling through the IntelliJ IDEA built-in build system. Starts at Gradle's execution stage when a Kotlin compile task starts, stops with the Gradle daemon or after two idle hours. Uses the same JDK as the Gradle daemon.
 - Ways to set JVM arguments (each overrides the ones before it): Gradle daemon arguments inheritance; `kotlin.daemon.jvm.options` system property; `kotlin.daemon.jvmargs` property; `kotlin` extension; specific task definition.
@@ -70,12 +70,12 @@ Behavior with JVM arguments:
 - Not specified arguments inherited from the Gradle daemon: `-Xmx`, `-XX:MaxMetaspaceSize`, `-XX:ReservedCodeCacheSize` (default `320m`).
 - Defaults: `-XX:UseParallelGC` (only if no other GC specified), `-ea`, `-XX:+UseCodeCacheFlushing`, `-Djava.awt.headless=true`, `-D{java.servername.property}={localhostip}`, `--add-exports=java.base/sun.nio.ch=ALL-UNNAMED` (JDK 16+ only). The list may vary between versions; check a running process with VisualVM.
 
-## Rolling back to the previous compiler
+### Rolling back to the previous compiler
 
 - K2 is the default from Kotlin 2.0.0. For Kotlin 2.0.0–2.3.21, roll back by setting the language version to `1.9` or using `-language-version 1.9`.
 - From Kotlin 2.4.0 onward you can't roll back to the previous compiler.
 
-## Trying the latest language version
+### Trying the latest language version
 
 From Kotlin 2.0.0, set `kotlin.experimental.tryNext` in `gradle.properties` to raise the language version one above the default (e.g. 2.0 becomes 2.1 in Kotlin 2.0.0):
 
@@ -83,7 +83,7 @@ From Kotlin 2.0.0, set `kotlin.experimental.tryNext` in `gradle.properties` to r
 ./gradlew assemble -Pkotlin.experimental.tryNext=true
 ```
 
-## Build reports
+### Build reports
 
 Build reports show durations of compilation phases and the reasons a compilation was not incremental; the language version used per task and the Kotlin version are shown too (the compiler used is visible in Gradle build scans since Kotlin 1.9.0).
 

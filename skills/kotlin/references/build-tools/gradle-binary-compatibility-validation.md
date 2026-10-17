@@ -22,7 +22,7 @@ Use an `abiValidation {}` block for custom configuration. In multi-module projec
 ./gradlew updateKotlinAbi
 ```
 
-## Tasks
+### Tasks
 
 | Task | Behavior |
 | --- | --- |

@@ -31,7 +31,7 @@ Add a dependency:
 </dependencies>
 ```
 
-## Standard library
+### Standard library
 
 Add it manually or let the `<extensions>` option add `kotlin-stdlib` automatically if missing (an already declared `kotlin-stdlib` is not overwritten).
 
@@ -58,7 +58,7 @@ Opt out of the automatic addition (this also disables registration of source roo
 
 Older targets: for JDK 7 or 8 with Kotlin older than 1.8 use `kotlin-stdlib-jdk7` / `kotlin-stdlib-jdk8`; older than 1.2 use `kotlin-stdlib-jre7` / `kotlin-stdlib-jre8`.
 
-## Test libraries and reflection
+### Test libraries and reflection
 
 ```xml
 <dependencies>
@@ -75,7 +75,7 @@ Older targets: for JDK 7 or 8 with Kotlin older than 1.8 use `kotlin-stdlib-jdk7
 </dependencies>
 ```
 
-## kotlinx libraries
+### kotlinx libraries
 
 Use the base artifact name or the name with a `-jvm` suffix (check the library README on klibs.io):
 
@@ -99,7 +99,7 @@ Use the base artifact name or the name with a `-jvm` suffix (check the library R
 </dependencies>
 ```
 
-## Manage dependencies with a BOM
+### Manage dependencies with a BOM
 
 `kotlin-bom` specifies the versions of Kotlin libraries (`kotlin-stdlib`, `kotlin-reflect`, `kotlin-test`) for one Kotlin release, so transitive Kotlin artifacts resolve to the same version.
 

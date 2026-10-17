@@ -52,7 +52,7 @@ The extension configuration replaces the whole `<executions>` section. Default M
 </plugin>
 ```
 
-## JVM target version resolution
+### JVM target version resolution
 
 Priority order: 1. `kotlin.compiler.jdkRelease` or `kotlin.compiler.jvmTarget`; 2. `maven.compiler.release`; 3. `maven.compiler.target`.
 
@@ -68,7 +68,7 @@ Priority order: 1. `kotlin.compiler.jdkRelease` or `kotlin.compiler.jvmTarget`; 
 
 Do not set different JDK options for `kotlin.compiler.jdkRelease` and `kotlin.compiler.jvmTarget` at the same time (error). `<extensions>` only checks project-level properties and the global `maven-compiler-plugin` configuration, not `<executions>`.
 
-## Manual configuration
+### Manual configuration
 
 Kotlin and Java sources: the Java compiler can't see Kotlin declarations until compiled, so Kotlin must run first. Declare `kotlin-maven-plugin` before `maven-compiler-plugin`, disable the default executions (`default-compile`, `default-testCompile`, with phase `none`), and add custom executions.
 
@@ -179,7 +179,7 @@ and the plugin with `compile` and `test-compile` executions:
 </plugin>
 ```
 
-## Set JDK version
+### Set JDK version
 
 Kotlin supports Maven Toolchains. With `maven-toolchains-plugin` configured, the Kotlin Maven plugin picks up the selected JDK:
 
@@ -207,7 +207,7 @@ Kotlin supports Maven Toolchains. With `maven-toolchains-plugin` configured, the
 
 Priority: 1. `jdkHome` option of `kotlin-maven-plugin`; 2. JDK in `maven-toolchains-plugin`; 3. `JAVA_HOME`. The plugin-specific `<jdkToolchain>` option sets the JDK only for Kotlin compilation. Setting `maven-toolchains-plugin` does not affect the `kapt` and `test-kapt` goals (KT-79897); set the version in `JAVA_HOME` instead.
 
-## Configure Java modules (JPMS)
+### Configure Java modules (JPMS)
 
 No extra JPMS options are needed in the build file; Kotlin must be compiled before Maven's Java compiler. Create `${project.basedir}/src/main/java/module-info.java`:
 

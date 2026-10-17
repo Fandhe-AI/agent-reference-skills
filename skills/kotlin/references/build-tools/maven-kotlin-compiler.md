@@ -37,6 +37,36 @@ Many options can be set as properties:
 </project>
 ```
 
+### Execution strategy
+
+Maven uses the Kotlin daemon strategy by default. Switch to "in process":
+
+```xml
+<properties>
+    <kotlin.compiler.daemon>false</kotlin.compiler.daemon>
+</properties>
+```
+
+### Incremental compilation
+
+```xml
+<properties>
+    <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+</properties>
+```
+
+Or run the build with `-Dkotlin.compiler.incremental=true`.
+
+### Explore goals and parameters
+
+```bash
+mvn help:describe \
+  -Dplugin=org.jetbrains.kotlin:kotlin-maven-plugin \
+  -Ddetail=true
+```
+
+Add `-Dgoal=compile` to describe a specific goal.
+
 ## Options / Props
 
 Attributes specific to JVM:
@@ -55,36 +85,6 @@ Attributes specific to JVM:
 | `jdkHome` | `kotlin.compiler.jdkHome` | Include a custom JDK from the specified location instead of default `JAVA_HOME` | | |
 | `jdkToolchain` | `kotlin.compiler.jdkToolchain` | JDK version from the toolchain; only affects Kotlin compilation | | |
 | `-Xadd-modules` | | (Experimental) Resolve the specified root modules in addition to the initial modules; `ALL-MODULE-PATH` resolves all modules on the module path. Passed via `<arg>` | Comma-separated module names or `ALL-MODULE-PATH` | |
-
-## Execution strategy
-
-Maven uses the Kotlin daemon strategy by default. Switch to "in process":
-
-```xml
-<properties>
-    <kotlin.compiler.daemon>false</kotlin.compiler.daemon>
-</properties>
-```
-
-## Incremental compilation
-
-```xml
-<properties>
-    <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-</properties>
-```
-
-Or run the build with `-Dkotlin.compiler.incremental=true`.
-
-## Explore goals and parameters
-
-```bash
-mvn help:describe \
-  -Dplugin=org.jetbrains.kotlin:kotlin-maven-plugin \
-  -Ddetail=true
-```
-
-Add `-Dgoal=compile` to describe a specific goal.
 
 ## Related
 

@@ -30,7 +30,7 @@ configurations.register("customConfiguration") {
 }
 ```
 
-## Variants
+### Variants
 
 | Variant | Gradle versions |
 | --- | --- |

@@ -58,7 +58,7 @@ tasks.named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilation
 
 To find which level is applied, use Gradle `DEBUG` log level: search `"Kotlin compiler args:"` for JVM and JS/WASM tasks, `"Arguments ="` for Native tasks. Third-party plugin authors should apply configuration at the project level to avoid overriding issues.
 
-## Migrate from kotlinOptions {} to compilerOptions {}
+### Migrate from kotlinOptions {} to compilerOptions {}
 
 `kotlinOptions {}` is deprecated from Kotlin 2.0.0 (source: "Before Kotlin 2.2.0, you could configure compiler options using the `kotlinOptions {}` block").
 
@@ -130,7 +130,7 @@ kotlin {
 }
 ```
 
-## Task names
+### Task names
 
 - JVM: `compileKotlin` (production), `compileTestKotlin` (tests), `compile<Name>Kotlin` for custom source sets. List Android tasks with `gradlew tasks --all` and look for `compile*Kotlin` in `Other tasks`.
 - `kotlin.compilerOptions` configures every Kotlin compilation task in the project; override with `tasks.named<KotlinJvmCompile>("compileKotlin") { }` or `tasks.withType<KotlinJvmCompile>().configureEach { }`.
