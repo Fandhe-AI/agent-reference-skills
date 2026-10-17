@@ -72,6 +72,15 @@ Output text is append-only: providers stream `output-text-delta` parts and final
 
 ## Options / Props
 
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `targetLanguage` | `string` | — | Target language as a BCP-47-style tag (e.g. `en`, `es`, `fr-CA`); supported values are provider-specific. |
+| `sourceLanguage` | `string` | — | Optional BCP-47-style source language tag; when absent, providers auto-detect it. |
+| `inputAudioFormat` | `{ type: string; rate?: number }` | — | Format of the raw input audio chunks; must match the chunks sent. |
+| `outputAudioFormat` | `{ type: string; rate?: number }` | provider default | Requested audio format for translated audio chunks. |
+| `providerOptions` | `Record<string, JSONObject>` | — | Provider or model-specific settings keyed by provider name. |
+| `abortSignal` | `AbortSignal` | — | Cancels the translation. |
+
 ### Output audio format
 
 Use `outputAudioFormat` to request a specific audio format for translated audio chunks. When absent, the provider default output format is used.

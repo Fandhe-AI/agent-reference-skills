@@ -127,6 +127,13 @@ Some providers require WebSocket headers for direct streaming STT. In those runt
 
 ## Options / Props
 
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `providerOptions` | `Record<string, JSONObject>` | — | Model-specific settings keyed by provider name (e.g. `openai: { timestampGranularities: ['word'] }`). |
+| `download` | `(options: { url: URL; abortSignal?: AbortSignal }) => Promise<{ data: Uint8Array; mediaType: string \| undefined }>` | built-in download with 2 GiB limit | Download function used when `audio` is a URL. Use `createDownload({ maxBytes })` to customize the size limit. |
+| `abortSignal` | `AbortSignal` | — | Aborts the call; useful with URL downloads. |
+| `headers` | `Record<string, string>` | — | Additional HTTP headers for the request. |
+
 ### Provider-Specific settings
 
 ```ts

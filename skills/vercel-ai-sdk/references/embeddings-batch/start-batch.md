@@ -16,7 +16,7 @@ const batch = await startBatch({
     {
       id: 'france',
       type: 'text',
-      model: 'gpt-5.4-nano',
+      model: 'openai/gpt-5.4-nano',
       prompt: 'What is the capital of France?',
     },
   ],
@@ -53,6 +53,7 @@ const batch = await startBatch({
 
 ## Notes
 
+- The official reference snippet omits `provider` and uses the bare ID `gpt-5.4-nano`; the example above uses `openai/gpt-5.4-nano` because the default AI Gateway expects a `creator/model-name` ID. Alternatively pass `provider` explicitly as in the Batch guide (`provider: anthropic` with `claude-haiku-5-5`).
 - Stability: batch support is experimental and the API may change in patch releases.
 
 ## Related

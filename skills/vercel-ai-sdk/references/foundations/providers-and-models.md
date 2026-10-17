@@ -4,7 +4,7 @@ source: https://ai-sdk.dev/docs/foundations/providers-and-models
 
 # Providers and Models
 
-AI SDK Core offers a standardized approach to interacting with LLMs through a language model specification (`packages/provider/src/language-model/v3` in `vercel/ai`) that abstracts differences between providers, so you can switch providers while using the same API.
+AI SDK Core offers a standardized approach to interacting with LLMs through a language model specification (`packages/provider/src/language-model/v4` in `vercel/ai`) that abstracts differences between providers, so you can switch providers while using the same API.
 
 ## Signature / Usage
 
@@ -46,6 +46,7 @@ Capabilities of popular models (excerpt; Check = supported, Cross = not supporte
 
 ## Notes
 
+- The official page still links the v3 specification; at ai 7 / @ai-sdk/provider 4 the current contract is `LanguageModelV4` (packages/provider/src/language-model/v4/language-model-v4.ts), as referenced by the middleware and testing pages.
 - The table above is an excerpt of the model list on the official page; the full table (xAI, OpenAI, Anthropic, Google, Mistral, DeepSeek, Cerebras, Groq rows) is on the source page and is not exhaustive. Model IDs are transcribed as published and not normalized.
 - Self-hosted models: Ollama provider (community), LM Studio (OpenAI-compatible), Baseten, Browser AI; any self-hosted provider supporting the OpenAI specification works with the OpenAI Compatible Provider.
 - Community providers listed on the page include Ollama (`ollama-ai-provider`), OpenRouter (`@openrouter/ai-sdk-provider`), Cloudflare Workers AI (`workers-ai-provider`), Portkey, Mem0, Letta, Claude Code Provider (`ai-sdk-provider-claude-code`), Codex CLI Provider (`ai-sdk-provider-codex-cli`), Gemini CLI, OpenCode, A2A, ACP, MCP Sampling and others; see the source page for the full list.

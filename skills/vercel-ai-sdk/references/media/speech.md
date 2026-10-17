@@ -45,6 +45,12 @@ Use `recordInputs: false` or `recordOutputs: false` when the text or output meta
 
 ## Options / Props
 
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `providerOptions` | `Record<string, JSONObject>` | — | Model-specific settings keyed by provider name. |
+| `abortSignal` | `AbortSignal` | — | Aborts the process or sets a timeout. |
+| `headers` | `Record<string, string>` | — | Additional HTTP headers for the request. |
+
 ### Provider-Specific settings
 
 Set model-specific settings with the `providerOptions` parameter.

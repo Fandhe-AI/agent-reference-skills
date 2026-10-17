@@ -29,6 +29,24 @@ const uint8Array = video.uint8Array; // Uint8Array video data
 
 ## Options / Props
 
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `aspectRatio` | `string` | — | `{width}:{height}`, or `'adaptive'` to inherit the ratio from input media (provider-specific support). |
+| `resolution` | `string` | — | `{width}x{height}`; supported values differ per model and provider. |
+| `duration` | `number` | — | Duration in seconds (some models only). |
+| `fps` | `number` | — | Frames per second (some models only). |
+| `generateAudio` | `boolean` | — | Whether the model generates audio alongside the video (some models only). |
+| `n` | `number` | — | Number of videos to generate. |
+| `maxVideosPerCall` | `number` | model limit | Maximum videos per API call; more calls are made when `n` exceeds it. |
+| `seed` | `number` | — | Same seed produces the same video, if supported. |
+| `frameImages` | `Array<{ image: DataContent; frameType: "first_frame" \| "last_frame" }>` | — | Role-tagged images for first-last-frame generation. |
+| `inputReferences` | `Array<DataContent \| { data: DataContent; mediaType?: string }>` | — | Reference images or videos for reference-to-video generation. |
+| `providerOptions` | `ProviderOptions` | — | Provider-specific settings; become request body properties. |
+| `abortSignal` | `AbortSignal` | — | Cancels the call. |
+| `poll` | `{ intervalMs?: number; timeoutMs?: number; delay?: ... }` | `intervalMs` 5000, `timeoutMs` 600000 | Polling configuration; `delay` is a custom sleep for durable workflows. |
+| `webhook` | `() => PromiseLike<{ url: string; received: PromiseLike<...> }>` | — | Webhook factory for models with native webhook support. |
+| `headers` | `Record<string, string>` | — | Additional HTTP headers for the request. |
+
 ### Aspect Ratio
 
 The aspect ratio is specified as a string in the format `{width}:{height}`. Models only support a few aspect ratios, and the supported aspect ratios are different for each model and provider.
