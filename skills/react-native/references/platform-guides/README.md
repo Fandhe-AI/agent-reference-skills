@@ -3,8 +3,8 @@
 | Name | Description | Path |
 |------|-------------|------|
 | App Extensions | App extensions let you provide custom functionality… | [app-extensions.md](./app-extensions.md) |
-| Communication between native and React Native | Summarizes the techniques for communicating between… | [communication-android.md](./communication-android.md) |
-| Communication between native and React Native | Summarizes the techniques for communicating between… | [communication-ios.md](./communication-ios.md) |
+| Communication between native and React Native (Android) | Summarizes the techniques for communicating between… | [communication-android.md](./communication-android.md) |
+| Communication between native and React Native (iOS) | Summarizes the techniques for communicating between… | [communication-ios.md](./communication-ios.md) |
 | Headless JS | Headless JS is a way to run tasks in JavaScript while… | [headless-js-android.md](./headless-js-android.md) |
 | Linking Libraries | Not every app uses all native capabilities, so many… | [linking-libraries-ios.md](./linking-libraries-ios.md) |
 | Publishing to Apple App Store | The publishing process is the same as any other nativ… | [publishing-to-app-store.md](./publishing-to-app-store.md) |

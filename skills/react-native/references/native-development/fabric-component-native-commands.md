@@ -49,6 +49,7 @@ Flow variant (`WebViewNativeComponent.js`):
 import type {CodegenTypes, HostComponent, ViewProps} from 'react-native';
 -import {codegenNativeComponent} from 'react-native';
 +import {codegenNativeCommands, codegenNativeComponent} from 'react-native';
++import * as React from 'react';
 
 type WebViewScriptLoadedEvent = $ReadOnly<{|
   result: "success" | "error",
@@ -166,7 +167,11 @@ Rerun codegen to generate the new types needed by the native code.
 ```bash
 cd android
 ./gradlew generateCodegenArtifactsFromSchema
+```
 
+Output:
+
+```text
 BUILD SUCCESSFUL in 837ms
 14 actionable tasks: 3 executed, 11 up-to-date
 ```
@@ -280,9 +285,11 @@ Run your app with the usual commands. Tap the refresh button to see the page get
 
 - Diff context aligned with the Fabric Native Components introduction spec (root react-native imports, CodegenTypes namespace); the official page uses deep imports from react-native/Libraries/...
 - React import added; the official snippet uses React.* at runtime without importing it.
-- In TypeScript, `React.ElementRef` is deprecated; the correct type is `React.ComponentRef`. However, due to a bug in Codegen, using `ComponentRef` will crash the app (per the official page; the fix needs a new React Native release).
+- In TypeScript, `React.ElementRef` is deprecated; the correct type is `React.ComponentRef`. However, due to a bug in Codegen, using `ComponentRef` in the NativeCommands spec will crash the app (per the official page; the fix needs a new React Native release). The Codegen issue concerns the viewRef parameter type in the NativeCommands spec; app-side refs (as in Measuring the Layout and Direct Manipulation) can use ComponentRef.
+- Corrected: the official Flow spec uses React.ElementRef without importing React; `import * as React from 'react'` is added.
+- Deviation: command output shown in the same block on the official page is split into a separate text block.
+- The @ReactProp name (sourceUrl) differs from the spec prop sourceURL as in the official page; it is unused because props are routed through the Codegen delegate returned by getDelegate().
 - Corrected: the official App diff imports `../specs/WebViewNativeComponent`, but the introduction guide places `App.tsx` and `specs/` side by side in `Demo/`; the import path is `./specs/WebViewNativeComponent` here.
-- All Native Commands must have a first parameter of type `React.ElementRef`.
 - Deviation from official docs: Flow nullable type written as ?T (the official sample's postfix T? is not valid Flow syntax).
 - Cross-skill: Android `WebView` / WebKit `WKWebView` APIs belong to android-architecture / apple-uikit; this page covers only the React Native native-command boundary.
 

@@ -31,7 +31,7 @@ npx @react-native-community/cli@latest init SampleApp --version "<current React 
         "TestModule": {
           "className": "<iOS-class-implementing-the-RCTModuleProvider-protocol>",
           "unstableRequiresMainQueueSetup": false,
-          "conformsToProtocols": ["RCTImageURLLoader", "RCTURLRequestHandler", "RCTImageDataDecoder"],
+          "conformsToProtocols": ["RCTImageURLLoader", "RCTURLRequestHandler", "RCTImageDataDecoder"]
         }
       },
       "components": {
@@ -53,7 +53,11 @@ npx @react-native-community/cli@latest init SampleApp --version "<current React 
 
 ```bash
 node node_modules/react-native/scripts/generate-codegen-artifacts.js
+```
 
+Output:
+
+```text
 Usage: generate-codegen-artifacts.js -p [path to app] -t [target platform] -o [output path]
 
 Options:
@@ -97,6 +101,9 @@ node node_modules/react-native/scripts/generate-codegen-artifacts.js \
 
 ## Notes
 
+- Corrected: the official codegenConfig snippet has a trailing comma after conformsToProtocols, which is invalid JSON; removed.
+- Deviation: command output shown in the same block on the official page is split into a separate text block.
+- The Turbo Native Modules (iOS), Cross-Platform C++ and Fabric Native Components guides map names with ios.modulesProvider / ios.componentProvider ({"<JS name>": "<ObjC class>"}) instead of ios.modules / ios.components; both forms appear in the 0.87 docs.
 - Codegen searches all the dependencies of the app for JS files that respect specific conventions: Turbo Native Module spec files must be prefixed with `Native` (e.g. `NativeLocalStorage.ts`); Fabric Native Component spec files must be suffixed with `NativeComponent` (e.g. `WebViewNativeComponent.ts`).
 - The official page's init command interpolates the current docs version into `--version`.
 - Android: Codegen is integrated with the React Native Gradle Plugin (RNGP). The task runs `generateCodegenArtifactsFromSchema` on all the imported projects of the app (the app and all the linked node modules). Generated code goes in the corresponding `node_modules/<dependency>` folder, e.g. `SampleApp/node_modules/my-fabric-component/android/build/generated/source/codegen`; for the app, `android/app/build/generated/source/codegen`.

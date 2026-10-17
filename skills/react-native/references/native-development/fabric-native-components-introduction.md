@@ -132,15 +132,17 @@ const styles = StyleSheet.create({
 export default App;
 ```
 
-Run the app. Android:
+Run the app from the `Demo` folder. Android:
 
 ```bash
+cd Demo
 yarn run android
 ```
 
 iOS:
 
 ```bash
+cd Demo
 yarn run ios
 ```
 
@@ -151,7 +153,9 @@ yarn run ios
 - The suffix `NativeComponent` is not only a convention: Codegen uses it to detect a spec file. The spec is used by Codegen to generate the C++, Objective-C++ and Java that connect platform code to the JavaScript runtime.
 - The spec has three main parts: `WebViewScriptLoadedEvent` (supporting data type for the event data passed from native to JavaScript), `NativeProps` (the props that can be set on the component), and the `codegenNativeComponent` statement (generates code for the custom component and defines a name used to match the native implementations). As with Native Modules, multiple specification files can live in `specs/`. Supported types and platform mappings are in the Appendix (Codegen typings).
 - On iOS, the `componentProvider` declaratively maps the name of the JS component exported by the spec (`CustomWebView`) to the iOS class that implements it natively (`RCTWebView`).
-- Step 2 (building your native code) is split by platform; the official page embeds the Android and iOS guides. See the Android and iOS pages linked below.
+- Deviation: the official page omits `cd Demo` before running the app; added for a runnable sequence.
+- The Using Codegen page documents `ios.modules` / `ios.components` instead of the `ios.componentProvider` form used here; both forms appear in the 0.87 docs.
+- The native code step (step 3 in the list above; the official page numbers its "Building your Native Code" heading as a second "2.") is split by platform; the official page embeds the Android and iOS guides. See the Android and iOS pages linked below.
 - This guide creates a Native Component that only works with the New Architecture. Supporting both the New Architecture and the Legacy Architecture requires the backwards compatibility guide in the React Native New Architecture working group repository.
 - Docusaurus highlight markers from the official page are removed; snippets show the final code.
 - Deviation from official docs: Flow nullable type written as ?T (the official sample's postfix T? is not valid Flow syntax).

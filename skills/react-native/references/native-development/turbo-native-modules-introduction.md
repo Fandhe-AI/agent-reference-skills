@@ -74,7 +74,11 @@ export default (TurboModuleRegistry.getEnforcing<Spec>(
 ```bash
 cd android
 ./gradlew generateCodegenArtifactsFromSchema
+```
 
+Output:
+
+```text
 BUILD SUCCESSFUL in 837ms
 14 actionable tasks: 3 executed, 11 up-to-date
 ```
@@ -190,6 +194,8 @@ export default App;
 
 ## Notes
 
+- `SafeAreaView` from react-native used in this sample is deprecated in the 0.87 docs; use react-native-safe-area-context in real apps.
+- Deviation: command output shown in the same block on the official page is split into a separate text block.
 - Corrected: the official Flow spec imported TurboModule twice and omitted the default export.
 - Docusaurus highlight markers from the official page are removed; snippets show the final code.
 - The specification declares the methods and data types that pass back and forth between native code and the React Native JavaScript runtime. A Turbo Native Module is both the specification, the native code you write, and the Codegen interfaces generated from the specification.

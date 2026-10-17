@@ -115,7 +115,7 @@ std::string NativeSampleModule::reverseString(jsi::Runtime& rt, std::string inpu
 
 **Android.** Create `SampleApp/android/app/src/main/jni/CMakeLists.txt`:
 
-```shell
+```cmake
 cmake_minimum_required(VERSION 3.13)
 
 # Define the library name here.
@@ -155,11 +155,11 @@ Modify `SampleApp/android/app/build.gradle`, within the existing `android` block
 }
 ```
 
-From `SampleApp/android/app/src/main/jni`, download the original `OnLoad.cpp` (the official page interpolates the core branch name for the current version into the URL):
+From the project root (`SampleApp`), download the original `OnLoad.cpp` into the `jni` folder (the official page interpolates the core branch name for the current version into the URL):
 
 ```sh
 RN_CORE_BRANCH="0.87-stable"
-curl -O "https://raw.githubusercontent.com/react/react-native/${RN_CORE_BRANCH}/packages/react-native/ReactAndroid/cmake-utils/default-app-setup/OnLoad.cpp"
+curl -fsSL -o android/app/src/main/jni/OnLoad.cpp "https://raw.githubusercontent.com/react/react-native/${RN_CORE_BRANCH}/packages/react-native/ReactAndroid/cmake-utils/default-app-setup/OnLoad.cpp"
 ```
 
 Then modify `android/app/src/main/jni/OnLoad.cpp`:
@@ -211,7 +211,7 @@ bundle exec pod install
 ```
 
 ```bash
-cd ios
+# from the ios folder
 open SampleApp.xcworkspace
 ```
 
@@ -353,6 +353,11 @@ export default App;
 
 ## Notes
 
+- Deviation: the official page runs `curl -O` from android/app/src/main/jni; here curl runs from the project root with -f so an HTTP error is not saved as OnLoad.cpp.
+- Deviation: the second `cd ios` from the official page is dropped because the previous step already runs inside ios/.
+- The official page labels the CMakeLists.txt snippet as shell; relabeled as cmake.
+- `SafeAreaView` from react-native used in this sample is deprecated in the 0.87 docs; use react-native-safe-area-context in real apps.
+- The Turbo Native Modules (iOS) and Fabric Native Components guides map names with `ios.modulesProvider` / `ios.componentProvider`; the Using Codegen page documents `ios.modules` / `ios.components`. Both forms appear in the 0.87 docs.
 - Docusaurus highlight markers from the official page are removed; snippets show the final code.
 - The official page interpolates the core branch name for the current docs version at build time; here it is a quoted shell variable (`RN_CORE_BRANCH`) set to the 0.87 branch name.
 - All Native Turbo Module spec files must have the prefix `Native`, otherwise Codegen will ignore them.

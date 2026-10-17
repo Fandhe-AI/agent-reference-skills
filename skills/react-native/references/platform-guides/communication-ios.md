@@ -116,6 +116,7 @@ Setting the mode to `RCTRootViewSizeFlexibilityHeight` means `rootViewDidChangeI
 - React Native layout calculation is performed on a separate thread, while native UI view updates are done on the main thread. This may cause temporary UI inconsistencies, a known problem the team is working on.
 - React Native does not perform any layout calculations until the root view becomes a subview of some other view. To hide the view until its dimensions are known, add the root view as a hidden subview and change its visibility in the delegate method.
 - The `RCTRootView` / `initWithBridge:` examples are Objective-C bridge APIs from the 0.87 docs; the guides linked from this page (native UI components, native modules) are in the Legacy Architecture. For native iOS UI and Swift, see the apple-uikit and apple-swift skills; this page covers the React Native interop layer.
+- `RCTRootView initWithBridge:` is a Legacy Architecture (bridge) initializer; since 0.84 legacy code is compiled out of iOS builds by default, so New Architecture apps create the root view with `RCTReactNativeFactory` (`[factory.rootViewFactory viewWithModuleName:initialProperties:]`) as in the Integration with Existing Apps guide, passing the same initialProperties dictionary.
 
 ## Related
 

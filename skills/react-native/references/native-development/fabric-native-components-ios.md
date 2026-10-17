@@ -4,7 +4,7 @@ source: https://reactnative.dev/docs/0.87/fabric-native-components-ios
 
 # Fabric Native Components: iOS
 
-iOS platform code for the Fabric Native Component web view example: run Codegen, write `RCTWebView`, and link the WebKit framework.
+iOS platform code for the Fabric Native Component web view example: run Codegen, write `RCTWebView`, and link the WebKit framework (registration is done in `package.json`).
 
 ## Signature / Usage
 
@@ -27,7 +27,7 @@ Prepare the iOS project using Xcode:
 1. Open the CocoaPods generated Xcode Workspace:
 
 ```bash
-cd ios
+# from the ios folder
 open Demo.xcworkspace
 ```
 
@@ -136,9 +136,11 @@ using namespace facebook::react;
 - (BOOL)urlIsValid:(std::string)propString
 {
   if (propString.length() > 0 && !_sourceURL) {
-    CustomWebViewEventEmitter::OnScriptLoaded result = CustomWebViewEventEmitter::OnScriptLoaded{CustomWebViewEventEmitter::OnScriptLoadedResult::Error};
+    if (_eventEmitter) {
+      CustomWebViewEventEmitter::OnScriptLoaded result = CustomWebViewEventEmitter::OnScriptLoaded{CustomWebViewEventEmitter::OnScriptLoadedResult::Error};
 
-    self.eventEmitter.onScriptLoaded(result);
+      self.eventEmitter.onScriptLoaded(result);
+    }
     return NO;
   }
   return YES;
@@ -190,6 +192,9 @@ To link the WebKit framework in your app:
 - Be careful about committing generated code to your repository. Generated code is specific to each version of React Native. Use npm `peerDependencies` to restrict compatibility with version of React Native.
 - Corrected: the official `updateProps` loads the request whenever `urlIsValid:` returns YES, which includes an empty `sourceURL` where `_sourceURL` is nil; the load is now skipped when `_sourceURL` is nil.
 - Corrected: the official init does not initialize _props with CustomWebViewProps, so the first updateProps static_pointer_casts the base ViewProps; a default CustomWebViewProps instance is now assigned in init.
+- Corrected: updateProps runs before updateEventEmitter on first mount (RCTMountingManager), so the error event is emitted only when _eventEmitter is set.
+- Deviation: the second `cd ios` from the official page is dropped because the previous step already runs inside ios/.
+- The official step list includes "Register the RCTWebView in the application" but the page has no such section; the registration is the ios.componentProvider mapping (CustomWebView -> RCTWebView) in package.json shown in the Fabric Native Components Introduction. The Using Codegen page documents the ios.components form instead.
 - The step numbering in the official page skips from "1. Run Codegen" to "3. Write the `RCTWebView`"; the content above follows the original order.
 - 0.88: React Native 0.88 adds iOS SceneDelegate lifecycle support as an additive change (`RCTReactNativeFactory` gains `startReactNativeWithModuleName:inWindow:connectionOptions:` and `startReactNativeWithModuleName:inWindow:initialProperties:connectionOptions:`), keeping backwards compatibility with the `AppDelegate` path; this iOS guide still shows `AppDelegate.swift`.
 - Cross-skill: UIKit / WebKit / Objective-C++ project APIs belong to apple-uikit / apple-swift; this page covers only the React Native native-component boundary.

@@ -8,7 +8,7 @@ Describes how to configure the React Native Gradle Plugin (often referred to as 
 
 ## Signature / Usage
 
-The plugin is distributed as a separate NPM package which is installed automatically with `react-native`, and is already configured for new projects created using `npx react-native init`. By default it works out of the box with sensible defaults. To configure it, modify the `react` block inside your `android/app/build.gradle`:
+The plugin is distributed as a separate NPM package which is installed automatically with `react-native`, and is already configured for new projects created using `npx @react-native-community/cli@latest init`. By default it works out of the box with sensible defaults. To configure it, modify the `react` block inside your `android/app/build.gradle`:
 
 ```groovy
 apply plugin: "com.facebook.react"
@@ -28,9 +28,9 @@ react {
 | --- | --- | --- | --- |
 | `root` | file | `../..` | Root folder of your React Native project, i.e. where `package.json` lives. e.g. `root = file("../../")` |
 | `reactNativeDir` | file | `../../node_modules/react-native` | Folder where the `react-native` package lives. Adjust for monorepos or other package managers. |
-| `codegenDir` | file | `../../node_modules/react-native-codegen` | Folder where the `react-native-codegen` package lives. e.g. `codegenDir = file("../../node_modules/@react-native/codegen")` |
+| `codegenDir` | file | `../../node_modules/@react-native/codegen` | Folder where the `@react-native/codegen` package lives. e.g. `codegenDir = file("../../node_modules/@react-native/codegen")` |
 | `cliFile` | file | `../../node_modules/react-native/cli.js` | Entrypoint file for the React Native CLI; the plugin invokes the CLI for bundling and creating your app. |
-| `debuggableVariants` | list | `debug` only | Variants that are debuggable. They do not ship a bundle, so Metro is needed to run them. e.g. `debuggableVariants = ["liteDebug", "prodDebug"]` |
+| `debuggableVariants` | list | `debug`, `debugOptimized` | Variants that are debuggable. They do not ship a bundle, so Metro is needed to run them. e.g. `debuggableVariants = ["liteDebug", "prodDebug"]` |
 | `nodeExecutableAndArgs` | list | `[node]` | Node command and arguments invoked for all the scripts. e.g. `nodeExecutableAndArgs = ["node"]` |
 | `bundleCommand` | string | `bundle` | Name of the `bundle` command invoked when creating the bundle. Useful for RAM Bundles, e.g. `bundleCommand = "ram-bundle"` |
 | `bundleConfig` | file | empty (no config file) | Path to a configuration file passed to `bundle --config <file>`. e.g. `bundleConfig = file("../../rn-cli.config.js")` |
@@ -45,6 +45,8 @@ react {
 
 - `debuggableVariants`: if you have other variants (like `staging`, `lite`, etc.) adjust it accordingly. The plugin skips JS bundling for all `debuggableVariants`, so e.g. a `fullStaging` listed there cannot be published to a store because it will be missing the bundle.
 - `enableBundleCompression`: disabling compression for the `.bundle` allows it to be directly memory-mapped to RAM, improving startup time at the cost of a larger app size on disk. The `.apk` download size is mostly unaffected because `.apk` files are compressed before downloading. Do not turn it on unless you are really concerned about disk space.
+- Corrected: defaults for `codegenDir` and `debuggableVariants` follow ReactExtension.kt in 0.87 (the official page lists `react-native-codegen` and `debug` only). The `@react-native/codegen` package name matches the official example and the Codegen CLI page.
+- The official page says `npx react-native init`; that command moved out of core to `npx @react-native-community/cli@latest init` (2024-06-25 "Use a framework" announcement).
 - Corrected: the official `bundleConfig` example writes `file(../rn-cli.config.js)` without quotes, which is not valid Groovy; the path is quoted here.
 - Corrected: the official page writes paths as file("../..."), but file() in android/app/build.gradle resolves against android/app, so the app root is ../../ (as in the React Native template).
 - `bundleConfig` / `extraPackagerArgs`: see the React Native community CLI documentation for the `bundle` command flags (linked from the official page).

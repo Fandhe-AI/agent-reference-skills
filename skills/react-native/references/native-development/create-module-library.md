@@ -68,7 +68,7 @@ The generated `example` folder has the same structure as an app created from `re
 
 1. Navigate to the `example` folder.
 2. Run `yarn install` to install all the dependencies.
-3. For iOS only, you need to install CocoaPods: `cd ios && pod install`.
+3. For iOS only, you need to install CocoaPods: `(cd ios && bundle exec pod install)` (subshell, so later steps still run from `example/`).
 4. Build and run Android with `yarn android` from the `example` folder.
 5. Build and run iOS with `yarn ios` from the `example` folder.
 
@@ -137,6 +137,7 @@ yarn add "<package.name>"
 
 ## Notes
 
+- Deviation: the official step runs `cd ios && pod install`; changed to a subshell with bundle exec so later steps still run from example/ and match the Bundler recommendation below.
 - Placeholder quoted here; the official page shows it unquoted.
 - For iOS only, whenever you install a new module with some native code, you have to reinstall CocoaPods, by running `bundle exec pod install` (recommended) or `pod install` if you are not using Ruby's Bundler (not recommended).
 - Libraries are collected in the reactnative.directory website.

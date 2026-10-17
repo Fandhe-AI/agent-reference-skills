@@ -10,6 +10,11 @@ A CLI that runs `@react-native/codegen` for your project, instead of calling Gra
 
 ```sh
 npx @react-native-community/cli codegen --help
+```
+
+Output:
+
+```text
 Usage: rnc-cli codegen [options]
 
 Options:
@@ -53,6 +58,7 @@ npx @react-native-community/cli codegen \
 
 ## Notes
 
+- Deviation: command output shown in the same block on the official page is split into a separate text block.
 - Including generated code in libraries: normally the generated code is not included in the library and the app that uses the library runs Codegen at build time. Codegen also offers the `includesGeneratedCode` property in the library's `codegenConfig` to include the generated code in the library itself.
 - Benefits of `includesGeneratedCode = true`: no need to rely on the app to run Codegen; implementation files are always consistent with the generated interfaces; no need to include two sets of files to support both architectures on Android (only the New Architecture one is kept, guaranteed to be backwards compatible); the native part of the library can be shipped as a prebuild.
 - Drawback: the generated code uses the React Native version defined inside your library. A library shipping with React Native 0.76 generates code based on that version, which may be incompatible with apps using a previous React Native version (e.g. 0.75).

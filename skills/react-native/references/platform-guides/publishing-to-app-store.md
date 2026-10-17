@@ -14,12 +14,12 @@ Building an app for distribution in the App Store requires using the `Release` s
 
 To configure it, go to **Product** → **Scheme** → **Edit Scheme**. Select the **Run** tab in the sidebar, then set the **Build Configuration** dropdown to `Release`.
 
-The static bundle is built every time you target a physical device, even in Debug. To save time, turn off bundle generation in Debug by adding the following to your shell script in the Xcode Build Phase `Bundle React Native code and images`:
+The static bundle is built every time you target a physical device, even in Debug. To save time, turn off bundle generation in Debug by adding the following to your shell script in the Xcode Build Phase `Bundle React Native code and images`. Add it before the line that invokes `react-native-xcode.sh`:
 
 ```shell
- if [ "${CONFIGURATION}" == "Debug" ]; then
+if [ "${CONFIGURATION}" = "Debug" ]; then
   export SKIP_BUNDLING=true
- fi
+fi
 ```
 
 ### 2. Build app for release
@@ -46,6 +46,7 @@ The Apple Store requires screenshots for the latest devices (see Apple's screens
 
 ## Notes
 
+- Deviation: `==` from the official snippet is replaced with POSIX `=` since Xcode run-script phases default to /bin/sh; the snippet must precede the react-native-xcode.sh invocation.
 - Check your Bundle Identifier and make sure it is exactly the same as the one you created in the Identifiers in the Apple Developer Dashboard.
 - If you use Expo, the official page points to the Expo "Deploying to App Stores" guide (works with any React Native app to automate deployment); see the expo documentation for that flow (Expo skill may not be installed).
 - Archiving, signing, TestFlight and App Store Connect are native iOS distribution topics; see the apple-distribution skill. This page covers the React Native specific Release scheme and bundling steps.

@@ -143,6 +143,7 @@ yarn run ios
 
 ## Notes
 
+- The Using Codegen page documents `ios.modules` / `ios.components` instead of the `ios.modulesProvider` form used here; both forms appear in the 0.87 docs.
 - Docusaurus highlight markers from the official page are removed; snippets show the final code.
 - You can use Xcode to jump to the Codegen `@protocol NativeLocalStorageSpec`. You can also use Xcode to generate stubs for you.
 - The last step updates `package.json` to tell React Native about the link between the JS specs of the Native Module and the concrete implementation of those specs in native code (`ios.modulesProvider`).

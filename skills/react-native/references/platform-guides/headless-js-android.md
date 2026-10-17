@@ -36,14 +36,43 @@ This still requires some thin native code: extend `HeadlessJsTaskService` and ov
 ```java
 package com.your_application_name;
 
+import android.app.Notification;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
+import android.os.Build;
 import android.os.Bundle;
+import androidx.core.app.NotificationChannelCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.ServiceCompat;
 import com.facebook.react.HeadlessJsTaskService;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.jstasks.HeadlessJsTaskConfig;
 import javax.annotation.Nullable;
 
 public class MyTaskService extends HeadlessJsTaskService {
+
+  // Not in the official example: required because the service is started with startForegroundService
+  @Override
+  public int onStartCommand(Intent intent, int flags, int startId) {
+    String channelId = "headless_js";
+    NotificationManagerCompat.from(this).createNotificationChannel(
+        new NotificationChannelCompat.Builder(channelId, NotificationManagerCompat.IMPORTANCE_LOW)
+            .setName("Background task")
+            .build());
+    Notification notification = new NotificationCompat.Builder(this, channelId)
+        .setSmallIcon(android.R.drawable.stat_notify_sync)
+        .setContentTitle("Running background task")
+        .build();
+    ServiceCompat.startForeground(
+        this,
+        1,
+        notification,
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+            ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            : 0);
+    return super.onStartCommand(intent, flags, startId);
+  }
 
   @Override
   protected @Nullable HeadlessJsTaskConfig getTaskConfig(Intent intent) {
@@ -67,11 +96,42 @@ public class MyTaskService extends HeadlessJsTaskService {
 package com.your_application_name;
 
 import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
+import androidx.core.app.NotificationChannelCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.ServiceCompat
 import com.facebook.react.HeadlessJsTaskService
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.jstasks.HeadlessJsTaskConfig
 
 class MyTaskService : HeadlessJsTaskService() {
+    // Not in the official example: required because the service is started with startForegroundService
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val channelId = "headless_js"
+        NotificationManagerCompat.from(this)
+            .createNotificationChannel(
+                NotificationChannelCompat.Builder(channelId, NotificationManagerCompat.IMPORTANCE_LOW)
+                    .setName("Background task")
+                    .build()
+            )
+        val notification =
+            NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(android.R.drawable.stat_notify_sync)
+                .setContentTitle("Running background task")
+                .build()
+        ServiceCompat.startForeground(
+            this,
+            1,
+            notification,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            else 0,
+        )
+        return super.onStartCommand(intent, flags, startId)
+    }
+
     override fun getTaskConfig(intent: Intent?): HeadlessJsTaskConfig? {
         return intent?.extras?.let {
             HeadlessJsTaskConfig(
@@ -100,7 +160,7 @@ Then add the service to your `AndroidManifest.xml` file inside the `application`
   android:foregroundServiceType="dataSync" />
 ```
 
-Now, whenever you start your service (see Android `Context.startService`), e.g. as a periodic task or in response to some system event / broadcast, JS will spin up, run your task, then spin down.
+Now, whenever you start your service with `ContextCompat.startForegroundService` (see the Android `Context.startService` / `startForegroundService` docs), e.g. as a periodic task or in response to some system event / broadcast, JS will spin up, run your task, then spin down.
 
 **Java**
 
@@ -185,13 +245,15 @@ If you wish all errors to cause a retry attempt, you will need to catch them and
 
 ### Example Usage
 
-Service can be started from Java API. First you need to decide when the service should be started and implement your solution accordingly. The example reacts to network connection change. Register the broadcast receiver in the Android manifest:
+Service can be started from Java API. First you need to decide when the service should be started and implement your solution accordingly. The example reacts to network connection change. Note: this is the official legacy example, kept for illustration; apps targeting API 24+ (every React Native 0.87 app) running on Android 7.0+ do not receive `CONNECTIVITY_CHANGE` in manifest-declared receivers, so it will not fire. Register the broadcast receiver in the Android manifest:
 
 ```xml
 <!-- outside <application>, required by ConnectivityManager -->
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<!-- required by HeadlessJsTaskService.acquireWakeLockNow() -->
+<uses-permission android:name="android.permission.WAKE_LOCK" />
 
-<!-- Not delivered to manifest-declared receivers when targetSdk >= 24 -->
+<!-- Not delivered to manifest-declared receivers when targeting API 24+ on Android 7.0+ -->
 <receiver android:name=".NetworkChangeReceiver" android:exported="false" >
   <intent-filter>
     <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -199,7 +261,7 @@ Service can be started from Java API. First you need to decide when the service 
 </receiver>
 ```
 
-Broadcast receiver then handles intent that was broadcasted in onReceive function. This is a great place to check whether your app is on foreground or not. If app is not on foreground we can prepare our intent to be started, with no information or additional information bundled using `putExtra` (keep in mind bundle can handle only parcelable values). In the end service is started and wakelock is acquired.
+Broadcast receiver then handles intent that was broadcasted in onReceive function. This is a great place to check whether your app is on foreground or not. If app is not on foreground we can prepare our intent to be started, with no information or additional information bundled using `putExtra` (keep in mind bundle can handle only parcelable values). In the end service is started and wakelock is acquired (on API < 31 only, and only if the broadcast is delivered).
 
 **Java**
 
@@ -399,8 +461,11 @@ class NetworkChangeReceiver : BroadcastReceiver() {
 - If you start your service from a `BroadcastReceiver`, make sure to call `HeadlessJsTaskService.acquireWakeLockNow()` before returning from `onReceive()`.
 - The official page's Java example uses the non-existent type HeadlessJsRetryPolicy; corrected here to HeadlessJsTaskRetryPolicy (com.facebook.react.jstasks, as of v0.87.0).
 - The official page imports {HeadlessJsTaskError} from 'HeadlessJsTask' (a Haste module name that does not resolve); corrected to the default export at react-native/Libraries/ReactNative/HeadlessJsTaskError (deep import, v0.87.0).
-- HeadlessJsTaskService does not call startForeground(); when started via startForegroundService the subclass must post a notification with startForeground() within the system deadline and declare a foregroundServiceType (Android 14+), which the official page omits.
-- Since Android 7.0 (API 24) CONNECTIVITY_CHANGE is not delivered to manifest-declared receivers; register the receiver at runtime with Context.registerReceiver or use ConnectivityManager.NetworkCallback / WorkManager network constraints instead (the official example predates this).
+- HeadlessJsTaskService does not call startForeground(); when started via startForegroundService the subclass must post a notification with startForeground() within the system deadline and declare a foregroundServiceType (Android 14+), which the official page omits. The MyTaskService shown here does so in onStartCommand.
+- Deviation from the official page: MyTaskService calls ServiceCompat.startForeground() in onStartCommand because the service is started with startForegroundService and HeadlessJsTaskService does not; the official MyTaskService only overrides getTaskConfig.
+- Deviation from the official page: added the WAKE_LOCK uses-permission required by HeadlessJsTaskService.acquireWakeLockNow() (omitted in the official example).
+- Since 0.87 the Strict TypeScript API is the default and deep imports into react-native/Libraries/* are a type error; the HeadlessJsTaskError import type-checks only with the "react-native-legacy-deep-imports" customConditions opt-out in tsconfig.json (or from an untyped .js task file).
+- For apps targeting API 24+ running on Android 7.0+, CONNECTIVITY_CHANGE is not delivered to manifest-declared receivers; register the receiver at runtime with Context.registerReceiver or use ConnectivityManager.NetworkCallback / WorkManager network constraints instead (the official example predates this).
 - Deviation from the official page: android:exported="false" is added to the receiver (required when targeting Android 12+).
 - Deviation from the official page: the service start is limited to API < 31 because Android 12+ forbids starting foreground services from the background (ForegroundServiceStartNotAllowedException); use WorkManager with a network constraint instead.
 - Deviation from the official page: ContextCompat.startForegroundService is used because Context.startForegroundService requires API 26 while React Native supports minSdk 24.

@@ -2,8 +2,8 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Advanced Topics on Native Modules Development | A set of advanced topics to implement more complex func… | [advanced-topics-components.md](./advanced-topics-components.md) |
-| Advanced Topics on Native Modules Development | A set of advanced topics to implement more complex func… | [advanced-topics-modules.md](./advanced-topics-modules.md) |
+| Advanced Topics on Native Modules Development (Components) | A set of advanced topics to implement more complex func… | [advanced-topics-components.md](./advanced-topics-components.md) |
+| Advanced Topics on Native Modules Development (Modules) | A set of advanced topics to implement more complex func… | [advanced-topics-modules.md](./advanced-topics-modules.md) |
 | Appendix | Terminology for the New Architecture native developme… | [appendix.md](./appendix.md) |
 | The Codegen CLI | A CLI that runs `@react-native/codegen` for your proj… | [codegen-cli.md](./codegen-cli.md) |
 | Create a Library for Your Module | Extract a module into a separate library with `create-… | [create-module-library.md](./create-module-library.md) |

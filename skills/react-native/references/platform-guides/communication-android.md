@@ -68,6 +68,9 @@ export default class ImageBrowserApp extends React.Component<{images: string[]}>
 
 ```java
 Bundle updatedProps = mReactRootView.getAppProperties();
+if (updatedProps == null) {
+    updatedProps = new Bundle();
+}
 ArrayList<String> imageList = new ArrayList<String>(Arrays.asList(
         "https://dummyimage.com/600x400/ff0000/000000.png",
         "https://dummyimage.com/600x400/ffffff/ff0000.png"
@@ -80,7 +83,7 @@ mReactRootView.setAppProperties(updatedProps);
 **Kotlin**
 
 ```kotlin
-var updatedProps: Bundle = reactRootView.getAppProperties()
+val updatedProps = reactRootView.appProperties ?: Bundle()
 var imageList = arrayListOf("https://dummyimage.com/600x400/ff0000/000000.png", "https://dummyimage.com/600x400/ffffff/ff0000.png")
 updatedProps.putStringArrayList("images", imageList)
 
@@ -103,6 +106,7 @@ Native modules are Java/Kotlin classes that are available in JS. Typically one i
 
 - Corrected: the official tsx snippet omits the props type and the image size; typed props ({images: string[]}) and a fixed width/height style were added.
 - React import added; the official snippet uses React.* at runtime without importing it.
+- Corrected: getAppProperties() is @Nullable (ReactRootView.java), so the snippets fall back to a new Bundle.
 - Updating `appProperties` is fine at any time, but updates have to be performed on the main thread. The getter can be used on any thread.
 - There is no way to update only a few properties at a time. Build it into your own wrapper instead.
 - After an appProperties update the root component re-renders with the new props; handle them in render, componentDidUpdate, or a useEffect that depends on the props (componentDidMount runs only on the initial mount).

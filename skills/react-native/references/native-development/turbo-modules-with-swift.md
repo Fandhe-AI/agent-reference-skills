@@ -112,6 +112,8 @@ Link the bridging header: in the project navigator select your app name, click `
 
 ## Notes
 
+- The official page uses SampleApp; with the TurboModuleExample app from the Turbo Native Modules iOS guide the headers are TurboModuleExample-Swift.h and TurboModuleExample-Bridging-Header.h.
+- The Using Codegen page documents `ios.modules` / `ios.components` instead of the `ios.modulesProvider` form used here; both forms appear in the 0.87 docs.
 - The core of React Native is mainly written in C++ and Swift/C++ interoperability is not great despite Apple's interoperability layer, so the module is not a pure Swift implementation: some Objective-C++ glue code is required, and the guide minimizes it. For migrating an existing legacy Native Module this approach should allow reuse of most of the code.
 - Adapter pattern: business logic in a Swift module with a thin Objective-C++ layer. The Objective-C++ object is created by React Native, keeps a reference to the Swift module, handles its lifecycle, and forwards all method invocations to Swift.
 - Declare all methods called from Objective-C as `public` with the `@objc` annotation (`@objcMembers` here), and make the class inherit from `NSObject`, otherwise it cannot be used from Objective-C.

@@ -32,6 +32,7 @@ package com.webview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -59,7 +60,7 @@ public class ReactWebView extends WebView {
   }
 
   private void configureComponent() {
-    this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+    this.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     this.setWebViewClient(new WebViewClient() {
       @Override
       public void onPageFinished(WebView view, String url) {
@@ -436,6 +437,10 @@ class MainApplication : Application(), ReactApplication {
 
 ## Notes
 
+- Corrected: inside a WebView subclass the unqualified LayoutParams resolves to AbsoluteLayout.LayoutParams (no 2-arg constructor), so the Java snippet uses ViewGroup.LayoutParams.
+- 0.85: `UIManagerHelper` (used here for getSurfaceId / getEventDispatcherForReactTag) is deprecated as part of the legacy architecture cleanup; the 0.87 guide still uses it.
+- The @ReactProp name (sourceUrl) differs from the spec prop sourceURL as in the official page; it is unused because props are routed through the Codegen delegate returned by getDelegate().
+- The 0.87 app template's MainApplication uses getDefaultReactHost(applicationContext, packageList = PackageList(this).packages.apply { add(...) }) and loadReactNative(this); add the package to packageList there. The DefaultReactNativeHost form shown is the official page's older shape (isHermesEnabled is deprecated and ignored, isNewArchEnabled=false is unsupported since 0.82).
 - The Codegen-generated names (`CustomWebViewManagerInterface`, `CustomWebViewManagerDelegate`) derive from the name passed to `codegenNativeComponent` in the spec (`CustomWebView`).
 - Corrected: the official Java snippet referenced an out-of-scope context variable and lacked the EventDispatcher import.
 - Corrected: the official Java package called a non-existent `ReactWebViewManager(reactContext)` constructor; the official package also returned the ViewManager from getModule and registered it as a TurboModule; view managers are registered only via createViewManagers.

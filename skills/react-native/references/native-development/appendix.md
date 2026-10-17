@@ -12,13 +12,13 @@ Codegen typings:
 
 | Flow | TypeScript | Flow Nullable Support | TypeScript Nullable Support | Android (Java) | iOS (ObjC) |
 | --- | --- | --- | --- | --- | --- |
-| `string` | `string` | `?string` | `string \| null` | `string` | `NSString` |
+| `string` | `string` | `?string` | `string \| null` | `String` | `NSString` |
 | `boolean` | `boolean` | `?boolean` | `boolean \| null` | `Boolean` | `NSNumber` |
-| Object Literal `{\| foo: string, ...\|}` | `{ foo: string }` | `?{\| foo: string, ...\|}` | `{ foo: string } \| null` | - | - |
+| Object Literal `{\| foo: string \|}` | `{ foo: string }` | `?{\| foo: string \|}` | `{ foo: string } \| null` | - | - |
 | Object [1] | Object [1] | `?Object` | `Object \| null` | `ReadableMap` | `@` (untyped dictionary) |
 | `Array<T>` | `Array<T>` | `?Array<T>` | `Array<T> \| null` | `ReadableArray` | `NSArray` (or `RCTConvertVecToArray` when used inside objects) |
 | `Function` | `Function` | `?Function` | `Function \| null` | - | - |
-| `Promise<T>` | `Promise<T>` | `?Promise<T>` | `Promise<T> \| null` | `com.facebook.react.bridge.Promise` | `RCTPromiseResolve` and `RCTPromiseRejectBlock` |
+| `Promise<T>` | `Promise<T>` | `?Promise<T>` | `Promise<T> \| null` | `com.facebook.react.bridge.Promise` | `RCTPromiseResolveBlock` and `RCTPromiseRejectBlock` |
 | Type Unions `'SUCCESS'\|'FAIL'` | Type Unions `'SUCCESS'\|'FAIL'` | Only as callbacks | | - | - |
 | Callbacks `() =>` | Callbacks `() =>` | Yes | | `com.facebook.react.bridge.Callback` | `RCTResponseSenderBlock` |
 | `number` | `number` | No | | `double` | `NSNumber` |
@@ -45,6 +45,8 @@ export default TurboModuleRegistry.getEnforcing<Spec>(
 
 - The official Appendix page has no code example; the snippet is quoted verbatim from the Turbo Native Modules guide (https://reactnative.dev/docs/0.87/turbo-native-modules).
 - Deviation from the official page: the official table lists "{ foo: string, ...} as const" for TypeScript, which is not a valid type; valid TypeScript type forms are shown instead.
+- Corrected: the official table lists the Java type as `string` (Java uses `String`), the iOS promise type as `RCTPromiseResolve` (the block type is `RCTPromiseResolveBlock`), and the Flow object literal as `{| foo: string, ...|}`, which mixes exact and explicit-inexact syntax.
+- 0.88: Java TurboModules can take and return ArrayBuffer; Codegen maps it to com.facebook.react.bridge.ArrayBuffer (not in the 0.87 table; iOS mapping not stated in the 0.88 release blog).
 - Terminology:
   - Spec: TypeScript or Flow code that describes the API for a Turbo Native Module or Fabric Native component. Used by Codegen to generate boilerplate code.
   - Native Modules: native libraries that have no User Interface (UI) for the user. Examples would be persistent storage, notifications, network events. These are accessible to your JavaScript application code as functions and objects.

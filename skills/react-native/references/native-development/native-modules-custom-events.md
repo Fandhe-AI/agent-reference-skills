@@ -66,7 +66,11 @@ Step 2: rerun Codegen. Android:
 ```bash
 cd android
 ./gradlew generateCodegenArtifactsFromSchema
+```
 
+Output:
+
+```text
 BUILD SUCCESSFUL in 837ms
 14 actionable tasks: 3 executed, 11 up-to-date
 ```
@@ -212,7 +216,7 @@ const styles = StyleSheet.create({
 export default App;
 ```
 
-Step 4: native code. **Android** (`NativeLocalStorage.kt`):
+Step 4: native code. **Android** (`android/app/src/main/java/com/nativelocalstorage/NativeLocalStorageModule.kt`):
 
 ```diff
 package com.nativelocalstorage
@@ -288,6 +292,9 @@ NS_ASSUME_NONNULL_END
 
 ## Notes
 
+- `SafeAreaView` from react-native used in this sample is deprecated in the 0.87 docs; use react-native-safe-area-context in real apps.
+- The official Android diff is titled "NativeLocalStorage"; the file name follows the Turbo Native Modules Android guide (NativeLocalStorageModule.kt).
+- Deviation: command output shown in the same block on the official page is split into a separate text block.
 - Deviation from the official page: the official diff does not match the App.tsx from the Native Modules introduction (named React hook imports, 'myKey' literals); the diff here is rebased onto that file.
 - Changing the value of an existing key does not emit the event, adding a new key does (as described on the page).
 - Corrected: the official Android snippet emitted when getItem(key) != null (existing key); the condition is inverted here to match the described new-key behavior and the iOS code.

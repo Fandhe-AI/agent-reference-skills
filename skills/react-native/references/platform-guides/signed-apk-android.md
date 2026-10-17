@@ -10,10 +10,10 @@ Android requires that all apps be digitally signed with a certificate before the
 
 Generate an upload key with `keytool`.
 
-**Windows** (run from `C:\Program Files\Java\jdkx.x.x_x\bin`, as administrator):
+**Windows** (run from a writable directory such as the project's `android\app`, without administrator rights; call the JDK's `keytool` by full path):
 
 ```shell
-keytool -genkeypair -v -storetype PKCS12 -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+"C:\Program Files\Java\jdkx.x.x_x\bin\keytool.exe" -genkeypair -v -storetype PKCS12 -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 This command prompts you for passwords for the keystore and key and for the Distinguished Name fields for your key. It then generates the keystore as a file called `my-upload-key.keystore`. The keystore contains a single key, valid for 10000 days. The alias is a name that you will use later when signing your app, so remember to take note of the alias.
@@ -30,10 +30,10 @@ It will output the directory of the JDK, which will look something like this:
 /Library/Java/JavaVirtualMachines/jdkX.X.X_XXX.jdk/Contents/Home
 ```
 
-Run the keytool command from a directory you can write to (for example the project's `android/app` directory), without sudo:
+Run the keytool command from a directory you can write to (for example the project's `android/app` directory), without sudo, using the JDK found above:
 
 ```shell
-keytool -genkey -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+"$(/usr/libexec/java_home)/bin/keytool" -genkey -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 ### Setting up Gradle variables
@@ -147,7 +147,8 @@ If you are migrating from a previous version of React Native chances are your ap
 
 ## Notes
 
-- Corrected: the official page runs keytool with sudo from the JDK directory; sudo is not required and would create a root-owned keystore.
+- Corrected: the official page runs keytool as administrator from the JDK bin folder on Windows and with sudo on macOS; neither is required, and both write a privileged/root-owned keystore.
+- Deviation: instead of cd-ing into the JDK folder, keytool is invoked via "$(/usr/libexec/java_home)/bin/keytool" (macOS) or its full path (Windows) from android/app.
 - Keep the keystore file private. If the upload key is lost or compromised, follow the Google Play reset instructions linked in the official page.
 - Saving the Gradle variables in `~/.gradle/gradle.properties` instead of `android/gradle.properties` prevents them from being checked in to git. You may have to create `~/.gradle/gradle.properties` in your user's home directory first.
 - On macOS, the official page suggests storing the credentials in the Keychain Access app (linking a third-party guide) so the two password rows in `~/.gradle/gradle.properties` can be skipped; this only works if `signingConfigs` is also changed to read the passwords from the Keychain as described in that guide. With the `signingConfigs` shown above, `MYAPP_UPLOAD_STORE_PASSWORD` / `MYAPP_UPLOAD_KEY_PASSWORD` must stay defined or release signing fails.
