@@ -1,0 +1,93 @@
+---
+source: https://www.typescriptlang.org/docs/handbook/declaration-files/templates/module-class-d-ts.html
+---
+
+# Template: module-class.d.ts
+
+Declaration template for a module whose export can be constructed with `new`, handling both module and UMD import.
+
+## Signature / Usage
+
+JavaScript usage being described:
+
+```ts
+const Greeter = require("super-greeter");
+
+const greeter = new Greeter();
+greeter.greet();
+```
+
+Template:
+
+```ts
+// Type definitions for [~THE LIBRARY NAME~] [~OPTIONAL VERSION NUMBER~]
+// Project: [~THE PROJECT NAME~]
+// Definitions by: [~YOUR NAME~] <[~A URL FOR YOU~]>
+
+/*~ This is the module template file for class modules.
+ *~ You should rename it to index.d.ts and place it in a folder with the same name as the module.
+ *~ For example, if you were writing a file for "super-greeter", this
+ *~ file should be 'super-greeter/index.d.ts'
+ */
+
+// Note that ES6 modules cannot directly export class objects.
+// This file should be imported using the CommonJS-style:
+//   import x = require('[~THE MODULE~]');
+//
+// Alternatively, if --allowSyntheticDefaultImports or
+// --esModuleInterop is turned on, this file can also be
+// imported as a default import:
+//   import x from '[~THE MODULE~]';
+//
+// Refer to the TypeScript documentation at
+// https://www.typescriptlang.org/docs/handbook/modules.html#export--and-import--require
+// to understand common workarounds for this limitation of ES6 modules.
+
+/*~ If this module is a UMD module that exposes a global variable 'myClassLib' when
+ *~ loaded outside a module loader environment, declare that global here.
+ *~ Otherwise, delete this declaration.
+ */
+export as namespace myClassLib;
+
+/*~ This declaration specifies that the class constructor function
+ *~ is the exported object from the file
+ */
+export = Greeter;
+
+/*~ Write your module's methods and properties in this class */
+declare class Greeter {
+  constructor(customGreeting?: string);
+
+  greet: void;
+
+  myMethod(opts: MyClass.MyClassMethodOptions): number;
+}
+
+/*~ If you want to expose types from your module as well, you can
+ *~ place them in this block.
+ *~
+ *~ Note that if you decide to include this namespace, the module can be
+ *~ incorrectly imported as a namespace object, unless
+ *~ --esModuleInterop is turned on:
+ *~   import * as x from '[~THE MODULE~]'; // WRONG! DO NOT DO THIS!
+ */
+declare namespace MyClass {
+  export interface MyClassMethodOptions {
+    width?: number;
+    height?: number;
+  }
+}
+```
+
+## Notes
+
+- Verbatim from source: ES6 modules cannot directly export class objects; import with `import x = require(...)`, or as a default import when `--allowSyntheticDefaultImports` or `--esModuleInterop` is on.
+- Deprecated (6.0): `esModuleInterop: false` and `allowSyntheticDefaultImports: false` are deprecated in 6.0 and removed in 7.0 (see the tsconfig interop-constraints page); the template text above predates this.
+- Source-text caveat: the published template merges `class Greeter` with `namespace MyClass`. To expose the types via `export =`, the namespace must share the class name (`declare namespace Greeter { ... }`), and `myMethod` should reference `Greeter.MyClassMethodOptions`.
+- The template as published declares `greet: void;` (a property of type `void`, not a method); reproduced as in the source.
+
+## Related
+
+- [Template: module.d.ts](./template-module.md)
+- [Template: module-function.d.ts](./template-module-function.md)
+- [Library Structures](./library-structures.md)
