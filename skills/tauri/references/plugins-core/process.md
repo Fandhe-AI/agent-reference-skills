@@ -6,7 +6,9 @@ source: https://v2.tauri.app/plugin/process/
 
 APIs to access the current process: exit and restart the application.
 
-## Supported Platforms
+## Signature / Usage
+
+### Supported Platforms
 
 | Platform | Level |
 | --- | --- |
@@ -18,7 +20,7 @@ APIs to access the current process: exit and restart the application.
 
 (`process-v2.4.0`.)
 
-## Setup
+### Setup
 
 ```sh
 npm run tauri add process
@@ -50,7 +52,7 @@ pub fn run() {
 }
 ```
 
-## Signature / Usage
+### Usage
 
 JavaScript:
 
@@ -76,7 +78,7 @@ app.exit(0);
 app.restart();
 ```
 
-## Permissions
+### Permissions
 
 ```json
 {

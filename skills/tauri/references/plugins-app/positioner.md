@@ -27,7 +27,7 @@ let mut win = app.get_webview_window("main").unwrap();
 let _ = win.as_ref().window().move_window(Position::TopRight);
 ```
 
-## Setup
+### Setup
 
 If you only intend on moving the window from Rust code, you only need the dependency in `src-tauri/Cargo.toml`, and can remove the plugin registration from `lib.rs` if you set up automatically.
 
@@ -100,7 +100,7 @@ pub fn run() {
 }
 ```
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -114,7 +114,7 @@ Minimum Rust version 1.90.
 
 Cargo features of `tauri-plugin-positioner` 2.4.0: `tray-icon` (enables `tauri/tray-icon`).
 
-## Permissions
+### Permissions
 
 `src-tauri/capabilities/default.json`:
 

@@ -42,7 +42,7 @@ if (permissions.location === 'granted') {
 }
 ```
 
-## Setup
+### Setup
 
 Automatic:
 
@@ -77,7 +77,7 @@ pub fn run() {
 
 3. `npm install @tauri-apps/plugin-geolocation`
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -89,7 +89,7 @@ Minimum Rust version 1.90.
 | Android | Full support | |
 | iOS | Full support | |
 
-## Configuration
+### Configuration
 
 iOS: Apple requires a privacy description in Info.plist for location information; describe why your app needs it.
 
@@ -117,7 +117,7 @@ If your app requires GPS functionality, also add the following. The Google Play 
 <uses-feature android:name="android.hardware.location.gps" android:required="true" />
 ```
 
-## Permissions
+### Permissions
 
 `src-tauri/capabilities/mobile.json`:
 

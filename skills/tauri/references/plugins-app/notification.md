@@ -56,7 +56,7 @@ tauri::Builder::default()
     .expect("error while running tauri application");
 ```
 
-## Setup
+### Setup
 
 Automatic:
 
@@ -82,7 +82,7 @@ pub fn run() {
 
 3. For JavaScript: `npm install @tauri-apps/plugin-notification`
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -94,7 +94,7 @@ Minimum Rust version 1.90.
 | Android | Full support | |
 | iOS | Full support | |
 
-## Actions
+### Actions
 
 Mobile only. Actions add interactive buttons and inputs to notifications.
 
@@ -143,7 +143,7 @@ await onAction((event) => {
 });
 ```
 
-## Attachments
+### Attachments
 
 Attachments add media content to notifications. Support varies by platform; test attachments on your target platforms.
 
@@ -167,7 +167,7 @@ sendNotification({
 | `id` | Unique identifier |
 | `url` | Content URL using asset:// or file:// protocol |
 
-## Channels
+### Channels
 
 Channels organize notifications into categories with different behaviors. Primarily used on Android, they provide a consistent API across platforms.
 
@@ -203,13 +203,19 @@ await createChannel({
 | `vibration` | Enable vibrations |
 | `sound` | Custom sound filename |
 
-Manage and use channels:
+Manage channels:
 
 ```javascript
-import { channels, removeChannel, sendNotification } from '@tauri-apps/plugin-notification';
+import { channels, removeChannel } from '@tauri-apps/plugin-notification';
 
 const existingChannels = await channels();
 await removeChannel('messages');
+```
+
+Use a channel:
+
+```javascript
+import { sendNotification } from '@tauri-apps/plugin-notification';
 
 sendNotification({
   title: 'New Message',
@@ -220,7 +226,7 @@ sendNotification({
 
 Create channels before sending notifications that reference them. Invalid channel IDs prevent notifications from displaying.
 
-## Permissions
+### Permissions
 
 Default permission set `notification:default`: allows all notification related features. It includes `allow-is-permission-granted`, `allow-request-permission`, `allow-notify`, `allow-register-action-types`, `allow-register-listener`, `allow-remove-listener`, `allow-cancel`, `allow-get-pending`, `allow-remove-active`, `allow-get-active`, `allow-check-permissions`, `allow-show`, `allow-batch`, `allow-list-channels`, `allow-delete-channel`, `allow-create-channel`, `allow-permission-state`.
 

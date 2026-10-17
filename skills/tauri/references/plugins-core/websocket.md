@@ -6,11 +6,13 @@ source: https://v2.tauri.app/plugin/websocket/
 
 Open a WebSocket connection using a Rust client in JavaScript.
 
-## Supported Platforms
+## Signature / Usage
+
+### Supported Platforms
 
 Windows, Linux, macOS, Android, iOS: full support (`websocket-v2.5.0`).
 
-## Setup
+### Setup
 
 ```sh
 npm run tauri add websocket
@@ -40,7 +42,7 @@ pub fn run() {
 }
 ```
 
-## Signature / Usage
+### Usage
 
 The websocket plugin is available in JavaScript.
 
@@ -63,7 +65,7 @@ await ws.send('Hello World!');
 // await ws.disconnect();
 ```
 
-## Permissions
+### Permissions
 
 ```json
 {

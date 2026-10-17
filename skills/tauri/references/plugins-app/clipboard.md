@@ -35,7 +35,7 @@ println!("{:?}", content.unwrap());
 // Prints "Tauri is awesome!" to the terminal
 ```
 
-## Setup
+### Setup
 
 Automatic:
 
@@ -70,7 +70,7 @@ pub fn run() {
 npm install @tauri-apps/plugin-clipboard-manager
 ```
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -82,7 +82,7 @@ Minimum Rust version 1.90.
 | Android | Partial support | Only plain-text content support |
 | iOS | Partial support | Only plain-text content support |
 
-## Permissions
+### Permissions
 
 No features are enabled by default; the clipboard can be inherently dangerous and it is application specific if read and/or write access is needed. Clipboard interaction needs to be explicitly enabled (there is no default permission set).
 

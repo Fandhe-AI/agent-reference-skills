@@ -21,7 +21,7 @@ import { scan, Format } from '@tauri-apps/plugin-barcode-scanner';
 scan({ windowed: true, formats: [Format.QRCode] });
 ```
 
-## Setup
+### Setup
 
 Automatic:
 
@@ -56,7 +56,7 @@ pub fn run() {
 
 3. `npm install @tauri-apps/plugin-barcode-scanner`
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -68,7 +68,7 @@ Minimum Rust version 1.90.
 | Android | Full support | |
 | iOS | Full support | |
 
-## Configuration
+### Configuration
 
 On iOS the plugin requires the `NSCameraUsageDescription` Info.plist value, describing why your app needs the camera. In `src-tauri/Info.ios.plist`:
 
@@ -83,7 +83,7 @@ On iOS the plugin requires the `NSCameraUsageDescription` Info.plist value, desc
 </plist>
 ```
 
-## Permissions
+### Permissions
 
 `src-tauri/capabilities/mobile.json`:
 

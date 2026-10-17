@@ -6,11 +6,13 @@ source: https://v2.tauri.app/plugin/persisted-scope/
 
 Save filesystem and asset scopes and restore them when the app is reopened.
 
-## Supported Platforms
+## Signature / Usage
+
+### Supported Platforms
 
 Windows, Linux, macOS, Android, iOS: full support (`persisted-scope-v2.4.2`). This is a Rust-only plugin (no JavaScript guest bindings).
 
-## Setup
+### Setup
 
 ```sh
 npm run tauri add persisted-scope
@@ -34,7 +36,7 @@ pub fn run() {
 }
 ```
 
-## Signature / Usage
+### Usage
 
 After setup the plugin automatically saves and restores filesystem and asset scopes. The plugin must be registered after the `fs` plugin:
 

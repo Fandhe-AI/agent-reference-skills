@@ -49,7 +49,7 @@ use tauri_plugin_window_state::{WindowExt, StateFlags};
 window.restore_state(StateFlags::all()); // will restore the window's state from disk
 ```
 
-## Setup
+### Setup
 
 Automatic:
 
@@ -84,7 +84,7 @@ pub fn run() {
 
 3. `npm install @tauri-apps/plugin-window-state`
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -96,7 +96,7 @@ Minimum Rust version 1.90.
 | Android | No support | |
 | iOS | No support | |
 
-## Permissions
+### Permissions
 
 `src-tauri/capabilities/default.json`:
 

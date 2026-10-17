@@ -54,7 +54,7 @@ pub fn run() {
 }
 ```
 
-## Setup
+### Setup
 
 Automatic (run with the project's package manager):
 
@@ -93,7 +93,7 @@ pub fn run() {
 npm install @tauri-apps/plugin-autostart
 ```
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90 (plugins-workspace `rust-version`).
 
@@ -105,7 +105,7 @@ Minimum Rust version 1.90 (plugins-workspace `rust-version`).
 | Android | No support | |
 | iOS | No support | |
 
-## Permissions
+### Permissions
 
 By default all potentially dangerous plugin commands and scopes are blocked. Enable them in your `capabilities` configuration.
 

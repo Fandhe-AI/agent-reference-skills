@@ -123,7 +123,7 @@ let update = app
   .await?;
 ```
 
-## Setup
+### Setup
 
 Automatic:
 
@@ -158,7 +158,7 @@ pub fn run() {
 
 3. `npm install @tauri-apps/plugin-updater`
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -170,7 +170,7 @@ Minimum Rust version 1.90.
 | Android | No support | |
 | iOS | No support | |
 
-## Signing updates
+### Signing updates
 
 Tauri's updater needs a signature to verify that the update is from a trusted source. This cannot be disabled. Two keys are needed:
 
@@ -216,57 +216,7 @@ Then run the Tauri build as usual. The generated files depend on `createUpdaterA
 
 With `"createUpdaterArtifacts": "v1Compatible"` (migrating from older Tauri): Linux creates `myapp.AppImage.tar.gz` + `.sig`; macOS `myapp.app.tar.gz` + `.sig`; Windows `myapp-setup.nsis.zip` / `myapp.msi.zip` + `.sig`.
 
-## Options / Props
-
-`tauri.conf.json` keys:
-
-| Key | Description |
-| --- | --- |
-| `bundle.createUpdaterArtifacts` | Setting this to `true` tells the bundler to create updater artifacts. If migrating from an older Tauri version set `"v1Compatible"`. This setting will be removed in v3 so change it to `true` once all users are migrated to v2. |
-| `plugins.updater.pubkey` | Public key generated from the Tauri CLI. It cannot be a file path! |
-| `plugins.updater.endpoints` | Array of endpoint URL strings. TLS is enforced in production mode. Tauri only continues to the next URL if a non-2XX status code is returned! |
-| `plugins.updater.dangerousInsecureTransportProtocol` | `true` allows the updater to accept non-HTTPS endpoints. Use with caution! |
-| `plugins.updater.windows.installMode` | Windows install mode (`"passive"`, `"basicUi"`, `"quiet"`; see below). |
-
-Endpoint URLs can contain dynamic variables: `{{current_version}}` (version of the requesting app), `{{target}}` (`linux`, `windows` or `darwin`), `{{arch}}` (`x86_64`, `i686`, `aarch64` or `armv7`). Custom variables are not supported, but you can define a custom `{{target}}`.
-
-```json
-{
-  "bundle": {
-    "createUpdaterArtifacts": true
-  },
-  "plugins": {
-    "updater": {
-      "pubkey": "CONTENT FROM PUBLICKEY.PEM",
-      "endpoints": [
-        "https://releases.myapp.com/{{target}}/{{arch}}/{{current_version}}",
-        // or a static github json file
-        "https://github.com/user/repo/releases/latest/download/latest.json"
-      ]
-    }
-  }
-}
-```
-
-Windows `installMode` (optional):
-
-```json
-{
-  "plugins": {
-    "updater": {
-      "windows": {
-        "installMode": "passive"
-      }
-    }
-  }
-}
-```
-
-- `"passive"`: small window with a progress bar, no user interaction. Generally recommended and the default.
-- `"basicUi"`: basic UI that requires user interaction to finish the installation.
-- `"quiet"`: no progress feedback. The installer cannot request admin privileges by itself, so it only works in user-wide installations or when the app already runs with admin privileges. Generally not recommended.
-
-## Server Support
+### Server Support
 
 Either a dynamic update server or a static JSON file (S3, GitHub gists, etc.).
 
@@ -316,7 +266,7 @@ Dynamic update server: Tauri follows the server's instructions. Overwrite the pl
 }
 ```
 
-## Runtime Configuration
+### Runtime Configuration
 
 Some APIs are Rust only for security reasons. Values from the configuration are used as fallback when builder values are not set.
 
@@ -390,7 +340,7 @@ let update = app
   .await?;
 ```
 
-## Permissions
+### Permissions
 
 `src-tauri/capabilities/default.json`:
 
@@ -413,6 +363,56 @@ Default permission set `updater:default`: the full workflow from checking for up
 | `updater:allow-install` | Enables the install command without any pre-configured scope. |
 
 Each `allow-*` has a matching `deny-*` (e.g. `updater:deny-check`).
+
+## Options / Props
+
+`tauri.conf.json` keys:
+
+| Key | Description |
+| --- | --- |
+| `bundle.createUpdaterArtifacts` | Setting this to `true` tells the bundler to create updater artifacts. If migrating from an older Tauri version set `"v1Compatible"`. This setting will be removed in v3 so change it to `true` once all users are migrated to v2. |
+| `plugins.updater.pubkey` | Public key generated from the Tauri CLI. It cannot be a file path! |
+| `plugins.updater.endpoints` | Array of endpoint URL strings. TLS is enforced in production mode. Tauri only continues to the next URL if a non-2XX status code is returned! |
+| `plugins.updater.dangerousInsecureTransportProtocol` | `true` allows the updater to accept non-HTTPS endpoints. Use with caution! |
+| `plugins.updater.windows.installMode` | Windows install mode (`"passive"`, `"basicUi"`, `"quiet"`; see below). |
+
+Endpoint URLs can contain dynamic variables: `{{current_version}}` (version of the requesting app), `{{target}}` (`linux`, `windows` or `darwin`), `{{arch}}` (`x86_64`, `i686`, `aarch64` or `armv7`). Custom variables are not supported, but you can define a custom `{{target}}`.
+
+```json
+{
+  "bundle": {
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "CONTENT FROM PUBLICKEY.PEM",
+      "endpoints": [
+        "https://releases.myapp.com/{{target}}/{{arch}}/{{current_version}}",
+        // or a static github json file
+        "https://github.com/user/repo/releases/latest/download/latest.json"
+      ]
+    }
+  }
+}
+```
+
+Windows `installMode` (optional):
+
+```json
+{
+  "plugins": {
+    "updater": {
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}
+```
+
+- `"passive"`: small window with a progress bar, no user interaction. Generally recommended and the default.
+- `"basicUi"`: basic UI that requires user interaction to finish the installation.
+- `"quiet"`: no progress feedback. The installer cannot request admin privileges by itself, so it only works in user-wide installations or when the app already runs with admin privileges. Generally not recommended.
 
 ## Notes
 

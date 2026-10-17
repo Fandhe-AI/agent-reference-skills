@@ -6,7 +6,9 @@ source: https://v2.tauri.app/plugin/opener/
 
 Open files and URLs in a specified, or the default, application. Also supports "revealing" files in the system's file explorer.
 
-## Supported Platforms
+## Signature / Usage
+
+### Supported Platforms
 
 | Platform | Level | Notes |
 | --- | --- | --- |
@@ -18,7 +20,7 @@ Open files and URLs in a specified, or the default, application. Also supports "
 
 (`opener-v2.7.2`.)
 
-## Setup
+### Setup
 
 ```sh
 npm run tauri add opener
@@ -50,7 +52,7 @@ pub fn run() {
 }
 ```
 
-## Signature / Usage
+### Usage
 
 JavaScript:
 
@@ -80,7 +82,7 @@ app.opener().open_path("C:/path/to/file", Some("vlc"));
 app.opener().open_url("https://tauri.app", None::<&str>);
 ```
 
-## Permissions
+### Permissions
 
 Both `path` and `url` scope entries use the glob pattern syntax.
 

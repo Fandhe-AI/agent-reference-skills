@@ -34,7 +34,7 @@ pub fn run() {
 }
 ```
 
-## Official Features
+### Official Features
 
 | Feature | Description | Path |
 | --- | --- | --- |
@@ -69,11 +69,11 @@ pub fn run() {
 | Websocket | Open a WebSocket connection using a Rust client in JavaScript. | [websocket.md](./websocket.md) |
 | Window State | Persist window sizes and positions. | `../plugins-app/window-state.md` |
 
-## Community Resources
+### Community Resources
 
 The page also lists community plugins (for example `sentry-tauri`, `tauri-awesome-rpc`, `tauri-nspanel`, `tauri-nspopover-plugin`) and integrations. You can contribute your own on Awesome Tauri (https://github.com/tauri-apps/awesome-tauri). Community content is not covered by this skill.
 
-## Support Table
+### Support Table
 
 Platform support for the plugins documented in this category (derived from `[package.metadata.platforms.support]` in each plugin's `Cargo.toml`; all pinned tags use workspace `rust-version` 1.90):
 

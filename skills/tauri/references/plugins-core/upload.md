@@ -6,11 +6,13 @@ source: https://v2.tauri.app/plugin/upload/
 
 Upload files from disk to a remote server over HTTP. Download files from a remote HTTP server to disk.
 
-## Supported Platforms
+## Signature / Usage
+
+### Supported Platforms
 
 Windows, Linux, macOS, Android, iOS: full support (`upload-v2.5.0`).
 
-## Setup
+### Setup
 
 ```sh
 npm run tauri add upload
@@ -40,7 +42,7 @@ pub fn run() {
 }
 ```
 
-## Signature / Usage
+### Usage
 
 All APIs are available through the JavaScript guest bindings.
 
@@ -72,7 +74,7 @@ await download(
 );
 ```
 
-## Permissions
+### Permissions
 
 ```json
 {

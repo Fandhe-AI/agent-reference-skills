@@ -55,7 +55,7 @@ pub fn run() {
 
 When a deep link triggers the running app, `onOpenUrl` / `on_open_url` is called. To detect whether the app was opened via a deep link, call `getCurrent` / `get_current` on app start. The open URL event carries a list of URLs (for compatibility with the macOS API); in most cases only one URL is received.
 
-## Setup
+### Setup
 
 Automatic:
 
@@ -90,7 +90,7 @@ pub fn run() {
 npm install @tauri-apps/plugin-deep-link
 ```
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -101,6 +101,160 @@ Minimum Rust version 1.90.
 | macOS | Partial support | Deep links must be registered in config. Dynamic registration at runtime is not supported. |
 | Android | Partial support | Deep links must be registered in config. Dynamic registration at runtime is not supported. |
 | iOS | Partial support | Deep links must be registered in config. Dynamic registration at runtime is not supported. |
+
+### Platform setup
+
+#### Android
+
+1. App Links (http/https + host, verified): needs a server with a `.well-known/assetlinks.json` endpoint returning a text response in this format:
+
+```json
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "$APP_BUNDLE_ID",
+      "sha256_cert_fingerprints": [
+        $CERT_FINGERPRINT
+      ]
+    }
+  }
+]
+```
+
+`$APP_BUNDLE_ID` is `tauri.conf.json > identifier` with `-` replaced with `_`; `$CERT_FINGERPRINT` is a list of SHA256 fingerprints of the app's signing certificates.
+
+2. Custom URI schemes (no host, no verification): for URIs like `myapp://...`, use the `scheme` field in the mobile configuration and omit `host`.
+
+#### iOS
+
+1. Universal Links (https + host, verified): needs a server with a `.well-known/apple-app-site-association` endpoint returning JSON (`Content-Type: application/json`, served over HTTPS):
+
+```json
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["$DEVELOPMENT_TEAM_ID.$APP_BUNDLE_ID"],
+        "components": [
+          {
+            "/": "/open/*",
+            "comment": "Matches any URL whose path starts with /open/"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+`$DEVELOPMENT_TEAM_ID` is `tauri.conf.json > bundle > iOS > developmentTeam` or the `TAURI_APPLE_DEVELOPMENT_TEAM` environment variable. To test localhost use a self-signed TLS certificate installed on the iOS simulator or a service like ngrok. Verify the domain configuration:
+
+```sh
+HOST="your.website.com"
+curl -v "https://app-site-association.cdn-apple.com/a/v1/${HOST}"
+```
+
+2. Custom URI schemes (no host, no verification): declare a custom scheme under mobile configuration with `"appLink": false` (or omit it). The plugin generates the `CFBundleURLTypes` entries in Info.plist.
+
+#### Desktop
+
+On Linux and Windows deep links are delivered as a command line argument to a new app process. For a unique app instance receiving the events, integrate with the single instance plugin: add the `deep-link` feature, and register the single instance plugin first.
+
+```toml
+[target."cfg(any(target_os = \"macos\", windows, target_os = \"linux\"))".dependencies]
+tauri-plugin-single-instance = { version = "2.0.0", features = ["deep-link"] }
+```
+
+```rust
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    let mut builder = tauri::Builder::default();
+
+    #[cfg(desktop)]
+    {
+        builder = builder.plugin(tauri_plugin_single_instance::init(|_app, argv, _cwd| {
+          println!("a new app instance was opened with {argv:?} and the deep link event was already triggered");
+          // when defining deep link schemes at runtime, you must also check `argv` here
+        }));
+    }
+
+    builder = builder.plugin(tauri_plugin_deep_link::init());
+
+    builder
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+#### Registering desktop deep links at runtime
+
+On Linux and Windows, schemes can also be associated at runtime via `register`:
+
+```rust
+use tauri_plugin_deep_link::DeepLinkExt;
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_deep_link::init())
+        .setup(|app| {
+            #[cfg(any(windows, target_os = "linux"))]
+            app.deep_link().register("my-app")?;
+            Ok(())
+        })
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+By default the deep link is only registered when the app is installed. `register_all` force-registers all statically configured deep links at runtime (also for development mode):
+
+```rust
+#[cfg(any(target_os = "linux", all(debug_assertions, windows)))]
+{
+  use tauri_plugin_deep_link::DeepLinkExt;
+  app.deep_link().register_all()?;
+}
+```
+
+### Testing
+
+- Desktop: deep links are only triggered for installed applications; on Linux and Windows use `register_all` (above) to register all configured schemes to trigger the current executable.
+- Windows: open `myapp://url` in the browser or run `start myapp://url` (replace `myapp` with your scheme).
+- Linux: open `myapp://url` in the browser or run `xdg-open myapp://url`.
+- iOS simulator: `xcrun simctl openurl booted https://your.website.com/path`
+- Android emulator: `adb shell am start -a android.intent.action.VIEW -d https://your.website.com/path com.example.app` (the last argument is your bundle identifier)
+
+### Permissions
+
+`src-tauri/capabilities/default.json`:
+
+```json
+{
+  "$schema": "../gen/schemas/mobile-schema.json",
+  "identifier": "mobile-capability",
+  "windows": ["main"],
+  "platforms": ["iOS", "android"],
+  "permissions": [
+    // Usually you will need core:event:default to listen to the deep-link event
+    "core:event:default",
+    "deep-link:default"
+  ]
+}
+```
+
+Default permission set `deep-link:default`: allows reading the opened deep link via the get_current command. It includes `allow-get-current`.
+
+| Identifier | Description |
+| --- | --- |
+| `deep-link:allow-get-current` | Enables the get_current command without any pre-configured scope. |
+| `deep-link:allow-is-registered` | Enables the is_registered command without any pre-configured scope. |
+| `deep-link:allow-register` | Enables the register command without any pre-configured scope. |
+| `deep-link:allow-unregister` | Enables the unregister command without any pre-configured scope. |
+
+Each `allow-*` has a matching `deny-*` (e.g. `deep-link:deny-register`).
 
 ## Options / Props
 
@@ -163,160 +317,6 @@ Desktop custom schemes:
 | `mobile[].pathPrefix` | mobile | Path prefixes (e.g. `["/open"]`) |
 | `mobile[].appLink` | mobile | `true` for verified App/Universal Link; `false` (or omitted) for a custom URI scheme |
 | `desktop.schemes` | desktop | Schemes associated with the app |
-
-## Platform setup
-
-### Android
-
-1. App Links (http/https + host, verified): needs a server with a `.well-known/assetlinks.json` endpoint returning a text response in this format:
-
-```json
-[
-  {
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "$APP_BUNDLE_ID",
-      "sha256_cert_fingerprints": [
-        $CERT_FINGERPRINT
-      ]
-    }
-  }
-]
-```
-
-`$APP_BUNDLE_ID` is `tauri.conf.json > identifier` with `-` replaced with `_`; `$CERT_FINGERPRINT` is a list of SHA256 fingerprints of the app's signing certificates.
-
-2. Custom URI schemes (no host, no verification): for URIs like `myapp://...`, use the `scheme` field in the mobile configuration and omit `host`.
-
-### iOS
-
-1. Universal Links (https + host, verified): needs a server with a `.well-known/apple-app-site-association` endpoint returning JSON (`Content-Type: application/json`, served over HTTPS):
-
-```json
-{
-  "applinks": {
-    "details": [
-      {
-        "appIDs": ["$DEVELOPMENT_TEAM_ID.$APP_BUNDLE_ID"],
-        "components": [
-          {
-            "/": "/open/*",
-            "comment": "Matches any URL whose path starts with /open/"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-`$DEVELOPMENT_TEAM_ID` is `tauri.conf.json > bundle > iOS > developmentTeam` or the `TAURI_APPLE_DEVELOPMENT_TEAM` environment variable. To test localhost use a self-signed TLS certificate installed on the iOS simulator or a service like ngrok. Verify the domain configuration:
-
-```sh
-HOST="your.website.com"
-curl -v "https://app-site-association.cdn-apple.com/a/v1/${HOST}"
-```
-
-2. Custom URI schemes (no host, no verification): declare a custom scheme under mobile configuration with `"appLink": false` (or omit it). The plugin generates the `CFBundleURLTypes` entries in Info.plist.
-
-### Desktop
-
-On Linux and Windows deep links are delivered as a command line argument to a new app process. For a unique app instance receiving the events, integrate with the single instance plugin: add the `deep-link` feature, and register the single instance plugin first.
-
-```toml
-[target."cfg(any(target_os = \"macos\", windows, target_os = \"linux\"))".dependencies]
-tauri-plugin-single-instance = { version = "2.0.0", features = ["deep-link"] }
-```
-
-```rust
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
-    let mut builder = tauri::Builder::default();
-
-    #[cfg(desktop)]
-    {
-        builder = builder.plugin(tauri_plugin_single_instance::init(|_app, argv, _cwd| {
-          println!("a new app instance was opened with {argv:?} and the deep link event was already triggered");
-          // when defining deep link schemes at runtime, you must also check `argv` here
-        }));
-    }
-
-    builder = builder.plugin(tauri_plugin_deep_link::init());
-
-    builder
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
-}
-```
-
-### Registering desktop deep links at runtime
-
-On Linux and Windows, schemes can also be associated at runtime via `register`:
-
-```rust
-use tauri_plugin_deep_link::DeepLinkExt;
-
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
-    tauri::Builder::default()
-        .plugin(tauri_plugin_deep_link::init())
-        .setup(|app| {
-            #[cfg(any(windows, target_os = "linux"))]
-            app.deep_link().register("my-app")?;
-            Ok(())
-        })
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
-}
-```
-
-By default the deep link is only registered when the app is installed. `register_all` force-registers all statically configured deep links at runtime (also for development mode):
-
-```rust
-#[cfg(any(target_os = "linux", all(debug_assertions, windows)))]
-{
-  use tauri_plugin_deep_link::DeepLinkExt;
-  app.deep_link().register_all()?;
-}
-```
-
-## Testing
-
-- Desktop: deep links are only triggered for installed applications; on Linux and Windows use `register_all` (above) to register all configured schemes to trigger the current executable.
-- Windows: open `myapp://url` in the browser or run `start myapp://url` (replace `myapp` with your scheme).
-- Linux: open `myapp://url` in the browser or run `xdg-open myapp://url`.
-- iOS simulator: `xcrun simctl openurl booted https://your.website.com/path`
-- Android emulator: `adb shell am start -a android.intent.action.VIEW -d https://your.website.com/path com.example.app` (the last argument is your bundle identifier)
-
-## Permissions
-
-`src-tauri/capabilities/default.json`:
-
-```json
-{
-  "$schema": "../gen/schemas/mobile-schema.json",
-  "identifier": "mobile-capability",
-  "windows": ["main"],
-  "platforms": ["iOS", "android"],
-  "permissions": [
-    // Usually you will need core:event:default to listen to the deep-link event
-    "core:event:default",
-    "deep-link:default"
-  ]
-}
-```
-
-Default permission set `deep-link:default`: allows reading the opened deep link via the get_current command. It includes `allow-get-current`.
-
-| Identifier | Description |
-| --- | --- |
-| `deep-link:allow-get-current` | Enables the get_current command without any pre-configured scope. |
-| `deep-link:allow-is-registered` | Enables the is_registered command without any pre-configured scope. |
-| `deep-link:allow-register` | Enables the register command without any pre-configured scope. |
-| `deep-link:allow-unregister` | Enables the unregister command without any pre-configured scope. |
-
-Each `allow-*` has a matching `deny-*` (e.g. `deep-link:deny-register`).
 
 ## Notes
 

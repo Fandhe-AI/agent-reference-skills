@@ -176,7 +176,7 @@ tauri::Builder::default()
   })
 ```
 
-## Setup
+### Setup
 
 Automatic:
 
@@ -211,7 +211,7 @@ pub fn run() {
 
 3. `npm install @tauri-apps/plugin-nfc`
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -223,7 +223,7 @@ Minimum Rust version 1.90.
 | Android | Full support | |
 | iOS | Full support | |
 
-## Configuration (iOS)
+### Configuration (iOS)
 
 The NFC plugin requires native configuration for iOS: the target iOS version, a usage description in Info.plist, and the NFC capability.
 
@@ -269,7 +269,7 @@ NFC capability: add "Near Field Communication Tag Reading" in Xcode's "Signing &
 </plist>
 ```
 
-## Permissions
+### Permissions
 
 `src-tauri/capabilities/default.json`:
 

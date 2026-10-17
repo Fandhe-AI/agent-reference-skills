@@ -6,7 +6,9 @@ source: https://v2.tauri.app/plugin/localhost/
 
 Expose your app's assets through a localhost server instead of the default custom protocol.
 
-## Supported Platforms
+## Signature / Usage
+
+### Supported Platforms
 
 | Platform | Level |
 | --- | --- |
@@ -18,7 +20,7 @@ Expose your app's assets through a localhost server instead of the default custo
 
 (`localhost-v2.4.0`.) This is a Rust-only plugin (no JavaScript guest bindings).
 
-## Setup
+### Setup
 
 ```sh
 npm run tauri add localhost
@@ -44,7 +46,7 @@ pub fn run() {
 }
 ```
 
-## Signature / Usage
+### Usage
 
 The localhost plugin is available in Rust. The usage example passes the port to `Builder::new`:
 

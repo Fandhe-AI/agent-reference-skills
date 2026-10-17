@@ -6,7 +6,9 @@ source: https://v2.tauri.app/plugin/cli/
 
 Gives your Tauri app a command line interface through clap. A CLI definition in `tauri.conf.json` defines the interface; argument matches are read in JavaScript and/or Rust. This is for the app's own CLI, not the `tauri` developer CLI.
 
-## Supported Platforms
+## Signature / Usage
+
+### Supported Platforms
 
 | Platform | Level |
 | --- | --- |
@@ -18,7 +20,7 @@ Gives your Tauri app a command line interface through clap. A CLI definition in 
 
 (`cli-v2.5.0`.) On Windows, due to an OS limitation, production apps are not able to write text back to the calling console by default (see tauri issue 8305 for a workaround).
 
-## Setup
+### Setup
 
 ```sh
 npm run tauri add cli
@@ -51,6 +53,72 @@ pub fn run() {
         .expect("error while running tauri application");
 }
 ```
+
+### Usage
+
+JavaScript:
+
+```javascript
+import { getMatches } from '@tauri-apps/plugin-cli';
+// when using `"withGlobalTauri": true`, you may use
+// const { getMatches } = window.__TAURI__.cli;
+
+const matches = await getMatches();
+if (matches.subcommand?.name === 'run') {
+  // `./your-app run $ARGS` was executed
+  const args = matches.subcommand.matches.args;
+  if (args.debug?.value === true) {
+    // `./your-app run --debug` was executed
+  }
+  if (args.release?.value === true) {
+    // `./your-app run --release` was executed
+  }
+}
+```
+
+Rust:
+
+```rust
+#[cfg(desktop)]
+use tauri_plugin_cli::CliExt;
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+   tauri::Builder::default()
+       .setup(|app| {
+           #[cfg(desktop)]
+           {
+               app.handle().plugin(tauri_plugin_cli::init())?;
+               match app.cli().matches() {
+                   // `matches` here is a Struct with { args, subcommand }.
+                   // `args` is `HashMap<String, ArgData>` where `ArgData` is a struct with { value, occurrences }.
+                   // `subcommand` is `Option<Box<SubcommandMatches>>` where `SubcommandMatches` is a struct with { name, matches }.
+                   Ok(matches) => {
+                       println!("{:?}", matches)
+                   }
+                   Err(_) => {}
+               }
+           }
+           Ok(())
+       })
+       .run(tauri::generate_context!())
+       .expect("error while running tauri application");
+}
+```
+
+### Permissions
+
+```json
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-capability",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": ["cli:default"]
+}
+```
+
+`cli:default` allows reading the CLI matches (`allow-cli-matches`). The permission identifiers are `cli:allow-cli-matches` and `cli:deny-cli-matches`.
 
 ## Options / Props
 
@@ -113,72 +181,6 @@ Subcommands are nested interfaces in the `subcommands` object; each has the same
   }
 }
 ```
-
-## Signature / Usage
-
-JavaScript:
-
-```javascript
-import { getMatches } from '@tauri-apps/plugin-cli';
-// when using `"withGlobalTauri": true`, you may use
-// const { getMatches } = window.__TAURI__.cli;
-
-const matches = await getMatches();
-if (matches.subcommand?.name === 'run') {
-  // `./your-app run $ARGS` was executed
-  const args = matches.subcommand.matches.args;
-  if (args.debug?.value === true) {
-    // `./your-app run --debug` was executed
-  }
-  if (args.release?.value === true) {
-    // `./your-app run --release` was executed
-  }
-}
-```
-
-Rust:
-
-```rust
-#[cfg(desktop)]
-use tauri_plugin_cli::CliExt;
-
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
-   tauri::Builder::default()
-       .setup(|app| {
-           #[cfg(desktop)]
-           {
-               app.handle().plugin(tauri_plugin_cli::init())?;
-               match app.cli().matches() {
-                   // `matches` here is a Struct with { args, subcommand }.
-                   // `args` is `HashMap<String, ArgData>` where `ArgData` is a struct with { value, occurrences }.
-                   // `subcommand` is `Option<Box<SubcommandMatches>>` where `SubcommandMatches` is a struct with { name, matches }.
-                   Ok(matches) => {
-                       println!("{:?}", matches)
-                   }
-                   Err(_) => {}
-               }
-           }
-           Ok(())
-       })
-       .run(tauri::generate_context!())
-       .expect("error while running tauri application");
-}
-```
-
-## Permissions
-
-```json
-{
-  "$schema": "../gen/schemas/desktop-schema.json",
-  "identifier": "main-capability",
-  "description": "Capability for the main window",
-  "windows": ["main"],
-  "permissions": ["cli:default"]
-}
-```
-
-`cli:default` allows reading the CLI matches (`allow-cli-matches`). The permission identifiers are `cli:allow-cli-matches` and `cli:deny-cli-matches`.
 
 ## Notes
 

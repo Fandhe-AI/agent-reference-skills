@@ -146,7 +146,7 @@ let file_path = app
     // the file path is `None` if the user closed the dialog
 ```
 
-## Setup
+### Setup
 
 Automatic:
 
@@ -176,7 +176,7 @@ pub fn run() {
 npm install @tauri-apps/plugin-dialog
 ```
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -190,7 +190,7 @@ Minimum Rust version 1.90.
 
 Cargo features of `tauri-plugin-dialog` 2.8.3: `default = ["gtk3"]`, `gtk3`, `xdg-portal`.
 
-## Permissions
+### Permissions
 
 Default permission set `dialog:default`: all dialog types are enabled. It includes `allow-message`, `allow-save`, `allow-open`.
 

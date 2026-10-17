@@ -6,11 +6,13 @@ source: https://v2.tauri.app/plugin/sql/
 
 Plugin providing an interface for the frontend to communicate with SQL databases through sqlx. Supports the SQLite, MySQL and PostgreSQL drivers, enabled by a Cargo feature.
 
-## Supported Platforms
+## Signature / Usage
+
+### Supported Platforms
 
 Windows, Linux, macOS, Android, iOS: full support (`sql-v2.6.0`).
 
-## Setup
+### Setup
 
 ```sh
 npm run tauri add sql
@@ -51,7 +53,7 @@ cargo add tauri-plugin-sql --features mysql
 cargo add tauri-plugin-sql --features postgres
 ```
 
-## Signature / Usage
+### Usage
 
 All APIs are available through the JavaScript guest bindings. The SQLite path is relative to `BaseDirectory::AppConfig`.
 
@@ -71,7 +73,7 @@ const mysqlDb = await Database.load('mysql://user:password@host/test');
 const postgresDb = await Database.load('postgres://user:password@host/test');
 ```
 
-## Syntax
+### Syntax
 
 sqlx is the underlying library and its query syntax is used.
 
@@ -98,7 +100,7 @@ const mysqlResult = await db.execute(
 );
 ```
 
-## Migrations
+### Migrations
 
 Migrations are defined in Rust with the `Migration` struct: a unique version number, a description, the SQL to execute, and the kind (Up or Down).
 
@@ -169,7 +171,7 @@ import Database from '@tauri-apps/plugin-sql';
 const db = await Database.load('sqlite:mydatabase.db');
 ```
 
-## Permissions
+### Permissions
 
 ```json
 {

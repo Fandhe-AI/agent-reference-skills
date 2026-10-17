@@ -59,7 +59,7 @@ pub fn run() {
 }
 ```
 
-## Setup
+### Setup
 
 Automatic:
 
@@ -97,7 +97,7 @@ pub fn run() {
 npm install @tauri-apps/plugin-global-shortcut
 ```
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -109,7 +109,7 @@ Minimum Rust version 1.90.
 | Android | No support | |
 | iOS | No support | |
 
-## Permissions
+### Permissions
 
 No features are enabled by default, as shortcuts can be inherently dangerous and it is application specific if specific shortcuts should be registered or unregistered.
 

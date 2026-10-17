@@ -97,7 +97,7 @@ fn bio_auth(app_handle: tauri::AppHandle) {
 }
 ```
 
-## Setup
+### Setup
 
 Automatic:
 
@@ -132,7 +132,7 @@ pub fn run() {
 
 3. `npm install @tauri-apps/plugin-biometric`
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -146,7 +146,7 @@ Minimum Rust version 1.90.
 
 The crate description lists Android, iOS, and macOS; the official page text names Android and iOS (see Notes).
 
-## Configuration
+### Configuration
 
 On iOS the plugin requires the `NSFaceIDUsageDescription` Info.plist value. In `src-tauri/Info.ios.plist`:
 
@@ -161,7 +161,7 @@ On iOS the plugin requires the `NSFaceIDUsageDescription` Info.plist value. In `
 </plist>
 ```
 
-## Permissions
+### Permissions
 
 `src-tauri/capabilities/default.json`:
 

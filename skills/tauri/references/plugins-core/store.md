@@ -6,11 +6,13 @@ source: https://v2.tauri.app/plugin/store/
 
 Persistent key-value store that saves state to a file, between app restarts. Usable from the webview or from Rust; the process is asynchronous.
 
-## Supported Platforms
+## Signature / Usage
+
+### Supported Platforms
 
 Windows, Linux, macOS, Android, iOS: full support (`store-v2.5.0`).
 
-## Setup
+### Setup
 
 ```sh
 npm run tauri add store
@@ -42,7 +44,7 @@ pub fn run() {
 }
 ```
 
-## Signature / Usage
+### Usage
 
 JavaScript:
 
@@ -106,7 +108,7 @@ pub fn run() {
 }
 ```
 
-### LazyStore
+#### LazyStore
 
 A high level JavaScript API that only loads the store on first access:
 
@@ -116,7 +118,7 @@ import { LazyStore } from '@tauri-apps/plugin-store';
 const store = new LazyStore('settings.json');
 ```
 
-## Permissions
+### Permissions
 
 ```json
 {

@@ -6,11 +6,13 @@ source: https://v2.tauri.app/plugin/stronghold/
 
 Store secrets and keys using the IOTA Stronghold secret management engine.
 
-## Supported Platforms
+## Signature / Usage
+
+### Supported Platforms
 
 Windows, Linux, macOS, Android, iOS: full support (`stronghold-v2.4.0`).
 
-## Setup
+### Setup
 
 ```sh
 npm run tauri add stronghold
@@ -50,7 +52,7 @@ Due to an upstream bug (plugins-workspace issue 2048) the docs also recommend ad
 opt-level = 3
 ```
 
-## Signature / Usage
+### Usage
 
 The plugin must be initialized with a password hash function, which takes the password string and must return a 32 bytes hash derived from it.
 
@@ -166,7 +168,7 @@ await stronghold.save();
 await store.remove(key);
 ```
 
-## Permissions
+### Permissions
 
 ```json
 {

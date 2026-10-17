@@ -6,11 +6,13 @@ source: https://v2.tauri.app/plugin/os-info/
 
 Read information about the operating system using the OS Information plugin.
 
-## Supported Platforms
+## Signature / Usage
+
+### Supported Platforms
 
 Windows, Linux, macOS, Android, iOS: full support (`os-v2.4.0`).
 
-## Setup
+### Setup
 
 ```sh
 npm run tauri add os
@@ -42,7 +44,7 @@ pub fn run() {
 }
 ```
 
-## Signature / Usage
+### Usage
 
 `platform` returns a string describing the specific operating system in use. The value is set at compile time. Possible values are `linux`, `macos`, `ios`, `freebsd`, `dragonfly`, `netbsd`, `openbsd`, `solaris`, `android`, `windows`.
 
@@ -66,7 +68,7 @@ println!("Platform: {}", platform);
 // Prints "windows" to the terminal
 ```
 
-## Permissions
+### Permissions
 
 ```json
 {

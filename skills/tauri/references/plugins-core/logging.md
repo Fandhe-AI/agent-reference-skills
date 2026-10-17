@@ -6,11 +6,13 @@ source: https://v2.tauri.app/plugin/logging/
 
 Configurable logging for your Tauri app, from Rust (the `log` crate) and from the frontend.
 
-## Supported Platforms
+## Signature / Usage
+
+### Supported Platforms
 
 Windows, Linux, macOS, Android, iOS: full support (`log-v2.10.1`).
 
-## Setup
+### Setup
 
 ```sh
 npm run tauri add log
@@ -42,7 +44,7 @@ pub fn run() {
 }
 ```
 
-## Signature / Usage
+### Usage
 
 JavaScript APIs:
 
@@ -100,7 +102,7 @@ log::error!("something bad happened!");
 log::info!("Tauri is awesome!");
 ```
 
-## Log targets
+### Log targets
 
 The builder's `targets` function configures destinations. By default the plugin logs to stdout and to a file in the application logs directory. To only use your own targets, call `clear_targets`:
 
@@ -181,7 +183,7 @@ tauri_plugin_log::Builder::new()
   .build()
 ```
 
-## Filtering
+### Filtering
 
 By default all logs are processed. Maximum log level, and per-module levels:
 
@@ -202,7 +204,7 @@ tauri_plugin_log::Builder::new()
   .build()
 ```
 
-## Formatting
+### Formatting
 
 Records are formatted as `DATE[TARGET][LEVEL] MESSAGE`. Custom format function:
 
@@ -249,7 +251,7 @@ tauri_plugin_log::Builder::new()
   .build()
 ```
 
-## Permissions
+### Permissions
 
 ```json
 {

@@ -24,7 +24,7 @@ await notificationFeedback('warning');
 await selectionFeedback();
 ```
 
-## Setup
+### Setup
 
 Automatic:
 
@@ -59,7 +59,7 @@ pub fn run() {
 
 3. `npm install @tauri-apps/plugin-haptics`
 
-## Supported Platforms
+### Supported Platforms
 
 Minimum Rust version 1.90.
 
@@ -71,7 +71,7 @@ Minimum Rust version 1.90.
 | Android | Full support | |
 | iOS | Full support | |
 
-## Permissions
+### Permissions
 
 `src-tauri/capabilities/mobile.json`:
 
