@@ -78,7 +78,7 @@ ARINFO <key> [FULL]
 - TypeScript SDK: `arget<TData>()` returns `TData | null` with automatic deserialization (default `string`); `arring` returns the index as a string in TypeScript and an integer in Python. `index` accepts `number | string`.
 - Python SDK shape for `ARGREP`: `redis.argrep("my-array", "-", "+", glob="error:*", limit=10)`.
 - Use an array when data has a natural numeric key (sequence number, bucketed timestamp); a list would force a scan and a hash stores the index as a string.
-- Source: https://upstash.com/docs/redis/commands/array/overview and each `array/*` command page, plus /redis/sdks/ts/commands/array/{arset,arget,arring} (fetched 2026-10; no version pin on the site).
+- Source: https://upstash.com/docs/redis/commands/array/overview and each `array/*` command page, plus https://upstash.com/docs/redis/sdks/ts/commands/array/arset, https://upstash.com/docs/redis/sdks/ts/commands/array/arget, https://upstash.com/docs/redis/sdks/ts/commands/array/arring (fetched 2026-10; no version pin on the site).
 
 ## Related
 

@@ -58,6 +58,7 @@ await redis.hsetex("user:123", { conditional: "FNX", expiration: { ex: 3600 } },
 - Hash field expiration commands were added in April 2025; `HGETDEL`, `HGETEX`, `HSETEX` in December 2025 (Upstash Redis changelog)
 - `HGETALL` returns `null` if the key does not exist
 - `HMSET` is deprecated in Redis 4.0; use `HSET` with multiple fields instead
+- The TS SDK page words `FNX`/`FXX` as hash existence, but the command page https://upstash.com/docs/redis/commands/hash/hsetex defines them per field (`FNX`: none of the given fields exist, `FXX`: all of them exist)
 - `HDEL` returns the count of fields that were actually deleted (ignores non-existent fields)
 
 ### Hash field expiration
@@ -84,7 +85,7 @@ Return values (`number[]`, one per field): set commands return `-2` (field or ke
 |---------|-----------|---------|
 | `hgetdel` | `key, ...fields` | `Record<string, TValue \| null> \| null`; values are returned and the fields deleted atomically; missing fields are `null`, `null` if hash or all fields are missing |
 | `hgetex` | `key, options, ...fields` | Same shape as `hgetdel`. `options`: exactly one of `ex` (seconds), `px` (ms), `exat` (Unix seconds), `pxat` (Unix ms), `persist: true`; pass `{}` to read without changing expiration |
-| `hsetex` | `key, options, fields` | Number of fields set (`0` if the condition is not met). `options.conditional`: `FNX` (only if the hash does not exist) / `FXX` (only if it exists), case-insensitive. `options.expiration`: `ex`, `px`, `exat`, `pxat`, or `keepttl: true`. Pass `undefined` for no options |
+| `hsetex` | `key, options, fields` | Number of fields set (`0` if the condition is not met). `options.conditional`: `FNX` (only if none of the given fields exist) / `FXX` (only if all of them exist), case-insensitive. `options.expiration`: `ex`, `px`, `exat`, `pxat`, or `keepttl: true`. Pass `undefined` for no options |
 
 ## Related
 

@@ -13,10 +13,11 @@ console.log(publicUrl.url)
 // https://{BOX_ID}-3000.preview.box.upstash.com
 
 const bearer = await box.getPublicURL(3000, { bearerToken: true })
-console.log(bearer.token) // curl -H "Authorization: Bearer <token>" <url>
+await fetch(bearer.url, { headers: { Authorization: `Bearer ${bearer.token}` } })
 
 const basic = await box.getPublicURL(8080, { basicAuth: true })
-console.log(basic.username, basic.password) // curl -u user:<password> <url>
+const basicCredentials = Buffer.from(`${basic.username}:${basic.password}`).toString("base64")
+await fetch(basic.url, { headers: { Authorization: `Basic ${basicCredentials}` } })
 
 const { publicURLs } = await box.listPublicURLs()
 await box.deletePublicURL(3000)
@@ -49,6 +50,8 @@ box.delete_public_url(3000)
 - Creating a public URL on a paused box resumes it
 - The SDK still supports `getPreviewUrl`, `listPreviews`, `deletePreview` as deprecated aliases of `getPublicURL`, `listPublicURLs`, `deletePublicURL`
 - Not available on EphemeralBox
+- The docs print token / password for illustration; do not log them in real code
+- Source: https://upstash.com/docs/box/overall/preview (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

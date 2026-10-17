@@ -16,12 +16,27 @@ const session = await box.exec.session({
 console.log(session.pid)  // in-box process id
 const code = await session.wait()
 
-session.write("banana\napple\n")
-session.endStdin()
-
+// Alternatively, before wait() resolves (while the process is still running):
 session.terminate(5000) // ms: SIGTERM, then SIGKILL after grace period
 session.kill("KILL")
 session.close()         // stops the process
+```
+
+Write to stdin (close stdin so `sort` can finish):
+
+```typescript
+let out = ""
+
+const session = await box.exec.session({
+  argv: ["sort"],
+  onStdout: (data) => (out += Buffer.from(data).toString()),
+})
+
+session.write("banana\napple\n")
+session.endStdin() // EOF, so sort can finish
+
+await session.wait()
+console.log(out) // "apple\nbanana\n"
 ```
 
 ```python
@@ -62,6 +77,7 @@ with box.exec.session(cmd="npm run dev", tty=True) as dev:
 - Only the first `terminate` starts the sequence; later calls are ignored
 - The session owns the process: closing the handle, losing the connection, or exiting your program stops the command. Sessions cannot be reattached; use schedules or a `keep_alive` box with `box.exec.command` for work that must outlive your program
 - Always stop the session on the way out (Python context manager; JavaScript `finally { session.close() }`)
+- Source: https://upstash.com/docs/box/overall/live-sessions (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

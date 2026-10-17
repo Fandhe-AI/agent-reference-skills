@@ -51,6 +51,7 @@ await receiver.verify({
 - No active resources: just change the env vars. With active resources: use the **Migrate** button in the QStash tab of the Upstash Console (guided). It copies schedules, URL groups and queues; message logs and DLQ stay in the old region. A message published in one region is still delivered from that region after migration.
 - QStash sends an `upstash-region` header (e.g. `US-EAST-1`) with every request; pass it to `verify` when `QSTASH_REGION` is set. Platform verifiers such as `verifySignatureAppRouter` handle it automatically.
 - Migration mode requires `@upstash/qstash` >= 2.9.0 and reads `process.env`, so it does not work where `process.env` is unavailable (e.g. Cloudflare Workers).
+- Source: https://upstash.com/docs/qstash/howto/multi-region (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

@@ -68,6 +68,7 @@ Customize the box via any `Box.create` option, e.g. `attachHeaders` and `network
 - Pause or delete a box only when `isWorkerRunning(box)` is `false`; the worker exits about a minute after each turn
 - Troubleshooting: session stays queued (dispatcher not running or ID/key mismatch); `This API key is not scoped to a workspace` (create the key inside a workspace); commands never run (check `/workspace/home/worker.log`)
 - This is about hosting the sandbox for Anthropic's Managed Agents; see the anthropic-managed-agents skill for the Managed Agents API itself
+- Source: https://upstash.com/docs/box/guides/claude-managed-agents (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

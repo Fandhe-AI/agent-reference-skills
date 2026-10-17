@@ -46,6 +46,7 @@ export default defineSandbox(() =>
 - Each build with something to prepare creates a new snapshot; old ones are not removed automatically (delete in console or `Box.deleteSnapshots()`)
 - Lifecycle: one box per Eve session; `sandbox.stop()` pauses, `sandbox.delete()` deletes; default `keepAlive: false`. Eve roots tools at `/workspace` while a Box session lives at `/workspace/home`; the provider rewrites paths
 - Migration from `upstash()` (agentkit-eve 0.12 and earlier, removed in Eve 0.64): `bootstrap` becomes `prepare`; `onSession` `use({ networkPolicy })` becomes `environment.open({ networkPolicy })`; `revalidationKey`, `redis`, `templatePrefix`, `enableTelemetry` are gone
+- Source: https://upstash.com/docs/box/guides/eve-setup (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

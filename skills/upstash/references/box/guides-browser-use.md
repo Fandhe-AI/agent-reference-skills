@@ -33,18 +33,40 @@ box.schedule.exec(
 In-box agent (`agent.py`):
 
 ```python
+import asyncio
+from datetime import datetime, timezone
+from pathlib import Path
+
 from browser_use import Agent, Browser, ChatAnthropic
 
-agent = Agent(
-    task=TASK,
-    llm=ChatAnthropic(model="claude-sonnet-4-5"),
-    browser=Browser(
-        executable_path="/usr/bin/chromium",
-        headless=True,
-        chromium_sandbox=False,
-    ),
-)
-history = await agent.run(max_steps=15)
+TASK = """
+Go to news.ycombinator.com and find the first 3 stories about AI on the front page.
+Return a markdown list with the title, link, and points of each.
+Open only the first one and add a two-sentence summary of it.
+"""
+
+
+async def main():
+    agent = Agent(
+        task=TASK,
+        llm=ChatAnthropic(model="claude-sonnet-4-5"),
+        browser=Browser(
+            executable_path="/usr/bin/chromium",
+            headless=True,
+            chromium_sandbox=False,
+        ),
+    )
+    history = await agent.run(max_steps=15)
+    if not history.is_successful():
+        raise SystemExit("The agent did not finish the task")
+
+    name = datetime.now(timezone.utc).strftime("%Y-%m-%d-%H%M")
+    report = Path("/workspace/home/reports") / f"{name}.md"
+    report.parent.mkdir(exist_ok=True)
+    report.write_text(history.final_result())
+
+
+asyncio.run(main())
 ```
 
 ## Notes
@@ -54,6 +76,7 @@ history = await agent.run(max_steps=15)
 - The box pauses when idle; each scheduled run wakes it and reports stay on the box
 - Run `setup.py` once: each run creates a new box with its own daily schedule
 - Delete the box with `box.delete()` when no longer needed
+- Source: https://upstash.com/docs/box/guides/browser-use (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

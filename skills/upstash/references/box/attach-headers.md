@@ -43,6 +43,7 @@ box = Box.create(
 - Global headers can be configured at user or team level in the console Settings tab under Attach Headers; they apply to new boxes. Per-box headers override global ones for the same host pattern; other global patterns are included as-is
 - Patterns must be lowercase; only `*.` prefix wildcards; most-specific match wins
 - Limitations: set at box creation (after merging) and not updated on a running box; only HTTPS on port `443` is intercepted; HTTP/2 through matched hosts is downgraded to HTTP/1.1; values are encrypted at rest and never returned by API responses
+- Source: https://upstash.com/docs/box/overall/attach-headers (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

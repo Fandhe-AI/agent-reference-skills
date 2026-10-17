@@ -76,6 +76,7 @@ Modules per box: Agent (Claude Code or Codex), Git, Shell, Filesystem, Snapshots
 - Each box is its own Docker container with independent filesystem, process tree, and network stack; boxes cannot reach or observe each other
 - Billing is on active usage by default; `keepAlive` switches to always-on billing. Pricing: https://upstash.com/pricing/box
 - Deletion is irreversible; snapshot first if you may need the environment again
+- Source: https://upstash.com/docs/box/overall/how-it-works (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

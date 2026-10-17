@@ -53,6 +53,7 @@ Cleanup: `await openai.beta.agents.sessions.delete(sessionId); await box.delete(
 - Customize via any `Box.create` option (`attachHeaders`, `networkPolicy: { mode: "custom", allowedDomains: [...] }`); to start every box with your own tools or repo, use `Box.fromSnapshot`
 - Troubleshooting: script waits and prints nothing (executor did not connect; check `/workspace/home/executor.log`); `missing required scope api.agents.environments.connect` (use an environment key, not a regular API key)
 - This guide hosts the sandbox for OpenAI's Agents API; see the openai-agents skill for the Agents SDK itself
+- Source: https://upstash.com/docs/box/guides/openai-agents-api (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

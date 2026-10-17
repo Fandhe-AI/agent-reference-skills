@@ -57,6 +57,7 @@ delay =  min(86400, e ** (2.5*n)) // in seconds
 - `Upstash-Retried` request header: QStash adds it to requests to your API; `0` is the first attempt, `1` the second, etc.
 - Non-retryable error: respond with status `489` and header `Upstash-NonRetryable-Error: true`. QStash marks the message failed immediately, skips further retries, and forwards it to the Dead Letter Queue.
 - The Python SDK `RetryConfig` (`retry={"retries": ..., "backoff": ...}`) configures retries of requests sent to QStash, not QStash's delivery retries.
+- Source: https://upstash.com/docs/qstash/features/retry (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

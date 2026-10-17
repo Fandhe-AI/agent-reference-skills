@@ -45,4 +45,3 @@
 | Security & Secrets | Every box runs in its own isolated container (dedicated filesystem, process tree, network stack); boxes cannot communicate with or observe each other, and cannot reach private networks, cloud metadata services, or other internal infrastructure. | [security.md](./security.md) |
 | Shell | Every box has a full Linux shell (Debian by default), reachable through the SDK or directly over SSH. | [shell.md](./shell.md) |
 | Snapshots | Snapshots capture and duplicate box state — filesystem and agent configuration — as a point-in-time checkpoint you can restore later, independent of the source box. | [snapshots.md](./snapshots.md) |
-</content>

@@ -63,6 +63,7 @@ Exported types: `EphemeralBox`, `EphemeralBoxConfig`, `EphemeralBoxData` (extend
 - Differs from `Box.create()`: ready immediately (no polling; API returns `status: "idle"`); the request sends `{ ephemeral: true, ttl?, runtime? }` to `POST /v2/box`
 - Auto-deleted after TTL
 - Composition over inheritance: wraps an internal `Box` and exposes only the subset, so agent/git are not accessible even at runtime
+- Source: https://upstash.com/docs/box/overall/ephemeral-box (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

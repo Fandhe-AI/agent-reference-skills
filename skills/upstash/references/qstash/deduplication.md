@@ -29,6 +29,7 @@ Content-based deduplication ID is derived from: destination (URL Group or endpoi
 - A duplicate is accepted by QStash but not enqueued. The response returns the messageID of the existing message with HTTP `202 Accepted`.
 - Useful when the connection fails and the acknowledgement is lost: re-publishing is safe.
 - The deduplication window is 10 minutes. After that, messages with the same ID or content can be sent again.
+- Source: https://upstash.com/docs/qstash/features/deduplication (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

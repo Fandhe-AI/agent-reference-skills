@@ -14,15 +14,14 @@ console.log(run.result) // "hello"
 console.log(run.status) // "completed"
 
 const code = await box.exec.code({ code: "console.log('hello')", lang: "js", timeout: 10_000 })
-console.log(code.output)    // "hello"
-console.log(code.exit_code) // "0"
+console.log(code.result)    // "hello"
+console.log(code.exitCode)  // 0
 
 const failed = await box.exec.command("node -e 'process.exit(1)'")
 console.log(failed.status) // "failed" (result contains stderr)
 
-const long = await box.exec.command("sleep 10")
-await long.cancel()
-console.log(long.status) // "cancelled"
+const s = await box.exec.session({ argv: ["sleep", "10"] })
+s.kill()
 
 const logs = await (await box.exec.command("npm test")).logs()
 // [{ timestamp: "2026-02-23T...", level: "info", message: "PASS src/auth.test.ts" }, ...]
@@ -47,6 +46,9 @@ session.wait(30)
 - Install system tools with `sudo apt-get install <package>` inside the box
 - `exec.command` runs to completion. To write stdin, drive a terminal, or signal a process, use `box.exec.session` (see Live Sessions)
 - Typical flow: `box.git.clone(...)`, `box.exec.command("npm install")`, then `box.agent.run({ prompt })`; build artifacts via `box.files.upload([...])` and `box.files.download({ folder: "/work/dist" })`
+- The docs' shell page shows `output` / `exit_code` for `exec.code`, but the SDK `Run` (@upstash/box 0.7.9 client.ts) exposes `result` / `exitCode` (number)
+- The docs' cancel example awaits `exec.command` first, so the command has already finished; use `exec.session` + `kill` / `terminate` to stop a running process
+- Source: https://upstash.com/docs/box/overall/shell (fetched 2026-10-17; no version pin on the site).
 - The SSH command can also be copied from the SSH button on the box details page in the Upstash Console
 
 ## Related

@@ -2,11 +2,11 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Algorithms | Three rate limiting algorithms available as static… | [algorithms.md](./algorithms.md) |
-| Redis Command Costs | Number of Redis commands consumed per operation, by… | [costs.md](./costs.md) |
-| Features | Advanced capabilities of `@upstash/ratelimit` beyond… | [features.md](./features.md) |
-| Strapi Integration | `@upstash/strapi-plugin-upstash-ratelimit` — official… | [integrations-strapi.md](./integrations-strapi.md) |
-| Methods | Instance methods on a `Ratelimit` (or `MultiRegionRatelimit`)… | [methods.md](./methods.md) |
-| Overview | `@upstash/ratelimit` — connectionless (HTTP-based) rate… | [overview.md](./overview.md) |
-| Python SDK (upstash-ratelimit) | `upstash-ratelimit` is a connectionless rate limiting… | [python-sdk.md](./python-sdk.md) |
-| Traffic Protection | Deny-list based request blocking by IP address, user agent… | [traffic-protection.md](./traffic-protection.md) |
+| Overview | Package overview, installation, and constructor options for `@upstash/ratelimit` | [overview.md](./overview.md) |
+| Algorithms | Fixed Window, Sliding Window, and Token Bucket algorithm reference | [algorithms.md](./algorithms.md) |
+| Methods | `limit()`, `blockUntilReady()`, `resetUsedTokens()`, `getRemaining()`, `setDynamicLimit()`, `getDynamicLimit()` | [methods.md](./methods.md) |
+| Features | Ephemeral cache, timeout, analytics, multi-region, multiple limits, dynamic limits, custom rates | [features.md](./features.md) |
+| Traffic Protection | Deny-list blocking by IP, user agent, country; auto IP deny list | [traffic-protection.md](./traffic-protection.md) |
+| Redis Command Costs | Commands consumed per algorithm and feature for billing estimation | [costs.md](./costs.md) |
+| Strapi Integration | `@upstash/strapi-plugin-upstash-ratelimit` setup and configuration | [integrations-strapi.md](./integrations-strapi.md) |
+| Python SDK | `upstash-ratelimit` Python SDK: connectionless rate limiting with `FixedWindow` / `SlidingWindow` / `TokenBucket`, `limit()`, `block_until_ready()` | [python-sdk.md](./python-sdk.md) |

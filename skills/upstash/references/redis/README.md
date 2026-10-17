@@ -34,4 +34,3 @@
 | Redis Search — Searchable Streams | Index and search individual Redis stream entries: each entry becomes a separate search document whose ID is the stream entry ID. | [search-streams.md](./search-streams.md) |
 | Security | Upstash Redis security features: TLS encryption, ACL, IP allowlisting, encryption at rest, and private connectivity options. | [security.md](./security.md) |
 | @upstash/redis — TypeScript SDK Overview | HTTP/REST-based Redis client for TypeScript, built on the Upstash REST API. Connectionless by design — ideal for serverless, edge, and WebAssembly environments where TCP is unavailable. | [ts-sdk-overview.md](./ts-sdk-overview.md) |
-</content>

@@ -60,6 +60,7 @@ export const register = () => registerQStashDev();
 - Starting the dev server prints predefined test users (`QSTASH_URL`, `QSTASH_TOKEN`, `QSTASH_CURRENT_SIGNING_KEY`, `QSTASH_NEXT_SIGNING_KEY`); copy the credentials from that output. They are not reproduced here.
 - License: the dev server is under the Development Server License; development and testing only, not production.
 - Local tunnel alternative: `npx localtunnel --port 3000` gives a public URL such as `https://good-months-leave.loca.lt`; if blocked, set the `Upstash-Forward-bypass-tunnel-reminder` header to any value. For ngrok: `ngrok config add-authtoken XXX`, then `ngrok http 3000`, and use the `Forwarding` URL plus your API path as the QStash destination (inspect traffic at `http://127.0.0.1:4040`).
+- Source: https://upstash.com/docs/qstash/howto/local-development (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

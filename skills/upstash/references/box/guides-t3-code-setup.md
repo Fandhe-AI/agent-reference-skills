@@ -36,6 +36,7 @@ t3 pair --base-dir /workspace/home/.t3
 - Projects, threads, and browser pairing live under `/workspace/home/.t3` on persistent storage and are captured by snapshots; keep existing project folders under `/workspace` too
 - After a reset, reinstall T3 Code (step 3); a snapshot restore brings projects and pairing back
 - If a thread says "Claude could not authenticate", the step 4 sign-in is missing
+- Source: https://upstash.com/docs/box/guides/t3-code-setup (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

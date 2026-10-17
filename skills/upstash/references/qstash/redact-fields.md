@@ -46,6 +46,7 @@ await client.schedule.create({
 - A message moved to the DLQ stays redacted there, but retrying a DLQ message delivers the original values to your endpoint.
 - Updating a redacted schedule via dashboard or API requires providing the original values; otherwise the fields are saved as the literal `REDACTED:<SHA256>`.
 - The TypeScript and Python examples on the official page use `header` (singular) in the `redact` object, while the cURL header and options table use `header[...]` / `headers`; follow the SDK form shown in the snippet.
+- Source: https://upstash.com/docs/qstash/howto/redact-fields (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

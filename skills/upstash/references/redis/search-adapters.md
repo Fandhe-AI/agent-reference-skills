@@ -63,7 +63,7 @@ Index methods shown: `search.createIndex()`, `search.index()`, `index.query()`, 
 - `search.index()` returns a client for an existing index without making a Redis call. Any key matching the index prefix is indexed automatically.
 - Index updates are batched; call `waitIndexing()` when queries must reflect recent writes.
 - This is a client-library choice, distinct from the `@upstash/redis` REST client covered in the TypeScript SDK page.
-- Source: https://upstash.com/docs/redis/search/adapters/node-redis and /adapters/ioredis (fetched 2026-10; no version pin on the site).
+- Source: https://upstash.com/docs/redis/search/adapters/node-redis and https://upstash.com/docs/redis/search/adapters/ioredis (fetched 2026-10; no version pin on the site).
 
 ## Related
 

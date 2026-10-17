@@ -36,6 +36,7 @@ await client.publishJSON({
 - Maximum delay: free 7 days; pay-as-you-go 1 year; fixed pricing custom.
 - `Upstash-Not-Before` overrides `Upstash-Delay` when both are used together.
 - In schedules, a delay is only possible via `Upstash-Delay`. It affects the messages created by the schedule, not the schedule itself (e.g. a `30s` delay: messages are created at trigger time and delivered 30 seconds later).
+- Source: https://upstash.com/docs/qstash/features/delay (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 
