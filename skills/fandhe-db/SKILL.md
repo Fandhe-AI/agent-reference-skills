@@ -6,8 +6,8 @@ description: >
   fandhe-db-engine / fandhe-db-wire-server リファレンス。
   USING PLAN / USING OPERATION_ID 構文、DDL / JOIN / CTE / window 関数、
   拡張クエリ・COPY・トランザクション、TLS 1.3 / SCRAM-SHA-256、
-  NoSQL HTTP 表層、HNSW / BM25 / RRF hybrid / rerank、redb 永続化、
-  tenant・RLS、SIMD / wgpu、wire_code エラー契約。
+  NoSQL HTTP 表層、precision・recall モード、HNSW / BM25 / RRF hybrid / rerank、
+  redb 永続化、tenant・RLS、SIMD / wgpu、wire_code エラー契約。
 user-invocable: false
 ---
 
