@@ -62,7 +62,7 @@ useLoader(GLTFLoader, url, (loader) => {
 It can also make multiple requests in parallel:
 
 ```jsx
-const [bumpMap, specMap, normalMap] = useLoader(TextureLoader, [url1, url2, url2])
+const [bumpMap, specMap, normalMap] = useLoader(TextureLoader, [url1, url2, url3])
 ```
 
 ### Loading status
@@ -94,6 +94,7 @@ useLoader.preload(GLTFLoader, '/model.glb' /* extensions */)
 ## Notes
 
 - Internally, `useLoader` relies on `suspend-react`.
+- The source (docs/API/hooks.mdx, v9.8.2) passes `[url1, url2, url2]`, which would load the same texture for specMap and normalMap; it is corrected to `url3` here.
 - Assets loaded with useLoader are cached by default. The urls given serve as cache-keys. This allows you to re-use loaded data everywhere in the component tree.
 - Be very careful with mutating or disposing of loaded assets, especially when you plan to re-use them. Refer to the automatic disposal section in the API (objects/disposal).
 - Source: `useLoader.clear(loader, input)` removes a loaded asset from cache. The loader may be a constructor (instantiated once and memoized per constructor) or a loader instance; the caller must be wrapped with `React.Suspense`. Load errors reject with `Could not load <input>: <message>`.
