@@ -8,13 +8,13 @@ Frequently asked questions, troubleshooting guidance, and workflow patterns for 
 
 Hermes works with any OpenAI-compatible API, including OpenRouter, Nous Portal, OpenAI, Anthropic, Google, z.ai/ZhipuAI, Kimi/Moonshot AI, MiniMax, and local models via Ollama, vLLM, llama.cpp, SGLang, or any OpenAI-compatible server.
 
-### Windows Compatibility
+### Windows / Android / my platform
 
-Hermes requires a Unix-like environment. Install WSL2 and run Hermes from within it using the standard installation script.
+See the Platform Support page for the full availability matrix. In v0.22.2 docs Windows is supported natively (`install.ps1` or the MSIX desktop package; Windows 11 22H2+ for MSIX), and aarch64 Android uses the Termux APT package (`pkg install hermes-agent`), not the install scripts. WSL2 remains supported for Linux-style installs.
 
-### Android / Termux
+### I run Hermes in WSL2. How do I control my normal Windows Chrome?
 
-Hermes runs on Android via Termux. Use the standard installation script within the Termux environment.
+Prefer an MCP bridge over `/browser connect`: run Hermes in WSL2 and add `chrome-devtools-mcp` as an MCP server through `cmd.exe` or `powershell.exe` (see the MCP guide).
 
 ### Data Privacy
 
@@ -48,9 +48,10 @@ Developers can import the `AIAgent` class and use Hermes programmatically within
 | Symptom | Resolution |
 |---------|------------|
 | Command not found | Reload shell profile: `source ~/.bashrc` or `source ~/.zshrc` |
-| Python too old | Requires Python 3.11+; install via apt or Homebrew |
-| `uv` not found | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
-| Permission errors | Avoid `sudo`; reinstall to `~/.local/bin` |
+| Unsupported Python version | Current first-party installations require Python 3.14, not an arbitrary newer version. The `>=3.11,<3.15` range in `pyproject.toml` only lets older installations run the updater before switching to 3.14; it does not mean the runtime supports 3.11-3.13. The installer and packaged distributions provide their pinned interpreter; do not replace the interpreter inside an installed app or container; run `hermes doctor` and use that installation's update method |
+| `node: command not found` in terminal commands | Hermes builds an environment snapshot via `bash -l` and auto-sources `~/.bashrc`; list extra files in `terminal.shell_init_files` (setting it disables the default `~/.bashrc` auto-source unless you list it; `terminal.auto_source_bashrc: false` for strict login-shell semantics) |
+| `uv` not found | Download, review, then run the uv installer: `curl -LsSfo uv-install.sh https://astral.sh/uv/install.sh`, `less uv-install.sh`, `sh uv-install.sh` |
+| Permission errors | Avoid `sudo`; the installer installs to `~/.local/bin` (clean up an earlier sudo install with `sudo rm /usr/local/bin/hermes`) |
 
 ### Provider & Model Issues
 
@@ -105,6 +106,9 @@ Profiles provide a managed layer on top of `HERMES_HOME`, handling directory str
 - **Bot token sharing**: Each messaging platform requires exclusive access to a bot token. If two profiles try to use the same token simultaneously, the second gateway will fail.
 - **Data isolation**: Each profile has its own memory store, session database, and skills directory. They are completely isolated.
 - **Update behavior**: `hermes update` pulls latest code and reinstalls dependencies once, then syncs updated skills to all profiles.
+- **Profiles vs `HERMES_HOME`**: profiles are a managed layer (directory structure, shell aliases such as `hermes-work`, `~/.hermes/active_profile`, skill sync, tab completion). A directory under `~/.hermes/profiles/` is a profile only if it carries an identity file (`config.yaml`, `.env`, `SOUL.md`, `profile.yaml`, `auth.json`, or `state.db`).
+- **Seeding a new profile**: `hermes profile create newname --clone-all` copies everything from the current profile; `--clone-from <profile>` copies from a specific source.
+- **One agent per profile**: never run two agents against the same profile or Hermes home (each loads the other's memory writes); for shared memory across agents use an external memory provider.
 - **Profile movement**: Export with `hermes profile export`, then import on another machine.
 - **Profile capacity**: No hard limit; practical limit depends on disk space and concurrent gateways the system can handle.
 
@@ -132,12 +136,30 @@ Slack supports thread-based sessions for multiple users. Discord supports channe
 
 ### Machine Export
 
-Use profile export/import or sync the `~/.hermes/` directory (excluding the `hermes-agent` subdirectory).
+Install Hermes on the new machine, run `hermes backup` on the source (zip at `~/hermes-backup-<timestamp>.zip`), copy it over, and run `hermes import <zip>` (stop the gateway first), then `hermes setup` to verify keys. A single profile moves with `hermes profile export work ./work-backup.tar.gz` and `hermes profile import ./work-backup.tar.gz work`.
+
+| Feature | `hermes backup` | `hermes profile export` |
+|---------|-----------------|-------------------------|
+| Use case | Full machine migration | Porting/sharing one profile |
+| Scope | Hermes data root minus exclusions | Single profile directory |
+| Credentials | Included (`.env`, `auth.json`) | Excluded (stripped) |
+| Format | `.zip` | `.tar.gz` |
+
+The full backup excludes the source checkout, dependency environments and downloaded tools/runtimes, build caches, checkpoints, previous backups, browser profiles, bytecode, SQLite sidecars, `gateway.pid`, `cron.pid`, and `.backup.lock`. It reports files that failed to copy; review the skipped-file report before removing the source installation. `hermes backup --quick` saves selected state files only and is not a migration substitute. Manual fallback: `rsync -av --exclude='hermes-agent' ~/.hermes/ newmachine:~/.hermes/`.
+
+### Still Stuck?
+
+Search GitHub Issues, ask on the Nous Research Discord, or file a bug report with your OS, Python version, Hermes version (`hermes --version`), and the full error message.
 
 ### Common Errors
 
 - **HTTP 400**: Usually indicates model mismatch or insufficient API key permissions on the provider side.
 - **Shell permission issues**: Fix with `chmod 644 ~/.zshrc` if needed.
+
+## Notes
+
+- Adapted: official docs pipe the installer straight into the shell; this page downloads and reviews it first.
+- Source: https://hermes-agent.nousresearch.com/docs/reference/faq (pinned to v0.22.2)
 
 ## Related
 

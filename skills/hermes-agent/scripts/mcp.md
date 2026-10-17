@@ -2,6 +2,12 @@
 
 MCP（Model Context Protocol）サーバーの設定・接続・管理。
 
+## MCP サポートの追加（初回のみ）
+
+```bash
+cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['mcp'], explicit=True)"
+```
+
 ## MCP サーバーとして Hermes を起動
 
 ```bash
@@ -85,6 +91,16 @@ mcp_servers:
     tools:
       include: [list_issues, create_issue, search_code]
 ```
+
+トークンは実値を設定ファイルへ直書きせず、環境変数や secret 管理経由で渡す。
+
+## ACP サポートの追加（初回のみ）
+
+```bash
+cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['acp'], explicit=True)"
+```
+
+標準の `[all]` に含まれるため、通常は不要。
 
 ## 代替エントリポイント（ACP サーバー）
 

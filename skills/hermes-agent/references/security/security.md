@@ -31,7 +31,21 @@ Configured via `approvals.mode` in `~/.hermes/config.yaml`:
 ```yaml
 approvals:
   mode: manual    # manual | smart | off
-  timeout: 60     # seconds to wait for user response (default: 60, fail-closed on timeout)
+  timeout: 300    # seconds to wait for user response (default: 300 in v0.22.2 docs, fail-closed on timeout)
+  deny: []        # glob patterns blocked unconditionally, before --yolo / mode: off
+```
+
+An expired prompt cannot be reopened and a timeout is not counted as a denial; send a new message to make the agent raise a fresh approval card.
+
+### User-Defined Deny Rules (`approvals.deny`)
+
+`approvals.deny` is a list of fnmatch globs (`*`, `?`, `[...]`, case-insensitive) matched against the whole command text and individual executable-command candidates; matches block the command unconditionally, before `--yolo`, `/yolo`, and `approvals.mode: off`, on all terminal backends including isolated containers. Always quote patterns in YAML (a bare leading `*` is an alias). Changes take effect immediately. Deny rules are a shell-command policy, not an OS sandbox: they do not resolve variables, aliases, functions, or renamed binaries.
+
+```yaml
+approvals:
+  deny:
+    - "git push --force*"
+    - "*curl*|*sh*"
 ```
 
 ### YOLO Mode
@@ -46,7 +60,7 @@ Bypasses all dangerous command approval prompts for the session.
 
 Use only in fully trusted environments.
 
-**Note:** Even with YOLO mode enabled, a hardline blocklist remains always active. Catastrophic operations (e.g., `rm -rf /`, fork bombs, disk format) are blocked unconditionally and cannot be bypassed.
+**Note:** Even with YOLO mode enabled, a hardline blocklist remains always active. Catastrophic operations (e.g., `rm -rf /`, `rm -rf --no-preserve-root /`, the bash fork bomb, `mkfs.*` on a mounted root device, `dd if=/dev/zero of=/dev/sd*`, piping untrusted URLs to `sh` at the rootfs top level) are blocked unconditionally, before the approval layer sees them, regardless of `--yolo`, `approvals.mode: off`, headless cron `approve` mode, or "allow always". The floor also fails closed on a command whose shell quoting cannot be parsed (`malformed executable payload`).
 
 ### Dangerous Patterns
 
@@ -225,7 +239,7 @@ _SECURITY_ARGS = [
 ```yaml
 terminal:
   backend: docker
-  docker_image: "nikolaik/python-nodejs:python3.11-nodejs20"
+  docker_image: "nousresearch/hermes-sandbox:desktop"
   docker_forward_env: []   # Explicit allowlist only; default: nothing forwarded
   container_cpu: 1         # CPU cores
   container_memory: 5120   # MB (default: 5 GB)
@@ -395,31 +409,14 @@ To intentionally allow internal network access (e.g., self-hosted services), set
 
 ---
 
-## Tirith Pre-Exec Scanning
+## Content-Level Command Checks
 
-Integrates [tirith](https://github.com/sheeki03/tirith) for content-level command scanning before execution.
+The dangerous-command detector flags two content-level shapes a destructive-verb list misses, both going through the normal approval flow:
 
-**Detects:**
-- Homograph URL spoofing (internationalized domain attacks)
-- Pipe-to-interpreter patterns (`curl | bash`, `wget | sh`)
-- Terminal injection attacks
+- A `curl` / `wget` request body that carries a secret (a secret-named variable such as `-d "k=$OPENAI_API_KEY"`, or a credential file such as `-F file=@.env`, `-T ~/.ssh/id_rsa`, `--post-file=/etc/passwd`, or a credential file piped into an uploading `curl`/`wget`). An `Authorization` header is ordinary API use and is not flagged.
+- Invisible or bidirectional Unicode control characters (zero-width spaces, right-to-left overrides, isolates). Emoji joiner sequences are not flagged.
 
-Tirith auto-installs from GitHub releases on first use with SHA-256 checksum verification (cosign provenance verification if available).
-
-```yaml
-security:
-  tirith_enabled: true       # Enable/disable scanning (default: true)
-  tirith_path: "tirith"      # Path to binary (default: PATH lookup)
-  tirith_timeout: 5          # Subprocess timeout in seconds
-  tirith_fail_open: true     # Allow execution when tirith unavailable (default: true)
-```
-
-### Notes
-
-- When `tirith_fail_open: true` (default), commands proceed if tirith is unavailable
-- Set `tirith_fail_open: false` in high-security environments to block when unavailable
-- Tirith verdict integrates with the approval flow: safe commands pass through; suspicious/blocked commands trigger user approval with full findings (severity, title, description, safer alternatives)
-- Default choice is **deny** for unattended/automated scenarios
+Removed: earlier releases bundled the external tirith scanner here (`security.tirith_enabled`, `tirith_path`, `tirith_timeout`, `tirith_fail_open`). It was removed in v0.22.0; upgrading drops the `security.tirith_*` settings and enables nothing in its place.
 
 ---
 
@@ -459,6 +456,35 @@ Blocked files display a warning instead of their content:
 ```
 
 ---
+
+## File Write Safety
+
+Before `write_file` or `patch` touches disk, Hermes checks the target against a denylist and an optional sandbox. Blocked writes return an error immediately; there is no approval prompt and no override from the chat UI.
+
+- Always blocked: OS credential stores (`~/.ssh/`, `~/.aws/`, `~/.kube/`, `/etc/sudoers`, `~/.netrc`), Hermes secret stores under `HERMES_HOME` (`.env`, `.anthropic_oauth.json`, `vault/`, `browser-profile/`, `mcp-tokens/`, `pairing/`, Bitwarden cache), and Windows NT/device-namespace paths (`\??\...`, `\\.\...`; rejected for reads and writes). `auth.json`, `config.yaml`, `webhook_subscriptions.json` are read-denied but writable. Project-local `.env`, `.env.local`, `.env.production`, `.envrc` are read-denied anywhere but writable.
+- `~/.ssh/config` is approval-gated (once/session/always), not hard-blocked; private keys and `authorized_keys` stay blocked. Non-interactive callers fail closed.
+- `HERMES_WRITE_SAFE_ROOT` (optional; set to `/opt/data` in the official Docker image; multiple roots separated by `:` on Unix, `;` on Windows) restricts writes to listed prefixes. Do not set it casually: it blocks `~/.hermes/cron/jobs.json` and other Hermes state. Use `cronjob_manage`, `hermes cron`, or `/cron` instead of patching `jobs.json`.
+- Defense-in-depth only: the `terminal` tool runs as the same OS user and can still overwrite denied paths. `display.file_mutation_verifier` (default on) appends a verifier footer; trust it over the assistant's summary.
+
+## Environment Variable Passthrough
+
+Skills declaring `required_environment_variables` are passed through automatically when set; other variables go in `terminal.env_passthrough`. Credential files go in `required_credential_files` or `terminal.credential_files` (relative to `~/.hermes/`, mounted read-only at `/root/.hermes/` in containers). Borrowed CLI logins (Codex CLI, Claude Code) can be disabled with `auth.adopt_external_logins: false`.
+
+## MCP Credential Handling
+
+Stdio MCP subprocesses receive only `PATH, HOME, USER, LANG, LC_ALL, TERM, SHELL, TMPDIR` plus `XDG_*` and variables in the server's `env`. Error messages returned to the LLM are redacted (`ghp_...`, `sk-...`, Bearer tokens, `token=` / `key=` / `API_KEY=` / `password=` / `secret=` parameters).
+
+## TLS certificate trust
+
+Hermes initializes the platform verifier through `truststore` (Windows certificate store, macOS system trust, Linux OpenSSL system paths), falling back to OpenSSL defaults on failure. For a corporate TLS proxy install its root through your OS trust procedure. Hermes no longer validates `HERMES_CA_BUNDLE` / `SSL_CERT_FILE` / `REQUESTS_CA_BUNDLE` / `CURL_CA_BUNDLE` at launch (no `SSLConfigurationError`; `HERMES_SKIP_SSL_GUARD` has no effect); `HERMES_CA_BUNDLE` is honoured only by the Nous Portal login flow. A custom provider can declare `ssl_ca_cert`; `ssl_verify: false` disables verification and is unsafe.
+
+## Trusted-by-placement extension points
+
+Gateway event hooks in `<profile home>/hooks/<name>/` (`HOOK.yaml` + `handler.py`) load at gateway startup with the gateway's own privileges; placing the directory is the opt-in (no `plugins.enabled` entry, no prompt; `HERMES_SAFE_MODE` does not skip it). Treat `~/.hermes/hooks/` like `config.yaml` and review handlers before placing them.
+
+## Supply-chain advisory checking
+
+A built-in advisory scanner flags Python packages in the active venv matching a curated catalog of known-compromised versions. Matches print a CLI banner warning, appear in `hermes doctor` with remediation, and are logged at gateway startup. Dismiss an advisory with `hermes doctor --ack <advisory-id>` (persisted in `config.security.acked_advisories`). Optional Python extras install lazily through PM (`pm.ensure_import("extra-name")`), subject to `security.allow_lazy_installs`.
 
 ## Production Deployment Best Practices
 

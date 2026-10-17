@@ -29,14 +29,10 @@ TELEGRAM_BOT_TOKEN=123456789:ABC...
 TELEGRAM_ALLOWED_USERS=123456789,987654321
 ```
 
-```yaml
-# ~/.hermes/gateway.json — per-platform session reset
-{
-  "reset_by_platform": {
-    "telegram": { "mode": "idle", "idle_minutes": 240 },
-    "discord": { "mode": "idle", "idle_minutes": 60 }
-  }
-}
+```text
+# In-chat: explicit conversation reset (no idle / daily auto-reset)
+/new
+/reset
 ```
 
 ## Notes
@@ -45,3 +41,6 @@ TELEGRAM_ALLOWED_USERS=123456789,987654321
 - Unknown users who DM the bot receive a one-time pairing code; approve with `hermes pairing approve telegram <code>`.
 - In-chat slash commands (`/new`, `/model`, `/compress`, `/background <prompt>`, etc.) work across all supported platforms.
 - On macOS `hermes gateway install` writes a launchd plist to `~/Library/LaunchAgents/`.
+- Retired in v0.22.0: gateway conversations no longer reset after inactivity or at a daily boundary. Core ignores legacy `session_reset` settings (including `idle_minutes` per-platform overrides) and reset-timer environment variables; startup and `hermes doctor` warn if `session_reset.mode` is still `idle`, `daily` or `both`. Use `/new` or `/reset`. To keep time-based resets, install the catalog plugin: `hermes plugins install hermes-session-reset-policy`.
+- One gateway per machine is the default (a multiplexed gateway serves every profile); `hermes update` folds per-profile gateways into the multiplexed default when nothing conflicts.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging (pinned to v0.22.2)
