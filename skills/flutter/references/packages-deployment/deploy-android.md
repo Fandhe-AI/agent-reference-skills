@@ -15,7 +15,7 @@ flutter build apk --split-per-abi
 flutter install
 ```
 
-`flutter build` defaults to a release build. The release bundle is created at `[project]/build/app/outputs/bundle/release/app.aab`.
+`flutter build` defaults to a release build. The release bundle is created at `[project]/build/app/outputs/bundle/release/app-release.aab`.
 
 ### Add a launcher icon
 
@@ -254,6 +254,7 @@ Secondary check: `apkanalyzer manifest print some-flutter-app.apk | grep flutter
 
 ## Notes
 
+- The official Android deployment page states the bundle path as `app.aab`, but the actual release output (as also given in the official CD and deferred-components pages) is `build/app/outputs/bundle/release/app-release.aab`.
 - Keep the keystore file and `key.properties` private; don't check them into public source control. The Windows path to `keystore.jks` must be specified with double backslashes (`\\`).
 - `keytool` is part of Java installed with Android Studio; run `flutter doctor -v` and locate the path after 'Java binary at:'. `-storetype JKS` is only required for Java 9 or newer (the default keystore type became PKS12 as of Java 9).
 - You might need to run `flutter clean` after changing the Gradle file so cached builds don't affect signing.
