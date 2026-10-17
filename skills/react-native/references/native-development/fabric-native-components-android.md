@@ -115,6 +115,7 @@ package com.webview
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.facebook.react.bridge.Arguments
@@ -137,7 +138,7 @@ class ReactWebView: WebView {
   }
 
   private fun configureComponent() {
-    this.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+    this.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
     this.webViewClient = object : WebViewClient() {
       override fun onPageFinished(view: WebView, url: String) {
         emitOnScriptLoaded(OnScriptLoadedEventResult.success)
@@ -437,7 +438,7 @@ class MainApplication : Application(), ReactApplication {
 
 ## Notes
 
-- Corrected: inside a WebView subclass the unqualified LayoutParams resolves to AbsoluteLayout.LayoutParams (no 2-arg constructor), so the Java snippet uses ViewGroup.LayoutParams.
+- Corrected: inside a WebView subclass the unqualified LayoutParams resolves to AbsoluteLayout.LayoutParams (no 2-arg constructor), so both the Java and Kotlin snippets use ViewGroup.LayoutParams.
 - 0.85: `UIManagerHelper` (used here for getSurfaceId / getEventDispatcherForReactTag) is deprecated as part of the legacy architecture cleanup; the 0.87 guide still uses it.
 - The @ReactProp name (sourceUrl) differs from the spec prop sourceURL as in the official page; it is unused because props are routed through the Codegen delegate returned by getDelegate().
 - The 0.87 app template's MainApplication uses getDefaultReactHost(applicationContext, packageList = PackageList(this).packages.apply { add(...) }) and loadReactNative(this); add the package to packageList there. The DefaultReactNativeHost form shown is the official page's older shape (isHermesEnabled is deprecated and ignored, isNewArchEnabled=false is unsupported since 0.82).
