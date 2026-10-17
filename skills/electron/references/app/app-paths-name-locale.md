@@ -21,15 +21,34 @@ app.whenReady().then(() => {
 
 (The three locale calls above are the documented Windows example: application locale German, regional format Finnish (Finland), preferred system languages French (Canada), English (US), Simplified Chinese (China), Finnish, Spanish (Latin America).)
 
-## Methods
+On macOS, given the application locale is German, the region is Finland, and the preferred system languages from most to least preferred are French (Canada), English (US), Simplified Chinese, and Spanish (Latin America):
 
-### `app.getAppPath()`
+```js
+app.getLocale() // 'de'
+app.getSystemLocale() // 'fr-FI'
+app.getPreferredSystemLanguages() // ['fr-CA', 'en-US', 'zh-Hans-FI', 'es-419']
+```
 
-Returns `string` - The current application directory.
+## Options / Props
 
-### `app.getPath(name)`
+| Name | Arguments | Returns | Description |
+| --- | --- | --- | --- |
+| `app.getAppPath()` | — | `string` | The current application directory. |
+| `app.getPath(name)` | `name` string - You can request the following paths by the name (see Notes for the list). | `string` | A path to a special directory or file associated with `name`. On failure, an `Error` is thrown. If `app.getPath('logs')` is called without calling `app.setAppLogsPath()` being called first, a default log directory will be created equivalent to calling `app.setAppLogsPath()` without a `path` parameter. |
+| `app.getFileIcon(path[, options])` | `path` string<br>`options` Object (optional)<br>`options.size` string - `small` (16x16), `normal` (32x32), or `large` (48x48 on _Linux_, 32x32 on _Windows_, unsupported on _macOS_). | `Promise<NativeImage>` | Fulfilled with the app's icon, which is a NativeImage. Fetches a path's associated icon. On _Windows_, there are 2 kinds of icons: icons associated with certain file extensions, like `.mp3`, `.png`, etc.; and icons inside the file itself, like `.exe`, `.dll`, `.ico`. On _Linux_ and _macOS_, icons depend on the application associated with file mime type. |
+| `app.setPath(name, path)` | `name` string<br>`path` string | void | Overrides the `path` to a special directory or file associated with `name`. If the path specifies a directory that does not exist, an `Error` is thrown. In that case, the directory should be created with `fs.mkdirSync` or similar. You can only override paths of a `name` defined in `app.getPath`. By default, web pages' cookies and caches will be stored under the `sessionData` directory. If you want to change this location, you have to override the `sessionData` path before the `ready` event of the `app` module is emitted. |
+| `app.getVersion()` | — | `string` | The version of the loaded application. If no version is found in the application's `package.json` file, the version of the current bundle or executable is returned. |
+| `app.getName()` | — | `string` | The current application's name, which is the name in the application's `package.json` file. Usually the `name` field of `package.json` is a short lowercase name, according to the npm modules spec. You should usually also specify a `productName` field, which is your application's full capitalized name, and which will be preferred over `name` by Electron. |
+| `app.setName(name)` | `name` string | void | Overrides the current application's name. This function overrides the name used internally by Electron; it does not affect the name that the OS uses. |
+| `app.setDesktopName(name)` _Linux_ | `name` string - The `.desktop` filename (e.g. `'com.example.MyApp.desktop'`). | void | Sets the `.desktop` filename on Linux. This must match the base filename of the app's installed `.desktop` file. The `.desktop` suffix is optional. This API must be called before the `ready` event. The value can also be set using `desktopName` in `package.json`. See Notes for the identity details. |
+| `app.getLocale()` | — | `string` | The current application locale, fetched using Chromium's `l10n_util` library. To set the locale, use a command line switch at app startup (see Supported Command Line Switches). |
+| `app.getLocaleCountryCode()` | — | `string` | User operating system's locale two-letter ISO 3166 country code. The value is taken from native OS APIs. When unable to detect locale country code, it returns empty string. |
+| `app.getSystemLocale()` | — | `string` | The current system locale. On Windows and Linux, it is fetched using Chromium's `i18n` library. On macOS, `[NSLocale currentLocale]` is used instead. To get the user's current system language, which is not always the same as the locale, it is better to use `app.getPreferredSystemLanguages()`. Different operating systems also use the regional data differently (see Notes). |
+| `app.getPreferredSystemLanguages()` | — | `string[]` | The user's preferred system languages from most preferred to least preferred, including the country codes if applicable. A user can modify and add to this list on Windows or macOS through the Language and Region settings. The API uses `GlobalizationPreferences` (with a fallback to `GetSystemPreferredUILanguages`) on Windows, `[NSLocale preferredLanguages]` on macOS, and `g_get_language_names` on Linux. This API can be used for purposes such as deciding what language to present the application in. |
 
-* `name` string - You can request the following paths by the name:
+## Notes
+
+* `app.getPath(name)` names:
   * `home` User's home directory.
   * `appData` Per-user application data directory, which by default points to: `%APPDATA%` on Windows; `$XDG_CONFIG_HOME` or `~/.config` on Linux; `~/Library/Application Support` on macOS.
   * `assets` The directory where app assets such as `resources.pak` are stored. By default this is the same as the folder containing the `exe` path. Available on Windows and Linux only.
@@ -47,104 +66,18 @@ Returns `string` - The current application directory.
   * `recent` Directory for the user's recent files (Windows only).
   * `logs` Directory for your app's log folder.
   * `crashDumps` Directory where crash dumps are stored.
-
-Returns `string` - A path to a special directory or file associated with `name`. On failure, an `Error` is thrown.
-
-If `app.getPath('logs')` is called without calling `app.setAppLogsPath()` being called first, a default log directory will be created equivalent to calling `app.setAppLogsPath()` without a `path` parameter.
-
-### `app.getFileIcon(path[, options])`
-
-* `path` string
-* `options` Object (optional)
-  * `size` string
-    * `small` - 16x16
-    * `normal` - 32x32
-    * `large` - 48x48 on _Linux_, 32x32 on _Windows_, unsupported on _macOS_.
-
-Returns `Promise<NativeImage>` - fulfilled with the app's icon, which is a NativeImage. Fetches a path's associated icon.
-
-On _Windows_, there are 2 kinds of icons: icons associated with certain file extensions, like `.mp3`, `.png`, etc.; and icons inside the file itself, like `.exe`, `.dll`, `.ico`. On _Linux_ and _macOS_, icons depend on the application associated with file mime type.
-
-### `app.setPath(name, path)`
-
-* `name` string
-* `path` string
-
-Overrides the `path` to a special directory or file associated with `name`. If the path specifies a directory that does not exist, an `Error` is thrown. In that case, the directory should be created with `fs.mkdirSync` or similar. You can only override paths of a `name` defined in `app.getPath`.
-
-By default, web pages' cookies and caches will be stored under the `sessionData` directory. If you want to change this location, you have to override the `sessionData` path before the `ready` event of the `app` module is emitted.
-
-### `app.getVersion()`
-
-Returns `string` - The version of the loaded application. If no version is found in the application's `package.json` file, the version of the current bundle or executable is returned.
-
-### `app.getName()`
-
-Returns `string` - The current application's name, which is the name in the application's `package.json` file. Usually the `name` field of `package.json` is a short lowercase name, according to the npm modules spec. You should usually also specify a `productName` field, which is your application's full capitalized name, and which will be preferred over `name` by Electron.
-
-### `app.setName(name)`
-
-* `name` string
-
-Overrides the current application's name. This function overrides the name used internally by Electron; it does not affect the name that the OS uses.
-
-### `app.setDesktopName(name)` _Linux_
-
-* `name` string - The `.desktop` filename (e.g. `'com.example.MyApp.desktop'`).
-
-Sets the `.desktop` filename on Linux. This must match the base filename of the app's installed `.desktop` file. The `.desktop` suffix is optional.
-
-The name (without the `.desktop` suffix) is the app's identity for Linux desktop integration. It should be a reverse-DNS style ID such as `com.example.MyApp`, following the desktop entry naming conventions. This value is used as:
-
-* the XDG application ID (`app_id`) on Wayland and `WM_CLASS` on X11, used to match the app's icon and window grouping.
-* the app ID that `xdg-desktop-portal` reports to portal backends such as GlobalShortcuts.
-
-Portals increasingly enforce this identity. If the name is not a valid reverse-DNS ID or does not match an installed `.desktop` file:
-
-* GNOME 50.0/50.1 (Ubuntu 26.04) rejects `globalShortcut` binds with `org.freedesktop.portal.Error.NotAllowed` with no error surfaced to the app ([electron/electron#52218](https://github.com/electron/electron/issues/52218)).
-* `xdg-desktop-portal` 1.21 and later refuses portal sessions for app IDs it cannot resolve to a `.desktop` file.
-
-If this value is not set and `desktopName` is not present in `package.json`, Electron falls back to a lowercased, hyphenated slug of the app's name (e.g. `My App` -> `my-app.desktop`), which is unlikely to be a valid portal identity; packaged apps should always set it explicitly.
-
-This API must be called before the `ready` event. The value can also be set using `desktopName` in `package.json`.
-
-### `app.getLocale()`
-
-Returns `string` - The current application locale, fetched using Chromium's `l10n_util` library. To set the locale, use a command line switch at app startup (see Supported Command Line Switches).
-
-### `app.getLocaleCountryCode()`
-
-Returns `string` - User operating system's locale two-letter ISO 3166 country code. The value is taken from native OS APIs. When unable to detect locale country code, it returns empty string.
-
-### `app.getSystemLocale()`
-
-Returns `string` - The current system locale. On Windows and Linux, it is fetched using Chromium's `i18n` library. On macOS, `[NSLocale currentLocale]` is used instead. To get the user's current system language, which is not always the same as the locale, it is better to use `app.getPreferredSystemLanguages()`.
-
-Different operating systems also use the regional data differently:
-
-* Windows 11 uses the regional format for numbers, dates, and times.
-* macOS Monterey uses the region for formatting numbers, dates, times, and for selecting the currency symbol to use.
-
-Therefore, this API can be used for purposes such as choosing a format for rendering dates and times in a calendar app, especially when the developer wants the format to be consistent with the OS.
-
-### `app.getPreferredSystemLanguages()`
-
-Returns `string[]` - The user's preferred system languages from most preferred to least preferred, including the country codes if applicable. A user can modify and add to this list on Windows or macOS through the Language and Region settings.
-
-The API uses `GlobalizationPreferences` (with a fallback to `GetSystemPreferredUILanguages`) on Windows, `[NSLocale preferredLanguages]` on macOS, and `g_get_language_names` on Linux. This API can be used for purposes such as deciding what language to present the application in.
-
-On macOS, given the application locale is German, the region is Finland, and the preferred system languages from most to least preferred are French (Canada), English (US), Simplified Chinese, and Spanish (Latin America):
-
-```js
-app.getLocale() // 'de'
-app.getSystemLocale() // 'fr-FI'
-app.getPreferredSystemLanguages() // ['fr-CA', 'en-US', 'zh-Hans-FI', 'es-419']
-```
-
-Both the available languages and regions and the possible return values differ between the two operating systems. On Windows, it is possible that a preferred system language has no country code, and that one of the preferred system languages corresponds with the language used for the regional format. On macOS, the region serves more as a default country code: the user doesn't need to have Finnish as a preferred language to use Finland as the region, and the country code `FI` is used as the country code for preferred system languages that do not have associated countries in the language name.
-
-## Notes
-
+* `app.setDesktopName`: the name (without the `.desktop` suffix) is the app's identity for Linux desktop integration. It should be a reverse-DNS style ID such as `com.example.MyApp`, following the desktop entry naming conventions. This value is used as:
+  * the XDG application ID (`app_id`) on Wayland and `WM_CLASS` on X11, used to match the app's icon and window grouping.
+  * the app ID that `xdg-desktop-portal` reports to portal backends such as GlobalShortcuts.
+* `app.setDesktopName`: portals increasingly enforce this identity. If the name is not a valid reverse-DNS ID or does not match an installed `.desktop` file:
+  * GNOME 50.0/50.1 (Ubuntu 26.04) rejects `globalShortcut` binds with `org.freedesktop.portal.Error.NotAllowed` with no error surfaced to the app ([electron/electron#52218](https://github.com/electron/electron/issues/52218)).
+  * `xdg-desktop-portal` 1.21 and later refuses portal sessions for app IDs it cannot resolve to a `.desktop` file.
+* `app.setDesktopName`: if this value is not set and `desktopName` is not present in `package.json`, Electron falls back to a lowercased, hyphenated slug of the app's name (e.g. `My App` -> `my-app.desktop`), which is unlikely to be a valid portal identity; packaged apps should always set it explicitly.
+* `app.getSystemLocale` regional data differs per OS:
+  * Windows 11 uses the regional format for numbers, dates, and times.
+  * macOS Monterey uses the region for formatting numbers, dates, times, and for selecting the currency symbol to use.
+  * Therefore, this API can be used for purposes such as choosing a format for rendering dates and times in a calendar app, especially when the developer wants the format to be consistent with the OS.
+* `app.getPreferredSystemLanguages`: both the available languages and regions and the possible return values differ between the two operating systems. On Windows, it is possible that a preferred system language has no country code, and that one of the preferred system languages corresponds with the language used for the regional format. On macOS, the region serves more as a default country code: the user doesn't need to have Finnish as a preferred language to use Finland as the region, and the country code `FI` is used as the country code for preferred system languages that do not have associated countries in the language name.
 * `app.getLocale()` and `app.getSystemLocale()` must be called after the `ready` event is emitted.
 * When distributing your packaged app, you have to also ship the `locales` folder.
 * `app.getLocaleCountryCode()` returns an empty string when it cannot detect the country code.
