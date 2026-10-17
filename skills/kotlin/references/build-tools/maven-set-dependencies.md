@@ -70,6 +70,7 @@ Older targets: for JDK 7 or 8 with Kotlin older than 1.8 use `kotlin-stdlib-jdk7
     <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
         <artifactId>kotlin-test-junit5</artifactId>
+        <version>${kotlin.version}</version>
         <scope>test</scope>
     </dependency>
 </dependencies>
@@ -123,6 +124,7 @@ Use the base artifact name or the name with a `-jvm` suffix (check the library R
 
 ## Notes
 
+- The official page (kotlin-web-site 0b10373) omits `<version>` for `kotlin-test-junit5`; without `dependencyManagement` (for example the `kotlin-bom` import below) Maven rejects a dependency with no version, so this page adds `${kotlin.version}`.
 - `mavenLocal()` in a Gradle project can cause problems when switching between Gradle and Maven; see [gradle-configure-project.md](./gradle-configure-project.md) (Declare repositories).
 
 ## Related
