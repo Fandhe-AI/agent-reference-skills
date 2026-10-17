@@ -2,8 +2,8 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
-| install | Install or update the Codex CLI binary (curl / PowerShell / npm / Homebrew) | [install.md](./install.md) |
-| auth | Sign in, check status, and sign out of the Codex CLI | [auth.md](./auth.md) |
-| cli-basics | Core interactive and session-management commands (`codex`, `exec`, `resume`, `review`, `apply`, `mcp`, plugins, cloud) | [cli-basics.md](./cli-basics.md) |
-| automation | Run Codex headlessly in scripts, CI, GitHub Actions, and security scans | [automation.md](./automation.md) |
-| config | CLI customization: shell completions, config home, editor, themes | [config.md](./config.md) |
+| Auth | Sign in, check status, and sign out of the Codex CLI. | [auth.md](./auth.md) |
+| Automation | Run Codex headlessly in scripts, CI pipelines, and GitHub Actions. | [automation.md](./automation.md) |
+| CLI Basics | Core interactive and session-management commands for the Codex terminal client. | [cli-basics.md](./cli-basics.md) |
+| Config | Customize the Codex terminal interface: shell completions, editor, and themes. | [config.md](./config.md) |
+| Install | Install or update the Codex CLI binary on macOS, Linux, or Windows. | [install.md](./install.md) |

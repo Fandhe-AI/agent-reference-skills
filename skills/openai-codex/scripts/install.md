@@ -30,6 +30,12 @@ brew install --cask codex
 
 Re-run the same command used for the original install (the `curl | sh` installer, the PowerShell installer, `npm install -g @openai/codex`, or `brew upgrade --cask codex`) to update to the latest release.
 
+```bash
+codex update
+```
+
+Checks for and applies a CLI update when the installed release supports self-update. Debug builds print a message telling you to install a release build instead.
+
 ## Environment diagnostics
 
 ```bash

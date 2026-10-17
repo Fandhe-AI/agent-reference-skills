@@ -25,6 +25,6 @@ Pause before irreversible actions or scope changes.
 
 ## Notes
 
-- Source: OpenAI Codex use-case (learn.chatgpt.com). `suggestedEffort: medium`
+- Source: OpenAI Codex use-case (learn.chatgpt.com). `suggestedModel: gpt-6.1-sol`, `suggestedEffort: medium`
 - Best for: operations tasks with structured inputs, explicit approval, and an auditable result, such as access updates, invite batches, or quota changes
 - Related: Plugins (https://learn.chatgpt.com/codex/plugins), Scheduled tasks (https://learn.chatgpt.com/codex/automations), Agent skills (https://learn.chatgpt.com/codex/build-skills)

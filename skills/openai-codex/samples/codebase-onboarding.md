@@ -15,6 +15,6 @@ End with the files I should read next.
 
 ## Notes
 
-- Source: OpenAI Codex use-case (learn.chatgpt.com). `suggestedModel: gpt-5.3-codex-spark`, `suggestedEffort: medium`
+- Source: OpenAI Codex use-case (learn.chatgpt.com). `suggestedEffort: medium`
 - Best for: new engineers onboarding to a repo or service, anyone trying to understand how a feature works before changing it
 - Related: ChatGPT desktop app (https://learn.chatgpt.com/codex/app)

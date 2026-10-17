@@ -54,6 +54,30 @@ Integrate external tools via MCP.
 codex doctor
 ```
 
+## Open the agents command center
+
+```bash
+codex agents
+```
+
+Opens the command center to browse chats and switch between agents on a shared server. Use `--remote <URL>` to connect to a remote server and `--cd <DIR>` to set the directory for new remote tasks. `codex agents` doesn't support `--no-daemon`.
+
+## Queue a message for an existing session
+
+```bash
+codex queue --thread <SESSION_ID> --message "Run the remaining checks"
+```
+
+`--thread` accepts a UUID or exact session name (use a UUID when sessions share the same name). Also accepts `--remote` and `--remote-auth-token-env`; image attachments aren't supported.
+
+## Update the CLI
+
+```bash
+codex update
+```
+
+Checks for and applies a Codex CLI update when the installed release supports self-update. Debug builds print a message telling you to install a release build instead.
+
 ## Notable CLI features
 
 - `codex resume` — reopen recent repository chats
@@ -90,7 +114,6 @@ codex fork
 codex login
 codex login status
 codex logout
-codex mcp-server
 codex plugin
 codex plugin add
 codex plugin list
@@ -100,11 +123,15 @@ codex plugin marketplace add
 codex plugin marketplace list
 codex sandbox
 codex update
+codex agents
+codex queue
 ```
 
 Listed in the official command reference (see `developer-commands.md?surface=cli`); flag details are rendered as interactive `<ConfigTable>` components that are not present in the Markdown export. Run `codex <command> --help` for options. 要確認: exact flags/arguments per subcommand.
 
-`codex login`, `codex login status`, and `codex logout` are documented in detail in `auth.md` (kept here only for completeness of the subcommand list).
+`codex mcp-server` (and the standalone `codex-mcp-server` binary) was removed — use `codex app-server` instead (see the Codex app server docs).
+
+`codex cloud`, `codex execpolicy`, and `codex remote-control` are labeled Experimental in the command overview (`codex execpolicy` is described as in preview). `codex login`, `codex login status`, and `codex logout` are documented in detail in `auth.md` (kept here only for completeness of the subcommand list).
 
 `codex app` (stable) launches the ChatGPT desktop app and is macOS/Windows only; the subcommand is not compiled on other platforms, where `app` instead falls through to prompt interpretation. Distinct from `codex app-server` above.
 
@@ -118,7 +145,6 @@ Type these during an interactive `codex` session:
 /keymap
 /vim
 /setup-default-sandbox
-/sandbox-add-read-dir
 /agent
 /subagents
 /apps

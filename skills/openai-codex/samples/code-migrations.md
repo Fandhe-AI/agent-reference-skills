@@ -18,6 +18,6 @@ Requirements:
 
 ## Notes
 
-- Source: OpenAI Codex use-case (learn.chatgpt.com). Can be paired with `$security-best-practices`, `$gh-fix-ci`, and framework-specific skills such as `$aspnet-core`
+- Source: OpenAI Codex use-case (learn.chatgpt.com). `suggestedModel: gpt-6-astra`, `suggestedEffort: medium`. Can be paired with `$security-best-practices`, `$gh-fix-ci`, and framework-specific skills such as `$aspnet-core`
 - Best for: legacy-to-modern stack moves where frameworks, runtimes, build systems, or platform conventions change; teams needing compatibility layers and checkpoint validation
 - Combine with Follow a goal (`follow-goals.md`) and Git worktrees (https://learn.chatgpt.com/codex/environments/git-worktrees) for long-running, milestone-based execution
