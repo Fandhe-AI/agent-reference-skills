@@ -1,45 +1,45 @@
-# Use Codex with the Agents SDK (MCP server)
+# Codex MCP server removal
 
-Runs Codex CLI as a Model Context Protocol (MCP) server so other MCP clients — for example an agent built with the OpenAI Agents SDK — can call it, enabling deterministic, reviewable multi-agent workflows.
+The `codex mcp-server` command and the standalone `codex-mcp-server` binary have been removed. Integrations that launch either command must migrate before upgrading Codex. The previous MCP tool reference and Agents SDK examples are no longer supported.
 
 ## Signature / Usage
 
+Migrate from MCP tool calls to the Codex app server, which uses its own JSON-RPC protocol:
+
 ```bash
+# before (removed)
 codex mcp-server
 
-# Inspect it
-npx @modelcontextprotocol/inspector codex mcp-server
+# after
+codex app-server
 ```
 
-```python
-from agents.mcp import MCPServerStdio
+Managing external MCP servers is unchanged:
 
-async with MCPServerStdio(
-    name="Codex CLI",
-    params={"command": "codex", "args": ["mcp-server"]},
-    client_session_timeout_seconds=360000,
-) as codex_mcp_server:
-    ...
+```bash
+codex mcp add <server-name> -- <stdio server-command>
+codex mcp list
 ```
 
 ## Options / Props
 
-| Name | Type | Description |
-|------|------|-------------|
-| `codex` tool: `prompt` (required) | string | Initial user prompt starting a Codex conversation. |
-| `codex` tool: `approval-policy` | string | `untrusted`, `on-request`, or `never` for shell commands the model generates. |
-| `codex` tool: `sandbox` | string | `read-only`, `workspace-write`, or `danger-full-access`. |
-| `codex` tool: `model` / `cwd` / `config` / `base-instructions` / `developer-instructions` / `compact-prompt` | various | Per-session overrides; `config` merges into `$CODEX_HOME/config.toml` settings. |
-| `codex-reply` tool: `prompt` (required), `threadId` (required) | string | Continues a session; `conversationId` is a deprecated alias for `threadId`. |
+| Name | Description |
+|------|-------------|
+| `codex mcp-server` | Removed. |
+| `codex-mcp-server` (standalone binary) | Removed. |
+| Codex app server | Replacement for integrations that need authentication, conversation history, approvals, and streamed agent events. Its own JSON-RPC protocol; not an MCP server or a drop-in replacement for an MCP client. |
+| `codex mcp` | Still manages connections to external MCP servers. |
 
 ## Notes
 
-- `tools/list` on the MCP server returns two tools: `codex` (start a session) and `codex-reply` (continue via `threadId`, taken from `structuredContent.threadId` in the prior `tools/call` response; approval prompts also carry `threadId`).
-- Modern MCP clients generally read only `structuredContent`; the server also returns `content` for older clients.
-- The multi-agent workflow pattern uses `MCPServerStdio` to keep one long-running Codex MCP server alive across many agent turns, with sub-agents instructed to always call Codex with an explicit `approval-policy`/`sandbox` pair (e.g. `"never"` / `"workspace-write"`) so file-writing steps don't block on interactive approval.
-- Requires Codex CLI installed locally (`codex` on `PATH`), Python 3.10+ for the Agents SDK example, and Node.js 18+ only if using the MCP Inspector.
+- Update your integration to use the app-server protocol instead of MCP tool calls. The app-server command is experimental and isn't supported for production workloads.
+- Codex continues to support external MCP servers; the removal affects hosting Codex as an MCP server.
+- Historical (no longer supported): the former server exposed two tools via `tools/list`, `codex` (start a session; `prompt`, `approval-policy`, `sandbox`, `model`, `cwd`, `config`, `base-instructions`, `developer-instructions`, `compact-prompt`) and `codex-reply` (continue via `threadId`), and was driven from the OpenAI Agents SDK through `MCPServerStdio`. Don't build new integrations on it.
+- For automation or CI, use the Codex SDK instead of driving app-server directly.
+- Source: https://learn.chatgpt.com/docs/mcp-server (retrieved 2026-10).
 
 ## Related
 
+- [Codex app server](./app-server.md)
 - [Codex SDK](./codex-sdk.md)
 - [Non-interactive mode](./non-interactive-mode.md)

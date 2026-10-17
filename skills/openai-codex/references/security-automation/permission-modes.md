@@ -1,6 +1,6 @@
-# Permission modes
+# Permissions
 
-The high-level modes exposed in the ChatGPT desktop app, IDE extension, and CLI (`/permissions`) that set the boundary for what Codex can do on its own versus what needs review — the user-facing counterpart to the `sandbox_mode`/`approval_policy` or `default_permissions`/`[permissions]` config systems.
+Permissions control how ChatGPT (in the desktop app) and Codex (in the CLI or IDE) handle local actions, such as editing files, running commands, and using the internet. The mode you choose sets the boundary for what can happen on its own and what needs review.
 
 ## Signature / Usage
 
@@ -10,16 +10,15 @@ Use the permissions control below the composer in the ChatGPT desktop app or IDE
 
 | Name | Description |
 |------|-------------|
-| Ask for approval | Recommended starting point. Codex works within the current workspace and pauses before reaching beyond that boundary. |
-| Approve for me | Called **Auto-review** in settings. Keeps the same workspace boundary as "Ask for approval"; sends requests that would cross that boundary to automatic review instead of pausing for a human. |
-| Full access | Removes the workspace boundary; available only after being enabled. |
+| Ask for approval | Recommended starting point. Works within the current workspace and pauses before reaching beyond that boundary. |
+| Approve for me | Sends eligible approval requests to automatic review (called Auto-review elsewhere). Keeps the same workspace boundary as "Ask for approval". Check that it's selected for the current chat; having it available doesn't mean it's selected. |
+| Full access | Removes the workspace boundary. |
 
 ## Notes
 
-- Two controls work together: the **sandbox** defines which files/network resources Codex can access, and **approvals** determine when Codex pauses or sends a request to automatic review. Changing who reviews a request (e.g. selecting Approve for me) does not by itself expand the sandbox.
-- **Ask for approval** is always available. To add **Approve for me** or **Full access** to the menu, turn them on under **Settings > General > Permissions** in the ChatGPT desktop app first — this makes the mode available, it doesn't select it or change an existing chat.
-- Available modes can depend on local configuration and organization-managed requirements; a disallowed mode appears disabled.
-- This page describes the product-level mode selector. For the underlying config keys, see [Sandbox](./sandbox.md) (`sandbox_mode`/`approval_policy`) and [Permission profiles](./permission-profiles.md) (`default_permissions`/`[permissions.<name>]`) — the two config systems do not compose with each other.
+- Two controls work together: the **sandbox** defines which files and network resources can be accessed, and **approvals** determine when the client pauses before an action or sends the request to automatic review. Changing who reviews a request (e.g. Approve for me) doesn't expand the sandbox.
+- Available modes depend on your app version, execution environment, local configuration, and your organization's requirements. A mode can be disabled or omitted when unavailable, and managed requirements can also restrict Ask for approval. If **Approve for me** is missing or disabled, see the permission troubleshooting section of the reference troubleshooting page.
+- This page describes the product-level mode selector (desktop app, CLI, IDE). For the underlying config keys, see [Sandbox](./sandbox.md) and [Permission profiles](./permission-profiles.md) (`default_permissions`, `[permissions.<name>]`, `approval_policy`, `sandbox_mode`) and [Auto-review](./auto-review.md).
 
 ## Related
 

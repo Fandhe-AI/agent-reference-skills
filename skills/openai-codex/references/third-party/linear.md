@@ -36,8 +36,15 @@ url = "https://mcp.linear.app/mcp"
 
 Linear suggests a repository from issue context; Codex picks the environment that best matches, falling back to the most recently used environment if ambiguous. The chat runs against the default branch of the first repository listed in that environment's repo map.
 
+## Connect Linear for local work (MCP)
+
+Use the CLI (recommended; the IDE extension and CLI share the same configuration): `codex mcp add linear --url https://mcp.linear.app/mcp` prompts you to sign in with your Linear account. To configure manually, add `[mcp_servers.linear]` with `url = "https://mcp.linear.app/mcp"` to `~/.codex/config.toml` and run `codex mcp login linear`.
+
 ## Notes
 
+- Track progress: open **Activity** on the issue for progress updates, or open the chat link for detail; when Codex finishes it posts a summary and a link to the completed chat so you can create a pull request. Update the repo map in Codex if you need a different default or more repositories; if no suitable environment or repository is available, Codex replies in Linear with instructions to fix it before retrying.
+- Tips and troubleshooting: missing connections (Codex replies in the issue with a link to connect your account); unexpected environment choice (reply in the thread, e.g. `@Codex please run this in openai/codex`); wrong part of the code (add more context or explicit instructions); Codex uses large language models that can make mistakes, so always review answers and diffs.
+- Enterprise: ask your ChatGPT workspace admin to turn on Codex cloud chats in workspace settings and enable **Codex for Linear** in connector settings. Available on paid plans.
 - `codex mcp add linear` / the `[mcp_servers.linear]` block here is Linear's own remote MCP server for **local** Codex (CLI/IDE/desktop app) access to issues — a specific server instance, distinct from the general MCP client configuration mechanism documented in `config/mcp-config.md`.
 - Data handling for `@Codex` mentions follows OpenAI's Privacy Policy and Terms of Use; see the security-automation category for Codex's own security model.
 
