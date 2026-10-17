@@ -202,9 +202,13 @@ printenv CODEX_ACCESS_TOKEN | npx @openai/codex-security login --with-access-tok
 
 ## Options / Props
 
-Authentication selection (`--auth auto`): when both a ChatGPT sign-in and `OPENAI_API_KEY` / `CODEX_API_KEY` exist, interactive text-output scans ask which to use; CI, JSON and JSONL scans, and other non-interactive scans use the environment API key; dry runs don't prompt or load credentials. Use `--auth chatgpt` for stored credentials or `--auth api-key` for the environment key; `unset OPENAI_API_KEY CODEX_API_KEY` makes stored credentials the automatic default.
-
-Other providers: `OPENROUTER_API_KEY` with `--provider openrouter --model anthropic/claude-sonnet-4.5`; `FIREWORKS_API_KEY` with `--provider fireworks --model accounts/fireworks/models/qwen3-235b-a22b`; both also support `bulk-scan`. Amazon Bedrock: `--provider amazon-bedrock` with a Bedrock model ID; scans use AWS credentials (`AWS_PROFILE` + `AWS_REGION`, `AWS_BEARER_TOKEN_BEDROCK`, or the standard AWS credential chain; temporary access keys need `AWS_SESSION_TOKEN`) without `--auth`, an OpenAI login, or an OpenAI API key.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `--auth` | `auto` / `chatgpt` / `api-key` | `auto` | `chatgpt` uses stored credentials; `api-key` uses the environment `OPENAI_API_KEY` / `CODEX_API_KEY` |
+| `--provider openrouter` | string | — | Requires `OPENROUTER_API_KEY`; example model `anthropic/claude-sonnet-4.5` |
+| `--provider fireworks` | string | — | Requires `FIREWORKS_API_KEY`; example model `accounts/fireworks/models/qwen3-235b-a22b` |
+| `--provider amazon-bedrock` | string | — | Uses AWS credentials (`AWS_PROFILE` + `AWS_REGION`, `AWS_BEARER_TOKEN_BEDROCK`, or the standard AWS credential chain; temporary access keys need `AWS_SESSION_TOKEN`); no `--auth`, OpenAI login, or OpenAI API key needed |
+| `--model` | string | — | Model ID for the selected provider (Bedrock model ID for `amazon-bedrock`) |
 
 | Bedrock access | Model ID | Region |
 |----------------|----------|--------|
@@ -213,6 +217,8 @@ Other providers: `OPENROUTER_API_KEY` with `--provider openrouter --model anthro
 
 ## Notes
 
+- Authentication selection (`--auth auto`): when both a ChatGPT sign-in and `OPENAI_API_KEY` / `CODEX_API_KEY` exist, interactive text-output scans ask which to use; CI, JSON and JSONL scans, and other non-interactive scans use the environment API key; dry runs don't prompt or load credentials. `unset OPENAI_API_KEY CODEX_API_KEY` makes stored credentials the automatic default.
+- `openrouter` and `fireworks` providers also support `bulk-scan`.
 - Daybreak Blue and Daybreak Red require Trusted Access for Cyber approval (enterprise access application or your OpenAI account team), then AWS provisioning on Bedrock; Daybreak Red approval doesn't include GPT-5.6-Cyber, which requires separate U.S. government approval. Saved local reports, `scans show`, and `export` work without cloud credentials; uploading to Codex Security Cloud needs a separate ChatGPT sign-in. `info` and `scan --dry-run` don't test AWS credentials or model access; run a scan to check. `@openai/codex-security@0.1.31` supports Amazon Bedrock scans but doesn't provide cost estimates or support `--max-cost` for the Daybreak model IDs.
 - Time limit: when `--max-time-hours` expires the scan stops unfinished workers, keeps completed results, and aggregates them into the final report (the deadline alone doesn't determine the exit code). The cost limit is an estimate: in-progress requests can finish slightly above it; if a deep scan reaches the limit after aggregation it can seal a completed result with a budget warning (exit `0`, or `1` if findings meet the threshold), otherwise it returns `2`.
 - Result locations: without `--output-dir`, results persist under `$CODEX_HOME/state/plugins/codex-security/scans/<repository>` (`CODEX_HOME` defaults to `~/.codex`); `CODEX_SECURITY_STATE_DIR` moves them to `$CODEX_SECURITY_STATE_DIR/scans/<repository>` and also moves the workbench database (`workbench.sqlite3`). The output directory must be outside the scanned directory and enclosing Git worktree; results can contain source excerpts and vulnerability details.
