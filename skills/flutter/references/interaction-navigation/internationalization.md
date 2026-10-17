@@ -683,6 +683,7 @@ $ dart run intl_translation:generate_from_arb \
 - When using VS Code, the arb-editor extension adds syntax highlighting, snippets, diagnostics, and quick fixes for `.arb` template files.
 - If a user's preferred locale isn't specified in `supportedLocales`, Flutter selects the closest match, which likely contains differences to what the user expects. Other languages like French (`fr_FR`, `fr_CA`) should also be fully differentiated.
 - The intl number format limitation: `intl` doesn't share the same flexibility for number formatting, so the formatting of an existing locale (here `en_US`) must be used as a substitute in the new-language delegate.
+- The `helloWorldOn` expression and the `MaterialLocalizations.of` shorthand are quoted verbatim from the docs and predate null safety: `Localizations.of<T>` returns `T?` and the generated `AppLocalizations.of` is nullable by default (`nullable-getter`), so null-safe code needs `!` (assuming a `Localizations` ancestor) or explicit null handling, e.g. `AppLocalizations.of(context)!.helloWorldOn(...)`; the framework's own `MaterialLocalizations.of` applies `!` after `debugCheckHasMaterialLocalizations`.
 - Flutter `flutter_localizations` / `gen-l10n` / ARB (Dart); distinct from JS i18n libraries and from Android `strings.xml` resources and Apple `.strings` / String Catalog localization in the other skills.
 
 ## Related

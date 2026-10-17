@@ -332,6 +332,7 @@ On the web, Flutter compiles your application code into either JavaScript or Web
 ## Notes
 
 - Impeller availability by device: see the "Impeller availability" page linked from the original (https://flutter.dev/go/can-i-use-impeller) and the Impeller rendering engine page in the testing-performance references.
+- `Window.render()` is the original article's wording and predates multi-view support: in current `dart:ui` the composited scene is rendered through `FlutterView.render(Scene)` of the `FlutterView` associated with each `RenderView`; the singleton `window` / `SingletonFlutterWindow` is deprecated.
 - Flutter (Dart, one codebase for mobile / web / desktop) is a separate framework from Kotlin Multiplatform with Compose Multiplatform (kotlin-multiplatform); their APIs are not interchangeable. The platform-embedding material (Activity, UIViewController, Win32) concerns the Flutter embedders, not the `android-*` / `apple-*` skills' platform APIs.
 
 ## Related

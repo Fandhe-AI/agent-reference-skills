@@ -66,7 +66,7 @@ Apps using the `Router` class integrate with the browser History API. Whenever y
 ## Notes
 
 - We don't recommend using named routes for most applications. Instead, use go_router (or another routing package) or use `Navigator` with `MaterialPageRoute`.
-- You can't prevent navigation from page-backed screens using `PopScope` or the deprecated `WillPopScope`. Consult your routing package's API documentation instead. For guidelines on migrating to `PopScope`, see the Android predictive back migration guide (`/release/breaking-changes/android-predictive-back` on docs.flutter.dev).
+- The navigation overview notes that `PopScope` / the deprecated `WillPopScope` can't prevent navigation driven by the `Router` (page-backed route changes such as deep links or browser history); for those, consult your routing package's API documentation. `PopScope(canPop: false)` with `onPopInvokedWithResult` still intercepts back/pop on the route it wraps (see the Android predictive back page, `/platform-integration/android/predictive-back`). For migration guidelines, see `/release/breaking-changes/android-predictive-back` on docs.flutter.dev.
 - Flutter `Navigator` / `Router` (Dart, `package:flutter/widgets.dart`); distinct from React Router and TanStack Router (JS route trees and loaders) and from Jetpack Navigation (`NavHost` / `NavController`) in the other skills.
 
 ## Related
