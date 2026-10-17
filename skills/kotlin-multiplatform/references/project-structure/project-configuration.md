@@ -6,7 +6,9 @@ source: https://kotlinlang.org/docs/multiplatform/multiplatform-project-configur
 
 Guidance on structuring a Kotlin Multiplatform setup: how the iOS app consumes the generated framework, single vs several shared modules, repository layout, and local vs remote code-sharing workflow. The source page has no code blocks.
 
-## Decision axes
+## Options / Props
+
+### Decision axes
 
 | Question | Options |
 |----------|---------|

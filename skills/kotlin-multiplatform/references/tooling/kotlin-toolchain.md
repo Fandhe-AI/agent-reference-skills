@@ -18,8 +18,12 @@ kotlin run -m desktopApp
 
 Installer script (macOS or Linux):
 
+Adapted (not in the official docs): the official docs pipe the installer straight into the shell; split into download, review, and run.
+
 ```shell
-curl -fsSL https://kotl.in/install.sh | sh
+curl -fsSLo kotlin-toolchain-install.sh https://kotl.in/install.sh
+less kotlin-toolchain-install.sh
+sh kotlin-toolchain-install.sh
 
 # Restart your terminal or run this command
 # to make 'kotlin' available
@@ -28,8 +32,12 @@ exec $SHELL
 
 Installer script (Windows):
 
-```shell
-powershell -ExecutionPolicy ByPass -c "irm 'https://kotl.in/install.ps1' | iex"
+Adapted (not in the official docs): the official docs pipe the installer straight into the shell; split into download, review, and run.
+
+```powershell
+Invoke-WebRequest -Uri 'https://kotl.in/install.ps1' -OutFile kotlin-toolchain-install.ps1
+Get-Content kotlin-toolchain-install.ps1
+powershell -ExecutionPolicy Bypass -File .\kotlin-toolchain-install.ps1
 ```
 
 Module configuration (`androidApp/module.yaml`); each module is listed in the overall `project.yaml`:
@@ -62,7 +70,7 @@ settings:
 ## Notes
 
 - Alpha: Kotlin Toolchain is in Alpha (version 0.13 in the pinned docs); feedback goes to YouTrack (project KTC).
-- The installer scripts pipe a remote script straight into the shell (`curl ... | sh`, `irm ... | iex`); inspect the script first or run it in a disposable environment, or prefer `sdk install kotlintoolchain`.
+- Download and review the installer before running it; SDKMAN! (`sdk install kotlintoolchain`) is the recommended route.
 - Install via SDKMAN! or the installer script. Building iOS apps requires Xcode and the necessary SDK; the CLI displays Xcode setup instructions when a build or run actually needs it.
 - The project ID is used for Kotlin package names, the Android namespace and application ID, and the iOS bundle ID. A Git repository is initialized by default.
 - The generated project has several `*App` modules (entry points per platform) and a `shared` module with common code; every application module explicitly depends on the shared module.

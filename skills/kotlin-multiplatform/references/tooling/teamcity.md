@@ -37,29 +37,31 @@ Parallel tests:
 
 Job 2, Android debug package:
 
+Adapted (not in the official docs): the official snippet indents Job2 under Job1; it is dedented here so Job2 is a sibling job under jobs, as in the Job 3 example.
+
 ```yaml
 jobs:
   Job1:
     name: Run tests
     ...
-    Job2:
-      name: Build Android
-      steps:
-        - type: gradle
-          jdk-home: '%\env.JDK_17_0%'
-          tasks: ':mobile:assembleDebug'
-          use-gradle-wrapper: true
-      files-publication:
-        - path: mobile/build/outputs/apk/debug/*.apk
-          share-with-jobs: false
-          publish-artifact: true
-      runs-on:
-        self-hosted:
-          - requirement: exists
-            name: Android home
-            parameter: env.ANDROID_HOME
-      dependencies:
-        - Job1
+  Job2:
+    name: Build Android
+    steps:
+      - type: gradle
+        jdk-home: '%\env.JDK_17_0%'
+        tasks: ':mobile:assembleDebug'
+        use-gradle-wrapper: true
+    files-publication:
+      - path: mobile/build/outputs/apk/debug/*.apk
+        share-with-jobs: false
+        publish-artifact: true
+    runs-on:
+      self-hosted:
+        - requirement: exists
+          name: Android home
+          parameter: env.ANDROID_HOME
+    dependencies:
+      - Job1
 ```
 
 Job 3, iOS simulator application:
@@ -115,6 +117,7 @@ jobs:
 - Job 2 and Job 3 depend on `Job1`, so they can run in parallel but start only after the tests finish. The Android job requirement guarantees assignment only to agents with the Android SDK.
 - With build configurations, the Script step for iOS can be replaced with the specialized Xcode Project step.
 - Switching from Any Git URL to a GitHub connection enables run status posting to GitHub and a Pull requests toggle; build configurations additionally enable build chains, composite configurations, Kubernetes agents, issue tracker and secret vault integrations.
+- The official Job 2 snippet nests Job2 inside Job1 by indentation; corrected to a sibling job.
 - `:mobile:assembleDebug` and the Xcode project names are specific to the JetCaster sample.
 
 ## Related

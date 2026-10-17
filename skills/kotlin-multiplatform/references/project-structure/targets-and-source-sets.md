@@ -31,7 +31,9 @@ kotlin {
 }
 ```
 
-## Concepts
+## Options / Props
+
+### Concepts
 
 | Concept | Description |
 |---------|-------------|

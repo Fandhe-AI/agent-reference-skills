@@ -6,7 +6,9 @@ source: https://kotlinlang.org/docs/multiplatform/multiplatform-share-on-platfor
 
 Overview of the code-sharing mechanisms: share across all platforms through the common source set, share among similar platforms through the hierarchical structure, share in libraries, and connect platform-specific libraries. The source page has no code blocks.
 
-## Mechanisms
+## Options / Props
+
+### Mechanisms
 
 | Mechanism | Description |
 |-----------|-------------|

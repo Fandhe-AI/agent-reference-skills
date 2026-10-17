@@ -4,33 +4,31 @@ source: https://kotlinlang.org/docs/multiplatform/multiplatform-cocoapods-overvi
 
 # iOS Integration
 
-iOS 統合（CocoaPods・SwiftPM export / import・direct integration）で公式ドキュメントに記載されたコマンド。いずれも macOS と Xcode が前提。
+Commands documented for iOS integration (CocoaPods, SwiftPM export / import, direct integration). macOS and Xcode are required for all of them.
 
-> **警告**: `sudo gem install` はシステムの Ruby 環境を変更する。使い捨て環境、または rbenv / RVM 等のバージョン管理下で実行する。
+> **警告**: Do not run `gem install` with administrator privileges against the system Ruby. Use Homebrew or a version-managed Ruby (rbenv / RVM).
 
-## CocoaPods のインストール（RVM / rbenv）
-
-```sh
-sudo gem install -n /usr/local/bin cocoapods
-```
-
-事前に `rvm install ruby <version>` または `rbenv install <version>` と `rbenv global <version>` で Ruby を用意する（バージョンは原文の変数 `rubyVersion` で、本スキルの固定値は無い）。
-
-## CocoaPods のインストール（既定の Ruby）
-
-```sh
-sudo gem install cocoapods
-```
-
-Apple M チップ搭載機では動作しない（原文注記）。
-
-## CocoaPods のインストール（Homebrew）
+## CocoaPods のインストール（Homebrew、推奨）
 
 ```sh
 brew install cocoapods
 ```
 
 Xcodeproj gem が最新の Xcode に未対応だと Pod インストールでエラーになる場合がある（原文警告）。
+
+## CocoaPods のインストール（RVM / rbenv）
+
+Adapted (not in the official docs): the official docs use `sudo gem install -n /usr/local/bin cocoapods`; sudo is removed here (a version-managed Ruby installs into its own bin).
+
+```sh
+gem install cocoapods
+```
+
+事前に `rvm install ruby <version>` または `rbenv install <version>` と `rbenv global <version>` で Ruby を用意する（バージョンは原文の変数 `rubyVersion` で、本スキルの固定値は無い）。
+
+## CocoaPods のインストール（既定の Ruby）
+
+Adapted (not in the official docs): the official docs use `sudo gem install cocoapods`; it is not included here because it modifies the system Ruby with administrator privileges. Use Homebrew or a version-managed Ruby instead. The official docs note this route does not work on Apple M chips.
 
 ## Pods のインストール
 

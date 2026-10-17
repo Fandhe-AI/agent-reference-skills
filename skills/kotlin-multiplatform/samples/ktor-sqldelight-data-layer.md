@@ -439,7 +439,9 @@ class RocketLaunchViewModel(private val sdk: SpaceSDK) : ViewModel() {
 }
 ```
 
-iOS: Koin helper in `sharedLogic/src/iosMain/kotlin/com/jetbrains/spacetutorial/KoinHelper.kt`:
+iOS: Koin helper in `sharedLogic/src/iosMain/kotlin/com/jetbrains/spacetutorial/KoinHelper.kt`.
+
+Adapted (not in the official docs): @Throws(Exception::class) is added to KoinHelper.getLaunches; the official tutorial annotates only SpaceSDK.getLaunches, but the annotation is not inherited by the wrapper Swift calls.
 
 ```kotlin
 package com.jetbrains.spacetutorial
@@ -451,6 +453,7 @@ import org.koin.core.component.inject
 class KoinHelper : KoinComponent {
     private val sdk: SpaceSDK by inject<SpaceSDK>()
 
+    @Throws(Exception::class)
     suspend fun getLaunches(forceReload: Boolean): List<RocketLaunch> {
         return sdk.getLaunches(forceReload = forceReload)
     }
@@ -516,5 +519,5 @@ struct iOSApp: App {
 - Wizard values: Name `SpaceTutorial`, Project ID `com.jetbrains.spacetutorial`, Android and iOS targets, **Do not share UI** for iOS. Template and final project: `https://github.com/kotlin-hands-on/kmm-networking-and-data-storage` (`final` branch).
 - Versions `agp = "9.0.1"` and `material3 = "1.11.0-alpha07"` are copied as written in the tutorial's `[versions]` block (a pre-release Material 3 build; not a stable pin).
 - The `[libraries]` block is tagged `toml` and its `...` placeholder is written as `# ...` (a valid TOML comment); the source page shows an untagged block with a bare `...`.
-- Marking `getLaunches` with `@Throws(Exception::class)` makes Swift see `NSError` and lets `try await` catch it. On iOS, add `-lsqlite3` to **Other Linker Flags** (Debug and Release) in Xcode for the native SQLDelight driver.
+- `@Throws(Exception::class)` is required on the public boundary Swift calls (`KoinHelper.getLaunches`); a suspend function without it only propagates `CancellationException` as `NSError`, and any other exception becomes a fatal error instead of reaching Swift's `catch`. On iOS, add `-lsqlite3` to **Other Linker Flags** (Debug and Release) in Xcode for the native SQLDelight driver.
 - The source page also has the Compose UI for Android (`App.kt` with `PullToRefreshBox`, Material theme export) and the SwiftUI `RocketLaunchRow` / `ContentView` list; they are omitted here to keep this sample on the shared data layer.

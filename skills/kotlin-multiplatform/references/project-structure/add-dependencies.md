@@ -25,6 +25,8 @@ kotlin {
 
 Version catalog used by the page's examples (versions from the pinned docs variables):
 
+Adapted (not in the official docs): version.ref uses the [versions] key names and the SQLDelight 2.x group app.cash.sqldelight instead of the official com.squareup.sqldelight.
+
 ```toml
 [versions]
 ktor = "3.5.2"

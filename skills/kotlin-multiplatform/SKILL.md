@@ -5,7 +5,7 @@ description: >
   expect/actual, source set hierarchy, Multiplatform Gradle DSL, org.jetbrains.compose, Compose Resources (Res),
   Compose for iOS / Compose Desktop (Window, Tray, MenuBar, nativeDistributions) / Web, iOS 統合 (SwiftPM export, CocoaPods),
   Navigation / ViewModel / Lifecycle, Compose Hot Reload,
-  Kotlin Toolchain, Maven Central / npm 公開, AGP 9 移行, 互換性表。
+  Kotlin Toolchain, CI (GitHub Actions / TeamCity), Maven Central / npm 公開, AGP 9 移行, 互換性表。
 user-invocable: false
 ---
 
