@@ -24,7 +24,7 @@ A basic button component that should render nicely on any platform. Supports a m
 | onPress | `({nativeEvent: PressEvent}) => void` | | | Yes | Handler to be called when the user taps the button. |
 | title | string | | | Yes | Text to display inside the button. On Android the given title will be converted to the uppercased form. |
 | accessibilityLabel | string | | | No | Text to display for blindness accessibility features. |
-| accessibilityLanguage | string | | iOS | A value indicating which language should be used by the screen reader when the user interacts with the element. It should follow the BCP 47 specification. |
+| accessibilityLanguage | string | | iOS | No | A value indicating which language should be used by the screen reader when the user interacts with the element. It should follow the BCP 47 specification. |
 | accessibilityActions | array | | | No | Accessibility actions allow an assistive technology to programmatically invoke the actions of a component. Each action object should contain the field name and label. |
 | onAccessibilityAction | function | | | No | Invoked when the user performs the accessibility actions. The only argument is an event containing the name of the action to perform. |
 | color | color | `'#2196F3'` on Android; `'#007AFF'` on iOS | | No | Color of the text (iOS), or background color of the button (Android). |
