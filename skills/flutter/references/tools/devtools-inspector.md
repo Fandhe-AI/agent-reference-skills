@@ -93,7 +93,12 @@ class AreaRepaintsPage extends StatelessWidget {
 ```
 
 ```dart
-debugRepaintRainbowEnabled = true;
+import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
+
+void highlightRepaints() {
+  debugRepaintRainbowEnabled = true;
+}
 ```
 
 - Highlight oversized images: inverts colors and flips vertically. Images are deemed too large if they use at least 128KB more than required. Info is printed in the debug console:
@@ -116,6 +121,8 @@ class ResizedImage extends StatelessWidget {
 ```
 
 ```dart
+import 'package:flutter/rendering.dart';
+
 void showOversizedImages() {
   debugInvertOversizedImages = true;
 }
@@ -136,6 +143,7 @@ The inspector instruments application code to learn where widgets are created, s
 - Track widget creation prevents otherwise-identical `const` Widgets from being considered equal in debug builds.
 - Changes made from the flex explorer don't modify source code and are reverted on hot reload.
 - Corrected from the official docs: the source example passes `cacheHeight: 213, cacheWidth: 392`, which swaps the 213×392 (width×height) display size shown in the log message; here it is `cacheWidth: 213, cacheHeight: 392`.
+- The source shows no import for the `showOversizedImages` excerpt; `import 'package:flutter/rendering.dart';` was added here (`debugInvertOversizedImages` is exported by `package:flutter/rendering.dart`). The `AreaRepaintsPage` and `ResizedImage` class snippets are kept as in the source, without imports.
 - Flutter DevTools inspector (Dart) is distinct from React DevTools (react skill).
 
 ## Related

@@ -40,7 +40,7 @@ $ flutter --version
 
 | Command | Example of use | More information |
 | --- | --- | --- |
-| analyze | `flutter analyze -d <DEVICE_ID>` | Analyzes the project's Dart source code. Use instead of `dart analyze`. |
+| analyze | `flutter analyze` | Analyzes the project's Dart source code. Use instead of `dart analyze`. |
 | assemble | `flutter assemble -o <DIRECTORY>` | Assemble and build flutter resources. |
 | attach | `flutter attach -d <DEVICE_ID>` | Attach to a running application. |
 | bash-completion | `flutter bash-completion` | Output command line shell completion setup scripts. |
@@ -50,7 +50,7 @@ $ flutter --version
 | config | `flutter config --build-dir=<DIRECTORY>` | Configure Flutter settings. To remove a setting, configure it to an empty string. |
 | create | `flutter create <DIRECTORY>` | Creates a new project. |
 | custom-devices | `flutter custom-devices list` | Add, delete, list, and reset custom devices. |
-| devices | `flutter devices -d <DEVICE_ID>` | List all connected devices. |
+| devices | `flutter devices` | List all connected devices. |
 | doctor | `flutter doctor` | Show information about the installed tooling. |
 | downgrade | `flutter downgrade` | Downgrade Flutter to the last active version for the current channel. |
 | drive | `flutter drive` | Runs Flutter Driver tests for the current project. |
@@ -62,14 +62,16 @@ $ flutter --version
 | pub | `flutter pub <PUB_COMMAND>` | Works with packages. Use instead of `dart pub`. |
 | run | `flutter run <DART_FILE>` | Runs a Flutter program. |
 | screenshot | `flutter screenshot` | Take a screenshot of a Flutter app from a connected device. |
-| symbolize | `flutter symbolize --input=<STACK_TRACK_FILE>` | Symbolize a stack trace from the AOT compiled flutter application. |
+| symbolize | `flutter symbolize --debug-info=<SYMBOLS_FILE> --input=<STACK_TRACE_FILE>` | Symbolize a stack trace from the AOT compiled flutter application. |
 | test | `flutter test [<DIRECTORY\|DART_FILE>]` | Runs tests in this package. Use instead of `dart test`. |
 | upgrade | `flutter upgrade` | Upgrade your copy of Flutter. |
 
 ## Notes
 
 - For additional help on any of the commands, enter `flutter help <command>`. You can also get details on `pub` commands, for example `flutter help pub outdated`.
+- The official command table lists `flutter symbolize --input=<STACK_TRACK_FILE>`, but symbolize also requires `--debug-info=<SYMBOLS_FILE>` (the `.symbols` file from `--split-debug-info`); the placeholder is also corrected to STACK_TRACE_FILE (corrected from the official docs).
 - The official command table lists `flutter gen-l10n <DIRECTORY>`, but gen-l10n takes no positional directory argument; run it from the project root or pass `--project-dir=<DIRECTORY>` (corrected from the official docs).
+- The official command table lists `flutter analyze -d <DEVICE_ID>` and `flutter devices -d <DEVICE_ID>`; `-d` is the global target-device option and has no role in static analysis or in listing devices, so both are shown here without it (corrected from the official docs).
 - The official table renders the test usage as `flutter test [<DIRECTORYDART_FILE>]` (separator lost); it is written here as `[<DIRECTORY\|DART_FILE>]`.
 - Dart-related commands (`dart analyze`, `dart format`, `dart pub`, `dart test`) are documented on dart.dev: https://dart.dev/tools/dart-tool
 
