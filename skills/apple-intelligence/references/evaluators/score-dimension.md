@@ -31,14 +31,6 @@ ScoreDimension("Safe", scale: .passFail(
 ))
 ```
 
-| Member | Description |
-|--------|-------------|
-| init(_:description:scale:) | Creates a scoring dimension. |
-| name | The name of the dimension, used as the DataFrame column name. |
-| metric | A metric identifier that uses this dimension's name. |
-| scale | The scoring scale for this dimension. |
-| description | An optional description providing additional context for the model judge about what this dimension measures. |
-
 ### ScoringScale
 
 ```swift
@@ -62,15 +54,6 @@ enum SafetyLevel: ScoreLevel {
 }
 let _ = ScoringScale.custom(SafetyLevel.self)
 ```
-
-| Member | Description |
-|--------|-------------|
-| passFail(passDescription:failDescription:) | Creates a binary pass or fail scoring scale. |
-| numeric(_:) | Creates a scoring scale from a numeric dictionary. |
-| custom(_:) | Creates a scoring scale from a typed score level enum. |
-| init(options:) | Creates a scoring scale with explicit options. |
-| options | The scale options, ordered from highest to lowest value. |
-| ScaleOption | A single option in a scoring scale. |
 
 ### ScoreLevel
 
@@ -102,12 +85,6 @@ enum SafetyLevel: ScoreLevel {
 let dimension = ScoreDimension("Safety", scale: .custom(SafetyLevel.self))
 ```
 
-| Member | Description |
-|--------|-------------|
-| guideDescription | Rubric guidance the model judge references for this level. |
-| label | A short judge-facing label for this level. |
-| value | The numeric value for this level that metric aggregation references. |
-
 ### ScoringMode
 
 ```swift
@@ -119,6 +96,39 @@ The scoring constraint mode for a model evaluator. The mode controls whether the
 ```swift
 let mode: ScoringMode = .discrete
 ```
+
+## Options / Props
+
+### ScoreDimension
+
+| Member | Description |
+|--------|-------------|
+| init(_:description:scale:) | Creates a scoring dimension. |
+| name | The name of the dimension, used as the DataFrame column name. |
+| metric | A metric identifier that uses this dimension's name. |
+| scale | The scoring scale for this dimension. |
+| description | An optional description providing additional context for the model judge about what this dimension measures. |
+
+### ScoringScale
+
+| Member | Description |
+|--------|-------------|
+| passFail(passDescription:failDescription:) | Creates a binary pass or fail scoring scale. |
+| numeric(_:) | Creates a scoring scale from a numeric dictionary. |
+| custom(_:) | Creates a scoring scale from a typed score level enum. |
+| init(options:) | Creates a scoring scale with explicit options. |
+| options | The scale options, ordered from highest to lowest value. |
+| ScaleOption | A single option in a scoring scale. |
+
+### ScoreLevel
+
+| Member | Description |
+|--------|-------------|
+| guideDescription | Rubric guidance the model judge references for this level. |
+| label | A short judge-facing label for this level. |
+| value | The numeric value for this level that metric aggregation references. |
+
+### ScoringMode
 
 | Case | Description |
 |------|-------------|

@@ -24,11 +24,6 @@ Evaluator { sample, subject in
 }
 ```
 
-| Member | Description |
-|--------|-------------|
-| init(_:) | Creates an evaluator with the given evaluation closure. |
-| metrics(subject:input:) | Evaluates the input and returns an array of metrics. |
-
 ### EvaluatorProtocol
 
 ```swift
@@ -50,6 +45,17 @@ where Input.ExpectedValue: Sendable & Codable {
     }
 }
 ```
+
+## Options / Props
+
+### Evaluator
+
+| Member | Description |
+|--------|-------------|
+| init(_:) | Creates an evaluator with the given evaluation closure. |
+| metrics(subject:input:) | Evaluates the input and returns an array of metrics. |
+
+### EvaluatorProtocol
 
 | Member | Description |
 |--------|-------------|
