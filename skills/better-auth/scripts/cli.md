@@ -48,7 +48,7 @@ Does not create schema files or apply migrations. Reads the live database for Ky
 
 ## Create an initial admin user
 
-> **Warning**: Creates a user with admin privileges in the configured database. Run it only against the intended environment, and avoid putting a real `--password` in shell history (omit it to be prompted).
+> **警告**: Creates a user with admin privileges in the configured database. Run it only against the intended environment, and avoid putting a real `--password` in shell history (omit it to be prompted).
 
 ```sh
 npx auth@latest create-admin --email admin@example.com --name "Admin" --role admin
@@ -58,7 +58,7 @@ Requires the Admin plugin and a persistent database. Uses the server-side `auth.
 
 ## Create an admin without the existing-users prompt
 
-> **Warning**: Skips the confirmation shown when users already exist.
+> **警告**: Skips the confirmation shown when users already exist.
 
 ```sh
 npx auth@latest create-admin --email admin@example.com --force
