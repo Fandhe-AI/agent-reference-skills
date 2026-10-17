@@ -48,3 +48,4 @@ curl http://localhost:8644/health
 - Use `deliver: log` while testing locally; valid `deliver` values: `log`, `github_comment`, `telegram`, `discord`, `slack`, `signal`, `sms`.
 - `{field}` / `{nested.field}` are the only template substitutions; `hermes webhook test <name>` works only for dynamic subscriptions, not routes in `config.yaml`.
 - Only the first found entry in `skills` is loaded.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/webhook-github-pr-review (pinned to v0.22.2)

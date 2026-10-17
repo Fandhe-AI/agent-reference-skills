@@ -42,3 +42,4 @@ display:
 - Use `hermes cron tick` to manually execute all due jobs once for debugging.
 - The agent-side tool is `cronjob_manage` (single tool with `action="create" | "list" | "update" | "pause" | "resume" | "run" | "remove"`); the toolset name is `cronjob`. Agents launched by the scheduler cannot use `cronjob_manage` by default.
 - For a watchdog that needs no LLM, see `cron-script-only.md`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/cron (pinned to v0.22.2)

@@ -43,3 +43,4 @@ TELEGRAM_ALLOWED_USERS=123456789,987654321
 - On macOS `hermes gateway install` writes a launchd plist to `~/Library/LaunchAgents/`.
 - Retired in v0.22.0: gateway conversations no longer reset after inactivity or at a daily boundary. Core ignores legacy `session_reset` settings (including `idle_minutes` per-platform overrides) and reset-timer environment variables; startup and `hermes doctor` warn if `session_reset.mode` is still `idle`, `daily` or `both`. Use `/new` or `/reset`. To keep time-based resets, install the catalog plugin: `hermes plugins install hermes-session-reset-policy`.
 - One gateway per machine is the default (a multiplexed gateway serves every profile); `hermes update` folds per-profile gateways into the multiplexed default when nothing conflicts.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging (pinned to v0.22.2)

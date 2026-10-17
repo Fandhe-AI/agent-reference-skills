@@ -39,3 +39,4 @@ python your_app.py
 - Create one `AIAgent` per thread or task; instances hold conversation history, tool sessions and iteration counters and are not thread-safe.
 - `skip_context_files=True` skips `AGENTS.md` loading; `skip_memory=True` disables persistent memory read/write (recommended for stateless endpoints). `max_iterations` defaults to 500.
 - Provider credentials use the same environment variables as the CLI (e.g. `OPENROUTER_API_KEY`).
+- Source: https://hermes-agent.nousresearch.com/docs/guides/python-library (pinned to v0.22.2)

@@ -22,3 +22,4 @@ hermes import-agent --sync --dry-run
 - Codex CLI: `AGENTS.md` and `memories/*.md` become memory entries; `[mcp_servers.*]` becomes `mcp_servers`; skills go to `~/.hermes/skills/codex-imports/<name>/`.
 - API keys and credential files are never imported; secret-looking MCP env vars / headers are stripped and listed in the report. Configure providers with `hermes setup` or `~/.hermes/.env`.
 - Existing MCP servers / skills are reported as conflicts and skipped unless `--overwrite`. The sync manifest is `~/.hermes/import-sync.json` (per profile). Coming from OpenClaw: use `hermes claw migrate`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/import-from-other-agents (pinned to v0.22.2)

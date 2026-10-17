@@ -52,3 +52,4 @@ GROQ_API_KEY=gsk_...
 - NeuTTS: the declared `neutts` dependency requires Python below 3.14 while the Hermes runtime requires Python 3.14, so requesting this extra does not install NeuTTS there; choose a compatible provider. KittenTTS is unavailable on Intel macOS and Windows ARM64 (no `onnxruntime` / PyTorch wheels); a Python 3.14 constraint for KittenTTS is not stated in the source docs.
 - Edge TTS supports 322 voices across 74 languages and requires no API key.
 - Discord voice channels require the Opus codec: `brew install opus` (macOS) or `sudo apt install libopus0` (Linux).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/voice-mode (pinned to v0.22.2)

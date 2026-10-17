@@ -35,3 +35,4 @@ hermes cron run <job_id>    # fire it once to test
 - Delivery targets: `telegram`, `telegram:<chat_id>`, `telegram:<chat_id>:<thread_id>`, `discord:#ops`, `slack:#engineering`, `signal:+E164`, `local`. A running gateway is not required for bot-token platforms.
 - From chat, the agent creates the same job via `cronjob_manage` with `no_agent=true`. Switch modes with `hermes cron edit <job_id> --agent` / `--no-agent --script ...`.
 - Do not use this for watchdogs that must fire when the gateway itself is down; use OS cron with `curl`.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/cron-script-only (pinned to v0.22.2)

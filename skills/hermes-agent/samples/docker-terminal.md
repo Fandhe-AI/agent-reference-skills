@@ -34,3 +34,4 @@ echo "TERMINAL_BACKEND=docker" >> ~/.hermes/.env
 - SSH, Modal, Singularity, and Daytona backends follow similar config patterns under `terminal:`.
 - The default `docker_image` is `nousresearch/hermes-sandbox:desktop` (includes a display stack for Bot Screen / computer_use / browser). Any other image works for shell work. Writing `docker_image` is a decision: a persisted container on another image is recreated on the next terminal call.
 - `container_persistent: true` (default) shares one long-lived container across sessions, `/new` and `delegate_task` subagents, preserving `/workspace` and `/root`. `false` creates one container per session and removes it when the session closes or goes idle past `lifetime_seconds`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/docker (pinned to v0.22.2)

@@ -45,3 +45,4 @@ hermes memory setup             # select the provider
 - Avoid storing large code blocks, temporary paths, or data already present in context files.
 - External memory providers such as Honcho, Hindsight, Supermemory and Holographic are installed from the plugin catalog (`hermes plugins install <name>`) before setting `memory.provider`; Honcho is no longer bundled. Memory pays off at session boundaries, so run `/new` at natural breakpoints.
 - Deprecation (v0.22.2): RetainDB and ByteRover leave core on October 15, 2026, and their standalone repositories are unmaintained; prefer a catalog provider (e.g. honcho) for new setups. See references/features/memory-providers.md and references/features/memory.md.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/memory (pinned to v0.22.2)

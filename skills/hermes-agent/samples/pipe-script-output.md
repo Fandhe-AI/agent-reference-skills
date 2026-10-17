@@ -32,3 +32,4 @@ hermes send --to telegram --quiet "keepalive" || {
 - Target formats: `platform`, `platform:chat_id`, `platform:chat_id:thread_id`, `platform:#channel`, `platform:+E164`.
 - No running gateway is needed for bot-token platforms; credentials come from `~/.hermes/.env` and `config.yaml` of the resolved Hermes home. Plugin platforms with a persistent adapter connection need `hermes gateway start`.
 - For OOM / disk-full watchdogs, keep a minimal `curl` instead; the Python interpreter may not load on a thrashing host.
+- Source: https://hermes-agent.nousresearch.com/docs/guides/pipe-script-output (pinned to v0.22.2)
