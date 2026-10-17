@@ -48,7 +48,9 @@ Website verification file at **/.well-known/assetlinks.json** (Expo Router / mod
 ]
 ```
 
-## Steps
+## Options / Props
+
+### Steps
 
 | Step | Description |
 | --- | --- |
@@ -57,7 +59,9 @@ Website verification file at **/.well-known/assetlinks.json** (Expo Router / mod
 | Host assetlinks.json | Serve from your domain over HTTPS with content-type `application/json`. |
 | Native app verification | Install the app on an Android device to trigger Android app verification. |
 
-## Debugging
+## Notes
+
+### Debugging
 
 Test without deploying a website using the Expo CLI tunnel. Set `EXPO_TUNNEL_SUBDOMAIN=my-custom-domain` for a stable tunnel URL, put `my-custom-domain.ngrok.io` in the `host` value of `intentFilters`, then:
 
@@ -67,7 +71,7 @@ npx expo run:android
 adb shell am start -a android.intent.action.VIEW  -c android.intent.category.BROWSABLE -d "https://my-custom-domain.ngrok.io/" <your-package-name>
 ```
 
-## Notes
+### General
 
 - Multiple fingerprints can be listed in `sha256_cert_fingerprints` to support different variants of the app.
 - Troubleshooting: serve the site over HTTPS with content-type `application/json`; Android verification may take 20 seconds or longer; if you update the web files, rebuild the native app to trigger a server update on the vendor side (Google).

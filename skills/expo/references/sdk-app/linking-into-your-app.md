@@ -39,7 +39,7 @@ export default function Home() {
 }
 ```
 
-## Test the deep link
+### Test the deep link
 
 ```sh
 # If you have `android.package` or `ios.bundleIdentifier` defined in your app.json

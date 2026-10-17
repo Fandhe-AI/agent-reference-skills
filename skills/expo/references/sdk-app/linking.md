@@ -15,8 +15,16 @@ npx expo install expo-linking
 ```ts
 import * as Linking from 'expo-linking';
 
-const url = Linking.useLinkingURL();
-const { hostname, path, queryParams } = Linking.parse(url);
+export default function Home() {
+  const url = Linking.useLinkingURL();
+
+  if (url) {
+    const { hostname, path, queryParams } = Linking.parse(url);
+    console.log(hostname, path, queryParams);
+  }
+
+  return null;
+}
 ```
 
 ## Options / Props

@@ -97,7 +97,7 @@ Multiple `NavigationBar` components can be mounted at once (for example one per 
 
 | Name | Definition |
 | --- | --- |
-| `NavigationBarStyle` | `'auto' \| 'inverted' \| 'light' \| 'dark'`. `auto` adjusts to the current theme; `light` a light bar with dark content; `dark` a dark bar with light content; `inverted` colors inverted relative to the theme. |
+| `NavigationBarStyle` (deprecated) | `'auto' \| 'inverted' \| 'light' \| 'dark'`. Button color semantics (as used by the component `style` prop and `setStyle`): `light` = light buttons; `dark` = dark buttons; `auto` follows the color scheme (`light` in dark mode). The source Types section (marked deprecated) describes the values as bar themes instead: `light` "a light navigation bar with dark content", `dark` "a dark navigation bar with light content", `inverted` colors inverted relative to the theme. |
 | `NavigationBarVisibility` (deprecated) | `'visible' \| 'hidden'` |
 | `NavigationBarVisibilityEvent` (deprecated) | `rawVisibility: number` (native `setOnSystemUiVisibilityChangeListener` value), `visibility: NavigationBarVisibility` |
 
@@ -106,6 +106,7 @@ Multiple `NavigationBar` components can be mounted at once (for example one per 
 - Platforms: android, expo-go. iOS and web are unsupported.
 - Due to a bug in the Android 15 emulator, `style` / `setStyle` may have no effect; try a physical device or a different Android version.
 - Existing React Native app (without CNG): to hide the navigation bar on Android, add `<item name="expoNavigationBarHidden">true</item>` to the `AppTheme` style in `android/app/src/main/res/values/styles.xml`.
+- The source Types section (marked deprecated) describes `light` as "a light navigation bar with dark content", which contradicts the component `style` prop ("color of the navigation bar buttons"); this page follows the prop semantics.
 - Source: `sdk-58` branch `packages/expo-navigation-bar`; modificationDate September 15, 2026.
 
 ## Related

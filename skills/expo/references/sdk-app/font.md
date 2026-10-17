@@ -116,7 +116,7 @@ Config plugin (recommended on Android and iOS; embeds fonts at build time, more 
 | `loadAsync(fontFamilyOrFontMap, source)` | `fontFamilyOrFontMap: FontMap`, `source?: FontSource` → `Promise<void>` | Android, iOS, tvOS, Web | Loads fonts from static or remote resources. In the browser, generates a `@font-face` block in a shared style sheet. If the `fontFamily` is already loaded it resolves without replacing it. Wrap in `try/catch/finally` so the app continues if loading fails. |
 | `renderToImageAsync(glyphs, options)` | `glyphs: string`, `options?: RenderToImageOptions` → `Promise<RenderToImageResult>` | Android, iOS | Creates an image with the provided text. |
 
-Loading multiple weights/styles on web:
+Loading multiple weights/styles on web (fragment; call inside a function component):
 
 ```tsx
 const [loaded, error] = useFonts([

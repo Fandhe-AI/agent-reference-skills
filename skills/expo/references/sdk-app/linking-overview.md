@@ -18,7 +18,9 @@ A deep link is built from scheme, host and path:
 - **Host**: the domain name (example: `web-app.com`).
 - **Path**: the screen to open (example: `/product`). If omitted, the user is taken to the home screen of the app.
 
-## Linking strategies
+## Options / Props
+
+### Linking strategies
 
 | Strategy | Description |
 | --- | --- |

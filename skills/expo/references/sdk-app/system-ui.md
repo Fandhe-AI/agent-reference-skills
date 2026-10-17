@@ -35,7 +35,7 @@ const color = await SystemUI.getBackgroundColorAsync();
 }
 ```
 
-The plugin configures `userInterfaceStyle` on Android and `backgroundColor` on iOS from the app config; they cannot be set at runtime.
+The config plugin applies `userInterfaceStyle` on Android and `backgroundColor` on iOS from the app config. These app config values cannot be changed at runtime; a new app binary must be built for them to take effect. The root view background color itself can be changed at runtime with `SystemUI.setBackgroundColorAsync`.
 
 ### Methods
 

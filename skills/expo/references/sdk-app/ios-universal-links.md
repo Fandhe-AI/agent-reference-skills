@@ -42,7 +42,9 @@ App config (do not include the protocol `https` in the value):
 }
 ```
 
-## Steps
+## Options / Props
+
+### Steps
 
 | Step | Description |
 | --- | --- |
@@ -61,7 +63,9 @@ Manual native configuration (no EAS and no `npx expo prebuild`): configure the A
 </array>
 ```
 
-## Apple Smart Banner
+## Notes
+
+### Apple Smart Banner
 
 Shows a banner prompting installation when the user is on a mobile device without the app. Add to the website `<head>`:
 
@@ -71,7 +75,7 @@ Shows a banner prompting installation when the user is on a mobile device withou
 
 Run `npx setup-safari` to generate the meta tag automatically. For a statically rendered Expo Router website, put the tag in the `<head>` of **src/app/+html.tsx** (uses `useServerDocumentContext` from `expo-router/html`).
 
-## Debugging
+### Debugging
 
 Set `EXPO_TUNNEL_SUBDOMAIN=my-custom-domain`, use `my-custom-domain.ngrok.io` in `associatedDomains`, then:
 
@@ -82,7 +86,7 @@ npx expo run:ios
 
 Type the custom domain link in the device browser to open the app.
 
-## Notes
+### General
 
 - The experimental CLI command `npx setup-safari` can register a bundle identifier, assign entitlements and create an iTunes app entry automatically.
 - iOS downloads the AASA when the app is first installed or when updates are installed from the App Store, and does not refresh frequently afterwards. Changing AASA paths for a production app requires a full App Store update.
