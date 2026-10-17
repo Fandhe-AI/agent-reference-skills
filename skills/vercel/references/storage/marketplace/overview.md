@@ -69,6 +69,30 @@ Access: **Project > Storage > select database > Browser**.
 
 Requires **Owner** permissions.
 
+## Redis in the Database Browser
+
+The database browser also supports Redis integrations (Redis, Upstash for Redis; changelog "Vercel Marketplace database browser now supports Redis"):
+
+- **CLI** tab: run Redis commands (redis-cli style) and inspect results; separate multiple commands with newlines or semicolons; `MULTI` / `EXEC` supported to run commands in a transaction
+- **Browser** tab: list keys (optionally grouped by prefix) and filter by type and pattern; view values for String, JSON, Hash, List, Set and Sorted set types; inspect key metadata (type, TTL, encoding, size)
+
+## Custom Environments for Native Integrations
+
+Vercel can scope a Native Marketplace resource's project environment variables to an exact Custom Environment, e.g. a `staging` deployment using a staging database without adding the database variables to Production, Preview, or Development.
+
+```bash
+# Provision a resource and connect it to staging in the linked project
+vercel integration add neon --environment staging
+
+# Connect an existing resource to staging in the linked project
+vercel integration resource connect my-database --environment staging
+
+# Deploy to the Custom Environment
+vercel deploy --target=staging
+```
+
+Repeat `--environment` to connect more environments. If you omit the option, the commands connect `production`, `preview`, and `development`; the default does not include Custom Environments. For a Custom Environment, Vercel first uses the provider's Preview secret value, or the default secret value if the provider set no Preview value. (changelog "Native Marketplace integrations now support custom environments", 2026-09-17)
+
 ## Choosing a Provider
 
 | Factor | Guidance |
@@ -82,7 +106,7 @@ Requires **Owner** permissions.
 
 - **Connection pooling**: In serverless, use built-in pooling or PgBouncer to manage database connections efficiently
 - **Region alignment**: Deploy database in regions near your Functions
-- **Caching strategy**: Use [Data Cache](https://vercel.com/docs/runtime-cache/data-cache) or [Edge Config](../edge-config/overview.md) to reduce database load
+- **Caching strategy**: Use [Data Cache](https://vercel.com/docs/runtime-cache/data-cache) or [Global Config (formerly Edge Config)](../edge-config/overview.md) to reduce database load
 - **Secrets**: Store credentials only in environment variables, never in code
 - Use SSL/TLS connections
 

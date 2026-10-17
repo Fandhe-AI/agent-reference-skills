@@ -6,9 +6,9 @@
 |--------|-------------|
 | **Storage** | Monthly average store size (GB-month) |
 | **Simple Operations** | `head()` calls + cache MISS blob URL accesses |
-| **Advanced Operations** | `put()`, `copy()`, `list()`, `upload()` calls; multipart parts count separately |
+| **Advanced Operations** | `put()`, `copy()`, `list()`, `upload()` calls and Blob store creation; multipart parts count separately |
 | **Blob Data Transfer** | Outbound data for public blob downloads and Function-to-store private fetches |
-| **Edge Requests** | Each blob URL access (HIT or MISS) |
+| **CDN Requests** | Each blob URL access (HIT or MISS); formerly called Edge Requests |
 | **Fast Origin Transfer** | Cache MISS scenarios only |
 
 ## Pricing (Pro Plan, iad1 example)
@@ -59,12 +59,14 @@ Monthly credit allocation; on-demand billing after credits are consumed. Support
 - Simple Ops (cache MISS): 750K − 100K = 650K × $0.40/1M = $0.26
 - Advanced Ops: 336K − 10K = 326K × $5.00/1M = $1.63
 - Blob Data Transfer: 350 GB − 100 GB = 250 GB × $0.05 = $12.50
-- Edge Requests: 2.5M (within 10M included) = $0.00
+- CDN Requests: 2.5M (within 10M included) = $0.00
 - Fast Origin Transfer: 105 GB − 100 GB = 5 GB × $0.06 = $0.30
 - **Total: ~$15.73/month**
 
 ## Notes
 
+- Store creation counts as one Advanced Operation (deleting a store is free; changelog 2026-09-23). The number of stores is unlimited on every plan; the previous limits of 100 (Hobby), 500 (Pro) and 1,000 (Enterprise) no longer apply. On Hobby, creation counts toward the 2,000 free Advanced Operations per month
+- "Edge Requests" was renamed "CDN Requests" (naming only)
 - Dashboard interactions count as operations (list, upload, view)
 - Multipart uploads: 1 op to start + 1 op per part + 1 op to complete
 - Client uploads: no data transfer charges for the upload itself

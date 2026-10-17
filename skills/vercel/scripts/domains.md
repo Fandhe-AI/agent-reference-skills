@@ -1,6 +1,6 @@
 # Domains
 
-ドメインの管理・購入・DNS 設定・エイリアス
+ドメインの管理・購入・更新・DNS 設定・エイリアス
 
 ## ドメイン一覧の表示
 
@@ -24,6 +24,45 @@ vercel domains ls --next 1584722256178
 
 ```sh
 vercel domains inspect [domain]
+```
+
+## ドメイン候補の検索
+
+キーワードやドメインの断片から候補を探す。認証なしで実行できる（購入・管理には認証が必要）。
+
+```sh
+vercel domains search [query]
+```
+
+登録可能な候補のみ表示。
+
+```sh
+vercel domains search acme --available
+```
+
+並び順を指定（`relevance`（デフォルト）/ `alphabetical` / `length`）。
+
+```sh
+vercel domains search acme --order alphabetical
+```
+
+TLD で絞り込み（複数指定可）。
+
+```sh
+vercel domains search acme --tld com --tld dev
+```
+
+1 ページあたりの候補数（デフォルト 20、最大 200）とページネーション。
+
+```sh
+vercel domains search acme --limit 200
+vercel domains search acme --next [cursor]
+```
+
+JSON 出力。
+
+```sh
+vercel domains search acme --format=json
 ```
 
 ## ドメインの追加
@@ -54,8 +93,44 @@ vercel domains rm [domain] --yes
 
 ## ドメインの購入
 
+> **警告**: 購入は課金を伴う。ドメイン登録は原則返金不可。
+
 ```sh
 vercel domains buy [domain]
+```
+
+## ドメインの更新
+
+> **警告**: 更新は課金を伴い、返金不可。コマンドは更新価格と期間を表示し、課金の確認を求める。
+
+有効期限前に登録済みドメインを更新。
+
+```sh
+vercel domains renew [domain]
+```
+
+プロンプトなし（スクリプト・エージェント向け）では、`--amount` を省略すると課金せず現在価格を JSON で返す。
+
+```sh
+vercel domains renew example.com --scope my-team --json
+```
+
+人が承認した価格（USD）を `--amount` に指定して課金を実行（金額は現在価格と一致する必要がある）。
+
+```sh
+vercel domains renew example.com --scope my-team --amount 20.00 --json
+```
+
+## 自動更新の切り替え
+
+ドメインと `on|off` の両方が必須。
+
+```sh
+vercel domains auto-renew [domain] [on|off]
+```
+
+```sh
+vercel domains auto-renew my-domain.com on --format=json
 ```
 
 ## ドメインの価格確認

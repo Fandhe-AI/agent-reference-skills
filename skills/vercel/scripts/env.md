@@ -46,17 +46,35 @@ vercel env add [name] [environment] [gitbranch]
 vercel env add [name] [environment] < [file]
 ```
 
-センシティブな環境変数として追加（Production/Preview のデフォルト）。
+## 環境変数の種別（Secret / Config）
+
+変数は Config または Secret として保存される。デフォルトは Production / Preview / カスタム環境が `secret`、Development が `config`。`--sensitive` は Secret、`--no-sensitive` は Config に対応する（`--visibility` は `--type` の非推奨エイリアス）。
+
+Secret として追加。
 
 ```sh
-vercel env add API_TOKEN --sensitive
+vercel env add API_KEY production --value "sk_live_..." --sensitive --yes
 ```
 
-センシティブ扱いをせずに追加（暗号化として保存）。
+Config として追加。
 
 ```sh
-vercel env add API_TOKEN production --no-sensitive
+vercel env add API_URL production --value "https://api.example.com" --no-sensitive --yes
 ```
+
+Development に Secret として追加。
+
+```sh
+vercel env add DEV_API_KEY development --value "sk_test_..." --sensitive --yes
+```
+
+`--type` で種別を明示（`config` または `secret`）。
+
+```sh
+vercel env add API_URL production --type config --yes
+```
+
+`--sensitive` / `--no-sensitive` と矛盾する `--type` を併用するとエラーになる。`NEXT_PUBLIC_` など公開フレームワークプレフィックスの変数は Config として保存される。従来の「Enforce Sensitive Environment Variables」チームポリシーは非推奨で、CLI はローカルで強制しない。
 
 既存の環境変数を確認なしで上書き。
 
@@ -88,10 +106,16 @@ stdin から値を更新（例: npmrc ファイルの内容）。
 cat ~/.npmrc | vercel env update NPM_RC preview
 ```
 
-センシティブとして更新。
+Secret として更新。
 
 ```sh
 vercel env update API_TOKEN --sensitive
+```
+
+種別を明示して更新。
+
+```sh
+vercel env update API_TOKEN production --type secret
 ```
 
 確認をスキップして更新。
@@ -139,6 +163,8 @@ vercel env pull --environment=preview --git-branch=feature-branch
 ```sh
 vercel env pull --yes
 ```
+
+ローカルファイルにのみ定義された変数は保持される。値を読み出せない Secret 変数は、ローカルファイルの実値を保持する（実値が無いキーにはプレースホルダーが書かれる）。`VERCEL_OIDC_TOKEN` は常に Vercel から更新される。
 
 ## 環境変数を注入してコマンドを実行（ファイルに書き出さない）
 

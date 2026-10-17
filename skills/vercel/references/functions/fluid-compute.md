@@ -52,6 +52,9 @@ Node.js, Python, Edge, Bun, Rust
 
 - Enabled by default for new projects created after April 23, 2025
 - Optimized concurrency (in-function concurrency) is only available for Node.js and Python runtimes
+- Checked against the current fluid compute docs: supported runtimes (Node.js, Python, Edge, Bun, Rust), the `"fluid": true` property and Node.js/Python-only optimized concurrency are unchanged
+- The 30 minute extended maximum duration is in beta for supported Node.js, Bun and Python runtime versions; values above 800s are set per function (see max-duration.md)
+- Large functions (Beta, up to 5 GB) require fluid compute with Active CPU (see limitations.md)
 - Bytecode caching only applies to production environments
 - Global state is shared across concurrent requests; unhandled errors are isolated per request
 - Use `waitUntil()` from `@vercel/functions` for background tasks

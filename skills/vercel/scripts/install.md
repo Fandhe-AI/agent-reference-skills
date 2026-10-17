@@ -5,34 +5,59 @@ Vercel CLI のインストール・更新・バージョン確認
 ## インストール（npm）
 
 ```sh
-npm i vercel
+npm i -g vercel
 ```
 
 ## インストール（pnpm）
 
 ```sh
-pnpm i vercel
+pnpm i -g vercel
 ```
 
 ## インストール（yarn）
 
 ```sh
-yarn i vercel
+yarn global add vercel
 ```
 
 ## インストール（bun）
 
 ```sh
-bun i vercel
+bun add -g vercel
 ```
 
-## ネイティブバイナリのインストール（実験的）
+## ネイティブバイナリの有効化（実験的）
+
+標準の `vercel` パッケージは、対応プラットフォーム向けのネイティブバイナリを optional dependencies として同梱する。optional dependencies を有効にしたままパッケージマネージャーで `vercel` をインストールしたうえで、ネイティブ実行を opt-in する。
 
 ```sh
-pnpm i -g @vercel/vc-native -f
+vercel upgrade --enable-binary
 ```
 
-Node.js のインストールが不要な軽量環境向けの実験的機能。`-f` フラグは既存のグローバル bin リンクを置き換えるために必要。
+ランチャーの実行に Node.js は引き続き必要。optional dependencies を省略してネイティブパッケージが無い場合は、optional dependencies を有効にして再インストールする（npm の例）。
+
+```sh
+npm install --global vercel@latest --include=optional
+vercel upgrade --enable-binary
+```
+
+Node.js 実行へ戻す場合。
+
+```sh
+vercel upgrade --disable-binary
+```
+
+## 旧ネイティブパッケージからの移行
+
+`@vercel/vc-native` を直接インストールしていた場合は、削除して同じパッケージマネージャーで `vercel` をインストールし直す（pnpm の例）。
+
+> **警告**: `@vercel/vc-native` はレガシーパッケージ。パッケージマネージャーによるアップグレードは `vercel` のみを更新し、`@vercel/vc-native` ラッパーは更新しない。
+
+```sh
+pnpm remove -g @vercel/vc-native
+pnpm add -g vercel@latest
+vercel upgrade --enable-binary
+```
 
 ## バージョン確認
 
@@ -40,13 +65,29 @@ Node.js のインストールが不要な軽量環境向けの実験的機能。
 vercel --version
 ```
 
+ネイティブ実行時は CLI のバナーに `(native)` と表示される。
+
 ## 更新
 
-インストール時と同じコマンドを再実行する。
+最新版を指定してインストールコマンドを再実行する。
 
 ```sh
-npm i vercel
+npm i -g vercel@latest
 ```
+
+```sh
+pnpm i -g vercel@latest
+```
+
+```sh
+yarn global add vercel@latest
+```
+
+```sh
+bun add -g vercel@latest
+```
+
+`vercel upgrade` でも更新できる（[upgrade.md](./upgrade.md) 参照）。
 
 ## ヘルプの表示
 

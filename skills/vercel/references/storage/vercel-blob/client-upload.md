@@ -122,10 +122,22 @@ export async function POST(request: Request) {
 VERCEL_BLOB_CALLBACK_URL=https://abc123.ngrok-free.app
 ```
 
+## Presigned Client Uploads (OIDC)
+
+`handleUploadPresigned` (server) and `uploadPresigned` (browser) are the presigned counterparts of `handleUpload` / `upload`: the server returns presigned `PUT` URLs backed by `issueSignedToken` instead of signing client tokens with a read-write token, so the flow works with OIDC or a read-write token. Mint the signed token in a `getSignedToken` callback (authenticate and authorize there), put `allowedContentTypes` / `maximumSizeInBytes` in the returned `urlOptions`, and point `handleUploadUrl` at the route. `onUploadCompleted` keeps its shape but its signature is verified with `BLOB_WEBHOOK_PUBLIC_KEY` (the `webhookPublicKey` parameter) instead of the read-write token. See blob-sdk.md and signed-urls.md.
+
+## Environment Variables
+
+Connected stores use OIDC by default: `BLOB_STORE_ID` plus a short-lived, auto-rotated `VERCEL_OIDC_TOKEN` (server-side access). `BLOB_READ_WRITE_TOKEN` (long-lived) is still required by `handleUpload` to generate client tokens and for code outside Vercel; `handleUploadPresigned` does not need it and verifies callbacks with `BLOB_WEBHOOK_PUBLIC_KEY`.
+
+## Callback URL
+
+`onUploadCompleted` is called by the Vercel API; `@vercel/blob` computes the callback URL from environment variables: `VERCEL_BRANCH_URL` in preview environments, `VERCEL_URL` in preview environments where `VERCEL_BRANCH_URL` is not set, and `VERCEL_PROJECT_PRODUCTION_URL` in production (set by Vercel as System Environment Variables). Without System Environment Variables, use the `callbackUrl` option in `onBeforeGenerateToken`. For local development behind a tunnel, set `VERCEL_BLOB_CALLBACK_URL` in `.env.local`.
+
 ## Notes
 
 - Client uploads have **no data transfer charges** for the upload itself
-- `handleUpload` requires `BLOB_READ_WRITE_TOKEN`; OIDC is not accepted
+- `handleUpload` requires `BLOB_READ_WRITE_TOKEN`; OIDC is not accepted (use `handleUploadPresigned` for OIDC)
 - Without authentication in `onBeforeGenerateToken`, your upload route accepts anonymous uploads
 - `pathname` and `clientPayload` are sent by the browser: treat them as untrusted and authorize the destination (and anything `clientPayload` references) before returning a token
 

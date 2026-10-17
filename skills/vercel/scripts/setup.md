@@ -1,6 +1,38 @@
 # Setup
 
-プロジェクトのリンク・初期化・設定取得
+プロジェクトのリンク・初期化・設定取得、コーディングエージェントのセットアップ
+
+## コーディングエージェントのセットアップ
+
+Claude Code / Codex 向け Vercel プラグインのインストールと、ローカルのコーディングエージェントの AI Gateway 接続を行う。各ステップの前に確認が入り、マシン上に無いエージェントはスキップされる。
+
+```sh
+vercel setup
+```
+
+AI Gateway への接続のみ実行（プラグインのステップをスキップ）。
+
+```sh
+vercel setup --gateway
+```
+
+Vercel プラグインのみを Codex 向けにインストール。
+
+```sh
+vercel setup --plugin --agent codex
+```
+
+変更内容のプレビュー（ファイルは書き込まない）。
+
+```sh
+vercel setup --dry-run
+```
+
+確認プロンプトをスキップして実行。
+
+```sh
+vercel setup --yes
+```
 
 ## ローカルディレクトリを Vercel プロジェクトにリンク
 

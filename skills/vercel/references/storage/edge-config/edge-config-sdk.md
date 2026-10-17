@@ -69,12 +69,12 @@ const ver = await config.digest();
 All methods throw errors when:
 
 - Read access token is invalid
-- Edge Config does not exist
+- The Global Config (formerly Edge Config) does not exist
 - A network error occurs
 
 ## Notes
 
-- Package renamed from `@vercel/edge-config` to `@vercel/global-config`; connection-string env var renamed from `EDGE_CONFIG` to `GLOBAL_CONFIG`. No documented alias/fallback was found for either old name — verify current behavior before relying on it
+- Package renamed from `@vercel/edge-config` to `@vercel/global-config`; connection-string env var renamed from `EDGE_CONFIG` to `GLOBAL_CONFIG`. Confirmed in the migration guide: `@vercel/global-config` is a drop-in replacement; it reads `GLOBAL_CONFIG` by default and falls back to `EDGE_CONFIG`. `@vercel/edge-config` keeps working but reads only `EDGE_CONFIG` by default, so a project still on it cannot read a newly connected store (upgrade the SDK before connecting a new store). Custom env var names read with `createClient` work with both packages
 - The SDK cannot write to Global Config; use the [Vercel REST API](./vercel-api.md) for writes
 - Writing requires Vercel Access Tokens; reading uses Global Config read tokens — these are separate
 - For high write volumes, consider Upstash Redis from the Marketplace instead
@@ -85,3 +85,4 @@ All methods throw errors when:
 - [Vercel REST API](./vercel-api.md)
 - [Using Edge Config](./using-edge-config.md)
 - [Limits](./limits.md)
+- [Migration Guide](./migration-guide.md)

@@ -1,24 +1,24 @@
-# Vercel REST API for Edge Config
+# Vercel REST API for Global Config (formerly Edge Config)
 
-Use the Vercel REST API to create and write to Edge Configs. For reads, use the [SDK](./edge-config-sdk.md) or the `edge-config.vercel.com` endpoint.
+Use the Vercel REST API to create and write to Global Configs. For reads, use the [SDK](./edge-config-sdk.md) or the `global-config.vercel.com` endpoint.
 
 All requests to `api.vercel.com` require `Authorization: Bearer <vercel_api_token>`.
 
-## Create an Edge Config
+## Create a Global Config
 
 ```bash
-POST https://api.vercel.com/v1/edge-config
+POST https://api.vercel.com/v1/global-config
 ```
 
 ```json
-{ "slug": "your_edge_config_name" }
+{ "slug": "your_global_config_name" }
 ```
 
 Response:
 ```json
 {
   "id": "ecfg_...",
-  "slug": "your_edge_config_name",
+  "slug": "your_global_config_name",
   "createdAt": 1234567890123,
   "updatedAt": 1234567890123,
   "digest": "abc123",
@@ -33,7 +33,7 @@ Scope to a team: add `?teamId=<teamId>` and use a team-scoped API token.
 ## Update Items
 
 ```bash
-PATCH https://api.vercel.com/v1/edge-config/<id>/items
+PATCH https://api.vercel.com/v1/global-config/<id>/items
 ```
 
 ```json
@@ -61,51 +61,51 @@ Response on success: `{ "status": "ok" }`
 ## Read All Items (via REST API)
 
 ```bash
-GET https://api.vercel.com/v1/edge-config/<id>/items?teamId=<teamId>
+GET https://api.vercel.com/v1/global-config/<id>/items?teamId=<teamId>
 ```
 
-> Not recommended for application reads — use the SDK or `edge-config.vercel.com` endpoint instead. Rate limited to 20 reads/min.
+> Not recommended for application reads — use the SDK or `global-config.vercel.com` endpoint instead. Rate limited to 20 reads/min.
 
 ## Read Metadata
 
 ```bash
-GET https://api.vercel.com/v1/edge-config/<id>?teamId=<teamId>
+GET https://api.vercel.com/v1/global-config/<id>?teamId=<teamId>
 ```
 
 Returns same structure as Create response.
 
-## List All Edge Configs
+## List All Global Configs
 
 ```bash
-GET https://api.vercel.com/v1/edge-config?teamId=<teamId>
+GET https://api.vercel.com/v1/global-config?teamId=<teamId>
 ```
 
-Returns an array of Edge Config metadata objects.
+Returns an array of Global Config metadata objects.
 
-## Edge Config Endpoint (Optimized Reads)
+## Global Config Endpoint (Optimized Reads)
 
-For high-volume reads, use `edge-config.vercel.com` directly. Auth: `Authorization: Bearer <read_access_token>`.
+For high-volume reads, use `global-config.vercel.com` directly. Auth: `Authorization: Bearer <read_access_token>`.
 
 ```bash
 # All items
-GET https://edge-config.vercel.com/<id>/items?token=<read_token>
+GET https://global-config.vercel.com/<id>/items?token=<read_token>
 
 # Single item
-GET https://edge-config.vercel.com/<id>/item/<key>?token=<read_token>
+GET https://global-config.vercel.com/<id>/item/<key>?token=<read_token>
 
 # Digest
-GET https://edge-config.vercel.com/<id>/digest?token=<read_token>
+GET https://global-config.vercel.com/<id>/digest?token=<read_token>
 ```
 
 This endpoint:
 - Is globally distributed with no rate limits
-- Is what `@vercel/edge-config` SDK reads from
+- Is what the `@vercel/global-config` SDK reads from
 - Uses read access tokens (not Vercel API tokens)
 
 ## Create a Read Access Token
 
 ```bash
-POST https://api.vercel.com/v1/edge-config/<id>/token
+POST https://api.vercel.com/v1/global-config/<id>/token
 Authorization: Bearer <vercel_api_token>
 
 { "label": "my-token-label" }
@@ -115,6 +115,7 @@ Response includes `token` (full plaintext — shown only once, copy immediately)
 
 ## Notes
 
+- This is Global Config, formerly Edge Config. Per the migration guide, `api.vercel.com/v1/edge-config` and `edge-config.vercel.com` continue to work; new integrations should use `api.vercel.com/v1/global-config` and `global-config.vercel.com`
 - Vercel shows the full token value **only once** at creation
 - Write propagation: up to 10 seconds globally
 - `api.vercel.com` always returns the latest data but does not apply read optimizations
@@ -124,3 +125,4 @@ Response includes `token` (full plaintext — shown only once, copy immediately)
 - [@vercel/edge-config SDK](./edge-config-sdk.md)
 - [Using Edge Config](./using-edge-config.md)
 - [Limits](./limits.md)
+- [Migration Guide](./migration-guide.md)

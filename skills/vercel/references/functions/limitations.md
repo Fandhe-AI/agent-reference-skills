@@ -11,6 +11,7 @@ All limits for Vercel Functions using the Node.js runtime.
 | Max duration | 300s | 800s | 800s |
 | Bundle size (uncompressed) | 250 MB | 250 MB | 250 MB |
 | Bundle size — Python | 500 MB | 500 MB | 500 MB |
+| Bundle size — Large functions (Beta; Node.js, Bun, Python) | Up to 5 GB | Up to 5 GB | Up to 5 GB |
 | Concurrency | Up to 30,000 | Up to 30,000 | 100,000+ |
 | Function regions | 1 | Up to 5 | All |
 | Functions per deployment | 12 | No limit | No limit |
@@ -54,6 +55,20 @@ All limits for Vercel Functions using the Node.js runtime.
 ### Inaccessible Env Vars (when fluid compute is enabled)
 
 `AWS_EXECUTION_ENV`, `AWS_LAMBDA_*`, `LAMBDA_*`, `_AWS_XRAY_*`, `_HANDLER`, `_LAMBDA_TELEMETRY_LOG_FD`
+
+Full list per docs: `AWS_EXECUTION_ENV`, `AWS_LAMBDA_EXEC_WRAPPER`, `AWS_LAMBDA_FUNCTION_MEMORY_SIZE`, `AWS_LAMBDA_FUNCTION_NAME`, `AWS_LAMBDA_FUNCTION_VERSION`, `AWS_LAMBDA_INITIALIZATION_TYPE`, `AWS_LAMBDA_LOG_GROUP_NAME`, `AWS_LAMBDA_LOG_STREAM_NAME`, `AWS_LAMBDA_RUNTIME_API`, `AWS_XRAY_CONTEXT_MISSING`, `AWS_XRAY_DAEMON_ADDRESS`, `LAMBDA_RUNTIME_DIR`, `LAMBDA_TASK_ROOT`, `_AWS_XRAY_DAEMON_ADDRESS`, `_AWS_XRAY_DAEMON_PORT`, `_HANDLER`, `_LAMBDA_TELEMETRY_LOG_FD`
+
+## Large Functions (Beta)
+
+Deploy uncompressed bundles up to **5 GB** for workloads shipping large dependencies, model files, or binaries.
+
+| Item | Detail |
+|------|--------|
+| Supported runtimes | `nodejs`, `bun`, `python` |
+| Requirement | Fluid compute with Active CPU enabled (Fluid compute is on by default for new projects) |
+| Enable | New projects are eligible by default. Existing projects opt in with the `VERCEL_SUPPORT_LARGE_FUNCTIONS` environment variable: `1` enables, `0` disables (always takes precedence over the project default) |
+| Scope | Only Functions exceeding the standard bundle size limit use the large functions beta; others use the standard path |
+| Not supported | Projects using Secure Compute or Static IPs |
 
 ## Archiving
 

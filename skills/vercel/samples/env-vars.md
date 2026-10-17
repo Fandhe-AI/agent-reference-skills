@@ -40,9 +40,21 @@ echo "preview-db-url" | vercel env add DATABASE_URL preview
 echo "staging-db-url" | vercel env add DATABASE_URL preview --git-branch staging
 ```
 
+Choosing the Config or Secret type explicitly:
+
+```bash
+# Config: value stays readable after saving
+vercel env add API_URL production --type config --yes
+
+# Secret: value is write-only after saving
+vercel env add API_KEY production --value "sk_live_..." --type secret --yes
+```
+
 ## Notes
 
 - Changes to environment variables only take effect on **new** deployments; redeploy to apply updates.
 - Each environment (Production / Preview / Development) can hold a different value for the same key.
 - Branch-specific Preview variables override the generic Preview value for that branch only.
-- Variables are encrypted at rest; total size limit is 64 KB per deployment (Edge runtime: 5 KB per variable).
+- Each variable is stored as **Config** (readable after saving) or **Secret** (write-only; use for passwords, API keys, tokens). Default type is `secret` for Production, Preview, and custom environments, and `config` for Development; Secrets are allowed in Development. `--sensitive` / `--no-sensitive` map to Secret / Config, and `--visibility` is a deprecated alias for `--type`. A conflicting `--type` returns an error.
+- Existing Sensitive variables are treated as Secrets. A saved Secret cannot be converted to Config in place; delete it and create a Config variable.
+- Total size limit is 64 KB per deployment (Edge runtime: 5 KB per variable).

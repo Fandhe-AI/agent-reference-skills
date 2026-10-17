@@ -1,6 +1,6 @@
 # Routing Middleware
 
-Code that executes before a request is processed, enabling personalization, redirects, rewrites, geolocation-based routing, and header manipulation. Runs on the Edge runtime by default (Node.js opt-in).
+Code that executes before a request is processed, enabling personalization, redirects, rewrites, geolocation-based routing, and header manipulation. Per the current docs, the `runtime` option defaults to `nodejs` (the older Edge-by-default wording is superseded).
 
 ## Signature / Usage
 
@@ -8,7 +8,7 @@ Code that executes before a request is processed, enabling personalization, redi
 // middleware.ts — place at project root, same level as package.json
 export const config = {
   matcher: '/about/:path*', // optional: limit which paths trigger middleware
-  runtime: 'edge',          // 'edge' (default) or 'nodejs'
+  runtime: 'nodejs',        // docs: `runtime` defaults to 'nodejs'
 };
 
 export default function middleware(request: Request) {
@@ -21,7 +21,7 @@ export default function middleware(request: Request) {
 | Property | Type | Description |
 |----------|------|-------------|
 | `matcher` | `string \| string[]` | Paths the middleware runs on. Supports regex. |
-| `runtime` | `'edge' \| 'nodejs'` | Runtime to use. Default: `'edge'` |
+| `runtime` | `string` (`'nodejs'`) | Middleware runtime; defaults to `'nodejs'` per the current Routing Middleware API docs (earlier versions of this page said `'edge'` was the default) |
 
 ### Matcher Examples
 
@@ -98,7 +98,9 @@ Continues executing `promise` after the response is sent (background tasks).
 - Middleware runs on **every route** unless `matcher` or conditional statements are used
 - Routing Middleware deploys to all CDN regions by default (fewer on Hobby)
 - Node.js runtime for middleware: set `runtime: 'nodejs'` in `config` and `experimental.nodeMiddleware: true` in `next.config.ts` (Node.js middleware incurs fluid compute pricing)
-- For Bun runtime: also set `bunVersion` in `vercel.json`
+- For Bun runtime: also set `bunVersion` in `vercel.json` together with `runtime: 'nodejs'` in `config`
+- `proxy` in `vercel.json` explicitly configures the file built as Routing Middleware (without it Vercel looks for `middleware.ts` / `middleware.js` at the project root): `proxy.entrypoint` (required; path relative to project root, ends in `.js` or `.ts`, may be in a subdirectory such as `src/proxy.ts`) and `proxy.matcher` (optional; path starting with `/` or an array of them). Example: `"proxy": { "entrypoint": "proxy.ts", "matcher": "/api/:func*" }`. The entrypoint exports its handler as a default export and runs on the Node.js runtime; a `middleware.ts` with `runtime: 'nodejs'` behaves the same as `"proxy": { "entrypoint": "middleware.ts" }`. Without a matcher it runs on every request. Set duration/memory with `functions` keyed on the entrypoint path (e.g. `"proxy.ts": { "maxDuration": 10 }`)
+- `skipMiddlewareRequestBody` (`vercel.json` / `vercel.ts`, boolean, default `false`; changelog 2026-10-08): skips forwarding the client request body to Routing Middleware, reducing Fast Origin Transfer and possibly TTFB. Enable only if your middleware never reads the body; Vercel Functions and rewrite targets still receive it
 - `@vercel/functions` helpers are Vercel-specific and won't work on other providers
 
 ## Related
