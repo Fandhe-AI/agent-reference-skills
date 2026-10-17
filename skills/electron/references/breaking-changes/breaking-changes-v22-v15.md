@@ -6,6 +6,26 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 22.0 through 15.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Deprecated: `webContents.incrementCapturerCount(stayHidden, stayAwake)`" (22.0):
+
+```js
+const w = new BrowserWindow({ show: false })
+
+// Removed in Electron 23
+w.webContents.incrementCapturerCount()
+w.capturePage().then((image) => {
+  console.log(image.toDataURL())
+  w.webContents.decrementCapturerCount()
+})
+
+// Replace with
+w.capturePage().then((image) => {
+  console.log(image.toDataURL())
+})
+```
+
 ## Breaking API Changes (22.0)
 
 ### Deprecated: `webContents.incrementCapturerCount(stayHidden, stayAwake)`
@@ -157,11 +177,15 @@ address changes upstream that made our previous implementation untenable and rif
 - `scale`
 - `preferCSSPageSize`
 
+Adapted (not in the official docs): the official snippet calls `printToPDF` on the `webContents` module; this version uses a `BrowserWindow`'s `webContents` instance.
+
 ```js
 // Main process
-const { webContents } = require('electron')
+const { BrowserWindow } = require('electron')
 
-webContents
+const win = new BrowserWindow()
+
+win.webContents
   .printToPDF({
     landscape: true,
     displayHeaderFooter: true,
@@ -337,6 +361,7 @@ console.log(app.runningUnderARM64Translation)
 
 - Affected API areas: `webContents.incrementCapturerCount` / `decrementCapturerCount` (deprecated 22.0, removed 23.0); `new-window` events on WebContents and `<webview>` (removed 22.0; use `setWindowOpenHandler` / `did-attach-webview`); BrowserWindow `scroll-touch-*` events (deprecated 22.0, removed 23.0); V8 memory cage (21.0, native modules); `webContents.printToPDF` options (21.0); renderer sandbox default (20.0); `skipTaskbar` on Linux (removed 20.0); `session.setDevicePermissionHandler` (20.0); `nativeWindowOpen` (default true in 15.0, deprecated 17.0, removed 18.0); `desktopCapturer.getSources` in the renderer (deprecated 16.0, removed 17.0); `crashReporter` on Linux (Crashpad, 16.0); `app.runningUnderRosettaTranslation` (deprecated 15.0, removed 28.0).
 - IA32 Linux: the 19.0 entry links to `#removed-ia32-linux-support`, which is the `Removed: IA32 Linux support` entry in the 3.0 section (see [v14-v2](./breaking-changes-v14-v2.md)).
+- Adapted (not in the official docs): in the 21.0 `webContents.printToPDF()` example the official snippet calls `printToPDF` on the `webContents` module; this page uses a `BrowserWindow`'s `webContents` instance.
 - The `<webview>` entries concern the Electron webview tag; WebView2 in WinUI is covered by windows-winui-controls and webview testing by playwright.
 
 ## Related

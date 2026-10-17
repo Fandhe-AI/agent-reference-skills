@@ -6,6 +6,24 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 32.0 and 31.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Removed: `File.path`" (32.0):
+
+```js
+// (preload)
+const { contextBridge, webUtils } = require('electron')
+
+contextBridge.exposeInMainWorld('electron', {
+  showFilePath(file) {
+    // It's best not to expose the full file path to the web content if
+    // possible.
+    const path = webUtils.getPathForFile(file)
+    alert(`Uploaded file path was: ${path}`)
+  }
+})
+```
+
 ## Breaking API Changes (32.0)
 
 ### Removed: `File.path`
@@ -44,6 +62,8 @@ The navigation-related APIs are now deprecated.
 
 These APIs have been moved to the `navigationHistory` property of `WebContents` to provide a more structured and intuitive interface for managing navigation history.
 
+Adapted (not in the official docs): the official example omits the `goToIndex` replacement and the `offset` argument of `canGoToOffset`; this version adds them.
+
 ```js
 // Deprecated
 win.webContents.clearHistory()
@@ -52,8 +72,8 @@ win.webContents.goBack()
 win.webContents.canGoForward()
 win.webContents.goForward()
 win.webContents.goToIndex(index)
-win.webContents.canGoToOffset()
-win.webContents.goToOffset(index)
+win.webContents.canGoToOffset(offset)
+win.webContents.goToOffset(offset)
 
 // Replace with
 win.webContents.navigationHistory.clear()
@@ -61,8 +81,9 @@ win.webContents.navigationHistory.canGoBack()
 win.webContents.navigationHistory.goBack()
 win.webContents.navigationHistory.canGoForward()
 win.webContents.navigationHistory.goForward()
-win.webContents.navigationHistory.canGoToOffset()
-win.webContents.navigationHistory.goToOffset(index)
+win.webContents.navigationHistory.goToIndex(index)
+win.webContents.navigationHistory.canGoToOffset(offset)
+win.webContents.navigationHistory.goToOffset(offset)
 ```
 
 ### Behavior changed: Directory `databases` in `userData` will be deleted
@@ -95,6 +116,7 @@ This brings the behavior to parity with Windows and Linux. Prior behavior: The f
 ## Notes
 
 - Affected API areas: Web `File.path` (removed; use `webUtils.getPathForFile`); `WebContents` navigation methods (deprecated; use `webContents.navigationHistory`); `userData/databases` directory cleanup; WebSQL (removed in 31); `nativeImage.toDataURL`; `win.flashFrame` / `dock.bounce` on macOS.
+- Adapted (not in the official docs): in the `navigationHistory` example the official snippet has no `goToIndex` replacement and calls `canGoToOffset()` / `goToOffset(index)` with an unnamed or mismatched argument; this page adds `navigationHistory.goToIndex(index)` and uses `offset` for both offset methods.
 - The `flashFrame` / `dock.bounce` entry concerns Electron's Dock API; native Dock/AppKit APIs are covered by apple-appkit.
 
 ## Related

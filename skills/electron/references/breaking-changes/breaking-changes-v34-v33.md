@@ -6,6 +6,18 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 34.0 and 33.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Deprecated: `systemPreferences.accessibilityDisplayShouldReduceTransparency`" (33.0):
+
+```js
+// Deprecated
+const shouldReduceTransparency = systemPreferences.accessibilityDisplayShouldReduceTransparency
+
+// Replace with:
+const prefersReducedTransparency = nativeTheme.prefersReducedTransparency
+```
+
 ## Breaking API Changes (34.0)
 
 ### Behavior Changed: menu bar will be hidden during fullscreen on Windows
@@ -57,6 +69,8 @@ ipcMain.on('unload-event', async (event) => {
 
 Due to changes made in Chromium to support [Non-Special Scheme URLs](http://bit.ly/url-non-special), custom protocol URLs that use Windows file paths will no longer work correctly with the deprecated `protocol.registerFileProtocol` and the `baseURLForDataURL` property on `BrowserWindow.loadURL`, `WebContents.loadURL`, and `<webview>.loadURL`.  `protocol.handle` will also not work with these types of URLs but this is not a change since it has always worked that way.
 
+Adapted (not in the official docs): the official example passes an undefined identifier `other` and uses `other://index.html`, where index.html becomes the host; this version quotes the scheme and uses `other:///index.html`.
+
 ```js
 // No longer works
 protocol.registerFileProtocol('other', () => {
@@ -72,14 +86,14 @@ mainWindow.loadURL('other://C:\\myapp\\index.html')
 // Replace with
 const path = require('node:path')
 const nodeUrl = require('node:url')
-protocol.handle(other, (req) => {
+protocol.handle('other', (req) => {
   const srcPath = 'C:\\myapp\\'
   const reqURL = new URL(req.url)
   return net.fetch(nodeUrl.pathToFileURL(path.join(srcPath, reqURL.pathname)).toString())
 })
 
-mainWindow.loadURL('data:text/html,<script src="loaded-from-dataurl.js"></script>', { baseURLForDataURL: 'other://' })
-mainWindow.loadURL('other://index.html')
+mainWindow.loadURL('data:text/html,<script src="loaded-from-dataurl.js"></script>', { baseURLForDataURL: 'other:///' })
+mainWindow.loadURL('other:///index.html')
 ```
 
 ### Behavior Changed: `webContents` property on `login` on `app`
@@ -124,6 +138,7 @@ const prefersReducedTransparency = nativeTheme.prefersReducedTransparency
 ## Notes
 
 - Affected API areas: `Menu` bar in fullscreen on Windows; `document.execCommand("paste")` / `WebPreferences.enableDeprecatedPaste` / permission `deprecated-sync-clipboard-read`; `WebFrameMain.detached`; `protocol.registerFileProtocol` (deprecated) vs `protocol.handle`; `baseURLForDataURL`; app `login` event; `BrowserWindowConstructorOptions.type` `textured`; native modules (C++20); `systemPreferences.accessibilityDisplayShouldReduceTransparency` (replaced by `nativeTheme.prefersReducedTransparency`).
+- Adapted (not in the official docs): in the custom protocol example, the official doc passes the bare identifier `other` to `protocol.handle` (quoted here) and loads `other://index.html` / `baseURLForDataURL: 'other://'`, where `index.html` becomes the host and the pathname is empty; this page uses `other:///index.html` and `'other:///'`.
 - Electron's `protocol` / `net.fetch` entries concern custom URL schemes inside Electron; server-side HTTP is covered by fastify and hono.
 - The native-modules C++20 entry relates to building addons; native module build steps are in the distribution-updates category of this skill.
 

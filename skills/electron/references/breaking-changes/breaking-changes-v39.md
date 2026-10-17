@@ -6,6 +6,15 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 39.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Behavior Changed: `NSAudioCaptureUsageDescription` should be included in your app's Info.plist file to use `desktopCapturer`" (39.0), to restore previous behavior:
+
+```js
+// main.js (right beneath your require/import statments)
+app.commandLine.appendSwitch('disable-features', 'MacCatapLoopbackAudioForScreenShare')
+```
+
 ## Breaking API Changes (39.0)
 
 ### Deprecated: `--host-rules` command line switch

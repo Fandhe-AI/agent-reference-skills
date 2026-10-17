@@ -8,7 +8,7 @@ All breaking changes listed for Electron 38.0, verbatim from the official docume
 
 ## Signature / Usage
 
-The 38.0 section of the source contains no fenced code. The replacements it names are shown below as plain signatures; only names that appear in the section are used.
+Adapted (not in the official docs): the 38.0 section has no code; this snippet only restates the replacement names given in the section.
 
 ```js
 // Deprecated: webFrame.routingId  ->  use webFrame.frameToken

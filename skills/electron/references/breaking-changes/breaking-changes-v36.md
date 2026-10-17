@@ -6,6 +6,17 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 36.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Deprecated: `NativeImage.getBitmap()`" (36.0):
+
+```js
+// Deprecated
+bitmap = image.getBitmap()
+// Use this instead
+bitmap = image.toBitmap()
+```
+
 ## Breaking API Changes (36.0)
 
 ### Behavior Changes: `app.commandLine`

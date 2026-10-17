@@ -6,6 +6,17 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 27.0 and 26.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Removed: `alternate-selected-control-text` value for `systemPreferences.getColor`" (27.0):
+
+```js
+// Removed
+systemPreferences.getColor('alternate-selected-control-text')
+// Replace with
+systemPreferences.getColor('selected-content-background')
+```
+
 ## Breaking API Changes (27.0)
 
 ### Removed: macOS 10.13 / 10.14 support

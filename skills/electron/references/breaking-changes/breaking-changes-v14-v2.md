@@ -6,6 +6,23 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 14.0 through 2.0, verbatim from the official document. These are legacy entries; most APIs named here no longer exist in current Electron.
 
+## Signature / Usage
+
+From "Removed: `remote` module" (14.0):
+
+```js
+// Deprecated in Electron 12:
+const { BrowserWindow } = require('electron').remote
+```
+
+```js
+// Replace with:
+const { BrowserWindow } = require('@electron/remote')
+
+// In the main process:
+require('@electron/remote/main').initialize()
+```
+
 ## Breaking API Changes (14.0)
 
 ### Removed: `remote` module
@@ -1201,6 +1218,8 @@ screen.getPrimaryDisplay().workArea
 
 ### `session`
 
+Adapted (not in the official docs): the official example calls callback(0), which accepts every certificate; this version uses callback(-3) to keep Chromium's verification result.
+
 ```js
 // Deprecated
 ses.setCertificateVerifyProc((hostname, certificate, callback) => {
@@ -1208,7 +1227,7 @@ ses.setCertificateVerifyProc((hostname, certificate, callback) => {
 })
 // Replace with
 ses.setCertificateVerifyProc((request, callback) => {
-  callback(0)
+  callback(-3) // -3: use the verification result from Chromium
 })
 ```
 
@@ -1388,6 +1407,7 @@ and
 - Version sections included: 14.0, 13.0, 12.0, 11.0, 10.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0 (source lines 2005 to end of file).
 - Several `protocol.*` entries in 10.0 and the `session.*` entries in 7.0 and 13.0 concern Electron's Chromium sessions and custom schemes, not server-side HTTP (fastify, hono) or app authentication sessions (better-auth).
 - `clipboard`, `menu`, `Tray`, `autoUpdater` and `dialog` entries here concern Electron's native OS integrations. Web UI components are covered by ark-ui and chakra-ui; Windows Store / MSIX and macOS distribution tooling by windows-packaging-publish and apple-distribution.
+- Adapted (not in the official docs): in the 3.0 `session` example the official text calls `callback(0)` in `setCertificateVerifyProc`, which accepts every certificate; this page uses `callback(-3)` (use Chromium's verification result) instead.
 - The 7.0 `webkitdirectory` illustration uses `console` blocks only; the code snippets in this page are verbatim from the source.
 
 ## Related

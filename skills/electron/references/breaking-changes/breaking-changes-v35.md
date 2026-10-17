@@ -6,6 +6,18 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 35.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Deprecated: `getFromVersionID` on `session.serviceWorkers`" (35.0):
+
+```js
+// Deprecated
+session.serviceWorkers.fromVersionID(versionId)
+
+// Replace with
+session.serviceWorkers.getInfoFromVersionID(versionId)
+```
+
 ## Breaking API Changes (35.0)
 
 ### Behavior Changed: Dialog API's `defaultPath` option on Linux

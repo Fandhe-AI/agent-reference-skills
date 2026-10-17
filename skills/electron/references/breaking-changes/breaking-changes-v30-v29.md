@@ -6,6 +6,16 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 30.0 and 29.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Behavior Changed: `ipcRenderer` can no longer be sent over the `contextBridge`" (29.0):
+
+```js
+contextBridge.exposeInMainWorld('app', {
+  onEvent: (cb) => ipcRenderer.on('foo', (e, ...args) => cb(args))
+})
+```
+
 ## Breaking API Changes (30.0)
 
 ### Behavior Changed: cross-origin iframes now use Permission Policy to access features

@@ -6,6 +6,17 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 28.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Removed: `app.runningUnderRosettaTranslation`" (28.0):
+
+```js
+// Removed
+console.log(app.runningUnderRosettaTranslation)
+// Replace with
+console.log(app.runningUnderARM64Translation)
+```
+
 ## Breaking API Changes (28.0)
 
 ### Behavior Changed: `WebContents.backgroundThrottling` set to false affects all `WebContents` in the host `BrowserWindow`

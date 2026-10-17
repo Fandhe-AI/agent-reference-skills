@@ -6,6 +6,20 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 25.0, 24.0 and 23.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Deprecated: `BrowserWindow.setTrafficLightPosition(position)`" (25.0):
+
+```js
+// Deprecated in Electron 25
+win.setTrafficLightPosition({ x: 10, y: 10 })
+win.setTrafficLightPosition({ x: 0, y: 0 })
+
+// Replace with
+win.setWindowButtonPosition({ x: 10, y: 10 })
+win.setWindowButtonPosition(null)
+```
+
 ## Breaking API Changes (25.0)
 
 ### Deprecated: `protocol.{un,}{register,intercept}{Buffer,String,Stream,File,Http}Protocol` and `protocol.isProtocol{Registered,Intercepted}`

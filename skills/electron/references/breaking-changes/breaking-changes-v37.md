@@ -6,6 +6,16 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 37.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Utility Process unhandled rejection behavior change" (37.0), to restore the previous behavior:
+
+```js
+process.on('unhandledRejection', () => {
+  process.exit(1)
+})
+```
+
 ## Breaking API Changes (37.0)
 
 ### Utility Process unhandled rejection behavior change

@@ -8,6 +8,8 @@ ProcessMetric, CPUUsage, MemoryInfo, MemoryUsageDetails, ProcessMemoryInfo and G
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the structure pages have no example; this loop only reads fields documented below.
+
 ```js
 const { app } = require('electron')
 
@@ -71,6 +73,7 @@ Possible values: `disabled_software`, `disabled_off`, `disabled_off_ok`, `unavai
 
 ## Notes
 
+- Adapted (not in the official docs): the `app.getAppMetrics()` loop under Signature / Usage is not in the structure pages; it only reads fields documented on this page.
 - `percentCPUUsage` and `idleWakeupsPerSecond` are averages, not instant samples; each call starts a fresh measurement interval. `process.getCPUUsage()` (per process) and `app.getAppMetrics()` (separate interval per process ID, all reset by one call) are independent, so the main process can report different values through each API at the same moment.
 - If a dependency calls these functions it starts a new interval before you read it; to measure an interval you control use `cumulativeCPUUsage` and subtract readings (reading it still starts a new interval).
 - Source files: `docs/api/structures/{process-metric,cpu-usage,memory-info,memory-usage-details,process-memory-info,gpu-feature-status}.md`.

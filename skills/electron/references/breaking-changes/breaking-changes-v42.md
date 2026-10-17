@@ -6,6 +6,19 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 42.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Deprecated: Passing only an array `hslShift` to `nativeImage.createFromNamedImage()`" (42.0):
+
+```js
+// Deprecated
+nativeImage.createFromNamedImage(imageName, [0, 1, -1])
+// Replace with
+nativeImage.createFromNamedImage(imageName, {
+  hslShift: [0, 1, -1]
+})
+```
+
 ## Breaking API Changes (42.0)
 
 ### Behavior Changed: macOS notifications now use `UNNotification` API

@@ -6,6 +6,25 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 43.0, verbatim from the official document.
 
+## Signature / Usage
+
+From "Behavior Changed: `NativeImage.toBitmap()` now normalizes color space" (43.0):
+
+```js
+const image = nativeImage.createFromPath('photo.png')
+// New default: normalized to sRGB
+const srgbBitmap = image.toBitmap()
+// Convert to Display P3
+const p3Bitmap = image.toBitmap({
+  colorSpace: {
+    primaries: 'p3',
+    transfer: 'srgb',
+    matrix: 'rgb',
+    range: 'full'
+  }
+})
+```
+
 ## Breaking API Changes (43.0)
 
 ### Behavior Changed: Rounded corners on Linux

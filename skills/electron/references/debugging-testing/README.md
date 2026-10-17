@@ -13,4 +13,3 @@
 | Process metric structures | ProcessMetric, CPUUsage, MemoryInfo, MemoryUsageDetails, ProcessMemoryInfo and GPUFeatureStatus structures returned by the app and process metric APIs. | [metrics-structures.md](./metrics-structures.md) |
 | REPL | Interactive Read-Eval-Print-Loop for the main process (via the Node.js `repl` module) and for renderers (via DevTools Console). | [repl.md](./repl.md) |
 | Testing on Headless CI Systems | Electron requires a display driver; on headless CI, use a virtual display driver such as Xvfb. | [testing-on-headless-ci.md](./testing-on-headless-ci.md) |
-</content>

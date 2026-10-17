@@ -6,6 +6,22 @@ source: https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-cha
 
 All breaking changes listed for Electron 44.0, verbatim from the official document (links to other doc pages converted to electronjs.org URLs).
 
+## Signature / Usage
+
+From "Behavior Changed: `webContents` may be `null` in `select-client-certificate`" (44.0):
+
+```js
+// Before
+app.on('select-client-certificate', (event, webContents, url, list, callback) => {
+  console.log(webContents.id)
+})
+
+// After
+app.on('select-client-certificate', (event, webContents, url, list, callback) => {
+  if (webContents) console.log(webContents.id)
+})
+```
+
 ## Breaking API Changes (44.0)
 
 ### Behavior Changed: workers created by subframes need `nodeIntegrationInSubFrames` for Node.js integration
@@ -195,8 +211,10 @@ now reached through a new `clipboard.selection` sub-namespace.
 
 #### Example migration code
 
+Adapted (not in the official docs): added `nativeImage` to the require, which the official snippet omits (`readImage` uses it).
+
 ```js
-const { clipboard, ClipboardItem } = require('electron')
+const { clipboard, ClipboardItem, nativeImage } = require('electron')
 
 function getClipboardToUse(clipboardType) {
   if (clipboardType === 'selection') {
@@ -368,6 +386,7 @@ These only worked on macOS 12 and below. Support for macOS 12 has been dropped.
 ## Notes
 
 - Affected API areas (for cross-reference): `webPreferences.nodeIntegrationInWorker` / `nodeIntegrationInSubFrames`; preload scripts (window and session); app `select-client-certificate` event; `net.request`; utility process `respondToAuthRequestsFromMainProcess`; `app.isUnityRunning()` (removed); `app.setBadgeCount` / `app.badgeCount`; `setProgressBar`; `clipboard` / `ClipboardItem` (removed from renderer, Promise-based); `app.setLoginItemSettings` / `app.getLoginItemSettings`; platform support (macOS 12, win32-ia32, linux-armv7l); ANGLE linking.
+- Adapted (not in the official docs): the clipboard example migration code adds `nativeImage` to the `require('electron')` destructuring; the official snippet omits it although `readImage` calls `nativeImage.createFromBuffer`.
 - The `clipboard` entries describe the Electron main-process OS clipboard API. For Web UI component libraries use ark-ui or chakra-ui; native clipboard APIs of other platforms are covered by apple-appkit, android-platform-core and windows-app-sdk.
 - The `net.request` / `select-client-certificate` entries concern Electron's client-side `net` module; server-side HTTP request handling is covered by fastify and hono.
 - Anchor note: the `Deprecated: clipboard API access from renderer processes` entry referenced above is in the 40.0 section (see [v41-v40](./breaking-changes-v41-v40.md)).
