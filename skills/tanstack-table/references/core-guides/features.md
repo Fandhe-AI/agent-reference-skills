@@ -59,7 +59,9 @@ const features = tableFeatures({
 })
 ```
 
-## Stock Features
+## Options / Props
+
+### Stock Features
 
 | Feature | Purpose |
 |---------|---------|
@@ -86,6 +88,7 @@ const features = tableFeatures({
 ## Notes
 
 - Total potential bundle size grew from ~14 kB (v8) to ~25 kB (v9), but most apps ship less because unused features are tree-shaken.
+- Tree-shaking (9.2.8 / 9.3.1): importing a single `filterFn_*`, `sortFn_*`, or `aggregationFn_*` bundles only that function. Core row models and features no longer bundle code from features a table doesn't register; for example, grouping without `rowAggregationFeature` does not bundle the aggregation executor, and the faceted unique and min/max values do not bundle global filtering code. A minimal table is smaller.
 - A feature (state/options/APIs) and its client-side row model (browser-side data processing) are separate concerns — omit the row model and use `manual*` options for server-side processing instead.
 - Register only individual filter/sort/aggregation functions you use; spreading a complete built-in registry defeats tree-shaking.
 - `tableFeatures()` validates cross-feature prerequisites at the type level (e.g. `sortedRowModel` requires `rowSortingFeature`).
