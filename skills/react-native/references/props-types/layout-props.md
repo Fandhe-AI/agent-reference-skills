@@ -54,7 +54,7 @@ All props are optional. `number, string` means points or percentage strings; in 
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `alignContent` | enum('flex-start', 'flex-end', 'center', 'stretch', 'space-between', 'space-around', 'space-evenly') | Controls how rows align in the cross direction, overriding the `alignContent` of the parent. |
+| `alignContent` | enum('flex-start', 'flex-end', 'center', 'stretch', 'space-between', 'space-around', 'space-evenly') | Defines the distribution of lines along the cross-axis within this container; only has effect when items are wrapped to multiple lines using `flexWrap`. |
 | `alignItems` | enum('flex-start', 'flex-end', 'center', 'stretch', 'baseline') | Aligns children in the cross direction. Works like `align-items` in CSS (default: stretch). |
 | `alignSelf` | enum('auto', 'flex-start', 'flex-end', 'center', 'stretch', 'baseline') | Controls how a child aligns in the cross direction, overriding the `alignItems` of the parent (default: auto). |
 | `aspectRatio` | number, string | Controls the size of the undefined dimension of a node (see below). |
@@ -155,6 +155,7 @@ All props are optional. `number, string` means points or percentage strings; in 
 ## Notes
 
 - `flex` and layout are computed by the Yoga layout engine, not by a CSS engine; behaviors differ from CSS (e.g. `flexDirection` defaults to `column`, `position` defaults to `relative`).
+- `alignContent`: the official Layout Props page says it overrides the parent's `alignContent`; this is inaccurate — it aligns the wrapped lines of the container it is set on (as described on the official Flexbox page).
 - `flexWrap`: it does not work anymore with `alignItems: stretch` (the default), so you may want to use `alignItems: flex-start` for example (breaking change introduced in v0.28.0).
 - `zIndex`: Normally you don't use it; components render according to their order in the document tree, so later components draw over earlier ones. On iOS, `zIndex` may require `View`s to be siblings of each other for it to work as expected.
 - `inset*`, `isolation` and percentage `gap` / `columnGap` / `rowGap` values are available only on the New Architecture.
