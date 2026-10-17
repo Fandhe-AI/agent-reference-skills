@@ -24,10 +24,14 @@ const redis = new Redis({
   token: process.env.KV_TOKEN,
 });
 
-export const cacheMiddleware: LanguageModelV4Middleware = {
+// Pass the identifier of the model the middleware wraps (e.g. 'gpt-4o'),
+// so responses from different models never share a cache entry.
+export const createCacheMiddleware = (
+  modelId: string,
+): LanguageModelV4Middleware => ({
   specificationVersion: 'v4',
   wrapGenerate: async ({ doGenerate, params }) => {
-    const cacheKey = JSON.stringify(params);
+    const cacheKey = JSON.stringify({ mode: 'generate', model: modelId, params });
 
     const cached = (await redis.get(cacheKey)) as Awaited<
       ReturnType<LanguageModelV4['doGenerate']>
@@ -52,7 +56,7 @@ export const cacheMiddleware: LanguageModelV4Middleware = {
     return result;
   },
   wrapStream: async ({ doStream, params }) => {
-    const cacheKey = JSON.stringify(params);
+    const cacheKey = JSON.stringify({ mode: 'stream', model: modelId, params });
 
     // Check if the result is in the cache
     const cached = await redis.get(cacheKey);
@@ -98,7 +102,7 @@ export const cacheMiddleware: LanguageModelV4Middleware = {
       ...rest,
     };
   },
-};
+});
 ```
 
 Lifecycle callbacks (`onEnd`), caching the response text for 1 hour (Next.js route):
@@ -162,6 +166,8 @@ export async function POST(req: Request) {
 - This middleware caches the raw model response before AI SDK validates structured output. With structured output, cache only a response that has passed your schema validation; otherwise an invalid response can be replayed from the cache.
 - Both the cached and fresh responses in the callback example use the text stream protocol, so use `TextStreamChatTransport` when calling this route with `useChat`.
 - Language model middleware is a wrap around the model (not HTTP middleware); see the middleware page. Experimental per the library's versioning policy.
+- Modified from the official example: the official middleware uses `JSON.stringify(params)` as the key in both `wrapGenerate` and `wrapStream`, so the stored shapes (result object vs. chunk array) can collide and the model is not part of the key. This version keys on `{ mode, model, params }` via a factory taking the model identifier.
+- In the `onEnd` example the key is `JSON.stringify(messages)` only; if the model or system prompt can vary, include them in the key as well.
 
 ## Related
 

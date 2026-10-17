@@ -119,7 +119,7 @@ Implement the `Telemetry` interface from `ai`; all methods are optional.
 
 Event types match the corresponding lifecycle callbacks (see `../core/lifecycle-callbacks.md`).
 
-## Telemetry integrations
+### Telemetry integrations
 
 Register several integrations at once (they all receive the same lifecycle events):
 
@@ -231,9 +231,9 @@ registerTelemetry(
 );
 ```
 
-## Collected data
+### Collected data
 
-### GenAI semantic conventions (`OpenTelemetry`, recommended)
+#### GenAI semantic conventions (`OpenTelemetry`, recommended)
 
 Spans follow the OpenTelemetry Semantic Conventions for GenAI; attributes use the `gen_ai.*` prefix and provider names are mapped to well-known values (e.g. `openai`, `anthropic`, `gcp.vertex_ai`).
 
@@ -253,7 +253,7 @@ Root `invoke_agent` span attributes: `gen_ai.operation.name` (`"invoke_agent"`),
 
 GenAI messages are JSON arrays of objects with `role` and a `parts` array; part types are `text`, `reasoning`, `tool_call`, `tool_call_response`, `blob` (base64), `uri`. Output messages also include `finish_reason`.
 
-### Legacy AI SDK spans (`LegacyOpenTelemetry`)
+#### Legacy AI SDK spans (`LegacyOpenTelemetry`)
 
 Emits `ai.*` prefixed attributes: `ai.generateText` / `ai.generateText.doGenerate` / `ai.toolCall`, `ai.streamText` / `ai.streamText.doStream` (plus `ai.stream.firstChunk` and `ai.stream.finish` events), `ai.embed` / `ai.embed.doEmbed`, `ai.embedMany` / `ai.embedMany.doEmbed`. Common attributes include `operation.name`, `ai.operationId`, `ai.model.id`, `ai.model.provider`, `ai.settings.maxRetries`, `ai.telemetry.functionId`, `ai.usage.completionTokens`, `ai.usage.promptTokens`, `ai.response.*`. Usage attribute names in the legacy format are `ai.usage.*`.
 

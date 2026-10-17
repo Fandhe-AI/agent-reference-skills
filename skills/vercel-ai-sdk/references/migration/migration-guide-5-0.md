@@ -11,7 +11,7 @@ Breaking-change guide, codemods and before/after snippets for upgrading from AI 
 Recommended process: back up the project, upgrade to AI SDK 5.0, migrate automatically (AI SDK 5 Migration MCP server or codemods), follow the breaking changes, verify, commit.
 
 ```sh
-npm install ai @ai-sdk/react @ai-sdk/openai zod@^4.1.8
+npm install ai@^5 @ai-sdk/react@^2 @ai-sdk/openai@^2 zod@^4.1.8
 npx @ai-sdk/codemod upgrade
 npx @ai-sdk/codemod v5
 npx @ai-sdk/codemod v5/rename-format-stream-part src/
@@ -209,6 +209,7 @@ Package versions: `ai` `5.0.0`; `@ai-sdk/provider` `2.0.0`; `@ai-sdk/provider-ut
 
 - Codemods may not cover all changes; manual edits may still be needed.
 - The published page at tag `ai@7.0.142` shows some names in its 5.0 snippets that were later renamed (for example `isStepCount` in `stopWhen` examples, `LanguageModelV3` / `LanguageModelV3Middleware` in the provider-interface section); the 7.0 guide states `stepCountIs` -> `isStepCount` is a 7.0 rename. Treat those names as the page's text, not as 5.x export names. Placeholders `__MODEL__` / `__PROVIDER_IMPORT__` also appear in the snippets.
+- The official install command has no version specifiers; this skill's latest is v7, so the command here pins the target major (`ai@^5`, `@ai-sdk/*@^2` per the package versions on this page).
 - If you have persisted messages in a database, also read `migration-guide-5-0-data.md`.
 - Beta-only change documented on the page: between 5.0 betas, `fullStream` chunk types changed from `text` / `reasoning` to `text-delta` / `reasoning-delta` (beta.26 and later use `reasoning-delta`).
 - `addToolResult` is deprecated in 5.0 and removed in version 6.

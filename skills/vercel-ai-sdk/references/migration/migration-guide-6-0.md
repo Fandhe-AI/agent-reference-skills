@@ -11,7 +11,7 @@ Breaking-change guide, codemod list and before/after snippets for upgrading from
 Recommended process: back up the project, upgrade to AI SDK 6.0, follow the breaking changes, verify, commit.
 
 ```sh
-pnpm install ai@latest @ai-sdk/react@latest @ai-sdk/openai@latest
+pnpm install ai@^6 @ai-sdk/react@^3 @ai-sdk/openai@^3
 npx @ai-sdk/codemod v6
 npx @ai-sdk/codemod v6/rename-text-embedding-to-embedding src/
 ```
@@ -126,6 +126,7 @@ Provider changes:
 - `generateObject` / `streamObject` are deprecated in 6.0; their later status is covered by `migration-guide-7-0.md` (still listed there for `system` -> `instructions`).
 - Codemods may not cover all changes; manual edits may be required.
 - `Experimental_Agent` replaced by `ToolLoopAgent` (agent classes are covered in the agents category; for other vendors' agent SDKs see openai-agents, anthropic-agent-sdk).
+- The official install command uses `@latest`; this skill's latest is v7, so the command here pins the target major (`ai@^6`, `@ai-sdk/*@^3` per the package versions table above).
 
 ## Related
 

@@ -22,7 +22,9 @@ const result = streamText({
 });
 ```
 
-## Streaming and deployment
+## Options / Props
+
+### Streaming and deployment
 
 | Slug / Issue | Cause / Background | Solution |
 | --- | --- | --- |
@@ -40,7 +42,7 @@ const result = streamText({
 | `stream-abort-handling`: `onEnd` is not called when the stream is aborted with `toUIMessageStream` | The abort handler immediately terminates the response, so `onEnd` has no chance to run | Add `consumeSseStream: consumeStream` to `createUIMessageStreamResponse` |
 | `abort-breaks-resumable-streams`: with `useChat({ resume: true })`, client aborts (closing a tab, refreshing, navigating away, `stop()`) are treated as disconnects and request-signal forwarding can cancel work that resumption expects to keep running | Stream resumption needs the server to keep the stream producer running even when no client is connected; explicit cancellation needs a separate server-side signal | Use `resume: true` for reconnecting and add a dedicated stop endpoint (load chat and active stream ID, persist the latest partial assistant message, cancel the producing work, clear the active stream reference only if it still points to the same stream); on the client POST to your stop endpoint (e.g. `/api/chat/<chatId>/stop`) before calling `chat.stop()`. Do not call the stop endpoint from route cleanup, page unload, or unmount. Without resumption, set `resume: false` and use `stop()` |
 
-## useChat and messages
+### useChat and messages
 
 | Slug / Issue | Cause / Background | Solution |
 | --- | --- | --- |
@@ -55,17 +57,17 @@ const result = streamText({
 | `no-object-generated-content-filter`: `NoObjectGeneratedError` with finish reason `content-filter` using OpenAI structured outputs | OpenAI structured outputs require specific JSON Schema; Zod `.nullish()` and `.optional()` produce incompatible schemas (`.nullable()` is compatible) | Replace `.nullish()` / `.optional()` with `.nullable()` in the `Output.object` schema |
 | `high-memory-usage-with-images`: memory grows when processing many images with `generateText` / `streamText` (especially `experimental_download` or base64 images) | With `include`, the SDK includes full request messages and request / response bodies in step results; base64 image data can be 1 MB+ per image and accumulates when results are retained | Control `include`: `requestBody`, `requestMessages` (both `generateText` and `streamText`), `rawChunks` (`streamText` only), `responseBody` (`generateText` only); all default `false`. Store only the data you need (e.g. `result.text`) |
 
-## TypeScript and tooling
+### TypeScript and tooling
 
 | Slug / Issue | Cause / Background | Solution |
 | --- | --- | --- |
 | `model-is-not-assignable-to-type`: `Type 'SomeModel' is not assignable to type 'LanguageModelV1'` after updating the SDK (similar errors can occur with `EmbeddingModelV4`) | New features are added to the model specification, causing incompatibility with older provider versions | Update provider packages and the AI SDK to the latest version |
-| `unsupported-model-version` (`AI_UnsupportedModelVersionError`): `Unsupported model version v1 for provider "ollama.chat"...` when migrating to AI SDK 5 | The provider package implements the older v1 specification; AI SDK 5 only supports specification version `v2` | Update `@ai-sdk/*` providers to `2.0.0` or later; for AI SDK 5: `ai` `5.0.0`+, `@ai-sdk/provider` `2.0.0`+, `zod` `4.1.8`+. Verify third-party / custom providers (peer dependency `@ai-sdk/provider` `2.0.0`+). `pnpm install ai@latest @ai-sdk/openai@latest @ai-sdk/anthropic@latest` |
+| `unsupported-model-version` (`AI_UnsupportedModelVersionError`): `Unsupported model version v1 for provider "ollama.chat"...` when migrating to AI SDK 5 | The provider package implements the older v1 specification; AI SDK 5 only supports specification version `v2` | Update `@ai-sdk/*` providers to `2.0.0` or later; for AI SDK 5: `ai` `5.0.0`+, `@ai-sdk/provider` `2.0.0`+, `zod` `4.1.8`+. Verify third-party / custom providers (peer dependency `@ai-sdk/provider` `2.0.0`+). `pnpm install ai@^5 @ai-sdk/openai@^2 @ai-sdk/anthropic@^2` for AI SDK 5 |
 | `typescript-performance-zod`: TypeScript server crashes or hangs, very slow type checking, "Type instantiation is excessively deep and possibly infinite" (AI SDK 5 with Zod) | With the standard `import { z } from 'zod'`, different module resolution settings caused TypeScript to load the same Zod declarations twice, leading to expensive structural comparisons | Upgrade to Zod `4.1.8` or later (`pnpm add zod@^4.1.8`), or set `"moduleResolution": "nodenext"` in `tsconfig.json` |
 | `typescript-cannot-find-namespace-jsx`: `error TS2503: Cannot find namespace 'JSX'` in a project without React (e.g. a Hono server) | The AI SDK depends on `@types/react`, which defines the `JSX` namespace; to be removed in the next major version | `npm install @types/react` |
 | `jest-cannot-find-module-ai-rsc`: `Cannot find module '@ai-sdk/rsc'` in Jest tests for RSC components | Jest module resolution | Add `"moduleNameMapper": { "^@ai-sdk/rsc$": "<rootDir>/node_modules/@ai-sdk/rsc/dist" }` to `jest.config.js` |
 
-## RSC and Server Actions
+### RSC and Server Actions
 
 | Slug / Issue | Cause / Background | Solution |
 | --- | --- | --- |
@@ -79,6 +81,8 @@ const result = streamText({
 - Code in the originals uses placeholder `__MODEL__` / `__PROVIDER_IMPORT__`; snippets here use `model` as a stand-in.
 - AI SDK RSC (`@ai-sdk/rsc`) rows apply to an experimental package.
 - Vercel platform settings referenced in the timeout row (Fluid Compute, plan limits, `vercel.json`) are covered by the vercel skill; plan limits quoted here are as stated on the AI SDK page.
+
+- The official `unsupported-model-version` row installs with `@latest`; this skill's latest is v7, so the AI SDK 5 command here pins the target major (`ai@^5`, `@ai-sdk/*@^2`).
 
 ## Related
 

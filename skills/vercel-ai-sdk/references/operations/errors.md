@@ -45,7 +45,19 @@ try {
 }
 ```
 
-## Common failure modes
+### Checking for an error
+
+```typescript
+import { APICallError } from 'ai';
+
+if (APICallError.isInstance(error)) {
+  // Handle the error
+}
+```
+
+## Options / Props
+
+### Common failure modes
 
 | Failure mode | Error to check |
 | --- | --- |
@@ -63,11 +75,11 @@ try {
 | The requested model or provider does not support a capability or specification version | `UnsupportedFunctionalityError` or `UnsupportedModelVersionError` |
 | UI messages cannot be converted or a UI message stream is invalid | `MessageConversionError` or `UIMessageStreamError` |
 
-## Error reference
+### Error reference
 
 Base class: `AISDKError` is the base class and broad type guard for AI SDK errors. `InvalidStreamPartError` is listed in the official index without its own page. All errors below are imported from `ai` and checked with `<Name>.isInstance(error)`, except where an alias is shown.
 
-### Provider requests and responses
+#### Provider requests and responses
 
 | Name | Properties | Description |
 | --- | --- | --- |
@@ -88,7 +100,7 @@ Base class: `AISDKError` is the base class and broad type guard for AI SDK error
 | `TypeValidationError` | `value`; `cause` (required in constructor) | Type validation fails. |
 | `UnsupportedFunctionalityError` | `functionality`; `message` (optional, auto-generated from `functionality`) | Functionality is not supported. |
 
-### Inputs and message streams
+#### Inputs and message streams
 
 | Name | Properties | Description |
 | --- | --- | --- |
@@ -98,7 +110,7 @@ Base class: `AISDKError` is the base class and broad type guard for AI SDK error
 | `MessageConversionError` | `originalMessage`; `message` | Message conversion fails. |
 | `UIMessageStreamError` | `chunkType`; `chunkId` (empty string for chunks without an ID, such as completion `error` chunks); `message` | A UI message stream reports an error or contains invalid or out-of-sequence chunks (for example `text-delta` without a preceding `text-start`, `reasoning-delta` / `reasoning-end` without `reasoning-start`, `tool-input-delta` without `tool-input-start`). Often surfaces when an upstream request fails before any tokens are streamed and a custom transport writes an inline error message without the proper start chunk. |
 
-### Generated output
+#### Generated output
 
 | Name | Properties | Description |
 | --- | --- | --- |
@@ -110,14 +122,14 @@ Base class: `AISDKError` is the base class and broad type guard for AI SDK error
 | `NoTranslationGeneratedError` | `response` (required in constructor) | No translation could be generated from the input audio: no `audio` part was emitted and the final output text is empty, or the stream ended without a finish event. |
 | `NoVideoGeneratedError` | `message` (optional, defaults to `'No video generated.'`); `responses` (optional); `cause` (optional) | The AI provider fails to generate a video. |
 
-### Providers and model compatibility
+#### Providers and model compatibility
 
 | Name | Properties | Description |
 | --- | --- | --- |
 | `NoSuchProviderError` | `providerId`; `availableProviders`; `modelId`; `modelType`; `message` | A provider ID is not found. |
 | `UnsupportedModelVersionError` (troubleshooting) | see the `UnsupportedModelVersionError` row in `troubleshooting.md` | A model implements an unsupported specification version. |
 
-### Tools and approvals
+#### Tools and approvals
 
 | Name | Properties | Description |
 | --- | --- | --- |
@@ -130,7 +142,7 @@ Base class: `AISDKError` is the base class and broad type guard for AI SDK error
 | `ToolCallRepairError` | `originalError` (either `NoSuchToolError` or `InvalidToolInputError`); `message`; `cause` | A failure while attempting to repair an invalid tool call. |
 | `ToolChoiceViolationError` | `toolChoice`; `finishReason`; `provider`; `modelId`; `content`; `message` | A `generateText` response does not satisfy an enforced tool choice: `toolChoice` is `'required'` but the response contains no structured tool call, or a specifically selected tool was not called. The error does not interpret text or reasoning as an executable tool call; inspect `content` for opt-in recovery and validate the schema before executing any recovered call. |
 
-### Decision errors (experimental)
+#### Decision errors (experimental)
 
 Exported from `ai` and `@ai-sdk/provider` with an `Experimental_` prefix; the official pages import them with an alias.
 
@@ -138,16 +150,6 @@ Exported from `ai` and `@ai-sdk/provider` with an `Experimental_` prefix; the of
 | --- | --- | --- |
 | `Experimental_DecisionRefusalError` (alias `DecisionRefusalError`) | `questionIds`; `provider`; `modelId`; `message` | Identifies questions that a decision model declined to answer. Decision models report a refusal as an answer with `type: 'refusal'`; `experimental_decide` throws this error when any answer is a refusal, after the provider call and without retrying it. |
 | `Experimental_DecisionUnsupportedQuestionTypeError` (alias `DecisionUnsupportedQuestionTypeError`) | `questionId`; `questionType`; `provider`; `modelId`; `message` (providers can supply a custom message) | Identifies a question whose type is unsupported by a decision model. |
-
-## Checking for an error
-
-```typescript
-import { APICallError } from 'ai';
-
-if (APICallError.isInstance(error)) {
-  // Handle the error
-}
-```
 
 ## Notes
 

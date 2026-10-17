@@ -34,11 +34,21 @@ declare function isUnsafeAddress(ip: string): boolean;
 
 const safeLookup: typeof lookup = (hostname, options, callback) => {
   lookup(hostname, options as any, (err, address, family) => {
-    if (!err && typeof address === 'string' && isUnsafeAddress(address)) {
-      callback(new Error(`Refusing to connect to ${address}`), '', 0);
+    if (err) {
+      (callback as any)(err);
       return;
     }
-    (callback as any)(err, address, family);
+    // `address` is a string, or an array of { address, family } when `all: true`
+    // (e.g. autoSelectFamily) is in effect; validate every resolved address.
+    const list: string[] = Array.isArray(address)
+      ? address.map((a: any) => a.address)
+      : [address as unknown as string];
+    const bad = list.find(isUnsafeAddress);
+    if (bad !== undefined) {
+      (callback as any)(new Error(`Refusing to connect to ${bad}`));
+      return;
+    }
+    (callback as any)(null, address, family);
   });
 };
 
@@ -79,6 +89,7 @@ const fal = createFal({ fetch: safeFetch });
 - URLs same-origin with the provider endpoint you configured (e.g. a custom `baseURL` for a self-hosted or `localhost` deployment) are exempt from these checks; any redirect off that origin is still validated.
 - Node.js default validated download fetch uses `node:dns` and an `undici` connector hook; wrapping or replacing global `fetch` does not disable it. Bun, Deno, Cloudflare Workers, and framework edge runtimes use their platform fetch even when they expose a Node-compatible `process`. If you explicitly inject a custom `fetch`, it is responsible for equivalent DNS validation and connection pinning; on other runtimes restrict network egress to private, loopback, link-local, and cloud-metadata ranges.
 - Hardening: (1) restrict outbound egress at the network layer (deny `169.254.0.0/16`, RFC-1918 ranges, and loopback); (2) harden an injected `fetch` as shown. The SDK's URL validation and custom fetch connect-time pinning are complementary; keep both.
+- Modified from the official example: the official `safeLookup` validates `address` only when it is a string, so the array returned with `all: true` (autoSelectFamily) would reach the socket unchecked; this version validates every address in both shapes.
 
 ## Related
 

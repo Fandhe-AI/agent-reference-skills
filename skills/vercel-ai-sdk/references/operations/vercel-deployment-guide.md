@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model,
-    messages: convertToModelMessages(messages),
+    messages: await convertToModelMessages(messages),
     abortSignal: req.signal,
   });
 
@@ -52,6 +52,7 @@ export async function POST(req: Request) {
 - Request cancellation: `useChat` and `useCompletion` abort the client request on `stop()`. To propagate cancellation to a Vercel Function and its model request you must (1) use the Node.js runtime (the default for Next.js route handlers), (2) enable `supportsCancellation` for the route in `vercel.json`, and (3) forward the route's `req.signal` to `streamText` / `generateText` as `abortSignal`. Without `supportsCancellation`, `stop()` closes the client-side stream but does not cancel the Vercel Function or model request.
 - Security: LLM calls are costly, so protect against abuse. Rate limiting (see the Vercel guide on securing an AI app with rate limiting) and the Vercel Firewall (automatic DDoS mitigation; Enterprise teams get customization such as custom rules for IP blocking).
 - Distinction: platform configuration (vercel.json fields, Functions, Firewall, deployment settings) is covered by the vercel skill; this page covers only the AI SDK deployment considerations.
+- The official page's example calls `convertToModelMessages(messages)` without `await`; since v6 it returns a Promise, so `await` was added here.
 - Troubleshooting links: streaming not working when proxied; timeouts on Vercel (see `troubleshooting.md`).
 
 ## Related
