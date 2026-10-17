@@ -117,8 +117,7 @@ if interaction.status == "requires_action":
     pending_calls = [step for step in interaction.steps if step.type == "function_call" and step.id not in executed_calls]
 
     if pending_calls:
-        fc_step = pending_calls[0]
-
+        # Replace the fixed result below with your own executor's output.
         final_interaction = client.interactions.create(
             agent="antigravity-preview-09-2026",
             previous_interaction_id=interaction.id,
@@ -131,6 +130,7 @@ if interaction.status == "requires_action":
                     "call_id": fc_step.id,
                     "result": {"temperature": 23, "unit": "celsius"},
                 }
+                for fc_step in pending_calls
             ],
         )
 ```
@@ -295,6 +295,7 @@ Estimated costs (from the page):
 
 ## Notes
 
+- The original sample answers only `pending_calls[0]`; the example returns a `function_result` for every pending call so parallel calls in one turn are all resolved.
 - Default tools are `code_execution`, `google_search`, and `url_context`; pass `tools` only when customizing or restricting the set, or adding custom functions. `code_execution` and filesystem tool execution can be intercepted by synchronous hooks (see `hooks.md`).
 - Capabilities: code execution (Bash, Python, Node.js), file management (files persist across interactions), web access, and automatic context compaction at ~135k tokens.
 - For a managed agent saved with `agents.create`, the model is locked to what was set at creation and cannot be overridden at interaction time.

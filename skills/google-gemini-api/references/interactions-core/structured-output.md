@@ -19,7 +19,7 @@ class Ingredient(BaseModel):
 
 class Recipe(BaseModel):
     recipe_name: str = Field(description="The name of the recipe.")
-    prep_time_minutes: Optional[int] = Field(description="Optional time in minutes to prepare the recipe.")
+    prep_time_minutes: Optional[int] = Field(default=None, description="Optional time in minutes to prepare the recipe.")
     ingredients: List[Ingredient]
     instructions: List[str]
 
@@ -198,6 +198,7 @@ Supported JSON Schema subset:
 
 ## Notes
 
+- The source declares `prep_time_minutes: Optional[int] = Field(description=...)` without a default, which Pydantic v2 treats as required; `default=None` is added so the generated schema matches the optional field in the other language examples.
 - Availability: Interactions API.
 - Configure `response_format` with an object (or an array containing an object) of type `text` and `mime_type` `application/json`; the schema goes in `schema`.
 - Streamed chunks of a structured output are valid partial JSON strings that concatenate into the final JSON object (use `stream: true`).

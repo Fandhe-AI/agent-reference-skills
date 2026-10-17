@@ -159,10 +159,15 @@ stream = client.interactions.create(
 )
 
 first_interaction_id = None
+final_status = None
 calls = {}
 for event in stream:
     if event.event_type == "interaction.created":
         first_interaction_id = event.interaction.id
+    elif event.event_type == "interaction.completed":
+        final_status = event.interaction.status
+    elif event.event_type == "error":
+        final_status = "error"
     elif event.event_type == "step.start":
         step = event.step
         if step.type == "function_call":
@@ -173,7 +178,7 @@ for event in stream:
 
 # Turn 2: Execute the tools and send the results back to resume the stream
 # run() is your own function executor
-if calls:
+if final_status == "requires_action" and calls:
     stream2 = client.interactions.create(
         model="gemini-3.8-flash",
         previous_interaction_id=first_interaction_id,
@@ -225,7 +230,8 @@ Step types and expected delta types:
 - With `stream: false`, the API returns a single `interaction` object whose `steps` array holds each assembled `step.start` -> `step.delta`(s) -> `step.stop` cycle.
 - `arguments_delta` is a partial JSON string and must be accumulated across deltas. For function calls, `step.start` delivers name, id, and empty arguments `{}`.
 - `thought_signature` is the last delta before `step.stop` in a `thought` step.
-- The original sample tracks a single call; the example keys calls by step `index` so that multiple function calls in one turn each get a `function_result`; the `if calls:` guard and the `import json` / `first_interaction_id = None` initialization are kept from the source structure, and the turn-2 stream is read for text deltas as in the source.
+- The original sample tracks a single call; the example keys calls by step `index` so that multiple function calls in one turn each get a `function_result`; the `import json` / `first_interaction_id = None` initialization is kept from the source structure, and the turn-2 stream is read for text deltas as in the source.
+- The original sample runs the tools whenever a call was streamed; the example records `interaction.completed` and runs them only when `event.interaction.status == "requires_action"` (as in the source's tool-streaming example), so an `error` event or a stream without a terminal event does not trigger execution.
 - The original sample omits `tools` on the turn-2 call; it is re-specified here because `tools` are interaction-scoped.
 - New event and delta types may be added over time: log and skip unknown events instead of throwing.
 - Migration (May 2026 breaking changes): legacy events are replaced — `interaction.start` -> `interaction.created`, `content.start` -> `step.start`, `content.delta` -> `step.delta`, `content.stop` -> `step.stop`, `interaction.complete` -> `interaction.completed`, and `interaction.status_update` is replaced by `interaction.in_progress` / `interaction.requires_action` etc. in the breaking-changes guide (this guide's current examples still show `interaction.status_update`).
