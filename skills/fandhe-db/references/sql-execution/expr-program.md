@@ -136,8 +136,10 @@ impl ExprProgram {
     /// `SqlSurfaceError::Internal`（固定文言）、0 除算（`22012`）・非有限値（`22003`）・確保失敗（`54000`）は
     /// 既存の写像を共有する（`apply_builtin`・`crate::sql::udf_call::eval_binary` 経由）。
     ///
-    /// `row_scalars` は `udf_call::eval_with_scalars` と同じ契約（`schema.columns` と同じ論理列インデックスの
-    /// 値ビュー。`None` は実 NULL）。`TextColumnRef` を含まない式は空スライスで呼べる。
+    /// `row_scalars` は [`udf_call::eval_with_scalars`] と同じ契約
+    /// （`schema.columns` と同じ論理列インデックスの `TEXT` 値ビュー。`None` は
+    /// 実 NULL）。`TextColumnRef` を含まない式（既存呼び出し元の大半）は
+    /// 空スライスで呼べる。
     ///
     /// `CASE`／`COALESCE`（SQL-26。Issue #921）の分岐命令を実行するため、プログラムカウンタ（`pc`）によるループ
     /// とする。ジャンプ先は常に前方（`target > pc`）のみを許可し、`pc` は単調に増加するためループは必ず停止する。
@@ -156,6 +158,7 @@ impl ExprProgram {
 - crate 内部 API: 本ファイルの全公開項目は `pub(crate)` であり、`fandhe-db-engine` の公開 API（`fandhe-db` crate）からは到達しない
 - Migration (0.1.0 → 0.2.0): `ExprProgram::eval` に `row_scalars: &'a [Option<ScalarRef<'a>>]` 引数が加わった（`compile` / `eval` はいずれも `impl ExprProgram` のメソッド）。`ExprStep` / `StackValue` に上記の variant が加わった。いずれも crate 内部のため外部コードへの影響はない
 - 上記は `fandhe-db-engine` 0.2.0（git SHA `dc888f6ea146d3078153d64a6848f5c8cf044431`）の `src/sql/expr_program.rs` から `ExprStep` / `StackValue` の全 variant と `compile` / `eval` のシグネチャ・doc comment を更新した（`ExprProgram::eval` の本体、`compile_node` 等の private ヘルパー、`PartialEq` 実装は未転記）
+- 上記 doc comment の空スライス条件は TextColumnRef だけに言及しているが、0.2.0 の `stack_to_expr_value`（同ファイル 251-293 行）は DateColumnRef / TimestampColumnRef / NumericColumnRef も `row_scalars` から解決し、範囲外なら `SqlSurfaceError::Internal` を返す。実際に空スライスで呼べるのは、行スカラー列参照（Text / Date / Timestamp / Numeric の各 ColumnRef）を一切含まない式に限られる（`udf_call::eval_with_scalars` の契約と同じ）
 - 関連 ADR: [`expr-step-compilation`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/dc888f6ea146d3078153d64a6848f5c8cf044431/docs/design/expr-step-compilation.md)（Issue #353。`sql::udf_call::eval` の再帰ツリーウォーク評価をステップ列コンパイル化する設計 = 本モジュールそのものの根拠 ADR）
 - Distinct from `mssql` / `drizzle` expression evaluation: not a SQL dialect expression compiler, but the engine's internal non-recursive expression execution representation.
 
