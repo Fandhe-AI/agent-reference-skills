@@ -30,13 +30,14 @@ Vout = Vref × (1 + R2 / R1) + Iadj × R2
 | Type | Regulator topology: Standard or 3-Terminal |
 | Vref | Internal reference voltage of the regulator (V) |
 | Iadj | Quiescent current flowing from the adjust pin (A); 3-Terminal type only |
-| R1 | Upper feedback resistor (Ω) |
-| R2 | Lower feedback resistor connected to the adjust pin (Ω) |
+| R1 | Feedback resistor R1 (Ω); position per the on-screen diagram |
+| R2 | Feedback resistor R2 (Ω); position per the on-screen diagram |
 | Vout | Desired or calculated output voltage (V) |
 
 ## Notes
 
-- For the 3-Terminal type, Iadj is typically below 100 µA and can often be neglected, but including it improves accuracy.
+- The manual text gives the two formulas only as images (alt text "Regulators"), so the formulas above are the standard divider form and the R1/R2 positions are defined only by the manual's diagram; check them against the on-screen diagram.
+- For the 3-Terminal type, Iadj is typically below 100 µA and can be neglected with caution.
 - Any one of R1, R2, or Vout can be the unknown; the other two must be provided.
 
 ## Related

@@ -10,7 +10,7 @@ The Drawing Sheet Editor reads and writes drawing sheet files with the `.kicad_w
 ## Notes
 
 - File extension: `.kicad_wks`
-- Custom sheets are portable and reusable across projects and organizations
+- Custom sheets are portable and reusable across projects and organizations (not found in the 10.0 manual)
 
 ## Related
 

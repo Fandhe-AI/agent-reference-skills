@@ -48,9 +48,10 @@ A = (I / (k × ΔT^0.44))^(1 / 0.725)
 
 ## Notes
 
-- External layers can carry approximately twice the current of internal layers for the same width due to better convective heat transfer.
-- IPC-2221 is an empirical standard; results are conservative estimates suitable for design guidelines.
-- The standard applies to steady-state DC or low-frequency AC currents; it does not model pulsed or transient currents.
+- The 10.0 manual text only states that the tool "uses formulas from IPC-2221 (formerly IPC-D-275)". The formula above, the exponents, and the k values (0.048 / 0.024) are from IPC-2221 and are not stated in the 10.0 manual text (the manual shows only a screenshot of the tool).
+- External layers can carry approximately twice the current of internal layers for the same width due to better convective heat transfer (not found in the 10.0 manual).
+- IPC-2221 is an empirical standard; results are conservative estimates suitable for design guidelines (not found in the 10.0 manual).
+- The standard applies to steady-state DC or low-frequency AC currents; it does not model pulsed or transient currents (not found in the 10.0 manual).
 
 ## Related
 

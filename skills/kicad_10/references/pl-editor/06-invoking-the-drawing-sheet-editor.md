@@ -4,20 +4,23 @@ The Drawing Sheet Editor can be launched in two ways.
 
 ## From the Command Line
 
+Adapted (not in the official docs): concrete example of the manual's syntax `pl_editor <*.kicad_wks file to open>`.
+
 ```sh
-pl_editor <*.kicad_wks file to open>
+pl_editor "path/to/sheet.kicad_wks"
 ```
 
 Passing a `.kicad_wks` file path opens that file directly.
 
 ## From the KiCad Project Manager
 
-The editor is accessible from the KiCad Project Manager application menu.
+Launch it from the KiCad Project Manager (Drawing Sheet Editor launcher, default hotkey `Ctrl+Y`).
 
 ## Notes
 
-- If no file is specified or opened, the default KiCad drawing sheet is loaded
-- The editor executable is named `pl_editor`
+- The default KiCad drawing sheet is displayed until a different drawing sheet file is opened
+- The command-line executable is `pl_editor`
+- The manual writes the syntax as `pl_editor <*.kicad_wks file to open>`; the angle brackets are placeholder notation, not shell syntax
 
 ## Related
 

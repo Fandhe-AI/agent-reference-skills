@@ -1,52 +1,57 @@
 # Design Variants
 
-Manage multiple board configurations (e.g., different component populations) from a single PCB design file.
+A single PCB can represent multiple product configurations. Variants are defined in the Schematic Editor (see the Schematic Editor manual's Design variants chapter) and transferred to the board through Update PCB from Schematic. The PCB Editor can view variant effects, select the active variant, and generate variant-specific output.
 
-## Overview
-
-Design variants allow producing different board versions from one base design. Common use cases:
-- Optional feature components (populated or DNP)
-- Regional or regulatory variants
-- Cost-reduced vs. full-featured product versions
-
-Variants are defined in the schematic (via component attributes) and reflected in the PCB editor.
+Common use cases: optional-feature components (populated or DNP), regional or regulatory variants, cost-reduced vs. full-featured versions.
 
 ## Selecting a Variant in the PCB Editor
 
-Switch the active variant via the variant selector in the PCB editor interface. The selected variant determines which components are shown as populated and which are marked DNP (Do Not Populate).
+The main toolbar contains a variant selector dropdown, identical in behavior to the Schematic Editor's. When a variant is active:
+
+- Components marked DNP in that variant display an X on the fabrication layers
+- Field text (Value, Footprint, custom fields) reflects the variant's overrides
+- Text items using `${VARIANT}` or `${VARIANT_DESC}` resolve to the active variant's name and description
+- Selecting `<Default>` returns to the base design with no overrides
 
 ## Viewing Variant Effects
 
-When a variant is active:
-- **DNP components** are visually distinguished on the canvas
-- The board reflects the specific component loading for that variant
-- Useful for visual verification before generating variant-specific outputs
+| Area | Behavior |
+|------|----------|
+| Component visibility and DNP | DNP components for the variant are drawn with an X on F.Fab and B.Fab; the view updates in real time when switching variants |
+| 3D viewer | Components marked DNP in the current variant are hidden; select the variant in the toolbar before or while viewing |
+| Footprint properties | With a non-default variant active, the Properties panel and Footprint Properties dialog show the variant's overrides (field values, DNP attribute, exclusion flags) and edit them |
 
 ## Generating Variant-Aware Outputs
 
-Fabrication files and documentation can be generated per variant:
+Several output dialogs include a variant selector; choose the variant before generating.
 
 | Output | Variant Behavior |
 |--------|-----------------|
-| BOM | Includes only populated components for the selected variant |
-| Component placement files | Excludes DNP components |
-| Gerbers/plots | Copper and silkscreen reflect DNP status |
-| 3D export | DNP components can be hidden |
-
-Generate outputs with the desired variant selected to produce variant-specific files.
+| Gerber (File → Plot…) | Variant dropdown; with **Indicate DNP on fabrication layers** enabled, DNP components get an X on F.Fab and B.Fab |
+| Component placement (File → Fabrication Outputs → Component Placement (.pos, .gbr)…) | Variant selector; components marked DNP or excluded from position files in the variant are omitted |
+| 3D model export (File → Export → STEP/GLB/BREP/XAO/PLY/STL…) | Variant selector; DNP components are excluded from the model |
+| ODB++ and IPC-2581 | Variant selection through the command line (`--variant` with `pcb export odb` / `pcb export ipc2581`); whether the GUI dialogs offer a variant selector is not stated in the 10.0 manual |
 
 ## Command-Line Variant Support
 
-KiCad supports batch generation of variant-specific outputs via command-line tools, enabling:
-- CI/CD integration for automated output generation
-- Scripted multi-variant export without manual PCB editor interaction
-- Build systems that produce all variant outputs in one pass
+All PCB export commands in `kicad-cli` support `--variant`. Specify it more than once with `${VARIANT}` in the output path (single-quoted in shells) to produce separate files per variant. Works with `pcb export step`, `pcb export pos`, `pcb export dxf`, `sch export bom`, and others. Without `--variant`, the default variant is used.
+
+```bash
+kicad-cli pcb export gerbers \
+    --variant "WiFi-only" \
+    --variant "WiFi-BT" \
+    -o 'gerbers_${VARIANT}/' \
+    my_board.kicad_pcb
+```
+
+Adapted (not in the official docs): the output path is single-quoted so the shell does not expand `${VARIANT}`; see Notes.
 
 ## Notes
 
-- DNP status is set on schematic symbols; it propagates to the PCB via forward annotation
-- All variants share the same board layout; placement and routing are common across variants
-- Variant-aware BOM generation requires the variant to be selected before export
+- `${VARIANT}` in output paths is expanded at export time and is independent of the `${VARIANT}` text variable used in schematic and board text items
+- Corrected from the official docs (deviation from source): the manual's multi-variant example double-quotes the output path (`-o "gerbers_${VARIANT}/"`); POSIX shells and PowerShell expand `${VARIANT}` inside double quotes to an empty string, so single-quote the path so that kicad-cli receives the literal `${VARIANT}`
+- The PCB Editor manual says all PCB export commands support `--variant`, but the 10.0 CLI manual's option tables list it only for gerbers, dxf, pdf, ps, svg, pos, step, vrml, 3dpdf, odb, ipc2581 and render (not drill, gencad, ipcd356, stats, glb, brep, ply, stl, stpz, u3d, xao); verify with `kicad-cli pcb export <fmt> -h`. `sch export bom` named in the body sentence is a schematic command, not a PCB one
+- Per-variant behavior of BOM, plots other than Gerber, and "all variants share the same layout": not found in the 10.0 PCB Editor manual
 
 ## Related
 

@@ -29,7 +29,7 @@ Only even numbers of copper layers are supported.
 ## Starting from a Schematic (Recommended)
 
 1. Complete the schematic in KiCad Schematic Editor
-2. Open (or create) the board file
+2. Open the board file (created empty with the project) from the project manager or the schematic editor's "Open PCB in board editor" button
 3. Run **Tools → Update PCB from Schematic…** (`F8`)
 4. Footprints and net connections are transferred automatically — no intermediate netlist file needed
 
@@ -37,8 +37,8 @@ Only even numbers of copper layers are supported.
 
 For standalone board design without a schematic:
 
-1. Launch the PCB editor independently
-2. Save the board file immediately — this creates a project file
+1. Launch the PCB editor standalone (not from the project manager)
+2. Save the board file immediately with **File → Save As…** — this creates a project file with the same name in the same location
 3. Add footprints manually; nets can be defined within the board editor
 
 > Starting from scratch is possible but not recommended for most workflows.

@@ -4,11 +4,13 @@ The KiCad project manager is the primary interface when launching KiCad. It prov
 
 ## Interface Layout
 
-- **Left panel**: Tree view displaying project files
+- **Left panel**: Tree view displaying project files (only files KiCad can open; only the root schematic sheet, except all sheets when the project is in a Git repository)
 - **Right panel**: Launcher with shortcuts to editors and tools
-- **Toolbar**: Quick access to common operations
+- **Toolbar** (left side): New project, Open project, Archive project (zip), Unarchive project (overwrites files in destination), Refresh tree view, Open project directory in file explorer
 
-Accessible tools include: Schematic Editor, PCB Editor, Symbol Editor, Footprint Editor, and utility applications.
+Accessible tools: Schematic Editor, Symbol Editor, PCB Editor, Footprint Editor, Gerber Viewer, Image Converter, Calculator Tools, Drawing Sheet Editor, Plugin and Content Manager.
+
+A project has a project file, a schematic and a single board; KiCad expects all three to share the same name. Double-click a file in the tree to open it; right-click for file commands.
 
 ## Standalone Mode
 
@@ -21,11 +23,11 @@ Standalone mode is typically used for importing projects from other EDA platform
 
 ## Creating a New Project
 
-1. Open via **File → New Project**, toolbar button, or keyboard shortcut (`Ctrl+N`)
-2. Select a template (the **Default** template is always available for blank projects)
-3. Enter a project name
+1. Open via **File → New Project…**, the New Project toolbar button, or `Ctrl+N` (default)
+2. Select a template (the **Default** template is always available for blank projects; recently used templates are listed on the left)
+3. Click OK and enter a project name
 
-By default, KiCad creates a matching directory for the project. Uncheck "Create a new directory for the project" to override (not recommended).
+By default, KiCad creates a directory with the same name (e.g. `MyProject/MyProject.kicad_pro`). Uncheck "Create a new directory for the project" to override (storing each project in its own directory is strongly recommended).
 
 New projects automatically include:
 
@@ -36,45 +38,48 @@ New projects automatically include:
 
 ## Importing a Project from Another EDA Tool
 
-Access via **File → Import Non-KiCad Project**. Supported formats:
+Access via the **File → Import Non-KiCad Project** submenu. Supported project formats:
 
 | Source | Format |
 |--------|--------|
 | Altium Designer | `.PrjPcb` |
-| CADSTAR | — |
-| Eagle 6.x+ | — |
-| EasyEDA | — |
-| PADS | — |
-| gEDA / Lepton EDA | — |
+| CADSTAR archive format | `.csa`, `.cpa` |
+| Eagle 6.x+ (XML) | `.sch`, `.brd` |
+| EasyEDA (JLCEDA) Standard Backup | `.zip` |
+| EasyEDA (JLCEDA) Pro Project | `.epro`, `.zip` |
+| PADS ASCII Project | `.asc`, `.txt` |
+| gEDA / Lepton EDA | `.prj`, `.sch`, `.pcb` |
+
+Imported schematic and board files should share the same base file name (e.g. `project.sch` and `project.brd`); you are then asked for a directory for the resulting project.
 
 Individual file imports (schematic or board only) are also supported from within the respective editors.
 
-**Schematic file imports**: Altium `.SchDoc`, Eagle `.sch` (XML), LTspice `.asc`, and others.
+**Schematic file imports**: Altium `.SchDoc`; Eagle `.sch` (XML); LTspice `.asc`; PADS Logic `.asc`, `.txt`; CADSTAR `.csa`; gEDA / Lepton `.sch`; EasyEDA Standard `.json`; EasyEDA Professional `.epro`, `.zip`.
 
-**PCB file imports**: Altium `.PcbDoc`, Cadence Allegro `.brd`, Eagle `.brd` (XML), and others.
+**PCB file imports**: Altium `.PcbDoc`, Circuit Maker `.CMPcbDoc`, Circuit Studio `.CSPcbDoc`; Cadence Allegro `.brd`; CADSTAR `.cpa`; Eagle `.brd` (XML); EasyEDA Standard `.json`, `.zip`; EasyEDA Professional `.epro`, `.zip`; Fabmaster `.txt`, `.fab`; gEDA / Lepton `.pcb`; P-CAD 200x `.pcb` (ASCII); PADS `.asc`; Solidworks PCB `.SWPcbDoc`.
 
 ## Project Backups and Autosave
 
-KiCad automatically protects work through two mechanisms:
+When enabled, KiCad backs up the entire current project in two situations:
 
-- **On save**: A backup snapshot is created when any editor saves
-- **On inactivity**: An autosave is triggered after a few seconds of inactivity with unsaved changes
+- **On manual save** in any editor
+- **On inactivity**: an autosave when there are unsaved changes after a few seconds of inactivity
 
 ### Backup Storage Options
 
 | Mode | Description |
 |------|-------------|
-| Incremental backups | Snapshots viewable in the Local History panel; backed by a hidden `.history` Git repository managed by KiCad. Restore via right-click → **Restore Commit** |
-| Zip archives | Compressed backups of the entire project directory; restore via **File → Unarchive Project…** |
+| Incremental backups | Snapshots viewable in the Local History panel (View → Panels → Local History; hover for changed files); backed by a hidden `.history` Git repository managed by KiCad (exclude it from your own VCS). Restore via right-click → **Restore Commit** |
+| Zip archives | One Zip file per backup of the project directory; restore with the Unarchive tool (**File → Unarchive Project…**) or manual extraction |
 
-Configure in **Preferences → Preferences → Common → Backup** (location: project directory or KiCad user data directory; maximum total backup size limit).
+Configure in the Project Backup section of Common preferences (format, location: project directory or KiCad user data directory; maximum total backup size).
 
 ## Saving and Loading Project Archives
 
 - **Archive**: **File → Archive Project…** — compresses the project into a ZIP file
 - **Unarchive**: **File → Unarchive Project…** — extracts a previously archived project
 
-Archives preserve: design files, manufacturing outputs, 3D models, netlists, scripts, documentation, and SPICE models. Unarchiving into an active project directory causes KiCad to reload the project automatically.
+Archived files from the project folder: KiCad design files (`*.kicad_prl`, `*.kicad_pro`, `*.kicad_sch`, `*.kicad_sym`, `*.kicad_pcb`, `*.kicad_mod`, `*.kicad_dru`, `*.kicad_wks`, `*.kicad_jobset`, `*.wbk`, `*.json`, `fp-lib-table`, `sym-lib-table`, `design-block-lib-table`), legacy design files (`*.pro`, `*.sch`, `*.lib`, `*.dcm`, `*.cmp`, `*.brd`, `*.mod`), 3D models (`*.stp`, `*.step`), Gerbers (`*.g?`, `*.g??`, `*.gm??`, `*.gbrjob`), manufacturing files (`*.pos`, `*.drl`, `*.nc`, `*.xnc`, `*.d356`, `*.rpt`), netlists (`*.net`), Python scripts (`*.py`), documentation (`*.pdf`, `*.txt`), SPICE models (`*.cir`, `*.sub`, `*.model`), IBIS models (`*.ibs`, `*.pkg`). Unarchiving into the currently loaded project directory reloads the project automatically.
 
 ## Git Integration
 
@@ -85,24 +90,26 @@ Projects within Git repositories display version control status in the file tree
 | Icon | Meaning |
 |------|---------|
 | Checkmark | Unchanged |
-| Modification indicator | Modified |
-| Add icon | Untracked |
+| Modification indicator | Uncommitted changes |
+| Add icon | Not tracked |
+
+No icons are shown if the project is not in a Git repository.
 
 ### Initializing Version Control
 
-Right-click in the file tree to initialize a new Git repository for an existing project. Remote configuration supports HTTPS, SSH, and local connections.
+Right-click a file in the tree → **Version Control → Add Project to Version Control…**. A remote must be configured: Location (HTTPS, SSH, or local file; type detected from the URL), SSH private key and SSH key password (SSH only), User name (often `git` for SSH), Password (HTTPS only). **Test Connection** checks authentication.
 
 ### Cloning a Repository
 
-**File → Clone Project from Repository…** — supports SSH, HTTPS, and local paths.
+**File → Clone Project from Repository…** — supports SSH, HTTPS, and local repositories with the same settings as above.
 
 ### Committing Changes
 
-Right-click on project or individual files to commit changes. Push and pull operations synchronize with remote repositories. Branch switching is available via context menus.
+Right-click → **Version Control → Commit Project…** (all changed files) or right-click a file → **Version Control → Commit File…** (that file only); the Commit Changes dialog selects files, message and author. Push: **Version Control → Push**; pull: **Version Control → Pull**; branch: **Version Control → Switch to Branch**. **Version Control → Disable Git Integration** disables KiCad's Git features for the current project only, without touching the repository.
 
 ## Notes
 
-- Version control display can be disabled in Preferences without affecting the actual repository
+- Git integration for all projects can be disabled on the Version Control page of Preferences (also sets update interval and default commit author) without affecting the actual repository
 - Cross-probing between editors requires both to be opened from the project manager (not standalone)
 
 ## Related

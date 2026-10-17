@@ -2,6 +2,8 @@
 
 A comprehensive PCB layout application for designing printed circuit boards, available on Linux, macOS, and Windows with full cross-platform file compatibility. It integrates footprint placement, track routing, library management, schematic synchronization, DRC, an interactive router, and a 3D viewer.
 
+The interactive router has multiple modes of operation (push-and-shove, walkaround, highlight collisions) and supports differential pair routing plus length and skew tuning. Fabrication/plot export covers Gerber, IPC-2581, ODB++, GenCAD, PDF, PostScript, and SVG; 3D model generation covers STEP, GLB, BREP, XAO, PLY, STL, IDF, and VRML. A netlist from other packages can also be imported.
+
 ## User Interface Components
 
 | Element | Description |
@@ -17,15 +19,17 @@ A comprehensive PCB layout application for designing printed circuit boards, ava
 
 ## Canvas Navigation
 
-- **Pan**: Middle or right mouse button drag
-- **Zoom**: Scroll wheel; toolbar buttons for zoom-to-fit and box zoom
+- **Pan**: Middle or right mouse button drag (default; configurable in Preferences → Mouse and Touchpad)
+- **Zoom**: Scroll wheel; top toolbar buttons for zoom in/out (about viewport center), zoom to fit the drawing sheet frame, zoom to fit items within the drawing sheet, and box zoom
+- The view can also be flipped to show the board from the bottom
 - **Status bar**: Displays cursor X/Y, zoom factor (Z), relative position, grid, and units
 - **Space**: Resets relative coordinate origin to zero (useful for distance measurement)
 
 ## Hotkeys
 
-- `Ctrl+F1` opens the current hotkey list
-- Custom hotkeys are configurable via Preferences
+- `Ctrl+F1` opens the current hotkey list; the default list is in the Actions Reference ([16-actions-reference.md](./16-actions-reference.md))
+- Key labels are for a standard PC keyboard; on an Apple layout use `Cmd` for `Ctrl` and `Option` for `Alt`
+- Custom hotkeys are configured in the hotkey editor (Preferences → Preferences… → Hotkeys); **Import Hotkeys** loads a `user.hotkeys` file
 - Configuration stored in `user.hotkeys` in the KiCad config directory:
   - Windows: `%APPDATA%\kicad\10.0\`
   - Linux: `~/.config/kicad/10.0/`

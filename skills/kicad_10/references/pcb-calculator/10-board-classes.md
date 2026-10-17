@@ -15,7 +15,7 @@ References IPC performance classes and PCB construction types to help identify t
 | Type | Description |
 |------|-------------|
 | Type 1 | Single-sided board (no plated through holes) |
-| Type 2 | Double-sided board (with plated through holes) |
+| Type 2 | Double-sided board |
 | Type 3 | Multilayer board without blind or buried vias |
 | Type 4 | Multilayer board with blind and/or buried vias |
 | Type 5 | Multilayer metal core board without blind or buried vias |
@@ -23,9 +23,9 @@ References IPC performance classes and PCB construction types to help identify t
 
 ## Notes
 
-- Performance class and PCB type together define the acceptance criteria applied during manufacturing inspection.
-- Higher classes impose stricter dimensional, electrical, and cosmetic requirements, typically increasing fabrication cost.
-- Metal core boards (Types 5 and 6) are used where enhanced thermal management is required.
+- Performance class and PCB type together define the acceptance criteria applied during manufacturing inspection (not found in the 10.0 manual).
+- Higher classes impose stricter dimensional, electrical, and cosmetic requirements, typically increasing fabrication cost (not found in the 10.0 manual).
+- Metal core boards (Types 5 and 6) are used where enhanced thermal management is required (not found in the 10.0 manual).
 
 ## Related
 

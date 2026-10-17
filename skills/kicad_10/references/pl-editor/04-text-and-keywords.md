@@ -21,7 +21,7 @@ Example: `Size: ${PAPER}` displays `Size: A4` when the paper size is A4.
 | `COMPANY` | Contents of the Company field in Page Setup |
 | `FILENAME` | Filename of the schematic or PCB design file, with extension |
 | `ISSUE_DATE` | Contents of the Issue Date field in Page Setup |
-| `LAYER` | Name of the current PCB layer (blank in schematic editor) |
+| `LAYER` | Name of the current PCB layer (blank in the Schematic and Board Editors; only shown in plots of PCB designs) |
 | `PAPER` | Current sheet's paper size (set in Page Setup) |
 | `REVISION` | Contents of the Revision field in Page Setup |
 | `SHEETNAME` | Sheet name of the current sheet (blank in board editor) |
@@ -32,10 +32,10 @@ Example: `Size: ${PAPER}` displays `Size: A4` when the paper size is A4.
 
 Two methods are available for inserting line breaks in text items:
 
-1. Insert the `\n` character sequence
-2. Press Enter directly in the Drawing Sheet Editor design window
+1. Insert the `\n` two-character sequence (mainly in the Page Setup dialog in KiCad)
+2. Insert a new line directly in the Drawing Sheet Editor design window
 
-Both methods work in the editor and in the Page Setup dialog.
+Keywords behave like text variables in the Schematic and Board Editors, but their values are set automatically by the editor or by the user in Page Setup. In Preview display mode, keywords are replaced with values (configurable in the Page Preview Settings dialog); in Edit mode, they are shown unreplaced.
 
 ## Multi-line Text in Page Setup Dialog
 

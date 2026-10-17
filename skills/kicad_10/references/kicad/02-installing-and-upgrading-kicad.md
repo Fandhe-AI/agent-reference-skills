@@ -16,9 +16,17 @@ When launching a new major KiCad version, a Welcome window appears to initialize
 
 ### Library Initialization Options
 
-The recommended option is **Start with the built-in KiCad libraries**, which initializes library tables with bundled KiCad resources. Other options include importing from a previous configuration or manual setup.
+Symbol, footprint, and design block libraries are initialized with one of:
 
-Default library locations:
+- **Start with the built-in KiCad libraries** (recommended for first-time setup): library tables include all libraries shipped with KiCad
+- **Import tables from the previous version** (with **Migrate built-in libraries to the latest version**, recommended, to replace old built-in library references)
+- Start with no libraries and configure manually
+
+Some options may be unavailable depending on the system and install method; libraries may be a separate package on some systems.
+
+Configuration setup: start with defaults, or import settings from a detected previous version (location auto-detected, can be overridden).
+
+Default library table file locations:
 
 | OS | Path |
 |----|------|
@@ -28,11 +36,11 @@ Default library locations:
 
 ### Hotkeys
 
-Hotkey configurations are **not** imported from previous versions automatically; manual import is possible through the Preferences dialog.
+Hotkey configurations are **not** imported from previous versions. Use the **Import Hotkeys…** button on the Hotkeys page of Preferences and browse to the `.hotkeys` file in the old version's configuration directory; this replaces the current version's hotkey settings.
 
 ### Privacy and Updates
 
-Users configure notifications for application updates and third-party packages. Windows installations offer anonymous crash reporting.
+Users choose whether to be notified of updates to KiCad and to packages installed via the Plugin and Content Manager. On Windows, anonymous crash reporting can also be enabled.
 
 ## Migrating Design Files from Previous Versions
 
@@ -40,10 +48,12 @@ Modern KiCad opens earlier file formats but writes only in the current format. N
 
 - File extensions may change upon saving
 - Original files remain undeleted after saving in new format
-- Files created or modified by one version of KiCad **cannot** be opened by older versions
+- Files created or modified by one version of KiCad generally **cannot** be opened by older versions; keep backup copies
+- Legacy schematic considerations are described in the Schematic Editor documentation
 
 ## Notes
 
+- The 10.0 manual is inconsistent: the first-time setup section mentions crash reporting on Windows only, while the Data Collection preferences section says it is supported on Windows and macOS (see KiCad Preferences)
 - Maintain backups during version transitions until you are confident in the permanent migration
 - Configuration directories are version-specific; settings from KiCad 9.x will not affect KiCad 10.0
 

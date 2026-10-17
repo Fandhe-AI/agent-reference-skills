@@ -27,10 +27,12 @@ Models frequency-dependent electrical characteristics of transmission line struc
 - Models are frequency-dependent and will diverge from simpler lumped-element models at sufficiently high frequencies.
 - The tool is heavily based on [Transcalc](http://transcalc.sourceforge.net/), an open-source transmission line calculator.
 - Academic references used in the implementation include:
-  - Atwater, "Simplified Design Equations for Microstrip Line Parameters," *Microwave Journal*, Nov 1989 (microstrip)
+  - Atwater, "Simplified Design Equations for Microstrip Line Parameters," *Microwave Journal*, Nov 1989 (microstrip and coupled microstrip)
   - Ramo, Whinnery, van Duzer, *Fields and Waves in Communication Electronics*, 2008 (rectangular waveguide)
   - Kirschning & Jansen, *IEEE Trans. Microwave Theory Tech.*, 1984 (coupled microstrip)
-  - March, *Microwaves*, Dec 1981 (stripline)
+  - Jansen, "High-Speed Computation of Single and Coupled Microstrip Parameters Including Dispersion, High-Order Modes, Loss and Finite Strip Thickness," *IEEE Trans. MTT*, Feb 1978 (coupled microstrip)
+  - March, "Microstrip Packaging: Watch the Last Step," *Microwaves*, Dec 1981 (coupled microstrip)
+- The manual lists no references for coplanar waveguide (with or without ground), coaxial line, stripline, or twisted pair.
 
 ## Related
 
