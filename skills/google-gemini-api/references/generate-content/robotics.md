@@ -203,6 +203,7 @@ print(response.text)
 
 - Sources: <https://ai.google.dev/gemini-api/docs/generate-content/robotics-overview> (Overview and pointing), <https://ai.google.dev/gemini-api/docs/generate-content/robotics-spatial> (Spatial reasoning), <https://ai.google.dev/gemini-api/docs/generate-content/robotics-agentic> (Agentic vision), <https://ai.google.dev/gemini-api/docs/generate-content/robotics-orchestration> (Task orchestration), <https://ai.google.dev/gemini-api/docs/generate-content/robotics-video-progress> (Video progress).
 - Preview source warning: "The Gemini Robotics ER model is currently in preview."
+- Official Python samples pass the class `types.ToolCodeExecution` (not an instance); the google-genai SDK coerces it to `ToolCodeExecution()` (verified with google-genai 2.31.0).
 - Full runnable code is referenced to the Robotics cookbook (google-gemini/robotics-samples) in the source. Robotics streaming (`robotics-streaming`) is covered in the live-realtime and Interactions-side robotics pages, not here.
 
 ## Related

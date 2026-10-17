@@ -104,12 +104,12 @@ def add_citations(response):
     for support in sorted_supports:
         end_index = support.segment.end_index
         if support.grounding_chunk_indices:
-            # Create citation string like [1](link1)[2](link2)
+            # Create citation string like 12
             citation_links = []
             for i in support.grounding_chunk_indices:
                 if i < len(chunks):
                     uri = chunks[i].web.uri
-                    citation_links.append(f"[{i + 1}]({uri})")
+                    citation_links.append(f"{i + 1}")
 
             citation_string = ", ".join(citation_links)
             text = text[:end_index] + citation_string + text[end_index:]
@@ -349,6 +349,7 @@ Notes:
 
 - Sources: <https://ai.google.dev/gemini-api/docs/generate-content/google-search> (Google Search), <https://ai.google.dev/gemini-api/docs/generate-content/maps-grounding> (Google Maps), <https://ai.google.dev/gemini-api/docs/generate-content/url-context> (URL context), <https://ai.google.dev/gemini-api/docs/generate-content/code-execution> (Code execution), <https://ai.google.dev/gemini-api/docs/generate-content/computer-use> (Computer use), <https://ai.google.dev/gemini-api/docs/generate-content/file-search> (File Search).
 - The official Maps REST sample writes `tools` as an object; it is corrected here to an array (`"tools": [{"googleMaps": {}}]`).
+- Official Python samples pass the class `types.ToolCodeExecution` (not an instance); the google-genai SDK coerces it to `ToolCodeExecution()` (verified with google-genai 2.31.0).
 - API surface: generateContent (REST `tools` array). Each built-in tool here is a `generateContent` tool; combination with custom functions is covered in the tool-combination page.
 - Distinct from Anthropic server tools and tool use (anthropic-api-tools-mcp skill) and OpenAI built-in tools / Agents SDK (openai-agents skill). File Search store and embeddings are Gemini-hosted RAG; for external vector databases see upstash (Vector) and fandhe-db.
 
