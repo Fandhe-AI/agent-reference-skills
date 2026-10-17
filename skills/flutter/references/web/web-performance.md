@@ -19,6 +19,7 @@ Set any of these top-level properties to `true` in your app's `main` method to c
 
 ```dart
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 
 void main() {
   debugProfileBuildsEnabled = true;
@@ -40,7 +41,7 @@ flutter run --profile -d chrome
 
 - Profiling Flutter web apps requires Flutter 3.14 or later.
 - You can emit your own timeline events with the `dart:developer` `Timeline` and `TimelineTask` APIs.
-- The source page shows no code. The Dart snippet only sets a flag named in the table above inside `main` (as the page instructs); `MyApp` is a placeholder. `flutter run --profile` appears on https://docs.flutter.dev/perf/ui-performance; `-d chrome` selects the web device.
+- The source page shows no code. The Dart snippet only sets a flag named in the table above inside `main` (as the page instructs); `MyApp` is a placeholder. `flutter run --profile` appears on https://docs.flutter.dev/perf/ui-performance; `-d chrome` selects the web device. `debugProfileBuildsEnabled` / `runApp` come from `package:flutter/widgets.dart`; `debugProfileLayoutsEnabled` / `debugProfilePaintsEnabled` from `package:flutter/rendering.dart`.
 - For web loading speed, see the Flutter blog post "Best practices for optimizing Flutter web loading speed".
 - This is Flutter's timeline in Chrome DevTools, not React Profiler (react skill) or Playwright tracing (playwright skill).
 

@@ -313,24 +313,23 @@ flutter:
         default_package: my_plugin_name
         fileName: my_file.dart
       web: # Optional
-        ffiPlugin: true
+        pluginClass: MyPlugin
         default_package: my_plugin_name
         fileName: my_file.dart
-    implements: # Optional
-      - example_platform_interface
+    implements: example_platform_interface # Optional
 ```
 
 | Subfield | Description |
 | --- | --- |
 | `platforms` | A list of platforms that will have configuration settings. |
 | `package` | The Android package name of the plugin. Used with the Android platform and required. |
-| `pluginClass` | The name of the plugin class. Optional if `dartPluginClass` is used for the same platform. Usable with Android, iOS, Linux, macOS, and Windows. |
+| `pluginClass` | The name of the plugin class. Optional if `dartPluginClass` is used for the same platform. Usable with Android, iOS, Linux, macOS, Windows, and web. |
 | `default_package` | Optional. The package used as the default implementation of a platform interface. Only applicable to federated plugins. |
 | `dartPluginClass` | Optional. The Dart class that serves as the entry point for a Flutter plugin. Usable with Android, iOS, Linux, macOS, and Windows. |
 | `sharedDarwinSource` | Optional. The plugin shares native code between iOS and macOS. |
 | `fileName` | Optional. The file that contains the plugin class. |
-| `ffiPlugin` | Optional. True if the plugin uses a Foreign Function Interface (FFI). |
-| `implements` | Optional. The platform interfaces that a Flutter plugin implements. |
+| `ffiPlugin` | Optional. True if the plugin uses a Foreign Function Interface (FFI). Not supported on web. |
+| `implements` | Optional. The name of the app-facing (platform interface) package that this federated platform implementation implements (a single package name string). |
 
 ### shaders
 
@@ -373,6 +372,8 @@ dependencies:
 ## Notes
 
 - Corrected from the official docs: the original example lists `material_ui` / `cupertino_ui` without a colon or version constraint (invalid YAML); here they are written as valid entries (`any`) — add them with `flutter pub add material_ui` / `flutter pub add cupertino_ui` to get a pinned constraint.
+- Corrected from the official docs: the original example writes `implements` as a YAML list; the Flutter tool reads it as a single package-name string (as on the official "Developing packages & plugins" page), so it is written as a string here.
+- Corrected from the official docs: the original example gives the `web` platform `ffiPlugin: true` and no `pluginClass`; FFI is unavailable on web and web plugins register through `pluginClass` + `fileName` (as on the official "Developing packages & plugins" page).
 - The pubspec can have additional auto-generated Flutter fields that aren't listed here.
 - Version note: in Flutter versions earlier than 3.44, Swift Package Manager isn't enabled by default. Support for disabling Swift Package Manager will be removed in a future Flutter release.
 - Don't list shader files under the `assets` field, either directly or through a directory that contains them; the Flutter tool reports an error if a shader is declared in both places. Like other assets, shaders also support `flavors`, `platforms`, and `transformers`.

@@ -31,12 +31,12 @@ Full page mode is the default for new Flutter web projects; no extra configurati
 
 | Feature | `iframe` embedding | Direct DOM embedding (`hostElement` / multiview) |
 | --- | --- | --- |
-| Isolation & sandboxing | Full browser sandboxing with separate JS global scope, DOM tree, and CSS styles | Shares the same DOM tree and JavaScript context |
+| Isolation & sandboxing | Separate JS global scope, DOM tree, and CSS styles; browser-enforced isolation only when the frame is cross-origin or has a `sandbox` attribute | Shares the same DOM tree and JavaScript context |
 | Memory & engine instances | Each `iframe` initializes its own Flutter engine, WebAssembly/JS runtime, and memory heap | A single Flutter engine instance and memory heap can manage one or more views (multiview) |
 | JavaScript interop | Asynchronous messaging (such as `postMessage`) | Direct synchronous communication using `package:web` and `dart:js_interop` |
 | Styling & layout | Independent frame isolated from host page CSS | Direct integration into host page CSS layout (such as flexbox and grid) |
 | State sharing | State must be synchronized across window boundaries | Direct state sharing in Dart across all attached views |
-| Best for | Third-party widgets, untrusted content, isolated micro-frontends, simple drop-in embeds | Embedded UI components in existing web apps, multi-view dashboards, tight host-app integration |
+| Best for | Third-party widgets, untrusted content (serve cross-origin and/or add `sandbox` with minimal `allow-*` tokens), isolated micro-frontends, simple drop-in embeds | Embedded UI components in existing web apps, multi-view dashboards, tight host-app integration |
 
 ## Embedded mode (multi-view)
 
@@ -245,6 +245,7 @@ An empty host `<div>` defaults to `height: auto` and `position: static`, giving 
 
 ## Notes
 
+- Clarified from the official docs (which say "Full browser sandboxing"): an iframe without the `sandbox` attribute that is same-origin with the host page can access the parent DOM and JavaScript; for untrusted content serve the Flutter app from a different origin and/or set `sandbox` with only the needed `allow-*` tokens (e.g. `allow-scripts`).
 - Multi-view embedding also works with a single view. Advantages: views can be created and removed dynamically, and if single-view support is ever deprecated your app is unaffected.
 - View constraints passed from JS must be compatible with the CSS of the `hostElement`; Flutter does not "fix" contradictory constraints (for example `max-height: 100px` in CSS with `maxHeight: Infinity` in Flutter).
 - Flutter web multi-view embedding (Dart `View` / `ViewCollection`, `runWidget`) is distinct from embedding React / Next.js components (react, nextjs-app skills).
