@@ -174,7 +174,7 @@ Files (e.g., datasheets, SPICE models) can be embedded in a symbol via the **Emb
 
 A power symbol is a regular symbol where:
 - The **Value** field determines the net name (global for power symbols; local power symbols do not connect between sheets)
-- It has a single pin of type **Power Input** (pin number 1, length 0, visible, placed on the anchor is recommended)
+- It has a single pin: for an ordinary power symbol (net label), a visible pin of type **Power Input** (pin number 1, length 0, placed on the anchor is recommended); a symbol that declares a power source, like `PWR_FLAG`, uses a single **Power Output** pin instead
 - **Define as power symbol** is checked (appears in the Add Power Symbol dialog, no footprint, excluded from board / BOM / netlists)
 - The Reference starts with `#` (e.g. `#GND`) and its Show box is unchecked
 
@@ -209,6 +209,7 @@ The symbol checker toolbar button in the Symbol Editor reports:
 
 ## Notes
 
+- The 10.0 manual's Power Symbols section says power symbols consist of a single Power Input pin, while its symbol checker section accepts either a single Power Output pin (see PWR_FLAG) or a visible Power Input pin; both are listed here.
 - Local power symbols are described only in the 10.0 Introduction (they do not connect between sheets); the Symbol Editor section gives no further scope details.
 - Library nicknames must be unique within each scope (global or project). A project library with the same nickname as a global library overrides the global one.
 - Symbol changes in the library do not retroactively update existing schematic instances. Run **Tools** → **Update Symbols from Library…** in the schematic editor to sync.
