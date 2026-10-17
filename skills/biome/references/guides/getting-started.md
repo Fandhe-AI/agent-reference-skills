@@ -52,8 +52,8 @@ npx @biomejs/biome init
 formatter・linter・assist を 1 回で実行。未整形のファイルと診断が列挙される。`--write` で整形・安全な lint 修正・assist を適用（残る診断は修正なし、または unsafe な修正のため要対応）。
 
 ```bash
-biome check
-biome check --write
+npx @biomejs/biome check
+npx @biomejs/biome check --write
 ```
 
 ## 基本コマンド
