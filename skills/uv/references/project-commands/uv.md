@@ -68,6 +68,7 @@ These options appear on (nearly) every uv command. They are listed once here (tr
 
 ## Notes
 
+- `--offline`: in the upstream text, "When disabled" refers to network access — i.e. when `--offline` (or `UV_OFFLINE`) is set, uv uses only locally cached data and locally available files.
 - Not every command accepts every global option; the CLI reference lists them per command. This page is the single place they are described for the project-commands pages.
 - `uv auth`, `uv tool`, `uv python`, `uv pip`, `uv cache` and `uv self` are command groups documented in other categories (indexes-auth, tools, python, pip-interface, configuration).
 
