@@ -13,7 +13,7 @@ A simple release process that uses **channels** and **runtime versions** and mos
 Adapted (not in the official docs): adds `--environment`, which the EAS CLI reference marks as required for Expo SDK 55 or greater.
 
 ```sh
-eas update --channel staging --environment staging
+eas update --channel staging --environment production
 eas update --channel production --environment production
 ```
 
@@ -57,7 +57,7 @@ The `"fingerprint"` policy is experimental and not yet widely recommended in thi
 ### Deploying
 
 - **Previews**: preview updates in internal distribution release builds (use a channel per feature such as "preview-feature-a") or in development builds, which can load updates from any channel provided the runtime version is compatible.
-- **Staging**: `eas update --channel staging --environment staging` makes the hotfix available to staging builds with the targeted runtime version. Staging is typically Google Play Beta or TestFlight. Create a staging build whenever you upload a production build (`eas build --profile staging --auto-submit` alongside `eas build --profile production --auto-submit`).
+- **Staging**: `eas update --channel staging --environment production` makes the hotfix available to staging builds with the targeted runtime version. Staging is typically Google Play Beta or TestFlight. Create a staging build whenever you upload a production build (`eas build --profile staging --auto-submit` alongside `eas build --profile production --auto-submit`).
 - **Production**: `eas update --channel production --environment production`. If you already verified the fix on staging, republish from the same commit. With identical environment variables and code signing configuration on staging and production, promote with `eas update:republish --destination-channel production` to use the exact bundle tested in staging.
 - **Runtime versions**: increment the app version with each new production build for a unique runtime version per release.
 - **Gradual rollout**: `eas update --rollout-percentage 10 --environment production` rolls out to 10% of users; edit later with `eas update:edit`. Per-update rollouts operate on a single update; branch-based rollouts switch a channel over to a different branch.
@@ -66,6 +66,7 @@ The `"fingerprint"` policy is experimental and not yet widely recommended in thi
 ## Notes
 
 - The official guide examples omit `--environment`; it is required for SDK 55+ (EAS CLI reference). The `--environment` values shown here are adapted, not from the official guide.
+- The `staging` build profile sets no `environment`, so with the default `store` distribution EAS Build uses `production`; pass the same environment to `eas update`, or set `build.staging.environment` explicitly. A `staging` EAS environment would be a custom environment, available only on Enterprise and Production plans (EAS environment variables usage / manage pages).
 - Each binary version must always point to a single channel, and you cannot change the channel embedded in a build after you create it. On SDK 54 and later, channel surfing lets an installed release build request updates from a different channel at runtime.
 - As an escape hatch you can host your own update service compatible with the Expo Updates Protocol; only "Runtime Version" and "Platform" exist at the protocol level.
 - Source modificationDate: August 11, 2026 (fetched 2026-10-17).

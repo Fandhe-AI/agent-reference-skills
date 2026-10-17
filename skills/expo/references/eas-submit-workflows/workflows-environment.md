@@ -94,7 +94,16 @@ jobs:
 - Values from secret or sensitive EAS environment variables are redacted in workflow logs.
 - Avoid naming your own variables with the `EAS_` prefix so they do not shadow worker variables such as `EAS_BUILD_ID`, `EAS_BUILD_PROJECT_ID`, and `CI`. Workers also expose toolchain variables such as `HOME`, `PATH`, `LANG`, `ANDROID_HOME`, `ANDROID_SDK_ROOT`, and `JAVA_HOME`, whose values depend on the worker image and may change.
 - `set-env` is on the worker `PATH`; it is the environment-variable counterpart of `set-output`.
-- To inspect a context at runtime: `run: echo '${{ toJSON(github) }}'`.
+- To inspect a context at runtime, pass it through the job `env` and print it quoted. Adapted (not verbatim): the official page uses `run: echo '${{ toJSON(github) }}'`, which interpolates untrusted event text such as commit messages directly into the shell, so a value containing `'` can break out of the quoting. Do not interpolate `${{ }}` values straight into `run`.
+
+  ```yaml
+  jobs:
+    inspect:
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      steps:
+        - run: printf '%s\n' "${GITHUB_CONTEXT}"
+  ```
 - Source modificationDate: September 17, 2026 (fetched 2026-10-17). Distinct from GitHub Actions: the `github` context here mirrors GitHub event fields but the workflow syntax is EAS-specific; see github-docs for GitHub Actions.
 
 ## Related

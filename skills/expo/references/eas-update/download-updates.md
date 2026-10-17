@@ -26,6 +26,8 @@ The strategies are not mutually exclusive.
 - **Foreground**: `Updates.checkForUpdateAsync()` resolves to an `UpdateCheckResult` with `isAvailable` and `manifest`; then `Updates.fetchUpdateAsync()` and `Updates.reloadAsync()`. The `useUpdates()` hook monitors library state from a component. Check when the app is foregrounded or at an interval, or at launch with a custom loading screen.
 - **Background**: use `expo-background-task` to run the same check and fetch methods inside a background task. Register the task at startup by calling `setupBackgroundUpdates` in the top-level component:
 
+Adapted (not verbatim): returns `BackgroundTaskResult` as required by the expo-background-task reference; the official guide returns `Promise.resolve()`.
+
 ```ts
 import * as TaskManager from 'expo-task-manager';
 import * as BackgroundTask from 'expo-background-task';
@@ -35,12 +37,17 @@ const BACKGROUND_TASK_NAME = 'task-run-expo-update';
 
 export const setupBackgroundUpdates = async () => {
   TaskManager.defineTask(BACKGROUND_TASK_NAME, async () => {
-    const update = await Updates.checkForUpdateAsync();
-    if (update.isAvailable) {
-      await Updates.fetchUpdateAsync();
-      await Updates.reloadAsync();
+    try {
+      const update = await Updates.checkForUpdateAsync();
+      if (update.isAvailable) {
+        await Updates.fetchUpdateAsync();
+        await Updates.reloadAsync();
+      }
+    } catch (error) {
+      console.error('Background update failed', error);
+      return BackgroundTask.BackgroundTaskResult.Failed;
     }
-    return Promise.resolve();
+    return BackgroundTask.BackgroundTaskResult.Success;
   });
 
   await BackgroundTask.registerTaskAsync(BACKGROUND_TASK_NAME, {
@@ -59,6 +66,7 @@ setupBackgroundUpdates();
 
 - All information applies only to release builds and debug builds with `EX_UPDATES_NATIVE_DEBUG` enabled.
 - Support for calling `Updates.reloadAsync()` while the app is backgrounded is experimental; monitor for crashes when first enabled. Downloading an update in the background is safe. Unless you persist and restore state, the user will experience a cold boot on reopening.
+- The background task example is adapted: the official guide returns `Promise.resolve()`, while the expo-background-task reference requires tasks to return `BackgroundTaskResult.Success` or `Failed`.
 - Source modificationDate: July 21, 2026 (fetched 2026-10-17).
 
 ## Related
