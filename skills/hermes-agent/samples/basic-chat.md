@@ -4,7 +4,7 @@ Install Hermes Agent and start an interactive session with a configured LLM prov
 
 ```bash
 # Install: download the installer, review it, then run it
-curl -fsSL -o hermes-install.sh https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh
+curl -fsSLo hermes-install.sh https://hermes-agent.nousresearch.com/install.sh
 less hermes-install.sh
 bash hermes-install.sh
 
@@ -23,6 +23,7 @@ hermes -r "my-project"
 
 ## Notes
 
+- Adapted (not in the official docs): the official quickstart pipes the installer from `https://hermes-agent.nousresearch.com/install.sh` straight into `bash`; this sample downloads it first so it can be reviewed before running.
 - Windows requires WSL2 before running the installer.
 - Provider and model can be changed at any time with `/model` inside a session.
 - Use `Alt+Enter` or `Ctrl+J` for multi-line input (e.g. pasting code blocks).
