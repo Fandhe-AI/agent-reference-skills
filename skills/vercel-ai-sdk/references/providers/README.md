@@ -1,0 +1,25 @@
+# providers
+
+| Name | Description | Path |
+|------|-------------|------|
+| addToolInputExamplesMiddleware | Appends tool `inputExamples` to tool descriptions, for providers that do not natively support the `inputExamples` property. | [add-tool-input-examples-middleware.md](./add-tool-input-examples-middleware.md) |
+| AI Gateway | The AI Gateway provider (part of the `ai` package; `gateway` / `createGateway`) connects to models from multiple AI providers through a single interface, with model strings in `creator/model-name` format. | [ai-gateway.md](./ai-gateway.md) |
+| AI SDK Providers | The AI SDK comes with several first-party providers for interacting with different language models, plus community providers built on the Language Model Specification. Not all providers support all AI SDK features. | [ai-sdk-providers.md](./ai-sdk-providers.md) |
+| Amazon Bedrock | The `@ai-sdk/amazon-bedrock` provider: Bedrock language models (Converse API), embedding, reranking and image models, plus the Bedrock Anthropic provider (InvokeModel API) and the Bedrock Mantle provider (OpenAI-compatible API). | [amazon-bedrock.md](./amazon-bedrock.md) |
+| Anthropic | The `@ai-sdk/anthropic` provider: language model support for the Anthropic Messages API, plus provider-defined tools, Agent Skills container support, and decision models. | [anthropic.md](./anthropic.md) |
+| customProvider | Maps ids to any model: custom model configurations, alias names, and an optional fallback provider. Can expose language, embedding, image, transcription, speech, reranking, video, files, and skills capabilities. | [custom-provider.md](./custom-provider.md) |
+| Writing a Custom Provider | Create your own npm provider package that leverages `@ai-sdk/openai-compatible`, so users get an easy way to use the provider's models. | [custom-providers.md](./custom-providers.md) |
+| defaultInstructionsMiddleware | Applies default instructions to language model calls that do not already contain a system message; call-level `instructions` take precedence. | [default-instructions-middleware.md](./default-instructions-middleware.md) |
+| defaultSettingsMiddleware | Applies default settings to language model calls to establish consistent default parameters across invocations. | [default-settings-middleware.md](./default-settings-middleware.md) |
+| extractJsonMiddleware | Extracts JSON from text content by stripping markdown code fences and other formatting; useful with `Output.object()` when models wrap JSON in code blocks. | [extract-json-middleware.md](./extract-json-middleware.md) |
+| extractReasoningMiddleware | Extracts delimited reasoning sections from generated text and exposes them separately from the main text content. | [extract-reasoning-middleware.md](./extract-reasoning-middleware.md) |
+| Google | Use Google Gemini models through AI Gateway (recommended, plain model strings) or directly through the `@ai-sdk/google` provider (Generative AI API, Interactions API, Live realtime, embeddings, image, speech, decision models). | [google.md](./google.md) |
+| LanguageModelV4Middleware | Interface for language model middleware: intercepts and modifies calls to the language model (guardrails, RAG, caching, logging) in a model-agnostic way. | [language-model-middleware.md](./language-model-middleware.md) |
+| Language Model Middleware | Language model middleware enhances the behavior of language models by intercepting and modifying calls to the model (guardrails, RAG, caching, logging) in a model-agnostic way. | [middleware.md](./middleware.md) |
+| OpenAI Compatible Providers | The `@ai-sdk/openai-compatible` package (`createOpenAICompatible`) lets the AI SDK use language model providers that implement the OpenAI API. Detailed docs exist for LM Studio, NIM, ModelRush, Cheaper Inference, Heroku, Clarifai, NEAR AI Cloud and TopxAI (not recorded here). | [openai-compatible-providers.md](./openai-compatible-providers.md) |
+| OpenAI | The `@ai-sdk/openai` provider: language models for the OpenAI Responses, Chat and Completion APIs, plus embedding, image, transcription, translation, speech, realtime and decision models. | [openai.md](./openai.md) |
+| Provider & Model Management | Manage multiple providers and models in a central place and access models through simple string ids, using custom providers (`customProvider`) and a provider registry (`createProviderRegistry`). | [provider-management.md](./provider-management.md) |
+| createProviderRegistry | Creates a registry of multiple providers whose models are accessed by ids in the format `providerId:modelId`. | [provider-registry.md](./provider-registry.md) |
+| simulateStreamingMiddleware | Simulates streaming behavior with responses from non-streaming language models, keeping a consistent streaming interface. | [simulate-streaming-middleware.md](./simulate-streaming-middleware.md) |
+| wrapImageModel | Enhances the behavior of an image model by wrapping it with middleware. | [wrap-image-model.md](./wrap-image-model.md) |
+| wrapLanguageModel | Enhances the behavior of a language model by wrapping it with middleware. | [wrap-language-model.md](./wrap-language-model.md) |
