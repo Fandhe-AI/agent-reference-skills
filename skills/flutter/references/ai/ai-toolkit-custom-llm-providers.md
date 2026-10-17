@@ -145,6 +145,7 @@ Providers shipped with the AI Toolkit: the Firebase AI Logic provider (`Firebase
 
 - A custom provider manages the history for a single chat session with the underlying LLM; as the history changes the underlying chat is either kept up to date automatically or manually recreated (the Firebase provider recreates it whenever history is set manually).
 - `ChangeNotifier` implements the `Listenable` requirement of `LlmProvider`.
+- The sample `history` getter returns the internal `_history` list itself, so the setter's `_history.clear()` also empties the input when it is passed `provider.history` (or a lazy view over it such as `.where(...)`); copy the input with `history.toList()` first and use that copy for `_history.addAll` and `_startChat`.
 - Example sources: the Echo provider at `lib/src/providers/implementations/echo_provider.dart` in https://github.com/flutter/ai and the `FirebaseProvider` class reference.
 - The source page's navigation lists a next page, "Chat client sample", which is not part of this reference.
 
