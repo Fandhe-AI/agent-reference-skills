@@ -77,6 +77,7 @@ cudaMemPoolCreate(&pool, &props);
 - Fork/join pattern: record a fork event on the parent stream, make each localized stream wait on it, launch per-domain work, record a join event per localized stream, and make the parent wait on all join events. Create events with `cudaEventCreateWithFlags` (disable timing when used only for ordering).
 - CUDA Graphs: a fork/join can be captured (`cudaStreamBeginCapture` ... `cudaStreamEndCapture`; every participating stream must be joined back before the end of capture). Captured kernel nodes retain their locality restriction, and replay uses the original localized SMs even when the graph is launched on a different stream. For manual construction, set `cudaKernelNodeParamsV2.ctx` to the localized execution context per kernel node.
 - Compatibility: vGPU and MIG devices report only 1 locality domain; CUDA on Windows does not support localization (1 domain); CUDA Checkpoint does not guarantee localization is retained when restored on a different device; MPS MLOPart mode presents each MLOPart device with a single locality domain, and MPS static partitioning treats the full device as a single locality domain.
+- Document version: CUDA Programming Guide v13.4.2 ([Locality Domains](https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/locality-domains.html); archived copy [13.4.2](https://docs.nvidia.com/cuda/archive/13.4.2/cuda-programming-guide/04-special-topics/locality-domains.html)).
 
 ## Related
 

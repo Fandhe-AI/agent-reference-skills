@@ -93,6 +93,7 @@ Device fabric instructions (`cuda::ptx`):
 - Counted operations: need `CU_LOGICAL_ENDPOINT_FLAG_COUNTED_OPS` at endpoint creation and device support; the counter increments by bytes written as data arrives, must be 256-byte aligned in endpoint memory, and the receiver waits for the expected byte count.
 - Cleanup: make sure no peer can still issue operations before unbinding/destroying (any inter-process synchronization is sufficient, e.g. barrier after stream sync). Destroy imported ids (local alias only), unbind (optional but recommended) and destroy the owner id, `cuLogicalEndpointIdRelease`, then free backing memory in VMM order (`cuMemUnmap`, `cuMemRelease`, `cuMemAddressFree`). Never free an allocation while bound. The endpoint's resources are released when every alias is destroyed.
 - The full instruction qualifiers (access sizes, memory-ordering modes, scopes) are specified in the PTX ISA "Fabric Instructions" section.
+- Document version: CUDA Programming Guide v13.4.2 ([Compute Fabric Transport](https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/compute-fabric-transport.html); archived copy [13.4.2](https://docs.nvidia.com/cuda/archive/13.4.2/cuda-programming-guide/04-special-topics/compute-fabric-transport.html)). Instruction qualifiers: PTX ISA 9.4 [Fabric Instructions](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#fabric-instructions).
 
 ## Related
 
