@@ -33,7 +33,7 @@ Memory pays off when a session ends. On messaging platforms a chat is one contin
 1. Check the write actually happened (`cat ~/.hermes/memories/MEMORY.md`); memory persists only when the model calls the `memory` tool. Small local models (roughly under 30B parameters) often claim a save they never made.
 2. With `write_approval: true`, writes outside the interactive CLI are staged; run `/memory pending` and `/memory approve all`.
 3. Memory is per profile (`hermes -p work` reads `~/.hermes/profiles/work/memories/`).
-4. `memory.memory_enabled: false` (or `memory` under `agent.disabled_toolsets`) removes the tool.
+4. Check memory is enabled. Setting both `memory.memory_enabled: false` and `memory.user_profile_enabled: false` (or listing `memory` under `agent.disabled_toolsets`) removes the tool; with only `memory_enabled: false` the tool stays but advertises only the `user` target and rejects `MEMORY.md` writes.
 5. The snapshot is frozen at session start; start a new session after the write.
 
 `.env` variables are not memory. For a location needed on every run of a recurring task, a skill is often a better home than a memory entry.
@@ -119,6 +119,7 @@ memory:
 ```
 
 - Setting both `memory_enabled` and `user_profile_enabled` to `false` turns the built-in stores off and drops the `memory` tool from the schema; an external provider set via `memory.provider` is unaffected. Listing `memory` under `agent.disabled_toolsets` also hides external provider tools.
+- With only `memory_enabled: false` (user profile still on), the tool stays because it backs the profile store; the tool schema advertises only the `user` target and writes to `MEMORY.md` are rejected. The inverse configuration advertises only `memory` and rejects `USER.md` writes. (Source: user-guide/features/memory.md, troubleshooting step 4 and Configuration section.)
 - `memory.prefetch_spill_enabled: true` replaces oversized external recall with a head/tail preview and file path (restart after changing).
 
 ## Controlling memory writes (`write_approval`)

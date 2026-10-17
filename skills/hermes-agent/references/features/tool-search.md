@@ -1,6 +1,6 @@
 # Tool Search
 
-Opt-in progressive-disclosure layer: MCP and plugin tools (and explicitly named cold built-ins) are replaced in the model-visible tools array by three bridge tools, and the model loads each tool's schema on demand.
+Progressive-disclosure layer, active by default (`tools.tool_search.enabled: auto`, currently an alias of `on`) whenever at least one deferred tool exists: MCP and plugin tools (and explicitly named cold built-ins) are replaced in the model-visible tools array by three bridge tools, and the model loads each tool's schema on demand. Set `enabled: off` to keep every tool eager.
 
 ## Signature / Usage
 
@@ -52,6 +52,7 @@ The budget is `min(threshold_pct% of context, listing_max_tokens)`, re-evaluated
 
 ## Notes
 
+- The upstream page's opening line calls the feature opt-in, but its configuration section defines `auto` (default) as an alias of `on`; `auto` is reserved for future mode changes, so set `on` / `off` explicitly to pin the behavior.
 - Core working-set tools (`terminal`, `read_file`, `write_file`, `patch`, `search_files`, `todo`, `memory`, `browser_*`, `web_search`, `web_extract`, `clarify`, `execute_code`, `delegate_task`, ...) stay eager by default; the curated `defer` list covers cold built-ins such as `computer_use` and `session_search`.
 - `tool_call` unwraps the bridge: hooks, guardrails and approvals run against the real tool name. A batch holds up to 10 entries. Per the Connectors section, local deferred tools stay one entry per `tool_call`: a multi-entry batch that names a local tool is rejected with a correction restating the valid shape, while connector entries in a batch are dispatched as separate gateway requests in input order. The Bridge tools section separately describes the agent splitting a batch containing local tools into one call per entry; the v0.22.2 docs state both.
 - Retrieval is BM25 over tool name, source name, description and parameter names with English Snowball stemming. A tool matches only if it contains the query's rarest token and at least half of the query's answerable terms (floor engages from four answerable terms). Queries with no match return `available_sources`.
