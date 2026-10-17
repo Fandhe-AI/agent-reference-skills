@@ -31,7 +31,7 @@ Two beeps signal recording completion. The agent can reply with text or spoken a
 | Mistral | voxtral-mini | — | Paid | Required |
 | xAI | Grok STT | — | Paid | `XAI_API_KEY` |
 
-Local processing: `pip install faster-whisper` (~150 MB model download). The system falls back automatically through available providers.
+Local processing uses Faster-Whisper, which PM prepares on supported targets (the `voice` extra; no STT API key needed; ~150 MB model download for `base`). It is excluded on native Windows ARM64 and Intel macOS, where a cloud or command-based STT provider is needed. Also available: ElevenLabs, DeepInfra, and `stt.streaming: true` live transcription (openai with `gpt-live-transcribe`, xai, elevenlabs). Automatic fallback order: local, groq, openai.
 
 ## Text-to-Speech (TTS) Providers
 
@@ -92,14 +92,29 @@ DISCORD_REQUIRE_MENTION=false
 DISCORD_FREE_RESPONSE_CHANNELS=123456789,987654321
 ```
 
-## System Dependencies
+## Requirements
 
-| Package Group | Dependencies |
-|---------------|-------------|
-| voice (Python) | sounddevice, numpy |
-| messaging | discord.py[voice], python-telegram-bot |
-| tts-premium | elevenlabs |
-| system | PortAudio, ffmpeg, Opus, espeak-ng (NeuTTS) |
+Use `hermes tools` to configure voice providers. Missing built-in feature requirements go through PM, subject to `security.allow_lazy_installs`; restart Hermes if the dependency environment changes. A bundled app includes its supported engine dependencies; Docker includes a curated subset and disables on-demand installs. Do not use pip against a signed payload or system Python.
+
+| Extra | Packages | Required For |
+|-------|----------|--------------|
+| `voice` | `sounddevice`, `numpy`, Faster-Whisper where supported | CLI audio and optional local STT |
+| `messaging` | `discord.py[voice]`, `python-telegram-bot`, `aiohttp` | Discord and Telegram bots |
+| `tts-premium` | `elevenlabs` | ElevenLabs TTS provider |
+
+`audio-io` contains the microphone/playback dependencies without local STT. The `all` extra does not mean every voice or wake engine. NeuTTS is a separate optional runtime that downloads models on first use; KittenTTS is unavailable on Python 3.14 (v0.22.0) and NeuTTS needs Python below 3.14, so neither installs into the 3.14 managed runtime. System packages: PortAudio, ffmpeg, Opus, espeak-ng (NeuTTS).
+
+## Prerequisites
+
+Hermes installed via the install script, an LLM provider configured (`hermes model`), and a working text chat. A paid Nous Portal subscription supplies the LLM and OpenAI TTS via the Tool Gateway (`hermes setup --portal`).
+
+## Further features
+
+- Say "stop" (strict whole-utterance match; `voice.stop_phrases`, `[]` disables) to end a voice chat; typing a bare stop phrase during a voice chat does the same.
+- Barge-in: interrupt the agent at any point (`voice.barge_in`, `voice.barge_in_threshold_multiplier` default 3.0, `voice.barge_in_grace_seconds` default 0.5).
+- Desktop: client-direct voice with a remote gateway (`voice.client_direct: false` forces the relay) and a GPT-Live full-duplex mode (`voice.voice_chat_mode: gpt-live`, OpenAI `gpt-live-1`, billed by OpenAI per minute of session time).
+- `auxiliary.voice_chat` runs spoken turns on a separate (usually faster) model with reasoning off by default.
+- Wake word ("hey hermes") is documented on the Wake Word feature page; TTS providers on the TTS feature page.
 
 ## Quality Features
 

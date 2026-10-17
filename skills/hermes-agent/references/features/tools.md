@@ -8,19 +8,26 @@ Hermes organizes its capabilities into eight tool categories and exposes them th
 |----------|-------------|-----------|
 | Web | Search and page extraction | `web_search`, `web_extract` |
 | X Search | Twitter/X post search | `x_search` (requires xAI credentials) |
-| Terminal & Files | Command execution and file operations | `terminal`, `process`, `read_file`, `patch` |
+| Terminal & Files | Command execution and file operations | `terminal`, `process_manage`, `read_file`, `patch` |
 | Browser | Interactive browser automation | `browser_navigate`, `browser_snapshot`, `browser_vision` |
 | Media | Multimodal generation and analysis | `vision_analyze`, `image_generate`, `text_to_speech` |
-| Agent Orchestration | Planning and task delegation | `todo`, `clarify`, `execute_code`, `delegate_task` |
+| Agent Orchestration | Planning and task delegation | `todo_list`, `clarify`, `execute_code`, `delegate_task` |
 | Memory & Recall | Persistent storage and retrieval | `memory`, `session_search` |
-| Automation & Delivery | Scheduled tasks and messaging | `cronjob`, `send_message` |
-| Integrations | Home Assistant, MCP servers, RL training | — |
+| Automation | Scheduled tasks (create/list/update/pause/resume/run/remove). Outbound delivery is handled by cron's own delivery, the `hermes send` CLI, and the gateway notifier, not by an agent-callable tool | `cronjob_manage` |
+| Integrations | MCP server tools and plugin tools (e.g. Home Assistant `ha_*` from the `homeassistant` catalog plugin) | — |
 
-The central registry (`tools/registry.py`) contains 70+ registered tools across ~28 toolsets.
+The built-in registry is ~100 tools (Built-in Tools Reference, "Quick counts"), including 10 core browser tools plus CDP-gated and browser-vault tools, 4 file tools, 11 desktop-GUI tools (desktop-app sessions only), 14 kanban tools (registered when the kanban dispatcher spawns the agent), and standalone tools such as `memory`, `clarify`, `delegate_task`, `execute_code`, `cronjob_manage`, `session_search`, `skill_view` / `skill_manage` / `skills_list`, `text_to_speech`, `image_generate`, `vision_analyze`, `video_analyze`, `todo_list`, `computer_use`, `x_search`. About 19 rarely used tools load lazily and are found through Tool Search (v0.22.0; see the Tool Search feature page).
 
 ## Available Toolsets
 
-Common preset names: `web`, `terminal`, `file`, `browser`, `vision`, `image_gen`, `moa`, `skills`, `tts`, `todo`, `memory`, `session_search`, `cronjob`, `code_execution`, `delegation`, `clarify`, `homeassistant`, `rl`
+Common toolsets: `web`, `search`, `terminal`, `file`, `browser`, `vision`, `image_gen`, `skills`, `tts`, `todo`, `memory`, `session_search`, `cronjob`, `code_execution`, `delegation`, `clarify`, `messaging`, `discord`, `discord_admin`, `debugging`, `safe`. Platform presets (`hermes-cli`, `hermes-telegram`, ...) and dynamic MCP toolsets (`mcp-<server>`) are listed in the Toolsets Reference. MCP tools appear with the prefix `mcp__<server>__`.
+
+Renamed in v0.22.0: `todo` is now `todo_list`, `cronjob` is now `cronjob_manage`, `process` is now `process_manage` (the old names still work).
+
+## Tool result annotations
+
+- Terminal commands killed by a signal return a human-readable note (e.g. exit `-9` / `137` becomes "terminated by signal 9: SIGKILL ...").
+- `read_file` transcodes UTF-16 text files (BOM or byte-pattern detection) to UTF-8 with a hint disclosing the conversion; files over 10 MB and truly binary files are still refused.
 
 ## Terminal Backends
 
@@ -32,10 +39,13 @@ Common preset names: `web`, `terminal`, `file`, `browser`, `vision`, `image_gen`
 | Singularity | HPC cluster computing |
 | Modal | Serverless cloud execution |
 | Daytona | Persistent remote dev environments |
+| Vercel Sandbox (`vercel_sandbox`) | Cloud microVM with snapshot-backed filesystem persistence |
+
+Home Assistant tools come from the `homeassistant` catalog plugin (moved out of the bundled set in v0.22.0). Nous Portal subscribers can use web search, image generation, TTS, and browser through the Tool Gateway.
 
 ## Background Process Management
 
-Start a process with `background=true`. Manage running processes via the `process` tool:
+Start a process with `background=true`. Manage running processes via the `process_manage` tool (formerly `process`; renamed v0.22.0):
 
 | Action | Description |
 |--------|-------------|
@@ -46,19 +56,19 @@ Start a process with `background=true`. Manage running processes via the `proces
 | kill | Terminate a process |
 | write | Send input to stdin |
 
+PTY mode (`pty=true`) enables interactive CLI tools. Completed background commands retain exit status and output (newest 64 results, up to 7 days, 200,000-character tail) under `logs/process-results/`, readable only from the conversation that launched them.
+
 ## Container Resources
 
-Configure CPU cores, memory (MB), disk (MB), and filesystem persistence when using container backends.
+Configure CPU cores, memory (MB), disk (MB), and filesystem persistence for all container backends (defaults: `container_cpu: 1`, `container_memory: 5120`, `container_disk: 51200`, `container_persistent: true`). For Vercel Sandbox leave `container_disk` at the shared default; custom disk sizing is unsupported. See the Configuration page for the full Docker key set.
 
 ## Security Features
 
-- Read-only root filesystem
-- Dropped Linux capabilities
-- No privilege escalation
-- PID limits enforced
-- Full namespace isolation
+All container backends run hardened: read-only root filesystem (Docker), all Linux capabilities dropped, no privilege escalation, PID limits (256), full namespace isolation, persistent workspace via volumes. `terminal.docker_forward_env` variables are visible to commands in the container. See the Security page.
 
 ## Web Search Providers
+
+Note: this section is no longer on the upstream Tools page in v0.22.2 (see Web Search in the Configuration page and the web-search feature page for current guidance); the content below is retained from earlier docs.
 
 `web_search` / `web_extract` dispatch to a registered provider. Selection precedence:
 
