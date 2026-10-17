@@ -102,6 +102,7 @@ The possible values and behaviors of the `type` option are platform dependent. P
 
 ## Notes
 
+* `skipTaskbar`: the official description ("Whether to show the window in taskbar") is inverted wording — `skipTaskbar: true` hides the window from the taskbar (same as `win.setSkipTaskbar(true)`, which "Makes the window not show in the taskbar"). Default `false` shows it.
 * Distinct from native window APIs: these are Electron's main-process window options. For WinUI 3 AppWindow / title bar see windows-winui-ui, for NSWindow see apple-appkit.
 * `backgroundMaterial` (Mica / Acrylic) is Electron's passthrough to the Windows DWM backdrop; WinUI 3 backdrop APIs are in windows-winui-ui.
 
