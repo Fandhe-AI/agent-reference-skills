@@ -37,7 +37,7 @@ Supported filters:
 
 - Build cache is always eligible for pruning with this command, including BuildKit cache mounts created with `RUN --mount=type=cache`. Use `docker builder prune` to reclaim only build cache without removing containers, networks, or images.
 - By default volumes are not removed, to avoid deleting important data when no container currently uses the volume. `--volumes` prunes anonymous volumes not used by at least one container.
-- Multiple filters with different keys combine with AND; the same key combines with OR (`--filter "label=foo" --filter "until=24h"` prunes items with label `foo` and older than 24 hours; `--filter "label=foo" --filter "label=bar"` prunes items with either label).
+- Multiple filters with different keys combine with AND; `--filter "label=foo" --filter "until=24h"` prunes items with label `foo` and older than 24 hours. The official docs state that the same key combines with OR ("either label"), but for `label` the daemon requires every specified label to match (AND): `--filter "label=foo" --filter "label=bar"` prunes only items that have both labels.
 - `until` accepts Unix timestamps, date-formatted timestamps (RFC3339Nano, RFC3339, `2006-01-02T15:04:05`, `2006-01-02T15:04:05.999999999`, `2006-01-02T07:00`, `2006-01-02`), or Go duration strings (e.g. `10m`, `1h30m`) computed relative to the daemon machine's time; the daemon's local timezone is used when no offset is given.
 - The confirmation prompt lists what will be removed: stopped containers, networks not used by at least one container, dangling images (or all images without a container with `-a`), unused build cache, and anonymous volumes with `--volumes`.
 

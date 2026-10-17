@@ -42,6 +42,7 @@ $ docker exec CONTAINER tar Ccf "$(dirname "$SRC_PATH")" - "$(basename "$SRC_PAT
 $ tar Ccf "$(dirname "$SRC_PATH")" - "$(basename "$SRC_PATH")" | docker exec -i CONTAINER tar Cxf "$DEST_PATH" -
 ```
 
+- Adapted from the official corner-case example: paths are assigned to `SRC_PATH` / `DEST_PATH` and quoted to avoid word splitting; the official text uses unquoted `$(dirname SRC_PATH)` placeholders.
 - With `-` as `SRC_PATH`, the tar content is extracted to `DEST_PATH` in the container, which must be a directory.
 - Distinct from other products' "container" concepts: LXC containers in proxmox-ve, ModelContainer in apple-data, CKContainer in apple-app-services, and item containers in windows-* skills are unrelated to Docker containers.
 

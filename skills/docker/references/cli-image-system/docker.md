@@ -22,18 +22,20 @@ Depending on the system configuration each `docker` command may need `sudo`; an 
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `--config` | `/root/.docker` | Location of client config files |
+| `--config` | `~/.docker` | Location of client config files |
 | `-c`, `--context` |  | Name of the context to use to connect to the daemon (overrides DOCKER_HOST env var and default context set with `docker context use`) |
 | `-D`, `--debug` |  | Enable debug mode |
 | `-H`, `--host` |  | Daemon socket to connect to |
 | `-l`, `--log-level` | `info` | Set the logging level (`debug`, `info`, `warn`, `error`, `fatal`) |
 | `--tls` |  | Use TLS; implied by --tlsverify |
-| `--tlscacert` | `/root/.docker/ca.pem` | Trust certs signed only by this CA |
-| `--tlscert` | `/root/.docker/cert.pem` | Path to TLS certificate file |
-| `--tlskey` | `/root/.docker/key.pem` | Path to TLS key file |
+| `--tlscacert` | `~/.docker/ca.pem` | Trust certs signed only by this CA |
+| `--tlscert` | `~/.docker/cert.pem` | Path to TLS certificate file |
+| `--tlskey` | `~/.docker/key.pem` | Path to TLS key file |
 | `--tlsverify` |  | Use TLS and verify the remote |
 
 ## Notes
+
+The official generated options table shows `/root/.docker` because it was rendered as root; the actual default is the `.docker` directory in the invoking user's `$HOME`, overridable with `DOCKER_CONFIG` or `--config` (the flag wins).
 
 ### Environment variables
 

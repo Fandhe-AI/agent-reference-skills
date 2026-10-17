@@ -35,7 +35,8 @@ Supported filters:
 
 ## Notes
 
-- Multiple filters with different keys combine with AND; multiple filters with the same key combine with OR. `--filter "label=foo" --filter "until=24h"` prunes images with label `foo` and older than 24 hours; `--filter "label=foo" --filter "label=bar"` prunes images with either label.
+- Multiple filters with different keys combine with AND; `--filter "label=foo" --filter "until=24h"` prunes images with label `foo` and older than 24 hours.
+- The official docs state that repeated filters with the same key combine with OR (and give `--filter "label=foo" --filter "label=bar"` as "either label"), but for `label` the daemon requires every specified label to match (AND, `MatchKVList` in moby): `--filter "label=foo" --filter "label=bar"` prunes only images that have both labels.
 - `until` accepts Unix timestamps (`seconds[.nanoseconds]`), date-formatted timestamps (RFC3339Nano, RFC3339, `2006-01-02T15:04:05`, `2006-01-02T15:04:05.999999999`, `2006-01-02T07:00`, `2006-01-02`), or Go duration strings (e.g. `10m`, `1h30m`) computed relative to the daemon machine's time. The daemon's local timezone is used when no `Z` or `+-00:00` offset is given.
 - Positive label filters can be previewed with `docker image ls` using the same filter syntax. Negative filters (`label!=`) do not work with `docker image ls`, so the result cannot be easily predicted. The confirmation prompt always warns that all dangling images will be removed, even with `--filter`, and does not list what will be removed.
 

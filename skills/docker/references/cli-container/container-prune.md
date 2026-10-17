@@ -24,7 +24,7 @@ $ docker container prune --force --filter "until=5m"
 ## Notes
 
 - Without `--force` the command prompts: `WARNING! This will remove all stopped containers. Are you sure you want to continue? [y/N]`.
-- `--filter` format is `key=value`; repeat for multiple filters. Different keys combine with AND; the same key combines with OR. Example: `--filter "label=foo" --filter "until=24h"` prunes containers with label `foo` and created more than 24 hours ago; `--filter "label=foo" --filter "label=bar"` prunes containers with either label.
+- `--filter` format is `key=value`; repeat for multiple filters. Different keys combine with AND. Example: `--filter "label=foo" --filter "until=24h"` prunes containers with label `foo` and created more than 24 hours ago. The official docs state that the same key combines with OR ("either label"), but for `label` the daemon requires every specified label to match (AND): `--filter "label=foo" --filter "label=bar"` prunes only containers that have both labels.
 - Supported filters:
   - `until` (`<timestamp>`): only remove containers created before the given timestamp.
   - `label` (`label=<key>`, `label=<key>=<value>`, `label!=<key>`, or `label!=<key>=<value>`): only remove containers with (or, with `label!=`, without) the specified labels.
