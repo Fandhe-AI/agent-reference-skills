@@ -1,0 +1,12 @@
+# extensions
+
+| Name | Description | Path |
+|------|-------------|------|
+| Authorization Extensions | The ext-auth repository contains official MCP extensions that add authorization capabilities beyond the core MCP specification, for scenarios where the standard OAuth 2.0 authorization code flow is not the right fit. | [auth-extensions.md](./auth-extensions.md) |
+| Extension Client Matrix | Community-maintained matrix of which MCP clients implement which official extensions. Extensions are always opt-in: a client only uses an extension if both client and server declare support in the `extensions` field of their capabilities. | [client-matrix.md](./client-matrix.md) |
+| Enterprise-Managed Authorization | The `io.modelcontextprotocol/enterprise-managed-authorization` extension lets organizations control MCP server access centrally through their existing identity provider (IdP) instead of each employee authorizing each MCP server individually. | [enterprise-managed-authorization.md](./enterprise-managed-authorization.md) |
+| Extensions Overview | MCP extensions are optional additions to the specification that define capabilities beyond the core protocol. They may be modular (e.g., authentication), specialized (industry-specific logic), or experimental (incubated for potential core inclusion). | [extensions-overview.md](./extensions-overview.md) |
+| Build an MCP App | Server-side and UI-side API surface used in the official MCP Apps quickstart (`@modelcontextprotocol/ext-apps`). Step-by-step project setup is in the samples. | [mcp-apps-build.md](./mcp-apps-build.md) |
+| MCP Apps | MCP Apps (`io.modelcontextprotocol/ui`) let servers return interactive HTML interfaces (data visualizations, forms, dashboards) that render directly in the chat inside an MCP host. | [mcp-apps.md](./mcp-apps.md) |
+| OAuth Client Credentials | The `io.modelcontextprotocol/oauth-client-credentials` extension adds the OAuth 2.0 client credentials flow (RFC 6749 section 4.4) to MCP, letting automated systems connect to MCP servers without interactive user authorization. | [oauth-client-credentials.md](./oauth-client-credentials.md) |
+| Tasks Extension | The `io.modelcontextprotocol/tasks` extension lets servers return a durable task handle instead of blocking, so clients can poll for progress, provide input when needed, and retrieve the final result after reconnecting. | [tasks.md](./tasks.md) |
