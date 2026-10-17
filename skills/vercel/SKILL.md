@@ -1,13 +1,14 @@
 ---
 name: vercel
 description: >
-  Vercel プラットフォームリファレンス。Vercel CLI、vercel.json / vercel.ts 設定、
-  Vercel Functions（Node.js / Edge / Fluid Compute / ISR / Middleware）、
-  Vercel Blob、Edge Config、Marketplace Storage（Neon / Upstash / Supabase）、
-  デプロイメント管理（Git 連携 / rollback / rolling release）、
-  環境変数、ドメイン、DNS、ログ、キャッシュ、CDN。
+  Vercel リファレンス。Vercel CLI、vercel.json / vercel.ts / vercel.toml、
+  Vercel Functions（Node.js / Python / Bun / Edge / Fluid Compute / ISR / Middleware）、
+  @vercel/functions、Vercel Blob、Global Config（旧 Edge Config）、Marketplace Storage、OIDC、
+  デプロイメント（rollback / rolling release）、環境変数、ドメイン、DNS、ログ、CDN。
 user-invocable: false
 ---
+
+対象バージョン: vercel.com/docs Markdown twins (取得日 2026-10-16) / Vercel CLI 64.3.1 / @vercel/blob 2.8.2 / @vercel/global-config 1.5.1 / @vercel/functions 3.10.1
 
 ## ディレクトリ構成
 
@@ -31,6 +32,7 @@ skills/vercel/
       buy.md
       cache.md
       certs.md
+      comments.md
       connect.md
       contract.md
       crons.md
@@ -45,7 +47,6 @@ skills/vercel/
       flags.md
       git.md
       global-config.md
-      global-options.md
       guidance.md
       help.md
       httpstat.md
@@ -63,6 +64,7 @@ skills/vercel/
       microfrontends.md
       oauth-apps.md
       open.md
+      pricing.md
       project.md
       promote.md
       pull.md
@@ -73,6 +75,9 @@ skills/vercel/
       rolling-release.md
       routes.md
       sandbox.md
+      security.md
+      setup.md
+      signup.md
       skills-cmd.md
       switch.md
       target.md
@@ -89,6 +94,7 @@ skills/vercel/
       README.md
       vercel-json.md
       vercel-ts.md
+      vercel-toml.md
       git-configuration.md
       build-output-api.md
     functions/
@@ -97,7 +103,18 @@ skills/vercel/
       fluid-compute.md
       node-js-runtime.md
       edge-runtime.md
+      python-runtime.md
+      bun-runtime.md
+      go-runtime.md
+      rust-runtime.md
+      ruby-runtime.md
+      wasm-runtime.md
+      container-runtime.md
       runtimes.md
+      functions-api-reference.md
+      vercel-sdk-python.md
+      concurrency-scaling.md
+      websockets.md
       configuring-functions.md
       regions.md
       max-duration.md
@@ -120,6 +137,9 @@ skills/vercel/
         server-upload.md
         client-upload.md
         pricing.md
+        signed-urls.md
+        python-sdk.md
+        security.md
       edge-config/
         README.md
         overview.md
@@ -127,6 +147,7 @@ skills/vercel/
         vercel-api.md
         using-edge-config.md
         limits.md
+        migration-guide.md
       marketplace/
         README.md
         overview.md
@@ -141,7 +162,14 @@ skills/vercel/
       vercel-for-github.md
       vercel-for-gitlab.md
       vercel-for-bitbucket.md
+      vercel-for-azure-pipelines.md
       generated-urls.md
+      claim-deployments.md
+      sharing-deployments.md
+      preview-deployment-suffix.md
+      deployment-policy.md
+      deployment-retention.md
+      deployment-storage.md
       deploy-hooks.md
       managing-deployments.md
       promoting-deployments.md
@@ -196,13 +224,20 @@ skills/vercel/
 | Fluid Compute / Edge Runtime / Node.js Runtime の違いを確認したい | functions | [references/functions/README.md](references/functions/README.md) |
 | ISR・Middleware・ストリーミング・画像最適化を知りたい | functions | [references/functions/README.md](references/functions/README.md) |
 | Functions のリージョン・最大実行時間・メモリ制限を確認したい | functions | [references/functions/README.md](references/functions/README.md) |
+| vercel.toml の設定項目を確認したい | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| Python / Bun / Go / Rust / Ruby / Wasm / Container ランタイムを知りたい | functions | [references/functions/README.md](references/functions/README.md) |
+| @vercel/functions の API（waitUntil / geolocation / getEnv など）を確認したい | functions | [references/functions/README.md](references/functions/README.md) |
 | Vercel Blob の使い方（アップロード・一覧・削除）を知りたい | storage/vercel-blob | [references/storage/vercel-blob/README.md](references/storage/vercel-blob/README.md) |
-| Edge Config の読み取り・更新 API を確認したい | storage/edge-config | [references/storage/edge-config/README.md](references/storage/edge-config/README.md) |
+| Blob の signed URL（presignUrl）・Python SDK を知りたい | storage/vercel-blob | [references/storage/vercel-blob/README.md](references/storage/vercel-blob/README.md) |
+| Global Config (旧 Edge Config) の読み取り・更新 API を確認したい | storage/edge-config | [references/storage/edge-config/README.md](references/storage/edge-config/README.md) |
+| Edge Config から Global Config への移行手順を知りたい | storage/edge-config | [references/storage/edge-config/README.md](references/storage/edge-config/README.md) |
 | Neon / Upstash / Supabase の接続方法を知りたい | storage/marketplace | [references/storage/marketplace/README.md](references/storage/marketplace/README.md) |
 | ストレージ製品の比較・選定をしたい | storage | [references/storage/README.md](references/storage/README.md) |
 | Git 連携・自動デプロイの設定を知りたい | deployment | [references/deployment/README.md](references/deployment/README.md) |
 | デプロイ環境（Preview / Production / Custom）を理解したい | deployment | [references/deployment/README.md](references/deployment/README.md) |
 | rollback・rolling release・promote の手順を確認したい | deployment | [references/deployment/README.md](references/deployment/README.md) |
 | Deploy Hooks・生成 URL・デプロイ管理を知りたい | deployment | [references/deployment/README.md](references/deployment/README.md) |
+| デプロイメント保持期間（retention）・Deployment Storage・共有・claim を知りたい | deployment | [references/deployment/README.md](references/deployment/README.md) |
+| Azure Pipelines 連携を設定したい | deployment | [references/deployment/README.md](references/deployment/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを実行したい | scripts | [scripts/README.md](scripts/README.md) |

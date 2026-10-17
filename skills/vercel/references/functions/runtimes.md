@@ -7,13 +7,14 @@ Runtimes transform source code into Vercel Functions. Each runtime provides diff
 | Runtime | Description |
 |---------|-------------|
 | [Node.js](./node-js-runtime.md) | Full Node.js API access; JS/TS; bundles up to 250 MB |
-| Bun | Bun-compatible runtime; most Node.js features supported |
-| Python | Single HTTP handler; bundles up to 500 MB |
-| Rust | Uses `vercel_runtime` crate; compiled to Vercel Function |
-| Go | Single HTTP handler |
-| Ruby | Single HTTP handler |
-| Wasm | Pre-compiled WebAssembly |
+| [Bun](./bun-runtime.md) (Beta) | Takes a Bun function entrypoint, builds its dependencies and bundles them into a Vercel Function |
+| [Python](./python-runtime.md) | Runs ASGI and WSGI applications such as FastAPI, Flask, and Django as Vercel Functions; bundles up to 500 MB. Generally available (changelog 2026-10-15) |
+| [Rust](./rust-runtime.md) (Beta) | Uses `vercel_runtime` crate; compiled to Vercel Function |
+| [Go](./go-runtime.md) (Beta) | Single HTTP handler |
+| [Ruby](./ruby-runtime.md) (Beta) | Single HTTP handler |
+| [Wasm](./wasm-runtime.md) | Pre-compiled WebAssembly |
 | [Edge](./edge-runtime.md) | V8-based; no container/VM; runs closest to user |
+| [Container](./container-runtime.md) (Beta) | Runs any code and library from an OCI container image built from a `Dockerfile.vercel` file |
 
 ## Community Runtimes
 
@@ -31,6 +32,7 @@ Specify via `functions` property in `vercel.json`:
 |---------|----------------------|
 | Node.js, Edge, Bun, etc. | 250 MB |
 | Python | 500 MB |
+| Node.js, Bun, Python with [Large functions](./limitations.md) (Beta) | Up to 5 GB (requires Fluid compute with Active CPU) |
 
 ## Features
 
@@ -67,7 +69,9 @@ Archived functions incur at least 1 second additional cold start on next invocat
 - Streaming supported by Node.js (default), Python, and Edge runtimes
 - `waitUntil()` available for Node.js and Edge runtimes
 - Cron jobs call a Vercel Function when triggered
-- Edge Config allows low-latency reads at the edge without querying a database
+- Global Config (formerly Edge Config) allows low-latency reads at the edge without querying a database
+- Availability labels come from each runtime's docs banner: Go, Ruby, Rust, Bun and Container show "(Beta) is available on all plans"; Node.js, Python, Wasm and Edge have no Beta banner
+- Related pages: [functions-api-reference.md](./functions-api-reference.md), [vercel-sdk-python.md](./vercel-sdk-python.md), [concurrency-scaling.md](./concurrency-scaling.md), [websockets.md](./websockets.md)
 
 ## Related
 

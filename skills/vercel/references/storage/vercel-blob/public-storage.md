@@ -92,7 +92,9 @@ Per browser download: Blob Data Transfer + Fast Origin Transfer (on cache miss o
 ## Notes
 
 - Access mode cannot be changed after store creation
-- HTML files are blocked from being hosted (content-disposition prevents it)
+- HTML files are blocked from being hosted: Vercel Blob sets the `content-disposition` header to `inline` for displayable types and `attachment` for everything else (so HTML pages can't be hosted)
+- On Vercel the SDK authenticates with OIDC by default: connect the store to a project and Vercel adds `BLOB_STORE_ID` and the OIDC token automatically (see blob-sdk.md Authentication)
+- Server-side conditional reads use `ifNoneMatch` with `get()` as shown above; checked against the current public-storage docs
 - `addRandomSuffix: true` makes URLs unguessable but does not prevent indexing if linked publicly
 
 ## Related

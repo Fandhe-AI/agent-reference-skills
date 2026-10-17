@@ -80,17 +80,31 @@ vercel cache dangerously-delete --tag foo
 vercel usage
 ```
 
-期間を指定して確認。
+期間を指定して確認（`--since` は `YYYY-MM-DD`・ISO 8601・相対期間（例: `7d`）、`--until` の指定には `--since` が必要）。
 
 ```sh
-vercel usage --from 2025-01-01 --to 2025-01-31
+vercel usage --since 2025-01-01 --until 2025-01-31
 ```
 
-日別内訳で表示。
+過去 7 日間を確認。
+
+```sh
+vercel usage --since 7d
+```
+
+日別内訳で表示（`daily` / `weekly` / `monthly`）。
 
 ```sh
 vercel usage --breakdown daily
 ```
+
+JSON 形式で出力。
+
+```sh
+vercel usage --format json
+```
+
+`--from` / `--to` は引き続き動作するが非推奨警告が出る。新規には `--since` / `--until` を使う。
 
 ## ファイアウォールの管理
 

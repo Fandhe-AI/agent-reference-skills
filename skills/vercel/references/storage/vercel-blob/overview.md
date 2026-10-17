@@ -17,7 +17,7 @@ Object storage for files of any size with private and public access modes.
 
 ```bash
 npm i @vercel/blob
-vercel env pull  # pulls BLOB_READ_WRITE_TOKEN / BLOB_STORE_ID
+vercel env pull  # pulls BLOB_STORE_ID / VERCEL_OIDC_TOKEN (OIDC default) for connected stores
 ```
 
 ```js
@@ -28,6 +28,16 @@ console.log(blob.url);
 ```
 
 ## Authentication
+
+Connected projects authenticate with OpenID Connect (OIDC) by default. When you connect a store (store's **Projects** tab > **Connect to Project**), Vercel adds these environment variables:
+
+| Variable | What it is |
+|----------|------------|
+| `BLOB_STORE_ID` | Id of the store; the SDK pairs it with the OIDC token. An identifier, not a secret |
+| `VERCEL_OIDC_TOKEN` | Short-lived OIDC token issued and rotated by Vercel; refreshed automatically after `vercel env pull` using your Vercel CLI credentials |
+| `BLOB_WEBHOOK_PUBLIC_KEY` | Public key the SDK uses to verify webhook callbacks signed by Vercel Blob. A public value, not a secret |
+
+`BLOB_READ_WRITE_TOKEN` is a long-lived static token added when you create a store and is a fallback: OIDC takes precedence when its environment variables are present. Use the read-write token only when your code runs outside Vercel (CI job, another host) or when you generate client tokens for browser uploads.
 
 The SDK resolves credentials in this order:
 
@@ -56,6 +66,11 @@ The SDK resolves credentials in this order:
 
 ## Notes
 
+- Unlimited stores on every plan (changelog 2026-09-23): the previous limits of 100 (Hobby), 500 (Pro) and 1,000 (Enterprise) stores no longer apply. Store creation is billed as a Blob Advanced Operation (Pro $5.00 per million; on Hobby it counts toward the 2,000 free operations per month); deleting a store is free
+- Overwrite protection is on by default: uploading to an existing pathname fails unless `allowOverwrite: true`; alternatives are `addRandomSuffix: true` or unique pathnames. Treat blobs as immutable where possible
+- Conditional writes (`ifMatch` with an ETag) and conditional reads (`ifNoneMatch`, 304) are supported for both private and public stores
+- Signed URLs (changelog "Signed URLs are now available for Vercel Blob"): time-limited access to a blob URL without exposing a read-write token; see [signed-urls.md](./signed-urls.md)
+- You can create stores in any of 19 regions (`--region` in the CLI, default `iad1`); region and access mode cannot be changed after creation
 - Blobs larger than 512 MB are never cached; every access is a cache MISS
 - `del()` operations are free; delete may take up to 60 seconds to propagate
 - Dashboard interactions (browse, upload, view) count as operations toward billing
@@ -67,4 +82,7 @@ The SDK resolves credentials in this order:
 - [Public Storage](./public-storage.md)
 - [Server Upload](./server-upload.md)
 - [Client Upload](./client-upload.md)
+- [Signed URLs](./signed-urls.md)
+- [Python SDK](./python-sdk.md)
+- [Security](./security.md)
 - [Pricing](./pricing.md)

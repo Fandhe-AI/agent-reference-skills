@@ -22,13 +22,35 @@ export const maxDuration = 30; // seconds
 
 ## Duration Limits by Plan (Fluid Compute enabled)
 
-### Node.js and Python Runtimes
+### Node.js, Bun and Python Runtimes
 
 | Plan | Default | Maximum |
 |------|---------|---------|
 | Hobby | 300s (5 min) | 300s (5 min) |
 | Pro | 300s (5 min) | 800s (13 min) |
 | Enterprise | 300s (5 min) | 800s (13 min) |
+
+### Extended max duration (Beta)
+
+Pro and Enterprise teams can run individual functions for up to 1800s (30 minutes). During the beta, durations above 800s must be configured per function in code or `vercel.json`; project-level defaults above 800s are not supported yet.
+
+| Plan | Default | Maximum | Extended maximum |
+|------|---------|---------|------------------|
+| Hobby | 300s | 300s | - |
+| Pro | 300s | 800s | 1800s (Beta) |
+| Enterprise | 300s | 800s | 1800s (Beta) |
+
+Supported runtime versions during the beta: `nodejs22.x`, `nodejs24.x`, Bun `1.x` and `1.4.x`, `python3.12`, `python3.13`, `python3.14`. The Bun runtime is included (changelog "Bun runtime now supports large functions and extended max duration"). Secure Compute and Static IPs do not support durations above 800s during the beta.
+
+```json
+{
+  "functions": {
+    "api/long-task.py": { "maxDuration": 1800 }
+  }
+}
+```
+
+For Next.js App Router functions on a supported Node.js or Bun runtime, set `export const maxDuration = 1800;` in the route file. For Python framework apps, key the entry on the resolved entrypoint file (e.g. `app/main.py`) instead of an `/api` route.
 
 ### Edge Runtime
 

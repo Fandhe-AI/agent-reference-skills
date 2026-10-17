@@ -59,6 +59,8 @@ A caching strategy combining static content speed with server-side rendering fle
 
 - ISR cache is scoped per deployment; each new deployment gets its own cache
 - ISR cache region follows the project's default function region (`iad1` by default)
+- Request collapsing (docs page `/docs/incremental-static-regeneration/request-collapsing`): when requests arrive while the first function invocation for an uncached path is still running, the CDN collapses them into the original one (within the same region); they wait and all receive the same result, preventing a cache stampede. It also applies when serving STALE responses (stale-while-revalidate), collapsing concurrent background revalidations into one invocation. Supported for ISR and Image Optimization
+- The `revalidate` / `isr.expiration` / `routeRules` ISR configuration forms in the table above match the current ISR docs (Nuxt: `routeRules` with the `isr` option; checked against the 2026-10 docs page)
 - `Cache-Control` headers alone do not enable request collapsing, durable storage, or 300ms global purges
 - Data caching inside functions (per-fetch, per-query) uses Runtime Cache separately from ISR
 

@@ -43,11 +43,17 @@ export async function GET(request: Request) {
 }
 ```
 
+## Authentication
+
+When your code runs on Vercel the SDK authenticates with OIDC by default: connect the store to a project and Vercel adds `VERCEL_OIDC_TOKEN` and `BLOB_STORE_ID` automatically. For team-level stores or code outside Vercel, see Authentication in blob-sdk.md.
+
 ## Accessing Without the SDK
+
+From code running on Vercel, pass the short-lived `VERCEL_OIDC_TOKEN` (preferred over the long-lived `BLOB_READ_WRITE_TOKEN` because it rotates; you handle expiry yourself, requests fail with `403` once it expires):
 
 ```bash
 curl https://<store-id>.private.blob.vercel-storage.com/file.pdf \
-  -H "Authorization: Bearer $BLOB_READ_WRITE_TOKEN"
+  -H "Authorization: Bearer $VERCEL_OIDC_TOKEN"
 ```
 
 ## Caching
@@ -63,6 +69,16 @@ Recommended `Cache-Control` values:
 |----------|--------|
 | General private content | `private, no-cache` |
 | Sensitive data (PII, tokens) | `private, no-store` |
+
+### Consistent reads (`useCache`)
+
+Reads go through the CDN cache by default, so an overwrite can take up to 60 seconds to propagate. When a read must reflect the latest write, bypass the cache for that read:
+
+```ts
+const result = await get(pathname, { access: 'private', useCache: false });
+```
+
+This serves the read directly from origin storage; these reads are slower and incur Fast Origin Transfer on each request. Keep the default for content that doesn't change after upload (unique pathnames or random suffix). Presigned `GET` URLs accept the same `useCache` option in `presignUrl()` (see signed-urls.md) for time-limited delivery without exposing a read-write token.
 
 ### Conditional Requests (ETag)
 

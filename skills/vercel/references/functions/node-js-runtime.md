@@ -31,7 +31,7 @@ Available on `request` and `response` objects for `/api` handlers:
 |--------|--------|-------------|
 | `request.query` | Request | Parsed query string object, or `{}` |
 | `request.cookies` | Request | Parsed cookies object, or `{}` |
-| `request.body` | Request | Parsed body based on `Content-Type`, or `null` |
+| `request.body` | Request | Parsed body based on `Content-Type`, or `undefined` if the request has no `Content-Type` header or an unsupported one |
 | `response.status(code)` | Response | Set HTTP status code; returns `response` for chaining |
 | `response.send(body)` | Response | Send `string`, `object`, or `Buffer` as response body |
 | `response.json(obj)` | Response | Send JSON response |
@@ -67,6 +67,8 @@ Vercel looks for these files in project root or `src/`:
 
 ## Notes
 
+- Node.js versions (docs "Supported Node.js versions"): `24.x` (default; a new project uses the latest LTS) and `22.x`; only major versions are selectable and Vercel rolls out minor and patch updates. Select the version in Project Settings > Build and Deployment > Node.js Version
+- Deprecated Node.js versions: team owners and members can upgrade all projects on Node.js 20 or earlier to Node.js 24 with one click in the dashboard (changelog 2026-08-13). This updates the project-settings version only; a version defined in `package.json` must be updated manually, and existing deployments are not affected. The changelog "Node.js 20 is being deprecated on October 1, 2026" is linked from the versions page
 - All Node.js APIs are supported, including file system, crypto, streams
 - `request.body` uses a JavaScript getter and is only computed on access
 - Malformed JSON in `request.body` throws an error — wrap with `try...catch`

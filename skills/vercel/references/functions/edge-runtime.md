@@ -73,6 +73,7 @@ export default function handler(request: Request) {
 
 ## Notes
 
+- Edge Functions as a product are deprecated (docs page `/docs/functions/runtimes/edge/edge-functions`, "Edge Functions (Deprecated)"): do not use them for new projects; use Vercel Functions on the Node.js runtime (the default; remove `export const runtime = 'edge'`). The deprecation applies to standalone Edge Functions, not to Routing Middleware, which uses the edge runtime by default and is supported
 - Must use ES modules (`import`/`export`); add `"type": "module"` to `package.json` or use `.mjs` extension if not using a framework
 - `node_modules` can be used if they implement ES Modules and don't use native Node.js APIs
 - Check runtime with `typeof EdgeRuntime !== 'string'` (dead-code eliminated in Node.js)

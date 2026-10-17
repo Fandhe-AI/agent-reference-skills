@@ -1,6 +1,6 @@
 # Connect
 
-Vercel Connect コネクタの作成・接続・トークン取得（beta）
+Vercel Connect コネクタの作成・接続・トークン取得
 
 ## コネクタの作成
 

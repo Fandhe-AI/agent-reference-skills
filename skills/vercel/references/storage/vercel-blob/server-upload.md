@@ -11,8 +11,13 @@ Upload files to Vercel Blob from a server-side Function or Server Action.
 
 ```bash
 npm i @vercel/blob
-vercel env pull  # pulls BLOB_READ_WRITE_TOKEN or OIDC vars
+# Create a store from your linked project directory and connect it
+# (--yes connects all environments, incl. Development which `vercel env pull` reads)
+vercel blob create-store Images --access private --environment production --environment development --yes
+vercel env pull  # pulls BLOB_STORE_ID + VERCEL_OIDC_TOKEN (OIDC default) and BLOB_READ_WRITE_TOKEN (fallback)
 ```
+
+Connected stores use OIDC by default: `BLOB_STORE_ID` identifies the store and `VERCEL_OIDC_TOKEN` is a short-lived token rotated automatically. `BLOB_READ_WRITE_TOKEN` (long-lived) is also added as a fallback for code outside Vercel or for generating client tokens. `--access` is required (`private` or `public`); use `--yes` to connect all environments, or `--environment` once per environment to connect only some (use one of the two). If the Blob variables are missing from `.env.local`, the store connection probably doesn't include **Development**: store's **Projects** tab > context menu > **Update Project Connection**.
 
 ## Upload via Route Handler
 

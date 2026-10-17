@@ -14,7 +14,7 @@ Global key-value data store for ultra-low latency reads. Most reads complete in 
 
 | Solution | Read Latency | Write Latency | Redeployment Required |
 |----------|-------------|---------------|----------------------|
-| **Edge Config** | **Ultra-low** | Seconds | No |
+| **Global Config (formerly Edge Config)** | **Ultra-low** | Seconds | No |
 | Remote JSON files | Varies | Varies | No |
 | Embedded JSON / Env Vars | Lowest (at deploy time) | Highest | Yes |
 
@@ -48,7 +48,7 @@ const greeting = await get('greeting');
 ## Notes
 
 - As of the current docs (2026-07-29), Vercel renamed Edge Config to **Global Config**: SDK package is `@vercel/global-config` (was `@vercel/edge-config`), read endpoint is `global-config.vercel.com` (was `edge-config.vercel.com`), connection-string env var is `GLOBAL_CONFIG` (was `EDGE_CONFIG`)
-- The CLI command `vercel edge-config` continues to work as an alias for `vercel global-config` (confirmed in the CLI overview docs); no equivalent alias/fallback statement was found for the old SDK package name or `EDGE_CONFIG` env var — verify before assuming backward compatibility
+- Backward compatibility (Global Config migration guide, last_updated 2026-07-29): the old connection strings (`edge-config.vercel.com`), `api.vercel.com/v1/edge-config`, the `@vercel/edge-config` package, the `vercel edge-config` CLI command and the `EDGE_CONFIG` environment variable all still work, with no removal timeline. The new SDK reads `GLOBAL_CONFIG` by default and falls back to `EDGE_CONFIG`; the legacy `@vercel/edge-config` reads only `EDGE_CONFIG` by default. Upgrade the SDK before connecting a new store to a project (connecting now creates `GLOBAL_CONFIG`). See [migration-guide.md](./migration-guide.md)
 - Local development reads go over the public internet (100ms+ slower than production)
 - Set the connection string as an environment variable (not hard-coded) for Vercel's optimizations to apply
 - Avoid Global Config for data that changes frequently or needs immediate consistency after writes (propagation: up to 10s)
@@ -59,3 +59,4 @@ const greeting = await get('greeting');
 - [Vercel REST API for Edge Config](./vercel-api.md)
 - [Limits and Pricing](./limits.md)
 - [Using Edge Config](./using-edge-config.md)
+- [Migration Guide](./migration-guide.md)
