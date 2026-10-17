@@ -34,7 +34,7 @@ plugins {
 
 dependencies {
     implementation(project(":annotations"))
-    implementation("com.google.devtools.ksp:symbol-processing-api:2.3.6")
+    implementation("com.google.devtools.ksp:symbol-processing-api:2.3.10")
 }
 ```
 
@@ -152,13 +152,13 @@ fun main() {
 
 ## Notes
 
-- `ksp(...)` applies the processor to application sources only; use `kspTest(...)` for test sources. `ksp(...)` is available only in single-platform projects (see `ksp-multiplatform`).
-- The official pages render kotlinVersion 2.4.21 with kspVersion 2.3.10 while the KSP requirements table (see ksp-overview) lists KGP 2.2.10–2.3.x; the google/ksp 2.3.10 release notes state no KGP range, so the official values are kept and the discrepancy is unconfirmed.
+- `ksp(...)` applies the processor to application sources only; use `kspTest(...)` for test sources. In KMP projects the catch-all `ksp(...)` is deprecated in favor of target-specific configurations (see `ksp-multiplatform`).
+- The official pages render kotlinVersion 2.4.21 with kspVersion 2.3.10 while the KSP requirements table (see ksp-overview) lists KGP 2.2.10–2.3.x; the google/ksp 2.3.10 release notes include a fix so that KSP works with Kotlin 2.4.0 (#2964); this page keeps the official table and follows the rendered versions.
 - In the example project, the root `build.gradle.kts` declares `id("com.google.devtools.ksp") version "2.3.10" apply false`, and `settings.gradle.kts` includes `annotations`, `app`, `processor`.
 - `process()` returns the list of unprocessed symbols for a later round (here `emptyList()`); imports needed: `com.google.devtools.ksp.processing.{CodeGenerator, Dependencies, Resolver, SymbolProcessor}`, `com.google.devtools.ksp.symbol.{KSAnnotated, KSFunctionDeclaration, KSVisitorVoid}`, `com.google.devtools.ksp.validate`, `java.io.OutputStream`.
 - Like the official quickstart, this processor assumes exactly one function annotated with @HelloWorldAnnotation: every visit calls createNewFile for the same GeneratedHelloWorld.kt and emits the same helloWorld(), so a second annotated function makes code generation fail (FileAlreadyExistsException). With several targets, derive both the file name and the generated function name from function.simpleName.asString(), or generate one aggregated file once.
 - The IDE flags `helloWorld()` as undefined until the build; KSP generates it at `app/build/generated/ksp/main/kotlin/GeneratedHelloWorld.kt`.
-- The page uses `symbol-processing-api:2.3.6` for the processor module and plugin `2.3.10` for the plugin; the latest KSP version is listed on GitHub Releases (google/ksp).
+- The official page uses `symbol-processing-api:2.3.6` for the processor module; this page aligns it with the KSP plugin version 2.3.10 (latest versions: google/ksp GitHub Releases).
 - This page covers the generic KSP setup. Android-specific KSP / Room / Hilt configuration is in android-build-gradle, android-data and android-architecture.
 
 ## Related

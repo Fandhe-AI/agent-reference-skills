@@ -45,7 +45,7 @@ Supported libraries (status):
 
 ## Notes
 
-- The official pages render kotlinVersion 2.4.21 with kspVersion 2.3.10 while the KSP requirements table lists KGP 2.2.10–2.3.x; the google/ksp 2.3.10 release notes state no KGP range, so this page keeps the official table unchanged and the discrepancy is unconfirmed.
+- The official pages render kotlinVersion 2.4.21 with kspVersion 2.3.10 while the KSP requirements table lists KGP 2.2.10–2.3.x; the google/ksp 2.3.10 release notes include a fix so that KSP works with Kotlin 2.4.0 (#2964); this page keeps the official table and follows the rendered versions.
 - KSP hides compiler changes behind a well-defined API, so processors need less maintenance; trade-off: KSP-based processors can't examine expressions or statements, and can't modify source code. KSP models declarations and type information, not function bodies.
 - Compilation flow: processors analyze source code and resources, generate source files or other outputs, then the Kotlin compiler compiles the original source together with the generated code.
 - The official page (kotlin-web-site 0b10373) lists Dagger as Alpha and Hilt as In progress; dagger.dev/dev-guide/ksp states Dagger's KSP support (including hilt-compiler) is stable as of Dagger 2.60+ and KSP 2.3.9+, so this page follows dagger.dev.
