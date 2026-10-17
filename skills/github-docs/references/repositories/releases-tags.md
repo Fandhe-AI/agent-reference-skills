@@ -2,6 +2,12 @@
 
 GitHub リリースは、特定のバージョンのソフトウェアをパッケージ化して配布するための機能です。Git タグに基づいて作成され、リリースノートやバイナリファイルを添付できます。
 
+## Signature / Usage
+
+```bash
+gh release create v1.0.0 --title "Release v1.0.0" --generate-notes
+```
+
 ## リリースの作成
 
 ### Web UI から
@@ -105,7 +111,12 @@ changelog:
 
 - 公開前にレビューや準備ができる
 - Immutable releases（不変リリース）を使用する場合、ドラフトとして作成し、すべてのアセットを添付してから公開することを推奨
-- 公開後の Immutable releases ではタイトルとリリースノートのみ編集可能
+- 公開後の Immutable releases ではタイトルとリリースノートのみ編集可能（pre-release / latest フラグの変更も可能）
+- 公開後は tag を移動できず、release が存在する間は tag を削除できない。release を削除すれば tag は削除できるが、同じ tag 名は再利用できない
+- アセットの変更・削除は不可
+- repository resurrection attack 対策を含む。リポジトリを削除して同名で作り直しても、元のリポジトリで immutable release に紐づいていた tag は再利用できない
+- release attestation（tag・commit SHA・アセットを含む検証可能な記録）が自動生成される
+- 詳細は Immutable releases の公式ページ（/en/code-security/concepts/supply-chain-security/immutable-releases）を参照。Actions 側の解説は [immutable-releases.md](../actions/creating-actions/immutable-releases.md)
 
 ### プレリリース
 
@@ -220,7 +231,12 @@ MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
 
 リリースの説明で `@mention` を使用すると、コントリビューターのアバターリストが自動的に追加されます。
 
-## 参考リンク
+## Notes
 
-- [Managing releases in a repository - GitHub Docs](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository)
-- [Semantic Versioning 2.0.0](https://semver.org/)
+- 手順ガイド形式のページ。Immutable releases・リリースアセット上限（2 GB）等の制約は各節を参照
+- 出典: [Managing releases in a repository - GitHub Docs](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository)
+- 出典: [Semantic Versioning 2.0.0](https://semver.org/)
+
+## Related
+
+- [immutable-releases.md](../actions/creating-actions/immutable-releases.md)

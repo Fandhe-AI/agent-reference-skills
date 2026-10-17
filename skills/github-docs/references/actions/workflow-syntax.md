@@ -4,6 +4,21 @@
 
 公式ドキュメント: https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions
 
+## Signature / Usage
+
+```yaml
+name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm test
+```
+
+キーごとの詳細は以下のトップレベルキー・ジョブレベルキー・ステップレベルキー節を参照。
+
 ---
 
 ## トップレベルキー
@@ -61,9 +76,13 @@ permissions: write-all
 permissions: {}  # 全権限を無効化
 ```
 
-利用可能なスコープ: `actions`, `artifact-metadata`, `attestations`, `checks`, `code-quality`, `contents`, `deployments`, `discussions`, `id-token`, `issues`, `models`, `packages`, `pages`, `pull-requests`, `repository-projects`, `security-events`, `statuses`, `vulnerability-alerts`
+利用可能なスコープ: `actions`, `artifact-metadata`, `attestations`, `checks`, `code-quality`, `contents`, `copilot-requests`, `deployments`, `discussions`, `id-token`, `issues`, `packages`, `pages`, `pull-requests`, `security-events`, `statuses`, `vulnerability-alerts`
 
-各スコープの値: `read`, `write`, `none`
+各スコープの値: `read`, `write`, `none`（`copilot-requests` と `id-token` は `write` / `none` のみ、`vulnerability-alerts` は `read` / `none` のみ）
+
+Notes:
+- `copilot-requests` は組織所有リポジトリのワークフローが `GITHUB_TOKEN` で Copilot CLI を使うためのスコープ。組織の billing policy が許可している場合に限る。
+- `models` と `repository-projects` は、2026-10-17 時点の公式 permissions 表に記載がないため上記一覧から外している（旧版由来）。既存ワークフローで使われている場合は公式ドキュメントで要確認。
 
 ### `env`
 
@@ -106,6 +125,8 @@ concurrency:
 
 - `group`: グループ名（大文字小文字を区別しない）
 - `cancel-in-progress`: `true` にすると、同じグループの進行中のジョブをキャンセルする
+- `queue`（任意）: 待機（pending）できる実行数の方式。`single`（既定）は pending を 1 件まで。新しい実行が queued になると既存の pending はキャンセルされ置き換わる。`max` は pending を最大 100 件まで許可し、キューが満杯のとき以降の実行はキャンセルされる
+- `queue: max` と `cancel-in-progress: true` の併用は workflow validation error になる
 - `github`, `inputs`, `vars` コンテキストの式をサポート
 
 ```yaml
@@ -115,7 +136,19 @@ concurrency:
   cancel-in-progress: false  # 進行中はキャンセルせず後続を待機させる
 ```
 
-注意: 同一の concurrency group で同時に存在できるのは、**進行中 1 件と待機中（pending）1 件のみ**。`cancel-in-progress` を省略または `false` にした場合、進行中の実行はキャンセルされないが、新しい実行が queued になると**それまで待機していた実行はキャンセルされ、最新の 1 件だけが待機列に残る**。待機列が積み上がることはない。
+```yaml
+# 複数の pending 実行をキューイングする場合（公式例）
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: production-deploy
+  queue: max
+```
+
+注意: 既定（`queue: single`）では、同一の concurrency group で同時に存在できるのは、**進行中 1 件と待機中（pending）1 件のみ**。`cancel-in-progress` を省略または `false` にした場合、進行中の実行はキャンセルされないが、新しい実行が queued になると**それまで待機していた実行はキャンセルされ、最新の 1 件だけが待機列に残る**。`queue: max` を指定した場合は最大 100 件が待機でき、待機中の実行は待機開始時刻に基づく順序で 1 件ずつ処理される（公式例の説明。厳密な順序保証は原本に記載がないため保証とは扱わない）。
 
 ### `jobs`
 
@@ -195,7 +228,7 @@ environment:
 
 ### `jobs.<job_id>.concurrency`
 
-ジョブレベルの concurrency 制御。ワークフローレベルと同じ構文。
+ジョブレベルの concurrency 制御。ワークフローレベルと同じ構文（`group` / `cancel-in-progress` / 任意の `queue: single|max`）。
 
 ### `jobs.<job_id>.outputs`
 
@@ -490,10 +523,16 @@ if: always()
 
 ---
 
-## 制約事項
+## Notes
 
 - ワークフローファイルは `.github/workflows/` ディレクトリに `.yml` または `.yaml` 拡張子で配置する
 - `workflow_dispatch` の入力は最大 25 個のトップレベルプロパティ
 - パスフィルタリングの Git diff は 300 ファイルまで（超過時はワークフローが自動トリガーされない）
 - concurrency グループ名は大文字小文字を区別しない
 - スケジュールの最短間隔は 5 分
+
+## Related
+
+- [events-triggers.md](./events-triggers.md)
+- [permissions.md](./permissions.md)
+- [expressions.md](./expressions.md)

@@ -41,10 +41,22 @@ on:
       - main
       - 'release/**'
       - '!release/**-alpha'   # 除外パターン
-    branches-ignore:
-      - 'feature/**'
     tags:
       - 'v*'
+      - '!v*-rc*'
+```
+
+```yaml
+# branches-ignore / tags-ignore は各々単独で使用（branches / tags とは併用不可）
+on:
+  push:
+    branches-ignore:
+      - 'feature/**'
+```
+
+```yaml
+on:
+  push:
     tags-ignore:
       - 'v*-rc*'
 ```
@@ -243,6 +255,7 @@ on:
 注意事項:
 - マージコンフリクトがある場合は実行されない
 - フォークからの PR では `GITHUB_TOKEN` は読み取り専用
+- `GITHUB_TOKEN` で作成・更新した PR の `opened` / `synchronize` / `reopened` は approval-required 状態の run を作り、write 権限を持つユーザーが Approve するまで実行されない。それ以外のイベントは `GITHUB_TOKEN` 起因では run を作らない（`workflow_dispatch` / `repository_dispatch` を除く）
 - HEAD コミット SHA は `github.event.pull_request.head.sha` で取得
 
 ### pull_request_review
