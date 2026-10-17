@@ -11,7 +11,7 @@ Convenience hook which creates a memoized, named object/material collection from
 ```jsx
 import { useLoader, useGraph } from '@react-three/fiber'
 
-function Model(url) {
+function Model({ url }) {
   const scene = useLoader(OBJLoader, url)
   const { nodes, materials } = useGraph(scene)
   return <mesh geometry={nodes.robot.geometry} material={materials.metal} />
@@ -29,6 +29,7 @@ export function useGraph(object: THREE.Object3D): ObjectMap {
 ## Notes
 
 - The result is memoized on `object` and produced by `buildGraph` (exported from `@react-three/fiber`).
+- The source (docs/API/hooks.mdx, v9.8.2) writes `function Model(url)`, but a React component's first argument is the props object, so it is corrected to `{ url }` here.
 - `Object3D` is a three.js class documented in the threejs skill.
 
 ## Related

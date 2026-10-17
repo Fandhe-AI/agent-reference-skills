@@ -40,7 +40,7 @@ function Scene() {
 }
 ```
 
-Smooth shading for STL:
+Computing vertex normals for STL (see Notes for smooth shading):
 
 ```jsx
 function Scene() {
@@ -56,6 +56,7 @@ function Scene() {
 
 ## Notes
 
-- `STLLoader` returns a `BufferGeometry`, not a scene or group, so attach it to your own `mesh` with a material. It renders with flat shading by default; call `computeVertexNormals()` for smooth shading or when the file has no valid normals.
+- `STLLoader` returns a `BufferGeometry`, not a scene or group, so attach it to your own `mesh` with a material.
+- The official tutorial calls `geometry.computeVertexNormals()` (second STL snippet) but does not describe it as producing smooth shading. `STLLoader` returns a non-indexed geometry, so `computeVertexNormals()` alone yields per-face normals and the mesh still looks flat. For smooth shading, first share vertices with `BufferGeometryUtils.mergeVertices(geometry)` (from `three/examples/jsm/utils/BufferGeometryUtils.js`), then call `computeVertexNormals()`. This merge step is not in the official tutorial.
 - The official tutorial also shows `useFBX` from `@react-three/drei` (`const fbx = useFBX('/Poimandres.fbx')`); drei is a separate package that this skill does not cover.
 - The loaders (`OBJLoader` / `FBXLoader` / `STLLoader`) are three.js classes; see the threejs skill (loaders-addons).

@@ -13,7 +13,7 @@ Creates a ReactThreeTestRenderer instance from a `three` element such as `<mesh 
 const renderer = await ReactThreeTestRenderer.create(element, options)
 ```
 
-By default, it won't create an actual `THREE.WebGLRenderer` and there will be no loop. But it will still render the complete scene graph. Returns a Promise that resolves to an object with the properties below (signature from `packages/test-renderer/src/index.tsx` at v9.8.2).
+By default, it won't create an actual `THREE.WebGLRenderer` and there will be no loop. But it will still render the complete scene graph. Returns a Promise that resolves to an object with the properties below (signature from [packages/test-renderer/src/index.tsx at v9.8.2](https://github.com/pmndrs/react-three-fiber/blob/v9.8.2/packages/test-renderer/src/index.tsx)).
 
 ## Options / Props
 
