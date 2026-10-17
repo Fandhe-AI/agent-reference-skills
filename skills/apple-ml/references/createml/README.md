@@ -1,4 +1,4 @@
-# CreateML
+# createml
 
 | Name | Description | Path |
 |------|-------------|------|
