@@ -9,7 +9,7 @@ user-invocable: false
 
 # React Native
 
-> 分割 PR の途中段階。現在収録済み: references/{apis, architecture, components, debugging-performance, getting-started, globals, legacy}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{apis, architecture, components, debugging-performance, getting-started, globals, legacy, native-development, platform-guides}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -35,6 +35,12 @@ skills/react-native/
     architecture/          # New Architecture・Fabric・スレッドモデル・Bundled Hermes
       README.md
       overview.md, fabric-renderer.md, render-pipeline.md, threading-model.md, ...
+    native-development/    # TurboModules・Fabric Native Components・Codegen
+      README.md
+      turbo-native-modules-introduction.md, using-codegen.md, codegen-cli.md, ...
+    platform-guides/       # Android / iOS 固有ガイド（署名・Gradle plugin・App Store 等）
+      README.md
+      signed-apk-android.md, react-native-gradle-plugin.md, publishing-to-app-store.md, ...
     getting-started/       # 環境構築・既存アプリ統合・トラブルシュート
       README.md
       set-up-your-environment.md, integration-with-existing-apps.md, troubleshooting.md, ...
@@ -62,6 +68,8 @@ skills/react-native/
 | StyleSheet / Platform / Linking / AppState / Dimensions 等の API を使いたい | apis | [references/apis/README.md](references/apis/README.md) |
 | console / timers / fetch / performance 等のグローバルを確認したい | globals | [references/globals/README.md](references/globals/README.md) |
 | New Architecture・Fabric・レンダーパイプライン・スレッドモデル・Bundled Hermes を理解したい | architecture | [references/architecture/README.md](references/architecture/README.md) |
+| TurboModules・Fabric Native Components・Codegen でネイティブ連携を書きたい | native-development | [references/native-development/README.md](references/native-development/README.md) |
+| Android 署名・Gradle plugin・iOS App Store 公開・ネイティブとの通信を調べたい | platform-guides | [references/platform-guides/README.md](references/platform-guides/README.md) |
 | 環境構築・既存アプリへの統合・トラブルシュートをしたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | DevTools デバッグ・プロファイル・パフォーマンス改善・テスト方針を知りたい | debugging-performance | [references/debugging-performance/README.md](references/debugging-performance/README.md) |
 | 旧 Native Modules / 削除済み API / Legacy Architecture を確認したい | legacy | [references/legacy/README.md](references/legacy/README.md) |
