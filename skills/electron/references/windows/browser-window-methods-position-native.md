@@ -17,7 +17,7 @@ const toolbarRect = document.getElementById('toolbar').getBoundingClientRect()
 win.setSheetOffset(toolbarRect.height)
 ```
 
-(The snippet above is the original `win.setSheetOffset` example; `document` refers to the page's DOM.)
+(The snippet above is the verbatim official `win.setSheetOffset` example. `document` does not exist in the main process; in practice, measure the toolbar height in the renderer (preload/renderer) and send it to main over IPC (`ipcRenderer.send` / `ipcMain.on`).)
 
 #### `win.setAlwaysOnTop(flag[, level][, relativeLevel])`
 
@@ -192,6 +192,7 @@ Captures a snapshot of the page within `rect`. Omitting `rect` will capture the 
 
 ## Notes
 
+* The official `win.setSheetOffset` example reads `document` in main-process code, where `document` does not exist. Measure the toolbar height in the renderer and send it to main over IPC (`ipcRenderer.send` / `ipcMain.on`).
 * `win.flashFrame(bool)` flashes the dock icon continuously on macOS (behavior change recorded in the original docs history; see breaking-changes pages).
 * Taskbar-related: `setSkipTaskbar`, `flashFrame`, `hookWindowMessage` operate on the Windows taskbar button / WndProc of an Electron window. For native Windows taskbar, jump list and shell integration outside Electron see windows-platform-integration.
 * Distinct from native window APIs: for WinUI 3 AppWindow see windows-winui-ui, for NSWindow see apple-appkit.

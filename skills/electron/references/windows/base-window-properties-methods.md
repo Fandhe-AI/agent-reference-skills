@@ -1013,6 +1013,8 @@ On Linux, the `symbolColor` is automatically calculated to have minimum accessib
 
 ## Notes
 
+* The official `win.setSheetOffset` example (near `win.setSheetOffset`) reads `document` in main-process code, where `document` does not exist. Measure the toolbar height in the renderer and send it to main over IPC (`ipcRenderer.send` / `ipcMain.on`).
+* `setContentProtection` uses NSWindowSharingNone on macOS. The official BaseWindow page does not state this, but the BrowserWindow page notes that newer apps using ScreenCaptureKit can still capture the window despite `setContentProtection(true)` (https://github.com/electron/electron/issues/48258#issuecomment-3269893618). Source: BrowserWindow page.
 * Taskbar-related (`setProgressBar`, `setOverlayIcon`, `setThumbarButtons`, `setThumbnailClip`, `setThumbnailToolTip`, `setAppDetails`): these configure the taskbar button of an Electron window. For native Windows taskbar, jump list and shell integration outside Electron see windows-platform-integration.
 * `win.setMenu` takes an Electron `Menu` (OS-native menu built in the main process); for Web UI menu components see ark-ui / chakra-ui / fandhe-frontend, for WinUI menus see windows-winui-controls, for NSMenu see apple-appkit.
 * Distinct from native window APIs: this is Electron's main-process `BaseWindow`. For WinUI 3 AppWindow see windows-winui-ui, for NSWindow see apple-appkit.

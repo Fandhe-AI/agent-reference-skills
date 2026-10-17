@@ -243,6 +243,7 @@ To convert `point` to DIP, use `screen.screenToDipPoint(point)`.
 
 ## Notes
 
+* The official app-command example uses `webContents.canGoBack()` / `goBack()`, which are deprecated; use `win.webContents.navigationHistory.canGoBack()` / `navigationHistory.goBack()` instead (see web-contents-methods-loading.md in the web-contents category).
 * Electron's built-in classes cannot be subclassed in user code (see the FAQ entry "Class inheritance does not work with Electron built-in modules").
 * Distinct from native window APIs: this is Electron's main-process `BrowserWindow`. For WinUI 3 AppWindow see windows-winui-ui, for NSWindow see apple-appkit.
 

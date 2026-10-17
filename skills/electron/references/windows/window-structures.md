@@ -9,13 +9,23 @@ Structures used by `BaseWindow` / `BrowserWindow`: `WindowSessionEndEvent` (argu
 ## Signature / Usage
 
 ```js
-const { BaseWindow } = require('electron')
+const { app, BrowserWindow } = require('electron')
 
-const win = new BaseWindow({ name: 'main', windowStatePersistence: true })
-win.on('persisted-state-restored', () => {})
+function createWindow() {
+  const win = new BrowserWindow({
+    name: 'main-window',
+    width: 800,
+    height: 600,
+    windowStatePersistence: true
+  })
+
+  win.loadFile('index.html')
+}
+
+app.whenReady().then(createWindow)
 ```
 
-(Constructed from the documented option `windowStatePersistence`, `name`, and the `persisted-state-restored` event.)
+(Verbatim official example from the Window State Persistence tutorial (tutorial/window-state-persistence).)
 
 ### WindowSessionEndEvent Object extends `Event`
 

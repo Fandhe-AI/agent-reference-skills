@@ -70,6 +70,7 @@ const win = new BrowserWindow({ width: 800, height: 600 })
 
 ## Notes
 
+- `enableWebSQL` is still listed in the official structure, but WebSQL support was removed in Electron 31 (Chromium removed it upstream; see the breaking-changes v31 entry), so this option does not bring WebSQL back.
 - Security-relevant defaults: `contextIsolation` is `true`, `sandbox` is `true` (since Electron 20), `nodeIntegration` is `false`, `webviewTag` is `false`. See the security pages for guidance.
 - Distinct from Web platform preferences in other stacks: this is the per-WebContents configuration of Electron's Chromium renderer. For WebView2 settings in WinUI apps see windows-winui-controls.
 

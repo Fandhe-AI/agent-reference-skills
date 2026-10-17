@@ -90,6 +90,7 @@ The object returned from the `setWindowOpenHandler` handler (original page: `api
 
 ## Notes
 
+* The `preload: 'my-child-window-preload-script.js'` in the official example is abbreviated; `webPreferences.preload` must be an absolute path (see web-preferences.md), so in practice write something like `path.join(__dirname, 'my-child-window-preload-script.js')`.
 * `webContents.setWindowOpenHandler` is documented on the webContents page (web-contents category) and runs in the main process, which is why it has the final say over renderer-supplied `features`.
 * Distinct from plain browser `window.open`: Electron additionally pairs the DOM `Window` with a BrowserWindow and applies the precedence rules above.
 
