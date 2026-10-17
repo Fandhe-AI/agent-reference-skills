@@ -91,4 +91,4 @@ type ReloadOptions = { ignoreDefaults?: boolean }
 
 ## Related
 
-- Store plugin
+- [Store plugin](../plugins-core/store.md)

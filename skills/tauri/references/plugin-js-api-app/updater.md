@@ -87,4 +87,4 @@ if (update) {
 
 ## Related
 
-- updater plugin
+- [updater plugin](../plugins-app/updater.md)

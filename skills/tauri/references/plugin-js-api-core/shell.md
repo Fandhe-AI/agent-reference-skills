@@ -130,5 +130,5 @@ Command.create('run-git-commit', ['commit', '-m', 'the commit message'])
 
 ## Related
 
-- Shell plugin
+- [Shell plugin](../plugins-core/shell.md)
 - [Opener plugin JS API](./opener.md)

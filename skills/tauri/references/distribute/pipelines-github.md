@@ -224,4 +224,4 @@ env:
 - [sign-windows](./sign-windows.md)
 - [sign-macos](./sign-macos.md)
 - [appimage](./appimage.md)
-- updater plugin
+- [updater plugin](../plugins-app/updater.md)

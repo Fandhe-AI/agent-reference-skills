@@ -211,6 +211,6 @@ const output = await command.execute();
 
 ## Related
 
-- Shell plugin
+- [Shell plugin](../plugins-core/shell.md)
 - [Embedding Additional Files](./resources.md)
 - [Environment Variables](./environment-variables.md)

@@ -366,5 +366,5 @@ With the `opener` plugin:
 
 - [Sidecar](./sidecar.md)
 - [Configuration Files](./configuration-files.md)
-- Capabilities
-- File System plugin
+- [Capabilities](../security/capabilities.md)
+- [File System plugin](../plugins-core/file-system.md)

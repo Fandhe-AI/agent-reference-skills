@@ -48,4 +48,4 @@ Run the development server first, then start debugging the Tauri App with the De
 ## Related
 
 - [Debug](./debug-overview.md)
-- Process Model
+- [Process Model](../getting-started/process-model.md)

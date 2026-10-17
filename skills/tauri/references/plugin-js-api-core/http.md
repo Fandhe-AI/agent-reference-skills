@@ -100,5 +100,5 @@ interface DangerousSettings {   // @since 2.3.0
 
 ## Related
 
-- HTTP Client plugin
+- [HTTP Client plugin](../plugins-core/http-client.md)
 - [Upload plugin JS API](./upload.md)

@@ -29,4 +29,4 @@ function disable(): Promise<void>        // since 2.0.0
 
 ## Related
 
-- autostart plugin
+- [autostart plugin](../plugins-app/autostart.md)

@@ -9,8 +9,6 @@ user-invocable: false
 
 # Tauri v2
 
-> 分割 PR の途中段階。現在収録済み: references/{cli, config, develop, distribute, getting-started, js-api, plugin-js-api-app, plugin-js-api-core, plugins-app, plugins-core, rust-api, security}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
-
 ## 対象バージョン
 
 Tauri v2。版 pin は次のとおり。
@@ -19,7 +17,7 @@ Tauri v2。版 pin は次のとおり。
 - @tauri-apps/api 2.12.4
 - @tauri-apps/cli 2.12.3
 - 公式ドキュメント: tauri-docs の v2 ブランチ、commit 32f68c5
-- 公式プラグイン: plugins-workspace の各 v2 タグ（プラグインごとに最新タグ。各ページの `source:` を参照）
+- 公式プラグイン: plugins-workspace の各 v2 タグ（プラグインごとに最新タグ。タグは各ページの `## Notes` の Source 行を参照）
 
 除外: Tauri v3 alpha と Tauri v1。
 
@@ -135,6 +133,25 @@ skills/tauri/
       sign-windows.md
       app-store.md
       pipelines-github.md
+  samples/
+    README.md
+    command-with-state-and-channel.md
+    system-tray.md
+    window-menu.md
+    updater-check-install.md
+    capabilities-for-windows-and-platforms.md
+    webdriver-webdriverio.md
+    github-actions-release.md
+  scripts/
+    README.md
+    prerequisites.md
+    create-project.md
+    dev-build.md
+    mobile.md
+    plugins-permissions.md
+    icons-signer.md
+    distribute.md
+    info-migrate.md
 ```
 
 ## 探索手順
@@ -142,8 +159,9 @@ skills/tauri/
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。
 
 1. 下記マッピング表でタスクに対応するカテゴリを探す
-2. 該当ページの `.md` を Read して詳細を確認する
-3. Rust 側 API は `rust-api`、フロントエンド側 API は `js-api` または `plugin-js-api-*`、プラグインの導入・設定・permission はガイド側 `plugins-core` / `plugins-app` を引く
+2. そのカテゴリの `references/{category}/README.md`（または `samples/` `scripts/` の README.md）を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
+4. Rust 側 API は `rust-api`、フロントエンド側 API は `js-api` または `plugin-js-api-*`、プラグインの導入・設定・permission はガイド側 `plugins-core` / `plugins-app` を引く
 
 ## タスク → カテゴリ マッピング
 
@@ -166,3 +184,5 @@ skills/tauri/
 | dialog / updater / notification / deep-link / global-shortcut / window-state / モバイル系プラグインの導入と設定 | plugins-app | [references/plugins-app/README.md](references/plugins-app/README.md) |
 | アプリ機能プラグイン (autostart / barcode-scanner / biometric / clipboard-manager / deep-link / dialog / geolocation / global-shortcut / haptics / nfc / notification / positioner / updater / window-state) の JS 関数シグネチャ (@tauri-apps/plugin-*) | plugin-js-api-app | [references/plugin-js-api-app/README.md](references/plugin-js-api-app/README.md) |
 | 署名・MSI / NSIS / DMG / AppImage / deb / rpm・各ストア・CI 配布 | distribute | [references/distribute/README.md](references/distribute/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

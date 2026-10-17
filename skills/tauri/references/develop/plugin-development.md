@@ -460,5 +460,5 @@ A plugin manages state the same way an application does (see State Management).
 - [Mobile Plugin Development](./mobile-plugin-development.md)
 - [State Management](./state-management.md)
 - [Calling Rust from the Frontend](./calling-rust.md)
-- Permissions
-- Plugin builder (Rust API)
+- [Permissions](../security/permissions.md)
+- [Plugin builder (Rust API)](../rust-api/plugin-builder.md)

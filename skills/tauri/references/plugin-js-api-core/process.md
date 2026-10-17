@@ -37,4 +37,4 @@ function relaunch(): Promise<void>            // @since 2.0.0
 
 ## Related
 
-- Process plugin
+- [Process plugin](../plugins-core/process.md)

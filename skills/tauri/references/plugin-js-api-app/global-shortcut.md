@@ -51,4 +51,4 @@ interface ShortcutEvent {
 
 ## Related
 
-- global-shortcut plugin
+- [global-shortcut plugin](../plugins-app/global-shortcut.md)
