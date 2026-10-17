@@ -3,13 +3,13 @@ name: shadcn-ui
 description: >
   shadcn/ui (Tailwind CSS + Base UI / Radix のコピー配布型 React コンポーネント集・shadcn CLI) のリファレンス。
   shadcn init / add / build, components.json, registry.json, components/ui, Data Table, Sonner,
-  AI Elements, @shadcn/react, dark mode, RTL, monorepo。
+  AI Elements, @shadcn/react, @shadcn/helpers, dark mode, RTL, monorepo。
 user-invocable: false
 ---
 
 # shadcn/ui
 
-> 分割 PR の途中段階。現在収録済み: references/{ai-elements, cli-config, components-chat, components-display}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{ai-elements, cli-config, components-chat, components-display, components-form, components-layout, components-overlay, forms, getting-started, packages}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 コンポーネントを npm 依存ではなくソースとして `components/ui/` へコピー配布する React UI 集と、その導入・配布を担う `shadcn` CLI のリファレンス。
 
@@ -27,13 +27,25 @@ user-invocable: false
 skills/shadcn-ui/
   SKILL.md
   references/
+    getting-started/        # 15 ページ: introduction, installation, manual, フレームワーク別 (next, vite, astro, ...), tailwind-v4, react-19
+      README.md
     cli-config/             # 7 ページ: cli, components-json, package-imports, monorepo, skills, mcp, figma
       README.md
+    forms/                  # 5 ページ: forms, react-hook-form, tanstack-form, formisch, next
+      README.md
+    components-form/        # 17 ページ: button, input, select, checkbox, field, calendar, date-picker, combobox, ...
+      README.md
     components-display/     # 20 ページ: card, table, data-table, chart, carousel, sonner, toast, typography, ...
+      README.md
+    components-layout/      # 11 ページ: sidebar, tabs, accordion, navigation-menu, resizable, direction, ...
+      README.md
+    components-overlay/     # 11 ページ: dialog, alert-dialog, sheet, drawer, popover, dropdown-menu, command, ...
       README.md
     components-chat/        # 8 ページ: message, bubble, message-scroller, questionnaire, trace, code-block, ...
       README.md
     ai-elements/            # 22 ページ: ai-elements, chat, message, prompt-input, tool, reasoning, ...
+      README.md
+    packages/               # 4 ページ: helpers-ai-sdk, helpers-tanstack-ai, react-message-scroller, react-questionnaire
       README.md
 ```
 
@@ -53,9 +65,17 @@ skills/shadcn-ui/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
+| shadcn/ui とは何か、思想を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| Next.js / Vite / Astro / React Router / TanStack Start 等への導入 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| Tailwind v4 / React 19 対応、手動インストール | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | `shadcn` CLI のサブコマンド、`components.json` 設定 | cli-config | [references/cli-config/README.md](references/cli-config/README.md) |
 | monorepo 構成、package imports（`#` エイリアス） | cli-config | [references/cli-config/README.md](references/cli-config/README.md) |
 | MCP server / 公式 Agent Skill / Figma ファイルの利用 | cli-config | [references/cli-config/README.md](references/cli-config/README.md) |
+| フォーム構築（React Hook Form / TanStack Form / Formisch / Server Actions） | forms | [references/forms/README.md](references/forms/README.md) |
+| Button / Input / Select / Checkbox / Field / Calendar / Combobox の API | components-form | [references/components-form/README.md](references/components-form/README.md) |
 | Card / Table / Data Table / Chart / Carousel / Sonner / Skeleton の API | components-display | [references/components-display/README.md](references/components-display/README.md) |
+| Sidebar / Tabs / Accordion / Navigation Menu / Resizable / Direction の API | components-layout | [references/components-layout/README.md](references/components-layout/README.md) |
+| Dialog / Sheet / Drawer / Popover / Dropdown Menu / Command の API | components-overlay | [references/components-overlay/README.md](references/components-overlay/README.md) |
 | チャット UI（Message / Bubble / Message Scroller / Questionnaire / Trace） | components-chat | [references/components-chat/README.md](references/components-chat/README.md) |
 | エージェント UI パターン（Prompt Input / Tool / Reasoning / Plan / Terminal） | ai-elements | [references/ai-elements/README.md](references/ai-elements/README.md) |
+| `@shadcn/helpers` / `@shadcn/react` パッケージの API | packages | [references/packages/README.md](references/packages/README.md) |
