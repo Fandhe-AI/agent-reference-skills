@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/arena.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/arena.rs
 ---
 
 # arena
@@ -37,6 +37,12 @@ pub enum ArenaError {
     /// 拒否した（TASK-79・SQL-9）。sql::exec::map_arena_error が
     /// SqlSurfaceError::InvalidInput（22000）へ写像する。
     InvalidInput(String),
+    /// フックが 0 除算を理由に拒否した（Issue #1163）。sql::exec::map_arena_error が
+    /// SqlSurfaceError::DivisionByZero（22012）へ写像する。メッセージは固定文言。
+    DivisionByZero(String),
+    /// フックが算術あふれ（非有限値化）を理由に拒否した（Issue #1163）。
+    /// SqlSurfaceError::NumericOutOfRange（22003）へ写像する。メッセージは固定文言。
+    NumericOutOfRange(String),
 }
 
 pub type Result<T> = std::result::Result<T, ArenaError>;
@@ -133,7 +139,8 @@ impl VectorArena {
 - `RlsCaptureFn`・`MAX_ARENA_ROWS`（`1_000_000`）・`MAX_ARENA_TOTAL_BYTES`（`1024 * 1024 * 1024`）・`check_capacity`・`SqlArenaCaptureBuilder`・`validated_vector_dim_in_txn`・`build_filtered_with_rows_in_txn`・`build_filtered_with_rows_in_txn_capturing`・`build_from_cached_rls_rows`・`build_from_cached_rls_rows_subset`・`filter_cached_rls_rows_subset`・`approx_heap_bytes` はすべて `pub(crate)` のためクレート外非公開（`rls.rs::SearchTimeFilter`・`core.rs::PrefilterCache` が同一クレート内から参照する）。
 - `build_filtered_with_rows_and_limits`・`build_filtered_with_limits`（上限値パラメータ化版）は `build`/`build_filtered`/`build_filtered_with_rows` の内部実装であり、`pub(crate)` の可能性が高いが本ページでは公開シグネチャのみを対象とし、実装詳細への言及は上記 3 公開関数の説明に留める。
 - アリーナ容量の上限検証（`check_capacity`）は `predicate`（RLS 段）を通過した可視行のみを対象に、行を追加するたびに逐次行う（テーブル全行数を基準にすると、他テナントの不可視行の量が対象テナントの検索可用性へ干渉するため。codex 指摘・Issue #137 対応）。
-- 本ページの記述は公開ソース（scratchpad の pin SHA verbatim ソースと突合済み）から検証済み。
+- Migration (0.1.0 → 0.2.0): `ArenaError` に `DivisionByZero(String)` / `NumericOutOfRange(String)` が加わった（Issue #1163）。`ArenaError` を網羅 `match` するコードは追随が必要。`VectorArena` の pub メソッドのシグネチャは 0.1.0 と同一。
+- 本ページの記述は `fandhe-db-engine` 0.2.0 の `src/arena.rs`（git SHA `dc888f6ea146d3078153d64a6848f5c8cf044431`）の `ArenaError` 定義と pub 項目一覧から検証済み。
 
 ## Related
 

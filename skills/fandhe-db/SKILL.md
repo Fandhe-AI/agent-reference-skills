@@ -85,10 +85,12 @@ skills/fandhe-db/
       visible-cache.md
       ddl.md
       check-constraint.md
+      view.md
       view-buffered.md
       join.md
       set-op.md
       subquery.md
+      window.md
       partitioned.md
       returning.md
       relation-snapshot.md
@@ -119,6 +121,14 @@ skills/fandhe-db/
       incremental.md
       arena.md
       buffer-pool.md
+      constraint.md
+      column-rewrite.md
+      bytea.md
+      uuid.md
+      key-index.md
+      datetime.md
+      numeric.md
+      scalar-float.md
     security/
       README.md
       policy.md

@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/row_codec.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/row_codec.rs
 ---
 
 # row_codec
@@ -27,7 +27,96 @@ pub enum Value {
     Null,
     Text(String),
     Vector(Vec<f32>),
+    /// 符号付き 32 ビット整数（ColumnType::Integer）。
+    Integer(i32),
+    /// 符号付き 64 ビット整数（ColumnType::BigInt）。
+    BigInt(i64),
+    Real(f32),
+    Double(f64),
+    /// 真偽値。NULL とはバイト列上も別物。
+    Bool(bool),
+    /// 日付。1970-01-01 起点の日数（i32）。
+    Date(i32),
+    /// 日時。1970-01-01 00:00:00 起点のマイクロ秒（i64、タイムゾーンなし）。
+    Timestamp(i64),
+    /// 配列列の値。要素型ごとに variant を分ける。
+    Array(ArrayValue),
+    /// 可変長バイナリ。NULL と空バイト列（Vec::new()）は区別される。
+    Bytes(Vec<u8>),
+    /// JSON / JSONB 列共通の値表現（JSON は入力テキストそのまま、JSONB は正規化済み）。
+    Json(String),
+    /// ENUM 列の値（ラベル文字列。語彙検証は encode 時のみ、decode 時は検査しない）。
+    Enum(String),
+    /// 十進固定小数。行には unscaled（i128 LE 16 バイト）のみを持ち scale はカタログが正。
+    Numeric(Decimal),
+    Uuid(Uuid),
 }
+
+/// 配列列 1 個分の値。各要素は Option（None が NULL 要素）。
+#[derive(Debug, Clone, PartialEq)]
+pub enum ArrayValue {
+    Text(Vec<Option<String>>),
+    Bool(Vec<Option<bool>>),
+    Integer(Vec<Option<i32>>),
+    BigInt(Vec<Option<i64>>),
+    Real(Vec<Option<f32>>),
+    Double(Vec<Option<f64>>),
+    Date(Vec<Option<i32>>),
+    Timestamp(Vec<Option<i64>>),
+    Uuid(Vec<Option<Uuid>>),
+    Numeric(Vec<Option<Decimal>>),
+    Bytea(Vec<Option<Vec<u8>>>),
+    Json(Vec<Option<String>>),
+    Jsonb(Vec<Option<String>>),
+    Enum(Vec<Option<String>>),
+}
+
+/// スカラー列走査（scan_scalar_columns 系）の借用結果。Option<&str> から型付き化された。
+/// #[non_exhaustive] は付けない（型追加時にコンパイラが全呼び出し元を列挙する）。
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum ScalarRef<'a> {
+    Text(&'a str),
+    Integer(i32),
+    BigInt(i64),
+    Real(f32),
+    Double(f64),
+    Bool(bool),
+    Date(i32),
+    Timestamp(i64),
+    Array(ArrayRef<'a>),
+    Bytes(&'a [u8]),
+    Json(&'a str),
+    Enum(&'a str),
+    Numeric(Decimal),
+    Uuid(Uuid),
+}
+
+impl<'a> ScalarRef<'a> {
+    /// Text 以外は None（TEXT 前提の消費側へ流入させない。fail-closed）。
+    pub fn as_text(&self) -> Option<&'a str> { /* ... */ }
+    pub fn as_bool(&self) -> Option<bool> { /* ... */ }
+    pub fn as_date(&self) -> Option<i32> { /* ... */ }
+    pub fn as_timestamp(&self) -> Option<i64> { /* ... */ }
+    pub fn as_numeric(&self) -> Option<Decimal> { /* ... */ }
+    pub fn as_uuid(&self) -> Option<crate::uuid::Uuid> { /* ... */ }
+    pub fn as_bytes(&self) -> Option<&'a [u8]> { /* ... */ }
+    pub fn as_dictionary_text(&self) -> Option<&'a str> { /* ... */ }
+}
+
+/// 配列列の借用結果。構造・UTF-8・要素上限は走査時に検証済み。
+pub struct ArrayRef<'a> { /* ... */ }
+
+impl<'a> ArrayRef<'a> {
+    pub fn elem(&self) -> ArrayElemType { /* ... */ }
+    pub fn count(&self) -> u32 { /* ... */ }
+    pub fn flags(&self) -> u8 { /* ... */ }
+    pub fn payload_bytes(&self) -> usize { /* ... */ }
+    /// 追加のエラー処理なしに複製できる（走査時に検証済み）。
+    pub fn to_value(&self) -> Result<ArrayValue> { /* ... */ }
+}
+
+/// ScalarRef の走査結果から TEXT 値のみを取り出す。束縛段が非 TEXT 列の参照を拒否する契約に依存する fail-closed 設計。
+pub fn scalar_refs_as_text<'a>(scanned: &[Option<ScalarRef<'a>>]) -> Vec<Option<&'a str>> { /* ... */ }
 
 /// デコード結果。行レベルの RLS フィールド（tenant_id・visibility）と、
 /// スキーマの列順に対応する値列を保持する。
@@ -79,10 +168,12 @@ pub fn encode_scalar_columns(schema: &TableSchema, values: &[Value]) -> Result<V
 /// すべて検証しつつ、Text 値は buf を借用した &str として返し、一切ヒープ確保
 /// しない。戻り値は schema.columns と同じ長さ・順序を持ち、VECTOR 列・NULL 列の
 /// 位置は常に None。
+/// （0.2.0: 戻り値は Vec<Option<ScalarRef<'a>>>、schema の借用も 'a。
+///  Text 値は buf を借用した &str のまま返る。VECTOR 列・NULL 列の位置は None。）
 pub fn scan_scalar_columns<'a>(
-    schema: &TableSchema,
+    schema: &'a TableSchema,
     buf: &'a [u8],
-) -> Result<Vec<Option<&'a str>>> { /* ... */ }
+) -> Result<Vec<Option<ScalarRef<'a>>>> { /* ... */ }
 
 /// scan_scalar_columns の列限定版（Issue #350: 集計経路が実際に参照しない列の
 /// &str 生成コストを避けるための必要列限定デコード）。mask が Some(m) のとき
@@ -92,10 +183,10 @@ pub fn scan_scalar_columns<'a>(
 /// 経由）は従来どおり全列を &str 化する。mask.len() != schema.columns.len() は
 /// fail-closed に Err とする。
 pub fn scan_scalar_columns_masked<'a>(
-    schema: &TableSchema,
+    schema: &'a TableSchema,
     buf: &'a [u8],
     mask: Option<&[bool]>,
-) -> Result<Vec<Option<&'a str>>> { /* ... */ }
+) -> Result<Vec<Option<ScalarRef<'a>>>> { /* ... */ }
 
 /// encode_scalar_columns の検証専用版（codex-review P1 指摘対応・PR #369:
 /// sql::aggregate::DecodeTier::Fast は scalar_mask が全列 false のときに使う
@@ -119,7 +210,10 @@ pub fn decode_scalar_columns(schema: &TableSchema, buf: &[u8]) -> Result<Vec<Val
 - `MAX_TEXT_FIELD_LEN`（`4 * 1024 * 1024`）は `pub(crate)` のためクレート外非公開。`declarative_filter::DeclarativeFilter::bind` がメタデータフィルタのリテラル長上限検査（`54000`）に再利用する（TASK-147・EXT-3、ソース実測）。
 - **`scan_scalar_columns` の「一切ヒープ確保しない」の範囲の訂正**: 上記コードブロックの `scan_scalar_columns` の doc comment（`row_codec.rs` からの verbatim 引用）にある「一切ヒープ確保しない」は、**Text 値本体のコピー（`to_string()` 相当のヒープ確保）を行わない**という意味であり、関数呼び出し全体でヒープ確保がゼロになるわけではない。戻り値の型は `Result<Vec<Option<&'a str>>>` であり、`schema.columns` と同じ長さの結果 `Vec` 自体は呼び出しのたびに確保される（`scan_scalar_columns_masked` の doc comment、上記コードブロック 100〜103 行相当に「`scan_scalar_columns_masked` を呼び `Vec<Option<&str>>` を毎行確保しており」と明記されている）。結果 `Vec` の確保まで含めて完全に省略するのは検証専用版の `validate_scalar_columns`（戻り値 `Result<()>`）のみで、こちらは検証済みの値を呼び出し元へ返さない・保持しないため `Vec` を一切確保しない。まとめると: `scan_scalar_columns`/`scan_scalar_columns_masked` は「Text 本体のコピーは省略、結果 `Vec` の確保は残る」、`validate_scalar_columns` は「結果 `Vec` の確保も省略」という 2 段階の性能契約になる。
 - 本モジュールの行フォーマットは `storage.rs` の行フォーマット v2 とは独立したバイトレイアウト（v1）であり、両者は置き換え関係ではない。
-- 本ページの記述は公開ソース（`raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/crates/engine/src/row_codec.rs`）から検証済み（scratchpad の pin SHA verbatim ソースと突合済み）。
+- Migration (0.1.0 → 0.2.0): `Value` に `Integer` / `BigInt` / `Real` / `Double` / `Bool` / `Date` / `Timestamp` / `Array` / `Bytes` / `Json` / `Enum` / `Numeric` / `Uuid` が加わり、`scan_scalar_columns` / `scan_scalar_columns_masked` の戻り値は `Vec<Option<&str>>` から `Vec<Option<ScalarRef<'a>>>` へ変わった（`schema` の借用も `&'a TableSchema`）。`Value` / `ScalarRef` の網羅 `match` は追随が必要。TEXT 前提の消費側は `scalar_refs_as_text` または `ScalarRef::as_text` を使う。
+- `scan_scalar_columns_masked` は 0.2.0 では内部の `scan_scalar_columns_validated`（削除済み列の墓標も物理走査上は構造検証する）を共有し、削除済み列は出力へ積まない（`values` は常に論理列数と同じ長さ。TABLE-19）。
+- 上記コードブロックの `scan_scalar_columns` 以外の doc comment（`encode_row` 等）は 0.1.0 時点の転記のまま。0.2.0 の同関数は新型の検証規則が追加されている可能性があり、doc comment 全文の再転記は未実施。
+- 本ページの記述は `fandhe-db-engine` 0.2.0 の `src/row_codec.rs`（git SHA `dc888f6ea146d3078153d64a6848f5c8cf044431`）の enum 定義・pub 関数シグネチャから更新した。
 
 ## Related
 
