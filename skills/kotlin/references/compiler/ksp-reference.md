@@ -92,7 +92,7 @@ Details (Java member to KSP equivalent):
 | `Element.getEnclosingElement` | `ksDeclaration.parentDeclaration` |
 | `Element.getKind` | Type check and cast following `ClassKind` or `FunctionKind` |
 | `Element.getModifiers` / `getSimpleName` | `ksDeclaration.modifiers` / `ksDeclaration.simpleName` |
-| `ExecutableElement.getDefaultValue` | To be implemented |
+| `ExecutableElement.getDefaultValue` | Approximation: for annotation members, read `ksAnnotation.defaultArguments` (the default values of the annotation members, as `KSValueArgument`s); there is no per-function accessor |
 | `ExecutableElement.getParameters` | `ksFunctionDeclaration.parameters` |
 | `ExecutableElement.getReceiverType` | `ksFunctionDeclaration.extensionReceiver` (Kotlin extension receiver; null if none). Java instance methods: containing `KSClassDeclaration` = `ksFunctionDeclaration.parentDeclaration as? KSClassDeclaration`; null for top-level / static |
 | `ExecutableElement.getReturnType` | `ksFunctionDeclaration.returnType` |
@@ -102,7 +102,7 @@ Details (Java member to KSP equivalent):
 | `ExecutableElement.isVarArgs` | `ksFunctionDeclaration.parameters.any { it.isVararg }` |
 | `QualifiedNameable.getQualifiedName` | `ksDeclaration.qualifiedName` |
 | `TypeElement.getEnclosedElements` / `getEnclosingElement` | `ksClassDeclaration.declarations` / `ksClassDeclaration.parentDeclaration` |
-| `TypeElement.getNestingKind` | Check `KSClassDeclaration.parentDeclaration` and `inner` modifier |
+| `TypeElement.getNestingKind` | Approximation: check `KSClassDeclaration.parentDeclaration` and `inner` modifier (local / anonymous classes are not captured) |
 | `TypeElement.getTypeParameters` | `ksClassDeclaration.typeParameters` |
 | `TypeParameterElement.getBounds` | `ksTypeParameter.bounds` |
 | `TypeParameterElement.getEnclosingElement` / `getGenericElement` | `ksTypeParameter.parentDeclaration` |
@@ -110,7 +110,7 @@ Details (Java member to KSP equivalent):
 | `VariableElement.getEnclosingElement` / `getSimpleName` | `ksValueParameter.parent` (a `KSNode?`; cast to `KSFunctionDeclaration` when the declaration is needed) / `ksValueParameter.name?.asString()` (`name` is a nullable `KSName?`) |
 | `ArrayType.getComponentType` | `ksType.arguments.first().type` for `Array<T>` only (`arguments` holds `KSTypeArgument`s; `type` is a `KSTypeReference?`). Primitive arrays (`IntArray`, `ByteArray`, ... — Java `int[]` etc.) have no type arguments; branch on `ksType.declaration.qualifiedName?.asString()` (`kotlin.IntArray` → `resolver.builtIns.intType`, `kotlin.ByteArray` → `byteType`, etc.) |
 | `DeclaredType.asElement` | `ksType.declaration` |
-| `DeclaredType.getEnclosingType` | `ksType.declaration.parentDeclaration` |
+| `DeclaredType.getEnclosingType` | No direct equivalent. `ksType.declaration.parentDeclaration` gives the enclosing declaration only: type arguments of the enclosing type (such as `Outer<String>`) are not recovered, and it is non-null for nested non-`inner` classes where javax returns `NoType`. For `inner` classes, rebuild the outer type manually, e.g. via `(parentDeclaration as KSClassDeclaration).asType(...)` |
 | `DeclaredType.getTypeArguments` | `ksType.arguments` |
 | `ExecutableType.getParameterTypes` | `ksFunctionDeclaration.parameters.map { it.type }` (resolved function type: `ksType.arguments.dropLast(1).map { it.type }`) |
 | `ExecutableType.getReceiverType` | `ksFunctionDeclaration.extensionReceiver?.resolve()`, or `(ksFunctionDeclaration.parentDeclaration as? KSClassDeclaration)?.asType(typeArguments)` for member functions (no receiver for top-level / `Modifier.JAVA_STATIC`) |
@@ -123,7 +123,8 @@ Details (Java member to KSP equivalent):
 | `WildcardType.getSuperBound` | `if (ksTypeArgument.variance == Variance.CONTRAVARIANT) ksTypeArgument.type else null` |
 | `Elements.getAllAnnotationMirrors` | `KSAnnotated.annotations` (`KSDeclaration.annotations`) |
 | `Elements.getAllMembers` | `ksClassDeclaration.getAllFunctions()` / `ksClassDeclaration.getAllProperties()` (declared and inherited members; requires type resolution) |
-| `Elements.getBinaryName` / `getElementValuesWithDefaults` / `hides` | To be decided / to be implemented |
+| `Elements.getBinaryName` / `hides` | To be decided / to be implemented |
+| `Elements.getElementValuesWithDefaults` | Approximation: combine `ksAnnotation.arguments` with `ksAnnotation.defaultArguments` (the default values of the annotation members) |
 | `Elements.getDocComment` | `ksDeclaration.docString` |
 | `Elements.getConstantExpression` | There is constant value, not expression |
 | `Elements.getName` | `resolver.getKSNameFromString` |
@@ -139,14 +140,14 @@ Details (Java member to KSP equivalent):
 | `Types.isSubtype(t1, t2)` | No exact equivalent; `t2.isAssignableFrom(t1)` is an assign-compatibility check, used as an approximation (a JLS subtype check, e.g. `int` vs `Integer`, is not reproduced) |
 | `Types.contains(t1, t2)` | No direct equivalent (type-argument containment); compare `KSTypeArgument.variance` and the bound types (`ksTypeArgument.type?.resolve()`) manually |
 | `Types.directSupertypes` | Approximation: `(ksType.declaration as? KSClassDeclaration)?.superTypes` lists the declared supertypes in terms of the declaration's own type parameters (for `Child<String>` with `Child<T> : Parent<T>` it yields `Parent<T>`, not `Parent<String>`); substitute `ksType.arguments` for the declaration's `typeParameters` yourself (e.g. via `replace(...)`) to get concrete supertypes |
-| `Types.erasure` | `ksType.starProjection()` |
+| `Types.erasure` | No direct equivalent / Approximation: `ksType.starProjection()` replaces type arguments with `*` (close to a raw type). For a type parameter, use its first bound (`(ksType.declaration as KSTypeParameter).bounds.first().resolve()`, then erase recursively); for `Array<T>`, erase the component type |
 | `Types.getArrayType` | `ksBuiltIns.arrayType.replace(...)` |
-| `Types.getDeclaredType` | `ksClassDeclaration.asType` |
-| `Types.getNoType` | `ksBuiltIns.nothingType` / `null` |
+| `Types.getDeclaredType` | Approximation: `ksClassDeclaration.asType(typeArguments)` (takes a list of `KSTypeArgument`) |
+| `Types.getNoType` | No direct equivalent. `ksBuiltIns.nothingType` is Kotlin's bottom type, not javax `NoType` (`TypeKind.VOID` / `TypeKind.NONE`); for `TypeKind.NONE` (absence of a type, e.g. no superclass) use `null` |
 | `Types.getNullType` | Depending on context, `KSType.makeNullable()` could be useful |
 | `Types.getWildcardType` | Use `Variance` in places expecting `KSTypeArgument` |
-| `Types.isSameType` | `ksType.equals` |
-| `Types.isSubsignature` | `functionTypeA == functionTypeB` / `functionTypeA == functionTypeB.starProjection()` |
+| `Types.isSameType` | Approximation: `ksType.equals` (nullability and flexible Java types may make results differ from javax) |
+| `Types.isSubsignature` | No direct equivalent; compare `simpleName`, type-parameter count/bounds and parameter types (`parameters.map { it.type.resolve() }`, erased as in the `Types.erasure` row) individually per JLS 8.4.2 (the return type is not part of the signature). For override checks use `resolver.overrides(overrider, overridee)` |
 
 ## Notes
 
@@ -161,6 +162,12 @@ Details (Java member to KSP equivalent):
 - In google/ksp 2.3.10, KSType.arguments is List<KSTypeArgument> (each with a nullable type: KSTypeReference?), so the ArrayType.getComponentType row and the resolved-function-type forms of getParameterTypes / getReturnType read .type from the type arguments.
 - The official table (kotlin-web-site 0b10373) lists getAnnotation / getDocComment as "to be implemented", getThrownTypes as not needed, and writes getEnclosingElements; google/ksp 2.3.10 api provides KSAnnotated.getAnnotationsByType / isAnnotationPresent (@KspExperimental), KSDeclaration.docString and Resolver.getJvmCheckedException (@KspExperimental), and the javax method is getEnclosingElement, which this page uses.
 - The official table (kotlin-web-site 0b10373) maps Types.contains / isAssignable / isSubtype all to KSType.isAssignableFrom and writes Types.directSuperTypes as declaration.superTypes; these javax operations differ (containment, assignability, subtyping) and isAssignableFrom takes the target type as receiver, while the javax method is directSupertypes and declaration.superTypes are unsubstituted, so this page splits the rows and states the approximations.
+- The official table (kotlin-web-site 0b10373) maps DeclaredType.getEnclosingType to parentDeclaration; this is not equivalent (no enclosing type arguments; non-null for nested non-inner classes where javax returns NoType).
+- The official table maps Types.erasure to starProjection(); this is only an approximation (type parameters, arrays and nested types need separate handling).
+- The official table maps Types.getNoType to nothingType / null; Nothing is the bottom type and is not equivalent to javax NoType.
+- The official table maps Types.isSubsignature to FunctionN equality; this is not equivalent (it drops the method name and includes the return type).
+- Rows marked "Approximation" (getNestingKind, getDeclaredType, isSameType) are only close to the javax semantics; the official table's wording is kept except for the stated qualifications.
+- The official table (kotlin-web-site 0b10373) lists ExecutableElement.getDefaultValue and Elements.getElementValuesWithDefaults as "to be implemented"; google/ksp 2.3.10 api declares KSAnnotation.defaultArguments ("The default values of the annotation members"), which this page uses for annotation members.
 - Remaining items marked "To be implemented" / "To be decided" follow the official table (kotlin-web-site 0b10373).
 - The official table (kotlin-web-site 0b10373) says getAllFunctions / getAllProperties are "to be implemented"; google/ksp 2.3.10 api declares KSClassDeclaration.getAllFunctions(): Sequence<KSFunctionDeclaration> and getAllProperties(): Sequence<KSPropertyDeclaration> (declared and inherited), which this page uses.
 
