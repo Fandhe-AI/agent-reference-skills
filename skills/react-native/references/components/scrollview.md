@@ -164,4 +164,4 @@ scrollToEnd(options?: {animated?: boolean});
 - [RefreshControl](./refreshcontrol.md)
 - [View](./view.md)
 - [VirtualView](./virtualview.md)
-- View Style Props
+- [View Style Props](../props-types/view-style-props.md)

@@ -48,4 +48,4 @@ A basic button component that should render nicely on any platform. Supports a m
 
 - [Pressable](./pressable.md)
 - [TouchableOpacity](./touchableopacity.md)
-- PressEvent
+- [PressEvent](../props-types/pressevent.md)

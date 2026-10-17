@@ -30,4 +30,4 @@ The guide walks through implementing a native module directly within a React Nat
 - [native-modules-ios.md](./native-modules-ios.md)
 - [native-modules-setup.md](./native-modules-setup.md)
 - [local-library-setup.md](./local-library-setup.md)
-- Turbo Native Modules
+- [Turbo Native Modules](../native-development/turbo-native-modules-introduction.md)

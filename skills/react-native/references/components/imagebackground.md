@@ -66,5 +66,5 @@ Inherits [Image Props](./image.md#options--props).
 
 - [Image](./image.md)
 - [View](./view.md)
-- Image Style Props
-- View Style Props
+- [Image Style Props](../props-types/image-style-props.md)
+- [View Style Props](../props-types/view-style-props.md)

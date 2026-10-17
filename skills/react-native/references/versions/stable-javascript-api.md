@@ -53,5 +53,5 @@ Opt in to the Strict TypeScript API (0.80 form):
 ## Related
 
 - [react-native-0.87.md](./react-native-0.87.md)
-- ../workflow/strict-typescript-api.md
-- ../workflow/typescript.md
+- [../workflow/strict-typescript-api.md](../workflow/strict-typescript-api.md)
+- [../workflow/typescript.md](../workflow/typescript.md)

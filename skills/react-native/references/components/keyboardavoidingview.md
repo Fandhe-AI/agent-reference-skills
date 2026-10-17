@@ -87,4 +87,4 @@ Inherits [View Props](./view.md#options--props).
 
 - [View](./view.md)
 - [TextInput](./textinput.md)
-- View Style Props
+- [View Style Props](../props-types/view-style-props.md)

@@ -144,4 +144,4 @@ An object that identifies the data to be rendered for a given section.
 - [FlatList](./flatlist.md)
 - [VirtualizedList](./virtualizedlist.md)
 - [ScrollView](./scrollview.md)
-- ViewToken
+- [ViewToken](../props-types/viewtoken.md)

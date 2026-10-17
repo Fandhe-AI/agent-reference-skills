@@ -246,5 +246,5 @@ export const MyView = () => {
 - [native-components-ios.md](./native-components-ios.md)
 - [native-modules-android.md](./native-modules-android.md)
 - [local-library-setup.md](./local-library-setup.md)
-- Fabric Native Components (Android)
+- [Fabric Native Components (Android)](../native-development/fabric-native-components-android.md)
 - [Integration with an Android Fragment](../getting-started/integration-with-android-fragment.md)

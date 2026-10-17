@@ -78,7 +78,7 @@ function MyComponent(props: MyComponentProps) {
 ## Related
 
 - [Pressable](./pressable.md)
-- PressEvent
-- Rect
-- LayoutEvent
-- TargetEvent
+- [PressEvent](../props-types/pressevent.md)
+- [Rect](../props-types/rect.md)
+- [LayoutEvent](../props-types/layoutevent.md)
+- [TargetEvent](../props-types/targetevent.md)

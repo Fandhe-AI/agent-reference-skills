@@ -267,6 +267,6 @@ Returned in the callback as a result of a component layout change. Contains `lin
 
 - [View](./view.md)
 - [TextInput](./textinput.md)
-- Text Style Props
-- PressEvent
-- Text Nodes
+- [Text Style Props](../props-types/text-style-props.md)
+- [PressEvent](../props-types/pressevent.md)
+- [Text Nodes](../props-types/text-nodes.md)
