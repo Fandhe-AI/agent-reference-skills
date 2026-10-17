@@ -86,8 +86,9 @@ jobs:
           security find-identity -v -p codesigning build.keychain
       - name: Verify Certificate
         run: |
-          CERT_INFO=$(security find-identity -v -p codesigning build.keychain | grep "Apple Development")
+          CERT_INFO=$(security find-identity -v -p codesigning build.keychain | grep -E "Developer ID Application|Apple Distribution")
           CERT_ID=$(echo "$CERT_INFO" | awk -F'"' '{print $2}')
+          if [ -z "$CERT_ID" ]; then echo "No matching signing certificate found"; exit 1; fi
           echo "CERT_ID=$CERT_ID" >> $GITHUB_ENV
           echo "Certificate imported."
       - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0
@@ -144,7 +145,7 @@ If you do not want to provide an Apple-authenticated identity but still want to 
 - A signing certificate is only valid if associated with your Apple ID; an invalid one is not listed in _Keychain Access > My Certificates_ or the `security find-identity` output. If the certificate does not download to the correct location, select the "login" option under "Default Keychains" in Keychain Access.
 - Notarization is required when using a _Developer ID Application_ certificate.
 - Ad-hoc signing does not prevent macOS from requiring users to allow the app in Privacy & Security settings.
-- The source's example job verifies a certificate using `grep "Apple Development"`; adjust it to your certificate type.
+- The source example greps "Apple Development"; changed here to match the distribution certificate types created above.
 - Tauri bundler side only; Apple's signing and notarization procedures belong to the apple-distribution skill.
 
 ## Related

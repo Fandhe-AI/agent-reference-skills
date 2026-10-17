@@ -23,8 +23,23 @@ Conceptually Tauri acts as a static web host: provide a folder containing a mix 
 - For mobile development, a development server of some kind is necessary that can host the frontend on your internal IP.
 - Use a proper client-server relationship between your app and your API's (no hybrid solutions with SSR).
 
+Minimal build configuration:
+
+```json
+// tauri.conf.json
+{
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devUrl": "http://localhost:5173",
+    "frontendDist": "../dist"
+  }
+}
+```
+
 ## Notes
 
+- The overview page has no code; the snippet is the minimal build config shared by the framework guides.
 - If a framework is not listed it may work with no additional configuration, or may not have been documented yet.
 - Tauri-side integration settings only; the frameworks themselves are covered by vite, nextjs-app and tanstack-start skills.
 

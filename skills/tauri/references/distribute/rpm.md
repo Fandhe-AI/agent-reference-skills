@@ -25,7 +25,7 @@ export TAURI_SIGNING_RPM_KEY_PASSPHRASE=password   # if the key has a passphrase
 cargo tauri build
 ```
 
-Verify the signature (local testing only): export and import the public key, edit `~/.rpmmacros`, then check:
+Verify the signature (local testing only): export and import the public key, then check (optionally set `~/.rpmmacros` as shown below):
 
 ```bash
 gpg --export -a 'Tauri-App' > RPM-GPG-KEY-Tauri-App
@@ -33,15 +33,11 @@ sudo rpm --import RPM-GPG-KEY-Tauri-App
 rpm  -v --checksig tauri-app-0.0.0-1.x86_64.rpm
 ```
 
+`~/.rpmmacros` (minimal):
+
 ```bash
 %_signature gpg
-%_gpg_path /home/johndoe/.gnupg
 %_gpg_name Tauri-App
-%_gpgbin /usr/bin/gpg2
-%__gpg_sign_cmd %{__gpg} \
-    gpg --force-v3-sigs --digest-algo=sha1 --batch --no-verbose --no-armor \
-    --passphrase-fd 3 --no-secmem-warning -u "%{_gpg_name}" \
-    -sbo %{__signature_filename} %{__plaintext_filename}
 ```
 
 ### Debugging the RPM package
@@ -160,6 +156,7 @@ license = "MIT" # add the license here
 - `epoch` is not recommended unless necessary, as it alters how the package manager compares package versions.
 - The source's `scripts` example sets `preInstallScript`/`preRemoveScript` and `postInstallScript`/`postRemoveScript` to the same `prescript.sh` / `postscript.sh` paths; use your own script file names.
 - The source repeats `touch` on backslash-continued lines (creating a stray `touch` file); merged into one command.
+- The source also shows a ~/.rpmmacros %__gpg_sign_cmd forcing --digest-algo=sha1 / --force-v3-sigs; it is omitted here because SHA-1 signatures are weak and rejected by modern rpm.
 - GUI apps on Linux do not inherit `$PATH` from shell dotfiles; see the `fix-path-env-rs` crate.
 
 ## Related

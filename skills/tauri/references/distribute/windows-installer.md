@@ -93,7 +93,7 @@ Expand .\Microsoft.WebView2.FixedVersionRuntime.128.0.2739.42.x64.cab -F:* ./src
     "windows": {
       "webviewInstallMode": {
         "type": "fixedRuntime",
-        "path": "./Microsoft.WebView2.FixedVersionRuntime.98.0.1108.50.x64/"
+        "path": "./Microsoft.WebView2.FixedVersionRuntime.128.0.2739.42.x64/"
       }
     }
   }
@@ -352,7 +352,7 @@ The NSIS installer is multi-language: a single installer contains all selected t
 - Hook dependency guidance: check whether the dependency is installed (registry keys, file existence or the Windows `where` command); use `/passive`, `/quiet` or `/silent` and `/norestart`; clean up temporary files and bundled installers; consider dependencies shared with other applications when uninstalling; provide meaningful error messages.
 - The source heading calls the dependency example "MSI Installer Example" but it is an NSIS hook (`NSIS_HOOK_POSTINSTALL`) that runs a bundled MSI.
 - The source's `resources` array snippet is missing a closing quote after `another-one.msi`; corrected here.
-- The `fixedRuntime` example in the source mixes WebView2 versions (`128.0.2739.42` downloaded, `98.0.1108.50` in the path); use the folder name of the runtime you extracted.
+- The source config uses the 98.0.1108.50 directory while extracting the 128.0.2739.42 CAB; aligned to 128.0.2739.42 here. Use the folder name of the runtime you extracted.
 - On Windows 10 (April 2018 release or later) and Windows 11 the WebView2 runtime is distributed with the operating system. A fixed runtime adds about 180MB; `skip` means the app WILL NOT work if the runtime is not installed.
 - Signing cross compiled Windows installers requires an external signing tool (see sign-windows).
 - Complete option lists: WixConfig and NsisConfig in the configuration reference.

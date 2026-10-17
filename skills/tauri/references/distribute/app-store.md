@@ -97,7 +97,7 @@ Required configuration:
 <plist version="1.0">
 <dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/> # or `true` if your app uses encryption
+	<false/> <!-- or true if your app uses encryption -->
 </dict>
 </plist>
 ```
@@ -127,6 +127,7 @@ Required configuration:
 
 - `--target universal-apple-darwin` added to the build step so it matches the bundle step (omitted in source).
 - The universal build supports both Apple Silicon and Intel. To support only Apple Silicon set `bundle > macOS > minimumSystemVersion` to `12.0`; on an Apple Silicon build machine drop `--target universal-apple-darwin` and use `target/release`; on an Intel build machine run `rustup target add aarch64-apple-darwin`, use `aarch64-apple-darwin` as target and `target/aarch64-apple-darwin/release` paths.
+- The source annotates the plist with a # comment; rewritten as an XML comment so the file stays valid.
 - The PKG must be signed with a _Mac Installer Distribution_ certificate.
 - Build with code signing enabled for entitlements to apply; make sure the app works in an App Sandbox context.
 - Uploaded apps are validated by Apple and available in TestFlight if approved.

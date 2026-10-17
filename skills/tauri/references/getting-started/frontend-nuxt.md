@@ -12,7 +12,7 @@ Checklist:
 
 - Use SSG by setting `ssr: false`. Tauri doesn't support server based solutions.
 - Use default `../dist` as `frontendDist` in `tauri.conf.json`.
-- Compile using `nuxi build`.
+- Compile using `nuxi generate` (the `generate` script, which `beforeBuildCommand` runs).
 - (Optional): Disable telemetry by setting `telemetry: false` in `nuxt.config.ts`.
 
 Tauri configuration (npm; yarn / pnpm / deno use `yarn dev` / `yarn generate`, `pnpm dev` / `pnpm generate`, `deno task dev` / `deno task generate`):
@@ -61,6 +61,7 @@ export default defineNuxtConfig({
 
 ## Notes
 
+- The source checklist says nuxi build, but its config runs the generate script; aligned to nuxi generate for static output. Scripts in package.json: `"dev": "nuxi dev"`, `"generate": "nuxi generate"`.
 - Tauri-side integration settings only; Nuxt itself has no dedicated skill here. Vite: vite skill.
 
 ## Related
