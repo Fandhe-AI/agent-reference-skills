@@ -27,5 +27,5 @@ win.webContents.openDevTools()
 
 - [Debugging the Main Process](./debugging-main-process.md)
 - [DevTools Extension](./devtools-extension.md)
-- Environment Variables
-- Supported Command Line Switches
+- [Environment Variables](../getting-started/environment-variables.md)
+- [Supported Command Line Switches](../getting-started/command-line-switches.md)

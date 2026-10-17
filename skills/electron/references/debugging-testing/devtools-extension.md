@@ -53,5 +53,5 @@ Alternatively, use the third-party `electron-devtools-installer` npm package to 
 ## Related
 
 - [Application Debugging](./application-debugging.md)
-- Chrome Extension Support
-- Extensions class
+- [Chrome Extension Support](../session-network/extensions.md)
+- [Extensions class](../session-network/extensions-api.md)

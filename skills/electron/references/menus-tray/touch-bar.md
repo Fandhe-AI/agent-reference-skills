@@ -71,4 +71,4 @@ Instance property: `touchBar.escapeItem` - a `TouchBarItem` that will replace th
 
 - [TouchBar items: basic](./touch-bar-items-basic.md)
 - [TouchBar items: advanced](./touch-bar-items-advanced.md)
-- BrowserWindow methods
+- [BrowserWindow methods](../windows/browser-window-methods-content-taskbar.md)

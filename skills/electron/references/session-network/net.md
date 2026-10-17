@@ -165,6 +165,6 @@ app.whenReady().then(() => {
 
 * [client-request](./client-request.md)
 * [incoming-message](./incoming-message.md)
-* web-socket
+* [web-socket](./web-socket.md)
 * [session-methods-cache-proxy-network](./session-methods-cache-proxy-network.md)
 * [protocol-handle](./protocol-handle.md)

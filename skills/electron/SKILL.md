@@ -11,8 +11,6 @@ user-invocable: false
 
 # Electron
 
-> 分割 PR の途中段階。現在収録済み: references/{app, breaking-changes, debugging-testing, distribution-updates, getting-started, ipc-preload, menus-tray, security-performance, session-network, system, web-contents, windows}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
-
 対象バージョン Electron v44.8.0: GitHub tag v44.8.0 (electron/electron)。npm latest = 44.8.0（2026-10-16 公開）。原本は 2026-10-17 に `raw.githubusercontent.com/electron/electron/v44.8.0/docs/` から取得。`main` および `44-x-y` ブランチは使用しない。45.0.0-beta は対象外。公式サイトに `llms.txt` / `.md` twin は無い。
 
 ## ディレクトリ構成
@@ -108,6 +106,28 @@ skills/electron/
       breaking-changes-overview.md
       breaking-changes-v44.md
       breaking-changes-v43.md
+  samples/                  # 実例（1 ユースケース 1 ファイル）
+    README.md
+    first-app.md
+    preload-script.md
+    ipc-invoke-handle.md
+    application-menu.md
+    tray-menu.md
+    notifications.md
+    deep-links.md
+    packaging-forge.md
+    publishing-updating.md
+    native-addon-cpp-win32.md
+  scripts/                  # 実行コマンド集
+    README.md
+    install.md
+    create-and-run.md
+    forge.md
+    debugging.md
+    testing-ci.md
+    native-modules.md
+    asar-fuses.md
+    platform-distribution.md
 ```
 
 ## 探索手順
@@ -117,6 +137,7 @@ skills/electron/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
+4. 典型的な実装は `samples/README.md`、コマンドは `scripts/README.md` を引く
 
 他スキルとの境界（Menu / Tray / dialog / Notification / session / protocol 等の同名 API）は各ページの `## Notes` に記載。
 
@@ -136,3 +157,5 @@ skills/electron/
 | パッケージング・Forge・コード署名・autoUpdater・MAS / Microsoft Store 申請をしたい | distribution-updates | [references/distribution-updates/README.md](references/distribution-updates/README.md) |
 | デバッグ・クラッシュレポート・E2E テスト・headless CI を整えたい | debugging-testing | [references/debugging-testing/README.md](references/debugging-testing/README.md) |
 | バージョン更新で削除・変更された API を確認したい | breaking-changes | [references/breaking-changes/README.md](references/breaking-changes/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

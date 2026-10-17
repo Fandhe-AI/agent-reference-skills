@@ -64,4 +64,4 @@ Sent to `submitURL` as `multipart/form-data` `POST` (gzip unless `compress` is `
 ## Related
 
 - [Crash Reporting guide](./crash-reporting.md)
-- process
+- [process](../getting-started/process.md)

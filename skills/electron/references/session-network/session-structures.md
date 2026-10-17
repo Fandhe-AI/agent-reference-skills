@@ -224,7 +224,7 @@ The `proxyBypassRules` is a comma separated list of rules described below:
 ## Notes
 
 * Source pages (https://www.electronjs.org/docs/latest/api/structures/<name>): cookie, proxy-config, resolved-host, resolved-endpoint, certificate, certificate-principal, referrer, web-request-filter, web-socket-options, shared-dictionary-info, shared-dictionary-usage-info, service-worker-info, extension, extension-info, preload-script, preload-script-registration.
-* `Cookie` is returned by [Cookies](./cookies.md); `ProxyConfig` by `ses.setProxy`; `ResolvedHost` / `ResolvedEndpoint` by `ses.resolveHost` / `net.resolveHost`; `Certificate` by `ses.setCertificateVerifyProc`; `WebRequestFilter` by [WebRequest](./web-request.md); `WebSocketOptions` by net.WebSocket; `PreloadScript` / `PreloadScriptRegistration` by `ses.registerPreloadScript`.
+* `Cookie` is returned by [Cookies](./cookies.md); `ProxyConfig` by `ses.setProxy`; `ResolvedHost` / `ResolvedEndpoint` by `ses.resolveHost` / `net.resolveHost`; `Certificate` by `ses.setCertificateVerifyProc`; `WebRequestFilter` by [WebRequest](./web-request.md); `WebSocketOptions` by [net.WebSocket](./web-socket.md); `PreloadScript` / `PreloadScriptRegistration` by `ses.registerPreloadScript`.
 * `Referrer` is a standalone structure used elsewhere in the Electron API.
 * These shapes describe browser-profile cookies and network configuration inside an Electron app; for authentication-session cookies see better-auth (it has an Electron integration).
 

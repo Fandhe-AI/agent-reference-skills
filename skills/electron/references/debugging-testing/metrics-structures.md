@@ -80,5 +80,5 @@ Possible values: `disabled_software`, `disabled_off`, `disabled_off_ok`, `unavai
 
 ## Related
 
-- process
+- [process](../getting-started/process.md)
 - [crashReporter](./crash-reporter.md)

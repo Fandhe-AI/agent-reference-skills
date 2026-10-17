@@ -305,4 +305,4 @@ const mainWindow = new BrowserWindow()
 * [security-checklist-11-20.md](./security-checklist-11-20.md)
 * [sandbox.md](./sandbox.md)
 * [context-isolation.md](../ipc-preload/context-isolation.md)
-* web-preferences.md
+* [web-preferences.md](../windows/web-preferences.md)
