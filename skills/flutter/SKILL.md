@@ -1,0 +1,53 @@
+---
+name: flutter
+description: >
+  Flutter (Google 製 Dart クロスプラットフォーム UI フレームワーク, 3.47) のリファレンス。
+  StatelessWidget / StatefulWidget / BuildContext, Sliver, Material / Cupertino, Impeller, DevTools,
+  Widget Previewer, MVVM, platform channels / dart:ffi, add-to-app, Flutter Web / Wasm, GenUI SDK / AI Toolkit。
+user-invocable: false
+---
+
+# Flutter
+
+## 対象バージョン
+
+- Flutter 3.47.7 stable / Dart 3.13.5（`releases_macos.json` の `current_release.stable` = `abaf9c523780a608bd46686fd5e53740a07077f8` = flutter/flutter tag `3.47.7`、2026-10-08 リリース）
+- ドキュメント原本: flutter/website（リリースタグなし）を main HEAD `ed9d404eab2ebb9c0e230bdbac0a1a0fc837021c`（2026-10-15T18:05:42Z）に pin、2026-10-16 取得
+- API リファレンス: api.flutter.dev（dartdoc HTML、URL に版なし）を 2026-10-16 取得
+- `llms.txt` は 3.44 のままのため版数の根拠にしない
+- 「Not yet released to stable」の breaking changes は第一級に扱わない。例外は material_ui / cupertino_ui で、3.47 から opt-in 可能（opt-in として記載）
+
+## ディレクトリ構成
+
+```text
+skills/flutter/
+  SKILL.md
+  references/
+    design-animation/        # Material/Cupertino・テーマ・アニメーション・アセット・シェーダー（17 ページ）
+      README.md
+    architecture-data/       # アプリアーキテクチャ・状態管理・ネットワーク・永続化・Firebase（21 ページ）
+      README.md
+    ai/                      # GenUI SDK・AI Toolkit・AI 開発ツール（10 ページ）
+      README.md
+```
+
+## 探索手順
+
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
+
+1. 下記マッピング表でタスクに対応するカテゴリを探す
+2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
+
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照 README |
+|--------|---------|------------|
+| MaterialApp・CupertinoApp・ThemeData・Scaffold を設定したい | design-animation | [references/design-animation/README.md](references/design-animation/README.md) |
+| 暗黙的/明示的アニメーション・Hero・AnimationController を使いたい | design-animation | [references/design-animation/README.md](references/design-animation/README.md) |
+| アセット・フォント・フラグメントシェーダーを扱いたい | design-animation | [references/design-animation/README.md](references/design-animation/README.md) |
+| アプリアーキテクチャ（MVVM・Repository）・設計パターンを知りたい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
+| 状態管理（ephemeral / app state・provider）を選びたい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
+| HTTP 通信・JSON シリアライズ・SQL / key-value 永続化・オフラインファーストを実装したい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
+| Firebase・データベース選定を調べたい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
+| GenUI SDK・AI Toolkit（LlmChatView）・AI 開発ツールを使いたい | ai | [references/ai/README.md](references/ai/README.md) |
