@@ -9,7 +9,7 @@ source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/numeric.rs
 ## Signature / Usage
 
 ```rust,ignore
-/// `NUMERIC` 列が宣言できる最大精度（全体桁数）。`i128::MAX` は 10^38 未満のため、
+/// `NUMERIC` 列が宣言できる最大精度（全体桁数）。10^38 − 1 は `i128::MAX`（約 1.7 × 10^38）未満のため、
 /// 38 桁までの `unscaled` は必ず `i128` へ収まる。
 pub const MAX_PRECISION: u8 = 38;
 pub const MAX_LITERAL_LEN: usize = 1024;
@@ -57,6 +57,7 @@ let r = parse_for_column("999.995", 5, 2); // Err(NumericError::OutOfRange)
 
 ## Notes
 
+- `MAX_PRECISION` の upstream doc comment（numeric.rs:13）は「`i128::MAX` は 10^38 未満」と大小を逆に書いている。正しい関係は同じファイル 65 行目のとおり（10^38 − 1 < `i128::MAX` ≈ 1.7 × 10^38）。上記コードブロックのコメントは訂正済み。
 - リテラル文法: `[+-]?(digits)?(\.digits?)?([eE][+-]?digits)?`。整数部・小数部の少なくとも一方に 1 桁以上必要。空白・`NaN` / `Infinity`・複数の `.`・指数部の小数・桁の無い指数は拒否。指数部は Issue #1358 で受理。走査前に長さ（1024 バイト以下）・ASCII を検査する。
 - 指数は小数点位置のシフトとして扱い、シフト後の値に対して丸め（half away from zero、D4）と桁検査を行う。極端に大きな負の指数は 0 へ丸まり、非ゼロ仮数の極端に大きな正の指数は `OutOfRange`（指数は絶対値 4096 で頭打ち）。
 - `parse_literal_exact` の `scale` は `max(0, 小数部の桁数 - 指数)`（`1e-3` は scale 3、`1.5e3` は scale 0）。これが 38 を超える、または整数部が 38 桁に収まらない場合は `OutOfRange`。

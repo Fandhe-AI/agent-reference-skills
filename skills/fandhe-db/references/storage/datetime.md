@@ -40,13 +40,14 @@ pub fn format_timestamp(micros: i64) -> String;
 
 | Name | Type | Description |
 |------|------|-------------|
-| `DateTimeLiteralError::Format` | variant | 閉じた文法に一致しない（区切り文字違い・桁数不足・TZ 接尾辞・特殊語・前後空白・非 ASCII 数字・長さ超過等）。`sql::parser` が `22000`（構文違反）へ写像 |
+| `DateTimeLiteralError::Format` | variant | 閉じた文法に一致しない（区切り文字違い・桁数不足・TZ 接尾辞・特殊語・前後空白・非 ASCII 数字・長さ超過等）。`sql::parser` が `22007`（`INVALID_DATETIME_FORMAT`、Issue #1187）へ写像 |
 | `DateTimeLiteralError::Overflow` | variant | 文法上は解析できたが値が範囲外・暦上不正（月 13・2 月 30 日・非閏年の 2/29・時 24・分 60・秒 60・年 0000・年 10000 以上等）。`22008`（`DATETIME_FIELD_OVERFLOW`）へ写像 |
 | `MAX_DATETIME_LITERAL_LEN` | `usize` = 40 | リテラル受理上限バイト長（パース前の早期拒否） |
 
 ## Notes
 
 - **タイムゾーンなし**（ADR `datetime-column.md` D-4）: `TIMESTAMP` はタイムゾーンなし（naive）の値のみを扱い、セッションのタイムゾーン設定・変換・`AT TIME ZONE` は持たない。入力に TZ 接尾辞（`Z`、`+hh:mm`、`-hh`）があれば閉じた文法の外として `22007` で拒否する。値をどのタイムゾーンで解釈するかはクライアント側の責任。`TIMESTAMPTZ` は対象外。
+- `datetime.rs` の `DateTimeLiteralError` の doc comment は旧写像 `22000` のまま残っているが、0.2.0 の実際の写像は `sql/parser.rs`・`error_format.rs` のとおり `22007`（ADR `datetime-column.md`: Issue #1187 で `22000` から変更）。
 - エポックは 1970-01-01（Unix エポック）。PostgreSQL の内部エポック 2000-01-01 とは異なり、バイナリ結果形式（#998・WIRE-14）で PG のバイナリ表現を返す場合はオフセット変換が必要（ADR 注記）。
 - `DATE` 文法は `Y{4,6}-MM-DD`（年は 4〜6 桁・月日は各 2 桁固定）。年は先発グレゴリオ暦の `0001..=9999` のみ。5〜6 桁の範囲外年は「文法違反」ではなく `Overflow`。
 - `TIMESTAMP` の小数秒は 1〜6 桁のみ。7 桁以上は丸めず `Format` で拒否（D-5）。例: `.5` は 500000 マイクロ秒。
