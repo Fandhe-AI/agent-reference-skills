@@ -114,7 +114,7 @@ compose.desktop {
     application {
         nativeDistributions {
             packageName = "ExampleApp"
-            packageVersion = "0.1-SNAPSHOT"
+            packageVersion = "1.0.0"
             description = "Compose Multiplatform App"
             copyright = "© 2024 My Name. All rights reserved."
             vendor = "Example vendor"
@@ -384,6 +384,7 @@ ProGuard options (`buildTypes.release.proguard`):
 
 ## Notes
 
+- The official example uses `0.1-SNAPSHOT`, which is not valid for dmg/pkg/msi/exe/rpm packaging; `1.0.0` is used here.
 - Output binaries are generated in `${project.buildDir}/compose/binaries`.
 - The `application` DSL here is unrelated to the deprecated Gradle `application` plugin.
 - The plugin does not determine required JDK modules automatically; missing modules cause `ClassNotFoundException` at runtime (in a packaged app or `runDistributable`). The plugin needs JDK 17 or newer for `jpackage`: point `JAVA_HOME` at it or set `javaHome` in the DSL.

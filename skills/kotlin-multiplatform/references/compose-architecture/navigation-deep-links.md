@@ -35,7 +35,7 @@ NavHost(
             // so we add the serial name for the route type
             navDeepLink<DeepLinkScreen>(basePath = "$firstBasePath/dlscreen"),
         )
-    ) {
+    ) { backStackEntry ->
         val deeplink: DeepLinkScreen = backStackEntry.toRoute()
         val nameGenerated = deeplink.name
         val nameGeneral = backStackEntry.arguments?.read { getStringOrNull("name") }
@@ -97,6 +97,7 @@ Generated URI pattern rules for a route type: required parameters become path pa
 
 ## Notes
 
+- The official snippet omits the `backStackEntry ->` lambda parameter; it is added here so the example compiles.
 - The docs pin `navigation-compose` to `2.10.0-rc01` (pre-release). Setup versions in the page's catalog example (`agp = "8.9.0"`, `kotlin = "2.1.0"`, `kotlinx-serialization = "1.7.3"`) are the page's own example values.
 - Outside input can be malicious; follow Android's security guidelines for unsafe deep link use.
 - URIs without a scheme are assumed to start with `http://` or `https://`. `{placeholder}` matches one or more characters (use `{.*}` for zero or more). Path placeholders are required; query placeholders are optional; extra query parameters do not affect matching. If several composables match the same URI, behavior is indeterminate.
