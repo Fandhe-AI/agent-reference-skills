@@ -10,6 +10,7 @@ Install and configure shadcn/ui for TanStack Router.
 
 ```bash
 npx create-tsrouter-app@latest my-app --template file-router --tailwind --add-ons shadcn
+cd my-app
 npx shadcn@latest add button
 ```
 
@@ -33,6 +34,7 @@ function App() {
 
 ## Notes
 
+- Adapted (not in the official docs): `cd my-app` added between project creation and `shadcn add` so the component is added to the new project.
 - The example file is `src/routes/index.tsx`.
 - Unlike the TanStack Start guide, this project is created with the `shadcn` add-on (`--add-ons shadcn`).
 - Framework APIs themselves are in skills tanstack-router / tanstack-start.
