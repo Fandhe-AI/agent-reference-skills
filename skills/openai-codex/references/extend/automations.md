@@ -16,19 +16,21 @@ Invoke a skill explicitly in a scheduled task prompt (desktop app):
 Check my commits from the last 24h and submit a $recent-code-bugfix.
 ```
 
-## Where tasks run
+### Task kinds
+
+- Standalone scheduled task: starts a new chat per run and reports in **Scheduled**.
+- Scheduled task in a chat: returns to the same chat with existing context; supports minute-based intervals, daily, and weekly schedules. Make the prompt durable (what to do each run, when to report, when to stop or ask).
+- Event-triggered (eligible plans, web and mobile only): Gmail (new messages, filter by sender/subject), Slack (new messages in selected channels; add `@ChatGPT` to each channel; no reactions/edits/deletes/DMs), GitHub (pull request activity; filter by PR, author, title, label). One task can use multiple event triggers but cannot combine them with a time-based schedule. Admins control via the **Allow event-triggered scheduled tasks** permission.
+
+## Options / Props
+
+### Where tasks run
 
 | Surface | Behavior |
 |---------|----------|
 | ChatGPT desktop app | Works with local projects; runs in the project directory or an isolated worktree (Git repos). Computer must be on and app running. Non-Git projects run directly in the project directory. |
 | ChatGPT web | Created from Chat or ChatGPT Work; manage in **Scheduled**. Uses uploaded context and connected tools; no local folder or worktree between runs. |
 | Codex CLI / IDE extension | No Scheduled management interface; use web or desktop app. Use CLI/IDE to prepare and test a prompt, skill, or script. |
-
-## Task kinds
-
-- Standalone scheduled task: starts a new chat per run and reports in **Scheduled**.
-- Scheduled task in a chat: returns to the same chat with existing context; supports minute-based intervals, daily, and weekly schedules. Make the prompt durable (what to do each run, when to report, when to stop or ask).
-- Event-triggered (eligible plans, web and mobile only): Gmail (new messages, filter by sender/subject), Slack (new messages in selected channels; add `@ChatGPT` to each channel; no reactions/edits/deletes/DMs), GitHub (pull request activity; filter by PR, author, title, label). One task can use multiple event triggers but cannot combine them with a time-based schedule. Admins control via the **Allow event-triggered scheduled tasks** permission.
 
 ## Notes
 

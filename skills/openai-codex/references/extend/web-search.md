@@ -10,7 +10,7 @@ codex --search "Summarize the latest release notes for this dependency"
 
 Searches appear as `web_search` items in the interactive transcript and in `codex exec --json` output.
 
-## Configuration
+## Options / Props
 
 ```toml
 web_search = "live"
@@ -25,7 +25,7 @@ web_search = "live"
 
 Related keys: `tools.web_search.allowed_domains`, managed `allowed_web_search_modes`.
 
-## Custom model provider
+### Custom model provider
 
 ```toml
 model_provider = "custom"

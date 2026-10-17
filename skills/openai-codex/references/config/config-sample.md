@@ -458,7 +458,7 @@ sandbox = "elevated"
 - MCP servers, profile files, and model providers in the sample are illustrative — remove or edit for your setup.
 - Web search `cached` serves results from an OpenAI-maintained index; `indexed` gates external web access through the search index; `live` fetches the most recent data.
 - `[features.network_proxy]` must be enabled for a profile's network domain rules to apply; a profile's `network.enabled` alone allows direct network access. Web search, apps, connectors, and MCP servers use separate controls. Exact hosts match only themselves; `*.example.com` matches subdomains only; `**.example.com` matches the apex plus subdomains; `*` allows any public host not denied.
-- Set `default_permissions = "workspace"` before using the `[permissions.workspace.*]` example profile.
+- Set `default_permissions = "workspace"` before using the `[permissions.workspace.*]` example profile, and remove or comment out the root `sandbox_mode` line and the `[sandbox_workspace_write]` table — `default_permissions` must not be combined with them (see [Configuration Reference](./config-reference.md)).
 - For every key's type/description, see [Configuration Reference](./config-reference.md).
 
 ## Related

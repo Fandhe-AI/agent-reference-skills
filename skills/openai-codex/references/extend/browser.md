@@ -11,7 +11,7 @@ bug, and fix only the overflowing controls.
 
 Reference the built-in browser with `@Browser`; use `@Chrome` for the Chrome extension.
 
-## Desktop built-in browser
+### Desktop built-in browser
 
 - Open with **New tab** then a URL, or press Cmd+T (Ctrl+T on Windows and Linux).
 - Cmd+Shift+B (Ctrl+Shift+B) toggles tabs / returns from full view to split view.
@@ -19,7 +19,7 @@ Reference the built-in browser with `@Browser`; use `@Chrome` for the Chrome ext
 - Annotate: select **Annotate**, click an element or drag an area, write and save a comment, then ask ChatGPT to address comments. **Adjust** gives style controls (font, text, spacing, color).
 - Preview workflow: start the dev server, open the local route, review rendered state beside the diff, leave comments, ask for narrow fixes.
 
-## Developer mode
+### Developer mode
 
 ```text
 This app is slow. Use @Browser to capture a performance trace and inspect
@@ -33,7 +33,7 @@ Enable in **Settings > Browser > Developer mode > Enable full CDP access**. Admi
 browser_use_full_cdp_access = false
 ```
 
-## ChatGPT Work cloud browser (web / mobile)
+### ChatGPT Work cloud browser (web / mobile)
 
 - Runs on a separate cloud computer with its own cookies and sessions; ChatGPT decides when to use it.
 - **Cloud browser** settings: **Always ask**, **Auto approve**, **Always allow** (not recommended); per-site allow/block.

@@ -27,18 +27,7 @@ my-skill/
 
 Create with the built-in creator: `$skill-creator` in Codex, `@skill-creator` in ChatGPT Work.
 
-## Where Codex loads local skills
-
-| Scope | Location | Use |
-|-------|----------|-----|
-| REPO | `$CWD/.agents/skills` | Skills relevant to a working folder |
-| REPO | `$CWD/../.agents/skills` | Skills for a shared parent folder |
-| REPO | `$REPO_ROOT/.agents/skills` | Root skills for everyone in the repo |
-| USER | `$HOME/.agents/skills` | Personal skills for any repo |
-| ADMIN | `/etc/codex/skills` | Machine/container-wide default skills |
-| SYSTEM | Bundled with Codex | skill-creator, plan skills, etc. |
-
-## Optional metadata (`agents/openai.yaml`)
+### Optional metadata (`agents/openai.yaml`)
 
 ```yaml
 interface:
@@ -63,7 +52,7 @@ dependencies:
 
 `allow_implicit_invocation` (default `true`): when `false`, Codex does not implicitly invoke the skill; explicit `$skill` invocation still works.
 
-## Enable or disable local skills
+### Enable or disable local skills
 
 ```toml
 [[skills.config]]
@@ -73,13 +62,26 @@ enabled = false
 
 Restart Codex after changing `~/.codex/config.toml`.
 
-## Install curated skills
+### Install curated skills
 
 Send this in the Codex composer (it is a skill invocation, not a shell command):
 
 ```text
 $skill-installer linear
 ```
+
+## Options / Props
+
+### Where Codex loads local skills
+
+| Scope | Location | Use |
+|-------|----------|-----|
+| REPO | `$CWD/.agents/skills` | Skills relevant to a working folder |
+| REPO | `$CWD/../.agents/skills` | Skills for a shared parent folder |
+| REPO | `$REPO_ROOT/.agents/skills` | Root skills for everyone in the repo |
+| USER | `$HOME/.agents/skills` | Personal skills for any repo |
+| ADMIN | `/etc/codex/skills` | Machine/container-wide default skills |
+| SYSTEM | Bundled with Codex | skill-creator, plan skills, etc. |
 
 ## Notes
 

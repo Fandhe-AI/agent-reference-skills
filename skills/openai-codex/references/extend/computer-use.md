@@ -12,14 +12,14 @@ again.
 
 Mention `@Computer` or `@AppName` (for example `@Chrome`), or ask ChatGPT to use Computer Use.
 
-## Setup
+### Setup
 
 1. In the desktop app, select ChatGPT and switch to Work, or select Codex.
 2. Open **Plugins > Computer Use**, select **Install plugin** (or **Enable**), turn on the Computer Use server and skill toggles, then **Try now**.
 3. Review app access in **Settings > Computer use** (**Always-allowed apps**; connected browser controls have **Manage**).
 4. macOS: grant **Screen Recording** (see the app) and **Accessibility** (click, type, navigate). Windows: keep the target app visible on the active desktop.
 
-## Windows app policy
+### Windows app policy
 
 ```toml
 [computer_use.windows]
@@ -28,7 +28,7 @@ always_allowed_app_ids = ["mspaint.exe"]
 
 Stored in `$CODEX_HOME/config.toml`; use the app identifier Windows Computer Use reports (executable name, or app user model ID for packaged apps). Older `$CODEX_HOME/computer-use/config.toml` allow-list entries are migrated; its `denied` list is not part of the current schema. Admins disable with `[features].computer_use = false` in `requirements.toml`.
 
-## Locked use (macOS only)
+### Locked use (macOS only)
 
 Enable in **Settings > Computer Use**. Installs an Apple authorization plug-in so ChatGPT can use Computer Use after the Mac locks, only during active trusted Computer Use turns. Safeguards: short-lived scoped authorization, all displays covered while unlocked, relock and pause on local keyboard or pointer input.
 

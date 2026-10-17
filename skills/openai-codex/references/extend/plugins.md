@@ -13,7 +13,16 @@ codex
 - Codex CLI: `/plugins` opens the plugin browser. Install from a configured marketplace, then start a new session before using bundled skills or tools. Press Space on an installed plugin to turn it on or off.
 - Type `@` to invoke a plugin or one of its bundled skills explicitly.
 
-## Plugin parts
+### Directory tabs
+
+- **OpenAI**: plugins built by OpenAI.
+- **Your workspace name**: plugins provided by your workspace.
+- **Personal**: personal marketplace plugins (**Created by me** / **Shared with me**).
+- A separate **Installed** row lists installed plugins.
+
+## Options / Props
+
+### Plugin parts
 
 | Part | Description |
 |------|-------------|
@@ -21,13 +30,6 @@ codex
 | MCP servers | Services that connect ChatGPT and Codex to tools and information in systems such as GitHub, Slack, or Google Drive. Define tools, enforce authentication, return structured data, perform actions; may include custom UI. |
 | Browser extensions | Browser capabilities a plugin needs for its workflow. |
 | Hooks | Commands that run at configured lifecycle points in the Codex runtime. Not supported in cloud-orchestrated ChatGPT Work; hook scripts must exist in the execution environment (enterprise admins can deploy via MDM). |
-
-## Directory tabs
-
-- **OpenAI**: plugins built by OpenAI.
-- **Your workspace name**: plugins provided by your workspace.
-- **Personal**: personal marketplace plugins (**Created by me** / **Shared with me**).
-- A separate **Installed** row lists installed plugins.
 
 ## Notes
 
