@@ -89,13 +89,15 @@ UIKitView(
 Camera view with `AVCaptureSession` and `AVCaptureVideoPreviewLayer`:
 
 ```kotlin
+val session = remember {
+    AVCaptureSession().apply {
+        val device = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)!!
+        val input = AVCaptureDeviceInput.deviceInputWithDevice(device, null)!!
+        addInput(input)
+    }
+}
 UIKitView(
     factory = {
-        val session = AVCaptureSession().apply {
-            val device = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)!!
-            val input = AVCaptureDeviceInput.deviceInputWithDevice(device, null)!!
-            addInput(input)
-        }
         val previewLayer = AVCaptureVideoPreviewLayer(session)
         session.startRunning()
 
@@ -108,7 +110,8 @@ UIKitView(
             layer.addSublayer(previewLayer)
         }
     },
-    modifier = Modifier.size(300.dp)
+    modifier = Modifier.size(300.dp),
+    onRelease = { session.stopRunning() }
 )
 ```
 
@@ -116,6 +119,7 @@ The page also contains an advanced `RealDeviceCamera` composable (photo capture 
 
 ## Notes
 
+- The official camera example never stops the session; this page adds `onRelease` to call `stopRunning()` when the view leaves the composition. The same applies to the advanced `RealDeviceCamera` composable.
 - In the `UITextField` example, the `factory` parameter holds `editingChanged()` and the `addTarget()` listener; `editingChanged()` is annotated with `@ObjCAction` to interoperate with Objective-C; the `update` parameter of `UIKitView()` is called when the observable `message` state changes.
 - Compose Multiplatform rendering requires high refresh rates to be explicitly enabled: add the `CADisableMinimumFrameDurationOnPhone` key to your app's `Info.plist` file. Without it, the app will crash at runtime.
 - To test the camera examples on a real device, add the `NSCameraUsageDescription` key to the app's `Info.plist` file. Without it, the app will crash at runtime.

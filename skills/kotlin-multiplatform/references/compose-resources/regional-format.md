@@ -20,9 +20,9 @@ These work out of the box for system locales and custom locale overrides. Format
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
+import platform.Foundation.NSDate
+import platform.Foundation.NSDateFormatter
+import platform.Foundation.NSDateFormatterMediumStyle
 import platform.Foundation.NSNumber
 import platform.Foundation.NSNumberFormatter
 import platform.Foundation.NSNumberFormatterCurrencyStyle
@@ -45,9 +45,11 @@ fun RegionalFormatExample() {
     }
     val formattedCurrency = currencyFormatter.stringFromNumber(NSNumber(amount)) 
 
-    // Gets current date using `kotlinx-datetime`
-    val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
-    val formattedDate = today.toString()
+    // Formats the current date with NSDateFormatter and an explicit locale
+    val formattedDate = NSDateFormatter().apply {
+        locale = currentLocale
+        dateStyle = NSDateFormatterMediumStyle
+    }.stringFromDate(NSDate())
 
     Column {
         Text("Current language: $languageCode")
@@ -61,6 +63,7 @@ fun RegionalFormatExample() {
 
 ## Notes
 
+- The official example formats the date with `LocalDate.toString()`, which always returns ISO 8601 regardless of locale; this page uses `NSDateFormatter` with an explicit locale instead.
 - There is no common API for a unified multiplatform solution, but formatting is consistent in most cases. To ensure correctness: test edge cases such as large numbers, negative values, or zeroes, and verify formatting for all supported locales on all target platforms.
 
 ## Related
