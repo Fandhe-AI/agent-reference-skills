@@ -78,11 +78,12 @@ useFrame(() => {
 Better, re-use the object:
 
 ```jsx
-function Foo(props)
-  const vec = new THREE.Vector()
+function Foo(props) {
+  const vec = new THREE.Vector3()
   useFrame(() => {
     ref.current.position.lerp(vec.set(x, y, z), 0.1)
   })
+}
 ```
 
 ### `useLoader` instead of plain loaders
@@ -121,7 +122,7 @@ For GLTFs, try to use GLTFJSX as much as you can; it creates immutable JSX graph
 ## Notes
 
 - `Points` is from `@react-three/drei`, a separate package not covered by this skill.
-- The `function Foo(props)` snippet (missing `{`) and `new THREE.Vector()` are reproduced verbatim from the official docs; `THREE.Vector3` is the usual class.
+- The official docs write `new THREE.Vector()` and omit the `{` after `function Foo(props)`; here it is corrected to `THREE.Vector3` with braces added.
 - `TextureLoader` and `Vector3` class APIs belong to the threejs skill.
 
 ## Related

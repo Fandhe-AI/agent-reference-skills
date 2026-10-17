@@ -49,7 +49,7 @@ function Foo() {
 
 - The types above are the docs table verbatim. The source (`packages/fiber/src/core/store.ts`, tag v9.8.2) declares, among others: `invalidate: (frames?: number) => void`, `setDpr: (dpr: Dpr) => void` where `Dpr = number | [min: number, max: number]`, `setFrameloop: (frameloop: Frameloop) => void` where `Frameloop = 'always' | 'demand' | 'never'`, `onPointerMissed?: (event: MouseEvent) => void`, `controls: THREE.EventDispatcher | null`, `previousRoot?: RootStore` (set when the state is layered via `createPortal`), and `internal: InternalState`.
 - Source declares `RenderCallback = (state: RootState, delta: number, frame?: XRFrame) => void`.
-- `setDpr` is overwritten by the `dpr` prop whenever the `Canvas` rerenders. If you want to use `setDpr` then don't use the `dpr` prop. This behavior will change in v10 (v9.8.2 release notes). Pixel ratio also updates automatically when moving between displays or zooming (v9.8.2).
+- `setDpr` is overwritten by the `dpr` prop whenever the `Canvas` rerenders. If you want to use `setDpr` then don't use the `dpr` prop. This behavior will change in v10 ([v9.8.2 release notes](https://github.com/pmndrs/react-three-fiber/releases/tag/v9.8.2)). Pixel ratio also updates automatically when moving between displays or zooming (v9.8.2).
 - `mouse` is deprecated; use `pointer`.
 - The three.js classes named in the table (`WebGLRenderer`, `Scene`, `PerspectiveCamera`, `Raycaster`, `Vector2`, `Clock`, `ColorManagement`) are documented in the threejs skill.
 

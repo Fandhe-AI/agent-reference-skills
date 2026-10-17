@@ -2,6 +2,6 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Install | `@react-three/fiber` のインストールと、Vite.js / Next.js 向けのセットアップコマンド。 | [install.md](./install.md) |
-| React Native | React Native / Expo 向けのプロジェクト作成と依存関係のインストール。 | [react-native.md](./react-native.md) |
-| Tooling | `@react-three/test-renderer` と `@react-three/eslint-plugin` の導入コマンドと設定。 | [tooling.md](./tooling.md) |
+| Install | Installing `@react-three/fiber`, plus setup commands for Vite.js and Next.js. | [install.md](./install.md) |
+| React Native | Project creation and dependency installation for React Native / Expo. | [react-native.md](./react-native.md) |
+| Tooling | Install commands and configuration for `@react-three/test-renderer` and `@react-three/eslint-plugin`. | [tooling.md](./tooling.md) |

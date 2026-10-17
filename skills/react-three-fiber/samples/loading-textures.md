@@ -19,7 +19,7 @@ function Scene() {
       <directionalLight />
       <mesh>
         <sphereGeometry args={[1, 32, 32]} />
-        <meshStandardMaterial />
+        <meshStandardMaterial map={colorMap} />
       </mesh>
     </>
   )

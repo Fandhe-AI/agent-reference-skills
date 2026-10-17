@@ -40,7 +40,7 @@ export function createPortal(
 ## Notes
 
 - Source behavior: the portal inherits the parent root state, then applies its own `scene` (the container), `raycaster`, `pointer` and `previousRoot`; `events`, `size` and `viewport` are merged with the overrides.
-- 9.8.2: portal memory leaks fixed; the portal's root state is no longer held by the parent after the portal unmounts (GitHub Release v9.8.2).
+- 9.8.2: portal memory leaks fixed; the portal's root state is no longer held by the parent after the portal unmounts ([GitHub Release v9.8.2](https://github.com/pmndrs/react-three-fiber/releases/tag/v9.8.2)).
 - 9.8.1: portal state is kept so `<Activity>` can preserve it (source comment: "Keep the store in state so Activity can preserve it").
 
 ## Related

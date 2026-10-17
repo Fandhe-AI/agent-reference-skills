@@ -61,7 +61,7 @@ function B() {
 - Be careful about what you do inside useFrame! You should never setState in there! Your calculations should be slim and you should mind all the commonly known pitfalls when dealing with loops in general, like re-use of variables, etc.
 - Callbacks will be executed in order of ascending priority values (lowest first, highest last.), similar to the DOM's z-order.
 - Source: the callback is `RenderCallback = (state: RootState, delta: number, frame?: XRFrame) => void`; the hook returns `null`.
-- 9.8.1: hiding an ancestor `<Activity>` (React 19.2+) disconnects `useFrame` subscriptions; revealing it reconnects them without resetting scene state (CHANGELOG).
+- 9.8.1: hiding an ancestor `<Activity>` (React 19.2+) disconnects `useFrame` subscriptions; revealing it reconnects them without resetting scene state ([CHANGELOG](https://github.com/pmndrs/react-three-fiber/blob/v9.8.2/packages/fiber/CHANGELOG.md)).
 
 ## Related
 

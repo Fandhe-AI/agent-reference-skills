@@ -17,8 +17,8 @@ cd my-app
 
 # Create and link bare app
 npx react-native init my-app
-npx install-expo-modules@latest
 cd my-app
+npx install-expo-modules@latest
 ```
 
 Then install dependencies (for manual installation or migration, see Expo's "installing expo modules" guide):
@@ -84,6 +84,7 @@ export function Canvas(props: CanvasProps)
 
 ## Notes
 
+- The official docs place `cd my-app` last in the bare-app snippet, but `install-expo-modules` must run inside the generated project directory, so the order is swapped here.
 - R3F's API is completely x-platform, so events and hooks are used just as on the web.
 - Make sure to import from `@react-three/fiber/native` or `@react-three/drei/native` for correct IntelliSense and platform-specific abstractions.
 - iOS simulators often have incomplete or unreliable OpenGL ES support, which can cause EXC_BAD_ACCESS crashes when rendering 3D content. Always test on a physical iOS device (iPhone/iPad running iOS 16 or later) to ensure stable WebGL rendering.

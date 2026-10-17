@@ -4,9 +4,9 @@ source: https://r3f.docs.pmnd.rs/getting-started/installation
 
 # React Native
 
-React Native / Expo 向けのプロジェクト作成と依存関係のインストール。`@react-three/fiber/native` から import する。
+Project creation and dependency installation for React Native / Expo. Import from `@react-three/fiber/native`.
 
-## Expo アプリの作成
+## Create an Expo app
 
 ```sh
 # Create a managed/bare app
@@ -14,20 +14,22 @@ npx create-expo-app
 cd my-app
 ```
 
-managed / bare いずれのアプリも `npx create-expo-app` で作成する（公式は `# or` で次節のコマンドと並記）。
+Both managed and bare apps are created with `npx create-expo-app` (the official docs list it with `# or` alongside the commands in the next section).
 
-## React Native アプリの作成と Expo modules の導入
+## Create a React Native app and add Expo modules
 
-> **警告**: `npx react-native init` は新規プロジェクトを生成し、`npx install-expo-modules@latest` はプロジェクトに Expo modules を組み込む。既存アプリには実行せず、使い捨ての新規ディレクトリで行う。手動インストール・移行は公式の expo modules installation ガイドを参照。
+> **Warning**: `npx react-native init` generates a new project, and `npx install-expo-modules@latest` wires Expo modules into the project in the current directory. Do not run them against an existing app; use a throwaway new directory. For manual installation or migration, see the official Expo modules installation guide.
 
 ```sh
 # Create and link bare app
 npx react-native init my-app
-npx install-expo-modules@latest
 cd my-app
+npx install-expo-modules@latest
 ```
 
-## 依存関係のインストール
+The official docs place `cd my-app` last, but `install-expo-modules` must run inside the generated project directory, so the order is swapped here.
+
+## Install dependencies
 
 ```sh
 # Automatically install
@@ -37,4 +39,4 @@ expo install expo-gl
 npm install three @react-three/fiber
 ```
 
-`useLoader` や drei の `useGLTF` / `useTexture` でアセットを読む場合は `metro.config.js` の設定が必要になることがある（内容は references/getting-started/react-native.md を参照）。iOS シミュレーターは OpenGL ES の対応が不完全なため、実機（iOS 16 以降）での確認が公式に推奨されている。
+Loading assets with `useLoader` or drei's `useGLTF` / `useTexture` may require `metro.config.js` settings (see references/getting-started/react-native.md). The iOS simulator has incomplete OpenGL ES support; the official docs recommend testing on a physical device (iOS 16 or later).

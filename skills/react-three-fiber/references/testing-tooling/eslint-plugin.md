@@ -32,7 +32,7 @@ Enable the rules that you would like to use:
 
 ```json
 "rules": {
-  "@react-three/no-clone-in-frame-loop": "error"
+  "@react-three/no-clone-in-loop": "error"
 }
 ```
 
@@ -48,7 +48,7 @@ Enable the rules that you would like to use:
 ## Notes
 
 - Both rules are enabled in `recommended`; neither is auto-fixable nor has editor suggestions.
-- The README's configuration example names the rule `@react-three/no-clone-in-frame-loop`, while the rules table and docs files are named `no-clone-in-loop` / `no-new-in-loop`. The source does not reconcile this; confirm the rule id in your installed version.
+- The README's configuration example writes `no-clone-in-frame-loop`, but the README Rules table and the CHANGELOG (0.1.0: rules `no-clone-in-loop` and `no-new-in-loop`) use `no-clone-in-loop`; that id is shown here.
 
 ## Related
 

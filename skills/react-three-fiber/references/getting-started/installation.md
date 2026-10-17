@@ -67,21 +67,21 @@ An official next.js starter exists: `pmndrs/react-three-next`.
 You can use React Three Fiber with browser-ready ES Modules from esm.sh and a JSX-like syntax powered by htm.
 
 ```jsx
-import ReactDOM from 'https://esm.sh/react-dom'
-import React, { useRef, useState } from 'https://esm.sh/react'
-import { Canvas, useFrame } from 'https://esm.sh/@react-three/fiber'
+import { createRoot } from 'https://esm.sh/react-dom@19/client'
+import React, { useRef, useState } from 'https://esm.sh/react@19'
+import { Canvas, useFrame } from 'https://esm.sh/@react-three/fiber@9'
 import htm from 'https://esm.sh/htm'
 
 const html = htm.bind(React.createElement)
-ReactDOM.render(html`<${Canvas}>...<//>`, document.getElementById('root'))
+createRoot(document.getElementById('root')).render(html`<${Canvas}>...<//>`)
 ```
 
 Full example:
 
 ```jsx
-import ReactDOM from 'https://esm.sh/react-dom'
-import React, { useRef, useState } from 'https://esm.sh/react'
-import { Canvas, useFrame } from 'https://esm.sh/@react-three/fiber'
+import { createRoot } from 'https://esm.sh/react-dom@19/client'
+import React, { useRef, useState } from 'https://esm.sh/react@19'
+import { Canvas, useFrame } from 'https://esm.sh/@react-three/fiber@9'
 import htm from 'https://esm.sh/htm'
 
 const html = htm.bind(React.createElement)
@@ -104,20 +104,20 @@ function Box(props) {
   </mesh>`
 }
 
-ReactDOM.render(
+createRoot(document.getElementById('root')).render(
   html` <${Canvas}>
     <ambientLight />
     <pointLight position=${[10, 10, 10]} />
     <${Box} position=${[-1.2, 0, 0]} />
     <${Box} position=${[1.2, 0, 0]} />
   <//>`,
-  document.getElementById('root'),
 )
 ```
 
 ## Notes
 
 - The docs list guides for Vite.js, Next.js, CDN without build tools, and React Native (see the React Native page).
+- Migration: the official docs' "Without build tools" examples use `ReactDOM.render`, which was removed in React 19; they are shown here with `createRoot` and React 19 / Fiber 9 esm.sh URLs.
 - Next.js 13.0 and older needs `next-transpile-modules`; 13.1+ uses `transpilePackages: ['three']`.
 
 ## Related

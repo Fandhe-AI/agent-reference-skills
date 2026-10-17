@@ -4,17 +4,17 @@ source: https://r3f.docs.pmnd.rs/getting-started/installation
 
 # Install
 
-`@react-three/fiber` のインストールと、Vite.js / Next.js 向けのセットアップコマンド。
+Installing `@react-three/fiber`, plus setup commands for Vite.js and Next.js.
 
-## パッケージのインストール
+## Install packages
 
 ```sh
 npm install three @types/three @react-three/fiber
 ```
 
-TypeScript 利用時は `@types/three` を含める（introduction.mdx 記載）。JavaScript のみなら `npm install three @react-three/fiber`（installation.mdx 記載）。React との版対応は `@react-three/fiber@9` が `react@19`、`@react-three/fiber@8` が `react@18`。
+Include `@types/three` when using TypeScript (from introduction.mdx). For JavaScript only, use `npm install three @react-three/fiber` (from installation.mdx). React compatibility: `@react-three/fiber@9` pairs with `react@19`, `@react-three/fiber@8` with `react@18`.
 
-## Vite.js プロジェクトの作成
+## Create a Vite.js project
 
 ```sh
 # Create app
@@ -30,17 +30,17 @@ npm install three @react-three/fiber
 npm run dev
 ```
 
-`npm create vite` の対話プロンプトで framework に react を選択する。
+Select react as the framework in the interactive prompt of `npm create vite`.
 
-## Next.js 13.1 以降の設定
+## Next.js 13.1 and later
 
 ```js
 transpilePackages: ['three'],
 ```
 
-`next.config.js` に追記する（コマンドではなく設定。three.js エコシステムの未トランスパイル add-on 対策）。
+Add to `next.config.js` (a config setting, not a command; handles untranspiled add-ons in the three.js ecosystem).
 
-## Next.js 13.0 以前の設定
+## Next.js 13.0 and earlier
 
 ```sh
 npm install next-transpile-modules --save-dev
@@ -51,4 +51,4 @@ const withTM = require('next-transpile-modules')(['three'])
 module.exports = withTM()
 ```
 
-`next-transpile-modules` は Next.js 13.0 以前のみで使う。13.1 以降は上記の `transpilePackages` を使う。
+Use `next-transpile-modules` only on Next.js 13.0 and earlier. On 13.1 and later, use `transpilePackages` above.

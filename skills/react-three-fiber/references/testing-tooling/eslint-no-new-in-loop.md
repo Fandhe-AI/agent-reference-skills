@@ -43,7 +43,7 @@ Also correct (vector created once inside a `useMemo`):
 ```js
 function MoveTowards({ x, y, z }) {
   const ref = useRef()
-  const tempVec = useMemo(() => new THREE.Vector3())
+  const tempVec = useMemo(() => new THREE.Vector3(), [])
 
   useFrame(() => {
     ref.current.position.lerp(tempVec.set(x, y, z), 0.1)
@@ -52,6 +52,10 @@ function MoveTowards({ x, y, z }) {
   return <mesh ref={ref} />
 }
 ```
+
+## Notes
+
+- The upstream rule docs omit the dependency array in the `useMemo` example; `[]` is added so the vector is actually created once.
 
 ## Related
 

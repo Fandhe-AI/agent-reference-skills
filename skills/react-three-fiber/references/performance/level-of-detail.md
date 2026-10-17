@@ -17,10 +17,10 @@ function Model() {
   const [low, mid, high] = useGLTF(["/low.glb", "/mid.glb", "/high.glb"])
   return (
     <Detailed distances={[0, 10, 20]}>
-      <mesh geometry={high} />
-      <mesh geometry={mid} />
-      <mesh geometry={low} />
-    <Detailed/>
+      <primitive object={high.scene} />
+      <primitive object={mid.scene} />
+      <primitive object={low.scene} />
+    </Detailed>
   )
 }
 ```
@@ -29,7 +29,7 @@ function Model() {
 
 - `Detailed` and `useGLTF` are from `@react-three/drei`, a separate package not covered by this skill.
 - The three.js `LOD` class API belongs to the threejs skill.
-- The closing tag `<Detailed/>` in the snippet is reproduced verbatim from the official docs; it should be `</Detailed>` in real code.
+- The official docs' example passes the `useGLTF` result to `<mesh geometry={...}>` and closes with `<Detailed/>`; neither works (`useGLTF` returns an object with `scene` / `nodes` / `materials`, not a BufferGeometry), so it is shown here with `<primitive object={...scene} />` and `</Detailed>`.
 
 ## Related
 

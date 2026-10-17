@@ -23,11 +23,12 @@ What `Canvas` (via `createRoot`) creates for you by default.
   - outputColorSpace = THREE.SRGBColorSpace
   - toneMapping = THREE.ACESFilmicToneMapping
 - It will also create the following scene internals:
-  - A `THREE.Perspective` camera
-  - A `THREE.Orthographic` cam if `orthographic` is true
+  - A `THREE.PerspectiveCamera`
+  - A `THREE.OrthographicCamera` if `orthographic` is true
   - A `THREE.PCFSoftShadowMap` if `shadows` is true
   - A `THREE.Scene` (into which all the JSX is rendered) and a `THREE.Raycaster`
 - In recent versions of threejs, `THREE.ColorManagement.enabled` will be set to `true` to enable automatic conversion of colors according to the renderer's configured color space. R3F will handle texture color space conversion. For more on this topic, see https://threejs.org/manual/#en/color-management.
+- The docs (canvas.mdx) write `THREE.Perspective` and `THREE.Orthographic`; the actual three.js class names are used above.
 - The three.js classes named here (`WebGLRenderer`, `ColorManagement`, tone mapping, shadow maps) are covered by the threejs skill.
 
 ## Related

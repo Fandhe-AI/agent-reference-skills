@@ -48,7 +48,7 @@ function Component() {
 
 ## Notes
 
-- Changelog: "Fix uniforms refs so they remain stable for ShaderMaterial" was released in 9.6.0.
+- [Changelog](https://github.com/pmndrs/react-three-fiber/blob/v9.8.2/packages/fiber/CHANGELOG.md): "Fix uniforms refs so they remain stable for ShaderMaterial" was released in 9.6.0.
 - `ShaderMaterial` and its `uniforms` are three.js API; see the threejs skill.
 
 ## Related

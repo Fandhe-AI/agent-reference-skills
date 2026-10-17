@@ -53,7 +53,7 @@ declare module '@react-three/fiber' {
 }
 
 // react-three-fiber will create your custom component and TypeScript will understand it
-<customComponent />
+<customElement />
 ```
 
 You can shorten element definition by using the `extend` factory signature, which will automatically extend the element locally. This will also prevent namespace bleeding.
@@ -71,7 +71,7 @@ const Element = extend(CustomElement)
 
 ## Notes
 
-- The upstream docs' final snippet uses `<customComponent />` although the registered element is `customElement`; transcribed verbatim.
+- The official docs write `<customComponent />` here; the registered name is `customElement`.
 - `GridHelper` is a three.js class; its API belongs to the threejs skill.
 
 ## Related
