@@ -11,7 +11,9 @@ Flutter supports web accessibility by translating its internal Semantics tree in
 Turn on accessibility mode in code:
 
 ```dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter/semantics.dart';
+import 'package:flutter/widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -77,7 +79,7 @@ Semantic roles define the purpose of a UI element (for example a button, a link,
 - A custom component without a clearly defined role can be incomprehensible to a screen reader user.
 - Assigning appropriate roles lets screen readers announce the type and purpose of elements, helps users navigate more effectively with assistive technologies, and helps adhere to web accessibility standards.
 - Flutter web accessibility (Semantics tree to ARIA, Dart); distinct from authoring ARIA attributes by hand in React, Next.js, or Vercel-hosted web apps in the other skills.
-- The `kIsWeb` check in the first snippet is as written on the source page.
+- The source page imports only `package:flutter/semantics.dart`; the `foundation.dart` (`kIsWeb`) and `widgets.dart` (`runApp`) imports were added so the snippet resolves. `MyApp` is your app widget.
 
 ## Related
 

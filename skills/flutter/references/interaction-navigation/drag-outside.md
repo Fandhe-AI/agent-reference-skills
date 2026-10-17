@@ -4,7 +4,7 @@ source: https://docs.flutter.dev/ui/interactivity/gestures/drag-outside
 
 # Drag outside an app
 
-How to drag from an app to another app or the operating system. Two approaches: Flutter's own `Draggable` / `DragTarget` widgets, or the `super_drag_and_drop` package from pub.dev.
+How to drag from an app to another app or the operating system. Two approaches: Flutter's own `Draggable` / `DragTarget` widgets for drag and drop within your app only, or the `super_drag_and_drop` package from pub.dev for drag and drop within your app and also between your app and other (possibly non-Flutter) apps or the OS.
 
 ## Signature / Usage
 
