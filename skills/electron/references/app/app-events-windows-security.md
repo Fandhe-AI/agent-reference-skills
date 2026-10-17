@@ -8,6 +8,8 @@ Events of `app` for BrowserWindow / WebContents creation and focus, certificate 
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the official `certificate-error` example trusts the certificate based on `url` alone; this version also pins `certificate.fingerprint`.
+
 ```js
 const { app } = require('electron')
 

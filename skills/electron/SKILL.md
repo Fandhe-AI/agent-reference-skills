@@ -10,6 +10,8 @@ user-invocable: false
 
 # Electron
 
+> 分割 PR の途中段階。現在収録済み: references/{app}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+
 対象バージョン Electron v44.8.0: GitHub tag v44.8.0 (electron/electron)。npm latest = 44.8.0（2026-10-16 公開）。原本は 2026-10-17 に `raw.githubusercontent.com/electron/electron/v44.8.0/docs/` から取得。`main` および `44-x-y` ブランチは使用しない。45.0.0-beta は対象外。公式サイトに `llms.txt` / `.md` twin は無い。
 
 ## ディレクトリ構成
