@@ -23,8 +23,9 @@ async def main():
       while True:
         async for message in session.receive():
           if message.server_content and message.server_content.audio_chunks:
-            audio_data = message.server_content.audio_chunks[0].data
-            # Process audio...
+            for chunk in message.server_content.audio_chunks:
+              audio_data = chunk.data
+              # Process audio...
           await asyncio.sleep(10**-12)
 
     async with (
@@ -66,7 +67,7 @@ async function main() {
   const speaker = new Speaker({
     channels: 2,       // stereo
     bitDepth: 16,      // 16-bit PCM
-    sampleRate: 44100, // 44.1 kHz
+    sampleRate: 48000, // 48 kHz (per the output specification)
   });
 
   const session = await client.live.music.connect({
@@ -96,7 +97,7 @@ async function main() {
       bpm: 90,
       temperature: 1.0,
       audioFormat: "pcm16",  // important so we know format
-      sampleRateHz: 44100,
+      sampleRateHz: 48000,
     },
   });
 
@@ -170,11 +171,11 @@ Playback control: `session.play()`, `session.pause()`, `session.stop()`, `sessio
 
 ## Notes
 
-- Added a `server_content` presence check; setup / filtered-prompt messages carry no `server_content`.
+- Added a `server_content` presence check; setup / filtered-prompt messages carry no `server_content`. The Python example iterates over all `audio_chunks` (the source reads only `audio_chunks[0]`).
 - Lyria RealTime is an experimental model. The model ID in the source examples is `models/lyria-realtime-exp`, used with `api_version` `v1beta`.
 - A `WeightedPrompt` has `text` and `weight`; the weight can be any value except `0` (`1.0` is usually a good starting point). Prompt transitions can be abrupt, so cross-fade by sending intermediate weights.
 - Updating configuration: you can't update a single parameter; set the whole configuration or other fields reset to defaults. Changing bpm or scale also requires `reset_context()` (a hard transition; the stream continues). For `bpm`, `density`, `brightness`, and `scale`, if no value is provided the model decides from the initial prompts.
-- Specifications: output raw 16-bit PCM audio, 48kHz, 2 channels (stereo). The source's JavaScript example sets `sampleRateHz: 44100` and a 44.1 kHz speaker; the specifications section states 48kHz.
+- Specifications: output raw 16-bit PCM audio, 48kHz, 2 channels (stereo). The source's JavaScript example uses a 44.1 kHz speaker and `sampleRateHz: 44100`; changed to 48000 to match the 48kHz output specification.
 - Limitations: instrumental only; prompts are checked by safety filters (triggering prompts are ignored, with an explanation in the output's `filtered_prompt` field); output audio is always watermarked.
 - Best practices: implement robust client audio buffering (network jitter, latency variation); be descriptive; iterate and steer gradually; experiment with prompt weights.
 - Non-streaming music generation is covered by the media-generation category (Lyria 3.5). Availability: v1beta only.
