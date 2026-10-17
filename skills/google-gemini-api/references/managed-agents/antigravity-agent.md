@@ -118,6 +118,7 @@ if interaction.status == "requires_action":
             agent="antigravity-preview-09-2026",
             previous_interaction_id=interaction.id,
             environment=interaction.environment_id,
+            tools=[{"type": "code_execution"}, get_weather_tool],
             input=[
                 {
                     "type": "function_result",
@@ -288,6 +289,7 @@ Estimated costs (from the page):
 - For a managed agent saved with `agents.create`, the model is locked to what was set at creation and cannot be overridden at interaction time.
 - Budget: when `max_total_tokens` is reached the interaction stops with `status: "incomplete"` (best-effort; usage may slightly exceed). Continue by sending a new interaction with `previous_interaction_id` and `environment` (the new interaction gets its own budget).
 - Function calling: filesystem tools such as `write_to_file` are also represented as function calls but executed automatically by the environment, so match `function_call` steps against `function_result` steps to find pending calls. Only stateful mode is supported (use `previous_interaction_id`).
+- The original two-turn example omits `tools` on the continuation call; it is re-specified here because `tools` are interaction-scoped and not inherited via `previous_interaction_id` (see interactions-overview.md).
 - The polling loop also waits while `queued` (an Interaction status in the API reference); the original example checks only `in_progress`.
 - Background execution requires `store=True` (default). The page's REST background examples send an `Api-Revision: 2026-05-20` header. The `Api-Revision` header shown in these examples is ignored since June 8, 2026 (legacy schema removed). `POST /v1beta/interactions/{id}/cancel` cancels a running background interaction. The official page's REST cancel example uses `interactions/{id}:cancel`; the API reference (cancelInteractionById) defines `/v1beta/interactions/{id}/cancel`.
 - Triggers: each execution reuses the same environment so files persist across runs. Reference a stored credential rather than an inline token for unattended schedules. Deleting a trigger does not delete past execution history; run-now works even if the trigger is paused.

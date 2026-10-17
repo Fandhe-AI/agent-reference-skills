@@ -132,6 +132,30 @@ stream = client.interactions.create(
 Streaming function calling: accumulate `arguments_delta` until the interaction completes with status `requires_action`, then send a `function_result` with `previous_interaction_id`:
 
 ```python
+weather_tool = {
+    "type": "function",
+    "name": "get_weather",
+    "description": "Get the current weather in a given location",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "location": {
+                "type": "string",
+                "description": "The city and state, e.g. San Francisco, CA"
+            }
+        },
+        "required": ["location"]
+    }
+}
+
+# Turn 1: Request function call
+stream = client.interactions.create(
+    model="gemini-3.8-flash",
+    tools=[weather_tool],
+    input="What is the weather in Paris right now?",
+    stream=True,
+)
+
 calls = {}
 for event in stream:
     if event.event_type == "interaction.created":
@@ -148,6 +172,7 @@ for event in stream:
 stream2 = client.interactions.create(
     model="gemini-3.8-flash",
     previous_interaction_id=first_interaction_id,
+    tools=[weather_tool],
     input=[
         {
             "type": "function_result",
@@ -191,6 +216,7 @@ Step types and expected delta types:
 - `arguments_delta` is a partial JSON string and must be accumulated across deltas. For function calls, `step.start` delivers name, id, and empty arguments `{}`.
 - `thought_signature` is the last delta before `step.stop` in a `thought` step.
 - The original sample tracks a single call; the example keys calls by step `index` so that multiple function calls in one turn each get a `function_result`.
+- The original sample omits `tools` on the turn-2 call; it is re-specified here because `tools` are interaction-scoped.
 - New event and delta types may be added over time: log and skip unknown events instead of throwing.
 - Migration (May 2026 breaking changes): legacy events are replaced — `interaction.start` -> `interaction.created`, `content.start` -> `step.start`, `content.delta` -> `step.delta`, `content.stop` -> `step.stop`, `interaction.complete` -> `interaction.completed`, and `interaction.status_update` is replaced by `interaction.in_progress` / `interaction.requires_action` etc. in the breaking-changes guide (this guide's current examples still show `interaction.status_update`).
 - Distinct from OpenAI Responses streaming events (`openai-api-core`) and Anthropic Messages streaming (`anthropic-api-core`).
