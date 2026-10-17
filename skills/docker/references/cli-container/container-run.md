@@ -130,7 +130,7 @@ Naming, identity, lifecycle:
 
 - `--name`: without it the daemon assigns a random name (e.g. `vibrant_cannon`). On a user-defined bridge network other containers can refer to the container by name via DNS (`docker run --name test --net mynet -d nginx:alpine`, then `docker run --net mynet busybox:latest ping test`).
 - `--cidfile`: Docker creates a new file and writes the container ID to it. If the file already exists, Docker returns an error. Docker closes the file when `docker run` exits.
-- `-d`: the container exits when its root process exits, unless `--rm` is also set. With `-d --rm` the container is removed when it exits or when the daemon exits, whichever happens first. Don't pass `service x start` to a detached container; use e.g. `docker run -d -p 80:80 my_image nginx -g 'daemon off;'`. For I/O with a detached container use network connections or shared volumes.
+- `-d`: a detached container stops when its root process exits (with or without `--rm`). With `-d --rm` the container is additionally removed when it exits or when the daemon exits, whichever happens first. Don't pass `service x start` to a detached container; use e.g. `docker run -d -p 80:80 my_image nginx -g 'daemon off;'`. For I/O with a detached container use network connections or shared volumes.
 - `--rm`: also removes anonymous volumes (like `docker rm -v`); named volumes are not removed. `docker run --rm -v /foo -v awesome:/bar busybox top` removes `/foo` but not `/bar`. Same logic for `--volumes-from`.
 - `--restart` policies:
 

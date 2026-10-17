@@ -25,7 +25,7 @@ $ docker attach topdemo
 
 - `attach` displays the output of the container's `ENTRYPOINT` and `CMD` process. It can look hung when the process is simply not writing output.
 - You can attach to the same process multiple times simultaneously from different sessions on the Docker host.
-- `CTRL-c` sends `SIGKILL` to the container; with `--sig-proxy` true (default) it sends `SIGINT`. If the container was run with `-i` and `-t`, detach with `CTRL-p CTRL-q` and leave it running.
+- With `--sig-proxy` true (default), `CTRL-c` sends `SIGINT` to the container process (signal proxying); whether the process stops depends on how it handles `SIGINT` (see the PID 1 note below). If the container was run with `-i` and `-t`, detach with `CTRL-p CTRL-q` and leave it running.
 - A process running as PID 1 ignores any signal with the default action, so it does not terminate on `SIGINT` or `SIGTERM` unless coded to do so.
 - You can't redirect the standard input of `docker attach` while attaching to a TTY-enabled container (`-i` and `-t`).
 - While attached, Docker uses a ~1MB memory buffer; once full, the API connection speed is affected. For performance-critical, output-heavy apps use `docker logs` instead.

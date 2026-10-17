@@ -23,7 +23,7 @@ $ docker rm --force redis
 
 ## Notes
 
-- `--link` (e.g. `docker rm --link /webapp/redis`) removes the underlying link between `/webapp` and `/redis` on the default bridge network, removing all network communication between the two. It does not apply when `--link` is used with user-specified networks.
+- `--link` (e.g. `docker rm --link /webapp/redis`) removes the legacy link between `/webapp` and `/redis` on the default bridge network. It does not disconnect either container from the network, so it is not a network-isolation control (the official reference phrases this as removing network communication between the two). It does not apply when `--link` is used with user-specified networks.
 - `--force`: the main process in the container receives `SIGKILL`, then the container is removed.
 - To remove all stopped containers use `docker container prune`; `docker system prune` also removes other unused resources. Alternatively combine with `docker ps -q`:
 

@@ -37,8 +37,9 @@ $ docker cp CONTAINER:/var/logs/app.log - | tar x -O | grep "ERROR"
 - Corner cases: cannot copy resources under `/proc`, `/sys`, `/dev`, tmpfs, and user-created mounts in the container. Workaround is manually running `tar` in `docker exec`:
 
 ```console
-$ docker exec CONTAINER tar Ccf $(dirname SRC_PATH) - $(basename SRC_PATH) | tar Cxf DEST_PATH -
-$ tar Ccf $(dirname SRC_PATH) - $(basename SRC_PATH) | docker exec -i CONTAINER tar Cxf DEST_PATH -
+$ SRC_PATH='/path/in/source'; DEST_PATH='/path/in/dest'
+$ docker exec CONTAINER tar Ccf "$(dirname "$SRC_PATH")" - "$(basename "$SRC_PATH")" | tar Cxf "$DEST_PATH" -
+$ tar Ccf "$(dirname "$SRC_PATH")" - "$(basename "$SRC_PATH")" | docker exec -i CONTAINER tar Cxf "$DEST_PATH" -
 ```
 
 - With `-` as `SRC_PATH`, the tar content is extracted to `DEST_PATH` in the container, which must be a directory.
