@@ -44,6 +44,7 @@ ruby "~> 3.3.x"
 ## Notes
 
 - New deployments use Ruby 3.3.x by default
+- RubyGems parses the official `~> 3.3.x` example as `>= 3.3.x, < 4` (it does not restrict to the 3.3 series); to stay on 3.3.x write `ruby "~> 3.3.0"`
 - If the patch part of the version is defined (e.g. `3.3.1`), it is ignored and the latest `3.3.x` is assumed
 - Dependencies are installed from the `Gemfile`; alternatively vendor them with `bundler install --deployment` (useful for gems with native extensions), in which case dependencies are not built on deployment
 - Source: https://vercel.com/docs/functions/runtimes/ruby
