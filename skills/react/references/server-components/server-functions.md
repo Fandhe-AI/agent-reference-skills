@@ -53,7 +53,7 @@ import {createNote} from './actions';
 function EmptyNote() {
   console.log(createNote);
   // {$$typeof: Symbol.for("react.server.reference"), $$id: 'createNote'}
-  <button onClick={() => createNote()} />
+  return <button onClick={() => createNote()} />;
 }
 ```
 
@@ -69,6 +69,11 @@ export async function updateName(name) {
     return {error: 'Name is required'};
   }
   await db.users.updateName(name);
+  return {error: null};
+}
+
+export async function updateNameFromForm(formData) {
+  return updateName(formData.get('name'));
 }
 ```
 
@@ -98,7 +103,7 @@ function UpdateName() {
 
   return (
     <form action={submitAction}>
-      <input type="text" name="name" disabled={isPending}/>
+      <input type="text" name="name" value={name} onChange={e => setName(e.target.value)} disabled={isPending}/>
       {error && <span>Failed: {error}</span>}
     </form>
   )
@@ -112,11 +117,11 @@ Pass a Server Function to a Form to automatically submit the form to the server:
 ```js
 "use client";
 
-import {updateName} from './actions';
+import {updateNameFromForm} from './actions';
 
 function UpdateName() {
   return (
-    <form action={updateName}>
+    <form action={updateNameFromForm}>
       <input type="text" name="name" />
     </form>
   )
@@ -133,7 +138,10 @@ When the Form submission succeeds, React will automatically reset the form. Add 
 import {updateName} from './actions';
 
 function UpdateName() {
-  const [state, submitAction, isPending] = useActionState(updateName, {error: null});
+  const [state, submitAction, isPending] = useActionState(
+    (previousState, formData) => updateName(formData.get('name')),
+    {error: null}
+  );
 
   return (
     <form action={submitAction}>
@@ -156,7 +164,11 @@ Server Functions support progressive enhancement with the third argument of `use
 import {updateName} from './actions';
 
 function UpdateName() {
-  const [, submitAction] = useActionState(updateName, null, `/name/update`);
+  const [, submitAction] = useActionState(
+    (previousState, formData) => updateName(formData.get('name')),
+    null,
+    `/name/update`
+  );
 
   return (
     <form action={submitAction}>
@@ -171,6 +183,7 @@ When the permalink is provided to `useActionState`, React will redirect to the p
 ## Notes
 
 - Server Functions are for use in React Server Components.
+- Snippets corrected from the original: `EmptyNote` returns the button; `updateName` returns `{error: null}` on success; the input is bound to `name` state; the form action and `useActionState` examples adapt `updateName(name)` to the FormData / `(previousState, formData)` argument contract (`updateNameFromForm` is added to `actions.js`).
 - Until September 2024, all Server Functions were referred to as "Server Actions". If a Server Function is passed to an action prop or called from inside an action then it is a Server Action, but not all Server Functions are Server Actions.
 - When a Server Function is defined with the `"use server"` directive, your framework automatically creates a reference to it and passes that reference to the Client Component. When called on the client, React sends a request to the server to execute the function and return the result.
 - While Server Functions in React 19 are stable and will not break between minor versions, the underlying APIs used to implement them in a bundler or framework do not follow semver and may break between minors in React 19.x. Pin to a specific React version, or use the Canary release.

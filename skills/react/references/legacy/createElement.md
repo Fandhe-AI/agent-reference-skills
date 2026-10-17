@@ -27,14 +27,15 @@ function Greeting({ name }) {
 | Name | Type | Description |
 | --- | --- | --- |
 | `type` | string or component | A valid React component type: a tag name string (such as `'div'` or `'span'`), or a React component (function, class, or special component like `Fragment`). |
-| `props` | object or `null` | `null` is treated the same as an empty object. `ref` and `key` are special: they are not available as `element.props.ref` / `element.props.key` but as `element.ref` / `element.key`. |
+| `props` | object or `null` | `null` is treated the same as an empty object. `key` is special: it is not available as `element.props.key` but as `element.key`. In React 19, `ref` is a regular prop and is available as `element.props.ref`. |
 | `...children` (optional) | React nodes | Zero or more child nodes (elements, strings, numbers, portals, empty nodes, arrays). |
 
-Returns a React element object with: `type` (the type passed), `props` (the props passed except `ref` and `key`), `ref` (the ref passed, or `null`), `key` (the key passed, coerced to a string, or `null`).
+Returns a React element object with: `type` (the type passed), `props` (the props passed except `key`), `key` (the key passed, coerced to a string, or `null`). `element.ref` is deprecated in React 19 (accessing it warns); use `element.props.ref`.
 
 ## Notes
 
 - Typically you'll use JSX instead.
+- React 19: ref is a regular prop; element.ref is deprecated in favor of element.props.ref (React 19 Upgrade Guide). The createElement reference page still describes the pre-19 behavior.
 - Treat React elements and their props as immutable. In development, React freezes the returned element and its `props` property shallowly.
 - With JSX, a tag must start with a capital letter to render your own component: `<Something />` is equivalent to `createElement(Something)`, but `<something />` is equivalent to `createElement('something')` (a string, treated as a built-in HTML tag).
 - Only pass children as multiple arguments if they are all statically known, like `createElement('h1', {}, child1, child2, child3)`. For dynamic children, pass the entire array as the third argument: `createElement('ul', {}, listItems)`.

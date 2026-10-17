@@ -46,7 +46,7 @@ function handleClick() {
 - The `dispatch` function only updates the state variable for the next render. If you read the state variable after calling `dispatch`, you will still get the old value.
 - If the new value is identical to the current `state` (`Object.is`), React will skip re-rendering the component and its children.
 - React batches state updates. It updates the screen after all the event handlers have run. To force an earlier update (for example to access the DOM), use `flushSync`.
-- Migration (18 → 19, TypeScript types): `useReducer` no longer accepts the full reducer type as a type parameter. The new best practice is not to pass type arguments: `useReducer(reducer)` instead of `useReducer<React.Reducer<State, Action>>(reducer)`; if you define the reducer inline, annotate the function parameters: `useReducer((state: State, action: Action) => state)`.
+- Migration (18 → 19, TypeScript types): `useReducer` no longer accepts the full reducer type as a type parameter. The new best practice is not to pass type arguments: `useReducer(reducer, initialState)` instead of `useReducer<React.Reducer<State, Action>>(reducer, initialState)`; if you define the reducer inline, annotate the function parameters: `useReducer((state: State, action: Action) => state, initialState)` (the upgrade guide diff omits initialArg for brevity).
 
 ## Related
 

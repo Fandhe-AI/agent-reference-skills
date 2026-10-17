@@ -50,7 +50,7 @@ To update the UI based on the result while supporting progressive enhancement, u
 // requestUsername.js
 'use server';
 
-export default async function requestUsername(formData) {
+export default async function requestUsername(previousState, formData) {
   const username = formData.get('username');
   if (canRequest(username)) {
     // ...
@@ -132,6 +132,7 @@ To read a Server Function return value, `await` the returned promise.
 - `'use server'` can only be used in server-side files. The resulting Server Functions can be passed to Client Components through props.
 - To import a Server Function from client code, the directive must be used at module level.
 - Because the underlying network calls are always asynchronous, `'use server'` can only be used on async functions.
+- Snippet adjusted: the original `requestUsername(formData)` is passed to `useActionState`, which calls the action as `(previousState, formData)`; the `requestUsername.js` snippet takes `(previousState, formData)`.
 - Always treat arguments to Server Functions as untrusted input and authorize any mutations. Arguments are fully client-controlled: validate and escape them as appropriate, and validate that the logged-in user is allowed to perform the action.
 - Server Functions should be called in a Transition. Server Functions passed to `<form action>` or `formAction` are automatically called in a transition.
 - Server Functions are designed for mutations that update server-side state; they are not recommended for data fetching. Frameworks implementing Server Functions typically process one action at a time and have no way to cache the return value.

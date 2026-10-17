@@ -67,7 +67,7 @@ Components that use browser-only APIs (web storage, audio and video, device hard
 ```js
 'use client';
 
-import {useRef, useEffect} from 'react';
+import {useRef, useLayoutEffect} from 'react';
 
 export default function Circle() {
   const ref = useRef(null);
@@ -99,6 +99,7 @@ If a library has not been updated for React Server Components (no `'use client'`
 ## Notes
 
 - `'use client'` is for use with React Server Components.
+- Snippet corrected: the original imports useEffect but calls useLayoutEffect.
 - `'use client'` must be at the very beginning of a file, above any imports or other code (comments are OK). It must be written with single or double quotes, not backticks.
 - When a `'use client'` module is imported from another client-rendered module, the directive has no effect.
 - When a component module contains a `'use client'` directive, any usage of that component is guaranteed to be a Client Component. However, a component can still be evaluated on the client even if it does not have the directive.

@@ -17,7 +17,7 @@ app.use('/', async (request, response) => {
     bootstrapScripts: ['/main.js'],
   });
 
-  response.setHeader('Content-Type', 'text/plain');
+  response.setHeader('Content-Type', 'text/html');
   prelude.pipe(response);
 });
 ```
@@ -90,6 +90,7 @@ async function renderToString() {
 
 ## Notes
 
+- Snippet corrected: the original Signature example uses text/plain; later examples on the same page use text/html.
 - `nonce` is not an available option when prerendering. Nonces must be unique per request and if you use nonces to secure your application with CSP it would be inappropriate and insecure to include the nonce value in the prerender itself.
 - The static `prerenderToNodeStream` API is used for static server-side generation (SSG). Unlike `renderToString`, it waits for all data to load before resolving. To stream content as it loads, use a streaming SSR API like `renderToReadableStream`.
 - `prerenderToNodeStream` can be aborted and resumed later with `resumeToPipeableStream` to support partial pre-rendering. Any Suspense boundaries with incomplete children are included in the prelude in the fallback state.
