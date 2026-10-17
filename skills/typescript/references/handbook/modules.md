@@ -57,9 +57,9 @@ const { squareTwo } = require("./maths");
 - Resolution flags named by the source: `moduleResolution`, `baseUrl`, `paths`, `rootDirs`.
 - Namespaces pre-date ES Modules; not deprecated per the source, but ES Modules are recommended.
 
-- Deprecated (6.0) / Removed (7.0): `module: amd | umd | systemjs | none` (the page's UMD emit example is no longer supported), `moduleResolution: node` / `node10` and `classic` (the source describes "Classic and Node" strategies), `baseUrl`, `esModuleInterop: false` and `allowSyntheticDefaultImports: false`, `outFile` (removed in 6.0 per the announcement), and the legacy `module Foo {}` namespace keyword. Recommended replacements: `nodenext` or `bundler` resolution. Source: TypeScript 6.0 and 7.0 announcements.
-- Default changed (6.0): `module` defaults to `esnext`. The source text's remark that Classic is the default when `module` is not `commonjs` is outdated. Source: TypeScript 6.0 announcement.
-- Deprecated (6.0): the `asserts` keyword on imports; use `with { type: "json" }` import attributes.
+- Deprecated (6.0) / Removed (7.0): `module: amd | umd | systemjs | none` (the page's UMD emit example is no longer supported), `moduleResolution: node` / `node10` and `classic` (the source describes "Classic and Node" strategies), `baseUrl`, `esModuleInterop: false` and `allowSyntheticDefaultImports: false`, `outFile` (removed in 6.0 per the announcement), and the legacy `module Foo {}` namespace keyword. Recommended replacements: `nodenext` or `bundler` resolution. Source: TypeScript 6.0 announcement (https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/) and 7.0 announcement (https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/).
+- Default changed (6.0): `module` defaults to `esnext`. The source text's remark that Classic is the default when `module` is not `commonjs` is outdated. Source: https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/.
+- Deprecated (6.0): the import assertions keyword `assert` (`import x from "./a.json" assert { type: "json" }`); use `with { type: "json" }` import attributes. The 6.0 release notes (https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html) heading spells it `asserts`; TypeScript 5.3 release notes give the keyword as `assert`. Not to be confused with `asserts` in assertion functions.
 
 ## Related
 

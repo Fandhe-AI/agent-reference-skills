@@ -44,7 +44,8 @@ The `path` of each reference can point to a directory containing a `tsconfig.jso
 - Referenced projects must enable `composite`. This sets `rootDir` (if not explicitly set) to the directory containing the `tsconfig` file, requires all implementation files to be matched by `include` or listed in `files`, and requires `declaration` to be on.
 - Enable `declarationMap` to use "Go to Definition" and Rename across project boundaries in supported editors.
 - `tsc` does not automatically build dependencies unless invoked with `--build`.
-- `tsc -b` effectively acts as if `noEmitOnError` is enabled for all projects.
+- Before 5.6: `tsc -b` effectively acts as if `noEmitOnError` is enabled for all projects.
+- Changed (5.6): `--build` no longer assumes `noEmitOnError`; it continues building downstream projects when upstream projects have errors and generates outputs on a best-effort basis. Use `--stopBuildOnErrors` to stop building downstream projects on error, and `noEmitOnError` to suppress emit itself (TypeScript 5.6 release notes, "Allow --build with Intermediate Errors"; the release notes text misspells the flag as `--stopOnBuildErrors`).
 - If you check in build outputs (`.js`, `.d.ts`, `.d.ts.map`), you may need a `--force` build after certain source control operations, depending on whether timestamps are preserved.
 - Build order of files passed on the command line does not matter; `tsc` re-orders so dependencies are built first.
 - Solution pattern: a "solution" `tsconfig.json` that only has `references` to leaf projects and sets `files` to an empty array (an empty `files` array is not an error since 3.0 when at least one `reference` exists). Use configuration file inheritance (`extends`) to centralize common options.

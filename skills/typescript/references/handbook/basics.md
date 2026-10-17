@@ -43,8 +43,8 @@ tsc --target es2015 hello.ts
 - Downleveling rewrites newer ECMAScript syntax for older targets, e.g. template strings to `"Hello ".concat(person, ", today is ").concat(date.toDateString(), "!")` for an ES5 target.
 - `strict` (CLI flag or `"strict": true` in `tsconfig.json`) toggles all strictness flags; the two most important are `noImplicitAny` (error on implicit `any`) and `strictNullChecks` (explicit handling of `null` / `undefined`).
 
-- The source text (written against the 5.x defaults) says "By default TypeScript targets ES5" and that the default experience is lenient (no `strictNullChecks`). Default changed (6.0): `strict` is now `true` by default and `target` defaults to the current-year ES version (`es2025` at the time of 6.0). Source: TypeScript 6.0 announcement, "Simple Default Changes".
-- Deprecated (6.0) / Removed (7.0): `target: es5` is no longer supported; TypeScript's lowest target is ES2015. Source: TypeScript 6.0 and 7.0 announcements.
+- The source text (written against the 5.x defaults) says "By default TypeScript targets ES5" and that the default experience is lenient (no `strictNullChecks`). Default changed (6.0): `strict` is now `true` by default and `target` defaults to the current-year ES version (`es2025` at the time of 6.0). Source: TypeScript 6.0 announcement, "Simple Default Changes" (https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/).
+- Deprecated (6.0) / Removed (7.0): `target: es5` is no longer supported; TypeScript's lowest target is ES2015. Source: https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/ and https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/.
 - The source states `tsc` is installed via `npm install -g typescript`; `npx` or a local `node_modules` install also works.
 
 ## Related
