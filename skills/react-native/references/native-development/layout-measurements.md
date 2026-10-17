@@ -11,7 +11,7 @@ Native methods to measure the current layout of views, to apply changes to the o
 The best way to invoke the measure methods is in a `useLayoutEffect` hook: this gives you the most recent values and lets you apply changes in the same frame when the measurements are computed.
 
 ```tsx
-function AComponent(children) {
+function AComponent({children}) {
   const targetRef = useRef(null)
 
   useLayoutEffect(() => {
@@ -23,7 +23,7 @@ function AComponent(children) {
   return (
     <View ref={targetRef}>
      {children}
-    <View />
+    </View>
   );
 }
 ```
@@ -52,6 +52,7 @@ function AComponent(children) {
 
 ## Notes
 
+- Corrected: the official snippet left View unclosed and took props as children.
 - `measure(callback)`: determines the location on screen (`x` and `y`), `width`, and `height` in the viewport of the given view. Returns the values via an async callback. The `width` and `height` returned are the width and height of the component in the viewport.
 - `measureInWindow(callback)`: determines the location (`x` and `y`) of the given view in the window and returns the values via an async callback. If the React root view is embedded in another native view, this gives you the absolute coordinates.
 - The methods are available on most of the default components provided by React Native. They are not available on composite components that are not directly backed by a native view, which generally includes most components defined in your own app.

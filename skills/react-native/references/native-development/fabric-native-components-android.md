@@ -40,6 +40,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.uimanager.UIManagerHelper;
 import com.facebook.react.uimanager.events.Event;
+import com.facebook.react.uimanager.events.EventDispatcher;
 
 public class ReactWebView extends WebView {
   public ReactWebView(Context context) {
@@ -68,7 +69,7 @@ public class ReactWebView extends WebView {
   }
 
   public void emitOnScriptLoaded(OnScriptLoadedEventResult result) {
-    ReactContext reactContext = (ReactContext) context;
+    ReactContext reactContext = (ReactContext) getContext();
     int surfaceId = UIManagerHelper.getSurfaceId(reactContext);
     EventDispatcher eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, getId());
     WritableMap payload = Arguments.createMap();
@@ -329,21 +330,17 @@ import com.facebook.react.module.model.ReactModuleInfoProvider;
 import com.facebook.react.uimanager.ViewManager;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ReactWebViewPackage extends BaseReactPackage {
   @Override
   public List<ViewManager<?, ?>> createViewManagers(ReactApplicationContext reactContext) {
-    return Collections.singletonList(new ReactWebViewManager(reactContext));
+    return Collections.singletonList(new ReactWebViewManager());
   }
 
   @Override
   public NativeModule getModule(String s, ReactApplicationContext reactApplicationContext) {
-    if (ReactWebViewManager.REACT_CLASS.equals(s)) {
-      return new ReactWebViewManager(reactApplicationContext);
-    }
     return null;
   }
 
@@ -352,16 +349,7 @@ public class ReactWebViewPackage extends BaseReactPackage {
     return new ReactModuleInfoProvider() {
       @Override
       public Map<String, ReactModuleInfo> getReactModuleInfos() {
-        Map<String, ReactModuleInfo> map = new HashMap<>();
-        map.put(ReactWebViewManager.REACT_CLASS, new ReactModuleInfo(
-                ReactWebViewManager.REACT_CLASS, // name
-                ReactWebViewManager.REACT_CLASS, // className
-                false,                           // canOverrideExistingModule
-                false,                           // needsEagerInit
-                false,                           // isCxxModule
-                true                             // isTurboModule
-        ));
-        return map;
+        return Collections.emptyMap();
       }
     };
   }
@@ -376,7 +364,6 @@ package com.webview
 import com.facebook.react.BaseReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.module.model.ReactModuleInfo
 import com.facebook.react.module.model.ReactModuleInfoProvider
 import com.facebook.react.uimanager.ViewManager
 
@@ -385,32 +372,17 @@ class ReactWebViewPackage : BaseReactPackage() {
     return listOf(ReactWebViewManager(reactContext))
   }
 
-  override fun getModule(s: String, reactApplicationContext: ReactApplicationContext): NativeModule? {
-    when (s) {
-      ReactWebViewManager.REACT_CLASS -> ReactWebViewManager(reactApplicationContext)
-    }
-    return null
-  }
+  override fun getModule(s: String, reactApplicationContext: ReactApplicationContext): NativeModule? = null
 
-  override fun getReactModuleInfoProvider(): ReactModuleInfoProvider = ReactModuleInfoProvider {
-    mapOf(ReactWebViewManager.REACT_CLASS to ReactModuleInfo(
-      name = ReactWebViewManager.REACT_CLASS,
-      className = ReactWebViewManager.REACT_CLASS,
-      canOverrideExistingModule = false,
-      needsEagerInit = false,
-      isCxxModule = false,
-      isTurboModule = true,
-    )
-    )
-  }
+  override fun getReactModuleInfoProvider(): ReactModuleInfoProvider = ReactModuleInfoProvider { emptyMap() }
 }
 ```
 
 The `ReactWebViewPackage` extends the `BaseReactPackage` and implements all the methods required to properly register the component:
 
 - the `createViewManagers` method is the factory method that creates the `ViewManager` that manage the custom views.
-- the `getModule` method returns the proper ViewManager depending on the View that React Native needs to render.
-- the `getReactModuleInfoProvider` provides all the information required when registering the module in the runtime.
+- the `getModule` method returns `null`, because a view-only package has no native module.
+- the `getReactModuleInfoProvider` returns an empty map, because there is no native module info to register.
 
 ### 5. Register the `ReactWebViewPackage` in the application
 
@@ -465,6 +437,8 @@ class MainApplication : Application(), ReactApplication {
 ## Notes
 
 - The Codegen-generated names (`CustomWebViewManagerInterface`, `CustomWebViewManagerDelegate`) derive from the name passed to `codegenNativeComponent` in the spec (`CustomWebView`).
+- Corrected: the official Java snippet referenced an out-of-scope context variable and lacked the EventDispatcher import.
+- Corrected: the official Java package called a non-existent `ReactWebViewManager(reactContext)` constructor; the official package also returned the ViewManager from getModule and registered it as a TurboModule; view managers are registered only via createViewManagers.
 - The manager's `getName` must return the same name used in the spec's `codegenNativeComponent` call.
 - Cross-skill: Android-side APIs (`WebView`, Gradle, Kotlin) belong to android-architecture / android-build-gradle; this page covers only the React Native native-component registration boundary.
 

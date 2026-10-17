@@ -30,14 +30,10 @@ Implement `localStorage` with `NSUserDefaults`. First update `RCTNativeLocalStor
 //  TurboModuleExample
 
 #import <Foundation/Foundation.h>
-// highlight-add-next-line
 #import <NativeLocalStorageSpec/NativeLocalStorageSpec.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-// highlight-remove-next-line
-@interface RCTNativeLocalStorage : NSObject
-// highlight-add-next-line
 @interface RCTNativeLocalStorage : NSObject <NativeLocalStorageSpec>
 
 @end
@@ -111,13 +107,11 @@ Register the Native Module in the app by modifying `package.json`:
      "android": {
        "javaPackageName": "com.nativelocalstorage"
      },
-     // highlight-add-start
      "ios": {
         "modulesProvider": {
           "NativeLocalStorage": "RCTNativeLocalStorage"
         }
      }
-     // highlight-add-end
    },
 
    "dependencies": {
@@ -147,6 +141,7 @@ yarn run ios
 
 ## Notes
 
+- Docusaurus highlight markers from the official page are removed; snippets show the final code.
 - You can use Xcode to jump to the Codegen `@protocol NativeLocalStorageSpec`. You can also use Xcode to generate stubs for you.
 - The last step updates `package.json` to tell React Native about the link between the JS specs of the Native Module and the concrete implementation of those specs in native code (`ios.modulesProvider`).
 - If you now build your application from Xcode, you should be able to build successfully.

@@ -30,10 +30,10 @@ It will output the directory of the JDK, which will look something like this:
 /Library/Java/JavaVirtualMachines/jdkX.X.X_XXX.jdk/Contents/Home
 ```
 
-Navigate to that directory by using the command `cd /your/jdk/path` and use the keytool command with sudo permission:
+Run the keytool command from a directory you can write to (for example the project's `android/app` directory), without sudo:
 
 ```shell
-sudo keytool -genkey -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+keytool -genkey -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 ### Setting up Gradle variables
@@ -147,6 +147,7 @@ If you are migrating from a previous version of React Native chances are your ap
 
 ## Notes
 
+- Corrected: the official page runs keytool with sudo from the JDK directory; sudo is not required and would create a root-owned keystore.
 - Keep the keystore file private. If the upload key is lost or compromised, follow the Google Play reset instructions linked in the official page.
 - Saving the Gradle variables in `~/.gradle/gradle.properties` instead of `android/gradle.properties` prevents them from being checked in to git. You may have to create `~/.gradle/gradle.properties` in your user's home directory first.
 - On macOS, credentials can alternatively be stored in the Keychain Access app (the official page links a third-party guide), after which the two password rows in `~/.gradle/gradle.properties` can be skipped.

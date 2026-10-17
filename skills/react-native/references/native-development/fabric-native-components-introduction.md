@@ -81,7 +81,6 @@ export default (codegenNativeComponent<NativeProps>(
     "start": "react-native start",
     "test": "jest"
   },
-  // highlight-start
   "codegenConfig": {
     "name": "AppSpec",
     "type": "components",
@@ -95,7 +94,6 @@ export default (codegenNativeComponent<NativeProps>(
       }
     }
   },
-  // highlight-end
   "dependencies": {
 ```
 
@@ -154,6 +152,7 @@ yarn run ios
 - On iOS, the `componentProvider` declaratively maps the name of the JS component exported by the spec (`CustomWebView`) to the iOS class that implements it natively (`RCTWebView`).
 - Step 2 (building your native code) is split by platform; the official page embeds the Android and iOS guides. See the Android and iOS pages linked below.
 - This guide creates a Native Component that only works with the New Architecture. Supporting both the New Architecture and the Legacy Architecture requires the backwards compatibility guide in the React Native New Architecture working group repository.
+- Docusaurus highlight markers from the official page are removed; snippets show the final code.
 - Cross-skill: this page covers the React Native native-component boundary; the Android `WebView` and iOS `WKWebView` APIs themselves belong to android-architecture / apple-uikit.
 
 ## Related

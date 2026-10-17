@@ -38,7 +38,7 @@ export default TurboModuleRegistry.getEnforcing<Spec>(
 
 ```flow
 import type {TurboModule} from 'react-native';
-import {TurboModule, TurboModuleRegistry} from 'react-native';
+import {TurboModuleRegistry} from 'react-native';
 
 export interface Spec extends TurboModule {
   setItem(value: string, key: string): void;
@@ -46,6 +46,10 @@ export interface Spec extends TurboModule {
   removeItem(key: string): void;
   clear(): void;
 }
+
+export default (TurboModuleRegistry.getEnforcing<Spec>(
+  'NativeLocalStorage',
+): Spec);
 ```
 
 `package.json` (the `codegenConfig` block is added after `scripts`):
@@ -54,7 +58,6 @@ export interface Spec extends TurboModule {
      "start": "react-native start",
      "test": "jest"
    },
-   // highlight-add-start
    "codegenConfig": {
      "name": "NativeLocalStorageSpec",
      "type": "modules",
@@ -63,7 +66,6 @@ export interface Spec extends TurboModule {
        "javaPackageName": "com.nativelocalstorage"
      }
    },
-   // highlight-add-end
    "dependencies": {
 ```
 
@@ -188,6 +190,8 @@ export default App;
 
 ## Notes
 
+- Corrected: the official Flow spec imported TurboModule twice and omitted the default export.
+- Docusaurus highlight markers from the official page are removed; snippets show the final code.
 - The specification declares the methods and data types that pass back and forth between native code and the React Native JavaScript runtime. A Turbo Native Module is both the specification, the native code you write, and the Codegen interfaces generated from the specification.
 - To create a specs file: inside the root folder of the app, create a folder called `specs` and a file called `NativeLocalStorage.ts`. If you rename the module and its specs file, always use `Native` as prefix (e.g. `NativeStorage` or `NativeUsersDefault`).
 - All types usable in a specification and the native types generated from them are listed in the Appendix page.

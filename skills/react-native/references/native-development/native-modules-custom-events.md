@@ -41,7 +41,8 @@ export default TurboModuleRegistry.getEnforcing<Spec>(
 
 // @flow
 +import type {TurboModule, CodegenTypes} from 'react-native';
-import {TurboModule, TurboModuleRegistry} from 'react-native';
+-import {TurboModule, TurboModuleRegistry} from 'react-native';
++import {TurboModuleRegistry} from 'react-native';
 
 +export type KeyValuePair = {
 +  key: string,
@@ -225,7 +226,7 @@ class NativeLocalStorageModule(reactContext: ReactApplicationContext) : NativeLo
 
   override fun setItem(value: String, key: String) {
 +   var shouldEmit = false
-+   if (getItem(key) != null) {
++   if (getItem(key) == null) {
 +       shouldEmit = true
 +   }
     val sharedPref = getReactApplicationContext().getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
@@ -245,7 +246,7 @@ class NativeLocalStorageModule(reactContext: ReactApplicationContext) : NativeLo
   override fun getItem(key: String): String? {
     val sharedPref = getReactApplicationContext().getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
     val username = sharedPref.getString(key, null)
-    return username.toString()
+    return username
   }
 ```
 
@@ -283,7 +284,10 @@ NS_ASSUME_NONNULL_END
 
 ## Notes
 
-- Changing the value of an existing key does not emit the event, adding a new key does (as described on the page). The Android snippet is reproduced verbatim from the official page.
+- Changing the value of an existing key does not emit the event, adding a new key does (as described on the page).
+- Corrected: the official Android snippet emitted when getItem(key) != null (existing key); the condition is inverted here to match the described new-key behavior and the iOS code.
+- Corrected: the official Android snippet returned username.toString(), which yields the string "null" for missing keys.
+- Corrected: the official Flow diff added a type import of TurboModule but kept the original TurboModule import, declaring it twice; the original import line is now replaced in the diff.
 - `CodegenTypes.EventEmitter<KeyValuePair>` is imported from `react-native`; the property `onKeyAdded` emits a payload of type `KeyValuePair`.
 - App code: import the `EventSubscription` type from `react-native`; use a `useRef` to keep the `EventSubscription` reference; register the listener in a `useEffect` (`onKeyAdded` takes a callback receiving an object of type `KeyValuePair`, executed every time the event is emitted from native to JS); in the cleanup function `remove` the subscription and set the ref to `null`.
 - Android: for complex types such as `KeyValuePair`, Codegen generates a function (`emitOnKeyAdded`) that expects a `ReadableMap`. Create it with `Arguments.createMap()` and populate it with `apply`. It is your responsibility that the keys in the map match the properties of the spec type in JS. The imports needed are `com.facebook.react.bridge.Arguments` and `com.facebook.react.bridge.WritableMap`.

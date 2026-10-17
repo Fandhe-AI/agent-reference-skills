@@ -56,7 +56,6 @@ export default TurboModuleRegistry.getEnforcing<Spec>(
      "start": "react-native start",
      "test": "jest"
    },
-   // highlight-add-start
    "codegenConfig": {
      "name": "AppSpecs",
      "type": "modules",
@@ -65,7 +64,6 @@ export default TurboModuleRegistry.getEnforcing<Spec>(
        "javaPackageName": "com.sampleapp.specs"
      }
    },
-   // highlight-add-end
    "dependencies": {
 ```
 
@@ -267,14 +265,12 @@ Update `package.json` to associate the JS module name with the ModuleProvider cl
      "jsSrcsDir": "specs",
      "android": {
        "javaPackageName": "com.sampleapp.specs"
-     // highlight-add-start
      },
      "ios": {
         "modulesProvider": {
           "NativeSampleModule":  "NativeSampleModuleProvider"
         }
      }
-     // highlight-add-end
    },
 
    "dependencies": {
@@ -357,6 +353,7 @@ export default App;
 
 ## Notes
 
+- Docusaurus highlight markers from the official page are removed; snippets show the final code.
 - The official page interpolates the core branch name for the current docs version at build time; here it is a quoted shell variable (`RN_CORE_BRANCH`) set to the 0.87 branch name.
 - All Native Turbo Module spec files must have the prefix `Native`, otherwise Codegen will ignore them.
 - The `codegenConfig` tells Codegen to look for spec files in the `specs` folder, to only generate code for `modules`, and to namespace the generated code as `AppSpecs`.

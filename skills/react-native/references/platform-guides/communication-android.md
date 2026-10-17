@@ -81,6 +81,9 @@ mReactRootView.setAppProperties(updatedProps);
 ```kotlin
 var updatedProps: Bundle = reactRootView.getAppProperties()
 var imageList = arrayListOf("https://dummyimage.com/600x400/ff0000/000000.png", "https://dummyimage.com/600x400/ffffff/ff0000.png")
+updatedProps.putStringArrayList("images", imageList)
+
+reactRootView.setAppProperties(updatedProps)
 ```
 
 ### Passing properties from React Native to native
@@ -99,7 +102,9 @@ Native modules are Java/Kotlin classes that are available in JS. Typically one i
 
 - Updating `appProperties` is fine at any time, but updates have to be performed on the main thread. The getter can be used on any thread.
 - There is no way to update only a few properties at a time. Build it into your own wrapper instead.
-- Currently, JS function `componentWillUpdateProps` of the top level RN component will not be called after a prop update. However, you can access the new props in the `componentDidMount` function.
+- After an appProperties update the root component re-renders with the new props; handle them in render, componentDidUpdate, or a useEffect that depends on the props (componentDidMount runs only on the initial mount).
+- Corrected: the official page says new props are available in componentDidMount and mentions a non-existent componentWillUpdateProps lifecycle.
+- Corrected: the official Kotlin snippet omitted putStringArrayList and setAppProperties.
 - Limit of properties: cross-language properties do not support callbacks, so bottom-up data bindings are not possible via props. Cross-language callbacks (Legacy Native Modules guide) are intended to trigger a native action from JS and handle its result in JS, not to be passed as properties.
 - Event pitfalls: events can be sent from anywhere and can introduce spaghetti-style dependencies; events share a namespace so name collisions are not detected statically; to distinguish several instances of the same component you will likely need identifiers (the native view's `reactTag` can be used).
 - All native modules share the same namespace. Watch out for name collisions when creating new ones.

@@ -86,7 +86,7 @@ class NativeLocalStorageModule(reactContext: ReactApplicationContext) : NativeLo
   override fun getItem(key: String): String? {
     val sharedPref = getReactApplicationContext().getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
     val username = sharedPref.getString(key, null)
-    return username.toString()
+    return username
   }
 
   override fun removeItem(key: String) {
@@ -209,7 +209,6 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactHost;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
-// highlight-add-next-line
 import com.nativelocalstorage.NativeLocalStoragePackage;
 
 import java.util.ArrayList;
@@ -223,7 +222,6 @@ public class MainApplication extends Application implements ReactApplication {
       List<ReactPackage> packages = new PackageList(this).getPackages();
       // Packages that cannot be autolinked yet can be added manually here, for example:
       // packages.add(new MyReactNativePackage());
-      // highlight-add-next-line
       packages.add(new NativeLocalStoragePackage());
       return packages;
     }
@@ -281,7 +279,6 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
-// highlight-add-next-line
 import com.nativelocalstorage.NativeLocalStoragePackage
 
 class MainApplication : Application(), ReactApplication {
@@ -292,7 +289,6 @@ class MainApplication : Application(), ReactApplication {
             PackageList(this).packages.apply {
               // Packages that cannot be autolinked yet can be added manually here, for example:
               // add(MyReactNativePackage())
-              // highlight-add-next-line
               add(NativeLocalStoragePackage())
             }
 
@@ -334,6 +330,8 @@ yarn run android
 
 ## Notes
 
+- Corrected: the official snippet returned username.toString(), which yields the string "null" for missing keys.
+- Docusaurus highlight markers from the official page are removed; snippets show the final code.
 - Registering the package means telling React Native in the main application how to find this `Package`; here it is added to the list returned by the `getPackages` method.
 - Later you learn how to distribute Native Modules as npm packages, which the build tooling autolinks (see "Create a Library for Your Module").
 - 0.88: Java TurboModules can take and return JavaScript `ArrayBuffer` values directly. Codegen maps them to `com.facebook.react.bridge.ArrayBuffer`, so binary data no longer needs to be encoded as strings or number arrays. For synchronous methods, inputs can borrow JavaScript memory and avoid a copy; the borrowed bytes are valid only until the method returns, so copy them during the call to retain them (`ArrayBuffer.arrayBufferWithCopiedBytes(data)`). Accessing `ArrayBuffer.bytes` or `ArrayBuffer.size` after a borrowed buffer has been revoked throws an `IllegalStateException`.

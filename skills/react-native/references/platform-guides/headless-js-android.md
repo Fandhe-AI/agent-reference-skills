@@ -13,7 +13,7 @@ A task is an async function that you register on `AppRegistry`, similar to regis
 ```tsx
 import {AppRegistry} from 'react-native';
 AppRegistry.registerHeadlessTask('SomeTaskName', () =>
-  require('SomeTaskName'),
+  require('./SomeTaskName'),
 );
 ```
 
@@ -73,7 +73,7 @@ import com.facebook.react.jstasks.HeadlessJsTaskConfig
 
 class MyTaskService : HeadlessJsTaskService() {
     override fun getTaskConfig(intent: Intent?): HeadlessJsTaskConfig? {
-        return intent.extras?.let {
+        return intent?.extras?.let {
             HeadlessJsTaskConfig(
                 "SomeTaskName",
                 Arguments.fromBundle(it),
@@ -134,7 +134,7 @@ HeadlessJsRetryPolicy retryPolicy = new LinearCountingRetryPolicy(
 );
 
 return new HeadlessJsTaskConfig(
-  'SomeTaskName',
+  "SomeTaskName",
   Arguments.fromBundle(extras),
   5000,
   false,
@@ -360,6 +360,7 @@ class NetworkChangeReceiver : BroadcastReceiver() {
 
 ## Notes
 
+- Corrected: the official snippets used require('SomeTaskName') (package resolution), intent.extras on a nullable Intent, and a single-quoted Java string.
 - By default, your app will crash if you try to run a task while the app is in the foreground. This is to prevent developers from shooting themselves in the foot by doing a lot of work in a task and slowing the UI. You can pass a fourth `boolean` argument to control this behaviour.
 - If you start your service from a `BroadcastReceiver`, make sure to call `HeadlessJsTaskService.acquireWakeLockNow()` before returning from `onReceive()`.
 - The Kotlin retry example in the official page declares the type `HeadlessJsTaskRetryPolicy` while the Java example uses `HeadlessJsRetryPolicy`; both are reproduced as written in the source.
