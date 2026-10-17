@@ -34,6 +34,7 @@ from dotenv import load_dotenv
 load_dotenv()  # load environment variables from .env
 
 MODEL = "claude-opus-5"
+MAX_ROUNDS = 10  # upper bound on tool-use rounds per query
 anthropic = Anthropic()
 
 
@@ -69,45 +70,10 @@ async def process_query(client: Client, query: str) -> str:
         "input_schema": tool.input_schema
     } for tool in tool_list.tools]
 
-    # Initial Claude API call
-    response = anthropic.messages.create(
-        model=MODEL,
-        max_tokens=1000,
-        messages=messages,
-        tools=available_tools
-    )
-
-    # Process response and handle tool calls
     final_text = []
-    tool_results = []
 
-    for content in response.content:
-        if content.type == 'text':
-            final_text.append(content.text)
-        elif content.type == 'tool_use':
-            tool_name = content.name
-            tool_args = content.input
-
-            # Execute tool call
-            result = await client.call_tool(tool_name, tool_args)
-            final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
-
-            tool_results.append({
-                "type": "tool_result",
-                "tool_use_id": content.id,
-                "content": "\n".join(
-                    block.text
-                    for block in result.content
-                    if isinstance(block, TextContent)
-                ),
-                "is_error": result.is_error
-            })
-
-    if tool_results:
-        messages.append({"role": "assistant", "content": response.content})
-        messages.append({"role": "user", "content": tool_results})
-
-        # Get next response from Claude
+    # Repeat until Claude stops requesting tools (bounded to avoid runaway loops)
+    for _ in range(MAX_ROUNDS):
         response = anthropic.messages.create(
             model=MODEL,
             max_tokens=1000,
@@ -115,9 +81,35 @@ async def process_query(client: Client, query: str) -> str:
             tools=available_tools
         )
 
+        tool_results = []
+
         for content in response.content:
             if content.type == 'text':
                 final_text.append(content.text)
+            elif content.type == 'tool_use':
+                tool_name = content.name
+                tool_args = content.input
+
+                # Execute tool call
+                result = await client.call_tool(tool_name, tool_args)
+                final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
+
+                tool_results.append({
+                    "type": "tool_result",
+                    "tool_use_id": content.id,
+                    "content": "\n".join(
+                        block.text
+                        for block in result.content
+                        if isinstance(block, TextContent)
+                    ),
+                    "is_error": result.is_error
+                })
+
+        if not tool_results:
+            break
+
+        messages.append({"role": "assistant", "content": response.content})
+        messages.append({"role": "user", "content": tool_results})
 
     return "\n".join(final_text)
 
@@ -163,6 +155,7 @@ if __name__ == "__main__":
 ## Notes
 
 - Assembled verbatim from the tutorial's code blocks; the Anthropic API key setup (`.env` with `ANTHROPIC_API_KEY`) is not repeated, see the source URL.
-- Tutorial code is reproduced as published; SDK protocol-version support is not stated in the source.
+- Change from the official example: `process_query` loops over multiple rounds of `tool_use` (up to `MAX_ROUNDS`) until Claude returns no more tool calls, instead of a single follow-up request.
+- Tutorial code is otherwise reproduced as published; SDK protocol-version support is not stated in the source.
 - `async with Client(...)` is the whole connection lifecycle; a tool that fails answers with `is_error` set rather than raising.
 - The tutorial uses the Anthropic SDK for the LLM call; Claude API usage itself belongs to the Anthropic API skills.

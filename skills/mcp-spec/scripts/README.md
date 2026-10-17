@@ -2,7 +2,7 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
-| Debugging Logs | Claude Desktop のログ確認と DevTools 有効化 | [debugging-logs.md](./debugging-logs.md) |
-| Inspector | `npx @modelcontextprotocol/inspector` による MCP サーバーの検査 | [inspector.md](./inspector.md) |
-| Install SDKs | uv / Python / TypeScript による MCP サーバー・クライアントのプロジェクトセットアップ | [install-sdks.md](./install-sdks.md) |
-| mcp-publisher | MCP Registry 公開用 CLI のインストール・認証・公開 | [mcp-publisher.md](./mcp-publisher.md) |
+| Debugging Logs | Check Claude Desktop logs and enable DevTools | [debugging-logs.md](./debugging-logs.md) |
+| Inspector | Inspect MCP servers with `npx @modelcontextprotocol/inspector` | [inspector.md](./inspector.md) |
+| Install SDKs | Set up MCP server and client projects with uv / Python / TypeScript | [install-sdks.md](./install-sdks.md) |
+| mcp-publisher | Install, authenticate, and publish with the MCP Registry CLI | [mcp-publisher.md](./mcp-publisher.md) |

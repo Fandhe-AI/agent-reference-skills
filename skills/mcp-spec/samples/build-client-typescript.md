@@ -95,7 +95,7 @@ async connectToServer(serverScriptPath: string) {
 }
 ```
 
-`processQuery` method (returns the assistant turn and `tool_use_id`-linked `tool_result` blocks, as in the Python example):
+`processQuery` method (loops while Claude requests tools; returns the assistant turn and `tool_use_id`-linked `tool_result` blocks, as in the Python example):
 
 ```typescript
 async processQuery(query: string) {
@@ -106,59 +106,51 @@ async processQuery(query: string) {
     },
   ];
 
-  const response = await this.anthropic.messages.create({
-    model: "claude-opus-5",
-    max_tokens: 1000,
-    messages,
-    tools: this.tools,
-  });
-
   const finalText = [];
-  const toolResults: ToolResultBlockParam[] = [];
+  const MAX_ROUNDS = 10; // upper bound on tool-use rounds per query
 
-  for (const content of response.content) {
-    if (content.type === "text") {
-      finalText.push(content.text);
-    } else if (content.type === "tool_use") {
-      const toolName = content.name;
-      const toolArgs = content.input as { [x: string]: unknown } | undefined;
-
-      const result = await this.mcp.callTool({
-        name: toolName,
-        arguments: toolArgs,
-      });
-      finalText.push(
-        `[Calling tool ${toolName} with args ${JSON.stringify(toolArgs)}]`
-      );
-
-      toolResults.push({
-        type: "tool_result",
-        tool_use_id: content.id,
-        content: result.content
-          .filter((block) => block.type === "text")
-          .map((block) => block.text)
-          .join("\n"),
-        is_error: result.isError === true,
-      });
-    }
-  }
-
-  if (toolResults.length > 0) {
-    messages.push({ role: "assistant", content: response.content });
-    messages.push({ role: "user", content: toolResults });
-
-    const nextResponse = await this.anthropic.messages.create({
+  // Repeat until Claude stops requesting tools
+  for (let round = 0; round < MAX_ROUNDS; round++) {
+    const response = await this.anthropic.messages.create({
       model: "claude-opus-5",
       max_tokens: 1000,
       messages,
       tools: this.tools,
     });
 
-    for (const content of nextResponse.content) {
+    const toolResults: ToolResultBlockParam[] = [];
+
+    for (const content of response.content) {
       if (content.type === "text") {
         finalText.push(content.text);
+      } else if (content.type === "tool_use") {
+        const toolName = content.name;
+        const toolArgs = content.input as { [x: string]: unknown } | undefined;
+
+        const result = await this.mcp.callTool({
+          name: toolName,
+          arguments: toolArgs,
+        });
+        finalText.push(
+          `[Calling tool ${toolName} with args ${JSON.stringify(toolArgs)}]`
+        );
+
+        toolResults.push({
+          type: "tool_result",
+          tool_use_id: content.id,
+          content: result.content
+            .filter((block) => block.type === "text")
+            .map((block) => block.text)
+            .join("\n"),
+          is_error: result.isError === true,
+        });
       }
     }
+
+    if (toolResults.length === 0) break;
+
+    messages.push({ role: "assistant", content: response.content });
+    messages.push({ role: "user", content: toolResults });
   }
 
   return finalText.join("\n");
@@ -177,6 +169,7 @@ node build/index.js path/to/build/index.js # node server
 
 - Abridged from the official tutorial: `chatLoop`, `cleanup` and `main()` are omitted; the tutorial's methods go inside the `MCPClient` class where `// methods will go here` appears. See the source URL for the full file.
 - Change from the official TS example: `processQuery` returns the assistant response and `tool_use_id`-linked `tool_result` blocks, matching the Python example (the original pushed plain user text).
+- Change from the official TS example: `processQuery` loops over multiple rounds of `tool_use` (up to `MAX_ROUNDS`) until Claude returns no more tool calls, instead of a single follow-up request.
 - Requires `"type": "module"` and a `build` script (`tsc && chmod 755 build/index.js`) in `package.json` plus the tutorial's `tsconfig.json`.
 - Tutorial code is otherwise reproduced as published; SDK protocol-version support is not stated in the source.
 - The tutorial uses the Anthropic SDK for the LLM call; Claude API usage itself belongs to the Anthropic API skills.

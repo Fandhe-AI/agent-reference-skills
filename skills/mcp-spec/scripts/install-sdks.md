@@ -4,29 +4,29 @@ source: https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server
 
 # Install SDKs
 
-公式チュートリアルに記載された SDK・開発環境のセットアップコマンド（Python / TypeScript）。
+SDK and development environment setup commands from the official tutorial (Python / TypeScript).
 
-## uv のインストール（Python 用）
+## Install uv (for Python)
 
-> **警告**: リモートのスクリプトを取得して実行する。実行前に内容を確認し、使い捨て環境または信頼できる環境で実行する。
+> **Warning**: This downloads and runs a remote script. Review the script before running it, and run it in a disposable or trusted environment.
 
-Adapted (not in the official docs): 公式は 1 行パイプ。内容確認のためダウンロードと実行を分割。
+Adapted (not in the official docs): the official docs use a one-line pipe. Split into download and run so the script can be reviewed first.
 
 ```bash
 curl -LsSf -o install.sh https://astral.sh/uv/install.sh
-# install.sh の内容を確認してから実行する
+# Review install.sh before running it
 sh install.sh
 ```
 
 ```powershell
 irm https://astral.sh/uv/install.ps1 -OutFile install.ps1
-# install.ps1 の内容を確認してから実行する
+# Review install.ps1 before running it
 powershell -ExecutionPolicy ByPass -File install.ps1
 ```
 
-インストール後は `uv` コマンドを認識させるため、ターミナルを再起動する。
+Restart the terminal after installing so that the `uv` command is recognized.
 
-## Python サーバープロジェクトの作成
+## Create a Python server project
 
 ```bash
 # Create a new directory for our project
@@ -44,16 +44,16 @@ uv add "mcp[cli]"
 touch weather.py
 ```
 
-## Node.js の確認（TypeScript 用）
+## Check Node.js (for TypeScript)
 
 ```bash
 node --version
 npm --version
 ```
 
-Node.js 20 以上が必要（原文）。
+Node.js 20 or later is required (per the source).
 
-## TypeScript サーバープロジェクトの作成
+## Create a TypeScript server project
 
 ```bash
 # Create a new directory for our project
@@ -72,4 +72,4 @@ mkdir src
 touch src/index.ts
 ```
 
-`package.json` に `"type": "module"` とビルドスクリプト、`tsconfig.json` の作成が続く。詳細は出典を参照。
+Next steps are adding `"type": "module"` and build scripts to `package.json`, and creating `tsconfig.json`. See the source for details.
