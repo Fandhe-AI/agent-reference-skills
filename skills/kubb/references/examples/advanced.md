@@ -1,106 +1,280 @@
 # Advanced Configuration Example
 
-複数プラグインを組み合わせた高度な設定例。TypeScript 型、API クライアント、React Query hooks、Zod スキーマ、MSW ハンドラーを同時に生成する。
+複数プラグインを組み合わせた高度な設定例。Redoc、TypeScript 型、Zod スキーマ、React Query hooks、Axios クライアント、MCP サーバー、Faker モック、Cypress、MSW ハンドラーを同時に生成する。
 
 ## kubb.config.ts
 
 ```typescript
-import { defineConfig } from '@kubb/core'
-import { pluginOas } from '@kubb/plugin-oas'
-import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
-import { pluginReactQuery } from '@kubb/plugin-react-query'
-import { pluginZod } from '@kubb/plugin-zod'
-import { pluginFaker } from '@kubb/plugin-faker'
+import { adapterOas } from '@kubb/adapter-oas'
+import { ast } from 'kubb/kit'
+import { pluginAxios } from '@kubb/plugin-axios'
+import { pluginCypress } from '@kubb/plugin-cypress'
+import { pluginFaker, resolverFaker } from '@kubb/plugin-faker'
+import { pluginMcp } from '@kubb/plugin-mcp'
 import { pluginMsw } from '@kubb/plugin-msw'
+import { pluginReactQuery } from '@kubb/plugin-react-query'
+import { pluginRedoc } from '@kubb/plugin-redoc'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginZod } from '@kubb/plugin-zod'
+
+import { defineConfig } from 'kubb/config'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  name: 'gen',
+  root: '.',
+  input: './petStore.yaml',
+  adapter: adapterOas({ unknownType: 'unknown', validate: true, discriminator: 'preserve', integerType: 'number', enums: 'root' }),
   output: {
     path: './src/gen',
     clean: true,
-    barrelType: 'named',
+    barrel: { type: 'named' },
+    defaultBanner: false,
+    lint: false,
+    format: 'oxfmt',
+    postGenerate: ['npm run typecheck'],
   },
   plugins: [
-    pluginOas({
-      validate: true,
-      collisionDetection: true,
-    }),
+    pluginRedoc(),
     pluginTs({
-      output: { path: './types' },
-      enumType: 'asConst',
-      dateType: 'date',
-      unknownType: 'unknown',
-      optionalType: 'questionTokenAndUndefined',
-    }),
-    pluginClient({
-      output: { path: './clients' },
-      client: 'fetch',
-      group: { type: 'tag' },
-      parser: 'zod',
-    }),
-    pluginReactQuery({
-      output: { path: './hooks' },
-      group: { type: 'tag' },
-      suspense: {},
-      infinite: {
-        queryParam: 'page',
-        initialPageParam: 0,
+      output: {
+        path: 'models/ts',
+        mode: 'directory',
       },
+      group: {
+        type: 'tag',
+      },
+      arrayType: 'generic',
+      enum: { type: 'asConst' },
+      override: [
+        {
+          type: 'operationId',
+          pattern: 'findPetsByStatus',
+          options: {
+            enum: { type: 'enum', constCasing: 'camelCase', typeSuffix: 'Key', keyCasing: 'none' },
+          },
+        },
+      ],
     }),
     pluginZod({
-      output: { path: './zod' },
+      output: {
+        path: './zod',
+        mode: 'directory',
+      },
+      exclude: [
+        {
+          type: 'tag',
+          pattern: 'store',
+        },
+      ],
       group: { type: 'tag' },
-      typed: true,
-      dateType: 'stringOffset',
+      inferred: true,
+    }),
+    pluginReactQuery({
+      output: {
+        path: './clients/hooks',
+        mode: 'directory',
+      },
+      exclude: [
+        {
+          type: 'tag',
+          pattern: 'store',
+        },
+        {
+          type: 'tag',
+          pattern: 'stream',
+        },
+      ],
+      override: [
+        {
+          type: 'operationId',
+          pattern: 'findPetsByTags',
+          options: {
+            infinite: {
+              queryParam: 'pageSize',
+              initialPageParam: 0,
+            },
+            mutation: {
+              importPath: '@tanstack/react-query',
+              methods: ['post', 'put', 'delete'],
+            },
+          },
+        },
+      ],
+      group: { type: 'tag' },
+      query: {
+        importPath: '../../../../tanstack-query-hook',
+      },
+      hooks: true,
+      infinite: false,
+      suspense: false,
+    }),
+    pluginAxios({
+      output: {
+        path: './clients/axios',
+        mode: 'directory',
+      },
+      exclude: [
+        {
+          type: 'tag',
+          pattern: 'store',
+        },
+      ],
+      validator: 'zod',
+      group: { type: 'tag', name: ({ group }) => `${group}Service` },
+      baseURL: 'https://petstore3.swagger.io/api/v3',
+      override: [
+        {
+          type: 'contentType',
+          pattern: 'multipart/form-data',
+          options: {
+            validator: false,
+          },
+        },
+        {
+          type: 'contentType',
+          pattern: 'application/octet-stream',
+          options: {
+            validator: false,
+          },
+        },
+        {
+          type: 'tag',
+          pattern: 'stream',
+          options: {
+            validator: false,
+          },
+        },
+      ],
+    }),
+    pluginMcp({
+      output: {
+        path: './mcp',
+        mode: 'directory',
+        barrel: false,
+      },
+      exclude: [
+        {
+          type: 'tag',
+          pattern: 'store',
+        },
+        {
+          type: 'tag',
+          pattern: 'stream',
+        },
+      ],
+      group: { type: 'tag' },
     }),
     pluginFaker({
-      output: { path: './mocks' },
+      output: {
+        path: 'mocks',
+        mode: 'directory',
+      },
+      exclude: [
+        {
+          type: 'tag',
+          pattern: 'store',
+        },
+      ],
       group: { type: 'tag' },
-      dateType: 'date',
-      seed: [42],
+      macros: [
+        {
+          name: 'pet-status-values',
+          schema(node) {
+            if (node.name === 'Pet' && 'properties' in node) {
+              return {
+                ...node,
+                properties: node.properties.map((property) =>
+                  property.name === 'status'
+                    ? { ...property, schema: ast.factory.createSchema({ type: 'enum', primitive: 'string', enumValues: ['available', 'pending'] }) }
+                    : property,
+                ),
+              }
+            }
+            return node
+          },
+        },
+      ],
+      resolver: {
+        name(name) {
+          return `${resolverFaker.name(name)}Faker`
+        },
+        file: {
+          baseName({ name, extname }) {
+            return `${resolverFaker.name(name)}Faker${extname}`
+          },
+        },
+      },
+    }),
+    pluginCypress({
+      output: {
+        path: 'cypress',
+        mode: 'directory',
+        barrel: false,
+      },
+      group: { type: 'tag' },
     }),
     pluginMsw({
-      output: { path: './msw' },
-      group: { type: 'tag' },
+      output: {
+        path: 'msw',
+        mode: 'directory',
+      },
       handlers: true,
-      parser: 'faker',
+      exclude: [
+        {
+          type: 'tag',
+          pattern: 'store',
+        },
+      ],
+      group: { type: 'tag' },
     }),
   ],
-  hooks: {
-    done: [
-      'npm run typecheck',
-      'biome format --write ./',
-      'biome lint --fix --unsafe ./src',
-    ],
-  },
 })
 ```
 
 ## 依存関係
 
-```bash
-npm install --save-dev @kubb/cli @kubb/core @kubb/plugin-oas @kubb/plugin-ts @kubb/plugin-client @kubb/plugin-react-query @kubb/plugin-zod @kubb/plugin-faker @kubb/plugin-msw
-npm install @tanstack/react-query zod @faker-js/faker msw
+```json
+{
+  "dependencies": {
+    "@faker-js/faker": "^10.6.0",
+    "@kubb/plugin-axios": "workspace:*",
+    "@kubb/plugin-cypress": "workspace:*",
+    "@kubb/plugin-faker": "workspace:*",
+    "@kubb/plugin-mcp": "workspace:*",
+    "@kubb/plugin-msw": "workspace:*",
+    "@kubb/plugin-react-query": "workspace:*",
+    "@kubb/plugin-redoc": "workspace:*",
+    "@kubb/plugin-zod": "workspace:*",
+    "@modelcontextprotocol/server": "^2.3.1",
+    "@tanstack/query-core": "^5.104.2",
+    "@tanstack/react-query": "^5.104.2",
+    "axios": "^1.20.0",
+    "cypress": "^16.1.1",
+    "msw": "^2.15.0",
+    "react": "^19.3.0",
+    "zod": "^4.6.6"
+  },
+  "devDependencies": {
+    "@kubb/adapter-oas": "catalog:",
+    "@kubb/plugin-ts": "workspace:*",
+    "kubb": "catalog:",
+    "typescript": "catalog:"
+  }
+}
 ```
 
-## 生成されるディレクトリ構造
+（`package.json` にはこのほか `@tanstack/vue-query` / `vue` / `solid-js` / `svelte` / `swr` / `@types/react` も列挙されているが、上の設定では使われない）
 
-```
-src/gen/
-├── types/          ← TypeScript 型・インターフェース
-├── clients/        ← Fetch ベース API クライアント（Zod パース付き）
-├── hooks/          ← React Query hooks（Suspense・無限クエリ対応）
-├── zod/            ← Zod バリデーションスキーマ
-├── mocks/          ← Faker モックデータジェネレーター
-├── msw/            ← MSW ハンドラー
-│   └── handlers.ts ← 全ハンドラーの統合ファイル
-└── index.ts        ← バレルエクスポート
-```
+## Notes
 
-## ポイント
+- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@5.5.15/examples/advanced — `examples/advanced` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`configs/kubb.config.ts`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14, `@kubb/plugin-axios` 5.6.5, `@kubb/plugin-cypress` 5.0.14, `@kubb/plugin-faker` 5.1.9, `@kubb/plugin-mcp` 5.2.3, `@kubb/plugin-msw` 5.1.3, `@kubb/plugin-react-query` 5.5.3, `@kubb/plugin-redoc` 5.0.12, `@kubb/plugin-zod` 5.4.12; `typescript`: use your project's version
+- Uses the v5 config shape (`kubb/config`, `adapterOas`, `output.postGenerate`, `barrel`). The `query.importPath` `'../../../../tanstack-query-hook'` and the `override` entries are specific to the example repository layout
+- The `tanstack-query-hook` module referenced by that `importPath` is a local wrapper module that is not included here; set `importPath` to `'@tanstack/react-query'` or your own module so the example is self-contained
+- `package.json` declares `node >=22.12`. Its scripts include `generate` (`KUBB_DISABLE_TELEMETRY=1 kubb generate`), `validate`, `mcp`, `studio`, and `typecheck` (`tsc`)
 
-- `parser: 'zod'`（client）— レスポンスを Zod スキーマでバリデーション
-- `parser: 'faker'`（msw）— Faker でモックレスポンスを生成
-- `collisionDetection: true` — スキーマ名の衝突を自動解決
-- `hooks.done` — 生成後に型チェック・フォーマット・リントを実行
+## Related
+
+- [axios.md](./axios.md)
+- [react-query.md](./react-query.md)
+- [msw.md](./msw.md)

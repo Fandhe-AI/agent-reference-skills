@@ -8,9 +8,7 @@ import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  input: {
-    path: './petStore.yaml',
-  },
+  input: './petStore.yaml',
   output: {
     path: './src/gen',
     clean: true,
@@ -25,7 +23,7 @@ export default defineConfig({
 
 ```bash
 # インストール
-npm install --save-dev kubb@beta @kubb/plugin-ts@beta
+npm install --save-dev kubb @kubb/plugin-ts
 
 # 生成実行
 npx kubb generate
@@ -47,6 +45,6 @@ export type Pet = {
 ## Notes
 
 - v5 系では `@kubb/plugin-oas` は廃止され、OpenAPI のパース・バリデーションは `kubb` パッケージに同梱される `@kubb/adapter-oas` がデフォルトで担う。明示的にオプションを渡す必要がなければ `adapter` フィールド自体を省略できる
+- `input` はパス・URL・スペック文字列・パース済みオブジェクトを直接受け取る。旧形式 `input: { path }` / `input: { data }` は `KUBB_LEGACY_INPUT` で失敗する
 - `output.clean: true` で生成前に出力ディレクトリをクリーンアップする
-- `input.path` にはローカルファイルパスだけでなく URL も指定可能
-- 執筆時点（v5 系）で `kubb` および各プラグインパッケージは `@beta` タグでの配布
+- `input` にはローカルファイルパスだけでなく URL も指定可能

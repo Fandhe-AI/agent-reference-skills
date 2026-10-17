@@ -9,7 +9,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFetch } from '@kubb/plugin-fetch'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginTs({

@@ -1,81 +1,74 @@
 # プラグイン概要
 
-Kubb はプラグインベースのアーキテクチャで、OpenAPI 仕様から様々なコード成果物を生成する。
+Kubb の拡張モデル（adapter / plugin / macro / resolver / printer / parser / storage）とプラグイン一覧（Kubb 5.11.0 / docs 5.x explanation/extensions に準拠）。
 
-## プラグインの依存関係
+## 拡張の選び方
 
-ほとんどのプラグインは `@kubb/plugin-oas` を基盤として必要とする。
+Use an existing plugin when it generates the output you need. To add an output or replace a pipeline layer, build on `kubb/kit`, a subpath of the `kubb` package.
 
-```
-@kubb/plugin-oas（必須基盤）
-├── @kubb/plugin-ts（TypeScript 型生成）
-├── @kubb/plugin-client（API クライアント）
-│   ├── @kubb/plugin-react-query
-│   ├── @kubb/plugin-vue-query
-│   ├── @kubb/plugin-solid-query
-│   ├── @kubb/plugin-svelte-query
-│   └── @kubb/plugin-swr
-├── @kubb/plugin-zod（バリデーション）
-├── @kubb/plugin-faker（モックデータ）
-├── @kubb/plugin-msw（MSW ハンドラー）
-├── @kubb/plugin-cypress（Cypress テスト）
-├── @kubb/plugin-mcp（MCP サーバー）
-└── @kubb/plugin-redoc（API ドキュメント）
-```
+| 変更したいもの | 拡張 | 理由 |
+| --- | --- | --- |
+| Input format | Adapter | Translate the format into Kubb's shared AST |
+| Schema meaning before generation | Macro | Transform nodes before the plugin processes them |
+| Generated names or paths | Resolver | Keep declarations and imports consistent |
+| Code emitted for a schema type | Printer | Change one output target without changing the input model |
+| A new kind of output | Plugin and generators | Choose the files and content to generate |
+| File syntax or assembly | Parser | Convert emitted nodes into source text |
+| Where files are stored | Storage | Reuse generation with another destination |
 
-## カテゴリ別プラグイン
+Macros run before printer handlers, so a macro change is visible to every output target while a printer change stays in one.
 
-### 基盤レイヤー
-- **@kubb/plugin-oas**: OpenAPI 仕様の読み込み・パース・バリデーション
+## Plugins
 
-### 型生成
-- **@kubb/plugin-ts**: TypeScript インターフェース・型の生成
+A plugin factory returns a name, options, and lifecycle hooks. It registers generators and a resolver during `kubb:plugin:setup`, then produces files during generation. Setup runs once per plugin.
 
-### API クライアント
-- **@kubb/plugin-client**: Axios/Fetch ベースの HTTP クライアント生成
+### 依存関係と順序
 
-### データフェッチング
-- **@kubb/plugin-react-query**: TanStack Query for React
-- **@kubb/plugin-vue-query**: TanStack Query for Vue
-- **@kubb/plugin-solid-query**: TanStack Query for SolidJS
-- **@kubb/plugin-svelte-query**: TanStack Query for Svelte
-- **@kubb/plugin-swr**: Vercel SWR hooks
+Declared dependencies run before their dependents. Kubb uses `enforce: 'pre'`, normal plugins, then `enforce: 'post'` and declaration order to break ties. Dependencies take priority over `enforce`. A plugin declares its dependencies as a record keyed by plugin name. A missing required entry fails the run with `KUBB_MISSING_DEPENDENCY` before any plugin runs, and an `optional: true` entry is skipped when its plugin is missing. Post-enforced plugins can process other plugins' emitted files; the built-in barrel plugin uses this to generate re-exports.
 
-### バリデーション・モック
-- **@kubb/plugin-zod**: Zod バリデーションスキーマ生成
-- **@kubb/plugin-faker**: Faker.js モックデータ生成
-- **@kubb/plugin-msw**: Mock Service Worker ハンドラー生成
+## Generators / Resolvers / Macros / Printers / Renderers
 
-### テスト・ドキュメント
-- **@kubb/plugin-cypress**: Cypress リクエスト定義（v3.7.0+）
-- **@kubb/plugin-redoc**: Redoc HTML ドキュメント生成
+- **Generators** handle `schema` nodes, `operation` nodes, or the complete `operations` batch. They return files directly or elements for a renderer
+- **Resolvers** determine identifiers, filenames, and paths. The plugin's `resolver` option patches its defaults
+- **Macros** rewrite the AST before generation. **Printers** turn schema nodes into output for one target (TypeScript types, Zod expressions)
+- **Renderers**: `kubb/jsx` provides the JSX renderer without React. Enable it per generator through `renderer`
 
-### AI 連携
-- **@kubb/plugin-mcp**: MCP サーバー生成（v3.9.0+）
+## プラグイン一覧
+
+| 区分 | パッケージ |
+| --- | --- |
+| 型生成 | `@kubb/plugin-ts` |
+| HTTP クライアント | `@kubb/plugin-axios` / `@kubb/plugin-fetch` / `@kubb/plugin-client`（ユーザーが書いたクライアントモジュールを呼ぶ型付き関数） |
+| データフェッチング | `@kubb/plugin-react-query` / `@kubb/plugin-vue-query` / `@kubb/plugin-swr` |
+| バリデーション・モック | `@kubb/plugin-zod` / `@kubb/plugin-faker` / `@kubb/plugin-msw` |
+| テスト・ドキュメント | `@kubb/plugin-cypress` / `@kubb/plugin-redoc` |
+| AI 連携 | `@kubb/plugin-mcp` |
+| 出力構成 | `@kubb/plugin-barrel`（ビルトイン） |
 
 ## 設定例
 
 ```typescript
-import { defineConfig } from '@kubb/core'
-import { pluginOas } from '@kubb/plugin-oas'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
-  input: { path: './petstore.yaml' },
+  input: './petstore.yaml',
   output: { path: './src/gen' },
-  plugins: [
-    pluginOas(),
-    pluginTs(),
-    pluginClient(),
-  ],
+  plugins: [pluginTs(), pluginAxios()],
 })
 ```
 
-## 共通パターン
+## Notes
 
-全プラグインは一貫したパターンに従う:
-- パッケージマネージャーでインストール
-- `kubb.config.ts` の `plugins` 配列に追加
-- 出力ディレクトリを指定
-- 依存プラグインを宣言
+- v5: plugin sources moved to kubb-labs/plugins with independent versions per plugin. Package names are unchanged
+- v5: `@kubb/plugin-solid-query` and `@kubb/plugin-svelte-query` are removed with no replacement (last 4.39.3)
+- v5: `@kubb/plugin-oas` is replaced by `adapterOas`, which `defineConfig` supplies by default together with the TypeScript/TSX/Markdown parsers and a barrel plugin
+- v5: `@kubb/plugin-client` role changed; use `pluginAxios()` / `pluginFetch()` for Axios / Fetch clients
+- Extensions are also installable from the Kubb registry via `kubb add <extension>`
+
+## Related
+
+- [core.md](./core.md)
+- [README.md](./README.md)
+- [../guides/migration-guide.md](../guides/migration-guide.md)

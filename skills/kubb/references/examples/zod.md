@@ -1,49 +1,111 @@
 # Zod Example
 
-OpenAPI 仕様から Zod バリデーションスキーマを生成する設定例。
+OpenAPI 仕様から Zod バリデーションスキーマを生成する設定例。通常の Zod、Zod Mini（`mini: true`）、ユニオン + readOnly の 3 つの生成を配列形式で定義する。
 
-## kubb.config.ts
+## kubb.config.js
 
 ```typescript
-import { defineConfig } from '@kubb/core'
-import { pluginOas } from '@kubb/plugin-oas'
+import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
+import { defineConfig } from 'kubb/config'
+import { pluginZodOperations } from './operationsPlugin.ts'
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen', clean: true },
-  plugins: [
-    pluginOas({ generators: [] }),
-    pluginTs({ output: { path: 'models' } }),
-    pluginZod({
-      output: { path: './zod' },
-      group: {
-        type: 'tag',
-        name: ({ group }) => `${group}Schemas`,
-      },
-      typed: true,
-      dateType: 'stringOffset',
-      unknownType: 'unknown',
-    }),
-  ],
-})
+export default defineConfig([
+  {
+    name: 'zod',
+    root: '.',
+    input: './petStore.yaml',
+    adapter: adapterOas({ unknownType: 'unknown' }),
+    output: {
+      path: './src/zod',
+      clean: true,
+    },
+    plugins: [
+      pluginTs({
+        output: {
+          path: './ts',
+          mode: 'directory',
+        },
+      }),
+      pluginZod({
+        output: {
+          path: './zod',
+          mode: 'directory',
+        },
+        importPath: '../../zod.ts',
+        inferred: true,
+      }),
+      pluginZodOperations(),
+    ],
+  },
+  {
+    name: 'zod-mini',
+    root: '.',
+    input: './petStore.yaml',
+    adapter: adapterOas({ unknownType: 'unknown' }),
+    output: {
+      path: './src/mini',
+      clean: true,
+    },
+    plugins: [
+      pluginZod({
+        output: {
+          path: './zod',
+          mode: 'directory',
+        },
+        mini: true,
+      }),
+    ],
+  },
+  {
+    name: 'zod-union',
+    root: '.',
+    input: './unionWithReadOnly.yaml',
+    adapter: adapterOas({ unknownType: 'unknown' }),
+    output: {
+      path: './src/gen3',
+      clean: true,
+    },
+    plugins: [
+      pluginZod({
+        output: {
+          path: './zod',
+          mode: 'directory',
+        },
+      }),
+    ],
+  },
+])
 ```
 
 ## 依存関係
 
-```bash
-npm install --save-dev @kubb/cli @kubb/core @kubb/plugin-oas @kubb/plugin-ts @kubb/plugin-zod
-npm install zod
-```
-
-## 生成コードの使用例
-
-```typescript
-import { petSchema } from './gen/zod'
-
-const result = petSchema.safeParse(apiResponse)
-if (result.success) {
-  console.log(result.data.name)
+```json
+{
+  "dependencies": {
+    "@kubb/adapter-oas": "catalog:",
+    "@kubb/plugin-ts": "workspace:*",
+    "@kubb/plugin-zod": "workspace:*",
+    "axios": "^1.20.0",
+    "kubb": "catalog:",
+    "react": "^19.3.0",
+    "typescript": "catalog:",
+    "zod": "^4.6.6"
+  }
 }
 ```
+
+## Notes
+
+- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@5.5.15/examples/zod — `examples/zod` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.js`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14, `@kubb/plugin-zod` 5.4.12; `typescript`: use your project's version
+- The config imports a local `pluginZodOperations` from `./operationsPlugin.ts`, which is a custom plugin in the example repository and is not included here. In v5 the `operations` option of `@kubb/plugin-zod` is removed, so rebuilding operation/path maps needs a custom plugin
+- `importPath: '../../zod.ts'` points to a local re-export module in the example repository that is not included here; replace it with `'zod'` or your own wrapper module. `pluginZodOperations` (and its import) must also be removed or replaced, otherwise the config cannot be resolved
+- The package declares `node >=22.12`; its `generate` script runs `KUBB_DISABLE_TELEMETRY=1 kubb --config kubb.config.js`
+- Replaces the v3/v4 shape (`typed: true`, `dateType` on the plugin, `pluginOas`). Use `inferred: true` (see [../plugins/plugin-zod.md](../plugins/plugin-zod.md))
+
+## Related
+
+- [../plugins/plugin-zod.md](../plugins/plugin-zod.md)
+- [typescript.md](./typescript.md)

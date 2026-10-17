@@ -1,71 +1,55 @@
 # Installation
 
-Kubb のインストール方法とシステム要件。
+Kubb のインストール方法とシステム要件（Kubb 5.11.0 / docs 5.x の how-to/installation に準拠）。
 
 ## システム要件
 
-- **Node.js:** 20以上（必須）
-- **TypeScript:** 4.7以上（任意）
+- **Node.js:** 22.12 以上（必須）
+- **TypeScript:** 5 以上（TypeScript の config を使う場合、または生成された型を import する場合）
 - パッケージマネージャー: npm / pnpm / yarn / bun いずれも対応
 
 ## インストール方法
 
-### 推奨: インタラクティブセットアップ
+### 1. Kubb と必要なプラグインをインストール
+
+`kubb` パッケージに CLI・コアランタイム・OpenAPI アダプター・TypeScript / TSX / Markdown パーサーが同梱される。各出力は個別のプラグインパッケージから生成されるため、必要なプラグインだけを追加する。以下は TypeScript プラグインの例:
+
+```bash
+pnpm add -D kubb @kubb/plugin-ts typescript
+npm install -D kubb @kubb/plugin-ts typescript
+yarn add -D kubb @kubb/plugin-ts typescript
+bun add -d kubb @kubb/plugin-ts typescript
+```
+
+出力に必要なランタイムライブラリも別途インストールする（Axios クライアントなら `axios`、React Query フックなら `react` と `@tanstack/react-query`）。各プラグインページに要件が記載されている。
+
+### 2. インストール確認
+
+```bash
+npx kubb --version
+```
+
+パッケージマネージャーに応じて `pnpm exec kubb` / `yarn kubb` / `bunx kubb` を使う。
+
+### 3. config を作成
+
+初期化ウィザードで仕様ファイル・出力ディレクトリ・プラグインを選ぶか、`kubb.config.ts` を直接書く。
 
 ```bash
 npx kubb init
 ```
 
-このコマンドが自動的に以下を行う:
+その後 `npx kubb generate` を実行すると、生成ファイルが `output.path` に書き出される。
 
-1. `package.json` を検出または作成
-2. OpenAPI/Swagger 仕様ファイルの場所を確認
-3. 出力ディレクトリパスを確認
-4. 使用プラグインを選択（TypeScript, React Query, Zod など）
-5. 必要なnpmパッケージをすべてインストール
-6. `kubb.config.ts` を生成
+### プラグインを後から追加する
 
-セットアップ完了後:
+config 作成後は `kubb add` が Kubb レジストリで pin されたバージョンのプラグインをインストールし、`kubb.config.ts` に追加する。
 
 ```bash
-npx kubb generate
+npx kubb add plugin-zod
 ```
 
-### 手動インストール
-
-**コアパッケージ:**
-
-```bash
-npm install --save-dev @kubb/cli @kubb/core
-```
-
-**オプションプラグイン（カテゴリ別）:**
-
-*TypeScript & HTTP:*
-
-```bash
-npm install --save-dev @kubb/plugin-ts       # TypeScriptインターフェース生成
-npm install --save-dev @kubb/plugin-client   # HTTPクライアント生成
-```
-
-*Data Fetching:*
-
-```bash
-npm install --save-dev @kubb/plugin-react-query
-npm install --save-dev @kubb/plugin-swr
-npm install --save-dev @kubb/plugin-vue-query
-npm install --save-dev @kubb/plugin-solid-query
-npm install --save-dev @kubb/plugin-svelte-query
-```
-
-*Validation & Testing:*
-
-```bash
-npm install --save-dev @kubb/plugin-zod     # ランタイムバリデーション
-npm install --save-dev @kubb/plugin-faker   # モックデータ生成
-npm install --save-dev @kubb/plugin-msw     # Mock Service Workerハンドラー生成
-npm install --save-dev @kubb/plugin-cypress # E2Eテストユーティリティ生成
-```
+`kubb list` で拡張一覧を確認し、`kubb update` で pin されたバージョンへ更新する。
 
 ## 推奨 TypeScript 設定
 
@@ -80,17 +64,13 @@ npm install --save-dev @kubb/plugin-cypress # E2Eテストユーティリティ�
 }
 ```
 
-## インストール確認
-
-```bash
-npx kubb --version
-```
-
 ## Notes
 
+- 安定版 5.x では `@beta` タグは不要（`kubb init` / `npx kubb init` も同様）
+- 旧 `@kubb/cli` + `@kubb/core` の手動インストールは不要。CLI パッケージは `kubb`
 - グローバルインストールよりプロジェクトごとのインストールを推奨
-- ピア依存関係の警告は通常無視して問題ない
 - 必要なプラグインだけをインストールすればよい
+- 推奨 TypeScript 設定は旧版ページ由来で、5.x の公式 installation ページには記載がない
 
 ## Related
 

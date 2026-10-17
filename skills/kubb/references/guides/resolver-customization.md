@@ -109,6 +109,8 @@ pluginTs({
 
 ## Notes
 
+- Synced with docs 5.x how-to/resolvers ("Customize names and paths", Kubb 5.11.0). The `this` rules and signatures for overrides are in the Kit reference ([resolvers.md](../kit/resolvers.md), "Resolver overrides")
+- The returned `file.path` may not escape the project root (`KUBB_PATH_TRAVERSAL`)
 - Resolver の概念的な役割は [resolvers.md](./resolvers.md) を参照
 - Resolver 自体の実装（`createResolver`）は [creating-plugins.md](./creating-plugins.md) の「Resolvers」セクションを参照
 

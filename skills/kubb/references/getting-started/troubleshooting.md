@@ -8,11 +8,11 @@ Kubbでよく発生する問題とその解決方法。
 
 **症状:** バージョン関連のエラーが発生する
 
-**解決策:** Kubbは **Node.js 20以上** が必須。
+**解決策:** Kubb 5.x は **Node.js 22.12 以上** が必須。
 
 ```bash
 node --version
-# v20.x.x 以上であることを確認
+# v22.12.0 以上であることを確認
 ```
 
 ### パッケージマネージャーの競合
@@ -151,8 +151,15 @@ kubb generate --debug
 - **GitHub Issues:** github.com/kubb-labs/kubb/issues（バージョン番号と最小再現手順を添えて報告）
 - **Discord:** discord.gg/shfBFeczrm
 
+## Notes
+
+- The official troubleshooting page was removed in the 5.x docs. Diagnostics now carry `KUBB_*` codes with fixes; see [diagnostics.md](../reference/diagnostics.md)
+- Node.js requirement updated to 22.12+ (docs 5.x how-to/installation)
+- v5 changes that affect items above: `@kubb/plugin-oas` no longer exists (`defineConfig` supplies `adapterOas()`); `output.barrelType` is replaced by `barrel: { type, nested }`; `--debug` is replaced by `--reporter file` (see [migration-guide.md](../guides/migration-guide.md)). The `.kubb` debug-log guidance below is kept from the previous version
+
 ## Related
 
+- [diagnostics.md](../reference/diagnostics.md)
 - [installation.md](./installation.md)
 - [quick-start.md](./quick-start.md)
 - [telemetry.md](./telemetry.md)

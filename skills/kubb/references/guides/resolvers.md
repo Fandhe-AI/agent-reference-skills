@@ -24,11 +24,13 @@ Kubb はこれらすべてにデフォルトを用意しているため、Plugin
 
 ## Notes
 
+- The concept page was removed in the 5.x docs and moved to the Kit reference (`reference/kit/resolvers`; see [resolvers.md](../kit/resolvers.md))
 - 実際に Resolver をカスタマイズする方法（`resolver` オプション、`name`・`file.baseName`・`file.path`・namespaced メソッド）は [resolver-customization.md](./resolver-customization.md) を参照
 - Resolver の実装（`createResolver`）は [creating-plugins.md](./creating-plugins.md) の「Resolvers」セクションを参照
 
 ## Related
 
+- [kit/resolvers](../kit/resolvers.md)
 - [resolver-customization](./resolver-customization.md)
 - [concepts-plugins](./concepts-plugins.md)
 - [generators](./generators.md)

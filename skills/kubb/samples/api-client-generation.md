@@ -9,7 +9,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFetch } from '@kubb/plugin-fetch'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginTs({
@@ -33,7 +33,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 import { pluginAxios } from '@kubb/plugin-axios'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   plugins: [
     pluginTs({
@@ -50,10 +50,10 @@ export default defineConfig({
 
 ```bash
 # インストール（Fetch の場合）
-npm install --save-dev kubb@beta @kubb/plugin-ts@beta @kubb/plugin-fetch@beta
+npm install --save-dev kubb @kubb/plugin-ts @kubb/plugin-fetch
 
 # Axios の場合
-npm install --save-dev kubb@beta @kubb/plugin-ts@beta @kubb/plugin-axios@beta
+npm install --save-dev kubb @kubb/plugin-ts @kubb/plugin-axios
 npm install axios
 ```
 
@@ -62,7 +62,7 @@ npm install axios
 ```typescript
 import { getPetById } from './gen/clients/PetService'
 
-const pet = await getPetById({ petId: 1 })
+const { data: pet } = await getPetById({ path: { petId: 1 } })
 console.log(pet.name)
 ```
 
@@ -71,6 +71,6 @@ console.log(pet.name)
 - v5 では旧 `@kubb/plugin-client`（`client: 'fetch' | 'axios'` で切替）が `@kubb/plugin-fetch` と `@kubb/plugin-axios` に分割された。用途に応じてどちらか一方をインストールする
 - レスポンスを Zod でバリデーションしたい場合は `validator: 'zod'` を追加し、`pluginZod` をあわせて登録する（未登録のまま `validator: 'zod'` を指定するとビルドエラーになる）
 - `pluginReactQuery` 等と組み合わせる場合は `client: 'fetch'` のように文字列でクライアントプラグインを指定する（v4 までのオブジェクト指定 `client: { dataReturnType }` は廃止）
+- v5 のクライアントは grouped `{ path, query, headers, body }` を取り、`{ status, data, error, contentType, request, response }` を返す（既定は `throwOnError: true` で非 2xx は throw。`returnType: 'data'` で成功ボディのみ返す）。`@kubb/plugin-client` は `importPath` で指定したユーザー自作のクライアントモジュールを呼ぶ別プラグインで、Axios / Fetch クライアントではない
 - 旧 `clientType` は `sdk`（`{ mode: 'tag' | 'flat'; name? }`）に、旧 `parser` は `validator` にリネームされた
 - `group: { type: 'tag' }` でタグごとにサービスクラス/ファイルを分割できる
-- 執筆時点で `@kubb/plugin-axios` / `@kubb/plugin-fetch` は `@beta` タグでの配布（v5 系）

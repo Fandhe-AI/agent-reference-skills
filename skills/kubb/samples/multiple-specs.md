@@ -10,7 +10,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 export default defineConfig([
   {
     name: 'petStore',
-    input: { path: './specs/petStore.yaml' },
+    input: './specs/petStore.yaml',
     output: { path: './src/gen/petStore', clean: true },
     plugins: [
       pluginTs({ output: { path: 'models' } }),
@@ -18,7 +18,7 @@ export default defineConfig([
   },
   {
     name: 'userApi',
-    input: { path: './specs/userApi.yaml' },
+    input: './specs/userApi.yaml',
     output: { path: './src/gen/userApi', clean: true },
     plugins: [
       pluginTs({ output: { path: 'models' } }),
@@ -33,7 +33,7 @@ URL からリモートの仕様を直接参照する場合:
 export default defineConfig([
   {
     name: 'externalApi',
-    input: { path: 'https://api.example.com/openapi.json' },
+    input: 'https://api.example.com/openapi.json',
     output: { path: './src/gen/external' },
     plugins: [pluginTs()],
   },
@@ -47,3 +47,4 @@ export default defineConfig([
 - リモート URL 参照時はネットワーク到達性とスキーマの安定性に注意する
 - 各設定は独立した `output.path` を持つ必要がある
 - v5 では `@kubb/plugin-oas` は廃止された。パース・バリデーションのオプションを明示したい場合は各設定エントリに `adapter: adapterOas({ validate: true })` を追加する（デフォルトのままでよい場合は省略可能）
+- `input` は文字列で直接指定する。旧形式 `input: { path }` は `KUBB_LEGACY_INPUT` で失敗する

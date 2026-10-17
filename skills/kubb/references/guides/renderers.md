@@ -14,6 +14,7 @@ Kubb は JSX 経路として `kubb/jsx` を標準搭載する。Generator ごと
 
 ## Notes
 
+- The concept page was removed in the 5.x docs. Renderer content is now in `reference/jsx` (the `#renderers` section; see `kubb/jsx` and the `@kubb/renderer-jsx` package) and in the Kit reference ([generators.md](../kit/generators.md)); `kubb/jsx` provides the JSX renderer without React
 - `createRenderer` の正確なシグネチャは Kit API リファレンス（[kit-api.md](../reference/kit-api.md)）を参照
 
 ## Related

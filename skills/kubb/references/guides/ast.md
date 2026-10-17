@@ -1,6 +1,6 @@
 # AST（概念）
 
-Kubb の共通 Abstract Syntax Tree はパイプラインの 2 つの半分をつなぐ契約。[Adapter](../adapters/adapter-oas.md) が仕様（OpenAPI、AsyncAPI、JSON Schema 等）から AST を生成し、[Plugin](./concepts-plugins.md) がそれを読み取ってファイルを出力する。すべての Plugin が同じツリーを読むため、1 つの Plugin がカスタム Adapter を含むどの仕様に対しても動作する。
+Kubb の共通 Abstract Syntax Tree はパイプラインの 2 つの半分をつなぐ契約。[Adapter](../adapters/adapter-oas.md) が仕様（既定の adapter は OpenAPI 2.0 / 3.0 / 3.1。カスタム adapter で他形式も可）から AST を生成し、[Plugin](./concepts-plugins.md) がそれを読み取ってファイルを出力する。すべての Plugin が同じツリーを読むため、1 つの Plugin がカスタム Adapter を含むどの仕様に対しても動作する。
 
 ## ツリーの形
 
@@ -28,10 +28,13 @@ Plugin は OpenAPI を直接見ることはない。Adapter が生成したツ�
 
 ## Notes
 
+- The concept page was removed in the 5.x docs reorganization. AST content now lives in the Kit reference (`reference/kit/ast`; see [ast.md](../kit/ast.md)), which covers the schema node types (structural / scalar / special), `ast.factory` builders, the `transform` / `collect` (`collectSync`) visitors, guards (`narrowSchema`, `isHttpOperationNode`), ref and schema-graph helpers, macros (`defineMacro` / `composeMacros` / `applyMacros`), and `createPrinter`
+- The architecture overview of the AST moved to the `#ast` section of explanation/architecture ([architecture.md](./architecture.md))
 - `ast` namespace とその `factory` ノードビルダーは `kubb/kit` から import する。guard・macro・printer・visitor もすべて同じ namespace に属する。詳細は Kit API リファレンス（[kit-api.md](../reference/kit-api.md)）を参照
 
 ## Related
 
+- [kit/ast](../kit/ast.md)
 - [architecture](./architecture.md)
 - [macros](./macros.md)
 - [printers](./printers.md)
