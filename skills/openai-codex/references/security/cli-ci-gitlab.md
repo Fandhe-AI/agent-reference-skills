@@ -134,7 +134,7 @@ Variables:
 
 - The scan job runs by default only for same-project merge requests between protected branches. Fork pipelines and unprotected merge requests do not receive the scan credential.
 - Masking and hiding a variable do not make untrusted CI code safe. Review every change to `.gitlab-ci.yml` before running a secret-bearing job.
-- The report job publishes SARIF first; the policy is restored in a separate `codex-security-gate` job. The report job accepts exit codes `0` and `1`, and `2` only when the scan manifest proves completion, coverage is explicitly `partial`, and a non-empty SARIF report exists. The example temporarily allows exit `2` while calibrating partial coverage.
+- The production pipeline (`gitlab.yml`) publishes SARIF first and restores the policy in a separate `codex-security-gate` job. Its report job accepts exit codes `0` and `1`, and `2` only when the scan manifest proves completion, coverage is explicitly `partial`, and a non-empty SARIF report exists; other runtime, configuration, or export failures remain blocking. That example temporarily allows exit `2` while calibrating partial coverage; remove that allowance when incomplete coverage must block the pipeline. The scan-only example above performs no coverage check: its report job records `0`/`1`/`2` in `scan-exit-code.txt` and exits `0`, and `codex-security-gate` then fails the pipeline for `1` or `2`.
 - Expected job artifacts: `scan-manifest.json`, `findings.json`, `coverage.json`, `results.sarif`, `scan-exit-code.txt`. Restrict artifact access because results can contain vulnerable source snippets.
 - Default-branch scans create project vulnerability records; merge request findings appear only in the pipeline Security tab or merge request security widget.
 - A completed diff scan applies only to that change and does not show the entire repository is clean.
@@ -143,6 +143,7 @@ Variables:
 - Verified remediation is optional and runs only for protected default-branch pipelines. It requires complete coverage and a `high` or `critical` finding, confirms the regression test fails before patching, rejects changes to CI, credential, binary, or other protected files, and uses `verify-fix` (`fixed`, `still_vulnerable`, `inconclusive`); a patch is published only for `fixed`. The regression test must exit `1` before the fix and `0` afterward.
 - Draft merge request publishing uses a Developer project access token (`api` and `write_repository` scopes) as protected, masked, hidden `GITLAB_REMEDIATION_TOKEN` scoped to the `codex-security/publish` environment. Do not substitute `CI_JOB_TOKEN`. It creates a `codex-security/fix-<finding-hash>` branch, reuses an existing open draft, and never merges automatically. Keep `CODEX_SECURITY_MR_TEST_COMMAND` unprotected.
 - Remediation and publishing run before the final policy gate, so a verified draft merge request can be produced even when the gate later fails the pipeline.
+- Source: https://learn.chatgpt.com/docs/security/cli/ci/gitlab (retrieved 2026-10).
 
 ## Related
 
