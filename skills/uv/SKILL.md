@@ -9,7 +9,7 @@ user-invocable: false
 
 # uv
 
-> 分割 PR の途中段階。現在収録済み: references/{build-publish, configuration, getting-started, indexes-auth}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{build-publish, configuration, getting-started, indexes-auth, integrations, pip-interface}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 uv (Astral 製 高速 Python パッケージ / プロジェクトマネージャー) のリファレンススキル。
 
@@ -35,6 +35,26 @@ skills/uv/
       platform-support.md
       reproducible-examples.md
       versioning-policy.md
+    pip-interface/
+      README.md
+      compatibility-options.md
+      compatibility-resolution.md
+      declaring-dependencies.md
+      environments.md
+      inspection.md
+      locking-environments.md
+      packages.md
+      pip-interface.md
+      uv-pip-check.md
+      uv-pip-compile.md
+      uv-pip-freeze.md
+      uv-pip-install.md
+      uv-pip-list.md
+      uv-pip-show.md
+      uv-pip-sync.md
+      uv-pip-tree.md
+      uv-pip-uninstall.md
+      uv-venv.md
     build-publish/
       README.md
       build-backend-file-inclusion.md
@@ -78,6 +98,18 @@ skills/uv/
       uv-cache.md
       uv-self.md
       uv-shell-completion-help.md
+    integrations/
+      README.md
+      alternative-registries.md
+      aws-lambda.md
+      bazel.md
+      dependency-bots.md
+      docker.md
+      github-actions.md
+      gitlab-ci.md
+      jupyter.md
+      pre-commit.md
+      pytorch.md
 ```
 
 ## 探索手順
@@ -93,6 +125,8 @@ skills/uv/
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | uv のインストール・初回起動・バージョニング・0.13 の破壊的変更を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| `uv pip` / `uv venv` で pip・pip-tools 互換のワークフローを使いたい | pip-interface | [references/pip-interface/README.md](references/pip-interface/README.md) |
 | `uv build` / `uv publish` / `uv_build` バックエンドでパッケージを配布したい | build-publish | [references/build-publish/README.md](references/build-publish/README.md) |
 | 外部 index・レジストリ認証・証明書・`uv auth` を設定したい | indexes-auth | [references/indexes-auth/README.md](references/indexes-auth/README.md) |
 | `uv.toml` / `[tool.uv]` 設定、`UV_*` 環境変数、キャッシュ、preview features、`uv self` を調べたい | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| Docker / GitHub Actions / GitLab CI / pre-commit / PyTorch / Jupyter / AWS Lambda と組み合わせたい | integrations | [references/integrations/README.md](references/integrations/README.md) |
