@@ -217,27 +217,28 @@ Other screen options:
 | `gestureEnabled` | iOS | Whether gestures can dismiss this screen. Defaults to `true` |
 | `navigationBarColor` | Android | Deprecated, will be removed in a future release |
 | `navigationBarHidden` | Android | Whether the navigation bar is hidden. Defaults to `false` |
-| `orientation` | Android | `default`, `all`, `portrait`, `portrait_up`, `portrait_down`, `landscape`, `landscape_left`, `landscape_right` |
-| `presentation` | Android | `card`, `modal`, `containedModal`, `fullScreenModal`, `transparentModal`, `containedTransparentModal`, `formSheet` |
+| `orientation` | Android, iOS | `default`, `all`, `portrait`, `portrait_up`, `portrait_down`, `landscape`, `landscape_left`, `landscape_right` |
+| `presentation` | Android, iOS | `card`, `modal`, `containedModal`, `fullScreenModal`, `transparentModal`, `containedTransparentModal`, `formSheet` |
 | `scrollEdgeEffects` | iOS | iOS 26 and later. Per-edge `automatic`, `hard`, `soft`, `hidden`. Defaults to `automatic` |
-| `sheetAllowedDetents` | Android | `'fitToContents'` or an ascending array of fractions. Android limited to 3 detents. Defaults to `[1.0]` |
-| `sheetCornerRadius` | Android | Corner radius of the sheet |
+| `sheetAllowedDetents` | Android, iOS | `'fitToContents'` or an ascending array of fractions. Android limited to 3 detents. Defaults to `[1.0]` |
+| `sheetCornerRadius` | Android, iOS | Corner radius of the sheet |
 | `sheetElevation` | Android | Elevation of the sheet. Defaults to `24` |
 | `sheetExpandsWhenScrolledToEdge` | iOS | Whether the sheet expands to a larger detent when scrolling. Defaults to `true` |
 | `sheetGrabberVisible` | iOS | Whether the sheet shows a grabber handle. Defaults to `false` |
-| `sheetInitialDetentIndex` | Android | Detent index after opening, or `'last'`. Defaults to `0` |
-| `sheetLargestUndimmedDetentIndex` | Android | Index, `'none'` (default) or `'last'` |
+| `sheetInitialDetentIndex` | Android, iOS | Detent index after opening, or `'last'`. Defaults to `0` |
+| `sheetLargestUndimmedDetentIndex` | Android, iOS | Index, `'none'` (default) or `'last'` |
 | `sheetResizeAnimationEnabled` | Android | Native animation when content size changes. Defaults to `true` |
 | `sheetShouldOverflowTopInset` | Android | Render sheet content behind the status bar or cutouts. Defaults to `false` |
-| `statusBarAnimation` | Android | `"fade"`, `"none"`, `"slide"` |
+| `statusBarAnimation` | Android, iOS | `"fade"`, `"none"`, `"slide"` |
 | `statusBarBackgroundColor` | Android | Deprecated, will be removed in a future release |
-| `statusBarHidden` | Android | Whether the status bar is hidden on this screen |
-| `statusBarStyle` | Android | `"auto"`, `"inverted"`, `"dark"`, `"light"` |
+| `statusBarHidden` | Android, iOS | Whether the status bar is hidden on this screen |
+| `statusBarStyle` | Android, iOS | `"auto"`, `"inverted"`, `"dark"`, `"light"` |
 | `statusBarTranslucent` | Android | Deprecated, will be removed in a future release. Defaults to `false` |
 | `tabBarAccessibilityLabel`, `tabBarActiveBackgroundColor`, `tabBarActiveTintColor`, `tabBarBackground`, `tabBarBadge`, `tabBarBadgeStyle`, `tabBarButton`, `tabBarButtonTestID`, `tabBarHideOnKeyboard`, `tabBarIcon`, `tabBarIconStyle`, `tabBarInactiveBackgroundColor`, `tabBarInactiveTintColor`, `tabBarItemStyle`, `tabBarLabel`, `tabBarLabelPosition`, `tabBarLabelStyle`, `tabBarPosition`, `tabBarShowLabel`, `tabBarStyle`, `tabBarVariant` | Android, iOS | Tab bar options also listed on this page; see the JavaScript tabs page for their descriptions |
 
 ## Notes
 
+- The official Other screen options table labels presentation/orientation/sheet* options as Android only; corrected to Android, iOS per the Modals page and the SDK 58 router API reference. The same correction is applied to statusBarAnimation/statusBarHidden/statusBarStyle (SDK 58 API reference lists android, iOS).
 - On Android a stacked route animates on top of the current screen; on iOS it animates from the right.
 - Starting in SDK 55, screen options and the header can be configured with the options-based API or the composition components API (alpha); both can be used interchangeably.
 - `Stack.Toolbar` adds header buttons; see the Stack Toolbar page.

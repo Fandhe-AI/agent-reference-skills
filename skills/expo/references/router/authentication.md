@@ -104,14 +104,22 @@ export function useStorageState(key: string): UseStateHook<string> {
       try {
         if (typeof localStorage !== 'undefined') {
           setState(localStorage.getItem(key));
+        } else {
+          setState(null);
         }
       } catch (e) {
         console.error('Local storage is unavailable:', e);
+        setState(null);
       }
     } else {
-      SecureStore.getItemAsync(key).then((value: string | null) => {
-        setState(value);
-      });
+      SecureStore.getItemAsync(key)
+        .then((value: string | null) => {
+          setState(value);
+        })
+        .catch((e) => {
+          console.error('SecureStore read failed:', e);
+          setState(null);
+        });
     }
   }, [key]);
 
@@ -119,7 +127,9 @@ export function useStorageState(key: string): UseStateHook<string> {
   const setValue = useCallback(
     (value: string | null) => {
       setState(value);
-      setStorageItemAsync(key, value);
+      setStorageItemAsync(key, value).catch((e) => {
+        console.error('Storage write failed:', e);
+      });
     },
     [key]
   );
@@ -237,7 +247,8 @@ export default function AppLayout() {
 
 - Protected routes redirect to the anchor route (usually the index screen) or the first available screen in the stack, including when a screen becomes protected while active. Deep links to protected routes redirect to sign-in.
 - This is the current guide; the SDK 52 and earlier guide is [Authentication (redirects)](./authentication-rewrites.md).
-- Web: Expo Router on the web currently only supports build-time static generation and has no support for custom middleware or serving; use client-side redirects and a loading state.
+- Web: the official guide states Expo Router on the web only supports build-time static generation with no custom middleware or serving, and recommends client-side redirects plus a loading state. This applies to `web.output: 'static'`/`'single'`; with `web.output: 'server'` server rendering, API routes and `+middleware` are available (see App config and Notation).
+- Unlike the official snippet, read failures (unavailable localStorage, rejected `SecureStore.getItemAsync`) resolve to a signed-out state so `isLoading` cannot stay true.
 - Expo Router's `Stack.Protected` is client-side navigation logic, not an auth library; see better-auth and supabase for authentication providers.
 - Page modification date is not recorded in the saved source head used here; source fetched 2026-10-17.
 

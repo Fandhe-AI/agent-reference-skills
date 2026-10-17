@@ -64,7 +64,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="home" color={color} />,
         }}
       />
       <Tabs.Screen name="feed" options={{ title: 'Feed' }} />
@@ -140,6 +140,7 @@ export default function Layout() {
 
 ## Notes
 
+- The official example passes the SF Symbol name `house.fill` to `MaterialIcons`; corrected to the Material icon name `home`.
 - With `Stack`, `/products` opens `products/index.tsx`; `/products/123` is pushed onto the stack; a back button is rendered by default. A page that is not visible but still pushed onto the stack is still being rendered.
 - Files inside the directory automatically become eligible routes, so every screen need not be declared in the navigator.
 - Nest navigators only when truly needed: an extra **_layout.tsx** with a `Stack` in a subdirectory defines another stack inside the first one. Directories that only affect the URL are fine.
