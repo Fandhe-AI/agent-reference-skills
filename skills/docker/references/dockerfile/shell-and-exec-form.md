@@ -42,6 +42,7 @@ RUN ["c:\\windows\\system32\\tasklist.exe"]
 Always uses a command shell. A regular string (not JSON); newlines can be escaped with the escape character (backslash by default) to continue onto the next line:
 
 ```dockerfile
+SHELL ["/bin/bash", "-c"]
 RUN source $HOME/.bashrc && \
 echo $HOME
 ```
@@ -49,6 +50,7 @@ echo $HOME
 is equivalent to `RUN source $HOME/.bashrc && echo $HOME`. Heredocs can also be used:
 
 ```dockerfile
+SHELL ["/bin/bash", "-c"]
 RUN <<EOF
   source $HOME/.bashrc
   echo $HOME
@@ -61,6 +63,10 @@ EOF
 SHELL ["/bin/bash", "-c"]
 RUN echo hello
 ```
+
+## Notes
+
+- Adapted: `source` is a bash builtin and is unavailable in the default `/bin/sh` (e.g. dash on Debian/Ubuntu), so `SHELL ["/bin/bash", "-c"]` was added to the shell form examples. The official examples do not include this line.
 
 ## Related
 

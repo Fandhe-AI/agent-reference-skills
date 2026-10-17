@@ -39,6 +39,7 @@ Or with `/etc/docker/daemon.json` (if the distribution doesn't use systemd):
 
 - Warning: remote access without protection can let remote non-root users gain root access on the host. Remote access without TLS is not recommended and will require explicit opt-in in a future release. Use TLS (see "Protect the Docker daemon socket").
 - Adapted: the official example listens on TCP without TLS client authentication; mutual TLS (`--tlsverify`) is shown instead (see Protect the Docker daemon socket).
+- Adapted: `127.0.0.1` is the official example address and is reachable only from the local host. To accept remote clients, replace it with a reachable host IP (e.g. `tcp://192.0.2.10:2376`, a documentation address), make sure the server certificate's SAN includes that address or hostname, and restrict allowed sources in the firewall. Do not use `0.0.0.0`.
 - Configuring listening through both the systemd unit file and `daemon.json` causes a conflict that prevents Docker from starting.
 - Setting `hosts` in `daemon.json` isn't supported on Docker Desktop for Windows or Mac.
 - Firewall: allow incoming connections on port `2376` (TLS) or `2375` (otherwise). For ufw set `DEFAULT_FORWARD_POLICY="ACCEPT"`; for firewalld add direct rules on the `FORWARD_direct` chain for incoming and outgoing requests (check interface and chain names).

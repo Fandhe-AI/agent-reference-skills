@@ -48,7 +48,7 @@ RUN echo hello
   RUN c:\example\Execute-MyCmdlet -sample 'hello world'
   ```
 
-- `SHELL` can also change how a shell operates, e.g. `SHELL cmd /S /C /V:ON|OFF` on Windows modifies delayed environment variable expansion.
+- `SHELL` can also change how a shell operates, e.g. `SHELL ["cmd", "/S", "/C", "/V:ON"]` (or `/V:OFF` to disable) on Windows modifies delayed environment variable expansion. (The official text abbreviates this as `SHELL cmd /S /C /V:ON|OFF`; the instruction itself must be in JSON form.)
 - Setting `SHELL` suppresses the `JSONArgsRecommended` build check (it signals that using shell form is a conscious decision).
 
 ## Related
