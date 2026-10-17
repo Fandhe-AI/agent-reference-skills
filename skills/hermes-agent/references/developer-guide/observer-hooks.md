@@ -26,7 +26,7 @@ Behavior-affecting hooks (other hook returns are ignored):
 | Hook | Return behavior |
 |------|-----------------|
 | `pre_llm_call` | String or `{"context": "..."}` injects ephemeral context into the current user message |
-| `pre_tool_call` | `{"action": "block", "message": "..."}` blocks; `{"action": "modify", "args": {...}}` transforms input arguments |
+| `pre_tool_call` | `{"action": "block", "message": "..."}` blocks; `{"action": "approve", "message": "...", "rule_key": "..."}` escalates to the human-approval gate; `{"action": "modify", "args": {...}}` shallow-merges into the input arguments (block wins over approve) |
 | `transform_tool_result` | Replacement tool result string after `post_tool_call` |
 | `transform_llm_output` | Replacement final assistant text string |
 
@@ -70,6 +70,7 @@ Event families:
 - Prefer sanitized `request` / `response` / `error` fields; legacy `request_messages`, `conversation_history`, `assistant_message` may still be present. Sanitization bounds payloads and redacts sensitive keys.
 - Expensive payload construction is gated behind `has_hook(...)`: register only hooks you consume, keep callbacks fast, offload network export.
 - Behavior-changing request/execution wrappers are middleware, not observers. A first-party NeMo Relay shared-metrics path exists that does not need an observability plugin; the official Langfuse catalog plugin is an example consumer.
+- `pre_tool_call` full return contract: https://hermes-agent.nousresearch.com/docs/user-guide/features/hooks#pre_tool_call.
 - Source: https://hermes-agent.nousresearch.com/docs/developer-guide/observer-hooks (pinned to v0.22.2)
 
 ## Related

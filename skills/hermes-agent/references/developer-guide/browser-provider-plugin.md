@@ -22,6 +22,8 @@ provides_browser_providers:
 ```
 
 ```python
+import os
+
 from agent.browser_provider import BrowserProvider
 
 class MyBackendProvider(BrowserProvider):

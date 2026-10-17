@@ -11,6 +11,7 @@ Secret sources resolve provider credentials from an external secret manager (vau
 ```
 
 ```python
+import os
 from pathlib import Path
 
 from agent.secret_sources.base import ErrorKind, FetchResult, SecretSource, run_secret_cli

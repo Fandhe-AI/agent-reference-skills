@@ -11,6 +11,8 @@ plugins/video_gen/my-backend/
 ```
 
 ```python
+import os
+
 from agent.video_gen_provider import VideoGenProvider, error_response, success_response
 
 class MyVideoGenProvider(VideoGenProvider):

@@ -11,6 +11,8 @@ plugins/image_gen/my-backend/
 ```
 
 ```python
+import os
+
 from agent.image_gen_provider import (
     DEFAULT_ASPECT_RATIO, ImageGenProvider, error_response,
     normalize_reference_images, resolve_aspect_ratio, save_b64_image, success_response,

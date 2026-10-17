@@ -107,7 +107,7 @@ Hooks (all callbacks should accept `**kwargs`):
 
 | Hook | Fires when | Callback arguments | Returns |
 |------|-----------|--------------------|---------|
-| `pre_tool_call` | Before any tool executes | `tool_name, args, task_id` | optional `{"action": "block"\|"approve", "message": ...}` |
+| `pre_tool_call` | Before any tool executes | `tool_name, args, task_id` | optional `{"action": "block", "message": ...}` (veto) / `{"action": "approve", "message": ..., "rule_key": ...}` (escalate to the human-approval gate) / `{"action": "modify", "args": {...}}` (shallow-merged into the tool arguments); a valid `block` wins over `approve` |
 | `post_tool_call` | After any tool returns | `tool_name, args, result, task_id, duration_ms` | ignored |
 | `pre_llm_call` | Once per turn before the tool loop | `session_id, user_message, conversation_history, is_first_turn, model, platform` | context injection (`{"context": str}` or str) |
 | `post_llm_call` | Once per successful turn after the loop | `session_id, user_message, assistant_response, conversation_history, model, platform` | ignored |
@@ -170,6 +170,7 @@ Middleware kinds (`ctx.register_middleware(kind, fn)`, canonical list `VALID_MID
 - Lazy installs: `from pm import ensure_import` takes a `pyproject.toml` extra name (e.g. `"bedrock"`); the old `LAZY_DEPS` / `FeatureUnavailable` no longer exist. Use `plugins.plugin_utils.lazy_singleton` / `SingletonSlot` for thread-safe lazy singletons.
 - Mid-run loading: gateway slash commands, hooks and platform callbacks activate immediately; `tools` and `prompt` sections apply from the next session; `mcp_servers` connect on `mcp.reload` or next session. There is no un-wire.
 - Third-party-product plugins ship as standalone repos, not into the core tree. Nix/NixOS is no longer explicitly supported (best-effort). Distribute via pip with the entry-point group `hermes_agent.plugins`.
+- `pre_tool_call` return contract (block / approve / modify, precedence) is documented in full at https://hermes-agent.nousresearch.com/docs/user-guide/features/hooks#pre_tool_call.
 - Source: https://hermes-agent.nousresearch.com/docs/developer-guide/plugins (pinned to v0.22.2)
 
 ## Related

@@ -13,6 +13,8 @@ plugins/web/my-backend/
 
 ```python
 # provider.py
+import os
+
 from agent.web_search_provider import WebSearchProvider
 
 class MyBackendWebSearchProvider(WebSearchProvider):
@@ -39,6 +41,9 @@ class MyBackendWebSearchProvider(WebSearchProvider):
             {"title": "...", "url": "...", "description": "...", "position": 1}]}}
 
 # __init__.py
+from plugins.web.my_backend.provider import MyBackendWebSearchProvider
+
+
 def register(ctx) -> None:
     ctx.register_web_search_provider(MyBackendWebSearchProvider())
 ```
