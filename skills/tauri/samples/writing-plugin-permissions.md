@@ -40,7 +40,9 @@ pub(crate) async fn write_custom_file<R: Runtime>(
     user_input: String,
     app: AppHandle<R>,
 ) -> Result<String> {
-    std::fs::write(app.path().temp_dir().unwrap().join("custom_file.txt"), user_input)?;
+    let dir = app.path().app_local_data_dir().unwrap();
+    std::fs::create_dir_all(&dir)?;
+    std::fs::write(dir.join("custom_file.txt"), user_input)?;
     Ok("success".to_string())
 }
 ```
@@ -107,5 +109,6 @@ permissions = ["allow-ping", "allow-write-custom-file"]
 - The `invoke` argument keys must be camelCase (`userInput`, not `user_input`).
 - Exposing the command in `guest-js/index.ts` is a convenience with no security impact; the command can already be invoked manually once the handler is generated.
 - The official snippet calls `app.test1()`, writes to `temp_dir()` itself, labels the file `src/build.rs` and manages an undefined `MyState`; this sample uses the template's `test()` accessor, joins a file name, uses the root `build.rs`, and drops `MyState`.
-- `unwrap()` on `temp_dir()` is kept because the template's `crate::Error` has no `tauri::Error` variant.
+- The official snippet writes to the shared temp_dir() with a fixed file name (symlink clobbering risk on a shared /tmp); this sample writes to app_local_data_dir() instead.
+- `unwrap()` on `app_local_data_dir()` is kept because the template's `crate::Error` has no `tauri::Error` variant; `std::io::Error` converts via `?`.
 - The official page then edits the plugin's `examples/tauri-app` Svelte `App.svelte` to call `writeCustomFile` (not reproduced here).

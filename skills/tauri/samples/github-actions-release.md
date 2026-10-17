@@ -94,7 +94,7 @@ on:
 ## Notes
 
 - Tauri bundler and `tauri-action` only; GitHub Actions syntax, runners and billing are covered by the github-docs skill. Code signing for Windows and macOS is a separate guide.
-- `GITHUB_TOKEN` has read-only permissions by default; the job sets `permissions: contents: write`, or enable "Read and write permissions" under Actions workflow permissions if you see "Resource not accessible by integration".
+- `GITHUB_TOKEN` has read-only permissions by default; this sample grants `permissions: contents: write` only to the release job. If you still see "Resource not accessible by integration", check that job's `permissions` and any repository/organization restrictions instead of switching the repository-wide default to Read and write (the official page suggests that; least privilege is kept here).
 - `ubuntu-22.04-arm` is only available in public repositories; for private repositories the official page shows a much slower `pguyot/arm-runner-action` workflow (about 1 hour uncached), not reproduced here.
 - Without an Apple signing certificate, the official page recommends an ad-hoc signing identity so Apple Silicon builds downloaded from GitHub releases are not treated as damaged.
 - When the app is not at the repository root, use the `projectPath` input.
