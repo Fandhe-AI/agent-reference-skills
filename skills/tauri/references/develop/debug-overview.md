@@ -81,6 +81,8 @@ Right-click in the WebView and choose `Inspect Element`, or use `Ctrl + Shift + 
 Control the inspector window with `WebviewWindow::open_devtools` and `WebviewWindow::close_devtools`:
 
 ```rust
+use tauri::Manager;
+
 tauri::Builder::default()
   .setup(|app| {
     #[cfg(debug_assertions)] // only include this code on debug builds

@@ -90,12 +90,28 @@ fn increase_counter(state: State<'_, Mutex<AppState>>) -> u32 {
 Async commands with Tokio's async `Mutex` (the return type must be `Result` because of the borrowed `State<'_, T>` argument):
 
 ```rust
+use tauri::State;
+use tokio::sync::Mutex;
+
 #[tauri::command]
 async fn increase_counter(state: State<'_, Mutex<AppState>>) -> Result<u32, ()> {
   let mut state = state.lock().await;
   state.counter += 1;
   Ok(state.counter)
 }
+```
+
+Register the state with the Tokio `Mutex` the same way (this setup block is not in the original page, which only says to set it up the same way):
+
+```rust
+use tauri::Manager;
+use tokio::sync::Mutex;
+
+tauri::Builder::default()
+  .setup(|app| {
+    app.manage(Mutex::new(AppState::default()));
+    Ok(())
+  })
 ```
 
 Outside commands, via the `Manager` trait (e.g. in `on_window_event`):
@@ -149,6 +165,7 @@ type AppState = Mutex<AppStateInner>;
 
 ## Notes
 
+- The type registered with `manage` must match the `State<'_, Mutex<T>>` type exactly; `std::sync::Mutex` and `tokio::sync::Mutex` are different types, so an async command using the Tokio mutex needs state registered with `tokio::sync::Mutex`.
 - Tauri's `State` / `Manager` is the application state API of the Tauri Rust crate; it is not the state or router type of fandhe-backend (HTTP server framework) or fandhe-frontend.
 
 ## Related

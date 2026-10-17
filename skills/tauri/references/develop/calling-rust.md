@@ -292,6 +292,8 @@ async fn my_custom_command(webview_window: tauri::WebviewWindow) {
 ```
 
 ```rust
+use tauri::Manager;
+
 #[tauri::command]
 async fn my_custom_command(app_handle: tauri::AppHandle) {
 	let app_data_dir = app_handle.path().app_data_dir();

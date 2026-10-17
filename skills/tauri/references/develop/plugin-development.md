@@ -143,7 +143,7 @@ Mobile plugins have additional lifecycle events (see Mobile Plugin Development).
 When: plugin is being initialized. Why: register mobile plugins, manage state, run background tasks.
 
 ```rust
-use tauri::{Manager, plugin::Builder};
+use tauri::{Emitter, Manager, plugin::Builder};
 use std::{collections::HashMap, sync::Mutex, time::Duration};
 
 struct DummyStore(Mutex<HashMap<String, String>>);
@@ -184,7 +184,7 @@ Builder::new("<plugin-name>")
 When: new window has been created. Why: execute an initialization script for every window.
 
 ```rust
-use tauri::plugin::Builder;
+use tauri::{Listener, plugin::Builder};
 
 Builder::new("<plugin-name>")
   .on_webview_ready(|window| {

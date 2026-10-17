@@ -121,6 +121,8 @@ Use the APIs instead of calculating the path manually.
 Rust: get a `PathResolver` from `App` / `AppHandle`, then call `PathResolver::resolve`:
 
 ```rust
+use tauri::{path::BaseDirectory, Manager};
+
 tauri::Builder::default()
   .setup(|app| {
     let resource_path = app.path().resolve("lang/de.json", BaseDirectory::Resource)?;
@@ -131,6 +133,8 @@ tauri::Builder::default()
 In a command:
 
 ```rust
+use tauri::{path::BaseDirectory, Manager};
+
 #[tauri::command]
 fn hello(handle: tauri::AppHandle) -> Result<(), String> {
   let resource_path = handle
@@ -161,6 +165,8 @@ The path can be a normal relative path like `folder/json_file.json` (resolves to
 ```
 
 ```rust
+use tauri::{path::BaseDirectory, Manager};
+
 let json_path = app.path().resolve("folder/json_file.json", BaseDirectory::Resource)?;
 let toml_path = app.path().resolve("../relative/folder/toml_file.toml", BaseDirectory::Resource)?;
 ```
@@ -170,6 +176,9 @@ let toml_path = app.path().resolve("../relative/folder/toml_file.toml", BaseDire
 Resources are stored in the APK as assets, so the returned values are not normal file system paths. The special URI prefix `asset://localhost/` is used, which works with the `fs` plugin through `FsExt::fs`:
 
 ```rust
+use tauri::{path::BaseDirectory, Manager};
+use tauri_plugin_fs::FsExt;
+
 let resource_path = app.path().resolve("lang/de.json", BaseDirectory::Resource).unwrap();
 let json = app.fs().read_to_string(&resource_path);
 ```
@@ -213,6 +222,9 @@ Example: bundle i18n JSON files.
 Rust:
 
 ```rust
+use tauri::{path::BaseDirectory, Manager};
+// For the Android `app.fs()` variant: use tauri_plugin_fs::FsExt;
+
 tauri::Builder::default()
   .setup(|app| {
     // The path specified must follow the same syntax as defined in
@@ -233,6 +245,9 @@ tauri::Builder::default()
 ```
 
 ```rust
+use tauri::{path::BaseDirectory, Manager};
+// For the Android `handle.fs()` variant: use tauri_plugin_fs::FsExt;
+
 #[tauri::command]
 fn hello(handle: tauri::AppHandle) -> Result<String, String> {
     let resource_path = handle

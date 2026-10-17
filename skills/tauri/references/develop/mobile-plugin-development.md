@@ -538,6 +538,7 @@ class ExamplePlugin(private val activity: Activity): Plugin(activity) {
       val payload = JSObject()
       payload.put("open", true)
       trigger("camera", payload)
+      invoke.resolve()
     }
 }
 ```
@@ -552,6 +553,7 @@ class ExamplePlugin: Plugin {
 
   @objc public func openCamera(_ invoke: Invoke) {
     trigger("camera", data: ["open": true])
+    invoke.resolve()
   }
 }
 ```
@@ -574,6 +576,7 @@ export async function onRequest(
 
 ## Notes
 
+- In the Plugin events example, the `invoke.resolve()` calls after `trigger(...)` in `openCamera` were added to this reference and are not in the original example: triggering an event does not answer the command, so the command must still be resolved or the caller (`invoke` / `run_mobile_plugin`) waits forever.
 - Listening to plugin events from JavaScript is gated by the same capability and permission system as plugin commands. Add the plugin's permission (commonly `<plugin-name>:default`, or a specific `allow-listen-*` permission if defined) to the `permissions` array of a capability under `src-tauri/capabilities/`; refer to the plugin's own documentation for the exact identifiers:
 
 ```json
