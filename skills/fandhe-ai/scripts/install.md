@@ -1,5 +1,5 @@
 ---
-source: https://fandhe-ai.github.io/fandhe-ai/getting-started/, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/facade/Cargo.toml
+source: https://fandhe-ai.github.io/fandhe-ai/getting-started/, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.11.0/README.md, https://docs.rs/crate/fandhe-ai/0.11.0
 ---
 
 # install
@@ -10,7 +10,7 @@ source: https://fandhe-ai.github.io/fandhe-ai/getting-started/, https://raw.gith
 
 ```toml
 [dependencies]
-fandhe-ai = "0.3.0"
+fandhe-ai = "0.11.0"
 ```
 
 公開 API サーフェスは `fandhe-ai` crate のみが対象。内部 crate（`fandhe-ai-tensor-core` 等）を直接依存に加えることは公式に非サポート。
@@ -22,7 +22,7 @@ fandhe-ai = "0.3.0"
 fandhe-ai = { git = "https://github.com/Fandhe-AI/fandhe-ai" }
 ```
 
-crates.io 版より新しい未リリース変更を試す場合に使う。
+crates.io 版より新しい未リリース変更を試す場合に使う。リポジトリ名は `Fandhe-AI/fandhe-ai`。
 
 ## Path 依存（ローカルクローン時）
 
@@ -47,4 +47,4 @@ cargo metadata --no-deps --format-version 1
 cargo deny --locked check advisories bans licenses sources
 ```
 
-CI と同じ依存監査を手元で実行する。`cargo-deny` の別途インストールが必要（`cargo install cargo-deny`）。
+CI と同じ依存監査を手元で実行する。`cargo-deny` の別途インストールが必要（`cargo install cargo-deny --locked`）。クローン済みリポジトリでは `make deny` が未導入時に自動導入する。
