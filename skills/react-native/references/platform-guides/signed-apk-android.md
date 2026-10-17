@@ -150,7 +150,7 @@ If you are migrating from a previous version of React Native chances are your ap
 - Corrected: the official page runs keytool with sudo from the JDK directory; sudo is not required and would create a root-owned keystore.
 - Keep the keystore file private. If the upload key is lost or compromised, follow the Google Play reset instructions linked in the official page.
 - Saving the Gradle variables in `~/.gradle/gradle.properties` instead of `android/gradle.properties` prevents them from being checked in to git. You may have to create `~/.gradle/gradle.properties` in your user's home directory first.
-- On macOS, credentials can alternatively be stored in the Keychain Access app (the official page links a third-party guide), after which the two password rows in `~/.gradle/gradle.properties` can be skipped.
+- On macOS, the official page suggests storing the credentials in the Keychain Access app (linking a third-party guide) so the two password rows in `~/.gradle/gradle.properties` can be skipped; this only works if `signingConfigs` is also changed to read the passwords from the Keychain as described in that guide. With the `signingConfigs` shown above, `MYAPP_UPLOAD_STORE_PASSWORD` / `MYAPP_UPLOAD_KEY_PASSWORD` must stay defined or release signing fails.
 - Make sure `gradle.properties` does not include `org.gradle.configureondemand=true` as that will make the release build skip bundling JS and assets into the app binary.
 - Test thoroughly if Proguard is enabled: it often requires configuration specific to each native library you use. See `app/proguard-rules.pro`.
 - Default permissions: `INTERNET` is added to your Android app by default. `SYSTEM_ALERT_WINDOW` is added to the APK in debug mode but removed in production.
