@@ -157,4 +157,4 @@ Common `options` of `showOpenDialog` / `showOpenDialogSync` (full list per metho
 ## Related
 
 * [dialog: showMessageBox / showErrorBox / showCertificateTrustDialog / sheets](./dialog-message-box-certificate.md)
-* BaseWindow
+* [BaseWindow](../windows/base-window-overview.md)

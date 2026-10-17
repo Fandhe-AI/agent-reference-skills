@@ -79,4 +79,4 @@ const myWindow = new BrowserWindow({
 
 ## Related
 
-* WebPreferences
+* [WebPreferences](../windows/web-preferences.md)

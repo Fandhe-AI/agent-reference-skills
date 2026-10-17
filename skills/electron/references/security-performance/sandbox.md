@@ -130,4 +130,4 @@ While we make our best effort to backport Chromium security fixes to older versi
 * [security-checklist-1-10.md](./security-checklist-1-10.md)
 * [context-isolation.md](../ipc-preload/context-isolation.md)
 * [ipc.md](../ipc-preload/ipc.md)
-* web-preferences.md
+* [web-preferences.md](../windows/web-preferences.md)

@@ -250,4 +250,4 @@ For more information on what `contextIsolation` is and how to use it to secure y
 * [security-checklist-1-10.md](./security-checklist-1-10.md)
 * [fuses.md](./fuses.md)
 * [context-isolation.md](../ipc-preload/context-isolation.md)
-* web-preferences.md
+* [web-preferences.md](../windows/web-preferences.md)

@@ -73,5 +73,5 @@ ThumbarButton Object:
 ## Related
 
 - [app Jump List and User Tasks](../app/app-jump-list-single-instance.md)
-- BrowserWindow methods: progress bar, thumbar
+- [BrowserWindow methods: progress bar, thumbar](../windows/browser-window-methods-content-taskbar.md)
 - [Tray](./tray.md)
