@@ -46,6 +46,21 @@ import {GoogleGenAI} from '@google/genai';
 
 const ai = new GoogleGenAI({});
 
+const inlinedRequests = [
+    {
+        contents: [{
+            parts: [{text: 'Tell me a one-sentence joke.'}],
+            role: 'user'
+        }]
+    },
+    {
+        contents: [{
+            parts: [{'text': 'Why is the sky blue?'}],
+            role: 'user'
+        }]
+    }
+]
+
 const response = await ai.batches.create({
     model: 'gemini-3.8-flash',
     src: inlinedRequests,
@@ -53,6 +68,8 @@ const response = await ai.batches.create({
         displayName: 'inlined-requests-job-1',
     }
 });
+
+console.log(response);
 ```
 
 ```bash

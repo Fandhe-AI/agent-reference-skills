@@ -279,6 +279,34 @@ def execute_tool(name: str, args: dict) -> dict:
    print(f"  [Tool] {name}({args})")
    return {"status": "success"}
 
+# ── Input helpers ────────────────────────────────────────────────────────────
+def send_text(session, text: str):
+   """Send a text turn."""
+   return session.send_client_content(
+       turns=types.Content(role="user", parts=[types.Part(text=text)]),
+       turn_complete=True,
+   )
+
+def send_image(session, image_bytes: bytes, prompt: str = ""):
+   """Send a JPEG image with an optional text prompt."""
+   parts = [
+       types.Part(
+           inline_data=types.Blob(data=image_bytes, mime_type="image/jpeg")
+       )
+   ]
+   if prompt:
+       parts.append(types.Part(text=prompt))
+   return session.send_client_content(
+       turns=types.Content(role="user", parts=parts),
+       turn_complete=True,
+   )
+
+def send_audio(session, audio_chunk: bytes):
+   """Stream a chunk of raw PCM audio (16-bit, 16 kHz, mono)."""
+   return session.send_realtime_input(
+       media=types.Blob(data=audio_chunk, mime_type="audio/pcm;rate=16000")
+   )
+
 # ── Receive loop ─────────────────────────────────────────────────────────────
 async def receive_loop(session):
    """Print model text and handle tool calls until the session ends."""
@@ -317,13 +345,18 @@ async def main():
    )
    async with client.aio.live.connect(model=MODEL, config=config) as session:
        recv_task = asyncio.create_task(receive_loop(session))
-       # Connect robot perception callbacks and user inputs to the helpers above.
-       recv_task.cancel()
+       try:
+           # Connect robot perception callbacks and user inputs to the helpers above.
+           # (Start a heartbeat task here, inside the same try, if you use one.)
+           await recv_task
+       finally:
+           recv_task.cancel()
 
 asyncio.run(main())
 ```
 
 - Added `import os`, which the source page's streaming example omits although `main()` reads `os.environ`. `execute_tool` is a stub to replace with a real robot SDK, as on the source page.
+- The source page's main() cancels recv_task immediately after create_task (a skeleton); this page awaits the receive task inside try/finally so the session stays open.
 - Only blocking function calls are supported when using the Live API for robotics.
 - Video frames alone do not trigger a new reasoning turn; to enable proactive reasoning implement a heartbeat that periodically sends the latest camera frame followed by a short text prompt (video input is rate-limited to one frame per second). Sending a new prompt while the model is generating acts as an interruption (barge-in) that cancels in-flight reasoning and tool calls; wait for the previous turn to complete (`er_turn_done`).
 - Gemini Robotics ER 2 returns text; route completed responses to a separate TTS provider (such as Gemini TTS) via a callback, or declare TTS as a tool.
