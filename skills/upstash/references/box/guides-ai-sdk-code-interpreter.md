@@ -160,6 +160,7 @@ export const runCode = tool({
 
 - Source: https://upstash.com/docs/box/guides/ai-sdk-setup (fetched 2026-10-17; no version pin on the site).
 - Official guide title is now "Vercel AI SDK Code Interpreter and Shell Tools". The URL was renamed from `/box/guides/ai-sdk-code-interpreter` to `/box/guides/ai-sdk-setup` (this file keeps its original name)
+- `Box.get(name)` is kept verbatim from the official guide. In the `@upstash/box` SDK, `Box.getByName` is an alias of `Box.get` (`static getByName = Box.get;` in `packages/sdk/src/client.ts`), so passing a box name to `Box.get` resolves the same box; `Box.getByName(name)` is the equivalent, more explicit spelling used in the how-it-works and CopilotKit guides
 - A box name is an address: never take `userId` or the box name from the request body; derive it from the server-side session
 - Only a 404 `BoxError` means "create one"; other errors must propagate
 - `runCommand` waits for exit, so a long-running process (e.g. `npm run dev`) needs a separate detached `startServer` tool that checks the port is listening, then calls `getPublicURL`
