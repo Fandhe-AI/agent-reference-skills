@@ -65,7 +65,7 @@ pub mod x509;
 ## Notes
 
 - 対象は TLS 1.3 / `TLS_AES_128_GCM_SHA256` / X25519 / Ed25519 のみ（`client_hello` が他を受理しない）。サーバー証明書・鍵は Ed25519 PKCS#8 秘密鍵（[tls-opt.md](./tls-opt.md) の `load_server_config`）。
-- `handshake.rs` の `SSLRequest` 応答（`'N'` を返す既存挙動）はビット単位で不変。TLS の実接続組み込みは #966（pg wire）・#968（NoSQL 表層の HTTPS 終端。`http::tls_transport`）で実装済み。CLI からの証明書・鍵読み込み（#967）も実装済み。
+- TLS 未構成時（`tls` が `None`）の `handshake.rs` の `SSLRequest` 応答（`'N'` を返す既存挙動）はビット単位で不変。TLS 構成時（`Some`）は `'S'` を返し、`server_handshake` を経て `TlsStream` へ昇格する（[handshake.md](./handshake.md) の `handle_connection_with_options` 参照）。TLS の実接続組み込みは #966（pg wire）・#968（NoSQL 表層の HTTPS 終端。`http::tls_transport`）で実装済み。CLI からの証明書・鍵読み込み（#967）も実装済み。
 - 3 クライアント接続テスト（#969）は本モジュールの対象外。
 - 設計 ADR（`tls-wire-connection` / `tls-server-handshake` ほか `tls-*`）は本ページの出典として未参照（crate ソースのモジュール doc に限る）。内部モジュールの項目単位 API は本ページに列挙しない（モジュール粒度）。
 
