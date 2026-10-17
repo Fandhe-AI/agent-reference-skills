@@ -88,7 +88,7 @@ $ uv pip compile pyproject.toml -o requirements.txt
 
 ## Notes
 
-- Global options (`--allow-insecure-host` / `--trusted-host`, `--cache-dir`, `--color`, `--config-file`, `--directory`, `--help`, `--managed-python`, `--no-managed-python`, `--no-cache`, `--no-progress`, `--no-python-downloads`, `--offline`, `--project`, `--quiet`, `--system-certs`, `--verbose`) are listed in `../project-commands/uv.md`. `--project` has no effect in the `uv pip` interface.
+- Global options (`--allow-insecure-host` / `--trusted-host`, `--cache-dir`, `--color`, `--config-file`, `--directory`, `--help`, `--managed-python`, `--no-managed-python`, `--no-cache`, `--no-progress`, `--no-python-downloads`, `--offline`, `--project`, `--quiet`, `--system-certs`, `--verbose`) are listed in `../project-commands/uv.md`. The CLI reference states `--project` has no effect in the `uv pip` interface; however, the pip guides use `--project <dir>` with `--group` to specify the project directory where dependency groups are sourced from (see `../pip-interface/locking-environments.md` / `../pip-interface/packages.md`).
 - `--torch-backend` is in preview per the CLI reference.
 - pip-tools differences (output file, `--strip-extras`, index URLs) are in `compatibility-options.md`.
 

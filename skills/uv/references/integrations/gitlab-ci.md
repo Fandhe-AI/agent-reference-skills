@@ -66,6 +66,7 @@ uv:
   # ...
 ```
 
+- Per the official GitLab guide, a distroless image requires an empty entrypoint. Note that distroless images contain nothing but the uv binaries (see [Docker](./docker.md)), so a job whose `script` needs a shell should use a derived image such as `ghcr.io/astral-sh/uv:$UV_VERSION-python$PYTHON_VERSION-$BASE_LAYER` as in the example above.
 - When persisting the cache with `uv pip`, you may want `requirements.txt` or `pyproject.toml` as cache key files instead of `uv.lock`.
 
 ## Related

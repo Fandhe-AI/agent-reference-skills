@@ -92,7 +92,7 @@ $ uv pip install flask
 
 ## Notes
 
-- Global options (`--allow-insecure-host` / `--trusted-host`, `--cache-dir`, `--color`, `--config-file`, `--directory`, `--help`, `--managed-python`, `--no-managed-python`, `--no-cache`, `--no-config`, `--no-progress`, `--no-python-downloads`, `--offline`, `--project`, `--quiet`, `--system-certs`, `--verbose`) are listed in `../project-commands/uv.md`. `--project` has no effect in the `uv pip` interface.
+- Global options (`--allow-insecure-host` / `--trusted-host`, `--cache-dir`, `--color`, `--config-file`, `--directory`, `--help`, `--managed-python`, `--no-managed-python`, `--no-cache`, `--no-config`, `--no-progress`, `--no-python-downloads`, `--offline`, `--project`, `--quiet`, `--system-certs`, `--verbose`) are listed in `../project-commands/uv.md`. The CLI reference states `--project` has no effect in the `uv pip` interface; however, the pip guides use `--project <dir>` with `--group` to specify the project directory where dependency groups are sourced from (see `../pip-interface/locking-environments.md` / `../pip-interface/packages.md`).
 - Changed in 0.13.0: `--require-hashes` in constraints files included with `-c` from a requirements file is now honored; installs that previously succeeded can fail if a requirement is missing a hash. Editable requirements in included constraints files are rejected with an error. Values passed to `--constraint`, `--override`, `--exclude`, and `--build-constraint` are treated as single paths. See `../getting-started/breaking-changes-0-13.md`.
 - `--torch-backend` is in preview per the CLI reference.
 

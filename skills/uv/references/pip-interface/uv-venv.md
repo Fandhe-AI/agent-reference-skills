@@ -55,7 +55,7 @@ When using uv, the virtual environment does not need to be activated. uv will fi
 
 ## Notes
 
-- Global options (`--allow-insecure-host` / `--trusted-host`, `--cache-dir`, `--color`, `--config-file`, `--directory`, `--help`, `--managed-python`, `--no-managed-python`, `--no-cache`, `--no-config`, `--no-progress`, `--no-python-downloads`, `--offline`, `--project`, `--quiet`, `--system-certs`, `--verbose`) are listed in `../project-commands/uv.md`. `--project` has no effect in the `uv pip` interface.
+- Global options (`--allow-insecure-host` / `--trusted-host`, `--cache-dir`, `--color`, `--config-file`, `--directory`, `--help`, `--managed-python`, `--no-managed-python`, `--no-cache`, `--no-config`, `--no-progress`, `--no-python-downloads`, `--offline`, `--project`, `--quiet`, `--system-certs`, `--verbose`) are listed in `../project-commands/uv.md`. The CLI reference states `--project` has no effect in the `uv pip` interface (the pip guides use it only as the source directory for `--group` in `uv pip compile` / `uv pip install`).
 - Changed in 0.13.0: new virtual environments on Python 3.10 and later omit the distutils startup patch (`_virtualenv.py` and `_virtualenv.pth`); existing environments are not modified. See environments.md.
 - `uv venv` replaces an existing virtual environment at the target path (removed and recreated), as stated in the command description.
 
