@@ -7,7 +7,7 @@
 | vite optimize / vite preview | `vite optimize` pre-bundles dependencies (deprecated); `vite preview` locally previews the production build. | [cli-optimize-preview.md](./cli-optimize-preview.md) |
 | index.html and Project Root | `index.html` is the entry point and part of the module graph; the project root is the directory files are served from. | [index-html-project-root.md](./index-html-project-root.md) |
 | Official Plugins | List of official Vite plugins plus pointers to community, Rolldown built-in, and Rolldown/Rollup plugins. | [official-plugins.md](./official-plugins.md) |
-| Overview & Browser Support | Vite is a build tool for a faster, leaner development experience: a dev server over native ES modules… | [overview.md](./overview.md) |
+| Overview & Browser Support | Vite is a build tool for a faster, leaner development experience: a dev server over native ES modules plus a Rolldown-based build command. | [overview.md](./overview.md) |
 | Project Philosophy | Design principles of Vite: lean extendable core, modern web, pragmatic performance, framework building, active ecosystem. | [philosophy.md](./philosophy.md) |
 | @vitejs/plugin-legacy | Provides support for legacy browsers that lack native ESM dynamic import and `import.meta` when building for production. | [plugin-legacy.md](./plugin-legacy.md) |
 | Scaffolding (create-vite) | Create a project from a template with `create vite`, or install the `vite` CLI manually. | [scaffolding.md](./scaffolding.md) |

@@ -2,20 +2,20 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Breaking Changes (planned / considering / past) | List of breaking changes in Vite including API deprecations, removals,… | [breaking-changes.md](./breaking-changes.md) |
-| HMR hotUpdate Plugin Hook | Plan to deprecate `handleHotUpdate` in favor of the Environment API aware… | [change-hotupdate-hook.md](./change-hotupdate-hook.md) |
-| Move to Per-environment APIs | Multiple `ViteDevServer` APIs related to the module graph and module… | [change-per-environment-apis.md](./change-per-environment-apis.md) |
-| Shared Plugins during Build | Aligns dev and build plugin pipelines by sharing plugins across… | [change-shared-plugins-during-build.md](./change-shared-plugins-during-build.md) |
-| SSR Using ModuleRunner API | `server.ssrLoadModule` has been replaced by importing from a Module Runner… | [change-ssr-using-modulerunner.md](./change-ssr-using-modulerunner.md) |
-| this.environment in Hooks | `this.environment` in the plugin context replaces the `options.ssr`… | [change-this-environment-in-hooks.md](./change-this-environment-in-hooks.md) |
+| Breaking Changes (planned / considering / past) | List of breaking changes in Vite including API deprecations, removals, and changes. Most of them can be opted into using the `future` option in the Vite config. | [breaking-changes.md](./breaking-changes.md) |
+| HMR hotUpdate Plugin Hook | Plan to deprecate `handleHotUpdate` in favor of the Environment API aware `hotUpdate` hook, which also handles `create` and `delete` watch events. | [change-hotupdate-hook.md](./change-hotupdate-hook.md) |
+| Move to Per-environment APIs | Multiple `ViteDevServer` APIs related to the module graph and module transforms have moved to `DevEnvironment` instances. Affected scope: Vite plugin authors. | [change-per-environment-apis.md](./change-per-environment-apis.md) |
+| Shared Plugins during Build | Aligns dev and build plugin pipelines by sharing plugins across environments during build. Affected scope: Vite plugin authors. | [change-shared-plugins-during-build.md](./change-shared-plugins-during-build.md) |
+| SSR Using ModuleRunner API | `server.ssrLoadModule` has been replaced by importing from a Module Runner. Affected scope: Vite plugin authors. | [change-ssr-using-modulerunner.md](./change-ssr-using-modulerunner.md) |
+| this.environment in Hooks | `this.environment` in the plugin context replaces the `options.ssr` argument of `resolveId`, `load` and `transform`. Affected scope: Vite plugin authors. | [change-this-environment-in-hooks.md](./change-this-environment-in-hooks.md) |
 | Migration: Advanced (plugin / framework authors) | Breaking changes from v7 expected to affect only a minority of use cases. | [migration-advanced.md](./migration-advanced.md) |
-| Build Option & API Removals (manualChunks, BundleError) | Removed `chokidar` watch option, removed object form and deprecated… | [migration-build-api-changes.md](./migration-build-api-changes.md) |
-| Minification & CommonJS Interop Changes | JavaScript minification moves to the Oxc Minifier, CSS minification to… | [migration-minify-interop.md](./migration-minify-interop.md) |
-| Dependency Optimizer & JS Transforms (Rolldown / Oxc) | The dependency optimizer now uses Rolldown instead of esbuild, and… | [migration-rolldown-oxc.md](./migration-rolldown-oxc.md) |
-| Migration from v7 (overview) | Vite 8 uses Rolldown and Oxc based tools instead of esbuild and Rollup… | [migration-v7-overview.md](./migration-v7-overview.md) |
-| Performance | Guide to identifying and fixing slow server starts, slow page loads and… | [performance.md](./performance.md) |
-| Troubleshooting: Build / Optimized Dependencies | Fixes for CORS errors on `file://` output, case-sensitivity errors… | [troubleshooting-build-deps.md](./troubleshooting-build-deps.md) |
-| Troubleshooting: CLI / Config | Fixes for CLI path errors on Windows and "This package is ESM only" errors… | [troubleshooting-cli-config.md](./troubleshooting-cli-config.md) |
-| Troubleshooting: Dev Server | Fixes for stalled requests, ENOSPC watcher limits, self-signed certificates… | [troubleshooting-dev-server.md](./troubleshooting-dev-server.md) |
-| Troubleshooting: HMR | Causes when HMR does not work, file changes are not detected, or a full… | [troubleshooting-hmr.md](./troubleshooting-hmr.md) |
-| Troubleshooting: Performance Bottlenecks / Others | CPU profiling with the Node.js inspector, plus Node.js module… | [troubleshooting-others.md](./troubleshooting-others.md) |
+| Build Option & API Removals (manualChunks, BundleError) | Removed `chokidar` watch option, removed object form and deprecated function form of `manualChunks`, `build()` throwing `BundleError`, module type auto detection for plugin authors, and other deprecations. | [migration-build-api-changes.md](./migration-build-api-changes.md) |
+| Minification & CommonJS Interop Changes | JavaScript minification moves to the Oxc Minifier, CSS minification to Lightning CSS, and CommonJS `default` import handling, `browser` / `module` field resolution, `require` calls for externals, and `import.meta.url` in UMD / IIFE change behavior. | [migration-minify-interop.md](./migration-minify-interop.md) |
+| Dependency Optimizer & JS Transforms (Rolldown / Oxc) | The dependency optimizer now uses Rolldown instead of esbuild, and JavaScript transformation uses Oxc instead of esbuild. The old `optimizeDeps.esbuildOptions` and `esbuild` options are converted automatically but deprecated. | [migration-rolldown-oxc.md](./migration-rolldown-oxc.md) |
+| Migration from v7 (overview) | Vite 8 uses Rolldown and Oxc based tools instead of esbuild and Rollup. This page covers the default browser target change, the gradual migration path via `rolldown-vite`, removed deprecated features, and the pointer to the v6 guide. | [migration-v7-overview.md](./migration-v7-overview.md) |
+| Performance | Guide to identifying and fixing slow server starts, slow page loads and slow builds. | [performance.md](./performance.md) |
+| Troubleshooting: Build / Optimized Dependencies | Fixes for CORS errors on `file://` output, case-sensitivity errors, `Failed to fetch dynamically imported module`, and stale pre-bundled dependencies. | [troubleshooting-build-deps.md](./troubleshooting-build-deps.md) |
+| Troubleshooting: CLI / Config | Fixes for CLI path errors on Windows and "This package is ESM only" errors in the config file. | [troubleshooting-cli-config.md](./troubleshooting-cli-config.md) |
+| Troubleshooting: Dev Server | Fixes for stalled requests, ENOSPC watcher limits, self-signed certificates, 431 header errors, dev container port forwarding, and file watching on unsupported file systems. | [troubleshooting-dev-server.md](./troubleshooting-dev-server.md) |
+| Troubleshooting: HMR | Causes when HMR does not work, file changes are not detected, or a full reload happens instead of HMR. | [troubleshooting-hmr.md](./troubleshooting-hmr.md) |
+| Troubleshooting: Performance Bottlenecks / Others | CPU profiling with the Node.js inspector, plus Node.js module externalization warnings, strict-mode errors, browser extensions, Windows cross-drive links, and CJS default import surprises. | [troubleshooting-others.md](./troubleshooting-others.md) |

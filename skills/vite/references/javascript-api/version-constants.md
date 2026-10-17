@@ -27,3 +27,8 @@ console.log(rolldownVersion) // e.g. "1.0.0"
 ## Notes
 
 - `esbuildVersion` and `rollupVersion` are retained only for backward compatibility (Vite v8 uses Rolldown).
+
+## Related
+
+- [createServer](./create-server.md)
+- [resolveConfig](./resolve-config.md)

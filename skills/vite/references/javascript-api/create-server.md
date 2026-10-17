@@ -54,14 +54,14 @@ const vite = await createServer({
   },
 })
 
-// @noErrors: 2339
-parentServer.use(vite.middlewares)
+parentServer.on('request', vite.middlewares)
 ```
 
 ## Notes
 
 - When using `createServer` and `build` in the same Node.js process, both rely on `process.env.NODE_ENV`, which also depends on the `mode` config option. To prevent conflicting behavior, set `process.env.NODE_ENV` or the `mode` of the two APIs to `development`. Otherwise, spawn a child process to run the APIs separately.
 - When using middleware mode with a WebSocket proxy config, the parent http server must be provided in `middlewareMode` so the proxy binds correctly.
+- The upstream v8.3.4 snippet calls `parentServer.use(vite.middlewares)` (with a `@noErrors: 2339` directive), which only works when the parent is a Connect/Express/Koa app; with a bare `http.Server` attach the middlewares via `parentServer.on('request', vite.middlewares)`.
 - `middlewares` on the returned server is a Connect instance. HTTP server frameworks themselves (express, etc.) are separate; see the fastify, hono, go-echo, fandhe-backend skills.
 
 ## Related

@@ -52,14 +52,14 @@ const runner = new ModuleRunner(
 Server side (`server.js`):
 
 ```js
-import { BroadcastChannel } from 'node:worker_threads'
+import { Worker } from 'node:worker_threads'
 import { createServer, DevEnvironment } from 'vite'
 
 function createWorkerEnvironment(name, config, context) {
   const worker = new Worker('./worker.js')
   const handlerToWorkerListener = new WeakMap()
   const client = {
-    send(payload: HotPayload) {
+    send(payload) {
       worker.postMessage(payload)
     },
   }
@@ -152,11 +152,11 @@ Server side of the HTTP example, using `handleInvoke` on the `NormalizedHotChann
 ```ts
 const customEnvironment = new DevEnvironment(name, config, context)
 
-server.onRequest((request: Request) => {
+server.onRequest(async (request: Request) => {
   const url = new URL(request.url)
   if (url.pathname === '/invoke') {
     const payload = (await request.json()) as HotPayload
-    const result = customEnvironment.hot.handleInvoke(payload)
+    const result = await customEnvironment.hot.handleInvoke(payload)
     return new Response(JSON.stringify(result))
   }
   return Response.error()
@@ -180,6 +180,7 @@ server.onRequest((request: Request) => {
 - For HMR support, `send` and `connect` are required. `send` is usually called when a custom event is triggered (like `import.meta.hot.send("my-event")`).
 - `skipFsCheck: true` on the `HotChannel` bypasses `server.fs` restrictions for transports not exposed over the network.
 - The `server.onRequest` and `serialize` style helpers in the examples are illustrative, not Vite APIs.
+- Upstream v8.3.4 snippets differ from the code above: the `server.js` example imports only `BroadcastChannel` (`Worker` must be imported from `node:worker_threads`) and uses a TypeScript annotation `send(payload: HotPayload)` in a `js` block; the HTTP handler example uses a non-async `server.onRequest` callback that awaits `request.json()` and does not await `handleInvoke`.
 - Release Candidate: the Environment API is generally in the release candidate phase.
 
 ## Related
