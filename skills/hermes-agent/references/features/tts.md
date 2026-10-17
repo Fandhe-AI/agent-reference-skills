@@ -35,8 +35,6 @@ stt:
 | DeepInfra TTS | Good | Paid | `DEEPINFRA_API_KEY` |
 | NeuTTS / KittenTTS / Piper | Good | Free (local) | None |
 
-Provider config keys (selected): `elevenlabs.voice_id` / `model_id`; `openai.base_url` / `pcm_sample_rate` / `language` (sent as `lang_code`, for compatible servers such as Kokoro) / `consent_attestation`; `minimax.region` (`global` or `cn`) / `model` (`speech-02-hd`, `speech-02-turbo`) / `voice_id` / `speed` / `vol` / `pitch`; `mistral.model` (`voxtral-mini-tts-2603`); `gemini.model` (`gemini-2.5-flash-preview-tts` or `gemini-3.1-flash-tts-preview`) / `voice` / `audio_tags` / `persona_prompt_file`; `xai.voice_id` / `language` / `speed` (0.7-1.5) / `auto_speech_tags` / `text_normalization` / `sample_rate`; `kittentts.model` / `voice` / `speed`; `piper.voice` (name or absolute `.onnx` path) / `voices_dir` / `use_cuda` / `length_scale` / `noise_scale` / `noise_w_scale` / `volume` / `normalize_audio`; `tts.streaming.min_len` (default 20); `tts.keep_warm_seconds` (default 60); `<provider>.max_text_length`.
-
 ## Platform delivery
 
 | Platform | Delivery | Format |
@@ -67,9 +65,7 @@ tts:
 | `{format}` | Output format |
 | `{voice}` / `{model}` / `{speed}` | Provider values |
 
-Optional keys: `timeout` (120, idle seconds), `output_format` (`mp3` default; also `wav`, `ogg`, `flac`, `m4a`, `aac`, `amr`, `opus`), `voice_compatible` (false), `max_text_length` (5000), `voice`, `model`, `env_passthrough`, `warm_command`, `release_command`.
-
-STT command providers use `stt.providers.<name>` with `type: command`, placeholders `{input_path}`, `{output_path}`, `{output_dir}`, `{format}` (`txt`/`json`/`srt`/`vtt`), `{language}`, `{model}`, and keys `timeout` (300), `format` (`txt`), `language`, `model`, `normalize`.
+STT command providers use `stt.providers.<name>` with `type: command` and placeholders `{input_path}`, `{output_path}`, `{output_dir}`, `{format}` (`txt`/`json`/`srt`/`vtt`), `{language}`, `{model}`.
 
 ## Python plugin providers
 
@@ -96,6 +92,52 @@ def register(ctx):
 ```
 
 Optional hooks: `list_voices()`, `list_models()`, `get_setup_schema()`, `stream()` with `streams_pcm` and `stream_sample_rate`, `voice_compatible`, `warm()` / `release()`. STT equivalent: subclass `TranscriptionProvider` in `agent.transcription_provider`, register with `ctx.register_transcription_provider()`, `transcribe()` returns `{"success", "transcript", "provider", "error"}`.
+
+## Options / Props
+
+Selected provider config keys under `tts.*`:
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `elevenlabs.voice_id` / `elevenlabs.model_id` | string | — | ElevenLabs voice and model |
+| `openai.base_url` | string | — | Override for OpenAI-compatible TTS endpoints |
+| `openai.pcm_sample_rate` | number | — | Streaming PCM rate expected from the endpoint |
+| `openai.language` | string | — | Sent as `lang_code`; only for compatible servers such as Kokoro |
+| `openai.consent_attestation` | string | — | Required by some OpenAI-compatible servers for cloned voices |
+| `minimax.region` | string | — | `global` or `cn` |
+| `minimax.model` | string | — | `speech-02-hd`, `speech-02-turbo` |
+| `minimax.voice_id` / `speed` / `vol` / `pitch` | string / number | — | Voice and prosody settings |
+| `mistral.model` | string | — | `voxtral-mini-tts-2603` |
+| `gemini.model` | string | — | `gemini-2.5-flash-preview-tts` or `gemini-3.1-flash-tts-preview` |
+| `gemini.voice` / `audio_tags` / `persona_prompt_file` | string / boolean | — | Voice, audio-tag insertion, persona direction file |
+| `xai.voice_id` / `language` / `auto_speech_tags` / `text_normalization` / `sample_rate` | mixed | — | xAI voice settings |
+| `xai.speed` | number | — | 0.7-1.5 |
+| `kittentts.model` / `voice` / `speed` | string / number | — | KittenTTS settings |
+| `piper.voice` | string | — | Voice name or absolute `.onnx` path |
+| `piper.voices_dir` / `use_cuda` / `length_scale` / `noise_scale` / `noise_w_scale` / `volume` / `normalize_audio` | mixed | — | Piper advanced knobs |
+| `streaming.min_len` | number | `20` | Streaming TTS: shortest first sentence (chars) spoken on its own |
+| `keep_warm_seconds` | number | `60` | Warm-engine retention |
+| `<provider>.max_text_length` | number | — | Per-provider input cap |
+
+Command providers (`tts.providers.<name>`, `type: command`) optional keys:
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `timeout` | number | `120` | Idle seconds |
+| `output_format` | string | `mp3` | Also `wav`, `ogg`, `flac`, `m4a`, `aac`, `amr`, `opus` |
+| `voice_compatible` | boolean | `false` | Convert to Opus/OGG for Telegram voice bubble |
+| `max_text_length` | number | `5000` | Max input characters per invocation |
+| `voice` / `model` | string | — | Passed as placeholder values only |
+| `env_passthrough` | list | — | Environment passthrough |
+| `warm_command` / `release_command` | string | — | Run when speech output is toggled on / last lease released |
+
+STT command providers (`stt.providers.<name>`, `type: command`) keys:
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `timeout` | number | `300` | Idle seconds |
+| `format` | string | `txt` | `txt` / `json` / `srt` / `vtt` |
+| `language` / `model` / `normalize` | — | — | Passed through to the command |
 
 ## Notes
 

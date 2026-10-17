@@ -69,7 +69,7 @@ def register(ctx):
 | Platform actions | `await ctx.platform_actions.add_reaction(...)` / `set_thread_title(...)` (Telegram, Discord; capability-gated) |
 | Memory backend / model provider | Subclass `MemoryProvider` in `plugins/memory/<name>/`; `register_provider(ProviderProfile(...))` in `plugins/model-providers/<name>/` (separate loaders) |
 
-## Configuration example
+## Options / Props
 
 ```yaml
 plugins:
@@ -87,8 +87,6 @@ plugins:
       allow_gateway_injection: true
       mcp_allowlist: ["knowledge_rag", "github"]
 ```
-
-## Options / Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
