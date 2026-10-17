@@ -13,14 +13,14 @@ immutable releases と Git タグを組み合わせて、アクションのリ�
 
 1. リリースブランチ上で、リリース候補を開発・検証する。
 2. 変更の共有方法を決める。
-   * 変更不可のバージョンを公開する場合: リリース固有のタグ（例: `v1.0.0`）で GitHub 上に release を作成する。
-   * 後からリリースの Git タグを更新したい場合: GitHub 上に release は作成せず、タグのみ作成する。
-     * 既存ワークフローに破壊的変更を含む場合: メジャーバージョンタグ（例: `v1`）
-     * 後方互換の新機能を含む場合: マイナーバージョンタグ（例: `v1.1`）
-     * 後方互換のバグ修正を含む場合: パッチバージョンタグ（例: `v1.1.1`）
+   - 変更不可のバージョンを公開する場合: リリース固有のタグ（例: `v1.0.0`）で GitHub 上に release を作成する。
+   - 後からリリースの Git タグを更新したい場合: GitHub 上に release は作成せず、タグのみ作成する。
+     - 既存ワークフローに破壊的変更を含む場合: メジャーバージョンタグ（例: `v1`）
+     - 後方互換の新機能を含む場合: マイナーバージョンタグ（例: `v1.1`）
+     - 後方互換のバグ修正を含む場合: パッチバージョンタグ（例: `v1.1.1`）
 3. GitHub の release に紐付かない Git タグは、利用者が最新の互換バージョンを使えるよう更新する。
-   * メジャーバージョン: 関連する最新のマイナーまたはパッチバージョンの Git ref を指すよう更新する。
-   * マイナーバージョン: 関連する最新のパッチバージョンの Git ref を指すよう更新する。
+   - メジャーバージョン: 関連する最新のマイナーまたはパッチバージョンの Git ref を指すよう更新する。
+   - マイナーバージョン: 関連する最新のパッチバージョンの Git ref を指すよう更新する。
 
 ---
 
@@ -28,17 +28,22 @@ immutable releases と Git タグを組み合わせて、アクションのリ�
 
 GitHub の release に紐付かない可動タグ（`v1` / `v1.1` 等）は、公式手順では最新コミットへ付け替える。公式例の全タグ force push（`--tags` 付き）はローカルの全タグを強制送信し、無関係なリリースタグまで上書きし得るため転記しない。immutable release に紐付くタグは公開後に変更できない。
 
+```bash
+git tag -f TAG-NAME
+git push origin --force-with-lease refs/tags/TAG-NAME
+```
+
 ---
 
 ## immutable releases が保護するもの
 
 immutable releases は、公開後に assets と関連 Git タグを変更できない release。
 
-* Git タグは移動不可: 公開後、タグは特定コミットに固定され、release が存在する間は削除もできない。immutable release を削除すればタグは削除できるが、同じタグ名は再利用できない。
-* release assets は変更・削除不可: release に添付された全ファイル（バイナリ、アーカイブ等）が保護される。
-* タイトルとリリースノートは公開後も編集可能。pre-release / latest release の指定も変更可能。
-* immutable release の作成時に release attestation（release タグ・コミット SHA・assets を含む暗号学的に検証可能な記録）が自動生成される。
-* リポジトリを削除して同名で作り直しても、元リポジトリの immutable release に紐付いていたタグは再利用できない（repository resurrection attack への保護）。
+- Git タグは移動不可: 公開後、タグは特定コミットに固定され、release が存在する間は削除もできない。immutable release を削除すればタグは削除できるが、同じタグ名は再利用できない。
+- release assets は変更・削除不可: release に添付された全ファイル（バイナリ、アーカイブ等）が保護される。
+- タイトルとリリースノートは公開後も編集可能。pre-release / latest release の指定も変更可能。
+- immutable release の作成時に release attestation（release タグ・コミット SHA・assets を含む暗号学的に検証可能な記録）が自動生成される。
+- リポジトリを削除して同名で作り直しても、元リポジトリの immutable release に紐付いていたタグは再利用できない（repository resurrection attack への保護）。
 
 ---
 
@@ -56,11 +61,12 @@ immutable release は次の手順で公開することが推奨される。
 
 ## Notes
 
-* 上記の 2 つの方針（release 付きの固定タグ / release 無しの可動タグ）は排他的な選択。可動のメジャー・マイナータグを運用したい場合は release を作成しない。
-* immutable releases の有効化方法はリポジトリ / organization 設定の別ドキュメント（Preventing changes to your releases）、整合性検証は Verifying the integrity of a release に記載されている。原本ではこれらの手順の詳細は確認していない。
+- 上記の 2 つの方針（release 付きの固定タグ / release 無しの可動タグ）は排他的な選択。可動のメジャー・マイナータグを運用したい場合は release を作成しない。
+- タグ移動の送信コマンドは、原本の全タグ強制送信（`-f` と `--tags` を併用し、ローカルの全タグを送る形）から単一タグ `refs/tags/TAG-NAME` のみを対象とする形に絞っている。`git tag -f TAG-NAME` は原本どおり。
+- immutable releases の有効化方法はリポジトリ / organization 設定の別ドキュメント（Preventing changes to your releases）、整合性検証は Verifying the integrity of a release に記載されている。原本ではこれらの手順の詳細は確認していない。
 
 ## Related
 
-* [action-metadata.md](./action-metadata.md)
-* [javascript-actions.md](./javascript-actions.md)
-* [docker-actions.md](./docker-actions.md)
+- [action-metadata.md](./action-metadata.md)
+- [javascript-actions.md](./javascript-actions.md)
+- [docker-actions.md](./docker-actions.md)

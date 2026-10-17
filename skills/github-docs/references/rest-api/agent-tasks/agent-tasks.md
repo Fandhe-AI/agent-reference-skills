@@ -12,7 +12,7 @@ Copilot cloud agent のタスクを開始・取得するエンドポイント（
 | GET | `/agents/tasks` | 認証ユーザーのタスク一覧 |
 | GET | `/agents/tasks/{task_id}` | ID 指定でタスクと sessions を取得 |
 
-## Usage
+## 例
 
 ```curl
 curl -L \
@@ -37,7 +37,7 @@ curl -L \
 }'
 ```
 
-## Parameters
+## パラメータ
 
 Start a task（POST）の body:
 
@@ -98,7 +98,7 @@ Get 系のレスポンスは Task に加え `sessions[]` を含む:
 | `usage` | object | `type`: `ai_credits` / `premium_requests`、`amount`: number |
 | `error` | object | `message`（string） |
 
-## Notes
+## 注意事項
 
 - public preview で変更の可能性あり（原文 Note）
 - 標準ヘッダー: `Authorization: Bearer <YOUR-TOKEN>` / `Accept: application/vnd.github+json` / `X-GitHub-Api-Version: 2026-03-10`（curl 例では省略）

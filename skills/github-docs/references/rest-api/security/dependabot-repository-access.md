@@ -22,7 +22,7 @@ Organization（および Enterprise）で Dependabot がアクセスできるリ
 | PATCH | `/enterprises/{enterprise}/dependabot/repository-access` | アクセス可能リポジトリリストの更新 |
 | PUT | `/enterprises/{enterprise}/dependabot/repository-access/default-level` | 既定のアクセスレベル設定 |
 
-## Usage
+## 例
 
 ```curl
 curl -L \
@@ -33,7 +33,7 @@ curl -L \
 }'
 ```
 
-## Parameters
+## パラメータ
 
 | パラメータ | 型 | 対象 | 説明 |
 |---|---|---|---|
@@ -54,13 +54,13 @@ PATCH のリクエストボディ例:
 }
 ```
 
-## Response
+## レスポンス
 
 - GET: 200。スキーマは `default_level`（`public` / `internal` / `null`）と `accessible_repositories`（object の配列）
 - PATCH / PUT: 204 No Content
 - 共通エラー: 403 Forbidden、404 Resource not found
 
-## Notes
+## 注意事項
 
 - `default_level` の意味: `public` は公開リポジトリのみ（非公開リポジトリは明示的に許可した場合を除く）、`internal` は公開と internal リポジトリ（private は明示的に許可した場合を除く）にアクセスできる
 - Enterprise 系エンドポイントは Enterprise owner のみ利用可能

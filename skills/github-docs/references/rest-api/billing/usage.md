@@ -24,7 +24,7 @@ Organization / user 単位の課金使用量レポート（AI credit・premium r
 | GET | `/users/{username}/settings/billing/usage` | 総使用量レポート（enhanced billing platform 対象のみ） |
 | GET | `/users/{username}/settings/billing/usage/summary` | 使用量サマリー（public preview、過去 24 か月分） |
 
-## 使用例
+## 例
 
 ```bash
 curl -L \
@@ -54,7 +54,7 @@ curl -L \
 - usage（総使用量）: `usageItems[]`（`date` / `product` / `sku` / `quantity` / `unitType` / `pricePerUnit` / `grossAmount` / `discountAmount` / `netAmount` / `organizationName`（org のみ）/ `repositoryName`）
 - usage/summary: `timePeriod`、`organization` または `user`、`repository`、`product`、`sku`、`usageItems[]`（`model` を除く上記 gross / discount / net 系フィールド）
 
-## Notes
+## 注意事項
 
 - エンドポイントは、そのアカウントに請求される使用量を返す。user エンドポイントは個人アカウントに直接請求される Copilot 使用量のみで、組織・enterprise 経由で管理・請求されるライセンスの使用量は含まれない（その場合は organization / enterprise エンドポイントを使う）
 - enterprise 向けエンドポイントは公式ページ上部のドロップダウンを GitHub Enterprise Cloud に切り替えて参照する（本ページ対象外）

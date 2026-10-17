@@ -8,7 +8,7 @@
 |---|---|---|
 | GET | `/repos/{owner}/{repo}/copilot/cloud-agent/configuration` | MCP server 設定・有効なレビューツール・Actions workflow 承認設定・firewall 設定の取得（public preview） |
 
-## Usage
+## 例
 
 ```curl
 curl -L \
@@ -16,7 +16,7 @@ curl -L \
   https://api.github.com/repos/OWNER/REPO/copilot/cloud-agent/configuration
 ```
 
-## Response (200)
+## レスポンス（200）
 
 | Field | Type | Description |
 |---|---|---|
@@ -29,7 +29,7 @@ curl -L \
 | `is_automations_enabled` | boolean | automations 有効 |
 | `require_write_access_for_automation_triggers` | boolean | automation trigger に write 権限を要求 |
 
-## Notes
+## 注意事項
 
 - public preview で変更の可能性あり。classic PAT / OAuth app トークンは `repo` スコープが必要
 - `X-GitHub-Api-Version: 2026-03-10` 前提（原文ヘッダー注記）

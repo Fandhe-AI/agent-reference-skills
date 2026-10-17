@@ -1,7 +1,5 @@
 # Samples
 
-サンプルの安全規約は SKILL.md の「samples 利用時の安全規約」参照。
-
 | Name | Description | Path |
 |------|-------------|------|
 | Cache Dependencies | `actions/cache` を使って依存関係をキャッシュし、ワークフローの実行時間を短縮するパターン。 | [cache-dependencies.md](./cache-dependencies.md) |

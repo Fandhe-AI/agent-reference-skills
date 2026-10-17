@@ -45,3 +45,4 @@ jobs:
 - `id-token: write` は OIDC トークンの取得・利用のみを許可し、リソースへの書き込み権限は与えない
 - AWS 側の IAM ロール信頼ポリシーに `token.actions.githubusercontent.com:sub` 条件を必ず定義する（プロバイダー URL は `https://token.actions.githubusercontent.com`、Audience は `sts.amazonaws.com`）
 - environment を使うワークフローでは `sub` が `repo:ORG-NAME/REPO-NAME:environment:ENVIRONMENT-NAME` 形式になる。2026-07-15 以降作成のリポジトリ等は owner / repository ID を含む `sub` 形式になり得るため、信頼ポリシーを実際の形式に合わせる
+- Source: https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws

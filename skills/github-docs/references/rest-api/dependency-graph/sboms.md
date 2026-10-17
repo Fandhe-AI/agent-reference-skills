@@ -4,7 +4,7 @@
 
 公式ドキュメント: https://docs.github.com/en/rest/dependency-graph/sboms
 
-## Signature / Usage
+## エンドポイント
 
 | メソッド | パス | 説明 |
 |---|---|---|
@@ -22,7 +22,7 @@ curl -L \
   https://api.github.com/repos/OWNER/REPO/dependency-graph/sbom/fetch-report/SBOM_UUID
 ```
 
-## Options / Props
+## パラメータ
 
 | パラメータ | 型 | 必須 | 説明 |
 |---|---|---|---|
@@ -47,7 +47,7 @@ curl -L \
 | `packages` | `SPDXID`, `name`, `versionInfo`, `downloadLocation`, `filesAnalyzed`, `licenseConcluded`, `licenseDeclared`, `supplier`, `copyrightText`, `externalRefs` |
 | `relationships` | `relationshipType`, `spdxElementId`, `relatedSpdxElement` |
 
-## Notes
+## 注意事項
 
 - `GET .../dependency-graph/sbom`（同期版）は closing down: 2026-11-13 以降アクセス不可。generate-report で生成を起動し fetch-report で取得する非同期フローへ移行する
 - 生成された SBOM レポートは元のリクエストから最大 1 週間保持される。fetch-report が返す一時ダウンロード URL の有効期限は別途、取得リクエスト時に設定される

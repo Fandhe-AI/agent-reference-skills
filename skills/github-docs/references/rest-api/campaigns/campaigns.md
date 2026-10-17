@@ -14,7 +14,7 @@ Organization のセキュリティキャンペーン（code scanning アラー�
 | PATCH | `/orgs/{org}/campaigns/{campaign_number}` | キャンペーン更新 |
 | DELETE | `/orgs/{org}/campaigns/{campaign_number}` | キャンペーン削除（204） |
 
-## Usage
+## 例
 
 ```curl
 curl -L \
@@ -84,7 +84,7 @@ Campaign オブジェクトの主なフィールド: `number`, `created_at`, `up
 | Update | 200, 400, 404, 422, 503 |
 | Delete | 204, 404, 503 |
 
-## Notes
+## 注意事項
 
 - 公開済みキャンペーンのみが対象。下書き（draft）キャンペーンは API で表示・管理できない
 - 認証ユーザーは Organization の owner または security manager が必要

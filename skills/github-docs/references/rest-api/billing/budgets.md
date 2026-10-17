@@ -12,7 +12,7 @@ Organization の課金予算（budget）を取得・作成・更新・削除す�
 | PATCH | `/organizations/{org}/settings/billing/budgets/{budget_id}` | 予算の更新 |
 | DELETE | `/organizations/{org}/settings/billing/budgets/{budget_id}` | 予算の削除 |
 
-## 使用例
+## 例
 
 ```bash
 curl -L \
@@ -75,7 +75,7 @@ curl -L \
 - POST / PATCH 200: `message` と `budget` オブジェクト
 - DELETE 200: `message` と `id`
 
-## Notes
+## 注意事項
 
 - 原文の IMPORTANT 注記: リクエストボディのスキーマには必須フィールドの記載漏れがある。`budget_scope` が `user` のとき `user` フィールド（対象 GitHub ユーザー名）も必須で、省略すると `HTTP 400: Missing required fields: budget_entity_name` が返る。`user` スコープでは `budget_entity_name` は空文字でよい
 - `user` スコープ予算の例（原文）: `budget_amount: 30` / `prevent_further_usage: true` / `budget_scope: "user"` / `budget_entity_name: ""` / `budget_type: "BundlePricing"` / `budget_product_sku: "ai_credits"` / `budget_alerting: {will_alert: false, alert_recipients: []}` / `user: "USERNAME"`（月間 Copilot AI credits を 1 ユーザー 30 USD に制限）

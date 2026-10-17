@@ -16,7 +16,7 @@ Copilot cloud agent の設定（enterprise ポリシー・organization の対象
 | PUT | `/orgs/{org}/copilot/coding-agent/permissions/repositories/{repository_id}` | リポジトリを有効化（public preview） |
 | DELETE | `/orgs/{org}/copilot/coding-agent/permissions/repositories/{repository_id}` | リポジトリを無効化（public preview） |
 
-## Usage
+## 例
 
 ```curl
 curl -L \
@@ -27,7 +27,7 @@ curl -L \
 }'
 ```
 
-## Parameters
+## パラメータ
 
 | Endpoint | Name | Type | Description |
 |---|---|---|---|
@@ -40,7 +40,7 @@ curl -L \
 
 GET `/orgs/{org}/copilot/coding-agent/permissions` のレスポンス: `enabled_repositories` (required, `all` / `selected` / `none`)、`selected_repositories_url` (string)。
 
-## Notes
+## 注意事項
 
 - 全エンドポイントは `X-GitHub-Api-Version: 2026-03-10` 前提（原文ヘッダー注記。curl 例では標準ヘッダーを省略）
 - enterprise ポリシー設定・organization 追加/削除は enterprise owner のみ。classic PAT / OAuth app トークンは `manage_billing:copilot` または `admin:enterprise` スコープが必要

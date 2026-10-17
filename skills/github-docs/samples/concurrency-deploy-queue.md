@@ -30,3 +30,4 @@ concurrency:
 - `queue: max` と `cancel-in-progress: true` の併用は workflow validation error になる
 - 待機中の実行は、各実行がグループで待機を開始した時刻順（dispatch 時刻ではない）で処理される。実際の開始時刻は変動しうるため、厳密な順序は保証されない（原文: ordering is not guaranteed）
 - `github.ref` は `pull_request` で `refs/pull/<番号>/merge` となり PR ごとに分離される。公式例の `github.head_ref` はブランチ名のため、fork の同名ブランチ間で group が衝突し得る。group 名は大文字小文字を区別しない
+- Source: https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency

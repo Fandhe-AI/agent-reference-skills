@@ -16,7 +16,7 @@ team のメンバーシップを管理する REST API。出典: https://docs.git
 | GET / PUT / DELETE | `/teams/{team_id}/members/{username}` | Legacy: メンバーの確認・追加・削除 |
 | GET / PUT / DELETE | `/teams/{team_id}/memberships/{username}` | Legacy: メンバーシップの取得・追加更新・削除 |
 
-## Usage
+## 例
 
 ```curl
 curl -L \
@@ -27,7 +27,7 @@ curl -L \
 }'
 ```
 
-## Parameters
+## パラメータ
 
 | Name | Type | Description |
 |---|---|---|
@@ -35,7 +35,7 @@ curl -L \
 | `role`（List members query） | `member` / `maintainer` / `all` | 既定 `all` |
 | `per_page` / `page` | integer | 最大 100・既定 30 / 既定 1 |
 
-## Response
+## レスポンス
 
 | Endpoint | Fields |
 |---|---|
@@ -43,7 +43,7 @@ curl -L \
 | List team members | `Team Member`: Simple User 項目に加え `role`（`member` / `maintainer`）と `inherited`（boolean） |
 | List pending invitations | `Organization Invitation`: `id`、`login`（nullable）、`email`、`role`、`created_at`、`failed_at`、`failed_reason`、`inviter`、`team_count`、`node_id`、`invitation_teams_url`、`invitation_source` |
 
-## Notes
+## 注意事項
 
 - 認証済みの当該 Organization メンバーのみ利用可。OAuth アクセストークンは `read:org` スコープが必要
 - IdP と team synchronization を設定している team では、API でメンバーシップを変更するとエラーになる。IdP 側で管理する。team synchronization は GitHub Enterprise Cloud の Organization で利用可能

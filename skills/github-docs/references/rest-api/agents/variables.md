@@ -2,7 +2,7 @@
 
 agents 用変数（Organization / リポジトリ単位）を管理するエンドポイント。シークレットと異なり値は平文で送受信され、取得時に値も返る。出典: https://docs.github.com/en/rest/agents/variables
 
-## Signature / Usage
+## エンドポイント
 
 ### Organization 変数
 
@@ -29,7 +29,7 @@ agents 用変数（Organization / リポジトリ単位）を管理するエン�
 | PATCH | `/repos/{owner}/{repo}/agents/variables/{name}` | 更新（204） |
 | DELETE | `/repos/{owner}/{repo}/agents/variables/{name}` | 削除（204） |
 
-### Example
+## 例
 
 ```curl
 curl -L \
@@ -46,7 +46,7 @@ curl -L \
 }'
 ```
 
-## Options / Props
+## パラメータ
 
 ### 一覧クエリ（変数一覧）
 
@@ -84,14 +84,14 @@ curl -L \
 |---|---|---|---|
 | `selected_repository_ids` | array of integers | yes | 置換後の選択リポジトリ ID 一覧 |
 
-### Response
+### レスポンス
 
 | Endpoint | Fields |
 |---|---|
 | 一覧 (200) | `total_count` と `variables` 配列。要素は `name` / `value` / `created_at` / `updated_at`。Organization 側は加えて `visibility` と `selected_repositories_url` |
 | 選択リポジトリ一覧 (200) | `total_count` と `repositories`（Minimal Repository の配列） |
 
-## Notes
+## 注意事項
 
 - 全エンドポイントで `X-GitHub-Api-Version: 2026-03-10` を使用（原文ヘッダー注記）。curl 例は標準ヘッダーを省略している
 - 認証: classic PAT / OAuth app トークンは Organization 系で `admin:org`（private リポジトリでは `repo` も）、リポジトリ系で `repo` スコープが必要。操作にはリポジトリへの collaborator アクセスが必要

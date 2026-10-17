@@ -72,7 +72,7 @@ curl -L \
 }'
 ```
 
-## Notes
+## 注意事項
 
 - 使用量系エンドポイントのデータは約 5 分ごとに更新されるため、反映に 5 分以上かかることがある
 - 必要なスコープ: キャッシュ一覧・削除・リポジトリ使用量は `repo`、リポジトリの上限設定は `admin:repository`、Organization の上限設定は `admin:organization`、Organization 使用量は `read:org`

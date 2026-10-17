@@ -38,7 +38,7 @@ curl -L \
   https://api.github.com/repos/OWNER/REPO/actions/concurrency_groups
 ```
 
-## Notes
+## 注意事項
 
 - private リポジトリでは OAuth app トークン / PAT (classic) に `repo` スコープが必要
 - `ahead_of_run` は workflow レベルの concurrency と reusable workflow のリースに一致する。run 内のジョブレベルのリースは run 全体をブロックするとはみなさない。ジョブ単位は `ahead_of_job` を使う

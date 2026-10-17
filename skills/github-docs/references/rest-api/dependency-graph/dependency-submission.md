@@ -4,7 +4,7 @@
 
 公式ドキュメント: https://docs.github.com/en/rest/dependency-graph/dependency-submission
 
-## Signature / Usage
+## エンドポイント
 
 | メソッド | パス | 説明 |
 |---|---|---|
@@ -56,7 +56,7 @@ curl -L \
 }'
 ```
 
-## Options / Props
+## パラメータ
 
 | Name | Type | Required | Description |
 |---|---|---|---|
@@ -84,7 +84,7 @@ curl -L \
 | `result` | string |
 | `message` | string |
 
-## Notes
+## 注意事項
 
 - 公式スキーマは `dependencies` を PURL 配列と説明するが、公式の送信例は `resolved` 内のキー名（`@actions/http-client` / `tunnel`）を列挙している。送信時は公式例の形式に合わせる
 

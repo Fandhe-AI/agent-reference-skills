@@ -9,7 +9,7 @@ organization の Copilot content exclusion path ルールを取得・設定す�
 | GET | `/orgs/{org}/copilot/content_exclusion` | content exclusion ルールの取得（public preview） |
 | PUT | `/orgs/{org}/copilot/content_exclusion` | content exclusion ルールの設定（public preview） |
 
-## Usage
+## 例
 
 ```curl
 curl -L \
@@ -24,7 +24,7 @@ curl -L \
 
 GET のレスポンス (200): object, additional properties: array。PUT のレスポンス (200): `message` (string)。
 
-## Notes
+## 注意事項
 
 - 両エンドポイントとも public preview。organization owner が対象。`X-GitHub-Api-Version: 2026-03-10` 前提（原文ヘッダー注記）
 - classic PAT / OAuth app トークンのスコープ: GET は `copilot` または `read:org`、PUT は `copilot`

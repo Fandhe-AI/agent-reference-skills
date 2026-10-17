@@ -71,7 +71,7 @@ curl -L \
 }'
 ```
 
-## Notes
+## 注意事項
 
 - 必要なスコープ: Organization の GET は `read:org`、subject claim PUT は `write:org`、custom property の POST / DELETE は `admin:org`、リポジトリは `repo`、Enterprise は `admin:enterprise`
 - Enterprise のエンドポイントは OAuth app トークンまたは PAT (classic) 専用。"Enterprise administration" の fine-grained permission は利用不可

@@ -4,7 +4,7 @@
 
 公式ドキュメント: https://docs.github.com/en/rest/dependency-graph/dependency-review
 
-## Signature / Usage
+## エンドポイント
 
 | メソッド | パス | 説明 |
 |---|---|---|
@@ -16,7 +16,7 @@ curl -L \
   https://api.github.com/repos/OWNER/REPO/dependency-graph/compare/BASEHEAD
 ```
 
-## Options / Props
+## パラメータ
 
 | パラメータ | 型 | 必須 | 説明 |
 |---|---|---|---|
@@ -51,7 +51,7 @@ curl -L \
 | 500 | Internal Error |
 | 503 | Service unavailable |
 
-## Notes
+## 注意事項
 
 - 403 は、GitHub Advanced Security が有効でない private リポジトリ、または fork に対して使った場合に返る
 - 標準ヘッダー: `Accept: application/vnd.github+json`、`X-GitHub-Api-Version: 2026-03-10`

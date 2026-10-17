@@ -2,7 +2,7 @@
 
 agents 用シークレット（Organization / リポジトリ単位）を管理するエンドポイント。値は LibSodium で暗号化して送信し、取得時に暗号化値は返らない。出典: https://docs.github.com/en/rest/agents/secrets
 
-## Signature / Usage
+## エンドポイント
 
 ### Organization シークレット
 
@@ -29,7 +29,7 @@ agents 用シークレット（Organization / リポジトリ単位）を管理�
 | PUT | `/repos/{owner}/{repo}/agents/secrets/{secret_name}` | 作成または更新（201 / 204） |
 | DELETE | `/repos/{owner}/{repo}/agents/secrets/{secret_name}` | 削除（204） |
 
-### Example
+## 例
 
 ```curl
 curl -L \
@@ -46,7 +46,7 @@ curl -L \
 }'
 ```
 
-## Options / Props
+## パラメータ
 
 ### 共通クエリ
 
@@ -70,7 +70,7 @@ curl -L \
 |---|---|---|---|
 | `selected_repository_ids` | array of integers | yes | 置換後の選択リポジトリ ID 一覧 |
 
-### Response
+### レスポンス
 
 | Endpoint | Fields |
 |---|---|
@@ -78,7 +78,7 @@ curl -L \
 | 公開鍵 (200) | `key_id`（必須）/ `key`（必須）/ `id` / `url` / `title` / `created_at` |
 | 選択リポジトリ一覧 (200) | `total_count` と `repositories`（Minimal Repository の配列） |
 
-## Notes
+## 注意事項
 
 - 全エンドポイントで `X-GitHub-Api-Version: 2026-03-10` を使用（原文ヘッダー注記）。curl 例は標準ヘッダーを省略している
 - 認証: classic PAT / OAuth app トークンは Organization 系で `admin:org`（private リポジトリでは `repo` も）、リポジトリ系で `repo` スコープが必要。操作にはリポジトリへの collaborator アクセスが必要

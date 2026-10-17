@@ -8,7 +8,7 @@
 
 ## 概要
 
-同一 concurrency group で同時に実行できるジョブまたはワークフローは最大 1 つ。group は任意の文字列または式で、利用可能なコンテキストは `github` / `inputs` / `vars` / `needs` / `strategy` / `matrix`。ワークフローレベルとジョブレベル（`jobs.<job_id>.concurrency`）の両方で指定できる。
+同一 concurrency group で同時に実行できるジョブまたはワークフローは最大 1 つ。group は任意の文字列または式で、ワークフローレベルとジョブレベル（`jobs.<job_id>.concurrency`）の両方で指定できる。利用可能なコンテキストはレベルで異なる。ワークフローレベルの `concurrency` は `github` / `inputs` / `vars` のみ。ジョブレベルの `jobs.<job_id>.concurrency` は加えて `needs` / `strategy` / `matrix` も使える。
 
 同一 group で実行中のものがあると、新規キューは `pending` になる。既定では同 group の既存 `pending` は取り消され、新しいものに置き換わる。
 

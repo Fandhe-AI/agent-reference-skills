@@ -22,7 +22,7 @@ Organization の team を作成・管理する REST API。出典: https://docs.g
 | GET / PUT / DELETE | `/teams/{team_id}/repos/{owner}/{repo}` | Legacy: リポジトリ権限の確認・追加・削除 |
 | GET | `/teams/{team_id}/teams` | Legacy: 子 team 一覧 |
 
-## Usage
+## 例
 
 ```curl
 curl -L \
@@ -37,7 +37,7 @@ curl -L \
 }'
 ```
 
-## Parameters
+## パラメータ
 
 ### Create a team（body）
 
@@ -72,7 +72,7 @@ curl -L \
 
 共通 query: `per_page`（最大 100、既定 30）、`page`（既定 1）。
 
-## Notes
+## 注意事項
 
 - 認証済みの当該 Organization メンバーのみ利用可。OAuth アクセストークンは `read:org` スコープが必要。slug は team `name` から生成される
 - `pull` / `push` は Organization リポジトリの Read / Write ロールに対応
