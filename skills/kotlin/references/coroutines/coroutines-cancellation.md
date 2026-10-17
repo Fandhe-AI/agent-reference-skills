@@ -98,7 +98,7 @@ parentJob.cancel()
 
 ### Suspension points and cancellation
 
-A canceled coroutine continues until a suspension point. If it suspends there, the suspending function checks for cancellation and throws `CancellationException`. A call to a `suspend` function is a suspension point but does not always suspend (awaiting a completed `Deferred` does not suspend). All suspending functions in `kotlinx.coroutines` cooperate with cancellation because they use `suspendCancellableCoroutine()` internally; custom suspending functions that use `suspendCoroutine()` do not react to cancellation.
+A canceled coroutine continues until a suspension point. If it suspends there, the suspending function checks for cancellation and throws `CancellationException`. A call to a `suspend` function is a suspension point but does not always suspend (awaiting a completed `Deferred` does not suspend). Suspending functions in `kotlinx.coroutines` are cancellable, but whether a call checks for cancellation depends on each API's contract: `Job.join()` always checks the caller's cancellation, while `delay(0)` or `await()` on a completed `Deferred` can return without checking. Custom suspending functions that use `suspendCoroutine()` do not react to cancellation, and CPU-bound code needs explicit checks such as `ensureActive()`.
 
 ### yield()
 
@@ -200,6 +200,7 @@ println("The slow operation finished with $slow")
 - Catching `CancellationException` can break cancellation propagation. If you must catch it, rethrow it.
 - Avoid `NonCancellable` with builders like `.launch()` or `.async()`; it breaks the parent-child relationship and disrupts structured concurrency.
 - A coroutine that does not suspend for a long time does not stop when canceled and blocks other coroutines on the same thread; call `yield()` periodically, or use `isActive` / `ensureActive()` when intentional.
+- The official page says all `kotlinx.coroutines` suspending functions cooperate with cancellation because they use `suspendCancellableCoroutine()` internally; this page instead follows the per-API KDoc contracts (kotlinx.coroutines 1.11.0 `Job.join()` / `delay()`).
 - On the JVM, cancellation alone does not interrupt `Thread.sleep()` or `BlockingQueue.take()`; wrap them in `runInterruptible()`.
 
 ## Related
