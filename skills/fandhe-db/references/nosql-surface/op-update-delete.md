@@ -53,7 +53,8 @@ source: https://docs.rs/crate/fandhe-db-wire-server/0.2.0/source/docs/nosql-api.
 ## Notes
 
 - 成功応答の `n`: `where` 形（単一行）は `0` または `1`（他テナント所有 id・未存在 id はいずれも `updated:0`／`deleted:0`・`200` で応答バイト列が完全一致する。RLS-9）。`filter`（述語形）は `0` 以上 `MAX_DML_AFFECTED_ROWS` 以下（一致した自テナント所有行数。上限超過は `54000` で応答が返らない）。
-- 複数列 `set` は JSON パース時点でキーのアルファベット順へ正規化される一方、SQL 表層の `UPDATE ... SET col1 = .., col2 = ..` はクライアントが記述した宣言順をそのまま保持する。台帳の内容照合ハッシュはこの列の記述順に依存しないようスキーマの列定義順へ正規化済み（PR #992）のため、SQL 表層がアルファベット順でない宣言順で書いた `UPDATE` と同一値の NoSQL `update` は、同一 `operation_id` への再送であれば内容一致の再送（`23505`）として正しく判定される。
+- 複数列 `set` は JSON パース時点でキーのアルファベット順へ正規化される一方、SQL 表層の `UPDATE ... SET col1 = .., col2 = ..` はクライアントが記述した宣言順をそのまま保持する。台帳の内容照合ハッシュをスキーマの列定義順へ正規化している（PR #992）のは、単一行 `where`（`id` 完全一致）形の部分更新に限る。この形では、SQL 表層がアルファベット順でない宣言順で書いた `UPDATE` と同一値の NoSQL `update` を同一 `operation_id` で再送すると、内容一致の再送（`23505`）として判定される。
+- `filter` 形（述語形。`mode` なしの原子実行と `mode: "partitioned"` の両方）は PR #992 の正規化の対象外。`for_update_where`／`for_update_where_partitioned` が `push_dml_assignments` で `SET` 割当を記述順のまま連結するため、SQL 表層が非アルファベット順で書いた多列 `SET` と同一内容でも、表層を跨いで再送すると `23505` ではなく `22023` になる（単一列、またはアルファベット順で書けば一致する）。根拠: engine 0.2.0 `recovery/content_hash.rs`。[partitioned-dml.md](./partitioned-dml.md) の同趣旨の記述も参照。
 - `VECTOR` 列の値（SQL 表層のベクトルリテラル文字列と NoSQL 表層の数値配列）は、`where` 形では元々同一の内容照合ハッシュに一致する（Issue #1061 で固定テスト追加）。述語形でも `SET` 側に `VECTOR` 列を含められ、跨表層一致・台帳照合は Issue #1062 で固定されている。
 - 原文が参照する設計文書（`docs/design/nosql-update-delete-mapping.md` 等）は本スキル未収録。
 - 検証コード（原文記載）: `crates/wire-server/src/http/query/op.rs`・`schema.rs`・`dml_target.rs`・`update.rs`・`delete.rs`・`gate.rs`・`crates/wire-server/tests/nosql9_op_allowlist.rs`・`nosql1_op_vocabulary.rs`・`nosql12_update_delete.rs`・`crates/engine/tests/sql_update_delete_session_public_api.rs`。

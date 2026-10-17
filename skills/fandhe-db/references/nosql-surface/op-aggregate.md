@@ -59,7 +59,8 @@ source: https://docs.rs/crate/fandhe-db-wire-server/0.2.0/source/docs/nosql-api.
 - `group_by` 要素数が 8（`MAX_GROUP_BY_COLUMNS`）超過・グループ数上限（10,000）・グループキー累計バイト・`having` 述語数上限超過 → `54000`
 - `group_by` 列が `TEXT`／数値列（INTEGER／BIGINT／REAL／DOUBLE）でない・`having` が `MIN`/`MAX(<TEXT列>)` を参照・参照先が `aggregates` に存在しない／曖昧（`(fn, column)` の重複照合） → `22000`
 - `sort[].column` が複数一致で曖昧（例: `count(*)` と `count(<列>)` を併記した既定名 `count`） → `42702`（Issue #1270。SQL の `ORDER BY` と同じ分類。候補は列挙せず参照名のみを返す）
-- `VECTOR` 列の集計: `count` は列の裸の列参照を受理し非 `NULL` 行数を数える（`resolve_aggregate_input` の `AggregateInput::VectorColumnPresence`）。`sum`／`avg`／`min`／`max` は同じ `VECTOR` 列参照を一律 `22000` で拒否
+- `VECTOR` 列の集計: `count` は列の裸の列参照を受理し非 `NULL` 行数を数える（`resolve_aggregate_input` の `AggregateInput::VectorColumnPresence`）。`sum`／`avg`／`min`／`max` は同じ `VECTOR` 列参照を `42883`（`UNDEFINED_FUNCTION`。Issue #1349）で拒否
+- 上記の `42883` について: 原文 nosql-api.md の当該箇所は `22000` と記すが、同じ文書のエラー表（`42883`、Issue #1349）・engine `sql/parser.rs` の `resolve_aggregate_input`（`(ColumnType::Vector(_), 非 count)` は `undefined_function`）・wire-server `http/query/aggregate.rs` のテスト（`wire_code() == "42883"`）が一致して `42883` を示すため、実装に合わせて記載している。原文は内部で不整合
 - `sum` オーバーフロー → `22003`
 
 その他:
