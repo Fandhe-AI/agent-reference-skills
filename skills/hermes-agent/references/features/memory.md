@@ -119,7 +119,7 @@ memory:
 ```
 
 - Setting both `memory_enabled` and `user_profile_enabled` to `false` turns the built-in stores off and drops the `memory` tool from the schema; an external provider set via `memory.provider` is unaffected. Listing `memory` under `agent.disabled_toolsets` also hides external provider tools.
-- With only `memory_enabled: false` (user profile still on), the tool stays because it backs the profile store; the tool schema advertises only the `user` target and writes to `MEMORY.md` are rejected. The inverse configuration advertises only `memory` and rejects `USER.md` writes. (Source: user-guide/features/memory.md, troubleshooting step 4 and Configuration section.)
+- With only `memory_enabled: false` (user profile still on), the tool stays because it backs the profile store; the tool schema advertises only the `user` target and writes to `MEMORY.md` are rejected. The inverse configuration advertises only `memory` and rejects `USER.md` writes. (Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/memory, pinned to v0.22.2 — troubleshooting step 4 and Configuration section.)
 - `memory.prefetch_spill_enabled: true` replaces oversized external recall with a head/tail preview and file path (restart after changing).
 
 ## Controlling memory writes (`write_approval`)

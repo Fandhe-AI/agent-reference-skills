@@ -39,7 +39,7 @@ computer_use:
   native_wayland: true             # Linux opt-in; only passed when WAYLAND_DISPLAY is set
   autostart: false                 # Windows Scheduled Task cua-driver-serve; default on-demand
   no_overlay: false                # force the overlay cursor on (false) or off (true)
-  allow_unsigned_driver: true      # local driver development only
+  allow_unsigned_driver: false     # default; true only for a locally built, unsigned cua-driver (local driver development only)
   cua_telemetry: false             # Hermes sets CUA_DRIVER_RS_TELEMETRY_ENABLED=0 unless true
   backend: cua                     # active provider (cua default, or a provider plugin)
 ```
@@ -53,7 +53,7 @@ computer_use:
 | `computer_use.native_wayland` | boolean | `true` | Linux opt-in; only passed when `WAYLAND_DISPLAY` is set |
 | `computer_use.autostart` | boolean | `false` | Windows Scheduled Task `cua-driver-serve`; default on-demand |
 | `computer_use.no_overlay` | boolean | `false` | Force the overlay cursor on (`false`) or off (`true`) |
-| `computer_use.allow_unsigned_driver` | boolean | `true` | Local driver development only |
+| `computer_use.allow_unsigned_driver` | boolean | `false` | Opt-in (`true`) to launch an unsigned cua-driver built from source; macOS otherwise verifies the CuaDriver.app code signature (`com.trycua.driver` + official team). Local driver development only |
 | `computer_use.cua_telemetry` | boolean | `false` | Hermes sets `CUA_DRIVER_RS_TELEMETRY_ENABLED=0` unless `true` |
 | `computer_use.backend` | string | `cua` | Active provider (`cua` default, or a provider plugin) |
 
