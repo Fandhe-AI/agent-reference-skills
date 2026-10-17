@@ -90,7 +90,7 @@ In the app, the configuration is set in `tauri.conf.json` under `plugins.<plugin
 ```json
 {
   "build": { ... },
-  "tauri": { ... },
+  "app": { ... },
   "plugins": {
     "plugin-name": {
       "timeout": 30
@@ -326,7 +326,7 @@ Scope struct (holds scope data, here for binaries a `shell` plugin may spawn):
 `src/scope.rs`
 
 ```rust
-#[derive(Debug, schemars::JsonSchema)]
+#[derive(Debug, serde::Deserialize, schemars::JsonSchema)]
 pub struct Entry {
     pub binary: String,
 }
@@ -444,6 +444,8 @@ A plugin manages state the same way an application does (see State Management).
 - Tauri (Rust core + system WebView). A Tauri plugin is not an Electron extension or preload script; see the electron skill for Electron.
 - Upstream Plugins page says `plugin android add` / `plugin ios add`, but the CLI (2.12.x) only provides `plugin android init` / `plugin ios init`.
 - Upstream `commands.rs` example declares `upload` without `pub`; `pub` added because `generate_handler![commands::upload]` references it from another module.
+- Upstream Plugins page's tauri.conf.json example still shows the v1 top-level `tauri` key; replaced with the v2 `app` key.
+- Upstream `Entry` scope example derives only `Debug` and `JsonSchema`; `serde::Deserialize` added because `CommandScope` / `GlobalScope` require the scope type to be deserializable.
 - Permissions / capabilities here are Tauri's ACL; see the security category.
 
 ## Related
