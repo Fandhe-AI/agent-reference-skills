@@ -33,7 +33,7 @@ Source: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
 "typescript.tsdk": "<path to your folder>/node_modules/typescript/lib"
 ```
 
-Add to `.vscode/settings.json`. Requires `typescript@next` to be installed.
+Add to `.vscode/settings.json`. Requires a TypeScript 6.x (JavaScript implementation) in `node_modules/typescript`, e.g. `npm install -D typescript@6`. `typescript@next` now ships the TypeScript 7 native build, which does not provide this `lib` language service.
 
 ### Sublime Text
 
@@ -41,7 +41,7 @@ Add to `.vscode/settings.json`. Requires `typescript@next` to be installed.
 "typescript_tsdk": "<path to your folder>/node_modules/typescript/lib"
 ```
 
-Add to the `Settings - User` file.
+Add to the `Settings - User` file. Requires TypeScript 6.x in `node_modules/typescript` (see the VS Code note above).
 
 ### IntelliJ IDEA
 
@@ -53,4 +53,4 @@ Add to the `Settings - User` file.
 C:\Users\USERNAME\AppData\Roaming\npm\node_modules\typescript\lib
 ```
 
-Path to set as the TypeScript Version when installed via npm.
+Path to set as the TypeScript Version when installed via npm. Requires TypeScript 6.x installed (see the VS Code note above).
