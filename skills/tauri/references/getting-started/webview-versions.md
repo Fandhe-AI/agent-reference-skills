@@ -1,0 +1,135 @@
+---
+source: https://v2.tauri.app/reference/webview-versions/
+---
+
+# Webview Versions
+
+Which system webview Tauri uses on each platform and how to map OS versions to WebKit / Safari versions.
+
+## Signature / Usage
+
+Find the WebKit version used by `WKWebView` on your macOS:
+
+```shell
+awk '/CFBundleVersion/{getline;gsub(/<[^>]*>/,"");print}' /System/Library/Frameworks/WebKit.framework/Resources/Info.plist
+```
+
+WebKit version format (5 segments plus a numeric OS prefix):
+
+```text
+$(SYSTEM_VERSION_PREFIX)$(MAJOR_VERSION).$(MINOR_VERSION).$(TINY_VERSION).$(MICRO_VERSION).$(NANO_VERSION)
+```
+
+Example: Safari 15.5 on macOS Monterey (12.x) is `17613.2.7.1.8`: `SYSTEM_VERSION_PREFIX` 17, `MAJOR_VERSION` 613, `MINOR_VERSION` 2, `TINY_VERSION` 7, `MICRO_VERSION` 1, `NANO_VERSION` 8.
+
+## Options / Props
+
+`SYSTEM_VERSION_PREFIX` values:
+
+| macOS version | `SYSTEM_VERSION_PREFIX` |
+|---------------|-------------------------|
+| sdk=iphone* | 8 |
+| 14.0 | 19 |
+| 13.0 | 18 |
+| 12.0 | 17 |
+| 11.0 | 16 |
+| 10.15 | 15 |
+| 10.14 | 14 |
+| 10.13 | 13 |
+| 10.12 | 12 |
+| 10.11 | 11 |
+
+WebKit versions in Safari (macOS):
+
+| OS Name | OS Version | WebKit Version | Safari Version | Notes |
+|---------|-----------|----------------|----------------|-------|
+| Sonoma | 14.0 (Beta) | 616.1.14.11.11 | 17.0 | Verified on a 2023 M2 14" MacBook Pro |
+| Ventura | 13.4.1 | 615.2.9.11.7 | 16.5.1 | Verified on a 2023 M2 14" MacBook Pro |
+| | 13.3.1 | 615.1.26.11.23 | | Verified on a 2023 M2 14" MacBook Pro |
+| | 13.3 | 615.1.26.11.22 | 16.4 | Verified on a 2023 M2 14" MacBook Pro |
+| | 13.2.1 | 614.4.6.1.6 | | |
+| | 13.2 | ? | 16.3 | |
+| | 13.1 | 614.3.7.1.5 | 16.2 | Verified on a 2020 M1 13" MacBook Pro |
+| | 13.0.1 | | | Verified on a 2020 M1 13" MacBook Pro |
+| | 13.0 | 614.2.9.1.12 | 16.1 | Verified on a 2020 M1 13" MacBook Pro |
+| Monterey | 12.6 | | | Verified on a 2020 M1 13" MacBook Pro |
+| | 12.5.1 | 613.3.9.1.16 | 15.6.1 | Verified on a 2020 M1 13" MacBook Pro |
+| | 12.5 | 613.3.9.1.5 | 15.6 | Verified on a 2020 M1 13" MacBook Pro |
+| | 12.4 | 613.2.7.1.8 | 15.5 | Verified on a 2020 M1 13" MacBook Pro |
+| | 12.3.1 | 613.1.17.1.13 | | |
+| | 12.3 | 613.1.17.1.6 | 15.4 | |
+| | 12.2.1 | 612.4.9.1.8 | | |
+| | 12.2 | 612.4.9.1.5 | 15.3 | |
+| | 12.1.1 | | | |
+| | 12.1 | 612.3.6.1.6 | 15.2 | |
+| | 12.0.1 | 612.2.9.1.20 | 15.1 | |
+| | 12.0 | 612.1.29.41.4 | 15.0 | |
+| Big Sur | 11.6.7 | | | |
+| | 11.6.6 | | | |
+| | 11.6.5 | | | |
+| | 11.6.2 | | | |
+| | 11.6.1 | | | |
+| | 11.6 | | | |
+| | 11.5.2 | 611.3.10.1.6 | | |
+| | 11.5.1 | | | |
+| | 11.5 | 611.3.10.1.3 | 14.1.2 | |
+| | 11.4 | 611.2.7.1.4 | 14.1.1 | |
+| | 11.3.1 | | | |
+| | 11.3 | 611.1.21.161.3 | 14.1 | 24" M1 iMac received a special WebKit version 611.1.21.1.12 |
+| | 11.2.3 | 610.4.3.1.7 | | |
+| | 11.2.2 | | | |
+| | 11.2.1 | | | |
+| | 11.2 | 610.4.3.1.4 | 14.0.3 | |
+| | 11.1 | 610.3.7.1.9 | 14.0.2 | |
+| | 11.0.1 | 610.2.11.51.8 | | |
+| | 11.0 | 610.2.11.1.3 | 14.0.1 | Safari 14.0 was only ever available on iPhones |
+| Catalina | 10.15.7 Security Update 2022-004 | 609.4.1.1.1 | | |
+| | 10.15.7 | 609.4.1 | 13.1.3 | |
+| | 10.15.6 | 609.3.5.1.3 | 13.1.2 | |
+| | 10.15.5 | 609.2.9.1.2 | 13.1.1 | |
+| | 10.15.4 | 609.1.20.111.8 | 13.1 | |
+| | 10.15.3 | 608.5.11 | 13.0.5 | |
+| | 10.15.2 | 608.4.9.1.3 | 13.0.4 | |
+| | 10.15.1 | 608.3.10.1.4 | 13.0.3 | Verified on a 2014 15" MacBook Pro |
+| | 10.15 | 608.2.30.1.1 | 13.0.2 | |
+| Mojave | 10.14.6 | 608.1.49 | 13.0 | |
+| | 10.14.4 | 607.1.40.1.5 | 12.1 | |
+| | 10.14.3 | 606.4.5 | 12.0.3 | |
+| | 10.14.2 | 606.3.4 | 12.0.2 | |
+| | 10.14.1 | 606.2.104.1.1 | 12.0.1 | |
+| | 10.14 | 606.2.11 | 12.0 | |
+| High Sierra | 10.13.6 | 605.3.8 | 11.1.2 | |
+| | 10.13.5 | 605.2.8 | 11.1.1 | |
+| | 10.13.4 Security Update 2018-001 | 605.1.33.1.4 | 11.1 | |
+| | 10.13.4 | 605.1.33.1.2 | 11.1 | |
+| | 10.13.3 | 604.5.6 | 11.0.3 | |
+| | 10.13.2 Supplemental Update | 604.4.7.1.6 | 11.0.2 | 27" iMac Pro received a special WebKit version 604.4.7.10.6 |
+| | 10.13.2 | 604.4.7.1.3 | 11.0.2 | 27" iMac Pro received a special WebKit version 604.4.7.10.4 |
+| | 10.13.1 | 604.3.5 | 11.0.1 | |
+| | 10.13 | 604.1.38.1.6 | 11.0 | |
+
+Linux (very incomplete list of common distributions):
+
+| Distro | `webkitgtk` Version | WebKit Version | Safari Equivalent |
+|--------|---------------------|----------------|-------------------|
+| Debian 11 (with update), Ubuntu 20.04 (with update), Ubuntu 22.04 | 2.36 | 614.1.6 | TP 140 (16.0) |
+| Debian 10 (with update) | 2.34 | 613.1.1 | 15.4 |
+| Debian 11, Ubuntu 18.04 (with update), centos 8 (non-stream) | 2.32 | 612.1.6 | 15.0 |
+| Ubuntu 20.04 | 2.28 | 610.1.1 | 14.0 |
+| Debian 9 (with backport), Debian 10 | 2.24 | 608.1.6 | 13.0 |
+| Ubuntu 18.04 | 2.20 | 606.1.4 | 12.0 |
+
+## Notes
+
+- The Windows Installer and Prerequisites pages state WebView2 is already distributed with Windows 10 (April 2018 / 1803) and later, so on Windows 10 the installer step is often a no-op.
+- Windows: Tauri uses WebView2 (Microsoft Edge / Chromium). WebView2 updates itself, so a relatively recent Chromium build is guaranteed on supported Windows versions (10 / 11). The source says it is supported on Windows 7 and newer and preinstalled on Windows 11; on older versions the installer generated by Tauri ensures WebView2 is installed.
+- WebView2 on Windows 7 / 8 / 8.1 stopped at version 109 (support ended January 2023) and no longer receives feature or security updates; the source's "relatively recent Chromium" guarantee applies only to supported Windows versions.
+- Android: Tauri uses the system Android WebView (Chromium-based) and does not bundle one, so the runtime version depends on the device's selected WebView provider. To check the version in a development build, open the Android Web Inspector and inspect the running WebView with Chrome DevTools, or check the selected WebView provider and app version in Android's developer settings.
+- macOS / iOS: WKWebView, the webview preinstalled with macOS since 10.10 (Yosemite), updated with regular OS updates; unsupported macOS versions do not receive WebKit updates. Linux: `webkit2gtk`; check your distro's repositories for up-to-date information.
+- The `SYSTEM_VERSION_PREFIX` appears only for macOS and iOS builds; if the last two segments are both `0` they can be omitted (`613.2.7.0.0` is referred to as `613.2.7`).
+- Use the mapping tables with sites like caniuse to decide whether a web platform feature is supported. The source page's bracketed links to WebKit `Version.xcconfig` files were dropped here.
+
+## Related
+
+- [Process Model](./process-model.md)
+- [Prerequisites](./prerequisites.md)
