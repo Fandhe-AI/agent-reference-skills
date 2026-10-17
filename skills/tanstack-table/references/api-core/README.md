@@ -57,4 +57,3 @@
 | TableState | Complete table state for a specific feature set | [table-state.md](./table-state.md) |
 | Table | The table object that includes both the core table and feature APIs | [table.md](./table.md) |
 | useTable | The v9 React adapter hook that creates a React table instance | [use-table.md](./use-table.md) |
-</content>
