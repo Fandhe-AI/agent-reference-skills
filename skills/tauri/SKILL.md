@@ -1,15 +1,15 @@
 ---
 name: tauri
 description: >
-  Tauri (Rust + WebView のデスクトップ / モバイルアプリフレームワーク, v2) の Electron とは別リファレンス。
-  tauri.conf.json, tauri CLI, command / invoke / Channel, AppHandle, Tauri capabilities / permissions (ACL),
-  @tauri-apps/api, 公式プラグイン (fs, dialog, updater, store, sql), sidecar, 署名・配布, WebDriver。
+  Tauri v2 (Rust + WebView のデスクトップ / モバイルアプリフレームワーク、Electron とは別) リファレンス。
+  tauri.conf.json, tauri CLI, command / invoke / Channel, AppHandle,
+  Tauri capabilities / permissions (ACL), @tauri-apps/api, sidecar, WebDriver。
 user-invocable: false
 ---
 
 # Tauri v2
 
-> 分割 PR の途中段階。現在収録済み: references/{cli, config, develop}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{cli, config, develop, distribute, getting-started}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -31,6 +31,15 @@ Tauri v2。版 pin は次のとおり。
 skills/tauri/
   SKILL.md
   references/
+    getting-started/        # 概要・前提条件・プロジェクト作成・フロントエンド別ガイド・IPC・Process Model・v1/beta 移行
+      README.md
+      overview.md
+      prerequisites.md
+      create-project.md
+      inter-process-communication.md
+      process-model.md
+      frontend-vite.md
+      migrate-from-tauri-1.md
     develop/                # コマンド呼び出し・状態管理・sidecar・resources・プラグイン開発・デバッグ・テスト・WebDriver
       README.md
       calling-rust.md
@@ -58,6 +67,16 @@ skills/tauri/
       ios.md
       plugin.md
       signer.md
+    distribute/             # バンドル形式・署名・ストア・CI 配布
+      README.md
+      overview.md
+      windows-installer.md
+      dmg.md
+      appimage.md
+      sign-macos.md
+      sign-windows.md
+      app-store.md
+      pipelines-github.md
 ```
 
 ## 探索手順
@@ -71,7 +90,11 @@ skills/tauri/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
+| Tauri の概要・アーキテクチャ・前提条件・プロジェクト作成を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| Vite / Next.js / SvelteKit / Leptos 等フロントエンドの設定をしたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| IPC・Process Model・Isolation Pattern・v1 / beta からの移行を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | Rust コマンドをフロントエンドから呼びたい（invoke / Channel） | develop | [references/develop/README.md](references/develop/README.md) |
 | 状態管理・sidecar・resources・アイコン・プラグイン開発・デバッグ・テスト・WebDriver | develop | [references/develop/README.md](references/develop/README.md) |
 | tauri.conf.json の window / bundle / build / app / security 設定 | config | [references/config/README.md](references/config/README.md) |
 | tauri dev / build / bundle / android / ios / icon / signer / plugin コマンドのオプション | cli | [references/cli/README.md](references/cli/README.md) |
+| 署名・MSI / NSIS / DMG / AppImage / deb / rpm・各ストア・CI 配布 | distribute | [references/distribute/README.md](references/distribute/README.md) |
