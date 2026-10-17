@@ -1,5 +1,5 @@
 ---
-source: https://ai.google.dev/gemini-api/docs/generate-content/gemini-3
+source: https://ai.google.dev/gemini-api/docs/generate-content/gemini-3, https://ai.google.dev/gemini-api/docs/generate-content/latest-model, https://ai.google.dev/gemini-api/docs/generate-content/whats-new-gemini-3.7, https://ai.google.dev/gemini-api/docs/generate-content/whats-new-gemini-3.6, https://ai.google.dev/gemini-api/docs/generate-content/whats-new-gemini-3.5
 ---
 
 # Gemini 3 developer guide and what's-new (generateContent)
@@ -87,7 +87,8 @@ Notes:
 - SDK minimums from the source: Python `google-genai` 2.30.1 or higher, JavaScript `@google/genai` 2.29.1 or higher (`automatic_continuation` defaults to `True`).
 - Migration checklist: set `max_output_tokens` explicitly (default 64K streaming and SDK calls, 32K non-streaming REST); raise caps below 32K to at least 32,768; replace `thinking_budget` with `thinking_level` (still maps with a warning); explicit context caching (`cachedContents` / `caches.create`) is not supported on Gemini 4 Argon and returns an error (implicit caching on for prompts of at least 4,096 tokens with a 95% discount on cache hits); remove `temperature`, `top_p`, `top_k`, `candidate_count` (ignored if provided); set HTTP client timeouts to at least 20 minutes; preserve thought signatures.
 - Gemini 4 Argon is not available on the Free tier or on the Google AI Pro plan. Implicit-cache discount pricing: cached input $0.10 per 1M tokens ($0.20 from December 1, 2026).
-- When `max_output_tokens` is exhausted the response returns `finish_reason: "MAX_TOKENS"` with a `continuation_token`; resume with a higher `max_output_tokens` or `400 INVALID_ARGUMENT` results.
+- When `max_output_tokens` is exhausted the response returns `finish_reason: "MAX_TOKENS"` with a `continuation_token`; resume with a higher `max_output_tokens` or `400 INVALID_ARGUMENT` results. This bullet describes only the case where the total `max_output_tokens` budget is used up (`MAX_TOKENS`).
+- Distinct per-hop case (long decode): when a hop reaches the per-request cap with tokens remaining, the response ends with `finish_reason: CONTINUATION` and a `continuation_token`; continue while `finish_reason` is `CONTINUATION` and stop on any other finish reason. See the Long decode section of [inference-options.md](./inference-options.md).
 
 ### Gemini 3.7 Flash (whats-new-gemini-3.7)
 
@@ -141,6 +142,7 @@ Notes:
 
 ## Notes
 
+- Sources: <https://ai.google.dev/gemini-api/docs/generate-content/gemini-3> (Gemini 3 developer guide), <https://ai.google.dev/gemini-api/docs/generate-content/latest-model> (Gemini 4 Argon), <https://ai.google.dev/gemini-api/docs/generate-content/whats-new-gemini-3.7> (3.7 Flash), <https://ai.google.dev/gemini-api/docs/generate-content/whats-new-gemini-3.6> (3.6 Flash / 3.5 Flash-Lite), <https://ai.google.dev/gemini-api/docs/generate-content/whats-new-gemini-3.5> (3.5 Flash).
 - API surface: generateContent tree. The Interactions API is also supported with the same configuration options (per the 3.5 page).
 - The coding-agent migration prompts in the source (for example `/gemini-api-dev migrate my app to Gemini 4 Argon`, `npx skills add google-gemini/gemini-skills --skill gemini-interactions-api --global`) refer to Gemini-side coding-agent skills; they are not this repository's skills and not Claude Code Agent Skills (anthropic-claude-code-extend skill).
 

@@ -89,7 +89,7 @@ response = client.models.generate_content(
     model="gemini-nano-banana-2.1",
     contents=[prompt],
     config=types.GenerateContentConfig(
-        response_format={"image": {aspect_ratio: "16:9",                 image_size: "2K",}}
+        response_format={"image": {"aspect_ratio": "16:9", "image_size": "2K"}}
     )
 )
 ```
@@ -153,6 +153,7 @@ The source also lists 1:4, 1:8, 4:1, 8:1 ratios and separate tables for 3.1 Flas
 
 ## Notes
 
+- The official Python sample uses unquoted dict keys (`aspect_ratio` / `image_size`) in `response_format`; they are quoted here so the code runs.
 - API surface: generateContent. The primary model in the source examples is `gemini-nano-banana-2.1`; model IDs are copied from the source as-is.
 - Features covered by the source page (see it for full code): up to 14 reference images, Grounding with Google Search (and Google Search for images on Nano Banana 2.1 and 3.1 Flash), video-to-image generation (Nano Banana 2.1, 3.1 Flash, 3.1 Flash Lite), up to 4K output, multi-turn image editing, batch generation, and a prompting guide.
 - Gemini 3 image models are thinking models; thinking is on by default and cannot be disabled; they generate up to two interim images and the last image in Thinking is the final image.

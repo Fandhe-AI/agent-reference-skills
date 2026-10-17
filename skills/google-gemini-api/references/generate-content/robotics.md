@@ -1,5 +1,5 @@
 ---
-source: https://ai.google.dev/gemini-api/docs/generate-content/robotics-overview
+source: https://ai.google.dev/gemini-api/docs/generate-content/robotics-overview, https://ai.google.dev/gemini-api/docs/generate-content/robotics-spatial, https://ai.google.dev/gemini-api/docs/generate-content/robotics-agentic, https://ai.google.dev/gemini-api/docs/generate-content/robotics-orchestration, https://ai.google.dev/gemini-api/docs/generate-content/robotics-video-progress
 ---
 
 # Gemini Robotics ER (generateContent)
@@ -201,6 +201,7 @@ print(response.text)
 
 ## Notes
 
+- Sources: <https://ai.google.dev/gemini-api/docs/generate-content/robotics-overview> (Overview and pointing), <https://ai.google.dev/gemini-api/docs/generate-content/robotics-spatial> (Spatial reasoning), <https://ai.google.dev/gemini-api/docs/generate-content/robotics-agentic> (Agentic vision), <https://ai.google.dev/gemini-api/docs/generate-content/robotics-orchestration> (Task orchestration), <https://ai.google.dev/gemini-api/docs/generate-content/robotics-video-progress> (Video progress).
 - Preview source warning: "The Gemini Robotics ER model is currently in preview."
 - Full runnable code is referenced to the Robotics cookbook (google-gemini/robotics-samples) in the source. Robotics streaming (`robotics-streaming`) is covered in the live-realtime and Interactions-side robotics pages, not here.
 

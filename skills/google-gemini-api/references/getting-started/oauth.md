@@ -20,7 +20,7 @@ Test with curl:
 
 ```bash
 access_token=$(gcloud auth application-default print-access-token)
-project_id=<MY PROJECT ID>
+project_id="YOUR_PROJECT_ID"
 curl -X GET https://generativelanguage.googleapis.com/v1/models \
     -H 'Content-Type: application/json' \
     -H "Authorization: Bearer ${access_token}" \
@@ -100,6 +100,7 @@ print('Available base models:', [m.name for m in client.models.list()])
 - The page says this simplified approach is for a testing environment; for production, read Google's authentication and authorization overview before choosing credentials.
 - The simplified setup triggers a "Google hasn't verified this app." dialog; the page says this is normal and to choose "continue".
 - If running on Colab, include `--no-browser` and follow the printed instructions.
+- The official sample writes `project_id=<MY PROJECT ID>`; it is quoted here as a shell string, so replace `YOUR_PROJECT_ID` with your project ID.
 - Docs fetched 2026-10-16. The curl example uses the `v1` models path.
 
 ## Related

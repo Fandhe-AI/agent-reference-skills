@@ -1,5 +1,5 @@
 ---
-source: https://ai.google.dev/gemini-api/docs/generate-content/image-understanding
+source: https://ai.google.dev/gemini-api/docs/generate-content/image-understanding, https://ai.google.dev/gemini-api/docs/generate-content/audio, https://ai.google.dev/gemini-api/docs/generate-content/video-understanding, https://ai.google.dev/gemini-api/docs/generate-content/document-processing, https://ai.google.dev/gemini-api/docs/generate-content/transcribe, https://ai.google.dev/gemini-api/docs/generate-content/media-resolution
 ---
 
 # Multimodal understanding (generateContent)
@@ -246,6 +246,7 @@ Notes:
 
 ## Notes
 
+- Sources: <https://ai.google.dev/gemini-api/docs/generate-content/image-understanding> (Image understanding), <https://ai.google.dev/gemini-api/docs/generate-content/audio> (Audio understanding), <https://ai.google.dev/gemini-api/docs/generate-content/video-understanding> (Video understanding), <https://ai.google.dev/gemini-api/docs/generate-content/document-processing> (Document processing), <https://ai.google.dev/gemini-api/docs/generate-content/transcribe> (Transcription), <https://ai.google.dev/gemini-api/docs/generate-content/media-resolution> (Media resolution).
 - API surface: generateContent tree. The Interactions API tree (multimodal-input category) has its own versions of these guides.
 - Supported file input mechanisms are described in the files page of this category.
 

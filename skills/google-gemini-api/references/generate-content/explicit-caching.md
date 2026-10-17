@@ -77,7 +77,7 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8
             "text": "Please summarize this transcript"
           }],
           "role": "user"
-        },
+        }
       ],
       "cachedContent": "'$CACHE_NAME'"
     }'
@@ -137,6 +137,7 @@ Implicit caching minimum input token counts:
 - Only `ttl` or `expire_time` can be updated.
 - Billing: cached token count (reduced rate on reuse), storage duration (TTL), plus non-cached input and output tokens. Cached content is a prefix to the prompt; no special rate limits; token limits include cached tokens. The minimum varies by model, the maximum equals the model maximum.
 - With an OpenAI library, enable explicit caching via the `cached_content` property in `extra_body`.
+- The trailing comma after the last `contents` element in the official REST sample is removed here so the JSON is valid.
 - Distinct from Anthropic prompt caching (anthropic-api-core skill) and OpenAI prompt caching (openai-api-core skill).
 
 ## Related

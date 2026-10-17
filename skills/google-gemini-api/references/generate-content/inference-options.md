@@ -1,5 +1,5 @@
 ---
-source: https://ai.google.dev/gemini-api/docs/generate-content/flex-inference
+source: https://ai.google.dev/gemini-api/docs/generate-content/flex-inference, https://ai.google.dev/gemini-api/docs/generate-content/priority-inference, https://ai.google.dev/gemini-api/docs/generate-content/webhooks, https://ai.google.dev/gemini-api/docs/generate-content/long-decode, https://ai.google.dev/gemini-api/docs/generate-content/safety-settings, https://ai.google.dev/gemini-api/docs/generate-content/api-errors
 ---
 
 # Flex / priority / webhooks / long decode / safety / errors (generateContent)
@@ -262,6 +262,7 @@ HTTP error codes returned by the `GenerateContent` API with gRPC status details.
 
 ## Notes
 
+- Sources: <https://ai.google.dev/gemini-api/docs/generate-content/flex-inference> (Flex inference), <https://ai.google.dev/gemini-api/docs/generate-content/priority-inference> (Priority inference), <https://ai.google.dev/gemini-api/docs/generate-content/webhooks> (Webhooks), <https://ai.google.dev/gemini-api/docs/generate-content/long-decode> (Long decode), <https://ai.google.dev/gemini-api/docs/generate-content/safety-settings> (Safety settings), <https://ai.google.dev/gemini-api/docs/generate-content/api-errors> (API errors).
 - API surface: generateContent tree. `service_tier` (Flex / Priority) is a v1beta request field; Priority applies to both GenerateContent and Interactions endpoints. Webhooks and long decode are described in the Interactions-side pages as well (platform-ops and interactions-core categories).
 - Distinct from Anthropic Message Batches (anthropic-api-core skill) and OpenAI Batch / webhooks (openai-api-core skill).
 

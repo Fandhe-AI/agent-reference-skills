@@ -83,11 +83,11 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-4-argon:gen
                     "items": {"type": "string"},
                     "description": "The name of the scorer."
                 }
+            },
+            "required": ["winner", "final_match_score", "scorers"]
           }
         }
-      },
-            "required": ["winner", "final_match_score", "scorers"]
-        }
+      }
     }
   }'
 ```
@@ -122,6 +122,7 @@ Model support (per source table, all marked supported): Gemini 4 Argon, 3.8 Flas
 
 ## Notes
 
+- The official REST sample places `required` outside `schema`; it is corrected here to sit inside the schema object next to `properties`.
 - API surface: generateContent. The `response_format` / `responseFormat` / `generationConfig.responseFormat.text` field with `mime_type` and `schema` is the shape used on this page.
 - The model produces outputs in the same order as the keys in the schema; only a subset of JSON Schema is supported and the model ignores unsupported properties. Very large or deeply nested schemas may be rejected.
 - Structured outputs with tools is a Preview feature "available only to Gemini 4 and Gemini 3 series models" (Google Search, URL Context, Code Execution, File Search, Function Calling).

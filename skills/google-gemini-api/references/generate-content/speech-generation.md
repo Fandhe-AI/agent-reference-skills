@@ -1,5 +1,5 @@
 ---
-source: https://ai.google.dev/gemini-api/docs/generate-content/speech-generation
+source: https://ai.google.dev/gemini-api/docs/generate-content/speech-generation, https://ai.google.dev/gemini-api/docs/generate-content/voice-design, https://ai.google.dev/gemini-api/docs/generate-content/voice-replication
 ---
 
 # TTS, voice design, voice replication (generateContent)
@@ -272,6 +272,7 @@ Notes:
 
 ## Notes
 
+- Sources: <https://ai.google.dev/gemini-api/docs/generate-content/speech-generation> (Text-to-speech), <https://ai.google.dev/gemini-api/docs/generate-content/voice-design> (Voice design), <https://ai.google.dev/gemini-api/docs/generate-content/voice-replication> (Voice replication).
 - API surface: generateContent tree (TTS models via `generateContent` / `streamGenerateContent`; the Voices endpoint is `v1beta/voices`).
 - Distinct from OpenAI TTS and the Realtime API (openai-realtime-audio skill).
 

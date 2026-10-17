@@ -1,5 +1,5 @@
 ---
-source: https://ai.google.dev/gemini-api/docs/generate-content/google-search
+source: https://ai.google.dev/gemini-api/docs/generate-content/google-search, https://ai.google.dev/gemini-api/docs/generate-content/maps-grounding, https://ai.google.dev/gemini-api/docs/generate-content/url-context, https://ai.google.dev/gemini-api/docs/generate-content/code-execution, https://ai.google.dev/gemini-api/docs/generate-content/computer-use, https://ai.google.dev/gemini-api/docs/generate-content/file-search
 ---
 
 # Built-in tools (generateContent)
@@ -148,7 +148,7 @@ response = client.models.generate_content(
       {"text": "Restaurants near here."}
     ]
   }],
-  "tools":  { "googleMaps": {} },
+  "tools": [{"googleMaps": {}}],
   "toolConfig":  {
     "retrievalConfig": {
       "latLng": {
@@ -347,6 +347,8 @@ Notes:
 
 ## Notes
 
+- Sources: <https://ai.google.dev/gemini-api/docs/generate-content/google-search> (Google Search), <https://ai.google.dev/gemini-api/docs/generate-content/maps-grounding> (Google Maps), <https://ai.google.dev/gemini-api/docs/generate-content/url-context> (URL context), <https://ai.google.dev/gemini-api/docs/generate-content/code-execution> (Code execution), <https://ai.google.dev/gemini-api/docs/generate-content/computer-use> (Computer use), <https://ai.google.dev/gemini-api/docs/generate-content/file-search> (File Search).
+- The official Maps REST sample writes `tools` as an object; it is corrected here to an array (`"tools": [{"googleMaps": {}}]`).
 - API surface: generateContent (REST `tools` array). Each built-in tool here is a `generateContent` tool; combination with custom functions is covered in the tool-combination page.
 - Distinct from Anthropic server tools and tool use (anthropic-api-tools-mcp skill) and OpenAI built-in tools / Agents SDK (openai-agents skill). File Search store and embeddings are Gemini-hosted RAG; for external vector databases see upstash (Vector) and fandhe-db.
 
