@@ -202,7 +202,7 @@ export default function importedChunks(
 ## Notes
 
 - For existing integrations with backends (Rails, Laravel, etc.), the page points to Awesome Vite (https://github.com/vitejs/awesome-vite#integrations-with-backends); this guide is for custom integrations.
-- Serving assets in development: either proxy static asset requests to the Vite server, or set `server.origin` so generated asset URLs resolve against the back-end server URL instead of a relative path. Needed for assets such as images to load properly.
+- Serving assets in development: either proxy static asset requests to the Vite server, or set `server.origin` (defines the origin of the generated asset URLs during development) so asset URLs are absolute instead of relative; without a proxy, point it at an origin where the browser can reach the Vite dev server (the guide's React preamble uses `http://localhost:5173` as "the local URL Vite is running at"). Needed for assets such as images to load properly.
 - The React preamble is needed because `@vitejs/plugin-react` cannot modify the HTML you serve.
 - Manifest entry kinds: entry chunks (from files in `build.rolldownOptions.input`, `isEntry: true`, key is relative src path from project root); dynamic entry chunks (from dynamic imports, `isDynamicEntry: true`, key is relative src path); non-entry chunks (key is the base name of the generated file prefixed with `_`); asset chunks (images, fonts; key is relative src path); CSS files (when `build.cssCodeSplit` is `false`, a single CSS file keyed `style.css`; otherwise keyed like JS chunks, with `_` prefix for non-entry).
 - JS chunks list static and dynamic imports (keys mapping to other manifest chunks) and their CSS and asset files.
