@@ -27,11 +27,18 @@ pub fn run() {
 }
 ```
 
+When using the Tauri API npm package:
+
 ```javascript
-// When using the Tauri API npm package:
 import { invoke } from '@tauri-apps/api/core';
 
-// When using the Tauri global script (if not using the npm package)
+// Invoke the command
+invoke('my_custom_command');
+```
+
+When using the Tauri global script (if not using the npm package):
+
+```javascript
 // Be sure to set `app.withGlobalTauri` in `tauri.conf.json` to true
 const invoke = window.__TAURI__.core.invoke;
 
@@ -490,6 +497,7 @@ Events emitted in the frontend also trigger listeners registered from Rust.
 
 - Tauri (Rust core + system WebView). This is not Electron's IPC (`ipcMain` / `ipcRenderer`); see the electron skill for Electron.
 - Command names must be unique across all modules.
+- The upstream first JavaScript snippet declares `invoke` twice (import and `window.__TAURI__`); split here into two alternative snippets.
 - Commands defined in `lib.rs` cannot be marked `pub` (glue code generation limitation); the compiler reports error E0255: the name `__cmd__command_name` is defined multiple times.
 - Events have no strong type support, payloads are JSON strings, and the capabilities system cannot fine-grain control event data and channels.
 - Upstream example (tauri-docs 32f68c5) uses the v1 APIs `path().app_dir()` / `GlobalShortcutManager`; rewritten for v2 using `path().app_data_dir()` (docs.rs tauri 2.12.4) and the global-shortcut registration was dropped.

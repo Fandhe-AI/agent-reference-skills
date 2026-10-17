@@ -457,7 +457,7 @@ Tauri automatically implements the commands `checkPermissions` and `requestPermi
 
 JavaScript:
 
-```javascript
+```typescript
 import { invoke, PermissionState } from '@tauri-apps/api/core'
 
 interface Permissions {
@@ -560,7 +560,7 @@ class ExamplePlugin: Plugin {
 
 Listen from the NPM package with `addPluginListener`:
 
-```javascript
+```typescript
 import { addPluginListener, PluginListener } from '@tauri-apps/api/core';
 
 export async function onRequest(
@@ -576,6 +576,7 @@ export async function onRequest(
 
 ## Notes
 
+- Fences changed from `javascript` to `typescript` for the permission-check and `addPluginListener` snippets because they use TypeScript-only syntax (`interface`, type annotations, type arguments).
 - In the Plugin events example, the `invoke.resolve()` calls after `trigger(...)` in `openCamera` were added to this reference and are not in the original example: triggering an event does not answer the command, so the command must still be resolved or the caller (`invoke` / `run_mobile_plugin`) waits forever.
 - Listening to plugin events from JavaScript is gated by the same capability and permission system as plugin commands. Add the plugin's permission (commonly `<plugin-name>:default`, or a specific `allow-listen-*` permission if defined) to the `permissions` array of a capability under `src-tauri/capabilities/`; refer to the plugin's own documentation for the exact identifiers:
 

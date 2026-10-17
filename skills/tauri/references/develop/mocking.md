@@ -8,7 +8,7 @@ When writing frontend tests, a fake Tauri environment simulates windows or inter
 
 ## Signature / Usage
 
-```javascript
+```typescript
 import { beforeAll, expect, test } from "vitest";
 import { randomFillSync } from "crypto";
 
@@ -44,7 +44,7 @@ test("invoke simple", async () => {
 
 To track how many times a command was invoked, combine `mockIPC()` with spying tools:
 
-```javascript
+```typescript
 import { beforeAll, expect, test, vi } from "vitest";
 import { randomFillSync } from "crypto";
 
@@ -154,6 +154,7 @@ test('invoke', async () => {
 
 ## Notes
 
+- Fences of the first two examples changed from `javascript` to `typescript` because the snippets use TypeScript-only syntax (`as number`).
 - Upstream shell example targets the v1 shell IPC (`args.message` / `onEventFn`); rewritten for plugin-shell v2 (`plugin:shell|execute`). Mocking `spawn()` (`plugin:shell|spawn` with a `Channel`) is not shown because it was not verified.
 - Upstream Windows example imports `getCurrent` / `getAll` from `@tauri-apps/api/webviewWindow`; the module (2.12.4) exports `getCurrentWebviewWindow` / `getAllWebviewWindows` (async).
 - Remember to clear mocks after each test run to undo mock state changes between runs; see `clearMocks()` in the JS API reference.
