@@ -55,6 +55,7 @@ moa:
 - Prompt cache of the main conversation is never broken. On OpenAI-compatible wires that reject adjacent user messages (`Conversation roles must alternate`), Hermes retries merged and remembers that destination for the session.
 - MoA is not listed under `hermes tools`; there is no `moa` toolset. A reference credential failure does not abort the turn. A preset can be a fallback entry: `fallback_providers: [{provider: moa, model: <preset>}]`.
 - Benchmark on HermesBench: opus-4.8 aggregating a gpt-5.5 reference 0.8202 vs `anthropic/claude-opus-4.8` 0.7607 vs `openai/gpt-5.5` 0.7412.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/mixture-of-agents (pinned to v0.22.2)
 
 ## Related
 

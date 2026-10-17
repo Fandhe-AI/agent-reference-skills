@@ -123,6 +123,7 @@ window.__HERMES_PLUGINS__.registerSlot("my-plugin", "sidebar", MySidebar);
 - A plugin has up to 2 seconds after script load to call `register()`. The `name` passed to `register()` must match `manifest.json` `name`.
 - `colorOverrides` are scoped to the active theme and cleared on switch. A re-registered `(plugin, slot)` replaces the earlier one.
 - Dashboard plugins are installed by directory layout, not pip entry point.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/extending-the-dashboard (pinned to v0.22.2)
 
 ## Related
 

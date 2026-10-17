@@ -87,6 +87,7 @@ Per-server keys: `disabled`, `command`, `env`, `initialization_options`. Custom 
 - `bash-language-server` delegates diagnostics to `shellcheck`; install it or `hermes lsp status` shows `Backend warnings`.
 - A crashed server is added to the broken set until `hermes lsp restart` (or `broken_retry_seconds`). Logs: `~/.hermes/logs/agent.log` (`[agent.lsp.client]`).
 - `lsp.enabled: false` disables the subsystem; disable one language with `lsp.servers.<id>.disabled: true`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/lsp (pinned to v0.22.2)
 
 ## Related
 

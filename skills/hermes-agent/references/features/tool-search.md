@@ -53,11 +53,12 @@ The budget is `min(threshold_pct% of context, listing_max_tokens)`, re-evaluated
 ## Notes
 
 - Core working-set tools (`terminal`, `read_file`, `write_file`, `patch`, `search_files`, `todo`, `memory`, `browser_*`, `web_search`, `web_extract`, `clarify`, `execute_code`, `delegate_task`, ...) stay eager by default; the curated `defer` list covers cold built-ins such as `computer_use` and `session_search`.
-- `tool_call` unwraps the bridge: hooks, guardrails and approvals run against the real tool name. A batch holds up to 10 entries; a batch containing local tools is split into one call per entry; connector-only batches dispatch as one hosted request each in input order. A multi-entry batch naming a local tool is rejected.
+- `tool_call` unwraps the bridge: hooks, guardrails and approvals run against the real tool name. A batch holds up to 10 entries. Per the Connectors section, local deferred tools stay one entry per `tool_call`: a multi-entry batch that names a local tool is rejected with a correction restating the valid shape, while connector entries in a batch are dispatched as separate gateway requests in input order. The Bridge tools section separately describes the agent splitting a batch containing local tools into one call per entry; the v0.22.2 docs state both.
 - Retrieval is BM25 over tool name, source name, description and parameter names with English Snowball stemming. A tool matches only if it contains the query's rarest token and at least half of the query's answerable terms (floor engages from four answerable terms). Queries with no match return `available_sources`.
 - Connectors (remote tools served by the managed tool gateway) are named `connectors__<connector>__<tool>`, discovered by `tool_search` (30-second gateway bound), and need a Nous identity; a missing link returns `CONNECTION_REQUIRED`. The `manage_connections` tool lists connectors and starts authorization; the model cannot disconnect an account.
 - Trade-offs: one extra round trip for cold tools, no system-prompt cache benefit for deferred schemas, local argument validation instead of provider-native validation, dependence on model query quality, and toolset edits invalidate the prompt cache.
 - The catalog is scoped to the session's granted toolsets, so subagents and restricted sessions cannot discover or call outside them.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-search (pinned to v0.22.2)
 
 ## Related
 

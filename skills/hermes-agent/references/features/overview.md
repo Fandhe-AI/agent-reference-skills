@@ -47,6 +47,7 @@ hermes setup --portal
 - Image Generation lists eleven models: FLUX 2 Klein/Pro, GPT-Image 1.5/2, Nano Banana Pro, Ideogram V3, Recraft V4 Pro, Qwen, Z-Image Turbo, Krea V2 Medium/Large.
 - TTS providers: Edge TTS (free), ElevenLabs, OpenAI TTS, MiniMax, Mistral Voxtral, Google Gemini, xAI, NeuTTS, KittenTTS, Piper.
 - Memory providers named in the overview: RetainDB, ByteRover, plus Honcho, Hindsight, Supermemory, Mem0, OpenViking and Holographic from the plugin catalog.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/overview (pinned to v0.22.2)
 
 ## Related
 

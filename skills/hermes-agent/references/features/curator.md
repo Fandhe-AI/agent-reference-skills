@@ -61,6 +61,7 @@ skills:
 - Usage telemetry in `.usage.json` (`use_count`, `view_count`, `patch_count`, timestamps, `state`, `pinned`, `archived_at`); bundled and hub skills are excluded.
 - Per-run reports: `~/.hermes/logs/curator/<timestamp>/run.json` and `REPORT.md`. With no candidates the report shows `Model: (not resolved)`, which is not an error.
 - Legacy `curator.auxiliary.{provider,model}` still works but is deprecated in favor of `auxiliary.curator`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/curator (pinned to v0.22.2)
 
 ## Related
 

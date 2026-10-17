@@ -106,6 +106,7 @@ Optional hooks: `list_voices()`, `list_models()`, `get_setup_schema()`, `stream(
 - Speech toggles (`/voice tts`, Desktop **Read replies aloud**) hold leases that warm and later unload local engines (Piper, KittenTTS); Desktop uses `POST /api/audio/tts-lease` with `{"lease": "<name>", "active": true|false}`.
 - STT: local Whisper (default; models `tiny`/`base`/`small`/`medium`/`large-v3`/`turbo`), Groq (`GROQ_API_KEY`), OpenAI (`VOICE_TOOLS_OPENAI_KEY` or `OPENAI_API_KEY`; `whisper-1`, `gpt-4o-mini-transcribe`, `gpt-4o-transcribe`, `gpt-transcribe`), Mistral (`voxtral-mini-latest`), xAI (`grok-voice-transcribe-2.0`). `HERMES_LOCAL_STT_COMMAND` runs a local CLI tokenized into argv without a shell. An explicit `stt.provider` is honored strictly (no silent fallback); with none selected, Hermes auto-detects.
 - Voice messages on Telegram, Discord, WhatsApp, Slack and Signal are transcribed automatically and injected as text.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/tts (pinned to v0.22.2)
 
 ## Related
 

@@ -56,6 +56,7 @@ Slash command: `/pet` (toggle), `/pet list`, `/pet scale <factor>`, `/pet <slug>
 - Generation: base drafts (cheap, prompt-only), then hatch (reference-image grounded animation rows packed into a petdex/Codex atlas, 8x9 grid of 192x208 cells). Requires a reference-capable image backend: Nous Portal, OpenRouter, OpenAI (`gpt-image-2`) or Krea; override with `HERMES_PET_IMAGE_PROVIDER` (e.g. `openrouter`). Installing gallery pets needs no image backend.
 - Desktop: Cmd+K "Pets..." and Settings -> Appearance (size slider, Roam toggle, off by default); Alt+wheel resizes; vibe reactions (hearts) trigger on local lexicon matches such as "good bot", "thank you"; Shift-click pops the pet out into a transparent always-on-top overlay (drag, single-click mini composer, double-click toggles app window, mail icon for finished turns).
 - `hermes pets doctor` reports pets directory, `display.pet.*`, detected protocol, and Pillow availability; prints `ready` when a pet is installed, selected, enabled and Pillow imports.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/pets (pinned to v0.22.2)
 
 ## Related
 

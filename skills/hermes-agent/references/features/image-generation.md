@@ -62,6 +62,7 @@ Tool inputs: `image_url` (primary source image to edit), `reference_image_urls` 
 - Resolution of the FAL model: `image_gen.model`, then `FAL_IMAGE_MODEL`, then `fal-ai/flux-2/klein/9b`. Returned URLs are temporary; Hermes materializes them to the local cache and delivers via `MEDIA:<url>`.
 - Token-billed image models (OpenRouter, OpenAI `gpt-image`) are recorded in `session_model_usage` as task `image_generation`; per-image backends are not.
 - Delivery: CLI prints markdown `![](url)`; Telegram photo with caption; Discord embed; Slack unfurl; WhatsApp media; others plain URL.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/image-generation (pinned to v0.22.2)
 
 ## Related
 

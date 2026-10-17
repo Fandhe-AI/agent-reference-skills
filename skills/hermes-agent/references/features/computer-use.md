@@ -73,6 +73,7 @@ computer_use:
 - The overlay cursor is cosmetic and disabled automatically on macOS, headless Linux / WSL2 / containers, and Linux X11; Wayland and Windows keep it.
 - `cua-driver skills install` installs Cua's skill pack (`SKILL.md`, `MACOS.md`, `WINDOWS.md`, `LINUX.md`, `RECORDING.md`, `WEB_APPS.md`, `TESTS.md`); Hermes autodetection is a planned follow-up.
 - On attachment-capable surfaces you can ask for a screenshot; the last 20 captures are kept and never sent automatically.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/computer-use (pinned to v0.22.2)
 
 ## Related
 

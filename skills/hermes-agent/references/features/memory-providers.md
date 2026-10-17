@@ -80,6 +80,7 @@ Supermemory (`$HERMES_HOME/supermemory.json`): `base_url` (`https://api.supermem
 - Mem0 setup flags: `hermes memory setup mem0 --mode <platform|selfhosted|oss> [--host ...] [--api-key ...] [--oss-llm ...] [--oss-vector ...] [--dry-run]`. The mem0ai SDK sends anonymous telemetry unless `MEM0_TELEMETRY=false`.
 - Provider data is isolated per profile (local paths under `$HERMES_HOME/`, per-profile config files, profile-scoped project names for RetainDB, per-profile `.env` for OpenViking).
 - Memori's `hermes-memori` is an external integration, not a `hermes pm install` package; do not let an external installer pip-install into Hermes's environment.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers (pinned to v0.22.2)
 
 ## Related
 

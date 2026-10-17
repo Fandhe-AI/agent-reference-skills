@@ -83,6 +83,7 @@ Management endpoint families accept `?profile=<name>` (or `"profile"` in the JSO
 - `/reload` in the CLI re-reads `~/.hermes/.env`. CORS is limited to localhost origins (9119, 3000, 5173).
 - Built-in themes: `default`, `default-large`, `nous-blue`, `midnight`, `ember`, `mono`, `cyberpunk`, `rose`; extension guide in Extending the Dashboard.
 - Development: `hermes dashboard --no-open` plus `npm run dev` in `web/` (Vite on 5173 proxying `/api`); build resource caps `HERMES_WEB_BUILD_MAX_OLD_SPACE_SIZE`, `HERMES_WEB_BUILD_THREADS`, `HERMES_WEB_BUILD_LIGHT=1`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/web-dashboard (pinned to v0.22.2)
 
 ## Related
 

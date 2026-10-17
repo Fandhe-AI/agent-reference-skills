@@ -52,6 +52,7 @@ browser:
 - Multiple connector accounts: names are 1-32 characters (lowercase letters, digits, `-`, starting with a letter or digit); no default account; once two or more are active every connector tool takes a `connector_alias` field. Reconnecting replaces an account and keeps the old one as retired; removal is user-only. Manage via the desktop Connectors page, `/connectors` in the TUI, `hermes connectors`, or Nous Portal.
 - The legacy `use_gateway: true` flag is deprecated and is read as `nous`; it is never written.
 - Modal (serverless terminal) is an optional add-on, not part of the default bundle. Direct keys in `.env` are ignored (not deleted) while the selection is Nous Subscription. Expired subscription: gateway tools stop until renewed or switched to direct keys.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/tool-gateway (pinned to v0.22.2)
 
 ## Related
 

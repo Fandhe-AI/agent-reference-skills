@@ -45,6 +45,7 @@ vision:
 - Routing: vision-capable models receive real pixels; text-only models get a description from the auxiliary vision model (`auxiliary.vision`). Browser screenshots, `computer_use` captures and MCP image results follow the same decision; `agent.image_input_mode: text` keeps pixels out of all of them.
 - `vision_analyze` returns raw pixels as a multimodal tool result when the main model is vision-capable and the provider supports images in tool results (Anthropic, OpenAI, Azure-OpenAI, Gemini 3.x); an image already attached natively is not re-embedded.
 - Responses-style backends (e.g. `openai-codex`) accept only inline JPEG, PNG, GIF and WebP; inline SVG is rasterized (`cairosvg`, `svglib`+`reportlab`, `rsvg-convert` or `inkscape`) or replaced by a text placeholder.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/vision (pinned to v0.22.2)
 
 ## Related
 

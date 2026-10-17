@@ -103,6 +103,7 @@ browser_cdp(method="Runtime.evaluate",
 - Browserbase falls back by disabling `keepAlive`, then proxies, when the plan lacks paid features.
 - Limitations: text-based interaction, large pages truncated at `browser.snapshot_threshold` (full snapshot saved under `~/.hermes/cache/web/`), cloud sessions consume provider credits, no file downloads.
 - Prefer `web_search` / `web_extract` for simple retrieval; use browser tools to interact.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/browser (pinned to v0.22.2)
 
 ## Related
 

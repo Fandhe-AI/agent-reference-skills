@@ -42,6 +42,7 @@ Summarize this article @url:https://arxiv.org/abs/2301.00001
 - Primarily a CLI feature: messaging gateways pass `@` text through unexpanded; the agent can still use `read_file`, `search_files`, `web_extract`.
 - Expanded content is summarized, not preserved verbatim, when context is compressed; use line ranges for large files.
 - Invalid references produce inline warnings (file not found, binary file, folder not found, git stderr, no content extracted, sensitive credential file, outside workspace) rather than failures.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/context-references (pinned to v0.22.2)
 
 ## Related
 

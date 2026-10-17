@@ -39,6 +39,7 @@ Result JSON fields: `answer`, `citations`, `inline_citations` (`url`, `title`, `
 - Dates are validated client-side: both must parse as `YYYY-MM-DD`, `from_date` must not be after `to_date` or after today (UTC); a future `to_date` is allowed. Failures return `{"error": "..."}` without an HTTP call.
 - `x_search` is read-only discovery. Posting, replying, liking, DMs, media upload and authenticated reads belong to the `xurl` skill; an `x_search` answer is never evidence that a write happened.
 - Errors: "No xAI credentials available" (set `XAI_API_KEY` or run `hermes auth add xai-oauth`, restart the session); "`x_search` is not enabled for this model" (switch to `grok-4.5` or another model with the tool).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/x-search (pinned to v0.22.2)
 
 ## Related
 

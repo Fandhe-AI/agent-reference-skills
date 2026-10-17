@@ -48,6 +48,7 @@ wake_word:
 - Desktop: saying "stop", "never mind", "goodbye", "cancel" or "that's all" ends a hands-free voice conversation (whole-utterance match only).
 - macOS grants microphone access per process; the Python backend needs its own grant (`/wake status` reports "mic delivers only silence"). On Windows set `wake_word.input_device` (`hermes config set wake_word.input_device "Microphone Array"`).
 - Requires `sounddevice` + `numpy`, an STT provider and a TTS provider; engine dependencies auto-install via PM unless `security.allow_lazy_installs` is off.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/wake-word (pinned to v0.22.2)
 
 ## Related
 

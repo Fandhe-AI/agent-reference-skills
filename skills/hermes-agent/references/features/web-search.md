@@ -57,6 +57,7 @@ SEARXNG_URL=http://localhost:8888
 - SearXNG: enable JSON output (`search.formats: [html, json]` in `settings.yml`; HTTP 403 means JSON is still disabled) and pair with an extract provider. Self-host with `searxng/searxng:latest` on port 8888; public instances at searx.space may disable JSON.
 - xAI results are LLM-generated, so validate returned URLs before fetching. OpenAI Native swaps the client-side `web_search` for the provider-executed built-in only on the Codex Responses endpoint.
 - Nous subscribers get managed search through the Tool Gateway; install the optional `searxng-search` skill with `hermes skills install official/research/searxng-search`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/web-search (pinned to v0.22.2)
 
 ## Related
 

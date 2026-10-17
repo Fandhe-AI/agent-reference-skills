@@ -48,6 +48,7 @@ Desktop deep link: `hermes://plugin/install?catalog=NAME` (reviewed pin) or `her
 - Live refresh: the catalog is published at `https://hermes-agent.nousresearch.com/docs/api/plugin-catalog.json`, fetched at most every six hours and cached under `~/.hermes/cache/`; offline cache is used for up to 24 hours.
 - Submission is a pull request adding one `plugin-catalog/<name>.yaml`; the plugin must be public, pin an exact commit, pass `hermes plugins validate`, never update itself, and extend Hermes only through public hooks and the Desktop SDK.
 - Examples: `snyk` entry pins the Snyk CLI MCP server and bundles `snyk-security-scan`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/plugin-catalog (pinned to v0.22.2)
 
 ## Related
 

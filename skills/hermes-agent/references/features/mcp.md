@@ -62,11 +62,11 @@ mcp_servers:
 Hermes prefixes MCP tools to prevent name collisions:
 
 ```
-mcp_<server_name>_<tool_name>
-# e.g. mcp_filesystem_read_file
+mcp__<server_name>__<tool_name>
+# e.g. mcp__filesystem__read_file
 ```
 
-Each server with at least one registered tool also creates a runtime toolset `mcp-<server>`. Utility tools (`list_resources`, `read_resource`, `list_prompts`, `get_prompt`, registered per server as e.g. `mcp_github_list_resources`) are capability-aware: they exist only if the session supports resources/prompts and your config allows them. If everything is filtered out, no empty toolset is created for that server.
+Each server with at least one registered tool also creates a runtime toolset `mcp-<server>`. Utility tools (`list_resources`, `read_resource`, `list_prompts`, `get_prompt`, registered per server as e.g. `mcp__github__list_resources`) are capability-aware: they exist only if the session supports resources/prompts and your config allows them. If everything is filtered out, no empty toolset is created for that server.
 
 Tool results: invisible Unicode TAG characters (U+E0000-U+E007F) are stripped from results, resources, and descriptions; vendor `_meta` is passed to the model but protocol-reserved prefixes are dropped; `ImageContent` is saved to the image cache and reported as `MEDIA:/path/to/image.png` (and attached when the main model can see images; downscaled to `vision.embed_target_bytes`, up to 4 per result).
 
@@ -157,6 +157,10 @@ hermes mcp serve
 **Event system:** supports polling and long-polling for near-real-time message awareness.
 
 **Current limitations:** stdio transport only; text-only sends; no media attachment support.
+
+## Notes
+
+- The v0.22.2 user-guide/features/mcp.md still shows the legacy single-underscore form `mcp_<server>_<tool>`, but the Tools Reference, the Toolsets Reference, and the v0.22.2 source `tools/mcp_tool_schema.py` (`MCP_TOOL_NAME_PREFIX = "mcp__"`) use the double-underscore form `mcp__<server>__<tool>`; this page follows the latter.
 
 ## Related
 

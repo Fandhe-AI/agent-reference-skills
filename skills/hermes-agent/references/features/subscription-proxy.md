@@ -39,6 +39,7 @@ Other paths return 404 with an error pointing at the allowed paths.
 - The proxy forwards the body verbatim with `Authorization: Bearer <minted-key>`, preserves SSE streaming, and logs no request bodies. Portal tier RPM/TPM limits apply across the whole proxy; no pooling.
 - New providers implement `UpstreamAdapter` in `hermes_cli/proxy/adapters/<provider>.py` and register it in `adapters/__init__.py`; non-OpenAI-compatible protocols are out of scope.
 - OpenViking example (`~/.openviking/ov.conf`): `"vlm": {"provider": "openai", "model": "Hermes-4-70B", "api_base": "http://127.0.0.1:8645/v1", "api_key": "unused-proxy-attaches-real-creds"}`. Karakeep: `OPENAI_API_BASE_URL=http://127.0.0.1:8645/v1`, `OPENAI_API_KEY=any-non-empty-string`, `INFERENCE_TEXT_MODEL=Hermes-4-70B`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/subscription-proxy (pinned to v0.22.2)
 
 ## Related
 

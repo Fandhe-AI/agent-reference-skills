@@ -87,6 +87,7 @@ hermes -p work codex-runtime migrate    # a named profile
 - `fallback_providers` fail over only on quota and rate-limit failures; auth failures, timeouts and unknown-model errors do not fail over.
 - The codex thread id is stored on the session row (`codex_thread_id`) and resumed with `thread/resume`; if it cannot be resumed Hermes starts a new thread (`Codex thread could not be resumed; starting a new one.`).
 - Status: opt-in beta, validated against Hermes Agent 2026.5 and Codex CLI 0.130.0.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/codex-app-server-runtime (pinned to v0.22.2)
 
 ## Related
 

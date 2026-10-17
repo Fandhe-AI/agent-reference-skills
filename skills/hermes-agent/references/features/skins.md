@@ -81,6 +81,7 @@ tool_prefix: "▏"
 - User skins in `~/.hermes/skins/` take precedence over built-ins with the same name; unknown skins fall back to `default`. `/skin` is session-only; set `display.skin` in `config.yaml` for a permanent default. Built-in skins load from `hermes_cli/skin_engine.py`.
 - Desktop: `default` means the Desktop theme Nous (a stock `display.skin: default` never repaints Desktop); the classic gold look is the Desktop theme `classic` (`/skin classic`, `/skin gold`, `/skin hermes`). Desktop built-in names such as `mono` and `slate` are reserved; a user skin with such a name keeps the Desktop palette, but its `customCSS` still applies.
 - Hermes Mod (community visual skin editor): `npx -y hermes-mod`; saves to `~/.hermes/skins/` and respects `HERMES_HOME`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/skins (pinned to v0.22.2)
 
 ## Related
 

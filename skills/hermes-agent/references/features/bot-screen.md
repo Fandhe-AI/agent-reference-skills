@@ -61,6 +61,7 @@ terminal:
 - Browser: one persistent user-data-dir per bot at `<HERMES_HOME>/bot-desktop/browser-profile` (override with `AGENT_BROWSER_PROFILE`); `AGENT_BROWSER_EXECUTABLE_PATH` picks the Chromium. Set `browser.headed: true` to show the bot's browsing on the screen. The dock is seeded once, guarded by `xfce4-panel.xml`.
 - Troubleshooting: read `<HERMES_HOME>/bot-desktop/launcher.log` when the screen starts then stops. The screen runs a US keymap, so layout-dependent keys on non-US keyboards land as US counterparts during takeover.
 - WSL2 is a supported host, but WSLg mounts `/tmp/.X11-unix` read-only; replace the mount with a writable directory before the first start (`sudo umount /tmp/.X11-unix`, then `sudo mkdir -p /tmp/.X11-unix && sudo chmod 1777 /tmp/.X11-unix`).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/bot-screen (pinned to v0.22.2)
 
 ## Related
 

@@ -63,6 +63,7 @@ def register(ctx):
 - Key sets for TUI and Desktop are exported in `locales/_keys.tui.json` and `locales/_keys.desktop.json`; the validator checks against them and warns about keys absent from the English catalog.
 - Personal overlay without a plugin: `~/.hermes/locales/en.yaml` (partial, e.g. `approval.denied`); applies per profile.
 - Troubleshooting: an id must match its file name (`pl` needs `locales/pl.yaml`); a language listed but English in TUI/Desktop means the pack lacks `.tui.yaml` / `.desktop.yaml`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/language-packs (pinned to v0.22.2)
 
 ## Related
 

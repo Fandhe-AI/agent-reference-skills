@@ -122,6 +122,7 @@ hermes plugins pack show|install|export ./hermes-pack.yaml
 - Approval transports change where a prompt is shown, not whether approval is needed; select with `security.approval.transport` and `transport_fallback: deny` (default) or `builtin`.
 - `plugins.isolation: host` runs user plugins in a separate per-profile process; platform adapters, approval transports, `create_client` provider profiles, streaming dashboard endpoints and monkeypatching plugins need `in_process`.
 - Config-driven surfaces are not Python plugins: MCP `mcp_servers`, TTS/STT `type: command` providers, shell `hooks:`, skill taps.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins (pinned to v0.22.2)
 
 ## Related
 

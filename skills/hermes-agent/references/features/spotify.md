@@ -51,6 +51,7 @@ Playback-mutating actions accept an optional `device_id`.
 - Over SSH (`SSH_CLIENT` / `SSH_TTY` set) Hermes skips browser auto-open; forward the callback port: `ssh -N -L 43827:127.0.0.1:43827 user@remote-host`.
 - Cron jobs need Spotify enabled in `hermes tools` and an always-on target device; cron runs with `skip_memory=True`.
 - Errors: `INVALID_CLIENT: Invalid redirect URI` (mismatch with app settings), `429` (rate limit), persistent `401` (refresh token revoked; run `hermes spotify login`).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/spotify (pinned to v0.22.2)
 
 ## Related
 

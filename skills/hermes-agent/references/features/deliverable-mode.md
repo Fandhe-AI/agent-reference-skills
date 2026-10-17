@@ -37,6 +37,7 @@ kanban_complete(
 - Kanban: artifacts passed to `kanban_complete` are uploaded with the "task completed" notification to subscribers; files that do not exist when the notifier runs are silently skipped.
 - Other services (Notion, GitHub, Linear, Slack, Gmail, Salesforce, Snowflake / BigQuery, Google Drive) connect through MCP servers under `mcp_servers` in `~/.hermes/config.yaml`.
 - OAuth tokens stay on the user's machine in `auth.json` / `.env`; no hosted token storage.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/deliverable-mode (pinned to v0.22.2)
 
 ## Related
 

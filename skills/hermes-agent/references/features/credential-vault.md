@@ -46,6 +46,7 @@ The tool result the agent sees is `{filled_fields: 1, origin: "https://github.co
 - Headless sessions (cron, webhooks, API server, `hermes chat -q`): saved local logins work; a locked manager reports `unavailable_in_this_session`; a missing login reports `prompt_unavailable`. 1Password can use `OP_SERVICE_ACCOUNT_TOKEN`.
 - Does not protect against the page itself: once a password is typed into a site, that site has it. Origin binding guards against filling the wrong site, not a compromised right one.
 - Desktop management: Settings -> Passwords & Logins (add, remove, unlock/lock managers).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/credential-vault (pinned to v0.22.2)
 
 ## Related
 
