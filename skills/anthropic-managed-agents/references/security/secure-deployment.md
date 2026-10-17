@@ -101,7 +101,7 @@ Stop controls:
 |---------|--------------|
 | Session budget | Cap on spend at public list prices; at the cap the session and each thread pause; in-progress requests finish, so spend can pass the cap |
 | Deployment budget | Same cap on each session a deployment starts |
-| `user.interrupt` event | Stops the model response; a running tool call can finish first; session goes `idle` |
+| `user.interrupt` event | Stops the model response; a running tool call can finish first; session goes `idle` unless a workflow run keeps it `running`; ends no workflow run |
 | Archive / delete a session | Archive keeps history and blocks new events; delete removes record, events, sandbox |
 | Pause / archive a deployment | Pause stops new scheduled runs (manual runs still allowed); archive ends the schedule permanently |
 | Archive / delete a vault or credential | Removes the secret from running sessions (with a delay); interrupt running sessions too |
@@ -124,6 +124,7 @@ Stop controls:
 - Recommended designs for untrusted input plus action: split reading and acting across a lead / fetcher / writer in one multiagent session (agents share the sandbox, files, and vault credentials, so for stronger separation use two sessions with separate environments and vaults), give the agent one narrow custom tool, or keep a person in the loop with `always_ask`.
 - Budget `max_list_cost.amount` is a whole number of US cents as a string (`"125"` = $1.25). A budget cannot be added to a session created without one; after removing a session's cap a new one cannot be set.
 - Stopping an agent: send `user.interrupt` alone; pause/archive the deployment for scheduled agents; rotate any exposed key at its issuer; send a `user.message` asking it to stop open workflow runs; wait for `idle` (a running session cannot be archived or deleted); archive to keep history or delete. An interrupt does not undo prior actions; archiving an agent does not stop running sessions.
+- Adapted (not in the official docs; combined from Session budgets and Workflow runs): if workflow runs are open and the session is `idle` with `stop_reason` `budget_reached`, the steps above stall. A `user.interrupt` is accepted but stops nothing, a `user.message` asking the agent to stop its runs returns 400, and archiving or deleting the session might return 400 (`workflow_run_open`). In that case: (1) check the session-level `stop_reason` and `usage.list_cost`; (2) raise the budget (new `max_list_cost` strictly greater than the consumed list cost) or remove it; this resumes every paused run that an interrupt did not also pause (`workflow_run.status_running`), so they spend again until stopped, and a removed cap cannot be set again; (3) send the `user.message` asking the agent to stop its runs; (4) confirm each run you saw created has `workflow_run.status_ended` (result `{"type": "stopped"}`), then wait for `idle` and archive or delete.
 
 ## Related
 

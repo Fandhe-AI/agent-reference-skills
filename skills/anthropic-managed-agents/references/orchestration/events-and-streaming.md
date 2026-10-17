@@ -48,7 +48,7 @@ client.beta.sessions.events.send(
 )
 ```
 
-The interrupted turn ends with `session.status_idle` and `stop_reason: end_turn` — the same value as a turn finishing on its own; there is no interruption-specific stop reason.
+The interrupted turn ends with `session.status_idle` and `stop_reason: end_turn` — the same value as a turn finishing on its own; there is no interruption-specific stop reason. If workflow runs are open, the interrupt ends none of them, and a running run can keep the session `running`, so this `session.status_idle` might not arrive.
 
 ## Reconnecting without missing events
 

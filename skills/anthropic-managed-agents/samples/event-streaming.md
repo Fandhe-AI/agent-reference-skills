@@ -76,7 +76,7 @@ with client.beta.sessions.events.stream(session.id, event_deltas=["agent.message
 
 ## Notes
 
-- The interrupted turn ends with `session.status_idle` and `stop_reason: end_turn` — the same value as a turn finishing on its own; there is no interruption-specific stop reason.
+- The interrupted turn ends with `session.status_idle` and `stop_reason: end_turn` — the same value as a turn finishing on its own; there is no interruption-specific stop reason. If workflow runs are open, the interrupt ends none of them, and a running run can keep the session `running`, so this `session.status_idle` might not arrive.
 - `event_deltas` accepts `agent.message` and `agent.thinking` (more than 100 values or any other value returns 400). The buffered `agent.message` event is always the authoritative record; deltas are a best-effort preview and may be shed under load.
 - `event_start`/`event_delta` events have no `id`/`processed_at` of their own and are never persisted in event history.
 - Managed Agents API requests require the `managed-agents-2026-04-01` beta header, except memory store endpoints (`agent-memory-2026-07-22`).
