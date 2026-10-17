@@ -23,7 +23,7 @@ services:
       - "--config.file=/etc/prometheus/prom.yml"
     ports:
       # Publish the Prometheus frontend on localhost:9091
-      - 9091:9090
+      - 127.0.0.1:9091:9090
     restart: always
     volumes:
       # Store Prometheus data in a volume:
@@ -105,7 +105,7 @@ The CLI exports a single metric, `command.time` (execution duration in milliseco
 ## Notes
 
 - The CLI emits nothing unless `DOCKER_CLI_OTEL_EXPORTER_OTLP_ENDPOINT` is set. You need a collector listening on that endpoint and a backend (e.g. Prometheus, InfluxDB; Grafana for visualization).
-- Adapted: the official example leaves the OTLP receiver endpoints empty; since Collector v0.104 receivers default to localhost, so `0.0.0.0` endpoints are set inside the container and the published port is limited to 127.0.0.1.
+- Adapted: the official example leaves the OTLP receiver endpoints empty; since Collector v0.104 receivers default to localhost, so `0.0.0.0` endpoints are set inside the container and the published port is limited to 127.0.0.1. The official example also publishes Prometheus as `9091:9090` (all interfaces); it is limited to `127.0.0.1` here as well, matching the localhost-only comment.
 
 ## Related
 
