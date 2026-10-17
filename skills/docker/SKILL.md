@@ -2,7 +2,8 @@
 name: docker
 description: >
   Docker (Docker Engine / Dockerfile / Compose / Buildx) の Dockerfile 命令, docker CLI,
-  compose.yaml (Compose Specification), BuildKit, Bake (HCL), dockerd, daemon.json, rootless。
+  compose.yaml (Compose Specification), BuildKit, Bake (HCL), マルチステージ, マルチプラットフォーム, ビルドキャッシュ,
+  SBOM / provenance, dockerd, daemon.json, rootless。
 user-invocable: false
 ---
 

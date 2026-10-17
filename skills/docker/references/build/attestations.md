@@ -83,7 +83,7 @@ With the `oci-artifact` option (`image` / `registry` exporters) set to `true`:
 
 - Starting with BuildKit v0.32.0, attestations are stored as OCI artifacts when OCI media types are enabled; `BUILDX_NO_DEFAULT_OCI_ARTIFACT=1` makes Buildx set `oci-artifact=false` (see the build variables page).
 
-- Additional source: BuildKit Image Attestation Storage, https://github.com/moby/buildkit/blob/master/docs/attestations/attestation-storage.md
+- Additional source: BuildKit Image Attestation Storage, https://docs.docker.com/build/metadata/attestations/attestation-storage/
 
 ## Related
 
