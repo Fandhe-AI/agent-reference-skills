@@ -33,5 +33,5 @@ var open: some AppSchemaIntent
 
 - [AppIntent(schema:)](./appintent-schema-macro.md)
 - [Photos domain](./domain-photos.md)
-- ShowInAppSearchResultsIntent
-- OpenIntent
+- [ShowInAppSearchResultsIntent](../intent-types/showinappsearchresultsintent.md)
+- [OpenIntent](../intent-types/openintent.md)

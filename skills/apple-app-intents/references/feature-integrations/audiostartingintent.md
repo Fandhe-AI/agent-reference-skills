@@ -33,6 +33,6 @@ struct PlayIntent: AudioPlaybackIntent { /* ... */ }
 
 ## Related
 
-- AudioPlaybackIntent
+- [AudioPlaybackIntent](../intent-types/audioplaybackintent.md)
 - [ForegroundContinuableIntent](./foregroundcontinuableintent.md)
 - [LiveActivityStartingIntent](./liveactivitystartingintent.md)

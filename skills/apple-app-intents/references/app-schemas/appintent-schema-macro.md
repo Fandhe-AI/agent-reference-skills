@@ -47,4 +47,4 @@ struct PlayAudioIntent: AudioStartingIntent {
 - [AppEnum(schema:)](./appenum-schema-macro.md)
 - [App schema base types](./app-schema-base-types.md)
 - [Previous schema types](./assistant-schemas-legacy.md)
-- AppIntent
+- [AppIntent](../intents/appintent.md)

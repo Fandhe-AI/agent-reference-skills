@@ -36,6 +36,6 @@ extension OrderSoupIntent: ForegroundContinuableIntent {}
 
 ## Related
 
-- IntentModes
-- AppIntentError
+- [IntentModes](../intents/intentmodes.md)
+- [AppIntentError](../intents/appintenterror.md)
 - [AudioStartingIntent](./audiostartingintent.md)

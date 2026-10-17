@@ -23,4 +23,4 @@ protocol ShowsSnippetView : IntentResult where Self.Snippet == _SnippetViewConta
 
 - [IntentResult](./intentresult.md)
 - [IntentResultContainer](./intentresultcontainer.md)
-- SnippetIntent
+- [SnippetIntent](../system-integration/snippetintent.md)
