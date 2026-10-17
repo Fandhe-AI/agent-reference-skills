@@ -42,11 +42,12 @@ Set `--keyring-provider subprocess`, `UV_KEYRING_PROVIDER=subprocess`, or `tool.
 
 If authentication is found for a single index URL or net location (scheme, host, and port), it is cached for the duration of the command and used for other queries to that index or net location. Authentication is not cached across invocations of uv.
 
-When using `uv add`, uv does not persist index credentials to `pyproject.toml` or `uv.lock`. However, uv does persist credentials for direct URLs, i.e., `package @ https://username:password:example.com/foo.whl`, as there is not currently a way to otherwise provide those credentials.
+When using `uv add`, uv does not persist index credentials to `pyproject.toml` or `uv.lock`. However, uv does persist credentials for direct URLs, i.e., `package @ https://username:password@example.com/foo.whl`, as there is not currently a way to otherwise provide those credentials.
 
 ## Notes
 
 - If credentials were attached to an index URL during `uv add`, uv may fail to fetch dependencies from indexes which require authentication on subsequent operations; see Index authentication.
+- The upstream docs (0.13.1) print the direct-URL example as `username:password:example.com` (typo); the correct form uses `@` before the host.
 - Differences from `pip` are described in the pip compatibility guide (registry authentication section).
 
 ## Related

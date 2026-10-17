@@ -17,7 +17,8 @@ $ env UV_INSTALL_DIR="/custom/path" sh "${installer}"
 ```
 
 ```pwsh-session
-PS> powershell -ExecutionPolicy ByPass -c {$env:UV_INSTALL_DIR = "C:\Custom\Path"; & $installer}
+PS> $env:UV_INSTALL_DIR = "C:\Custom\Path"
+PS> powershell -ExecutionPolicy ByPass -File $installer
 ```
 
 ## Options / Props

@@ -16,12 +16,12 @@ $ HF_TOKEN=hf_... uv run https://huggingface.co/datasets/<user>/<name>/resolve/<
 
 The documentation has dedicated guides for popular alternative Python package indexes:
 
-| Service | Guide path in uv docs |
-|---------|-----------------------|
-| Azure Artifacts | `/uv/guides/integration/azure/` |
-| Google Artifact Registry | `/uv/guides/integration/google/` |
-| AWS CodeArtifact | `/uv/guides/integration/aws/` |
-| JFrog Artifactory | `/uv/guides/integration/jfrog/` |
+| Service | Guide |
+|---------|-------|
+| Azure Artifacts | https://docs.astral.sh/uv/guides/integration/azure/ |
+| Google Artifact Registry | https://docs.astral.sh/uv/guides/integration/google/ |
+| AWS CodeArtifact | https://docs.astral.sh/uv/guides/integration/aws/ |
+| JFrog Artifactory | https://docs.astral.sh/uv/guides/integration/jfrog/ |
 
 ## Hugging Face support
 
