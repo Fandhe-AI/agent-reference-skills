@@ -49,6 +49,7 @@ Profile {
 - `DynamicInstructions` describes the content and tools; a `LanguageModelSession.DynamicProfile` orchestrates transitions between session configurations.
 - `LanguageModelSession.Profile` conforms to `LanguageModelSession.DynamicProfile` and includes all the same modifiers used to configure a unit of work.
 - When a profile and a subprofile both register a life cycle callback, the framework calls both.
+- The Profile page example passes `toolCall, output` to `onToolOutput`, but the declared signature of `onToolOutput(perform:)` takes a zero-argument `() async throws -> Void` closure (see the onToolOutput(perform:) page); follow the declaration.
 
 ## Related
 
