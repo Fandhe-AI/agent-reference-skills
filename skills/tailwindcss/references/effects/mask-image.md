@@ -25,12 +25,12 @@ Utilities for controlling an element's mask image.
 | `mask-[<value>]` | `mask-image: <value>;` |
 | `mask-(<custom-property>)` | `mask-image: var(<custom-property>);` |
 | `mask-none` | `mask-image: none;` |
-| `mask-linear-<number>` | `mask-image: linear-gradient(<number>deg, black var(--tw-mask-linear-from)), transparent var(--tw-mask-linear-to));` |
-| `-mask-linear-<number>` | `mask-image: linear-gradient(calc(<number>deg * -1), black var(--tw-mask-linear-from)), transparent var(--tw-mask-linear-to));` |
+| `mask-linear-<number>` | `mask-image: linear-gradient(<number>deg, black var(--tw-mask-linear-from), transparent var(--tw-mask-linear-to));` |
+| `-mask-linear-<number>` | `mask-image: linear-gradient(calc(<number>deg * -1), black var(--tw-mask-linear-from), transparent var(--tw-mask-linear-to));` |
 | `mask-linear-from-<number>` | `mask-image: linear-gradient(var(--tw-mask-linear-position), black calc(var(--spacing) * <number>), transparent var(--tw-mask-linear-to));` |
 | `mask-linear-from-<percentage>` | `mask-image: linear-gradient(var(--tw-mask-linear-position), black <percentage>, transparent var(--tw-mask-linear-to));` |
 | `mask-linear-from-<color>` | `mask-image: linear-gradient(var(--tw-mask-linear-position), <color> var(--tw-mask-linear-from), transparent var(--tw-mask-linear-to));` |
-| `mask-linear-from-(<custom-property>)` | `mask-image: linear-gradient(var(--tw-mask-linear-position), black <custom-property>, transparent var(--tw-mask-linear-to));` |
+| `mask-linear-from-(<custom-property>)` | `mask-image: linear-gradient(var(--tw-mask-linear-position), black var(<custom-property>), transparent var(--tw-mask-linear-to));` |
 | `mask-linear-from-[<value>]` | `mask-image: linear-gradient(var(--tw-mask-linear-position), black <value>, transparent var(--tw-mask-linear-to));` |
 | `mask-linear-to-<number>` | `mask-image: linear-gradient(var(--tw-mask-linear-position), black var(--tw-mask-linear-from), transparent calc(var(--spacing) * <number>));` |
 | `mask-linear-to-<percentage>` | `mask-image: linear-gradient(var(--tw-mask-linear-position), black var(--tw-mask-linear-from), transparent <percentage>);` |
@@ -73,8 +73,8 @@ Utilities for controlling an element's mask image.
 | `mask-l-from-(<custom-property>)` | `mask-image: linear-gradient(to left, black var(<custom-property>), transparent var(--tw-mask-left-to));` |
 | `mask-l-from-[<value>]` | `mask-image: linear-gradient(to left, black <value>, transparent var(--tw-mask-left-to));` |
 | `mask-l-to-<number>` | `mask-image: linear-gradient(to left, black var(--tw-mask-left-from), transparent calc(var(--spacing) * <number>));` |
-| `mask-l-to-<percentage>` | `mask-image: linear-gradient(to bottom, black var(--tw-mask-left-from), transparent <percentage>);` |
-| `mask-l-to-<color>` | `mask-image: linear-gradient(to bottom, black var(--tw-mask-left-from), <color> var(--tw-mask-left-to));` |
+| `mask-l-to-<percentage>` | `mask-image: linear-gradient(to left, black var(--tw-mask-left-from), transparent <percentage>);` |
+| `mask-l-to-<color>` | `mask-image: linear-gradient(to left, black var(--tw-mask-left-from), <color> var(--tw-mask-left-to));` |
 | `mask-l-to-(<custom-property>)` | `mask-image: linear-gradient(to left, black var(--tw-mask-left-from), transparent var(<custom-property>));` |
 | `mask-l-to-[<value>]` | `mask-image: linear-gradient(to left, black var(--tw-mask-left-from), transparent <value>);` |
 | `mask-y-from-<number>` | `mask-image: linear-gradient(to top, black calc(var(--spacing) * <number>), transparent var(--tw-mask-top-to)), linear-gradient(to bottom, black calc(var(--spacing) * <number>), transparent var(--tw-mask-bottom-to)); mask-composite: intersect;` |
@@ -83,8 +83,8 @@ Utilities for controlling an element's mask image.
 | `mask-y-from-(<custom-property>)` | `mask-image: linear-gradient(to top, black var(<custom-property>), transparent var(--tw-mask-top-to)), linear-gradient(to bottom, black var(<custom-property>), transparent var(--tw-mask-bottom-to)); mask-composite: intersect;` |
 | `mask-y-from-[<value>]` | `mask-image: linear-gradient(to top, black <value>, transparent var(--tw-mask-top-to)), linear-gradient(to bottom, black <value>, transparent var(--tw-mask-bottom-to)); mask-composite: intersect;` |
 | `mask-y-to-<number>` | `mask-image: linear-gradient(to top, black var(--tw-mask-top-from), transparent calc(var(--spacing) * <number>)), linear-gradient(to bottom, black var(--tw-mask-bottom-from), transparent calc(var(--spacing) * <number>)); mask-composite: intersect;` |
-| `mask-y-to-<percentage>` | `mask-image: linear-gradient(to bottom, black var(--tw-mask-top-from), transparent <percentage>), linear-gradient(to bottom, black var(--tw-mask-bottom-from), transparent <percentage>); mask-composite: intersect;` |
-| `mask-y-to-<color>` | `mask-image: linear-gradient(to bottom, black var(--tw-mask-top-from), <color> var(--tw-mask-top-to)), linear-gradient(to bottom, black var(--tw-mask-bottom-from), <color> var(--tw-mask-bottom-to)); mask-composite: intersect;` |
+| `mask-y-to-<percentage>` | `mask-image: linear-gradient(to top, black var(--tw-mask-top-from), transparent <percentage>), linear-gradient(to bottom, black var(--tw-mask-bottom-from), transparent <percentage>); mask-composite: intersect;` |
+| `mask-y-to-<color>` | `mask-image: linear-gradient(to top, black var(--tw-mask-top-from), <color> var(--tw-mask-top-to)), linear-gradient(to bottom, black var(--tw-mask-bottom-from), <color> var(--tw-mask-bottom-to)); mask-composite: intersect;` |
 | `mask-y-to-(<custom-property>)` | `mask-image: linear-gradient(to top, black var(--tw-mask-top-from), transparent var(<custom-property>)),linear-gradient(to bottom, black var(--tw-mask-bottom-from), transparent var(<custom-property>)); mask-composite: intersect;` |
 | `mask-y-to-[<value>]` | `mask-image: linear-gradient(to top, black var(--tw-mask-top-from), transparent <value>),linear-gradient(to bottom, black var(--tw-mask-bottom-from), transparent <value>); mask-composite: intersect;` |
 | `mask-x-from-<number>` | `mask-image: linear-gradient(to right, black calc(var(--spacing) * <number>), transparent var(--tw-mask-right-to)), linear-gradient(to left, black calc(var(--spacing) * <number>), transparent var(--tw-mask-left-to)); mask-composite: intersect;` |
@@ -93,8 +93,8 @@ Utilities for controlling an element's mask image.
 | `mask-x-from-(<custom-property>)` | `mask-image: linear-gradient(to right, black var(<custom-property>), transparent var(--tw-mask-right-to)), linear-gradient(to left, black var(<custom-property>), transparent var(--tw-mask-left-to)); mask-composite: intersect;` |
 | `mask-x-from-[<value>]` | `mask-image: linear-gradient(to right, black <value>, transparent var(--tw-mask-right-to)), linear-gradient(to left, black <value>, transparent var(--tw-mask-left-to)); mask-composite: intersect;` |
 | `mask-x-to-<number>` | `mask-image: linear-gradient(to right, black var(--tw-mask-right-from), transparent calc(var(--spacing) * <number>)), linear-gradient(to left, black var(--tw-mask-left-from), transparent calc(var(--spacing) * <number>)); mask-composite: intersect;` |
-| `mask-x-to-<percentage>` | `mask-image: linear-gradient(to left, black var(--tw-mask-right-from), transparent <percentage>), linear-gradient(to left, black var(--tw-mask-left-from), transparent <percentage>); mask-composite: intersect;` |
-| `mask-x-to-<color>` | `mask-image: linear-gradient(to left, black var(--tw-mask-right-from), <color> var(--tw-mask-right-to)), linear-gradient(to left, black var(--tw-mask-left-from), <color> var(--tw-mask-left-to)); mask-composite: intersect;` |
+| `mask-x-to-<percentage>` | `mask-image: linear-gradient(to right, black var(--tw-mask-right-from), transparent <percentage>), linear-gradient(to left, black var(--tw-mask-left-from), transparent <percentage>); mask-composite: intersect;` |
+| `mask-x-to-<color>` | `mask-image: linear-gradient(to right, black var(--tw-mask-right-from), <color> var(--tw-mask-right-to)), linear-gradient(to left, black var(--tw-mask-left-from), <color> var(--tw-mask-left-to)); mask-composite: intersect;` |
 | `mask-x-to-(<custom-property>)` | `mask-image: linear-gradient(to right, black var(--tw-mask-right-from), transparent var(<custom-property>)),linear-gradient(to left, black var(--tw-mask-left-from), transparent var(<custom-property>)); mask-composite: intersect;` |
 | `mask-x-to-[<value>]` | `mask-image: linear-gradient(to right, black var(--tw-mask-right-from), transparent <value>),linear-gradient(to left, black var(--tw-mask-left-from), transparent <value>); mask-composite: intersect;` |
 | `mask-radial-[<value>]` | `mask-image: radial-gradient(<value>);` |
@@ -134,13 +134,13 @@ Utilities for controlling an element's mask image.
 | `mask-conic-from-[<value>]` | `mask-image: conic-gradient(from var(--tw-mask-conic-position), black <value>, transparent var(--tw-mask-conic-to));` |
 | `mask-conic-to-<number>` | `mask-image: conic-gradient(from var(--tw-mask-conic-position), black var(--tw-mask-conic-from), transparent calc(var(--spacing) * <number>));` |
 | `mask-conic-to-<percentage>` | `mask-image: conic-gradient(from var(--tw-mask-conic-position), black var(--tw-mask-conic-from), transparent <percentage>);` |
-| `mask-conic-to-<color>` | `mask-image: conic-gradient(from var(--tw-mask-conic-position), black var(--tw-mask-conic-from), <color> var(--tw-mask-conic-to);` |
-| `mask-conic-to-(<custom-property>)` | `mask-image: conic-gradient(from var(--tw-mask-conic-position), black var(--tw-mask-conic-from), transparent var(<custom-property>);` |
+| `mask-conic-to-<color>` | `mask-image: conic-gradient(from var(--tw-mask-conic-position), black var(--tw-mask-conic-from), <color> var(--tw-mask-conic-to));` |
+| `mask-conic-to-(<custom-property>)` | `mask-image: conic-gradient(from var(--tw-mask-conic-position), black var(--tw-mask-conic-from), transparent var(<custom-property>));` |
 | `mask-conic-to-[<value>]` | `mask-image: conic-gradient(from var(--tw-mask-conic-position), black var(--tw-mask-conic-from), transparent <value>);` |
 
 ## Notes
 
-- The table is transcribed as published, including its inconsistencies (for example unbalanced parentheses in some `mask-linear-*` / `mask-conic-to-*` rows and `to bottom` in `mask-l-to-<percentage>`); treat it as documentation text, not as generated CSS.
+- The published table contains typos that this page corrects: extra `)` in the `mask-linear-<number>` / `-mask-linear-<number>` rows; missing `var()` in `mask-linear-from-(<custom-property>)`; missing closing `)` in `mask-conic-to-<color>` / `mask-conic-to-(<custom-property>)`; wrong direction `to bottom` in `mask-l-to-<percentage>` / `mask-l-to-<color>` and in the first (top) gradient of `mask-y-to-<percentage>` / `mask-y-to-<color>` (corrected to `to left` / `to top`); wrong direction `to left` in the first (right) gradient of `mask-x-to-<percentage>` / `mask-x-to-<color>` (corrected to `to right`).
 - Using an image mask: use the `mask-[<value>]` syntax to set the mask image of an element.
 - Masking edges: use `mask-b-from-<value>` and `mask-t-to-<value>` (also `mask-r-*`, `mask-l-*`) to add a linear gradient mask to a single side. Use `mask-x-from-70%` and `mask-y-to-90%` to apply a mask to two sides at the same time.
 

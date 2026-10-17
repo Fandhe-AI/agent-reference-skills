@@ -25,18 +25,18 @@ Utilities for controlling the shadow of a text element.
 | `text-shadow-lg` | `text-shadow: var(--text-shadow-lg); /* 0px 1px 2px rgb(0 0 0 / 0.1), 0px 3px 2px rgb(0 0 0 / 0.1), 0px 4px 8px rgb(0 0 0 / 0.1) */` |
 | `text-shadow-none` | `text-shadow: none;` |
 | `text-shadow-(<custom-property>)` | `text-shadow: var(<custom-property>);` |
-| `text-shadow-(color:<custom-property>)` | `--tw-shadow-color var(<custom-property>);` |
+| `text-shadow-(color:<custom-property>)` | `--tw-text-shadow-color: var(<custom-property>);` |
 | `text-shadow-[<value>]` | `text-shadow: <value>;` |
-| `text-shadow-inherit` | `--tw-shadow-color inherit;` |
-| `text-shadow-current` | `--tw-shadow-color currentColor;` |
-| `text-shadow-transparent` | `--tw-shadow-color transparent;` |
-| `text-shadow-<color>` | `--tw-text-shadow-color var(--color-<color>); /* value from theme.css */` |
+| `text-shadow-inherit` | `--tw-text-shadow-color: inherit;` |
+| `text-shadow-current` | `--tw-text-shadow-color: currentColor;` |
+| `text-shadow-transparent` | `--tw-text-shadow-color: transparent;` |
+| `text-shadow-<color>` | `--tw-text-shadow-color: var(--color-<color>); /* value from theme.css */` |
 
 `<color>` stands for every default palette color (the docs table lists one row per color): `black`, `white`, and the families `red`, `orange`, `amber`, `yellow`, `lime`, `green`, `emerald`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `fuchsia`, `pink`, `rose`, `slate`, `gray`, `zinc`, `neutral`, `stone`, `mauve`, `olive`, `mist`, `taupe`, each with shades `50` to `950` (`50`, `100`-`900`, `950`). Values are the `--color-*` variables in `theme.css`.
 
 ## Notes
 
-- Table is transcribed as published, including the missing colons in the `--tw-shadow-color` rows.
+- The published table omits the colon after the property name in the color rows and uses `--tw-shadow-color` (the `box-shadow` variable) in four of them, inconsistent with the `text-shadow-<color>` row (`--tw-text-shadow-color`). This page corrects the colons and uses `--tw-text-shadow-color` throughout.
 - The official docs custom value example is `rgb(0, 0, 0 / 0.25)`, which is invalid because it mixes comma and slash syntax. This page corrects it to the space-separated `rgb(0 0 0 / 0.25)`.
 - Basic example: `text-shadow-2xs`, `text-shadow-xs`, `text-shadow-sm`, `text-shadow-md`, `text-shadow-lg`.
 - Changing the opacity: use the opacity modifier, e.g. `text-shadow-lg/20`, `text-shadow-lg/30`. The default text shadow opacities are quite low (20% or less), so increasing the opacity (to like 50%) will make the text shadows more pronounced.

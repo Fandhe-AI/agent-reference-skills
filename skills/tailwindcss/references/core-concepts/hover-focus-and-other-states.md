@@ -73,7 +73,7 @@ Quick reference of every variant included by default (CSS column as in the docs;
 | `in-range` | `&:in-range` |
 | `out-of-range` | `&:out-of-range` |
 | `placeholder-shown` | `&:placeholder-shown` |
-| `details-content` | `&:details-content` |
+| `details-content` | `&::details-content` |
 | `autofill` | `&:autofill` |
 | `read-only` | `&:read-only` |
 | `before` | `&::before` |
@@ -164,7 +164,7 @@ The CSS of the pointer variants and `nth-*` family matches the docs' quick refer
 ## Notes
 
 - Variant groups described in the docs: pseudo-classes, pseudo-elements, media and feature queries, attribute selectors, child selectors.
-- Pseudo-class references: `hover`, `focus`, `active`, `visited`, `focus-within`, `focus-visible`, `target`, structural variants (`first`, `last`, `odd`, `even`, `only`, `nth-*`, `*-of-type`, `empty`), form states (`required`, `invalid`, `disabled`, `checked`, `read-only`, `indeterminate`, `default`, `optional`, `valid`, `user-valid`, `user-invalid`, `in-range`, `out-of-range`, `placeholder-shown`, `autofill`, `enabled`, `details-content`).
+- Pseudo-class references: `hover`, `focus`, `active`, `visited`, `focus-within`, `focus-visible`, `target`, structural variants (`first`, `last`, `odd`, `even`, `only`, `nth-*`, `*-of-type`, `empty`), form states (`required`, `invalid`, `disabled`, `checked`, `read-only`, `indeterminate`, `default`, `optional`, `valid`, `user-valid`, `user-invalid`, `in-range`, `out-of-range`, `placeholder-shown`, `autofill`, `enabled`). `details-content` is a pseudo-element (`&::details-content`); the published table shows `&:details-content` with a single colon, which this page corrects.
 - `nth-*` accepts any number by default; use arbitrary values for complex expressions like `nth-[2n+1_of_li]`.
 - Tailwind adds `content: ''` automatically with `before:` / `after:` unless you specify another value.
 
