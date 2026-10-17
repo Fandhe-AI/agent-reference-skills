@@ -32,7 +32,7 @@ kicad-cli fp upgrade --force MyFootprintLibrary.pretty
 
 > **警告**: `--force` を付けると既に最新フォーマットのライブラリも上書きする。
 
-対応する入力フォーマット: KiCad `.pretty` (`.kicad_mod`)、Legacy KiCad pre-5.0 (`.mod`, `.emp`)、Altium (`.PcbLib`, `.IntLib`)、CADSTAR (`.cpa`)、EAGLE XML (`.lbr`)、EasyEDA/JLCEDA (`.json`, `.elibz`, `.epro`, `.zip`)、GEDA/PCB (`.fp`)
+対応する入力フォーマット: KiCad `.pretty` (`.kicad_mod`)、Legacy KiCad pre-5.0 (`.mod`, `.emp`)、Altium (`.PcbLib`, `.IntLib`)、CADSTAR (`.cpa`)、EAGLE XML (`.lbr`)、EasyEDA/JLCEDA (`.json`, `.elibz`, `.epro`, `.zip`)、GEDA/PCB（`.fp` ファイルを入れたフォルダー）
 
 ## シンボルを SVG にエクスポート
 
@@ -48,6 +48,8 @@ kicad-cli sym export svg --output ./svg/ --symbol R MySymbolLibrary.kicad_sym
 
 ## シンボルを KiCad ネイティブ形式にエクスポート
 
+> 注意: KiCad 10.0 の CLI マニュアルには `sym export kicad_sym` の記載なし（`sym export svg` と `sym upgrade` のみ）。実行前に `kicad-cli sym export -h` で確認すること。
+
 ```sh
 kicad-cli sym export kicad_sym --output output.kicad_sym input.kicad_sym
 ```
@@ -60,4 +62,12 @@ kicad-cli sym upgrade --output ./upgraded/ legacy_library.lib
 
 > **警告**: `--output` を省略すると元ファイルを上書きする。実行前にバックアップを取ること。
 
-対応する入力フォーマット: KiCad `.kicad_sym`、Legacy KiCad pre-5.0 (`.lib`, `.dcm`)、Altium (`.IntLib`)、EAGLE XML (`.lbr`)、EasyEDA/JLCEDA (`.json`, `.elibz`, `.epro`, `.zip`)
+`--output` にディレクトリを渡すと 1 シンボル 1 ファイルの unpacked ライブラリ、`.kicad_sym` ファイルを渡すと 1 ファイルの packed ライブラリとして保存される。
+
+## シンボルライブラリのアップグレード（1 ファイルにまとめて出力）
+
+```sh
+kicad-cli sym upgrade --output upgraded.kicad_sym legacy_library.lib
+```
+
+対応する入力フォーマット: KiCad `.kicad_sym`、KiCad pre-6.0 (`.lib`)、Altium (`.SchLib`, `.IntLib`)、CADSTAR parts (`.lib`)、EAGLE XML (`.lbr`)、EasyEDA/JLCEDA (`.json`, `.elibz`, `.epro`, `.zip`)

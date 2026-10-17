@@ -11,7 +11,7 @@ kicad-cli sch export bom --output bom.csv schematic.kicad_sch
 ## BOM の出力（フィールド指定）
 
 ```sh
-kicad-cli sch export bom --output bom.csv --fields "Reference,Value,Footprint,Quantity" schematic.kicad_sch
+kicad-cli sch export bom --output bom.csv --fields "Reference,Value,Footprint,QUANTITY" schematic.kicad_sch
 ```
 
 ## BOM の出力（グループ化・DNP 除外）
@@ -49,7 +49,7 @@ kicad-cli sch export pdf --output schematic.pdf schematic.kicad_sch
 ## PDF の出力（白黒・プロパティポップアップ除外）
 
 ```sh
-kicad-cli sch export pdf --output schematic.pdf --black-and-white --exclude-property-popups schematic.kicad_sch
+kicad-cli sch export pdf --output schematic.pdf --black-and-white --exclude-pdf-property-popups schematic.kicad_sch
 ```
 
 ## SVG の出力（全シート）
@@ -85,3 +85,5 @@ kicad-cli sch upgrade old_schematic.kicad_sch
 ```
 
 > **警告**: アップグレードしたファイルは旧バージョンの KiCad で開けなくなる。実行前にバックアップを取ること。
+
+指定したファイルだけが対象で、子シートはアップグレードされない（階層設計では各 `.kicad_sch` ごとに実行する）。既に最新フォーマットの場合は何もしない（`--force` で再保存）。

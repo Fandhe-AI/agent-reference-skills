@@ -11,19 +11,19 @@ Symbol Editor workflow:
    → Save as getting-started.kicad_sym (inside project folder)
 
 2. New symbol
-   File → New Symbol
+   File → New Symbol…  (Ctrl+N)
    Name: SW_MySwitch   Reference prefix: SW
 
 3. Add pins  (must be on 50 mil grid)
-   Add a pin tool
-   Pin 1: name=A, type=Passive, position=(-2.54, 0)
-   Pin 2: name=B, type=Passive, position=(2.54, 0)
-   Press Insert to auto-increment pin numbers
+   Pin tool (right toolbar) → Pin Properties dialog, then place
+   Pin 1: name=A, type=Passive, position=(-100 mil, 0)
+   Pin 2: name=B, type=Passive, position=(100 mil, 0)
+   Press Insert to repeat the last item (auto-increment pin numbers)
 
 4. Draw body (graphic lines/circles on Symbol layer)
 
 5. Set properties
-   File → Symbol Properties → keywords, datasheet URL
+   File → Symbol Properties (or the Symbol Properties toolbar button / double-click empty canvas) → Keywords, Datasheet field
 
 ---
 
@@ -56,7 +56,8 @@ Linking:
 
 ## Notes
 
+- Adapted from the Getting Started tutorial (pin at -200 mil): the manual strongly recommends mils for symbol pins in the Symbol Editor; mixing metric and imperial units makes pins unconnectable.
 - Pins must always be placed on a 50 mil grid; off-grid pins cause connection failures in the schematic.
 - Use `${KIPRJMOD}` as the library path variable to keep project libraries portable.
 - Setting the `Footprint` field in the symbol eliminates manual assignment during schematic entry.
-- STEP or VRML 3D models can be attached via Footprint Properties → 3D Models tab; recommended tool is FreeCAD with StepUp Workbench.
+- STEP, VRML, or IDF 3D models can be attached via Footprint Properties → 3D Models tab (use Embed File in the file browser to embed one); recommended tool is FreeCAD with StepUp Workbench.
