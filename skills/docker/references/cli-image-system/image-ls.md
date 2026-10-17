@@ -23,7 +23,7 @@ $ docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}"
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `-a`, `--all` |  | Show all images (default hides intermediate and dangling images) |
+| `-a`, `--all` |  | Show all images (default hides intermediate images) |
 | `--digests` |  | Show digests |
 | `-f`, `--filter` |  | Filter output based on conditions provided |
 | `--format` |  | Format output using a custom template: `table` (default, with headers), `table TEMPLATE`, `json`, or `TEMPLATE` (Go template). See https://docs.docker.com/go/formatting/ |
@@ -55,7 +55,7 @@ Supported filters (`key=value`; repeat the flag for multiple filters):
 
 ## Notes
 
-- By default only top-level images are shown; intermediate layers are hidden (use `-a` to include them). Untagged leaf images typically still appear as `<none>:<none>` rows; the official reference states that dangling images are also hidden by default, which does not match the usual output.
+- By default only top-level images are shown; intermediate layers are hidden (use `-a` to include them). Untagged leaf (dangling) images still appear as `<none>:<none>` rows. Adapted: the official option table says `-a` reveals "intermediate and dangling images", which does not match the actual output, so the table above omits "dangling".
 - `SIZE` is the cumulative space of the image and all its parent images, which is also the disk space used by the tar file created by `docker save`. An image with multiple repository names or tags is listed more than once (matching `IMAGE ID`) but counts toward `SIZE` once.
 - `[REPOSITORY[:TAG]]` must be an exact match (`docker images jav` does not match `java`); if nothing matches, the list is empty.
 - Images in the v2 or later format have a content-addressable `digest`; it can be used with `pull`, `create`, `run`, `rmi`, and in a Dockerfile `FROM`.

@@ -23,8 +23,10 @@ $ docker buildx use mybuilder
 ## Notes
 
 - The global `--builder` flag (same as `docker buildx --builder`) overrides the configured builder instance for a single invocation.
+- `docker buildx build` (and other `docker buildx` build commands) use the selected builder, but `docker build` always defaults to the default builder for backwards compatibility; pass `--builder` or set `BUILDX_BUILDER` to use the selected builder with `docker build` (see Builders).
 
 ## Related
 
+- [Builders](../build/builders.md)
 - [docker buildx create](./buildx-create.md)
 - [docker buildx ls](./buildx-ls.md)

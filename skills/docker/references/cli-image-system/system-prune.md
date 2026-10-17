@@ -4,7 +4,7 @@ source: https://docs.docker.com/reference/cli/docker/system/prune/
 
 # docker system prune
 
-Remove unused data: all unused containers, networks, images (both dangling and unused), unused build cache, and optionally volumes.
+Remove unused data: all stopped containers, networks not used by at least one container, dangling images (all unused images with `-a`), unused build cache, and optionally anonymous volumes (`--volumes`).
 
 ## Signature / Usage
 
@@ -35,6 +35,7 @@ Supported filters:
 
 ## Notes
 
+- Adapted: the official summary says images "(both dangling and unused)"; by default only dangling images are removed, and other unused images require `-a`.
 - Build cache is always eligible for pruning with this command, including BuildKit cache mounts created with `RUN --mount=type=cache`. Use `docker builder prune` to reclaim only build cache without removing containers, networks, or images.
 - By default volumes are not removed, to avoid deleting important data when no container currently uses the volume. `--volumes` prunes anonymous volumes not used by at least one container.
 - Multiple filters with different keys combine with AND; `--filter "label=foo" --filter "until=24h"` prunes items with label `foo` and older than 24 hours. The official docs state that the same key combines with OR ("either label"), but for `label` the daemon requires every specified label to match (AND): `--filter "label=foo" --filter "label=bar"` prunes only items that have both labels.
