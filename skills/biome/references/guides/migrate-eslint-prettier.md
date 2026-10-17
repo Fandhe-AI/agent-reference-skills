@@ -57,10 +57,11 @@ biome migrate prettier --write
 
 ## After migrating
 
-- ESLint / Prettier は `.gitignore` のファイルを既定でスキップするが、Biome は VCS 統合が有効なときのみ。同じファイル集合を無視するため VCS 統合を有効化する（`integrate-in-vcs.md`）
+- ESLint / Prettier は `.gitignore` のファイルを既定でスキップするが、Biome は VCS 統合が有効なときのみ。同じファイル集合を無視するため VCS 統合を有効化する（`integrate-in-vcs.md`）（公式ドキュメントの記述。ツールごとの差異は Notes 参照）
 - 結果に満足したら ESLint・Prettier とそのプラグインを依存から削除し、エディタ拡張を Biome のものに置き換える
 - 完全に同一の動作は期待できない。一部のルールオプションは Biome に実装されていない
 
 ## Notes
 
+- 公式は「ESLint / Prettier は `.gitignore` を既定でスキップ」と記載しているが、ESLint（flat config）は `.gitignore` を既定では読まず、設定側の除外指定で対象を絞る（この点は原本に記載なし）。VCS 統合を有効化する前に、移行元の明示的な除外設定と `.gitignore` を照合して対象ファイル集合を確認する
 - 公式 URL は `/guides/migrate-eslint-prettier` から `/installation/migrate-eslint-prettier` へ移動した（ページは 2026-10 に再構成）
