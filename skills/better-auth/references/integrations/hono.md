@@ -89,6 +89,12 @@ export const sessionMiddleware = createMiddleware<Env>(async (c, next) => {
 Add it to any route that needs the session:
 
 ```typescript
+import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
+import { sessionMiddleware } from "./session-middleware";
+
+const app = new Hono();
+
 app.get("/hello", sessionMiddleware, (c) => {
   const session = c.get("session");
   if (!session) {
@@ -96,6 +102,8 @@ app.get("/hello", sessionMiddleware, (c) => {
   }
   return c.json({ message: `Hello, ${session.user.name}.` });
 });
+
+export default app;
 ```
 
 ### Hono RPC
