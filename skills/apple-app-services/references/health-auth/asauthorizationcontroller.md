@@ -42,7 +42,9 @@ init(authorizationRequests: [ASAuthorizationRequest])
 
 iOS 13.0+, iPadOS 13.0+, macOS 10.15+, tvOS 13.0+, watchOS 6.0+, visionOS 1.0+, Mac Catalyst 13.1+. `delegate` and `presentationContextProvider` must be set before calling `performRequests()`. Combine multiple request types in a single controller to let the system offer the best available credential. Delegate callbacks execute on the main thread.
 
-In SwiftUI, get an `AuthorizationController` from `@Environment(\.authorizationController)` (iOS 16.4+, macOS 13.3+, tvOS 16.4+, watchOS 9.4+, visionOS 1.0+) and call its async `performRequest(_:)`, which returns an `ASAuthorizationResult` without a delegate.
+In SwiftUI, get an `AuthorizationController` from `@Environment(\.authorizationController)` (iOS 16.4+, iPadOS 16.4+, Mac Catalyst 16.4+, macOS 13.3+, tvOS 16.4+, watchOS 9.4+) and call its async `performRequest(_:)`, which returns an `ASAuthorizationResult` without a delegate.
+
+- Source: https://developer.apple.com/documentation/authenticationservices/asauthorizationcontroller
 
 ## Related
 
