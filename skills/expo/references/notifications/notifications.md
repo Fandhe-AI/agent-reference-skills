@@ -43,9 +43,12 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
-async function registerForPushNotificationsAsync() {
-  let token;
+function handleRegistrationError(errorMessage: string) {
+  alert(errorMessage);
+  throw new Error(errorMessage);
+}
 
+async function registerForPushNotificationsAsync() {
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('myNotificationChannel', {
       name: 'A channel is needed for the permissions prompt to appear',
@@ -62,20 +65,20 @@ async function registerForPushNotificationsAsync() {
     finalStatus = status;
   }
   if (finalStatus !== 'granted') {
-    alert('Failed to get push token for push notification!');
+    handleRegistrationError('Permission not granted to get push token for push notification!');
     return;
   }
-  try {
-    const projectId =
-      Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-    if (!projectId) {
-      throw new Error('Project ID not found');
-    }
-    token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-  } catch (e) {
-    token = `${e}`;
+  const projectId =
+    Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+  if (!projectId) {
+    handleRegistrationError('Project ID not found');
   }
-  return token;
+  try {
+    const pushTokenString = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+    return pushTokenString;
+  } catch (e: unknown) {
+    handleRegistrationError(`${e}`);
+  }
 }
 ```
 
@@ -459,7 +462,7 @@ Notifications.scheduleNotificationAsync({
 | `interruptionLevel` | `InterruptionLevel` | iOS. Importance and delivery timing. |
 | `launchImageName` | `string` | Image or storyboard used when the app launches because of the notification. |
 | `priority` | `string` | Android. Relative priority. |
-| `sound` | `boolean \| 'default' \| 'defaultCritical' \| 'defaultRingtone' \| string & undefined` | `false` for silent. On Android 8+, control sounds via notification channels. `defaultCritical` and `defaultRingtone` are iOS only, `defaultCritical` requires the critical alerts entitlement. On iOS a custom filename including extension can be given if the file is in the plugin `sounds` array. |
+| `sound` | `boolean \| 'default' \| 'defaultCritical' \| 'defaultRingtone' \| string` | Optional. `false` for silent. On Android 8+, control sounds via notification channels. `defaultCritical` and `defaultRingtone` are iOS only, `defaultCritical` requires the critical alerts entitlement. On iOS a custom filename including extension can be given if the file is in the plugin `sounds` array. |
 | `sticky` | `boolean` | Android. If `true`, the notification cannot be dismissed by swipe (Android `isOngoing`; Firebase `sticky`). Defaults to `false`. |
 | `subtitle` | `string \| null` | Android: `subText`. iOS: `subtitle`. |
 | `threadIdentifier` | `string` | Groups related notifications (Android group key; iOS `threadIdentifier`). |
@@ -548,6 +551,8 @@ Notifications.scheduleNotificationAsync({
 - Deprecated per the source: `NotificationBehavior.shouldShowAlert` (use `shouldShowBanner` / `shouldShowList`) and `NotificationCategoryOptions.allowAnnouncement` (ignored by iOS). The source also prints "Deprecated: Use `clearLastNotificationResponse` instead." under `clearLastNotificationResponse()` and "Deprecated: Use `getLastNotificationResponse` instead." under `getLastNotificationResponse()` (self-referential, likely a doc generation artifact; the page's own Expo Router example uses the synchronous forms), and "Deprecated: use the `EventSubscription` type instead" next to the `Subscription` type.
 - The upstream example returns `BackgroundNotificationResult.NoData`, which is not exported; the actual enum is `BackgroundNotificationTaskResult` (NewData = 0, NoData = 1, Failed = 2).
 - The upstream manual step names `ios/project-name/Supporting/Expo.plist`, but the same page (and TaskManager docs) state `UIBackgroundModes` must be in the app's Info.plist, which is where iOS reads it.
+- The registration example follows the error handling of the Push notifications setup guide (`handleRegistrationError` throws); the SDK reference page snippet instead returns the stringified error as the token.
+- The official type table renders `sound` as `... | string & undefined`; any custom sound filename string (for example `mySoundFile.wav`) is accepted.
 - This page covers the Expo `expo-notifications` JS API and the Expo Push Service token flow. APNs and FCM native APIs are covered by apple-app-services and android-platform-core; this page is only the Expo wrapper over them.
 
 ## Related
