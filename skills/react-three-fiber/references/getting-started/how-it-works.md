@@ -120,7 +120,7 @@ is equivalent to:
 
 ```jsx
 const material = new THREE.MeshBasicMaterial()
-material.color = 'red'
+material.color.set('red')
 ```
 
 Fiber will check the type of the property value and either:
@@ -138,7 +138,7 @@ is equivalent to:
 
 ```jsx
 const mesh = new THREE.Mesh()
-mesh.scale = new THREE.Vector3(1, 2, 3)
+mesh.scale.set(1, 2, 3)
 
 // on update, it will instead `set()` the vector
 mesh.scale.set(3, 4, 5)
@@ -181,6 +181,7 @@ The loop is setup using `setAnimationLoop`, which will execute its callback ever
 - JSX elements map to three.js classes; the class APIs (`Mesh`, `BoxGeometry`, `Raycaster`, `WebGLRenderer.setAnimationLoop`) belong to the threejs skill.
 - The tutorial text says the default camera is at `[0, 0, 0]`; the Canvas API defaults table (camera position `[0, 0, 5]`) is authoritative.
 - The tutorial says objects are checked every frame; per the Events API, raycasting runs only on user interaction (use `events.update()` otherwise, see raycast-without-interaction.md).
+- The source tutorial (docs/tutorials/how-it-works.mdx, v9.8.2) shows `material.color = 'red'` and `mesh.scale = new THREE.Vector3(1, 2, 3)`; these are not valid three.js equivalents (`Object3D.scale` is read-only and `color` is a `THREE.Color`), so they are corrected here to `material.color.set('red')` / `mesh.scale.set(1, 2, 3)`.
 - `useCamera` is from `@react-three/drei`, a separate package not covered by this skill.
 
 ## Related
