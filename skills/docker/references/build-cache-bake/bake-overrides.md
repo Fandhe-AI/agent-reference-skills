@@ -40,12 +40,12 @@ Default file lookup order when no `--file` / `-f` is given:
 
 - If more than one Bake file is found, all are loaded and merged in lookup order; duplicate attributes are merged or overridden by the last occurrence depending on the attribute. `docker-bake.override.hcl` is loaded last, so its `variable "TAG" { default = "bar" }` overrides `foo`.
 - `--set` is repeatable. For array fields such as `tags`, repeat `--set` or use the `+=` operator to append without replacing. Array literal syntax like `--set target.tags=[a,b]` is not supported.
-- `--set` supports Go `path.Match` patterns:
+- `--set` supports Go `path.Match` patterns. Quote wildcard patterns so the shell does not expand them.
 
 ```console
-$ docker buildx bake --set foo*.args.mybuildarg=value
-$ docker buildx bake --set *.platform=linux/arm64
-$ docker buildx bake --set foo*.no-cache
+$ docker buildx bake --set 'foo*.args.mybuildarg=value'
+$ docker buildx bake --set '*.platform=linux/arm64'
+$ docker buildx bake --set 'foo*.no-cache'
 ```
 
 - Environment variables only override `variable` blocks: define the variable in the Bake file, then set an environment variable with the same name. Values are coerced into the variable's type first (e.g. `PORT=7070` with `add(PORT, 1)` yields `"7071"`).

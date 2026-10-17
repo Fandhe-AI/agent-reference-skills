@@ -188,10 +188,6 @@ provenanceEnvDir = "/etc/buildkit/provenance.d"
 [registry."docker.io"]
   # mirror configuration to handle path in case a mirror registry requires a /project path rather than just a host:port
   mirrors = ["yourmirror.local:5000", "core.harbor.domain/proxy.docker.io"]
-  # Use plain HTTP to connect to the mirrors.
-  http = true
-  # Use HTTPS with self-signed certificates. Do not enable this together with `http`.
-  insecure = true
   # If you use token auth with self-signed certificates,
   # then buildctl also needs to trust the token provider CA (for example, certificates that are configured for registry)
   # because buildctl pulls tokens directly without daemon process
@@ -247,6 +243,7 @@ provenanceEnvDir = "/etc/buildkit/provenance.d"
 
 ## Notes
 
+- The official full example also sets `http = true` and `insecure = true` on `docker.io` for illustration; they are mutually exclusive and both disable TLS protection — trust self-signed certificates with `ca` instead, and use `http = true` only for local mirrors.
 - Comments in the code block above were shortened where they repeated an earlier comment (e.g. the `reservedSpace` / `maxUsedSpace` / `minFreeSpace` explanations in `[worker.containerd]` and `[[worker.oci.gcpolicy]]`); keys and values are unchanged. See the official page for full comments.
 - Disk space parameters accept an integer number of bytes, a string with a unit (e.g. `"512MB"`), or a percentage of total disk space (e.g. `"10%"`).
 

@@ -19,7 +19,7 @@ Multi-platform images contain a manifest list pointing to multiple manifests (ea
 ### Prerequisites
 
 - An image store that supports manifest lists. Docker Desktop and Docker Engine 29.0+ use the containerd image store by default, which supports multi-platform images.
-- Older Engine versions (or upgrades still on classic storage drivers): enable the containerd image store in the daemon configuration file, or create a builder with the `docker-container` driver. That driver does not load images into the Engine image store; push with `docker build --push`.
+- Older Engine versions (or upgrades still on classic storage drivers): enable the containerd image store in the daemon configuration file, or create a builder with the `docker-container` driver. That driver does not load images into the Engine image store; push with `docker buildx build --push` (or `docker build --builder container-builder --push`); plain `docker build` always uses the default builder, not the one selected with `--use`.
 
 ```console
 $ docker buildx create \
