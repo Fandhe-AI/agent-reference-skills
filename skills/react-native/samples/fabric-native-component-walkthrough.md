@@ -256,6 +256,21 @@ class MainApplication : Application(), ReactApplication {
 (cd ios && bundle install && bundle exec pod install)
 ```
 
+Prepare the iOS project using Xcode:
+
+1. Open the CocoaPods generated Xcode Workspace:
+
+```bash
+# from the ios folder
+open Demo.xcworkspace
+```
+
+2. Right click on app and select New Group, call the new group `WebView`.
+3. In the `WebView` group, create New -> File from Template.
+4. Use the Objective-C File template, and name it `RCTWebView`.
+5. Repeat step 4 and create a header file named `RCTWebView.h`.
+6. Rename `RCTWebView.m` to `RCTWebView.mm` making it an Objective-C++ file.
+
 `RCTWebView.h`:
 
 ```objc
@@ -409,6 +424,7 @@ yarn run ios
 
 ## Notes
 
+- Create the .h/.mm files through Xcode (File from Template) so they are members of the app target; files only written to disk are not compiled.
 - The name passed to `codegenNativeComponent` (`CustomWebView`) must match the Android `getName()` and the iOS `componentProvider` mapping.
 - iOS needs the WebKit framework linked in Xcode (target, General, Frameworks, Libraries, and Embedded Content) for this web view only.
 - The source page also gives Java variants of the Android classes and a Flow spec. The Android manager in the source uses `@ReactProp(name = "sourceUrl")` while the spec prop is `sourceURL`, reproduced as written.

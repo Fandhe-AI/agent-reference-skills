@@ -271,7 +271,22 @@ class MainApplication : Application(), ReactApplication {
 }
 ```
 
-4b. iOS: `NativeLocalStorage/RCTNativeLocalStorage.h`:
+4b. iOS. Prepare the Xcode project:
+
+1. Open the CocoaPods generated Xcode Workspace.
+
+```bash
+cd ios
+open TurboModuleExample.xcworkspace
+```
+
+2. Right click on app and select `New Group`, call the new group `NativeLocalStorage`.
+3. In the `NativeLocalStorage` group, create `New` -> `File from Template`.
+4. Use the `Cocoa Touch Class`.
+5. Name the Cocoa Touch Class `RCTNativeLocalStorage` with the `Objective-C` language.
+6. Rename `RCTNativeLocalStorage.m` -> `RCTNativeLocalStorage.mm` making it an Objective-C++ file.
+
+Then write `NativeLocalStorage/RCTNativeLocalStorage.h`:
 
 ```objc
 //  RCTNativeLocalStorage.h
@@ -289,7 +304,7 @@ NS_ASSUME_NONNULL_BEGIN
 NS_ASSUME_NONNULL_END
 ```
 
-`NativeLocalStorage/RCTNativeLocalStorage.mm` (rename the `.m` file to `.mm`):
+`NativeLocalStorage/RCTNativeLocalStorage.mm` (the file renamed from `.m` in step 6):
 
 ```objc
 //  RCTNativeLocalStorage.m
@@ -353,6 +368,7 @@ npm run ios
 
 ## Notes
 
+- Create the .h/.mm files through Xcode (File from Template) so they are members of the app target; files only written to disk are not compiled.
 - Spec files must be prefixed `Native` (for example `NativeLocalStorage.ts`); `TurboModuleRegistry.getEnforcing` throws if the module is missing, `get` returns `null`.
 - Re-run `bundle exec pod install` (from `ios/`) after changing `codegenConfig` so Codegen regenerates.
 - This guide targets the New Architecture only. The source page also gives Java variants for the Android classes and the spec in Flow.
