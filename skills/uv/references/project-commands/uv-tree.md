@@ -76,7 +76,7 @@ $ uv tree --depth 1 --outdated
 ## Notes
 
 - Global options are listed in uv.md (project-commands).
-- Commands that support `--output-format json`, such as `uv tree`, can produce machine-readable output; the JSON schemas are experimental and may change without warning (preview feature `json-output`; see the preview features page).
+- For `uv tree`, JSON output is selected with `--format json` (see the options table above). The preview features page refers to this generically as `--output-format json` for commands that support machine-readable output; for `uv tree` use `--format json`. The JSON schemas are experimental and may change without warning (preview feature `json-output` suppresses the warning; see the preview features page).
 
 ## Related
 
