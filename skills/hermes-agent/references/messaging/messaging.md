@@ -14,7 +14,23 @@ hermes gateway start/stop/status       # Manage running service
 
 ## Supported Platforms
 
-25+ platforms: Telegram, Discord, Slack, WhatsApp, Signal, SMS (Twilio), Email, Home Assistant, Mattermost, Matrix, DingTalk, Feishu/Lark, WeCom (Enterprise WeChat), Weixin, QQ, Yuanbao, Microsoft Teams, Google Chat, LINE, SimpleX Chat, BlueBubbles (iMessage), ntfy, Open WebUI, API Server (OpenAI-compatible), Webhooks.
+Per the v0.22.2 Platform Comparison table: Telegram, Discord, Slack, Google Chat, WhatsApp, WhatsApp Cloud API, Signal, SMS, Email, Home Assistant (plugin), Mattermost, Matrix, DingTalk, Feishu/Lark, WeCom, WeCom Callback, Weixin, BlueBubbles, Photon (iMessage), QQ, Yuanbao, Microsoft Teams, LINE, ntfy, Raft, IRC, Buzz, SimpleX; plus API Server (OpenAI-compatible), Webhooks, and your browser. Hermes Relay (experimental) is a connector system that fronts Discord, Telegram, Slack, and WhatsApp through an external connector that owns the credentials; its capabilities are negotiated per connector at handshake.
+
+Home Assistant moved to a catalog plugin in v0.22.0 (toolset `hermes-homeassistant` with `ha_list_entities`, `ha_get_state`, `ha_call_service`, `ha_list_services` comes from the `homeassistant` plugin). One multiplexed gateway per machine serving all profiles is the default in v0.22.0; `hermes update` folds per-profile gateways into it when nothing conflicts (the "one profile per workspace / one gateway per profile" guidance below describes the earlier model; a bot token still cannot be opened by two gateways).
+
+### Messaging status in Desktop and the dashboard
+
+Status belongs to the selected profile on the selected machine. Credentials saved by `hermes gateway setup` can enable a credential-based platform without a `platforms` entry; an explicit `platforms.<name>.enabled: false` still disables it (and wins over credentials left in `.env`). **Saved** means credentials are stored, not that the gateway is running or the platform connected.
+
+### Intentional Silence Tokens
+
+If the agent's final response is exactly one supported token (`[SILENT]`, `SILENT`, `NO_REPLY`, `NO REPLY`, or the Chinese renderings `[静默]` / `静默` / `[沉默]` / `沉默`; whitespace and case normalized), the gateway sends nothing. The silence turn stays in the transcript; failed turns still surface as errors. On a message from a person a bare token is replaced by a short notice.
+
+### Gateway diagnostics
+
+- `kill -USR2 <gateway pid>` (Linux/macOS) appends all thread stacks to `~/.hermes/logs/gateway_faulthandler.log`.
+- An event-loop watchdog (`gateway.loop_watchdog_probe_interval_s` default 30, `gateway.loop_watchdog_max_strikes` default 3; `gateway.loop_watchdog: false` disables) dumps stacks, marks `gateway_state.json` degraded, and exits with code 75 so the supervisor restarts it. `hermes gateway status` reports degraded and stale-heartbeat states.
+- Linux/systemd only: `gateway.systemd_watchdog_seconds: 120` makes the generated unit `Type=notify` with `WatchdogSec` (regenerate with `hermes gateway install --force`).
 
 ## Slack Setup (Socket Mode)
 
@@ -124,7 +140,11 @@ sudo loginctl enable-linger "$USER"
 | `/reasoning [level\|show\|hide]` | Configure reasoning display |
 | `/voice [on\|off\|tts\|join\|leave\|status]` | Control voice features |
 | `/rollback [number]` | Restore filesystem checkpoints |
-| `/background <prompt>` | Run an independent background task |
+| `/bg <prompt>` (also `/background`) | Run an independent background task |
+| `/btw <question>` | Ask a side question without interrupting the conversation |
+| `/whoami` | Show your slash command access on this scope (admin / user / unrestricted) |
+| `/sessions [all] [search <query>]` | List previous sessions (`all` is admin-only) |
+| `/platform list\|pause <name>\|resume <name>` | Inspect and steer individual adapters without restarting the gateway |
 | `/reload-mcp` | Refresh MCP servers |
 | `/update` | Upgrade to the latest version |
 | `/help` | Display the command list |
@@ -132,26 +152,17 @@ sudo loginctl enable-linger "$USER"
 
 ## Session Management
 
-Sessions persist conversation context across messages until reset.
+Sessions persist conversation context across messages until you reset explicitly.
 
-**Reset policies:**
+**Session continuity (retired in v0.22.0: idle/daily reset policies):** gateway conversations no longer reset after inactivity or at a daily boundary (the earlier `daily` 4:00 AM / `idle` 1440-minute defaults and `reset_by_platform` overrides are gone). Use `/new` or `/reset` for a new conversation; context compression stays automatic. Core ignores legacy `session_reset` settings, reset-policy overrides, and reset-timer environment variables; gateway startup and `hermes doctor` warn if `session_reset.mode` is still `idle`, `daily`, or `both`. To keep time-based resets, install the catalog plugin: `hermes plugins install hermes-session-reset-policy`.
 
-| Mode | Default | Behavior |
-|------|---------|----------|
-| `daily` | 4:00 AM | Resets once per day |
-| `idle` | 1440 minutes | Resets after inactivity threshold |
-| `both` | — | Whichever policy triggers first |
+- `/sessions` lists previous sessions for the current chat; `/sessions search <query>` filters by title or id.
+- A `/model` switch persists across gateway restarts (credentials are re-resolved, never written); `/new` clears it; `/model <name> --global` writes through to `config.yaml`; `/model <name> --once` applies for one turn.
+- Delivery reliability: final responses are recorded in a durable delivery ledger (`state.db`) and redelivered after a crash (at-least-once; mid-send replies get a "Recovered reply" prefix; 3 attempts, 24-hour freshness, delivered rows pruned after 7 days). Disable with `gateway.delivery_ledger: false`.
 
-**Platform-specific overrides** in `~/.hermes/gateway.json`:
+**Per-channel overrides** (`platforms.<name>.channel_overrides.<channel-or-thread-id>` with optional `model`, `provider`, `system_prompt`): lookup is exact id then parent channel; model priority is session `/model` override, then `channel_overrides`, then global config.
 
-```json
-{
-  "reset_by_platform": {
-    "telegram": { "mode": "idle", "idle_minutes": 240 },
-    "discord": { "mode": "idle", "idle_minutes": 60 }
-  }
-}
-```
+**Admins vs regular users** (per platform and per scope via `extra`): `allow_admin_from` admins run every slash command; `user_allowed_commands` lists what non-admins may run (floor: `/help`, `/whoami`); `group_allow_admin_from` / `group_user_allowed_commands` for group scope. If `allow_admin_from` is unset the split is disabled for that scope.
 
 ## Security
 
@@ -194,6 +205,13 @@ display:
   background_process_notifications: all  # all | result | error | off
 ```
 
+## Busy input, clarify, and tool progress
+
+- Messaging a busy agent redirects its active turn by default (a foreground terminal command is moved to the background, not killed); `/stop` is a hard stop. Set `display.busy_input_mode: queue | steer | interrupt`; related keys `display.busy_ack_enabled`, `display.busy_text_debounce_seconds` (0.35), `display.busy_text_hard_cap_seconds` (1.0). `queue` gives each follow-up its own turn in arrival order; `steer` injects via `/steer` after the next tool call and falls back to queue if the agent has not started.
+- `clarify` supports multi-select: reply with numbers separated by commas or spaces (e.g. `1, 3`), option text, or a free-form answer.
+- `display.tool_progress: off | new | all | verbose | log`; `log` sends no chat bubbles and appends each tool call to `~/.hermes/logs/tool_calls.log` (5 MB x 3 backups, secrets redacted). `tool_progress_grouping: accumulate | separate`.
+- `platforms.<name>.enabled: false` is authoritative over credentials in `.env`; `gateway.trust_env: false` ignores an inherited HTTP(S) proxy.
+
 ## Service Management
 
 ### Linux (systemd)
@@ -213,6 +231,17 @@ tail -f ~/.hermes/logs/gateway.log          # Stream logs
 ```
 
 The plist is written to `~/Library/LaunchAgents/ai.hermes.gateway.plist` and includes `PATH`, `VIRTUAL_ENV`, and `HERMES_HOME` variables.
+
+### Windows (Task Scheduler)
+
+```powershell
+hermes gateway install   # Register the Hermes_Gateway Scheduled Task (runs at logon)
+hermes gateway start     # Start the gateway hidden, without a console window
+hermes gateway stop      # Drain and stop the service
+hermes gateway status    # Check status, including registration drift
+```
+
+The task runs `wscript.exe` on a generated `.vbs` launcher under `%USERPROFILE%\.hermes\gateway-service\` that starts `python.exe -m hermes_cli.main gateway run` hidden and exits immediately. `RestartOnFailure` covers only the launcher, not a gateway that crashes later; a gateway killed from outside stays down until `hermes gateway start` or `schtasks /Run /TN <task>`. `hermes gateway start` and `hermes update` re-register a task that predates the current template.
 
 ## Platform-Specific Toolsets
 
