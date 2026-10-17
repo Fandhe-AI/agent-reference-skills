@@ -61,7 +61,7 @@ An unsigned or ad-hoc signed app may behave inconsistently with:
 
 ### Azure Artifact Signing
 
-Azure Artifact Signing (formerly Azure Trusted Signing) is Microsoft's cloud-based signing service. It is the cheapest option for code signing on Windows, and it gets rid of SmartScreen warnings. It is currently limited to developers in certain countries (see the Artifact Signing documentation).
+Azure Artifact Signing (formerly Azure Trusted Signing) is Microsoft's cloud-based signing service. It is the cheapest option for code signing on Windows, and signing is valid, but SmartScreen reputation builds up through download history, so new files may initially show a warning (same as OV). It is currently limited to developers in certain countries (see the Artifact Signing documentation).
 
 For developers on Linux or macOS, `jsign` can sign Windows apps via Azure Artifact Signing:
 
@@ -79,7 +79,7 @@ Electron Forge is the recommended way to sign your app as well as your `Squirrel
 
 ### Traditional certificates
 
-Since June 2023, Microsoft requires software to be signed with an "extended validation" (EV) code signing certificate. Simpler "authenticode code signing" / "software-based OV" certificates no longer provide benefits: Windows treats the app as completely unsigned. EV certificates must be stored on a hardware storage module compliant with FIPS 140 Level 2, Common Criteria EAL 4+ or equivalent, so they cannot simply be downloaded onto CI infrastructure. Many providers offer "cloud-based signing", which makes signing in CI relatively easy. Electron's own apps use DigiCert KeyLocker; any provider with a command line tool for signing files is compatible with Electron's tooling.
+Since June 2023, both OV and EV code signing certificates must have their private key stored on a hardware storage module compliant with FIPS 140 Level 2, Common Criteria EAL 4+ or equivalent, so they cannot simply be downloaded onto CI infrastructure. OV signing remains valid; since 2024, even EV certificates need SmartScreen reputation to build up (see windows-packaging-publish for certificate types). Many providers offer "cloud-based signing", which makes signing in CI relatively easy. Electron's own apps use DigiCert KeyLocker; any provider with a command line tool for signing files is compatible with Electron's tooling.
 
 All tools in the Electron ecosystem use `@electron/windows-sign` and typically expose it through a `windowsSign` property. The same `windowsSign` configuration works across Electron Forge, `@electron/packager`, `electron-winstaller`, and `electron-wix-msi`.
 
@@ -149,6 +149,8 @@ For Windows Store applications see [windows-store-guide.md](./windows-store-guid
 
 - Distance line: this page covers Electron-specific signing flows (Forge / `@electron/packager` / `@electron/osx-sign` / `@electron/windows-sign`). For general Apple signing, notarization, and App Store distribution see apple-distribution; for general MSIX / Microsoft Store publishing see windows-packaging-publish.
 - The `electron-wix-msi` example above uses a placeholder `signFile` function that the original page does not define.
+- Corrected (differs from the official page): the official text says an EV certificate is required since June 2023 and that OV signing is treated as completely unsigned. This page instead states the current requirements: the hardware key-storage requirement applies to both OV and EV certificates, and OV signing remains valid.
+- Corrected (differs from the official page): the official text says Azure Artifact Signing gets rid of SmartScreen warnings. This page distinguishes signing from SmartScreen reputation: reputation accumulates through download history, so new files may initially warn (same as OV).
 
 ## Related
 

@@ -53,13 +53,14 @@ fs.readFileSync('/path/to/example.asar')
 Some Node APIs unpack the file to the filesystem when called; apart from performance issues, various anti-virus scanners might be triggered. Leave files unpacked using the `--unpack` option; for example, shared libraries of native Node.js modules:
 
 ```sh
-$ asar pack app app.asar --unpack *.node
+$ asar pack app app.asar --unpack '*.node'
 ```
 
 This creates a folder `app.asar.unpacked` together with `app.asar`. It contains the unpacked files and should be shipped together with the `app.asar` archive.
 
 ## Notes
 
+- Adapted (not in the official docs): the `--unpack` glob is quoted so the shell does not expand it before asar receives it.
 Limitations of the Node API:
 
 - Archives are read-only: all Node APIs that can modify files will not work with ASAR archives.
