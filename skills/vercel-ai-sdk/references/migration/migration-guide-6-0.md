@@ -27,7 +27,7 @@ const agent = new ToolLoopAgent({
   tools: {
     // your tools here
   },
-  // stopWhen defaults to isStepCount(20)
+  // stopWhen defaults to stepCountIs(20)
 });
 
 const result = await agent.generate({
@@ -83,7 +83,7 @@ AI SDK Core changes:
 
 | Change | AI SDK 5 | AI SDK 6 |
 | --- | --- | --- |
-| Agent class | `Experimental_Agent` (`system`, default `stopWhen` of one step) | `ToolLoopAgent` (`instructions`, `stopWhen` defaults to `isStepCount(20)`) |
+| Agent class | `Experimental_Agent` (`system`, default `stopWhen` of one step) | `ToolLoopAgent` (`instructions`, `stopWhen` defaults to `stepCountIs(20)`) |
 | Core messages | `CoreMessage`, `convertToCoreMessages` | removed; use `ModelMessage`, `await convertToModelMessages(...)` |
 | Structured output | `generateObject`, `streamObject` (`partialObjectStream`) | deprecated, will be removed; use `generateText` / `streamText` with `output: Output.object({ schema })` (`output`, `partialOutputStream`) |
 | `convertToModelMessages` | sync | async (supports async `Tool.toModelOutput()`) |
@@ -121,7 +121,7 @@ Provider changes:
 
 ## Notes
 
-- The published page at tag `ai@7.0.142` shows `isStepCount` in its AI SDK 5 / 6 example snippets; the 7.0 guide states `stepCountIs` -> `isStepCount` is a 7.0 rename, so treat `isStepCount` in 5.x/6.x snippets as the page's text, not a 5.x export name.
+- The published page at tag `ai@7.0.142` shows `isStepCount` in its AI SDK 5 / 6 example snippets; the 7.0 guide states `stepCountIs` -> `isStepCount` is a 7.0 rename, so this page uses the 6.x name `stepCountIs`.
 - The page's snippets use the placeholders `__PROVIDER_IMPORT__` and `__MODEL__`.
 - `generateObject` / `streamObject` are deprecated in 6.0; their later status is covered by `migration-guide-7-0.md` (still listed there for `system` -> `instructions`).
 - Codemods may not cover all changes; manual edits may be required.

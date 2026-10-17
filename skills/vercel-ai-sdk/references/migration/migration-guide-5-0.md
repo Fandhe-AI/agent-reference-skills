@@ -12,8 +12,12 @@ Recommended process: back up the project, upgrade to AI SDK 5.0, migrate automat
 
 ```sh
 npm install ai@^5 @ai-sdk/react@^2 @ai-sdk/openai@^2 zod@^4.1.8
-npx @ai-sdk/codemod upgrade
 npx @ai-sdk/codemod v5
+```
+
+To run only a specific codemod instead of the full set:
+
+```sh
 npx @ai-sdk/codemod v5/rename-format-stream-part src/
 ```
 
@@ -69,7 +73,7 @@ Package versions: `ai` `5.0.0`; `@ai-sdk/provider` `2.0.0`; `@ai-sdk/provider-ut
 | --- | --- |
 | `maxTokens` | `maxOutputTokens` |
 | `providerMetadata` (input) | `providerOptions` (returned metadata is still `providerMetadata`) |
-| `maxSteps: 5` | `stopWhen: isStepCount(5)` / `hasToolCall('finalizeTask')` / arrays / custom `({ steps }) => ...`; `stopWhen` is only evaluated when the last step contains tool results |
+| `maxSteps: 5` | `stopWhen: stepCountIs(5)` / `hasToolCall('finalizeTask')` / arrays / custom `({ steps }) => ...`; `stopWhen` is only evaluated when the last step contains tool results |
 | `result.usage` (total across steps) | `usage` = final step only; `totalUsage` = all steps |
 | `step.reasoning` (string) | `step.reasoningText`; in `generateText` / `streamText` results `reasoning` -> `reasoningText`, `reasoningDetails` -> `reasoning` |
 | `experimental_continueSteps` | removed (use models with higher output token limits) |
@@ -162,7 +166,7 @@ Package versions: `ai` `5.0.0`; `@ai-sdk/provider` `2.0.0`; `@ai-sdk/provider-ut
 
 | Provider | AI SDK 4.0 | AI SDK 5.0 |
 | --- | --- | --- |
-| Providers (language model interface) | `LanguageModelV3` / `LanguageModelV1Middleware` imported from `ai`; `usage: { promptTokens, completionTokens }`; `rawResponse` | import from `@ai-sdk/provider` (`LanguageModelV3`, `LanguageModelV3Middleware`); `usage: { inputTokens, outputTokens, totalTokens }` (`totalTokens` required); `response`; expanded `LanguageModelV3StreamPart` with start/delta/end and ids |
+| Providers (language model interface) | `LanguageModelV1` / `LanguageModelV1Middleware` imported from `ai`; `usage: { promptTokens, completionTokens }`; `rawResponse` | import from `@ai-sdk/provider` (`LanguageModelV2`, `LanguageModelV2Middleware`); `usage: { inputTokens, outputTokens, totalTokens }` (`totalTokens` required); `response`; expanded `LanguageModelV2StreamPart` with start/delta/end and ids |
 | OpenAI | default instance used Chat Completions | default instance uses the Responses API; `openai.chat(...)` / `openai.responses(...)` select explicitly |
 | OpenAI | `strictSchemas` (default true) | `strictJsonSchema` (defaults to false; also on Chat Completions) |
 | OpenAI | `openai('gpt-4.1', { structuredOutputs: true })` | `providerOptions.openai.structuredOutputs` (typed with `OpenAIChatLanguageModelOptions`) |
@@ -180,7 +184,7 @@ Package versions: `ai` `5.0.0`; `@ai-sdk/provider` `2.0.0`; `@ai-sdk/provider-ut
 | Flatten streamText file properties | `v5/flatten-streamtext-file-properties` |
 | ID generation size argument | `v5/require-createIdGenerator-size-argument` |
 | IDGenerator -> IdGenerator | `v5/rename-IDGenerator-to-IdGenerator` |
-| Import LanguageModelV3 from provider package | `v5/import-LanguageModelV3-from-provider-package` |
+| Import LanguageModelV2 from provider package | `v5/import-LanguageModelV2-from-provider-package` |
 | Migrate to data stream protocol v2 | `v5/migrate-to-data-stream-protocol-v2` |
 | Move image model maxImagesPerCall | `v5/move-image-model-maxImagesPerCall` |
 | Move LangChain adapter | `v5/move-langchain-adapter` |
@@ -208,7 +212,8 @@ Package versions: `ai` `5.0.0`; `@ai-sdk/provider` `2.0.0`; `@ai-sdk/provider-ut
 ## Notes
 
 - Codemods may not cover all changes; manual edits may still be needed.
-- The published page at tag `ai@7.0.142` shows some names in its 5.0 snippets that were later renamed (for example `isStepCount` in `stopWhen` examples, `LanguageModelV3` / `LanguageModelV3Middleware` in the provider-interface section); the 7.0 guide states `stepCountIs` -> `isStepCount` is a 7.0 rename. Treat those names as the page's text, not as 5.x export names. Placeholders `__MODEL__` / `__PROVIDER_IMPORT__` also appear in the snippets.
+- `npx @ai-sdk/codemod upgrade` currently runs the codemods of all versions (v4 through latest), so it is not used here for a 5.0 migration; use `v5` (see the note in migration-guide-6-0).
+- The published page at tag `ai@7.0.142` shows some names in its 5.0 snippets that were later renamed (`isStepCount` in `stopWhen` examples, `LanguageModelV3*` in the provider-interface section and codemod table). This page uses the 5.x names instead: `stepCountIs` (the 7.0 guide states `stepCountIs` -> `isStepCount` is a 7.0 rename), `LanguageModelV2*`, and the codemod `v5/import-LanguageModelV2-from-provider-package` (file name confirmed in `packages/codemod/src/codemods/v5/` at tag `ai@5.0.0`). Placeholders `__MODEL__` / `__PROVIDER_IMPORT__` also appear in the snippets.
 - The official install command has no version specifiers; this skill's latest is v7, so the command here pins the target major (`ai@^5`, `@ai-sdk/*@^2` per the package versions on this page).
 - If you have persisted messages in a database, also read `migration-guide-5-0-data.md`.
 - Beta-only change documented on the page: between 5.0 betas, `fullStream` chunk types changed from `text` / `reasoning` to `text-delta` / `reasoning-delta` (beta.26 and later use `reasoning-delta`).
