@@ -12,6 +12,7 @@ const { BrowserWindow, app, screen, ipcMain, desktopCapturer, shell } = require(
 const fs = require('node:fs').promises
 const os = require('node:os')
 const path = require('node:path')
+const { pathToFileURL } = require('node:url')
 
 let mainWindow = null
 
@@ -33,14 +34,16 @@ async function takeScreenshot () {
   for (const source of sources) {
     const sourceName = source.name.toLowerCase()
     if (sourceName === 'entire screen' || sourceName === 'screen 1') {
-      const screenshotPath = path.join(os.tmpdir(), 'screenshot.png')
+      const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'electron-screenshot-'))
+      const screenshotPath = path.join(dir, 'screenshot.png')
 
       await fs.writeFile(screenshotPath, source.thumbnail.toPNG())
-      shell.openExternal(`file://${screenshotPath}`)
+      shell.openExternal(pathToFileURL(screenshotPath).href)
 
       return `Saved screenshot to: ${screenshotPath}`
     }
   }
+  return 'No matching screen source found'
 }
 
 ipcMain.handle('take-screenshot', () => takeScreenshot())
@@ -92,5 +95,6 @@ screenshot.addEventListener('click', async () => {
 
 - Source fiddle: `docs/fiddles/media/screenshot/take-screenshot`. The `index.html` needs elements with ids `screen-shot` and `screenshot-path`.
 - The thumbnail size is scaled by the primary display's `scaleFactor` in main, not by a renderer-supplied `devicePixelRatio` (the upstream fiddle passes `window.devicePixelRatio` over IPC; it is not trusted here).
+- Unlike the upstream fiddle, which writes a fixed screenshot.png into os.tmpdir(), this sample saves into a fresh fs.mkdtemp directory so a pre-planted symlink in a shared /tmp cannot redirect the write.
 - The fiddle matches the source named `entire screen` or `screen 1` (localized names may differ on non-English systems).
 - Screen capture may require OS screen-recording permission (e.g. macOS); the page does not cover it, so check the `desktopCapturer` reference.

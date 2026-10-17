@@ -9,6 +9,11 @@ Open additional BrowserWindows from IPC and report bounds and focus changes back
 New window on request:
 
 ```js
+const path = require('node:path')
+const { pathToFileURL } = require('node:url')
+
+let mainWindow // assigned in createWindow()
+const APP_URL = pathToFileURL(path.join(__dirname, 'index.html')).href
 const ALLOWED_URLS = new Set(['https://electronjs.org/'])
 
 function clampSize (value, fallback) {
@@ -16,9 +21,10 @@ function clampSize (value, fallback) {
 }
 
 ipcMain.on('new-window', (event, args = {}) => {
-  // Only accept messages from the app's own file: page
-  const frameUrl = event.senderFrame && event.senderFrame.url
-  if (!frameUrl || new URL(frameUrl).protocol !== 'file:') return
+  // Only accept messages from the main frame of the app's own index.html
+  if (!mainWindow || event.sender !== mainWindow.webContents ||
+      event.senderFrame !== event.sender.mainFrame ||
+      event.senderFrame.url !== APP_URL) return
 
   let target
   try {
@@ -58,8 +64,7 @@ ipcMain.on('create-demo-window', (event) => {
 Focus, blur, and close events:
 
 ```js
-// module scope: assigned inside createWindow()
-let mainWindow
+// mainWindow: declared in the first block, assigned inside createWindow()
 let demoWindow
 
 function sendToMain (channel) {
@@ -94,8 +99,7 @@ ipcMain.on('focus-demo-window', () => {
 
 ## Notes
 
-- Excerpts of the `new-window`, `manage-window-state`, and `window-events` fiddles under `docs/fiddles/windows/manage-windows`. Register these `ipcMain` listeners once at module top level (not inside `createWindow()`), so re-creating the window on macOS `activate` does not add duplicate listeners; `mainWindow` is a module-scope variable assigned in `createWindow()` (as in the `first-app` sample).
-- Unlike the upstream fiddle, which registers them inside `createWindow()`.
-- Unlike the upstream fiddle, which passes `url` / `width` / `height` to `BrowserWindow` and `loadURL` without validation, this sample adds a `senderFrame` check, a URL allowlist, and size validation (do not trust renderer input; validate the sender of IPC messages per the Electron Security checklist).
+- Excerpts of the `new-window`, `manage-window-state`, and `window-events` fiddles under `docs/fiddles/windows/manage-windows`. Register these `ipcMain` listeners once at module top level (not inside `createWindow()`), so re-creating the window on macOS `activate` does not add duplicate listeners; `mainWindow` is a module-scope variable assigned in `createWindow()` (as in the `first-app` sample). Unlike the upstream fiddle, which registers them inside `createWindow()`.
+- Unlike the upstream fiddle, which passes `url` / `width` / `height` to `BrowserWindow` and `loadURL` without validation, this sample adds a sender check, a URL allowlist, and size validation (do not trust renderer input). The sender check matches the main window's `WebContents`, its main frame, and the exact URL of the app's `index.html`, per the Electron Security checklist on validating the sender of IPC messages.
 - The fiddles' main windows also block navigation with `will-navigate` and open the URL externally via `shell.openExternal`.
 - Distance: window management here is the Electron `BrowserWindow` API, not WinUI / AppKit window management (windows-winui-ui, apple-appkit).

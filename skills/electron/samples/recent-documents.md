@@ -20,16 +20,18 @@ function createWindow () {
   win.loadFile('index.html')
 }
 
-const filePath = path.join(__dirname, 'recently-used.md')
-fs.writeFile(filePath, 'Lorem Ipsum', (err) => {
-  if (err) {
-    console.error(err)
-    return
-  }
-  app.addRecentDocument(filePath)
-})
+app.whenReady().then(() => {
+  const filePath = path.join(app.getPath('userData'), 'recently-used.md')
+  fs.writeFile(filePath, 'Lorem Ipsum', (err) => {
+    if (err) {
+      console.error(err)
+      return
+    }
+    app.addRecentDocument(filePath)
+  })
 
-app.whenReady().then(createWindow)
+  createWindow()
+})
 
 app.on('window-all-closed', () => {
   app.clearRecentDocuments()
@@ -79,7 +81,7 @@ app.whenReady().then(() => {
 
 ## Notes
 
-- Unlike the official fiddle, this writes and registers the same absolute path (`__dirname`-based) and skips `addRecentDocument` when the write fails. For packaged apps a writable location such as `app.getPath('userData')` is safer.
+- Unlike the official fiddle, which writes recently-used.md next to main.js at load time, this sample writes it under app.getPath('userData') after ready (__dirname is read-only inside app.asar), registers the same absolute path, and skips addRecentDocument when the write fails.
 - Source fiddle: `docs/fiddles/features/recent-documents`. `app.getRecentDocuments()` returns the current list.
 - Windows: the app must be registered as a handler of the document's file type, otherwise the file does not show in the JumpList; clicking an entry starts a new instance with the path as a command-line argument.
 - macOS: set the application menu after `ready`, or the `recentdocuments` item is disabled. Selecting an item emits the `open-file` event on `app`.
