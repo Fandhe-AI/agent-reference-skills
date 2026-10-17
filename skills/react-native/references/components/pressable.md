@@ -137,8 +137,8 @@ Ripple effect configuration for the `android_ripple` property (type: object).
 
 ## Related
 
-- PressEvent
-- Rect
-- View Style Props
+- [PressEvent](../props-types/pressevent.md)
+- [Rect](../props-types/rect.md)
+- [View Style Props](../props-types/view-style-props.md)
 - [TouchableOpacity](./touchableopacity.md)
 - [TouchableHighlight](./touchablehighlight.md)

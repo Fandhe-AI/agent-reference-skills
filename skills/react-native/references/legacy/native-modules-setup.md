@@ -40,4 +40,4 @@ Then continue with the Android Native Modules or iOS Native Modules guides to ad
 - [native-modules-android.md](./native-modules-android.md)
 - [native-modules-ios.md](./native-modules-ios.md)
 - [local-library-setup.md](./local-library-setup.md)
-- Create a Module Library
+- [Create a Module Library](../native-development/create-module-library.md)

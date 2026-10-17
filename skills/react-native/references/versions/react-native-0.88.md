@@ -98,7 +98,7 @@ Swift Package Manager rollout plan: 0.87 introduced experimental support; 0.88 h
 ## Related
 
 - [react-native-0.87.md](./react-native-0.87.md)
-- ../workflow/upgrading.md
-- ../workflow/metro.md
+- [../workflow/upgrading.md](../workflow/upgrading.md)
+- [../workflow/metro.md](../workflow/metro.md)
 - [../components/inputaccessoryview.md](../components/inputaccessoryview.md)
 - [../props-types/text-style-props.md](../props-types/text-style-props.md)

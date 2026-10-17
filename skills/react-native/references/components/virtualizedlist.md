@@ -206,5 +206,5 @@ scrollToOffset(params: {
 - [FlatList](./flatlist.md)
 - [SectionList](./sectionlist.md)
 - [ScrollView](./scrollview.md)
-- ViewToken
-- Optimizing FlatList Configuration
+- [ViewToken](../props-types/viewtoken.md)
+- [Optimizing FlatList Configuration](../debugging-performance/optimizing-flatlist-configuration.md)

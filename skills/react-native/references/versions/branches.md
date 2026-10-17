@@ -43,4 +43,4 @@ https://github.com/react/react-native/tree/0.88-stable
 
 - [releases-overview.md](./releases-overview.md)
 - [react-native-0.84.md](./react-native-0.84.md)
-- ../workflow/hermes.md
+- [../workflow/hermes.md](../workflow/hermes.md)

@@ -88,5 +88,5 @@ yarn ios --udid "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
 
 ## Related
 
-- Running on Device
+- [Running on Device](../workflow/running-on-device.md)
 - [Publishing to Apple App Store](./publishing-to-app-store.md)

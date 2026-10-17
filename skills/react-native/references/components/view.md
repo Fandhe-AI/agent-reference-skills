@@ -110,8 +110,8 @@ For `View` responder props (e.g., `onResponderMove`), the synthetic touch event 
 
 ## Related
 
-- PressEvent
-- LayoutEvent
-- View Style Props
+- [PressEvent](../props-types/pressevent.md)
+- [LayoutEvent](../props-types/layoutevent.md)
+- [View Style Props](../props-types/view-style-props.md)
 - [Text](./text.md)
-- Accessibility
+- [Accessibility](../ui-interaction/accessibility.md)

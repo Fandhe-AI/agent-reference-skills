@@ -202,6 +202,6 @@ isFocused(): boolean;
 - [Text](./text.md)
 - [InputAccessoryView](./inputaccessoryview.md)
 - [KeyboardAvoidingView](./keyboardavoidingview.md)
-- PressEvent
-- TargetEvent
-- LayoutEvent
+- [PressEvent](../props-types/pressevent.md)
+- [TargetEvent](../props-types/targetevent.md)
+- [LayoutEvent](../props-types/layoutevent.md)

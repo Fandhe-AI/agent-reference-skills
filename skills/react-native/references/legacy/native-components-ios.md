@@ -189,4 +189,4 @@ Native views are `UIView` subclasses, so most style attributes work. For fixed-s
 
 - [native-components-android.md](./native-components-android.md)
 - [native-modules-ios.md](./native-modules-ios.md)
-- Fabric Native Components (iOS)
+- [Fabric Native Components (iOS)](../native-development/fabric-native-components-ios.md)

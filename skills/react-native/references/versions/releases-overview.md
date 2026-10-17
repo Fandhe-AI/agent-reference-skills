@@ -41,5 +41,5 @@ Support definitions:
 
 - [versioning-policy.md](./versioning-policy.md)
 - [branches.md](./branches.md)
-- ../workflow/release-levels.md
-- ../workflow/upgrading.md
+- [../workflow/release-levels.md](../workflow/release-levels.md)
+- [../workflow/upgrading.md](../workflow/upgrading.md)

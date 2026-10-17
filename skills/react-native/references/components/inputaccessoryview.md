@@ -81,4 +81,4 @@ export default App;
 ## Related
 
 - [TextInput](./textinput.md)
-- View Style Props
+- [View Style Props](../props-types/view-style-props.md)

@@ -76,4 +76,4 @@ Native methods available on most default components (not on composite components
 - [view.md](../components/view.md)
 - [textinput.md](../components/textinput.md)
 - [touchableopacity.md](../components/touchableopacity.md)
-- Direct Manipulation (New Architecture)
+- [Direct Manipulation (New Architecture)](../native-development/direct-manipulation-new-architecture.md)

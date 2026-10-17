@@ -87,5 +87,5 @@ Deprecations:
 - [react-native-0.88.md](./react-native-0.88.md)
 - [react-native-0.86.md](./react-native-0.86.md)
 - [stable-javascript-api.md](./stable-javascript-api.md)
-- ../workflow/strict-typescript-api.md
-- ../workflow/metro.md
+- [../workflow/strict-typescript-api.md](../workflow/strict-typescript-api.md)
+- [../workflow/metro.md](../workflow/metro.md)

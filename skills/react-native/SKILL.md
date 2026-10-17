@@ -2,14 +2,13 @@
 name: react-native
 description: >
   React Native (Meta 製クロスプラットフォームネイティブアプリフレームワーク, react-native 0.87 / 0.88) の
-  Text, FlatList, Pressable, TextInput, Animated, StyleSheet, Flexbox, Platform, Linking,
-  New Architecture (Fabric, TurboModules, Codegen), Hermes, Metro, React Native DevTools。
+  リファレンス。View, Text, FlatList, Pressable, TextInput, Animated, StyleSheet, Flexbox, Platform, Linking,
+  New Architecture (Fabric, TurboModules, Codegen), Hermes, Metro, React Native DevTools,
+  Android / iOS 統合、0.84〜0.88 差分。
 user-invocable: false
 ---
 
 # React Native
-
-> 分割 PR の途中段階。現在収録済み: references/{apis, architecture, components, debugging-performance, getting-started, globals, legacy, native-development, platform-guides, props-types, ui-interaction, versions}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -50,6 +49,9 @@ skills/react-native/
     getting-started/       # 環境構築・既存アプリ統合・トラブルシュート
       README.md
       set-up-your-environment.md, integration-with-existing-apps.md, troubleshooting.md, ...
+    workflow/              # Metro・Fast Refresh・Hermes・TypeScript・アップグレード
+      README.md
+      metro.md, fast-refresh.md, hermes.md, typescript.md, upgrading.md, ...
     debugging-performance/ # DevTools・デバッグ・プロファイル・パフォーマンス・テスト
       README.md
       react-native-devtools.md, debugging.md, performance.md, testing-overview.md, ...
@@ -59,6 +61,15 @@ skills/react-native/
     legacy/                # 旧 Native Modules / Native Components・削除済み API
       README.md
       native-modules-intro.md, removed-apis.md, ...
+  samples/
+    README.md
+    learn-the-basics.md, react-fundamentals.md, props-and-state.md, handling-text-input.md,
+    scrollview-and-lists.md, networking-fetch.md, animations-basics.md,
+    turbo-native-module-walkthrough.md, fabric-native-component-walkthrough.md, ...
+  scripts/
+    README.md
+    create-project.md, run-and-dev.md, build-release.md, codegen.md,
+    debugging-profiling.md, testing.md, upgrade.md
 ```
 
 ## 探索手順
@@ -68,6 +79,7 @@ skills/react-native/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
+4. 実装例は `samples/README.md`、実行コマンドは `scripts/README.md` を引く
 
 ## タスク → カテゴリ マッピング
 
@@ -82,6 +94,9 @@ skills/react-native/
 | TurboModules・Fabric Native Components・Codegen でネイティブ連携を書きたい | native-development | [references/native-development/README.md](references/native-development/README.md) |
 | Android 署名・Gradle plugin・iOS App Store 公開・ネイティブとの通信を調べたい | platform-guides | [references/platform-guides/README.md](references/platform-guides/README.md) |
 | 環境構築・既存アプリへの統合・トラブルシュートをしたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| Metro / Fast Refresh / Hermes / TypeScript 設定・アップグレードを扱いたい | workflow | [references/workflow/README.md](references/workflow/README.md) |
 | DevTools デバッグ・プロファイル・パフォーマンス改善・テスト方針を知りたい | debugging-performance | [references/debugging-performance/README.md](references/debugging-performance/README.md) |
 | 0.84〜0.88 の変更点・バージョニング方針・リリース状況を確認したい | versions | [references/versions/README.md](references/versions/README.md) |
 | 旧 Native Modules / 削除済み API / Legacy Architecture を確認したい | legacy | [references/legacy/README.md](references/legacy/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

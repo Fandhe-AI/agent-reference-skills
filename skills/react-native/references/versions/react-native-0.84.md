@@ -58,5 +58,5 @@ Deprecations:
 
 - [react-native-0.85.md](./react-native-0.85.md)
 - [new-architecture-is-here.md](./new-architecture-is-here.md)
-- ../workflow/hermes.md
+- [../workflow/hermes.md](../workflow/hermes.md)
 - [../architecture/bundled-hermes.md](../architecture/bundled-hermes.md)

@@ -42,4 +42,4 @@ React Shadow Tree (and React Shadow Node): A React Shadow Tree is created by the
 
 - [Fabric](./fabric-renderer.md)
 - [Render, Commit, and Mount](./render-pipeline.md)
-- Debugging
+- [Debugging](../debugging-performance/debugging.md)

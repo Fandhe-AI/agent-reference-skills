@@ -202,4 +202,4 @@ openDrawer();
 ## Related
 
 - [View](./view.md)
-- Navigation
+- [Navigation](../ui-interaction/navigation.md)

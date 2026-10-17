@@ -252,5 +252,5 @@ Modules can conform to `RCTInvalidating` by implementing `invalidate()`, which c
 - [native-modules-intro.md](./native-modules-intro.md)
 - [native-modules-android.md](./native-modules-android.md)
 - [native-components-ios.md](./native-components-ios.md)
-- Turbo Native Modules (iOS)
-- Turbo Modules with Swift
+- [Turbo Native Modules (iOS)](../native-development/turbo-native-modules-ios.md)
+- [Turbo Modules with Swift](../native-development/turbo-modules-with-swift.md)

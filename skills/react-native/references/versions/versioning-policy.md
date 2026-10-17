@@ -46,4 +46,4 @@ What is a breaking change:
 
 - [releases-overview.md](./releases-overview.md)
 - [branches.md](./branches.md)
-- ../workflow/upgrading.md
+- [../workflow/upgrading.md](../workflow/upgrading.md)

@@ -207,7 +207,7 @@ Type: object, array of objects, or number (opaque type returned by something lik
 ## Related
 
 - [ImageBackground](./imagebackground.md)
-- Image Style Props
-- Rect
-- LayoutEvent
-- Images
+- [Image Style Props](../props-types/image-style-props.md)
+- [Rect](../props-types/rect.md)
+- [LayoutEvent](../props-types/layoutevent.md)
+- [Images](../ui-interaction/images.md)
