@@ -1,0 +1,16 @@
+# operations
+
+| Name | Description | Path |
+|------|-------------|------|
+| Backpressure | Explains back-pressure and cancellation with streams: why the SDK streams lazily (`pull`) instead of eagerly pushing into a `ReadableStream`. Background reading; not required to use the AI SDK. | [backpressure.md](./backpressure.md) |
+| Caching | Caching AI provider responses: recommended via language model middleware (`wrapGenerate` / `wrapStream` with `simulateReadableStream`), or via lifecycle callbacks such as `onEnd`. | [caching.md](./caching.md) |
+| DevTools | AI SDK DevTools (`@ai-sdk/devtools`) captures runs and steps from `generateText`, `streamText`, and `ToolLoopAgent` through the telemetry system and serves a local web viewer to inspect LLM requests, responses, tool calls, and multi-step interactions. | [devtools.md](./devtools.md) |
+| Error Handling | How errors surface from AI SDK Core calls: regular errors are thrown, `streamText` reports errors as stream parts, and provider errors after streaming starts can be retried with `streamRetries`. | [error-handling.md](./error-handling.md) |
+| AI SDK Errors (aggregated) | Typed error classes exposed by the AI SDK so applications can handle expected failure modes without matching error message strings. One row per error; each row corresponds to an official page `https://ai-sdk.dev/docs/reference/ai-sdk-errors/ai-<kebab-case-name>-error` (the two rows marked "troubleshooting" live under `/docs/troubleshooting/`). | [errors.md](./errors.md) |
+| Rate Limiting | Protect an API endpoint from abuse by capping the number of requests a client can make in a timeframe; the official example uses Upstash Redis and Upstash Ratelimit in front of `streamText`. | [rate-limiting.md](./rate-limiting.md) |
+| Secure URL Fetching | How the AI SDK protects server-side fetches of URLs returned by model providers (generated media, polling URLs), the `fetchUntrustedUrl` helper from `@ai-sdk/provider-utils`, and how to harden your deployment further. | [secure-url-fetching.md](./secure-url-fetching.md) |
+| Stopping Streams | Canceling ongoing streams: `abortSignal` and `onAbort` in AI SDK Core, the `stop` helper of AI SDK UI hooks, and `consumeStream` for UI message streams. | [stopping-streams.md](./stopping-streams.md) |
+| Telemetry | The AI SDK uses OpenTelemetry to collect telemetry data. Integrations are registered with `registerTelemetry`; the `@ai-sdk/otel` package provides the `OpenTelemetry` and `LegacyOpenTelemetry` integrations. | [telemetry.md](./telemetry.md) |
+| Testing | Mock providers and test helpers from `ai/test` for deterministic unit tests of code that uses the AI SDK, without calling a language model provider. | [testing.md](./testing.md) |
+| Troubleshooting (aggregated) | Common issues with the AI SDK, aggregated from the official troubleshooting section (31 pages) into Issue / Cause (or Background) / Solution tables. Each row corresponds to `https://ai-sdk.dev/docs/troubleshooting/<slug>`; the slug is given in the first column. | [troubleshooting.md](./troubleshooting.md) |
+| Vercel Deployment Guide | Deploying an AI SDK application (Next.js App Router) to Vercel, with considerations for function duration, request cancellation, and security. | [vercel-deployment-guide.md](./vercel-deployment-guide.md) |
