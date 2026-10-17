@@ -43,7 +43,7 @@ Core tool elements (function tools and dynamic tools):
 
 Call-level settings covered by the page: `toolChoice` (`auto` default / `required` / `none` / `{ type: 'tool', toolName }`), `activeTools` (names of active tools; default all), `toolOrder` (partial list sent first, rest alphabetical; `activeTools` filters first), `toolCallConcurrency` (positive integer; default concurrent execution), `toolApproval`, `repairToolCall`, `prepareStep`, `onStepEnd`, `onToolExecutionStart` / `onToolExecutionEnd`, `toolsContext`, `runtimeContext`, `experimental_sandbox`.
 
-## Multi-step calls (stopWhen)
+### Multi-step calls (stopWhen)
 
 Built-in stop conditions: `isStepCount(count)` (default `isStepCount(1)` for `generateText` / `streamText`), `hasToolCall(...toolNames)`, `isLoopFinished()` (never triggers). `stopWhen` is only evaluated when the last step contains tool results. Access intermediate results via `steps`:
 
@@ -58,7 +58,7 @@ const { steps } = await generateText({
 const allToolCalls = steps.flatMap(step => step.toolCalls);
 ```
 
-## Tool execution approval
+### Tool execution approval
 
 Configure approval with `toolApproval` on `generateText`, `streamText`, or `ToolLoopAgent`. Per-tool statuses: `'not-applicable'` (default; also `undefined` from a function), `'approved'`, `'denied'`, `'user-approval'`; object form `{ type, reason }`. A `GenericToolApprovalFunction` receives `toolCall`, `tools`, `toolsContext`, `messages`, `runtimeContext`; a `SingleToolApprovalFunction` receives the tool input and `toolCallId`, `messages`, `toolContext`, `runtimeContext`.
 
@@ -85,7 +85,7 @@ const response: ToolApprovalResponse = {
 messages.push({ role: 'tool', content: [response] });
 ```
 
-## Other patterns
+### Other patterns
 
 Dynamic tools and `TypedToolCall` / `TypedToolResult`:
 
@@ -95,7 +95,7 @@ import { z } from 'zod';
 
 const customTool = dynamicTool({
   description: 'Execute a custom function',
-  inputSchema: z.object({}),
+  inputSchema: z.object({ action: z.string(), parameters: z.unknown() }),
   execute: async input => {
     const { action, parameters } = input as any;
     return { result: `Executed ${action}` };
@@ -131,6 +131,7 @@ repairToolCall: async ({ toolCall, tools, inputSchema, error }) => {
 
 ## Notes
 
+- The upstream `dynamicTool` example uses an empty `inputSchema: z.object({})` while `execute` reads `action` / `parameters`; corrected here to `z.object({ action: z.string(), parameters: z.unknown() })` (same as the dynamicTool page) so the model is told about those fields.
 - Tool errors: `NoSuchToolError`, `InvalidToolInputError`, `ToolCallRepairError`, `ToolChoiceViolationError` are thrown by `generateText`; errors thrown inside `execute` become `tool-error` content parts. `streamText` sends them in the stream (`tool-error` / `error` parts).
 - Errors thrown inside `onToolExecutionStart` / `onToolExecutionEnd` are silently caught.
 - `needsApproval` on `tool()` is deprecated; move approval logic to `toolApproval`. Provider-executed tools ignore `toolApproval`.

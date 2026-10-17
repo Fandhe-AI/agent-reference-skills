@@ -14,7 +14,7 @@ import { useChat } from '@ai-sdk/react';
 const { messages, sendMessage } = useChat();
 ```
 
-## Hooks
+### Hooks
 
 | Name | Description |
 | --- | --- |
@@ -22,7 +22,7 @@ const { messages, sendMessage } = useChat();
 | `useCompletion` | Handles text completions; manages the prompt input and updates the UI as new completions are streamed. |
 | `useObject` | Consumes streamed JSON objects to handle and display structured data. |
 
-## UI Framework Support
+### UI Framework Support
 
 | Framework | useChat | useCompletion | useObject | MCP Apps |
 | --- | --- | --- | --- | --- |

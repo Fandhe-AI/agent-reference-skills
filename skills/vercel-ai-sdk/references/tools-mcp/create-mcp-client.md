@@ -20,7 +20,8 @@ let client;
 try {
   client = await createMCPClient({
     transport: new Experimental_StdioMCPTransport({
-      command: 'node server.js',
+      command: 'node',
+      args: ['server.js'],
     }),
   });
 
@@ -104,6 +105,7 @@ Returned `MCPClient`:
 
 ## Notes
 
+- The upstream example passes `command: 'node server.js'`; corrected here to `command: 'node'` + `args: ['server.js']` because `command` is the executable and arguments go in `args`.
 - Distinct from other skills: this is the MCP **client** of the AI SDK. The Claude API MCP connector is covered by anthropic-api-tools-mcp, MCP in Claude Code by anthropic-claude-code-extend, MCP consumption in the Agents SDK by openai-agents, and publishing MCP servers for ChatGPT apps by openai-apps-sdk.
 - The client does not support in-band notifications from an MCP server. Experimental webhook delivery is covered by the MCP Events pages.
 - Errors: `MCPClientError` (initialization failures, protocol version mismatches, missing server capabilities, connection failures) with optional `code` (JSON-RPC application error), `statusCode`, `url`, `responseBody` (HTTP context; undefined for network errors, timeouts, aborts, stdio failures). Use `MCPClientError.isInstance(error)`. A missing `statusCode` alone does not indicate a retryable failure. OAuth failures can throw `UnauthorizedError` or `MCPClientOAuthError`. Tool execution errors propagate as `CallToolError`. Redact `url` / `responseBody` before logging.

@@ -16,7 +16,8 @@ import { Experimental_StdioMCPTransport } from '@ai-sdk/mcp/mcp-stdio';
 
 const client = await createMCPClient({
   transport: new Experimental_StdioMCPTransport({
-    command: 'node server.js',
+    command: 'node',
+    args: ['server.js'],
   }),
 });
 ```
@@ -35,6 +36,7 @@ const client = await createMCPClient({
 
 ## Notes
 
+- The upstream example passes `command: 'node server.js'`; corrected here to `command: 'node'` + `args: ['server.js']` because `command` is the executable and arguments go in `args`.
 - Experimental: this feature may change or be removed in the future.
 - Use only for local servers; stdio cannot be deployed to production environments (HTTP transport is recommended there). The MCP SDK's `StdioClientTransport` can be used instead.
 

@@ -42,7 +42,7 @@ For AI Gateway, pass `gateway.experimental_realtime(...)` as the model and point
 | onEvent | `(event: Experimental_RealtimeServerEvent) => void` | Optional. Called for every normalized realtime server event. |
 | onError | `(error: Error) => void` | Optional. Called when the realtime session encounters an error. |
 
-## Returns
+### Returns
 
 | Name | Type | Description |
 | --- | --- | --- |

@@ -44,7 +44,7 @@ Imports: React `useObject` from `@ai-sdk/react`; Svelte `StructuredObject` from 
 | onError | `(error: Error) => void` | Optional. Called when an error is encountered. |
 | onFinish | `(result: OnFinishResult) => void` | Optional. Called when the streaming response has finished. `OnFinishResult`: `object` (`T \| undefined`, the generated object typed by the schema; can be undefined if the final object does not match the schema) and `error` (`Error \| undefined`, e.g. a `TypeValidationError` when the final object does not match the schema). |
 
-## Returns
+### Returns
 
 | Name | Type | Description |
 | --- | --- | --- |

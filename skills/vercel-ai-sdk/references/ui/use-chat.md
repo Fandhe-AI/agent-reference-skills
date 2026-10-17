@@ -44,7 +44,7 @@ const { messages, sendMessage, status } = useChat();
 | throttle | `number` | Optional. React and Vue only. Custom throttle wait time in milliseconds for reactive chat message updates. Positive values reduce UI update frequency without delaying stream processing or callbacks, and the latest messages are published before a ready or error status. Default is undefined, which disables throttling. |
 | resume | `boolean` | Optional. Whether to automatically resume an ongoing chat generation stream on mount and after the page becomes visible again following a network disconnect. Defaults to false. |
 
-## Returns
+### Returns
 
 | Name | Type | Description |
 | --- | --- | --- |

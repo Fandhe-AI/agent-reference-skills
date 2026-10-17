@@ -47,7 +47,7 @@ const { messages, sendMessage, error, regenerate } = useChat();
 
 Alternatively replace the failed message with a custom submit handler (`setMessages(messages => messages.at(-1)?.role === 'assistant' ? messages.slice(0, -2) : messages.slice(0, -1))`), removing both the partial assistant response and its user message when the response had started streaming.
 
-## Warnings
+### Warnings
 
 Warnings use Node.js `process.emitWarning` when available and `console.warn` in browser/edge runtimes. All include "AI SDK Warning". Turn off or customize:
 
@@ -70,7 +70,7 @@ type LoggerOptions =
   | Parameters<LogWarningsFunctionV6>[0];
 ```
 
-### Deprecation codes
+#### Deprecation codes
 
 | Code | Deprecated usage / replacement |
 | --- | --- |
@@ -82,7 +82,9 @@ type LoggerOptions =
 | `AISDK_DEP_UI_MESSAGE_RAW_INPUT` | Use `input` instead of `rawInput` in UI tool parts. |
 | `AISDK_DEP_IMAGE_CONTENT_PART` | Use `file` with an image `mediaType` instead of `image` message parts. |
 
-## Client error classes
+## Options / Props
+
+### Client error classes
 
 AI SDK-created client errors use exported error classes with marker-based `.isInstance()` guards:
 

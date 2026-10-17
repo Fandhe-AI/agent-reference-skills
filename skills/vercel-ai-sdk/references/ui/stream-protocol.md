@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 }
 ```
 
-## Text Stream Protocol
+### Text Stream Protocol
 
 Chunks of plain text appended together to form the response. Supported by `useChat`, `useCompletion`, and `useObject`. Enable with `TextStreamChatTransport` in `useChat`, or `streamProtocol: 'text'` in `useCompletion`. On the backend, pass the result's `stream` to `toTextStream` and return it with `createTextStreamResponse`. Text streams only support basic text; use data streams for tool calls etc.
 
@@ -74,7 +74,7 @@ const { messages, sendMessage } = useChat({
 });
 ```
 
-## Data Stream Protocol
+### Data Stream Protocol
 
 Uses Server-Sent Events (SSE) format. Custom backends must set the `x-vercel-ai-ui-message-stream` header to `v1`. Supported by `useChat` and `useCompletion` (used by default); `useCompletion` only supports the `text` and `data` stream parts. Each part is sent as `data: <JSON>` followed by a blank line.
 

@@ -28,7 +28,7 @@ const dataPartSchema = z.object({
 type MyDataPart = z.infer<typeof dataPartSchema>;
 
 const tools = {
-  someTool: tool({}),
+  someTool: tool({ inputSchema: z.object({}) }),
 } satisfies ToolSet;
 
 type MyTools = InferUITools<typeof tools>;
@@ -36,7 +36,9 @@ type MyTools = InferUITools<typeof tools>;
 export type MyUIMessage = UIMessage<MyMetadata, MyDataPart, MyTools>;
 ```
 
-## Interface
+## Options / Props
+
+### Interface
 
 ```typescript
 interface UIMessage<
@@ -51,7 +53,7 @@ interface UIMessage<
 }
 ```
 
-## UIMessagePart types
+### UIMessagePart types
 
 | Part | Shape |
 | --- | --- |
@@ -93,6 +95,7 @@ function ToolError({ part }: { part: UIMessage['parts'][number] }) {
 
 ## Notes
 
+- The upstream type example uses `tool({})`; here `tool({ inputSchema: z.object({}) })` is used because `inputSchema` is required by `tool()`.
 - The tool part type is based on the tool name (`tool-someTool` for a tool named `someTool`); the data part type is based on the data part name (`data-someDataPart`).
 - `approval.descriptor` is optional opaque metadata supplied as `approvalDescriptor` on the approval request stream chunk. It is preserved from `approval-requested` to `approval-responded` and in later approval-bearing output states.
 - `isToolOutputErrorUIPart` avoids checking the tool state discriminator directly; the generic `ToolOutputErrorUIPart<TOOLS>` preserves static tool input types and also includes dynamic tool errors.

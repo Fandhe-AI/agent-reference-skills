@@ -50,7 +50,7 @@ Constructor:
 - `reconnectToStream()`: sends a `resume` frame. `start`, the first `chunk`, or `end` resolves to a readable stream; `no-active` resolves to `null`; `error`, cancellation, or a connection failure rejects if no stream has been returned yet.
 - `close()`: closes the current socket and errors active streams. A later send or resume opens a new connection.
 
-## Wire Protocol
+### Wire Protocol
 
 Each frame is a JSON object with a `type` and a correlated `requestId`.
 

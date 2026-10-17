@@ -32,14 +32,7 @@ export async function POST(req: Request) {
 
 Import: `import { convertToModelMessages } from "ai"`. Returns `Promise<ModelMessage[]>`.
 
-## Options / Props
-
-| Name | Type | Description |
-| --- | --- | --- |
-| messages | `Message[]` | An array of UI messages from the useChat hook to be converted. |
-| options | `{ tools?: ToolSet, ignoreIncompleteToolCalls?: boolean, convertDataPart?: (part: DataUIPart) => TextPart \| FilePart \| undefined }` | Optional. `tools` enables multi-modal tool responses. `ignoreIncompleteToolCalls: true` skips tool calls without results (default: false). `convertDataPart` transforms custom data parts into model-compatible content. |
-
-## Multi-modal tool responses
+### Multi-modal tool responses
 
 Tools can implement the optional `toModelOutput` to transform results into content parts; pass the tools via `options.tools`.
 
@@ -47,9 +40,16 @@ Tools can implement the optional `toModelOutput` to transform results into conte
 const screenshotTool = tool({
   inputSchema: z.object({}),
   execute: async () => 'imgbase64',
-  toModelOutput: ({ output }) => [
-    { type: 'file-data', data: output, mediaType: 'image/png' },
-  ],
+  toModelOutput: ({ output }) => ({
+    type: 'content',
+    value: [
+      {
+        type: 'file',
+        mediaType: 'image/png',
+        data: { type: 'data', data: output },
+      },
+    ],
+  }),
 });
 
 const result = streamText({
@@ -62,7 +62,7 @@ const result = streamText({
 });
 ```
 
-## Custom data part conversion
+### Custom data part conversion
 
 By default, data parts in user messages are filtered out. Provide `convertDataPart` to turn them into text or file parts; only data parts for which you return a text or file part are included.
 
@@ -88,8 +88,16 @@ const modelMessages = await convertToModelMessages<CustomUIMessage>(messages, {
 });
 ```
 
+## Options / Props
+
+| Name | Type | Description |
+| --- | --- | --- |
+| messages | `Message[]` | An array of UI messages from the useChat hook to be converted. |
+| options | `{ tools?: ToolSet, ignoreIncompleteToolCalls?: boolean, convertDataPart?: (part: DataUIPart) => TextPart \| FilePart \| undefined }` | Optional. `tools` enables multi-modal tool responses. `ignoreIncompleteToolCalls: true` skips tool calls without results (default: false). `convertDataPart` transforms custom data parts into model-compatible content. |
+
 ## Notes
 
+- The upstream `toModelOutput` example returns a bare array of `file-data` parts; corrected here to the `ToolResultOutput` contract (`{ type: 'content', value: [...] }`) with a `file` part carrying tagged `data` (`{ type: 'data', data }`), the form recommended in v7 (`file-data` is deprecated).
 - Deprecated `rawInput` field: tool parts in the `output-error` state should store arguments in `input`. Legacy `rawInput` remains supported for persisted messages but triggers an AI SDK deprecation warning when defined. `input` takes precedence when non-nullish; `rawInput` is the fallback when `input` is `null` or `undefined`. Migrate stored messages to `input` before the next major version, when `rawInput` will be removed.
 - Tool approval states are preserved: tool parts with approval metadata produce `tool-approval-request` content parts (`approval.requestReason` forwarded as `reason`); `approval-responded` parts also produce `tool-approval-response` parts (response `reason` forwarded); `approval.isAutomatic` is forwarded to the request part; denied approvals also produce a synthetic `tool-result` with `output: { type: 'execution-denied', reason?: string }`.
 - The generic parameter (`convertToModelMessages<MyUIMessage>`) types `part.data` of custom data parts.

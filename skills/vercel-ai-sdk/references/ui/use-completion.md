@@ -34,7 +34,7 @@ Type parameter: `BODY` (`object`) is the type of the additional request body pas
 | fetch | `FetchFunction` (Optional) | A custom fetch function for the API call. Defaults to the global fetch function. |
 | throttle | `number` (Optional) | React only. Custom throttle wait time in milliseconds for the completion and data updates. Default is undefined, which disables throttling. |
 
-## Returns
+### Returns
 
 | Name | Type | Description |
 | --- | --- | --- |

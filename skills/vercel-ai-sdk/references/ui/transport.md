@@ -64,7 +64,7 @@ const { messages, sendMessage } = useChat({
 });
 ```
 
-## WebSocket Transport
+### WebSocket Transport
 
 `WebSocketChatTransport` shares a persistent WebSocket connection across chat turns instead of one HTTP request per turn.
 
@@ -95,7 +95,7 @@ export default function Chat() {
 - `sendAutomaticallyWhen` still starts a new chat turn after the preceding UI message stream finishes; it does not send tool results into an active model generation.
 - If the socket closes during a response, the active stream errors and a later send opens a new connection. No automatic replay of requests. `reconnectToStream` requests a complete replay of the retained response from sequence zero; the replay must include all earlier chunks and the original `start` chunk's `messageId`. Duplicate sequence numbers are ignored within each response stream.
 
-## Direct Agent Transport
+### Direct Agent Transport
 
 `DirectChatTransport` invokes an Agent's `stream()` method directly in-process (server-side rendering, testing, single-process apps).
 
@@ -118,7 +118,7 @@ const { messages, sendMessage } = useChat({
 
 It validates incoming UI messages, converts them with `convertToModelMessages`, calls the agent's `stream()` method, and returns the result via `toUIMessageStream()`. Options: `options`, `sendReasoning`, `sendSources`.
 
-## Workflow Transport
+### Workflow Transport
 
 `WorkflowChatTransport` from `@ai-sdk/workflow/client` provides automatic stream reconnection for chat apps built on the Workflow SDK.
 

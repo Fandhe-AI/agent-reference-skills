@@ -53,11 +53,13 @@ Import: `import { zodSchema } from "ai"`. Returns a Schema object containing bot
 
 ```ts
 // Metadata will be lost - .min() returns a new instance without metadata
-z.string().meta({ describe: 'first name' }).min(1);
+z.string().meta({ description: 'first name' }).min(1);
 
 // Metadata is preserved - .meta() is the final method
-z.string().min(1).meta({ describe: 'first name' });
+z.string().min(1).meta({ description: 'first name' });
 ```
+
+- The upstream example uses the key `describe` in `.meta({ ... })`; corrected here to `description`, the metadata key that becomes the JSON Schema `description`.
 
 - Distinct from the zod skill: that skill covers the Zod library itself (schemas, parsing, refinements); this page covers only the AI SDK `zodSchema()` conversion helper.
 
