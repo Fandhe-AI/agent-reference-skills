@@ -53,7 +53,7 @@ cutlass.experimental.task_scheduling.OpaqueCondition(key, negated=False, resourc
 - With a raw schedule list and multiple named work methods the label is the final tuple element, e.g. `(smem, ScheduleStage.ConsumerWork, "build_desc_a")`.
 - The prose guide (schedules page) states the `domain_loop` `unroll` default as `1`; this API page renders the signature default as `None`.
 - Module path is `cutlass.experimental.task_scheduling` (experimental).
-- Document version: CUTLASS v4.8.0 — [task_scheduling](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_api/ts.html)（原本: [ts_api/ts.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_api/ts.rst)）
+- Document version: CUTLASS v4.8.0 — [task_scheduling](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_api/ts.html) (source: [ts_api/ts.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_api/ts.rst))
 
 ## Related
 

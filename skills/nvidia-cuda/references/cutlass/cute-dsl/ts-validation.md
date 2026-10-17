@@ -97,7 +97,7 @@ Complete check list:
 - Exhaustive interleaving follows the dependency graph transitively, but still flags a race if overlapping aliased write and read stages can run concurrently in any interleaving.
 - Verification gaps (cannot be checked statically; author's responsibility): inter-CTA communication inside work bodies (e.g. split-K peer-SMEM exchanges), hand-written or named barriers, and the TMA transaction byte count (TS does not verify that issued TMA instructions sum to the declared `num_bytes`; it only checks internal consistency across the cluster).
 - `TaskManager(skip_validation=True)` still runs the checks but reports failures as warnings; use only when deliberately compiling a schedule known to violate a conservative check.
-- Document version: CUTLASS v4.8.0 — [Validation](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_validation.html)（原本: [ts_validation.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_validation.rst)）
+- Document version: CUTLASS v4.8.0 — [Validation](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_validation.html) (source: [ts_validation.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_validation.rst))
 
 ## Related
 

@@ -81,7 +81,7 @@ Constructing a `TaskManager` runs `print_and_verify()` immediately; with the def
   ```
 
 - If the search reaches its state cap (`max_states=100000`) it prints a warning that the search was incomplete, not that the schedule is safe. Keep the checker on in CI with a compile-time Python `int` domain and bump the state limit; disable it (`exhaustive_deadlock_race_check=False`) in production kernels for faster compilation.
-- Document version: CUTLASS v4.8.0 — [Reading the Printed Output](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_printout.html)（原本: [ts_printout.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_printout.rst)）
+- Document version: CUTLASS v4.8.0 — [Reading the Printed Output](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_printout.html) (source: [ts_printout.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_printout.rst))
 
 ## Related
 

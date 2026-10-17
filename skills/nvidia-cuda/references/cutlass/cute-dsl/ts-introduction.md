@@ -77,7 +77,7 @@ task_manager.print_and_verify()
 - `@consumer_work` reads a value out of the resource; `@producer_work` writes a value into the resource. A task that calls `consumer_work` on a resource lists it in `src_resources`; a task that calls `producer_work` lists it in `dst_resources`.
 - `TaskManager.print_and_verify()` validates captured schedules as compile-time metadata and does not need to launch a GPU kernel.
 - The module is `cutlass.experimental.task_scheduling` (experimental).
-- Document version: CUTLASS v4.8.0 — [Introduction](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_introduction.html)（原本: [ts_introduction.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_introduction.rst)）
+- Document version: CUTLASS v4.8.0 — [Introduction](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_introduction.html) (source: [ts_introduction.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_introduction.rst))
 
 ## Related
 

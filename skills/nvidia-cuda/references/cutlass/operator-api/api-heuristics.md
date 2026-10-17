@@ -40,7 +40,7 @@ operators = ops.get_operators(
 - Install the optional dependency with `pip install 'nvidia-cutlass-operators[heuristics]'`. Registration does not imply availability: use `is_available()`, which does not validate a particular GEMM or guarantee a candidate will match.
 - Custom heuristics: subclass `Heuristic` and implement `rank`, returning an ordered subset of the input Operator objects (pruning allowed). `get_operators` raises `RuntimeError` if ranking introduces an Operator or duplicates one beyond its count in the input. Turning a heuristic on or off changes order and possibly presence of candidates, never their correctness.
 - The symbols are also exported by `cutlass.operators.heuristics`. The nvMatmul `_mapping` and `_provider` modules are implementation details and not public APIs.
-- Document version: CUTLASS v4.8.0 — [Heuristics](https://docs.nvidia.com/cutlass/latest/media/docs/operators/api_reference/heuristics.html)（原本: [heuristics.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/operators/api_reference/heuristics.rst)）
+- Document version: CUTLASS v4.8.0 — [Heuristics](https://docs.nvidia.com/cutlass/latest/media/docs/operators/api_reference/heuristics.html) (source: [heuristics.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/operators/api_reference/heuristics.rst))
 
 ## Related
 

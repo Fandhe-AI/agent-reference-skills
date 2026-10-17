@@ -46,7 +46,7 @@ def load_a_schedule(
 - PDL lets a successor grid start before the predecessor grid has fully completed, so the wait is a correctness boundary: any successor-grid work that reads predecessor-grid results must execute `wait_griddep` before the first dependent memory access.
 - TS cannot infer that dependency from address expressions or resource names. Declare the data resource as depending on the wait resource in the dependency graph; TS then treats `PdlWaitBarrier` as an ordering-only upstream resource and checks the wait precedes the dependent work. Without the edge, the two resources are independent to the validator.
 - Launch barriers are schedule-only notification resources. The checker rejects an enabled `launch_griddep` path when no `wait_griddep` has executed in any task schedule, including skipped-tile execution.
-- Document version: CUTLASS v4.8.0 — [Programmatic Dependent Launch](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_pdl.html)（原本: [ts_pdl.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_pdl.rst)）
+- Document version: CUTLASS v4.8.0 — [Programmatic Dependent Launch](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_pdl.html) (source: [ts_pdl.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_pdl.rst))
 
 ## Related
 

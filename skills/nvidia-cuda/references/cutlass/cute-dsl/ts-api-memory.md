@@ -53,7 +53,7 @@ allocator.compute_layout()   # pure Python — sets .offset on each alloc
 
 - `_LayoutAllocator` is the base class with common declaration and layout logic.
 - Module path is `cutlass.experimental.task_scheduling` (experimental).
-- Document version: CUTLASS v4.8.0 — [memory](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_api/memory.html)（原本: [ts_api/memory.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_api/memory.rst)）
+- Document version: CUTLASS v4.8.0 — [memory](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_api/memory.html) (source: [ts_api/memory.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_api/memory.rst))
 
 ## Related
 

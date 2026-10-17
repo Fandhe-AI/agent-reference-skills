@@ -80,7 +80,7 @@ task_manager.setup_resources_and_tasks()
 
 - Default SMEM alignment is 128 bytes. Pipeline mbarrier storage is accounted separately as 16 bytes per stage and patched by `assign_barrier_ptrs()`.
 - Checker coupling: if two aliased resources are accessed at the same time by different tasks and one writes, the checker reports an `aliasing race` (e.g. a writer re-acquires and overwrites `tmem_sp` after the reader released it while the reader still reads the aliased `tmem_vec`).
-- Document version: CUTLASS v4.8.0 — [Allocators](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_allocators.html)（原本: [ts_allocators.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_allocators.rst)）
+- Document version: CUTLASS v4.8.0 — [Allocators](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_general/ts_allocators.html) (source: [ts_allocators.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_general/ts_allocators.rst))
 
 ## Related
 

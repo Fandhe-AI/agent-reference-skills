@@ -41,7 +41,7 @@ operators[0].run(args)
 - Unsupported GPU example: `ops.get_heuristic("nvmatmul")(gpu="H100_SXM")` raises `ValueError` ("nvmatmul only supports SM100 today; ... e.g. "B200", "GB200_NVL", "GB300_NVL"").
 - Tutorial benchmark on a 4096^3 FP16 GEMM: 892 total operators, 26 after heuristic pruning; median 0.0894 ms for the fastest recommended operator, 0.2378 ms for the slowest recommended, 0.2745 ms for an arbitrary unsorted one (measured by the tutorial's own run; values are hardware-dependent).
 - Ranking is an estimate. It helps narrow the search to promising top-N candidates and may not yield a definitive single winner.
-- Document version: CUTLASS v4.8.0 — [Heuristics to Rank Operators](https://docs.nvidia.com/cutlass/latest/media/docs/operators/tutorials/007_heuristics.html)（原本: [007_heuristics.ipynb](https://github.com/NVIDIA/cutlass/blob/v4.8.0/operators/examples/007_heuristics.ipynb)）
+- Document version: CUTLASS v4.8.0 — [Heuristics to Rank Operators](https://docs.nvidia.com/cutlass/latest/media/docs/operators/tutorials/007_heuristics.html) (source: [007_heuristics.ipynb](https://github.com/NVIDIA/cutlass/blob/v4.8.0/operators/examples/007_heuristics.ipynb))
 
 ## Related
 

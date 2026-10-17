@@ -68,7 +68,7 @@ Allowed pipeline types per official table:
 - Valid heterogeneous merge pairs (consumer side homogeneous): consumer `async`: AsyncAsync + TmaAsync, AsyncAsync + UmmaAsync, TmaAsync + UmmaAsync; consumer `umma`: TmaUmma + AsyncUmma, TmaUmma + UmmaUmma, AsyncUmma + UmmaUmma. Valid heterogeneous fork pairs (producer side homogeneous): producer `tma`: TmaAsync + TmaUmma; `async`: AsyncAsync + AsyncUmma; `umma`: UmmaAsync + UmmaUmma.
 - Topology auto-derivation from the kind decomposition: producer kinds differ -> Merge; consumer kinds differ -> Fork; both homogeneous -> explicit `mode` parameter; both differ -> Error.
 - Module path is `cutlass.experimental.task_scheduling` (experimental).
-- Document version: CUTLASS v4.8.0 — [pipeline_group](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_api/pipeline_group.html)（原本: [ts_api/pipeline_group.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_api/pipeline_group.rst)）
+- Document version: CUTLASS v4.8.0 — [pipeline_group](https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/ts_api/pipeline_group.html) (source: [ts_api/pipeline_group.rst](https://github.com/NVIDIA/cutlass/blob/v4.8.0/media/docs/pythonDSL/ts_api/pipeline_group.rst))
 
 ## Related
 
