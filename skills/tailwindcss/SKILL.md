@@ -48,10 +48,9 @@ skills/tailwindcss/
       README.md
   samples/
     README.md
-    install-<framework>.md   # nextjs, react-router, tanstack-start, sveltekit, nuxt, astro, angular, laravel, rspack, solidjs
-    <framework>.md           # v4 版: 上記 + qwik, parcel
+    <framework>.md           # nextjs, react-router, tanstack-start, sveltekit, nuxt, astro, angular, laravel, rspack, solidjs, qwik, parcel
     theme-custom-colors-fonts.md, custom-utility.md, layer-components.md, source-detection.md,
-    dark-mode-toggle.md, group-peer-data-variants.md, state-variants.md, container-queries.md, arbitrary-values.md
+    dark-mode-toggle.md, state-variants.md, container-queries.md, arbitrary-values.md
   scripts/
     README.md
     install.md

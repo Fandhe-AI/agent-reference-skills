@@ -8,6 +8,7 @@ Set up Tailwind CSS v4 in an Rspack project (React or Vue) with the `@tailwindcs
 
 ```shell
 npm create rspack@latest
+cd my-project
 npm install tailwindcss @tailwindcss/postcss postcss postcss-loader
 ```
 
@@ -65,6 +66,7 @@ export default function App() {
 
 ## Notes
 
+- `npm create rspack@latest` prompts for a project name; `cd` into the generated directory (shown as `my-project`) before installing. The official guide omits this step.
 - Start the build with `npm run dev`. The official guide links to rspack.dev/guide/tech/css#tailwind-css for PostCSS loader details.
 - The `rspack.config.ts` snippet is verbatim from the official guide and is a fragment (the closing `)` of `defineConfig` is omitted there).
 - Rspack itself and its framework APIs are outside this skill; this sample covers only Tailwind setup.

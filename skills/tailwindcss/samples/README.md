@@ -8,17 +8,6 @@
 | Container Queries | Style children by the size of a parent container with `@container` and variants such as `@md` and `@max-md`. | [container-queries.md](./container-queries.md) |
 | Custom Utility with @utility | Register your own utility classes, including nested and functional (`tab-*`) forms, with `@utility`. | [custom-utility.md](./custom-utility.md) |
 | Manual Dark Mode Toggle | Toggle dark mode with a class by overriding the `dark` variant, and persist the user's choice in `localStorage`. | [dark-mode-toggle.md](./dark-mode-toggle.md) |
-| Styling by Parent, Sibling, and Data State | Use `group-*`, `peer-*`, and `data-*` variants to style an element based on another element's state or an attribute. | [group-peer-data-variants.md](./group-peer-data-variants.md) |
-| Tailwind CSS Setup Steps for Angular | Install-only variant: the commands, PostCSS config, and CSS entry needed to enable Tailwind CSS in Angular (no demo markup). | [install-angular.md](./install-angular.md) |
-| Tailwind CSS Setup Steps for Astro | Install-only variant: the commands, Vite plugin config, and CSS entry needed to enable Tailwind CSS in Astro (no demo markup). | [install-astro.md](./install-astro.md) |
-| Tailwind CSS Setup Steps for Laravel | Install-only variant: the commands, Vite or Laravel Mix config, and CSS entry needed to enable Tailwind CSS in Laravel (no demo markup). | [install-laravel.md](./install-laravel.md) |
-| Tailwind CSS Setup Steps for Next.js | Install-only variant: the commands, PostCSS config, and CSS entry needed to enable Tailwind CSS in Next.js (no demo markup). | [install-nextjs.md](./install-nextjs.md) |
-| Tailwind CSS Setup Steps for Nuxt | Install-only variant: the commands, Vite plugin config, and CSS entry needed to enable Tailwind CSS in Nuxt (no demo markup). | [install-nuxt.md](./install-nuxt.md) |
-| Tailwind CSS Setup Steps for React Router | Install-only variant: the commands, Vite plugin config, and CSS entry needed to enable Tailwind CSS in React Router (no demo markup). | [install-react-router.md](./install-react-router.md) |
-| Tailwind CSS Setup Steps for Rspack | Install-only variant: the commands, `postcss-loader` rule, PostCSS config, and CSS entry needed to enable Tailwind CSS in Rspack (no demo markup). | [install-rspack.md](./install-rspack.md) |
-| Tailwind CSS Setup Steps for SolidJS | Install-only variant: the commands, Vite plugin config, and CSS entry needed to enable Tailwind CSS in SolidJS (no demo markup). | [install-solidjs.md](./install-solidjs.md) |
-| Tailwind CSS Setup Steps for SvelteKit | Install-only variant: the commands, Vite plugin config, CSS entry, and layout import needed to enable Tailwind CSS in SvelteKit (no demo markup). | [install-sveltekit.md](./install-sveltekit.md) |
-| Tailwind CSS Setup Steps for TanStack Start | Install-only variant: the commands, Vite plugin config, CSS entry, and root-route `?url` stylesheet link needed to enable Tailwind CSS in TanStack Start (no demo markup). | [install-tanstack-start.md](./install-tanstack-start.md) |
 | Install Tailwind CSS with Laravel | Set up Tailwind CSS v4 in a Laravel project, using Vite (default) or Laravel Mix. | [laravel.md](./laravel.md) |
 | Component Classes with @layer components | Define card/button-style classes in the `components` layer so utility classes can still override them. | [layer-components.md](./layer-components.md) |
 | Install Tailwind CSS with Next.js | Set up Tailwind CSS v4 in a Next.js (App Router) project with the `@tailwindcss/postcss` plugin. | [nextjs.md](./nextjs.md) |
