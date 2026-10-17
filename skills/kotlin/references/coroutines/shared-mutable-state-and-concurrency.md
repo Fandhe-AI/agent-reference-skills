@@ -90,6 +90,7 @@ fun main() = runBlocking {
 - Thread confinement is typical in UI applications, where all UI state is confined to a single event-dispatch thread; with coroutines it is applied through a single-threaded context.
 - Imports used on the page: `kotlinx.coroutines.sync.*` for `Mutex` / `withLock`, `java.util.concurrent.atomic.*` for `AtomicInteger`, `kotlin.system.*` for `measureTimeMillis`.
 - The official samples call `newSingleThreadContext` without an opt-in; in kotlinx.coroutines 1.11.0 it is `@ExperimentalCoroutinesApi` and `@DelicateCoroutinesApi`, so real code needs `@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)`.
+- The official sample keeps `counterContext` in a top-level variable and never closes it; in long-lived code call `counterContext.close()` when it is no longer needed (or scope it with `use`).
 
 ## Related
 

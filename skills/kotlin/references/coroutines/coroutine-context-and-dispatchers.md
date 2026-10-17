@@ -109,6 +109,7 @@ Limitation: when a thread-local is mutated, the new value is not propagated to t
 - The official guide writes `coroutineContext[Job]?.isActive == true`; the actual implementation (CoroutineScope.kt at 7e0d1b3) is `coroutineContext[Job]?.isActive ?: true`, so a scope without a Job reports active.
 - Android has first-party support for coroutine scope in all entities with a lifecycle (`lifecycleScope`); Android-side `viewModelScope`, `collectAsStateWithLifecycle` and `StateFlow` UI state are covered by android-architecture, and coroutine / Flow testing by android-testing. This page covers the kotlinx.coroutines context model only.
 - The official samples call `newSingleThreadContext` without an opt-in; in kotlinx.coroutines 1.11.0 it is `@ExperimentalCoroutinesApi` and `@DelicateCoroutinesApi`, so real code needs `@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)`.
+- The official snippet never closes the dispatcher created by `newSingleThreadContext("MyOwnThread")`, so its thread leaks; in real code keep a reference and call `close()` when the owner shuts down, or wrap it in `newSingleThreadContext(...).use { ctx -> ... }` and wait for (join) the child coroutines inside `use` (see the Ctx1/Ctx2 example above).
 
 ## Related
 
