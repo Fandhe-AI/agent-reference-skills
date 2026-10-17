@@ -51,5 +51,5 @@ Utilities for controlling whether an element responds to pointer events.
 ## Related
 
 - [cursor](./cursor.md)
-- user-select
-- touch-action
+- [user-select](./user-select.md)
+- [touch-action](./touch-action.md)

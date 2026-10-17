@@ -367,5 +367,5 @@ Now the `fill-regal-blue` utility can be used in your markup.
 
 ## Related
 
-- stroke
-- stroke-width
+- [stroke](./stroke.md)
+- [stroke-width](./stroke-width.md)
