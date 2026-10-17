@@ -74,3 +74,4 @@ export const userOnboarding = inngest.createFunction(
 - Keep the client module free of imports of app entrypoints, functions, DB clients, or AI SDK clients, since provider setup imports it
 - For ESM apps with a custom provider, the instrumentation hook and dynamic imports must be loaded before app code; a single installed version of `@opentelemetry/instrumentation` avoids silently lost spans
 - AI metadata extraction is separate and on by default (`aiMetadata: true`); see the ai-metadata-quickstart sample
+- Source: https://www.inngest.com/docs-markdown/examples/open-telemetry (retrieved 2026-10-16)

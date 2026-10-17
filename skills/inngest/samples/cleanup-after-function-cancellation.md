@@ -43,3 +43,4 @@ export const cleanupCancelledImport = inngest.createFunction(
 - Works the same whether the run was cancelled via a `cancelOn` event, the REST API, or bulk cancellation
 - The trigger's `if` filters `inngest/function.cancelled` to one function; `function_id` is the App ID and the function `id` joined as a hyphenated slug (`newsletter-app-import-all-contacts`)
 - The original triggering event is available at `event.data.event`
+- Source: https://www.inngest.com/docs-markdown/examples/cleanup-after-function-cancellation (retrieved 2026-10-16)

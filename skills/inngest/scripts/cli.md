@@ -6,6 +6,8 @@ Inngest CLI による Cloud の run 調査・trace 取得・function 起動と�
 
 > **警告**: インストーラースクリプトはリモートのシェルスクリプトを実行する。内容を確認できる環境・使い捨て環境で実行する。
 
+Adapted (not in the official docs): 公式は `curl -sfL https://cli.inngest.com/install.sh` の出力をそのまま `sh` へパイプする 1 行コマンド。内容確認のためダウンロードと実行に分割
+
 ```sh
 curl -sfL -o install.sh https://cli.inngest.com/install.sh
 # install.sh の内容を確認してから実行する
@@ -122,7 +124,7 @@ export INNGEST_API_KEY
 
 キーは `sk-inn-api-` で始まる形式。値はコマンドに直接書かず、プロンプトへの入力または CI のシークレットから注入する。API キーは保存済みの OAuth ログインより優先される。OAuth に戻す場合は `INNGEST_API_KEY` を unset し、明示的なキーフラグも外す。
 
-## Credential precedence
+## 認証情報の優先順位
 
 API コマンドの認証情報は次の順で解決される。
 
@@ -134,7 +136,7 @@ API コマンドの認証情報は次の順で解決される。
 
 ローカル Dev Server は認証不要。
 
-## Output format
+## 出力形式
 
 ```sh
 # Get just the status
@@ -145,3 +147,7 @@ inngest api --prod --env production get-function-run 01ABC123 | jq .
 ```
 
 出力はデフォルトで compact JSON。jq 等へパイプして整形・抽出する。
+
+## 出典
+
+- https://www.inngest.com/docs-markdown/cli （取得日 2026-10-16）

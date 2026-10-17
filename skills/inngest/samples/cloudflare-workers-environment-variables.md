@@ -50,3 +50,4 @@ const myFn = inngest.createFunction(
 - Workers bind environment variables to the `fetch` handler's `env` argument rather than `process.env`, so they must be forwarded explicitly
 - `wrapRequest` captures `requestArgs` (`[request, env, ctx]` for Workers) and `transformFunctionInput` injects `env` into the handler input
 - With Hono, `requestArgs` is `[honoContext]`; read the bindings from `honoCtx.env` instead of `requestArgs[1]`
+- Source: https://www.inngest.com/docs-markdown/examples/middleware/cloudflare-workers-environment-variables (retrieved 2026-10-16)

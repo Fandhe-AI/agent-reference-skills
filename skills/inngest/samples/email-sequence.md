@@ -2,12 +2,14 @@
 
 Build a behavior-based drip campaign: welcome email, wait for a click, then send tips or a trial offer.
 
+Adapted (not in the official docs): the `waitForEvent` `if` expression quotes `emailId` as a CEL string, and the destructured `first_name` is unified to `firstName` so the JSX references resolve.
+
 ```javascript
 const signupDripCampaign = inngest.createFunction(
   { id: "signup-drip-campaign", triggers: { event: "app/signup.completed" } },
   async ({ event, step }) => {
     const { user } = event.data;
-    const { email, first_name } = user
+    const { email, firstName } = user
     const welcome = "Welcome to ACME";
 
     const { id: emailId } = await step.run("welcome-email", async () => {
@@ -15,7 +17,7 @@ const signupDripCampaign = inngest.createFunction(
         email,
         welcome,
         <div>
-          <h1>Welcome to ACME, {user.firstName}</h1>
+          <h1>Welcome to ACME, {firstName}</h1>
         </div>
       );
     });
@@ -23,7 +25,7 @@ const signupDripCampaign = inngest.createFunction(
     // Wait up to 3 days for the user open the email and click any link in it
     const clickEvent = await step.waitForEvent("wait-for-engagement", {
       event: "resend/email.clicked",
-      if: `async.data.email_id == ${emailId}`,
+      if: `async.data.email_id == '${emailId}'`,
       timeout: "3 days",
     });
 
@@ -67,5 +69,6 @@ const signupDripCampaign = inngest.createFunction(
 
 - `step.waitForEvent()` returns `null` when the timeout elapses without a matching event, so the `if (clickEvent)` branch handles the non-engaged path
 - The `if` expression correlates the incoming `resend/email.clicked` event (`async`) with the email sent in the earlier step
-- `{user.firstName}` and `{firstName}` are JSX interpolation expressions (email body variables), not unfilled placeholders
-- The snippet is the official illustrative code; helpers such as `sendEmail` and `db` and the identifiers `first_name` / `firstName` are not defined there
+- The official Email Sequence example leaves `emailId` unquoted in the CEL expression and destructures `first_name` while referencing `firstName`; other official examples quote interpolated values (`== '${...}'`), so the quoted form is used here
+- Helpers such as `sendEmail` and `db` are not defined in the official snippet
+- Source: https://www.inngest.com/docs-markdown/examples/email-sequence (retrieved 2026-10-16)

@@ -34,3 +34,4 @@ await inngest.send({
 - `ts` is milliseconds since the Unix epoch
 - A future `ts` only delays starting function runs; functions waiting for a matching event (`step.waitForEvent()`) resume immediately regardless of the timestamp
 - For periodic work use a cron trigger; for mid-function delays use `step.sleepUntil()`
+- Source: https://www.inngest.com/docs-markdown/examples/scheduling-one-off-function (retrieved 2026-10-16)

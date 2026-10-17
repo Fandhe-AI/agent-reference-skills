@@ -49,3 +49,7 @@ services:
 - `INNGEST_BASE_URL=http://inngest:8288`: SDK に Dev Server の場所を伝える
 - `command`: Docker ネットワーク内のアプリ（`app` サービス、ポート `3000`）の場所を Dev Server に伝える
 - `ports`: `8288` で UI をホストへ公開し、`8289` は `connect()` 用に公開する
+
+## 出典
+
+- https://www.inngest.com/docs-markdown/local-development/docker （取得日 2026-10-16）

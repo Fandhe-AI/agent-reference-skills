@@ -48,3 +48,5 @@ export const POST = inngest.endpoint(async (req: NextRequest) => {
 - `endpointAdapter` comes from `"inngest/next"` for Next.js or `"inngest/edge"` for Bun
 - Completed steps are memoized: if the handler is re-executed after a crash or retry, finished steps return their cached results
 - Independent steps can run in parallel with `Promise.all([step.run(...), step.run(...)])`, each retried on its own
+- The official guide and example use `req.json()`, but the TypeScript v4 reference (reference/typescript/v4/durable-endpoints, "Passing Data to Endpoints") says POST body is not yet supported and recommends query string parameters; the sources conflict, so prefer `new URL(req.url).searchParams` in production
+- Source: https://www.inngest.com/docs-markdown/examples/durable-endpoints (retrieved 2026-10-16)

@@ -48,3 +48,4 @@ export default inngest.createFunction(
 - `inngest/function.failed` fires whenever any function in the Inngest environment fails
 - The event carries `data.error`, `data.function_id`, `data.run_id`, and the original triggering `data.event`
 - Datadog can be swapped for any monitoring or alerting system (e.g. Sentry)
+- Source: https://www.inngest.com/docs-markdown/examples/track-failures-in-datadog (retrieved 2026-10-16)

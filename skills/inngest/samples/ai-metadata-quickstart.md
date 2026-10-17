@@ -34,3 +34,4 @@ export const inngest = new Inngest({
 - Inngest reads only spans carrying OpenTelemetry GenAI semantic-convention attributes (e.g. `gen_ai.request.model`, `gen_ai.usage.input_tokens`)
 - The `@inngest/otel` preload auto-instruments the OpenAI, Anthropic, and Google Generative AI SDKs; other SDKs or custom HTTP clients must emit the same attributes
 - If the **AI Metadata** entry is missing on a step in the dashboard, check the preload order, per-call `experimental_telemetry`, and that `aiMetadata` is not `false`
+- Source: https://www.inngest.com/docs-markdown/examples/ai-metadata-quickstart (retrieved 2026-10-16)
