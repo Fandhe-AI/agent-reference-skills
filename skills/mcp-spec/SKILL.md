@@ -1,15 +1,15 @@
 ---
 name: mcp-spec
 description: >
-  Model Context Protocol (MCP 仕様 2026-07-28, modelcontextprotocol.io) の仕様リファレンス。
-  JSON-RPC, server/discover, tools/call, subscriptions/listen, MRTR (InputRequiredResult),
-  Streamable HTTP, CIMD, CacheableResult, MCP Apps (ui://)。
+  Model Context Protocol (MCP 仕様 2026-07-28) リファレンス。
+  JSON-RPC, tools/call, server/discover, Streamable HTTP, MRTR, CIMD, MCP Apps (ui://),
+  MCP Registry (server.json, MCPB)。
 user-invocable: false
 ---
 
 # mcp-spec
 
-> 分割 PR の途中段階。現在収録済み: references/{authorization, base-protocol, client-features, extensions, overview, patterns}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{authorization, base-protocol, client-features, extensions, overview, patterns, registry, schema, security, server-features}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -59,6 +59,22 @@ skills/mcp-spec/
       access-token-usage.md
       authorization-errors.md
       authorization-security.md
+    server-features/      # tools / resources / prompts / discover / caching 等
+      README.md
+      server-overview.md
+      discover.md
+      tools.md
+      tool-definition.md
+      tool-result.md
+      tool-errors-and-state.md
+      resources.md
+      resource-templates.md
+      resource-change-notifications.md
+      prompts.md
+      completion.md
+      logging.md
+      pagination.md
+      caching.md
     client-features/      # sampling / elicitation / roots
       README.md
       sampling.md
@@ -84,6 +100,43 @@ skills/mcp-spec/
       auth-extensions.md
       oauth-client-credentials.md
       enterprise-managed-authorization.md
+    registry/             # MCP Registry / server.json / 公開
+      README.md
+      registry-about.md
+      server-json.md
+      package-types.md
+      remote-servers.md
+      registry-authentication.md
+      registry-versioning.md
+      registry-aggregators.md
+    security/             # セキュリティベストプラクティス・攻撃類型
+      README.md
+      security-best-practices.md
+      confused-deputy.md
+      token-passthrough.md
+      ssrf.md
+      state-handle-hijacking.md
+      oauth-redirect-attacks.md
+      local-server-compromise.md
+      scope-minimization.md
+      authorization-tutorial.md
+    schema/               # スキーマ型定義（メソッド別）
+      README.md
+      json-rpc.md
+      common-types.md
+      errors.md
+      content.md
+      discover-types.md
+      tools-types.md
+      resources-types.md
+      prompts-types.md
+      completion-types.md
+      sampling-types.md
+      elicitation-types.md
+      roots-types.md
+      mrtr-types.md
+      subscriptions-types.md
+      notifications-types.md
 ```
 
 ## 探索手順
@@ -93,6 +146,7 @@ skills/mcp-spec/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
+4. 型の正確なフィールドは `references/schema/` を参照する
 
 ## タスク → カテゴリ マッピング
 
@@ -101,6 +155,10 @@ skills/mcp-spec/
 | 仕様全体像・Host / Client / Server 構成・バージョン管理・主要変更・非推奨機能を知りたい | overview | [references/overview/README.md](references/overview/README.md) |
 | JSON-RPC メッセージ・エラー・`_meta`・版ネゴシエーション・拡張ネゴシエーション・statelessness を知りたい | base-protocol | [references/base-protocol/README.md](references/base-protocol/README.md) |
 | OAuth 認可フロー・CIMD・スコープ選択・認可サーバー探索・トークン利用を実装したい | authorization | [references/authorization/README.md](references/authorization/README.md) |
+| `server/discover`・tools・resources・prompts・completion・logging・pagination・caching を実装したい | server-features | [references/server-features/README.md](references/server-features/README.md) |
 | sampling・elicitation（form / URL）・roots を実装したい | client-features | [references/client-features/README.md](references/client-features/README.md) |
 | MRTR・`subscriptions/listen`・cancellation・progress のパターンを知りたい | patterns | [references/patterns/README.md](references/patterns/README.md) |
 | MCP Apps・Tasks 拡張・認可拡張・拡張の対応クライアントを知りたい | extensions | [references/extensions/README.md](references/extensions/README.md) |
+| MCP Registry への公開・`server.json`・package types・認証・バージョニングを知りたい | registry | [references/registry/README.md](references/registry/README.md) |
+| confused deputy・token passthrough・SSRF・ローカルサーバー侵害などの対策を知りたい | security | [references/security/README.md](references/security/README.md) |
+| メソッド別のスキーマ型（フィールド・必須性）を確認したい | schema | [references/schema/README.md](references/schema/README.md) |
