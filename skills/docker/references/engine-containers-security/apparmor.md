@@ -26,7 +26,7 @@ Customize the generated `docker-default` from a template (Docker Engine 29.8+), 
 
 ```json
 {
-  "apparmor-profile": "/etc/apparmor.d/containers/my-custom-docker-profile.tpl"
+  "apparmor-profile": "/etc/docker/apparmor/docker-default"
 }
 ```
 
@@ -87,6 +87,7 @@ Template data available in a custom `docker-default` template:
 - `docker-default` applies to containers, not to the Docker daemon. A daemon profile exists in `contrib/apparmor` of the Docker Engine source repository but isn't installed with the `deb` packages. The container profile is generated from the `baseTemplate` in `moby/profiles` (`apparmor/template.go`).
 - Custom template (Engine 29.8+): the template uses Go `text/template` syntax and is rendered when the daemon starts. Start from the built-in `baseTemplate`, save the contents between its backticks as `/etc/docker/apparmor/docker-default`, and keep the `.Abi`, `.Name`, `.Imports` and `.InnerImports` substitutions. Use `.DaemonProfile` in rules permitting signals from the daemon.
 - Store the template outside `/etc/apparmor.d` because the host AppArmor service may try to parse it before Docker renders it. Privileged containers without an explicit profile use `unconfined`; containers with another profile keep that setting.
+- Adapted: the official daemon.json / `--apparmor-profile` examples use `/etc/apparmor.d/containers/my-custom-docker-profile.tpl`, which contradicts its own advice to store the template outside `/etc/apparmor.d`; the path is unified to `/etc/docker/apparmor/docker-default` here.
 - A custom template can reduce container isolation; review and test every change.
 - Set the template path either with `dockerd --apparmor-profile=<path>` or in `daemon.json`, not both. Restart the daemon and check logs for `Failed to load default apparmor profile`. If `apparmor_parser` rejects the rendered profile, the daemon keeps running with the previously loaded profile. Verify with `docker info --format '{{json .SecurityOptions}}'` (output includes `name=apparmor,profile=<path>`).
 - Debug with `dmesg` (AppArmor audit lines such as `apparmor="DENIED" operation="ptrace" profile="docker-default"`) and `aa-status` (shows profiles in enforce / complain mode).
