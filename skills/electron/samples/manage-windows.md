@@ -37,7 +37,16 @@ ipcMain.on('create-demo-window', (event) => {
 Focus, blur, and close events:
 
 ```js
+// module scope: assigned inside createWindow()
+let mainWindow
 let demoWindow
+
+function sendToMain (channel) {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send(channel)
+  }
+}
+
 ipcMain.on('show-demo-window', () => {
   if (demoWindow) {
     demoWindow.focus()
@@ -47,13 +56,13 @@ ipcMain.on('show-demo-window', () => {
   demoWindow.loadURL('https://electronjs.org')
   demoWindow.on('close', () => {
     demoWindow = undefined
-    mainWindow.webContents.send('window-close')
+    sendToMain('window-close')
   })
   demoWindow.on('focus', () => {
-    mainWindow.webContents.send('window-focus')
+    sendToMain('window-focus')
   })
   demoWindow.on('blur', () => {
-    mainWindow.webContents.send('window-blur')
+    sendToMain('window-blur')
   })
 })
 
@@ -64,6 +73,7 @@ ipcMain.on('focus-demo-window', () => {
 
 ## Notes
 
-- Excerpts of the `new-window`, `manage-window-state`, and `window-events` fiddles under `docs/fiddles/windows/manage-windows`; each sits inside the standard `main.js` (`app.whenReady`, `activate`, `window-all-closed`) and inside `createWindow()` where `mainWindow` is defined, as in the `first-app` sample.
+- Excerpts of the `new-window`, `manage-window-state`, and `window-events` fiddles under `docs/fiddles/windows/manage-windows`. Register these `ipcMain` listeners once at module top level (not inside `createWindow()`), so re-creating the window on macOS `activate` does not add duplicate listeners; `mainWindow` is a module-scope variable assigned in `createWindow()` (as in the `first-app` sample).
+- Unlike the upstream fiddle, which registers them inside `createWindow()`.
 - The fiddles' main windows also block navigation with `will-navigate` and open the URL externally via `shell.openExternal`.
 - Distance: window management here is the Electron `BrowserWindow` API, not WinUI / AppKit window management (windows-winui-ui, apple-appkit).

@@ -15,17 +15,18 @@ const path = require('node:path')
 
 let mainWindow = null
 
-function determineScreenShotSize (devicePixelRatio) {
-  const screenSize = screen.getPrimaryDisplay().workAreaSize
+function determineScreenShotSize () {
+  const display = screen.getPrimaryDisplay()
+  const screenSize = display.workAreaSize
   const maxDimension = Math.max(screenSize.width, screenSize.height)
   return {
-    width: maxDimension * devicePixelRatio,
-    height: maxDimension * devicePixelRatio
+    width: maxDimension * display.scaleFactor,
+    height: maxDimension * display.scaleFactor
   }
 }
 
-async function takeScreenshot (devicePixelRatio) {
-  const thumbSize = determineScreenShotSize(devicePixelRatio)
+async function takeScreenshot () {
+  const thumbSize = determineScreenShotSize()
   const options = { types: ['screen'], thumbnailSize: thumbSize }
 
   const sources = await desktopCapturer.getSources(options)
@@ -42,7 +43,7 @@ async function takeScreenshot (devicePixelRatio) {
   }
 }
 
-ipcMain.handle('take-screenshot', (event, devicePixelRatio) => takeScreenshot(devicePixelRatio))
+ipcMain.handle('take-screenshot', () => takeScreenshot())
 
 function createWindow () {
   const windowOptions = {
@@ -72,7 +73,7 @@ app.whenReady().then(() => {
 const { contextBridge, ipcRenderer } = require('electron/renderer')
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  takeScreenshot: () => ipcRenderer.invoke('take-screenshot', window.devicePixelRatio)
+  takeScreenshot: () => ipcRenderer.invoke('take-screenshot')
 })
 ```
 
@@ -90,6 +91,6 @@ screenshot.addEventListener('click', async () => {
 ## Notes
 
 - Source fiddle: `docs/fiddles/media/screenshot/take-screenshot`. The `index.html` needs elements with ids `screen-shot` and `screenshot-path`.
-- The thumbnail size is scaled by `devicePixelRatio` so the PNG matches physical resolution.
+- The thumbnail size is scaled by the primary display's `scaleFactor` in main, not by a renderer-supplied `devicePixelRatio` (the upstream fiddle passes `window.devicePixelRatio` over IPC; it is not trusted here).
 - The fiddle matches the source named `entire screen` or `screen 1` (localized names may differ on non-English systems).
 - Screen capture may require OS screen-recording permission (e.g. macOS); the page does not cover it, so check the `desktopCapturer` reference.

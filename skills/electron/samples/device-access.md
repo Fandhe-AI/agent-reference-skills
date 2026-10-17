@@ -83,23 +83,7 @@ WebHID (session events and handlers):
 
 ```js
 mainWindow.webContents.session.on('select-hid-device', (event, details, callback) => {
-  // Add events to handle devices being added or removed before the callback on
-  // `select-hid-device` is called.
-  const onAdded = (event, device) => {
-    console.log('hid-device-added FIRED WITH', device)
-    // Optionally update details.deviceList
-  }
-  const onRemoved = (event, device) => {
-    console.log('hid-device-removed FIRED WITH', device)
-    // Optionally update details.deviceList
-  }
-  mainWindow.webContents.session.on('hid-device-added', onAdded)
-  mainWindow.webContents.session.on('hid-device-removed', onRemoved)
-
   event.preventDefault()
-  // Stop listening once the request is finished
-  mainWindow.webContents.session.removeListener('hid-device-added', onAdded)
-  mainWindow.webContents.session.removeListener('hid-device-removed', onRemoved)
   if (details.deviceList && details.deviceList.length > 0) {
     callback(details.deviceList[0].deviceId)
   } else {
@@ -179,7 +163,8 @@ mainWindow.webContents.session.setUSBProtectedClassesHandler((details) => {
 
 - Source fiddles: `docs/fiddles/features/web-{bluetooth,hid,serial,usb}`; the HID / Serial / USB blocks are trimmed to the Electron-specific calls (the fiddles also register `*-added` / `*-removed` listeners and a `setDevicePermissionHandler` for USB).
 - Changed from the official Bluetooth fiddle: `ipcMain.on` listeners are registered once outside `createWindow`, and each stored callback is checked for existence, cleared, then called at most once.
-- Changed from the official HID / USB fiddles: when the device list is empty, `callback('')` ends the request so `requestDevice()` does not stay pending (same as the Serial block); the HID `hid-device-added` / `hid-device-removed` listeners are removed before the callback so they do not accumulate across requests.
+- Changed from the official HID / USB fiddles: when the device list is empty, `callback('')` ends the request so `requestDevice()` does not stay pending (same as the Serial block).
+- `hid-device-added` / `hid-device-removed` on the Session only fire while a `select-hid-device` request is pending (until its callback is called); to use them, defer `callback` (e.g. show a chooser), attach the listeners for that request, and remove them right before calling `callback`.
 - In a browser the user picks a device from a popup; in Electron the developer must pick the device or show their own UI from the selection event, and call `event.preventDefault()` plus the callback.
 - `*-added` / `*-removed` events only fire until the selection callback is called; they are not generic device listeners.
 - Granted device permission is stored for the lifetime of the `WebContents`; persist it yourself and read it back in `setDevicePermissionHandler` for longer storage.
