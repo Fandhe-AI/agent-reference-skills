@@ -21,4 +21,3 @@
 | Thought signatures (generateContent) | Encrypted representations of the model's thought process, passed back exactly as received to keep reasoning context. | [thought-signatures.md](./thought-signatures.md) |
 | Understand and count tokens (generateContent) | All Gemini API input and output is tokenized; count with count_tokens or read usage_metadata. | [tokens.md](./tokens.md) |
 | Combine built-in tools and function calling (generateContent) | Gemini 3 models combine built-in tools such as google_search with custom function calling in one generation. | [tool-combination.md](./tool-combination.md) |
-</content>

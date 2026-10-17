@@ -10,4 +10,3 @@
 | Gemini API libraries (Google GenAI SDK) | The official, production-ready Google GenAI SDK is recommended for Python, JavaScript/TypeScript, Go, Java, and C#. | [libraries.md](./libraries.md) |
 | Authentication with OAuth quickstart | OAuth setup (Application Default Credentials or in-app credentials) for stricter access control than API keys. | [oauth.md](./oauth.md) |
 | Gemini API overview | The Gemini API is the fastest path from prompt to production for text, image, and multimodal generation. | [overview.md](./overview.md) |
-</content>
