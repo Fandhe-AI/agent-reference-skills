@@ -24,7 +24,9 @@ response = client.responses.create(model="gpt-6-astra", input=context)
 | previous_response_id | string | — | Chains a response onto a prior one for stateful multi-turn context |
 | text.format | object | — | Replaces `response_format` for Structured Outputs |
 
-## Migration steps
+## Notes
+
+### Migration steps
 
 1. **Update generation endpoints**: switch `POST /v1/chat/completions` calls to `POST /v1/responses`. Simple message arrays (no functions/multimodal input) are input-compatible across both.
 2. **Map Messages to Items**:
@@ -54,7 +56,7 @@ response = client.responses.create(model="gpt-6-astra", input=context)
    - Reusing Chat Completions streaming handlers without handling typed Responses events.
    - Assuming `previous_response_id` removes billing for prior context (it does not).
 
-## Notes
+### General notes
 
 - Responses is agentic by default: it can call multiple built-in tools (web search, file search, computer use, code interpreter, remote MCP) plus custom functions within a single request, and supports native multimodal input (text + images; audio "coming soon").
 - Chat Completions remains supported, so migration can proceed one flow at a time. GPT-6 Astra and GPT-6.1 Sol accept Chat Completions but tool calling requires Responses; GPT-6 Sol and GPT-6 Luna support function calling in Chat Completions only with `reasoning_effort: "none"` (use Responses for reasoning with tools).

@@ -2,6 +2,26 @@
 
 Overview of HTTP error codes returned by the OpenAI API and the corresponding exception classes raised by the Python library, with causes and solutions.
 
+## Signature / Usage
+
+```python
+import openai
+from openai import OpenAI
+
+client = OpenAI()
+
+try:
+    response = client.responses.create(model="gpt-6-astra", input="Hello world")
+except openai.APIConnectionError as e:
+    print(f"Failed to connect to OpenAI API: {e}")
+except openai.RateLimitError as e:
+    print(f"OpenAI API request exceeded rate limit: {e}")
+except openai.APIError as e:
+    print(f"OpenAI API returned an API Error: {e}")
+else:
+    print(response.output_text)
+```
+
 ## Options / Props
 
 | Code | Cause | Solution |
