@@ -55,7 +55,14 @@ permissions:
 curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
 ```
 
-toolkit を使う例:
+レスポンスには OIDC JWT（`.value`）が含まれる。Actions のステップでは標準出力へ出さずに変数で受け、`::add-mask::` で登録してから使う（マスク付きの例）:
+
+```bash
+IDTOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq -r '.value')
+echo "::add-mask::$IDTOKEN"
+```
+
+推奨: `core.getIDToken()`（取得したトークンを自動でマスクする）。toolkit を使う例:
 
 ```yaml
 jobs:
@@ -232,6 +239,7 @@ org 内の任意のリポジトリから特定 reusable workflow のみ許可す
 
 ## Notes
 
+- 「トークンの要求方法」のマスク付き curl 例は、原本の curl 行と `::add-mask::`（workflow-commands ページ）から構成したもの。原本の例そのものではない。
 - Dependabot の update ジョブ用トークンは `event_name` が `dynamic`。GitHub Actions ワークフローのみを許可したい trust policy では、期待するイベント名だけを許可する。
 - Dependabot は AWS CodeArtifact / Azure DevOps Artifacts / JFrog Artifactory 上の、`username` / `password` 認証を使うレジストリに対して OIDC で認証できる。
 - immutable subject claims は GitHub Enterprise Server では利用不可。
