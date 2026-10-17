@@ -2,7 +2,7 @@
 
 ## 概要
 
-Biome Assist はコード改善アクションを提供。リンタールールとは異なり、アシストアクションは常にコード修正を提供する。プロパティのソート、式の簡素化、リファクタリングなどを実行。現在 6 つのアシストアクションが利用可能。
+Biome Assist はコード改善アクションを提供。リンタールールとは異なり、アシストアクションは常にコード修正を提供する。プロパティのソート、式の簡素化、リファクタリングなどを実行。アシストアクション数は公式ページで自動生成される値（言語別の一覧は各 `*-actions.md` 参照）。バグ検出やコーディングスタイルの強制を目的としない。LSP のコードアクション（`codeActionKind`）に近い意味論で、グループに分類される。
 
 ## セーフな修正
 
@@ -49,6 +49,8 @@ biome check --formatter-enabled=false --linter-enabled=false
 biome check --enforce-assist=false
 ```
 
+`check` は既定でアシストを enforce する。`--enforce-assist=false` では未適用アクションがあっても診断エラーを出さない。
+
 ## 設定
 
 ```json
@@ -65,6 +67,32 @@ biome check --enforce-assist=false
 ```
 
 アシストはデフォルトで有効。一部ルールは推奨ルールセットに含まれる。
+
+### preset
+
+`assist.actions.preset` と `assist.actions.[group].preset` は `"recommended"` | `"all"` | `"none"` を取る（`assist.actions.preset` の既定は `"recommended"`）。
+
+```json
+{
+  "assist": {
+    "actions": {
+      "preset": "recommended",
+      "source": {
+        "preset": "all",
+        "useSortedKeys": "off"
+      }
+    }
+  }
+}
+```
+
+- 優先順位: 個別アクション設定 > グループ preset > `assist.actions.preset`
+- `preset` が `"none"` でも、個別アクションを明示的に有効化できる
+- `recommended`（boolean）も残るが、同時指定時は `preset` が優先
+
+## 抑制
+
+アシストアクションの抑制は `analyzer/suppressions.md` を参照。
 
 ## グループ
 

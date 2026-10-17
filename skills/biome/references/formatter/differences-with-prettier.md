@@ -23,14 +23,36 @@ TypeScript の `(a.?.b)!` と `a.?.b!` — Prettier は括弧の有無を保持�
 
 ## 5. 無効な構文の扱い
 
-Prettier は構文エラーを見過ごして整形:
-- 重複修飾子: `private public a = 1`
-- オプショナルチェーンへの代入: `(a?.b) = c`
-- 不正な型パラメータ修飾子
+Prettier は Babel ベースのパースが緩く、複数の構文エラーを見過ごして整形する。Biome のパーサーは意図的に厳格で、次を構文エラーとして検出する:
+- 関数の重複修飾子 / プロパティ修飾子の不正な順序
+- 本体を持つ関数宣言（`declare function foo() {}`）
+- 非 abstract クラスの abstract プロパティ
+- オプショナルチェーンへの代入
+- interface の型パラメータへの `const` 修飾子
 - トップレベル return
-- 不正な自己増減: `(1)++`
 
-Biome は「Bogus」ノードとして逐語的に出力。
+Biome ではパースエラーが「Bogus」ノードになり、フォーマットせず逐語的に出力する（整形で意味が変わるのを避けるため）。クラスプロパティでは、Prettier は修飾子を boolean で保持するため各種 1 つしか残らないが、Biome は修飾子のリストを保持するため重複が残る。
+
+### クラスプロパティの重複修飾子
+
+```ts
+class Foo {
+  private public a  = 1;   // Prettier: private a = 1;  Biome: そのまま出力
+}
+declare function foo ( ) {  }   // Prettier: declare function foo() {};
+class Read {
+  readonly readonly   x: number;   // Prettier は 1 つに整形
+}
+```
+
+### オプショナルチェーンへの代入
+`(a?.b) = c` のような代入を Prettier は整形し、Biome は Bogus として逐語出力。
+
+### interface の型パラメータへの不正な修飾子
+interface の型パラメータへの不正な `const` 修飾子を Prettier は整形し、Biome は構文エラー。
+
+### トップレベル return
+トップレベルの `return` を Prettier は整形し、Biome は構文エラー。
 
 ## 6. TypeScript/Babel パーサー間の矛盾
 

@@ -8,7 +8,7 @@ Biome はオピニオン型フォーマッターで、複数の言語をサポ�
 
 ## 対応言語
 
-JavaScript, TypeScript, JSX, TSX, JSON, JSONC, CSS, GraphQL, HTML
+JavaScript, TypeScript, JSX, TSX, JSON, JSONC, CSS, GraphQL, HTML, SVG（SVG と HTML のフォーマットは実験的。`internals/language-support.md` 参照）
 
 ## CLI での使い方
 
@@ -40,6 +40,7 @@ biome format --write ./src
 | arrowParentheses | always |
 | bracketSpacing | true |
 | bracketSameLine | false |
+| delimiterSpacing | false（2.5.0 で追加） |
 
 ## 抑制方法
 
@@ -57,3 +58,5 @@ const x = 1;
 ## .editorconfig 統合
 
 v1.9 以降で `.editorconfig` の読み込みをサポート。`formatter.useEditorconfig: true` で有効化。
+
+glob は shell が展開する（`biome format ./src/**/*.test.{js,ts}` は shell 依存）。展開にはコストとファイル数の上限があるため、`includes` 設定を推奨。

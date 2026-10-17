@@ -5,13 +5,13 @@ Docker を使った Biome の実行コマンド集。ローカルインストー
 ## フォーマットの実行（ドライラン）
 
 ```sh
-docker run -v $(pwd):/code ghcr.io/biomejs/biome format
+docker run -v "$(pwd)":/code ghcr.io/biomejs/biome format
 ```
 
 ## フォーマットの実行（書き込み）
 
 ```sh
-docker run -v $(pwd):/code ghcr.io/biomejs/biome format --write
+docker run -v "$(pwd)":/code ghcr.io/biomejs/biome format --write
 ```
 
 > **警告**: カレントディレクトリのファイルをコンテナ内から上書きする。
@@ -19,13 +19,13 @@ docker run -v $(pwd):/code ghcr.io/biomejs/biome format --write
 ## リントの実行
 
 ```sh
-docker run -v $(pwd):/code ghcr.io/biomejs/biome lint
+docker run -v "$(pwd)":/code ghcr.io/biomejs/biome lint
 ```
 
 ## リントの実行（安全な自動修正）
 
 ```sh
-docker run -v $(pwd):/code ghcr.io/biomejs/biome lint --write
+docker run -v "$(pwd)":/code ghcr.io/biomejs/biome lint --write
 ```
 
 > **警告**: カレントディレクトリのファイルをコンテナ内から上書きする。

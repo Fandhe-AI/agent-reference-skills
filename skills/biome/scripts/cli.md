@@ -8,6 +8,22 @@ Biome CLI のコアコマンド一覧。フォーマット・リント・チェ�
 biome --version
 ```
 
+## バージョンとデーモン情報の表示
+
+```sh
+biome version
+```
+
+CLI のバージョンと、接続中のデーモンサーバーの情報を表示して終了する。
+
+## Biome 自体のアップグレード（スタンドアロンバイナリ）
+
+```sh
+biome upgrade
+```
+
+インストール方法に応じて最新の stable へ更新する（スタンドアロンはその場で更新、Homebrew は `brew upgrade biome` を実行）。npm 経由でインストールした Biome は更新できないため、パッケージマネージャーで `@biomejs/biome` を更新する。
+
 ## フォーマットの実行（ドライラン）
 
 ```sh
@@ -61,10 +77,12 @@ biome lint --suppress .
 ## リント違反の抑制（理由付き）
 
 ```sh
-biome lint --suppress --reason "legacy code" .
+biome lint --suppress --reason="legacy code" .
 ```
 
-## チェックの実行（フォーマット + リント + インポート整理）
+`--reason` は `--suppress` が必須。
+
+## チェックの実行（フォーマット + リント + アシスト）
 
 ```sh
 biome check .
@@ -84,17 +102,48 @@ biome check --write --unsafe .
 
 > **警告**: unsafe 修正はコードの挙動を変える可能性がある。
 
-## 特定ルール・ドメインのみ実行
+## 特定のグループ・ルール・ドメイン・アクション・プラグインのみ実行
 
 ```sh
-biome check --only=lint/suspicious .
+biome check --only=suspicious .
+biome check --only=correctness/noUnusedVariables .
+biome check --only=plugin .
 ```
 
-## 特定ルール・ドメインをスキップ
+書式は `--only=<GROUP|RULE|DOMAIN|ACTION|PLUGIN>`。複数指定可。`plugin` はアナライザープラグインのみを実行する。`biome lint` では ACTION を除いた `--only=<GROUP|RULE|DOMAIN|PLUGIN>`。
+
+## 特定のグループ・ルール・ドメイン・アクション・プラグインをスキップ
 
 ```sh
-biome check --skip=lint/style .
+biome check --skip=suspicious .
+biome check --skip=correctness/noUnusedVariables --skip=plugin .
 ```
+
+書式は `--skip=<GROUP|RULE|DOMAIN|ACTION|PLUGIN>`。`--only` より優先される。
+
+## ファイル変更の監視
+
+```sh
+biome check --watch
+```
+
+初回実行後、対象パスを監視し、以降に変更されたファイルを再処理する。`lint` / `format` でも使用可。
+
+## 簡潔なレポーター出力
+
+```sh
+biome check --reporter=concise
+```
+
+診断を 1 行 1 件で表示する（フォーマッター診断はまとめて表示）。
+
+## ルールごとの実行時間の計測
+
+```sh
+biome check --profile-rules
+```
+
+各ルールの実行時間を報告する（意味モデル構築等の準備時間は除く）。`lint` でも使用可。
 
 ## ステージング済みファイルのみチェック
 
@@ -113,8 +162,10 @@ biome check --changed
 ## 特定ブランチとの差分でチェック
 
 ```sh
-biome check --changed --since=next
+biome check --changed --since=main
 ```
+
+`--since=REF` は `--changed` の比較基準を `vcs.defaultBranch` から上書きする（`--changed` が必須）。`lint` / `format` / `ci` でも使用可。
 
 ## Grit パターン検索（実験的機能）
 

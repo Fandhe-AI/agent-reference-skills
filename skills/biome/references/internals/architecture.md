@@ -44,9 +44,15 @@ Work in progress.
 
 ## Daemon
 
-Biome adopts a server-client architecture. The daemon is a long-running background server that handles requests from editors and the CLI.
+Biome adopts a server-client architecture. The daemon is a long-running background server that Biome spawns in the background and uses to process requests from editors and the CLI. The official section is marked work in progress.
+
+## Notes
+
+- The scanner indexes `package.json` manifests and source files when rules from the project domain are enabled; Scanner targeting optimisations do not apply in that case
 
 ## Related
 
 - [Philosophy](./philosophy.md)
 - [Language support](./language-support.md)
+- [Daemon](../reference/daemon.md)
+- [Language server](../reference/language-server.md)

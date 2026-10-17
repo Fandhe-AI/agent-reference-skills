@@ -1,11 +1,12 @@
 ---
 name: biome
 description: >
-  Biome (Rust 製の高速 JavaScript / TypeScript フォーマッター・リンター) リファレンス。
-  biome.json 設定、biome check / lint / format コマンド、ルール、suppressions、
-  ESLint / Prettier からの移行、import 整理、CI 連携、monorepo 対応。
+  Biome (Rust 製フォーマッター・リンター) リファレンス。
+  JavaScript / TypeScript / JSX / CSS / JSON / GraphQL / HTML (Vue, Svelte, Astro) 対応。
+  biome.json, biome check / lint / format / ci / migrate / upgrade, linter ルール・preset・domains,
+  GritQL プラグイン, assist (organizeImports), suppressions (biome-ignore), LSP / VS Code / Zed,
+  ESLint / Prettier 移行, monorepo, CI。
 user-invocable: false
-model: sonnet
 ---
 
 # Biome リファレンス
@@ -13,15 +14,22 @@ model: sonnet
 Biome（biomejs.dev）の全ドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
+対象 Biome 2.5.15（`@biomejs/biome@2.5.15`、2026-09-30）。ドキュメントは biomejs/website commit `c5cb3eb4`（2.5.15 release sync、ルール / アクション / ドメイン表）と `49293f2`（2026-10-16、本文ページ、取得日 2026-10-17）。
+
 ## ディレクトリ構成
 
 ```text
 skills/biome/
   SKILL.md
   references/
+    introduction/
+      README.md
+      why-biome.md
+      comparison-with-other-tools.md
     guides/
       README.md
       getting-started.md
+      editors.md
       configure-biome.md
       integrate-in-vcs.md
       migrate-eslint-prettier.md
@@ -51,6 +59,7 @@ skills/biome/
       graphql-rules.md
       graphql-sources.md
       html-rules.md
+      html-sources.md
     assist/
       README.md
       introduction.md
@@ -59,6 +68,7 @@ skills/biome/
       css-actions.md
       html-actions.md
       json-actions.md
+      graphql-actions.md
     reference/
       README.md
       cli.md
@@ -68,6 +78,8 @@ skills/biome/
       reporters.md
       vscode.md
       zed.md
+      language-server.md
+      daemon.md
       environment-variables.md
     recipes/
       README.md
@@ -75,12 +87,14 @@ skills/biome/
       git-hooks.md
       badges.md
       renovate.md
+      gritql-plugins.md
     internals/
       README.md
       architecture.md
       changelog.md
       language-support.md
       philosophy.md
+      versioning.md
   samples/
     README.md
     getting-started.md
@@ -110,10 +124,14 @@ skills/biome/
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
+2026-10 の公式ドキュメント再編で `guides/` 配下ページの公式 URL は `/installation/` `/configuration/` 系へ移動したが、ディレクトリ名は維持している。現行 URL は各ページの Notes を参照すること。
+
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
+| Biome を選ぶ理由、Prettier / ESLint / Oxc との比較 | introduction | [references/introduction/README.md](references/introduction/README.md) |
+| エディタ設定（VS Code / Zed / IntelliJ / Helix / その他） | guides | [references/guides/README.md](references/guides/README.md) |
 | インストール、初期設定、biome init | guides | [references/guides/README.md](references/guides/README.md) |
 | ESLint/Prettier からの移行、biome migrate | guides | [references/guides/README.md](references/guides/README.md) |
 | モノレポ対応、extends、共有設定 | guides | [references/guides/README.md](references/guides/README.md) |
@@ -126,9 +144,15 @@ skills/biome/
 | ドメイン（React, Next.js, Vue）設定 | linter | [references/linter/README.md](references/linter/README.md) |
 | GritQL プラグイン、カスタムルール | linter | [references/linter/README.md](references/linter/README.md) |
 | ESLint / Stylelint ルールとの対応表 | linter | [references/linter/README.md](references/linter/README.md) |
+| HTML ルールのソース対応表 | linter | [references/linter/README.md](references/linter/README.md) |
 | import ソート、キーソート、organizeImports | assist | [references/assist/README.md](references/assist/README.md) |
 | useSortedKeys、useSortedProperties、CSS アクション | assist | [references/assist/README.md](references/assist/README.md) |
-| CLI コマンド、biome check/lint/format/ci | reference | [references/reference/README.md](references/reference/README.md) |
+| GraphQL アシスト（useSortedSelectionSet 等） | assist | [references/assist/README.md](references/assist/README.md) |
+| CLI コマンド、biome check/lint/format/ci、biome upgrade、--watch、concise レポーター | reference | [references/reference/README.md](references/reference/README.md) |
+| LSP、language server、lsp-proxy、エディタ拡張の自作 | reference | [references/reference/README.md](references/reference/README.md) |
+| デーモン、biome start、daemon リクエスト（biome/* メソッド） | reference | [references/reference/README.md](references/reference/README.md) |
+| GritQL プラグインのレシピ集・CST ノード名 | recipes | [references/recipes/README.md](references/recipes/README.md) |
+| バージョニング、バージョン固定 (-E) の理由 | internals | [references/internals/README.md](references/internals/README.md) |
 | biome.json 設定、全オプション | reference | [references/reference/README.md](references/reference/README.md) |
 | 診断、レポーター、環境変数 | reference | [references/reference/README.md](references/reference/README.md) |
 | VS Code 拡張、Zed 設定、GritQL 構文 | reference | [references/reference/README.md](references/reference/README.md) |
