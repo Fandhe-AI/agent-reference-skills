@@ -110,7 +110,7 @@ class ResizedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset('dash.png', cacheHeight: 213, cacheWidth: 392);
+    return Image.asset('dash.png', cacheWidth: 213, cacheHeight: 392);
   }
 }
 ```
@@ -135,6 +135,7 @@ The inspector instruments application code to learn where widgets are created, s
 
 - Track widget creation prevents otherwise-identical `const` Widgets from being considered equal in debug builds.
 - Changes made from the flex explorer don't modify source code and are reverted on hot reload.
+- Corrected from the official docs: the source example passes `cacheHeight: 213, cacheWidth: 392`, which swaps the 213×392 (width×height) display size shown in the log message; here it is `cacheWidth: 213, cacheHeight: 392`.
 - Flutter DevTools inspector (Dart) is distinct from React DevTools (react skill).
 
 ## Related

@@ -51,7 +51,8 @@ The compiler reduces compiled code size by tree shaking and by renaming symbols 
 ## Notes
 
 - Exclude source maps from public hosting: standard deployment tools upload all files in `build/web/`. If source maps are public, browser DevTools download them automatically, exposing un-minified symbol names, class hierarchies, and local file paths. Upload `.map` files to your private error-monitoring service (such as Sentry or Datadog) during CI/CD and exclude `*.map` from public hosting (for example `"ignore": ["**/*.map"]` in `firebase.json`, or strip them before deployment).
-- WebAssembly builds use multiple threads and require the server to return `Cross-Origin-Embedder-Policy: credentialless` and `Cross-Origin-Opener-Policy: same-origin`. See the Wasm page.
+- WebAssembly builds can render with multiple threads; multi-threaded rendering requires the server to return `Cross-Origin-Embedder-Policy: credentialless` (or `require-corp`) and `Cross-Origin-Opener-Policy: same-origin`. Without these headers the app runs single-threaded (see `forceSingleThreadedSkwasm` on the initialization page). See the Wasm page.
+- The official deployment page states these headers are required for all Wasm builds; this page follows the Wasm page, which scopes them to multi-threaded rendering.
 - Other hosting options named in the source: GitHub Pages and Google Cloud Hosting.
 - `npm install -g firebase-tools` modifies the global npm environment; run it in a disposable or trusted environment.
 - This covers deploying Flutter web builds (static output in `build/web`); it is distinct from Vercel (vercel skill) and Next.js (nextjs-app skill) deployment.
@@ -59,6 +60,7 @@ The compiler reduces compiled code size by tree shaking and by renaming symbols 
 ## Related
 
 - [Wasm](./wasm.md)
+- [Customize app initialization](./initialization.md)
 - [Web images](./web-images.md)
 - [Adding Flutter to any web application](./embedding-flutter-web.md)
 - [Web FAQ](./web-faq.md)
