@@ -121,6 +121,7 @@ _userEventSubscription = surfaceController.onSubmit.listen(sendRequest);
 ## Notes
 
 - Experimental: the `genui` package is in alpha and is likely to change.
+- Caveat: `UiEvent` / `UserActionEvent` are extension types over `JsonMap`, which are erased at runtime, so `event is! UserActionEvent` only tests the representation type and cannot distinguish a `UserActionEvent` from other `UiEvent` values; the source snippet (and its "verifies the event type" wording) is quoted as-is. Validate by JSON keys (e.g. the action `name`) when you need a real check.
 - The AI agent receives the JSON message, processes the user action, and may stream back new `surfaceUpdate` or `dataModelUpdate` messages, completing the loop.
 - The source text still names `ContentGenerator` in the transmission step while the other GenUI pages use `A2uiTransportAdapter`; the class listing is not reconciled in the source.
 

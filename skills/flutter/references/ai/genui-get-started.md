@@ -249,10 +249,10 @@ void main() async {
 ## Notes
 
 - Experimental: the `genui` package is in alpha and is likely to change.
-- For iOS or macOS builds, add `com.apple.security.network.client` set to `<true/>` to the `{ios,macos}/Runner/*.entitlements` file(s) to enable outbound network requests.
+- For macOS builds, add `com.apple.security.network.client` set to `<true/>` to `macos/Runner/DebugProfile.entitlements` and `Release.entitlements` (App Sandbox outbound network). iOS needs no such entitlement for ordinary HTTPS; the source text lists `{ios,macos}`, but the key only applies to the macOS App Sandbox.
 - `PromptBuilder.chat()` generates a system prompt that might be 3,000-5,000+ tokens long, which can exceed the context window of on-device or small models. For on-device LLMs, write a compact custom system prompt that covers only the A2UI `createSurface` to `updateComponents` flow, or use `systemPromptFragments` to pass only the needed schema portions.
 - Always include the tools provided by `SurfaceController` when building the `PromptBuilder`.
-- Firebase has a minimum version requirement for Apple platforms that might be higher than Flutter's default; check the `Podfile` (iOS) and `CMakeLists.txt` (macOS).
+- Firebase has a minimum version requirement for Apple platforms that might be higher than Flutter's default; raise `platform :ios` in `ios/Podfile` and `platform :osx` in `macos/Podfile` (plus the Runner target's iOS / macOS Deployment Target in Xcode). The source says `CMakeLists.txt` for macOS, but Flutter macOS projects are built with Xcode/CocoaPods and have no `CMakeLists.txt`.
 - Source snippets import `package:material_ui/material_ui.dart`. In Flutter 3.47 `material_ui` is the standalone Material package that can be opted into; the framework `package:flutter/material.dart` remains the stable surface.
 - Examples: the `examples` directory of the genui repository, including the travel app, which shows a custom domain-specific widget catalog.
 - Distinction: `Catalog`, `Surface`, `Conversation` and the A2UI protocol here are Dart `package:genui`; the A2A/MCP agent frameworks of openai-agents and anthropic-agent-sdk are separate.

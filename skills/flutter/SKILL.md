@@ -2,14 +2,14 @@
 name: flutter
 description: >
   Flutter (Google 製 Dart クロスプラットフォーム UI フレームワーク, 3.47) のリファレンス。
-  StatelessWidget / StatefulWidget / BuildContext, Sliver, Material / Cupertino, Impeller, DevTools,
-  Widget Previewer, MVVM, platform channels / dart:ffi, add-to-app, Flutter Web / Wasm, GenUI SDK / AI Toolkit。
+  StatelessWidget / StatefulWidget / BuildContext, Material / Cupertino, Impeller, DevTools, MVVM,
+  add-to-app, GenUI SDK / AI Toolkit。
 user-invocable: false
 ---
 
 # Flutter
 
-> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
