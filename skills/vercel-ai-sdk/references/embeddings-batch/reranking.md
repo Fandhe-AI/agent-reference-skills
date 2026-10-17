@@ -46,7 +46,7 @@ console.log(rerankedDocuments[0]);
 // { from: 'John McGill', subject: 'Missing Info', text: '...' }
 ```
 
-## Result
+### Result
 
 `rerank` returns `ranking`, `rerankedDocuments`, `originalDocuments`:
 
@@ -56,7 +56,7 @@ console.log(rerankedDocuments[0]);
 
 Each `ranking` item contains `originalIndex` (position in the original documents array), `score` (relevance score, typically 0-1, higher is more relevant), and `document` (the original document).
 
-## Settings
+## Options / Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -78,7 +78,9 @@ const { ranking, response } = await rerank({
 console.log(response); // { id, timestamp, modelId, headers, body }
 ```
 
-## Reranking providers and models
+## Notes
+
+### Reranking providers and models
 
 | Provider | Model |
 | --- | --- |

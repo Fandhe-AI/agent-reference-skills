@@ -240,14 +240,16 @@ const result = await generateText({
 
 for (const file of result.files) {
   if (file.mediaType.startsWith('image/')) {
-    // file.base64: string (data URL format)
+    // file.base64: string (base64 encoded data)
     // file.uint8Array: Uint8Array (binary data)
     // file.mediaType: string (e.g. "image/png")
   }
 }
 ```
 
-## Image Models
+## Notes
+
+### Image Models
 
 A small subset of the image models supported by the AI SDK providers (see the respective provider documentation for more). Support sizes (`width x height`) or aspect ratios (`width : height`):
 
@@ -315,9 +317,10 @@ A small subset of the image models supported by the AI SDK providers (see the re
 | Black Forest Labs | `flux-pro-1.1` | From 3:7 (portrait) to 7:3 (landscape) |
 | Black Forest Labs | `flux-pro-1.0-fill` | From 3:7 (portrait) to 7:3 (landscape) |
 
-## Notes
+### General notes
 
 - This page covers `generateImage` through AI SDK provider packages (`@ai-sdk/openai`, `@ai-sdk/google`, etc.), not the raw provider image APIs. For the raw OpenAI image APIs (gpt-image / vision / Sora) see openai-images-video and openai-api-core; for Gemini and Anthropic native APIs see the corresponding provider skills (anthropic-api-core).
+- The original guide comment labels `file.base64` as "data URL format", but the `GeneratedFile` reference defines `base64` as a plain base64 encoded string without a `data:` prefix; build a data URL as `` `data:${file.mediaType};base64,${file.base64}` `` when one is needed.
 - Stability: `generateImage` has no `experimental_` prefix (stable). Model IDs and supported sizes are copied verbatim from the official page as of ai 7.0.142 and are provider-dependent.
 
 ## Related

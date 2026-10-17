@@ -48,7 +48,7 @@ console.log(
 );
 ```
 
-## Settings
+## Options / Props
 
 Both `embed` and `embedMany` accept the following settings.
 
@@ -74,7 +74,7 @@ const { embedding } = await embed({
 
 Result information: `usage` (for example `{ tokens: 10 }`) and `response` (raw provider response) are returned by both functions.
 
-## Embedding middleware
+### Embedding middleware
 
 Enhance embedding models (for example to set default values) with `wrapEmbeddingModel` and `EmbeddingModelMiddleware`. Example with the built-in `defaultEmbeddingSettingsMiddleware`:
 
@@ -101,7 +101,9 @@ const embeddingModelWithDefaults = wrapEmbeddingModel({
 });
 ```
 
-## Embedding providers and models
+## Notes
+
+### Embedding providers and models
 
 | Provider | Model | Embedding Dimensions | Multimodal |
 | --- | --- | --- | --- |
@@ -122,7 +124,7 @@ const embeddingModelWithDefaults = wrapEmbeddingModel({
 | Amazon Bedrock | `amazon.titan-embed-text-v1` | 1536 | No |
 | Amazon Bedrock | `amazon.titan-embed-text-v2:0` | 1024 | No |
 
-## Notes
+### General notes
 
 - Providers map `dimensions` to their native output dimension setting. An explicit dimension setting in `providerOptions` takes precedence over `dimensions`; other provider options can be combined with the top-level setting.
 - Support and allowed dimension values depend on the model. The SDK forwards the requested size to the provider API without truncating or resizing the returned embeddings. AI Gateway forwards `dimensions` and `providerOptions` for resolution by the selected provider.

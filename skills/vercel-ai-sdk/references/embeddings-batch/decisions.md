@@ -38,7 +38,7 @@ async function triage(model: Experimental_DecisionModel, message: string) {
 }
 ```
 
-## Multimodal state
+### Multimodal state
 
 Combine text, structured data, and images in one state:
 
@@ -74,7 +74,7 @@ const result = await experimental_decide({
 
 Arrays passed directly as `state` contain parts. To send a JSON array, put it inside an object (`state: { records }`) or a JSON part (`state: [{ type: 'json', value: records }]`). An empty `state: []` contains zero parts. Question instructions and criteria still accept JSON arrays directly.
 
-## Provider models
+### Provider models
 
 Use a provider's `decisionModel` factory:
 
@@ -90,7 +90,7 @@ Use a provider's `decisionModel` factory:
 - The Anthropic and Google language-model adapters request `reasoning: 'none'` by default. Each provider maps this to its model's reasoning controls. Pass supported reasoning settings through `providerOptions` to override. OpenAI decision models use the Decisions endpoint and do not accept Responses API reasoning options.
 - Language-model decision adapters accept image files only. The underlying model must support the file data form. Gateway forwards image files to the routed decision model, which must support image input. TypeSafe AI accepts text and JSON state only.
 
-## Model aliases and registries
+### Model aliases and registries
 
 Use `customProvider` to give models application-specific names, then register providers with `createProviderRegistry`:
 
@@ -132,7 +132,7 @@ result.answers.department.choice; // 'billing' | 'support'
 - Registry IDs use `providerId:modelId`; the `separator` option changes the separator. Only the first separator is used, so model IDs can contain it.
 - Custom aliases take precedence over a fallback provider. A fallback only resolves unknown model IDs; it does not retry failed decisions or substitute a model when a question type is unsupported. Registered providers keep their own credentials and settings. Registry language/image middleware does not wrap decision models.
 
-### Default-provider strings
+#### Default-provider strings
 
 String IDs use Vercel AI Gateway by default. Configure Gateway authentication with `AI_GATEWAY_API_KEY` or Vercel OIDC, then pass a Gateway model ID:
 
@@ -173,7 +173,7 @@ const result = await experimental_decide({
 - Missing registry providers throw `NoSuchProviderError`; missing models or decision capabilities throw `NoSuchModelError` with `modelType: 'decisionModel'`. Unsupported model versions throw `UnsupportedModelVersionError`, including models returned by registries.
 - The stable `ProviderV4` and `ProviderRegistryProvider` interfaces are unchanged; keep the inferred registry type, or use `Experimental_DecisionProviderRegistry`, to retain its experimental `decisionModel` method.
 
-## Question types
+### Question types
 
 | Type | Criteria | Answer |
 | --- | --- | --- |
@@ -187,7 +187,7 @@ Answers retain question IDs and have the same `type` as their question. When a C
 
 Distributions must sum to one, and weighted scores must agree with their distributions. The default absolute tolerance is `0.000001`. Providers that round their output can declare `rounding.probabilityDecimals` and `rounding.scoreDecimals` (integers from 0 to 15). Validation then also allows half a unit in the last decimal place per rounded probability or score, accumulated over the sum or weighted mean. The result includes this `rounding` information. Invalid output is rejected; native values are preserved, never silently normalized.
 
-## Probabilities and confidence
+### Probabilities and confidence
 
 Choice and Score distributions are optional. Boolean probability is required: `0.98` means a strong yes and `0.02` means a strong no. It is not confidence in either outcome. The SDK does not promise calibration across providers. Provider-specific confidence statistics belong in `providerMetadata`. TypeSafe exposes its separate Choice/Score confidence statistic at `result.providerMetadata?.typesafe?.confidence`, keyed by question ID.
 
@@ -207,7 +207,7 @@ if (result.answers.requestsRefund.probability >= 0.8) {
 }
 ```
 
-## Errors and cancellation
+### Errors and cancellation
 
 - The model's `supportedQuestionTypes` are checked before calling the provider. Any unsupported question fails the entire call with `Experimental_DecisionUnsupportedQuestionTypeError`. Successful calls return an answer for every question; there is no partial success, and Core does not substitute models automatically.
 - Invalid inputs throw `InvalidArgumentError`. Missing answers, mismatched answer types, invalid options, scores, or probabilities throw `InvalidResponseDataError`.

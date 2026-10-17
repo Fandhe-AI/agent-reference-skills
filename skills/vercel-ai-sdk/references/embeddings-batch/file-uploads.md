@@ -43,7 +43,7 @@ const { providerReference } = await uploadFile({
 });
 ```
 
-## Supported file types
+### Supported file types
 
 Images, PDFs, text files, and other documents depending on the provider. The media type is auto-detected from the file bytes when not specified:
 
@@ -68,7 +68,7 @@ Use the `providerReference` in a file content part with its media type:
 }
 ```
 
-## Provider-specific options
+### Provider-specific options
 
 Some providers accept additional options through `providerOptions`. For example, OpenAI requires a `purpose` field:
 
@@ -86,7 +86,7 @@ const { providerReference } = await uploadFile({
 });
 ```
 
-## Streaming uploads
+### Streaming uploads
 
 Providers that support streaming uploads (e.g. OpenAI, xAI) accept a tagged `{ type: 'stream', stream }` shape, sending the bytes without buffering the full file in memory. Providers without streaming support reject stream data with an `UnsupportedFunctionalityError`.
 
@@ -103,7 +103,7 @@ The provider consumes the stream: any failed upload (including validation failur
 
 Uploads can be cancelled with `abortSignal` and carry request-specific `headers`. Results include `byteSize`, `createdAt`, and `expiresAt` (the provider-applied retention expiry) when the provider reports them.
 
-## Provider references
+### Provider references
 
 ```ts
 // Example ProviderReference
@@ -114,7 +114,7 @@ Uploads can be cancelled with `abortSignal` and carry request-specific `headers`
 
 When you pass a `ProviderReference` as the `data` or `image` field of a message content part, the provider looks up its own file ID from the reference. If the reference does not contain an entry for the current provider, an error is thrown.
 
-## Multi-provider usage
+### Multi-provider usage
 
 If you switch providers mid-conversation, upload the file to both providers and merge the references:
 
@@ -141,7 +141,9 @@ const mergedReference = {
 
 The merged reference can then be used in messages regardless of which provider processes the request.
 
-## Supported providers
+## Notes
+
+### Supported providers
 
 | Provider | Factory Method |
 | --- | --- |
@@ -150,7 +152,7 @@ The merged reference can then be used in messages regardless of which provider p
 | OpenAI | `openai.files()` |
 | xAI | `xai.files()` |
 
-## Notes
+### General notes
 
 - Providers without file upload support throw an `UnsupportedFunctionalityError` if they encounter a provider reference in a message.
 

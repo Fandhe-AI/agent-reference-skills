@@ -27,7 +27,7 @@ const base64 = video.base64; // base64 video data
 const uint8Array = video.uint8Array; // Uint8Array video data
 ```
 
-## Settings
+## Options / Props
 
 ### Aspect Ratio
 
@@ -311,7 +311,9 @@ try {
 }
 ```
 
-## Video Models
+## Notes
+
+### Video Models
 
 A small subset of the video models supported by the AI SDK providers (see the respective provider documentation for more).
 
@@ -333,7 +335,7 @@ A small subset of the video models supported by the AI SDK providers (see the re
 | xAI | `grok-imagine-video` | Text-to-video, image-to-video, editing, extension, R2V |
 | xAI | `grok-imagine-video-1.5` | Text-to-video, image-to-video, editing, extension, R2V (with reference audio) |
 
-## Notes
+### General notes
 
 - Experimental: `experimental_generateVideo` may change in patch releases.
 - This page covers `experimental_generateVideo` through AI SDK provider packages, not the raw provider video APIs. For raw OpenAI video (Sora) APIs see openai-images-video; its Videos API end-of-life is tracked in openai-api-core.

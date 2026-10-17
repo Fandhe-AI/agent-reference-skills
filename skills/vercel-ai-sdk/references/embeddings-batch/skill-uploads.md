@@ -53,7 +53,7 @@ const { providerReference } = await uploadSkill({
 });
 ```
 
-## Skill files
+### Skill files
 
 A skill is composed of one or more files, each with a relative `path` and `content`. Content can be a `Uint8Array` (e.g. from `fs.readFileSync`) or a base64-encoded string:
 
@@ -73,7 +73,7 @@ const { providerReference } = await uploadSkill({
 });
 ```
 
-## Upload result
+### Upload result
 
 `uploadSkill` returns an `UploadSkillResult`:
 
@@ -87,7 +87,7 @@ const { providerReference } = await uploadSkill({
 | `providerMetadata` | `object?` | Additional provider-specific metadata (e.g. timestamps) |
 | `warnings` | `Warning[]` | Warnings for unsupported options (e.g. `displayTitle` on OpenAI) |
 
-## Provider references
+### Provider references
 
 ```ts
 // Example ProviderReference
@@ -98,7 +98,7 @@ const { providerReference } = await uploadSkill({
 
 Pass the `providerReference` when referencing the skill during inference. Each provider looks up its own skill ID from the reference. If no entry exists for the current provider, an error is thrown.
 
-## Multi-provider usage
+### Multi-provider usage
 
 Upload the skill to each provider and merge the references:
 
@@ -123,7 +123,7 @@ const mergedReference = {
 // mergedReference: { openai: 'sk_...', anthropic: 'sk_...' }
 ```
 
-## Using skills in inference calls
+### Using skills in inference calls
 
 How you attach a skill depends on the provider.
 
@@ -146,14 +146,16 @@ await generateText({
 });
 ```
 
-## Supported providers
+## Notes
+
+### Supported providers
 
 | Provider | Factory Method |
 | --- | --- |
 | Anthropic | `anthropic.skills()` |
 | OpenAI | `openai.skills()` |
 
-## Notes
+### General notes
 
 - Distance from other skills: "skills" here are provider-side skill bundles uploaded through the AI SDK `uploadSkill` function and referenced by `ProviderReference`. For the Claude Skills API itself see anthropic-api-tools-mcp; for Agent Skills (`SKILL.md`) authored for Claude Code see anthropic-claude-code-extend. This page documents only the AI SDK upload and reference mechanism.
 

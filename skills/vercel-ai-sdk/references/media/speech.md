@@ -27,7 +27,7 @@ const audioData = result.audio.uint8Array; // audio data as Uint8Array
 const audioBase64 = result.audio.base64; // audio data as base64 string
 ```
 
-## Telemetry
+### Telemetry
 
 `generateSpeech` accepts the standard `telemetry` option. Registered integrations receive start, end, and error events with the provider and model, source text, generated audio byte length, media type and format, warnings, response metadata, provider metadata, and usage when the provider reports it. Raw generated audio is not included in telemetry events.
 
@@ -43,7 +43,7 @@ const result = await generateSpeech({
 
 Use `recordInputs: false` or `recordOutputs: false` when the text or output metadata should not be recorded by telemetry integrations.
 
-## Settings
+## Options / Props
 
 ### Provider-Specific settings
 
@@ -97,7 +97,9 @@ try {
 }
 ```
 
-## Speech Models
+## Notes
+
+### Speech Models
 
 A small subset of the speech models supported by the AI SDK providers (see the respective provider documentation for more).
 
@@ -136,7 +138,7 @@ A small subset of the speech models supported by the AI SDK providers (see the r
 | Fish Audio | `s2-pro` |
 | Fish Audio | `s2.1-pro` |
 
-## Notes
+### General notes
 
 - Stability: `generateSpeech` has no `experimental_` prefix (stable).
 - This page covers the AI SDK function via provider packages, not the raw provider TTS APIs. For raw OpenAI TTS / realtime audio see openai-realtime-audio and openai-api-core.

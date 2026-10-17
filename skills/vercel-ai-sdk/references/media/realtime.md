@@ -163,7 +163,7 @@ export default function RealtimePage() {
 
 Keep model and session configuration objects stable across renders. Use module scope as above, or `useMemo` when configuration depends on props. Replacing either object replaces the hook's session.
 
-## Tool Calling
+### Tool Calling
 
 Realtime tool execution is client-driven. The provider sends tool calls over the WebSocket, and your application handles them with `onToolCall`. If the result is available immediately, return it from `onToolCall`. The SDK sends it back to the provider as tool output.
 
@@ -237,7 +237,9 @@ realtime.addToolOutput(toolCallId, {
 });
 ```
 
-## Supported Providers
+## Notes
+
+### Supported Providers
 
 Realtime models are available on providers that expose realtime WebSocket APIs:
 
@@ -263,7 +265,7 @@ const gatewayModel = gateway.experimental_realtime('openai/gpt-realtime-2');
 
 `gateway.experimental_realtime.getToken()` mints a short-lived Gateway client secret on your server. The browser uses that token to open the Gateway WebSocket; the SDK handles the Gateway-specific WebSocket subprotocols for you. See the AI Gateway realtime docs for Gateway-specific token and provider option details.
 
-## Notes
+### General notes
 
 - Experimental: realtime (`experimental_realtime`, `experimental_useRealtime`, `experimental_getRealtimeToolDefinitions`) may change in patch releases.
 - This page covers realtime through AI SDK provider packages and AI Gateway, not the raw provider realtime APIs. For the raw OpenAI Realtime API (WebRTC / WebSocket / SIP) see openai-realtime-audio and openai-api-core; for AI Gateway platform settings see vercel.

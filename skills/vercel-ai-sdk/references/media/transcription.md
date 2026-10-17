@@ -28,7 +28,7 @@ const language = transcript.language; // language of the transcript e.g. "en", i
 const durationInSeconds = transcript.durationInSeconds; // duration of the transcript in seconds, if available
 ```
 
-## Telemetry
+### Telemetry
 
 `transcribe` and `experimental_streamTranscribe` accept the standard `telemetry` option. Registered integrations receive start, end, and error events with the provider and model, audio byte length and media type, final transcript, warnings, response metadata, provider metadata, and usage when the provider reports it. Because streaming transcription is experimental, custom integrations receive its lifecycle through `experimental_onStreamTranscriptionStart` and `experimental_onStreamTranscriptionEnd`; errors continue to use `onError`. Integrations that wrap or delegate to another telemetry integration must forward these experimental callbacks explicitly for streaming transcription to be observed.
 
@@ -46,7 +46,7 @@ Raw audio is not included in telemetry events. For streaming transcription, the 
 
 For URL audio, the downloaded media type is passed to the provider and reported on successful telemetry events. If downloading or decoding input audio fails, the start event is still emitted before the correlated error event, but its audio byte length and media type can be undefined because preparation did not complete.
 
-## Streaming Transcription
+### Streaming Transcription
 
 Streaming transcription is an experimental feature.
 
@@ -125,7 +125,7 @@ const result = streamTranscribe({
 
 Some providers require WebSocket headers for direct streaming STT. In those runtimes, pass a provider-specific `webSocket` implementation when creating the provider.
 
-## Settings
+## Options / Props
 
 ### Provider-Specific settings
 
@@ -221,7 +221,9 @@ try {
 }
 ```
 
-## Transcription Models
+## Notes
+
+### Transcription Models
 
 A small subset of the transcription models supported by the AI SDK providers (see the respective provider documentation for more).
 
@@ -265,7 +267,7 @@ A small subset of the transcription models supported by the AI SDK providers (se
 | Cartesia (streaming) | `ink-2` |
 | Fish Audio | `transcribe-1` |
 
-## Notes
+### General notes
 
 - Stability: `transcribe` is stable; `experimental_streamTranscribe` is experimental and may change in patch releases (versioning rule: `experimental_` prefix).
 - This page covers the AI SDK function via provider packages, not the raw provider speech APIs. For OpenAI realtime / STT / TTS raw APIs see openai-realtime-audio and openai-api-core.

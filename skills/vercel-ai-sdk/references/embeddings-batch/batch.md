@@ -26,21 +26,7 @@ import {
 } from 'ai';
 ```
 
-## Supported providers
-
-Batch processing requires a provider that implements the batch interface; support is provider- and model-specific.
-
-| Provider | Provider value | Request types | Provider API |
-| --- | --- | --- | --- |
-| Anthropic | `anthropic` | text | Message Batches API |
-| Google | `google` | text, image | Gemini Batch API |
-| OpenAI | `openai` | text | Batch API |
-| xAI | `xai` | text, image | Batch API |
-| AI Gateway | global default | text | Batch processing |
-
-OpenAI batch support is available through the Responses API, not `openai.chat()`.
-
-## Starting a batch
+### Starting a batch
 
 Pass a provider and one or more uniquely identified requests. Each text request must specify `type: 'text'`, a model ID, and either a text `prompt` or a `messages` array. Requests can use different model IDs when supported by the provider, and can use the usual text-generation settings such as `instructions`, `maxOutputTokens`, `temperature`, `topP`, `topK`, `presencePenalty`, `frequencyPenalty`, `stopSequences`, `seed`, and `reasoning`.
 
@@ -76,7 +62,7 @@ console.log(batch.id, batch.status);
 - The batch reference returned by `startBatch` is serializable. Persist it before the process exits if the batch will be completed by another process or later. When retrieving a batch, pass the same provider; the AI SDK uses the reference to ensure the batch is not read through an incompatible provider.
 - Tool definitions and tool settings are provided on individual requests. A tool with the same name must have the same definition in every request that uses it.
 
-### Image requests
+#### Image requests
 
 Image requests use the same prompt and generation settings as `generateImage`: `prompt`, `n`, `size`, `aspectRatio`, `seed`, and `providerOptions`. A prompt can also contain input images and a mask for providers that support image editing. Provider batch endpoints may support only a subset of these options; unsupported options produce warnings or errors.
 
@@ -108,7 +94,7 @@ for await (const item of getBatchResults({ provider: google, batch })) {
 }
 ```
 
-## Batch tools
+### Batch tools
 
 Batch text requests support both client-defined and provider-defined tools. Tool definitions are sent with each request that includes them.
 
@@ -153,7 +139,7 @@ for await (const item of getBatchResults({
 
 Provider-defined tools, such as web search or code execution, can execute on the provider when supported by that provider's batch API; their calls and results are returned as normalized `content` parts.
 
-## Checking batch status
+### Checking batch status
 
 ```ts
 import { setTimeout } from 'node:timers/promises';
@@ -186,7 +172,7 @@ Status responses can also include `requestCounts` (total, pending, completed, fa
 
 For webhook-capable providers, pass `webhookUrl` to `startBatch` to receive a notification when the batch reaches a terminal state. Webhook support and payloads are provider-specific; providers without webhooks return an unsupported warning and continue without one.
 
-## Cancelling a batch
+### Cancelling a batch
 
 ```ts
 const result = await cancelBatch({
@@ -199,7 +185,7 @@ console.log(result.providerMetadata);
 
 A successful call means the provider accepted the cancellation request. It does not guarantee that cancellation has finished or that every pending request will be cancelled. Use `getBatchStatus` afterwards.
 
-## Listing batches
+### Listing batches
 
 Results are paginated. Pass the returned `nextCursor` as `cursor` to get the next page:
 
@@ -223,23 +209,23 @@ do {
 
 Each item is a serializable batch reference with its latest normalized status, so it can be passed directly to `getBatchStatus`, `getBatchResults`, or `cancelBatch`. Cursors are opaque and provider-specific; store or pass them unchanged.
 
-## Retrieving results
+### Retrieving results
 
-After the batch is complete, `getBatchResults` returns an async iterable; each item has the ID and terminal status of one input request:
+After the batch is complete, `getBatchResults` returns an async iterable; each item has the ID and terminal status of one input request. Mixed batches can contain both text (`type: 'text'`) and image (`type: 'image'`) results; narrow with `item.type` (see "Image requests" above for image results, which contain `images` instead of `text`):
 
 ```ts
 for await (const item of getBatchResults({ provider: anthropic, batch })) {
-  if (item.status === 'succeeded') {
+  if (item.type === 'text' && item.status === 'succeeded') {
     console.log(item.id, item.text);
-  } else {
+  } else if (item.status !== 'succeeded') {
     console.error(item.id, item.status, item.error);
   }
 }
 ```
 
-Successful items include `text` (concatenated text content; can be an empty string), `content` (ordered normalized parts: text, reasoning, files, sources, tool calls, tool results, provider content where supported), `finishReason` and optional `rawFinishReason`, `usage` and optional `response`, and optional `providerMetadata`. Failed, cancelled, and expired items include `id` and status; failed items include `error`, and cancelled/expired items may also include one. One failed request does not mean every request failed, so handle each item independently.
+Successful text items include `text` (concatenated text content; can be an empty string), `content` (ordered normalized parts: text, reasoning, files, sources, tool calls, tool results, provider content where supported), `finishReason` and optional `rawFinishReason`, `usage` and optional `response`, and optional `providerMetadata`. Failed, cancelled, and expired items include `id` and status; failed items include `error`, and cancelled/expired items may also include one. One failed request does not mean every request failed, so handle each item independently.
 
-## Request controls
+## Options / Props
 
 All lifecycle functions accept `providerOptions`, `headers`, `timeout`, and `abortSignal`. `getBatchStatus`, `getBatchResults`, and `listBatches` also accept `maxRetries`.
 
@@ -255,6 +241,20 @@ All lifecycle functions accept `providerOptions`, `headers`, `timeout`, and `abo
 - Cancellation and listing are optional provider capabilities; calling either with a provider that does not implement it throws an `UnsupportedFunctionalityError`.
 - Batch retrieval does not run an AI SDK tool loop or invoke client-defined `execute` functions. Treat result content and provider metadata as untrusted model output, and avoid logging it indiscriminately because it can contain sensitive data.
 - Request controls affect communication with the provider only; they do not change the provider's processing deadline or cancel a batch that has already been submitted.
+
+### Supported providers
+
+Batch processing requires a provider that implements the batch interface; support is provider- and model-specific.
+
+| Provider | Provider value | Request types | Provider API |
+| --- | --- | --- | --- |
+| Anthropic | `anthropic` | text | Message Batches API |
+| Google | `google` | text, image | Gemini Batch API |
+| OpenAI | `openai` | text | Batch API |
+| xAI | `xai` | text, image | Batch API |
+| AI Gateway | global default | text | Batch processing |
+
+OpenAI batch support is available through the Responses API, not `openai.chat()`.
 
 ## Related
 

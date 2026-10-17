@@ -53,7 +53,7 @@ const usage = await result.usage; // audio/text token usage, if reported
 
 A translation stream is considered successful when at least one `audio` part was emitted or the final output text is non-empty. For providers that produce only audio output, `translationText` may resolve to an empty string.
 
-## Stream parts
+### Stream parts
 
 The `fullStream` yields the following part types:
 
@@ -70,7 +70,7 @@ The `fullStream` yields the following part types:
 
 Output text is append-only: providers stream `output-text-delta` parts and finalize per-utterance with `output-text-final`. There is no partial/revision part for output text by design for now.
 
-## Settings
+## Options / Props
 
 ### Output audio format
 
@@ -133,7 +133,9 @@ try {
 }
 ```
 
-## Translation Models
+## Notes
+
+### Translation Models
 
 A small subset of the translation models supported by the AI SDK providers (see the respective provider documentation for more).
 
@@ -142,7 +144,7 @@ A small subset of the translation models supported by the AI SDK providers (see 
 | OpenAI | `gpt-realtime-translate` |
 | Google | `gemini-3.5-live-translate-preview` |
 
-## Notes
+### General notes
 
 - Experimental: `experimental_streamTranslate` and `Experimental_SpeechTranslationModelV4` may change in patch releases.
 - This page covers the AI SDK function via provider packages, not the raw provider realtime APIs. For raw OpenAI realtime audio see openai-realtime-audio.

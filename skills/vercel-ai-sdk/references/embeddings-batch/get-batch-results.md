@@ -13,9 +13,9 @@ import { anthropic } from '@ai-sdk/anthropic';
 import { experimental_getBatchResults as getBatchResults } from 'ai';
 
 for await (const item of getBatchResults({ provider: anthropic, batch })) {
-  if (item.status === 'succeeded') {
+  if (item.type === 'text' && item.status === 'succeeded') {
     console.log(item.id, item.text);
-  } else {
+  } else if (item.status !== 'succeeded') {
     console.error(item.id, item.error);
   }
 }
@@ -39,6 +39,8 @@ for await (const item of getBatchResults({ provider: anthropic, batch })) {
 An `AsyncIterableStream<Experimental_BatchItemResult>` of succeeded, failed, cancelled, or expired request results. It can be consumed as either an async iterable or a `ReadableStream`.
 
 Successful items contain `id`, `status: 'succeeded'`, `text`, normalized `content` (including text, reasoning, sources, files, tool calls, and tool results), `finishReason`, `usage`, and optional response and provider metadata. `text` is the concatenation of text parts and can be an empty string when a result contains no text parts. Failed, cancelled, and expired items contain the request `id`, their terminal status, and optional error details.
+
+The fields above describe text requests (`type: 'text'`). Successful image requests (`type: 'image'`) instead contain an `images` array of `GeneratedFile` values plus warnings, response metadata, usage, and provider metadata; narrow mixed results with `item.type`.
 
 ## Notes
 

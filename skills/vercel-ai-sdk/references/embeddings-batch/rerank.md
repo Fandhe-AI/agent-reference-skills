@@ -60,7 +60,7 @@ const { ranking } = await rerank({
 | `response.body` | unknown (Optional) | The raw response body. |
 | `providerMetadata` | ProviderMetadata \| undefined (Optional) | Optional metadata from the provider. The outer key is the provider name. The inner values are the metadata. Details depend on the provider. |
 
-## Examples
+### Examples
 
 ```ts
 const { ranking, rerankedDocuments } = await rerank({
