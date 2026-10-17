@@ -26,11 +26,13 @@ immutable releases と Git タグを組み合わせて、アクションのリ�
 
 ## タグの移動
 
-GitHub の release に紐付かない可動タグ（`v1` / `v1.1` 等）は、公式手順では最新コミットへ付け替える。公式例の全タグ force push（`--tags` 付き）はローカルの全タグを強制送信し、無関係なリリースタグまで上書きし得るため転記しない。immutable release に紐付くタグは公開後に変更できない。
+可動タグ（`v1` / `v1.1`）は、公式手順ではタグを最新コミットへ付け替える（force push）運用になる。リモートタグの強制更新を伴うため、本リファレンスにはコマンドを転記しない。実行時は公式ページの手順を参照する。immutable release に紐付くタグは公開後に変更できない。
 
-```bash
-git tag -f TAG-NAME
-git push origin --force-with-lease refs/tags/TAG-NAME
+```text
+v1     -> v1.1.1 と同じコミット（可動、release なし）
+v1.1   -> v1.1.1 と同じコミット（可動、release なし）
+v1.1.1 -> 最新パッチ（release なし）
+v1.0.0 -> 固定（immutable release 付き）
 ```
 
 ---
@@ -62,7 +64,7 @@ immutable release は次の手順で公開することが推奨される。
 ## Notes
 
 - 上記の 2 つの方針（release 付きの固定タグ / release 無しの可動タグ）は排他的な選択。可動のメジャー・マイナータグを運用したい場合は release を作成しない。
-- タグ移動の送信コマンドは、原本の全タグ強制送信（`-f` と `--tags` を併用し、ローカルの全タグを送る形）から単一タグ `refs/tags/TAG-NAME` のみを対象とする形に絞っている。`git tag -f TAG-NAME` は原本どおり。
+- 原本のタグ移動手順は全タグの強制 push（`git tag` の強制付け替えと `--tags` 付きの強制送信）であり、危険コマンドの転記禁止に従い本ページには載せていない。
 - immutable releases の有効化方法はリポジトリ / organization 設定の別ドキュメント（Preventing changes to your releases）、整合性検証は Verifying the integrity of a release に記載されている。原本ではこれらの手順の詳細は確認していない。
 
 ## Related
