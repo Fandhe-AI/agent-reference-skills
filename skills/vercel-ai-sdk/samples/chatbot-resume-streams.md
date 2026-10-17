@@ -69,11 +69,11 @@ export async function POST(req: Request) {
 
   messages = [...messages, message!];
 
-  // Clear any previous active stream and save the user message
-  await saveChat({ id, messages, activeStreamId: null });
-
   // Fixed once per request; shared by consumeSseStream and onEnd
   const streamId = generateId();
+
+  // Register this request's stream ID before consumption starts (also replaces any previous active stream)
+  await saveChat({ id, messages, activeStreamId: streamId });
 
   const result = streamText({
     model: 'openai/gpt-6-luna',
@@ -95,10 +95,16 @@ export async function POST(req: Request) {
     async consumeSseStream({ stream }) {
       // Create a resumable stream from the SSE stream
       const streamContext = createResumableStreamContext({ waitUntil: after });
-      await streamContext.createNewResumableStream(streamId, () => stream);
-
-      // Update the chat with the active stream ID
-      await saveChat({ id, activeStreamId: streamId });
+      try {
+        await streamContext.createNewResumableStream(streamId, () => stream);
+      } catch (error) {
+        // Unregister only if this request's ID is still the active one
+        const current = await readChat(id);
+        if (current.activeStreamId === streamId) {
+          await saveChat({ id, activeStreamId: null });
+        }
+        throw error;
+      }
     },
   });
 }
@@ -128,10 +134,16 @@ export async function GET(
     waitUntil: after,
   });
 
-  return new Response(
-    await streamContext.resumeExistingStream(chat.activeStreamId),
-    { headers: UI_MESSAGE_STREAM_HEADERS },
+  const resumed = await streamContext.resumeExistingStream(
+    chat.activeStreamId,
   );
+
+  // The ID is registered before the resumable stream exists (or it already ended)
+  if (resumed == null) {
+    return new Response(null, { status: 204 });
+  }
+
+  return new Response(resumed, { headers: UI_MESSAGE_STREAM_HEADERS });
 }
 ```
 
@@ -139,6 +151,6 @@ export async function GET(
 
 - You build the storage: a Redis instance for the stream, `resumable-stream`, and a persistence layer that records `activeStreamId` per chat. The SDK supplies the `resume` option, the `consumeSseStream` callback, and the automatic GET request to `/api/chat/[id]/stream` (customizable via `prepareReconnectToStreamRequest`). The `readChat` / `saveChat` store is not defined on the page.
 - The official example does not await `saveChat`; it is awaited here so completion is awaited and failures are not swallowed.
-- onEnd only persists and clears when the chat's activeStreamId still equals this request's streamId, so an older generation finishing late cannot overwrite a newer one; in production make this a compare-and-set in your store (e.g. a conditional UPDATE) so the check and write are atomic.
+- onEnd only persists and clears when the chat's activeStreamId still equals this request's streamId, so an older generation finishing late cannot overwrite a newer one. The ID is registered before stream consumption starts, so a fast generation cannot finish before registration; if `createNewResumableStream` fails, the ID is cleared only when it still matches. This order intentionally differs from the official example (register after creation). In production make register / check / clear a compare-and-set in your store (e.g. a conditional UPDATE) so each step is atomic.
 - Official warning: in a resumable setup, client-side aborts (closing the tab, refresh, `stop()`) are treated as disconnects and do not cancel generation. Add a dedicated stop endpoint (persist the partial assistant message, cancel the work, clear `activeStreamId` only if it still matches).
 - `DefaultChatTransport` treats resumed streams as full replays; set `resumeStreamIsReplay: false` if your endpoint sends only remaining chunks. Clear `activeStreamId` when starting a new stream to avoid resuming outdated streams, and authenticate both create and resume endpoints.
