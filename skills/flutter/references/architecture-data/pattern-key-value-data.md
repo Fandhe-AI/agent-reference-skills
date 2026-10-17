@@ -156,6 +156,7 @@ ListenableBuilder(
 - Presentation layer: `ThemeSwitch` widget (a `StatelessWidget` containing a `Switch`) and `ThemeSwitchViewModel`. Data layer: `ThemeRepository` and `SharedPreferencesService`. `ThemeRepository` and `SharedPreferencesService` are created in `main()` and passed to `MainApp` as constructor dependencies.
 - `SharedPreferencesService` hides the third-party dependency from the rest of the application.
 - Key-value stores suit simple data such as app configuration. For complex data, use SQL (see the SQL pattern page). The page refers to the "Store key-value data on disk" cookbook recipe for basics.
+- The official `_toggle()` flips `_isDarkMode` before saving and does not revert it when `setDarkMode()` returns an error, while `ThemeRepository` only emits on success; in production, commit the new value after `Result.ok` (or revert on error) to keep the switch and `MainAppViewModel` in sync.
 - Flutter design pattern (Dart, MVVM) — distinct from the android-architecture skill's guidance.
 
 ## Related

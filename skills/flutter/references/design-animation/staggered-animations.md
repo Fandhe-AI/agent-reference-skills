@@ -212,6 +212,7 @@ void main() {
 - In the example the opacity changes during the first 10% of the timeline, a tiny gap follows before the width changes, nothing animates during the last 25%, increasing the padding makes the widget appear to rise, and a border radius of `75.0` turns the `150.0` x `150.0` square into a circle. Padding and height changes share the exact same interval, but they don't have to.
 - The stateless widget (`StaggerAnimation`) specifies the tweens, defines the `Animation` objects, and builds the animating widget tree; the stateful widget (`StaggerDemo`) creates the controller (2000 ms), plays the animation, and builds the non-animating tree. Taps during playback are ignored so the sequence can finish.
 - The example uses an `Opacity` widget inside `AnimatedBuilder` to keep all animated properties in one builder; when animating opacity alone prefer `FadeTransition` to avoid rebuilding the child on each frame.
+- `EdgeInsetsTween` extends `Tween<EdgeInsets>` (non-nullable), so `animate()` yields `Animation<EdgeInsets>`; `BorderRadiusTween` and `ColorTween` are nullable, hence `Animation<BorderRadius?>` / `Animation<Color?>`.
 - The sample imports `package:material_ui/material_ui.dart`, the opt-in standalone Material package available in Flutter 3.47.
 - Flutter animation framework (Dart). Distinct from Motion (JS) keyframes/sequences, Jetpack Compose animation APIs, Rive, and Theatre.js sequences; use the motion, android-compose-graphics-animation, rive, or theatrejs skills for those.
 

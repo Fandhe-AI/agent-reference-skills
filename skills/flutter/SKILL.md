@@ -9,11 +9,13 @@ user-invocable: false
 
 # Flutter
 
+> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+
 ## 対象バージョン
 
-- Flutter 3.47.7 stable / Dart 3.13.5（`releases_macos.json` の `current_release.stable` = `abaf9c523780a608bd46686fd5e53740a07077f8` = flutter/flutter tag `3.47.7`、2026-10-08 リリース）
-- ドキュメント原本: flutter/website（リリースタグなし）を main HEAD `ed9d404eab2ebb9c0e230bdbac0a1a0fc837021c`（2026-10-15T18:05:42Z）に pin、2026-10-16 取得
-- API リファレンス: api.flutter.dev（dartdoc HTML、URL に版なし）を 2026-10-16 取得
+- Flutter 3.47.7 stable / Dart 3.13.5（[`releases_macos.json`](https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json) の `current_release.stable` = `abaf9c523780a608bd46686fd5e53740a07077f8` = flutter/flutter tag [`3.47.7`](https://github.com/flutter/flutter/releases/tag/3.47.7)、2026-10-08 リリース）
+- ドキュメント原本: flutter/website（リリースタグなし）を main HEAD [`ed9d404eab2ebb9c0e230bdbac0a1a0fc837021c`](https://github.com/flutter/website/tree/ed9d404eab2ebb9c0e230bdbac0a1a0fc837021c)（2026-10-15T18:05:42Z）に pin、2026-10-16 取得
+- API リファレンス: [api.flutter.dev](https://api.flutter.dev/)（dartdoc HTML、URL に版なし）を 2026-10-16 取得
 - `llms.txt` は 3.44 のままのため版数の根拠にしない
 - 「Not yet released to stable」の breaking changes は第一級に扱わない。例外は material_ui / cupertino_ui で、3.47 から opt-in 可能（opt-in として記載）
 
