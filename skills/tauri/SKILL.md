@@ -9,7 +9,7 @@ user-invocable: false
 
 # Tauri v2
 
-> 分割 PR の途中段階。現在収録済み: references/{cli, config, develop, distribute, getting-started, js-api, plugin-js-api-app, plugin-js-api-core}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{cli, config, develop, distribute, getting-started, js-api, plugin-js-api-app, plugin-js-api-core, plugins-app, plugins-core}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -77,6 +77,13 @@ skills/tauri/
       menu.md
       tray.md
       path.md
+    plugins-core/           # 公式コアプラグイン（ガイド）: fs / http / shell / sql / store / log など
+      README.md
+      overview.md
+      file-system.md
+      shell.md
+      sql.md
+      store.md
     plugin-js-api-core/     # 同 JS API (@tauri-apps/plugin-*)
       README.md
       fs.md
@@ -84,6 +91,14 @@ skills/tauri/
       shell.md
       sql.md
       store.md
+    plugins-app/            # アプリ機能プラグイン（ガイド）: dialog / updater / notification / deep-link / モバイル系など
+      README.md
+      dialog.md
+      updater.md
+      notification.md
+      deep-linking.md
+      global-shortcut.md
+      window-state.md
     plugin-js-api-app/      # 同 JS API (@tauri-apps/plugin-*)
       README.md
       dialog.md
@@ -122,6 +137,8 @@ skills/tauri/
 | tauri.conf.json の window / bundle / build / app / security 設定 | config | [references/config/README.md](references/config/README.md) |
 | tauri dev / build / bundle / android / ios / icon / signer / plugin コマンドのオプション | cli | [references/cli/README.md](references/cli/README.md) |
 | @tauri-apps/api の core / event / window / webview / menu / tray / path | js-api | [references/js-api/README.md](references/js-api/README.md) |
+| fs / http / shell / sql / store / log / opener / os / process プラグインの導入と設定 | plugins-core | [references/plugins-core/README.md](references/plugins-core/README.md) |
 | コアプラグイン (cli / fs / http / log / opener / os / process / shell / sql / store / stronghold / upload / websocket) の JS 関数シグネチャ (@tauri-apps/plugin-*) | plugin-js-api-core | [references/plugin-js-api-core/README.md](references/plugin-js-api-core/README.md) |
+| dialog / updater / notification / deep-link / global-shortcut / window-state / モバイル系プラグインの導入と設定 | plugins-app | [references/plugins-app/README.md](references/plugins-app/README.md) |
 | アプリ機能プラグイン (autostart / barcode-scanner / biometric / clipboard-manager / deep-link / dialog / geolocation / global-shortcut / haptics / nfc / notification / positioner / updater / window-state) の JS 関数シグネチャ (@tauri-apps/plugin-*) | plugin-js-api-app | [references/plugin-js-api-app/README.md](references/plugin-js-api-app/README.md) |
 | 署名・MSI / NSIS / DMG / AppImage / deb / rpm・各ストア・CI 配布 | distribute | [references/distribute/README.md](references/distribute/README.md) |
