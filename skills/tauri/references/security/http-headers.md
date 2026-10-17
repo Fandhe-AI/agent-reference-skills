@@ -107,7 +107,8 @@ export default defineConfig({
 })
 ```
 
-- Angular: `angular.json` under `projects.<name>.architect.serve.options.headers`. Nuxt: `nuxt.config.ts` under `vite.server.headers`. Next.js (not Vite): `async headers()` in `next.config.js` returning `[{ source: '/*', headers: [{ key, value }, ...] }]`. Yew / Leptos: `headers = { ... }` under `[serve]` in `Trunk.toml`.
+- Angular: `angular.json` under `projects.<name>.architect.serve.options.headers`. Nuxt: `nuxt.config.ts` under `vite.server.headers`. Next.js (not Vite): `async headers()` in `next.config.js` returning `[{ source: '/:path*', headers: [{ key, value }, ...] }]`. Yew / Leptos: `headers = { ... }` under `[serve]` in `Trunk.toml`.
+- The official Tauri docs show `source: '/*'` for Next.js; this is not a valid Next.js path pattern (unnamed wildcard), so `'/:path*'` is used here to match all paths.
 - Framework build tools themselves (Vite / Next.js / Nuxt) are covered by vite / nextjs-app skills; only the Tauri-side interplay is described here.
 
 ## Related
