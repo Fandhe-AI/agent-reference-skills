@@ -55,7 +55,7 @@ Gateway hook events:
 
 Hooks are directories with `HOOK.yaml` and `handler.py`, discovered from `gateway/builtin_hooks/` (empty) and `<profile home>/hooks/`.
 
-DM pairing flow:
+DM pairing flow (developer-guide example; see Notes for the owner-approval flow):
 
 ```text
 Admin: /pair
@@ -67,6 +67,7 @@ Gateway: "Paired! You're now authorized."
 ## Notes
 
 - Source: https://hermes-agent.nousresearch.com/docs/developer-guide/gateway-internals (pinned to v0.22.2)
+- The DM pairing example above is verbatim from the developer guide (gateway-internals). The user-facing flow in the User Guide security page differs: an unknown user DMs the bot, the bot replies with an 8-character pairing code, and the bot owner approves it with `hermes pairing approve <platform> <code>` (see security/security.md and messaging/messaging.md). Source: https://hermes-agent.nousresearch.com/docs/user-guide/security
 - Two-level message guard: Level 1 base adapter (`_active_sessions` -> queue in `_pending_messages` + interrupt event); Level 2 gateway runner (`_running_agents`; intercepts `/stop`, `/new`, `/queue`, `/status`, `/approve`, `/deny`, everything else triggers `running_agent.interrupt()`). `/approve` etc. dispatch inline to avoid races.
 - Slash commands resolve via `resolve_command()` (`hermes_cli/commands.py`), `GATEWAY_KNOWN_COMMANDS`, and handler lookup `_handle_<name>_command`; busy handling via `CommandDef.busy_policy` / `busy_handler`.
 - Config sources: `~/.hermes/.env`, `~/.hermes/config.yaml`, environment variables. The gateway reads `config.yaml` directly, unlike the CLI's `load_cli_config()` defaults.
