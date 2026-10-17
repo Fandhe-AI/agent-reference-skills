@@ -35,7 +35,7 @@ function PostIdComponent() {
 ## Notes
 
 - In React 19 you can use the `use()` hook instead of `Await`.
-- With an external cache like TanStack Query, don't use `defer`/`Await` — instead call `queryClient.prefetchQuery` (fire-and-forget) for slow data and `await queryClient.ensureQueryData` for fast data in `loader`, then read via `useSuspenseQuery` in the component.
+- With an external cache like TanStack Query, don't use `defer`/`Await` — instead call `void queryClient.query(slowDataOptions()).catch(noop)` (`noop` imported from `@tanstack/react-query`) for non-awaited prefetch and `await queryClient.query({ ...fastDataOptions(), staleTime: 'static' })` for awaited fetch in `loader`, then read via `useSuspenseQuery` in the component.
 - `Await` triggers the nearest suspense boundary until resolved; a rejected promise throws the serialized error to the nearest error boundary.
 - Streamed promises follow the same lifecycle as their associated loader data and can be preloaded.
 - SSR streaming requires a server configured for it — see the SSR guide's "Streaming SSR" section.

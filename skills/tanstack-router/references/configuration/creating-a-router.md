@@ -46,12 +46,13 @@ declare module '@tanstack/react-router' {
 | defaultGcTime | `number` | 5 minutes | Cache retention period |
 | defaultPendingMs | `number` | `1000` | Threshold before showing pending UI |
 | defaultPendingMinMs | `number` | `500` | Minimum pending display duration |
-| protocolAllowlist | `string[]` | — | Permitted URL protocols, e.g. `['https:', 'mailto:']` |
+| protocolAllowlist | `string[]` | `DEFAULT_PROTOCOL_ALLOWLIST` | Permitted URL protocols, e.g. `['https:', 'mailto:']` |
 | basepath | `string` | `/` | Router mount point |
 | trailingSlash | `'always' \| 'never' \| 'preserve'` | `'never'` | Trailing slash handling |
 | caseSensitive | `boolean` | `false` | Route matching case sensitivity |
-| rewrite | `RouterRewrite` | — | Bidirectional URL transformation configuration |
-| pathParamsAllowedCharacters | `string[]` | — | URI characters permitted in path parameters |
+| rewrite | `LocationRewrite` | — | Bidirectional URL transformation configuration |
+| pathParamsAllowedCharacters | `ReadonlyArray<';' \| ':' \| '@' \| '&' \| '=' \| '+' \| '$' \| ','>` | — | URI characters permitted in path parameters; fixed at router creation |
+| origin | `string` | browser origin (`http://localhost` on the server and in browsers with an opaque origin) | Origin used to resolve URLs; pass a normalized origin with no path or trailing slash |
 | defaultViewTransition | `boolean \| object` | — | Enable View Transitions API integration |
 | defaultHashScrollIntoView | `boolean` | `true` | Auto-scroll to hash targets |
 | context | `object` | `{}` | Root context available to all routes (see Router Context) |
@@ -71,10 +72,11 @@ declare module '@tanstack/react-router' {
 
 - Router type registration (via `declare module` on `Register`) is required for library-wide type safety across bare imports like `Link` and `useNavigate` — do not skip it.
 - `notFoundComponent` for the catch-all case is configured on the root route via `createRootRoute`, not on `createRouter` directly (`defaultNotFoundComponent` is the router-wide fallback).
-- The full `RouterOptions` type reference lives at `../api/router/RouterOptionsType.md` on the official site.
+- The full `RouterOptions` type reference is in [RouterOptions](../api/router-options.md).
 
 ## Related
 
+- [RouterOptions](../api/router-options.md)
 - [Router Context](./router-context.md)
 - [Not Found Errors](./not-found-errors.md)
 - [Router Events](./router-events.md)

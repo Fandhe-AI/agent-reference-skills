@@ -58,6 +58,7 @@ export const Route = createFileRoute('/posts/{-$category}')({
 
 - Dynamic segments compose at each path level (e.g. `/posts/$postId/$revisionId`).
 - Pathless layout routes cannot support dynamic route segments in their own path.
+- Not the same as React Router's `routes.ts` / `Route` configuration; naming and API differ.
 
 ## Related
 

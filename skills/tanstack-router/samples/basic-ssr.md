@@ -46,6 +46,7 @@ hydrateRoot(document, <RouterClient router={router} />)
 ## Notes
 
 - Do not mix in Next.js/Remix/React Router DOM conventions (`src/pages/`, `getServerSideProps`, `react-router-dom` imports) — this is TanStack Router's own SSR model with `src/routes/` + `createFileRoute`.
-- Server history switches automatically to `createMemoryHistory` inside `RouterServer`; the client uses `createBrowserHistory`.
-- Resolved `loader` data is automatically dehydrated/hydrated; deferred/streamed data needs the streaming variant (`defaultStreamHandler` + `renderRouterToStream`).
+- The SSR request handler (and TanStack Start) automatically creates a lightweight server history holding only the request URL (`createServerHistory`); it keeps no navigation stack, and `push` / `replace` / `go` / `back` / `forward` calls and server-side `router.navigate()` are no-ops (use `throw redirect(...)` instead). The client uses `createBrowserHistory`.
+- Resolved `loader` data is automatically dehydrated/hydrated; deferred/streamed data needs the streaming variant (`defaultStreamHandler`, or `renderRouterToStream` for a custom render).
+- For streaming, render `<Scripts />` inside `<body>` of the root route; without it the page cannot hydrate. See the streaming server entry in `references/data-rendering/ssr.md`.
 - This SSR layer is experimental and shares its internal implementation with TanStack Start.

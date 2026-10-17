@@ -27,7 +27,7 @@ function PostComponent() {
 | `params.parse` | `(raw) => T \| false` | Custom parse/validate function; return `false` to fall through to the next candidate route |
 | `params.stringify` | `(parsed) => raw` | Inverse of `parse`, used when building URLs |
 | `params.priority` | `number` | Higher values tried first among competing `params.parse` candidates (default `0`) |
-| `pathParamsAllowedCharacters` (RouterOptions) | `string[]` | Extra URI characters (e.g. `@`) not escaped via `encodeURIComponent` |
+| `pathParamsAllowedCharacters` (RouterOptions) | `ReadonlyArray<';' \| ':' \| '@' \| '&' \| '=' \| '+' \| '$' \| ','>` | Extra URI characters (e.g. `@`) not escaped via `encodeURIComponent` |
 
 ## Notes
 
@@ -40,6 +40,7 @@ function PostComponent() {
 - `params.parse` runs during route planning, may run more than once, and must be deterministic/side-effect-free.
 - `params.priority` only affects competing `params.parse` candidates; static routes still match before dynamic/optional/wildcard routes regardless of priority.
 - Allowed extra characters in path params: `; : @ & = + $ ,` (default is `encodeURIComponent` escaping for everything else).
+- This setting is fixed when the router is created. To use different allowed characters, create a new router instance.
 
 ## Related
 

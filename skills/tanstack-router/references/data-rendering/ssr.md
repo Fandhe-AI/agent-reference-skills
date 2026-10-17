@@ -93,8 +93,11 @@ Use `renderRouterToStream` in place of `renderRouterToString` for manual streami
 ## Notes
 
 - **TanStack Router is not Next.js, Remix, or React Router DOM** — do not use `src/pages/`, `app/layout.tsx`, `getServerSideProps`/`getStaticProps`, Remix-style `loader`/`action` exports, or imports from `react-router-dom`/`next/`. Use `src/routes/` + `createFileRoute`, `Link`/`useNavigate`/`redirect` from `@tanstack/react-router`, and `createServerFn` from `@tanstack/<framework>-start` for Start. Wrong-framework code typically fails to build or produces conflicting `/` routes.
-- Server history is automatically switched to `createMemoryHistory` (vs. `createBrowserHistory` on the client) inside `RouterServer`.
-- Resolved loader data is automatically dehydrated/hydrated; deferred/streamed data additionally requires the Streaming SSR setup below.
+- On the client, Router defaults to `createBrowserHistory`. On the server, the Router SSR request handler and TanStack Start automatically create a lightweight history containing only the request URL; it keeps no navigation stack and ignores `push`, `replace`, `go`, `back`, and `forward`.
+- On the server, `router.navigate()` and `router.commitLocation()` are no-ops (their promises resolve without changing the request location or running another load). To redirect a request, use `throw redirect({ to: '/login' })` in `beforeLoad` or a loader.
+- `renderRouterToString` uses React's native synchronous string renderer: suspended components render their Suspense fallback without waiting, while the router still finishes serializing hydration data before returning the response. Use `renderRouterToStream` when the server must render suspended content after it resolves.
+- IMPORTANT: for streaming, render `<Scripts />` inside `<body>` of the root route. It emits the route scripts and marks where the router inserts streamed hydration data. Without it the response still completes, but the page cannot hydrate.
+- Resolved loader data is automatically dehydrated/hydrated; deferred/streamed data additionally requires the Streaming SSR setup (see the streaming server entry above).
 - Built-in serialization supports `undefined`, `Date`, `Error`, `FormData`; `Map`/`Set`/`BigInt` need a custom serializer.
 - Experimental: internal implementation is shared with TanStack Start and may change until Start reaches stable.
 - If using an Express-style server with its own Request/Response objects, convert to/from the web-standard `Request`/`Response` expected by `createRequestHandler`.

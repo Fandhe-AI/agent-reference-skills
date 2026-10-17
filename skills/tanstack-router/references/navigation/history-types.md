@@ -25,6 +25,7 @@ const router = createRouter({ routeTree, history: memoryHistory })
 | `createBrowserHistory()` | function | Default history type; uses the browser History API |
 | `createHashHistory()` | function | Tracks history via a URL hash, for servers without SPA rewrite support |
 | `createMemoryHistory({ initialEntries })` | function | Keeps history in memory; useful outside browsers or to avoid URL interaction |
+| `createServerHistory` | function | A history type with a fixed request URL and no-op navigation, used by the SSR request handlers |
 
 ## Notes
 

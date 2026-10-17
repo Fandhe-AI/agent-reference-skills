@@ -3,7 +3,7 @@ name: tanstack-router
 description: >
   TanStack Router (型安全 React ルーター、@tanstack/react-router) の API リファレンス。
   React Router (react-router) とは別ライブラリ。
-  createRouter, createFileRoute, createRootRoute, createLazyFileRoute, Link, Outlet,
+  createRouter, createFileRoute, createRootRoute, createLazyFileRoute, createLazyRoute, Link, Outlet,
   useNavigate, useParams, useSearch, useLoaderData, useBlocker, loader, beforeLoad,
   validateSearch, redirect, notFound, Await, file-based routing, routeTree.gen.ts,
   router-plugin, tsr CLI, code splitting, SSR, TanStack Query 統合, eslint-plugin-router。
@@ -14,6 +14,8 @@ user-invocable: false
 
 TanStack Router (`@tanstack/react-router`) の公式ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+対象 `@tanstack/react-router` 1.170.44（TanStack/router のリリースタグ release-2026-10-14-1451 で docs を pin、取得日 2026-10-17）。
 
 ## ディレクトリ構成
 
@@ -141,6 +143,28 @@ skills/tanstack-router/
       use-parent-matches.md
       is-redirect.md
       is-not-found.md
+      active-link-options.md
+      async-route-component.md
+      link-props.md
+      match-route-options.md
+      not-found-error.md
+      parsed-history-state.md
+      redirect-type.md
+      route-api.md
+      route-mask.md
+      route.md
+      router-events.md
+      router-state.md
+      to-mask-options.md
+      to-options.md
+      use-match-route-options.md
+      view-transition-options.md
+      create-lazy-route.md
+      default-global-not-found.md
+      history-state.md
+      link-options-function.md
+      not-found-component.md
+      file-based-routing-config.md
   samples/
     README.md
     basic-file-routing.md
@@ -189,6 +213,8 @@ skills/tanstack-router/
 | `createRouter` の初期化オプション・Router Events・型安全性・Router Context | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | Not Found エラー処理・`beforeLoad` による認証ガード・Static Route Data | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | 個別 API（フック・コンポーネント・関数・型）のシグネチャを正確に知りたい | api | [references/api/README.md](references/api/README.md) |
+| 型（ToOptions / RouterState / RouteApi / RedirectType / NotFoundError / ViewTransitionOptions 等）を調べたい | api | [references/api/README.md](references/api/README.md) |
+| File-based routing generator 設定（routesDirectory / generatedRouteTree / routeToken / indexToken / autoCodeSplitting / routeFileIgnorePrefix 等） | api | [references/api/README.md](references/api/README.md) |
 | `defer` / `Await` / `useAwaited`・ESLint プラグイン・TanStack Query 統合の API | api | [references/api/README.md](references/api/README.md) |
 | 典型的な使い方（ファイルルーティング・認証ガード・SSR・Query 統合等）の実装例を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・scaffold・bundler plugin 設定・CLI・Devtools・ESLint コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

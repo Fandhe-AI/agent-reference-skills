@@ -49,6 +49,7 @@ const router = createRouter({
 - `basepath` acts as an automatic rewrite composed with any custom rewrite: it strips first on input (before your rewrite runs), and is added last on output (after your rewrite runs).
 - `Link` automatically applies output rewrites to generated `href` attributes.
 - If an output rewrite changes the hostname, links render as plain anchor tags and trigger a full page load instead of client-side navigation.
+- When the final output URL has a different origin, programmatic navigation (`navigate`) automatically performs a full page load; `reloadDocument: true` is not needed for cross-origin rewrites. If a route mask is applied, the mask's output URL determines whether navigation stays on the current origin.
 - On server environments (e.g. TanStack Start), the same rewrite configuration applies during request parsing and response generation, keeping server/client URLs consistent.
 
 ## Related
