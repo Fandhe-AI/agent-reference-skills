@@ -45,7 +45,7 @@ npx shadcn@latest init
 | `style` | string | Component style. Cannot be changed after initialization. `default` is deprecated; use `new-york`. |
 | `tailwind.config` | string | Path to `tailwind.config.js` / `.ts`. For Tailwind CSS v4, leave blank. |
 | `tailwind.css` | string | Path to the CSS file that imports Tailwind CSS. |
-| `tailwind.baseColor` | `neutral` \| `stone` \| `zinc` \| `mauve` \| `olive` \| `mist` \| `taupe` | Generates default theme tokens. Cannot be changed after initialization. |
+| `tailwind.baseColor` | `neutral` \| `stone` \| `zinc` \| `mauve` \| `olive` \| `mist` \| `taupe` | Generates default theme tokens. Cannot be changed after initialization by editing this field directly; use `npx shadcn@latest migrate base-color` to switch base colors (see CLI). |
 | `tailwind.cssVariables` | boolean | `true` generates semantic tokens (`background`, `foreground`, `primary`); `false` uses inline Tailwind color utilities. Cannot be changed after initialization (delete and re-install components to switch). |
 | `tailwind.prefix` | string | Prefix for Tailwind utility classes; components are added with it. |
 | `rsc` | boolean | Enable React Server Components; CLI adds `use client` to client components when `true`. |
@@ -76,6 +76,7 @@ npx shadcn@latest init
 }
 ```
 
+- To switch base colors after init, run `npx shadcn@latest migrate base-color` (or `npx shadcn@latest migrate base-color --to zinc --yes` for a non-interactive run). It rewrites the theme CSS variables in the file set by `tailwind.css` and updates `baseColor`, so later `npx shadcn add` installs use the new base color. Tokens that do not match the source base color are left untouched and reported.
 - shadcn/ui is a copy-in component setup, distinct from `@ark-ui/react` (skill ark-ui), `@chakra-ui/react` (skill chakra-ui) and the Rust fandhe-frontend crates (skill fandhe-frontend).
 
 ## Related
