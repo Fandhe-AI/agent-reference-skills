@@ -39,20 +39,22 @@ If no Owner Stack is available, `null` is returned.
 - Owner Stacks are only available in development. `captureOwnerStack` will always return `null` outside of development, and is only exported in development builds (it is `undefined` in production builds). In files bundled for both, use a namespace import (`import * as React from 'react'`) and access it conditionally, not a named import.
 - The Owner Stack is different from the Component Stack (e.g. `errorInfo.componentStack` in `onUncaughtError`). For an error thrown in `SubComponent`, rendered as `main > Navigation / Component > fieldset > SubComponent`, the Component Stack lists `SubComponent`, `fieldset`, `Component`, `main`, `React.Suspense`, `App`, while the Owner Stack only reads `at Component`, since only `Component` created the node containing `SubComponent`.
 - The Owner Stack is `null` when called outside of a React controlled function, e.g. in a `setTimeout` callback, after a `fetch` call or in a custom DOM event handler. Capture it earlier, e.g. in the Effect body.
-- Typical use: when intercepting `console.error` calls to highlight them in an error overlay, call `captureOwnerStack` to include the Owner Stack.
+- Typical use: when intercepting `console.error` calls to highlight them in an error overlay, call `captureOwnerStack` to include the Owner Stack. Adapted from the official example (which uses a named import) to follow the development-only note above.
 
 ```js
-import { captureOwnerStack } from "react";
+import * as React from "react";
 
-const originalConsoleError = console.error;
-console.error = function patchedConsoleError(...args) {
-  originalConsoleError.apply(console, args);
-  const ownerStack = captureOwnerStack();
-  onConsoleError({
-    consoleMessage: args[0],
-    ownerStack,
-  });
-};
+if (process.env.NODE_ENV !== "production") {
+  const originalConsoleError = console.error;
+  console.error = function patchedConsoleError(...args) {
+    originalConsoleError.apply(console, args);
+    const ownerStack = React.captureOwnerStack();
+    onConsoleError({
+      consoleMessage: args[0],
+      ownerStack,
+    });
+  };
+}
 ```
 
 ## Related

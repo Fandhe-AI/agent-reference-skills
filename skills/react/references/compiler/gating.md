@@ -26,7 +26,7 @@ function Button(props) {
 }
 
 // Output (simplified)
-import { shouldUseCompiler } from './src/utils/feature-flags';
+import { shouldUseCompiler } from 'my-feature-flags';
 
 const Button = shouldUseCompiler()
   ? function Button_optimized(props) { /* compiled version */ }
@@ -49,7 +49,7 @@ Type: `{ source: string; importSpecifierName: string } | null`. Default: `null`.
 - The import is added to every file with compiled functions.
 - The gating function is evaluated once at module time, so once the JS bundle has been parsed and evaluated the choice of component stays static for the rest of the browser session.
 - The flag module must use a named export matching `importSpecifierName` (a default export does not work).
-- Import errors: use a module resolution path (for example `@myapp/feature-flags`) or an absolute path from the project root (`./src/utils/flags`); a path relative to `babel.config.js` is wrong.
+- Import errors: the official docs list a module resolution path (for example `@myapp/feature-flags`) and `./src/utils/flags` (described there as an absolute path from the project root) as correct, and a path relative to `babel.config.js` as wrong. Because the import is inserted into every file with compiled functions, prefer a module resolution path (package name or configured alias) that resolves from every compiled file.
 
 ## Related
 
