@@ -45,7 +45,7 @@ dayjs().utcOffset()
 
 In UTC mode, display methods output UTC time. Getters/setters use `Date#getUTC*` / `Date#setUTC*` internally.
 
-Split `.utcOffset` row into getter/setter per https://github.com/iamkun/dayjs/blob/v1.11.23/src/plugin/utc/index.js.
+`.utcOffset()` with no argument returns the offset in minutes; with an argument it returns a new instance with that offset (source: https://github.com/iamkun/dayjs/blob/v1.11.23/src/plugin/utc/index.js).
 
 ---
 
