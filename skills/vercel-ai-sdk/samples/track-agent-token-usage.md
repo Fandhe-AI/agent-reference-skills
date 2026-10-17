@@ -35,20 +35,20 @@ export const agent = new ToolLoopAgent({
   prepareCall: ({ options, ...settings }) => {
     return {
       ...settings,
-      context: { lastInputTokens: options.lastInputTokens },
+      runtimeContext: { lastInputTokens: options.lastInputTokens },
     };
   },
-  prepareStep: ({ steps, context }) => {
+  prepareStep: ({ steps, runtimeContext }) => {
     const lastStep = steps.at(-1);
     const lastStepUsage =
       lastStep?.usage?.inputTokens ??
-      (context as TContext)?.lastInputTokens ??
+      (runtimeContext as TContext)?.lastInputTokens ??
       0;
     console.log('Last step input tokens:', lastStepUsage);
     // You can use this to implement context compaction strategies
     return {
-      context: {
-        ...context,
+      runtimeContext: {
+        ...runtimeContext,
         lastStepUsage,
       },
     };
@@ -133,6 +133,7 @@ export default function Chat() {
 
 ## Notes
 
-- `prepareStep` only sees steps of the current run, so the previous request's usage is passed in through `callOptionsSchema` + `prepareCall` (placed on `context`); this is how you build context compaction on token limits.
+- `prepareStep` only sees steps of the current run, so the previous request's usage is passed in through `callOptionsSchema` + `prepareCall` (placed on `runtimeContext`); this is how you build context compaction on token limits.
+- Modified for v7: the official page keeps this shared state in `context`; v7 renames the shared state to `runtimeContext` (in `prepareCall` and in the `prepareStep` argument and return value), while per-tool context comes from `toolsContext` + `contextSchema`.
 - `InferAgentUIMessage<typeof agent, AgentMetadata>` gives typed tool parts and metadata on the client; `messageMetadata` reads usage from the `finish-step` part.
 - `ToolLoopAgent` is the AI SDK agent abstraction (`references/agents/tool-loop-agent.md`). It is distinct from the agent runtimes in openai-agents, anthropic-agent-sdk and hermes-agent.

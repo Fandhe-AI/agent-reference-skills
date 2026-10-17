@@ -9,6 +9,7 @@ Pause a tool until the user approves with the tool-level `needsApproval` propert
 ```ts
 // app/api/chat/route.ts
 import {
+  convertToModelMessages,
   streamText,
   tool,
   createUIMessageStreamResponse,
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: openai('gpt-6-astra'),
-    messages,
+    messages: await convertToModelMessages(messages),
     tools: {
       getWeatherInformation: tool({
         description: 'show the weather in a given city to the user',
@@ -148,6 +149,7 @@ export default function Chat() {
 // dynamic approval: only payments over $1000 need approval
 // app/api/chat/route.ts
 import {
+  convertToModelMessages,
   streamText,
   tool,
   createUIMessageStreamResponse,
@@ -161,7 +163,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: openai('gpt-6-astra'),
-    messages,
+    messages: await convertToModelMessages(messages),
     tools: {
       processPayment: tool({
         description: 'Process a payment',
@@ -187,7 +189,7 @@ export async function POST(req: Request) {
 // handling denial: stop the model from retrying
 const result = streamText({
   model: openai('gpt-6-astra'),
-  messages,
+  messages: await convertToModelMessages(messages),
   instructions:
     'When a tool execution is not approved by the user, do not retry it. ' +
     'Inform the user that the action was not performed.',
@@ -200,5 +202,6 @@ const result = streamText({
 ## Notes
 
 - This cookbook page uses the tool-level `needsApproval` property (`true` or an async predicate such as `amount > 1000`). The newer chatbot guide marks `needsApproval` as deprecated in favour of `toolApproval` on `streamText` (see `chatbot-tool-execution-approval.md`); check the installed version before copying.
+- Modified from the official example: the page passes `messages` (UI messages) directly to `streamText`; the two route examples here convert them with `await convertToModelMessages(messages)`.
 - Server flow: an approval-required call sends an `approval-requested` tool part with `approval.id`; after `addToolApprovalResponse` and the auto re-submit, an approved tool runs `execute`, a denied one gives the model the denial.
 - Durable human-in-the-loop with workflows is in `references/workflow-harnesses/workflow-agent-guide.md`.

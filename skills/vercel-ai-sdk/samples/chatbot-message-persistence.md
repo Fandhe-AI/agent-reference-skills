@@ -161,7 +161,8 @@ import {
 } from 'ai';
 
 export async function POST(req: Request) {
-  const { messages, chatId }: { messages: UIMessage[]; chatId: string } =
+  // DefaultChatTransport sends the chat ID as `id`
+  const { messages, id }: { messages: UIMessage[]; id: string } =
     await req.json();
 
   const result = streamText({
@@ -174,7 +175,7 @@ export async function POST(req: Request) {
       stream: result.stream,
       originalMessages: messages,
       onEnd: ({ messages }) => {
-        saveChat({ chatId, messages });
+        saveChat({ chatId: id, messages });
       },
     }),
   });
@@ -256,7 +257,7 @@ import {
 import { saveChat } from '@util/chat-store';
 
 export async function POST(req: Request) {
-  const { messages, chatId }: { messages: UIMessage[]; chatId: string } =
+  const { messages, id }: { messages: UIMessage[]; id: string } =
     await req.json();
 
   const result = streamText({
@@ -273,7 +274,7 @@ export async function POST(req: Request) {
       stream: result.stream,
       originalMessages: messages,
       onEnd: ({ messages }) => {
-        saveChat({ chatId, messages });
+        saveChat({ chatId: id, messages });
       },
     }),
   });
@@ -283,6 +284,7 @@ export async function POST(req: Request) {
 ## Notes
 
 - The official guide does not cover authorization or error handling; the file store is illustrative (use a database in production). Validate chat IDs as opaque tokens before using them in file paths. `@util/chat-store` is a path alias from the page.
+- Modified from the official example: the page's routes read `chatId` from the request body, but the default `DefaultChatTransport` sends the chat ID as `id` (as the `prepareSendMessagesRequest` example on the same page also uses). This version reads `id` and calls `saveChat({ chatId: id, messages })`.
 - Store messages in the `UIMessage` (`useChat`) format, not `ModelMessage`; saving happens in the `onEnd` callback of `toUIMessageStream`. On load, validate with `validateUIMessages` and handle `TypeValidationError` for stale schemas.
 - Server-side assistant message IDs: `generateMessageId: createIdGenerator({ prefix: 'msg', size: 16 })` in `toUIMessageStream`, or write a `start` part with `messageId` via `createUIMessageStream`.
 - Streaming tool input persists `rawInput` while in `input-streaming`; legacy `rawInput` on `output-error` tool parts is deprecated (store arguments in `input`). Resumable streams are in `chatbot-resume-streams.md`.

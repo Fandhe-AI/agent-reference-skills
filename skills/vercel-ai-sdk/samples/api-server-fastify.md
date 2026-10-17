@@ -4,11 +4,15 @@ source: https://ai-sdk.dev/cookbook/api-servers/fastify
 
 # API Server: Fastify
 
-Send `streamText` output from a Fastify route by converting it with `toUIMessageStream` and passing the stream to `reply.send`.
+Send `streamText` output from a Fastify route by converting it with `toUIMessageStream` and `createUIMessageStreamResponse`, then passing the response body to `reply.send`.
 
 ```ts
 // index.ts
-import { streamText, toUIMessageStream } from 'ai';
+import {
+  createUIMessageStreamResponse,
+  streamText,
+  toUIMessageStream,
+} from 'ai';
 import Fastify from 'fastify';
 
 const fastify = Fastify({ logger: true });
@@ -19,9 +23,12 @@ fastify.post('/', async function (request, reply) {
     prompt: 'Invent a new holiday and describe its traditions.',
   });
 
-  reply.header('Content-Type', 'text/plain; charset=utf-8');
+  const response = createUIMessageStreamResponse({
+    stream: toUIMessageStream({ stream: result.stream }),
+  });
+  reply.headers(Object.fromEntries(response.headers));
 
-  return reply.send(toUIMessageStream({ stream: result.stream }));
+  return reply.send(response.body);
 });
 
 fastify.listen({ port: 8080 });
@@ -29,7 +36,12 @@ fastify.listen({ port: 8080 });
 
 ```ts
 // index.ts (custom data)
-import { createUIMessageStream, streamText, toUIMessageStream } from 'ai';
+import {
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  streamText,
+  toUIMessageStream,
+} from 'ai';
 import Fastify from 'fastify';
 
 const fastify = Fastify({ logger: true });
@@ -63,9 +75,10 @@ fastify.post('/stream-data', async function (request, reply) {
     },
   });
 
-  reply.header('Content-Type', 'text/plain; charset=utf-8');
+  const response = createUIMessageStreamResponse({ stream });
+  reply.headers(Object.fromEntries(response.headers));
 
-  return reply.send(stream);
+  return reply.send(response.body);
 });
 
 fastify.listen({ port: 8080 });
@@ -94,6 +107,7 @@ fastify.listen({ port: 8080 });
 
 ## Notes
 
-- The Fastify cookbook passes the stream to `reply.send` with a `text/plain; charset=utf-8` header instead of using a `pipe*ToResponse` helper; examples use the AI Gateway (`AI_GATEWAY_API_KEY`).
+- Modified from the official cookbook: it passes `toUIMessageStream(...)` (a stream of chunk objects) directly to `reply.send` with a `text/plain` header. Here the UI message stream is converted to an SSE response with `createUIMessageStreamResponse`, and its headers and body are handed to Fastify. Only the `textStream` example (a string stream) keeps `text/plain`.
+- Examples use the AI Gateway (`AI_GATEWAY_API_KEY`).
 - This covers only the AI SDK calls; Fastify routing, reply and hooks belong to the fastify skill.
 - Test with `curl -X POST http://localhost:8080`; for proxied-streaming problems see `references/operations/troubleshooting.md`.

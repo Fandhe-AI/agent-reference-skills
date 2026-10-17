@@ -9,6 +9,7 @@ Require user approval before a server-side tool runs, with `toolApproval` on `st
 ```tsx
 // app/api/chat/route.ts
 import {
+  convertToModelMessages,
   createUIMessageStreamResponse,
   streamText,
   tool,
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: __MODEL__,
-    messages,
+    messages: await convertToModelMessages(messages),
     tools: {
       getWeather: tool({
         description: 'Get the weather in a location',
@@ -150,6 +151,7 @@ const { messages, addToolApprovalResponse } = useChat({
 ## Notes
 
 - `__PROVIDER_IMPORT__` and `__MODEL__` are placeholders on the official page; `fetchWeather` is an application placeholder. `toolApproval` on `streamText` enables approval; the older `needsApproval` property on tools is deprecated.
+- Modified from the official example: the page passes `messages` (UI messages from `useChat`) straight to `streamText`; this version converts them with `await convertToModelMessages(messages)`, as the other `chatbot-tool-usage` examples do.
 - Call `addToolApprovalResponse` only for manual approvals; automatic approvals/denials arrive with `part.approval.isAutomatic === true`. If nothing happens after approving, call `sendMessage` manually or set `sendAutomaticallyWhen` (last block).
 - For sensitive tools the official page adds `experimental_toolApprovalSecret: process.env.TOOL_APPROVAL_SECRET` to `streamText` so the server verifies it issued the approval (experimental).
 - Agent-level approval concepts: `references/agents/tool-approvals.md`; this is the `useChat` UI side only.

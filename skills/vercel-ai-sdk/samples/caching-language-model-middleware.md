@@ -47,7 +47,11 @@ export const createCacheMiddleware = (
 
     const result = await doGenerate();
 
-    redis.set(cacheKey, result);
+    try {
+      await redis.set(cacheKey, result, { ex: 60 * 60 });
+    } catch (error) {
+      console.error('cache write failed', error);
+    }
 
     return result;
   },
@@ -78,18 +82,28 @@ export const createCacheMiddleware = (
     const { stream, ...rest } = await doStream();
 
     const fullResponse: LanguageModelV4StreamPart[] = [];
+    let hasError = false;
+    let finished = false;
 
     const transformStream = new TransformStream<
       LanguageModelV4StreamPart,
       LanguageModelV4StreamPart
     >({
       transform(chunk, controller) {
+        if (chunk.type === 'error') hasError = true;
+        if (chunk.type === 'finish') finished = true;
         fullResponse.push(chunk);
         controller.enqueue(chunk);
       },
-      flush() {
-        // Store the full response in the cache after streaming is complete
-        redis.set(cacheKey, fullResponse);
+      async flush() {
+        // Store only streams that completed without an error part
+        if (!hasError && finished) {
+          try {
+            await redis.set(cacheKey, fullResponse, { ex: 60 * 60 });
+          } catch (error) {
+            console.error('cache write failed', error);
+          }
+        }
       },
     });
 
@@ -105,6 +119,7 @@ export const createCacheMiddleware = (
 // app/api/chat/route.ts
 import { createCacheMiddleware } from '@/ai/middleware';
 import {
+  convertToModelMessages,
   wrapLanguageModel,
   streamText,
   tool,
@@ -123,7 +138,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: wrappedModel,
-    messages,
+    messages: await convertToModelMessages(messages),
     tools: {
       weather: tool({
         description: 'Get the weather in a location',
@@ -148,5 +163,6 @@ export async function POST(req: Request) {
 - Official warning on this cookbook page: "This example is not yet updated to v5" (its client snippet still uses the old `input` / `handleSubmit` / `m.content` `useChat` shape, so it is omitted here). Verify the middleware types against the installed version; language model middleware is experimental per the versioning policy.
 - This is a language model middleware that wraps the model (`wrapGenerate` for `generateText`, `wrapStream` for `streamText`), not HTTP middleware in hono / fastify / nextjs-app / go-echo.
 - Streams are cached as an array of stream parts and replayed with `simulateReadableStream` (`initialDelayInMs`, `chunkDelayInMs`). The page uses `@upstash/redis`, but any KV store works; Upstash itself is covered by the upstash skill.
-- Modified from the official example: the cookbook keys both `wrapGenerate` and `wrapStream` on `JSON.stringify(params)`, so the stored shapes (result object vs. chunk array) can collide and the model is not part of the key. This version keys on `{ mode, model, params }` via a factory taking the model identifier.
+- Modified from the official example: the cookbook keys both `wrapGenerate` and `wrapStream` on `JSON.stringify(params)`, so the stored shapes (result object vs. chunk array) can collide and the model is not part of the key. This version keys on `{ mode, model, params }` via a factory taking the model identifier. It also awaits `redis.set` inside `try` / `catch` with a one-hour TTL, caches a stream only when it reached `finish` without an `error` part (same as `references/operations/caching.md`), and passes `convertToModelMessages(messages)` to `streamText`.
+- In serverless environments, let the cache write run to completion with `waitUntil` (or an equivalent mechanism).
 - References: `references/providers/language-model-middleware.md`, `references/providers/wrap-language-model.md`, `references/core/simulate-readable-stream.md`.

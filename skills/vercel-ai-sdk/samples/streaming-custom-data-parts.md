@@ -44,7 +44,7 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
 
   const stream = createUIMessageStream<MyUIMessage>({
-    execute: ({ writer }) => {
+    execute: async ({ writer }) => {
       // 1. Start the assistant message before writing any message parts.
       writer.write({ type: 'start' });
 
@@ -57,14 +57,10 @@ export async function POST(req: Request) {
 
       // 3. Send sources (useful for RAG use cases)
       writer.write({
-        type: 'source',
-        value: {
-          type: 'source',
-          sourceType: 'url',
-          id: 'source-1',
-          url: 'https://weather.com',
-          title: 'Weather Data Source',
-        },
+        type: 'source-url',
+        sourceId: 'source-1',
+        url: 'https://weather.com',
+        title: 'Weather Data Source',
       });
 
       // 4. Send data parts with loading state
@@ -113,6 +109,7 @@ export async function POST(req: Request) {
 'use client';
 
 import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 import { useState } from 'react';
 import type { MyUIMessage } from '@/ai/types';
 
@@ -120,7 +117,7 @@ export default function Chat() {
   const [input, setInput] = useState('');
 
   const { messages, sendMessage } = useChat<MyUIMessage>({
-    api: '/api/chat',
+    transport: new DefaultChatTransport({ api: '/api/chat' }),
     onData: dataPart => {
       // Handle transient notifications
       if (dataPart.type === 'data-notification') {
@@ -181,6 +178,6 @@ export default function Chat() {
 ## Notes
 
 - `__PROVIDER_IMPORT__` and `__MODEL__` are placeholders on the official page; replace them with your provider import and model.
-- Data parts are persistent (in `message.parts`) and reconcile when written again with the same `id`; `transient: true` parts are only visible through the `onData` callback. Sources (`type: 'source'`) are useful for RAG.
-- The official snippet calls `await convertToModelMessages(...)` inside a non-async `execute`; declare `execute` as `async` when copying.
+- Data parts are persistent (in `message.parts`) and reconcile when written again with the same `id`; `transient: true` parts are only visible through the `onData` callback. Sources (`type: 'source-url'` / `'source-document'`) are useful for RAG.
+- Modified from the official page: (1) `execute` is declared `async` (the official snippet uses `await` in a non-async `execute`); (2) the source chunk uses the current `{ type: 'source-url', sourceId, url, title }` shape (see `references/ui/stream-protocol.md`) instead of the older `{ type: 'source', value: {...} }`; (3) `api` is passed via `transport: new DefaultChatTransport({ api })` because `useChat` has no direct `api` option (`references/ui/use-chat.md`).
 - Use message metadata (`messageMetadata` callback in `toUIMessageStream`) for message-level info such as model and token usage; use data parts for dynamic content. Custom backends can emit the same stream via the UI Message Stream Protocol (`references/ui/stream-protocol.md`); SSE response handling in hono / fastify / nextjs-app is covered by those skills.

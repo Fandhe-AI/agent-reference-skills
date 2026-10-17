@@ -103,12 +103,17 @@ const loadSkillTool = tool({
   inputSchema: z.object({
     name: z.string().describe('The skill name to load'),
   }),
-  execute: async ({ name }, { context }) => {
-    const { sandbox, skills } = context as {
-      sandbox: Sandbox;
-      skills: SkillMetadata[];
-    };
-
+  contextSchema: z.object({
+    sandbox: z.custom<Sandbox>(),
+    skills: z.array(
+      z.object({
+        name: z.string(),
+        description: z.string(),
+        path: z.string(),
+      }),
+    ),
+  }),
+  execute: async ({ name }, { context: { sandbox, skills } }) => {
     const skill = skills.find(s => s.name.toLowerCase() === name.toLowerCase());
     if (!skill) {
       return { error: `Skill '${name}' not found` };
@@ -141,8 +146,8 @@ const callOptionsSchema = z.object({
 const readFileTool = tool({
   description: 'Read a file from the filesystem',
   inputSchema: z.object({ path: z.string() }),
-  execute: async ({ path }, { context }) => {
-    const { sandbox } = context as { sandbox: Sandbox };
+  contextSchema: z.object({ sandbox: z.custom<Sandbox>() }),
+  execute: async ({ path }, { context: { sandbox } }) => {
     return sandbox.readFile(path, 'utf-8');
   },
 });
@@ -150,8 +155,8 @@ const readFileTool = tool({
 const bashTool = tool({
   description: 'Execute a bash command',
   inputSchema: z.object({ command: z.string() }),
-  execute: async ({ command }, { context }) => {
-    const { sandbox } = context as { sandbox: Sandbox };
+  contextSchema: z.object({ sandbox: z.custom<Sandbox>() }),
+  execute: async ({ command }, { context: { sandbox } }) => {
     return sandbox.exec(command);
   },
 });
@@ -167,9 +172,10 @@ const agent = new ToolLoopAgent({
   prepareCall: ({ options, ...settings }) => ({
     ...settings,
     instructions: `${settings.instructions}\n\n${buildSkillsPrompt(options.skills)}`,
-    context: {
-      sandbox: options.sandbox,
-      skills: options.skills,
+    toolsContext: {
+      loadSkill: { sandbox: options.sandbox, skills: options.skills },
+      readFile: { sandbox: options.sandbox },
+      bash: { sandbox: options.sandbox },
     },
   }),
 });
@@ -186,7 +192,7 @@ const skills = await discoverSkills(sandbox, [
 ]);
 
 // Run the agent
-const result = await agent.run({
+const result = await agent.generate({
   prompt: userMessage,
   options: { sandbox, skills },
 });
@@ -195,5 +201,6 @@ const result = await agent.run({
 ## Notes
 
 - This sample implements Agent Skills (`SKILL.md` folders, progressive disclosure) inside an AI SDK agent at runtime. It is not the Skills API (anthropic-api-tools-mcp) and not Claude Code's skill system (anthropic-claude-code-extend); it is also a different distribution path from the official `npx skills add vercel/ai` skill.
-- `loadSkill` is a standard AI SDK tool, so `execute` can read from any source (filesystem, bundled assets, API, registry). `Sandbox` is the page's generic abstraction (Node.js `fs/promises` and `child_process` work directly); `createSandbox`, `yaml`, `yourModel` and `userMessage` are placeholders. The page calls `agent.run`, which is reproduced as written.
+- `loadSkill` is a standard AI SDK tool, so `execute` can read from any source (filesystem, bundled assets, API, registry). `Sandbox` is the page's generic abstraction (Node.js `fs/promises` and `child_process` work directly); `createSandbox`, `yaml`, `yourModel` and `userMessage` are placeholders.
+- Modified from the official page for v7: the page calls `agent.run`, but `ToolLoopAgent` exposes `generate` / `stream` (`references/agents/tool-loop-agent.md`), so this uses `agent.generate`. The page also passes one shared `context` from `prepareCall` and casts it inside each tool; in v7 each tool declares `contextSchema` and receives its own value from `toolsContext` keyed by tool name.
 - Skills load progressively: names and descriptions at startup, full `SKILL.md` on activation, bundled files via the agent's existing `readFile` / `bash` tools. See `references/agents/tool-loop-agent.md` and `references/workflow-harnesses/harness-skills.md`.
