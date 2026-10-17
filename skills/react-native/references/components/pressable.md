@@ -100,7 +100,7 @@ After pressing `onPressIn`, one of two things will happen:
 | --- | --- | --- | --- | --- |
 | android_disableSound | boolean | `false` | Android | If true, doesn't play Android system sound on press. |
 | android_ripple | RippleConfig | | Android | Enables the Android ripple effect and configures its properties. The `color` field accepts both plain colors and `PlatformColor` values (e.g. `?attr/colorAccent`); with a `PlatformColor` the ripple is automatically updated when the system configuration changes (e.g. light/dark mode). |
-| children | React Node | | | Either children or a function that receives a boolean reflecting whether the component is currently pressed. |
+| children | React Node or `({ pressed: boolean }) => React Node` | | | Either children or a function that receives a state object `{ pressed }` reflecting whether the component is currently pressed. |
 | unstable_pressDelay | number | | | Duration (in milliseconds) to wait after press down before calling `onPressIn`. |
 | delayLongPress | number | `500` | | Duration (in milliseconds) from `onPressIn` before `onLongPress` is called. |
 | disabled | boolean | `false` | | Whether the press behavior is disabled. |
@@ -113,7 +113,7 @@ After pressing `onPressIn`, one of two things will happen:
 | onPressMove | `({nativeEvent: PressEvent}) => void` | | | Called when the press location moves. |
 | onPressOut | `({nativeEvent: PressEvent}) => void` | | | Called when a touch is released. |
 | pressRetentionOffset | Rect or number | `{bottom: 30, left: 20, right: 20, top: 20}` | | Additional distance outside of this view in which a touch is considered a press before `onPressOut` is triggered. |
-| style | View Style or `({ pressed: boolean }) => View Style` | | | Either view styles or a function that receives a boolean reflecting whether the component is currently pressed and returns view styles. |
+| style | View Style or `({ pressed: boolean }) => View Style` | | | Either view styles or a function that receives a state object `{ pressed }` reflecting whether the component is currently pressed and returns view styles. |
 | testOnly_pressed | boolean | `false` | | Used only for documentation or testing (e.g. snapshot testing). |
 
 ### RippleConfig
@@ -132,6 +132,7 @@ Ripple effect configuration for the `android_ripple` property (type: object).
 
 - The touch area never extends past the parent view bounds and the Z-index of sibling views always takes precedence if a touch hits two overlapping views.
 - `Pressable` uses React Native's `Pressability` API.
+- The official 0.87 prop table says the children/style functions receive a boolean, but the official example destructures `({pressed})`; the argument is a state object.
 - This is the React Native core `Pressable` (imported from `react-native`, rendered as a native view). It is distinct from same-named parts in apple-swiftui / apple-uikit, android-compose-components / android-compose-ui, windows-winui-controls, and the web UI libraries ark-ui / chakra-ui / fandhe-frontend.
 
 ## Related

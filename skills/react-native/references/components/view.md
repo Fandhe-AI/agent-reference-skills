@@ -87,7 +87,7 @@ For `View` responder props (e.g., `onResponderMove`), the synthetic touch event 
 | onResponderReject | `({nativeEvent: PressEvent}) => void` | | | Another responder is already active and will not release it to that `View`. |
 | onResponderRelease | `({nativeEvent: PressEvent}) => void` | | | Fired at the end of the touch. |
 | onResponderTerminate | `({nativeEvent: PressEvent}) => void` | | | The responder has been taken from the `View` (by other views after `onResponderTerminationRequest`, or by the OS without asking, e.g. control center/notification center on iOS). |
-| onResponderTerminationRequest | `({nativeEvent: PressEvent}) => void` | | | Some other `View` wants to become responder; returning `true` allows its release. |
+| onResponderTerminationRequest | `({nativeEvent: PressEvent}) => boolean` | | | Some other `View` wants to become responder; returning `true` allows its release. |
 | onStartShouldSetResponder | `({nativeEvent: PressEvent}) => boolean` | | | Does this view want to become responder on the start of a touch? |
 | onStartShouldSetResponderCapture | `({nativeEvent: PressEvent}) => boolean` | | | If a parent wants to prevent a child from becoming responder on a touch start, it should have this handler return `true`. |
 | pointerEvents | enum('box-none', 'none', 'box-only', 'auto') | | | Whether the `View` can be the target of touch events. `auto`: can be the target. `none`: never the target. `box-none`: never the target but its subviews can be (CSS `pointer-events: none` on the view, `auto` on its descendants). `box-only`: can be the target but its subviews cannot. |
@@ -105,6 +105,7 @@ For `View` responder props (e.g., `onResponderMove`), the synthetic touch event 
 - `View`s are designed to be used with StyleSheet for clarity and performance, although inline styles are also supported.
 - The `hitSlop` touch area never extends past the parent view bounds, and the Z-index of sibling views always takes precedence if a touch hits two overlapping views.
 - `experimental_accessibilityOrder` is experimental: "Experimental APIs may contain bugs and are likely to change in a future version of React Native. Don't use them in production."
+- The official 0.87 type table lists `onResponderTerminationRequest` as `=> void`, but its description and the Gesture Responder System page (`evt => true`) show it returns a boolean; the boolean form is used here.
 - This is the React Native core `View` (imported from `react-native`, rendered as a native view). It is distinct from same-named parts in apple-swiftui / apple-uikit (`UIView`), android-compose-components / android-compose-ui, windows-winui-controls, and the web UI libraries ark-ui / chakra-ui / fandhe-frontend.
 
 ## Related
