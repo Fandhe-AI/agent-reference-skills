@@ -71,5 +71,5 @@ onKeyDown={(event) => {
 
 - [Model Selector](./model-selector.md)
 - [Suggestion](./suggestion.md)
-- Input Group
+- [Input Group](../components-form/input-group.md)
 - [Attachment](../components-chat/attachment.md)
