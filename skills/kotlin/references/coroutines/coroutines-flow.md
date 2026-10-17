@@ -190,7 +190,7 @@ class Chatroom {
 
 ### Convert cold flows to hot flows
 
-`.shareIn(scope, started, replay)` and `.stateIn(scope, started, initialValue)` collect the upstream once in the given scope and share it with subscribers. `SharingStarted.Eagerly` starts immediately; `SharingStarted.WhileSubscribed()` starts with the first subscriber and stops when the last disappears. `.stateIn()` requires an initial value.
+`.shareIn(scope, started, replay)` and `.stateIn(scope, started, initialValue)` collect the upstream once in the given scope and share it with subscribers. `SharingStarted.Eagerly` starts immediately; `SharingStarted.WhileSubscribed()` starts with the first subscriber and stops when the last disappears. The three-argument `.stateIn(scope, started, initialValue)` requires an initial value because a `StateFlow` always has a current value; the one-argument `suspend fun Flow<T>.stateIn(scope: CoroutineScope): StateFlow<T>` needs none — it suspends until the upstream emits its first value and uses that value as the initial state (sharing starts eagerly).
 
 ```kotlin
 val lastUpdateFlow: StateFlow<Instant?> =
@@ -222,6 +222,7 @@ Hot flows have no close or cancel operation. Canceling a collecting coroutine on
 - Explicit backing fields are Stable since Kotlin 2.4.0 and need no opt-in; the official coroutines page still labels this section experimental and links to the Kotlin 2.3 what's-new entry.
 - Explicit backing fields do not provide the read-only wrapper that `.asSharedFlow()` gives; use only when downcasting is not a concern.
 - For updating a shared value without observing changes, the page suggests Kotlin Atomics APIs such as `AtomicInt` or `AtomicReference`.
+- The official page says `.stateIn()` always requires an initial value; `Share.kt` (kotlinx.coroutines 7e0d1b3) also defines a suspending `stateIn(scope)` overload without one.
 - Persistent collections via `kotlinx.collections.immutable` are marked Experimental on the page.
 - Turbine (`cashapp/turbine`) is suggested for testing flows. Android-side `viewModelScope`, `collectAsStateWithLifecycle` and `StateFlow` UI state are covered by android-architecture, and coroutines / Flow testing in Android by android-testing; this page covers the kotlinx.coroutines Flow API only. TanStack Query and React Flow are unrelated to Kotlin `Flow`.
 

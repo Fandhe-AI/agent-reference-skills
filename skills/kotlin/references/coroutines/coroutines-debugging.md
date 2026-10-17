@@ -25,7 +25,7 @@ Debug mode assigns a unique name to every launched coroutine, visible in a Java 
 
 When a coroutine receives an exception from another coroutine through a suspending function such as `Deferred.await()`, the stack trace lacks the receiving coroutine's frames. Stack trace recovery throws a copy of the exception with extra frames, and the original becomes its cause; suppressed exceptions stay attached to the original. Debug mode enables it by default; disable with `-Dkotlinx.coroutines.stacktrace.recovery=false`.
 
-A custom exception is copied automatically when its class has a public constructor accepting a message, a cause, both, or no arguments. Otherwise implement `StackTraceRecoverable` (standard library) and override `copyForStackTraceRecovery()`; return `null` to opt out.
+A custom exception is copied automatically only when its class has a public constructor accepting a message, a cause, both, or no arguments, and declares no instance fields beyond those of `Throwable`. Exceptions that carry extra state (for example an error code field) are not copied reflectively; implement `StackTraceRecoverable` (standard library) and override `copyForStackTraceRecovery()` to copy them, or return `null` to opt out.
 
 ```kotlin
 @OptIn(ExperimentalStdlibCoroutineSupportApi::class)
@@ -146,6 +146,7 @@ android {
 - Since JDK 21, loading the agent dynamically with `DebugProbes.install()` can produce a warning; use the `-javaagent` VM option to avoid it.
 - `StackTraceRecoverable` and `ExperimentalStdlibCoroutineSupportApi` are Experimental and require `@OptIn(ExperimentalStdlibCoroutineSupportApi::class)`; the interface exists on all targets but `kotlinx.coroutines` uses it for recovery only on the JVM.
 - `kotlinx-coroutines-debug` provides automatic BlockHound integration to detect blocking calls in disallowed coroutine contexts.
+- The official page omits the field condition; per `ExceptionsConstructor.kt` (kotlinx.coroutines 7e0d1b3), classes with instance fields beyond `Throwable`'s are skipped by reflective copying.
 - The `android {}` packaging block above is an Android Gradle Plugin setting; AGP configuration is covered by android-build-gradle.
 
 ## Related
