@@ -65,8 +65,13 @@ const result = await agent.generate({
 // rebuild each step from the original input plus recent responses
 prepareStep: ({ initialMessages, responseMessages, stepNumber }) => {
   if (stepNumber > 0) {
+    // drop leading tool-result messages whose tool-call was cut off by slice
+    let recent = responseMessages.slice(-10);
+    while (recent.length > 0 && recent[0].role === 'tool') {
+      recent = recent.slice(1);
+    }
     return {
-      messages: [...initialMessages, ...responseMessages.slice(-10)],
+      messages: [...initialMessages, ...recent],
     };
   }
 };
@@ -76,5 +81,6 @@ prepareStep: ({ initialMessages, responseMessages, stepNumber }) => {
 
 - `__PROVIDER_IMPORT__` and `__MODEL__` are placeholders on the official page; `loadLargeDocument` is an application placeholder.
 - `prepareStep` runs before every model step; a returned `messages` array is used for that step and persists as the base for later steps. The token estimate is deliberately crude; use a real tokenizer or provider usage data for tighter accounting.
+- The official page's example is `responseMessages.slice(-10)` only, which can split a tool-call from its tool-result and leave a history starting with a `tool` message (providers may reject it); the leading orphaned `tool` messages are dropped here. Trimming per step is safer.
 - The same `prepareStep` works with `generateText` and `streamText`. Compare `track-agent-token-usage.md` for feeding usage into the trigger.
 - `ToolLoopAgent` is the AI SDK abstraction, separate from openai-agents / anthropic-agent-sdk runtimes.

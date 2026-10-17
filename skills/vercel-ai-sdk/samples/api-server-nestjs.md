@@ -69,9 +69,9 @@ export class AppController {
             stream: result.stream,
             sendStart: false,
             onError: error => {
-              // Error messages are masked by default for security reasons.
-              // If you want to expose the error message to the client, you can do so here:
-              return error instanceof Error ? error.message : String(error);
+              // Error messages are masked by default; log details server-side and return a generic message to the client.
+              console.error(error);
+              return 'An error occurred.';
             },
           }),
         );
@@ -108,4 +108,5 @@ export class AppController {
 ## Notes
 
 - The controller injects the Express `Response` (`@Res()`), so the Node `pipe*ToResponse` helpers apply. Set `AI_GATEWAY_API_KEY` for the Vercel AI Gateway model ids used in the page.
+- The official page's `onError` example returns `error.message` to the client, which can leak internal details; here it is replaced with a generic message and server-side logging.
 - If streaming fails behind a proxy, see `references/operations/troubleshooting.md`; the page links a full example at `examples/nest` in the vercel/ai repository.

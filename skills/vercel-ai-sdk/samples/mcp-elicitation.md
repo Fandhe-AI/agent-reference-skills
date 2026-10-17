@@ -8,7 +8,7 @@ Handle an MCP server's request for extra user input during tool execution with `
 
 ```ts
 import { createMCPClient, ElicitationRequestSchema } from '@ai-sdk/mcp';
-import { generateText } from 'ai';
+import { generateText, isStepCount } from 'ai';
 
 // Create the MCP client with elicitation capability enabled
 const mcpClient = await createMCPClient({
@@ -46,6 +46,7 @@ try {
   const { text } = await generateText({
     model: 'openai/gpt-6-luna',
     tools,
+    stopWhen: isStepCount(5),
     prompt: 'Register a new user account',
   });
 
@@ -79,4 +80,5 @@ async function promptUserForInput(
 
 - Handler results must be `{ action: 'accept', content }`, `{ action: 'decline' }` or `{ action: 'cancel' }`. Official warning: the client application is responsible for handling elicitation properly; the MCP client only surfaces the server request.
 - Parse `request.params.requestedSchema`, collect input (CLI, form, dialog), and validate it against the schema before accepting. The mock credentials in `promptUserForInput` are the page's placeholders.
+- The default is a single step, so `stopWhen: isStepCount(5)` is needed for tool results to be returned to the model and `text` to contain the final answer (omitted in the official page's example).
 - The AI SDK acts as an MCP client here. For other MCP roles see anthropic-api-tools-mcp (MCP connector), anthropic-claude-code-extend (Claude Code connecting to MCP servers), openai-agents (consumer side) and openai-apps-sdk (publisher side).

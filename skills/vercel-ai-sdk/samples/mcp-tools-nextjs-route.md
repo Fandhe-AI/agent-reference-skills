@@ -11,6 +11,7 @@ Connect to stdio, HTTP and SSE MCP servers with `createMCPClient`, pass their to
 import { createMCPClient, type MCPClient } from '@ai-sdk/mcp';
 import {
   createUIMessageStreamResponse,
+  isStepCount,
   streamText,
   toUIMessageStream,
 } from 'ai';
@@ -85,6 +86,8 @@ export async function POST(req: Request) {
     const response = await streamText({
       model: 'openai/gpt-6-astra',
       tools,
+      // Default is a single step; allow more steps so tool results are fed back to the model
+      stopWhen: isStepCount(5),
       prompt,
       // When streaming, the client should be closed after the response is finished:
       onEnd: async () => {
@@ -147,4 +150,5 @@ export default function Page() {
 - The AI SDK is an MCP client here (tools come from `client.tools()`). Related skills: anthropic-api-tools-mcp (MCP connector), anthropic-claude-code-extend (Claude Code MCP), openai-agents (MCP consumption from the Agents SDK), openai-apps-sdk (publishing MCP servers to ChatGPT).
 - `Experimental_StdioMCPTransport` is experimental and local only; the optional official transports come from `@modelcontextprotocol/sdk` (`pnpm install @modelcontextprotocol/sdk`).
 - Always close clients after use (`onEnd`, optionally `onError`); later tool sets override earlier tools with the same name when spread together.
+- The default is a single step, so `stopWhen: isStepCount(5)` is needed for tool results to be returned to the model for a final answer (omitted in the official page's example).
 - API details: `references/tools-mcp/create-mcp-client.md`, `references/tools-mcp/mcp-tools.md`.

@@ -63,9 +63,9 @@ createServer(async (req, res) => {
               stream: result.stream,
               sendStart: false,
               onError: error => {
-                // Error messages are masked by default for security reasons.
-                // If you want to expose the error message to the client, you can do so here:
-                return error instanceof Error ? error.message : String(error);
+                // Error messages are masked by default; log details server-side and return a generic message to the client.
+                console.error(error);
+                return 'An error occurred.';
               },
             }),
           );
@@ -104,6 +104,7 @@ curl -X POST http://localhost:8080
 
 ## Notes
 
-- Examples use the Vercel AI Gateway; set `AI_GATEWAY_API_KEY`. Error messages are masked by default; `onError` on `toUIMessageStream` exposes them.
+- Examples use the Vercel AI Gateway; set `AI_GATEWAY_API_KEY`. Error messages are masked by default; `onError` on `toUIMessageStream` can override the masked message, so avoid returning raw `error.message`.
+- The official page's example returns `error.message` to the client, which can leak internal details; here it is replaced with a generic message and server-side logging.
 - Helpers: `pipeUIMessageStreamToResponse` (UI message stream), `pipeTextStreamToResponse` (plain text). If streaming does not work behind a proxy, see the troubleshooting entry "streaming not working when proxied" (`references/operations/troubleshooting.md`).
 - This covers only the AI SDK response helpers; routing frameworks are in the hono / fastify / nextjs-app skills (`references/ui/pipe-ui-message-stream-to-response.md`).

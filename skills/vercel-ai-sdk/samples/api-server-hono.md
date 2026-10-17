@@ -88,9 +88,9 @@ app.post('/stream-data', async c => {
           stream: result.stream,
           sendStart: false,
           onError: error => {
-            // Error messages are masked by default for security reasons.
-            // If you want to expose the error message to the client, you can do so here:
-            return error instanceof Error ? error.message : String(error);
+            // Error messages are masked by default; log details server-side and return a generic message to the client.
+            console.error(error);
+            return 'An error occurred.';
           },
         }),
       );
@@ -106,4 +106,5 @@ serve({ fetch: app.fetch, port: 8080 });
 
 - Hono handlers return a Web `Response`, so use `createUIMessageStreamResponse` / `createTextStreamResponse` rather than the `pipe*ToResponse` Node helpers.
 - This covers only the AI SDK calls; Hono routing, middleware and streaming helpers (`streamSSE` etc.) belong to the hono skill. Examples use the AI Gateway (`AI_GATEWAY_API_KEY`).
+- The official page's example returns `error.message` to the client, which can leak internal details; here it is replaced with a generic message and server-side logging.
 - Test with `curl -X POST http://localhost:8080`; for proxied-streaming problems see `references/operations/troubleshooting.md`.
