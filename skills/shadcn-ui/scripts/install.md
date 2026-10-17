@@ -86,9 +86,6 @@ Prerequisite: a monorepo setup already exists. Run it inside `apps/web`, or from
 ```sh
 npx create-next-app@latest
 npx create-next-app@latest --src-dir
-npm create vite@latest
-npm install tailwindcss @tailwindcss/vite
-npm install -D @types/node
 npm create react-router@latest
 npx @tanstack/cli@latest create
 npx create-tsrouter-app@latest my-app --template file-router --tailwind --add-ons shadcn
@@ -98,7 +95,18 @@ npm init gatsby
 npx create-remix@latest my-app
 ```
 
-Each line belongs to a different framework's procedure; run only the relevant ones. Vite needs the first three lines plus edits to tsconfig and vite.config (see `references/getting-started/vite.md`).
+Each line belongs to a different framework's procedure; run only the relevant ones.
+
+### Vite
+
+```sh
+npm create vite@latest
+cd <project-name>
+npm install tailwindcss @tailwindcss/vite
+npm install -D @types/node
+```
+
+Run the install commands inside the newly created project directory. Between them, replace `src/index.css` with `@import "tailwindcss";`, add `baseUrl`/`paths` to `tsconfig.json` and `tsconfig.app.json`, and update `vite.config.ts` (see `references/getting-started/vite.md`).
 
 ## Dependencies for manual installation
 
