@@ -105,8 +105,16 @@ print(response.text)
 Register Google Cloud Storage files:
 
 ```python
+import google.auth
 from google import genai
 from google.genai.types import Part
+
+GCS_READ_SCOPES = [
+  'https://www.googleapis.com/auth/devstorage.read_only',
+  'https://www.googleapis.com/auth/cloud-platform'
+]
+
+credentials, project = google.auth.default(scopes=GCS_READ_SCOPES)
 
 client = genai.Client()
 
@@ -174,6 +182,7 @@ External URL supported types: text (`text/html`, `text/css`, `text/plain`, `text
 - Files API: prompting strategies (from the source): be specific in instructions; add few-shot examples; break the task down step by step; specify the output format (markdown, JSON, HTML); put the image first for single-image prompts. Troubleshooting: hint at which part of the image to use, ask the model to describe the image first, ask it to explain its reasoning, lower temperature or ask for shorter descriptions to reduce hallucination, tune temperature and top-k.
 - File input methods: Source: "The new methods are supported in all of the Gemini API endpoints, including Batch, Interactions and Live API."
 - File input methods: GCS registration: enable the Gemini API, create the Service Agent with `gcloud beta services identity create --service=generativelanguage.googleapis.com --project=<your_project>`, grant it the `Storage Object Viewer` IAM role on the specific buckets, authenticate with scopes `https://www.googleapis.com/auth/devstorage.read_only` and `https://www.googleapis.com/auth/cloud-platform`. An API key in `GEMINI_API_KEY` must exist but is unused for the registration endpoint.
+- File input methods: the GCS registration snippet merges the official "obtain credentials" step (`google.auth.default(scopes=GCS_READ_SCOPES)`, for environments with Application Default Credentials such as Cloud Run or Compute Engine) so that `credentials` is defined; the client itself still uses the API key, and `credentials` is passed only via `auth=`.
 - File input methods: External URLs: Gemini 2.0 family models are not supported; URLs must be public or signed (compatible with S3 presigned URLs and Azure SAS) without login or paywall; a failing safety check yields `url_retrieval_status` of `URL_RETRIEVAL_STATUS_UNSAFE`.
 - File input methods: limitations: inline data increases payload size; File API uploads expire after 48 hours; external URL fetching limited to 15 MB per file and listed content types. Always provide the correct MIME type.
 - Distinct from OpenAI Files API (openai-api-core skill) and Anthropic Files API (anthropic-api-core skill).

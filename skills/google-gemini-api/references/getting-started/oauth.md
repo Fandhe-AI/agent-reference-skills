@@ -27,15 +27,6 @@ curl -X GET https://generativelanguage.googleapis.com/v1/models \
     -H "x-goog-user-project: ${project_id}" | grep '"name"'
 ```
 
-Python (ADC found automatically):
-
-```python
-from google import genai
-
-client = genai.Client()
-print('Available base models:', [m.name for m in client.models.list()])
-```
-
 Manage credentials yourself (`load_creds.py`):
 
 ```python
@@ -73,18 +64,7 @@ def load_creds():
     return creds
 ```
 
-Use them with the client:
-
-```python
-from google import genai
-from load_creds import load_creds
-
-creds = load_creds()
-
-client = genai.Client(credentials=creds)
-
-print('Available base models:', [m.name for m in client.models.list()])
-```
+Use the token from `load_creds()` (`creds.token`) as the `Authorization: Bearer` header, together with `x-goog-user-project`, in the curl example above.
 
 ## Options / Props
 
@@ -92,7 +72,6 @@ print('Available base models:', [m.name for m in client.models.list()])
 |------|------|-------------|
 | `--client-id-file` | gcloud flag | Path to `client_secret.json` (OAuth 2.0 Client ID of type Desktop app) |
 | `--scopes` | gcloud flag | `https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/generative-language.retriever` |
-| `genai.Client(credentials=creds)` | Python | Pass your own credentials object |
 
 ## Notes
 
@@ -101,6 +80,7 @@ print('Available base models:', [m.name for m in client.models.list()])
 - The simplified setup triggers a "Google hasn't verified this app." dialog; the page says this is normal and to choose "continue".
 - If running on Colab, include `--no-browser` and follow the printed instructions.
 - The official sample writes `project_id=<MY PROJECT ID>`; it is quoted here as a shell string, so replace `YOUR_PROJECT_ID` with your project ID.
+- The official page also shows `genai.Client()` (ADC auto-detected) and `genai.Client(credentials=creds)`; these are omitted because in Gemini Developer API mode google-genai 2.31.0 requires an API key (raises `ValueError: No API key was provided`) and only loads ADC for Vertex AI (`vertexai=True`), so use the REST call with an `Authorization: Bearer` header for OAuth instead.
 - Docs fetched 2026-10-16. The curl example uses the `v1` models path.
 
 ## Related
