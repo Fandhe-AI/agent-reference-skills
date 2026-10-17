@@ -385,6 +385,24 @@ language js(typescript, jsx)
 - CST node names are specific to Biome's parser and may change between versions. Check them in the Playground for the version you use. All nodes are defined in the `.ungram` files under `xtask/codegen` in the Biome repository.
 - A regex matching a JSON key is applied to the whole node text including the quotes (e.g. `"user_name"`). `r".*_.*"` works because the `.*` on both sides absorbs the quotes.
 - "Limit the number of function parameters" counts commas in the text of the parameter list, so commas inside default values or type annotations (e.g. `function f(value = [1, 2, 3, 4]) {}`) and trailing commas are also counted; it can report functions that actually have three or fewer parameters (a simple example as in the official recipe).
+- "Ban nested ternary expressions" is the official recipe verbatim, but `contains` also matches the node itself (the GritQL engine starts its subtree walk at the node itself: https://github.com/getgrit/gritql/blob/main/crates/grit-pattern-matcher/src/pattern/contains.rs), so `$outer <: contains JsConditionalExpression() as $inner` also flags a single, non-nested ternary such as `a ? b : c`, contrary to the official description. Checked with `npx @biomejs/biome@2.5.15 lint` on the three lines of the official example: the recipe as written reports line 1 as well. Binding the child fields and searching only inside them reports lines 2 and 3 but not line 1 (same check):
+
+  ```grit
+  engine biome(1.0)
+  language js(typescript, jsx)
+
+  JsConditionalExpression(consequent=$c, alternate=$a) where {
+      or {
+          $c <: contains JsConditionalExpression() as $inner,
+          $a <: contains JsConditionalExpression() as $inner
+      },
+      register_diagnostic(
+          span = $inner,
+          message = "Nested ternary expressions are not allowed. Use `if`/`else` instead."
+      )
+  }
+  ```
+
 - For the Playground link of each example, see the source page: https://biomejs.dev/recipes/gritql-plugins/
 
 ## Related
