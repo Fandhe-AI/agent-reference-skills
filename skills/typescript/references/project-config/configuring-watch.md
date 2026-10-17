@@ -13,8 +13,7 @@ The suggested method is the `watchOptions` section of `tsconfig.json`:
 ```json
 {
   "compilerOptions": {
-    "target": "es2020",
-    "moduleResolution": "node"
+    "target": "es2020"
   },
 
   "watchOptions": {
@@ -54,6 +53,7 @@ The suggested method is the `watchOptions` section of `tsconfig.json`:
 
 ## Notes
 
+- The original handbook example also sets `moduleResolution: "node"` (node10); it is omitted here because node10 is deprecated in 6.0 and removed in 7.0 (source: https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/).
 - `TSC_WATCHFILE` and `TSC_WATCHDIRECTORY` are environment variables. `TSC_WATCHDIRECTORY` is for platforms without native recursive directory watching; it is ignored where that is supported.
 - The 6.0 compiler's `--watch` relies on Node's `fs.watch` (event-based, OS dependent, may hit per-OS watch limits, lighter on CPU) and `fs.watchFile` (polling, most reliable, costs CPU proportional to the number of watched files). Recursive directory watching is supported on Windows and macOS, but not on Linux.
 - Changed (7.0): TypeScript 7 ships a rebuilt `--watch` mode powered by a file-watcher based on the Parcel bundler's `@parcel/watcher`, ported to Go; the Node `fs.watch` / `fs.watchFile` background above describes the pre-7.0 implementation. The `typescript-go` v7.0.2 README lists Watch mode as "prototype" ("Watches files and rebuilds, but no incremental rechecking. Not optimized"), while the 7.0 announcement blog describes a completely rebuilt mode. The page does not state whether `watchOptions` and `TSC_WATCHFILE` / `TSC_WATCHDIRECTORY` are still honored in 7.0; this is unconfirmed. Sources: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/ and https://github.com/microsoft/typescript-go/blob/typescript/v7.0.2/README.md.

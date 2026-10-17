@@ -106,7 +106,7 @@ exports.default = "default export";
 
 ### `system`, `amd`, `umd`
 
-- Deprecated (6.0) / Removed (7.0): `--module amd`, `umd`, `systemjs` (and `none`) are no longer supported in 6.0; in 7.0 they are hard errors with no-op behavior, recommending `esnext` or `preserve` with bundlers or browser-based module resolution. The `amd-module` directive no longer has any effect (6.0 release notes https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html, TypeScript 7.0 announcement https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/).
+- Deprecated (6.0) / Removed (7.0): `--module amd`, `umd`, `systemjs` (and `none`) are deprecated in 6.0 (usable only with `ignoreDeprecations: "6.0"`, https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/); in 7.0 they are hard errors with no-op behavior, recommending `esnext` or `preserve` with bundlers or browser-based module resolution. The `amd-module` directive no longer has any effect (6.0 release notes https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html, TypeScript 7.0 announcement https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/).
 - `amd` emit example: `define(["require", "exports", "mod", "mod"], function (require, exports, mod_1, mod) { ... });`. `umd` emit wraps a factory that checks `module.exports` then `define.amd`. `system` emit uses `System.register(["mod"], function (exports_1, context_1) { ... })`.
 - Changed (6.0): `moduleResolution: bundler` can now combine with `module: commonjs` (previously only `esnext` / `preserve`), as an upgrade path from deprecated `node10`; planning a migration to `preserve` + `bundler` or `nodenext` is suggested.
 

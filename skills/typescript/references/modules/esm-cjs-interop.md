@@ -47,7 +47,7 @@ mod.world; // Accessing properties from the default always works
 ```
 
 - Libraries shipping declarations should ensure types are error-free under many compiler options; a default import in a `.d.ts` that only works with `esModuleInterop` is "infectious" (prefer `import express = require("express");`). `verbatimModuleSyntax` sidesteps this by forcing CommonJS-style syntax in CommonJS-emitting files.
-- Deprecated (6.0) / Removed (7.0): `esModuleInterop: false` and `allowSyntheticDefaultImports: false` can no longer be set in 6.0 (safer interop always enabled); in 7.0 they cannot be set to `false`. Where the text above says interop "when disabled" it describes behavior prior to 6.0. Adjust imports that relied on the old behavior (e.g. `import * as express from "express"` becomes `import express from "express"`).
+- Deprecated (6.0) / Removed (7.0): 6.0 deprecates `esModuleInterop: false` and `allowSyntheticDefaultImports: false` and enables the safer interop by default; setting `"ignoreDeprecations": "6.0"` lets them keep working without errors in 6.0 as a transition period, and 7.0 removes them so they cannot be set to `false` (source: https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/). Where the text above says interop "when disabled" it describes behavior prior to 6.0 or under `ignoreDeprecations: "6.0"`. Adjust imports that relied on the old behavior (e.g. `import * as express from "express"` becomes `import express from "express"`).
 
 ## Related
 

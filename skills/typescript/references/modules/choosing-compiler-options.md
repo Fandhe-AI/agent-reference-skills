@@ -80,7 +80,7 @@ Node.js app (compiling and running outputs):
 - Bundling libraries: `module: esnext` + `moduleResolution: bundler` is acceptable with two caveats: TypeScript cannot model a split between bundled and externalized imports in one compilation, and declaration files must also be bundled (each declaration file represents exactly one JavaScript file); if the bundler does not bundle declarations, use `moduleResolution: nodenext`.
 - Dual-emit solutions (two outputs with different module formats while type checking once) leave at least one output unchecked; test and run static analysis (e.g. `@arethetypeswrong/cli`) against all output bundles before publishing.
 - `verbatimModuleSyntax` only works when the JS emitter emits the same module kind as `tsc` would; configurations producing both ESM and CJS from the same source are incompatible with it.
-- Deprecated (6.0) / Removed (7.0): the bundler template's `esModuleInterop` cannot be set `false` in 6.0/7.0 (always enabled); `moduleResolution: node10` / `classic` and `baseUrl` are not used by these templates (6.0 release notes, TypeScript 7.0 announcement).
+- Deprecated (6.0) / Removed (7.0): the bundler template's `esModuleInterop` is deprecated in 6.0 as `false` (allowed only with `ignoreDeprecations: "6.0"`) and cannot be set to `false` in 7.0 (https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/); `moduleResolution: node10` / `classic` and `baseUrl` are not used by these templates (6.0 release notes, TypeScript 7.0 announcement).
 
 ## Related
 
