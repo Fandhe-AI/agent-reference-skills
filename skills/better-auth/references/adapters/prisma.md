@@ -32,11 +32,26 @@ export const auth = betterAuth({
   ```
 
 - **スキーママイグレーション（非サポート）**: Prisma アダプターでは Better Auth CLI によるマイグレーションは非サポート。Prisma 自身のマイグレーションツールを使用する。
-- **実験的 Joins 機能**（v1.4.0 以降）: データベース Joins が単一操作で関連データを取得するクエリを最適化し、データベースレイテンシに応じて 2-3 倍のパフォーマンス改善を提供。
+- **セットアップ構成（1.7 ドキュメント）**: 例は Prisma 7 + PostgreSQL。Prisma 6 以前ではドライバーアダプターは任意で既存の Prisma Client 設定のままでよい。
+  1. Prisma を構成: `npx prisma init --datasource-provider postgresql --output ../src/generated/prisma`（`prisma/schema.prisma` / `prisma.config.ts` / `.env` を作成。`.env` に `DATABASE_URL`）。既存プロジェクトでは初期化不要。出力パス構成後に `npx prisma generate`。
+  2. Prisma client を作成: schema の出力パスから `PrismaClient` を import し PostgreSQL ドライバーアダプターを渡す。
+
+     ```typescript
+     import { PrismaPg } from "@prisma/adapter-pg";
+     import { PrismaClient } from "../generated/prisma/client";
+
+     const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+     export const prisma = new PrismaClient({ adapter });
+     ```
+
+     `PrismaClient` は 1 インスタンスを再利用する（ホットリロードやサーバーレスではフレームワーク固有のライフサイクルパターンが必要な場合あり）。
+  3. Better Auth を構成: `prismaAdapter(prisma, { provider: "postgresql" })`。
+- スキーマ生成後のマイグレーションは Prisma で: `npx prisma migrate dev --name add-better-auth` → `npx prisma generate`。
+- **Joins（v1.4.0 以降、1.7 で experimental を外れた）**: データベース Joins が単一操作で関連データを取得するクエリを最適化し、データベースレイテンシに応じて 2-3 倍のパフォーマンス改善を提供。設定は `advanced.database.joins`（旧 `experimental.joins` は 1.7 で renamed）。
 
   ```typescript
   export const auth = betterAuth({
-    experimental: { joins: true },
+    advanced: { database: { joins: true } },
   });
   ```
 

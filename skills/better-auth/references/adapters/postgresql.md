@@ -26,54 +26,49 @@ export const auth = betterAuth({
   npx auth@latest generate
   ```
 
-- **実験的 Joins 機能**: `/get-session` や `/get-full-organization` などのエンドポイントでパフォーマンスを改善し、データベースレイテンシに応じて 2-3 倍のパフォーマンス改善を提供。
+- **Joins（v1.4.0 以降、1.7 で experimental を外れた）**: `/get-session` や `/get-full-organization` などのエンドポイントでパフォーマンスを改善し、データベースレイテンシに応じて 2-3 倍のパフォーマンス改善を提供。設定は `advanced.database.joins`（旧 `experimental.joins` は 1.7 で renamed）。Kysely PostgreSQL ダイアレクトが標準でサポート。
 
   ```typescript
   export const auth = betterAuth({
-    experimental: { joins: true },
+    advanced: { database: { joins: true } },
   });
   ```
 
-  Kysely PostgreSQL ダイアレクトは v1.4.0 以降でこの機能をサポート。有効化後のマイグレーション実行を推奨。
-
-- **非デフォルトスキーマ設定**:
-  - オプション 1（推奨）: 接続文字列に `options` パラメーターを追加。
-
-    ```
-    postgres://user:password@localhost:5432/database?options=-c search_path=auth
-    ```
-
-    URL エンコード版: `?options=-c%20search_path%3Dauth`
-
-  - オプション 2: Pool オプションに `options` を指定。
+- **非デフォルトスキーマ（1.7 ドキュメントの推奨は `database.schemaName`）**: PostgreSQL は既定で `public` スキーマを使う。`database.schemaName` で明示するか、PostgreSQL の `search_path` を設定する。両方ある場合は `database.schemaName` が優先され、他の修飾なしクエリは接続の `search_path` に従う。
+  - `database.schemaName`（Kysely ダイアレクトまたは Kysely インスタンス）:
 
     ```typescript
+    export const auth = betterAuth({
+      database: {
+        dialect: new PostgresDialect({
+          pool: new Pool({ connectionString: "postgres://user:password@localhost:5432/database" }),
+        }),
+        type: "postgres",
+        schemaName: "auth",
+      },
+    });
+    // Kysely インスタンスの場合: database: { db, type: "postgres", schemaName: "auth" }
+    ```
+
+    スキーマはランタイムクエリと CLI マイグレーションの両方に適用される。`npx auth@latest migrate` は必要時にスキーマを作成し他スキーマの同名テーブルを無視する。`npx auth@latest generate` は生成マイグレーションの先頭で `create schema if not exists "auth";` を出力し、以降はスキーマ修飾名（`"auth"."user"`）を使う。Better Auth が使う PostgreSQL ロールにはスキーマとテーブルの作成権限が必要（なければ事前にスキーマ作成と権限付与）。
+  - `search_path`（`pg.Pool` を直接渡す場合、または接続上の全ての修飾なしクエリを同じスキーマにしたい場合）。CLI はスキーマが既に存在することを前提とするため、`migrate` の前に作成し接続ロールへ権限付与する。3 つの指定方法を 1 節にまとめたもの:
+
+    ```typescript
+    // Pool options
     database: new Pool({
-      host: "localhost",
-      port: 5432,
-      user: "postgres",
-      password: "password",
-      database: "my-db",
+      connectionString: "postgres://user:password@localhost:5432/database",
       options: "-c search_path=auth",
     })
+    // 接続文字列: postgres://user:password@localhost:5432/database?options=-c%20search_path%3Dauth
     ```
-
-  - オプション 3: ユーザーデフォルトスキーマを設定。
 
     ```sql
-    ALTER USER your_user SET search_path TO auth;
+    ALTER ROLE your_role IN DATABASE your_database SET search_path TO auth;
     ```
 
-  - カスタムスキーマの前提条件:
+    変更後は再接続し、`SHOW search_path` で有効値を確認する。
 
-    ```sql
-    CREATE SCHEMA IF NOT EXISTS auth;
-    GRANT ALL PRIVILEGES ON SCHEMA auth TO your_user;
-    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA auth TO your_user;
-    ALTER DEFAULT PRIVILEGES IN SCHEMA auth GRANT ALL ON TABLES TO your_user;
-    ```
-
-- **動作の仕組み**: Better Auth CLI は設定された `search_path` を自動検出する。マイグレーション時、指定スキーマ内のテーブルのみを検査し、他のスキーマを無視して競合を防止。新しいテーブルはすべて指定スキーマに作成される。
-- **トラブルシューティング**: マイグレーション中に「relation does not exist」エラーが出た場合、スキーマが存在しユーザーが適切な権限を持っているか確認する（前提条件を参照）。`SHOW search_path;` で Better Auth が使用するスキーマを検証でき、カスタムスキーマ（例: `auth`）が最初の値として返されるべき。
+- **動作の仕組み**: `search_path` 使用時、Better Auth CLI は設定された `search_path` を検出し、マイグレーションで指定スキーマ内のテーブルのみを検査し、他のスキーマを無視して競合を防止。
+- **トラブルシューティング**: マイグレーション中に「relation does not exist」エラーが出た場合、スキーマが存在しロールが適切な権限を持っているか確認する。`SHOW search_path;` で Better Auth が使用するスキーマを検証できる。
 - PostgreSQL サポートは Kysely アダプター経由で実装される。Kysely がサポートする任意のデータベースが Better Auth と互換。
-- パフォーマンス改善については [パフォーマンス最適化ガイド](/docs/guides/optimizing-for-performance) を参照。
+- パフォーマンス改善については パフォーマンス最適化ガイド を参照。

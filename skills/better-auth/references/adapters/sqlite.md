@@ -50,11 +50,11 @@ CLI コマンドでは型エラーを避けるため `bunx --bun` フラグを�
   npx auth@latest migrate
   ```
 
-- **Joins（実験的）**: 関連データクエリのパフォーマンス改善のためデータベース Joins を有効化。`/get-session`, `/get-full-organization` などのエンドポイントで、データベースレイテンシに応じて 2-3 倍のパフォーマンス改善。
+- **Joins（1.7 で experimental を外れた）**: 関連データクエリのパフォーマンス改善のためデータベース Joins を有効化。`/get-session`, `/get-full-organization` などのエンドポイントで、データベースレイテンシに応じて 2-3 倍のパフォーマンス改善。設定は `advanced.database.joins`（旧 `experimental.joins` は 1.7 で renamed）。
 
   ```typescript
   export const auth = betterAuth({
-    experimental: { joins: true },
+    advanced: { database: { joins: true } },
   });
   ```
 

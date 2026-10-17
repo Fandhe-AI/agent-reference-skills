@@ -27,7 +27,14 @@ const session = await auth.api.getSession({
 
 ## Notes
 
-- Don't use `express.json()` before the Better Auth handler — it blocks the client API. Apply JSON middleware after the auth handler, or only on non-auth routes
+- Mount the Better Auth handler before body-parsing middleware such as `express.json()`: body parsers consume the incoming request stream before passing control to the next handler. Mount `app.use(express.json())` after the auth handler (or only on non-auth routes).
+
+  ```javascript
+  app.all("/api/auth/*", toNodeHandler(auth)); // ExpressJS v4 (v5: "/api/auth/*splat")
+
+  // Mount body-parsing middleware after the Better Auth handler.
+  app.use(express.json());
+  ```
 - Requires ESM (`"type": "module"` in `package.json`)
 - Verify setup with a GET request to `/api/auth/ok`
 

@@ -36,7 +36,7 @@ const signIn = async () => {
 ## Notes
 
 - Redirect URL — development: `http://localhost:3000/api/auth/callback/roblox`; production: update to your application's domain. Adjust if you've customized the auth route base path
-- **Email limitation**: the Roblox API does not provide email addresses. As a workaround, the user's `email` field uses the `preferred_username` value instead, meaning it contains the user's Roblox username rather than an actual email address
+- **Email limitation**: the Roblox API does not provide email addresses. Better Auth uses the user's stable `sub` claim to create a non-routable `{sub}@roblox.placeholder.invalid` address (1.6 docs: the `preferred_username` value was used as the email)
 
 ## Related
 

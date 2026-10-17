@@ -180,6 +180,7 @@ This command automatically generates database migrations for plugin schemas.
 
 ## Notes
 
+- Publishing a reusable plugin? Register its server type (augment `BetterAuthPluginRegistry` from `@better-auth/core`) so `getPlugin()` can infer its exact return type; see concepts/plugins.md "Register a plugin type".
 - After creation, share your plugin with the community through the Better Auth Discord server or GitHub pull requests
 - The framework maintains a community plugins registry for discoverable extensions
 - For advanced patterns, consult the comprehensive plugins documentation covering endpoints, middleware, rate limiting, and client-side atoms

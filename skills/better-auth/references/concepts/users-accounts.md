@@ -187,6 +187,29 @@ deleteUser: {
 }
 ```
 
+### validateUserInfo
+
+A gate that decides which identities Better Auth admits. It fires just before a user is created (`create-user`) or a new provider account is linked (`link-account`), for every authentication method (OAuth, OIDC SSO, SAML SSO, email/password, magic link, email OTP, anonymous, SIWE, phone number, admin-created users, SCIM), including stateless setups. It also fires when an existing OAuth or SSO user signs in again (`sign-in`), receiving the fresh provider email and profile; non-provider returning sign-ins are not re-validated (use the admin plugin's ban controls or a `databaseHooks.session.create.before` hook to block those).
+
+`source.action` is `"create-user"`, `"link-account"`, or `"sign-in"`; `source.method` is the authentication method; `source.oauth` carries the provider id and raw provider profile; `source.sso` carries the SSO provider id and raw claims or assertion attributes. Return nothing to allow provisioning, or an object with `error` (and optional `errorDescription`, which is returned to the client) to reject: redirect flows send the rejection to the configured error URL, programmatic flows return a `403` API error.
+
+```typescript
+export const auth = betterAuth({
+    user: {
+        validateUserInfo: ({ user, source }) => {
+            if (!user.email?.endsWith("@example.com")) {
+                return { error: "email_not_allowed", errorDescription: "Use your example.com email to sign in" };
+            }
+            if (source.oauth?.providerId === "company-oauth" && source.oauth?.profile?.hd !== "example.com") {
+                return { error: "invalid_organization", errorDescription: "Use your company OAuth account" };
+            }
+        },
+    },
+});
+```
+
+`validateUserInfo` is the high-level policy gate; the lower-level `databaseHooks.user.create.before` still runs afterward for data shaping and can also abort a write.
+
 ### Account management
 
 Each auth provider creates an "account" that stores provider-specific data (tokens, credentials).

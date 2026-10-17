@@ -22,6 +22,10 @@ Better Auth の動的ベース URL 機能により、複数ホスト名（カス
 | `fallback` | string | — | 許可リスト外のホスト用のフォールバック URL |
 | `crossSubDomainCookies` | boolean | — | サブドメイン間での Cookie 共有 |
 
+## Notes
+
+- Changed in 1.7: forwarded headers are not trusted by default for `allowedHosts`; set `advanced.trustedProxyHeaders: true` when the proxy exposes the public hostname only through `x-forwarded-host`. Without `baseURL.fallback`, requests with no usable or non-matching host fail closed. See concepts/dynamic-base-url.md.
+
 ## Related
 
 - [Dynamic Base URL (concepts)](../concepts/dynamic-base-url.md)

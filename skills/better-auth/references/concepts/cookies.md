@@ -1,6 +1,11 @@
 # Cookies
 
-Better Auth uses cookies to store session tokens, session data, OAuth state, and other authentication-related information. All cookies are cryptographically signed using the `secret` key in the auth options or the `BETTER_AUTH_SECRET` environment variable. During rotation with versioned secrets, encrypted cookie data automatically uses the current key while still being decryptable with previous keys.
+Better Auth uses cookies to store session tokens, session data, OAuth state, and other authentication-related information.
+
+- The primary `session_token` cookie remains an opaque, secret-signed session identifier.
+- The `session_data` cookie is only present when `session.cookieCache` is enabled; its encoding depends on the strategy: `compact` (base64url + HMAC with your Better Auth secret), `jwt` (HS256 by default, or asymmetric signing when `sessionCookieCache` is enabled on the JWT plugin), `jwe` (encrypted with your Better Auth secret).
+
+Signing uses the `secret` key in the auth options or the `BETTER_AUTH_SECRET` environment variable. With versioned secrets for rotation, secret-backed cookie data (signed cookies and encrypted JWE session caches) automatically uses the current key and remains compatible with previous keys where supported.
 
 ## Signature / Usage
 

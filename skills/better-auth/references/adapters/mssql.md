@@ -62,14 +62,14 @@ export const auth = betterAuth({
 ## Notes
 
 - **スキーマ管理**: `npx auth@latest migrate`（サポート済み）/ `npx auth@latest generate`（サポート済み）。Better Auth CLI は設定と有効なプラグインに基づいてデータベーススキーマの生成とマイグレーションを処理する。
-- **データベース Joins（実験的）**: 影響を受けるエンドポイント `/get-session`、`/get-full-organization`、その他のデータフェッチエンドポイントで 2-3 倍のパフォーマンス改善。
+- **データベース Joins（1.7 で experimental を外れた）**: 影響を受けるエンドポイント `/get-session`、`/get-full-organization`、その他のデータフェッチエンドポイントで 2-3 倍のパフォーマンス改善。設定は `advanced.database.joins`（旧 `experimental.joins` は 1.7 で renamed）。
 
   ```typescript
   export const auth = betterAuth({
-    experimental: { joins: true },
+    advanced: { database: { joins: true } },
   });
   ```
 
-  利用条件: Kysely MS SQL ダイアレクト v1.4.0 以降が必要。有効化後のマイグレーション実行が必要な場合がある。
+  利用条件: Kysely MS SQL ダイアレクト v1.4.0 以降が必要。
 - 実装は Kysely の MS SQL ダイアレクトに依存。Kysely がサポートする任意のデータベースが Better Auth と互換。
 - 追加のパフォーマンスガイダンスは「パフォーマンス最適化」ドキュメントを参照。Kysely の公式ドキュメントで詳細な [MssqlDialect 設定オプション](https://kysely-org.github.io/kysely-apidoc/classes/MssqlDialect.html) を参照。

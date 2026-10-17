@@ -32,18 +32,18 @@ MySQL ダイアレクトオプションの詳細は Kysely の [MySQLDialect ド
   npx auth@latest migrate     # スキーママイグレーション
   ```
 
-- **データベース Joins（実験的）**: 複数テーブルにまたがる関連データフェッチ時のパフォーマンスを改善し、データベースレイテンシに応じて 2-3 倍のパフォーマンス改善を提供。
+- **データベース Joins（1.7 で experimental を外れた）**: 複数テーブルにまたがる関連データフェッチ時のパフォーマンスを改善し、データベースレイテンシに応じて 2-3 倍のパフォーマンス改善を提供。設定は `experimental: { joins: true }` から `advanced: { database: { joins: true } }` へ移った（旧設定は 1.7 で renamed）。
 
   ```typescript
   import { betterAuth } from "better-auth";
 
   export const auth = betterAuth({
-    experimental: { joins: true },
+    advanced: { database: { joins: true } },
   });
   ```
 
-  Kysely MySQL ダイアレクトは v1.4.0 以降でネイティブに Joins をサポート。この機能を有効にした後、マイグレーションの実行が必要な場合がある。
+  Kysely MySQL ダイアレクトは v1.4.0 以降でネイティブに Joins をサポート。1.7 のドキュメントでは、旧版にあった migration 警告の Callout は削除されている。
 
 - MySQL 統合は Kysely アダプターを通じて動作する — Kysely がサポートする任意のデータベースが互換。
 - `timezone: "Z"` の設定で一貫したタイムゾーン値を確保することが重要。
-- パフォーマンス最適化のガイダンスは [パフォーマンス最適化ガイド](/docs/guides/optimizing-for-performance) を参照。
+- パフォーマンス最適化のガイダンスは パフォーマンス最適化ガイド を参照。

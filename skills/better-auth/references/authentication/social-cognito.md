@@ -13,8 +13,18 @@ export const auth = betterAuth({
       domain: process.env.COGNITO_DOMAIN as string,
       region: process.env.COGNITO_REGION as string,
       userPoolId: process.env.COGNITO_USERPOOL_ID as string,
+      identityProvider: "Google", // optional: skip the hosted UI picker
     },
   },
+})
+```
+
+Override the preselected identity provider per call (for example a "Sign in with Okta" button that bypasses the Cognito picker) through `additionalParams`:
+
+```typescript
+await authClient.signIn.social({
+  provider: "cognito",
+  additionalParams: { identity_provider: "Okta" },
 })
 ```
 
@@ -41,6 +51,8 @@ const signIn = async () => {
 | `userPoolId` | string | `COGNITO_USERPOOL_ID` |
 | `scope` | string[] | Additional OAuth2 scopes |
 | `getUserInfo` | function | Custom function retrieving user information from the Cognito UserInfo endpoint |
+| `identityProvider` | string | Preselect a Cognito-configured identity provider to skip the hosted-UI picker: `"COGNITO"`, a SAML/OIDC provider name on the User Pool, or `"Google"`, `"Facebook"`, `"LoginWithAmazon"`, `"SignInWithApple"`. Per-call `additionalParams.identity_provider` takes precedence |
+| `refreshAccessToken` | function | Custom function to refresh tokens; receives the stored refresh token |
 
 ## Notes
 
@@ -54,6 +66,7 @@ const signIn = async () => {
   6. Add callback URL (e.g., `http://localhost:3000/api/auth/callback/cognito`)
 - **Common Cognito scopes**: `openid` (required for OpenID Connect), `profile` (basic profile information access), `email` (user email access), `phone` (phone number access), `aws.cognito.signin.user.admin` (Cognito-specific APIs)
 - Scopes must be configured in the Cognito App Client settings before use
+- Refresh tokens: Cognito returns a refresh token after a successful authorization code grant; later refresh-token grants return new access and ID tokens. Cognito only returns a new refresh token when refresh token rotation is enabled in the app client; otherwise the original refresh token remains valid and Better Auth keeps using it. `auth.api.getAccessToken` refreshes an expired access token automatically when the account has a refresh token and a known `accessTokenExpiresAt` (returns the access and ID tokens); use the `/refresh-token` endpoint if you need the refresh token in the response.
 
 ## Related
 

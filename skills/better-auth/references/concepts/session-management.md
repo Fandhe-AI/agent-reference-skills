@@ -92,6 +92,33 @@ session: {
 }
 ```
 
+The main `session_token` cookie is still the server-side session identifier. With `session.cookieCache`, Better Auth also writes a separate `session_data` cookie for short-lived cached session data; it is distinct from the JWT plugin's `/token` endpoint and `set-auth-jwt` header output.
+
+Strategies: `compact` (default; base64url + HMAC-SHA256), `jwt` (standard JWT, HS256 with your Better Auth secret by default; signed, readable, tamper-proof), `jwe` (A256CBC-HS512 with HKDF; fully encrypted).
+
+#### JWKS-backed cookie-cache JWTs
+
+To make the `session_data` cookie verifiable with the JWT plugin's JWKS instead of a shared secret, enable the JWT plugin and opt in explicitly:
+
+```typescript
+import { betterAuth } from "better-auth"
+import { jwt } from "better-auth/plugins"
+
+export const auth = betterAuth({
+    plugins: [jwt({
+        sessionCookieCache: true
+    })],
+    session: {
+        cookieCache: {
+            enabled: true,
+            strategy: "jwt"
+        }
+    }
+})
+```
+
+This only affects the `session_data` cookie; `session_token` stays an opaque identifier and is not exposed through JWKS. Cookie-cache JWTs use a separate token profile from the JWT plugin's `/token` endpoint, so the tokens are not interchangeable.
+
 Disable the cookie cache for a specific request:
 
 ```typescript
@@ -110,7 +137,7 @@ betterAuth({
 });
 ```
 
-Force database storage:
+Store sessions in both the database and secondary storage (token lookups check secondary storage first, then fall back to the database for missing entries unless `preserveSessionInDatabase` is enabled):
 
 ```typescript
 session: {
@@ -118,7 +145,7 @@ session: {
 }
 ```
 
-Preserve revoked sessions:
+Preserve revoked sessions (the row is kept, marked ended by setting `expiresAt` to the revocation time, so it is never restored as a live session and any bound token such as OAuth Provider access tokens is treated as ended):
 
 ```typescript
 session: {
@@ -269,6 +296,9 @@ customSession(
 - Revoked sessions can remain active on other devices until the cookie cache expires
 - For immediate revocation on critical actions, disable `cookieCache` or shorten `maxAge`
 - All cookie cache strategies provide tamper protection via cryptographic signing
+- Password change with `revokeOtherSessions: true`: for database-stored sessions, the password change and session revocation run in one transaction when transactions are enabled for your adapter, and sessions are revoked first; if revocation fails the request errors and the current password stays. Without transactions, a failure while saving the new password leaves the current password with the sessions already revoked. With secondary storage, sessions are removed from it after commit; a failure there is logged, the new password is kept, and those sessions can stay valid until they expire.
+- In stateless OAuth flows, `storeAccountCookie` stores provider account data (including token material) in the encrypted `account_data` cookie; `getAccessToken({ useAccountCookie: true })` can refresh expired provider tokens when the cookie holds a refresh token and a known expiry, and refresh responses set an updated account cookie (forward `Set-Cookie`). Oversized account cookies are chunked but browsers and proxies still enforce limits.
+- Changed in 1.7: the cached session is tied to the `session_token` cookie (cookie-cache session binding), and `session.delete` hooks run on sign-out even with `secondaryStorage` and `preserveSessionInDatabase`.
 
 ## Related
 
