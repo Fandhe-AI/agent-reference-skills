@@ -112,4 +112,4 @@ nursery グループは stable では明示的 opt-in が必要で、セマン�
 
 ## Notes
 
-- 公式 linter ページのドメイン無効化例は `"off"` と記載するが、2.5.15 の configuration_schema.json（RuleDomainValue）が受け付けるのは `"all"` / `"none"` / `"recommended"` のみのため `"none"` を採用
+- 公式 linter ページ（https://biomejs.dev/linter/）のドメイン無効化例は `"off"` と記載するが、2.5.15 の configuration_schema.json（https://biomejs.dev/schemas/2.5.15/schema.json の RuleDomainValue）が受け付けるのは `"all"` / `"none"` / `"recommended"` のみのため `"none"` を採用
