@@ -188,6 +188,7 @@ void main() {
 - `DatabaseService` can also be implemented with `sqlite3`, `drift`, or cloud storage such as `firebase_database`. Web support is in the experimental `sqflite_common_ffi_web` plugin and is not included in the example (`main()` throws `UnsupportedError` on web).
 - Define table and column names as constants to avoid typos. Closing the database depends on the database implementation and app requirements; check with the package authors.
 - The full runnable source is in `examples/app-architecture/todo_data_service/` of the website repository.
+- The constructor uses Dart's private named parameters: `{required this._database}` initializes the private field `_database`, and callers pass it under the public name `database:` (e.g. `TodoRepository(database: databaseService)`). This matches the official code excerpt verbatim.
 - Flutter design pattern (Dart, MVVM) — distinct from the android-architecture skill's guidance.
 
 ## Related
