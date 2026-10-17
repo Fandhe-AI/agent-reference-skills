@@ -9,6 +9,8 @@ Azure portal walkthrough for the app registration that powers the Teams meeting 
 3. API permissions -> Add a permission -> Microsoft Graph -> Application permissions, then Grant admin consent.
 4. (Recommended) scope with an Application Access Policy:
 
+Note: Microsoft Graph requires an application access policy for app-only access to onlineMeetings APIs (see Notes).
+
 ```powershell
 New-CsApplicationAccessPolicy `
   -Identity "Hermes-Meeting-Pipeline-Policy" `
@@ -55,8 +57,8 @@ print(provider.inspect_token_health())
 | `OnlineMeetingTranscript.Read.All` | Meeting transcripts (transcript-first summaries) |
 | `OnlineMeetingRecording.Read.All` | Download recordings for offline STT (recording fallback) |
 | `CallRecords.Read.All` | Resolve meetings from call records (recording fallback) |
-| `ChannelMessage.Send` | Post to channels (only when `platforms.teams.extra.delivery_mode` is `graph`) |
-| `Chat.ReadWrite.All` | Post to 1:1 / group chats (graph mode with `chat_id` target) |
+| `ChannelMessage.Send` | Post to channels (only when `platforms.teams.extra.delivery_mode` is `graph`) (per Hermes docs; see Notes) |
+| `Chat.ReadWrite.All` | Post to 1:1 / group chats (graph mode with `chat_id` target) (per Hermes docs; see Notes) |
 
 Common errors:
 
@@ -71,7 +73,8 @@ Common errors:
 
 - Needs tenant admin rights (or an admin to consent) and a Microsoft 365 tenant with Teams licenses producing transcripts and recordings.
 - Not recommended: `OnlineMeetings.ReadWrite.All`, `Chat.ReadWrite` without `.All`, and delegated permissions (the pipeline uses client-credentials).
-- Without an Application Access Policy, every user's meetings are readable; propagation can take up to 30 minutes. The policy is PowerShell-only (MicrosoftTeams module, `Connect-MicrosoftTeams`).
+- The Hermes docs call the policy optional and state that without it every user's meetings are readable; however Microsoft Graph's onlineMeeting API docs state that for application permissions tenant administrators must create an application access policy and grant it to the user (https://learn.microsoft.com/en-us/graph/api/onlinemeeting-get), so treat this step as required. Propagation can take up to 30 minutes; the policy is PowerShell-only (MicrosoftTeams module, `Connect-MicrosoftTeams`).
+- Caveat: Microsoft Graph's own permission table for POST /teams/{id}/channels/{id}/messages lists ChannelMessage.Send as a delegated permission only, and application permissions (Teamwork.Migrate.All) are supported only for message import/migration — app-only (client-credentials) posting to channels or chats is not supported by Graph, so graph delivery_mode as described here may fail; verify against https://learn.microsoft.com/en-us/graph/api/channel-post-messages before relying on it.
 - Secret rotation: create a second secret, update `MSGRAPH_CLIENT_SECRET`, `hermes gateway restart`, verify, then delete the old secret.
 - Follow-up pages (webhook listener, pipeline configuration, outbound delivery) were described in the source as landing with later PRs.
 - Source: https://hermes-agent.nousresearch.com/docs/guides/microsoft-graph-app-registration (pinned to v0.22.2)
