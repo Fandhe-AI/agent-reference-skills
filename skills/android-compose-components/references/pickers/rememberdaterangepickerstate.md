@@ -36,7 +36,7 @@ val range = dateRangePickerState.selectedStartDateMillis to dateRangePickerState
 ## Notes
 
 - Returns a `DateRangePickerState` exposing `selectedStartDateMillis: Long?` and `selectedEndDateMillis: Long?`.
-- Experimental API (`@ExperimentalMaterial3Api`).
+- Stable in Material3 1.4.0 (no `@ExperimentalMaterial3Api` opt-in required; the guide snippets' `@OptIn` is not needed for these APIs).
 - Package: `androidx.compose.material3`.
 
 ## Related

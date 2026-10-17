@@ -53,7 +53,7 @@ DatePickerDialog(
 
 ## Notes
 
-- Experimental API (`@ExperimentalMaterial3Api`); declared as `expect fun` (platform-specific `actual` implementations).
+- Stable in Material3 1.4.0 (no `@ExperimentalMaterial3Api` opt-in required; the guide snippets' `@OptIn` is not needed for these APIs). Declared as `expect fun` (platform-specific `actual` implementations).
 - The caller must supply and wire up `confirmButton`/`dismissButton` events; the dialog itself does not read/commit the picker state.
 - Package: `androidx.compose.material3`.
 

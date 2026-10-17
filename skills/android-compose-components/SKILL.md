@@ -66,7 +66,9 @@ skills/android-compose-components/
       datepicker.md
       rememberdatepickerstate.md
       datepickerdialog.md
+      dateinput.md
       daterangepicker.md
+      daterangeinput.md
       rememberdaterangepickerstate.md
       timepicker.md
       timeinput.md
@@ -161,7 +163,7 @@ skills/android-compose-components/
 | Checkbox / RadioButton / Switch / Slider で選択・切り替え UI を作りたい | inputs | [references/inputs/README.md](references/inputs/README.md) |
 | TextField / OutlinedTextField / SecureTextField でテキスト入力を実装したい | inputs | [references/inputs/README.md](references/inputs/README.md) |
 | SearchBar / DropdownMenu / Chip 系コンポーネントを使いたい | inputs | [references/inputs/README.md](references/inputs/README.md) |
-| DatePicker / DateRangePicker で日付選択 UI を実装したい | pickers | [references/pickers/README.md](references/pickers/README.md) |
+| DatePicker / DateRangePicker で日付選択 UI、または DisplayMode.Input でキーボード日付入力（DateInput / DateRangeInput ページ）を実装したい | pickers | [references/pickers/README.md](references/pickers/README.md) |
 | TimePicker / TimeInput で時刻選択 UI を実装したい | pickers | [references/pickers/README.md](references/pickers/README.md) |
 | rememberDatePickerState 等の State や DatePickerDialog / TimePickerDialog でダイアログ表示したい | pickers | [references/pickers/README.md](references/pickers/README.md) |
 | Card / Surface / Scaffold / ListItem でコンテンツを表示したい | containers | [references/containers/README.md](references/containers/README.md) |

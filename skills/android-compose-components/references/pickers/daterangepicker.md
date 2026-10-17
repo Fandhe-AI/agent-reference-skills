@@ -70,7 +70,7 @@ DatePickerDialog(
 
 ## Notes
 
-- Experimental API (`@ExperimentalMaterial3Api`).
+- Stable in Material3 1.4.0 (no `@ExperimentalMaterial3Api` opt-in required; the guide snippets' `@OptIn` is not needed for these APIs).
 - Unlike `DatePicker`, `DateRangePicker` typically needs an explicit `Modifier.height(...)` when placed inside `DatePickerDialog`.
 - Package: `androidx.compose.material3`.
 - This is the Jetpack Compose (Kotlin) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
