@@ -185,6 +185,6 @@ export async function POST(req: Request) {
 
 ## Related
 
-- Language Model Middleware
+- [Language Model Middleware](../providers/middleware.md)
 - [simulateReadableStream](../core/simulate-readable-stream.md)
 - [Rate Limiting](./rate-limiting.md)

@@ -71,5 +71,5 @@ A `Promise<Experimental_RealtimeToolDefinition[]>`. Each returned definition con
 ## Related
 
 - [Realtime](./realtime.md)
-- useRealtime
-- tool
+- [useRealtime](../ui/use-realtime.md)
+- [tool](../tools-mcp/tool.md)

@@ -275,4 +275,4 @@ Emits `ai.*` prefixed attributes: `ai.generateText` / `ai.generateText.doGenerat
 
 - [DevTools](./devtools.md)
 - [Lifecycle Callbacks](../core/lifecycle-callbacks.md)
-- Runtime and Tool Context
+- [Runtime and Tool Context](../tools-mcp/runtime-and-tool-context.md)

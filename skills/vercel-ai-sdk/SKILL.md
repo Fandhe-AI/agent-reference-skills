@@ -10,8 +10,6 @@ user-invocable: false
 
 # Vercel AI SDK
 
-> 分割 PR の途中段階。現在収録済み: references/{agents, core, embeddings-batch, foundations, media, migration, operations, providers, rsc, tools-mcp, ui, workflow-harnesses}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
-
 TypeScript 向け LLM アプリ開発ツールキット `ai`（AI SDK Core / UI / RSC）と `@ai-sdk/*` パッケージ群のリファレンス・サンプル・コマンド集。
 
 ## 対象バージョン
@@ -64,6 +62,12 @@ skills/vercel-ai-sdk/
     migration/          # 4.x → 5.0 → 6.0 → 7.0 移行ガイド・versioning
       README.md
       migration-guide-7-0.md, migration-guide-6-0.md, migration-guide-5-0.md, versioning.md ...
+  samples/              # quickstart・API サーバー・chatbot・RAG・MCP・RSC などの実例
+    README.md
+    quickstart-nextjs-app-router.md, api-server-hono.md, rag-in-memory-embeddings.md ...
+  scripts/              # インストール・codemod・DevTools・Agent Skill 導入コマンド
+    README.md
+    install.md, codemod.md, devtools.md, agent-skill.md
 ```
 
 ## 探索手順
@@ -71,8 +75,9 @@ skills/vercel-ai-sdk/
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
 1. 下記マッピング表でタスクに対応するカテゴリを探す
-2. 該当ページの `.md` を Read して詳細を確認する
-3. 版差異が疑われる場合は `references/migration/` を確認する（v4 / v5 / v6 / v7 で API が大きく変わる）
+2. そのカテゴリの `references/{category}/README.md`（samples / scripts は `README.md`）を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
+4. 版差異が疑われる場合は `references/migration/` を確認する（v4 / v5 / v6 / v7 で API が大きく変わる）
 
 ## タスク → カテゴリ マッピング
 
@@ -108,3 +113,5 @@ skills/vercel-ai-sdk/
 | rate limiting・キャッシュ・ストリーム中断・Vercel デプロイを知りたい | operations | [references/operations/README.md](references/operations/README.md) |
 | 旧バージョンから v7 へ移行したい（破壊的変更・codemod） | migration | [references/migration/README.md](references/migration/README.md) |
 | 版管理・API 安定性の方針を知りたい | migration | [references/migration/README.md](references/migration/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
