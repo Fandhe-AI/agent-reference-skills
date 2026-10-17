@@ -66,6 +66,7 @@ Provider-specific `options` shape:
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/agent (fetched 2026-10-17; no version pin on the site).
 - Choose `run()` to wait for completion and read the final typed result, or `stream()` for real-time output
 - Python SDK option keys are snake_case (`max_turns`, `max_budget_usd`, `model_reasoning_effort`, `web_search`, `reasoning_effort`)
 - `responseSchema` (Zod v3/v4 or pydantic) parses the result before returning it, so a successful call always yields data in the requested shape

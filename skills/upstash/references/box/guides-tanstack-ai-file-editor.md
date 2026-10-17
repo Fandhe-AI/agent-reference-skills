@@ -104,6 +104,7 @@ Provider capabilities: `fs` (native Box file API), `exec` (separate stdout / std
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/guides/tanstack-setup (fetched 2026-10-17; no version pin on the site).
 - Official guide replaced: the URL was renamed from `/box/guides/tanstack-ai-file-editor` to `/box/guides/tanstack-setup` (this file keeps its original name); the old EphemeralBox file-editor tool recipe is no longer in the official guide
 - TanStack AI itself is outside the scope of the tanstack-* skills in this repository; only the Upstash Box provider side is covered here
 - Clone the repo in a `setup` step rather than `source: githubRepo(...)`: the box home directory already contains agent dotfiles (`.claude`, `.codex`, `.cursor`, `.local`), `git clone` into a non-empty target exits `128` and the bootstrap does not surface the failure. Clone into `/tmp` and copy across

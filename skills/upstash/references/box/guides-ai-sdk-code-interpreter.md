@@ -158,6 +158,7 @@ export const runCode = tool({
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/guides/ai-sdk-setup (fetched 2026-10-17; no version pin on the site).
 - Official guide title is now "Vercel AI SDK Code Interpreter and Shell Tools". The URL was renamed from `/box/guides/ai-sdk-code-interpreter` to `/box/guides/ai-sdk-setup` (this file keeps its original name)
 - A box name is an address: never take `userId` or the box name from the request body; derive it from the server-side session
 - Only a 404 `BoxError` means "create one"; other errors must propagate

@@ -72,6 +72,7 @@ box.agent.run(prompt="create an index.txt saying 'hello world'")
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/quickstart (fetched 2026-10-17; no version pin on the site).
 - Python SDK ships both a synchronous `Box` and an asynchronous `AsyncBox` (`await AsyncBox.create(...)`)
 - A box is usable standalone (shell/git/filesystem) even without configuring an `agent`
 - Direct SSH shell access is available: `ssh <box-id>@us-east-1.box.upstash.com`, using the Box API key as the SSH password

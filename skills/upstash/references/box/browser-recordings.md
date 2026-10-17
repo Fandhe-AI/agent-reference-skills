@@ -51,6 +51,7 @@ path = box.browser.recordings.download(saved.id, path="./session.mp4")
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/browser/recordings (fetched 2026-10-17; no version pin on the site).
 - One active recording per box; stops on `stop()`, at `maxDurationSeconds`, or automatically after 3 minutes with no on-screen activity
 - Unlike Live View URLs, the `playlistUrl` is not tokenized — fetching it requires the Box API key like any other API call. Recordings are retained for 14 days
 - To play recordings in your own product, keep the API key server-side: proxy playlist/segment requests and attach the `X-Box-Api-Key` header there, feeding the proxied playlist to an HLS player (e.g. hls.js); do not ship the key to end users

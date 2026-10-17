@@ -71,6 +71,7 @@ box.files.remove("build", recursive=True)
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/files (fetched 2026-10-17; no version pin on the site).
 - Filesystem operations are the counterpart to `box.exec` (shell) and `box.git` — together they cover most agent workflows
 - Use the `stat` `version` token for optimistic concurrency: read it before a slow operation and compare for equality afterwards; do not parse it
 - Common patterns: upload input files then run an agent with a `responseSchema`; write config before a test run; fan out work across multiple boxes and `download()` each result locally

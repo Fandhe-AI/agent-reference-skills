@@ -33,6 +33,7 @@ Settings `excludedPaths` and `allowSensitivePaths` control the upload filter (co
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/guides/herdr-setup (fetched 2026-10-17; no version pin on the site).
 - Needs Herdr 0.8.0 or newer and Node.js 22 or newer
 - Credentials and `.env` files are left out of the upload, with every excluded file shown with its reason first
 - Local files are never edited directly; changes return only through Apply changes

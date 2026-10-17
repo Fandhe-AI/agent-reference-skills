@@ -40,6 +40,7 @@ packages/sdk/examples/browser/testing/04-visual-regression.ts
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/browser/cookbook (fetched 2026-10-17; no version pin on the site).
 - All examples need `UPSTASH_BOX_API_KEY`
 - Examples marked AI use metered browser AI (`act`, `extract`, `observe`) and need a model provider key on the box or account; everything else runs with the Box key alone
 - Base URL: https://github.com/upstash/box/tree/%40upstash/box%400.7.9/packages/sdk/examples/browser (pinned to tag @upstash/box@0.7.9; the docs page links main)
