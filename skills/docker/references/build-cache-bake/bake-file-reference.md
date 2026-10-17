@@ -165,6 +165,10 @@ target "default" {
 - `secret`: same as `--secret`; override an existing secret's source with `--set default.secret.aws=env=AWS_CREDENTIALS`.
 
 ```hcl
+variable "HOME" {
+  default = null
+}
+
 target "default" {
   secret = [
     { type = "env", id = "KUBECONFIG" },

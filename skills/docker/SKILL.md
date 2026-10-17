@@ -9,6 +9,8 @@ user-invocable: false
 
 # Docker
 
+> 分割 PR の途中段階。現在収録済み: references/{build, build-cache-bake}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+
 Docker Engine / Dockerfile / Docker Compose / Buildx (BuildKit) の公式ドキュメントを蒸留したリファレンス。
 
 ## 対象バージョン
