@@ -53,3 +53,4 @@
 - `{@linkcode}` / `{@linkplain}` は TSDoc 標準外の JSDoc タグ。TypeDoc が認識し、`@link` と同じ方式で解決する。eslint-plugin-tsdoc で使うには `tsdoc.json` で `typedoc/tsdoc.json` を `extends` する
 - パイプ無しの `{@link Foo.Bar click here}` は TSDoc 非準拠（TypeDoc だけが受け付ける）。表示名は必ず `|` で区切る
 - TypeDoc は既定（`--useTsLinkResolution`）で TypeScript のスコープ解決を使い、解決できない場合は declaration references にフォールバックする
+- 出典: https://tsdoc.org/pages/tags/link/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags.__link_.html （TypeDoc v0.28.20）
