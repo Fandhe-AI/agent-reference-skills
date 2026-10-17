@@ -83,7 +83,7 @@ Config plugin (app.json):
 | --- | --- | --- |
 | disableLibdav1d (iOS) | `false` | When `true`, skips adding the bundled `libavif/libdav1d` Pod. Use when another dependency (such as `FFmpegKit`) already links `libdav1d`. Removes AVIF support on iOS unless another decoder is available. |
 
-Without CNG, set `EXPO_IMAGE_DISABLE_LIBDAV1D=1` before `pod install`, or add `ENV['EXPO_IMAGE_DISABLE_LIBDAV1D'] ||= '0'` to the top of the `Podfile`.
+Without CNG, set `EXPO_IMAGE_DISABLE_LIBDAV1D=1` before `pod install`, or add `ENV['EXPO_IMAGE_DISABLE_LIBDAV1D'] ||= '1'` to the top of the `Podfile`.
 
 ### Image props
 
@@ -304,6 +304,7 @@ Reference to a native image instance (`Drawable` on Android, `UIImage` on iOS); 
 ## Notes
 
 - Platforms: Android, iOS, tvOS, Web, included in Expo Go. Package `expo-image`, source `https://github.com/expo/expo/tree/sdk-58/packages/expo-image`. Pinned to Expo SDK 58 docs (modificationDate September 15, 2026).
+- The official page shows `ENV['EXPO_IMAGE_DISABLE_LIBDAV1D'] ||= '0'`, but ExpoImage.podspec only disables libdav1d when the variable is `'1'` or `'true'`, so `'1'` is used here.
 - Supported formats: WebP, PNG / APNG, AVIF, JPEG, GIF, SVG, ICO on Android, iOS and Web; HEIC on Android and iOS (not on Web); ICNS and PSD (composite preview) on iOS only.
 - iOS SVG caveat: the system SVG decoder can render distorted or not render elliptical arc commands (`A` / `a`) when `large-arc-flag` and `sweep-flag` are packed (common in minified SVG, e.g. `a6 6 0 0111.573-2.226`). Separate the flags with spaces or give each arc its own command; `react-native-svg` renders these correctly.
 - This is `expo-image`'s `Image`, distinct from React Native core `Image` and from `ImageManipulator` / `ImagePicker`. Core React Native components are out of scope for this skill.
