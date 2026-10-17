@@ -1,0 +1,75 @@
+# GitHub PR Review Agent
+
+Tutorial: poll repos on a cron schedule, review new PRs with `gh` and a review skill, and deliver feedback (no public endpoint needed).
+
+## Signature / Usage
+
+Prerequisites: gateway running (`hermes gateway install` or `hermes gateway`), `gh` installed and authenticated (`gh auth login`).
+
+Review skill at `~/.hermes/skills/code-review/SKILL.md`:
+
+```markdown
+---
+name: code-review
+description: Review pull requests for bugs, security issues, and code quality
+---
+
+# Code Review Guidelines
+
+## What to Check
+1. **Bugs** — Logic errors, off-by-one, null/undefined handling
+2. **Security** — Injection, auth bypass, secrets in code, SSRF
+3. **Performance** — N+1 queries, unbounded loops, memory leaks
+4. **Style** — Naming conventions, dead code, missing error handling
+5. **Tests** — Are changes tested? Do tests cover edge cases?
+
+## Rules
+- End with: APPROVE / REQUEST_CHANGES / COMMENT
+```
+
+Cron job:
+
+```bash
+hermes cron create "0 */2 * * *" \
+  "Check for new open PRs and review them.
+Repos to monitor:
+- myorg/backend-api
+Steps:
+1. Run: gh pr list --repo REPO --state open --limit 5 --json number,title,author,createdAt
+2. For each PR created or updated in the last 4 hours:
+   - Run: gh pr diff NUMBER --repo REPO
+   - Review the diff using the code-review guidelines
+If no new PRs found, say: No new PRs to review." \
+  --name "pr-review" \
+  --deliver telegram \
+  --skill code-review
+
+hermes cron run pr-review
+```
+
+To post directly to GitHub, add to the prompt: `gh pr review NUMBER --repo REPO --comment --body "..."` (or `--request-changes` / `--approve`).
+
+## Options / Props
+
+| Schedule | When |
+|----------|------|
+| `0 */2 * * *` | Every 2 hours |
+| `0 9,13,17 * * 1-5` | Three times a day, weekdays |
+| `0 9 * * 1` | Weekly Monday roundup |
+| `30m` | Every 30 minutes |
+
+## Notes
+
+- Teach conventions via memory ("Remember: In our backend repo...") so the reviewer enforces them persistently.
+- `deliver: "local"` saves reviews to `~/.hermes/cron/output/`.
+- `gh` needs a token with `repo` scope when posting reviews; reviews appear as the authenticated user.
+- "gh: command not found": the gateway runs a minimal environment; ensure `gh` is on the system PATH and restart the gateway.
+- If a job does not run: `hermes gateway status`, `hermes cron list`.
+- GitHub allows 5,000 authenticated API requests/hour; each review uses ~3-5.
+- For real-time reviews use the webhook approach (requires a public endpoint).
+
+## Related
+
+- [webhook-github-pr-review](./webhook-github-pr-review.md)
+- [daily-briefing-bot](./daily-briefing-bot.md)
+- [automate-with-cron](./automate-with-cron.md)

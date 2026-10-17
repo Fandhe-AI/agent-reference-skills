@@ -19,11 +19,11 @@ Guide for integrating Model Context Protocol (MCP) servers with Hermes, includin
 
 ### Installation
 
-If installed via standard script, MCP is included. To add separately:
+If installed via the standard install script, MCP support is already included (PM selects the declared `all` extra). To add it separately:
 
 ```bash
 cd ~/.hermes/hermes-agent
-uv pip install -e ".[mcp]"
+python -c "import pm; pm.sync_venv(['mcp'], explicit=True)"
 ```
 
 Ensure Node.js/`npx` (for JavaScript servers) and `uvx` (for Python servers) are available.
@@ -154,6 +154,17 @@ mcp_servers:
 | Server connects but tools missing | Filtered via `include`, excluded via `exclude`, or utility wrappers disabled |
 | Server configured but won't load | `enabled: false`; missing runtime; unreachable endpoint; incorrect auth |
 | Fewer tools than advertised | Expected — Hermes respects per-server policy and capabilities |
+
+### WSL2: bridge Hermes in WSL to Windows Chrome
+
+Use this when Hermes runs inside WSL2, the browser to control is your signed-in Windows Chrome, and `/browser connect` is awkward from WSL. Hermes starts a local stdio MCP server launched through Windows interop (`cmd.exe` or `powershell.exe`), which attaches to the live Windows Chrome session: `Hermes (WSL) -> MCP stdio bridge -> Windows Chrome`. This keeps your real browser profile, cookies, and logins while Hermes stays in WSL2. Use `chrome-devtools-mcp`; with live remote debugging enabled at `chrome://inspect/#remote-debugging`:
+
+```bash
+hermes mcp add chrome-devtools-win --command cmd.exe --args /c npx -y chrome-devtools-mcp@latest --autoConnect --no-usage-statistics
+hermes mcp test chrome-devtools-win
+```
+
+Then start a fresh session or run `/reload-mcp`.
 
 ### Recommended First Servers
 

@@ -14,19 +14,23 @@ Guide for enabling and configuring voice interaction in Hermes, covering CLI mic
 
 ### Installation
 
+Extras are requested through PM (the package manager); installing from PyPI (`pip install hermes-agent[...]`) is an unsupported distribution method.
+
 ```bash
-# CLI voice input/output
-pip install "hermes-agent[voice]"
+# CLI microphone + playback
+cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['voice'], explicit=True)"
 
 # Messaging platform support
-pip install "hermes-agent[messaging]"
+cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['messaging'], explicit=True)"
 
-# Premium TTS providers
-pip install "hermes-agent[tts-premium]"
+# Premium ElevenLabs TTS
+cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['tts-premium'], explicit=True)"
 
-# All features
-pip install "hermes-agent[all]"
+# Combined voice and messaging setup
+python -c "import pm; pm.sync_venv(['voice', 'messaging', 'tts-premium', 'edge-tts'], explicit=True)"
 ```
+
+The `all` extra is not every optional feature and does not include these voice extras. Local NeuTTS: the declared `neutts` dependency requires Python below 3.14, but the Hermes runtime is Python 3.14, so requesting the extra does not install NeuTTS there; choose a compatible provider (a separately managed NeuTTS command provider needs its own supported Python environment).
 
 **System dependencies:**
 
