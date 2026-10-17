@@ -188,7 +188,7 @@ z.toJSONSchema(mySchema);
 Configure the output with options:
 
 ```typescript
-z.toJSONSchema(schema, {
+z.toJSONSchema(mySchema, {
   target: "draft-2020-12", // or "draft-07", "draft-04", "openapi-3.0"
   unrepresentable: "throw", // or "any" — how to handle schemas that can't be represented
 });
@@ -277,7 +277,7 @@ This returns the following pretty-printable multi-line string:
 ✖ Unrecognized key: "extraField"
 ✖ Invalid input: expected string, received number
   → at username
-✖ Invalid input: expected number, received string
+✖ Too small: expected number to be >=0
   → at favoriteNumbers[1]
 ```
 
@@ -472,6 +472,10 @@ While this will not be relevant to the majority of Zod users, it's worth highlig
 I was resistant to this at first, but now I see it as one of Zod 4's most important features. It lets Zod level up from a simple library to a fast validation "substrate" that can be sprinkled into other libraries.
 
 If you're building a schema library, refer to the implementations of Zod and Zod Mini to see how to build on top of the foundation `zod/v4/core` provides. Don't hesitate to get in touch in GitHub discussions or via [X](https://x.com/colinhacks)/[Bluesky](https://bsky.app/profile/colinhacks.com) for help or feedback.
+
+## Notes
+
+- In the official zod.dev/v4 example, the last line of the `z.prettifyError()` output is `Invalid input: expected number, received string`, which does not match the `too_small` issue. `z.prettifyError()` prints each issue's `message`, so the output here follows the issue as defined. The `ZodError` definition above is unchanged from the original.
 
 ## Related
 
