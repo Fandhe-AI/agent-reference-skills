@@ -34,6 +34,6 @@ $ uv add -r requirements.txt -c constraints.txt
 
 ## Notes
 
-- The virtual environment (`.venv`) and `uv.lock` are created the first time `uv run`, `uv sync`, or `uv lock` runs. Commit `uv.lock`; do not edit it manually.
+- `uv.lock` is created or updated by `uv lock` (and implicitly by `uv run` / `uv sync`); the project virtual environment (`.venv`) is created by `uv run` or `uv sync`, not by `uv lock`. Commit `uv.lock`; do not edit it manually.
 - `uv run` verifies that the lockfile matches `pyproject.toml` and that the environment matches the lockfile before every invocation. It does not remove extraneous packages by default.
 - `uv version` reads the package version; `--short` prints the version only and `--output-format json` prints JSON.

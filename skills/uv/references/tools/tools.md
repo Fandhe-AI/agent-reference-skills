@@ -58,8 +58,8 @@ $ uv tool upgrade black --reinstall
 $ uv tool upgrade black --reinstall-package click
 ```
 
-- Upgrades respect the version constraints provided at install time. `uv tool install black >=23,<24` followed by `uv tool upgrade black` upgrades Black to the latest version in `>=23,<24`.
-- To replace the version constraints, reinstall with `uv tool install black>=24`.
+- Upgrades respect the version constraints provided at install time. `uv tool install 'black>=23,<24'` followed by `uv tool upgrade black` upgrades Black to the latest version in `>=23,<24`.
+- To replace the version constraints, reinstall with `uv tool install 'black>=24'`.
 - Upgrades retain the settings provided at install time (e.g., `--prerelease allow`).
 - Tool upgrades reinstall the tool executables, even if they have not changed.
 
@@ -118,6 +118,7 @@ If the tool should not be isolated from the project (e.g., `pytest` or `mypy`), 
 ## Notes
 
 - This is uv's `uv tool` / `uvx` for running Python CLI packages, distinct from LLM tool use (function calling) covered by openai-agents and anthropic-api-tools-mcp.
+- The official docs show these specifiers unquoted; quote them in a shell so `>` / `<` are not parsed as redirections.
 
 ## Related
 

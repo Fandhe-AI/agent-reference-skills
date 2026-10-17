@@ -17,7 +17,7 @@ $ uv tool upgrade black --upgrade-package click
 ```
 
 - If a tool was installed with version constraints, they are respected on upgrade — to upgrade beyond the originally provided constraints, use `uv tool install` again.
-- If a tool was installed with specific settings (e.g., `--prereleases allow`), they continue to be respected in upgrades.
+- If a tool was installed with specific settings (e.g., `--prerelease allow`), they continue to be respected in upgrades.
 - Argument `NAME`: the name of the tool to upgrade, along with an optional version specifier.
 
 ## Options / Props
@@ -62,6 +62,7 @@ $ uv tool upgrade black --upgrade-package click
 
 - Global options are listed in uv.md (project-commands).
 - Tool upgrades reinstall the tool executables, even if they have not changed (see tools.md).
+- The CLI reference help text spells this `--prereleases`; the actual flag is `--prerelease` (see concepts/tools).
 
 ## Related
 
