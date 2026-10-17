@@ -25,8 +25,8 @@ Embed a signature by setting environment variables before building, then display
 Download one of the `validate-$PLATFORM.AppImage` files from https://github.com/AppImageCommunity/AppImageUpdate/releases/tag/continuous.
 
 ```shell
-chmod +x validate-$PLATFORM.AppImage
-./validate-$PLATFORM.AppImage $TAURI_OUTPUT.AppImage
+chmod +x "validate-${PLATFORM}.AppImage"
+./"validate-${PLATFORM}.AppImage" "${TAURI_OUTPUT}.AppImage"
 ```
 
 Successful output:
@@ -54,6 +54,7 @@ Validation successful
 - Back up your private and public keys in a secure location.
 - AppImage does not validate the signature itself, so you cannot rely on it to detect tampering. Users must verify manually with the AppImage validate tool, which requires you to publish your key ID on an authenticated channel (e.g. your website served via TLS).
 - Variable names are braced (differs from source, where `$APPNAME_` would be parsed as one variable).
+- Shell variables are quoted (`"${VAR}"`) here; the official example leaves them unquoted.
 - Replace `$APPNAME` and `$VERSION` with the values from your configuration.
 - RPM package signing (GPG key via `TAURI_SIGNING_RPM_KEY`) is documented on the RPM page.
 

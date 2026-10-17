@@ -28,6 +28,7 @@ Core -> Frontend: Response
 
 - Message passing is safer than shared memory or direct function access because the recipient may reject or discard requests; e.g. if the Core determines a request is malicious, it discards it and never executes the function.
 - Commands use a JSON-RPC like protocol under the hood, so all arguments and return data must be serializable to JSON. Because Commands still use message passing, they do not share the security pitfalls of real FFI.
+- Exception (not in the original page): Commands can also exchange raw bytes without JSON — accept `tauri::ipc::Request` and read `InvokeBody::Raw`, or return `tauri::ipc::Response` for array buffers; see calling-rust.md (develop category).
 - Under the hood, events still utilize Commands, and access to the events API is controlled by the Event permissions (core permissions reference).
 - Two IPC patterns are available: Brownfield (default) and Isolation.
 - Tauri (Rust core + system WebView). Not Electron's IPC (`ipcMain` / `ipcRenderer`); see the electron skill for Electron.
@@ -37,3 +38,4 @@ Core -> Frontend: Response
 - [Brownfield Pattern](./brownfield-pattern.md)
 - [Isolation Pattern](./isolation-pattern.md)
 - [Process Model](./process-model.md)
+- [Calling Rust from the Frontend](../develop/calling-rust.md)

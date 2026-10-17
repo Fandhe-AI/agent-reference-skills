@@ -95,8 +95,8 @@ parts:
       set -eu
       npm install
       npm run tauri build -- --bundles deb
-      dpkg -x src-tauri/target/release/bundle/deb/*.deb $SNAPCRAFT_PART_INSTALL/
-      sed -i -e "s|Icon=appname|Icon=/usr/share/icons/hicolor/32x32/apps/appname.png|g" $SNAPCRAFT_PART_INSTALL/usr/share/applications/appname.desktop
+      dpkg -x src-tauri/target/release/bundle/deb/*.deb "${SNAPCRAFT_PART_INSTALL}/"
+      sed -i -e "s|Icon=appname|Icon=/usr/share/icons/hicolor/32x32/apps/appname.png|g" "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/appname.desktop"
 ```
 
 Build, test, release:
@@ -124,6 +124,7 @@ snapcraft upload --release=stable mysnap_latest_amd64.snap
 
 ## Notes
 
+- Shell variables in `override-build` are quoted (`"${VAR}"`) here; the official example leaves them unquoted.
 - Building automatically: on your app's developer page open the `builds` tab, click `login with github`, then enter your repository's details.
 - The source marks the `snap run` step with `TODO: This seems to be wrong`; a `snap install --dangerous` step is added because snapcraft only builds the `.snap` and does not install it.
 - Replace `net_mydomain_MyApp` in the single-instance slot/plug names with your app ID using `_` instead of `.` and `-`.

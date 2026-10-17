@@ -90,7 +90,7 @@ jobs:
           CERT_INFO=$(security find-identity -v -p codesigning build.keychain | grep -E "Developer ID Application|Apple Distribution")
           CERT_ID=$(echo "$CERT_INFO" | awk -F'"' '{print $2}')
           if [ -z "$CERT_ID" ]; then echo "No matching signing certificate found"; exit 1; fi
-          echo "CERT_ID=$CERT_ID" >> $GITHUB_ENV
+          echo "CERT_ID=${CERT_ID}" >> "${GITHUB_ENV}"
           echo "Certificate imported."
       - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0
         env:
@@ -140,6 +140,7 @@ If you do not want to provide an Apple-authenticated identity but still want to 
 
 ## Notes
 
+- The `$GITHUB_ENV` redirect target and `CERT_ID` are quoted and braced (`"${VAR}"`) here; the official example leaves them unquoted.
 - `needs: prepare` from the source is removed because the excerpt defines no `prepare` job. Checkout / Node / Rust target setup steps added so the workflow runs standalone (the source relies on a prepare job).
 - Third-party actions pinned to commit SHAs (upstream uses tags); SHAs resolved from the GitHub API on 2026-10-17, re-resolve when updating.
 - Requires an Apple Developer account, paid (99$ per year) or free (testing and development only), and an Apple device for signing. With a free account you cannot notarize and the app still shows as not verified.

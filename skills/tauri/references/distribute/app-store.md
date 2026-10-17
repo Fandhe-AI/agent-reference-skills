@@ -12,15 +12,15 @@ macOS (build the app bundle, create a signed `.pkg`, upload with `altool`):
 
 ```sh
 cargo tauri build --bundles app --target universal-apple-darwin
-xcrun productbuild --sign "<certificate signing identity>" --component "src-tauri/target/universal-apple-darwin/release/bundle/macos/$APPNAME.app" /Applications "$APPNAME.pkg"
-xcrun altool --upload-app --type macos --file "$APPNAME.pkg" --apiKey $APPLE_API_KEY_ID --apiIssuer $APPLE_API_ISSUER
+xcrun productbuild --sign "<certificate signing identity>" --component "src-tauri/target/universal-apple-darwin/release/bundle/macos/${APPNAME}.app" /Applications "${APPNAME}.pkg"
+xcrun altool --upload-app --type macos --file "${APPNAME}.pkg" --apiKey "${APPLE_API_KEY_ID}" --apiIssuer "${APPLE_API_ISSUER}"
 ```
 
 iOS:
 
 ```sh
 cargo tauri ios build --export-method app-store-connect
-xcrun altool --upload-app --type ios --file "src-tauri/gen/apple/build/arm64/$APPNAME.ipa" --apiKey $APPLE_API_KEY_ID --apiIssuer $APPLE_API_ISSUER
+xcrun altool --upload-app --type ios --file "src-tauri/gen/apple/build/arm64/${APPNAME}.ipa" --apiKey "${APPLE_API_KEY_ID}" --apiIssuer "${APPLE_API_ISSUER}"
 ```
 
 ### Requirements
@@ -125,6 +125,7 @@ Required configuration:
 
 ## Notes
 
+- Shell variables are quoted and braced (`"${VAR}"`) here; the official example leaves them unquoted.
 - The source says Individual Keys, but individual API keys have no Issuer ID; `--apiIssuer`/`APPLE_API_ISSUER` require a Team API key, so changed to Team Keys.
 - `--target universal-apple-darwin` added to the build step so it matches the bundle step (omitted in source).
 - The universal build supports both Apple Silicon and Intel. To support only Apple Silicon set `bundle > macOS > minimumSystemVersion` to `12.0`; on an Apple Silicon build machine drop `--target universal-apple-darwin` and use `src-tauri/target/release`; on an Intel build machine run `rustup target add aarch64-apple-darwin`, use `aarch64-apple-darwin` as target and `src-tauri/target/aarch64-apple-darwin/release` paths.

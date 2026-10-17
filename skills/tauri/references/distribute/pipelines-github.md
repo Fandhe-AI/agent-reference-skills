@@ -177,7 +177,7 @@ jobs:
             npm run tauri build -- --verbose
 
       - name: Get app version
-        run: echo "APP_VERSION=$(jq -r .version src-tauri/tauri.conf.json)" >> $GITHUB_ENV
+        run: echo "APP_VERSION=$(jq -r .version src-tauri/tauri.conf.json)" >> "${GITHUB_ENV}"
 
       # TODO: Combine this with the basic workflow and upload the files to the Release.
       - name: Upload deb bundle
@@ -207,6 +207,7 @@ env:
 
 ## Notes
 
+- The `$GITHUB_ENV` redirect target is quoted (`"${GITHUB_ENV}"`) here; the official example leaves it unquoted.
 - For Windows and macOS signing in the workflow, follow the platform signing pages. If you build a macOS app without an Apple signing certificate, configure an ad-hoc signing identity (see sign-macos) to avoid macOS treating Apple Silicon builds downloaded from GitHub releases as damaged.
 - Without a `release` branch workflow the action can also initialize Tauri for you in a repo that has no Tauri configured; see the action's readme (project initialization).
 - `ubuntu-22.04-arm` / `ubuntu-24.04-arm` runners are publicly available (since August 2025) in public repositories, so the standard workflow can build Arm64 there.
