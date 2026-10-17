@@ -50,6 +50,7 @@ sandbox.delete()
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/guides/langchain-deep-agents (fetched 2026-10-17; no version pin on the site).
 - Filesystem helpers (`ls` / `read` / `write` / `edit` / `glob` / `grep`) are included on the sandbox backend
 - The `model="anthropic:..."` shorthand requires `langchain-anthropic` and an `ANTHROPIC_API_KEY`; any LangChain chat model works
 - You own the box lifecycle — call `sandbox.delete()` when done. An idle box auto-pauses (compute released, filesystem kept) and wakes on the next command, but stays around until deleted

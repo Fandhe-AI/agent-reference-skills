@@ -22,7 +22,7 @@ const { notifyResponse } = await context.notify(
 | `eventData` | `any` | Payload delivered to waiting workflows |
 | `workflowRunId` | `string` (optional) | Target workflow run ID; enables lookback to handle race conditions |
 
-## Response
+### Response
 
 Returns `NotifyResponse[]`. Each entry contains:
 

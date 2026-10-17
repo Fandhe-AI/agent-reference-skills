@@ -62,6 +62,7 @@ box.schedule.delete(schedules[0].id)
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/schedules (fetched 2026-10-17; no version pin on the site).
 - `list()` returns all non-deleted schedules; `get(id)`, `pause(id)`, `resume(id)`, `delete(id)` operate on a single schedule
 - Standard 5-field cron syntax in UTC, e.g. `0 9 * * 1-5` for weekday mornings at 9 AM
 

@@ -28,8 +28,9 @@ const { status, body, headers } = await context.call<ResultType>("fetch-data", {
 | `retryDelay` | `number \| string` | Delay between retries in ms; supports expressions using `retried` variable |
 | `timeout` | `number` | Response wait duration in seconds |
 | `flowControl` | `object` | Rate limiting and concurrency controls (key, rate, parallelism, period) |
+| `workflow` | `WorkflowObject` | With `serveMany`, call another workflow defined in the same `serveMany` in a type-safe way |
 
-## Response
+### Response
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -42,9 +43,11 @@ const { status, body, headers } = await context.call<ResultType>("fetch-data", {
 - Returns responses for all status codes including non-2xx; inspect `status` to handle errors
 - Cannot reach `localhost` or internal Upstash QStash services without a local tunnel
 - Use the generic type parameter `context.call<MyType>(...)` for type-safe response bodies
+- Migration (0.x → 1.0.0): `stringifyBody` removed; `body` must be a string (`JSON.stringify` objects yourself)
 
 ## Related
 
 - [context](./context.md)
+- [context.api](./context-api.md)
 - [flow-control](./flow-control.md)
 - [parallel-steps](./parallel-steps.md)

@@ -31,6 +31,7 @@ print(public_url.url)
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/guides/nextjs-setup (fetched 2026-10-17; no version pin on the site).
 - Commands run from the box's home directory (`/workspace/home`), where the app was created
 - Next.js blocks cross-origin dev resources by default; add the public host to `allowedDevOrigins` in `next.config.ts` for hot reloading to work over the public URL
 - `getPublicURL(port)` exposes a running server's port; see the Public URLs guide (`overall/preview`, not covered in this skill's scope) for authentication options

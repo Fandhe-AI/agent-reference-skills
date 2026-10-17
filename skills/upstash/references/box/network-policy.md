@@ -52,6 +52,7 @@ type NetworkPolicy =
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/network-policy (fetched 2026-10-17; no version pin on the site).
 - `allowedDomains` supports exact matches (`api.github.com`) and wildcard `*.suffix` form (`*.githubusercontent.com`)
 - In `custom` mode, `deniedCidrs` takes precedence over allowed CIDRs
 - Private IP ranges are always blocked, even if explicitly allowed

@@ -20,7 +20,7 @@ const client = new Client({
 | `token` | `string` | QStash token from the Upstash dashboard |
 | `baseUrl` | `string` | QStash base URL; defaults to production if omitted |
 
-## Available Methods
+### Available Methods
 
 | Method | Description |
 |--------|-------------|

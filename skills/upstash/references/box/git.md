@@ -64,6 +64,7 @@ pr = box.git.create_pr(title="fix: handle empty state", body="Fixes the dashboar
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/git (fetched 2026-10-17; no version pin on the site).
 - Omitting `token` is fine for public repositories where push access is not required
 - `updateConfig()` applies immediately in Running/Idle boxes (equivalent to `git config --global`); at least one field must be provided, the other retains its current value
 - A configured `agent` also has full git access, useful when the exact git steps (branch name, commit message, push flow) aren't known ahead of time — the agent can inspect, decide, and drive the whole flow itself

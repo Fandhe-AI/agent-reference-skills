@@ -29,7 +29,7 @@ When passing a filter object:
 |------|------|-------------|
 | `filter.workflowUrl` | `string` | Match runs by exact workflow URL |
 | `filter.workflowUrlStartingWith` | `string` | Match runs by URL prefix (mutually exclusive with `workflowUrl`) |
-| `filter.label` | `string` | Match runs by label |
+| `filter.label` | `string \| string[]` | Match runs by label; an array matches runs that have any of the given labels (OR semantics) |
 | `filter.fromDate` | `Date \| number` | Start of date range (Date object or Unix ms timestamp) |
 | `filter.toDate` | `Date \| number` | End of date range |
 | `filter.callerIp` | `string` | Filter by originating IP address |
@@ -37,14 +37,9 @@ When passing a filter object:
 | `count` | `number` | Max runs to cancel per request; default: 100 |
 | `all` | `boolean` | Cancel all active runs when `true` |
 
-## Response
-
-```typescript
-{ cancelled: number }
-```
-
 ## Notes
 
+- Returns `{ cancelled: number }`
 - Bulk cancellation (`all: true`) requires looping until `cancelled === 0` to ensure all runs are terminated
 - Canceled runs do not trigger `failureFunction` and are not sent to the DLQ; they receive a "canceled" status
 

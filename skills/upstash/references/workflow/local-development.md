@@ -47,6 +47,14 @@ await client.trigger({ url: `${BASE_URL}/api/workflow` })
 - Automatic mode (`QSTASH_DEV=true`): signature verification works end-to-end without extra configuration; runs do not appear in the Upstash Console
 - Manual local tunnel: uses production QStash credentials; runs are visible in the Console dashboard
 - Local server runs are not billed
+- Next.js edge routes: the SDK cannot spawn the dev server from the edge runtime (it can only verify it is reachable). Start it before any edge request by calling `registerQStashDev()` from `@upstash/qstash/nextjs` in `instrumentation.ts`:
+
+```typescript
+// instrumentation.ts
+import { registerQStashDev } from "@upstash/qstash/nextjs";
+
+export const register = () => registerQStashDev();
+```
 - Use `UPSTASH_WORKFLOW_URL` env var to explicitly set the workflow's public URL when using a tunnel
 
 ## Related

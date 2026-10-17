@@ -36,6 +36,7 @@ named = Box.from_snapshot(snapshot.id, name="restored-worker")
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/snapshots (fetched 2026-10-17; no version pin on the site).
 - A snapshot captures the full disk state and agent harness/model/API key settings, but **not** active schedules
 - Snapshots are independent of the source box — deleting the original box does not delete its snapshots
 - Best for preserving cloned repos, installed dependencies, and prepared workspaces; restoring is usually faster than re-cloning/re-installing

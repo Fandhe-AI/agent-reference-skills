@@ -42,6 +42,7 @@ tab.close()
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/browser/tabs (fetched 2026-10-17; no version pin on the site).
 - `tab.create` boots Chromium on its first call if not already running
 - `goto` has no `waitUntil`/`timeout` options — it waits for load with a fixed 60-second deadline
 - Tab handles are addressed by a stable CDP target id, so an id can be stored and re-attached later, even from a different process, via `getTab`

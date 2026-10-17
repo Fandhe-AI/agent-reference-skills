@@ -31,12 +31,9 @@ await client.notify({
 | `eventData` | `any` | Data delivered to the waiting workflow's `eventData` field |
 | `workflowRunId` | `string` (optional) | Target a specific run; enables lookback — notification is stored even if sent before `waitForEvent` is reached |
 
-## Response
-
-Returns `Waiter[]` — a list of notified workflow runs.
-
 ## Notes
 
+- Returns `Waiter[]` — a list of notified workflow runs
 - Use `client.notify()` from external code (webhooks, API routes outside the workflow); use `context.notify()` from inside a workflow
 - Providing `workflowRunId` is the recommended way to prevent race conditions
 
