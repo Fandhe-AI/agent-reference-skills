@@ -12,7 +12,7 @@ Existing Claude Haiku 4.5 prompts should perform well without changes.
 The current date is {{current_date}}.
 ```
 
-(Search grounding: give the date in the system prompt or search tool description; see "Accurate search results".)
+`{{current_date}}` is an intentional template variable in the official example: your application substitutes today's date when the conversation starts, in the system prompt or in the search tool's description (it is not a literal string for Claude). See "Accurate search results".
 
 ## Use effort to control thinking
 
