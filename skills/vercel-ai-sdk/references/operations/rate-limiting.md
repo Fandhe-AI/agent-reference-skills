@@ -10,9 +10,11 @@ Protect an API endpoint from abuse by capping the number of requests a client ca
 
 ```tsx
 import {
+  convertToModelMessages,
   createUIMessageStreamResponse,
   streamText,
   toUIMessageStream,
+  type UIMessage,
 } from 'ai';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
@@ -42,11 +44,11 @@ export async function POST(req: NextRequest) {
     return new Response('Ratelimited!', { status: 429 });
   }
 
-  const { messages } = await req.json();
+  const { messages }: { messages: UIMessage[] } = await req.json();
 
   const result = streamText({
     model,
-    messages,
+    messages: await convertToModelMessages(messages),
   });
 
   return createUIMessageStreamResponse({
@@ -60,6 +62,7 @@ export async function POST(req: NextRequest) {
 - Rate limiting sets a maximum threshold on the number of requests a client can make within a specified timeframe, preventing excessive usage that degrades service performance and incurs unnecessary costs.
 - The rate limiter in this example is application code placed before the AI SDK call (Upstash Redis + Upstash Ratelimit). The Upstash SDK (Redis, Ratelimit) is covered by the upstash skill; this page only shows how it wraps a `streamText` route.
 - Modified from the official example: it uses `req.ip ?? 'ip'`, but `NextRequest.ip` was removed in Next.js 15, so this version reads the client IP with `ipAddress` from `@vercel/functions` (an authenticated user ID also works).
+- Modified from the official example: it passes the request messages directly to `streamText`; `useChat` sends `UIMessage[]`, so they are converted with `await convertToModelMessages(messages)`.
 - A shared fallback key such as `'ip'` is not used because every client would then share a single 5 requests / 30s window; requests that cannot be identified are rejected instead.
 - See the Upstash Ratelimit documentation for configuration of limiters.
 
