@@ -31,9 +31,16 @@ ls ~/.hermes/memories/
 # → agent consolidates or removes entries before adding new ones
 ```
 
+```bash
+# Optional external memory provider (one active at a time; built-in memory stays active)
+hermes plugins install honcho   # catalog plugin; RetainDB / ByteRover are bundled
+hermes memory setup             # select the provider
+```
+
 ## Notes
 
 - Memory files are injected as frozen snapshots at session start — there is no explicit read action needed.
 - `MEMORY.md` stores environment facts, conventions, completed milestones; `USER.md` stores user preferences and communication style.
 - When either file exceeds its character limit, the agent must consolidate before adding new entries; consolidate proactively at ~80% capacity.
 - Avoid storing large code blocks, temporary paths, or data already present in context files.
+- External memory providers such as Honcho, Hindsight, Supermemory and Holographic are installed from the plugin catalog (`hermes plugins install <name>`) before setting `memory.provider`; Honcho is no longer bundled. Memory pays off at session boundaries, so run `/new` at natural breakpoints.
