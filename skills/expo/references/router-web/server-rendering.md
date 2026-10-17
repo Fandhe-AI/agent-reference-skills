@@ -74,7 +74,7 @@ Supported platforms:
 - `generateMetadata` runs on the server and is stripped from the client bundle; `<Head>` from `expo-router/head` can co-exist but only updates tags after hydration.
 - Server rendering cannot be deployed to static hosts such as GitHub Pages. Static and server rendering cannot be mixed in one project. Response caching is handled at the server or CDN level. API routes run on the server independently of the page rendering mode, but require `web.output: "server"` (enabled by default in SDK 58+) or `web.output: "static"` with `apiRoutes: true` in the `expo-router` plugin; they are not available with `single` output. Data loaders run per request.
 - The official FAQ says API routes work independently of the rendering mode; the output-mode requirement was added from the API Routes page (static or server output required).
-- EAS Hosting deploy: `npx expo export --platform web` then `npx eas-cli@latest hosting:deploy dist`.
+- EAS Hosting deploy: `npx expo export --platform web` then `npx eas-cli@latest deploy --export-dir dist`. The official page shows `hosting:deploy dist`, but eas-cli 25.1.1 has no `hosting:deploy` command; the command is `eas deploy` (alias `worker:deploy`) with `--export-dir`.
 - Pinned: documentation fetched 2026-10-17, Expo SDK 58.
 
 ## Related

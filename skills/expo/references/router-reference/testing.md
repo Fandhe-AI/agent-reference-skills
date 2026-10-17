@@ -79,8 +79,7 @@ Jest matchers added to `expect` for `screen`:
 | `toHavePathname()` | Asserts the current pathname (uses `usePathname`), e.g. `expect(screen).toHavePathname('/my-router');` |
 | `toHavePathnameWithParams()` | Asserts pathname including URL parameters, e.g. `expect(screen).toHavePathnameWithParams('/my-router?hello=world');` |
 | `toHaveSegments()` | Asserts current segments (uses `useSegments`), e.g. `expect(screen).toHaveSegments(['[id]']);` |
-| `useLocalSearchParams()` | Asserts local URL params, e.g. `expect(screen).useLocalSearchParams({ first: 'abc' });` |
-| `useGlobalSearchParams()` | Asserts global URL params, e.g. `expect(screen).useGlobalSearchParams({ first: 'abc' });` |
+| `toHaveSearchParams()` | Asserts the current route's URL params, e.g. `expect(screen).toHaveSearchParams({ first: 'abc' });` |
 | `toHaveRouterState()` | Advanced: asserts router state, e.g. `expect(screen).toHaveRouterState({ routes: [{ name: 'index', path: '/' }] });` |
 
 ## Notes
@@ -88,6 +87,7 @@ Jest matchers added to `expect` for `screen`:
 - Set up `jest-expo` per the Unit testing with Jest guide and `@testing-library/react-native` first. `expo-router/testing-library` requires `@testing-library/react-native` version 14 or newer.
 - Do not put test files inside the **app** directory; everything there must be a route or layout file. Use `__tests__` or a separate directory.
 - Await `renderRouter` and the `testRouter` methods `navigate`, `push`, `replace`, `back`, `setParams`, and `dismissAll` before asserting. `testRouter.canGoBack()` remains synchronous.
+- The official page lists these matchers as `useLocalSearchParams()` / `useGlobalSearchParams()`, but expo-router 58.0.23 (`build/testing-library/expect.js`) registers only `toHavePathname`, `toHavePathnameWithParams`, `toHaveSegments`, `toHaveSearchParams`, and `toHaveRouterState`; there is no separate global-params matcher.
 - Source: https://docs.expo.dev/router/reference/testing/ (unversioned guide, fetched 2026-10-17, modificationDate October 13, 2026).
 
 ## Related
