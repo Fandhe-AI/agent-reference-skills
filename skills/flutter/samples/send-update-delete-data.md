@@ -152,7 +152,7 @@ Future<Album> updateAlbum(String title) async {
   }
 }
 
-Future<Album> deleteAlbum(String id) async {
+Future<void> deleteAlbum(String id) async {
   final http.Response response = await http.delete(
     Uri.parse('https://jsonplaceholder.typicode.com/albums/$id'),
     headers: <String, String>{
@@ -161,12 +161,8 @@ Future<Album> deleteAlbum(String id) async {
   );
 
   if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then return an empty Album. After deleting,
-    // you'll get an empty JSON `{}` response.
-    // Don't return `null`, otherwise `snapshot.hasData`
-    // will always return false on `FutureBuilder`.
-    return Album.empty();
+    // After deleting, you'll get an empty JSON `{}` response.
+    return;
   } else {
     // If the server did not return a "200 OK response",
     // then throw an exception.
@@ -178,7 +174,7 @@ Future<Album> deleteAlbum(String id) async {
 ## Notes
 
 - Sources: https://docs.flutter.dev/cookbook/networking/send-data, https://docs.flutter.dev/cookbook/networking/update-data, https://docs.flutter.dev/cookbook/networking/delete-data.
-- `deleteAlbum` relies on the delete-data recipe's `Album` class, which has nullable fields and an `Album.empty()` constructor; the `Album` above (non-nullable fields) is from the send-data recipe.
+- `deleteAlbum` returns `Future<void>` here instead of the official recipe's `Album.empty()` (which needs the delete-data recipe's nullable `Album`), so the sample compiles with the `Album` defined above.
 - `POST` expects status 201; `PUT` and `DELETE` expect 200. Throw on any other status instead of returning `null`.
 - Added `flutter pub add material_ui`: the official recipe imports package:material_ui but never adds the dependency; alternatively import package:flutter/material.dart.
 - Added dispose() for the TextEditingController (omitted in the official recipe).

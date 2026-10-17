@@ -4,7 +4,7 @@ source: https://docs.flutter.dev/cookbook/networking/fetch-data
 
 # Fetch and Parse JSON
 
-Fetch JSON with the `http` package, convert it to a Dart object, show it with `FutureBuilder`, and parse large payloads in a background isolate with `compute`.
+Fetch JSON with the `http` package, convert it to a Dart object, show it with `FutureBuilder`, and parse large payloads in a background isolate with `compute` (on native platforms; on the web `compute` runs on the main thread).
 
 ```console
 $ flutter pub add http material_ui
@@ -116,6 +116,7 @@ Future<List<Photo>> fetchPhotos(http.Client client) async {
   );
 
   // Use the compute function to run parsePhotos in a separate isolate.
+  // On the web, compute runs on the main thread (no isolates).
   return compute(parsePhotos, response.body);
 }
 
@@ -162,4 +163,5 @@ class Photo {
 - Call `fetchAlbum()` in `initState()` or `didChangeDependencies()`, never inside `build()`, which runs repeatedly.
 - Throw an exception on non-200 responses instead of returning `null`; otherwise `snapshot.hasData` never becomes true.
 - Background-parsing block trimmed from the official complete example; the `PhotosList` UI is omitted. `compute` comes from `package:flutter/foundation.dart`.
+- On Flutter web, isolates are not supported: `compute()` runs on the main thread, so it does not prevent UI jank there (source: https://docs.flutter.dev/perf/isolates#web-platforms-and-compute).
 - `compute()` messages must be simple (primitives, `List<Photo>`); passing a `Future` or `http.Response` between isolates can fail.

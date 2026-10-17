@@ -3,7 +3,7 @@
 | Name | Description | Path |
 |------|-------------|------|
 | ChangeNotifier and ListenableBuilder | Hold state in a `ChangeNotifier` view model and rebuild the UI with `ListenableBuilder`, handling loading / error / data with a switch expression. | [change-notifier-listenable-builder.md](./change-notifier-listenable-builder.md) |
-| Fetch and Parse JSON | Fetch JSON with the `http` package, convert it to a Dart object, show it with `FutureBuilder`, and parse large payloads in a background isolate with `compute`. | [fetch-and-parse-json.md](./fetch-and-parse-json.md) |
+| Fetch and Parse JSON | Fetch JSON with the `http` package, convert it to a Dart object, show it with `FutureBuilder`, and parse large payloads in a background isolate with `compute` (on native platforms; on the web it runs on the main thread). | [fetch-and-parse-json.md](./fetch-and-parse-json.md) |
 | Form Validation | Validate a `TextFormField` through a `Form` with a `GlobalKey<FormState>`, and submit only when valid. | [form-validation.md](./form-validation.md) |
 | Gestures: Taps and Swipe to Dismiss | Handle taps with `GestureDetector` and remove list items by swiping with `Dismissible`. | [gestures-taps-dismissible.md](./gestures-taps-dismissible.md) |
 | Hero and Page Route Animation | Animate a widget across screens with `Hero`, and customize a route transition with `PageRouteBuilder`, `Tween` and `SlideTransition`. | [hero-and-page-route-animation.md](./hero-and-page-route-animation.md) |
