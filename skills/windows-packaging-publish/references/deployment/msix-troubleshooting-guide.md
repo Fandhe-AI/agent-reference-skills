@@ -7,7 +7,7 @@ Common MSIX installation, signing, App Installer delivery, dependency, and runti
 Read deployment logs (Event Viewer: `Applications and Services Logs > Microsoft > Windows > AppxDeployment-Server > Operational`) and inspect the package:
 
 ```powershell
-Get-AppxLog | Where-Object {$_.EventId -eq 404} | Select-Object -Last 20
+Get-AppxLog | Out-GridView
 MakeAppx unpack /p "C:\path\to\app.msix" /d "C:\unpack-output"
 ```
 
@@ -46,6 +46,7 @@ Servicing a package in use (`ERROR_PACKAGES_IN_USE`, `0x80073D02`):
 
 - Source: https://learn.microsoft.com/en-us/windows/msix/msix-troubleshooting-guide
 - The source page maps 0x80073CF3 to `ERROR_INSTALL_PACKAGE_DOWNGRADE` and 0x80073CF9 to `ERROR_INSTALL_PACKAGE_NOT_FOUND`; per winerror.h 0x80073CF3 is `ERROR_INSTALL_RESOLVE_DEPENDENCY_FAILED`, downgrade is 0x80073D06 `ERROR_INSTALL_PACKAGE_DOWNGRADE`, and 0x80073CF9 is `ERROR_INSTALL_FAILED`.
+- The source page's filter example `Where-Object {$_.EventId -eq 404}` is not reproduced: event records returned by `Get-AppxLog` expose the event number as `Id`, not `EventId`; filter with `Where-Object { $_.Id -eq 404 }`.
 - Installing from a UNC network share is a common cause of misleading 0x80073CF0 / 0x80070002 errors; copy the package locally first.
 - On Windows 11 version 24H2 and later a package can declare `uap17:UpdateWhileInUse` with value `defer`, which takes precedence over force-shutdown options. Windows App SDK apps can call `PackageDeploymentManager.IsPackageRegistrationPending` (and `IsPackageRegistrationPendingForUser` as an administrator) to detect a deferred registration.
 - `Add-AppxPackage` installs for the current user only; use `Add-AppxProvisionedPackage` for all users. An app missing from Start after a successful install may be a per-user vs per-machine issue, a refresh issue, a missing `VisualElements` / `Square150x150Logo`, or a package family name conflict.
