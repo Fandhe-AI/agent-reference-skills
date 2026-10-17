@@ -11,7 +11,8 @@ Expo Router is an open-source file-based routing library for Universal React Nat
 Create a new project with Expo Router already installed and configured:
 
 ```sh
-npx create-expo-app@latest --template default@sdk-58
+npx create-expo-app@latest my-app --template default@sdk-58
+cd my-app
 npx expo start
 ```
 
@@ -23,6 +24,7 @@ npx expo start
 - Basic static rendering (SSG) is supported. Server-side rendering requires custom infrastructure (per this page; with `web.output: 'server'` server rendering is available, see App config and Notation).
 - Other navigation libraries such as React Navigation can still be used. React Native Navigation by Wix is not available in Expo Go and is not yet compatible with `expo-dev-client`.
 - Expo Router is file-based and built on React Navigation. Its `Link`, `useRouter` and `Stack` differ from the same-named APIs in react-router and tanstack-router.
+- The official page shows these commands in separate blocks; a project name and cd were added so the snippet runs as one sequence.
 - Page modification date: October 16, 2026.
 
 ## Related

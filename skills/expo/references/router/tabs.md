@@ -73,7 +73,16 @@ Dynamic route in a tab:
   options={{
     // Ensure the tab always links to the same href.
     href: '/evanbacon',
-    // OR you can use the href object.
+  }}
+/>
+```
+
+Or use the href object:
+
+```tsx
+<Tabs.Screen
+  name="[user]"
+  options={{
     href: {
       pathname: '/[user]',
       params: {
@@ -118,6 +127,7 @@ Set via `screenOptions` on `Tabs` (all tabs) or `options` on `Tabs.Screen` (one 
 - The `(tabs)` directory is a group directory; **index.tsx** is the default tab when the app loads.
 - When adding a dynamic route in a tab layout, the dynamic route must be unique: two `[user]` tabs are not allowed. For multiple dynamic routes, create a custom navigator.
 - Expo Router is file-based and built on React Navigation; its `Tabs` and `Link` differ from same-named APIs in react-router and tanstack-router.
+- The official snippet defines href twice in one object; it is split into two snippets here to avoid a duplicate-property error.
 - Page modification date: September 29, 2026. Source fetched 2026-10-17.
 
 ## Related

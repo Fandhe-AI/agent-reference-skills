@@ -36,12 +36,22 @@ export function redirectSystemPath({ path, initial }) {
 }
 ```
 
-Rewrite URLs while the app is open from a `_layout` using `usePathname()`; the location of the `_layout` sets the scope (root layout = global, a directory or group `_layout` = localized):
+Rewrite URLs while the app is open from a `_layout` using `usePathname()`; the location of the `_layout` sets the scope. For a global rewrite the root layout still renders a navigator, and the check lives in a nested group layout:
 
 ```tsx
-import { Slot, Redirect, usePathname } from 'expo-router';
+// src/app/_layout.tsx
+import { Slot } from 'expo-router';
 
 export default function RootLayout() {
+  return <Slot />;
+}
+```
+
+```tsx
+// src/app/(app)/_layout.tsx
+import { Slot, Redirect, usePathname } from 'expo-router';
+
+export default function AppLayout() {
   const pathname = usePathname();
 
   // isUserAllowed is your own app-defined function
@@ -104,6 +114,7 @@ Force a URL to be evaluated by the browser by writing a fully qualified `http`/`
 - Universal Links and multiple domains need no extra Expo Router configuration; all URLs given to the app are evaluated. Customize the URL scheme(s) via the `scheme` value in app config.
 - `legacy_subscribe` is in alpha (available in SDK 52). It is for third-party providers that support React Navigation through `Linking.subscribe` but not Expo Router. Not recommended for new projects; incompatible with server-side routing and static rendering, and hard to manage offline or on poor connections.
 - Expo Router is file-based and built on React Navigation, and `+native-intent` is unrelated to router libraries of the same domain. See react-router and tanstack-router for the differently shaped APIs.
+- The official example places the Redirect in the root _layout; it was moved to a nested group layout because the root layout must render a Slot/navigator on first render (see authentication-rewrites).
 - The imports of `usePathname` and `useEffect` are added in the snippets above; the official snippets omit them. `isUserAllowed` is an app-defined placeholder.
 - Page modification date: September 25, 2026. Source fetched 2026-10-17.
 
