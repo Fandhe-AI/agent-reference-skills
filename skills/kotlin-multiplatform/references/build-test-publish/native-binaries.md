@@ -74,7 +74,7 @@ kotlin {
         }
         sharedLib {
             // It's possible to export different sets of dependencies to different binaries.
-            export(project(':dependency'))
+            export(project(":dependency"))
         }
     }
 }

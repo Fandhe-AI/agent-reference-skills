@@ -6,11 +6,18 @@ source: https://kotlinlang.org/docs/multiplatform/multiplatform-plugin-releases.
 
 The Kotlin Multiplatform IDE plugin (plugins.jetbrains.com/plugin/14936-kotlin-multiplatform) helps develop cross-platform applications for Android, iOS, desktop and web.
 
+## Signature / Usage
+
+```text
+Settings | Plugins
+Settings | Languages & Frameworks | Kotlin -> Enable K2 mode
+```
+
 ## Notes
 
 - IntelliJ IDEA supports the plugin on macOS starting with 2025.1.1.1, and on Windows and Linux starting with 2025.2.2. Android Studio supports it on macOS starting with Narwhal 2025.1.1, and on Windows and Linux starting with Otter 2025.2.1.
 - The plugin is updated for each IntelliJ IDEA and Android Studio release and its major version is aligned with the corresponding IDE version. Your IDE suggests updating as soon as a release is available; check or update manually in **Settings | Plugins**.
-- The source lists only releases published before the tooling was stabilized. This page has no code blocks in the source.
+- The source lists only releases published before the tooling was stabilized. The source has no code blocks; the snippet lists IDE settings paths quoted from the page.
 - Gradle plugin information is in the Gradle DSL reference and the compatibility guide.
 
 Release history (from the source table):

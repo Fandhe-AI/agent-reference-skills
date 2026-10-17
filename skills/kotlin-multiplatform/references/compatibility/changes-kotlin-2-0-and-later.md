@@ -22,14 +22,16 @@ From Kotlin 2.1.20 remove `withJava()` from the build script (the Java source se
 
 Target presets replaced by target DSL functions:
 
-```kotlin
+```groovy
 // Before
 kotlin {
     targets {
         fromPreset(presets.iosArm64, 'ios')
     }
 }
+```
 
+```kotlin
 // Now
 kotlin {
     iosArm64()
@@ -141,7 +143,7 @@ Best practice: extract the parts into separate Gradle projects.
    }
 
    dependencies {
-       project(":shared") // Add dependency on the original project
+       implementation(project(":shared")) // Add dependency on the original project
        // Copy dependencies of jvmKtorMain here
    }
 
@@ -194,6 +196,8 @@ Deprecated in the public API of the Kotlin Gradle plugin: the `presets` property
 
 ## Notes
 
+- The official snippet writes a bare `project(":shared")`, which does not register a dependency in Kotlin DSL; `implementation(...)` is used here.
+- The official page labels the target presets "Before" snippet as Kotlin but uses Groovy syntax.
 - Migration (Kotlin 1.9 → 2.0): the removed APIs here are target presets, Apple target shortcuts (`ios()` / `watchos()` / `tvos()`), legacy hierarchical-structure Gradle properties, and `embedBitcode`; see also dsl-targets, android-source-set-layout and agp-9-migration.
 - Android Gradle plugin, `com.android.kotlin.multiplatform.library` and Gradle Java plugin handling belong to android-build-gradle for the Android-side details; this page covers only the Kotlin Multiplatform plugin's behavior.
 
