@@ -2,8 +2,9 @@
 name: kotlin
 description: >
   Kotlin (JetBrains 製プログラミング言語, kotlinlang.org) の言語仕様・標準ライブラリ・ツールチェーン。
-  null safety, data class, sealed class, context parameters, kotlinx.coroutines (suspend, Flow),
-  kotlinx.serialization (@Serializable), KGP, Maven, KSP, kapt, K2, KDoc。
+  null safety, data class, sealed class, 拡張関数, context parameters, スコープ関数 (let / run / apply / also / with), コレクション,
+  Uuid, Duration (kotlin.time), kotlinx.coroutines (suspend, Flow),
+  kotlinx.serialization (@Serializable, Json, ProtoBuf, CBOR), KGP, Maven, KSP, kapt, K2, KDoc。
 user-invocable: false
 ---
 
