@@ -15,6 +15,12 @@ endpointProp.unicast = {.device = cuDevice};
 endpointProp.ipcHandleTypes = CU_LOGICAL_ENDPOINT_IPC_HANDLE_TYPE_FABRIC;
 endpointProp.flags = useCounted ? CU_LOGICAL_ENDPOINT_FLAG_COUNTED_OPS : CU_LOGICAL_ENDPOINT_FLAG_NONE;
 
+cuuint64_t bindAlignment = 0;
+cuuint64_t maxSize = 0;
+cuLogicalEndpointGetLimits(&bindAlignment, &maxSize, &endpointProp);
+// Set endpointProp.size: a multiple of bindAlignment and no larger than maxSize
+// (partition across several endpoints if needed)
+
 cuLogicalEndpointCreate(leId + myRank, &endpointProp);
 
 CUlogicalEndpointFabricHandle localHandle;
@@ -22,8 +28,13 @@ cuLogicalEndpointExport(&localHandle, leId + myRank, CU_LOGICAL_ENDPOINT_IPC_HAN
 // ... transfer handle to peer, then on the peer:
 cuLogicalEndpointImport(leId + sendRank, &sendRankHandle, CU_LOGICAL_ENDPOINT_IPC_HANDLE_TYPE_FABRIC);
 
+// Poll cuLogicalEndpointQuery until it returns non-zero for leId + myRank and leId + sendRank
+// (non-blocking; using an id before readiness is undefined behavior)
+
 // Bind the whole backing allocation at endpoint offset 0, by allocation handle.
 cuLogicalEndpointBindMem(leId + myRank, cuDevice, 0, exportHandle, 0, exportSize, 0);
+// No rank may issue an operation until every destination has been bound.
+MPI_CHECK(MPI_Barrier(MPI_COMM_WORLD));
 
 // Device: put from shared memory, tracked by an mbarrier (layout_v1)
 cuda::ptx::mbarrier_init(cuda::ptx::layout_v1, &putBar, 1);
@@ -93,6 +104,7 @@ Device fabric instructions (`cuda::ptx`):
 - Counted operations: need `CU_LOGICAL_ENDPOINT_FLAG_COUNTED_OPS` at endpoint creation and device support; the counter increments by bytes written as data arrives, must be 256-byte aligned in endpoint memory, and the receiver waits for the expected byte count.
 - Cleanup: make sure no peer can still issue operations before unbinding/destroying (any inter-process synchronization is sufficient, e.g. barrier after stream sync). Destroy imported ids (local alias only), unbind (optional but recommended) and destroy the owner id, `cuLogicalEndpointIdRelease`, then free backing memory in VMM order (`cuMemUnmap`, `cuMemRelease`, `cuMemAddressFree`). Never free an allocation while bound. The endpoint's resources are released when every alias is destroyed.
 - The full instruction qualifiers (access sizes, memory-ordering modes, scopes) are specified in the PTX ISA "Fabric Instructions" section.
+- The source's `cuLogicalEndpointGetLimits` example names the property variable `prop`; the example above uses `endpointProp`. The source shows no code assigning `size`, so the comment states only the documented constraints.
 - Document version: CUDA Programming Guide v13.4.2 ([Compute Fabric Transport](https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/compute-fabric-transport.html); archived copy [13.4.2](https://docs.nvidia.com/cuda/archive/13.4.2/cuda-programming-guide/04-special-topics/compute-fabric-transport.html)). Instruction qualifiers: PTX ISA 9.4 [Fabric Instructions](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#fabric-instructions).
 
 ## Related
