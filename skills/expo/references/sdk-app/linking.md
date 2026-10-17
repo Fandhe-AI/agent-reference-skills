@@ -84,6 +84,7 @@ unwrapDevLaunchURL('myapp://login?__expo_disable_fab=1');
 
 - Platforms: android, ios, web, tvos, expo-go.
 - `createURL` in Expo Go for published updates is undefined behavior; use a build with an explicit scheme when a stable URL is needed (e.g. authorization callbacks).
+- The usage snippet (Home component calling useLinkingURL and parsing the URL with Linking.parse) is adapted; the official API section shows only the import.
 - Expo Router handles deep linking automatically; this library is for apps not using it.
 - Source: `sdk-58` branch `packages/expo-linking`; modificationDate September 15, 2026.
 

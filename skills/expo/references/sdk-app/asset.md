@@ -90,7 +90,8 @@ const [{ localUri }] = await Asset.loadAsync(require('./assets/snack-icon.png'))
 
 - Platforms: android, ios, tvos, web, expo-go.
 - The useAssets snippet adds the Image import and a component wrapper not present in the official fragment.
-- Files downloaded via `downloadAsync` are stored in the caches directory as `ExponentAsset-{cacheFileId}.{extension}`; persistence between sessions is not guaranteed. To clear manually use `expo-file-system`: `Paths.cache.delete()` (or legacy `deleteAsync(cacheDirectory)`).
+- Files downloaded via `downloadAsync` are stored in the caches directory as `ExponentAsset-{cacheFileId}.{extension}`; persistence between sessions is not guaranteed. To remove a downloaded asset manually, delete only the file its `localUri` points to with `expo-file-system` (run only when `localUri` is not `null`): `new File(asset.localUri).delete()`.
+- The official docs suggest `Paths.cache.delete()` / legacy `deleteAsync(cacheDirectory)`, but that deletes the entire cache directory, including files unrelated to assets.
 - `uri`: if not using Classic Updates (legacy), ignore this field because assets are on device before app logic runs.
 - For `.db` files see the SQLite API reference; for `.lottie` / `.riv` add the extension to `assetExts` in the Metro config.
 - Source: `sdk-58` branch `packages/expo-asset`; modificationDate September 15, 2026.

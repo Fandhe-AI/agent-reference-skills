@@ -78,7 +78,13 @@ export default function Layout() {
 | `ScreenOrientation.removeOrientationChangeListener(subscription)` | `subscription: EventSubscription` | `void` | Deprecated: will be removed; keep track of your own subscriptions. |
 | `ScreenOrientation.removeOrientationChangeListeners()` | — | `void` | Removes all orientation change listeners. |
 
-`addOrientationChangeListener` is marked deprecated in the source ("will be removed in a future version. Use `subscription.remove()` instead").
+Register with `addOrientationChangeListener`, and unsubscribe with `subscription.remove()` rather than the deprecated `removeOrientationChangeListener`:
+
+```ts
+const subscription = ScreenOrientation.addOrientationChangeListener(listener);
+// later
+subscription.remove();
+```
 
 ### Types
 
@@ -108,6 +114,7 @@ export default function Layout() {
 - iPad split view (iOS 9+): to lock orientation, set `ios.requireFullScreen` to `true` in the app config. On iOS 27 and later, `requireFullScreen` no longer opts the app out of being resized, so it cannot reliably lock orientation.
 - iOS 27 and later: iPhone apps can be resized (for example iPhone Mirroring on macOS, or on iPad). While resizable, the system treats a supported orientation as a preference: `lockAsync` may have no effect, and `getOrientationAsync` may not describe the window shape (iPhone Mirroring always reports portrait). Design screens to adapt. Debug builds log a warning when the system refuses an orientation lock.
 - Existing React Native app: open `ios` in Xcode (`xed ios`; run `npx expo prebuild -p ios` if absent) and tick `Requires Full Screen` under Project Target > General > Deployment Info.
+- The official docs place "Use subscription.remove() instead" under addOrientationChangeListener, but what it replaces is unsubscribing (removeOrientationChangeListener); keep using addOrientationChangeListener to register.
 - For physical device orientation, see Device Motion (sdk-device-data).
 - Source: `sdk-58` branch `packages/expo-screen-orientation`; modificationDate September 15, 2026.
 
