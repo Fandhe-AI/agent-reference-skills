@@ -490,15 +490,14 @@ struct PermissionResponse {
 }
 
 #[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
 struct RequestPermission {
-  post_notification: bool,
+  permissions: Vec<String>,
 }
 
 impl<R: Runtime> Notification<R> {
   pub fn request_post_notification_permission(&self) -> crate::Result<PermissionState> {
     self.0
-      .run_mobile_plugin::<PermissionResponse>("requestPermissions", RequestPermission { post_notification: true })
+      .run_mobile_plugin::<PermissionResponse>("requestPermissions", RequestPermission { permissions: vec!["postNotification".into()] })
       .map(|r| r.post_notification)
       .map_err(Into::into)
   }
@@ -588,6 +587,7 @@ export async function onRequest(
 - Upstream JNI example passes a `JString` directly to `format!` (no `Display`); the string is now read with `env.get_string(&name)` first.
 - Upstream Swift FFI example passes the nullable `helloWorldFFI` result straight to `String(cString:)` / `freeHelloResult`; a `guard let` now handles `nil`.
 - Upstream iOS permissions example declares `checkPermissions` as `@objc open func` without `override`; `public override` added because `Plugin` already defines it (matching `requestPermissions`).
+- Upstream Rust example sends `{"postNotification": true}`; it was changed to the `{"permissions": ["postNotification"]}` shape used by the JavaScript example and the built-in `requestPermissions` handler.
 - The source page has a TODO noting that the Plugin Events section may duplicate Lifecycle Events.
 
 ## Related

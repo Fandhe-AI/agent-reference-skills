@@ -109,6 +109,10 @@ Grant permission to run `execute` or `spawn` on the child process in `<PROJECT R
 
 ```json
 {
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window",
+  "windows": ["main"],
   "permissions": [
     "core:default",
     {
@@ -201,6 +205,7 @@ const output = await command.execute();
 ## Notes
 
 - Upstream capability example allows `binaries/app` while the JavaScript code runs `binaries/my-sidecar`; the name was unified to `binaries/my-sidecar`.
+- identifier and windows were added so the snippet is a complete capability file.
 - Migrating from Tauri v1: the `migrate` command of the Tauri v2 CLI handles the argument configuration conversion.
 - Environment variable `TAURI_SKIP_SIDECAR_SIGNATURE_CHECK` skips signing sidecars (see Environment Variables).
 

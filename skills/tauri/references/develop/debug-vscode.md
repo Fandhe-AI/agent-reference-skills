@@ -38,7 +38,7 @@ Install the `vscode-lldb` extension, then create `.vscode/launch.json`:
       "request": "launch",
       "name": "Tauri Production Debug",
       "cargo": {
-        "args": ["build", "--release", "--manifest-path=./src-tauri/Cargo.toml"]
+        "args": ["build", "--release", "--features=tauri/custom-protocol", "--manifest-path=./src-tauri/Cargo.toml"]
       },
       // task for the `beforeBuildCommand` if used, must be configured in `.vscode/tasks.json`
       "preLaunchTask": "ui:build"
@@ -145,6 +145,10 @@ It does not use the Tauri CLI either. `tasks.json` is the same as with `lldb`, e
   ]
 }
 ```
+
+## Notes
+
+- `custom-protocol` is a feature managed by the Tauri CLI; when invoking cargo directly for a production build, enable `tauri/custom-protocol` or the app keeps using `devUrl` (upstream example omits it).
 
 ## Related
 

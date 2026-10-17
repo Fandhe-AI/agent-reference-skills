@@ -272,7 +272,7 @@ Commands live in `commands.rs` and are regular Tauri application commands (acces
 use tauri::{command, ipc::Channel, AppHandle, Runtime, Window};
 
 #[command]
-pub async fn upload<R: Runtime>(app: AppHandle<R>, window: Window<R>, on_progress: Channel, url: String) {
+pub async fn upload<R: Runtime>(app: AppHandle<R>, window: Window<R>, on_progress: Channel<u32>, url: String) {
   // implement command logic here
   on_progress.send(100).unwrap();
 }
@@ -447,6 +447,7 @@ A plugin manages state the same way an application does (see State Management).
 - Upstream Plugins page's tauri.conf.json example still shows the v1 top-level `tauri` key; replaced with the v2 `app` key.
 - Upstream `Entry` scope example derives only `Debug` and `JsonSchema`; `serde::Deserialize` added because `CommandScope` / `GlobalScope` require the scope type to be deserializable.
 - Upstream Plugins page initializes the global-shortcut plugin with `tauri_plugin_global_shortcut::init()`, but the v2 plugin exposes only `Builder`; replaced with `Builder::new().build()` (as on the global-shortcut plugin page).
+- Upstream example declares `on_progress: Channel` (default `TSend = InvokeResponseBody`), which does not accept `send(100)`; the type parameter `Channel<u32>` was added.
 - Permissions / capabilities here are Tauri's ACL; see the security category.
 
 ## Related
