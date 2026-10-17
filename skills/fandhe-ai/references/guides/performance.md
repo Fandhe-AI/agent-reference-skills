@@ -11,8 +11,10 @@ source: https://fandhe-ai.github.io/fandhe-ai/guides/performance/
 `Var::matmul`（GEMM）の簡易計測例（`std::time::Instant` ベース）。性能下限判定に使う本格計測（`criterion` を使う `bench-harness` クレート）とは別物。
 
 ```sh
-cargo run --release -p fandhe-ai --example gemm_bench
+cargo run --release -p fandhe-ai --example facade_gemm_bench
 ```
+
+example のターゲット名は `facade_gemm_bench`（`crates/facade/Cargo.toml` の `[[example]] name = "facade_gemm_bench"`。ソースファイルは `examples/gemm_bench.rs` のまま）。旧名 `--example gemm_bench` では実行できない。
 
 ## Notes
 

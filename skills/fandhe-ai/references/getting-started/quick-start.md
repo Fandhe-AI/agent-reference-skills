@@ -1,5 +1,5 @@
 ---
-source: https://fandhe-ai.github.io/fandhe-ai/getting-started/
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.11.0/crates/facade/examples/getting_started.rs
 ---
 
 # クイックスタート
