@@ -54,6 +54,7 @@ Other SDKs: Python `raise inngest.NonRetriableError("...")` (use `from error` to
 - Catch the failed step to run a fallback or compensation in another step. If left uncaught, the function fails and a configured failure handler handles that final failure.
 - Do not catch a failed step and throw a standard `Error` unless you want the function code to retry.
 - `NonRetriableError` does not undo external calls that already completed.
+- Source: https://www.inngest.com/docs-markdown/durable-execution/guides-and-advanced/error-handling/non-retriable-errors (fetched 2026-10).
 
 ## Related
 

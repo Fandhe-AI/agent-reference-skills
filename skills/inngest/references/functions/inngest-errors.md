@@ -54,6 +54,7 @@ export const fetchItem = inngest.createFunction(
 - If the upstream service supplies a valid `Retry-After` value, pass that duration or time instead of a fixed value.
 - After a step exhausts retries it throws a `StepError` into the function. Wrap the step in `try`/`catch` to run a fallback or compensation step; if uncaught, the function fails.
 - Avoid treating every error as permanent; ordinary errors are appropriate when another attempt can succeed.
+- Source: https://www.inngest.com/docs-markdown/durable-execution/guides-and-advanced/error-handling/inngest-errors (fetched 2026-10).
 
 ## Related
 

@@ -33,11 +33,11 @@ await import("./app.js");
 Manually add the span processor to your own provider:
 
 ```ts
-import { BasicTracerProvider } from "@opentelemetry/sdk-trace-base";
+import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node";
 import { InngestSpanProcessor } from "inngest/experimental";
 
 // client created with extendedTracesMiddleware({ behaviour: "off" })
-const provider = new BasicTracerProvider({
+const provider = new NodeTracerProvider({
   spanProcessors: [new InngestSpanProcessor(inngest)],
 });
 provider.register();
@@ -60,6 +60,7 @@ provider.register();
 - `@inngest/otel` instruments common Node packages, OpenAI, Anthropic and Google Generative AI. If you configure OpenTelemetry yourself, manage your own instrumentation list and add `InngestSpanProcessor` (with `behaviour: "off"`).
 - AI metadata extraction is configured separately: set `aiMetadata: false` on the Inngest client to disable it; Extended Traces keeps exporting spans.
 - The middleware is imported from `inngest/experimental`.
+- The official extended-traces page shows `BasicTracerProvider` here; `register()` is provided by `NodeTracerProvider` (as in the official OpenTelemetry setup guide, https://www.inngest.com/docs-markdown/examples/open-telemetry), so this example uses it.
 - Source: https://www.inngest.com/docs-markdown/reference/typescript/v4/extended-traces (fetched 2026-10).
 
 ## Related
