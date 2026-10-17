@@ -75,7 +75,8 @@ Select the credentials source in a build profile:
 - Add **credentials.json** and all credentials (keystores, `ios/certs/*`) to **.gitignore** so secrets are not committed. Suggested locations: `android/keystores/release.keystore`, `ios/certs`.
 - iOS needs a paid Apple Developer account, a Distribution Certificate and a Provisioning Profile (from the Apple Developer Portal).
 - Multi-target iOS projects (App Extensions such as Share or Widget) need credentials for every Xcode target, keyed by target name under `ios` (each with `provisioningProfilePath` and `distributionCertificate`), because each extension has its own bundle identifier.
-- CI: convert the file to base64 (`base64 credentials.json`), store it in an environment variable such as `CREDENTIALS_JSON_BASE64`, and restore with `echo $CREDENTIALS_JSON_BASE64 | base64 -d > credentials.json`. Keystore, provisioning profile and certificate must also exist on the CI file system at the paths defined in **credentials.json**.
+- CI: convert the file to base64 (`base64 credentials.json`), store it in an environment variable such as `CREDENTIALS_JSON_BASE64`, and restore with `printf '%s' "${CREDENTIALS_JSON_BASE64}" | base64 -d > credentials.json`. Keystore, provisioning profile and certificate must also exist on the CI file system at the paths defined in **credentials.json**.
+- The official documentation writes this restore command with an unquoted `echo $CREDENTIALS_JSON_BASE64 | base64 -d > credentials.json`; the quoted `printf` form above is used here to avoid word splitting.
 - Source modificationDate: December 08, 2025 (fetched 2026-10-17).
 
 ## Related

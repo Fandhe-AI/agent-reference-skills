@@ -33,6 +33,25 @@ export const withMyCustomConfig: ConfigPlugin = config => {
     return config;
   });
 };
+
+async function setCustomConfigAsync(
+  config: Pick<ExpoConfig, 'android'>,
+  androidManifest: AndroidConfig.Manifest.AndroidManifest
+): Promise<AndroidConfig.Manifest.AndroidManifest> {
+  const appId = 'my-app-id';
+  // Get the <application /> tag and assert if it doesn't exist.
+  const mainApplication = getMainApplicationOrThrow(androidManifest);
+
+  addMetaDataItemToMainApplication(
+    mainApplication,
+    // value for `android:name`
+    'my-app-id-key',
+    // value for `android:value`
+    appId
+  );
+
+  return androidManifest;
+}
 ```
 
 Info.plist:
