@@ -76,7 +76,7 @@ Files to touch for a full-path built-in provider:
 - Native providers: audit every `api_mode` switch point and every `self.client.` use in `run_agent.py` (`__init__`, `_build_api_kwargs()`, `_interruptible_api_call()`, interrupt/rebuild, response validation, finish-reason and usage extraction, fallback, summary/memory flush). Send only fields the provider understands (e.g. OpenRouter routing fields).
 - `config["model"]` can be a string or a dict.
 - Test with `scripts/run_tests.sh tests/hermes_cli/test_runtime_provider_resolution.py tests/hermes_cli/test_cli_provider_resolution.py tests/hermes_cli/test_setup_model_provider.py tests/agent/test_provider_parity.py -q`.
-- Source: developer-guide/adding-providers (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/adding-providers (pinned to v0.22.2)
 
 ## Related
 

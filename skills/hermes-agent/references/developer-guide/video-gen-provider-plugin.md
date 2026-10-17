@@ -93,7 +93,7 @@ Response keys: success (`success`, `video` URL or absolute path, `model`, `promp
 - Model families (FAL pattern): one catalog entry per family; pick `text_endpoint` vs `image_endpoint` inside `generate()` depending on `image_url`.
 - The agent sees the active backend's `capabilities()` in the tool description, rebuilt when the user changes backend.
 - Add a smoke test under `tests/plugins/video_gen/test_<name>_plugin.py` (xAI and FAL tests show the pattern).
-- Source: developer-guide/video-gen-provider-plugin (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/video-gen-provider-plugin (pinned to v0.22.2)
 
 ## Related
 

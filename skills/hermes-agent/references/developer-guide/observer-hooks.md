@@ -70,7 +70,7 @@ Event families:
 - Prefer sanitized `request` / `response` / `error` fields; legacy `request_messages`, `conversation_history`, `assistant_message` may still be present. Sanitization bounds payloads and redacts sensitive keys.
 - Expensive payload construction is gated behind `has_hook(...)`: register only hooks you consume, keep callbacks fast, offload network export.
 - Behavior-changing request/execution wrappers are middleware, not observers. A first-party NeMo Relay shared-metrics path exists that does not need an observability plugin; the official Langfuse catalog plugin is an example consumer.
-- Source: developer-guide/observer-hooks (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/observer-hooks (pinned to v0.22.2)
 
 ## Related
 

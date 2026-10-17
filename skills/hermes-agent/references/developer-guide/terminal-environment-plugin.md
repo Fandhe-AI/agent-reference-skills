@@ -94,7 +94,7 @@ Core surfaces driven by provider attributes:
 - Environment object contract: `execute(command, timeout=None, ...)` returns `{"output": str, "exit_code": int}`; `cleanup()` is called on session teardown / idle reaping. Subclassing `tools.environments.base.BaseEnvironment` is recommended but not required.
 - If the sandbox is resumed by name (durable VM), set `session_isolated_when_nonpersistent = True` so each session gets its own sandbox under `terminal.container_persistent: false`.
 - Mirrors the Browser Provider Plugins guide (same registration flow and scope semantics).
-- Source: developer-guide/terminal-environment-plugin (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/terminal-environment-plugin (pinned to v0.22.2)
 
 ## Related
 

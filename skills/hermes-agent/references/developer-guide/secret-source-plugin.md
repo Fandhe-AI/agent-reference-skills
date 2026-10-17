@@ -104,7 +104,7 @@ Shapes: `mapped` (user binds env-var names to references; beats bulk on conteste
 - Registration is rejected with a warning for non-`SecretSource` instances, invalid/duplicate names, a `scheme` another source owns, wrong `api_version`, or a `shape` outside `mapped` / `bulk`.
 - Timing: `load_hermes_dotenv()` often runs before plugin discovery; Hermes re-pulls secrets after discovery when any enabled plugin secret source is configured (idempotent, fail-open). Code reading `os.environ` during import or `register(ctx)` cannot depend on credentials from that source. `hermes update` never resolves external sources.
 - The bundled set is closed; publish new vault backends as standalone plugin repos.
-- Source: developer-guide/secret-source-plugin (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/secret-source-plugin (pinned to v0.22.2)
 
 ## Related
 

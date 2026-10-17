@@ -84,7 +84,7 @@ Trust gate (config under `plugins.entries.<plugin-id>.llm`):
 - A plugin can use only an auxiliary task it registered itself; unknown or foreign task names fail before provider invocation. Registered tasks appear on `hermes model` auxiliary picker, dashboard Models page and Desktop Settings. `inherit_from` resolves on every read; precedence is inherited base, then plugin `defaults`, then operator `auxiliary.<task>`; an operator pin wins as a whole route; a bad base logs a warning and registers without inheritance. Omit `task=` (or use `"auto"`) to keep the active main provider/model.
 - Every call runs against the user's paid provider; avoid unbounded loops.
 - Plugin id is the manifest `name:` for flat plugins, or the path-derived key for nested plugins (`image_gen/openai`).
-- Source: developer-guide/plugin-llm-access (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/plugin-llm-access (pinned to v0.22.2)
 
 ## Related
 

@@ -95,7 +95,7 @@ Response envelope: search success `{"success": True, "data": {"web": [{"title", 
 - `search()` / `extract()` may be `async def`; the dispatcher detects coroutines.
 - `is_available()` must not make network calls (runs on every `hermes tools` paint). Use `pm.available("extra-name")` there and `pm.ensure_import("extra-name")` in the operation; report `InstallError`. Third-party plugins declare their own dependencies in manifest or `pyproject.toml`.
 - Reference implementations: `brave_free/` (API-key search-only template), `ddgs/` (no-key, lazy-installs SDK), `firecrawl/` (search + extract + crawl), `searxng/` (self-hosted, no auth), `xai/` (LLM-backed search reusing existing credentials).
-- Source: developer-guide/web-search-provider-plugin (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/web-search-provider-plugin (pinned to v0.22.2)
 
 ## Related
 

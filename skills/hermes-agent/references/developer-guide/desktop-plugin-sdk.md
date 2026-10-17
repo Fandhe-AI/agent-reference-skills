@@ -122,7 +122,7 @@ SDK export groups: host, plugin contract types, area constants, area payload typ
 - Security: a loaded plugin runs in the renderer with full app authority (error isolation only, not a sandbox). Catalog installs rely on admission review plus the `desktop surface` lint and the import allowlist; neither is a sandbox.
 - Agents writing desktop plugins should load the bundled `hermes-desktop-plugins` skill (includes `templates/plugin.js`).
 - The Pet bubble, theme / composer / session-row / model-pill, embedding, transcript-directive, and backend (`plugin_api.py`, event push) sections of the source page are summarized only through the tables above; read the source page for their full payload details.
-- Source: developer-guide/desktop-plugin-sdk (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/desktop-plugin-sdk (pinned to v0.22.2)
 
 ## Related
 

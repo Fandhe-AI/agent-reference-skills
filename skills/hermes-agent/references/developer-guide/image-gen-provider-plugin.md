@@ -90,7 +90,7 @@ Response helpers:
 - Base64 output: `save_b64_image(b64, prefix=..., extension="png")` writes to `$HERMES_HOME/cache/images/` and returns an absolute `Path`; pass `str(path)` as `image=`. URLs and absolute paths are both delivered by the gateway.
 - User plugins with the same `name` as a bundled one override it (last-writer-wins).
 - Reference implementations: `plugins/image_gen/openai/` (gpt-image-2 tiers as virtual model IDs), `xai/` (Grok Imagine, URL output), `openai-codex/` (Codex OAuth token, plain `httpx`).
-- Source: developer-guide/image-gen-provider-plugin (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/image-gen-provider-plugin (pinned to v0.22.2)
 
 ## Related
 

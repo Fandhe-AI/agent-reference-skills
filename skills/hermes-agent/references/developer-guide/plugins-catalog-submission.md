@@ -50,7 +50,7 @@ Admission rules (summary of the 17 mirrored rules):
 - Updating an entry: new PR bumping `sha`, bump `version` in the same PR, re-pin `image` / `screenshots` URLs embedding the old sha. `hermes plugins list --json` reports `update_available`.
 - Delisting deletes the entry file (existing installs keep the plugin); removal adds it to `plugin-catalog/removed.yaml` (blocklist for security/policy incidents; installers refuse it).
 - If a needed hook is missing, open an issue on `NousResearch/hermes-agent` rather than patching.
-- Source: developer-guide/plugins/catalog-submission (v0.22.2 snapshot). The rule text above is abbreviated; the full wording is in the source page.
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/plugins/catalog-submission (pinned to v0.22.2). The rule text above is abbreviated; the full wording is in the source page.
 
 ## Related
 

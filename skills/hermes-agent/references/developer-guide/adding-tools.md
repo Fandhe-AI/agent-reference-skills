@@ -87,7 +87,7 @@ _HERMES_CORE_TOOLS = [
 - `todo_list`, `memory`, `session_search`, `delegate_task` are intercepted by the agent loop (`agent/tool_executor.py`, called from `agent/conversation_loop.py`) before reaching the registry; `dispatch()` returns a fallback error if the intercept is bypassed.
 - Optional setup-wizard integration: add the key to `OPTIONAL_ENV_VARS` in `hermes_cli/config.py` (`description`, `prompt`, `url`, `tools`, `password`).
 - Checklist ends with a smoke test: `hermes chat -q "Use the weather tool for London"`; optionally add to `toolset_distributions.py` for batch processing.
-- Source: developer-guide/adding-tools (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/adding-tools (pinned to v0.22.2)
 
 ## Related
 

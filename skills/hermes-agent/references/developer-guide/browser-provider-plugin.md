@@ -78,7 +78,7 @@ browser:
 - `name` must be lowercase and stable (it is a user-written config value). `is_available()` runs at tool registration and on every `hermes tools` paint.
 - A backend that cannot be selected and configured through `hermes tools` is not done.
 - Reference implementations under `plugins/browser/`: `firecrawl` (simplest), `browser_use`, `browserbase` (stealth/proxy/keep-alive flags).
-- Source: developer-guide/browser-provider-plugin (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/browser-provider-plugin (pinned to v0.22.2)
 
 ## Related
 

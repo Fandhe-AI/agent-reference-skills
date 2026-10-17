@@ -83,7 +83,7 @@ Availability states (`hermes_platform/resolver/availability.py::availability(dec
 - `gpu_class()` reads the registry on Windows, sysfs on Linux, CPU architecture on macOS; when it cannot read the GPU (`unknown`) the requirement passes.
 - Evaluation never probes a server, launches an application or connects.
 - Two gates: MCP `check_fn` (`tools/mcp_tool_handlers.py::_make_check_fn`, connection alive AND `availability(decl).offerable`) and skill `requires_apps:` frontmatter (`agent/skill_utils.py::skill_matches_apps`).
-- Source: developer-guide/plugins/application-declarations (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/plugins/application-declarations (pinned to v0.22.2)
 
 ## Related
 

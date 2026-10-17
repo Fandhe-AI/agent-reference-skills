@@ -76,7 +76,7 @@ Default layout top to bottom: output area, spacer, extra widgets, status bar, im
 - Call `self._invalidate()` after state changes to trigger a redraw; `self.agent`, `self.model`, `self.conversation_history` are available.
 - Use `ConditionalContainer` or `filter=Condition(...)` to make widgets toggleable.
 - Do not override `run()` unless absolutely necessary.
-- Source: developer-guide/extending-the-cli (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/extending-the-cli (pinned to v0.22.2)
 
 ## Related
 

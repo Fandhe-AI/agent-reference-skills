@@ -112,7 +112,7 @@ Trust levels: `builtin`, `official` (`optional-skills/`), `trusted` (openai/skil
 - Placement: `skills/` for broadly useful, `optional-skills/` for official but niche, Skills Hub / tap for community.
 - Installing a skill with a `blueprint:` block registers a suggested cron job (opt-in) reviewed via `/suggestions` (`accept N`, `dismiss N`, `catalog`). Sources: `catalog`, `blueprint`, `usage`, `integration`. Accepting calls `cron.jobs.create_job`; suggestions never auto-create jobs.
 - The hub scanner checks data exfiltration, prompt injection, destructive commands and shell injection. External sources: GitHub identifiers, `skills.sh` identifiers, `/.well-known/skills/index.json` endpoints.
-- Source: developer-guide/creating-skills (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/creating-skills (pinned to v0.22.2)
 
 ## Related
 

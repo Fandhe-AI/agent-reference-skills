@@ -22,6 +22,12 @@ class MyMemoryProvider(MemoryProvider):
         self._api_key = get_secret("MY_API_KEY") or ""
         self._session_id = session_id
 
+    def get_tool_schemas(self) -> list[dict]:
+        return []   # required @abstractmethod — see full guide
+
+    # ... implement remaining methods (get_config_schema, save_config, and
+    # handle_tool_call if the provider exposes tools) — omitted in this partial example
+
 def register(ctx) -> None:
     ctx.register_memory_provider(MyMemoryProvider())
 ```
@@ -101,7 +107,7 @@ Config schema field keys: `key`, `description`, `secret` (with `env_var`, writte
 - Keep setup wizard schema minimal (only must-configure fields); `config_schema.py` drives the Desktop config panel.
 - `$HERMES_HOME/plugins/**` survives ordinary Hermes updates including managed-venv rebuilds (excluding explicit plugin update/removal flows); sidecar wrappers with no dependency surface never join the pm dependency union.
 - Testing: `MemoryManager().add_provider(p)`, `initialize_all(session_id=..., platform="cli")`, `handle_tool_call`, `sync_all`, `on_session_end`, `shutdown_all`; see `tests/agent/test_memory_provider.py`.
-- Source: developer-guide/memory-provider-plugin (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/memory-provider-plugin (pinned to v0.22.2)
 
 ## Related
 

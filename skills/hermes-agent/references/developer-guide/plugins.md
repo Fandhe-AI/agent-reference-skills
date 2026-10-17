@@ -170,7 +170,7 @@ Middleware kinds (`ctx.register_middleware(kind, fn)`, canonical list `VALID_MID
 - Lazy installs: `from pm import ensure_import` takes a `pyproject.toml` extra name (e.g. `"bedrock"`); the old `LAZY_DEPS` / `FeatureUnavailable` no longer exist. Use `plugins.plugin_utils.lazy_singleton` / `SingletonSlot` for thread-safe lazy singletons.
 - Mid-run loading: gateway slash commands, hooks and platform callbacks activate immediately; `tools` and `prompt` sections apply from the next session; `mcp_servers` connect on `mcp.reload` or next session. There is no un-wire.
 - Third-party-product plugins ship as standalone repos, not into the core tree. Nix/NixOS is no longer explicitly supported (best-effort). Distribute via pip with the entry-point group `hermes_agent.plugins`.
-- Source: developer-guide/plugins (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/plugins (pinned to v0.22.2)
 
 ## Related
 

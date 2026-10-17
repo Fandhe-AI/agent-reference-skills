@@ -100,7 +100,7 @@ Declarative PKCE: `OAuthPKCEConfig(client_id, authorize_url, token_url, scopes, 
 - Pip distribution: entry point group `hermes_agent.plugins`; opt-in via `plugins.enabled`; lowest precedence (bundled and `$HERMES_HOME` profiles of the same name win).
 - Testing: point `HERMES_HOME` at a scratch directory, then `hermes -z "hello" --provider my-provider -m some-model`; verify via `hermes doctor`.
 - Reference plugins: `openrouter`, `gemini`, `kimi-coding`, `qwen-oauth`, `nous`, `custom`, `bedrock`.
-- Source: developer-guide/model-provider-plugin (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/model-provider-plugin (pinned to v0.22.2)
 
 ## Related
 

@@ -84,7 +84,7 @@ Pi-style RPC mapping: `prompt` -> `prompt.submit`; `steer` -> `session.steer`; `
 - A run is never reported `completed` with `completed: false` or `partial: true`.
 - Model hot-swapping works on every surface via `/model` (CLI/TUI, `command.dispatch`, ACP prompt, API server `model` field; see `hermes_cli/model_switch.py`).
 - Hermes has no `--mode rpc` flag. For in-process Python embedding import `run_agent.AIAgent` directly.
-- Source: developer-guide/programmatic-integration (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/programmatic-integration (pinned to v0.22.2)
 
 ## Related
 

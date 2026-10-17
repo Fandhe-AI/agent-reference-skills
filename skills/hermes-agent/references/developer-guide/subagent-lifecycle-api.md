@@ -42,7 +42,7 @@ Routing precedence for `provider`: request > `delegation` config > parent; `mode
 - Metadata and terminal results are retained in-process for one hour; after restart `reconnect` returns `RECONNECT_UNAVAILABLE` and never starts a replacement child.
 - Fail-closed requests: size caps, unknown or parent-broadening toolsets rejected (plugin-registered toolsets count as known); per-tool blocks, working-directory overrides and per-launch timeouts are explicitly rejected for now. Use `allowed_toolsets` to narrow a child. An unresolvable provider raises `SubagentLifecycleError`.
 - Does not change the synchronous `delegate_task` tool; core does not expose `provider` to the model.
-- Source: developer-guide/subagent-lifecycle-api (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/subagent-lifecycle-api (pinned to v0.22.2)
 
 ## Related
 

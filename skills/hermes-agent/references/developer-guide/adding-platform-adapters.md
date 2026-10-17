@@ -142,7 +142,7 @@ Reference implementations:
 - Use `acquire_scoped_lock(platform, token)` / `release_scoped_lock` from `gateway.status` to prevent two profiles from sharing a credential.
 - For platforms with tight callback deadlines, acknowledge immediately and deliver the reply proactively via API.
 - Run a parity audit against an established platform (search for files mentioning the reference platform vs the new one) before completing a new platform PR.
-- Source: developer-guide/adding-platform-adapters (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/adding-platform-adapters (pinned to v0.22.2)
 
 ## Related
 
