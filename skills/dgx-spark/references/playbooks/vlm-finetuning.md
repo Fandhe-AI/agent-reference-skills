@@ -42,7 +42,7 @@ streamlit run Image_VLM.py
 - Video recipe: dataset layout is `dataset/videos/*.mp4` plus `metadata.jsonl` (one structured JSON record per video); usable quality often needs a day or more of training
 - Last Updated 10/09/2026: `peft` pinned in the Dockerfile (`peft==0.17.1`) so GRPO no longer fails with `ImportError: Found an incompatible version of torchao`; rebuild the image if you hit it
 - UMA: flush buffer cache with `sudo sh -c 'sync; echo 3 > /proc/sys/vm/drop_caches'` if memory pressure appears within capacity
-- Duration: ~2 hours setup plus short image run; Risk: Medium. Rollback: remove containers (`docker rmi vlm_demo`) and delete downloaded models, datasets, checkpoints
+- Duration: ~2 hours setup plus short image run; Risk: Medium. Rollback: stop and remove the Docker containers (exit the container; `docker stop` / `docker rm` for a running one), then remove the image if no longer needed (`docker rmi vlm_demo`, Step 7 Cleanup); delete downloaded models, datasets, and checkpoints under the mounted assets directory if needed
 - Source: https://build.nvidia.com/spark/vlm-finetuning (dgx-spark-playbooks commit c035e0ac7d21)
 
 ## Related
