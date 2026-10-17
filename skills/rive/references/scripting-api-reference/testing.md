@@ -12,15 +12,21 @@ blob(name: string) -> Blob?
 ```
 
 ```lua
-group("Math utilities", function()
-  case("adds numbers", function(expect)
-    expect(2 + 2).is(4)
-  end)
-end)
+function setup(test: Tester)
+  local case = test.case
+  local group = test.group
+  local errors = test.errors
 
-errors("rejects a negative size", function(expect)
-  buffer.create(-1)
-end, "invalid argument")
+  group("Math utilities", function()
+    case("adds numbers", function(expect)
+      expect(2 + 2).is(4)
+    end)
+  end)
+
+  errors("rejects a negative size", function(expect)
+    buffer.create(-1)
+  end, "invalid argument")
+end
 ```
 
 ## Options / Props

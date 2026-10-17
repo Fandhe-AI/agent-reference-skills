@@ -127,7 +127,7 @@ rive myproject --screenshot=out.png --key=tab:down+shift
 rive myproject --screenshot=scrolled.png --pointer='drag@200,300>200,80:12'
 ```
 
-`--data` / `--pointer` / `--advance` / `--key` は繰り返し指定でき、書いた順に実行される。`--pointer` と `--advance` は `--screenshot` が必要。`drag` の値は `>` がリダイレクトと解釈されないよう引用符で囲む。存在しない `--data` パスは警告のみで無視される。
+`--data` / `--pointer` / `--advance` / `--key` は繰り返し指定でき、書いた順に実行される。`--pointer` と `--advance` は `--screenshot` が必要。ただし `--data-dump` もウィンドウなしでビルド・実行され、公式例では `--screenshot` なしで `--advance` と併用している（次節）。`drag` の値は `>` がリダイレクトと解釈されないよう引用符で囲む。存在しない `--data` パスは警告のみで無視される。
 
 ## データの読み出し
 
@@ -135,7 +135,7 @@ rive myproject --screenshot=scrolled.png --pointer='drag@200,300>200,80:12'
 rive myproject --data-dump=- --advance=60
 ```
 
-バインドされた view model の値を JSON で出力する。`--data-dump-filter=<paths>`（glob 可）で絞り込み、`--data-dump-every=<N|Ns|Nms>` でサンプリング間隔を指定できる。
+`--data-dump` はビルドしてウィンドウなしで実行し、バインドされた view model の値を JSON で出力する。上記の公式例は `--screenshot` なしで `--advance` を使う。`--data-dump-filter=<paths>`（glob 可）で絞り込み、`--data-dump-every=<N|Ns|Nms>` でサンプリング間隔を指定できる。
 
 ## 表示の制御
 
