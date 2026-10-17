@@ -99,7 +99,7 @@ Four generated-Android-app files to modify:
 
 | File | Change |
 | --- | --- |
-| `android/app/build.gradle` (or `.kts`) | Add `buildFeatures { compose = true }` and `composeOptions { kotlinCompilerExtensionVersion = "1.4.8" }` to the `android` block; add a root-level `dependencies` block (core-ktx, lifecycle-runtime-ktx, activity-compose, compose-bom, compose ui / material / material3, test artifacts). |
+| `android/app/build.gradle` (or `.kts`) | Add `buildFeatures { compose = true }` and `composeOptions { kotlinCompilerExtensionVersion = "1.4.8" }` (as written in the source; pre-Kotlin 2.0 setup) to the `android` block; add a root-level `dependencies` block (core-ktx, lifecycle-runtime-ktx, activity-compose, compose-bom, compose ui / material / material3, test artifacts). |
 | `android/build.gradle` (or `.kts`) | Add a top `buildscript` block with `classpath("com.android.tools.build:gradle:8.1.1")` ("Replace with the latest version"), `google()` and `mavenCentral()` repositories. |
 | `android/app/src/main/AndroidManifest.xml` | Declare `.SecondActivity`. |
 | `android/app/src/main/kotlin/com/example/flutter_android_activity/MainActivity.kt` | Add imports, `CHANNEL`, `configureFlutterEngine`, and `SecondActivity`. |
@@ -110,7 +110,8 @@ Three values must match across Dart and Kotlin: the channel name (`com.example.f
 
 - Corrected from the official docs: the source sample passes `call.arguments.toString()` (the whole map, so `SecondActivity` would show `{message=Hello from Flutter}`); this page extracts the `message` key with `call.argument<String>("message")`. `result.success(true)` is returned only after `startActivity` succeeds and failures return `result.error` (source: empty `catch`, then `success`). The `else` branch calls `result.notImplemented()` (source: empty `else -> {}`).
 - Dependency snippet from the source (Kotlin DSL): `implementation(platform("androidx.compose:compose-bom:2024.06.00"))`, `implementation("androidx.compose.material3:material3")`, `implementation("androidx.activity:activity-compose")`, among others. The Groovy tab uses `compose-bom:2023.08.00` for `androidTestImplementation`.
-- Adjust `kotlinCompilerExtensionVersion` (see the Compose-Kotlin compatibility map on developer.android.com) only if `flutter run` errors tell you which versions are installed.
+- Corrected from the official docs (outdated): `composeOptions { kotlinCompilerExtensionVersion = "1.4.8" }` applies only to Kotlin 1.x. With Kotlin 2.0+ (the norm on Flutter 3.44+ with AGP 9 built-in Kotlin), apply the Compose Compiler Gradle plugin `org.jetbrains.kotlin.plugin.compose` (same version as Kotlin) and drop `kotlinCompilerExtensionVersion`; keep `buildFeatures { compose = true }`. Example: `plugins { id("org.jetbrains.kotlin.plugin.compose") version "<kotlin-version>" }`.
+- For Kotlin 1.x, adjust `kotlinCompilerExtensionVersion` (see the Compose-Kotlin compatibility map on developer.android.com) only if `flutter run` errors tell you which versions are installed.
 - Imports may vary if library versions change or you use different Compose classes; follow your IDE's hints.
 - All Flutter apps on Android exist within an activity completely consumed by Flutter, so the native `MethodChannel` callback's job is to launch a second activity. Not all Android activities use Jetpack Compose; this tutorial assumes Compose.
 - To host native Android views inside the Flutter widget tree instead, see the Android platform views page.
