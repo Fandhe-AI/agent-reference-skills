@@ -19,7 +19,7 @@ const result = await generateText({
 });
 ```
 
-## Language model call options
+### Language model call options
 
 Settings that influence how the model generates its response; forwarded to the underlying model.
 
@@ -48,7 +48,7 @@ Settings that influence how the model generates its response; forwarded to the u
 | `'xhigh'` | Extra-high reasoning |
 | `'max'` | Maximum reasoning |
 
-## Request options
+### Request options
 
 Settings that affect transport, retries, cancellation, and timeouts, not generation behavior.
 

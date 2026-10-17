@@ -34,7 +34,7 @@ for await (const textPart of result.textStream) {
 }
 ```
 
-## generateText result
+### generateText result
 
 | Property | Description |
 | --- | --- |
@@ -66,11 +66,11 @@ Each step includes `performance`:
 | `timeToFirstOutputMs` | For streaming steps, the time until the first generated output chunk was received in milliseconds. For `generateText`, `undefined`. |
 | `timeBetweenOutputChunksMs` | For streaming steps with at least two output chunks, timing statistics for the gaps between output chunks in milliseconds (`min`, `p10`, `median`, `avg`, `p90`, `max`). |
 
-## streamText result promises
+### streamText result promises
 
 `result.content`, `result.text`, `result.finalStep`, `result.files`, `result.sources`, `result.toolCalls`, `result.toolResults`, `result.finishReason`, `result.rawFinishReason`, `result.usage` (total usage across all steps), `result.warnings`, `result.steps` resolve when the stream is finished. `result.totalUsage` is deprecated; use `result.usage` instead.
 
-## Response headers and body
+### Response headers and body
 
 ```ts
 const result = await generateText({
@@ -81,7 +81,7 @@ console.log(JSON.stringify(result.finalStep.response.headers, null, 2));
 console.log(JSON.stringify(result.finalStep.response.body, null, 2));
 ```
 
-## Callbacks
+### Callbacks
 
 `onEnd` (triggered after the last step of `generateText`, or when the `streamText` stream is finished) receives text, usage information, finish reason, messages, steps, total usage, and more:
 
@@ -116,7 +116,7 @@ const result = streamText({
 
 `onChunk` receives all stream part types from `stream`: `start`, `start-step`, `text-start`, `text-delta`, `text-end`, `reasoning-start`, `reasoning-delta`, `reasoning-end`, `custom`, `source`, `file`, `reasoning-file`, `tool-call`, `tool-input-start`, `tool-input-delta`, `tool-input-end`, `tool-result`, `tool-error`, `tool-output-denied`, `tool-approval-request`, `tool-approval-response`, `finish-step`, `finish`, `abort`, `error`, `raw`.
 
-### Lifecycle callbacks (experimental)
+#### Lifecycle callbacks (experimental)
 
 Available on both `generateText` and `streamText`; errors thrown inside these callbacks are silently caught and do not break the generation flow.
 
@@ -128,7 +128,7 @@ Available on both `generateText` and `streamText`; errors thrown inside these ca
 - `onToolExecutionEnd`: Called right after a tool's `execute` function completes or errors. Receives the tool call object, `toolExecutionMs`, and a `toolOutput` discriminated union (`type: 'tool-result'` with `output`, or `type: 'tool-error'` with `error`).
 - `onStepEnd`: Called after each step finishes (`generateText` includes `stepNumber`, the zero-based index of the completed step).
 
-## stream property
+### stream property
 
 ```ts
 for await (const part of result.stream) {
@@ -153,7 +153,7 @@ for await (const part of result.stream) {
 }
 ```
 
-## Stream helpers
+### Stream helpers
 
 `result.stream` can be passed to standalone helpers for AI SDK UI integration:
 
@@ -162,7 +162,7 @@ for await (const part of result.stream) {
 - `createTextStreamResponse({ stream: toTextStream({ stream: result.stream }) })`: Creates a simple text stream HTTP response.
 - `pipeTextStreamToResponse({ stream: toTextStream({ stream: result.stream }), response })`: Writes text delta output to a Node.js response-like object.
 
-## Stream transformation
+### Stream transformation
 
 Use `experimental_transform` to filter, change, or smooth the stream. Transformations are applied before the callbacks are invoked and the promises are resolved (e.g. an uppercase transformation means `onEnd` receives the transformed text). Multiple transformations are applied in the order provided.
 
@@ -198,7 +198,7 @@ const upperCaseTransform =
 
 When invoking `stopStream`, simulate the `finish-step` and `finish` events to guarantee a well-formed stream is returned and all callbacks are invoked.
 
-## Sources and citations
+### Sources and citations
 
 Some providers (e.g. Perplexity, Google) include sources in the response; sources reference URLs or documents. Each `url` source has `id`, `url`, optional `title`, and `providerMetadata`. For OpenAI Responses and Anthropic web search, sources contain the retrieved references, which can include more references than the model cites. OpenAI file-search results are also exposed as document sources when the API returns them.
 

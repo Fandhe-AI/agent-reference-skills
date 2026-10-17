@@ -34,7 +34,7 @@ The loop continues until:
 - A tool call needs approval, or
 - A stop condition is met
 
-## Stop Conditions
+### Stop Conditions
 
 The `stopWhen` parameter controls when to stop execution when there are tool results in the last step. By default, `ToolLoopAgent` stops after 20 steps using `isStepCount(20)`. When `stopWhen` is an array, execution stops when any of the conditions are met.
 
@@ -97,7 +97,7 @@ const budgetExceeded: StopCondition<typeof tools> = ({ steps }) => {
 };
 ```
 
-## Prepare Step
+### Prepare Step
 
 The `prepareStep` callback runs before each step in the loop and defaults to the initial settings if you don't return any changes. It receives `messages` for the current step, plus `initialMessages` and `responseMessages` when you need to distinguish the original input from assistant/tool messages accumulated in earlier steps. If you return a `messages` override, that override persists as the base for later steps, together with the response messages from each completed step.
 
@@ -233,7 +233,7 @@ const agent = new ToolLoopAgent({
 });
 ```
 
-### Step information
+#### Step information
 
 Both `stopWhen` and `prepareStep` receive detailed information about the current execution:
 
@@ -259,7 +259,7 @@ prepareStep: async ({
 },
 ```
 
-## Forced Tool Calling
+### Forced Tool Calling
 
 Combine `toolChoice: 'required'` with a `done` tool that has no `execute` function:
 
@@ -298,7 +298,7 @@ if (toolCall?.toolName === 'done') {
 - **`done` tool without `execute`**: A tool that has no `execute` function acts as a termination signal.
 - **Accessing results**: The final answer is available in `result.staticToolCalls`, which contains tool calls that weren't executed.
 
-## Manual Loop Control
+### Manual Loop Control
 
 Use `generateText` / `streamText` to implement your own loop instead of `stopWhen` and `prepareStep`:
 

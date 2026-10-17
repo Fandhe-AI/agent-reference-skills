@@ -31,7 +31,7 @@ const result = await generateText({
 
 Callbacks can be synchronous or asynchronous. If a callback throws, the error is caught internally and the AI SDK call continues. Keep callbacks fast or enqueue expensive work in a background system.
 
-## Available callbacks
+### Available callbacks
 
 `generateText` and `streamText`:
 
@@ -50,7 +50,7 @@ Callbacks can be synchronous or asynchronous. If a callback throws, the error is
 `rerank`: `onStart(RerankStartEvent)`, `onEnd(RerankEndEvent)`.
 `experimental_decide`: `onStart(Experimental_DecideStartEvent)`, `onEnd(Experimental_DecideEndEvent)` (called when the decision operation completes successfully).
 
-## Generation lifecycle order
+### Generation lifecycle order
 
 Single-step: `onStart`, `onStepStart`, `onLanguageModelCallStart`, `onLanguageModelCallEnd`, `onStepEnd`, `onEnd`.
 
@@ -58,7 +58,7 @@ Multi-step with local tool execution: `onStart`, `onStepStart`, `onLanguageModel
 
 `onStepStart` / `onStepEnd` describe the full step; `onLanguageModelCallStart` / `onLanguageModelCallEnd` describe only the model call inside it, so step duration can be longer than model response duration when local tools run.
 
-## Event data (text generation)
+### Event data (text generation)
 
 | Callback | Fields |
 | --- | --- |
@@ -71,7 +71,7 @@ Multi-step with local tool execution: `onStart`, `onStepStart`, `onLanguageModel
 | onStepEnd | The full `StepResult`: `callId`, `stepNumber`, `model: { provider; modelId }`, `content`, `text`, `toolCalls`, `toolResults`, `finishReason`, `usage`, `performance: StepResultPerformance`, `warnings`, `request: LanguageModelRequestMetadata`, `response: LanguageModelResponseMetadata`, `runtimeContext`, `toolsContext` |
 | onEnd | `callId`, `steps: Array<StepResult>`, `finalStep` (shortcut for `steps.at(-1)`), `responseMessages: Array<ResponseMessage>`, `content`, `text` (final step), `toolCalls`, `toolResults`, `finishReason` (final step), `usage` (aggregated across all steps), `warnings` |
 
-## Event data (embedding, rerank, decision)
+### Event data (embedding, rerank, decision)
 
 | Callback | Fields |
 | --- | --- |
@@ -82,7 +82,7 @@ Multi-step with local tool execution: `onStart`, `onStepStart`, `onLanguageModel
 | decide onStart | `callId`, `operationId` (`'ai.decide'`), `runtimeContext`, `provider`, `modelId`, `state: string \| object \| array`, `questions: Readonly<Record<string, Experimental_DecisionQuestion>>`, `maxRetries`, `headers`, `providerOptions` |
 | decide onEnd | every `onStart` field plus `answers: Record<string, Experimental_DecisionAnswer>` (exactly one typed answer per question ID), `usage: { inputTokens; outputTokens; totalTokens }`, `warnings`, `rounding: { probabilityDecimals?; scoreDecimals? }`, `providerMetadata`, `response` |
 
-## Runtime and tool context
+### Runtime and tool context
 
 Generation and step lifecycle callbacks receive the full `runtimeContext` and `toolsContext` values that flow through the call. Tool-execution callbacks receive the scoped `toolContext` for the tool being executed.
 

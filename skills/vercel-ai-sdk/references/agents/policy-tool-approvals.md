@@ -40,7 +40,7 @@ const result = await generateText({
 });
 ```
 
-## How it works
+### How it works
 
 The policy is consulted before every tool dispatch and maps to one of the standard approval statuses:
 
@@ -88,7 +88,7 @@ opaPolicy({
 });
 ```
 
-## API (exported from `@ai-sdk/policy-opa`)
+### API (exported from `@ai-sdk/policy-opa`)
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -103,7 +103,7 @@ opaPolicy({
 | `normalizeOpaDecision(result)` | function | Standalone result normalization, for users who call OPA themselves. |
 | `PolicyDecision`, `WrappedMcpTools`, `PolicyDecisionEvent` | types | Helper types. |
 
-## Rolling out with shadow mode
+### Rolling out with shadow mode
 
 `shadow(approval, opts)` evaluates the policy and reports the decision via `onDecision`, but tells the SDK every call is approved until you flip `enforce: true`.
 
@@ -131,7 +131,7 @@ const toolApproval = shadow(
 
 Each `PolicyDecisionEvent` carries the tool call, the policy `decision` (type and reason), `enforced`, and `effective` (what the SDK acted on). `onDecision` is fire-and-forget: a slow or throwing logger cannot block or break enforcement.
 
-## Capability scoping and discovered tools
+### Capability scoping and discovered tools
 
 `opaCapabilityMiddleware` enforces policy before the model is told a tool exists (rule at `path` returns a `string[]` of allowed tool names, or `{ tools: string[] }`):
 
@@ -162,7 +162,7 @@ const { tools, toolApproval } = wrapMcpTools(
 await generateText({ model, tools, toolApproval, prompt });
 ```
 
-## Loading the policy
+### Loading the policy
 
 - WASM (in-process): compile ahead of time with `opa build -t wasm -e 'agent/call/decision' -o bundle.tar.gz policy.rego` then `tar -xzf bundle.tar.gz /policy.wasm`; no network call per decision; hot-reload means rebuilding the WASM and re-instantiating the client.
 - HTTP (running OPA server): `httpPolicyClient({ url: 'http://localhost:8181' })`; one HTTP round-trip per decision; good for hot-reload without redeploying.

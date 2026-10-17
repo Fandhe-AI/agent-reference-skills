@@ -30,10 +30,10 @@ const result = streamText({
 });
 
 for await (const part of result.stream) {
-  if (part.type === 'reasoning') {
-    process.stdout.write(part.textDelta);
+  if (part.type === 'reasoning-delta') {
+    process.stdout.write(part.text);
   } else if (part.type === 'text-delta') {
-    process.stdout.write(part.textDelta);
+    process.stdout.write(part.text);
   }
 }
 ```
@@ -51,7 +51,7 @@ for await (const part of result.stream) {
 | `'xhigh'` | Extra-high reasoning |
 | `'max'` | Maximum reasoning |
 
-## Precedence rules
+### Precedence rules
 
 Provider-specific settings take precedence over the corresponding fields derived from `reasoning`. Partial configurations may still use portable reasoning to fill missing fields; summary and display settings can be used alongside it.
 
@@ -68,7 +68,7 @@ const { text } = await generateText({
 });
 ```
 
-## Migrating from providerOptions
+### Migrating from providerOptions
 
 Before (Anthropic):
 
@@ -97,6 +97,7 @@ Older Anthropic model: `thinking: { type: 'enabled', budgetTokens: 12000 }` beco
 - Maximum reasoning can substantially increase token usage, latency, cost, and the chance of reaching request or output limits.
 - Providers and models that do not support reasoning configuration emit an `unsupported` warning and ignore the parameter.
 - To enforce an exact token budget (e.g. exactly 12000 tokens), keep using `providerOptions` instead of the top-level `reasoning` parameter.
+- The official Reasoning page's streaming example uses the pre-v5 `part.type === 'reasoning'` / `part.textDelta`; this page follows the v7 stream part shape (`reasoning-delta` / `text-delta` with `part.text`) shown in Generating Text and the v7 migration guide.
 
 ## Related
 

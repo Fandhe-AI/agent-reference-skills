@@ -87,7 +87,7 @@ Method parameters (`generate()` takes `AgentCallParameters`; `stream()` takes `A
 | `onEnd` | `GenerateTextOnEndCallback<TOOLS>` | — | Called when all steps are finished and the response is complete. |
 | `onFinish` | `GenerateTextOnEndCallback<TOOLS>` | — | Deprecated alias for `onEnd`. |
 
-## Example: Custom Agent Implementation
+### Example: Custom Agent Implementation (minimal sketch from the official page)
 
 ```ts
 import { Agent, GenerateTextResult, StreamTextResult } from 'ai';
@@ -116,6 +116,7 @@ class MyEchoAgent implements Agent {
 
 ## Notes
 
+- The official `MyEchoAgent` example is a minimal sketch: it returns only `{ text, steps }` / `{ textStream }` and does not satisfy the full `GenerateTextResult` / `StreamTextResult` contract, so it will not work with `createAgentUIStream*` helpers. A real implementation should delegate to `generateText` / `streamText` (or wrap `ToolLoopAgent`) to return complete results.
 - Agents should define their `tools` property, even if empty (`{}`), for compatibility with SDK utilities.
 - The interface accepts both plain prompts and message arrays as input, but only one at a time.
 - All SDK utilities that accept an agent (`createAgentUIStream`, `createAgentUIStreamResponse`, `pipeAgentUIStreamToResponse`) expect an object adhering to the `Agent` interface. `ToolLoopAgent` is the official implementation (recommended for multi-step workflows with tool use).

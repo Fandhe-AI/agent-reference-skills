@@ -17,7 +17,7 @@ const { text } = await generateText({
 });
 ```
 
-## Core Functions
+### Core Functions
 
 | Name | Description |
 | --- | --- |

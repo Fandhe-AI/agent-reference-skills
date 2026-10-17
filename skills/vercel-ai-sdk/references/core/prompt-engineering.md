@@ -20,7 +20,7 @@ console.log(result.finalStep.request.messages);
 console.log(result.finalStep.request.body);
 ```
 
-## Tips for tools
+### Tips for tools
 
 1. Use a model that is strong at tool calling, such as `gpt-6-astra` or `claude-sonnet-5-5`. Weaker models will often struggle to call tools effectively and flawlessly.
 2. Keep the number of tools low, e.g. to 5 or less.
@@ -30,7 +30,7 @@ console.log(result.finalStep.request.body);
 6. When the output of a tool might be unclear to the model and there are dependencies between tools, use the tool `description` field to describe the output of the tool execution.
 7. Include example input/outputs of tool calls in your prompt. Tools work with JSON objects, so the examples should use JSON.
 
-## Schemas
+### Schemas
 
 Zod dates: Zod expects JavaScript Date objects, but models return dates as strings. Validate the date format with `z.string().datetime()` or `z.string().date()`, then use a Zod transformer to convert to a Date:
 
@@ -70,7 +70,7 @@ const workingTool = tool({
 
 Temperature: for tool calls and object generation, `temperature: 0` is recommended for deterministic and consistent results (structured data with specific formats, precise tool calls, strict schemas).
 
-## Debugging
+### Debugging
 
 - `result.warnings`: providers either throw exceptions or return warnings when they do not support a feature.
 - `request.messages`: input messages sent to the model for the final step; set `include.requestMessages` to `true` to include them in step results.

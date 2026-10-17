@@ -75,13 +75,13 @@ Top-level parameters (nested message-part and tool-definition schemas are summar
 | onEnd | `(event: GenerateTextEndEvent<TOOLS>) => PromiseLike<void> \| void` (Optional) | Called when the entire generation completes. Includes the final step result properties (excluding direct `performance`) plus aggregated data; use `event.steps` for per-step performance. |
 | onFinish | callback (Optional) | Deprecated alias for `onEnd`. |
 
-### prepareStep
+#### prepareStep
 
 `PrepareStepOptions`: `steps` (executed so far), `stepNumber`, `model`, `instructions` (an instructions override carries forward to later steps), `initialInstructions`, `messages` (a messages override carries forward), `runtimeContext`, `toolsContext`, `experimental_sandbox`.
 
 `PrepareStepResult<TOOLS>` (all optional; omitted values use the top-level value): `model`, `maxOutputTokens`, `temperature`, `topP`, `topK`, `presencePenalty`, `frequencyPenalty`, `stopSequences`, `seed`, `reasoning`, `toolChoice`, `activeTools`, `toolOrder`, `instructions`, `messages`, `runtimeContext` (affects this step and all subsequent steps), `toolsContext` (affects this and subsequent steps), `experimental_sandbox` (this step only), `providerOptions` (e.g. container IDs for Anthropic code execution).
 
-## Returns
+### Returns
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -108,7 +108,7 @@ Top-level parameters (nested message-part and tool-definition schemas are summar
 | steps | `Array<StepResult<TOOLS>>` | Response information for every step. |
 | finalStep | `StepResult<TOOLS>` | The final step; shortcut for `steps.at(-1)`. |
 
-## Types
+### Types
 
 ```ts
 type ActiveTools<TOOLS extends ToolSet> =

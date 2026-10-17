@@ -61,7 +61,7 @@ async function generateMarketingCopy(input: string) {
 }
 ```
 
-## Patterns
+### Patterns
 
 | Pattern | Description |
 | --- | --- |
@@ -71,7 +71,7 @@ async function generateMarketingCopy(input: string) {
 | Orchestrator-Worker | A primary model (orchestrator) coordinates the execution of specialized workers. Each worker optimizes for a specific subtask. |
 | Evaluator-Optimizer | Dedicated evaluation steps assess intermediate results; the workflow proceeds, retries with adjusted parameters, or takes corrective action. |
 
-### Routing
+#### Routing
 
 ```ts
 const { output: classification } = await generateText({
@@ -104,7 +104,7 @@ const { text: response } = await generateText({
 });
 ```
 
-### Parallel Processing
+#### Parallel Processing
 
 ```ts
 const [securityReview, performanceReview, maintainabilityReview] =
@@ -125,6 +125,12 @@ const [securityReview, performanceReview, maintainabilityReview] =
     // ...performance and maintainability reviewers follow the same shape
   ]);
 
+const reviews = [
+  { ...securityReview.output, type: 'security' },
+  { ...performanceReview.output, type: 'performance' },
+  { ...maintainabilityReview.output, type: 'maintainability' },
+];
+
 // Aggregate results using another model instance
 const { text: summary } = await generateText({
   model,
@@ -134,7 +140,7 @@ const { text: summary } = await generateText({
 });
 ```
 
-### Orchestrator-Worker
+#### Orchestrator-Worker
 
 ```ts
 // Orchestrator: Plan the implementation
@@ -174,7 +180,7 @@ const fileChanges = await Promise.all(
 );
 ```
 
-### Evaluator-Optimizer
+#### Evaluator-Optimizer
 
 ```ts
 // Evaluation-optimization loop

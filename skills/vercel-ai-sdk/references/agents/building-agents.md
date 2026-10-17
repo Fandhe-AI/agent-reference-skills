@@ -22,9 +22,9 @@ const myAgent = new ToolLoopAgent({
 
 The ToolLoopAgent accepts all the same settings as `generateText` and `streamText`.
 
-## Configuration
+### Configuration
 
-### Context and Agent State
+#### Context and Agent State
 
 Use `runtimeContext` as the agent's shared runtime state. It flows through the agent loop and is available in `prepareStep`, lifecycle callbacks, and final results. If a tool needs server-side values such as credentials, scoped permissions, or default settings, pass them through `toolsContext` and declare them with the tool's `contextSchema`. Set both in the `ToolLoopAgent` constructor.
 
@@ -70,7 +70,7 @@ const agent = new ToolLoopAgent({
 
 For context that changes with each invocation, use `callOptionsSchema` and `prepareCall`. Model call settings returned from `prepareStep`, such as `temperature`, apply only to the current step. Later steps use the agent's top-level setting unless they return another override.
 
-### Tools That Use Experimental Sandboxes
+#### Tools That Use Experimental Sandboxes
 
 Pass `experimental_sandbox` when an agent tool needs a command or code execution environment. The experimental sandbox is a per-call value, so provide it to `generate()`, `stream()`, or the agent UI stream helper that invokes the agent.
 
@@ -109,7 +109,7 @@ const result = await agent.generate({
 });
 ```
 
-### Tool approval
+#### Tool approval
 
 Configure approval on the `ToolLoopAgent` with `toolApproval`:
 
@@ -131,7 +131,7 @@ const agent = new ToolLoopAgent({
 });
 ```
 
-### Loop Control
+#### Loop Control
 
 By default, agents run for 20 steps (`stopWhen: isStepCount(20)`). In each step, the model either generates text or calls a tool. If it generates text, the agent completes. If it calls a tool, the AI SDK executes that tool.
 
@@ -154,7 +154,7 @@ Each step represents one generation (which results in either text or a tool call
 - A tool call needs approval, or
 - A stop condition is met
 
-### Tool Choice
+#### Tool Choice
 
 ```ts
 const agent = new ToolLoopAgent({
@@ -171,7 +171,7 @@ const agent = new ToolLoopAgent({
 // toolChoice: 'required' forces tool use, 'none' disables tools, 'auto' (default) lets the model decide
 ```
 
-### Structured Output
+#### Structured Output
 
 ```ts
 import { ToolLoopAgent, Output } from 'ai';
@@ -193,7 +193,7 @@ const { output } = await analysisAgent.generate({
 });
 ```
 
-### System instructions
+#### System instructions
 
 System instructions define your agent's behavior, personality, and constraints. They set the context for all interactions and guide how the agent responds to user queries and uses tools.
 
@@ -205,7 +205,7 @@ const agent = new ToolLoopAgent({
 });
 ```
 
-## Using an Agent
+### Using an Agent
 
 ```ts
 // Generate Text
@@ -235,7 +235,7 @@ export async function POST(request: Request) {
 }
 ```
 
-## Lifecycle Callbacks
+### Lifecycle Callbacks
 
 Agents provide lifecycle callbacks for logging, observability, debugging, and custom telemetry.
 
@@ -293,7 +293,7 @@ const result = await myAgent.generate({
 
 All lifecycle callbacks can be defined in the constructor for agent-wide tracking, in the `generate()`/`stream()` call for per-call tracking, or both. When both are provided, both are called (constructor first, then the method callback).
 
-## End-to-end Type Safety
+### End-to-end Type Safety
 
 ```ts
 import { ToolLoopAgent, InferAgentUIMessage } from 'ai';

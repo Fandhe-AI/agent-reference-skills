@@ -35,7 +35,7 @@ type ToolContent = Array<ToolResultPart>;
 
 Zod schema exports: `systemModelMessageSchema`, `userModelMessageSchema`, `assistantModelMessageSchema`, `toolModelMessageSchema`.
 
-## Message parts
+### Message parts
 
 ```typescript
 export interface TextPart {
@@ -90,7 +90,7 @@ export interface ToolResultPart {
 }
 ```
 
-### ToolResultOutput
+#### ToolResultOutput
 
 Union of: `{ type: 'text'; value: string }`, `{ type: 'json'; value: JSONValue }`, `{ type: 'execution-denied'; reason?: string }` (user denied execution of the tool call), `{ type: 'error-text'; value: string }`, `{ type: 'error-json'; value: JSONValue }`, and `{ type: 'content'; value: Array<...> }`. Each variant accepts optional `providerOptions`.
 

@@ -52,7 +52,7 @@ Returns `Promise<void>`; completes when the UI message stream has been fully sen
 | `onUIMessageStepEnd` | `UIMessageStreamOnStepEndCallback` | — | Called after each UI message step is assembled. Receives `messages`, `isContinuation`, and the accumulated `responseMessage`. |
 | `...UIMessageStreamResponseInit & AgentUIMessageStreamOptions` | `object` | — | Options for streaming headers, status, SSE stream config, and additional UI message stream control. |
 
-## Example: Express Route Handler
+### Example: Express Route Handler
 
 ```ts
 import { pipeAgentUIStreamToResponse } from 'ai';

@@ -57,7 +57,7 @@ Returns `Promise<Response>` whose `body` is a streaming UI message output from t
 | `statusText` | `string` | — | Optional HTTP status text. |
 | `consumeSseStream` | `(options: { stream: ReadableStream<string> }) => PromiseLike<void> \| void` | — | Optional function to consume the SSE stream. When provided, called with the SSE stream to handle consumption. |
 
-## Example: Next.js API Route Handler
+### Example: Next.js API Route Handler
 
 ```ts
 import { createAgentUIStreamResponse } from 'ai';

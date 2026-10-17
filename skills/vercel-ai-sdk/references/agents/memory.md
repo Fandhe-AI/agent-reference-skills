@@ -34,7 +34,7 @@ const result = await agent.generate({
 });
 ```
 
-## Three Approaches
+### Three Approaches
 
 | Approach | Effort | Flexibility | Provider Lock-in |
 | --- | --- | --- | --- |
@@ -42,13 +42,13 @@ const result = await agent.generate({
 | Memory Providers | Low | Low | Depends on memory provider |
 | Custom Tool | High | High | No |
 
-### Provider-Defined Tools
+#### Provider-Defined Tools
 
 Provider-defined tools are tools where the provider specifies the tool's `inputSchema` and `description`, but you provide the `execute` function. The model has been trained to use these tools, which can result in better performance compared to custom tools.
 
 The Anthropic Memory Tool gives Claude a structured interface for managing a `/memories` directory. The tool receives structured commands (`view`, `create`, `str_replace`, `insert`, `delete`, `rename`), each with a `path` scoped to `/memories`. Your `execute` function maps these to your storage backend. Use it when you want memory with minimal implementation effort and are already using Anthropic models; the tradeoff is provider lock-in.
 
-### Memory Providers
+#### Memory Providers
 
 Providers that wrap an external memory service and expose it through the AI SDK's standard interface. Memory storage, retrieval, and injection happen transparently.
 
@@ -98,7 +98,7 @@ const agent = new ToolLoopAgent({
 });
 ```
 
-### Custom Tool
+#### Custom Tool
 
 Building your own memory tool from scratch is the most flexible approach: you control the storage format, the interface, and the retrieval logic, with no provider lock-in and no external dependencies. Two common patterns:
 

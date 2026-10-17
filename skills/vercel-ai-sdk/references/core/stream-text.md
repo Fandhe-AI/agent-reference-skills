@@ -42,7 +42,7 @@ for await (const textPart of textStream) {
 | onStart, onStepStart, onLanguageModelCallStart, onLanguageModelCallEnd, onToolExecutionStart, onToolExecutionEnd | callbacks (Optional) | As in `generateText` (see Lifecycle Callbacks). `experimental_onToolCallStart` / `experimental_onToolCallFinish` are deprecated aliases. |
 | output | `Output` (Optional) | Specification for parsing structured outputs; see Output. |
 
-## Returns
+### Returns
 
 Result values on the result object (promises resolve when the stream finishes; most properties automatically consume the stream).
 
@@ -74,7 +74,7 @@ Result values on the result object (promises resolve when the stream finishes; m
 | toUIMessageStreamResponse | `(options?: ResponseInit & UIMessageStreamOptions) => Response` | Converts the result to a streamed Response with a UI message stream. |
 | toTextStreamResponse | `(init?: ResponseInit) => Response` | Simple text stream Response; each text delta is UTF-8 encoded and sent as a separate chunk; non-text-delta events are ignored. |
 
-### UIMessageStreamOptions
+#### UIMessageStreamOptions
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -91,7 +91,7 @@ Result values on the result object (promises resolve when the stream finishes; m
 
 `ResponseInit` fields for the response helpers: `status`, `statusText`, `headers`.
 
-## Types
+### Types
 
 ```ts
 type ActiveTools<TOOLS extends ToolSet> =

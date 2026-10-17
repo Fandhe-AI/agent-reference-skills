@@ -96,9 +96,9 @@ Properties:
 | `tools` | `Record<string, Tool>` | — | The tool set configured for this agent. Read-only. |
 | `id` | `string \| undefined` | — | The agent identifier, if one was provided in the constructor. |
 
-## Methods
+### Methods
 
-### `generate()`
+#### `generate()`
 
 Generates a response and triggers tool calls as needed, running the agent loop and returning the final result. Returns a promise resolving to a `GenerateTextResult`.
 
@@ -119,12 +119,12 @@ const result = await agent.generate({
 | `onStart`, `onStepStart`, `onToolExecutionStart`, `onToolExecutionEnd`, `onStepEnd`, `onEnd` | callbacks | — | Optional. If also specified in the constructor, both are called (constructor first). |
 | `onStepFinish`, `onFinish` | callbacks | — | Deprecated aliases for `onStepEnd` and `onEnd`. |
 
-### `stream()`
+#### `stream()`
 
 Streams a response from the agent, including agent reasoning and tool calls, as they occur. Returns a `StreamTextResult`.
 
 ```ts
-const stream = agent.stream({
+const stream = await agent.stream({
   prompt: 'Tell me a story about a robot.',
 });
 
@@ -140,7 +140,7 @@ for await (const chunk of stream.textStream) {
 | `experimental_transform` | `StreamTextTransform \| Array<StreamTextTransform>` | — | Optional. Stream transformation(s), applied in the order provided; must maintain the stream structure. |
 | `timeout` | `number \| { totalMs?, stepMs?, firstChunkMs?, chunkMs? }` | — | `firstChunkMs` limits the wait for the first content-bearing output in each model-call step. `chunkMs` starts with the first meaningful model output and limits gaps between subsequent meaningful output chunks. Both output timers stop when the model response finishes and start fresh for each retry or later model call; they exclude retry backoff and local tool execution. Tool results, including preliminary results, do not reset them. |
 
-## Types
+### Types
 
 `ActiveTools` limits an agent step to the listed tool names (`undefined` means no restriction):
 
@@ -169,7 +169,7 @@ type MetadataAgentUIMessage = InferAgentUIMessage<
 >;
 ```
 
-## Examples
+### Examples
 
 Approved tool execution:
 
@@ -224,15 +224,17 @@ console.log(approvedResult.text);
 Output parsing (as shown on the reference page):
 
 ```ts
+import { ToolLoopAgent, Output } from 'ai';
+
 const analysisAgent = new ToolLoopAgent({
   model,
-  output: {
+  output: Output.object({
     schema: z.object({
       sentiment: z.enum(['positive', 'negative', 'neutral']),
       score: z.number(),
       summary: z.string(),
     }),
-  },
+  }),
 });
 ```
 
@@ -240,7 +242,8 @@ const analysisAgent = new ToolLoopAgent({
 
 - `generate()` returns a `GenerateTextResult` and `stream()` a `StreamTextResult`; see generateText / streamText in the core category.
 - `experimental_` options (`experimental_toolCallers`, `experimental_refineToolInput`, `experimental_download`, `experimental_sandbox`, `experimental_transform`) can change in patch releases.
-- The official page's "Agent with Output Parsing" example passes a plain `{ schema }` object to `output`, while the guide pages use `Output.object({ schema })`. Prefer `Output.object` as shown in the Building Agents page.
+- The official page's example passes a plain `{ schema }` object; this page uses `Output.object({ schema })` as in Building Agents and the Output reference.
+- The official ToolLoopAgent reference shows `agent.stream()` without `await`; `stream()` returns `PromiseLike<StreamTextResult>` per the Agent interface, so it is awaited here as in Building Agents.
 - Distinct from other skills: `ToolLoopAgent` is the AI SDK agent class (`ai` package, provider-agnostic). For the OpenAI Agents SDK see openai-agents, for the Claude Agent SDK anthropic-agent-sdk, for hosted Managed Agents anthropic-managed-agents, for Hermes hermes-agent, and for Claude Code subagents anthropic-claude-code-extend.
 
 ## Related

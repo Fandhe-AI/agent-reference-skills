@@ -54,7 +54,7 @@ const mainAgent = new ToolLoopAgent({
 });
 ```
 
-## When to Use Subagents
+### When to Use Subagents
 
 | Use Subagents When | Avoid Subagents When |
 | --- | --- |
@@ -65,7 +65,7 @@ const mainAgent = new ToolLoopAgent({
 
 Subagents add latency and complexity. Common motivations: offloading context-heavy tasks (a subagent may use hundreds of thousands of tokens and return only a focused summary), parallelizing independent work, and specialized orchestration (e.g. read-only exploration subagent, coding subagent, integration subagent).
 
-## Handling Cancellation
+### Handling Cancellation
 
 When the user cancels a request, the `abortSignal` propagates to the subagent. Always pass it through. If you abort the signal, the subagent stops executing and throws an `AbortError`; the main agent's tool execution fails, which stops the main loop. To avoid errors about incomplete tool calls in subsequent messages, use `convertToModelMessages` with `ignoreIncompleteToolCalls`:
 
@@ -77,7 +77,7 @@ const modelMessages = await convertToModelMessages(messages, {
 });
 ```
 
-## Streaming Subagent Progress
+### Streaming Subagent Progress
 
 Use preliminary tool results: change `execute` to an async generator (`async function*`); each `yield` sends a preliminary result and **replaces** the previous output entirely (it does not append). `readUIMessageStream` builds an ever-growing `UIMessage` from the stream:
 
@@ -107,7 +107,7 @@ const researchTool = tool({
 });
 ```
 
-## Controlling What the Model Sees
+### Controlling What the Model Sees
 
 The full `UIMessage` with all the subagent's work is stored in the message history and displayed in the UI. `toModelOutput` maps the tool's output to the tokens sent to the model:
 
@@ -127,7 +127,7 @@ const researchTool = tool({
 
 Users see the full subagent execution; the model sees just the final summary text. For `toModelOutput` to extract a useful summary, give the subagent explicit instructions to write a clear summary of its findings as its final response (otherwise it might simply say "Done").
 
-## Rendering Subagents in the UI (with useChat)
+### Rendering Subagents in the UI (with useChat)
 
 Check the tool part's `state` and `preliminary` flag.
 
@@ -169,7 +169,7 @@ export function Chat() {
 }
 ```
 
-## Passing conversation history
+### Passing conversation history
 
 Each subagent invocation starts with a fresh context window. If you need to give a subagent access to the conversation history, `messages` is available in the tool's `execute` options alongside `abortSignal`:
 

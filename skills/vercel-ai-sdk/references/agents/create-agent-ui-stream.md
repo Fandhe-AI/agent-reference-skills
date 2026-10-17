@@ -58,7 +58,7 @@ Returns `Promise<AsyncIterableStream<UIMessageChunk>>`; each chunk is a UI messa
 | `onUIMessageStepEnd` | `UIMessageStreamOnStepEndCallback` | — | Called after each UI message step is assembled. Receives `messages`, `isContinuation`, and the accumulated `responseMessage`. |
 | `...UIMessageStreamOptions` | `UIMessageStreamOptions` | — | Additional options to control the UI message stream, including message IDs, metadata, final callbacks, sources, and reasoning. |
 
-## Persisting the UI Message After Each Step
+### Persisting the UI Message After Each Step
 
 ```ts
 const stream = await createAgentUIStream({
@@ -83,7 +83,7 @@ for await (const chunk of stream) {
 }
 ```
 
-## How It Works
+### How It Works
 
 1. UI Message Validation: the input `uiMessages` array is validated and normalized using the agent's `tools` definition. Invalid messages cause an error.
 2. Conversion to Model Messages.

@@ -45,7 +45,7 @@ for await (const partialObject of partialOutputStream) {
 }
 ```
 
-## Output types
+### Output types
 
 | Output | Description |
 | --- | --- |
@@ -87,7 +87,7 @@ output: Output.object({
 }),
 ```
 
-## Combining with tools
+### Combining with tools
 
 ```ts
 import { generateText, Output, tool, isStepCount } from 'ai';
@@ -114,12 +114,12 @@ const { output } = await generateText({
 });
 ```
 
-## Reasoning and response
+### Reasoning and response
 
 - `result.reasoningText` contains the model's thought process (must be a reasoning model).
 - Raw response headers and body: `result.response.headers` / `result.response.body`.
 
-## Error handling
+### Error handling
 
 - If the model response cannot be parsed or validated against the schema, `generateText` rejects with `AI_NoObjectGeneratedError`.
 - If `generateText` returns a result without an output, accessing `result.output` throws `AI_NoOutputGeneratedError` (e.g. the final step finished with `tool-calls` rather than `stop`). `output` is a getter, so destructuring it also triggers this access.

@@ -45,7 +45,7 @@ const result = await supportAgent.generate({
 
 The `options` parameter is now required and type-checked. If you don't provide it or pass incorrect types, TypeScript will error.
 
-## Modifying Agent Settings
+### Modifying Agent Settings
 
 Use `prepareCall` to modify any agent setting. The returned object replaces the call settings, so spread the incoming settings and override only the ones you want to change.
 
@@ -119,7 +119,7 @@ const agent = new ToolLoopAgent({
 });
 ```
 
-## Advanced Patterns
+### Advanced Patterns
 
 Retrieval Augmented Generation (`prepareCall` can be async):
 
@@ -161,7 +161,7 @@ ${options.userRole === 'admin' ? 'You have full database access.' : 'You have re
 }),
 ```
 
-## Using with createAgentUIStreamResponse
+### Using with createAgentUIStreamResponse
 
 ```ts
 import { createAgentUIStreamResponse } from 'ai';
@@ -172,7 +172,7 @@ export async function POST(request: Request) {
 
   return createAgentUIStreamResponse({
     agent: myAgent,
-    messages,
+    uiMessages: messages,
     options: {
       userId,
       accountType,
@@ -183,7 +183,7 @@ export async function POST(request: Request) {
 
 ## Notes
 
-- The official page passes `messages` to `createAgentUIStreamResponse` in this example, while the API reference for `createAgentUIStreamResponse` names the parameter `uiMessages`. Follow the reference page for the parameter name.
+- The official guide page passes `messages` here; the `createAgentUIStreamResponse` API reference and Building Agents use `uiMessages`, which this example follows.
 
 ## Related
 

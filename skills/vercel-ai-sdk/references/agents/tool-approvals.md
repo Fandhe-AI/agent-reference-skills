@@ -28,7 +28,7 @@ const agent = new ToolLoopAgent({
 
 When `runCommand` is called, the agent returns a `tool-approval-request` instead of executing the tool.
 
-## Statuses
+### Statuses
 
 Every approval rule returns one of these statuses, either as a string or as an object with a `type` field:
 
@@ -52,7 +52,7 @@ toolApproval: {
 
 Approval functions can also return `undefined`, which is treated the same as `'not-applicable'`.
 
-## Decide Based on Tool Input
+### Decide Based on Tool Input
 
 A per-tool approval function receives the typed input plus `toolCallId`, `messages`, `toolContext`, and `runtimeContext`.
 
@@ -80,7 +80,7 @@ const agent = new ToolLoopAgent({
 });
 ```
 
-## Use One Policy for All Tools
+### Use One Policy for All Tools
 
 Pass a function directly as `toolApproval` (a `GenericToolApprovalFunction`):
 
@@ -106,7 +106,7 @@ The generic function receives:
 - `messages`: the messages sent to the model for the step that produced the tool call.
 - `runtimeContext`: the call's shared runtime context.
 
-## Configure Approval per Request
+### Configure Approval per Request
 
 Because `toolApproval` is an agent setting, it can be returned from `prepareCall`:
 
@@ -133,7 +133,7 @@ const agent = new ToolLoopAgent({
 });
 ```
 
-## Handle Manual Approvals
+### Handle Manual Approvals
 
 1. Call `agent.generate()` or `agent.stream()` with `toolApproval`.
 2. Read the `tool-approval-request` from the result or UI stream.
@@ -172,7 +172,7 @@ const finalResult = await agent.generate({ messages });
 
 If approved, the tool runs on the second call. If denied, the model receives the denial and can respond without the tool result.
 
-## Use with `useChat`
+### Use with `useChat`
 
 Approval requests appear as tool parts with `state: 'approval-requested'`. Respond with `addToolApprovalResponse`.
 
@@ -229,11 +229,11 @@ export default function Chat() {
 
 Only call `addToolApprovalResponse` for manual approvals. Automatic approvals and denials already include approval state in the stream. When a manual approval status includes a reason, it is available as `part.approval.requestReason`. A reason supplied with `addToolApprovalResponse` is stored separately as `part.approval.reason`.
 
-## Schema transforms and persisted approvals
+### Schema transforms and persisted approvals
 
 Approval requests preserve the original schema input in `inputSchemaInput` when it differs from the input presented for approval. Keep this field when persisting `responseMessages` or UI messages; the UI message conversion functions preserve it automatically. On continuation, the SDK reconstructs the transformed input and checks that it matches the approved input. It never replaces the approved input with a different value. Older or projected histories that omit the original input are rejected as invalid tool input if revalidation fails or would change the approved value. The original input is included in persisted messages and UI approval streams, including fields removed by schema transforms; a transform that removes a field does not redact it from approval metadata.
 
-## Signing approvals with `experimental_toolApprovalSecret`
+### Signing approvals with `experimental_toolApprovalSecret`
 
 In the standard `useChat` pattern, the server rebuilds the conversation from the messages the client sends each turn, so message history is client-controlled input. Tool approvals reconstructed from this history are re-validated (schema check and policy re-evaluation), but without additional protection a client that crafts a valid-looking approval for a schema-conforming input can bypass the human-in-the-loop step. For sensitive tools, use `experimental_toolApprovalSecret`: the server HMAC-signs each approval request at issuance and verifies the signature when the approval is replayed. Configure it on `ToolLoopAgent` (or pass it directly to `generateText` or `streamText`).
 
