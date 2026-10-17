@@ -19,11 +19,11 @@ dependencies {
 }
 ```
 
-## Libraries
+### Libraries
 
 All format libraries are in the `org.jetbrains.kotlinx:` group with names starting `kotlinx-serialization-`. They build on `kotlinx-serialization-core`, which is the dependency to use when writing your own format. The libraries follow their own versioning, independent of Kotlin.
 
-## Supported serialization formats
+### Supported serialization formats
 
 | Format | Artifact ID | Platform | Status |
 | --- | --- | --- | --- |

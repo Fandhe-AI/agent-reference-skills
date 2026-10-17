@@ -30,7 +30,7 @@ object UserListSerializer : JsonTransformingSerializer<List<User>>(ListSerialize
 
 `JsonTransformingSerializer` is an abstract `KSerializer` offering `transformSerialize()` and `transformDeserialize()` to override.
 
-## Recipes
+### Recipes
 
 Unwrap a single-element array during serialization:
 
@@ -98,7 +98,7 @@ object UserNameSerializer : JsonTransformingSerializer<User>(User.generatedSeria
 }
 ```
 
-## Custom JSON-specific serialization logic
+### Custom JSON-specific serialization logic
 
 Cast `Encoder` to `JsonEncoder` and `Decoder` to `JsonDecoder` to use `decodeJsonElement()` and `encodeJsonElement()`. Both expose a `json` property for `encodeToJsonElement()` / `decodeFromJsonElement()`, enabling two-stage conversions (decode to `JsonElement`, then to a Kotlin value; or the reverse).
 

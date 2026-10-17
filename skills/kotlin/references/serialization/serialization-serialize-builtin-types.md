@@ -22,7 +22,7 @@ fun main() {
 }
 ```
 
-## Types
+### Types
 
 | Type | JSON representation |
 | --- | --- |

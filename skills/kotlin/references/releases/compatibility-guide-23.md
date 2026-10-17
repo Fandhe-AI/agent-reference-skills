@@ -20,7 +20,7 @@ NodeJsExec.create()  ->  NodeJsExec.register()
 getPluginArtifactForNative()  ->  getPluginArtifact()
 ```
 
-## Language
+### Language
 
 | Change | Type | Deprecation cycle |
 | --- | --- | --- |
@@ -34,7 +34,7 @@ getPluginArtifactForNative()  ->  getPluginArtifact()
 | Prohibit reified type parameters inferred as intersection types (KTLC-13) | source | 2.1.0 warning; 2.3.0 error |
 | Prohibit exposing less-visible types through type parameter bounds (KTLC-275) | source | 2.1.0 warning; 2.3.0 error |
 
-## Standard library
+### Standard library
 
 | Change | Type | Deprecation cycle |
 | --- | --- | --- |
@@ -46,7 +46,7 @@ getPluginArtifactForNative()  ->  getPluginArtifact()
 | Unify Kotlin/Native stack trace printing: additional causes are not printed if already printed (KT-81431) | behavioral | 2.3.20 |
 | `Iterable<T>.intersect()` / `subtract()` test membership per receiver element, compare with `Any::equals` (KTLC-268) | behavioral | 2.3.0 new behavior |
 
-## Tools
+### Tools
 
 | Change | Type | Deprecation cycle |
 | --- | --- | --- |
@@ -84,7 +84,7 @@ getPluginArtifactForNative()  ->  getPluginArtifact()
 
 `kotlin-dsl` plus `kotlin("jvm")` options (not a supported setup): (1) do not apply `kotlin("jvm")` and let `kotlin-dsl` provide a compatible KGP; (2) apply it with `embeddedKotlinVersion` (upgrade Gradle to upgrade the embedded Kotlin); (3) do not use `kotlin-dsl` (for binary plugins). Last resort: language version 2.1 or higher overrides the conflicting behavior (not recommended).
 
-## Build tool removal
+### Build tool removal
 
 | Change | Deprecation cycle |
 | --- | --- |

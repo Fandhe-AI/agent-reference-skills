@@ -21,7 +21,7 @@ dependencies {
 
 Maven: `org.jetbrains.kotlin:kotlin-metadata-jvm:2.4.21` as a `<dependency>`.
 
-## Read and parse
+### Read and parse
 
 ```kotlin
 import kotlin.metadata.jvm.*
@@ -61,7 +61,7 @@ fun main() {
 
 `kmClass` gives class-level metadata (name, functions, properties, visibility); `kmPackage` gives top-level functions and properties of file facades.
 
-## Annotations in metadata
+### Annotations in metadata
 
 APIs for accessing annotations: `KmClass.annotations`, `KmFunction.annotations`, `KmProperty.annotations`, `KmConstructor.annotations`, `KmPropertyAccessorAttributes.annotations`, `KmValueParameter.annotations`, `KmFunction.extensionReceiverAnnotations`, `KmProperty.extensionReceiverAnnotations`, `KmProperty.backingFieldAnnotations`, `KmProperty.delegateFieldAnnotations`, `KmEnumEntry.annotations`.
 
@@ -81,7 +81,7 @@ fun main() {
 }
 ```
 
-## Modify and create metadata
+### Modify and create metadata
 
 Modify: parse with `readStrict()`, change `kmClass` (e.g. filter functions), then `write()`; embedding into the `.class` file needs a bytecode framework such as ASM.
 

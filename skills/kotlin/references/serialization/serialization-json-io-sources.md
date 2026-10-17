@@ -28,7 +28,7 @@ fun main() {
 }
 ```
 
-## Functions
+### Functions
 
 | Target | Encode | Decode | Lazy sequence |
 | --- | --- | --- | --- |
@@ -68,7 +68,7 @@ fun main() {
 }
 ```
 
-## Dependencies
+### Dependencies
 
 kotlinx-io:
 

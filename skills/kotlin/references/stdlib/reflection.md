@@ -32,7 +32,7 @@ fun main() {
 }
 ```
 
-## Packages and dependency
+### Packages and dependency
 
 | Package | Contents |
 | --- | --- |
@@ -48,7 +48,7 @@ dependencies {
 
 Maven: `org.jetbrains.kotlin:kotlin-reflect` with `<version>${kotlin.version}</version>`. The command-line compiler adds `kotlin-reflect.jar` by default; exclude it with `-no-reflect`.
 
-## Types, casts, members
+### Types, casts, members
 
 - `typeOf<T>()` returns a `KType` including type arguments and nullability; `KClass` does not preserve them (`List<String>` and `List<Int>` share `List::class`).
 - For a class stored in a `KClass`: `isInstance()` checks, `cast()` returns the typed value or throws, `safeCast()` returns `null` on mismatch.
@@ -121,7 +121,7 @@ fun main() {
 }
 ```
 
-## Java reflection interoperability
+### Java reflection interoperability
 
 ```kotlin
 import kotlin.reflect.jvm.*

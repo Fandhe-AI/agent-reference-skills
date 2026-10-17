@@ -29,7 +29,7 @@ private constructor(
 }
 ```
 
-## Highlights
+### Highlights
 
 | Area | Change |
 | --- | --- |
@@ -43,13 +43,13 @@ private constructor(
 
 To update, change the Kotlin version to 2.4.20 in your build scripts (the latest IDE versions bundle the plugin).
 
-## Stable: `when` with `invokedynamic`
+### Stable: `when` with `invokedynamic`
 
 Experimental `when` compilation with `invokedynamic` on JVM 21 and later (introduced in 2.2.20) is now Stable and enabled by default. See the control-flow page (`../basics/control-flow.md`).
 
-## Standard library
+### Standard library
 
-### Coroutine stack trace recovery
+#### Coroutine stack trace recovery
 
 - `StackTraceRecoverable` (package `kotlin.coroutines.debug`) lets an exception define how `kotlinx.coroutines` creates a new instance for stack trace recovery, without a dependency on `kotlinx.coroutines`.
 - `kotlinx.coroutines` recovers automatically for exceptions whose constructors take only a message, a cause, both, or no arguments. Implement the interface when the constructor has additional required arguments.
@@ -57,7 +57,7 @@ Experimental `when` compilation with `invokedynamic` on JVM 21 and later (introd
 - The interface exists on all targets; `kotlinx.coroutines` uses it only on the JVM.
 - Experimental; opt in with `@OptIn(ExperimentalStdlibCoroutineSupportApi::class)`. KEEP-0461; feedback at KT-86595.
 
-### Collection equality and uniqueness checks
+#### Collection equality and uniqueness checks
 
 | Function | Checks |
 | --- | --- |
@@ -85,7 +85,7 @@ fun main() {
 }
 ```
 
-### New overloads for `kotlin.test` assertions
+#### New overloads for `kotlin.test` assertions
 
 Lambda-based message overloads build the failure message lazily (aligned with JUnit 5; helps the Power-assert plugin). Available for `assertTrue()` / `assertFalse()`, `assertEquals()` / `assertNotEquals()`, `assertSame()` / `assertNotSame()`, `assertIs()` / `assertIsNot()`, `assertNull()`, `assertContains()`, `assertContentEquals()`. Opt in with `@OptIn(ExperimentalKotlinTestApi::class)` (KEEP-0465).
 
@@ -102,7 +102,7 @@ fun testValues(actual: Int, expected: Int, items: List<String>) {
 }
 ```
 
-## Kotlin/Native
+### Kotlin/Native
 
 - `assembleSharedXCFramework` now generates a `Package.swift` to distribute with an XCFramework that depends on SwiftPM packages.
 - Swift export: sealed classes and interfaces map to Swift enums via a generated `sealedType()` method, enabling exhaustive `switch` without `default`.
@@ -123,7 +123,7 @@ let name = switch shape.sealedType() {
 }
 ```
 
-## Kotlin/Wasm
+### Kotlin/Wasm
 
 - `@JsFun` declarations that use top-level `require()` now report an error (the generated `require` in `import-object.mjs` is removed). Replace with `@JsModule`, or `import()` with `/* webpackIgnore: true */`; as a workaround, define `globalThis.require` via `module.default.createRequire(import.meta.url)`.
 - Superclass companion objects are initialized before subclass companions (matches JVM).
@@ -151,7 +151,7 @@ kotlin.wasm.compilationMode=multimodule-closed-world-only-in-dev
 
 - Lambdas and functional interfaces compile to functions with shared base classes: about 5-10% smaller Wasm binaries on the KotlinConf app; more dynamic calls may affect runtime performance (KT-83159).
 
-## Kotlin/JS
+### Kotlin/JS
 
 - `@JsExport.Ignore` on data class constructor and properties is now honored; synthetic `copy()` / `componentN()` no longer warn about non-exported types.
 - New Experimental browser testing DSL (Playwright, Mocha, webpack; replaces Karma):
@@ -177,7 +177,7 @@ kotlin {
 
 - Export of suspending lambdas as `async` functions with `freeCompilerArgs.add("-Xsuspend-lambda-exporting")`, then mark declarations with `@JsExport`.
 
-## Gradle and build tools API
+### Gradle and build tools API
 
 - Fully compatible with Gradle 7.6.3 through 9.7.0.
 - The KGP Problems API integration now includes compiler diagnostic IDs and groups diagnostics by ID; enabled by default starting with Gradle 8.6.
@@ -189,7 +189,7 @@ kotlin.js.runViaBuildToolsApi=true
 kotlin.metadata.runViaBuildToolsApi=true
 ```
 
-## Kotlin compiler
+### Kotlin compiler
 
 - `kotlinr` replaces `kotlin` as the Kotlin runner command to avoid a name clash with the Kotlin Toolchain `kotlin` command; the runner warns when `kotlin` is used.
 - First Experimental release of the Kotlin compiler native image, a drop-in replacement for `kotlinc` with faster startup (download from GitHub Releases for v2.4.20). It bundles Serialization, Compose compiler, All-open, no-arg, SAM with receiver, Assignment, Lombok, and Power-assert plugins, usable with `-Xplugin` or `-Xcompiler-plugin`.

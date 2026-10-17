@@ -36,17 +36,18 @@ fun main() {
 }
 ```
 
-## Annotations
+### Annotations
 
 | Annotation | Purpose |
 | --- | --- |
 | `@Serializable` | Generates serialization code; referenced classes must also be `@Serializable` |
-| `@EncodeDefault` / `@EncodeDefault(NEVER)` | Always (or never) encode a property regardless of its value or format settings; `EncodeDefault.Mode` controls this |
+| `@EncodeDefault` | Always encode the property, even when it equals its default value, regardless of format settings (`encodeDefaults`) |
+| `@EncodeDefault(NEVER)` | Do not encode the property only when its value equals the default, regardless of format settings (non-default values are still encoded); to always exclude a property, use `@Transient` |
 | `@Required` | Property must be present in the input even if it has a default value (`MissingFieldException` otherwise) |
 | `@SerialName("x")` | Customizes the serial name |
 | `@Transient` | Excludes a property; it must have a default value |
 
-## Classes
+### Classes
 
 - Referenced classes must also be `@Serializable`. To reference non-serializable classes, mark the property `@Transient` or provide a custom serializer.
 - Repeated object references are encoded once per reference; circular structures cause stack overflow.
@@ -57,10 +58,10 @@ fun main() {
 class Payload<T>(val value: T)
 ```
 
-## Optional properties
+### Optional properties
 
 - Properties with default values are optional on deserialization and may be skipped on serialization. The default JSON configuration skips encoding default values (see `encodeDefaults` in the Json configuration page).
-- `null` values of nullable properties with null defaults are not encoded. A `null` for a non-nullable property throws `JsonDecodingException` even if it has a default; use `coerceInputValues` to coerce it, or `explicitNulls = false` to omit nulls.
+- `null` values of nullable properties with null defaults are not encoded. A `null` for a non-nullable property throws `JsonDecodingException` even if it has a default; to fall back to the default value, enable `coerceInputValues`. Separately, `explicitNulls = false` omits `null` values when encoding and lets missing nullable properties decode as `null`; it does not accept explicit `null` for non-nullable properties.
 - When the input includes a value for an optional property, its initializer is not called, so avoid side effects in initializers.
 
 ```kotlin
@@ -103,7 +104,7 @@ data class User(
 data class Project(val name: String, @Required val language: String = "Kotlin")
 ```
 
-## Customize class serialization
+### Customize class serialization
 
 Serial names:
 

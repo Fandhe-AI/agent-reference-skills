@@ -24,7 +24,7 @@ fun main() {
 }
 ```
 
-## Function selection
+### Function selection
 
 | Function | Object reference | Return value | Is extension function |
 | --- | --- | --- | --- |
@@ -45,7 +45,7 @@ Short guide by purpose:
 - Additional effects: `also`
 - Grouping function calls on an object: `with`
 
-## Distinctions
+### Distinctions
 
 The two main differences are how the context object is referenced and the return value.
 
@@ -76,7 +76,7 @@ fun main() {
 }
 ```
 
-## takeIf and takeUnless
+### takeIf and takeUnless
 
 `takeIf` returns the object if it satisfies the predicate, otherwise `null`. `takeUnless` has the opposite logic. The object is available as `it`. The return value is nullable, so chain with a safe call (`?.`).
 

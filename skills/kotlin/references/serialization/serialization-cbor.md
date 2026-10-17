@@ -49,7 +49,7 @@ fun main() {
 | `verifyKeyTags` / `verifyValueTags` / `verifyObjectTags` | Boolean | Control verification of tags |
 | `preferCborLabelsOverNames` | Boolean | Prefer numeric `@CborLabel` over serial names when both are present |
 
-## Annotations
+### Annotations
 
 | Annotation | Purpose |
 | --- | --- |

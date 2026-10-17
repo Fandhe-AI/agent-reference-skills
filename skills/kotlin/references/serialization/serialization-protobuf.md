@@ -35,7 +35,7 @@ fun main() {
 }
 ```
 
-## Annotations
+### Annotations
 
 | Annotation | Purpose |
 | --- | --- |
@@ -66,7 +66,7 @@ data class Project(
 )
 ```
 
-## oneof fields
+### oneof fields
 
 Model a `oneof` with a sealed interface, a `@ProtoOneOf` property, and subclasses whose single property carries the `oneof` field number:
 
@@ -97,7 +97,7 @@ data class Data(
 
 For deserialization only, a class without `@ProtoOneOf` works (`homeNumber: String? = null`, `workNumber: String? = null`), but it does not enforce exclusivity on serialization.
 
-## Generate a ProtoBuf schema
+### Generate a ProtoBuf schema
 
 `ProtoBufSchemaGenerator` generates a proto2-compatible schema from one or more `SerialDescriptor`s:
 

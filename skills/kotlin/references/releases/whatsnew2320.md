@@ -25,7 +25,7 @@ fun main() {
 }
 ```
 
-## Highlights
+### Highlights
 
 | Area | Change |
 | --- | --- |
@@ -36,7 +36,7 @@ fun main() {
 | Standard library | `Map.Entry.copy()` (Experimental) |
 | Kotlin/Native | New interop mode for C / Objective-C (Experimental), cross-compilation checker, new DSL to disable the compilation cache |
 
-## Stable: simplified Maven setup
+### Stable: simplified Maven setup
 
 With `<extensions>true</extensions>` on `kotlin-maven-plugin`, the plugin registers `src/main/kotlin` and `src/test/kotlin` as source roots (if they exist and are not configured) and adds `kotlin-stdlib` when not declared.
 
@@ -55,9 +55,9 @@ With `<extensions>true</extensions>` on `kotlin-maven-plugin`, the plugin regist
 
 Opt out with `<kotlin.smart.defaults.enabled>false</kotlin.smart.defaults.enabled>` in `<properties>`; this disables both the automatic stdlib addition and the source root registration (other `<extensions>` features stay on).
 
-## Language
+### Language
 
-### Name-based destructuring (Experimental)
+#### Name-based destructuring (Experimental)
 
 Variables are matched to property names instead of position-based `componentN()`. Controlled with `-Xname-based-destructuring`:
 
@@ -82,11 +82,11 @@ val [username, email] = user
 
 The plan is to move gradually to name-based matching by default, keeping position-based destructuring through the square-bracket syntax. KEEP-0438; feedback at KT-19627.
 
-### Overload resolution for context parameters
+#### Overload resolution for context parameters
 
 Declarations with context parameters are no longer considered more specific than those without. Calls that differ only by context parameters can become ambiguous (error), and the compiler warns about shadowed contextual declarations. The number of `kotlin.context` overloads was reduced from 22 to 6.
 
-## Standard library
+### Standard library
 
 `Map.Entry.copy()` creates an immutable copy of an entry so it can be reused after the map is modified. Experimental: `@OptIn(ExperimentalStdlibApi::class)` or `-opt-in=kotlin.ExperimentalStdlibApi`.
 
@@ -106,28 +106,28 @@ fun main() {
 }
 ```
 
-## Compiler plugins
+### Compiler plugins
 
 - Lombok is promoted to Alpha (experimental since Kotlin 1.5.20).
 - `kotlin.plugin.jpa` now applies all-open with a built-in JPA preset in addition to no-arg. Entities annotated with `javax.persistence` / `jakarta.persistence` `Entity`, `Embeddable`, `MappedSuperclass` become `open` and get no-argument constructors. Maven `kotlin-maven-noarg` now implicitly includes `kotlin-maven-allopen` (IntelliJ IDEA support from 2026.1).
 
-## Kotlin/JVM
+### Kotlin/JVM
 
 - Vert.x `io.vertx.codegen.annotations.Nullable` is recognized; mismatches warn by default. Make them errors with `-Xnullability-annotations=@io.vertx.codegen.annotations:strict`.
 - `org.jetbrains.annotations.Unmodifiable` / `UnmodifiableView` make Java-returned collections read-only in Kotlin; assigning to a mutable type warns, and the warning is scheduled to become an error in Kotlin 2.5.0.
 
-## Kotlin/Native
+### Kotlin/Native
 
 - Experimental `-Xccall-mode direct` for cinterop (`extraOpts += listOf("-Xccall-mode", "direct")`); do not publish libraries built with it yet (KT-83218).
 - `crossCompilationSupported` API checks whether cross-compilation is supported for a target.
 - `disableNativeCache(version = ..., reason = ..., issue = ...)` in `binaries {}` replaces the deprecated `kotlin.native.cacheKind` Gradle property.
 
-## Kotlin/Wasm and Kotlin/JS
+### Kotlin/Wasm and Kotlin/JS
 
 - Wasm: JS String builtins for `kotlin.String` operations (up to 4.6x faster string interpolation in targeted benchmarks), compilation time and memory optimizations (65% clean build / 21% incremental improvement in testing), experimental `@nativeInvoke` for `wasmJs`.
 - JS: Kotlin interfaces can be implemented from TypeScript (`-Xenable-implementing-interfaces-from-typescript`, default implementations via `DefaultImpls`); experimental SWC transpilation with `kotlin.js.delegated.transpilation=true`.
 
-## Gradle and Build tools API
+### Gradle and Build tools API
 
 - Binary compatibility validation tasks renamed: `checkLegacyAbi` to `checkKotlinAbi`, `updateLegacyAbi` to `updateKotlinAbi`, `dumpLegacyAbi` to `internalDumpKotlinAbi` (old names still exist in 2.3.20); `check` now runs `checkKotlinAbi` automatically.
 - BTA: cancellable build operations via `CancellableBuildOperation.cancel()` (best effort), immutable operations created with `build()`, `BuildMetricsCollector`, and `CommonCompilerArguments.COMPILER_PLUGINS` for configuring compiler plugins.

@@ -19,7 +19,7 @@ fun updateCity(newCity: String) {
 }
 ```
 
-## Highlights
+### Highlights
 
 | Area | Change |
 | --- | --- |
@@ -33,14 +33,14 @@ fun updateCity(newCity: String) {
 
 To update, change the Kotlin version to 2.3.0 in your build scripts (the plugin is bundled in IntelliJ IDEA and Android Studio).
 
-## Language
+### Language
 
-### Stable and default features
+#### Stable and default features
 
 - Stable: nested type aliases, data-flow-based exhaustiveness checks for `when`.
 - Enabled by default: `return` in expression bodies with explicit return types.
 
-### Unused return value checker (Experimental)
+#### Unused return value checker (Experimental)
 
 Warns when an expression returns a value other than `Unit` / `Nothing` that is not used (increments `++` / `--` are ignored). Modes:
 
@@ -72,20 +72,20 @@ fun main() {
 
 `@IgnorableReturnValue` suppresses warnings on a function; assigning to `val _` suppresses it at one call site. KEEP-0412; feedback at KT-12719.
 
-### Explicit backing fields (Experimental)
+#### Explicit backing fields (Experimental)
 
 Declares the backing field type directly in the property scope, replacing the private backing property pattern (`_city` / `city`); the compiler smart-casts to the field type inside the private scope. Opt in with `-Xexplicit-backing-fields`. KEEP: explicit-backing-fields; feedback at KT-14663.
 
-### Context-sensitive resolution (Experimental)
+#### Context-sensitive resolution (Experimental)
 
 - Sealed and enclosing supertypes of the current type are now part of the contextual search scope; no other supertype scopes are considered (KT-77823).
 - A warning is reported when context-sensitive resolution makes type operators or equality ambiguous, for example with a clashing imported class (KT-77821).
 
-## Kotlin/JVM
+### Kotlin/JVM
 
 Starting with 2.3.0 the compiler can generate Java 25 bytecode.
 
-## Kotlin/Native
+### Kotlin/Native
 
 - Swift export maps Kotlin enum classes to native Swift enums and `vararg` functions to Swift variadic parameters (generic types in variadic parameters are not supported yet).
 - C and Objective-C library import is Beta; `@ExperimentalForeignApi` is still required for some `kotlinx.cinterop.*` APIs and non-platform native library declarations.
@@ -93,25 +93,25 @@ Starting with 2.3.0 the compiler can generate Java 25 bytecode.
 - Release link tasks such as `linkReleaseFrameworkIosArm64` can be up to 40% faster.
 - Minimum Apple versions raised: iOS / tvOS 12.0 to 14.0, watchOS 5.0 to 7.0 (override with `-Xoverride-konan-properties=minVersion.<os>=<ver>`, not guaranteed to work). `macosX64`, `iosX64`, `tvosX64`, `watchosX64` are demoted to support tier 3; removal of x86_64 Apple targets is planned for Kotlin 2.4.0.
 
-## Kotlin/Wasm
+### Kotlin/Wasm
 
 - `KClass.qualifiedName` (fully qualified names) is enabled by default.
 - String literals with only Latin-1 characters are stored as UTF-8 (up to 13% smaller binaries in the KotlinConf app).
 - The new exception handling proposal is default for `wasmWasi`; for `wasmJs` it is opt-in via `-Xwasm-use-new-exception-proposal`.
 
-## Kotlin/JS
+### Kotlin/JS
 
 - Experimental export of suspend functions with `@JsExport`: `-Xenable-suspend-function-exporting`.
 - Experimental `BigInt64Array` representation of `LongArray`: `-Xes-long-as-bigint`.
 - Companion objects inside exported interfaces are accessed uniformly as `Foo.Companion.bar()` across module systems; `@JsStatic` is allowed in interfaces with companion objects; `@JsQualifier` can be applied to individual functions and classes.
 - `@JsExport.Default` generates an `export default` for ES modules.
 
-## Gradle
+### Gradle
 
 - Gradle 7.6.3 through 9.0.0; AGP minimum 8.2.2, maximum 8.13.0.
 - New Experimental `KotlinSourceSet` API (`generatedKotlin`) to register generated sources, useful for tools such as KSP.
 
-## Standard library
+### Standard library
 
 - `kotlin.time.Clock` and `kotlin.time.Instant` are stable.
 - UUID API (Experimental, `@OptIn(ExperimentalUuidApi::class)` or `-opt-in=kotlin.uuid.ExperimentalUuidApi`): `Uuid.parseOrNull()`, `Uuid.parseHexDashOrNull()`, `Uuid.parseHexOrNull()`; `Uuid.generateV4()` and `Uuid.generateV7()` (`Uuid.random()` still generates v4); `Uuid.generateV7NonMonotonicAt(instant)` (no monotonic ordering guarantee).
@@ -132,7 +132,7 @@ fun main() {
 }
 ```
 
-## Compose compiler
+### Compose compiler
 
 Stack traces for minified Android apps: when R8 minifies, the Compose Compiler Gradle plugin appends group key entries to ProGuard mapping files. Requires Compose runtime 1.10 or newer; enable with `Composer.setDiagnosticStackTraceMode(ComposeStackTraceMode.GroupKeys)` before initializing `@Composable` content. Disable the mapping task with `composeCompiler { includeComposeMappingFile.set(false) }`. Known issue: KT-83099.
 

@@ -53,7 +53,7 @@ val lenientJson = Json(customJson) {
 
 The Default column is inferred from the page's prose (strict and compact by default, discriminator `type`, `useAlternativeNames` true by default), not from the API reference.
 
-## Examples
+### Examples
 
 Encode defaults:
 

@@ -27,7 +27,7 @@ fun main() {
 
 Deserialize with `Json.decodeFromString<Book>("""{"yearPublished":1937, "title": "The Hobbit"}""")`. A collection can be serialized in a single call: `Json.encodeToString(listOf(Book(1937, "The Hobbit"), Book(1867, "War and Peace")))`.
 
-## Add plugins and dependencies
+### Add plugins and dependencies
 
 Gradle (Kotlin DSL):
 
@@ -114,7 +114,7 @@ commonMain {
 }
 ```
 
-## Configure R8 for Android projects
+### Configure R8 for Android projects
 
 Kotlin serialization includes default ProGuard rules, so serializers for serializable classes are kept after shrinking. These rules do not apply to classes with named companion objects. Add rules to `proguard-rules.pro` based on the R8 mode.
 

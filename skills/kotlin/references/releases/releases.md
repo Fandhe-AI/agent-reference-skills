@@ -35,7 +35,7 @@ plugins {
 
 Alternatively, change the `kotlin-maven-plugin` `<version>` in `pom.xml`.
 
-## Release types (since Kotlin 2.0.0)
+### Release types (since Kotlin 2.0.0)
 
 | Type | Version | Contents | Cadence |
 | --- | --- | --- | --- |
@@ -45,18 +45,18 @@ Alternatively, change the `kotlin-maven-plugin` `<version>` in `pom.xml`.
 
 Example from the page: language release 2.2.0 had one tooling release 2.2.20 and one bug fix release 2.2.21. Preview (EAP) versions are shipped for each language and tooling release.
 
-## Upcoming releases
+### Upcoming releases
 
 - 2.5.0: planned for December 2026
 - 2.5.20: planned for March 2027
 
-## Update to a new version
+### Update to a new version
 
 - Latest Kotlin version at fetch time: 2.4.21 (bug fix release; see What's new in Kotlin 2.4.20 for features).
 - If a project uses `kotlinx` libraries, check whether to update their versions too (Gradle: "Set a dependency on a kotlinx library"; Maven: "Dependency on a kotlinx library").
 - Kotlin has full out-of-the-box support in IntelliJ IDEA and Android Studio; for a new language release the Kotlin plugin migration tools help.
 
-## Standard library security support
+### Standard library security support
 
 Starting with Kotlin 2.4.0, the Kotlin standard library for the JVM has an 18-month support window per release line (language release 2.x.0 and its tooling release 2.x.20 form one line, 2.x). On a vulnerability, a bug fix release is shipped for the latest release in the line, plus every line within its active support window.
 
@@ -66,7 +66,7 @@ Starting with Kotlin 2.4.0, the Kotlin standard library for the JVM has an 18-mo
 
 Example from the page: if the latest release is 2.4.20, a fix is released for 2.4.20 only, not for 2.4.0.
 
-## Release history (selected)
+### Release history (selected)
 
 | Version | Released | Type |
 | --- | --- | --- |

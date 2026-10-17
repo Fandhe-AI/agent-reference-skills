@@ -25,7 +25,7 @@ readln()         // instead of readLine()!!
 readlnOrNull()   // instead of readLine()
 ```
 
-## Compatibility kinds
+### Compatibility kinds
 
 - source: code that compiled without errors or warnings no longer compiles.
 - binary: interchanging two binary artifacts leads to loading or linkage errors.
@@ -33,7 +33,7 @@ readlnOrNull()   // instead of readLine()
 
 These definitions apply to pure Kotlin only (compatibility from Java is out of scope).
 
-## Language and compiler
+### Language and compiler
 
 | Change | Type | Deprecation cycle |
 | --- | --- | --- |
@@ -62,7 +62,7 @@ These definitions apply to pure Kotlin only (compatibility from Java is out of s
 
 Annotation defaulting detail: without an explicit use-site target the compiler now uses `param` and `property` if they apply, and `field` only if `property` does not. Restore the previous rule project-wide with `-Xannotation-default-target=first-only`, or write the target explicitly (for example `@param:Annotation`).
 
-## Standard library
+### Standard library
 
 | Change | Type | Deprecation cycle |
 | --- | --- | --- |
@@ -70,7 +70,7 @@ Annotation defaulting detail: without an explicit use-site target the compiler n
 | Deprecate `AbstractCoroutineContextKey`, `getPolymorphicElement()`, `minusPolymorphicKey()` (KT-84970) | source | 2.4.0 warning |
 | `Random.nextDouble(until)` contract now requires a finite `until` (KT-84368) | behavioral | 2.4.0 new behavior |
 
-## Tools (Gradle and build tools API)
+### Tools (Gradle and build tools API)
 
 | Change | Type | Deprecation cycle |
 | --- | --- | --- |

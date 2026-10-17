@@ -33,7 +33,7 @@ fun main() {
 }
 ```
 
-## Duration
+### Duration
 
 | Operation | API |
 | --- | --- |
@@ -67,7 +67,7 @@ fun main() {
 }
 ```
 
-## Measure time
+### Measure time
 
 ```kotlin
 import kotlin.time.measureTime
@@ -111,7 +111,7 @@ fun main() {
 }
 ```
 
-## Time sources
+### Time sources
 
 Default monotonic source per platform:
 

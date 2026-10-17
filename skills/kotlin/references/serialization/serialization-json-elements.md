@@ -22,7 +22,7 @@ fun main() {
 }
 ```
 
-## Types and accessors
+### Types and accessors
 
 | Type / API | Description |
 | --- | --- |

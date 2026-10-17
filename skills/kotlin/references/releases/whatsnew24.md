@@ -33,7 +33,7 @@ fun notifyUser() {
 }
 ```
 
-## Highlights
+### Highlights
 
 | Area | Change |
 | --- | --- |
@@ -46,7 +46,7 @@ fun notifyUser() {
 | Gradle / Maven | Gradle 7.6.3 through 9.5.0, minimum AGP 8.5.2; Maven JVM target alignment and Toolchains |
 | Compiler | Intra-module inlining during klib compilation |
 
-## Stable in 2.4.0
+### Stable in 2.4.0
 
 - Context parameters, except explicit context arguments and callable references.
 - `@all` meta-target for properties and the new defaulting rules for use-site annotation targets.
@@ -56,7 +56,7 @@ fun notifyUser() {
 - Value class export to JS/TS, ES2015 features in JS inlining.
 - Maven automatic Java / JVM target alignment, Maven Toolchains.
 
-## Experimental language features (opt-in)
+### Experimental language features (opt-in)
 
 | Feature | Compiler option |
 | --- | --- |
@@ -100,7 +100,7 @@ inline fun <T, R> T.customLet(block: (T) -> R): R {
 - `@IntroducedAt("1.1")` on newly added optional parameters makes the compiler generate hidden overloads for older versions; combining with `@JvmOverloads` yields a warning (the `@IntroducedAt` overloads win if suppressed).
 - No deprecation warning is reported when a deprecated symbol is referenced in the last segment of an import (KT-30155).
 
-## Standard library
+### Standard library
 
 - `Uuid`: stable since 2.4.0. Parsing (`parse`, `parseHexDash`, `parseHex`, and `*OrNull` variants), `<` / `>` comparison, and Java conversions were added over earlier releases.
 - Sorted-order checks on iterables, arrays, and sequences: `.isSorted()`, `.isSortedDescending()`, `.isSortedWith(comparator)`, `.isSortedBy(selector)`, `.isSortedByDescending(selector)`. They return `true` for fewer than two elements and stop at the first out-of-order pair.
@@ -121,12 +121,12 @@ fun main() {
 
 - Map fallbacks for nullable values (Experimental, `@OptIn(ExperimentalStdlibApi::class)`): `.getOrElseIfNull(key, defaultValue)` / `.getOrPutIfNull(key, defaultValue)` (default when key missing or value `null`); `.getOrElseIfMissing(key, defaultValue)` / `.getOrPutIfMissing(key, defaultValue)` (default only when key missing). Feedback at KT-67337.
 
-## Kotlin/JVM
+### Kotlin/JVM
 
 - Java 26 bytecode is supported.
 - Annotations in Kotlin metadata (readable via the Kotlin Metadata JVM library) are written by default.
 
-## Kotlin/Native
+### Kotlin/Native
 
 - Swift export is Alpha: suspend functions export as Swift `async`, `kotlinx.coroutines` `Flow` exports as `AsyncSequence` (via `.asAsyncSequence()`).
 - Swift package import in Gradle (`swiftPMDependencies { swiftPackage(url = ..., version = from("..."), products = listOf(product("...")) ) }`).
@@ -134,13 +134,13 @@ fun main() {
 - Lower peak memory in devirtualization analysis, Xcode 26.4 support, LLVM 19 to 21.
 - Default minimum Apple versions: iOS / tvOS 15.0 (from 14.0), macOS 12.0 (from 11.0), watchOS 8.0 (from 7.0); override via `-Xoverride-konan-properties=minVersion.<os>=<ver>`.
 
-## Kotlin/Wasm
+### Kotlin/Wasm
 
 - Incremental compilation is Stable and default; disable with `kotlin.incremental.wasm=false`.
 - Compiler-generated internal variables use a `~` prefix in Chrome DevTools.
 - Experimental WebAssembly Component Model support (feedback KT-64569).
 
-## Kotlin/JS
+### Kotlin/JS
 
 - `@JsExport` on `@JvmInline value class` exports it as a regular TypeScript class.
 - `js()` inlining supports `const` / `let`, ES classes, generators, arrow functions, spread / rest, template strings (the argument must be a string constant).
@@ -148,7 +148,7 @@ fun main() {
 - `@JsNoRuntime` on interfaces maps them to plain TypeScript interfaces; `is` / `as` checks, `::class`, and reified type arguments are prohibited for them. Avoid on external interfaces.
 - Exported interfaces may contain nested classes and named companion objects.
 
-## Gradle and Maven
+### Gradle and Maven
 
 - Gradle 7.6.3 through 9.5.0 fully compatible; minimum supported AGP is 8.5.2.
 - Default module names are `{group}:{project_name}` on all platforms; revert on JVM with `kotlin { compilerOptions.moduleName(project.name) }`.
@@ -174,13 +174,13 @@ fun main() {
 </build>
 ```
 
-## Build tools API
+### Build tools API
 
 - Type-safe abstractions for most JVM and common compiler options (backwards-compatible at runtime, may break source compatibility).
 - `BaseIncrementalCompilationConfiguration.TRACK_CONFIGURATION_INPUTS` tracks non-source changes; `AbiValidationToolchain` supports binary compatibility validation; `CompilerMessageRenderer` customizes messages.
 - Kotlin daemon logging options: `LOGS_PATH`, `LOGS_FILE_SIZE_LIMIT`, `LOGS_FILE_COUNT_LIMIT` (set on the daemon execution policy; `null` means no limit).
 
-## Compiler and compiler plugins
+### Compiler and compiler plugins
 
 - Intra-module inlining during `.klib` compilation is the default for Native / JS / Wasm; disable with `-Xklib-ir-inliner=disabled`; cross-module inlining is available with `-Xklib-ir-inliner=full` (planned default later).
 - Partial library linkage is always on; `-Xpartial-linkage` is deprecated; default log level `SILENT`, change with `-Xpartial-linkage-loglevel=INFO|WARNING|ERROR`.

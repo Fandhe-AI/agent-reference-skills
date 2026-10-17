@@ -32,7 +32,7 @@ fun main() {
 }
 ```
 
-## Closed polymorphism
+### Closed polymorphism
 
 - Use a `sealed` class or interface as base type; mark it and all subclasses `@Serializable`.
 - The `type` property is the class discriminator by default and appears only when the base class is the static type. With the subclass as static type it is omitted; pass the base type explicitly: `Json.encodeToString<Project>(data)`.
@@ -40,7 +40,7 @@ fun main() {
 - Base class properties with backing fields are serialized with subclass properties.
 - `object` subclasses annotated `@Serializable` are serialized like classes without properties (`{"type":"EmptyResponse"}`).
 
-## Open polymorphism
+### Open polymorphism
 
 For `open` / `abstract` classes and interfaces whose subclasses are not all known at compile time: register them in a `SerializersModule` with `polymorphic()` and `subclass()`, then pass it to `Json { serializersModule = module }`.
 
@@ -95,6 +95,24 @@ val module = SerializersModule {
     polymorphic(BaseProject::class) { registerProjectSubclasses() }
     polymorphic(Project::class) { registerProjectSubclasses() }
 }
+
+val format = Json { serializersModule = module }
+
+interface BaseProject {
+    val name: String
+}
+
+interface Project : BaseProject
+
+@Serializable
+@SerialName("owned")
+class OwnedProject(override val name: String, val owner: String) : Project
+
+@Serializable
+class Data(
+    val project: Project,
+    val baseProject: BaseProject
+)
 ```
 
 Default deserializer example:
@@ -115,6 +133,7 @@ val module = SerializersModule {
 - Sealed base types do not need explicit configuration for generic subtypes because the compiler plugin can infer the subtype serializer.
 - `subclassesOfSealed()` registers recursively; all subclasses must be concrete or sealed, otherwise `IllegalArgumentException`.
 - An unregistered subtype fails with `SerializationException`; the default deserializer assumes unknown subtypes follow a known structure. For JSON you can combine it with `ignoreUnknownKeys`; for varying structure use a custom serializer.
+- The helper works for both base types because `PolymorphicModuleBuilder` is declared contravariant (`PolymorphicModuleBuilder<in Base : Any>`), so a builder for `BaseProject` is accepted where `PolymorphicModuleBuilder<Project>` is expected when `Project : BaseProject`.
 - The discriminator key can be changed with `classDiscriminator` in the Json configuration page.
 
 ## Related

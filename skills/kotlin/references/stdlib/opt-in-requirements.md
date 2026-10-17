@@ -31,7 +31,7 @@ fun getDate(): Date {
 }
 ```
 
-## Ways to opt in
+### Ways to opt in
 
 | Approach | How |
 | --- | --- |
@@ -50,7 +50,7 @@ tasks.named<KotlinCompilationTask<*>>("compileKotlin").configure {
 
 For a multiplatform Gradle module use `kotlin { compilerOptions { optIn.add("org.mylibrary.OptInAnnotation") } }`. For Maven pass `<arg>-opt-in=org.mylibrary.OptInAnnotation</arg>` in `kotlin-maven-plugin` `<args>`.
 
-## Require opt-in (library authors)
+### Require opt-in (library authors)
 
 An opt-in requirement annotation must be annotated with `@RequiresOptIn` and must have:
 

@@ -34,7 +34,7 @@ inline fun <reified T> encodeToList(value: T) = encodeToList(serializer(), value
 
 Serializers call `beginStructure()` for structured values (classes, collections), which returns a `CompositeEncoder` / `CompositeDecoder`. `AbstractEncoder` delegates most `encodeXxx()` functions (such as `encodeString()`) to `encodeValue(value: Any)`.
 
-## Building blocks
+### Building blocks
 
 | Goal | Override |
 | --- | --- |

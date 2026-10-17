@@ -25,7 +25,7 @@ fun main() {
 
 `KSerializer` extends `SerializationStrategy` and `DeserializationStrategy`.
 
-## Obtain serializers
+### Obtain serializers
 
 | Need | API |
 | --- | --- |
@@ -39,7 +39,7 @@ fun main() {
 val stringListSerializer: KSerializer<List<String>> = ListSerializer(String.serializer()) 
 ```
 
-## Custom primitive serializer
+### Custom primitive serializer
 
 Implement `KSerializer<Type>` as an `object`, override `descriptor` with `PrimitiveSerialDescriptor(serialName, kind)` (use a unique `serialName` and a matching `PrimitiveKind`), implement `serialize()` with an `Encoder` function matching the kind, `deserialize()` with a `Decoder`, then apply it with `@Serializable(YourSerializer::class)`.
 
@@ -73,7 +73,7 @@ data class Color(val rgb: Int)
 
 Base64 for `ByteArray`: use a custom primitive serializer with a Kotlin Base64 variant (`Base64.Default`, `Base64.Mime`), e.g. `encoder.encodeString(base64.encode(value))` and `base64.decode(decoder.decodeString())`.
 
-## Delegate to another serializer
+### Delegate to another serializer
 
 Wrap the delegated serializer's descriptor in a new one (you cannot use the original class descriptor or the delegate's descriptor directly), and use `encoder.encodeSerializableValue()` / `decoder.decodeSerializableValue()`:
 
@@ -100,7 +100,7 @@ class ColorIntArraySerializer : KSerializer<Color> {
 }
 ```
 
-## Surrogate class
+### Surrogate class
 
 A surrogate class matches the serialized form of another class; use it to change serialization without modifying the class, avoid a composite serializer, or validate the serialized form first. Make it `private`, give it `@SerialName`, and wrap its generated descriptor under a different unique `serialName`.
 
@@ -133,7 +133,7 @@ object ColorSerializer : KSerializer<Color> {
 }
 ```
 
-## Custom composite serializer
+### Custom composite serializer
 
 Define the descriptor with `buildClassSerialDescriptor()` and `element()` (order determines indices from `0`), encode with the `encodeStructure()` DSL (`CompositeEncoder`, e.g. `encodeIntElement`), decode with the `decodeStructure()` DSL (`CompositeDecoder`) looping on `decodeElementIndex()` until `CompositeDecoder.DECODE_DONE`:
 
@@ -183,7 +183,7 @@ object ColorAsObjectSerializer : KSerializer<Color> {
 - Encode defaults: plugin-generated serializers check whether the encoder needs to encode default values (JSON: `encodeDefaults`). A custom serializer does the same with `shouldEncodeElementDefault(descriptor, index)` and `element<Int>("r", isOptional = true)`. If a property is annotated `@EncodeDefault`, plugin-generated serializers do not call `shouldEncodeElementDefault()`.
 - Sequential decoding: `decodeSequentially()` returns `true` when the current structure can be decoded in order; handle that case separately (`@OptIn(ExperimentalSerializationApi::class)`). Plugin-generated serializers use this optimization.
 
-## Generic types
+### Generic types
 
 Declare the serializer as a `class` (not `object`) with one `KSerializer` constructor parameter per generic type parameter:
 
@@ -203,7 +203,7 @@ class BoxSerializer<T>(private val dataSerializer: KSerializer<T>) : KSerializer
 }
 ```
 
-## Plugin-generated serializer alongside a custom one
+### Plugin-generated serializer alongside a custom one
 
 By default no serializer is generated when you specify `@Serializable(YourSerializer::class)`. Annotate with `@KeepGeneratedSerializer` and call `.generatedSerializer()` on the companion:
 
@@ -217,7 +217,7 @@ class Color(val rgb: Int)
 // Json.encodeToString(Color.generatedSerializer(), green) -> {"rgb":65280}
 ```
 
-## Apply serializers
+### Apply serializers
 
 | Way | Example |
 | --- | --- |

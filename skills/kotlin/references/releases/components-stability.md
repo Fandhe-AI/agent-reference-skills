@@ -14,7 +14,7 @@ Stability levels, from least to most stable (the first three are the pre-stable 
 Experimental -> Alpha -> Beta -> Stable
 ```
 
-## Stability levels
+### Stability levels
 
 | Level | Meaning |
 | --- | --- |
@@ -27,7 +27,7 @@ Experimental, Alpha, and Beta are collectively the pre-stable levels. Levels say
 
 GitHub projects in the Kotlin organization carry two badges: a stability badge (same levels) and a support-status badge (unified for JetBrains products).
 
-## Kotlin compiler
+### Kotlin compiler
 
 | Component | Status | Since |
 | --- | --- | --- |
@@ -37,7 +37,7 @@ GitHub projects in the Kotlin organization carry two badges: a stability badge (
 | Kotlin/Wasm | Beta | 2.2.20 |
 | Analysis API | Stable | |
 
-## Core compiler plugins
+### Core compiler plugins
 
 | Component | Status | Since |
 | --- | --- | --- |
@@ -48,7 +48,7 @@ GitHub projects in the Kotlin organization carry two badges: a stability badge (
 | Lombok | Alpha | 2.3.20 |
 | Power-assert | Experimental | 2.0.0 |
 
-## Kotlin libraries
+### Kotlin libraries
 
 | Component | Status | Since |
 | --- | --- | --- |
@@ -61,7 +61,7 @@ GitHub projects in the Kotlin organization carry two badges: a stability badge (
 | kotlinx-io | Alpha | 0.2.0 |
 | kotlinx-collections-immutable | Alpha | 0.3.5 |
 
-## Kotlin Multiplatform and Kotlin/Native
+### Kotlin Multiplatform and Kotlin/Native
 
 | Component | Status | Since |
 | --- | --- | --- |
@@ -73,7 +73,7 @@ GitHub projects in the Kotlin organization carry two badges: a stability badge (
 | cinterop klib binaries | Beta | 1.3.0 |
 | CocoaPods integration | Stable | 1.9.20 |
 
-## Build tools
+### Build tools
 
 | Component | Status | Since |
 | --- | --- | --- |
@@ -85,7 +85,7 @@ GitHub projects in the Kotlin organization carry two badges: a stability badge (
 
 The Build tools API currently does not support Kotlin/Native.
 
-## Language tools
+### Language tools
 
 | Component | Status | Since |
 | --- | --- | --- |

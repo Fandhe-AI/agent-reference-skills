@@ -18,7 +18,7 @@ kotlin {
 }
 ```
 
-## In preview (Experimental)
+### In preview (Experimental)
 
 | Feature | Available since | Issue |
 | --- | --- | --- |
@@ -31,7 +31,7 @@ kotlin {
 | Common Atomics and Atomic Arrays (KEEP-0398) | 2.2.0 | KT-62423 |
 | KMP Kotlin-to-Java direct actualization | 2.1.0 | KT-67202 |
 
-## Stable
+### Stable
 
 | Feature | Available since | Stable since | Issue |
 | --- | --- | --- | --- |
@@ -53,7 +53,7 @@ kotlin {
 
 "n/a": the source lists only an "Available since" version for the entry (no separate "Stable since").
 
-## KEEP discussion
+### KEEP discussion
 
 - `CoroutineContext` as context parameter (KEEP-0443, KT-15555)
 - Rich Errors: motivation and rationale (KEEP-0441, KT-68296)
@@ -62,11 +62,11 @@ kotlin {
 - Streamline KDoc ambiguity links (dokka issues 3451, 3179, 3334)
 - Resolution of links to extensions in KDoc (dokka issue 3555)
 
-## Exploration and design
+### Exploration and design
 
 - Support immutability (KT-77734; KEEP notes on value classes and immutability)
 
-## Revoked
+### Revoked
 
 - Context receivers (KT-10468): replaced with context parameters.
 - Java synthetic property references (KT-8575).
