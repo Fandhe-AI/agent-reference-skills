@@ -176,7 +176,8 @@ await inngest.send({
 ## Notes
 
 - Channels and topics are plain strings in Python and Go. Python uses `realtime.publish(client=, channel=, topic=, data=)` and `realtime.get_subscription_token()` from `inngest.experimental`; Go uses `realtime.Publish(ctx, channel, topic, data)` with payloads encoded yourself (for example `json.Marshal`). Python has no durable publish step, so one-time publishes are wrapped in `ctx.step.run()`. Mint tokens with the TypeScript or Python SDK.
-- `inngest.realtime.publish()` sends each token immediately. If the step retries, some tokens can repeat. Call it inside `step.run()` for streamed output so Inngest retries the stream as one unit; the UI should tolerate repeated tokens.
+- `inngest.realtime.publish()` sends each token immediately. If the step retries, some tokens can repeat. This costs less than making every token a durable step. Call it inside `step.run()` for streamed output so Inngest retries the stream as one unit.
+- The UI example above (verbatim from the official guide) concatenates every `tokens` message, so after a stream-model retry the partial output of the failed attempt stays visible next to the new attempt until the durable result arrives and replaces it. To avoid showing mixed text, include an attempt marker in the token payload yourself and reset the buffer when it changes (not part of the official example).
 - `step.realtime.publish()` sends status and the final result as durable steps, so a retry never sends them twice.
 - Each token counts as one Realtime message; check the plan's daily message allowance before streaming long responses at high volume.
 - Run `message.kind === "run"` check before `message.topic`: run lifecycle messages share the list and carry an untyped payload, so skipping them lets TypeScript narrow `message.data`.
