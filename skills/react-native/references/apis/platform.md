@@ -43,7 +43,7 @@ This gives `flex: 1` on all platforms, green on Android, red on iOS, blue on oth
 | `isVision` | All | `static isVision: boolean;` | Whether the device is an Apple Vision. With Apple Vision Pro (Designed for iPad), `isVision` is `false` but `isPad` is `true`. |
 | `isTesting` | All | `static isTesting: boolean;` | Whether the app is running in Developer Mode with the testing flag set. |
 | `OS` | All | `static OS: 'android' \| 'ios';` | String value for the current OS. |
-| `Version` | All | `static Version: 'number' \| 'string';` | OS version: number on Android, string on iOS. |
+| `Version` | All | `static Version: 'number' \| 'string';` | OS version: number on Android, string on iOS. The official signature literal `'number' \| 'string'` is a docs typo; the effective type is `number \| string`. |
 
 `Platform.constants` properties:
 
@@ -51,7 +51,7 @@ This gives `flex: 1` on all platforms, green on Android, red on iOS, blue on oth
 | --- | --- | --- | --- | --- |
 | isDisableAnimations | All | boolean | Yes | Whether animations should be disabled. Defaults to the value of `isTesting`. |
 | isTesting | All | boolean | No | |
-| reactNativeVersion | All | object | No | React Native version info. Keys `major`, `minor`, `patch` with optional `prerelease`; values are numbers. |
+| reactNativeVersion | All | object | No | React Native version info. Keys `major`, `minor`, `patch` (numbers) with optional `prerelease` (`string \| null`, see ReactNativeVersion). |
 | Version | Android | number | No | OS version constant. |
 | Release | Android | string | No | |
 | Serial | Android | string | No | Hardware serial number. |
@@ -85,6 +85,7 @@ const Component = Platform.select({
 
 ## Notes
 
+- The official page's "values are numbers" for `reactNativeVersion` and the literal-type notation `'number' | 'string'` for `Version` are docs typos; types here follow the same page's Type table (Android `number` / iOS `string`) and the ReactNativeVersion page (`prerelease: string | null`).
 - `Platform.constants.reactNativeVersion` is the per-platform native-reported React Native version; the JS-side resolved package version is `ReactNativeVersion`.
 
 ## Related
