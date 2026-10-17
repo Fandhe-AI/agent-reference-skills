@@ -40,6 +40,14 @@ services:
     command: /code/run_worker
     depends_on:
       - queue
+
+  queue:
+    image: redis:7-alpine
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
 ```
 
 Extend a service in the same file:
@@ -50,6 +58,7 @@ services:
     build: ./alpine
     extends: webapp
   webapp:
+    image: alpine
     environment:
       - DEBUG=1
 ```
@@ -59,3 +68,5 @@ services:
 - Extending from another file reuses only that service's properties; the extended service itself is not added to the project unless you also declare it.
 - All paths must be relative to the base Compose file, but relative paths declared in the extended file are converted automatically (check with `docker compose config`).
 - `extends` is not supported by `docker stack deploy`.
+- Adapted: the official compose.yaml references queue and db without defining them; minimal definitions are added so the file validates.
+- Adapted: the official same-file example gives webapp neither image nor build; image: alpine is added because every service in the file is validated on its own.
