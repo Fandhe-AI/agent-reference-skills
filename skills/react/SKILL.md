@@ -10,7 +10,7 @@ user-invocable: false
 
 # React
 
-> 分割 PR の途中段階。現在収録済み: references/{apis, compiler, components, dom-apis, dom-components}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{apis, compiler, components, dom-apis, dom-components, dom-server, hooks, legacy, rules-of-react, server-components}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 対象バージョン: React 19.3.1 (npm `react` / `react-dom` latest、2026-10-14 公開。versions.md の表記は "Latest version: 19.3")。
 関連パッケージ: babel-plugin-react-compiler 1.0.0 / eslint-plugin-react-hooks 7.1.1 / @types/react 19.3.0 / react-devtools 8.0.0。
@@ -22,6 +22,13 @@ user-invocable: false
 skills/react/
   SKILL.md
   references/
+    hooks/                  # useState / useEffect / useActionState / useOptimistic ほか
+      README.md
+      overview.md
+      useState.md
+      useEffect.md
+      useActionState.md
+      useOptimistic.md
     apis/                   # react パッケージの組み込み API
       README.md
       overview.md
@@ -52,6 +59,25 @@ skills/react/
       flushSync.md
       useFormStatus.md
       preload.md
+    dom-server/             # react-dom/server・static
+      README.md
+      renderToPipeableStream.md
+      renderToReadableStream.md
+      prerender.md
+      resume.md
+    server-components/      # RSC・Server Functions・ディレクティブ
+      README.md
+      server-components.md
+      server-functions.md
+      use-client.md
+      use-server.md
+      directives.md
+    rules-of-react/         # Rules of React
+      README.md
+      overview.md
+      rules-of-hooks.md
+      components-and-hooks-must-be-pure.md
+      react-calls-components-and-hooks.md
     compiler/               # React Compiler
       README.md
       introduction.md
@@ -60,6 +86,12 @@ skills/react/
       compilationMode.md
       incremental-adoption.md
       debugging.md
+    legacy/                 # レガシー API
+      README.md
+      overview.md
+      Component.md
+      forwardRef.md
+      createElement.md
 ```
 
 ## 探索手順
@@ -74,11 +106,17 @@ skills/react/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
+| state・ref・effect・context・transition などの Hook を使う | hooks | [references/hooks/README.md](references/hooks/README.md) |
+| フォーム Action・楽観的更新・Effect Event の API を調べる | hooks | [references/hooks/README.md](references/hooks/README.md) |
 | `use` / `cache` / `memo` / `lazy` / `startTransition` / `createContext` を調べる | apis | [references/apis/README.md](references/apis/README.md) |
 | `act`・`captureOwnerStack`・`addTransitionType`・taint API を調べる | apis | [references/apis/README.md](references/apis/README.md) |
 | Suspense / Activity / ViewTransition / StrictMode / Profiler / Fragment を使う | components | [references/components/README.md](references/components/README.md) |
 | `<form>` / `<input>` / `<select>` / `<link>` / `<script>` / `<title>` などの DOM コンポーネントを調べる | dom-components | [references/dom-components/README.md](references/dom-components/README.md) |
 | `createRoot` / `hydrateRoot` / `createPortal` / `flushSync` を使う | dom-apis | [references/dom-apis/README.md](references/dom-apis/README.md) |
 | `preload` / `preinit` / `preconnect` などのリソースプリロード、`useFormStatus` を調べる | dom-apis | [references/dom-apis/README.md](references/dom-apis/README.md) |
+| サーバーレンダリング・ストリーミング・prerender・resume を調べる | dom-server | [references/dom-server/README.md](references/dom-server/README.md) |
+| Server Components・Server Functions・`'use client'` / `'use server'` を調べる | server-components | [references/server-components/README.md](references/server-components/README.md) |
+| Hooks のルール・純粋性など Rules of React を確認する | rules-of-react | [references/rules-of-react/README.md](references/rules-of-react/README.md) |
 | React Compiler の導入・設定・段階的導入・デバッグ | compiler | [references/compiler/README.md](references/compiler/README.md) |
 | `"use memo"` / `"use no memo"` / compilationMode / gating を調べる | compiler | [references/compiler/README.md](references/compiler/README.md) |
+| クラスコンポーネント・`forwardRef`・`createElement` などレガシー API を調べる | legacy | [references/legacy/README.md](references/legacy/README.md) |
