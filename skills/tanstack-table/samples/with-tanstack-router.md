@@ -90,7 +90,8 @@ export default function App() {
 ## Notes
 
 - Trimmed from the official example: `components/table.tsx` (the `useTable` setup), `utils/cleanEmptyParams.ts`, `utils/tableSortMapper.ts`, `utils/userColumns.tsx`, the sorting / filter wiring, devtools, and `DEFAULT_PAGE_INDEX` / `DEFAULT_PAGE_SIZE` (exported from `components/table`). The snippet joins `hooks/useFilters.ts`, an excerpt of `routes/index.tsx` and an excerpt of `App.tsx` in one block.
-- The URL search params are the single source of truth for table state; `navigate({ search, replace: true })` avoids piling up history entries.
+- The URL search params are intended to be the single source of truth for table state; `navigate({ search, replace: true })` avoids piling up history entries. See the `validateSearch` note below for what the verbatim route code does and does not do.
+- `validateSearch: () => ({}) as UserFilters` is verbatim from the official example and only supplies the type; it does not parse or keep the incoming params. In real code, validate and return the incoming search object (e.g. `validateSearch: (search) => search as UserFilters`, or a schema parse) so `useSearch()` keeps pageIndex / pageSize / sorting / filters.
 - See the `tanstack-router` and `tanstack-query` skills for those APIs.
 
 ## Related

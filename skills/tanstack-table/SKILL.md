@@ -6,7 +6,7 @@ description: >
   useTable, createTableHook, tableFeatures, createColumnHelper, flexRender, createCoreRowModel,
   table.Subscribe, atoms, React Compiler, custom features, sorting, column / global / fuzzy filtering,
   faceting, pagination, row selection, expanding, grouping / aggregation,
-  ordering / pinning / sizing / visibility。
+  column / row の ordering・pinning・sizing・visibility, virtualization。
   v8 legacy (useReactTable / getCoreRowModel) と v9 移行。
 user-invocable: false
 ---
@@ -17,6 +17,7 @@ TanStack Table (`@tanstack/react-table`) v9 の公式ドキュメントを蒸留
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 対象: `@tanstack/react-table` / `@tanstack/table-core` 9.3.1 (2026-10-12)
+出典: タグ `@tanstack/react-table@9.3.1`（commit `95c4768`）、リリース https://github.com/TanStack/table/releases/tag/%40tanstack/react-table%409.3.1
 
 ## ディレクトリ構成
 

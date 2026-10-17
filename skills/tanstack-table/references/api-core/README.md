@@ -45,7 +45,7 @@
 | RowModelFns / CachedRowModels | Feature-derived type maps for row model functions and cached row models | [row-model-fns.md](./row-model-fns.md) |
 | RowModel | The output shape of a row-model factory, such as core and filtered row models | [row-model.md](./row-model.md) |
 | Row | Combines core row functionality with feature-specific row APIs | [row.md](./row.md) |
-| Static Functions | In v9, most per-object methods (e.g. `table.getRowModel()`) are replaced by static functions | [static-functions.md](./static-functions.md) |
+| Static Functions | Name inventory of the ~270 standalone functions (`table_*` / `column_*` / `row_*` / `cell_*` / `header_*`) bound onto objects as methods; methods such as `table.getRowModel()` remain callable | [static-functions.md](./static-functions.md) |
 | stockFeatures | The complete set of stock optional table features | [stock-features.md](./stock-features.md) |
 | Subscribe (React) | React component for opting into state re-renders for selected table slices | [subscribe.md](./subscribe.md) |
 | TableFeature | Lifecycle hooks and defaults contributed by a table feature | [table-feature.md](./table-feature.md) |
@@ -57,3 +57,4 @@
 | TableState | Complete table state for a specific feature set | [table-state.md](./table-state.md) |
 | Table | The table object that includes both the core table and feature APIs | [table.md](./table.md) |
 | useTable | The v9 React adapter hook that creates a React table instance | [use-table.md](./use-table.md) |
+</content>
