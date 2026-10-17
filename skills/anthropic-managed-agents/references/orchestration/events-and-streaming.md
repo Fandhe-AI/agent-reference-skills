@@ -114,6 +114,8 @@ The idle event's `stop_reason.type` is `end_turn`. If workflow runs are open, th
 
 On a supported model, send a `system.message` event to give the agent privileged system-level context that applies to the accompanying turn and all subsequent turns (for example a different persona, revised constraints, or context fetched at runtime). `content` accepts 1–1000 text items and is appended as a `role: "system"` turn; it doesn't replace the agent definition's `system` prompt.
 
+Official guide sample (verbatim). Per the API reference contract (see Notes), a request containing only `system.message` is rejected; use the adapted example below.
+
 ```python
 client.beta.sessions.events.send(
     session.id,
