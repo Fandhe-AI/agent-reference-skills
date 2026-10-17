@@ -101,6 +101,8 @@ const { app } = require('electron/main')
 
 ## Notes
 
+- The Signature / Usage snippet is an excerpt from the official docs: BrowserWindow can only be created after the app module emits ready, so in a real main.js wrap the window creation in app.whenReady().then(() => { ... }) (requiring app from electron).
+- BrowserView is deprecated (since Electron 30) and replaced by WebContentsView; use WebContentsView for new web embeds.
 - Distance: BrowserWindow / BaseWindow here are Electron's Chromium-backed windows, distinct from the OS-native window APIs in windows-winui-ui (AppWindow) and apple-appkit (NSWindow). Menu, dialog and Tray here are OS-native elements created from the main process, distinct from the Web UI components in ark-ui, chakra-ui and fandhe-frontend.
 
 ## Related

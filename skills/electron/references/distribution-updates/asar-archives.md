@@ -60,7 +60,9 @@ This creates a folder `app.asar.unpacked` together with `app.asar`. It contains 
 
 ## Notes
 
+- The BrowserWindow snippet in Signature / Usage is an excerpt from the official docs: run it after app.whenReady() (BrowserWindow can only be created after the app module emits ready).
 - Adapted (not in the official docs): the `--unpack` glob is quoted so the shell does not expand it before asar receives it.
+
 Limitations of the Node API:
 
 - Archives are read-only: all Node APIs that can modify files will not work with ASAR archives.

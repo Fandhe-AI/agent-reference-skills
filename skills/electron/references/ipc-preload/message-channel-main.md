@@ -37,6 +37,7 @@ ipcRenderer.on('port', (e) => {
 
 ## Notes
 
+- The Main process part of the snippet is an excerpt from the official docs: run it after app.whenReady() (BrowserWindow can only be created after the app module emits ready).
 - Electron's built-in classes cannot be subclassed in user code.
 
 ## Related

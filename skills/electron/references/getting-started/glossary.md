@@ -48,6 +48,7 @@ The main process file is specified in the `main` property in `package.json`; thi
 
 ## Notes
 
+- The glossary's IPC wording (serialized JSON) is outdated: ipcRenderer / webContents IPC arguments are serialized with the Structured Clone Algorithm (see ipc-renderer.md); sending Functions, Promises, Symbols, WeakMaps, or WeakSets will throw, and sending DOM objects or special Electron objects will throw an exception.
 - Distance: code signing, notarization, MAS, MSI and Squirrel are defined here only as Electron terminology. For Apple distribution workflows see apple-distribution; for MSIX / Microsoft Store packaging see windows-packaging-publish. The webview tag is not the WebView2 control (windows-winui-controls).
 
 ## Related
