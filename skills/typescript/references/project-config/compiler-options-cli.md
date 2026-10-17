@@ -22,7 +22,7 @@ tsc src/*.ts
 tsc --project tsconfig.production.json
 
 # Emit d.ts files for a js file with showing compiler options which are booleans
-tsc index.js --declaration --emitDeclarationOnly
+tsc index.js --declaration --allowJs --emitDeclarationOnly
 
 # Emit a single .js file from two files via compiler options which take string arguments
 tsc app.ts util.ts --target esnext --outfile index.js
@@ -74,6 +74,7 @@ The page also contains a "Compiler Flags" table that repeats every tsconfig comp
 ## Notes
 
 - `--locale` cannot be set via `tsconfig.json`, only via the host environment or the CLI flag, e.g. `tsc --locale ru`. Locales supported as of TypeScript 3.7 (as listed in the source): `pr-BR` (Brazilian Portuguese), `zh-TW` (listed as Chinese (Simplified)), `zh-CN` (listed as Chinese (Traditional)), `cs-CZ`, `en-US`, `fr-FR`, `de-DE`, `it-IT`, `ja-JP`, `ko-KR`, `pl-PL`, `ru-RU`, `es-ES`, `tr-TR`. The Chinese rows and `pr-BR` are reproduced as written in the source and look inconsistent; verify before relying on them.
+- The source example omits `--allowJs`; without it, tsc rejects a `.js` input file (TS6504) because tsconfig.json is not used when files are passed on the command line. `--allowJs` added here, matching creating-dts-from-js.md.
 - `--verbose`, `--force`, `--clean`, `--stopBuildOnErrors` and `--locale` are CLI-only: their option docs exist but they are not rendered on the tsconfig reference page.
 - Changed (7.0): command line builds cannot take file paths when the current directory contains a `tsconfig.json` file unless passed an explicit `--ignoreConfig` flag (7.0 announcement blog).
 - Changed (7.0): `stableTypeOrdering` is `true` by default and cannot be turned off; it was introduced in 6.0 (the CLI table here lists `--stableTypeOrdering`: "Ensure types are ordered stably and deterministically across compilations").

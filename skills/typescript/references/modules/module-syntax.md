@@ -72,7 +72,7 @@ declare module "*.html" {
 }
 ```
 
-- Changed (6.0 / 7.0): the legacy `module Foo {}` namespace syntax is deprecated in 6.0 and not allowed in 7.0; the ambient form `declare module "some-module" { ... }` remains supported (6.0 release notes https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html, TypeScript 7.0 announcement https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/). The import assertions keyword `assert` (`import ... assert { ... }`, also in `import(..., { assert: {...} })`) is deprecated in 6.0 and must be `with` (import attributes) in 7.0. The 6.0 release notes heading spells it `asserts`; TypeScript 5.3 release notes give the keyword as `assert`.
+- Changed (6.0 / 7.0): the legacy `module Foo {}` namespace syntax is deprecated in 6.0 and not allowed in 7.0; the ambient form `declare module "some-module" { ... }` remains supported (6.0 release notes https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html, TypeScript 7.0 announcement https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/). The import assertions keyword `assert` (`import ... assert { ... }`, also in `import(..., { assert: {...} })`) is deprecated in 6.0 and must be `with` (import attributes) in 7.0. The 6.0 release notes heading spells it `asserts`; TypeScript 5.3 release notes (https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-3.html) give the keyword as `assert`.
 
 ## Related
 
