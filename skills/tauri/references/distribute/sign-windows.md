@@ -30,7 +30,7 @@ Custom sign command (any tool that can sign Windows executables; `%1` is the fil
 }
 ```
 
-## OV Certificates
+### OV Certificates
 
 Applies only to OV code signing certificates acquired before June 1st 2023. For EV certificates and OV certificates received after that date, consult your certificate issuer's documentation.
 
@@ -78,7 +78,7 @@ Secrets: `WINDOWS_CERTIFICATE` (base64 `.pfx`, e.g. `certutil -encode certificat
 
 The step assigns secrets to env variables, creates a `certificate` directory, writes the secret to `tempCert.txt`, decodes it with `certutil` into a `.pfx`, removes `tempCert.txt`, and imports the `.pfx` into the Windows cert store with the password as a secure string.
 
-## Azure Key Vault
+### Azure Key Vault
 
 Uses `relic` (supports secret-based authentication; download from its releases page or `go install github.com/sassoftware/relic/v8@latest`); other tools can be configured.
 
@@ -101,7 +101,7 @@ keys:
 
 `tauri build` then produces signed Windows installers.
 
-## Azure Artifact Signing
+### Azure Artifact Signing
 
 Azure Artifact Signing (previously Azure Code Signing / Azure Trusted Signing). Prerequisites (preinstalled for GitHub Actions): an Artifact Signing Account with permissions configured, .NET (8 recommended), Azure CLI, Signtool (Windows 11 SDK 10.0.26100.0 or later recommended).
 

@@ -11,7 +11,7 @@ Distribute a Tauri app as a Flatpak via Flathub. The source page (titled "Flathu
 Build and test locally (closed source flow):
 
 ```sh
-flatpak install flathub org.gnome.Platform//46 org.gnome.Sdk//46
+flatpak install flathub org.gnome.Platform//47 org.gnome.Sdk//47
 flatpak-builder --force-clean --user --disable-cache --repo flatpak-repo flatpak flatpak-builder.yaml
 flatpak run <your flatpak id>
 flatpak -y --user update <your flatpak id>
@@ -23,7 +23,7 @@ Install the tools (example for Debian; Arch: `sudo pacman -S --needed flatpak fl
 sudo apt install flatpak flatpak-builder
 ```
 
-## Closed Source tab
+### Closed Source tab
 
 Steps: install `flatpak` and `flatpak-builder`; install the runtime; build the `.deb` of your tauri app; create an AppStream MetaInfo file; create the manifest; install and test; submit to Flathub.
 
@@ -103,7 +103,7 @@ TrayIconBuilder::new()
 
 Submitting to Flathub: fork `https://github.com/flathub/flathub/fork`, clone with `git clone --branch=new-pr git@github.com:your_github_username/flathub.git`, `cd flathub`, `git checkout -b your_app_name`, add your manifest to the branch, commit and push, open a pull request against the `new-pr` branch. After review and approval you receive an invitation to edit your app's repository.
 
-## Open Source tab
+### Open Source tab
 
 1. Get tools:
 
@@ -138,7 +138,7 @@ python3 flatpak-builder-tools/cargo/flatpak-cargo-generator.py -o cargo-sources.
 ## Notes
 
 - The tray snippet is adjusted from the source to compile on v2: added `use tauri::{tray::TrayIconBuilder, Manager};` and `.build(app)` (the source calls `.build()` without the manager argument).
-- The Gnome 46 runtime (closed source install step) includes all dependencies of the standard Tauri app with their correct versions; the manifest example itself uses runtime-version `'47'`, as in the source.
+- The source installs runtime 46 but its manifest uses runtime-version `'47'`; the install command is aligned to 47 here. The Gnome runtime includes all dependencies of the standard Tauri app with their correct versions.
 - If your binary needs more libraries than the default tauri app, add them to the manifest. Including a locally built `.so` is only suitable for fast local development; build the library from source inside the flatpak for the final build.
 - The Open Source tab YAML manifest in the original page is garbled (lost indentation, unterminated code fence); only its described structure is summarized above.
 - The Flatpak card is commented out of the official distribute overview page, but this page exists.

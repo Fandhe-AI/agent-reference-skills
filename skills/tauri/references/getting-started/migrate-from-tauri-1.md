@@ -48,7 +48,7 @@ cargo install tauri-cli --version "^2.0.0" --locked
 cargo tauri migrate
 ```
 
-## Summary of Changes
+### Summary of Changes
 
 ### Tauri Configuration
 
@@ -105,7 +105,7 @@ cargo tauri migrate
 - `api::process::Command`, `tauri::api::shell` and `tauri::Manager::shell_scope` APIs removed. Use `tauri-plugin-shell` instead.
 - `api::process::current_binary` and `tauri::api::process::restart` moved to `tauri::process`.
 - `api::version` module has been removed. Use the semver crate instead.
-- `App::clipboard_manager` and `AppHandle::clipboard_manager` removed. Use `tauri-plugin-clipboard` instead.
+- `App::clipboard_manager` and `AppHandle::clipboard_manager` removed. Use `tauri-plugin-clipboard-manager` instead.
 - `App::get_cli_matches` removed. Use `tauri-plugin-cli` instead.
 - `App::global_shortcut_manager` and `AppHandle::global_shortcut_manager` removed. Use `tauri-plugin-global-shortcut` instead.
 - `Manager::fs_scope` removed. The file system scope can be accessed via `tauri_plugin_fs::FsExt`.
@@ -125,7 +125,7 @@ The `@tauri-apps/api` package no longer provides non-core modules. Only the prev
 
 - `@tauri-apps/api/tauri` module renamed to `@tauri-apps/api/core`.
 - `@tauri-apps/api/cli` module removed. Use `@tauri-apps/plugin-cli` instead.
-- `@tauri-apps/api/clipboard` module removed. Use `@tauri-apps/plugin-clipboard` instead.
+- `@tauri-apps/api/clipboard` module removed. Use `@tauri-apps/plugin-clipboard-manager` instead.
 - `@tauri-apps/api/dialog` module removed. Use `@tauri-apps/plugin-dialog` instead.
 - `@tauri-apps/api/fs` module removed. Use `@tauri-apps/plugin-fs` instead.
 - `@tauri-apps/api/global-shortcut` module removed. Use `@tauri-apps/plugin-global-shortcut` instead.
@@ -180,7 +180,7 @@ Tauri v2 introduces multiwebview support currently behind an `unstable` feature 
 
 On Windows the frontend files in production apps are now hosted on `http://tauri.localhost` instead of `https://tauri.localhost`. Because of this IndexedDB, LocalStorage and Cookies will be reset unless `dangerousUseHttpScheme` was used in v1. To prevent this you can set `app > windows > useHttpsScheme` to `true` or use `WebviewWindowBuilder::use_https_scheme` to keep using the `https` scheme.
 
-## Detailed Migration Steps
+### Detailed Migration Steps
 
 ### Migrate to Core Module
 
@@ -340,7 +340,7 @@ use tauri_plugin_global_shortcut::GlobalShortcutExt;
 
 tauri::Builder::default()
     .plugin(
-        tauri_plugin_global_shortcut::Builder::new().with_handler(|app, shortcut| {
+        tauri_plugin_global_shortcut::Builder::new().with_handler(|_app, shortcut, _event| {
             println!("Shortcut triggered: {:?}", shortcut);
         })
         .build(),
@@ -461,7 +461,7 @@ use tauri::menu::{MenuBuilder, PredefinedMenuItem};
 
 tauri::Builder::default()
     .setup(|app| {
-        let menu = MenuBuilder::new(app).item(&PredefinedMenuItem::copy(app)?).build()?;
+        let menu = MenuBuilder::new(app).item(&PredefinedMenuItem::copy(app, None)?).build()?;
         Ok(())
     })
 ```
@@ -754,7 +754,7 @@ import { check } from '@tauri-apps/plugin-updater';
 import { relaunch } from '@tauri-apps/plugin-process';
 
 const update = await check();
-if (update?.available) {
+if (update) {
   console.log(`Update to ${update.version} available! Date: ${update.date}`);
   console.log(`Release notes: ${update.body}`);
   await update.downloadAndInstall();
@@ -843,6 +843,8 @@ To enable permissions for your app, create capability files inside the `src-taur
 - Snippets adjusted from the source to compile on v2: dialog `blocking_show()`, `set_menu(menu)?`, cloned `AppHandle` in updater, `Manager` import in tray.
 - Plugin snippets in the source page register the plugin in Rust and add the npm package.
 - Differs from the source so the snippets compile on v2: the clipboard example uses `tauri_plugin_clipboard_manager::ClipboardExt` / `write_text` (the source shows a nonexistent `tauri_plugin_clipboard` / `ClipKind` API), `SubmenuBuilder::text` / `check` take `(id, text)`, `fn main()` examples end with `.run(tauri::generate_context!())`, and `updater()` (which returns a `Result`) is unwrapped before `check()`.
+- Also differs from the source: the summary lines name `tauri-plugin-clipboard-manager` / `@tauri-apps/plugin-clipboard-manager` (the source summary says `tauri-plugin-clipboard` / `@tauri-apps/plugin-clipboard`, contradicting its own detailed section); `PredefinedMenuItem::copy` takes `(app, None)`; `global_shortcut::Builder::with_handler` takes `(app, shortcut, event)`.
+- The source checks `update?.available`; `Update.available` is deprecated and always `true` (updater 2.14.0), so the example checks `check()`'s return value for `null` instead.
 
 ## Related
 

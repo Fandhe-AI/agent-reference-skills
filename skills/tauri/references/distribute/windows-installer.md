@@ -23,7 +23,7 @@ cargo tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc
 
 Output is in `target/x86_64-pc-windows-msvc/release/bundle/nsis/`.
 
-## Building
+### Building
 
 - Building MSI packages (`"targets": "msi"` or `"all"`) requires the VBSCRIPT optional feature enabled on Windows (Settings > Apps > Optional features > More Windows features). Errors like `failed to run light.exe` indicate it is missing.
 - Cross-compiling uses [NSIS] only, with Tauri's MSVC target; it is less tested and a last resort versus local VMs or CI such as GitHub Actions.
@@ -42,7 +42,7 @@ cargo tauri build --target aarch64-pc-windows-msvc
 
 For ARM64 install "C++ ARM64 build tools" via Visual Studio Installer (Modify > Individual Components; in VS2022 `MSVC v143 - VS 2022 C++ ARM64 build tools (Latest)`). The NSIS installer itself still runs as x86 under emulation on ARM; the app is a native ARM64 binary.
 
-## Supporting Windows 7
+### Supporting Windows 7
 
 The `.msi` does not work on Windows 7 by default because it needs to download the WebView2 bootstrapper (may fail without TLS 1.2). Embed the bootstrapper instead; the NSIS installer also supports `downloadBootstrapper` on Windows 7. For the Notification API on Windows 7 enable the `windows7-compat` feature:
 
@@ -51,7 +51,7 @@ The `.msi` does not work on Windows 7 by default because it needs to download th
 tauri-plugin-notification = { version = "2.0.0", features = [ "windows7-compat" ] }
 ```
 
-## FIPS Compliance
+### FIPS Compliance
 
 Set `TAURI_BUNDLER_WIX_FIPS_COMPLIANT` to `true` before `tauri build` for a FIPS compliant MSI:
 
@@ -59,7 +59,7 @@ Set `TAURI_BUNDLER_WIX_FIPS_COMPLIANT` to `true` before `tauri build` for a FIPS
 $env:TAURI_BUNDLER_WIX_FIPS_COMPLIANT="true"
 ```
 
-## WebView2 Installation Options
+### WebView2 Installation Options
 
 | Installation Method (`webviewInstallMode.type`) | Requires Internet? | Additional Installer Size | Notes |
 | --- | --- | --- | --- |
@@ -112,7 +112,7 @@ Minimum WebView2 version (verified by the installer, which runs the bootstrapper
 }
 ```
 
-## Customizing the WiX Installer
+### Customizing the WiX Installer
 
 The default WiX source (`main.wxs`, uses handlebars) works for simple webview apps; a completely different installer can be set with `bundle > windows > wix > template`. Extend it with WiX fragments (`.wxs` in `src-tauri/windows/fragments`):
 
@@ -213,7 +213,7 @@ Default language is `en-US`. `bundle > windows > wix > language` accepts a strin
 </WixLocalization>
 ```
 
-## Customizing the NSIS Installer
+### Customizing the NSIS Installer
 
 A custom `.nsi` template can be set on `bundle > windows > nsis > template`. To extend rather than replace, use installer hooks:
 

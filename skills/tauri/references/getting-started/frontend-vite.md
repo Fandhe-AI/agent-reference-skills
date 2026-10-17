@@ -71,7 +71,7 @@ export default defineConfig({
     },
   },
   // Env variables starting with the item of `envPrefix` will be exposed in tauri's source code through `import.meta.env`.
-  envPrefix: ['VITE_', 'TAURI_ENV_*'],
+  envPrefix: ['VITE_', 'TAURI_ENV_'],
   build: {
     // Tauri uses Chromium on Windows and WebKit on macOS and Linux
     target:
@@ -88,6 +88,7 @@ export default defineConfig({
 
 ## Notes
 
+- The source uses `'TAURI_ENV_*'`; Vite's envPrefix is a plain prefix match, so the wildcard is dropped.
 - Tauri-side integration settings only; Vite itself is covered by the vite skill (Next.js: nextjs-app, TanStack Start: tanstack-start).
 - The page recommends Vite as the default choice for SPA frameworks.
 

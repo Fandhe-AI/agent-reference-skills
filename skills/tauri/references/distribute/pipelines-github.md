@@ -82,7 +82,7 @@ jobs:
           args: ${{ matrix.args }}
 ```
 
-## Configuration
+### Configuration
 
 - All options are in the `tauri-action` readme (inputs). When your app is not at the repository root use the `projectPath` input.
 - Keep the final `tauri-apps/tauri-action` step at the end of the workflow; it runs the build script and releases your app.
@@ -99,7 +99,7 @@ on:
 
 - Workflow steps: checkout (`actions/checkout@v7`), install Linux system dependencies, Node.js LTS with package cache (`actions/setup-node@v6`), Rust and cache (`dtolnay/rust-toolchain@stable`, `swatinem/rust-cache@v2`), install frontend dependencies (and build the web app unless `beforeBuildCommand` is configured), `tauri-apps/tauri-action@v1`.
 
-## Arm Runner Compilation
+### Arm Runner Compilation
 
 `pguyot/arm-runner-action` compiles on an emulated Arm runner, bridging the missing cross-architecture build support of the AppImage tooling. Abridged workflow:
 
@@ -134,7 +134,7 @@ jobs:
             base_image: https://dietpi.com/downloads/images/DietPi_RPi-ARMv7-Bookworm.img.xz
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
       - name: Cache rust build artifacts
         uses: Swatinem/rust-cache@v2
@@ -162,9 +162,11 @@ jobs:
             apt-get update -y --allow-releaseinfo-change
             apt-get autoremove -y
             apt-get install -y --no-install-recommends --no-install-suggests curl libwebkit2gtk-4.1-dev build-essential libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf libfuse2 file
-            curl https://sh.rustup.rs -sSf | sh -s -- -y
+            curl -sSf https://sh.rustup.rs -o rustup-init.sh
+            sh rustup-init.sh -y
             . "$HOME/.cargo/env"
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | bash
+            curl -fsSL https://deb.nodesource.com/setup_lts.x -o nodesource_setup.sh
+            bash nodesource_setup.sh
             apt-get install -y nodejs
 
             # Install frontend dependencies
@@ -178,15 +180,15 @@ jobs:
 
       # TODO: Combine this with the basic workflow and upload the files to the Release.
       - name: Upload deb bundle
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Debian Bundle
+          name: Debian Bundle ${{ matrix.arch }}
           path: ${{ github.workspace }}/src-tauri/target/release/bundle/deb/appname_${{ env.APP_VERSION }}_${{ matrix.deb }}.deb
 ```
 
-(The source also uploads the `rpm` bundle `appname-${{ env.APP_VERSION }}-1.${{ matrix.rpm }}.rpm` and the AppImage `appname_${{ env.APP_VERSION }}_${{ matrix.appimage }}.AppImage` with the same `actions/upload-artifact@v3` step shape.)
+(The source also uploads the `rpm` bundle `appname-${{ env.APP_VERSION }}-1.${{ matrix.rpm }}.rpm` and the AppImage `appname_${{ env.APP_VERSION }}_${{ matrix.appimage }}.AppImage` with the same `actions/upload-artifact@v4` step shape, each with a unique artifact name.)
 
-## Troubleshooting
+### Troubleshooting
 
 The GitHub Token is issued automatically per workflow run, so there is no risk of secret leakage. It only has read permission by default, so you may get "Resource not accessible by integration". Fix: project Settings, `Actions`, `Workflow permissions`, check "Read and write permissions".
 
@@ -202,7 +204,8 @@ env:
 - `ubuntu-22.04-arm` / `ubuntu-24.04-arm` runners are publicly available (since August 2025) in public repositories, so the standard workflow can build Arm64 there.
 - `arm-runner-action` is much slower than standard runners; an uncached build for a fresh `create-tauri-app` project needs about 1 hour. Be careful in private repositories where build minutes are invoiced.
 - Read GitHub's usage limits, billing and administration documentation for Actions. GitHub Actions itself is covered by the github-docs skill.
-- The `curl ... | sh` (rustup) and `curl ... | bash` (NodeSource) lines are copied from the source and run inside the disposable `arm-runner-action` image; review those scripts before running them on a persistent machine.
+- The source pipes the rustup and NodeSource installer scripts directly into the shell; they are split into download / run here. Review those scripts before running them on a persistent machine.
+- Updated from `actions/upload-artifact@v3` / `actions/checkout@v3` (deprecated) in the source; artifact names include the matrix value because v4 requires unique names.
 
 ## Related
 

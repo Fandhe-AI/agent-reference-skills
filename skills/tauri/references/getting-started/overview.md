@@ -16,7 +16,7 @@ npm create tauri-app@latest
 
 After creating the app, see Project Structure to understand what each file does.
 
-## Why Tauri?
+### Why Tauri?
 
 - Secure foundation for building apps
 - Smaller bundle size by using the system's native webview

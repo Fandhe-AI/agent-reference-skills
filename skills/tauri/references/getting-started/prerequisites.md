@@ -124,7 +124,12 @@ xcode-select --install
 **Rust (Linux and macOS)**
 
 ```sh
-curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+# download
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o rustup-init.sh
+# inspect
+less rustup-init.sh
+# run
+sh rustup-init.sh
 ```
 
 **Rust (Windows)**
@@ -197,7 +202,13 @@ rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim
 brew install cocoapods
 ```
 
-(Homebrew itself is installed via `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`.)
+Homebrew itself is installed with its install script (download, inspect, then run):
+
+```sh
+curl -fsSL -o install.sh https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+less install.sh
+/bin/bash install.sh
+```
 
 ## Notes
 
@@ -208,7 +219,7 @@ brew install cocoapods
 - Alpine: containers include no fonts by default; install at least one font package (for example `font-dejavu`). Alpine targets musl, so Rust builds link several system libraries statically; if linking fails with symbols from libraries `pkg-config` reports as present, install the matching `*-static` packages (`openssl-libs-static cairo-static harfbuzz-static glib-static wayland-static zlib-static`). Not every dependency is packaged as `*-static`; some may need building from source.
 - Restart the terminal (and in some cases the system) after installing Rust or Node.js. Package managers other than npm can be enabled with `corepack enable`.
 - Android: "Show Package Details" in the SDK Manager allows older package versions; install older versions only if necessary (compatibility/security risks). On Windows, apps do not refresh environment variables automatically; restart the terminal and IDE.
-- The `curl ... | sh` rustup command is the page's own instruction; the page advises reading the script (https://sh.rustup.rs/) before running it.
+- The source pipes the rustup installer script directly into the shell; it is split into download / inspect / run here. The page itself advises reading the script (https://sh.rustup.rs/) before running it.
 - Rust itself (language, Cargo) is covered by the rust skill; Android Studio / Xcode specifics by the `android-*` and `apple-*` skills.
 
 ## Related

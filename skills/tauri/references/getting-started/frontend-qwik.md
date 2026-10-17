@@ -23,7 +23,9 @@ cd <PROJECT>
 npm run qwik add static
 # 3. Add the Tauri CLI to your project
 npm install -D @tauri-apps/cli@latest
-# 4. Initiate a new Tauri project
+# 4. Define the `tauri` script in package.json
+npm pkg set scripts.tauri=tauri
+# 5. Initiate a new Tauri project
 npm run tauri init
 ```
 
@@ -49,6 +51,7 @@ npm run tauri dev
 
 ## Notes
 
+- Added the `tauri` script step; the source runs `npm run tauri` without defining it.
 - The page source omits the comma after the `devUrl` line in its JSON example; it is added above so the snippet is valid JSON.
 - Tauri-side integration settings only; Qwik itself has no dedicated skill here. Vite: vite skill.
 

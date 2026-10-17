@@ -22,21 +22,7 @@ Export a certificate for CI/CD:
 openssl base64 -A -in /path/to/certificate.p12 -out certificate-base64.txt
 ```
 
-## Options / Props
-
-| Environment variable | Description |
-| --- | --- |
-| `APPLE_SIGNING_IDENTITY` | Signing identity (alternative to `signingIdentity` config) |
-| `APPLE_CERTIFICATE` | Contents of `certificate-base64.txt` (base64 `.p12`) |
-| `APPLE_CERTIFICATE_PASSWORD` | Password of the exported `.p12` |
-| `APPLE_API_ISSUER` | Notarization (App Store Connect): Issuer ID above the keys table |
-| `APPLE_API_KEY` | Notarization (App Store Connect): Key ID column value |
-| `APPLE_API_KEY_PATH` | Notarization (App Store Connect): path of the downloaded private key |
-| `APPLE_ID` | Notarization (Apple ID): Apple account email |
-| `APPLE_PASSWORD` | Notarization (Apple ID): app-specific password |
-| `APPLE_TEAM_ID` | Notarization (Apple ID): Apple Team ID (account membership page) |
-
-## Signing
+### Signing
 
 1. Generate a Certificate Signing Request (CSR) on your Mac.
 2. In Certificates, IDs & Profiles click `Create a certificate`. Choose `Apple Distribution` to submit to the App Store or `Developer ID Application` to ship outside it; upload the CSR.
@@ -56,7 +42,6 @@ on:
 
 jobs:
   build-macos:
-    needs: prepare
     strategy:
       matrix:
         include:
@@ -99,7 +84,7 @@ jobs:
           args: ${{ matrix.args }}
 ```
 
-## Notarization
+### Notarization
 
 Provide credentials for Tauri to authenticate with Apple, either with the App Store Connect API or an Apple ID:
 
@@ -112,7 +97,7 @@ Then rerun the build, e.g. `pnpm tauri build --bundles dmg`. To skip stapling fo
 pnpm tauri build --bundles dmg --skip-stapling
 ```
 
-## Ad-Hoc Signing
+### Ad-Hoc Signing
 
 If you do not want to provide an Apple-authenticated identity but still want to sign, use the pseudo-identity `-`. This is useful on Apple Silicon, where code-signing is required for all apps from the Internet.
 
@@ -120,8 +105,23 @@ If you do not want to provide an Apple-authenticated identity but still want to 
 "signingIdentity": "-"
 ```
 
+## Options / Props
+
+| Environment variable | Description |
+| --- | --- |
+| `APPLE_SIGNING_IDENTITY` | Signing identity (alternative to `signingIdentity` config) |
+| `APPLE_CERTIFICATE` | Contents of `certificate-base64.txt` (base64 `.p12`) |
+| `APPLE_CERTIFICATE_PASSWORD` | Password of the exported `.p12` |
+| `APPLE_API_ISSUER` | Notarization (App Store Connect): Issuer ID above the keys table |
+| `APPLE_API_KEY` | Notarization (App Store Connect): Key ID column value |
+| `APPLE_API_KEY_PATH` | Notarization (App Store Connect): path of the downloaded private key |
+| `APPLE_ID` | Notarization (Apple ID): Apple account email |
+| `APPLE_PASSWORD` | Notarization (Apple ID): app-specific password |
+| `APPLE_TEAM_ID` | Notarization (Apple ID): Apple Team ID (account membership page) |
+
 ## Notes
 
+- `needs: prepare` from the source is removed because the excerpt defines no `prepare` job.
 - Requires an Apple Developer account, paid (99$ per year) or free (testing and development only), and an Apple device for signing. With a free account you cannot notarize and the app still shows as not verified.
 - Only the Apple Developer `Account Holder` can create _Developer ID Application_ certificates (it can be associated with a different Apple ID via a CSR with a different user email).
 - A signing certificate is only valid if associated with your Apple ID; an invalid one is not listed in _Keychain Access > My Certificates_ or the `security find-identity` output. If the certificate does not download to the correct location, select the "login" option under "Default Keychains" in Keychain Access.

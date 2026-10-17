@@ -30,17 +30,7 @@ File structure:
 │   ├── SharedSupport
 ```
 
-## Options / Props
-
-| Config key | Description |
-| --- | --- |
-| `bundle > macOS > entitlements` | Path to the `Entitlements.plist` applied when signing |
-| `bundle > macOS > minimumSystemVersion` | Minimum macOS version; default support is macOS 10.13 and above |
-| `bundle > macOS > frameworks` | System or custom frameworks and dylib files to include |
-| `bundle > macOS > files` | Map of destination path (under `<product-name>.app/Contents`) to source path relative to `tauri.conf.json` |
-| `bundle > resources` | Resources copied to `Resources` (used for `InfoPlist.strings`) |
-
-## Native configuration
+### Native configuration
 
 Tauri configures the most important `Info.plist` properties (binary name, version, bundle identifier, minimum system version and more). To extend it, create `src-tauri/Info.plist`:
 
@@ -57,7 +47,7 @@ Tauri configures the most important `Info.plist` properties (binary name, versio
 </plist>
 ```
 
-### Info.plist localization
+#### Info.plist localization
 
 `Info.plist` supports a single language. For more, create `InfoPlist.strings` per language in `<lang-code>.lproj` directories (the file must be named `InfoPlist.strings`; use two-letter BCP 47 codes in most cases):
 
@@ -86,7 +76,7 @@ NSMicrophoneUsageDescription = "Mikrofon Zugriff wird benötigt für WebRTC Funk
 }
 ```
 
-## Entitlements
+### Entitlements
 
 Entitlements are Apple key-value pairs that grant particular capabilities (e.g. App Sandbox). They are applied when the app is signed. Create `src-tauri/Entitlements.plist`:
 
@@ -111,7 +101,7 @@ Entitlements are Apple key-value pairs that grant particular capabilities (e.g. 
 }
 ```
 
-## Minimum system version
+### Minimum system version
 
 ```json
 {
@@ -123,7 +113,7 @@ Entitlements are Apple key-value pairs that grant particular capabilities (e.g. 
 }
 ```
 
-## Including macOS frameworks
+### Including macOS frameworks
 
 ```json
 {
@@ -139,7 +129,7 @@ Entitlements are Apple key-value pairs that grant particular capabilities (e.g. 
 }
 ```
 
-## Adding custom files
+### Adding custom files
 
 ```json
 {
@@ -155,6 +145,16 @@ Entitlements are Apple key-value pairs that grant particular capabilities (e.g. 
 ```
 
 `profile-name.provisionprofile` is copied to `<product-name>.app/Contents/embedded.provisionprofile` and `docs/index.md` to `<product-name>.app/Contents/SharedSupport/docs.md`.
+
+## Options / Props
+
+| Config key | Description |
+| --- | --- |
+| `bundle > macOS > entitlements` | Path to the `Entitlements.plist` applied when signing |
+| `bundle > macOS > minimumSystemVersion` | Minimum macOS version; default support is macOS 10.13 and above |
+| `bundle > macOS > frameworks` | System or custom frameworks and dylib files to include |
+| `bundle > macOS > files` | Map of destination path (under `<product-name>.app/Contents`) to source path relative to `tauri.conf.json` |
+| `bundle > resources` | Resources copied to `Resources` (used for `InfoPlist.strings`) |
 
 ## Notes
 

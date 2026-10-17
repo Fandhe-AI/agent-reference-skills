@@ -26,11 +26,11 @@ cargo tauri bundle --bundles app,dmg
 cargo tauri bundle --bundles app --config src-tauri/tauri.appstore.conf.json
 ```
 
-## Versioning
+### Versioning
 
 Your application version can be defined in `tauri.conf.json > version`, which is the recommended way for managing the app version. If that config value is not set, Tauri uses the `package > version` value from your `src-tauri/Cargo.toml` file instead.
 
-## Distribution targets
+### Distribution targets
 
 | Platform | Formats / services | Pages |
 | --- | --- | --- |
@@ -41,7 +41,7 @@ Your application version can be defined in `tauri.conf.json > version`, which is
 | iOS | App Store | [app-store](./app-store.md) |
 | Cloud | CrabNebula Cloud | [crabnebula-cloud](./crabnebula-cloud.md) |
 
-## Signing
+### Signing
 
 Code signing enhances the security of your application by applying a digital signature to your application's executables and bundles, validating your identity of the provider of your application. Signing is required on most platforms.
 

@@ -8,15 +8,9 @@ Create a Tauri app with the `create-tauri-app` utility (official framework templ
 
 ## Signature / Usage
 
-Run one of these in the folder where you want the project (the page recommends the Bash command on Linux and macOS and the PowerShell command on Windows):
+Run one of these in the folder where you want the project:
 
 ```sh
-# Bash
-sh <(curl https://create.tauri.app/sh)
-# PowerShell
-irm https://create.tauri.app/ps | iex
-# Fish
-sh (curl -sSL https://create.tauri.app/sh | psub)
 # npm
 npm create tauri-app@latest
 # Yarn
@@ -60,7 +54,7 @@ cargo install tauri-cli --version "^2.0.0" --locked
 cargo tauri dev
 ```
 
-## Manual Setup (Tauri CLI)
+### Manual Setup (Tauri CLI)
 
 1. Create the frontend (example with Vite): `npm create vite@latest .` (pnpm: `pnpm create vite .`; yarn: `yarn create vite .`; deno: `deno run -A npm:create-vite .`; bun: `bun create vite`).
 2. Install the Tauri CLI (if using `cargo`, it must be installed globally):
@@ -112,6 +106,7 @@ export default defineConfig({
 
 ## Notes
 
+- The source also lists shell one-liners (Bash, PowerShell, Fish) that pipe `https://create.tauri.app/sh` / `/ps` into the shell; they are omitted here in favor of the package-manager commands above. If you use them, save the script first, inspect it, then run it.
 - The page recommends starting with the vanilla template (language `TypeScript / JavaScript`, package manager `pnpm`, UI template `Vanilla`, flavor `TypeScript`); a framework can be integrated later.
 - If `create-tauri-app` detects missing dependencies it prints a list of packages and how to install them.
 - If you already initialized the frontend, skip manual-setup step 1.

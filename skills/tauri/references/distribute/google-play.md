@@ -12,11 +12,15 @@ Google Play is the Android app distribution service maintained by Google. This g
 cargo tauri android build --aab
 ```
 
-## Requirements
+### Requirements
 
 - A Play Console developer account; register the app on the Play Console website.
 - Code signing set up (see sign-android).
 - After `tauri android init`, update icons with `tauri icon /path/to/app-icon.png`.
+
+### Upload
+
+The AAB is found in `gen/android/app/build/outputs/bundle/universalRelease/app-universal-release.aab`. Create a new release and upload it in the Google Play Console.
 
 ## Options / Props
 
@@ -54,10 +58,6 @@ cargo tauri android build --apk --split-per-abi
   }
 }
 ```
-
-## Upload
-
-The AAB is found in `gen/android/app/build/outputs/bundle/universalRelease/app-universal-release.aab`. Create a new release and upload it in the Google Play Console.
 
 ## Notes
 

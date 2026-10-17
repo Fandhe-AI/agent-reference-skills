@@ -27,13 +27,13 @@ cargo tauri build --no-bundle
 cargo tauri bundle --config src-tauri/tauri.microsoftstore.conf.json
 ```
 
-## Requirements
+### Requirements
 
 - A Microsoft account, enrolled as a developer (individual or company).
 - Register the app in the Apps and Games page: `New Product`, select `EXE or MSI app`, reserve a unique name.
 - Icons: `tauri icon /path/to/app-icon.png` generates all icons including Microsoft Store icons from a PNG or SVG.
 
-## Build and upload
+### Build and upload
 
 Tauri currently only generates EXE and MSI installers, so you create a Microsoft Store application that only links to the unpacked application. The linked installer must be offline, handle auto-updates and be code signed.
 

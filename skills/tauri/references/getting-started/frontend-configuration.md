@@ -15,7 +15,7 @@ Frameworks with recommended configurations:
 
 For most projects the page recommends Vite for SPA frameworks such as React, Vue, Svelte, and Solid, and for plain JavaScript or TypeScript projects. The other JavaScript guides cover meta-frameworks, which are typically designed for SSR and need special configuration.
 
-## Configuration Checklist
+### Configuration Checklist
 
 Conceptually Tauri acts as a static web host: provide a folder containing a mix of HTML, CSS, JavaScript and possibly WASM to be served to the webview.
 

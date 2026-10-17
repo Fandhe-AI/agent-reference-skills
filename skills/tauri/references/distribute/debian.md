@@ -27,7 +27,7 @@ Include custom files in the package with `tauri.conf.json > bundle > linux > deb
 
 Additional system dependencies can be specified in `tauri.conf.json > bundle > linux > deb`.
 
-## Cross-Compiling for ARM-based Devices
+### Cross-Compiling for ARM-based Devices
 
 Manual compilation steps (Debian/Ubuntu host). For ARMv7 use `armv7-unknown-linux-gnueabihf` / `armhf`, for ARMv8 (ARM64) use `aarch64-unknown-linux-gnu` / `arm64`.
 

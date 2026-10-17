@@ -23,14 +23,14 @@ cargo tauri ios build --export-method app-store-connect
 xcrun altool --upload-app --type ios --file "src-tauri/gen/apple/build/arm64/$APPNAME.ipa" --apiKey $APPLE_API_KEY_ID --apiIssuer $APPLE_API_ISSUER
 ```
 
-## Requirements
+### Requirements
 
 - Enroll in the Apple Developer program.
 - Set up code signing for macOS and iOS.
 - Register your app in App Store Connect. The _Bundle ID_ field **must** match `tauri.conf.json > identifier`.
 - Running on a macOS machine is a requirement.
 
-## Changing App Icon
+### Changing App Icon
 
 After running `tauri ios init`, use `tauri icon`. `--ios-color` defines the background color for the iOS icons.
 
@@ -38,7 +38,7 @@ After running `tauri ios init`, use `tauri icon`. `--ios-color` defines the back
 cargo tauri icon /path/to/app-icon.png --ios-color '#fff'
 ```
 
-## Version
+### Version
 
 Tauri derives `CFBundleVersion` from `tauri.conf.json > version`. Set a custom value in `bundle > iOS > bundleVersion` or `bundle > macOS > bundleVersion`:
 
@@ -58,7 +58,7 @@ Tauri leverages Xcode for the iOS app, so you can archive and distribute from Xc
 cargo tauri ios build --open
 ```
 
-## macOS setup
+### macOS setup
 
 Separate config file applied only for App Store builds (`src-tauri/tauri.appstore.conf.json`):
 
@@ -76,7 +76,7 @@ Separate config file applied only for App Store builds (`src-tauri/tauri.appstor
 ```
 
 ```sh
-cargo tauri build --no-bundle
+cargo tauri build --no-bundle --target universal-apple-darwin
 cargo tauri bundle --bundles app --target universal-apple-darwin --config src-tauri/tauri.appstore.conf.json
 ```
 
@@ -119,12 +119,13 @@ Required configuration:
 </plist>
 ```
 
-## Authentication
+### Authentication
 
 `altool` authenticates with an App Store Connect API key. Create it in App Store Connect Users and Access, Integrations > Individual Keys, Add button, Developer access. `APPLE_API_ISSUER` is the Issuer ID shown above the keys table; `APPLE_API_KEY_ID` is the Key ID column value. The private key can be downloaded only once and must be saved as `AuthKey_<APPLE_API_KEY_ID>.p8` in one of: `<current-working-directory>/private_keys`, `~/private_keys`, `~/.private_keys` or `~/.appstoreconnect/private_keys`.
 
 ## Notes
 
+- `--target universal-apple-darwin` added to the build step so it matches the bundle step (omitted in source).
 - The universal build supports both Apple Silicon and Intel. To support only Apple Silicon set `bundle > macOS > minimumSystemVersion` to `12.0`; on an Apple Silicon build machine drop `--target universal-apple-darwin` and use `target/release`; on an Intel build machine run `rustup target add aarch64-apple-darwin`, use `aarch64-apple-darwin` as target and `target/aarch64-apple-darwin/release` paths.
 - The PKG must be signed with a _Mac Installer Distribution_ certificate.
 - Build with code signing enabled for entitlements to apply; make sure the app works in an App Sandbox context.

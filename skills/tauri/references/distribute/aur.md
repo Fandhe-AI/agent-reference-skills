@@ -39,20 +39,7 @@ git commit -m "Initial Commit"
 git push
 ```
 
-## Options / Props
-
-| Variable | Description |
-| --- | --- |
-| `pkgname` | Package name |
-| `pkgver` | Version; best used in the source variable |
-| `pkgdesc` | Shown on the AUR page |
-| `arch` | Architectures that can install the package |
-| `url` | Not required, helps the package look professional |
-| `install` | `.install` script run on install, removal or upgrade |
-| `depends` | Required to run the app; for any Tauri app include all dependencies shown above |
-| `source` | Required; may be made architecture specific (`source_x86_64`) |
-
-## Examples
+### Examples
 
 Extracting from a Debian package (add `sha256sums_*` and a `package()`):
 
@@ -117,6 +104,19 @@ package() {
 	cp -a <project>/src-tauri/target/release/bundle/deb/<project>_${pkgver}_*/data/* "${pkgdir}"
 }
 ```
+
+## Options / Props
+
+| Variable | Description |
+| --- | --- |
+| `pkgname` | Package name |
+| `pkgver` | Version; best used in the source variable |
+| `pkgdesc` | Shown on the AUR page |
+| `arch` | Architectures that can install the package |
+| `url` | Not required, helps the package look professional |
+| `install` | `.install` script run on install, removal or upgrade |
+| `depends` | Required to run the app; for any Tauri app include all dependencies shown above |
+| `source` | Required; may be made architecture specific (`source_x86_64`) |
 
 ## Notes
 

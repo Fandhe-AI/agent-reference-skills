@@ -14,6 +14,53 @@ cargo tauri build
 
 The RPM package is built in the `src-tauri/target/release/bundle/rpm` directory. Full option list: RpmConfig in the configuration reference.
 
+### Signing the RPM package
+
+Tauri signs the package with a GPG key during the build.
+
+```bash
+gpg --gen-key
+export TAURI_SIGNING_RPM_KEY=$(cat /home/johndoe/my_super_private.key)
+export TAURI_SIGNING_RPM_KEY_PASSPHRASE=password   # if the key has a passphrase
+cargo tauri build
+```
+
+Verify the signature (local testing only): export and import the public key, edit `~/.rpmmacros`, then check:
+
+```bash
+gpg --export -a 'Tauri-App' > RPM-GPG-KEY-Tauri-App
+sudo rpm --import RPM-GPG-KEY-Tauri-App
+rpm  -v --checksig tauri-app-0.0.0-1.x86_64.rpm
+```
+
+```bash
+%_signature gpg
+%_gpg_path /home/johndoe/.gnupg
+%_gpg_name Tauri-App
+%_gpgbin /usr/bin/gpg2
+%__gpg_sign_cmd %{__gpg} \
+    gpg --force-v3-sigs --digest-algo=sha1 --batch --no-verbose --no-armor \
+    --passphrase-fd 3 --no-secmem-warning -u "%{_gpg_name}" \
+    -sbo %{__signature_filename} %{__plaintext_filename}
+```
+
+### Debugging the RPM package
+
+| Purpose | Command |
+| --- | --- |
+| Package info (version, release, architecture) | `rpm -qip package_name.rpm` |
+| Query specific fields | `rpm  -qp --queryformat '[%{NAME} %{VERSION} %{RELEASE} %{ARCH} %{SIZE}\n]' package_name.rpm` |
+| List package contents | `rpm -qlp package_name.rpm` |
+| Print pre/post install/remove scripts | `rpm -qp --scripts package_name.rpm` |
+| Check dependencies | `rpm -qp --requires package_name.rpm` |
+| Packages that depend on a package | `rpm -q --whatrequires package_name.rpm` |
+| Verbose install | `rpm -ivvh package_name.rpm` |
+| Verbose upgrade of installed package | `rpm -Uvvh package_name.rpm` |
+
+### Cross-Compiling for ARM-based Devices
+
+The ten manual steps (Rust targets `armv7-unknown-linux-gnueabihf` / `aarch64-unknown-linux-gnu`, gcc linker, `.cargo/config.toml` linker entries, `dpkg --add-architecture`, ports.ubuntu.com sources with `[arch=amd64]` on existing lines, `libwebkit2gtk-4.1-dev:armhf|arm64`, OpenSSL headers or vendored `openssl-sys`, `PKG_CONFIG_SYSROOT_DIR`, `cargo tauri build --target <triple>`) are identical to the Debian page; see debian.md.
+
 ## Options / Props
 
 `tauri.conf.json > bundle > linux > rpm`:
@@ -106,53 +153,6 @@ license = "MIT" # add the license here
   }
 }
 ```
-
-## Signing the RPM package
-
-Tauri signs the package with a GPG key during the build.
-
-```bash
-gpg --gen-key
-export TAURI_SIGNING_RPM_KEY=$(cat /home/johndoe/my_super_private.key)
-export TAURI_SIGNING_RPM_KEY_PASSPHRASE=password   # if the key has a passphrase
-cargo tauri build
-```
-
-Verify the signature (local testing only): export and import the public key, edit `~/.rpmmacros`, then check:
-
-```bash
-gpg --export -a 'Tauri-App' > RPM-GPG-KEY-Tauri-App
-sudo rpm --import RPM-GPG-KEY-Tauri-App
-rpm  -v --checksig tauri-app-0.0.0-1.x86_64.rpm
-```
-
-```bash
-%_signature gpg
-%_gpg_path /home/johndoe/.gnupg
-%_gpg_name Tauri-App
-%_gpgbin /usr/bin/gpg2
-%__gpg_sign_cmd %{__gpg} \
-    gpg --force-v3-sigs --digest-algo=sha1 --batch --no-verbose --no-armor \
-    --passphrase-fd 3 --no-secmem-warning -u "%{_gpg_name}" \
-    -sbo %{__signature_filename} %{__plaintext_filename}
-```
-
-## Debugging the RPM package
-
-| Purpose | Command |
-| --- | --- |
-| Package info (version, release, architecture) | `rpm -qip package_name.rpm` |
-| Query specific fields | `rpm  -qp --queryformat '[%{NAME} %{VERSION} %{RELEASE} %{ARCH} %{SIZE}\n]' package_name.rpm` |
-| List package contents | `rpm -qlp package_name.rpm` |
-| Print pre/post install/remove scripts | `rpm -qp --scripts package_name.rpm` |
-| Check dependencies | `rpm -qp --requires package_name.rpm` |
-| Packages that depend on a package | `rpm -q --whatrequires package_name.rpm` |
-| Verbose install | `rpm -ivvh package_name.rpm` |
-| Verbose upgrade of installed package | `rpm -Uvvh package_name.rpm` |
-
-## Cross-Compiling for ARM-based Devices
-
-The ten manual steps (Rust targets `armv7-unknown-linux-gnueabihf` / `aarch64-unknown-linux-gnu`, gcc linker, `.cargo/config.toml` linker entries, `dpkg --add-architecture`, ports.ubuntu.com sources with `[arch=amd64]` on existing lines, `libwebkit2gtk-4.1-dev:armhf|arm64`, OpenSSL headers or vendored `openssl-sys`, `PKG_CONFIG_SYSROOT_DIR`, `cargo tauri build --target <triple>`) are identical to the Debian page; see debian.md.
 
 ## Notes
 
