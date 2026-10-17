@@ -17,7 +17,7 @@ const renderItem = useCallback(({item}) => (
 
 return (
   // ...
-  <FlatList data={items} renderItem={renderItem} />;
+  <FlatList data={items} renderItem={renderItem} />
   // ...
 );
 ```
@@ -36,6 +36,7 @@ return (
 
 - Terms: VirtualizedList (component behind `FlatList`), memory consumption, responsiveness, blank areas, viewport (visible area), window (area where items are mounted, much larger than the viewport).
 - List item tips: use basic and light components (small thumbnails, little logic / nesting), use `memo()` with a comparison function, use cached optimized images (e.g. `@d11/react-native-fast-image`), use `getItemLayout` when items have equal height (or width), use `keyExtractor` or `key`, and avoid anonymous `renderItem` functions (wrap in `useCallback`; for class components move it out of `render`).
+- Adapted (not in the official docs): the stray semicolon after the JSX inside `return (...)` in the official snippet is removed so the example parses.
 - Distinct from web virtualization (tanstack-virtual) and Jetpack Compose LazyColumn (android-compose-ui).
 
 ## Related

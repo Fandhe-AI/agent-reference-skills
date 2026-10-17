@@ -77,7 +77,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.3.1")
+        classpath("com.android.tools.build:gradle")
 +       classpath("com.facebook.react:react-native-gradle-plugin")
     }
 }
@@ -701,6 +701,7 @@ Use the `initialProperties` parameter of the `view(withModuleName:initialPropert
 ## Notes
 
 - Adapted (not in the official docs): (1) the Java `MainApplication` diff gained the missing semicolon on `import com.facebook.react.soloader.OpenSourceMergedSoMapping;`; (2) the Objective-C call is `presentViewController:animated:completion:` with `completion:nil` added (the official text omits `completion:`); (3) the Swift initial-props example gained the missing comma after `withModuleName: "HelloWorld"`; (4) the release-build script passes each path as a separately quoted argument, `/bin/sh "$WITH_ENVIRONMENT" "$REACT_NATIVE_XCODE"`, so paths containing spaces work; the official script uses `/bin/sh -c "$WITH_ENVIRONMENT $REACT_NATIVE_XCODE"`.
+- Corrected (differs from the official docs): the official top-level build.gradle diff shows AGP 7.3.1 as unchanged context; it is aligned with the React Native Community Template (`classpath("com.android.tools.build:gradle")` with no version number, from the template's `0.87-stable` android/build.gradle) because 7.3.1 does not support compileSdk 35.
 - Corrected (differs from the official docs): the official Java snippet passes `OpenSourceMergedSoMapping` directly; because it is a Kotlin `object`, Java must use `OpenSourceMergedSoMapping.INSTANCE`.
 - Requirements: React Native can be added as a single view or user flow to an existing app; the template `package.json` / `Gemfile` / `Podfile` are fetched from the React Native Community Template branch matching the docs version.
 - The userID / token above are placeholders from the docs; never ship real secrets in initial properties.

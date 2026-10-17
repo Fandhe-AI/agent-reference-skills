@@ -168,6 +168,19 @@ class MyViewManager(
 
   override fun getCommandsMap() = mapOf("create" to COMMAND_CREATE)
 
+  override fun receiveCommand(
+      root: FrameLayout,
+      commandId: String,
+      args: ReadableArray?
+  ) {
+    super.receiveCommand(root, commandId, args)
+    val reactNativeViewId = requireNotNull(args).getInt(0)
+
+    when (commandId.toInt()) {
+      COMMAND_CREATE -> createFragment(root, reactNativeViewId)
+    }
+  }
+
   @ReactPropGroup(names = ["width", "height"], customType = "Style")
   fun setStyle(view: FrameLayout, index: Int, value: Int) { /* store width/height */ }
 
