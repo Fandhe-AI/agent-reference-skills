@@ -92,7 +92,8 @@ flutter drive \
 - Added `flutter pub add material_ui`: the official recipe imports package:material_ui but never adds the dependency; alternatively import package:flutter/material.dart.
 - Added the dev-dependency step: the profiling recipe assumes the integration-test setup and does not list it.
 - Add `--no-dds` when running on a mobile device or emulator, because the Dart Development Service is not reachable from the computer.
-- Results land in `build/`: `scrolling_summary.timeline_summary.json` and `scrolling_timeline.timeline.json` (open the latter at `chrome://tracing`).
+- Results land in `build/`: `scrolling_timeline.timeline_summary.json` and `scrolling_timeline.timeline.json` (open the latter at `chrome://tracing`).
+- The source names the summary `scrolling_summary.timeline_summary.json`, but with `writeTimelineToFile('scrolling_timeline', ...)` the file is `scrolling_timeline.timeline_summary.json`.
 - Recording performance timelines is not supported on web.
 - `integration_test` cannot interact with native platform UI; the source names the third-party `patrol` package for that.
 - This is Flutter `integration_test` / `flutter drive` (Dart), distinct from Playwright end-to-end tests, Vitest, and Android instrumented testing.

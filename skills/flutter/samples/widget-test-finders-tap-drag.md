@@ -51,7 +51,8 @@ class TodoList extends StatefulWidget {
 
 class _TodoListState extends State<TodoList> {
   static const _appTitle = 'Todo List';
-  final todos = <String>[];
+  final todos = <({int id, String text})>[];
+  var _nextId = 0;
   final controller = TextEditingController();
 
   @override
@@ -76,10 +77,11 @@ class _TodoListState extends State<TodoList> {
                   final todo = todos[index];
 
                   return Dismissible(
-                    key: Key('$todo$index'),
-                    onDismissed: (direction) => setState(() => todos.removeAt(index)),
+                    key: ValueKey(todo.id),
+                    onDismissed: (direction) =>
+                        setState(() => todos.removeWhere((t) => t.id == todo.id)),
                     background: Container(color: Colors.red),
-                    child: ListTile(title: Text(todo)),
+                    child: ListTile(title: Text(todo.text)),
                   );
                 },
               ),
@@ -89,7 +91,7 @@ class _TodoListState extends State<TodoList> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             setState(() {
-              todos.add(controller.text);
+              todos.add((id: _nextId++, text: controller.text));
               controller.clear();
             });
           },
@@ -130,7 +132,8 @@ testWidgets('finds a specific instance', (tester) async {
 
 - The test environment does not rebuild automatically after state changes; call `pump()` for one frame or `pumpAndSettle()` to rebuild until animations finish.
 - Added `flutter pub add material_ui`: the official recipe imports package:material_ui but never adds the dependency; alternatively import package:flutter/material.dart.
-- Changed onDismissed to wrap todos.removeAt in setState (the official tap-drag recipe omits it; the dismissible recipe uses setState) so the list rebuilds after removal.
+- Changed onDismissed to wrap the removal in setState (the official tap-drag recipe omits it; the dismissible recipe uses setState) so the list rebuilds after removal.
+- Changed the Dismissible key from the source's `Key('$todo$index')` to a stable per-item id, because index-based keys shift after a removal and reuse the dismissed item's State.
 - Added dispose() for the TextEditingController (omitted in the official recipe).
 - `find.text`, `find.byType`, `find.byKey`, `find.byWidget` come from `flutter_test`; see `CommonFinders` for the full list.
 - This is `flutter_test` (Dart) widget testing run with `flutter test`, distinct from Playwright, Vitest, and Android instrumented/Compose testing.

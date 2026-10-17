@@ -126,6 +126,6 @@ Navigator.pushNamed(
 
 - The source states that named routes are no longer recommended for most applications; see the Limitations section of the navigation overview (https://docs.flutter.dev/ui/navigation#limitations).
 - The arguments example requires registering ExtractArgumentsScreen.routeName in MaterialApp.routes (or handling it in onGenerateRoute).
-- When using `initialRoute`, do not define a `home` property.
+- The source says not to define `home` when using `initialRoute`; in practice `home` and `initialRoute` can be combined (`home` becomes the `/` route) — what MaterialApp forbids is defining both `home` and `routes['/']`.
 - Arguments can alternatively be extracted in `onGenerateRoute: (settings) { ... settings.arguments as ScreenArguments ... }` and passed to the screen through its constructor.
 - Flutter `Navigator` named routes (Dart) are distinct from React Router / TanStack Router route definitions and Jetpack Navigation graphs.
