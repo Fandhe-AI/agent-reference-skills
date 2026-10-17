@@ -134,7 +134,7 @@ export default function RootLayout() {
 }
 ```
 
-Reset navigation state with `CommonActions.reset`:
+Reset navigation state with `CommonActions.reset` (SDK 58 and later require `stale: false` in the reset state):
 
 ```tsx
 import { Button } from 'react-native'
@@ -146,7 +146,9 @@ export default function Screen() {
 
   const handleResetAction = () => {
     navigation.dispatch(CommonActions.reset({
-      routes: [{key: "(tabs)", name: "(tabs)"}]
+      index: 0,
+      routes: [{key: "(tabs)", name: "(tabs)"}],
+      stale: false
     }))
   }
 
@@ -208,6 +210,7 @@ import { Header, HeaderBackButton } from 'expo-router/react-navigation';
 - Expo Router adds `react-native-safe-area-context` support automatically but does not add `react-native-gesture-handler` (as of v3); add it yourself for Gesture Handler or the Drawer layout, and avoid it on web.
 - The `NavigationContainer` is completely managed by Expo Router.
 - The `Text` / `Button` imports from `react-native` are added here; the source snippets omit them.
+- The official reset sample passes only `routes`; `index` and `stale: false` were added here because SDK 58 requires `stale: false` for `CommonActions.reset` (see the SDK 57 to 58 migration).
 - With groups or shared routes, navigate to specific tabs by the fully qualified route name, for example `/(home)/settings`.
 - Splash screen: import `SplashScreen` from `expo-router` instead of `expo-splash-screen`; Expo Router hides it after navigation mounts and when an unexpected error is caught.
 - Initial routes for deep linking and server navigation: use layout settings (Router settings) instead of `initialRouteName` in the linking configuration.

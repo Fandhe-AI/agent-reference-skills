@@ -44,7 +44,8 @@ const source: ImageSourcePropType = { uri: 'https://example.com/photo.jpg' };
 export default function Page() {
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const { width } = useWindowDimensions();
-  const previewHeight = (width / imageSize.width) * imageSize.height;
+  const previewHeight =
+    imageSize.width > 0 ? (width / imageSize.width) * imageSize.height : 200;
 
   return (
     <Link href="/about">
@@ -123,7 +124,7 @@ function MyComponent() {
   - Rendering a `Link` with a preview or context menu without a `Link.Trigger` throws an exception; so does placing any non-`Link.*` component directly inside `Link` in preview mode.
   - With `asChild`, `Link.Trigger` may have only one child; `onPress` is forwarded to that child only.
   - Changing the `href` path dynamically while the preview is open is not supported; only query parameters may be changed.
-- The official custom preview snippet has no import statements and leaves `source` undefined; the imports and the placeholder `source` above were added here so the example compiles.
+- The official custom preview snippet has no import statements and leaves `source` undefined; the imports and the placeholder `source` above were added here so the example compiles, and a finite fallback height is used until the image size is known (the official formula yields NaN for the initial 0x0 size).
 - All `Link.MenuAction` customization options are in the Router Link API page.
 - Source: https://docs.expo.dev/router/reference/link-preview/ (unversioned guide, fetched 2026-10-17, modificationDate October 15, 2026).
 

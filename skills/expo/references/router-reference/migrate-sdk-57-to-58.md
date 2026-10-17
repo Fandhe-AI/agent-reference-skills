@@ -36,9 +36,9 @@ import { Stack } from 'expo-router';
   }
 ```
 
-## Common migrations
+### Common migrations
 
-### Web safe-area, server rendering, metadata
+#### Web safe-area, server rendering, metadata
 
 - Replace web spacing based on `SafeAreaView` or `useSafeAreaInsets()` with CSS (see the safe-area guide's web instructions).
 - In SDK 58, `web.output: "server"` renders HTML pages on each request instead of prerendering during export. To keep the SDK 57 behavior, set `web.output` to `"static"` and enable `apiRoutes: true` in the `expo-router` config plugin (this still requires a deployed server):
@@ -82,11 +82,11 @@ import { Stack } from 'expo-router';
 
 `generateMetadata()` can be asynchronous. For static rendering, its first argument is `undefined` and its second contains the route parameters (also in development). Server rendering with `web.output: "server"` continues to provide the incoming request. Metadata is resolved from the matched route, not its layouts: move shared layout `Head` metadata into each route's `generateMetadata()` or add shared tags in **src/app/+html.tsx**. Move any `<html>` / `<body>` attributes previously set through `Head` onto those elements in the Root HTML component.
 
-### Custom Root HTML components
+#### Custom Root HTML components
 
 If the app uses `web.output: "static"` or `"server"` and has **src/app/+html.tsx**, call `useServerDocumentContext()` from `expo-router/html`. Spread `htmlAttributes` and `bodyAttributes` onto their elements, render `headNodes` inside `<head>` and `bodyNodes` after `children` inside `<body>`. In SDK 58, `bodyNodes` includes the JavaScript bundles required for hydration; omitting it prevents the app from becoming interactive. The root HTML component also receives `pathname` and `params` props; use them instead of navigation hooks. Navigation hooks (`usePathname`, `useSegments`, `useLocalSearchParams`, `useRouter`) no longer work in **app/+html.tsx**; use them in the root layout **app/_layout.tsx**.
 
-### Remove deprecated server flags
+#### Remove deprecated server flags
 
 Remove these `expo-router` config plugin options. In SDK 58 they have no effect and emit a deprecation warning whenever present, even when `false`:
 
@@ -96,7 +96,7 @@ Remove these `expo-router` config plugin options. In SDK 58 they have no effect 
 | `unstable_useServerDataLoaders` | Data loaders are available with `web.output: "static"` or `"server"` without an opt-in. |
 | `unstable_useServerMiddleware` | Server middleware no longer requires an opt-in. |
 
-### Async route defaults
+#### Async route defaults
 
 In SDK 58, async routes are enabled by default on web in development and production. Native defaults are unchanged (native production builds load routes synchronously). Async routes use the default loading fallback instead of custom `SuspenseFallback` exports. To keep custom fallbacks on web:
 
@@ -110,7 +110,7 @@ In SDK 58, async routes are enabled by default on web in development and product
 
 Existing explicit `asyncRoutes` settings take precedence over the defaults. After upgrading or changing `asyncRoutes`, clear the Metro cache with `expo start --clear` or `expo export --clear`.
 
-### Update Router tests
+#### Update Router tests
 
 `expo-router/testing-library` requires `@testing-library/react-native` version 14 or later. `renderRouter` now returns a promise; `await` it and the `testRouter` methods `navigate`, `push`, `replace`, `back`, `setParams`, `dismissAll`:
 
@@ -128,19 +128,19 @@ import { renderRouter, screen, testRouter } from 'expo-router/testing-library';
 
 Replace `renderRouterAsync` with `renderRouter` (keep `await`). Replace the removed `RenderRouterAsyncOptions` type with `RenderRouterOptions`. `testRouter.canGoBack()` remains synchronous.
 
-### Prefer `useRouter` in components
+#### Prefer `useRouter` in components
 
 Prefer the router from `useRouter()` over `useNavigation().navigate()` or the module-level `router` for href-based navigation from a component; the hook is bound to the Expo Router root that rendered the component. The module-level `router` is still available but throws before the first router render and cannot distinguish multiple router roots. Keep `useNavigation` for navigator-specific APIs (events, options, action dispatching). `useRouter()` includes `push`, `navigate`, `replace`, `back`, `dismiss`, `dismissTo`, `dismissAll`, `canGoBack`, `canDismiss`, `setParams`, `prefetch`.
 
-### Navigate with complete hrefs
+#### Navigate with complete hrefs
 
 In SDK 57, React Navigation could interpret `screen`, `params`, and `initial` as instructions for building nested state. In SDK 58 they are ordinary user parameters. Ancestor route params are also no longer copied into descendant routes during imperative navigation; include the value in the destination href.
 
-### `initialRouteName` to `unstable_settings`
+#### `initialRouteName` to `unstable_settings`
 
 The `initialRouteName` navigator prop is removed. Export `unstable_settings.anchor` from the stack's layout to add a back destination when deep linking. Do not use `anchor` to choose the app's initial screen (the launch URL does; for `/`, use an **index.tsx** route). A stack nested in tabs reads the setting from that stack's own **_layout.tsx**. During imperative navigation pass `{ withAnchor: true }` when the anchor route should be inserted below the destination.
 
-### Replace `redirect` and `initialParams`
+#### Replace `redirect` and `initialParams`
 
 Layout `Screen` components no longer accept `redirect` or `initialParams`. Render a `Redirect` from the route file; for access control use a protected route with `redirectTo`:
 
@@ -169,7 +169,7 @@ Replace `initialParams` with defaults where the screen reads its params:
 const { sort = 'latest' } = useLocalSearchParams<{ sort?: string }>();
 ```
 
-### Declare tabs and drawer screens
+#### Declare tabs and drawer screens
 
 JavaScript tabs, top tabs, drawer, headless tabs, and native tabs now show only screens declared in the layout:
 
@@ -187,11 +187,11 @@ export default function TabLayout() {
 }
 ```
 
-### Protected routes
+#### Protected routes
 
 Protected routes remain registered in their navigator in SDK 58. A route whose guard fails renders a redirect instead of being removed from the route tree. Set `redirectTo` on `Protected` only to control the destination; otherwise Expo Router uses the navigator's accessible anchor or initial route, then its first accessible route.
 
-### Web modals, `freezeOnBlur`
+#### Web modals, `freezeOnBlur`
 
 - The experimental web modal implementation is removed; see the custom web modals guide. Custom implementations can import `NativeStackView` from `expo-router`.
 - `freezeOnBlur` has no effect in SDK 58. To preserve state while cleaning up effects after a screen loses focus, set `activityEnabled` on the navigator or a declared screen. A value of `1` hides the screen content as soon as another screen is focused:
@@ -207,7 +207,7 @@ Protected routes remain registered in their navigator in SDK 58. A route whose g
 
 When `activityEnabled` is `true`, a stack hides a screen's content once two screens sit above it; tabs and drawers hide it as soon as it loses focus. Stack navigators and screens also accept a positive number to override the threshold. To hide only part of a screen, wrap that content in `NavigationAwareActivity` (its `hideWhenNestedAtLevel` prop defaults to `2`).
 
-### Optional native dependencies
+#### Optional native dependencies
 
 `expo-symbols` and `@expo/ui` become optional peer dependencies of Expo Router. Install only what your APIs use, then rebuild development builds:
 
@@ -218,7 +218,7 @@ npx expo install expo-symbols
 npx expo install @expo/ui
 ```
 
-### Prevent a screen from being removed
+#### Prevent a screen from being removed
 
 `usePreventRemove` from `expo-router` blocks removal while a screen has unsaved data. To continue the exact blocked action, set the prevention condition to `false` and call the callback's `repeat`:
 
@@ -240,7 +240,7 @@ usePreventRemove(hasUnsavedChanges, ({ repeat }) => {
 
 To navigate somewhere else, keep the `disablePrevention` function returned by `usePreventRemove`: set the condition to `false`, call `disablePrevention()`, then navigate. Do not dispatch from a raw `removePrevented` listener while prevention is active. Always update the boolean passed to `usePreventRemove` when calling `disablePrevention()`; if it stays `true` the hook warns and does not re-enable prevention until the boolean changes.
 
-### iOS header appearance
+#### iOS header appearance
 
 In SDK 58, `Stack` headers on iOS 26 and later use the system bar appearance by default (transparent with Liquid Glass, content under the header). The default `headerTransparent` is `{ ios: true, android: false, web: false }`; on iOS it applies only when Liquid Glass is available and the screen does not set `headerStyle.backgroundColor` or `headerBackground`. Earlier iOS versions and apps with Liquid Glass off keep the opaque header; Android is unchanged. If content is hidden under the header, add `contentInsetAdjustmentBehavior="automatic"` to the root `ScrollView`, `FlatList`, or `SectionList`; for a screen without a scroll view use `SafeAreaView`; to keep an opaque header set `headerTransparent: false`. Headers now use system fonts instead of theme fonts on iOS 26+; set `fontFamily` in `headerTitleStyle`, `headerBackTitleStyle`, or `headerLargeTitleStyle` to keep a custom font. To restore the previous appearance for all screens:
 
@@ -256,9 +256,9 @@ export default function RootLayout() {
 
 `enableLegacyHeaderAppearance()` is deprecated; in a future release the native iOS header appearance becomes the only behavior and the function will be removed.
 
-## Advanced migrations
+### Advanced migrations
 
-### `navigation.dispatch`
+#### `navigation.dispatch`
 
 `navigation.dispatch` and helper actions are queued until after the current React commit. Use `navigation.dispatchSync(action)` only when an integration must apply an action immediately. Dispatch functions are no longer supported; read state first, compute an action, dispatch the object:
 
@@ -279,7 +279,7 @@ export default function RootLayout() {
 + navigation.dispatch(action);
 ```
 
-### `navigationKey`, `beforeRemove`, `__unsafe_action__`, `useNavigation`
+#### `navigationKey`, `beforeRemove`, `__unsafe_action__`, `useNavigation`
 
 - Layout `Screen` and `Group` no longer accept `navigationKey`; there is no direct replacement.
 - `beforeRemove` and `__unsafe_action__` events are removed. Use `removed` (fires after the route unmounts; defer listener cleanup) and `removePrevented`:
@@ -296,7 +296,7 @@ useEffect(() => {
 
 - `useNavigation` throws when called outside a navigator (including components rendered by `ExpoRoot`'s `wrapper` prop).
 
-### Navigation state
+#### Navigation state
 
 Navigation state is an implementation detail; prefer `usePathname`, `useSegments`, `useGlobalSearchParams`.
 
@@ -322,7 +322,7 @@ for (const routeName of state.routeNames) {
 - `DrawerNavigationState.default` is removed; use `useDrawerStatus` from `expo-router/drawer`. `getDrawerStatusFromState` is deprecated and requires the router's default status as its second argument.
 - Persisted initial state must be complete: every nested state needs a state key, route keys, `routeKeySeq`, `routeNames`, `index`, and `stale: false`; Expo Router throws on incomplete persisted state. `CommonActions.reset` also requires `stale: false`, but generates omitted route keys and fills an omitted `routeKeySeq`.
 
-### Custom routers
+#### Custom routers
 
 Create custom routers by extending `StackRouter` or `TabRouter` with `extendRouter` or `extendRouterActions`.
 
@@ -395,7 +395,7 @@ const CustomStackRouter = extendRouter(StackRouter, ({ nextKey }) => ({
 
 `extendRouter` receives the base router and a `nextKey` function (deterministic route keys; the wrapper writes the updated `routeKeySeq`). Use `extendRouterActions` when only `getStateForAction` needs customization; returning `null` or `undefined` instead of a `RouterActionHandling` value is deprecated and warns in development. `extendRouter` inherits the base router's `type`; pass a different type in the wrapper's options if the state requires it.
 
-### Custom navigators
+#### Custom navigators
 
 For new custom integrations use `createStandardRouterNavigator` (app) or `integrateWithRouter` (reusable library); these use the `standard-navigation` contract.
 
@@ -422,7 +422,7 @@ For new custom integrations use `createStandardRouterNavigator` (app) or `integr
 
 Import base and native stack helpers from `expo-router`; navigator-specific helpers from `expo-router/js-stack`, `expo-router/js-tabs`, `expo-router/js-top-tabs`, or `expo-router/native-tabs`. The `key` on `descriptor.route` can be `undefined` for a declared route that does not yet have a live state route.
 
-### Removed `expo-router/react-navigation` exports
+#### Removed `expo-router/react-navigation` exports
 
 | Removed API | Replacement |
 | --- | --- |

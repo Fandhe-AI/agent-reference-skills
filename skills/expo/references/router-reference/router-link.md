@@ -154,19 +154,24 @@ import { Pressable, Text } from 'react-native';
 </Link>
 
 <Link href="/about">
+  <Link.Trigger>About</Link.Trigger>
   <Link.Preview />
 </Link>
 
-<Link.Menu>
-  <Link.MenuAction title="Action 1" onPress={() => {}} />
-  <Link.MenuAction title="Action 2" onPress={() => {}} />
-</Link.Menu>
+<Link href="/about">
+  <Link.Trigger>About</Link.Trigger>
+  <Link.Menu>
+    <Link.MenuAction title="Action 1" onPress={() => {}} />
+    <Link.MenuAction title="Action 2" onPress={() => {}} />
+  </Link.Menu>
+</Link>
 ```
 
 ## Notes
 
 - Platforms: android, ios, tvos, web, expo-go; `Link.AppleZoom` and `Link.AppleZoomTarget` need iOS 18+; `Link.Menu`, `Link.MenuAction`, `Link.Preview`, `Link.Trigger` and `usePreventZoomTransitionDismissal` are iOS only.
 - Expo Router `Link` and `Redirect` are file-based routing components built on React Navigation. They are different APIs from the same-named `Link` in react-router and tanstack-router.
+- The official API-page snippets for `Link.Preview` / `Link.Menu` omit `Link` and `Link.Trigger`; they were added here because a `Link` with a preview or menu throws without a `Link.Trigger`.
 - Source: https://docs.expo.dev/versions/v58.0.0/sdk/router/link/ (modificationDate September 16, 2026).
 
 ## Related
