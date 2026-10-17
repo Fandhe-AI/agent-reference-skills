@@ -89,6 +89,7 @@ export function BugReportForm() {
           <Input
             id="title"
             name="title"
+            defaultValue={formState.values?.title ?? ""}
             disabled={pending}
             aria-invalid={!!formState.errors?.title?.length}
           />

@@ -156,6 +156,7 @@ export function ModeToggle() {
 
 ## Notes
 
+- The `DropdownMenuTrigger asChild` usage in the toggle is the source's Radix-style example as written; with the default Base UI components use the `render` prop instead (e.g. `<DropdownMenuTrigger render={<Button variant="outline" size="icon" />}>`), or install the Radix variant.
 - Framework APIs themselves are in skills nextjs-app / react-router / tanstack-start / tanstack-router.
 
 ## Related

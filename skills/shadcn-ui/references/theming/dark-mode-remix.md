@@ -147,6 +147,7 @@ export function ModeToggle() {
 
 ## Notes
 
+- The `DropdownMenuTrigger asChild` usage in the toggle is the source's Radix-style example as written; with the default Base UI components use the `render` prop instead (e.g. `<DropdownMenuTrigger render={<Button variant="outline" size="icon" />}>`), or install the Radix variant.
 - Adapted (not in the official docs): the official action route imports `./sessions.server`, which does not resolve from `app/routes/`; changed to `../sessions.server`.
 - The cookie `secrets: ["s3cr3t"]` in the source is a placeholder; supply your own secret from configuration, not a literal.
 - Framework APIs themselves are in skills nextjs-app / react-router / tanstack-start / tanstack-router.
