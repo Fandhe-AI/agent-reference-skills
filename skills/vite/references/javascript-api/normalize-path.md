@@ -14,4 +14,4 @@ function normalizePath(id: string): string
 
 ## Related
 
-- Path Normalization / Hook Filters
+- [Path Normalization / Hook Filters](../plugin-api/path-normalization-filters.md)

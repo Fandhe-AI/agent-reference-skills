@@ -23,4 +23,4 @@ Framework templates created via `create-vite` already have HMR integrations pre-
 ## Related
 
 - [Client Types](./client-types.md)
-- HMR API overview
+- [HMR API overview](../plugin-api/hmr-api-overview.md)

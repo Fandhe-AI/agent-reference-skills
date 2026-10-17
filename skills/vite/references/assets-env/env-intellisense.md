@@ -44,4 +44,4 @@ If code relies on browser types such as DOM and WebWorker, update the `lib` fiel
 
 - [env-variables.md](./env-variables.md)
 - [built-in-constants.md](./built-in-constants.md)
-- Client Types (vite/client)
+- [Client Types (vite/client)](../features/client-types.md)

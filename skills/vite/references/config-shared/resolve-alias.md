@@ -52,4 +52,4 @@ With a regular expression `find` (replacement patterns such as `$1` are usable):
 ## Related
 
 - [resolve.* options](./resolve-options.md)
-- SSR externals
+- [SSR externals](../ssr/ssr-externals.md)

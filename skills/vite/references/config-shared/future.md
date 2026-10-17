@@ -31,4 +31,4 @@ export default defineConfig({
 
 ## Related
 
-- Breaking changes
+- [Breaking changes](../migration-troubleshooting/breaking-changes.md)

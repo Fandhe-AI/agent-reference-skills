@@ -68,4 +68,4 @@ document.getElementById('hero-img').style.background = `url("${imgUrl}")`
 - [new-url-import-meta-url.md](./new-url-import-meta-url.md)
 - [../config-shared/assets-include.md](../config-shared/assets-include.md)
 - [../config-build/build-assets-inline-limit.md](../config-build/build-assets-inline-limit.md)
-- Client Types (vite/client)
+- [Client Types (vite/client)](../features/client-types.md)
