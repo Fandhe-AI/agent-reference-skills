@@ -9,7 +9,7 @@ user-invocable: false
 
 # Tailwind CSS
 
-> 分割 PR の途中段階。現在収録済み: references/{backgrounds-borders, core-concepts, effects, filters, flexbox-grid, getting-started}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{backgrounds-borders, core-concepts, effects, filters, flexbox-grid, getting-started, interactivity}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 対象バージョン: Tailwind CSS v4.3.3 (npm latest, GitHub tag `tailwindlabs/tailwindcss@v4.3.3`, 2026-07-16 リリース)。
 
@@ -32,6 +32,8 @@ skills/tailwindcss/
     effects/                 # 14 ページ: box-shadow, text-shadow, opacity, mask-*, mix-blend-mode
       README.md
     filters/                 # 20 ページ: filter-*, backdrop-filter-*
+      README.md
+    interactivity/           # 24 ページ: cursor, scroll-*, scrollbar-*, user-select, fill, stroke, touch-action 等
       README.md
 ```
 
