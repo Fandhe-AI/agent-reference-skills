@@ -80,7 +80,7 @@ Lists:
 ### Operations that don't exist in Java's standard library
 
 - `zip()`, `unzip()` - transform a collection.
-- `aggregate()` - group by a condition.
+- `groupBy()`, `groupingBy()` + `aggregate()` - group by a condition, then accumulate within each group.
 - `takeLast()`, `takeLastWhile()`, `dropLast()`, `dropLastWhile()` - take or drop elements by a predicate.
 - `slice()`, `chunked()`, `windowed()` - retrieve collection parts.
 - Plus (`+`) and minus (`-`) operators - add or remove elements.
@@ -273,6 +273,8 @@ println(numbers.associateWith { it.length })
 - The official guide says `filter()` returns the same collection type; actually `Iterable.filter()` (List/Set) returns `List` and `Map.filter()` returns `Map`.
 
 - The official guide says `zip()` returns a List of `Pair` right after a transform-lambda example; only the overload without `transform` returns pairs.
+
+- The official guide lists `aggregate()` as "group by a condition"; grouping is done by `groupBy()` / `groupingBy()`, and `Grouping.aggregate()` accumulates within each group.
 
 ## Related
 
