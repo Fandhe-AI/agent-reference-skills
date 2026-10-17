@@ -149,6 +149,7 @@ fun getUsername(profile: UserProfile?): String? =
 
 ## Notes
 
+- The Signature snippet renames the official `stringLength` examples to `stringLengthNonNull` / `stringLengthOrZero` so both can coexist in one file without a JVM signature clash; the body sections keep the official name.
 - The official docs show `Game<T>` methods with `{}` bodies, which is invalid Java for non-default interface methods; they are written here as abstract declarations.
 - In the Java `getStringLength()` example the result is primitive `int`; making it return `null` needs boxed `Integer`, but returning a negative value and checking it avoids boxing.
 

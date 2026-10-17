@@ -113,7 +113,7 @@ Report level per annotation package:
 -Xnullability-annotations=@<package-name>:<report-level>
 ```
 
-`<report-level>` is `ignore`, `warn`, or `strict`. JSpecify is the only supported flavor that uses `strict` by default.
+`<report-level>` is `ignore`, `warn`, or `strict`. Most supported flavors (e.g. JetBrains, Android) report mismatches as errors by default; JSR-305 is controlled separately by `-Xjsr305` and defaults to `warn`; JSpecify defaults to `strict` since Kotlin 2.1.
 
 #### Mutability annotations
 
@@ -378,6 +378,7 @@ var myProperty: String
 
 ## Notes
 
+- The official docs claim JSpecify is the only flavor that is `strict` by default; most other supported flavors (e.g. JetBrains, Android) also report mismatches as errors by default, while JSR-305 defaults to warn.
 - Java synthetic property references (`Person::age`) were introduced as Experimental. Prior to Kotlin 1.9.0 the option was `-language-version 1.9`.
 - The official page still says to enable this with -language-version 2.1, but kotlin-language-features-and-proposals lists Java synthetic property references as Revoked, and in the Kotlin 2.4.21 compiler the ReferencesToSyntheticJavaProperties feature has no since-version, so no -language-version value enables it.
 - SAM conversions work only for interfaces, not abstract classes.

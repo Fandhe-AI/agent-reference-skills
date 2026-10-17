@@ -97,7 +97,8 @@ fun double(x: Int): Int = x * 2
 fun double(x: Int) = x * 2
 ```
 
-- Recursive / mutually recursive functions and typeless expressions like `fun empty() = null` always require an explicit return type.
+- Recursive / mutually recursive functions require an explicit return type.
+- `fun empty() = null` compiles with an inferred `Nothing?` return type, but `Nothing?` is rarely what you intend, so declare the type explicitly.
 - A `return` inside an expression body requires an explicit return type:
 
 ```kotlin
@@ -176,6 +177,7 @@ tailrec fun findFixPoint(x: Double = 1.0): Double =
 
 ## Notes
 
+- The official docs say `fun empty() = null` always requires a return type; in fact it compiles with an inferred `Nothing?` return type, and only recursive functions strictly require one.
 - Infix calls have lower precedence than arithmetic operators, type casts and `rangeTo` (`1 shl 2 + 3` is `1 shl (2 + 3)`), but higher than `&&`, `||`, `is`- and `in`-checks (`a xor b in c` is `(a xor b) in c`).
 - Infix calls on the current receiver need an explicit `this` (`this add "second"`).
 - Named argument syntax cannot be used when calling Java functions on the JVM (parameter names are not always preserved).

@@ -95,7 +95,7 @@ flow {
 
 ### Cancellation and channelFlow
 
-Collection is tied to the collecting coroutine; canceling its `Job` stops collection and cancels the upstream flow. Throwing `CancellationException` from the collector cancels upstream while the collecting coroutine stays active (this is how `.take()` works).
+Collection is tied to the collecting coroutine; canceling its `Job` stops collection and cancels the upstream flow. Throwing `CancellationException` from the collector cancels upstream and the exception propagates out of `collect()`. To keep the collecting coroutine going, catch your own thrown exception instance with try/catch and complete the flow normally, as `.take()` and the official `myTake` example do.
 
 `channelFlow()` creates a cold flow backed by a channel; use `send()` instead of `emit()`. It has a buffer of up to 64 values by default; change it with `.buffer(n)` (`.buffer(0)` removes the buffer).
 
@@ -216,6 +216,7 @@ Hot flows have no close or cancel operation. Canceling a collecting coroutine on
 
 ## Notes
 
+- The official docs imply the collecting coroutine stays active after throwing `CancellationException`; it only does so when the operator catches its own exception instance, as `.take()` does.
 - Avoid mutable objects inside a `StateFlow`: mutating the object does not replace the value, so collectors get no update.
 - Setting `StateFlow.value` is thread-safe, but updating based on the previous value is not atomic; use `.update()`.
 - Explicit backing fields are Stable since Kotlin 2.4.0 and need no opt-in; the official coroutines page still labels this section experimental and links to the Kotlin 2.3 what's-new entry.

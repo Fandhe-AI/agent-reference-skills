@@ -25,7 +25,7 @@ Use `$name` for a variable and `${expr}` for a complicated expression.
 | Build a string | `StringBuilder` + `append` | `buildString { ... }` (inline function using the same `StringBuilder` via implicit `this`) |
 | String from collection items | Stream `filter` / `map` / `Collectors.joining("; ")` | `joinToString(separator = ...)` |
 | Default if blank | ternary `isBlank() ? "John Doe" : v` | `ifBlank { "John Doe" }` |
-| Strip leading/trailing chars | `replaceAll("^##\|##$", "")` | `removeSurrounding("##")` |
+| Strip leading/trailing chars | `replaceAll("^##\|##$", "")` | `removeSurrounding("##")` (strips only when both ends match; for one-sided removal use `removePrefix("##").removeSuffix("##")`) |
 | Replace occurrences | `Pattern` + `Matcher.replaceAll` | `Regex(...).replace(input, replacement = ...)` |
 | Split | `split("\\.")` (regex arg) | `split(".")` (varargs of delimiters; `Regex` overload for regexes) |
 | Substring after a char | `substring(indexOf("?") + 1)` | `substringAfter("?")`, `substringAfterLast(",")` |
@@ -126,6 +126,10 @@ val result = """
 """.trimMargin("#")
 println(result)
 ```
+
+## Notes
+
+- `removeSurrounding()` only strips when both prefix and suffix are present, unlike Java's `replaceAll("^##|##$", "")`; use `removePrefix().removeSuffix()` for one-sided removal.
 
 ## Related
 

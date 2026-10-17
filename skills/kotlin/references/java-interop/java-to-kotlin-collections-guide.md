@@ -91,7 +91,7 @@ Lists:
 
 In Java you can't tell from the type whether a collection is mutable (`Arrays.asList` and `Collections.unmodifiableList` fail at runtime with `UnsupportedOperationException`). In Kotlin you explicitly declare mutable or read-only collections; modifying a read-only one doesn't compile (see snippet above).
 
-### Covariance
+#### Covariance
 
 Kotlin read-only collection types are covariant: `List<Rectangle>` can be used where `List<Shape>` is required. Maps are covariant on the value type, not the key type. Mutable collections aren't covariant.
 
@@ -110,7 +110,7 @@ fun main() {
 }
 ```
 
-### Ranges and progressions
+#### Ranges and progressions
 
 ```kotlin
 class Version(val major: Int, val minor: Int): Comparable<Version> {
@@ -132,7 +132,7 @@ fun main() {
 
 Inclusive ranges don't help when you need to exclude one of the bounds.
 
-### Comparison by several criteria
+#### Comparison by several criteria
 
 ```kotlin
 data class Person(
@@ -149,7 +149,7 @@ fun main() {
 
 Java equivalent: `Comparator.comparing(Person::getName).thenComparingInt(Person::getAge)`.
 
-### Sequences
+#### Sequences
 
 Java: `IntStream.iterate(1, e -> e + 3).limit(10).sum()`. Kotlin sequences are processed lazily when possible:
 
@@ -160,7 +160,7 @@ val sum = generateSequence(1) {
 println(sum) // Prints 145
 ```
 
-### Removal of elements from a list
+#### Removal of elements from a list
 
 Kotlin has two removals: by index with `removeAt()` and by value with `remove()` (Java needs `Integer.valueOf()` to remove an integer value).
 
@@ -172,7 +172,7 @@ numbers.remove(1)
 println(numbers) // [2, 3]
 ```
 
-### Traverse a map
+#### Traverse a map
 
 ```kotlin
 for ((k, v) in numbers) {
@@ -182,7 +182,7 @@ for ((k, v) in numbers) {
 numbers.forEach { (k, v) -> println("Key = $k, Value = $v") }
 ```
 
-### First and last items of a possibly empty collection
+#### First and last items of a possibly empty collection
 
 Java 21+ also has `getFirst()` / `getLast()` on `SequencedCollection`. Kotlin:
 
@@ -192,7 +192,7 @@ val theOldestEmail = emails.firstOrNull() ?: ""
 val theFreshestEmail = emails.lastOrNull() ?: ""
 ```
 
-### Create a set from a list
+#### Create a set from a list
 
 Java: `Set.copyOf(sourceList)`. Kotlin:
 
@@ -202,7 +202,7 @@ val copySet = sourceList.toSet()
 println(copySet)
 ```
 
-### Group elements
+#### Group elements
 
 Java: `Collectors.groupingBy`. Kotlin:
 
@@ -222,7 +222,7 @@ fun main() {
 }
 ```
 
-### Filter elements
+#### Filter elements
 
 Filtering is built into collections; `filter()` on a List or Set returns a `List`, and on a `Map` returns a `Map` (no `stream()`/`collect()` needed).
 
@@ -251,7 +251,7 @@ println(numbers.any { it.endsWith("e") })
 println(numbers.all { it.endsWith("e") })
 ```
 
-### Zip and associate
+#### Zip and associate
 
 ```kotlin
 val colors = listOf("red", "brown")

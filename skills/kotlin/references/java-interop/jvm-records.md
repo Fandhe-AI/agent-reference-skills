@@ -46,14 +46,14 @@ Requires JVM bytecode target `16` or higher; set the `jvmTarget` compiler option
 
 ### Annotate record components
 
-In Java, annotations on a record component propagate to the backing field, getter, setter, and constructor parameter. Replicate with the `all` use-site target:
+In Java, annotations on a record component propagate to the backing field, getter, and constructor parameter (where the annotation is applicable to that target). Replicate with the `all` use-site target:
 
 ```kotlin
 @JvmRecord
 data class Person(val name: String, @all:Positive val age: Int)
 ```
 
-With `@JvmRecord` and `@all:`, Kotlin propagates the annotation to the property, backing field, constructor parameter, getter, and setter, and applies it to the record component if the annotation supports Java's `RECORD_COMPONENT`.
+With `@JvmRecord` and `@all:`, Kotlin propagates the annotation to the property, backing field, constructor parameter, and getter (only to targets the annotation supports), and applies it to the record component if the annotation supports Java's `RECORD_COMPONENT`.
 
 To make an annotation available for both Kotlin properties and Java record components, add both `@Target` (Kotlin) and `@java.lang.annotation.Target` (Java):
 
@@ -65,6 +65,7 @@ annotation class ExampleClass
 
 ## Notes
 
+- The official docs list the setter as a propagation target, but Java records and `@JvmRecord` classes (val-only) have no setters.
 - Applying `@JvmRecord` to an existing class is not a binary compatible change: it alters the naming convention of the class property accessors.
 - Technical details: language proposal KEEP `jvm-records`.
 
