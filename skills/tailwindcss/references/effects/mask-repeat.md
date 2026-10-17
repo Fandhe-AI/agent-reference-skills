@@ -30,9 +30,10 @@ Utilities for controlling the repetition of an element's mask image.
 - Preventing clipping: `mask-repeat-space` repeats the mask image without clipping.
 - Preventing clipping and gaps: `mask-repeat-round` repeats the mask image without clipping, stretching if needed to avoid gaps.
 - Disabling repeating: `mask-no-repeat` prevents a mask image from repeating.
+- The official mask-repeat-x / mask-repeat-y examples omit the space before `...`; a space is added here so `bg-[url(...)]` stays a separate class.
 
 ```html
-<div class="mask-repeat-x mask-[url(/img/circle.png)] mask-size-[50px_50px] bg-[url(/img/mountains.jpg)]..."></div>
+<div class="mask-repeat-x mask-[url(/img/circle.png)] mask-size-[50px_50px] bg-[url(/img/mountains.jpg)] ..."></div>
 <div class="mask-no-repeat mask-[url(/img/circle.png)] mask-size-[50px_50px] bg-[url(/img/mountains.jpg)] ..."></div>
 ```
 

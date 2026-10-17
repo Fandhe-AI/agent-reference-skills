@@ -94,6 +94,8 @@ Whitespace: use `_` for a space in arbitrary values (converted at build time). T
 </div>
 ```
 
+The `<!-- ... -->` placeholder inside the JSX `String.raw` example is carried over from the official docs; in real JSX use `{/* ... */}` or a self-closing element instead.
+
 Resolving ambiguities: `text-[22px]` generates a font-size utility and `text-[#bada55]` a color utility. For ambiguous CSS variables hint the CSS data type:
 
 ```html
