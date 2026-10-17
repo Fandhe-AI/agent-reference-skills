@@ -223,7 +223,7 @@ The nested form, `withOAuthProtectedResource(withSupabase({ auth: 'user' }, hand
 
 With the local stack running, serve the function with `supabase functions serve mcp`. An unauthenticated request returns `401` with a `WWW-Authenticate` header naming the metadata document, and the metadata document (`/functions/v1/mcp/oauth-protected-resource`) points clients at your project's Auth server. The MCP Inspector or Claude Code (`claude mcp add --transport http todos http://127.0.0.1:54321/functions/v1/mcp`, then `/mcp` to authenticate) can run the OAuth flow.
 
-Deploy: link your project, push the Auth settings from `config.toml`, and deploy the function (same three commands as the public server). Deploy your frontend with the consent route to the origin configured as the Auth Site URL.
+Deploy: link your project, push the Auth settings from `config.toml`, and deploy the function (same three commands as the public server). The official Deploy step does not apply database migrations: before `supabase functions deploy mcp`, confirm the linked project and run `supabase db push` to apply the `todos` table and RLS policy migration; otherwise `list_todos` fails on a fresh remote project because the table does not exist. Deploy your frontend with the consent route to the origin configured as the Auth Site URL.
 
 ### Connect from MCP clients
 
