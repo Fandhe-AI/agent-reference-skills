@@ -103,7 +103,7 @@ it("should display required error when value is invalid", async () => {
   fireEvent.submit(screen.getByRole("button"))
 
   expect(await screen.findAllByRole("alert")).toHaveLength(2)
-  expect(mockLogin).not.toBeCalled()
+  expect(mockLogin).not.toHaveBeenCalled()
 })
 
 it("should not display error when value is valid", async () => {
@@ -131,7 +131,7 @@ it("should not display error when value is valid", async () => {
     expect(screen.getByRole("textbox", { name: /email/i })).toHaveValue("")
     expect(screen.getByLabelText("password")).toHaveValue("")
   })
-  expect(mockLogin).toBeCalledWith("test@mail.com", "password")
+  expect(mockLogin).toHaveBeenCalledWith("test@mail.com", "password")
 })
 ```
 
@@ -164,6 +164,7 @@ it("should have a submit button", async () => {
 - We are using the `*ByRole` method when querying different elements because that's how users recognize your UI component.
 - The act warning occurs because react-hook-form internally uses asynchronous validation handlers. In order to compute the formState, it has to initially validate the form, which is done asynchronously and results in another render. That update happens after the test function returns, which triggers the warning.
 - You **must not** wrap your `render()` calls in `act()`.
+- The official example uses the alias matchers `toBeCalled` / `toBeCalledWith`, which were removed in Jest 30; this page uses `toHaveBeenCalled` / `toHaveBeenCalledWith` instead.
 
 ## Related
 
