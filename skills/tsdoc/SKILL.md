@@ -2,9 +2,10 @@
 name: tsdoc
 description: >
   TSDoc (TypeScript ドキュメンテーションコメント) ガイドライン。
-  @param, @returns, @example, @remarks, @public / @internal / @beta、
-  @deprecated, @see, @throws、TypeDoc 互換タグのみ使用。
-  コード作成・レビュー・リファクタリング時に自動参照。
+  @param, @returns, @example, @remarks, @public / @beta / @alpha / @internal、
+  @packageDocumentation, @privateRemarks, {@inheritDoc}, @override,
+  @deprecated, @see, @throws。TypeDoc 互換、TSDoc 標準タグ + TypeDoc 拡張 (@category, @since, linkcode, linkplain)。
+  コード作成・レビュー時に自動参照。
 user-invocable: false
 model: sonnet
 ---
@@ -17,6 +18,7 @@ model: sonnet
 
 - TSDoc 形式（`/** ... */`）のみ使用する（`//` や `/* */` は TSDoc として認識されない）
 - TypeDoc がサポートするタグのみ使用する（独自タグは禁止）
+- 対象版: TSDoc 仕様 tsdoc.org / `@microsoft/tsdoc` 0.17.1、TypeDoc 0.28.20
 - 説明文は日本語で記述する
 - `@param` の説明にはハイフン区切りを使用する: `@param name - 説明`
 - `@param` には型を記述しない（TypeScript の型情報から自動推論される）
@@ -30,15 +32,26 @@ model: sonnet
 
 ### ブロックタグ
 
-`@param`, `@typeParam`, `@returns`, `@throws`, `@remarks`, `@example`, `@see`, `@deprecated`, `@defaultValue`, `@category`, `@since`
+TSDoc 標準タグのうち TypeDoc 0.28.20 が既定でサポートするものを使用する。
+
+`@param`, `@typeParam`, `@returns`, `@throws`, `@remarks`, `@privateRemarks`, `@example`, `@see`, `@deprecated`, `@defaultValue`
 
 ### モディファイアタグ
 
-`@internal`
+- リリースステージ: `@public`, `@beta`, `@alpha`, `@experimental`, `@internal`（`@public` は TypeDoc では可視性を上書きするため通常は省略。`tags/public.md` 参照）
+- 継承・不変: `@sealed`, `@virtual`, `@override`, `@readonly`
+- その他: `@eventProperty`, `@packageDocumentation`
 
 ### インラインタグ
 
-`{@link}`, `{@linkcode}`, `{@linkplain}`
+`{@link}`, `{@inheritDoc}`, `{@label}`
+
+### TSDoc 標準外の TypeDoc 拡張
+
+`@category`, `@since`, `{@linkcode}`, `{@linkplain}`
+
+- eslint-plugin-tsdoc と併用する場合は `tsdoc.json` に `"extends": ["typedoc/tsdoc.json"]` が必要
+- `@decorator` は TSDoc 標準（Extended）だが TypeDoc の既定タグ一覧に無いため使用しない
 
 ## TSDoc が必要なエクスポート
 
@@ -253,6 +266,8 @@ export const useSearchInput = (initialQuery: string, delay: number) => {
 8. **`@link` に波括弧を付けない** → インラインタグは `{@link Target}` で波括弧が必要
 9. **概要が長すぎる** → 1 行目は 1 文で簡潔に。詳細は `@remarks` に分離する
 10. **`@category` の不統一** → 上記の統一名を使用する
+11. **`{@link Foo text}`（パイプ無し）を書く** → TSDoc 非準拠で TypeDoc のみ受け付ける。表示テキストは `{@link Foo | text}` と書く
+12. **`@inheritDoc Ref` を波括弧なしで書く** → TSDoc ではインラインタグ。`{@inheritDoc Ref}` と書く（TypeDoc は波括弧なしも受け付けるが JSDoc 互換の扱い）
 
 ## ディレクトリ構成
 
@@ -273,6 +288,19 @@ skills/tsdoc/
     since.md
     type-param.md
     link.md
+    public.md
+    beta.md
+    alpha.md
+    experimental.md
+    sealed.md
+    virtual.md
+    override.md
+    readonly.md
+    event-property.md
+    package-documentation.md
+    private-remarks.md
+    inherit-doc.md
+    label.md
   samples/
     README.md
     function-comment.md
@@ -292,20 +320,23 @@ skills/tsdoc/
 
 ## 探索手順
 
-タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する。ただし `tags/` は 1 タグ 1 ページ構成の例外で README.md を持たず、マッピング表が各タグページを直接指す（`references/` を持たないガイドライン型スキルの例外パターン）:
 
 1. 下記マッピング表でタスクに対応するカテゴリを探す
-2. タグの詳細は `tags/<tag-name>.md` を直接 Read して確認する
+2. タグの詳細は `tags/<tag-name>.md` を直接 Read して確認する（`tags/README.md` は存在しない）
 3. 使用例は `samples/README.md` を参照してから該当ページを Read する
 4. コマンド・設定は `scripts/README.md` を参照してから該当ページを Read する
 
 ## タスク → カテゴリ マッピング
 
-| タスク | カテゴリ | 参照先 |
+| タスク | カテゴリ | 参照先（tags は README 無しのため個別ページ直接） |
 |--------|---------|--------|
 | `@param` / `@returns` / `@throws` の構文を確認したい | tags | [tags/param.md](tags/param.md), [tags/returns.md](tags/returns.md), [tags/throws.md](tags/throws.md) |
 | `@remarks` / `@example` / `@see` の使い方を知りたい | tags | [tags/remarks.md](tags/remarks.md), [tags/example.md](tags/example.md), [tags/see.md](tags/see.md) |
 | `@deprecated` / `@internal` / `@since` の使い方を知りたい | tags | [tags/deprecated.md](tags/deprecated.md), [tags/internal.md](tags/internal.md), [tags/since.md](tags/since.md) |
 | `@defaultValue` / `@category` / `@typeParam` / `{@link}` を調べたい | tags | [tags/default-value.md](tags/default-value.md), [tags/category.md](tags/category.md), [tags/type-param.md](tags/type-param.md), [tags/link.md](tags/link.md) |
+| リリースステージ（`@public` / `@beta` / `@alpha` / `@experimental` / `@internal`）を指定したい | tags | [tags/public.md](tags/public.md), [tags/beta.md](tags/beta.md), [tags/alpha.md](tags/alpha.md), [tags/experimental.md](tags/experimental.md), [tags/internal.md](tags/internal.md) |
+| 継承・不変（`@override` / `@sealed` / `@virtual` / `@readonly`）を示したい | tags | [tags/override.md](tags/override.md), [tags/sealed.md](tags/sealed.md), [tags/virtual.md](tags/virtual.md), [tags/readonly.md](tags/readonly.md) |
+| パッケージ・ドキュメント制御（`@packageDocumentation` / `@privateRemarks` / `{@inheritDoc}` / `{@label}` / `@eventProperty`）を調べたい | tags | [tags/package-documentation.md](tags/package-documentation.md), [tags/private-remarks.md](tags/private-remarks.md), [tags/inherit-doc.md](tags/inherit-doc.md), [tags/label.md](tags/label.md), [tags/event-property.md](tags/event-property.md) |
 | 典型的な TSDoc コメントの書き方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・lint・tsdoc.json 設定のコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

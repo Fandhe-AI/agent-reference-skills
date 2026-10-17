@@ -38,3 +38,13 @@ const FieldsetContext = createContext<FieldsetContextValue | null>(null);
 - エクスポートされていない関数は TypeDoc の対象外のため `@internal` は不要
 - パッケージの subpath exports に含まれないがエクスポートされるヘルパーに有用
 - モディファイアタグのため、説明テキストは付かない
+- TSDoc では Discretionary のモディファイアで、リリースステージ系（`@public` / `@beta` / `@alpha` / `@experimental` / `@internal`）の 1 つ。suggested meaning は「サードパーティ開発者の利用を想定しない。公開リリースからツールが宣言を trim してよい」。メンバーはリリースステージを親クラスから継承する
+- TypeDoc 側では `--visibilityFilters` と `--excludeInternal` が効き、TypeScript の `--stripInternal` とも対応する
+- 出典: https://tsdoc.org/pages/tags/internal/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags._internal.html （TypeDoc v0.28.20）
+
+## 関連
+
+- [@public](./public.md)
+- [@beta](./beta.md)
+- [@alpha](./alpha.md)
+- [@experimental](./experimental.md)

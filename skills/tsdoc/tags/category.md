@@ -13,8 +13,8 @@ TypeDoc のドキュメントでシンボルをグループ化するブロック
 | カテゴリ名 | 対象 |
 |-----------|------|
 | `UI` | UI コンポーネント（Button, Tag, Select 等） |
-| `Layout` | レイアウトコンポーネント（Container, Fieldset, Clickable 等） |
-| `Icon` | アイコン関連（Icon, IconProvider, シンボル） |
+| `Layout` | レイアウトコンポーネント（Container, Fieldset 等） |
+| `Icon` | アイコン関連コンポーネント |
 | `Model` | 型定義、interface |
 | `Data` | 定数、データオブジェクト |
 | `Hooks` | カスタムフック |
@@ -29,14 +29,16 @@ TypeDoc のドキュメントでシンボルをグループ化するブロック
  *
  * @category UI
  */
-const StarRating = ({ ... }: Props) => { ... };
+const StarRating = (props: Props) => null;
 
 /**
  * カテゴリカードに表示するアイテムの型。
  *
  * @category Model
  */
-export interface CategoryCardItem { ... }
+export interface CategoryCardItem {
+  label: string;
+}
 
 /**
  * 業種カテゴリの一覧データ。
@@ -58,3 +60,6 @@ export const useFieldset = () => useContext(FieldsetContext);
 - TypeDoc 独自のタグ（TSDoc 標準にはない）
 - プロジェクト内で上記の統一名を使用する
 - 1 つのシンボルに複数の `@category` を指定可能
+- 関連する TypeDoc タグ: 親リフレクションに置く `@categoryDescription`（1 行目がカテゴリ名、以降が説明）、モディファイアの `@showCategories` / `@hideCategories`（`navigation.includeCategories` の個別切替）
+- eslint-plugin-tsdoc の未定義タグ警告を避けるには、`tsdoc.json` で `typedoc/tsdoc.json` を `extends` する
+- 出典: https://typedoc.org/documents/Tags._category.html （TypeDoc v0.28.20）
