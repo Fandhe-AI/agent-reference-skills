@@ -81,7 +81,7 @@ const root = hydrateRoot(container, <App />, {
 - If you call `root.render` before the root has finished hydrating, React will clear the existing server-rendered HTML content and switch the entire root to client rendering.
 - Once you call `root.unmount` you cannot call `root.render` again on the root ("Cannot update an unmounted root" error).
 - `suppressHydrationWarning={true}` only works one level deep, is an escape hatch, and React will not attempt to patch mismatched text content.
-- For intentionally different client and server content, a two-pass render (state variable such as `isClient` set to `true` in an Effect) makes hydration slower because components render twice. If a component should render only in the browser, call `use(browser())` instead of waiting for an Effect.
+- For intentionally different client and server content, a two-pass render (state variable such as `isClient` set to `true` in an Effect) makes hydration slower because components render twice. If a component should render only in the browser, call `use(browser())` instead of waiting for an Effect. Availability of `browser` in the stable channel is not confirmed by the source docs (see browser.md).
 - `root.render` only takes one argument; pass root options to `hydrateRoot(...)`, not `root.render(...)`.
 - Migration (18 -> 19): `ReactDOM.hydrate` was removed in React 19; use `hydrateRoot`.
 

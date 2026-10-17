@@ -36,7 +36,7 @@ function AppRoot() {
 | --- | --- | --- |
 | `href` | string | The URL of the resource you want to download and execute. |
 | `options.as` | string | Required. The type of resource. Possible values are `script` and `style`. |
-| `options.precedence` | string | Required with stylesheets. Says where to insert the stylesheet relative to others. Stylesheets with higher precedence can override those with lower precedence. Possible values are `reset`, `low`, `medium`, `high`. |
+| `options.precedence` | string | Required with stylesheets. Says where to insert the stylesheet relative to others. Stylesheets with higher precedence can override those with lower precedence. The value is an arbitrary string that groups stylesheets; React infers that precedence values it discovers first are "lower" and values discovered later are "higher" (names like reset/low/medium/high carry no built-in order). |
 | `options.crossOrigin` | string | The CORS policy to use. Possible values are `anonymous` and `use-credentials`. |
 | `options.integrity` | string | A cryptographic hash of the resource, to verify its authenticity. |
 | `options.nonce` | string | A cryptographic nonce to allow the resource when using a strict Content Security Policy. |
@@ -49,6 +49,7 @@ function AppRoot() {
 - In the browser, you can call `preinit` in any situation: while rendering a component, in an Effect, in an event handler, and so on.
 - In server-side rendering or when rendering Server Components, `preinit` only has an effect if you call it while rendering a component or in an async context originating from rendering a component. Any other calls will be ignored.
 - If you want the browser to download the script but not to execute it right away, use `preload` instead. If you want to load an ESM module, use `preinitModule`.
+- The react.dev preinit page lists reset/low/medium/high as possible values, but the `<link>`/`<style>` pages state precedence values are arbitrary and ranked by discovery order; this page follows the latter.
 - If you want to download the stylesheet but not to insert it into the document right away, use `preload` instead.
 
 ## Related

@@ -40,7 +40,7 @@ function AppRoot() {
 | --- | --- | --- |
 | `href` | string | The URL of the resource you want to download. |
 | `options.as` | string | Required. The type of resource. Possible values are `audio`, `document`, `embed`, `fetch`, `font`, `image`, `object`, `script`, `style`, `track`, `video`, `worker`. |
-| `options.crossOrigin` | string | The CORS policy to use. Possible values are `anonymous` and `use-credentials`. It is required when `as` is set to `"fetch"`. |
+| `options.crossOrigin` | string | The CORS policy to use. Possible values are `anonymous` and `use-credentials`. It is required when `as` is set to `"fetch"`. For fonts (`as: "font"`), set it (e.g. `"anonymous"`) even for same-origin URLs, because browsers fetch fonts in CORS mode and a preload without it is not reused. |
 | `options.referrerPolicy` | string | The Referrer header to send when fetching. Possible values are `no-referrer-when-downgrade` (the default), `no-referrer`, `origin`, `origin-when-cross-origin`, and `unsafe-url`. |
 | `options.integrity` | string | A cryptographic hash of the resource, to verify its authenticity. |
 | `options.type` | string | The MIME type of the resource. |
@@ -56,6 +56,7 @@ function AppRoot() {
 - In the browser, you can call `preload` in any situation: while rendering a component, in an Effect, in an event handler, and so on.
 - In server-side rendering or when rendering Server Components, `preload` only has an effect if you call it while rendering a component or in an async context originating from rendering a component. Any other calls will be ignored.
 - If you want the browser to start executing the script immediately (rather than just downloading it), use `preinit` instead. If you want to load an ESM module, use `preloadModule`.
+- The react.dev font examples omit `crossOrigin`; per MDN (`<link rel="preload">` `as="font"`), font preloads need `crossOrigin: 'anonymous'` to match the actual font request.
 - If you preload a stylesheet, it's smart to also preload any fonts that the stylesheet refers to.
 
 ## Related

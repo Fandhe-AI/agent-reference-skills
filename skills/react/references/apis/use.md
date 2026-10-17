@@ -54,7 +54,7 @@ function BrowserOnly() {
 - To avoid unnecessary fallbacks, a cache can set `status` / `value` / `reason` fields on the Promise (`'fulfilled'` reads `value` synchronously, `'rejected'` throws `reason`, missing or `'pending'` suspends). Never read `promise.status` yourself to bypass `use`.
 - To re-fetch in Client Components, invalidate the cache entry and store the new Promise in state inside `startTransition`.
 - When passing a Promise from a Server Component to a Client Component, its resolved value must be serializable. Unwrap a Promise with `await` in a Server Component and with `use` in a Client Component.
-- `use(browser())`: during server rendering the component suspends and React includes the closest `<Suspense>` boundary's fallback in the HTML (it must be inside a `<Suspense>` boundary or server rendering fails). In a Server Components app it must be called from a Client Component. `browser` was added in 19.3 (react-19-3 release post).
+- `use(browser())`: during server rendering the component suspends and React includes the closest `<Suspense>` boundary's fallback in the HTML (it must be inside a `<Suspense>` boundary or server rendering fails). In a Server Components app it must be called from a Client Component. `browser` was announced in the React 19.3 release post, but the reference docs still mark it as not yet in Stable (canary-pinned sandboxes); see browser.md before relying on it.
 - This is React's built-in `use`. Data fetching via `useSuspenseQuery` (tanstack-query) or loaders (tanstack-router / react-router) is covered by those skills.
 
 ```js
