@@ -31,8 +31,8 @@ slider.isVertical = true
 | `altIncrementValue` | `Double` | Step size when the user Option-drags the knob |
 | `knobThickness` | `CGFloat` | Thickness of the knob in points |
 | `trackFillColor` | `NSColor?` | Color of the filled portion of the track |
-| `neutralValue` | `Double` | Value from which the fill begins (defaults to `minValue`) |
-| `tintProminence` | `NSTintProminence` | How strongly the tint color is applied |
+| `neutralValue` | `Double` | Value from which the fill begins (defaults to `minValue`) (macOS 26.0+) |
+| `tintProminence` | `NSTintProminence` | How strongly the tint color is applied (macOS 26.0+). Automatic tints the track fill of a regular slider; a slider with tick marks is untinted. Setting it overrides this default |
 
 ## Notes
 

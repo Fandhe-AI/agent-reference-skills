@@ -32,6 +32,7 @@ collectionView.reloadData()
 | `selectionIndexPaths` | `Set<IndexPath>` | Currently selected index paths |
 | `backgroundView` | `NSView?` | View rendered behind all items |
 | `backgroundColors` | `[NSColor]` | Background color(s) |
+| `appIntentsDataSource` | `(any NSCollectionViewAppIntentsDataSource)?` | Weak. Data source for app entity identifiers that make a cell's content discoverable by Apple Intelligence and Siri (macOS 15.4+) |
 
 **Registration:**
 

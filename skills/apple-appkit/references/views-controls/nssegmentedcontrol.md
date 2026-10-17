@@ -32,7 +32,8 @@ segmented.selectedSegment = 0
 | `segmentStyle` | `NSSegmentedControl.Style` | Visual style (`.automatic`, `.rounded`, `.texturedRounded`, `.separated`, etc.) |
 | `trackingMode` | `NSSegmentedControl.SwitchTracking` | Selection behavior (`.selectOne`, `.selectAny`, `.momentary`, `.momentaryAccelerator`) |
 | `segmentDistribution` | `NSSegmentedControl.Distribution` | Spacing distribution of segments |
-| `borderShape` | `NSSegmentedControl.BorderShape` | Shape of the border |
+| `borderShape` | `NSControl.BorderShape` | Shape of the border (macOS 26.0+) |
+| `role` | `NSSegmentedControl.Role` | Role of the control: `.automatic`, `.tabs`, `.valueSelection` (macOS 27.0+) |
 
 ## Notes
 

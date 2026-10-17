@@ -36,6 +36,9 @@ let iconButton = NSButton(title: "Open", image: NSImage(systemSymbolName: "folde
 | `allowsMixedState` | `Bool` | Allow `.mixed` state (checkboxes / tri-state controls) |
 | `isBordered` | `Bool` | Whether the button draws a border |
 | `isTransparent` | `Bool` | Whether the button is transparent |
+| `NSButton.BezelStyle.glass` | bezel style (macOS 26.0+) | A bezel style with a glass effect (Liquid Glass button style) |
+| `borderShape` | `NSControl.BorderShape` | Border shape (macOS 26.0+) |
+| `tintProminence` | `NSTintProminence` | Tint prominence (macOS 26.0+). Cases `.automatic`, `.none`, `.primary`, `.secondary`; primary suggests the most preferred option among similar buttons, secondary a reasonable alternative |
 
 ## Notes
 

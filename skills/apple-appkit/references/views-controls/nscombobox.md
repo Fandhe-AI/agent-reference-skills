@@ -45,6 +45,7 @@ combo.dataSource = myDataSource
 - Item management: `addItem(withObjectValue:)`, `addItems(withObjectValues:)`, `insertItem(withObjectValue:at:)`, `removeItem(at:)`, `removeItem(withObjectValue:)`, `removeAllItems()`.
 - Selection: `selectItem(at:)`, `selectItem(withObjectValue:)`, `deselectItem(at:)`.
 - Key notifications: `selectionDidChangeNotification`, `willPopUpNotification`, `willDismissNotification`.
+- macOS 27.0 adds typed `NotificationCenter.MainActorMessage` structs `NSComboBox.SelectionDidChangeMessage`, `SelectionIsChangingMessage`, `WillPopUpMessage`, `WillDismissMessage`.
 
 ## Related
 

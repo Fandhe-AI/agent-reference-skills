@@ -31,8 +31,8 @@ colorWell.action = #selector(colorChanged(_:))
 | `supportsAlpha` | `Bool` | Whether the color picker exposes alpha/opacity controls |
 | `pulldownTarget` | `AnyObject?` | Target for color-area click action |
 | `pulldownAction` | `Selector?` | Action performed when the color area is clicked |
-| `maximumLinearExposure` | `CGFloat` | Maximum linear exposure for HDR color support (≥1, default 1) |
-| `isBordered` | `Bool` | Whether a border is drawn (deprecated) |
+| `maximumLinearExposure` | `CGFloat` | Maximum linear exposure for HDR color support (macOS 26.0+). Default 1; values below 1 are ignored; a value >= 2 allows linear exposure to be applied to the picked color |
+| `isBordered` | `Bool` | Whether a border is drawn (deprecated in macOS 27.0) |
 
 ## Notes
 

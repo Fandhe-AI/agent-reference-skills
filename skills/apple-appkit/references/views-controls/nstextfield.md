@@ -39,7 +39,13 @@ let wrapped = NSTextField(wrappingLabelWithString: "Long description text...")
 | `preferredMaxLayoutWidth` | `CGFloat` | Preferred maximum width for Auto Layout |
 | `allowsEditingTextAttributes` | `Bool` | Allow font attribute changes by the user |
 | `isAutomaticTextCompletionEnabled` | `Bool` | Enable system text completion |
-| `allowsWritingTools` | `Bool` | Enable Writing Tools support (macOS 15+) |
+| `allowsWritingTools` | `Bool` | Enable Writing Tools support (macOS 15.2+) |
+| `allowsWritingToolsAffordance` | `Bool` | Writing Tools affordance (macOS 15.4+) |
+| `suggestionsDelegate` | `(any NSTextSuggestionsDelegate)?` | Weak delegate that provides type-ahead text suggestions and responds to the user highlighting and selecting items (macOS 15.0+). Related types: `NSTextSuggestionsDelegate`, `NSSuggestionItem`, `NSSuggestionItemSection`, `NSSuggestionItemResponse` (all macOS 15.0+) |
+| `borderShape` | `NSControl.BorderShape` | Border shape (macOS 26.0+) |
+| `placeholderStrings` | `[String]` | Placeholder strings (macOS 26.0+) |
+| `placeholderAttributedStrings` | `[NSAttributedString]` | Styled placeholder strings (macOS 26.0+) |
+| `resolvesNaturalAlignmentWithBaseWritingDirection` | `Bool` | Controls how `natural` alignment is resolved to visual alignment (macOS 26.0+) |
 | `delegate` | `NSTextFieldDelegate?` | Delegate for editing lifecycle events |
 
 ## Notes

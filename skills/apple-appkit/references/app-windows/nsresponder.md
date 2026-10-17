@@ -46,11 +46,15 @@ class MyView: NSView {
 | `menu` | `NSMenu?` | Context menu for this responder |
 | `userActivity` | `NSUserActivity?` | Handoff user activity |
 | `touchBar` | `NSTouchBar?` | The Touch Bar object |
+| `contextMenuKeyDown(_:)` | method (macOS 15.0+) | Keyboard-invoked context menu event |
+| `mouseCancelled(with:)` | override (macOS 26.0+) | Mouse tracking cancelled |
+| `showWritingTools(_:)` | `@IBAction` (macOS 15.2+) | Shows Writing Tools |
 
 ## Notes
 
 - macOS 10.0+. `NSApplication`, `NSWindow`, `NSView`, `NSViewController`, and `NSWindowController` all inherit from `NSResponder`.
 - The responder chain flows: first responder → view hierarchy → window → window controller → application → app delegate.
+- `beginGesture(with:)` and `endGesture(with:)` are deprecated in macOS 27.0.
 - Always call `super` for unhandled events so they propagate correctly.
 
 ## Related

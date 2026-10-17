@@ -36,6 +36,7 @@ tableView.reloadData()
 | `allowsColumnReordering` | `Bool` | Whether columns can be reordered |
 | `allowsColumnResizing` | `Bool` | Whether columns can be resized |
 | `headerView` | `NSTableHeaderView?` | The column header view |
+| `appIntentsDataSource` | `(any NSTableViewAppIntentsDataSource)?` | Weak. Data source for app entity identifiers that make a cell's content discoverable by Apple Intelligence and Siri (macOS 15.4+) |
 
 **Key methods:**
 
@@ -58,6 +59,7 @@ tableView.reloadData()
 - macOS only. Does not store data itself; data source is a weak reference.
 - Use view-based tables (`makeView(withIdentifier:owner:)` pattern) in modern apps; cell-based is legacy.
 - Data source methods may be called before `awakeFromNib()`: return `0` from `numberOfRows(in:)` until initialized, then call `reloadData()` in `awakeFromNib()`.
+- macOS 27.0 adds typed `NotificationCenter.MainActorMessage` structs `NSTableView.SelectionDidChangeMessage`, `SelectionIsChangingMessage`, `ColumnDidMoveMessage`, `ColumnDidResizeMessage`.
 - Subclassing is rarely needed; use data source and delegate instead.
 
 ## Related

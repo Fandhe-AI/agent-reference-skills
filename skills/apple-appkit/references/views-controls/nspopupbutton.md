@@ -36,6 +36,8 @@ pullDown.addItem(withTitle: "Actions")
 | `indexOfSelectedItem` | `Int` | Zero-based index of the selected item |
 | `numberOfItems` | `Int` | Total number of items in the menu |
 | `itemArray` | `[NSMenuItem]` | All menu item objects |
+| `usesItemFromMenu` | `Bool` | When `true` (default), a pull-down uses the first item's title and hides that item; a pop-up uses the selected item's title (macOS 15.0+) |
+| `altersStateOfSelectedItem` | `Bool` | When `true`, the selected item's `state` is set to on; ignored for pull-down buttons (macOS 15.0+) |
 
 ## Notes
 
@@ -43,6 +45,7 @@ pullDown.addItem(withTitle: "Actions")
 - Item management: `addItem(withTitle:)`, `addItems(withTitles:)`, `insertItem(withTitle:at:)`, `removeItem(at:)`, `removeAllItems()`.
 - Selection: `select(_:)`, `selectItem(at:)`, `selectItem(withTitle:)`, `selectItem(withTag:)`.
 - Setting the `image` property (inherited from `NSButton`) has no effect; the displayed image comes from the selected menu item (pop-up) or the first menu item (pull-down).
+- macOS 27.0 adds the typed `NotificationCenter.MainActorMessage` struct `NSPopUpButton.WillPopUpMessage`.
 - Programmatic menu changes during user interaction are not reflected until the menu closes.
 
 ## Related

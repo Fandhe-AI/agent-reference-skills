@@ -38,11 +38,20 @@ scrollView.documentView = textView
 | `isContinuousSpellCheckingEnabled` | `Bool` | Whether spell checking is on |
 | `isAutomaticTextCompletionEnabled` | `Bool` | Whether auto-completion is on |
 | `delegate` | `NSTextViewDelegate?` | Delegate for editing and selection events |
+| `writingToolsBehavior` | `NSWritingToolsBehavior` | Writing Tools behavior (macOS 15.0+) |
+| `allowedWritingToolsResultOptions` | `NSWritingToolsResultOptions` | Allowed Writing Tools result options (macOS 15.0+) |
+| `isWritingToolsActive` | `Bool` | Whether Writing Tools is active; get-only (macOS 15.0+) |
+| `textHighlightAttributes` | `[NSAttributedString.Key: Any]` | Text highlight attributes (macOS 15.0+) |
+| `highlight(_:)` | `@IBAction` | Toggles `NSTextHighlightStyleAttributeName` in the selected range; the sender should be a menu item whose `representedObject` is an `NSTextHighlightColorScheme` (macOS 15.0+) |
+| `drawTextHighlightBackground(for:origin:)` | method | Draws the highlight background for an `NSTextRange` (macOS 15.0+) |
+| `mathExpressionCompletionType` | `NSTextInputTraitType` | Math expression completion trait (macOS 15.0+) |
+| `register(_:forTextAttachmentViewProviderType:)` | method | Registers an `NSTextAttachmentViewProviderReusePolicy` for all instances of an `NSTextAttachmentViewProvider` subclass (macOS 27.0+) |
 
 ## Notes
 
 - Platform: macOS. For simple single-line input, prefer `NSTextField`.
 - macOS 12+ uses `NSTextLayoutManager` (TextKit 2) by default; accessing `layoutManager` reverts to NSLayoutManager compatibility mode.
+- macOS 27.0 adds typed `NotificationCenter.MainActorMessage` structs `NSTextView.DidBeginEditingMessage`, `DidChangeMessage`, `DidChangeSelectionMessage`, `DidChangeTypingAttributesMessage`, `DidEndEditingMessage`, `WillChangeNotifyingTextViewMessage`.
 - `NSTextViewDelegate` provides callbacks for selection changes, attribute modification, spell checking, and drag-and-drop.
 
 ## Related
