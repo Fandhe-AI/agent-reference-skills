@@ -133,7 +133,7 @@ To use custom path aliases with TypeScript, you need to set the path aliases to 
 +    "baseUrl": ".",
 +    "paths": {
 +      "*": ["src/*"],
-+      "tests": ["tests/*"],
++      "tests/*": ["tests/*"],
 +      "@components/*": ["src/components/*"],
 +    },
 +  }
@@ -174,6 +174,7 @@ To use custom path aliases with TypeScript, you need to set the path aliases to 
 - You should leave the `./index.js` entrypoint file as it is otherwise you may run into an issue when it comes to bundling a production build.
 - Since 0.87: the Strict TypeScript API is enabled by default; see the Strict TypeScript API page for ref typing (`*Instance`), opt-out via `customConditions`, and removed types.
 - The babel.config.js snippet keeps the official page's legacy preset name `metro-react-native-babel-preset`; current React Native templates use `presets: ['module:@react-native/babel-preset']` (see the JavaScript Environment page), so keep your existing presets line and add only the plugins entry.
+- The official docs use the key "tests" in paths, which TypeScript matches exactly and so does not resolve imports like tests/File; this page uses "tests/*" so it matches the description and the Babel alias.
 - This page covers TypeScript setup for React Native; the TypeScript language itself is out of scope here.
 
 ## Related
