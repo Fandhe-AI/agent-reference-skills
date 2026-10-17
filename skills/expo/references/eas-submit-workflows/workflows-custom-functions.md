@@ -8,7 +8,7 @@ Custom functions define reusable step sequences for custom jobs and hooks, calle
 
 ## Signature / Usage
 
-Adapted (not in the official docs): the official example interpolates `${{ inputs.who }}` and `${{ steps.greet.outputs.message }}` directly into `run`, which is only safe for fixed literal values. Here the value is passed through `env` (inherited by every step in the function, per the documented scoping) and referenced as a quoted shell variable.
+Adapted (not in the official docs): the official example interpolates `${{ inputs.who }}` and `${{ steps.greet.outputs.message }}` directly into `run`, which is only safe for fixed literal values. Here the step inside the function receives the input through its own `env` (`${{ inputs.who }}`, evaluated in the function's scope per the documented scoping) and references it as a quoted shell variable.
 
 `.eas/functions/greet/function.yml` (one input, one output, one step):
 
@@ -23,7 +23,9 @@ outputs:
 runs:
   steps:
     - id: make
-      run: set-output message "Hello, ${WHO:-world}!"
+      env:
+        WHO: '${{ inputs.who }}'
+      run: set-output message "Hello, ${WHO}!"
 ```
 
 Call it from a workflow (Adapted: the output is exposed through `jobs.<job_id>.outputs` and displayed by a later job via `env`):
@@ -39,8 +41,6 @@ jobs:
         uses: ./.eas/functions/greet
         with:
           who: Expo
-        env:
-          WHO: Expo
   show:
     needs: [greet]
     env:
