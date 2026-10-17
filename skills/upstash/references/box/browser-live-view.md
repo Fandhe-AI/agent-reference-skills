@@ -22,6 +22,7 @@ live_url = tab.live_view_url()
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/browser/live-view (fetched 2026-10-17; no version pin on the site).
 - The URL is self-contained: an access token is embedded in the URL, so viewers need no API key or SDK
 - View-only — viewers cannot click or type; drive the browser via the SDK or connect over CDP instead
 - Treat live view URLs as secrets: anyone with the URL can watch the tab

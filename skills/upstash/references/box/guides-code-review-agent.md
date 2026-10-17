@@ -52,6 +52,7 @@ export async function reviewPullRequest(input: { repo: string; base: string; hea
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/guides/code-review-agent (fetched 2026-10-17; no version pin on the site).
 - Fail the CI job when `verdict === "changes_requested"` to gate merges automatically
 - `responseSchema` guarantees a typed, structured result you can persist as JSON and branch on in a follow-up CI step
 - Always `box.delete()` in a `finally` block

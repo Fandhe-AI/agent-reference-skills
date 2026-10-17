@@ -22,14 +22,14 @@ export const { POST } = serve(async (context) => {
 })
 ```
 
-## How It Works
+### How It Works
 
 1. Each step executes via its own HTTP request
 2. Step results are persisted in durable state
 3. On resumption, completed steps are skipped and prior results are restored
 4. Failed steps are automatically retried with exponential backoff
 
-## Key Concepts
+### Key Concepts
 
 | Concept | Description |
 |---------|-------------|

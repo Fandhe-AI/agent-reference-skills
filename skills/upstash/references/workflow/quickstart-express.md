@@ -40,7 +40,7 @@ curl -X POST http://localhost:3000/workflow \
   -d '{"message": "Hello from the workflow!"}'
 ```
 
-## Environment Variables
+### Environment Variables
 
 | Variable | Description |
 |----------|-------------|

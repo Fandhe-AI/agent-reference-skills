@@ -45,7 +45,7 @@ curl -X POST http://localhost:8787/ \
 wrangler deploy
 ```
 
-## Environment Variables (`.dev.vars`)
+### Environment Variables (`.dev.vars`)
 
 | Variable | Description |
 |----------|-------------|

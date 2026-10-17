@@ -48,6 +48,20 @@ Returns a namespace-scoped client exposing the same methods as `Index`: `upsert`
 
 **`index.listNamespaces()`:** Returns `string[]` of all active namespace names.
 
+**Rename namespace (REST API, added August 2025):** `POST /rename-namespace` on the index REST endpoint (`UPSTASH_VECTOR_REST_URL`)
+
+| Name | Type | Description |
+|------|------|-------------|
+| `namespace` | `string` | Required. Name of the namespace to rename |
+| `newNamespace` | `string` | Required. New name |
+| `deleteExisting` | `boolean` | Optional, default `false`. If a namespace with the new name exists, it is deleted before the rename |
+
+Response: `{ "result": { "renamed": true } }`.
+
+```json
+{ "namespace": "ns", "newNamespace": "newNs" }
+```
+
 **`index.reset(options)`:**
 
 | Name | Type | Description |
@@ -58,6 +72,7 @@ Returns a namespace-scoped client exposing the same methods as `Index`: `upsert`
 ## Notes
 
 - Namespaces are created implicitly on first upsert — no explicit create step
+- The default namespace (`""`) cannot be renamed. An SDK method name for rename is not confirmed in the docs (only the REST endpoint is documented), so none is listed here
 - Deleting a namespace permanently removes all its vectors
 - Pre-namespace indexes (created before the feature existed) continue to work against the default namespace automatically
 - In Python SDK: pass `namespace="ns"` as a keyword argument directly to each method (e.g., `index.query(..., namespace="ns")`)

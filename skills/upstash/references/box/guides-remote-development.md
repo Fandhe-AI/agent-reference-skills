@@ -17,6 +17,7 @@ npm run dev
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/guides/remote-development (fetched 2026-10-17; no version pin on the site).
 - The SSH tunnel makes the dev server available at `http://localhost:<port>` on the local machine, live-editable inside the box
 - To share publicly, expose the port with a public URL from the Upstash Console: `https://<box-id>-<port>.preview.box.upstash.com`
 

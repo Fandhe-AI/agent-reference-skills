@@ -33,7 +33,7 @@ await context.run("validate-user", async () => {
 | `retries` | `number` | Number of retry attempts before moving to DLQ; default: 3 |
 | `retryDelay` | `number \| string` | Delay between retries in ms; supports math expressions using `retried` (0-indexed attempt count) |
 
-## Default Backoff Schedule
+### Default Backoff Schedule
 
 | Attempt | Approximate delay |
 |---------|------------------|
@@ -44,7 +44,7 @@ await context.run("validate-user", async () => {
 
 Formula: `delay = min(86400, e^(2.5 * n))` seconds
 
-## Stopping Retries
+### Stopping Retries
 
 | Method | Effect |
 |--------|--------|

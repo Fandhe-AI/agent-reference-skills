@@ -6,6 +6,7 @@
 | Algorithm | The three-stage pipeline Upstash Search uses to rank results: input enrichment, hybrid vector search, and reranking. | [algorithm.md](./algorithm.md) |
 | Content and Metadata | `content` holds the searchable, filterable fields of a document; `metadata` holds extra context that is not indexed for search. | [content-and-metadata.md](./content-and-metadata.md) |
 | delete | Removes documents from an index by ID, ID prefix, or metadata/content filter. | [delete.md](./delete.md) |
+| Docusaurus Integration | AI-powered search component for Docusaurus using Upstash Search (`@upstash/docusaurus-theme-upstash-search`), with dark/light mode support. | [docusaurus.md](./docusaurus.md) |
 | fetch | Retrieves documents by ID or by ID prefix, without running a search ranking pass. | [fetch.md](./fetch.md) |
 | Filtering | SQL-like filter expressions to narrow `search` and `delete` results by `content` or `metadata` fields. | [filtering.md](./filtering.md) |
 | Getting Started | Creating an Upstash Search database, adding documents, and running your first search. | [getting-started.md](./getting-started.md) |
@@ -18,6 +19,8 @@
 | range | Retrieves documents in paginated, cursor-based chunks. Stateless — all parameters must be passed on every call. | [range.md](./range.md) |
 | Reranking | Optional AI-powered reordering of search results for higher relevancy, combining semantic and full-text outcomes. | [reranking.md](./reranking.md) |
 | reset | Clears all documents from an index. | [reset.md](./reset.md) |
+| Search UI (@upstash/search-ui) | Pre-styled, accessible React search component (`SearchBar`) that is provider agnostic; the documented example uses Upstash Search as the backend. | [search-ui.md](./search-ui.md) |
 | search | Retrieves the most relevant documents for a query using Upstash Search's hybrid semantic + full-text ranking. Scores are normalized between 0 and 1, where 1 is the highest relevance. | [search.md](./search.md) |
 | @upstash/search TypeScript SDK | Serverless client for Upstash Search. Provides typed `search`, `upsert`, `fetch`, `delete`, `range`, `info`, and `reset` operations against a Search index. | [ts-sdk-overview.md](./ts-sdk-overview.md) |
+| Tools: Database Migrator / Documentation Crawler | CLI tools for filling an Upstash Search database: `@upstash/search-migrator` (from Algolia / Meilisearch) and `@upstash/search-crawler` (crawl a docs site). | [tools.md](./tools.md) |
 | upsert | Adds new documents to an index or updates existing ones by ID. | [upsert.md](./upsert.md) |

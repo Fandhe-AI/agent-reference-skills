@@ -41,6 +41,7 @@ article = tab.extract("extract the article title and author", Article)
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/browser/reading-pages (fetched 2026-10-17; no version pin on the site).
 - `extract` uses an LLM and is metered; needs a provider API key on the box or account, and accepts an optional `model` override like the other AI Actions
 - Screenshots work headless with no display needed
 

@@ -18,6 +18,7 @@ hermes gateway start > gateway.log 2>&1 &
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/guides/hermes-setup (fetched 2026-10-17; no version pin on the site).
 - Hermes is resource-intensive; a Medium-sized box is recommended for a smooth installation
 - Set the gateway start command as the box's init script in the Upstash Console so it restarts automatically if the box crashes
 

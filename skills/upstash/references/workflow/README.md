@@ -2,32 +2,59 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Overview | How Upstash Workflow works; durable execution model, installation | [overview.md](./overview.md) |
-| serve() | Expose a workflow as an HTTP endpoint with failure handling options | [serve.md](./serve.md) |
-| serveMany() / createWorkflow() | Serve multiple workflows on a single route; enables type-safe context.invoke() | [serve-many.md](./serve-many.md) |
-| Workflow Context | Context object properties and all available step methods | [context.md](./context.md) |
-| context.run() | Execute business logic as a named, durable step | [context-run.md](./context-run.md) |
-| context.sleep() / sleepUntil() | Pause workflow without consuming compute resources | [context-sleep.md](./context-sleep.md) |
-| context.call() | Make HTTP requests as a workflow step (up to 12-hour responses) | [context-call.md](./context-call.md) |
-| context.invoke() | Invoke another workflow and await its completion | [context-invoke.md](./context-invoke.md) |
-| context.waitForEvent() | Pause until an external event is received | [context-wait-for-event.md](./context-wait-for-event.md) |
-| context.notify() | Notify a waiting workflow with event data (from within a workflow) | [context-notify.md](./context-notify.md) |
-| Parallel Steps | Run multiple steps concurrently with Promise.all() | [parallel-steps.md](./parallel-steps.md) |
-| Wait for Event | Feature overview: pause/resume pattern, race condition mitigations | [wait-for-event.md](./wait-for-event.md) |
-| Flow Control | Rate limiting and concurrency control for workflow steps | [flow-control.md](./flow-control.md) |
-| Retries | Automatic retry configuration, backoff, WorkflowNonRetryableError | [retries.md](./retries.md) |
-| Failures & Error Handling | failureFunction, failureUrl, DLQ recovery | [failures.md](./failures.md) |
-| Security | Signature verification and custom authorization | [security.md](./security.md) |
-| Client | Workflow management client: trigger, cancel, notify, logs | [client.md](./client.md) |
-| client.trigger() | Start one or more workflow runs | [client-trigger.md](./client-trigger.md) |
-| client.cancel() | Terminate workflow runs by ID, filter, or bulk | [client-cancel.md](./client-cancel.md) |
-| client.notify() | Send events to workflows paused at waitForEvent (from outside) | [client-notify.md](./client-notify.md) |
-| client.logs() | Retrieve paginated workflow execution history | [client-logs.md](./client-logs.md) |
-| Scheduled Workflows | Trigger workflows on a cron schedule via QStash Schedules | [schedule.md](./schedule.md) |
-| Local Development | Local QStash dev server and tunnel setup | [local-development.md](./local-development.md) |
-| Agents | Durable AI agent pipelines with prompt chaining, parallelization | [agents.md](./agents.md) |
-| Quickstart: Next.js | App Router and Pages Router integration | [quickstart-nextjs.md](./quickstart-nextjs.md) |
-| Quickstart: Hono | Hono integration for Cloudflare Workers | [quickstart-hono.md](./quickstart-hono.md) |
-| Quickstart: Express.js | Express.js server integration | [quickstart-express.md](./quickstart-express.md) |
-| Quickstart: Cloudflare Workers | Cloudflare Workers deployment with Wrangler | [quickstart-cloudflare.md](./quickstart-cloudflare.md) |
-| Quickstart: Nuxt (H3) | Nuxt.js integration using the H3 adapter | [quickstart-nuxt.md](./quickstart-nuxt.md) |
+| Agents | The `@upstash/workflow` Agents API enables building durable AI agent pipelines — individual agents or multi-agent collaborations — with built-in reliability, observability, and integration with AI SDK and LangChain. | [agents.md](./agents.md) |
+| Best Practices | Rules for writing Upstash Workflow endpoints. The endpoint is called many times per workflow run, so code outside `context.run` must be deterministic and steps must be safe to retry. | [best-practices.md](./best-practices.md) |
+| client.cancel() | Terminates one or more workflow runs. Supports direct run ID, filter-based, and bulk cancellation. Returns the count of canceled runs. | [client-cancel.md](./client-cancel.md) |
+| client.dlq (list / restart / resume / delete / retryFailureFunction) | Programmatic access to the Dead Letter Queue through the Workflow `Client`. | [client-dlq.md](./client-dlq.md) |
+| client.logs() | Retrieves paginated workflow run history with optional filtering by state, label, date range, and more. | [client-logs.md](./client-logs.md) |
+| client.notify() | Resumes workflows paused at `context.waitForEvent()` by delivering an event and optional payload. Called from outside a workflow (e.g., a webhook handler or API route). | [client-notify.md](./client-notify.md) |
+| client.trigger() | Initiates one or more new workflow runs and returns the assigned `workflowRunId`. | [client-trigger.md](./client-trigger.md) |
+| client.getWaiters() | Retrieves all waiters currently listening for a given event. A waiter is a workflow run paused at a `context.waitForEvent` step waiting for the specified `eventId`. | [client-waiters.md](./client-waiters.md) |
+| Client | Lightweight, stateless client for programmatic workflow management. Used to trigger, cancel, notify, and inspect workflow runs from application code or external services. | [client.md](./client.md) |
+| context.api (OpenAI / Anthropic / Resend) | The `context.api` namespace provides type-safe built-in integrations for OpenAI, Anthropic, and Resend, as an alternative to `context.call` for third-party requests. | [context-api.md](./context-api.md) |
+| context.call() | Makes an HTTP request as a workflow step. Upstash handles the request on the caller's behalf, allowing responses up to 12 hours without consuming compute resources. | [context-call.md](./context-call.md) |
+| context.cancel() | Explicitly cancels the current workflow run. Unlike other context methods, it does not define a step. | [context-cancel.md](./context-cancel.md) |
+| context.invoke() | Launches another workflow and pauses the calling workflow until the invoked workflow finishes (success, failure, or cancellation). Requires both workflows to be registered in the same `serveMany` route. | [context-invoke.md](./context-invoke.md) |
+| context.notify() | Sends an event notification from within a workflow to resume other workflows paused at `context.waitForEvent()`. Optionally includes a `workflowRunId` for lookback support. | [context-notify.md](./context-notify.md) |
+| context.run() | Executes custom business logic as a named workflow step. Returns a Promise resolving to any JSON-serializable value. | [context-run.md](./context-run.md) |
+| context.sleep() / context.sleepUntil() | Pauses workflow execution for a specified duration or until an absolute timestamp. No compute resources are consumed during the pause. | [context-sleep.md](./context-sleep.md) |
+| context.waitForEvent() | Pauses workflow execution until an external event is received via `client.notify()` or `context.notify()`. No compute resources are consumed while waiting. | [context-wait-for-event.md](./context-wait-for-event.md) |
+| context.createWebhook() / context.waitForWebhook() | `createWebhook` creates a unique webhook URL that external services can call to resume the workflow; `waitForWebhook` pauses the run until that webhook is called or a timeout is reached. | [context-webhook.md](./context-webhook.md) |
+| Workflow Context | The `context` object passed to every workflow route function. Provides metadata about the current run and all step execution APIs. | [context.md](./context.md) |
+| Dead Letter Queue (DLQ) | The DLQ automatically captures failed workflow runs that exhausted all retry attempts, preserving their complete execution context for recovery. | [dlq.md](./dlq.md) |
+| Failure Function (failureFunction / failureUrl) | Custom logic that runs when a workflow run fails after exhausting all retries, before the run moves to the Dead Letter Queue (DLQ). | [failure-callback.md](./failure-callback.md) |
+| Failures & Error Handling | Workflows fail when a step errors after exhausting all retries. Failure handling is configured via `failureFunction` on `serve()` or `failureUrl` (passed to `client.trigger()` in the TypeScript SDK since 1.0.0; the Python SDK keeps it on the `serve` decorator). Failed runs land in the Dead Letter Queue (DLQ). | [failures.md](./failures.md) |
+| Flow Control | Limits the rate and concurrency of workflow step execution. When thresholds are exceeded, steps are queued rather than rejected. | [flow-control.md](./flow-control.md) |
+| How Workflow Works | Upstash Workflow is an orchestration layer for durable, scalable, cost-efficient multi-step workflows, built on top of Upstash QStash. | [how-it-works.md](./how-it-works.md) |
+| Local Development | Two approaches to run and test Upstash Workflow without using production QStash credentials: automatic dev server mode and manual local tunnel setup. | [local-development.md](./local-development.md) |
+| Middlewares | Middlewares intercept workflow lifecycle events and debug messages, for logging, monitoring, error tracking, and custom integrations. Pass them via the `middlewares` option of `serve`. | [middlewares.md](./middlewares.md) |
+| Migration Guide (1.0.0 / from @upstash/qstash) | Breaking changes between versions of the Upstash Workflow TypeScript SDK: the January 2026 1.0.0 major release, and the October 2024 move from `@upstash/qstash` to `@upstash/workflow`. | [migrations.md](./migrations.md) |
+| Select a Region (Multi-Region) | Upstash Workflow runs on QStash, available in an EU region and a US region. Each region is fully independent (infrastructure, pricing, resources, workflow runs, API tokens, signing keys). | [multi-region.md](./multi-region.md) |
+| Upstash Workflow Overview | Durable serverless function orchestration built on QStash. Splits multi-step backend processes into individually managed, automatically retried steps that survive timeouts and outages. | [overview.md](./overview.md) |
+| Parallel Steps | Run multiple workflow steps concurrently using `Promise.all()`. Each step executes as a separate HTTP request managed by QStash. | [parallel-steps.md](./parallel-steps.md) |
+| Quickstart: Astro | Use and deploy Upstash Workflow with Astro. Example source: `examples/astro` in `upstash/workflow-js`. | [quickstart-astro.md](./quickstart-astro.md) |
+| Quickstart: Cloudflare Workers | Deploy Upstash Workflow on Cloudflare Workers with Wrangler. | [quickstart-cloudflare.md](./quickstart-cloudflare.md) |
+| Quickstart: Express.js | Integrate Upstash Workflow with Express.js. | [quickstart-express.md](./quickstart-express.md) |
+| Quickstart: FastAPI (Python) | Use Upstash Workflow with FastAPI via the Python SDK `upstash-workflow`. Example source: `examples/fastapi` in `upstash/workflow-py`. | [quickstart-fastapi.md](./quickstart-fastapi.md) |
+| Quickstart: Flask (Python) | Use Upstash Workflow with Flask via the Python SDK `upstash-workflow`. Example source: `examples/flask` in `upstash/workflow-py`. | [quickstart-flask.md](./quickstart-flask.md) |
+| Quickstart: Hono | Integrate Upstash Workflow with Hono (e.g., on Cloudflare Workers). | [quickstart-hono.md](./quickstart-hono.md) |
+| Quickstart: Next.js + FastAPI | Run a Next.js frontend with a Python FastAPI Workflow API from the `nextjs-fastapi` example. Example source: `examples/nextjs-fastapi` in `upstash/workflow-py`. | [quickstart-nextjs-fastapi.md](./quickstart-nextjs-fastapi.md) |
+| Quickstart: Next.js + Flask | Run a Next.js frontend with a Python Flask Workflow API from the `nextjs-flask` example. Example source: `examples/nextjs-flask` in `upstash/workflow-py`. | [quickstart-nextjs-flask.md](./quickstart-nextjs-flask.md) |
+| Quickstart: Next.js | Integrate Upstash Workflow with Next.js App Router or Pages Router. | [quickstart-nextjs.md](./quickstart-nextjs.md) |
+| Quickstart: Nuxt (H3) | Integrate Upstash Workflow with Nuxt.js using the H3 server adapter. | [quickstart-nuxt.md](./quickstart-nuxt.md) |
+| Quickstart: Solid.js | Use and deploy Upstash Workflow with SolidJS. Example source: `examples/solidjs` in `upstash/workflow-js`. | [quickstart-solidjs.md](./quickstart-solidjs.md) |
+| Quickstart: SvelteKit | Use and deploy Upstash Workflow with SvelteKit. Example source: `examples/sveltekit` in `upstash/workflow-js`. | [quickstart-svelte.md](./quickstart-svelte.md) |
+| Quickstart: TanStack Start | Use Upstash Workflow with TanStack Start, exposing workflow endpoints as API routes. Example source: `examples/tanstack-start` in `upstash/workflow-js`. | [quickstart-tanstack-start.md](./quickstart-tanstack-start.md) |
+| Realtime / Human-in-the-Loop | Emit workflow progress to a frontend in real time with Upstash Realtime (powered by Upstash Redis, delivered via Server-Sent Events), and pause for human approval with `context.waitForEvent` + `client.notify`. | [realtime.md](./realtime.md) |
+| Redact Private Data | Redact specific fields of a workflow run so they appear as `REDACTED:<SHA256>` in the Upstash Console and API responses. Original values are still delivered to your workflow endpoint. | [redact-fields.md](./redact-fields.md) |
+| Retries | Upstash Workflow automatically retries failed steps. Default retry count is 3 with exponential backoff. Retries can be customized at trigger time or suppressed with `WorkflowNonRetryableError`. | [retries.md](./retries.md) |
+| Run a Step Now | Release a waiting step early so the run continues immediately. A run waits either because a step is sleeping (`context.sleep` / `context.sleepUntil`) or because a failed step is waiting out its retry delay. | [retry-now.md](./retry-now.md) |
+| Scheduled Workflows | Trigger workflows on a recurring schedule using QStash Schedules and cron expressions. Schedules can be created via the Upstash Console or programmatically with the QStash SDK. | [schedule.md](./schedule.md) |
+| Security | Upstash Workflow endpoints should be protected against unauthorized invocations. Two approaches are available: built-in signature verification (recommended) and custom authorization. | [security.md](./security.md) |
+| serveMany() / createWorkflow() | Exposes multiple workflows under a single catch-all route, enabling type-safe workflow invocation via `context.invoke()` without hardcoded URLs. | [serve-many.md](./serve-many.md) |
+| serve() | Establishes an HTTP endpoint that executes a workflow. Accepts a route function defining workflow steps and an optional configuration object. | [serve.md](./serve.md) |
+| Singleton Workflows | Ensure at most one run of a workflow is in progress at a time by starting every run with the same `workflowRunId`. A run ID is reserved while its run is in progress and released once the run finishes, fails, or is cancelled. | [singleton.md](./singleton.md) |
+| Troubleshooting (General / Vercel) | Common Upstash Workflow errors, their causes, and fixes, plus Vercel preview deployment protection. | [troubleshooting.md](./troubleshooting.md) |
+| Update a Workflow | How code changes affect in-progress workflow runs. The step order of an existing run cannot be changed. | [update-workflow.md](./update-workflow.md) |
+| Wait for Event | Feature that pauses a workflow until an external event is received, without consuming compute resources. Uses `context.waitForEvent()` to pause and `client.notify()` or `context.notify()` to resume. | [wait-for-event.md](./wait-for-event.md) |
+| Webhooks | Pause workflow execution until a webhook URL is called (`createWebhook` / `waitForWebhook`), and use workflow endpoints as webhook receivers. | [webhooks.md](./webhooks.md) |

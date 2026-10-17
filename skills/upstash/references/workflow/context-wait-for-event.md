@@ -24,14 +24,14 @@ if (timeout) {
 | `eventId` | `string` | Identifier of the event to wait for; must match the `eventId` passed to `notify()` |
 | `options.timeout` | `string \| number` | Maximum wait time (string like `"1d"`, or seconds as number). Run fails if exceeded |
 
-## Response
+### Response
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `eventData` | `any` | Data delivered by the notifying caller |
 | `timeout` | `boolean` | `true` if the event was not received before the timeout |
 
-## Timeout Limits by Plan
+### Timeout Limits by Plan
 
 | Plan | Maximum timeout |
 |------|----------------|

@@ -24,9 +24,10 @@ serve(async (context) => {
 | `failureUrl` | `string` | Callback URL for workflow failures |
 | `env` | `object` | Available environment variables |
 | `qstashClient` | `Client` | QStash client instance backing this workflow |
-| `label` | `string \| undefined` | Optional run label set at trigger time |
+| `labels` | `string[]` | Labels attached to the current run, if set in `client.trigger`; defaults to an empty array |
+| `label` | `string \| undefined` | Deprecated (June 2026); use `labels`. With multiple labels it returns only the first one |
 
-## Available Methods
+### Available Methods
 
 | Method | Description |
 |--------|-------------|
@@ -36,6 +37,8 @@ serve(async (context) => {
 | `context.call()` | Make an HTTP request as a step |
 | `context.invoke()` | Invoke another workflow and await its completion |
 | `context.waitForEvent()` | Pause until an external event is received |
+| `context.createWebhook()` | Create a webhook for the run |
+| `context.waitForWebhook()` | Pause until a created webhook is called |
 | `context.notify()` | Notify a waiting workflow with event data |
 | `context.cancel()` | Cancel this workflow run (no DLQ, no failure handler) |
 | `context.api()` | Call provider APIs (e.g., OpenAI) as a step |
@@ -53,3 +56,6 @@ serve(async (context) => {
 - [context.invoke](./context-invoke.md)
 - [context.waitForEvent](./context-wait-for-event.md)
 - [context.notify](./context-notify.md)
+- [context.createWebhook / waitForWebhook](./context-webhook.md)
+- [context.api](./context-api.md)
+- [context.cancel](./context-cancel.md)

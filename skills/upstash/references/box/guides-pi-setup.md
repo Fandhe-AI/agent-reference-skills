@@ -29,6 +29,7 @@ Slash commands: `/sandbox` (box status/branch link), `/github` (open the session
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/guides/pi-setup (fetched 2026-10-17; no version pin on the site).
 - The repo is cloned **from GitHub** into the box — the box never sees local files, so the repo must exist on github.com and any needed content must be committed and pushed first
 - With `gh auth login` on a github.com repo, each session gets its own `pi/<short-session-id>` branch, auto-pushed after each turn
 - `preview_url` tool returns a live, basic-auth-protected URL for any port the agent starts a server on

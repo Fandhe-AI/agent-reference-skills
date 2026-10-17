@@ -39,6 +39,7 @@ await stagehand.init()
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/overall/browser/connect (fetched 2026-10-17; no version pin on the site).
 - Like Live View URLs, the CDP URL carries its auth token in the URL — anyone with it gets full control of the browser; treat it as a secret
 - `playwright-core` (not full `playwright`) is enough since you connect to the box's Chromium instead of launching one locally
 - CDP clients and the SDK drive the same browser and tabs: a page opened by Playwright shows up in `box.browser.listTabs()`, and an SDK-created tab is visible to Playwright — script predictable steps with Playwright and hand off to AI Actions for steps easier to describe in natural language

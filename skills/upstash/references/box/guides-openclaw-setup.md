@@ -9,7 +9,8 @@ Set up [OpenClaw](https://docs.openclaw.ai) inside an Upstash Box.
 ssh -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -L 18789:127.0.0.1:18789 <box-id>@us-east-1.box.upstash.com
 
 # 2. Install OpenClaw CLI
-sudo npm install -g openclaw
+npm install -g --prefix /home/boxuser/.local openclaw
+export PATH="/home/boxuser/.local/bin:$PATH"
 
 # 3. Run onboarding
 openclaw onboard --install-daemon
@@ -23,6 +24,8 @@ nohup openclaw gateway > gateway.log 2>&1 &
 
 ## Notes
 
+- Source: https://upstash.com/docs/box/guides/openclaw-setup (fetched 2026-10-17; no version pin on the site).
+- Original docs use `sudo npm install -g openclaw` inside the box; this page rewrites it to a user-space install
 - Use the Box API key as the SSH password; the `-L` flag forwards the OpenClaw dashboard port to the local machine
 - Set `nohup openclaw gateway > gateway.log 2>&1 &` as the box's init script (Upstash Console) so the gateway restarts automatically on crash
 - If SSH freezes during onboarding, retry with `ssh -F /dev/null -o ControlMaster=no -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -L 18789:127.0.0.1:18789 ...` to bypass a stale local `~/.ssh/config` `ControlMaster` socket or NAT/firewall dropping idle connections
