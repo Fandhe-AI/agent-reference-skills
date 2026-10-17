@@ -50,11 +50,14 @@ npm install update-electron-app
 
 ```js
 // main.js
-require('update-electron-app')()
+const { updateElectronApp } = require('update-electron-app')
+
+updateElectronApp()
 ```
 
 ## Notes
 
+- Unlike the official tutorial, which calls the legacy default export `require('update-electron-app')()`, this sample uses the named export `updateElectronApp` exposed by current versions of update-electron-app.
 - This page follows the v44.8.0 tag text. The `44-x-y` branch has unreleased wording changes to the Forge import steps in the packaging/publishing tutorials.
 - update.electronjs.org requires: macOS or Windows, a public GitHub repository, builds published to GitHub releases, and (macOS only) code-signed builds.
 - The publisher reads the token from the `GITHUB_TOKEN` environment variable by default (a PAT with `public_repo` scope); keep it secret and never commit it.

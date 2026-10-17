@@ -25,8 +25,12 @@ function createWindow () {
   const outPath = path.join(app.getPath('userData'), 'ex.png')
 
   win.loadURL('https://github.com')
+  let writing = false
   win.webContents.on('paint', (event, dirty, image) => {
+    if (writing) return
+    writing = true
     fs.writeFile(outPath, image.toPNG(), (err) => {
+      writing = false
       if (err) console.error(err)
     })
   })
@@ -57,5 +61,5 @@ app.on('window-all-closed', () => {
 - `app.disableHardwareAcceleration()` selects the software output device mode (faster frame generation than the GPU shared-memory-bitmap mode, but no GPU features such as WebGL).
 - With `webPreferences.offscreen.useSharedTexture` set to `true` frames go to GPU shared textures (advanced, needs a native Node module); the default `false` gives `NativeImage` bitmaps and a maximum frame rate of 240.
 - Only the dirty area is passed to `paint`; no frames are generated when the page is idle. An offscreen window is always frameless.
-- Unlike the official fiddle, which synchronously writes ex.png into process.cwd() on every paint, this sample writes asynchronously under app.getPath('userData') with an error callback.
+- Unlike the official fiddle, which synchronously writes ex.png into process.cwd() on every paint, this sample writes asynchronously under app.getPath('userData'), skips frames while a previous write is still in flight to avoid overlapping writes, and reports errors.
 - The sample loads a remote URL; change it for real use.

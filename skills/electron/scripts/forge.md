@@ -47,4 +47,4 @@ Add `"publish": "electron-forge publish"` to `package.json` first. By default on
 npm install update-electron-app
 ```
 
-Call `require('update-electron-app')()` in the main process. Requirements for update.electronjs.org: macOS or Windows, a public GitHub repository, and publishing to GitHub Releases (code signing is required on macOS).
+Call `const { updateElectronApp } = require('update-electron-app'); updateElectronApp()` in the main process (current versions expose the named export; the official tutorial still shows the legacy default-export call). Requirements for update.electronjs.org: macOS or Windows, a public GitHub repository, and publishing to GitHub Releases (code signing is required on macOS).
