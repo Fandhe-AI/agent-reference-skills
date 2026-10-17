@@ -15,9 +15,9 @@ Order layers so that expensive, rarely-changing steps come first:
 FROM node
 WORKDIR /app
 # Copy package management files
-COPY package.json yarn.lock .
+COPY package.json package-lock.json .
 # Install dependencies
-RUN npm install
+RUN npm ci
 # Copy over project files
 COPY . .
 # Run build
@@ -29,7 +29,8 @@ Cache mount for a package manager:
 ```dockerfile
 FROM node:latest
 WORKDIR /app
-RUN --mount=type=cache,target=/root/.npm npm install
+COPY package.json package-lock.json .
+RUN --mount=type=cache,target=/root/.npm npm ci
 ```
 
 ## Options / Props
@@ -48,7 +49,7 @@ Cache mount examples by build tool (from the page):
 
 ## Notes
 
-- The official example puts trailing `#` comments on instruction lines; Dockerfile only treats `#` at the start of a line as a comment, so they are moved to their own lines here. The official example also uses `npm build`, corrected to `npm run build`.
+- The official example puts trailing `#` comments on instruction lines; Dockerfile only treats `#` at the start of a line as a comment, so they are moved to their own lines here. The official example also uses `npm build`, corrected to `npm run build`. The official example copies `yarn.lock` but runs `npm install`; it is aligned here to the `package-lock.json` that npm uses, with `npm ci`. The official cache mount example is an excerpt with no `package.json` COPY before `npm install`; the COPY is added here (and `npm ci` used) so it works as written.
 - Keep the context small: create a `.dockerignore` in the root of the build context (works like `.gitignore`, applies to the entire context including subdirectories).
 
 ```plaintext

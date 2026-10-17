@@ -28,7 +28,7 @@ $ docker buildx build --output type=registry[,parameters] .
 | `force-compression` | `true`,`false` | `false` | Forcefully apply compression. |
 | `rewrite-timestamp` | `true`,`false` | `false` | Rewrite file timestamps to the `SOURCE_DATE_EPOCH` value. |
 | `oci-mediatypes` | `true`,`false` | `false` | Use OCI media types in exporter manifests. |
-| `oci-artifact` | `true`,`false` | `false` | Attestations are formatted as OCI artifacts. |
+| `oci-artifact` | `true`,`false` | `false` | Attestations are formatted as OCI artifacts. (see Notes for BuildKit v0.32.0+) |
 | `unpack` | `true`,`false` | `false` | Unpack image after creation (for use with containerd). |
 | `store` | `true`,`false` | `true` | Store the result images to the worker's (e.g. containerd) image store and ensure the image has all blobs in the content store. Ignored if the worker has no image store (e.g. OCI workers). |
 | `annotation.<key>` | String | | Attach an annotation with the given `key` and `value` to the built image. |
@@ -43,6 +43,8 @@ $ docker buildx build \
 Alternatively repeat the `--tag` flag.
 
 ## Notes
+
+- Starting with BuildKit v0.32.0, attestations are stored as OCI artifacts when OCI media types are enabled (`oci-mediatypes=true`) even if `oci-artifact` is not set; set `BUILDX_NO_DEFAULT_OCI_ARTIFACT=1` to make Buildx set `oci-artifact=false`. The table default reflects the exporter attribute itself. (Source: build variables page.)
 
 ### Annotations
 
