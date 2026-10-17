@@ -16,6 +16,8 @@ ksp.incremental=false
 
 Declare dependencies when generating output with `Dependencies`:
 
+Adapted (not in the official docs): adds the `List<KSAnnotated>` return type and returns `emptyList()`.
+
 ```kotlin
 // A.kt
 @Interesting

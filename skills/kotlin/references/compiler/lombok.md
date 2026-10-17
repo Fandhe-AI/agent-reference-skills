@@ -57,7 +57,7 @@ Maven:
 Command-line compiler:
 
 ```bash
--Xplugin=$KOTLIN_HOME/lib/lombok-compiler-plugin.jar
+-Xplugin="${KOTLIN_HOME}/lib/lombok-compiler-plugin.jar"
 -P plugin:org.jetbrains.kotlin.lombok:config=<PATH_TO_CONFIG_FILE>
 ```
 

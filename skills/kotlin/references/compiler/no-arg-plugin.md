@@ -59,7 +59,7 @@ Maven:
 Command-line compiler:
 
 ```bash
--Xplugin=$KOTLIN_HOME/lib/noarg-compiler-plugin.jar
+-Xplugin="${KOTLIN_HOME}/lib/noarg-compiler-plugin.jar"
 -P plugin:org.jetbrains.kotlin.noarg:annotation=com.my.Annotation
 -P plugin:org.jetbrains.kotlin.noarg:preset=jpa
 ```

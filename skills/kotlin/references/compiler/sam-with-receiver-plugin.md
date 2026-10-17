@@ -74,7 +74,7 @@ Maven:
 Command-line compiler:
 
 ```bash
--Xplugin=$KOTLIN_HOME/lib/sam-with-receiver-compiler-plugin.jar
+-Xplugin="${KOTLIN_HOME}/lib/sam-with-receiver-compiler-plugin.jar"
 -P plugin:org.jetbrains.kotlin.samWithReceiver:annotation=com.my.SamWithReceiver
 ```
 

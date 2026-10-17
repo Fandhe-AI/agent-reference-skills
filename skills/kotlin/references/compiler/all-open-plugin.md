@@ -63,7 +63,7 @@ Maven (`pom.xml`):
 Command-line compiler:
 
 ```bash
--Xplugin=$KOTLIN_HOME/lib/allopen-compiler-plugin.jar
+-Xplugin="${KOTLIN_HOME}/lib/allopen-compiler-plugin.jar"
 -P plugin:org.jetbrains.kotlin.allopen:annotation=com.my.Annotation
 -P plugin:org.jetbrains.kotlin.allopen:preset=spring
 ```

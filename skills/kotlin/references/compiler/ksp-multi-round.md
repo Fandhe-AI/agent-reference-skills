@@ -8,6 +8,8 @@ KSP processes files over multiple rounds; the output of each round is used as ad
 
 ## Signature / Usage
 
+Adapted (not in the official docs): uses `forEach` for the visitor side effect and returns `result.toList()`.
+
 ```kotlin
 override fun process(resolver: Resolver): List<KSAnnotated> {
     val symbols = resolver.getSymbolsWithAnnotation("com.example.annotation.Builder")

@@ -128,10 +128,10 @@ Details (Java member to KSP equivalent):
 | `Elements.getName` | `resolver.getKSNameFromString` |
 | `Elements.getPackageElement` / `getPackageOf` | Package not supported (package information can be retrieved; operations on packages aren't possible) |
 | `Elements.getTypeElement` | `Resolver.getClassDeclarationByName` |
-| `Elements.overrides` | `KSFunctionDeclaration.overrides` / `KSPropertyDeclaration.overrides` |
+| `Elements.overrides` | `resolver.overrides(overrider, overridee)` |
 | `Elements.printElements` | KSP has basic `toString()` implementation on most classes |
 | `Types.asElement` | `ksType.declaration` |
-| `Types.asMemberOf` | `resolver.asMemberOf` |
+| `Types.asMemberOf` | `ksFunctionDeclaration.asMemberOf(containing)` / `ksPropertyDeclaration.asMemberOf(containing)` |
 | `Types.boxedClass` / `unboxedType` / `getPrimitiveType` | Not needed (check `KSBuiltins`) |
 | `Types.capture` | To be decided |
 | `Types.contains` / `isAssignable` / `isSubtype` | `KSType.isAssignableFrom` |
@@ -150,6 +150,7 @@ Details (Java member to KSP equivalent):
 - A `KSType` for a function is just a signature represented by the `FunctionN<P1, ..., PN, R>` family.
 - The official table (kotlin-web-site 0b10373) writes KSValueArguments, KSDeclarations.annotations and KSType.markNullable; the KSP API names are KSValueArgument, KSAnnotated.annotations and KSType.makeNullable() (checked against google/ksp 2.3.10 api sources), which this page uses.
 - The official table maps parameter/return types to ksType.declaration.typeParameters and writes FunctionN<R, T1, ..., TN>; this page uses the resolved type arguments / declaration members and Kotlin's FunctionN<P1, ..., PN, R> order.
+- The official table (kotlin-web-site 0b10373) maps overrides to KSFunctionDeclaration.overrides / KSPropertyDeclaration.overrides and asMemberOf to resolver.asMemberOf; in google/ksp 2.3.10 these are Resolver.overrides(overrider, overridee) and KSFunctionDeclaration/KSPropertyDeclaration.asMemberOf(containing: KSType), which this page uses (KSType.starProjection() does exist).
 - Items marked "To be implemented" / "To be decided" are unimplemented or undecided in KSP at the time of the page.
 
 ## Related

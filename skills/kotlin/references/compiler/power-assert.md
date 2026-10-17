@@ -8,6 +8,8 @@ Improves debugging by generating detailed failure messages with intermediate val
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the `compilationFilter` lambda compares the compilation name (`main` / `test`) instead of source-set names.
+
 ```kotlin
 // build.gradle.kts
 plugins {
@@ -18,7 +20,7 @@ plugins {
 powerAssert {
     functions = listOf("kotlin.assert", "kotlin.test.assertTrue", "kotlin.test.assertEquals", "kotlin.test.assertNull")
     compilationFilter = PowerAssertCompilationFilter {
-        it.name in setOf("commonMain", "jvmMain", "jsMain", "nativeMain")
+        it.name == KotlinCompilation.MAIN_COMPILATION_NAME
     }
 }
 ```
@@ -127,6 +129,7 @@ class AssertScopeImpl : AssertScope {
 ## Notes
 
 - The plugin is Experimental: each build shows warnings; add `@OptIn(ExperimentalKotlinGradlePluginApi::class)` (import `org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi`) before the `powerAssert {}` block to exclude them.
+- The official example (kotlin-web-site 0b10373) filters on source-set names (commonMain, jvmMain, ...); PowerAssertCompilationFilter.check receives a KotlinCompilation whose name is main/test (TESTS uses KotlinCompilation.TEST_COMPILATION_NAME in kotlin v2.4.21), so this page compares against the compilation name.
 - Transformable functions must have a form that allows a `String` or `() -> String` value as the last parameter. Register them in the build file before use (functions annotated with `@PowerAssert` are transformed automatically).
 - To get a more complete message, inline variables into the assertion call (e.g. inline `isValidName && isValidAge` into the `assert()` expression).
 - Runtime library provides the `@PowerAssert` annotation and the `CallExplanation` class (`PowerAssert.explanation` provides the call-site info; `toDefaultMessage()` renders the standard message; `@PowerAssert.Ignore` excludes a parameter). Gradle adds the runtime dependency automatically; Maven needs `kotlin-power-assert-runtime`.
