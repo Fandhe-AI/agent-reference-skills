@@ -134,4 +134,4 @@ Anonymous objects returned from a local or `private` function or property expose
 - [Data classes](./data-classes.md)
 - [Sealed classes and interfaces](./sealed-classes.md)
 - [Extensions](./extensions.md) (companion object extensions)
-- [Java to Kotlin interop](../java-interop/java-to-kotlin-interop.md)
+- Java to Kotlin interop

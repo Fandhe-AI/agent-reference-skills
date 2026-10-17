@@ -168,4 +168,4 @@ val delegate: Int by provider
 
 - [Properties](./properties.md)
 - [Delegation](./delegation.md)
-- [Operator overloading](../functions/operator-overloading.md)
+- Operator overloading

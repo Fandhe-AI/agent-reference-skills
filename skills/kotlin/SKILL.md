@@ -9,6 +9,8 @@ user-invocable: false
 
 # Kotlin
 
+> 分割 PR の途中段階。現在収録済み: references/{basics, build-tools, classes-objects}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+
 ## 対象バージョン
 
 | 対象 | 版 | 備考 |
@@ -19,11 +21,11 @@ user-invocable: false
 | KSP | 2.3.10 | |
 
 - 取得日: 2026-10-16
-- 本文の一次ソース: `kotlinlang.org/docs/_llms/<slug>.txt`（公式 llms.txt の Markdown twin）。URL に版が無いため取得日を記録
+- 本文の一次ソース: [kotlinlang.org/docs/llms.txt](https://kotlinlang.org/docs/llms.txt) が列挙する Markdown twin `https://kotlinlang.org/docs/_llms/<slug>.txt`（例: [basic-syntax.txt](https://kotlinlang.org/docs/_llms/basic-syntax.txt)）。URL に版が無いため取得日を記録
 - 照合用の原本
-  - Kotlin 本体ドキュメント: `JetBrains/kotlin-web-site` commit `0b10373a150997e9fbcd730a7e00ae8444cc8606`（リリースタグが無いため SHA で pin）
-  - kotlinx.coroutines: `Kotlin/kotlinx.coroutines` commit `7e0d1b3e9ca83652427ae00dda7d1673f058a743`（サイトは master から生成され、タグ 1.11.0 の docs は古い構成のため。保存した 14 件に 1.12 / EAP の記述は 0 件）
-  - kotlinx.serialization: Writerside ソースが公開されていないため twin のみ。補助として GitHub ガイドをタグ `v1.11.0` で保存
+  - Kotlin 本体ドキュメント: `JetBrains/kotlin-web-site` commit [`0b10373a150997e9fbcd730a7e00ae8444cc8606`](https://github.com/JetBrains/kotlin-web-site/tree/0b10373a150997e9fbcd730a7e00ae8444cc8606)（リリースタグが無いため SHA で pin）
+  - kotlinx.coroutines: `Kotlin/kotlinx.coroutines` commit [`7e0d1b3e9ca83652427ae00dda7d1673f058a743`](https://github.com/Kotlin/kotlinx.coroutines/tree/7e0d1b3e9ca83652427ae00dda7d1673f058a743)（サイトは master から生成され、タグ 1.11.0 の docs は古い構成のため。保存した 14 件に 1.12 / EAP の記述は 0 件）
+  - kotlinx.serialization: Writerside ソースが公開されていないため twin のみ。補助として GitHub ガイドをタグ [`v1.11.0`](https://github.com/Kotlin/kotlinx.serialization/tree/v1.11.0/docs) で保存
 - 除外した版: Kotlin 2.5.0-Beta1、kotlinx.serialization 1.12.0-RC
 
 ## ディレクトリ構成

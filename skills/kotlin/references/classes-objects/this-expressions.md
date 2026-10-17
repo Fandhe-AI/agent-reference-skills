@@ -123,4 +123,4 @@ fun main() {
 - [Nested and inner classes](./nested-classes.md)
 - [Extensions](./extensions.md)
 - [Object declarations and expressions](./object-declarations.md)
-- [Lambdas](../functions/lambdas.md)
+- Lambdas
