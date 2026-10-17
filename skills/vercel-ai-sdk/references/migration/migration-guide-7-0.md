@@ -163,7 +163,7 @@ registerTelemetry(new OpenTelemetry());
 | Change | Detail |
 | --- | --- |
 | OpenTelemetry moved | Span collection is no longer built into `ai`. Install `@ai-sdk/otel` and call `registerTelemetry(new OpenTelemetry())` once at startup (Next.js: `instrumentation.ts`). |
-| Opt-out by default | Once an integration (e.g. `OpenTelemetry`, `DevToolsTelemetry`) is registered, all calls emit telemetry. `experimental_telemetry: { isEnabled: true }` is redundant; `isEnabled: false` opts out per call; to disable globally register no integration. Keep other fields like `functionId`. |
+| Opt-out by default | Once an integration (e.g. `OpenTelemetry`, `DevToolsTelemetry`) is registered, all calls emit telemetry. `experimental_telemetry: { isEnabled: true }` is redundant; `isEnabled: false` opts out per call; not registering any integration only stops delivery to globally registered integrations; per-call `telemetry.integrations` and Node.js tracing-channel subscribers still receive events, so pass `telemetry: { isEnabled: false }` on every call to disable telemetry events entirely (see operations/telemetry.md). Keep other fields like `functionId`. |
 | `tracer` removed | Pass a custom OpenTelemetry `Tracer` to `new OpenTelemetry({ tracer })` instead. Default uses `trace.getTracer('ai')`. |
 | `experimental_telemetry` -> `telemetry` | Old name works as deprecated alias; mixed usage supported during the deprecation window. Applies to `generateText`, `streamText`, `generateObject`, `streamObject`, `embed`, `embedMany`, `rerank`, `ToolLoopAgent`, `WorkflowAgent`. |
 | `onRerankFinish` / `onEmbedFinish` | Renamed `onRerankEnd` / `onEmbedEnd` (telemetry integration callbacks and the `type` emitted on `AI_SDK_TELEMETRY_TRACING_CHANNEL`). |
