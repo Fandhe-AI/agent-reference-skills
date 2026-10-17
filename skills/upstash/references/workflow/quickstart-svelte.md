@@ -29,7 +29,7 @@ export const { POST } = serve(
 ```
 
 ```bash
-curl -X POST https://localhost:5000/api/workflow \
+curl -X POST http://localhost:5000/api/workflow \
      -H "content-type: application/json"
 
 # result: {"workflowRunId":"wfr_xxxxxx"}
@@ -49,6 +49,8 @@ Create a `.env.local` file in the project root. Two options for local developmen
 - SvelteKit passes `env` from `$env/dynamic/private` as the second argument to `serve`
 - Production: set environment variables (e.g. `QSTASH_TOKEN`) in the platform project settings, remove local-tunnel settings, deploy to Vercel, Netlify, or similar, verify with a POST to `https://<YOUR-PRODUCTION-URL>/api/workflow`, and monitor in the QStash dashboard
 - Prerequisites: an Upstash QStash API key, and Node.js with npm (or another package manager)
+- The original curl uses `https://localhost:5000`; corrected to `http://localhost:5000` because the local dev server does not use TLS
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/quickstarts/svelte
 
 ## Related
 

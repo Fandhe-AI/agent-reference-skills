@@ -60,7 +60,7 @@ import { Client } from "@upstash/workflow";
 const client = new Client({ token: "<QSTASH_TOKEN>" })
 
 const { workflowRunId } = await client.trigger({
-  url: "https://<YOUR_WORKFLOW_URL>/workflow"
+  url: "https://<YOUR_WORKFLOW_URL>/workflow",
   failureUrl: "https://<YOUR_FAILURE_URL>/workflow-failure"
 })
 ```
@@ -93,6 +93,8 @@ const response = await client.dlq.retryFailureFunction({
 - `failureFunction` and `failureUrl` are mutually exclusive. `failureFunction` is the better choice for most users: it runs alongside the workflow with the same context and dependencies, is retried automatically on failure, and can be retried manually via the DLQ
 - The official pages disagree on the Python argument name: this page's source (`workflow/features/failureFunction/advanced`) writes `failure_url=`, while `workflow/basics/serve/advanced` and `workflow/howto/failures` write `failureUrl=`. Which one the Python SDK accepts is not confirmed here
 - The `failResponse` / `failHeaders` types are listed as `number` in the original parameter docs; this appears to be a documentation typo (body and headers)
+- The original `failureUrl` example omits the comma after the `url` property; added here so the snippet is valid
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/features/failure-callback (also `features/failureFunction/advanced` and `features/failureFunction/reliability`)
 
 ## Related
 

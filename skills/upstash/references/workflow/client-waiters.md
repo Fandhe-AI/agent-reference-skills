@@ -31,6 +31,10 @@ const result = await client.getWaiters({
 | `timeoutBody` | `unknown` (optional) | Body used in the timeout request |
 | `timeoutHeaders` | `Record<string, string[]>` (optional) | Headers sent in case of timeout |
 
+## Notes
+
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/basics/client/waiters
+
 ## Related
 
 - [client](./client.md)

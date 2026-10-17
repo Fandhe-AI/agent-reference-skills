@@ -124,6 +124,7 @@ Process events in discrete steps with `context.run` (e.g. `handle-webhook-event`
 
 - Built-in lookback: if the external service calls the webhook URL before `waitForWebhook` executes, the call is stored and returned when `waitForWebhook` is reached
 - Use webhooks for third-party callback-based APIs or when race-condition protection is needed without knowing the workflow run ID; use Wait for Event when you control notification and can use the Workflow Client. Passing `workflowRunId` to `notify` enables lookback for Wait for Event
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/features/webhooks
 
 ## Related
 

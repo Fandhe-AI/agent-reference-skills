@@ -168,12 +168,36 @@ const workflowClient = new Client({
 });
 
 export async function POST(request: NextRequest) {
+  // Placeholder: replace with your own session lookup
+  const session = await getSession(request);
+  if (!session) {
+    return NextResponse.json(
+      { success: false, error: "unauthorized" },
+      { status: 401 }
+    );
+  }
+
   const body = await request.json();
   const { eventId, eventData } = body;
 
   if (!eventId) {
     return NextResponse.json(
       { success: false, error: "eventId is required" },
+      { status: 400 }
+    );
+  }
+
+  // Placeholder: replace with your own check that this user may approve the run behind eventId
+  if (!(await canApprove(session, eventId))) {
+    return NextResponse.json(
+      { success: false, error: "forbidden" },
+      { status: 403 }
+    );
+  }
+
+  if (typeof eventData?.approved !== "boolean") {
+    return NextResponse.json(
+      { success: false, error: "eventData.approved must be a boolean" },
       { status: 400 }
     );
   }
@@ -189,7 +213,9 @@ export async function POST(request: NextRequest) {
 - Prerequisites for human-in-the-loop: an Upstash QStash project for workflows, a Redis database for Realtime, and a Next.js app with the basic setup above
 - Always handle the timeout case when waiting for events; use a unique `eventId` per approval request
 - Race conditions: pass `workflowRunId` to `workflowClient.notify({ eventId, eventData, workflowRunId })` to enable lookback so the notification is delivered even if sent before `waitForEvent`
+- The original notify handler has no authentication or authorization; session (401), approval-permission (403), and `eventData.approved` type (400) checks were added here. `getSession` / `canApprove` are placeholders for your own implementation
 - Full working example: `examples/upstash-realtime` in the `upstash/workflow-js` repository
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/howto/realtime/basic (and `howto/realtime/human-in-the-loop`)
 
 ## Related
 

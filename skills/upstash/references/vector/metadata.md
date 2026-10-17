@@ -51,21 +51,21 @@ const result = await index.query({
 REST equivalents (query with metadata, range with metadata, raw text upsert):
 
 ```shell
-curl $UPSTASH_VECTOR_REST_URL/query \
-  -H "Authorization: Bearer $UPSTASH_VECTOR_REST_TOKEN" \
+curl "${UPSTASH_VECTOR_REST_URL}/query" \
+  -H "Authorization: Bearer ${UPSTASH_VECTOR_REST_TOKEN}" \
   -d '{
    "vector":[0.9215,0.3897],
    "topK" : 5,
    "includeMetadata": true
 }'
 
-curl $UPSTASH_VECTOR_REST_URL/range \
-  -H "Authorization: Bearer $UPSTASH_VECTOR_REST_TOKEN" \
+curl "${UPSTASH_VECTOR_REST_URL}/range" \
+  -H "Authorization: Bearer ${UPSTASH_VECTOR_REST_TOKEN}" \
   -d '{ "cursor" : "0",  "limit" : 3, "includeMetadata": true}'
 
-curl $UPSTASH_VECTOR_REST_URL/upsert-data \
+curl "${UPSTASH_VECTOR_REST_URL}/upsert-data" \
   -X POST \
-  -H "Authorization: Bearer $UPSTASH_VECTOR_REST_TOKEN" \
+  -H "Authorization: Bearer ${UPSTASH_VECTOR_REST_TOKEN}" \
   -d '{
         "id": "id-0",
         "data": "Upstash is a serverless data platform."

@@ -104,6 +104,7 @@ do {
 - Bulk operations (filter / all) are paginated; loop until `cursor` is undefined
 - The DLQ feature page documents `restart` / `resume` with the object form `{ dlqId, retries }`; this API reference documents the ID / IDs / filter / all forms shown above
 - Resume: only change workflow code after the failed steps (see update-workflow)
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/basics/client/dlq/list (and sibling pages `restart`, `resume`, `delete`, `callback` under `basics/client/dlq/`)
 
 ## Related
 

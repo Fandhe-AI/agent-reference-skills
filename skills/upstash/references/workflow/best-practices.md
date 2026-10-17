@@ -57,7 +57,7 @@ const parentWorkflow = createWorkflow(
   async (context: WorkflowContext<BatchInput>) => {
     const { body, isFailed, isCanceled } = await context.invoke("process batch", {
       workflow: processBatch,
-      body: context.requestPayload,
+      body: JSON.stringify(context.requestPayload),
     })
     if (isFailed || isCanceled) {
       throw new Error("The batch workflow did not complete successfully")
@@ -75,6 +75,8 @@ export const { POST } = serveMany({
 ## Notes
 
 - Non-idempotent code outside a step (e.g. `getResultFromDb(entryId)`) must move inside `context.run("get-result-from-db", ...)` before branching or returning on its result
+- Since 1.0.0 the `context.invoke` `body` is a string (`stringifyBody` was removed; use `JSON.stringify()`, see migrations); the original workflow-limits example passes the object directly (old form)
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/basics/best-practices/overview (and sibling pages under `basics/best-practices/`)
 - The original docs show each rule in both TypeScript and Python; the same rules apply to the Python SDK (`context.run("step-1", _step_1)` with an async function)
 
 ## Related

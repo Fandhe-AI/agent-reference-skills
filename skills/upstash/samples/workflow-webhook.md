@@ -63,9 +63,9 @@ export const { POST } = serve(async (context) => {
     "handle-webhook-event",
     async () => {
       if (event.type === "user.created") {
-        const { id: clerkUserId, email_addresses, first_name } = event.data;
+        const { id: clerkUserId, email_addresses, first_name, last_name } = event.data;
         const primaryEmail = email_addresses.find(
-          (email) => (email.id = event.data.primary_email_address_id)
+          (email) => email.id === event.data.primary_email_address_id
         );
 
         if (!primaryEmail) {
@@ -77,6 +77,7 @@ export const { POST } = serve(async (context) => {
           userId: clerkUserId,
           email: primaryEmail.email_address,
           firstName: first_name,
+          lastName: last_name,
         } as UserPayload;
       }
       return false;
@@ -97,7 +98,7 @@ export const { POST } = serve(async (context) => {
   const customer = await context.run("create-stripe-customer", async () => {
     return await stripe.customers.create({
       email: user.email,
-      name: `${user.firstName} ${user.lastName}`,
+      name: [user.firstName, user.lastName].filter(Boolean).join(" "),
       metadata: {
         userId: user.userId,
       },
@@ -111,6 +112,7 @@ export const { POST } = serve(async (context) => {
 ## Notes
 
 - Always validate incoming webhook requests so that only the original webhook source can trigger the workflow; the official example uses Clerk webhooks with Svix
-- The snippets are fragments of one route (`// ...` marks code from the previous snippet); `UserPayload` and the `stripe` client are not defined in the official guide
+- The snippets are fragments of one route (`// ...` marks code from the previous snippet); `UserPayload` and the `stripe` client are not defined in the official guide (your `UserPayload` needs a `lastName` field)
+- Differences from the original guide: it uses `=` (assignment) in the `find` callback, corrected to `===`; it omits `last_name` from the extraction but uses `user.lastName`, so `lastName` is added to the extraction and the Stripe name is built from the non-empty parts
 - `webhookSecret` is a placeholder in the official example; supply the real secret from your webhook provider
 - Official example project: `upstash/workflow-js` `examples/nextjs-webhook-stripe`

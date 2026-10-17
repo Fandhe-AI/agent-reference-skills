@@ -67,6 +67,7 @@ In both patterns, a trigger after the previous run has ended starts a new run, e
 - `client.cancel` resolves to `{ cancelled: 1 }` when a run was cancelled and `{ cancelled: 0 }` when there was nothing to cancel; it does not throw, so it can be called unconditionally. The cancel completes before it returns, so the ID is free for the new trigger
 - A cancelled run stops right away; a step executing on your endpoint at that moment runs to the end but its result is discarded. Steps, waits, and `context.call` results of the cancelled run are never added to the new run
 - If two callers cancel and trigger the same ID at the same time, both cancels can complete before either trigger; the second trigger then throws the 400 error. Catch it and retry cancel and trigger if the latest request must win
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/howto/singleton
 
 ## Related
 

@@ -82,6 +82,7 @@ const { status, body } = await context.api.openai.call("Call Deepseek", {
 - `context.api.openai.call`, `context.api.anthropic.call`, and `context.api.resend.call` are not yet available in workflow-py; use `context.call` instead
 - Model IDs in the examples (`gpt-4o`, `claude-3-5-sonnet-20241022`, `deepseek-chat`) are copied verbatim from the official docs and may be outdated; pick a current model ID from the provider
 - More integrations may be added over time (per the docs)
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/steps/api
 
 ## Related
 

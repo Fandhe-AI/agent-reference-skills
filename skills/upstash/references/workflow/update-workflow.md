@@ -27,6 +27,7 @@ HTTP status 400. Incompatible step name. Expected <STEP_NAME>, got <STEP_NAME>
 ## Notes
 
 - Related DLQ behavior: when resuming a run from the DLQ, only change code after the failed steps
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/howto/changes
 
 ## Related
 

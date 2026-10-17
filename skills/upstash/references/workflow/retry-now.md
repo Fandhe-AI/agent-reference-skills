@@ -19,6 +19,7 @@ In the `Logs` tab of the Upstash Console, each waiting step shows a button: **Ru
 
 - Buttons are offered only while the run is running and the step is genuinely waiting; once QStash picks the step up, the button disappears and the run continues as if the delay ended on its own
 - Releasing a retrying step does not add an attempt. If it was on its last retry and fails again, the run fails and the failure function is called as usual
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/howto/retry-now
 
 ## Related
 

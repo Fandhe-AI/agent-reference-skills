@@ -43,6 +43,7 @@ curl -XPOST \
 - When `body` is redacted, step outputs in the dashboard and API show `REDACTED:<SHA256>`; the workflow still executes with the original data
 - If a run fails into the DLQ, redacted fields stay redacted there; retry, resume, or restart from the DLQ delivers the original values to your endpoint
 - The option names in the docs table are `headers` / `headers[header_name]`, while the TypeScript example uses `header` and the cURL example uses `header[Authorization]`; this inconsistency is in the original docs
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/howto/redact-fields
 
 ## Related
 

@@ -44,7 +44,7 @@ Trigger a run:
 ```javascript
 import { Client } from "@upstash/workflow";
 
-const client = Client()
+const client = new Client({ token: process.env.QSTASH_TOKEN! })
 
 const { workflowRunId } = await client.trigger({
   url: `http://localhost:3000/api/workflow`,
@@ -69,6 +69,8 @@ For production, set your actual credentials from the Upstash Workflow dashboard 
 - Use the app URL for the `url` option: `http://localhost:3000/api/workflow` locally, your deployed URL in production (e.g. a `BASE_URL` constant switched on `process.env.NODE_ENV`)
 - Local mode can be enabled in the Upstash Workflow dashboard to use the UI during local development
 - Manual QStash CLI setup, custom ports, and the `registerQStashDev()` helper for edge routes are covered in the Development Server guide
+- The original page writes `const client = Client()` (without `new` and without a token); corrected here to match the `new Client({ token })` form used on the other pages
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/quickstarts/tanstack-start
 
 ## Related
 

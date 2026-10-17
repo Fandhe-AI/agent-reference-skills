@@ -7,7 +7,7 @@ Use Upstash Workflow with Flask via the Python SDK `upstash-workflow`. Example s
 ```bash
 python -m venv venv
 source venv/bin/activate
-pip install fastapi uvicorn upstash-workflow
+pip install flask upstash-workflow
 ```
 
 `main.py`:
@@ -37,7 +37,7 @@ def workflow(context) -> None:
 source .env
 flask --app main run -p 8000
 
-curl -X POST https://localhost:8000/api/workflow
+curl -X POST http://localhost:8000/api/workflow
 # result: {"workflowRunId":"wfr_xxxxxx"}
 ```
 
@@ -93,9 +93,11 @@ Create `.env` (uses `export` lines) with one of:
 ## Notes
 
 - Flask uses `Serve` from `upstash_workflow.flask`, `@serve.route(...)`, plain `def` handlers, and `WorkflowContext` (no `await`), unlike FastAPI's `AsyncWorkflowContext`
-- The original installation step reads `pip install fastapi uvicorn upstash-workflow` even on the Flask page (apparent doc copy-paste); Flask itself must also be installed
+- The original installation step reads `pip install fastapi uvicorn upstash-workflow` even though the text says "install the Workflow SDK and Flask" (apparent doc copy-paste from the FastAPI page); corrected here to `pip install flask upstash-workflow`
+- The original curl uses `https://localhost:8000`; corrected to `http://localhost:8000` because the local Flask dev server does not use TLS
 - Source the `.env` file (`source .env`) before starting the app
 - Prerequisites: an Upstash QStash API key, Python and pip
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/quickstarts/flask
 
 ## Related
 

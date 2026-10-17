@@ -21,6 +21,7 @@ export const { POST } = serve<{ topic: string }>(async (context) => {
 - The run is labeled as canceled (not failed)
 - The configured `failureFunction` is not triggered
 - No entries are sent to the dead-letter queue (DLQ)
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/steps/cancel
 
 ## Related
 

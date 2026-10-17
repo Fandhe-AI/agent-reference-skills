@@ -2,9 +2,13 @@
 name: upstash
 description: >
   Upstash サーバーレスデータプラットフォーム (マネージド SaaS の JS SDK)。
-  @upstash/redis (REST, pipelining, Redis Search)、@upstash/ratelimit、QStash (publishJSON, DLQ)、
-  @upstash/workflow (durable execution)、@upstash/vector (namespace)、@upstash/search、
-  @upstash/box (サンドボックス, custom harness, browser)、upstash CLI。Rust 製 fandhe-db とは別。
+  @upstash/redis (REST, pipelining, transactions, JSON, Redis Search, VECTOR/Array/Functions コマンド)、
+  @upstash/ratelimit (Fixed/Sliding Window, Token Bucket, blockUntilReady)、
+  QStash (publishJSON, schedules, queues, URL Groups, flow-control, DLQ)、
+  @upstash/vector (upsert, query, ANN, namespace, hybrid/sparse index, embedding models, reranking)、
+  @upstash/workflow (serve, durable execution, context.run/sleep/call/invoke, waitForEvent, parallel steps, agents)、
+  @upstash/search、@upstash/box (サンドボックス, filesystem, git, CDP, browser, network policy, snapshots, custom harness)、
+  upstash CLI。Rust 製 fandhe-db とは別。
 user-invocable: false
 ---
 

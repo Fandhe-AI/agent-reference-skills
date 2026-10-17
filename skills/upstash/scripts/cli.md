@@ -40,7 +40,7 @@ Upstash アカウントに触れるコマンドはすべて認証が必要で、
 ## 作成済み一時 DB の認証情報の再取得
 
 ```sh
-upstash start-redis --id $DB_ID
+upstash start-redis --id "${DB_ID}"
 ```
 
 ## エージェント識別付きの一時 DB 作成
@@ -104,7 +104,7 @@ upstash redis create --name=cli-powered-db --region=eu-central-1
 upstash redis exec --db-url <DB_URL> --db-token <DB_TOKEN> GET <KEY>
 ```
 
-`DB_URL` と `DB_TOKEN` は Upstash Console の Details タブ、または `upstash redis get --db-id $DB_ID` で確認できる。`UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` を環境変数または `.env` に設定すれば `--db-url` / `--db-token` は省略可能。
+`DB_URL` と `DB_TOKEN` は Upstash Console の Details タブ、または `upstash redis get --db-id "${DB_ID}"` で確認できる。`UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` を環境変数または `.env` に設定すれば `--db-url` / `--db-token` は省略可能。
 
 ## Vector インデックス一覧の取得
 

@@ -46,6 +46,7 @@ export const { POST } = serve<string>(async (context) => {
 ## Notes
 
 - Because the endpoint is called multiple times per run, code outside `context.run` runs repeatedly; see best-practices
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/basics/how
 
 ## Related
 

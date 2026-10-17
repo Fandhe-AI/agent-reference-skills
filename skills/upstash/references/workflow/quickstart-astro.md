@@ -55,6 +55,7 @@ Create a `.env` file in the project root. Two options for local development:
 - Astro requires passing `env` to `serve`: `import.meta.env` for local dev and `process.env` for deployment
 - Production: set all environment variables (e.g. `QSTASH_TOKEN`) in the hosting platform (e.g. Vercel), remove local-tunnel settings, deploy normally, verify with a POST to `<DEPLOYMENT_URL>/api/workflow`, and monitor runs in the QStash dashboard
 - Prerequisites: an Upstash QStash API key, and Node.js with npm (or another package manager)
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/quickstarts/astro
 
 ## Related
 

@@ -80,6 +80,7 @@ await client.trigger({
 - Both Vercel steps are required: the header must be passed when triggering AND configured in the QStash client for subsequent steps
 - Verbose mode diagnostics (the localhost, deduplication, and network-warning logs above) are not yet available in workflow-py
 - Retry settings live in two places: `client.trigger` (the run) and `context.call` (third-party requests)
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/troubleshooting/general (and `troubleshooting/vercel`)
 
 ## Related
 

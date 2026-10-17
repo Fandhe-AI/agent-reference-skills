@@ -63,6 +63,7 @@ npm install @upstash/workflow@latest @upstash/qstash@latest
 - If a workflow run started in one region, all its steps execute in that region
 - After migration the app can handle requests from both regions simultaneously
 - Migration mode relies on `process.env`; it does not work on platforms without it, such as Cloudflare Workers
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/howto/multi-region
 
 ## Related
 

@@ -102,6 +102,7 @@ const databaseMiddleware = new WorkflowMiddleware({
 - Built-in `loggingMiddleware` (from `@upstash/workflow`) logs run start/complete, before/after each step, and error/warning/info messages to the console
 - Multiple middlewares can be combined (`middlewares: [loggingMiddleware, errorTrackingMiddleware, ...]`); they execute in the order provided
 - `WorkflowMiddleware` takes `name` plus either `callbacks` or `init`
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/howto/middlewares
 
 ## Related
 

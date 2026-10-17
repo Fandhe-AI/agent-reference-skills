@@ -86,6 +86,7 @@ const {
 - Python SDK: the options moved in 1.0.0 (`retries`, `flowControl`, `retryDelay`, `failureUrl`) remain in the `serve` decorator as before
 - Old behavior of `context.call`: a failed request failed the workflow run. New behavior: a failed request does not fail the workflow; status and body are returned and the run continues. For in-flight runs during the transition, `status` and `headers` may be unavailable in old runs
 - Migration (v0 to v1) affects `failure-callback`, `context-call`, `context-invoke`, `serve`, `client-trigger`, `middlewares`, `agents` pages in this reference; existing pages may still document pre-1.0.0 options
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/howto/migrations
 
 ## Related
 

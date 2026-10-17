@@ -61,6 +61,7 @@ Response:
 ## Notes
 
 - The same `webhook` object can be passed to `waitForWebhook` multiple times to wait for multiple calls to the same URL
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/steps/createWebhook (and `steps/waitForWebhook`)
 
 ## Related
 

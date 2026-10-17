@@ -142,12 +142,36 @@ const workflowClient = new Client({
 });
 
 export async function POST(request: NextRequest) {
+  // Placeholder: replace with your own session lookup
+  const session = await getSession(request);
+  if (!session) {
+    return NextResponse.json(
+      { success: false, error: "unauthorized" },
+      { status: 401 }
+    );
+  }
+
   const body = await request.json();
   const { eventId, eventData } = body;
 
   if (!eventId) {
     return NextResponse.json(
       { success: false, error: "eventId is required" },
+      { status: 400 }
+    );
+  }
+
+  // Placeholder: replace with your own check that this user may approve the run behind eventId
+  if (!(await canApprove(session, eventId))) {
+    return NextResponse.json(
+      { success: false, error: "forbidden" },
+      { status: 403 }
+    );
+  }
+
+  if (typeof eventData?.approved !== "boolean") {
+    return NextResponse.json(
+      { success: false, error: "eventData.approved must be a boolean" },
       { status: 400 }
     );
   }
@@ -171,5 +195,6 @@ QSTASH_TOKEN=...
 
 - Flow: the middleware emits `waitingForInput` before the `wait-for-approval` step, the frontend calls `/api/notify` with the user's decision, the workflow resumes, then `inputResolved` and `stepFinish` are emitted and `runFinish` on completion
 - Use a unique `eventId` such as `approval-${workflowRunId}` and always handle the `timeout` case of `waitForEvent`
+- The original guide's notify handler has no authentication or authorization; the session check, `canApprove` check, and `approved` type check are added here (`getSession` / `canApprove` are your own placeholders, not Upstash APIs)
 - To trigger a workflow and notify it immediately, pass `workflowRunId` to `client.notify()` to enable lookback so the event is delivered even if sent before `waitForEvent`
 - Requires a QStash project for workflows and a Redis database for Realtime; the frontend hook (`useRealtime` with `workflow.waitingForInput` / `workflow.inputResolved` events) and the basic real-time setup are in the official guide and the `upstash/workflow-js` `examples/upstash-realtime` example

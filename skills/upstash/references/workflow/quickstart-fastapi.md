@@ -37,7 +37,7 @@ async def workflow(context) -> None:
 source .env
 uvicorn main:app --reload
 
-curl -X POST https://localhost:8000/api/workflow
+curl -X POST http://localhost:8000/api/workflow
 # result: {"workflowRunId":"wfr_xxxxxx"}
 ```
 
@@ -98,6 +98,8 @@ Create `.env` (uses `export` lines) with one of:
 - Source the `.env` file (`source .env`) before starting the app
 - This page documents the `npx @upstash/qstash-cli dev` approach; the TypeScript quickstarts use `QSTASH_DEV=true`
 - Prerequisites: an Upstash QStash API key, Python and pip
+- The original curl uses `https://localhost:8000`; corrected to `http://localhost:8000` because the local uvicorn dev server does not use TLS
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/quickstarts/fastapi
 
 ## Related
 
