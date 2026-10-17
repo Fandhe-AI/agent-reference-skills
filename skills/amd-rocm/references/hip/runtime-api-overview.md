@@ -24,6 +24,7 @@ hipSetDevice(0);
 | Execution control | Kernel launch, occupancy, launch bounds |
 | Memory management | Host/device/unified/virtual memory, stream-ordered allocator |
 | Module and context management | Loading compiled code objects, context stack |
+| Execution context management | Green contexts (`hipGreenCtx*`); new reference module in the 10.1.0 docs (see `execution-context.md`) |
 | Graph management | Recording and replaying operation DAGs |
 | Peer-to-peer / multi-device | Cross-GPU memory access |
 | Interop | External resource, OpenGL, graphics interoperability |
@@ -31,7 +32,7 @@ hipSetDevice(0);
 ## Notes
 
 - This is the AMD HIP API (`hip*` prefix), not the CUDA runtime API (`cuda*` prefix). HIP and CUDA are source-portable but not source-identical; see `porting-cuda-to-hip.md` and `hipify.md`. CUDA equivalents are covered by the separate `nvidia-cuda` skill.
-- Documented against HIP 7.14.x (ROCm 7.x), `rocm.docs.amd.com/projects/HIP/en/latest/` as of 2026-07.
+- Documented against HIP 7.16.0 (ROCm Core SDK 10.1.0), `rocm.docs.amd.com/projects/HIP/en/latest/` as of 2026-10.
 
 ## Related
 

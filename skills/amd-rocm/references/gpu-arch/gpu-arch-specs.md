@@ -17,6 +17,7 @@ hipcc --offload-arch=gfx942 kernel.hip -o kernel
 | --- | --- | --- | --- | --- | --- | --- |
 | MI355X | CDNA4 | gfx950 | 288 | 256 (32 per XCD) | 64 | 32 (4 per XCD) |
 | MI350X | CDNA4 | gfx950 | 288 | 256 (32 per XCD) | 64 | 32 (4 per XCD) |
+| MI350P | CDNA4 | gfx950 | 144 | 128 (32 per XCD) | 64 | 16 (4 per XCD) |
 | MI325X | CDNA3 | gfx942 | 256 | 304 (38 per XCD) | 64 | 32 (4 per XCD) |
 | MI300X | CDNA3 | gfx942 | 192 | 304 (38 per XCD) | 64 | 32 (4 per XCD) |
 | MI300A | CDNA3 | gfx942 | 128 | 228 (38 per XCD) | 64 | 24 (4 per XCD) |
@@ -38,6 +39,7 @@ hipcc --offload-arch=gfx942 kernel.hip -o kernel
 | Radeon AI PRO R9700S | RDNA4 | gfx1201 | 32 | 64 | 32 or 64 | 64 |
 | Radeon AI PRO R9700 | RDNA4 | gfx1201 | 32 | 64 | 32 or 64 | 64 |
 | Radeon AI PRO R9600D | RDNA4 | gfx1201 | 32 | 48 | 32 or 64 | 48 |
+| Radeon AI PRO R9600 | RDNA4 | gfx1201 | 32 | 48 | 32 or 64 | 48 |
 | Radeon PRO V710 | RDNA3 | gfx1101 | 28 | 54 | 32 or 64 | 56 |
 | Radeon PRO W7900 Dual Slot | RDNA3 | gfx1100 | 48 | 96 | 32 or 64 | 96 |
 | Radeon PRO W7900 | RDNA3 | gfx1100 | 48 | 96 | 32 or 64 | 96 |
@@ -59,7 +61,7 @@ VRAM for Ryzen APUs is dynamically allocated from system memory plus a carveout 
 
 ## Notes
 
-- Source: `rocm.docs.amd.com/en/latest/reference/gpu-arch-specs.html` (ROCm 7.14.0 doc tree). Only compute-relevant columns are reproduced here (VGPR/SGPR file sizes and per-cache-level KiB breakdowns are omitted; consult the source page for the full column set).
+- Source: `rocm.docs.amd.com/en/latest/reference/gpu-arch-specs.html` (ROCm Core SDK 10.1.0 doc tree; the gpu-specs table now includes MI350P and Radeon AI PRO R9600). Only compute-relevant columns are reproduced here (VGPR/SGPR file sizes and per-cache-level KiB breakdowns are omitted; consult the source page for the full column set).
 - `gfx90a` (CDNA2) and `gfx942` (CDNA3) are also the values passed to `--offload-arch` / seen in `rocminfo` / `hipDeviceProp_t::gcnArchName`.
 - MI300A is an APU (GPU + CPU CCDs on one package); MI300X is GPU-only — hence MI300A's lower CU/L2 count in the same `gfx942` family.
 - These are AMD CDNA/RDNA hardware terms (compute unit, wavefront, gfx target) and are distinct from NVIDIA SM / warp / compute capability terminology.

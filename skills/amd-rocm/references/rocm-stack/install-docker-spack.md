@@ -41,7 +41,10 @@ services:
 
 ## Notes
 
-- ROCm 7.14.0
+- ROCm Core SDK 10.1.0. The 10.1.0 docs add an official "Run ROCm Docker containers" install page (`install/docker-containers`) next to Spack. It documents two ways to expose GPUs: the AMD Container Runtime Toolkit (CDI recommended, or amd-container-runtime) and manual `--device` passthrough as shown above; the `--security-opt seccomp=unconfined` option is marked optional (enables memory mapping; recommended for HPC workloads using `numactl`)
+- Host prerequisites per that page: on Linux the AMD GPU driver (`amdgpu-dkms`) and Docker Engine. Verify inside a container with `rocminfo` and `amd-smi list`, which enumerate only the GPUs passed into the container
+- When GPUs are partitioned (for example MI300X or MI350X in DPX, QPX, or CPX mode), each partition appears as a separate render node; account for this when selecting `/dev/dri/renderD*`
+- Images: `rocm/rocm-terminal` (minimal, prerequisites to build HIP applications, no libraries), ROCm dev images on Docker Hub, and AI ecosystem framework images; Dockerfiles live in `ROCm/ROCm-docker`
 - `/dev/kfd` (the kernel fusion driver device) and `/dev/dri` (the direct rendering infrastructure device nodes) are both required for a container to reach the GPU; omitting either results in the container falling back to CPU-only execution
 - Pre-built images live under the `rocm/` namespace on Docker Hub (e.g. `rocm/rocm-terminal`, framework images such as `rocm/pytorch`); AMD also publishes AI/HPC images through Infinity Hub
 

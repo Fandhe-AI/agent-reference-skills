@@ -21,7 +21,9 @@ find_package(hip REQUIRED)
 
 ## Notes
 
-- ROCm 7.14.0
+- ROCm Core SDK 10.1.0 (RCCL 2.30.7, rocSHMEM 3.7.0)
+- Known issue (10.1.0): RCCL `allreduce` with the Low Latency (LL) protocol might produce incorrect results on AMD Instinct MI350 Series GPUs. Workaround: `export NCCL_PROTO=LL128,Simple` (TheRock GitHub issue [#8792](https://github.com/ROCm/TheRock/issues/8792); ROCm 10.1.0 release notes)
+- 10.0.0: RCCL extended symmetric memory support with a Reduce-Scatter symmetric kernel (MI300 / MI350 Series; adds the AVG reduction operation), GPU-only multi-segment registration, and elastic buffers (device or host memory), the latter two for single-node configurations
 - RCCL is AMD's counterpart to NVIDIA's NCCL — same collective-communication role (all-reduce, broadcast, etc.) but a separate implementation. NCCL/CUDA-side APIs belong to the `nvidia-cuda` skill, not this one
 
 ## Related

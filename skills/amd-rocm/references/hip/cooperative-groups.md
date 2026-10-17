@@ -33,6 +33,8 @@ __global__ void kernel() {
 | `thread_rank(g)` | Returns the calling thread's rank within `[0, num_threads())` |
 | `group_size(g)` | Returns the total number of threads in the group |
 | `is_valid(g)` | Validates group construction constraints |
+| `inclusive_scan(group, val, op)` / `inclusive_scan(group, val)` | Inclusive scan over any cooperative group type with an optional binary operator (default is summation); defined in `cooperative_groups/hip_scan.h`; each thread contributes its own `val`; all threads of the group are expected to participate (behaviour is undefined if a thread does not participate) (added in ROCm 10.0.0, CUDA parity) |
+| `exclusive_scan(group, val, op)` / `exclusive_scan(group, val)` | Exclusive scan, same parameters and participation requirement as `inclusive_scan`; the value returned for the first active lane is platform-dependent (on AMD the identity of the operation, for example 0 for `plus`) |
 | `hipLaunchCooperativeKernel(...)` | Launches a kernel enabling grid-wide cooperation/synchronization on one device |
 | `hipLaunchCooperativeKernelMultiDevice(...)` | Launches a cooperative kernel spanning multiple devices |
 | `hipModuleLaunchCooperativeKernel(...)` | Module-API variant of a cooperative kernel launch |
@@ -40,6 +42,7 @@ __global__ void kernel() {
 ## Notes
 
 - This is the AMD HIP API (`hip*` prefix), not the CUDA runtime API (`cuda*` prefix). HIP and CUDA are source-portable but not source-identical; see `porting-cuda-to-hip.md` and `hipify.md`. CUDA equivalents are covered by the separate `nvidia-cuda` skill.
+- The official docs phrase the scan participation requirement as "each thread contributing the same per-thread value"; `val` is the calling thread's own input.
 - Grid- and multi-grid-level groups require launching via the cooperative-launch functions, not the `<<<>>>` syntax.
 
 ## Related

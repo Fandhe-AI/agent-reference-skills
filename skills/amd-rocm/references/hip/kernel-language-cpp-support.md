@@ -25,7 +25,7 @@ __global__ void kernel(int* out) {
 | Classes | Supported, but memory-space qualifiers (`__device__`, `__managed__`, `__shared__`, `__constant__`) cannot be applied to member variables |
 | Exceptions | Not available (no hardware support); device code must use return codes for error handling |
 | RTTI | Not supported |
-| Standard library | Severely limited; only `constexpr`-qualified functions are compiled for device by default. `libhipcxx` is an ongoing effort to expand coverage |
+| Standard library | Severely limited; only `constexpr`-qualified functions are compiled for device by default. libhipcxx 3.0.2 now ships in ROCm Core SDK 10.1.0 and provides opt-in, heterogeneous Standard Library features (atomics, type traits, containers) usable in device code; see [libhipcxx](../rocm-stack/libhipcxx.md) |
 | `std::function` | Not supported (polymorphic function wrapper) |
 
 ## Notes

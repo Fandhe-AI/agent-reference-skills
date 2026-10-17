@@ -35,6 +35,7 @@ hipMemMap(ptr, size, 0, handle, 0);
 
 - This is the AMD HIP API (`hip*` prefix), not the CUDA runtime API (`cuda*` prefix). HIP and CUDA are source-portable but not source-identical; see `porting-cuda-to-hip.md` and `hipify.md`. CUDA equivalents are covered by the separate `nvidia-cuda` skill.
 - Implemented on Linux; Windows support is ongoing.
+- Host-NUMA allocations (HIP 7.16.0, ROCm Core SDK 10.1.0): `hipMemCreate` and the rest of the VMM lifecycle (create, reserve, map, set access, teardown) accept `hipMemLocationTypeHostNuma` (= 3; `id` is the host NUMA node id) and `hipMemLocationTypeHostNumaCurrent` (= 4; the host NUMA node closest to the current thread's CPU, `id` ignored) in `hipMemLocation`. They allocate pinned memory backed by real host memory on the chosen NUMA node instead of a GPU-pool substitute, on Linux systems with NUMA-capable, VMM-capable GPUs; the stated use case includes collective-communication libraries such as RCCL
 
 ## Related
 

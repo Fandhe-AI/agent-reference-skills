@@ -25,9 +25,9 @@ hipHostAlloc(&ptr, size, flags);
 
 ## Notes
 
-- No breaking changes are called out specifically for HIP 7 in the current documentation; the officially documented deprecation history above (through ROCm 6.1.0) is the authoritative list as of HIP 7.14.x.
+- The deprecated API list (`reference/deprecated_api_list`) is unchanged between the 7.14.0 and 10.1.0 documentation; the deprecation history above (through ROCm 6.1.0) is the authoritative list as of HIP 7.16.0. Behavior, signature, struct, and error-code changes that came with HIP 7.0 (for example `hipGetLastError` semantics with `hipExtGetLastError` for the prior behavior, `hipRTC` symbols removed from the HIP runtime library so applications must link `hipRTC` explicitly, `HIP_MEMSET_NODE_PARAMS` removed in favor of `hipMemsetParams`) are documented on the separate "HIP API 7.0 changes" page (`hip-7-changes`)
 - Texture-reference (`hipTexRef*`) APIs are broadly superseded by the texture object API; prefer `hipCreateTextureObject` (see `texture-surface.md`) in new code.
-- Documented against HIP 7.14.x (ROCm 7.x), `rocm.docs.amd.com/projects/HIP/en/latest/` as of 2026-07.
+- Documented against HIP 7.16.0 (ROCm Core SDK 10.1.0), `rocm.docs.amd.com/projects/HIP/en/latest/` as of 2026-10.
 
 ## Related
 

@@ -58,4 +58,4 @@ amd-smi version
 sudo amd-smi reset --gpu 0 --gpureset
 ```
 
-`amd-smi` は旧 `rocm-smi` の後継コマンドであり、本ファイルでは `amd-smi` を使用する。
+`amd-smi` は旧 `rocm-smi` の後継コマンドであり、本ファイルでは `amd-smi` を使用する。ROCm 10.1.0 では rocm-smi (rocm-smi-lib) は deprecated となり、標準の `ROCm/TheRock` ビルドでビルド・インストールされない（release notes）。

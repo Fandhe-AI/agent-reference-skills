@@ -26,6 +26,9 @@ rocgdb ./application_name
 
 - Setting `AMD_SERIALIZE_KERNEL=3` and `AMD_SERIALIZE_COPY=3` forces synchronous execution so faults appear at the offending call in backtraces; unset these before benchmarking, as they are debug-only and not for production use.
 - Memory-violation (VM) faults typically stem from out-of-bounds array access, invalid pointers, missing synchronization, or compiler issues.
+- ROCgdb 16.3 (ROCm Core SDK 10.1.0) automatically presents the diagnostic inline frame of Clang's `__builtin_verbose_trap` in backtraces, for both AMD64 and AMDGPU targets: after a verbose trap, `__clang_trap_msg$<category>$<message>` is shown as frame #0 (previously the program counter had to be rewound manually to recover the category and message strings).
+- 10.0.0: the ROCr runtime generates a valid GPU core dump even when a debugger such as ROCgdb or ROCr Debug Agent is already attached to the process, so debugging sessions and core dump collection are no longer mutually exclusive.
+- With the TheRock-based Core SDK, `/opt/rocm/bin` remains valid for `PATH` through the symlinks provided by the `amdrocm` meta package; the real install path is `/opt/rocm/core-10.1`. Debugging (`rocgdb`, ROCr Debug Agent) is not supported on WSL2 in 10.1.0.
 
 ## Related
 
