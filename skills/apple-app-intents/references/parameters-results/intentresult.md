@@ -12,10 +12,10 @@ A type that contains the result of performing an action, and includes optional i
 protocol IntentResult : Sendable
 ```
 
-Instead of implementing this protocol, use the `ReturnsValue`, `ProvidesDialog`, `ShowsSnippetView`, `OpensIntent` type aliases/protocols on your `AppIntent` implementation in combination with the `result` methods, as in the page's example:
+Instead of implementing this protocol, use the `ReturnsValue`, `ProvidesDialog`, `ShowsSnippetView`, `OpensIntent` type aliases/protocols on your `AppIntent` implementation in combination with the `result` methods, as in the following example (corrected from the page's example, which writes `& OpensAppIntent`):
 
 ```swift
-func perform() async throws -> some ReturnsValue<Int> & OpensAppIntent {
+func perform() async throws -> some ReturnsValue<Int> & OpensIntent {
     .result(value: 1, opensIntent: MyOpensIntent())
 }
 ```
@@ -47,6 +47,7 @@ Selected `result` factory methods (as listed in the page topics):
 ## Notes
 
 - iOS 16.0+, iPadOS 16.0+, Mac Catalyst 16.0+, macOS 13.0+, tvOS 16.0+, watchOS 9.0+. The source data carries no `introducedAt` for visionOS.
+- The official page's example writes `& OpensAppIntent`, which is the IntentResult associated type, not a protocol; the composable protocol is `OpensIntent` (corrected here).
 - `AppIntent.perform()` is declared as `func perform() async throws -> Self.PerformResult`.
 - The topic list shows the abbreviated declaration fragments; the full overload set is on the official page.
 

@@ -29,7 +29,7 @@ struct CreateBook: AppIntent, PredictableIntent {
     }
 
     @MainActor
-    func perform() async throws -> IntentResult<BookEntity> {
+    func perform() async throws -> some IntentResult & ReturnsValue<BookEntity> {
         ...
     }
 }
@@ -50,6 +50,7 @@ Supporting types (listed under "Getting the supporting types"): `IntentPredictio
 - Adopt it to improve the descriptions the system shows for your intent in proactive suggestions such as the Siri Suggestions widget. Describe the action concisely using only the parameters you find relevant (for example, only one of several parameters).
 - Provide one or more `IntentPrediction` values in `predictionConfiguration`; each conveys the intent's purpose using zero or more parameters.
 - Inherits from `AppIntent`, `PersistentlyIdentifiable`, `Sendable`, `SendableMetatype`. Referenced from the article "Donating your app's data and actions to the system".
+- The official example declares `-> IntentResult<BookEntity>`, but IntentResult has no primary associated type; use `some IntentResult & ReturnsValue<BookEntity>` (corrected here).
 
 ## Related
 

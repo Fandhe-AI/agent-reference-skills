@@ -29,7 +29,7 @@ struct CreateBook: AppIntent, PredictableIntent {
     }
 
     @MainActor
-    func perform() async throws -> IntentResult<BookEntity> {
+    func perform() async throws -> some IntentResult & ReturnsValue<BookEntity> {
         ...
     }
 }
@@ -47,6 +47,7 @@ struct CreateBook: AppIntent, PredictableIntent {
 - iOS 16.0+, iPadOS 16.0+, Mac Catalyst 16.0+, macOS 13.0+, tvOS 16.0+, watchOS 9.0+ (the page JSON lists visionOS without an `introducedAt` value).
 - You create this type from the `predictionConfiguration` property of a `PredictableIntent`. Provide a `DisplayRepresentation` that describes the intent's purpose; the system uses it in proactive suggestions.
 - Conforms to `IntentPredictionConfiguration`.
+- The official example declares `-> IntentResult<BookEntity>`, but IntentResult has no primary associated type; use `some IntentResult & ReturnsValue<BookEntity>` (corrected here).
 
 ## Related
 
