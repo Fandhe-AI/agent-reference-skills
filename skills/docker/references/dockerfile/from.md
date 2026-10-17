@@ -21,6 +21,9 @@ RUN apt-get update && apt-get install -y shared-tooling
 FROM base AS dev
 RUN apt-get install -y dev-tooling
 
+FROM base AS build
+RUN mkdir /app && echo built > /app/artifact
+
 FROM base AS prod
 COPY --from=build /app /app
 ```
@@ -34,6 +37,7 @@ COPY --from=build /app /app
 
 ## Notes
 
+- Adapted: the official example references a `build` stage it never defines (it would resolve to the external image `build:latest`); a minimal `build` stage is added here.
 - A valid Dockerfile must start with `FROM`. `ARG` is the only instruction that may precede it.
 - `FROM` can appear multiple times to create multiple images or use one build stage as a dependency for another. Each `FROM` clears any state created by previous instructions.
 - `tag` and `digest` are optional; if both are omitted the builder assumes `latest`. The builder returns an error if it can't find the `tag`.
