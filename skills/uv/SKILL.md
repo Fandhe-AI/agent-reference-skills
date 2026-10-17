@@ -51,6 +51,7 @@ skills/uv/
       lock-sync.md
       optional-dependencies.md
       run.md
+      scripts.md
       workspace-metadata.md
       workspaces.md
     project-commands/
