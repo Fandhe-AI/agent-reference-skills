@@ -10,7 +10,7 @@ user-invocable: false
 
 # Expo
 
-> 分割 PR の途中段階。現在収録済み: references/{configuration, eas-build, eas-submit-workflows, eas-update, modules-api, notifications, router}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{configuration, eas-build, eas-submit-workflows, eas-update, modules-api, notifications, router, router-reference, router-web}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -38,6 +38,25 @@ skills/expo/
       native-tabs.md
       authentication.md
       protected-routes.md
+    router-reference/          # Router API・移行・型付きルート
+      README.md
+      router-api.md
+      router-link.md
+      router-stack.md
+      router-native-tabs.md
+      typed-routes.md
+      url-parameters.md
+      migrate-sdk-57-to-58.md
+    router-web/                # Web・サーバー・API Routes・DOM components
+      README.md
+      web.md
+      server.md
+      api-routes.md
+      middleware.md
+      data-loaders.md
+      static-rendering.md
+      server-rendering.md
+      dom-components.md
     configuration/             # app config・config plugins・Metro・Babel
       README.md
       app-config.md
@@ -94,6 +113,10 @@ skills/expo/
 |--------|---------|------------|
 | ファイルベースルーティング・レイアウト・ナビゲーション・認証ルートを理解したい | router | [references/router/README.md](references/router/README.md) |
 | Stack / Tabs / NativeTabs / Drawer / Modal を構成したい | router | [references/router/README.md](references/router/README.md) |
+| Link / useRouter / Stack 等の API・型付きルート・URL パラメータを調べたい | router-reference | [references/router-reference/README.md](references/router-reference/README.md) |
+| React Navigation や SDK 57 からの移行・テスト・リダイレクトを知りたい | router-reference | [references/router-reference/README.md](references/router-reference/README.md) |
+| Web 出力・SSR・静的レンダリング・サーバー実行基盤を設定したい | router-web | [references/router-web/README.md](references/router-web/README.md) |
+| API Routes・サーバーミドルウェア・データローダー・DOM components を使いたい | router-web | [references/router-web/README.md](references/router-web/README.md) |
 | app.json / app.config・環境変数・Metro・Babel・TypeScript を設定したい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | config plugin・mods を作りたい、モノレポ・New Architecture・React Compiler を設定したい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | Swift / Kotlin でネイティブモジュールを書きたい (Expo Modules API) | modules-api | [references/modules-api/README.md](references/modules-api/README.md) |
