@@ -39,6 +39,7 @@ Utilities for controlling which CSS properties transition.
 </button>
 ```
 
+- Caveat: in v4, `-translate-y-1` sets the individual `translate` property, so `motion-reduce:hover:transform-none` (which only sets `transform: none`) does not cancel it; use `motion-reduce:hover:translate-none` or limit the movement with `motion-safe:hover:-translate-y-1`.
 - Custom value: use the `transition-[<value>]` syntax (for example `transition-[height]`) to set the transition properties based on a completely custom value; for CSS variables use `transition-(<custom-property>)`, shorthand for `transition-[var(<custom-property>)]`.
 
 ```html
