@@ -159,7 +159,7 @@ app.whenReady().then(() => {
 
   win.webContents.session.setDevicePermissionHandler((details) => {
     if (new URL(details.origin).hostname === 'some-host' && details.deviceType === 'serial') {
-      if (details.device.vendorId === 123 && details.device.productId === 345) {
+      if (details.device.vendorId === '123' && details.device.productId === '345') {
         // Always allow this type of device (this allows skipping the call to `navigator.serial.requestPort` first)
         return true
       }
@@ -391,6 +391,7 @@ app.whenReady().then(() => {
 
 * The examples call `fetchGrantedDevices()` and `updateGrantedDevices()`, which the source states "needs to be implemented by developer" to fetch/persist permissions; they are not Electron APIs.
 * Behavior changed (Electron 37.0): WebUSB and Web Serial now support the WebUSB Blocklist and Web Serial Blocklist used by Chromium; pass `disable-usb-blocklist` and `disable-serial-blocklist` command line flags to disable them ([breaking-changes-v37](../breaking-changes/breaking-changes-v37.md)).
+* Adapted (not in the official docs): the official example compares `vendorId` / `productId` to number literals in the serial branch, but `SerialPort.vendorId` / `productId` are strings, so it is changed to string comparison.
 * Device structures (`HIDDevice`, `SerialPort`, `USBDevice`, `WebAuthnAccount`) are in [device-structures.md](./device-structures.md).
 
 ## Related

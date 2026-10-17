@@ -277,7 +277,7 @@ app.whenReady().then(() => {
         )
       })
     } else if (details.deviceType === 'serial') {
-      if (details.device.vendorId === 123 && details.device.productId === 345) {
+      if (details.device.vendorId === '123' && details.device.productId === '345') {
         // Always allow this type of device (this allows skipping the call to `navigator.hid.requestDevice` first)
         return true
       }
@@ -398,6 +398,7 @@ app.whenReady().then(() => {
 * Adapted (not in the official docs): the official example grants every permission except notifications from one host and checks webContents.getURL(), which does not identify subframe requesters; this page checks details.requestingUrl and grants only allowlisted origin/permission pairs, denying everything else.
 * Implement both `setPermissionRequestHandler` and `setPermissionCheckHandler` for complete permission handling; most web APIs do a check and then a request if the check is denied.
 * Migration: `setDevicePermissionHandler` — the handler is no longer passed a `WebFrameMain` frame but the `origin` checking for device permission ([breaking-changes-v22-v15](../breaking-changes/breaking-changes-v22-v15.md)). `setPermissionCheckHandler` — the first parameter `webContents` can now sometimes be `null`; use `requestingOrigin`, `embeddingOrigin` and `securityOrigin` instead ([breaking-changes-v14-v2](../breaking-changes/breaking-changes-v14-v2.md)). Cross-origin iframes must specify features via the `allow` attribute (Permission Policy, Electron 30.0; [breaking-changes-v30-v29](../breaking-changes/breaking-changes-v30-v29.md)).
+* Adapted (not in the official docs): the official example compares `vendorId` / `productId` to number literals in the serial branch, but `SerialPort.vendorId` / `productId` are strings, so it is changed to string comparison.
 * `fetchGrantedDevices()` in the device example is a developer-implemented placeholder, not an Electron API.
 * `setDisplayMediaRequestHandler` `opts.useSystemPicker` is _macOS_ _Experimental_ (macOS 15+ only).
 * `setBluetoothPairingHandler` is _Windows_ _Linux_ only; macOS handles pairing automatically.

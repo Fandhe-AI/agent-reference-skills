@@ -12,9 +12,9 @@ Process: Main
 
 ```js
 const { session } = require('electron')
-// consider any url ending with `example.com`, `foobar.com`, `baz`
+// list only the fully qualified host names of your managed authentication servers
 // for integrated authentication.
-session.defaultSession.allowNTLMCredentialsForDomains('*example.com, *foobar.com, *baz')
+session.defaultSession.allowNTLMCredentialsForDomains('auth.example.com, intranet.example.com')
 ```
 
 ### `ses.clearHostResolverCache()`
@@ -226,7 +226,7 @@ Returns `boolean` - Whether the word was successfully removed from the custom di
 
 ## Notes
 
-* Adapted (not in the official docs): the official example also shows allowNTLMCredentialsForDomains('*'), which sends integrated (NTLM/Negotiate) credentials to any server that asks; restrict the list to your managed authentication servers.
+* Adapted (not in the official docs): the official example uses `'*example.com, *foobar.com, *baz'` and also shows `'*'`. A leading `*` is a suffix match, so it also matches unmanaged domains such as `evilexample.com`, and `'*'` matches every server and sends integrated (NTLM/Negotiate) credentials to any server that asks. This page therefore replaces them with fully qualified host names of your managed authentication servers.
 * `ses.setPreloads` and `ses.getPreloads` are _Deprecated_; use `ses.registerPreloadScript` / `ses.getPreloadScripts` (note `getPreloadScripts` is the replacement for `getPreloads`, which only returned `frame` context paths).
 * Breaking (v44): a `chrome-extension://` document used to receive the window's preload script (and session preload scripts) wherever it was embedded; it now only does so when it is a top-level frame or is hosted inside the DevTools front-end (a `devtools_page` or panel). An extension frame embedded in an ordinary page is treated like any other subframe and follows `nodeIntegrationInSubFrames` ([breaking-changes-v44](../breaking-changes/breaking-changes-v44.md)).
 * `ses.setSpellCheckerLanguages`, `ses.setSpellCheckerDictionaryDownloadURL` are no-ops on macOS (the OS spellchecker is used).

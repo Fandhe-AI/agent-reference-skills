@@ -133,8 +133,8 @@ Sends a request, similarly to how `fetch()` works in the renderer, using Chromiu
 Example:
 
 ```js
-async function example() {
-  const response = await net.fetch('https://my.app')
+async function example(ses) {
+  const response = await ses.fetch('https://my.app')
   if (response.ok) {
     const body = await response.json()
     // ... use the result.
@@ -155,11 +155,11 @@ Limitations:
 By default, requests made with `net.fetch` can be made to custom protocols ([protocol-handle.md](./protocol-handle.md)) as well as `file:`, and will trigger [webRequest](./web-request.md) handlers if present. When the non-standard `bypassCustomProtocolHandlers` option is set in RequestInit, custom protocol handlers will not be called for this request. This allows forwarding an intercepted request to the built-in handler. [webRequest](./web-request.md) handlers will still be triggered when bypassing custom protocols.
 
 ```js
-protocol.handle('https', (req) => {
+ses.protocol.handle('https', (req) => {
   if (req.url === 'https://my-app.com') {
     return new Response('<body>my app</body>')
   } else {
-    return net.fetch(req, { bypassCustomProtocolHandlers: true })
+    return ses.fetch(req, { bypassCustomProtocolHandlers: true })
   }
 })
 ```
@@ -209,6 +209,7 @@ win.webContents.session.setCertificateVerifyProc((request, callback) => {
 
 * `ses.fetch` / `net.fetch` use Chromium's network stack and honour `protocol.handle` handlers and `webRequest`; they are client-side requests from the Electron app, not an HTTP server API (for server-side HTTP see fastify / hono).
 * Adapted (not in the official docs): the official example calls callback(0) for github.com, which accepts the certificate without verification and disables Certificate Transparency checks; this page uses callback(-3) (Chromium's verification result) instead. Never call callback(0) without your own certificate validation.
+* Adapted (not in the official docs): the official `ses.fetch` section example calls `net.fetch` (which uses the default session); here it is changed to `ses.fetch` (and `ses.protocol.handle` / `ses.fetch` in the forwarding example) to match the method being described, so the request uses the given session's cookies, proxy and protocol handlers.
 * `ses.setCertificateVerifyProc(null)` reverts to the default verify proc; the result is cached by the network service.
 
 ## Related

@@ -186,6 +186,7 @@ Emitted when a hunspell dictionary file download fails. For details on the failu
 
 ## Notes
 
+* Deprecated: the `extension-loaded` / `extension-unloaded` / `extension-ready` events on Session are deprecated in favor of the same events on `ses.extensions` (Extensions API, [extensions-api.md](./extensions-api.md)); see breaking change 'Deprecated: Extension methods and events on session' (Electron 36, [breaking-changes-v36.md](../breaking-changes/breaking-changes-v36.md)).
 * History: changed — Added the trailing `frame` argument to `will-download` (https://github.com/electron/electron/pull/53685).
 * History: changed — Added the trailing `frame` argument to `preconnect` (https://github.com/electron/electron/pull/53685).
 * History: changed — `file-system-access-restricted`: Added `details.frame` and `details.webContents`; emitted once per requesting document instead of once per path (https://github.com/electron/electron/pull/53666).
