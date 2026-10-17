@@ -243,6 +243,7 @@ export default defineConfig([
 ## Notes
 
 - Source: `examples/typescript` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.ts`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14; `typescript`: use your project's version
 - Replaces the v3/v4 shape (`enumType: 'asPascalConst'` etc., `barrelType`, `pluginOas`). `'asPascalConst'` is now `{ type: 'asConst', constCasing: 'pascalCase' }` (see [../plugins/plugin-ts.md](../plugins/plugin-ts.md))
 - The package declares `node >=22.12`
 

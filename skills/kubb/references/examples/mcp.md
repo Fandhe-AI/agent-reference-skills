@@ -69,6 +69,7 @@ export default defineConfig(() => {
 ## Notes
 
 - Source: `examples/mcp` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.ts`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14, `@kubb/plugin-axios` 5.6.5, `@kubb/plugin-mcp` 5.2.3, `@kubb/plugin-zod` 5.4.12; `@kubb/parser-ts` (no pinned version recorded) and `typescript`: use your project's version
 - The example passes `parsers: [parserTs(), parserTsx()]` explicitly (a custom `parsers` array replaces the default set) and registers `pluginAxios` instead of the v4 `pluginClient({ client: 'fetch' })`. `baseURL` is set on the client plugin, not on `pluginMcp`
 - The package declares `node >=22.12`
 

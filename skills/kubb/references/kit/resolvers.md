@@ -67,6 +67,11 @@ const suffixed = resolver.imports({
 `Resolver.merge(base, patch)` returns a new resolver with `patch`'s fields layered over `base`'s and every helper re-bound.
 
 ```typescript
+import { createResolver, Resolver } from 'kubb/kit'
+import type { PluginType } from 'kubb/kit'
+
+const resolver = createResolver<PluginType>({ pluginName: 'plugin-example' })
+
 const patched = Resolver.merge(resolver, {
   name(name) {
     return `Custom${this.default.name(name)}`

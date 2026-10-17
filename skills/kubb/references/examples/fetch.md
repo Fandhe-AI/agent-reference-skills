@@ -63,6 +63,7 @@ export default defineConfig(() => {
 ## Notes
 
 - Source: `examples/fetch` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.ts`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14, `@kubb/plugin-fetch` 5.6.5; `typescript`: use your project's version
 - The generated code calls the global `fetch`, so no HTTP client package is needed. The package declares `node >=22.12`
 - Replaces the v3/v4 shape (`@kubb/core`, `pluginOas`, `pluginClient({ client: 'fetch' })`, `hooks.done`)
 
