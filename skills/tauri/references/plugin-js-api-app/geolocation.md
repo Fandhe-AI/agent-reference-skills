@@ -82,4 +82,4 @@ await clearWatch(watchId);
 
 ## Related
 
-- geolocation plugin
+- [geolocation plugin](../plugins-app/geolocation.md)

@@ -150,4 +150,4 @@ python3 flatpak-builder-tools/cargo/flatpak-cargo-generator.py -o cargo-sources.
 
 - [debian](./debian.md)
 - [bundle-linux config](../config/bundle-linux.md)
-- tray icon (Rust API)
+- [tray icon (Rust API)](../rust-api/tray.md)

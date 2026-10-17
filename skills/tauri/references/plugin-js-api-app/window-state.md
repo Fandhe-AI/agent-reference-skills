@@ -53,4 +53,4 @@ await restoreStateCurrent(StateFlags.ALL);
 
 ## Related
 
-- window-state plugin
+- [window-state plugin](../plugins-app/window-state.md)

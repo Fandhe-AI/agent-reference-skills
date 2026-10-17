@@ -85,4 +85,4 @@ await write([uriRecord('https://tauri.app')], { kind: { type: 'ndef' } });
 
 ## Related
 
-- nfc plugin
+- [nfc plugin](../plugins-app/nfc.md)

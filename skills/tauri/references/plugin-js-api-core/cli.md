@@ -71,4 +71,4 @@ interface CliMatches {
 
 ## Related
 
-- CLI plugin
+- [CLI plugin](../plugins-core/cli.md)

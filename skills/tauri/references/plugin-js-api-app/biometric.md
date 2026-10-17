@@ -86,4 +86,4 @@ console.log(decrypted.data);
 
 ## Related
 
-- biometric plugin
+- [biometric plugin](../plugins-app/biometric.md)

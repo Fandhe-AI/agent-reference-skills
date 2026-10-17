@@ -110,5 +110,5 @@ interface Duration { secs: number; nanos: number }
 
 ## Related
 
-- Stronghold plugin
+- [Stronghold plugin](../plugins-core/stronghold.md)
 - [Store plugin JS API](./store.md)

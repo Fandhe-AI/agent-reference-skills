@@ -23,5 +23,5 @@ Sign in to the Cloud website (https://web.crabnebula.cloud/) with your GitHub ac
 
 ## Related
 
-- updater plugin
+- [updater plugin](../plugins-app/updater.md)
 - [pipelines-github](./pipelines-github.md)

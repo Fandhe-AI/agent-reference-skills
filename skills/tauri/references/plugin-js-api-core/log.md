@@ -69,4 +69,4 @@ interface LogOptions {
 
 ## Related
 
-- Logging plugin
+- [Logging plugin](../plugins-core/logging.md)

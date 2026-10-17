@@ -75,4 +75,4 @@ interface CloseFrame { code: number; reason: string }
 
 ## Related
 
-- WebSocket plugin
+- [WebSocket plugin](../plugins-core/websocket.md)

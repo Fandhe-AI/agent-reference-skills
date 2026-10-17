@@ -59,4 +59,4 @@ All functions are `@since 2.0.0`.
 
 ## Related
 
-- OS Information plugin
+- [OS Information plugin](../plugins-core/os-info.md)

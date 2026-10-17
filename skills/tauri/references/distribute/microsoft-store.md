@@ -89,5 +89,5 @@ Upload the installer to a distribution service of your choice and link it in you
 
 - [windows-installer](./windows-installer.md)
 - [sign-windows](./sign-windows.md)
-- updater plugin
+- [updater plugin](../plugins-app/updater.md)
 - [bundle-windows config](../config/bundle-windows.md)

@@ -56,5 +56,5 @@ and for paths `opener:allow-open-path` with `"allow": [{ "path": "$APPDATA/file"
 
 ## Related
 
-- Opener plugin
+- [Opener plugin](../plugins-core/opener.md)
 - [Shell plugin JS API](./shell.md)

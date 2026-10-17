@@ -169,5 +169,5 @@ test('invoke', async () => {
 
 - [Tests](./tests-overview.md)
 - [WebDriver](./webdriver-overview.md)
-- JS API: mocks
+- [JS API: mocks](../js-api/mocks.md)
 - [Calling the Frontend from Rust](./calling-frontend.md)

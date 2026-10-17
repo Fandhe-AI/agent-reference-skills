@@ -53,5 +53,5 @@ await writeHtml('<h1>Tauri is awesome!</h1>', 'plaintext');
 
 ## Related
 
-- clipboard plugin
+- [clipboard plugin](../plugins-app/clipboard.md)
 - [image](../js-api/image.md)

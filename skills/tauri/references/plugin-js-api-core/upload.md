@@ -89,5 +89,5 @@ interface ProgressPayload {
 
 ## Related
 
-- Upload plugin
+- [Upload plugin](../plugins-core/upload.md)
 - [HTTP Client plugin JS API](./http.md)

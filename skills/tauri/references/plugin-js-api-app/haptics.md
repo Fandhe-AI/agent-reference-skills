@@ -46,4 +46,4 @@ type Result<T, E> = { status: 'ok'; data: T } | { status: 'error'; error: E }
 
 ## Related
 
-- haptics plugin
+- [haptics plugin](../plugins-app/haptics.md)

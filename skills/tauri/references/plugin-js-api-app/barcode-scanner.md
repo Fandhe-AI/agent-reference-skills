@@ -70,4 +70,4 @@ interface Scanned {
 
 ## Related
 
-- barcode-scanner plugin
+- [barcode-scanner plugin](../plugins-app/barcode-scanner.md)

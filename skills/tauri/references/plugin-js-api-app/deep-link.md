@@ -41,5 +41,5 @@ function onOpenUrl(handler: (urls: string[]) => void): Promise<UnlistenFn>  // s
 
 ## Related
 
-- deep-linking plugin
-- single-instance plugin
+- [deep-linking plugin](../plugins-app/deep-linking.md)
+- [single-instance plugin](../plugins-app/single-instance.md)

@@ -597,4 +597,4 @@ export async function onRequest(
 ## Related
 
 - [Plugin Development](./plugin-development.md)
-- Capabilities
+- [Capabilities](../security/capabilities.md)

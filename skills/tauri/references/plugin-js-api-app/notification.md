@@ -112,4 +112,4 @@ sendNotification({ title: 'Tauri', body: 'One minute later', schedule });
 
 ## Related
 
-- notification plugin
+- [notification plugin](../plugins-app/notification.md)

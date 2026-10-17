@@ -101,4 +101,4 @@ await message('Take on the task?', {
 
 ## Related
 
-- dialog plugin
+- [dialog plugin](../plugins-app/dialog.md)

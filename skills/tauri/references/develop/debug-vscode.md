@@ -176,4 +176,4 @@ It does not use the Tauri CLI either. `tasks.json` is the same as with `lldb`, e
 ## Related
 
 - [Debug](./debug-overview.md)
-- Process Model
+- [Process Model](../getting-started/process-model.md)

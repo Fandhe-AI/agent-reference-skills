@@ -66,4 +66,4 @@ const tray = await TrayIcon.new({ id: 'main', action })
 
 ## Related
 
-- positioner plugin
+- [positioner plugin](../plugins-app/positioner.md)

@@ -81,4 +81,4 @@ interface LoadOptions {   // @since 2.6.0
 
 ## Related
 
-- SQL plugin
+- [SQL plugin](../plugins-core/sql.md)
