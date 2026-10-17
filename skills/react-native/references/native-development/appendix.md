@@ -1,0 +1,64 @@
+---
+source: https://reactnative.dev/docs/0.87/appendix
+---
+
+# Appendix
+
+Terminology for the New Architecture native development guides and the Codegen type mapping table (Flow / TypeScript to Java / Objective-C).
+
+## Signature / Usage
+
+Codegen typings:
+
+| Flow | TypeScript | Flow Nullable Support | TypeScript Nullable Support | Android (Java) | iOS (ObjC) |
+| --- | --- | --- | --- | --- | --- |
+| `string` | `string` | `?string` | `string \| null` | `String` | `NSString` |
+| `boolean` | `boolean` | `?boolean` | `boolean \| null` | `Boolean` | `NSNumber` |
+| Object Literal `{\| foo: string \|}` | `{ foo: string }` | `?{\| foo: string \|}` | `{ foo: string } \| null` | - | - |
+| Object [1] | Object [1] | `?Object` | `Object \| null` | `ReadableMap` | `@` (untyped dictionary) |
+| `Array<T>` | `Array<T>` | `?Array<T>` | `Array<T> \| null` | `ReadableArray` | `NSArray` (or `RCTConvertVecToArray` when used inside objects) |
+| `Function` | `Function` | `?Function` | `Function \| null` | - | - |
+| `Promise<T>` | `Promise<T>` | `?Promise<T>` | `Promise<T> \| null` | `com.facebook.react.bridge.Promise` | `RCTPromiseResolveBlock` and `RCTPromiseRejectBlock` |
+| Type Unions `'SUCCESS'\|'FAIL'` | Type Unions `'SUCCESS'\|'FAIL'` | Only as callbacks | | - | - |
+| Callbacks `() =>` | Callbacks `() =>` | Yes | | `com.facebook.react.bridge.Callback` | `RCTResponseSenderBlock` |
+| `number` | `number` | No | | `double` | `NSNumber` |
+
+Example spec using these types (from the Turbo Native Modules guide):
+
+```typescript
+import type {TurboModule} from 'react-native';
+import {TurboModuleRegistry} from 'react-native';
+
+export interface Spec extends TurboModule {
+  setItem(value: string, key: string): void;
+  getItem(key: string): string | null;
+  removeItem(key: string): void;
+  clear(): void;
+}
+
+export default TurboModuleRegistry.getEnforcing<Spec>(
+  'NativeLocalStorage',
+);
+```
+
+## Notes
+
+- The official Appendix page has no code example; the snippet is quoted verbatim from the Turbo Native Modules guide (https://reactnative.dev/docs/0.87/turbo-native-modules).
+- Deviation from the official page: the official table lists "{ foo: string, ...} as const" for TypeScript, which is not a valid type; valid TypeScript type forms are shown instead.
+- Corrected: the official table lists the Java type as `string` (Java uses `String`), the iOS promise type as `RCTPromiseResolve` (the block type is `RCTPromiseResolveBlock`), and the Flow object literal as `{| foo: string, ...|}`, which mixes exact and explicit-inexact syntax.
+- 0.88: Java TurboModules can take and return ArrayBuffer; Codegen maps it to com.facebook.react.bridge.ArrayBuffer (not in the 0.87 table; iOS mapping not stated in the 0.88 release blog).
+- Terminology:
+  - Spec: TypeScript or Flow code that describes the API for a Turbo Native Module or Fabric Native component. Used by Codegen to generate boilerplate code.
+  - Native Modules: native libraries that have no User Interface (UI) for the user. Examples would be persistent storage, notifications, network events. These are accessible to your JavaScript application code as functions and objects.
+  - Native Component: native platform views that are available to your application JavaScript code through React Components.
+  - Legacy Native Components: components which are running on the old React Native architecture.
+  - Legacy Native Modules: modules which are running on the old React Native architecture.
+- [1] "We strongly recommend using Object literals instead of Objects."
+- The JavaScript specifications for the core modules in React Native, located inside the `Libraries/` directory in the React Native repository, are also a useful reference.
+
+## Related
+
+- [What is Codegen?](./what-is-codegen.md)
+- [Native Modules: Introduction](./turbo-native-modules-introduction.md)
+- [Fabric Native Components Introduction](./fabric-native-components-introduction.md)
+- [Advanced: Custom C++ Types](./custom-cxx-types.md)
