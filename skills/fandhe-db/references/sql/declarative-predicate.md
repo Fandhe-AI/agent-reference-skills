@@ -59,7 +59,7 @@ pub fn bind_declarative_predicates(
 - 上記フェンスは原文の module doc・公開型・公開関数シグネチャの抜粋（`check_predicate_limits` と束縛本体は省略）。
 - 上限は `declarative_filter::MAX_METADATA_FILTERS`（葉の総数）と `udf_call::MAX_EXPR_DEPTH`（`Or` のネスト深さ）をそのまま採用（二重定義しない）。超過は `54000`。
 - `Or` は 2 分岐未満・空分岐を `22000` で拒否する。空の `AND` 列は恒真として評価されるため、`OR` 全体を無条件で真にさせない二次防御（一次防御は wire-server の JSON 走査）。
-- `BoundWhereFilters::or_filters` の要素型 `BoundOrGroup` は定義元 `sql::where_tree` が `pub(crate) mod` だが、`sql.rs` の `pub use where_tree::BoundOrGroup;` により `fandhe_db_engine::sql::BoundOrGroup` として型名は外部から記述できる（`ScalarShapeInput::or_filters` の要素型を名前解決可能にするための再エクスポート）。ただしフィールド `branches` と `new` / `matches` 等のメソッドはすべて `pub(crate)` のため、クレート外では不透明な値として受け渡すだけ（[where-tree](./where-tree.md)）。
+- `BoundWhereFilters::or_filters` の要素型 `BoundOrGroup` は定義元 `sql::where_tree` が `pub(crate) mod` だが、`sql.rs` の `pub use where_tree::BoundOrGroup;` により `engine::sql::BoundOrGroup`（package 名は fandhe-db-engine、lib 名は engine）として型名は外部から記述できる（`ScalarShapeInput::or_filters` の要素型を名前解決可能にするための再エクスポート）。ただしフィールド `branches` と `new` / `matches` 等のメソッドはすべて `pub(crate)` のため、クレート外では不透明な値として受け渡すだけ（[where-tree](./where-tree.md)）。
 - Distinct from `mssql` (node-mssql, T-SQL client) / `drizzle` (TypeScript ORM) / `supabase` (Postgres): this is the engine's NoSQL filter AST binding entry, not an ORM query builder.
 
 ## Related
