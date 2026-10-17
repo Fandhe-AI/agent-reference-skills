@@ -115,7 +115,7 @@ Critical fields in returned steps:
 
 | Name | Type | Description |
 |------|------|-------------|
-| `id` | field | Found on `function_call` and `function_response` steps. A unique identifier that maps a call to its response |
+| `id` | field | Found on `function_call` steps. A unique identifier that maps a call to its result: in the Interactions API, set the `function_result` step's `call_id` to the originating `function_call.id` |
 | `signature` | field | Found on `thought` steps, as well as all tool call and result steps for Gemini 3+ models. Encrypted context enabling tool context circulation across interactions |
 
 Tool-specific data:
@@ -143,8 +143,9 @@ Supported tools:
 
 - Enable combination by including your custom `function` tools (`{"type": "function", ...}` entries in `tools`) together with the built-in tools you want to use. The source wording says `function_declarations`, which is generateContent terminology.
 - In the Interactions API the step types are `function_result` (not `function_response`) and `code_execution_call` / `code_execution_result`; the tables above keep the source wording (`function_response`, `code_execution`). Usage is reported in `usage.total_input_tokens` / `total_tool_use_tokens`; the source's `prompt_token_count` below is generateContent terminology.
+- Source difference: the source says `id` is found on both `function_call` and `function_response` steps (generateContent wording); in the Interactions API the result step is `function_result` and it references the call through `call_id` (= `function_call.id`), as in function-calling and computer-use.
 - Gemini 3 models use tool context circulation to preserve built-in tool context and share it with custom tools in the same interaction. The API returns separate steps for built-in tool calls (managed automatically) and `function_call` steps for your custom functions.
-- Stateful mode (recommended): with `previous_interaction_id`, the server handles `id` and `signature` automatically. Stateless mode: pass both `id` and `signature` back in subsequent requests; official SDKs do this if you pass the full response object back to history.
+- Stateful mode (recommended): with `previous_interaction_id`, the server handles `id` and `signature` automatically. Stateless mode: pass both the `function_call` step's `id` and `signature` back in subsequent requests; official SDKs do this if you pass the full response object back to history.
 - Tokens: built-in tool call parts in requests count towards `prompt_token_count` (requests only, not responses). Google Search is an exception: it has query-level pricing, so tokens are not double-charged.
 - Limitations: default to `validated` mode (`auto` mode is not supported) when tool context circulation is enabled. Built-in tools such as `google_search` rely on location and current time, so conflicting location/time information in `system_instruction` or `function_declaration.description` may break combination.
 - API surface: Interactions API; a generateContent version of this page exists under `generate-content/` (tool-combination). Docs fetched 2026-10-16.
