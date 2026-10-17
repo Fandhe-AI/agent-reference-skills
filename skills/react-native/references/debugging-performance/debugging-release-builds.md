@@ -19,7 +19,7 @@ npx metro-symbolicate android/app/build/generated/sourcemaps/react/release/index
 adb logcat -d | npx metro-symbolicate android/app/build/generated/sourcemaps/react/release/index.android.bundle.map
 ```
 
-## Enabling source maps
+### Enabling source maps
 
 **Android** (enabled by default): ensure the following `hermesFlags` are present in `android/app/build.gradle`.
 

@@ -9,7 +9,7 @@ Common issues encountered while setting up React Native. If something is not lis
 ## Signature / Usage
 
 ```shell
-sudo lsof -i :8081
+lsof -i :8081
 kill -9 <PID>
 ```
 
@@ -41,10 +41,14 @@ You will also need to update your applications to load the JavaScript bundle fro
 
 If you encounter an error such as `npm WARN locking Error: EACCES` while using the React Native CLI:
 
+Check the owner of the npm cache, and only if it is wrong, fix it:
+
 ```shell
-sudo chown -R $USER ~/.npm
-sudo chown -R $USER /usr/local/lib/node_modules
+ls -ld ~/.npm
+sudo chown -R "$(id -u):$(id -g)" ~/.npm
 ```
+
+Adapted (not in the official docs): the official docs run `sudo chown -R $USER ~/.npm` and `sudo chown -R $USER /usr/local/lib/node_modules` unconditionally. Here the `~/.npm` fix is split into an owner check followed by `chown` only when the owner is wrong, and the variable is replaced by the quoted `"$(id -u):$(id -g)"`. The recursive `chown` on the shared global `/usr/local/lib/node_modules` is not reproduced; use a Node version manager or a user-level npm prefix instead.
 
 ### Missing libraries for React
 
@@ -103,9 +107,13 @@ Case 1: Error `"code":"ENOSPC","errno":"ENOSPC"`. Caused by the number of direct
 echo fs.inotify.max_user_watches=582222 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 ```
 
+Adapted (not in the official docs): this changes system-wide settings and needs administrator privileges.
+
 ### Error: spawnSync ./gradlew EACCES
 
-If `npm run android` or `yarn android` on macOS throws this error, run `sudo chmod +x android/gradlew` to make `gradlew` files executable.
+If `npm run android` or `yarn android` on macOS throws this error, run `chmod +x android/gradlew` to make `gradlew` files executable.
+
+Adapted (not in the official docs): `sudo` was removed from `chmod` (and from `lsof -i :8081` in the first example); the official docs use `sudo` for both, but your own files and processes do not require it.
 
 ## Related
 

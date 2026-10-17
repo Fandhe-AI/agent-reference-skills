@@ -17,17 +17,17 @@ import App from './App';
 AppRegistry.registerComponent('HelloWorld', () => App);
 ```
 
-## Android (Java & Kotlin)
+### Android (Java & Kotlin)
 
 Key steps: 1) set up directory structure, 2) install NPM dependencies, 3) add React Native to your Gradle configuration, 4) write the TypeScript code for your first screen, 5) integrate with your Android code using a `ReactActivity`, 6) test by running the bundler.
 
 Use the React Native Community Template (https://github.com/react-native-community/template/) as reference; it contains a minimal Android app. Prerequisites: `set-up-your-environment` and `getting-started-without-a-framework`; familiarity with Activities and `AndroidManifest.xml`.
 
-### 1. Set up directory structure
+#### 1. Set up directory structure
 
 Create a new folder for the integrated project, then **move your existing Android project** to the `/android` subfolder.
 
-### 2. Install NPM dependencies
+#### 2. Install NPM dependencies
 
 In the root directory, copy the template `package.json` (the template branch matches the docs version):
 
@@ -51,7 +51,7 @@ yarn install
 
 This creates a `node_modules` folder. Add `node_modules/` to your `.gitignore`.
 
-### 3. Adding React Native to your app
+#### 3. Adding React Native to your app
 
 `settings.gradle`:
 
@@ -142,7 +142,7 @@ Enable cleartext traffic (https://developer.android.com/training/articles/securi
 </manifest>
 ```
 
-### 4. Writing the TypeScript code
+#### 4. Writing the TypeScript code
 
 `index.js` is the starting point for React Native applications and is always required; it can import other files or contain all the code. Create it in the project root (see snippet above). Then create `App.tsx`, the root component:
 
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
 export default App;
 ```
 
-### 5. Integrating with your Android code
+#### 5. Integrating with your Android code
 
 Update your `Application` class.
 
@@ -235,7 +235,7 @@ import android.app.Application;
 +import com.facebook.react.defaults.DefaultReactHost;
 +import com.facebook.react.defaults.DefaultReactNativeHost;
 +import com.facebook.soloader.SoLoader;
-+import com.facebook.react.soloader.OpenSourceMergedSoMapping
++import com.facebook.react.soloader.OpenSourceMergedSoMapping;
 +import java.util.List;
 
 -class MainApplication extends Application {
@@ -378,7 +378,7 @@ Register the Activity in `AndroidManifest.xml` and set its theme to `Theme.AppCo
 </manifest>
 ```
 
-### 6. Test your integration
+#### 6. Test your integration
 
 Create `metro.config.js` in the project root:
 
@@ -411,19 +411,19 @@ cd android
 ./gradlew :app:bundleRelease
 ```
 
-## iOS (Objective-C and Swift)
+### iOS (Objective-C and Swift)
 
 Key steps: 1) set up directory structure, 2) install NPM dependencies, 3) add React Native to your Podfile configuration, 4) write the TypeScript code, 5) integrate with your iOS code using a `RCTRootView`, 6) test by running the bundler. Use the React Native Community Template as reference (minimal iOS app). Prerequisites: `set-up-your-environment`, `getting-started-without-a-framework`, and basics of iOS development such as creating a `UIViewController` and editing the `Podfile`.
 
-### 1. Set up directory structure
+#### 1. Set up directory structure
 
 Create a new folder for the integrated project and **move your existing iOS project** to the `/ios` subfolder.
 
-### 2. Install NPM dependencies
+#### 2. Install NPM dependencies
 
 Same as Android: copy the template `package.json` with `curl -O` (see above, template `package.json`), run `npm install` or `yarn install`, add `node_modules/` to `.gitignore`.
 
-### 3. Install development tools
+#### 3. Install development tools
 
 Command Line Tools for Xcode: choose **Settings... (or Preferences...)** in the Xcode menu, go to the Locations panel and select the most recent version in the Command Line Tools dropdown.
 
@@ -433,7 +433,7 @@ CocoaPods (https://cocoapods.org) adds the React Native framework code locally i
 brew install cocoapods
 ```
 
-### 4. Adding React Native to your app
+#### 4. Adding React Native to your app
 
 Two files are needed: a **Gemfile** (Ruby dependencies) and a **Podfile**. From the project root download the Gemfile; from the `ios` folder download the Podfile (template branch matches the docs version):
 
@@ -464,11 +464,11 @@ bundle exec pod install
 
 The first command installs the Ruby dependencies; the second integrates the React Native code so your iOS files can import the React Native headers.
 
-### 5. Writing the TypeScript code
+#### 5. Writing the TypeScript code
 
 Create `index.js` and `App.tsx` exactly as in the Android section above.
 
-### 5. Integrating with your iOS code
+#### 5. Integrating with your iOS code
 
 React Native initialization is not bound to any specific part of an iOS app. It can be initialized using `RCTReactNativeFactory`, which handles the React Native lifecycle. Once initialized, you can either start a React Native view providing a `UIWindow` object, or ask the factory to generate a `UIView` to load in any `UIViewController`. The example creates a `ReactViewController` whose `view` is the React Native view. Create a new Cocoa Touch Class file with `UIViewController` as "Subclass of".
 
@@ -643,7 +643,7 @@ class ViewController: UIViewController {
 +  if (reactViewController == NULL) {
 +    reactViewController = [ReactViewController new];
 +  }
-+  [self presentViewController:reactViewController animated:YES];
++  [self presentViewController:reactViewController animated:YES completion:nil];
 +}
 
 @end
@@ -651,7 +651,7 @@ class ViewController: UIViewController {
 
 Disable Sandbox scripting: in Xcode click your app > build settings, filter for `script`, and set `User Script Sandboxing` to `NO`. This is needed to switch between the Debug and Release version of the Hermes engine (https://github.com/facebook/hermes/blob/main/README.md). Also add the `UIViewControllerBasedStatusBarAppearance` key to `Info.plist` with value `NO`.
 
-### 6. Test your integration
+#### 6. Test your integration
 
 Create `metro.config.js` (same content as Android), and a `.watchmanconfig` containing an empty JSON object:
 
@@ -661,7 +661,7 @@ echo {} > .watchmanconfig
 
 Run `npm start` (or `yarn start`) in the project root, then build and run your iOS app as normal.
 
-#### Creating a release build in Xcode
+##### Creating a release build in Xcode
 
 Add a script that packages your JS and images into the iOS app: select your application > `Build Phases` > `+` > `New Run Script Phase`, rename it `Bundle React Native code and images`, paste the script below, and drag it before `[CP] Embed Pods Frameworks`.
 
@@ -671,10 +671,10 @@ set -e
 WITH_ENVIRONMENT="$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh"
 REACT_NATIVE_XCODE="$REACT_NATIVE_PATH/scripts/react-native-xcode.sh"
 
-/bin/sh -c "$WITH_ENVIRONMENT $REACT_NATIVE_XCODE"
+/bin/sh "$WITH_ENVIRONMENT" "$REACT_NATIVE_XCODE"
 ```
 
-### 7. Passing initial props to the React Native view
+#### 7. Passing initial props to the React Native view
 
 Use the `initialProperties` parameter of the `view(withModuleName:initialProperty)` overload of `RCTReactNativeFactory`. In `App.tsx` change `function App(): React.JSX.Element` to `function App(props): React.JSX.Element` and render `props.userID` and `props.token`; `RCTReactNativeFactory` passes them to the component when it is rendered.
 
@@ -692,7 +692,7 @@ Use the `initialProperties` parameter of the `view(withModuleName:initialPropert
 
 ```diff
 -   view = reactNativeFactory!.rootViewFactory.view(withModuleName: "HelloWorld")
-+   view = reactNativeFactory!.rootViewFactory.view(withModuleName: "HelloWorld" initialProperties: [
++   view = reactNativeFactory!.rootViewFactory.view(withModuleName: "HelloWorld", initialProperties: [
 +     "userID": "12345678",
 +     "token": "secretToken"
 +])
@@ -700,6 +700,7 @@ Use the `initialProperties` parameter of the `view(withModuleName:initialPropert
 
 ## Notes
 
+- Adapted (not in the official docs): (1) the Java `MainApplication` diff gained the missing semicolon on `import com.facebook.react.soloader.OpenSourceMergedSoMapping;`; (2) the Objective-C call is `presentViewController:animated:completion:` with `completion:nil` added (the official text omits `completion:`); (3) the Swift initial-props example gained the missing comma after `withModuleName: "HelloWorld"`; (4) the release-build script passes each path as a separately quoted argument, `/bin/sh "$WITH_ENVIRONMENT" "$REACT_NATIVE_XCODE"`, so paths containing spaces work; the official script uses `/bin/sh -c "$WITH_ENVIRONMENT $REACT_NATIVE_XCODE"`.
 - Requirements: React Native can be added as a single view or user flow to an existing app; the template `package.json` / `Gemfile` / `Podfile` are fetched from the React Native Community Template branch matching the docs version.
 - The userID / token above are placeholders from the docs; never ship real secrets in initial properties.
 - 0.88: the iOS SceneDelegate lifecycle is supported (additive; the `AppDelegate` path stays compatible). Starting with the iOS 27 SDK, Apple requires the UIScene lifecycle (UIKit apps built with Xcode 27 fail to launch). `RCTReactNativeFactory` gains `startReactNativeWithModuleName:inWindow:connectionOptions:` and `startReactNativeWithModuleName:inWindow:initialProperties:connectionOptions:`. Support is limited to a single scene (keep `UIApplicationSupportsMultipleScenes` set to `false`). Migration: move the React Native entry point from `AppDelegate` to a `SceneDelegate`, forward the scene's URL and user-activity callbacks to `RCTLinkingManager`, and add a `UIApplicationSceneManifest` key to `Info.plist`. Source: React Native 0.88 release blog.

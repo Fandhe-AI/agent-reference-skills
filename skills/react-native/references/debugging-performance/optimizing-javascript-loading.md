@@ -81,7 +81,7 @@ module.exports = {
 };
 ```
 
-## RAM bundles (non-Hermes)
+### RAM bundles (non-Hermes)
 
 **Android** (`android/app/build.gradle`, before `apply from: "../../node_modules/react-native/react.gradle"`):
 
