@@ -45,7 +45,9 @@ If you do not want to switch, opt out with `--provenance=false --sbom=false`. Pu
 - Attestations use the in-toto format; records are JSON blobs attached as a manifest in the image index, so they can be inspected in a registry without pulling the whole image.
 - All BuildKit exporters support attestations. The `local` and `tar` exporters write attestations to JSON files in the root directory of the export.
 
-Attestation manifest structure: each attestation manifest refers to a single image manifest (one platform variant) and contains a single layer (`application/vnd.in-toto+json`) with an annotation `in-toto.io/predicate-type`, e.g. `https://spdx.dev/Document`.
+Attestation manifest structure: each attestation manifest refers to a single image manifest (one platform variant). docs.docker.com describes each attestation manifest as holding the attestation "value" in its layers; per the BuildKit attestation storage spec, each entry in `layers` is a descriptor for a single attestation blob (`application/vnd.in-toto+json`, annotated with `in-toto.io/predicate-type`, e.g. `https://spdx.dev/Document`), so a manifest can carry one or more attestation layers.
+
+The example below shows an SBOM-only attestation manifest (one SPDX layer).
 
 ```json
 {
@@ -80,6 +82,8 @@ With the `oci-artifact` option (`image` / `registry` exporters) set to `true`:
 ### Other notes
 
 - Starting with BuildKit v0.32.0, attestations are stored as OCI artifacts when OCI media types are enabled; `BUILDX_NO_DEFAULT_OCI_ARTIFACT=1` makes Buildx set `oci-artifact=false` (see the build variables page).
+
+- Additional source: BuildKit Image Attestation Storage, https://github.com/moby/buildkit/blob/master/docs/attestations/attestation-storage.md
 
 ## Related
 

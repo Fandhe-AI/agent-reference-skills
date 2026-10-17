@@ -29,10 +29,12 @@ Drivers:
 | Automatically load image | yes | | Conditional | | |
 | Cache export | yes (*) | yes | yes | yes | yes |
 | Tarball output | | yes | yes | yes | yes |
-| Multi-arch images | | yes | yes | yes | yes |
+| Multi-arch images | (†) | yes | yes | yes | yes |
 | BuildKit configuration | | yes | Managed by Docker | yes | Managed externally |
 
 (*) The `docker` driver does not support all cache export options.
+
+(†) The docs table leaves this blank for the `docker` driver; with the containerd image store (default in Docker Desktop and Docker Engine 29.0+) the `docker` driver can build and load multi-platform images. The classic image store cannot hold manifest lists. See [multi-platform builds](./multi-platform.md).
 
 ### Loading to local image store
 

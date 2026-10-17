@@ -2,14 +2,13 @@
 name: docker
 description: >
   Docker (Docker Engine / Dockerfile / Compose / Buildx) の Dockerfile 命令, docker CLI,
-  compose.yaml (Compose Specification), BuildKit, Bake (HCL), マルチステージ, マルチプラットフォーム,
-  ビルドキャッシュ, SBOM / provenance, dockerd, daemon.json, logging driver, rootless, seccomp。
+  compose.yaml (Compose Specification), BuildKit, Bake (HCL), dockerd, daemon.json, rootless。
 user-invocable: false
 ---
 
 # Docker
 
-> 分割 PR の途中段階。現在収録済み: references/{build, build-cache-bake}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{build, build-cache-bake}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 Docker Engine / Dockerfile / Docker Compose / Buildx (BuildKit) の公式ドキュメントを蒸留したリファレンス。
 
