@@ -8,11 +8,13 @@ Preparing Kotlin Multiplatform applications for release to Google Play, the Appl
 
 ## Signature / Usage
 
-Generate web artifacts with the Gradle task:
+Generate web artifacts by running the `wasmJsBrowserDistribution` Gradle task (from the command line, or via an IDE Gradle run configuration whose Tasks and arguments field is `wasmJsBrowserDistribution`):
 
 ```shell
-wasmJsBrowserDistribution
+./gradlew :sharedUI:wasmJsBrowserDistribution
 ```
+
+Replace `sharedUI` with the name of your shared UI module.
 
 Output directory: `sharedUI/build/dist/wasmJs/productionExecutable`.
 
