@@ -47,20 +47,48 @@ no-proxy = ["localhost", "127.0.0.1"]
 
 Examples from the reference:
 
+Each snippet is an independent example; do not combine conflicting options (e.g., `index-url` with `no-index` / `offline`).
+
+```toml
+[tool.uv]
+check-url = "https://test.pypi.org/simple"
+publish-url = "https://test.pypi.org/legacy/"
+trusted-publishing = "always"
+```
+
+```toml
+[tool.uv]
+concurrent-downloads = 4
+```
+
+```toml
+[tool.uv]
+extra-index-url = ["https://download.pytorch.org/whl/cpu"]
+index-strategy = "unsafe-best-match"
+```
+
+```toml
+[tool.uv]
+index-url = "https://test.pypi.org/simple"
+keyring-provider = "subprocess"
+```
+
+```toml
+[tool.uv]
+find-links = ["https://download.pytorch.org/whl/torch_stable.html"]
+no-index = true
+```
+
+```toml
+[tool.uv]
+offline = true
+```
+
+Local verification or disposable environments only; do not keep as a permanent setting (disables certificate verification for the host):
+
 ```toml
 [tool.uv]
 allow-insecure-host = ["localhost:8080"]
-check-url = "https://test.pypi.org/simple"
-concurrent-downloads = 4
-extra-index-url = ["https://download.pytorch.org/whl/cpu"]
-find-links = ["https://download.pytorch.org/whl/torch_stable.html"]
-index-strategy = "unsafe-best-match"
-index-url = "https://test.pypi.org/simple"
-keyring-provider = "subprocess"
-no-index = true
-offline = true
-publish-url = "https://test.pypi.org/legacy/"
-trusted-publishing = "always"
 ```
 
 ```toml

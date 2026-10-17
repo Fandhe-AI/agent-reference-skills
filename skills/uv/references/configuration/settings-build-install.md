@@ -57,15 +57,45 @@ config-settings = { editable_mode = "compat" }
 config-settings-package = { numpy = { editable_mode = "compat" } }
 extra-build-dependencies = { pytest = ["setuptools"] }
 extra-build-variables = { flash-attn = { FLASH_ATTENTION_SKIP_CUDA_BUILD = "TRUE" } }
-no-binary = true
-no-binary-package = ["ruff"]
-no-build = true
-no-build-isolation = true
-no-build-isolation-package = ["package1", "package2"]
 no-cache = true
-reinstall = true
-reinstall-package = ["ruff"]
 require-build-hashes = true
+```
+
+Independent alternatives (do not combine the global and per-package forms, or `no-build` with build-related options):
+
+```toml
+[tool.uv]
+no-binary = true
+```
+
+```toml
+[tool.uv]
+no-binary-package = ["ruff"]
+```
+
+```toml
+[tool.uv]
+no-build = true
+```
+
+```toml
+[tool.uv]
+no-build-isolation = true
+```
+
+```toml
+[tool.uv]
+no-build-isolation-package = ["package1", "package2"]
+```
+
+```toml
+[tool.uv]
+reinstall = true
+```
+
+```toml
+[tool.uv]
+reinstall-package = ["ruff"]
 ```
 
 ## Notes

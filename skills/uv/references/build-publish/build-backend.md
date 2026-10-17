@@ -17,7 +17,7 @@ build-backend = "uv_build"
 To create a new project that uses the uv build backend, use `uv init`:
 
 ```console
-$ uv init
+$ uv init --build-backend uv
 ```
 
 ## Choosing a build backend
@@ -32,6 +32,8 @@ $ uv init
 The build backend is published as a separate package (`uv_build`) that is optimized for portability and small binary size. However, the `uv` executable also includes a copy of the build backend, which will be used during builds performed by uv, e.g., during `uv build`, if its version is compatible with the `uv_build` requirement. If it's not compatible, a compatible version of the `uv_build` package will be used. Other build frontends, such as `python -m build`, will always use the `uv_build` package, typically choosing the latest compatible version.
 
 ## Notes
+
+- The upstream concept page shows plain `uv init`. Unless the packaged-init preview feature is enabled, `uv init` creates an application without a `[build-system]`; `--build-backend` implicitly sets `--package` (per the CLI reference), so pass `--build-backend uv` (or `--package` / `--lib`).
 
 - The uv build backend follows the same versioning policy as uv. Including an upper bound on the `uv_build` version ensures that your package continues to build correctly as new versions are released.
 - Changed in 0.13.0: no breaking changes to the configuration of the uv build backend. If your `[build-system]` table includes an upper bound on `uv_build`, update it to allow 0.13, e.g., `uv_build>=0.13.0,<0.14`.

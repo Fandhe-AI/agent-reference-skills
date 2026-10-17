@@ -65,17 +65,51 @@ universal = true
 
 Examples from the reference:
 
+Each snippet is an independent example; do not combine conflicting options (e.g., `no-binary` / `only-binary`, `prefix` / `target`).
+
 ```toml
 [tool.uv.pip]
 all-extras = true
 no-extra = ["dev", "docs"]
+```
+
+```toml
+[tool.uv.pip]
 no-binary = ["ruff"]
+```
+
+```toml
+[tool.uv.pip]
 only-binary = ["ruff"]
+```
+
+```toml
+[tool.uv.pip]
 no-emit-package = ["ruff"]
+```
+
+```toml
+[tool.uv.pip]
 prefix = "./prefix"
+```
+
+```toml
+[tool.uv.pip]
 python = "3.10"
+```
+
+```toml
+[tool.uv.pip]
 python-platform = "x86_64-unknown-linux-gnu"
+```
+
+```toml
+[tool.uv.pip]
 target = "./target"
+```
+
+```toml
+[tool.uv.pip]
 torch-backend = "auto"
 verify-hashes = true
 ```

@@ -51,11 +51,29 @@ dependency-metadata = [
 ]
 exclude-newer-package = { tqdm = "2022-04-04T00:00:00Z", markupsafe = false }
 fork-strategy = "fewest"
-no-sources = true
-no-sources-package = ["ruff"]
 prerelease-package = { numpy = "allow", scipy = "disallow" }
 torch-backend = "auto"
+```
+
+Independent alternatives (do not combine the global and per-package forms):
+
+```toml
+[tool.uv]
+no-sources = true
+```
+
+```toml
+[tool.uv]
+no-sources-package = ["ruff"]
+```
+
+```toml
+[tool.uv]
 upgrade = true
+```
+
+```toml
+[tool.uv]
 upgrade-package = ["ruff"]
 ```
 

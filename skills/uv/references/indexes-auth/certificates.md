@@ -9,8 +9,12 @@ uv uses TLS to communicate with package indexes and other HTTPS servers. TLS cer
 ## Signature / Usage
 
 ```toml
-[tool.uv]
-allow-insecure-host = ["example.com"]
+# uv.toml
+system-certs = true
+```
+
+```console
+$ SSL_CERT_FILE=/path/to/ca-bundle.pem uv pip install ruff
 ```
 
 ## TLS backend
@@ -38,7 +42,14 @@ Multiple entries are supported, separated by a platform-specific delimiter (`:` 
 
 ## Insecure hosts
 
-To trust a self-signed certificate or otherwise disable certificate verification for dedicated hosts, use the `allow-insecure-host` option (see the snippet above). It expects a hostname (e.g., `localhost`) or hostname-port pair (e.g., `localhost:8080`), and applies only to HTTPS connections.
+To trust a self-signed certificate or otherwise disable certificate verification for dedicated hosts, use the `allow-insecure-host` option. For local verification or disposable environments only; do not keep it as a permanent setting.
+
+```toml
+[tool.uv]
+allow-insecure-host = ["localhost:8080"]
+```
+
+It expects a hostname (e.g., `localhost`) or hostname-port pair (e.g., `localhost:8080`), and applies only to HTTPS connections.
 
 ## Notes
 
