@@ -10,7 +10,7 @@ user-invocable: false
 
 # Expo
 
-> 分割 PR の途中段階。現在収録済み: references/{configuration, eas-build, eas-submit-workflows, eas-update, modules-api, notifications, router}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{configuration, eas-build, eas-submit-workflows, eas-update, modules-api, notifications, router}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
