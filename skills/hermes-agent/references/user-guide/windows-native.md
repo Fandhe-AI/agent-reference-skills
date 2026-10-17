@@ -5,13 +5,16 @@ Hermes runs natively on Windows 10 and 11 without WSL, Cygwin, or Docker. Covers
 ## Signature / Usage
 
 ```powershell
-iex (irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1)
+# download, review, then run
+Invoke-WebRequest https://hermes-agent.nousresearch.com/install.ps1 -OutFile install.ps1
+Get-Content install.ps1 | more
+.\install.ps1
 ```
 
-No admin rights required; installs to `%LOCALAPPDATA%\hermes\` and adds `hermes` to the User PATH (open a new terminal afterwards). Installer options use a scriptblock:
+No admin rights required; installs to `%LOCALAPPDATA%\hermes\` and adds `hermes` to the User PATH (open a new terminal afterwards). Installer options are passed to the saved script:
 
 ```powershell
-& ([scriptblock]::Create((irm https://hermes-agent.nousresearch.com/install.ps1))) -NonInteractive -Branch main
+.\install.ps1 -NonInteractive -Branch main
 ```
 
 ## Options / Props
@@ -52,9 +55,11 @@ hermes gateway status
 
 - Uninstall: `hermes uninstall` (review `hermes uninstall --dry-run` first; `--full` also removes data, `--data` removes data only). MSIX/Store installs are removed through Windows Settings -> Apps. Do not recursively delete `%LOCALAPPDATA%\hermes`.
 - Never use `os.kill(pid, 0)` on Windows (it maps to `CTRL_C_EVENT`); use `psutil.pid_exists()` or `gateway.status._pid_exists()`.
-- Common pitfalls: `hermes: command not found` right after install (open a new shell); `WinError 193` (use the `.cmd` variant such as `npx.cmd`); `[scriptblock]::Create(...)` BOM error (use the `irm | iex` form); gateway not staying up (`schtasks /Query /TN Hermes_Gateway /V /FO LIST`); `?` characters in the CLI (check `HERMES_DISABLE_WINDOWS_UTF8`, use Windows Terminal); BOM inside YAML folded scalars breaks parsing.
+- Common pitfalls: `hermes: command not found` right after install (open a new shell); `WinError 193` (use the `.cmd` variant such as `npx.cmd`); `[scriptblock]::Create(...)` BOM error (official scriptblock form only; the saved-file `-File` / `.\install.ps1` form used on this page does not go through `[scriptblock]::Create`); gateway not staying up (`schtasks /Query /TN Hermes_Gateway /V /FO LIST`); `?` characters in the CLI (check `HERMES_DISABLE_WINDOWS_UTF8`, use Windows Terminal); BOM inside YAML folded scalars breaks parsing.
 - Browser tool: PM supplies pinned `agent-browser` and Chromium; on Windows ARM64 they can use x64 emulation. Run `hermes doctor` and `hermes pm doctor` for timeouts.
 - Source note: the WSL2 guide states the dashboard `/chat` embedded terminal pane is WSL2-only, while this page states it works natively through ConPTY. The two pages differ; treat the native availability as dependent on a working `pywinpty`.
+- Adapted: the v0.22.2 page shows `iex (irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1)` for the plain form and `& ([scriptblock]::Create((irm https://hermes-agent.nousresearch.com/install.ps1))) -NonInteractive -Branch main` for options; this page uses the canonical `hermes-agent.nousresearch.com/install.ps1` URL used elsewhere in the same page to avoid tracking `main`, and saves the script with `-OutFile` for review before running instead of piping into `iex`. The BOM pitfall above applies to the official scriptblock form.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/windows-native (pinned to v0.22.2)
 
 ## Related
 

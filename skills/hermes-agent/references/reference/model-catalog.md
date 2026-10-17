@@ -67,7 +67,7 @@ Fetch behaviour: `/model` or `hermes model` fetches only when the disk cache is 
 - GUI pickers read `~/.hermes/provider_models_cache.json` and refresh in the background; `/model --refresh` busts the cache and probes every provider live.
 - Maintainers regenerate the manifest with `python scripts/build_model_catalog.py`, then PR `website/static/api/model-catalog.json`.
 - Model IDs above are copied from the schema example in the docs, not a current recommendation.
-- Source pin: Hermes Agent docs at release tag v0.22.2.
+- Source: https://hermes-agent.nousresearch.com/docs/reference/model-catalog (pinned to v0.22.2)
 
 ## Related
 

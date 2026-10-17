@@ -64,6 +64,7 @@ hermes peer stop spark run_abc123
   Peer key lives in `~/.hermes/.env` as `HERMES_PEER_<NAME>_KEY`; names/URLs in `config.yaml` under `bot_peers`. A gateway behind NAT can dial out but not be dialed in.
 - Hosted room authority takeover is an operator recovery procedure using JSON-RPC `groups.promote` (requires `room_id` and `confirm: true`) and `groups.demote` (requires `room_id`, `observed_gateway_id`, `observed_epoch`); fence the old writer first or histories diverge.
 - Turning off: Capabilities -> Plugins -> Bots -> **Desktop** switch; data is untouched.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/bot-mode (pinned to v0.22.2)
 
 ## Related
 

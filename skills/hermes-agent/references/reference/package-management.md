@@ -87,7 +87,7 @@ Network retries: at most 4 attempts, backoff 1/2/4 s (a `Retry-After` can extend
 - Installing a plugin requires trusting the plugin and its dependencies; PM is not a sandbox. PM owns the pinned `bws` and `iron-proxy` packages (hashes from `pm/lock.json`).
 - Diagnostics: `hermes pm doctor` for a missing/outdated tool, `hermes pm status` for conflicts, `hermes pm repair` then restart for damaged Python dependencies; a new environment needs a process restart.
 - Packaged installs: base payload is immutable; Termux uses a sealed APT package, Docker bakes the runtime and disables on-demand installs, Nix uses derivations.
-- Source pin: Hermes Agent docs at release tag v0.22.2.
+- Source: https://hermes-agent.nousresearch.com/docs/reference/package-management (pinned to v0.22.2)
 
 ## Related
 

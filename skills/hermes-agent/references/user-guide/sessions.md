@@ -67,6 +67,7 @@ session_search(session_id="20260510_174648_805cc2", around_message_id=590803, wi
 - Gateway session keys: DM `agent:main:<platform>:dm:<chat_id>`; group `agent:main:<platform>:group:<chat_id>:<user_id>`; thread shared by default; channel per user. Gateway conversations do not reset on idle or daily boundaries (legacy `session_reset` ignored; plugin `hermes-session-reset-policy` restores time-based resets). Use `/new` at task boundaries so memory and `session_search` work.
 - Auto-prune is on by default: ended sessions inactive for `retention_days` are removed at startup; open sessions from state-owned sources (`cli`, `cron`, `kanban`, `acp`, `api_server`, `subagent`, `tool`) older than that are closed non-destructively. Active sessions are never pruned.
 - `~/.hermes/sessions/sessions.json` is only a legacy mirror of the `gateway_routing` table in `state.db` (gateway entries only); legacy `*.jsonl` transcripts are no longer read.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/sessions (pinned to v0.22.2)
 
 ## Related
 

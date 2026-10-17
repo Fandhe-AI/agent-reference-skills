@@ -47,6 +47,7 @@ hermes
 - Nix: `nix run .` still runs a Nix-owned derivation; use `nix develop` for a dev shell. Termux is a bionic APT package; the source bootstrap is not its supported route.
 - Switching back: stop the source runtime, leave activation, check `command -v hermes` (Windows `Get-Command hermes -All`). Downgrading is not the reverse of a schema migration; restore a compatible pre-switch backup if needed. Deleting the checkout does not remove the packaged app or PM entries; use PM diagnostics and garbage collection.
 - Troubleshooting: wrong version (inspect command resolution), missing dependencies (`python -m pm.cli install`), gateway already running (`hermes gateway status`), skills differences after first run (newer code can sync bundled skills into the home).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/switching-to-source (pinned to v0.22.2)
 
 ## Related
 

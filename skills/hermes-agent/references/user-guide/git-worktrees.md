@@ -32,6 +32,7 @@ hermes
 - Each worktree writes checkpoints under a different shadow hash derived from its path, so `/rollback` is independent per worktree.
 - Cleanup: `git worktree remove ../repo-feature` refuses with uncommitted changes unless forced; it does not delete the branch. `~/.hermes/checkpoints/` data is not pruned automatically on removal.
 - Avoid running Hermes from the bare repo root when using worktrees.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/git-worktrees (pinned to v0.22.2)
 
 ## Related
 

@@ -14,7 +14,7 @@ hermes egress status
 ## Notes
 
 - The only implementation documented is iron-proxy, a single-binary TLS-intercepting proxy from ironsh/iron-proxy, lazy-installed and managed by `hermes egress`. See [egress-iron-proxy.md](./egress-iron-proxy.md).
-- Source: user-guide/egress (Hermes Agent docs, v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/egress (pinned to v0.22.2)
 
 ## Related
 

@@ -51,6 +51,7 @@ Ownership on update: distribution-owned (`SOUL.md`, `config.yaml`, `mcp.json`, `
 - Git ref pinning (`#v1.2.0`) is planned but not in the initial release; install tracks the default branch. Distributions are unsigned; shipped cron jobs install paused, while SOUL.md and skills are active immediately, so review before first run.
 - Export file: without `-o`, written to the managed `profile-exports/` directory under the default Hermes home (never into a Git checkout; refuses with "No safe automatic export destination" if none is safe). The desktop app adds `desktop.json` (skin, light/dark mode, custom themes, rail color, window layout). The default profile is exported via an allow-list; a named profile copies the whole directory minus credentials and `home/`, so it can include `memories/`, `sessions/`, `USER.md`, `state.db`, and logs. Inspect with `tar -tzf research-bot.tar.gz | less` before sharing.
 - Pick a distribution for a versioned agent others track; pick an export for a one-off handoff or moving machines.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/profile-distributions (pinned to v0.22.2)
 
 ## Related
 

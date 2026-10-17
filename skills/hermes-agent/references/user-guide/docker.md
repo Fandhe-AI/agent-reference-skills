@@ -78,6 +78,7 @@ model:
   base_url: http://vllm:8000/v1
   api_key: "none"
 ```
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/docker (pinned to v0.22.2)
 
 ## Related
 

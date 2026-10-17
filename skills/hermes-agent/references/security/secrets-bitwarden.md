@@ -63,7 +63,7 @@ secrets:
 - Binary: a `bws` on `PATH` is honored before PM selection; PM verifies SHA-256 from `pm/lock.json` and a mismatch aborts installation.
 - Not recommended for single-machine setups, air-gapped environments, or CI/CD with existing secret injection.
 - Also usable as the egress proxy credential source (`hermes egress setup --from-bitwarden`).
-- Source: user-guide/secrets/bitwarden (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/secrets/bitwarden (pinned to v0.22.2)
 
 ## Related
 

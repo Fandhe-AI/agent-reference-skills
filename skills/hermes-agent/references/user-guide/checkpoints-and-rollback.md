@@ -64,6 +64,7 @@ checkpoints:
 - Container terminal backends (`docker`, `singularity`, `modal`, `daytona`, `vercel_sandbox`, container plugins): no checkpoints are taken and diff/restore are refused (list still works). Local and SSH backends are unaffected.
 - Guards: git missing from `PATH` disables checkpoints; root `/` and `$HOME` skipped; directories over 50,000 files skipped; no-change snapshots skipped; snapshot failures never block tools.
 - `.checkpoints.lock` coordinates processes; do not remove it while Hermes runs.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/checkpoints-and-rollback (pinned to v0.22.2)
 
 ## Related
 

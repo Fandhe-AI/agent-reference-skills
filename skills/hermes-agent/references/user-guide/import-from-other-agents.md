@@ -44,6 +44,7 @@ Codex CLI mapping:
 - Non-interactive sessions stop at the preview unless `--yes` is passed. Memory and allowlist/denylist merges deduplicate; existing MCP servers or skills are conflicts skipped unless `--overwrite`; malformed files become per-item errors.
 - Sync: each import records its source digest in `~/.hermes/import-sync.json` (per profile). Unchanged sources are skipped; skills imported by `import-agent` are refreshed in place, while skills you modified are never clobbered. Credential-file changes never trigger a sync. `hermes profile create <name> --clone --sync-imports` carries the manifest over.
 - Coming from OpenClaw: use `hermes claw migrate`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/import-from-other-agents (pinned to v0.22.2)
 
 ## Related
 

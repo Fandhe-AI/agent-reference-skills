@@ -5,18 +5,22 @@ Hermes Agent のインストールと依存パッケージ（PM 管理）の操�
 ## クイックインストール（Linux / macOS / WSL2）
 
 ```bash
-curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+curl -fsSLo hermes-install.sh https://hermes-agent.nousresearch.com/install.sh
+less hermes-install.sh   # review before running
+bash hermes-install.sh
 ```
 
-事前に必要なのは Git、curl、tar、SHA-256 ユーティリティ。Python 3.14、Node.js、npm、ripgrep、FFmpeg は PM（package management）が pin したバージョンを供給する（システムの Node は採用されない）。ソースインストールは Python extra `all` を選択する。
+公式はダウンロード結果をそのままシェルへ渡す形式を案内しているが、ここでは保存・確認してから実行する形に変更した。事前に必要なのは Git、curl、tar、SHA-256 ユーティリティ。Python 3.14、Node.js、npm、ripgrep、FFmpeg は PM（package management）が pin したバージョンを供給する（システムの Node は採用されない）。ソースインストールは Python extra `all` を選択する。
 
 ## クイックインストール（Windows ネイティブ）
 
 ```powershell
-iex (irm https://hermes-agent.nousresearch.com/install.ps1)
+irm https://hermes-agent.nousresearch.com/install.ps1 -OutFile install.ps1
+notepad install.ps1   # review before running
+powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
-PowerShell で実行する。Git が無い場合は pin 済みの Git for Windows アーカイブが自動で取得される。
+公式は `iex (irm ...)` 形式を案内しているが、ここでは保存・確認してから実行する形に変更した。PowerShell で実行する。Git が無い場合は pin 済みの Git for Windows アーカイブが自動で取得される。オプションは `.\install.ps1 -NonInteractive` のようにファイル名の後ろへ付ける（公式の例示は scriptblock 形式のため、-File 実行時の挙動は要確認）。
 
 ## インストーラーのオプション
 

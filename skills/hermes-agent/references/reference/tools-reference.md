@@ -50,7 +50,7 @@ hermes chat --toolsets web,file,terminal
 
 - Honcho tools, Home Assistant tools (`ha_*`) and Spotify tools (`spotify_*`) are no longer built-in; they come from catalog plugins (`hermes plugins install honcho|homeassistant|spotify`).
 - The `desktop_ui` toolset also exposes the `data-tour` HTML attribute convention for stable tour targets; `gui_tour` and `show_tip` can be switched off with `display.in_app_tours` / `display.in_app_tips`.
-- Source pin: Hermes Agent docs at release tag v0.22.2.
+- Source: https://hermes-agent.nousresearch.com/docs/reference/tools-reference (pinned to v0.22.2)
 
 ## Related
 

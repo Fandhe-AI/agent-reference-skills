@@ -23,7 +23,7 @@ Surfaces:
 - Plugins can add blueprints; keys are prefixed with the plugin name (`teamtools:standup`) so they cannot replace built-ins. They appear only in profiles where the plugin is enabled. Disabling the plugin removes the blueprint from the catalog but already-created jobs keep running.
 - A blueprint is a skill whose `SKILL.md` frontmatter has a `metadata.hermes.blueprint` block; plugin authors can register one with `ctx.register_automation_blueprint()`.
 - The built-in blueprint list is rendered by a site component (`AutomationBlueprintsCatalog`) and is not present in the source markdown, so individual blueprint names are not listed here.
-- Source pin: Hermes Agent docs at release tag v0.22.2 (`automation-blueprints-catalog.mdx`).
+- Source: https://hermes-agent.nousresearch.com/docs/reference/automation-blueprints-catalog (pinned to v0.22.2)
 
 ## Related
 

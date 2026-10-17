@@ -38,6 +38,7 @@ Fields: **Name** (required, unique case-insensitively, max 64 chars); Remote gat
 - Security: session and OAuth tokens are stored as owner-only (0600) files in the Electron main process; optional **Encrypt saved secrets with the OS keychain**; `connections.json` holds labels/URLs/hosts only.
 - The remote backend must be a running `hermes serve` process; the app does not start it (except SSH connections).
 - Troubleshooting: "Connection test failed" means the backend is unreachable at that URL; HTTP passing but WebSocket failing usually means a proxy, firewall, or origin guard blocking `/api/ws`; "Update Hermes Desktop to chat with agents on other connections" means the app predates the multi-connection stack.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/multi-connection-desktop (pinned to v0.22.2)
 
 ## Related
 

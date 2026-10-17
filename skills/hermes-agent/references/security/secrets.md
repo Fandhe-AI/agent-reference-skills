@@ -31,7 +31,7 @@ Supported sources: Bitwarden Secrets Manager (`bws`), 1Password (`op://` via `op
 - A var the vault supplies under its canonical name always beats a profile alias. `preserve_existing` and aliasing live in the orchestrator, so they apply to bundled and plugin sources.
 - Child processes (terminal commands, `execute_code`, `no_agent` cron scripts) run with a sanitized env; only `terminal.env_passthrough` (or a skill's `required_environment_variables`) is forwarded, using the owning profile's value. Provider credentials cannot be declared.
 - Custom backends: subclass `agent.secret_sources.base.SecretSource` (`fetch(cfg, home_path) -> FetchResult`) and register with `ctx.register_secret_source(MySource())` in the plugin's `register(ctx)`. Bundled set is closed (Bitwarden, 1Password); others belong in plugin repos.
-- Source: user-guide/secrets (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/secrets (pinned to v0.22.2)
 
 ## Related
 

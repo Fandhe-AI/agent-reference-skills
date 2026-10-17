@@ -29,7 +29,7 @@ secrets:
 - POSIX-only (needs `/bin/sh`); on Windows the source reports unconfigured and startup continues.
 - Startup is never blocked. Errors: `secrets.command.command is empty`, `helper command failed` (run the helper manually to see stderr), `helper output was not a KEY=VALUE map`.
 - For complex CLI wrapping, prefer a secret-source plugin (caching, provenance labels, typed config).
-- Source: user-guide/secrets/command (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/secrets/command (pinned to v0.22.2)
 
 ## Related
 

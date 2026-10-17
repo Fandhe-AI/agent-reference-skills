@@ -57,7 +57,7 @@ secrets:
 - Never blocks startup; failures print a one-line warning with a `→` remediation hint. Empty field values are never applied.
 - Cache: `<hermes_home>/cache/op_cache.json` (0600, atomic), values only, invalidated when token/account/`OP_SESSION_*`/references change, not written on per-reference errors.
 - Security: the `op` child gets a minimal allowlisted env (auth/session vars, `PATH`, `HOME`, `OP_CONFIG_DIR`, `XDG_CONFIG_HOME`); set `OP_CONFIG_DIR` when `~/.config` is not writable. References must start with `op://` and are passed after `--`. Hermes refuses to overwrite the token env var itself.
-- Source: user-guide/secrets/onepassword (v0.22.2 snapshot).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/secrets/onepassword (pinned to v0.22.2)
 
 ## Related
 

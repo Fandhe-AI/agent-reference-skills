@@ -76,7 +76,7 @@ State directory `~/.hermes/proxy/` (dir `0o700`): `ca.crt` (0644), `ca.key` (060
 - Does NOT protect against: a compromised host process, loss of the trusted-proxy boundary (stolen CA key / hijacked endpoint), raw-socket bypass (Node.js only partially mitigated), credential files mounted into Docker, exfiltration to allowlisted hosts, uncovered providers, or same-uid reads of iron-proxy process memory.
 - Limitations (v1): no native Windows binary (Linux / macOS / WSL); the CA is a 10-year self-signed cert and rotation is manual; iron-proxy v0.39 supports a single bind per daemon.
 - Linux firewall (e.g. ufw default-deny) may block container-to-host traffic: `sudo ufw allow in on docker0 to any port 9090 proto tcp` (and 9091).
-- Source: user-guide/egress/iron-proxy (v0.22.2 snapshot). Upstream: github.com/ironsh/iron-proxy, docs.iron.sh.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/egress/iron-proxy (pinned to v0.22.2). Upstream: github.com/ironsh/iron-proxy, docs.iron.sh.
 
 ## Related
 

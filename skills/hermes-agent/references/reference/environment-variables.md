@@ -156,7 +156,7 @@ Other platform families documented on the page: Google Chat, Twilio SMS, DingTal
 - `AUXILIARY_WEB_EXTRACT_*` variables are obsolete. `HERMES_TOOL_PROGRESS` is ignored (use `display.tool_progress`); `HERMES_HUMAN_DELAY_*` are no longer read (use the `human_delay` config section).
 - `TERMINAL_CWD` and `MESSAGING_CWD` are deprecated in favour of `terminal.cwd` in `config.yaml`.
 - Names on the env writer's denylist (`HERMES_HOME`, `HERMES_YOLO_MODE`, `PATH`, ...) are refused by `hermes config set`.
-- Source pin: Hermes Agent docs at release tag v0.22.2.
+- Source: https://hermes-agent.nousresearch.com/docs/reference/environment-variables (pinned to v0.22.2)
 
 ## Related
 

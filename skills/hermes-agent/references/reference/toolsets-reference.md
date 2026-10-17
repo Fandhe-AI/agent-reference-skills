@@ -67,7 +67,7 @@ Dynamic toolsets:
 - `all` / `*` does not enable capability-gated tools unless their backend or credential is configured, and does not enable `kanban` (list it explicitly or be a dispatcher-spawned worker) or `catalog`.
 - `hermes tools` works at tool level (finer than toolsets), persists to `config.yaml`, and disabled tools are filtered out even when their toolset is enabled.
 - Plugin-provided platforms get an implicit `hermes-<platform>` bundle that is not part of `hermes-gateway` (e.g. `hermes-homeassistant` after installing the `homeassistant` plugin).
-- Source pin: Hermes Agent docs at release tag v0.22.2.
+- Source: https://hermes-agent.nousresearch.com/docs/reference/toolsets-reference (pinned to v0.22.2)
 
 ## Related
 

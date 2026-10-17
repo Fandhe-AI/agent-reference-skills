@@ -46,7 +46,7 @@ Skills by category.
 
 - Install path is `official/<category>/<skill>`. The source catalog does not state the install path of skills whose doc page slug differs from the skill name (for example `axolotl` links to `mlops-training-axolotl`); this is unconfirmed.
 - To contribute a skill: create `optional-skills/<category>/<skill-name>/`, add a `SKILL.md` with standard frontmatter (name, description, version, author), put supporting files in `references/`, `templates/`, or `scripts/`, and open a pull request.
-- Source pin: Hermes Agent docs at release tag v0.22.2.
+- Source: https://hermes-agent.nousresearch.com/docs/reference/optional-skills-catalog (pinned to v0.22.2)
 
 ## Related
 

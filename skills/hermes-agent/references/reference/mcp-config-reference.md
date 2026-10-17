@@ -81,7 +81,7 @@ Add-to-Hermes deep link: `hermes://mcp/install?name=NAME&config=BASE64` (`name` 
 - An unset `${VAR}` in a remote server's `url` or `headers` fails the connect closed instead of sending the literal placeholder.
 - OAuth tokens persist to `~/.hermes/mcp-tokens/<server>.json` (named profiles use `~/.hermes/profiles/<name>/mcp-tokens/`). Hermes pins the CIMD callback to ports `27890`-`27894` unless the flow reverts to a random port.
 - `ssl_verify: false` should not be used with real services.
-- Source pin: Hermes Agent docs at release tag v0.22.2.
+- Source: https://hermes-agent.nousresearch.com/docs/reference/mcp-config-reference (pinned to v0.22.2)
 
 ## Related
 

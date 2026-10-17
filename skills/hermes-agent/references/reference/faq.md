@@ -50,7 +50,7 @@ Developers can import the `AIAgent` class and use Hermes programmatically within
 | Command not found | Reload shell profile: `source ~/.bashrc` or `source ~/.zshrc` |
 | Unsupported Python version | Current first-party installations require Python 3.14, not an arbitrary newer version. The `>=3.11,<3.15` range in `pyproject.toml` only lets older installations run the updater before switching to 3.14; it does not mean the runtime supports 3.11-3.13. The installer and packaged distributions provide their pinned interpreter; do not replace the interpreter inside an installed app or container; run `hermes doctor` and use that installation's update method |
 | `node: command not found` in terminal commands | Hermes builds an environment snapshot via `bash -l` and auto-sources `~/.bashrc`; list extra files in `terminal.shell_init_files` (setting it disables the default `~/.bashrc` auto-source unless you list it; `terminal.auto_source_bashrc: false` for strict login-shell semantics) |
-| `uv` not found | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
+| `uv` not found | Download, review, then run the uv installer: `curl -LsSfo uv-install.sh https://astral.sh/uv/install.sh`, `less uv-install.sh`, `sh uv-install.sh` |
 | Permission errors | Avoid `sudo`; the installer installs to `~/.local/bin` (clean up an earlier sudo install with `sudo rm /usr/local/bin/hermes`) |
 
 ### Provider & Model Issues
@@ -155,6 +155,11 @@ Search GitHub Issues, ask on the Nous Research Discord, or file a bug report wit
 
 - **HTTP 400**: Usually indicates model mismatch or insufficient API key permissions on the provider side.
 - **Shell permission issues**: Fix with `chmod 644 ~/.zshrc` if needed.
+
+## Notes
+
+- Adapted: official docs pipe the installer straight into the shell; this page downloads and reviews it first.
+- Source: https://hermes-agent.nousresearch.com/docs/reference/faq (pinned to v0.22.2)
 
 ## Related
 

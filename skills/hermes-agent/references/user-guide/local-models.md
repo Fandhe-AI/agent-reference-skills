@@ -42,6 +42,7 @@ providers:
 - Downloads use PM's pinned URLs and SHA-256 (`pm/lock.json`), can be paused/resumed, and partials live in PM's writable `cache/partials`. Engine versions come only from PM's lockfile (no `local_runtime.tag` override).
 - **Find more models** searches Hugging Face; **Add model file** links an existing `.gguf` without copying. A running llama-server is detected and used instead of starting a new one; a custom endpoint accepts the server root or the full `/v1` URL.
 - Models live in the machine-shared `models/` directory; `runtimes/llamacpp/` holds mutable presets and server state. A GPU with 8 GB+ runs the small catalog models; 16 GB+ runs the 27-35B models at high quality.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/local-models (pinned to v0.22.2)
 
 ## Related
 

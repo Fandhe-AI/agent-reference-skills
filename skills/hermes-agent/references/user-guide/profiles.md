@@ -62,11 +62,14 @@ terminal:
 - Messaging channels (bot tokens, allowlists, `platforms:` sections, `gateway.multiplex_profiles` / `profile_routes`, pairing state) are never cloned unless `--clone-channels`; credentials shared with non-channel capabilities (`HASS_*`, `TWILIO_*`, `EMAIL_*`) are stripped only when the source's gateway would run that adapter.
 - OAuth logins for Anthropic, OpenAI Codex, and xAI use single-use refresh tokens and are not copied; the clone reads the root `~/.hermes/auth.json`. Give a profile its own login with `hermes -p <name> auth add <provider>`. Static API keys are copied.
 - Profiles do not sandbox the agent. `cwd: "."` on the local backend means the launch directory, not the profile directory. `SOUL.md` changes apply to new sessions.
-- Each profile runs its own gateway process (see multi-profile-gateways.md for multiplexing); the same bot token on two profiles is blocked (Telegram, Discord, Slack, WhatsApp, Signal). Per-profile service names such as `hermes-gateway-coder`. Inside the official Docker image, per-profile gateways are s6-supervised.
+- By default in v0.22.2 one host gateway process multiplexes every profile (`gateway.multiplex_profiles` defaults to true); named-profile `gateway install` / `start` refuses with exit 78 and attaches to the host. Per-profile gateway processes are the pre-multiplex layout (see multi-profile-gateways.md migration notes).
+- Source note: the v0.22.2 profiles page still says each profile runs its own gateway process; this conflicts with the multi-profile-gateways page, which is followed here.
+- Where a per-profile gateway does run, the same bot token on two profiles is blocked (Telegram, Discord, Slack, WhatsApp, Signal), with per-profile service names such as `hermes-gateway-coder`. Inside the official Docker image, per-profile gateways are s6-supervised.
 - The default profile is `~/.hermes` itself; its ID is always `default`. `hermes profile rename default <name>` sets only a display name (`display_name` in `~/.hermes/profile.yaml`). The default profile cannot be deleted; use `hermes uninstall`. If the sticky profile's directory is deleted by hand, ordinary commands refuse until `hermes profile use default`.
 - `HERMES_HOME` is the profile boundary; `HOME` stays the real user home on host installs. `terminal.home_mode: profile` runs tool subprocesses with `HOME={HERMES_HOME}/home`; `HERMES_REAL_HOME` exposes the actual home.
 - `hermes update` pulls code once and syncs bundled skills to all profiles; user-modified skills are never overwritten. Shell completion: `eval "$(hermes completion bash)"` or `zsh`.
 - Sharing: export file (`/export`, `/import`) or git distribution (`hermes profile install` / `update`). PM state (`installs/`, `tools/`, `cache/`) is excluded from export/import/distribution.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/profiles (pinned to v0.22.2)
 
 ## Related
 
