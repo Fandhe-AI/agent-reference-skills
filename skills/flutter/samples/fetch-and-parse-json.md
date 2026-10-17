@@ -104,6 +104,12 @@ class _MyAppState extends State<MyApp> {
 Background parsing (from https://docs.flutter.dev/cookbook/networking/background-parsing):
 
 ```dart
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+
 Future<List<Photo>> fetchPhotos(http.Client client) async {
   final response = await client.get(
     Uri.parse('https://jsonplaceholder.typicode.com/photos'),
@@ -120,6 +126,32 @@ List<Photo> parsePhotos(String responseBody) {
 
   return parsed.map<Photo>(Photo.fromJson).toList();
 }
+
+class Photo {
+  final int albumId;
+  final int id;
+  final String title;
+  final String url;
+  final String thumbnailUrl;
+
+  const Photo({
+    required this.albumId,
+    required this.id,
+    required this.title,
+    required this.url,
+    required this.thumbnailUrl,
+  });
+
+  factory Photo.fromJson(Map<String, Object?> json) {
+    return Photo(
+      albumId: json['albumId'] as int,
+      id: json['id'] as int,
+      title: json['title'] as String,
+      url: json['url'] as String,
+      thumbnailUrl: json['thumbnailUrl'] as String,
+    );
+  }
+}
 ```
 
 ## Notes
@@ -129,4 +161,5 @@ List<Photo> parsePhotos(String responseBody) {
 - Android requires `<uses-permission android:name="android.permission.INTERNET" />` in `AndroidManifest.xml`; macOS requires the `com.apple.security.network.client` entitlement (`<true/>`) in `DebugProfile.entitlements` and `Release.entitlements`.
 - Call `fetchAlbum()` in `initState()` or `didChangeDependencies()`, never inside `build()`, which runs repeatedly.
 - Throw an exception on non-200 responses instead of returning `null`; otherwise `snapshot.hasData` never becomes true.
+- Background-parsing block trimmed from the official complete example; the `PhotosList` UI is omitted. `compute` comes from `package:flutter/foundation.dart`.
 - `compute()` messages must be simple (primitives, `List<Photo>`); passing a `Future` or `http.Response` between isolates can fail.
