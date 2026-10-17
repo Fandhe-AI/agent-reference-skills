@@ -45,7 +45,7 @@ ruff==0.3.0
 To upgrade a dependency, use `--upgrade-package`:
 
 ```console
-$ uv pip compile - -o requirements.txt --upgrade-package ruff
+$ echo "ruff" | uv pip compile - -o requirements.txt --upgrade-package ruff
 ```
 
 To upgrade all dependencies, there is an `--upgrade` flag.
@@ -119,6 +119,7 @@ Resolution can then succeed, but if `a` is correct that it does not support `c>=
 
 ## Notes
 
+- The official docs omit the `echo "ruff" |` input in the `--upgrade-package` example; it is added here because `-` reads requirements from stdin.
 - `--group` is an addition not present in pip-tools' `pip compile` (they are considering it); uv expects to support whatever syntax and semantics they adopt. `--group` flags do not apply to other specified sources: `uv pip compile some/path/pyproject.toml --group foo` sources `foo` from `./pyproject.toml`, not `some/path/pyproject.toml`.
 - Changed in 0.13.0: `--require-hashes` in constraints files included with `-c` from a requirements file is now honored (previously ignored); hashes are required for all requirements in the installation, and there is no opt-out while the directive is present. Add the missing hashes, or remove the `--require-hashes` directive from the included constraints file. See `../getting-started/breaking-changes-0-13.md`.
 

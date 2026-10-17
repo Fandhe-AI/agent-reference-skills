@@ -20,7 +20,7 @@ To install packages from within the notebook, create a dedicated kernel for the 
 
 ```console
 $ uv add --dev ipykernel
-$ uv run ipython kernel install --user --env VIRTUAL_ENV $(pwd)/.venv --name=project
+$ uv run ipython kernel install --user --env VIRTUAL_ENV "$(pwd)/.venv" --name=project
 $ uv run --with jupyter jupyter lab
 ```
 
@@ -90,6 +90,7 @@ $ uv add --dev uv
 ## Notes
 
 - VS Code requires `ipykernel` in the project environment; to avoid adding it as a dev dependency, run `uv pip install ipykernel`.
+- The official docs show `$(pwd)/.venv` unquoted; it is quoted here so paths containing spaces or glob characters are passed as a single argument.
 
 ## Related
 
