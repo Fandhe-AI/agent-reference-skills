@@ -193,7 +193,7 @@ Type: `React.Component<CameraViewProps>`. Inherits `ViewProps`.
 | `takePictureAsync(options?: CameraPictureOptions)` | all | `Promise<CameraCapturedPicture>` | Saves the picture to the cache directory (rotated and scaled to match the preview unless `skipProcessing`). Wait for `onCameraReady` first. |
 | `toggleRecordingAsync()` | all | `Promise<void \| undefined>` | Pauses or resumes a recording. iOS 18 only. |
 
-On native platforms the local image URI is temporary; make a permanent copy with `FileSystem.copy`. On web `uri` is a base64 string.
+On native platforms the local image URI is temporary; make a permanent copy with the `expo-file-system` `File` instance method `copy()` / `copySync()` (e.g. `new File(photo.uri).copy(new File(Paths.document, "photo.jpg"))`). On web `uri` is a base64 string.
 
 ### Hooks
 
@@ -292,6 +292,7 @@ Read-only properties: `dismissScanner`, `FlashMode` (`Record<keyof FlashMode, ..
 ## Notes
 
 - Platforms: Android (device only), iOS (device only), Web, included in Expo Go. Package `expo-camera`, source `https://github.com/expo/expo/tree/sdk-58/packages/expo-camera`. Pinned to Expo SDK 58 docs (modificationDate September 15, 2026).
+- The source text says `FileSystem.copy`, but its link targets the `File#copy(destination, options)` instance method of `expo-file-system`; there is no module-level `FileSystem.copy` function (the legacy `copyAsync` lives in `expo-file-system/legacy`).
 - Only one camera preview can be active at a time; unmount `CameraView` when a screen is unfocused.
 - Wait for `onCameraReady` before calling `takePictureAsync`. While the preview is paused, `takePictureAsync` throws on Android and captures the last frame on iOS.
 - Web: image URIs are always base64 strings. In cross-origin iframes in Chrome 64+, add `allow="microphone; camera;"` to the iframe element.

@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 | --- | --- | --- | --- |
 | colors | readonly [ColorValue, ColorValue, ...ColorValue[]] | — | Colors representing gradient stops. At least two are required (for a single color use `style.backgroundColor` on a `View`). For TypeScript to know the array has 2+ values, provide it inline or typed `as const`. |
 | dither (Android) | `boolean` | `true` | Enables or disables paint dithering, which can reduce color banding. `false` may improve rendering performance. |
-| end | `LinearGradientPoint \| null` | — | End point. E.g. `{ x: 0.1, y: 0.2 }` ends 10% from the left and 20% from the bottom. On web, only changes the angle (CSS gradients do not support changing the end position). |
+| end | `LinearGradientPoint \| null` | — | End point. E.g. `{ x: 0.1, y: 0.2 }` ends 10% from the left and 20% from the top. On web, only changes the angle (CSS gradients do not support changing the end position). |
 | locations | `readonly [number, number, ...number[]] \| null` | `[]` | Numbers from `0` to `1` (ascending), same length as `colors`, giving each color-stop location. If omitted, colors are distributed evenly. |
 | start | `LinearGradientPoint \| null` | — | Start point. E.g. `{ x: 0.1, y: 0.2 }` starts 10% from the left and 20% from the top. On web, only changes the angle. |
 
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
 ## Notes
 
 - Platforms: Android, iOS, tvOS, Web, included in Expo Go. Source `https://github.com/expo/expo/tree/sdk-58/packages/expo-linear-gradient`. Pinned to Expo SDK 58 docs (modificationDate October 16, 2026).
+- The source describes the `end` example `{ x: 0.1, y: 0.2 }` as "20% from the bottom"; since `start` and `end` share the same coordinate system (y = 0 is the top edge), this page says "from the top".
 - React Native also provides the `backgroundImage` style property on `View` (Android, iOS, web) supporting CSS gradient syntax such as `linear-gradient()` and `radial-gradient()`, as an alternative without an extra dependency.
 
 ## Related
