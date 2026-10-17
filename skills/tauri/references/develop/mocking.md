@@ -128,7 +128,7 @@ For window-specific code (e.g. a splash screen), `mockWindows()` creates fake wi
 import { beforeAll, expect, test } from 'vitest';
 import { randomFillSync } from 'crypto';
 
-import { mockWindows } from '@tauri-apps/api/mocks';
+import { mockWindows, mockIPC } from '@tauri-apps/api/mocks';
 
 // jsdom doesn't come with a WebCrypto implementation
 beforeAll(() => {
@@ -144,6 +144,9 @@ beforeAll(() => {
 
 test('invoke', async () => {
   mockWindows('main', 'second', 'third');
+  mockIPC((cmd) => {
+    if (cmd === 'plugin:window|get_all_windows') return ['main', 'second', 'third'];
+  });
 
   const { getCurrentWebviewWindow, getAllWebviewWindows } = await import('@tauri-apps/api/webviewWindow');
 
@@ -157,6 +160,7 @@ test('invoke', async () => {
 - Fences of the first two examples changed from `javascript` to `typescript` because the snippets use TypeScript-only syntax (`as number`).
 - Upstream shell example targets the v1 shell IPC (`args.message` / `onEventFn`); rewritten for plugin-shell v2 (`plugin:shell|execute`). Mocking `spawn()` (`plugin:shell|spawn` with a `Channel`) is not shown because it was not verified.
 - Upstream Windows example imports `getCurrent` / `getAll` from `@tauri-apps/api/webviewWindow`; the module (2.12.4) exports `getCurrentWebviewWindow` / `getAllWebviewWindows` (async).
+- In 2.12.4 `mockWindows()` ignores the additional labels and only sets current-window metadata; `getAllWebviewWindows()` invokes `plugin:window|get_all_windows`, so the example mocks it with `mockIPC()`.
 - Remember to clear mocks after each test run to undo mock state changes between runs; see `clearMocks()` in the JS API reference.
 - `mockWindows()` only fakes the existence of windows, not window properties. To simulate window properties, intercept the corresponding calls with `mockIPC()`.
 - `mockIPC` fakes `invoke` under the mock runtime; no real webview or Rust backend runs. To mock the same commands in end-to-end tests, `@wdio/tauri-service` provides an equivalent `browser.tauri.mock()` (see WebDriver).

@@ -233,7 +233,7 @@ tauri::Builder::default()
 
     let json = std::fs::read_to_string(&resource_path).unwrap();
     // Or when dealing with Android, use the file system plugin instead
-    // let json = app.fs().read_to_string(&resource_path);
+    // let json = app.fs().read_to_string(&resource_path)?;
 
     let lang_de: serde_json::Value = serde_json::from_str(&json).unwrap();
 
@@ -257,7 +257,7 @@ fn hello(handle: tauri::AppHandle) -> Result<String, String> {
 
     let json = std::fs::read_to_string(&resource_path).unwrap();
     // Or when dealing with Android, use the file system plugin instead
-    // let json = handle.fs().read_to_string(&resource_path);
+    // let json = handle.fs().read_to_string(&resource_path).map_err(|e| e.to_string())?;
 
     let lang_de: serde_json::Value = serde_json::from_str(&json).unwrap();
 
@@ -359,6 +359,7 @@ With the `opener` plugin:
 ## Notes
 
 - Upstream Rust command examples use `?` in functions without a `Result` return type, pass `String` by value to `serde_json::from_str`, and return `&Value` where `String` is declared; corrected here (`Result<_, String>` with `map_err`, `from_str(&json)`, `as_str()`).
+- The Android `FsExt` variants (`app.fs()` / `handle.fs()`) return a `Result`; upstream assigns it directly, here it is unwrapped with `?` / `map_err` in the commented-out alternatives.
 
 ## Related
 
