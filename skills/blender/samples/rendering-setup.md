@@ -129,6 +129,8 @@ render.resolution_y          = 1080
 render.resolution_percentage = 100
 render.fps                   = 24
 
+if hasattr(render.image_settings, 'media_type'):  # Blender 5.0+
+    render.image_settings.media_type = 'MULTI_LAYER_IMAGE'
 render.image_settings.file_format = 'OPEN_EXR_MULTILAYER'  # preserves all passes
 render.image_settings.color_depth = '32'
 render.filepath = "//renders/frame_####"
@@ -145,7 +147,7 @@ print("Active passes: Z =", view_layer.use_pass_z,
 - `BLENDER_EEVEE` is the engine identifier in Blender 5.0+ (renamed from `BLENDER_EEVEE_NEXT`, used in 4.2-4.5).
 - Blender 5.0 renamed many render passes to avoid obscure abbreviations (e.g. `'DiffCol'` to `'Diffuse Color'`, `'IndexMA'` to `'Material Index'`, `'Z'` to `'Depth'`); update scripts that look passes up by name.
 - Blender 5.0: `scene.eevee.gtao_distance` moved to `view_layer.eevee.ambient_occlusion_distance`; `scene.eevee.use_gtao` and `gtao_quality` were removed (they had no effect since 4.2).
-- Blender 5.0: `ImageFormatSettings.media_type` must be set to an appropriate type before setting `file_format`.
+- Blender 5.0: `ImageFormatSettings.media_type` must be set to an appropriate type before setting `file_format`; the example sets `'MULTI_LAYER_IMAGE'` for `'OPEN_EXR_MULTILAYER'` and guards it with `hasattr` so 4.x (no `media_type`) still works.
 - `cprefs.get_devices()` must be called before iterating `cprefs.devices`; in background mode the list can be empty until refreshed.
 - `use_pass_*` flags are per `ViewLayer`; a scene with multiple view layers needs each configured separately.
 - `OPEN_EXR_MULTILAYER` is the only format that stores all render passes in a single file; use `PNG` when only the Combined pass is needed.
