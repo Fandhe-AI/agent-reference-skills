@@ -333,6 +333,8 @@ On the web, Flutter compiles your application code into either JavaScript or Web
 
 - Impeller availability by device: see the "Impeller availability" page linked from the original (https://flutter.dev/go/can-i-use-impeller) and the Impeller rendering engine page in the testing-performance references.
 - `Window.render()` is the original article's wording and predates multi-view support: in current `dart:ui` the composited scene is rendered through `FlutterView.render(Scene)` of the `FlutterView` associated with each `RenderView`; the singleton `window` / `SingletonFlutterWindow` is deprecated.
+- The Android `MethodChannel(flutterView, "foo")` snippet is verbatim from the original and predates the current Android embedding: `io.flutter.embedding.android.FlutterView` does not implement `BinaryMessenger`, so pass `flutterEngine.dartExecutor.binaryMessenger` (e.g. inside `FlutterActivity.configureFlutterEngine`) instead.
+- The FFI `MessageBoxW` snippet is verbatim from the original and leaks the two `toNativeUtf16()` allocations; in real code keep the pointers and release them with `malloc.free` in a `finally` block (or allocate via `using((arena) => ...)` with `toNativeUtf16(allocator: arena)`).
 - Flutter (Dart, one codebase for mobile / web / desktop) is a separate framework from Kotlin Multiplatform with Compose Multiplatform (kotlin-multiplatform); their APIs are not interchangeable. The platform-embedding material (Activity, UIViewController, Win32) concerns the Flutter embedders, not the `android-*` / `apple-*` skills' platform APIs.
 
 ## Related
