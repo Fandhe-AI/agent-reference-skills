@@ -23,7 +23,7 @@ curl -s -X POST http://127.0.0.1:5432/v1/query \
 2. `Authorization: Bearer` 認証（`28000`）
 3. ヘッダの `tenant_id` 相当拒否（`42601`）
 4. 本文の UTF-8／JSON 構文／`op` フィールドの形（`42601`）
-5. `op` 許可リスト判定（11 値の厳密一致。語彙外は `0A000`。DDL・UDF 呼び出し・トランザクション制御を含む）
+5. `op` 許可リスト判定（11 値の厳密一致。語彙外は `0A000`。許可リスト外の DDL（`CREATE INDEX`／`DROP INDEX`／`CREATE VIEW`／`DROP VIEW` 等。`create_table`／`alter_table`／`drop_table` は 11 値に含まれ受理される）・UDF 呼び出し・トランザクション制御を含む）
 6. op 別スキーマ検証（必須キー欠落・未知キー・型不一致・`null` は `42601`）
 7. op 別の意味検証・実行（`search` は `explain: true` を通常実行より先に判定）
 
