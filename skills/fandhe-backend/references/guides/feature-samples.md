@@ -39,7 +39,7 @@ let server = Server::new()
 | static | `fandhe-backend-plugin-static` | `cargo run --example static_demo -p fandhe-backend-core --features static` |
 | hub-wiring | `fandhe-backend-plugin-hub-wiring` | `cargo run --release -p fandhe-backend-plugin-hub-wiring --example hub_service_demo` |
 
-## 各 feature の要点
+## Notes
 
 - **websocket**: RFC 6455 ハンドシェイク検証・101 応答を `UpgradeHandler` 拡張点経由で提供する。`GET /ws`（既定パス）へ接続するとエコーセッションが確立する
 - **graphql**: `POST /graphql` をパスインターセプトし、`async-graphql` で実クエリを実行する。`Server::graphql` にスキーマを登録した場合のみ処理し、未登録時は feature 有効でもフォールスルーする
@@ -48,17 +48,12 @@ let server = Server::new()
 - **tracing**: サンプリング付き可観測性を `Middleware` 拡張点経由で提供する。決定的カウンタ方式のサンプリング + 既定で非同期・バッファ済み I/O（`tracing-appender` の non-blocking writer）により RPS への影響を抑える
 - **openapi**: `utoipa::path` 定義から `gen-openapi` CLI で `openapi.json` / `openapi.yaml` を生成し静的埋め込みする。`Server::openapi()` を登録すると両方が同一スキーマ源（`ApiDoc`）から配信される
 - **cors**: 配線は 2 点のみ。`Router::options_fallback(...)` でプリフライトを委譲し、`Server::new().handler(router).cors(config)` で実リクエスト応答へのヘッダ付与を有効化する（未登録なら feature 有効でも完全フォールスルー、opt-in）。`CorsConfig::builder()` は許可オリジン完全一致リスト（既定）・`allow_any_origin()`・`allow_credentials`・`allow_headers`・`max_age` 等を提供し、`allow_any_origin()` と `allow_credentials(true)` の併用は `build()` が `Err` を返す（フェイルクローズ）
-- **compression**: 配線は 1 点のみ。`Server::new().handler(router).compression(config)` で登録すると、ステータス・`Content-Type`・body サイズ・`Accept-Encoding` の判定基準を満たすレスポンスを gzip 圧縮する（未登録なら feature 有効でも完全フォールスルー、opt-in）。`CompressionConfig::builder()` は `min_size`（既定 1024 バイト）・`compressible_types`（既定 `text/*`・`application/json` 等）を提供する
-- **static**: 配線は `Server::new().static_files(config)` の 1 点のみ。`StaticFilesConfig::builder(mount, root)` は `root` を構築時に `canonicalize` し、不在・非ディレクトリを `Err` で早期拒否する
+- **compression**: 配線は 1 点のみ。`Server::new().handler(router).compression(config)` で登録すると、ステータス・`Content-Type`・body サイズ・`Accept-Encoding` の判定基準を満たすレスポンスを gzip 圧縮する（未登録なら feature 有効でも完全フォールスルー、opt-in）。`CompressionConfig::builder()` は `min_size`（既定 1024 バイト）・`compressible_types`（既定 `text/*`・`application/json` 等）を提供する。秘密情報を含みやすいレスポンスは BREACH 類似の情報漏洩リスクがあるため、対象 `Content-Type` から除外することを推奨する
+- **static**: 配線は `Server::new().static_files(config)` の 1 点のみ。`StaticFilesConfig::builder(mount, root)` は `root` を構築時に `canonicalize` し、不在・非ディレクトリを `Err` で早期拒否する。パストラバーサル対策は二層防御（I/O 前の字句検証 + `canonicalize` 後の実パスが正規化済み root 配下か確認）で行い、シンボリックリンク経由の脱出も拒否する。先頭が `.` のセグメントは一律拒否し、`.env`・`.git/config` 等の機密ファイルが配信されることを防ぐ。ファイル未検出・検証失敗・サイズ超過（`max_file_bytes`、既定 8 MiB）は一律 404（フェイルクローズ）。ファイル I/O は `tokio::task::spawn_blocking` に閉じる
 - **hub-wiring**: マルチテナントのテナント境界強制を `RequestGate` 拡張点（`TenantGate`）だけで実現する。JWT 検証は `fandhe-backend-plugin-jwt`（`JwtPolicy` 必須）に委譲される（v0.5.0）
-
-## Notes
-
 - 掲載する example の多くは NFR（性能）計測専用として追加されたものである（doc comment に「計測専用」と明記）。production 配線の書き方は各 example のコードと `../getting-started/minimal-server.md` の `Server` builder 呼び出し例を参照する
 - `fandhe-backend-plugin-jwt` / `fandhe-backend-plugin-csrf`（v0.5.0 で追加）は `examples/with-*` に standalone サンプルがない。`fandhe-backend-plugin-jwt` の `examples/jwt_gate_server.rs` は NFR-6 計測専用サーバであり、配線の参考用サンプルではない
 - `crates/core/examples/*` は最小 example。独立プロジェクトとして `cargo run` できる standalone 版（`with-<feature>` 命名）は `examples/` に、複数 feature を同時配線した実運用形の雛形は `templates/app/` にある
-- **static**: パストラバーサル対策は二層防御（I/O 前の字句検証 + `canonicalize` 後の実パスが正規化済み root 配下か確認）で行い、シンボリックリンク経由の脱出も拒否する。先頭が `.` のセグメントは一律拒否し、`.env`・`.git/config` 等の機密ファイルが配信されることを防ぐ。ファイル未検出・検証失敗・サイズ超過（`max_file_bytes`、既定 8 MiB）は一律 404（フェイルクローズ）。ファイル I/O は `tokio::task::spawn_blocking` に閉じる
-- **compression**: 秘密情報を含みやすいレスポンスは BREACH 類似の情報漏洩リスクがあるため、対象 `Content-Type` から除外することを推奨する
 - pay-for-what-you-use の検証は各 feature を無効化した状態で当該プラグインの依存が依存グラフから完全に消えることで確認する: `cargo tree -p fandhe-backend-core`（feature なし） / `cargo tree -p fandhe-backend-core --features websocket`（feature あり）
 
 ## Related

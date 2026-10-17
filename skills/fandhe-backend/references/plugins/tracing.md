@@ -1,6 +1,6 @@
 # tracing
 
-可観測性（サンプリング付きトレーシング）プラグイン（TASK-10.1）。REQ-10 の PoC-10 実測（サンプリングなし構成で RPS 劣化 31.6%・p95 悪化 61.7%）を踏まえ、`Middleware` 拡張点上で一定割合のみ span/event を記録する。
+可観測性（サンプリング付きトレーシング）プラグイン（TASK-10.1）。REQ-10 の PoC-10 実測（サンプリングなしで RPS 最大 63.0% 劣化、非同期 I/O 化のみでも RPS 劣化 31.6%・p95 悪化 61.7%）を踏まえ、`Middleware` 拡張点上で一定割合のみ span/event を記録する。
 
 - feature 名: `tracing`
 - crate 名: `fandhe-backend-plugin-tracing`（crates/plugin-tracing）
