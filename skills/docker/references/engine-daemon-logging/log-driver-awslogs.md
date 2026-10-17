@@ -30,12 +30,14 @@ $ docker run \
 With Docker Compose:
 
 ```yaml
-myservice:
-  logging:
-    driver: awslogs
-    options:
-      awslogs-region: us-east-1
-      awslogs-group: myLogGroup
+services:
+  myservice:
+    image: alpine
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: us-east-1
+        awslogs-group: myLogGroup
 ```
 
 ## Options / Props
@@ -73,6 +75,7 @@ $ docker run \
 - The CloudWatch log API doesn't support `:` in the log name, which affects `{{ .ImageName }}` as a tag; use `--log-opt tag='{{ with split .ImageName ":" }}{{join . "_"}}{{end}}-{{.ID}}'` (yields e.g. `alpine_latest-bf0072049c76`).
 - Credentials must reach the Docker daemon via `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN`, the root user's `~/.aws/credentials`, or an EC2 instance profile. Docker reads credentials when the container starts; restart the container after refreshing temporary credentials.
 - Adapted: the official daemon.json / Compose examples set only `awslogs-region`; `awslogs-group` is required, so create the group beforehand or set `awslogs-create-group=true` with the `logs:CreateLogGroup` IAM permission.
+- Adapted: the official Compose snippet places `myservice` at the top level with no image; it is nested under `services:` with an example `image` here so the file is valid under the Compose Specification.
 - Required IAM actions: `logs:CreateLogStream` and `logs:PutLogEvents`.
 
 ## Related
