@@ -11,8 +11,7 @@ const inngest = new Inngest({ id: "my-app" });
 
 // Option A: step.ai.infer() — call any OpenAI-compatible endpoint directly
 export const summarizeTicket = inngest.createFunction(
-  { id: "summarize-ticket" },
-  { event: "app/ticket.created" },
+  { id: "summarize-ticket", triggers: { event: "app/ticket.created" } },
   async ({ event, step }) => {
     const summary = await step.ai.infer("summarize-with-openai", {
       model: step.ai.models.openai({ model: "gpt-4o" }),
@@ -38,8 +37,7 @@ export const summarizeTicket = inngest.createFunction(
 
 // Option B: step.ai.wrap() — wrap any AI SDK call for durability
 export const classifyContent = inngest.createFunction(
-  { id: "classify-content" },
-  { event: "app/content.uploaded" },
+  { id: "classify-content", triggers: { event: "app/content.uploaded" } },
   async ({ event, step }) => {
     const { text } = await step.ai.wrap("classify-with-vercel-ai", generateText, {
       model: openai("gpt-4-turbo"),

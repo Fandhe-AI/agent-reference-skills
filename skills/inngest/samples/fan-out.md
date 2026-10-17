@@ -10,8 +10,7 @@ const inngest = new Inngest({ id: "my-app" });
 // One event triggers all functions listening to it — no coordination needed
 
 export const sendWelcomeEmail = inngest.createFunction(
-  { id: "send-welcome-email" },
-  { event: "app/user.signup" },
+  { id: "send-welcome-email", triggers: { event: "app/user.signup" } },
   async ({ event, step }) => {
     await step.run("send-email", async () => {
       await sendEmail({ to: event.data.user.email, template: "welcome" });
@@ -20,8 +19,7 @@ export const sendWelcomeEmail = inngest.createFunction(
 );
 
 export const startStripeTrial = inngest.createFunction(
-  { id: "start-stripe-trial" },
-  { event: "app/user.signup" },
+  { id: "start-stripe-trial", triggers: { event: "app/user.signup" } },
   async ({ event, step }) => {
     const customer = await step.run("create-stripe-customer", async () => {
       return stripe.customers.create({ email: event.data.user.email });
