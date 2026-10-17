@@ -93,5 +93,5 @@ struct CreateAlbumIntent: AppIntent {
 
 - Source article: "Integrating your photo app with Apple Intelligence" (https://developer.apple.com/documentation/appintents/integrating-your-photo-app-with-apple-intelligence), a sample code article. Listings are separate fragments; listing 3 is truncated exactly as published.
 - Target OS: iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, Xcode 27.0 (article metadata).
-- Schema conformance on the entity is a prerequisite for providing onscreen cues; the view shows one photo at a time, so the app annotates an `NSUserActivity` with the visible entity instead of a per-view annotation.
+- The article states that schema conformance is a prerequisite for providing onscreen cues in this photos-domain sample; the view shows one photo at a time, so the app annotates an `NSUserActivity` with the visible entity instead of a per-view annotation.
 - See samples/spotlight-indexed-entities.md for the donation side of `IndexedEntity`.

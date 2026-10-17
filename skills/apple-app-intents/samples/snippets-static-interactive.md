@@ -67,4 +67,4 @@ extension LandmarkSnippetIntent {
 
 - Source article: "Displaying static and interactive snippets" (https://developer.apple.com/documentation/appintents/displaying-static-and-interactive-snippets). The article also covers the snippet lifecycle, `requestConfirmation` sequences, and `reload()`; those listings are not reproduced here.
 - Target OS: `SnippetIntent` and `ShowsSnippetIntent` availability is on references/system-integration/snippetintent.md and showssnippetintent.md (SDK 27.0, Xcode 27.0).
-- The first `ClosestLandmarkIntent` listing in the article returns only `ReturnsValue<LandmarkEntity>`; the version shown here adds `ShowsSnippetIntent` and `snippetIntent:` to hand off to the snippet intent.
+- The article first shows a `ClosestLandmarkIntent` that returns only `ReturnsValue<LandmarkEntity>`; the listing reproduced here is the article's later, verbatim version that adds `ShowsSnippetIntent` and `snippetIntent:` to hand off to the snippet intent.

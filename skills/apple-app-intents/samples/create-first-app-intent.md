@@ -99,4 +99,4 @@ struct OpenFavorites: AppIntent {
 - Source article: "Creating your first app intent" (https://developer.apple.com/documentation/appintents/creating-your-first-app-intent). Listings are shown in article order as separate fragments; they are not one compilable file.
 - Target OS: App Intents iOS 16.0+ / macOS 13.0+ / watchOS 9.0+ / visionOS 1.0+; `AppIntent.supportedModes` / `IntentModes` are iOS 26.0+ (see references/intents/intentmodes.md). SDK: Xcode 27.0.
 - The article says the `@AppIntent` property wrapper is only for intents that support a system schema; `@Parameter` is only needed for custom (non-schema) intents.
-- `@Dependency` property names must match the registration; register objects early because the system may run intents right after launch.
+- The article states: "set the property's name to the variable name you used at registration time"; register objects early because the system may run intents right after launch.
