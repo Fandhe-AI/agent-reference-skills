@@ -39,7 +39,7 @@ Renders a link using `href` to another route. By default it accepts children and
 | `ref` | `Ref<Text>` | Ref to the underlying `Text`. |
 | `relativeToDirectory` | `boolean` | Relative URL references are relative to the directory or the document. By default, relative paths are relative to the document. |
 | `replace` | `boolean` | Removes the current route from the history and replaces it with the specified URL. |
-| `withAnchor` | `boolean` | Replaces the initial screen with the current route. |
+| `withAnchor` | `boolean` | Also loads the navigator's anchor route (`unstable_settings.anchor`) below the target route when navigating, so back returns to the anchor. |
 
 ### `Redirect`
 
@@ -49,7 +49,7 @@ Redirects to the `href` as soon as the component is mounted. Platforms: Android,
 | --- | --- | --- |
 | `href` | `Href` | The path of the route to navigate to (string or object with `pathname` and optional `params`). |
 | `relativeToDirectory` | `boolean` | Relative to the directory or the document (default document). |
-| `withAnchor` | `boolean` | Replaces the initial screen with the current route. |
+| `withAnchor` | `boolean` | Also loads the navigator's anchor route (`unstable_settings.anchor`) below the target route when navigating, so back returns to the anchor. |
 
 ### `Link.AppleZoom` (iOS 18+)
 
@@ -170,6 +170,7 @@ import { Pressable, Text } from 'react-native';
 ## Notes
 
 - Platforms: android, ios, tvos, web, expo-go; `Link.AppleZoom` and `Link.AppleZoomTarget` need iOS 18+; `Link.Menu`, `Link.MenuAction`, `Link.Preview`, `Link.Trigger` and `usePreventZoomTransitionDismissal` are iOS only.
+- The v58 API page describes `withAnchor` as "Replaces the initial screen with the current route."; this page follows the router-settings and SDK 57 to 58 migration guides, which describe it as loading the anchor route below the target.
 - Expo Router `Link` and `Redirect` are file-based routing components built on React Navigation. They are different APIs from the same-named `Link` in react-router and tanstack-router.
 - The official API-page snippets for `Link.Preview` / `Link.Menu` omit `Link` and `Link.Trigger`; they were added here because a `Link` with a preview or menu throws without a `Link.Trigger`.
 - Source: https://docs.expo.dev/versions/v58.0.0/sdk/router/link/ (modificationDate September 16, 2026).

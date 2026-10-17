@@ -105,7 +105,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 | Hook | Returns | Description |
 | --- | --- | --- |
 | `useCurrentRouteInfo()` | `UrlObject \| undefined` | Returns route info for a screen it is called from. |
-| `useFocusEffect(effect, do_not_pass_a_second_prop)` | `void` | Runs an effect whenever a route is focused; cleanup runs when the screen loses focus, not on unmount. `effect` is a memoized `EffectCallback`; wrap it in `React.useCallback`. |
+| `useFocusEffect(effect, do_not_pass_a_second_prop)` | `void` | Runs an effect whenever a route is focused; the optional cleanup runs when the screen loses focus, the dependencies change, or the component unmounts. `effect` is a memoized `EffectCallback`; wrap it in `React.useCallback`. |
 | `useGlobalSearchParams()` | `RouteOutputParams<TRoute> & TParams` | URL parameters for the globally selected route, including dynamic path segments. Updates even when the route is not focused. |
 | `useIsFocused()` | `boolean` | Whether the screen is focused. |
 | `useLoaderData()` | `LoaderFunctionResult<T>` | Result of the `loader` function for the calling route. |
@@ -199,6 +199,7 @@ The source page also documents the following types, not reproduced here: `BaseRo
 - In SDK 56 and later, Expo Router no longer supports importing from external `@react-navigation/*` packages in application code; repoint those imports to the matching `expo-router` entry points.
 - `useLocalSearchParams` is preferred over `useGlobalSearchParams` in stacks because it only updates when the route is focused.
 - Expo Router is file-based and built on React Navigation. Its `Link`, `useRouter`, and `Stack` are different APIs from the same-named APIs in react-router and tanstack-router.
+- The v58 API page says the `useFocusEffect` cleanup runs "not on unmount"; this page follows the focus-handling guide, which states cleanup also runs on dependency change and unmount.
 - Source: https://docs.expo.dev/versions/v58.0.0/sdk/router/ (modificationDate October 13, 2026).
 
 ## Related
