@@ -4,31 +4,46 @@ source: https://www.typescriptlang.org/docs/handbook/nightly-builds.html
 
 # Nightly Builds
 
-nightly ビルドの取得とエディター設定。nightly は `main` ブランチから PST 深夜までに npm へ公開される。
+Fetching nightly builds and configuring editors. Nightly builds are published to npm from the `main` branch by midnight PST.
 
-## nightly のインストール
+## Install a nightly
 
 ```sh
 npm install -D typescript@next
 ```
 
-## VS Code で workspace の TypeScript を切り替え
+Per the TypeScript 7.0 announcement, nightlies resume under the `next` tag of the `typescript` package. See install.md for the former `@typescript/native-preview` package.
+
+## TypeScript 7 editor support
+
+Source: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
+
+- TypeScript 7 uses the Language Server Protocol (LSP); other editors work through their LSP support (check your editor's documentation).
+- VS Code: a dedicated TypeScript 7 extension is available. Toggle it with the "Disable TypeScript 7 Language Server" and "Enable TypeScript 7 Language Server" commands from the command palette. The announcement says VS Code itself will ship TypeScript 7 support in the coming weeks.
+- Visual Studio: the latest version automatically enables TypeScript 7 based on your workspace.
+- TypeScript 7 does not yet expose a stable programmatic API. Tools that embed TypeScript (such as Volar) can only rely on TypeScript 6.0 for now.
+
+## TypeScript 6.0 and earlier (JS implementation): editor setup
+
+> The settings below are from the legacy Nightly Builds handbook page and describe the JavaScript implementation (`node_modules/typescript/lib`). They are not documented for the TypeScript 7 native build.
+
+### VS Code: switch the workspace TypeScript
 
 ```json
 "typescript.tsdk": "<path to your folder>/node_modules/typescript/lib"
 ```
 
-`.vscode/settings.json` に追加する。`typescript@next` が導入済みであることが前提。
+Add to `.vscode/settings.json`. Requires `typescript@next` to be installed.
 
-## Sublime Text
+### Sublime Text
 
 ```json
 "typescript_tsdk": "<path to your folder>/node_modules/typescript/lib"
 ```
 
-`Settings - User` ファイルに追加する。
+Add to the `Settings - User` file.
 
-## IntelliJ IDEA
+### IntelliJ IDEA
 
 ```text
 # Mac (Preferences > Languages & Frameworks > TypeScript)
@@ -38,6 +53,4 @@ npm install -D typescript@next
 C:\Users\USERNAME\AppData\Roaming\npm\node_modules\typescript\lib
 ```
 
-npm でインストールした場合の TypeScript Version に設定するパス。
-
-> 注記: 7.0 ブログは、nightly が `typescript` パッケージの `next` タグで再開されると記載している。旧 `@typescript/native-preview` は install.md を参照。
+Path to set as the TypeScript Version when installed via npm.

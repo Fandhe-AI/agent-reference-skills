@@ -1,42 +1,42 @@
 ---
-source: https://github.com/microsoft/TypeScript/blob/main/README.md
+source: https://github.com/microsoft/typescript-go/blob/typescript/v7.0.2/README.md
 ---
 
 # Install
 
-TypeScript 本体のインストールコマンド集。7.0 ではネイティブ版 `tsc` が標準。
+Commands to install TypeScript. In 7.0 the native `tsc` is the default.
 
-> 出典: TypeScript README、typescript-go `typescript/v7.0.2` の README.md、公式ブログ https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
+> Sources: typescript-go README at tag `typescript/v7.0.2` and the official blog https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
 
-## 最新安定版のインストール
+## Install the latest stable release
 
 ```sh
 npm install -D typescript
 ```
 
-7.0 では新しい `tsc` 実行ファイルが入る（`npx tsc` で実行）。
+TypeScript 7.0 installs the new `tsc` executable (run with `npx tsc`).
 
-## nightly ビルドのインストール
+## Install a nightly build
 
 ```sh
 npm install -D typescript@next
 ```
 
-7.0 ブログによると、nightly は今後 `typescript` パッケージの `next` タグで再開される。
+Per the 7.0 blog, nightlies resume under the `next` tag of the `typescript` package.
 
-## TypeScript 6.0 API との併用 (npm alias)
+## Use alongside the TypeScript 6.0 API (npm alias)
 
 ```sh
 npm install -D typescript@npm:@typescript/typescript6
 ```
 
-> 注記: この alias では `tsc6` 実行ファイルのみが残る。typescript-eslint など 6.0 API を peer dependency で要求するツール向け。7.0 の `tsc` も使う場合は `package.json` で別名 alias を追加する（`samples/` の side-by-side 参照）。
+> Note: with this alias only the `tsc6` executable remains. It is for tools such as typescript-eslint that require the 6.0 API as a peer dependency. To also use the 7.0 `tsc`, add a separately named alias in `package.json` (see the side-by-side sample in `samples/`).
 
-## 旧 nightly パッケージ (@typescript/native-preview)
+## Former nightly package (@typescript/native-preview)
 
 ```sh
 npm install @typescript/native-preview
 npx tsgo # Use this as you would tsc.
 ```
 
-> 注記: typescript-go README は「TypeScript 7.0 RC 以降のコマンド名は `tsc`」と記載。`tsgo` は旧 nightly の名称で、7.0 では `typescript` パッケージの `tsc` を使う。
+> Note: the typescript-go README states that from TypeScript 7.0 RC the command name is `tsc`. `tsgo` is the former nightly name; in 7.0 use `tsc` from the `typescript` package.

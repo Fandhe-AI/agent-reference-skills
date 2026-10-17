@@ -4,18 +4,18 @@ source: https://www.typescriptlang.org/docs/handbook/compiler-options.html
 
 # tsc CLI
 
-`tsc` のコンパイル実行と主要な CLI 専用フラグのコマンド集。
+Commands for running `tsc` and the main CLI-only flags.
 
-## tsconfig.json に基づくコンパイル
+## Compile based on tsconfig.json
 
 ```sh
 # Run a compile based on a backwards look through the fs for a tsconfig.json
 tsc
 ```
 
-ファイルをコマンドラインで指定すると `tsconfig.json` は無視される。
+When files are specified on the command line, `tsconfig.json` is not loaded. Since TypeScript 6.0, running `tsc` with file arguments in a directory that contains a `tsconfig.json` fails with `error TS5112: tsconfig.json is present but will not be loaded if files are specified on commandline. Use '--ignoreConfig' to skip this error.` Add `--ignoreConfig` to compile with the defaults (TypeScript 6.0 release notes).
 
-## ファイルを指定したコンパイル
+## Compile specific files
 
 ```sh
 # Emit JS for just the index.ts with the compiler defaults
@@ -25,58 +25,72 @@ tsc index.ts
 tsc src/*.ts
 ```
 
-## 別の設定ファイルを指定
+With TypeScript 6.0 and later, add `--ignoreConfig` when the current directory contains a `tsconfig.json`:
+
+```sh
+tsc --ignoreConfig foo.ts
+```
+
+## Specify another config file
 
 ```sh
 # Emit files referenced in with the compiler settings from tsconfig.production.json
 tsc --project tsconfig.production.json
 ```
 
-## 宣言ファイルのみ出力
+## Emit declaration files only
 
 ```sh
 # Emit d.ts files for a js file with showing compiler options which are booleans
 tsc index.js --declaration --emitDeclarationOnly
 ```
 
-## 文字列引数付きオプションで単一ファイルを出力
+A `.js` input requires `--allowJs`, and `allowJs` in `tsconfig.json` is not read when files are given on the command line. Runnable form:
+
+```sh
+tsc index.js --allowJs --declaration --emitDeclarationOnly
+```
+
+## Emit a single file with string-valued options
 
 ```sh
 # Emit a single .js file from two files via compiler options which take string arguments
 tsc app.ts util.ts --target esnext --outfile index.js
 ```
 
-## tsconfig.json の生成
+> **Deprecated / removed**: `--outFile` was removed in TypeScript 6.0 and is not available in TypeScript 7.0. The sample above applies to TypeScript 5.x and earlier only. Per the TypeScript 6.0 announcement, migrate to an external bundler (Webpack, Rollup, esbuild, Vite, Parcel, etc.).
+
+## Generate tsconfig.json
 
 ```sh
 tsc --init
 ```
 
-TypeScript プロジェクトを初期化し `tsconfig.json` を作成する（公式の説明）。
+Initializes a TypeScript project and creates a `tsconfig.json` (official description).
 
-## 最終設定の表示
+## Show the final configuration
 
 ```sh
 tsc --showConfig
 ```
 
-ビルドせず最終的な設定を表示する。
+Prints the final configuration without building.
 
-## 型チェックのみ
+## Type-check only
 
 ```sh
 tsc --noEmit
 ```
 
-コンパイルからのファイル出力を無効化する。
+Disables emitting files from the compilation.
 
-## watch モード
+## Watch mode
 
 ```sh
 tsc --watch
 ```
 
-## バージョン・ヘルプ・全オプション
+## Version, help, and all options
 
 ```sh
 tsc --version
@@ -84,12 +98,16 @@ tsc --help
 tsc --all
 ```
 
-`--help` は CLI のローカルヘルプ、`--all` は全コンパイラーオプションを表示する。
+`--help` shows the local CLI help; `--all` shows all compiler options.
 
-## 設定ファイルを無視
+## Ignore the config file
 
 ```sh
 tsc --ignoreConfig
 ```
 
-見つかった tsconfig を無視し、コマンドラインのオプションとファイルでビルドする。引数付きの実例は公式に無いため、ファイルとオプションは用途に応じて併記する（要確認）。
+Ignores a discovered tsconfig and builds with the command-line options and files. Example from the TypeScript 6.0 release notes:
+
+```sh
+tsc --ignoreConfig foo.ts
+```

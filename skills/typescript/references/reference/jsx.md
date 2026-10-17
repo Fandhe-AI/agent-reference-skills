@@ -61,7 +61,7 @@ declare namespace JSX {
 }
 ```
 
-- Function components: first argument is a `props` object; return type must be assignable to `JSX.Element`. TypeScript first tries to resolve an expression as a function component (overload resolution), then as a class component. The `SFC` / `StatelessComponent` types were deprecated.
+- Function components: first argument is a `props` object; return type must be assignable to `JSX.Element` by default (`JSX.Element | null`); as of TypeScript 5.1, if `JSX.ElementType` is defined it decides which component types are valid instead. TypeScript first tries to resolve an expression as a function component (overload resolution), then as a class component. The `SFC` / `StatelessComponent` types were deprecated.
 - Class components: the element instance type must be assignable to `JSX.ElementClass` (default `{}`; can be augmented).
 
 ```tsx

@@ -42,7 +42,7 @@ f(); // ok, default to { a: "" }, which then defaults b = 0
 f({}); // error, 'a' is required if you supply an argument
 ```
 
-- Spread: shallow copy; later properties overwrite earlier ones in object spread. Object spread includes only own enumerable properties (methods of class instances are lost). The compiler does not allow spreads of type parameters from generic functions.
+- Spread: shallow copy; later properties overwrite earlier ones in object spread. Object spread includes only own enumerable properties (methods of class instances are lost). The source page states that the compiler does not allow spreads of type parameters from generic functions; this is outdated, as generic spread expressions in object literals are supported since TypeScript 3.2 (they produce intersection types).
 
 ```ts
 let defaults = { food: "spicy", price: "$$", ambiance: "noisy" };

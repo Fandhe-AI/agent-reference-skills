@@ -37,7 +37,7 @@ import * as e from "./file.js";
 
 ## Notes
 
-- Not rewritten: dynamic `import()` paths, `paths` / `baseUrl` aliases, and `package.json` `exports` / `imports` (e.g. `#root/*`). For workspace layouts, use conditional exports with scoped custom conditions such as `@my-package/development` and run `node --conditions=@my-package/development`.
+- Not rewritten: paths computed at runtime (e.g. `await import(getPath())`) cannot be statically handled; `paths` / `baseUrl` aliases, and `package.json` `exports` / `imports` (e.g. `#root/*`). For workspace layouts, use conditional exports with scoped custom conditions such as `@my-package/development` and run `node --conditions=@my-package/development`.
 - JSON import example:
 
 ```ts

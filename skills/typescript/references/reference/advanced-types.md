@@ -67,7 +67,7 @@ type Partial<T> = {
 };
 ```
 
-- Conditional types `T extends U ? X : Y` are resolved or deferred; distributive over naked type parameters when instantiated with a union (e.g. `Diff`, `Filter`, `NotNullable`); `infer` declares a type variable in the `extends` clause (multiple covariant candidates give a union, contravariant give an intersection; overloads infer from the last signature; `infer` is not allowed in constraint clauses of regular type parameters). Conditional types cannot reference themselves recursively per this page (`type ElementType<T> = T extends any[] ? ElementType<T[number]> : T; // Error`).
+- Conditional types `T extends U ? X : Y` are resolved or deferred; distributive over naked type parameters when instantiated with a union (e.g. `Diff`, `Filter`, `NotNullable`); `infer` declares a type variable in the `extends` clause (multiple covariant candidates give a union, contravariant give an intersection; overloads infer from the last signature; `infer` is not allowed in constraint clauses of regular type parameters). The legacy page states that conditional types cannot reference themselves recursively (`type ElementType<T> = T extends any[] ? ElementType<T[number]> : T; // Error`); this restriction was lifted in TypeScript 4.1 (Recursive Conditional Types), so the example is valid in 6.0 / 7.0.
 
 ```ts
 type ReturnType<T> = T extends (...args: any[]) => infer R ? R : any;
