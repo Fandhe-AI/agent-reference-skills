@@ -6,6 +6,8 @@ source: https://docs.rs/crate/fandhe-ai/0.11.0/source/examples/hf_safetensors_se
 
 PyTorch / HF レイアウトの safetensors を読み込み、`compat::Sequential`（Embedding → TransformerEncoderLayer）へ復元して元モデルと bit 一致を確認する。
 
+Adapted (not in the official docs): 例 3（batch decode）と一部の `println!` を省略。
+
 ```rust
 #[path = "convert.rs"]
 mod convert;

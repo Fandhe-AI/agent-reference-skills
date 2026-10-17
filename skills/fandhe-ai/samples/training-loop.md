@@ -117,9 +117,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 実行: `cargo run -p fandhe-ai --example training_loop`
 
-## Tape の再利用（reset）について
-
-上記の例はステップごとに `fandhe_ai::tape()` を新規生成・破棄する運用。ステップ内で `Tape` を再利用したい場合（reuse GEMM・tape 構築コストが問題になる学習ループ）は、`Tape::reset`（イシュー #1048）でノード列を葉プレフィックス（最初の演算より前に登録した葉）まで切り詰め、同一 `Tape` を使い回せる（`site/examples/training-loop.md` v0.11.0 の節、verbatim）。
+**Tape の再利用（reset）**: 上記の例はステップごとに `fandhe_ai::tape()` を新規生成・破棄する運用。ステップ内で `Tape` を再利用したい場合（reuse GEMM・tape 構築コストが問題になる学習ループ）は、`Tape::reset`（イシュー #1048）でノード列を葉プレフィックス（最初の演算より前に登録した葉）まで切り詰め、同一 `Tape` を使い回せる（`site/examples/training-loop.md` v0.11.0 の節、verbatim）。
 
 ```rust
 let mut tape = fandhe_ai::tape();

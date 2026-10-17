@@ -43,7 +43,7 @@ impl SplitMix64 {
 }
 ```
 
-実行（リポジトリ内、`--release` 推奨）: `cargo run --release -p fandhe-ai --example main [resnet|transformer|all]`
+実行（リポジトリ内、`--release` 推奨）: `cargo run --release -p fandhe-ai --example main -- resnet`（引数は `resnet` / `transformer` / `all`。省略時は `all`）
 
 ## Notes
 

@@ -4,7 +4,9 @@ source: https://docs.rs/crate/fandhe-ai/0.11.0/source/src/interop/onnx.rs
 
 # ONNX Load with External Data Limits
 
-`OnnxModel::from_path_with_limits` で external data の読み込み予算を引き上げて ONNX モデルを読み込む。
+`OnnxModel::from_path_with_limits` で external data の読み込み予算を既定の 64 GiB から 8 GiB へ引き下げて ONNX モデルを読み込む。
+
+Adapted (not in the official docs): `fn main`・引数でのパス受け取り・`println!` を追加。
 
 ```rust
 use fandhe_ai::interop::onnx::{OnnxExternalDataLimits, OnnxModel};

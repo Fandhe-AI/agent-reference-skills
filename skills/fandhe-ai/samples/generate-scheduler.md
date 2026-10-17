@@ -6,6 +6,8 @@ source: https://docs.rs/crate/fandhe-ai/0.11.0/source/src/inference/mod.rs
 
 `BatchScheduler` で複数要求を step 実行し、`generate_speculative` の fail-closed 契約を確認する。
 
+Adapted (not in the official docs): doctest 2 件を 1 つの `main` に統合し、後者の `Table` を前者に統合。
+
 ```rust
 use fandhe_ai::inference::{
     AutoregressiveModel, BatchScheduler, GenerateConfig, SamplingStrategy, SchedulerLimits,
