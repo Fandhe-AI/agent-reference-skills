@@ -10,4 +10,3 @@
 | Video generation with Veo 3.1 | Veo 3.1 video generation: 8-second 720p, 1080p, or 4k clips with native audio via a long-running operation. | [veo.md](./veo.md) |
 | Voice design | Create a persistent vocal persona from a natural-language description via the Gemini Voices endpoint. | [voice-design.md](./voice-design.md) |
 | Voice replication | Replicate a speaker's vocal characteristics from a short audio sample via the Gemini Voices endpoint. | [voice-replication.md](./voice-replication.md) |
-</content>

@@ -16,4 +16,3 @@
 | What's new in Gemini 3.6 Flash and 3.5 Flash-Lite | Gemini 3.6 Flash and 3.5 Flash-Lite, previous-generation Gemini 3 releases that remain available for production. | [whats-new-gemini-3-6.md](./whats-new-gemini-3-6.md) |
 | What's new in Gemini 3.7 Flash | Gemini 3.7 Flash (gemini-3.7-flash), a deprecated previous-generation Flash model automatically routed to Gemini 3.8 Flash. | [whats-new-gemini-3-7.md](./whats-new-gemini-3-7.md) |
 | What's new in Gemini 4 Argon | Gemini 4 Argon (gemini-4-argon), the latest model with a unified 1M-token context window and tunable thinking levels. | [whats-new-gemini-4-argon.md](./whats-new-gemini-4-argon.md) |
-</content>

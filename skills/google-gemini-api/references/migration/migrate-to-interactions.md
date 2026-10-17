@@ -95,26 +95,30 @@ interaction = client.interactions.create(
     tools=[weather_tool],
 )
 
+function_results = []
 for step in interaction.steps:
     if step.type == "function_call":
         print(f"Executing {step.name} for {step.arguments}")
 
         result = "52°F and rain"
 
-        interaction = client.interactions.create(
-            model="gemini-3.8-flash",
-            previous_interaction_id=interaction.id,
-            tools=[weather_tool],
-            input=[
-                {
-                    "type": "function_result",
-                    "call_id": step.id,
-                    "name": step.name,
-                    "result": [{"type": "text", "text": result}],
-                }
-            ],
+        function_results.append(
+            {
+                "type": "function_result",
+                "call_id": step.id,
+                "name": step.name,
+                "result": [{"type": "text", "text": result}],
+            }
         )
-        print(interaction.output_text)
+
+if function_results:
+    follow_up = client.interactions.create(
+        model="gemini-3.8-flash",
+        previous_interaction_id=interaction.id,
+        tools=[weather_tool],
+        input=function_results,
+    )
+    print(follow_up.output_text)
 ```
 
 Streaming: same endpoint with `stream=True` (no dedicated `:streamGenerateContent`); events are `step.delta` / `interaction.completed` etc.
@@ -163,6 +167,7 @@ Mapping between the two APIs (as shown in the guide):
 - `.output_text` extracts and joins consecutive `TextContent` blocks at the end of the model's response. It does not include earlier text blocks separated by non-text content (thoughts, images, audio, tool calls); for interleaved multimodal responses iterate over `steps` instead. Other convenience properties (`.output_image`, `.output_audio`) are described in the Interactions overview.
 - Server-side tool citations are returned inline: the text item in the `model_output` step carries its own `annotations` array instead of a separate metadata object. The source Python sample reads `anno.uri`; the Interactions schema `UrlCitation` field is `url` (with `title`, `start_index`, `end_index`), as the May 2026 breaking-changes page shows with `type: url_citation`.
 - The source omits `tools` on the function_result follow-up call; tools are interaction-scoped and not carried over by `previous_interaction_id`, so `tools=[weather_tool]` is re-specified here. The first `interactions.create` call and the `weather_tool` definition are restored from the source.
+- The source sends one follow-up per function_call inside the loop; here all function_result items are collected and returned in a single request against the original interaction.id, matching get-started.md and the call/result count requirement.
 - The schema of the Interactions API itself changed in May 2026 (`steps` replaces `outputs`, `response_format` is polymorphic). See `interactions-breaking-changes-may-2026.md` in this category.
 - The source suggests automating the migration with a coding agent that supports skills by installing the Gemini API development skill (`/gemini-api/docs/coding-agents#gemini-api-dev`) and running `/gemini-api-dev migrate my app to the interactions api`. That skill is Gemini-side tooling, not a skill of this repository and not a Claude Code Agent Skill (see anthropic-claude-code-extend).
 - Distance from other LLM APIs: the Interactions API is Gemini-specific; for OpenAI Responses API see openai-api-core, for Claude Messages API see anthropic-api-core.

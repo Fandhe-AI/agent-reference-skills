@@ -9,4 +9,3 @@
 | Migrate to the Google GenAI SDK | Before-and-after guide for moving from the legacy Gemini libraries to the Google GenAI SDK. | [migrate-genai-sdk.md](./migrate-genai-sdk.md) |
 | Migrating to the Interactions API | Guide for migrating from the generateContent API to the Interactions API, recommended for new development. | [migrate-to-interactions.md](./migrate-to-interactions.md) |
 | OpenAI compatibility | Reach Gemini models through the OpenAI libraries or REST by changing the API key, base_url, and model. | [openai-compatibility.md](./openai-compatibility.md) |
-</content>
