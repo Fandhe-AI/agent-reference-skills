@@ -55,7 +55,7 @@ Legacy libraries (deprecated as of November 30th, 2025):
 - No legacy Google-provided Java SDK existed, so no migration is needed for Java.
 - The Maven example `<version>1.0.0</version>` is verbatim from the page and is not the current version. SDK versions measured 2026-10-16: `google-genai` 2.31.0 (PyPI), `@google/genai` 2.30.0 (npm latest), `google.golang.org/genai` v1.75.0, `com.google.genai:google-genai` 1.57.0 (Maven), `Google.GenAI` 1.26.1 (NuGet). The Interactions API requires `google-genai` / `@google/genai` from 2.3.0 onwards (see interactions-overview).
 - Docs fetched 2026-10-16.
-- Out of scope: Gemini CLI (a separate product; the gws skill covers its extension install) and Firebase AI Logic (Android / Swift), which is distinct from the `android-*` and `apple-*` skills.
+- Out of scope: Gemini CLI (a separate product, not covered by any skill in this repository) and Firebase AI Logic (Android / Swift), which is distinct from the `android-*` and `apple-*` skills.
 
 ## Related
 

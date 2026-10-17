@@ -65,7 +65,7 @@ interaction = client.interactions.create(
 - Capability entry points listed: Image Generation, Long Context, Structured Outputs, Function Calling, Video Generation with Veo 3.1, Voice Agents with Live API, Tools (Google Search, URL Context, Google Maps, Code Execution, Computer Use), Document Understanding (up to 1000 pages of PDF), Thinking.
 - Managed Agents: "In a single request, Gemini can write and run code, search the web, and create files in a hosted sandbox environment. Start with our prebuilt Antigravity agent, or customize it with your own instructions and tools."
 - Docs fetched 2026-10-16 (no version in URL). The REST example uses `v1beta`.
-- API availability: Interactions API (this page's examples). Gemini CLI (handled by the gws skill) and Firebase AI Logic are out of scope for this skill.
+- API availability: Interactions API (this page's examples). Gemini CLI (a separate product, not covered by any skill in this repository) and Firebase AI Logic are out of scope for this skill.
 - Distinct from OpenAI Responses API (openai-api-core skill) and Anthropic Messages API (anthropic-api-core skill).
 
 ## Related

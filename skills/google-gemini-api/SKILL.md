@@ -3,14 +3,14 @@ name: google-gemini-api
 description: >
   Google Gemini API (Gemini Developer API, ai.google.dev) の
   Interactions API (v1 / v1beta), generateContent, Google GenAI SDK (google-genai / @google/genai),
-  Live API, ephemeral tokens, Managed Agents, Deep Research, function calling, Google Search grounding,
-  File Search, Files API, thought signatures, Nano Banana, Veo, Lyria, Batch API, Flex / Priority inference, OpenAI 互換。
+  Live API, Managed Agents, Deep Research, function calling, Google Search grounding, File Search,
+  Files API, thought signatures, Nano Banana, Veo, Lyria, Batch API。
 user-invocable: false
 ---
 
 # Google Gemini API
 
-> 分割 PR の途中段階。現在収録済み: references/{generate-content, getting-started}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{generate-content, getting-started}。冒頭説明・description に挙げた残りの範囲（Interactions API 本体・各種ツール・Live API・メディア生成・運用・移行等）は後続 PR で追加し、最終 PR でこの行を削除する。
 
 Google Gemini API (Gemini Developer API, `ai.google.dev`) のリファレンススキル。Interactions API を中心に、generateContent・Live API・Managed Agents・各種ツール・メディア生成・運用・移行を収録する。
 
@@ -28,14 +28,8 @@ Google Gemini API (Gemini Developer API, `ai.google.dev`) のリファレンス�
 
 ## 近接スキルとの棲み分け
 
-- Core（interactions-core / rest-reference / テキスト生成・ストリーミング・構造化出力）と移行・OpenAI 互換: `openai-api-core`、`anthropic-api-core` とは別物
-- managed-agents: `anthropic-managed-agents`、`anthropic-agent-sdk`、`openai-agents`、`hermes-agent` とは別物。managed-agents の hooks は `anthropic-claude-code-extend`、`lefthook`、`react-hook-form`、`fastify` の hooks とは別物
-- tools-grounding（function calling・Remote MCP・computer use・file search・google search）: `anthropic-api-tools-mcp`、`openai-agents` とは別物。file search / embeddings は `upstash`、`fandhe-db` の vector 検索とは別物
-- live-realtime / ephemeral tokens / speech generation: `openai-realtime-audio` とは別物
-- media-generation（Nano Banana, Omni, Veo）: `openai-images-video` とは別物
-- platform-ops の batch / webhooks: `anthropic-api-core`、`openai-api-core`、`stripe`、`inngest` とは別物
 - getting-started/coding-agents の `gemini-api-dev` スキルと Gemini Docs MCP は本リポジトリのスキルでも Claude Code の Agent Skills (`anthropic-claude-code-extend`) でもない
-- Gemini CLI（`gws` が担当）と Firebase AI Logic は対象外
+- Gemini CLI（別製品、本リポジトリに担当スキルなし）と Firebase AI Logic は対象外
 
 ## ディレクトリ構成
 
@@ -63,7 +57,6 @@ skills/google-gemini-api/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
-4. 新規コードは Interactions API（`interactions-core`）を第一候補とし、旧 generateContent は `generate-content`、移行は `migration` を引く
 
 ## タスク → カテゴリ マッピング
 

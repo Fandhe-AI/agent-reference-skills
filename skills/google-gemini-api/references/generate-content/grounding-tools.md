@@ -104,12 +104,12 @@ def add_citations(response):
     for support in sorted_supports:
         end_index = support.segment.end_index
         if support.grounding_chunk_indices:
-            # Create citation string like 12
+            # Create citation string like [1](link1)[2](link2)
             citation_links = []
             for i in support.grounding_chunk_indices:
                 if i < len(chunks):
                     uri = chunks[i].web.uri
-                    citation_links.append(f"{i + 1}")
+                    citation_links.append(f"[{i + 1}]({uri})")
 
             citation_string = ", ".join(citation_links)
             text = text[:end_index] + citation_string + text[end_index:]
