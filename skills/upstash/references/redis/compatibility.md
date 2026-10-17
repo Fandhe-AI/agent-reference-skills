@@ -12,7 +12,8 @@ curl REST_URL/COMMAND/arg1/arg2/../argN
 
 ## Notes
 
-- The `Usage` snippet is taken from the REST API page (`/redis/features/restapi`, "API Semantics").
+- Source: https://upstash.com/docs/redis/overall/compatibility (Redis protocol 8.4, command families, connectivity) and https://upstash.com/docs/redis/overall/changelog ("Recent additions" dates) (fetched 2026-10; no version pin on the site).
+- The `Usage` snippet is taken from https://upstash.com/docs/redis/features/restapi ("API Semantics").
 
 ### Upstash command families (extensions)
 - **Search**: indexes JSON, hash, string, and stream keys through `SEARCH.*` commands (`SEARCH.CREATE`, `DROP`, `DESCRIBE`, `WAITINDEXING`, `QUERY`, `COUNT`, `AGGREGATE`, `ALIASADD`, `ALIASDEL`, `LISTALIASES`). Separate from, and incompatible with, the `FT.*` commands of the RediSearch module
