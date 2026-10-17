@@ -56,8 +56,6 @@ permissions:
 
 リポジトリ設定の「Workflow permissions」で 2 つのデフォルトモード（Permissive / Restricted）から選択可能。スコープ別の既定値は現行 docs に表として掲載されていないため、リポジトリ / 組織の Workflow permissions 設定で確認すること（`## Notes` 参照）。
 
-Restricted（制限）モード（推奨）は `contents: read` と `packages: read` のみ、その他は `none`。
-
 ---
 
 ## パーミッションの設定

@@ -234,8 +234,9 @@ MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
 ## Notes
 
 - 手順ガイド形式のページ。Immutable releases・リリースアセット上限（2 GB）等の制約は各節を参照
+- 出典: [Managing releases in a repository - GitHub Docs](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository)
+- 出典: [Semantic Versioning 2.0.0](https://semver.org/)
 
 ## Related
 
-- [Managing releases in a repository - GitHub Docs](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository)
-- [Semantic Versioning 2.0.0](https://semver.org/)
+- [immutable-releases.md](../actions/creating-actions/immutable-releases.md)
