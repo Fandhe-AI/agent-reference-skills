@@ -93,10 +93,8 @@ turn_off_the_lights = {"name": "turn_off_the_lights"} # turn_off_the_lights will
   function_response = types.FunctionResponse(
       id=fc.id,
       name=fc.name,
-      response={
-          "result": "ok",
-          "scheduling": "INTERRUPT" # Can also be WHEN_IDLE or SILENT
-      }
+      response={"result": "ok"},
+      scheduling="INTERRUPT" # Can also be WHEN_IDLE or SILENT
   )
 ```
 
@@ -110,10 +108,8 @@ const turn_on_the_lights = {name: "turn_on_the_lights", behavior: Behavior.NON_B
 const functionResponse = {
   id: fc.id,
   name: fc.name,
-  response: {
-    result: "ok",
-    scheduling: FunctionResponseScheduling.INTERRUPT  // Can also be WHEN_IDLE or SILENT
-  }
+  response: { result: "ok" },
+  scheduling: FunctionResponseScheduling.INTERRUPT  // Can also be WHEN_IDLE or SILENT
 }
 ```
 
@@ -164,6 +160,7 @@ Scheduling values for a `NON_BLOCKING` function response:
 
 - Unlike the `generateContent` API, the Live API doesn't support automatic tool response handling; you must handle tool responses manually in client code (`session.send_tool_response` / `sendToolResponse`).
 - Function calling executes sequentially by default (pauses until each result is available). Asynchronous function calling is not yet supported in Gemini 3.1 Flash Live; the model won't start responding until you've sent the tool response.
+- The official guide nests `scheduling` inside `response`; per the FunctionResponse API reference it is a top-level field, so the examples place it next to `id` / `name` / `response`.
 - From a single prompt, the model can generate multiple function calls and the code necessary to chain their outputs; this code executes in a sandbox, generating subsequent `BidiGenerateContentToolCall` messages.
 - The model may generate and execute Python code to use Search (`executable_code` / `code_execution_result` parts).
 - The source's tool table lists Gemini 3.1 Flash Live Preview and Gemini 2.5 Flash Live Preview, while the examples use `gemini-3.8-live`; the capabilities page documents async function calling and scheduling (`SILENT`, `WHEN_IDLE`, `INTERRUPTED`) for Gemini 3.8 Live.

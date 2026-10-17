@@ -145,7 +145,7 @@ Voice Activity Detection (interruption handling, automatic VAD configuration, hy
 
 ```python
 async for response in session.receive():
-    if response.server_content.interrupted is True:
+    if response.server_content and response.server_content.interrupted is True:
         # The generation was interrupted
 
         # If realtime playback is implemented in your application,
@@ -259,6 +259,7 @@ Limitations:
 
 ## Notes
 
+- Added a `server_content` presence check; messages such as tool calls, GoAway, and session-resumption updates carry no `server_content`.
 - The page opens with a warning: "Preview: The Live API is in preview."
 - Audio formats: Live API audio is always raw, little-endian, 16-bit PCM. Output is always 24kHz. Input is natively 16kHz but the API resamples if needed; set the Blob MIME type like `audio/pcm;rate=16000`.
 - Video frames are sent as individual images at max 1 frame per second.

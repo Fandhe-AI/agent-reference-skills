@@ -132,27 +132,31 @@ stream = client.interactions.create(
 Streaming function calling: accumulate `arguments_delta` until the interaction completes with status `requires_action`, then send a `function_result` with `previous_interaction_id`:
 
 ```python
+calls = {}
 for event in stream:
     if event.event_type == "interaction.created":
         first_interaction_id = event.interaction.id
     elif event.event_type == "step.start":
         step = event.step
         if step.type == "function_call":
-            func_call_id = step.id
-            func_call_name = step.name
+            calls[event.index] = {"id": step.id, "name": step.name, "args": ""}
     elif event.event_type == "step.delta":
         if event.delta.type == "arguments_delta":
-            func_args_accumulated += event.delta.arguments
+            calls[event.index]["args"] += event.delta.arguments
 
+# run() is your own function executor
 stream2 = client.interactions.create(
     model="gemini-3.8-flash",
     previous_interaction_id=first_interaction_id,
-    input=[{
-        "type": "function_result",
-        "name": func_call_name,
-        "call_id": func_call_id,
-        "result": dummy_result
-    }],
+    input=[
+        {
+            "type": "function_result",
+            "name": c["name"],
+            "call_id": c["id"],
+            "result": run(c["name"], json.loads(c["args"])),
+        }
+        for c in calls.values()
+    ],
     stream=True,
 )
 ```
@@ -186,6 +190,7 @@ Step types and expected delta types:
 - With `stream: false`, the API returns a single `interaction` object whose `steps` array holds each assembled `step.start` -> `step.delta`(s) -> `step.stop` cycle.
 - `arguments_delta` is a partial JSON string and must be accumulated across deltas. For function calls, `step.start` delivers name, id, and empty arguments `{}`.
 - `thought_signature` is the last delta before `step.stop` in a `thought` step.
+- The original sample tracks a single call; the example keys calls by step `index` so that multiple function calls in one turn each get a `function_result`.
 - New event and delta types may be added over time: log and skip unknown events instead of throwing.
 - Migration (May 2026 breaking changes): legacy events are replaced — `interaction.start` -> `interaction.created`, `content.start` -> `step.start`, `content.delta` -> `step.delta`, `content.stop` -> `step.stop`, `interaction.complete` -> `interaction.completed`, and `interaction.status_update` is replaced by `interaction.in_progress` / `interaction.requires_action` etc. in the breaking-changes guide (this guide's current examples still show `interaction.status_update`).
 - Distinct from OpenAI Responses streaming events (`openai-api-core`) and Anthropic Messages streaming (`anthropic-api-core`).

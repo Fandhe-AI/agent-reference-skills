@@ -102,7 +102,7 @@ async for response in session.receive():
         print(response.go_away.time_left)
 
 async for response in session.receive():
-    if response.server_content.generation_complete is True:
+    if response.server_content and response.server_content.generation_complete is True:
         # The generation is complete
 ```
 
@@ -127,6 +127,7 @@ if (turn.serverContent && turn.serverContent.generationComplete) {
 
 ## Notes
 
+- Added a `server_content` presence check; messages such as tool calls, GoAway, and session-resumption updates carry no `server_content`.
 - Without compression, audio-only sessions are limited to 15 minutes and audio-video sessions to 2 minutes; exceeding these terminates the session. Context window compression extends sessions to an unlimited amount of time.
 - The lifetime of a connection is limited to around 10 minutes; when it terminates, the session terminates too. Session resumption keeps one session active over multiple connections.
 - Resumption tokens are valid for 2 hr after the last session's termination.

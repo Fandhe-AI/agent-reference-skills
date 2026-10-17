@@ -22,8 +22,9 @@ async def main():
       """Example background task to process incoming audio."""
       while True:
         async for message in session.receive():
-          audio_data = message.server_content.audio_chunks[0].data
-          # Process audio...
+          if message.server_content and message.server_content.audio_chunks:
+            audio_data = message.server_content.audio_chunks[0].data
+            # Process audio...
           await asyncio.sleep(10**-12)
 
     async with (
@@ -169,6 +170,7 @@ Playback control: `session.play()`, `session.pause()`, `session.stop()`, `sessio
 
 ## Notes
 
+- Added a `server_content` presence check; setup / filtered-prompt messages carry no `server_content`.
 - Lyria RealTime is an experimental model. The model ID in the source examples is `models/lyria-realtime-exp`, used with `api_version` `v1beta`.
 - A `WeightedPrompt` has `text` and `weight`; the weight can be any value except `0` (`1.0` is usually a good starting point). Prompt transitions can be abrupt, so cross-fade by sending intermediate weights.
 - Updating configuration: you can't update a single parameter; set the whole configuration or other fields reset to defaults. Changing bpm or scale also requires `reset_context()` (a hard transition; the stream continues). For `bpm`, `density`, `brightness`, and `scale`, if no value is provided the model decides from the initial prompts.

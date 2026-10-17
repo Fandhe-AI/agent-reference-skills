@@ -95,8 +95,10 @@ refined_plan = client.interactions.create(
     background=True,
 )
 
-while (result := client.interactions.get(id=refined_plan.id)).status != "completed":
+while (result := client.interactions.get(id=refined_plan.id)).status == "in_progress":
     time.sleep(5)
+if result.status != "completed":
+    raise RuntimeError(f"{result.status}: {result.error}")
 print(result.steps[-1].content[0].text)
 
 # Third interaction: approve the plan and kick off research
@@ -112,8 +114,10 @@ final_report = client.interactions.create(
     background=True,
 )
 
-while (result := client.interactions.get(id=final_report.id)).status != "completed":
+while (result := client.interactions.get(id=final_report.id)).status == "in_progress":
     time.sleep(5)
+if result.status != "completed":
+    raise RuntimeError(f"{result.status}: {result.error}")
 print(result.steps[-1].content[0].text)
 ```
 
@@ -224,9 +228,9 @@ def process_stream(stream):
         if event.event_type == "step.delta":
             if event.delta.type == "text":
                 print(event.delta.text, end="", flush=True)
-            elif event.delta.type == "thought":
-                print(f"Thought: {event.delta.text}", flush=True)
-        elif event.event_type in ("interaction.completed", "interaction.error"):
+            elif event.delta.type == "thought_summary":
+                print(f"Thought: {event.delta.content.text}", flush=True)
+        elif event.event_type in ("interaction.completed", "error"):
             is_complete = True
 
 stream = client.interactions.create(
@@ -241,7 +245,11 @@ process_stream(stream)
 # Reconnect if the connection drops
 while not is_complete and interaction_id:
     status = client.interactions.get(interaction_id)
+    if status.status == "completed":
+        print(status.steps[-1].content[0].text)
+        break
     if status.status != "in_progress":
+        print(f"Stopped ({status.status}): {status.error}")
         break
     stream = client.interactions.get(
         id=interaction_id, stream=True, last_event_id=last_event_id,
@@ -306,7 +314,8 @@ Stream event types:
 
 | Event type | Delta type | Description |
 |------------|------------|-------------|
-| `step.delta` | `thought` | Intermediate reasoning step from the agent |
+| `step.delta` | `thought_summary` | Intermediate reasoning summary from the agent (text in `content`) |
+| `error` | — | Error object with `message` and `code` |
 | `step.delta` | `text` | Part of the final text output |
 | `step.delta` | `image` | A generated image (base64-encoded) |
 
@@ -316,7 +325,9 @@ Comparison: standard Gemini models answer in seconds (generate then output; chat
 
 - Preview. The Deep Research agent is exclusively available using the Interactions API; it cannot be accessed through `generate_content`.
 - `background=True` is required (agents run asynchronously). The API returns a partial `Interaction` immediately; status transitions from `in_progress` to `completed` or `failed`. Background execution requires `store=True`.
-- The polling loops also stop on `cancelled` / `incomplete`; the original page only checks `completed` / `failed`.
+- The polling loops (including the collaborative-planning ones) also stop on `cancelled` / `incomplete`; the original page only checks `completed` / `failed` (collaborative-planning loops check only `completed`).
+- The official page's Python/JS samples use `thought` deltas and `interaction.error`; aligned with the streaming guide's `thought_summary` delta and `error` event (also used by the page's Java/Go samples).
+- The reconnect loop prints the final output when the interaction completed while disconnected; the original sample breaks without reading it.
 - Collaborative planning: step 1 set `collaborative_planning=True` to get a plan instead of a report; step 2 (optional) keep it `True` with `previous_interaction_id` to refine; step 3 set it `False` (or omit) to approve and execute.
 - Visualization: generated images appear in response steps (`step.type == "model_output"` content items of type `image` with base64 `data`) and stream as `image` deltas. Ask for visuals explicitly in the prompt; `"auto"` enables the capability but visuals are generated only when requested.
 - Streaming requires `stream=True` and `background=True`; set `thinking_summaries` to `"auto"` to get thoughts. The connection can drop (e.g. after the 600-second timeout); track `interaction_id` and `last_event_id` and reconnect.
