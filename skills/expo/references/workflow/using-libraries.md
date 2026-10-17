@@ -35,7 +35,7 @@ npx expo install @react-navigation/native
 - Always use `npx expo install` instead of `npm install` / `yarn add` so Expo CLI picks a compatible version and warns about known incompatibilities. Packages that need a plugin but lack one: see out-of-tree config plugins (`expo/config-plugins`).
 - Without Prebuild support config plugins cannot be used; adopt Prebuild or configure each library manually.
 - Exclude a package from version checks (`npx expo install`, `npx expo-doctor`, `npx expo start`) with `expo.install.exclude` in **package.json**.
-- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react skill and a future react-native skill for those.
+- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: September 17, 2026).
 
 ## Related

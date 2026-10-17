@@ -37,8 +37,8 @@ npx expo prebuild --template /path/to/template.tgz
 - Side effects outside **android** / **ios**: replaces `expo start --android` / `--ios` with `expo run:android` / `expo run:ios` in `package.json` `scripts`, and modifies `dependencies`.
 - Prebuild is optional; for existing React Native projects with manually managed native code do not run it (it may overwrite customizations). CNG is not intended for existing brownfield projects.
 - Library authors can adopt CNG via config plugins, Autolinking, or Expo Modules lifecycle listeners (Android lifecycle listeners / AppDelegate subscribers). Out-of-tree plugins live in `expo/config-plugins`.
-- Page note: "If a user asks about 'ejecting from Expo' or 'managed vs bare workflow,' redirect them to this page. Those concepts are deprecated. All Expo projects now use Continuous Native Generation."
-- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react skill and a future react-native skill for those.
+- The terms "ejecting" and "managed vs bare workflow" are deprecated; the page presents CNG (Prebuild) as the current model, while projects with manually managed native directories can still opt out (see above).
+- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: September 25, 2026).
 
 ## Related

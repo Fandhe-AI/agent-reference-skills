@@ -20,7 +20,7 @@ npx react-native log-ios
 - With `npx expo start --no-dev`, console logs do not appear in the terminal (the forwarding runtime code only runs in development mode). `console.log` still writes to the native log: use `adb logcat` on Android or the Console app on iOS.
 - Native runtime logs: compile the native app locally and use Android Studio / Xcode.
 - System logs (everything on the device, other apps and the OS) are usually not necessary; yarn uses `yarn dlx react-native ...`, pnpm `pnpm dlx`, bun `bunx`.
-- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react skill and a future react-native skill for those.
+- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: August 11, 2026).
 
 ## Related

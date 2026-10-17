@@ -24,7 +24,7 @@ npx expo-doctor
 - If you use CNG: delete **android** and **ios** directories generated for a previous SDK; they regenerate on the next `npx expo run:ios`, `npx expo prebuild`, or EAS Build.
 - If you do not use CNG: run `npx pod-install` if you have an **ios** directory, apply changes from the Native project upgrade helper, or consider adopting prebuild.
 - Read the SDK changelog for the target version; see "Upgrading your app" at the bottom of the release notes page. Changelogs linked on the page: SDK 58, 57, 56, 55 (current list); SDK 54 and older are listed as deprecated SDK version changelogs (e.g. `https://expo.dev/changelog/sdk-58`).
-- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react skill and a future react-native skill for those.
+- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: October 16, 2026). Page describes the SDK 58 upgrade. For Expo Router specific changes see the SDK 57 to 58 migration page in the router-reference category.
 
 ## Related

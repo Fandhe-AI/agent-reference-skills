@@ -12,7 +12,7 @@ npx expo install react-native-view-shot expo-media-library
 
 ```tsx src/app/(tabs)/index.tsx
 import * as ImagePicker from 'expo-image-picker';
-import * as MediaLibrary from 'expo-media-library';
+import * as MediaLibrary from 'expo-media-library/legacy';
 import { useEffect, useRef, useState } from 'react';
 import { ImageSourcePropType, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -86,7 +86,8 @@ export default function Index() {
         alert('Saved!');
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      alert('Failed to save the image.');
     }
   };
 
@@ -146,7 +147,8 @@ const styles = StyleSheet.create({
 ## Notes
 
 - `ImagePicker.useMediaLibraryPermissions()` returns `[permissionResponse, requestPermission]`; `permissionResponse` is `null` until the user has answered. The tutorial states this hook requests both read and write permissions.
-- `captureRef()` returns a promise resolving to the captured file URI, which is passed to `MediaLibrary.saveToLibraryAsync()`.
+- `captureRef()` returns a promise resolving to the captured file URI, which is passed to `MediaLibrary.saveToLibraryAsync()` (imported from `expo-media-library/legacy` in this sample).
 - `collapsable={false}` on the captured `View` keeps it from being flattened so only the background image and sticker are captured.
 - The page shows the result on Android and iOS; its next chapter (platform differences) handles the web, which this sample does not cover.
+- Deviation from source: the tutorial targets SDK 57 and imports from `expo-media-library`; the SDK 58 reference marks `MediaLibrary.saveToLibraryAsync` as deprecated ("import this method from `expo-media-library/legacy`. This method will throw in runtime."), so this sample imports `expo-media-library/legacy`. The catch block also surfaces the error instead of only logging it.
 - Source: https://docs.expo.dev/tutorial/screenshot/ (fetched 2026-10-17, modificationDate September 03, 2026).

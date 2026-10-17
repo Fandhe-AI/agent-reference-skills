@@ -2,7 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| create-expo-module | Expo Modules API 用のモジュール（ローカル・スタンドアロン）を生成するコマンド集。 | [create-expo-module.md](./create-expo-module.md) |
-| EAS CLI | EAS CLI のコマンド集。対象は eas-cli 25.0.0 で、バージョニングは Expo SDK とは別… | [eas-cli.md](./eas-cli.md) |
-| Expo CLI | Expo CLI（`expo` パッケージ同梱、`npx expo ...`）の開発・ビルド・エクスポート・設定コマンド集。 | [expo-cli.md](./expo-cli.md) |
-| Install | 新規プロジェクト作成とパッケージのインストール・バージョン検証のコマンド集。 | [install.md](./install.md) |
+| create-expo-module | Commands to generate modules (local and standalone) for the Expo Modules API. | [create-expo-module.md](./create-expo-module.md) |
+| EAS CLI | EAS CLI commands. Targets eas-cli 25.0.0, which is versioned separately from the Expo SDK. | [eas-cli.md](./eas-cli.md) |
+| Expo CLI | Expo CLI (bundled with the `expo` package, `npx expo ...`) commands for development, build, export, and configuration. | [expo-cli.md](./expo-cli.md) |
+| Install | Commands to create a new project, install packages, and validate package versions. | [install.md](./install.md) |

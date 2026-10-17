@@ -4,56 +4,56 @@ source: https://docs.expo.dev/more/create-expo-module/
 
 # create-expo-module
 
-Expo Modules API 用のモジュール（ローカル・スタンドアロン）を生成するコマンド集。
+Commands to generate modules (local and standalone) for the Expo Modules API.
 
-## ローカルモジュールの作成
+## Create a local module
 
 ```sh
 npx create-expo-module@latest --local
 ```
 
-既存の Expo プロジェクトのディレクトリで実行。既定は **modules** ディレクトリに作成され、`expo.autolinking.nativeModulesDir` を `package.json` で定義していればそのディレクトリに作成される。yarn は `yarn create expo-module --local`、pnpm は `pnpm create expo-module --local`、bun は `bun create expo-module --local`。
+Run it in the directory of an existing Expo project. By default the module is created in the **modules** directory; if `expo.autolinking.nativeModulesDir` is defined in `package.json`, it is created in that directory. yarn: `yarn create expo-module --local`, pnpm: `pnpm create expo-module --local`, bun: `bun create expo-module --local`.
 
-## スタンドアロンモジュールの作成
+## Create a standalone module
 
 ```sh
 npx create-expo-module@latest my-module
 ```
 
-example アプリ付きで生成される。Git リポジトリ外では新規リポジトリを初期化して初回コミットを作成する。
+Generated with an example app. Outside a Git repository, it initializes a new repository and creates an initial commit.
 
-## プラットフォームの指定
+## Specify platforms
 
 ```sh
 npx create-expo-module@latest my-module --platform android apple
 ```
 
-指定可能な値は `android` / `apple` / `web`。
+Allowed values: `android` / `apple` / `web`.
 
-## 機能例の指定
+## Specify example features
 
 ```sh
 npx create-expo-module@latest my-module --features Function AsyncFunction
 npx create-expo-module@latest my-module --features all
 ```
 
-`Constant` / `Function` / `AsyncFunction` / `Event` / `View` / `ViewEvent` / `SharedObject` / `all`。`--full-example` は `--features all` と同等。
+Allowed values: `Constant` / `Function` / `AsyncFunction` / `Event` / `View` / `ViewEvent` / `SharedObject` / `all`. `--full-example` is equivalent to `--features all`.
 
-## example アプリなしで作成
+## Create without an example app
 
 ```sh
 npx create-expo-module@latest my-module --no-example
 ```
 
-## 非対話での作成
+## Create non-interactively
 
 ```sh
 npx create-expo-module@latest my-module --name MyModule --package expo.modules.mymodule --platform android apple --features Function AsyncFunction --description "My module" --license MIT --module-version 0.1.0
 ```
 
-CI や stdin が TTY でない環境では対話プロンプトを省略する。明示しない値は既定値で埋められ警告が出る。
+In CI or when stdin is not a TTY, interactive prompts are skipped. Values you do not specify are filled with defaults and a warning is shown.
 
-## 既存モジュールへのプラットフォーム追加
+## Add platform support to an existing module
 
 ```sh
 npx create-expo-module@latest add-platform-support
@@ -61,9 +61,9 @@ npx create-expo-module@latest add-platform-support ./packages/my-module
 npx create-expo-module@latest add-platform-support --platform android --features Function Event
 ```
 
-モジュールルートで実行する（パスも指定可）。非対話モードでは `--platform` が必須。既存のネイティブディレクトリ（android / ios 等）は上書きしない。
+Run it in the module root (a path can also be given). In non-interactive mode, `--platform` is required. Existing native directories (android / ios, etc.) are not overwritten.
 
-## スタンドアロンモジュールの開発
+## Develop a standalone module
 
 ```sh
 cd my-module
@@ -73,9 +73,9 @@ cd example
 npx expo start
 ```
 
-`open:ios` は macOS と Xcode が必要。ネイティブコードを変更したら example アプリを再ビルドする。
+`open:ios` requires macOS and Xcode. Rebuild the example app after changing native code.
 
-## beta テンプレートの使用
+## Use the beta template
 
 ```sh
 EXPO_BETA=1 npx create-expo-module@latest my-module

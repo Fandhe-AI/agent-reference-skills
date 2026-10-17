@@ -4,100 +4,100 @@ source: https://docs.expo.dev/more/expo-cli/
 
 # Install
 
-新規プロジェクト作成とパッケージのインストール・バージョン検証のコマンド集。
+Commands to create a new project, install packages, and validate package versions.
 
-## 新規プロジェクトの作成 (SDK 58)
+## Create a new project (SDK 58)
 
 ```sh
 npx create-expo-app@latest --template default@sdk-58
 ```
 
-出典: `https://docs.expo.dev/more/create-expo/`。SDK 58 移行期間中は `--template` なしの `create-expo-app@latest` が SDK 57 プロジェクトを作成する（Expo Go を実機で使う場合は SDK 57 を使用）。他のパッケージマネージャーの形式は yarn `yarn create expo-app --template default@sdk-58`、pnpm `pnpm create expo-app --template default@sdk-58`、bun `bun create expo --template default@sdk-58`。
+Source: `https://docs.expo.dev/more/create-expo/`. During the SDK 58 transition period, `create-expo-app@latest` without `--template` creates an SDK 57 project (use SDK 57 if you test with Expo Go on a physical device). Forms for other package managers: yarn `yarn create expo-app --template default@sdk-58`, pnpm `pnpm create expo-app --template default@sdk-58`, bun `bun create expo --template default@sdk-58`.
 
-## 既定設定で作成
+## Create with default options
 
 ```sh
 npx create-expo-app@latest --yes --template default@sdk-58
 ```
 
-`--yes` は既定オプションで作成。
+`--yes` creates the project with the default options.
 
-## 依存インストールを省略して作成
+## Create without installing dependencies
 
 ```sh
 npx create-expo-app@latest --no-install --template default@sdk-58
 ```
 
-npm 依存と CocoaPods のインストールを省略。
+Skips installing npm dependencies and CocoaPods.
 
-## AGENTS.md の生成を省略して作成
+## Create without generating AGENTS.md
 
 ```sh
 npx create-expo-app@latest --no-agents-md --template default@sdk-58
 ```
 
-既定では AGENTS.md（Claude Code 検出時は .claude/settings.json も）を生成する。
+By default, AGENTS.md is generated (and .claude/settings.json as well when Claude Code is detected).
 
-## 例プロジェクトから作成
+## Create from an example project
 
 ```sh
 npx create-expo-app --example with-router
 ```
 
-`--example` のみ指定すると expo/examples の一覧から対話選択する。
+With `--example` alone, you choose interactively from the list in expo/examples.
 
-## ライブラリのインストール
+## Install a library
 
 ```sh
 npx expo install expo-camera
 ```
 
-`npm install` の代替。`react-native` の版に合う互換版を選ぶ。複数指定は `npx expo install typescript expo-sms`。
+Replacement for `npm install`. Picks the version compatible with your `react-native` version. To install several at once: `npx expo install typescript expo-sms`.
 
-## パッケージマネージャーへの引数の受け渡し
+## Pass arguments to the package manager
 
 ```sh
 yarn expo install typescript -- -D
 ```
 
-`--` 以降は下位のパッケージマネージャーへ渡る（上記は `yarn add typescript -D` 相当）。
+Everything after `--` is passed to the underlying package manager (the above is equivalent to `yarn add typescript -D`).
 
-## パッケージマネージャーの明示
+## Specify the package manager explicitly
 
 ```sh
 npx expo install expo-camera --npm
 ```
 
-`--bun` / `--npm` / `--pnpm` / `--yarn` で指定。未指定時はロックファイルから判定。
+Use `--bun` / `--npm` / `--pnpm` / `--yarn`. When omitted, the package manager is detected from the lockfile.
 
-## インストール済みパッケージの版検証
+## Validate installed package versions
 
 ```sh
 npx expo install --check
 ```
 
-不整合のあるパッケージを表示し、ローカルでは修正を促す。CI では非ゼロ終了する。
+Lists packages with mismatched versions and, locally, prompts you to fix them. In CI, it exits with a non-zero code.
 
-## 特定パッケージのみ検証
+## Validate specific packages only
 
 ```sh
 npx expo install react-native expo-sms --check
 ```
 
-## 不整合の自動修正
+## Automatically fix mismatches
 
-> **警告**: `package.json` とロックファイルが書き換わる。作業ツリーをコミットまたは退避してから、使い捨てのブランチで実行すること。
+> **Warning**: This rewrites `package.json` and the lockfile. Commit or stash your working tree first, and run it on a throwaway branch.
 
 ```sh
 npx expo install --fix
 ```
 
-`--check` と異なり、環境によらず不整合を常に修正する。
+Unlike `--check`, it always fixes mismatches regardless of the environment.
 
-## CI での検証
+## Validate in CI
 
 ```sh
 CI=1 npx expo install --check
 ```
 
-古いパッケージがあると失敗する（公式の例）。
+Fails if there are outdated packages (official example).

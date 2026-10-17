@@ -40,7 +40,7 @@ Statuses (experimental, alpha, preview, beta, stable, deprecated) used across th
 ## Notes
 
 - Statuses are not a single pipeline. Any feature can become deprecated, and individual APIs in otherwise stable libraries can be experimental.
-- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react skill and a future react-native skill for those.
+- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: August 06, 2026).
 
 ## Related

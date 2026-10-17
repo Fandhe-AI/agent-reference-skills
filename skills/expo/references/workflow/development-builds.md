@@ -55,7 +55,7 @@ iOS Simulator builds with EAS need `ios.simulator` set to `true` in the `develop
 - `npx expo run:*` and `eas build` run prebuild automatically if no native directories exist.
 - iOS: enable developer mode on the device; for local iPhone builds set a unique `ios.bundleIdentifier`. iOS Simulator builds install only on simulators; device builds only on iPhones.
 - Existing React Native projects that do not use CNG need further configuration after installing `expo-dev-client`.
-- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react skill and a future react-native skill for those.
+- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: September 10, 2026). The page's AI-agent prompt blocks and Expo Skills promotion are not transcribed.
 
 ## Related

@@ -18,7 +18,7 @@ npx expo install expo
 - All features are free, optional, and can be used independently; unused features add no bloat.
 - With `expo` (vs existing React Native without it): develop complex apps entirely in JavaScript; write JSI native modules with Swift and Kotlin; develop without Xcode or Android Studio; share examples in the browser with Snack; major upgrades without native changes; first-class TypeScript; install natively compatible libraries from the command line; websites from the same codebase; tunnel your dev server to any device.
 - Expo Application Services (EAS): cloud services for building, submitting, and updating apps; usable with any React Native app, with or without `expo`.
-- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react skill and a future react-native skill for those.
+- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: September 17, 2026).
 
 ## Related

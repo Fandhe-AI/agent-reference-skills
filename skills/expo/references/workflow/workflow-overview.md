@@ -27,7 +27,7 @@ npx @react-native-community/cli@latest init MyApp && cd MyApp && npx install-exp
 - Core development loop: write and run JavaScript; update app configuration; write native code or modify native project configuration; install a library that requires native code modifications (the last three require a development build).
 - Development variants (development, preview, production) can be installed on the same device.
 - Lifecycle steps covered: share with testers (EAS Build internal distribution; local production builds), release to stores (EAS Submit), monitor (Sentry, BugSnag, analytics), update (`expo-updates`, EAS Update).
-- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react skill and a future react-native skill for those.
+- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: October 16, 2026).
 
 ## Related

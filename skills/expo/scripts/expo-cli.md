@@ -4,67 +4,67 @@ source: https://docs.expo.dev/more/expo-cli/
 
 # Expo CLI
 
-Expo CLI（`expo` パッケージ同梱、`npx expo ...`）の開発・ビルド・エクスポート・設定コマンド集。
+Expo CLI (bundled with the `expo` package, `npx expo ...`) commands for development, build, export, and configuration.
 
-## 開発サーバーの起動
+## Start the development server
 
 ```sh
 npx expo start
 ```
 
-`npx expo` は `npx expo start` のエイリアス。既定は `http://localhost:8081`。
+`npx expo` is an alias for `npx expo start`. Defaults to `http://localhost:8081`.
 
-## 起動先の固定
+## Pin the launch target
 
 ```sh
 npx expo start --dev-client
 npx expo start --go
 ```
 
-`--dev-client` は常に development build、`--go` は常に Expo Go。未指定時は `expo-dev-client` があれば development build。
+`--dev-client` always targets a development build; `--go` always targets Expo Go. When neither is given, a development build is used if `expo-dev-client` is installed.
 
-## ローカルホスト限定・ポート指定
+## Localhost only and port selection
 
 ```sh
 npx expo start --localhost
 npx expo start --port 0
 ```
 
-`--port 0` は最初の空きポートを使用。
+`--port 0` uses the first available port.
 
-## トンネル接続
+## Tunnel connection
 
 ```sh
 npm i -g @expo/ngrok
 npx expo start --tunnel
 ```
 
-事前に `@expo/ngrok` のインストールが必要。トンネル URL は公開される。
+`@expo/ngrok` must be installed beforehand. The tunnel URL is publicly reachable.
 
-## オフライン起動
+## Start offline
 
 ```sh
 npx expo start --offline
 ```
 
-## iOS / Android のローカルビルドと実行
+## Build and run locally on iOS / Android
 
 ```sh
 npx expo run:ios
 npx expo run:android
 ```
 
-ネイティブディレクトリが無ければ先に `npx expo prebuild` が実行される。`run:ios` は Mac と Xcode、`run:android` は Android Studio と Java が必要。
+If the native directories do not exist, `npx expo prebuild` runs first. `run:ios` requires a Mac and Xcode; `run:android` requires Android Studio and Java.
 
-## 実機・デバイス指定
+## Specify a physical device or simulator
 
 ```sh
 npx expo run:ios --device
 ```
 
-`--device [device]` で名前または ID を指定。`--device generic` はビルドのみ。
+`--device [device]` accepts a name or an ID. `--device generic` only builds.
 
-## Android バリアント
+## Android variants
 
 ```sh
 npx expo run:android --variant debug
@@ -72,71 +72,71 @@ npx expo run:android --variant debugOptimized
 npx expo run:android --variant release
 ```
 
-`debugOptimized` は SDK 54 以降。`release` は Google Play 提出用の署名なし。
+`debugOptimized` is available in SDK 54 and later. `release` is unsigned for Google Play submission.
 
-## Android の product flavor
+## Android product flavors
 
 ```sh
 npx expo run:android --variant freeDebug --app-id dev.expo.myapp.free
 ```
 
-## iOS Release 構成
+## iOS Release configuration
 
 ```sh
 npx expo run:ios --configuration Release
 ```
 
-App Store 提出用の署名ではない。
+Not signed for App Store submission.
 
-## iOS Simulator 向けビルドのみ
+## Build for iOS Simulator only
 
 ```sh
 npx expo run:ios --configuration Release --device generic --output ./build
 ```
 
-`--output` でビルド済みバイナリのコピー先を指定。
+`--output` specifies where the built binary is copied.
 
-## ビルド済みバイナリのインストール
+## Install a prebuilt binary
 
 ```sh
 npx expo run:ios --binary <path>
 ```
 
-`--binary <path>` 指定時はビルドを省略してインストールする。その他の共通オプション: `--no-build-cache` / `--no-install` / `--no-bundler` / `-p, --port`。
+With `--binary <path>`, the build is skipped and the binary is installed. Other common options: `--no-build-cache` / `--no-install` / `--no-bundler` / `-p, --port`.
 
-## JavaScript とアセットのエクスポート
+## Export JavaScript and assets
 
 ```sh
 npx expo export
 ```
 
-既定の出力先は `dist`、`--platform` の既定は `all`。
+The default output directory is `dist`, and the default for `--platform` is `all`.
 
-## エクスポートのオプション
+## Export options
 
 ```sh
 npx expo export --platform ios --output-dir dist --clear
 ```
 
-他に `--dev` / `--max-workers <number>` / `--no-minify` / `--no-bytecode` / `--no-ssg, --api-only`。`--no-bytecode` は bundle サイズ分析用で、ネイティブに出荷しない。
+Others: `--dev` / `--max-workers <number>` / `--no-minify` / `--no-bytecode` / `--no-ssg, --api-only`. `--no-bytecode` is for bundle size analysis and is not shipped to native.
 
-## webpack でのエクスポート (非推奨)
+## Export with webpack (deprecated)
 
 ```sh
 npx expo export:web
 ```
 
-SDK 50 以降 Expo Webpack は非推奨（universal Metro の `npx expo export` を使用）。`expo.web.bundler: 'metro'` の場合は無効。
+Expo Webpack is deprecated as of SDK 50 (use the universal Metro `npx expo export`). It has no effect when `expo.web.bundler: 'metro'` is set.
 
-## ネイティブコードの生成 (Prebuild)
+## Generate native code (Prebuild)
 
 ```sh
 npx expo prebuild
 ```
 
-## ネイティブディレクトリの再生成
+## Regenerate native directories
 
-> **警告**: `--clean` は既存のネイティブディレクトリを再生成し、手動変更を失う。変更を git で追跡し、使い捨てのブランチまたはクローンで実行すること。公式は iOS 向けに `npx expo prebuild -p ios --clean` を例示。
+> **Warning**: `--clean` regenerates the existing native directories and discards manual changes. Track your changes in git and run it on a throwaway branch or clone. The official docs give `npx expo prebuild -p ios --clean` as the iOS example.
 
 ```sh
 npx expo prebuild -p ios --clean
@@ -148,9 +148,9 @@ npx expo prebuild -p ios --clean
 npx expo lint
 ```
 
-初回は ESLint を Expo 向け設定でセットアップする。既定の対象は **src** / **app** / **components**。
+On first run, it sets up ESLint with the Expo configuration. The default targets are **src** / **app** / **components**.
 
-## Lint の自動修正と対象指定
+## Lint auto-fix and target selection
 
 ```sh
 npx expo lint --fix
@@ -159,32 +159,32 @@ npx expo lint --ext .ts,.tsx
 npx expo lint -- --no-error-on-unmatched-pattern
 ```
 
-`--` 以降は ESLint へ渡る。
+Everything after `--` is passed to ESLint.
 
-## app config の評価
+## Evaluate the app config
 
 ```sh
 npx expo config
 ```
 
-## app config の出力オプション
+## App config output options
 
 ```sh
 npx expo config --full --json
 npx expo config --type public
 ```
 
-`-t, --type` は `public` / `prebuild` / `introspect`。
+`-t, --type` accepts `public` / `prebuild` / `introspect`.
 
-## 設定ファイルの生成
+## Generate configuration files
 
 ```sh
 npx expo customize
 ```
 
-babel.config.js / webpack.config.js / metro.config.js / tsconfig.json から選択する。
+Choose from babel.config.js / webpack.config.js / metro.config.js / tsconfig.json.
 
-## 認証
+## Authentication
 
 ```sh
 npx expo register
@@ -193,12 +193,12 @@ npx expo whoami
 npx expo logout
 ```
 
-認証情報は Expo CLI と EAS CLI で共有される。
+Credentials are shared between Expo CLI and EAS CLI.
 
-## 環境変数
+## Environment variables
 
 ```sh
 EXPO_NO_TELEMETRY=1 npx expo start
 ```
 
-主な変数: `EXPO_OFFLINE` / `EXPO_NO_TELEMETRY` / `EXPO_DEBUG` / `CI` / `EXPO_EDITOR` / `EXPO_NO_GIT_STATUS`（`prebuild --clean` 時の git 警告を抑止）。全一覧は `references/workflow/expo-cli.md` の環境変数表を参照。
+Main variables: `EXPO_OFFLINE` / `EXPO_NO_TELEMETRY` / `EXPO_DEBUG` / `CI` / `EXPO_EDITOR` / `EXPO_NO_GIT_STATUS` (suppresses the git warning on `prebuild --clean`). For the full list, see the environment variable table in `references/workflow/expo-cli.md`.

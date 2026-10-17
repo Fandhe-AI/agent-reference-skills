@@ -43,7 +43,7 @@ Ways to open the Developer menu: Android device (no USB) shake vertically; Andro
 - React Native Debugger requires deprecated Remote JS debugging (deprecated since React Native 0.73) and is incompatible with Hermes. For Expo SDK 50+ use React Native DevTools or Expo dev tools plugin equivalents (Redux DevTools); it can still be used with Expo SDK 49 and earlier (`brew install react-native-debugger`, port `8081`).
 - Network inspection alternatives (proxies): Charles Proxy, Proxyman, mitmproxy, Fiddler.
 - Production apps: use a crash and bug reporting service.
-- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react skill and a future react-native skill for those.
+- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: September 29, 2026).
 
 ## Related

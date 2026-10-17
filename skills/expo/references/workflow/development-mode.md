@@ -26,7 +26,7 @@ npx expo start --no-dev --minify
 - Production mode is useful for testing performance and catching bugs that only show up in production.
 - In production mode, console logs do not appear in the Expo CLI terminal; view them via native logs.
 - To compile fully for production see Compiling Android and Compiling iOS in the Expo CLI reference.
-- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react skill and a future react-native skill for those.
+- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: August 11, 2026).
 
 ## Related

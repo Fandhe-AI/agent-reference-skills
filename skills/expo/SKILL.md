@@ -4,7 +4,7 @@ description: >
   Expo (React Native フレームワーク, Expo SDK 58 / EAS) のリファレンス。
   Expo Router (file-based routing, expo-server, data loaders, +api.ts), app.json / app.config, config plugins,
   Expo Modules API, expo-* SDK, Expo UI, EAS Build / Update / Submit / Workflows, eas.json, expo-updates (OTA),
-  CNG / prebuild, development build (dev-client), expo-notifications push。
+  CNG / prebuild, Expo CLI (npx expo), development build (dev-client), expo-notifications push。
 user-invocable: false
 ---
 

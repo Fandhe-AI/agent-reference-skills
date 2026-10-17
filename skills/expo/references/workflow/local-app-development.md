@@ -43,7 +43,7 @@ npx expo run:android --variant freeDebug --app-id dev.expo.myapp.free
 - Installing `expo-dev-client` makes the debug build a development build.
 - Customizing the Android build type away from `release` breaks Expo's assumption that `release` is used for production.
 - Run EAS Build locally with the `--local` flag (see local builds in EAS Build).
-- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react skill and a future react-native skill for those.
+- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: September 17, 2026).
 
 ## Related

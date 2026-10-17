@@ -41,7 +41,17 @@ Commands:
 | `npx expo customize` | Generate default config files: **babel.config.js**, **webpack.config.js**, **metro.config.js**, **tsconfig.json**. |
 | `register` / `login` / `whoami` / `logout` | Authentication, shared with EAS CLI; used to code-sign manifests. |
 
-`start` options: `--dev-client`, `--go`, `--localhost`, `--port` (default 8081; `0` for first available), `--https` (deprecated in favor of `--tunnel`), `--tunnel` (needs `@expo/ngrok`), `--offline`.
+`start` options:
+
+| Option | Description |
+| --- | --- |
+| `--dev-client` | Always launch the app in a development build. |
+| `--go` | Always launch the app in Expo Go. |
+| `--localhost` | Serve over localhost only (default is LAN). |
+| `--port` | Dev server port (default 8081; `0` for first available). |
+| `--https` | Deprecated in favor of `--tunnel`. |
+| `--tunnel` | Needs `@expo/ngrok`. |
+| `--offline` | Offline mode. |
 
 Terminal UI shortcuts: A / Shift+A (Android), I / Shift+I (iOS Simulator), W (web), R (reload), S (switch Expo Go / development build), M (dev menu), Shift+M (more commands), J (React Native DevTools, Hermes), O (open in editor; `EXPO_EDITOR`, `EDITOR`), E (QR code), ? (all commands).
 
@@ -59,7 +69,18 @@ Terminal UI shortcuts: A / Shift+A (Android), I / Shift+I (iOS Simulator), W (we
 | `--variant <v>` / `--app-id <id>` | Android variant (`debug`, `debugOptimized` SDK 54+, `release`, flavor) and application ID. |
 | `--scheme <s>` / `--configuration Release` | iOS scheme and build configuration. |
 
-`export` options: `--platform <platform>` (`ios`, `android`, `all` default; `web` if configured), `--dev`, `--output-dir <dir>` (default `dist`), `--max-workers <number>`, `-c, --clear`, `--no-minify`, `--no-bytecode`, `--no-ssg, --api-only`.
+`export` options:
+
+| Option | Description |
+| --- | --- |
+| `--platform <platform>` | `ios`, `android`, `all` (default); `web` if configured. |
+| `--dev` | Bundle for development environments without minifying code or stripping the `__DEV__` boolean. |
+| `--output-dir <dir>` | Directory to export the static files to (default `dist`). |
+| `--max-workers <number>` | Maximum number of tasks the bundler may spawn; `0` runs all transpilation in the same process. |
+| `-c, --clear` | Clear the bundler cache before exporting. |
+| `--no-minify` | Skip minifying JavaScript and CSS assets. |
+| `--no-bytecode` | Skip generating Hermes bytecode for native platforms (only for analyzing bundle sizes; never ship UTF-8 bundles to native). |
+| `--no-ssg, --api-only` | Skip exporting static HTML files for web routes; only generates server code in **dist**. |
 
 Environment variables (selected; page lists more):
 
@@ -90,7 +111,7 @@ Environment variables (selected; page lists more):
 - Android `debugOptimized` variant: C++ debugging is disabled. iOS `run` pipes simulator native error logs to the terminal (not physical devices).
 - `expo.install.exclude` in **package.json** excludes packages from version checking.
 - Telemetry is anonymous and opt-out with `EXPO_NO_TELEMETRY=1`.
-- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react skill and a future react-native skill for those.
+- Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17; `@expo/cli` 58.1.10.
 
 ```sh
