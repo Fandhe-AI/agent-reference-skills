@@ -12,4 +12,3 @@
 | Send notifications with the Expo Push Service | Send a push notification by POSTing to the Expo Push API with the `ExpoPushToken` obtained via `getExpoPushTokenAsync`. | [sending-notifications.md](./sending-notifications.md) |
 | TaskManager | `expo-task-manager` manages long-running tasks, in particular tasks that can run while the app is in the background. | [task-manager.md](./task-manager.md) |
 | What you need to know about notifications | Notification types and their behavior on Android and iOS. | [what-you-need-to-know.md](./what-you-need-to-know.md) |
-</content>

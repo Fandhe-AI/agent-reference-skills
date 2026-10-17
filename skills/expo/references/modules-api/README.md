@@ -18,4 +18,3 @@
 | Using shared objects | Shared objects expose long-lived native instances from Android and iOS to JavaScript/TypeScript without handing over their lifecycle. | [shared-objects.md](./shared-objects.md) |
 | Wrap third-party native libraries | Tutorial: wrap two similar native chart libraries (MPAndroidChart on Android, Charts / DGCharts on iOS) in one Expo module that exposes a radial (pie) chart view. | [third-party-library.md](./third-party-library.md) |
 | Type generation reference | Reference for the `expo-type-information` package: parses Swift Expo modules (via `sourcekitten`) and generates TypeScript interfaces and mocks. | [type-generation-reference.md](./type-generation-reference.md) |
-</content>
