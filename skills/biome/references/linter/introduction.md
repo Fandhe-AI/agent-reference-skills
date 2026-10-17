@@ -75,7 +75,7 @@ glob は shell が展開する（Biome は glob 非対応）。`./src/**/*.test.
 
 ## ドメイン
 
-`"react"` / `"solid"` / `"test"` 等、技術単位でルールを束ねる。`package.json` の依存から自動有効化され、`linter.domains` で `"recommended"` / `"all"` / `"off"` を指定。詳細は `domains.md`。
+`"react"` / `"solid"` / `"test"` 等、技術単位でルールを束ねる。`package.json` の依存から自動有効化され、`linter.domains` で `"recommended"` / `"all"` / `"none"` を指定。詳細は `domains.md`。
 
 ## マイグレーション
 
@@ -109,3 +109,7 @@ nursery グループは stable では明示的 opt-in が必要で、セマン�
 プロジェクトドメインルールが有効な場合、モジュールグラフ分析と型推論を実行する Scanner が起動。
 - 約 2,000 ファイルで ~2s のオーバーヘッド
 - TypeScript 型スキャン時は node_modules の依存関係も含むためメモリ使用量が増加
+
+## Notes
+
+- 公式 linter ページのドメイン無効化例は `"off"` と記載するが、2.5.15 の configuration_schema.json（RuleDomainValue）が受け付けるのは `"all"` / `"none"` / `"recommended"` のみのため `"none"` を採用
