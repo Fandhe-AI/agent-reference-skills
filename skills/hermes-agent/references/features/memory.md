@@ -86,7 +86,7 @@ A timeline of saved skills and memory entries over time. `hermes journey` (alias
 
 ## External Memory Providers
 
-Hermes ships with two bundled external provider plugins, RetainDB and ByteRover. Honcho, Hindsight, Supermemory, Mem0, OpenViking and Holographic moved to the plugin catalog in v0.22.0: install with `hermes plugins install <name>` (existing users are migrated automatically, data intact). Providers run alongside built-in memory (never replacing it); only one external provider can be active at a time.
+Hermes ships with two bundled external provider plugins, RetainDB and ByteRover (both leave core on October 15, 2026; see Notes). Honcho, Hindsight, Supermemory, Mem0, OpenViking and Holographic moved to the plugin catalog in v0.22.0: install with `hermes plugins install <name>` (existing users are migrated automatically, data intact). Providers run alongside built-in memory (never replacing it); only one external provider can be active at a time.
 
 | Plugin | Capability | Distribution |
 |--------|-----------|--------------|
@@ -140,6 +140,10 @@ Approval applies to exactly the entry targeted when staged; if it changed since,
 - `display.memory_notifications: off | on (default) | verbose` controls the `💾 Memory updated` line after the background self-improvement review.
 - `auxiliary.background_review.provider` / `.model` runs the review on a cheaper model (`auto` = main model; ~3-5x cheaper in benchmarks). A same-model review always inherits the parent's reasoning effort.
 - Skill writes use a similar gate: `skills.write_approval: true` stages all skill writes; review with `/skills pending`, `/skills diff <id>`, `/skills approve <id|all>`, `/skills reject <id|all>`, `/skills approval on|off`.
+
+## Notes
+
+- Deprecation (v0.22.2): RetainDB and ByteRover leave core on October 15, 2026; their standalone repositories are unmaintained and open for a new maintainer. Provider name, settings, data directory and tools stay the same; `hermes update` installs the catalog plugin for profiles that name them. See [Memory Providers](./memory-providers.md). (Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers)
 
 ## Related
 
