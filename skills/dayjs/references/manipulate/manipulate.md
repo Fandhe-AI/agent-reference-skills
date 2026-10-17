@@ -185,3 +185,4 @@ dayjs.utc('2000-01-01T06:01:02Z').utcOffset(1, true).format()
 ### Notes
 
 - The offset remains fixed and does not automatically adjust for daylight saving time rules.
+- v1.11.14: fixed a bug where the result of `.utcOffset(0, true)` and its clone differed (#2505).
