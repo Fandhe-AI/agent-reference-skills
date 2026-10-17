@@ -8,16 +8,24 @@ The main-process-side equivalent of the DOM `MessageChannel`. Its singular funct
 
 ## Signature / Usage
 
+Adapted (not in the official docs): wrapped in app.whenReady(), the receiver is registered in a preload set with path.join(__dirname, 'preload.js'), and the port is posted only after await loadFile('index.html').
+
 ```js
 // Main process
-const { BrowserWindow, MessageChannelMain } = require('electron')
+const path = require('node:path')
+const { app, BrowserWindow, MessageChannelMain } = require('electron')
 
-const w = new BrowserWindow()
-const { port1, port2 } = new MessageChannelMain()
-w.webContents.postMessage('port', null, [port2])
-port1.postMessage({ some: 'message' })
+app.whenReady().then(async () => {
+  const w = new BrowserWindow({
+    webPreferences: { preload: path.join(__dirname, 'preload.js') }
+  })
+  await w.loadFile('index.html')
+  const { port1, port2 } = new MessageChannelMain()
+  w.webContents.postMessage('port', null, [port2])
+  port1.postMessage({ some: 'message' })
+})
 
-// Renderer process
+// preload.js
 const { ipcRenderer } = require('electron')
 
 ipcRenderer.on('port', (e) => {
@@ -37,7 +45,6 @@ ipcRenderer.on('port', (e) => {
 
 ## Notes
 
-- The Main process part of the snippet is an excerpt from the official docs: run it after app.whenReady() (BrowserWindow can only be created after the app module emits ready).
 - Electron's built-in classes cannot be subclassed in user code.
 
 ## Related

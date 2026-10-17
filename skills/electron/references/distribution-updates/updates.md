@@ -99,13 +99,15 @@ setInterval(() => {
 
 Notify users:
 
+Adapted (not in the official docs): the official example uses releaseNotes on win32, but the autoUpdater API states that with Squirrel.Windows only releaseName is available; this version uses releaseName on every platform with a string fallback.
+
 ```js
 autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
   const dialogOpts = {
     type: 'info',
     buttons: ['Restart', 'Later'],
     title: 'Application Update',
-    message: process.platform === 'win32' ? releaseNotes : releaseName,
+    message: releaseName || 'A new version is available',
     detail: 'A new version has been downloaded. Restart the application to apply the updates.'
   }
 
@@ -144,6 +146,7 @@ B0892F3C7AC91D72A6271FF36905FEF8FE993520 https://your-static.storage/your-app-1.
 ## Notes
 
 - Handling updates manually: the `url` field supports the `file://` protocol, so you can load an update from a local directory (useful when the update server is behind authentication).
+- With Squirrel.Windows only `releaseName` is passed to the `update-downloaded` event (see [auto-updater.md](./auto-updater.md)).
 - macOS builds must be code-signed for updates; see [code-signing.md](./code-signing.md).
 - Distance line: Electron's Squirrel-based update flow only. App store updates and general MSIX / Sparkle distribution are covered by apple-distribution and windows-packaging-publish.
 
