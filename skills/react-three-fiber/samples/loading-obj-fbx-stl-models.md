@@ -54,9 +54,35 @@ function Scene() {
 }
 ```
 
+Adapted (not in the official tutorial): smooth shading by merging shared vertices.
+
+```jsx
+import { useMemo } from 'react'
+import { useLoader } from '@react-three/fiber'
+import { STLLoader } from 'three/addons/loaders/STLLoader.js'
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js'
+
+function Scene() {
+  const geometry = useLoader(STLLoader, '/model.stl')
+  const merged = useMemo(() => {
+    const g = geometry.clone()
+    g.deleteAttribute('normal')
+    const m = BufferGeometryUtils.mergeVertices(g)
+    m.computeVertexNormals()
+    return m
+  }, [geometry])
+  return (
+    <mesh geometry={merged}>
+      <meshStandardMaterial color="orange" />
+    </mesh>
+  )
+}
+```
+
 ## Notes
 
 - `STLLoader` returns a `BufferGeometry`, not a scene or group, so attach it to your own `mesh` with a material.
-- The official tutorial calls `geometry.computeVertexNormals()` (second STL snippet) but does not describe it as producing smooth shading. `STLLoader` returns a non-indexed geometry, so `computeVertexNormals()` alone yields per-face normals and the mesh still looks flat. For smooth shading, first share vertices with `BufferGeometryUtils.mergeVertices(geometry)` (from `three/examples/jsm/utils/BufferGeometryUtils.js`), then call `computeVertexNormals()`. This merge step is not in the official tutorial.
+- The official tutorial calls `geometry.computeVertexNormals()` (second STL snippet) but does not describe it as producing smooth shading. `STLLoader` returns a non-indexed geometry, so `computeVertexNormals()` alone yields per-face normals and the mesh still looks flat.
+- The third snippet is adapted and not in the official tutorial. `mergeVertices` compares all attributes, so the per-face `normal` set by `STLLoader` must be removed first; it returns a new geometry, which is the one to pass to `mesh`. The processing runs in `useMemo` on a clone so the cached `useLoader` result is not mutated on every render.
 - The official tutorial also shows `useFBX` from `@react-three/drei` (`const fbx = useFBX('/Poimandres.fbx')`); drei is a separate package that this skill does not cover.
 - The loaders (`OBJLoader` / `FBXLoader` / `STLLoader`) are three.js classes; see the threejs skill (loaders-addons).
