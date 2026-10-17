@@ -222,7 +222,7 @@ reusable workflow 内のジョブのトークンは、呼び出し元の標準�
 org 内の任意のリポジトリから特定 reusable workflow のみ許可する例:
 
 - Subject: `repo:octo-org/*`
-- Custom claim（特定ワークフロー・ref）: `job_workflow_ref:octo-org/octo-automation/.github/workflows/deployment.yml@ 10040c56a8c0253d69db7c1f26a0d227275512e2`
+- Custom claim（特定ワークフロー・ref）: `job_workflow_ref:octo-org/octo-automation/.github/workflows/deployment.yml@10040c56a8c0253d69db7c1f26a0d227275512e2`
 - Custom claim（リポジトリ内の任意の reusable workflow）: `job_workflow_ref:octo-org/octo-automation@*`
 
 ---
@@ -238,6 +238,8 @@ org 内の任意のリポジトリから特定 reusable workflow のみ許可す
 - 「トークンの要求方法」のマスク付き curl 例は、原本の curl 行と `::add-mask::`（workflow-commands ページ）から構成したもの。原本の例そのものではない。
 - Dependabot の update ジョブ用トークンは `event_name` が `dynamic`。GitHub Actions ワークフローのみを許可したい trust policy では、期待するイベント名だけを許可する。
 - Dependabot は AWS CodeArtifact / Azure DevOps Artifacts / JFrog Artifactory 上の、`username` / `password` 認証を使うレジストリに対して OIDC で認証できる。
+- 実際の `job_workflow_ref` クレーム値は `ORG/REPO/.github/workflows/FILE@ref` 形式（原本の例: `octo-org/octo-automation/.github/workflows/oidc.yml@refs/heads/main`）。`job_workflow_ref:octo-org/octo-automation@*` は原本の Syntax / Example の転記で、ワイルドカードが一致するかはクラウドプロバイダーの条件評価に依存する。trust policy へ転記する前に実際のクレーム値で確認する。
+- 原本の `deployment.yml@ 10040c56...` の例は `@` の後に空白を含む誤記で、本ページでは空白を除去した。
 - immutable subject claims は GitHub Enterprise Server では利用不可。
 
 ## Related
