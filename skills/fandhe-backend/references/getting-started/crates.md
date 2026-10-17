@@ -2,7 +2,18 @@
 
 fandhe-backend は 15 クレートで構成される（すべて v0.5.0（2026-10-16）、lockstep で crates.io に公開済み）。コア 3 クレート + プラグイン 12 クレートに分かれ、依存方向は `server → routes → http::*` の一方向。
 
-## コア（3 クレート）
+## Usage
+
+```bash
+cargo add fandhe-backend-core fandhe-backend-http fandhe-backend-routes
+
+# プラグインは feature で有効化する（例: WebSocket）
+cargo add fandhe-backend-core --features websocket
+```
+
+## Options / Props
+
+**コア（3 クレート）**
 
 | クレート | 役割 |
 |---------|------|
@@ -10,7 +21,7 @@ fandhe-backend は 15 クレートで構成される（すべて v0.5.0（2026-1
 | `fandhe-backend-http` | HTTP/1.1 プリミティブ（sans-IO パーサ・レスポンス構築・chunked / query / form / cookie 各パーサ） |
 | `fandhe-backend-routes` | ルータ（静的・パスパラメータ・ワイルドカード・フォールバック・async ハンドラ対応）。`fandhe-backend-http` にのみ依存する中間層 |
 
-## プラグイン（12 クレート）
+**プラグイン（12 クレート）**
 
 | クレート | feature 名 | 役割 |
 |---------|-----------|------|
@@ -26,15 +37,6 @@ fandhe-backend は 15 クレートで構成される（すべて v0.5.0（2026-1
 | `fandhe-backend-plugin-hub-wiring` | （独立クレート、feature 無し） | hub 共通配線プラグイン。コアの `RequestGate` 拡張点上に `TenantGate` を実装し、`org_id` 抽出 → フェイルクローズの配線を集約する。JWT 検証は `fandhe-backend-plugin-jwt` に依存・委譲する（v0.5.0） |
 | `fandhe-backend-plugin-jwt` | （独立クレート、feature 無し。Gate 型） | 汎用 JWT 検証プラグイン。RS256・ES256 の検証ポリシー（`JwtPolicy`）、JWKS 鍵集合、`RequestGate` 実装 `JwtGate`（v0.5.0 で初公開） |
 | `fandhe-backend-plugin-csrf` | （独立クレート、feature 無し。Gate 型） | CSRF 検査ゲート。`RequestGate` 実装 `CsrfGate`（v0.5.0 で初公開） |
-
-## Usage
-
-```bash
-cargo add fandhe-backend-core fandhe-backend-http fandhe-backend-routes
-
-# プラグインは feature で有効化する（例: WebSocket）
-cargo add fandhe-backend-core --features websocket
-```
 
 ## Notes
 
