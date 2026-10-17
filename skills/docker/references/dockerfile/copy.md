@@ -20,6 +20,7 @@ FROM golang AS build
 WORKDIR /app
 RUN --mount=type=bind,target=. go build -o /myapp ./cmd
 
+FROM alpine
 COPY --from=build /myapp /usr/bin/
 ```
 
@@ -36,6 +37,7 @@ COPY --from=build /myapp /usr/bin/
 
 ## Notes
 
+- Adapted: the official snippet omits the second `FROM`, which makes the stage copy from itself.
 - `ADD` and `COPY` are functionally similar but serve slightly different purposes.
 - The last argument is always the destination. With multiple sources (or a wildcard) the destination must be a directory ending with `/`.
 - Build context sources: a leading slash or `../` navigating outside the context has parent navigation removed; trailing slashes are disregarded. For a directory, only its contents are copied (merged; conflicts resolved in favor of the added content, except copying a directory onto an existing file is an error). File permissions are preserved. With a Dockerfile passed via stdin there is no build context; only `--from` copies work. With a Git repository as the build context, copied file permission bits are 644 (755 if executable), directories 755.

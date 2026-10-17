@@ -11,9 +11,12 @@ Environment variables (declared with `ENV`) can be used in certain instructions 
 ```dockerfile
 FROM busybox
 ENV FOO=/bar
-WORKDIR ${FOO}   # WORKDIR /bar
-ADD . $FOO       # ADD . /bar
-COPY \$FOO /quux # COPY $FOO /quux
+# -> WORKDIR /bar
+WORKDIR ${FOO}
+# -> ADD . /bar
+ADD . $FOO
+# -> COPY $FOO /quux
+COPY \$FOO /quux
 ```
 
 Variables are written `$variable_name` or `${variable_name}` (treated equivalently; braces are typically used for names like `${foo}_bar`).
@@ -40,6 +43,7 @@ Supported only in a pre-release Dockerfile syntax (`# syntax=docker/dockerfile-u
 
 ## Notes
 
+- Adapted: the official example shows the expanded values as trailing comments; Dockerfile only treats `#` at the start of a line as a comment.
 - In all cases, `word` can be any string, including additional environment variables.
 - `pattern` is a glob pattern where `?` matches any single character and `*` any number of characters (including zero). To match literal `?` and `*`, use `\?` and `\*`.
 - Escape whole variable names with `\`: `\$foo` or `\${foo}` translate to the literals `$foo` and `${foo}`.

@@ -10,7 +10,8 @@ How to customize the Docker daemon, `dockerd`, with a JSON configuration file or
 
 ```console
 $ dockerd --debug \
-  --tls=true \
+  --tlsverify \
+  --tlscacert=/var/docker/ca.pem \
   --tlscert=/var/docker/server.pem \
   --tlskey=/var/docker/serverkey.pem \
   --host tcp://192.168.59.3:2376
@@ -36,6 +37,7 @@ Default configuration file location:
 
 ## Notes
 
+- Adapted: the official example uses `--tls=true`, which encrypts traffic but does not authenticate clients; `--tlsverify` with `--tlscacert` enforces mutual TLS (see Protect the Docker daemon socket).
 - The JSON file is the preferred option. Flags and the file may be combined only if the same option is not set in both; otherwise the daemon won't start and prints an error.
 - Rootless mode respects `XDG_CONFIG_HOME` (`$XDG_CONFIG_HOME/docker/daemon.json`). `dockerd --config-file` sets an explicit location.
 - Starting with Docker Engine 29.5, `dockerd` on Windows can listen on a Unix socket (optional; the default Windows endpoint remains the `npipe` named pipe): `dockerd -H unix://C:/Users/<USER>/docker.sock --group docker-users` from an elevated PowerShell session. Without `--group`, only Administrators and `SYSTEM` can access the socket. Use a path in the user profile; a socket created directly under `C:\` can inherit a high integrity level that blocks access. Client: `docker -H unix://C:/Users/<USER>/docker.sock info`.

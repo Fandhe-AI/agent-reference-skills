@@ -16,12 +16,13 @@ Expose the Docker daemon as a Prometheus target via `metrics-addr`.
 }
 ```
 
-Prometheus scrape job for the daemon (from the stock `prometheus.yml` example):
+Minimal `prometheus.yml` with the scrape job for the daemon (the official stock file also has `global` and `rule_files`):
 
 ```yml
+scrape_configs:
   - job_name: docker
-      # metrics_path defaults to '/metrics'
-      # scheme defaults to 'http'.
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
 
     static_configs:
       - targets: ["host.docker.internal:9323"]
@@ -42,6 +43,7 @@ $ docker run --name my-prometheus \
 - Warning: available metrics and their names are in active development and may change at any time. Only Docker itself can be monitored, not your application.
 - Default daemon config locations: Linux `/etc/docker/daemon.json`, Windows Server `C:\ProgramData\docker\config\daemon.json`, Docker Desktop via Settings > Docker Engine.
 - Metrics are exposed on port 9323 on the loopback interface; `0.0.0.0` exposes it to the wider network, so consider your threat model.
+- On Linux Docker Engine, `host-gateway` resolves to the bridge gateway address, not the host loopback, so a bridge-networked Prometheus container cannot reach `127.0.0.1:9323`. Either run Prometheus with `--network host` and target `localhost:9323`, or bind `metrics-addr` to a host address reachable from containers and restrict access with a firewall.
 - With Docker Desktop the `--add-host` flag is optional; target URLs on the Prometheus targets page can't be opened directly.
 - Verify the target at `http://localhost:9090/targets/`; example metric: `engine_daemon_network_actions_seconds_count`. Default scrape interval in the example is 15 seconds.
 - For remote Prometheus, add the daemon address as a scrape endpoint: `targets: ["docker.daemon.example:<PORT>"]`.

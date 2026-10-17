@@ -48,7 +48,7 @@ Prerequisites (verify with `id -u`, `whoami`, `grep ^$(whoami): /etc/subuid`):
 - Rootless mode uses no binaries with `SETUID` bits or file capabilities except `newuidmap` and `newgidmap`.
 - The setup script automatically shows help when prerequisites aren't satisfied. If `dockerd-rootless-setuptool.sh` is missing, install the `docker-ce-rootless-extras` package (e.g. `sudo apt-get install -y docker-ce-rootless-extras`).
 - If the system-wide daemon is running, disable it: `sudo systemctl disable --now docker.service docker.socket` and `sudo rm /var/run/docker.sock`. Otherwise pass `--force` to the setup script; until you shut it down you're still running rootful Docker.
-- The official docs show the install script being piped straight from curl into the shell. Here it is changed to download the script, review it, then run it, so that remote content is not executed unreviewed.
+- Adapted (not in the official docs): the official docs pipe the downloaded `https://get.docker.com/rootless` script directly into `sh`; here it is downloaded, reviewed, then run.
 - The install script is not supported on `s390x` (no static packages).
 - Control the service with `systemctl --user (start|stop|restart) docker.service`; to start on system startup run `sudo loginctl enable-linger <user>`.
 - Add `export PATH=...` shown by the installer (e.g. `/usr/bin` or `/home/<user>/bin`) to `~/.bashrc`. Some applications need `DOCKER_HOST=unix:///run/user/<uid>/docker.sock`.
