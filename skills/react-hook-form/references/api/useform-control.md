@@ -39,6 +39,7 @@ Pass it to `Controller`, `useController`, `useWatch`, `useFieldArray`, `useFormS
 ## Notes
 
 - Do not access any of the properties inside this object directly; it is for internal use only.
+- `FormProvider` does not take `control` alone: it requires all `useForm` methods, so spread them as `<FormProvider {...methods}>` (which includes `control`), not `<FormProvider control={control}>`. See [FormProvider](./formprovider.md).
 
 ## Related
 
