@@ -37,6 +37,18 @@ const approval = await step.waitForSignal("wait-for-approval", {
 - Must be called with `await` or another Promise handler to ensure the function actually pauses
 - Resumed only by calling `inngest.sendSignal`, `step.sendSignal`, or the signal API with a matching signal string
 - Resolves at most one run per signal; to resume many runs from a single event, use `step.waitForEvent` instead
+- Signals are currently experimental.
+- Official docs use two different spellings for duplicate-signal handling. The primitives guide uses `onConflict: "fail" | "replace"` (Go: `OnConflict: step.SignalConflictFail`): `"fail"` fails this run if another active wait uses the same signal name; `"replace"` gives the name to the new wait and the earlier wait stays pending until its timeout. The v4 reference (signature above) uses `duplicate?: 'replace'`. Both are documented; this page does not unify them, so check the installed SDK's types.
+- Timeout return value differs by page: the primitives guide says the function resumes with `null` (Go: `step.ErrSignalNotReceived`) and to check it before reading `data`; the v4 reference says it resumes with `undefined`.
+- The guide's example result shape reads `approval.data.approved` (an object with the signal's `data`).
+- Send a signal from your app with `inngest.sendSignal`, or with `step.sendSignal()` from another function:
+
+```ts
+await inngest.sendSignal({
+  signal: `approval/${requestId}`,
+  data: { approved: true },
+});
+```
 
 ## Related
 

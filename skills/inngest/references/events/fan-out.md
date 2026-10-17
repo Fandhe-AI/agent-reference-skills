@@ -13,20 +13,17 @@ await inngest.send({
 
 // 2. Multiple functions independently consume the same event
 export const sendWelcomeEmail = inngest.createFunction(
-  { id: "send-welcome-email" },
-  { event: "app/user.created" },
+  { id: "send-welcome-email", triggers: { event: "app/user.created" } },
   async ({ event }) => { /* send email */ },
 );
 
 export const createCrmContact = inngest.createFunction(
-  { id: "create-crm-contact" },
-  { event: "app/user.created" },
+  { id: "create-crm-contact", triggers: { event: "app/user.created" } },
   async ({ event }) => { /* create CRM entry */ },
 );
 
 export const grantTrialAccess = inngest.createFunction(
-  { id: "grant-trial-access" },
-  { event: "app/user.created" },
+  { id: "grant-trial-access", triggers: { event: "app/user.created" } },
   async ({ event }) => { /* provision trial */ },
 );
 ```

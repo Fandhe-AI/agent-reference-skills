@@ -11,8 +11,7 @@ import Anthropic from "@anthropic-ai/sdk";
 const anthropic = new Anthropic();
 
 export const agent = inngest.createFunction(
-  { id: "agent-loop" },
-  { event: "agent/message.received" },
+  { id: "agent-loop", triggers: { event: "agent/message.received" } },
   async ({ event, step }) => {
     const messages: Anthropic.MessageParam[] = [
       { role: "user", content: event.data.message },

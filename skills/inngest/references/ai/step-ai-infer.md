@@ -8,8 +8,7 @@ Offloads an LLM inference request to Inngest's infrastructure, pausing function 
 import { inngest } from "./client";
 
 export const myFn = inngest.createFunction(
-  { id: "ai-inference-example" },
-  { event: "app/inference.requested" },
+  { id: "ai-inference-example", triggers: { event: "app/inference.requested" } },
   async ({ event, step }) => {
     const result = await step.ai.infer("call-openai", {
       model: step.ai.models.openai({ model: "gpt-4o" }),
@@ -27,11 +26,9 @@ export const myFn = inngest.createFunction(
 
 ## Options / Props
 
-**`step.ai.infer(id, options)`**
-
 | Name | Type | Description |
 |------|------|-------------|
-| `id` | `string` | Step identifier used in function logs and memoization |
+| `id` | `string` | Step identifier for `step.ai.infer(id, options)`, used in function logs and memoization |
 | `options.model` | `ModelConfig` | Model configuration from `step.ai.models.*` |
 | `options.body` | `object` | Strongly-typed request body; shape depends on the model provider |
 

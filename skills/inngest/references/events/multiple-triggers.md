@@ -22,8 +22,7 @@ inngest.createFunction(
 
 // Wildcard triggers
 inngest.createFunction(
-  { id: "handle-app-events" },
-  { event: "app/*" }, // matches app/user.created, app/blog.post.published, etc.
+  { id: "handle-app-events", triggers: { event: "app/*" } }, // matches app/user.created, app/blog.post.published, etc.
   async ({ event }) => { /* ... */ },
 );
 ```

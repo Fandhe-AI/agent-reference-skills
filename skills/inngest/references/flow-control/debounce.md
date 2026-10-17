@@ -13,8 +13,8 @@ inngest.createFunction(
       key: "event.data.user_id",
       timeout: "2m",
     },
+    triggers: { event: "user/profile.updated" },
   },
-  { event: "user/profile.updated" },
   async ({ event, step }) => { /* handler */ }
 );
 ```

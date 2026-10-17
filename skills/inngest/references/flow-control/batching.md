@@ -14,8 +14,8 @@ inngest.createFunction(
       key: "event.data.user_id",
       if: 'event.data.account_type == "free"',
     },
+    triggers: { event: "api/call.recorded" },
   },
-  { event: "api/call.recorded" },
   async ({ events, step }) => {
     const attrs = events.map((evt) => ({
       user_id: evt.data.user_id,

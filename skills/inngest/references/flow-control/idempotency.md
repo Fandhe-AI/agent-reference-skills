@@ -21,8 +21,8 @@ export const sendEmail = inngest.createFunction(
   {
     id: "send-checkout-email",
     idempotency: "event.data.cartId",
+    triggers: { event: "cart/checkout.completed" },
   },
-  { event: "cart/checkout.completed" },
   async ({ event, step }) => { /* handler */ }
 );
 ```

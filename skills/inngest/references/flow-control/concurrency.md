@@ -20,8 +20,8 @@ inngest.createFunction(
         limit: 1,
       },
     ],
+    triggers: { event: "ai/generate.requested" },
   },
-  { event: "ai/generate.requested" },
   async ({ event, step }) => { /* handler */ }
 );
 ```

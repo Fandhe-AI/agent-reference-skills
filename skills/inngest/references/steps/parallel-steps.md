@@ -28,6 +28,7 @@ const summaries = await Promise.all(
 - Each parallel step is independently retried on failure
 - On serverless platforms, steps run with true parallelism; on single-server Node.js, they share the thread
 - **Optimized parallelism** (default in SDK v4): reduces HTTP requests from 2 per step to 1, significantly improving performance
+- The optimization is on by default in v4. `optimizeParallelism: false` (on the client or the function) is deprecated and also stops checkpointing from resuming after parallel steps. Parallel steps always switch to standard orchestration while they run; with the default setting, the SDK can usually switch back to checkpointing afterward.
 - With optimized parallelism, `Promise.race()` waits for **all** parallel steps to complete before resolving (use `group.parallel()` for early-resolution behavior)
 - Total data returned across all steps must not exceed 4 MB
 - Maximum 1,000 steps per function run
