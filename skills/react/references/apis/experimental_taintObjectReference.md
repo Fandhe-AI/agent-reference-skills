@@ -47,5 +47,5 @@ Returns: `undefined`. Now whenever anyone tries to pass this object to a Client 
 ## Related
 
 - [experimental_taintUniqueValue](./experimental_taintUniqueValue.md)
-- [Server Components](../server-components/server-components.md)
-- [use client](../server-components/use-client.md)
+- Server Components
+- use client

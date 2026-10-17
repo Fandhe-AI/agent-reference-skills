@@ -65,4 +65,4 @@ Provider (`<SomeContext value={...}>`) props:
 ## Related
 
 - [use](./use.md)
-- [useContext](../hooks/useContext.md)
+- useContext

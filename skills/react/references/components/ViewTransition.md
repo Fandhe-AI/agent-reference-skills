@@ -107,7 +107,7 @@ Each event receives `(instance, types)`:
 - `<ViewTransition>` creates an image that can be moved, scaled and cross-faded; unlike Layout Animations (React Native or Motion), not every element inside animates its position. You may need to add more `<ViewTransition>` boundaries manually.
 - Currently `<ViewTransition>` only works in the DOM.
 - Only one event fires per `<ViewTransition>` per Transition; `onShare` takes precedence over `onEnter` and `onExit`. Each event should return a cleanup function, called when the View Transition finishes.
-- `<ViewTransition>` only activates if it is placed before any DOM node (a `<ViewTransition>` nested inside a `<div>` in the same component does not activate).
+- `<ViewTransition>` only activates exit/enter if it is placed before any DOM nodes; if there's a `<div>` above it, no exit/enter animations trigger.
 - Two `<ViewTransition>` with the same `name` mounted at the same time is an error ("There are two `<ViewTransition name=%s>` components with the same name mounted at the same time."); make `name` unique, e.g. add an item id.
 - React calls `startViewTransition` itself; you should never do that yourself, and React interrupts other running ViewTransitions on the page. If a `flushSync` happens in the middle of the sequence, React skips the Transition.
 - `useEffect` is invoked after the finished Promise of `startViewTransition` resolves; `useInsertionEffect`, `useLayoutEffect`, refs and lifecycle methods run inside the update callback.

@@ -78,4 +78,4 @@ function Albums({ albumsPromise }) {
 - [Suspense](../components/Suspense.md)
 - [startTransition](./startTransition.md)
 - [browser](../dom-apis/browser.md)
-- [use client](../server-components/use-client.md)
+- use client

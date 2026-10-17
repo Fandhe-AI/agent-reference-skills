@@ -44,4 +44,4 @@ global.IS_REACT_ACT_ENVIRONMENT=true
 ## Related
 
 - [createRoot](../dom-apis/createRoot.md)
-- [React 19 Upgrade Guide](../versions/react-19-upgrade-guide.md)
+- React 19 Upgrade Guide

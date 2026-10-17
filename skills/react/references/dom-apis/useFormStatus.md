@@ -69,5 +69,5 @@ export default function UsernameForm() {
 
 ## Related
 
-- [useActionState](../hooks/useActionState.md)
+- useActionState
 - [Built-in React DOM Hooks](./hooks-overview.md)
