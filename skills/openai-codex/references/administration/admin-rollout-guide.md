@@ -44,7 +44,7 @@ Rollout boundaries covered:
 - Managed configuration is a separate policy layer that constrains supported runtime behavior for those clients.
 - Repository configuration (Step 4) can supply defaults and reusable workflows, but can't grant workspace, model, Platform API, or connected-system access.
 - Codex cloud (Step 5) respects the repository permissions exposed by the connected source system; workspace access doesn't bypass those controls.
-- Disabling a connector-backed capability (Step 6) doesn't necessarily uninstall the plugin or its bundled skills. Plugins are available with ChatGPT Work on web, with ChatGPT Work and Codex in the desktop app, and through the Codex CLI plugin browser — not in Chat, the IDE extension, or mobile.
+- Disabling a connector-backed capability (Step 6) doesn't necessarily uninstall the plugin or its bundled skills.
 - Use authenticated API references (not this guide) for current access requirements, schemas, and request behavior when building integrations.
 
 ## Related
