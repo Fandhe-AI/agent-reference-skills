@@ -219,7 +219,7 @@ Recommended for all packages: `README.md`, `CHANGELOG.md`, `LICENSE`, API docume
 
 ```console
 export FLUTTER_ROOT=~/dev/flutter  # on macOS or Linux
-$FLUTTER_ROOT/bin/cache/dart-sdk/bin/dart doc   # on macOS or Linux
+"$FLUTTER_ROOT/bin/cache/dart-sdk/bin/dart" doc   # on macOS or Linux
 ```
 
 Individual licenses in a LICENSE file are separated by 80 hyphens on their own line; each component license starts with the package names it applies to, followed by a blank line.
@@ -282,6 +282,7 @@ To distribute skills with your package: create a `skills/` directory in the pack
 - Windows: after changing plugin code, select **Build > Build Solution** before running again, otherwise an outdated copy of the built plugin runs.
 - Migration (Flutter 3.44): Android plugins that apply the Kotlin Gradle Plugin (KGP) must migrate to built-in Kotlin for Android Gradle Plugin 9 and later; Flutter 3.44 added temporary support for legacy KGP with `android.builtInKotlin=false`, and Flutter 3.47 added support for enabling built-in Kotlin (`android.builtInKotlin=true`) once an app and all its plugins have migrated. See the built-in Kotlin migration guide for plugin authors in the release category. Flutter plans to remove KGP support in a future version.
 - Migration (Flutter 3.44): native Darwin dependencies default to Swift Package Manager; CocoaPods is legacy (see Swift Package Manager for plugin authors).
+- Shell expansions are quoted here (the official snippet leaves them unquoted).
 - This page covers Flutter packages and plugins (Dart); the android-build-gradle, apple-distribution and rust skills cover Gradle, App Store distribution and Rust respectively. Package skills here are the pub.dev mechanism, distinct from Claude Code Agent Skills documented by anthropic-claude-code-extend.
 
 ## Related

@@ -75,7 +75,7 @@ ssh-keygen -t rsa -b 2048 -m PEM -f cert_key -q -N ""
 
 keychain initialize
 
-app-store-connect fetch-signing-files $(xcode-project detect-bundle-id) \
+app-store-connect fetch-signing-files "$(xcode-project detect-bundle-id)" \
     --platform IOS \
     --type IOS_APP_STORE \
     --certificate-key=@file:/path/to/cert_key \
@@ -87,10 +87,10 @@ flutter packages pub get
 find . -name "Podfile" -execdir pod install \;
 
 flutter build ipa --release \
-    --export-options-plist=$HOME/export_options.plist
+    --export-options-plist="$HOME/export_options.plist"
 
 app-store-connect publish \
-    --path $(find $(pwd) -name "*.ipa")
+    --path "$(find "$(pwd)" -name "*.ipa")"
 
 keychain use-login
 ```
@@ -105,7 +105,7 @@ An App Store Connect API Key with App Manager access is required. `export_option
 ## Notes
 
 - The deployment/ios page still says iOS 13; the supported-platforms reference lists iOS 15–27 as supported and 14 and earlier as unsupported.
-- The Codemagic samples use unquoted $(pwd) in find; quote it ("$(pwd)") if the project path can contain spaces.
+- Shell expansions are quoted here (the official snippet leaves them unquoted).
 - After running `keychain initialize` you **must** run `keychain use-login` to set your login keychain as the default and avoid authentication issues with other apps.
 - On versions of Flutter where `flutter build ipa --export-method` is unavailable, open `build/ios/archive/MyApp.xcarchive` and validate/distribute from Xcode.
 - The Codemagic CLI procedure creates a temporary keychain isolated from your login keychain; handle API keys and certificate private keys as secrets and run it only on a disposable or trusted build machine.

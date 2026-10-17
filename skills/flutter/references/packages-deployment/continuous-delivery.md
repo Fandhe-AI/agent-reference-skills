@@ -40,7 +40,7 @@ Run deployment locally: build the release app (`flutter build appbundle` / `flut
 
 ### Cloud build and deploy setup
 
-Cloud instances are ephemeral and untrusted, so don't leave credentials on the server. Store private data in the CI system's encrypted environment variables and pass them with `--dart-define MY_VAR=MY_VALUE` while building.
+Cloud instances are ephemeral and untrusted, so don't leave credentials on the server. Store private data (store credentials, signing keys) in the CI system's encrypted environment variables and consume them only in fastlane / the signing scripts (for example `json_key_data` below). Use `--dart-define` only for non-secret app configuration, because values passed with it are compiled into the app binary.
 
 ```plaintext
 upload_to_play_store(
@@ -61,7 +61,7 @@ source "https://rubygems.org"
 gem "fastlane"
 ```
 
-Run `bundle update` in both `[project]/android` and `[project]/ios`, commit `Gemfile` and `Gemfile.lock`, and use `bundle exec fastlane` locally. In the CI script (`.travis.yml`, `.cirrus.yml`): shard across Linux and macOS; in setup, ensure Bundler (`gem install bundler`), run `bundle install`, make the Flutter SDK available in `PATH`, set `ANDROID_SDK_ROOT` for Android, and specify Xcode for iOS (for example `osx_image: xcode9.2`); in the script phase run `flutter build appbundle` or `flutter build ios --release --no-codesign --config-only`, then `cd android` or `cd ios` and `bundle exec fastlane [name of the lane]`.
+Run `bundle update` in both `[project]/android` and `[project]/ios`, commit `Gemfile` and `Gemfile.lock`, and use `bundle exec fastlane` locally. In the CI script (`.travis.yml`, `.cirrus.yml`): shard across Linux and macOS; in setup, ensure Bundler (`gem install bundler`), run `bundle install`, make the Flutter SDK available in `PATH`, set `ANDROID_SDK_ROOT` for Android, and specify an Xcode version supported by the target Flutter release for iOS (see supported-platforms / iOS setup requirements); in the script phase run `flutter build appbundle` or `flutter build ios --release --no-codesign --config-only`, then `cd android` or `cd ios` and `bundle exec fastlane [name of the lane]`.
 
 ### Xcode Cloud
 
@@ -74,10 +74,10 @@ Requirements: Xcode 13.4.1 or higher, and enrollment in the Apple Developer Prog
 set -e
 
 # The default execution directory of this script is the ci_scripts directory.
-cd $CI_PRIMARY_REPOSITORY_PATH # change working directory to the root of your cloned repo.
+cd "$CI_PRIMARY_REPOSITORY_PATH" # change working directory to the root of your cloned repo.
 
 # Install Flutter using git.
-git clone https://github.com/flutter/flutter.git --depth 1 -b stable $HOME/flutter
+git clone https://github.com/flutter/flutter.git --depth 1 -b stable "$HOME/flutter"
 export PATH="$PATH:$HOME/flutter/bin"
 
 # Install Flutter artifacts for iOS (--ios), or macOS (--macos) platforms.
@@ -107,6 +107,9 @@ Create a workflow with **Product > Xcode Cloud > Create Workflow**, select the p
 ## Notes
 
 - Values passed with --dart-define are compiled into the app binary and can be extracted; keep store credentials (json_key_data, FASTLANE_PASSWORD, signing keys) in CI encrypted env vars consumed only by fastlane/the build scripts, and use --dart-define only for non-secret app configuration.
+- The official page suggests passing private data with --dart-define; this page narrows it to non-secret config because those values are compiled into the binary.
+- The official page's example `osx_image: xcode9.2` is outdated and is omitted; pick the Xcode image that the pinned Flutter release supports.
+- Shell expansions are quoted here (the official snippet leaves them unquoted).
 - Treat the Play Store service account `.json` file like a password; do not check it into any public source control.
 - Take precaution not to re-echo secret variable values onto the console in test scripts. CI secrets are not available in pull requests until merged, so malicious pull requests cannot print them; be careful with how secrets are used in pull requests you accept and merge.
 - The Xcode Cloud post-clone script uses `git clone` of the Flutter `stable` branch and Homebrew on an ephemeral Xcode Cloud build environment; run such scripts only in disposable CI environments. The environment includes macOS and Xcode tools (for example Python) plus Homebrew.
