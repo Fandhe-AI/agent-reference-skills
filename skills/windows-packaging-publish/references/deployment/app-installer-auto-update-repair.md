@@ -28,7 +28,7 @@ PowerShell cmdlets:
 | `Get-AppxPackageAutoUpdateSettings` | Returns the auto-update and repair settings for a specific or all configured apps. |
 | `Set-AppxPackageAutoUpdateSettings` | Configures auto-update and repair settings for an app installed using an App Installer file. |
 
-CSP settings (path `./Device/Vendor/MSFT/EnterpriseModernAppManagement/AppManagement/nonStore/<Windows app Family Name>/AppUpdateSettings/AutoUpdateSettings/`):
+CSP settings (path `./Device/Vendor/MSFT/EnterpriseModernAppManagement/AppManagement/System/{PackageFamilyName}/AppUpdateSettings/AutoUpdateSettings/`):
 
 | CSP | Description |
 | --- | --- |
@@ -41,7 +41,7 @@ CSP settings (path `./Device/Vendor/MSFT/EnterpriseModernAppManagement/AppManage
 | ./ForceUpdateFromAnyVersion | Whether the update can be both up-level or down-level. |
 | ./Disable | Whether Auto-Update is enabled / disabled for a package. |
 
-Automatic repair CSP path: `.../AppUpdateSettings/AutoRepair/`, with `./PackageSource` (the `.appinstaller` or app file used to check for repairs).
+Automatic repair CSP path: `./Device/Vendor/MSFT/EnterpriseModernAppManagement/AppManagement/System/{PackageFamilyName}/AppUpdateSettings/AutoRepair/`, with `./PackageSource` (the `.appinstaller` or app file used to check for repairs).
 
 ## Notes
 
@@ -50,8 +50,8 @@ Automatic repair CSP path: `.../AppUpdateSettings/AutoRepair/`, with `./PackageS
 - Repair uses the App Installer URI path; if inaccessible or not configured, it falls back to the `RepairURIs`.
 - On-launch update checks depend on how the app is activated: they run through supported entry points (Start menu including pinned tile, app execution alias, protocol handler). A desktop shortcut or taskbar item that launches the executable directly bypasses the check. To check regardless of activation, update the package from your code.
 - An embedded App Installer file configures settings for a specific app; an external App Installer file overrides all settings configured by an embedded one.
-- The source overview writes `AutoUpdateSettings` twice in the update path and places `AutoRepair` under `AutoUpdateSettings`; corrected here to match the EnterpriseModernAppManagement CSP reference, where `AutoUpdateSettings` and `AutoRepair` are sibling nodes under `AppUpdateSettings`. The CSP reference lists `AppUpdateSettings` under `AppManagement/System/{PackageFamilyName}`; the `nonStore` prefix is as written in the source overview, so verify the node exists on the target device before deploying an OMA-URI.
-- Source: https://learn.microsoft.com/en-us/windows/msix/app-installer/auto-update-and-repair--overview, last updated 07/02/2026 (ms.date).
+- The source overview writes `AutoUpdateSettings` twice in the update path and places `AutoRepair` under `AutoUpdateSettings`; the paths on this page follow the EnterpriseModernAppManagement CSP reference instead, where `AutoUpdateSettings` and `AutoRepair` are sibling nodes under `AppUpdateSettings`, which sits under `AppManagement/System/{PackageFamilyName}` (the overview uses an `AppManagement/nonStore/...` prefix).
+- Source: https://learn.microsoft.com/en-us/windows/msix/app-installer/auto-update-and-repair--overview, last updated 07/02/2026 (ms.date); CSP paths: https://learn.microsoft.com/en-us/windows/client-management/mdm/enterprisemodernappmanagement-csp
 
 ## Related
 
