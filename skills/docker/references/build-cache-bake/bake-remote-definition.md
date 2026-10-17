@@ -46,6 +46,7 @@ target "default" {
 }
 ```
 
+- The official example's `&& stop` is a deliberate failure: it prints the local files (`foo`, `bar`) with `ls -l` and then halts the build. The expected error is `/bin/sh: stop: not found`. Remove `&& stop` for a normal build.
 - If the repository contains more than one Bake file, choose with `--file` / `-f`: `docker buildx bake -f bake.hcl "https://github.com/crazy-max/buildx.git#remote-with-local"`.
 - With `-f`, `bake.hcl` loads relative to the Git URL, `cwd://local.hcl` relative to the current working directory. Combining is needed e.g. in GitHub Actions with `docker/metadata-action`, which generates a Bake file in the runner's local context:
 

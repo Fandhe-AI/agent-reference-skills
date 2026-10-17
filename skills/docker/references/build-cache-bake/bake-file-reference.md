@@ -47,7 +47,7 @@ Target attributes:
 | `dockerfile-inline` | String | Inline Dockerfile string |
 | `dockerfile` | String | Dockerfile location |
 | `entitlements` | List | Permissions that the build process requires to run |
-| `extra-hosts` | List | Custom host-to-IP mapping |
+| `extra-hosts` | Map | Custom host-to-IP mapping |
 | `inherits` | List | Inherit attributes from other targets |
 | `labels` | Map | Metadata for images |
 | `matrix` | Map | Define a set of variables that forks a target into multiple targets. |
@@ -60,7 +60,7 @@ Target attributes:
 | `pull` | Boolean | Always pull images |
 | `resources` | Map | Resource limits for build containers |
 | `secret` | List | Secrets to expose to the build |
-| `shm-size` | List | Size of `/dev/shm` |
+| `shm-size` | String | Size of `/dev/shm` |
 | `ssh` | List | SSH agent sockets or keys to expose to the build |
 | `tags` | List | Image names and tags |
 | `target` | String | Target build stage |
@@ -84,6 +84,8 @@ Context value types (`target.contexts`):
 | Bake target | `target:base` |
 
 ## Notes
+
+The official attribute table lists `extra-hosts` and `shm-size` as List, but the official usage examples use a Map (`extra-hosts = { ... }`) and a String (`shm-size = "128m"`); the table above follows the examples.
 
 File lookup and merging:
 
