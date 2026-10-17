@@ -34,6 +34,8 @@ tasks.test { // Test task configuration.
 
 Application entry point with the `application` plugin (from the console app tutorial):
 
+Adapted (not in the official docs): adds `application { mainClass.set("MainKt") }` so that `gradle run` works without an IDE run configuration.
+
 ```kotlin
 plugins {
     kotlin("jvm") version "2.4.21"

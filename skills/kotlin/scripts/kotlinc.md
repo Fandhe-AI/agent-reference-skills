@@ -80,12 +80,13 @@ You can look up `DIAGNOSTIC_NAME` by also passing `-Xrender-internal-diagnostic-
 
 ## Set the compiler plugin execution order
 
+Adapted (not in the official docs): both ordering rules, the plugin jars, and a source file are passed to a single kotlinc invocation. The jar names are placeholders.
+
 ```sh
-kotlinc '-Xcompiler-plugin-order=plugin.first>plugin.middle'
-kotlinc '-Xcompiler-plugin-order=plugin.middle>plugin.last'
+kotlinc -Xplugin=first.jar -Xplugin=middle.jar -Xplugin=last.jar '-Xcompiler-plugin-order=plugin.first>plugin.middle' '-Xcompiler-plugin-order=plugin.middle>plugin.last' hello.kt
 ```
 
-The whole argument is wrapped in single quotes so that `>` is not treated as a shell redirect (the official page shows it without quotes). Plugins run in the order `plugin.first`, `plugin.middle`, `plugin.last`. For plugin IDs, see the table at https://kotlinlang.org/docs/compiler-reference.html.
+The whole argument is wrapped in single quotes so that `>` is not treated as a shell redirect (the official page shows it without quotes). The official page shows the two rules as separate kotlinc lines; they only combine when passed to the same invocation, and the referenced plugins must be loaded (e.g. via -Xplugin) for a rule to apply — a rule for a missing plugin is ignored. Plugins run in the order `plugin.first`, `plugin.middle`, `plugin.last`. For plugin IDs, see the table at https://kotlinlang.org/docs/compiler-reference.html.
 
 ## Resolve additional JVM modules
 
