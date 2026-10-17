@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/managed-agents/migration / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/managed-agents/migration / last verified: 2026-10-17 -->
 
 # Migration
 
@@ -58,6 +58,7 @@ with client.beta.sessions.events.stream(session.id) as stream:
 
 - System prompt and model — same fields, now on the agent definition.
 - Custom tools — still declared with JSON Schema; execution moves from inline handling to responding to `agent.custom_tool_use` events.
+- Web search and web fetch settings — the same `allowed_domains`, `blocked_domains`, `max_content_tokens`, and `user_location` fields, now set once on the `web_search` and `web_fetch` entries of the agent toolset's `configs` array instead of on every request. The `max_uses`, `citations`, and `cache_control` fields are not available.
 - Context — still injectable via system prompt, file resources, or skills.
 
 ## From the Claude Agent SDK
@@ -73,7 +74,7 @@ The Agent SDK executes in a process you operate; Managed Agents runs in Anthropi
 | `cwd`, `add_dirs` point at local paths | Upload or mount files as session resources |
 | `system_prompt` and the `CLAUDE.md` hierarchy | A single `system` string on the agent; each update produces a new server-side version |
 | `mcp_servers` configured and authenticated in one place | Declare servers on the agent; provide credentials through a vault on the session |
-| `permission_mode`, `can_use_tool` | Per-tool `permission_policy`; send `user.tool_confirmation` events for `always_ask` tools |
+| `permission_mode` (TypeScript: `permissionMode`), `can_use_tool` (TypeScript: `canUseTool`) | Per-tool `permission_policy` (`always_allow`, `always_ask`, or `auto`); send `user.tool_confirmation` events for calls that pause for your approval |
 
 ### Features that move to your client
 
@@ -81,8 +82,8 @@ The Agent SDK executes in a process you operate; Managed Agents runs in Anthropi
 |-------------|--------------------------|
 | Plan mode | Run a planning-only session first, then a second session to run the plan |
 | Output styles, slash commands | Apply in your client before sending `user.message` or after receiving `agent.message` |
-| `PreToolUse` / `PostToolUse` hooks | Your client already sees every `agent.custom_tool_use` event before responding; for built-in tools, use `permission_policy: always_ask` |
-| `max_turns` | Count turns client-side |
+| `PreToolUse` / `PostToolUse` hooks | Your client already sees every `agent.custom_tool_use` event before responding; for built-in tools, use `permission_policy: always_ask` to review every call (`auto` lets the server evaluate each call instead, but a call judged safe runs without reaching your client) |
+| `max_turns` (TypeScript: `maxTurns`) | Count turns client-side |
 
 ## Migration checklist
 

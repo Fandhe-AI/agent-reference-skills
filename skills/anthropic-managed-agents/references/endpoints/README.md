@@ -1,7 +1,5 @@
 # Endpoints
 
-エンドポイントは個別ページではなくリソース単位の集約ページ（1 リソース 1 ファイルに全エンドポイントを表で網羅）。beta ヘッダー値は各ページの Notes を参照（managed-agents-2026-04-01 / agent-memory-2026-07-22 / dreaming-2026-04-21 / user-profiles-2026-03-24）。
-
 | Name | Description | Path |
 |------|-------------|------|
 | Agents API | Managed Agents agent resource: reusable agent configurations (model, system prompt, tools, skills, MCP servers). | [agents.md](./agents.md) |

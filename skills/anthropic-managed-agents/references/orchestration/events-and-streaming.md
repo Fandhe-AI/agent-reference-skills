@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/managed-agents/events-and-streaming / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/managed-agents/events-and-streaming / last verified: 2026-10-17 -->
 
 # Session Event Stream
 
@@ -48,7 +48,7 @@ client.beta.sessions.events.send(
 )
 ```
 
-The interrupted turn ends with `session.status_idle` and `stop_reason: end_turn` — the same value as a turn finishing on its own; there is no interruption-specific stop reason.
+The interrupted turn ends with `session.status_idle` and `stop_reason: end_turn` — the same value as a turn finishing on its own; there is no interruption-specific stop reason. If workflow runs are open, the interrupt ends none of them, and a running run can keep the session `running`, so this `session.status_idle` might not arrive.
 
 ## Reconnecting without missing events
 
@@ -66,23 +66,105 @@ events = client.beta.sessions.events.list(session.id, types=["agent.tool_use", "
 
 ## Event deltas (previews)
 
-By default, response text arrives as buffered `agent.message` events after the model request finishes. Event deltas let you render text incrementally as a best-effort preview while the model is still generating — the buffered `agent.message` is always the authoritative record.
-
-Opt in per stream connection with the `event_deltas[]` query parameter (accepted values: `agent.message`, `agent.thinking`; >100 values or any other value returns 400). Works on both the session-level stream and each session-thread stream.
+Event deltas render response text incrementally as a best-effort preview while the model is still generating; the buffered `agent.message` is always the authoritative record. Opt in per stream connection with the `event_deltas[]` query parameter (accepted values: `agent.message`, `agent.thinking`; >100 values or any other value returns 400). Works on both the session-level stream and each session-thread stream.
 
 ```python
 with client.beta.sessions.events.stream(session.id, event_deltas=["agent.message"]) as stream:
     ...
 ```
 
-- `event_start` announces the upcoming event's `type`/`id`.
-- `event_delta` carries incremental text, keyed by `event_id` and `delta.index`.
-- For `agent.thinking`, only `event_start` is emitted (no deltas follow; the buffered event carries no thinking content).
-- `event_start`/`event_delta` have no `id`/`processed_at` of their own and are never persisted (absent from event history).
+`event_start` / `event_delta` are never persisted. For opting in, accumulating (key the buffer by `(event_id, index)`), and reconciling previews, see Event deltas.
 
-### Accumulate and reconcile
+## Respond when the session goes idle
 
-Key the preview buffer by `(event_id, index)`. Per model request: `span.model_request_start` → `event_start` → `event_delta`* → buffered `agent.message` → `span.model_request_end`. On `span.model_request_end`, close any preview whose buffered event never arrived (deltas may be shed under load — never treat an accumulated preview as final).
+A `session.status_idle` event means the agent has stopped and is waiting for input. Its `stop_reason.type` says why:
+
+| `stop_reason.type` | Why the session stopped | What to do |
+|--------------------|-------------------------|------------|
+| `end_turn` | The agent finished its turn, or you interrupted it. | Send a `user.message` when you have more work for the agent. |
+| `requires_action` | One or more tool calls need an answer from you, such as a custom tool call or a confirmation request. | Answer each blocking tool call. |
+| `budget_reached` | The session's tracked list cost reached its budget. | Change or remove the budget. |
+
+No event you send resumes a session paused at its budget. The work that the budget paused resumes automatically when you change the budget to a value above the consumed list cost, or remove it; the session then emits a `workflow_run.status_running` event for each workflow run the budget paused. A run that an interrupt paused stays paused.
+
+## Resume an idle session
+
+Sessions persist between interactions. To resume one, send a `user.message` event to it as usual.
+
+```python
+client.beta.sessions.events.send(
+    session.id,
+    events=[{"type": "user.message", "content": [{"type": "text", "text": "Continue with the next step."}]}],
+)
+```
+
+Conversation history is preserved unless the session is explicitly deleted. When a session goes idle, its sandbox is checkpointed (filesystem, installed packages, files the agent created). Sandbox state is preserved for only 30 days after the sandbox is created, and activity does not extend this window; after 30 days a resumed session starts from a fresh sandbox. Have the agent write important artifacts to outputs before the window ends.
+
+## Interrupt the agent
+
+Send a `user.interrupt` event to stop the agent mid-execution, then follow up with a `user.message` to redirect it (see the interrupt example under Signature / Usage). The call returns as soon as the events are queued. The interrupt then takes effect in this order:
+
+1. The agent applies the interrupt. Until then, the interrupt's `processed_at` stays null and the session stays `running`. A model response in progress stops immediately, but the interrupt can take longer while tool calls are running.
+2. The `user.interrupt` event appears on the stream, and the interrupted turn ends with a `session.status_idle` event.
+3. The agent starts its next turn with the `user.message` you sent after the interrupt.
+
+The idle event's `stop_reason.type` is `end_turn`. If workflow runs are open, the interrupt ends none of them; a run that's running can keep the session `running`, so the `session.status_idle` event in step 2 might not arrive.
+
+## Send system messages
+
+On a supported model, send a `system.message` event to give the agent privileged system-level context that applies to the accompanying turn and all subsequent turns (for example a different persona, revised constraints, or context fetched at runtime). `content` accepts 1–1000 text items and is appended as a `role: "system"` turn; it doesn't replace the agent definition's `system` prompt.
+
+Official guide sample (verbatim). Per the API reference contract (see Notes), a request containing only `system.message` is rejected; use the adapted example below.
+
+```python
+client.beta.sessions.events.send(
+    session.id,
+    events=[
+        {
+            "type": "system.message",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "The user's current timezone is America/New_York.",
+                },
+            ],
+        },
+    ],
+)
+```
+
+Adapted (not in the official docs): to satisfy the API reference contract for POST /v1/sessions/{id}/events (at most one `system.message` per request, sent as the final event immediately after the `user.message` / `user.tool_result` / `user.custom_tool_result` it accompanies), send it in the same request after the user turn:
+
+```python
+client.beta.sessions.events.send(
+    session.id,
+    events=[
+        {
+            "type": "user.message",
+            "content": [
+                {"type": "text", "text": "Analyze the performance of the sort function in utils.py"},
+            ],
+        },
+        {
+            "type": "system.message",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "The user's current timezone is America/New_York.",
+                },
+            ],
+        },
+    ],
+)
+```
+
+### Supported models
+
+`system.message` is supported by Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, and Claude Haiku 5.5. If the agent's primary model does not support mid-conversation system injection, the event is rejected with a `model_does_not_support_mid_conversation_system` validation error. Subagent models are not checked, because `system.message` lands on the primary thread only.
+
+### System messages while a tool call is pending
+
+While the session is idle with a `requires_action` stop reason, a `system.message` must trail a tool result event in the same request. Sent on its own or with a `user.message`, it is rejected until the pending tool events are resolved.
 
 ## Additional scenarios
 
@@ -124,6 +206,7 @@ client.beta.sessions.events.send(
 
 ## Notes
 
+- The API reference for POST /v1/sessions/{id}/events states that `system.message` is allowed at most once per request, must be the final event, and must immediately follow the `user.message`, `user.tool_result`, or `user.custom_tool_result` it accompanies; the guide's standalone sample above conflicts with this, so when sending it with a turn, place it after that event.
 - Managed Agents API requests require the `managed-agents-2026-04-01` beta header, except memory store endpoints (`agent-memory-2026-07-22`).
 
 ## Related
@@ -131,3 +214,5 @@ client.beta.sessions.events.send(
 - [Multiagent orchestration](./multiagent-orchestration.md)
 - [Define outcomes](../getting-started/define-outcomes.md)
 - [Subscribe to webhooks](./webhooks.md)
+- [Event deltas](./event-deltas.md)
+- [Workflow runs](./workflow-runs.md)

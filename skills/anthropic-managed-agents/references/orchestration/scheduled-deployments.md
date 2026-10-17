@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/managed-agents/scheduled-deployments / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/managed-agents/scheduled-deployments / last verified: 2026-10-17 -->
 
 # Scheduled deployments
 
@@ -39,6 +39,27 @@ Max granularity is minute-level. A maximum of **1,000 scheduled deployments** is
 - Wall-clock times that don't exist on a spring-forward day are not triggered; times that occur twice on a fall-back day fire twice. Schedule outside the 1–3 AM local window (or use UTC) when missed/duplicate executions are unacceptable.
 - The response's `schedule.upcoming_runs_at` reflects the exact configured schedule; actual execution applies jitter of up to 15% of the interval (min 5s, max 9min) to distribute load.
 
+### Set a budget on each run
+
+Pass the optional `budget` object when you create or update the deployment; it takes the same shape as a session budget (`{"type": "limit", "max_list_cost": {"amount": "2000", "currency": "USD"}}`). The deployment copies the cap onto each session it starts, so the budget bounds every run separately rather than acting as a cumulative ceiling: a deployment with a `"2000"` cap can spend up to about $20 on every run.
+
+```python
+client.beta.deployments.update(
+    deployment.id,
+    budget={"type": "limit", "max_list_cost": {"amount": "2000", "currency": "USD"}},
+)
+```
+
+A session started by the deployment pauses with `budget_reached` when its own list cost reaches the cap. Changing the deployment's budget applies to runs started afterward; a session already running keeps the cap it started with (change it through the session itself). Unlike a session budget, a deployment's budget can be removed with `"budget": null` and set again later.
+
+### Claude Platform on AWS: `execution_identity`
+
+On Claude Platform on AWS, each run creates its session as an IAM role in your AWS account. Before you create the deployment, set `execution_identity` on the agent to `{"type": "aws_role", "role_arn": "arn:aws:iam::123456789012:role/example-role"}`; creating a deployment for an agent without this field returns a 400 error.
+
+- **Trust policy:** allow the `aws-external-anthropic.amazonaws.com` service principal to call `sts:AssumeRole` and `sts:SetSourceIdentity`.
+- **Role permissions:** allow `aws-external-anthropic:CreateSession`, `sts:GetWebIdentityToken`, and `sts:TagGetWebIdentityToken`.
+- **Caller permissions:** the IAM principal that sets the role on the agent needs `iam:PassRole` on that role; the role must be in the same AWS account. No managed policy grants `iam:PassRole`.
+
 ## Deployment runs
 
 Each execution attempt generates a **deployment run** record, independent of session lifecycle. A successful run's `session_id` links to the created session; failures carry an `error.type` (for example `environment_archived_error`, `agent_archived_error`, `session_rate_limited_error`).
@@ -64,6 +85,10 @@ client.beta.deployments.archive(deployment.id)   # terminal; cannot be modified 
 client.beta.deployments.run(deployment.id)       # manual run outside the schedule, for testing
 ```
 
+### Trigger a manual run
+
+`client.beta.deployments.run(...)` creates a session immediately and writes a deployment run with `trigger_context.type: "manual"`, so you can test a deployment before committing to the schedule. Manual runs through the `run` endpoint are still allowed while the deployment is paused. Pausing sets `paused_reason` to `{"type": "manual"}`; unpausing clears it.
+
 Each lifecycle change emits a webhook event (see webhooks.md, Deployment / Deployment run events tabs).
 
 ## Notes
@@ -75,3 +100,4 @@ Each lifecycle change emits a webhook event (see webhooks.md, Deployment / Deplo
 - [Subscribe to webhooks](./webhooks.md)
 - [Session Event Stream](./events-and-streaming.md)
 - [Define your agent](../getting-started/agent-setup.md)
+- [Session budgets](../sessions/budgets.md)

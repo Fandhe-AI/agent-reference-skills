@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes / last verified: 2026-10-17 -->
 
 # Run a Self-Hosted Sandbox Worker
 
@@ -20,7 +20,7 @@ ant beta:environments:work stats --environment-id "$ANTHROPIC_ENVIRONMENT_ID"
 ## Notes
 
 - A `self_hosted` environment (`config.type: "self_hosted"` on `environments.create`) is a work queue: your worker claims items, downloads the agent's skills to `<workdir>/skills/<name>/`, runs tool calls in the working directory, and posts results back. `/workspace` is the system default working directory.
-- Sessions on self-hosted environments cannot include `resources` (files/GitHub/memory stores are rejected) — pass file references via session `metadata` and stage them yourself in the working directory.
+- Sessions on self-hosted environments support `memory_store` resources only. A session that includes a `file` or `github_repository` resource is rejected with 400 (`resources are not supported with self-hosted environments`); to give a session its own input files, see "Stage files for a session" in `managed-agents/self-hosted-sandboxes-workers` and stage them yourself in the working directory.
 - Custom tools and MCP servers reachable only from your network can be served by the worker itself, but this requires the SDK's `EnvironmentWorker` / `work.poller()` / `sessions.events.tool_runner()` helpers — the `ant` CLI worker cannot register custom tool implementations.
 - If `workers_polling` stays at 0, confirm `ANTHROPIC_ENVIRONMENT_KEY` and `ANTHROPIC_ENVIRONMENT_ID` are set correctly on the worker host.
 - Example from the Claude API (platform.claude.com) `managed-agents/self-hosted-sandboxes` page.
