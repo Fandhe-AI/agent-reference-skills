@@ -10,9 +10,9 @@ A special `public` directory under the project root holds assets that are served
 
 Place the asset in `<root>/public` and reference it by root absolute path. For example, `public/icon.png` is referenced in source code as `/icon.png`.
 
-```js
-// public/icon.png
-document.getElementById('icon').src = '/icon.png'
+```html
+<!-- public/icon.png: base is applied to this reference during build -->
+<img src="/icon.png" />
 ```
 
 ## Options / Props
@@ -25,6 +25,7 @@ document.getElementById('icon').src = '/icon.png'
 
 - Use `public` when assets are never referenced in source code (e.g. `robots.txt`), must retain the exact same file name (without hashing), or you do not want to import an asset first just to get its URL.
 - Always reference `public` assets using the root absolute path.
+- Root absolute paths in HTML / CSS `url()` are rewritten to respect `base` during build; URLs built dynamically in JavaScript are not, so use `import.meta.env.BASE_URL` (statically replaced; must appear exactly as-is). See https://vite.dev/guide/build#public-base-path.
 - In general, prefer importing assets unless you specifically need the guarantees provided by the `public` directory.
 
 ## Related
