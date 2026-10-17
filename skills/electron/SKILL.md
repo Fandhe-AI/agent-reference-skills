@@ -3,15 +3,15 @@ name: electron
 description: >
   Electron (Chromium + Node.js 製クロスプラットフォームデスクトップアプリフレームワーク, v44) の
   リファレンス。main / renderer / preload / utilityProcess, ipcMain / ipcRenderer / contextBridge,
-  BrowserWindow / BaseWindow / WebContentsView / webContents, Electron Forge, autoUpdater,
-  safeStorage, fuses, ASAR, contextIsolation / sandbox, code signing, MAS, crashReporter,
-  contentTracing, debugging, E2E testing, breaking changes。
+  BrowserWindow / BaseWindow / WebContentsView / webContents, Electron Forge, autoUpdater, safeStorage, fuses, ASAR,
+  contextIsolation / sandbox, code signing, MAS, crashReporter, contentTracing, debugging, E2E testing,
+  breaking changes。
 user-invocable: false
 ---
 
 # Electron
 
-> 分割 PR の途中段階。現在収録済み: references/{app, breaking-changes, debugging-testing, distribution-updates, getting-started, ipc-preload, menus-tray, security-performance, session-network, system, web-contents}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{app, breaking-changes, debugging-testing, distribution-updates, getting-started, ipc-preload, menus-tray, security-performance, session-network, system, web-contents, windows}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 対象バージョン Electron v44.8.0: GitHub tag v44.8.0 (electron/electron)。npm latest = 44.8.0（2026-10-16 公開）。原本は 2026-10-17 に `raw.githubusercontent.com/electron/electron/v44.8.0/docs/` から取得。`main` および `44-x-y` ブランチは使用しない。45.0.0-beta は対象外。公式サイトに `llms.txt` / `.md` twin は無い。
 
@@ -37,6 +37,14 @@ skills/electron/
       app-lifecycle-methods.md
       app-paths-name-locale.md
       app-properties.md
+    windows/                # BaseWindow / BrowserWindow / View / WebContentsView / WebPreferences
+      README.md
+      browser-window-overview.md
+      base-window-overview.md
+      window-options.md
+      web-preferences.md
+      web-contents-view.md
+      window-open.md
     web-contents/           # webContents / webFrameMain / webview タグ / debugger / NavigationHistory
       README.md
       web-contents-overview.md
@@ -118,6 +126,7 @@ skills/electron/
 | --- | --- | --- |
 | Electron の概要・プロセスモデル・ESM・バージョン方針・環境変数を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | app の起動・終了・single instance・パス・ログイン項目・Jump List を扱いたい | app | [references/app/README.md](references/app/README.md) |
+| ウィンドウ生成・オプション・WebPreferences・WebContentsView・window.open を制御したい | windows | [references/windows/README.md](references/windows/README.md) |
 | ページのロード・ナビゲーション・print・executeJavaScript・webview を扱いたい | web-contents | [references/web-contents/README.md](references/web-contents/README.md) |
 | main / renderer 間 IPC・contextBridge・MessagePort・utilityProcess を実装したい | ipc-preload | [references/ipc-preload/README.md](references/ipc-preload/README.md) |
 | アプリメニュー・コンテキストメニュー・Tray・Dock・グローバルショートカットを作りたい | menus-tray | [references/menus-tray/README.md](references/menus-tray/README.md) |
