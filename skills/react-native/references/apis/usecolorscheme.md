@@ -14,7 +14,7 @@ import {useColorScheme} from 'react-native';
 const colorScheme = useColorScheme();
 ```
 
-## Return values
+### Return values
 
 | Value | Description |
 | --- | --- |

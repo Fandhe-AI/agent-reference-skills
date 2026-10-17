@@ -19,7 +19,7 @@ patch; // 1
 prerelease; // null
 ```
 
-## Properties and Methods
+### Properties and Methods
 
 | Name | Signature | Description |
 | --- | --- | --- |

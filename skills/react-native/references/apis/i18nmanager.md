@@ -21,7 +21,7 @@ const isRTL = I18nManager.isRTL;
 </View>;
 ```
 
-## Properties and Methods
+### Properties and Methods
 
 | Name | Signature | Description |
 | --- | --- | --- |

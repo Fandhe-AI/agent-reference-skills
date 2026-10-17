@@ -37,7 +37,7 @@ static addEventListener(
 static currentState: AppStateStatus;
 ```
 
-## App states
+### App states
 
 | State | Platform | Description |
 | --- | --- | --- |
@@ -45,7 +45,7 @@ static currentState: AppStateStatus;
 | `background` | All | The app is running in the background. The user is in another app, on the home screen, or (Android) on another `Activity`, including temporary system activities such as autofill credential pickers (even if launched by your app or the system). |
 | `inactive` | iOS | Occurs when transitioning between foreground and background, and during periods of inactivity such as entering the multitasking view, opening the Notification Center or on an incoming call. |
 
-## Events
+### Events
 
 | Event | Platform | Description |
 | --- | --- | --- |
