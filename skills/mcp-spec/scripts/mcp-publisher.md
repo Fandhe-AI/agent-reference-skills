@@ -14,7 +14,7 @@ Install, authentication, and publish commands for the `mcp-publisher` CLI, which
 curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
 ```
 
-Place the binary in a user-owned directory on your PATH (assumes `${HOME}/.local/bin` is in PATH).
+Adapted (not in the official docs): the official one-liner ends with `&& sudo mv mcp-publisher /usr/local/bin/`. Split into extract and move, and move into a user-owned directory instead of using sudo. Assumes `${HOME}/.local/bin` is in PATH.
 
 ```bash
 mkdir -p "${HOME}/.local/bin" && mv mcp-publisher "${HOME}/.local/bin/"
@@ -125,7 +125,7 @@ curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.my-
 ## Notes
 
 - Source: `registry/quickstart.mdx` / `registry/authentication.mdx` (tag `2026-07-28` raw); the unversioned site path `registry/` was fetched 2026-10-16.
-- The source moves the binary to `/usr/local/bin/` with `sudo mv`; this skill replaces that step with a move into the user-owned `${HOME}/.local/bin/`.
+- The source one-liner is `curl -L ... | tar xz mcp-publisher && sudo mv mcp-publisher /usr/local/bin/`. To avoid routine `sudo`, this skill splits it into extract and move, and moves into the user-owned `${HOME}/.local/bin/` instead.
 - The MCP Registry is in preview; breaking changes or data resets may occur before GA (per the source).
 - DNS / HTTP authentication via Google KMS / Azure Key Vault (using `gcloud` / `az`) is long and not included. See `registry/authentication.mdx` in the source.
 - Publishing the package to npm (`npm adduser` / `npm publish --access public`) follows npm's procedure and is listed in the source as a prerequisite for `mcp-publisher`.
