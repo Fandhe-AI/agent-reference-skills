@@ -80,10 +80,10 @@ const config = {
   tools: [{ functionDeclarations: [searchFlights] }],
 };
 
-if (message.interactionStatus === 'IDLE') {
+if (message.serverContent?.interactionStatus === 'IDLE') {
   // Ready for user input
   setUiState('listening');
-} else if (message.interactionStatus === 'IN_PROGRESS') {
+} else if (message.serverContent?.interactionStatus === 'IN_PROGRESS') {
   // Reasoning or executing tools
   setUiState('thinking');
 }
@@ -150,7 +150,7 @@ Upgrading from Gemini 3.1 Flash Live to `gemini-3.8-live` (omit `thinking_level`
 ## Notes
 
 - Server emits `interaction_status: "IN_PROGRESS"` during background processing and `"IDLE"` when the overall task completes. In Thinking sessions track `interaction_status` instead of `turnComplete`; only return to idle when it is `IDLE`.
-- The source reads `getattr(message, "interaction_status", None)`; in google-genai 2.31.0 the field lives on `server_content` (`LiveServerContent`) and `session.receive()` already stops when it is `IDLE` (falling back to `turn_complete` only when the status is unset), so the example reads `message.server_content.interaction_status` in a single loop. The JavaScript fragment is transcribed as in the source; the API reference lists `interactionStatus` under `BidiGenerateContentServerContent` (`message.serverContent?.interactionStatus`).
+- The source reads `getattr(message, "interaction_status", None)`; in google-genai 2.31.0 the field lives on `server_content` (`LiveServerContent`) and `session.receive()` already stops when it is `IDLE` (falling back to `turn_complete` only when the status is unset), so the example reads `message.server_content.interaction_status` in a single loop. The source's JavaScript fragment reads `message.interactionStatus`; the API reference lists `interactionStatus` under `BidiGenerateContentServerContent`, so the fragment reads `message.serverContent?.interactionStatus`.
 - Synchronous blocking tools return an error with the Thinking model; set `"behavior": "NON_BLOCKING"` on all function declarations.
 - Extended Thinking response flow: spoken filler (`turnComplete: true`, `interactionStatus: "IN_PROGRESS"`), asynchronous tool call (still `IN_PROGRESS`), client tool response, final response (`turnComplete: true`, `interactionStatus: "IDLE"`).
 - Upgrading from `gemini-3.1-flash-live-preview` to `gemini-3.8-live`: update the model string and omit `thinking_level` / `thinking_config`; turn lifecycle and `turnComplete` signals remain identical.
