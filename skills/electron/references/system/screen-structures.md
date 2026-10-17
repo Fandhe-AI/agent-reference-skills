@@ -9,10 +9,12 @@ Plain-object structures used by `screen`, `BrowserWindow` bounds, `nativeImage` 
 ## Signature / Usage
 
 ```js
-const { screen } = require('electron')
+const { app, screen } = require('electron')
 
-const { bounds, workArea, scaleFactor } = screen.getPrimaryDisplay()
-const cursor = screen.getCursorScreenPoint() // { x, y }
+app.whenReady().then(() => {
+  const { bounds, workArea, scaleFactor } = screen.getPrimaryDisplay()
+  const cursor = screen.getCursorScreenPoint() // { x, y }
+})
 ```
 
 ### Display Object

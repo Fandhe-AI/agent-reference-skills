@@ -16,22 +16,30 @@ Electron APIs that take image files accept either file paths or `NativeImage` in
 ## Signature / Usage
 
 ```js
-const { BrowserWindow, nativeImage, Tray } = require('electron')
+const { app, BrowserWindow, nativeImage, Tray } = require('electron')
 
-const trayIcon = nativeImage.createFromPath('/Users/somebody/images/icon.png')
-const appIcon = nativeImage.createFromPath('/Users/somebody/images/window.png')
-const tray = new Tray(trayIcon)
-const win = new BrowserWindow({ icon: appIcon })
+app.whenReady().then(() => {
+  const trayIcon = nativeImage.createFromPath('/Users/somebody/images/icon.png')
+  const appIcon = nativeImage.createFromPath('/Users/somebody/images/window.png')
+  const tray = new Tray(trayIcon)
+  const win = new BrowserWindow({ icon: appIcon })
+})
 ```
+
+Adapted (not in the official docs): wrapped in `app.whenReady()`; the official snippet runs at top level, but Tray and BrowserWindow cannot be created before the app is ready.
 
 Equivalently, pass an image file path as a string:
 
 ```js
-const { BrowserWindow, Tray } = require('electron')
+const { app, BrowserWindow, Tray } = require('electron')
 
-const tray = new Tray('/Users/somebody/images/icon.png')
-const win = new BrowserWindow({ icon: '/Users/somebody/images/window.png' })
+app.whenReady().then(() => {
+  const tray = new Tray('/Users/somebody/images/icon.png')
+  const win = new BrowserWindow({ icon: '/Users/somebody/images/window.png' })
+})
 ```
+
+Adapted (not in the official docs): wrapped in `app.whenReady()`; the official snippet runs at top level, but Tray and BrowserWindow cannot be created before the app is ready.
 
 ### Supported Formats
 
@@ -343,6 +351,7 @@ const cs = {
 
 ## Notes
 
+* Adapted (not in the official docs): the two Signature / Usage snippets are wrapped in `app.whenReady()`; the official snippets run at top level, but Tray and BrowserWindow cannot be created before the app is ready.
 * Behavior changed: `NativeImage.toBitmap()` now normalizes pixel data to sRGB by default (pass the image's original `colorSpace` to keep the previous behavior); `image.getBitmap()` is a deprecated legacy alias. `toDataURL` preserves PNG colorspace. See the breaking-changes category.
 * Structure page: https://www.electronjs.org/docs/latest/api/structures/color-space
 

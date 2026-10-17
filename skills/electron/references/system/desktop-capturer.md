@@ -8,7 +8,7 @@ Access information about media sources that can be used to capture audio and vid
 
 ## Signature / Usage
 
-The following example shows how to capture video from a desktop window whose title is `Electron`:
+The following example grants the first screen found (`types: ['screen']`) to getDisplayMedia requests:
 
 ```js
 // main.js
@@ -157,6 +157,7 @@ It is possible to circumvent this limitation by capturing system audio with anot
 
 ## Notes
 
+* The official lead sentence says the example captures a window titled `Electron`, but the code requests `types: ['screen']` and grants `sources[0]` (the first screen). To capture a specific window, request `types: ['window']` and pick the source whose `name` matches.
 * The official sample only calls `video.pause()`; the tracks are stopped here so screen capture actually ends.
 * Past breaking change: `desktopCapturer.getSources` returns a Promise instead of using a callback (see the breaking-changes category).
 * Structure page: https://www.electronjs.org/docs/latest/api/structures/desktop-capturer-source

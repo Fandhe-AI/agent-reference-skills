@@ -16,10 +16,10 @@ This module adds extra protection to data being stored on disk by using OS-provi
 The original page has no code example; this usage only combines the documented methods below.
 
 ```js
-const { safeStorage } = require('electron')
+const { app, safeStorage } = require('electron')
 
-safeStorage.isAsyncEncryptionAvailable().then(async (available) => {
-  if (!available) return
+app.whenReady().then(async () => {
+  if (!(await safeStorage.isAsyncEncryptionAvailable())) return
   const encrypted = await safeStorage.encryptStringAsync('secret')
   const { shouldReEncrypt, result } = await safeStorage.decryptStringAsync(encrypted)
   if (shouldReEncrypt) {
@@ -97,7 +97,7 @@ Returns `Promise<Buffer>` - An array of bytes representing the encrypted string.
 
 Returns `Promise<Object>` - Resolve with an object containing the following:
 
-* `shouldReEncrypt` boolean - whether data that has just been returned from the decrypt operation should be re-encrypted, as the key has been rotated or a new key is available that provides a different security level. If `true`, you should call `decryptStringAsync` again to receive the new decrypted string.
+* `shouldReEncrypt` boolean - whether data that has just been returned from the decrypt operation should be re-encrypted, as the key has been rotated or a new key is available that provides a different security level. If `true`, you should call `decryptStringAsync` again to receive the new decrypted string. (Official wording. To actually rotate, re-encrypt the returned `result` with `safeStorage.encryptStringAsync()` and replace the stored ciphertext; see Notes.)
 * `result` string - the decrypted string.
 
 #### `safeStorage.setUsePlainTextEncryption(usePlainText)`

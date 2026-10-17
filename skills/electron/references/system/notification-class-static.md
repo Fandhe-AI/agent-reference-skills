@@ -26,6 +26,8 @@ app.whenReady().then(() => {
 })
 ```
 
+Adapted (not in the official docs): the official example calls `Notification.handleActivation()` unconditionally; this version guards it with `process.platform === 'win32'` because the method is Windows-only.
+
 > [!NOTE]
 > If you want to show notifications from a renderer process you should use the web Notifications API (see the Notifications tutorial).
 
@@ -159,6 +161,8 @@ Notification.removeGroup('chat-thread-1')
 
 ## Notes
 
+* Adapted (not in the official docs): the official example calls `Notification.handleActivation()` unconditionally; the Signature / Usage snippet guards it with `process.platform === 'win32'` because the method is Windows-only.
+* In the official `getHistory()` example, `notifications` is local to the `whenReady` callback; to keep receiving events, store the restored objects in a module-scope array (e.g. `const restored = []` at top level and `restored.push(...notifications)`) for as long as they are needed.
 * On Windows, `urgency` type 'critical' sorts the notification higher in Action Center (above default priority notifications), but does not prevent auto-dismissal. To prevent auto-dismissal, you should also set `timeoutType` to 'never'.
 * Distinction: this is Electron's main-process `Notification` class for OS desktop notifications. Platform notification frameworks (UserNotifications / APNs) are covered by apple-app-services, Android notifications by android-platform-core, and Windows App Notifications by windows-app-sdk.
 
