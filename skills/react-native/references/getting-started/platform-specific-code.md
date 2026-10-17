@@ -12,7 +12,9 @@ Two ways to organize code by platform: the `Platform` module and platform-specif
 import {Platform, StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
-  height: Platform.OS === 'ios' ? 200 : 100,
+  container: {
+    height: Platform.OS === 'ios' ? 200 : 100,
+  },
 });
 ```
 
@@ -119,6 +121,7 @@ import Container from './Container';
 
 ## Notes
 
+- Corrected (differs from the official docs): the official snippet passes `height` as a top-level key of `StyleSheet.create`; it is wrapped in a named style (`container`) because each key must map to a style object.
 - Use the `Platform` module when only small parts of a component are platform-specific; use separate files when the platform-specific code is more complex.
 - Certain components may have properties that work on one platform only. All of these props are annotated with `@platform` and have a small badge next to them on the website.
 - Pro tip: configure your Web bundler to ignore `.native.js` extensions in order to avoid having unused code in your production bundle, thus reducing the final bundle size.

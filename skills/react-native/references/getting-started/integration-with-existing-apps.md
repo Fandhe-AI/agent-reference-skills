@@ -32,7 +32,7 @@ Create a new folder for the integrated project, then **move your existing Androi
 In the root directory, copy the template `package.json` (the template branch matches the docs version):
 
 ```shell
-curl -O https://raw.githubusercontent.com/react-native-community/template/refs/heads/<template-branch-for-version>/template/package.json
+curl -O https://raw.githubusercontent.com/react-native-community/template/refs/heads/0.87-stable/template/package.json
 ```
 
 Then:
@@ -438,11 +438,11 @@ brew install cocoapods
 Two files are needed: a **Gemfile** (Ruby dependencies) and a **Podfile**. From the project root download the Gemfile; from the `ios` folder download the Podfile (template branch matches the docs version):
 
 ```shell
-curl -O https://raw.githubusercontent.com/react-native-community/template/refs/heads/<template-branch-for-version>/template/Gemfile
+curl -O https://raw.githubusercontent.com/react-native-community/template/refs/heads/0.87-stable/template/Gemfile
 ```
 
 ```shell
-curl -O https://raw.githubusercontent.com/react-native-community/template/refs/heads/<template-branch-for-version>/template/ios/Podfile
+curl -O https://raw.githubusercontent.com/react-native-community/template/refs/heads/0.87-stable/template/ios/Podfile
 ```
 
 If you created your project with Xcode 16, update the Gemfile:
@@ -703,6 +703,7 @@ Use the `initialProperties` parameter of the `view(withModuleName:initialPropert
 - Adapted (not in the official docs): (1) the Java `MainApplication` diff gained the missing semicolon on `import com.facebook.react.soloader.OpenSourceMergedSoMapping;`; (2) the Objective-C call is `presentViewController:animated:completion:` with `completion:nil` added (the official text omits `completion:`); (3) the Swift initial-props example gained the missing comma after `withModuleName: "HelloWorld"`; (4) the release-build script passes each path as a separately quoted argument, `/bin/sh "$WITH_ENVIRONMENT" "$REACT_NATIVE_XCODE"`, so paths containing spaces work; the official script uses `/bin/sh -c "$WITH_ENVIRONMENT $REACT_NATIVE_XCODE"`.
 - Corrected (differs from the official docs): the official top-level build.gradle diff shows AGP 7.3.1 as unchanged context; it is aligned with the React Native Community Template (`classpath("com.android.tools.build:gradle")` with no version number, from the template's `0.87-stable` android/build.gradle) because 7.3.1 does not support compileSdk 35.
 - Corrected (differs from the official docs): the official Java snippet passes `OpenSourceMergedSoMapping` directly; because it is a Kotlin `object`, Java must use `OpenSourceMergedSoMapping.INSTANCE`.
+- Adapted (not in the official docs): the official docs compute the template branch at render time (getTemplateBranchNameForCurrentVersion()); it is written out as `0.87-stable` for this version in the curl commands.
 - Requirements: React Native can be added as a single view or user flow to an existing app; the template `package.json` / `Gemfile` / `Podfile` are fetched from the React Native Community Template branch matching the docs version.
 - The userID / token above are placeholders from the docs; never ship real secrets in initial properties.
 - 0.88: the iOS SceneDelegate lifecycle is supported (additive; the `AppDelegate` path stays compatible). Starting with the iOS 27 SDK, Apple requires the UIScene lifecycle (UIKit apps built with Xcode 27 fail to launch). `RCTReactNativeFactory` gains `startReactNativeWithModuleName:inWindow:connectionOptions:` and `startReactNativeWithModuleName:inWindow:initialProperties:connectionOptions:`. Support is limited to a single scene (keep `UIApplicationSupportsMultipleScenes` set to `false`). Migration: move the React Native entry point from `AppDelegate` to a `SceneDelegate`, forward the scene's URL and user-activity callbacks to `RCTLinkingManager`, and add a `UIApplicationSceneManifest` key to `Info.plist`. Source: React Native 0.88 release blog.
