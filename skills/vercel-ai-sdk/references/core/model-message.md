@@ -78,7 +78,9 @@ export interface ToolCallPart {
   type: 'tool-call';
   toolCallId: string; // matches the tool call with the tool result
   toolName: string;
-  args: unknown; // JSON-serializable object matching the tool's input schema
+  input: unknown; // JSON-serializable object matching the tool's input schema
+  providerOptions?: ProviderOptions;
+  providerExecuted?: boolean; // whether the tool call was executed by the provider
 }
 
 export interface ToolResultPart {
@@ -114,7 +116,7 @@ Union of: `{ type: 'text'; value: string }`, `{ type: 'json'; value: JSONValue }
 
 - Use the top-level `instructions` property instead of a system message for system instructions. AI SDK functions reject system messages in `prompt` or `messages` by default unless `allowSystemInMessages` is set to `true`. Opting in can create a prompt injection risk if users can inject system messages.
 - `ImagePart` is deprecated. Use `FilePart` with `mediaType: 'image'` (or a more specific `image/*` subtype) instead.
-- `ToolCallPart` documents its arguments field as `args` on this reference page; the `generateText` reference page documents tool-call parts in `messages` with an `input` field. The two pages differ in the original documentation.
+- The official ModelMessage reference page still shows the pre-v5 field name `args`; the published type at ai@7.0.142 (packages/provider-utils/src/types/content-part.ts) uses `input` (renamed in v5, see migration guide 5.0 'Tool Property Changes').
 
 ## Related
 

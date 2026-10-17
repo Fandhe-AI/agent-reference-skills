@@ -28,7 +28,7 @@ Top-level parameters (nested message-part and tool-definition schemas are summar
 | model | `LanguageModel` | The language model to use. Example: `openai('gpt-6-astra')` |
 | instructions | `Instructions` | Instructions that specify the behavior of the model. |
 | prompt | `string \| Array<SystemModelMessage \| UserModelMessage \| AssistantModelMessage \| ToolModelMessage>` | The input prompt to generate the text from. |
-| messages | `Array<SystemModelMessage \| UserModelMessage \| AssistantModelMessage \| ToolModelMessage>` | A list of messages that represent a conversation. Automatically converts UI messages from the useChat hook. (Message shapes: see ModelMessage page.) |
+| messages | `Array<SystemModelMessage \| UserModelMessage \| AssistantModelMessage \| ToolModelMessage>` | A list of messages that represent a conversation. Accepts `ModelMessage[]`; convert `UIMessage[]` from `useChat` with `await convertToModelMessages(messages)` first. (Message shapes: see ModelMessage page.) |
 | allowSystemInMessages | `boolean` (Optional) | Whether system messages are allowed in `prompt` or `messages`. Defaults to false. System messages in `instructions` are always allowed. Enabling this for user-controlled messages can create a prompt injection risk. |
 | tools | `ToolSet` | Tools accessible to and callable by the model. The model needs to support calling tools. Each `Tool` has `description` (string, or function of `{ context, experimental_sandbox? }`), `inputSchema` (Zod Schema \| JSON Schema), and `execute` (`async (parameters: T, options: ToolExecutionOptions) => RESULT`, optional; `ToolExecutionOptions` has `toolCallId`, `messages`, `abortSignal`). |
 | toolChoice | `"auto" \| "none" \| "required" \| { "type": "tool", "toolName": string }` (Optional) | How tools are selected. Default `"auto"`. `"none"` disables tool execution, `"required"` requires tools to be executed. |
@@ -120,6 +120,7 @@ type ActiveTools<TOOLS extends ToolSet> =
 
 ## Notes
 
+- The official generateText reference describes `messages` as automatically converting useChat UI messages, but the parameter type is `ModelMessage[]`; per the convertToModelMessages reference, UI messages must be converted explicitly.
 - Several result properties (`reasoning`, `reasoningText`, `request`, `response`, `providerMetadata`, `totalUsage`) and callbacks (`onStepFinish`, `onFinish`, `experimental_onToolCallStart`, `experimental_onToolCallFinish`) are deprecated; replacements are listed above.
 - `experimental_*` options (`experimental_toolCallers`, `experimental_refineToolInput`, `experimental_sandbox`, `experimental_download`) are experimental and may change in incremental package releases.
 - For `runtimeContext`, `toolsContext`, tool `context`, and sensitive context filtering, see the Runtime and Tool Context guide.
