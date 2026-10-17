@@ -64,12 +64,13 @@ cargo add tauri-plugin-single-instance --target 'cfg(any(target_os = "macos", wi
 ```rust
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
-        .setup(|app| {
-            #[cfg(desktop)]
-            app.handle().plugin(tauri_plugin_single_instance::init(|app, args, cwd| {}));
-            Ok(())
-        })
+    let mut builder = tauri::Builder::default();
+    #[cfg(desktop)]
+    {
+        builder = builder.plugin(tauri_plugin_single_instance::init(|app, args, cwd| {}));
+    }
+
+    builder
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -146,7 +147,7 @@ Because this plugin currently does not have JavaScript APIs you do not have to c
 
 ## Notes
 
-- The official Manual setup registers the plugin inside `setup()`, which runs after all `Builder::plugin` registrations; to satisfy the "register first" requirement, add it with `Builder::plugin` before other plugins as in the focus example and the Deep Linking page.
+- Manual setup snippet differs from the official page (which registers inside `setup()`); it uses `Builder::plugin` as in the plugin README so the plugin is registered first. `setup()` runs after all `Builder::plugin` registrations.
 - The Single Instance plugin must be the first one to be registered to work well. This assures that it runs before other plugins can interfere.
 - Tauri plugin (Rust core + system WebView). Not Electron's API; see the electron skill for Electron's `app.requestSingleInstanceLock()`.
 - Source: `plugins-workspace@single-instance-v2.5.4` `plugins/single-instance/Cargo.toml`.
