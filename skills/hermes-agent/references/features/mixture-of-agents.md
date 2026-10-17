@@ -59,5 +59,5 @@ moa:
 
 ## Related
 
-- Fallback Providers
+- [Fallback Providers](../integrations/fallback-providers.md)
 - [Delegation](../automation/delegation.md)

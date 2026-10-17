@@ -44,3 +44,4 @@ skills:
 - The agent autonomously creates and updates skills after complex workflows (5+ tool calls) or user corrections via `skill_manage`.
 - Local skills take precedence over external directory versions when names conflict.
 - All hub skills are scanned for exfiltration, injection, and supply-chain threats before installation.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/skills (pinned to v0.22.2)
