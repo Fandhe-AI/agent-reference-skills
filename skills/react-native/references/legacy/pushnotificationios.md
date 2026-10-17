@@ -75,7 +75,7 @@ Static methods:
 | getScheduledLocalNotifications | `static getScheduledLocalNotifications(callback: (notifications: ScheduleLocalNotificationDetails[]) => void)` | Lists currently scheduled local notifications. |
 | addEventListener | `static addEventListener(type: PushNotificationEventName, handler)` | Attaches a listener. Types: `notification`, `localNotification`, `register` (hex deviceToken string), `registrationError` (`{message: string, code: number, details: any}`). |
 | removeEventListener | `static removeEventListener(type: PushNotificationEventName)` | Removes the listener; do this in `componentWillUnmount`. |
-| requestPermissions | `static requestPermissions(permissions?: PushNotificationPermissions[])` | Prompts for permissions (`alert`, `badge`, `sound`; all by default). Returns a promise resolving to the permission state. |
+| requestPermissions | `static requestPermissions(permissions?: PushNotificationPermissions): Promise<PushNotificationPermissions>` | Prompts for permissions (`alert`, `badge`, `sound`; all by default). Returns a promise resolving to the permission state. |
 | abandonPermissions | `static abandonPermissions()` | Unregisters for all remote notifications via APNs; use in rare circumstances only. |
 | checkPermissions | `static checkPermissions(callback: (permissions: PushNotificationPermissions) => void)` | Reports enabled permissions (`alert`, `badge`, `sound` booleans). |
 | getInitialNotification | `static getInitialNotification(): Promise<PushNotification \| null>` | Notification that launched the app, otherwise `null`. |
@@ -102,6 +102,7 @@ Instance getters on a received notification:
 - If a tapped notification was already handled in `willPresentNotification`, notify `RCTPushNotificationManager` in only one of the two callbacks.
 - `finish()` is superseded by `UNUserNotificationCenterDelegate` and is no longer invoked if both `application:didReceiveRemoteNotification:fetchCompletionHandler:` and the newer handlers are implemented; if you still use the old handler you must call it as soon as possible.
 - 0.88: React Native 0.88 adds iOS SceneDelegate lifecycle support (`RCTReactNativeFactory` SceneDelegate entry points; a single scene only), which applies to native iOS entry-point code like the `AppDelegate.m` snippets above (0.88 release blog).
+- The 0.87 docs show `permissions?: PushNotificationPermissions[]`, but the Flow implementation (Libraries/PushNotificationIOS/PushNotificationIOS.js) takes a permissions object `{alert?, badge?, sound?}` and only requests truthy keys; the array overload in the .d.ts returns void. Example: `PushNotificationIOS.requestPermissions({alert: true, badge: true, sound: false})`.
 - iOS-native notification APIs themselves (UserNotifications, APNs): see apple-app-services and apple-uikit.
 
 ## Related

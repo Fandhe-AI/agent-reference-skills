@@ -72,8 +72,7 @@ export default App;
 
 ## Notes
 
-- Systrace is a standard Android marker-based profiling tool (installed with the Android platform-tools package); code blocks are surrounded by start/end markers visualized in a chart. Start profiling with an Android profiling tool such as Perfetto or EasyProfiler, then use these markers to identify events in the captured trace.
-- The Profiling guide notes that the standalone `systrace` tool has been removed from Android platform-tools and recommends the Android Studio Profiler.
+- `Systrace` here is React Native's JS marker API (begin/end/async/counter events) that emits markers into Android traces; code blocks are surrounded by start/end markers visualized in a chart. The standalone `systrace` command-line tool has been removed from Android platform-tools (per the Profiling guide); capture traces with the Android Studio Profiler or Perfetto, then use these markers to identify events.
 
 ## Related
 

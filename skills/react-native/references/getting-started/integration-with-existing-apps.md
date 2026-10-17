@@ -157,18 +157,12 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: isDarkMode ? '#222222' : '#F3F3F3',
   };
 
   return (
@@ -180,12 +174,9 @@ function App(): JSX.Element {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
         <View
           style={{
-            backgroundColor: isDarkMode
-              ? Colors.black
-              : Colors.white,
+            backgroundColor: isDarkMode ? '#000000' : '#FFFFFF',
             padding: 24,
           }}>
           <Text style={styles.title}>Step One</Text>
@@ -193,10 +184,6 @@ function App(): JSX.Element {
             Edit <Text style={styles.bold}>App.tsx</Text> to
             change this screen and see your edits.
           </Text>
-          <Text style={styles.title}>See your changes</Text>
-          <ReloadInstructions />
-          <Text style={styles.title}>Debug</Text>
-          <DebugInstructions />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -700,6 +687,7 @@ Use the `initialProperties` parameter of the `view(withModuleName:initialPropert
 
 ## Notes
 
+- The official 0.87 docs still import from `react-native/Libraries/NewAppScreen`, but that path is not shipped in react-native 0.87.0 (moved to the separate `@react-native/new-app-screen` package); the App.tsx snippet here avoids it.
 - Adapted (not in the official docs): (1) the Java `MainApplication` diff gained the missing semicolon on `import com.facebook.react.soloader.OpenSourceMergedSoMapping;`; (2) the Objective-C call is `presentViewController:animated:completion:` with `completion:nil` added (the official text omits `completion:`); (3) the Swift initial-props example gained the missing comma after `withModuleName: "HelloWorld"`; (4) the release-build script passes each path as a separately quoted argument, `/bin/sh "$WITH_ENVIRONMENT" "$REACT_NATIVE_XCODE"`, so paths containing spaces work; the official script uses `/bin/sh -c "$WITH_ENVIRONMENT $REACT_NATIVE_XCODE"`.
 - Corrected (differs from the official docs): the official top-level build.gradle diff shows AGP 7.3.1 as unchanged context; it is aligned with the React Native Community Template (`classpath("com.android.tools.build:gradle")` with no version number, from the template's `0.87-stable` android/build.gradle) because 7.3.1 does not support compileSdk 35.
 - Corrected (differs from the official docs): the official Java snippet passes `OpenSourceMergedSoMapping` directly; because it is a Kotlin `object`, Java must use `OpenSourceMergedSoMapping.INSTANCE`.
