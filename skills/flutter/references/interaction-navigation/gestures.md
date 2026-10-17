@@ -21,7 +21,7 @@ return GestureDetector(
 
 (This page itself contains no code block. The snippet above is verbatim from the `TapboxC` example on the interactivity page, https://docs.flutter.dev/ui/interactivity, and is truncated at `child:`.)
 
-## Pointers
+### Pointers
 
 Four types of pointer events:
 
@@ -36,7 +36,7 @@ On pointer down, the framework does a _hit test_ to determine which widget exist
 
 To listen to pointer events directly from the widgets layer, use a `Listener` widget. Generally, consider using gestures instead.
 
-## Gesture callbacks
+### Gesture callbacks
 
 | Group | Callback | Description |
 |-------|----------|-------------|
@@ -56,7 +56,7 @@ To listen to pointer events directly from the widgets layer, use a `Listener` wi
 | Pan | `onPanUpdate` | A pointer that is in contact with the screen and is moving in the vertical or horizontal direction. This callback crashes if `onHorizontalDragUpdate` or `onVerticalDragUpdate` is set. |
 | Pan | `onPanEnd` | A pointer that was previously in contact with screen is no longer in contact with the screen and is moving at a specific velocity when it stopped contacting the screen. This callback crashes if `onHorizontalDragEnd` or `onVerticalDragEnd` is set. |
 
-## Gesture disambiguation
+### Gesture disambiguation
 
 At a given location on screen, there might be multiple gesture detectors (for example a `ListTile` tap recognizer with a nested trailing icon button, or one `GestureDetector` handling both tap and long press). When more than one recognizer exists for a pointer, each recognizer joins the _gesture arena_. Rules:
 

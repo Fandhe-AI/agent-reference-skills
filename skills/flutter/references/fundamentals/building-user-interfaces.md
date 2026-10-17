@@ -30,7 +30,7 @@ void main() {
 
 `runApp()` takes the given `Widget` and makes it the root of the widget tree. Here the tree has two widgets, `Center` and its child `Text`. The framework forces the root widget to cover the screen, so the text ends up centered. The text direction must be specified here; when `MaterialApp` is used it is taken care of for you.
 
-## The `widgets` package
+### The `widgets` package
 
 `package:flutter/widgets.dart` provides the foundational, style-neutral building blocks: layout primitives (`Row`, `Column`, `Stack`), interaction models (`GestureDetector`), animation controllers, and base presentation widgets (`CustomPaint`, `Image`, `RichText`).
 
@@ -40,13 +40,13 @@ Use `widgets` when:
 - **Creating design-agnostic packages:** importing `package:flutter/widgets.dart` lets a pub.dev package be used in both Material and Cupertino apps without unnecessary dependencies.
 - **Embedded and non-standard devices:** automotive, kiosks, or embedded displays where platform conventions do not apply and minimal bundle size is critical.
 
-## The `material_ui` package
+### The `material_ui` package
 
 `package:material_ui/material_ui.dart` implements Google's Material 3 design system (visual styling, dynamic color, elevation, typography, ripples) on top of the base widgets.
 
 Use `material_ui` for Android or cross-platform apps, rapid prototyping (`Scaffold`, `AppBar`, `NavigationBar`, `ElevatedButton`, `FloatingActionButton`, `TextField`, `Dialog`), and Material theming (`ColorScheme.fromSeed`, light/dark mode, Android dynamic color).
 
-## The `cupertino_ui` package
+### The `cupertino_ui` package
 
 `package:cupertino_ui/cupertino_ui.dart` implements Apple's Human Interface Guidelines (iOS-specific visual styles, translucent blurs, haptic touches, navigation gestures).
 
@@ -60,7 +60,7 @@ Use `cupertino_ui` when targeting iOS and macOS native aesthetics (`CupertinoNav
 | Scaffolding & layout | Raw layout (`Stack`, `Column`) | `Scaffold`, `AppBar` | `CupertinoPageScaffold` |
 | Primary use case | Custom design systems, reusable packages | Android & cross-platform apps | iOS-first & adaptive apps |
 
-## Basic widgets
+### Basic widgets
 
 - `Text`: a run of styled text.
 - `Row`, `Column`: flex widgets for horizontal (`Row`) and vertical (`Column`) layouts, based on the web's flexbox model.
@@ -116,7 +116,7 @@ flutter:
 
 Many Material widgets need to be inside a `MaterialApp` to inherit theme data. `MyAppBar` marks its middle child `Expanded` so it fills remaining space; several `Expanded` children share space by their `flex` argument.
 
-## Using Material components
+### Using Material components
 
 A Material app starts with `MaterialApp`, which builds useful widgets at the root of the app, including a `Navigator` that manages a stack of widgets identified by strings ("routes"). Using `MaterialApp` is entirely optional but a good practice.
 
@@ -164,7 +164,7 @@ class TutorialHome extends StatelessWidget {
 
 `Scaffold` takes several widgets as named arguments, each placed in the appropriate position; `AppBar` accepts widgets for `leading`, `title`, and `actions`. This pattern recurs throughout the framework.
 
-## Handling gestures
+### Handling gestures
 
 `GestureDetector` has no visual representation but detects user gestures (taps, drags, scales). Many widgets (`IconButton`, `ElevatedButton`, `FloatingActionButton`) use it to expose `onPressed()` callbacks.
 
@@ -195,7 +195,7 @@ class MyButton extends StatelessWidget {
 }
 ```
 
-## Changing widgets in response to input
+### Changing widgets in response to input
 
 Stateless widgets receive arguments from their parent and store them in `final` fields. `StatefulWidget`s generate `State` objects that hold state.
 
@@ -255,7 +255,7 @@ class _CounterState extends State<Counter> {
 
 Change notifications flow "up" the widget hierarchy by way of callbacks, while current state flows "down" to the stateless widgets that do presentation. The common parent that redirects this flow is the `State`. Separating concerns, a stateless `CounterDisplay` (takes `count`) and `CounterIncrementor` (takes `onPressed`) can sit under a `Counter` state holder.
 
-## Bringing it all together
+### Bringing it all together
 
 A shopping-list example: `ShoppingListItem` (stateless) stores constructor values in `final` fields and calls the `onCartChanged` callback it received from its parent instead of mutating `inCart`. The parent `ShoppingList` (stateful) mutates its state inside `setState()`.
 
@@ -315,15 +315,15 @@ class _ShoppingListState extends State<ShoppingList> {
 
 When the parent rebuilds it creates a new `ShoppingListItem`, which is cheap because the framework compares newly built widgets with the previous ones and applies only the differences to the underlying `RenderObject`. The framework reuses the existing `_ShoppingListState` instead of calling `createState` again; use the `widget` property to read the current `ShoppingList`, and override `didUpdateWidget(oldWidget)` to be notified when it changes. Forgetting `setState` means the framework does not know the widget is dirty and the UI might not update.
 
-## Responding to widget lifecycle events
+### Responding to widget lifecycle events
 
 After `createState()`, the framework inserts the state object into the tree and calls `initState()` (once-only work such as configuring animations or subscribing to platform services; must start by calling `super.initState`). When the state object is no longer needed, the framework calls `dispose()` (cancel timers, unsubscribe; typically ends with `super.dispose`).
 
-## Keys
+### Keys
 
 By default the framework matches widgets across builds by `runtimeType` and order. With keys, the two widgets must also have the same `key`. Keys are most useful in widgets that build many instances of the same type (for example a lazily built list): semantic keys let the framework sync entries with matching keys and keep state attached to the same semantic entry instead of the same numerical position.
 
-## Global keys
+### Global keys
 
 Global keys uniquely identify child widgets, must be globally unique across the whole widget hierarchy (unlike local keys, which only need to be unique among siblings), and can be used to retrieve the state associated with a widget (`GlobalKey`).
 

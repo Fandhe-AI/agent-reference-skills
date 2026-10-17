@@ -35,7 +35,7 @@ Widget build(BuildContext context) {
 }
 ```
 
-## Concepts
+### Concepts
 
 - An `Intent` instance represents a generic action the user wishes to perform; it can be fulfilled by different actions in different contexts.
 - An `Action` can be a simple callback (`CallbackAction`) or something more complex that integrates with undo/redo architectures or other logic.
@@ -44,7 +44,7 @@ Widget build(BuildContext context) {
 - Intents can configure an action so the same action serves multiple uses (for example `DirectionalFocusIntent` takes a direction). Don't pass state in the `Intent` that applies to all invocations of an `Action`; pass it to the `Action` constructor instead.
 - Why not callbacks: actions can decide whether they are enabled by implementing `isEnabled`, and key bindings and implementations are often in different places.
 
-## Callbacks only: CallbackShortcuts
+### Callbacks only: CallbackShortcuts
 
 If all you need are callbacks without the flexibility of `Actions` and `Shortcuts`, use `CallbackShortcuts`:
 
@@ -74,7 +74,7 @@ Widget build(BuildContext context) {
 }
 ```
 
-## Shortcuts and ShortcutManager
+### Shortcuts and ShortcutManager
 
 The map given to `Shortcuts` maps a `LogicalKeySet` (or a `ShortcutActivator`) to an `Intent` instance. The shortcut manager is longer-lived than the `Shortcuts` widget; it contains the logic for deciding how to handle keys, walks up the tree to find other shortcut mappings, and maintains the map of key combinations to intents. `Shortcuts` takes a `ShortcutManager` that you can subclass:
 
@@ -91,7 +91,7 @@ class LoggingShortcutManager extends ShortcutManager {
 }
 ```
 
-## Defining and invoking actions
+### Defining and invoking actions
 
 Actions in simplest form are subclasses of `Action<Intent>` with an `invoke()` method:
 
@@ -167,7 +167,7 @@ Widget build(BuildContext context) {
 }
 ```
 
-## Action dispatchers
+### Action dispatchers
 
 Replace the default `ActionDispatcher` to, for example, log executed actions. Pass the dispatcher to the `Actions` widget; it invokes actions from any `Actions` widgets below that don't set a dispatcher of their own.
 

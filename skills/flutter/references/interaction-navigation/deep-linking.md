@@ -17,7 +17,7 @@ AndroidManifest.xml    flutter_deeplinking_enabled = false
 
 In a web browser no additional setup is required. By default, web apps read the deep link path from the URL fragment using the pattern `/#/path/to/app/screen`; this can be changed by configuring the URL strategy.
 
-## Behavior
+### Behavior
 
 The behavior varies slightly based on the platform and whether the app is launched and running.
 

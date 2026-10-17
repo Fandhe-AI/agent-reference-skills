@@ -36,7 +36,7 @@ Category definition format in `index.yml` (first entries, verbatim):
   id: material
 ```
 
-## Design systems
+### Design systems
 
 The style-neutral `widgets` library (`package:flutter/widgets.dart`) ships with the Flutter SDK. Two UI design packages, `material_ui` and `cupertino_ui`, are built on top of `widgets` and are available on pub.dev.
 
@@ -45,7 +45,7 @@ The style-neutral `widgets` library (`package:flutter/widgets.dart`) ships with 
 
 Community design systems on pub.dev include the Windows-inspired `fluent_ui`, the macOS-inspired `macos_ui`, and the Ubuntu-inspired `yaru`.
 
-## Catalog categories (`index.yml`)
+### Catalog categories (`index.yml`)
 
 | id | Name | Description |
 | --- | --- | --- |
@@ -65,75 +65,75 @@ Community design systems on pub.dev include the Windows-inspired `fluent_ui`, th
 | scrolling | Scrolling | Scroll multiple widgets as children of the parent. Subcategory: Sliver widgets. |
 | accessibility | Accessibility | Make your app accessible. |
 
-## Widgets by category (`widgets.yml`)
+### Widgets by category (`widgets.yml`)
 
 Entries carry a `categories` list and/or a `subcategories` list; a widget can appear under several. Names are the catalog entry names (some are not class names, e.g. `Common buttons`, `Bottom sheet`, `Menu`, `Navigation rail`, `Bottom app bar`, `Extended FloatingActionButton`).
 
-### Basics
+#### Basics
 
 AppBar, Column, Container, ElevatedButton, FlutterLogo, Icon, Image, Placeholder, Row, Scaffold, Text.
 
-### Animation and motion
+#### Animation and motion
 
 AlignTransition, AnimatedAlign, AnimatedBuilder, AnimatedContainer, AnimatedCrossFade, AnimatedDefaultTextStyle, AnimatedList, AnimatedListState, AnimatedModalBarrier, AnimatedOpacity, AnimatedPhysicalModel, AnimatedPositioned, AnimatedScale, AnimatedSize, AnimatedWidget, ImplicitlyAnimatedWidget, DecoratedBoxTransition, DefaultTextStyleTransition, FadeTransition, Hero, MatrixTransition, PositionedTransition, RelativePositionedTransition, RepeatingAnimationBuilder, RotationTransition, ScaleTransition, SizeTransition, SlideTransition, SliverFadeTransition.
 
-### Assets, images, and icons
+#### Assets, images, and icons
 
 AssetBundle, Icon, Image, RawImage.
 
-### Input
+#### Input
 
 Autocomplete, Form, FormField, KeyboardListener.
 
-### Painting and effects
+#### Painting and effects
 
 BackdropFilter, ClipOval, ClipPath, ClipRect, CustomPaint, DecoratedBox, FractionalTranslation, Opacity, RotatedBox, Transform.
 
-### Scrolling
+#### Scrolling
 
 CarouselView, CustomScrollView, DraggableScrollableSheet, GridView, ListView, NestedScrollView, NotificationListener, PageView, RefreshIndicator, ReorderableListView, ScrollConfiguration, Scrollable, Scrollbar, SingleChildScrollView.
 
-### Text
+#### Text
 
 DefaultTextStyle, RichText, Text.
 
-### Styling
+#### Styling
 
 MediaQuery, Padding, Theme.
 
-### Accessibility
+#### Accessibility
 
 ExcludeSemantics, MergeSemantics, Semantics.
 
-### Async
+#### Async
 
 FutureBuilder, StreamBuilder.
 
-### Cupertino
+#### Cupertino
 
 CupertinoActionSheet, CupertinoActionSheetAction, CupertinoActivityIndicator, CupertinoAdaptiveTextSelectionToolbar, CupertinoAlertDialog, CupertinoApp, CupertinoButton, CupertinoCheckBox, CupertinoColors, CupertinoContextMenu, CupertinoContextMenuAction, CupertinoDatePicker, CupertinoDesktopTextSelectionControls, CupertinoDesktopTextSelectionToolbar, CupertinoDesktopTextSelectionToolbarButton, CupertinoDialogAction, CupertinoDialogRoute, CupertinoDynamicColor, CupertinoFormRow, CupertinoFormSection, CupertinoFullscreenDialogTransition, CupertinoThemeData, CupertinoListSection, CupertinoListTile, CupertinoListTileChevron, CupertinoLocalizations, CupertinoMagnifier, CupertinoModalPopupRoute, CupertinoNavigationBar, CupertinoNavigationBarBackButton, CupertinoPage, CupertinoPageRoute, CupertinoPageScaffold, CupertinoPageTransition, CupertinoPicker, CupertinoPickerDefaultSelectionOverlay, CupertinoPopupSurface, CupertinoRadio, CupertinoScrollbar, CupertinoScrollBehavior, CupertinoSearchTextField, CupertinoSlider, CupertinoSlidingSegmentedControl, CupertinoSliverNavigationBar, CupertinoSliverRefreshControl, CupertinoSpellCheckSuggestionsToolbar, CupertinoSwitch, CupertinoTabBar, CupertinoTabController, CupertinoTabScaffold, CupertinoTabView, CupertinoTextField, CupertinoTextFormFieldRow, CupertinoTextMagnifier, CupertinoTextSelectionControls, CupertinoTextSelectionToolbar, CupertinoTextSelectionToolbarButton, CupertinoTextThemeData, CupertinoTheme, CupertinoThumbPainter, CupertinoTimerPicker.
 
-### Layout: Single-child layout widgets
+#### Layout: Single-child layout widgets
 
 Align, AspectRatio, Baseline, Center, ConstrainedBox, Container, CustomSingleChildLayout, Expanded, FittedBox, FractionallySizedBox, IntrinsicHeight, IntrinsicWidth, LimitedBox, Offstage, OverflowBox, Padding, SizedBox, SizedOverflowBox, Transform.
 
-### Layout: Multi-child layout widgets
+#### Layout: Multi-child layout widgets
 
 CarouselView, Column, CustomMultiChildLayout, Flow, GridView, IndexedStack, LayoutBuilder, ListBody, ListView, OverflowBar, Row, Stack, Table, Wrap.
 
-### Layout / Scrolling: Sliver widgets
+#### Layout / Scrolling: Sliver widgets
 
 CupertinoSliverNavigationBar, CupertinoSliverRefreshControl, CustomScrollView, SliverAppBar, SliverChildBuilderDelegate, SliverChildListDelegate, SliverFillRemaining, SliverFixedExtentList, SliverGrid, SliverList, SliverPadding, SliverToBoxAdapter, SliverPersistentHeader.
 
-### Interaction models: Touch interactions
+#### Interaction models: Touch interactions
 
 AbsorbPointer, Dismissible, DragTarget, Draggable, DraggableScrollableSheet, GestureDetector, IgnorePointer, InteractiveViewer, LongPressDraggable, Scrollable.
 
-### Interaction models: Routing
+#### Interaction models: Routing
 
 Hero, Navigator.
 
-### Material components (Material 3)
+#### Material components (Material 3)
 
 - Actions: Common buttons, FloatingActionButton, Extended FloatingActionButton, IconButton, SegmentedButton.
 - Communication: Badge, LinearProgressIndicator, SnackBar.
@@ -142,7 +142,7 @@ Hero, Navigator.
 - Selection: Checkbox, Chip, DatePicker, Menu, Radio, Slider, Switch, TimePicker.
 - Text inputs: TextField.
 
-### Material 2 components
+#### Material 2 components
 
 - App structure and navigation: AppBar, BottomNavigationBar, Drawer, MaterialApp, Scaffold, SliverAppBar, TabBar, TabBarView, TabController, TabPageSelector, WidgetsApp.
 - Buttons: DropdownButton, ElevatedButton, FloatingActionButton, Extended FloatingActionButton, IconButton, OutlinedButton, PopupMenuButton, TextButton.
@@ -151,7 +151,7 @@ Hero, Navigator.
 - Information displays: Card, Chip, CircularProgressIndicator, DataTable, GridView, Icon, Image, LinearProgressIndicator, Tooltip.
 - Layout: Divider, ListTile, Stepper.
 
-## Widget of the Week
+### Widget of the Week
 
 100+ short, 1-minute explainer videos to help you quickly get started with Flutter widgets.
 

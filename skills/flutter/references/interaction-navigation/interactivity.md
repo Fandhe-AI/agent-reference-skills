@@ -57,13 +57,13 @@ Plug the stateful widget into the tree:
   ),
 ```
 
-## Stateful and stateless widgets
+### Stateful and stateless widgets
 
 - A _stateless_ widget never changes. `Icon`, `IconButton`, and `Text` are examples; they subclass `StatelessWidget`.
 - A _stateful_ widget is dynamic. `Checkbox`, `Radio`, `Slider`, `InkWell`, `Form`, and `TextField` are examples; they subclass `StatefulWidget`.
 - A widget's state is stored in a `State` object, separating the widget's state from its appearance. When the state changes, the state object calls `setState()`, telling the framework to redraw the widget.
 
-## Managing state
+### Managing state
 
 Common ways to manage state:
 
@@ -77,7 +77,7 @@ Principles from the page:
 - If the state in question is aesthetic (for example an animation), the state is best managed by the widget itself.
 - If in doubt, start by managing state in the parent widget.
 
-### The widget manages its own state (TapboxA)
+#### The widget manages its own state (TapboxA)
 
 ```dart
 import 'package:material_ui/material_ui.dart';
@@ -141,7 +141,7 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-### The parent widget manages the widget's state (TapboxB)
+#### The parent widget manages the widget's state (TapboxB)
 
 TapboxB exports its state to its parent through a callback. Because TapboxB doesn't manage any state, it subclasses `StatelessWidget`.
 
@@ -210,7 +210,7 @@ class TapboxB extends StatelessWidget {
 }
 ```
 
-### A mix-and-match approach (TapboxC)
+#### A mix-and-match approach (TapboxC)
 
 `TapboxC` exports its `_active` state to its parent but manages its `_highlight` state internally. The `GestureDetector` listens to all tap events: tap down adds a dark green border, tap up removes it.
 
@@ -270,7 +270,7 @@ class _TapboxCState extends State<TapboxC> {
 }
 ```
 
-## Other interactive widgets
+### Other interactive widgets
 
 Standard widgets: `Form`, `FormField`.
 

@@ -21,7 +21,7 @@ flutter build <target>   # release mode for a specific target; list targets with
 
 For the headless testing mode, see the engine wiki's docs on Flutter's build modes (`docs/engine/Flutter's-modes.md` in the flutter/flutter repository).
 
-## Debug
+### Debug
 
 The app is set up for debugging on the physical device, emulator, or simulator. On mobile:
 
@@ -34,7 +34,7 @@ On web: the build is not minified and tree shaking has not been performed; the a
 
 By default, `flutter run` compiles to debug mode. In Android Studio use **Run > Debug...**.
 
-## Release
+### Release
 
 For deploying the app: maximum optimization and minimal footprint. On mobile (not supported on the simulator or emulator):
 
@@ -48,7 +48,7 @@ On web: the build is minified and tree shaking has been performed; the app is co
 
 `flutter run --release` compiles to release mode; compile for a specific target with `flutter build <target>`. In Android Studio use **Run > Run...**.
 
-## Profile
+### Profile
 
 Some debugging ability is maintained, enough to profile performance. Profile mode is disabled on the emulator and simulator because their behavior is not representative of real performance. On mobile it is similar to release mode, except:
 

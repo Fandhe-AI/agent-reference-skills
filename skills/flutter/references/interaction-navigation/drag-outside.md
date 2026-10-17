@@ -17,11 +17,11 @@ super_drag_and_drop   https://pub.dev/packages/super_drag_and_drop
 Recipe: Drag a UI element within an app   https://docs.flutter.dev/cookbook/effects/drag-a-widget
 ```
 
-## Create draggable widgets within your app
+### Create draggable widgets within your app
 
 To implement drag and drop within your application, use the `Draggable` widget (see the "Drag a UI element within an app" recipe). An advantage of `Draggable` and `DragTarget` is that you can supply Dart code to decide whether to accept a drop.
 
-## Implement drag and drop between apps
+### Implement drag and drop between apps
 
 To implement drag and drop within your application _and_ between your application and another (possibly non-Flutter) app, use the `super_drag_and_drop` package.
 

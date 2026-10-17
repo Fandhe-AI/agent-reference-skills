@@ -29,13 +29,13 @@ void main() {
 
 (This page itself has no code block; the snippet above is an excerpt of the example on https://docs.flutter.dev/ui/accessibility/accessibility-testing.)
 
-## Large fonts
+### Large fonts
 
 Both Android and iOS contain system settings to configure the desired font sizes used by apps. Flutter text widgets respect this OS setting when determining font sizes, calculated automatically. Make sure your layout has enough room to render all its contents when font sizes are increased, for example by testing on a small-screen device configured to the largest font setting.
 
 To adjust font sizes: on iOS, Settings > Accessibility > Display & Text Size; on Android, Settings > Font size.
 
-## Sufficient contrast
+### Sufficient contrast
 
 The W3C recommends:
 
@@ -44,7 +44,7 @@ The W3C recommends:
 | Small text (below 18 point regular or 14 point bold) | At least 4.5:1 |
 | Large text (18 point and above regular or 14 point and above bold) | At least 3.0:1 |
 
-## Tap target size
+### Tap target size
 
 | Source | Recommended minimum |
 |--------|---------------------|

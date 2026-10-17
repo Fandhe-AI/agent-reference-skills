@@ -19,7 +19,7 @@ Escalation only if no g.co/vulnz response within 5 working days : security@flutt
 Bug bounty listing requests : security@flutter.dev
 ```
 
-## Security philosophy
+### Security philosophy
 
 Flutter's strategy rests on five pillars:
 
@@ -29,29 +29,29 @@ Flutter's strategy rests on five pillars:
 - **Respond**: define processes to report, triage, and respond to vulnerabilities or attacks.
 - **Recover**: build capabilities to contain and recover from an incident with minimal impact.
 
-## Reporting vulnerabilities
+### Reporting vulnerabilities
 
 Before reporting a vulnerability found by a static analysis tool, check the list of known false positives (/reference/security-false-positives). Intake is via g.co/vulnz; coordination and disclosure happen on GitHub (including GitHub Security Advisory). The Google Security Team responds within 5 working days. You may also reach the team through the public Discord channels, but still report to g.co/vulnz and avoid revealing vulnerability information in public if that could put users at risk. See the security policy at https://github.com/flutter/flutter/security/policy.
 
 Security reports are not tracked explicitly in the GitHub issue database; open reports are tracked with GitHub's security advisory feature.
 
-## Supported versions
+### Supported versions
 
 Security updates are published for the version of Flutter currently on the `stable` branch.
 
-## Expectations
+### Expectations
 
 Security reports are treated as P0 priority. Depending on the release schedule, a new beta or a stable hotfix is released for any major security report found in the most recent stable SDK, whichever is most expedient. A vulnerability in Flutter websites like docs.flutter.dev needs no release and is fixed in the website itself.
 
-## Bug Bounty programs
+### Bug Bounty programs
 
 Non-Google teams that use or contribute to Flutter may include Flutter in the scope of their bug bounty programs (contact `security@flutter.dev` to be listed). Google considers Flutter to be in scope for the Google Open Source Software Vulnerability Reward Program (https://bughunters.google.com/open-source-security).
 
-## Receiving security updates
+### Receiving security updates
 
 Subscribe to the flutter-announce mailing list or watch the Discord channel; security updates are also announced in the technical release blog post.
 
-## Best practices
+### Best practices
 
 - **Keep current with the latest Flutter SDK releases.** Updates might fix security defects discovered in previous versions.
 - **Keep your application's dependencies up to date.** Upgrade your package dependencies. Avoid pinning to specific versions and, if you do, check periodically for security updates and update the pin.

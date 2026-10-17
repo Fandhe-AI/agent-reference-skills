@@ -20,7 +20,7 @@ void main() {
 }
 ```
 
-## Screen readers
+### Screen readers
 
 Mobile screen readers (TalkBack, VoiceOver) give spoken feedback about screen contents and let users interact through gestures on mobile and keyboard shortcuts on desktop.
 
@@ -32,7 +32,7 @@ Mobile screen readers (TalkBack, VoiceOver) give spoken feedback about screen co
 | Browsers (desktop) | macOS: VoiceOver; Windows: JAWS and NVDA. |
 | Desktop apps | Windows: Narrator (some developers recommend the more popular NVDA); macOS: VoiceOver (included in macOS); Linux: Orca (pre-installed with some distributions, available on package repositories such as `apt`). |
 
-## Mobility support
+### Mobility support
 
 | OS | Feature | Function |
 |----|---------|----------|

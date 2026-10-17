@@ -16,14 +16,14 @@ CI-tested    : The Flutter team tests these platforms on every commit.
 Unsupported  : The Flutter team doesn't test or support these platforms.
 ```
 
-## Mobile platforms
+### Mobile platforms
 
 | Platform | Architectures | Supported | CI-tested | Unsupported | Deploy to |
 | --- | --- | --- | --- | --- | --- |
 | Android | x64, Arm32, Arm64 | 24 to 37 | 24 to 36 | 23 and earlier | /deployment/android |
 | iOS | Arm64 | 15 to 27 | 18 and 26 | 14 and earlier | /deployment/ios |
 
-## Desktop platforms
+### Desktop platforms
 
 | Platform | Architectures | Supported | CI-tested | Unsupported | Deploy to |
 | --- | --- | --- | --- | --- | --- |
@@ -32,7 +32,7 @@ Unsupported  : The Flutter team doesn't test or support these platforms.
 | Debian (Linux) | x64, Arm64 | 10 to 13 | 12 | 9 and earlier | /deployment/linux |
 | Ubuntu (Linux) | x64, Arm64 | 20.04 LTS to 24.04 LTS | 22.04 LTS | 25.10 and earlier non-LTS | /deployment/linux |
 
-## Web platforms
+### Web platforms
 
 | Browser | Architectures | Supported | CI-tested | Unsupported | Deploy to |
 | --- | --- | --- | --- | --- | --- |

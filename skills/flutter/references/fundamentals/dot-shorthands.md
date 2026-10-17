@@ -50,7 +50,7 @@ Container(
 );
 ```
 
-## Where to use dot shorthands
+### Where to use dot shorthands
 
 Dot shorthands work anywhere the Dart compiler has a clear "context type". In Flutter this is almost everywhere inside a widget's property list. Common targets:
 
@@ -58,7 +58,7 @@ Dot shorthands work anywhere the Dart compiler has a clear "context type". In Fl
 - **Static properties and methods**: `FontWeight` (constants like `.bold`).
 - **Constructors**: `EdgeInsets.all()`, `BorderRadius.circular()`.
 
-### Enums
+#### Enums
 
 ```dart
 Row(
@@ -67,7 +67,7 @@ Row(
 )
 ```
 
-### Static properties
+#### Static properties
 
 Static properties work when the context type is exactly the class that defines the property:
 
@@ -80,7 +80,7 @@ Text(
 )
 ```
 
-### Constructors
+#### Constructors
 
 Many Flutter layout properties accept a base class like `EdgeInsetsGeometry`. To support dot shorthands, Flutter adds redirecting constructors to these base classes that point to the appropriate subclasses.
 

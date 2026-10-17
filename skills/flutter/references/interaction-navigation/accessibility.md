@@ -22,7 +22,7 @@ Release checklist (non-exhaustive)
 - Scale factors              legible and usable at very large text size and display scaling
 ```
 
-## Accessibility regulations
+### Accessibility regulations
 
 | Standard / law | Description |
 |----------------|-------------|

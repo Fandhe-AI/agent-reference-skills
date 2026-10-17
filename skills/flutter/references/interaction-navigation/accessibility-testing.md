@@ -45,7 +45,7 @@ Web: visualize the semantic nodes created for your web app in profile and releas
 flutter run -d chrome --profile --dart-define=FLUTTER_WEB_DEBUG_SHOW_SEMANTICS=true
 ```
 
-## Inspecting accessibility support
+### Inspecting accessibility support
 
 | Platform | Steps |
 |----------|-------|

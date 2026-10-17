@@ -25,11 +25,11 @@ Declarative style (Flutter): describe the current UI state and let the framework
 return ViewB(color: red, child: const ViewC());
 ```
 
-## Why a declarative UI?
+### Why a declarative UI?
 
 Frameworks from Win32 to web to Android and iOS typically use an imperative style, where you manually construct a full-functioned UI entity such as a UIView and later mutate it with methods and setters. Flutter instead lets the developer describe the current UI state and leaves the transitioning to the framework.
 
-## How to change UI in a declarative framework
+### How to change UI in a declarative framework
 
 In the imperative style you go to ViewB's owner, retrieve instance `b` (selectors, `findViewById`, or similar), and invoke mutations on it. You might also need to replicate that configuration in the constructor of ViewB, since the source of truth for the UI might outlive instance `b`.
 

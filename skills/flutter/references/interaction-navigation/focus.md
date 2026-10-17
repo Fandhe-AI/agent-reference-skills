@@ -68,7 +68,7 @@ class _MyCustomWidgetState extends State<MyCustomWidget> {
 }
 ```
 
-## Glossary
+### Glossary
 
 | Term | Definition |
 |------|------------|
@@ -91,9 +91,9 @@ Attributes of the `Focus` widget discussed on the page:
 | `skipTraversal` | `bool` | If true, the node doesn't participate in focus traversal but is still focusable if `requestFocus` is called on it. |
 | `descendantsAreFocusable` | `bool` | Controls whether descendants can receive focus while still allowing this node to receive focus. `ExcludeFocus` is a `Focus` widget with this attribute set. |
 | `onKeyEvent` | callback | Handler for key events in the subtree; return `KeyEventResult.handled` to stop propagation. |
-| `onFocusChange` / `Focus.onFocusChanged` | callback | Notification when the focus state of the node changes (added to or removed from the focus chain, not only primary focus). |
+| `onFocusChange` | callback | Notification when the focus state of the node changes (added to or removed from the focus chain, not only primary focus). |
 
-## Key events
+### Key events
 
 Key events start at the focus node with primary focus. If that node doesn't return `KeyEventResult.handled` from its `onKeyEvent` handler, its parent focus node is given the event, and so on up to the root. If the event reaches the root unhandled, it is returned to the platform for the next native control. Handled events are not propagated to other Flutter widgets or to native widgets.
 
@@ -126,7 +126,7 @@ Widget build(BuildContext context) {
 }
 ```
 
-## Obtaining the FocusNode
+### Obtaining the FocusNode
 
 From an ancestor, create and pass in a `FocusNode` as the `focusNode` attribute (owned by a stateful widget). From a descendant, call `Focus.of(context)`; within the same build function use a `Builder` to get the correct context:
 
@@ -145,7 +145,7 @@ Widget build(BuildContext context) {
 }
 ```
 
-## Controlling focus traversal
+### Controlling focus traversal
 
 The default algorithm is `ReadingOrderTraversalPolicy`. Place `FocusTraversalGroup` around subtrees that should be fully traversed before moving on; give it a `FocusTraversalPolicy` (for example `OrderedTraversalPolicy`) to determine ordering. The `order` argument of `FocusTraversalOrder` can be any `FocusOrder` subclass; `NumericFocusOrder` and `LexicalFocusOrder` are provided. Traversing a row of buttons in the order TWO, ONE, THREE:
 
@@ -186,6 +186,7 @@ class OrderedButtonRow extends StatelessWidget {
 
 ## Notes
 
+- The docs prose refers to `Focus.onFocusChanged`; the actual `Focus` constructor parameter is `onFocusChange` (per api.flutter.dev Focus class).
 - Best practices for `FocusNode`:
   - Don't allocate a new `FocusNode` for each build (memory leaks, occasional loss of focus on rebuild).
   - Do create `FocusNode` and `FocusScopeNode` in a stateful widget's state and dispose them in `dispose`.

@@ -61,11 +61,11 @@ class MyCustomListWidget extends StatelessWidget {
 }
 ```
 
-## Opt-in web accessibility
+### Opt-in web accessibility
 
 For performance reasons, Flutter's web accessibility is not on by default. The user presses an invisible button with `aria-label="Enable accessibility"`; after that the DOM tree reflects all accessibility information for the widgets. Alternatively, enable it in code as shown above.
 
-## Semantic roles
+### Semantic roles
 
 Semantic roles define the purpose of a UI element (for example a button, a link, a heading, a slider, or part of a table), helping screen readers and other assistive tools interpret and present your application. Flutter provides the `Semantics` widget with the `SemanticsRole` enum; when your Flutter web app is rendered, these roles are translated into corresponding ARIA roles in the page's HTML.
 

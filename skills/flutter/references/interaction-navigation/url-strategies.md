@@ -29,7 +29,7 @@ void main() {
 }
 ```
 
-## Strategies
+### Strategies
 
 | Strategy | Behavior | Example |
 |----------|----------|---------|
@@ -38,11 +38,11 @@ void main() {
 
 Related API names linked from the page: `HashUrlStrategy`, `PathUrlStrategy`, `setUrlStrategy`, `usePathUrlStrategy` (library `flutter_web_plugins`).
 
-## Configuring your web server
+### Configuring your web server
 
 `PathUrlStrategy` uses the History API, which requires additional web server configuration: rewrite requests to `index.html` (check your web server's documentation for single-page apps). With Firebase Hosting, choose "Configure as a single-page app" when initializing the project. The local dev server created by `flutter run -d chrome` handles any path and falls back to the app's `index.html`.
 
-## Hosting a Flutter app at a non-root location
+### Hosting a Flutter app at a non-root location
 
 Update the `<base href="/">` tag in `web/index.html` to the path where your app is hosted. For example, to host at `my_app.dev/flutter_app`, change it to `<base href="/flutter_app/">`.
 
