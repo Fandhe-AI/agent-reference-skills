@@ -18,7 +18,7 @@ struct CreateBookIntent: AppIntent {
     var authorName: String
 
     struct AuthorNamesOptionsProvider: DynamicOptionsProvider {
-        func results() async throws -> ItemCollection<Int> {
+        func results() async throws -> ItemCollection<String> {
             ItemCollection {
                 ItemSection("Italian Authors") {
                     "Dante Alighieri"
@@ -49,7 +49,7 @@ struct CreateBookIntent: AppIntent {
 
 - iOS 16.0+, iPadOS 16.0+, Mac Catalyst 16.0+, macOS 13.0+, tvOS 16.0+, watchOS 9.0+; visionOS (no `introducedAt` value in the source JSON)
 - Conforms to `ResultsCollection`, `Sendable`, `SendableMetatype`.
-- The example above is verbatim from the source page, including its use of the names `ItemCollection` / `ItemSection`.
+- The example above is adapted from the source page: the official listing declares `ItemCollection<Int>` although `authorName` and every section element are `String`, so the return type is corrected to `ItemCollection<String>` here. It keeps the page's use of the names `ItemCollection` / `ItemSection`.
 
 ## Related
 
