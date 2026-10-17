@@ -108,6 +108,7 @@ Response: `{ buckets: [{ key, docCount }], afterKey }`. Pass `afterKey` back ver
 - `$terms`, `$range`, `$histogram`, `$dateHistogram`, and `$composite` support nested `$aggs` for per-bucket sub-metrics; `$facet` and metric operators do not
 - Metric aggregations return `{ value: number }`; bucket aggregations return `{ buckets: [{ key, docCount, ... }] }`
 - Results are keyed by the alias name provided in the `aggregations` object
+- Source: https://upstash.com/docs/redis/search/aggregation-operators/bucket-aggregations/composite , https://upstash.com/docs/redis/search/aggregations (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

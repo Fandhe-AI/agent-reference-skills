@@ -49,6 +49,7 @@ await client.messages.cancel({ filter: { url: "https://example.com" } });
 - `delete()`, `deleteMany()`, and `deleteAll()` are deprecated; use `cancel()` in all cases
 - `cancel({ all: true })` should be called in a loop until `cancelled === 0` to handle large queues
 - Cancelling a message that is currently being delivered has no effect on the ongoing attempt
+- Source: https://upstash.com/docs/qstash/howto/retry-now , https://upstash.com/docs/qstash/sdks/ts/examples/messages (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 

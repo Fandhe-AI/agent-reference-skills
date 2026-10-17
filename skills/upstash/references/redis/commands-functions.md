@@ -22,7 +22,21 @@ redis.register_function('my_hset',
 const libraryName = await redis.functions.load({ code, replace: true }); // "mylib"
 
 await redis.functions.call("my_hset", ["myhash"], ["myfield", "some value"]);
-await redis.functions.callRo("get_value", ["mykey"]); // function registered with 'no-writes'
+
+const roCode = `#!lua name=ro_lib
+
+local function get_value(keys, args)
+  return redis.call('GET', keys[1])
+end
+
+redis.register_function({
+  function_name='get_value',
+  callback=get_value,
+  flags={ 'no-writes' }
+})
+`;
+await redis.functions.load({ code: roCode, replace: true });
+await redis.functions.callRo("get_value", ["mykey"]); // registered above with 'no-writes'
 await redis.functions.list({ libraryName: "mylib", withCode: true });
 await redis.functions.stats(); // { engines: { LUA: { librariesCount, functionsCount } } }
 await redis.functions.delete("mylib");

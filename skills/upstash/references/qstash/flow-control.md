@@ -105,6 +105,7 @@ Response fields of `get`:
 - `GET /v2/globalParallelism` now returns `{ parallelismMax, parallelismCount }` instead of the old `{ waitListSize }` shape
 - The console `FlowControl` tab shows wait list size and can pin, unpin, and reset rate
 - `parallelism` in `flowControl` applies across all messages sharing the same `key`; queue-level `parallelism` (in `queue.upsert()`) applies only within that queue
+- Source: https://upstash.com/docs/qstash/features/flowcontrol , https://upstash.com/docs/qstash/sdks/ts/examples/flow-control , https://upstash.com/docs/qstash/sdks/py/examples/flow-control (fetched 2026-10-17; no version pin on the site).
 
 ## Related
 
