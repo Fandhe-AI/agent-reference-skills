@@ -38,7 +38,7 @@ org.gradle.jvmargs=-Xmx1500m -Xms500m -XX:MaxMetaspaceSize=1g
 becomes the Kotlin daemon arguments:
 
 ```text
--Xmx1500m -XX:ReservedCodeCacheSize=320m -XX:MaxMetaspaceSize=1g -XX:UseParallelGC -ea -XX:+UseCodeCacheFlushing -XX:+HeapDumpOnOutOfMemoryError -Djava.awt.headless=true -Djava.rmi.server.hostname=127.0.0.1 --add-exports=java.base/sun.nio.ch=ALL-UNNAMED
+-Xmx1500m -XX:ReservedCodeCacheSize=320m -XX:MaxMetaspaceSize=1g -XX:+UseParallelGC -ea -XX:+UseCodeCacheFlushing -XX:+HeapDumpOnOutOfMemoryError -Djava.awt.headless=true -Djava.rmi.server.hostname=127.0.0.1 --add-exports=java.base/sun.nio.ch=ALL-UNNAMED
 ```
 
 `kotlin.daemon.jvm.options` rules: use `-` only before `Xmx`, `XX:MaxMetaspaceSize`, `XX:ReservedCodeCacheSize`; separate with commas, no spaces (arguments after a space go to the Gradle daemon). Gradle ignores it when JDK 9+ and Gradle 7.0–7.1.1 compile Kotlin DSL scripts with no Kotlin daemon running; upgrade to Gradle 7.2+ or use `kotlin.daemon.jvmargs`.
@@ -68,7 +68,7 @@ Behavior with JVM arguments:
 
 - Multiple Kotlin daemons can run at once when subprojects/tasks use different JVM arguments. A new daemon starts only if no existing daemon has the same arguments; an existing daemon with enough heap is reused even if other arguments differ.
 - Not specified arguments inherited from the Gradle daemon: `-Xmx`, `-XX:MaxMetaspaceSize`, `-XX:ReservedCodeCacheSize` (default `320m`).
-- Defaults: `-XX:UseParallelGC` (only if no other GC specified), `-ea`, `-XX:+UseCodeCacheFlushing`, `-Djava.awt.headless=true`, `-D{java.servername.property}={localhostip}`, `--add-exports=java.base/sun.nio.ch=ALL-UNNAMED` (JDK 16+ only). The list may vary between versions; check a running process with VisualVM.
+- Defaults: `-XX:+UseParallelGC` (only if no other GC specified), `-ea`, `-XX:+UseCodeCacheFlushing`, `-Djava.awt.headless=true`, `-D{java.servername.property}={localhostip}`, `--add-exports=java.base/sun.nio.ch=ALL-UNNAMED` (JDK 16+ only). The list may vary between versions; check a running process with VisualVM.
 
 ### Rolling back to the previous compiler
 
@@ -140,6 +140,7 @@ HTTP build statistics can contain project and system properties (possibly sensit
 
 - Compiler execution strategy and fallback strategy are described on the compiler execution strategy page (compiler category of this skill).
 - Kotlin daemon details: see [kotlin-daemon.md](./kotlin-daemon.md).
+- The official page (kotlin-web-site 0b10373) writes `-XX:UseParallelGC` without `+`; the JVM rejects a boolean -XX option without +/- ("Missing +/- setting for VM option"), so this page uses `-XX:+UseParallelGC` as in the page own kotlinDaemonJvmArgs examples.
 
 ## Related
 
