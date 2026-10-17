@@ -36,7 +36,7 @@ services:
     depends_on:
       - prometheus
     ports:
-      - 4317:4317
+      - 127.0.0.1:4317:4317
     volumes:
       # Mount the otelcol.yml config file
       - ./otelcol.yml:/etc/otelcol/config.yaml
@@ -53,7 +53,9 @@ receivers:
   otlp:
     protocols:
       grpc:
+        endpoint: 0.0.0.0:4317
       http:
+        endpoint: 0.0.0.0:4318
 
 # Establish an endpoint for Prometheus to scrape from
 exporters:
@@ -103,6 +105,7 @@ The CLI exports a single metric, `command.time` (execution duration in milliseco
 ## Notes
 
 - The CLI emits nothing unless `DOCKER_CLI_OTEL_EXPORTER_OTLP_ENDPOINT` is set. You need a collector listening on that endpoint and a backend (e.g. Prometheus, InfluxDB; Grafana for visualization).
+- Adapted: the official example leaves the OTLP receiver endpoints empty; since Collector v0.104 receivers default to localhost, so `0.0.0.0` endpoints are set inside the container and the published port is limited to 127.0.0.1.
 
 ## Related
 

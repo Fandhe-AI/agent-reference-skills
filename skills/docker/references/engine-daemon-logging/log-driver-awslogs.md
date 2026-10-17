@@ -12,7 +12,8 @@ Sends container logs to Amazon CloudWatch Logs.
 {
   "log-driver": "awslogs",
   "log-opts": {
-    "awslogs-region": "us-east-1"
+    "awslogs-region": "us-east-1",
+    "awslogs-group": "myLogGroup"
   }
 }
 ```
@@ -34,6 +35,7 @@ myservice:
     driver: awslogs
     options:
       awslogs-region: us-east-1
+      awslogs-group: myLogGroup
 ```
 
 ## Options / Props
@@ -70,6 +72,7 @@ $ docker run \
 - Multi-line logging performs regular expression parsing of all messages and may hurt performance.
 - The CloudWatch log API doesn't support `:` in the log name, which affects `{{ .ImageName }}` as a tag; use `--log-opt tag='{{ with split .ImageName ":" }}{{join . "_"}}{{end}}-{{.ID}}'` (yields e.g. `alpine_latest-bf0072049c76`).
 - Credentials must reach the Docker daemon via `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_SESSION_TOKEN`, the root user's `~/.aws/credentials`, or an EC2 instance profile. Docker reads credentials when the container starts; restart the container after refreshing temporary credentials.
+- Adapted: the official daemon.json / Compose examples set only `awslogs-region`; `awslogs-group` is required, so create the group beforehand or set `awslogs-create-group=true` with the `logs:CreateLogGroup` IAM permission.
 - Required IAM actions: `logs:CreateLogStream` and `logs:PutLogEvents`.
 
 ## Related
