@@ -100,7 +100,8 @@ kotlin {
 - Expected classes can be useful when inheriting from existing platform classes (for example `actual class CommonIdentity : Identity()` on the JVM), including `expect abstract class` for framework authors.
 - Starting with Kotlin 1.9.0, using the POSIX `getlogin()` and `getpid()` functions requires the `@OptIn` annotation.
 - Type aliases: define the `typealias` in the same package as the expected declaration. Since `LocalDate` uses the `Month` enum, both must be declared as expected classes in common code.
-- Expanded visibility: an actual may be more visible than its expected declaration; the compiler currently errors, suppressible with `@Suppress("ACTUAL_WITHOUT_EXPECT")` on the actual type alias. The source says that starting with Kotlin 2.0 this limitation will not apply.
+- Expanded visibility: an actual may be more visible than its expected declaration; before Kotlin 2.0 the compiler reported an error, suppressible with `@Suppress("ACTUAL_WITHOUT_EXPECT")` on the actual type alias; per the source this limitation no longer applies from Kotlin 2.0, so the suppression is only needed for older compilers.
+- The official page still describes this in the future tense (pre-2.0 wording).
 - Additional enum entries: an actual enum may add constants beyond the expected ones, but then a `when` over the expected enum requires an `else` clause.
 - Distance line: this page documents the language mechanism as presented in the multiplatform docs; Kotlin language reference and stdlib belong to the kotlin skill.
 
