@@ -34,9 +34,10 @@ export function getRouter() {
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
+// fetchPosts: a data-fetching function usable on both server and client
 const postsQuery = queryOptions({
   queryKey: ['posts'],
-  queryFn: () => fetch('/api/posts').then((r) => r.json()),
+  queryFn: () => fetchPosts(),
 })
 
 export const Route = createFileRoute('/posts')({
@@ -67,6 +68,7 @@ function PostsPage() {
 - `QueryClientProvider` wrapping happens automatically by default (disable via `wrapQueryClient: false`).
 - Redirects thrown from queries/mutations are handled by default.
 - Compatible with TanStack Start (which uses Router internally).
+- The official snippet uses a relative URL (`fetch('/api/posts')`); Node.js `fetch` cannot resolve relative URLs during SSR, so use a server-capable fetcher or build an absolute URL from a trusted API origin.
 
 ## Related
 

@@ -48,3 +48,11 @@ tanstackRouter({
 - Regex tokens: in `tsr.config.json` use `{ "routeToken": { "regex": "[a-z]+-layout", "flags": "i" } }`; in code use a native `RegExp` (`routeToken: /[a-z]+-layout/i`). The regex is matched against the entire final segment of the route path (`dashboard.main-layout.tsx` matches; `dashboard.my-layout-extra.tsx` does not). To keep a literal segment that would match a regex `indexToken`, wrap it in square brackets, e.g. `[home-page].tsx`.
 - Ignore the generated route tree file in your linter and formatter to avoid conflicts with `quoteStyle` / `semicolons`.
 - Next major release (v2) is planned to default `autoCodeSplitting` to `true`.
+
+## Related
+
+- [File-Based Routing](../core-routing/file-based-routing.md)
+- [File Naming Conventions](../core-routing/file-naming-conventions.md)
+- [Virtual File Routes](../core-routing/virtual-file-routes.md)
+- [Installation with Vite](../getting-started/installation-with-vite.md)
+- [createFileRoute](./create-file-route.md)

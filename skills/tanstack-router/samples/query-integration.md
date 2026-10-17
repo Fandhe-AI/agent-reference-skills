@@ -13,7 +13,8 @@ import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 
 const postsQueryOptions = queryOptions({
   queryKey: ['posts'],
-  queryFn: () => fetch('/api/posts').then((r) => r.json()),
+  // fetchPosts: your data fetching function; it must work on both server and client
+  queryFn: () => fetchPosts(),
 })
 
 export const Route = createFileRoute('/posts')({
@@ -62,6 +63,7 @@ export function createRouter() {
 
 ## Notes
 
+- `fetchPosts` is a placeholder for your own data fetching function (replace it with your preferred library's API). Avoid a relative-URL `fetch('/api/posts')` here: it fails when the loader runs on the server during SSR; use an absolute URL or a server-capable function.
 - `staleTime: 'static'` returns cached data immediately and otherwise executes a fetch. `queryClient.ensureQueryData` and `queryClient.prefetchQuery` are deprecated in TanStack Query in favor of `queryClient.query`.
 - To prefetch without blocking SSR, do not await or return the promise: `void queryClient.query(opts).catch(noop)` (`noop` is exported from `@tanstack/react-query`).
 - Preload via `route.loader` (not component-level fetching) to avoid loading-state flashes and fetch waterfalls, and to keep data ready for SEO.
