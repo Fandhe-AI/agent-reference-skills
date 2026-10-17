@@ -65,11 +65,11 @@ After placement the content consists of ordinary schematic objects. A manually c
 
 **Power supply templates:** Draw and annotate the circuit, select it, right-click a library → **Save Selection as Design Block…**, then reuse in other projects with **Place as group** (and **Keep annotations** off to reassign references).
 
-**Per-channel sheets:** Save a dedicated sheet with **Save Current Sheet as Design Block…**, add Default Fields (e.g. `GAIN_R` = `10k`), place with **Place as sheet**, and adjust the sheet fields per instance. All instances share one subsheet file, so **Update Design Block from Current Sheet** after edits updates every instance in the project.
+**Per-channel sheets:** Save a dedicated sheet with **Save Current Sheet as Design Block…**, add Default Fields (e.g. `GAIN_R` = `10k`), place with **Place as sheet**, and adjust the sheet fields per instance. The manual's per-channel example states that all placed sheet instances share one subsheet file, and that after **Update Design Block from Current Sheet** they all reflect the change (see Notes).
 
 ## Notes
 
-- Placed design blocks are independent copies of the content at placement time (unless placed as a repeated hierarchical sheet, which shares a subsheet file).
+- The 10.0 manual is internally inconsistent: the Updating section says updating a block in the library does not update previously placed instances (they are independent copies), while the hierarchical-parameters workflow says all sheet instances reflect Update Design Block from Current Sheet because they reference the same subsheet file. Both statements are kept here; verify the behavior in KiCad before relying on either. Editing a subsheet file that several sheet symbols explicitly reference (a repeated hierarchical sheet) changes all of them, independent of the library.
 - The manual's multichannel tool can replicate a completed layout between groups without a stored layout fragment.
 - Not found in the 10.0 manual (retained from the earlier page as unverified): a "Design Blocks vs. Hierarchical Sheets" comparison table, the "Interface connectors" and "Module standardization" workflow examples, and creating new empty libraries inside Manage Design Block Libraries (the manual uses **New Library…** in the panel's right-click menu).
 - Not found in the 10.0 manual: a **View** → **Design Blocks** menu entry (the path is **View** → **Panels** → **Design Blocks**), a "Save as Design Block" entry under the **Tools** menu, drag-and-drop placement, and name-matching of labels inside a placed block to existing nets.

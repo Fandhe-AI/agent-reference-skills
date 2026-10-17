@@ -73,7 +73,7 @@ KiCad identifies the Eagle vs. gEDA `.sch` and the PADS vs. LTspice `.asc` forma
 ## Notes
 
 - Not found in the 10.0 manual: "KiCad legacy (.sch)" as an import format, "Change Symbols" under **Tools** (it is **Edit** → **Change Symbols…**; the manual's import chapter points to the Symbol Fields Table instead), and the statement that import support is under active development.
-- Corrected from the earlier page: imported symbols are stored in a generated library alongside the schematic (not embedded in the schematic file).
+- Imported symbols are placed into a generated symbol library saved alongside the imported schematic (manual import chapter). As with any placed symbol, the saved .kicad_sch also holds embedded copies of the library symbols (manual, Updating and exchanging symbols), so later edits to the generated library reach placed symbols only through Update/Change Symbols.
 - Not found in the 10.0 manual (retained from the earlier page as unverified): Altium parametric component data may not fully transfer; EasyEDA symbol mappings may differ from KiCad standard libraries; a "check net names" post-import step for buses and hierarchical connections; complex multi-sheet designs may need manual restructuring; backing up the original before converting a legacy file.
 - Legacy KiCad `.sch` files are covered by the "Opening legacy schematics" section of the Schematic Creation and Editing chapter (KiCad 5.0 / 5.1 and pre-5.0).
 - The menu label for the Symbol Fields Table is given as **Edit Symbol Fields…** in this chapter but **Bulk Edit Symbol Fields…** elsewhere in the 10.0 manual.

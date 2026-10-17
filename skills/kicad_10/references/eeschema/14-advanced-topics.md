@@ -93,7 +93,7 @@ Database libraries allow symbols to be sourced from an external database via ODB
 
 ### Configuration
 
-Database libraries are configured via a `.kicad_dbl` JSON file:
+Database libraries are configured via a `.kicad_dbl` JSON file (Adapted (not in the official docs): simplified from the manual's template; see Notes):
 
 ```json
 {

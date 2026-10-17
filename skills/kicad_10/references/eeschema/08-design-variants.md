@@ -52,7 +52,7 @@ Example (KiCad CLI):
 kicad-cli sch export pdf --variant "WiFi-only" my_project.kicad_sch
 ```
 
-Multiple variants (single-quote the output path so the shell does not expand `${VARIANT}`):
+Multiple variants (Adapted (not in the official docs): single-quoted output path so the shell does not expand `${VARIANT}`; see Notes):
 ```
 kicad-cli sch export pdf --variant "WiFi-only" --variant "WiFi-BT" -o 'schematic_${VARIANT}.pdf' my_project.kicad_sch
 ```
@@ -73,7 +73,7 @@ Variant data is transferred by **Tools** → **Update PCB from Schematic…** (D
 - Menu label: the 10.0 manual calls the Symbol Fields Table entry both **Edit Symbol Fields…** (footprint and import chapters) and **Bulk Edit Symbol Fields…** (this chapter and the actions reference). The Symbol Fields Table also opens from a top-toolbar button.
 - Not found in the 10.0 manual: a **Schematic Setup** → **Variants** tab, an **Add Variant** button in Schematic Setup, and the claim that DNP components appear greyed out or struck through in plots (the manual says drawn with an X).
 
-- Deviation from source: the manual's multi-variant example double-quotes the output path (`-o "schematic_${VARIANT}.pdf"`); POSIX shells and PowerShell expand `${VARIANT}` inside double quotes to an empty string (output becomes `schematic_.pdf`), so single-quote the path (`-o 'schematic_${VARIANT}.pdf'`) so that kicad-cli receives the literal `${VARIANT}`.
+- Corrected from the official docs (deviation from source): the manual's multi-variant example double-quotes the output path (`-o "schematic_${VARIANT}.pdf"`); POSIX shells and PowerShell expand `${VARIANT}` inside double quotes to an empty string (output becomes `schematic_.pdf`), so single-quote the path (`-o 'schematic_${VARIANT}.pdf'`) so that kicad-cli receives the literal `${VARIANT}`.
 - The CLI manual shows `--variant VAR` once per command, while the Schematic Editor manual's design-variants chapter repeats `--variant` to export several variants in one call; verify with `kicad-cli sch export <fmt> -h`.
 
 ## Related
