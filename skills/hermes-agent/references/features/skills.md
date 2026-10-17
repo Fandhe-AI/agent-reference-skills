@@ -162,7 +162,7 @@ Hermes ships with bundled skills seeded on install and every `hermes update`.
 ```bash
 hermes skills opt-out            # Stop future seeding
 hermes skills opt-out --remove   # Delete unmodified bundled skills
-hermes skills reset skill-name   # Restore a bundled skill to baseline
+hermes skills reset skill-name --restore   # Restore a bundled skill to baseline
 ```
 
 ## Skills Hub
@@ -185,7 +185,7 @@ hermes skills search kubernetes --source skills-sh
 hermes skills install openai/skills/k8s
 hermes skills check    # detect upstream updates
 hermes skills update   # reinstall changed skills
-hermes skills reset skill-name   # restore bundled version
+hermes skills reset skill-name --restore   # restore bundled version
 ```
 
 ## Security & Trust Levels
