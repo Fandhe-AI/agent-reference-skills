@@ -31,13 +31,7 @@ export default class Form extends Component {
 }
 ```
 
-## Options / Props
-
-`createRef` takes no parameters. It returns an object with a single property:
-
-| Name | Type | Description |
-| --- | --- | --- |
-| `current` | any | Initially `null`. You can later set it to something else. If you pass the ref object to React as a `ref` attribute to a JSX node, React sets its `current` property. |
+`createRef` takes no parameters. It returns an object with a single property `current`: initially `null`; you can later set it to something else. If you pass the ref object to React as a `ref` attribute to a JSX node, React sets its `current` property.
 
 ## Notes
 

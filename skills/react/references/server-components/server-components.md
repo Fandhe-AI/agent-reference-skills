@@ -162,6 +162,7 @@ function Comments({commentsPromise}) {
 - Only the rendered output reaches the client: the Server Component definitions and the libraries they use are not in the client bundle.
 - There is no directive for Server Components. A common misunderstanding is that Server Components are denoted by `"use server"`, but `"use server"` is used for Server Functions.
 - Since async components are not supported on the client, await the promise with `use` in Client Components.
+- Rendering a Context imported from a `'use client'` module directly in a Server Component requires React 19.3+; earlier versions needed a client wrapper component (e.g. `UserProvider`) that renders the Context.
 - Scope: this page is React's own Server Components specification. Next.js App Router specifics (`use cache`, file conventions) belong to nextjs-app, TanStack's `createServerFn` to tanstack-start, and React Router's RSC support to react-router.
 
 ## Related

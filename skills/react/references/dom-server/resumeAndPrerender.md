@@ -14,9 +14,7 @@ import { getPostponedState } from 'storage';
 
 async function handler(request, response) {
   const postponedState = getPostponedState(request);
-  const { prelude } = await resumeAndPrerender(<App />, postponedState, {
-    bootstrapScripts: ['/main.js']
-  });
+  const { prelude } = await resumeAndPrerender(<App />, postponedState);
   return new Response(prelude, {
     headers: { 'content-type': 'text/html' },
   });
@@ -44,6 +42,7 @@ Returns a Promise:
 
 ## Notes
 
+- Snippet corrected from the original: the original example passes `bootstrapScripts`, which is not a `resumeAndPrerender` option; pass bootstrap options to the `prerender` call that produced `postponedState` (as stated on the `resume` page).
 - `nonce` is not an available option when prerendering. Nonces must be unique per request and if you use nonces to secure your application with CSP it would be inappropriate and insecure to include the nonce value in the prerender itself.
 - The static `resumeAndPrerender` API is used for static server-side generation (SSG). Unlike `renderToString`, it waits for all data to load before resolving. To stream content as it loads, use a streaming SSR API like `renderToReadableStream`.
 - `resumeAndPrerender` can be aborted and later either continued with another `resumeAndPrerender` or resumed with `resume` to support partial pre-rendering.

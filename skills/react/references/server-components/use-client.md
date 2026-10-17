@@ -55,7 +55,7 @@ import { readFile } from 'node:fs/promises';
 import Counter from './Counter';
 
 export default async function CounterContainer() {
-  const initialValue = await readFile('/path/to/counter_value');
+  const initialValue = Number(await readFile('/path/to/counter_value', 'utf8'));
   return <Counter initialValue={initialValue} />
 }
 ```
@@ -98,6 +98,7 @@ If a library has not been updated for React Server Components (no `'use client'`
 
 ## Notes
 
+- Snippet corrected from the original: `readFile` is called with `'utf8'` and converted with `Number`, since without an encoding it returns a `Buffer`.
 - `'use client'` is for use with React Server Components.
 - Snippet corrected: the original imports useEffect but calls useLayoutEffect.
 - `'use client'` must be at the very beginning of a file, above any imports or other code (comments are OK). It must be written with single or double quotes, not backticks.
