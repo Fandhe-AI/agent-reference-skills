@@ -11,7 +11,7 @@ Nuxt is a meta framework for Vue. This guide is accurate as of Nuxt 4.2.
 Checklist:
 
 - Use SSG by setting `ssr: false`. Tauri doesn't support server based solutions.
-- Use default `../dist` as `frontendDist` in `tauri.conf.json`.
+- Use default `../dist` as `frontendDist` in `tauri.conf.json` (a symlink to `.output/public` created by `nuxi generate`).
 - Compile using `nuxi generate` (the `generate` script, which `beforeBuildCommand` runs).
 - (Optional): Disable telemetry by setting `telemetry: false` in `nuxt.config.ts`.
 
@@ -61,6 +61,7 @@ export default defineNuxtConfig({
 
 ## Notes
 
+- `nuxi generate` writes static output to `.output/public` and links `<rootDir>/dist` to it (Nuxt's `linkStaticDist`), so `frontendDist: ../dist` resolves to the generated assets.
 - The source checklist says nuxi build, but its config runs the generate script; aligned to nuxi generate for static output. Scripts in package.json: `"dev": "nuxi dev"`, `"generate": "nuxi generate"`.
 - Tauri-side integration settings only; Nuxt itself has no dedicated skill here. Vite: vite skill.
 

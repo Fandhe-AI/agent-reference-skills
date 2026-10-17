@@ -129,8 +129,8 @@ jobs:
             appimage: aarch64
           - arch: armv7l
             cpu: cortex-a53
-            deb: armhfp
-            rpm: arm
+            deb: armhf
+            rpm: armhfp
             appimage: armhf
             base_image: https://dietpi.com/downloads/images/DietPi_RPi-ARMv7-Bookworm.img.xz
 
@@ -215,6 +215,7 @@ env:
 - The source pipes the rustup and NodeSource installer scripts directly into the shell; they are split into download / run here. Review those scripts before running them on a persistent machine.
 - Third-party actions pinned to commit SHAs (upstream uses tags); SHAs resolved from the GitHub API on 2026-10-17, re-resolve when updating.
 - The source suggests switching the repository-wide Workflow permissions to Read and write; this page scopes contents: write to the release job instead (least privilege).
+- The source uses `deb: armhfp` / `rpm: arm`; changed to `armhf` / `armhfp`, the architecture names tauri-bundler emits for ARMv7 (debian.rs / rpm.rs).
 - Updated from `actions/upload-artifact@v3` / `actions/checkout@v3` (deprecated) in the source; artifact names include the matrix value because v4 requires unique names.
 
 ## Related

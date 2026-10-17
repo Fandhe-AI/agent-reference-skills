@@ -302,10 +302,30 @@ Rust `tauri::api::file` and JavaScript `@tauri-apps/api/fs` were removed. Use `s
 tauri-plugin-fs = "2"
 ```
 
+```rust
+fn main() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+```json
+// package.json
+{
+  "dependencies": {
+    "@tauri-apps/plugin-fs": "^2.0.0"
+  }
+}
+```
+
 ```javascript
 import { mkdir, BaseDirectory } from '@tauri-apps/plugin-fs';
 await mkdir('db', { baseDir: BaseDirectory.AppLocalData });
 ```
+
+Calling `mkdir` requires fs permissions in a capability: `fs:allow-mkdir` plus a scope covering the target directory (for example `fs:scope-applocaldata-recursive`). See Migrate Permissions below.
 
 Renamed or removed in the JavaScript API:
 
