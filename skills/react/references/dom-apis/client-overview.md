@@ -17,7 +17,7 @@ import { createRoot, hydrateRoot } from 'react-dom/client';
 
 ## Notes
 
-- Browser support: React supports all popular browsers, including Internet Explorer 9 and above. Some polyfills are required for older browsers such as IE 9 and IE 10.
+- Browser support: React 18 dropped support for Internet Explorer (it relies on modern browser features such as microtasks); stay on React 17 if IE is required. The official client page still says "Internet Explorer 9 and above", which is outdated. Source: https://react.dev/blog/2022/03/08/react-18-upgrade-guide#dropping-support-for-internet-explorer
 - Migration (18 -> 19): `ReactDOM.render` and `ReactDOM.hydrate` were removed; use `createRoot` and `hydrateRoot`.
 
 ## Related

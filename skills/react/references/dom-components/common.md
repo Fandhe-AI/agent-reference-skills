@@ -32,7 +32,7 @@ Special React props supported for all built-in components:
 | --- | --- | --- |
 | children | React node | An element, a string, a number, a portal, an empty node like `null`, `undefined` and booleans, or an array of other React nodes. Specifies the content inside the component. |
 | dangerouslySetInnerHTML | `{ __html: string }` | An object with a raw HTML string or `TrustedHTML` value inside. Overrides the `innerHTML` property of the DOM node. Use with extreme caution: untrusted HTML introduces an XSS vulnerability. |
-| ref | ref object, callback, or string | A ref object from `useRef` or `createRef`, a `ref` callback function, or a string for legacy refs. Filled with the DOM element for this node. |
+| ref | ref object or callback | A ref object from `useRef` or `createRef`, or a `ref` callback function. Filled with the DOM element for this node. |
 | suppressContentEditableWarning | boolean | If `true`, suppresses the warning for elements that have both `children` and `contentEditable={true}`. |
 | suppressHydrationWarning | boolean | If `true`, React will not warn about mismatches in the attributes and the content of that element when server and client render different content. Works one level deep; an escape hatch. |
 | style | object | CSS styles, e.g. `{ fontWeight: 'bold', margin: 20 }`. Property names are `camelCase`. A number value like `width: 100` gets `px` appended unless it is a unitless property. Use only for dynamic styles; otherwise prefer `className`. |
@@ -139,6 +139,7 @@ Generic `Event` handlers receive a React event object with no additional propert
 - Applying CSS: use `className`, define rules in a separate CSS file; React does not prescribe how you add CSS files. Use `style` only for dynamic styles that depend on JavaScript variables. Produce conditional class strings yourself, e.g. with a helper like `classnames`.
 - `dangerouslySetInnerHTML`: create the `{__html}` object as close to where the HTML is generated as possible; creating it inline is not recommended. If your site enforces Trusted Types, pass a `TrustedHTML` value created by your security policy as `__html`; React passes it to the browser without converting it to a string. Only use with trusted and sanitized data.
 - `Migration (18 → 19)`: `ref` callbacks may return a cleanup function (see above).
+- Migration (18 -> 19): string refs were removed in React 19; migrate to ref callbacks or `useRef`/`createRef`. The official common props page still mentions string legacy refs. Source: https://react.dev/blog/2024/04/25/react-19-upgrade-guide#removed-string-refs
 
 ## Related
 

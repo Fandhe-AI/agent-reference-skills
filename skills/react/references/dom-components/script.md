@@ -34,13 +34,13 @@ function Map({lat, long}) {
 | --- | --- | --- |
 | children | string | The source code of an inline script. |
 | src | string | The URL of an external script. |
-| async | boolean | Allows the browser to defer execution of the script until the rest of the document has been processed; the preferred behavior for performance. |
+| async | boolean | Fetches the script in parallel and executes it as soon as it is available, possibly before the document finishes parsing; execution order between async scripts is not guaranteed. Required (`async={true}`) for React to de-duplicate and move the script. |
 | crossOrigin | string | The CORS policy to use. Possible values are `anonymous` and `use-credentials`. |
 | fetchPriority | string | Lets the browser rank scripts in priority when fetching multiple scripts at the same time. Can be `"high"`, `"low"`, or `"auto"` (the default). |
 | integrity | string | A cryptographic hash of the script, to verify its authenticity. |
 | noModule | boolean | Disables the script in browsers that support ES modules, allowing for a fallback script for browsers that do not. |
 | nonce | string | A cryptographic nonce to allow the resource when using a strict Content Security Policy. |
-| referrer | string | Says what Referer header to send when fetching the script and any resources that the script fetches in turn. |
+| referrerPolicy | string | The referrer policy string (e.g. `no-referrer`, `origin`, `strict-origin-when-cross-origin`) that controls which Referer header is sent when fetching the script. |
 | type | string | Says whether the script is a classic script, ES module, or import map. |
 | onError | function | Called when the script fails to load. Disables React's special treatment of scripts. |
 | onLoad | function | Called when the script finishes being loaded. Disables React's special treatment of scripts. |
@@ -55,6 +55,8 @@ function Map({lat, long}) {
 - The component might be committed before the script has finished loading. You can start depending on the script content once the `load` event is fired, e.g. by using the `onLoad` prop.
 - Inline scripts are not de-duplicated or moved to the document `<head>`.
 - Calling `preinit` may allow the browser to start fetching the script earlier than rendering a `<script>` component, for example by sending an HTTP Early Hints response.
+- The official `<script>` page lists this prop as `referrer`, but the linked HTML attribute is `referrerpolicy` (React prop `referrerPolicy`).
+- The official page describes `async` as deferring execution until the document is processed; per the HTML spec / MDN, that describes `defer`, not `async`.
 - Built-in DOM element, distinct from framework script components: see nextjs-app (`next/script`) and react-router.
 
 ## Related
