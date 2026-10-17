@@ -588,6 +588,7 @@ Tailwind CSS v4.0 is not designed to be used with CSS preprocessors like Sass, L
 - This page is the aggregation point for v3 → v4 changes; affected pages carry a per-page `Migration (v3 → v4): ...` note.
 - Pages affected per the upgrade guide: box-shadow, filter-drop-shadow, filter-blur, backdrop-filter-blur, border-radius, outline-style / outline-width, border-width (divide, ring), border-color, margin (space-between), background-image (gradients), opacity (`*-opacity-*`), flex-grow, flex-shrink, text-overflow, box-decoration-break, transform / rotate / scale / translate, transition-property, grid-template-columns / grid-template-rows / object-position, hover-focus-and-other-states, functions-and-directives, adding-custom-styles, preflight, theme, detecting-classes-in-source-files.
 - The `hover` variant, `@source inline()`, `@utility`, `@reference`, and `@config` are documented on their own pages in this skill.
+- The official `@apply` alternative example uses `var(--text-red-500)` verbatim, but color theme variables live in the `--color-*` namespace (`--text-*` is for font sizes), so use `var(--color-red-500)` to get the red color.
 - Transcribed from `tailwindlabs/tailwindcss.com@7f92c22` `src/docs/upgrade-guide.mdx` (fetched 2026-10-16).
 
 ## Related

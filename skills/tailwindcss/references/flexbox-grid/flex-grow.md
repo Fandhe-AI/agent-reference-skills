@@ -29,6 +29,7 @@ Utilities for controlling how flex items grow.
 
 - Migration (v3 → v4): the deprecated `flex-grow-*` utilities were removed in v4; use `grow-*` instead (upgrade guide, "Removed deprecated utilities").
 - Allowing items to grow: `grow` allows a flex item to grow to fill any available space.
+- The official `grow-[25vw]` example is transcribed verbatim, but `flex-grow` accepts only a non-negative unitless number, so a length such as `25vw` makes the declaration invalid; use a number such as `grow-[2.5]`.
 - Growing items based on factor: `grow-<number>` utilities like `grow-3` make flex items grow proportionally based on their growth factor, allowing them to fill the available space relative to each other.
 
 ```html

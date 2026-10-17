@@ -29,6 +29,7 @@ Utilities for controlling how flex items shrink.
 
 - Migration (v3 → v4): the deprecated `flex-shrink-*` utilities were removed in v4; use `shrink-*` instead (upgrade guide, "Removed deprecated utilities").
 - Allowing flex items to shrink: `shrink` allows a flex item to shrink if needed.
+- The official `shrink-[calc(100vw-var(--sidebar))]` example is transcribed verbatim, but `flex-shrink` accepts only a non-negative unitless number, so a length expression makes the declaration invalid; use a number such as `shrink-[2]`.
 - Preventing items from shrinking: `shrink-0` prevents a flex item from shrinking.
 
 ```html
