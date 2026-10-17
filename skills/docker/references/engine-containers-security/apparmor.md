@@ -65,8 +65,9 @@ profile docker-nginx flags=(attach_disconnected,mediate_deleted) {
 }
 ```
 
+Load the profile into the kernel first with `apparmor_parser` (requires root; see the official page for the exact command), then run:
+
 ```console
-$ sudo apparmor_parser -r -W /etc/apparmor.d/containers/docker-nginx
 $ docker run --security-opt "apparmor=docker-nginx" -p 80:80 -d --name apparmor-nginx nginx
 ```
 
