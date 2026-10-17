@@ -55,9 +55,9 @@ Sent to `submitURL` as `multipart/form-data` `POST` (gzip unless `compress` is `
 
 ## Notes
 
-- Calling `start`, `getLastCrashReport`, `getUploadedReports`, `getUploadToServer`, `setUploadToServer` from a renderer is deprecated (history: electron/electron#23265); these are main-process only.
+- `start`, `getLastCrashReport`, `getUploadedReports`, `getUploadToServer`, `setUploadToServer` (and `getCrashesDirectory`) were deprecated for renderer calls in Electron 10 and removed from the renderer in Electron 12 (electron/electron#23265). In v44 they are main-process only. Only `addExtraParameter`, `removeExtraParameter` and `getParameters` are usable from a renderer (from the preload script when context isolation is enabled).
 - Disabled in Mac App Store builds: methods do nothing, `getUploadedReports()` returns an empty array and `getUploadToServer()` returns `false`.
-- With context isolation enabled, call from the preload script and expose via `contextBridge`.
+- With context isolation enabled, call `addExtraParameter` / `removeExtraParameter` / `getParameters` from the preload script and expose via `contextBridge`.
 - Keys over 39 bytes are ignored with a warning; values over 20320 bytes are truncated.
 - Structure source: `docs/api/structures/crash-report.md` (`CrashReport`).
 

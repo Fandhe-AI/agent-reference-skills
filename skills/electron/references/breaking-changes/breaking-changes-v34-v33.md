@@ -69,7 +69,7 @@ ipcMain.on('unload-event', async (event) => {
 
 Due to changes made in Chromium to support [Non-Special Scheme URLs](http://bit.ly/url-non-special), custom protocol URLs that use Windows file paths will no longer work correctly with the deprecated `protocol.registerFileProtocol` and the `baseURLForDataURL` property on `BrowserWindow.loadURL`, `WebContents.loadURL`, and `<webview>.loadURL`.  `protocol.handle` will also not work with these types of URLs but this is not a change since it has always worked that way.
 
-Adapted (not in the official docs): the official example passes an undefined identifier `other` and uses `other://index.html`, where index.html becomes the host; this version quotes the scheme and uses `other:///index.html`.
+Adapted (not in the official docs): the official example passes an undefined identifier `other` and uses `other://index.html`, where index.html becomes the host; this version quotes the scheme and uses `other:///index.html`. It also adds a containment check that rejects requests resolving outside the served root directory (path traversal).
 
 ```js
 // No longer works
@@ -89,7 +89,11 @@ const nodeUrl = require('node:url')
 protocol.handle('other', (req) => {
   const srcPath = 'C:\\myapp\\'
   const reqURL = new URL(req.url)
-  return net.fetch(nodeUrl.pathToFileURL(path.join(srcPath, reqURL.pathname)).toString())
+  const root = path.resolve(srcPath)
+  const filePath = path.resolve(root, '.' + decodeURIComponent(reqURL.pathname))
+  const rel = path.relative(root, filePath)
+  if (rel.startsWith('..') || path.isAbsolute(rel)) return new Response('Forbidden', { status: 403 })
+  return net.fetch(nodeUrl.pathToFileURL(filePath).toString())
 })
 
 mainWindow.loadURL('data:text/html,<script src="loaded-from-dataurl.js"></script>', { baseURLForDataURL: 'other:///' })

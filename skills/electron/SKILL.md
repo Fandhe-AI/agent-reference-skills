@@ -2,9 +2,9 @@
 name: electron
 description: >
   Electron (Chromium + Node.js 製クロスプラットフォームデスクトップアプリフレームワーク, v44) の
-  ipcMain / ipcRenderer / contextBridge, BrowserWindow / BaseWindow / WebContentsView / webContents,
-  Electron Forge, autoUpdater, fuses, contextIsolation / sandbox, code signing, MAS,
-  breaking changes。
+  ipcMain / ipcRenderer / contextBridge, BrowserWindow / BaseWindow / WebContentsView,
+  Electron Forge, autoUpdater, fuses, contextIsolation / sandbox, code signing, MAS, crashReporter,
+  contentTracing, debugging, breaking changes。
 user-invocable: false
 ---
 
