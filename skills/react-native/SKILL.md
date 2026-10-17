@@ -3,13 +3,13 @@ name: react-native
 description: >
   React Native (Meta 製クロスプラットフォームネイティブアプリフレームワーク, react-native 0.87 / 0.88) の
   Text, FlatList, Pressable, TextInput, Animated, StyleSheet, Flexbox, Platform, Linking,
-  New Architecture (Fabric, TurboModules, Codegen), Hermes。
+  New Architecture (Fabric, TurboModules, Codegen), Hermes, Metro, React Native DevTools。
 user-invocable: false
 ---
 
 # React Native
 
-> 分割 PR の途中段階。現在収録済み: references/{apis, architecture, components}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{apis, architecture, components, debugging-performance, getting-started, globals, legacy}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -29,9 +29,21 @@ skills/react-native/
     apis/                  # Core APIs
       README.md
       stylesheet.md, platform.md, linking.md, appstate.md, dimensions.md, ...
+    globals/               # ランタイムグローバル
+      README.md
+      runtime-globals.md, console.md, timer-globals.md, network-globals.md, ...
     architecture/          # New Architecture・Fabric・スレッドモデル・Bundled Hermes
       README.md
       overview.md, fabric-renderer.md, render-pipeline.md, threading-model.md, ...
+    getting-started/       # 環境構築・既存アプリ統合・トラブルシュート
+      README.md
+      set-up-your-environment.md, integration-with-existing-apps.md, troubleshooting.md, ...
+    debugging-performance/ # DevTools・デバッグ・プロファイル・パフォーマンス・テスト
+      README.md
+      react-native-devtools.md, debugging.md, performance.md, testing-overview.md, ...
+    legacy/                # 旧 Native Modules / Native Components・削除済み API
+      README.md
+      native-modules-intro.md, removed-apis.md, ...
 ```
 
 ## 探索手順
@@ -48,4 +60,8 @@ skills/react-native/
 |--------|---------|------------|
 | View / Text / TextInput / FlatList / Pressable 等のコンポーネント props を調べたい | components | [references/components/README.md](references/components/README.md) |
 | StyleSheet / Platform / Linking / AppState / Dimensions 等の API を使いたい | apis | [references/apis/README.md](references/apis/README.md) |
+| console / timers / fetch / performance 等のグローバルを確認したい | globals | [references/globals/README.md](references/globals/README.md) |
 | New Architecture・Fabric・レンダーパイプライン・スレッドモデル・Bundled Hermes を理解したい | architecture | [references/architecture/README.md](references/architecture/README.md) |
+| 環境構築・既存アプリへの統合・トラブルシュートをしたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| DevTools デバッグ・プロファイル・パフォーマンス改善・テスト方針を知りたい | debugging-performance | [references/debugging-performance/README.md](references/debugging-performance/README.md) |
+| 旧 Native Modules / 削除済み API / Legacy Architecture を確認したい | legacy | [references/legacy/README.md](references/legacy/README.md) |
