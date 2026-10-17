@@ -57,7 +57,7 @@ fun main() {
 println("My job is ${coroutineContext[Job]}")
 ```
 
-`isActive` in `CoroutineScope` is a shortcut for `coroutineContext[Job]?.isActive == true`.
+`isActive` in `CoroutineScope` is a shortcut for `coroutineContext[Job]?.isActive ?: true` (it returns `true` when the context has no `Job`).
 
 ### Children of a coroutine
 
@@ -106,6 +106,7 @@ Limitation: when a thread-local is mutated, the new value is not propagated to t
 ## Notes
 
 - Debugging: run with the `-Dkotlinx.coroutines.debug` JVM option to append the coroutine id to the thread name (for example `[main @coroutine#2]`); debug mode is also on with `-ea`. The IntelliJ IDEA Coroutine Debugger works for `kotlinx-coroutines-core` 1.3.8 or later. See [Debug coroutines](./coroutines-debugging.md).
+- The official guide writes `coroutineContext[Job]?.isActive == true`; the actual implementation (CoroutineScope.kt at 7e0d1b3) is `coroutineContext[Job]?.isActive ?: true`, so a scope without a Job reports active.
 - Android has first-party support for coroutine scope in all entities with a lifecycle (`lifecycleScope`); Android-side `viewModelScope`, `collectAsStateWithLifecycle` and `StateFlow` UI state are covered by android-architecture, and coroutine / Flow testing by android-testing. This page covers the kotlinx.coroutines context model only.
 - The official samples call `newSingleThreadContext` without an opt-in; in kotlinx.coroutines 1.11.0 it is `@ExperimentalCoroutinesApi` and `@DelicateCoroutinesApi`, so real code needs `@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)`.
 

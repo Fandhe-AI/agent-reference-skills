@@ -261,7 +261,7 @@ println(colors.zip(animals) { color, animal ->
     "The ${animal.replaceFirstChar { it.uppercase() }} is $color" })
 ```
 
-`zip()` returns a List of `Pair`; if sizes differ, the result has the smaller size.
+`zip(other)` returns a `List<Pair<T, R>>`; `zip(other) { a, b -> ... }` (as above) returns a `List` of the transform results (here `List<String>`). If sizes differ, the result has the smaller size.
 
 ```kotlin
 val numbers = listOf("one", "two", "three", "four")
@@ -271,6 +271,8 @@ println(numbers.associateWith { it.length })
 ## Notes
 
 - The official guide says `filter()` returns the same collection type; actually `Iterable.filter()` (List/Set) returns `List` and `Map.filter()` returns `Map`.
+
+- The official guide says `zip()` returns a List of `Pair` right after a transform-lambda example; only the overload without `transform` returns pairs.
 
 ## Related
 
