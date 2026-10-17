@@ -1,15 +1,16 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/sql/group_by.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/sql/group_by.rs
 ---
 
 # sql::group_by
 
-`GROUP BY <TEXT 列>` 集計（複数行結果、TASK-167・SQL-14）の実行本体。`sql::aggregate::execute_aggregate_with_cache` が `BoundAggregate::group_by` を検出した場合にのみ呼ばれる。
+`GROUP BY <列>[, <列>...]` 集計（複数行結果、TASK-167・SQL-14）の実行本体。Issue #1185・SQL-25 (d) で `TEXT` 限定を外し、並べ替え可能な型の列と疑似列 `id` をキーに許可し、複数列 `GROUP BY` に対応した。`sql::aggregate::execute_aggregate_with_cache` が `BoundAggregate::group_by` を検出した場合にのみ呼ばれる。
 
 ## Signature / Usage
 
 ```rust,ignore
-//! `GROUP BY <TEXT 列>` 集計（複数行結果、TASK-167・SQL-14）の実行本体。
+//! `GROUP BY <列>[, <列>...]` 集計（複数行結果、TASK-167・SQL-14。Issue #1185・SQL-25 (d)
+//! で `TEXT` 限定を外し、並べ替え可能な型の列と疑似列 `id` をキーに許可）の実行本体。
 //!
 //! 責務境界: `crate::sql::aggregate::execute_aggregate` が `BoundAggregate::group_by`
 //! を検出した場合にのみ呼ばれる（`GROUP BY` なしの単一行集計は `aggregate.rs` が
@@ -26,7 +27,11 @@ source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/sql/group
 //! `TEXT` 値は 1 件あたり最大 4 MiB 許容されるため、件数上限だけでは有界にならない。
 
 /// `GROUP BY` が生成してよいグループ数の上限（無制限 `BTreeMap` 確保を避ける）。
-pub(crate) const MAX_GROUPS: usize = 10_000;
+///
+/// `pub`（TASK-186・NOSQL-5）: `crates/wire-server/tests/nosql5_group_by.rs` が
+/// この値ちょうど＋1 グループのフィクスチャを組み立てて上限超過（`54000`）を
+/// 検証するために参照する（値・挙動そのものは不変）。0.1.0 では `pub(crate)` だった。
+pub const MAX_GROUPS: usize = 10_000;
 
 /// グループキー文字列（`Some` 側）が累計で保持してよいバイト数の上限。
 const MAX_GROUP_KEY_TOTAL_BYTES: usize = 16 * 1024 * 1024;
@@ -56,24 +61,57 @@ enum GroupAccumulateError {
 /// `aggregate.rs::execute_aggregate` の単一行経路と同一の規約を独立して踏襲する
 /// （責務分離のためモジュールを分けたことによる意図的な複製）。
 pub(crate) fn execute_grouped_aggregate(
-    read_txn: &redb::ReadTransaction,
+    read_txn: &impl crate::storage::read_source::ReadSource,
     ctx: &PolicyContext,
     schema: &TableSchema,
     bound: &BoundAggregate,
+    // PR #1049 P0／codex P1: 生成中の結果全体（グループ数に比例する固定分＋グループキー
+    // 累計＋TEXT 集計状態累計。`ResultBudget`）に対する結果バイト予算。通常は
+    // `MAX_AGGREGATE_RESULT_BYTES`、`DECLARE` の内側実行だけが
+    // `MAX_CURSOR_BYTES_PER_SESSION`（16 MiB）を渡す。
+    max_result_bytes: usize,
     // Issue #475: `sql::scalar_index::ScalarIndex` 経由の候補削減・キー列挙。
     // `WHERE` なしの `GROUP BY`（列挙形）・索引対応述語のみの `WHERE` を持つ
     // `GROUP BY`（候補走査形）に限り消費する。
     arena_cache: Option<crate::sql::arena_cache::ArenaCacheAccess<'_>>,
     scalar_cache: Option<crate::sql::scalar_index::ScalarCacheAccess<'_>>,
 ) -> Result<QueryResult, SqlSurfaceError>;
+
+/// `bound.items` に `MIN`/`MAX(<TEXT 列>)` 集計が 1 つでも含まれるか。含まれる場合は
+/// 列挙形（`observe_group_enumeration`）を使わない。`pub(crate)`: `sql::aggregate::
+/// classify_aggregate_access`（Issue #922・SQL-27 の EXPLAIN 静的判定）が executor と
+/// 同じ単一情報源として本関数を共有する。
+pub(crate) fn has_text_min_max_aggregate(items: &[crate::sql::parser::BoundAggregateItem]) -> bool;
+
+pub(crate) fn single_text_key_column(group_by: &crate::sql::parser::BoundGroupBy) -> Option<usize>;
+pub(crate) fn having_matches(cell: &Cell, op: BinOp, literal: f64) -> bool;
+pub(crate) fn cmp_cells_pg_nulls(a: &Cell, b: &Cell, descending: bool) -> std::cmp::Ordering;
+
+/// 評価済みの行（セル由来の `scanned`）を 1 行ずつ受け取って集計する実行器（Issue #1411・
+/// TABLE-18。`sql::view_buffered` が評価後射影形ビューの本文結果に対する外側集計で使う）。
+/// ストレージを読まないため RLS・可視性判定には関与しない。グループ表・予算・終端処理は
+/// ストレージ走査経路と同じ実装を共有し、`GROUP BY` なしは可視行が 0 件でも 1 行
+/// （`COUNT` は 0、他は NULL）を返す。
+pub(crate) struct GroupedRowAccumulator<'a> { /* ... */ }
+
+impl<'a> GroupedRowAccumulator<'a> {
+    pub(crate) fn new(
+        bound: &'a BoundAggregate,
+        schema: &'a TableSchema,
+        max_result_bytes: usize,
+    ) -> Result<Self, SqlSurfaceError>;
+    pub(crate) fn observe(&mut self, scanned: &[Option<row_codec::ScalarRef<'_>>]) -> Result<(), SqlSurfaceError>;
+    pub(crate) fn finish(self) -> Result<QueryResult, SqlSurfaceError>;
+}
 ```
 
 ## Notes
 
-- 上記は main が pin SHA（`7022d112e79760dca916480599553fcac256b5fb`）で保存したソース（`src/engine/src/sql/group_by.rs`、全1319行）から Read で verbatim 転記した公開・crate内定数・型・エントリ関数。`is_text_accumulator_budget_error` 以下の private ヘルパー関数（`check_new_group_budget` / `new_accumulators` / `accumulate_row` / `observe_group_enumeration` / `observe_group_slots` / `observe_candidate_slots_grouped` / `observe_candidate_slots_grouped_inner` / `cmp_integer_to_literal` / `having_matches` / `cmp_cell_values` / `order_with_nulls_last` / `has_text_min_max_aggregate`）は内部実装のため掲載していない
+- Migration (0.1.0 → 0.2.0): 複数列 `GROUP BY`（最大 `sql::allowlist::MAX_GROUP_BY_COLUMNS` 列）と並べ替え可能な型の列・疑似列 `id` のキーに対応した（Issue #1185・SQL-25 (d)。キーは `BoundGroupBy::keys` から `extract_order_value_ref` で取り出す）。`MAX_GROUPS` は `pub(crate)` から `pub` になった。`execute_grouped_aggregate` は第 1 引数が `&impl ReadSource` に、`max_result_bytes: usize` が追加された。結果バイト予算（`ResultBudget`）の detail 文言は `GROUP BY result exceeds capacity` / `GROUP BY groups exceed the allowed result capacity`。新規グループ追加時の予算超過は `TEXT` 集計状態の超過と異なり索引経路から全走査へのフォールバックを起こさない。
+- 本ページは 0.2.0 の `src/sql/group_by.rs`（git SHA `dc888f6ea146d3078153d64a6848f5c8cf044431`）から pub／crate 内部の入口とモジュール doc の要点を更新した。0.1.0 の転記元は pin SHA `7022d112e79760dca916480599553fcac256b5fb`（全 1319 行）。`is_text_accumulator_budget_error` 以下の private ヘルパー関数（`check_new_group_budget` / `new_accumulators` / `accumulate_row` / `observe_group_enumeration` / `observe_group_slots` / `observe_candidate_slots_grouped` / `observe_candidate_slots_grouped_inner` / `cmp_integer_to_literal` / `having_matches` / `cmp_cell_values` / `order_with_nulls_last` / `has_text_min_max_aggregate`）は内部実装のため掲載していない
 - **`execute_aggregate` は旧名（PR #204 codex-review 第4ラウンド P1 対応）**: 上記フェンス内のモジュール doc comment（14行目相当「責務境界: `crate::sql::aggregate::execute_aggregate` が...」）と `execute_grouped_aggregate` の doc comment（56行目相当「`aggregate.rs::execute_aggregate` の単一行経路と...」）はいずれも `sql::aggregate::execute_aggregate` という関数名を verbatim に含むが、`src/engine/src/sql/aggregate.rs` の `pub` 関数を確認するとこの名前の関数は 0.1.0 に存在しない。実体は `pub(crate) fn execute_aggregate_with_cache`（`GROUP BY` の有無で `sql::group_by::execute_grouped_aggregate` へ分岐する薄い分岐を持つ唯一のエントリ関数）であり、`core.rs::EngineCore` もこれを直接呼ぶ。本文（H1 直下の説明）は現行名 `execute_aggregate_with_cache` へ訂正済み
 - `MAX_GROUPS = 10_000`、`MAX_GROUP_KEY_TOTAL_BYTES` / `MAX_TEXT_ACCUMULATOR_TOTAL_BYTES` はいずれも `16 * 1024 * 1024`（16 MiB）
-- 関連 ADR: [`aggregate-decode-skip`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/aggregate-decode-skip.md)（Issue #350・Accepted。集計経路の embedding 非参照デコードスキップと必要列限定デコード = 行走査ループが `DecodeTier` に応じてデコード範囲を絞る根拠）
+- 関連 ADR: [`aggregate-decode-skip`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/dc888f6ea146d3078153d64a6848f5c8cf044431/docs/design/aggregate-decode-skip.md)（Issue #350・Accepted。集計経路の embedding 非参照デコードスキップと必要列限定デコード = 行走査ループが `DecodeTier` に応じてデコード範囲を絞る根拠）
 - distinct from `mssql` / `drizzle` GROUP BY: internal streaming aggregation implementation, not a SQL dialect feature
 
 ## Related
