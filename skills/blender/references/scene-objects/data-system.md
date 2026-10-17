@@ -84,6 +84,17 @@ for obj in data_dst.objects:
 | `relative` | `bool` | Store filepath as relative (default `False`) |
 | `assets_only` | `bool` | Limit to asset-marked datablocks (default `False`) |
 
+Since 5.2, the input side of the context manager exposes `input.libraries` (library info, including blend-file paths of the libraries used by the loaded file). Release-notes example (originally a Python Console session where `D = bpy.data`; `D` is replaced with `bpy.data` here so the snippet runs as a script):
+
+```python
+with bpy.data.libraries.load("/home/path/to/singularity/pro/shots/050_contact/050_0070/050_0070-anim.blend") as (input, output):
+    for l in input.libraries:
+        print(l)
+# bpy_lib.libraries(filepath='//../../../assets/props/singularity/singularity.blend', is_archive=False)
+```
+
+To visit or remap file paths used by data-blocks, see `bpy.data.file_path_foreach` in the bpy.data reference.
+
 ---
 
 ### Library Override
@@ -145,6 +156,8 @@ ID Properties are saved in the `.blend` file, can be animated, and are accessibl
 
 ## Notes
 
+- Changed (5.2): the maximum nesting level of IDProperties is 1024 (PR#160274). It applies to user properties (groups in groups) and to py-defined data (RNA structs in RNA structs).
+- Changed (5.0): properties defined with `bpy.props` are no longer reachable through dict-style ID access (e.g. `bpy.context.scene['cycles']` no longer gives Cycles settings). Reset with `obj.property_unset('cycles')`; use `obj.bl_system_properties_get()` only for versioning old data.
 - Purging is irreversible in the same session; check `users` before purging.
 - Appended datablocks become fully independent — changes to the source file do not propagate. Use Link + Library Override for live-updated assets.
 - `bpy.data.libraries.load()` is a context manager; data is populated **after** the `with` block exits.

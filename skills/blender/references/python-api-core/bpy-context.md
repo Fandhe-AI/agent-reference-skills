@@ -84,6 +84,22 @@ with bpy.context.temp_override(area=my_area):
           break
   ```
 
+- **Context logging (5.0)**: call `logging_set(True)` on the `with` target of a temporary override to log which context members are accessed (439fe8a1a0):
+
+  ```python
+  import bpy
+  from bpy import context
+
+  my_objects = [context.scene.camera]
+
+  with context.temp_override(selected_objects=my_objects) as override:
+      override.logging_set(True)  # Enable logging.
+      bpy.ops.object.delete()
+  ```
+
+  Global equivalent from the command line (replaces the previous `bpy.context` logging category): `./blender --log-level trace --log "context"`.
+- Removed (5.0): `context.active_file` is not available in the asset shelf; use `context.asset`.
+- Changed (5.0): the VSE uses `context.sequencer_scene` (`context.workspace.sequencer_scene`), which can differ from `context.scene` (the active scene of the window).
 - **Background mode**: `area`, `space_data`, and `region` are `None` when Blender runs headless (`--background`). Operators that require a window context will fail.
 
 ## Related

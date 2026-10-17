@@ -132,6 +132,8 @@ bpy.app.timers.register(make_countdown(5))
 
 ## Notes
 
+- Added (5.1): `bpy.app.cachedir` (cache directory used by Blender, e6f3c6a4ac) and the `exit_pre` handler (7faeb2a1d1)
+- Changed (5.1): bundled Python is 3.13 (matching VFX platform 2026)
 - Handler callbacks for `frame_change_pre`/`post` during rendering are called from the render thread, while viewport updates occur on a different thread. Modifying scene data in these handlers without locking can cause crashes — lock the interface before rendering if handlers mutate data.
 - Timer functions run on the main thread between UI events; they are safe for data modifications but should complete quickly to avoid UI stutter.
 - `bpy.app.timers.register` with `persistent=True` preserves the timer across file loads, analogous to `@persistent` for handlers.

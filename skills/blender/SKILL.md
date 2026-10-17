@@ -2,12 +2,14 @@
 name: blender
 description: >
   Blender Python API リファレンス。bpy / bmesh / mathutils / gpu / bpy_extras モジュール、
-  bpy.data / bpy.context / bpy.ops / bpy.types / bpy.props コア API。
+  bpy.data / bpy.context / bpy.ops / bpy.types / bpy.props / bpy.msgbus / bpy.path コア API。
   Mesh / Modifier / Geometry Nodes / Armature / Keyframe / Driver / Shape Key / NLA、
   Cycles / EEVEE / Shader Nodes / Rigid Body / Cloth / Fluid / Compositor Nodes / AOV、
   headless CLI レンダリング、add-on 開発、Extensions システム、MCP Server (Model Context Protocol)。
 user-invocable: false
 ---
+
+対象: Blender 5.2 LTS（Python API docs 5.2、PyPI bpy 5.2.2 / Python 3.13）、Blender MCP v1.0.3（add-on は Blender 5.1.0+）。5.0 の破壊的変更（legacy Action API 削除、EEVEE ID が BLENDER_EEVEE に復帰、render pass 名変更、use_nodes 非推奨）は各ページの Notes に記載。
 
 ## ディレクトリ構成
 
@@ -25,6 +27,8 @@ skills/blender/
       bpy-utils.md
       bpy-app.md
       bpy-info.md
+      bpy-msgbus.md
+      bpy-path.md
     python-api-modules/
       README.md
       bmesh.md
@@ -121,6 +125,8 @@ skills/blender/
 | bpy.context でアクティブオブジェクト・選択状態を取得したい | python-api-core | [references/python-api-core/README.md](references/python-api-core/README.md) |
 | bpy.ops でオペレーターを呼び出したい | python-api-core | [references/python-api-core/README.md](references/python-api-core/README.md) |
 | bpy.types / bpy.props でカスタム型・プロパティを定義したい | python-api-core | [references/python-api-core/README.md](references/python-api-core/README.md) |
+| RNA プロパティ変更を購読・通知したい (bpy.msgbus) | python-api-core | [references/python-api-core/README.md](references/python-api-core/README.md) |
+| blend 相対パス `//` を解決・整形したい (bpy.path) | python-api-core | [references/python-api-core/README.md](references/python-api-core/README.md) |
 | bmesh で低レベルメッシュ編集をしたい | python-api-modules | [references/python-api-modules/README.md](references/python-api-modules/README.md) |
 | mathutils の Vector / Matrix / Quaternion を使いたい | python-api-modules | [references/python-api-modules/README.md](references/python-api-modules/README.md) |
 | GPU シェーダー・ビューポートオーバーレイを描画したい | python-api-modules | [references/python-api-modules/README.md](references/python-api-modules/README.md) |

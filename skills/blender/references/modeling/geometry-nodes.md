@@ -173,8 +173,30 @@ join = nodes.new("GeometryNodeJoinGeometry")
 links.new(sphere.outputs["Mesh"], join.inputs["Geometry"])
 ```
 
+### Setting Modifier Inputs and Output Attributes (5.2+)
+
+Starting in 5.2, the modifier has real RNA properties instead of custom properties (1561c1ea4a). Release-notes Before/After:
+
+```python
+# Before
+modifier["identifier"] = 5.0
+modifier["identifier_use_attribute"] = True
+modifier["identifier_attribute_name"] = "some_input_attribute"
+modifier["identifier_attribute_name"] = "some_output_attribute"
+# After
+modifier.properties.inputs.identifier.value = 5.0
+modifier.properties.inputs.identifier.type = "ATTRIBUTE"
+modifier.properties.inputs.identifier.attribute_name = "some_input_attribute"
+modifier.properties.outputs.identifier.attribute_name = "some_output_attribute"
+```
+
+`NodesModifier.is_input_used(identifier)` and `NodesModifier.is_input_visible(identifier)` (5.2) report whether an input is currently used / visible given the modifier settings.
+
 ## Notes
 
+- Changed (5.2): the Geometry Nodes modifier property API (`modifier['identifier']` style access no longer applies; see above). Asset files with Geometry Nodes tools must be re-saved to be used properly in 5.2 (1561c1ea4a)
+- Changed (5.2): socket identifiers of the Compare and Random Value nodes (3a5cd7862b)
+- Added (5.0): tree interface items can be looked up by identifier (6f2988f0af)
 - In Blender 4.0+, group input/output sockets are managed via `node_tree.interface.new_socket()` rather than the older `node_tree.inputs.new()` / `node_tree.outputs.new()` API
 - Node type identifiers (e.g., `"GeometryNodeSetPosition"`) can be found in the Blender Python API reference or by hovering over nodes in the Info editor when adding them via the UI
 - Fields (Position, Index, etc.) are evaluated lazily per-element; they are not scalar values

@@ -84,7 +84,9 @@ class MYTOOL_OT_add_object(Operator):
 
         obj = context.active_object
 
-        # Apply color as a simple material
+        # Apply color as a simple material.
+        # use_nodes = True is required on 4.x (node_tree is None otherwise);
+        # on 5.0+ it is a deprecated no-op (removal planned for 6.0).
         mat = bpy.data.materials.new("ProceduralMat")
         mat.use_nodes = True
         bsdf = mat.node_tree.nodes.get("Principled BSDF")
@@ -210,6 +212,7 @@ category = "Object"
 - Modal operators must call `context.window_manager.modal_handler_add(self)` in `invoke()` before returning `{'RUNNING_MODAL'}`.
 - `PropertyGroup` fields attached to `bpy.types.Scene` persist across operator calls; remember to delete the pointer property in `unregister()`.
 - Blender 4.2+ `blender_manifest.toml` replaces `bl_info` for the new Extensions platform; both can coexist for backward compatibility.
+- Blender 5.0+: `mat.use_nodes` is deprecated (always `True`, no effect, removal planned for 6.0); a new material already has a default node tree. While supporting 4.2+ (`blender_version_min = "4.2.0"`), keep `mat.use_nodes = True`; it can be deleted once the minimum version is 5.0+.
 
 ## Variations
 

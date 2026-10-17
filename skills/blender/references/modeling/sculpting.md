@@ -84,9 +84,20 @@ sculpt = bpy.context.scene.tool_settings.sculpt
 sculpt.use_symmetry_x = True
 sculpt.use_symmetry_y = False
 
-# Enable Dyntopo settings (requires Sculpt Mode active)
-sculpt.use_edge_collapse = True
-sculpt.constant_detail_resolution = 9.0  # for Constant Detail mode
+# Dyntopo detail settings (use_symmetry_x/y/z are inherited from Paint)
+sculpt.detail_type_method = 'CONSTANT'   # 'RELATIVE' (default) | 'CONSTANT' | 'BRUSH' | 'MANUAL'
+sculpt.detail_size = 12.0                # pixels, Relative mode (default 12.0)
+sculpt.constant_detail_resolution = 9.0  # for Constant Detail mode (default 3.0)
+```
+
+### Automasking settings (5.2+)
+
+```python
+# Brush and Paint (e.g. tool_settings.sculpt) expose a MeshAutomaskingSettings struct
+am = bpy.context.scene.tool_settings.sculpt.mesh_automasking_settings
+am.use_automasking_topology = True      # was sculpt.use_automasking_topology
+am.use_automasking_cavity = True
+am.cavity_factor = 0.5                  # was automasking_cavity_factor
 ```
 
 ### Entering Sculpt Mode and Setting the Active Brush
@@ -154,6 +165,14 @@ if ".sculpt_mask" in mesh.attributes:
 
 ## Notes
 
+- Changed (5.2): Brush/Sculpt `use_automasking_*` and `automasking_*` properties moved to the `MeshAutomaskingSettings` struct, reached as `brush.mesh_automasking_settings` / `paint.mesh_automasking_settings` (e.g. `automasking_cavity_factor` -> `mesh_automasking_settings.cavity_factor`; `automasking_view_normal_limit` -> `.view_normal_limit`)
+- Removed (5.2): `paint.eraser_brush` / `eraser_brush_asset_reference`
+- Renamed (5.0): `brush.sculpt_tool` -> `brush.sculpt_brush_type` (all `*_tool` brush type enums became `*_brush_type`)
+- Moved (5.0): `tool_settings.unified_paint_settings` -> `tool_settings.sculpt.unified_paint_settings`
+- Moved (5.0): radial symmetry `tool_settings.sculpt.radial_symmetry` -> `mesh.radial_symmetry`
+- Renamed (5.0): `brush.curve` / `curve_preset` -> `curve_distance_falloff` / `curve_distance_falloff_preset`
+- Changed (5.1): `use_airbrush` / `use_anchor` / `use_space` / `use_line` / `use_curve` / `use_restore_mesh` folded into `brush.stroke_method` (`AIRBRUSH` / `ANCHORED` / `SPACE` / `LINE` / `CURVE` / `DRAG_DOT`)
+- Removed (5.1): operator `sculpt.sample_color`, merged into `paint.sample_color`
 - Sculpt Mode operates on triangle topology internally; Dyntopo always triangulates the mesh
 - Face Sets are stored as an integer face attribute named `.sculpt_face_set`; values correspond to the face set ID
 - The Mask attribute is stored as a float vertex attribute named `.sculpt_mask` (0.0 = unmasked, 1.0 = masked)

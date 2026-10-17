@@ -169,11 +169,11 @@ imbuf.write(img, "/path/to/out.png")
 | Function | Signature | Description |
 |----------|-----------|-------------|
 | `imbuf.load` | `load(filepath)` | Load image from disk; returns `ImBuf` |
-| `imbuf.new` | `new(size, planes=24, buffer_type='BYTE')` | Create blank image |
-| `imbuf.write` | `write(image, filepath=None)` | Save image (uses internal path if `filepath` is `None`) |
+| `imbuf.new` | `new(size, *, planes=32, buffer_type='BYTE')` | Create blank image |
+| `imbuf.write` | `write(image, *, filepath=None)` | Save image (uses the image's file path if `filepath` is `None`) |
 | `imbuf.load_from_buffer` | `load_from_buffer(buffer)` | Load from in-memory bytes |
-| `imbuf.write_to_buffer` | `write_to_buffer(image)` | Export to bytes (e.g., `io.BytesIO`) |
-| `imbuf.file_type_from_buffer` | `file_type_from_buffer(buffer)` | Detect format from binary data |
+| `imbuf.write_to_buffer` | `write_to_buffer(image, file)` | Write to a writable file-like object (e.g., `io.BytesIO`) |
+| `imbuf.file_type_from_buffer` | `file_type_from_buffer(buffer)` | Detect format from binary data; returns `ImBufFileType` or `None` |
 
 ### ImBuf Properties and Methods
 
@@ -186,11 +186,20 @@ imbuf.write(img, "/path/to/out.png")
 | `buffer_type` | `str` | `'BYTE'` or `'FLOAT'` |
 | `file_type` | `str` | Format identifier |
 | `ppm` | `(float, float)` | Pixels per meter |
+| `quality` | `int` | Quality for lossy formats (0-100, clamped) |
+| `compress` | `int` | Compression level for lossless formats (0-100, clamped) |
 | `copy()` | `ImBuf` | Return a copy |
 | `resize(size, method='FAST')` | — | Resize in-place; `method`: `'FAST'` or `'BILINEAR'` |
 | `crop(min, max)` | — | Crop in-place by pixel coordinate tuples |
 | `convert_buffer_type(buffer_type)` | — | Convert between `'BYTE'` and `'FLOAT'` |
 | `with_buffer(write=False, region=None)` | context manager | Yields `memoryview` shaped `(height, width, channels)` |
+
+### imbuf.types
+
+| Class | Members |
+|-------|---------|
+| `ImBufFileType` | `id` (e.g. `"PNG"`, `"JPEG"`), `file_extensions`, `has_read_file`, `has_read_memory`, `has_write_file`, `has_write_memory` |
+| `ImBufBuffer` | Context manager (`__enter__` / `__exit__`) returned by `ImBuf.with_buffer()` |
 
 ---
 
@@ -221,6 +230,8 @@ print(obj.id_properties_ui("my_float"))
 
 ## Notes
 
+- Added (5.2): imbuf can convert between file formats (read/write of different file types and known extensions), exposes image quality and compression, supports grey-scale / RGB / RGBA images, and pixel access via buffer methods and a context manager
+- Made private (5.0): bundled modules `animsys_refactor`, `bl_console_utils`, `bl_i18n_utils`, `bl_previews_utils`, `bl_rna_utils`, `bl_text_utils`, `bl_ui_utils`, `bpy_restrict_state`, `console_python`, `console_shell`, `graphviz_export`, `keyingsets_utils`, `rna_info`, `rna_manual_reference`, `rna_xml`; scripts should not import them
 - `blf` drawing must occur inside a registered draw handler or a modal operator's `modal()` call in a draw context
 - `aud.Device()` with no arguments uses the system default audio backend
 - `imbuf` supports common formats (PNG, JPEG, EXR, TIFF); format is detected from the file extension on write

@@ -19,8 +19,7 @@ Real-time rasterization engine. Fast interactive rendering suited for animation,
 ```python
 import bpy
 scene = bpy.context.scene
-scene.render.engine = 'BLENDER_EEVEE_NEXT'  # Blender 4.2+
-# scene.render.engine = 'BLENDER_EEVEE'     # Legacy (pre-4.2)
+scene.render.engine = 'BLENDER_EEVEE'  # 5.0+ (was 'BLENDER_EEVEE_NEXT' in 4.2-4.5)
 ```
 
 ### Shadows (EEVEE Next)
@@ -49,9 +48,8 @@ In EEVEE Next, AO is computed via screen-space ray tracing and visible in real-t
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `scene.eevee.use_gtao` | bool | Enable ground truth ambient occlusion |
-| `scene.eevee.gtao_distance` | float | AO distance (world units) |
-| `scene.eevee.gtao_factor` | float | AO strength multiplier |
+| `view_layer.eevee.ambient_occlusion_distance` | float | Distance of objects that contribute to ambient occlusion (default 10.0) |
+| `scene.eevee.fast_gi_thickness_near` | float | Geometric thickness of surfaces for fast GI and AO (default 0.1) |
 
 ### Bloom (Legacy EEVEE only — removed in 4.2)
 
@@ -89,12 +87,11 @@ scene.eevee.ssr_quality = 0.25  # 0.0–1.0
 import bpy
 
 scene = bpy.context.scene
-scene.render.engine = 'BLENDER_EEVEE_NEXT'
+scene.render.engine = 'BLENDER_EEVEE'
 
-# Ambient occlusion
-scene.eevee.use_gtao = True
-scene.eevee.gtao_distance = 0.2
-scene.eevee.gtao_factor = 1.0
+# Ambient occlusion (5.0+: distance lives on the view layer)
+bpy.context.view_layer.eevee.ambient_occlusion_distance = 0.2
+scene.eevee.fast_gi_thickness_near = 0.1
 
 # Shadows
 scene.eevee.shadow_pool_size = '512'
@@ -105,7 +102,10 @@ scene.eevee.ray_tracing_method = 'SCREEN'
 
 ## Notes
 
-- EEVEE Next (4.2+) engine ID is `'BLENDER_EEVEE_NEXT'`; legacy is `'BLENDER_EEVEE'`
+- Renamed (5.0): engine ID `BLENDER_EEVEE_NEXT` -> `BLENDER_EEVEE`; the 5.2 API default for `scene.render.engine` is `'BLENDER_EEVEE'`. `'BLENDER_EEVEE_NEXT'` applies to 4.2-4.5 only
+- Removed (5.0): `scene.eevee.use_gtao` and `gtao_quality` (they did nothing since 4.2); `scene.eevee.gtao_distance` moved to `view_layer.eevee.ambient_occlusion_distance`
+- `scene.eevee.gtao_factor` is not present in the 5.2 API
+- Removed (5.2): `SceneEEVEE.fast_gi_thickness_far`
 - Bloom is no longer a render property in 4.2+; apply the Glare node in Compositor
 - Virtual Shadow Maps in EEVEE Next support much higher resolution than the old cube-size approach
 - For Light Probes (Irradiance Volume / Reflection Cubemap), use `bpy.ops.object.lightprobe_cache_bake()`

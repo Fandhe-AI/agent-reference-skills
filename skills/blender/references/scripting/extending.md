@@ -16,7 +16,7 @@ Blender bundles its own CPython interpreter isolated from the system Python. Thi
 /path/to/blender/python/bin/python3 -m pip install requests
 
 # Windows example
-"C:\Program Files\Blender Foundation\Blender 4.2\4.2\python\bin\python.exe" -m pip install requests
+"C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\bin\python.exe" -m pip install requests
 ```
 
 Packages land in Blender's `python/lib/pythonX.Y/site-packages/`.
@@ -94,6 +94,8 @@ blender --background --python-expr \
 
 ## Notes
 
+- Changed (5.1): bundled Python is 3.13 (matching VFX platform 2026); check the `bpy` PyPI page for the matching Blender / Python combination.
+- Added (5.1): on macOS, scripts and extensions can access the device camera, microphone and system audio after a system permission dialog is shown to the user (c1a1748b66, 8218d5f5d3, 5b156ec599).
 - Blender's Python is isolated by design; packages installed system-wide are not available unless `--python-use-system-env` is passed or `PYTHONPATH` is set before launch.
 - The recommended pattern for extensions that need third-party packages is to **vendor** (bundle) them inside the extension `.zip` under a `wheels/` directory, declared in `blender_manifest.toml` under `[wheels]`.
 - `bpy` on PyPI is for pipeline/scripting use only — it does not support rendering with Cycles GPU or most interactive operators; use the full Blender binary for production renders.

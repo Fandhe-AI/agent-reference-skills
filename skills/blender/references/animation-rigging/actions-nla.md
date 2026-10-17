@@ -5,7 +5,7 @@ description: Action data-blocks, NLA (Non-Linear Animation) tracks and strips, p
 
 # Actions & NLA
 
-An **Action** is a named data-block that stores F-Curves (keyframe animation) for one object or one armature pose. The **NLA Editor** (Non-Linear Animation) layers and blends multiple Actions as reusable strips.
+An **Action** is a named data-block that stores F-Curves (keyframe animation) in layers and slots; since 4.4 the binding to a data-block type lives on the Action slot (`action_slot.target_id_type`), not on the Action. The **NLA Editor** (Non-Linear Animation) layers and blends multiple Actions as reusable strips.
 
 ## Overview
 
@@ -84,7 +84,7 @@ add_strip.influence = 0.5
 
 ```python
 for action in bpy.data.actions:
-    print(action.name, len(action.fcurves))
+    print(action.name, len(action.slots), len(action.layers))  # action.fcurves was removed in 5.0
 ```
 
 ### Remove an NLA strip
@@ -115,6 +115,7 @@ track.strips.remove(strip)
 
 ## Notes
 
+- Removed (5.0): legacy Action API (`action.fcurves`, `action.groups`, `action.id_root`). F-Curves are reached via a slot's channelbag: `bpy_extras.anim_utils.action_get_channelbag_for_slot(action, slot).fcurves`.
 - While `AnimData.action` is set (i.e., the active action is not pushed down), the NLA tracks are in a "tweaking" state and NLA evaluation may be bypassed for that object.
 - `bpy.ops.nla.action_pushdown()` requires an active object with a non-None `action` and an NLA Editor area in the UI context; prefer the data API (`track.strips.new()`) in headless scripts.
 - Actions are shared data-blocks: multiple objects can reference the same Action. Use `action.copy()` before modifying if independent copies are needed.

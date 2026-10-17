@@ -51,12 +51,14 @@ del bpy.types.Scene.my_value
 |-----------|------|-------------|
 | `name` | `str` | UI label |
 | `description` | `str` | Tooltip text |
-| `options` | `set` | Flags: `'ANIMATABLE'`, `'HIDDEN'`, `'SKIP_SAVE'`, `'SKIP_PRESET'` |
+| `options` | `set` | Flags (5.2 Property Flag Items): `'READ_ONLY'`, `'HIDDEN'`, `'SKIP_SAVE'`, `'SKIP_PRESET'`, `'ANIMATABLE'`, `'LIBRARY_EDITABLE'`, `'PROPORTIONAL'`, `'TEXTEDIT_UPDATE'`, `'OUTPUT_PATH'`, `'PATH_SUPPORTS_BLEND_RELATIVE'`, `'SUPPORTS_TEMPLATES'` |
 | `override` | `set` | Library override flags |
 | `tags` | `set` | Custom tags for tooling |
 | `update` | `callable` | Callback `fn(self, context)` called on value change |
 | `get` | `callable` | Custom getter `fn(self) -> value` |
 | `set` | `callable` | Custom setter `fn(self, value)` |
+| `get_transform` | `callable` | Added 5.0. `fn(self, stored_value, is_set) -> value`; modifies the value on read while keeping the default storage |
+| `set_transform` | `callable` | Added 5.0. `fn(self, new_value, curr_value, is_set) -> value`; modifies the value before it is stored in the default storage |
 
 ### Numeric Parameters (Int / Float)
 
@@ -140,6 +142,9 @@ def unregister():
 
 - Properties defined with annotation syntax (`prop: bpy.props.FloatProperty()`) inside a class body are only effective for `PropertyGroup` and `Operator` subclasses that Blender registers. For other classes use direct assignment (`MyClass.prop = bpy.props.FloatProperty()`).
 - Defining `get` without `set` makes the property read-only in the UI.
+- Changed (5.0, breaking): properties defined by `bpy.props` no longer share storage with custom properties, so dict-style access such as `bpy.context.scene['cycles']` does not give access to them. Release-notes migration table (Before -> After): resetting `del obj['cycles']` / `obj.property_unset('cycles')` -> `obj.property_unset('cycles')`; versioning `old_prop = obj['old_data']['old_prop']` -> `sys_props = obj.bl_system_properties_get(); old_prop = sys_props['old_data']['old_prop']` (main use case of `bl_system_properties_get`).
+- Changed (5.0): define read-only properties with `options={'READ_ONLY'}`. `get` / `set` should only be used when storing data outside the default system; `get` without `set` forces read-only (as before); `set` without `get` is an error. A property should typically not need both `get` and `get_transform` (or `set` and `set_transform`); the transform versions were benchmarked several times faster than real `get` / `set`.
+- Not directly supported since 5.0: bypassing property handling via `obj.my_addon['my_prop']`.
 - `update` and `get`/`set` callbacks may execute in a threaded context during rendering. Avoid modifying unrelated scene data inside them.
 - To remove a dynamically added property: `del bpy.types.SomeType.prop_name` or `bpy.props.RemoveProperty(cls, attr="prop_name")`.
 - `CollectionProperty` elements are accessed like a list: `.add()`, `.remove(index)`, `.clear()`, and iteration.

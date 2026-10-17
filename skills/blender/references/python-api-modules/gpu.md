@@ -174,6 +174,13 @@ draw_circle_2d(
 
 Requires `gpu.state.blend_set('ALPHA')` for transparency.
 
+## gpu.init (5.2+)
+
+```python
+import gpu
+gpu.init()  # initialize the GPU module for background use (--background); raises SystemError on failure
+```
+
 ## GPU State
 
 ```python
@@ -185,6 +192,10 @@ gpu.state.point_size_set(5.0)
 
 ## Notes
 
+- Added (5.2): `gpu.init()` for running the GPU module in `--background` mode
+- Removed (5.0): the deprecated BGL module; `Image.bindcode` (use `gpu.texture.from_image(image)` and `gpu.types.GPUTexture`); creating shaders directly from GLSL source files
+- Deprecated (5.0): `DEPTH24_STENCIL8` / `DEPTH_COMPONENT24` (depth32f variants are used instead) and the `UINT_24_8` data type (consider `FLOAT`)
+- Changed (5.1): `GPUFrameBuffer.read_color` / `read_depth` raise `ValueError` when reading out of bounds
 - Reuse `GPUBatch` objects across frames; re-create only when geometry changes
 - On macOS, GLSL is internally translated to MSL; matrix constructors are limited (use diagonal, all-scalar, or column-vector forms only)
 - `GPU_BARRIER_*` constants are available for compute shader synchronization

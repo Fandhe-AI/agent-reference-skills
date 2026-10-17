@@ -126,17 +126,38 @@ rl.scene = scene
 # Access enabled pass outputs by name (not by index — enabled passes shift indices)
 z_socket      = rl.outputs["Depth"]
 normal_socket = rl.outputs["Normal"]
-diffuse_dir   = rl.outputs["DiffDir"]
+diffuse_dir   = rl.outputs["Diffuse Direct"]   # 5.0+ name; 'DiffDir' before 5.0
 aov_socket    = rl.outputs["MyColor"]   # custom AOV
 ```
 
+## Render pass names (RE_PASSNAME_*, DNA_scene_enums.h v5.2.2)
+
+These are the internal render pass names from the `RE_PASSNAME_*` defines in `DNA_scene_enums.h` (v5.2.2). They are not a definition of Render Layers node socket names. Except for the Combined and Cryptomatte rows below, the Render Layers socket name matches the pass name.
+
+| Pass | Pass name / Render Layers socket |
+|------|-------------|
+| Combined | pass `Combined` -> Render Layers sockets `Image` and `Alpha` (use `rl.outputs["Image"]`) |
+| Depth / Vector / Position / Normal / UV | `Depth`, `Vector`, `Position`, `Normal`, `UV` |
+| Emission / Shadow / Ambient Occlusion / Environment | `Emission`, `Shadow`, `Ambient Occlusion`, `Environment` |
+| Object / Material Index | `Object Index`, `Material Index` |
+| Mist | `Mist` |
+| Diffuse | `Diffuse Direct`, `Diffuse Indirect`, `Diffuse Color` |
+| Glossy | `Glossy Direct`, `Glossy Indirect`, `Glossy Color` |
+| Transmission | `Transmission Direct`, `Transmission Indirect`, `Transmission Color` |
+| Subsurface | `Subsurface Direct`, `Subsurface Indirect`, `Subsurface Color` |
+| Other | `Freestyle`, `Volume Direct`, `Transparent`, `Grease Pencil` |
+| Cryptomatte | passes `CryptoObject` / `CryptoAsset` / `CryptoMaterial` -> sockets are numbered per layer, e.g. `CryptoObject00`, `CryptoObject01`, ... |
+
 ## Notes
 
-- Pass socket names on the Render Layers node match Blender UI labels, not Python property names (e.g., property `use_pass_z` → socket `"Depth"`).
+- Renamed (5.0): many pass names were expanded to avoid obscure abbreviations, e.g. `'DiffCol'` -> `'Diffuse Color'`, `'IndexMA'` -> `'Material Index'`, `'Z'` -> `'Depth'` (PR#141675, PR#142731). This breaks scripts and compositing setups that rely on the old names. The Python property stays `use_pass_z` (PR#141675).
+- Removed (5.0): the deprecated render pass `find_by_type`, replaced by `find_by_name` (PR#142731).
+- Pass socket names on the Render Layers node match Blender UI labels, not Python property names (e.g., property `use_pass_z` → socket `"Depth"`); exceptions are Combined (socket `Image`, plus `Alpha`) and Cryptomatte (numbered sockets such as `CryptoObject00`).
 - Enabling many passes increases render time and memory usage.
 - Cryptomatte passes require Cycles or a renderer that supports them; EEVEE support varies by version.
 - AOV type must match the shader AOV Output node's data type (Color vs. Value).
 - The Denoising Data passes (`use_pass_denoising_data`) enable Albedo and Normal inputs for the Denoise compositor node.
+- Source (5.0 changes): https://developer.blender.org/docs/release_notes/5.0/rendering/ and https://developer.blender.org/docs/release_notes/5.0/python_api/
 - **Blender 5.0+:** Access the compositor tree via `scene.compositing_node_group` instead of `scene.node_tree`. See [compositor-nodes.md](./compositor-nodes.md) for the cross-version helper pattern.
 
 ## Related

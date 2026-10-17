@@ -5,10 +5,16 @@ Blender MCP Server のインストール・起動・設定・テストに使う�
 ## Installation — MCP サーバー（pip）
 
 ```sh
-pip install git+https://projects.blender.org/lab/blender_mcp.git#subdirectory=mcp
+pip install git+https://projects.blender.org/lab/blender_mcp.git@v1.0.3#subdirectory=mcp
 ```
 
-Python 3.10 以上が必要。依存パッケージ: `docutils`, `mcp[cli]>=1.2.0`, `pyyaml`。
+Python 3.10 以上が必要。依存パッケージ: `docutils`, `mcp[cli]>=1.2.0,<2`, `pyyaml`（v1.0.3 の `mcp/pyproject.toml`）。
+
+代替: デフォルトブランチの最新を追う場合（本スキルが記載する v1.0.3 と差異が出うる）:
+
+```sh
+pip install git+https://projects.blender.org/lab/blender_mcp.git#subdirectory=mcp
+```
 
 ## Installation — Blender add-on（Extensions リポジトリ）
 
@@ -125,7 +131,7 @@ make test_integration TESTS="test_one test_two"
 make check_all
 ```
 
-ruff / mypy / vulture / license / ascii / namespace の全チェックをまとめて実行する。
+ruff / mypy / vulture / license / ascii / namespace の全チェックをまとめて実行する。`check_pylint` は `check_all` に含まれない。
 
 ```sh
 make format
@@ -138,6 +144,7 @@ autopep8 でソースコードを自動整形する。
 ```sh
 make check_ruff      # ruff linting
 make check_mypy      # mypy 型チェック
+make check_pylint    # pylint（check_all には含まれない）
 make check_vulture   # vulture デッドコード検出
 make check_license   # SPDX ヘッダー検証
 make check_ascii     # 非 ASCII 文字の検出

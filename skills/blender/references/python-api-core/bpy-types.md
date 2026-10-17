@@ -43,7 +43,7 @@ class VIEW3D_PT_my_panel(bpy.types.Panel):
 |------|---------------|-------------|
 | `Object` | `name`, `location`, `rotation_euler`, `scale`, `data`, `parent`, `modifiers`, `constraints`, `collections` | Scene entity; wraps mesh/curve/armature/etc. |
 | `Mesh` | `vertices`, `edges`, `loops`, `polygons`, `uv_layers`, `vertex_colors`, `materials` | Polygonal geometry data |
-| `Material` | `name`, `use_nodes`, `node_tree`, `diffuse_color`, `roughness`, `metallic` | Surface shading definition |
+| `Material` | `name`, `use_nodes` (deprecated since 5.0: always `True`, no effect), `node_tree`, `diffuse_color`, `roughness`, `metallic` | Surface shading definition |
 | `Scene` | `name`, `frame_current`, `frame_start`, `frame_end`, `camera`, `world`, `collection`, `render` | Root container for render and world settings |
 | `Collection` | `name`, `objects`, `children`, `color_tag`, `hide_viewport` | Hierarchical object grouping |
 | `Armature` | `name`, `bones`, `edit_bones` | Skeletal rig data; `edit_bones` available only in Edit Mode |

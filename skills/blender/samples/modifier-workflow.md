@@ -54,7 +54,7 @@ cutter.display_type = 'WIRE'  # show as wireframe while setting up
 bool_mod = main.modifiers.new(name="Boolean", type='BOOLEAN')
 bool_mod.operation = 'DIFFERENCE'   # 'UNION' | 'DIFFERENCE' | 'INTERSECT'
 bool_mod.object = cutter
-bool_mod.solver = 'FAST'            # 'FAST' | 'EXACT'
+bool_mod.solver = 'FLOAT'           # 'FLOAT' | 'EXACT' | 'MANIFOLD' ('FAST' was renamed 'FLOAT' in 5.0)
 
 apply_modifier(main, "Boolean")
 
@@ -102,7 +102,7 @@ print("Modifier workflow complete.")
 
 - `obj.modifiers.new(name, type)` adds the modifier and returns it; assign all properties before applying.
 - Applying a modifier requires the object to be selected and active **in Object Mode**. `bpy.ops.object.modifier_apply()` will raise a `RuntimeError` from Edit Mode.
-- Boolean operations in 'EXACT' solver mode are more robust for complex geometry but slower than 'FAST'.
+- Boolean `solver` valid values in 5.2 are `'FLOAT'`, `'EXACT'`, `'MANIFOLD'` (default `'EXACT'`). `'FAST'` was renamed to `'FLOAT'` in Blender 5.0 (modifier and operator). `'EXACT'` is better for coplanar faces but slower; `'MANIFOLD'` is the fastest but works only on manifold meshes.
 - When applying a stack, iterate over `list(plane.modifiers)` (a snapshot) because applying changes the live collection length.
 - Array's `relative_offset_displace` is a multiplier of the object's bounding-box dimensions, not world units.
 
@@ -118,6 +118,11 @@ mirror.use_clip = True                   # merge vertices at mirror plane
 solidify = obj.modifiers.new("Solidify", 'SOLIDIFY')
 solidify.thickness = 0.05
 solidify.offset = -1.0    # grow inward
+
+# Geometry Nodes modifier inputs (5.2): NodesModifier.properties is read-only
+# (NodesModifierProperties | None); each input is addressed by its identifier.
+# gn = obj.modifiers.new("GeoNodes", 'NODES')
+# gn.properties.inputs.<id>.value = 2.0
 ```
 
 ## Related

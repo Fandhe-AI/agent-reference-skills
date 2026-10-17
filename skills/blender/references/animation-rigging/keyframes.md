@@ -49,7 +49,9 @@ anim = obj.animation_data_create()
 action = bpy.data.actions.new(name="MyAction")
 anim.action = action
 
-fc = action.fcurves.new(data_path="location", index=0)  # X axis
+# The action must already be assigned to the data-block (anim.action = action above).
+# Creates the layer, keyframe strip and slot if needed, and assigns the slot.
+fc = action.fcurve_ensure_for_datablock(obj, "location", index=0, group_name="Location")  # X axis
 fc.keyframe_points.insert(frame=1,  value=0.0)
 fc.keyframe_points.insert(frame=24, value=2.0)
 fc.update()
@@ -58,8 +60,11 @@ fc.update()
 ### Access existing F-Curves
 
 ```python
-action = obj.animation_data.action
-for fc in action.fcurves:
+from bpy_extras import anim_utils
+
+anim = obj.animation_data
+channelbag = anim_utils.action_get_channelbag_for_slot(anim.action, anim.action_slot)
+for fc in channelbag.fcurves:
     print(fc.data_path, fc.array_index)
     for kp in fc.keyframe_points:
         print(f"  frame={kp.co[0]:.1f}  value={kp.co[1]:.4f}  interp={kp.interpolation}")
@@ -68,7 +73,7 @@ for fc in action.fcurves:
 ### Set interpolation mode
 
 ```python
-for fc in obj.animation_data.action.fcurves:
+for fc in channelbag.fcurves:
     for kp in fc.keyframe_points:
         kp.interpolation = 'BEZIER'   # 'CONSTANT' | 'LINEAR' | 'BEZIER'
         kp.easing = 'AUTO'            # 'AUTO' | 'EASE_IN' | 'EASE_OUT' | 'EASE_IN_OUT'
@@ -77,8 +82,16 @@ for fc in obj.animation_data.action.fcurves:
 ### Evaluate an F-Curve at a frame
 
 ```python
-fc = obj.animation_data.action.fcurves.find("location", index=0)
+fc = channelbag.fcurves.find("location", index=0)
 value_at_frame_10 = fc.evaluate(10)
+```
+
+### Find or create an F-Curve in a channelbag
+
+```python
+# fcurves.new(data_path, *, index=0, group_name='') / fcurves.ensure(...) returns the existing curve if present
+channelbag = anim_utils.action_ensure_channelbag_for_slot(anim.action, anim.action_slot)
+fc = channelbag.fcurves.ensure("location", index=2, group_name="Location")
 ```
 
 ## Options / Props
@@ -96,6 +109,8 @@ value_at_frame_10 = fc.evaluate(10)
 
 ## Notes
 
+- Removed (5.0): the legacy Action API `action.fcurves` / `action.groups` / `action.id_root`. Use the channelbag of a slot instead (`action_group` parameter renamed `group_name`; `id_root` -> `action_slot.target_id_type`). Each slot of an Action can have a channelbag; get or ensure one with `bpy_extras.anim_utils.action_get_channelbag_for_slot` / `action_ensure_channelbag_for_slot`.
+- Removed (5.0): the `INSERTKEY_XYZ_TO_RGB` flag of `keyframe_insert()`'s `options` parameter (it was deprecated and non-functional).
 - Always call `fc.update()` after inserting points manually to rebuild the curve handles.
 - `keyframe_insert()` reads the property's **current value at the current frame** unless `frame` is given explicitly.
 - The Graph Editor and Dope Sheet are the UI counterparts; they visualize the same `Action` / `FCurve` data.

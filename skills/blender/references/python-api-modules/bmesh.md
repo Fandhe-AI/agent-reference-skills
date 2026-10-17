@@ -181,6 +181,7 @@ bm.select_flush_mode()
 
 ## Notes
 
+- Changed (5.0): UV selection is shared between all UV maps. Added: `BMLoop.uv_select_vert`, `BMLoop.uv_select_edge`, `BMFace.uv_select`, `BMesh.uv_select_sync_valid`; methods `BMLoop.uv_select_vert_set()`, `BMLoop.uv_select_edge_set()`, `BMFace.uv_select_set()`, `BMesh.uv_select_flush_mode()`, `uv_select_flush()`, `uv_select_flush_shared()`, `uv_select_sync_from_mesh()`, `uv_select_sync_to_mesh()`, `uv_select_foreach_set()`, `uv_select_foreach_set_from_mesh()`. Removed: `BMLoopUV.select`, `BMLoopUV.select_edge`, `MeshUVLoopLayer.vertex_selection`, `MeshUVLoopLayer.edge_selection`. Reading and writing `loop[uv_layer].uv` is unaffected.
 - Always call `bm.free()` after standalone usage to release memory
 - After adding/removing geometry, call `bm.verts.ensure_lookup_table()` / `bm.edges.ensure_lookup_table()` / `bm.faces.ensure_lookup_table()` before index access
 - When a face is selected, its edges and vertices must also be selected (flushing enforces this)

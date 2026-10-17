@@ -28,9 +28,9 @@ Controls the background environment visible in renders and the viewport.
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `color` | `Color` (3) | Solid background color (used when `use_nodes=False`) |
-| `use_nodes` | `bool` | Enable node-based environment (Cycles/Eevee shading) |
-| `node_tree` | `NodeTree` | Shader node graph for background; `None` if not enabled |
+| `color` | `Color` (3) | Solid background color |
+| `use_nodes` | `bool` | Deprecated since 5.0 (removal planned for 6.0): always `True`, setting it has no effect |
+| `node_tree` | `NodeTree` | Shader node graph for background; created by default in `worlds.new()` since 5.0 |
 | `light_settings` | `WorldLighting` | Ambient occlusion and irradiance settings (read-only sub-object) |
 | `mist_settings` | `WorldMistSettings` | Atmospheric mist/fog (read-only sub-object) |
 
@@ -41,7 +41,7 @@ import bpy
 
 world = bpy.data.worlds.get("World") or bpy.data.worlds.new("World")
 bpy.context.scene.world = world
-world.use_nodes = True
+# world.use_nodes = True  # Deprecated since 5.0, no effect
 
 nt = world.node_tree
 nt.nodes.clear()
@@ -148,6 +148,7 @@ Objects remain a single datablock; modifying `obj.location` from either scene co
 
 ## Notes
 
+- Deprecated (5.0): `world.use_nodes` (removal planned for 6.0). It always returns `True`, setting it has no effect, and `bpy.data.worlds.new()` creates a default node tree (PR#142342).
 - `scene.frame_set(n)` is preferred over `scene.frame_current = n` because it updates the dependency graph (animation, constraints, drivers).
 - `render.fps_base` defaults to `1.0`; NTSC 29.97 fps is represented as `fps=30, fps_base=1.001`.
 - World nodes are only effective in Cycles and Eevee; Workbench ignores the World node tree.

@@ -34,7 +34,8 @@ render.fps_base = 1.0   # fps / fps_base = actual FPS
 # Output path
 render.filepath = '/tmp/render/frame_'
 
-# File format
+# File format (5.0+: set media_type first; 'IMAGE' is the default)
+render.image_settings.media_type = 'IMAGE'   # 'IMAGE' | 'MULTI_LAYER_IMAGE' | 'VIDEO'
 render.image_settings.file_format = 'PNG'
 render.image_settings.color_mode = 'RGBA'  # 'BW', 'RGB', 'RGBA'
 render.image_settings.color_depth = '16'   # '8', '16'
@@ -65,17 +66,27 @@ bpy.ops.render.render(animation=True)
 
 | `file_format` value | Description |
 |--------------------|-------------|
-| `'PNG'` | Lossless, supports alpha, 8/16-bit |
+| `'AVIF'` | AVIF (.avif) |
 | `'JPEG'` | Lossy, no alpha, 8-bit |
 | `'OPEN_EXR'` | HDR floating-point, 16/32-bit, multi-layer capable |
-| `'OPEN_EXR_MULTILAYER'` | Multi-layer EXR with render passes |
-| `'TIFF'` | 8/16/32-bit, lossless |
+| `'PNG'` | Lossless, supports alpha, 8/16-bit |
+| `'WEBP'` | WebP (.webp) |
 | `'BMP'` | 8-bit, no alpha |
-| `'FFMPEG'` | Video container (MP4, MKV, etc.) |
+| `'CINEON'` | Cineon (.cin) |
+| `'DPX'` | DPX (.dpx) |
+| `'IRIS'` | SGI IRIS (.rgb) |
+| `'JPEG2000'` | JPEG 2000 (.jp2) |
+| `'HDR'` | Radiance HDR (.hdr) |
+| `'TARGA'` | Targa (.tga) |
+| `'TARGA_RAW'` | Uncompressed Targa (.tga) |
+| `'TIFF'` | 8/16/32-bit, lossless |
+| `'OPEN_EXR_MULTILAYER'` | Multi-layer EXR with render passes (set `media_type = 'MULTI_LAYER_IMAGE'` first) |
+| `'FFMPEG'` | Video container (MP4, MKV, etc.) (set `media_type = 'VIDEO'` first) |
 
 ### FFmpeg Video Output
 
 ```python
+render.image_settings.media_type = 'VIDEO'   # required before 'FFMPEG' (5.0+)
 render.image_settings.file_format = 'FFMPEG'
 render.ffmpeg.format = 'MPEG4'          # 'AVI', 'MKV', 'MPEG4', 'WEBM', ...
 render.ffmpeg.codec = 'H264'            # 'H264', 'H265', 'VP9', 'AV1', ...
@@ -122,6 +133,9 @@ render.use_placeholder = False     # Reserve filenames for farm rendering
 
 ## Notes
 
+- Added (5.0): `ImageFormatSettings.media_type` (`'IMAGE'` default, `'MULTI_LAYER_IMAGE'`, `'VIDEO'`); set it before `file_format`
+- Added (5.0): `render.render()` operator optional `frame_start` / `frame_end` arguments (PR#146022, PR#147169)
+- Changed (5.0): the format of logging output, including background render progress; add-ons or render farms parsing this output may need to be updated
 - AgX replaced Filmic as the default view transform in Blender 4.0
 - `view_transform` affects display and saved 8/16-bit images; EXR always saves linear data
 - `resolution_percentage` is applied before rendering; actual pixel dimensions = `resolution_x * resolution_percentage / 100`

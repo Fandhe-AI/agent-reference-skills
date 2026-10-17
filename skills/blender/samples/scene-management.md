@@ -97,11 +97,12 @@ scene.camera = cam_obj   # set as active render camera
 
 
 # ── 6. World background (solid color) ─────────────────────────────────────────
+# Blender 5.0+: bpy.data.worlds.new() already creates a default node tree
+# (world.use_nodes is a deprecated no-op that always returns True).
 world = bpy.data.worlds.get("World")
 if world is None:
     world = bpy.data.worlds.new("World")
 scene.world = world
-world.use_nodes = True
 
 bg_node = world.node_tree.nodes.get("Background")
 if bg_node is None:
@@ -114,7 +115,6 @@ bg_node.inputs['Strength'].default_value = 1.0
 # Uncomment and provide an actual .hdr / .exr file to use:
 #
 # HDRI_PATH = "/path/to/environment.hdr"
-# world.use_nodes = True
 # wt_nodes = world.node_tree.nodes
 # wt_links = world.node_tree.links
 # wt_nodes.clear()
@@ -142,6 +142,7 @@ print(f"Active camera: {scene.camera.name}")
 - `bpy.data.lights.new(name, type)` creates the light data; a separate `bpy.data.objects.new()` call wraps it into a scene object — same pattern as meshes.
 - Use `ShaderNodeTexEnvironment` (not `ShaderNodeTexImage`) for HDRI environment maps; the mapping is spherical by default, which is correct for HDRIs.
 - `scene.camera` must be set to an Object (not a Camera data-block) for the render camera to work.
+- Blender 5.0+: `world.use_nodes` is deprecated (always `True`, setting it has no effect, removal planned for 6.0) and a new World gets a default node tree. On Blender ≤ 4.5 set `world.use_nodes = True` before accessing `world.node_tree`.
 
 ## Variations
 
