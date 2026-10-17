@@ -16,7 +16,7 @@ export const AI = createAI<ServerMessage[], ClientMessage[]>({
     'use server';
 
     if (done) {
-      saveChatToDB(state);
+      await saveChatToDB(state);
     }
   },
 });
@@ -78,4 +78,5 @@ export const AI = createAI<ServerMessage[], ClientMessage[]>({
 
 - Official warning: AI SDK RSC is experimental; AI SDK UI is recommended for production (see the migration guide, `references/rsc/migrating-to-ui.md`).
 - UI state cannot be saved directly because its contents are not serializable; use the AI state as a proxy and rebuild the UI state in `onGetUIState`.
+- The official example does not await `saveChatToDB`; it is awaited here so completion is awaited and failures are not swallowed.
 - `saveChatToDB`, `loadChatFromDB`, `ServerMessage`, `ClientMessage`, `continueConversation` and `Component` are application-defined placeholders, not SDK exports. The non-RSC equivalent is `chatbot-message-persistence.md`.

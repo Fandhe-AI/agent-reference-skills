@@ -27,9 +27,19 @@ const computerTool = anthropic.tools.computer_20250124({
     }
   },
   toModelOutput({ output }) {
-    return typeof output === 'string'
-      ? [{ type: 'text', text: output }]
-      : [{ type: 'file-data', data: output.data, mediaType: 'image/png' }];
+    return {
+      type: 'content',
+      value:
+        typeof output === 'string'
+          ? [{ type: 'text', text: output }]
+          : [
+              {
+                type: 'file',
+                mediaType: 'image/png',
+                data: { type: 'data', data: output.data },
+              },
+            ],
+    };
   },
 });
 ```
@@ -68,6 +78,7 @@ const response = await generateText({
 ## Notes
 
 - The tools are predefined interfaces only: `getScreenshot` and `executeComputerAction` (and the text editor `execute` implementation, `anthropic.tools.textEditor_20250728`) are yours to implement. Anthropic's reference implementation is `anthropics/anthropic-quickstarts` (`computer-use-demo`).
+- The cookbook page returns a bare array from `toModelOutput` (old form); this sample uses the `{ type: 'content', value: [...] }` form from `docs/ai-sdk-core/tools-and-tool-calling`.
 - The official page marks Computer Use as beta and recommends a dedicated VM or container with minimal privileges, no sensitive data, an internet allowlist and human confirmation for consequential actions.
 - Tool versions (`computer_20250124`, `bash_20250124`, `textEditor_20250728`) and the model ID are copied as written on the page and may be stale; check `references/providers/anthropic.md` for current provider tools. The third snippet's `// ...` replaces an elision in the original.
 - This is the AI SDK provider-tool wrapper. The raw Anthropic computer-use tool protocol belongs to anthropic-api-tools-mcp.

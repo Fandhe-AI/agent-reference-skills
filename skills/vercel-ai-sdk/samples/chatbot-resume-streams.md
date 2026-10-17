@@ -70,7 +70,7 @@ export async function POST(req: Request) {
   messages = [...messages, message!];
 
   // Clear any previous active stream and save the user message
-  saveChat({ id, messages, activeStreamId: null });
+  await saveChat({ id, messages, activeStreamId: null });
 
   const result = streamText({
     model: 'openai/gpt-6-luna',
@@ -82,9 +82,9 @@ export async function POST(req: Request) {
       stream: result.stream,
       originalMessages: messages,
       generateMessageId: generateId,
-      onEnd: ({ messages }) => {
+      onEnd: async ({ messages }) => {
         // Clear the active stream when finished
-        saveChat({ id, messages, activeStreamId: null });
+        await saveChat({ id, messages, activeStreamId: null });
       },
     }),
     async consumeSseStream({ stream }) {
@@ -95,7 +95,7 @@ export async function POST(req: Request) {
       await streamContext.createNewResumableStream(streamId, () => stream);
 
       // Update the chat with the active stream ID
-      saveChat({ id, activeStreamId: streamId });
+      await saveChat({ id, activeStreamId: streamId });
     },
   });
 }
@@ -135,6 +135,6 @@ export async function GET(
 ## Notes
 
 - You build the storage: a Redis instance for the stream, `resumable-stream`, and a persistence layer that records `activeStreamId` per chat. The SDK supplies the `resume` option, the `consumeSseStream` callback, and the automatic GET request to `/api/chat/[id]/stream` (customizable via `prepareReconnectToStreamRequest`). The `readChat` / `saveChat` store is not defined on the page.
+- The official example does not await `saveChat`; it is awaited here so completion is awaited and failures are not swallowed.
 - Official warning: in a resumable setup, client-side aborts (closing the tab, refresh, `stop()`) are treated as disconnects and do not cancel generation. Add a dedicated stop endpoint (persist the partial assistant message, cancel the work, clear `activeStreamId` only if it still matches).
 - `DefaultChatTransport` treats resumed streams as full replays; set `resumeStreamIsReplay: false` if your endpoint sends only remaining chunks. Clear `activeStreamId` when starting a new stream to avoid resuming outdated streams, and authenticate both create and resume endpoints.
-- `after` is the Next.js helper that keeps work running after the response; server framework specifics belong to the nextjs-app skill.

@@ -67,15 +67,13 @@ async function main() {
       },
     });
 
-    let fullResponse = '';
     process.stdout.write('\nAssistant: ');
     for await (const delta of result.textStream) {
-      fullResponse += delta;
       process.stdout.write(delta);
     }
     process.stdout.write('\n\n');
 
-    messages.push({ role: 'assistant', content: fullResponse });
+    messages.push(...(await result.responseMessages));
   }
 }
 
@@ -89,5 +87,6 @@ pnpm tsx index.ts
 ## Notes
 
 - Requires Node.js 22+ and an AI Gateway API key; the official page uses `__MODEL__` / `__PROVIDER_IMPORT__` placeholders, replaced here by the gateway example model id from the same page.
+- The official quickstart pushes only the concatenated text to history; this sample uses `result.responseMessages` so tool calls and results carry over to the next turn.
 - Without `stopWhen` the loop ends after the first tool call (blank assistant text); `result.toolCalls` / `result.toolResults` expose the calls when needed.
 - The official page adds a second tool (`convertFahrenheitToCelsius`) the same way as in `quickstart-nextjs-app-router.md`.

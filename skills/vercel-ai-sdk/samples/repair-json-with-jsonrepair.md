@@ -37,7 +37,7 @@ const result = await generateText({
 });
 
 const repairedText = jsonrepair(result.text);
-const parseResult = safeParseJSON({ text: repairedText });
+const parseResult = await safeParseJSON({ text: repairedText });
 
 if (!parseResult.success) {
   throw parseResult.error;
@@ -51,4 +51,5 @@ console.log(output.recipe);
 
 - `__PROVIDER_IMPORT__` and `__MODEL__` are placeholders on the official page; replace them with your provider import and model.
 - Flow: generate plain text (`Output.text()`), repair with `jsonrepair`, parse with `safeParseJSON` (from `@ai-sdk/provider-utils`), validate with your schema. Repair is best-effort and cannot fix structurally wrong data; for truncation consider raising `maxOutputTokens` or simplifying the schema.
+- The cookbook text omits `await` before `safeParseJSON`; it returns a Promise (other docs pages call `await safeParseJSON(...)`).
 - The page describes this as a pattern for AI SDK v6. Native structured output is in `references/core/generating-structured-data.md`; schema validation with Zod belongs to the zod skill.
