@@ -3,14 +3,13 @@ name: kotlin-multiplatform
 description: >
   Kotlin Multiplatform (KMP) / Compose Multiplatform (JetBrains, Kotlin) の公式リファレンス。
   expect/actual, source set hierarchy, Multiplatform Gradle DSL, org.jetbrains.compose, Compose Resources (Res),
-  Compose for iOS / Compose Desktop (Window, Tray, MenuBar, nativeDistributions), iOS 統合 (SwiftPM export, CocoaPods),
-  Navigation / ViewModel / Lifecycle, Compose Hot Reload, Maven Central / npm 公開, AGP 9 移行, 互換性表。
+  Compose for iOS / Compose Desktop (Window, Tray, MenuBar, nativeDistributions) / Web, iOS 統合 (SwiftPM export, CocoaPods),
+  Navigation / ViewModel / Lifecycle, Compose Hot Reload,
+  Kotlin Toolchain, CI (GitHub Actions / TeamCity), Maven Central / npm 公開, AGP 9 移行, 互換性表。
 user-invocable: false
 ---
 
 # Kotlin Multiplatform / Compose Multiplatform
-
-> 分割 PR の途中段階。現在収録済み: references/{build-test-publish, compatibility, compose-architecture, compose-desktop, compose-ios, compose-resources, compose-ui, getting-started, gradle-dsl, ios-integration}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 JetBrains の `kotlin-multiplatform-dev-docs`（`kotlinlang.org/docs/multiplatform/**` と Compose Multiplatform ドキュメント）を蒸留したリファレンススキル。`kotlinlang.org/docs/**` のうち `multiplatform/` 以外は kotlin スキルの担当。
 
@@ -34,6 +33,19 @@ skills/kotlin-multiplatform/
       compose-and-jetpack-compose.md
       jetpack-libraries.md
       platform-differences.md
+    project-structure/
+      README.md
+      targets-and-source-sets.md
+      hierarchy.md
+      advanced-project-structure.md
+      share-on-platforms.md
+      project-configuration.md
+      recommended-structure.md
+      expect-actual.md
+      platform-specific-apis.md
+      add-dependencies.md
+      android-dependencies.md
+      ios-dependencies.md
     gradle-dsl/
       README.md
       dsl-overview.md
@@ -53,6 +65,14 @@ skills/kotlin-multiplatform/
       publish-lib-setup.md
       publish-to-maven.md
       publish-to-npm.md
+    tooling/
+      README.md
+      build-and-run.md
+      kotlin-toolchain.md
+      compose-hot-reload.md
+      github-actions.md
+      teamcity.md
+      ios-ci-cd-teamcity.md
     compose-ui/
       README.md
       entry-points.md
@@ -132,6 +152,25 @@ skills/kotlin-multiplatform/
       changes-kotlin-1-7-1-8.md
       changes-kotlin-1-9.md
       changes-kotlin-2-0-and-later.md
+  samples/
+    README.md
+    quickstart.md
+    compose-multiplatform-new-project.md
+    create-multiplatform-library.md
+    integrate-in-existing-android-app.md
+    migrate-advanced-android-app.md
+    ktor-sqldelight-data-layer.md
+    upgrade-app-native-ui.md
+    official-samples.md
+  scripts/
+    README.md
+    gradle-tasks.md
+    kotlin-toolchain-cli.md
+    hot-reload.md
+    native-distribution.md
+    ios-integration.md
+    publish.md
+    ci.md
 ```
 
 ## 探索手順
@@ -141,6 +180,7 @@ skills/kotlin-multiplatform/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
+4. 実例は `samples/README.md`、実行コマンドは `scripts/README.md` を引く
 
 他スキルとの棲み分け:
 
@@ -153,9 +193,12 @@ skills/kotlin-multiplatform/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | KMP の概要・対応プラットフォームの安定度・Jetpack Compose との関係を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| source set・階層・targets・モジュール構成を決めたい | project-structure | [references/project-structure/README.md](references/project-structure/README.md) |
+| expect/actual、プラットフォーム固有 API、依存関係（Android / iOS / 共通）を追加したい | project-structure | [references/project-structure/README.md](references/project-structure/README.md) |
 | `kotlin { }` ブロックの targets / sourceSets / compilations / compilerOptions を書きたい | gradle-dsl | [references/gradle-dsl/README.md](references/gradle-dsl/README.md) |
 | Compose compiler プラグインの更新方法を知りたい | gradle-dsl | [references/gradle-dsl/README.md](references/gradle-dsl/README.md) |
 | compilation 設定・ネイティブバイナリ・テスト実行・ライブラリ / アプリ公開 | build-test-publish | [references/build-test-publish/README.md](references/build-test-publish/README.md) |
+| ビルド・実行、Hot Reload、Kotlin Toolchain、CI（GitHub Actions / TeamCity）を設定したい | tooling | [references/tooling/README.md](references/tooling/README.md) |
 | 共通 UI の entry point・レイアウト・modifier・popup・drag-and-drop・preview・テスト | compose-ui | [references/compose-ui/README.md](references/compose-ui/README.md) |
 | Web（ComposeViewport）の viewport / CSS、Android 専用コンポーネントの扱い | compose-ui | [references/compose-ui/README.md](references/compose-ui/README.md) |
 | lifecycle・ViewModel・Navigation・deep link・Navigation 3 を使いたい | compose-architecture | [references/compose-architecture/README.md](references/compose-architecture/README.md) |
@@ -164,3 +207,5 @@ skills/kotlin-multiplatform/
 | desktop のウィンドウ・メニューバー・トレイ・キーボード・マウス・パッケージング | compose-desktop | [references/compose-desktop/README.md](references/compose-desktop/README.md) |
 | 共有モジュールを iOS アプリへ統合（SwiftPM / CocoaPods / direct integration）、privacy manifest | ios-integration | [references/ios-integration/README.md](references/ios-integration/README.md) |
 | Kotlin / Compose / Gradle / AGP の対応版、AGP 9 移行、リリース内容、非互換変更 | compatibility | [references/compatibility/README.md](references/compatibility/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI・Gradle タスクのコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

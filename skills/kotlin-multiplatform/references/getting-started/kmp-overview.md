@@ -31,9 +31,9 @@ kotlin {
 | Share both UI and business logic | shared logic and UI tutorial (compose-multiplatform-new-project) |
 | Turn an Android app into a multiplatform app | migration tutorial (multiplatform-integrate-in-existing-app) |
 | Share some code without sharing UI | shared logic tutorial (multiplatform-upgrade-app) |
-| Project structure | targets-and-source-sets.md |
-| Code sharing mechanisms | share-on-platforms.md |
-| Dependencies | add-dependencies.md |
+| Project structure | [targets-and-source-sets.md](../project-structure/targets-and-source-sets.md) |
+| Code sharing mechanisms | [share-on-platforms.md](../project-structure/share-on-platforms.md) |
+| Dependencies | [add-dependencies.md](../project-structure/add-dependencies.md) |
 | iOS integration methods | [integration-overview.md](../ios-integration/integration-overview.md) |
 | Compilations and native binaries | [configure-compilations.md](../build-test-publish/configure-compilations.md), [native-binaries.md](../build-test-publish/native-binaries.md) |
 | Publishing | [publish-apps.md](../build-test-publish/publish-apps.md), [publish-lib-setup.md](../build-test-publish/publish-lib-setup.md) |

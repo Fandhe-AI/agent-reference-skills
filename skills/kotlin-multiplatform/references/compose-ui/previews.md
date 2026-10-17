@@ -77,5 +77,5 @@ Available annotations:
 
 ## Related
 
-- Compose Hot Reload
+- [Compose Hot Reload](../tooling/compose-hot-reload.md)
 - [Updating multiplatform projects with Android apps to use AGP 9](../compatibility/agp-9-migration.md)

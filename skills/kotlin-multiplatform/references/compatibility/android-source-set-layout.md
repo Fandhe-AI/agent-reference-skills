@@ -71,5 +71,5 @@ Source directories (new pattern: `src/{KotlinSourceSet.name}/kotlin`):
 
 - [Updating multiplatform projects with Android apps to use AGP 9](./agp-9-migration.md)
 - [Compatibility guide for Kotlin Multiplatform — Kotlin 1.9.0−1.9.25](./changes-kotlin-1-9.md)
-- Adding Android dependencies
-- The basics of Kotlin Multiplatform project structure
+- [Adding Android dependencies](../project-structure/android-dependencies.md)
+- [The basics of Kotlin Multiplatform project structure](../project-structure/targets-and-source-sets.md)
