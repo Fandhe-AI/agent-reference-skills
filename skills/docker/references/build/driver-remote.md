@@ -32,11 +32,11 @@ $ docker buildx create \
 Unix socket:
 
 ```console
-$ sudo ./buildkitd --group $(id -gn) --addr unix://$HOME/buildkitd.sock
+$ sudo ./buildkitd --group "$(id -gn)" --addr "unix://${HOME}/buildkitd.sock"
 $ docker buildx create \
   --name remote-unix \
   --driver remote \
-  unix://$HOME/buildkitd.sock
+  "unix://${HOME}/buildkitd.sock"
 $ docker buildx build --builder=remote-unix -t test --load .
 ```
 
@@ -47,7 +47,7 @@ $ docker run -d --rm \
   --name=remote-buildkitd \
   --privileged \
   -p 1234:1234 \
-  -v $PWD/.certs:/etc/buildkit/certs \
+  -v "${PWD}/.certs:/etc/buildkit/certs" \
   moby/buildkit:latest \
   --addr tcp://0.0.0.0:1234 \
   --tlscacert /etc/buildkit/certs/daemon/ca.pem \
@@ -57,7 +57,7 @@ $ docker run -d --rm \
 $ docker buildx create \
   --name remote-container \
   --driver remote \
-  --driver-opt cacert=${PWD}/.certs/client/ca.pem,cert=${PWD}/.certs/client/cert.pem,key=${PWD}/.certs/client/key.pem,servername=<TLS_SERVER_NAME> \
+  --driver-opt "cacert=${PWD}/.certs/client/ca.pem,cert=${PWD}/.certs/client/cert.pem,key=${PWD}/.certs/client/key.pem,servername=<TLS_SERVER_NAME>" \
   tcp://localhost:1234
 ```
 
@@ -76,7 +76,7 @@ BuildKit in Kubernetes (service `buildkitd`):
 $ docker buildx create \
   --name remote-kubernetes \
   --driver remote \
-  --driver-opt cacert=${PWD}/.certs/client/ca.pem,cert=${PWD}/.certs/client/cert.pem,key=${PWD}/.certs/client/key.pem \
+  --driver-opt "cacert=${PWD}/.certs/client/ca.pem,cert=${PWD}/.certs/client/cert.pem,key=${PWD}/.certs/client/key.pem" \
   tcp://buildkitd.default.svc:1234
 ```
 

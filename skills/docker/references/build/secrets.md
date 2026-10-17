@@ -11,7 +11,7 @@ A build secret is sensitive information (password, API token) consumed during th
 Two steps: pass the secret to the build, then consume it in the Dockerfile.
 
 ```console
-$ docker build --secret id=aws,src=$HOME/.aws/credentials .
+$ docker build --secret "id=aws,src=${HOME}/.aws/credentials" .
 ```
 
 ```hcl
