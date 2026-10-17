@@ -27,7 +27,7 @@ Swift symbols:
 Load a platform library on Android:
 
 ```dart
-DynamicLibrary.open('libGLES_v3.so');
+DynamicLibrary.open('libGLESv3.so');
 ```
 
 ## Options / Props
@@ -53,6 +53,7 @@ Distribution format of dynamic libraries: Android: set of `.so` (ELF) files, one
 
 ## Notes
 
+- Corrected from the official docs: the source sample loads `libGLES_v3.so`; the Android NDK system library is `libGLESv3.so`.
 - Legacy: since Flutter 3.38 the `package_ffi` template with build hooks is recommended. This legacy template is still useful if you need to access the Flutter Plugin API, use static linking (on iOS and macOS), or configure a Google Play services runtime on Android.
 - You can exclude platforms from `--platforms` that you do not want to build for, but include the platform of the device you are testing on.
 - The FFI library can only bind against C symbols. The native code is invoked from Dart in `lib/native_add_bindings_generated.dart`, generated with `package:ffigen`.

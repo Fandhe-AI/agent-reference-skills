@@ -118,14 +118,25 @@ override func application(
 
 Launch options:
 
-```swift
-flutterEngine.run(withEntrypoint: "myOtherEntrypoint", libraryURI: "other_file.dart")
+Custom entrypoint:
 
+```swift
+let flutterEngine = FlutterEngine()
+flutterEngine.run(withEntrypoint: "myOtherEntrypoint", libraryURI: "other_file.dart")
+```
+
+Initial route:
+
+```swift
 let flutterEngine = FlutterEngine()
 // FlutterDefaultDartEntrypoint is the same as nil, which will run main().
-engine.run(
+flutterEngine.run(
   withEntrypoint: "main", initialRoute: "/onboarding")
+```
 
+Initial route with an implicit engine:
+
+```swift
 let flutterViewController = FlutterViewController(
       project: nil, initialRoute: "/onboarding", nibName: nil, bundle: nil)
 ```
@@ -140,7 +151,7 @@ void myOtherEntrypoint() { ... };
 Content-sized views:
 
 ```swift
-let flutterViewController = FlutterViewController(engine: engine, nibName: nil, bundle: nil)
+let flutterViewController = FlutterViewController(engine: flutterEngine, nibName: nil, bundle: nil)
 flutterViewController.isAutoResizable = true
 ```
 
@@ -161,6 +172,7 @@ flutterViewController.isAutoResizable = true
 
 ## Notes
 
+- Corrected from the official docs: the source Swift initial-route sample declares `flutterEngine` but calls `engine.run(...)`; this page uses `flutterEngine` consistently (as the Objective-C tab does).
 - Pre-warming a long-lived `FlutterEngine` is generally recommended: the first frame appears faster, Flutter and Dart state outlive one `FlutterViewController`, and the app and plugins can interact with Dart logic before showing the UI. The implicit-engine alternative can suit rarely shown screens, no good heuristic for starting the Dart VM, or no need to persist state between view controllers.
 - As of Flutter 3.41, `UIScene` support is the default for iOS apps, and Apple requires UIKit apps built with recent iOS SDKs to use the `UIScene` lifecycle. Adopt both `FlutterAppDelegate` (or `FlutterAppLifeCycleProvider`) and `FlutterSceneDelegate` (or `FlutterSceneLifeCycleProvider`) so plugins receive all lifecycle events. See the UIScene migration guide (`/release/breaking-changes/uiscenedelegate`).
 - In SwiftUI apps, configure the scene delegate class in `application(_:configurationForConnecting:options:)`; if the app does not support multiple scenes, set **Enable Multiple Scenes** (`UIApplicationSupportsMultipleScenes`) to **NO** under **Application Scene Manifest** in the target's `Info.plist`.

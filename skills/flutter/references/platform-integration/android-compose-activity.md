@@ -90,7 +90,7 @@ class SecondActivity : ComponentActivity() {
 Manifest declaration (`android/app/src/main/AndroidManifest.xml`, inside `<application>`):
 
 ```xml
-<activity android:name=".SecondActivity" android:exported="true" android:theme="@style/LaunchTheme"></activity>
+<activity android:name=".SecondActivity" android:exported="false" android:theme="@style/LaunchTheme"></activity>
 ```
 
 ## Options / Props
@@ -108,6 +108,7 @@ Three values must match across Dart and Kotlin: the channel name (`com.example.f
 
 ## Notes
 
+- Changed from the official docs: the source manifest uses `android:exported="true"`; since `SecondActivity` is only launched by an explicit intent from the same app, this page uses `android:exported="false"` so other apps cannot launch it with arbitrary extras.
 - Corrected from the official docs: the source sample passes `call.arguments.toString()` (the whole map, so `SecondActivity` would show `{message=Hello from Flutter}`); this page extracts the `message` key with `call.argument<String>("message")`. `result.success(true)` is returned only after `startActivity` succeeds and failures return `result.error` (source: empty `catch`, then `success`). The `else` branch calls `result.notImplemented()` (source: empty `else -> {}`).
 - Dependency snippet from the source (Kotlin DSL): `implementation(platform("androidx.compose:compose-bom:2024.06.00"))`, `implementation("androidx.compose.material3:material3")`, `implementation("androidx.activity:activity-compose")`, among others. The Groovy tab uses `compose-bom:2023.08.00` for `androidTestImplementation`.
 - Corrected from the official docs (outdated): `composeOptions { kotlinCompilerExtensionVersion = "1.4.8" }` applies only to Kotlin 1.x. With Kotlin 2.0+ (the norm on Flutter 3.44+ with AGP 9 built-in Kotlin), apply the Compose Compiler Gradle plugin `org.jetbrains.kotlin.plugin.compose` (same version as Kotlin) and drop `kotlinCompilerExtensionVersion`; keep `buildFeatures { compose = true }`. Example: `plugins { id("org.jetbrains.kotlin.plugin.compose") version "<kotlin-version>" }`.
