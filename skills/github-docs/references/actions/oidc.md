@@ -58,7 +58,7 @@ IDTOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$
 echo "::add-mask::$IDTOKEN"
 ```
 
-推奨: `core.getIDToken()`（取得したトークンを自動でマスクする）。toolkit を使う例:
+推奨: `core.getIDToken()`（取得したトークンを自動でマスクする）。`actions/github-script` は同梱の `@actions/core` を使うため、`npm install` は不要（インストールしても反映されない）。使用例:
 
 ```yaml
 jobs:
@@ -66,8 +66,6 @@ jobs:
     environment: Production
     runs-on: ubuntu-latest
     steps:
-    - name: Install OIDC Client from Core Package
-      run: npm install @actions/core@1.6.0 @actions/http-client
     - name: Get Id Token
       uses: actions/github-script@v8
       id: idtoken
