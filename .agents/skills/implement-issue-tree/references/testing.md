@@ -104,3 +104,9 @@ volta run --node 22 node skills/implement-issue-tree/tests/tools/mutate.mjs --ru
   環境で繰り返して見る。
 - `node --test` の中から実行器を呼ぶと環境変数 `NODE_TEST_CONTEXT` が子の `node --test` へ引き継がれ、赤でも exit 0 を
   返す。実行器は子へ渡す環境からこれを外している（外さないと全変異が `SURVIVED` になる）。
+
+## ツリー取得（Issue #668）
+
+- `tests/fetch-tree-unit.test.mjs`（lib の表）・`tests/fetch-tree.test.mjs` と `tests/fetch-tree-alt-bash.test.mjs`（偽 gh `tests/lib/gh-tree-stub.mjs` で実スクリプトを bash ごとに並列実行。本体は `tests/lib/fetch-tree-suite.mjs`）・`tests/fetch-tree-host.test.mjs`（stub agent で実装スクリプト全体を実行し、検査値の照合と取り直しを確かめる）。期待する検査値は `tests/lib/signed-output.mjs` の `treeFetchReply` が node:crypto で独立に計算する。
+- 既存テストの stub が `plan:issue-tree` に平らな `{ nodes }` を返す場合は、`tests/lib/stub-run.mjs` が封筒に包む（`wrapTreeReply`。封筒の形・null・Error はそのまま通す）。
+- 変異テスト: `node skills/implement-issue-tree/tests/tools/mutate.mjs --run FT1-host-digest-unchecked …`（`FT1`〜`FT10`）。

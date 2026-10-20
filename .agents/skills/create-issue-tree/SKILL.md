@@ -445,7 +445,8 @@ fi
 マージの不変条件: Phase 行・セクションは実ツリー（sub_issues API）からのみ作り、先行 Phase の表・自由記述は保持する /
 issue タイトルは非信頼データとして `|`・改行・バックスラッシュを無害化する / プレースホルダーが残る本文では
 `gh issue edit` しない（fail-closed）/ 一時ファイルは成否によらず削除する / granularity マーカーは常に
-GRANULARITY で書き直す。詳細は `scripts/merge-root-body.sh` 冒頭コメントを参照。
+GRANULARITY で書き直す / update-issue-tree の管理マーカー区間があれば内側だけを置換し、`<details>` 内（退避節）は対象外 /
+マーカーが 1 組でない・除外後も同名見出しが複数ある・`<details>` が閉じていない本文は中止する。詳細は `scripts/merge-root-body.sh` 冒頭コメントを参照。
 
 `--root` 未指定（新規作成）の場合は `scripts/create-root-body.sh` が実ツリーから本文を生成して更新する
 （Issue #555）。ヘルパー（`list_subs` 等）は両経路とも `scripts/tree-lib.sh` を共用する。

@@ -589,6 +589,8 @@ const SIBLINGS = [
   { number: 761, parent: 753, title: 'docs: TASK-97-8 重複 A' },
   { number: 762, parent: 753, title: 'docs: TASK-97-8 重複 B' },
   { number: 763, parent: 753, title: 'docs: TASK-97-9 ID の後ろが重複の工程' },
+  { number: 770, parent: 753, title: 'docs: TASK-97-08 ゼロ埋めの工程' },
+  { number: 771, parent: 753, title: 'docs: TASK-97-09 ゼロ埋めの次の工程' },
   { number: 764, parent: 753, title: 'docs: ID の無いタイトル' },
   { number: 801, parent: 800, title: 'feat: TASK-97-5 別の親の同じ ID' },
   { number: 901, parent: 900, title: 'docs: ID の無いタイトルだけの親' },
@@ -622,6 +624,7 @@ test('titleTaskId: タイトル先頭のタスク ID だけを取り出す (#657
 test('buildSiblingTaskTable: 親ごとに ID → 番号を作り、重複 ID は落とし、前の工程を工程番号から解決する (#657)', () => {
   assert.deepEqual(SIB_BUILT.families.get(753), [
     ['TASK-97-1', 754], ['TASK-97-4', 757], ['TASK-97-5', 758], ['TASK-97-6', 759], ['TASK-97-9', 763],
+    ['TASK-97-08', 770], ['TASK-97-09', 771],
   ])
   assert.deepEqual(SIB_BUILT.nodes.get(759), { parent: 753, prev: 758 })
   assert.deepEqual(SIB_BUILT.nodes.get(758), { parent: 753, prev: 757 })
@@ -636,6 +639,30 @@ test('buildSiblingTaskTable: 親ごとに ID → 番号を作り、重複 ID は
   const big = buildSiblingTaskTable(many)
   assert.deepEqual(big.skipped, [5])
   assert.equal(big.families.size, 0)
+})
+
+test('buildSiblingTaskTable: 前の工程の ID は元の桁数のゼロ埋めで引く (TASK-97-09 は TASK-97-08) (#657)', () => {
+  assert.deepEqual(SIB_BUILT.nodes.get(771), { parent: 753, prev: 770 })
+  assert.deepEqual(SIB_BUILT.nodes.get(770), { parent: 753, prev: 0 }, 'TASK-97-07 の兄弟が無ければ前の工程は無い')
+  const t = buildSiblingTaskTable([
+    { number: 1, parent: 9, title: 'x: A-1-9 a' },
+    { number: 2, parent: 9, title: 'x: A-1-10 b' },
+  ])
+  assert.deepEqual(t.nodes.get(2), { parent: 9, prev: 1 }, 'ゼロ埋めの無い ID は従来どおり A-1-9')
+  const z = buildSiblingTaskTable([
+    { number: 1, parent: 9, title: 'x: A-1-09 a' },
+    { number: 2, parent: 9, title: 'x: A-1-10 b' },
+  ])
+  assert.deepEqual(z.nodes.get(2), { parent: 9, prev: 1 }, 'A-1-10 の前は桁を保った A-1-09')
+})
+
+test('見出し行の兄弟 ID 参照（Depends on TASK-97-5）も依存にする (#657)', () => {
+  assert.deepEqual(runSib(759, '## Depends on TASK-97-5\n'), [758])
+  assert.deepEqual(runSib(759, '# Blocked by TASK-97-4\n'), [757])
+  assert.deepEqual(runSib(759, '## 関連: Depends on TASK-97-5\n'), [], '否定語を含む見出しは拾わない')
+  assert.deepEqual(runSib(759, '## 概要\n- TASK-97-5\n'), [], '見出しの拡張で依存節の外の行頭 ID は拾わない')
+  assert.deepEqual(runSib(759, '## Depends on TASK-97-5\n## 依存\n- TASK-97-1\n'), [754, 758])
+  assert.deepEqual(runSib(759, '## Depends on #12\n'), [12], '従来の Depends on #N は変わらない')
 })
 
 test('siblingTaskTableFor: 依頼する番号の分だけを埋め込み、表に単一引用符を含めない (#657)', () => {
@@ -674,6 +701,15 @@ test('ID の直後に先行を表す語が続く形・英語の前置詞・依�
   ]
   for (const line of positives) assert.deepEqual(runSib(759, `${line}\n`), [758], line)
   assert.deepEqual(runSib(759, '## 依存\n- TASK-97-5\n- [ ] TASK-97-1（確認）\n'), [754, 758].sort((a, b) => a - b))
+})
+
+test('見出し行の ID を伴わない「前の工程」は節見出しであり依存にしない（ID を伴う形と本文行は従来どおり）', () => {
+  assert.deepEqual(runSib(759, '## 前の工程\n'), [], '見出しの前の工程は依存にしない')
+  assert.deepEqual(runSib(759, '### 前工程の振り返り\n'), [], '見出しの前工程は依存にしない')
+  assert.deepEqual(runSib(759, '### Depends on TASK-97-5\n'), [758], '見出しの Depends on ID は拾う（退行ガード）')
+  assert.deepEqual(runSib(759, '## 前の工程（TASK-97-5）の後に\n'), [758], '見出しの ID を伴う前の工程は拾う')
+  assert.deepEqual(runSib(759, '前の工程の結果を踏まえ、実装する\n'), [758], '本文行の前の工程は従来どおり')
+  assert.deepEqual(runSib(759, '- [ ] 前の工程の結果を踏まえている\n'), [758], 'リスト行の前の工程は従来どおり')
 })
 
 test('ID を書かない「前の工程」は自分の工程番号を 1 つ戻した兄弟に解決する (#657)', () => {
@@ -754,5 +790,5 @@ test('declaredDepsPrompt は兄弟の表を埋め込んだフィルタを使い�
 test('駆動部はタイトルから兄弟の表を作って抽出へ渡す (#657)', () => {
   assert.ok(driverPart.includes('const siblingTasks = buildSiblingTaskTable(tree.nodes)'))
   assert.ok(driverPart.includes('await extractDeclaredDeps(chunks, undefined, (pending) => siblingTaskTableFor(pending, siblingTasks))'))
-  assert.match(driverPart, /前の工程（TASK-x-y）の結果を踏まえている/, 'Tree エージェントの手順 4 にも書く')
+  assert.match(definitionPart, /前の工程（TASK-x-y）の結果を踏まえている/, 'Tree エージェントの手順 4 にも書く')
 })

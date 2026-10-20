@@ -35,6 +35,8 @@ const SETTLED = ['observe-pr-checks-settled.test.mjs']
 const CLASSIFY = ['observe-checks-unit.test.mjs', 'observe-pr-checks-settled.test.mjs']
 const PR_PUSH = ['pr-push.test.mjs', 'pr-push-unit.test.mjs']
 const BASE_MERGE = ['base-merge.test.mjs', 'base-merge-unit.test.mjs']
+const FETCH_TREE_HOST = ['fetch-tree-host.test.mjs']
+const FETCH_TREE_SCRIPT = ['fetch-tree.test.mjs', 'fetch-tree-alt-bash.test.mjs']
 
 export const MUTATIONS = [
   { id: 'AF1-unregistered-unobservable-as-not-registered', file: WR, from: "    if [ \"$(wr_path_state \"${path}\")\" = unknown ]; then T_WT='retained-unobservable'; return 0; fi\n", to: '', tests: [...WR_REAL, 'worktree-remove-alt-bash.test.mjs'], note: "登録の無いパスの有無を確かめられない（読めない親）とき not-registered / 実体なしと返す（ホストが消えたものとして追跡を外す）" },
@@ -398,4 +400,15 @@ export const MUTATIONS = [
   { id: 'AE2-revive-false-ignored', file: SRC, from: "  if (revive) markWorktreeLive(p)\n", to: "  markWorktreeLive(p)\n", tests: WR_LEDGER, note: "recordEphemeralWorktree が revive: false を無視して常に live に戻す" },
   { id: 'WZ4-live-worktree-leaves-sweep-candidate', file: SRC, from: "  confirmedRemovedPaths.delete(p)\n  sweepEligiblePaths.delete(p)\n", to: "  confirmedRemovedPaths.delete(p)\n", tests: WR_LEDGER, note: "削除済みからは外すが最終スイープの削除候補に残す（作り直された実体を --force で消し得る）" },
   { id: 'WZ5-live-worktree-leaves-confirmed-removed', file: SRC, from: "  confirmedRemovedPaths.delete(p)\n  sweepEligiblePaths.delete(p)\n", to: "  sweepEligiblePaths.delete(p)\n", tests: WR_LEDGER, note: "スイープ候補からは外すが削除済みに残す（作り直された実体がバイト測定から漏れる）" },
+  // ---- ツリー取得のスクリプト化と検査値（Issue #668）----
+  { id: 'FT1-host-digest-unchecked', file: SRC, from: "  if (signed.payload.nodesSha256 !== treeNodesDigest(nodes)) return { ok: false, reason: 'digest' }\n", to: '', tests: FETCH_TREE_HOST, note: "封筒の nodesSha256 と nodes から計算し直した値を照合しない（書き写しで 1 欄変わっても通る）" },
+  { id: 'FT2-digest-drops-total', file: SRC, from: "n.state, n.subIssuesTotal, sha256Hex(n.title)].join('\\t')", to: "n.state, sha256Hex(n.title)].join('\\t')", tests: FETCH_TREE_HOST, note: "ダイジェストから subIssuesTotal の欄を落とす（その欄の書き写しの誤りが見つからない）" },
+  { id: 'FT3-retry-limit-three', file: SRC, from: "for (let attempt = 1; attempt <= 2; attempt++) {\n    let result = null\n    let nonce = ''", to: "for (let attempt = 1; attempt <= 3; attempt++) {\n    let result = null\n    let nonce = ''", tests: [...FETCH_TREE_HOST, 'tree-completeness.test.mjs'], note: "取り直しの上限を 2 回（初回 + 1 回）から 3 回にする" },
+  { id: 'FT4-script-count-unchecked', file: 'scripts/fetch-tree.sh', from: '  ft_count_ok "${expected}" "${actual}" || {', to: '  true || {', tests: FETCH_TREE_SCRIPT, note: "取得した子の件数が subIssuesTotal と一致するかを検査しない（ページの取り落としが通る）" },
+  { id: 'FT5-host-input-unchecked', file: SRC, from: "result?.sha256 }, nonce, inputSha)", to: "result?.sha256 }, nonce)", tests: FETCH_TREE_HOST, note: "封筒がルート・リポジトリを束縛していること（inputSha256）を照合しない（別入力の出力の流用が通る）" },
+  { id: 'FT6-nonce-fixed-across-attempts', file: SRC, from: "const nonce = boundaryNonce(`fetch-tree:${attempt}:${parent}:${repoArg}`)", to: "const nonce = boundaryNonce(`fetch-tree:1:${parent}:${repoArg}`)", tests: FETCH_TREE_HOST, note: "プロンプトの nonce を試行によらず固定する（取り直しで前回の出力を流用できる）" },
+  { id: 'FT7-script-duplicate-unchecked', file: 'scripts/fetch-tree.sh', from: '        *" ${cnum} "*) echo "fetch-tree: 番号の重複', to: '        *"  ${cnum}x "*) echo "fetch-tree: 番号の重複', tests: FETCH_TREE_SCRIPT, note: "番号の重複を検出しない" },
+  { id: 'FT8-script-digest-drops-title', file: 'scripts/lib/fetch-tree-lib.sh', from: "  tsha=$(printf '%s' \"$6\" | so_sha256) || return 1\n", to: "  tsha=none\n", tests: [...FETCH_TREE_SCRIPT, 'fetch-tree-unit.test.mjs'], note: "ダイジェストに title を含めない（title の書き写しの誤りが見つからない）" },
+  { id: 'FT9-dedupe-by-number-only', file: SRC, from: '    const sig = stableStringify(n)\n', to: '    const sig = String(n.number)\n', tests: ['tree-completeness.test.mjs'], note: "#667: 重複を number だけで畳む（内容の違う重複が畳まれて見えなくなる）" },
+  { id: 'FT10-shape-check-skipped', file: SRC, from: "const verified = shape === '' ?", to: "const verified = true ?", tests: FETCH_TREE_HOST, note: "書き写された 6 欄の型・値域の検査を飛ばす（state が open / closed でない値が通る）" },
 ]

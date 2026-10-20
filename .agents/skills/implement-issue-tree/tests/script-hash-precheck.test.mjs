@@ -256,13 +256,12 @@ test('流れ: 1 回目と 2 回目の nonce は別（前の呼び出しの封筒
   assert.notEqual(nonces[0], nonces[1])
 })
 
-test('流れ: dryRun でも skillDir があれば予検査を 1 回行い、skillDir が無い dryRun では行わない（スクリプトを使わないため）', async () => {
+test('流れ: dryRun でも予検査を 1 回行い、skillDir が無い dryRun は（ツリー取得がスクリプト経由のため）エージェントを呼ぶ前に停止する', async () => {
   const withDir = await runScript({ args: { ...BASE_ARGS, dryRun: true } })
   assert.equal(labels(withDir.calls).filter((l) => l === LABEL).length, 1)
   const { skillDir, ...noDir } = BASE_ARGS
   assert.ok(skillDir)
-  const without = await runScript({ args: { ...noDir, dryRun: true } })
-  assert.equal(labels(without.calls).filter((l) => l === LABEL).length, 0)
+  await assert.rejects(runScript({ args: { ...noDir, dryRun: true } }), /args\.skillDir にはスキルディレクトリ/)
   // 版ずれのある dryRun も停止する（見積りの前に版ずれを知らせる）
   await assert.rejects(
     runScript({ args: { ...BASE_ARGS, dryRun: true }, override: (label, opts, prompt) => (label === LABEL ? hashPrecheckReply(prompt, { ok: 0, missing: NAMES.length, firstBad: 1 }) : undefined) }),
