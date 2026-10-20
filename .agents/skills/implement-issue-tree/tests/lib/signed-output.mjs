@@ -100,3 +100,57 @@ export function availableBashes() {
 export function toolExists(name) {
   return spawnSync('sh', ['-c', `command -v ${name}`], { encoding: 'utf8' }).status === 0
 }
+
+// ---- ツリー取得（scripts/fetch-tree.sh。Issue #668）----
+// ホストの実装（treeNodesDigest 等）とは独立に node:crypto で計算する。ダイジェストの定義は
+// scripts/lib/fetch-tree-lib.sh と同じ: 行 = number TAB parent TAB siblingIndex TAB state TAB subIssuesTotal TAB sha256hex(title)、
+// number 昇順に改行で連結して SHA-256。
+export function treeNodesSha256(nodes) {
+  const h = (s) => createHash('sha256').update(String(s), 'utf8').digest('hex')
+  const lines = [...nodes]
+    .sort((a, b) => a.number - b.number)
+    .map((n) => [n.number, n.parent, n.siblingIndex, n.state, n.subIssuesTotal, h(n.title)].join('\t'))
+  return h(lines.join('\n'))
+}
+
+export function treeInputSha256(root, repo = '') {
+  return inputSha256(`fetch-tree\n${root}\n${repo}`)
+}
+
+// プロンプトのコマンド `... --nonce N --root R [--repo O/R]` から封筒を作る（正直なエージェントが fetch-tree.sh を実行して転記した結果）。
+// nodes = エージェントが書き写した nodes。opts.digestNodes = スクリプトが見た『真の内容』（既定は nodes）で、書き写しの誤りを模すには
+// nodes だけを書き換える。opts.nonce / opts.payload / opts.sha256 / opts.omit / opts.failure で封筒の欠落・不整合・失敗申告を模す。
+export function treeFetchReply(prompt, nodes, opts = {}) {
+  const nonce = nonceOf(prompt)
+  const root = /--root (\d+)/.exec(String(prompt))?.[1]
+  const repo = /--repo ([A-Za-z0-9._/-]+)/.exec(String(prompt))?.[1] ?? ''
+  if (nonce === null || root === undefined) throw new Error('プロンプトに fetch-tree.sh のコマンドが無い')
+  const truth = opts.digestNodes ?? nodes
+  const payload = { count: truth.length, inputSha256: treeInputSha256(root, repo), nodesSha256: treeNodesSha256(truth), ...(opts.payload ?? {}) }
+  const env = makeEnvelope(opts.nonce ?? nonce, payload)
+  const out = { nodes, nonce: env.nonce, payload: env.payload, sha256: opts.sha256 ?? env.sha256 }
+  for (const k of opts.omit ?? []) delete out[k]
+  if (opts.failure !== undefined) out.failure = opts.failure
+  return out
+}
+
+// 全欄（6 欄）が一致する重複を 1 件にした配列（スクリプトは重複を出さないので、真の内容にはこちらを使う）
+function uniqueBySixFields(nodes) {
+  const seen = new Set()
+  return nodes.filter((n) => {
+    const k = JSON.stringify([n.number, n.parent, n.siblingIndex, n.state, n.subIssuesTotal, n.title])
+    if (seen.has(k)) return false
+    seen.add(k)
+    return true
+  })
+}
+
+// 既存テストの agent スタブが返していた `{ nodes }` を封筒つきに変える薄いアダプタ。nodes が配列でない・オブジェクト以外を含む・
+// 既に封筒の形のもの・null / Error はそのまま返す（ホストが封筒より前に検査する異常系を温存するため）
+export function wrapTreeReply(prompt, value) {
+  if (value === null || value === undefined || value instanceof Error) return value
+  if (typeof value !== 'object' || !Array.isArray(value.nodes)) return value
+  if (['nonce', 'payload', 'sha256', 'failure'].some((k) => k in value)) return value
+  if (value.nodes.some((n) => n === null || typeof n !== 'object' || Array.isArray(n))) return value
+  return treeFetchReply(prompt, value.nodes, { digestNodes: uniqueBySixFields(value.nodes) })
+}

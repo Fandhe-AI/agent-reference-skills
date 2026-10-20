@@ -169,7 +169,7 @@ function codeLines(text) {
 
 test('走査の対象にスクリプト一式（scripts/*.sh と scripts/lib/*.sh）が含まれ、除外は merge-guard-hook.sh だけ', () => {
   const names = targets().map((t) => t.name)
-  for (const must of ['base-merge.sh', 'observe-pr.sh', 'measure-residual-bytes.sh', 'measure-free-disk.sh', 'run-verified.sh', 'preview-tree.sh', 'pr-push.sh', 'merge-gate.sh', 'worktree-remove.sh', 'recover-prep.sh', 'lib/worktree-remove-lib.sh', 'lib/recover-prep-lib.sh', 'lib/merge-gate-lib.sh', 'lib/signed-output.sh', 'lib/push-verify.sh', 'lib/base-merge-lib.sh', 'lib/pr-push-lib.sh']) {
+  for (const must of ['base-merge.sh', 'observe-pr.sh', 'measure-residual-bytes.sh', 'measure-free-disk.sh', 'run-verified.sh', 'preview-tree.sh', 'pr-push.sh', 'merge-gate.sh', 'worktree-remove.sh', 'recover-prep.sh', 'fetch-tree.sh', 'lib/fetch-tree-lib.sh', 'lib/worktree-remove-lib.sh', 'lib/recover-prep-lib.sh', 'lib/merge-gate-lib.sh', 'lib/signed-output.sh', 'lib/push-verify.sh', 'lib/base-merge-lib.sh', 'lib/pr-push-lib.sh']) {
     assert.ok(names.includes(must), `${must} が走査の対象にない（${names.join(', ')}）`)
   }
   assert.ok(!names.includes('merge-guard-hook.sh'))

@@ -21,7 +21,7 @@ import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { stripMetaExport } from './lib/workflow-script-contract.mjs'
-import { hashPrecheckReply } from './lib/signed-output.mjs'
+import { hashPrecheckReply, wrapTreeReply } from './lib/signed-output.mjs'
 
 const SCRIPT_PATH = process.env.IIT_BLOCKED_BATCH_SCRIPT_PATH ?? join(
   dirname(fileURLToPath(import.meta.url)),
@@ -339,7 +339,7 @@ async function runScript({ args, nodes, saved = null, ootStates = { [OOT]: 'OPEN
       return { ...stateVerifyFor(saved), highWaterVersion: 2 }
     }
     // スクリプトが返却ノードを書き換える（optinTests の採用結果）ため、実行ごとに複製して返す。
-    if (label === 'plan:issue-tree') return { nodes: structuredClone(nodes) }
+    if (label === 'plan:issue-tree') return wrapTreeReply(prompt, { nodes: structuredClone(nodes) })
     if (label === 'detect:external-checks') return { apps: [] }
     if (label.startsWith('plan:declared-deps')) {
       const m = /for n in ([0-9 ]+); do/.exec(prompt)

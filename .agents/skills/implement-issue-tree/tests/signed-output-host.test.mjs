@@ -485,7 +485,7 @@ test('起動時: dryRun でないランは、既定でもバイト軸オプト�
     const { error, calls } = await runDriver(args)
     assert.ok(error, `エラーで停止する: ${JSON.stringify(args)}`)
     assert.match(error.message, /args\.skillDir にはスキルディレクトリ.*絶対パスを渡す/)
-    assert.match(error.message, /省略できるのは dryRun: true のときだけ/)
+    assert.match(error.message, /dryRun: true のときも必須/)
     assert.deepEqual(calls, [])
   }
 })
@@ -498,11 +498,12 @@ test('起動時: skillDir の形式不正は、他の引数より先に起動時
   }
 })
 
-test('起動時: dryRun: true のランは skillDir を省略できる（スクリプトを使うエージェントを起動しない）', async () => {
-  for (const args of [{ parent: 1, dryRun: true }]) {
-    const { error } = await runDriver(args)
-    assert.ok(!error || !/skillDir/.test(error.message), `${JSON.stringify(args)}: ${error?.message}`)
-  }
+// Issue #668: ツリー取得が全ランで fetch-tree.sh 経由になったため、dryRun でも skillDir は必須（エージェントを 1 回も呼ばずに停止する）
+test('起動時: dryRun: true のランも skillDir 未指定ならエージェントを 1 回も呼ばずエラーで停止する', async () => {
+  const { error, calls } = await runDriver({ parent: 1, dryRun: true })
+  assert.ok(error && /args\.skillDir にはスキルディレクトリ/.test(error.message))
+  assert.match(error.message, /dryRun: true のときも必須/)
+  assert.deepEqual(calls, [])
 })
 
 test('起動時: 有効な skillDir を渡せば skillDir のエラーにならない', async () => {

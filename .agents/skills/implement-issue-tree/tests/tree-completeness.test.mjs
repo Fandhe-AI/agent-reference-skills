@@ -35,8 +35,8 @@ const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 const driverPart = source.slice(markerIndex)
 const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-tree-completeness-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-defs.mjs')
-writeFileSync(slicePath, `${definitionPart}\nexport { findIncompleteTreeNodes, closePrompt, TREE_SCHEMA }\n`)
-const { findIncompleteTreeNodes, closePrompt, TREE_SCHEMA } = await import(pathToFileURL(slicePath).href)
+writeFileSync(slicePath, `${definitionPart}\nexport { findIncompleteTreeNodes, dedupeIdenticalTreeNodes, closePrompt, TREE_SCHEMA }\n`)
+const { findIncompleteTreeNodes, dedupeIdenticalTreeNodes, closePrompt, TREE_SCHEMA } = await import(pathToFileURL(slicePath).href)
 
 const node = (number, parent, subIssuesTotal, state = 'open') => (
   { number, title: `t${number}`, state, parent, siblingIndex: 0, dependsOn: [], subIssuesTotal }
@@ -91,21 +91,21 @@ test('TREE_SCHEMA は subIssuesTotal を 0 以上の整数・required で宣言�
   assert.equal(items.properties.subIssuesTotal.minimum, 0)
 })
 
-function treePrompt() {
-  const start = driverPart.indexOf('const tree = await agent([')
-  const end = driverPart.indexOf("label: 'plan:issue-tree'")
-  assert.ok(start >= 0 && end > start, 'Tree 取得の agent 呼び出しが見つからない')
-  return driverPart.slice(start, end)
-}
-
-test('(f) Tree 取得プロンプトは closed も辿る・total 0 のみ leaf・全ノードで sub_issues を呼ぶ', () => {
-  const p = treePrompt()
-  assert.match(p, /closed のノードも必ず辿る/)
-  assert.match(p, /`sub_issues_summary\.total` が 0 のノードだけ/)
-  assert.match(p, /それ以外の全ノードで `sub_issues` を呼ぶ/)
-  assert.match(p, /subIssuesTotal/)
-  assert.match(p, /--paginate/)
-  assert.match(p, /ホストも同照合し/)
+// 取得手順（closed の貫通・total 0 のみ leaf・ページ送り・件数の自己点検）は scripts/fetch-tree.sh へ移った（Issue #668）。
+// その挙動は tests/fetch-tree.test.mjs が実スクリプトで固定する。ここではプロンプトがスクリプト起動と書き写しの規則を持つことを確かめる
+test('(f) Tree 取得プロンプトは fetch-tree.sh を launcher 経由で 1 回実行させ、全行の書き写しと封筒の転記を求める', async () => {
+  const { runScript: rs, BASE_ARGS: BA } = await import('./lib/stub-run.mjs')
+  const { calls } = await rs({ args: { ...BA, repo: 'o/r' }, leaves: [2, 3] })
+  const p = calls.find((c) => c.opts.label === 'plan:issue-tree').prompt
+  assert.match(p, /bash '[^']+\/scripts\/run-verified\.sh' [0-9a-f]{0,64}\S* fetch-tree\.sh --nonce [0-9a-z]{28} --root 1 --repo o\/r\n/)
+  assert.match(p, /一字一句そのまま/)
+  assert.match(p, /欠落・追加・並べ替え・加工なしで nodes へ写す/)
+  assert.match(p, /同じノードを 2 回書かない/)
+  assert.match(p, /観測値のまま StructuredOutput へ転記する/)
+  assert.match(p, /failure/)
+  assert.ok(!/--paginate/.test(p), '取得手順そのものはプロンプトに書かない')
+  assert.match(p, /dependsOn/)
+  assert.match(p, /optin-tests/)
 })
 
 test('(g) クローズ検証プロンプトは直下だけでなく子孫を再帰確認する', () => {
@@ -116,9 +116,144 @@ test('(g) クローズ検証プロンプトは直下だけでなく子孫を再�
   assert.match(p, /closed: false/)
 })
 
-test('配線: 完全性検査は byParent 構築後・visit(root) より前で、旧 state 経路ではなく新規取得直後に置かれる', () => {
-  const check = driverPart.indexOf('findIncompleteTreeNodes(tree.nodes)')
-  assert.ok(check > driverPart.indexOf('const byParent = new Map()'))
-  assert.ok(check < driverPart.indexOf('visit(root)'))
-  assert.ok(check > driverPart.indexOf('const tree = await agent(['))
+test('配線: 駆動部に旧位置の検査は無く、fetchTree が依存宣言の抽出などの agent より前にある', () => {
+  assert.ok(!driverPart.includes('findIncompleteTreeNodes(tree.nodes)'))
+  const f = driverPart.indexOf('await fetchTree()')
+  assert.ok(f >= 0)
+  assert.ok(f < driverPart.indexOf("label: 'detect:external-checks'"))
+  assert.ok(f < driverPart.indexOf('extractDeclaredDeps('))
+  assert.ok(f < driverPart.indexOf('const byParent = new Map()'))
+  const fn = definitionPart.slice(definitionPart.indexOf('async function fetchTree()'))
+  assert.match(fn.slice(0, 2500), /dedupeIdenticalTreeNodes\(/)
+  assert.match(fn.slice(0, 2500), /findIncompleteTreeNodes\(/)
+})
+
+// ---- 畳み込み（単体） ----
+const full = (number, parent, total, extra = {}) => ({ ...node(number, parent, total), ...extra })
+
+test('全欄一致の重複は 1 件に畳まれ folded に記録され、畳んだ後の検査は 0 件', () => {
+  const nodes = [full(1, 0, 2), full(2, 1, 0, { siblingIndex: 0 }), full(3, 1, 0, { siblingIndex: 1 }), full(3, 1, 0, { siblingIndex: 1 })]
+  const r = dedupeIdenticalTreeNodes(nodes)
+  assert.equal(r.nodes.length, 3)
+  assert.deepEqual(r.folded, [{ number: 3, extra: 1 }])
+  assert.deepEqual(findIncompleteTreeNodes(r.nodes), [])
+})
+
+test('キー順だけ違う同内容・同じ配列欄のノードも畳まれる', () => {
+  const a = { number: 2, title: 't', state: 'open', parent: 1, siblingIndex: 0, dependsOn: [5, 6], subIssuesTotal: 0, optinTests: ['x'] }
+  const b = { optinTests: ['x'], subIssuesTotal: 0, dependsOn: [5, 6], siblingIndex: 0, parent: 1, state: 'open', title: 't', number: 2 }
+  assert.equal(dedupeIdenticalTreeNodes([a, b]).nodes.length, 1)
+})
+
+test('1 欄でも違う重複は畳まれず、検査が従来どおり重複を返す', () => {
+  const base = full(2, 1, 0)
+  const variants = [{ siblingIndex: 1 }, { parent: 9 }, { title: 'other' }, { state: 'closed' }, { subIssuesTotal: 1 }, { dependsOn: [3] }, { optinTests: ['y'] }]
+  for (const v of variants) {
+    const r = dedupeIdenticalTreeNodes([full(1, 0, 1), base, { ...base, ...v }])
+    assert.equal(r.nodes.length, 3, JSON.stringify(v))
+    assert.deepEqual(r.folded, [], JSON.stringify(v))
+    assert.ok(findIncompleteTreeNodes(r.nodes).some((x) => x.number === 2), JSON.stringify(v))
+  }
+})
+
+test('3 重複は extra 2、複数番号の重複と元の順序を保つ', () => {
+  const nodes = [full(1, 0, 2), full(3, 1, 0), full(2, 1, 0), full(3, 1, 0), full(2, 1, 0), full(3, 1, 0)]
+  const r = dedupeIdenticalTreeNodes(nodes)
+  assert.deepEqual(r.nodes.map((n) => n.number), [1, 3, 2])
+  assert.deepEqual(r.folded, [{ number: 3, extra: 2 }, { number: 2, extra: 1 }])
+})
+
+test('子の欠け・subIssuesTotal 不正は畳み込みの影響を受けず検出される', () => {
+  assert.equal(findIncompleteTreeNodes(dedupeIdenticalTreeNodes([full(1, 0, 3), full(2, 1, 0), full(2, 1, 0)]).nodes).length, 1)
+  assert.equal(findIncompleteTreeNodes(dedupeIdenticalTreeNodes([full(1, 0, undefined)]).nodes).length, 1)
+})
+
+test('非配列・非オブジェクト要素でも例外にならず畳まずに返す', () => {
+  assert.equal(dedupeIdenticalTreeNodes(undefined).nodes, undefined)
+  assert.deepEqual(dedupeIdenticalTreeNodes('x').folded, [])
+  const r = dedupeIdenticalTreeNodes([null, null, [1], 'a', 3, full(1, 0, 0)])
+  assert.equal(r.nodes.length, 6)
+  assert.deepEqual(r.folded, [])
+})
+
+// ---- 結合（スクリプト全体） ----
+const { runScript, BASE_ARGS } = await import('./lib/stub-run.mjs')
+const treeNodes = (extra = []) => [
+  { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: 2 },
+  { number: 2, title: 'a', state: 'open', parent: 1, siblingIndex: 0, dependsOn: [], subIssuesTotal: 0 },
+  { number: 3, title: 'b', state: 'open', parent: 1, siblingIndex: 1, dependsOn: [], subIssuesTotal: 0 },
+  ...extra,
+]
+const POST = /^(detect:external-checks|plan:declared-deps|plan:root-ancestors|plan:out-of-tree-deps)/
+const names = (calls) => calls.map((c) => c.opts.label)
+
+function run(responses) {
+  let i = 0
+  return runScript({
+    args: BASE_ARGS,
+    leaves: [2, 3],
+    override: (label) => {
+      if (label === 'plan:issue-tree' || label === 'plan:issue-tree-retry') {
+        const r = responses[i++]
+        if (r instanceof Error) throw r
+        return r
+      }
+      return undefined
+    },
+  })
+}
+
+test('結合: 全欄一致の重複を含んでも止まらず、畳んだ記録が結果に残り取り直しは 0 回', async () => {
+  const { result, calls } = await run([{ nodes: treeNodes([{ ...treeNodes()[2] }]) }])
+  assert.equal(result.treeFetch.attempts, 1)
+  assert.deepEqual(result.treeFetch.foldedDuplicates, [{ number: 3, extra: 1 }])
+  assert.ok(!names(calls).includes('plan:issue-tree-retry'))
+})
+
+test('結合: 成功時、依存宣言などの agent は tree 取得の最後の呼び出しより後', async () => {
+  const { calls } = await run([{ nodes: treeNodes() }])
+  const n = names(calls)
+  const lastTree = Math.max(...n.map((l, i) => (l.startsWith('plan:issue-tree') ? i : -1)))
+  const firstPost = n.findIndex((l) => POST.test(l))
+  assert.ok(firstPost > lastTree)
+})
+
+test('結合: 内容違いの重複は 1 回取り直した後に止まり、後続 agent は 1 件も起動しない', async () => {
+  const bad = { nodes: treeNodes([{ ...treeNodes()[2], title: 'other' }]) }
+  await assert.rejects(run([bad, bad]), /ツリー取得が不完全/)
+  const { calls } = await run([bad, { nodes: treeNodes() }])
+  assert.deepEqual(names(calls).filter((l) => l.startsWith('plan:issue-tree')), ['plan:issue-tree', 'plan:issue-tree-retry'])
+})
+
+test('結合: 失敗時は plan:issue-tree 1 回 + retry 1 回の計 2 回で、後続 agent を起動しない', async () => {
+  const seen = []
+  const bad = { nodes: treeNodes().slice(0, 2) }
+  await assert.rejects(runScript({
+    args: BASE_ARGS,
+    leaves: [2, 3],
+    override: (label) => {
+      seen.push(label)
+      if (label.startsWith('plan:issue-tree')) return bad
+      return undefined
+    },
+  }), /取り直しても解消しなかった/)
+  assert.deepEqual(seen.filter((l) => l.startsWith('plan:issue-tree')), ['plan:issue-tree', 'plan:issue-tree-retry'])
+  assert.ok(!seen.some((l) => POST.test(l)))
+})
+
+test('結合: 子の欠けは 1 回だけ取り直して続行し、予算に 1 回分が載る', async () => {
+  const one = await run([{ nodes: treeNodes() }])
+  const { result, calls } = await run([{ nodes: treeNodes().slice(0, 2) }, { nodes: treeNodes() }])
+  assert.equal(result.treeFetch.attempts, 2)
+  assert.equal(names(calls).filter((l) => l.startsWith('plan:issue-tree')).length, 2)
+  assert.equal(result.agentBudget.used, one.result.agentBudget.used + 1)
+})
+
+test('結合: agent 例外・null 返却の 1 回目は取り直しに回り、2 回目が正しければ続行する', async () => {
+  for (const first of [new Error('boom'), null, { nodes: null }, { nodes: [null] }]) {
+    const { result } = await run([first, { nodes: treeNodes() }])
+    assert.equal(result.treeFetch.attempts, 2)
+  }
+  await assert.rejects(run([new Error('boom'), null]), /nodes 配列が無い/)
+  await assert.rejects(run([null, new Error('boom2')]), /ツリー取得 agent が失敗/)
 })

@@ -115,8 +115,8 @@ for (const [name, build] of Object.entries(prompts)) {
 
 test('駆動部: インラインの Tree 取得・外部チェック観測エージェントも COMMON を含む', () => {
   for (const head of ['GitHub イシューツリー取得タスク。', '外部チェック観測タスク']) {
-    const i = driverPart.indexOf(head)
+    const i = (head.startsWith('GitHub') ? definitionPart : driverPart).indexOf(head)
     assert.ok(i >= 0, `${head} が見つからない`)
-    assert.match(driverPart.slice(i, i + 300), /\n\s+COMMON,\n/)
+    assert.match((head.startsWith('GitHub') ? definitionPart : driverPart).slice(i, i + 300), /\n\s+COMMON,\n/)
   }
 })

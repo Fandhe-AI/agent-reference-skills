@@ -13,7 +13,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { stripMetaExport } from './workflow-script-contract.mjs'
 import { trackTmp } from './tmp-track.mjs'
-import { hashPrecheckReply } from './signed-output.mjs'
+import { hashPrecheckReply, wrapTreeReply } from './signed-output.mjs'
 
 export const SCRIPT_PATH = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'scripts', 'implement-issue-tree.src.js')
 const DRIVER_MARKER = ['__IMPLEMENT', 'ISSUE', 'TREE', 'DRIVER', 'START__'].join('_')
@@ -67,14 +67,15 @@ export async function runScript({ args, leaves = [2], override = () => undefined
   const handler = (prompt, opts) => {
     const label = opts.label
     const overridden = override(label, opts, prompt)
-    if (overridden !== undefined) return overridden
+    // ツリー取得は封筒つきで返る（Issue #668）。override が平らな { nodes } を返したら封筒に包む（封筒の形・null・Error はそのまま）
+    if (overridden !== undefined) return label.startsWith('plan:issue-tree') ? wrapTreeReply(prompt, overridden) : overridden
     const n = Number(/#(\d+)/.exec(label)?.[1])
     if (label === 'nonce:seed') return { seedHex: 'b'.repeat(64) }
     if (label === 'script-hash-precheck') return hashPrecheckReply(prompt)
     if (label === 'worktree:untracked-scan') return { count: 0, paths: [] }
     if (label === 'state:load') return { ok: true, fileExisted: false, items: {}, highWaterBytes: 0, highWaterVersion: 0 }
     if (label === 'state:load-verify') return { fileExists: false, hashes: {}, keysSha256: '', keysCount: 0, highWaterBytes: 0, highWaterVersion: 0 }
-    if (label === 'plan:issue-tree') return { nodes: structuredClone(nodes) }
+    if (label === 'plan:issue-tree') return wrapTreeReply(prompt, { nodes: structuredClone(nodes) })
     if (label === 'detect:external-checks') return { apps: [] }
     if (label.startsWith('plan:declared-deps')) {
       const m = /for n in ([0-9 ]+); do/.exec(prompt)
