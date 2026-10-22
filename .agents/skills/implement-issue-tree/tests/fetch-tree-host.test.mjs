@@ -39,7 +39,6 @@ const MUTATIONS = {
   siblingIndex: (n) => ({ ...n, siblingIndex: 5 }),
   state: (n) => ({ ...n, state: 'closed' }),
   subIssuesTotal: (n) => ({ ...n, subIssuesTotal: 1 }),
-  title: (n) => ({ ...n, title: 'b ' }),
 }
 
 for (const [field, mutate] of Object.entries(MUTATIONS)) {
@@ -58,7 +57,7 @@ for (const [field, mutate] of Object.entries(MUTATIONS)) {
 
 test('2 回とも不一致なら後続 agent を 1 件も起動せず、メッセージに「検査値」が入る', async () => {
   const seen = []
-  const bad = (prompt) => treeFetchReply(prompt, baseNodes().map((n) => (n.number === 2 ? { ...n, title: 'x' } : n)), { digestNodes: baseNodes() })
+  const bad = (prompt) => treeFetchReply(prompt, baseNodes().map((n) => (n.number === 2 ? { ...n, siblingIndex: 7 } : n)), { digestNodes: baseNodes() })
   await assert.rejects(
     runScript({
       args: BASE_ARGS,
@@ -74,7 +73,99 @@ test('2 回とも不一致なら後続 agent を 1 件も起動せず、メッ�
   assert.ok(!seen.some((l) => POST.test(l)))
 })
 
+// title だけの書き写し誤り（構造 5 欄は一致）。Issue #687
+const titleOff = (p, title = 'b ') => treeFetchReply(p, baseNodes().map((n) => (n.number === 3 ? { ...n, title } : n)), { digestNodes: baseNodes() })
+
+test('title だけが違う返却は 1 回取り直し、取り直しで正しければ採用する（titleMismatch なし）', async () => {
+  const { result, calls, logs } = await run([titleOff, honest])
+  assert.equal(result.treeFetch.attempts, 2)
+  assert.equal(result.treeFetch.titleMismatch, false)
+  assert.equal(names(calls).filter(isTree).length, 2)
+  assert.ok(logs.some((l) => l.includes('title だけの書き写し誤り')))
+})
+
+test('2 回とも title だけが違っても停止せず、警告つきで続行する（titleMismatch: true・後続 agent も起動）', async () => {
+  const { result, calls, logs } = await run([titleOff, (p) => titleOff(p, 'c')])
+  assert.equal(result.treeFetch.attempts, 2)
+  assert.equal(result.treeFetch.titleMismatch, true)
+  assert.ok(logs.some((l) => l.includes('title の一部が取得スクリプトの出力と違う可能性')))
+  assert.ok(names(calls).some((l) => POST.test(l)))
+})
+
+for (const [name, second] of [
+  ['構造不一致', (p) => treeFetchReply(p, baseNodes().map((n) => (n.number === 2 ? { ...n, siblingIndex: 7 } : n)), { digestNodes: baseNodes() })],
+  ['agent 例外', new Error('boom')],
+  ['failure 申告', (p) => treeFetchReply(p, [], { failure: { exitCode: 5, stderr: 'x' } })],
+]) {
+  test(`試行 1 が title のみ不一致で試行 2 が ${name} なら、試行 1 の構造検証済みノードで続行する`, async () => {
+    const { result, logs } = await run([titleOff, second])
+    assert.equal(result.treeFetch.attempts, 1)
+    assert.equal(result.treeFetch.titleMismatch, true)
+    assert.ok(logs.some((l) => l.includes('試行 1 の構造検証済みノード')))
+  })
+}
+
+test('試行 1 が構造不一致で試行 2 が title のみ不一致なら続行する', async () => {
+  const structBad = (p) => treeFetchReply(p, baseNodes().map((n) => (n.number === 2 ? { ...n, state: 'closed' } : n)), { digestNodes: baseNodes() })
+  const { result } = await run([structBad, titleOff])
+  assert.equal(result.treeFetch.attempts, 2)
+  assert.equal(result.treeFetch.titleMismatch, true)
+})
+
+test('title のみ不一致でも完全性検査が落ちれば止まる（構造未検証のフォールバックは持たない）', async () => {
+  const short = (p) => treeFetchReply(p, baseNodes().slice(0, 2).map((n) => (n.number === 2 ? { ...n, title: 'z' } : n)), { digestNodes: baseNodes().slice(0, 2) })
+  await assert.rejects(run([short, short]), /ツリー取得が不完全/)
+})
+
+test('約 570 ノード規模で title が 1〜2 件違っても止まらない', async () => {
+  const big = [{ number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: 569 }]
+  for (let i = 0; i < 569; i++) big.push({ number: 2 + i, title: `t${i}`, state: 'closed', parent: 1, siblingIndex: i, dependsOn: [], subIssuesTotal: 0 })
+  const copied = (p) => treeFetchReply(p, big.map((n) => (n.number === 100 || n.number === 400 ? { ...n, title: n.title + 'x' } : n)), { digestNodes: big })
+  const { result } = await run([copied, copied])
+  assert.equal(result.treeFetch.titleMismatch, true)
+})
+
+// タスク ID は依存の解決に使うため、title の不一致を許容する場合でも書き写し誤りを許さない（Issue #687 の追補）
+const withId = () => baseNodes().map((n) => (n.number === 2 ? { ...n, title: 'feat: TASK-97-1 a' } : n.number === 3 ? { ...n, title: 'feat: TASK-97-2 b' } : n))
+const idDropped = (p) => treeFetchReply(p, withId().map((n) => (n.number === 2 ? { ...n, title: 'feat: a' } : n)), { digestNodes: withId() })
+
+test('タスク ID が転記で欠落した返却は、構造が一致していても取り直し、2 回続けば停止する（fail-closed）', async () => {
+  const seen = []
+  await assert.rejects(
+    runScript({
+      args: BASE_ARGS,
+      leaves: [2, 3],
+      override: (label, _opts, prompt) => {
+        seen.push(label)
+        return isTree(label) ? idDropped(prompt) : undefined
+      },
+    }),
+    /検査値/,
+  )
+  assert.equal(seen.filter(isTree).length, 2)
+  assert.ok(!seen.some((l) => POST.test(l)))
+})
+
+test('タスク ID が正しく title の他の部分だけが違う返却は、警告つきで続行する', async () => {
+  const off = (p) => treeFetchReply(p, withId().map((n) => (n.number === 3 ? { ...n, title: 'feat: TASK-97-2 bb' } : n)), { digestNodes: withId() })
+  const { result } = await run([off, off])
+  assert.equal(result.treeFetch.titleMismatch, true)
+})
+
 const BROKEN = {
+  'taskIdSha256 の転記漏れ': (p) => {
+    const r = treeFetchReply(p, baseNodes())
+    delete r.payload.taskIdSha256
+    return r
+  },
+  'taskIdSha256 の書き換え（sha256 も整合）': (p) => treeFetchReply(p, baseNodes(), { payload: { taskIdSha256: 'a'.repeat(64) } }),
+  'structSha256 の転記漏れ': (p) => {
+    const r = treeFetchReply(p, baseNodes())
+    delete r.payload.structSha256
+    return r
+  },
+  'structSha256 の書き換え（sha256 も整合）': (p) => treeFetchReply(p, baseNodes(), { payload: { structSha256: 'a'.repeat(64) } }),
+  'structSha256 の書き換え（sha256 不整合）': (p) => ({ ...treeFetchReply(p, baseNodes()), payload: { ...treeFetchReply(p, baseNodes()).payload, structSha256: 'a'.repeat(64) } }),
   '封筒の欠落（nonce 無し）': (p) => treeFetchReply(p, baseNodes(), { omit: ['nonce'] }),
   '封筒の欠落（payload 無し）': (p) => treeFetchReply(p, baseNodes(), { omit: ['payload'] }),
   '封筒の欠落（sha256 無し）': (p) => treeFetchReply(p, baseNodes(), { omit: ['sha256'] }),
@@ -82,7 +173,15 @@ const BROKEN = {
   'sha256 不一致': (p) => treeFetchReply(p, baseNodes(), { sha256: 'f'.repeat(64) }),
   '入力（root）違い': (p) => treeFetchReply(p, baseNodes(), { payload: { inputSha256: 'e'.repeat(64) } }),
   '件数違い': (p) => treeFetchReply(p, baseNodes(), { payload: { count: 9 } }),
-  'failure 申告': (p) => treeFetchReply(p, [], { failure: 'fetch-tree 失敗' }),
+  'pages の転記漏れ（sha256 が payload 全体を束縛する）': (p) => {
+    const r = treeFetchReply(p, baseNodes())
+    delete r.payload.pages
+    return r
+  },
+  'pages の書き換え': (p) => ({ ...treeFetchReply(p, baseNodes()), payload: { ...treeFetchReply(p, baseNodes()).payload, pages: 3 } }),
+  'failure 申告': (p) => treeFetchReply(p, [], { failure: { exitCode: 5, stderr: 'fetch-tree: gh の失敗' } }),
+  'failure 申告（封筒つき）': (p) => treeFetchReply(p, [], { failure: { exitCode: 5, stderr: '' }, withEnvelope: true }),
+  'failure 申告（旧形式の文字列）': (p) => treeFetchReply(p, [], { failure: 'fetch-tree 失敗' }),
   'null 返却': () => null,
   'agent 例外': new Error('boom'),
 }

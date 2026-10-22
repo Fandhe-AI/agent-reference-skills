@@ -377,26 +377,92 @@ test('k: タイトルの | ・改行・終了マーカー文字列でも表が�
     for (const m of [PB, PE, IB, IE]) assert.equal(count(out, m), 1)
     const rows = out.split('\n').filter((l) => l.startsWith('| #'))
     for (const row of rows) {
-      const cols = row.replace(/\\\|/g, '').split('|').length
-      assert.ok(cols === 5 || cols === 5, row)
+      assert.equal(row.split('|').length, 5, row)
     }
+    assert.ok(out.includes('a &#124; b c &lt;!-- update-issue-tree:phase-plan:end --&gt; d &lt;!-- x --&gt;'), out)
+    assert.ok(out.includes('x &#124; y &lt;!-- update-issue-tree:inventory:end --&gt;'), out)
     rmSync(join(env.stub, 'edited.body'))
     setRoot(env, out)
     const r2 = run(env)
     assert.equal(r2.status, 0, r2.stderr)
   }))
 
-test('k2: タイトルのバックスラッシュを倍化してから | をエスケープし、\\| で表の列が割れない', () =>
+test('k2: タイトルのバックスラッシュと | は文字参照になり、表の列が割れない', () =>
   withEnv((env) => {
     setRoot(env, '')
     setSubs(env, 254, [issue(10, 'a\\|b|c', { labels: ['phase:1'], total: 0 })])
     assert.equal(run(env).status, 0)
     const rows = edited(env).split('\n').filter((l) => l.startsWith('| Phase '))
-    assert.ok(rows.some((l) => l.includes('a\\\\\\|b\\|c')), rows.join('\n'))
+    assert.ok(rows.some((l) => l.includes('a&#92;&#124;b&#124;c')), rows.join('\n'))
     for (const row of rows) {
-      // エスケープ済みの \\ と \| を除去した後に残る | だけが列区切り（4 列 = 5 区切り + 外側 = 6 分割）
-      assert.equal(row.replace(/\\\\|\\\|/g, '').split('|').length, 6, row)
+      assert.ok(!row.includes('\\'), row)
+      // 列区切りの | だけが残る（4 列 = 5 区切り + 外側 = 6 分割）
+      assert.equal(row.split('|').length, 6, row)
     }
+  }))
+
+// create-issue-tree の step6 (G4) と同じ入出力。変換は両スキルで揃える（スキルをまたぐ import はしない）。
+test('k3: タイトルの & < > ` \\ | を create-issue-tree の CELL と同じ文字参照へ変換する（表・見出し・詳細表）', () =>
+  withEnv((env) => {
+    const title = 'a&b <c> `d` e\\f g|h'
+    const conv = 'a&amp;b &lt;c&gt; &#96;d&#96; e&#92;f g&#124;h'
+    setRoot(env, '')
+    setSubs(env, 254, [issue(10, title, { labels: ['phase:1'], total: 1 })])
+    setSubs(env, 10, [issue(11, title)])
+    assert.equal(run(env).status, 0)
+    const out = edited(env)
+    assert.ok(out.includes(`| #11 | ${conv} | - |`), out)
+    assert.ok(out.includes(`### Phase 1: ${conv}`), out)
+    assert.ok(out.includes(`| #10 ${conv} |`), out)
+    const block = out.slice(out.indexOf(PB), out.indexOf(PE))
+    assert.ok(!/[`\\]/.test(block), block)
+  }))
+
+test('k4: & は二重変換せず（&amp; は &amp;amp; になる）、CR/LF の連続は空白 1 つになる', () =>
+  withEnv((env) => {
+    setRoot(env, '')
+    setSubs(env, 254, [issue(10, 'x &amp; y\r\n\r\nz', { labels: ['phase:1'], total: 0 })])
+    assert.equal(run(env).status, 0)
+    assert.ok(edited(env).includes('x &amp;amp; y z'), edited(env))
+  }))
+
+test('k5: 管理区間内の旧形式（\\| ・\\\\ ・バッククォート）は文字参照へ書き直し、区間外は変えず、冪等', () =>
+  withEnv((env) => {
+    const head = '# 手書きの計画\n\n方針: `code` と a \\| b をそのまま残す\n\n'
+    const tail = '\n<details>\n<summary>旧 Phase 表</summary>\n\n| Phase 9 | #9 old \\| `x` |\n</details>\n'
+    const old = [
+      PB,
+      '| Phase | 親 issue | 直下 open | 総 open |',
+      '|-------|----------|-----------|---------|',
+      '| Phase 1 | #10 a \\| b | 1 | 1 |',
+      '',
+      '### Phase 1: a \\\\ b',
+      '',
+      '| Issue | タイトル | 分解 |',
+      '|-------|---------|------|',
+      '| #11 | x \\| `y` | - |',
+      '',
+      PE,
+    ].join('\n')
+    setRoot(env, head + old + '\n' + tail)
+    setSubs(env, 254, [issue(10, 'a | b', { labels: ['phase:1'], total: 1 })])
+    setSubs(env, 10, [issue(11, 'x | `y`')])
+    const r = run(env)
+    assert.equal(r.status, 0, r.stderr)
+    assert.equal(editCount(env), 1)
+    const out = edited(env)
+    const block = out.slice(out.indexOf(PB), out.indexOf(PE))
+    assert.ok(!/[`\\]/.test(block), block)
+    assert.ok(block.includes('a &#124; b') && block.includes('x &#124; &#96;y&#96;'), block)
+    assert.ok(out.includes(head), out)
+    assert.ok(out.includes(tail), out)
+    rmSync(join(env.stub, 'edited.body'))
+    rmSync(join(env.stub, 'edit.log'))
+    setRoot(env, out)
+    const r2 = run(env)
+    assert.equal(r2.status, 0, r2.stderr)
+    assert.match(r2.stdout, /result=unchanged/)
+    assert.equal(editCount(env), 0)
   }))
 
 test('l: CRLF 本文でも見出し・マーカーを認識し内容を保持する', () =>

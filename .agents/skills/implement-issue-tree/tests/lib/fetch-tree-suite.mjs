@@ -7,7 +7,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
-import { copyFileSync, mkdirSync, mkdtempSync, readdirSync, writeFileSync, readFileSync } from 'node:fs'
+import { copyFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, rmSync, symlinkSync, unlinkSync, writeFileSync, readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { spawnSync } from 'node:child_process'
 import { dirname, join } from 'node:path'
@@ -33,23 +33,45 @@ export function independentNodesSha(rows) {
       .join('\n'),
   )
 }
+// 独立実装: 構造 5 欄（title を除く）のダイジェスト（Issue #687）
+export function independentStructSha(rows) {
+  return sha(
+    [...rows]
+      .sort((a, b) => a.number - b.number)
+      .map((r) => [r.number, r.parent, r.siblingIndex, r.state, r.subIssuesTotal].join('\t'))
+      .join('\n'),
+  )
+}
+// 独立実装: タイトル先頭のタスク ID のダイジェスト（Issue #687）
+export function independentTaskIdSha(rows) {
+  const re = /^\s*(?:[a-z]+(?:\([^()\n]{0,64}\))?!?:\s*)?[[【]?([A-Z][A-Z0-9]{0,19}(?:-[0-9]{1,6}){1,4})(?=$|[\s\]】:：])/
+  return sha([...rows].sort((a, b) => a.number - b.number).map((r) => `${r.number}\t${re.exec(r.title)?.[1] ?? ''}`).join('\n'))
+}
 export const inputShaOf = (root, repo = '') => sha(`fetch-tree\n${root}\n${repo}`)
 
-export function run(bash, stub, args, { script = SCRIPT, launcher = null } = {}) {
+export function run(bash, stub, args, { script = SCRIPT, launcher = null, env = {} } = {}) {
   const argv = launcher ? [launcher.runVerified, launcher.sha, launcher.name, ...args] : [script, ...args]
-  const r = spawnSync(bash, argv, { env: stub.env(), encoding: 'utf8' })
+  const r = spawnSync(bash, argv, { env: { ...stub.env(), ...env }, encoding: 'utf8' })
   return { status: r.status, stdout: r.stdout, stderr: r.stderr }
 }
 
-// 標準出力を { rows, envelope } に分ける
+function parseRow(l) {
+  const [number, parent, siblingIndex, state, subIssuesTotal, ...t] = l.split('\t')
+  return { number: Number(number), parent: Number(parent), siblingIndex: Number(siblingIndex), state, subIssuesTotal: Number(subIssuesTotal), title: t.join('\t') }
+}
+
+// --page の出力（TSV 行だけ）を行オブジェクトにする
+export function parseRows(text) {
+  return text.replace(/\n$/, '').split('\n').filter((l) => l !== '').map(parseRow)
+}
+
+// 標準出力を { rows, envelope, dir } に分ける（dir は FETCH_TREE_DIR の行の値。無ければ null）
 export function parseOut(stdout) {
   const lines = stdout.replace(/\n$/, '').split('\n')
   const envelope = JSON.parse(lines[lines.length - 1])
-  const rows = lines.slice(0, -1).map((l) => {
-    const [number, parent, siblingIndex, state, subIssuesTotal, ...t] = l.split('\t')
-    return { number: Number(number), parent: Number(parent), siblingIndex: Number(siblingIndex), state, subIssuesTotal: Number(subIssuesTotal), title: t.join('\t') }
-  })
-  return { rows, envelope }
+  const dirLine = lines.find((l) => l.startsWith('FETCH_TREE_DIR='))
+  const rows = lines.slice(0, -1).filter((l) => !l.startsWith('FETCH_TREE_DIR=')).map(parseRow)
+  return { rows, envelope, dir: dirLine === undefined ? null : dirLine.slice('FETCH_TREE_DIR='.length) }
 }
 
 const P = 'repos/o/r'
@@ -79,7 +101,7 @@ export function registerFetchTreeTests(bash) {
       [5, 4, 0, 'open', 0],
     ])
     assert.equal(rows[1].title, '日本語 🎉 title')
-    assert.deepEqual(envelope.payload, { count: 5, inputSha256: inputShaOf(1, 'o/r'), nodesSha256: independentNodesSha(rows) })
+    assert.deepEqual(envelope.payload, { count: 5, inputSha256: inputShaOf(1, 'o/r'), nodesSha256: independentNodesSha(rows), pages: 1, structSha256: independentStructSha(rows), taskIdSha256: independentTaskIdSha(rows) })
     assert.equal(envelope.nonce, NONCE)
     assert.equal(envelope.sha256, expectedSha256(NONCE, envelope.payload))
     assert.equal(stub.callsTo('issues/3/sub_issues'), 0)
@@ -153,11 +175,118 @@ export function registerFetchTreeTests(bash) {
     assert.equal(r.status, 5)
   })
 
-  test(`${tag} 出力が大きすぎると exit 7（中央が欠けて静かに壊れない）`, () => {
-    const kids = Array.from({ length: 90 }, (_, i) => issue(100 + i, { title: 'x'.repeat(300) }))
-    const stub = makeGhTreeStub({ [`${P}/issues/1`]: issue(1, { total: 90 }), [`${P}/issues/1/sub_issues`]: { pages: [kids] } })
-    const r = run(bash, stub, ['--nonce', NONCE, '--root', '1', '--repo', 'o/r'])
+  // 大きなツリー（Issue #673）: 1 回の Bash 出力（24000 バイト）に収まらない TSV は一時ファイルへ書き出し、1 ページずつ読む
+  const bigTree = (n, titleLen) => {
+    const kids = Array.from({ length: n }, (_, i) => issue(100 + i, { title: `${i}-`.padEnd(titleLen, 'x') }))
+    return { [`${P}/issues/1`]: issue(1, { total: n }), [`${P}/issues/1/sub_issues`]: { pages: [kids.slice(0, 100), kids.slice(100)].filter((x) => x.length > 0) } }
+  }
+  const tmpBase = () => trackTmp(mkdtempSync(join(tmpdir(), 'iit-ft-tmp-')))
+  const ARGS = ['--nonce', NONCE, '--root', '1', '--repo', 'o/r']
+  const BYTES_LIMIT = 24000
+
+  test(`${tag} 出力が 1 ページに収まらない大きなツリーは一時ファイルへ書かれ、--page で全行を読める（連結すると全 TSV・nodesSha256 と一致）`, () => {
+    const tmp = tmpBase()
+    const stub = makeGhTreeStub(bigTree(90, 300))
+    const r = run(bash, stub, ARGS, { env: { TMPDIR: tmp } })
+    assert.equal(r.status, 0, r.stderr)
+    assert.ok(Buffer.byteLength(r.stdout) <= BYTES_LIMIT, `1 回目の出力 ${Buffer.byteLength(r.stdout)} バイト`)
+    const { rows: first, envelope, dir } = parseOut(r.stdout)
+    assert.ok(envelope.payload.pages >= 2, `pages=${envelope.payload.pages}`)
+    assert.ok(dir !== null && dir.startsWith(tmp.replace(/\/$/, '')) && /\/iit-tree\.[A-Za-z0-9]+$/.test(dir), dir)
+    const lines = r.stdout.replace(/\n$/, '').split('\n')
+    assert.equal(lines[lines.length - 2], `FETCH_TREE_DIR=${dir}`, 'FETCH_TREE_DIR の行は封筒の直前')
+    // ディレクトリは 700、ファイルは 600
+    assert.equal(lstatSync(dir).mode & 0o777, 0o700)
+    assert.equal(lstatSync(join(dir, 'tree.tsv')).mode & 0o777, 0o600)
+    let all = [...first]
+    for (let p = 2; p <= envelope.payload.pages; p++) {
+      const pr = run(bash, stub, ['--page', String(p), '--dir', dir])
+      assert.equal(pr.status, 0, pr.stderr)
+      assert.ok(Buffer.byteLength(pr.stdout) <= BYTES_LIMIT, `ページ ${p} が ${Buffer.byteLength(pr.stdout)} バイト`)
+      all = all.concat(parseRows(pr.stdout))
+    }
+    assert.equal(all.length, 91)
+    assert.equal(envelope.payload.count, all.length)
+    assert.deepEqual(all.map((x) => x.number), [1, ...Array.from({ length: 90 }, (_, i) => 100 + i)])
+    assert.equal(envelope.payload.nodesSha256, independentNodesSha(all))
+    assert.equal(envelope.payload.structSha256, independentStructSha(all))
+    assert.equal(envelope.payload.taskIdSha256, independentTaskIdSha(all))
+    assert.equal(envelope.sha256, expectedSha256(NONCE, envelope.payload))
+    // ページ範囲外は exit 2。--page は gh を呼ばない
+    const callsBefore = stub.calls().length
+    assert.equal(run(bash, stub, ['--page', String(envelope.payload.pages + 1), '--dir', dir]).status, 2)
+    assert.equal(stub.calls().length, callsBefore)
+    // 片づけ: ディレクトリが消え、TMPDIR は空に戻る。2 回目は何も無くても exit 0
+    const rel = run(bash, stub, ['--release', '--dir', dir])
+    assert.equal(rel.status, 0, rel.stderr)
+    assert.equal(existsSync(dir), false)
+    assert.deepEqual(readdirSync(tmp), [])
+    assert.equal(run(bash, stub, ['--release', '--dir', dir]).status, 0)
+  })
+
+  test(`${tag} 1 ページに収まるツリーは一時ファイルを作らない（pages は 1・FETCH_TREE_DIR の行なし）`, () => {
+    const tmp = tmpBase()
+    const r = run(bash, makeGhTreeStub(smallTree()), ARGS, { env: { TMPDIR: tmp } })
+    assert.equal(r.status, 0, r.stderr)
+    assert.equal(parseOut(r.stdout).envelope.payload.pages, 1)
+    assert.ok(!r.stdout.includes('FETCH_TREE_DIR='))
+    assert.deepEqual(readdirSync(tmp), [])
+  })
+
+  test(`${tag} --page / --release は --dir を検証してから使う（形・シンボリックリンク・余計なファイル・取得引数との混在）`, () => {
+    const tmp = tmpBase()
+    const stub = makeGhTreeStub(bigTree(90, 300))
+    const r = run(bash, stub, ARGS, { env: { TMPDIR: tmp } })
+    assert.equal(r.status, 0, r.stderr)
+    const { dir } = parseOut(r.stdout)
+    // 形が不正
+    for (const bad of ['relative/iit-tree.x', `${tmp}/other.x`, `${tmp}/iit-tree.a b`, `${tmp}/../iit-tree.x`, '/']) {
+      assert.equal(run(bash, stub, ['--page', '2', '--dir', bad]).status, 4, bad)
+      assert.equal(run(bash, stub, ['--release', '--dir', bad]).status, 4, bad)
+    }
+    // シンボリックリンク（実体は正しいディレクトリ）は拒否し、実体も消さない
+    const link = join(tmp, 'iit-tree.link')
+    symlinkSync(dir, link)
+    assert.equal(run(bash, stub, ['--page', '2', '--dir', link]).status, 4)
+    assert.equal(run(bash, stub, ['--release', '--dir', link]).status, 4)
+    assert.equal(existsSync(join(dir, 'tree.tsv')), true)
+    // 余計なファイルがあるディレクトリは片づけない
+    writeFileSync(join(dir, 'extra'), 'x')
+    assert.equal(run(bash, stub, ['--release', '--dir', dir]).status, 4)
+    assert.equal(existsSync(join(dir, 'tree.tsv')), true)
+    assert.equal(run(bash, stub, ['--page', '2', '--dir', dir]).status, 4)
+    // 使い方の誤り: ページ 1 以下・--dir 無し・取得引数との混在・--page と --release の同時指定
+    for (const args of [
+      ['--page', '1', '--dir', dir],
+      ['--page', '0', '--dir', dir],
+      ['--page', 'x', '--dir', dir],
+      ['--page', '2'],
+      ['--release'],
+      ['--page', '2', '--dir', dir, '--root', '1'],
+      ['--release', '--dir', dir, '--nonce', NONCE],
+      ['--page', '2', '--release', '--dir', dir],
+      [...ARGS, '--dir', dir],
+    ]) {
+      assert.equal(run(bash, stub, args).status, 2, args.join(' '))
+    }
+    // 後始末
+    rmSync(join(dir, 'extra'))
+    unlinkSync(link)
+    assert.equal(run(bash, stub, ['--release', '--dir', dir]).status, 0)
+    assert.deepEqual(readdirSync(tmp), [])
+  })
+
+  test(`${tag} ページ数が上限（30）を超えるツリーだけが exit 7 で、何も残さない`, () => {
+    const tmp = tmpBase()
+    const r = run(bash, makeGhTreeStub(bigTree(250, 3000)), ARGS, { env: { TMPDIR: tmp } })
     assert.equal(r.status, 7)
+    assert.equal(r.stdout, '')
+    assert.deepEqual(readdirSync(tmp), [])
+  })
+
+  test(`${tag} 一時ディレクトリを作れない（TMPDIR が書けない場所）と exit 4 で、封筒を出さない`, () => {
+    const r = run(bash, makeGhTreeStub(bigTree(90, 300)), ARGS, { env: { TMPDIR: '/nonexistent-iit-tmp/none' } })
+    assert.equal(r.status, 4)
     assert.equal(r.stdout, '')
   })
 
@@ -205,6 +334,8 @@ export function registerFetchTreeTests(bash) {
     assert.equal(rows.length, 1)
     assert.equal(rows[0].title, 'a b c d e  ')
     assert.equal(envelope.payload.nodesSha256, independentNodesSha(rows))
+    assert.equal(envelope.payload.structSha256, independentStructSha(rows))
+    assert.equal(envelope.payload.taskIdSha256, independentTaskIdSha(rows))
   })
 
   test(`${tag} run-verified.sh 経由で起動でき、スクリプトか lib を書き換えるとハッシュ不一致で起動しない`, () => {

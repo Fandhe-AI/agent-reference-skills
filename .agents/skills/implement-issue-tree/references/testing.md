@@ -107,6 +107,8 @@ volta run --node 22 node skills/implement-issue-tree/tests/tools/mutate.mjs --ru
 
 ## ツリー取得（Issue #668）
 
-- `tests/fetch-tree-unit.test.mjs`（lib の表）・`tests/fetch-tree.test.mjs` と `tests/fetch-tree-alt-bash.test.mjs`（偽 gh `tests/lib/gh-tree-stub.mjs` で実スクリプトを bash ごとに並列実行。本体は `tests/lib/fetch-tree-suite.mjs`）・`tests/fetch-tree-host.test.mjs`（stub agent で実装スクリプト全体を実行し、検査値の照合と取り直しを確かめる）。期待する検査値は `tests/lib/signed-output.mjs` の `treeFetchReply` が node:crypto で独立に計算する。
+- `tests/fetch-tree-unit.test.mjs`（lib の表）・`tests/fetch-tree.test.mjs` と `tests/fetch-tree-alt-bash.test.mjs`（偽 gh `tests/lib/gh-tree-stub.mjs` で実スクリプトを bash ごとに並列実行。本体は `tests/lib/fetch-tree-suite.mjs`）・`tests/fetch-tree-host.test.mjs`（stub agent で実装スクリプト全体を実行し、検査値の照合と取り直しを確かめる）。`tests/fetch-tree-failure.test.mjs`（偽 gh の実スクリプトの終了コード 5 / 6 / 7 と stderr をホストのログ・最終例外で確かめる。1 回目と最終の文面の出し分け・未信頼値の扱い・schema）。期待する検査値は `tests/lib/signed-output.mjs` の `treeFetchReply` が node:crypto で独立に計算する。
+  - title だけの書き写し誤り（Issue #687）: `fetch-tree-host` は構造 5 欄の変異は取り直し・title のみは取り直し後に採用 / 警告つき続行（`treeFetch.titleMismatch`）・試行 1 の構造検証済みノードへのフォールバック・約 570 ノード規模・`structSha256` と `taskIdSha256` の欠落 / 不一致の拒否（タスク ID の転記欠落は fail-closed）、`fetch-tree-unit` は `ft_struct_digest` の表（title 非依存・順序非依存）。変異 FT14〜17。
+  - ページ読み（Issue #673）: 大きなツリーで 1 回目の出力と各ページが 24000 バイト以下・連結が全 TSV と `nodesSha256` に一致・一時ディレクトリの権限と `--release` 後の消去・`--dir` の検証（形・シンボリックリンク・余計なファイル）・30 ページ超の exit 7・TMPDIR が使えないときの exit 4。lib の `ft_page_count` / `ft_page_slice` / `ft_page_dir_name_ok` は `fetch-tree-unit.test.mjs` の表、`pages` の転記漏れ・書き換えは `fetch-tree-host.test.mjs`、プロンプトの配線は `tree-completeness.test.mjs`。
 - 既存テストの stub が `plan:issue-tree` に平らな `{ nodes }` を返す場合は、`tests/lib/stub-run.mjs` が封筒に包む（`wrapTreeReply`。封筒の形・null・Error はそのまま通す）。
 - 変異テスト: `node skills/implement-issue-tree/tests/tools/mutate.mjs --run FT1-host-digest-unchecked …`（`FT1`〜`FT10`）。

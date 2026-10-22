@@ -166,15 +166,19 @@ opt-in ランのクライアント側マージは、未信頼のレビュー本�
 
 ### Step 1: ツリーを取得して依存グラフ付き実行キューを構築する（Tree）
 
-gh CLI の sub-issues API で親イシュー配下の全ツリーを最下層まで再帰取得し、post-order DFS で実行キューを構築する。取得はキュー方式で、closed ノードも含めて全ノードの `sub_issues` を辿り、深さでは打ち切らない。打ち切るのは `sub_issues_summary.total` が 0 のノード（leaf と確定）だけで、訪問済み番号は再度辿らない。各ノードに `subIssuesTotal`（`sub_issues_summary.total`。closed を含む直下の子の総数）を記録し、ホストが全ノードで「返却ノード中の子の数 == `subIssuesTotal`」を照合する。不一致が 1 件でもあれば Workflow を停止する（fail-closed。取り損ねたノードを leaf と誤認して配下を黙って未実装にしない）。各 open イシューは本文を読んで機能的依存（`dependsOn`）を抽出する。
+親イシュー配下の全ツリーを最下層まで取得し、post-order DFS で実行キューを構築する。取得は `scripts/fetch-tree.sh` が決定的に行う（`gh api` の GET のみ・幅優先・sub-issues のページ送り・closed ノードも `subIssuesTotal > 0` なら貫通・訪問済み番号は再度辿らない・各子に `siblingIndex` を付与・親ごとに「取得した子の数 == `subIssuesTotal`」を自己点検し、不一致・番号重複は exit 6）。`plan:issue-tree` エージェントはコマンドを 1 回実行して標準出力の TSV を `nodes` へ写し、封筒（nonce・payload・sha256）を転記するだけで、各 open イシューの本文を読む `dependsOn` と `optinTests` の抽出だけが従来どおりエージェントに残る。
+
+ホストは次の順で照合する: `failure` 申告（取得スクリプトの失敗。あれば以降の検査へ進まず取り直しへ）→ 全欄一致の重複を畳む → 6 欄の型・値域 → 封筒（欠落・nonce・sha256・入力束縛）→ 件数とダイジェスト（`nodes` の 6 欄から計算し直す）→ 完全性（返却ノード中の子の数 == `subIssuesTotal`・番号重複）。どれかが落ちたら固定語彙の理由をログに出し、`plan:issue-tree-retry` で 1 回だけ取り直す。2 回目も失敗したら Workflow を停止する（fail-closed。取り損ねたノードを leaf と誤認して配下を黙って未実装にしない）。検査値は書き写しの誤り・行の脱落・別入力の流用を検出するが、sha256 を計算できる悪意あるエージェントの捏造は防がないため、ツリーの内容はマージ・push・削除の根拠にしない（詳細は [references/script-trust-model.md](references/script-trust-model.md) の「ツリー取得」節）。
+
+出力が 1 ページ（20000 バイト）に収まらないツリーは、`fetch-tree.sh` が専用の一時ディレクトリへ全行を書き、`--page` で 1 ページずつ読む（#673）。ページ数が 30（約 4,500 ノード相当）を超えると exit 7 で止まり、取り直しても同じ理由になるため、ランは着手前に「fetch-tree.sh が失敗（exit 7: 出力過大…）」（`treeFetchFailureReason()` の文言）で停止する。検査値は構造 5 欄の `structSha256` と title 先頭のタスク ID の `taskIdSha256`（どちらも不一致は fail-closed。タスク ID は兄弟の依存解決に使うため）と title を含む `nodesSha256` に分かれ、title だけの不一致は 1 回取り直したうえで警告つきで続行する（#687。title は実行順・マージ・push・削除の判断に使わない）。
 
 各 open イシューの本文からは opt-in テスト宣言マーカー（`<!-- optin-tests: ... -->`）も機械抽出し、ホスト側で許可形式かを再検証する（前掲「opt-in テストの宣言」節参照。宣言が無ければ後続処理は現行と変わらない）。
 
 ツリー取得に続いて、直前 3 件の merged PR の check-runs から GitHub Actions 以外の外部チェック App（例: Cursor Bugbot）を観測する。**観測結果は参考値であり構成の確定情報ではない**。構成の確定は `args.externalChecks` の明示入力で行い、明示がない限り「確定不能」として後続の Merge ステップで自動マージを停止する。
 
 ```bash
-# 各ノードのサブイシューを取得（--paginate で 100 件超も全ページ自動取得。子ごとに繰り返す）
-gh api --paginate "repos/{owner}/{repo}/issues/<parent>/sub_issues?per_page=100"
+# ツリー取得はホストが args.skillDir から組み立てて plan:issue-tree に実行させる（起動前にハッシュを照合）。
+# 手で打つ場合: bash "<skillDir>/scripts/run-verified.sh" <sha256> fetch-tree.sh --nonce <nonce> --root <親番号> [--repo <owner/repo>]
 
 # 各 open イシューの本文を読み、機能的依存を抽出
 gh issue view <N>
@@ -660,7 +664,7 @@ open のサブイシューが残っている場合、または受入基準が未
 
 | エージェント | model | effort | 根拠 |
 |------------|-------|--------|------|
-| `plan:issue-tree`（Tree 取得・依存抽出） | sonnet | medium | 本文読解・依存判断。取得そのもの（幅優先・ページ送り・siblingIndex・件数の自己点検）は `scripts/fetch-tree.sh`、エージェントは出力を nodes へ写して封筒を転記するだけ。ホストが 6 欄から検査値を計算し直して照合し、続けて全欄一致の重複ノードを畳んで完全性を検査する。失敗は `plan:issue-tree-retry` で 1 回だけ取り直す（返却値 `treeFetch` に `attempts`・`foldedDuplicates`。Issue #668） |
+| `plan:issue-tree`（Tree 取得・依存抽出） | sonnet | medium | 本文読解・依存判断。取得そのもの（幅優先・ページ送り・siblingIndex・件数の自己点検）は `scripts/fetch-tree.sh`、エージェントは出力を nodes へ写して封筒を転記するだけ（出力が 1 ページに収まらない大きなツリーは `--page` で 1 ページずつ読む。上限は約 4,500 ノード相当 = 30 ページで、超えると exit 7）。ホストは全欄一致の重複ノードを畳んだうえで型・封筒・件数・ダイジェストを 6 欄から計算し直して照合し、続けて完全性を検査する。失敗は `plan:issue-tree-retry` で 1 回だけ取り直す（スクリプトの失敗は終了コードと理由つきでログ・最終例外に出る。返却値 `treeFetch` に `attempts`・`foldedDuplicates`。Issue #668） |
 | `plan:declared-deps-*`（本文の依存宣言の機械抽出） | haiku | low | 定型コマンド出力の転記（判断なし） |
 | `plan:out-of-tree-deps-*` / `plan:root-ancestors-<round>`（ツリー外前提の state・ルートの祖先チェーンの機械取得） | haiku | low | 定型コマンド出力の転記（判断なし）。ツリー外の前提がある場合のみ起動。祖先チェーンはラウンドごとにラベルが変わる（`plan:root-ancestors-1` 等、最大 5 ラウンド） |
 | `detect:external-checks`（外部チェック判定） | haiku | low | 定型コマンド集計 |

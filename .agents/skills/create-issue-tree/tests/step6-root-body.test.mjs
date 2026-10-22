@@ -139,7 +139,7 @@ test('(b) タイトルの | と改行で表の列数が崩れない', () => {
     assert.equal(r.status, 0, r.stderr)
     const row = body.split('\n').find((l) => l.startsWith('| #111 '))
     assert.ok(row, '#111 行がある')
-    assert.equal(row, '| #111 | feat: a \\| b c | sub-issue あり |')
+    assert.equal(row, '| #111 | feat: a &#124; b c | sub-issue あり |')
   } finally {
     rmSync(ctx.dir, { recursive: true, force: true })
   }
@@ -307,7 +307,9 @@ function runRootFull(rootBody, children, { args = ROOT_ARGS, env = {} } = {}) {
   writeFileSync(join(bin, 'gh'), ROOT_GH_STUB)
   chmodSync(join(bin, 'gh'), 0o755)
   writeFileSync(join(fx, 'root_body.md'), rootBody)
-  writeFileSync(join(fx, 'sub_101_1.json'), JSON.stringify(children))
+  const pnIdx = args.indexOf('--phase-number')
+  const pn = pnIdx >= 0 ? args[pnIdx + 1] : '101'
+  writeFileSync(join(fx, `sub_${pn}_1.json`), JSON.stringify(children))
   for (const c of children) writeFileSync(join(fx, `sub_${c.number}_1.json`), '[]')
   const callLog = join(dir, 'calls.log')
   const allLog = join(dir, 'all.log')
@@ -1010,23 +1012,23 @@ test('(B8) 区間内に生成物以外のプレースホルダーが残れば従
   assert.equal(edits.length, 0)
 })
 
-test('(B9) 置換対象の節と旧表の間にコメント行・details があっても旧表は次の見出しまで除去され、details は保持される', () => {
+test('(B9) 置換対象の節と旧表の間に通常の行・details があっても旧表は次の見出しまで除去され、details は保持される', () => {
   const root = MANAGED_ROOT().replace(
     '### Phase 1: A\n\n| Issue',
-    '### Phase 1: A\n\n<!-- note -->\n\n<details><summary>メモ</summary>\n\nKEEP-DETAILS\n\n</details>\n\n| Issue',
+    '### Phase 1: A\n\nNOTE-LINE\n\n<details><summary>メモ</summary>\n\nKEEP-DETAILS\n\n</details>\n\n| Issue',
   )
   const { r, body } = runRoot(root, [issue(111, 'feat: 新しい子')])
   assert.equal(r.status, 0, r.stderr)
   assert.ok(!body.includes('| #11 | old |'), '旧表が新節の後に残っている')
-  assert.ok(!body.includes('<!-- note -->'))
+  assert.ok(!body.includes('NOTE-LINE'))
   assert.ok(body.includes('KEEP-DETAILS'), '保護対象の details が消えた')
   assert.ok(body.includes(END_M))
   assert.ok(body.includes('| #12 | legacy | - |'))
   assert.match(body, /### Phase 2: B/)
 })
 
-test('(B10) マーカー無しでも節と旧表の間のコメント行で除去が止まらない', () => {
-  const root = ROOT_BODY.replace('### Phase 1: 古い\n', '### Phase 1: 古い\n\n<!-- note -->\n')
+test('(B10) マーカー無しでも節と旧表の間の通常の行で除去が止まらない', () => {
+  const root = ROOT_BODY.replace('### Phase 1: 古い\n', '### Phase 1: 古い\n\nNOTE-LINE\n')
   const { r, body } = runRoot(root, [issue(111, 'feat: 新しい子')])
   assert.equal(r.status, 0, r.stderr)
   assert.ok(!body.includes('古い子'))
@@ -1046,49 +1048,59 @@ test('(C1) 閉じ忘れの <details> の後ろに置換対象の節がある本�
   assert.deepEqual(leftovers, [])
 })
 
-test('(C2) `>` を伴わず行末で終わる <details は開きタグとして数え、閉じなければ中止する', () => {
-  const root = ROOT_BODY.replace('### Phase 1: 古い', '<details\n\n### Phase 1: 古い')
-  const { r, edits } = runRootFull(root, [issue(111, 'feat: 新しい子')])
-  assert.equal(r.status, 1, r.stderr)
-  assert.equal(edits.length, 0)
+test('(C2) `>` を伴わず行末で終わる <details は複数行にまたがるタグとして判定できず、edit せず中止する', () => {
+  abortsAmbiguous(ROOT_BODY.replace('### Phase 1: 古い', '<details\n\n### Phase 1: 古い'), 'C2')
 })
 
-test('(C2b) CRLF 本文で行末が CR の <details 単独行も開きタグとして数え、閉じなければ中止する', () => {
-  const root = ROOT_BODY.replace('### Phase 1: 古い', '<details\n\n### Phase 1: 古い').replace(/\n/g, '\r\n')
-  const { r, edits } = runRootFull(root, [issue(111, 'feat: 新しい子')])
-  assert.equal(r.status, 1, r.stderr)
-  assert.equal(edits.length, 0)
+test('(C2b) CRLF 本文で行末が CR の <details 単独行も判定できず中止する', () => {
+  abortsAmbiguous(ROOT_BODY.replace('### Phase 1: 古い', '<details\n\n### Phase 1: 古い').replace(/\n/g, '\r\n'), 'C2b')
 })
 
-test('(C3) <detailsfoo> のように <details で始まるだけの行は除外扱いにならず、後ろの節が置換される', () => {
-  const root = ROOT_BODY.replace('### Phase 1: 古い', '<detailsfoo>\n\n### Phase 1: 古い')
-  const { r, body } = runRoot(root, [issue(111, 'feat: 新しい子')])
-  assert.equal(r.status, 0, r.stderr)
-  assert.ok(!body.includes('古い子'), '旧節が残っている')
-  assert.ok(!body.includes('OLD-DETAIL-MARKER'))
-  assert.equal(phase1Headings(body), 1)
-  assert.match(body, /### Phase 2: 後続\n\nPHASE2-KEEP-MARKER/)
-  assert.ok(body.includes('<detailsfoo>'), '無関係な行は素通しされる')
+test('(C2c) 属性付き <details open> を含む本文は中止する', () => {
+  abortsAmbiguous(ROOT_BODY.replace('### Phase 1: 古い', '<details open>\n\n### Phase 1: 退避済み\n\nKEEP\n\n</details>\n\n### Phase 1: 古い'), 'C2c')
 })
 
-test('(C4) 属性つき <details open> と 1 行で開閉する <details>…</details> は従来どおり除外され、閉じていれば中止しない', () => {
+test('(C2d) 属性値に </details> を含む開きタグ（codex P1）は同じ行で depth が戻らず、退避内容を消さずに中止する', () => {
+  abortsAmbiguous(ROOT_BODY.replace('### Phase 1: 古い', '<details title="</details>">\n\n### Phase 1: 退避済み\n\nKEEP-ATTR\n\n</details>\n\n### Phase 1: 古い'), 'C2d')
+})
+
+test('(C3) <detailsfoo> のような許可リスト外のタグは別名でも中止する（旧: 通常行として素通し）', () => {
+  abortsAmbiguous(ROOT_BODY.replace('### Phase 1: 古い', '<detailsfoo>\n\n### Phase 1: 古い'), 'C3')
+})
+
+test('(C4) 属性の無い複数行 <details> と 1 行で開閉する <details>…</details> は除外され、閉じていれば中止しない', () => {
   const root = ROOT_BODY.replace(
     '### Phase 1: 古い',
-    '<details open>\n\n### Phase 1: 退避済み\n\nKEEP-OPEN-ATTR\n\n</details>\n\n<details><summary>x</summary>y</details>\n\n### Phase 1: 古い',
+    '<details>\n\n### Phase 1: 退避済み\n\nKEEP-OPEN-ATTR\n\n</details>\n\n<details><summary>x</summary>y</details>\n\n### Phase 1: 古い',
   )
   const { r, body } = runRoot(root, [issue(111, 'feat: 新しい子')])
   assert.equal(r.status, 0, r.stderr)
-  assert.ok(body.includes('KEEP-OPEN-ATTR'), '属性つき details 内が消えた')
+  assert.ok(body.includes('KEEP-OPEN-ATTR'), 'details 内が消えた')
   assert.ok(body.includes('<details><summary>x</summary>y</details>'))
   assert.ok(!body.includes('古い子'))
   assert.equal(phase1Headings(body), 2)
 })
 
-test('(C5) 閉じタグが `>` を欠く </details は閉じとして数えず、閉じ忘れとして中止する', () => {
-  const root = ROOT_BODY.replace('### Phase 1: 古い', '<details><summary>x</summary>\n\n</details\n\n### Phase 1: 古い')
-  const { r, edits } = runRootFull(root, [issue(111, 'feat: 新しい子')])
-  assert.equal(r.status, 1, r.stderr)
-  assert.equal(edits.length, 0)
+const abortsAmbiguous = (root, label) => {
+  const { r, edits, leftovers } = runRootFull(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 1, `${label}: ${r.stderr}`)
+  assert.equal(edits.length, 0, `${label}: gh issue edit が呼ばれた`)
+  assert.match(r.stderr, /判定できません/, label)
+  assert.match(r.stderr, /バッククォート・<!--・-->・バックスラッシュ/, label)
+  assert.match(r.stderr, /許可していない HTML タグ/, label)
+  assert.deepEqual(leftovers, [], label)
+}
+
+test('(C4b) HTML コメントを含む行が判定範囲にあれば、コメント内の </details> を数えず推測もせず中止する', () => {
+  abortsAmbiguous(ROOT_BODY.replace('### Phase 1: 古い', '<details>\n\n<!-- </details> -->\n\n### Phase 1: 退避済み\n\nKEEP-COMMENT\n\n</details>\n\n### Phase 1: 古い'), 'C4b')
+})
+
+test('(C4c) 複数行 HTML コメントを含む本文も、本文を書き換えず中止する', () => {
+  abortsAmbiguous(ROOT_BODY.replace('### Phase 1: 古い', '<details>\n\n<!--\n</details>\n<details>\n-->\n\n### Phase 1: 退避済み\n\nKEEP-MULTI\n\n</details>\n\n### Phase 1: 古い'), 'C4c')
+})
+
+test('(C5) 閉じタグが `>` を欠く </details は閉じと判定できず、edit せず中止する', () => {
+  abortsAmbiguous(ROOT_BODY.replace('### Phase 1: 古い', '<details><summary>x</summary>\n\n</details\n\n### Phase 1: 古い'), 'C5')
 })
 
 test('(C6) update-issue-tree が退避する <details><summary>…</summary>…</details> は引き続き除外され、閉じていれば中止しない', () => {
@@ -1096,4 +1108,434 @@ test('(C6) update-issue-tree が退避する <details><summary>…</summary>…<
   assert.equal(r.status, 0, r.stderr)
   assert.ok(body.includes('| #12 | legacy | - |'))
   assert.ok(body.includes('</details>'))
+})
+
+// 許可リスト（Issue #678・codex P1）: < は <details> </details> <summary> </summary> の素の形の一部のときだけ許す。
+const ESCAPED_ATTR = '<details>\n<span title="</details>">説明</span>\n\n### Phase 1: 退避済み\n\nKEEP\n\n</details>'
+
+test('(H1) 属性値に </details> を持つ別タグ（codex P1）は depth が 0 に戻って見えても、edit せず中止する', () => {
+  abortsAmbiguous(withOld(ESCAPED_ATTR), 'H1')
+})
+
+test('(H2) <span>・<br>・<a href> を含む判定範囲は中止する', () => {
+  for (const tag of ['<span>x</span>', 'a<br>b', '<a href="x">link</a>']) abortsAmbiguous(withOld(tag), `H2 ${tag}`)
+})
+
+test('(H3) update-issue-tree 形式の退避節（summary 付き details・旧表・</details>）は中止せず更新でき、退避節が保持される', () => {
+  const esc = '<details><summary>移行前の Phase 別表（update-issue-tree が退避）</summary>\n\n| Issue | タイトル | 分解 |\n|---|---|---|\n| #9 | KEEP-OLD | - |\n\n</details>'
+  const { r, body, edits } = runRootFull(withOld(esc), [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.equal(edits.length, 1)
+  assert.ok(body.includes(esc), '退避節が保持されていない')
+  assert.ok(!body.includes('古い子'))
+})
+
+test('(H4) 管理マーカーの外にある HTML タグは中止の対象にならない', () => {
+  const root = MANAGED_ROOT().replace('OPS-KEEP-MARKER', '<span title="</details>">KEEP</span><br>')
+  const { r, body, edits } = runRootFull(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.equal(edits.length, 1)
+  assert.ok(body.includes('<span title="</details>">KEEP</span><br>'))
+})
+
+test('(H5) 管理マーカーの内側の HTML タグは中止する', () => {
+  abortsAmbiguous(MANAGED_ROOT().replace('| #11 | old | - |', '| #11 | <b>old</b> | - |'), 'H5')
+})
+
+test('(H6) > 単独の行（a > b）は中止しない', () => {
+  const { r, body, edits } = runRootFull(withOld('a > b\n\n> 引用'), [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.equal(edits.length, 1)
+  assert.ok(body.includes('a > b'))
+})
+
+// 行内・行末の </details>: 閉じている本文でも行頭以外の閉じタグを数えず exit 8 になっていた（Issue #678）。
+// 表行・見出し行は子 issue のタイトルが入る（CELL は < を無害化しない）ため、タグを数えない（閉じは行全体が </details> の行など表行・見出し行以外）。
+const withOld = (head) => ROOT_BODY.replace('### Phase 1: 古い', `${head}\n\n### Phase 1: 古い`)
+
+test('(D1) 単独行 </details> で閉じる退避節でも中止せず、退避節の外だけが置換される', () => {
+  const root = withOld('<details><summary>退避</summary>\n\n| Issue | タイトル |\n|---|---|\n| #9 | old |\n\n</details>')
+  const { r, body, edits } = runRootFull(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.equal(edits.length, 1)
+  assert.ok(body.includes('| #9 | old |'))
+  assert.ok(!body.includes('古い子'), '旧節が残っている')
+  assert.equal(phase1Headings(body), 1)
+})
+
+test('(D1b) 退避節内に同名見出しがあっても素通しされ、外側の旧節だけが置換される', () => {
+  const root = withOld('<details><summary>退避</summary>\n\n### Phase 1: 退避済み\n\n| #9 | old |\n\n</details>')
+  const { r, body } = runRoot(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.ok(body.includes('### Phase 1: 退避済み'))
+  assert.ok(!body.includes('古い子'))
+  assert.equal(phase1Headings(body), 2)
+})
+
+test('(D1c) 見出し行の </details> も他の行と同じく閉じと数える（表・見出し行を特別扱いしない）', () => {
+  const root = withOld('<details><summary>退避</summary>\n\n| #9 | old |\n\n### Phase 2: fix </details>')
+  const { r, body } = runRoot(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.ok(body.includes('### Phase 2: fix </details>'))
+  assert.ok(body.includes('| #9 | old |'))
+  assert.ok(!body.includes('古い子'))
+  assert.equal(phase1Headings(body), 1)
+})
+
+test('(D1d) 退避節が表行末の </details> で閉じていても、閉じと数えて更新できる', () => {
+  const root = withOld('<details><summary>退避</summary>\n\n| #9 | old |</details>')
+  const { r, body } = runRoot(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.ok(body.includes('| #9 | old |</details>'))
+  assert.ok(!body.includes('古い子'))
+})
+
+test('(D2) 1 行で開閉したあとに文字が続く行でも中止せず、素通しされる', () => {
+  const line = '<details><summary>x</summary>y</details> 補足'
+  const { r, body } = runRoot(withOld(line), [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.ok(body.includes(line))
+  assert.ok(!body.includes('古い子'))
+  assert.equal(phase1Headings(body), 1)
+})
+
+test('(D3) 本当に閉じていない本文は従来どおり edit せず中止し、一時ファイルを残さない', () => {
+  for (const head of ['<details><summary>退避</summary>\n\n| #9 | old |', '<details><summary>x</summary>y 補足']) {
+    const { r, edits, leftovers } = runRootFull(withOld(head), [issue(111, 'feat: 新しい子')])
+    assert.equal(r.status, 1, r.stderr)
+    assert.equal(edits.length, 0)
+    assert.match(r.stderr, /<details> が閉じていない/)
+    assert.deepEqual(leftovers, [])
+  }
+})
+
+test('(D4) 地の文の中ほどにある </details> で退避節が閉じ、後ろの節は置換対象に戻る', () => {
+  const root = withOld('<details><summary>退避</summary>\n\nfoo </details> bar')
+  const { r, body } = runRoot(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.ok(body.includes('foo </details> bar'))
+  assert.ok(!body.includes('古い子'))
+  assert.equal(phase1Headings(body), 1)
+})
+
+test('(D5) 1 行内の入れ子は閉じが 2 つなら通り、1 つなら中止する', () => {
+  const ok = runRoot(withOld('<details><details>a</details></details>'), [issue(111, 'feat: 新しい子')])
+  assert.equal(ok.r.status, 0, ok.r.stderr)
+  const ng = runRootFull(withOld('<details><details>a</details>'), [issue(111, 'feat: 新しい子')])
+  assert.equal(ng.r.status, 1, ng.r.stderr)
+  assert.equal(ng.edits.length, 0)
+})
+
+test('(D6) バッククォートを含む行が判定範囲にあれば、<details> の言及でも中止する', () => {
+  abortsAmbiguous(withOld('`<details>` を使う説明'), 'D6 open')
+  abortsAmbiguous(withOld('<details><summary>x</summary>\n\n`</details>` の説明'), 'D6 close')
+})
+
+test('(D6b) 複数バッククォートのコードスパンを含む本文も中止する', () => {
+  abortsAmbiguous(withOld('<details><summary>退避</summary>\n\n`` </details> ``\n\n### Phase 1: 退避済み\n\n</details>'), 'D6b')
+})
+
+test('(D7) タイトルに <details> を含む子 issue は文字参照で書かれ、再マージしても未閉じ扱いで中止しない', () => {
+  const kids = [issue(111, 'fix: <details> の閉じ忘れ')]
+  const first = runRoot(ROOT_BODY, kids)
+  assert.equal(first.r.status, 0, first.r.stderr)
+  assert.ok(first.body.includes('fix: &lt;details&gt; の閉じ忘れ'))
+  const second = runRootFull(first.body, kids)
+  assert.equal(second.r.status, 0, second.r.stderr)
+  assert.equal(second.edits.length, 1)
+  assert.equal(phase1Headings(second.body), 1)
+})
+
+test('(D8) 表行の行中の </details> も閉じと数える', () => {
+  const root = withOld('<details><summary>退避</summary>\n\n| #5 | fix: </details> を数えず | - |')
+  const { r, body } = runRoot(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.ok(body.includes('| #5 | fix: </details> を数えず | - |'))
+  assert.ok(!body.includes('古い子'))
+})
+
+test('(D9) 表行のタイトルに <!-- を含む本文は、状態を追わず中止する', () => {
+  abortsAmbiguous(withOld('<details><summary>退避</summary>\n\n### Phase 1: 退避済み\n\n| #9 | fix: <!-- の説明 |\n\n</details>'), 'D9')
+})
+
+// バックスラッシュでエスケープした details タグは文字として表示されるだけで、深さを変えない（PR #679 レビュー）。
+test('(D11) 説明文中のバックスラッシュ（\<details>）を含む行は、エスケープを解釈せず中止する', () => {
+  abortsAmbiguous(withOld('タグは \\<details> と書く'), 'D11')
+})
+
+test('(D12) 退避節内のバックスラッシュを含む行（\</details>）も中止する', () => {
+  abortsAmbiguous(withOld('<details><summary>退避</summary>\n\n説明: \\</details> は文字\n\n### Phase 1: 退避済み\n\n</details>'), 'D12')
+})
+
+test('(D13) 二重バックスラッシュ直後の <details> も中止する', () => {
+  abortsAmbiguous(withOld('\\\\<details>'), 'D13')
+})
+
+test('(D10) 見出し行に <!-- を含む本文は中止する', () => {
+  abortsAmbiguous(withOld('### メモ <!-- 注\n\n<details><summary>退避</summary>\n\n### Phase 1: 退避済み\n\n</details>'), 'D10')
+})
+
+// 方針（Issue #678）: コードスパン・HTML コメント・エスケープの状態は追わない。判定範囲に曖昧な記号があれば中止する。
+test('(E1) 状態追跡のコード（strip_code・pend・incomment・エスケープ除去）を持たず、未閉じ <details> は edit せず中止する', () => {
+  const src = readFileSync(new URL('../scripts/merge-root-body.sh', import.meta.url), 'utf8')
+  for (const dead of ['strip_code', 'pend_hit', 'incomment', 'gsub(/[\\\\]<']) assert.ok(!src.includes(dead), `${dead} が残っている`)
+  const ng = runRootFull(withOld('<details><summary>x</summary>'), [issue(111, 'feat: 新しい子')])
+  assert.equal(ng.r.status, 1, ng.r.stderr)
+  assert.equal(ng.edits.length, 0)
+  assert.match(ng.r.stderr, /<details> が閉じていない/)
+})
+
+test('(E2) 複数行のコードスパンを含む本文は、スパン内の </details> を数えず推測もせず中止する', () => {
+  abortsAmbiguous(withOld('<details><summary>退避</summary>\n\n### Phase 1: 退避済み\n\n説明 `例:\nfoo </details>\n終わり`\n\n</details>'), 'E2')
+})
+
+test('(E3) 閉じないバッククォートを含む本文は中止する', () => {
+  for (const head of ['<details><summary>退避</summary>\n\n説明 `例:\nfoo </details>\n\n続き', '説明 `例:\n<details>x']) abortsAmbiguous(withOld(head), 'E3')
+})
+
+const KEEP = '### Phase 1: 退避済み'
+const ESC = `<details><summary>退避</summary>\n\n${KEEP}\n\nKEEP-BODY\n\n</details>`
+
+// レビュー指摘 1（Bugbot High）: 閉じないバッククォートで行の残りを読み飛ばすと、その中の --> も読み飛ばして後続の <details> を見落とした。
+test('(E4) 閉じないバッククォートと --> を持つ本文は中止し、退避済みの節を消さない', () => {
+  abortsAmbiguous(withOld(`説明 \`未閉じ -->\n${ESC}`), 'E4 backtick+-->')
+  abortsAmbiguous(withOld(`<!-- 注 \`\n-->\n${ESC}`), 'E4 comment')
+})
+
+// レビュー指摘 2（codex P1）: 見出し・表行の中で閉じるコメントを検出できなかった。
+test('(E5) 見出し行・表行の中で閉じる --> を含む本文は中止する', () => {
+  abortsAmbiguous(withOld(`<!-- 開始\n# 注記 -->\n${ESC}`), 'E5 heading')
+  abortsAmbiguous(withOld(`<!-- 開始\n| 注記 -->\n${ESC}`), 'E5 table')
+})
+
+// レビュー指摘 3（codex P1）: エスケープされたバッククォート・<!-- をコードスパン・コメントの開始として扱った。
+test('(E6) エスケープされたバッククォート・<!-- を含む本文は中止する', () => {
+  abortsAmbiguous(withOld(`文字の \\\` です\n${ESC}`), 'E6 backtick')
+  abortsAmbiguous(withOld(`文字の \\<!-- です\n${ESC}`), 'E6 comment')
+})
+
+test('(F1) 判定範囲に記号が無ければ、行内に複数の <details> / </details> があっても数えて更新できる', () => {
+  const head = `<details>a</details> 補足 <details><details>b</details></details>\n\n${ESC}\n\n行頭 </details> を余分に閉じても深さは負にならない`
+  const { r, body, edits } = runRootFull(withOld(head), [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.equal(edits.length, 1)
+  assert.ok(body.includes('KEEP-BODY'))
+  assert.ok(body.includes(KEEP))
+  assert.ok(!body.includes('古い子'))
+  assert.equal(phase1Headings(body), 2)
+})
+
+test('(F2) 管理マーカーの外にあるバッククォート・コメント・バックスラッシュでは止まらず、内側だけを判定する', () => {
+  const root = MANAGED_ROOT()
+    .replace('OPS-KEEP-MARKER', 'OPS `code` <!-- c --> \\ KEEP')
+    .replace('## Phase 別表\n', '## Phase 別表\n\n説明 `x` と <!-- メモ --> と \\\n')
+  const { r, body, edits } = runRootFull(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.equal(edits.length, 1)
+  assert.ok(body.includes('OPS `code` <!-- c --> \\ KEEP'))
+  assert.ok(body.includes('| #12 | legacy | - |'))
+})
+
+test('(F3) 管理マーカーの内側にバッククォートがあれば中止する', () => {
+  abortsAmbiguous(MANAGED_ROOT().replace('| #11 | old | - |', '| #11 | `old` | - |'), 'F3')
+})
+
+test('(F4) コードフェンス内の記号は走査せず、フェンス外に記号が無ければ更新できる', () => {
+  const root = withOld('```\n`x` <!-- y --> \\\n```')
+  const { r, edits } = runRootFull(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.equal(edits.length, 1)
+})
+
+// ---- CELL を HTML 文字参照へ変更（Issue #678 追加指摘）----
+// タイトル由来の | \ ` < > & が生成行に残ると、次回以降の --root 再マージが判定範囲の記号で中止したり、
+// タグに触れた行が置換対象から外れて Phase が二重化した。生成時に文字参照へ変換して無害化する。
+const countLines = (body, re) => body.split('\n').filter((l) => re.test(l)).length
+
+test('(G1) | と \\ を含むタイトルで create-root-body.sh → --root 再マージを 2 回続けても中止せず、Phase 行は重複しない', () => {
+  const ptitle = 'feat(phase-1): a | b \\ c'
+  const ctitle = 'feat: x | y \\ z'
+  const ctx = setup({
+    'sub_100_1.json': [issue(101, ptitle, 'open', ['phase:1'])],
+    'sub_101_1.json': [issue(111, ctitle)],
+    'sub_111_1.json': [],
+  })
+  let created
+  try {
+    created = run(ctx)
+  } finally {
+    rmSync(ctx.dir, { recursive: true, force: true })
+  }
+  assert.equal(created.r.status, 0, created.r.stderr)
+  assert.ok(created.body.includes('&#124;') && created.body.includes('&#92;'), '文字参照が出ていない')
+  assert.ok(!created.body.includes('\\'), 'バックスラッシュが残っている')
+  const kids = [issue(111, ctitle)]
+  const env = { PHASE_TITLE: ptitle }
+  const m1 = runRootFull(created.body, kids, { env })
+  assert.equal(m1.r.status, 0, m1.r.stderr)
+  const m2 = runRootFull(m1.body, kids, { env })
+  assert.equal(m2.r.status, 0, m2.r.stderr)
+  assert.equal(m2.edits.length, 1)
+  assert.equal(countLines(m2.body, /^\| Phase 1 \|/), 1)
+  assert.equal(phase1Headings(m2.body), 1)
+  assert.equal(countLines(m2.body, /^\| #111 \|/), 1)
+})
+
+test('(G2) Phase 親タイトルが </details> / <details>x</details> でも表行・節が置換され、1 つずつしか無い', () => {
+  const t1 = 'fix: </details>'
+  const t2 = 'fix: <details>x</details>'
+  const a1 = ['--root', '100', '--granularity', '2h', '--phase', '1', '--phase-number', '101']
+  const a2 = ['--root', '100', '--granularity', '2h', '--phase', '2', '--phase-number', '102']
+  const kids = [issue(111, 'feat: 新しい子')]
+  let body = ROOT_BODY
+  for (let round = 0; round < 2; round++) {
+    const r1 = runRootFull(body, kids, { args: a1, env: { PHASE_TITLE: t1 } })
+    assert.equal(r1.r.status, 0, `round ${round} phase1: ${r1.r.stderr}`)
+    const r2 = runRootFull(r1.body, kids, { args: a2, env: { PHASE_TITLE: t2 } })
+    assert.equal(r2.r.status, 0, `round ${round} phase2: ${r2.r.stderr}`)
+    body = r2.body
+  }
+  assert.equal(countLines(body, /^\| Phase 1 \|/), 1)
+  assert.equal(countLines(body, /^\| Phase 2 \|/), 1)
+  assert.equal(phase1Headings(body), 1)
+  assert.equal(countLines(body, /^### Phase 2:/), 1)
+  assert.ok(body.includes('fix: &lt;/details&gt;'))
+  assert.ok(body.includes('fix: &lt;details&gt;x&lt;/details&gt;'))
+  assert.ok(!body.includes('古い子') && !body.includes('PHASE2-KEEP-MARKER'), '旧節が残っている')
+  assert.ok(body.includes('OPS-KEEP-MARKER'))
+})
+
+test('(G3) バッククォート・<!--・--> を含むタイトルでも 2 回の再マージが通り、生成行に記号が残らない', () => {
+  const t = 'feat: `x` <!-- y --> z'
+  const kids = [issue(111, t)]
+  const env = { PHASE_TITLE: t }
+  const m1 = runRootFull(ROOT_BODY, kids, { env })
+  assert.equal(m1.r.status, 0, m1.r.stderr)
+  const m2 = runRootFull(m1.body, kids, { env })
+  assert.equal(m2.r.status, 0, m2.r.stderr)
+  const gen = m2.body.split('\n').filter((l) => /^(\| Phase 1 \||### Phase 1:|\| #111 \|)/.test(l))
+  assert.equal(gen.length, 3)
+  for (const l of gen) assert.ok(!/[`\\]|<!--|-->/.test(l), `生成行に記号が残る: ${l}`)
+  assert.ok(m2.body.includes('&#96;x&#96; &lt;!-- y --&gt; z'))
+  assert.equal(phase1Headings(m2.body), 1)
+})
+
+test('(G4) & は最初に変換され、文字参照が二重変換されない', () => {
+  const kids = [issue(111, 'a&b <c> `d` e\\f g|h')]
+  const { r, body } = runRootFull(ROOT_BODY, kids)
+  assert.equal(r.status, 0, r.stderr)
+  assert.ok(body.includes('| #111 | a&amp;b &lt;c&gt; &#96;d&#96; e&#92;f g&#124;h | - |'))
+})
+
+test('(G5) 旧形式のエスケープ（\\|）が残る本文は中止し、文字参照で手直しする案内を出す', () => {
+  const root = ROOT_BODY.replace('| #901 | 古い子 | - |', '| #901 | a \\| b | - |')
+  const { r, edits } = runRootFull(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 1, r.stderr)
+  assert.equal(edits.length, 0)
+  assert.match(r.stderr, /旧形式のエスケープ/)
+  assert.match(r.stderr, /文字参照/)
+  assert.match(r.stderr, /&#124;/)
+  assert.match(r.stderr, /管理マーカー区間内の行も対象/)
+  assert.match(r.stderr, /update-issue-tree を再実行/)
+  assert.doesNotMatch(r.stderr, /update-issue-tree で本文を更新してください/)
+  assert.doesNotMatch(r.stderr, /回避策になりません/)
+})
+
+// Issue #683: update-issue-tree の管理区間の出力を create-issue-tree の --root 再マージへ通す往復。
+// update-issue-tree が無い配布形態（スキル単体の配布）では skip する。スキルをまたぐ import はしない。
+const UPDATE_SCRIPT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'update-issue-tree', 'scripts', 'update-root-body.sh')
+const UPDATE_GH_STUB = `#!/usr/bin/env bash
+D="\${STUB_DIR}"
+case "$1" in
+  auth) exit 0 ;;
+  issue) cp "$5" "\${D}/edited.body"; exit 0 ;;
+  api)
+    path="$2"
+    case "\${path}" in
+      */sub_issues\\?*)
+        rest="\${path#*/issues/}"; n="\${rest%%/*}"; page="\${path##*page=}"
+        f="\${D}/sub_\${n}_\${page}.json"
+        if [[ -f "\${f}" ]]; then cat "\${f}"; exit 0; fi
+        exit 1 ;;
+      */issues/*)
+        if [[ -f "\${D}/edited.body" ]]; then
+          jq -n --rawfile b "\${D}/edited.body" '{body: $b, repository_url: "https://api.github.com/repos/o/r"}'
+        else
+          cat "\${D}/root.json"
+        fi
+        exit 0 ;;
+    esac ;;
+esac
+exit 1
+`
+
+// update-root-body.sh を gh スタブで実行し、生成した本文を返す。ルート 254 の直下に phase:1 の親 10・その子 11。
+function runUpdate(rootBody, parentTitle, childTitle) {
+  const dir = mkdtempSync(join(tmpdir(), 'step6upd-'))
+  const stub = join(dir, 'stub')
+  const bin = join(dir, 'bin')
+  const tmp = join(dir, 'tmp')
+  for (const d of [stub, bin, tmp]) mkdirSync(d)
+  writeFileSync(join(bin, 'gh'), UPDATE_GH_STUB)
+  chmodSync(join(bin, 'gh'), 0o755)
+  const url = 'https://api.github.com/repos/o/r'
+  const mk = (number, title, labels, total) => ({
+    number, title, state: 'open', repository_url: url,
+    labels: labels.map((name) => ({ name })), sub_issues_summary: { total, completed: 0 },
+  })
+  writeFileSync(join(stub, 'root.json'), JSON.stringify({ number: 254, repository_url: url, body: rootBody }))
+  writeFileSync(join(stub, 'sub_254_1.json'), JSON.stringify([mk(10, parentTitle, ['phase:1'], 1)]))
+  writeFileSync(join(stub, 'sub_10_1.json'), JSON.stringify([mk(11, childTitle, [], 0)]))
+  try {
+    const r = spawnSync('bash', [UPDATE_SCRIPT, '--root', '254', '--granularity', '2h', '--reassigned', '0', '--orphans', '0', '--labels', '0', '--new-phases', '0', '--split', '0', '--date', '2026-10-06'], {
+      cwd: dir,
+      encoding: 'utf8',
+      env: { PATH: `${bin}:${process.env.PATH}`, STUB_DIR: stub, TMPDIR: tmp, HOME: dir },
+    })
+    const f = join(stub, 'edited.body')
+    return { r, body: existsSync(f) ? readFileSync(f, 'utf8') : null }
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+}
+
+const HOSTILE_TITLE = 'fix: a | b \\ c `d` <details>x</details> <!-- y --> </details>'
+
+test('(G6) update-issue-tree が書いた管理区間は create-issue-tree の --root 再マージで中止しない', { skip: !existsSync(UPDATE_SCRIPT) }, () => {
+  const upd = runUpdate('', HOSTILE_TITLE, HOSTILE_TITLE)
+  assert.equal(upd.r.status, 0, upd.r.stderr)
+  const kids = [issue(111, HOSTILE_TITLE)]
+  const m = runRootFull(upd.body, kids, { env: { PHASE_TITLE: HOSTILE_TITLE } })
+  assert.equal(m.r.status, 0, m.r.stderr)
+  assert.equal(m.edits.length, 1)
+  assert.doesNotMatch(m.r.stderr, /バッククォート/)
+  for (const mk of ['phase-plan:begin', 'phase-plan:end', 'inventory:begin', 'inventory:end']) {
+    assert.equal(m.body.split(`<!-- update-issue-tree:${mk} -->`).length - 1, 1, mk)
+  }
+  assert.equal(countLines(m.body, /^### Phase 1:/), 1)
+  assert.equal(countLines(m.body, /^\| Phase 1 \|/), 1)
+  assert.equal(countLines(m.body, /^\| #111 \|/), 1)
+  // 往復: マージ後の本文を update-issue-tree へもう一度通しても通る
+  const upd2 = runUpdate(m.body, HOSTILE_TITLE, HOSTILE_TITLE)
+  assert.equal(upd2.r.status, 0, upd2.r.stderr)
+})
+
+test('(G7) update-issue-tree の表セル・見出しは create-issue-tree の CELL と同じ出力になる', { skip: !existsSync(UPDATE_SCRIPT) }, () => {
+  const inputs = [
+    'a&b <c> `d` e\\f g|h',
+    '&amp;',
+    'x\r\ny\n\nz',
+    '<!-- update-issue-tree:phase-plan:end -->',
+    '</details>',
+    'feat: 日本語のタイトル',
+  ]
+  for (const t of inputs) {
+    const cell = spawnSync('bash', ['-c', 'source "$1"; jq -rn --arg t "$2" "\\$t | ${CELL}"', 'bash', LIB, t], { encoding: 'utf8' })
+    assert.equal(cell.status, 0, cell.stderr)
+    const expected = cell.stdout.replace(/\n$/, '')
+    const upd = runUpdate('', t, t)
+    assert.equal(upd.r.status, 0, upd.r.stderr)
+    assert.ok(upd.body.includes(`### Phase 1: ${expected}\n`), JSON.stringify([t, expected]))
+    assert.ok(upd.body.includes(`| #11 | ${expected} | - |`), JSON.stringify([t, expected]))
+  }
 })

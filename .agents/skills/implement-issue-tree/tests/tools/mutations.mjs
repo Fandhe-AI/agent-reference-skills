@@ -36,6 +36,7 @@ const CLASSIFY = ['observe-checks-unit.test.mjs', 'observe-pr-checks-settled.tes
 const PR_PUSH = ['pr-push.test.mjs', 'pr-push-unit.test.mjs']
 const BASE_MERGE = ['base-merge.test.mjs', 'base-merge-unit.test.mjs']
 const FETCH_TREE_HOST = ['fetch-tree-host.test.mjs']
+const FETCH_TREE_FAILURE = ['fetch-tree-failure.test.mjs']
 const FETCH_TREE_SCRIPT = ['fetch-tree.test.mjs', 'fetch-tree-alt-bash.test.mjs']
 
 export const MUTATIONS = [
@@ -401,8 +402,8 @@ export const MUTATIONS = [
   { id: 'WZ4-live-worktree-leaves-sweep-candidate', file: SRC, from: "  confirmedRemovedPaths.delete(p)\n  sweepEligiblePaths.delete(p)\n", to: "  confirmedRemovedPaths.delete(p)\n", tests: WR_LEDGER, note: "削除済みからは外すが最終スイープの削除候補に残す（作り直された実体を --force で消し得る）" },
   { id: 'WZ5-live-worktree-leaves-confirmed-removed', file: SRC, from: "  confirmedRemovedPaths.delete(p)\n  sweepEligiblePaths.delete(p)\n", to: "  sweepEligiblePaths.delete(p)\n", tests: WR_LEDGER, note: "スイープ候補からは外すが削除済みに残す（作り直された実体がバイト測定から漏れる）" },
   // ---- ツリー取得のスクリプト化と検査値（Issue #668）----
-  { id: 'FT1-host-digest-unchecked', file: SRC, from: "  if (signed.payload.nodesSha256 !== treeNodesDigest(nodes)) return { ok: false, reason: 'digest' }\n", to: '', tests: FETCH_TREE_HOST, note: "封筒の nodesSha256 と nodes から計算し直した値を照合しない（書き写しで 1 欄変わっても通る）" },
-  { id: 'FT2-digest-drops-total', file: SRC, from: "n.state, n.subIssuesTotal, sha256Hex(n.title)].join('\\t')", to: "n.state, sha256Hex(n.title)].join('\\t')", tests: FETCH_TREE_HOST, note: "ダイジェストから subIssuesTotal の欄を落とす（その欄の書き写しの誤りが見つからない）" },
+  { id: 'FT1-host-digest-unchecked', file: SRC, from: "  if (typeof signed.payload.structSha256 !== 'string' || signed.payload.structSha256 !== treeStructDigest(nodes)) return { ok: false, reason: 'digest' }\n", to: '', tests: FETCH_TREE_HOST, note: "封筒の structSha256 と nodes から計算し直した値を照合しない（構造 5 欄の書き写しの誤りが通る）" },
+  { id: 'FT2-digest-drops-total', file: SRC, from: "n.siblingIndex, n.state, n.subIssuesTotal].join('\\t'))", to: "n.siblingIndex, n.state].join('\\t'))", tests: FETCH_TREE_HOST, note: "ダイジェストから subIssuesTotal の欄を落とす（その欄の書き写しの誤りが見つからない）" },
   { id: 'FT3-retry-limit-three', file: SRC, from: "for (let attempt = 1; attempt <= 2; attempt++) {\n    let result = null\n    let nonce = ''", to: "for (let attempt = 1; attempt <= 3; attempt++) {\n    let result = null\n    let nonce = ''", tests: [...FETCH_TREE_HOST, 'tree-completeness.test.mjs'], note: "取り直しの上限を 2 回（初回 + 1 回）から 3 回にする" },
   { id: 'FT4-script-count-unchecked', file: 'scripts/fetch-tree.sh', from: '  ft_count_ok "${expected}" "${actual}" || {', to: '  true || {', tests: FETCH_TREE_SCRIPT, note: "取得した子の件数が subIssuesTotal と一致するかを検査しない（ページの取り落としが通る）" },
   { id: 'FT5-host-input-unchecked', file: SRC, from: "result?.sha256 }, nonce, inputSha)", to: "result?.sha256 }, nonce)", tests: FETCH_TREE_HOST, note: "封筒がルート・リポジトリを束縛していること（inputSha256）を照合しない（別入力の出力の流用が通る）" },
@@ -411,4 +412,11 @@ export const MUTATIONS = [
   { id: 'FT8-script-digest-drops-title', file: 'scripts/lib/fetch-tree-lib.sh', from: "  tsha=$(printf '%s' \"$6\" | so_sha256) || return 1\n", to: "  tsha=none\n", tests: [...FETCH_TREE_SCRIPT, 'fetch-tree-unit.test.mjs'], note: "ダイジェストに title を含めない（title の書き写しの誤りが見つからない）" },
   { id: 'FT9-dedupe-by-number-only', file: SRC, from: '    const sig = stableStringify(n)\n', to: '    const sig = String(n.number)\n', tests: ['tree-completeness.test.mjs'], note: "#667: 重複を number だけで畳む（内容の違う重複が畳まれて見えなくなる）" },
   { id: 'FT10-shape-check-skipped', file: SRC, from: "const verified = shape === '' ?", to: "const verified = true ?", tests: FETCH_TREE_HOST, note: "書き写された 6 欄の型・値域の検査を飛ばす（state が open / closed でない値が通る）" },
+  { id: 'FT11-failure-checked-after-nodes', file: SRC, from: "    if (result?.failure !== undefined && result?.failure !== null && result?.failure !== '') {\n      lastReason = treeFetchFailureReason(result.failure, attempt)", to: "    if (false) {\n      lastReason = treeFetchFailureReason(result.failure, attempt)", tests: [...FETCH_TREE_HOST, ...FETCH_TREE_FAILURE], note: "#676: failure 申告を先に見ない（理由が「検査値が一致しない」「封筒の欠落」に化ける）" },
+  { id: 'FT12-first-attempt-says-unresolved', file: SRC, from: "return attempt < 2 ? '。1 回だけ取り直す'", to: "return attempt < 99 ? `。取り直しても解消しなかった。${finalHint}`", tests: FETCH_TREE_FAILURE, note: "#676: 1 回目のログにも「取り直しても解消しなかった」を出す" },
+  { id: 'FT17-task-id-digest-unchecked', file: SRC, from: "  if (typeof signed.payload.taskIdSha256 !== 'string' || signed.payload.taskIdSha256 !== treeTaskIdDigest(nodes)) return { ok: false, reason: 'digest' }\n", to: '', tests: FETCH_TREE_HOST, note: "#687: タスク ID のダイジェストを照合しない（転記でタスク ID が欠落しても依存解決に進む）" },
+  { id: 'FT14-title-mismatch-ignored', file: SRC, from: "titleMismatch: signed.payload.nodesSha256 !== treeNodesDigest(nodes) }", to: "titleMismatch: false }", tests: FETCH_TREE_HOST, note: "#687: title だけの不一致を検出しない（取り直しも警告もしない）" },
+  { id: 'FT15-title-mismatch-no-retry', file: SRC, from: "if (attempt === 1) { log('⚠️ （試行 1）title", to: "if (false) { log('⚠️ （試行 1）title", tests: FETCH_TREE_HOST, note: "#687: title だけの不一致でも取り直さない" },
+  { id: 'FT16-title-mismatch-unreported', file: SRC, from: "if (!verified.titleMismatch) return", to: "if (!verified.titleMismatch || attempt === 2) return", tests: FETCH_TREE_HOST, note: "#687: 取り直しでも title が違うのに titleMismatch を立てずに採用する（報告に出ない）" },
+  { id: 'FT13-exit-code-hidden', file: SRC, from: "const code = d.exitCode === null ? '' : `exit ${d.exitCode}: `", to: "const code = ''", tests: FETCH_TREE_FAILURE, note: "#676: 失敗ログに終了コードを出さない" },
 ]
