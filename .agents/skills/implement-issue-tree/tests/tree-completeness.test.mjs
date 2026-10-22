@@ -103,6 +103,11 @@ test('(f) Tree 取得プロンプトは fetch-tree.sh を launcher 経由で 1 �
   assert.match(p, /同じノードを 2 回書かない/)
   assert.match(p, /観測値のまま StructuredOutput へ転記する/)
   assert.match(p, /failure/)
+  // 大きなツリーのページ読み（Issue #673）: --page / --release を launcher 経由で、プレースホルダのまま渡す
+  assert.match(p, /fetch-tree\.sh --page <P> --dir <DIR>\n/)
+  assert.match(p, /fetch-tree\.sh --release --dir <DIR>/)
+  assert.match(p, /FETCH_TREE_DIR=/)
+  assert.match(p, /payload\.pages が 2 以上/)
   assert.ok(!/--paginate/.test(p), '取得手順そのものはプロンプトに書かない')
   assert.match(p, /dependsOn/)
   assert.match(p, /optin-tests/)

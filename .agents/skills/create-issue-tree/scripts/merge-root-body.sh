@@ -24,7 +24,13 @@
 #   - update-issue-tree の管理マーカー（`<!-- update-issue-tree:phase-plan:begin/end -->`）がある本文では区間の内側だけを
 #     置換対象にし、外側は素通しする。マーカーが無くても `<details>` 内（update-issue-tree が退避した旧表など）は対象外。
 #     マーカーが 1 組でない・除外後も同名の見出しが複数ある・`<details>` が閉じていない本文は、置換先を決められないため中止する。
-#     `<details` は直後が空白・CR・`>`・行末のときだけ開きタグとして数える（`<detailsfoo>` 等は通常行）。
+#     開閉として数えるのは属性の無い `<details>` と `</details>` だけ。判定範囲の行に `<` があってよいのは `<details>` `</details>`
+#     `<summary>` `</summary>`（いずれも属性の無い素の形）の一部である場合だけで、これらを取り除いた後に `<` が残る行
+#     （属性付きの details・span 等の別タグ・属性値の中の `</details>`・行をまたぐタグ・`>` を欠く閉じタグ）は exit 9 で中止する。`>` 単独は中止しない。
+#     行内・行末の `</details>` も閉じとして数え、表行・見出し行も区別しない（1 行に複数あれば全て数える）。
+#     コードスパン・HTML コメント・エスケープの状態は追わない。判定範囲（管理マーカーがあれば区間の内側、無ければ本文全体。
+#     コードフェンス内と先頭の granularity マーカー行を除く）の行にバッククォート・`<!--`・`-->`・バックスラッシュのいずれかが
+#     あれば、タグが文字か構造か決められないため何も書かず中止する（exit 1・stderr に理由。awk 内部では exit 9）。
 #   - 一時ファイルは成否によらず削除する（trap は mktemp より先に登録）。
 #   - granularity マーカーは常に GRANULARITY で先頭へ 1 行だけ書き直す。
 #
@@ -134,7 +140,7 @@ PHASE_ROW="| Phase ${PHASE} | #${PHASE_NUMBER} ${PTITLE} | ${DIRECT} | ${TOTAL} 
 # コードフェンス（行頭 0〜3 空白の ``` / ~~~、閉じは同記号で開き以上の長さ）の内側の行は F[] で印を付け、
 # 見出し・表行・プレースホルダー・運用見出しの判定から外す。ユーザー編集可能な本文で閉じ忘れフェンスがあると
 # 以降が全てフェンス内扱いになり実セクションを消し得るため、閉じていなければ exit 5 で本文未更新のまま中止する。
-# 管理マーカー区間と <details> の内側は X[] で対象外にし、マーカーの不整合は exit 6、除外後も置換対象の見出しが複数なら exit 7、<details> の閉じ忘れは exit 8 で中止する。
+# 管理マーカー区間と <details> の内側は X[] で対象外にし、マーカーの不整合は exit 6、除外後も置換対象の見出しが複数なら exit 7、<details> の閉じ忘れは exit 8、判定範囲内の曖昧な記号（バッククォート・<!--・-->・バックスラッシュ）と許可していない HTML タグ（<details> / <summary> の素の形以外）は exit 9 で中止する。
 # 区間指定 {n,m} や gawk 拡張は mawk・BSD awk 非対応のため使わない。
 # セクションは全子 issue の行を含み環境変数・引数の長さ上限を超え得るため、一時ファイル経由で渡す。
 # 行（1 行）は ENVIRON で渡し、いずれもシェル構文・awk 構文として再評価させない
@@ -198,16 +204,33 @@ NEW_BODY=$(printf '%s\n' "${NEW_BODY}" | PH="${PHASE}" ROW="${PHASE_ROW}" SECF="
       else if (L[k] ~ /^[ \t]*<!-- update-issue-tree:phase-plan:end -->[ \t\r]*$/) { ne++; epos = k }
     }
     if (nb > 1 || ne > 1 || nb != ne || (nb == 1 && bpos > epos)) exit 6
-    for (k = 1; k <= NR; k++) {
-      if (nb == 1 && (k <= bpos || k >= epos)) { X[k] = 1; XO[k] = 1 }
+    # 判定範囲: 管理マーカーがあれば区間の内側だけ（外側は常に素通しで <details> の判定に関わらない）、無ければ本文全体。
+    # 範囲内の行にコードスパン・HTML コメント・エスケープの記号（バッククォート・<!--・-->・バックスラッシュ）があると、
+    # <details> の開閉が文字か構造かを状態追跡なしには決められないため、何も書かず exit 9 で中止する（fail-closed）。
+    # コードフェンス内の行（F[]）は走査しない。先頭の granularity マーカー行（本スクリプトが付ける 1 行）は記号を含むが対象外。
+    # 記号が無ければ状態を追わず、表行・見出し行も区別せず各行の開き・閉じタグを左から全て数える。
+    lo = 1; hi = NR
+    if (nb == 1) {
+      lo = bpos + 1; hi = epos - 1
+      for (k = 1; k <= NR; k++) if (k <= bpos || k >= epos) { X[k] = 1; XO[k] = 1 }
+    }
+    for (k = lo; k <= hi; k++) {
       if (F[k]) { if (depth > 0) X[k] = 1; continue }
-      if (L[k] ~ /^[ \t]*<details([ \t\r>]|$)/) {
-        opens = 1; X[k] = 1
-        if (L[k] ~ /<\/details>[ \t\r]*$/) opens = 0
-        depth += opens
-      } else if (L[k] ~ /^[ \t]*<\/details>/) {
-        X[k] = 1; if (depth > 0) depth--
-      } else if (depth > 0) X[k] = 1
+      s = L[k]
+      if (s ~ /^<!-- granularity: [1-9][0-9]*h -->[ \t\r]*$/) continue
+      if (index(s, "`") || index(s, "<!--") || index(s, "-->") || index(s, "\\")) exit 9
+      # 許可するタグは <details> </details> <summary> </summary> の属性の無い素の形だけ。これらを取り除いたあとに < が残る行
+      # （属性付きの details・span などの別タグ・属性値の中の </details>・行をまたぐタグ・> を欠く閉じタグ）は、
+      # 属性値や別タグの中の </details> と構造を区別できないため、何も書かず exit 9 で中止する。> 単独は見ない
+      t = s; gsub(/<\/?details>|<\/?summary>/, "", t)
+      if (index(t, "<")) exit 9
+      before = depth; touched = 0
+      while (match(s, /<\/details>|<details>/)) {
+        if (substr(s, RSTART, 2) == "</") { if (depth > 0) depth--; touched = 1 }
+        else { depth++; touched = 1 }
+        s = substr(s, RSTART + RLENGTH)
+      }
+      if (before > 0 || touched) X[k] = 1
     }
     # 閉じ忘れの <details> は、以降の行が全て除外されて後ろの見出しが置換対象から外れるため、範囲を判定できず中止する
     if (depth > 0) exit 8
@@ -253,6 +276,8 @@ elif [ "${rc}" -eq 7 ]; then
   die 1 "置換対象の '### Phase ${PHASE}:' 見出しが管理マーカー・<details> を除いても複数あり、どれを置換するか判定できません。ルート本文は更新しません。"
 elif [ "${rc}" -eq 8 ]; then
   die 1 "ルート本文の <details> が閉じていないため置換対象の範囲を判定できません。ルート本文は更新しません。"
+elif [ "${rc}" -eq 9 ]; then
+  die 1 "ルート本文の <details> を判定する範囲に、バッククォート・<!--・-->・バックスラッシュのいずれかを含む行、または許可していない HTML タグ（<details> / <summary> の素の形以外。属性付きの <details>・<span> 等・> を欠く </details など）を含む行があり、<details> の開閉を判定できません。該当記号を取り除くか、update-issue-tree の管理マーカー区間の外へ移してください。旧形式のエスケープ（タイトル中の | や \\ を \\| ・\\\\ と書いた旧版の生成行）の可能性もあります。その場合は該当行を手で文字参照（&#124; ・&#92; ・&#96;）へ置き換えてください。update-issue-tree が書いた管理マーカー区間内の行も対象です。管理マーカー区間内の旧形式の行は、現行版の update-issue-tree を再実行すると文字参照へ書き直されます。区間の外・手書きの行は手で置き換えてください。ルート本文は更新しません。"
 elif [ "${rc}" -ne 0 ]; then
   die 1 "本文の Phase 別表に追記位置（'| Phase N |' 行または '| (作成後に更新) |' 行）がないか、Phase 行を出力できませんでした。中止します。"
 fi
