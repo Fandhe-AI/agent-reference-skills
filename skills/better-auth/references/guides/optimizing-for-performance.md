@@ -50,7 +50,7 @@ export const auth = betterAuth({
 });
 ```
 
-**Operations to defer**: cleanup tasks, analytics, rate limit updates, email sending.
+**Operations to defer**: cleanup tasks, analytics aggregation, email sending.
 
 ### Server-Side Rendering (SSR)
 
@@ -92,4 +92,5 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 - **SSR pre-fetching** eliminates redundant client requests
 - **Database indexing** accelerates query execution across all auth tables
 - **Selective imports** minimize JavaScript bundle footprint
+- Rate limit counter updates are removed from the deferrable examples: they must stay in the request path as a single atomic check-and-increment (see rate-limit.md, `customStorage.consume`), otherwise concurrent requests can read a stale counter and exceed the limit (Adapted from the official docs).
 - Configuration examples pass options to `betterAuth({ ... })`; Better Auth instances have no `auth.config()` method (Adapted from the official docs)
