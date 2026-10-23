@@ -297,6 +297,7 @@ Configure `user.additionalFields` to set additional user fields.
 ### Security
 
 - Validate and sanitize all client-provided data before use
+- `authClient.getAccessToken` and `listAccounts` return `{ data, error }`, not the bare payload; the sample destructures `data`, handles `error`, and guards a missing account instead of using `accessToken` directly (Adapted from the official docs)
 
 ## Related
 

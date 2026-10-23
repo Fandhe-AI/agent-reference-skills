@@ -203,6 +203,7 @@ Joins perform multiple queries in a single request (50+ endpoints). When disable
 - An account is one authentication method linked to a user: the provider-side identity is the pair `providerId` + `accountId`, while `id` identifies the local account row (use `id` when an account API asks for an `accountId`). Indexes on `session.userId`, `account.userId`, and `verification.identifier` were added to the docs schema.
 - Before hooks can run more than once on MongoDB with transactions (the adapter retries when MongoDB aborts for a concurrent write); send emails and call other services from an after hook. After hooks in a transaction run after commit and are skipped on rollback; without adapter transactions they also run when a later step of the same request fails.
 - Additional configuration is required for client-side type inference of custom fields
+- The additional-field `role` example sets `input: false` so users cannot set their own role at sign-up (security) (Adapted from the official docs)
 
 ## Related
 

@@ -184,6 +184,7 @@ await authClient.twoFactor.verifyTotp({ code: "123456", trustDevice: true });
 - Always use HTTPS in production
 - Secure cookies are applied to session management
 - Email verification can be required before sign-in
+- The client method is `twoFactor.verifyTotp`, not `verifyTOTP`; the official sample used the wrong casing (Adapted from the official docs)
 
 ## Related
 

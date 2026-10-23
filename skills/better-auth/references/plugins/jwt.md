@@ -270,6 +270,7 @@ jwks table:
 | crv | string | ? | The elliptic curve this web key was generated on |
 | createdAt | Date | - | Creation timestamp |
 | expiresAt | Date | ? | Expiration date |
+- Local verification calls `createLocalJWKSet(storedJWKS)` with the JWKS object itself; the official sample read `storedJWKS.data?.keys`, which does not exist on a plain JWKS (Adapted from the official docs)
 
 ## Related
 

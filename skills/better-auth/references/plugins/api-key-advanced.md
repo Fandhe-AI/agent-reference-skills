@@ -283,6 +283,7 @@ Error codes:
 
 - Manually validating with `verifyApiKey()` and then using the same API key header with `getSession()` will increment the rate limit counter twice. Use `enableSessionForAPIKeys: true` or reuse the validation result
 - Organization-owned keys cannot mock a user session
+- `secondaryStorage` and `customStorage` examples add the `getAndDelete` and `increment` methods that 1.7 requires; the official snippets omit them (Adapted from the official docs)
 
 ## Related
 

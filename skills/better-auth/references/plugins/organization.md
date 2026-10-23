@@ -570,3 +570,5 @@ organizationHooks: {
 - Changed in 1.7: `team.memberCount` (durable member count for team capacity) and `teamMember.membershipKey` (internal unique team+user key) columns are added; no manual preparation. `maximumMembersPerTeam` is enforced when accepting team invitations, adding an existing organization member to a team, and adding a new organization member with a `teamId`.
 - Changed in 1.7: `organization.updateTeam` no longer accepts `id`, `createdAt`, and `updatedAt` in the request body (remove `createdAt` / `updatedAt` from `data`); `updateMemberRole` validates role existence after authorization checks.
 - Dynamic roles cannot be checked client-side; use the `hasPermission` API for verification
+- `addMember` is shown as a server-only `auth.api.addMember({ body })` call because it is not exposed on the client (Adapted from the official docs)
+- `updateTeam` data no longer passes `createdAt` / `updatedAt`, which are managed by the server and not client-settable (Adapted from the official docs)

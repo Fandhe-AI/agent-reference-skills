@@ -68,12 +68,14 @@ export const birthdayPlugin = () => ({
         {
           matcher: (context) => context.path.startsWith("/sign-up/email"),
           handler: createAuthMiddleware(async (ctx) => {
-            // JSON request bodies carry dates as strings (or numbers), never Date instances
+            // JSON request bodies carry dates as strings (or numbers), never Date instances.
+            // Restrict the type first: `new Date(false)` / `new Date([])` would otherwise coerce silently.
             const raw = ctx.body?.birthday;
-            const birthday = raw === undefined || raw === null ? null : new Date(raw);
+            const isIsoDate = typeof raw === "string" && /^\d{4}-\d{2}-\d{2}/.test(raw);
+            const birthday = isIsoDate ? new Date(raw) : null;
             if (!birthday || Number.isNaN(birthday.getTime())) {
               throw new APIError("BAD_REQUEST", {
-                message: "Birthday must be a valid date."
+                message: "Birthday must be a valid ISO date string (YYYY-MM-DD)."
               });
             }
 
@@ -186,3 +188,4 @@ This command automatically generates database migrations for plugin schemas.
 - After creation, share your plugin with the community through the Better Auth Discord server or GitHub pull requests
 - The framework maintains a community plugins registry for discoverable extensions
 - For advanced patterns, consult the comprehensive plugins documentation covering endpoints, middleware, rate limiting, and client-side atoms
+- The birthday hook validates `ctx.body.birthday` as an ISO date string and converts it to `Date`, rejecting other types and invalid dates; JSON bodies never contain `Date` instances, so the official `instanceof Date` check would reject every request (Adapted from the official docs)

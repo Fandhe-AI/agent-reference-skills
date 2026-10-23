@@ -75,8 +75,14 @@ export const auth = betterAuth({
       sendOTP: async ({ phoneNumber, code }) => {
         // Do not await: awaiting the SMS request makes response time reveal whether
         // the number exists (timing attack). Same policy as the email examples.
-        // On serverless platforms, pass the promise to `waitUntil` or similar.
-        void sendSMS({ to: phoneNumber, code, template: "phone-verification" });
+        // Handle rejection so a failed send is not an unhandled promise rejection;
+        // never log the phone number or the OTP code.
+        const task = sendSMS({ to: phoneNumber, code, template: "phone-verification" }).catch(
+          () => console.error("SMS delivery failed"),
+        );
+        // On serverless platforms, also pass `task` to the platform's `waitUntil`
+        // (e.g. `waitUntil(task)`) so the function is not frozen before delivery finishes.
+        void task;
       },
     }),
     dash({ apiKey: process.env.BETTER_AUTH_API_KEY }),
@@ -84,6 +90,7 @@ export const auth = betterAuth({
 });
 ```
 - Source: https://www.better-auth.com/docs/infrastructure/services/sms (better-auth v1.7.10 docs)
+- `sendOTP` does not `await` `sendSMS` (timing attack on number existence, same policy as the email examples) and attaches a `.catch()` that logs no phone number or OTP; the official sample awaits it (Adapted from the official docs)
 
 ## Related
 

@@ -39,3 +39,4 @@ export default async function DashboardPage() {
 - Cookie-setting endpoints (`signInEmail`, etc.) need a custom `wakuCookies()` plugin paired with middleware that reads `contextData.betterAuthSetCookie` — Waku has no built-in cookie plugin like Next.js's `nextCookies`
 - Middleware should only check `getSessionCookie`/`getCookieCache` existence for optimistic redirects, not full validation
 - Client setup uses `createAuthClient` from `better-auth/react` (see `samples/client-setup.md`)
+- `database` is a `pg` `Pool`, matching the other adapter docs; the `{ provider, url }` object form is not a valid Better Auth database option (Adapted from the official docs)

@@ -44,6 +44,7 @@ betterAuth({
 - **Email enumeration protection**: when `requireEmailVerification` is enabled or `autoSignIn` is `false`, sign-up endpoints return identical `200` responses regardless of email registration status (OWASP best practice); timing attacks are mitigated through password hash simulation on duplicate attempts.
 - **Security reporting**: discovered vulnerabilities should be reported to `security@better-auth.com` for prompt remediation, with credit given for validated discoveries.
 - Better Auth implements defense-in-depth through multiple layers — encryption, origin validation, state management, rate limiting, and Fetch Metadata protection — requiring careful configuration of `trustedOrigins` and proxy headers for production deployments.
+- Cookie security bullet corrected: HTTPS/`Secure` does not encrypt cookies; the session token cookie is signed, and only the optional `session_data` cache cookie with the `jwe` strategy is encrypted. The official summary said encryption is enabled by default for HTTPS (Adapted from the official docs)
 
 ## Related
 

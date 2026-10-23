@@ -21,6 +21,7 @@ This error occurs when Better Auth cannot identify which OAuth provider should h
   - Log only the request path (e.g. `/api/auth/callback/<provider>`), not the full URL: the query string carries `code` and `state`
   - Verify the `<provider>` path parameter exists in your router
   - Compare route configurations across development and production environments
+- Debug tip: log only the request path, not the full URL, because the query string carries `code` and `state` (Adapted from the official docs)
 
 ## Related
 

@@ -253,3 +253,5 @@ If `cookiePrefix` doesn't match the `webAuthnChallengeCookie` prefix, passkey au
 
 - Use the "Emulated Authenticator" in Chrome DevTools' WebAuthn tab when debugging
 - Some browsers require user interaction with the input field before the autofill prompt appears
+- `addPasskey` is shown as client-only (the server `auth.api.addPasskey` snippet and endpoint line were removed) because registration needs the browser WebAuthn ceremony (Adapted from the official docs)
+- The conditional-UI example awaits `PublicKeyCredential.isConditionalMediationAvailable()`, which returns a Promise; the official sample treated it as a boolean (Adapted from the official docs)

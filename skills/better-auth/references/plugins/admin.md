@@ -449,6 +449,7 @@ Additional fields on the session table:
 | Field | Type | Description |
 |---|---|---|
 | `impersonatedBy` | string | ID of the admin who initiated impersonation |
+- `authClient.admin.listUsers` returns `{ data, error }`; the pagination sample reads `data.total` after an error check instead of `users.total` (Adapted from the official docs)
 
 ## Related
 

@@ -26,6 +26,7 @@ This error occurs during OAuth authentication when Better Auth cannot obtain an 
   - Confirm which environment credentials are active
   - Cross-reference scope requirements between environments
 - This error only occurs in OAuth flows and will not appear in non-OAuth authentication methods
+- Debug tip: check only whether `email` is present in the provider profile instead of logging the whole profile object (PII) (Adapted from the official docs)
 
 ## Related
 

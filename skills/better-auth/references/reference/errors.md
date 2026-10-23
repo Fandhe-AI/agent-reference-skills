@@ -40,6 +40,7 @@ betterAuth({
 
 - When an error occurs, users are redirected to `/api/auth/error`.
 - See the individual error reference pages below for causes and fixes.
+- Error table lists `email_does_not_match` (renamed from `email_doesn't_match` in 1.7) (Adapted from the official docs)
 
 ## Related
 

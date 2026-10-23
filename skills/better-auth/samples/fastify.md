@@ -42,3 +42,4 @@ fastify.listen({ port: 4000 });
 - Register `@fastify/cors` before the auth route, with `credentials: true` for cross-origin cookie support
 - Read sessions in other routes with `auth.api.getSession({ headers: fromNodeHeaders(request.headers) })`
 - Add cross-origin frontends to `trustedOrigins` in the Better Auth config
+- `Set-Cookie` is forwarded via `getSetCookie()` as separate values instead of the generic header copy, which comma-joins cookies (Adapted from the official docs)

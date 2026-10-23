@@ -25,6 +25,8 @@ This error occurs during OAuth account linking when the email returned by the pr
   - Do not log emails or full provider profiles (PII). Compare the two addresses in a debugger or a local-only check, or log only non-sensitive facts (e.g. whether they differ after lowercasing, or whether the provider marks the email as verified)
   - Check for normalization issues (case, Gmail dots/aliases)
   - Confirm which provider credentials (dev/staging/prod) are in use and verify the returned identity matches expectations
+- The error code is `email_does_not_match` in 1.7 (`email_doesn't_match` in 1.6 and earlier); the file name is kept for compatibility (Adapted from the official docs)
+- Debug tips no longer suggest logging emails or provider profiles, to avoid logging PII (Adapted from the official docs)
 
 ## Related
 

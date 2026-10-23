@@ -25,6 +25,7 @@ This error occurs when a user attempts to register using an OAuth provider that 
 - For conditional sign-up, use the `user.validateUserInfo` gate shown above instead of toggling `disableSignUp`
 - Keep sign-up disabled (`disableSignUp`) when you do not want conditional registration. If you need to allow sign-up only for some users, use `user.validateUserInfo` (see [users-accounts](../concepts/users-accounts.md) and [oauth](../concepts/oauth.md)); it also works in stateless setups
 - This approach provides more flexibility for implementing custom signup validation logic rather than a simple on/off toggle
+- The example uses `user.validateUserInfo` (works in stateless setups) instead of a `databaseHooks` before-create hook, and the advice to replace `disableSignUp` with database hooks was rewritten accordingly; the official hook example also shadowed `isAllowedToSignUp` with a local variable of the same name (Adapted from the official docs)
 
 ## Related
 

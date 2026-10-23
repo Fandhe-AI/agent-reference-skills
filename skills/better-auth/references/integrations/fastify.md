@@ -48,6 +48,7 @@ const session = await auth.api.getSession({
 - Register `@fastify/cors` before mounting the auth handler; enable `credentials: true` and set `Cache-Control` max-age (e.g. 86400s)
 - Restrict CORS origins via environment variables in production
 - Requests without a valid session return 401 from protected routes
+- The handler builds a `URL` before constructing `Request` (the official sample referenced an undefined `url`), forwards response headers, and sends `Set-Cookie` as separate values via `getSetCookie()` so sessions are not lost to comma-joined cookies (Adapted from the official docs)
 
 ## Related
 
