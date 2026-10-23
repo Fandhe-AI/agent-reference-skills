@@ -296,12 +296,8 @@ Use `setPassword` (server) or the "password reset" flow for credential account l
 ### Unlinking an account
 
 ```typescript
-await authClient.unlinkAccount({
-  providerId: "google",
-});
-
-// Unlinking a specific account (1.7): pass the local account row `id` from
-// `listAccounts` as `accountId`; do not pass `providerId`
+// 1.7: pass the local account row `id` from `listAccounts` as `accountId`;
+// `providerId` alone is no longer accepted
 const { data: accounts } = await authClient.listAccounts();
 const google = accounts?.find((a) => a.providerId === "google");
 if (google) {
