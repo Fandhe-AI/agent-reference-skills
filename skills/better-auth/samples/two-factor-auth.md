@@ -14,10 +14,7 @@ export const auth = betterAuth({
       issuer: "my-app-name",
       otpOptions: {
         async sendOTP({ user, otp }, ctx) {
-          // Send in the background (same policy as the other email samples); never log the OTP
-          void sendEmail({ to: user.email, subject: "Your OTP", text: otp }).catch(() =>
-            console.error("Failed to send OTP email"),
-          );
+          await sendEmail({ to: user.email, subject: "Your OTP", text: otp });
         },
       },
     }),
@@ -69,4 +66,3 @@ await authClient.twoFactor.disable({ password: "user-password" });
 - With `totp`, `twoFactorEnabled` stays `false` until the user verifies a TOTP code (unless the server plugin sets `skipVerificationOnEnable: true`); with `otp` it becomes `true` immediately
 - `twoFactor` plugin adds 1 field to the user table and 1 additional table; run `migrate` after adding it
 - `trustDevice: true` skips 2FA on subsequent logins from the same device; `twoFactorPage` is the route shown when 2FA is required during sign-in
-- `sendOTP` sends the email without `await` and handles failures without logging the OTP, consistent with the other email samples; the official sample awaits delivery (Adapted from the official docs)
