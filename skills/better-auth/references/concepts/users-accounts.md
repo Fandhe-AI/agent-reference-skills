@@ -300,11 +300,13 @@ await authClient.unlinkAccount({
   providerId: "google",
 });
 
-// Unlinking a specific account
-await authClient.unlinkAccount({
-  providerId: "google",
-  accountId: "123",
-});
+// Unlinking a specific account (1.7): pass the local account row `id` from
+// `listAccounts` as `accountId`; do not pass `providerId`
+const { data: accounts } = await authClient.listAccounts();
+const google = accounts?.find((a) => a.providerId === "google");
+if (google) {
+  await authClient.unlinkAccount({ accountId: google.id });
+}
 ```
 
 **Safeguard:** unlinking is prevented if a user has only one account remaining (unless `allowUnlinkingAll: true` is set).

@@ -126,8 +126,8 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     password: {
-      hash: hashPassword,
-      verify: verifyPassword,
+      hash: (password) => hash(password),
+      verify: ({ hash: hashed, password }) => verify(hashed, password),
     },
   },
 });

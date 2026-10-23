@@ -160,7 +160,7 @@ const authClient = createAuthClient({
 ```typescript
 await authClient.twoFactor.enable({ password });
 await authClient.twoFactor.disable({ password });
-await authClient.twoFactor.verifyTOTP({ code: "123456", trustDevice: true });
+await authClient.twoFactor.verifyTotp({ code: "123456", trustDevice: true });
 ```
 
 ## Options / Props

@@ -153,11 +153,14 @@ const { data, error } = await authClient.organization.listMembers({
 **Add member (server only)**
 
 ```typescript
-const { data, error } = await authClient.organization.addMember({
-    userId: "user-id",
-    role: ["admin", "sale"],
-    organizationId: "org-id",
-    teamId: "team-id",
+// Not available on the client: call it from trusted server code via `auth.api`
+const data = await auth.api.addMember({
+    body: {
+        userId: "user-id",
+        role: ["admin", "sale"],
+        organizationId: "org-id",
+        teamId: "team-id",
+    },
 })
 ```
 
@@ -281,8 +284,6 @@ const { data, error } = await authClient.organization.updateTeam({
     data: {
         name: "My new team name",
         organizationId: "organization-id",
-        createdAt: new Date(),
-        updatedAt: new Date(),
     },
 })
 ```

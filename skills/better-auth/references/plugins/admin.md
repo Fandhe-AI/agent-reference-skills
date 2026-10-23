@@ -133,14 +133,17 @@ Pagination example:
 const pageSize = 10
 const currentPage = 2
 
-const users = await authClient.admin.listUsers({
+// authClient methods return `{ data, error }`
+const { data, error } = await authClient.admin.listUsers({
     query: {
         limit: pageSize,
         offset: (currentPage - 1) * pageSize
     }
 })
 
-const totalUsers = users.total
+if (error || !data) throw new Error(error?.message ?? "Failed to list users")
+
+const totalUsers = data.total
 const totalPages = Math.ceil(totalUsers / pageSize)
 ```
 

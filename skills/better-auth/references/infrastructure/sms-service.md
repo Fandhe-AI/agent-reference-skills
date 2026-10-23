@@ -73,7 +73,10 @@ export const auth = betterAuth({
   plugins: [
     phoneNumber({
       sendOTP: async ({ phoneNumber, code }) => {
-        await sendSMS({ to: phoneNumber, code, template: "phone-verification" });
+        // Do not await: awaiting the SMS request makes response time reveal whether
+        // the number exists (timing attack). Same policy as the email examples.
+        // On serverless platforms, pass the promise to `waitUntil` or similar.
+        void sendSMS({ to: phoneNumber, code, template: "phone-verification" });
       },
     }),
     dash({ apiKey: process.env.BETTER_AUTH_API_KEY }),

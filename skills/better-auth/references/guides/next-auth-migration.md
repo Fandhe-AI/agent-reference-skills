@@ -22,7 +22,7 @@ Auth.js (NextAuth.js) から Better Auth へ移行するためのガイド。
    |---|---|---|
    | User | user | フィールド名が異なる場合がある |
    | Session | session | 必須フィールドが増加 |
-   | Account | account | `providerId` を `"credential"` に設定 |
+   | Account | account | OAuth 行は Auth.js の `provider` / `providerAccountId` を `providerId` / `accountId` に対応付ける。`providerId` を `"credential"` にするのはパスワード認証の行のみ |
    | VerificationToken | verification | 命名規約が異なる |
 
 6. **リソースの保護**: ミドルウェアベースではなくページレベルで認証チェックを実装する

@@ -68,10 +68,12 @@ export const birthdayPlugin = () => ({
         {
           matcher: (context) => context.path.startsWith("/sign-up/email"),
           handler: createAuthMiddleware(async (ctx) => {
-            const { birthday } = ctx.body;
-            if (!(birthday instanceof Date)) {
+            // JSON request bodies carry dates as strings (or numbers), never Date instances
+            const raw = ctx.body?.birthday;
+            const birthday = raw === undefined || raw === null ? null : new Date(raw);
+            if (!birthday || Number.isNaN(birthday.getTime())) {
               throw new APIError("BAD_REQUEST", {
-                message: "Birthday must be of type Date."
+                message: "Birthday must be a valid date."
               });
             }
 
