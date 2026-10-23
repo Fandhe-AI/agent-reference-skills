@@ -8,11 +8,14 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     sendResetPassword: async ({ user, url, token }, request) => {
-      await sendEmail({
+      // Do not await delivery: waiting only for existing users makes response time
+      // reveal whether the account exists (timing attack). Handle failures without
+      // logging the address; on serverless, also pass the promise to `waitUntil`.
+      void sendEmail({
         to: user.email,
         subject: "Reset your password",
         text: `Click the link to reset your password: ${url}`,
-      });
+      }).catch(() => console.error("Failed to send reset email"));
     },
   },
 });
@@ -42,3 +45,4 @@ const { data, error } = await authClient.resetPassword({
 - The token in step 2 must be extracted from the URL query string on the reset page
 - Reset tokens expire; the default expiry is 1 hour
 - `onPasswordReset` callback can be added to `emailAndPassword` to run logic after a successful reset
+- The reset email is sent without `await` (with a `.catch()` that logs no PII) to avoid leaking account existence through response time, matching references/concepts/email.md; the official sample awaits delivery (Adapted from the official docs)

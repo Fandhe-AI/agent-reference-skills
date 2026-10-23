@@ -15,10 +15,21 @@ fastify.route({
   url: "/api/auth/*",
   async handler(request, reply) {
     const url = new URL(request.url, `http://${request.headers.host}`);
+    // Keep the original body encoding: Content-Type is forwarded as-is, so a form body
+    // must stay URL-encoded (needs @fastify/formbody to be parsed) rather than JSON
+    const contentType = String(request.headers["content-type"] ?? "");
+    const body =
+      request.body == null
+        ? undefined
+        : typeof request.body === "string"
+          ? request.body
+          : contentType.includes("application/x-www-form-urlencoded")
+            ? new URLSearchParams(request.body as Record<string, string>).toString()
+            : JSON.stringify(request.body);
     const req = new Request(url.toString(), {
       method: request.method,
       headers: fromNodeHeaders(request.headers),
-      ...(request.body ? { body: JSON.stringify(request.body) } : {}),
+      ...(body !== undefined ? { body } : {}),
     });
 
     const response = await auth.handler(req);
@@ -43,3 +54,4 @@ fastify.listen({ port: 4000 });
 - Read sessions in other routes with `auth.api.getSession({ headers: fromNodeHeaders(request.headers) })`
 - Add cross-origin frontends to `trustedOrigins` in the Better Auth config
 - `Set-Cookie` is forwarded via `getSetCookie()` as separate values instead of the generic header copy, which comma-joins cookies (Adapted from the official docs)
+- The bridge keeps the original body encoding (URL-encoded form bodies are not converted to JSON, since `Content-Type` is forwarded unchanged); register `@fastify/formbody` to accept form POSTs such as OAuth Provider logout (Adapted from the official docs)
