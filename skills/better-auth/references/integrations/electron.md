@@ -15,7 +15,7 @@ import { electron } from "@better-auth/electron";
 export const auth = betterAuth({
   plugins: [electron()],
   emailAndPassword: { enabled: true },
-  social: { google: { clientId: "...", clientSecret: "..." } }
+  socialProviders: { google: { clientId: "...", clientSecret: "..." } }
 });
 ```
 

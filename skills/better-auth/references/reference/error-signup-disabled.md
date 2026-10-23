@@ -11,8 +11,8 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user, ctx) => {
-          const isAllowedToSignUp = await isAllowedToSignUp(user, ctx);
-          if (!isAllowedToSignUp) {
+          const allowed = await isAllowedToSignUp(user, ctx);
+          if (!allowed) {
             throw new APIError("BAD_REQUEST", {
               message: "Signup is disabled",
             });

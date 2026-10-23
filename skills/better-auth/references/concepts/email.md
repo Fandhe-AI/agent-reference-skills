@@ -55,7 +55,8 @@ export const auth = betterAuth({
     },
     autoSignInAfterVerification: true,
     async afterEmailVerification(user, request) {
-      console.log(`${user.email} verified successfully`);
+      // Avoid logging PII such as email addresses
+      console.log(`User ${user.id} verified successfully`);
     },
   },
 });

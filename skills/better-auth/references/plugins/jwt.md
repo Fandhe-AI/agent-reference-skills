@@ -106,7 +106,7 @@ import { jwtVerify, createLocalJWKSet } from 'jose'
 
 async function validateToken(token: string) {
     const storedJWKS = { keys: [{ /* JWKS from /api/auth/jwks */ }] }
-    const JWKS = createLocalJWKSet({ keys: storedJWKS.data?.keys! })
+    const JWKS = createLocalJWKSet(storedJWKS)
     const { payload } = await jwtVerify(token, JWKS, {
         issuer: 'http://localhost:3000',
         audience: 'http://localhost:3000',

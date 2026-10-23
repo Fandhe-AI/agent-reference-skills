@@ -5,9 +5,10 @@ Mount the handler on a resource route and call it from both `loader` and `action
 ```ts
 // app/lib/auth.server.ts
 import { betterAuth } from "better-auth";
+import { Pool } from "pg";
 
 export const auth = betterAuth({
-  database: { provider: "postgres", url: process.env.DATABASE_URL },
+  database: new Pool({ connectionString: process.env.DATABASE_URL }),
 });
 ```
 

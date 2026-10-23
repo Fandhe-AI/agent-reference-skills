@@ -5,9 +5,10 @@ Mount the handler on a Waku catch-all API route and read sessions via `waku/serv
 ```ts
 // src/auth.ts
 import { betterAuth } from "better-auth";
+import { Pool } from "pg";
 
 export const auth = betterAuth({
-  database: { provider: "postgres", url: process.env.DATABASE_URL },
+  database: new Pool({ connectionString: process.env.DATABASE_URL }),
 });
 ```
 
