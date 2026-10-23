@@ -8,7 +8,7 @@ Better Auth の動的ベース URL 機能により、複数ホスト名（カス
 
 代表的なパターン:
 
-- Vercel ワイルドカードサポート
+- プレビューデプロイ用の自ドメインに対するワイルドカード指定（例: `*.preview.myapp.com`）
 - 開発・本番でのプロトコル切り替え
 - 複数地域の本番ドメイン
 - クロスサブドメイン Cookie 共有
@@ -17,7 +17,7 @@ Better Auth の動的ベース URL 機能により、複数ホスト名（カス
 
 | プロパティ | Type | Default | 説明 |
 | --- | --- | --- | --- |
-| `allowedHosts` | string[] | — | 許可するドメイン配列（ワイルドカード `*.vercel.app` 対応） |
+| `allowedHosts` | string[] | — | 許可するドメインの配列。ワイルドカードを使える（例: `*.preview.myapp.com`）。`*.vercel.app` のような共有ホスティングのドメインは第三者のサイトまで `trustedOrigins` で信頼してしまうため指定しない |
 | `protocol` | `"http"` \| `"https"` \| `"auto"` | `"auto"` | 使用プロトコル |
 | `fallback` | string | — | 許可リスト外のホスト用のフォールバック URL |
 | `crossSubDomainCookies` | boolean | — | サブドメイン間での Cookie 共有 |
