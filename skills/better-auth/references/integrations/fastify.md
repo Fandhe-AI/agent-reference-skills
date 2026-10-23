@@ -9,14 +9,21 @@ fastify.route({
   method: ["GET", "POST"],
   url: "/api/auth/*",
   async handler(request, reply) {
-    const req = new Request(url, {
+    const url = new URL(request.url, `http://${request.headers.host}`);
+    const req = new Request(url.toString(), {
       method: request.method,
       headers: fromNodeHeaders(request.headers),
       body: request.method !== "GET" ? JSON.stringify(request.body) : undefined,
     });
     const response = await auth.handler(req);
     reply.status(response.status);
-    return response.body;
+    // Forward headers (Location, etc.); Set-Cookie must be sent as separate values
+    response.headers.forEach((value, key) => {
+      if (key !== "set-cookie") reply.header(key, value);
+    });
+    const cookies = response.headers.getSetCookie();
+    if (cookies.length > 0) reply.header("set-cookie", cookies);
+    return reply.send(response.body ? await response.text() : null);
   },
 });
 ```

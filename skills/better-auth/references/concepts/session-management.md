@@ -223,7 +223,7 @@ import { customSession } from "better-auth/plugins";
 
 plugins: [
   customSession(async ({ user, session }) => {
-    const roles = findUserRoles(session.session.userId);
+    const roles = findUserRoles(session.userId);
     return {
       roles,
       user: { ...user, newField: "value" },

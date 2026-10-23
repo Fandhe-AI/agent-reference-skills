@@ -109,7 +109,8 @@ emailAndPassword: {
     });
   },
   onPasswordReset: async ({ user }, request) => {
-    console.log(`Password for user ${user.email} has been reset.`);
+    // Avoid logging PII such as email addresses
+    console.log(`Password reset completed for user ${user.id}`);
   },
 }
 ```

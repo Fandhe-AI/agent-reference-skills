@@ -23,7 +23,12 @@ fastify.route({
 
     const response = await auth.handler(req);
     reply.status(response.status);
-    response.headers.forEach((value, key) => reply.header(key, value));
+    // Set-Cookie must be forwarded as separate values, not comma-joined
+    response.headers.forEach((value, key) => {
+      if (key !== "set-cookie") reply.header(key, value);
+    });
+    const cookies = response.headers.getSetCookie();
+    if (cookies.length > 0) reply.header("set-cookie", cookies);
     return reply.send(response.body ? await response.text() : null);
   },
 });

@@ -17,6 +17,7 @@ export const auth = betterAuth({
         type: ["user", "admin"],
         required: false,
         defaultValue: "user",
+        input: false, // prevent users from setting their own role at sign-up
       },
     },
   },
