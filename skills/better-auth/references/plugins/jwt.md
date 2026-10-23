@@ -247,7 +247,7 @@ jwt({
 | EdDSA | crv: Ed25519, Ed448 | Ed25519 |
 | ES256 | N/A | - |
 | ES512 | N/A | - |
-| RSA256 | modulusLength (number) | 2048 |
+| RS256 | modulusLength (number) | 2048 |
 | PS256 | modulusLength (number) | 2048 |
 | ECDH-ES | crv: P-256, P-384, P-521 | P-256 |
 
@@ -271,6 +271,7 @@ jwks table:
 | createdAt | Date | - | Creation timestamp |
 | expiresAt | Date | ? | Expiration date |
 - Local verification calls `createLocalJWKSet(storedJWKS)` with the JWKS object itself; the official sample read `storedJWKS.data?.keys`, which does not exist on a plain JWKS (Adapted from the official docs)
+- The RSA algorithm identifier is `RS256` (JOSE); `RSA256` is not a valid `alg` value (Adapted from the official docs)
 
 ## Related
 

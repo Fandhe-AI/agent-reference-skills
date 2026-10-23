@@ -21,7 +21,7 @@ DODO_PAYMENTS_WEBHOOK_SECRET=your_webhook_secret_here
 
 ```typescript
 import { betterAuth } from "better-auth"
-import { dodoPayments } from "@dodopayments/better-auth"
+import { dodoPayments, checkout, portal, webhooks } from "@dodopayments/better-auth"
 import DodoPayments from "dodopayments"
 
 const dodoClient = new DodoPayments({ bearerToken: process.env.DODO_PAYMENTS_API_KEY })
@@ -79,6 +79,10 @@ export const authClient = createAuthClient({
 | `products` | array | Array mapping product IDs to slugs |
 | `successUrl?` | string | Redirect URL after successful payment |
 | `authenticatedUsersOnly?` | boolean | Restrict to authenticated users only (default: false) |
+
+## Notes
+
+- The server setup imports `checkout`, `portal`, and `webhooks` alongside `dodoPayments`; the sample used them without importing (Adapted from the official docs)
 
 ## Related
 

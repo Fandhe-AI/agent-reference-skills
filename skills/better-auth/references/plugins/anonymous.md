@@ -67,7 +67,7 @@ export const auth = betterAuth({
 Trigger:
 
 ```typescript
-const user = await authClient.signIn.email({ email })
+const user = await authClient.signIn.email({ email, password })
 ```
 
 The anonymous user is deleted by default after linking.
@@ -120,3 +120,4 @@ Additional fields on the user table:
 | Field | Type | Optional | Description |
 |---|---|---|---|
 | `isAnonymous` | boolean | Yes | Identifies anonymous user accounts |
+- The account-linking trigger passes `password` to `signIn.email`, which requires it; the sample omitted it (Adapted from the official docs)
