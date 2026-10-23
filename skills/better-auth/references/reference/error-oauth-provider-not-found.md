@@ -18,9 +18,10 @@ This error occurs when Better Auth cannot identify which OAuth provider should h
 - Check infrastructure configuration: review proxy and CDN settings (Vercel, Cloudflare, Nginx) to confirm they preserve the complete path, and align trailing slash behavior consistently across all environments
 - Avoid direct access: don't navigate to the base callback route manually; always initiate OAuth through Better Auth APIs, which automatically generate correct provider-specific URLs
 - Debug steps:
-  - Log the full request URL received by your server
+  - Log only the request path (e.g. `/api/auth/callback/<provider>`), not the full URL: the query string carries `code` and `state`
   - Verify the `<provider>` path parameter exists in your router
   - Compare route configurations across development and production environments
+- Debug tip: log only the request path, not the full URL, because the query string carries `code` and `state` (Adapted from the official docs)
 
 ## Related
 

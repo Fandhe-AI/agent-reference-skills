@@ -153,11 +153,14 @@ const { data, error } = await authClient.organization.listMembers({
 **Add member (server only)**
 
 ```typescript
-const { data, error } = await authClient.organization.addMember({
-    userId: "user-id",
-    role: ["admin", "sale"],
-    organizationId: "org-id",
-    teamId: "team-id",
+// Not available on the client: call it from trusted server code via `auth.api`
+const data = await auth.api.addMember({
+    body: {
+        userId: "user-id",
+        role: ["admin", "sale"],
+        organizationId: "org-id",
+        teamId: "team-id",
+    },
 })
 ```
 
@@ -281,8 +284,6 @@ const { data, error } = await authClient.organization.updateTeam({
     data: {
         name: "My new team name",
         organizationId: "organization-id",
-        createdAt: new Date(),
-        updatedAt: new Date(),
     },
 })
 ```
@@ -569,3 +570,5 @@ organizationHooks: {
 - Changed in 1.7: `team.memberCount` (durable member count for team capacity) and `teamMember.membershipKey` (internal unique team+user key) columns are added; no manual preparation. `maximumMembersPerTeam` is enforced when accepting team invitations, adding an existing organization member to a team, and adding a new organization member with a `teamId`.
 - Changed in 1.7: `organization.updateTeam` no longer accepts `id`, `createdAt`, and `updatedAt` in the request body (remove `createdAt` / `updatedAt` from `data`); `updateMemberRole` validates role existence after authorization checks.
 - Dynamic roles cannot be checked client-side; use the `hasPermission` API for verification
+- `addMember` is shown as a server-only `auth.api.addMember({ body })` call because it is not exposed on the client (Adapted from the official docs)
+- `updateTeam` data no longer passes `createdAt` / `updatedAt`, which are managed by the server and not client-settable (Adapted from the official docs)

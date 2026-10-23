@@ -22,12 +22,13 @@ This error occurs during OAuth authentication when Better Auth cannot obtain an 
 - Debug locally:
   - Inspect the authorization request URL to verify `email` scope is included
   - Check the callback payload and `id_token` claims for email fields
-  - Log the provider profile object in your callback handler
+  - Check only whether the `email` field is present in the provider profile (log a boolean or the key names, never the profile object, which contains PII)
   - Confirm which environment credentials are active
   - Cross-reference scope requirements between environments
 - This error only occurs in OAuth flows and will not appear in non-OAuth authentication methods
+- Debug tip: check only whether `email` is present in the provider profile instead of logging the whole profile object (PII) (Adapted from the official docs)
 
 ## Related
 
-- [email_doesn't_match](./error-email-doesnt-match.md)
+- [email_does_not_match](./error-email-doesnt-match.md)
 - [errors](./errors.md)

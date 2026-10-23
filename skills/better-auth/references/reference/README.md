@@ -6,7 +6,7 @@
 | account_not_linked | This error occurs during an OAuth flow when a provider account cannot be linked to the current user, either because linking conditions are not met or automatic linking is not permitted. | [error-account-not-linked.md](./error-account-not-linked.md) |
 | Configuration Options | Complete reference for all configuration options available in `betterAuth({...})`. | [options.md](./options.md) |
 | Contributing to Better Auth | Guide for contributing code, plugins, and documentation to the Better Auth open-source project. | [contributing.md](./contributing.md) |
-| email_doesn't_match | This error occurs during OAuth account linking when the email returned by the provider does not match the email on the currently authenticated user. | [error-email-doesnt-match.md](./error-email-doesnt-match.md) |
+| email_does_not_match (`email_doesn't_match` before 1.7) | This error occurs during OAuth account linking when the email returned by the provider does not match the email on the currently authenticated user. | [error-email-doesnt-match.md](./error-email-doesnt-match.md) |
 | email_not_found | This error occurs during OAuth authentication when Better Auth cannot obtain an email from the OAuth provider. | [error-email-not-found.md](./error-email-not-found.md) |
 | Errors | When an error occurs, users are redirected to `/api/auth/error`. | [errors.md](./errors.md) |
 | FAQ | Frequently asked questions covering common Better Auth authentication setup, client import paths, session management, proxy configuration, and troubleshooting. | [faq.md](./faq.md) |

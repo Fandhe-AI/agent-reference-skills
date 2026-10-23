@@ -296,15 +296,13 @@ Use `setPassword` (server) or the "password reset" flow for credential account l
 ### Unlinking an account
 
 ```typescript
-await authClient.unlinkAccount({
-  providerId: "google",
-});
-
-// Unlinking a specific account
-await authClient.unlinkAccount({
-  providerId: "google",
-  accountId: "123",
-});
+// 1.7: pass the local account row `id` from `listAccounts` as `accountId`;
+// `providerId` alone is no longer accepted
+const { data: accounts } = await authClient.listAccounts();
+const google = accounts?.find((a) => a.providerId === "google");
+if (google) {
+  await authClient.unlinkAccount({ accountId: google.id });
+}
 ```
 
 **Safeguard:** unlinking is prevented if a user has only one account remaining (unless `allowUnlinkingAll: true` is set).
@@ -334,6 +332,7 @@ A user must satisfy one of the following:
 - For OAuth users without a password, use email verification or a fresh session check
 - Account linking is enabled by default
 - OAuth tokens are not encrypted by default. Enable `account.encryptOAuthTokens`; do not encrypt them yourself in a database hook
+- `unlinkAccount` in 1.7 takes the local account row `id` from `listAccounts` as `accountId` and no `providerId`; the official sample passes `providerId` plus a made-up `accountId` (Adapted from the official docs)
 
 ## Related
 

@@ -38,3 +38,4 @@ export const authClient = createAuthClient();
 - The auth instance file must export `auth` as a named or default export, and is conventionally placed at `app/lib/auth.server.ts` (or project root / `utils/`)
 - Recommended mount path is `app/routes/api.auth.$.ts` (resolves to `/api/auth/*`)
 - Official example: github.com/better-auth/examples/tree/main/react-router-example — Email & Password, Google sign-in, Passkeys, Email Verification, Password Reset, Two Factor Authentication, Profile Update, Session Management
+- `database` is a `pg` `Pool`, matching the other adapter docs; the `{ provider, url }` object form is not a valid Better Auth database option (Adapted from the official docs)

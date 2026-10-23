@@ -81,10 +81,18 @@ Every token or provider-profile request must select the account explicitly: pass
 ```typescript
 const { data: accounts } = await authClient.listAccounts();
 const account = accounts?.find((a) => a.providerId === "google");
+if (!account) {
+  throw new Error("No linked Google account");
+}
 
-const { accessToken } = await authClient.getAccessToken({
+// authClient methods return `{ data, error }` instead of the bare payload
+const { data: tokenData, error } = await authClient.getAccessToken({
   accountId: account.id,
 });
+if (error || !tokenData) {
+  throw new Error(error?.message ?? "Could not get an access token");
+}
+const accessToken = tokenData.accessToken;
 
 // signed account cookie
 await authClient.getAccessToken({ useAccountCookie: true });
@@ -289,6 +297,7 @@ Configure `user.additionalFields` to set additional user fields.
 ### Security
 
 - Validate and sanitize all client-provided data before use
+- `authClient.getAccessToken` and `listAccounts` return `{ data, error }`, not the bare payload; the sample destructures `data`, handles `error`, and guards a missing account instead of using `accessToken` directly (Adapted from the official docs)
 
 ## Related
 

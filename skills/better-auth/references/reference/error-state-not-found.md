@@ -7,7 +7,8 @@
 - Fix: always use Better Auth APIs to start OAuth flows — avoid manually constructing authorize URLs or directly accessing callback endpoints, and let Better Auth generate and manage the `state` parameter.
 - Verify that the provider's configured callback URL exactly matches the `/api/auth/callback` route, including protocol and domain.
 - Confirm that proxies, CDN rewrites, and middleware preserve the full query string and body parameters.
-- Debug locally via DevTools -> Network: confirm the callback includes `?state=...`, verify a `state` cookie exists before the redirect, and log request query/body in the callback handler.
+- Debug locally via DevTools -> Network: confirm the callback includes `?state=...`, verify a `state` cookie exists before the redirect, and check which parameter names (not values) reach the callback handler. Do not log the query/body: it can contain `state` and authorization codes.
+- Debug tip: do not log the callback query/body, which can contain `state` and authorization codes; check parameter names only (Adapted from the official docs)
 
 ## Related
 

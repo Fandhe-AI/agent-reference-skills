@@ -49,7 +49,7 @@ export const auth = betterAuth({
   advanced: {
     crossSubDomainCookies: {
       enabled: true,
-      domain: "app.example.com",
+      domain: "example.com", // parent domain shared by example.com, app1.example.com and app2.example.com
     },
   },
   trustedOrigins: [
@@ -164,6 +164,7 @@ export const auth = betterAuth({
 - **Untrusted subdomains**: Be cautious of subdomains that could be compromised; consider a separate domain for untrusted services
 - **Signing**: Cookies are cryptographically signed to prevent tampering
 - **Production mode**: Non-production environments require explicitly setting `useSecureCookies: true` to enforce security
+- `crossSubDomainCookies.domain` is the parent domain (`example.com`), not a single subdomain, so the cookie is shared across `app1` and `app2`; the official sample uses `app.example.com`, which does not cover sibling subdomains (Adapted from the official docs)
 
 ## Related
 

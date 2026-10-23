@@ -46,21 +46,11 @@ export const authClient = createAuthClient({
 
 ### Add/register a passkey
 
-`POST /passkey/add-passkey`
-
 ```typescript
-// Client
+// Client only (needs the browser's WebAuthn API)
 const { data, error } = await authClient.passkey.addPasskey({
     name: "example-passkey-name",
     authenticatorAttachment: "cross-platform",
-})
-
-// Server
-const data = await auth.api.addPasskey({
-    body: {
-        name: "example-passkey-name",
-        authenticatorAttachment: "cross-platform",
-    },
 })
 ```
 
@@ -68,7 +58,7 @@ Parameters:
 - `name` (string, optional): label for the authenticator. Defaults to the user's email or ID if omitted
 - `authenticatorAttachment` ("platform" | "cross-platform", optional): the authenticator type to register
 
-Client-only endpoint. `throw: true` has no effect.
+`addPasskey` is client-only: there is no `auth.api.addPasskey` server call, because registration requires the browser's WebAuthn ceremony. `throw: true` has no effect.
 
 ### Sign in with passkey
 
@@ -190,11 +180,13 @@ Add the `autocomplete="webauthn"` attribute (as the last value):
 
 ```typescript
 useEffect(() => {
-    if (!PublicKeyCredential.isConditionalMediationAvailable ||
-        !PublicKeyCredential.isConditionalMediationAvailable()) {
-        return
+    // isConditionalMediationAvailable() returns a Promise, so it must be awaited
+    const run = async () => {
+        if (!PublicKeyCredential.isConditionalMediationAvailable) return
+        if (!(await PublicKeyCredential.isConditionalMediationAvailable())) return
+        await authClient.signIn.passkey({ autoFill: true })
     }
-    void authClient.signIn.passkey({ autoFill: true })
+    void run()
 }, [])
 ```
 
@@ -261,3 +253,5 @@ If `cookiePrefix` doesn't match the `webAuthnChallengeCookie` prefix, passkey au
 
 - Use the "Emulated Authenticator" in Chrome DevTools' WebAuthn tab when debugging
 - Some browsers require user interaction with the input field before the autofill prompt appears
+- `addPasskey` is shown as client-only (the server `auth.api.addPasskey` snippet and endpoint line were removed) because registration needs the browser WebAuthn ceremony (Adapted from the official docs)
+- The conditional-UI example awaits `PublicKeyCredential.isConditionalMediationAvailable()`, which returns a Promise; the official sample treated it as a boolean (Adapted from the official docs)

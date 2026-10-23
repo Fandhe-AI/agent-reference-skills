@@ -143,6 +143,7 @@ export const auth = betterAuth({
 - **Timing attacks**: do not await email sending in verification/reset handlers
 - **Token security**: tokens are cryptographically generated. Never expose raw tokens in logs
 - **Email ownership confirmation**: verification confirms actual control of the address, not merely format validity
+- `afterEmailVerification` logs the user id instead of the email address to avoid logging PII (Adapted from the official docs)
 
 ## Related
 

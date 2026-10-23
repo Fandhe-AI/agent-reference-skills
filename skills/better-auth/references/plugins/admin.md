@@ -133,14 +133,17 @@ Pagination example:
 const pageSize = 10
 const currentPage = 2
 
-const users = await authClient.admin.listUsers({
+// authClient methods return `{ data, error }`
+const { data, error } = await authClient.admin.listUsers({
     query: {
         limit: pageSize,
         offset: (currentPage - 1) * pageSize
     }
 })
 
-const totalUsers = users.total
+if (error || !data) throw new Error(error?.message ?? "Failed to list users")
+
+const totalUsers = data.total
 const totalPages = Math.ceil(totalUsers / pageSize)
 ```
 
@@ -446,6 +449,7 @@ Additional fields on the session table:
 | Field | Type | Description |
 |---|---|---|
 | `impersonatedBy` | string | ID of the admin who initiated impersonation |
+- `authClient.admin.listUsers` returns `{ data, error }`; the pagination sample reads `data.total` after an error check instead of `users.total` (Adapted from the official docs)
 
 ## Related
 

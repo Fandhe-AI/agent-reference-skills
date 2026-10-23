@@ -1,10 +1,12 @@
-# email_doesn't_match
+# email_does_not_match
 
 ## Signature / Usage
 
 ```
-Error code: email_doesn't_match
+Error code: email_does_not_match
 ```
+
+Renamed in 1.7: this callback error was `email_doesn't_match` in 1.6 and earlier (the file name is kept for compatibility).
 
 This error occurs during OAuth account linking when the email returned by the provider does not match the email on the currently authenticated user.
 
@@ -20,9 +22,11 @@ This error occurs during OAuth account linking when the email returned by the pr
   - Have the user switch to the correct provider account using the same email as their app account
   - Alternatively, update the app account email to the intended email (if your product allows it) and retry linking
 - Debug locally:
-  - Log the current user's email in your app and the email returned by the provider profile
-  - Inspect whether the provider email is verified/primary and check for normalization issues
+  - Do not log emails or full provider profiles (PII). Compare the two addresses in a debugger or a local-only check, or log only non-sensitive facts (e.g. whether they differ after lowercasing, or whether the provider marks the email as verified)
+  - Check for normalization issues (case, Gmail dots/aliases)
   - Confirm which provider credentials (dev/staging/prod) are in use and verify the returned identity matches expectations
+- The error code is `email_does_not_match` in 1.7 (`email_doesn't_match` in 1.6 and earlier); the file name is kept for compatibility (Adapted from the official docs)
+- Debug tips no longer suggest logging emails or provider profiles, to avoid logging PII (Adapted from the official docs)
 
 ## Related
 

@@ -299,6 +299,7 @@ customSession(
 - Password change with `revokeOtherSessions: true`: for database-stored sessions, the password change and session revocation run in one transaction when transactions are enabled for your adapter, and sessions are revoked first; if revocation fails the request errors and the current password stays. Without transactions, a failure while saving the new password leaves the current password with the sessions already revoked. With secondary storage, sessions are removed from it after commit; a failure there is logged, the new password is kept, and those sessions can stay valid until they expire.
 - In stateless OAuth flows, `storeAccountCookie` stores provider account data (including token material) in the encrypted `account_data` cookie; `getAccessToken({ useAccountCookie: true })` can refresh expired provider tokens when the cookie holds a refresh token and a known expiry, and refresh responses set an updated account cookie (forward `Set-Cookie`). Oversized account cookies are chunked but browsers and proxies still enforce limits.
 - Changed in 1.7: the cached session is tied to the `session_token` cookie (cookie-cache session binding), and `session.delete` hooks run on sign-out even with `secondaryStorage` and `preserveSessionInDatabase`.
+- `customSession` callback reads `session.userId`; the official sample used `session.session.userId`, which does not exist on the callback's `session` argument (Adapted from the official docs)
 
 ## Related
 

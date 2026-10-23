@@ -126,8 +126,8 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     password: {
-      hash: hashPassword,
-      verify: verifyPassword,
+      hash: (password) => hash(password),
+      verify: ({ hash: hashed, password }) => verify(hashed, password),
     },
   },
 });
@@ -161,6 +161,8 @@ export const auth = betterAuth({
 - `onPasswordReset` runs after the new password is saved (and after session revocation when enabled). If the callback throws, the request returns an error but the reset has already taken effect.
 - Password reset order: Better Auth checks the new password before it spends the reset token, so a rejected password (for example one refused by Have I Been Pwned) always leaves the link usable. For database sessions, revocation and the password change succeed or fail together when adapter transactions are enabled (Drizzle and Prisma only with `transaction: true`; a standalone MongoDB server and Cloudflare D1 do not support them): the token is spent, sessions are revoked, and the password is saved in one transaction, so on failure the old password stays and the same link can be used again when verification values are stored in the database (the default without secondary storage; with secondary storage set `verification.storeInDatabase: true`). Otherwise the token is spent and the user needs a new link. The email OTP and phone number reset endpoints behave the same way.
 - Weaker cases: without adapter transactions, the token is spent and sessions are revoked (including secondary-storage copies) before the password is saved, so a later save failure leaves the old password with revoked sessions and the user needs a new link or OTP. With secondary storage, sessions are removed from it only after the database work commits; a failure there is logged, the new password is kept, and those sessions can stay valid until they expire.
+- Custom `password.hash` / `password.verify` are wrapped to match Better Auth's signatures: `hash(password)` and `verify({ hash, password })`; the official sample passes undefined helper names directly (Adapted from the official docs)
+- `onPasswordReset` logs the user id instead of the email address to avoid logging PII; `afterEmailVerification` is treated the same in concepts/email.md (Adapted from the official docs)
 
 ## Related
 

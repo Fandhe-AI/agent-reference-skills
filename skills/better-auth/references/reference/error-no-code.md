@@ -21,8 +21,9 @@ This error occurs during the OAuth callback when the authorization code is missi
 - Verify callback URL and parameter delivery: confirm the provider's configured redirect URI matches your `/api/auth/callback` route exactly (protocol, host, path), and ensure infrastructure (proxies, rewrites, middleware) preserves the full query string
 - Debug locally:
   - Inspect the callback request in DevTools -> Network to verify whether `code` or `error` parameters are present
-  - Log raw query/body received by the callback handler during development
+  - Log only the names of the parameters present on the callback (e.g. `code`, `error`, `state` present or absent), not their values: authorization codes and state are credentials and must not appear in logs
   - Compare dev/staging/prod credentials and redirect URIs for consistency
+- Debug tip: log only which callback parameter names are present, never their values, because authorization codes and `state` are credentials (Adapted from the official docs)
 
 ## Related
 

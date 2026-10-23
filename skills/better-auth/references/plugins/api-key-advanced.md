@@ -155,6 +155,13 @@ await redis.connect()
 export const auth = betterAuth({
     secondaryStorage: {
         get: async (key) => await redis.get(key),
+        // 1.7: getAndDelete and increment are required
+        getAndDelete: async (key) => await redis.getDel(key),
+        increment: async (key, ttl) => {
+            // bump a counter by one; set the expiry only when the key is first created
+            const [value] = await redis.multi().incr(key).expire(key, ttl, "NX").execTyped()
+            return value
+        },
         set: async (key, value, ttl) => {
             if (ttl) await redis.set(key, value, { EX: ttl })
             else await redis.set(key, value)
@@ -178,6 +185,9 @@ apiKey({
     storage: "secondary-storage",
     customStorage: {
         get: async (key) => await customStorage.get(key),
+        // 1.7: getAndDelete and increment are required
+        getAndDelete: async (key) => await customStorage.getAndDelete(key),
+        increment: async (key, ttl) => await customStorage.increment(key, ttl),
         set: async (key, value, ttl) => await customStorage.set(key, value, ttl),
         delete: async (key) => await customStorage.delete(key),
     },
@@ -273,6 +283,7 @@ Error codes:
 
 - Manually validating with `verifyApiKey()` and then using the same API key header with `getSession()` will increment the rate limit counter twice. Use `enableSessionForAPIKeys: true` or reuse the validation result
 - Organization-owned keys cannot mock a user session
+- `secondaryStorage` and `customStorage` examples add the `getAndDelete` and `increment` methods that 1.7 requires; the official snippets omit them (Adapted from the official docs)
 
 ## Related
 

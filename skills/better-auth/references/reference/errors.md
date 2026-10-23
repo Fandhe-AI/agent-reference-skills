@@ -26,7 +26,7 @@ betterAuth({
 | `no_callback_url` | The `state` parameter doesn't contain a callback URL |
 | `oauth_provider_not_found` | No provider segment found in the callback URL |
 | `email_not_found` | The provider didn't return an email address |
-| `email_doesn't_match` | The provider's email doesn't match the authenticated user's email |
+| `email_does_not_match` (`email_doesn't_match` before 1.7) | The provider's email doesn't match the authenticated user's email |
 | `unable_to_get_user_info` | Unable to retrieve user information from the provider |
 | `unable_to_link_account` | Unable to link the provider account to the user |
 | `account_already_linked_to_different_user` | The provider account is already linked to a different user |
@@ -40,6 +40,7 @@ betterAuth({
 
 - When an error occurs, users are redirected to `/api/auth/error`.
 - See the individual error reference pages below for causes and fixes.
+- Error table lists `email_does_not_match` (renamed from `email_doesn't_match` in 1.7) (Adapted from the official docs)
 
 ## Related
 
