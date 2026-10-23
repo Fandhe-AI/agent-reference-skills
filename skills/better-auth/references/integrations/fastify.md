@@ -10,10 +10,21 @@ fastify.route({
   url: "/api/auth/*",
   async handler(request, reply) {
     const url = new URL(request.url, `http://${request.headers.host}`);
+    // Keep the original body encoding: Content-Type is forwarded as-is, so a form body
+    // must stay URL-encoded (needs @fastify/formbody to be parsed) rather than JSON
+    const contentType = String(request.headers["content-type"] ?? "");
+    const body =
+      request.body == null
+        ? undefined
+        : typeof request.body === "string"
+          ? request.body
+          : contentType.includes("application/x-www-form-urlencoded")
+            ? new URLSearchParams(request.body as Record<string, string>).toString()
+            : JSON.stringify(request.body);
     const req = new Request(url.toString(), {
       method: request.method,
       headers: fromNodeHeaders(request.headers),
-      body: request.method !== "GET" ? JSON.stringify(request.body) : undefined,
+      body: request.method !== "GET" ? body : undefined,
     });
     const response = await auth.handler(req);
     reply.status(response.status);
@@ -49,6 +60,7 @@ const session = await auth.api.getSession({
 - Restrict CORS origins via environment variables in production
 - Requests without a valid session return 401 from protected routes
 - The handler builds a `URL` before constructing `Request` (the official sample referenced an undefined `url`), forwards response headers, and sends `Set-Cookie` as separate values via `getSetCookie()` so sessions are not lost to comma-joined cookies (Adapted from the official docs)
+- The bridge keeps the original body encoding (URL-encoded form bodies are not converted to JSON, since `Content-Type` is forwarded unchanged); register `@fastify/formbody` to accept form POSTs such as OAuth Provider logout (Adapted from the official docs)
 
 ## Related
 

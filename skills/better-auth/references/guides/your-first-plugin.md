@@ -84,14 +84,16 @@ export const birthdayPlugin = () => ({
               });
             }
 
-            const today = new Date();
+            // Compare calendar dates in UTC (birthday is parsed as UTC midnight);
+            // someone born exactly five years ago today is allowed
+            const now = new Date();
             const fiveYearsAgo = new Date(
-              today.setFullYear(today.getFullYear() - 5)
+              Date.UTC(now.getUTCFullYear() - 5, now.getUTCMonth(), now.getUTCDate())
             );
 
-            if (birthday >= fiveYearsAgo) {
+            if (birthday > fiveYearsAgo) {
               throw new APIError("BAD_REQUEST", {
-                message: "User must be above 5 years old."
+                message: "User must be at least 5 years old."
               });
             }
 
@@ -194,3 +196,4 @@ This command automatically generates database migrations for plugin schemas.
 - The framework maintains a community plugins registry for discoverable extensions
 - For advanced patterns, consult the comprehensive plugins documentation covering endpoints, middleware, rate limiting, and client-side atoms
 - The birthday hook validates `ctx.body.birthday` as an exact `YYYY-MM-DD` string and converts it to `Date`, rejecting other types, invalid dates, and non-existent dates such as `2020-02-30`; JSON bodies never contain `Date` instances, so the official `instanceof Date` check would reject every request (Adapted from the official docs)
+- The age check compares UTC calendar dates and allows a birthday exactly five years ago; the official sample mixes local time with the parsed date and excludes the boundary day (Adapted from the official docs)

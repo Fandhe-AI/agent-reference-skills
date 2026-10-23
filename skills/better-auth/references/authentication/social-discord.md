@@ -53,7 +53,8 @@ discord: {
   - Production: update to match your application's domain
   - Custom base paths: adjust the redirect URL if you modify the auth route base path
 - Consult [Discord's permissions documentation](https://discord.com/developers/docs/topics/permissions) for permission bit details
-- For the complete list of supported options across all social providers, refer to the [Provider Options documentation](/docs/concepts/oauth#provider-options)
+- For the complete list of supported options across all social providers, refer to the [Provider Options documentation](../concepts/oauth.md)
+- The provider-options link points to the bundled references/concepts/oauth.md instead of the site-relative `/docs/...` path (Adapted from the official docs)
 
 ## Related
 

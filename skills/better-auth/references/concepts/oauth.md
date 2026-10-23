@@ -122,8 +122,9 @@ const info = await authClient.accountInfo({
   query: { accountId: account.id }, // or { useAccountCookie: true }
 });
 
-console.log(info.data?.account.accountId);
-console.log(info.data?.user.email);
+const providerAccountId = info.data?.account.accountId;
+// `info.data?.user` holds mutable profile fields (name, email, ...); do not log them (PII)
+const profile = info.data?.user;
 ```
 
 ### Customizing the Authorization URL
@@ -298,6 +299,7 @@ Configure `user.additionalFields` to set additional user fields.
 
 - Validate and sanitize all client-provided data before use
 - `authClient.getAccessToken` and `listAccounts` return `{ data, error }`, not the bare payload; the sample destructures `data`, handles `error`, and guards a missing account instead of using `accessToken` directly (Adapted from the official docs)
+- The provider account info example reads `info.data` without logging the email address (PII); the official sample logs it with `console.log` (Adapted from the official docs)
 
 ## Related
 
