@@ -16,7 +16,7 @@ export const auth = betterAuth({
 ```
 
 ```typescript
-import { createAuthClient } from "better-auth/auth-client"
+import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
 
 const signIn = async () => {
@@ -81,6 +81,7 @@ facebook: {
   - Development: `http://localhost:3000/api/auth/callback/facebook`
   - Production: update to your application's domain
 - Reference the [Facebook Permissions Documentation](https://developers.facebook.com/docs/permissions) for the complete list of available permissions
+- The client is imported from `better-auth/client`; `better-auth/auth-client` is not a public import path (Adapted from the official docs)
 
 ## Related
 

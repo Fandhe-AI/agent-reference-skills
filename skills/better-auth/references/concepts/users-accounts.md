@@ -30,6 +30,8 @@ export const auth = betterAuth({
     sendVerificationEmail: async ({ user, url, token }) => {
       void sendEmail({
         to: user.email,
+        subject: "Verify your new email address",
+        text: `Click the link to verify your new email: ${url}`,
       });
     },
   },
@@ -333,6 +335,7 @@ A user must satisfy one of the following:
 - Account linking is enabled by default
 - OAuth tokens are not encrypted by default. Enable `account.encryptOAuthTokens`; do not encrypt them yourself in a database hook
 - `unlinkAccount` in 1.7 takes the local account row `id` from `listAccounts` as `accountId` and no `providerId`; the official sample passes `providerId` plus a made-up `accountId` (Adapted from the official docs)
+- The change-email verification sample includes the verification `url` in the email body; without it the user cannot complete verification (Adapted from the official docs)
 
 ## Related
 
