@@ -205,7 +205,7 @@ For `http://` and `https://` URLs, patterns match the full origin (paths and que
 | `database.generateId` | `function \| false \| "serial" \| "uuid"` | — | Custom ID generation strategy |
 | `database.defaultFindManyLimit` | `number` | `100` | Default limit for findMany queries |
 | `database.joins` | `boolean` | `false` | Enable database joins for adapters that support them; when disabled, related data is fetched via separate queries. Renamed in 1.7 from `database.experimentalJoins` (and `experimental.joins`) |
-| `database.validateSchema` | `boolean` | `true` outside production | Compare the schema with the tables Better Auth writes before the first request and report every difference with its fix |
+| `database.validateSchema` | `boolean` | `true` | Compare the schema with the tables Better Auth writes before the first request and report every difference with its fix. Enabled by default, including in production; set `false` to disable |
 | `backgroundTasks.handler` | `function` | — | Handler for background tasks (e.g., `waitUntil` in serverless) |
 | `skipTrailingSlashes` | `boolean` | `false` | Normalize trailing slashes in routes |
 | `trustedProxyHeaders` | `boolean` | — | Trust `X-Forwarded-Host` / `X-Forwarded-Proto` when resolving a dynamic base URL (`baseURL` with `allowedHosts`); they are ignored otherwise (changed in 1.7) |
@@ -277,6 +277,7 @@ plugins: [myPlugin(), anotherPlugin()]
 - For `baseURL`, always set explicitly rather than relying on request inference
 - The official example uses `*.vercel.app`; this page substitutes a self-owned domain pattern because shared-suffix wildcards also trust third-party deployments.
 - Background tasks enable optimistic responses in serverless environments
+- `database.validateSchema` defaults to `true` in every environment, including production (the official options table says "true outside production", which contradicts the database docs and the v1.7.10 source, where validation runs unless the option is `false`) (Adapted from the official docs).
 
 ## Related
 
