@@ -37,6 +37,7 @@ const PR_PUSH = ['pr-push.test.mjs', 'pr-push-unit.test.mjs']
 const BASE_MERGE = ['base-merge.test.mjs', 'base-merge-unit.test.mjs']
 const FETCH_TREE_HOST = ['fetch-tree-host.test.mjs']
 const FETCH_TREE_FAILURE = ['fetch-tree-failure.test.mjs']
+const FETCH_TREE_PAGES = ['fetch-tree-pages-host.test.mjs']
 const FETCH_TREE_SCRIPT = ['fetch-tree.test.mjs', 'fetch-tree-alt-bash.test.mjs']
 
 export const MUTATIONS = [
@@ -101,7 +102,7 @@ export const MUTATIONS = [
   { id: 'P15-reuse-edit-no-R', file: SRC, from: 'gh pr edit <番号>${repoArg ? ` -R ${repoArg}` : \'\'} --body-file "$f" && rm -f "$f"', to: 'gh pr edit <番号> --body-file "$f" && rm -f "$f"', tests: ['pr-push-prompt.test.mjs'], note: '再利用 PR の本文更新に -R を付けない（別リポジトリの同番号 PR を書き換える）' },
   { id: 'P16-shared-ref-deleted', file: PP, from: 'base_ref="refs/worktree/pr-push/base"', to: 'base_ref="refs/remotes/origin/${base}"', tests: ['pr-push.test.mjs'], note: 'base の取得先を並列 worktree が共有する refs/remotes/origin/<base> に戻す（prepare が共有 ref を削除し、別 worktree の取り込み・検査を壊す）' },
   { id: 'P17-base-not-merged-off', file: PP, from: '    1) fail base-not-merged "base が HEAD に取り込まれていない（コンフリクトの解消を中止した等。prepare をやり直す）" ;;', to: '    1) ;;', tests: ['pr-push.test.mjs'], note: 'push モードが base 未取り込みの HEAD を止めない（conflict 後に merge --abort して push すると base 未取り込みの head が届く）' },
-  { id: 'P18-push-routing-off', file: PP, from: '  check_routing\n  pv_push_verified "${branch}"', to: '  pv_push_verified "${branch}"', tests: ['pr-push.test.mjs'], note: 'push モードの routing 照合を外す（push 先が書き換えられても push する）' },
+  { id: 'P18-push-routing-off', file: PP, from: '  check_routing\n  if [ "${origin_kind}" = fix ]; then\n    try_rewrite_push', to: '  if [ "${origin_kind}" = fix ]; then\n    try_rewrite_push', tests: ['pr-push.test.mjs'], note: 'push モードの routing 照合を外す（push 先が書き換えられても push する）' },
   { id: 'P19-pr-routing-off', file: PP, from: '  check_routing\n  # サーバー上のブランチ head が push した HEAD', to: '  # サーバー上のブランチ head が push した HEAD', tests: ['pr-push.test.mjs'], note: 'pr モードの routing 照合を外す' },
   { id: 'P20-milestone-fail-open', file: PP_LIB, from: '    \'\' | *[!0-9]*)\n      PP_MILESTONE=fetch-failed\n      return 1\n      ;;', to: '    \'\' | *[!0-9]*)\n      PP_MILESTONE=not-used\n      return 0\n      ;;', tests: PR_PUSH, note: 'milestone 件数の取得失敗を非運用扱いにする（fail-open。取得失敗を確認済みと読み替える）' },
   { id: 'P21-fork-pr-reused', file: PP, from: 'select(.isCrossRepository == false) | ', to: '', tests: ['pr-push.test.mjs'], note: 'fork の同名ブランチの PR も一覧に含める（別リポジトリの PR を再利用・取り違える）' },
@@ -407,16 +408,30 @@ export const MUTATIONS = [
   { id: 'FT3-retry-limit-three', file: SRC, from: "for (let attempt = 1; attempt <= 2; attempt++) {\n    let result = null\n    let nonce = ''", to: "for (let attempt = 1; attempt <= 3; attempt++) {\n    let result = null\n    let nonce = ''", tests: [...FETCH_TREE_HOST, 'tree-completeness.test.mjs'], note: "取り直しの上限を 2 回（初回 + 1 回）から 3 回にする" },
   { id: 'FT4-script-count-unchecked', file: 'scripts/fetch-tree.sh', from: '  ft_count_ok "${expected}" "${actual}" || {', to: '  true || {', tests: FETCH_TREE_SCRIPT, note: "取得した子の件数が subIssuesTotal と一致するかを検査しない（ページの取り落としが通る）" },
   { id: 'FT5-host-input-unchecked', file: SRC, from: "result?.sha256 }, nonce, inputSha)", to: "result?.sha256 }, nonce)", tests: FETCH_TREE_HOST, note: "封筒がルート・リポジトリを束縛していること（inputSha256）を照合しない（別入力の出力の流用が通る）" },
-  { id: 'FT6-nonce-fixed-across-attempts', file: SRC, from: "const nonce = boundaryNonce(`fetch-tree:${attempt}:${parent}:${repoArg}`)", to: "const nonce = boundaryNonce(`fetch-tree:1:${parent}:${repoArg}`)", tests: FETCH_TREE_HOST, note: "プロンプトの nonce を試行によらず固定する（取り直しで前回の出力を流用できる）" },
+  { id: 'FT6-nonce-fixed-across-attempts', file: SRC, from: "nonce = boundaryNonce(`fetch-tree:${attempt}:${parent}:${repoArg}`)", to: "nonce = boundaryNonce(`fetch-tree:1:${parent}:${repoArg}`)", tests: FETCH_TREE_HOST, note: "プロンプトの nonce を試行によらず固定する（取り直しで前回の出力を流用できる）" },
   { id: 'FT7-script-duplicate-unchecked', file: 'scripts/fetch-tree.sh', from: '        *" ${cnum} "*) echo "fetch-tree: 番号の重複', to: '        *"  ${cnum}x "*) echo "fetch-tree: 番号の重複', tests: FETCH_TREE_SCRIPT, note: "番号の重複を検出しない" },
   { id: 'FT8-script-digest-drops-title', file: 'scripts/lib/fetch-tree-lib.sh', from: "  tsha=$(printf '%s' \"$6\" | so_sha256) || return 1\n", to: "  tsha=none\n", tests: [...FETCH_TREE_SCRIPT, 'fetch-tree-unit.test.mjs'], note: "ダイジェストに title を含めない（title の書き写しの誤りが見つからない）" },
   { id: 'FT9-dedupe-by-number-only', file: SRC, from: '    const sig = stableStringify(n)\n', to: '    const sig = String(n.number)\n', tests: ['tree-completeness.test.mjs'], note: "#667: 重複を number だけで畳む（内容の違う重複が畳まれて見えなくなる）" },
   { id: 'FT10-shape-check-skipped', file: SRC, from: "const verified = shape === '' ?", to: "const verified = true ?", tests: FETCH_TREE_HOST, note: "書き写された 6 欄の型・値域の検査を飛ばす（state が open / closed でない値が通る）" },
-  { id: 'FT11-failure-checked-after-nodes', file: SRC, from: "    if (result?.failure !== undefined && result?.failure !== null && result?.failure !== '') {\n      lastReason = treeFetchFailureReason(result.failure, attempt)", to: "    if (false) {\n      lastReason = treeFetchFailureReason(result.failure, attempt)", tests: [...FETCH_TREE_HOST, ...FETCH_TREE_FAILURE], note: "#676: failure 申告を先に見ない（理由が「検査値が一致しない」「封筒の欠落」に化ける）" },
+  { id: 'FT11-failure-checked-after-nodes', file: SRC, from: "  if (result?.failure !== undefined && result?.failure !== null && result?.failure !== '') return treeFetchFailureReason(result.failure, attempt)\n", to: "", tests: [...FETCH_TREE_HOST, ...FETCH_TREE_FAILURE], note: "#676: failure 申告を先に見ない（理由が「検査値が一致しない」「封筒の欠落」に化ける）" },
   { id: 'FT12-first-attempt-says-unresolved', file: SRC, from: "return attempt < 2 ? '。1 回だけ取り直す'", to: "return attempt < 99 ? `。取り直しても解消しなかった。${finalHint}`", tests: FETCH_TREE_FAILURE, note: "#676: 1 回目のログにも「取り直しても解消しなかった」を出す" },
   { id: 'FT17-task-id-digest-unchecked', file: SRC, from: "  if (typeof signed.payload.taskIdSha256 !== 'string' || signed.payload.taskIdSha256 !== treeTaskIdDigest(nodes)) return { ok: false, reason: 'digest' }\n", to: '', tests: FETCH_TREE_HOST, note: "#687: タスク ID のダイジェストを照合しない（転記でタスク ID が欠落しても依存解決に進む）" },
   { id: 'FT14-title-mismatch-ignored', file: SRC, from: "titleMismatch: signed.payload.nodesSha256 !== treeNodesDigest(nodes) }", to: "titleMismatch: false }", tests: FETCH_TREE_HOST, note: "#687: title だけの不一致を検出しない（取り直しも警告もしない）" },
   { id: 'FT15-title-mismatch-no-retry', file: SRC, from: "if (attempt === 1) { log('⚠️ （試行 1）title", to: "if (false) { log('⚠️ （試行 1）title", tests: FETCH_TREE_HOST, note: "#687: title だけの不一致でも取り直さない" },
   { id: 'FT16-title-mismatch-unreported', file: SRC, from: "if (!verified.titleMismatch) return", to: "if (!verified.titleMismatch || attempt === 2) return", tests: FETCH_TREE_HOST, note: "#687: 取り直しでも title が違うのに titleMismatch を立てずに採用する（報告に出ない）" },
+  // ページ経路（Issue #690）
+  { id: 'FP1-page-input-unchecked', file: SRC, from: "checkTreeNodes(result, nonce, pageInput, attempt)", to: "checkTreeNodes(result, nonce, undefined, attempt)", tests: FETCH_TREE_PAGES, note: "#690: ページの封筒が tsvSha256 とページ番号に束縛されていること（inputSha256）を照合しない（別ページの出力の流用が通る）" },
+  { id: 'FP2-page-dir-unchecked', file: SRC, from: "if (!treePageDirOk(p.dir)) return", to: "if (false) return", tests: FETCH_TREE_PAGES, note: "#690: エージェントが返した dir の形を検査せずにコマンドへ埋め込む" },
+  { id: 'FP3-page-budget-unchecked', file: SRC, from: "if (agentBudget.limit - agentBudget.used < need) {", to: "if (false) {", tests: FETCH_TREE_PAGES, note: "#690: ページ読みの前の呼び出し数の事前検査を外す" },
+  { id: 'FP4-page-nonce-fixed', file: SRC, from: "boundaryNonce(`fetch-tree-page:${p}:${attempt}:${tsvSha}`)", to: "boundaryNonce(`fetch-tree-page:${p}:1:${tsvSha}`)", tests: FETCH_TREE_PAGES, note: "#690: ページの nonce を試行によらず固定する" },
+  { id: 'FP5-page-whole-unchecked', file: SRC, from: "if (!verified.ok) throw new Error(`ツリー取得のページを連結", to: "if (false) throw new Error(`ツリー取得のページを連結", tests: FETCH_TREE_PAGES, note: "#690: 連結後の全体照合（取得時の封筒）を飛ばす" },
+  { id: 'FP6-page-limit-unchecked', file: SRC, from: "p.pages > TREE_MAX_PAGES", to: "false", tests: FETCH_TREE_PAGES, note: "#690: ページ数の上限を検査しない" },
+  { id: 'FP7-page-release-skipped', file: SRC, from: "  } finally {\n    await releaseTreeDir(dir)\n  }", to: "  } finally {\n  }", tests: FETCH_TREE_PAGES, note: "#690: ページ読みの後に一時ディレクトリを片づけない" },
   { id: 'FT13-exit-code-hidden', file: SRC, from: "const code = d.exitCode === null ? '' : `exit ${d.exitCode}: `", to: "const code = ''", tests: FETCH_TREE_FAILURE, note: "#676: 失敗ログに終了コードを出さない" },
+  { id: 'RW1-rewrite-tree-unchecked', file: PP_LIB, from: 'ntree[b] != otree[a] || ', to: '', tests: PR_PUSH, note: "#696: 書き直しの同等性判定で tree の比較を外す（内容を変える amend まで lease つきで上書きする）" },
+  { id: 'RW2-rewrite-parent-unchecked', file: PP_LIB, from: 'if (npar[b, k] != want) ok = 0', to: '', tests: PR_PUSH, note: "#696: 親の比較を外す（rebase で履歴を付け替えたコミットまで上書きする）" },
+  { id: 'RW3-rewrite-ambiguous-accepted', file: PP_LIB, from: 'if (cand > 1) { print "ambiguous"; exit }', to: '', tests: PR_PUSH, note: "#696: 等価な候補が複数あっても対応先を確定して ok にする" },
+  { id: 'RW4-rewrite-lease-valueless', file: PV, from: '--force-with-lease="refs/heads/${branch}:${lease}"', to: '--force-with-lease', tests: PR_PUSH, note: "#696: lease の期待値を落とす（値なしの lease は追跡 ref に依存し、観測後の並行 push を守れない）" },
+  { id: 'RW5-rewrite-not-fix-only', file: PP, from: 'if [ "${origin_kind}" = fix ]; then\n    try_rewrite_push', to: 'if true; then\n    try_rewrite_push', tests: PR_PUSH, note: "#696: 書き直し経路を fix 限定にしない（pr-create でも force 系の push に入る）" },
+  { id: 'RW6-rewrite-race-as-push-failed', file: PV, from: 'PV_OUTCOME=race\n    else\n      PV_OUTCOME=push-failed', to: 'PV_OUTCOME=push-failed\n    else\n      PV_OUTCOME=push-failed', tests: PR_PUSH, note: "#696: lease で拒否された並行 push（リモート head が観測値とも HEAD とも違う）を race と区別しない" },
 ]

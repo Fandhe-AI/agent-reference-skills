@@ -2,7 +2,7 @@
 # pr-push-lib.sh — pr-push.sh の判定だけを持つ純関数（source 専用）
 #
 # 呼び出し元: pr-push.sh（Issue #603 第 4 弾）。起点（ローカルとリモートのどちらから続けるか）の決定、既存 open PR の分類、
-#             gh pr create の出力からの PR 番号の取り出し、タイトル・パスの形式検証。スクリプト本体から切り出した理由は、
+#             gh pr create の出力からの PR 番号の取り出し、タイトル・パスの形式検証、fix の書き直し push の同等性判定（pp_rewrite_equivalent・Issue #696）。スクリプト本体から切り出した理由は、
 #             テストが 1 回の bash 起動で表の全ケースを渡せるようにするため（lib/base-merge-lib.sh と同じ）。
 # 契約: どの関数も exit せず、git・gh・ネットワークを呼ばない。結果は PP_* 変数と return 値で返し、何も出力しない。
 #       source 元のシェル状態を壊さないため set -e / set -u / trap / exit は置かない。二重 source は無害。
@@ -17,6 +17,8 @@ PP_PR_STATUS=""
 PP_PR_NUMBER=""
 PP_HEAD=""
 PP_MILESTONE=""
+PP_REWRITE=""
+PP_REWRITE_IMAGE=""
 
 pp_is_uint() {
   case "$1" in
@@ -240,4 +242,89 @@ pp_milestone_status() {
     PP_MILESTONE=unassigned
   fi
   return 0
+}
+
+# メッセージだけの書き直しの同等性（fix の push が --force-with-lease を使ってよいかの判定。Issue #696）。
+#   $1 = 捨てられるコミット（リモート head R の側。R --not HEAD）、$2 = 新しく送るコミット（HEAD --not R）、$3 = R の sha。
+#   どちらの行リストも古い順（git rev-list --topo-order --reverse --parents の順）で、1 行 1 コミット `sha tree parent...`
+#   （40 桁小文字 16 進を空白区切り。親は 0 個以上）。改行区切りの文字列で渡す。
+#   捨てるコミット o のそれぞれについて、新しい側に『tree が同じ・親の数が同じ・親が位置ごとに対応（o の親が捨てる側にあれば
+#   その対応先、無ければ同じ sha）』のコミットがちょうど 1 つあることを要求する。新しい側のうち対応先にならなかったコミット
+#   （base の取り込みや書き直しの上に積んだ修正）は許す: 通常の fast-forward の push でも同じ内容が送られ、force によって
+#   新たに失われるものが無いため。内容（tree）や親が変わる書き換え（内容を変える amend・rebase）は対応が見つからず mismatch。
+# PP_REWRITE:
+#   ok         すべての捨てるコミットに対応先がある（PP_REWRITE_IMAGE = R の対応先の sha）
+#   mismatch   対応先が無いコミットがある（内容か親が変わっている）
+#   ambiguous  対応先の候補が 2 つ以上ある
+#   too-large  どちらかが 100 件を超える
+#   error      行の形が不正・捨てるコミットが空・R が捨てる側に無い
+# return 0 = ok、1 = それ以外
+pp_rewrite_equivalent() {
+  local olines=$1 nlines=$2 r=$3 res line cnt=0
+  PP_REWRITE=""
+  PP_REWRITE_IMAGE=""
+  pp_is_sha "${r}" || { PP_REWRITE=error; return 1; }
+  [ -n "${olines}" ] || { PP_REWRITE=error; return 1; }
+  while IFS= read -r line; do
+    [ -n "${line}" ] || continue
+    cnt=$((cnt + 1))
+  done <<EOF
+${olines}
+EOF
+  [ "${cnt}" -le 100 ] || { PP_REWRITE=too-large; return 1; }
+  cnt=0
+  while IFS= read -r line; do
+    [ -n "${line}" ] || continue
+    cnt=$((cnt + 1))
+  done <<EOF
+${nlines}
+EOF
+  [ "${cnt}" -le 100 ] || { PP_REWRITE=too-large; return 1; }
+  # 行の形（40 桁 16 進と空白だけ・3 欄以上）は awk の中で検証する。awk の出力は固定語彙 + sha だけ
+  res=$({
+    printf '%s\n' "${olines}" | while IFS= read -r line; do [ -z "${line}" ] || printf 'O %s\n' "${line}"; done
+    printf '%s\n' "${nlines}" | while IFS= read -r line; do [ -z "${line}" ] || printf 'N %s\n' "${line}"; done
+  } | awk -v r="${r}" '
+    function bad(s) { return (length(s) != 40 || s ~ /[^0-9a-f]/) }
+    {
+      kind = $1
+      if (NF < 3 || NF > 18 || (kind != "O" && kind != "N")) { print "error"; exit }
+      for (i = 2; i <= NF; i++) if (bad($i)) { print "error"; exit }
+      if (kind == "O") { no++; osha[no] = $2; otree[no] = $3; onp[no] = NF - 3; for (i = 4; i <= NF; i++) opar[no, i - 3] = $i; isO[$2] = 1 }
+      else { nn++; nsha[nn] = $2; ntree[nn] = $3; nnp[nn] = NF - 3; for (i = 4; i <= NF; i++) npar[nn, i - 3] = $i }
+    }
+    END {
+      if (no == 0) { print "error"; exit }
+      for (a = 1; a <= no; a++) {
+        found = 0; cand = 0
+        for (b = 1; b <= nn; b++) {
+          if (used[nsha[b]] || ntree[b] != otree[a] || nnp[b] != onp[a]) continue
+          ok = 1
+          for (k = 1; k <= onp[a]; k++) {
+            want = opar[a, k]
+            if (want in map) want = map[want]
+            else if (want in isO) ok = 0
+            if (npar[b, k] != want) ok = 0
+          }
+          if (ok) { cand++; found = b }
+        }
+        if (cand == 0) { print "mismatch"; exit }
+        if (cand > 1) { print "ambiguous"; exit }
+        map[osha[a]] = nsha[found]; used[nsha[found]] = 1
+      }
+      if (!(r in map)) { print "error"; exit }
+      print "ok " map[r]
+    }
+  ') || { PP_REWRITE=error; return 1; }
+  case "${res}" in
+    ok\ *)
+      PP_REWRITE=ok
+      PP_REWRITE_IMAGE=${res#ok }
+      pp_is_sha "${PP_REWRITE_IMAGE}" || { PP_REWRITE=error; PP_REWRITE_IMAGE=""; return 1; }
+      return 0
+      ;;
+    mismatch | ambiguous | error) PP_REWRITE=${res} ;;
+    *) PP_REWRITE=error ;;
+  esac
+  return 1
 }

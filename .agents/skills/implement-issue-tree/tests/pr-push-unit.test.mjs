@@ -38,6 +38,9 @@ while IFS="$US" read -r fn a b c d; do
 /g')" >/dev/null 2>&1; true ;;
     head) out=$(pp_head_status "$a" "$b" "$c" 2>&1) || rc=$?; pp_head_status "$a" "$b" "$c" >/dev/null 2>&1; true ;;
     milestone) out=$(pp_milestone_status "$a" "$b" "$c" 2>&1) || rc=$?; pp_milestone_status "$a" "$b" "$c" >/dev/null 2>&1; true ;;
+    rewrite) olines=$(printf '%s' "$a" | sed 's/@@/\\
+/g'); nlines=$(printf '%s' "$b" | sed 's/@@/\\
+/g'); out=$(pp_rewrite_equivalent "$olines" "$nlines" "$c" 2>&1) || rc=$?; pp_rewrite_equivalent "$olines" "$nlines" "$c" >/dev/null 2>&1; PP_ORIGIN=$PP_REWRITE; PP_PR_NUMBER=$PP_REWRITE_IMAGE; true ;;
     title) out=$(pp_valid_title "$a" 2>&1) || rc=$?; true ;;
     path) out=$(pp_valid_path "$a" 2>&1) || rc=$?; true ;;
     *) echo "unknown fn $fn" >&2; exit 8 ;;
@@ -171,6 +174,42 @@ for (const bash of availableBashes()) {
     const res = table(bash, cases.map(([c, rc, t]) => ['milestone', c, String(rc), t]))
     cases.forEach(([c, vrc, t, rc, status], i) => {
       assert.deepEqual({ rc: res[i].rc, status: res[i].origin, out: res[i].out }, { rc, status, out: '' }, JSON.stringify([c, vrc, t]))
+    })
+  })
+
+  test(`${tag} pp_rewrite_equivalent: 捨てるコミットがすべて tree と親を保って新しい側に残っているときだけ ok。内容・親・親の数の変化は mismatch、候補が複数なら ambiguous、不正な入力は error`, () => {
+    const h = (c) => c.repeat(40)
+    const [base, t1, t2, t3, tx] = [h('1'), h('2'), h('3'), h('4'), h('5')]
+    const [o1, o2, o3] = [h('a'), h('b'), h('c')]
+    const [n1, n2, n3, ex1, ex2, m1] = [h('d'), h('e'), h('f'), h('6'), h('7'), h('8')]
+    const L = (...f) => f.join(' ')
+    const J = (...ls) => ls.join(NL)
+    // [名前, 捨てる側, 新しい側, R, 期待 rc, 期待 status, 期待 image]
+    const cases = [
+      ['1 コミットの reword', L(o1, t1, base), L(n1, t1, base), o1, 0, 'ok', n1],
+      ['連続 3 コミットの reword（対応が親へ連鎖）', J(L(o1, t1, base), L(o2, t2, o1), L(o3, t3, o2)), J(L(n1, t1, base), L(n2, t2, n1), L(n3, t3, n2)), o3, 0, 'ok', n3],
+      ['書き直しの上に追加コミットとマージ', L(o1, t1, base), J(L(n1, t1, base), L(ex1, tx, n1), L(ex2, t3, ex1, m1)), o1, 0, 'ok', n1],
+      ['tree が違う（内容を変える amend）', L(o1, t1, base), L(n1, tx, base), o1, 1, 'mismatch', ''],
+      ['親が違う（rebase）', L(o1, t1, base), L(n1, t1, m1), o1, 1, 'mismatch', ''],
+      ['親の数が違う（マージをつぶした）', L(o1, t1, base, m1), L(n1, t1, base), o1, 1, 'mismatch', ''],
+      ['途中のコミットだけ tree が違う', J(L(o1, t1, base), L(o2, t2, o1)), J(L(n1, t1, base), L(n2, tx, n1)), o2, 1, 'mismatch', ''],
+      ['親が捨てる側にあるのに新しい側では元の sha のまま', J(L(o1, t1, base), L(o2, t2, o1)), J(L(n1, t1, base), L(n2, t2, o1)), o2, 1, 'mismatch', ''],
+      ['等価な候補が 2 つ', L(o1, t1, base), J(L(n1, t1, base), L(n2, t1, base)), o1, 1, 'ambiguous', ''],
+      ['範囲外の親は同じ sha だけを許す（マージコミット）', L(o1, t1, base, m1), L(n1, t1, base, m1), o1, 0, 'ok', n1],
+      ['捨てる側が空', '', L(n1, t1, base), o1, 1, 'error', ''],
+      ['R が捨てる側に無い', L(o1, t1, base), L(n1, t1, base), o2, 1, 'error', ''],
+      ['sha が 40 桁でない', L('abc', t1, base), L(n1, t1, base), o1, 1, 'error', ''],
+      ['欄が足りない', o1, L(n1, t1, base), o1, 1, 'error', ''],
+      ['大文字の sha', L(o1.toUpperCase(), t1, base), L(n1, t1, base), o1, 1, 'error', ''],
+      ['R が不正', L(o1, t1, base), L(n1, t1, base), 'zz', 1, 'error', ''],
+    ]
+    // 上限（100 件）を超えたら too-large
+    const many = (c) => J(...Array.from({ length: 101 }, (_, i) => L(String(i).padStart(2, '0').repeat(20).slice(0, 40).replace(/[^0-9a-f]/g, c), t1, base)))
+    cases.push(['捨てる側が 101 件', many('9'), L(n1, t1, base), o1, 1, 'too-large', ''])
+    cases.push(['新しい側が 101 件', L(o1, t1, base), many('9'), o1, 1, 'too-large', ''])
+    const res = table(bash, cases.map(([, o, n, r]) => ['rewrite', o, n, r]))
+    cases.forEach(([name, , , , rc, status, image], i) => {
+      assert.deepEqual({ rc: res[i].rc, status: res[i].origin, image: res[i].number, out: res[i].out }, { rc, status, image, out: '' }, name)
     })
   })
 }

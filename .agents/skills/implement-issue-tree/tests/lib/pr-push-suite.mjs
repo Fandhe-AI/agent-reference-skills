@@ -75,7 +75,7 @@ function result(r) {
   const v = JSON.parse(lines[0].slice('PR_PUSH_RESULT '.length))
   for (const [k, x] of Object.entries(v)) {
     if (k === 'prNumber') assert.ok(Number.isInteger(x) && x > 0)
-    else if (k === 'localSha' || k === 'remoteSha' || k === 'headSha') assert.match(x, /^[0-9a-f]{40}$/)
+    else if (k === 'localSha' || k === 'remoteSha' || k === 'headSha' || k === 'replacedSha') assert.match(x, /^[0-9a-f]{40}$/)
     else assert.match(String(x), /^[a-z-]+$/, `${k}: 固定語彙だけ`)
   }
   assert.doesNotMatch(r.stdout + r.stderr, /github\.com|ghp_|https?:\/\/|origin\.git/, 'URL・トークンを出力しない')
@@ -322,6 +322,111 @@ export function registerPrPushTests(bash) {
     commitOn(sb3.wt, 'z.txt', 'z')
     assert.equal(push(sb3, 'fix', { FAKE_LS_1: 'fail' }).status, 'unverified', 'push 前の確認不能でも push は実行する')
     assert.equal(sb3.remoteSha(), git(sb3.wt, 'rev-parse', 'HEAD'))
+  })
+
+  // ---- push: fix のコミットメッセージだけの書き直し（Issue #696） ----
+  const leasePushes = (sb) => sb.gitCalls().filter((c) => /^push( |$)/.test(c))
+  // base を取り込み済みのブランチで fix の prepare を通し、detached HEAD をリモート head に置いた状態にする
+  const rewriteSetup = () => {
+    const sb = makeSandbox({ branchHasBase: true })
+    assert.equal(prepare(sb, 'fix').status, 'up-to-date')
+    return sb
+  }
+
+  t('push fix: メッセージだけを amend した書き直しは --force-with-lease（期待値 = fetch で観測したリモート head）で push して pushed-rewritten。replacedSha は置き換えた head', () => {
+    const sb = rewriteSetup()
+    const old = sb.remoteSha()
+    git(sb.wt, 'commit', '-q', '--amend', '-m', 'chore: 本文を短く書き直す')
+    const head = git(sb.wt, 'rev-parse', 'HEAD')
+    assert.notEqual(head, old)
+    assert.deepEqual(push(sb, 'fix'), { mode: 'push', status: 'pushed-rewritten', headSha: head, replacedSha: old })
+    assert.equal(sb.remoteSha(), head)
+    assert.deepEqual(leasePushes(sb), [`push --no-follow-tags --force-with-lease=refs/heads/${BRANCH}:${old} origin HEAD:refs/heads/${BRANCH}`])
+    for (const c of sb.gitCalls()) assert.doesNotMatch(c, /--no-verify|--mirror|--delete|--force( |$)|(^| )-f( |$)|\+HEAD/, c)
+    assert.deepEqual(readdirSync(sb.tmp), [], '一時ファイルが残らない')
+  })
+
+  t('push fix: 内容（tree）を変える amend は push せず push-failed。リモートは動かない', () => {
+    const sb = rewriteSetup()
+    const old = sb.remoteSha()
+    writeFileSync(join(sb.wt, 'feature.txt'), 'changed\n')
+    git(sb.wt, 'add', 'feature.txt')
+    git(sb.wt, 'commit', '-q', '--amend', '-m', 'chore: 内容も変える')
+    assert.deepEqual(push(sb, 'fix'), { mode: 'push', status: 'push-failed' })
+    assert.equal(sb.remoteSha(), old)
+    assert.deepEqual(leasePushes(sb), [])
+  })
+
+  t('push fix: tree が同じでも親の並びが変わる書き換えは push-failed。リモートは動かない', () => {
+    const sb = rewriteSetup()
+    const old = sb.remoteSha()
+    const [p1, p2] = git(sb.wt, 'rev-list', '--parents', '-n', '1', 'HEAD').split(' ').slice(1)
+    const swapped = git(sb.wt, 'commit-tree', 'HEAD^{tree}', '-p', p2, '-p', p1, '-m', 'chore: 親を入れ替える')
+    git(sb.wt, 'checkout', '-q', '--detach', swapped)
+    assert.equal(push(sb, 'fix').status, 'push-failed')
+    assert.equal(sb.remoteSha(), old)
+    assert.deepEqual(leasePushes(sb), [])
+  })
+
+  t('push fix: 検証のあとにリモートが動いたら lease で拒否されて race（リモートは動かした側の値のまま）', () => {
+    const sb = rewriteSetup()
+    git(sb.wt, 'commit', '-q', '--amend', '-m', 'chore: 書き直す')
+    const other = git(sb.origin, 'rev-parse', `refs/heads/${BASE}`)
+    sb.writeHook(join(sb.wt, '.git'), 'pre-push', `git --git-dir="${sb.origin}" update-ref refs/heads/${BRANCH} ${other}`)
+    const v = push(sb, 'fix')
+    assert.equal(v.status, 'race')
+    assert.equal(v.headSha, git(sb.wt, 'rev-parse', 'HEAD'))
+    assert.equal(sb.remoteSha(), other)
+    assert.equal(leasePushes(sb).length, 1)
+  })
+
+  t('push fix: 書き直しの push が hook などで拒否されたら push-failed（リモートは lease の値のまま）', () => {
+    const sb = rewriteSetup()
+    const old = sb.remoteSha()
+    git(sb.wt, 'commit', '-q', '--amend', '-m', 'chore: 書き直す')
+    sb.writeHook(sb.origin, 'pre-receive', 'echo denied >&2; exit 1')
+    assert.deepEqual(push(sb, 'fix'), { mode: 'push', status: 'push-failed' })
+    assert.equal(sb.remoteSha(), old)
+  })
+
+  t('push pr-create: 書き直した HEAD は force しない。non-fast-forward で push-failed になり、lease 形の push を呼ばない', () => {
+    const sb = makeSandbox({ branchHasBase: true })
+    localBranch(sb)
+    assert.equal(prepare(sb, 'pr-create').status, 'up-to-date')
+    const old = sb.remoteSha()
+    git(sb.wt, 'commit', '-q', '--amend', '-m', 'chore: 書き直す')
+    assert.equal(push(sb, 'pr-create').status, 'push-failed')
+    assert.equal(sb.remoteSha(), old)
+    for (const c of sb.gitCalls()) assert.doesNotMatch(c, /--force/, c)
+  })
+
+  t('push fix: 書き直しのない通常の追加コミットは従来どおり pushed（lease 形を使わない）', () => {
+    const sb = rewriteSetup()
+    commitOn(sb.wt, 'more.txt', 'more')
+    const head = git(sb.wt, 'rev-parse', 'HEAD')
+    assert.deepEqual(push(sb, 'fix'), { mode: 'push', status: 'pushed', headSha: head })
+    assert.deepEqual(leasePushes(sb), [`push --no-follow-tags origin HEAD:refs/heads/${BRANCH}`])
+  })
+
+  t('push fix: 書き直したコミットの上に base のマージコミットがあっても（余分な新規コミットは許す）pushed-rewritten', () => {
+    const sb = makeSandbox()
+    pinBase(sb)
+    const old = sb.remoteSha()
+    git(sb.wt, 'checkout', '-q', '--detach', `refs/remotes/origin/${BRANCH}`)
+    git(sb.wt, 'commit', '-q', '--amend', '-m', 'chore: 書き直す')
+    git(sb.wt, 'merge', '-q', '--no-ff', '-m', 'chore: base ブランチの変更を取り込む', PRIVATE_BASE)
+    const head = git(sb.wt, 'rev-parse', 'HEAD')
+    assert.deepEqual(push(sb, 'fix'), { mode: 'push', status: 'pushed-rewritten', headSha: head, replacedSha: old })
+    assert.equal(sb.remoteSha(), head)
+  })
+
+  t('push fix: リモートに branch が無ければ（fetch できない）書き直しの判定をせず従来の push に戻る', () => {
+    const sb = rewriteSetup()
+    git(sb.origin, 'update-ref', '-d', `refs/heads/${BRANCH}`)
+    commitOn(sb.wt, 'more.txt', 'more')
+    const v = push(sb, 'fix')
+    assert.equal(v.status, 'pushed')
+    assert.deepEqual(leasePushes(sb), [`push --no-follow-tags origin HEAD:refs/heads/${BRANCH}`])
   })
 
   // ---- push: base の固定と取り込み確認 ----

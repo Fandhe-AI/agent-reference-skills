@@ -116,6 +116,12 @@ ft_input_sha() {
   printf 'fetch-tree\n%s\n%s' "$1" "$2" | so_sha256
 }
 
+# --page の封筒の入力の束縛（Issue #690）: sha256("fetch-tree-page\n" + tree.tsv 全体の SHA-256 + "\n" + ページ番号)。
+# $1 = tsvSha256、$2 = ページ番号。ホストの treePageInputSha256 と同じ定義。
+ft_page_input_sha() {
+  printf 'fetch-tree-page\n%s\n%s' "$1" "$2" | so_sha256
+}
+
 _ft_posint() {
   case "$1" in
     '' | *[!0-9]* | 0*) return 1 ;;

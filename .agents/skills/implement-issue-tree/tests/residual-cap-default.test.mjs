@@ -662,7 +662,7 @@ test('monitoring 再開ゲートは remeasureResidualBytesNow の戻り値のみ
   const anchor = 'monitoring 再開の直前にも実測し直す'
   const start = source.indexOf(anchor)
   assert.ok(start >= 0, 'monitoring 再開の実測し直しブロックを特定できること')
-  const blockEnd = source.indexOf('\n          const recordedByIssue = new Map()', start)
+  const blockEnd = source.indexOf('\n          const reservedUnits = reservedUnitsNow()', start)
   assert.ok(blockEnd > start, 'ブロック終端（予約計上ロジックの開始）を特定できること')
   const block = source.slice(start, blockEnd)
   // 戻り値を保持して失敗・超過・予約見積り更新失敗（reserveStale）の全てを判定すること

@@ -100,7 +100,7 @@ test('fixPrompt(pushAfterFix: true): base 取り込みだけの HEAD でも push
   mod.__setBoundaryNonceSeedForTest('a'.repeat(64))
   const prompt = fixPrompt(item, impl, { summary: 'mergeable: CONFLICTING（実測値）。base 取り込みとコンフリクト解消が必要。', unresolvedComments: [] }, true)
   assert.ok(prompt.includes('base 取り込みだけの HEAD でも必ず実行する'), 'push を省略しない旨がない（省略すると detached HEAD の解消作業が worktree 破棄で失われる）')
-  assert.ok(prompt.includes('status が pushed のときだけ pushed: true'))
+  assert.ok(prompt.includes('status が pushed・pushed-rewritten のときだけ pushed: true'))
   for (const s of ['noop は pushed: false', 'race は pushed: false', 'unverified・push-failed は pushed: false']) assert.ok(prompt.includes(s), s)
   // 手順 5 (a) の resolve 許可条件は 2 条件判定（自ローカル HEAD との一致）で pushed: true と確認できた場合に限る
   assert.ok(prompt.includes('push 後の ls-remote sha が自ローカル HEAD と一致）で pushed: true と確認できた場合のみ'))

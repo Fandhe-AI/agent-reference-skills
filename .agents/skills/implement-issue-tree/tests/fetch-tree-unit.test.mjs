@@ -45,6 +45,7 @@ while IFS="$US" read -r fn a b c d e f; do
     pcount) out=$(printf '%s\\n' "$a" | ft_page_count "$b") || rc=$? ;;
     pcount0) out=$(printf '' | ft_page_count "$b") || rc=$? ;;
     pslice) out=$(printf '%s\\n' "$a" | ft_page_slice "$b" "$c") || rc=$? ;;
+    pinput) out=$(ft_page_input_sha "$a" "$b") || rc=$? ;;
     dname) ft_page_dir_name_ok "$a" || rc=$? ;;
     *) echo "unknown fn $fn" >&2; exit 8 ;;
   esac
@@ -121,6 +122,7 @@ for (const bash of availableBashes()) {
       ['dname', '/tmp/iit-tree.a b'],
       ['dname', '/tmp/../etc/iit-tree.x'],
       ['dname', '/tmp/iit-tree.x;rm'],
+      ['pinput', 'abc', '3'],
     ])
     assert.deepEqual(res.slice(0, 6).map((x) => x.out), ['plain', 'a b', 'x y', '   ', '日本語 🎉', ''])
     assert.deepEqual(res.slice(6, 10).map((x) => x.rc), [0, 0, 1, 1])
@@ -134,7 +136,8 @@ for (const bash of availableBashes()) {
     assert.equal(res[25].rc, 1)
     assert.equal(res[26].rc, 2)
     assert.deepEqual(res.slice(27, 31).map((x) => [x.rc, x.out]), [[0, 'aaaa\nbbbb'], [0, 'cccc'], [1, ''], [2, '']])
-    assert.deepEqual(res.slice(31).map((x) => x.rc), [0, 0, 1, 1, 1, 1, 1, 1])
+    assert.deepEqual(res.slice(31, 39).map((x) => x.rc), [0, 0, 1, 1, 1, 1, 1, 1])
+    assert.deepEqual([res[39].rc, res[39].out], [0, sha('fetch-tree-page\nabc\n3')])
     void hex
   })
 
