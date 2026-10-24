@@ -103,11 +103,10 @@ test('(f) Tree 取得プロンプトは fetch-tree.sh を launcher 経由で 1 �
   assert.match(p, /同じノードを 2 回書かない/)
   assert.match(p, /観測値のまま StructuredOutput へ転記する/)
   assert.match(p, /failure/)
-  // 大きなツリーのページ読み（Issue #673）: --page / --release を launcher 経由で、プレースホルダのまま渡す
-  assert.match(p, /fetch-tree\.sh --page <P> --dir <DIR>\n/)
-  assert.match(p, /fetch-tree\.sh --release --dir <DIR>/)
-  assert.match(p, /FETCH_TREE_DIR=/)
-  assert.match(p, /payload\.pages が 2 以上/)
+  // 大きなツリー（Issue #690）: ページ読みはホストがページごとに別のエージェントで行う。取得のプロンプトは封筒だけを写させる
+  assert.match(p, /payload\.pages が 2 以上のときは TSV 行が無く、nodes は空配列/)
+  assert.match(p, /pages が 1 のときだけ/)
+  assert.ok(!/--page|--release|FETCH_TREE_DIR/.test(p), 'ページの起動はホストが行う')
   assert.ok(!/--paginate/.test(p), '取得手順そのものはプロンプトに書かない')
   assert.match(p, /dependsOn/)
   assert.match(p, /optin-tests/)
@@ -129,8 +128,9 @@ test('配線: 駆動部に旧位置の検査は無く、fetchTree が依存宣�
   assert.ok(f < driverPart.indexOf('extractDeclaredDeps('))
   assert.ok(f < driverPart.indexOf('const byParent = new Map()'))
   const fn = definitionPart.slice(definitionPart.indexOf('async function fetchTree()'))
-  assert.match(fn.slice(0, 2500), /dedupeIdenticalTreeNodes\(/)
-  assert.match(fn.slice(0, 2500), /findIncompleteTreeNodes\(/)
+  const check = definitionPart.slice(definitionPart.indexOf('function checkTreeNodes('))
+  assert.match(check.slice(0, 1500), /dedupeIdenticalTreeNodes\(/)
+  assert.match(fn.slice(0, 5000), /findIncompleteTreeNodes\(/)
 })
 
 // ---- 畳み込み（単体） ----

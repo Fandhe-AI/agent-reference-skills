@@ -28,7 +28,12 @@
 #   push     MERGE_HEAD が残っていれば止まる。prepare が固定した base が HEAD の祖先でなければ止まる（base-not-merged。コンフリクトで
 #            merge --abort したまま push して base 未取り込みの head を送らない）。pr-create は base..HEAD の先行コミット数が 0 なら
 #            push せず止まる（no-diff）。HEAD:refs/heads/<branch> を push し、前後のリモート head の突き合わせで結果を決める
-#            （lib/push-verify.sh）。結果には HEAD の sha（headSha）を添える（pr モードの --expect-sha へ渡す）
+#            （lib/push-verify.sh）。結果には HEAD の sha（headSha）を添える（pr モードの --expect-sha へ渡す）。
+#            fix だけの例外（Issue #696）: リモート head が HEAD の祖先でない（コミットメッセージの書き直し）とき、fetch で観測した
+#            リモート head のうち捨てるコミットがすべて tree と親を保って HEAD の履歴に残っている（lib の pp_rewrite_equivalent）と
+#            スクリプト自身が確かめられた場合だけ、観測した sha を期待値にした --force-with-lease で push する（pushed-rewritten。
+#            replacedSha = 置き換えたリモート head）。観測後にリモートが動いていれば race。判定できないときは通常の push に任せ、
+#            内容か親が変わる書き換え（内容を変える amend・rebase）は push せず push-failed。pr-create では lease を使わない
 #   pr       サーバー上のブランチ head が --expect-sha と一致することを確かめてから（push 後に第三者が積んだ未レビューのコミットを
 #            PR にしない。既存 PR の再利用でも同じ）、Closes 対象 Issue の milestone を確認し（create-pr スキル Step 2.5 と同じ判定。
 #            lib の pp_milestone_status）、open PR を検出し（gh pr list --head・同一リポジトリの head だけ）、base と head の sha が一致する
@@ -41,13 +46,15 @@
 #         prepare: status = merged | up-to-date | conflict | hook-rejected | no-own-commits | routing-error | dirty-worktree | base-fetch-failed |
 #                  branch-fetch-failed | local-missing | remote-ahead | diverged | checkout-failed | sha-mismatch | merge-failed | error
 #                  start（ok のとき）= local | remote。remote-ahead・diverged は localSha・remoteSha を添える
-#         push:    status = pushed | noop | race | unverified | push-failed | no-diff | merge-in-progress | base-not-fetched |
-#                  base-not-merged | routing-error | error。pushed・noop・race・unverified は headSha を添える
+#         push:    status = pushed | pushed-rewritten | noop | race | unverified | push-failed | no-diff | merge-in-progress | base-not-fetched |
+#                  base-not-merged | routing-error | error。pushed・pushed-rewritten・noop・race・unverified は headSha を、pushed-rewritten は replacedSha も添える
 #         pr:      status = created | reused | head-mismatch | base-mismatch | ambiguous | list-failed | create-failed | body-invalid |
 #                  title-invalid | routing-error | head-moved | remote-head-missing | remote-head-unknown | remote-head-mismatch |
 #                  milestone-check-failed | error。prNumber（整数）・milestone（assigned | unassigned | not-used）を添えることがある
 # 終了コード: 0 結果の行を出力した / 2 使い方の誤り（引数不足・形式不正・未知の引数）/ 3 実行できる前提が無い（git・gh が無い等）
-# 自衛: push の refspec は HEAD:refs/heads/<branch> の 1 形だけ（--no-follow-tags 付き）。--force 系・--no-verify は使わない（hook を通す）。
+# 自衛: push の refspec は HEAD:refs/heads/<branch> の 1 形だけ（--no-follow-tags 付き）。--no-verify は使わない（hook を通す）。
+#       --force 系は、fix の書き直し push の lease 形（--force-with-lease=refs/heads/<branch>:<観測した sha>）の 1 形だけが例外で、
+#       tree と親の同等性をスクリプトが確かめたときに限る（--force・+ refspec・値なしの lease は使わない）。
 #       merge・approve・設定変更・クローズは実行しない。gh は pr list / pr create / issue view と、milestone 件数の読み取り（gh api の GET）だけ。
 #       milestone は割り当てない（自律運転ではユーザーの同意を取れないため、create-pr の『同意を得て付与』は行わず、未割当は PR 本文の警告で残す）
 # 互換: macOS（BSD userland・bash 3.2）と Linux（GNU・busybox）。paste・bc・mapfile・GNU 専用フラグを使わない。
@@ -314,6 +321,55 @@ do_prepare() {
 }
 
 # ============================ push ============================
+rev_lines() {
+  # $@ = git rev-list の範囲指定。1 行 1 コミット `sha tree parent...`（古い順）。失敗は return 1
+  local shas sha tree parents out=""
+  shas=$(git rev-list --topo-order --reverse --parents "$@" 2>/dev/null) || return 1
+  while IFS= read -r sha; do
+    [ -n "${sha}" ] || continue
+    parents=${sha#* }
+    [ "${parents}" != "${sha}" ] || parents=""
+    sha=${sha%% *}
+    tree=$(git rev-parse "${sha}^{tree}" 2>/dev/null) || return 1
+    out="${out}${sha} ${tree}${parents:+ ${parents}}
+"
+  done <<EOF
+${shas}
+EOF
+  REV_LINES=${out}
+}
+
+# fix 限定: コミットメッセージだけの書き直し（リモート head が HEAD の祖先でない）を lease つきで反映する（Issue #696）。
+# 捨てるコミットがすべて tree と親を保って HEAD の履歴に残っているとスクリプト自身が確かめられたときだけ push する。
+# 判定できない（fetch 失敗・ブランチ無し）・祖先である場合は何もせず返り、従来の通常 push に任せる。
+# 不一致なら push せず push-failed。lease の期待値は、比較に使った fetch の結果（agent の申告値ではない）
+try_rewrite_push() {
+  local remote_sha anc=0 olines nlines head_now
+  git update-ref -d "${branch_ref}" >/dev/null 2>&1 || true
+  git fetch origin "refs/heads/${branch}:${branch_ref}" >/dev/null 2>&1 || return 0
+  remote_sha=$(git rev-parse -q --verify "${branch_ref}" 2>/dev/null) || return 0
+  pv_is_sha "${remote_sha}" || return 0
+  git merge-base --is-ancestor "${remote_sha}" HEAD >/dev/null 2>&1 || anc=$?
+  [ "${anc}" -eq 1 ] || return 0
+  if ! rev_lines "${remote_sha}" --not HEAD; then echo "pr-push: rewrite-error（捨てるコミットを読めない）" >&2; emit push-failed; fi
+  olines=${REV_LINES}
+  if ! rev_lines HEAD --not "${remote_sha}"; then echo "pr-push: rewrite-error（新しいコミットを読めない）" >&2; emit push-failed; fi
+  nlines=${REV_LINES}
+  if ! pp_rewrite_equivalent "${olines}" "${nlines}" "${remote_sha}"; then
+    echo "pr-push: rewrite-${PP_REWRITE}（リモートの履歴を捨てる書き直しはメッセージだけの変更に限る）" >&2
+    emit push-failed
+  fi
+  check_routing
+  pv_push_rewrite_verified "${branch}" "${remote_sha}" || fail error "push の前提（ブランチ名・lease）が不正"
+  head_now=$(git rev-parse HEAD 2>/dev/null) || head_now=""
+  case "${PV_OUTCOME}" in
+    pushed-rewritten) emit pushed-rewritten "headSha=${head_now}" "replacedSha=${remote_sha}" ;;
+    race | unverified) emit "${PV_OUTCOME}" "headSha=${head_now}" ;;
+    push-failed) emit push-failed ;;
+    *) fail error "push の結果を判定できない" ;;
+  esac
+}
+
 do_push() {
   local count anc head_now
   if git rev-parse -q --verify MERGE_HEAD >/dev/null 2>&1; then
@@ -339,6 +395,9 @@ do_push() {
     [ "${count}" -gt 0 ] || fail no-diff "base との差分が 0 件（push 対象コミットなし）"
   fi
   check_routing
+  if [ "${origin_kind}" = fix ]; then
+    try_rewrite_push
+  fi
   pv_push_verified "${branch}" || fail error "push の前提（ブランチ名）が不正"
   case "${PV_OUTCOME}" in
     pushed | noop | race | unverified)

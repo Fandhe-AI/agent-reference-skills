@@ -1150,7 +1150,7 @@ test('(H6) > 単独の行（a > b）は中止しない', () => {
 })
 
 // 行内・行末の </details>: 閉じている本文でも行頭以外の閉じタグを数えず exit 8 になっていた（Issue #678）。
-// 表行・見出し行は子 issue のタイトルが入る（CELL は < を無害化しない）ため、タグを数えない（閉じは行全体が </details> の行など表行・見出し行以外）。
+// 数えるのは行内・行末の閉じタグまで。除外（素通し）にする行の条件は Issue #689 の (I*) 系で固定している。
 const withOld = (head) => ROOT_BODY.replace('### Phase 1: 古い', `${head}\n\n### Phase 1: 古い`)
 
 test('(D1) 単独行 </details> で閉じる退避節でも中止せず、退避節の外だけが置換される', () => {
@@ -1538,4 +1538,63 @@ test('(G7) update-issue-tree の表セル・見出しは create-issue-tree の C
     assert.ok(upd.body.includes(`### Phase 1: ${expected}\n`), JSON.stringify([t, expected]))
     assert.ok(upd.body.includes(`| #11 | ${expected} | - |`), JSON.stringify([t, expected]))
   }
+})
+
+// Issue #689: 文字参照化（#679・#684）より前の版が書いた表行・見出しに素のタグ文字列が残っていても、
+// 行頭が <details> / </details> でなければ除外せず置換対象に戻す。開いたまま終わる表行・見出しは中止する。
+test('(I1) マーカー無し: 表行・見出し・子行のタグ文字列は除外されず置換される', () => {
+  const root = ROOT_BODY
+    .replace('| Phase 1 | #101 古い | 9 | 9 |', '| Phase 1 | #101 fix: <details>x</details> | 9 | 9 |')
+    .replace('### Phase 1: 古い', '### Phase 1: fix: </details>')
+    .replace('| #901 | 古い子 | - |', '| #901 | <details>a</details> 古い子 | - |')
+  const { r, body, edits } = runRootFull(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.equal(edits.length, 1)
+  assert.equal(countLines(body, /^\| Phase 1 \|/), 1)
+  assert.equal(phase1Headings(body), 1)
+  assert.ok(!body.includes('古い子') && !body.includes('fix: </details>'), '旧行が残っている')
+  assert.ok(body.includes('PHASE2-KEEP-MARKER') && body.includes('OPS-KEEP-MARKER'))
+})
+
+test('(I2) 管理マーカー区間: 表行・見出しのタグ文字列は置換され、退避節は保持される', () => {
+  const root = MANAGED_ROOT()
+    .replace('| Phase 1 | #10 A | 1 | 1 |', '| Phase 1 | #10 A </details> | 1 | 1 |')
+    .replace('### Phase 1: A\n\n| Issue | タイトル | 分解 |\n|-------|---------|------|\n| #11', '### Phase 1: A <details>q</details>\n\n| Issue | タイトル | 分解 |\n|-------|---------|------|\n| #11')
+  const { r, body } = runRootFull(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.equal(countLines(body, /^\| Phase 1 \|/), 1)
+  assert.ok(!body.includes('| #11 | old |'), '旧子行が残っている')
+  assert.ok(body.includes('| #12 | legacy | - |') && body.includes('<details><summary>移行前'))
+  assert.equal(phase1Headings(body), 2)
+})
+
+test('(I3) 開いたまま終わる表行・見出しは構造かタイトルか決められず中止する', () => {
+  for (const [from, to] of [
+    ['### Phase 1: 古い', '### Phase 1: fix: <details>'],
+    ['| Phase 1 | #101 古い | 9 | 9 |', '| Phase 1 | #101 a <details> | 9 | 9 |'],
+  ]) {
+    const { r, edits, leftovers } = runRootFull(ROOT_BODY.replace(from, to), [issue(111, 'feat: 新しい子')])
+    assert.equal(r.status, 1, r.stderr)
+    assert.equal(edits.length, 0)
+    assert.match(r.stderr, /閉じていない素の <details>/)
+    assert.deepEqual(leftovers, [])
+  }
+})
+
+test('(I4) 深さ 0 の段落の行内タグは除外されない: 旧節の中なら落ち、外なら保持される', () => {
+  const inside = withOld('').replace('OLD-DETAIL-MARKER', '説明 <details>a</details> の話')
+  const a = runRootFull(inside, [issue(111, 'feat: 新しい子')])
+  assert.equal(a.r.status, 0, a.r.stderr)
+  assert.ok(!a.body.includes('説明 <details>a</details> の話'))
+  const outside = ROOT_BODY.replace('PHASE2-KEEP-MARKER', '説明 <details>a</details> の話')
+  const b = runRootFull(outside, [issue(111, 'feat: 新しい子')])
+  assert.equal(b.r.status, 0, b.r.stderr)
+  assert.ok(b.body.includes('説明 <details>a</details> の話'))
+})
+
+test('(I5) 深さ 0 の表行で余った </details> は深さを負にせず、後ろの退避節は保持される', () => {
+  const root = withOld('| x | </details> |\n\n<details><summary>退避</summary>\n\n| #9 | keep |\n\n</details>')
+  const { r, body } = runRootFull(root, [issue(111, 'feat: 新しい子')])
+  assert.equal(r.status, 0, r.stderr)
+  assert.ok(body.includes('| #9 | keep |') && body.includes('<details><summary>退避</summary>'))
 })

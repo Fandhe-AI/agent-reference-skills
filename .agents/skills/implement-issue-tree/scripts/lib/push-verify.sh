@@ -12,8 +12,11 @@
 #         (iii) push コマンド自身が成功した
 #       push 前後どちらかの ls-remote が失敗して比較できないときも push 自体は実行する（作業は detached HEAD 上にしか
 #       無く、push を省くと worktree の破棄で失われるため）が、結果は unverified（pushed ではない）にする。
-# 契約: push は `git push --no-follow-tags origin HEAD:refs/heads/<branch>` の 1 形だけ（refspec 固定・--force 系・--no-verify を
-#       使わない）。--no-follow-tags は利用者設定 push.followTags=true のとき、push 先の履歴を指す注釈付きタグまで origin へ
+# 契約: push は 2 形だけ。通常は `git push --no-follow-tags origin HEAD:refs/heads/<branch>`（pv_git_push。refspec 固定・--force 系・
+#       --no-verify を使わない）。例外は pr-push.sh の fix 経路が『捨てるコミットがすべて tree と親を保って新しい履歴に残っている
+#       （メッセージだけの書き直し）』ことを自分で確かめたときだけ呼ぶ lease 形（pv_git_push_lease。
+#       --force-with-lease=refs/heads/<branch>:<観測した sha>。値なしの lease・+ refspec・--force は使わない。Issue #696）。
+#       pv_git_push / pv_push_verified は base-merge.sh と共有するため lease 形の影響を受けない。--no-follow-tags は利用者設定 push.followTags=true のとき、push 先の履歴を指す注釈付きタグまで origin へ
 #       出ていくのを止める（push するのは対象ブランチの 1 ref だけにする）。
 #       結果は PV_OUTCOME に入れる:
 #         pushed      二条件を満たした
@@ -121,6 +124,62 @@ pv_push_verified() {
     PV_OUTCOME=noop
   elif [ "${after}" = "${local_head}" ]; then
     PV_OUTCOME=pushed
+  else
+    PV_OUTCOME=race
+  fi
+  return 0
+}
+
+# メッセージだけの書き直しを反映する lease つき push（Issue #696）。この 1 行が lib 全体で唯一の lease 形の git push で、
+# pr-push.sh の fix 経路が『捨てるコミットがすべて内容（tree）と親を保って新しい履歴に残っている』ことを自分で確かめたときだけ、
+# pv_push_rewrite_verified 経由で呼ぶ。lease の期待値は呼び出し側がスクリプト自身の fetch で観測した 40 桁の sha で、
+# 観測した後にリモートが動いていれば git が拒否する（値なしの --force-with-lease・+ refspec・--force は使わない）。
+# 呼び出し元のローカル変数 branch・lease・rc を動的スコープで読み書きするため、単独では呼ばない
+pv_git_push_lease() {
+  git push --no-follow-tags --force-with-lease="refs/heads/${branch}:${lease}" origin "HEAD:refs/heads/${branch}" >/dev/null || rc=$?
+}
+
+# lease つきで HEAD を refs/heads/$1 へ push し、結果を PV_OUTCOME に入れる。$2 = 観測済みのリモート head（lease の期待値）。
+#   pushed-rewritten  push が成功し、リモート head が HEAD と一致した
+#   race              リモート head が lease の値とも HEAD とも違う（観測後に並行 push された。lease で拒否された）、
+#                     または push 成功後のリモート head が HEAD と違う
+#   unverified        push は成功したが push 後のリモート head を確認できない
+#   push-failed       push が拒否された（hook・通信エラー・サーバー側の force push 禁止など。リモート head は lease の値のまま）
+# git の標準エラーの文面は解析しない（外部のテキスト）。判定には ls-remote の sha だけを使う
+pv_push_rewrite_verified() {
+  local branch=$1 lease=$2 local_head after="" after_ok=0 rc=0 errf
+  PV_OUTCOME=""
+  pv_valid_branch "${branch}" || return 1
+  pv_is_sha "${lease}" || return 1
+  local_head=$(git rev-parse HEAD 2>/dev/null) || local_head=""
+  if ! pv_is_sha "${local_head}"; then
+    PV_OUTCOME=unverified
+    return 0
+  fi
+  errf=$(mktemp "${TMPDIR:-/tmp}/push-verify-err.XXXXXX" 2>/dev/null) || errf=""
+  if [ -n "${errf}" ]; then
+    pv_git_push_lease 2>"${errf}"
+    grep -vE '^To |failed to push some refs to|://' "${errf}" >&2 || true
+    rm -f "${errf}"
+  else
+    pv_git_push_lease 2>/dev/null
+  fi
+  if pv_remote_sha "${branch}"; then
+    after=${PV_SHA}
+    after_ok=1
+  fi
+  if [ "${rc}" -ne 0 ]; then
+    if [ "${after_ok}" -eq 1 ] && [ "${after}" != "${lease}" ] && [ "${after}" != "${local_head}" ]; then
+      PV_OUTCOME=race
+    else
+      PV_OUTCOME=push-failed
+    fi
+    return 0
+  fi
+  if [ "${after_ok}" -eq 0 ]; then
+    PV_OUTCOME=unverified
+  elif [ "${after}" = "${local_head}" ]; then
+    PV_OUTCOME=pushed-rewritten
   else
     PV_OUTCOME=race
   fi

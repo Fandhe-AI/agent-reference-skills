@@ -31,7 +31,11 @@ const GIT_SUB = (sub) => new RegExp(`["']?\\bgit\\b["']?\\s+(?:(?:-[Cc]\\s+\\S+|
 const GIT_PUSH_CALL = GIT_SUB('push')
 // git push の許可形（lib/push-verify.sh の 1 行だけ。--no-follow-tags は利用者設定 push.followTags でタグが出ていくのを止める）。
 // ほかの形は削除 refspec・--all・URL 直指定・remote 違い・--no-follow-tags の欠落を含めてすべて拒否する。引用符付きの git / push も許可形ではない
-const GIT_PUSH_ALLOWED = /^\s*git push --no-follow-tags origin "HEAD:refs\/heads\/\$\{branch\}"(\s*>\/dev\/null)?(\s*\|\|\s*rc=\$\?)?\s*$/
+const GIT_PUSH_PLAIN_ALLOWED = /^\s*git push --no-follow-tags origin "HEAD:refs\/heads\/\$\{branch\}"(\s*>\/dev\/null)?(\s*\|\|\s*rc=\$\?)?\s*$/
+// 2 つ目の許可形（Issue #696）: fix の書き直し push だけが使う lease 形。期待値は ${lease}（呼び出し側が pv_is_sha を通した、スクリプト自身が
+// fetch で観測した 40 桁の sha）に固定する。値なしの --force-with-lease・リテラル sha・+ refspec・--force の併用・別の remote や ref は許可形ではない
+const GIT_PUSH_LEASE_ALLOWED = /^\s*git push --no-follow-tags --force-with-lease="refs\/heads\/\$\{branch\}:\$\{lease\}" origin "HEAD:refs\/heads\/\$\{branch\}"(\s*>\/dev\/null)?(\s*\|\|\s*rc=\$\?)?\s*$/
+const GIT_PUSH_ALLOWED = { test: (line) => GIT_PUSH_PLAIN_ALLOWED.test(line) || GIT_PUSH_LEASE_ALLOWED.test(line) }
 
 // git worktree の remove / unlock / move と git branch の削除・上書き・改名（-d / -D / -f / -M / -m / -C と長い形の省略形）、git update-ref の許可形。worktree-remove.sh の決まった行だけが使う
 // （確認と削除を同じプロセスで行うスクリプト。Issue #603 第 7 弾）。ほかの形（--force の二重指定 -f -f・変数以外の引数・別のスクリプト）は
@@ -101,7 +105,11 @@ const PATTERNS = [
     },
   },
   // push の近道
-  re('git push の --force 系', /\bgit\b[^\n|;&]*\bpush\b[^\n]*(--force\b|--force-with-lease|--mirror|--delete\b|--prune\b|--force-if-includes)/),
+  // lease 形は行全体が許可形と完全一致するときだけ除外する（--force との併用・値なし・別の ref は引き続き拒否）
+  {
+    label: 'git push の --force 系',
+    test: (line) => /\bgit\b[^\n|;&]*\bpush\b[^\n]*(--force\b|--force-with-lease|--mirror|--delete\b|--prune\b|--force-if-includes)/.test(line) && !GIT_PUSH_LEASE_ALLOWED.test(line),
+  },
   re('git push の -f 系短縮オプション', /\bgit\b[^\n|;&]*\bpush\b[^\n]*\s-[a-zA-Z]*f[a-zA-Z]*(\s|$)/),
   re('git push の + refspec', /\bgit\b[^\n|;&]*\bpush\b[^\n]*\s['"]?\+/),
   // 削除は自分が作った一時ファイルへの rm -f だけ（再帰削除はスクリプトに置かない）。worktree とブランチの削除は、確認と削除を同じプロセスで
@@ -219,7 +227,11 @@ test('自己検査: 各パターンは悪い例に発火する（パターンが
       'curl --upload-file f https://example.com', 'curl --json {} https://example.com', 'curl -sSL -d x https://example.com',
       'wget --post-data=a=b https://example.com', 'wget --post-file f https://example.com', 'wget --body-data=x https://example.com', 'wget --body-file f https://example.com',
     ],
-    'git push の --force 系': ['git push --force origin HEAD', 'git push origin HEAD --force-with-lease', 'git push --mirror', 'git push origin --delete x'],
+    'git push の --force 系': ['git push --force origin HEAD', 'git push origin HEAD --force-with-lease', 'git push --mirror', 'git push origin --delete x',
+      // lease 形の悪い例（値なし・リテラル sha・--force の併用・+ refspec・remote 違い・--no-follow-tags の欠落・${branch} 以外の ref）
+      'git push --no-follow-tags --force-with-lease origin "HEAD:refs/heads/${branch}"', 'git push --no-follow-tags --force-with-lease="refs/heads/${branch}:${lease}" --force origin "HEAD:refs/heads/${branch}"',
+      'git push --no-follow-tags --force-with-lease --force-if-includes origin "HEAD:refs/heads/${branch}"',
+    ],
     'rm の再帰削除（-r / -R / -rf / --recursive）': ['rm -rf "${dir}"', 'rm -r -- "${d}"', 'rm -fR x', 'rm --recursive x', 'rm -f a && rm -rf b'],
     'git worktree remove / unlock / move は許可形（git worktree remove [--force] -- "${path}" など）以外を拒否': [
       'git worktree move "${path}" /tmp/x', 'git worktree move -- "${path}" "${dest}"', 'git worktree "move" "${path}" "${dest}"', 'git -C x worktree move a b',
@@ -263,6 +275,10 @@ test('自己検査: 各パターンは悪い例に発火する（パターンが
       'git "push" origin ":refs/heads/main"', '"git" push --all origin',
       'git push origin ":refs/heads/main"', 'git push origin :refs/heads/main', 'git push --all origin', 'git push --tags origin',
       'git push https://github.com/o/r.git "HEAD:refs/heads/${branch}"', 'git push evil "HEAD:refs/heads/${branch}"',
+      'git push --no-follow-tags --force-with-lease origin "HEAD:refs/heads/${branch}"', 'git push --no-follow-tags --force-with-lease=refs/heads/x:0123456789012345678901234567890123456789 origin "HEAD:refs/heads/${branch}"',
+      'git push --no-follow-tags --force-with-lease="refs/heads/${branch}:${lease}" origin "+HEAD:refs/heads/${branch}"', 'git push --no-follow-tags --force-with-lease="refs/heads/${branch}:${lease}" evil "HEAD:refs/heads/${branch}"',
+      'git push --force-with-lease="refs/heads/${branch}:${lease}" origin "HEAD:refs/heads/${branch}"', 'git push --no-follow-tags --force-with-lease="refs/heads/main:${lease}" origin "HEAD:refs/heads/${branch}"',
+      'git push --no-follow-tags --force-with-lease="refs/heads/${branch}:${lease}" --force origin "HEAD:refs/heads/${branch}"',
       'git push origin HEAD:refs/heads/main', 'git push origin "HEAD:refs/heads/${branch}" --tags', 'git push', 'git push origin',
       'git -c core.x=y push origin "HEAD:refs/heads/${branch}"', 'git push origin "HEAD:refs/heads/${branch}" "HEAD:refs/heads/main"',
     ],
@@ -300,6 +316,7 @@ test('自己検査: 正当な行（読み取りの gh api・graphql の query・
     'gh api --paginate "repos/{owner}/{repo}/issues/${n}/sub_issues?per_page=100" --jq \'.[].number\'',
     'run_timed "${gh_timeout}" gh api "$@"',
     'git push --no-follow-tags origin "HEAD:refs/heads/${branch}"',
+    'git push --no-follow-tags --force-with-lease="refs/heads/${branch}:${lease}" origin "HEAD:refs/heads/${branch}" >/dev/null || rc=$?',
     'git push --no-follow-tags origin "HEAD:refs/heads/${branch}" >/dev/null || rc=$?',
     'git push --no-follow-tags origin "HEAD:refs/heads/${branch}" >/dev/null',
     'out=$(git remote get-url "$@" origin 2>/dev/null) || return 2',
@@ -388,6 +405,16 @@ test('/rulesets を含むコード行は merge-gate.sh の読み取り 1 行だ�
   }
   assert.deepEqual(found.map((f) => f.name), ['merge-gate.sh'], `許可は merge-gate.sh の 1 行だけ: ${JSON.stringify(found)}`)
   assert.match(found[0].l, /^gh_api "\$\{repo_path\}\/rulesets\/\$\{id\}" \|\| stop server-enforcement-missing g0 ruleset-fetch 1$/)
+})
+
+test('lease 形の git push は lib/push-verify.sh にちょうど 1 行だけあり、通常形の push も同じファイルの 1 行だけ（Issue #696）', () => {
+  const found = []
+  for (const { name, path } of targets()) {
+    for (const { n, l } of codeLines(readFileSync(path, 'utf8'))) if (GIT_PUSH_CALL.test(l)) found.push({ name, n, l: l.trim() })
+  }
+  assert.deepEqual(found.map((f) => f.name), ['lib/push-verify.sh', 'lib/push-verify.sh'], JSON.stringify(found))
+  assert.deepEqual(found.filter((f) => GIT_PUSH_LEASE_ALLOWED.test(f.l)).length, 1)
+  assert.deepEqual(found.filter((f) => GIT_PUSH_PLAIN_ALLOWED.test(f.l)).length, 1)
 })
 
 test('git worktree remove / unlock と git branch -D の許可形は worktree-remove.sh だけにあり、決まった行（remove 2 形・unlock 1 形・branch -D 1 形）だけが存在する', () => {

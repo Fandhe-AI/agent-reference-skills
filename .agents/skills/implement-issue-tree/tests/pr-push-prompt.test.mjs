@@ -117,9 +117,15 @@ test('fixPrompt(pushAfterFix: true): 手順 1 で prepare --origin fix、手順 
   assert.match(text, /pushed: false・commitFailed: true・routingError なしで返す/)
 })
 
+test('prCreatePrompt: pushed-rewritten（fix 専用の書き直し push）を扱わない', () => {
+  const text = prCreatePrompt(item, impl, [])
+  assert.doesNotMatch(text, /pushed-rewritten|書き直してよい/)
+})
+
 test('fixPrompt(pushAfterFix: true): push の status を pushed 判定へ結ぶ（pushed だけが true。noop・race では resolve しない）', () => {
   const text = fixPrompt(item, impl, { summary: 's', unresolvedComments: [] }, true, [])
-  assert.match(text, /status が pushed のときだけ pushed: true/)
+  assert.match(text, /status が pushed・pushed-rewritten のときだけ pushed: true/)
+  assert.match(text, /メッセージだけを書き直してよい/, 'メッセージだけの書き直しを許す一文（内容と親は変えない）')
   assert.match(text, /noop は pushed: false・summary に「変更なしのため push は no-op」（手順 5 の resolve を一切実行しない/)
   assert.match(text, /race は pushed: false・summary に「リモート head がローカル HEAD と不一致（並行 push 競合の可能性）」（resolve しない/)
   assert.match(text, /merge-in-progress・base-not-fetched・base-not-merged（[^）]*）・routing-error・error は push していないので、pushed: false・commitFailed: true/)

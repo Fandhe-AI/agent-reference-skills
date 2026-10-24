@@ -3,29 +3,34 @@
 #
 # 使い方（通常は run-verified.sh 経由。ホストがコマンドを組み立てる）:
 #   bash fetch-tree.sh --nonce <nonce> --root <親イシュー番号> [--repo <owner/repo>]   取得（既定）
-#   bash fetch-tree.sh --page <P> --dir <FETCH_TREE_DIR の値>                         P ページ目（2 以上）の行だけを出す
-#   bash fetch-tree.sh --release --dir <FETCH_TREE_DIR の値>                           一時ディレクトリを片づける
+#   bash fetch-tree.sh --nonce <nonce> --page <P> --dir <封筒の dir>                  P ページ目（1 以上）の行と、そのページの封筒を出す
+#   bash fetch-tree.sh --release --dir <封筒の dir>                                    一時ディレクトリを片づける
 #
 # 役割: これまで取得エージェントが毎回自分で書いていた幅優先の取得（sub_issues のページ送り・closed ノードの貫通・
 #       siblingIndex の付与・件数の自己点検）を決定的な手順にする。エージェントは標準出力を nodes へ書き写し、
 #       封筒（lib/signed-output.sh）の値を転記するだけになる。ホストは書き写しを同じ定義で計算し直して照合する。
-#       ツリーが大きく 1 回の Bash 出力（上限 24000 バイト）に収まらないときは、全行を一時ファイルへ書き出し、
-#       1 ページ目だけを標準出力へ出す。残りは --page で 1 ページずつ読む（Issue #673）。
+#       ツリーが大きく 1 ページ（20000 バイト）に収まらないときは、全行を一時ファイルへ書き、取得モードは封筒だけを出す。
+#       ホストが 1 ページごとに別のエージェントで --page を実行させ、ページの封筒で照合してから連結する
+#       （1 体のエージェントに全件を書き写させない。Issue #673・#690）。
 # 出力（取得モード。標準出力。成功時のみ。失敗時は何も出さない）:
-#   前半  ノードごとに 1 行の TSV: number TAB parent TAB siblingIndex TAB state TAB subIssuesTotal TAB title
-#         （発見順。ルートは parent 0・siblingIndex 0。title は制御文字を半角スペースへ置換した表示形）
-#         ページ数が 2 以上のときは 1 ページ目の行だけで、続けて FETCH_TREE_DIR=<絶対パス> の 1 行を出す
-#   最終行  封筒 1 行 {nonce, payload, sha256}。payload は {"count":N,"inputSha256":"...","nodesSha256":"...","pages":P,"structSha256":"...","taskIdSha256":"..."}
+#   ページ数 1   ノードごとに 1 行の TSV: number TAB parent TAB siblingIndex TAB state TAB subIssuesTotal TAB title
+#                （発見順。ルートは parent 0・siblingIndex 0。title は制御文字を半角スペースへ置換した表示形）に続けて封筒
+#   ページ数 2 以上  封筒 1 行だけ（行は --page で読む）
+#   封筒 {nonce, payload, sha256}。payload は {"count":N,"dir":"...","inputSha256":"...","nodesSha256":"...","pages":P,"structSha256":"...","taskIdSha256":"...","tsvSha256":"..."}
 #         - count       全ページ合計の行数
+#         - dir         ページ数 2 以上のときの一時ディレクトリの絶対パス（1 のときは空文字）
 #         - inputSha256  sha256("fetch-tree\n" + root + "\n" + repo)。ルート・対象リポジトリを束縛する
 #         - nodesSha256  lib/fetch-tree-lib.sh の ft_nodes_digest（6 欄を網羅。title は SHA-256 の 16 進にして含める）
 #         - structSha256 lib/fetch-tree-lib.sh の ft_struct_digest（title を除く 5 欄。title の書き写し誤りと構造の誤りを分けて扱う・Issue #687）
 #         - taskIdSha256 lib/fetch-tree-lib.sh の ft_task_id_digest（title 先頭のタスク ID だけ。依存解決に使う値で、title の不一致を許容する場合でも別に検査する）
-#         - pages        ページ数（封筒の sha256 が束縛する。ページの読み飛ばしは count / structSha256 / nodesSha256 の不一致として検出される）
-# 出力（--page モード）: 指定ページの TSV 行だけ（封筒なし）。gh・jq・nonce を使わない。
+#         - pages        ページ数
+#         - tsvSha256    tree.tsv 全体（各行 + 改行）の SHA-256。--page の封筒の入力の束縛に使う
+# 出力（--page モード）: 指定ページの TSV 行 + そのページだけの封筒 1 行。payload は
+#   {"count":N,"inputSha256":sha256("fetch-tree-page\n" + tsvSha256 + "\n" + P),"nodesSha256":..,"page":P,"structSha256":..,"taskIdSha256":..}
+#   （各ダイジェストはそのページの行だけに対する値）。ホストが同じ定義で照合する。
 # 終了コード:
 #   0  成功（取得モードは封筒を出力した）
-#   2  使い方の誤り（引数の欠落・形式不正・未知の引数・モードの混在）、--page の範囲外
+#   2  使い方の誤り（引数の欠落・形式不正・未知の引数・モードの混在・--page で --nonce なし）、--page の範囲外
 #   3  封筒を作れない（sha256sum / shasum が無い・jq が無い）
 #   4  一時ディレクトリ・ファイルの作成、読み出し、--dir の検証の失敗
 #   5  gh の失敗・応答が想定外の形（終了コードで判定する。gh は HTTP エラー本文も標準出力へ出すため内容では判定しない）
@@ -59,7 +64,7 @@ PAGE_BYTES=20000
 MAX_PAGES=30
 
 usage() {
-  echo "使い方: fetch-tree.sh --nonce NONCE --root N [--repo OWNER/REPO] | --page P --dir DIR | --release --dir DIR" >&2
+  echo "使い方: fetch-tree.sh --nonce NONCE --root N [--repo OWNER/REPO] | --nonce NONCE --page P --dir DIR | --release --dir DIR" >&2
   exit 2
 }
 
@@ -81,25 +86,38 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-# --page / --release（読み出し専用。gh・jq・nonce を使わない）。取得モードの引数とは混在させない。
+# --page / --release。取得モードの引数（--root / --repo）とは混在させない。
 if [ -n "${page}" ] || [ "${release}" = "1" ]; then
-  if [ -n "${nonce}" ] || [ -n "${root}" ] || [ -n "${repo}" ]; then usage; fi
+  if [ -n "${root}" ] || [ -n "${repo}" ]; then usage; fi
   if [ -n "${page}" ] && [ "${release}" = "1" ]; then usage; fi
   [ -n "${dir}" ] || usage
   ft_page_dir_name_ok "${dir}" || { echo "fetch-tree: --dir の形が不正" >&2; exit 4; }
   if [ "${release}" = "1" ]; then
+    [ -z "${nonce}" ] || usage
     # 既に無ければ何もしない（失敗経路からの呼び出しでも安全にする）
     if [ ! -e "${dir}" ] && [ ! -L "${dir}" ]; then exit 0; fi
     ft_is_page_dir "${dir}" || { echo "fetch-tree: --dir の検証に失敗（片づけない）" >&2; exit 4; }
     rm -f "${dir}/tree.tsv" && rmdir "${dir}" || { echo "fetch-tree: 片づけに失敗" >&2; exit 4; }
     exit 0
   fi
-  is_uint "${page}" && [ "${page}" -ge 2 ] || usage
+  so_valid_nonce "${nonce}" || usage
+  is_uint "${page}" && [ "${page}" -ge 1 ] || usage
+  command -v jq >/dev/null 2>&1 || { echo "fetch-tree: jq が無い" >&2; exit 3; }
   ft_is_page_dir "${dir}" && [ -f "${dir}/tree.tsv" ] || { echo "fetch-tree: --dir の検証に失敗" >&2; exit 4; }
+  tsv_sha=$(so_sha256 <"${dir}/tree.tsv") || { echo "fetch-tree: tree.tsv のハッシュを計算できなかった" >&2; exit 3; }
   page_out=$(ft_page_slice "${PAGE_BYTES}" "${page}" <"${dir}/tree.tsv"; echo x) || true
   page_out=${page_out%x}
   [ -n "${page_out}" ] || { echo "fetch-tree: ページが範囲外（${page}）" >&2; exit 2; }
-  printf '%s' "${page_out}"
+  p_count=$(printf '%s' "${page_out}" | grep -c '')
+  p_nodes=$(printf '%s' "${page_out}" | ft_nodes_digest) || { echo "fetch-tree: ノードのダイジェストを作れなかった" >&2; exit 3; }
+  p_struct=$(printf '%s' "${page_out}" | ft_struct_digest) || { echo "fetch-tree: 構造のダイジェストを作れなかった" >&2; exit 3; }
+  p_task=$(printf '%s' "${page_out}" | ft_task_id_digest) || { echo "fetch-tree: タスク ID のダイジェストを作れなかった" >&2; exit 3; }
+  p_input=$(ft_page_input_sha "${tsv_sha}" "${page}") || { echo "fetch-tree: 入力のハッシュを計算できなかった" >&2; exit 3; }
+  p_env=$(so_emit "${nonce}" "$(printf '{"count":%d,"inputSha256":"%s","nodesSha256":"%s","page":%d,"structSha256":"%s","taskIdSha256":"%s"}' "${p_count}" "${p_input}" "${p_nodes}" "${page}" "${p_struct}" "${p_task}")") \
+    || { echo "fetch-tree: 出力封筒を作れなかった" >&2; exit 3; }
+  p_total=$(printf '%s%s\n' "${page_out}" "${p_env}" | wc -c | tr -d ' ')
+  [ "${p_total}" -le "${MAX_TSV_BYTES}" ] || { echo "fetch-tree: 出力が大きすぎる（${p_total} バイト > ${MAX_TSV_BYTES}）" >&2; exit 7; }
+  printf '%s%s\n' "${page_out}" "${p_env}"
   exit 0
 fi
 
@@ -175,15 +193,11 @@ struct_sha=$(printf '%s\n' "${rows}" | ft_struct_digest) || { echo "fetch-tree: 
 task_sha=$(printf '%s\n' "${rows}" | ft_task_id_digest) || { echo "fetch-tree: タスク ID のダイジェストを作れなかった" >&2; exit 3; }
 pages=$(printf '%s\n' "${rows}" | ft_page_count "${PAGE_BYTES}") || { echo "fetch-tree: ページ数を数えられなかった" >&2; exit 4; }
 [ "${pages}" -le "${MAX_PAGES}" ] || { echo "fetch-tree: ツリーが大きすぎる（${pages} ページ > ${MAX_PAGES}）" >&2; exit 7; }
-envelope=$(so_emit "${nonce}" "$(printf '{"count":%d,"inputSha256":"%s","nodesSha256":"%s","pages":%d,"structSha256":"%s","taskIdSha256":"%s"}' "${count}" "${input_sha}" "${nodes_sha}" "${pages}" "${struct_sha}" "${task_sha}")") \
-  || { echo "fetch-tree: 出力封筒を作れなかった（sha256sum / shasum が無い等）" >&2; exit 3; }
-
 out_dir=""
-if [ "${pages}" = "1" ]; then
-  out=$(printf '%s\n%s\n' "${rows}" "${envelope}")
-else
-  # 全行を専用の一時ディレクトリへ書き、1 ページ目と FETCH_TREE_DIR 行だけを標準出力へ出す。封筒を作った後に作るので、
-  # 封筒を作れない場合は何も残らない。
+# tree.tsv 全体（各行 + 改行）の SHA-256。--page の封筒の入力の束縛に使う
+tsv_sha=$(printf '%s\n' "${rows}" | so_sha256) || { echo "fetch-tree: tsv のハッシュを計算できなかった" >&2; exit 3; }
+if [ "${pages}" != "1" ]; then
+  # 全行を専用の一時ディレクトリへ書く。ハッシュを求めた後に作るので、ここまでの失敗では何も残らない。
   tmp_base=${TMPDIR:-/tmp}
   tmp_base=${tmp_base%/}
   out_dir=$(umask 077 && mktemp -d "${tmp_base}/iit-tree.XXXXXX" 2>/dev/null) || { echo "fetch-tree: 一時ディレクトリを作れなかった" >&2; exit 4; }
@@ -198,9 +212,14 @@ else
     echo "fetch-tree: 一時ファイルを書けなかった" >&2
     exit 4
   fi
-  first=$(printf '%s\n' "${rows}" | ft_page_slice "${PAGE_BYTES}" 1; echo x)
-  first=${first%x}
-  out=$(printf '%sFETCH_TREE_DIR=%s\n%s\n' "${first}" "${out_dir}" "${envelope}")
+fi
+envelope=$(so_emit "${nonce}" "$(printf '{"count":%d,"dir":"%s","inputSha256":"%s","nodesSha256":"%s","pages":%d,"structSha256":"%s","taskIdSha256":"%s","tsvSha256":"%s"}' "${count}" "${out_dir}" "${input_sha}" "${nodes_sha}" "${pages}" "${struct_sha}" "${task_sha}" "${tsv_sha}")") \
+  || { [ -z "${out_dir}" ] || { rm -f "${out_dir}/tree.tsv"; rmdir "${out_dir}" 2>/dev/null; }; echo "fetch-tree: 出力封筒を作れなかった（sha256sum / shasum が無い等）" >&2; exit 3; }
+
+if [ "${pages}" = "1" ]; then
+  out=$(printf '%s\n%s\n' "${rows}" "${envelope}")
+else
+  out=${envelope}
 fi
 # 上限は封筒を含む最終出力全体のバイト数で判定する（上限付近で封筒が切れて静かに壊れないため）。
 out_bytes=$(printf '%s\n' "${out}" | wc -c | tr -d ' ')

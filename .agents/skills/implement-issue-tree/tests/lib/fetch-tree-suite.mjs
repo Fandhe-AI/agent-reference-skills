@@ -48,6 +48,10 @@ export function independentTaskIdSha(rows) {
   return sha([...rows].sort((a, b) => a.number - b.number).map((r) => `${r.number}\t${re.exec(r.title)?.[1] ?? ''}`).join('\n'))
 }
 export const inputShaOf = (root, repo = '') => sha(`fetch-tree\n${root}\n${repo}`)
+// 独立実装: tree.tsv 全体（各行 + 改行）の SHA-256 と、--page の入力の束縛（Issue #690）
+const tsvLine = (r) => [r.number, r.parent, r.siblingIndex, r.state, r.subIssuesTotal, r.title].join('\t')
+export const independentTsvSha = (rows) => sha(rows.map((r) => `${tsvLine(r)}\n`).join(''))
+export const pageInputShaOf = (tsvSha, page) => sha(`fetch-tree-page\n${tsvSha}\n${page}`)
 
 export function run(bash, stub, args, { script = SCRIPT, launcher = null, env = {} } = {}) {
   const argv = launcher ? [launcher.runVerified, launcher.sha, launcher.name, ...args] : [script, ...args]
@@ -101,7 +105,7 @@ export function registerFetchTreeTests(bash) {
       [5, 4, 0, 'open', 0],
     ])
     assert.equal(rows[1].title, '日本語 🎉 title')
-    assert.deepEqual(envelope.payload, { count: 5, inputSha256: inputShaOf(1, 'o/r'), nodesSha256: independentNodesSha(rows), pages: 1, structSha256: independentStructSha(rows), taskIdSha256: independentTaskIdSha(rows) })
+    assert.deepEqual(envelope.payload, { count: 5, inputSha256: inputShaOf(1, 'o/r'), nodesSha256: independentNodesSha(rows), pages: 1, structSha256: independentStructSha(rows), taskIdSha256: independentTaskIdSha(rows), dir: '', tsvSha256: independentTsvSha(rows) })
     assert.equal(envelope.nonce, NONCE)
     assert.equal(envelope.sha256, expectedSha256(NONCE, envelope.payload))
     assert.equal(stub.callsTo('issues/3/sub_issues'), 0)
@@ -184,37 +188,51 @@ export function registerFetchTreeTests(bash) {
   const ARGS = ['--nonce', NONCE, '--root', '1', '--repo', 'o/r']
   const BYTES_LIMIT = 24000
 
-  test(`${tag} 出力が 1 ページに収まらない大きなツリーは一時ファイルへ書かれ、--page で全行を読める（連結すると全 TSV・nodesSha256 と一致）`, () => {
+  test(`${tag} 出力が 1 ページに収まらない大きなツリーは封筒だけを出し、--page がページごとの封筒つきで全行を返す（連結すると全 TSV・全体の検査値と一致）`, () => {
     const tmp = tmpBase()
     const stub = makeGhTreeStub(bigTree(90, 300))
     const r = run(bash, stub, ARGS, { env: { TMPDIR: tmp } })
     assert.equal(r.status, 0, r.stderr)
     assert.ok(Buffer.byteLength(r.stdout) <= BYTES_LIMIT, `1 回目の出力 ${Buffer.byteLength(r.stdout)} バイト`)
-    const { rows: first, envelope, dir } = parseOut(r.stdout)
-    assert.ok(envelope.payload.pages >= 2, `pages=${envelope.payload.pages}`)
-    assert.ok(dir !== null && dir.startsWith(tmp.replace(/\/$/, '')) && /\/iit-tree\.[A-Za-z0-9]+$/.test(dir), dir)
     const lines = r.stdout.replace(/\n$/, '').split('\n')
-    assert.equal(lines[lines.length - 2], `FETCH_TREE_DIR=${dir}`, 'FETCH_TREE_DIR の行は封筒の直前')
+    assert.equal(lines.length, 1, '取得モードは封筒 1 行だけ')
+    const envelope = JSON.parse(lines[0])
+    const dir = envelope.payload.dir
+    assert.ok(envelope.payload.pages >= 2, `pages=${envelope.payload.pages}`)
+    assert.ok(dir.startsWith(tmp.replace(/\/$/, '')) && /\/iit-tree\.[A-Za-z0-9]+$/.test(dir), dir)
+    assert.equal(envelope.sha256, expectedSha256(NONCE, envelope.payload))
     // ディレクトリは 700、ファイルは 600
     assert.equal(lstatSync(dir).mode & 0o777, 0o700)
     assert.equal(lstatSync(join(dir, 'tree.tsv')).mode & 0o777, 0o600)
-    let all = [...first]
-    for (let p = 2; p <= envelope.payload.pages; p++) {
-      const pr = run(bash, stub, ['--page', String(p), '--dir', dir])
+    let all = []
+    for (let p = 1; p <= envelope.payload.pages; p++) {
+      const pn = `pn${p}`
+      const pr = run(bash, stub, ['--nonce', pn, '--page', String(p), '--dir', dir])
       assert.equal(pr.status, 0, pr.stderr)
       assert.ok(Buffer.byteLength(pr.stdout) <= BYTES_LIMIT, `ページ ${p} が ${Buffer.byteLength(pr.stdout)} バイト`)
-      all = all.concat(parseRows(pr.stdout))
+      const { rows, envelope: pe } = parseOut(pr.stdout)
+      assert.equal(pe.nonce, pn)
+      assert.equal(pe.sha256, expectedSha256(pn, pe.payload))
+      assert.deepEqual(pe.payload, {
+        count: rows.length,
+        inputSha256: pageInputShaOf(envelope.payload.tsvSha256, p),
+        nodesSha256: independentNodesSha(rows),
+        page: p,
+        structSha256: independentStructSha(rows),
+        taskIdSha256: independentTaskIdSha(rows),
+      })
+      all = all.concat(rows)
     }
     assert.equal(all.length, 91)
     assert.equal(envelope.payload.count, all.length)
     assert.deepEqual(all.map((x) => x.number), [1, ...Array.from({ length: 90 }, (_, i) => 100 + i)])
+    assert.equal(envelope.payload.tsvSha256, independentTsvSha(all))
     assert.equal(envelope.payload.nodesSha256, independentNodesSha(all))
     assert.equal(envelope.payload.structSha256, independentStructSha(all))
     assert.equal(envelope.payload.taskIdSha256, independentTaskIdSha(all))
-    assert.equal(envelope.sha256, expectedSha256(NONCE, envelope.payload))
     // ページ範囲外は exit 2。--page は gh を呼ばない
     const callsBefore = stub.calls().length
-    assert.equal(run(bash, stub, ['--page', String(envelope.payload.pages + 1), '--dir', dir]).status, 2)
+    assert.equal(run(bash, stub, ['--nonce', NONCE, '--page', String(envelope.payload.pages + 1), '--dir', dir]).status, 2)
     assert.equal(stub.calls().length, callsBefore)
     // 片づけ: ディレクトリが消え、TMPDIR は空に戻る。2 回目は何も無くても exit 0
     const rel = run(bash, stub, ['--release', '--dir', dir])
@@ -224,11 +242,12 @@ export function registerFetchTreeTests(bash) {
     assert.equal(run(bash, stub, ['--release', '--dir', dir]).status, 0)
   })
 
-  test(`${tag} 1 ページに収まるツリーは一時ファイルを作らない（pages は 1・FETCH_TREE_DIR の行なし）`, () => {
+  test(`${tag} 1 ページに収まるツリーは一時ファイルを作らない（pages は 1・dir は空）`, () => {
     const tmp = tmpBase()
     const r = run(bash, makeGhTreeStub(smallTree()), ARGS, { env: { TMPDIR: tmp } })
     assert.equal(r.status, 0, r.stderr)
     assert.equal(parseOut(r.stdout).envelope.payload.pages, 1)
+    assert.equal(parseOut(r.stdout).envelope.payload.dir, '')
     assert.ok(!r.stdout.includes('FETCH_TREE_DIR='))
     assert.deepEqual(readdirSync(tmp), [])
   })
@@ -238,33 +257,35 @@ export function registerFetchTreeTests(bash) {
     const stub = makeGhTreeStub(bigTree(90, 300))
     const r = run(bash, stub, ARGS, { env: { TMPDIR: tmp } })
     assert.equal(r.status, 0, r.stderr)
-    const { dir } = parseOut(r.stdout)
+    const dir = parseOut(r.stdout).envelope.payload.dir
+    const PG = ['--nonce', NONCE, '--page', '2']
     // 形が不正
     for (const bad of ['relative/iit-tree.x', `${tmp}/other.x`, `${tmp}/iit-tree.a b`, `${tmp}/../iit-tree.x`, '/']) {
-      assert.equal(run(bash, stub, ['--page', '2', '--dir', bad]).status, 4, bad)
+      assert.equal(run(bash, stub, [...PG, '--dir', bad]).status, 4, bad)
       assert.equal(run(bash, stub, ['--release', '--dir', bad]).status, 4, bad)
     }
     // シンボリックリンク（実体は正しいディレクトリ）は拒否し、実体も消さない
     const link = join(tmp, 'iit-tree.link')
     symlinkSync(dir, link)
-    assert.equal(run(bash, stub, ['--page', '2', '--dir', link]).status, 4)
+    assert.equal(run(bash, stub, [...PG, '--dir', link]).status, 4)
     assert.equal(run(bash, stub, ['--release', '--dir', link]).status, 4)
     assert.equal(existsSync(join(dir, 'tree.tsv')), true)
     // 余計なファイルがあるディレクトリは片づけない
     writeFileSync(join(dir, 'extra'), 'x')
     assert.equal(run(bash, stub, ['--release', '--dir', dir]).status, 4)
     assert.equal(existsSync(join(dir, 'tree.tsv')), true)
-    assert.equal(run(bash, stub, ['--page', '2', '--dir', dir]).status, 4)
-    // 使い方の誤り: ページ 1 以下・--dir 無し・取得引数との混在・--page と --release の同時指定
+    assert.equal(run(bash, stub, [...PG, '--dir', dir]).status, 4)
+    // 使い方の誤り: ページ 0 以下・--dir 無し・取得引数との混在・--page と --release の同時指定
     for (const args of [
+      ['--nonce', NONCE, '--page', '0', '--dir', dir],
+      ['--nonce', NONCE, '--page', 'x', '--dir', dir],
       ['--page', '1', '--dir', dir],
-      ['--page', '0', '--dir', dir],
-      ['--page', 'x', '--dir', dir],
-      ['--page', '2'],
+      ['--nonce', 'BAD NONCE', '--page', '1', '--dir', dir],
+      ['--nonce', NONCE, '--page', '2'],
       ['--release'],
-      ['--page', '2', '--dir', dir, '--root', '1'],
+      [...PG, '--dir', dir, '--root', '1'],
       ['--release', '--dir', dir, '--nonce', NONCE],
-      ['--page', '2', '--release', '--dir', dir],
+      [...PG, '--release', '--dir', dir],
       [...ARGS, '--dir', dir],
     ]) {
       assert.equal(run(bash, stub, args).status, 2, args.join(' '))

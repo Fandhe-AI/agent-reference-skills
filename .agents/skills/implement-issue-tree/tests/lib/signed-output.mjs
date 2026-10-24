@@ -152,6 +152,31 @@ export function treeFetchReply(prompt, nodes, opts = {}) {
   return out
 }
 
+// ページ経路（Issue #690）。取得の封筒（pages >= 2）: nodes は空、payload は全体の真の内容に対する値と pages / dir / tsvSha256。
+export function treePagesFetchReply(prompt, truth, { pages, dir, tsvSha, payload = {}, nonce } = {}) {
+  return treeFetchReply(prompt, [], { digestNodes: truth, nonce, payload: { pages, dir, tsvSha256: tsvSha, ...payload } })
+}
+
+// ページ読みの返却。nodes = エージェントが写した内容、opts.digestNodes = そのページの真の内容（既定は nodes）。
+// 入力の束縛は sha256("fetch-tree-page\n" + tsvSha + "\n" + P)。P はプロンプトのコマンド `--page P` から取る。
+export function treePageReply(prompt, nodes, tsvSha, opts = {}) {
+  const nonce = nonceOf(prompt)
+  const page = Number(/--page (\d+)/.exec(String(prompt))?.[1])
+  if (nonce === null || !Number.isInteger(page)) throw new Error('プロンプトに fetch-tree.sh --page のコマンドが無い')
+  const truth = opts.digestNodes ?? nodes
+  const payload = {
+    count: truth.length,
+    inputSha256: inputSha256(`fetch-tree-page\n${tsvSha}\n${page}`),
+    nodesSha256: treeNodesSha256(truth),
+    page,
+    structSha256: treeStructSha256(truth),
+    taskIdSha256: treeTaskIdSha256(truth),
+    ...(opts.payload ?? {}),
+  }
+  const env = makeEnvelope(opts.nonce ?? nonce, payload)
+  return { nodes, nonce: env.nonce, payload: env.payload, sha256: env.sha256 }
+}
+
 // 全欄（6 欄）が一致する重複を 1 件にした配列（スクリプトは重複を出さないので、真の内容にはこちらを使う）
 function uniqueBySixFields(nodes) {
   const seen = new Set()

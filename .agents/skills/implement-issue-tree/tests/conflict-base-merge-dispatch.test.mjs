@@ -329,7 +329,7 @@ test('monitorPrompt: 手順 1c の CONFLICTING 経路は state: conflicting を�
 test('fixPrompt(pushAfterFix: true): push 検証は pr-push.sh の status（pushed のときだけ pushed: true）に結ぶ（二条件判定は lib/push-verify.sh の実行テストが固定する）', () => {
   const finding = { summary: 'テスト用の指摘', unresolvedComments: [] }
   const prompt = fixPrompt(item, impl, finding, true)
-  assert.ok(prompt.includes('status が pushed のときだけ pushed: true'), 'pushed: true の判定が status に結ばれていない')
+  assert.ok(prompt.includes('status が pushed・pushed-rewritten のときだけ pushed: true'), 'pushed: true の判定が status に結ばれていない')
   assert.ok(prompt.includes('push 前後のリモート head をローカル HEAD と突き合わせる判定もスクリプトが行う'), '突き合わせをスクリプトが行う旨がない')
 })
 

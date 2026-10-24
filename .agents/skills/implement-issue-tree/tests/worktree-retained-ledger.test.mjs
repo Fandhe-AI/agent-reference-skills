@@ -181,8 +181,10 @@ test('置換: 新パスが不明（空文字）でも旧が保持されたら件
 test('予約の差し引き（recordedByIssue）は retained・replacement を数えない: 事後に載せた分は予約済みの枠を食わない', () => {
   const guarded = source.split('if (!LEDGER_ONLY_KINDS.has(e.kind)) recordedByIssue.set(').length - 1
   const all = source.split('recordedByIssue.set(').length - 1
-  assert.equal(all, 4)
-  assert.equal(guarded, 4)
+  // 4 か所の予約計上は reservedUnitsNow() へ集約済み（バイト予算のため重複を除去）。
+  assert.equal(all, 1)
+  assert.equal(guarded, 1)
+  assert.equal(source.split('reservedUnitsNow()').length - 1, 4)
   assert.match(source, /const LEDGER_ONLY_KINDS = new Set\(\['retained', 'replacement'\]\)/)
   assert.doesNotMatch(source, /EPHEMERAL_KIND_MAX = Object\.freeze\(\{[^}]*(retained|replacement)/, 'retained・replacement は予約（EPHEMERAL_KIND_MAX）に含めない')
 })
