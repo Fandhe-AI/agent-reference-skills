@@ -17,6 +17,7 @@
 #                （発見順。ルートは parent 0・siblingIndex 0。title は制御文字を半角スペースへ置換した表示形）に続けて封筒
 #   ページ数 2 以上  封筒 1 行だけ（行は --page で読む）
 #   封筒 {nonce, payload, sha256}。payload は {"count":N,"dir":"...","inputSha256":"...","nodesSha256":"...","pages":P,"structSha256":"...","taskIdSha256":"...","tsvSha256":"..."}
+#   （P が 1 のときは dir・tsvSha256 を含まない 6 欄。空文字の欄の転記漏れで署名が合わなくなるのを避ける）
 #         - count       全ページ合計の行数
 #         - dir         ページ数 2 以上のときの一時ディレクトリの絶対パス（1 のときは空文字）
 #         - inputSha256  sha256("fetch-tree\n" + root + "\n" + repo)。ルート・対象リポジトリを束縛する
@@ -213,7 +214,15 @@ if [ "${pages}" != "1" ]; then
     exit 4
   fi
 fi
-envelope=$(so_emit "${nonce}" "$(printf '{"count":%d,"dir":"%s","inputSha256":"%s","nodesSha256":"%s","pages":%d,"structSha256":"%s","taskIdSha256":"%s","tsvSha256":"%s"}' "${count}" "${out_dir}" "${input_sha}" "${nodes_sha}" "${pages}" "${struct_sha}" "${task_sha}" "${tsv_sha}")") \
+# 1 ページのときは dir（空文字）・tsvSha256 を payload に入れない。これらはページ経路（pages >= 2）でしか使わず、
+# 空文字の欄はエージェントの転記で落ちやすい。1 欄でも欠けると署名の再計算が合わず取得が毎回失敗するため、
+# 転記で落ちうる欄を署名対象から外す（ホストの TREE_SCHEMA でも dir・tsvSha256 は任意）
+if [ "${pages}" = "1" ]; then
+  payload=$(printf '{"count":%d,"inputSha256":"%s","nodesSha256":"%s","pages":%d,"structSha256":"%s","taskIdSha256":"%s"}' "${count}" "${input_sha}" "${nodes_sha}" "${pages}" "${struct_sha}" "${task_sha}")
+else
+  payload=$(printf '{"count":%d,"dir":"%s","inputSha256":"%s","nodesSha256":"%s","pages":%d,"structSha256":"%s","taskIdSha256":"%s","tsvSha256":"%s"}' "${count}" "${out_dir}" "${input_sha}" "${nodes_sha}" "${pages}" "${struct_sha}" "${task_sha}" "${tsv_sha}")
+fi
+envelope=$(so_emit "${nonce}" "${payload}") \
   || { [ -z "${out_dir}" ] || { rm -f "${out_dir}/tree.tsv"; rmdir "${out_dir}" 2>/dev/null; }; echo "fetch-tree: 出力封筒を作れなかった（sha256sum / shasum が無い等）" >&2; exit 3; }
 
 if [ "${pages}" = "1" ]; then

@@ -105,7 +105,7 @@ export function registerFetchTreeTests(bash) {
       [5, 4, 0, 'open', 0],
     ])
     assert.equal(rows[1].title, '日本語 🎉 title')
-    assert.deepEqual(envelope.payload, { count: 5, inputSha256: inputShaOf(1, 'o/r'), nodesSha256: independentNodesSha(rows), pages: 1, structSha256: independentStructSha(rows), taskIdSha256: independentTaskIdSha(rows), dir: '', tsvSha256: independentTsvSha(rows) })
+    assert.deepEqual(envelope.payload, { count: 5, inputSha256: inputShaOf(1, 'o/r'), nodesSha256: independentNodesSha(rows), pages: 1, structSha256: independentStructSha(rows), taskIdSha256: independentTaskIdSha(rows) })
     assert.equal(envelope.nonce, NONCE)
     assert.equal(envelope.sha256, expectedSha256(NONCE, envelope.payload))
     assert.equal(stub.callsTo('issues/3/sub_issues'), 0)
@@ -247,7 +247,9 @@ export function registerFetchTreeTests(bash) {
     const r = run(bash, makeGhTreeStub(smallTree()), ARGS, { env: { TMPDIR: tmp } })
     assert.equal(r.status, 0, r.stderr)
     assert.equal(parseOut(r.stdout).envelope.payload.pages, 1)
-    assert.equal(parseOut(r.stdout).envelope.payload.dir, '')
+    // 転記で落ちやすい空文字の dir と tsvSha256 は 1 ページの署名対象に入れない（欠落で sha256 が毎回不一致になるため）
+    assert.equal('dir' in parseOut(r.stdout).envelope.payload, false)
+    assert.equal('tsvSha256' in parseOut(r.stdout).envelope.payload, false)
     assert.ok(!r.stdout.includes('FETCH_TREE_DIR='))
     assert.deepEqual(readdirSync(tmp), [])
   })
