@@ -73,6 +73,26 @@ test('2 回とも不一致なら後続 agent を 1 件も起動せず、メッ�
   assert.ok(!seen.some((l) => POST.test(l)))
 })
 
+// 1 ページの封筒の payload は dir・tsvSha256 を持たない（空文字の欄は転記で落ちやすく、欠けると sha256 が毎回不一致になるため）。
+// 観測値の sha256 のまま、転記で欄が欠けた・余った返却は検査値の不一致として 2 回とも拒否される（fail-closed）。
+test('1 ページの封筒の payload は 6 欄だけで、dir・tsvSha256 を含まない', () => {
+  const r = honest('--nonce abc123 --root 1')
+  assert.deepEqual(Object.keys(r.payload).sort(), ['count', 'inputSha256', 'nodesSha256', 'pages', 'structSha256', 'taskIdSha256'])
+})
+
+for (const [name, tamper] of [
+  ['pages を落とす', (pl) => { const { pages: _p, ...rest } = pl; return rest }],
+  ['空文字の dir を足す', (pl) => ({ ...pl, dir: '' })],
+]) {
+  test(`転記で payload の欄が変わる（${name}）と検査値の不一致で 2 回とも拒否する`, async () => {
+    const copied = (prompt) => {
+      const r = honest(prompt)
+      return { ...r, payload: tamper(r.payload) }
+    }
+    await assert.rejects(run([copied, copied]), /検査値/)
+  })
+}
+
 // title だけの書き写し誤り（構造 5 欄は一致）。Issue #687
 const titleOff = (p, title = 'b ') => treeFetchReply(p, baseNodes().map((n) => (n.number === 3 ? { ...n, title } : n)), { digestNodes: baseNodes() })
 
