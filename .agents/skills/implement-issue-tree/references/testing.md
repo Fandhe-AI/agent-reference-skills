@@ -3,15 +3,20 @@
 本書は implement-issue-tree スキルの一部。全体は ../SKILL.md 参照。
 
 `skills/implement-issue-tree/tests/` のテストを速く確かめ、検査が弱くなっていないことを変異で確かめるための手引き。
-テストの本数は多い（2800 件超）が、全体は単独で約 105 秒（Node 24・16 コア・2026-10 実測）で終わる。
+テストの本数は多い。全スキルの `skills/*/tests` を下記の手順で単独に流すと、3685 件・約 118 秒（Node 24・16 コア・2026-10-26 実測）で終わる。
 
 ## 流し方
 
-CI と同じ全体（`failglob` でテストが 1 件も見つからない事故を落とす）:
+CI と同じテスト集合の全体実行。CI は `shopt -s globstar failglob; node --test skills/*/tests/**/*.test.mjs`（ubuntu の bash 5）だが、macOS 標準の `/bin/bash` 3.2 には `globstar` が無く、`**` が 1 階層にしか当たらないため `tests/` 直下のテストが漏れても成功する。そこでシェルの展開に頼らず `find` で一覧を作る（zsh・bash 3.2・bash 5 のどれに貼っても同じ動き）。リポジトリのルートで実行する:
 
 ```bash
-bash -c 'shopt -s globstar failglob; node --test skills/*/tests/**/*.test.mjs'
+bash -c 'files=$(find -H skills/*/tests \( -type f -o -type l \) -name "*.test.mjs" -not -path "*/.*" | sort); [ -n "$files" ] || { echo "テストが 1 件も見つからない" >&2; exit 1; }; echo "$files" | xargs node --test'
 ```
+
+- CI の `globstar` とほぼ同じ集合になる: `tests/` 直下とサブディレクトリの両方を含み、ドット始まりのパスは除く（`-not -path "*/.*"`）。起点の `skills/*/tests` が symlink でも辿る（`-H`）。
+- `*.test.mjs` の symlink ファイルは含める（CI の glob と同じ）。symlink のディレクトリは対象外（bash の `**` は版や位置で降りる・降りないが変わるため、等価にしない）。
+- 0 件のときは node を起動せず非 0 で止まる（CI の `failglob` に相当。`node --test` は 1 件も無くても成功しうる）。
+- パスに空白・改行・引用符・バックスラッシュが無いことを前提にしている（`xargs` が解釈するため。このリポジトリのテストは満たす）。
 
 1 ファイルだけ（スクリプトや lib を変えたときは、そのテストと、同じスクリプトを検査するファイルだけを流す）:
 
@@ -19,13 +24,17 @@ bash -c 'shopt -s globstar failglob; node --test skills/*/tests/**/*.test.mjs'
 node --test skills/implement-issue-tree/tests/base-merge.test.mjs skills/implement-issue-tree/tests/base-merge-unit.test.mjs
 ```
 
-Node 24 と 22 を並列に流す（`TMPDIR` を別々の空ディレクトリにして、一時ファイルの残存も確かめる）:
+Node 24 と 22 を並列に流す（`TMPDIR` を別々の空ディレクトリにして、一時ファイルの残存も確かめる）。引数なしの `wait` は常に 0 を返すので、PID ごとに終了コードを集める:
 
 ```bash
 t24=$(mktemp -d); t22=$(mktemp -d)
-TMPDIR="$t24" bash -c 'shopt -s globstar failglob; node --test skills/*/tests/**/*.test.mjs' > "$t24.log" 2>&1 &
-TMPDIR="$t22" bash -c 'shopt -s globstar failglob; volta run --node 22 node --test skills/*/tests/**/*.test.mjs' > "$t22.log" 2>&1 &
-wait
+TMPDIR="$t24" bash -c 'files=$(find -H skills/*/tests \( -type f -o -type l \) -name "*.test.mjs" -not -path "*/.*" | sort); [ -n "$files" ] || { echo "テストが 1 件も見つからない" >&2; exit 1; }; echo "$files" | xargs node --test' > "$t24.log" 2>&1 &
+p24=$!
+TMPDIR="$t22" bash -c 'files=$(find -H skills/*/tests \( -type f -o -type l \) -name "*.test.mjs" -not -path "*/.*" | sort); [ -n "$files" ] || { echo "テストが 1 件も見つからない" >&2; exit 1; }; echo "$files" | xargs volta run --node 22 node --test' > "$t22.log" 2>&1 &
+p22=$!
+wait "$p24"; r24=$?
+wait "$p22"; r22=$?
+echo "node24 exit=$r24 node22 exit=$r22"   # 両方 0 であること
 ls "$t24" "$t22"   # 空であること（テストが作った一時ディレクトリは trackTmp で消える）
 ```
 
