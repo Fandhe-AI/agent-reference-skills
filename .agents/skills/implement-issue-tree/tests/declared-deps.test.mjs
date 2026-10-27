@@ -792,3 +792,31 @@ test('駆動部はタイトルから兄弟の表を作って抽出へ渡す (#65
   assert.ok(driverPart.includes('await extractDeclaredDeps(chunks, undefined, (pending) => siblingTaskTableFor(pending, siblingTasks))'))
   assert.match(definitionPart, /前の工程（TASK-x-y）の結果を踏まえている/, 'Tree エージェントの手順 4 にも書く')
 })
+
+// Issue #716: Claude Code はツール入力中の \uXXXX を実行前に文字へ変換する。フィルタやプロンプトに
+// \uXXXX が残ると、' が単一引用符に戻って --jq '...' の引用が途中で閉じる。\x27 / \x60 の形なら変換されない。
+test('declaredDepsPrompt / フィルタに \\uXXXX の形が無く、変換を模擬しても文字列が変わらない (#716)', () => {
+  const table = { f: { 1: [['TASK-1-2', 12]] }, n: { 12: [1, 0] } }
+  const toChars = (s) => s.replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)))
+  const texts = [DECLARED_DEPS_JQ, declaredDepsJq(table), declaredDepsPrompt([1, 2]), declaredDepsPrompt([1], table)]
+  for (const t of texts) {
+    assert.doesNotMatch(t, /\\u[0-9a-fA-F]{4}/)
+    assert.equal(toChars(t), t)
+  }
+})
+
+test('変換を模擬したあとも --jq の単一引用符の中に単一引用符が現れない (#716)', () => {
+  const toChars = (s) => s.replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)))
+  const p = toChars(declaredDepsPrompt([1, 2]))
+  assert.ok(p.includes(DECLARED_DEPS_JQ), '変換後もフィルタ全体がそのまま埋め込まれる')
+  assert.ok(p.includes("--jq '"))
+  assert.ok(!toChars(DECLARED_DEPS_JQ).includes("'"))
+})
+
+test("否定の n't とバッククォートのコードスパン / フェンスの除去は \\x27 / \\x60 化後も同じ結果 (#716)", () => {
+  assert.deepEqual(runFilter("don't depend on #5\ndoesn't depend on #6\n"), [])
+  assert.deepEqual(runFilter('Depends on #7\n'), [7])
+  assert.deepEqual(runFilter('`Depends on #8` と ``blocked by #9``\n'), [])
+  assert.deepEqual(runFilter('```\nDepends on #10\n```\nDepends on #11\n'), [11])
+  assert.deepEqual(runFilter('~~~\nDepends on #12\n~~~\n'), [])
+})

@@ -397,11 +397,11 @@ monitor の手順 2〜3 は、HEAD sha のチェックの完了を `gh pr checks
 
 ### 静的ガード
 
-`git add` / `git commit` が `scripts/` に現れるのはこのスクリプトが初めてで、既存のパターン（`--no-verify`・`git commit -n`・フック無効化）はそのまま効く。さらに第 7 弾の方式で**行単位の許可形**を新設した: `git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?` の 1 行だけを許し、`git -C "${path}"` で対象の worktree を明示しない形（メイン worktree が暗黙の対象になる）・別のパス・メッセージの変更・フラグの追加・引用符つきの `git` / サブコマンドはすべて拒否する。許可形が `recover-prep.sh` にしか無く 1 行だけであることは専用テストで固定する。同じテストで、`recover-prep.sh` にブランチ削除・`reset`・`checkout`・`clean`・`stash`・`push`・`merge`・`update-ref`・`rm` が無く、`git worktree` が `list --porcelain` だけで、`git fetch` が `refs/remotes/origin/` へ保存する 1 形だけであることも固定する。`git fetch` は既存パターンに当たらない（変更なし）。除外リストと `merge-guard-hook.sh` は変えていない。
+`git add` / `git commit` が `scripts/` に現れるのはこのスクリプトが初めてで、既存のパターン（`--no-verify`・`git commit -n`・フック無効化）はそのまま効く。さらに第 7 弾の方式で**行単位の許可形**を新設した: `git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "chore(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?` の 1 行だけを許し、`git -C "${path}"` で対象の worktree を明示しない形（メイン worktree が暗黙の対象になる）・別のパス・メッセージの変更・フラグの追加・引用符つきの `git` / サブコマンドはすべて拒否する。許可形が `recover-prep.sh` にしか無く 1 行だけであることは専用テストで固定する。同じテストで、`recover-prep.sh` にブランチ削除・`reset`・`checkout`・`clean`・`stash`・`push`・`merge`・`update-ref`・`rm` が無く、`git worktree` が `list --porcelain` だけで、`git fetch` が `refs/remotes/origin/` へ保存する 1 形だけであることも固定する。`git fetch` は既存パターンに当たらない（変更なし）。除外リストと `merge-guard-hook.sh` は変えていない。
 
 ### 既知の挙動（旧プロンプトとの差）
 
-- **WIP のコミット件名は固定の `wip(recover): …`** のまま。commitlint の `type-enum` がこの type を許さないリポジトリでは `commit-msg` フックが拒否して `commit-failed`（`wipCommitted: false`）になり、`failed` で保全される（旧プロンプトでも同じ結果だった。保全側に倒れる）。
+- **WIP のコミット件名は固定の `chore(recover): …`**。type を `feat|fix|perf|refactor|test|docs|build|ci|chore` に限る commit-msg フックを通る。`scope-enum` で scope を限定するリポジトリでは拒否され得て、その場合は従来どおり `commit-failed`（`wipCommitted: false`）→ `failed` で保全される（旧件名 `wip(recover)` は type 検証で必ず拒否されていた。Issue #718）。
 - **汚れの観測が旧プロンプトより厳しい**: 旧は素の `git status --porcelain`（利用者の設定やグローバルの除外に従う）で、グローバルの除外に載った未追跡ファイルは見えず `wipCommitted: true` になり得たが、第 7 弾の `--mode discard` がそのファイルを汚れとして保持して `failed` になっていた。今は最初から `residual-dirty`・`false` で保全する（結末は同じで、早く止まる）。
 - **メイン worktree・未登録・不一致のパスを渡されたとき**は何も書かずに `resolved: false`。旧プロンプトは `git -C` でそのパスの HEAD を読み、メインや無関係な repo に WIP コミットを積み得た。
 - **lock は見ない（旧プロンプトと同じ）**: 生きた agent の lock が付いた worktree にも WIP コミットを積む。`git worktree list` の `locked` 行は読まない。lock の扱いは削除側が担い、第 7 弾の `worktree-remove.sh --mode discard` が生きたセッションの lock を `retained-locked` で保持する（WIP コミットは lock の有無によらずブランチに残るのでデータは失われない）。この pid はセッション（メインの `claude` プロセス）の pid なので、同じセッション内の再実行では lock が常に生存と判定される。ここで lock を理由に WIP を拒むと同一セッション内の Recover が成り立たなくなるため、この弾では入れない。

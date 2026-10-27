@@ -188,8 +188,9 @@ if [ "${wtstate}" = live ]; then
     commit)
       crc=0
       old_head=$(git -C "${path}" rev-parse -q --verify HEAD 2>/dev/null) || old_head=""
+      # 件名の type は commit-msg フックの type 検証（feat|fix|…|chore）を通すため chore にする（wip は拒否される・Issue #718）
       # stdin を閉じる（stdin 待ちのフックがハングしない）。フックの出力は標準エラーへ（標準出力の最後の 1 行を結果に保つ）
-      git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?
+      git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "chore(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?
       # コミットの実体: 成功の終了コードでも、フックがあとで変更を捨てると HEAD が進まない・進んでも差分が空になる（汚れは無く見える）
       cstate=made
       if [ "${crc}" = 0 ]; then
