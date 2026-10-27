@@ -11,7 +11,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { gitEnv, makeRepo } from './worktree-sandbox.mjs'
@@ -20,7 +21,7 @@ import { bundleSha256 } from '../../scripts/build-workflow.mjs'
 
 export const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'scripts', 'recover-prep.sh')
 const SHA40 = /^[0-9a-f]{40}$/
-const WIP_SUBJECT = 'wip(recover): 中断時の未コミット変更を退避'
+const WIP_SUBJECT = 'chore(recover): 中断時の未コミット変更を退避'
 
 // makeRepo に origin（bare）を足す。main を push 済みにして refs/remotes/origin/main を作れる状態にする
 function makeRecoverRepo(opts = {}) {
@@ -95,6 +96,39 @@ export function registerRecoverPrepTests(bash) {
       assert.deepEqual([r.result.diff, r.result.commitsAhead, r.result.filesChanged], ['nonempty', 1, files.length])
     })
   }
+
+  // Issue #718: type を限定する commit-msg フックのもとでも WIP 退避が成功する（旧件名 wip(...) は type 検証で拒否されていた）
+  const TYPE_HOOK = 'head -n1 "$1" | grep -Eq \'^(feat|fix|perf|refactor|test|docs|build|ci|chore)(\\([^)]+\\))?!?: .+\' || { echo "type-enum" >&2; exit 1; }'
+  test(`${tag} type を限定する commit-msg フックを通り、WIP 退避が成功する（Issue #718）`, () => {
+    const repo = makeRecoverRepo()
+    hook(repo, 'commit-msg', TYPE_HOOK)
+    const a = repo.addWorktree('a')
+    repo.write(a.path, 'a.txt', 'changed\n')
+    repo.write(a.path, 'u.txt', 'u\n')
+    const r = prep(repo, a)
+    assert.equal(r.status, 0, r.stderr)
+    assert.equal(r.result.wip, 'committed')
+    assert.equal(r.result.wipCommitted, true)
+    assert.equal(repo.git(a.path, 'status', '--porcelain'), '')
+    assert.equal(logSubjects(repo, a.branch)[0], WIP_SUBJECT)
+    assert.equal(r.lines.length, 1, '標準出力は結果の 1 行だけ')
+  })
+
+  test(`${tag} 同じ型限定フックの検査式は旧件名 wip(recover) を拒否し chore(recover) を通す（回帰の対照）`, () => {
+    // 実 git のフックと同じく件名はファイル経由で渡す（/dev/stdin は環境差が出る）
+    const dir = mkdtempSync(join(tmpdir(), 'recover-hook-'))
+    try {
+      const check = (subject) => {
+        const f = join(dir, 'msg')
+        writeFileSync(f, `${subject}\n`)
+        return spawnSync('sh', ['-c', TYPE_HOOK, 'sh', f], { encoding: 'utf8' }).status
+      }
+      assert.equal(check('wip(recover): 中断時の未コミット変更を退避'), 1)
+      assert.equal(check(WIP_SUBJECT), 0)
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
 
   test(`${tag} ignore 対象のみ（node_modules・dist）: 汚れに数えず WIP は作らない`, () => {
     const repo = makeRecoverRepo()

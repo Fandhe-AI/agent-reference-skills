@@ -1786,8 +1786,9 @@ const TREE_SCHEMA = {
 //   ID の前後は英数字・`_`・`-` 以外の文字か行頭・行末であることを要求し、TASK-97-5 を TASK-97-50 や
 //   TASK-97-5-1 の一部として読まない。gh api --jq は gojq（Go の RE2）で動くため、先読み・後読み・
 //   後方参照は使わない。
-// フィルタはシェルの単一引用符へ埋め込むため単一引用符を含めず（jq の \u0027 で表す）、バッククォートも
-// jq の \u0060 で表す（String.raw 内に生のバッククォートを置かないため）。
+// フィルタはシェルの単一引用符へ埋め込むため単一引用符を含めず（jq の正規表現の \x27 で表す）、バッククォートも
+// \x60 で表す（String.raw 内に生のバッククォートを置かないため）。\uXXXX は使わない: Claude Code がツール入力中の
+// \uXXXX を実行前に文字へ戻し、\u0027 が単一引用符になって --jq の引用が閉じる（Issue #716）。
 // 兄弟の表（{f: {<親番号>: [[ID, 番号], …]}, n: {<番号>: [<親番号>, <前の工程の番号 or 0>]}}）は
 // buildSiblingTaskTable / siblingTaskTableFor が作り、ID は TITLE_TASK_ID_RE（英大文字・数字・`-` のみ）を
 // 通ったものだけなので、単一引用符・正規表現の特殊文字を含まない（`-` は文字クラスの外では文字そのもの）。
@@ -1795,10 +1796,10 @@ const EMPTY_SIBLING_TASK_TABLE = { f: {}, n: {} }
 const DECLARED_DEPS_JQ_DEFS = [
   String.raw`def refs: [scan("#([0-9]+)") | .[0] | tonumber];`,
   String.raw`def run: "(#[0-9]+(?:(?:[ \t,、/]|and|および|及び)+#[0-9]+)*)";`,
-  String.raw`def inline: gsub("(?i)(?:\\b(?:not|no longer|never)\\b|n\u0027t)(?:[ \t]+[A-Za-z]+)?[ \t]+(?:depends on|blocked by)[ \t]*:?[ \t]*" + run; "") | [scan("(?i)(?:depends on|blocked by)[ \t]*:?[ \t]*" + run) | .[0] | refs[]];`,
-  String.raw`def neg: test("(?i)関連|参考|参照|任意|なし|不要|\\b(related|see also|optional|none|no longer|not|never|unnecessary)\\b|n\u0027t");`,
-  String.raw`def fenceof: (capture("^[ ]{0,3}(?<f>\u0060{3,}|~{3,})") | .f) // null;`,
-  String.raw`def stripcode: . as $s | [match("\u0060+"; "g") | {o: .offset, l: .length}] as $r`,
+  String.raw`def inline: gsub("(?i)(?:\\b(?:not|no longer|never)\\b|n\\x27t)(?:[ \t]+[A-Za-z]+)?[ \t]+(?:depends on|blocked by)[ \t]*:?[ \t]*" + run; "") | [scan("(?i)(?:depends on|blocked by)[ \t]*:?[ \t]*" + run) | .[0] | refs[]];`,
+  String.raw`def neg: test("(?i)関連|参考|参照|任意|なし|不要|\\b(related|see also|optional|none|no longer|not|never|unnecessary)\\b|n\\x27t");`,
+  String.raw`def fenceof: (capture("^[ ]{0,3}(?<f>\\x60{3,}|~{3,})") | .f) // null;`,
+  String.raw`def stripcode: . as $s | [match("\\x60+"; "g") | {o: .offset, l: .length}] as $r`,
   String.raw`| def go($i): if $i >= ($r | length) then []`,
   String.raw`else (first(range($i + 1; $r | length) | select($r[.].l == $r[$i].l)) // null) as $j`,
   String.raw`| if $j == null then go($i + 1) else [[$r[$i].o, $r[$j].o + $r[$j].l]] + go($j + 1) end end;`,
@@ -1823,7 +1824,7 @@ const DECLARED_DEPS_JQ_MAIN = [
   String.raw`($raw | sub("\r$"; "")) as $l`,
   String.raw`| ($l | fenceof) as $f`,
   String.raw`| if .fence != null then`,
-  String.raw`(if $f != null and ($f[0:1] == .fence[0:1]) and (($f | length) >= (.fence | length)) and ($l | test("^[ ]{0,3}[\u0060~]+[ \t]*$")) then .fence = null else . end)`,
+  String.raw`(if $f != null and ($f[0:1] == .fence[0:1]) and (($f | length) >= (.fence | length)) and ($l | test("^[ ]{0,3}[\\x60~]+[ \t]*$")) then .fence = null else . end)`,
   String.raw`elif $f != null then flush | .fence = $f`,
   String.raw`elif ($l | test("^[ ]{0,3}>")) or ($l | test("^[ \t]*$")) then flush`,
   String.raw`elif ($l | test("^[ ]{0,3}#{1,6}([ \t]|$)")) then flush`,

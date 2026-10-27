@@ -1791,14 +1791,15 @@ description:'本文の `<!-- optin-tests: <コマンド> -->` マーカーの値
 
 
 
+
 const EMPTY_SIBLING_TASK_TABLE={f:{},n:{}}
 const DECLARED_DEPS_JQ_DEFS=[
 String.raw`def refs: [scan("#([0-9]+)") | .[0] | tonumber];`,
 String.raw`def run: "(#[0-9]+(?:(?:[ \t,、/]|and|および|及び)+#[0-9]+)*)";`,
-String.raw`def inline: gsub("(?i)(?:\\b(?:not|no longer|never)\\b|n\u0027t)(?:[ \t]+[A-Za-z]+)?[ \t]+(?:depends on|blocked by)[ \t]*:?[ \t]*" + run; "") | [scan("(?i)(?:depends on|blocked by)[ \t]*:?[ \t]*" + run) | .[0] | refs[]];`,
-String.raw`def neg: test("(?i)関連|参考|参照|任意|なし|不要|\\b(related|see also|optional|none|no longer|not|never|unnecessary)\\b|n\u0027t");`,
-String.raw`def fenceof: (capture("^[ ]{0,3}(?<f>\u0060{3,}|~{3,})") | .f) // null;`,
-String.raw`def stripcode: . as $s | [match("\u0060+"; "g") | {o: .offset, l: .length}] as $r`,
+String.raw`def inline: gsub("(?i)(?:\\b(?:not|no longer|never)\\b|n\\x27t)(?:[ \t]+[A-Za-z]+)?[ \t]+(?:depends on|blocked by)[ \t]*:?[ \t]*" + run; "") | [scan("(?i)(?:depends on|blocked by)[ \t]*:?[ \t]*" + run) | .[0] | refs[]];`,
+String.raw`def neg: test("(?i)関連|参考|参照|任意|なし|不要|\\b(related|see also|optional|none|no longer|not|never|unnecessary)\\b|n\\x27t");`,
+String.raw`def fenceof: (capture("^[ ]{0,3}(?<f>\\x60{3,}|~{3,})") | .f) // null;`,
+String.raw`def stripcode: . as $s | [match("\\x60+"; "g") | {o: .offset, l: .length}] as $r`,
 String.raw`| def go($i): if $i >= ($r | length) then []`,
 String.raw`else (first(range($i + 1; $r | length) | select($r[.].l == $r[$i].l)) // null) as $j`,
 String.raw`| if $j == null then go($i + 1) else [[$r[$i].o, $r[$j].o + $r[$j].l]] + go($j + 1) end end;`,
@@ -1823,7 +1824,7 @@ String.raw`| (reduce .[] as $raw ({in: false, fence: null, buf: [], d: [], me: $
 String.raw`($raw | sub("\r$"; "")) as $l`,
 String.raw`| ($l | fenceof) as $f`,
 String.raw`| if .fence != null then`,
-String.raw`(if $f != null and ($f[0:1] == .fence[0:1]) and (($f | length) >= (.fence | length)) and ($l | test("^[ ]{0,3}[\u0060~]+[ \t]*$")) then .fence = null else . end)`,
+String.raw`(if $f != null and ($f[0:1] == .fence[0:1]) and (($f | length) >= (.fence | length)) and ($l | test("^[ ]{0,3}[\\x60~]+[ \t]*$")) then .fence = null else . end)`,
 String.raw`elif $f != null then flush | .fence = $f`,
 String.raw`elif ($l | test("^[ ]{0,3}>")) or ($l | test("^[ \t]*$")) then flush`,
 String.raw`elif ($l | test("^[ ]{0,3}#{1,6}([ \t]|$)")) then flush`,
@@ -4360,7 +4361,7 @@ const SCRIPT_SHA256={
 'state.sh':'5053a965abf6bc79bf50e559a1fccf609346518120c02ff26ed8aedc924e4ebe',
 'merge-gate.sh':'17f022728251f8125259f4f7d98caab53400920136c9353a8d018e36fe9d5a71',
 'worktree-remove.sh':'96501c0b2887bbce5278fad8359ca95286e9aa615068088c833aaf7a84530ac3',
-'recover-prep.sh':'265aa7edd3ce837c295ee4a27666ed057108e6c0a13f67ef19265a268a02ca9b',
+'recover-prep.sh':'6e3a18783102f3716c99187666620f42ae4f9438d26a8db89ecb59de438437cb',
 'fetch-tree.sh':'fddce55942793541d9829050350a53105c9155e0630b5a89e104e02774a58708',
 }
 

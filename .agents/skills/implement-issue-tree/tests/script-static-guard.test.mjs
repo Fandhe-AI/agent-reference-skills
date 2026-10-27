@@ -65,7 +65,7 @@ const refBindingRejected = (line) => refBinding(line) && !REF_ASSIGN_ALLOWED.tes
 // --no-verify の省略形は別のパターンが拒否する）。コミットメッセージは固定。stdin を閉じ、出力は標準エラーへ送る。ほかの形はすべて拒否する。
 // 許可形がこのファイルにしか無いことは下の専用テストで固定する。引用符付きの git / サブコマンドは許可形ではない
 const GIT_ADD_COMMIT_CALL = new RegExp(`${GIT_SUB('(?:add|commit)').source}`)
-const GIT_WIP_ALLOWED = /^\s*git -C "\$\{path\}" add -A >&2 && git -C "\$\{path\}" commit -q -m "wip\(recover\): 中断時の未コミット変更を退避" <\/dev\/null >&2 \|\| crc=\$\?\s*$/
+const GIT_WIP_ALLOWED = /^\s*git -C "\$\{path\}" add -A >&2 && git -C "\$\{path\}" commit -q -m "chore\(recover\): 中断時の未コミット変更を退避" <\/dev\/null >&2 \|\| crc=\$\?\s*$/
 
 const PATTERNS = [
   // マージ・クローズ
@@ -261,9 +261,10 @@ test('自己検査: 各パターンは悪い例に発火する（パターンが
       'git add -A', 'git add .', 'git add -- a.txt', 'git commit -m x', 'git commit --amend --no-edit', 'git commit -F "${msgfile}"', 'git commit --no-edit',
       'git -C "${other}" add -A', 'git -C "$path" add -A', 'git -C . add -A', 'git -C "${path}" add --force .', 'git -C "${path}" add -f x', 'git -C "${path}" add -N .',
       'git -C "${path}" commit -m x', 'git -C "${path}" commit -q -m "別のメッセージ" </dev/null >&2 || crc=$?', 'git -C "${path}" commit -a -m x', 'git -C "${path}" commit --amend',
-      'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" >&2 || crc=$?',
-      'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" </dev/null >&2 || true',
-      'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?; git -C "${path}" add -f x',
+      'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "chore(recover): 中断時の未コミット変更を退避" >&2 || crc=$?',
+      'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "chore(recover): 中断時の未コミット変更を退避" </dev/null >&2 || true',
+      'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "chore(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?; git -C "${path}" add -f x',
+      'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?',
       '"git" -C "${path}" add -A', 'git "add" -A', 'git -C "${path}" "commit" -m x', "git -C x 'add' y", 'git -c user.name=x commit -m x', 'git -c core.hooksPath=/x commit -m x',
     ],
     'git push の -f 系短縮オプション': ['git push -f origin HEAD', 'git push origin HEAD -f', 'git push -uf origin HEAD'],
@@ -324,7 +325,7 @@ test('自己検査: 正当な行（読み取りの gh api・graphql の query・
     'git config --get remote.origin.url',
     'git config --list',
     'git ls-remote origin "refs/heads/$1"',
-    'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?',
+    'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "chore(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?',
     'git -C "${path}" -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=none',
     'gh -R "${repo}" api repos/o/r/commits/x/check-runs',
     'gh -R "${repo}" api graphql -f query="${Q}" -F owner="${o}"',
@@ -478,7 +479,7 @@ test('git add / git commit の許可形は recover-prep.sh だけにあり、決
   assert.deepEqual(found.map((f) => f.name), ['recover-prep.sh'], JSON.stringify(found))
   assert.equal(found.length, 1, '許可形は 1 行だけ')
   assert.ok(GIT_WIP_ALLOWED.test(found[0].l), found[0].l)
-  assert.equal(found[0].l, 'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?')
+  assert.equal(found[0].l, 'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "chore(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?')
   // 同じ行がフック回避の綴りを持たない（--no-verify の省略形・-n）。--no-verbose のような別のオプションは --no-verify の検査に誤検出されない
   for (const p of PATTERNS.filter((x) => x.label === '--no-verify' || x.label.startsWith('git commit -n'))) assert.equal(p.test(found[0].l), false, p.label)
   assert.equal(PATTERNS.find((x) => x.label === '--no-verify').test('git commit --no-verbose'), false)
