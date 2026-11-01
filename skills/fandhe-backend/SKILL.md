@@ -1,10 +1,11 @@
 ---
 name: fandhe-backend
 description: >
-  Rust 製バックエンド HTTP サーバーフレームワーク fandhe-backend (v0.6)。
-  Server, BoundServer, Router, Handler。拡張点 RequestGate（RequestExtensions 受け渡し）, Interceptor, UpgradeHandler, Middleware。
-  sans-IO HTTP/1.1, StreamingResponse, graceful shutdown。
-  プラグイン jwt（JwtGate, DPoP RFC 9449, jwks-refresh）, csrf, websocket, graphql, openapi, webrtc。
+  Rust 製バックエンド HTTP サーバーフレームワーク fandhe-backend (v0.6) のリファレンス。
+  fandhe-backend-core / -http / -routes。Server, BoundServer, Router（merge）, Handler。
+  拡張点 Middleware（on_response_with_status）/ UpgradeHandler / RequestGate（RequestExtensions 受け渡し）/ Interceptor。
+  Diagnostics, StreamingResponse, SetCookie session（__Host-）, sans-IO HTTP/1.1, graceful shutdown。
+  プラグイン cors, websocket（WsSender）, graphql, openapi, webrtc, jwt（JwtGate, JwtPolicy, DPoP RFC 9449, jwks-refresh）, csrf（CsrfGate）。
 user-invocable: false
 ---
 

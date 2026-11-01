@@ -92,7 +92,12 @@ assert_eq!(head.extensions().get::<u32>(), Some(&42));
 - `remove` / `get_mut` は意図的に提供しない。件数はゲート数程度の少数を前提に線形探索する。外部依存なし・`unsafe` なし
 - 再エクスポート: `fandhe_backend_core::extension` と `fandhe-backend-core` の crate ルートから `RequestExtensions` を使える。`RequestGate::check` の第 3 引数としてコア側で使用する
 - WebSocket: ハンドシェイクのフックは `WsHandshakeContext::head().extensions()` から読める。`WsOpenContext::extensions()` / `WsConnContext::extensions()` は `fandhe-backend-plugin-websocket` の追加 API（CHANGELOG 記載）で読み取り専用。ゲートが拒否した upgrade では `on_open` も 101 応答も発生しない
-- 注意: WebSocket では値がセッション継続中ずっと保持され、JWT の `exp` はハンドシェイク時点でのみ検証される（設計書 14.7）
+- 注意: WebSocket では値がセッション継続中ずっと保持され、JWT の `exp` はハンドシェイク時点でのみ検証される（設計書 `gate-request-extensions.md` §14.7「既知の限界」）
+- 出典（`RequestExtensions` 本体・rustdoc 例）: https://docs.rs/crate/fandhe-backend-http/0.6.1/source/src/extensions.rs
+- 出典（`RequestHead::extensions` / `extensions_mut`）: https://docs.rs/crate/fandhe-backend-http/0.6.1/source/src/request.rs
+- 出典（core からの再エクスポート、`RequestGate::check` の第 3 引数）: https://docs.rs/crate/fandhe-backend-core/0.6.1/source/src/extension.rs
+- 出典（設計書）: https://github.com/fandhe-ai/fandhe-backend/blob/9a75278f68d7fb537867787ee83fc1b550dd2ca8/docs/design/gate-request-extensions.md
+- 出典（CHANGELOG）: https://github.com/fandhe-ai/fandhe-backend/blob/9a75278f68d7fb537867787ee83fc1b550dd2ca8/CHANGELOG.md
 
 ## Related
 
