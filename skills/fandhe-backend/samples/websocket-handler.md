@@ -4,10 +4,10 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = { version = "0.5.0", features = ["websocket"] }
-fandhe-backend-http = "0.5.0"
-fandhe-backend-routes = "0.5.0"
-fandhe-backend-plugin-websocket = "0.5.0"
+fandhe-backend-core = { version = "0.6.1", features = ["websocket"] }
+fandhe-backend-http = "0.6.1"
+fandhe-backend-routes = "0.6.1"
+fandhe-backend-plugin-websocket = "0.6.1"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal", "time", "sync"] }
 ```
 
@@ -148,6 +148,7 @@ bye      # -> サーバから Close
 - `with_ping_interval(interval, pong_timeout)` は `Result<Self, PingIntervalError>` を返し、どちらかが `Duration::ZERO` だと構築時に拒否される（既定は無効）。`idle_timeout` はクライアントからの受信でのみリセットされるため、push を受けるだけのクライアントの死活監視には本設定が必要。Pong タイムアウト切断は `CloseReason::PongTimeout`
 - `with_handshake_check` は RFC 6455 検証通過後・101 送出前に一度だけ同期で評価される。`WsHandshakeContext::header` は同名ヘッダが重複していると `None` を返す（拒否側に倒れる）。拒否時の戻り値は 3xx（304 除く）/4xx/5xx の `Response`、それ以外のステータスは 400 に置換される。拒否しても `handle_upgrade` の戻り値は `Ok(())`。`peer_addr()` は非ソケット経路では `None`
 - `with_path_pattern` は `Result<Self, PathPatternError>` を返し、既定の `/ws` を置き換える。`{name}` の値は % デコードされない生文字列で、`WsHandshakeContext::param` / `WsOpenContext::param` / `WsConnContext::param` から読める。メッセージごとの接続情報が要る場合は `on_message_with_ctx` を override する（`ctx.conn_id()` / `ctx.sender()` / `ctx.param()` / `ctx.peer_addr()` / `ctx.origin()` など）
+- v0.6.1 で追加: `WsOpenContext::extensions() -> &RequestExtensions`（`WsConnContext::extensions()` も同様）で、ゲート（`RequestGate::check`）が入れた Claims・テナント等を型で読める。`ctx.extensions().get::<T>()` の `None` は拒否側に倒す（フェイルクローズ）。`JwtGate::verified` / `TenantGate::verified` は `&RequestHead` を取るため WebSocket 側では使えず、`get::<GateVerified<E>>()` のように型で引く。値はセッション中保持され `exp` はハンドシェイク時点でしか検証されないため、長寿命接続では失効に備える（`on_open` で期限を読み `WsSender::close` を予約する、ping / idle timeout を併用する等）
 - WebSocket 配線自体は `Router` の責務範囲外。`Server::websocket(config)` で登録し、HTTP 側のルーティング（`GET /`）と同一 `Server` に共存できる。`WebSocketConfig` のサイズ・アイドルタイムアウトは既定値（1 MiB / 256 KiB / 60 秒）から変更しない限り安全側に倒れる。上限超過は close code 1009 を送出して閉じる（0.4.2 修正）
 - v0.3.0 (issue #499): `on_message` が返す `Future` は shutdown・rebind の drain 処理中、任意の await 点で drop されうる契約。完了保証が必要な副作用（DB 書き込み等）はこの Future の await に依存せず `tokio::spawn` で切り離す。キャンセルされた場合、意図した `WsOutcome::Reply` は送出されない
 - `WebSocketConfig::with_close_grace(Duration)`（既定 10 秒）でクローズハンドシェイクの猶予期間を調整できる。`Duration::ZERO` や既定より大幅に長い値もクランプされずそのまま適用される

@@ -4,10 +4,10 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = { version = "0.5.0", features = ["cors"] }
-fandhe-backend-http = "0.5.0"
-fandhe-backend-routes = "0.5.0"
-fandhe-backend-plugin-cors = "0.5.0"
+fandhe-backend-core = { version = "0.6.1", features = ["cors"] }
+fandhe-backend-http = "0.6.1"
+fandhe-backend-routes = "0.6.1"
+fandhe-backend-plugin-cors = "0.6.1"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal", "sync"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

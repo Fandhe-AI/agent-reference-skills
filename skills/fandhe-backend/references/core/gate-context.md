@@ -13,8 +13,13 @@ impl GateContext {
     pub fn peer_addr(&self) -> Option<SocketAddr>;
 }
 
-// RequestGate::check の第2引数として渡される
-fn check(&self, head: &RequestHead, ctx: &GateContext) -> GateOutcome;
+// RequestGate::check の第2引数として渡される（v0.6.0 で第3引数 `extensions: &mut RequestExtensions` が追加）
+fn check(
+    &self,
+    head: &RequestHead,
+    ctx: &GateContext,
+    extensions: &mut RequestExtensions,
+) -> GateOutcome;
 ```
 
 ## Options / Props
@@ -29,6 +34,7 @@ fn check(&self, head: &RequestHead, ctx: &GateContext) -> GateOutcome;
 - peer address を前提とする判定を行う gate 実装は、`None` の場合に必ず `GateOutcome::Reject` を返すこと（フェイルクローズ）
 - リバースプロキシ配下では `peer_addr` はプロキシ自身のアドレスを指す。転送ヘッダー（spoofable）ではなく `peer_addr` を IP ベース認可の根拠にする
 - `new` が public なのは、実ソケット経路と gate 実装の単体テストの両方を可能にするため
+- v0.6.0 で `check` に第 3 引数 `extensions: &mut RequestExtensions` が追加されたが、`GateContext` 自体は変わらない（詳細は [RequestGate](./request-gate.md)）
 
 ## Related
 

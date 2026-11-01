@@ -2,7 +2,7 @@
 
 hub 共通配線プラグイン（TASK-9.1 / TASK-9.2）。コアの `RequestGate` 拡張点上に `TenantGate` を実装し、`org_id` 抽出とテナント境界のフェイルクローズ配線を集約する。JWT の検証（署名・`iss`・`aud`・`typ`・`exp`・`nbf`・JWKS 鍵集合・検証結果キャッシュ）は v0.5.0（#820）から汎用 JWT 検証クレート `fandhe-backend-plugin-jwt` へ委譲され、本クレートはその全体を `jwt` として再エクスポートする。
 
-- feature 名: なし（feature ゲート不使用の依存逆転型プラグイン。利用側サービスが本クレートを依存に追加するだけで有効化する）
+- feature 名: `dpop`（v0.6.0 で追加。opt-in で既定は無効。`fandhe-backend-plugin-jwt/dpop` の転送のみで新規依存なし。有効にしただけでは挙動は変わらない）。それ以外に feature ゲートはなく、利用側サービスが本クレートを依存に追加するだけで有効化する依存逆転型プラグイン
 - crate 名: `fandhe-backend-plugin-hub-wiring`（crates/plugin-hub-wiring）
 - 配線パターン: RequestGate 型（依存逆転型）。既存 4 プラグイン（コア → プラグインの optional 依存 + feature ゲート）とは逆に、本クレートが `fandhe-backend-core` へ一方向に依存する。`crates/core` の `Cargo.toml`・`server.rs`・`plugin.rs` は本クレートのために一切変更しない
 
@@ -30,13 +30,30 @@ let gate = TenantGate::new(config);
 impl TenantGateConfig {
     pub fn new(jwks: SharedKeySet, policy: JwtPolicy) -> Self;
     pub fn from_jwks_json(json: &str, policy: JwtPolicy) -> Result<Self, JwksError>;
+    // v0.6.0 で追加: 構築済みの Authenticator から設定を組み立てる（DPoP を使うときの入口）
+    pub fn from_authenticator(authenticator: Authenticator) -> Self;
     pub fn authenticator(&self) -> Authenticator;
 }
 
 impl RequestGate for TenantGate {
     fn name(&self) -> &'static str; // "hub-tenant-gate"
-    fn check(&self, head: &RequestHead, ctx: &GateContext) -> GateOutcome;
+    fn check(
+        &self,
+        head: &RequestHead,
+        _ctx: &GateContext,
+        extensions: &mut fandhe_backend_core::extension::RequestExtensions, // v0.6.0 で追加
+    ) -> GateOutcome;
 }
+
+// v0.6.0 で追加（feature によらない）。pub use gate::{NotAdmitted, TenantGate, TenantGateConfig, TenantVerified}
+impl TenantGate {
+    pub fn verified(head: &RequestHead) -> Result<&TenantClaims, NotAdmitted>;
+}
+pub struct TenantVerified; // フィールド非公開・Clone なし。ゲートだけが RequestExtensions へ入れる
+impl TenantVerified {
+    pub fn tenant(&self) -> &TenantClaims;
+}
+pub struct NotAdmitted; // Debug / Clone / Copy / PartialEq / Eq / Display / std::error::Error
 
 pub use fandhe_backend_plugin_jwt as jwt; // JwtPolicy / SharedKeySet / KeySet / JwksError など
 pub use auth::{AuthError, Authenticator, HubClaims, TenantClaims};
@@ -77,7 +94,9 @@ JWKS の取得（HTTP フェッチ・自動リフレッシュ）は本クレー�
 
 ## Notes
 
-- `GateOutcome` は許可/拒否の判定結果のみを運ぶ契約であり、検証で得た `org_id` 等のクレームはコアへ一切渡らない
+- `GateOutcome` は許可/拒否の判定結果のみを運ぶ契約であり、検証で得た `org_id` 等のクレームは `GateOutcome` 経由ではコアへ渡らない。v0.6.0 からは `TenantGate::check` が受理時に `TenantVerified` を `RequestExtensions` へ入れ、ハンドラは `TenantGate::verified(&head)` で `&TenantClaims` を読む（検証は繰り返さない）。ゲートを通っていない要求は `NotAdmitted`（フェイルクローズ）。`TenantVerified` はゲート以外に作れないため、値の存在が「`TenantGate` を通った」ことの証明になる。`TenantGate` を二重登録すると上書きせず 500（`{"error":"internal_error"}`）で拒否する。`Debug` は値を出さない
+- DPoP（v0.6.0 で追加、`dpop` feature）: `JwtAuthenticator::<HubClaims>::builder(..).dpop(cfg).build()` を `Authenticator::from_jwt` で包み `TenantGateConfig::from_authenticator` に渡したときだけ、DPoP の検証と拒否 401 への `WWW-Authenticate: DPoP` チャレンジが働く。設定しない認証器では `TenantGateConfig::new` と同じ応答になる。DPoP を設定した認証器ではハンドラが `Authenticator::authenticate` を呼び直せない（`jti` の再使用になる）ため、`org_id` は `TenantGate::verified` で取り出す。DPoP 自体の詳細は [jwt-dpop](./jwt-dpop.md)
+- Migration (v0.5.0 → v0.6.0): コアの `RequestGate::check` に第 3 引数 `extensions: &mut RequestExtensions` が加わった（BREAKING）。`TenantGate` はシグネチャの追随に加えて検証結果を `TenantVerified` として載せるようになったが、401 / 403 の判定と応答は変わらない
 - `RequestGate::check` は同期・I/O なしの契約。JWT 検証は `fandhe-backend-plugin-jwt` が担い（Cargo.toml の依存に `ring` を持つ）、本クレートに残るのは `org_id` の取り出しとテナント境界（欠落・空・空白のみは `AuthError::MissingOrgId` → 403）、Outbox・同意ゲート・越境アクセス監査のみ
 - `RequestGate` はコアループ内で `UpgradeHandler`・`plugin::try_intercept` より先に評価されるため、WebSocket アップグレード等の長時間接続もこの認証をバイパスできない
 - `audit`（越境アクセス監査ログ）・`outbox`（`OutboxStore`）・`consent`（`ConsentStore`）はいずれも同一クレート内の関連モジュールで、`RequestGate::check` の同期 API 制約の対象外（判定通過後にハンドラ層から呼ばれる想定）
@@ -88,4 +107,6 @@ JWKS の取得（HTTP フェッチ・自動リフレッシュ）は本クレー�
 
 ## Related
 
+- [jwt](./jwt.md)
+- [jwt-dpop](./jwt-dpop.md)
 - [tracing](./tracing.md)

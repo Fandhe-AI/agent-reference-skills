@@ -189,6 +189,7 @@ vercel deploy --prebuilt --prod
 
 - 出典: https://fandhe-ai.github.io/fandhe-frontend/examples/vercel-ssg/
 - 出典は公式 `examples/vercel-ssg`（`fandhe-frontend-core` 0.4.3 / `fandhe-frontend-server` 0.2.6）。`clean_output_dir` は公式からの転記で、生成前に固定リテラルの `.vercel/output` だけを削除し（シンボリックリンクは fail-closed で拒否）、削除済みページの HTML が古い出力に残って公開され続けるのを防ぐ。公式は環境変数 `FANDHE_VERCEL_SSG_BASIC_AUTH=1` で有効化する Basic 認証 Routing Middleware（opt-in）も持つが、ここでは最小構成のため省略しており、`main` は公式のものを `clean_output_dir` → `generate_pages` → `generate_assets` の流れに簡略化している。
+- 依存版 `fandhe-frontend-server` 0.2.6 は出典どおり（upstream の Cargo.toml も同版）。crates.io 最新 0.2.8 でも `generate_pages` / `generate_assets` を含む pub アイテムの差分は無い（`src/` diff 確認済み、2026-11-01）。
 - `config.json` の `routes` は、先頭でセキュリティヘッダーを付与（`continue: true`）し、`{"handle": "filesystem"}` で実在ファイルに一致させ、一致しなければ 404 ステータスで `/404.html` を返す。`python3 -m http.server -d .vercel/output/static` のような簡易サーバーでは `routes` は効かない。
 - 生成物は `.vercel/output/config.json` と `.vercel/output/static/`（`index.html`・`pages/about/index.html`・`404.html`）。Vercel 側に Rust ツールチェーンは不要で、ローカルまたは CI でビルドした出力を `--prebuilt` で配置するだけでよい。
 - 新規 Vercel プロジェクトは Deployment Protection（Vercel Authentication）が既定で有効で、未認証アクセスは SSO ページへ 302 になり 404 フォールバックへは到達しない。リクエスト時 SSR が必要なら `vercel-ssr`（Container Images）を使う。

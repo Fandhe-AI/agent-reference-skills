@@ -7,6 +7,8 @@
 | csrf | CSRF 検査ゲートプラグイン（REQ-17、イシュー #825）。Cookie 認証の画面（素の `<form method="post">` を受けるハンドラ）を守るため、状態を変える要求の送信元をハンドラ到達前に一律検査する `CsrfGate` を提供する。 | [csrf.md](./csrf.md) |
 | graphql | GraphQL プラグイン実装（TASK-5.1）。パスインターセプト型のプラグイン境界パターンを維持したまま、`async-graphql` による実クエリ実行を提供する。 | [graphql.md](./graphql.md) |
 | hub-wiring | hub 共通配線プラグイン（TASK-9.1 / TASK-9.2）。コアの `RequestGate` 拡張点上に `TenantGate` を実装し、`org_id` 抽出とテナント境界のフェイルクローズ配線を集約する。 | [hub-wiring.md](./hub-wiring.md) |
+| jwt-dpop | `fandhe-backend-plugin-jwt` の opt-in feature `dpop`（v0.6.0 で追加）。RFC 9449 の DPoP（Demonstrating Proof of Possession）で結合されたアクセストークンを検証する。 | [jwt-dpop.md](./jwt-dpop.md) |
+| jwt-jwks-refresh | `fandhe-backend-plugin-jwt` の opt-in feature `jwks-refresh`（v0.6.0 で追加）。ゲートの外で `SharedKeySet` を最新に保つ非同期タスクを提供し、JWKS のローテーションにサーバ再起動なしで追従する。 | [jwt-jwks-refresh.md](./jwt-jwks-refresh.md) |
 | jwt | 汎用 JWT 検証プラグイン（REQ-16、イシュー #812 系）。`Authorization: Bearer` の JWT（RFC 9068 のアクセストークン）を RS256 / ES256 で検証する `RequestGate` 実装 `JwtGate` と、その構成要素（検証ポリシー・JWKS 鍵集合・検証関数・認証器・未知 `kid` 通知口）を提供する。 | [jwt.md](./jwt.md) |
 | openapi | OpenAPI ドキュメント生成プラグイン（TASK-3.1、REQ-3【Must】）。実装本体（`crates/routes` 等）から独立した「ドキュメント専用の薄い関数」に `#[utoipa::path(...)]` を付与し `ApiDoc` に集約する。 | [openapi.md](./openapi.md) |
 | static | 静的ファイル配信プラグイン。パストラバーサル対策・`spawn_blocking` I/O を備えたディレクトリ配信を提供する（イシュー #318）。 | [static.md](./static.md) |

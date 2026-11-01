@@ -91,6 +91,7 @@ vercel deploy --prod
 
 - 出典: https://fandhe-ai.github.io/fandhe-frontend/examples/vercel-ssr/
 - 出典は公式 `examples/vercel-ssr`。公式の `src/main.rs` は上記に加え、`SIGTERM` / `SIGINT` 受信後に listener を drop し、`hyper_util::server::graceful::GracefulShutdown` で処理中の接続を最大 `DRAIN_TIMEOUT_SECS`（25 秒、Vercel の 30 秒猶予より短い）まで待つ graceful shutdown（`ShutdownSignals` / `drain_within`）と accept ループを持つ。ここでは bind 先解決とレスポンス組み立てのみ抜粋。
+- 依存版 `fandhe-frontend-dist-server = "0.3.4"` は出典どおり（upstream main の Cargo.toml も同版）。crates.io 最新 0.3.7 でも `route_request` を含む pub API の差分は無い（`src/` diff 確認済み、2026-11-01）。0.3.7 では WASM 配布 feature 集合 `WASM_DIST_FEATURES` に `action-keydown` が 1 件加わった（他は doc comment のみ）。
 - bind 先の優先順位は `FANDHE_FRONTEND_BIND_ADDR` > `PORT`（`0.0.0.0:$PORT`）> 既定 `127.0.0.1:3100`。`FANDHE_FRONTEND_BIND_ADDR` が設定されていれば `PORT` は検証されない。`PORT` が `1..=65535` 以外なら起動失敗（fail-closed）。
 - Vercel のプロジェクト環境変数 `PORT` に 1024 以上（例 `3100`）の設定が必須。`Dockerfile.vercel` は非 root（`USER 65532:65532`）で実行するため 1024 未満（Container Images 既定の `80`）へ bind できない。`Dockerfile.vercel` が `FANDHE_FRONTEND_BIND_ADDR` を設定しないのは、`PORT` より優先されて Vercel の上書きが効かなくなるため。
 - crates.io の外部依存では `/static/*` と WASM が出荷されず、`/static/*` は常に 404。Container Images は Beta 機能（チームで有効化が必要な場合あり）。`vercel deploy` が `Dockerfile.vercel` を自動検出してビルドするため `--prebuilt` は付けない（静的配置は `vercel-ssg`）。Vercel 実機でのデプロイ確認は公式側でも未実施。

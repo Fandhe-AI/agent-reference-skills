@@ -4,7 +4,7 @@
 
 ```toml
 [dependencies]
-fandhe-backend-http = "0.5.0"
+fandhe-backend-http = "0.6.1"
 ```
 
 ```rust
