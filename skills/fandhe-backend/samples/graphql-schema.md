@@ -4,10 +4,10 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = { version = "0.5.0", features = ["graphql"] }
-fandhe-backend-http = "0.5.0"
-fandhe-backend-routes = "0.5.0"
-fandhe-backend-plugin-graphql = "0.5.0"
+fandhe-backend-core = { version = "0.6.1", features = ["graphql"] }
+fandhe-backend-http = "0.6.1"
+fandhe-backend-routes = "0.6.1"
+fandhe-backend-plugin-graphql = "0.6.1"
 async-graphql = { version = "7", default-features = false, features = ["dynamic-schema"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal"] }
 ```

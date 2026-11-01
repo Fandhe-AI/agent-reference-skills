@@ -97,7 +97,7 @@ impl WsSender {
 
 ### WsOpenContext / WsConnContext（v0.4.1 / v0.4.2 で追加）
 
-`on_open` に渡される `WsOpenContext`（所有値）と、`on_message_with_ctx` / `on_close` に渡される `&WsConnContext`。どちらも同名の 9 アクセサを持つ。
+`on_open` に渡される `WsOpenContext`（所有値）と、`on_message_with_ctx` / `on_close` に渡される `&WsConnContext`。どちらも同名の 9 アクセサを持つ。加えて v0.6.1 で両方に `extensions()` が追加された（下記）。
 
 | メソッド | 戻り値 | 説明 |
 | --- | --- | --- |
@@ -109,6 +109,14 @@ impl WsSender {
 | `host()` / `origin()` / `user_agent()` | `Option<&str>` | 対応するリクエストヘッダ値（v0.4.2） |
 | `query()` | `Option<&str>` | query 文字列（v0.4.2） |
 
+```rust,ignore
+// v0.6.1 で追加。WsOpenContext / WsConnContext の双方に同シグネチャで存在する
+#[must_use]
+pub fn extensions(&self) -> &RequestExtensions;
+```
+
+- `extensions()`（v0.6.1 で追加）: `RequestGate` が入れた検証結果（JWT の検証済みクレーム等）を、`on_open`・`on_message_with_ctx`・`on_close` から読み取り専用で参照できる。`ctx.extensions().get::<T>()` で読む。ハンドシェイクのフックは従来どおり `WsHandshakeContext::head().extensions()`。`Debug` は値を出さない。ゲートが拒否した upgrade は 101 にもハンドラにも届かない。追加のみで既存の型は壊れない
+- `extensions()` の限界（CHANGELOG）: 値はセッションの間ずっと保持され、JWT の `exp` はハンドシェイク時点でしか検証されない。コアの `Server::max_connection_lifetime` は upgrade 後の委譲セッションには効かない。緩和策はガイド `ws-gate-extensions`（https://fandhe-ai.github.io/fandhe-backend/guides/ws-gate-extensions/ 、[ws-gate-extensions](../guides/ws-gate-extensions.md)）を参照
 - ヘッダ値は `MAX_CONTEXT_HEADER_VALUE_BYTES`（1024）、query は `MAX_CONTEXT_QUERY_BYTES`（2048）を上限とし、超過した値は切り詰めずに `None`（部分一致による許可リスト迂回を避けるフェイルクローズ）
 - 保持するのは固定 5 項目（`peer_addr` / `host` / `origin` / `user_agent` / `query`）のみ。任意ヘッダの汎用アクセサはない。2 つのコンテキストは同一の内部値を `Arc` 共有する
 - `Debug` 出力にはパスパラメータ・リクエスト由来の値・peer address を含めない
@@ -201,6 +209,7 @@ let config = WebSocketConfig::default().with_handshake_check(
 
 ## Related
 
+- [ws-gate-extensions](../guides/ws-gate-extensions.md)
 - [webrtc](./webrtc.md)
 - [webrtc-proxy](./webrtc-proxy.md)
 - [graphql](./graphql.md)

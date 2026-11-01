@@ -29,7 +29,10 @@ cargo add fandhe-backend-core --features graphql,openapi,cors
 
 ## Notes
 
-- Gate 型の `fandhe-backend-plugin-hub-wiring`（テナント境界強制、JWT 検証は plugin-jwt に委譲）・`fandhe-backend-plugin-jwt`（`JwtGate`）・`fandhe-backend-plugin-csrf`（`CsrfGate`）は `crates/core` の feature ではなく、feature なしの独立クレートとして直接依存に加え `Server::gate` で登録する（`[features]` 一覧は v0.5.0 でも変わらない）
+- Gate 型の `fandhe-backend-plugin-hub-wiring`（テナント境界強制、JWT 検証は plugin-jwt に委譲）・`fandhe-backend-plugin-jwt`（`JwtGate`）・`fandhe-backend-plugin-csrf`（`CsrfGate`）は `crates/core` の feature ではなく、feature なしの独立クレートとして直接依存に加え `Server::gate` で登録する（`fandhe-backend-core` の `[features]` 一覧は v0.6.1 でも変わらない）
+- Gate 型クレート側の opt-in feature（いずれも既定は無効、`default = []`）: `fandhe-backend-plugin-jwt` の `dpop`（v0.6.0 で追加、RFC 9449 DPoP 結合トークンの検証。新規依存なし）と `jwks-refresh`（v0.6.0 で追加、`SharedKeySet` の取り直しタスク。`dep:tokio` を有効化）、`fandhe-backend-plugin-hub-wiring` の `dpop`（v0.6.0 で追加、`fandhe-backend-plugin-jwt/dpop` の転送のみ。有効化しただけでは挙動は変わらず、DPoP を設定した認証器を `TenantGateConfig::from_authenticator` に渡したときだけ働く）。`fandhe-backend-plugin-csrf` は feature を持たない
+- 注意（`dpop` 無効、または DPoP を設定していないゲートは、DPoP 結合トークンも bearer として受理する）。DPoP を強制したい下流は必ず `dpop` を有効化して設定すること
+- `cargo add fandhe-backend-plugin-jwt --features dpop,jwks-refresh` のように直接依存側で有効化する
 - プラグインは大きく 4 パターンに分かれる: `UpgradeHandler` 経由（`websocket`）、`Middleware` 経由（`tracing`）、パスインターセプト型（`graphql` / `openapi` / `static`）、レスポンス後処理型（`cors` / `compression`）
 - feature 無効時は該当プラグインの依存・コード・バイナリ増が一切発生しない（`cargo tree -p fandhe-backend-core` で検証可能）
 

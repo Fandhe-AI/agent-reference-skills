@@ -38,4 +38,4 @@ cargo add fandhe-backend-plugin-jwt
 cargo add fandhe-backend-plugin-csrf
 ```
 
-Gate 型の `fandhe-backend-plugin-hub-wiring` / `fandhe-backend-plugin-jwt` / `fandhe-backend-plugin-csrf` は `fandhe-backend-core` の feature を持たない独立クレート。直接依存に追加し、`Server::gate` で登録する。`fandhe-backend-plugin-jwt` と `fandhe-backend-plugin-csrf` は 0.5.0 で初公開（CHANGELOG 記載。0.4.2 以前の crates.io には存在しない）。
+Gate 型の `fandhe-backend-plugin-hub-wiring` / `fandhe-backend-plugin-jwt` / `fandhe-backend-plugin-csrf` は `fandhe-backend-core` の feature を持たない独立クレート。直接依存に追加し、`Server::gate` で登録する。`fandhe-backend-plugin-jwt` と `fandhe-backend-plugin-csrf` は 0.5.0 で初公開（CHANGELOG 記載。0.4.2 以前の crates.io には存在しない）。0.6.1 時点の任意 feature（いずれも既定無効）は、`fandhe-backend-plugin-jwt` が `dpop` / `jwks-refresh`、`fandhe-backend-plugin-hub-wiring` が `dpop`（jwt の `dpop` を有効化）。

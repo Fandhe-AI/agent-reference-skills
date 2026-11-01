@@ -1,11 +1,11 @@
 ---
 name: fandhe-backend
 description: >
-  Rust 製バックエンド HTTP サーバーフレームワーク fandhe-backend のリファレンス。
+  Rust 製バックエンド HTTP サーバーフレームワーク fandhe-backend (v0.6) のリファレンス。
   fandhe-backend-core / -http / -routes。Server, BoundServer, Router（merge）, Handler。
-  拡張点 Middleware（on_response_with_status）/ UpgradeHandler / RequestGate / Interceptor。
+  拡張点 Middleware（on_response_with_status）/ UpgradeHandler / RequestGate（RequestExtensions 受け渡し）/ Interceptor。
   Diagnostics, StreamingResponse, SetCookie session（__Host-）, sans-IO HTTP/1.1, graceful shutdown。
-  プラグイン cors, websocket（WsSender）, graphql, openapi, webrtc, jwt（JwtGate, JwtPolicy）, csrf（CsrfGate）。
+  プラグイン cors, websocket（WsSender）, graphql, openapi, webrtc, jwt（JwtGate, JwtPolicy, DPoP RFC 9449, jwks-refresh）, csrf（CsrfGate）。
 user-invocable: false
 ---
 
@@ -15,7 +15,7 @@ fandhe-backend は Rust 製バックエンド HTTP サーバーフレームワ�
 
 **他スキルとの使い分け** — `Server` / `Router` / `Middleware` / `CORS` / `WebSocket` という語は複数のフレームワークで共通するため誤参照しやすい。`hono`（Web Standards JS）・`fastify`（Node.js ネイティブ）・`go-echo`（Go）は別フレームワークであり、いずれも本スキルとは別物。`fandhe-frontend` は同じ fandhe ファミリーの Rust 製フロントエンド層（SSR / SPA / SSG）であり、Rust 製バックエンド HTTP サーバーを調べる場合は本スキル（`fandhe-backend`）を参照すること。
 
-対象バージョン: v0.5.0（2026-10-16 crates.io 公開、15 クレート lockstep、git e23b9a2。各ページ内の「vX.Y.Z で追加」は導入バージョンを示す）。
+対象バージョン: v0.6.1（2026-10-28 crates.io 公開、15 クレート lockstep、git 9a75278。各ページ内の「vX.Y.Z で追加」は導入バージョンを示す）。v0.6.0 で `RequestGate::check` に第 3 引数 `extensions` が加わる破壊的変更あり。
 
 公式ドキュメント: https://fandhe-ai.github.io/fandhe-backend/
 
@@ -40,6 +40,9 @@ skills/fandhe-backend/
       extension-points.md
       streaming.md
       graceful-shutdown.md
+      dpop.md
+      jwks-refresh.md
+      ws-gate-extensions.md
     core/
       README.md
       server.md
@@ -63,6 +66,7 @@ skills/fandhe-backend/
       README.md
       overview.md
       request.md
+      extensions.md
       response.md
       cookie.md
       location.md
@@ -88,6 +92,8 @@ skills/fandhe-backend/
       webrtc-proxy.md
       hub-wiring.md
       jwt.md
+      jwt-dpop.md
+      jwt-jwks-refresh.md
       csrf.md
   samples/
     README.md
@@ -136,6 +142,10 @@ skills/fandhe-backend/
 | sans-IO なリクエスト/レスポンスパーサー、Cookie・クエリ・フォーム・percent-decode、body フレーミング・chunked コーディング、読み取りバッファ、エラーレスポンス、ソケットオプション・keep-alive を知りたい | http | [references/http/README.md](references/http/README.md) |
 | セッション Cookie（`SetCookie::session`、`__Host-` / `__Secure-` 接頭辞）、POST 後 303（`Response::see_other` / `SameOriginLocation`）、`Vary` / `no-store`、フォーム上限（`FormLimits`）を知りたい | http | [references/http/README.md](references/http/README.md) |
 | JWT 検証ゲート（`JwtGate` / `JwtPolicy` / JWKS KeySet）、CSRF ゲート（`CsrfGate`、`Sec-Fetch-Site` / `Origin`）を使いたい | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| DPoP（RFC 9449）で sender-constrained トークンを検証したい、JWKS を取り直して鍵ローテーションに追従したい（`jwt-dpop` / `jwt-jwks-refresh`） | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| リクエスト単位の型付き拡張領域（`RequestExtensions`）を使いたい、ゲートの検証結果をハンドラへ渡したい（`RequestGate::check` の `extensions` 引数） | http | [references/http/README.md](references/http/README.md) |
+| WebSocket のアップグレード時にゲートの検証結果（extensions）を `UpgradeHandler` へ渡したい | guides | [references/guides/README.md](references/guides/README.md) |
+| DPoP 検証の導入手順、JWKS 取り直しの手順を知りたい | guides | [references/guides/README.md](references/guides/README.md) |
 | CORS・圧縮・静的配信・トレーシング・WebSocket・GraphQL・OpenAPI・WebRTC（in-process / proxy）・hub 共通配線・JWT / CSRF ゲートなど、プラグイン API を知りたい | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | 最小サーバ、CRUD ルーティング、Middleware / RequestGate / Interceptor 自作、CORS・WebSocket・GraphQL・ストリーミング・graceful shutdown・静的配信・圧縮・JwtGate・CsrfGate・セッション Cookie + 303 の動く配線例、実運用形テンプレートを知りたい | samples | [samples/README.md](samples/README.md) |
 | クレート導入・feature 有効化コマンド、ビルド・実行・テスト・lint・依存監査コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

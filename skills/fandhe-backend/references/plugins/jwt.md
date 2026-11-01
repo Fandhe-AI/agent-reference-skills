@@ -6,7 +6,8 @@
 - 拡張点: `RequestGate`（`Server::gate(...)` に登録）
 - 依存方向: プラグイン → コアの一方向。コア側に feature や再エクスポートは追加しない。`#![forbid(unsafe_code)]`
 - `iss`・`aud`・`typ`・許可 `alg` の欠けた構成は型の段階で作れない。`none`・HS 系は `Algorithm` に変種がなく型として表現できない（RFC 8725 3.1・3.8・3.9・3.11・3.12、RFC 9068 4 節）
-- 設計は `docs/design/jwt-verify-plugin.md`（https://github.com/fandhe-ai/fandhe-backend/blob/e23b9a2a6b5ee46b50fe142d5b48f123d2c234dd/docs/design/jwt-verify-plugin.md）
+- 設計は `docs/design/jwt-verify-plugin.md`（https://github.com/fandhe-ai/fandhe-backend/blob/9a75278f68d7fb537867787ee83fc1b550dd2ca8/docs/design/jwt-verify-plugin.md）
+- opt-in feature（いずれも既定は無効）: `dpop`（v0.6.0 で追加。RFC 9449 の DPoP 結合トークン検証。詳細は [jwt-dpop](./jwt-dpop.md)）、`jwks-refresh`（v0.6.0 で追加。`SharedKeySet` の取り直しタスク。詳細は [jwt-jwks-refresh](./jwt-jwks-refresh.md)）
 
 ## Signature / Usage
 
@@ -35,6 +36,28 @@ pub struct JwtGate<E = NoExtraClaims>;
 impl<E> JwtGate<E> {
     pub fn new(auth: JwtAuthenticator<E>) -> Self;
     pub fn authenticator(&self) -> JwtAuthenticator<E>; // ハンドラと共有する clone
+    // v0.6.0 で追加: ゲートが載せた検証済みクレームをハンドラから読む（検証は繰り返さない）
+    pub fn verified(head: &RequestHead) -> Result<&Claims<E>, NotAdmitted>;
+}
+
+// v0.6.0 で追加。フィールド・コンストラクタは非公開（JwtGate::check だけが RequestExtensions へ入れられる）
+pub struct GateVerified<E = NoExtraClaims>;
+impl<E> GateVerified<E> {
+    pub fn claims(&self) -> &Claims<E>;
+}
+
+// v0.6.0 で追加。Debug / Clone / Copy / PartialEq / Eq / Display / std::error::Error を実装
+pub struct NotAdmitted;
+
+// v0.6.0 で BREAKING（コアの RequestGate::check に第 3 引数 extensions を追加）に追随
+impl<E> RequestGate for JwtGate<E> {
+    fn name(&self) -> &'static str; // "jwt-gate"
+    fn check(
+        &self,
+        head: &RequestHead,
+        _ctx: &GateContext,
+        extensions: &mut RequestExtensions,
+    ) -> GateOutcome;
 }
 
 // auth
@@ -169,13 +192,21 @@ pub trait UnknownKeyNotifier: Send + Sync {
 - `bearer_token`: スキーム名は大文字小文字不問、スキームとトークンの間の 1 個以上の SP を許す。トークンが空、スキームが `Bearer` 以外、`Authorization` ヘッダが複数ある場合は `None`
 - 拒否応答: `JwtGate` は 401 を返す。本文は固定の `{"error":"invalid_token"}`（`Content-Type: application/json`）で、トークン・`kid`・失敗理由を反映しない。`WWW-Authenticate` はトークンなしなら `Bearer`（RFC 6750 3.1）、トークンはあるが検証失敗なら `Bearer error="invalid_token"`（`error_description` は付けない）。ヘッダ付与に失敗した場合もヘッダ無しの 401 に倒し `Allow` にはしない
 - 未知 `kid`: ゲートはその場で 401（フェイルクローズ）にし、鍵ローテーションの可能性だけを同期の `UnknownKeyNotifier` へ通知する（判定確定後に呼び、通知口の遅延・panic は判定結果を変えない）。実装契約はブロックしない・I/O しない（`try_send` 等で利用側の非同期タスクへ合図するだけ）・panic しない（呼び出し側は `catch_unwind` で包むが `panic = "abort"` では効かない）。通知は最小間隔で間引かれ、`UnknownKeyEvent::suppressed()` が前回通知以降に間引かれた件数を返す。`UnknownKeyEvent::kid()` は攻撃者が自由に決められる信頼できない値で、ログへ出す場合はエスケープし、鍵取得先の URL やファイル名の組み立てに直接使わないこと。取り直し（HTTP 取得・`SharedKeySet::set`）は利用側の非同期タスクが担う
+- ゲート通過後のクレーム取得（v0.6.0 で追加）: `JwtGate::check` は受理時に `GateVerified<E>` を `RequestExtensions` へ入れ、ハンドラは `JwtGate::<E>::verified(&head)` で読む（検証は繰り返さない）。ゲートを通っていない要求（ゲート未登録・別経路）は `NotAdmitted` を返すので、ハンドラは認証失敗として扱い、クレームを推測や再検証で補わないこと（フェイルクローズ）。`E` は登録したゲートの追加クレーム型と同じにする（違うと値が見つからず `NotAdmitted`）。同じ型のゲートを二重登録すると上書きせず 500（`{"error":"internal_error"}`）で拒否する。`GateVerified` の `Debug` はクレーム値を出さない
+- Migration (v0.5.0 → v0.6.0): コアの `RequestGate::check` に第 3 引数 `extensions: &mut RequestExtensions` が加わった（BREAKING）。`JwtGate` はシグネチャの追随のみで挙動は変わらない。独自の `RequestGate` 実装は `check` に第 3 引数 `_extensions: &mut RequestExtensions` を足す。従来の `JwtGate::authenticator()` 経由で `authenticate` を呼ぶ方法も使えるが、DPoP を設定した認証器ではハンドラで `authenticate` を呼び直すと `jti` の再使用になるため `JwtGate::verified` を使う
+- DPoP（v0.6.0 で追加、`dpop` feature）: `JwtAuthenticatorBuilder::dpop(DpopConfig)` で RFC 9449 の DPoP 結合トークンを検証し、`Claims::cnf_jkt()`・`VerifyError::Dpop`（`#[non_exhaustive]` への追加）・`JwtAuthenticator::dpop_mode()`・`JwtAuthenticator::unauthorized_response(head, err)` が加わる。feature が無効、または DPoP を設定していないゲートは、結合トークンも bearer として受理する（CHANGELOG）。詳細は [jwt-dpop](./jwt-dpop.md)
+- JWKS 取り直し（v0.6.0 で追加、`jwks-refresh` feature）: ゲートの外で `SharedKeySet` を最新に保つ取り直しタスクと、未知 `kid` を契機とする `JwtAuthenticatorBuilder::jwks_refresh_trigger(RefreshTrigger)` が加わる。HTTP クライアントと TLS は持たず取得関数（`JwksFetcher`）をアプリが渡す。詳細は [jwt-jwks-refresh](./jwt-jwks-refresh.md)
 - `Claims` は `sub` などの識別子を含むためログへ出さないこと（`Debug` は `sub` / `jti` / `client_id` / `scope` / `extra` の値を出さず有無のみ示す）
 - Cookie 認証の画面と併用する場合は CSRF ゲートを先に登録する。`JwtGate` は `Authorization: Bearer` のみを見て Cookie は見ない
 - v0.5.0 の BREAKING CHANGES（CHANGELOG）: `fandhe-backend-plugin-hub-wiring` の JWT 検証部を本クレートへ移した。検証ポリシー（発行者・受信者・許可アルゴリズム・トークン種別）が `TenantGateConfig` の構築に必須となり、旧公開パスの互換層は無い。移行は `TenantGateConfig::from_jwks_json(&jwks_json, policy)?`（旧: `from_jwks_json(&jwks_json)?`）。詳細は [hub-wiring](./hub-wiring.md) を参照
-- 出典: https://docs.rs/crate/fandhe-backend-plugin-jwt/0.5.0/source/src/lib.rs
-- 設計文書: https://github.com/fandhe-ai/fandhe-backend/blob/e23b9a2a6b5ee46b50fe142d5b48f123d2c234dd/docs/design/jwt-verify-plugin.md
+- 出典: https://docs.rs/crate/fandhe-backend-plugin-jwt/0.6.1/source/src/lib.rs
+- 設計文書: https://github.com/fandhe-ai/fandhe-backend/blob/9a75278f68d7fb537867787ee83fc1b550dd2ca8/docs/design/jwt-verify-plugin.md
 
 ## Related
 
+- [jwt-dpop](./jwt-dpop.md)
+- [jwt-jwks-refresh](./jwt-jwks-refresh.md)
+- [dpop](../guides/dpop.md)
+- [jwks-refresh](../guides/jwks-refresh.md)
 - [csrf](./csrf.md)
 - [hub-wiring](./hub-wiring.md)

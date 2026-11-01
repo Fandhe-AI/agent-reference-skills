@@ -8,6 +8,7 @@
 | connection | keep-alive 判定・ソケット読み取りループ。`should_keep_alive` は `Connection` ヘッダと HTTP バージョンからの意味判定を行う sans-IO 純関数。 | [connection.md](./connection.md) |
 | cookie | Cookie 関連ヘルパー。読み取り側（`parse_cookie_header`、RFC 6265 cookie-pair 構文準拠）と書き込み側（`SetCookie`、構築時検証済みの `Set-Cookie` 専用型）の 2 つの独立した責務を持つ。 | [cookie.md](./cookie.md) |
 | error | エラーレスポンス共通化ヘルパー。各ハンドラが都度自前定義していた `Result<T, E> -> Response` 変換・JSON エラーボディの定型記述を共通化する最小 trait と関数を提供する。 | [error.md](./error.md) |
+| extensions | リクエスト単位の型付き拡張領域 `RequestExtensions`（v0.6.0 で追加）。`RequestGate` が得た検証結果（例: 検証済み JWT の Claims）を、同じリクエストのハンドラだけへ渡す器。 | [extensions.md](./extensions.md) |
 | form | `application/x-www-form-urlencoded` ボディパーサー（sans-IO）。`query`（`&`/`=` 分解）・`percent`（percent-decode）の既存 sans-IO 純関数を合成して提供する。 | [form.md](./form.md) |
 | location | 同一オリジンに限るリダイレクト先の構築時検証済み型（イシュー #828）。 | [location.md](./location.md) |
 | overview（crate ルート） | `fandhe-backend-http`: fandhe-backend の最小 HTTP コア。sans-IO な HTTP/1.1 パーサー実装であり、workspace 依存グラフ（`server → routes → http`）の末端に位置する。 | [overview.md](./overview.md) |

@@ -28,6 +28,8 @@ impl RequestHead {
     pub fn path(&self) -> &str;
     pub fn query(&self) -> Option<&str>;
     pub fn cookies(&self) -> Result<Vec<(&str, &str)>, crate::cookie::CookieError>;
+    pub fn extensions(&self) -> &RequestExtensions;
+    pub fn extensions_mut(&mut self) -> &mut RequestExtensions;
 }
 
 pub enum ParseOutcome {
@@ -70,6 +72,9 @@ let outcome = parse_request_head(buf).unwrap();
 - `RequestHead::header` は同名ヘッダが複数存在する場合は最初の 1 件のみ返す。全件走査は `headers()` を使う
 - `path()` / `query()` は `?` の 1 点のみで分離し、% デコード・末尾スラッシュ正規化等は一切行わない（ルート照合とのデコード差異による正規化バイパスを防ぐ契約）
 - `cookies()` は複数 `Cookie` ヘッダを `"; "` 結合と等価に扱い、[`cookie::MAX_COOKIE_COUNT`](./cookie.md) / [`cookie::MAX_COOKIE_STRING_BYTES`](./cookie.md) の累積上限を適用する（ヘッダ分割による迂回防止）
+- v0.6.0 で `extensions()` / `extensions_mut()` を追加（issue #924）。`RequestGate` が得た検証結果（例: 検証済み JWT の Claims）を同じリクエストのハンドラへ渡すリクエスト単位の型付き領域 `RequestExtensions` を返す。型の詳細は [`extensions`](./extensions.md) を参照
+- `extensions()` はパーサー構築直後は常に空（クライアント入力から値が入る経路はない）。本番経路で書き込むのはコアのみ（全ゲート通過後に器を移す）で、`&RequestHead` しか持たない後段は読み取り専用。`extensions_mut()` はハンドラの単体テストで値を仕込む用途にも使える
+- `RequestHead` の `PartialEq` は `extensions` を比較対象に含めない（ワイヤ上の値ではないため）
 - `is_tchar` は `response::AllowedMethods` と判定基準を共有する（`pub(crate)`）
 
 ## Related
@@ -78,3 +83,4 @@ let outcome = parse_request_head(buf).unwrap();
 - [cookie](./cookie.md)
 - [query](./query.md)
 - [connection](./connection.md)
+- [extensions](./extensions.md)

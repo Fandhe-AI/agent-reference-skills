@@ -25,6 +25,7 @@ use fandhe_backend_http::request::parse_request_head;
 | `form` | `application/x-www-form-urlencoded` ボディパーサー |
 | `error` | エラーレスポンス共通化ヘルパー（`IntoResponse`） |
 | `location` | 同一オリジンに限るリダイレクト先の検証済み型（`SameOriginLocation`、#828）。`Response::see_other` が受け取る |
+| `extensions` | リクエスト単位の型付き拡張領域（`RequestExtensions`、#924、v0.6.0 で追加）。[`extensions`](./extensions.md) 参照 |
 
 ## Notes
 

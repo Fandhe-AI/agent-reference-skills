@@ -4,14 +4,14 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = "0.5.0"
-fandhe-backend-http = "0.5.0"
-fandhe-backend-plugin-csrf = "0.5.0"
+fandhe-backend-core = "0.6.1"
+fandhe-backend-http = "0.6.1"
+fandhe-backend-plugin-csrf = "0.6.1"
 ```
 
 ```rust
 use fandhe_backend_core::Server;
-use fandhe_backend_core::extension::{GateContext, GateOutcome, RequestGate};
+use fandhe_backend_core::extension::{GateContext, GateOutcome, RequestExtensions, RequestGate};
 use fandhe_backend_http::request::RequestHead;
 use fandhe_backend_plugin_csrf::CsrfGate;
 
@@ -21,7 +21,12 @@ impl RequestGate for Auth {
     fn name(&self) -> &'static str {
         "auth"
     }
-    fn check(&self, _head: &RequestHead, _ctx: &GateContext) -> GateOutcome {
+    fn check(
+        &self,
+        _head: &RequestHead,
+        _ctx: &GateContext,
+        _extensions: &mut RequestExtensions,
+    ) -> GateOutcome {
         GateOutcome::Allow
     }
 }
@@ -49,5 +54,6 @@ fn main() {
 - 除外パス（`exempt_path`）は完全一致のみ。`/token?x=1` は除外されるが、`/token/`・`/tok%65n` は除外されず検査を受ける
 - `allow_origin` はブラウザがシリアライズする形（小文字 scheme・小文字ホスト・既定ポート省略・パスなし）でなければ `build()` が `Err` を返す
 - 登録順は許可/拒否の結論には影響しない（複数ゲートは AND 結合）。CSRF を先にすると、送信元検査に落ちた要求が資格情報を評価するゲートの副作用（キャッシュ書き込み・監査等）へ届かない
+- Migration (v0.5 → v0.6): `RequestGate::check` に第 3 引数 `extensions: &mut RequestExtensions` が追加された。値を入れない自作ゲートは `_extensions` で受ける（`RequestExtensions` は `fandhe_backend_core::extension` から import）
 - 出典: https://docs.rs/crate/fandhe-backend-plugin-csrf/0.5.0/source/src/lib.rs
 - 出典: https://docs.rs/crate/fandhe-backend-plugin-csrf/0.5.0/source/src/gate.rs

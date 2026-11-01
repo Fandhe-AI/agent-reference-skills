@@ -13,7 +13,7 @@ loop {
     Err(e)            → e に応じた 4xx/5xx（またはエラー応答なし）を返しクローズ
     Ok(Some(req)) →
       1. Middleware::on_request（登録順）
-      2. RequestGate::check（登録順、最初の Reject を優先。フェイルクローズ）
+      2. RequestGate::check（登録順、最初の Reject を優先。フェイルクローズ。v0.6.0 で第 3 引数 extensions: &mut RequestExtensions を追加。全ゲートが Allow のときだけ器を RequestHead へ移す）
       3. UpgradeHandler::matches（登録順。マッチしたら読み取りバッファを明示解放してから try_handle_upgrade へ委譲）
       3.5. Interceptor::intercept（ユーザー向けインターセプト拡張点。登録順、最初の Some(response) なら以降の plugin::try_intercept・Handler::handle をスキップ）
       4. plugin::try_intercept（パスインターセプト型プラグイン。3.5 で確定済みならスキップ。Some(response) なら以降の Handler::handle をスキップ）
@@ -28,6 +28,7 @@ loop {
 ## Notes
 
 - v0.4.2 で `Middleware` に `on_response_with_status(head, status, elapsed)` が追加された（issue #721）。`status` は `Interceptor::map_response` 適用後にクライアントへ実際に送出した値で、コアが呼ぶのはこの新フックのみ（既定実装が `on_response` へ委譲するため既存実装は無変更で動作）。詳細は [Middleware](./middleware.md)
+- v0.6.0 で `RequestGate::check` に第 3 引数 `extensions: &mut RequestExtensions` が追加された（BREAKING、issue #924）。ゲートが得た検証結果を同じリクエストのハンドラ・`Interceptor` へ渡す経路で、`Reject` 後・keep-alive の後続リクエスト・ゲート未登録時には届かない。移行は [RequestGate](./request-gate.md) の Notes を参照
 - `RequestGate` を `UpgradeHandler` より先に評価するのは、将来の hub TenantGate が WebSocket アップグレードも既定拒否でゲートできるようにするため
 - `Interceptor::intercept` を `RequestGate` より後・`UpgradeHandler` より後に評価するのは、ユーザーコードがゲートの既定拒否を迂回できないようにするため（フェイルクローズ維持）
 - 4 拡張点は dyn 互換性のため同期 API として定義される。`Handler::handle` のみ非対称に async 化されている（イシュー #315）。`Interceptor` の実装内でも同期ブロッキング I/O は禁止（実測でスループット最大 25% 劣化）
