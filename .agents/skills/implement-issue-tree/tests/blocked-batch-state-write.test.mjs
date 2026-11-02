@@ -554,7 +554,7 @@ test('配線: 一括書き込みは終了時の孤立 worktree 判定（loadStat
   assert.equal(calls.length, 1)
   const reload = driverPart.indexOf('const fresh = await enqueueStateWrite(() => loadState())')
   assert.ok(reload > 0 && calls[0].index < reload)
-  assert.match(driverPart, /writeBlockedStateBatch\(blockedStateBatch, savedItems\)/)
+  assert.match(driverPart, /writeBlockedStateBatch\(blockedStateBatch\.filter\(\(e\) => !done\.has\(e\.number\)\), savedItems\)/)
 })
 
 test('配線: 新ラベル state:update-batch は runStateAgent 経由で、sonnet フォールバックと meta の説明に登録されている', () => {

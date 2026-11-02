@@ -38,6 +38,16 @@
     "true / {\"enabled\": true}": "opt-in。Review の各ラウンドで、セキュリティ専用の Review を通常の Review と並列に走らせ、両方の結果を合わせて判定する（どちらかが needs-fix なら通らず、fix に指摘をすべて渡す）。Review ラウンドごとに 1 エージェントと使い捨て worktree 1 件が増える",
     "それ以外の形": "エラーで停止する（誤記を黙って読み替えない）"
   },
+  "_skipLabels": {
+    "未指定 / []": "現行動作。ラベルは見ず、agent も呼ばない",
+    "[\"owner:human\", \"owner:joint\"]": "opt-in（Issue #720）。いずれかのラベルが付いた open ノードは Plan / Implement を起動せず blocked（halt 非カウント）で待たせ、それを dependsOn に持つ後続も待つ。ラベルは付いたノード自身にだけ効き子孫へは継承しない。リポジトリ全体の open issue をラベルごとに 1 体の agent で列挙し、取得できなければ open ノードを全て待たせる（fail-closed）。close するかラベルを外して再実行すると着手する",
+    "配列でない・11 件以上・空文字・改行や制御文字・前後空白・51 文字以上・文字列でない要素": "agent を呼ぶ前に起動時エラーで停止する。カンマを含む要素も拒否する（labels= のカンマは AND 指定になるため）。リポジトリに存在しないラベルは警告と返却値 skippedLabels.absent で知らせる（fail-closed にはしない）"
+  },
+  "_notifyBlocked": {
+    "未指定 / false": "通知なし。返却値にも blockedWaiting を足さない",
+    "true": "opt-in（Issue #720）。ツリー外の前提または対象外ラベルで待っている issue があるとき、ラン終了時にルート issue へ 1 回コメントし（dryRun では投稿しない）、返却値に blockedWaiting を足す。メインセッションは blockedWaiting が空でなければ PushNotification で通知する（SKILL.md の Step 8）",
+    "boolean 以外": "エラーで停止する（誤記を黙って読み替えない）"
+  },
   "_repo": "base 取り込み（maxBaseMerges > 0）の worktree routing ガードが期待する owner/repo（例: \"Fandhe-AI/agent-cli-skills\"）。人間が明示するホスト側入力のみを使い、エージェントの自己申告値は使わない（PR #443 codex P0）。未指定は base 取り込みを起動せず conflicting を即 blocked+quality にする。形式不正（owner/repo でない）は起動時にエラーで停止する（誤記の黙読み替え禁止）",
   "examples": [
     {
@@ -95,6 +105,10 @@
     {
       "description": "push 前 Review にセキュリティ専用の Review を足し、そのモデルを opus にする（securityReview。通常の Review は既定の sonnet のまま）",
       "args": { "parent": 42, "skillDir": "/Users/me/repo/.claude/skills/implement-issue-tree", "externalChecks": [], "securityReview": true, "models": { "securityReview": "opus" } }
+    },
+    {
+      "description": "人手の issue（owner:human / owner:joint）を同じツリーに置き、自動実装の対象から外して待たせる。待機中の issue はルート issue へコメントする（skipLabels / notifyBlocked。事前に dryRun: true で見積もれる）",
+      "args": { "parent": 42, "skillDir": "/Users/me/repo/.claude/skills/implement-issue-tree", "externalChecks": [], "skipLabels": ["owner:human", "owner:joint"], "notifyBlocked": true }
     }
   ]
 }

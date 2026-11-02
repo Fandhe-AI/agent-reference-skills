@@ -133,8 +133,15 @@ fetch_sub_issues "${ROOT_NUMBER}"
 | 既存 Phase に収まらない新規タスクがある | 新 Phase 親の新設を検討 |
 | 実装時間が `${GRANULARITY}`（Step 1 で確定。既定 2h）超の issue が分解されていない | sub-issue に分解（create-issue-tree と同じ粒度基準） |
 | 対象 issue の親が別リポジトリにある（cross-repository sub-issue） | 本スキルの対象外。棚卸し対象から除外し、Step 9 の要確認事項へ記載する |
+| `owner:human` / `owner:joint` ラベル付きの open issue がある | 一覧化して Step 9 の要確認事項へ記載するだけ。ラベルは自動で付け外ししない（人手の判断を機械が書き換えない） |
 
 棚卸し対象の一覧をユーザーに提示し、方針確認を取ってから変更を実行する。
+
+owner ラベル付き issue は、Step 1 のツリーマップ（sub_issues API の応答の `labels`）に記録したラベルからだけ抽出する。
+対象は Step 1 のツリーに含まれる番号に限る（リポジトリ全体の `gh issue list` は 30 件上限で別ツリーも混ざるため使わない）。
+ラベルが不明な番号だけ `gh issue view "${N}" --json number,labels` で取得し、gh のエラーは stdout に出るため
+**終了コード**で成否を判定する（失敗を「該当なし」と読まない）。
+これらの issue は `implement-issue-tree` を `skipLabels: ["owner:human","owner:joint"]` 付きで呼ぶと自動実装の対象外になる。
 
 **承認された対象を Step 3 / Step 4 が読む 2 つの計画配列へ落とす。** 配列は必ず宣言する
 （対象 0 件でも空配列として宣言する）。未宣言のまま Step 3 / Step 4 へ進むと
@@ -684,6 +691,7 @@ fi
 
 ### 要確認事項（自動配置できなかった issue）
 - #N: タイトル — 確認理由
+- owner ラベル付き open issue（`owner:human` / `owner:joint`）: #N: タイトル — 人手対応待ち（ラベルは変更しない）
 - 退避ブロック（`<details>`）の確認 / Step 8 の exit 5・6・7（該当時）
 ```
 

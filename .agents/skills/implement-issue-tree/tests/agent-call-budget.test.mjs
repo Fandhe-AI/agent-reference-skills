@@ -190,6 +190,9 @@ async function runScript({ args, leaves, cutoffAfter = Infinity, override = () =
       const m = /for n in ([0-9 ]+); do/.exec(prompt)
       return { entries: m[1].trim().split(' ').map(Number).map((x) => ({ number: x, state: 'OPEN', sig: outOfTreeStateChecksum(x, 'OPEN') })) }
     }
+    // 対象外ラベル（args.skipLabels）の既定の応答: どのラベルにも該当する open issue なし。通知コメントは成功
+    if (label.startsWith('plan:skip-labels')) return { entries: [...new Set(args.skipLabels ?? [])].map((_, k) => ({ i: k + 1, x: 0, numbers: [], sig: declaredDepsChecksum((k + 1) * 2, []) })) }
+    if (label === 'notify-blocked') return { ok: true }
     if (label === 'worktree:orphan-scan') return { entries: [{ path: '/repo', branch: 'main', isMain: true }] }
     if (label === 'worktree:record-count') return { count: 1 }
     if (label.startsWith('plan:#')) { inFlight.add(n); peak = Math.max(peak, inFlight.size); return { plan: 'p', summary: 's' } }
