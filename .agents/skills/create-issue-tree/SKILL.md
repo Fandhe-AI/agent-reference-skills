@@ -51,6 +51,7 @@ create-issue-tree requirements.md --granularity 4h
 入力テキストまたはファイルから要件を読み込み、以下の観点でタスクを分解する。
 
 - **粒度基準: 1 issue は実装 `${GRANULARITY}`（既定 2h・`--granularity` で変更可）程度に収める。** 超えると判断した場合は sub-issue に再分解する
+- **人手タスクの判定:** 依頼者の回答・レビュー、対象者の聞き取り、実機・スクリーンリーダー操作、承認など自動実装できないものは `owner:human`（人手のみ）、人と Claude の協働は `owner:joint` とする。判定が曖昧なものは下の確認提示でユーザーに聞く。ラベルは付けた issue 本人にだけ効き、子孫へは継承されない。`implement-issue-tree` の `skipLabels` で自動実装の対象外にできる（Step 5 の案内と次のアクション参照）
 
 `--granularity` の値は代入前に Claude 側でも同じ正規表現（`^[1-9][0-9]*h$`）で検証し、
 不一致なら**このフェンスを実行せず**ユーザーに再指定を求める（未信頼値を生成済みシェルへ
@@ -103,7 +104,7 @@ echo "粒度基準: ${GRANULARITY}（由来: ${GRANULARITY_SOURCE}）"
 
 以降の Step は Step 1 で出力された `GRANULARITY` の値を使う（既定 2h と読み替えない）。
 
-- 各タスクの依存関係・実行順を把握する
+- 各タスクの依存関係・実行順を把握する。人手タスクに依存する実装タスクは、本文に `## 前提` 節を置いて行頭に `- #N` を書く（Step 5 参照）。そのため人手 issue を先に起票する
 - タスク数を集計し、Phase 分割の要否を判断する（目安: 10 件超で Phase 分割を検討）
 
 分解結果をユーザーに提示し、Phase 構成・issue 数について確認を取る。  
@@ -260,6 +261,18 @@ PHASE=1
 # （作成済みの場合は失敗を無視して続行する）
 gh label create "phase:${PHASE}" --color "0075ca" 2>/dev/null || true
 
+# 人手タスク用の owner ラベル。このツリーで実際に使うラベルだけを OWNER_LABELS に並べる
+# （該当タスクが無ければ空配列のままにし、何も作成しない）
+OWNER_LABELS=()  # 例: ("owner:human" "owner:joint")
+for OWNER in ${OWNER_LABELS[@]+"${OWNER_LABELS[@]}"}; do
+  case "${OWNER}" in
+    owner:human) COLOR="d93f0b" ;;
+    owner:joint) COLOR="fbca04" ;;
+    *) continue ;;
+  esac
+  gh label create "${OWNER}" --color "${COLOR}" 2>/dev/null || true
+done
+
 # --root 再実行時の重複防止: ルート直下に同じ Phase の open な親が既にあれば再利用する
 # closed な親は再利用しない（closed 親の下に open issue を残置しない運用ルールと整合させる）。
 # phase ラベルだけでは同ラベルの一般 issue がルート直下に混在した場合に誤マッチするため、
@@ -330,8 +343,13 @@ gh api \
 ```bash
 # MILESTONE が空でなければ --milestone を付与する（Step 2.5 で決定済み）
 CHILD_ARGS=(--title "feat: タスク名" --label "phase:${PHASE}")
+OWNER_LABEL=""  # 人手タスクなら "owner:human" または "owner:joint" に置き換える
 if [[ -n "${MILESTONE}" ]]; then
   CHILD_ARGS+=(--milestone "${MILESTONE}")
+fi
+# 人手タスクだけ owner ラベルを追加する（OWNER_LABEL は owner:human / owner:joint の固定値のみ。それ以外は空）
+if [[ -n "${OWNER_LABEL}" ]]; then
+  CHILD_ARGS+=(--label "${OWNER_LABEL}")
 fi
 
 # 子 issue を作成（URL 末尾から番号を抽出）。PHASE は Step 4 で設定した番号を引き継ぐ
@@ -370,6 +388,18 @@ gh api \
   "repos/{owner}/{repo}/issues/${CHILD_NUMBER}/sub_issues" \
   -F "sub_issue_id=${SUB_ID}"
 ```
+
+**人手タスクに依存する実装タスク**は、本文に `## 前提` 節を置き、行頭に `- #N`（人手 issue の番号）を書く。
+書式は `implement-issue-tree` の依存宣言（見出し節の行頭の `#N`）に合わせる。「関連」「参考」を含む行は依存から除外される。
+番号が要るため、人手 issue を実装 issue より先に起票する。
+
+```markdown
+## 前提
+
+- #123
+```
+
+人手 issue を同じツリーに置くのは、`implement-issue-tree` を `skipLabels` 付きで回す前提である。付けずに回すと人手 issue も自動実装の対象になる。
 
 issue 数が多い場合（50 件超が目安）は `per_page=100` パラメータを使用し、ページネーションで全件確認する。
 
@@ -513,7 +543,7 @@ fi
 ...
 
 ### 次のアクション
-- 実装消化: implement-issue-tree スキルに ルート issue 番号を渡す
+- 実装消化: implement-issue-tree スキルに ルート issue 番号を渡す。`owner:human` / `owner:joint` を使った場合は `skipLabels: ["owner:human","owner:joint"]`（待ち一覧をルートへ通知するなら `notifyBlocked: true` も）を付ける
 - ツリー更新: update-issue-tree スキルでトラッキング issue を棚卸しする
 ```
 
@@ -552,6 +582,7 @@ gh api "repos/{owner}/{repo}/issues/${PHASE_NUMBER}/sub_issues?per_page=100" \
 | closed 親の下に open issue が残置される | Phase 親を close する前に全子 issue の close を確認する |
 | Step 6 の本文を手書きのプレースホルダーのまま `gh issue edit` してルート本文が雛形で上書きされる | 実ツリーから表を生成する `scripts/create-root-body.sh`（新規作成）・`scripts/merge-root-body.sh`（`--root`）を使う。検査ガードに引っかかったら本文を送らず中止される |
 | Step 6 到達前に中断し、雛形のままのルートが残った | `--root <ルート番号>` を付けて再実行する。プレースホルダー行は今回の Phase 行へ置き換わる |
+| 人手 issue（`owner:*`）を置いたツリーを `skipLabels` なしで `implement-issue-tree` に渡し、人手 issue まで自動実装の対象になる | `skipLabels: ["owner:human","owner:joint"]` を付けて実行する。ラベルは本人だけに効き子孫へ継承されない |
 | `--granularity` に `2 h`・`2`・`0h` 等を渡して中断される | 正整数+h 形式（`^[1-9][0-9]*h$`。例: `2h`・`4h`）で指定する |
 
 ## 注意事項
@@ -564,4 +595,5 @@ gh api "repos/{owner}/{repo}/issues/${PHASE_NUMBER}/sub_issues?per_page=100" \
 - シェルコマンドの変数は必ず `"${var}"` でクォートする（コマンドインジェクション対策）
 - **`gh issue create` は `--json` 非対応**。issue URL を stdout に出力するため、`| grep -oE '[0-9]+$'` で末尾の番号を抽出して変数に保持する
 - **sub_issues API の `sub_issue_id` は issue 番号ではなく database id**（GitHub 仕様）。`gh api "repos/{owner}/{repo}/issues/<number>" --jq '.id'` で id を取得してから POST する。番号をそのまま渡すと誤った issue を紐付ける／404 になる
+- 人手タスクは `owner:human` / `owner:joint` ラベルで区別し、依存する実装 issue には `## 前提` 節で `- #N` を書く。`implement-issue-tree` は `skipLabels` 付きで呼ぶ（Step 1・Step 5 参照）
 - phase ラベルは Step 4 冒頭の `gh label create "phase:${PHASE}" --color "0075ca"` で issue 作成より前に必ず作成する（作成済みリポジトリでは no-op）
