@@ -8,11 +8,13 @@ Trigger and manage Workflow instances from a Python Worker through the `env` bin
 
 ## Signature / Usage
 
+Adapted (not in the official docs): `send_event` is shown on the instance returned by `get(id)` as the JavaScript `sendEvent`; see Notes.
+
 ```python
 create(options=None)
 create_batch(batch)
 get(id)
-send_event(type, payload)
+instance.sendEvent(to_js({"type": type, "payload": payload}))
 ```
 
 Payload inside a Python Workflow:
@@ -77,12 +79,22 @@ class Default(WorkerEntrypoint):
 
 Send an event:
 
+Adapted (not in the official docs): the event is sent to a specific instance via `get(id)` and the JavaScript `WorkflowInstance.sendEvent`, with the payload converted by the `to_js` helper from the Python FFI page; see Notes.
+
 ```python
+from js import Object
+from pyodide.ffi import to_js as _to_js
+
 from workers import WorkerEntrypoint, Response
+
+# to_js converts between Python dictionaries and JavaScript Objects
+def to_js(obj):
+   return _to_js(obj, dict_converter=Object.fromEntries)
 
 class Default(WorkerEntrypoint):
     async def fetch(self, request):
-        await self.env.MY_WORKFLOW.send_event(type="my-event-type", payload={"foo": "bar"})
+        instance = await self.env.MY_WORKFLOW.get("abc-123")
+        await instance.sendEvent(to_js({"type": "my-event-type", "payload": {"foo": "bar"}}))
         return Response.json({"status": "success"})
 ```
 
@@ -93,16 +105,16 @@ class Default(WorkerEntrypoint):
 | create `options` | `dict` | `None` | Same keys as `WorkflowInstanceCreateOptions` (`id`, `params`, `retention`) |
 | create_batch `batch` | `list` of `WorkflowInstanceCreateOptions` | — | Up to 100 instances; each element is expected to include both `id` and `params` |
 | get `id` | `str` | — | Instance ID |
-| send_event `type` | `str` | — | Event type to send |
-| send_event `payload` | — | — | Payload to send |
+| sendEvent `type` | `str` | — | Event type to send (key of the object passed to `sendEvent`) |
+| sendEvent `payload` | — | — | Payload to send (key of the object passed to `sendEvent`) |
 
 ## Notes
 
 - Requires both `python_workflows` and `python_workers` compatibility flags and `compatibility_date` of `2025-08-01` or later. Bindings use FFI; see https://developers.cloudflare.com/workers/languages/python/ffi/#using-bindings-from-python-workers .
 - `create` and `get` return JavaScript `WorkflowInstance` objects, not Python objects.
 - `create_batch` here takes a list; in JavaScript the array form of `createBatch` is deprecated in favour of the `{ instances }` object form (see [workflow-binding.md](./workflow-binding.md)). The Python page documents only the list form.
-- The Python page documents `send_event(type, payload)` on the binding; the JavaScript API exposes `sendEvent` on a `WorkflowInstance` returned by `get()` (see [workflow-instance.md](./workflow-instance.md)).
-- Configuration for Python Workflows is in [python-sdk.md](./python-sdk.md). Events sent with `send_event` should come only from authenticated callers in a real Worker.
+- Corrected from the official docs: the Python page calls `send_event(type=..., payload=...)` on the binding itself without naming a target instance. Through FFI the binding is the JavaScript Workflow binding, which has no event-sending method; events are sent with `sendEvent({ type, payload })` on the `WorkflowInstance` returned by `get(id)` (see [workflow-instance.md](./workflow-instance.md)). The example converts the dictionary with `to_js(..., dict_converter=Object.fromEntries)` as shown on https://developers.cloudflare.com/workers/languages/python/ffi/ .
+- Configuration for Python Workflows is in [python-sdk.md](./python-sdk.md). Events sent with `sendEvent` should come only from authenticated callers in a real Worker.
 
 ## Related
 

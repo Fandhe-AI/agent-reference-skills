@@ -38,24 +38,20 @@ export class MyWorkflow extends WorkflowEntrypoint<Env> {
 			return object.body;
 		});
 
-		// Read only the first 4 KiB for the preview; cancel the rest of the stream.
+		// Copy only the bytes still needed into a fixed 4 KiB buffer; nothing else is kept.
+		const limit = 4096;
+		const buffer = new Uint8Array(limit);
 		const reader = reportStream.getReader();
-		const chunks: Uint8Array[] = [];
-		let total = 0;
-		while (total < 4096) {
+		let filled = 0;
+		while (filled < limit) {
 			const { done, value } = await reader.read();
 			if (done) break;
-			chunks.push(value);
-			total += value.byteLength;
+			const needed = Math.min(value.byteLength, limit - filled);
+			buffer.set(value.subarray(0, needed), filled);
+			filled += needed;
 		}
 		await reader.cancel();
-		const bytes = new Uint8Array(total);
-		let offset = 0;
-		for (const chunk of chunks) {
-			bytes.set(chunk, offset);
-			offset += chunk.byteLength;
-		}
-		const preview = new TextDecoder().decode(bytes.subarray(0, 4096));
+		const preview = new TextDecoder().decode(buffer.subarray(0, filled));
 		return { preview };
 	}
 }
@@ -91,7 +87,7 @@ export class MyWorkflow extends WorkflowEntrypoint<Env, Params> {
 
 ## Notes
 
-- Adapted from the official docs: the stream example built its preview with `await new Response(reportStream).text()`, which buffers the entire R2 object and defeats returning a stream for large output; it reads only the first 4 KiB (an example size) and cancels the stream. Pass the stream on to the consumer unread when you need the whole output.
+- Adapted from the official docs: the stream example built its preview with `await new Response(reportStream).text()`, which buffers the entire R2 object and defeats returning a stream for large output; it copies at most the first 4 KiB (an example size) into a fixed-size buffer, keeping no other chunk data, and cancels the stream. Pass the stream on to the consumer unread when you need the whole output.
 - Returned state must be serializable: primitives, `Array`/`Object` of serializable values, and any structured-cloneable type up to 1 MiB (non-stream). Functions, Symbols, and circular references throw.
 - JavaScript Workflows may return a fresh, unlocked `ReadableStream<Uint8Array>` for larger binary output. Do not return a locked or already-read stream; BYOB streams/readers are unsupported. After persisting, use the new stream returned by the step, not the original. Streamed bytes still count toward the per-instance storage limit.
 - `step.sleep` and `step.sleepUntil` do not count toward the maximum steps limit.

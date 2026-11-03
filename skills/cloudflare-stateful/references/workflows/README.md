@@ -29,5 +29,5 @@
 | Glossary | Workflows terminology | [glossary.md](./glossary.md) |
 | Release notes | Workflows changelog 2024-10 to 2026-04 | [changelog.md](./changelog.md) |
 | Python Workflows SDK | WorkflowEntrypoint, step.do decorator, sleep, errors in Python | [python-sdk.md](./python-sdk.md) |
-| Python Workflow bindings | create, create_batch, get, send_event from Python Workers | [python-bindings.md](./python-bindings.md) |
+| Python Workflow bindings | create, create_batch, get, and per-instance sendEvent from Python Workers | [python-bindings.md](./python-bindings.md) |
 | Python DAG Workflows | Declarative step dependencies by parameter name | [python-dag.md](./python-dag.md) |
