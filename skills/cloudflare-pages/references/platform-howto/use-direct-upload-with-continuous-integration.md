@@ -94,7 +94,7 @@ script:
 | `CLOUDFLARE_API_TOKEN` | secret | — | API token with Account > Cloudflare Pages > Edit. |
 | `CLOUDFLARE_ACCOUNT_ID` | secret | — | Account ID, shown in the **API** section of the zone overview. |
 | `gitHubToken` | action input | — | `${{ secrets.GITHUB_TOKEN }}` with `contents: read` and `deployments: write` lets the action create a Deployment. |
-| `branch` | action input | current git branch | Add a `branch` option under `with` to override. |
+| `command` | action input | — | Wrangler command to run. `wrangler-action` has no `branch` input; to override the deployed branch, append `--branch=<BRANCH_NAME>` to `pages deploy` (without it, Wrangler uses the current git branch, so a build on your production branch deploys to production). |
 
 ## Notes
 

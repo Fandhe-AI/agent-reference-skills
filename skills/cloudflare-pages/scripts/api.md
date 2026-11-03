@@ -10,7 +10,9 @@ Copy-paste `curl` commands for the Pages REST API. Export credentials once in th
 
 Adapted (not in the official docs): the token is read from a silent prompt so it is not typed into a command line or shell history.
 
-```sh
+Run this in Bash or Zsh: `read -s` is not POSIX `sh` (it fails in dash, for example `/bin/sh` on Ubuntu). In a POSIX shell use `stty -echo; read CLOUDFLARE_API_TOKEN; stty echo` instead of the `read` line.
+
+```bash
 export ACCOUNT_ID="<ACCOUNT_ID>"
 export PROJECT_NAME="<PROJECT_NAME>"
 read -rs CLOUDFLARE_API_TOKEN && export CLOUDFLARE_API_TOKEN  # paste the token, then press Enter

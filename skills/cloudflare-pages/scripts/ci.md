@@ -44,7 +44,7 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-The `uses:` references are pinned to full commit SHAs (the version tag is kept as a trailing comment); re-resolve them when you upgrade. The job sets `permissions` with `contents: read` (and `deployments: write` for the Deployment). The workflow deploys the current git branch unless a `branch` option is added under `with`.
+The `uses:` references are pinned to full commit SHAs (the version tag is kept as a trailing comment); re-resolve them when you upgrade. The job sets `permissions` with `contents: read` (and `deployments: write` for the Deployment). `wrangler-action` has no `branch` input; the workflow deploys the current git branch unless `--branch=<BRANCH_NAME>` is appended to the `pages deploy` command in `command`.
 
 ## CircleCI config
 

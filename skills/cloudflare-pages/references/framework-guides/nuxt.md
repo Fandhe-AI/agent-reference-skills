@@ -40,7 +40,11 @@ export default defineEventHandler(({ context }) => {
 
 TypeScript typing (`env.d.ts` in the project root; generate runtime types with `wrangler types` first):
 
+Adapted (not in the official docs): `export {}` added so the file is a module and `declare module "h3"` augments the existing types instead of declaring an ambient module; see Notes.
+
 ```ts
+export {};
+
 declare module "h3" {
 	interface H3EventContext {
 		cf: CfProperties;
@@ -70,8 +74,9 @@ Git integration build settings:
 
 - For new projects Cloudflare recommends Workers; see cloudflare-workers framework-guides.
 - The initial C3 deployment is a Direct Upload deployment. Git integration cannot be added to an existing Pages application; create a new Pages application to use it.
-- Wrangler configuration is used mainly for local development. Bindings declared there are not available remotely unless created as remote bindings (https://developers.cloudflare.com/workers/local-development/#remote-bindings).
-- To use bindings in a deployed application, configure them in the Cloudflare dashboard ([bindings.md](../functions/bindings.md)).
+- Adapted from the official docs: `export {}` was added at the top of `env.d.ts`. Without a top-level import/export the file is a script, and `declare module "h3"` would declare an ambient module rather than augment `H3EventContext`.
+- Local development: `nitro-cloudflare-dev` emulates bindings from the Wrangler configuration file locally. To reach real remote resources from local dev, use remote bindings (https://developers.cloudflare.com/workers/local-development/#remote-bindings); that is a local-development feature, not a condition for bindings in a deployed app.
+- Deployed environment: if the Wrangler configuration file sets `pages_build_output_dir`, its bindings are used on deployment and those fields can no longer be edited in the dashboard; otherwise (a file used only for local development) configure bindings in the Cloudflare dashboard. See [wrangler-configuration.md](../functions/wrangler-configuration.md) and [bindings.md](../functions/bindings.md).
 - Nuxt and Nitro APIs themselves are out of scope for this skill.
 
 ## Related
