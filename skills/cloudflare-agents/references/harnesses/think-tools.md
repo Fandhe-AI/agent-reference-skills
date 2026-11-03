@@ -86,7 +86,7 @@ export class MyAgent extends Think<Env> {
 - Upgrade from `@cloudflare/shell` (deprecated): `list` is now `ls`; the in-process `bash` tool is gone (add a backend to get `exec`); `workspaceBash`, `createWorkspaceTools`, and `@cloudflare/think/tools/workspace` are removed. Think does not move your data: copy files with the script at https://github.com/cloudflare/agents/blob/main/docs/shell/migrating-to-computer.md.
 - `ws:tools` does not export tools that need approval or run in the browser; calls from code do not go through `beforeToolCall`.
 - Code run via `exec` on the JavaScript backend executes in a Dynamic Worker isolate (needs a `worker_loaders` binding), not on the host. A `just-bash` shell backend and a container backend with a full Linux userland also exist (see https://github.com/cloudflare/computer/tree/main/packages/computer#choosing-a-backend). For container/sandbox isolation products, see the cloudflare-sandbox-containers skill (sandbox; https://developers.cloudflare.com/sandbox/).
-- Corrected from the official docs: `deleteFile` used `needsApproval: async ({ path }) => path.startsWith("/important/")`, which lets the model delete any other file without approval and is bypassable with `..` segments; it is `needsApproval: true`. A predicate is still fine for non-destructive tools, but compare normalized paths.
+- Corrected from the official docs: `deleteFile` used `needsApproval: async ({ path }) => path.startsWith("/important/")`, which lets the model delete any other file without approval and is bypassable with `..` segments; it is `needsApproval: true`. Because a tool returned from `getTools()` only adds a name and does not replace a differently named built-in, a separate `deleteFile` would leave the built-in `delete` callable without approval; the example therefore returns the approval-gated tool under the built-in name `delete` and lists `delete` in the `beforeTurn` `activeTools`. A predicate is still fine for non-destructive tools, but compare normalized paths.
 - Approval: when `needsApproval` returns `true` the call goes to the client and the conversation pauses until the client responds with `CF_AGENT_TOOL_APPROVAL`. Inside the deprecated code-execution sandbox, `needsApproval` maps to Code Mode's durable pause/approve/resume and a function-valued `needsApproval` always requires approval. The `pending` array in a paused tool output is a truncated preview (~2 KB per arg); render approval cards from `pendingExecutions()` (full args up to 1 MB), not the transcript. Callables: `approveExecution(executionId)`, `rejectExecution(executionId, reason?)`, `pendingExecutions()`.
 - Adapted from the official docs: the `addServer` callable in the MCP snippet forwarded any client-supplied URL to `addMcpServer()`; the fence adds an origin allowlist (`https://mcp.example.com` is a placeholder). Callables are reachable by every connected client, so also authenticate connections (routing-authentication reference).
 - `beforeTurn` can return `activeTools` (limits callable tools) and `tools` (extra tools for this turn only).
@@ -165,13 +165,14 @@ export default async function () {
 
 ### Tool approval and per-turn overrides
 
-Adapted (not in the official docs): the official `deleteFile` asks for approval only when `path.startsWith("/important/")`, so every other deletion (and a path such as `/x/../important/y` that resolves inside `/important/`) runs without approval; deletion now always requires approval. See Notes.
+Adapted (not in the official docs): the official `deleteFile` asks for approval only when `path.startsWith("/important/")`, so every other deletion (and a path such as `/x/../important/y` that resolves inside `/important/`) runs without approval; deletion now always requires approval. The tool is named `delete` so it replaces the built-in workspace `delete` (otherwise the model could still delete files without approval), and `beforeTurn` keeps `delete` in `activeTools`. See Notes.
 
 ```ts
 getTools(): ToolSet {
 	return {
-		deleteFile: tool({
-			description: "Delete a file from the system",
+		// Same name as the built-in workspace tool, so this replaces it.
+		delete: tool({
+			description: "Delete a file or directory",
 			inputSchema: z.object({ path: z.string() }),
 			// Destructive: always require approval (a prefix check on an
 			// unnormalized path can be bypassed with "..").
@@ -186,7 +187,7 @@ getTools(): ToolSet {
 
 beforeTurn(ctx: TurnContext) {
 	return {
-		activeTools: ["read", "write", "getWeather"],
+		activeTools: ["read", "write", "delete", "getWeather"],
 		tools: { emergencyTool: this.createEmergencyTool() },
 	};
 }
