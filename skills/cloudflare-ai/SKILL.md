@@ -1,11 +1,11 @@
 ---
 name: cloudflare-ai
 description: >
-  Cloudflare の AI 基盤 (Workers AI / AI Gateway / Vectorize) の
+  Cloudflare の AI 基盤 (Workers AI / AI Gateway / Vectorize / AI Search) の
   リファレンス。env.AI.run、REST API、OpenAI 互換エンドポイント、JSON mode、function calling、batch API、LoRA、toMarkdown、
   モデルカタログ (text generation / embeddings / text-to-image / ASR / TTS)、
   AI Gateway (caching / rate limiting / fallbacks / logs / BYOK / dynamic routing)、
-  VectorizeIndex insert / upsert / query / metadata filtering。
+  VectorizeIndex insert / upsert / query / metadata filtering、AI Search (旧 AutoRAG) search / chatCompletions。
   Agents SDK は cloudflare-agents、プロバイダー API 本体は openai-api-core / anthropic-api-core / google-gemini-api、Upstash Vector とは別。
 user-invocable: false
 ---
@@ -165,13 +165,59 @@ skills/cloudflare-ai/
       what-is-a-vector-database.md
       workers-ai-embeddings.md
       wrangler-commands.md
+    ai-search/
+      README.md
+      agent-sdks.md
+      bindings-configuration.md
+      bring-your-own-generation-model.md
+      chat-completions.md
+      chunking-and-path-filtering.md
+      custom-domains-and-access.md
+      data-source-r2.md
+      data-source-website.md
+      data-sources.md
+      error-codes.md
+      filtering.md
+      get-started-python-sdk.md
+      get-started-rest-api.md
+      get-started-workers.md
+      get-started-wrangler.md
+      get-started.md
+      how-ai-search-works.md
+      how-to-guides.md
+      indexing-methods.md
+      instance-methods.md
+      items-workers-binding.md
+      limits-pricing.md
+      mcp.md
+      metadata-attributes.md
+      migration-from-autorag.md
+      models.md
+      multitenancy.md
+      namespace-methods.md
+      namespace-public-endpoints.md
+      namespaces.md
+      public-endpoint-settings.md
+      public-endpoint-usage.md
+      reranking-query-rewriting-system-prompt.md
+      rest-api-instances-items.md
+      rest-api-search.md
+      result-controls-and-boosting.md
+      search.md
+      service-api-token.md
+      similarity-cache.md
+      syncing.md
+      ui-snippets.md
+      website-parse-types.md
+      workers-binding-legacy.md
+      wrangler-commands.md
 ```
 
 ## 探索手順
 
 タスクから製品カテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（workers-ai / workers-ai-models / ai-gateway / vectorize）を探す
+1. 下記マッピング表でタスクに対応するカテゴリ（workers-ai / workers-ai-models / ai-gateway / vectorize / ai-search）を探す
 2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
@@ -194,3 +240,7 @@ skills/cloudflare-ai/
 | query・metadata filtering・namespaces で検索したい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
 | VectorizeIndex バインディング API・distance metrics を調べたい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
 | Vectorize の制限・料金・v1 からの移行を確認したい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
+| AI Search（旧 AutoRAG）のインスタンスを作成してデータソースを接続したい | ai-search | [references/ai-search/README.md](references/ai-search/README.md) |
+| `search` / `chatCompletions` を Workers バインディング・REST API・Python SDK から呼びたい | ai-search | [references/ai-search/README.md](references/ai-search/README.md) |
+| チャンク分割・filtering・reranking・similarity cache を調整したい | ai-search | [references/ai-search/README.md](references/ai-search/README.md) |
+| AutoRAG からの移行・namespaces・マルチテナント構成・公開エンドポイントを設定したい | ai-search | [references/ai-search/README.md](references/ai-search/README.md) |
