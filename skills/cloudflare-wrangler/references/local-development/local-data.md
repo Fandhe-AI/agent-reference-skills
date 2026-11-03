@@ -40,7 +40,7 @@ npx wrangler flagship flags create <APP_ID> new-checkout --local
 
 Durable Objects: no CLI commands exist. Write application code (e.g. development endpoints or test routes) that creates Durable Object instances and calls methods that store state.
 
-## Where local data gets stored
+### Where local data gets stored
 
 Wrangler and the Vite plugin both store local binding data in `.wrangler/state` (subdirectories per binding type). Delete the folder (or sub-folders) to reset; Miniflare recreates it on the next `dev`.
 

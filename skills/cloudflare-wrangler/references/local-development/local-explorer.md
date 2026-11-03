@@ -22,6 +22,36 @@ Retrieve the API's OpenAPI spec:
 curl http://localhost:8787/cdn-cgi/local/explorer/api
 ```
 
+### Test Cron Triggers
+
+Sends one-off invocations to the `scheduled()` handler (configured Cron Triggers or ad hoc expressions). Requires Wrangler 4.139.0+ or Cloudflare Vite plugin 1.60.0+.
+
+1. Select the Worker, then **Cron Triggers** > **Configured Crons**.
+2. Under **Scheduled time**, select *Now*, or **Add preset** with a UTC date/time or epoch milliseconds.
+3. Select **Trigger** next to a cron expression.
+4. Review the outcome, `noRetry()` status, dispatched expression, and scheduled time.
+5. Optionally use **Cron Triggers** > **Ad-Hoc Triggers** > **Add trigger**.
+
+API: `POST /cdn-cgi/local/explorer/api/local/scheduled?worker=<WORKER_NAME>` (exact Worker; required cron expression, optional scheduled time).
+
+### Observability
+
+Traces and logs from every Worker invocation are captured automatically with `cf dev`, `wrangler dev`, or the Vite plugin, with no code changes. **Logs** captures all `console.*` output, filterable by level (error, warn, info, log, debug) or text. **Traces** shows each invocation and every binding operation with timing, status, and errors, including operations through remote bindings. Query traces/logs via `POST /cdn-cgi/local/explorer/api/local/observability/query` (SQL).
+
+When it detects an AI agent, the dev server prints a hint with the API endpoint:
+
+```txt
+This dev session is running in an AI agent.
+
+The Local Explorer API is available at
+http://localhost:8787/cdn-cgi/local/explorer/api
+
+...
+
+Debug with traces:
+POST /cdn-cgi/local/explorer/api/local/observability/query -- query traces and logs with SQL
+```
+
 ## Options / Props
 
 Supported bindings:
@@ -51,36 +81,6 @@ Quartz-like options in the ad hoc expression builder:
 | `W` | Select the nearest weekday |
 | `LW` | Select the last weekday of the month |
 | `#` | Select an occurrence of a named weekday |
-
-## Test Cron Triggers
-
-Sends one-off invocations to the `scheduled()` handler (configured Cron Triggers or ad hoc expressions). Requires Wrangler 4.139.0+ or Cloudflare Vite plugin 1.60.0+.
-
-1. Select the Worker, then **Cron Triggers** > **Configured Crons**.
-2. Under **Scheduled time**, select *Now*, or **Add preset** with a UTC date/time or epoch milliseconds.
-3. Select **Trigger** next to a cron expression.
-4. Review the outcome, `noRetry()` status, dispatched expression, and scheduled time.
-5. Optionally use **Cron Triggers** > **Ad-Hoc Triggers** > **Add trigger**.
-
-API: `POST /cdn-cgi/local/explorer/api/local/scheduled?worker=<WORKER_NAME>` (exact Worker; required cron expression, optional scheduled time).
-
-## Observability
-
-Traces and logs from every Worker invocation are captured automatically with `cf dev`, `wrangler dev`, or the Vite plugin, with no code changes. **Logs** captures all `console.*` output, filterable by level (error, warn, info, log, debug) or text. **Traces** shows each invocation and every binding operation with timing, status, and errors, including operations through remote bindings. Query traces/logs via `POST /cdn-cgi/local/explorer/api/local/observability/query` (SQL).
-
-When it detects an AI agent, the dev server prints a hint with the API endpoint:
-
-```txt
-This dev session is running in an AI agent.
-
-The Local Explorer API is available at
-http://localhost:8787/cdn-cgi/local/explorer/api
-
-...
-
-Debug with traces:
-POST /cdn-cgi/local/explorer/api/local/observability/query -- query traces and logs with SQL
-```
 
 ## Notes
 

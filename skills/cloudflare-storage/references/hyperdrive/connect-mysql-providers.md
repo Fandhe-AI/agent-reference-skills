@@ -86,7 +86,7 @@ Binding printed by the create command:
 - To let Hyperdrive reach a database, allow Cloudflare IPs: either all ranges (0.0.0.0 - 255.255.255.255) or restrict the ACL to the IP ranges used by Hyperdrive; or connect over a private network with Cloudflare Tunnel.
 - Connection string format: `mysql://USERNAME:PASSWORD@HOSTNAME_OR_IP_ADDRESS:PORT/database_name`. Hyperdrive verifies connectivity on creation.
 - Worker code is the same for every provider (mysql2 with `disableEval: true`; see [connect-mysql-drivers](./connect-mysql-drivers.md)).
-- Consolidated from: .../connect-to-mysql/mysql-database-providers/azure/ , .../google-cloud-sql/ , .../planetscale/
+- Consolidated from: https://developers.cloudflare.com/hyperdrive/examples/connect-to-mysql/mysql-database-providers/azure/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-mysql/mysql-database-providers/google-cloud-sql/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-mysql/mysql-database-providers/planetscale/
 - PlanetScale-hosted databases billed via Cloudflare: see [planetscale](./planetscale.md). Placement configuration: see the cloudflare-workers skill.
 
 ## Related

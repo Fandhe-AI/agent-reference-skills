@@ -34,7 +34,7 @@ To enable only `AsyncLocalStorage`:
 compatibility_flags = [ "nodejs_als" ]
 ```
 
-## Supported Node.js APIs
+### Supported Node.js APIs
 
 | API Name | Natively supported by the Workers Runtime |
 | --- | --- |
@@ -71,7 +71,7 @@ compatibility_flags = [ "nodejs_als" ]
 | Web Streams API | supported |
 | Zlib ([zlib](./crypto-zlib.md)) | supported |
 
-## Non-functional stub modules
+### Non-functional stub modules
 
 A stub can be imported or required, but does not provide a working implementation. Stubs are enabled automatically only when `nodejs_compat` is enabled and the compatibility date is on or after the date shown. To enable one earlier, add the enable flag; to keep one unavailable, add the disable flag.
 

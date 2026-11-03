@@ -20,7 +20,7 @@ export default {
 
 Snippet taken from https://developers.cloudflare.com/workers/reference/how-workers-works/#compute-per-request.
 
-## What you can build
+### What you can build
 
 | Use case | Entry point |
 | --- | --- |
@@ -32,7 +32,7 @@ Snippet taken from https://developers.cloudflare.com/workers/reference/how-worke
 
 Frameworks, languages: React, Vue, Svelte, Next, Astro, React Router, fate (https://developers.cloudflare.com/workers/framework-guides/); JavaScript, TypeScript, Python, Rust, and anything compiling to WebAssembly.
 
-## Integrate with Workers (bindings)
+### Integrate with Workers (bindings)
 
 Connect to external services via Bindings (https://developers.cloudflare.com/workers/runtime-apis/bindings/).
 
@@ -53,7 +53,7 @@ Connect to external services via Bindings (https://developers.cloudflare.com/wor
 
 For KV, D1, R2, and Hyperdrive, see the cloudflare-storage skill.
 
-## Glossary
+### Glossary
 
 | Term | Definition |
 | --- | --- |

@@ -79,7 +79,7 @@ export default {
 };
 ```
 
-## Available bindings
+### Available bindings
 
 | Binding | Details |
 |---------|---------|

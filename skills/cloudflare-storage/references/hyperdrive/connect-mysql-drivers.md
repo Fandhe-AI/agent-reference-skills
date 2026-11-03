@@ -183,7 +183,7 @@ MySQL TLS modes:
 - Hyperdrive does not support MySQL prepared statements (`COM_STMT_PREPARE`); see [supported-databases-and-features](./supported-databases-and-features.md).
 - Identify Hyperdrive connections: `SELECT DISTINCT USER, HOST, PROGRAM_NAME FROM performance_schema.threads WHERE PROGRAM_NAME = 'Cloudflare Hyperdrive'`.
 - Drizzle Kit migrations use the direct database connection string. Drizzle ORM API itself: see the drizzle skill.
-- Consolidated from: https://developers.cloudflare.com/hyperdrive/examples/connect-to-mysql/mysql-drivers-and-libraries/mysql2/ , .../mysql/ , .../drizzle-orm/
+- Consolidated from: https://developers.cloudflare.com/hyperdrive/examples/connect-to-mysql/mysql-drivers-and-libraries/mysql2/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-mysql/mysql-drivers-and-libraries/mysql/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-mysql/mysql-drivers-and-libraries/drizzle-orm/
 - Node.js compatibility flags: see [get-started](./get-started.md).
 
 ## Related

@@ -43,7 +43,7 @@ binding = "screenshots_bucket"
 remote = true
 ```
 
-## Defaults
+### Defaults
 
 By default, `wrangler dev` / `vite dev` (with the Vite plugin) means:
 
@@ -53,11 +53,11 @@ By default, `wrangler dev` / `vite dev` (with the Vite plugin) means:
 
 Bindings use the same API calls (such as `env.MY_KV.put()`) as in a deployed environment. Local resources are initially empty (see `local-data.md`). Bindings connect to local simulations except AI bindings (AI models always run remotely). `wrangler dev --local` temporarily disables all remote bindings.
 
-## Remote bindings
+### Remote bindings
 
 Remote bindings connect to the deployed resource instead of the local simulation. Supported by Wrangler, the Cloudflare Vite plugin, and `@cloudflare/vitest-plugin`. The Worker still **executes locally**; only the resources change. Bindings without `remote: true` keep using local simulations.
 
-### Integration with environments
+#### Integration with environments
 
 Combine with Workers Environments to protect production data:
 
@@ -106,7 +106,7 @@ remote = true
 
 Running `wrangler dev -e staging` (or `CLOUDFLARE_ENV=staging vite dev`) runs the Worker locally, and calls to `env.screenshots_bucket` use `preview-screenshots-bucket`.
 
-### Recommended remote bindings
+#### Recommended remote bindings
 
 These bindings are recommended to have `remote: true` (they rely on Cloudflare's network or have complex backends not fully simulated locally).
 
@@ -226,7 +226,7 @@ namespace = "testing"
 remote = true
 ```
 
-### Unsupported remote bindings
+#### Unsupported remote bindings
 
 These always use local simulations or local values. Specifying `remote: true` for them **issues an error**. See `bindings-per-env.md`.
 
@@ -241,14 +241,14 @@ These always use local simulations or local values. Specifying `remote: true` fo
 
 For use-cases needing these remotely, open a feature request in the `workers-sdk` repository.
 
-### Using remote resources with Durable Objects and Workflows
+#### Using remote resources with Durable Objects and Workflows
 
 Two recommended patterns:
 
 - **Local Durable Objects/Workflows with remote bindings:** with remote bindings enabled in Wrangler configuration, locally running Durable Objects and Workflows can access remote resources.
 - **Accessing remote Durable Objects/Workflows via service bindings:** deploy a Worker that defines them, then configure a remote service binding in your local Worker pointing to the deployed Worker, which acts as a proxy interface to the remote bindings.
 
-### Connect to Access-protected Workers
+#### Connect to Access-protected Workers
 
 If the Worker is protected by Cloudflare Access (the Worker, all Workers in the account, a `workers.dev` hostname, a Custom Domain, or another hostname/path routing to the Worker), Wrangler must authenticate with Access when connecting to remote bindings:
 
@@ -266,7 +266,7 @@ export CLOUDFLARE_ACCESS_CLIENT_ID=<CLIENT_ID>
 export CLOUDFLARE_ACCESS_CLIENT_SECRET=<CLIENT_SECRET>
 ```
 
-## Remote bindings API
+### Remote bindings API
 
 Wrangler exposes programmatic utilities for tooling authors using Miniflare:
 
@@ -320,7 +320,7 @@ async function startOrUpdateDevSession() {
 // `remoteProxySessionDetails?.session.dispose()`
 ```
 
-## `wrangler dev --remote` (Legacy)
+### `wrangler dev --remote` (Legacy)
 
 ```sh
 npx wrangler dev --remote

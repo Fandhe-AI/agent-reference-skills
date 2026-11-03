@@ -74,7 +74,7 @@ D1 migrations in the deploy script (reference the binding name, not the database
 }
 ```
 
-## Built with Cloudflare button
+### Built with Cloudflare button
 
 An SVG badge to show you use Cloudflare products (it does not deploy anything):
 

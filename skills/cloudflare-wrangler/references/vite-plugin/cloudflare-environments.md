@@ -66,7 +66,7 @@ MY_VAR = "Production var"
 }
 ```
 
-## Secrets in local development
+### Secrets in local development
 
 Put local-development secrets in a `.dev.vars` or `.env` file in the same directory as the Wrangler configuration file (dotenv syntax):
 
@@ -83,7 +83,7 @@ API_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
   - `.env` files: all matching files are loaded and merged; the most specific wins. Precedence: `.env.<environment-name>.local` (most specific), `.env.local`, `.env.<environment-name>`, `.env` (least specific).
 - Controlling `.env` handling: set `CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV` to `"false"` to disable loading local dev vars from `.env` files without providing a `.dev.vars` file. To include every process environment variable as a local dev variable, ensure there is no `.dev.vars` and set `CLOUDFLARE_INCLUDE_PROCESS_ENV` to `"true"` (not needed with the `secrets` config property, which loads from `process.env` automatically).
 
-## Combining Cloudflare environments and Vite modes
+### Combining Cloudflare environments and Vite modes
 
 Provide `.env.staging` and `.env.production` files that select the Cloudflare environment:
 

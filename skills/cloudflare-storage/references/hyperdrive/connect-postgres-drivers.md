@@ -267,7 +267,7 @@ const sql = postgres(env.HYPERDRIVE.connectionString, {
 - Prisma ORM requires driver adapters (`@prisma/adapter-pg`) to use the Hyperdrive connection string; connection pooling is provided by Hyperdrive, so Prisma Accelerate is not needed.
 - Hyperdrive's connections show `Cloudflare Hyperdrive` as `application_name` in `pg_stat_activity` only when the driver does not send its own (Postgres.js sends `postgres.js`); that does not mean it bypasses Hyperdrive. Query: `SELECT DISTINCT usename, application_name FROM pg_stat_activity WHERE application_name = 'Cloudflare Hyperdrive'`.
 - Node.js compatibility: dates `2026-08-04`+ enable `nodejs_compat` and `nodejs_compat_v2` by default; earlier dates need `nodejs_compat` (see [get-started](./get-started.md)).
-- Consolidated from: https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/node-postgres/ , .../postgres-js/ , .../drizzle-orm/ , .../prisma-orm/
+- Consolidated from: https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/node-postgres/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/postgres-js/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/drizzle-orm/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/prisma-orm/
 - Wrangler config and bindings in general: see the cloudflare-wrangler and cloudflare-workers skills.
 
 ## Related

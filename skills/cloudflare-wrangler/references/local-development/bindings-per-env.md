@@ -35,7 +35,7 @@ Snippet taken from https://developers.cloudflare.com/workers/local-development/#
 | **Analytics Engine** | ✅ | ✅ |
 | **Browser Run** | ✅ | ✅ |
 | **D1** | ✅ | ✅ |
-| **Durable Objects** | ✅ | ❌ <sup>[1](#user-content-fn-1)</sup> |
+| **Durable Objects** | ✅ | ❌ <sup>1</sup> |
 | **Containers** | ✅ | ❌ |
 | **Email Bindings** | ✅ | ✅ |
 | **Flagship** | ✅ | ✅ |
@@ -51,7 +51,7 @@ Snippet taken from https://developers.cloudflare.com/workers/local-development/#
 | **Vectorize** | ❌ | ✅ |
 | **Workflows** | ✅ | ❌ |
 
-## Remote development
+### Remote development
 
 Supported only in `wrangler dev --remote` — there is no Vite plugin equivalent. All Worker code is uploaded and executed on Cloudflare, and bindings always connect to remote resources. Local development with remote binding connections is recommended instead.
 
@@ -80,7 +80,7 @@ Supported only in `wrangler dev --remote` — there is no Vite plugin equivalent
 
 ## Notes
 
-- Footnote 1: for Durable Objects and Workflows, see "Using remote resources with Durable Objects and Workflows" in `overview.md` for recommended workarounds.
+- Footnote 1 (the source table links the marker to a page-level footnote; rendered here as a plain superscript): for Durable Objects and Workflows, see "Using remote resources with Durable Objects and Workflows" in `overview.md` for recommended workarounds.
 
 ## Related
 

@@ -127,7 +127,7 @@ Constructor: `new AsyncLocalStorage()` returns a new `AsyncLocalStorage` instanc
 | `AsyncLocalStorage.bind(fn)` (static) | function | Captures the async context current when `bind()` is called and returns a function that enters that context before calling the passed function. |
 | `AsyncLocalStorage.snapshot()` (static) | function | Captures the async context current when `snapshot()` is called and returns a function that enters that context before calling a given function. |
 
-## AsyncResource
+### AsyncResource
 
 `AsyncResource` is provided solely for backwards compatibility with Node.js; `AsyncLocalStorage.snapshot()` and `AsyncLocalStorage.bind()` are the better approach.
 

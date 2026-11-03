@@ -30,7 +30,7 @@
 | Source of Truth | Config vs dashboard, keep_vars | [source-of-truth.md](./source-of-truth.md) |
 | Generated Wrangler Configuration | .wrangler/deploy/config.json redirect | [generated-config.md](./generated-config.md) |
 | Environments | env.<name> configuration and selection | [environments.md](./environments.md) |
-| System Environment Variables | CLOUDFLARE_* and WRANGLER_* variables | [system-environment-variables.md](./system-environment-variables.md) |
+| System Environment Variables | `CLOUDFLARE_*` and `WRANGLER_*` variables | [system-environment-variables.md](./system-environment-variables.md) |
 | Install and Update | Install, check version, update Wrangler | [install-and-update.md](./install-and-update.md) |
 | Authentication Profiles | Named logins bound to directories (beta) | [profiles.md](./profiles.md) |
 | Deprecations | Deprecated and removed features by version | [deprecations.md](./deprecations.md) |
