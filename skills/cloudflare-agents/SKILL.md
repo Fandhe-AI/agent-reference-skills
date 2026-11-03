@@ -3,7 +3,7 @@ name: cloudflare-agents
 description: >
   Cloudflare Agents SDK (agents パッケージ、Durable Objects 上のエージェント) の
   リファレンス。Agent class、state / setState、this.sql、schedule、@callable RPC、routeAgentRequest、
-  useAgent / AgentClient、AIChatAgent、human-in-the-loop。
+  useAgent / AgentClient、AIChatAgent、human-in-the-loop、browser / code execution tools、x402 payments。
   OpenAI Agents SDK (openai-agents)・Claude Agent SDK (anthropic-agent-sdk) とは別、MCP 仕様は mcp-spec。
 user-invocable: false
 ---
@@ -34,7 +34,7 @@ Cloudflare Agents SDK（npm `agents`）を扱う。Durable Objects 上で動く�
 - openai-apps-sdk: ChatGPT 内アプリを MCP サーバーとして公開する SDK は別物
 - anthropic-agent-sdk: Claude Agent SDK（自前ホスト型のエージェントループ）は別物。本スキルは Durable Objects 上でホストされる Cloudflare のエージェント
 - 「Agent skills (agents SDK)」（`references/agent-skills/` と `references/tools/skills-tools.md`）は Agents SDK が提供するスキル読み込み機能であり、Claude Code の Agent Skills（SKILL.md）や本リポジトリのスキルとは別物。SKILL.md 形式の仕様自体は `references/concepts/agent-skills.md` にあるが、Claude Code 側の skills 設定は anthropic-claude-code-extend を参照
-- cloudflare-stateful / cloudflare-ai / cloudflare-sandbox-containers は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-stateful: https://developers.cloudflare.com/durable-objects/ ・ /queues/ ・ /workflows/、cloudflare-ai: https://developers.cloudflare.com/workers-ai/ ・ /ai-gateway/ ・ /vectorize/ ・ /ai-search/、cloudflare-sandbox-containers: https://developers.cloudflare.com/sandbox/ ・ /containers/）を参照
+- cloudflare-stateful は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-stateful: https://developers.cloudflare.com/durable-objects/ ・ /queues/ ・ /workflows/）を参照
 
 ## ディレクトリ構成
 
@@ -101,13 +101,50 @@ skills/cloudflare-agents/
       tools.md
       what-are-agents.md
       workflows.md
+    tools/
+      README.md
+      ai-search.md
+      browser-internal-hostnames.md
+      browser-legacy.md
+      browser-live-view-recording.md
+      browser.md
+      codemode-ai-sdk.md
+      codemode-api-reference.md
+      codemode-browser.md
+      codemode-durable-runtime.md
+      codemode-how-it-works.md
+      codemode-mcp.md
+      codemode-openapi.md
+      codemode-overview.md
+      codemode-tanstack-ai.md
+      filesystem.md
+      mcp-client-tools.md
+      payments-mpp-accept.md
+      payments-mpp-charge-http.md
+      payments-mpp-pay-agents-sdk.md
+      payments-mpp.md
+      payments-overview.md
+      payments-x402-charge-http.md
+      payments-x402-charge-mcp.md
+      payments-x402-coding-tools.md
+      payments-x402-pay-agents-sdk.md
+      payments-x402.md
+      sandbox.md
+      skills-tools.md
+      web-fetch.md
+      web-search.md
+    models/
+      README.md
+      ai-sdk.md
+      overview.md
+      pi-ai.md
 ```
 
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（agent-class / runtime / concepts）を探す
+1. 下記マッピング表でタスクに対応するカテゴリ（agent-class / runtime / concepts / tools / models）を探す
 2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
@@ -129,3 +166,9 @@ skills/cloudflare-agents/
 | agentic patterns・long-running agents・human-in-the-loop・Workflows の考え方を知りたい | concepts | [references/concepts/README.md](references/concepts/README.md) |
 | 同時実行・ストレージ・計算時間の制限を確認したい | concepts | [references/concepts/README.md](references/concepts/README.md) |
 | 会話メモリ（Session memory API・compaction）を理解したい | concepts | [references/concepts/README.md](references/concepts/README.md) |
+| browser ツール・Browser Run・Live View を使いたい | tools | [references/tools/README.md](references/tools/README.md) |
+| Code Mode（codemode・connectors・durable runtime）を使いたい | tools | [references/tools/README.md](references/tools/README.md) |
+| web fetch / web search / sandbox / filesystem / AI Search ツールを使いたい | tools | [references/tools/README.md](references/tools/README.md) |
+| x402 / MPP でエージェントの課金・支払いを実装したい | tools | [references/tools/README.md](references/tools/README.md) |
+| createAI でモデルプロバイダー（AI SDK / Pi AI）を設定したい | models | [references/models/README.md](references/models/README.md) |
+| Workers AI・AI Gateway のモデルをエージェントから呼びたい | models | [references/models/README.md](references/models/README.md) |
