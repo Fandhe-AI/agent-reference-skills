@@ -41,12 +41,12 @@ const logs = await env.AI_SEARCH.get("my-instance")
 
 ## Options / Props
 
-`update()` accepts a partial of the create parameters. Only included fields change.
+`update()` accepts a partial of the create parameters. Only included fields change. The embedding model cannot be changed after creation.
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `ai_search_model` | string | — | Text-generation model. |
-| `embedding_model` | string | — | Embedding model. |
+| `embedding_model` | string | — | Create only: sets the vector dimensions and cannot be changed after creation (see models.md / indexing-methods.md). |
 | `index_method` | object | — | `{ vector: boolean, keyword: boolean }`. |
 | `fusion_method` | string | — | `rrf` or `max`. |
 | `indexing_options` | object | — | `keyword_tokenizer`, `use_ocr`. |
@@ -82,6 +82,7 @@ const logs = await env.AI_SEARCH.get("my-instance")
 
 ## Notes
 
+- `embedding_model` is creation-only (configuration docs: "Only available to be changed when creating a new AI Search"; it sets the vector dimensions). To use a different embedding model, create a new instance and re-index.
 - `jobs.create({ description })`: description up to 255 characters. Job objects: `id`, `source` (`user` or `schedule`), optional `description`, `last_seen_at`, `started_at`, `ended_at`, `end_reason`. Logs: `id`, `message`, `message_type`, `created_at`, plus `result_info`.
 - `stats()` is the polling endpoint for indexing completion.
 - User-triggered syncs have a 30 second cooldown (error `7020`).

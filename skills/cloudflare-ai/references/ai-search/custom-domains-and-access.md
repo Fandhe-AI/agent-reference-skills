@@ -39,8 +39,10 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/<ZONE_ID>/dns_records" 
 
 Non-browser client with an Access service token (export the values; do not paste them in shared logs):
 
+Adapted (not in the official docs): the request goes to `search.example.com`, the custom domain registered above (the official example uses `access.search.example.com`, which the steps never configure). See Notes.
+
 ```bash
-curl https://access.search.example.com/search \
+curl https://search.example.com/search \
   --header "Content-Type: application/json" \
   --header "CF-Access-Client-Id: <CLIENT_ID>" \
   --header "CF-Access-Client-Secret: <CLIENT_SECRET>" \
@@ -67,6 +69,7 @@ Errors: `7090` not a verified zone, `7091` already in use, `7092` provisioning f
 
 ## Notes
 
+- Corrected from the official docs: the service-token example called `access.search.example.com`, a hostname the page never sets up; it uses the configured custom domain `search.example.com`.
 - `public_endpoint_params` is replaced in full on every update. Omitted fields revert to defaults; in particular omitting `default_domain_enabled` re-opens the unauthenticated default hostname. Send the complete object each time. `custom_domains` is the exception (omit to keep, `null` echoed in the response).
 - The hostname must be in an active zone on the same account; one custom domain per instance or namespace; a hostname attaches to one endpoint at a time.
 - The CNAME must be Proxied (orange-to-orange); DNS only bypasses your zone so Access never runs.

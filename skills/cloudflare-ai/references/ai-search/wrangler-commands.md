@@ -64,7 +64,7 @@ Common to instance commands (`list`, `create`, `get`, `update`, `delete`, `stats
 | `--custom-metadata` | array | — | `field_name:data_type` (`text`, `number`, `boolean`, `datetime`); repeatable. |
 | `--custom-metadata-schema` | string | — | JSON file path (array of `{ field_name, data_type }`); exclusive with `--custom-metadata`. |
 
-`update <NAME>`: `--embedding-model`, `--generation-model`, `--chunk-size`, `--chunk-overlap`, `--max-num-results`, `--reranking`, `--reranking-model`, `--hybrid-search`, `--cache`, `--score-threshold`, and `--paused` (boolean, pause or resume).
+`update <NAME>`: `--generation-model`, `--chunk-size`, `--chunk-overlap`, `--max-num-results`, `--reranking`, `--reranking-model`, `--hybrid-search`, `--cache`, `--score-threshold`, and `--paused` (boolean, pause or resume). The official reference also lists `--embedding-model` here; see Notes.
 
 `search <NAME>`:
 
@@ -82,6 +82,7 @@ Global flags (every command): `--version`/`-v`, `--cwd`, `--config`/`-c`, `--env
 
 ## Notes
 
+- Source inconsistency: the official Wrangler reference lists `--embedding-model` ("Update the embedding model") for `ai-search update`, but the configuration pages state the embedding model is set at creation and cannot be changed afterwards (it fixes the vector dimensions). Treat it as a `create` option; to change models, create a new instance.
 - Corrected from the official docs: the source prints short aliases as `--v`, `--c`, `--e`, `--n`, `--y`; Wrangler short aliases are single-dash (`-v`, `-c`, `-e`, `-n`, `-y`).
 - `jobs create` triggers a sync; user-triggered syncs have a 30 second cooldown.
 - `ai-search create` can register the service API token for R2 sources automatically; see service-api-token.md.
