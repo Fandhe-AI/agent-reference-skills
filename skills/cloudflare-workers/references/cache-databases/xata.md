@@ -53,7 +53,7 @@ export default {
 
 - Adapted from the official docs: the official example never closes the client; it now calls `ctx.waitUntil(client.end())` in a `finally` block.
 - Copy the `PostgreSQL` connection string from the Xata dashboard and use it for the Hyperdrive configuration (dashboard Hyperdrive page or the Wrangler command above).
-- Install `pg@>8.16.3` (minimum 8.16.3) and `@types/pg`; the Wrangler file needs `compatibility_flags: ["nodejs_compat"]` and a `hyperdrive` binding named `HYPERDRIVE`.
+- Install `"pg@>=8.16.3"` (minimum 8.16.3; quote the range so the shell does not treat `>` as a redirect) and `@types/pg`; the Wrangler file needs `compatibility_flags: ["nodejs_compat"]` and a `hyperdrive` binding named `HYPERDRIVE`.
 - Hyperdrive details: See the cloudflare-storage skill.
 
 ## Related

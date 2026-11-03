@@ -12,7 +12,7 @@ Connect Workers to PlanetScale MySQL-compatible databases through Hyperdrive (re
 npx wrangler hyperdrive create <NAME_OF_HYPERDRIVE_CONFIG> --connection-string="mysql://user:password@HOSTNAME_OR_IP_ADDRESS:PORT/database_name"
 ```
 
-Worker using `mysql2` (`npm i mysql2@>3.13.0`):
+Worker using `mysql2` (`npm i "mysql2@>=3.13.0"`; the range is quoted so the shell does not treat `>` as a redirect):
 
 Adapted (not in the official docs): the connection is closed in a `finally` block via `ctx.waitUntil`; see Notes.
 

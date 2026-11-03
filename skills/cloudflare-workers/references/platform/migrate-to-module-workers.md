@@ -27,6 +27,8 @@ addEventListener('fetch', event => {
 
 ES modules format:
 
+Adapted (not in the official docs): `pathname` is assigned onto a fixed-host URL instead of resolved as a relative URL; see Notes.
+
 ```js
 export default {
   fetch(request) {
@@ -34,7 +36,9 @@ export default {
     const statusCode = 301;
 
     const source = new URL(request.url);
-    const destination = new URL(source.pathname, base);
+    const destination = new URL(base);
+    destination.pathname = source.pathname;
+    destination.search = source.search;
     return Response.redirect(destination.toString(), statusCode);
   },
 };
@@ -100,6 +104,7 @@ export default {
 - Service Worker semantics: if a `fetch` handler does not call `respondWith`, the next registered `fetch` handler is tried; if none does, the request goes to the origin (a `*.workers.dev` Worker has no origin, so it must call `respondWith`). `passThroughOnException()` fails open to the origin.
 - Supported `FetchEvent` properties: `type` (always `"fetch"`), `request`, `respondWith()`, `waitUntil()`, `passThroughOnException()`.
 - Source code issue: the Service Worker bindings example (`addEventListener("fetch", async (event) => { return await getTodos() })`) references `event` inside `getTodos`, where it is not in scope; it illustrates globals only.
+- Adapted from the official docs: the ES modules redirect originally used `new URL(source.pathname, base)`; a request path such as `//attacker.example/x` would change the host and become an open redirect. The adapted snippet keeps the host fixed by assigning `pathname` (and `search`) onto `new URL(base)`. The Service Worker snippet's `new URL(request.url, base)` ignores `base` because `request.url` is already absolute.
 - Snippet for the Service Worker `waitUntil` caching example used `event.waitUntil(caches.default.put(event.request, res.clone()))`.
 
 ## Related

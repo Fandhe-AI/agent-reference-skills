@@ -30,7 +30,7 @@ Wrangler configuration:
 }
 ```
 
-Worker using node-postgres (`npm i pg@>8.16.3`, `npm i -D @types/pg`):
+Worker using node-postgres (`npm i "pg@>=8.16.3"`, `npm i -D @types/pg`; the range is quoted so the shell does not treat `>` as a redirect):
 
 Adapted (not in the official docs): the client is closed in a `finally` block via `ctx.waitUntil`; see Notes.
 
@@ -95,7 +95,7 @@ export default {
 
 - Adapted from the official docs: the official examples never close the database client; both now call `ctx.waitUntil(client.end())` in a `finally` block so the connection is released after the response is sent.
 - Create a dedicated role (for example `hyperdrive-user`) in the Neon dashboard, copy its password (shown once), and use the `psql` connection string with connection pooling unchecked.
-- Hyperdrive minimum `pg` version is 8.16.3 (the docs' install command `pg@>8.16.3` technically excludes 8.16.3 itself).
+- Hyperdrive minimum `pg` version is 8.16.3 (the docs' install command `pg@>8.16.3` technically excludes 8.16.3 itself and, unquoted, is parsed by the shell as a redirect; this page uses `"pg@>=8.16.3"`).
 - With Hyperdrive, use node-postgres or Postgres.js rather than the Neon serverless driver so Hyperdrive can pool and route.
 - Hyperdrive validates credentials when creating a configuration; see Hyperdrive troubleshooting if it fails. Hyperdrive details: See the cloudflare-storage skill.
 

@@ -77,6 +77,8 @@ async function loadExpensiveData(request: Request): Promise<unknown> {
 
 Per-user partitioning: pass `props` so the user ID becomes part of the key.
 
+Adapted (not in the official docs): `props` is supplied when the entrypoint binding is created (`ctx.exports.CachedAPI({ props })`), not as a `fetch()` option; see Notes.
+
 ```ts
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
@@ -90,20 +92,25 @@ export default {
 
 		// The gateway's cache is disabled, so it runs on every request.
 		// Pass the authenticated userId to the cached entrypoint via props —
-		// this becomes part of the cache key.
-		return ctx.exports.CachedAPI.fetch(forwarded, {
-			props: { userId },
-		});
+		// this becomes part of the cache key. The callee reads it as
+		// this.ctx.props.userId.
+		return ctx.exports.CachedAPI({ props: { userId } }).fetch(forwarded);
 	},
 } satisfies ExportedHandler<Env>;
 ```
 
 Cache an origin you do not control (overlay your own `Cache-Control`):
 
+Adapted (not in the official docs): the upstream URL is built from the fixed `ORIGIN` host with `pathname`/`search` assigned separately, and only an allowlist of non-credential headers is forwarded, so the shared cached response is never personalized; see Notes.
+
 ```ts
 import { WorkerEntrypoint } from "cloudflare:workers";
 
 const ORIGIN = "https://api.example.com";
+
+// Headers safe to forward. Credentials (Authorization, Cookie) are never
+// forwarded, so the cached response is identical for every caller.
+const FORWARDED_HEADERS = ["accept", "accept-language", "user-agent"];
 
 // Cached entrypoint. Fetches the upstream origin and overlays your own
 // Cache-Control on the response. Workers Caching sits in front of this,
@@ -111,7 +118,17 @@ const ORIGIN = "https://api.example.com";
 export class CachedOrigin extends WorkerEntrypoint {
 	async fetch(request: Request): Promise<Response> {
 		const url = new URL(request.url);
-		const upstream = new URL(url.pathname + url.search, ORIGIN);
+		// Fixed host: never resolve the incoming pathname as a relative URL
+		// (a path like //attacker.example/x would change the host).
+		const upstream = new URL(ORIGIN);
+		upstream.pathname = url.pathname;
+		upstream.search = url.search;
+
+		const upstreamHeaders = new Headers();
+		for (const name of FORWARDED_HEADERS) {
+			const value = request.headers.get(name);
+			if (value !== null) upstreamHeaders.set(name, value);
+		}
 
 		// Forward the request to the third-party origin. The origin's own
 		// caching headers (or lack of them) are about to be overwritten —
@@ -119,7 +136,7 @@ export class CachedOrigin extends WorkerEntrypoint {
 		// not to your cache layer.
 		const response = await fetch(upstream, {
 			method: request.method,
-			headers: request.headers,
+			headers: upstreamHeaders,
 			body: request.body,
 		});
 
@@ -157,7 +174,8 @@ export default {
 - Normalize `Accept-Encoding` for `Vary`: Cloudflare typically rewrites `Accept-Encoding` to a canonical value before the Worker runs; the original is in `request.cf.clientAcceptEncoding`. A gateway restores it (`forwarded.headers.set("Accept-Encoding", original)`) before calling the cached entrypoint that sets `Vary: Accept-Encoding`. All variants must share the same `Cache-Tag`.
 - Cache Durable Object responses: wrap the Durable Object in a cached `WorkerEntrypoint` (for example `CachedLeaderboard`) that forwards to the stub and sets `Cache-Control: public, max-age=30` and `Cache-Tag: leaderboard`. After writes, the gateway calls an `invalidate()` method on that entrypoint (`await this.ctx.cache.purge({ tags: ["leaderboard"] })`); the purge must run inside the cached entrypoint because purges are scoped to the calling entrypoint. For one Durable Object per tenant, pass the tenant ID via `ctx.props`.
 - In the first (authenticated) snippet `authenticate()` returns a boolean; the per-user snippet reuses the name but treats the result as a user ID (`const userId = await authenticate(...)`), so there it must return the verified user ID (or a falsy value). Derive `props.userId` only from verified credentials, never from client-supplied headers or query parameters.
-- The origin snippet forwards all incoming request headers (including `Authorization`, `Cookie`, and `Host`) to the third-party origin and caches the response for every caller. In real code, forward only the headers the origin needs, and do not cache responses to credentialed requests.
+- Corrected from the official docs: the per-user snippet shows `ctx.exports.CachedAPI.fetch(forwarded, { props: { userId } })`, but `fetch()` takes no `props` option, so `this.ctx.props` would stay empty and users would share one cache entry. Props are set when creating the entrypoint binding: `ctx.exports.CachedAPI({ props: { userId } }).fetch(forwarded)` (see `handlers-context/context.md`).
+- Adapted from the official docs: the origin snippet originally resolved `new URL(url.pathname + url.search, ORIGIN)` (a pathname such as `//attacker.example/x` changes the host and leaks forwarded credentials) and forwarded all incoming headers (including `Authorization`, `Cookie`, `Host`) and cached the response for every caller. It now assigns `pathname`/`search` onto `new URL(ORIGIN)` and forwards only an allowlist of non-credential headers. If the origin needs credentials, bypass this cached entrypoint for those requests or partition by verified user via `ctx.props`.
 - Origin pattern extensions: per-path TTL and tags, per-user `ctx.props`, `stale-while-revalidate` for slow or flaky origins, targeted `ctx.cache.purge({ tags: [...] })` on webhooks.
 - The docs describe the composition as "four lenses" while the page contains five example sections (authenticated, per-user, `Accept-Encoding`, Durable Object, origin); the summary table lists four rows.
 

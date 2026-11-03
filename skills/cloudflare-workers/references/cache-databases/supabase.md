@@ -27,7 +27,7 @@ export default {
 };
 ```
 
-Hyperdrive with node-postgres (`npm i pg@>8.16.3`):
+Hyperdrive with node-postgres (`npm i "pg@>=8.16.3"`; the range is quoted so the shell does not treat `>` as a redirect):
 
 Adapted (not in the official docs): the client is closed in a `finally` block via `ctx.waitUntil`; see Notes.
 
