@@ -100,6 +100,6 @@ pnpm create cloudflare@latest my-mcp-client --template=cloudflare/ai/demos/hello
 
 ## Related
 
-- `install.md` — adding SDK and harness packages
-- `dev-test.md` — running locally and testing
+- [install.md](./install.md) — adding SDK and harness packages
+- [dev-test.md](./dev-test.md) — running locally and testing
 - `create-cloudflare` (C3) flag details are outside this skill; see https://developers.cloudflare.com/workers/get-started/guide/

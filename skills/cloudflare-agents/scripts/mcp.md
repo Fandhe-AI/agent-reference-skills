@@ -50,6 +50,6 @@ npx @discourse/mcp@latest
 
 ## Related
 
-- `deploy.md` — deploying an MCP server
-- `create-project.md` — scaffolding an authless MCP server
+- [deploy.md](./deploy.md) — deploying an MCP server
+- [create-project.md](./create-project.md) — scaffolding an authless MCP server
 - For the MCP protocol specification itself, see the mcp-spec skill.

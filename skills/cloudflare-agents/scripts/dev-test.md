@@ -76,4 +76,4 @@ npx vitest
 ## Related
 
 - For `wrangler dev` flag details, see the cloudflare-wrangler skill.
-- `mcp.md` — testing an MCP server locally
+- [mcp.md](./mcp.md) — testing an MCP server locally

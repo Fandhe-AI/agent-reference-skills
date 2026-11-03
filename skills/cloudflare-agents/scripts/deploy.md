@@ -55,4 +55,4 @@ If a Git repository is already connected to the Worker through Workers Builds, p
 ## Related
 
 - For `wrangler deploy` and `wrangler secret` flag details, see the cloudflare-wrangler skill.
-- `mcp.md` — connecting MCP clients after deployment
+- [mcp.md](./mcp.md) — connecting MCP clients after deployment
