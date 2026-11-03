@@ -10,7 +10,7 @@ Design guidelines for correct and effective Durable Objects: when to use them, s
 
 Coordination example (Worker routes by event ID, the object serializes bookings):
 
-Adapted (not in the official docs): the official example queries a `bookings` table that is never created; a constructor creates it. See Notes.
+Adapted (not in the official docs): the official example queries a `bookings` table that is never created; a constructor creates it. The Worker also takes the user ID from a verified identity instead of the request body (failing closed until you plug in your authentication) and validates `eventId` / `seatId` before the RPC. See Notes.
 
 ```js
 import { DurableObject } from "cloudflare:workers";
@@ -51,17 +51,42 @@ export class SeatBooking extends DurableObject {
 	}
 }
 
+// Replace with your authentication (for example, verify a session cookie or a
+// JWT) and return the verified user ID. Returning null rejects every request.
+async function getVerifiedUserId(request, env) {
+	return null;
+}
+
+const ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
+
 export default {
 	async fetch(request, env) {
+		const userId = await getVerifiedUserId(request, env);
+		if (!userId) {
+			return new Response("Unauthorized", { status: 401 });
+		}
+
 		const url = new URL(request.url);
 		const eventId = url.searchParams.get("event") ?? "default";
+		if (!ID_PATTERN.test(eventId)) {
+			return new Response("Invalid event", { status: 400 });
+		}
 
 		// Route to a Durable Object by event ID
 		// All bookings for the same event go to the same instance
 		const id = env.BOOKING.idFromName(eventId);
 		const booking = env.BOOKING.get(id);
 
-		const { seatId, userId } = await request.json();
+		let seatId;
+		try {
+			({ seatId } = await request.json());
+		} catch {
+			return new Response("Invalid JSON", { status: 400 });
+		}
+		// Also check that seatId exists in this event's seat map (application data).
+		if (typeof seatId !== "string" || !ID_PATTERN.test(seatId)) {
+			return new Response("Invalid seat", { status: 400 });
+		}
 		const result = await booking.bookSeat(seatId, userId);
 
 		return Response.json(result, {
@@ -391,6 +416,7 @@ export default defineConfig({
 - Adapted from the official docs: `startGame()` throws while `phase` is `"active"`. Otherwise a restart during the `await calculateFinalScores()` of the previous game's `alarm()` would be overwritten by that stale `alarm()` (`phase: "ended"`, a 24-hour `cleanupAt`) and the new game would end up in `deleteAll()`; the retry path only reschedules while the same game is still active. The game's deadline is stored as `endsAt`; an alarm that fires before it (a duplicate end-of-game alarm from a previous game redelivered after a restart) re-arms the alarm for `endsAt` and returns.
 - Corrected from the official docs: the parent/child sharding example inserted into and selected from `matches` without ever creating the table; a constructor now runs `CREATE TABLE IF NOT EXISTS matches` inside `blockConcurrencyWhile()`.
 - Adapted from the official docs: the migration steps run in `transactionSync()` so a non-idempotent step (`ALTER TABLE ... ADD COLUMN`) and its marker row cannot be split by a failure.
+- Corrected from the official docs: the seat-booking Worker took `userId` from the request body, so any caller could book in another user's name. The user ID now comes from `getVerifiedUserId()`, a placeholder that returns `null` (401) until replaced with real authentication; `eventId` and `seatId` are checked against a length-limited pattern before the RPC, and the seat should also be checked against the event's seat map.
 - Corrected from the official docs: the seat-booking example never created its `bookings` table; the "write progress as you go" example used `forEach(async ...)` (not awaited/ordered). The page's seat-booking TypeScript and several other TypeScript variants have broken indentation in the source; the JavaScript variants are reproduced.
 - Not reproduced here (identity from unverified input): the official WebSocket chat example takes `userId`/`username` from query parameters and trusts them. Derive identities from verified authentication in the Worker instead; see the WebSockets page for the attachments pattern.
 - SQLite is recommended; `PRAGMA user_version` is not supported, so track schema versions with a table. Libraries named in the source: `durable-utils` (`SQLSchemaMigrations`) and `@cloudflare/actors` storage utilities.

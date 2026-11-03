@@ -72,6 +72,8 @@ Wrangler binding and migration:
 
 Persist per-connection state across hibernation with attachments:
 
+Adapted (not in the official docs): `orderId` comes from the query string, so its UTF-8 byte length is checked before the WebSocket is accepted; otherwise a long value makes `serializeAttachment()` throw (16,384-byte limit) after the socket was accepted. The 256-byte cap is an example value. See Notes.
+
 ```js
 import { DurableObject } from "cloudflare:workers";
 
@@ -79,6 +81,10 @@ export class WebSocketServer extends DurableObject {
 	async fetch(request) {
 		const url = new URL(request.url);
 		const orderId = url.searchParams.get("orderId") ?? "anonymous";
+		// Keep the attachment (orderId + joinedAt) far below the 16,384-byte limit.
+		if (new TextEncoder().encode(orderId).byteLength > 256) {
+			return new Response("orderId too long", { status: 400 });
+		}
 
 		const webSocketPair = new WebSocketPair();
 		const [client, server] = Object.values(webSocketPair);
@@ -287,6 +293,7 @@ export class WebSocketServer extends DurableObject {
 
 ## Notes
 
+- Adapted from the official docs: the attachment example validates the byte length of the query-string `orderId` (example cap 256 bytes) before `acceptWebSocket()`, so an oversized value is rejected with 400 instead of making `serializeAttachment()` throw after the socket was accepted.
 - Adapted from the official docs: the batching example casts `JSON.parse(message)` to `BatchedMessage` without checks, so malformed JSON, `null` or `{"messages":null}` throws and batch size is unbounded; the example checks the frame size in bytes, parses in `try`, validates the shape and caps the element count, closing with `1009` / `1007` on failure.
 
 - Hibernation: after a short period without events, the object is evicted; clients stay connected, in-memory state resets, and an event re-runs the `constructor`, so keep the constructor light. Billable duration (GB-s) does not accrue while hibernating.
