@@ -41,7 +41,7 @@ Removed options:
 
 | Option | Replacement / reason |
 |--------|----------------------|
-| `wranglerConfigPath` / `wranglerConfigEnv` | Use `unstable_dev()` to start a Worker from Wrangler config |
+| `wranglerConfigPath` / `wranglerConfigEnv` | Official page says `unstable_dev()` (now deprecated; prefer `createTestHarness()`) to start a Worker from Wrangler config |
 | `packagePath` | Use `scriptPath` |
 | `watch` | Use a separate file watcher and call `setOptions()` |
 | `logUnhandledRejections` | Use `addEventListener("unhandledrejection")` in Workers |

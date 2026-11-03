@@ -138,12 +138,20 @@ new Miniflare({
 
 Run your build tool before tests (e.g. in a `before` hook):
 
+Adapted (not in the official docs): `wrangler build` was removed, so `wrangler deploy --dry-run --outdir dist` is used and the exit status is checked; see Notes.
+
 ```js
 before(() => {
-	spawnSync("npx wrangler build -c wrangler-build.json", {
-		shell: true,
-		stdio: "pipe",
-	});
+	const result = spawnSync(
+		"npx wrangler deploy --dry-run --outdir dist -c wrangler-build.json",
+		{
+			shell: true,
+			stdio: "pipe",
+		},
+	);
+	if (result.status !== 0) {
+		throw new Error(`wrangler build step failed: ${result.stderr}`);
+	}
 });
 ```
 
@@ -152,6 +160,7 @@ before(() => {
 - Cloudflare recommends the Workers Vitest integration for unit tests and `createTestHarness()` for integration tests. Use Miniflare directly only when you need low-level simulator control not exposed by those APIs.
 - Miniflare does not read Wrangler's config file; every binding the Worker uses must be specified in the Miniflare options.
 - All access to the Worker goes through `dispatchFetch()`; individual Worker functions cannot be unit tested this way. Test files run in Node.js while only the Worker runs in `workerd`, so imported functions relying on `workerd`-specific behavior may behave differently.
+- Corrected from the official docs: the "Custom builds" example runs `wrangler build`, which was removed (see [deprecations.md](../configuration/deprecations.md): use your own build script or `wrangler deploy --dry-run --outdir=path/to/build`). The example now uses the latter and throws when the build exits non-zero; point Miniflare at the emitted output under `dist`.
 - The page says to install "the latest version of Miniflare v3" but the command installs `miniflare@latest`.
 - Test runner APIs (describe/it/expect): see the vitest skill.
 

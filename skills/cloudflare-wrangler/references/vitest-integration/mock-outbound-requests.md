@@ -35,9 +35,11 @@ afterAll(() => network.disable());
 
 Worker (`src/index.ts`):
 
+Adapted (not in the official docs): `fetch` declares `request`, `env`, `ctx` parameters so the test's 3-argument call type-checks; see Notes.
+
 ```ts
 export default {
-	async fetch(): Promise<Response> {
+	async fetch(_request, _env, _ctx): Promise<Response> {
 		return fetch("https://api.example.com/greeting");
 	},
 } satisfies ExportedHandler;
@@ -76,6 +78,7 @@ it("mocks an outbound request", async () => {
 
 ## Notes
 
+- Corrected from the official docs: the official Worker defines `fetch()` with no parameters while the test calls `worker.fetch(request, env, ctx)`, which fails type-checking (`Expected 0 arguments, but got 3`); the parameters were declared (unused, underscore-prefixed; contextual types come from `ExportedHandler`).
 - Use `network.use()` with MSW request handlers to return a response for an outbound request.
 - For a WebSocket, use MSW's `ws.link()` API. The request-mocking fixture (https://github.com/cloudflare/workers-sdk/tree/main/fixtures/vitest-plugin-examples/request-mocking) includes HTTP, `exports.default.fetch()`, and WebSocket examples.
 - Replaces `fetchMock` from `cloudflare:test` and `getMiniflareFetchMock()`; see the migration pages.

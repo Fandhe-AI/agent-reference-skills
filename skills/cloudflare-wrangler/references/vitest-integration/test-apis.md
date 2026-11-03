@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/workers/testing/vitest-integration/tes
 
 # Test APIs
 
-Runtime helpers for writing tests, exported from `cloudflare:workers` and `cloudflare:test`. Both modules are provided by `@cloudflare/vitest-plugin` and can only be imported from test files that execute in the Workers runtime.
+Runtime helpers for writing tests, exported from `cloudflare:workers` and `cloudflare:test`. `cloudflare:test` is provided by `@cloudflare/vitest-plugin` and can only be imported from test files that execute in the Workers runtime. `cloudflare:workers` is a Workers runtime module that production code also imports (`env`, `exports`, `WorkerEntrypoint`, ...); under the plugin, its `env` is populated from the Vitest configuration.
 
 ## Signature / Usage
 
@@ -32,7 +32,7 @@ declare module "cloudflare:workers" {
 ### `cloudflare:workers` exports
 
 - `env`: `import("cloudflare:workers").ProvidedEnv` - the `env` object (bindings defined in the Vitest configuration file), for use as the second argument to ES modules format exported handlers.
-- `exports`: object - exports of the `main` Worker. Use `exports.default.fetch()` for integration tests against the default export handler. The `main` Worker runs in the same isolate/context as tests so global mocks apply to it. Unlike the previous `SELF` binding, `exports` does not expose Assets; to test assets, use `startDevWorker()` (https://developers.cloudflare.com/workers/testing/unstable_startworker/).
+- `exports`: object - exports of the `main` Worker. Use `exports.default.fetch()` for integration tests against the default export handler. The `main` Worker runs in the same isolate/context as tests so global mocks apply to it. Unlike the previous `SELF` binding, `exports` does not expose Assets; to test assets, use an integration test with `createTestHarness()` (see Notes).
 
 ```js
 import { exports } from "cloudflare:workers";
@@ -473,6 +473,8 @@ it("introspects instances created through ctx.exports", async () => {
 
 ## Notes
 
+- Corrected from the official docs: the official page points to `startDevWorker()` for testing Assets, which is not a public Wrangler API; the documented public APIs are `createTestHarness()` (recommended) and the deprecated `unstable_startWorker()` / `unstable_dev()` (see [api.md](../commands/api.md) and [test-harness-overview.md](../miniflare/test-harness-overview.md)). The same applies to the `startDevWorker()` mention in [migrate-from-vitest-3-to-vitest-4.md](./migrate-from-vitest-3-to-vitest-4.md).
+- The official page describes both modules as plugin-provided and test-file-only; only `cloudflare:test` has that restriction. `cloudflare:workers` is a runtime module also used from Worker source.
 - `SELF` and `env` from `cloudflare:test` are deprecated in favor of `cloudflare:workers` (see [migrate-from-vitest-3-to-vitest-4.md](./migrate-from-vitest-3-to-vitest-4.md)).
 - Corrected from the official docs: the `introspectWorkflow` example calls `introspector.get()` without `await` although `get()` is documented as returning a Promise (iterating a Promise would throw), so `await` was added. The explicit-disposal example disposes in a `catch` block, which only runs on error, so it was changed to `finally`.
 - The D1 bullet above and `configuration.md` reference `@cloudflare/vitest-plugin/config` for `readD1Migrations`, while the configuration examples import it from `@cloudflare/vitest-plugin`; both subpaths are covered by the rename in migrate-to-vitest-plugin.md.

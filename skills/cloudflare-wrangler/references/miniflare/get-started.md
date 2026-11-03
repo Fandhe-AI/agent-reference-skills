@@ -61,6 +61,8 @@ await mf.setOptions({
 
 `getWorker` dispatches `fetch`, `queues`, and `scheduled` events to workers respectively:
 
+Adapted (not in the official docs): the `dispatchFetch` call targets `/get-url` so the expected output matches the handler; see Notes.
+
 ```js
 import { Miniflare } from "miniflare";
 
@@ -107,10 +109,8 @@ const mf = new Miniflare({
 	}`,
 });
 
-const res = await mf.dispatchFetch("http://localhost:8787/", {
-	headers: { "X-Message": "Hello Miniflare!" },
-});
-console.log(await res.text()); // Hello Miniflare!
+const res = await mf.dispatchFetch("http://localhost:8787/get-url");
+console.log(await res.text()); // http://localhost:8787/get-url
 
 const worker = await mf.getWorker();
 
@@ -392,6 +392,7 @@ All options are optional, but one of `script` or `scriptPath` is required. Descr
 
 ## Notes
 
+- Corrected from the official docs: the "Dispatching events" example requested `/` expecting `Hello Miniflare!`, but its handler returns an empty 404 for `/` and never reads headers; the request now targets `/get-url`, which echoes the request URL.
 - Miniflare's API is primarily for testing; for file watching use a separate watcher (`fs.watch()`, chokidar) and call `setOptions()` with the original configuration on change.
 - The migration page says `setOptions()` requires a full configuration object (not a partial patch), while the Reference block calls `mf.setOptions({ kvNamespaces: [...] })` with a partial object. Pass the complete original options plus changes to be safe.
 - Always `await mf.dispose()` to clean up and stop listening. Reload scripts and options by calling `setOptions()` with the original configuration object.
