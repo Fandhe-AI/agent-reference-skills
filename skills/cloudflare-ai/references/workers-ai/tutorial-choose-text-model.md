@@ -34,6 +34,7 @@ def speed_date(models, questions):
         print(f"---\n #### {model}")
         for question in questions:
             print("> " + question)
+            response = None
             try:
                 official_model_name = model.split("/")[-1]
                 start = timer()
@@ -52,7 +53,8 @@ def speed_date(models, questions):
             except Exception as ex:
                 print("uh oh")
                 print(ex)
-                print(response.text)
+                if response is not None:
+                    print(response.text)
 
 models = [
     "@hf/thebloke/zephyr-7b-beta-awq",
@@ -79,7 +81,7 @@ speed_date(models, questions)
 
 ## Notes
 
-- Adapted from the official docs: notebook `display(Markdown(...))` was replaced by `print`, and the exception handler prints `response.text` instead of the possibly undefined `inference` variable.
+- Adapted from the official docs: notebook `display(Markdown(...))` was replaced by `print`, and the exception handler prints `response.text` instead of the possibly undefined `inference` variable. `response` is reset to `None` on each iteration and printed only when a response exists, so a connection error does not raise `UnboundLocalError` or show a previous iteration's body.
 - The Text Generation interface is the same regardless of the model chosen; all text generation models on Workers AI support streaming (per the source).
 - The notebook's per-model outputs and timings are example runs, not reference data, and are omitted. The model IDs are from a past catalog; check the catalog for current IDs.
 - Notebook download: https://developers.cloudflare.com/workers-ai/static/documentation/notebooks/text-generation-model-exploration.ipynb

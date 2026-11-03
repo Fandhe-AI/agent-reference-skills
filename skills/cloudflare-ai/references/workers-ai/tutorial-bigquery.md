@@ -26,7 +26,7 @@ BQ_PRIVATE_KEY_ID="<your_private_key_id>"
 BQ_PROJECT_ID="<your_project_id>"
 ```
 
-Adapted (not in the official docs): `.dev.vars` used `BQ_CLIENT_KEY` while the code reads `BQ_PRIVATE_KEY` (aligned); `setExpirationTime(expiryAt)` with `expiryAt = now` expired the token at issue time, so `"1h"` is used; an `ACCESS_TOKEN` bearer check (fail closed when unset) protects the endpoint; Step 2's `console.log` of secrets is omitted.
+Adapted (not in the official docs): `.dev.vars` used `BQ_CLIENT_KEY` while the code reads `BQ_PRIVATE_KEY` (aligned); `setExpirationTime(expiryAt)` with `expiryAt = now` expired the token at issue time, so `"1h"` is used; an `ACCESS_TOKEN` bearer check (fail closed when unset) protects the endpoint; Step 2's `console.log` of secrets is omitted; a response with neither `rows` nor `error` now returns an empty list instead of leaving `formattedResults` undefined, and the AI-step failure returns status 500.
 
 ```js
 import * as jose from "jose";
@@ -149,6 +149,9 @@ export default {
 			formattedResults = formatRows(ticketInfo.rows, ticketInfo.schema.fields);
 		} else if ("error" in ticketInfo) {
 			return new Response(ticketInfo.error.message, { status: 500 });
+		} else {
+			// e.g. a query that returned zero rows has no `rows` key
+			return Response.json({ data: [] });
 		}
 
 		// Generate AI summaries and sentiment scores
@@ -167,6 +170,7 @@ export default {
 		} catch {
 			return new Response(
 				"There was an error while generating the text summaries or sentiment scores",
+				{ status: 500 },
 			);
 		}
 

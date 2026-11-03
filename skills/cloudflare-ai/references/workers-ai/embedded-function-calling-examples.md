@@ -69,7 +69,7 @@ export default {
 } satisfies ExportedHandler<Env>;
 ```
 
-KV API. Adapted (not in the official docs): `KV.put()` returns `undefined`, so the original message interpolated `undefined`; the message no longer includes the return value.
+KV API. Adapted (not in the official docs): `KV.put()` returns `undefined`, so the original message interpolated `undefined`; the message no longer includes the return value. A fail-closed bearer check (`ADMIN_TOKEN`) guards the handler because it performs a KV write and an inference call.
 
 ```ts
 import { runWithTools } from "@cloudflare/ai-utils";
@@ -77,10 +77,20 @@ import { runWithTools } from "@cloudflare/ai-utils";
 type Env = {
 	AI: Ai;
 	KV: KVNamespace;
+	// Secret: `npx wrangler secret put ADMIN_TOKEN` (local dev: .dev.vars, gitignored)
+	ADMIN_TOKEN: string;
 };
 
 export default {
 	async fetch(request, env, ctx) {
+		// Fail closed: this handler writes to KV, so reject unless the token matches.
+		if (
+			!env.ADMIN_TOKEN ||
+			request.headers.get("Authorization") !== `Bearer ${env.ADMIN_TOKEN}`
+		) {
+			return new Response("Unauthorized", { status: 401 });
+		}
+
 		// Define function
 		const updateKvValue = async ({
 			key,
@@ -201,6 +211,7 @@ export default {
 ## Notes
 
 - Corrected from the official docs: `type: 'numDays'` in the fetch example, and the `${response}` of `KV.put()` in the KV example (it is `undefined`).
+- Adapted from the official docs: the KV example gained the `ADMIN_TOKEN` bearer check (the original was an open endpoint that writes to KV on every request); send `Authorization: Bearer <token>` when calling it.
 - The KV example needs a provisioned KV namespace and a `KV` binding; KV itself is covered by cloudflare-storage.
 - The KV tool name `"KV update"` is kept as in the source; the sources do not state naming constraints for tool names.
 - The spec URL in the OpenAPI example is a third-party gist; the model decides which GitHub endpoints are called, so do not point such tools at APIs where write access or credentials are exposed without validation.

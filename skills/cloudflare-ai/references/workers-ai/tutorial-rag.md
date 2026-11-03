@@ -74,11 +74,25 @@ export class RAGWorkflow extends WorkflowEntrypoint {
 }
 ```
 
-Routes (Hono):
+Routes (Hono). Adapted (not in the official docs): a fail-closed bearer-token middleware protects every route (the official tutorial has none); see Notes.
 
 ```js
 import { Hono } from "hono";
 const app = new Hono();
+
+// Fail closed: reject every request unless API_TOKEN is configured and matches.
+// Set it with `npx wrangler secret put API_TOKEN` (local dev: .dev.vars, gitignored).
+app.use("*", async (c, next) => {
+	const expected = c.env.API_TOKEN;
+	const header = c.req.header("Authorization") ?? "";
+	const enc = new TextEncoder();
+	const a = enc.encode(header);
+	const b = enc.encode(`Bearer ${expected}`);
+	if (!expected || a.byteLength !== b.byteLength || !crypto.subtle.timingSafeEqual(a, b)) {
+		return c.text("Unauthorized", 401);
+	}
+	await next();
+});
 
 app.post("/notes", async (c) => {
 	const { text } = await c.req.json();
@@ -137,11 +151,12 @@ app.get("/", async (c) => {
 export default app;
 ```
 
-Delete a note and its vector. Adapted (not in the official docs): `c.status(204)` only sets the status and does not return a Response; `c.body(null, 204)` does.
+Delete a note and its vector (register it before `export default app`; it is covered by the bearer-token middleware above). Adapted (not in the official docs): `c.status(204)` only sets the status and does not return a Response; `c.body(null, 204)` does, and the id is validated as numeric.
 
 ```js
 app.delete("/notes/:id", async (c) => {
 	const { id } = c.req.param();
+	if (!/^\d+$/.test(id)) return c.text("Invalid id", 400);
 
 	const query = `DELETE FROM notes WHERE id = ?`;
 	await c.env.DB.prepare(query).bind(id).run();
@@ -164,6 +179,7 @@ app.delete("/notes/:id", async (c) => {
 ## Notes
 
 - Corrected from the official docs: `return c.status(204)` in the delete route does not return a Response (changed to `c.body(null, 204)`); the `app.onError(... c.text(err))` handler was omitted because `err` is an Error object, not a string.
+- Adapted from the official docs: the tutorial exposes `POST /notes`, `GET /` and `DELETE /notes/:id` publicly, so anyone could create or delete shared notes and spend Workers AI usage. The middleware authenticates all routes with a single shared secret `API_TOKEN` (rejects when unset). It does not provide per-user ownership: for multi-user data add an owner column to `notes`, filter every query by the authenticated user, and verify ownership before deleting.
 - This page keeps the Workers AI steps; the C3 project creation, `wrangler dev`/`deploy`, Hono install, and the optional text-splitting step (`@langchain/textsplitters` `RecursiveCharacterTextSplitter`, then one workflow step per chunk) are in the source.
 - Optional step 8 calls Anthropic through `@anthropic-ai/sdk` with model `claude-3-5-sonnet-latest` (transcribed as written; model IDs are not normalized) when `ANTHROPIC_API_KEY` is set (`npx wrangler secret put ANTHROPIC_API_KEY`), otherwise falls back to `@cf/meta/llama-3.1-8b-instruct`. The Anthropic SDK API belongs to anthropic-api-core.
 - D1 and the `wrangler d1` commands are covered by cloudflare-storage (`wrangler d1 execute` is local by default; `--remote` is used here). Vectorize is a sibling category of this skill. Workflows (cloudflare-stateful skill) and AI Search, the managed RAG option (how-ai-search-works.md (https://developers.cloudflare.com/ai-search/)), are separate products. Hono API: hono.
