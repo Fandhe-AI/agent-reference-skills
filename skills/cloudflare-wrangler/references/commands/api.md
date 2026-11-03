@@ -320,7 +320,11 @@ script_name = "external-do-worker"
 
 You will need to declare your Durable Object `"MyDurableObject"` in another Worker, called `external-do-worker` in this example (`./external-do-worker/src/index.ts`):
 
+Adapted (not in the official docs): added the missing `cloudflare:workers` import for `DurableObject`; see Notes.
+
 ```ts
+import { DurableObject } from "cloudflare:workers";
+
 export class MyDurableObject extends DurableObject {
 	// Your DO code goes here
 }
@@ -480,6 +484,7 @@ Return type: a `Promise` resolving to:
 - Hyperdrive proxies return passthrough values: values such as `connectionString` and `host` do not have a valid meaning outside of a `workerd` process, so they correspond to the database connection provided by the user.
 - Workers AI always accesses your Cloudflare account in order to run AI models and will incur usage charges even in local development.
 - Binding API details for KV / R2 / D1 / Hyperdrive / Queue belong to the cloudflare-storage skill; Durable Object, `ctx.waitUntil`, and `caches` runtime APIs belong to the cloudflare-workers skill.
+- Adapted from the official docs: the Durable Object Worker example omits `import { DurableObject } from "cloudflare:workers";`. `DurableObject` is not a global and must be imported from `cloudflare:workers`, so the import was added.
 - Docs formatting glitch kept out of the transcription: the official page's Durable Object example caption reads `./external-do-worker/src/index.tsts`; the correct file is `src/index.ts` per the config shown.
 
 ## Related

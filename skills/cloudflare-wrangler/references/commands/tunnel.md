@@ -139,7 +139,7 @@ npx wrangler tunnel run my-app
 npx wrangler tunnel run --token eyJhIjoiNGE2MjY...
 ```
 
-Note: The tunnel token is passed to `cloudflared` via the `TUNNEL_TOKEN` environment variable rather than CLI arguments, preventing it from appearing in process listings.
+Note: The tunnel token is passed to `cloudflared` via the `TUNNEL_TOKEN` environment variable rather than CLI arguments, preventing it from appearing in the `cloudflared` child process arguments. See Notes: the example above still exposes the token in Wrangler's own arguments.
 
 Press `Ctrl+C` to stop the tunnel. Wrangler will send a graceful shutdown signal to `cloudflared` before exiting.
 
@@ -182,6 +182,7 @@ The following global flags work on every command (as listed on this page):
 - All `wrangler tunnel` commands are **experimental** and may change without notice.
 - Wrangler manages the `cloudflared` binary automatically. On first use, Wrangler will prompt you to download `cloudflared` to a local cache directory. You can skip this by installing `cloudflared` yourself and adding it to your `PATH`, or by setting the `CLOUDFLARED_PATH` environment variable to point to an existing binary.
 - The "(not supported by Pages)" text on `--config` is verbatim from the official page, which does not scope it further; `wrangler pages` commands list `--config` on their own page.
+- Adapted from the official docs: the official wording says the token is kept out of "process listings". That holds only for the `cloudflared` child process. In `npx wrangler tunnel run --token <TOKEN>` the token is part of Wrangler's own command line, so it is visible in the process list and shell history. The official page documents no environment-variable form for Wrangler's `--token`; avoid pasting real tokens into shared shells or CI logs.
 - This page lists a three-flag global set (`--help`, `--config`, `--cwd`), which differs from the seven-flag block on most other command pages.
 
 ## Related
