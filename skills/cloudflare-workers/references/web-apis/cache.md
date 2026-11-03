@@ -73,7 +73,7 @@ Request headers respected by `match()`:
 
 ## Related
 
-- Workers Cache (the `workers/cache/` feature): see [cache-databases](../cache-databases/README.md)
+- Workers Cache (the `workers/cache/` feature): see https://developers.cloudflare.com/workers/cache/
 - [Request](./request.md)
 - [Response](./response.md)
 - [Fetch](./fetch.md)

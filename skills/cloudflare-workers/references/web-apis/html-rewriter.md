@@ -66,7 +66,7 @@ Async handler:
 ```js
 class UserElementHandler {
 	async element(element) {
-		let response = await fetch(new Request("/user"));
+		let response = await fetch(new Request("https://example.com/user"));
 
 		// fill in user info using response
 	}
@@ -187,6 +187,7 @@ Methods:
 
 ## Notes
 
+- Adapted from the official docs: the official async handler example calls `new Request("/user")`, but the Workers `Request` constructor has no implicit base URL, so a relative URL throws; the example uses an absolute URL (`https://example.com/user` is a placeholder; alternatively resolve with `new URL("/user", request.url)`).
 - Element handlers are attached with `.on`; they respond to `element`, `comments`, and `text`. Document handler `doctype`, `comments`, `text`, and `end` functions are not scoped by a selector and are called for all content on the page, including content outside the top-level HTML tag.
 - All handler functions can return `void` or `Promise<void>`; async handlers can access external resources such as fetch, Workers KV, Durable Objects, or the cache.
 - Text chunks: Cloudflare performs zero-copy streaming parsing, so a text node can arrive in multiple chunks (for example `"Hey. How "` then `"are you?"`). The last chunk has `lastInTextNode` set to `true`; concatenate chunks yourself.

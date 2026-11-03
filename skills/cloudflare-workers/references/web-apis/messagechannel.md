@@ -15,11 +15,12 @@ port2.onmessage = (event) => {
 	console.log('Received message:', event.data);
 };
 
-port2.postMessage('Hello from port2!');
+port1.postMessage('Hello from port1!');
 ```
 
 ## Notes
 
+- Corrected from the official docs: the official example sets `onmessage` on `port2` and also calls `port2.postMessage(...)`, but a message posted on one port is delivered to the other port, so the handler never ran; changed the sender to `port1.postMessage(...)`.
 - Any value that can be used with `structuredClone(...)` can be sent over the port.
 - You can send messages between parts of your Worker, but not across different Workers.
 - Transfer lists are not supported: you cannot transfer ownership of objects like `ArrayBuffer` or `MessagePort` between ports.

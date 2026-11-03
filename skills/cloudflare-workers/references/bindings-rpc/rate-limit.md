@@ -70,8 +70,8 @@ export default {
 
 ```ts
 // Recommended: use a key that represents a specific user or class of user
-const url = new URL(req.url);
-const userId = url.searchParams.get("userId") || "";
+// (userId must come from a verified session or token, not from client-supplied input)
+const userId = await getVerifiedUserId(req); // your own authentication logic
 const { success } = await env.MY_RATE_LIMITER.limit({ key: userId });
 
 // Not recommended:  many users may share a single IP, especially on mobile networks
@@ -80,6 +80,7 @@ const ipAddress = req.headers.get("cf-connecting-ip") || "";
 const { success } = await env.MY_RATE_LIMITER.limit({ key: ipAddress });
 ```
 
+- Adapted from the official docs: the official example derives `userId` from `url.searchParams.get("userId")`, which a caller can vary per request to evade the limit or set to another user's ID to consume that user's quota; the example now takes the ID from a verified identity (`getVerifiedUserId` is a placeholder for your own authentication).
 - Locality: limits are local to the Cloudflare location the Worker runs in; counts from different locations do not combine into a worldwide limit.
 - Performance: each check uses a locally cached count; the promise resolves with the decision without waiting for cross-instance synchronization.
 - Accuracy: counts are eventually consistent. A burst can result in more than `limit` calls returning `success: true`, even within one Worker or location. Sharing a namespace or awaiting each call does not make the limit strict.

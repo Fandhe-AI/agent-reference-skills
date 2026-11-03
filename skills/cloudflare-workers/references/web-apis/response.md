@@ -42,13 +42,18 @@ let response = new Response(body, init);
 | `response.url` | string | The URL of the response. The final URL obtained after any redirects. |
 | `response.webSocket` | WebSocket? | Present in successful WebSocket handshake responses (see `webSocket` above). |
 
+### Static methods
+
+| Name | Returns | Description |
+|------|---------|-------------|
+| `Response.json()` | Response | Creates a new response with a JSON-serialized payload. |
+| `Response.redirect()` | Response | Creates a new response with a different URL. |
+
 ### Instance methods
 
 | Name | Returns | Description |
 |------|---------|-------------|
 | `clone()` | Response | Creates a clone of a `Response` object. |
-| `json()` | Response | Creates a new response with a JSON-serialized payload. |
-| `redirect()` | Response | Creates a new response with a different URL. |
 | `arrayBuffer()` | Promise\<ArrayBuffer> | Reads the stream to completion and resolves with an `ArrayBuffer`. |
 | `formData()` | Promise\<FormData> | Reads the stream to completion and resolves with a `FormData` object. |
 | `json()` | Promise\<JSON> | Reads the stream to completion and resolves with the result of parsing the body text as JSON. |
@@ -57,7 +62,8 @@ let response = new Response(body, init);
 ## Notes
 
 - `Response` implements the `Body` mixin of the Fetch API, hence the body-reading methods above.
-- The first `json()` and `redirect()` rows are listed under "Instance methods" in the official page as creating new responses; the page lists `json()` twice with different return types (also under the Body mixin methods).
+- Corrected from the official docs: the official page lists `json()` and `redirect()` (the ones that create new responses) under "Instance methods", but they are static methods (`Response.json(...)`, `Response.redirect(...)`). Only the Body mixin `json()` (parses the body) is an instance method. They were moved to a "Static methods" table.
+- Corrected from the official docs: the `FixedLengthStream` example below uses `writer.close()`; the official page's `writer.end()` does not exist on `WritableStreamDefaultWriter`.
 - The `Content-Length` header is set automatically by the runtime; any value set in `Headers` is ignored. To specify a value, the `body` must be a `FixedLengthStream` or a fixed-length value such as a string or `TypedArray`. Any other `ReadableStream` body uses chunked encoding.
 - Workers-specific differences: `cf` property (informational only), `webSocket` property, `encodeBody` option, and `headers` returns a Workers `Headers` with `getAll()` for `Set-Cookie`.
 - Workers type definitions define a `Response` type including `cf` and `webSocket`, not directly compatible with the `lib.dom.d.ts` `Response`; type assertions may be needed.
@@ -70,7 +76,7 @@ let response = new Response(body, init);
   const enc = new TextEncoder();
   const writer = writable.getWriter();
   writer.write(enc.encode("hello world"));
-  writer.end();
+  writer.close();
 
   return new Response(readable);
 ```

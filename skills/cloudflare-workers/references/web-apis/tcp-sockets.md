@@ -92,11 +92,12 @@ const reader = socket.readable.getReader();
 socket.close();
 
 // After close() is called, you can no longer read from the readable side of the socket
-const reader = socket.readable.getReader(); // This fails
+socket.readable.getReader(); // This fails
 ```
 
 ## Notes
 
+- Adapted from the official docs: the official "Closing a connection" snippet redeclares `const reader` on the failing line, which is a syntax error before `close()` is ever reached; the redeclaration was dropped so only the failing call remains.
 - For PostgreSQL, use Hyperdrive (https://developers.cloudflare.com/hyperdrive/), which provides `connect()` with built-in connection pooling and query caching.
 - Outbound TCP connections are sourced from a prefix that is not part of the published Cloudflare IP ranges. Outbound sockets to Cloudflare IP ranges are blocked.
 - `startTls()` can only be called if `secureTransport` is `starttls`; once called, the initial socket is closed and existing readers/writers no longer work (create new ones from the returned socket). Call it only once per socket.

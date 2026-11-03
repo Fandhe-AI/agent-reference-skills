@@ -234,10 +234,12 @@ In addition to the standard `Request` properties, `request.cf` on an inbound `Re
   const enc = new TextEncoder();
   const writer = writable.getWriter();
   writer.write(enc.encode("hello world"));
-  writer.end();
+  writer.close();
 
   const req = new Request('https://example.org', { method: 'POST', body: readable });
 ```
+
+- Corrected from the official docs: the official `FixedLengthStream` example calls `writer.end()`, but `WritableStreamDefaultWriter` has no `end()` method (it would throw a TypeError); changed to `writer.close()`.
 
 ## Related
 

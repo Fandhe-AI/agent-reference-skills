@@ -11,7 +11,7 @@ The `tail()` handler is the handler you implement when writing a Tail Worker. Ta
 ```js
 export default {
   async tail(events, env, ctx) {
-    fetch("<YOUR_ENDPOINT>", {
+    await fetch("<YOUR_ENDPOINT>", {
       method: "POST",
       body: JSON.stringify(events),
     })
@@ -84,6 +84,7 @@ Event properties:
 - Some `TailRequest` properties are redacted by default to make it harder to accidentally record sensitive information. The redactions use heuristic rules, so they are subject to false positives and negatives. `getUnredacted()` bypasses redaction; be careful about what information is retained.
   - Header redaction: the value is the string `"REDACTED"` when the (case-insensitive) header name is `cookie`/`set-cookie` or contains the substring `"auth"`, `"key"`, `"secret"`, `"token"`, or `"jwt"`.
   - URL redaction: for each greedily matched substring of ID characters (a-z, A-Z, 0-9, `+`, `-`, `_`), if it meets the criteria for a hex or base-64 ID, it is replaced with `"REDACTED"`. Hex ID: 32 or more hex digits, containing only hex digits and separators (`+`, `-`, `_`). Base-64 ID: 21 or more characters with at least two uppercase, two lowercase, and two digits.
+- Corrected from the official docs: the official example calls `fetch(...)` without `await`, so the forwarding request is not tied to the invocation lifetime and may be cancelled when `tail()` returns; added `await` (alternatively pass the promise to `ctx.waitUntil()`).
 - Tail Worker setup: see https://developers.cloudflare.com/workers/observability/logs/tail-workers/. The `wrangler tail` command is covered by the cloudflare-wrangler skill.
 
 ## Related

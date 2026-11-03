@@ -3,12 +3,14 @@ name: cloudflare-workers
 description: >
   Cloudflare Workers (V8 isolate サーバーレス実行環境, workerd) の API リファレンス。
   fetch / scheduled / tail handler、waitUntil、WorkerEntrypoint RPC、service bindings、
-  compatibility flags (nodejs_compat)、HTMLRewriter、static assets、cron triggers。
+  HTMLRewriter、Request / Response、Cache API、WebSockets。
   Wrangler は cloudflare-wrangler、KV / D1 / R2 は cloudflare-storage。
 user-invocable: false
 ---
 
 # Cloudflare Workers リファレンス
+
+> 分割 PR で順次追加中の部分版。現時点で収録済みなのは下記「ディレクトリ構成」とマッピング表に載っているカテゴリのみ。
 
 Cloudflare Workers — V8 isolate 上でコードを実行するサーバーレス実行環境（ランタイム workerd）。
 ハンドラー（fetch / scheduled / tail）、env bindings と RPC、Web 標準 API と Node.js 互換 API、
@@ -27,6 +29,7 @@ Workers アプリの設計・実装時に参照する。
 - binding の配置: env / bindings の概念・一覧、service bindings、RPC、secrets は本スキル（`bindings-rpc`）。各ストレージの API は cloudflare-storage
 - Durable Objects / Queues / Workflows / Workers AI / Vectorize / Agents / Pages 等、第 2 波で未収録の Cloudflare 製品は公式 docs（`https://developers.cloudflare.com/<product>/`）を参照
 - フレームワーク本体の API は hono / react-router / tanstack-start / nextjs-app / react / vite スキルが担当。`framework-guides` は Cloudflare 側のデプロイ要点のみ
+- cloudflare-wrangler / cloudflare-storage は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-wrangler: https://developers.cloudflare.com/workers/wrangler/、cloudflare-storage: https://developers.cloudflare.com/kv/ ・ /d1/ ・ /r2/ ・ /hyperdrive/）を参照
 
 ## ディレクトリ構成
 
