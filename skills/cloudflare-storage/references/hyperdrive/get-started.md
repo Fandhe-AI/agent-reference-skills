@@ -89,6 +89,8 @@ export default {
 
 Worker (mysql2):
 
+Adapted (not in the official docs): the `Access-Control-Allow-Origin: *` response header is removed; see Notes.
+
 ```typescript
 // mysql2 v3.13.0 or later is required
 import { createConnection } from "mysql2/promise";
@@ -124,7 +126,6 @@ export default {
 			return new Response(JSON.stringify({ results, fields }), {
 				headers: {
 					"Content-Type": "application/json",
-					"Access-Control-Allow-Origin": "*",
 				},
 			});
 		} catch (e) {
@@ -158,6 +159,7 @@ npx wrangler deploy
 
 ## Notes
 
+- Adapted from the official docs: the official mysql2 example returns `Access-Control-Allow-Origin: *`, which lets any website read the database result in a browser; the header is removed (add a specific origin only if the data is meant for that site).
 - Hyperdrive removes seven round-trips before a query can be sent: TCP handshake (1x), TLS negotiation (3x), database authentication (3x).
 - Node.js compatibility is required for database drivers. For compatibility dates of `2026-08-04` or later, Workers and Pages projects enable both `nodejs_compat` and `nodejs_compat_v2` by default. For earlier dates add `"compatibility_flags": ["nodejs_compat"]`. To turn it off for `2026-08-04`+, add both `no_nodejs_compat` and `no_nodejs_compat_v2`.
 - Minimum driver versions: `pg` 8.16.3 (`@types/pg` 8.13.0), `mysql2` 3.13.0.

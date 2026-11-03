@@ -88,7 +88,7 @@ export async function withRetry<T>(
 import { withRetry } from "./retry";
 ```
 
-Adapted (not in the official docs): the imports, the Hono app skeleton and `export default app;` that the official page leaves implicit are added so the route is complete; see Notes.
+Adapted (not in the official docs): the imports, the Hono app skeleton and `export default app;` that the official page leaves implicit are added so the route is complete, and the catch block returns a 500 error instead of an empty `[]`; see Notes.
 
 ```ts
 import { Hono } from "hono";
@@ -121,7 +121,7 @@ app.get("/api/products", async (c) => {
 		});
 	} catch (e) {
 		console.error(e);
-		return c.json([]);
+		return c.json({ error: "Failed to fetch products" }, 500);
 	}
 });
 
@@ -131,6 +131,7 @@ export default app;
 ## Notes
 
 - Fences are transcribed from the official page: the binding, `retry.ts`, the `withRetry` import and the `GET /api/products` route. The route fence additionally carries the page's assumed skeleton (`Hono`, `getCookie` / `setCookie` imports, `new Hono<{ Bindings: Env }>()`, `export default app;`; `Env` must declare `DB: D1Database`). The write route (`db.withSession("first-primary")`) is at the official URL.
+- Adapted from the official docs: the official catch block returns `c.json([])` with status 200, which makes a failed query look like an empty product list; the sample returns a 500 error body.
 - Hono API itself: see the hono skill. Read replication must be enabled on the database; D1 does not create replicas in local development (set `"remote": true` on the binding to test).
 - The page cautions that retries can cause data inconsistency; only retry idempotent work.
 - Related: [read-replication](../references/d1/read-replication.md), [retry-queries](../references/d1/retry-queries.md), [D1 README](../references/d1/README.md).

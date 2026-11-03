@@ -6,12 +6,17 @@ source: https://developers.cloudflare.com/r2/examples/cache-api/
 
 Serve R2 objects from a Worker and store them in Cloudflare's cache with the Workers Cache API.
 
-Adapted (not in the official docs): the catch block returns status 500 instead of the default 200; see Notes.
+Adapted (not in the official docs): the catch block returns status 500 instead of the default 200, and non-GET methods get 405; see Notes.
 
 ```js
 export default {
   async fetch(request, env, context) {
     try {
+      // The Cache API only stores GET responses; cache.put() throws for other methods
+      if (request.method !== 'GET') {
+        return new Response('Method Not Allowed', { status: 405, headers: { Allow: 'GET' } });
+      }
+
       const url = new URL(request.url);
 
       // Construct the cache key from the cache URL
@@ -70,5 +75,6 @@ export default {
 
 - Needs an R2 binding named `MY_BUCKET`. The Cache API only works on a custom domain or route; it has no effect in the dashboard editor, Playground previews, or `*.workers.dev`.
 - Corrected from the official docs: the official catch block returns the error text with the default status 200, which clients and monitoring read as success; it now sets `status: 500`. The error message is returned to the client; log it and return a generic body for public endpoints.
+- Adapted from the official docs: the official handler also caches non-GET requests, but `cache.put()` rejects methods other than GET (the thrown error then surfaces as a 500); the sample returns 405 for them.
 - Cache API entries respect `Cache-Control` (`s-maxage=10` here) and are not replicated across data centers.
 - Related: [workers-api-usage](../references/r2/workers-api-usage.md), [objects-download](../references/r2/objects-download.md).

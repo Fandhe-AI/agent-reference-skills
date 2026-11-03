@@ -10,6 +10,8 @@ Store a JSON translations file in Workers KV and return a localized HTML page ba
 npx wrangler kv key put hello-world.json --path hello-world.json --namespace-id=<ENTER_NAMESPACE_ID_HERE>
 ```
 
+Adapted (not in the official docs): returns an explicit 404 when no translation is found instead of dereferencing `undefined`, and rejects keys over 512 bytes with 414; see Notes.
+
 ```ts
 import mime from 'mime';
 import parser from 'accept-language-parser'
@@ -54,7 +56,14 @@ export default {
     		// Get the message for the selected language
     		let selectedTranslation = translations.find(item => item.language_code === languageCode)
     		if(!selectedTranslation) selectedTranslation = translations.find(item => item.language_code === "en")
-    		const helloWorldTranslated = selectedTranslation!['message'];
+    		// No matching language and no English entry (or no translations stored): explicit 404
+    		if(!selectedTranslation){
+    			return new Response('No translation available', {
+    				status: 404,
+    				headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+    			})
+    		}
+    		const helloWorldTranslated = selectedTranslation.message;
 
     		// Generate and return the translated html
     		const html = `<!DOCTYPE html>
@@ -74,6 +83,13 @@ export default {
     			}
     		})
     	}
+
+    // KV keys are limited to 512 bytes; longer keys make get() throw
+    if(new TextEncoder().encode(key).length > 512){
+      return new Response('Key too long', {
+        status: 414
+      })
+    }
 
     // Get the mimetype from the key path
     const extension = key.split('.').pop();
@@ -104,6 +120,8 @@ export default {
 
 ## Notes
 
-- Transcribed verbatim from the second Worker snippet of the same official page as `kv-serve-static-assets`. Requires `mime` and `accept-language-parser` and a `hello-world.json` array of `{ "language_code", "message" }` objects (see the official page for the full eight-language file).
+- Adapted from the official docs: the official snippet does `selectedTranslation!['message']`, which throws when the KV key is missing, the requested language does not match, and there is no `en` entry. The sample returns a 404 first. The `message` value is interpolated into HTML unescaped, so keep `hello-world.json` under trusted control.
+- Adapted from the official docs: keys are limited to 512 bytes and the official generic-asset path lets a longer URL path make `get()` throw; the sample returns 414 first.
+- Otherwise transcribed from the second Worker snippet of the same official page as `kv-serve-static-assets`. Requires `mime` and `accept-language-parser` and a `hello-world.json` array of `{ "language_code", "message" }` objects (see the official page for the full eight-language file).
 - Uses the same `assets` KV binding configuration as `kv-serve-static-assets`.
 - Related: [KV README](../references/kv/README.md), [api-read](../references/kv/api-read.md).

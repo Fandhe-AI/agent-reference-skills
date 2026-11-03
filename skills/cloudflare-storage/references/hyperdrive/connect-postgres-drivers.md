@@ -70,6 +70,8 @@ export default {
 
 Postgres.js (`npm i "postgres@>=3.4.5"`):
 
+Adapted (not in the official docs): the catch block returns a 500 response instead of `Response.error()`; see Notes.
+
 ```ts
 // filepath: src/index.ts
 import postgres from "postgres";
@@ -102,7 +104,7 @@ export default {
 		} catch (e: any) {
 			console.error("Database error:", e.message);
 
-			return Response.error();
+			return new Response("Internal error occurred", { status: 500 });
 		}
 	},
 } satisfies ExportedHandler<Env>;
@@ -272,6 +274,7 @@ const sql = postgres(env.HYPERDRIVE.connectionString, {
 - Consolidated from: https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/node-postgres/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/postgres-js/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/drizzle-orm/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/prisma-orm/
 - Adapted from the official docs: install commands are quoted with `>=` (the official `pg@>8.16.3` form is a shell redirection when unquoted and would exclude the stated minimum 8.16.3; same for `postgres@>3.4.5`).
 - Adapted from the official docs: the Prisma sample's `john.doe.${Date.now()}@example.com` is replaced with a `crypto.randomUUID()` suffix, because two requests in the same millisecond would produce the same email (a unique-constraint failure if the schema has `@unique`).
+- Adapted from the official docs: the official Postgres.js catch block returns `Response.error()` (a network-error response with no status or body); it is replaced with the same 500 response the node-postgres example uses.
 - Clients are created per request and not closed explicitly: Hyperdrive cleans up the client connection when the request ends (see [connection-lifecycle](./connection-lifecycle.md)); do not add `client.end()` or module-level clients.
 - Wrangler config and bindings in general: see the cloudflare-wrangler and cloudflare-workers skills.
 

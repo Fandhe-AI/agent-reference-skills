@@ -10,6 +10,8 @@ Upload a file to Workers KV with Wrangler and serve any key as an HTTP path from
 npx wrangler kv key put index.html --path index.html --namespace-id=<ENTER_NAMESPACE_ID_HERE>
 ```
 
+Adapted (not in the official docs): rejects keys over 512 bytes with 414 before calling `get()`; see Notes.
+
 ```ts
 import mime from "mime";
 
@@ -32,6 +34,13 @@ export default {
     	if(!key){
     		return new Response('Missing path in URL', {
     			status: 400
+    		})
+    	}
+
+    	// KV keys are limited to 512 bytes; longer keys make get() throw
+    	if(new TextEncoder().encode(key).length > 512){
+    		return new Response('Key too long', {
+    			status: 414
     		})
     	}
 
@@ -83,9 +92,9 @@ export default {
 
 ## Notes
 
-- Transcribed verbatim. `get(key, 'arrayBuffer')` keeps binary assets (images, audio, video) intact. Requires the `mime` npm package.
+- Transcribed from the official page apart from the key-length guard. `get(key, 'arrayBuffer')` keeps binary assets (images, audio, video) intact. Requires the `mime` npm package.
 - Every key in the bound namespace is publicly readable through this Worker (the URL path is the key); do not store non-public values in the same namespace.
-- The key is derived from the URL path, and KV keys are limited to 512 bytes (see limits); a longer path makes `get()` throw. Validate the key length and return 400/404 first in real code.
+- Adapted from the official docs: the key is derived from the URL path, and KV keys are limited to 512 bytes (see limits); the official code lets a longer path make `get()` throw, so the sample returns 414 first.
 - For hosting a whole front-end or full-stack app, the official page recommends Workers static assets or Pages instead of KV.
 - The official page's `wrangler kv key put` text says it writes to production and preview namespaces, but the command only takes `--namespace-id`.
 - Related: [KV README](../references/kv/README.md), [kv-commands](../references/kv/kv-commands.md), [kv-bindings](../references/kv/kv-bindings.md).

@@ -41,7 +41,7 @@ CREATE TABLE readings(
 SELECT create_hypertable('readings', 'ts');
 ```
 
-Adapted (not in the official docs): `limit` is validated and defaulted (a missing `limit` was passed as `NULL`), unmatched routes return 404, and responses use `Response.json`; see Notes.
+Adapted (not in the official docs): `limit` is validated and defaulted (a missing `limit` was passed as `NULL`), unmatched routes return 404, responses use `Response.json`, and invalid JSON bodies (400) and query failures (500) are handled; see Notes.
 
 ```ts
 import { Client } from "pg";
@@ -63,7 +63,15 @@ export default {
 		// Create a route for inserting JSON as readings
 		if (request.method === "POST" && url.pathname === "/readings") {
 			// Parse the request's JSON payload
-			const productData = await request.json();
+			let productData;
+			try {
+				productData = await request.json();
+			} catch {
+				return Response.json({ error: "Invalid JSON body" }, { status: 400 });
+			}
+			if (!Array.isArray(productData)) {
+				return Response.json({ error: "Body must be a JSON array of readings" }, { status: 400 });
+			}
 
 			// Write the raw query. You are using jsonb_to_recordset to expand the JSON
 			// to PG INSERT format to insert all items at once, and using coalesce to
@@ -74,12 +82,17 @@ export default {
       AS t(ts timestamptz, sensor UUID, metadata jsonb, value numeric)
   `;
 
-			const insertResult = await client.query(insertQuery, [
-				JSON.stringify(productData),
-			]);
+			try {
+				const insertResult = await client.query(insertQuery, [
+					JSON.stringify(productData),
+				]);
 
-			// Collect the raw row count inserted to return
-			return Response.json(insertResult.rowCount);
+				// Collect the raw row count inserted to return
+				return Response.json(insertResult.rowCount);
+			} catch (e) {
+				console.error(e);
+				return Response.json({ error: "Insert failed" }, { status: 500 });
+			}
 
 			// Create a route for querying within a time-frame
 		} else if (request.method === "GET" && url.pathname === "/readings") {
@@ -90,13 +103,18 @@ export default {
 				: Math.min(Math.max(parsedLimit, 1), 1000);
 
 			// Query the readings table using the limit param passed
-			const result = await client.query(
-				"SELECT * FROM readings ORDER BY ts DESC LIMIT $1",
-				[limit],
-			);
+			try {
+				const result = await client.query(
+					"SELECT * FROM readings ORDER BY ts DESC LIMIT $1",
+					[limit],
+				);
 
-			// Return the result as JSON
-			return Response.json(result.rows);
+				// Return the result as JSON
+				return Response.json(result.rows);
+			} catch (e) {
+				console.error(e);
+				return Response.json({ error: "Query failed" }, { status: 500 });
+			}
 		}
 
 		return new Response("Not found", { status: 404 });
@@ -107,7 +125,7 @@ export default {
 ## Notes
 
 - Install `pg` (`npm i pg`) and enable `nodejs_compat`. Pass `env.HYPERDRIVE.connectionString` straight to the driver; Hyperdrive owns the pool, so a new `Client` per request is cheap. Per-database/driver connection examples live in the hyperdrive references.
-- Corrected from the official docs: the official handler passes `url.searchParams.get("limit")` straight to `LIMIT $1` (a missing `limit` becomes `NULL`, i.e. no limit, and a non-numeric value makes the query fail), and returns `undefined` for unmatched routes (a Worker `fetch` must return a `Response`). `limit` is now parsed, defaulted to 100 and capped at 1000, unmatched routes return 404, and `Response.json` replaces the manual `JSON.stringify` responses. The POST body is still unauthenticated and unvalidated, as in the tutorial; add authentication before exposing it.
+- Corrected from the official docs: the official handler passes `url.searchParams.get("limit")` straight to `LIMIT $1` (a missing `limit` becomes `NULL`, i.e. no limit, and a non-numeric value makes the query fail), and returns `undefined` for unmatched routes (a Worker `fetch` must return a `Response`). `limit` is now parsed, defaulted to 100 and capped at 1000, unmatched routes return 404, and `Response.json` replaces the manual `JSON.stringify` responses. The sample also returns 400 for a body that is not valid JSON or not an array (the official code would throw an unhandled exception) and 500 when the database query fails. The POST body is still unauthenticated and unvalidated, as in the tutorial; add authentication before exposing it.
 - Known page defect (unchanged): the official page says to note the deployed URL for a "GitHub webhook" (leftover from another tutorial).
 - Clients are created per request and not closed (see the connection-lifecycle reference).
 - Related: [Hyperdrive README](../references/hyperdrive/README.md), [get-started](../references/hyperdrive/get-started.md), [connection-pooling](../references/hyperdrive/connection-pooling.md).

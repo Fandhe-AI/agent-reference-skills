@@ -6,6 +6,8 @@ source: https://developers.cloudflare.com/kv/examples/distributed-configuration-
 
 Sync per-user configuration from Postgres into Workers KV through the REST API (bulk update), then read it in a Worker.
 
+Adapted (not in the official docs): the sync script sets a non-zero exit code on failure instead of always exiting 0, and the Worker rejects a `userId` over the 512-byte KV key limit; see Notes.
+
 ```js
 const postgres = require('postgres');
 const { Cloudflare } = require('cloudflare');
@@ -61,14 +63,15 @@ console.log('Starting sync of user preview status...');
     	console.log(`Sync complete. Updated ${users.length} users.`);
     } catch (error) {
     	console.error('Error syncing preview status:', error);
+    	process.exitCode = 1; // report failure to the caller (cron, CI)
     }
 
 }
 
 // Run the sync function
 syncPreviewStatus()
-.catch(console.error)
-.finally(() => process.exit(0));
+.catch((e) => { console.error(e); process.exitCode = 1; })
+.finally(() => process.exit()); // keeps process.exitCode
 ```
 
 ```ts
@@ -86,8 +89,9 @@ export default {
     const url = new URL(request.url);
     const userId = url.searchParams.get('userId');
 
-    if (!userId) {
-      return new Response('Please provide a userId query parameter', {
+    // KV keys are limited to 512 bytes; longer keys make get() throw
+    if (!userId || new TextEncoder().encode(userId).length > 512) {
+      return new Response('Please provide a valid userId query parameter', {
         status: 400,
         headers: { 'Content-Type': 'text/plain' }
       });
@@ -161,7 +165,7 @@ export default {
 
 ## Notes
 
-- Transcribed verbatim from the official page (the source's emoji in the HTML template is kept as written). The first fence is an external Node.js script (needs `DATABASE_CONNECTION_STRING`, `CLOUDFLARE_EMAIL`, `CLOUDFLARE_API_KEY`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_WORKERS_KV_NAMESPACE_ID` env vars; the official page also ships `.env` and `db.sql` fences).
+- Adapted from the official docs: the official script logs sync errors and then always calls `process.exit(0)`, so cron/CI sees success after a failed sync; the sample sets `process.exitCode = 1` on error. The Worker also returns 400 for a `userId` longer than the 512-byte key limit, which would otherwise make `get()` throw. Otherwise transcribed from the official page (the source's emoji in the HTML template is kept as written). The first fence is an external Node.js script (needs `DATABASE_CONNECTION_STRING`, `CLOUDFLARE_EMAIL`, `CLOUDFLARE_API_KEY`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_WORKERS_KV_NAMESPACE_ID` env vars; the official page also ships `.env` and `db.sql` fences).
 - Security: the sync script authenticates with the legacy global API key (`apiEmail` / `apiKey`); prefer a scoped API token with Workers KV Storage Edit permission. The Worker trusts the `userId` query parameter, so any client can read any user's configuration; derive the user from an authenticated session in real code. A single bulk request is limited in key count, so chunk large user lists.
 - Known page defect: the paragraph after the Worker snippet ("uses `arrayBuffer`... MIME type") is pasted from the static-assets example and does not describe this code.
 - The page suggests consolidating many small keys into fewer key-value pairs for better cache efficiency (value size limit 25 MiB).

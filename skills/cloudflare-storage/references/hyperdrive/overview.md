@@ -58,7 +58,7 @@ export default {
 
 MySQL (mysql2) variant:
 
-Adapted (not in the official docs): markdown escape artifact `'\*'` replaced by `'*'`; see Notes.
+Adapted (not in the official docs): the `Access-Control-Allow-Origin: *` header is removed and the query is wrapped in `try`/`catch` returning 500; see Notes.
 
 ```ts
 import { createConnection } from 'mysql2/promise';
@@ -79,14 +79,18 @@ export default {
      disableEval: true
   });
 
-  const [results, fields] = await connection.query('SHOW tables;');
+  try {
+    const [results, fields] = await connection.query('SHOW tables;');
 
-  return new Response(JSON.stringify({ results, fields }), {
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
-  });
+    return new Response(JSON.stringify({ results, fields }), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (e) {
+    console.error(e);
+    return Response.json({ error: 'Database query failed' }, { status: 500 });
+  }
 }} satisfies ExportedHandler<{ HYPERDRIVE: Hyperdrive }>;
 ```
 
@@ -95,7 +99,7 @@ export default {
 - Hyperdrive supports any Postgres or MySQL database, including those hosted on AWS, Google Cloud, Azure, Supabase, Neon, and PlanetScale, plus Postgres-compatible databases like CockroachDB and Timescale.
 - Features: connect your database ([get-started](./get-started.md)), PostgreSQL support, MySQL support, and default-on query caching ([query-caching](./query-caching.md)).
 - Related products: Workers, Pages.
-- Corrected from the official docs: the official mysql2 snippet writes `'Access-Control-Allow-Origin': '\*'` (a markdown escape artifact); it is `'*'`. `*` allows any origin to read the database result; restrict it for non-public data.
+- Adapted from the official docs: the official mysql2 snippet sets `'Access-Control-Allow-Origin': '*'` (rendered as `'\*'` in the markdown), which lets any website read the database result in a browser; the header is removed (add a specific origin only if the data is meant for that site). The query is also wrapped in `try`/`catch` so a failure returns 500 instead of an unhandled exception.
 - Bindings concepts and Wrangler configuration in general: see the cloudflare-workers and cloudflare-wrangler skills.
 
 ## Related

@@ -6,7 +6,7 @@ source: https://developers.cloudflare.com/kv/examples/routing-with-workers-kv/
 
 Look up a per-tenant origin URL in Workers KV and proxy the request to that origin.
 
-Adapted (not in the official docs): the proxied request forwards an allowlist of headers instead of `request.headers`; see Notes.
+Adapted (not in the official docs): the proxied request forwards an allowlist of headers instead of `request.headers`, and `Set-Cookie` is removed from the tenant response; see Notes.
 
 ```ts
 // Example routing data stored in Workers KV:
@@ -76,8 +76,10 @@ export default {
 
     		console.log(response.status)
 
-      // Clone the response and add a custom header
+      // Clone the response, strip cookies a tenant origin must not set on the
+      // shared domain, and add a custom header
       const modifiedResponse = new Response(response.body, response);
+      modifiedResponse.headers.delete('Set-Cookie');
       modifiedResponse.headers.set('X-Served-By', 'Cloudflare Worker');
       modifiedResponse.headers.set('X-Storefront-ID', storefrontId);
 
@@ -118,6 +120,7 @@ export default {
 ## Notes
 
 - Adapted from the official docs: the official example passes `request.headers` to every tenant origin, which would leak `Authorization`, `Cookie` and similar credentials to third-party servers. The sample builds the outgoing headers from an allowlist; if an origin needs authentication, use a credential scoped to that origin.
+- Adapted from the official docs: the official example returns the origin response unchanged, so a tenant origin could set `Set-Cookie` on the shared platform domain (cookie overwrite across tenants). The sample deletes `Set-Cookie`. Path-based tenants all share one origin (scheme + host + port), so for untrusted tenants serving HTML or scripts, stripping cookies is not sufficient: serve each tenant from its own domain or subdomain instead.
 - Routing data is read-heavy, which suits KV's low-latency reads; the same pattern fits A/B tests and blue-green rollouts of external origins.
 - Known page defect: the frontmatter description of the official page is copied from the distributed-configuration example; the body is correct.
 - Related: [KV README](../references/kv/README.md), [api-read](../references/kv/api-read.md).
