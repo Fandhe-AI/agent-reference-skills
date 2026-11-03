@@ -73,8 +73,32 @@ export class Backend extends WorkerEntrypoint<Env, Props> {
 }
 ```
 
+Adapted (not in the official docs): gateway that authenticates the caller, passes `props`, and keeps the per-user response out of shared caches; see Notes.
+
+```ts
+export default {
+	async fetch(request, env, ctx): Promise<Response> {
+		// Replace with real verification of the credential; never trust
+		// a user ID taken from unverified input.
+		const userId = await authenticateUser(request, env);
+		if (!userId) {
+			return new Response("Unauthorized", { status: 401 });
+		}
+
+		const cached = await ctx.exports
+			.Backend({ props: { userId } })
+			.fetch(request);
+
+		const res = new Response(cached.body, cached);
+		res.headers.set("Cache-Control", "private, no-store");
+		return res;
+	},
+} satisfies ExportedHandler<Env>;
+```
+
 ## Notes
 
+- Adapted from the official docs: the `ctx.props` example returns `Cache-Control: public, max-age=300` for per-user data. That header is needed for Workers Cache but must not reach clients; a gateway that returns the cached response after authenticating copies it and sets `Cache-Control: private, no-store` so shared proxies and browsers cannot reuse one user's response. `authenticateUser()` is a placeholder (see `workers-cache-examples.md`).
 - Corrected from the official docs: the official `ctx.props` example uses `export default class Backend`, which would collide with the gateway's `export default` and cannot be reached as `ctx.exports.Backend` or the `"Backend"` entry in `exports`; it is a named export here (the gateway keeps the default export).
 - Key components: target entrypoint; path and query string (order and trailing slashes matter); Worker version (default; disable with `cache.cross_version_cache`); `ctx.props` for service-binding/RPC invocations.
 - Anti-poisoning additions: the `x-http-method-override`, `x-http-method`, `x-method-override` headers; `x-forwarded-host`, `x-host`, `x-forwarded-scheme` (unless `http`/`https`), `x-original-url`, `x-rewrite-url`, `forwarded`; and the `Cloudflare-Workers-Version-Key` request header (not set automatically; only if a caller adds it).

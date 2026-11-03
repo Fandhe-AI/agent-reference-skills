@@ -27,6 +27,8 @@ Shared Wrangler configuration: disable caching on the gateway (default) entrypoi
 
 Cache authenticated responses (strip `Authorization` before forwarding):
 
+Adapted (not in the official docs): the gateway copies the cached response and sets `Cache-Control: private, no-store` on the outward response so shared proxies and browsers cannot reuse it without authentication; see Notes.
+
 ```ts
 import { WorkerEntrypoint } from "cloudflare:workers";
 
@@ -60,7 +62,13 @@ export default {
 		const forwarded = new Request(request);
 		forwarded.headers.delete("Authorization");
 
-		return ctx.exports.CachedAPI.fetch(forwarded);
+		const cached = await ctx.exports.CachedAPI.fetch(forwarded);
+
+		// The inner response is public, max-age=60 so the cache layer can
+		// store it. Do not let it escape to shared caches or browsers.
+		const res = new Response(cached.body, cached);
+		res.headers.set("Cache-Control", "private, no-store");
+		return res;
 	},
 } satisfies ExportedHandler<Env>;
 
@@ -77,7 +85,7 @@ async function loadExpensiveData(request: Request): Promise<unknown> {
 
 Per-user partitioning: pass `props` so the user ID becomes part of the key.
 
-Adapted (not in the official docs): `props` is supplied when the entrypoint binding is created (`ctx.exports.CachedAPI({ props })`), not as a `fetch()` option, and the user ID comes from a separate `authenticateUser()` helper returning `string | null` (the earlier `authenticate()` returns a boolean); see Notes.
+Adapted (not in the official docs): `props` is supplied when the entrypoint binding is created (`ctx.exports.CachedAPI({ props })`), not as a `fetch()` option, and the user ID comes from a separate `authenticateUser()` helper returning `string | null` (the earlier `authenticate()` returns a boolean); see Notes. The gateway also copies the cached response and sets `Cache-Control: private, no-store` on the outward response.
 
 ```ts
 export default {
@@ -94,7 +102,14 @@ export default {
 		// Pass the authenticated userId to the cached entrypoint via props —
 		// this becomes part of the cache key. The callee reads it as
 		// this.ctx.props.userId.
-		return ctx.exports.CachedAPI({ props: { userId } }).fetch(forwarded);
+		const cached = await ctx.exports
+			.CachedAPI({ props: { userId } })
+			.fetch(forwarded);
+
+		// Per-user content: keep it out of shared proxies and browser caches.
+		const res = new Response(cached.body, cached);
+		res.headers.set("Cache-Control", "private, no-store");
+		return res;
 	},
 } satisfies ExportedHandler<Env>;
 
@@ -184,6 +199,7 @@ export default {
 - Corrected from the official docs: the per-user snippet assigns `userId` from `authenticate()`, which in the first snippet returns a boolean (so `props.userId` would be `true` for every caller); it uses an `authenticateUser()` helper returning a verified user ID or `null` instead.
 - Corrected from the official docs: the per-user snippet shows `ctx.exports.CachedAPI.fetch(forwarded, { props: { userId } })`, but `fetch()` takes no `props` option, so `this.ctx.props` would stay empty and users would share one cache entry. Props are set when creating the entrypoint binding: `ctx.exports.CachedAPI({ props: { userId } }).fetch(forwarded)` (see `handlers-context/context.md`).
 - Adapted from the official docs: the origin snippet originally resolved `new URL(url.pathname + url.search, ORIGIN)` (a pathname such as `//attacker.example/x` changes the host and leaks forwarded credentials) and forwarded all incoming headers (including `Authorization`, `Cookie`, `Host`) and cached the response for every caller. It now assigns `pathname`/`search` onto `new URL(ORIGIN)` and forwards only an allowlist of non-credential headers. If the origin needs credentials, bypass this cached entrypoint for those requests or partition by verified user via `ctx.props`.
+- Adapted from the official docs: the authenticated and per-user snippets originally returned the inner entrypoint's `Cache-Control: public, max-age=...` response straight to the client. After the gateway authenticates the caller, that header would let shared proxies and browsers reuse the response for unauthenticated or different users, so the gateway now copies the response (`new Response(cached.body, cached)`) and sets `Cache-Control: private, no-store` on the outward response. The inner `public` header still governs Workers Cache.
 - Origin pattern extensions: per-path TTL and tags, per-user `ctx.props`, `stale-while-revalidate` for slow or flaky origins, targeted `ctx.cache.purge({ tags: [...] })` on webhooks.
 - The docs describe the composition as "four lenses" while the page contains five example sections (authenticated, per-user, `Accept-Encoding`, Durable Object, origin); the summary table lists four rows.
 

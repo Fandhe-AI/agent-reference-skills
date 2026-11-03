@@ -129,7 +129,7 @@ export default {
 
 Concatenate responses without buffering:
 
-Adapted (not in the official docs): the pipeline promise is passed to `ctx.waitUntil` so it is not left floating; see Notes.
+Adapted (not in the official docs): the pipeline promise is passed to `ctx.waitUntil` so it is not left floating, and a failure aborts the writable so the readable side errors instead of ending as a truncated success; see Notes.
 
 ```ts
 export default {
@@ -148,16 +148,25 @@ export default {
 
 		// pipe each response body sequentially without buffering
 		const pipeline = (async () => {
-			for (const url of urls) {
-				const response = await fetch(url);
-				if (response.body) {
-					// pipeTo with preventClose keeps the writable open for the next response
-					await response.body.pipeTo(writable, {
-						preventClose: true,
-					});
+			try {
+				for (const url of urls) {
+					const response = await fetch(url);
+					if (!response.ok) {
+						throw new Error(`Upstream ${url} returned ${response.status}`);
+					}
+					if (response.body) {
+						// pipeTo with preventClose keeps the writable open for the next response
+						// (preventAbort is left unset so a failing body also aborts the writable)
+						await response.body.pipeTo(writable, {
+							preventClose: true,
+						});
+					}
 				}
+				await writable.close();
+			} catch (err) {
+				// Error the readable side so the client sees a failed stream.
+				await writable.abort(err).catch(() => {});
 			}
-			await writable.close();
 		})();
 		// Keep the Worker alive until the pipeline finishes.
 		ctx.waitUntil(pipeline);
