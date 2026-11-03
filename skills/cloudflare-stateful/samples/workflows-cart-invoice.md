@@ -8,7 +8,7 @@ A Workflow that polls D1 until a cart is checked out, charges a payment processo
 
 ## Signature / Usage
 
-Adapted (not in the official docs): the cart check, the payment request (idempotency key), the example address in a comment, the admin route authentication, and a stale `package.json` pin were changed. See Notes.
+Adapted (not in the official docs): the cart check, the payment request (idempotency key), the example address in a comment, the cart query (explicit columns instead of a nested `account.email`), the admin route authentication, and a stale `package.json` pin were changed. See Notes.
 
 ```ts
 import {
@@ -66,17 +66,23 @@ export class cartInvoicesWorkflow extends WorkflowEntrypoint<Env, Params> {
 				timeout: "30 seconds",
 			},
 			async () => {
+				// Assumed schema: cart(id TEXT PRIMARY KEY, checkedOut INTEGER, amount REAL, email TEXT).
+				// D1 rows are flat, so the customer address is its own column, not a nested object.
 				const { results } = await this.env.DB.prepare(
-					`SELECT * FROM cart WHERE id = ?`,
+					`SELECT checkedOut, amount, email FROM cart WHERE id = ?`,
 				)
 					.bind(event.payload.cartId)
 					.run();
-				// should return { checkedOut: true, amount: 250 , account: { email: "customer@example.com" }};
+				// should return { checkedOut: 1, amount: 250, email: "customer@example.com" }
 				// D1 returns booleans as 0/1, so test for falsiness rather than `=== false`.
-				if (!results[0] || !results[0].checkedOut) {
+				const row = results[0];
+				if (!row || !row.checkedOut) {
 					throw new Error("cart hasn't been checked out yet");
 				}
-				return results[0];
+				if (typeof row.amount !== "number" || typeof row.email !== "string" || !row.email) {
+					throw new Error("cart row is missing amount or email");
+				}
+				return { amount: row.amount, email: row.email };
 			},
 		);
 
@@ -112,7 +118,7 @@ export class cartInvoicesWorkflow extends WorkflowEntrypoint<Env, Params> {
 		);
 
 		// Send invoice to the customer, retry 10 times every 5 minutes or give up
-		// Requires that cart.account.email has previously been validated in Email Routing,
+		// Requires that cart.email has previously been validated in Email Routing,
 		// See https://developers.cloudflare.com/email-service/api/route-emails/email-handler/
 		await step.do(
 			"send invoice",
@@ -125,7 +131,7 @@ export class cartInvoicesWorkflow extends WorkflowEntrypoint<Env, Params> {
 				timeout: "30 seconds",
 			},
 			async () => {
-				const message = genEmail(cart.account.email, payment.amount);
+				const message = genEmail(cart.email, payment.amount);
 				try {
 					await this.env.SEND_EMAIL.send(message);
 				} catch (e) {
@@ -192,6 +198,8 @@ export default {
 
 Wrangler configuration:
 
+Adapted (not in the official docs): a `d1_databases` binding for `DB` was added. See Notes.
+
 ```jsonc
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
@@ -214,15 +222,23 @@ Wrangler configuration:
 		{
 			"name": "SEND_EMAIL"
 		}
+	],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "<DATABASE_NAME>",
+			"database_id": "<DATABASE_ID>"
+		}
 	]
 }
 ```
 
 ## Notes
 
-- Corrected from the official docs: the cart check was `results[0].checkedOut === false`; D1 returns `0`/`1`, so it never matched and an unchecked cart would proceed. A missing row also threw a `TypeError`. The check is now `!results[0] || !results[0].checkedOut`.
+- Corrected from the official docs: the cart check was `results[0].checkedOut === false`; D1 returns `0`/`1`, so it never matched and an unchecked cart would proceed. A missing row also threw a `TypeError`. The check is now `!row || !row.checkedOut`, where `row = results[0]`.
 - Adapted from the official docs: an `Idempotency-Key` header derived from the cart ID (`cart-<cartId>-payment`) was added to the payment call, because the step is retried up to 10 times and a timed-out attempt may have charged the card before its response was lost. Keying on the cart rather than the instance ID also deduplicates a second instance started for the same cart. Whether it is honored, and for how long, depends on your processor; `payment-processor.example.com` is a placeholder. On an ambiguous failure, reconcile with the processor using the same key rather than charging again.
-- The `D1` row is assumed to expose `amount` and `account.email`; the official page leaves the schema implicit, so adapt the query to your table.
+- Corrected from the official docs: the official step runs `SELECT * FROM cart` and the invoice step reads `cart.account.email`, but a D1 row is a flat object of column values and cannot contain a nested `account` object (a JSON `TEXT` column would come back as a string, so `.email` would be `undefined` and the invoice send would fail). The query now selects explicit columns `checkedOut`, `amount`, and `email`, checks that `amount` is a number and `email` a non-empty string (a failing check throws, so the step is retried like an unchecked-out cart), and returns `{ amount, email }`; the invoice step uses `cart.email`. The schema `cart(id TEXT PRIMARY KEY, checkedOut INTEGER, amount REAL, email TEXT)` is an assumption (the official page leaves it implicit), so adapt the column names to your table.
+- Adapted from the official docs: the official Wrangler configuration has no `d1_databases` entry although the Workflow calls `this.env.DB.prepare()`; a `DB` binding with placeholder `<DATABASE_NAME>` / `<DATABASE_ID>` was added. Create the database with `npx wrangler d1 create <DATABASE_NAME>` and copy its ID.
 - Adapted from the official docs: the admin `fetch` handler (marked "Remove in production" in the source) created instances and exposed instance status to any caller; it now requires a bearer token (`ADMIN_TOKEN`, rejected when unset). Set it with `npx wrangler secret put ADMIN_TOKEN`.
 - Adapted from the official docs: the payment step is retried up to 10 times, so a processor that does not honor `Idempotency-Key` can charge more than once; check the processor's idempotency support before relying on retries. Workflows does not make a step's side effects exactly-once.
 - The invoice step has no idempotency key: if `SEND_EMAIL.send()` succeeds but the step attempt still fails (for example, it times out), the retry sends a duplicate invoice. Record sent invoices (for example, in D1 keyed by cart ID) if duplicates matter.

@@ -8,7 +8,7 @@ Batch requests to one Durable Object and flush them from an `alarm()` handler 10
 
 ## Signature / Usage
 
-Adapted (not in the official docs): the official example uses numeric storage keys (keys must be strings; unpadded numeric order breaks the `reverse` lookup), does not await `setAlarm`, and passes an array directly as the `fetch` body. Also, the body is read with `readTextWithLimit()`, which counts bytes while streaming and rejects bodies over 64 KiB, instead of storing an unbounded `await request.text()`. See Notes.
+Adapted (not in the official docs): the official example uses numeric storage keys (keys must be strings; unpadded numeric order breaks the `reverse` lookup), does not await `setAlarm`, and passes an array directly as the `fetch` body. Also, the body is read with `readTextWithLimit()`, which counts bytes while streaming and rejects bodies over 64 KiB, instead of storing an unbounded `await request.text()`. The body is read before the storage key is allocated and before the alarm is set. See Notes.
 
 ```js
 import { DurableObject } from "cloudflare:workers";
@@ -59,22 +59,29 @@ export class Batcher extends DurableObject {
 	}
 
 	async fetch(request) {
-		this.count++;
-
-		// If there is no alarm currently set, set one for 10 seconds from now
-		// Any further POSTs in the next 10 seconds will be part of this batch.
-		let currentAlarm = await this.storage.getAlarm();
-		if (currentAlarm == null) {
-			await this.storage.setAlarm(Date.now() + 1000 * 10);
-		}
-
-		// Add the request to the batch.
+		// Read and validate the body first. Awaiting the stream opens the input gate, so
+		// other requests can run here; nothing about this request's key is decided yet.
 		const body = await readTextWithLimit(request, 64 * 1024);
 		if (body === null) {
 			return new Response("Payload too large", { status: 413 });
 		}
-		await this.storage.put(String(this.count).padStart(10, "0"), body);
-		return new Response(JSON.stringify({ queued: this.count }), {
+
+		// Allocate the key synchronously (no await between the increment and the read),
+		// so two requests can never get the same key.
+		const id = ++this.count;
+		const key = String(id).padStart(10, "0");
+
+		// Add the request to the batch.
+		await this.storage.put(key, body);
+
+		// Ensure an alarm exists only after the entry is stored, so alarm() never runs
+		// before this entry is visible. If there is no alarm currently set, set one for
+		// 10 seconds from now; further POSTs in the next 10 seconds join this batch.
+		let currentAlarm = await this.storage.getAlarm();
+		if (currentAlarm == null) {
+			await this.storage.setAlarm(Date.now() + 1000 * 10);
+		}
+		return new Response(JSON.stringify({ queued: id }), {
 			headers: {
 				"content-type": "application/json;charset=UTF-8",
 			},
@@ -142,6 +149,7 @@ Adapted (not in the official docs): `main` points to `src/index.js` because the 
 - Adapted from the official docs: the request body is read with `readTextWithLimit()`, which counts bytes while reading the stream and cancels it past 64 KiB (an example cap below the storage value size limit); the official example stored `await request.text()` without any bound.
 - Corrected from the official docs: the page stores values under numeric keys (`put(this.count, ...)`); storage keys must be strings, and unpadded keys sort lexicographically, so `"10"` sorts before `"9"` and the restored count would be wrong. Keys are now zero-padded.
 - Corrected from the official docs: `setAlarm` is now awaited, and the upstream `fetch` body is `JSON.stringify(...)` of the values (an array is not a valid `fetch` body); the upstream URL uses `https`.
+- Adapted from the official docs: the official `fetch()` increments `this.count` and sets the alarm before reading the body, then stores the body under `this.count`. Awaiting the body opens the Durable Object input gate, so a concurrent request could increment the counter in between and both bodies would be stored under the same key; and if reading took longer than 10 seconds, `alarm()` could run against empty storage and return, leaving the later-stored body with no alarm. The handler now reads and validates the body first, allocates the key into a local variable (`const id = ++this.count`) with no `await` before it is used, stores the body, and only then calls `getAlarm()` / `setAlarm()`. While `alarm()` is running, `getAlarm()` returns `null`, so a request stored during an in-flight flush schedules the next alarm.
 - Adapted from the official docs: a non-OK upstream response throws so the alarm is retried instead of silently deleting the batch.
 - Adapted from the official docs: the official `alarm()` reads the batch, awaits the upstream `fetch`, then calls `deleteAll()` and resets the counter. Entries stored by requests that arrived during the `fetch` were deleted unsent, and the reset counter could reuse keys. The handler now deletes only the keys it sent. Delivery is at-least-once (a retry after a partial failure resends the batch), so the upstream should deduplicate.
 - An alarm that fails with an uncaught exception is retried; see the Alarms reference for retry limits. Only the JavaScript variant is shown.

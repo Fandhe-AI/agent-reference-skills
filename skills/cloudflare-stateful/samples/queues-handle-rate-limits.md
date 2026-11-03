@@ -10,6 +10,8 @@ Send emails through Resend (default limit: two requests per second) by queuing r
 
 Wrangler configuration:
 
+Adapted (not in the official docs): `max_concurrency: 1` was added to the consumer so that only one consumer invocation runs at a time. See Notes.
+
 ```jsonc
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
@@ -33,14 +35,16 @@ Wrangler configuration:
 				"queue": "rate-limit-queue",
 				"max_batch_size": 2,
 				"max_batch_timeout": 10,
-				"max_retries": 3
+				"max_retries": 3,
+				// One consumer invocation at a time; the handler paces its own sends.
+				"max_concurrency": 1
 			}
 		]
 	}
 }
 ```
 
-Adapted (not in the official docs): the official Worker lets any caller of any method trigger an email to an arbitrary address. A POST-only check, a fail-closed constant-time bearer-token check, and a length and shape check on the address were added, and the producer stores a `requestId` in each message that the consumer passes to Resend as an idempotency key, so a redelivered message does not send a second email. Also, the body is read with `readTextWithLimit()`, which counts bytes while streaming and cancels past the limit, instead of `await req.text()` followed by a size check (which buffers the whole body first). See Notes.
+Adapted (not in the official docs): the official Worker lets any caller of any method trigger an email to an arbitrary address. A POST-only check, a fail-closed constant-time bearer-token check, and a length and shape check on the address were added, and the producer stores a `requestId` in each message that the consumer passes to Resend as an idempotency key, so a redelivered message does not send a second email. Also, the body is read with `readTextWithLimit()`, which counts bytes while streaming and cancels past the limit, instead of `await req.text()` followed by a size check (which buffers the whole body first). The consumer sends one email at a time and waits so that consecutive sends start at least 500 ms apart. See Notes.
 
 ```ts
 import { Resend } from "resend";
@@ -56,6 +60,9 @@ interface Env {
 	RESEND_API_KEY: string;
 	ENQUEUE_TOKEN: string;
 }
+
+// Resend's default limit is two requests per second, so start sends >= 500 ms apart.
+const MIN_SEND_INTERVAL_MS = 500;
 
 // Reads the body while counting bytes; cancels and returns null past `limit`.
 async function readTextWithLimit(
@@ -128,6 +135,10 @@ export default {
 		// Initialize Resend
 		const resend = new Resend(env.RESEND_API_KEY);
 		for (const message of batch.messages) {
+			// Sends run one after another (each is awaited). With max_concurrency: 1,
+			// batches also run one after another, so the wait at the end of each
+			// iteration keeps send starts >= MIN_SEND_INTERVAL_MS apart across batches.
+			const startedAt = Date.now();
 			try {
 				// send email; requestId was fixed by the producer, so Resend can drop
 				// a duplicate send when this message is delivered again.
@@ -152,6 +163,10 @@ export default {
 			} catch (e) {
 				console.error(e);
 				message.retry({ delaySeconds: 5 });
+			}
+			const remaining = MIN_SEND_INTERVAL_MS - (Date.now() - startedAt);
+			if (remaining > 0) {
+				await scheduler.wait(remaining);
 			}
 		}
 	},
@@ -178,7 +193,8 @@ curl -X POST -H "Authorization: Bearer ${ENQUEUE_TOKEN}" -d "delivered@resend.de
 
 - Adapted from the official docs: the request body is read with `readTextWithLimit()`, which counts bytes while reading the stream and cancels it once the limit is exceeded; `await req.text()` followed by a byte-length check would already have buffered an arbitrarily large body.
 - Adapted from the official docs: added the method check, a constant-time token check, and validation of the request body (at most 254 bytes and a basic `local@domain` shape) before it is queued; the final tutorial script had no authentication and queued the raw body. The tutorial itself advises checking for `POST` and, in production, queuing a user identifier and looking up the address in a database instead of putting an email address in the message.
-- `max_batch_size = 2` matches the two-requests-per-second limit; with fewer than two messages the consumer waits up to `max_batch_timeout` (10 s) before processing.
+- Adapted from the official docs: the tutorial relies on `max_batch_size = 2` alone to respect the two-requests-per-second limit. That bounds the batch size, not the rate: consumers autoscale to many concurrent invocations by default, and each invocation can finish two sends in well under a second and take the next batch. The sample adds `max_concurrency: 1` (a documented consumer setting) so batches run one at a time, and the consumer awaits each send and then waits with `scheduler.wait()` until at least 500 ms have passed since that send started. Together these keep send starts from this consumer at least 500 ms apart, which holds this consumer to about two sends per second. This is client-side pacing, not a guarantee from Resend: network latency can still bunch requests at Resend, and other Workers, scripts, or queues that use the same `RESEND_API_KEY` are not counted. For one strict limit shared by every sender, route the sends for that credential through a single Durable Object that keeps the counter (the Rate Limiting binding docs recommend this for strict limits; the binding itself is approximate, per Cloudflare location, and uses 10 s or 60 s periods). Any failed send, including a rate-limit (HTTP 429) error from Resend, is retried with `delaySeconds: 5`, so a burst that still hits the limit is delayed rather than lost (up to `max_retries`).
+- Setting `max_concurrency` trades latency for upstream safety: the backlog grows when messages arrive faster than about two per second, and messages that reach the retention period expire. With fewer than two messages the consumer waits up to `max_batch_timeout` (10 s) before processing.
 - The intermediate tutorial version called `message.ack()` again after the success/failure branch, which would acknowledge a message that was just retried; the final script (used here) acks only on success.
 - Failed sends are retried with `delaySeconds: 5`, up to `max_retries` (3). No `dead_letter_queue` is configured, so a message that still fails after the last retry is deleted permanently; add a DLQ to keep it.
 - Adapted from the official docs: Queues delivers at least once. If Resend accepts a send but the consumer still sees an error (for example, the response is lost), the message is retried, and an invocation failure redelivers the whole batch; the official consumer would then email the recipient again. Following the delivery-guarantees guidance (generate a unique ID when writing the message and use it as the idempotency key of the downstream email API), the producer adds `requestId: crypto.randomUUID()` to the body and the consumer passes `` idempotencyKey: `queue-email/${message.body.requestId}` `` to Resend, which deduplicates repeated keys for a limited window (see Resend's idempotency documentation). Two separate HTTP requests for the same address still produce two messages with different IDs; derive `requestId` from a business identifier (for example, a signup ID) if those must collapse too. Exactly-once email delivery is not guaranteed.
