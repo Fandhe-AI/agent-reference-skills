@@ -163,10 +163,11 @@ Get information about the queries run on a D1 database. Acts on remote D1 databa
 | `--limit` | number (default 5) | Fetch insights about the first X queries |
 | `--json` | boolean (default false) | Return output as JSON |
 
-Global flags accepted by every command: `--v` (alias `--version`), `--cwd`, `--config` (alias `--c`), `--env` (alias `--e`), `--env-file`, `--install-skills` (boolean, default false), `--profile`.
+Global flags accepted by every command: `--version` (alias `-v`), `--cwd`, `--config` (alias `-c`), `--env` (alias `-e`), `--env-file`, `--install-skills` (boolean, default false), `--profile`.
 
 ## Notes
 
+- Corrected from the official docs: the official global-flags block writes the aliases as `--v`, `--c` and `--e`; the real Wrangler short aliases are single-dash `-v`, `-c` and `-e`.
 - Per the release notes, since `wrangler@3.33.0` `d1 execute` and `d1 migrations apply` default to a local database; pass `--remote` for the deployed database.
 - Wrangler in general (installation, configuration, other commands) is covered by the cloudflare-wrangler skill.
 
