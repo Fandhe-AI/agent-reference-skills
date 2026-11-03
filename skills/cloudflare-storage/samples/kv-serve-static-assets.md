@@ -6,8 +6,14 @@ source: https://developers.cloudflare.com/kv/examples/workers-kv-to-serve-assets
 
 Upload a file to Workers KV with Wrangler and serve any key as an HTTP path from a Worker.
 
+Adapted (not in the official docs): the local/remote flags are added because `wrangler kv key put` writes to local storage by default; see Notes.
+
 ```sh
+# Local storage (default; used by wrangler dev)
 npx wrangler kv key put index.html --path index.html --namespace-id=<ENTER_NAMESPACE_ID_HERE>
+
+# Production namespace on Cloudflare (overwrites an existing key of the same name)
+npx wrangler kv key put index.html --path index.html --namespace-id=<ENTER_NAMESPACE_ID_HERE> --remote
 ```
 
 Adapted (not in the official docs): rejects keys over 512 bytes with 414 before calling `get()`; see Notes.
@@ -97,4 +103,5 @@ export default {
 - Adapted from the official docs: the key is derived from the URL path, and KV keys are limited to 512 bytes (see limits); the official code lets a longer path make `get()` throw, so the sample returns 414 first.
 - For hosting a whole front-end or full-stack app, the official page recommends Workers static assets or Pages instead of KV.
 - The official page's `wrangler kv key put` text says it writes to production and preview namespaces, but the command only takes `--namespace-id`.
+- Adapted from the official docs: `wrangler kv key put` (and `kv bulk put`) writes to local storage by default, so a deployed Worker would not see the file; add `--remote` to upload to the production namespace (see the cloudflare-storage `scripts/kv.md`, "Local versus remote storage").
 - Related: [KV README](../references/kv/README.md), [kv-commands](../references/kv/kv-commands.md), [kv-bindings](../references/kv/kv-bindings.md).

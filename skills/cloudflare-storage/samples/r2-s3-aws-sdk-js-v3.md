@@ -82,7 +82,7 @@ curl -X PUT "https://my-bucket.<ACCOUNT_ID>.r2.cloudflarestorage.com/dog.png?X-A
 ## Notes
 
 - `ACCOUNT_ID`, `ACCESS_KEY_ID`, `SECRET_ACCESS_KEY` are placeholders; create an S3 access key first (api-tokens).
-- S3-compatible API does not work with local `wrangler dev`. The Wrangler `alias` fence is only for running the SDK inside a Worker (needs `nodejs_compat` and a direct `@aws-sdk/xml-builder` dependency to avoid `DOMParser is not defined`); for plain reads/writes in a Worker prefer the R2 binding.
+- The local R2 emulator (`wrangler dev` default) exposes no S3-compatible endpoint, so there is no local S3 target. SDK code running inside a local Worker that points at the real `https://<ACCOUNT_ID>.r2.cloudflarestorage.com` endpoint reads and writes the REAL production bucket with your S3 access key, not local data. The Wrangler `alias` fence is only for running the SDK inside a Worker (needs `nodejs_compat` and a direct `@aws-sdk/xml-builder` dependency to avoid `DOMParser is not defined`); for plain reads/writes in a Worker prefer the R2 binding.
 - Adapted from the official docs: `signableHeaders: new Set(["content-type"])` keeps `Content-Type` in the signature; with `ContentType` alone the SDK may leave the header unsigned, so the restriction would not be enforced.
 - A presigned PUT with `ContentType` requires the client to send the matching `Content-Type` header; combine with bucket CORS rules to limit abuse.
 - Related: [s3-presigned-urls](../references/r2/s3-presigned-urls.md), [buckets-cors](../references/r2/buckets-cors.md), [api-tokens](../references/r2/api-tokens.md).

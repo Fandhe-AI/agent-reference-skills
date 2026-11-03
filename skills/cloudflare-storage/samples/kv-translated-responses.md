@@ -6,8 +6,14 @@ source: https://developers.cloudflare.com/kv/examples/workers-kv-to-serve-assets
 
 Store a JSON translations file in Workers KV and return a localized HTML page based on the `Accept-Language` header.
 
+Adapted (not in the official docs): the local/remote flags are added because `wrangler kv key put` writes to local storage by default; see Notes.
+
 ```sh
+# Local storage (default; used by wrangler dev)
 npx wrangler kv key put hello-world.json --path hello-world.json --namespace-id=<ENTER_NAMESPACE_ID_HERE>
+
+# Production namespace on Cloudflare (overwrites an existing key of the same name)
+npx wrangler kv key put hello-world.json --path hello-world.json --namespace-id=<ENTER_NAMESPACE_ID_HERE> --remote
 ```
 
 Adapted (not in the official docs): returns an explicit 404 when no translation is found instead of dereferencing `undefined`, and rejects keys over 512 bytes with 414; see Notes.
@@ -124,4 +130,5 @@ export default {
 - Adapted from the official docs: keys are limited to 512 bytes and the official generic-asset path lets a longer URL path make `get()` throw; the sample returns 414 first.
 - Otherwise transcribed from the second Worker snippet of the same official page as `kv-serve-static-assets`. Requires `mime` and `accept-language-parser` and a `hello-world.json` array of `{ "language_code", "message" }` objects (see the official page for the full eight-language file).
 - Uses the same `assets` KV binding configuration as `kv-serve-static-assets`.
+- Adapted from the official docs: `wrangler kv key put` writes to local storage by default, so a deployed Worker would not see the file; add `--remote` to upload to the production namespace (see the cloudflare-storage `scripts/kv.md`, "Local versus remote storage").
 - Related: [KV README](../references/kv/README.md), [api-read](../references/kv/api-read.md).
