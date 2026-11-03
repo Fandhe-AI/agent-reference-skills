@@ -38,6 +38,8 @@ Advanced routing control (explicit Worker-first paths):
 }
 ```
 
+Adapted (not in the official docs): the fallback forwards non-API requests to `env.ASSETS.fetch(request)` instead of returning 404, and `env` is typed with the `ASSETS` binding; see Notes.
+
 ```ts
 export default {
 	async fetch(request, env): Promise<Response> {
@@ -49,9 +51,11 @@ export default {
 			});
 		}
 
-		return new Response(null, { status: 404 });
+		// An array run_worker_first disables Sec-Fetch-Mode: navigate detection, so unmatched
+		// SPA routes (for example /dashboard) can reach this code. Serve them from assets.
+		return env.ASSETS.fetch(request);
 	},
-} satisfies ExportedHandler;
+} satisfies ExportedHandler<{ ASSETS: Fetcher }>;
 ```
 
 ## Options / Props
@@ -60,13 +64,14 @@ export default {
 |------|------|-------------|
 | `assets.directory` | string | Build output directory. |
 | `assets.not_found_handling` | `"single-page-application"` | Non-matching requests are served `/index.html` with `200 OK`. |
-| `assets.run_worker_first` | boolean \| string[] | Disables automatic `Sec-Fetch-Mode: navigate` detection; explicit control over Worker vs asset handling. |
+| `assets.run_worker_first` | boolean \| string[] | `true` invokes the Worker for every request. An array of patterns invokes it for matching paths (a `!` negative match goes to assets) and disables automatic `Sec-Fetch-Mode: navigate` detection. Unset/`false` keeps navigation detection. |
 
 ## Notes
 
 - Navigation requests: with a Worker script (`main`), `assets.not_found_handling` set, and the `assets_navigation_prefers_asset_serving` compatibility flag (or compatibility date `2025-04-01` or later), requests carrying `Sec-Fetch-Mode: navigate` do not invoke the Worker. This reduces billable invocations.
 - Consequence: a Worker endpoint such as `/api/date` works from a client-side `fetch("/api/date")`, but navigating to it in the browser serves HTML. Disable with the `assets_navigation_has_no_effect` compatibility flag (https://developers.cloudflare.com/workers/configuration/compatibility-flags/#navigation-requests-prefer-asset-serving).
 - To run the Worker ahead of assets (logging, authentication) also set `assets.run_worker_first`; `not_found_handling` is retained when no asset matches.
+- Corrected from the official docs: the official advanced-routing example returns `404` for every path other than `/api/name`. Because an array `run_worker_first` disables `Sec-Fetch-Mode: navigate` detection, a request that matches neither the array nor an asset (for example `/dashboard`) is routed to the Worker, so that handler would 404 SPA routes. The example now forwards such requests to `env.ASSETS.fetch(request)`, which applies `not_found_handling` (`/index.html`).
 - Client-side callbacks (e.g. OAuth `/oauth/callback?code=...`): with the flag, HTML is served instead of the Worker. Serve a slim HTML page that forwards the query to an API route with client-side JS:
 
 ```html
@@ -123,7 +128,7 @@ export default class extends WorkerEntrypoint {
 
 - The OAuth callback example does not verify an OAuth `state` parameter; in real code, validate `state` against a value stored before the redirect. The helper `exchangeAuthorizationCodeForAccessAndRefreshTokensAndPersistToDatabaseAndGetSessionId` is a placeholder not defined by the docs.
 - Advanced routing control requires Wrangler v4.20.0+ and Cloudflare Vite plugin v1.7.0+. A SPA shell with HTMLRewriter bootstrap data example is at https://developers.cloudflare.com/workers/examples/spa-shell/.
-- Routing decision order: if `run_worker_first` matches a path the Worker is invoked; a negative match or any asset match goes to asset serving; otherwise, with no Worker script assets serve; with a Worker script, navigation requests go to assets and others invoke the Worker. Within asset serving, an unmatched request is rewritten to `/index.html` (`200 OK`), or a `404 Not Found` null-body response if no HTML page exists. The Worker can reach assets through the binding. Only invocations of the Worker script are billable.
+- Routing decision order: if `run_worker_first` matches a path the Worker is invoked; a negative match or any asset match goes to asset serving; otherwise, with no Worker script assets serve; with a Worker script, navigation requests go to assets and others invoke the Worker. When `run_worker_first` is an array, navigation detection is disabled, so any request that matches neither the array nor an asset also invokes the Worker (the Worker should pass it to `env.ASSETS.fetch(request)`); with `run_worker_first` unset/`false`, navigation requests go to assets. Within asset serving, an unmatched request is rewritten to `/index.html` (`200 OK`), or a `404 Not Found` null-body response if no HTML page exists. The Worker can reach assets through the binding. Only invocations of the Worker script are billable.
 - With the Vite plugin, see the cloudflare-wrangler skill (vite-plugin category).
 
 ## Related
