@@ -42,10 +42,12 @@ Nested layouts (e.g. Drizzle):
 
 Commands (see Wrangler commands): `wrangler d1 migrations create`, `list`, `apply`.
 
-Temporarily disable foreign key checks while applying a migration:
+Defer foreign key checks until the end of the migration's transaction:
+
+Adapted (not in the official docs): the official page only gives the prose "call `PRAGMA defer_foreign_keys = true`"; the statement is shown here with `on` (as in the D1 foreign keys page) and a `;` terminator; see Notes.
 
 ```sql
-PRAGMA defer_foreign_keys = true
+PRAGMA defer_foreign_keys = on;
 ```
 
 ## Options / Props
@@ -62,7 +64,8 @@ PRAGMA defer_foreign_keys = true
 - Use the database name rather than the binding name when running migrations: binding names can change, database names cannot.
 - `migrations_pattern` rules: `migrations_dir` must also be set; the pattern must start with `migrations_dir`; each migration is recorded in the migrations table as the path relative to `migrations_dir` (e.g. `0001_init/migration.sql`).
 - `wrangler d1 migrations create` only writes top-level files in `migrations_dir`; for nested layouts generate migrations with your ORM (e.g. `drizzle-kit generate`; see the drizzle skill).
-- To disable foreign keys during migration use `PRAGMA defer_foreign_keys = true` before violating changes.
+- To defer foreign key checks during a migration, run `PRAGMA defer_foreign_keys = on;` (the official page writes `= true`) before changes that would temporarily violate them. It does not disable foreign keys: checking is deferred to the end of the transaction, any unresolved violation still fails with `FOREIGN KEY constraint failed`, and `ON DELETE CASCADE` (and other referential actions) still run immediately, so a table rebuild (drop and recreate a parent table) can delete child rows.
+- Corrected from the official docs: the official migrations page says to "temporarily disable foreign key constraints" with `PRAGMA defer_foreign_keys = true`; the SQL statements and foreign keys pages state that the pragma only defers enforcement to the end of the transaction, so the wording was changed to match.
 - Run schema changes once through migrations, not on your application's hot path.
 - Migrations create a backup after apply and roll back a failing migration (see Wrangler commands).
 

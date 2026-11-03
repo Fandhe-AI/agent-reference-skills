@@ -55,7 +55,8 @@ VALUES
 - Import limit: `wrangler d1 execute --file` is limited to 5GiB files (same as the R2 upload limit). Split larger imports into multiple files.
 - Export limitations: not supported for virtual tables (including FTS5; workaround: delete virtual tables, export, recreate); a running export blocks other database requests; numeric values are affected by JavaScript's 52-bit precision (large `int64` values may lose precision).
 - Troubleshooting: import SQL format only; the schema must be SQLite3 compatible (no MySQL / PostgreSQL imports); import tables in foreign-key order; `"cannot start a transaction within a transaction"` means `BEGIN TRANSACTION` / `COMMIT` remain in the dump.
-- To temporarily disable foreign key constraints during import, call `PRAGMA defer_foreign_keys = true` before changes that would violate them.
+- To defer foreign key checks during import, put `PRAGMA defer_foreign_keys = on;` before changes that would violate them (the official page writes `= true`). It does not disable foreign keys: checking is deferred to the end of the transaction, unresolved violations still fail with `FOREIGN KEY constraint failed`, and `ON DELETE CASCADE` actions still run. Otherwise import tables in foreign-key order.
+- Corrected from the official docs: the official import page says to "temporarily disable foreign key constraints" with `PRAGMA defer_foreign_keys = true`; the D1 SQL statements and foreign keys pages state it only defers enforcement to the end of the transaction, so the wording was changed to match.
 
 ## Related
 

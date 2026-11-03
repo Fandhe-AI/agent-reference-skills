@@ -12,12 +12,14 @@ Indexes improve query performance (and reduce rows read, hence cost) over freque
 CREATE INDEX IF NOT EXISTS idx_orders_customer_id ON orders(customer_id)
 ```
 
+Adapted (not in the official docs): each statement is terminated with `;`; see Notes.
+
 ```sql
 -- Uses the index: the indexed column is referenced by the query.
-SELECT * FROM orders WHERE customer_id = ?
+SELECT * FROM orders WHERE customer_id = ?;
 
 -- Does not use the index: customer_id is not in the query.
-SELECT * FROM orders WHERE order_date = '2023-05-01'
+SELECT * FROM orders WHERE order_date = '2023-05-01';
 ```
 
 List indexes:
@@ -36,9 +38,11 @@ QUERY PLAN
 
 Multi-column and partial indexes:
 
+Adapted (not in the official docs): each statement is terminated with `;`; see Notes.
+
 ```sql
-CREATE INDEX idx_customer_id_transaction_date ON transactions(customer_id, transaction_date)
-CREATE INDEX idx_order_status_not_complete ON orders(order_status) WHERE order_status != 6
+CREATE INDEX idx_customer_id_transaction_date ON transactions(customer_id, transaction_date);
+CREATE INDEX idx_order_status_not_complete ON orders(order_status) WHERE order_status != 6;
 ```
 
 Remove with `DROP INDEX` (dropped indexes cannot be restored).
@@ -67,6 +71,7 @@ Patterns that read or write too many rows:
 
 ## Notes
 
+- Adapted from the official docs: the official examples omit `;` between statements in multi-statement blocks; terminators were added so the blocks run as written.
 - Useful for: columns in predicates (emails, usernames, user IDs, dates), uniqueness (`CREATE UNIQUE INDEX`), multi-column queries, and JOIN columns.
 - Indexes update automatically on insert/update/delete. Tables using the default `ROWID` or their own `INTEGER PRIMARY KEY` need no index on that column.
 - Common naming format: `idx_TABLE_NAME_COLUMN_NAMES`.
