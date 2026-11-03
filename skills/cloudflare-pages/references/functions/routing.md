@@ -24,7 +24,7 @@ export function onRequest(context) {
 }
 ```
 
-Multiple segments (`/functions/users/[[user]].js`), value is an array:
+Multiple segments (`/functions/users/[[catchall]].js`; the file name inside the double brackets is the key on `context.params`), value is an array:
 
 ```js
 export function onRequest(context) {

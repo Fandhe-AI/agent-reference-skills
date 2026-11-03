@@ -168,7 +168,7 @@ export const onRequestPost: PagesFunction<{ SECRET_KEY: string }>[] = [
 - Plugin results are placed on `data`: `data.cloudflareAccess.JWT.payload` (fields differ between identity authorizations such as a browser user and non-identity ones such as a service token), `data.stytch.session`, `data.hCaptcha` (hCaptcha response object), `context.data.turnstile` (Turnstile Siteverify response). They are available in subsequent Functions, including `onError`.
 - The hCaptcha and Turnstile plugins expose a single route wherever mounted (for example `functions/register.ts` validates `/register`). Turnstile verifies the `cf-turnstile-response` POST parameter.
 - Adapted from the official docs: the Access `getIdentity` example contained a full sample JWT literal; use the request's real JWT (for example the `CF-Access-Jwt-Assertion` header) instead. Stytch and Turnstile secrets are read from `env` rather than embedded; the official Stytch text recommends KV for the secret. The Turnstile demo secret in the official code is a public demo key; never ship a real secret in source.
-- hCaptcha's `0x00…` secret and `10000000-ffff-…` sitekey are test values; use real keys from the hCaptcha dashboard, stored as secrets.
+- The hCaptcha secret and sitekey in the snippet above are hCaptcha's public test values; use real keys from the hCaptcha dashboard, stored as secrets.
 
 ## Related
 

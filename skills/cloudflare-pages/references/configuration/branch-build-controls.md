@@ -18,11 +18,11 @@ curl --request PATCH \
 --data "{\"production_branch\": \"main\"}"
 ```
 
-Example: deploy only `release/` branches as previews.
+Example: deploy only `release/` branches as previews. Adapted (not in the official docs): the exclude list is empty, because excludes are evaluated first and an exclude of `*` would also exclude `release/*`; see Notes.
 
 ```txt
 Include Preview branches: release/*
-Exclude Preview branches: *
+Exclude Preview branches: (empty)
 ```
 
 ## Options / Props
