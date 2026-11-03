@@ -240,7 +240,7 @@ export class ChatRoom extends DurableObject {
 
 Alarm that avoids exhausting retries:
 
-Adapted (not in the official docs): the official example persists `gameActive = false` before `calculateFinalScores()`, so a retry exits early and the work is lost; completion is now recorded only after it succeeds, and an explicit `phase` / `cleanupAt` pair keeps a duplicate end-of-game alarm from running the 24-hour cleanup early; `startGame()` refuses to restart while a game is active. See Notes.
+Adapted (not in the official docs): the official example persists `gameActive = false` before `calculateFinalScores()`, so a retry exits early and the work is lost; completion is now recorded only after it succeeds, and an explicit `phase` / `cleanupAt` pair keeps a duplicate end-of-game alarm from running the 24-hour cleanup early; `startGame()` refuses to restart while a game is active, and the stored `endsAt` deadline makes an early (stale) alarm re-arm instead of ending the game. See Notes.
 
 ```js
 import { DurableObject } from "cloudflare:workers";
@@ -252,11 +252,11 @@ export class GameMatch extends DurableObject {
 		if ((await this.ctx.storage.get("phase")) === "active") {
 			throw new Error("Game already in progress");
 		}
-		await this.ctx.storage.put("gameStarted", Date.now());
-		await this.ctx.storage.put("phase", "active");
+		const endsAt = Date.now() + durationMs;
+		await this.ctx.storage.put({ gameStarted: Date.now(), phase: "active", endsAt });
 
 		// Schedule the game to end after the duration
-		await this.ctx.storage.setAlarm(Date.now() + durationMs);
+		await this.ctx.storage.setAlarm(endsAt);
 	}
 
 	// Called when the alarm fires
@@ -278,6 +278,14 @@ export class GameMatch extends DurableObject {
 
 		if (phase !== "active") {
 			return; // Game was never started (or already cleaned up)
+		}
+
+		// A redelivered alarm from a previous game can fire after a restart: before this
+		// game's deadline, re-arm the alarm for that deadline and return.
+		const endsAt = await this.ctx.storage.get("endsAt");
+		if (endsAt !== undefined && Date.now() < endsAt) {
+			await this.ctx.storage.setAlarm(endsAt);
+			return;
 		}
 
 		// Calculate final scores, notify players, etc. (should be idempotent)
@@ -369,7 +377,7 @@ export default defineConfig({
 - Location hints are suggestions, not guarantees; see the data-location page.
 - Corrected from the official docs: the alarm example saved `gameActive = false` before `calculateFinalScores()`, so a retry or re-scheduled alarm returned early and lost the scoring/notification work. Completion is now saved only after the work succeeds, as `phase: "ended"` plus a `cleanupAt` deadline; `alarm()` deletes data only when `phase === "ended"` and `Date.now() >= cleanupAt`, otherwise it re-arms the alarm for `cleanupAt`, so a duplicate or retried end-of-game alarm never cleans up early. Because alarms are at-least-once, the end-of-game work should itself be idempotent.
 - Corrected from the official docs: the transfer example claimed coalesced writes are atomic, but a later statement throwing does not undo earlier ones. The three statements run inside `ctx.storage.transactionSync()`, which rolls back on exception (callback must be synchronous).
-- Adapted from the official docs: `startGame()` throws while `phase` is `"active"`. Otherwise a restart during the `await calculateFinalScores()` of the previous game's `alarm()` would be overwritten by that stale `alarm()` (`phase: "ended"`, a 24-hour `cleanupAt`) and the new game would end up in `deleteAll()`; the retry path only reschedules while the same game is still active.
+- Adapted from the official docs: `startGame()` throws while `phase` is `"active"`. Otherwise a restart during the `await calculateFinalScores()` of the previous game's `alarm()` would be overwritten by that stale `alarm()` (`phase: "ended"`, a 24-hour `cleanupAt`) and the new game would end up in `deleteAll()`; the retry path only reschedules while the same game is still active. The game's deadline is stored as `endsAt`; an alarm that fires before it (a duplicate end-of-game alarm from a previous game redelivered after a restart) re-arms the alarm for `endsAt` and returns.
 - Adapted from the official docs: the migration steps run in `transactionSync()` so a non-idempotent step (`ALTER TABLE ... ADD COLUMN`) and its marker row cannot be split by a failure.
 - Corrected from the official docs: the seat-booking example never created its `bookings` table; the "write progress as you go" example used `forEach(async ...)` (not awaited/ordered). The page's seat-booking TypeScript and several other TypeScript variants have broken indentation in the source; the JavaScript variants are reproduced.
 - Not reproduced here (identity from unverified input): the official WebSocket chat example takes `userId`/`username` from query parameters and trusts them. Derive identities from verified authentication in the Worker instead; see the WebSockets page for the attachments pattern.
