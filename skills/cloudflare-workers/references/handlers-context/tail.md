@@ -37,7 +37,7 @@ Event properties:
 |------|------|-------------|
 | `event.type` | string | The type of event. This will always return `"tail"`. |
 | `event.traces` | array | An array of `TailItems` (same as `events`). |
-| `event.waitUntil(promisePromise)` | void | See [Context (ctx)](./context.md#waituntil). Unlike fetch event handlers, tail handlers do not return a value, so this is the only way for trace Workers to do asynchronous work. |
+| `event.waitUntil(promisePromise)` | void | Service Worker format only (`addEventListener("tail", event => ...)`); not available in the module `tail(events, env, ctx)` handler above, which has no `event` parameter. See [Context (ctx)](./context.md#waituntil). In the module format, `await` the work inside the `async tail()` handler or pass the promise to `ctx.waitUntil()`. |
 
 `TailItems` properties:
 
@@ -88,6 +88,7 @@ Event properties:
   - URL redaction: for each greedily matched substring of ID characters (a-z, A-Z, 0-9, `+`, `-`, `_`), if it meets the criteria for a hex or base-64 ID, it is replaced with `"REDACTED"`. Hex ID: 32 or more hex digits, containing only hex digits and separators (`+`, `-`, `_`). Base-64 ID: 21 or more characters with at least two uppercase, two lowercase, and two digits.
 - Corrected from the official docs: the official example calls `fetch(...)` without `await`, so the forwarding request is not tied to the invocation lifetime and may be cancelled when `tail()` returns; added `await` (alternatively pass the promise to `ctx.waitUntil()`).
 - Corrected from the official docs: `TailException.message` is typed `object` in the official table; it is an error description string (`TraceException.message: string` in `@cloudflare/workers-types`).
+- Corrected from the official docs: the official `event.waitUntil()` entry says it is "the only way" to do asynchronous work; that describes the Service Worker format. In the module format shown on this page there is no `event` argument, and asynchronous work is done with `await` or `ctx.waitUntil()`. The `event.type` / `event.traces` rows likewise apply to the Service Worker `event` object.
 - Tail Worker setup: see https://developers.cloudflare.com/workers/observability/logs/tail-workers/. The `wrangler tail` command is covered by the cloudflare-wrangler skill.
 
 ## Related

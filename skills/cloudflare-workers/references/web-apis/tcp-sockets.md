@@ -92,7 +92,7 @@ export default {
 
 Closing a connection:
 
-Adapted (not in the official docs): duplicate `const reader` redeclaration removed and the code moved from module top level into a `fetch` handler; see Notes.
+Adapted (not in the official docs): duplicate `const reader` redeclaration removed, the second `getReader()` replaced with a read on the already-acquired reader, and the code moved from module top level into a `fetch` handler; see Notes.
 
 ```typescript
 import { connect } from "cloudflare:sockets"
@@ -103,20 +103,23 @@ export default {
     const reader = socket.readable.getReader();
     socket.close();
 
-    // After close() is called, you can no longer read from the readable side of the socket
+    // After close() is called, you can no longer read from the readable side of the socket.
+    // Use the reader acquired above: a second getReader() would throw because the stream
+    // is already locked, regardless of close().
     try {
-      socket.readable.getReader(); // This fails
+      const { done } = await reader.read(); // may resolve with done: true instead of throwing
+      return new Response("readable side is closed, done=" + done);
     } catch (e) {
       return new Response("readable side is no longer usable: " + e, { status: 500 });
     }
-    return new Response("unreachable");
   }
 } satisfies ExportedHandler;
 ```
 
 ## Notes
 
-- Adapted from the official docs: the official "Closing a connection" snippet redeclares `const reader` on the failing line, which is a syntax error before `close()` is ever reached; the redeclaration was dropped so only the failing call remains.
+- Adapted from the official docs: the official "Closing a connection" snippet redeclares `const reader` on the failing line, which is a syntax error before `close()` is ever reached; the redeclaration was dropped. The official snippet then calls `socket.readable.getReader()` a second time and says it fails after `close()`; that call would throw a `TypeError` because the first reader still holds the stream lock, whether or not the socket was closed, so it does not demonstrate closing. The example now reads from the already-acquired reader instead.
+- Reader lock and socket lifetime are independent: `getReader()` locks the stream until `releaseLock()` and says nothing about the connection, while `socket.close()` ends the connection and forcibly closes both streams. After `close()`, a read on the held reader settles as closed (`done: true`) or rejects, depending on how the stream ended; this page does not specify which, so handle both.
 - Adapted from the official docs: the official StartTLS and "Closing a connection" snippets call `connect()` at module top level, which conflicts with the rule below that sockets must be created inside a handler; both were wrapped in a `fetch` handler (the surrounding handler and return values are not in the official snippets).
 - For PostgreSQL, use Hyperdrive (https://developers.cloudflare.com/hyperdrive/), which provides `connect()` with built-in connection pooling and query caching.
 - Outbound TCP connections are sourced from a prefix that is not part of the published Cloudflare IP ranges. Outbound sockets to Cloudflare IP ranges are blocked.

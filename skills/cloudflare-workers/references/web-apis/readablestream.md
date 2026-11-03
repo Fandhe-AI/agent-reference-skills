@@ -47,7 +47,7 @@ const stream = ReadableStream.from(
 | `pipeThrough(transformStream, optionsPipeToOptions)` | ReadableStream | Pipes the readable stream to the writable side of a given `TransformStream` and returns the transform's readable side, so calls can be chained. `options` accepts the same values as `pipeTo()`. |
 | `getReader(optionsObject)` | ReadableStreamDefaultReader \| ReadableStreamBYOBReader | Gets a `ReadableStreamDefaultReader` and locks the stream to it. The only supported option is `mode`, which can be set to `byob` to get a `ReadableStreamBYOBReader` instead (only for byte-capable streams such as the readable side of `IdentityTransformStream`). |
 | `cancel(reasonstringoptional)` | Promise\<void> | Cancels the stream. `reason` is an optional human-readable string passed to the underlying source's cancel algorithm. Any data not yet read is lost. |
-| `tee()` | \[ReadableStream, ReadableStream] | Locks the stream and returns two new `ReadableStream` instances that each read the same data. Backpressure to the underlying source follows the branch with the most unread data, avoiding unbounded buffering when one branch reads more slowly, as long as the underlying source responds to backpressure. |
+| `tee()` | \[ReadableStream, ReadableStream] | Locks the stream and returns two new `ReadableStream` instances that each read the same data. Per the WHATWG Streams standard, the source is read at the pace of the faster branch and chunks not yet read by the slower branch are buffered, so a slow or unconsumed branch can grow memory without bound. Consume both branches concurrently. See Notes for the Workers-specific claim in the official docs. |
 | `values(optionsObject)` | AsyncIterableIterator | Returns an async iterator that reads and consumes the chunks of the stream. The only supported option is `preventCancel`; when `true`, the stream is not canceled when the iterator exits early (for example, from a `break`). A `ReadableStream` is also async iterable directly. |
 
 ### Static methods
@@ -62,6 +62,10 @@ const stream = ReadableStream.from(
 |------|------|-------------|
 | `preventClose` | bool | When `true`, closure of the source `ReadableStream` will not cause the destination `WritableStream` to be closed. |
 | `preventAbort` | bool | When `true`, errors in the source `ReadableStream` will no longer abort the destination `WritableStream`. `pipeTo` returns a rejected promise with the error from the source or any error that occurred while aborting the destination. |
+
+## Notes
+
+- Corrected from the official docs: the official `tee()` entry says backpressure to the underlying source follows the branch with the most unread data, avoiding unbounded buffering when one branch is slower, as long as the source responds to backpressure (it links to the workerd streams README, "tee behavior", for implementation details). That is a runtime-specific claim that is not part of the WHATWG standard, and this page does not rely on it: the standard `tee()` reads ahead at the pace of the faster branch and queues unread chunks for the slower one, with no bound. For large bodies (for example a `Response` body teed for caching and for the client), read both branches at the same time (for example `ctx.waitUntil()` for one and return the other) and do not leave a branch unread, to stay within the Worker memory limit.
 
 ## Related
 
