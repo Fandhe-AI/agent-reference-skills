@@ -1,9 +1,11 @@
 ---
 name: cloudflare-wrangler
 description: >
-  Cloudflare Workers 開発ツール (Wrangler CLI v4 / @cloudflare/vite-plugin) の
+  Cloudflare Workers 開発ツール (Wrangler CLI v4 / @cloudflare/vite-plugin / Vitest 統合 / Miniflare) の
   リファレンス。wrangler dev / deploy / versions / rollback / tail / secret / types の全フラグ、
-  グローバルフラグ、製品別サブコマンド、wrangler.jsonc、.dev.vars、remote bindings、source maps。
+  グローバルフラグ、製品別サブコマンド、wrangler.jsonc、.dev.vars、remote bindings、
+  @cloudflare/vitest-plugin (旧 vitest-pool-workers)、gradual deployments、
+  Workers Builds、Logpush、source maps。
   ランタイム API は cloudflare-workers、KV / D1 / R2 は cloudflare-storage。
 user-invocable: false
 ---
@@ -123,6 +125,97 @@ skills/cloudflare-wrangler/
       non-javascript-modules.md
       debugging.md
       migrating-from-wrangler-dev.md
+    vitest-integration/
+      README.md
+      vitest-overview.md
+      testing-overview.md
+      write-your-first-test.md
+      configuration.md
+      test-apis.md
+      isolation-and-concurrency.md
+      mock-outbound-requests.md
+      recipes.md
+      debugging.md
+      known-issues.md
+      migrate-to-vitest-plugin.md
+      migrate-from-vitest-3-to-vitest-4.md
+      migrate-from-unstable-dev.md
+      migrate-from-miniflare-2.md
+    miniflare/
+      README.md
+      overview.md
+      get-started.md
+      writing-tests.md
+      compatibility.md
+      fetch-events.md
+      scheduled-events.md
+      queues.md
+      modules.md
+      multiple-workers.md
+      web-standards.md
+      websockets.md
+      variables-secrets.md
+      cache.md
+      kv.md
+      d1.md
+      r2.md
+      durable-objects.md
+      debugger.md
+      live-reload.md
+      migrating-from-v2.md
+      unstable-startworker.md
+      test-harness-overview.md
+      test-harness-get-started.md
+      test-harness-configure.md
+      test-harness-prepare-test-state.md
+      test-harness-interact-with-workers.md
+      test-harness-integrations.md
+    ci-cd-deployments/
+      README.md
+      builds-overview.md
+      builds-configuration.md
+      builds-branches-and-paths.md
+      builds-build-image.md
+      builds-git-integration.md
+      builds-api-reference.md
+      builds-deploy-hooks.md
+      builds-event-subscriptions.md
+      builds-troubleshoot.md
+      external-ci-github-actions.md
+      external-ci-gitlab-cicd.md
+      versions-overview.md
+      versions-gradual-deployments.md
+      versions-version-affinity.md
+      versions-version-overrides.md
+      versions-version-urls.md
+      previews-overview.md
+      previews-compare-workflows.md
+      previews-configuration.md
+      previews-custom-domains.md
+      previews-test-and-debug.md
+      previews-examples.md
+      previews-resources.md
+    observability/
+      README.md
+      overview.md
+      workers-logs.md
+      real-time-logs.md
+      tail-workers.md
+      logpush.md
+      traces.md
+      custom-spans.md
+      spans-and-attributes.md
+      opentelemetry-export.md
+      metrics-and-analytics.md
+      query-builder.md
+      errors.md
+      issues.md
+      issues-investigate.md
+      source-maps.md
+      devtools.md
+      cpu-profiling.md
+      memory-profiling.md
+      profiling-in-production.md
 ```
 
 ## 探索手順
@@ -154,3 +247,16 @@ skills/cloudflare-wrangler/
 | `@cloudflare/vite-plugin` を導入・設定したい | vite-plugin | [references/vite-plugin/README.md](references/vite-plugin/README.md) |
 | Vite の Cloudflare environments・静的アセット・secrets を扱いたい | vite-plugin | [references/vite-plugin/README.md](references/vite-plugin/README.md) |
 | `wrangler dev` から Vite プラグインへ移行したい | vite-plugin | [references/vite-plugin/README.md](references/vite-plugin/README.md) |
+| `@cloudflare/vitest-plugin` で Workers のテストを書きたい | vitest-integration | [references/vitest-integration/README.md](references/vitest-integration/README.md) |
+| テスト API（`cloudflare:test`）・分離と並行実行・外部リクエストのモックを知りたい | vitest-integration | [references/vitest-integration/README.md](references/vitest-integration/README.md) |
+| `vitest-pool-workers` や `unstable_dev` からの移行手順を知りたい | vitest-integration | [references/vitest-integration/README.md](references/vitest-integration/README.md) |
+| Miniflare を Node.js から起動して Worker をテストしたい | miniflare | [references/miniflare/README.md](references/miniflare/README.md) |
+| test harness / `unstable_startWorker` の使い方を知りたい | miniflare | [references/miniflare/README.md](references/miniflare/README.md) |
+| Miniflare の KV / D1 / R2 / DO / Queues シミュレーションを調べたい | miniflare | [references/miniflare/README.md](references/miniflare/README.md) |
+| Workers Builds（Git 連携ビルド）を設定・トラブルシュートしたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
+| GitHub Actions / GitLab CI/CD から Worker をデプロイしたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
+| gradual deployments・version affinity・version overrides を使いたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
+| preview URLs・Preview 環境の設定とカスタムドメインを知りたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
+| Workers Logs / Real-time logs / Logpush / Tail Workers を設定したい | observability | [references/observability/README.md](references/observability/README.md) |
+| traces・custom spans・OpenTelemetry エクスポートを設定したい | observability | [references/observability/README.md](references/observability/README.md) |
+| source maps・CPU / メモリプロファイリング・DevTools でデバッグしたい | observability | [references/observability/README.md](references/observability/README.md) |
