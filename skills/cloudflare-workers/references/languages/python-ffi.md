@@ -10,9 +10,12 @@ Via Pyodide, Python Workers can call JavaScript: bindings, JavaScript globals (`
 
 Declare a KV binding:
 
+Adapted (not in the official docs): adds the required `python_workers` compatibility flag; see Notes.
+
 ```jsonc
 {
 	"main": "./src/index.py",
+	"compatibility_flags": ["python_workers"],
 	"kv_namespaces": [
 		{
 			"binding": "FOO",
@@ -59,6 +62,8 @@ class Default(WorkerEntrypoint):
 ```
 
 ## Notes
+
+- Adapted from the official docs: the official configuration example omits `compatibility_flags`; Python Workers require the `python_workers` compatibility flag (see python.md), so it is added to the example.
 
 - The recommended way to access JavaScript globals in a more Pythonic way is the `workers` module (from the `workers-runtime-sdk` package); import from `js` only when direct access is needed.
 - Pyodide FFI details: https://pyodide.org/en/stable/usage/type-conversions.html; `pyodide.ffi.to_js`: https://pyodide.org/en/stable/usage/api/python-api/ffi.html#pyodide.ffi.to_js.

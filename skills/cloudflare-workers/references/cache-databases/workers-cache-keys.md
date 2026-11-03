@@ -45,6 +45,8 @@ Wrangler configuration (gateway uncached, `Backend` cached):
 
 Per-caller isolation with `ctx.props` (part of the key automatically):
 
+Adapted (not in the official docs): `Backend` is a named export (the official example uses `export default class`); see Notes.
+
 ```ts
 import { WorkerEntrypoint } from "cloudflare:workers";
 
@@ -52,7 +54,7 @@ interface Props {
 	userId: string;
 }
 
-export default class Backend extends WorkerEntrypoint<Env, Props> {
+export class Backend extends WorkerEntrypoint<Env, Props> {
 	async fetch(request: Request): Promise<Response> {
 		// ctx.props.userId is set by the caller (for example, an auth gateway).
 		// Because it is part of the cache key, User A and User B requesting the
@@ -73,6 +75,7 @@ export default class Backend extends WorkerEntrypoint<Env, Props> {
 
 ## Notes
 
+- Corrected from the official docs: the official `ctx.props` example uses `export default class Backend`, which would collide with the gateway's `export default` and cannot be reached as `ctx.exports.Backend` or the `"Backend"` entry in `exports`; it is a named export here (the gateway keeps the default export).
 - Key components: target entrypoint; path and query string (order and trailing slashes matter); Worker version (default; disable with `cache.cross_version_cache`); `ctx.props` for service-binding/RPC invocations.
 - Anti-poisoning additions: the `x-http-method-override`, `x-http-method`, `x-method-override` headers; `x-forwarded-host`, `x-host`, `x-forwarded-scheme` (unless `http`/`https`), `x-original-url`, `x-rewrite-url`, `forwarded`; and the `Cloudflare-Workers-Version-Key` request header (not set automatically; only if a caller adds it).
 - Not in the key: HTTP method (`GET` and `HEAD` share an entry; a cold `HEAD` is converted to `GET`), host, request body, and other headers (`User-Agent`, `Accept-Language`, `Cookie`, `Authorization`). Use `Vary` for content negotiation.

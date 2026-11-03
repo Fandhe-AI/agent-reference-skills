@@ -77,12 +77,12 @@ async function loadExpensiveData(request: Request): Promise<unknown> {
 
 Per-user partitioning: pass `props` so the user ID becomes part of the key.
 
-Adapted (not in the official docs): `props` is supplied when the entrypoint binding is created (`ctx.exports.CachedAPI({ props })`), not as a `fetch()` option; see Notes.
+Adapted (not in the official docs): `props` is supplied when the entrypoint binding is created (`ctx.exports.CachedAPI({ props })`), not as a `fetch()` option, and the user ID comes from a separate `authenticateUser()` helper returning `string | null` (the earlier `authenticate()` returns a boolean); see Notes.
 
 ```ts
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		const userId = await authenticate(request, env);
+		const userId = await authenticateUser(request, env);
 		if (!userId) {
 			return new Response("Unauthorized", { status: 401 });
 		}
@@ -97,6 +97,13 @@ export default {
 		return ctx.exports.CachedAPI({ props: { userId } }).fetch(forwarded);
 	},
 } satisfies ExportedHandler<Env>;
+
+// Replace with real verification: return the user ID that the credential
+// verifiably belongs to, or null. Never take it from unverified input.
+async function authenticateUser(request: Request, env: Env): Promise<string | null> {
+	const token = request.headers.get("Authorization")?.replace(/^Bearer\s+/, "");
+	return token === env.API_TOKEN ? "user-123" : null;
+}
 ```
 
 Cache an origin you do not control (overlay your own `Cache-Control`):
@@ -174,6 +181,7 @@ export default {
 - Normalize `Accept-Encoding` for `Vary`: Cloudflare typically rewrites `Accept-Encoding` to a canonical value before the Worker runs; the original is in `request.cf.clientAcceptEncoding`. A gateway restores it (`forwarded.headers.set("Accept-Encoding", original)`) before calling the cached entrypoint that sets `Vary: Accept-Encoding`. All variants must share the same `Cache-Tag`.
 - Cache Durable Object responses: wrap the Durable Object in a cached `WorkerEntrypoint` (for example `CachedLeaderboard`) that forwards to the stub and sets `Cache-Control: public, max-age=30` and `Cache-Tag: leaderboard`. After writes, the gateway calls an `invalidate()` method on that entrypoint (`await this.ctx.cache.purge({ tags: ["leaderboard"] })`); the purge must run inside the cached entrypoint because purges are scoped to the calling entrypoint. For one Durable Object per tenant, pass the tenant ID via `ctx.props`.
 - In the first (authenticated) snippet `authenticate()` returns a boolean; the per-user snippet reuses the name but treats the result as a user ID (`const userId = await authenticate(...)`), so there it must return the verified user ID (or a falsy value). Derive `props.userId` only from verified credentials, never from client-supplied headers or query parameters.
+- Corrected from the official docs: the per-user snippet assigns `userId` from `authenticate()`, which in the first snippet returns a boolean (so `props.userId` would be `true` for every caller); it uses an `authenticateUser()` helper returning a verified user ID or `null` instead.
 - Corrected from the official docs: the per-user snippet shows `ctx.exports.CachedAPI.fetch(forwarded, { props: { userId } })`, but `fetch()` takes no `props` option, so `this.ctx.props` would stay empty and users would share one cache entry. Props are set when creating the entrypoint binding: `ctx.exports.CachedAPI({ props: { userId } }).fetch(forwarded)` (see `handlers-context/context.md`).
 - Adapted from the official docs: the origin snippet originally resolved `new URL(url.pathname + url.search, ORIGIN)` (a pathname such as `//attacker.example/x` changes the host and leaks forwarded credentials) and forwarded all incoming headers (including `Authorization`, `Cookie`, `Host`) and cached the response for every caller. It now assigns `pathname`/`search` onto `new URL(ORIGIN)` and forwards only an allowlist of non-credential headers. If the origin needs credentials, bypass this cached entrypoint for those requests or partition by verified user via `ctx.props`.
 - Origin pattern extensions: per-path TTL and tags, per-user `ctx.props`, `stale-while-revalidate` for slow or flaky origins, targeted `ctx.cache.purge({ tags: [...] })` on webhooks.
