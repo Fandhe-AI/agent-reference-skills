@@ -72,12 +72,40 @@ await instance.terminate();
 await instance.terminate({ rollback: true });
 ```
 
-Adapted (not in the official docs): the official `sendEvent` handler forwards any caller's JSON to an instance without authentication and does not check that `instanceId` is present. This version fails closed on a missing secret, compares the bearer token in constant time, validates `instanceId`, and caps the body at the 1 MiB event payload limit before parsing it.
+Adapted (not in the official docs): the official `sendEvent` handler forwards any caller's JSON to an instance without authentication and does not check that `instanceId` is present. This version fails closed on a missing secret, compares the bearer token in constant time, validates `instanceId`, and caps the body at the 1 MiB event payload limit before parsing it. Also, the body is read with `readTextWithLimit()`, which counts bytes while streaming and cancels past the limit, instead of `await req.text()` followed by a size check (which buffers the whole body first). See Notes.
 
 ```ts
 interface Env {
 	MY_WORKFLOW: Workflow;
 	WEBHOOK_SECRET?: string;
+}
+
+// Reads the body while counting bytes; cancels and returns null past `limit`.
+async function readTextWithLimit(
+	req: Request,
+	limit: number,
+): Promise<string | null> {
+	if (!req.body) return "";
+	const reader = req.body.getReader();
+	const chunks: Uint8Array[] = [];
+	let total = 0;
+	for (;;) {
+		const { done, value } = await reader.read();
+		if (done) break;
+		total += value.byteLength;
+		if (total > limit) {
+			await reader.cancel();
+			return null;
+		}
+		chunks.push(value);
+	}
+	const bytes = new Uint8Array(total);
+	let offset = 0;
+	for (const chunk of chunks) {
+		bytes.set(chunk, offset);
+		offset += chunk.byteLength;
+	}
+	return new TextDecoder().decode(bytes);
 }
 
 export default {
@@ -100,8 +128,8 @@ export default {
 			return Response.json({ error: "instanceId required" }, { status: 400 });
 		}
 		// Event payloads are limited to 1 MiB; reject larger bodies before parsing.
-		const raw = await req.text();
-		if (enc.encode(raw).byteLength > 1024 * 1024) {
+		const raw = await readTextWithLimit(req, 1024 * 1024);
+		if (raw === null) {
 			return Response.json({ error: "payload too large" }, { status: 413 });
 		}
 		let webhookPayload: unknown;
@@ -208,6 +236,7 @@ interface WorkflowInstanceTerminateOptions {
 
 ## Notes
 
+- Adapted from the official docs: the request body is read with `readTextWithLimit()`, which counts bytes while reading the stream and cancels it once the limit is exceeded; `await req.text()` followed by a byte-length check would already have buffered an arbitrarily large body.
 - `sendEvent` returns `void` on success and throws if the Workflow is not running or is in an errored state. Call it repeatedly with different `type` values to feed multiple `waitForEvent` calls, or use `Promise.race` in the Workflow to let the first event proceed.
 - Adapted from the official docs: the webhook-forwarding example had no authentication, `instanceId` check, or payload validation; it now fails closed, rejects bodies over 1 MiB and non-JSON or non-object bodies, and leaves schema checks specific to your event type to you.
 - `resume` on an instance that is not paused has no effect (trigger-workflows page) while the class comment says an error is thrown if it is already running; handle both. If the Workflow is at its concurrency limit the resumed instance is queued.

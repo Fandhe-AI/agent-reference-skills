@@ -278,12 +278,38 @@ export class MyWorkflow extends WorkflowEntrypoint {
 
 ### Use unique instance IDs
 
-Adapted (not in the official docs): the official example uses `payload`, `getUserId`, `getTransactionId`, and `addNewInstanceToDB` without defining them, takes the user ID from the request, and actually creates the "bad" instance before the good one (a second request with the same user ID then throws). Here the user ID comes from a placeholder `authenticate()` that fails closed, the body is parsed inside `try` and size-checked, and the bad call is shown as a comment. See Notes.
+Adapted (not in the official docs): the official example uses `payload`, `getUserId`, `getTransactionId`, and `addNewInstanceToDB` without defining them, takes the user ID from the request, and actually creates the "bad" instance before the good one (a second request with the same user ID then throws). Here the user ID comes from a placeholder `authenticate()` that fails closed, the body is parsed inside `try` and size-checked, and the bad call is shown as a comment. The good ID is a full `crypto.randomUUID()` (the official `${userId}-${uuid.slice(0, 6)}` keeps only 24 random bits, so IDs collide after a few thousand instances per user). Also, the body is read with `readTextWithLimit()`, which counts bytes while streaming and cancels past the limit, instead of `await req.text()` followed by a size check (which buffers the whole body first). See Notes.
 
 ```js
 // authenticate, getTransactionId and addNewInstanceToDB are your own functions.
 // authenticate() must verify the caller (session, JWT, ...) and return a user ID,
 // or null when the request is not authenticated.
+
+// Reads the body while counting bytes; cancels and returns null past `limit`.
+async function readTextWithLimit(req, limit) {
+	if (!req.body) return "";
+	const reader = req.body.getReader();
+	const chunks = [];
+	let total = 0;
+	for (;;) {
+		const { done, value } = await reader.read();
+		if (done) break;
+		total += value.byteLength;
+		if (total > limit) {
+			await reader.cancel();
+			return null;
+		}
+		chunks.push(value);
+	}
+	const bytes = new Uint8Array(total);
+	let offset = 0;
+	for (const chunk of chunks) {
+		bytes.set(chunk, offset);
+		offset += chunk.byteLength;
+	}
+	return new TextDecoder().decode(bytes);
+}
+
 export default {
 	async fetch(req, env) {
 		const userId = await authenticate(req, env);
@@ -292,8 +318,8 @@ export default {
 		}
 
 		// Event payloads are limited to 1 MiB.
-		const raw = await req.text();
-		if (new TextEncoder().encode(raw).byteLength > 1024 * 1024) {
+		const raw = await readTextWithLimit(req, 1024 * 1024);
+		if (raw === null) {
 			return new Response("Payload too large", { status: 413 });
 		}
 		let payload;
@@ -312,9 +338,9 @@ export default {
 		// ✅ Good: use an ID that is unique
 		// e.g. a transaction ID, order ID, or task ID are good options
 		let instanceId = getTransactionId(); // e.g. assuming transaction IDs are unique
-		// or: compose a composite ID and store it in your database
+		// or: use a full random UUID and store the user association in your database
 		// so that you can track all instances associated with a specific user or merchant.
-		instanceId = `${userId}-${crypto.randomUUID().slice(0, 6)}`;
+		instanceId = crypto.randomUUID();
 		await addNewInstanceToDB(userId, instanceId);
 		let goodInstance = await env.MY_WORKFLOW.create({
 			id: instanceId,
@@ -413,7 +439,7 @@ export default {
 
 ### Keep large outputs out of step returns
 
-`processData` is a placeholder for your own function. Adapted (not in the official docs): the fetch status and the R2 `get` result (which is `null` for a missing key) are checked before use. See Notes.
+`processData` is a placeholder for your own function. Adapted (not in the official docs): the fetch status and the R2 `get` result (which is `null` for a missing key) are checked before use, and the R2 key includes `event.instanceId` instead of the fixed `dataset-123`, so concurrent instances do not overwrite each other. See Notes.
 
 ```js
 export class MyWorkflow extends WorkflowEntrypoint {
@@ -425,9 +451,10 @@ export class MyWorkflow extends WorkflowEntrypoint {
 				throw new Error(`dataset fetch failed with status ${response.status}`);
 			}
 			const data = await response.json();
-			// Store in R2 and return a reference
-			await this.env.MY_BUCKET.put("dataset-123", JSON.stringify(data));
-			return { key: "dataset-123" };
+			// Store in R2 under a per-instance key and return a reference
+			const key = `datasets/${event.instanceId}.json`;
+			await this.env.MY_BUCKET.put(key, JSON.stringify(data));
+			return { key };
 		});
 
 		// Retrieve the data in a later step when needed
@@ -444,6 +471,8 @@ export class MyWorkflow extends WorkflowEntrypoint {
 
 ## Notes
 
+- Corrected from the official docs: the unique-ID example truncated the UUID to 6 hex characters (24 bits; roughly 50% collision probability after about 4,800 IDs for one user), which makes `create()` fail on a reused ID; it uses the full UUID and keeps the user association in the database. The large-output example wrote every instance to the same R2 key `dataset-123`, so concurrent instances overwrote each other; the key is derived from `event.instanceId`.
+- Adapted from the official docs: the request body is read with `readTextWithLimit()`, which counts bytes while reading the stream and cancels it once the limit is exceeded; `await req.text()` followed by a byte-length check would already have buffered an arbitrarily large body.
 - Corrected from the official docs: step callbacks in four examples returned a raw `Response` (from `fetch`) or a `WorkflowInstance` stub; step return values must be serializable, so they now return `{ status }`, `res.status`, or `{ id }`. `authenticate`, `getTransactionId`, `addNewInstanceToDB` and `getIssues` are placeholders for your own functions.
 - Corrected from the official docs: `KV.get("cat-list")` returned a string that was then iterated as a list (fixed with `{ type: "json" }`); the instance-ID example used undefined `payload` and created the "bad" instance before the good one, so the same handler failed on the second request for a user. Examples were also reduced to the JavaScript variants and the "bad" counter-examples were mostly omitted; the full set is on the official page.
 - Adapted from the official docs: the instance-ID example takes the user ID from a placeholder `authenticate()` (401 when it returns `null`) instead of the request, parses the body inside `try`, rejects bodies over 1 MiB or that are not JSON objects, and leaves the bad `create` as a comment. The idempotent-charge step throws on a non-2xx response so it is retried; the KV- and R2-backed examples handle a missing key (`null`) and the large-dataset step checks the fetch status.

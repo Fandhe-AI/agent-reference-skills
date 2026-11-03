@@ -57,8 +57,36 @@ export const onRequest = async (context) => {
 
 Calling the Worker over HTTP instead. Adapted (not in the official docs): the official Worker uses an undefined `payload`, and the Pages Function returns the `Response` object as JSON; this version reads the request body (capped at 1 MiB, parsed inside `try`, and required to be a JSON object), fails closed on a shared secret compared in constant time, and returns the parsed body only for a successful upstream response. `YOUR_WORKER` is a placeholder host and the secret is set with `npx wrangler secret put`. See Notes.
 
+Adapted (not in the official docs): the body is read with `readTextWithLimit()`, which counts bytes while streaming and cancels past the limit, instead of `await req.text()` followed by a size check (which buffers the whole body first). See Notes.
+
 ```js
 // Worker (same file as your Workflow definition)
+
+// Reads the body while counting bytes; cancels and returns null past `limit`.
+async function readTextWithLimit(req, limit) {
+	if (!req.body) return "";
+	const reader = req.body.getReader();
+	const chunks = [];
+	let total = 0;
+	for (;;) {
+		const { done, value } = await reader.read();
+		if (done) break;
+		total += value.byteLength;
+		if (total > limit) {
+			await reader.cancel();
+			return null;
+		}
+		chunks.push(value);
+	}
+	const bytes = new Uint8Array(total);
+	let offset = 0;
+	for (const chunk of chunks) {
+		bytes.set(chunk, offset);
+		offset += chunk.byteLength;
+	}
+	return new TextDecoder().decode(bytes);
+}
+
 export default {
 	async fetch(req, env) {
 		// Fail closed: reject when the secret is not configured or does not match
@@ -74,8 +102,8 @@ export default {
 			return new Response("Unauthorized", { status: 401 });
 		}
 		// Workflow params are limited to 1 MiB; reject larger bodies up front.
-		const raw = await req.text();
-		if (enc.encode(raw).byteLength > 1024 * 1024) {
+		const raw = await readTextWithLimit(req, 1024 * 1024);
+		if (raw === null) {
 			return new Response("Payload too large", { status: 413 });
 		}
 		let payload;
@@ -116,6 +144,7 @@ export const onRequest = async (context) => {
 
 ## Notes
 
+- Adapted from the official docs: the request body is read with `readTextWithLimit()`, which counts bytes while reading the stream and cancels it once the limit is exceeded; `await req.text()` followed by a byte-length check would already have buffered an arbitrarily large body.
 - Corrected from the official docs: binding name mismatch (`WORKFLOWS_SERVICE` vs `WORKFLOW_SERVICE`), undefined `payload`, and returning a `Response` object through `Response.json`.
 - Adapted from the official docs: the HTTP Worker compares the shared secret in constant time, rejects bodies over 1 MiB (the Workflow event payload limit), invalid JSON, and non-object payloads, and the Pages Function only parses the upstream body as JSON when the response is successful (error responses are plain text).
 - The Pages Function examples create an instance for every request to the route; protect the route (and keep the payload server-defined or validated) before deploying.

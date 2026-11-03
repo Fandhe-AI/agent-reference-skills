@@ -64,7 +64,7 @@ export type WorkflowEvent<T> = {
 - The value returned by `run` is available when querying instance status (Workers API, REST API, dashboard).
 - Any JS control flow (if, loops, `try...catch`, promises) can manage steps inside `run`.
 - `WorkflowEvent` and its `payload` are effectively immutable: mutations are not persisted across steps or restarts. Persist state by returning it from `step.do`.
-- A type parameter does not validate the incoming event; properties that do not conform are dropped in TypeScript. Validate with a library such as zod or your own logic.
+- A type parameter does not validate the incoming event: TypeScript types are erased at runtime, so nothing is checked or removed and extra or malformed properties still reach `run()`. Validate at runtime with a schema library such as zod or your own checks, and copy only the fields you need. Corrected from the official docs: the source says non-conforming properties "are dropped", which TypeScript does not do.
 - `event.timestamp` is a `Date`.
 
 ## Related
