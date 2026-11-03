@@ -418,6 +418,7 @@ wrangler kv <TAB>        # shows subcommands: namespace, key, bulk
 ## Notes
 
 - `auth create` / `activate` / `deactivate` / `list` / `delete` are marked Experimental on the official page; the other `auth` and global flags apply (see the global flags page). `--profile` selects an auth profile.
+- The "(not supported by Pages)" text on `--config` is verbatim from the official page, which does not scope it further; `wrangler pages` commands list `--config` on their own page.
 - Commands without a reduced-set list above (`docs`, `auth create|activate|deactivate|list|delete`, `whoami`) accept the full global flags block.
 
 ## Related

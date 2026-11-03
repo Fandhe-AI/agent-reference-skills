@@ -181,6 +181,7 @@ The following global flags work on every command (as listed on this page):
 
 - All `wrangler tunnel` commands are **experimental** and may change without notice.
 - Wrangler manages the `cloudflared` binary automatically. On first use, Wrangler will prompt you to download `cloudflared` to a local cache directory. You can skip this by installing `cloudflared` yourself and adding it to your `PATH`, or by setting the `CLOUDFLARED_PATH` environment variable to point to an existing binary.
+- The "(not supported by Pages)" text on `--config` is verbatim from the official page, which does not scope it further; `wrangler pages` commands list `--config` on their own page.
 - This page lists a three-flag global set (`--help`, `--config`, `--cwd`), which differs from the seven-flag block on most other command pages.
 
 ## Related

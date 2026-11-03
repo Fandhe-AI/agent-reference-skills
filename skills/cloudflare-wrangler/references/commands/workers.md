@@ -285,7 +285,7 @@ If sampling persists after using options to filter messages, consider using inst
 | `--site-include` | string[], optional, deprecated | Array of `.gitignore`-style patterns that match file or directory names from the sites directory. Only matched items will be uploaded. |
 | `--site-exclude` | string[], optional, deprecated | Array of `.gitignore`-style patterns that match file or directory names from the sites directory. Matched items will not be uploaded. |
 | `--var` | key:value[], optional | Array of `key:value` pairs to inject as variables into your code. The value will always be passed as a string to your Worker. For example, `--var git_hash:$(git rev-parse HEAD) test:123` makes the `git_hash` and `test` variables available in your Worker's `env`. This flag is an alternative to defining `vars` in your Wrangler configuration file. If defined in both places, this flag's values will be used. |
-| `--define` | key:value[], optional | Array of `key:value` pairs to replace global identifiers in your code. For example, `--define GIT_HASH:$(git rev-parse HEAD)` will replace all uses of `GIT_HASH` with the actual value at build time. This flag is an alternative to defining `define` in your Wrangler configuration file. If defined in both places, this flag's values will be used. |
+| `--define` | key:value[], optional | Array of `key:value` pairs to replace global identifiers in your code. For example, `--define "GIT_HASH:'$(git rev-parse HEAD)'"` will replace all uses of `GIT_HASH` with the actual value at build time. This flag is an alternative to defining `define` in your Wrangler configuration file. If defined in both places, this flag's values will be used. |
 | `--triggers`, `--schedule`, `--schedules` | string[], optional | Cron schedules to attach to the deployed Worker. Refer to Cron Trigger Examples. |
 | `--routes`, `--route` | string[], optional | Routes where this Worker will be deployed. For example: `--route example.com/*`. |
 | `--domain` | string[], optional | Custom domains where this Worker will be deployed. For example: `--domain example.com`. |
@@ -444,9 +444,10 @@ If sampling persists after using options to filter messages, consider using inst
 
 ## Notes
 
-- Commands that the official page documents with the reduced global flag set (`init`, `dev`, `deploy`, `preview`, `delete`) list `--help`, `--config` (not supported by Pages), `--cwd`. The other commands accept the full global flags; see the global flags page.
+- Commands that the official page documents with the reduced global flag set (`init`, `dev`, `deploy`, `preview`, `delete`) list `--help`, `--config` (annotated "not supported by Pages" in the source; the source does not scope this further), `--cwd`. The other commands accept the full global flags; see the global flags page.
 - Deleting secrets by setting a key to `null` (`secret bulk`) requires wrangler version 4.97.0 or later and JSON format. Deletion is not supported with `.env` files.
-- Docs inconsistency: the `deploy` `--var` / `--define` examples are unquoted (`--var git_hash:$(git rev-parse HEAD) test:123`) while the `dev` examples are quoted; the `dev` `--log-level` type list in the official page has an unbalanced quote (`'error|'none'`), kept verbatim.
+- Corrected from the official docs: the `deploy` `--define` example is unquoted (`--define GIT_HASH:$(git rev-parse HEAD)`), which would substitute an unquoted identifier rather than a string literal; it is written here with the quoting used by the `dev` example (`--define "GIT_HASH:'$(git rev-parse HEAD)'"`). The `deploy` `--var` example is kept verbatim (unquoted, `--var git_hash:$(git rev-parse HEAD) test:123`) while the `dev` example is quoted.
+- Docs inconsistency: the `dev` `--log-level` type list in the official page has an unbalanced quote (`'error|'none'`), kept verbatim.
 - Worker runtime APIs (`fetch`, `scheduled`, `env`) belong to the cloudflare-workers skill; configuration keys (`vars`, `define`, `main`) belong to the configuration references.
 
 ## Related

@@ -287,7 +287,7 @@ Use the summary and CPU profile to understand where your Worker spends time duri
 
 ## Notes
 
-- `rollback`, `types`, and `check startup` list the reduced global flag set (`--help`, `--config` not supported by Pages, `--cwd`); the other commands accept the full global flags (see the global flags page).
+- `rollback`, `types`, and `check startup` list the reduced global flag set (`--help`, `--config` annotated "not supported by Pages" in the source without further scoping, `--cwd`); the other commands accept the full global flags (see the global flags page).
 - For Wrangler versions greater than `3.66.0` but below `4.0.0`, `wrangler types` needed `--experimental-include-runtime`. During its experimental release, runtime types were output to a separate file (`.wrangler/types/runtime.d.ts` by default). With older Wrangler, runtime types are available through the `@cloudflare/workers-types` package.
 - Docs inconsistency: the `wrangler types` `--config` description in the official page's Options list restates the multi-config example with `-c wrangler.toml`; the `--check` flag is listed under Options with no minimum version.
 - `versions secret put|delete|bulk` only create a new version (use `wrangler secret ...` to create and deploy immediately).

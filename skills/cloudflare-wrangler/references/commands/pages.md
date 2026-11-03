@@ -193,7 +193,7 @@ Descriptions:
 ## Notes
 
 - `pages download config` is marked Experimental on the official page.
-- `--config` is not supported by Pages commands (stated on the other command pages that list the reduced global flag set).
+- The official Pages commands page lists `--config` (alias `-c`) among its global flags. The "(not supported by Pages)" annotation appears only on the `--config` row of the reduced global flag sets of other command pages (for example `login`, `tunnel`, `deploy`), and the source does not scope it further; it is not a statement about `wrangler pages` commands.
 - Each command also accepts the global flags; see the global flags page.
 - Pages binding names in `pages dev` flags correspond to bindings documented in the cloudflare-storage / cloudflare-workers skills.
 

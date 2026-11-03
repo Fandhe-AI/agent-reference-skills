@@ -4,7 +4,6 @@ description: >
   Cloudflare Workers 開発ツール (Wrangler CLI v4) のコマンドリファレンス。
   wrangler dev / deploy / versions / rollback / tail / secret / types の全フラグ、
   グローバルフラグ、製品別サブコマンド。
-  ランタイム API は cloudflare-workers、KV / D1 / R2 は cloudflare-storage。
 user-invocable: false
 ---
 
