@@ -28,15 +28,22 @@ remote = true
 
 AI SDK adapter (Pi Durable: `agents/webfetch/pi`; TanStack AI: `agents/webfetch/tanstack-ai`):
 
+Adapted (not in the official docs): `stopWhen: stepCountIs(5)` is added; without it the AI SDK stops after one step, so the model never sees the tool results it requested. See Notes.
+
 ```ts
-import { streamText } from "ai";
+import { stepCountIs, streamText } from "ai";
 import { webFetchTool } from "agents/webfetch/ai-sdk";
 
 const tools = {
 	web_fetch: webFetchTool({ binding: env.AI }),
 };
 
-const result = streamText({ model, messages, tools });
+const result = streamText({
+	model,
+	messages,
+	tools,
+	stopWhen: stepCountIs(5),
+});
 ```
 
 Restrict what the model may fetch:
@@ -101,6 +108,7 @@ Model-chosen input: required `url`, optional nonnegative integer `offset`, optio
 
 ## Notes
 
+- Corrected from the official docs: the example omitted `stopWhen`, and AI SDK `generateText` / `streamText` stop after a single step by default, so a tool call is executed but no answer is generated from its result; `stopWhen: stepCountIs(5)` (an example limit) lets the model continue after tool results.
 - Requires Agents SDK 0.28.0 or later. Requests Markdown first (Markdown for Agents sites skip conversion); JSON is pretty-printed; Markdown and other text pass through.
 - Results include a header (final URL, status, content type, character range, continuation offset) and wrap content in `<untrusted_web_content>`. The wrapper marks external content as data, not instructions, and is not a guarantee against prompt injection.
 - SSRF: the built-in source rejects non-HTTP schemes, credentials in URLs, URLs over 2,000 characters, and HTTPS-to-HTTP redirects, and blocks private IP literals and local hostnames by default. It does not resolve DNS, so addresses behind public hostnames are not checked. Set `allowedHosts` for production agents; leave `allowPrivateHosts` off outside local development.

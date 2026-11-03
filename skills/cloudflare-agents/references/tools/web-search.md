@@ -28,15 +28,22 @@ remote = true
 
 AI SDK adapter (Pi Durable: `agents/websearch/pi`; TanStack AI: `agents/websearch/tanstack-ai`):
 
+Adapted (not in the official docs): `stopWhen: stepCountIs(5)` is added; without it the AI SDK stops after one step, so the model never sees the tool results it requested. See Notes.
+
 ```ts
-import { streamText } from "ai";
+import { stepCountIs, streamText } from "ai";
 import { webSearchTool } from "agents/websearch/ai-sdk";
 
 const tools = {
 	web_search: webSearchTool({ binding: env.AI }),
 };
 
-const result = streamText({ model, messages, tools });
+const result = streamText({
+	model,
+	messages,
+	tools,
+	stopWhen: stepCountIs(5),
+});
 ```
 
 Control cost and provider:
@@ -87,6 +94,7 @@ const { items } = await search.search({
 
 ## Notes
 
+- Corrected from the official docs: the example omitted `stopWhen`, and AI SDK `generateText` / `streamText` stop after a single step by default, so a tool call is executed but no answer is generated from its result; `stopWhen: stepCountIs(5)` (an example limit) lets the model continue after tool results.
 - Requires Agents SDK 0.27.0 or later. The Workers AI binding gained web search in workerd 1.20260924.1 (Wrangler 4.141.0, `@cloudflare/vite-plugin` 1.60.2); older runtimes fail with `web_search_unsupported_runtime`.
 - The account must be able to pay for searches (AI Gateway credits or a provider key stored on the gateway).
 - Invalid `limit`, `maxDescriptionChars`, `timeoutMs`, or `byokAlias` throws a `RangeError` at creation. The model's input is a `query` of 1 to 1,024 characters plus optional positive integer `limit`.

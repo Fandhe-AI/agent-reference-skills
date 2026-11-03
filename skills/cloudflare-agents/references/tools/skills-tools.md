@@ -10,8 +10,10 @@ Give an agent tools to discover, load, and read Agent Skills (`SKILL.md` folders
 
 AI SDK adapter:
 
+Adapted (not in the official docs): `stopWhen: stepCountIs(5)` is added; without it the AI SDK stops after one step, so the model never sees the tool results it requested. See Notes.
+
 ```ts
-import { streamText } from "ai";
+import { stepCountIs, streamText } from "ai";
 import { loadSkillCatalog, r2 } from "agents/skills";
 import { createSkillTools } from "agents/skills/tools/ai-sdk";
 
@@ -24,6 +26,7 @@ const result = streamText({
 	system: [instructions, catalog.prompt()].filter(Boolean).join("\n\n"),
 	tools: { ...tools, ...createSkillTools(catalog) },
 	messages,
+	stopWhen: stepCountIs(5),
 });
 ```
 
@@ -107,6 +110,7 @@ Catalog diagnostics (`catalog.diagnostics`):
 
 ## Notes
 
+- Corrected from the official docs: the example omitted `stopWhen`, and AI SDK `generateText` / `streamText` stop after a single step by default, so a tool call is executed but no answer is generated from its result; `stopWhen: stepCountIs(5)` (an example limit) lets the model continue after tool results.
 - Skills sources are a Computer Workspace, an R2 bucket, or code. The tools are the same for every source.
 - The tools appear only when at least one skill is available; `name` is limited to skills in the catalog.
 - Think relists sources before each turn. Pi reads sources once when the factory builds the extension; both Pi tools are marked `replay: "safe"`. With the AI SDK, reload the catalog and rebuild the tools to pick up changes.

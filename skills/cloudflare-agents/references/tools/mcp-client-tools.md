@@ -8,9 +8,11 @@ Connect an agent, as an MCP client, to external Model Context Protocol servers a
 
 ## Signature / Usage
 
+Adapted (not in the official docs): `stopWhen: stepCountIs(5)` is added; without it the AI SDK stops after one step, so the model never sees the tool results it requested. See Notes.
+
 ```ts
 import { Agent } from "agents";
-import { generateText } from "ai";
+import { generateText, stepCountIs } from "ai";
 import { createAI } from "agents/models/ai-sdk";
 
 export class ToolAgent extends Agent<Env> {
@@ -25,6 +27,7 @@ export class ToolAgent extends Agent<Env> {
 			model: ai("@cf/zai-org/glm-4.7-flash"),
 			prompt: "Use available tools to summarize the latest issue activity.",
 			tools: this.mcp.getAITools(),
+			stopWhen: stepCountIs(5),
 		});
 
 		return new Response(response.text);
@@ -56,6 +59,7 @@ await this.addMcpServer("internal", this.env.MCP_SERVER_URL, {
 
 ## Notes
 
+- Corrected from the official docs: the example omitted `stopWhen`, and AI SDK `generateText` / `streamText` stop after a single step by default, so a tool call is executed but no answer is generated from its result; `stopWhen: stepCountIs(5)` (an example limit) lets the model continue after tool results.
 - Connections are persisted in the agent's SQL storage.
 - Public MCP servers need no binding configuration. Keep server URLs, API tokens, and OAuth settings in environment variables or secrets (never in tool arguments, prompts, or source). Add local `.dev.vars` to `.gitignore`.
 - Tool descriptions and results from an external MCP server are untrusted input to the model; connect only to servers you trust and require approval for tools with side effects (see [Code Mode with MCP](./codemode-mcp.md) for durable approvals).

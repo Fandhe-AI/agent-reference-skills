@@ -74,6 +74,8 @@ const codemode = createCodeTool({
 
 Durable runtime with an AI SDK toolset:
 
+Adapted (not in the official docs): `stopWhen: stepCountIs(5)` is added; without it the AI SDK stops after one step, so the model never sees the tool results it requested. See Notes.
+
 ```ts
 import { AIChatAgent } from "@cloudflare/ai-chat";
 import {
@@ -81,7 +83,7 @@ import {
 	DynamicWorkerExecutor,
 } from "@cloudflare/codemode";
 import { toolSetConnector } from "@cloudflare/codemode/ai";
-import { convertToModelMessages, streamText } from "ai";
+import { convertToModelMessages, stepCountIs, streamText } from "ai";
 import { model } from "./model";
 import { operationTools } from "./tools";
 
@@ -106,6 +108,7 @@ export class OperationsAgent extends AIChatAgent<Env> {
 			model,
 			messages: await convertToModelMessages(this.messages),
 			tools: { codemode: runtime.tool() },
+			stopWhen: stepCountIs(5),
 		});
 
 		return result.toUIMessageStreamResponse();
@@ -124,6 +127,7 @@ export class OperationsAgent extends AIChatAgent<Env> {
 
 ## Notes
 
+- Corrected from the official docs: the example omitted `stopWhen`, and AI SDK `generateText` / `streamText` stop after a single step by default, so a tool call is executed but no answer is generated from its result; `stopWhen: stepCountIs(5)` (an example limit) lets the model continue after tool results.
 - Choose `createCodeTool()` for simple stateless execution (excludes tools with `needsApproval`) or the connector for durable execution (maps `needsApproval` to runtime approval).
 - Each sandbox-callable tool needs an `execute` function; client-side or provider-executed tools cannot run through the server-side executor. The connector drops tools without `execute` from types and bindings.
 - Approvals: `createCodeTool()` filters out tools where `needsApproval` is `true` or a function (they do not appear and cannot run); `needsApproval: false` stays. `ToolSetConnector` maps `needsApproval` to the durable `requiresApproval` and pauses the run, resumed with `runtime.approve({ executionId })`; a function-valued `needsApproval` is treated as always requiring approval since arguments are unknown beforehand. This uses the Code Mode flow, not the AI SDK per-call approval flow.
