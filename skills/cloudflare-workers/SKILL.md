@@ -5,13 +5,13 @@ description: >
   fetch / scheduled / tail handler、waitUntil、WorkerEntrypoint RPC、service bindings、
   compatibility flags (nodejs_compat)、HTMLRewriter、Request / Response、Cache API、WebSockets、
   static assets、cron triggers。
+  framework guides (Hono / React Router / Next.js (OpenNext / vinext) / Astro / SvelteKit / Nuxt / TanStack Start)、
+  C3 (create-cloudflare)、wrangler types。
   Wrangler は cloudflare-wrangler、KV / D1 / R2 は cloudflare-storage。
 user-invocable: false
 ---
 
 # Cloudflare Workers リファレンス
-
-> 分割 PR で順次追加中の部分版。現時点で収録済みなのは下記「ディレクトリ構成」とマッピング表に載っているカテゴリのみ。
 
 Cloudflare Workers — V8 isolate 上でコードを実行するサーバーレス実行環境（ランタイム workerd）。
 ハンドラー（fetch / scheduled / tail）、env bindings と RPC、Web 標準 API と Node.js 互換 API、
@@ -206,6 +206,55 @@ skills/cloudflare-workers/
       workers-cache-limitations.md
       workers-cache-purge.md
       xata.md
+    framework-guides/
+      README.md
+      astro.md
+      automatic-configuration.md
+      hono.md
+      microfrontends.md
+      nextjs-vinext.md
+      nuxt.md
+      opennext.md
+      overview.md
+      react-router.md
+      react-vite.md
+      redwoodsdk.md
+      sveltekit.md
+      tanstack-start.md
+      vike.md
+  samples/
+    README.md
+    ab-testing.md
+    alter-headers.md
+    basic-auth.md
+    bulk-redirects.md
+    cache-api.md
+    cache-post-request.md
+    cache-using-fetch.md
+    cors-header-proxy.md
+    country-code-redirect.md
+    cron-trigger.md
+    extract-cookie-value.md
+    fetch-json.md
+    geolocation-hello-world.md
+    hot-link-protection.md
+    multiple-cron-triggers.md
+    post-json.md
+    redirect.md
+    respond-with-another-site.md
+    return-json.md
+    rewrite-links.md
+    security-headers.md
+    signing-requests.md
+    streaming-json.md
+    turnstile-html-rewriter.md
+    websockets.md
+  scripts/
+    README.md
+    create-project.md
+    languages.md
+    static-assets.md
+    types.md
 ```
 
 ## 探索手順
@@ -215,6 +264,7 @@ skills/cloudflare-workers/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
+4. 実装例が必要なら `samples/README.md`、プロジェクト作成・型生成などのコマンドは `scripts/README.md` を引く
 
 ## タスク → カテゴリ マッピング
 
@@ -241,3 +291,6 @@ skills/cloudflare-workers/
 | 既知の問題・changelog・CLI / dashboard での開始手順を知りたい | platform | [references/platform/README.md](references/platform/README.md) |
 | Workers でのキャッシュ制御・外部データベース接続を知りたい | cache-databases | [references/cache-databases/README.md](references/cache-databases/README.md) |
 | Neon / PlanetScale / Supabase / Turso / Upstash 等と接続したい | cache-databases | [references/cache-databases/README.md](references/cache-databases/README.md) |
+| Hono / React Router / Astro / SvelteKit / Nuxt 等を Workers にデプロイしたい | framework-guides | [references/framework-guides/README.md](references/framework-guides/README.md) |
+| 典型的な使い方（cron・リダイレクト・キャッシュ・認証等）を知りたい | samples | [samples/README.md](samples/README.md) |
+| プロジェクト作成・型生成のコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

@@ -1,0 +1,143 @@
+---
+source: https://developers.cloudflare.com/workers/examples/signing-requests/
+---
+
+# Sign requests
+
+Generate and verify HMAC SHA-256 signed, expiring URLs with Web Crypto.
+
+Adapted (not in the official docs): no hard-coded fallback signing key, a guard for a malformed `verify` value, a newline delimiter between pathname and timestamp in the signed data (sign and verify use the same format), and a fixed-host upstream request that does not forward the client's credentials or body; see Notes.
+
+```js
+import { Buffer } from "node:buffer";
+
+const encoder = new TextEncoder();
+
+// How long an HMAC token should be valid for, in seconds
+const EXPIRY = 60;
+
+export default {
+	/**
+	 *
+	 * @param {Request} request
+	 * @param {{SECRET_DATA: string}} env
+	 * @returns
+	 */
+	async fetch(request, env) {
+		// You will need some secret data to use as a symmetric key. This should be
+		// attached to your Worker as an encrypted secret.
+		// Refer to https://developers.cloudflare.com/workers/configuration/secrets/
+		if (!env.SECRET_DATA) {
+			return new Response("Server misconfigured: SECRET_DATA is not set.", {
+				status: 500,
+			});
+		}
+		const secretKeyData = encoder.encode(env.SECRET_DATA);
+
+		// Import your secret as a CryptoKey for both 'sign' and 'verify' operations
+		const key = await crypto.subtle.importKey(
+			"raw",
+			secretKeyData,
+			{ name: "HMAC", hash: "SHA-256" },
+			false,
+			["sign", "verify"],
+		);
+
+		const url = new URL(request.url);
+
+		// This is a demonstration Worker that allows unauthenticated access to /generate
+		// In a real application you would want to make sure that
+		// users could only generate signed URLs when authenticated
+		if (url.pathname.startsWith("/generate/")) {
+			url.pathname = url.pathname.replace("/generate/", "/");
+
+			const timestamp = Math.floor(Date.now() / 1000);
+
+			// This contains all the data about the request that you want to be able to verify
+			// Here we only sign the timestamp and the pathname, but often you will want to
+			// include more data (for instance, the URL hostname or query parameters)
+			// "\n" cannot appear in a URL pathname (it is percent-encoded), so the
+			// pathname/timestamp boundary is unambiguous. verify uses the same format.
+			const dataToAuthenticate = `${url.pathname}\n${timestamp}`;
+
+			const mac = await crypto.subtle.sign(
+				"HMAC",
+				key,
+				encoder.encode(dataToAuthenticate),
+			);
+
+			// Refer to https://developers.cloudflare.com/workers/runtime-apis/nodejs/
+			// for more details on using Node.js APIs in Workers
+			const base64Mac = Buffer.from(mac).toString("base64");
+
+			url.searchParams.set("verify", `${timestamp}-${base64Mac}`);
+
+			return new Response(`${url.pathname}${url.search}`);
+			// Verify all non /generate requests
+		} else {
+			// Make sure you have the minimum necessary query parameters.
+			if (!url.searchParams.has("verify")) {
+				return new Response("Missing query parameter", { status: 403 });
+			}
+
+			const [timestamp, hmac] = url.searchParams.get("verify").split("-");
+			if (!timestamp || !hmac) {
+				return new Response("Invalid verify parameter", { status: 403 });
+			}
+
+			const assertedTimestamp = Number(timestamp);
+			if (!Number.isInteger(assertedTimestamp)) {
+				return new Response("Invalid verify parameter", { status: 403 });
+			}
+
+			// Same format as in /generate/: pathname, newline, timestamp
+			const dataToAuthenticate = `${url.pathname}\n${assertedTimestamp}`;
+
+			const receivedMac = Buffer.from(hmac, "base64");
+
+			// Use crypto.subtle.verify() to guard against timing attacks. Since HMACs use
+			// symmetric keys, you could implement this by calling crypto.subtle.sign() and
+			// then doing a string comparison -- this is insecure, as string comparisons
+			// bail out on the first mismatch, which leaks information to potential
+			// attackers.
+			const verified = await crypto.subtle.verify(
+				"HMAC",
+				key,
+				receivedMac,
+				encoder.encode(dataToAuthenticate),
+			);
+
+			if (!verified) {
+				return new Response("Invalid MAC", { status: 403 });
+			}
+
+			// Signed requests expire after one minute. Note that this value should depend on your specific use case
+			if (Date.now() / 1000 > assertedTimestamp + EXPIRY) {
+				return new Response(
+					`URL expired at ${new Date((assertedTimestamp + EXPIRY) * 1000)}`,
+					{ status: 403 },
+				);
+			}
+		}
+
+		// Fixed upstream host; only the path and query come from the request
+		const upstream = new URL("https://example.com");
+		upstream.pathname = url.pathname;
+		// Drop the signature parameter before forwarding
+		url.searchParams.delete("verify");
+		upstream.search = url.search;
+		// Fresh request: the client's Cookie, Authorization and body are not forwarded
+		return fetch(upstream, { method: "GET" });
+	},
+};
+```
+
+## Notes
+
+- Requires the `nodejs_compat` compatibility flag for `node:buffer`.
+- Adapted from the official docs: the official code falls back to the public literal `"my secret symmetric key"` when `env.SECRET_DATA` is unset, which lets anyone forge valid URLs; this version returns 500 instead. A `verify` value without a `-` made `Buffer.from(undefined)` throw; it now returns 403. Keep `SECRET_DATA` in `.dev.vars` locally and gitignore it.
+- Adapted from the official docs: the official code ends with `fetch(new URL(url.pathname, "https://example.com"), request)`, which forwards the original request (its `Cookie`, `Authorization` and body, plus the `verify` query) to the upstream. This version builds the URL on a fixed host, copies only pathname and query (minus `verify`), and sends a fresh `GET` so client credentials and body are not leaked to the upstream. Add back specific headers explicitly if the upstream needs them.
+- Use `crypto.subtle.verify()` rather than comparing re-signed strings, to avoid timing leaks.
+- Adapted from the official docs: the official code signs `${pathname}${timestamp}` with no separator, so a path ending in digits and a different timestamp can produce identical input (e.g. `/a1` + `234` vs `/a` + `1234`). This version signs `${pathname}\n${timestamp}`; sign and verify must use the identical format. `Number.isInteger` also rejects a non-numeric timestamp, which would otherwise make the expiry comparison always false.
+- The official page states its signature format is compatible with the WAF `is_timed_hmac_valid_v0()` function. That compatibility applies to the official concatenation format, not to the delimiter-based format used here; if the WAF must verify these URLs, use the WAF's own format instead.
+- `/generate/` is unauthenticated in the sample; protect it in real applications. Web Crypto is covered in `../references/web-apis/web-crypto.md`.
