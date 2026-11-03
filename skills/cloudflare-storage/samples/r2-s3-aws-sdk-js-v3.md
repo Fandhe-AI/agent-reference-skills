@@ -59,8 +59,11 @@ console.log(
 );
 ```
 
+Adapted (not in the official docs): the host and path are not rewritten; use the full URL printed by the PutObject `getSignedUrl` call above verbatim (see Notes).
+
 ```sh
-curl -X PUT "https://my-bucket.<ACCOUNT_ID>.r2.cloudflarestorage.com/dog.png?X-Amz-Algorithm=..." \
+# Paste the complete presigned URL (host, path and all query parameters) exactly as returned by getSignedUrl
+curl -X PUT "<PRESIGNED_PUT_URL>" \
   -H "Content-Type: image/png" \
   --data-binary @dog.png
 ```
@@ -84,5 +87,6 @@ curl -X PUT "https://my-bucket.<ACCOUNT_ID>.r2.cloudflarestorage.com/dog.png?X-A
 - `ACCOUNT_ID`, `ACCESS_KEY_ID`, `SECRET_ACCESS_KEY` are placeholders; create an S3 access key first (api-tokens).
 - The local R2 emulator (`wrangler dev` default) exposes no S3-compatible endpoint, so there is no local S3 target. SDK code running inside a local Worker that points at the real `https://<ACCOUNT_ID>.r2.cloudflarestorage.com` endpoint reads and writes the REAL production bucket with your S3 access key, not local data. The Wrangler `alias` fence is only for running the SDK inside a Worker (needs `nodejs_compat` and a direct `@aws-sdk/xml-builder` dependency to avoid `DOMParser is not defined`); for plain reads/writes in a Worker prefer the R2 binding.
 - Adapted from the official docs: `signableHeaders: new Set(["content-type"])` keeps `Content-Type` in the signature; with `ContentType` alone the SDK may leave the header unsigned, so the restriction would not be enforced.
+- Adapted from the official docs: the curl example uses the placeholder `<PRESIGNED_PUT_URL>` for the full URL returned by `getSignedUrl`. Do not rewrite its host or path (for example by inserting or removing the bucket name) and do not truncate the query string: the signature covers them, and a modified URL fails with a signature mismatch.
 - A presigned PUT with `ContentType` requires the client to send the matching `Content-Type` header; combine with bucket CORS rules to limit abuse.
 - Related: [s3-presigned-urls](../references/r2/s3-presigned-urls.md), [buckets-cors](../references/r2/buckets-cors.md), [api-tokens](../references/r2/api-tokens.md).

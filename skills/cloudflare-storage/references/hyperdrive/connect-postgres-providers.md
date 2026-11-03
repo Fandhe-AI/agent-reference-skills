@@ -64,10 +64,13 @@ Google Cloud SQL (gcloud CLI):
 gcloud sql users create hyperdrive-user --instance=YOUR_INSTANCE_NAME --password=SUFFICIENTLY_LONG_PASSWORD
 ```
 
+Adapted (not in the official docs): the official `--authorized-networks="0.0.0.0/0"` (open to the whole internet) is replaced with a placeholder for Cloudflare's published IP ranges; see Notes.
+
 ```sh
 # If you have any existing authorized networks, ensure you provide those as a comma separated list.
 # The gcloud CLI will replace any existing authorized networks with the list you provide here.
-gcloud sql instances patch YOUR_INSTANCE_NAME --authorized-networks="0.0.0.0/0"
+# <CLOUDFLARE_IP_RANGES> = comma-separated CIDR list copied from https://www.cloudflare.com/ips/
+gcloud sql instances patch YOUR_INSTANCE_NAME --authorized-networks="<CLOUDFLARE_IP_RANGES>"
 ```
 
 Fly:
@@ -118,13 +121,13 @@ PlanetScale placement hint:
 
 | Provider | Credentials / network steps | Notes |
 |----------|-----------------------------|-------|
-| AWS RDS and Aurora | AWS console: **Public access** = **Yes**; VPC security group allowing `0.0.0.0/0` to port `5432`; Aurora: **Endpoints** > Endpoint name of type `Writer` + Port; RDS: **Connectivity & security** > Endpoint + Port (default `5432`) | Create a less privileged user (SQL above) |
-| Azure Database for PostgreSQL | Settings > Networking > ensure **Public access** > Firewall rules `0.0.0.0` to `255.255.255.255`; Overview > **Server name**; default database `postgres` | Private: use Tunnel |
+| AWS RDS and Aurora | AWS console: **Public access** = **Yes**; VPC security group allowing `<CLOUDFLARE_IP_RANGES>` (from https://www.cloudflare.com/ips/) to port `5432`; Aurora: **Endpoints** > Endpoint name of type `Writer` + Port; RDS: **Connectivity & security** > Endpoint + Port (default `5432`) | Create a less privileged user (SQL above) |
+| Azure Database for PostgreSQL | Settings > Networking > ensure **Public access** > Firewall rules: one rule per range in `<CLOUDFLARE_IP_RANGES>` (from https://www.cloudflare.com/ips/), converted to start/end IPs; Overview > **Server name**; default database `postgres` | Private: use Tunnel |
 | ClickHouse Managed Postgres | ClickHouse Cloud console: **Connect** > **Directly**; copy host, port, database, user, password; download CA (`postgres-ca.pem`) from **Settings** | Requires Wrangler 4.9.0+; use `verify-full` with the instance CA; example disables caching |
 | CockroachDB | CockroachDB Cloud console: **SQL Users** > **Add User** > **Generate & Save Password**; **Connect** > choose user + database (for example `defaultdb`) > **General connection string** | Cloud allows `0.0.0.0/0` by default |
 | Digital Ocean | Dashboard: database **Overview** > **Connection Details** > **Public network** > **Connection string** > show-password | |
 | Fly | Allocate public IPv6 (IPv4 if your ISP lacks IPv6), configure external service in `fly.toml` (above), deploy; connection string form `postgres://{username}:{password}@{public-hostname}:{port}/{database}?options` | |
-| Google Cloud SQL | Console: Connections > Networking > **Public IP** > **Add a Network** `0.0.0.0/0`; Overview > **Public IP address**; Users > Add User Account > Built-in authentication | Or use gcloud commands above |
+| Google Cloud SQL | Console: Connections > Networking > **Public IP** > **Add a Network** for each range in `<CLOUDFLARE_IP_RANGES>` (from https://www.cloudflare.com/ips/); Overview > **Public IP address**; Users > Add User Account > Built-in authentication | Or use gcloud commands above |
 | Materialize | Console: **App Passwords** > **Manage app passwords** > **New app password** (shown once); **Connect** > **External tools** > Host, Port, Database | Postgres-compatible streaming database |
 | Neon | Dashboard: **Roles** > **New Role** (for example `hyperdrive-user`, copy password); Connection Details: select branch, database, role; choose `psql` and **uncheck connection pooling** | Use pg or Postgres.js, not the Neon serverless driver |
 | Nile | Console: database > **Settings** > **Connection** > Postgres logo > **Generate credentials** > copy connection string (without `psql`), like `postgres://0191c898-...:4d7d8b45-...@eu-central-1.db.thenile.dev:5432/my_database` | Multi-tenant Postgres |
@@ -138,6 +141,7 @@ PlanetScale placement hint:
 ## Notes
 
 - To let Hyperdrive reach a database, allow Cloudflare IPs (all ranges or the Hyperdrive ranges) or use Cloudflare Tunnel for private databases. Hyperdrive verifies connectivity on creation.
+- Adapted from the official docs: the official AWS RDS/Aurora, Azure and Google Cloud SQL steps open the database to `0.0.0.0/0` (or `0.0.0.0`-`255.255.255.255`). This page uses the placeholder `<CLOUDFLARE_IP_RANGES>` instead: copy the current ranges from https://www.cloudflare.com/ips/ (ranges are not reproduced here). The preferred option for private databases is a private connection (see [connect-private-database-tunnel](./connect-private-database-tunnel.md) or [connect-private-database-vpc](./connect-private-database-vpc.md)), which needs no public exposure.
 - Pages for Neon, Supabase, PlanetScale and Prisma Postgres warn: use a driver such as node-postgres (pg) or Postgres.js to connect directly to the underlying database instead of the vendor serverless driver / client (Neon serverless driver, Supabase JavaScript client, PlanetScale serverless driver, Prisma Accelerate). Hyperdrive performs global pooling and fast query routing by connecting directly.
 - Prisma Postgres: two limits apply: the provider's direct connection limit and Hyperdrive's origin connection limit (soft); set Hyperdrive's lower than the provider's. Dashboard: Hyperdrive > Settings > **Origin connection limit** > **Edit Settings**. Verify with `npx wrangler hyperdrive get <HYPERDRIVE_ID>`. `npx create-db@latest` creates a temporary Prisma Postgres database.
 - Supabase platform features: see the supabase skill.

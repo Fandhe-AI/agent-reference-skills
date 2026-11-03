@@ -128,7 +128,8 @@ SELECT LASTVAL(), * FROM articles LIMIT 50;
 SELECT * FROM events WHERE created_at > NOW() - INTERVAL '1 hour';
 ```
 
-- MySQL non-cached examples: `SELECT LAST_INSERT_ID(), * FROM articles LIMIT 50;` (volatile) and `SELECT * FROM events WHERE created_at > NOW() - INTERVAL 1 HOUR;` (non-deterministic).
+- MySQL non-cached examples: `SELECT LAST_INSERT_ID(), articles.* FROM articles LIMIT 50;` (volatile) and `SELECT * FROM events WHERE created_at > NOW() - INTERVAL 1 HOUR;` (non-deterministic).
+- Corrected from the official docs: the official MySQL example is `SELECT LAST_INSERT_ID(), * FROM articles LIMIT 50;`, which is invalid in MySQL (an unqualified `*` cannot follow another select expression); it is written here as `articles.*`.
 - Do not use SQL comments as cache controls: Hyperdrive uses text-based pattern matching to detect uncacheable functions, including names inside comments (`-- NOW()` makes the query uncacheable). Other comment text does not change the cache key: `/* some text here */ SELECT * FROM some_table;` and `/* some different text here */ SELECT * FROM some_table;` share the same cached value. Avoid uncacheable function names anywhere in query text.
 - Read-after-write: Hyperdrive does not purge cached reads when you write. A later matching `SELECT` can return a cached result until `max_age` expires (or during the `stale_while_revalidate` window). Choose per read: cache where brief staleness is fine; lower `max_age` / `stale_while_revalidate`; use a cache-disabled configuration for authentication, sessions, permissions, billing, admin settings and reads right after a write; disable caching everywhere only if most reads must be fresh (pooling and fast setup still apply).
 - If an ORM or auth library owns the SQL, create separate clients for cached and cache-disabled bindings and pass the cache-disabled client to that library.
