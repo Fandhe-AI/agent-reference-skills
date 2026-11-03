@@ -43,7 +43,7 @@ Execution location:
 - MCP describes the source and transport of a tool, not how the model invokes it. Pass MCP tools directly via the Agents MCP client, or expose them inside Code Mode via MCP connectors. An MCP server can also expose Code Mode itself (a `code` tool, or `search` and `execute`).
 - Approval policy is independent of location and source: direct tools use the human-in-the-loop approval pattern; the durable Code Mode runtime can pause generated code before an annotated connector method runs, replay completed calls from the execution log, apply the approved action, and continue.
 - Callables (client-invoked methods) are for app clients, tools are for actions the model chooses.
-- Tool pages for workspace, sandbox, browser, web, AI Search, payments, Code Mode are in the `tools/` category: see codemode-overview.md (https://developers.cloudflare.com/agents/tools/codemode/), sandbox.md (https://developers.cloudflare.com/agents/tools/sandbox/), browser.md (https://developers.cloudflare.com/agents/tools/browser/), filesystem.md (https://developers.cloudflare.com/agents/tools/filesystem/), ai-search.md (https://developers.cloudflare.com/agents/tools/ai-search/), payments-overview.md (https://developers.cloudflare.com/agents/tools/payments/).
+- Tool pages for workspace, sandbox, browser, web, AI Search, payments, Code Mode are in the `tools/` category: see [codemode-overview.md](../tools/codemode-overview.md), [sandbox.md](../tools/sandbox.md), [browser.md](../tools/browser.md), [filesystem.md](../tools/filesystem.md), [ai-search.md](../tools/ai-search.md), [payments-overview.md](../tools/payments-overview.md).
 
 ## Related
 

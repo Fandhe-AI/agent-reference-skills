@@ -299,7 +299,7 @@ Related APIs:
 - Form-mode elicitation collects structured, non-sensitive input; URL mode sends the user through an out-of-band flow (third-party authorization, payment). The `forwardElicitationToUser` stub above throws until you implement it.
 - Best practices: approve only actions with real consequences, show full action arguments, set timeouts and escalation (`schedule()`), record decisions in `this.sql` for audit, keep pending approvals in agent state so they survive disconnects, and define fallback behavior on rejection.
 - `onWorkflowProgress` here adds placeholder entries (`amount: 0`, `requestedBy: "user"`); fill them from workflow params.
-- The Workflows product is in the cloudflare-stateful skill (workflows; https://developers.cloudflare.com/workflows/); the durable Code Mode runtime is in codemode-durable-runtime.md (https://developers.cloudflare.com/agents/tools/codemode/durable-runtime/). The client side of MCP elicitation is in the MCPClientManager page.
+- The Workflows product is in the cloudflare-stateful skill (workflows; https://developers.cloudflare.com/workflows/); the durable Code Mode runtime is in [codemode-durable-runtime.md](../tools/codemode-durable-runtime.md). The client side of MCP elicitation is in the MCPClientManager page.
 
 ## Related
 

@@ -63,8 +63,8 @@ await this.addMcpServer("internal", this.env.MCP_SERVER_URL, {
 - Connections are persisted in the agent's SQL storage.
 - Public MCP servers need no binding configuration. Keep server URLs, API tokens, and OAuth settings in environment variables or secrets (never in tool arguments, prompts, or source). Add local `.dev.vars` to `.gitignore`.
 - Tool descriptions and results from an external MCP server are untrusted input to the model; connect only to servers you trust and require approval for tools with side effects (see [Code Mode with MCP](./codemode-mcp.md) for durable approvals).
-- Scope: this page is the client side (agent consumes tools). The MCP protocol itself is covered by the mcp-spec skill; AI SDK `tool()` semantics are in vercel-ai-sdk. Building an MCP server is documented in overview.md (https://developers.cloudflare.com/agents/model-context-protocol/) and remote-mcp-server.md (https://developers.cloudflare.com/agents/model-context-protocol/guides/remote-mcp-server/)
-- Client API reference: client-api.md (https://developers.cloudflare.com/agents/model-context-protocol/apis/client-api/)
+- Scope: this page is the client side (agent consumes tools). The MCP protocol itself is covered by the mcp-spec skill; AI SDK `tool()` semantics are in vercel-ai-sdk. Building an MCP server is documented in [overview.md](../mcp/overview.md) and [remote-mcp-server.md](../mcp/remote-mcp-server.md)
+- Client API reference: [client-api.md](../mcp/client-api.md)
 
 ## Related
 

@@ -4,14 +4,12 @@ description: >
   Cloudflare Agents SDK (agents パッケージ、Durable Objects 上のエージェント) の
   リファレンス。Agent class、state / setState、this.sql、schedule、@callable RPC、routeAgentRequest、
   useAgent / AgentClient、AIChatAgent、human-in-the-loop、McpAgent (リモート MCP サーバー公開)、
-  MCPClientManager、workers-oauth-provider、browser / code execution tools、x402 payments。
+  MCPClientManager、workers-oauth-provider、Think harness、browser / code execution tools、x402 payments。
   OpenAI Agents SDK (openai-agents)・Claude Agent SDK (anthropic-agent-sdk) とは別、MCP 仕様は mcp-spec。
 user-invocable: false
 ---
 
 # Cloudflare Agents SDK リファレンス
-
-> 分割 PR で順次追加中の部分版。現時点で収録済みなのは下記「ディレクトリ構成」とマッピング表に載っているカテゴリのみ。
 
 Cloudflare Agents SDK（npm `agents`）を扱う。Durable Objects 上で動く状態保持型エージェントの `Agent` クラス、state / SQL / スケジューリング / `@callable` RPC / WebSocket・HTTP ルーティング、チャット（`AIChatAgent`）、リモート MCP サーバー公開（`McpAgent`）と MCP クライアント（`MCPClientManager`）、Think などの harness、モデルプロバイダー（`createAI`）、ツール群（browser / Code Mode / web fetch・search / sandbox / x402・MPP 課金）、Agent skills（agents SDK）を参照する。
 
@@ -164,14 +162,47 @@ skills/cloudflare-agents/
       source-code.md
       source-computer.md
       source-r2.md
+    harnesses/
+      README.md
+      opencode.md
+      overview.md
+      pi.md
+      think-actions.md
+      think-channels-messengers.md
+      think-client-tools.md
+      think-configuration.md
+      think-getting-started.md
+      think-lifecycle-hooks.md
+      think-overview.md
+      think-recovery.md
+      think-scheduled-tasks-workflows.md
+      think-sub-agents-submissions.md
+      think-tools.md
+  samples/
+    README.md
+    browser-agent-tools.md
+    browser-puppeteer-extract.md
+    chat-agent.md
+    durable-object-lifecycle.md
+    email-agent-secure-reply.md
+    slack-agent.md
+    testing-agent-vitest.md
+    voice-agent.md
+  scripts/
+    README.md
+    create-project.md
+    deploy.md
+    dev-test.md
+    install.md
+    mcp.md
 ```
 
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（agent-class / runtime / concepts / tools / models / mcp / agent-skills）を探す
-2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
+1. 下記マッピング表でタスクに対応するカテゴリ（agent-class / runtime / concepts / tools / models / mcp / agent-skills / harnesses / samples / scripts）を探す
+2. そのカテゴリの `references/{category}/README.md`（samples / scripts は直下の `README.md`）を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
 `agent-class/` は `Agent` クラスの機能別ガイド、`runtime/` は SDK ランタイム層（lifecycle・routing・scheduler・sessions・tracing 等）のリファレンス。両者で同名のページ（`state` / `routing` / `websockets`）があるため、README の説明で選ぶ。
@@ -203,3 +234,8 @@ skills/cloudflare-agents/
 | MCP クライアントとして外部 MCP サーバーへ接続（OAuth 含む）したい | mcp | [references/mcp/README.md](references/mcp/README.md) |
 | MCP の transport・リモート MCP サーバーのテスト・MCP SDK v2 移行を知りたい | mcp | [references/mcp/README.md](references/mcp/README.md) |
 | Agent skills (agents SDK) の読み込み元（コード / Computer / R2）と実行方法を知りたい | agent-skills | [references/agent-skills/README.md](references/agent-skills/README.md) |
+| Think harness の設定・ツール・lifecycle hooks・recovery を調べたい | harnesses | [references/harnesses/README.md](references/harnesses/README.md) |
+| Pi / OpenCode harness を使いたい | harnesses | [references/harnesses/README.md](references/harnesses/README.md) |
+| Think の sub-agents・scheduled tasks・channels / messengers を扱いたい | harnesses | [references/harnesses/README.md](references/harnesses/README.md) |
+| 典型的な使い方を知りたい（チャット / email / Slack / voice / browser / テストの実例） | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンド（create / wrangler dev / deploy / MCP Inspector）を知りたい | scripts | [scripts/README.md](scripts/README.md) |

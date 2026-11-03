@@ -209,7 +209,7 @@ Static options / hooks:
 - Drill in with `useAgent({ agent, name, sub: [{ agent: "Researcher", name: runId }] })`; gate external access with `onBeforeSubAgent` so guessed run IDs cannot spawn child facets.
 - Observability channel `agentTool` (raw `diagnostics_channel` name `agents:agent_tool`), event `agent_tool:recovery:row`.
 - Placeholders in snippets (`ImportInput`, `markImportReady`, `userId`, `toolCallId`) are defined elsewhere in the application.
-- Think harness docs: think-overview.md (https://developers.cloudflare.com/agents/harnesses/think/).
+- Think harness docs: [think-overview.md](../harnesses/think-overview.md).
 
 ## Related
 

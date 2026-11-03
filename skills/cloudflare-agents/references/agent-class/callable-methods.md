@@ -119,7 +119,7 @@ export default defineConfig({
 - Callables are for clients outside your Worker. From a Worker or another Agent, use Durable Object RPC through a `getAgentByName()` stub (no decorator).
 - `@callable()` is a TC39 standard decorator. If the dev server fails with `SyntaxError: Invalid or unexpected token`, add the `agents/vite` plugin and extend `agents/tsconfig` (or set `"target": "ES2021"`). Do not set `"experimentalDecorators": true`: it silently breaks `@callable()` at runtime.
 - The streaming example uses a model ID taken verbatim from the source page.
-- Timeouts, errors and transports: websockets.md (https://developers.cloudflare.com/agents/runtime/capabilities/websockets/).
+- Timeouts, errors and transports: [websockets.md](../runtime/websockets.md).
 
 ## Related
 

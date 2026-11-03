@@ -182,7 +182,7 @@ Shared members of `useAgent` and `AgentClient`:
 - `@callable()` is only needed for external runtimes; inside a Worker use Durable Object RPC. Errors thrown by the method reject `call()`; streaming errors go to `onError`.
 - Use `agentFetch` for one-off or server-to-server requests and `useAgent`/`AgentClient` for real-time, state sync and multiple RPC calls.
 - `WebSocketChatTransport` (`agents/chat/transport`) needs no React peer dependency; see [chat-agents.md](./chat-agents.md) for what it does not cover. `useAgentToolEvents({ agent })` renders agent-tool timelines ([agent-tools.md](./agent-tools.md)).
-- Authentication across domains: routing-authentication.md (https://developers.cloudflare.com/agents/runtime/routing/authentication/). Do not put long-lived secrets in query parameters; prefer short-lived tokens.
+- Authentication across domains: [routing-authentication.md](../runtime/routing-authentication.md). Do not put long-lived secrets in query parameters; prefer short-lived tokens.
 - `getAuthToken`, `userId`, `prompt`, `appendToOutput` in snippets are placeholders.
 
 ## Related

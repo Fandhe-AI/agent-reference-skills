@@ -217,7 +217,7 @@ Host module factories: `createGitModule()` (`ws:git`, pass `{ allowNetwork: true
 - All users of one agent instance share its workspace; use one instance per user for separation. Storage is the Durable Object's (size for working files, not monorepos).
 - Experimental: resuming runs and waiting for answers may change in any release; interrupted runs fail across upgrades. Replay needs identical paths; pass `ctx.callId` as an idempotency key and wrap non-repeatable functions in `unsafeToRepeat()` (from `@cloudflare/computer`). A call may call `ctx.interrupt()` once; only `onInterrupt: "replay"` runs can wait; `respond()` throws `ENOTWAITING` for non-waiting calls. Replay buffers `fetch` bodies up to 1 MiB, a run gets three attempts, and interrupted runs restart four at a time. Call `workspace.runtime.recover()` from a Durable Object alarm to resume without traffic.
 - Pi adapter: mark `read`, `ls`, `find`, `grep`, `write`, `delete` as `replay: "safe"` and `edit`/`exec` unsafe (see the official page's `workspaceTools` helper). A custom Think tool with the same name replaces a workspace tool.
-- Completed runs are kept 60 minutes by default. Source: https://github.com/cloudflare/computer. Think workspace tools: think-tools.md (https://developers.cloudflare.com/agents/harnesses/think/tools/) ; Dynamic Workers: https://developers.cloudflare.com/dynamic-workers/
+- Completed runs are kept 60 minutes by default. Source: https://github.com/cloudflare/computer. Think workspace tools: [think-tools.md](../harnesses/think-tools.md) ; Dynamic Workers: https://developers.cloudflare.com/dynamic-workers/
 
 ## Related
 

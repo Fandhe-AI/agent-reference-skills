@@ -389,7 +389,7 @@ Capabilities and imports:
 - The SDK adds tables with the `cf_agents_` prefix and storage keys with `cf_agents:`; the Pi harness uses `pi_`. Existing data is untouched.
 - Counter notes: each name is a separate agent; `State` writes survive restarts; clients may also call `agent.setState()` — guard with `validateStateChange` or readonly connections. In React, `useAgent<CounterState>({ agent: "Counter", name: "demo" })` gives `agent.state` and `agent.stub.increment()`.
 - Testing: new Workers projects already include `vitest` and `@cloudflare/vitest-plugin`; otherwise `npm install vitest@^4.1.0 @cloudflare/vitest-plugin --save-dev`. `npx wrangler dev` runs the same runtime locally (Miniflare). Details of the Vitest integration and Wrangler: cloudflare-wrangler.
-- Pi harness and Cloudflare Computer (workspace) are documented in pi.md (https://developers.cloudflare.com/agents/harnesses/pi/) and filesystem.md (https://developers.cloudflare.com/agents/tools/filesystem/).
+- Pi harness and Cloudflare Computer (workspace) are documented in [pi.md](../harnesses/pi.md) and [filesystem.md](../tools/filesystem.md).
 
 ## Related
 
