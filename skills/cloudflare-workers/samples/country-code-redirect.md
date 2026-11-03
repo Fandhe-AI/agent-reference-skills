@@ -6,6 +6,8 @@ source: https://developers.cloudflare.com/workers/examples/country-code-redirect
 
 Redirect a response based on the visitor's country code from `request.cf`.
 
+Adapted (not in the official docs): the fallback sends a fresh `GET` to the fixed host instead of forwarding the original request; see Notes.
+
 ```js
 export default {
 	async fetch(request) {
@@ -30,7 +32,8 @@ export default {
 			);
 			return Response.redirect(url);
 		} else {
-			return fetch("https://example.com", request);
+			// Fresh request: the client's Cookie, Authorization and body are not sent to another host
+			return fetch("https://example.com", { method: "GET" });
 		}
 	},
 };
@@ -38,6 +41,7 @@ export default {
 
 ## Notes
 
+- Adapted from the official docs: the official fallback is `fetch("https://example.com", request)`, which would forward the visitor's `Cookie` / `Authorization` headers and body to a different host. This version sends a fresh `GET` instead.
 - `request.cf` is populated by Cloudflare at the edge; it is not available in every local-dev context.
 - `EU` is not an ISO country code, so it never matches `request.cf.country` in practice; the sample is illustrative.
 - See [geolocation-hello-world.md](./geolocation-hello-world.md) for the full list of `request.cf` fields used.

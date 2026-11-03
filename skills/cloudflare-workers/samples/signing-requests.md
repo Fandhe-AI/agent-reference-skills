@@ -6,7 +6,7 @@ source: https://developers.cloudflare.com/workers/examples/signing-requests/
 
 Generate and verify HMAC SHA-256 signed, expiring URLs with Web Crypto.
 
-Adapted (not in the official docs): no hard-coded fallback signing key, a guard for a malformed `verify` value, and a newline delimiter between pathname and timestamp in the signed data (sign and verify use the same format); see Notes.
+Adapted (not in the official docs): no hard-coded fallback signing key, a guard for a malformed `verify` value, a newline delimiter between pathname and timestamp in the signed data (sign and verify use the same format), and a fixed-host upstream request that does not forward the client's credentials or body; see Notes.
 
 ```js
 import { Buffer } from "node:buffer";
@@ -120,7 +120,14 @@ export default {
 			}
 		}
 
-		return fetch(new URL(url.pathname, "https://example.com"), request);
+		// Fixed upstream host; only the path and query come from the request
+		const upstream = new URL("https://example.com");
+		upstream.pathname = url.pathname;
+		// Drop the signature parameter before forwarding
+		url.searchParams.delete("verify");
+		upstream.search = url.search;
+		// Fresh request: the client's Cookie, Authorization and body are not forwarded
+		return fetch(upstream, { method: "GET" });
 	},
 };
 ```
@@ -129,6 +136,7 @@ export default {
 
 - Requires the `nodejs_compat` compatibility flag for `node:buffer`.
 - Adapted from the official docs: the official code falls back to the public literal `"my secret symmetric key"` when `env.SECRET_DATA` is unset, which lets anyone forge valid URLs; this version returns 500 instead. A `verify` value without a `-` made `Buffer.from(undefined)` throw; it now returns 403. Keep `SECRET_DATA` in `.dev.vars` locally and gitignore it.
+- Adapted from the official docs: the official code ends with `fetch(new URL(url.pathname, "https://example.com"), request)`, which forwards the original request (its `Cookie`, `Authorization` and body, plus the `verify` query) to the upstream. This version builds the URL on a fixed host, copies only pathname and query (minus `verify`), and sends a fresh `GET` so client credentials and body are not leaked to the upstream. Add back specific headers explicitly if the upstream needs them.
 - Use `crypto.subtle.verify()` rather than comparing re-signed strings, to avoid timing leaks.
 - Adapted from the official docs: the official code signs `${pathname}${timestamp}` with no separator, so a path ending in digits and a different timestamp can produce identical input (e.g. `/a1` + `234` vs `/a` + `1234`). This version signs `${pathname}\n${timestamp}`; sign and verify must use the identical format. `Number.isInteger` also rejects a non-numeric timestamp, which would otherwise make the expiry comparison always false.
 - The official page states its signature format is compatible with the WAF `is_timed_hmac_valid_v0()` function. That compatibility applies to the official concatenation format, not to the delimiter-based format used here; if the WAF must verify these URLs, use the WAF's own format instead.
