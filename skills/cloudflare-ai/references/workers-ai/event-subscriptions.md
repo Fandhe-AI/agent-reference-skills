@@ -40,7 +40,7 @@ Workers AI publishes batch events to a Cloudflare Queue through event subscripti
 
 ## Notes
 
-- Events are consumed with Workers or HTTP pull consumers of a queue. Queues and event subscriptions are in the cloudflare-stateful skill (queues, event-subscriptions).
+- Events are consumed with Workers or HTTP pull consumers of a queue. Queues and event subscriptions are in the cloudflare-stateful skill (queues, event-subscriptions; https://developers.cloudflare.com/queues/).
 - The `batch.queued` and `batch.succeeded` examples have the same shape as the failed example without `message`, `internalCode`, `httpCode`.
 - IDs and timestamps above are sample values from the docs.
 

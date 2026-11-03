@@ -33,7 +33,7 @@ data = client.workers.ai.with_raw_response.run(
 | Build an AI Image Generator Playground (Part 1) | video | — | Deploy a Workers AI Image Playground with the flux models; repository https://github.com/kristianfreeman/workers-ai-image-playground |
 | Add New AI Models to your Playground (Part 2) | video | — | Integrate new models and parameters that customize image generation. |
 | Store and Catalog AI Generated Images with R2 (Part 3) | video | — | Use R2 to keep track of each generated image. |
-| Build an AI code interpreter | tutorial (Intermediate) | — | cloudflare-sandbox-containers skill (sandbox: build-an-ai-code-interpreter) |
+| Build an AI code interpreter | tutorial (Intermediate) | — | cloudflare-sandbox-containers skill (sandbox: build-an-ai-code-interpreter; https://developers.cloudflare.com/sandbox/) |
 | Code interpreter with Workers AI | tutorial (Intermediate) | — | https://developers.cloudflare.com/sandbox/sdk/tutorials/workers-ai-code-interpreter/ (Sandbox SDK 0.x tutorial; not covered by the cloudflare-sandbox-containers skill) |
 | Summarize PDF files on upload | tutorial (Intermediate) | — | https://developers.cloudflare.com/r2/tutorials/summarize-pdf/ |
 
@@ -41,7 +41,7 @@ data = client.workers.ai.with_raw_response.run(
 
 - The image playground pages are video series with no code on the page; the snippet above is borrowed from the notebook tutorial.
 - Reference architectures using Workers AI (all under https://developers.cloudflare.com/reference-architecture/diagrams/): fullstack applications (`serverless/fullstack-application/`), storing user generated content (`storage/storing-user-generated-content/`), connected transportation systems (`iot/optimizing-and-securing-connected-transportation-systems/`), BigQuery to Workers AI (`ai/bigquery-workers-ai/`), multi-vendor AI observability and control (`ai/ai-multivendor-observability-control/`), composable AI (`ai/ai-composable/`), content-based asset creation (`ai/ai-asset-creation/`), RAG (`ai/ai-rag/`), automatic video captioning (`ai/ai-video-caption/`), serverless image content management (`serverless/serverless-image-content-management/`).
-- Sandbox is covered by the cloudflare-sandbox-containers skill (sandbox category); the Sandbox SDK 0.x tutorial stays an official URL.
+- Sandbox is covered by the cloudflare-sandbox-containers skill (sandbox category; https://developers.cloudflare.com/sandbox/); the Sandbox SDK 0.x tutorial stays an official URL.
 - Tutorials are example-oriented; consider samples/ for working workflows.
 
 ## Related

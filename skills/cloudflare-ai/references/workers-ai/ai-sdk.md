@@ -137,7 +137,7 @@ const { rerankedDocuments } = await rerank({
 - The `workers-ai-provider` package is deprecated per the source; use `createAI` instead.
 - Requires `ai@^7` and `@ai-sdk/provider@^4`. The `AI` binding must be in the Wrangler config (`"ai": { "binding": "AI" }`).
 - Model IDs start with `@cf/` and autocomplete from `@cloudflare/workers-types`.
-- `createAI({ binding: env.AI, id: "my-gateway" })` selects another gateway; the same provider also calls AI Gateway catalog models such as `anthropic/claude-opus-5.5`. Gateway options, caching, fallback: cloudflare-agents skill (models: ai-sdk)
+- `createAI({ binding: env.AI, id: "my-gateway" })` selects another gateway; the same provider also calls AI Gateway catalog models such as `anthropic/claude-opus-5.5`. Gateway options, caching, fallback: cloudflare-agents skill (models: ai-sdk; https://developers.cloudflare.com/agents/)
 - The `ai` package API (`generateText`, `streamText`, `Output.object`, `embedMany`, ...) belongs to vercel-ai-sdk; `z.object` schemas belong to zod. This page covers only the Workers AI provider setup.
 - Provider SDKs for the underlying vendors (OpenAI, Anthropic, Gemini): openai-api-core, anthropic-api-core, google-gemini-api.
 

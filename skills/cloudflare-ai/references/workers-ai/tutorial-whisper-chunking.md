@@ -21,7 +21,7 @@ Transcribe large audio files by fetching them, splitting into 1 MB chunks, and c
 }
 ```
 
-Adapted (not in the official docs): removed `import type { Ai } from "workers-ai"` (no such package; `Ai` is a global type from `@cloudflare/workers-types`); added a fail-closed host allowlist (`ALLOWED_AUDIO_HOSTS`, comma-separated); redirects are rejected (`redirect: "manual"`); the download is capped by `Content-Length` and by the streamed byte count; and the input is restricted to PCM WAV, split on sample-frame boundaries with a fresh WAV header per chunk so every chunk is independently decodable (see Notes).
+Adapted (not in the official docs): removed `import type { Ai } from "workers-ai"` (no such package; `Ai` is a global type from `@cloudflare/workers-types`); added a fail-closed host allowlist (`ALLOWED_AUDIO_HOSTS`, comma-separated); redirects are rejected (`redirect: "manual"`); the download is capped by `Content-Length` and by the streamed byte count; and the input is restricted to PCM WAV, split on sample-frame boundaries with a fresh WAV header per chunk so every chunk is independently decodable (see Notes); each piece gets a normalized 16-byte PCM `fmt` chunk.
 
 ```ts
 import { Buffer } from "node:buffer";
@@ -98,7 +98,7 @@ function splitWav(buf: ArrayBuffer, chunkBytes: number): ArrayBuffer[] {
 		}
 		pos += 8 + size + (size & 1);
 	}
-	if (fmtOffset < 0 || fmtSize < 16 || dataOffset < 0) {
+	if (fmtOffset < 0 || fmtSize < 16 || fmtOffset + 16 > buf.byteLength || dataOffset < 0) {
 		throw new Error("Malformed WAV file");
 	}
 	const format = view.getUint16(fmtOffset, true);
@@ -108,22 +108,24 @@ function splitWav(buf: ArrayBuffer, chunkBytes: number): ArrayBuffer[] {
 
 	const framesPerChunk = Math.max(1, Math.floor(chunkBytes / blockAlign));
 	const step = framesPerChunk * blockAlign;
-	const fmtPad = fmtSize & 1;
+	// PCM needs only the 16-byte fmt body; copy just that so an oversized
+	// input fmt chunk is not duplicated into every piece.
+	const FMT_LEN = 16;
 	const chunks: ArrayBuffer[] = [];
 	for (let start = 0; start < dataSize; start += step) {
 		// Drop a trailing partial frame so every piece ends on a frame boundary.
 		const len = Math.min(step, dataSize - start) - (Math.min(step, dataSize - start) % blockAlign);
 		if (len === 0) break;
-		const headerLen = 12 + 8 + fmtSize + fmtPad + 8;
+		const headerLen = 12 + 8 + FMT_LEN + 8;
 		const out = new Uint8Array(headerLen + len);
 		const outView = new DataView(out.buffer);
 		writeAscii(out, 0, "RIFF");
 		outView.setUint32(4, out.byteLength - 8, true);
 		writeAscii(out, 8, "WAVE");
 		writeAscii(out, 12, "fmt ");
-		outView.setUint32(16, fmtSize, true);
-		out.set(bytes.subarray(fmtOffset, fmtOffset + fmtSize), 20);
-		const dataHeader = 20 + fmtSize + fmtPad;
+		outView.setUint32(16, FMT_LEN, true);
+		out.set(bytes.subarray(fmtOffset, fmtOffset + FMT_LEN), 20);
+		const dataHeader = 20 + FMT_LEN;
 		writeAscii(out, dataHeader, "data");
 		outView.setUint32(dataHeader + 4, len, true);
 		out.set(bytes.subarray(dataOffset + start, dataOffset + start + len), headerLen);
@@ -246,6 +248,7 @@ curl "http://localhost:8787?url=https://raw.githubusercontent.com/your-username/
 
 - Adapted from the official docs: invalid `workers-ai` type import removed; allowlist added because the original fetched any user-supplied URL. Set the allowlist with `wrangler.jsonc` `vars` (for example `raw.githubusercontent.com`). The official page used `redirect: "follow"`, which lets an allowed host relay to any other host; the example now uses `redirect: "manual"` and rejects 3xx responses.
 - Adapted from the official docs: the original buffered the whole response with `arrayBuffer()` without a limit; the example now checks `Content-Length` and also counts streamed bytes (a missing or wrong `Content-Length` is not trusted), cancelling the read past `MAX_AUDIO_BYTES`.
+- Adapted from the official docs: each piece gets a normalized 16-byte PCM `fmt` chunk instead of a copy of the input's `fmt` chunk, whose size comes from the file; copying an oversized `fmt` into every piece would multiply memory use.
 - Adapted from the official docs: the original sliced raw bytes at fixed 1 MB offsets. For compressed formats such as MP3 that cuts frames and containers mid-stream, so later pieces are not valid standalone files. The example therefore accepts PCM WAV only and rebuilds a WAV header per piece, splitting on sample-frame (`blockAlign`) boundaries. Other formats need decoding and re-encoding with a media library outside the Worker (not covered by the source).
 - The compatibility date in the source config is shown as the date the docs were generated; use today's date. `nodejs_compat` needs a compatibility date of 2024-09-23 or later.
 - The file is still held in memory (up to `MAX_AUDIO_BYTES`, plus the chunk copies); adjust the cap to your Worker memory limit. Splitting at fixed sizes can still cut a word in half at a chunk boundary, so a transcript may have errors at joins. The endpoint itself is unauthenticated; add authentication if the Worker is public, since each request spends Workers AI usage.

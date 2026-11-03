@@ -89,7 +89,7 @@ export default {
 ## Notes
 
 - Streaming: `stream: true` in the input returns a stream; respond with `content-type: text/event-stream` (see Streaming).
-- Pages Functions: configure the Workers AI binding in the Cloudflare dashboard (see the cloudflare-pages skill, functions: bindings).
+- Pages Functions: configure the Workers AI binding in the Cloudflare dashboard (see the cloudflare-pages skill (functions: bindings; https://developers.cloudflare.com/pages/).
 - Local development: using Workers AI always accesses your Cloudflare account to run models and incurs usage charges even with `wrangler dev`; log in when prompted. Wrangler configuration keys and `remote` bindings are covered by the cloudflare-wrangler skill.
 - Wrangler file keys (`ai`) and Worker runtime APIs generally are covered by cloudflare-wrangler and cloudflare-workers.
 - The dashboard "LLM Chat App" template and `npm create cloudflare@latest -- [<DIRECTORY>] --type=pre-existing` are described in the dashboard getting-started page.
