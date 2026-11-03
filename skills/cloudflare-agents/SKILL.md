@@ -3,7 +3,8 @@ name: cloudflare-agents
 description: >
   Cloudflare Agents SDK (agents パッケージ、Durable Objects 上のエージェント) の
   リファレンス。Agent class、state / setState、this.sql、schedule、@callable RPC、routeAgentRequest、
-  useAgent / AgentClient、AIChatAgent、human-in-the-loop、browser / code execution tools、x402 payments。
+  useAgent / AgentClient、AIChatAgent、human-in-the-loop、McpAgent (リモート MCP サーバー公開)、
+  MCPClientManager、workers-oauth-provider、browser / code execution tools、x402 payments。
   OpenAI Agents SDK (openai-agents)・Claude Agent SDK (anthropic-agent-sdk) とは別、MCP 仕様は mcp-spec。
 user-invocable: false
 ---
@@ -34,7 +35,6 @@ Cloudflare Agents SDK（npm `agents`）を扱う。Durable Objects 上で動く�
 - openai-apps-sdk: ChatGPT 内アプリを MCP サーバーとして公開する SDK は別物
 - anthropic-agent-sdk: Claude Agent SDK（自前ホスト型のエージェントループ）は別物。本スキルは Durable Objects 上でホストされる Cloudflare のエージェント
 - 「Agent skills (agents SDK)」（`references/agent-skills/` と `references/tools/skills-tools.md`）は Agents SDK が提供するスキル読み込み機能であり、Claude Code の Agent Skills（SKILL.md）や本リポジトリのスキルとは別物。SKILL.md 形式の仕様自体は `references/concepts/agent-skills.md` にあるが、Claude Code 側の skills 設定は anthropic-claude-code-extend を参照
-- cloudflare-stateful は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-stateful: https://developers.cloudflare.com/durable-objects/ ・ /queues/ ・ /workflows/）を参照
 
 ## ディレクトリ構成
 
@@ -138,13 +138,39 @@ skills/cloudflare-agents/
       ai-sdk.md
       overview.md
       pi-ai.md
+    mcp/
+      README.md
+      agent-api.md
+      authorization.md
+      build-codemode-mcp-server.md
+      client-api.md
+      community-mcp-server.md
+      connect-mcp-client.md
+      governance.md
+      handler-api.md
+      migrate-to-mcp-sdk-v2.md
+      oauth-mcp-client.md
+      overview.md
+      remote-mcp-server.md
+      securing-mcp-server.md
+      servers-for-cloudflare.md
+      test-remote-mcp-server.md
+      tools.md
+      transport.md
+    agent-skills/
+      README.md
+      execution.md
+      overview.md
+      source-code.md
+      source-computer.md
+      source-r2.md
 ```
 
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（agent-class / runtime / concepts / tools / models）を探す
+1. 下記マッピング表でタスクに対応するカテゴリ（agent-class / runtime / concepts / tools / models / mcp / agent-skills）を探す
 2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
@@ -172,3 +198,8 @@ skills/cloudflare-agents/
 | x402 / MPP でエージェントの課金・支払いを実装したい | tools | [references/tools/README.md](references/tools/README.md) |
 | createAI でモデルプロバイダー（AI SDK / Pi AI）を設定したい | models | [references/models/README.md](references/models/README.md) |
 | Workers AI・AI Gateway のモデルをエージェントから呼びたい | models | [references/models/README.md](references/models/README.md) |
+| McpAgent でリモート MCP サーバーを公開したい | mcp | [references/mcp/README.md](references/mcp/README.md) |
+| MCP の認可（workers-oauth-provider）・セキュリティ・ガバナンスを設定したい | mcp | [references/mcp/README.md](references/mcp/README.md) |
+| MCP クライアントとして外部 MCP サーバーへ接続（OAuth 含む）したい | mcp | [references/mcp/README.md](references/mcp/README.md) |
+| MCP の transport・リモート MCP サーバーのテスト・MCP SDK v2 移行を知りたい | mcp | [references/mcp/README.md](references/mcp/README.md) |
+| Agent skills (agents SDK) の読み込み元（コード / Computer / R2）と実行方法を知りたい | agent-skills | [references/agent-skills/README.md](references/agent-skills/README.md) |
