@@ -3,7 +3,7 @@ name: cloudflare-ai
 description: >
   Cloudflare の AI 基盤 (Workers AI) の
   リファレンス。env.AI.run、REST API、OpenAI 互換エンドポイント、JSON mode、function calling、batch API、LoRA、toMarkdown。
-  プロバイダー API 本体は openai-api-core / anthropic-api-core / google-gemini-api、Upstash Vector とは別。
+  Agents SDK は cloudflare-agents、プロバイダー API 本体は openai-api-core / anthropic-api-core / google-gemini-api、Upstash Vector とは別。
 user-invocable: false
 ---
 
@@ -29,7 +29,6 @@ Cloudflare 開発者プラットフォームの AI 4 製品 — Workers AI（サ
 - upstash: Upstash Vector は別製品。Vectorize とは別物
 - fandhe-db: Rust 製 vector 特化クエリ DB。Vectorize とは別製品
 - 未収録の Cloudflare 製品（Durable Objects / Queues / Workflows 等）は公式 docs を参照
-- cloudflare-agents は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-agents: https://developers.cloudflare.com/agents/）を参照
 
 ## ディレクトリ構成
 
