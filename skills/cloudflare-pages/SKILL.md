@@ -3,14 +3,13 @@ name: cloudflare-pages
 description: >
   Cloudflare Pages (静的サイト + Pages Functions、新規は Workers 推奨) の
   リファレンス。Pages Functions、onRequest / EventContext、_routes.json、advanced mode _worker.js、
-  _headers / _redirects、preview / branch deployments。
+  _headers / _redirects、preview / branch deployments、Direct Upload、Git integration、
+  wrangler pages dev / deploy、framework guides。
   Workers + static assets は cloudflare-workers、Wrangler は cloudflare-wrangler、Vercel とは別。
 user-invocable: false
 ---
 
 # Cloudflare Pages リファレンス
-
-> 分割 PR で順次追加中の部分版。現時点で収録済みなのは下記「ディレクトリ構成」とマッピング表に載っているカテゴリのみ。
 
 公式トップは新規プロジェクトを Workers（static assets）で始めるよう推奨しており、移行手順は cloudflare-workers の static-assets/migrate-from-pages を参照する。本スキルは既存の Pages プロジェクトの保守・移行元の理解を主眼に、Pages Functions（ファイルベースルーティング、`onRequest` ハンドラー、`EventContext`、middleware、plugins）、`_routes.json` / `_headers` / `_redirects`、ビルド設定、Git integration / Direct Upload、preview deployments、フレームワーク別デプロイガイドを扱う。
 
@@ -27,7 +26,6 @@ user-invocable: false
 - cloudflare-stateful: Durable Objects 等のステートフル製品。Pages Functions からの bindings 設定のみ本スキル
 - nextjs-app / react-router / hono / vite: フレームワーク・ビルドツール本体の API。本スキルは Cloudflare Pages へのデプロイ手順のみ扱う
 - vercel: 別プラットフォーム。Vercel からの移行ガイドのみ本スキルに収録
-- cloudflare-stateful は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-stateful: https://developers.cloudflare.com/durable-objects/ ・ /queues/ ・ /workflows/）を参照
 
 ## ディレクトリ構成
 
@@ -85,14 +83,78 @@ skills/cloudflare-pages/
       redirects.md
       rollbacks.md
       serving-pages.md
+    platform-howto/
+      README.md
+      add-custom-http-headers.md
+      build-commands-branches.md
+      changelog.md
+      custom-branch-aliases.md
+      deploy-a-wordpress-site.md
+      enable-zaraz.md
+      get-started-c3.md
+      get-started-direct-upload.md
+      get-started-git-integration.md
+      known-issues.md
+      limits.md
+      migrating-from-firebase.md
+      migrating-from-netlify.md
+      migrating-from-vercel.md
+      migrating-from-workers.md
+      migrating-jekyll-from-github-pages.md
+      npm-private-registry.md
+      overview.md
+      preview-with-cloudflare-tunnel.md
+      redirect-to-custom-domain.md
+      refactor-a-worker-to-pages-functions.md
+      use-direct-upload-with-continuous-integration.md
+      use-worker-for-ab-testing-in-pages.md
+      web-analytics.md
+      www-redirect.md
+    framework-guides/
+      README.md
+      angular.md
+      astro.md
+      blazor.md
+      docs-site-generators.md
+      hono.md
+      hugo-zola.md
+      jekyll.md
+      nextjs.md
+      node-static-generators.md
+      nuxt.md
+      overview.md
+      python-generators.md
+      qwik.md
+      react-preact-remix.md
+      solid-start.md
+      static-html.md
+      sveltekit.md
+      vue.md
+  samples/
+    README.md
+    api-with-pages-functions.md
+    formspree-html-form.md
+    formspree-react-form.md
+    html-form-functions.md
+    localize-htmlrewriter.md
+    nuxt-sanity-blog.md
+    r2-static-assets.md
+  scripts/
+    README.md
+    api.md
+    ci.md
+    create-project.md
+    dev-deploy.md
+    functions.md
+    manage.md
 ```
 
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（functions / configuration）を探す
-2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
+1. 下記マッピング表でタスクに対応するカテゴリ（functions / configuration / platform-howto / framework-guides / samples / scripts）を探す
+2. そのカテゴリの `references/{category}/README.md`（samples / scripts は直下の `README.md`）を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
 ## タスク → カテゴリ マッピング
@@ -108,3 +170,11 @@ skills/cloudflare-pages/
 | `_headers` / `_redirects`・Early Hints・配信挙動を設定したい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | preview / branch deployments・rollbacks・deploy hooks を扱いたい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | GitHub / GitLab の Git integration・カスタムドメイン・Pages API を使いたい | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| Pages プロジェクトを作成してデプロイしたい（C3 / Direct Upload / Git） | platform-howto | [references/platform-howto/README.md](references/platform-howto/README.md) |
+| Pages の制限・既知の問題・changelog を確認したい | platform-howto | [references/platform-howto/README.md](references/platform-howto/README.md) |
+| Netlify / Vercel / Firebase / Workers から Pages へ移行したい | platform-howto | [references/platform-howto/README.md](references/platform-howto/README.md) |
+| www リダイレクト・Web Analytics・Zaraz・CI からの Direct Upload を設定したい | platform-howto | [references/platform-howto/README.md](references/platform-howto/README.md) |
+| Next.js / Astro / Nuxt / SvelteKit / Hono などを Pages にデプロイしたい | framework-guides | [references/framework-guides/README.md](references/framework-guides/README.md) |
+| Hugo / Jekyll / 静的 HTML などの静的サイトジェネレーターをデプロイしたい | framework-guides | [references/framework-guides/README.md](references/framework-guides/README.md) |
+| 典型的な使い方を知りたい（フォーム処理・API・R2 静的アセット・HTMLRewriter） | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンド（wrangler pages dev / deploy、プロジェクト作成、API、CI）を知りたい | scripts | [scripts/README.md](scripts/README.md) |
