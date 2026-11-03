@@ -137,7 +137,7 @@ Retry with a delay:
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `batch_size` | number | 5 (max 100) | Messages returned per pull. |
-| `visibility_timeout_ms` | number | 30 seconds (max 12 hours) | How long the consumer has to acknowledge messages; after it expires they are redelivered and the `lease_id` is no longer valid. The prose calls this `visibility_timeout`; request bodies use `visibility_timeout_ms`. |
+| `visibility_timeout_ms` | number | 30 seconds (max 12 hours) | How long the consumer holds the lease; after it expires, unacknowledged messages become eligible for redelivery (possibly to another client). An ack sent with the original `lease_id` after the timeout is still accepted (see Notes), so always ack messages you finished processing. The prose calls this `visibility_timeout`; request bodies use `visibility_timeout_ms`. |
 
 ### Message object
 
@@ -182,6 +182,7 @@ Retry with a delay:
 - Pull is short polling: Queues returns immediately and returns an empty response if no messages are available; there is no long polling.
 - Several HTTP clients may pull concurrently, each receiving a unique batch and holding the lease until the visibility timeout expires or the message is marked for retry.
 - Unacknowledged messages are redelivered after the visibility timeout. Queues accepts late acks by lease ID, even after the timeout, and even if the message was redelivered elsewhere.
+- Source inconsistency: the same official page says "A `lease_id` is no longer valid once this timeout has been reached" and, later, that Queues still accepts an acknowledgment by lease ID after the visibility timeout (also when the message was meanwhile delivered to another consumer). This page follows the latter: the timeout controls when a message can be redelivered, not whether a late ack is accepted. Ack every message you processed, and keep processing idempotent because a redelivered copy may already be in progress elsewhere.
 - Ack all `lease_id`s you processed; group acknowledgements to reduce API calls.
 - Pull delivery is also at-least-once: a message whose visibility timeout expires before the ack arrives is delivered again, possibly to another client. Ack only after processing succeeds, and make processing idempotent (see [delivery-guarantees.md](./delivery-guarantees.md)).
 - Only use `text`, `bytes` or `json` content types for queues with a pull consumer.
