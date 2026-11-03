@@ -8,9 +8,11 @@ Two steps: (1) eject webpack projects, then (2) update to Wrangler v2. The CLI g
 
 ## Signature / Usage
 
+Adapted (not in the official docs): `npm install -g wrangler` pinned to `wrangler@2` because the unpinned install now gives v4; see Notes.
+
 ```sh
 npm uninstall -g @cloudflare/wrangler   # or: cargo uninstall wrangler
-npm install -g wrangler
+npm install -g wrangler@2
 npx wrangler --version
 npx wrangler dev   # shows warnings/errors to fix
 ```
@@ -66,6 +68,7 @@ command = "npm run build"
 
 ## Notes
 
+- Adapted from the official docs: the official page runs `npm install -g wrangler`, which installs Wrangler v4 today; `wrangler@2` pins the v1 to v2 target of this guide. To move to the current release afterwards see [migration-v3-to-v4.md](./migration-v3-to-v4.md).
 - Example v2 warnings from `wrangler dev`: ignored `type`; deprecations for `zone_id` and `build.upload.format`; error when `route` is not a string or `{ pattern, zone_id | zone_name }`.
 - Full v1 vs v2 differences: see [deprecations.md](./deprecations.md). Archived Wrangler v1 docs: see [legacy-wrangler-v1.md](./legacy-wrangler-v1.md).
 

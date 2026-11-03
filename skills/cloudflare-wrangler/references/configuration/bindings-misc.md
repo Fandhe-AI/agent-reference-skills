@@ -35,12 +35,23 @@ Configuration keys for the remaining binding types.
 [vars]
 API_HOST = "example.com"
 
+  [vars.SERVICE_X_DATA]
+  URL = "service-x-api.dev.example"
+  MY_ID = 123
+
 [browser]
 binding = "<BINDING_NAME>"
 
 [[send_email]]
+name = "<NAME_FOR_BINDING1>"
+
+[[send_email]]
 name = "<NAME_FOR_BINDING2>"
 destination_address = "<YOUR_EMAIL>@example.com"
+
+[[send_email]]
+name = "<NAME_FOR_BINDING3>"
+allowed_destination_addresses = [ "<YOUR_EMAIL>@example.com", "<YOUR_EMAIL2>@example.com" ]
 
 [[flagship]]
 binding = "FLAGS"

@@ -23,6 +23,9 @@ Configuration keys for binding D1 databases, KV namespaces, R2 buckets, Hyperdri
 ```
 
 ```toml
+# required for database drivers to function
+compatibility_flags = [ "nodejs_compat_v2" ]
+
 [[d1_databases]]
 binding = "<BINDING_NAME>"
 database_name = "<DATABASE_NAME>"

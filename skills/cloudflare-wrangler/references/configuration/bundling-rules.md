@@ -67,7 +67,7 @@ exclude = [ "**/*.pyc", "**/__pycache__" ]
 - Normally Wrangler only includes additional modules that are statically imported. Setting `find_additional_modules` to `true` traverses the file tree below `base_dir` (defaults to the directory containing `main`); files matching `rules` are included as unbundled, external modules.
 - By default `python_modules.exclude` is `["**/*.pyc"]`; include this when setting a different value.
 - Wrangler bundling is not applicable with the Cloudflare Vite plugin.
-- Docs inconsistency: this page and the type list use `ESModule`, while the Bundling page example writes `"type": "EsModule"`.
+- Docs inconsistency: this page and the type list use `ESModule`, while the official Bundling page example writes `"type": "EsModule"`; [bundling.md](./bundling.md) corrects that example to `ESModule`.
 
 ## Related
 

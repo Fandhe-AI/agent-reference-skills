@@ -8,6 +8,8 @@ Local environment variables that change Wrangler's behavior. Set them via a `.en
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the values are placeholders and the `.gitignore` caution is added; see Notes.
+
 ```bash
 CLOUDFLARE_ACCOUNT_ID=<YOUR_ACCOUNT_ID_VALUE>
 CLOUDFLARE_API_TOKEN=<YOUR_API_TOKEN_VALUE>
@@ -66,6 +68,7 @@ Other types: `version-upload`, `version-deploy`, `pages-deploy`, `command-failed
 ## Notes
 
 - To set different variables per environment, create `.env.<environment-name>`; with `--env <name>` that file is loaded instead of `.env` (not merged).
+- Adapted from the official docs: the example values above are placeholders; `.env` files can hold real credentials (`CLOUDFLARE_API_TOKEN`), so add `.env*` to `.gitignore` and do not commit them.
 - During local development, `.env` values are also loaded into the Worker's `env` object (e.g. `env.API_HOST`).
 - Deprecated variables: `CF_ACCOUNT_ID`, `CF_API_TOKEN`, `CF_API_KEY`, `CF_EMAIL`, `CF_API_BASE_URL`; use the `CLOUDFLARE_*` equivalents.
 

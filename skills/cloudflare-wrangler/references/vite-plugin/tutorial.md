@@ -8,10 +8,13 @@ Adapt a Vite React project to the Cloudflare Vite plugin: SPA served as static a
 
 ## Signature / Usage
 
-Scaffold and install:
+Scaffold and install (run the following commands from the new project directory):
+
+Adapted (not in the official docs): `cd cloudflare-vite-tutorial` added so `npm i -D` runs inside the scaffolded project; see Notes.
 
 ```
 npm create vite@latest -- cloudflare-vite-tutorial --template react-ts
+cd cloudflare-vite-tutorial
 npm i -D @cloudflare/vite-plugin wrangler
 ```
 
@@ -159,6 +162,7 @@ npx wrangler deploy
 
 ## Notes
 
+- Adapted from the official docs: the official page only says to open the `cloudflare-vite-tutorial` directory in your editor before `npm i -D ...`; an explicit `cd cloudflare-vite-tutorial` was added so the install and all later commands (`npm run build`, `npx wrangler deploy`) run in the project directory. `npm i -D` also installs the template's existing dependencies, so no separate `npm install` is needed.
 - Equivalent `wrangler.toml` forms exist for each config shown (e.g. `[assets]` with `not_found_handling = "single-page-application"` and `run_worker_first = ["/api/*"]`).
 - `not_found_handling: "single-page-application"` serves `index.html` for all not-found requests (needed for React Router and other client-side routing). With the plugin, `assets` routing config replaces Vite's default behavior so dev matches production.
 - The `directory` field is not used when configuring assets with Vite; the output config points to the client build output automatically.

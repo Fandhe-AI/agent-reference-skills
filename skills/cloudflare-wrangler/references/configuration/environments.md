@@ -56,8 +56,10 @@ routes = [ "example.com/foo/*", "example.com/bar/*" ]
 
 Select an environment with `--env` / `-e`:
 
+Adapted (not in the official docs): the dev command uses `-e=staging` to match the configuration above; see Notes.
+
 ```sh
-npx wrangler dev -e=dev
+npx wrangler dev -e=staging
 npx wrangler deploy --env staging   # Uploaded my-worker-staging
 ```
 
@@ -72,6 +74,7 @@ npx wrangler deploy --env staging   # Uploaded my-worker-staging
 - `workers_dev = true` in an environment deploys it to `https://my-worker-staging.<YOUR_SUBDOMAIN>.workers.dev`.
 - Caution: creating a Worker via an environment automatically creates a publicly discoverable SSL certificate; do not put sensitive information in environment names.
 - Docs inconsistency: the staging `workers.dev` example output shows `Uploaded my-worker` while the published URL contains `my-worker-staging`; and the Secrets section writes `-env` instead of `--env`.
+- Adapted from the official docs: the official page runs `npx wrangler dev -e=dev` (from a different, earlier example that defines `env.dev`); the configuration above defines only `staging` and `production`, so the command uses `-e=staging`.
 - The `service` environments mechanism (`legacy_env`) is deprecated; see [deprecations.md](./deprecations.md).
 
 ## Related

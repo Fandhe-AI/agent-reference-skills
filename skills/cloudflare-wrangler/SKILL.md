@@ -2,8 +2,8 @@
 name: cloudflare-wrangler
 description: >
   Cloudflare Workers 開発ツール (Wrangler CLI v4 / @cloudflare/vite-plugin) の
-  リファレンス。wrangler dev / deploy / versions / rollback / tail、wrangler.jsonc、
-  .dev.vars、remote bindings、source maps。
+  リファレンス。wrangler dev / deploy / versions / rollback / tail / secret / types の全フラグ、
+  グローバルフラグ、製品別サブコマンド、wrangler.jsonc、.dev.vars、remote bindings、source maps。
 user-invocable: false
 ---
 

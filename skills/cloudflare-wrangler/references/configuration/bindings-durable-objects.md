@@ -49,10 +49,18 @@ class_name = "<CLASS_NAME>"
 type = "durable-object"
 storage = "sqlite"
 
+[exports.OldClass]
+type = "durable-object"
+state = "deleted"
+
 [exports.OldName]
 type = "durable-object"
 state = "renamed"
 renamed_to = "NewName"
+
+[exports.NewName]
+type = "durable-object"
+storage = "sqlite"
 ```
 
 ## Options / Props
