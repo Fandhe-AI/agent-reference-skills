@@ -3,7 +3,7 @@ name: cloudflare-stateful
 description: >
   Cloudflare Workers のステートフル基盤 (Durable Objects) の
   リファレンス。DurableObject、ctx.storage SQL / KV API、alarms、WebSocket hibernation。
-  ランタイムは cloudflare-workers、Wrangler は cloudflare-wrangler、Upstash QStash・Inngest・BullMQ とは別。
+  ランタイムは cloudflare-workers、Wrangler は cloudflare-wrangler、Agents SDK は cloudflare-agents、Upstash QStash・Inngest・BullMQ とは別。
 user-invocable: false
 ---
 
@@ -27,7 +27,6 @@ Cloudflare Workers 上のステートフル 3 製品 — Durable Objects（強�
 - drizzle: Durable Objects の SQLite を Drizzle ORM で扱う場合は drizzle が担当
 - upstash / inngest / bullmq: Upstash QStash、Inngest、BullMQ は別製品。Cloudflare Queues / Workflows とは別物
 - 未収録の Cloudflare 製品は公式 docs（`https://developers.cloudflare.com/<product>/`）を参照
-- cloudflare-agents は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-agents: https://developers.cloudflare.com/agents/）を参照
 
 ## ディレクトリ構成
 
