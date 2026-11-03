@@ -31,7 +31,7 @@ Cloudflare 開発者プラットフォームの Sandbox SDK（`@cloudflare/sandb
 - docker: Docker Engine / Dockerfile / Compose / Buildx 本体。本スキルは Cloudflare Containers へのイメージ登録・デプロイのみ扱う
 - anthropic-claude-code / openai-codex: エージェント本体（CLI・設定・機能）は各スキル。本スキルはサンドボックス内で動かす方法（`references/sandbox/claude-code.md` / `codex.md` ほか）のみ扱う
 - 未収録の Cloudflare 製品は公式 docs（`https://developers.cloudflare.com/<product>/`）を参照
-- cloudflare-stateful / cloudflare-agents は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-stateful: https://developers.cloudflare.com/durable-objects/ ・ /queues/ ・ /workflows/、cloudflare-agents: https://developers.cloudflare.com/agents/）を参照
+- cloudflare-stateful は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-stateful: https://developers.cloudflare.com/durable-objects/ ・ /queues/ ・ /workflows/）を参照
 
 ## ディレクトリ構成
 
