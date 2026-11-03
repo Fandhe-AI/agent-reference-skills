@@ -1,9 +1,10 @@
 ---
 name: cloudflare-sandbox-containers
 description: >
-  Cloudflare Sandbox SDK 1.0 (Durable Object から起動するコンテナ) の
+  Cloudflare Sandbox SDK 1.0 / Containers (Durable Object から起動するコンテナ) の
   リファレンス。@cloudflare/sandbox、exec / processes / files / preview URLs / terminals / code interpreter、
-  coding agents in sandbox。
+  coding agents in sandbox、Container class (defaultPort / sleepAfter / getContainer)、
+  instance types、image registry、wrangler containers、Sandbox SDK 0.x → 1.0 migration。
   Wrangler は cloudflare-wrangler、Docker 本体は docker。
 user-invocable: false
 ---
@@ -76,13 +77,46 @@ skills/cloudflare-sandbox-containers/
       save-and-restore-a-workspace.md
       serve-previews-on-their-own-hostnames.md
       stream-command-output.md
+    containers/
+      README.md
+      api-comparison.md
+      architecture.md
+      container-class.md
+      deploy.md
+      durable-object-container.md
+      environment-variables.md
+      execute-commands.md
+      faq.md
+      get-started.md
+      image-management.md
+      limits.md
+      local-dev.md
+      outbound-traffic.md
+      overview.md
+      placement.md
+      pricing.md
+      rollouts.md
+      scaling-and-routing.md
+      scheduling-policy.md
+      snapshots.md
+      ssh.md
+      workers-connections.md
+      wrangler-configuration.md
+    sandbox-migration/
+      README.md
+      api-map.md
+      commands-and-processes.md
+      files-and-storage.md
+      networking-and-other.md
+      overview.md
+      plan-and-move.md
 ```
 
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（sandbox）を探す
+1. 下記マッピング表でタスクに対応するカテゴリ（sandbox / containers / sandbox-migration）を探す
 2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
@@ -95,3 +129,8 @@ skills/cloudflare-sandbox-containers/
 | ファイル操作・R2 マウント・ディレクトリのバックアップ / 復元をしたい | sandbox | [references/sandbox/README.md](references/sandbox/README.md) |
 | プレビュー URL・ブラウザーターミナル・コードインタープリターを構築したい | sandbox | [references/sandbox/README.md](references/sandbox/README.md) |
 | Claude Code / Codex / OpenCode / Pi などをサンドボックス内で動かしたい | sandbox | [references/sandbox/README.md](references/sandbox/README.md) |
+| Container class（defaultPort / sleepAfter / getContainer）で Durable Object からコンテナを起動したい | containers | [references/containers/README.md](references/containers/README.md) |
+| Containers のデプロイ・イメージ管理・instance types・スケーリングを設定したい | containers | [references/containers/README.md](references/containers/README.md) |
+| コンテナの環境変数・外向き通信・ローカル開発・SSH・スナップショットを扱いたい | containers | [references/containers/README.md](references/containers/README.md) |
+| Containers の制限・料金・FAQ を確認したい | containers | [references/containers/README.md](references/containers/README.md) |
+| Sandbox SDK 0.x から 1.0 への移行手順・API 対応表を知りたい | sandbox-migration | [references/sandbox-migration/README.md](references/sandbox-migration/README.md) |
