@@ -68,7 +68,9 @@ export class ParentWorkflow extends WorkflowEntrypoint<Env, Params> {
 
 		// Trigger a child workflow for additional processing
 		const childId = await step.do("trigger child workflow", async () => {
-			const id = `child-${event.instanceId}`;
+			// Reuse the parent ID: it is already unique and within the 100-character
+			// limit, and the child lives in a different Workflow.
+			const id = event.instanceId;
 			try {
 				await this.env.CHILD_WORKFLOW.create({
 					id,
@@ -152,7 +154,7 @@ Trigger paths:
 - `restart()` cancels in-progress steps, erases intermediate state, and keeps the previous concurrency slot; calling it recursively without a condition runs forever and effectively removes a slot. The official page also shows a long R2-chunk pipeline that restarts itself while keeping a cursor object in R2; its key point is to keep any state that must survive a restart outside the instance. See https://developers.cloudflare.com/workflows/build/trigger-workflows/#restart-a-workflow .
 - `deleteBatch` accepts 1 to 100 IDs. Wrangler `instances delete` takes one or more IDs or a file with a top-level JSON array of strings (combined up to 100 IDs); `latest` deletes the most recent instance. With `--local` it targets a `wrangler dev` session.
 - If creating the child instance fails inside a step, the step retries per its retry configuration; once created, the child runs independently.
-- Adapted from the official docs: the child ID is deterministic (`child-<parent instance ID>`), and `create` throws when the ID already exists, so a step retried after a successful `create` would fail on every attempt. The step falls back to `get(id)` to confirm the existing child, which keeps it idempotent.
+- Adapted from the official docs: the child ID is deterministic (the parent instance ID itself, which is valid in the child Workflow and stays within the 100-character ID limit; a `child-` prefix could push a long parent ID past it), and `create` throws when the ID already exists, so a step retried after a successful `create` would fail on every attempt. The step falls back to `get(id)` to confirm the existing child, which keeps it idempotent.
 - Adapted from the official docs: the `fetch` example creates an instance and reveals instance status, so it now requires a bearer token (`TRIGGER_TOKEN`, rejected when unset). Never expose instance creation on an unauthenticated public route.
 - Corrected from the official docs: the parent/child example returned the `WorkflowInstance` from `step.do`; step state must be serializable, so only the child ID is returned. `Params` is a placeholder type, and `WorkflowEntrypoint`/`WorkflowEvent`/`WorkflowStep` must be imported from `cloudflare:workers` (types via `import type`).
 

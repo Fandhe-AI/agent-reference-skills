@@ -339,7 +339,7 @@ export class ResearchAgent extends Agent<Env, State> {
 
 `src/index.ts`:
 
-Adapted (not in the official docs): the official `/research` and `/status` endpoints are public and start paid LLM runs for any caller; this version fails closed on a shared secret (`API_TOKEN`, set with `npx wrangler secret put`, compared in constant time) for those two routes, and `/research` rejects non-JSON or non-object bodies, a missing or oversized `task`, and both routes reject malformed `agentId` values. WebSocket routing via `routeAgentRequest` is unchanged. See Notes.
+Adapted (not in the official docs): the official `/research` and `/status` endpoints and the `/agents/research-agent/{name}` WebSocket route are public, so any caller could start paid LLM runs or connect to an agent and receive its broadcast progress and results. Every route now goes through one fail-closed `authenticate()` placeholder (it rejects everything until you implement verification), the agent instance is named after the verified user ID instead of a client-supplied `agentId`, and `/research` rejects non-JSON or non-object bodies and a missing or oversized `task`. See Notes.
 
 ```ts
 import { getAgentByName, routeAgentRequest } from "agents";
@@ -347,30 +347,38 @@ import { getAgentByName, routeAgentRequest } from "agents";
 export { ResearchAgent } from "./agent";
 export { ResearchWorkflow } from "./workflow";
 
+// Verify a session cookie, a JWT, or an API key here and return the user ID.
+// Browsers cannot set headers on a WebSocket upgrade, so for /agents/* also
+// accept a token from a cookie or the `token` query parameter.
+// This placeholder rejects every request until you implement verification.
+async function authenticate(request: Request, env: Env): Promise<string | null> {
+	return null;
+}
+
 export default {
 	async fetch(request: Request, env: Env): Promise<Response> {
 		const url = new URL(request.url);
 
-		// Route WebSocket connections to /agents/research-agent/{name}
-		const agentResponse = await routeAgentRequest(request, env);
-		if (agentResponse) return agentResponse;
-
-		const isApiRoute =
-			(request.method === "POST" && url.pathname === "/research") ||
-			url.pathname === "/status";
-		if (isApiRoute) {
-			// Fail closed: reject when the token is not configured or does not match
-			const enc = new TextEncoder();
-			const expected = env.API_TOKEN;
-			const provided = enc.encode(request.headers.get("Authorization") ?? "");
-			const wanted = enc.encode(`Bearer ${expected ?? ""}`);
-			if (
-				!expected ||
-				provided.byteLength !== wanted.byteLength ||
-				!crypto.subtle.timingSafeEqual(provided, wanted)
-			) {
+		// WebSocket and HTTP routes under /agents/research-agent/{name}:
+		// each user can only reach the agent named after them.
+		const check = async (req: Request, route: { name: string }) => {
+			const userId = await authenticate(req, env);
+			if (!userId) {
 				return new Response("Unauthorized", { status: 401 });
 			}
+			if (route.name !== userId) {
+				return new Response("Forbidden", { status: 403 });
+			}
+		};
+		const agentResponse = await routeAgentRequest(request, env, {
+			onBeforeConnect: check,
+			onBeforeRequest: check,
+		});
+		if (agentResponse) return agentResponse;
+
+		const userId = await authenticate(request, env);
+		if (!userId) {
+			return new Response("Unauthorized", { status: 401 });
 		}
 
 		// HTTP API for starting research tasks
@@ -384,7 +392,7 @@ export default {
 			if (typeof body !== "object" || body === null) {
 				return Response.json({ error: "body must be a JSON object" }, { status: 400 });
 			}
-			const { task, agentId = "default" } = body as { task?: unknown; agentId?: unknown };
+			const { task } = body as { task?: unknown };
 			// Bound the prompt before it starts a paid LLM run.
 			if (
 				typeof task !== "string" ||
@@ -393,12 +401,9 @@ export default {
 			) {
 				return Response.json({ error: "task must be a string of 1-4096 bytes" }, { status: 400 });
 			}
-			if (typeof agentId !== "string" || !/^[a-zA-Z0-9_-]{1,64}$/.test(agentId)) {
-				return Response.json({ error: "invalid agentId" }, { status: 400 });
-			}
 
-			// Get agent instance by name (creates if doesn't exist)
-			const agent = await getAgentByName(env.ResearchAgent, agentId);
+			// The agent instance belongs to the authenticated user
+			const agent = await getAgentByName(env.ResearchAgent, userId);
 
 			// Start the research workflow via RPC
 			const result = await agent.startResearch(task);
@@ -408,16 +413,11 @@ export default {
 		// Check workflow status
 		if (url.pathname === "/status") {
 			const instanceId = url.searchParams.get("instanceId");
-			const agentId = url.searchParams.get("agentId") ?? "default";
-
 			if (!instanceId) {
 				return Response.json({ error: "instanceId required" }, { status: 400 });
 			}
-			if (!/^[a-zA-Z0-9_-]{1,64}$/.test(agentId)) {
-				return Response.json({ error: "invalid agentId" }, { status: 400 });
-			}
 
-			const agent = await getAgentByName(env.ResearchAgent, agentId);
+			const agent = await getAgentByName(env.ResearchAgent, userId);
 			const status = await agent.getResearchStatus(instanceId);
 
 			return Response.json(status);
@@ -430,41 +430,40 @@ export default {
 } satisfies ExportedHandler<Env>;
 ```
 
-Local development and deploy (secrets go in an untracked `.dev.vars`/`.env` file locally; add it to `.gitignore`):
+Local development and deploy (secrets go in an untracked `.dev.vars`/`.env` file locally; add it to `.gitignore`). Until `authenticate()` is implemented every request returns 401; `<TOKEN>` stands for whatever credential your `authenticate()` verifies:
 
 ```sh
 # .env (local only; do not commit)
 ANTHROPIC_API_KEY=your-api-key-here
-API_TOKEN=choose-a-long-random-value
 ```
 
 ```sh
 npx wrangler dev
 curl -X POST http://localhost:8787/research \
-  -H "Authorization: Bearer ${API_TOKEN}" \
+  -H "Authorization: Bearer <TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{"task": "Compare open-source LLM projects"}'
-curl -H "Authorization: Bearer ${API_TOKEN}" "http://localhost:8787/status?instanceId=abc-123-def"
+curl -H "Authorization: Bearer <TOKEN>" "http://localhost:8787/status?instanceId=abc-123-def"
 npx wrangler deploy
 npx wrangler secret put ANTHROPIC_API_KEY
-npx wrangler secret put API_TOKEN
 npx wrangler workflows instances describe research-workflow latest
 ```
 
 React client (`useAgent` connects to `/agents/{agent-name}/{instance-name}`):
 
-Adapted (not in the official docs): `useState(null)` infers the type `null` in a `.tsx` file, so `progress.message` does not type-check; the state is typed, and non-JSON WebSocket frames are ignored instead of throwing in `JSON.parse`. See Notes.
+Adapted (not in the official docs): `useState(null)` infers the type `null` in a `.tsx` file, so `progress.message` does not type-check; the state is typed, and non-JSON WebSocket frames are ignored instead of throwing in `JSON.parse`. The client connects to the agent named after the signed-in user and sends its token in the `query` option (browsers cannot set headers on a WebSocket upgrade), matching the Worker check. See Notes.
 
 ```tsx
 import { useState } from "react";
 import { useAgent } from "agents/react";
 
-function ResearchUI({ agentId = "default" }) {
+function ResearchUI({ userId, token }: { userId: string; token: string }) {
 	const [progress, setProgress] = useState<{ message: string; percent: number } | null>(null);
 
 	const { state } = useAgent({
 		agent: "research-agent", // Maps to ResearchAgent class
-		name: agentId, // Instance name
+		name: userId, // Instance name: must equal the authenticated user ID
+		query: { token }, // Read by authenticate() on the WebSocket upgrade
 		onMessage: (message) => {
 			let data;
 			try {
@@ -492,11 +491,10 @@ function ResearchUI({ agentId = "default" }) {
 
 ## Notes
 
-- Corrected from the official docs: GitHub path segments are URL-encoded; the `/research` and `/status` routes require a bearer token (Adapted for safety; the official guide serves them unauthenticated). The official local-dev `curl` shows no secret; `${API_TOKEN}` here is a shell variable you export from the value in your local env file.
-- Adapted from the official docs: `/research` parses the body inside `try` (400 on invalid JSON or a non-object body), requires `task` to be a non-empty string of at most 4096 bytes before starting an LLM run, and both routes accept `agentId` only as 1 to 64 letters, digits, `-` or `_`. With a single shared `API_TOKEN` every caller is the same principal; to give users their own agents, derive the agent name from your verified user identity instead of the request body.
+- Corrected from the official docs: GitHub path segments are URL-encoded. The official guide serves `/research`, `/status` and the agent WebSocket route unauthenticated; here every route goes through `authenticate()`, a placeholder that returns `null` (401) until you verify a session, JWT or API key.
+- Adapted from the official docs: `/research` parses the body inside `try` (400 on invalid JSON or a non-object body) and requires `task` to be a non-empty string of at most 4096 bytes before starting an LLM run. The agent instance is named after the verified user ID (`getAgentByName(env.ResearchAgent, userId)`), and `routeAgentRequest` gets `onBeforeConnect` / `onBeforeRequest` hooks that reject a connection unless `route.name` equals that ID, so one user cannot connect to another user's agent and receive its broadcasts (see the routing-authentication reference of the cloudflare-agents skill).
 - Adapted from the official docs: the React client types its `progress` state (the official `useState(null)` does not type-check in TSX) and ignores WebSocket frames that are not JSON.
-- `routeAgentRequest` is called before the token check, so the `/agents/research-agent/{name}` WebSocket routes are not covered by `API_TOKEN`; any client that can reach them can pick an agent instance name. Authenticate those connections with the mechanism documented by the Agents SDK before exposing them, and do not derive instance names from unverified input.
-- Each `step.do()` is a checkpoint: after an LLM step its response is persisted and skipped on resume; after a tool step earlier tools do not re-run. Useful for expensive LLM calls, rate-limited or side-effecting APIs, and non-idempotent tools (such as sending email).
+- Each `step.do()` is a checkpoint: after an LLM step its response is persisted and skipped on resume; after a tool step earlier tools do not re-run. This is not exactly-once: if a step fails after its side effect but before its result is persisted (crash, timeout, retry), the callback runs again. Side-effecting tools (such as sending email or charging) still need a stable idempotency key derived from the instance and step, or deduplication on the receiving side. Corrected from the official docs: the source says checkpoints make the pattern suitable for non-idempotent tools.
 - `this.reportProgress()` and `this.broadcastToClients()` are non-durable; `step.reportComplete()` is durable. `AgentWorkflow` is from the Agents SDK (`agents/workflows`), which is covered by the cloudflare-agents skill (agent-class, run-workflows; https://developers.cloudflare.com/agents/).
 - The Agent is a Durable Object (hence the `durable_objects` binding and SQLite migration); see [overview.md](../durable-objects/overview.md) for Durable Objects. Agent class names become kebab-case in URLs (`ResearchAgent` becomes `research-agent`).
 - The LLM model ID in the example is the official value and may be retired; pick a current model from your provider. The same pattern works with any LLM SDK.

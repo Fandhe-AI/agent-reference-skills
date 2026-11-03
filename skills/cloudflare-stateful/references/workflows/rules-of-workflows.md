@@ -10,39 +10,35 @@ Best practices for resilient, correct Workflows: idempotent steps, granular step
 
 ### Make API and binding calls idempotent
 
-Adapted (not in the official docs): the official step returns the raw `Response` from `fetch`, which is not serializable step state, and treats a failed charge as success; it throws on a non-2xx response and returns plain data here (see Notes).
+Adapted (not in the official docs): the official step checks `charged` with a GET and then charges with a POST, which is not atomic (two concurrent instances for the same customer can both charge), returns the raw `Response` from `fetch`, which is not serializable step state, and treats a failed charge as success. Here the charge carries an idempotency key derived from the customer and billing period so the payment processor deduplicates it, it throws on a non-2xx response, and it returns plain data. See Notes.
 
 ```js
 export class MyWorkflow extends WorkflowEntrypoint {
 	async run(event, step) {
 		const customer_id = 123456;
-		// ✅ Good: Non-idempotent API/Binding calls are always done **after** checking if the operation is
-		// still needed.
+		// Billing period of this run, for example taken from the event payload
+		const billingPeriod = event.payload.billingPeriod; // e.g. "2026-11"
+		// ✅ Good: Non-idempotent API calls carry a key derived from what they do (customer + period),
+		// not from the instance, so retries AND concurrent instances for the same charge share it.
+		const idempotencyKey = `subscription-${customer_id}-${billingPeriod}`;
 		await step.do(
 			`charge ${customer_id} for its monthly subscription`,
 			async () => {
-				// API call to check if customer was already charged
-				const subscription = await fetch(
-					`https://payment.processor/subscriptions/${customer_id}`,
-				).then((res) => res.json());
-
-				// return early if the customer was already charged, this can happen if the destination service dies
-				// in the middle of the request but still commits it, or if the Workflows Engine restarts.
-				if (subscription.charged) {
-					return;
-				}
-
-				// non-idempotent call, this operation can fail and retry but still commit in the payment
-				// processor - which means that, on retry, it would mischarge the customer again if the above checks
-				// were not in place.
+				// A check-then-charge (GET "charged?" then POST) is not idempotent: two instances can
+				// both read "not charged" and both charge. Let the payment processor deduplicate the
+				// request atomically by idempotency key instead (assuming it supports one).
 				const res = await fetch(
 					`https://payment.processor/subscriptions/${customer_id}`,
 					{
 						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Idempotency-Key": idempotencyKey,
+						},
 						body: JSON.stringify({ amount: 10.0 }),
 					},
 				);
-				// Throw on failure so the step retries (the check above makes the retry safe)
+				// Throw on failure so the step retries; the idempotency key makes the retry safe
 				if (!res.ok) {
 					throw new Error(`charge failed with status ${res.status}`);
 				}
@@ -471,6 +467,7 @@ export class MyWorkflow extends WorkflowEntrypoint {
 
 ## Notes
 
+- Corrected from the official docs: the "check if already charged, then charge" example is presented as idempotent, but the GET and the POST are separate requests, so concurrent Workflow instances (or a duplicate trigger) for the same customer can both see `charged: false` and both charge; the `step.do` cache is per instance and does not help. The example sends a stable `Idempotency-Key` built from the customer and billing period and relies on the processor to deduplicate atomically; `payment.processor` and its support for that header are illustrative.
 - Corrected from the official docs: the unique-ID example truncated the UUID to 6 hex characters (24 bits; roughly 50% collision probability after about 4,800 IDs for one user), which makes `create()` fail on a reused ID; it uses the full UUID and keeps the user association in the database. The large-output example wrote every instance to the same R2 key `dataset-123`, so concurrent instances overwrote each other; the key is derived from `event.instanceId`.
 - Adapted from the official docs: the request body is read with `readTextWithLimit()`, which counts bytes while reading the stream and cancels it once the limit is exceeded; `await req.text()` followed by a byte-length check would already have buffered an arbitrarily large body.
 - Corrected from the official docs: step callbacks in four examples returned a raw `Response` (from `fetch`) or a `WorkflowInstance` stub; step return values must be serializable, so they now return `{ status }`, `res.status`, or `{ id }`. `authenticate`, `getTransactionId`, `addNewInstanceToDB` and `getIssues` are placeholders for your own functions.
