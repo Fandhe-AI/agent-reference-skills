@@ -19,9 +19,18 @@ The in-Worker R2 API, accessed by binding an R2 bucket to a Worker. It includes 
 }
 ```
 
+Adapted (not in the official docs): added a pre-shared-secret authorization check (403 before any bucket operation); see Notes.
+
 ```js
 export default {
 	async fetch(request, env) {
+		if (
+			!env.AUTH_KEY_SECRET ||
+			request.headers.get("X-Custom-Auth-Key") !== env.AUTH_KEY_SECRET
+		) {
+			return new Response("Forbidden", { status: 403 });
+		}
+
 		const url = new URL(request.url);
 		const key = url.pathname.slice(1);
 
@@ -168,6 +177,7 @@ while (truncated) {
 
 ## Notes
 
+- Adapted from the official docs: added an authorization check (secret binding `AUTH_KEY_SECRET` compared to the `X-Custom-Auth-Key` header); the official example is unauthenticated and must not be deployed as is.
 - `get()` returns an `R2Object` with `body` undefined if a precondition fails; `put()` returns `null` if a precondition fails and the object is not stored.
 - R2 writes and deletes are strongly consistent. `delete` accepts up to 1000 keys per call. `list` is lexicographically ordered and returns up to 1000 entries, possibly fewer.
 - Use `httpEtag` (quoted, RFC 9110) when returning an etag in a response header.

@@ -10,9 +10,18 @@ Upload via the dashboard, Workers API, S3 API, or CLI, using single-part `PUT` o
 
 Workers single upload:
 
+Adapted (not in the official docs): added a pre-shared-secret authorization check (403 before any bucket operation); see Notes.
+
 ```ts
 export default {
 	async fetch(request: Request, env: Env): Promise<Response> {
+		if (
+			!env.AUTH_KEY_SECRET ||
+			request.headers.get("X-Custom-Auth-Key") !== env.AUTH_KEY_SECRET
+		) {
+			return new Response("Forbidden", { status: 403 });
+		}
+
 		try {
 			const object = await env.MY_BUCKET.put("image.png", request.body, {
 				httpMetadata: {
@@ -40,9 +49,18 @@ export default {
 
 Workers multipart upload:
 
+Adapted (not in the official docs): added a pre-shared-secret authorization check (403 before any bucket operation); see Notes.
+
 ```ts
 export default {
 	async fetch(request: Request, env: Env): Promise<Response> {
+		if (
+			!env.AUTH_KEY_SECRET ||
+			request.headers.get("X-Custom-Auth-Key") !== env.AUTH_KEY_SECRET
+		) {
+			return new Response("Forbidden", { status: 403 });
+		}
+
 		const key = "large-file.bin";
 
 		// Create a new multipart upload
@@ -149,6 +167,8 @@ console.log(`Upload complete. ETag: ${result.ETag}`);
 
 S3 API presigned PUT URL:
 
+Adapted (not in the official docs): added `signableHeaders: new Set(["content-type"])` so `Content-Type` is part of the signature; see Notes.
+
 ```ts
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -160,7 +180,7 @@ const presignedUrl = await getSignedUrl(
 		Key: "user-upload.png",
 		ContentType: "image/png",
 	}),
-	{ expiresIn: 3600 }, // Valid for 1 hour
+	{ expiresIn: 3600, signableHeaders: new Set(["content-type"]) }, // Valid for 1 hour
 );
 ```
 
@@ -204,6 +224,8 @@ wrangler r2 object put test-bucket/image.png --file=image.png
 
 ## Notes
 
+- Adapted from the official docs: added an authorization check to both Workers upload examples (secret binding `AUTH_KEY_SECRET` compared to the `X-Custom-Auth-Key` header); the official examples are unauthenticated and must not be deployed as is.
+- Adapted from the official docs: the presigned PUT adds `signableHeaders: new Set(["content-type"])` so `ContentType` is actually signed and enforced; the uploader must send the same `Content-Type`.
 - Corrected from the official docs: the official `@aws-sdk/lib-storage` example annotates `leavePartsOnError: false` with "Upload parts in parallel (default: 4)". `leavePartsOnError` controls cleanup of uploaded parts on failure; parallelism is the separate `queueSize` option, so the comment was rewritten.
 - Adapted (not in the official docs): the `resumeMultipartUpload` snippet condenses lines from the official client-driven multipart Worker example, and the Python `boto3` snippet condenses the official manual multipart example (parallel upload and abort handling omitted).
 - Most S3 SDKs and tools (such as `rclone`) automatically choose multipart for large files above a configurable threshold.

@@ -163,7 +163,7 @@ skills/cloudflare-storage/
 タスクから製品カテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
 1. 下記マッピング表でタスクに対応するカテゴリ（kv / d1 / r2 / scripts）を探す
-2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
+2. そのカテゴリの `references/{category}/README.md`（scripts は直下の `README.md`）を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
 ## タスク → カテゴリ マッピング

@@ -8,9 +8,18 @@ Delete objects or folders via the dashboard, Workers API, S3 API, or Wrangler.
 
 ## Signature / Usage
 
+Adapted (not in the official docs): added a pre-shared-secret authorization check (403 before any bucket operation); see Notes.
+
 ```ts
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+		if (
+			!env.AUTH_KEY_SECRET ||
+			request.headers.get("X-Custom-Auth-Key") !== env.AUTH_KEY_SECRET
+		) {
+			return new Response("Forbidden", { status: 403 });
+		}
+
 		await env.MY_BUCKET.delete("image.png");
 		return new Response("Deleted");
 	},
@@ -61,6 +70,7 @@ wrangler r2 object delete test-bucket/image.png
 
 ## Notes
 
+- Adapted from the official docs: added an authorization check (secret binding `AUTH_KEY_SECRET` compared to the `X-Custom-Auth-Key` header); the official example is unauthenticated and must not be deployed as is.
 - Deleting objects is irreversible.
 - Dashboard: select objects and/or folders (a mix is allowed), then **Delete** and confirm. To delete everything, use Empty a bucket.
 - Bucket lock rules also apply when deleting folders from the dashboard.

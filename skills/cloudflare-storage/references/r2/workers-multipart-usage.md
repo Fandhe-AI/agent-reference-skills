@@ -8,11 +8,12 @@ A Worker that exposes an HTTP API (actions `mpu-create`, `mpu-uploadpart`, `mpu-
 
 ## Signature / Usage
 
-Adapted (not in the official docs): `await` was added to `multipartUpload.abort()` in the `mpu-abort` branch; see Notes.
+Adapted (not in the official docs): added a pre-shared-secret authorization check (403 before any bucket operation) and the `AUTH_KEY_SECRET` binding, and `await` was added to `multipartUpload.abort()` in the `mpu-abort` branch; see Notes.
 
 ```ts
 interface Env {
   MY_BUCKET: R2Bucket;
+  AUTH_KEY_SECRET: string; // set with `npx wrangler secret put AUTH_KEY_SECRET`
 }
 
 export default {
@@ -21,6 +22,14 @@ export default {
     env,
     ctx
   ): Promise<Response> {
+    // Reject unauthorized callers before touching the bucket
+    if (
+      !env.AUTH_KEY_SECRET ||
+      request.headers.get("X-Custom-Auth-Key") !== env.AUTH_KEY_SECRET
+    ) {
+      return new Response("Forbidden", { status: 403 });
+    }
+
     const bucket = env.MY_BUCKET;
 
     const url = new URL(request.url);
@@ -202,6 +211,7 @@ def upload_file(worker_endpoint, filename, partsize):
 - Using multipart through a Worker allows files larger than the Workers request body size limit; each part is still subject to that limit.
 - Minimum part size 5 MB except the last part; the example script uses 10 MB parts and a retry policy.
 - Corrected from the official docs: the `mpu-abort` branch calls `multipartUpload.abort()` without `await`, so the surrounding `try`/`catch` cannot catch a rejected promise (`abort()` returns `Promise<void>`); `await` was added.
+- Adapted from the official docs: added an authorization check; the official example is unauthenticated and must not be deployed as is. Clients must then send `X-Custom-Auth-Key` on every request (add it as `headers=` in the Python `requests` calls).
 - The Python snippet is an excerpt of `upload_file`; the official page also defines the `upload_part` helper it calls.
 - Consider a framework such as Hono for routing as complexity grows.
 

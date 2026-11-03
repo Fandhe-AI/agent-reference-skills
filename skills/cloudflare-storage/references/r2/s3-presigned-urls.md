@@ -8,6 +8,8 @@ Presigned URLs grant temporary access to a specific R2 object without exposing A
 
 ## Signature / Usage
 
+Adapted (not in the official docs): added `signableHeaders: new Set(["content-type"])` to the `PutObjectCommand` presign options so `Content-Type` is part of the signature; see Notes.
+
 ```ts
 import { S3Client, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -39,15 +41,25 @@ const putUrl = await getSignedUrl(
 		Key: "image.png",
 		ContentType: "image/png",
 	}),
-	{ expiresIn: 3600 },
+	{ expiresIn: 3600, signableHeaders: new Set(["content-type"]) },
 );
 ```
+
+Adapted (not in the official docs): added an authorization check (403 before any URL is issued); see Notes.
 
 ```ts
 import { AwsClient } from "aws4fetch";
 
 export default {
 	async fetch(request, env): Promise<Response> {
+		// Require authorization before issuing presigned URLs
+		if (
+			!env.AUTH_KEY_SECRET ||
+			request.headers.get("X-Custom-Auth-Key") !== env.AUTH_KEY_SECRET
+		) {
+			return new Response("Forbidden", { status: 403 });
+		}
+
 		const client = new AwsClient({
 			service: "s3",
 			region: "auto",
@@ -120,12 +132,15 @@ aws s3 presign --endpoint-url https://<ACCOUNT_ID>.r2.cloudflarestorage.com \
 
 Using a presigned URL:
 
+Adapted (not in the official docs): the PUT request sends `Content-Type: image/png`, matching the signed value; see Notes.
+
 ```sh
 # Download using a GET presigned URL
 curl "https://my-bucket.<ACCOUNT_ID>.r2.cloudflarestorage.com/image.png?X-Amz-Algorithm=..."
 
-# Upload using a PUT presigned URL
+# Upload using a PUT presigned URL (Content-Type must match the signed value)
 curl -X PUT "https://my-bucket.<ACCOUNT_ID>.r2.cloudflarestorage.com/image.png?X-Amz-Algorithm=..." \
+  -H "Content-Type: image/png" \
   --data-binary @image.png
 ```
 
@@ -143,6 +158,8 @@ Signature parameters: `X-Amz-Algorithm`, `X-Amz-Credential`, `X-Amz-Date`, `X-Am
 - To generate one you specify: resource identifier (account ID, bucket, object path), operation (GET, PUT, HEAD, or DELETE), and expiry from 1 second to 7 days (604,800 seconds).
 - The Workers R2 binding cannot generate presigned URLs; sign with an S3 client such as `aws4fetch` or AWS SDK for JavaScript v3 with `nodejs_compat`.
 - Restrict `Content-Type`: the signature includes it, so uploads with a different `Content-Type` fail with `403/SignatureDoesNotMatch`. With aws4fetch set `allHeaders: true` and send the same `Content-Type`.
+- Adapted from the official docs: the AWS SDK v3 `getSignedUrl` hoists headers out of the signature by default, so `ContentType` alone is not enforced; `signableHeaders: new Set(["content-type"])` keeps it signed. The curl PUT now sends `-H "Content-Type: image/png"`; without it (or with a different value) the upload fails with `SignatureDoesNotMatch`.
+- Adapted from the official docs: added an authorization check to the Worker example; the official example is unauthenticated, so anyone could obtain presigned URLs for the bucket, and must not be deployed as is.
 - Browser use needs CORS rules on the bucket. Tampering with resource, operation, or expiry returns `403/SignatureDoesNotMatch`. The same URL can be reused until it expires.
 - Supported methods: `GET`, `HEAD`, `PUT`, `DELETE`. `POST` (multipart form uploads via HTML forms) is not supported. The AWS CLI `presign` supports GET only.
 - Treat presigned URLs as bearer tokens; use short expirations for sensitive operations.
