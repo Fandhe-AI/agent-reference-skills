@@ -9,7 +9,7 @@ description: >
   @upstash/workflow (serve, durable execution, context.run/sleep/call/invoke, waitForEvent, parallel steps, agents)、
   Upstash Search (@upstash/search, search, upsert, fetch, range, filtering, reranking, algorithm)、
   @upstash/box (サンドボックス, filesystem, git, CDP, browser, network policy, snapshots, custom harness)、
-  upstash CLI。Rust 製 fandhe-db とは別。
+  upstash CLI。Rust 製 fandhe-db とは別。Cloudflare Workers KV / D1 / R2 は cloudflare-storage。
 user-invocable: false
 ---
 

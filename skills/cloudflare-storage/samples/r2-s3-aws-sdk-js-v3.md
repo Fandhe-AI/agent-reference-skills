@@ -1,0 +1,92 @@
+---
+source: https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/
+---
+
+# Use R2 with the AWS SDK for JavaScript v3
+
+Point `@aws-sdk/client-s3` at the R2 endpoint, list buckets, and generate presigned GET and PUT URLs.
+
+The block below is the first part of the official fence (cut at the end; the following `ListObjectsV2Command` call and output comments are at the official URL).
+
+```ts
+import {
+	S3Client,
+	ListBucketsCommand,
+	ListObjectsV2Command,
+	GetObjectCommand,
+	PutObjectCommand,
+} from "@aws-sdk/client-s3";
+
+const S3 = new S3Client({
+	region: "auto", // Required by SDK but not used by R2
+	// Provide your Cloudflare account ID
+	endpoint: `https://${ACCOUNT_ID}.r2.cloudflarestorage.com`,
+	// Retrieve your S3 API credentials for your R2 bucket via API tokens (see: https://developers.cloudflare.com/r2/api/tokens)
+	credentials: {
+		accessKeyId: ACCESS_KEY_ID,
+		secretAccessKey: SECRET_ACCESS_KEY,
+	},
+});
+
+console.log(await S3.send(new ListBucketsCommand({})));
+```
+
+Adapted (not in the official docs): the PutObject presign options add `signableHeaders: new Set(["content-type"])` so `Content-Type` is signed; see Notes.
+
+```ts
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+// Use the expiresIn property to determine how long the presigned link is valid.
+console.log(
+	await getSignedUrl(
+		S3,
+		new GetObjectCommand({ Bucket: "my-bucket", Key: "dog.png" }),
+		{ expiresIn: 3600 },
+	),
+);
+// You can also create links for operations such as PutObject to allow temporary write access to a specific key.
+// Specify ContentType to restrict uploads to a specific file type.
+console.log(
+	await getSignedUrl(
+		S3,
+		new PutObjectCommand({
+			Bucket: "my-bucket",
+			Key: "dog.png",
+			ContentType: "image/png",
+		}),
+		{ expiresIn: 3600, signableHeaders: new Set(["content-type"]) },
+	),
+);
+```
+
+Adapted (not in the official docs): the host and path are not rewritten; use the full URL printed by the PutObject `getSignedUrl` call above verbatim (see Notes).
+
+```sh
+# Paste the complete presigned URL (host, path and all query parameters) exactly as returned by getSignedUrl
+curl -X PUT "<PRESIGNED_PUT_URL>" \
+  -H "Content-Type: image/png" \
+  --data-binary @dog.png
+```
+
+```jsonc
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Set this to today's date
+  "compatibility_date": "2026-11-03",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "alias": {
+    "@aws-sdk/xml-builder": "@aws-sdk/xml-builder/dist-cjs/index.js"
+  }
+}
+```
+
+## Notes
+
+- `ACCOUNT_ID`, `ACCESS_KEY_ID`, `SECRET_ACCESS_KEY` are placeholders; create an S3 access key first (api-tokens).
+- The local R2 emulator (`wrangler dev` default) exposes no S3-compatible endpoint, so there is no local S3 target. SDK code running inside a local Worker that points at the real `https://<ACCOUNT_ID>.r2.cloudflarestorage.com` endpoint reads and writes the REAL production bucket with your S3 access key, not local data. The Wrangler `alias` fence is only for running the SDK inside a Worker (needs `nodejs_compat` and a direct `@aws-sdk/xml-builder` dependency to avoid `DOMParser is not defined`); for plain reads/writes in a Worker prefer the R2 binding.
+- Adapted from the official docs: `signableHeaders: new Set(["content-type"])` keeps `Content-Type` in the signature; with `ContentType` alone the SDK may leave the header unsigned, so the restriction would not be enforced.
+- Adapted from the official docs: the curl example uses the placeholder `<PRESIGNED_PUT_URL>` for the full URL returned by `getSignedUrl`. Do not rewrite its host or path (for example by inserting or removing the bucket name) and do not truncate the query string: the signature covers them, and a modified URL fails with a signature mismatch.
+- A presigned PUT with `ContentType` requires the client to send the matching `Content-Type` header; combine with bucket CORS rules to limit abuse.
+- Related: [s3-presigned-urls](../references/r2/s3-presigned-urls.md), [buckets-cors](../references/r2/buckets-cors.md), [api-tokens](../references/r2/api-tokens.md).
