@@ -100,4 +100,4 @@ export default {
 - `Cross-Origin-Embedder-Policy: require-corp` can break third-party embeds; test before shipping.
 - Corrected from the official docs: the official sample sets `Cross-Origin-Opener-Policy: same-site; report-to="default";`, but `same-site` is not a valid COOP value (valid: `unsafe-none`, `same-origin-allow-popups`, `same-origin`, `noopener-allow-popups`), so browsers ignore the header. Changed to `same-origin`, which can break cross-origin popup flows (OAuth); relax if needed.
 - `Cross-Origin-Resource-Policy: same-site` blocks cross-site embedding of these HTML responses.
-- Non-HTML responses are returned with original headers only.
+- Non-HTML responses are returned with original headers only, and the TLS version check runs only for HTML (or responses without a `Content-Type`); it is not a site-wide TLS enforcement. `request.cf` may be undefined outside the edge (for example in some local-dev setups).

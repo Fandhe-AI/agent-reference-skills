@@ -32,5 +32,6 @@ export default {
 
 ## Notes
 
+- The returned `Response` always has status 200 and only the `content-type` header; the upstream status and other headers are not relayed.
 - The body is read once, either as JSON or text, depending on the upstream `content-type`.
 - To pass the upstream response through unchanged, return the `fetch()` result directly instead.

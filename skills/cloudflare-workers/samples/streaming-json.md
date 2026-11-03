@@ -15,8 +15,8 @@ Adapted (not in the official docs): input and accumulated output are bounded wit
 ```ts
 import { JSONParser } from "@streamparser/json-whatwg";
 
-const MAX_BODY_BYTES = 256 * 1024 * 1024; // reject larger request bodies
-const MAX_USERS = 100_000; // cap the accumulated output
+const MAX_BODY_BYTES = 1024 * 1024; // 1 MiB: bounds parser state, retained names and output
+const MAX_USERS = 10_000; // cap the number of retained entries
 
 export default {
 	async fetch(request): Promise<Response> {
@@ -73,7 +73,7 @@ export default {
 
 ## Notes
 
-- Adapted from the official docs: the official sample bounds nothing, so a hostile client can stream an unbounded body and grow `users` until the Worker runs out of memory. This version rejects oversized `Content-Length`, counts bytes in a `TransformStream`, and caps the accumulated output (`MAX_USERS`); the limits are examples, tune them to your payloads. A parse error is reported as 413 for brevity; return 400 for invalid JSON if you need to distinguish it.
-- Buffering with `request.json()` would hit the 128 MB memory limit on multi-gigabyte payloads; streaming avoids that.
+- Adapted from the official docs: the official sample bounds nothing, so a hostile client can stream an unbounded body and grow `users` until the Worker runs out of memory. This version rejects oversized `Content-Length`, counts bytes in a `TransformStream` (so a missing or wrong header does not matter), and caps the number of retained entries (`MAX_USERS`). The streaming parser does not limit the size of a single value being built, so the 1 MiB input cap is what bounds memory: parser state, the retained `name` strings and the JSON output are all derived from at most `MAX_BODY_BYTES` of input. Raise the cap only after checking it against the 128 MB Worker memory limit; the limits are examples. A parse error is reported as 413 for brevity; return 400 for invalid JSON if you need to distinguish it.
+- Buffering with `request.json()` would hit the 128 MB memory limit on multi-gigabyte payloads; streaming avoids that only together with a byte cap like the one above, since the sample retains the extracted names.
 - `paths` is a JSONPath-like selector choosing which values are emitted.
 - Streams API details: `../references/web-apis/streams.md`.

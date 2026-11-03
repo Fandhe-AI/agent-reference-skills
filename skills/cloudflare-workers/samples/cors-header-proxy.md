@@ -6,6 +6,8 @@ source: https://developers.cloudflare.com/workers/examples/cors-header-proxy/
 
 Add the necessary CORS headers (including preflight handling) to a third party API response.
 
+Adapted (not in the official docs): proxies only to the fixed `API_URL` (no `?apiurl=`), strips caller credentials, does not follow redirects, and answers `Access-Control-Allow-Origin: *`; see Notes.
+
 ```js
 export default {
 	async fetch(request) {
@@ -51,11 +53,11 @@ export default {
           return fetch("${API_URL}").then(r => r.json())
         }
         reqs.proxy = async () => {
-          let href = "${PROXY_ENDPOINT}?apiurl=${API_URL}"
+          let href = "${PROXY_ENDPOINT}"
           return fetch(window.location.origin + href).then(r => r.json())
         }
         reqs.proxypreflight = async () => {
-          let href = "${PROXY_ENDPOINT}?apiurl=${API_URL}"
+          let href = "${PROXY_ENDPOINT}"
           let response = await fetch(window.location.origin + href, {
             method: "POST",
             headers: {
@@ -83,28 +85,21 @@ export default {
     `;
 
 		async function handleRequest(request) {
-			const url = new URL(request.url);
-			let apiUrl = url.searchParams.get("apiurl");
-
-			if (apiUrl == null) {
-				apiUrl = API_URL;
-			}
-
-			// Rewrite request to point to API URL. This also makes the request mutable
-			// so you can add the correct Origin header to make the API server think
-			// that this request is not cross-site.
-			request = new Request(apiUrl, request);
-			request.headers.set("Origin", new URL(apiUrl).origin);
-			let response = await fetch(request);
+			// Rewrite request to point to the fixed API URL (never a caller-supplied URL).
+			// This also makes the request mutable so you can add the correct Origin
+			// header to make the API server think that this request is not cross-site.
+			request = new Request(API_URL, request);
+			request.headers.set("Origin", new URL(API_URL).origin);
+			// Do not forward the caller's credentials to the third party
+			request.headers.delete("Cookie");
+			request.headers.delete("Authorization");
+			// Do not follow redirects: they could lead outside the fixed API
+			let response = await fetch(request, { redirect: "manual" });
 			// Recreate the response so you can modify the headers
 
 			response = new Response(response.body, response);
-			// Set CORS headers
-
-			response.headers.set("Access-Control-Allow-Origin", url.origin);
-
-			// Append to/Add Vary header so browser will cache response correctly
-			response.headers.append("Vary", "Origin");
+			// Set CORS headers: "*" is correct for a public, credential-less API
+			response.headers.set("Access-Control-Allow-Origin", "*");
 
 			return response;
 		}
@@ -163,6 +158,6 @@ export default {
 
 - Only `handleRequest` / `handleOptions` matter for real use; `DEMO_PAGE` and `rawHtmlResponse` exist to demo the proxy in a browser.
 - `new Response(response.body, response)` makes a fetched response's headers mutable; a plain fetch result is immutable.
-- Security: the sample forwards to whatever `?apiurl=` the caller supplies, which makes it an open proxy (SSRF / abuse). In real use, hard-code `API_URL` or validate `apiurl` against an allowlist, and do not reflect arbitrary origins. This is a demo only.
-- Always append `Vary: Origin` when the allowed origin is dynamic.
+- Adapted from the official docs: the official sample forwards to whatever `?apiurl=` the caller supplies (an open proxy) and sets `Access-Control-Allow-Origin` to the proxy's own origin, which does not match a cross-origin caller. This version proxies only to the fixed `API_URL`, removes `Cookie` / `Authorization` from the forwarded request, uses `redirect: "manual"`, and responds with `Access-Control-Allow-Origin: *`, which is only appropriate for a public API that needs no credentials.
+- To restrict callers instead, compare the request `Origin` against an allowlist, echo only a matching value in `Access-Control-Allow-Origin`, and append `Vary: Origin`.
 - For Hono apps, use the `hono` skill's CORS middleware instead of hand-rolling this.
