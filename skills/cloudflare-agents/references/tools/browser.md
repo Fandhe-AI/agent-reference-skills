@@ -10,6 +10,8 @@ A persistent remote browser (Browser Run) that an agent returns to across turns,
 
 Pi Durable example. Install: `npm i agents @earendil-works/pi-durable @earendil-works/pi-ai @earendil-works/chord @cloudflare/codemode`.
 
+Adapted (not in the official docs): `ask()` calls `await this.lifecycle.start()` before using the harness, because the Worker calls it over RPC, which does not start the Lifecycle. See Notes.
+
 ```ts
 import { DurableObject } from "cloudflare:workers";
 import { createModels } from "@earendil-works/pi-ai/models";
@@ -47,6 +49,8 @@ export class BrowserAssistant extends DurableObject<Env> {
 	lifecycle = Lifecycle.install(this).use(this.browser).use(this.harness);
 
 	async ask(prompt: string) {
+		// Native RPC does not go through fetch() and does not start the Lifecycle.
+		await this.lifecycle.start();
 		const { text } = await this.harness.prompt(prompt);
 		return text;
 	}
@@ -132,6 +136,7 @@ Browser API available to model code (an async arrow function against `browser`; 
 
 ## Notes
 
+- Corrected from the official docs: the Worker calls `ask()` on the stub over native Durable Object RPC, which bypasses `fetch()` and does not start the Lifecycle, so after a cold start or eviction the harness could be used before its `onStart()` ran; `ask()` now begins with `await this.lifecycle.start()` (see the runtime lifecycle reference).
 - Isolation: the model's code runs in a new Dynamic Worker for each call with no network access (`fetch()` and `connect()` blocked); `browser` is its only way out. The browser itself runs outside your Durable Object.
 - Results are cut to about 24,000 characters, console output to 100 lines; a screenshot is at most 1 MB (use a viewport screenshot or JPEG for long pages). `sessionId: "active"` addresses the scope's active tab; `Browser.*` and `Target.*` commands take no `sessionId`.
 - Blocked from the model (your application owns them): `Browser.close`, `Browser.crash`, `Browser.crashGpuProcess`, `Cloudflare.getLiveView`, `Cloudflare.handoff`, `Target.sendMessageToTarget`, `Target.exposeDevToolsProtocol`. To close a tab the model sends `Target.closeTarget`.
