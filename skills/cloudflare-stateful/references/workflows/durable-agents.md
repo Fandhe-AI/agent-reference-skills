@@ -339,7 +339,7 @@ export class ResearchAgent extends Agent<Env, State> {
 
 `src/index.ts`:
 
-Adapted (not in the official docs): the official `/research` and `/status` endpoints and the `/agents/research-agent/{name}` WebSocket route are public, so any caller could start paid LLM runs or connect to an agent and receive its broadcast progress and results. Every route now goes through one fail-closed `authenticate()` placeholder (it rejects everything until you implement verification), the agent instance is named after the verified user ID instead of a client-supplied `agentId`, and `/research` rejects non-JSON or non-object bodies and a missing or oversized `task`. See Notes.
+Adapted (not in the official docs): the official `/research` and `/status` endpoints and the `/agents/research-agent/{name}` WebSocket route are public, so any caller could start paid LLM runs or connect to an agent and receive its broadcast progress and results. Every route now goes through one fail-closed `authenticate()` placeholder (it rejects everything until you implement verification), the agent instance is named after the verified user ID instead of a client-supplied `agentId`, and `/research` caps the whole body at 16 KiB while reading it (413), then rejects non-JSON or non-object bodies and a missing or oversized `task`. See Notes.
 
 ```ts
 import { getAgentByName, routeAgentRequest } from "agents";
@@ -353,6 +353,34 @@ export { ResearchWorkflow } from "./workflow";
 // This placeholder rejects every request until you implement verification.
 async function authenticate(request: Request, env: Env): Promise<string | null> {
 	return null;
+}
+
+// Reads the body while counting bytes; cancels and returns null past `limit`.
+async function readTextWithLimit(
+	req: Request,
+	limit: number,
+): Promise<string | null> {
+	if (!req.body) return "";
+	const reader = req.body.getReader();
+	const chunks: Uint8Array[] = [];
+	let total = 0;
+	for (;;) {
+		const { done, value } = await reader.read();
+		if (done) break;
+		total += value.byteLength;
+		if (total > limit) {
+			await reader.cancel();
+			return null;
+		}
+		chunks.push(value);
+	}
+	const bytes = new Uint8Array(total);
+	let offset = 0;
+	for (const chunk of chunks) {
+		bytes.set(chunk, offset);
+		offset += chunk.byteLength;
+	}
+	return new TextDecoder().decode(bytes);
 }
 
 export default {
@@ -383,9 +411,14 @@ export default {
 
 		// HTTP API for starting research tasks
 		if (request.method === "POST" && url.pathname === "/research") {
+			// Cap the whole body before parsing it (the task itself is capped below).
+			const raw = await readTextWithLimit(request, 16 * 1024);
+			if (raw === null) {
+				return Response.json({ error: "body too large" }, { status: 413 });
+			}
 			let body: unknown;
 			try {
-				body = await request.json();
+				body = JSON.parse(raw);
 			} catch {
 				return Response.json({ error: "body must be JSON" }, { status: 400 });
 			}
@@ -492,7 +525,7 @@ function ResearchUI({ userId, token }: { userId: string; token: string }) {
 ## Notes
 
 - Corrected from the official docs: GitHub path segments are URL-encoded. The official guide serves `/research`, `/status` and the agent WebSocket route unauthenticated; here every route goes through `authenticate()`, a placeholder that returns `null` (401) until you verify a session, JWT or API key.
-- Adapted from the official docs: `/research` parses the body inside `try` (400 on invalid JSON or a non-object body) and requires `task` to be a non-empty string of at most 4096 bytes before starting an LLM run. The agent instance is named after the verified user ID (`getAgentByName(env.ResearchAgent, userId)`), and `routeAgentRequest` gets `onBeforeConnect` / `onBeforeRequest` hooks that reject a connection unless `route.name` equals that ID, so one user cannot connect to another user's agent and receive its broadcasts (see the routing-authentication reference of the cloudflare-agents skill).
+- Adapted from the official docs: `/research` reads the body with `readTextWithLimit()` (16 KiB example cap, counted while streaming, 413 when exceeded) before parsing it inside `try` (400 on invalid JSON or a non-object body) and requires `task` to be a non-empty string of at most 4096 bytes before starting an LLM run. The agent instance is named after the verified user ID (`getAgentByName(env.ResearchAgent, userId)`), and `routeAgentRequest` gets `onBeforeConnect` / `onBeforeRequest` hooks that reject a connection unless `route.name` equals that ID, so one user cannot connect to another user's agent and receive its broadcasts (see the routing-authentication reference of the cloudflare-agents skill).
 - Adapted from the official docs: the React client types its `progress` state (the official `useState(null)` does not type-check in TSX) and ignores WebSocket frames that are not JSON.
 - Each `step.do()` is a checkpoint: after an LLM step its response is persisted and skipped on resume; after a tool step earlier tools do not re-run. This is not exactly-once: if a step fails after its side effect but before its result is persisted (crash, timeout, retry), the callback runs again. Side-effecting tools (such as sending email or charging) still need a stable idempotency key derived from the instance and step, or deduplication on the receiving side. Corrected from the official docs: the source says checkpoints make the pattern suitable for non-idempotent tools.
 - `this.reportProgress()` and `this.broadcastToClients()` are non-durable; `step.reportComplete()` is durable. `AgentWorkflow` is from the Agents SDK (`agents/workflows`), which is covered by the cloudflare-agents skill (agent-class, run-workflows; https://developers.cloudflare.com/agents/).
