@@ -39,6 +39,8 @@ for obj in response.get('Contents', []):
     print(f"Object: {obj['Key']}")
 ```
 
+Adapted (not in the official docs): `list.Contents` is guarded with `?? []` because ListObjectsV2 omits `Contents` for an empty bucket; see Notes.
+
 ```js
 import {
 	S3Client,
@@ -86,12 +88,13 @@ const list = await s3.send(
 );
 console.log(
 	"Objects:",
-	list.Contents.map((obj) => obj.Key),
+	(list.Contents ?? []).map((obj) => obj.Key),
 );
 ```
 
 ## Notes
 
+- Adapted from the official docs: the JavaScript example calls `list.Contents.map(...)` directly, but `ListObjectsV2` omits `Contents` when the bucket is empty, which would throw a `TypeError`. The example uses `(list.Contents ?? []).map(...)`, matching the Python example's `response.get('Contents', [])`.
 - Create a bucket first: `npx wrangler login`, `npx wrangler r2 bucket create my-bucket`, `npx wrangler r2 bucket list`.
 - Credentials: dashboard **Storage & databases > R2 > Overview > Manage in API Tokens > Create Account API token** (or **Create User API token**), choose **Object Read & Write** and **Apply to specific buckets only**. Copy the Access Key ID and Secret Access Key; the secret cannot be viewed again.
 - The S3 API endpoint URL is shown at the bottom of the Create API Token confirmation page, or on the R2 Overview page.
