@@ -8,7 +8,7 @@ Stream an incrementing number from a Durable Object to a Worker, and cancel the 
 
 ## Signature / Usage
 
-Adapted (not in the official docs): the official loop cancels after six values rather than five, does not await `reader.cancel()`, and never closes the stream when the source ends. See Notes.
+Adapted (not in the official docs): the official loop cancels after six values rather than five, does not await `reader.cancel()`, never closes the stream when the source ends, and counts each `read()` chunk as one value; values are now newline-delimited and parsed across chunk boundaries. See Notes.
 
 ```js
 import { DurableObject } from "cloudflare:workers";
@@ -37,7 +37,8 @@ export class MyDurableObject extends DurableObject {
 				}
 
 				for await (const value of dataSource(abortController.signal)) {
-					controller.enqueue(new TextEncoder().encode(String(value)));
+					// Newline-delimited: chunk boundaries are not preserved over HTTP.
+					controller.enqueue(new TextEncoder().encode(`${value}\n`));
 				}
 				// After a cancel the stream is already closed; closing it again would throw.
 				if (!abortController.signal.aborted) controller.close();
@@ -68,24 +69,23 @@ export default {
 			.pipeThrough(new TextDecoderStream())
 			.getReader();
 
-		let data = [];
-		while (true) {
-			// Cancel the stream after 5 messages
-			if (data.length >= 5) {
-				await reader.cancel();
-				break;
-			}
+		const data = [];
+		let pending = ""; // incomplete line carried over to the next chunk
+		while (data.length < 5) {
 			const { value, done } = await reader.read();
+			if (done) break;
 
-			if (value) {
-				console.log(`Got value ${value}`);
-				data = [...data, value];
-			}
-
-			if (done) {
-				break;
+			pending += value;
+			const lines = pending.split("\n");
+			pending = lines.pop(); // the last element has no newline yet
+			for (const line of lines) {
+				if (data.length >= 5) break;
+				console.log(`Got value ${line}`);
+				data.push(Number(line));
 			}
 		}
+		// Cancel the stream after 5 values
+		await reader.cancel();
 
 		return Response.json(data);
 	},
@@ -94,7 +94,7 @@ export default {
 
 ## Notes
 
-- Corrected from the official docs: the page's counter `i > 5` check read six values although the description says five; the loop now cancels when five values are collected. `reader.cancel()` is awaited and `controller.close()` is called when the source finishes, unless the stream was cancelled first (closing a cancelled stream throws). The no-op `{ ...request }` init argument to `stub.fetch` was dropped.
+- Corrected from the official docs: the page's counter `i > 5` check read six values although the description says five; the loop now cancels when five values are collected. `reader.cancel()` is awaited and `controller.close()` is called when the source finishes, unless the stream was cancelled first (closing a cancelled stream throws). The no-op `{ ...request }` init argument to `stub.fetch` was dropped. Adapted from the official docs: the page enqueues numbers without a separator and counts each `reader.read()` result as one value, but an HTTP byte stream (and `TextDecoderStream`) does not preserve enqueue boundaries, so values can be merged or split. The sample writes one value per line, keeps the incomplete trailing fragment between reads, and counts parsed values.
 - If the Worker cancels the Durable Object's readable stream, the cancellation propagates to the Durable Object (its `cancel()` runs).
 - Requires a `MY_DURABLE_OBJECT` binding to class `MyDurableObject` with a migration, as in the other Durable Object samples.
 - Only the JavaScript variant is shown.
