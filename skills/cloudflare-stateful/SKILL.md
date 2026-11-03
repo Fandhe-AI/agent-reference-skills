@@ -1,8 +1,9 @@
 ---
 name: cloudflare-stateful
 description: >
-  Cloudflare Workers のステートフル基盤 (Durable Objects) の
-  リファレンス。DurableObject、ctx.storage SQL / KV API、alarms、WebSocket hibernation。
+  Cloudflare Workers のステートフル基盤 (Durable Objects / Workflows) の
+  リファレンス。DurableObject、ctx.storage SQL / KV API、alarms、WebSocket hibernation、
+  WorkflowEntrypoint、step.do / sleep / waitForEvent。
   ランタイムは cloudflare-workers、Wrangler は cloudflare-wrangler、Agents SDK は cloudflare-agents、Upstash QStash・Inngest・BullMQ とは別。
 user-invocable: false
 ---
@@ -69,13 +70,44 @@ skills/cloudflare-stateful/
       webgpu.md
       websockets.md
       what-are-durable-objects.md
+    workflows/
+      README.md
+      call-workflows-from-pages.md
+      changelog.md
+      data-location.md
+      durable-agents.md
+      event-subscriptions.md
+      events-and-parameters.md
+      get-started.md
+      glossary.md
+      limits.md
+      local-development.md
+      metrics-analytics.md
+      overview.md
+      pricing.md
+      python-bindings.md
+      python-dag.md
+      python-sdk.md
+      rollback.md
+      rules-of-workflows.md
+      sleeping-and-retrying.md
+      step-config-and-context.md
+      subscribe-instance-events.md
+      trigger-workflows.md
+      visualizer.md
+      workflow-binding.md
+      workflow-configuration.md
+      workflow-entrypoint.md
+      workflow-instance.md
+      workflow-step.md
+      wrangler-commands.md
 ```
 
 ## 探索手順
 
 タスクから製品カテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（durable-objects）を探す
+1. 下記マッピング表でタスクに対応するカテゴリ（durable-objects / workflows）を探す
 2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
@@ -88,3 +120,7 @@ skills/cloudflare-stateful/
 | ctx.storage の SQL API / KV API を使いたい | durable-objects | [references/durable-objects/README.md](references/durable-objects/README.md) |
 | alarms・WebSocket hibernation・in-memory state を扱いたい | durable-objects | [references/durable-objects/README.md](references/durable-objects/README.md) |
 | Durable Objects の migrations・制限・料金・トラブルシュートを確認したい | durable-objects | [references/durable-objects/README.md](references/durable-objects/README.md) |
+| Workflow を WorkflowEntrypoint で定義し最初のインスタンスを動かしたい | workflows | [references/workflows/README.md](references/workflows/README.md) |
+| step.do / step.sleep / step.waitForEvent の API・リトライ設定を調べたい | workflows | [references/workflows/README.md](references/workflows/README.md) |
+| Workflow インスタンスの起動・状態取得・イベント送信・rollback を扱いたい | workflows | [references/workflows/README.md](references/workflows/README.md) |
+| Workflows の制限・料金・Python SDK・ローカル開発を確認したい | workflows | [references/workflows/README.md](references/workflows/README.md) |
