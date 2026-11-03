@@ -188,7 +188,8 @@ MySQL TLS modes:
 
 - `disableEval: true` is required with mysql2 on Workers: mysql2 uses `eval()` for result parsing of rows with more than 100 columns, which is unavailable. Without it you see `Code generation from strings disallowed for this context`.
 - Hyperdrive does not support MySQL prepared statements (`COM_STMT_PREPARE`); see [supported-databases-and-features](./supported-databases-and-features.md).
-- Identify Hyperdrive connections: `SELECT DISTINCT USER, HOST, PROGRAM_NAME FROM performance_schema.threads WHERE PROGRAM_NAME = 'Cloudflare Hyperdrive'`.
+- Identify Hyperdrive connections: `SELECT DISTINCT t.PROCESSLIST_USER, t.PROCESSLIST_HOST FROM performance_schema.threads t JOIN performance_schema.session_connect_attrs a ON a.PROCESSLIST_ID = t.PROCESSLIST_ID WHERE a.ATTR_NAME = 'program_name' AND a.ATTR_VALUE = 'Cloudflare Hyperdrive'`.
+- Corrected from the official docs: the official page queries `USER`, `HOST` and `PROGRAM_NAME` columns of `performance_schema.threads`, which do not exist in MySQL 8 (the columns are `PROCESSLIST_USER` / `PROCESSLIST_HOST`; the program name is a connection attribute in `performance_schema.session_connect_attrs`, joined on `PROCESSLIST_ID`). The query above is a MySQL 8 equivalent; it relies on the client sending `program_name` as a connection attribute.
 - Drizzle Kit migrations use the direct database connection string. Drizzle ORM API itself: see the drizzle skill.
 - Consolidated from: https://developers.cloudflare.com/hyperdrive/examples/connect-to-mysql/mysql-drivers-and-libraries/mysql2/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-mysql/mysql-drivers-and-libraries/mysql/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-mysql/mysql-drivers-and-libraries/drizzle-orm/
 - Node.js compatibility flags: see [get-started](./get-started.md).

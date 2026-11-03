@@ -6,7 +6,7 @@ source: https://developers.cloudflare.com/d1/tutorials/import-to-d1-with-rest-ap
 
 Import SQL into D1 through the REST API import flow: init, upload to the returned URL, ingest, then poll.
 
-Adapted (not in the official docs): SQL string literals are escaped by doubling single quotes; `pollImport` and the request steps check HTTP/API errors, throw on a failed import and stop after a maximum wait; see Notes.
+Adapted (not in the official docs): SQL string literals are escaped by doubling single quotes; `pollImport` and the request steps check HTTP/API errors, throw on a failed import and stop after a maximum wait; random `id` values are not generated (SQLite assigns them); see Notes.
 
 ```js
 import crypto from "crypto";
@@ -26,7 +26,6 @@ const headers = {
 
 // Generate Fake data
 const data = Array.from({ length: uploadSize }, () => ({
-	id: Math.floor(Math.random() * 1000000),
 	text: faker.lorem.paragraph(),
 	date_added: new Date().toISOString().slice(0, 19).replace("T", " "),
 }));
@@ -185,6 +184,7 @@ runImport();
 - This is the page's "final code" fence. The API token needs Account > D1 > Edit; keep it in an environment variable in production. The target table must already exist (`CREATE TABLE IF NOT EXISTS TargetD1Table (id INTEGER PRIMARY KEY, text TEXT, date_added TEXT);`).
 - Corrected from the official docs: the official `makeSqlInsert` deletes every single quote and then turns every double quote into a single quote (`.replace(/'/g, "").replace(/"/g, "'")`), which silently alters data and produces invalid SQL for values containing `"`; the SQL-standard escape `''` is used instead. Set `TARGET_TABLE`, `ACCOUNT_ID`, `DATABASE_ID` and `D1_API_KEY` (the empty strings are placeholders; the table name is interpolated unescaped, so use a trusted name).
 - Adapted from the official docs: the official `pollImport` loops forever on a failed import (`success: false` with a specific `error`) and never checks HTTP status or the API envelope. The sample throws on HTTP/API errors and on any other `error`, and gives up after `MAX_WAIT_MS`. The official page documents only the `success` flag and the `Not currently importing anything.` message as end conditions, so those two stay as "finished" and `success: false` without an `error` is treated as still in progress; confirm the exact poll response fields against the D1 REST API reference for your use.
+- Adapted from the official docs: the official generator sets `id: Math.floor(Math.random() * 1000000)`; 500 random ids from 1,000,000 values collide in about 12% of runs (and more on re-runs), which fails the whole INSERT on `id INTEGER PRIMARY KEY`. The `id` column is omitted from the INSERT so SQLite assigns the rowid.
 - Known page defects: the step-by-step snippets reference `sqlInsert` and `crypto` before they are defined, and the prose says 2500 rows while `uploadSize` is 500. The final fence above is self-consistent.
 - A `statement too long` error means the SQL must be split into smaller batches (see import-export-data).
 - Related: [import-export-data](../references/d1/import-export-data.md), [D1 README](../references/d1/README.md).

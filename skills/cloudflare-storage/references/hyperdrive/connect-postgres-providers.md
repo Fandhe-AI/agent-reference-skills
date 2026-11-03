@@ -23,6 +23,8 @@ AWS RDS / Aurora: create a less privileged user.
 psql postgresql://MASTER_USERNAME:MASTER_PASSWORD@ENDPOINT_NAME:PORT/database_name
 ```
 
+Adapted (not in the official docs): `GRANT ALL PRIVILEGES ON DATABASE` is replaced with schema, table and sequence grants, because database-level privileges do not grant table access; see Notes.
+
 ```sql
 -- Create a role for Hyperdrive
 CREATE ROLE hyperdrive;
@@ -30,8 +32,15 @@ CREATE ROLE hyperdrive;
 -- Allow Hyperdrive to connect
 GRANT CONNECT ON DATABASE postgres TO hyperdrive;
 
--- Grant database privileges to the hyperdrive role
-GRANT ALL PRIVILEGES ON DATABASE postgres to hyperdrive;
+-- Grant table-level privileges (run while connected to the target database)
+GRANT USAGE ON SCHEMA public TO hyperdrive;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO hyperdrive;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO hyperdrive;
+
+-- Cover tables/sequences created later by the role that owns them
+-- (replace <owner_role> with the role that creates your tables)
+ALTER DEFAULT PRIVILEGES FOR ROLE <owner_role> IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO hyperdrive;
+ALTER DEFAULT PRIVILEGES FOR ROLE <owner_role> IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO hyperdrive;
 
 -- Create a specific user for Hyperdrive to log in as
 CREATE ROLE hyperdrive_user LOGIN PASSWORD 'sufficientlyRandomPassword';
@@ -135,6 +144,7 @@ PlanetScale placement hint:
 - Worker code for each provider is the same node-postgres example as in [connect-postgres-drivers](./connect-postgres-drivers.md).
 - Some pages configure through the dashboard: Hyperdrive > **Create Configuration** > fill the form including connection string > **Create**.
 - Consolidated from (under https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-database-providers/): aws-rds-aurora, azure, clickhouse-managed-postgres, cockroachdb, digital-ocean, fly, google-cloud-sql, materialize, neon (representative), nile, pgedge, planetscale-postgres, prisma-postgres, supabase, timescale, xata.
+- Adapted from the official docs: the official AWS RDS/Aurora step runs `GRANT ALL PRIVILEGES ON DATABASE postgres`, which only covers database-level privileges (CREATE, CONNECT, TEMP) and gives no access to existing tables, so queries fail with `permission denied`. The role instead gets `USAGE` on the schema plus DML on tables and sequence privileges; `ALTER DEFAULT PRIVILEGES` (per owner role) covers objects created later. Drop the DML grants you do not need for a read-only workload.
 - Wrangler `cert` commands: see the cloudflare-wrangler skill.
 
 ## Related
