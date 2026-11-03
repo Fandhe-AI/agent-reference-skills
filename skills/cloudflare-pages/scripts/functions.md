@@ -6,7 +6,9 @@ source: https://developers.cloudflare.com/pages/functions/typescript/
 
 Copy-paste commands for TypeScript type generation in a `functions/` directory.
 
-## Generate runtime and Env types
+## Signature / Usage
+
+### Generate runtime and Env types
 
 ```sh
 npx wrangler types --path='./functions/types.d.ts'
@@ -33,4 +35,12 @@ Writes runtime types and an `Env` type to `functions/types.d.ts`. Reference it f
 }
 ```
 
-If you use the `nodejs_compat` flag, install `@types/node` and add `"node"` to `types`. If the project root has its own `tsconfig.json`, exclude `functions/**/*` there to avoid conflicts.
+## Notes
+
+- If you use the `nodejs_compat` flag, install `@types/node` and add `"node"` to `types`.
+- If the project root has its own `tsconfig.json`, exclude `functions/**/*` there to avoid conflicts.
+
+## Related
+
+- [TypeScript for Functions](../references/functions/typescript.md)
+- [Bindings](../references/functions/bindings.md)

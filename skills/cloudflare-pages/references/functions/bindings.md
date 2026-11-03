@@ -8,7 +8,7 @@ A binding lets Pages Functions interact with Cloudflare developer platform resou
 
 ## Signature / Usage
 
-Dashboard path for every binding: **Workers & Pages** > your Pages project > **Settings** > **Bindings** > **Add** > (binding type); give a **Variable name**, select the resource, then redeploy the project for the binding to take effect. Configure the same bindings in the Wrangler configuration file instead if preferred.
+Dashboard path for every binding: **Workers & Pages** > your Pages project > **Settings** > **Bindings** > **Add** > (binding type); give a **Variable name**, select the resource, then redeploy the project for the binding to take effect. Alternatively configure the bindings in the Wrangler configuration file. When that file contains `pages_build_output_dir` it is the source of truth for the project and the fields it sets cannot be edited in the dashboard, so use the dashboard path only for projects not managed by such a file.
 
 Local development with a binding flag:
 

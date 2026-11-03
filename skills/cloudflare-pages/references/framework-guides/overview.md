@@ -72,7 +72,7 @@ Production branch is `main` in every guide.
 - Framework APIs themselves (Next.js, Nuxt, SvelteKit, Astro, React Router, Hono, Vite and so on) are not covered here; use the matching skill (for example nextjs-app, react-router, tanstack-start, hono, vite). This category records only the Cloudflare-side deployment points: build command, build output directory, adapter or C3 command, and how bindings are reached.
 - The guides assume basic Git knowledge. SSH clones require SSH keys on each machine.
 - After deploying, the project gets a `*.pages.dev` subdomain, rebuilds on every pushed commit, and gets preview deployments for pull requests. Environment variables set for Production must also be added to Preview if previews need them.
-- Bindings for deployed Pages projects are configured in the dashboard; local emulation relies on Wrangler configuration. See [bindings.md](../functions/bindings.md).
+- Where bindings and other project settings live depends on how the project is configured. If the project deploys with a Wrangler configuration file that contains `pages_build_output_dir`, that file is the source of truth and the fields it sets cannot be edited in the dashboard. Otherwise (no Wrangler file, or one without `pages_build_output_dir`) the dashboard manages bindings and the file is only used for local development. See [bindings.md](../functions/bindings.md) and [wrangler-configuration.md](../functions/wrangler-configuration.md).
 
 ## Related
 

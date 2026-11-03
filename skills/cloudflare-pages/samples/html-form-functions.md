@@ -86,6 +86,8 @@ Project layout:
 
 `functions/api/submit.js`:
 
+Adapted (not in the official docs): the plain `{}` accumulator is replaced by a `Map` (converted with `Object.fromEntries`), because untrusted form keys such as `constructor`, `toString` or `__proto__` would otherwise collide with inherited properties on a plain object. Repeated keys still become arrays.
+
 ```js
 /**
  * POST /api/submit
@@ -96,17 +98,16 @@ export async function onRequestPost(context) {
 
 		// Convert FormData to JSON
 		// NOTE: Allows multiple values per key
-		let output = {};
+		let output = new Map();
 		for (let [key, value] of input) {
-			let tmp = output[key];
-			if (tmp === undefined) {
-				output[key] = value;
+			if (!output.has(key)) {
+				output.set(key, value);
 			} else {
-				output[key] = [].concat(tmp, value);
+				output.set(key, [].concat(output.get(key), value));
 			}
 		}
 
-		let pretty = JSON.stringify(output, null, 2);
+		let pretty = JSON.stringify(Object.fromEntries(output), null, 2);
 		return new Response(pretty, {
 			headers: {
 				"Content-Type": "application/json;charset=utf-8",
@@ -129,7 +130,8 @@ npx wrangler pages deploy public
 
 - For new projects Cloudflare recommends Workers (cloudflare-workers skill, static assets); this sample targets an existing Pages project.
 - `Request.formData()` parses both `application/x-www-form-urlencoded` and `multipart/form-data` (the latter needs `enctype="multipart/form-data"` on the form).
-- `Object.fromEntries` would drop all but one `movies` checkbox value, hence the manual loop.
+- Adapted from the official docs: the official handler accumulates into `{}` and reads `output[key]`; the `Map` version avoids inherited-property and `__proto__` collisions from user-controlled keys.
+- `Object.fromEntries` applied directly to the `FormData` would drop all but one `movies` checkbox value, hence the manual loop.
 - The handler echoes the submission and has no authentication or CSRF protection; treat it as a demo and add validation before storing data.
 - File inputs yield `File` objects, which `JSON.stringify` renders as `{}`.
 - `wrangler pages dev` / `deploy` commands are shown for convenience; the tutorial itself deploys through Git integration with Framework preset None and output directory `public`.
