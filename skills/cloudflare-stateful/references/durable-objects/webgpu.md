@@ -26,7 +26,7 @@ compatibility_flags = ["experimental", "webgpu"]
 | `GPUBindGroupLayout`, `GPUBindGroup` | API | — | Supported |
 | `GPUBuffer` | API | — | Supported |
 | `GPUCommandBuffer`, `GPUCommandEncoder` | API | — | Supported |
-| `GPUComputePassEncoder`, `GPUComputePipeline`, `GPUComputePipelineError` | API | — | Supported |
+| `GPUComputePassEncoder`, `GPUComputePipeline`, `GPUPipelineError` | API | — | Supported |
 | `GPUDevice`, `GPUDeviceLostInfo` | API | — | Supported |
 | `GPUOutOfMemoryError`, `GPUValidationError`, `GPUInternalError`, `GPUUncapturedErrorEvent` | API | — | Supported |
 | `GPUPipelineLayout`, `GPUQuerySet`, `GPUQueue`, `GPUSampler` | API | — | Supported |
@@ -44,6 +44,8 @@ compatibility_flags = ["experimental", "webgpu"]
 | `GPUTexture`, `GPUTextureView`, `GPUExternalTexture` | API | — | Not supported |
 
 ## Notes
+
+- Corrected from the official docs: the support table lists `GPUComputePipelineError`, which is not a WebGPU interface; its link points to MDN `GPUPipelineError`, the error type of async pipeline creation, which is listed here.
 
 - The page's two tables both list `GPUShaderModule` (supported and unsupported); the source does not resolve this.
 - Enable the `experimental` and `webgpu` compatibility flags in the Wrangler configuration of the Durable Object (compatibility flags and local development are covered by the cloudflare-wrangler skill).

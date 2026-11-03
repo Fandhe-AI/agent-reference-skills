@@ -113,6 +113,8 @@ export class WebSocketServer extends DurableObject {
 
 Batching messages:
 
+Adapted (not in the official docs): the server validates the batch (frame size in bytes, JSON parse errors, object shape, `messages` array with an element limit and a string `type` per element) instead of casting `JSON.parse(message) as BatchedMessage`; the limits are example values.
+
 ```ts
 import { DurableObject } from "cloudflare:workers";
 
@@ -134,12 +136,45 @@ function sendBatch(
 	ws.send(JSON.stringify(batch));
 }
 
+const MAX_FRAME_BYTES = 64 * 1024;
+const MAX_BATCH_SIZE = 100;
+
+function isBatchedMessage(value: unknown): value is BatchedMessage {
+	if (typeof value !== "object" || value === null) return false;
+	const { messages } = value as { messages?: unknown };
+	return (
+		Array.isArray(messages) &&
+		messages.length <= MAX_BATCH_SIZE &&
+		messages.every(
+			(m) =>
+				typeof m === "object" &&
+				m !== null &&
+				typeof (m as { type?: unknown }).type === "string",
+		)
+	);
+}
+
 // Durable Object: process batched messages
 export class GameRoom extends DurableObject<Env> {
 	async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer) {
 		if (typeof message !== "string") return;
+		// Reject oversized frames and batches before doing any work
+		if (new TextEncoder().encode(message).byteLength > MAX_FRAME_BYTES) {
+			ws.close(1009, "Message too big");
+			return;
+		}
 
-		const batch = JSON.parse(message) as BatchedMessage;
+		let batch: unknown;
+		try {
+			batch = JSON.parse(message);
+		} catch {
+			ws.close(1007, "Invalid JSON");
+			return;
+		}
+		if (!isBatchedMessage(batch)) {
+			ws.close(1007, "Invalid batch");
+			return;
+		}
 
 		// Process all messages in the batch in a single handler invocation
 		for (const msg of batch.messages) {
@@ -251,6 +286,8 @@ export class WebSocketServer extends DurableObject {
 | `deserializeAttachment()` | `() => any` | — | Most recent value passed to `serializeAttachment()`, or `null`. |
 
 ## Notes
+
+- Adapted from the official docs: the batching example casts `JSON.parse(message)` to `BatchedMessage` without checks, so malformed JSON, `null` or `{"messages":null}` throws and batch size is unbounded; the example checks the frame size in bytes, parses in `try`, validates the shape and caps the element count, closing with `1009` / `1007` on failure.
 
 - Hibernation: after a short period without events, the object is evicted; clients stay connected, in-memory state resets, and an event re-runs the `constructor`, so keep the constructor light. Billable duration (GB-s) does not accrue while hibernating.
 - Attachments persist through hibernation as long as the WebSocket remains healthy; if either side closes the connection they are lost. For larger values or data that must outlive the socket, use the Storage API and store its key as the attachment.
