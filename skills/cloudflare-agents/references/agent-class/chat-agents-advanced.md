@@ -242,16 +242,58 @@ export class ChatAgent extends AIChatAgent {
 
 Language model middleware:
 
+Adapted (not in the official docs): the official example reads a top-level `text` from `doGenerate()`, which does not exist in `LanguageModelV3` results (they carry a `content` array), and it only covers `generateText`. This version masks `text` parts in `result.content`, and adds `wrapStream` so the `streamText` call below is covered too.
+
 ```ts
 import { streamText, convertToModelMessages, wrapLanguageModel } from "ai";
-import type { LanguageModelV3Middleware } from "@ai-sdk/provider";
+import type {
+	LanguageModelV3Middleware,
+	LanguageModelV3StreamPart,
+} from "@ai-sdk/provider";
+
+const mask = (s: string) => s.replace(/\b\d{3}-\d{2}-\d{4}\b/g, "[REDACTED]");
 
 const guardrailMiddleware: LanguageModelV3Middleware = {
+	specificationVersion: "v3",
+
 	wrapGenerate: async ({ doGenerate }) => {
-		const { text, ...rest } = await doGenerate();
-		// Filter PII or sensitive content from the response
-		const cleaned = text?.replace(/\b\d{3}-\d{2}-\d{4}\b/g, "[REDACTED]");
-		return { text: cleaned, ...rest };
+		const result = await doGenerate();
+		return {
+			...result,
+			content: result.content.map((part) =>
+				part.type === "text" ? { ...part, text: mask(part.text) } : part,
+			),
+		};
+	},
+
+	wrapStream: async ({ doStream }) => {
+		const { stream, ...rest } = await doStream();
+		// Buffer each text block until `text-end`, so a value split across
+		// `text-delta` chunks cannot leak.
+		const buffers = new Map<string, string>();
+
+		const transform = new TransformStream<
+			LanguageModelV3StreamPart,
+			LanguageModelV3StreamPart
+		>({
+			transform(chunk, controller) {
+				if (chunk.type === "text-delta") {
+					buffers.set(chunk.id, (buffers.get(chunk.id) ?? "") + chunk.delta);
+				} else if (chunk.type === "text-end") {
+					controller.enqueue({
+						type: "text-delta",
+						id: chunk.id,
+						delta: mask(buffers.get(chunk.id) ?? ""),
+					});
+					buffers.delete(chunk.id);
+					controller.enqueue(chunk);
+				} else {
+					controller.enqueue(chunk);
+				}
+			},
+		});
+
+		return { stream: stream.pipeThrough(transform), ...rest };
 	},
 };
 
@@ -394,6 +436,8 @@ Streaming and storage controls:
 
 ## Notes
 
+- Adapted from the official docs: the language model middleware example reads `result.content` (an array of parts) instead of a top-level `text`, sets `specificationVersion: "v3"`, and adds a `wrapStream` so streamed output is masked. The stream part shapes (`text-delta` with `id` / `delta`, `text-end` with `id`) follow the AI SDK skill; its documented middleware page targets `LanguageModelV4Middleware` / `specificationVersion: "v4"`, so use the matching V-number for your installed `ai` major.
+- Masking each `text-delta` independently can miss values split across deltas, so the example buffers each text block until `text-end` (output for that block is delayed and held in memory). Reasoning parts and tool input are not masked.
 - Adapted from the official docs: the custom-data example sends `userId` in `body` and reads it on the server; `body` is supplied by the client, so a comment now warns not to treat it as an identity.
 - Streams resume automatically after reconnect with no configuration: chunks are buffered in SQLite, the server keeps streaming while the client is away, and a reconnecting client receives all buffered chunks and then live data. Generic client stream abort stays local to the browser, so the server turn keeps running.
 - `onData` fires on new messages, stream resumption and cross-tab broadcasts.

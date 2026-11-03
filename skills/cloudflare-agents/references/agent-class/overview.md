@@ -138,7 +138,7 @@ https://your-worker.workers.dev/agents/:agent-name/:instance-name
 ## Notes
 
 - Agents require Durable Objects. The wrangler bindings and migrations are covered in [routing.md](./routing.md) and routing.md (https://developers.cloudflare.com/agents/runtime/routing/) in the runtime category.
-- Agents are Durable Objects: DO storage, alarms and the namespace API details are in the cloudflare-stateful skill. See [internals.md](./internals.md) for how `Agent` layers on `DurableObject`.
+- Agents are Durable Objects: DO storage, alarms and the namespace API details are in the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/). See [internals.md](./internals.md) for how `Agent` layers on `DurableObject`.
 - Chat UI hooks and the AI SDK integration (`streamText`, `useChat`, `UIMessage`) build on the AI SDK; see the vercel-ai-sdk skill for the SDK itself. `@cloudflare/ai-chat` is the Cloudflare adapter covered in [chat-agents.md](./chat-agents.md).
 - This `Agent` class of the `agents` package is NOT the OpenAI Agents SDK (openai-agents skill) and NOT the Claude Agent SDK (anthropic-agent-sdk skill); it is a Cloudflare Durable Object base class.
 - Module-level helper `agentTool()` from `agents/agent-tools` converts a Think or `AIChatAgent` subclass into an AI SDK tool definition.

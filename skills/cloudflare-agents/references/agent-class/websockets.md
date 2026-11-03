@@ -124,7 +124,7 @@ Protocol frames sent on connect (and again on change for state and MCP): `cf_age
 - Adapted from the official docs: the official `promote()` callable let any caller, including a readonly one, call `setConnectionReadonly(connection, false)` on itself, which defeats readonly. Readonly clients can still invoke callables, so any callable that changes permissions must verify authorization server-side (here a placeholder `verifyGrant()` that denies by default) or be removed.
 - Do not trust a query parameter alone to decide who can write (the `mode=view` example is illustrative); authenticate in the Worker before routing.
 - The protocol decision is made once when the connection is accepted and survives hibernation. A connection without protocol frames still sends/receives your own messages, `broadcast()`, and `@callable()` calls.
-- Connection state, tags and transports: websockets.md (https://developers.cloudflare.com/agents/runtime/capabilities/websockets/). WebSocket Hibernation API details are in the cloudflare-stateful skill.
+- Connection state, tags and transports: websockets.md (https://developers.cloudflare.com/agents/runtime/capabilities/websockets/). WebSocket Hibernation API details are in the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
 - Decorator `@callable()` needs the setup in [callable-methods.md](./callable-methods.md).
 
 ## Related

@@ -181,7 +181,7 @@ Other knobs:
 - In `wrangler dev`, recovery works the same; kill and restart wrangler to test.
 - `resolveFiber()` only updates managed fibers currently `interrupted`.
 - Helpers such as `expensiveOperation`, `postReply`, `webhookId` in the snippets are placeholders defined elsewhere.
-- DO eviction and alarm limits are Durable Object behaviour; see the cloudflare-stateful skill.
+- DO eviction and alarm limits are Durable Object behaviour; see the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
 
 ## Related
 

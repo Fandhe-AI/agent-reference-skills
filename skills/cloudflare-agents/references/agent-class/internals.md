@@ -113,7 +113,7 @@ Built-in tables / frames:
 - `destroy()` calls `this.ctx.abort()` asynchronously via `setTimeout`, so an uncatchable error appears in logs after the event loop yields. It is safe inside scheduled callbacks (an internal flag skips remaining DB updates). In a sub-agent it delegates cleanup to the parent and should be treated as fire-and-forget.
 - `agents` wraps your methods with `AsyncLocalStorage`; use `getCurrentAgent()` to get `{ agent, connection, request, email }` anywhere.
 - Methods named `onError(connectionOrError, error?)` receive either a `Connection` plus error (WebSocket) or just an error (server).
-- Because Agents are Durable Objects, DO storage, alarm and namespace API details live in the cloudflare-stateful skill. The snippets on the source page are illustrative, not best practice.
+- Because Agents are Durable Objects, DO storage, alarm and namespace API details live in the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/). The snippets on the source page are illustrative, not best practice.
 - Class-field state does not survive eviction; keep durable data in `this.state`, `connection.state` or SQLite.
 
 ## Related

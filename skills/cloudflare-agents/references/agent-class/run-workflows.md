@@ -215,7 +215,7 @@ Limits:
 - Sub-agents may call `runWorkflow()`; tracking lives in the child's `cf_agents_workflows` table and `getWorkflows()` only sees the calling agent's rows. Parents cannot call inherited methods on `SubAgentStub`, so add wrapper methods on the child. For sub-agent origins, `this.agent` is RPC-only; use `routeSubAgentRequest()` for HTTP/WebSocket.
 - Routing constraints: the originating Agent is re-resolved by name via `getAgentByName`, so start workflows from name-addressed Agents (not raw DO IDs); preserve class names when bundling (esbuild `keepNames: true`); `agentBinding` from a sub-agent is the root binding.
 - Use `metadata` for queryable info and a retention policy for the tracking table; rename bindings with `migrateWorkflowBinding()`.
-- Workflows product docs: cloudflare-stateful skill (workflows). `processData` and `userId` in the snippets are placeholders.
+- Workflows product docs: cloudflare-stateful skill (workflows; https://developers.cloudflare.com/workflows/). `processData` and `userId` in the snippets are placeholders.
 
 ## Related
 

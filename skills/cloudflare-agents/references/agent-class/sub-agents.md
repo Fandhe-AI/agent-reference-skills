@@ -234,7 +234,7 @@ Behaviour of Agent features inside a sub-agent:
 - Different classes may share a name; the internal key is class name plus facet name. `this.name` in a child is the facet name.
 - Workflows started from a sub-agent are tracked in the child's SQLite; add child wrapper methods to control them (see [run-workflows.md](./run-workflows.md)).
 - Do not authenticate sub-agent access by name alone: use `onBeforeSubAgent`. If you return a modified `Request`, preserve WebSocket upgrade headers.
-- Sub-agents use Durable Object facets; see the cloudflare-stateful skill for DO-level behaviour.
+- Sub-agents use Durable Object facets; see the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/) for DO-level behaviour.
 
 ## Related
 

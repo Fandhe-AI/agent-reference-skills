@@ -129,7 +129,10 @@ reportProgress<T>(
 
 React and gating:
 
+Adapted (not in the official docs): `useAgentChat()` messages are AI SDK `UIMessage`s, whose tool parts have type `tool-<name>` or `dynamic-tool`, never `"tool-call"`; the check below uses `isToolUIPart`.
+
 ```tsx
+import { isToolUIPart } from "ai";
 import { useAgent, useAgentToolEvents } from "agents/react";
 import { useAgentChat } from "@cloudflare/ai-chat/react";
 
@@ -139,7 +142,7 @@ const agentTools = useAgentToolEvents({ agent });
 
 for (const message of messages) {
 	for (const part of message.parts) {
-		if (part.type === "tool-call") {
+		if (isToolUIPart(part)) {
 			const runs = agentTools.getRunsForToolCall(part.toolCallId);
 			// Render the child runs beside this tool call.
 		}
@@ -196,6 +199,7 @@ Static options / hooks:
 
 ## Notes
 
+- Adapted from the official docs: the React example matches tool parts with `isToolUIPart(part)` from `ai` (true for `tool-<name>` and `dynamic-tool` parts, both carrying `toolCallId`) instead of `part.type === "tool-call"`, which is a model-level stream part and never appears in `UIMessage.parts`.
 - Supports `@cloudflare/think` agents and `AIChatAgent` subclasses. `AIChatAgent` children run headlessly through `saveMessages()`, so use server-side tools; browser client tools are unavailable during an agent-tool turn.
 - `retryable` is `true` only for `interrupted` runs. Branch on `reason` and `childStillRunning` rather than the `error` prose. Both are mirrored onto `agent-tool-event` frames and `useAgentToolEvents()` state.
 - Detached completion is exactly-once on the happy path and at-least-once under a crash: `onFinish` handlers must be idempotent. A detached run does not inherit the spawning turn's signal. `interrupted` is soft: a late child completion re-fires `onFinish` with `completed`.
