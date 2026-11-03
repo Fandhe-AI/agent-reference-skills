@@ -12,13 +12,15 @@ Only Blazor WebAssembly works on Pages; Blazor Server is incompatible with the C
 dotnet new blazorwasm -o my-blazor-project
 ```
 
-`build.sh` (runs in the Pages build environment; update the channel if you are not on the .NET 8 SDK). Make it executable with `chmod +x build.sh`:
+`build.sh` (runs in the Pages build environment; update the channel if you are not on the .NET 8 SDK). Make it executable with `chmod +x build.sh`.
+
+Adapted (not in the official docs): `-c 8.0 -InstallDir ./dotnet` is written with the documented shell-script options `--channel 8.0 --install-dir ./dotnet`.
 
 ```plaintext
 #!/bin/sh
 curl -sSL https://dot.net/v1/dotnet-install.sh > dotnet-install.sh
 chmod +x dotnet-install.sh
-./dotnet-install.sh -c 8.0 -InstallDir ./dotnet
+./dotnet-install.sh --channel 8.0 --install-dir ./dotnet
 ./dotnet/dotnet --version
 ./dotnet/dotnet publish -c Release -o output
 ```
@@ -41,6 +43,7 @@ dotnet new gitignore
 
 - For new projects Cloudflare recommends Workers; see cloudflare-workers framework-guides.
 - Troubleshooting `Error: Asset "/opt/buildhome/repo/output/wwwroot/_framework/dotnet.wasm" is over the 25MiB limit`: either reduce asset size (https://docs.microsoft.com/en-us/aspnet/core/blazor/performance?view=aspnetcore-6.0#minimize-app-download-size), or remove the wasm files from the output with `rm output/wwwroot/_framework/*.wasm` and modify the app to load the Brotli compressed files (https://docs.microsoft.com/en-us/aspnet/core/blazor/host-and-deploy/webassembly?view=aspnetcore-6.0#compression).
+- Adapted from the official docs: the source passes the PowerShell-style `-InstallDir` to `dotnet-install.sh`; this page uses the shell script's documented `--install-dir` (and `--channel`) spelling.
 - The build script downloads and runs Microsoft's installer script during the Pages build; review it before committing.
 
 ## Related
