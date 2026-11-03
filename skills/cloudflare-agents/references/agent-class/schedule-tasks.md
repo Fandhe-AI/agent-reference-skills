@@ -67,7 +67,7 @@ export class ReportAgent extends Agent<Env> {
 - `callback` must name a method on the Agent. `getSchedule()` and `getSchedules()` are deprecated synchronous versions of `getScheduleById()` and `listSchedules()` (and throw inside sub-agents).
 - An idle DO is evicted after about 70 to 140 seconds without requests, messages or alarms; in-flight work then stops. A heartbeat only prevents idle eviction: a deploy or crash still stops work, so schedule a job or use a Workflow for work that must finish.
 - `AIChatAgent` keeps itself alive while it streams; scheduled callbacks and Workflows do not need `keepAlive`.
-- Options, retries, limits and natural-language parsing: scheduler.md (https://developers.cloudflare.com/agents/runtime/capabilities/scheduler/). DO alarm mechanics are in the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
+- Options, retries, limits and natural-language parsing: [scheduler.md](../runtime/scheduler.md). DO alarm mechanics are in the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
 
 ## Related
 

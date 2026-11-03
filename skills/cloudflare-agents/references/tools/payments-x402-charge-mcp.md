@@ -86,7 +86,7 @@ export default {
 - A call without payment returns `402` with payment requirements; the client pays via x402, retries with proof, and gets the result.
 - `agents/x402` needs `@modelcontextprotocol/sdk`, an optional peer dependency of `agents`; it is not loaded at runtime but its types refer to MCP SDK v1. Pin the exact version your Agents release expects (for example `@modelcontextprotocol/sdk@1.32.1`).
 - Test with `base-sepolia` and Circle faucet USDC (https://faucet.circle.com/). `0xYourWalletAddress` is a placeholder for your public receiving address.
-- Server-side MCP publishing guide: remote-mcp-server.md (https://developers.cloudflare.com/agents/model-context-protocol/guides/remote-mcp-server/) . The MCP protocol itself: mcp-spec skill.
+- Server-side MCP publishing guide: [remote-mcp-server.md](../mcp/remote-mcp-server.md) . The MCP protocol itself: mcp-spec skill.
 
 ## Related
 

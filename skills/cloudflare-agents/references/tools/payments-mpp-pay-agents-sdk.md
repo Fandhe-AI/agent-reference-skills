@@ -116,7 +116,7 @@ export class BuyerAgent extends Agent<PaymentEnv> {
 - Human-in-the-loop: by default both clients pay compatible Challenges automatically. Use `onChallenge` (HTTP) or `onPaymentRequired` (MCP) when a payment needs approval. Challenge amounts are integer base units, not decimal display values.
 - For production Agents use a scoped access key with spending limits and recipient restrictions (https://mpp.dev/guides/managing-agent-spend). Keep `MPP_PRIVATE_KEY` a Workers secret, never in tool arguments or logs; fund the account only for the payment method the service accepts.
 - If `paidSearch()` returns an `authUrl`, send the user there and retry after authorization. Free endpoints pass through; paid ones return a `Payment-Receipt` header.
-- The `mppx` HTTP client also recognizes x402 Challenges; configure an x402-compatible EVM method (https://mpp.dev/guides/use-mpp-with-x402). MCP connection options: client-api.md (https://developers.cloudflare.com/agents/model-context-protocol/apis/client-api/)
+- The `mppx` HTTP client also recognizes x402 Challenges; configure an x402-compatible EVM method (https://mpp.dev/guides/use-mpp-with-x402). MCP connection options: [client-api.md](../mcp/client-api.md)
 
 ## Related
 

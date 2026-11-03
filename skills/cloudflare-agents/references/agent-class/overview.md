@@ -115,12 +115,12 @@ https://your-worker.workers.dev/agents/:agent-name/:instance-name
 | Durable execution | `runFiber()`, `startFiber()`, `stash()`, `onFiberRecovered()`, `keepAlive()`, `keepAliveWhile()` | [durable-execution.md](./durable-execution.md) |
 | Queue | `queue()`, `dequeue()`, `dequeueAll()`, `getQueue()` | [queue-tasks.md](./queue-tasks.md) |
 | WebSockets | `onConnect()`, `onMessage()`, `onClose()`, `broadcast()` | [websockets.md](./websockets.md) |
-| HTTP/SSE | `onRequest()` | http-sse.md (https://developers.cloudflare.com/agents/runtime/routing/http-sse/) |
+| HTTP/SSE | `onRequest()` | [http-sse.md](../runtime/http-sse.md) |
 | Email | `onEmail()`, `replyToEmail()` | [email.md](./email.md) |
 | Workflows | `runWorkflow()`, `waitForApproval()` | [run-workflows.md](./run-workflows.md) |
-| MCP client | `addMcpServer()`, `removeMcpServer()`, `getMcpServers()` | client-api.md (https://developers.cloudflare.com/agents/model-context-protocol/apis/client-api/) |
+| MCP client | `addMcpServer()`, `removeMcpServer()`, `getMcpServers()` | [client-api.md](../mcp/client-api.md) |
 | Protocol messages | `shouldSendProtocolMessages()`, `isConnectionProtocolEnabled()` | [websockets.md](./websockets.md) |
-| Context | `getCurrentAgent()` | get-current-agent.md (https://developers.cloudflare.com/agents/runtime/lifecycle/get-current-agent/) |
+| Context | `getCurrentAgent()` | [get-current-agent.md](../runtime/get-current-agent.md) |
 | Sub-agents | `subAgent()`, `abortSubAgent()`, `deleteSubAgent()` | [sub-agents.md](./sub-agents.md) |
 | Agents as tools | `runAgentTool()`, `clearAgentToolRuns()`, `hasAgentToolRun()` | [agent-tools.md](./agent-tools.md) |
 | Chat SDK | `createChatSdkState()`, `ChatSdkStateAgent` | [chat-sdk.md](./chat-sdk.md) |
@@ -137,7 +137,7 @@ https://your-worker.workers.dev/agents/:agent-name/:instance-name
 
 ## Notes
 
-- Agents require Durable Objects. The wrangler bindings and migrations are covered in [routing.md](./routing.md) and routing.md (https://developers.cloudflare.com/agents/runtime/routing/) in the runtime category.
+- Agents require Durable Objects. The wrangler bindings and migrations are covered in [routing.md](./routing.md) and [routing.md](../runtime/routing.md) in the runtime category.
 - Agents are Durable Objects: DO storage, alarms and the namespace API details are in the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/). See [internals.md](./internals.md) for how `Agent` layers on `DurableObject`.
 - Chat UI hooks and the AI SDK integration (`streamText`, `useChat`, `UIMessage`) build on the AI SDK; see the vercel-ai-sdk skill for the SDK itself. `@cloudflare/ai-chat` is the Cloudflare adapter covered in [chat-agents.md](./chat-agents.md).
 - This `Agent` class of the `agents` package is NOT the OpenAI Agents SDK (openai-agents skill) and NOT the Claude Agent SDK (anthropic-agent-sdk skill); it is a Cloudflare Durable Object base class.

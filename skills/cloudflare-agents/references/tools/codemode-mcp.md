@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/agents/tools/codemode/mcp/
 
 # Code Mode with MCP tools
 
-`McpConnector` exposes tools from an existing Agents SDK MCP client connection inside the Code Mode sandbox, with discovery, durable approvals, and execution history. This page covers an Agent consuming an MCP server; publishing Code Mode as an MCP server is documented in build-codemode-mcp-server.md (https://developers.cloudflare.com/agents/model-context-protocol/guides/build-codemode-mcp-server/)
+`McpConnector` exposes tools from an existing Agents SDK MCP client connection inside the Code Mode sandbox, with discovery, durable approvals, and execution history. This page covers an Agent consuming an MCP server; publishing Code Mode as an MCP server is documented in [build-codemode-mcp-server.md](../mcp/build-codemode-mcp-server.md)
 
 ## Signature / Usage
 

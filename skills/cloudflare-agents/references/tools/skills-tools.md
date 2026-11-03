@@ -116,7 +116,7 @@ Catalog diagnostics (`catalog.diagnostics`):
 - Think relists sources before each turn. Pi reads sources once when the factory builds the extension; both Pi tools are marked `replay: "safe"`. With the AI SDK, reload the catalog and rebuild the tools to pick up changes.
 - Tool failures (unknown skill, missing file) are returned to the model as tool errors. AI SDK tools throw; Pi tools return `isError: true`.
 - `run_skill_script` executes bundled scripts: enable it only for skill sources you trust, and keep the runner on the sandboxed Worker Loader binding.
-- Distinct from Claude Code Agent Skills (see the anthropic-claude-code-extend skill) and from this repository's skill system: this page covers the Agents SDK `agents/skills` API only. Concepts: [agent-skills.md](../concepts/agent-skills.md) ; sources and validation: overview.md (https://developers.cloudflare.com/agents/skills/) ; script execution: execution.md (https://developers.cloudflare.com/agents/skills/execution/)
+- Distinct from Claude Code Agent Skills (see the anthropic-claude-code-extend skill) and from this repository's skill system: this page covers the Agents SDK `agents/skills` API only. Concepts: [agent-skills.md](../concepts/agent-skills.md) ; sources and validation: [overview.md](../agent-skills/overview.md) ; script execution: [execution.md](../agent-skills/execution.md)
 
 ## Related
 

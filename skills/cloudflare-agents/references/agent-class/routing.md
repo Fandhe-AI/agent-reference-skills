@@ -103,7 +103,7 @@ class SecureAgent extends Agent {
 - Unlike `getByName()`, `getAgentByName()` starts the Agent before returning, so its capabilities and `onStart()` are ready.
 - Props only reach an Agent that is starting. `routeAgentRequest()` accepts the same `props` option and passes them to whichever Agent the URL matches; use `getAgentByName()` for per-Agent values.
 - Inside an Agent, `this.selfPath` holds its own path. `buildAgentPath()` adds a `/sub/` segment per level.
-- URL shape, routing options, authentication and custom routes: routing.md (https://developers.cloudflare.com/agents/runtime/routing/), routing-options.md (https://developers.cloudflare.com/agents/runtime/routing/options/), routing-authentication.md (https://developers.cloudflare.com/agents/runtime/routing/authentication/), custom-routing.md (https://developers.cloudflare.com/agents/runtime/routing/custom-routing/). Check the caller's identity in the Worker before routing.
+- URL shape, routing options, authentication and custom routes: [routing.md](../runtime/routing.md), [routing-options.md](../runtime/routing-options.md), [routing-authentication.md](../runtime/routing-authentication.md), [custom-routing.md](../runtime/custom-routing.md). Check the caller's identity in the Worker before routing.
 - The Agents are Durable Objects; binding and migration details live in the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
 
 ## Related

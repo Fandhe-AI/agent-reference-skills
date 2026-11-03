@@ -158,7 +158,7 @@ Wrangler configuration (Containers require the Workers Paid plan):
 - Prompt injection: file contents, packages, or web pages in the sandbox can steer the model. Check tool results before acting outside the sandbox and require approval for tools with side effects.
 - All users of one agent instance share its sandbox; give each user their own instance when files must stay apart.
 - If model-written code only calls methods you define, use Code Mode (Dynamic Worker, faster start) instead.
-- The Sandbox SDK / Containers products themselves are in the cloudflare-sandbox-containers skill (sandbox; https://developers.cloudflare.com/sandbox/); this page covers only the agent tool pattern. Think workspace tools and approvals: think-tools.md (https://developers.cloudflare.com/agents/harnesses/think/tools/)
+- The Sandbox SDK / Containers products themselves are in the cloudflare-sandbox-containers skill (sandbox; https://developers.cloudflare.com/sandbox/); this page covers only the agent tool pattern. Think workspace tools and approvals: [think-tools.md](../harnesses/think-tools.md)
 
 ## Related
 

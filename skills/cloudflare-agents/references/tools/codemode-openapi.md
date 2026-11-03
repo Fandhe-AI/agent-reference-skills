@@ -190,7 +190,7 @@ const result = await orders.request({
 - Credentials (`ORDERS_API_TOKEN`) stay in the host Worker as a secret; model code receives only methods and results. `options.headers` is model-influenced; the connector sets `Authorization` last so the model cannot override it.
 - Human-in-the-loop: the official example marks only `create_order` with `requiresApproval: true`, but the low-level `request` method reaches the same `request()` with the same token, so model code could call `orders.request({ path: "/orders", method: "POST", body: ... })` and create an order without approval. Adapted from the official docs: `tool()` returns the tool unchanged only for names in the read-only allowlist `READ_ONLY_TOOLS` and adds `requiresApproval: true` to everything else, including `request` and operations added to the spec later. Derived operations and `request` share `request()`, so a method check there cannot tell them apart; gate by tool name in `tool()`.
 - Method names are the sanitized `operationId` (else derived from HTTP method and path; duplicates and names reserved for `request` / `spec` are skipped). Parameters are top-level fields, JSON body under `body`, required OpenAPI parameters are required fields, local `$ref` resolved. Response types are not derived: methods return `unknown`.
-- Publishing an OpenAPI service to external MCP clients via `search` / `execute`: build-codemode-mcp-server.md (https://developers.cloudflare.com/agents/model-context-protocol/guides/build-codemode-mcp-server/)
+- Publishing an OpenAPI service to external MCP clients via `search` / `execute`: [build-codemode-mcp-server.md](../mcp/build-codemode-mcp-server.md)
 
 ## Related
 

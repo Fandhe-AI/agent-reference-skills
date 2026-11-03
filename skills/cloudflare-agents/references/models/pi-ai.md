@@ -145,7 +145,7 @@ Same options as the AI SDK provider: `id`, `skipCache`, `cacheTtl`, `cacheKey`, 
 - Transient errors (cut-off stream, or silence for `streamIdleTimeoutMs`) are retried by the Pi harness. Catalog and dynamic-route streams resume through the binding (up to five drops, run id in the `cloudflare` diagnostic's `runId`); `@cf/` streams and off-catalog model objects do not.
 - Fallback: tried in order only before any output; the answer has a `cloudflare-fallback` diagnostic and `message.model` names the answering model. Failed requests produce a `cloudflare-error` diagnostic (`status`, `code`, `logId`); gateway failures become `CloudflareAIError`.
 - Account-id mode needs a token with **Workers AI Read** and **AI Gateway Run**; it is sent only to the AI Gateway REST API and `gateway.ai.cloudflare.com`. Keep it a secret. Third-party models use Unified Billing or a key stored on the gateway; the Worker holds no provider key. `flux-1-schnell` drops `width`, `height`, `seed`, `guidance`, `negativePrompt` (listed in `cloudflare-compat`).
-- Pi AI is the third-party `earendil-works/pi` library; Pi harness: pi.md (https://developers.cloudflare.com/agents/harnesses/pi/). Workers AI / AI Gateway products are in the cloudflare-ai skill (workers-ai; https://developers.cloudflare.com/workers-ai/).
+- Pi AI is the third-party `earendil-works/pi` library; Pi harness: [pi.md](../harnesses/pi.md). Workers AI / AI Gateway products are in the cloudflare-ai skill (workers-ai; https://developers.cloudflare.com/workers-ai/).
 
 ## Related
 

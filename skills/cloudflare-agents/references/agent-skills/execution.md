@@ -92,7 +92,7 @@ Runner options:
 - Scripts get no network and no tools unless granted; relative `ctx.workspace` paths resolve against `/workspace`. Grant `read-write` and `network` only when a skill needs them, since skill content can come from users or the agent itself.
 - With the JavaScript Workspace backend, a skill's instructions can tell the model to run a script by re-exporting it: `export { default } from "./scripts/format-release-notes.js";`. Activating a skill returns its folder as `location`, for example `/workspace/.agents/skills/release-notes`.
 - Distinct from Claude Code Agent Skills (SKILL.md under anthropic-claude-code-extend) and from this repository's reference skills; this is the Cloudflare Agents SDK runtime feature. Running arbitrary skill scripts happens inside a Dynamic Worker or Workspace backend, not on a host machine.
-- Related products: Sandbox (container code execution) in [sandbox.md](../tools/sandbox.md) and Think tools in think-tools.md (https://developers.cloudflare.com/agents/harnesses/think/tools/).
+- Related products: Sandbox (container code execution) in [sandbox.md](../tools/sandbox.md) and Think tools in [think-tools.md](../harnesses/think-tools.md).
 
 ## Related
 

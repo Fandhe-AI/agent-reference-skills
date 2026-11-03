@@ -77,7 +77,7 @@ Workflow step methods (durable, not repeated on Workflow retry):
 - In `onStateChanged()`, ignore changes whose `source` is `"server"` when you call `setState()` from inside it, or you will loop. (The source example guards on `source !== "server"`.)
 - Client `setState()` goes through `validateStateChange()` before being stored.
 - Data that need not reach clients belongs in SQLite (`this.sql`). For read-only clients use readonly connections ([websockets.md](./websockets.md)).
-- State is stored in the `cf_agents_state` table; the State capability is documented in state.md (https://developers.cloudflare.com/agents/runtime/capabilities/state/) (runtime category).
+- State is stored in the `cf_agents_state` table; the State capability is documented in [state.md](../runtime/state.md) (runtime category).
 
 ## Related
 
