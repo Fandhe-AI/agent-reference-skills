@@ -25,18 +25,28 @@ npx wrangler r2 bucket list
 }
 ```
 
+Adapted (not in the official docs): calls `authorizeRequest` (defined in the authorization block below) before the `switch`, returns 412 when a conditional `put()` returns `null`, and returns 206 with `Content-Range` / 304 / 412 for range and conditional GETs; see Notes.
+
 ```js
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const key = url.pathname.slice(1);
 
+    if (!authorizeRequest(request, env, key)) {
+      return new Response("Forbidden", { status: 403 });
+    }
+
     switch (request.method) {
       case "PUT": {
-        await env.MY_BUCKET.put(key, request.body, {
+        const stored = await env.MY_BUCKET.put(key, request.body, {
           onlyIf: request.headers,
           httpMetadata: request.headers,
         });
+        // put() returns null when the precondition fails (nothing is stored)
+        if (stored === null) {
+          return new Response("Precondition Failed", { status: 412 });
+        }
         return new Response(`Put ${key} successfully!`);
       }
       case "GET": {
@@ -53,11 +63,33 @@ export default {
         object.writeHttpMetadata(headers);
         headers.set("etag", object.httpEtag);
 
-        // When no body is present, preconditions have failed
-        return new Response("body" in object ? object.body : undefined, {
-          status: "body" in object ? 200 : 412,
-          headers,
-        });
+        // When no body is present, preconditions have failed:
+        // 304 for cache validators (If-None-Match / If-Modified-Since), otherwise 412
+        if (!("body" in object) || object.body === undefined) {
+          const notModified =
+            request.headers.has("If-None-Match") ||
+            request.headers.has("If-Modified-Since");
+          return new Response(null, {
+            status: notModified ? 304 : 412,
+            headers,
+          });
+        }
+
+        // Range request: 206 with Content-Range
+        let status = 200;
+        if (request.headers.has("Range") && object.range) {
+          const r = object.range;
+          const start =
+            "suffix" in r ? object.size - r.suffix : (r.offset ?? 0);
+          const length =
+            "suffix" in r ? r.suffix : (r.length ?? object.size - start);
+          headers.set(
+            "Content-Range",
+            `bytes ${start}-${start + length - 1}/${object.size}`,
+          );
+          status = 206;
+        }
+        return new Response(object.body, { status, headers });
       }
       case "DELETE": {
         await env.MY_BUCKET.delete(key);
@@ -106,6 +138,9 @@ curl https://your-worker.dev/cat-pic.jpg -X PUT --header "X-Custom-Auth-Key: ***
 
 ## Notes
 
+- Adapted from the official docs: the official Worker example never calls `authorizeRequest`, so it serves the bucket unauthenticated. The `fetch` handler above calls it before the `switch` and returns 403 on denial (the authorization block must be included in the same Worker).
+- Corrected from the official docs: the official example returns "Put successfully" even when a conditional `put()` returned `null` (precondition failed, nothing stored); it now returns 412.
+- Corrected from the official docs: the official example returns 200 for range requests and 412 for every bodyless `get()` result. Range requests now return 206 with `Content-Range`, and failed `If-None-Match` / `If-Modified-Since` return 304; other failed conditions (`If-Match`, `If-Unmodified-Since`) return 412. When both kinds of headers are sent together the 304/412 choice is a simplification. A missing object is still 404.
 - `wrangler dev` runs against local storage by default; set `"remote": true` on the R2 binding to use a real bucket.
 - A request body can only be read once; use `request.clone()` if `request.formData()` was already used. Workers have a 128 MB memory limit per Worker; prefer Streams for large files.
 - Adding the unauthenticated example code exposes the bucket publicly; define authorization in the Worker.

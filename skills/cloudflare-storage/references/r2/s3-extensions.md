@@ -29,7 +29,7 @@ Host: bucket.account.r2.cloudflarestorage.com
 | `Content-Language` | `httpMetadata.contentLanguage` |
 | `Content-Disposition` | `httpMetadata.contentDisposition` |
 | `Cache-Control` | `httpMetadata.cacheControl` |
-| `Expires` | `httpMetadata.expires` |
+| `Expires` | `httpMetadata.cacheExpiry` |
 
 `ListBuckets` search parameters (headers take precedence):
 
@@ -55,6 +55,7 @@ Host: bucket.account.r2.cloudflarestorage.com
 
 ## Notes
 
+- Corrected from the official docs: the official table maps `Expires` to `httpMetadata.expires`, but `R2HTTPMetadata` defines no such property; the field is `cacheExpiry` (`Date`, see the Workers API reference).
 - Unicode metadata: the Workers R2 API supports Unicode in `customMetadata` keys and values natively; these map to `x-amz-meta-` headers in the S3 API. R2 follows RFC 2047, decoding `x-amz-meta-*` values before storage and RFC 2047-encoding Unicode values on retrieval. The length limit applies to the decoded value.
 - Metadata variance: if metadata keys contain Unicode, they are stripped through the S3 API and `x-amz-missing-meta` is set to the number of omitted keys.
 - Auto-create: HTTP `100` is not supported by Cloudflare, hence the header. Useful for per-customer buckets created on first upload; `ListBuckets` extension supports accounts with more than 1,000 buckets.
