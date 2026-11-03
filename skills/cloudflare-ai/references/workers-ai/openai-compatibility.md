@@ -76,7 +76,7 @@ const response = await openai.responses.create({
 - Most Workers AI text generation models support Chat Completions; embedding models support the Embeddings API.
 - The Responses API works only with `@cf/openai/gpt-oss-120b` and `@cf/openai/gpt-oss-20b`, non-streaming.
 - OpenAI clients that remove unknown fields do not send `options.rejectIfBusy`, so requests proceed normally.
-- These endpoints are also compatible with AI Gateway (see the AI Gateway category of this skill; see integrations-workers-ai-binding.md (https://developers.cloudflare.com/ai-gateway/integrations/aig-workers-ai-binding/)).
+- These endpoints are also compatible with AI Gateway (see the AI Gateway category of this skill; see [integrations-workers-ai-binding.md](../ai-gateway/integrations-workers-ai-binding.md)).
 - The `openai` SDK itself (client API, models, Responses semantics on OpenAI) is covered by openai-api-core; this page covers only the Workers AI base URL and supported endpoints. Anthropic and Gemini SDKs: anthropic-api-core, google-gemini-api.
 - Keep the token in a Worker secret (`env.CLOUDFLARE_API_KEY` here), never in client-side code.
 

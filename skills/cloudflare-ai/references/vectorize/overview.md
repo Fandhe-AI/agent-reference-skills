@@ -28,7 +28,7 @@ Snippet taken from https://developers.cloudflare.com/vectorize/reference/client-
 - Vectorize is Generally Available.
 - Distinct from Upstash Vector (covered by the upstash skill) and from fandhe-db; those are different products with their own APIs.
 - The `wrangler vectorize` command flags are documented in the cloudflare-wrangler skill (commands/vectorize.md).
-- Managed RAG that sets up Vectorize automatically is AI Search: how-ai-search-works.md (https://developers.cloudflare.com/ai-search/)
+- Managed RAG that sets up Vectorize automatically is AI Search: [how-ai-search-works.md](../ai-search/how-ai-search-works.md)
 
 ## Related
 
