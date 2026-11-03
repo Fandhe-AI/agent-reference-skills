@@ -76,7 +76,7 @@ Run `uv run pywrangler dev`; `curl http://localhost:8787/` returns `{"message":"
 }
 ```
 
-Adapted (not in the official docs): the asset request keeps the original method, headers, and query string, and the JS `Response` body and headers are converted to Python types (`bytes`, `dict`) before building the Flask `Response`; see Notes.
+Adapted (not in the official docs): the asset request keeps the original method, headers, and query string (using the raw request target when the server provides one), and the JS `Response` body and headers are converted to Python types (`bytes`, `dict`) before building the Flask `Response`; see Notes.
 
 ```python
 from urllib.parse import quote
@@ -97,10 +97,15 @@ def api_hello():
 def frontend(path=""):
     assets = request.environ["workers.env"].ASSETS
     # Keep the original method, headers (conditional/Range) and query string.
-    # Re-quote the decoded path; do not build the URL from the `path` parameter.
-    asset_url = f"https://assets.local{quote(request.path)}"
-    if request.query_string:
-        asset_url += f"?{request.query_string.decode()}"
+    # Prefer the raw request target (path + query) when the WSGI server provides it;
+    # otherwise re-quote the decoded path (percent-encoded slashes may be lost).
+    raw_uri = request.environ.get("RAW_URI") or request.environ.get("REQUEST_URI")
+    if raw_uri:
+        asset_url = f"https://assets.local{raw_uri}"
+    else:
+        asset_url = f"https://assets.local{quote(request.path)}"
+        if request.query_string:
+            asset_url += f"?{request.query_string.decode()}"
     asset_request = js.Request.new(
         asset_url,
         to_js(
@@ -122,7 +127,9 @@ Default = wsgi.entrypoint(app)
 ```
 
 - Adapted from the official docs: `assets.fetch()` returns a JavaScript `Response` (a Pyodide `JsProxy`). The official snippet passed the JS body and `headers` object directly to Flask's `Response`, which expects Python `bytes` and a Python mapping. The snippet now converts the body with `.to_py()` (wrapped in `bytes()`) and the headers with `dict(asset_response.headers.entries())`. See python-ffi.md and https://pyodide.org/en/stable/usage/type-conversions.html.
-- Adapted from the official docs: the official snippet called `assets.fetch()` with a URL built from the decoded `path` parameter, which drops the query string, the request method and headers (conditional `If-None-Match`, `Range`) and can corrupt percent-encoded characters. The snippet now builds a JS `Request` (via `to_js` with `dict_converter=Object.fromEntries`, see python-ffi.md) from the re-quoted request path, raw query string, method and headers. The host `assets.local` is a placeholder; only the path and query matter to the assets binding.
+- Adapted from the official docs: the official snippet called `assets.fetch()` with a URL built from the decoded `path` parameter, which drops the query string, the request method and headers (conditional `If-None-Match`, `Range`) and can corrupt percent-encoded characters. The snippet now builds a JS `Request` (via `to_js` with `dict_converter=Object.fromEntries`, see python-ffi.md) from the raw request target (`RAW_URI` or `REQUEST_URI` in the WSGI environ, path plus query) when present, otherwise from the re-quoted `request.path` and the raw query string, together with the method and headers. The host `assets.local` is a placeholder; only the path and query matter to the assets binding.
+- Limitation: WSGI's `PATH_INFO` (`request.path`) is already percent-decoded, so `quote(request.path)` cannot recover an encoded slash (`%2F`) and such paths may be altered when the server provides no raw URI. This page does not guarantee exact path preservation under WSGI; for exact paths use the ASGI form (see python-fastapi.md) or forward requests to the assets binding without a framework.
+- HEAD: Flask automatically adds HEAD to routes registered for GET, so the `@app.get` routes shown also answer HEAD requests, and the asset request keeps `request.method`.
 - `run_sync` bridges the asynchronous asset operations into Flask's synchronous handler.
 - Example: clone `cloudflare/python-workers-examples` and see `flask-todo` (README for instructions).
 
