@@ -6,7 +6,7 @@ source: https://developers.cloudflare.com/workers/examples/signing-requests/
 
 Generate and verify HMAC SHA-256 signed, expiring URLs with Web Crypto.
 
-Adapted (not in the official docs): no hard-coded fallback signing key and a guard for a malformed `verify` value; see Notes.
+Adapted (not in the official docs): no hard-coded fallback signing key, a guard for a malformed `verify` value, and a newline delimiter between pathname and timestamp in the signed data (sign and verify use the same format); see Notes.
 
 ```js
 import { Buffer } from "node:buffer";
@@ -56,7 +56,9 @@ export default {
 			// This contains all the data about the request that you want to be able to verify
 			// Here we only sign the timestamp and the pathname, but often you will want to
 			// include more data (for instance, the URL hostname or query parameters)
-			const dataToAuthenticate = `${url.pathname}${timestamp}`;
+			// "\n" cannot appear in a URL pathname (it is percent-encoded), so the
+			// pathname/timestamp boundary is unambiguous. verify uses the same format.
+			const dataToAuthenticate = `${url.pathname}\n${timestamp}`;
 
 			const mac = await crypto.subtle.sign(
 				"HMAC",
@@ -79,13 +81,17 @@ export default {
 			}
 
 			const [timestamp, hmac] = url.searchParams.get("verify").split("-");
-				if (!timestamp || !hmac) {
-					return new Response("Invalid verify parameter", { status: 403 });
-				}
+			if (!timestamp || !hmac) {
+				return new Response("Invalid verify parameter", { status: 403 });
+			}
 
 			const assertedTimestamp = Number(timestamp);
+			if (!Number.isInteger(assertedTimestamp)) {
+				return new Response("Invalid verify parameter", { status: 403 });
+			}
 
-			const dataToAuthenticate = `${url.pathname}${assertedTimestamp}`;
+			// Same format as in /generate/: pathname, newline, timestamp
+			const dataToAuthenticate = `${url.pathname}\n${assertedTimestamp}`;
 
 			const receivedMac = Buffer.from(hmac, "base64");
 
@@ -124,5 +130,6 @@ export default {
 - Requires the `nodejs_compat` compatibility flag for `node:buffer`.
 - Adapted from the official docs: the official code falls back to the public literal `"my secret symmetric key"` when `env.SECRET_DATA` is unset, which lets anyone forge valid URLs; this version returns 500 instead. A `verify` value without a `-` made `Buffer.from(undefined)` throw; it now returns 403. Keep `SECRET_DATA` in `.dev.vars` locally and gitignore it.
 - Use `crypto.subtle.verify()` rather than comparing re-signed strings, to avoid timing leaks.
-- The signature format is compatible with the WAF `is_timed_hmac_valid_v0()` function, so the WAF can verify URLs this Worker generates.
+- Adapted from the official docs: the official code signs `${pathname}${timestamp}` with no separator, so a path ending in digits and a different timestamp can produce identical input (e.g. `/a1` + `234` vs `/a` + `1234`). This version signs `${pathname}\n${timestamp}`; sign and verify must use the identical format. `Number.isInteger` also rejects a non-numeric timestamp, which would otherwise make the expiry comparison always false.
+- The official page states its signature format is compatible with the WAF `is_timed_hmac_valid_v0()` function. That compatibility applies to the official concatenation format, not to the delimiter-based format used here; if the WAF must verify these URLs, use the WAF's own format instead.
 - `/generate/` is unauthenticated in the sample; protect it in real applications. Web Crypto is covered in `../references/web-apis/web-crypto.md`.

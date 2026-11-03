@@ -6,9 +6,16 @@ source: https://developers.cloudflare.com/workers/examples/cache-api/
 
 Store and reuse responses in Cloudflare's cache with `caches.default`.
 
+Adapted (not in the official docs): requests carrying `Authorization` or `Cookie` bypass the shared cache, and responses with `Set-Cookie` or `Cache-Control: private` / `no-store` are not stored; see Notes.
+
 ```js
 export default {
 	async fetch(request, env, ctx) {
+		// Never serve or store personalised content through the shared cache
+		if (request.headers.has("Authorization") || request.headers.has("Cookie")) {
+			return fetch(request);
+		}
+
 		const cacheUrl = new URL(request.url);
 
 		// Construct the cache key from the cache URL
@@ -33,9 +40,16 @@ export default {
 			// will limit the response to be in cache for 10 seconds max
 
 			// Any changes made to the response here will be reflected in the cached value
-			response.headers.append("Cache-Control", "s-maxage=10");
+			const cc = response.headers.get("Cache-Control") ?? "";
+			const cacheable =
+				response.ok &&
+				!response.headers.has("Set-Cookie") &&
+				!/\b(private|no-store)\b/i.test(cc);
 
-			ctx.waitUntil(cache.put(cacheKey, response.clone()));
+			if (cacheable) {
+				response.headers.append("Cache-Control", "s-maxage=10");
+				ctx.waitUntil(cache.put(cacheKey, response.clone()));
+			}
 		} else {
 			console.log(`Cache hit for: ${request.url}.`);
 		}
@@ -45,6 +59,8 @@ export default {
 ```
 
 ## Notes
+
+- Adapted from the official docs: the official sample caches every response under a URL-only key, so an authenticated or cookie-bearing request could populate the cache with user-specific content that is then served to everyone. This version bypasses the cache for requests with `Authorization` / `Cookie`, and skips `cache.put` for non-OK responses and responses with `Set-Cookie` or `Cache-Control: private` / `no-store`. Remove the guards only for fully public content.
 
 - `cache.put` is wrapped in `ctx.waitUntil` so the write finishes after the response is returned; pass `response.clone()` because the body can be read once.
 - The Cache API is per data center and does not purge globally; see `../references/web-apis/cache.md`.

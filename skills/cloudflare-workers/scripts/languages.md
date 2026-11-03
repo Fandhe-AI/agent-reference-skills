@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/workers/languages/python/
 
 # Languages
 
-Project setup commands for Python and Rust Workers. Pinned to cloudflare-docs production SHA `d0995b9`, fetched 2026-11-03. Rust from `/workers/languages/rust/`; Python also from `/workers/languages/python/basics/`, `/packages/`, `/packages/django/`.
+Project setup commands for Python and Rust Workers. Pinned to cloudflare-docs production SHA `d0995b9`, fetched 2026-11-03. Rust from https://developers.cloudflare.com/workers/languages/rust/; Python also from https://developers.cloudflare.com/workers/languages/python/basics/, https://developers.cloudflare.com/workers/languages/python/packages/, https://developers.cloudflare.com/workers/languages/python/packages/django/.
 
 Full Wrangler command set: see the cloudflare-wrangler skill. For uv itself, see the uv skill.
 

@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/workers/get-started/guide/
 
 # Create Project
 
-Scaffold a new Worker project with C3 (`create-cloudflare`). Pinned to cloudflare-docs production SHA `d0995b9`, fetched 2026-11-03. Also from `/workers/static-assets/get-started/` and `/workers/framework-guides/web-apps/*`.
+Scaffold a new Worker project with C3 (`create-cloudflare`). Pinned to cloudflare-docs production SHA `d0995b9`, fetched 2026-11-03. Also from https://developers.cloudflare.com/workers/static-assets/get-started/ and the framework guides under https://developers.cloudflare.com/workers/framework-guides/web-apps/.
 
 Full Wrangler command set: see the cloudflare-wrangler skill.
 
@@ -28,7 +28,7 @@ cd my-first-worker
 npm create cloudflare@latest -- my-static-site
 ```
 
-Choose `Hello World example` -> `Static site` -> `TypeScript`. See also `/workers/static-assets/get-started/`.
+Choose `Hello World example` -> `Static site` -> `TypeScript`. See also https://developers.cloudflare.com/workers/static-assets/get-started/.
 
 ## Create a full-stack (SSR) project
 

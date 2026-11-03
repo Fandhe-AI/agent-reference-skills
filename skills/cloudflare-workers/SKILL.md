@@ -5,6 +5,8 @@ description: >
   fetch / scheduled / tail handler、waitUntil、WorkerEntrypoint RPC、service bindings、
   compatibility flags (nodejs_compat)、HTMLRewriter、Request / Response、Cache API、WebSockets、
   static assets、cron triggers。
+  framework guides (Hono / React Router / Next.js (OpenNext / vinext) / Astro / SvelteKit / Nuxt / TanStack Start)、
+  C3 (create-cloudflare)、wrangler types。
   Wrangler は cloudflare-wrangler、KV / D1 / R2 は cloudflare-storage。
 user-invocable: false
 ---
