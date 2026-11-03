@@ -1,9 +1,10 @@
 ---
 name: cloudflare-ai
 description: >
-  Cloudflare の AI 基盤 (Workers AI / Vectorize) の
+  Cloudflare の AI 基盤 (Workers AI / AI Gateway / Vectorize) の
   リファレンス。env.AI.run、REST API、OpenAI 互換エンドポイント、JSON mode、function calling、batch API、LoRA、toMarkdown、
   モデルカタログ (text generation / embeddings / text-to-image / ASR / TTS)、
+  AI Gateway (caching / rate limiting / fallbacks / logs / BYOK / dynamic routing)、
   VectorizeIndex insert / upsert / query / metadata filtering。
   Agents SDK は cloudflare-agents、プロバイダー API 本体は openai-api-core / anthropic-api-core / google-gemini-api、Upstash Vector とは別。
 user-invocable: false
@@ -92,6 +93,58 @@ skills/cloudflare-ai/
       text-to-image.md
       text-to-speech.md
       translation.md
+    ai-gateway/
+      README.md
+      configuration-authentication.md
+      configuration-bring-your-own-keys.md
+      configuration-cloudflare-access.md
+      configuration-custom-costs.md
+      configuration-custom-domains.md
+      configuration-custom-providers.md
+      configuration-fallbacks.md
+      configuration-manage-gateway.md
+      configuration-request-handling.md
+      evaluations-human-feedback.md
+      evaluations.md
+      features-auto-router.md
+      features-caching.md
+      features-dlp.md
+      features-dynamic-routing.md
+      features-guardrails.md
+      features-machine-payments.md
+      features-rate-limiting.md
+      features-spend-limits.md
+      features-unified-billing.md
+      get-started.md
+      header-glossary.md
+      integrations-ai-sdks.md
+      integrations-coding-agents.md
+      integrations-ide-clients.md
+      integrations-workers-ai-binding.md
+      observability-analytics.md
+      observability-costs.md
+      observability-custom-metadata.md
+      observability-legacy-logs.md
+      observability-log-classification.md
+      observability-logging.md
+      observability-logpush.md
+      observability-otel-integration.md
+      observability-user-insights.md
+      overview.md
+      reference-audit-logs.md
+      reference-limits.md
+      reference-pricing.md
+      reference-troubleshooting.md
+      usage-chat-completion.md
+      usage-providers-anthropic-bedrock-vertex-gemini.md
+      usage-providers-openai-compatible.md
+      usage-providers-others.md
+      usage-providers-overview.md
+      usage-rest-api.md
+      usage-universal-endpoint.md
+      usage-web-search.md
+      usage-websockets-api.md
+      usage-worker-binding-methods.md
     vectorize/
       README.md
       binding-api.md
@@ -118,7 +171,7 @@ skills/cloudflare-ai/
 
 タスクから製品カテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（workers-ai / workers-ai-models / vectorize）を探す
+1. 下記マッピング表でタスクに対応するカテゴリ（workers-ai / workers-ai-models / ai-gateway / vectorize）を探す
 2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
@@ -132,6 +185,11 @@ skills/cloudflare-ai/
 | Workers AI の料金・制限・エラーコードを確認したい | workers-ai | [references/workers-ai/README.md](references/workers-ai/README.md) |
 | text generation のパラメーターやモデル選定基準を知りたい | workers-ai-models | [references/workers-ai-models/README.md](references/workers-ai-models/README.md) |
 | embeddings・text-to-image・ASR・TTS・翻訳・分類モデルの入出力を調べたい | workers-ai-models | [references/workers-ai-models/README.md](references/workers-ai-models/README.md) |
+| AI Gateway を作成して最初のリクエストを中継したい | ai-gateway | [references/ai-gateway/README.md](references/ai-gateway/README.md) |
+| caching・rate limiting・fallbacks・dynamic routing を設定したい | ai-gateway | [references/ai-gateway/README.md](references/ai-gateway/README.md) |
+| BYOK・認証・カスタムプロバイダー・カスタムドメインを設定したい | ai-gateway | [references/ai-gateway/README.md](references/ai-gateway/README.md) |
+| logs・analytics・costs・Logpush・OpenTelemetry で観測したい | ai-gateway | [references/ai-gateway/README.md](references/ai-gateway/README.md) |
+| 各プロバイダー（OpenAI 互換 / Anthropic / Bedrock / Vertex / Gemini ほか）への接続方法を知りたい | ai-gateway | [references/ai-gateway/README.md](references/ai-gateway/README.md) |
 | Vectorize インデックスを作成して vector を insert / upsert したい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
 | query・metadata filtering・namespaces で検索したい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
 | VectorizeIndex バインディング API・distance metrics を調べたい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
