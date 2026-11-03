@@ -8,7 +8,7 @@ Uncaught exceptions thrown by a Durable Object, or by Durable Objects infrastruc
 
 ## Signature / Usage
 
-Adapted (not in the official docs): the official example returns `Response.json(resp)` of a `Response`, never checks `.overloaded`, and has unreachable code; it now returns the response, skips retries for overloaded errors, and uses a typed namespace.
+Adapted (not in the official docs): the official example returns `Response.json(resp)` of a `Response`, never checks `.overloaded`, and has unreachable code; it now returns the response, skips retries for overloaded errors, and uses a typed namespace. `ErrorThrowingObject.fetch()` declares `Promise<Response>` so the throw-only method still matches the `DurableObject` `fetch()` contract.
 
 ```ts
 import { DurableObject } from "cloudflare:workers";
@@ -64,7 +64,7 @@ export class ErrorThrowingObject extends DurableObject {
 		throw new Error("no good");
 	}
 
-	async fetch(req: Request) {
+	async fetch(req: Request): Promise<Response> {
 		// Generate an uncaught exception
 		// A .remote property will be added to the exception propagated to the caller
 		// and will be set to True

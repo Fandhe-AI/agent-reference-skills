@@ -26,7 +26,7 @@ Cloudflare Workers 上のステートフル 3 製品 — Durable Objects（強�
 - cloudflare-agents: Durable Objects 上に構築するエージェント（Agents SDK）は cloudflare-agents が担当
 - drizzle: Durable Objects の SQLite を Drizzle ORM で扱う場合は drizzle が担当
 - upstash / inngest / bullmq: Upstash QStash、Inngest、BullMQ は別製品。Cloudflare Queues / Workflows とは別物
-- 未収録の Cloudflare 製品は公式 docs（`https://developers.cloudflare.com/<product>/`）を参照
+- cloudflare-ai / cloudflare-pages / cloudflare-sandbox-containers: Workers AI・AI Gateway・Vectorize・AI Search、Pages、Containers / Sandbox SDK（Durable Object から起動するコンテナ）は各スキル。いずれにも無い Cloudflare 製品は公式 docs（`https://developers.cloudflare.com/<product>/`）を参照
 
 ## ディレクトリ構成
 
