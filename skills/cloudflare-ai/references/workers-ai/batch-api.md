@@ -146,6 +146,7 @@ Completed response (REST, wrapped in `result`; binding returns the inner object)
 
 ## Notes
 
+- Polling is asynchronous: while the response `status` is `queued` or `running` the batch has not finished and carries no `responses`; keep polling with the `request_id` (with a bounded retry or timeout) and do not treat that status object as a completed result.
 - Requests are fulfilled eventually instead of erroring when capacity is short at a given time; useful for summarization and embeddings with no human in the loop.
 - Ensure the total payload is under 10 MB.
 - On completion the API returns HTTP `200` with an array of responses; each `id` maps to the index of the prompt in the original request.

@@ -136,7 +136,7 @@ export default {
 | config.maxRecursiveToolRuns | number | — | Optional. |
 | config.strictValidation | boolean | — | Optional. |
 | config.verbose | boolean | — | Optional. Emits logs for function calls and input/output statistics. |
-| config.trimFunction | boolean | — | Optional. Pass `autoTrimTools` to choose the right tools (using an LLM) before inference, reducing input tokens. |
+| config.trimFunction | function (callback) | — | Optional. Pass the `autoTrimTools` helper function (not a boolean) to choose the right tools (using an LLM) before inference, reducing input tokens. |
 
 `createToolsFromOpenAPISpec(spec, config)`:
 
@@ -157,6 +157,7 @@ export default {
 - A `BadInput` error can mean inputs exceed the model's context window; reduce input tokens.
 - Logging inside tool functions works like any Worker (`console.log`).
 - Package source: https://github.com/cloudflare/ai-utils
+- Corrected from the official docs: the API reference lists `trimFunction` as `boolean` but tells you to pass the `autoTrimTools` helper, so it is documented here as a callback function; the exact parameter and return types are not stated on the page. https://developers.cloudflare.com/workers-ai/features/function-calling/embedded/api-reference/
 - Corrected from the official docs: the troubleshooting page showed `...` placeholders that are not valid TypeScript; the second snippet is a complete composition of its documented options.
 
 ## Related

@@ -26,7 +26,7 @@ BQ_PRIVATE_KEY_ID="<your_private_key_id>"
 BQ_PROJECT_ID="<your_project_id>"
 ```
 
-Adapted (not in the official docs): `.dev.vars` used `BQ_CLIENT_KEY` while the code reads `BQ_PRIVATE_KEY` (aligned); `setExpirationTime(expiryAt)` with `expiryAt = now` expired the token at issue time, so `"1h"` is used; an `ACCESS_TOKEN` bearer check (fail closed when unset) protects the endpoint; Step 2's `console.log` of secrets is omitted; a response with neither `rows` nor `error` now returns an empty list instead of leaving `formattedResults` undefined, and the AI-step failure returns status 500.
+Adapted (not in the official docs): `.dev.vars` used `BQ_CLIENT_KEY` while the code reads `BQ_PRIVATE_KEY` (aligned); `setExpirationTime(expiryAt)` with `expiryAt = now` expired the token at issue time, so `"1h"` is used; an `ACCESS_TOKEN` bearer check (fail closed when unset) protects the endpoint; Step 2's `console.log` of secrets is omitted; a response with neither `rows` nor `error` now returns an empty list instead of leaving `formattedResults` undefined, and the AI-step failure returns status 500; a response with `jobComplete: false` is no longer treated as an empty result: `getBQResults` polls the BigQuery `jobs.getQueryResults` endpoint (`GET /bigquery/v2/projects/{projectId}/queries/{jobId}`) up to `MAX_POLL_ATTEMPTS` times and the Worker returns 504 if the job is still running.
 
 ```js
 import * as jose from "jose";
@@ -62,6 +62,24 @@ const queryBQ = async (bgJWT, path) => {
 		headers: {
 			Authorization: `Bearer ${bgJWT}`,
 		},
+	});
+	return response.json();
+};
+
+const MAX_POLL_ATTEMPTS = 5;
+
+// Fetch the results of a job that was not complete when queries returned
+const getBQResults = async (bgJWT, projectId, jobReference) => {
+	const url = new URL(
+		`https://bigquery.googleapis.com/bigquery/v2/projects/${encodeURIComponent(projectId)}/queries/${encodeURIComponent(jobReference.jobId)}`,
+	);
+	if (jobReference.location) {
+		url.searchParams.set("location", jobReference.location);
+	}
+	// Ask BigQuery to wait up to 10 s per poll before answering
+	url.searchParams.set("timeoutMs", "10000");
+	const response = await fetch(url, {
+		headers: { Authorization: `Bearer ${bgJWT}` },
 	});
 	return response.json();
 };
@@ -143,14 +161,45 @@ export default {
 			});
 		}
 
+		// BigQuery returns `jobComplete: false` plus a `jobReference` (and no `rows`)
+		// when the query is still running; poll getQueryResults a bounded number of times
+		for (
+			let attempt = 0;
+			attempt < MAX_POLL_ATTEMPTS &&
+			!("error" in ticketInfo) &&
+			ticketInfo.jobComplete === false;
+			attempt++
+		) {
+			try {
+				ticketInfo = await getBQResults(
+					bqJWT,
+					env.BQ_PROJECT_ID,
+					ticketInfo.jobReference,
+				);
+			} catch (error) {
+				console.log(error);
+				return new Response("An error has occurred while polling BQ", {
+					status: 500,
+				});
+			}
+		}
+
+		if ("error" in ticketInfo) {
+			return new Response(ticketInfo.error.message, { status: 500 });
+		}
+		if (ticketInfo.jobComplete === false) {
+			// Still running after the bounded wait: do not report it as empty data
+			return new Response("The BigQuery job has not completed yet", {
+				status: 504,
+			});
+		}
+
 		// Transform output format into array of objects with named fields
 		let formattedResults;
 		if ("rows" in ticketInfo) {
 			formattedResults = formatRows(ticketInfo.rows, ticketInfo.schema.fields);
-		} else if ("error" in ticketInfo) {
-			return new Response(ticketInfo.error.message, { status: 500 });
 		} else {
-			// e.g. a query that returned zero rows has no `rows` key
+			// Completed job with zero rows has no `rows` key
 			return Response.json({ data: [] });
 		}
 
@@ -207,6 +256,7 @@ export default {
 ## Notes
 
 - Adapted from the official docs: see the marker above. The source built the Worker step by step with `...` fragments; only the final combined code is kept.
+- Adapted from the official docs: the source did not handle BigQuery's `jobComplete: false` response (no `rows`, only a `jobReference`), which would otherwise be returned as an empty result. The polling endpoint is a Google BigQuery REST API detail not described on the Cloudflare page; the Worker bounds the wait (5 polls of up to 10 s each) and returns 504 on timeout.
 - The key file is sensitive: use the minimum BigQuery read role for the service account and never commit the key or `.dev.vars`.
 - Secrets are only available once deployed; use `.dev.vars` locally. Install `jose` with `npm i jose`.
 - The BigQuery service account and query are Google Cloud concepts; sampled tables must be cloned to your own GCP namespace to run job queries.
