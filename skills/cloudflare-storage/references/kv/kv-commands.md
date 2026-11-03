@@ -156,16 +156,17 @@ Global flags (all commands):
 
 | Name | Type | Description |
 |------|------|-------------|
-| --v (alias --version) | boolean | Show version number |
+| --version (alias -v) | boolean | Show version number |
 | --cwd | string | Run as if Wrangler was started in the specified directory instead of the current working directory |
-| --config (alias --c) | string | Path to Wrangler configuration file |
-| --env (alias --e) | string | Environment to use for operations, and for selecting .env and .dev.vars files |
+| --config (alias -c) | string | Path to Wrangler configuration file |
+| --env (alias -e) | string | Environment to use for operations, and for selecting .env and .dev.vars files |
 | --env-file | string | Path to an .env file to load - can be specified multiple times - values from earlier files are overridden by values in later files |
 | --install-skills | boolean | Install Cloudflare skills for detected AI coding agents before running the command (default: false) |
 | --profile | string | Use a specific auth profile |
 
 ## Notes
 
+- Corrected from the official docs: the official global-flags block writes the aliases as `--v`, `--c` and `--e`; the real Wrangler short aliases are single-dash `-v`, `-c` and `-e`.
 - Deprecation: since Wrangler 3.60.0 the `kv ...` syntax is supported; the older `kv:...` syntax (versions below 3.60.0) is deprecated and will be removed in a future major version.
 
 ```sh

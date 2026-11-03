@@ -95,10 +95,11 @@ npx wrangler basin catalog snapshot-expiration disable <BUCKET_NAME>
 
 All `r2 bucket` commands also accept `--jurisdiction` (`--J`); `r2 object` commands accept `--jurisdiction` for the object's jurisdiction.
 
-Global flags: `--v` (version), `--cwd`, `--config` (`--c`), `--env` (`--e`), `--env-file`, `--install-skills` (default false), `--profile`.
+Global flags: `--version` (`-v`), `--cwd`, `--config` (`-c`), `--env` (`-e`), `--env-file`, `--install-skills` (default false), `--profile`.
 
 ## Notes
 
+- Corrected from the official docs: the official global-flags block writes the aliases as `--v`, `--c` and `--e`; the real Wrangler short aliases are single-dash `-v`, `-c` and `-e`.
 - Docs inconsistency: other R2 pages show `lifecycle remove` / `lock remove` with `--id <RULE_ID>` and `notification create` with `--event-type`; this reference lists `--name` (alias `--id`) and `--event-types` (alias `--event-type`), so both spellings work.
 - `r2 bucket local-uploads enable|disable <BUCKET_NAME>` is documented on the Local uploads page but not listed on this Wrangler commands page.
 
