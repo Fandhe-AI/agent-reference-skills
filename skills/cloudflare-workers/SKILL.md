@@ -33,7 +33,7 @@ Workers アプリの設計・実装時に参照する。
 
 ## ディレクトリ構成
 
-各カテゴリの全ページは `references/{category}/README.md` の索引を参照する（下記は主要ページのみ）。
+`references/` `samples/` `scripts/` 配下の全 `.md` を列挙する（README.md を先頭、以降アルファベット順）。
 
 ```text
 skills/cloudflare-workers/
@@ -41,73 +41,171 @@ skills/cloudflare-workers/
   references/
     handlers-context/
       README.md
-      handlers-overview.md
-      fetch.md
-      scheduled.md
-      tail.md
       connect.md
       context.md
+      fetch.md
+      handlers-overview.md
       runtime-apis-overview.md
+      scheduled.md
+      tail.md
     bindings-rpc/
       README.md
+      analytics-sql.md
       bindings-overview.md
-      service-bindings.md
-      service-bindings-http.md
-      service-bindings-rpc.md
+      environment-variables.md
+      mtls.md
+      rate-limit.md
       rpc.md
       rpc-lifecycle.md
       rpc-typescript.md
       rpc-visibility.md
       secrets.md
-      environment-variables.md
+      service-bindings.md
+      service-bindings-http.md
+      service-bindings-rpc.md
       version-metadata.md
-      rate-limit.md
-      mtls.md
-      analytics-sql.md
     web-apis/
       README.md
+      cache.md
+      console.md
+      encoding.md
+      eventsource.md
       fetch.md
-      request.md
-      response.md
       headers.md
       html-rewriter.md
-      cache.md
-      websockets.md
-      tcp-sockets.md
+      messagechannel.md
+      performance.md
+      readablestream.md
+      readablestream-byob-reader.md
+      readablestream-default-reader.md
+      request.md
+      response.md
+      scheduler.md
       streams.md
+      tcp-sockets.md
+      transformstream.md
       web-crypto.md
-      webassembly.md
       web-standards.md
+      webassembly.md
+      webassembly-javascript.md
+      websockets.md
+      writablestream.md
+      writablestream-default-writer.md
     nodejs-compat/
       README.md
-      overview.md
+      assert.md
+      asynclocalstorage.md
       buffer.md
       crypto-zlib.md
+      diagnostics-channel.md
+      dns.md
+      eventemitter.md
+      fs.md
       http.md
+      https.md
       net.md
+      overview.md
+      path.md
       process.md
-      asynclocalstorage.md
+      streams.md
+      string-decoder.md
+      test.md
+      timers.md
+      tls.md
+      url.md
+      util.md
     configuration/
       README.md
-      overview.md
+      cloudflare-access.md
       compatibility-dates.md
       compatibility-flags.md
       compatibility-flags-nodejs.md
+      compatibility-flags-platform.md
+      compatibility-flags-web-platform.md
       cron-triggers.md
-      routes.md
       custom-domains.md
-      workers-dev.md
+      integrations.md
+      multipart-upload-metadata.md
+      overview.md
       placement.md
+      routes.md
+      routing-overview.md
+      workers-dev.md
+      workers-sites.md
+      workers-with-page-rules.md
     static-assets/
       README.md
-      overview.md
-      get-started.md
+      billing-and-limitations.md
       binding.md
+      direct-upload.md
+      get-started.md
       headers.md
-      redirects.md
-      routing-single-page-application.md
-      routing-worker-script.md
+      migrate-from-netlify.md
       migrate-from-pages.md
+      migrate-from-vercel.md
+      overview.md
+      redirects.md
+      routing-full-stack-application.md
+      routing-html-handling.md
+      routing-serving-a-subdirectory.md
+      routing-single-page-application.md
+      routing-static-site-generation.md
+      routing-worker-script.md
+    languages/
+      README.md
+      python.md
+      python-basics.md
+      python-django.md
+      python-examples.md
+      python-fastapi.md
+      python-ffi.md
+      python-flask.md
+      python-how-it-works.md
+      python-langchain.md
+      python-packages.md
+      python-stdlib.md
+      rust.md
+      typescript.md
+    platform/
+      README.md
+      best-practices.md
+      changelog.md
+      claim-deployments.md
+      deploy-buttons.md
+      get-started-cli.md
+      get-started-dashboard.md
+      how-the-cache-works.md
+      how-workers-works.md
+      infrastructure-as-code.md
+      known-issues.md
+      limits.md
+      migrate-to-module-workers.md
+      overview.md
+      playground.md
+      pricing.md
+      prompting.md
+      roles-and-permissions.md
+      security-model.md
+      storage-options.md
+      workers-roles-and-permissions.md
+    cache-databases/
+      README.md
+      connecting-to-databases.md
+      mongodb.md
+      neon.md
+      planetscale.md
+      supabase.md
+      third-party-integrations.md
+      turso.md
+      upstash.md
+      workers-cache.md
+      workers-cache-configuration.md
+      workers-cache-debugging.md
+      workers-cache-examples.md
+      workers-cache-keys.md
+      workers-cache-limitations.md
+      workers-cache-purge.md
+      xata.md
 ```
 
 ## 探索手順
@@ -137,3 +235,9 @@ skills/cloudflare-workers/
 | Smart Placement を使いたい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | static assets の配信・binding・routing を設定したい | static-assets | [references/static-assets/README.md](references/static-assets/README.md) |
 | `_headers` / `_redirects`・SPA ルーティング・Pages からの移行を知りたい | static-assets | [references/static-assets/README.md](references/static-assets/README.md) |
+| TypeScript / Python / Rust で Worker を書きたい | languages | [references/languages/README.md](references/languages/README.md) |
+| Python Workers (FastAPI / Flask / パッケージ / FFI) を使いたい | languages | [references/languages/README.md](references/languages/README.md) |
+| 制限・料金・実行モデル・セキュリティモデルを確認したい | platform | [references/platform/README.md](references/platform/README.md) |
+| 既知の問題・changelog・CLI / dashboard での開始手順を知りたい | platform | [references/platform/README.md](references/platform/README.md) |
+| Workers でのキャッシュ制御・外部データベース接続を知りたい | cache-databases | [references/cache-databases/README.md](references/cache-databases/README.md) |
+| Neon / PlanetScale / Supabase / Turso / Upstash 等と接続したい | cache-databases | [references/cache-databases/README.md](references/cache-databases/README.md) |
