@@ -22,7 +22,7 @@ Create the token from **Account API tokens** > **Create Token** > **Edit Cloudfl
 
 ## GitHub Actions workflow
 
-Adapted (not in the official docs): added a least-privilege `permissions:` block; see Notes.
+Adapted (not in the official docs): added a least-privilege `permissions:` block and pinned actions to commit SHAs; see Notes.
 
 ```yaml
 name: Deploy Worker
@@ -38,12 +38,12 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       # Run your project's build step, if required
       # - name: Build
       #   run: npm ci && npm run build
       - name: Deploy Worker
-        uses: cloudflare/wrangler-action@v4
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -109,4 +109,5 @@ WRANGLER_LOG=debug WRANGLER_LOG_PATH=./wrangler.log npx wrangler deploy
 
 ## Notes
 
+- Adapted from the official docs: actions pinned to the commit SHAs of their tags as of 2026-11-03 (tags are mutable).
 - Adapted from the official docs: the workflow gains `permissions: contents: read`; it triggers only on pushes to `main`, so secrets are not exposed to fork pull requests (do not use `pull_request_target` with these secrets). `<...>` placeholders after `=` are quoted because an unquoted `<` is shell redirection.

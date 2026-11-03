@@ -61,5 +61,5 @@ Run it with `node --test`.
 - Miniflare does not read the Wrangler config; declare every binding in the options (for example `bindings: { FOO: "Hello Bindings" }`, `kvNamespaces: ["KV"]`) and read them with `await worker.getBindings()`.
 - Only the Worker runs in `workerd`; test files run in Node.js, so individual functions cannot be unit tested. Cloudflare recommends the Vitest integration for unit tests and `createTestHarness()` for integration tests.
 - The guide asks for Miniflare v3 (`miniflare@latest`).
-- For TypeScript Workers, run a build first (for example `spawnSync("npx wrangler build -c wrangler-build.json", { shell: true, stdio: "pipe" })` in `before`).
+- Corrected from the official docs: for TypeScript Workers, run a build first. The official "Custom builds" example runs `wrangler build`, which was removed in Wrangler v4; use `wrangler deploy --dry-run --outdir dist` (or your own build script), check the exit status, and point Miniflare at the emitted output under `dist`. For example, in `before`: `const result = spawnSync("npx wrangler deploy --dry-run --outdir dist -c wrangler-build.json", { shell: true, stdio: "pipe" }); if (result.status !== 0) throw new Error(\`wrangler build step failed: ${result.stderr}\`);`.
 - See [../references/miniflare/README.md](../references/miniflare/README.md).

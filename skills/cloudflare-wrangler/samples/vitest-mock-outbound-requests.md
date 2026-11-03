@@ -33,9 +33,11 @@ afterAll(() => network.disable());
 
 `src/index.ts`:
 
+Adapted (not in the official docs): `fetch` declares `request`, `env`, `ctx` parameters so the test's 3-argument call type-checks; see Notes.
+
 ```ts
 export default {
-	async fetch(): Promise<Response> {
+	async fetch(_request, _env, _ctx): Promise<Response> {
 		return fetch("https://api.example.com/greeting");
 	},
 } satisfies ExportedHandler;
@@ -74,6 +76,7 @@ it("mocks an outbound request", async () => {
 
 ## Notes
 
+- Corrected from the official docs: the official Worker defines `fetch()` with no parameters while the test calls `worker.fetch(request, env, ctx)`, which fails type-checking (`Expected 0 arguments, but got 3`); the parameters were declared (unused, underscore-prefixed; contextual types come from `ExportedHandler`).
 - Requires MSW 3 or later. Works for unit tests (`worker.fetch`) and integration tests (`exports.default.fetch()`).
 - Outbound WebSockets are mocked with MSW's `ws.link()`; see the `request-mocking` fixture in the `workers-sdk` repository.
 - For `createTestHarness()` tests, outbound requests are instead proxied through Node's `globalThis.fetch` (see the test harness state sample).
