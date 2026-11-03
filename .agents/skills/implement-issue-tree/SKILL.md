@@ -611,7 +611,7 @@ open のサブイシューが残っている場合、または受入基準が未
 
 前提イシューがラン中に外部完了（人手マージ・クローズ）した場合、**halt 発生前に限り**下流の依存ブロック項目は同一ラン内で再判定され着手される。halt（3 イシュー連続で完了できなかった場合の新規着手停止）後もプローブと状態記録（`prereqTransitions` への記録・state ファイルへの永続化）は継続するが、新規着手ゲート自体は再開しない（halt は新規イシュー投入を止めるユーザー判断待ちの防御であり、外部完了検知を理由に自動解除しない）。halt 後に検知・記録された外部完了は、次回ランの再実行時に下流着手へ反映される。この再判定件数はレポートの返却値 `prereqTransitions` に記録される。前提の PR MERGED 判定は PR 番号の一致だけでなく、merge-verify と同じ PR と issue の結び付け照合（headRefName・base・同一リポジトリ・closingIssues）を満たす場合に限る（詳細は references/recovery.md）。
 
-**待機中の issue の通知（`notifyBlocked: true` のとき）**: 返却値 `blockedWaiting`（`outOfTree`〔ツリー外の前提で blocked〕/ `skippedLabel`〔対象外ラベルで blocked〕/ `waitingOn`〔待たれているツリー外の前提〕）のいずれかが空でなければ、メインセッションが PushNotification で番号の一覧を通知する（Workflow スクリプトからは通知できないため、この経路だけ）。ルート issue へのコメントはスクリプトが投稿済みで、再実行のたびに増える。`notifyBlocked` が無い、または 3 つとも空なら通知しない。
+**待機中の issue の通知（`notifyBlocked: true` のとき）**: 返却値 `blockedWaiting`（`outOfTree`〔ツリー外の前提で blocked〕/ `skippedLabel`〔対象外ラベルで blocked〕/ `waitingOn`〔残っている `outOfTree` の項目が待っているツリー外の前提〕）のいずれかが空でなければ、メインセッションが PushNotification で番号の一覧を通知する（Workflow スクリプトからは通知できないため、この経路だけ）。ルート issue へのコメントはスクリプトが投稿済みで、再実行のたびに増える。`notifyBlocked` が無い、または 3 つとも空なら通知しない。
 
 レポート出力テンプレート（処理結果サマリー・完了イシュー・失敗/未着手イシュー・対象外/未解決コメントの各節）と返却値フィールドの説明は以下を参照。
 
