@@ -77,11 +77,15 @@ Run `uv run pywrangler dev`, then `curl http://localhost:8787/` returns `{"Hello
 
 `src/worker.py` with a catch-all route proxying to the assets binding:
 
-Adapted (not in the official docs): the JS `Response` body and headers are converted to Python types (`bytes`, `dict`) before building the FastAPI `Response`; see Notes.
+Adapted (not in the official docs): the asset request keeps the original method, headers, and query string, and the JS `Response` body and headers are converted to Python types (`bytes`, `dict`) before building the FastAPI `Response`; see Notes.
 
 ```python
+from urllib.parse import quote
+
+import js
 from fastapi import FastAPI, Request
 from fastapi.responses import Response
+from pyodide.ffi import to_js
 from workers import asgi
 
 app = FastAPI()
@@ -96,8 +100,19 @@ async def api_hello():
 @app.get("/{path:path}")
 async def frontend(path: str, request: Request):
     env = request.scope["env"]
-    asset_url = f"https://assets.local/{path}"
-    resp = await env.ASSETS.fetch(asset_url)
+    # Keep the original method, headers (conditional/Range) and query string.
+    # Re-quote the decoded path; do not build the URL from the `path` parameter.
+    asset_url = f"https://assets.local{quote(request.url.path)}"
+    if request.url.query:
+        asset_url += f"?{request.url.query}"
+    asset_request = js.Request.new(
+        asset_url,
+        to_js(
+            {"method": request.method, "headers": dict(request.headers.items())},
+            dict_converter=js.Object.fromEntries,
+        ),
+    )
+    resp = await env.ASSETS.fetch(asset_request)
     # resp is a JavaScript Response (JsProxy): convert body and headers to Python types.
     body = bytes((await resp.bytes()).to_py())
     headers = dict(resp.headers.entries())
@@ -105,6 +120,7 @@ async def frontend(path: str, request: Request):
 ```
 
 - Adapted from the official docs: `env.ASSETS.fetch()` returns a JavaScript `Response` (a Pyodide `JsProxy`). The official snippet passed `resp.headers` (a JS `Headers` object) straight to FastAPI's `Response`, which expects a Python mapping. The snippet now converts the body with `.to_py()` (wrapped in `bytes()`) and the headers with `dict(resp.headers.entries())`. See python-ffi.md and https://pyodide.org/en/stable/usage/type-conversions.html for JS-to-Python conversion.
+- Adapted from the official docs: the official snippet called `env.ASSETS.fetch()` with a URL built from the decoded `path` parameter, which drops the query string, the request method and headers (conditional `If-None-Match`, `Range`) and can corrupt percent-encoded characters. The snippet now builds a JS `Request` (via `to_js` with `dict_converter=Object.fromEntries`, see python-ffi.md) from the re-quoted request path, raw query string, method and headers. The host `assets.local` is a placeholder; only the path and query matter to the assets binding.
 - Examples: `git clone https://github.com/cloudflare/python-workers-examples`, then `cd python-workers-examples/fastapi` and `uv run pywrangler dev`.
 
 ## Related

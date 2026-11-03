@@ -43,7 +43,7 @@ npm i @upstash/qstash
 
 ## Notes
 
-- `Redis.fromEnv(env)` reads the default `url` and `token` secret names; if you renamed the secrets, declare them explicitly as in Upstash's basic example.
+- `Redis.fromEnv(env)` reads the `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` bindings from `env` (the secrets set above); `url` and `token` are the constructor option names of `new Redis({ url, token })`, not env var names. If you renamed the secrets, pass them explicitly with `new Redis({ url: env.<YOUR_URL_SECRET>, token: env.<YOUR_TOKEN_SECRET> })`.
 - For receiving QStash webhooks in a Worker, follow Upstash's Cloudflare Workers quickstart (https://docs.upstash.com/qstash/quickstarts/cloudflare-workers#3-use-qstash-in-your-handler).
 - This page covers connecting from a Worker. For Upstash products themselves (Redis, QStash, Vector, Kafka), see the upstash skill.
 - Redis is a trademark of Redis Ltd.; use by Upstash is referential only.
