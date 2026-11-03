@@ -203,6 +203,8 @@ model User {
 }
 ```
 
+Adapted (not in the official docs): the sample email uses `crypto.randomUUID()` instead of `Date.now()` so requests in the same millisecond do not collide on a unique email; see Notes.
+
 ```ts
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
@@ -221,7 +223,7 @@ export default {
 		const user = await prisma.user.create({
 			data: {
 				name: "John Doe",
-				email: `john.doe.${Date.now()}@example.com`,
+				email: `john.doe.${crypto.randomUUID()}@example.com`,
 			},
 		});
 
@@ -269,6 +271,7 @@ const sql = postgres(env.HYPERDRIVE.connectionString, {
 - Node.js compatibility: dates `2026-08-04`+ enable `nodejs_compat` and `nodejs_compat_v2` by default; earlier dates need `nodejs_compat` (see [get-started](./get-started.md)).
 - Consolidated from: https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/node-postgres/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/postgres-js/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/drizzle-orm/, https://developers.cloudflare.com/hyperdrive/examples/connect-to-postgres/postgres-drivers-and-libraries/prisma-orm/
 - Adapted from the official docs: install commands are quoted with `>=` (the official `pg@>8.16.3` form is a shell redirection when unquoted and would exclude the stated minimum 8.16.3; same for `postgres@>3.4.5`).
+- Adapted from the official docs: the Prisma sample's `john.doe.${Date.now()}@example.com` is replaced with a `crypto.randomUUID()` suffix, because two requests in the same millisecond would produce the same email (a unique-constraint failure if the schema has `@unique`).
 - Clients are created per request and not closed explicitly: Hyperdrive cleans up the client connection when the request ends (see [connection-lifecycle](./connection-lifecycle.md)); do not add `client.end()` or module-level clients.
 - Wrangler config and bindings in general: see the cloudflare-wrangler and cloudflare-workers skills.
 

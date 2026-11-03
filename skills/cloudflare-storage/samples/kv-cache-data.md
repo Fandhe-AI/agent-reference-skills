@@ -6,7 +6,7 @@ source: https://developers.cloudflare.com/kv/examples/cache-data-with-workers-kv
 
 Read-through cache in a Worker: return JSON from Workers KV if present, otherwise fetch it and store it with an expiration TTL.
 
-Adapted (not in the official docs): the markdown-escape artifact `(.\*?)` in the two helper regexes is restored to `(.*?)`; see Notes.
+Adapted (not in the official docs): the markdown-escape artifact `(.\*?)` in the two helper regexes is restored to `(.*?)`, and `EXPIRATION_TTL` is raised from 30 to 60 (the `expirationTtl` minimum); see Notes.
 
 ```ts
 interface Env {
@@ -16,7 +16,7 @@ interface Env {
 export default {
   async fetch(request, env, ctx): Promise<Response> {
 
-     const EXPIRATION_TTL = 30; // Cache expiration in seconds
+     const EXPIRATION_TTL = 60; // Cache expiration in seconds (KV minimum is 60)
     const url = 'https://example.com';
     const cacheKey = "cache-json-example";
 
@@ -105,5 +105,6 @@ if (!bodyMatch) return 'No content found';
 ## Notes
 
 - Corrected from the official docs: the official helper regexes carry a markdown-escape artifact (`(.\*?)`, which matches a literal `*`); they are `(.*?)`. The fetched response is cached without checking `response.ok`, so an error page would be cached for `EXPIRATION_TTL` seconds; check it before `put` in real code.
+- Corrected from the official docs: the official example sets `EXPIRATION_TTL = 30`, but `put()` requires `expirationTtl` >= 60 (see api-write); 30 would be rejected on a cache miss. The 30-second minimum applies only to the `cacheTtl` option of `get()`, a separate constraint.
 - `expirationTtl` is in seconds; without it the entry persists until deleted. Contrast with the Workers Cache API (ephemeral, not replicated outside the originating data center).
 - Related: [KV README](../references/kv/README.md), [api-write](../references/kv/api-write.md), [api-read](../references/kv/api-read.md).

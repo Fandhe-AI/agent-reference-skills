@@ -6,6 +6,8 @@ source: https://developers.cloudflare.com/kv/examples/routing-with-workers-kv/
 
 Look up a per-tenant origin URL in Workers KV and proxy the request to that origin.
 
+Adapted (not in the official docs): the proxied request forwards an allowlist of headers instead of `request.headers`; see Notes.
+
 ```ts
 // Example routing data stored in Workers KV:
 // Key: "storefrontA" | Value: {"origin": "https://storefrontA-server.example.com"}
@@ -53,10 +55,18 @@ export default {
       const originUrl = new URL(newPathname, storefrontConfig.origin);
       originUrl.search = url.search;
 
+      // Forward only an allowlist of headers; never pass Authorization, Cookie
+      // or other platform credentials on to a tenant origin
+      const forwardedHeaders = new Headers();
+      for (const name of ['Accept', 'Accept-Language', 'Content-Type', 'User-Agent']) {
+        const value = request.headers.get(name);
+        if (value !== null) forwardedHeaders.set(name, value);
+      }
+
       // Create a new request to the origin server
       const originRequest = new Request(originUrl, {
         method: request.method,
-        headers: request.headers,
+        headers: forwardedHeaders,
         body: request.body,
         redirect: 'follow'
       });
@@ -107,6 +117,7 @@ export default {
 
 ## Notes
 
-- Transcribed verbatim. Routing data is read-heavy, which suits KV's low-latency reads; the same pattern fits A/B tests and blue-green rollouts of external origins.
+- Adapted from the official docs: the official example passes `request.headers` to every tenant origin, which would leak `Authorization`, `Cookie` and similar credentials to third-party servers. The sample builds the outgoing headers from an allowlist; if an origin needs authentication, use a credential scoped to that origin.
+- Routing data is read-heavy, which suits KV's low-latency reads; the same pattern fits A/B tests and blue-green rollouts of external origins.
 - Known page defect: the frontmatter description of the official page is copied from the distributed-configuration example; the body is correct.
 - Related: [KV README](../references/kv/README.md), [api-read](../references/kv/api-read.md).

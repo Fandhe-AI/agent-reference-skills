@@ -85,6 +85,7 @@ export default {
 
 - Transcribed verbatim. `get(key, 'arrayBuffer')` keeps binary assets (images, audio, video) intact. Requires the `mime` npm package.
 - Every key in the bound namespace is publicly readable through this Worker (the URL path is the key); do not store non-public values in the same namespace.
+- The key is derived from the URL path, and KV keys are limited to 512 bytes (see limits); a longer path makes `get()` throw. Validate the key length and return 400/404 first in real code.
 - For hosting a whole front-end or full-stack app, the official page recommends Workers static assets or Pages instead of KV.
 - The official page's `wrangler kv key put` text says it writes to production and preview namespaces, but the command only takes `--namespace-id`.
 - Related: [KV README](../references/kv/README.md), [kv-commands](../references/kv/kv-commands.md), [kv-bindings](../references/kv/kv-bindings.md).
