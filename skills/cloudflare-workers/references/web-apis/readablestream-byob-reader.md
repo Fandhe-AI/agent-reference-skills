@@ -10,8 +10,10 @@ source: https://developers.cloudflare.com/workers/runtime-apis/streams/readables
 
 A `ReadableStreamBYOBReader` is not instantiated via its constructor; it is retrieved from a `ReadableStream`:
 
+Adapted (not in the official docs): `new TransformStream()` replaced with `new IdentityTransformStream()`; see Notes.
+
 ```js
-const { readable, writable } = new TransformStream();
+const { readable, writable } = new IdentityTransformStream();
 const reader = readable.getReader({ mode: 'byob' });
 ```
 
@@ -34,6 +36,7 @@ const reader = readable.getReader({ mode: 'byob' });
 
 ## Notes
 
+- Corrected from the official docs: the official snippet uses `new TransformStream()`, which was an identity stream (with BYOB support) only under the legacy constructor. With the standard `TransformStream` (default as of compatibility date 2022-11-30), its readable side cannot provide a BYOB reader; use `IdentityTransformStream` or `FixedLengthStream` (as in the snippet above) for a BYOB-capable readable.
 - Functionally identical to `ReadableStreamDefaultReader` except for the `read` method.
 - `read` provides no control over the minimum number of bytes read into the buffer. Even with a 1 MiB buffer, the kernel may fulfill the read with a single byte. In practice `read` typically fills only 1% of the provided buffer.
 - `readAtLeast` is a non-standard extension to the Streams API.

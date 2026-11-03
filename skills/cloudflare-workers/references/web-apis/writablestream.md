@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/workers/runtime-apis/streams/writables
 
 # WritableStream
 
-A `WritableStream` is the `writable` property of a `TransformStream`. On the Workers platform, `WritableStream` cannot be directly created using the `WritableStream` constructor.
+A `WritableStream` is the `writable` property of a `TransformStream`. In the legacy behaviour described by the official page, `WritableStream` cannot be directly created using the `WritableStream` constructor (see Notes for the current default).
 
 ## Signature / Usage
 
@@ -38,6 +38,10 @@ writer.write(data);
 |------|---------|-------------|
 | `abort(reasonstringoptional)` | Promise\<void> | Aborts the stream; fulfills with `undefined`. `reason` is an optional human-readable string passed to the underlying sink's abort algorithm. If this writable stream is one side of a `TransformStream`, its abort algorithm causes the transform's readable side to become errored with `reason`. Any data not yet written is lost upon abort. |
 | `getWriter()` | WritableStreamDefaultWriter | Gets a `WritableStreamDefaultWriter` and locks the `WritableStream` to that writer. |
+
+## Notes
+
+- Corrected from the official docs: the "cannot be directly created" statement is the legacy behaviour. Per the compatibility-flags page, `streams_enable_constructors` is default as of compatibility date 2022-11-30 (disable with `streams_disable_constructors`) and adds the `new ReadableStream()` and `new WritableStream()` constructors backed by JavaScript underlying sources and sinks. Workers with an earlier compatibility date and no flag still cannot construct a `WritableStream` directly.
 
 ## Related
 

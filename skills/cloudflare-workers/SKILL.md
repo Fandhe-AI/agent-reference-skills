@@ -4,7 +4,6 @@ description: >
   Cloudflare Workers (V8 isolate サーバーレス実行環境, workerd) の API リファレンス。
   fetch / scheduled / tail handler、waitUntil、WorkerEntrypoint RPC、service bindings、
   HTMLRewriter、Request / Response、Cache API、WebSockets。
-  Wrangler は cloudflare-wrangler、KV / D1 / R2 は cloudflare-storage。
 user-invocable: false
 ---
 

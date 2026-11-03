@@ -8,6 +8,8 @@ The MessageChannel API provides a communication channel between different parts 
 
 ## Signature / Usage
 
+Adapted (not in the official docs): sender changed from `port2.postMessage` to `port1.postMessage`; see Notes.
+
 ```js
 const { port1, port2 } = new MessageChannel();
 

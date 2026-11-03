@@ -63,6 +63,8 @@ class DocumentHandler {
 
 Async handler:
 
+Adapted (not in the official docs): relative `new Request("/user")` replaced with an absolute placeholder URL; see Notes.
+
 ```js
 class UserElementHandler {
 	async element(element) {

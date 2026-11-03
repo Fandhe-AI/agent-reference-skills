@@ -68,6 +68,8 @@ export default {
 - Multiple rate limiting configurations per Worker are allowed (for example free vs paid tiers with namespaces `"1001"` and `"1002"`).
 - Best practice: key on stable identifiers such as API keys in `Authorization` headers, URL paths or routes, query parameters, user IDs and tenant IDs. IP addresses and locations are not recommended because many users can share them.
 
+Adapted (not in the official docs): `userId` taken from a verified identity instead of a query parameter; see Notes.
+
 ```ts
 // Recommended: use a key that represents a specific user or class of user
 // (userId must come from a verified session or token, not from client-supplied input)

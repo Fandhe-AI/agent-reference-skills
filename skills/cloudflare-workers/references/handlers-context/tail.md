@@ -8,6 +8,8 @@ The `tail()` handler is the handler you implement when writing a Tail Worker. Ta
 
 ## Signature / Usage
 
+Adapted (not in the official docs): `await` added before `fetch(...)`; see Notes.
+
 ```js
 export default {
   async tail(events, env, ctx) {

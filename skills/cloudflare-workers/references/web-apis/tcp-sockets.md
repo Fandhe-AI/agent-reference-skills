@@ -84,6 +84,8 @@ const secureSocket = socket.startTls();
 
 Closing a connection:
 
+Adapted (not in the official docs): duplicate `const reader` redeclaration removed; see Notes.
+
 ```typescript
 import { connect } from "cloudflare:sockets"
 

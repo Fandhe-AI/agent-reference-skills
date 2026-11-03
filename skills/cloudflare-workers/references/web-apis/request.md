@@ -228,6 +228,8 @@ In addition to the standard `Request` properties, `request.cf` on an inbound `Re
 
 `FixedLengthStream` example (from the same page):
 
+Adapted (not in the official docs): `writer.end()` replaced with `writer.close()`; see Notes.
+
 ```js
   const { writable, readable } = new FixedLengthStream(11);
 

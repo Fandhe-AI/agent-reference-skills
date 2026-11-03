@@ -52,7 +52,7 @@ export default {
 - To maintain streaming behavior, only modify the response body using the Streams API methods. If a Worker only forwards subrequest responses verbatim without reading their body text, its body handling is already optimal.
 - The example calls `response.body.pipeTo(writable)` without `await` so it does not block the rest of the function. It continues asynchronously until the response completes or the client disconnects; the runtime can continue running it after the response is returned.
 - The Streams API is only available inside the Request context (inside the `fetch` handler).
-- Docs inconsistency: the Streams overview example above passes a `transform(chunk, controller)` option to `new TransformStream(...)`, while the TransformStream page states Workers currently only implements an identity transform stream. Treat custom `transform` callbacks with caution and verify against the runtime.
+- Clarified: the example above passes a `transform(chunk, controller)` option to `new TransformStream(...)`. This works with the standard constructor, which is default as of compatibility date 2022-11-30 (`transformstream_enable_standard_constructor`, together with `streams_enable_constructors`). The TransformStream page's identity-only statement describes the legacy constructor used by earlier compatibility dates or when the `*_disable_*` flags are set.
 - Sub-pages: ReadableStream, ReadableStream BYOBReader, ReadableStream DefaultReader, TransformStream, WritableStream, WritableStream DefaultWriter.
 
 ## Related

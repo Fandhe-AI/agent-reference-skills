@@ -48,14 +48,17 @@ export default {
 
 Python:
 
+Adapted (not in the official docs): handler signature is `scheduled(self, controller)` with bindings on `self.env` / `self.ctx`; see Notes.
+
 ```python
 from workers import WorkerEntrypoint
 
 class Default(WorkerEntrypoint):
-    async def scheduled(self, controller, env, ctx):
+    async def scheduled(self, controller):
         # controller.cron contains the cron pattern that triggered this event
         # controller.scheduledTime contains the scheduled time in ms since epoch
         print(f"Cron triggered: {controller.cron}")
+        # Bindings and context are on self.env / self.ctx, not handler arguments
 ```
 
 ## Options / Props
@@ -71,6 +74,7 @@ class Default(WorkerEntrypoint):
 
 ## Notes
 
+- Corrected from the official docs: the official Python examples write `async def scheduled(self, controller, env, ctx)`. In a Python `WorkerEntrypoint` the handler takes only `self` and `controller`; bindings and context are read from `self.env` and `self.ctx` (the same pattern the Python Workers pages use for `fetch`, for example `self.env.API_HOST`). The `env, ctx` arguments belong to the JavaScript/TypeScript signature.
 - The value of `controller.cron` is the exact cron expression string from your configuration. It must match character-for-character, including spacing.
 - The runtime waits for the promise returned by the `scheduled()` handler to resolve (up to the 15-minute duration limit). You do not need `waitUntil()` for the runtime to wait for a single asynchronous task. `waitUntil()` is most useful when you need to run multiple concurrent tasks, or when you want the outcome of a specific promise to be recorded as the Cron Trigger invocation status.
 - Local testing: use Local Explorer (https://developers.cloudflare.com/workers/local-development/local-explorer/#test-cron-triggers) with `cf dev`, `wrangler dev`, or the Cloudflare Vite plugin. For scripted tests, send an HTTP request to `/cdn-cgi/local/scheduled` on the port printed by the dev server; pass `?format=json` for the structured result:

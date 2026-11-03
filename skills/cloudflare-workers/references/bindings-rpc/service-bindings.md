@@ -66,7 +66,10 @@ export default {
 - Local development: run one `wrangler dev` per Worker (`npx wrangler@latest dev`); bindings show as `connected` / `not connected`. Multiple Workers in one command via multiple `-c` flags (first = primary at `http://localhost:8787`): `wrangler dev -c wrangler.json -c ../other-worker/wrangler.json`. This is experimental and subject to change.
 - Deployment: Workers are deployed separately. On first deploy, deploy Worker B before Worker A, otherwise deploying A fails. For changes: deploy compatible B changes first (for example add a new method), then A, then remove unused code.
 - Smart Placement can be combined with service bindings to split a Worker into two services (https://developers.cloudflare.com/workers/configuration/placement/#multiple-workers).
-- Limits: each request via a service binding counts toward the subrequest limit; a single request has a maximum of 32 Worker invocations (each service binding call counts; subsequent calls throw); service binding calls do not count toward simultaneous open connection limits.
+- Subrequest limit: each request made via a service binding counts toward the per-invocation subrequest limit (50 on Free, 10,000 on Paid by default; see the Workers limits page).
+- Worker invocation limit (separate from the subrequest limit): a single incoming request can trigger at most 32 Worker invocations in total, counting the top-level Worker and every Worker reached through service bindings along the call chain. Calls beyond that throw an exception. This is a cap on how many Workers one request may fan into, not a second subrequest counter for the calling Worker.
+- Service binding calls do not count toward simultaneous open connection limits.
+- Clarified: the official page words the 32 limit as "each call to a Service binding counts towards this limit"; read it as invocations of Workers within one request's chain, and keep it separate from the subrequest limit above.
 - The `wrangler.jsonc` key reference belongs to the cloudflare-wrangler skill.
 
 ## Related

@@ -30,6 +30,8 @@ export default {
 };
 ```
 
+Adapted (not in the official docs): `ExportedHandler<Env>` changed to `ExportedHandler<Environment>`; see Notes.
+
 ```ts
 interface Environment {
   CF_VERSION_METADATA: WorkerVersionMetadata;
@@ -46,7 +48,7 @@ export default {
     });
     //...
   },
-} satisfies ExportedHandler<Env>;
+} satisfies ExportedHandler<Environment>;
 ```
 
 ## Options / Props
@@ -60,7 +62,7 @@ export default {
 ## Notes
 
 - Versions are described at https://developers.cloudflare.com/workers/versions-and-deployments/#versions.
-- The official TypeScript example declares `interface Environment` but uses `ExportedHandler<Env>`; the names do not match, so declare the interface as `Env` when copying.
+- Corrected from the official docs: the official TypeScript example declares `interface Environment` but uses `ExportedHandler<Env>`, so the names do not match. The snippet above uses `ExportedHandler<Environment>` so the interface and the generic agree.
 - Analytics Engine: https://developers.cloudflare.com/analytics/analytics-engine/
 
 ## Related
