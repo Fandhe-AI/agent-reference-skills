@@ -12,8 +12,6 @@ user-invocable: false
 
 # Cloudflare Workers 開発ツール リファレンス
 
-> 分割 PR で順次追加中の部分版。現時点で収録済みなのは下記「ディレクトリ構成」とマッピング表に載っているカテゴリのみ。
-
 Wrangler CLI・設定ファイル (wrangler.jsonc / wrangler.toml)・ローカル開発・Vite プラグイン・Vitest 統合・Miniflare・CI/CD・オブザーバビリティを扱う。Workers の開発・テスト・デプロイ・運用を設計・実装するときに参照する。
 
 ## 対象バージョン
@@ -216,6 +214,34 @@ skills/cloudflare-wrangler/
       cpu-profiling.md
       memory-profiling.md
       profiling-in-production.md
+  samples/
+    README.md
+    dev-vars-secrets.md
+    remote-bindings.md
+    vite-react-spa-api.md
+    vite-cloudflare-environments.md
+    vitest-first-test.md
+    vitest-mock-outbound-requests.md
+    vitest-d1-migrations.md
+    vitest-scheduled-queue-durable-objects.md
+    vitest-workflow-introspection.md
+    miniflare-node-test.md
+    miniflare-dispatch-events.md
+    test-harness-first-test.md
+    test-harness-prepare-state.md
+    github-actions-deploy.md
+    gradual-deployment.md
+  scripts/
+    README.md
+    install-auth.md
+    dev.md
+    environments.md
+    secrets-env.md
+    deploy-versions.md
+    vite-plugin.md
+    testing.md
+    ci.md
+    observability.md
 ```
 
 ## 探索手順
@@ -225,6 +251,7 @@ skills/cloudflare-wrangler/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
+4. 動く実例は `samples/README.md`、コピペ実行できるコマンドは `scripts/README.md` を併せて引く
 
 ## タスク → カテゴリ マッピング
 
@@ -260,3 +287,5 @@ skills/cloudflare-wrangler/
 | Workers Logs / Real-time logs / Logpush / Tail Workers を設定したい | observability | [references/observability/README.md](references/observability/README.md) |
 | traces・custom spans・OpenTelemetry エクスポートを設定したい | observability | [references/observability/README.md](references/observability/README.md) |
 | source maps・CPU / メモリプロファイリング・DevTools でデバッグしたい | observability | [references/observability/README.md](references/observability/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

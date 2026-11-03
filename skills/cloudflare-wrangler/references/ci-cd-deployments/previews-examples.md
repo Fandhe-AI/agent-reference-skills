@@ -10,6 +10,8 @@ Create Previews from Workers Builds, GitHub Actions, or another CI system by run
 
 GitHub Actions workflow creating one Preview per pull request and commenting its URL (`.github/workflows/preview.yml`):
 
+Adapted (not in the official docs): `actions/checkout` pinned to a commit SHA; see Notes.
+
 ```yaml
 name: Preview
 
@@ -26,7 +28,7 @@ jobs:
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - id: preview
         name: Create or update Preview
         run: |
@@ -46,12 +48,14 @@ jobs:
 
 Cleanup job (add under `jobs`):
 
+Adapted (not in the official docs): `actions/checkout` pinned to a commit SHA; see Notes.
+
 ```yaml
 cleanup:
   if: github.event.action == 'closed'
   runs-on: ubuntu-latest
   steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
     - name: Delete Preview
       run: npx wrangler preview delete --name "pr-${{ github.event.pull_request.number }}" --skip-confirmation
       env:
@@ -70,6 +74,8 @@ Probe step:
 
 Screenshot step:
 
+Adapted (not in the official docs): `actions/upload-artifact` pinned to a commit SHA; see Notes.
+
 ```yaml
 - name: Capture Preview screenshot
   run: |
@@ -78,7 +84,7 @@ Screenshot step:
   env:
     PREVIEW_URL: ${{ steps.preview.outputs.preview_url }}
 
-- uses: actions/upload-artifact@v4
+- uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
   with:
     name: preview-screenshot
     path: preview.png
@@ -103,7 +109,7 @@ npx wrangler preview --name "$BRANCH_NAME" --json
 
 ## Notes
 
-- Pin every `uses:` (`actions/checkout@v4`, `actions/upload-artifact@v4`) to a full commit SHA (e.g. `actions/checkout@<sha> # v4`) before use; tags are mutable. The workflow already sets `permissions:` (`contents: read`, `pull-requests: write`) as in the official page.
+- Adapted from the official docs: actions pinned to the commit SHAs of their tags as of 2026-11-03 (tags are mutable). The workflow already sets `permissions:` (`contents: read`, `pull-requests: write`) as in the official page.
 - Fork-PR exposure: the `pull_request` workflow passes `CLOUDFLARE_API_TOKEN` to `npx wrangler preview`, which runs code from the PR. Forked PRs do not receive secrets by default; never switch to `pull_request_target`, and keep a same-repository guard such as `if: github.event.pull_request.head.repo.full_name == github.repository` on the jobs so fork PRs never receive secrets.
 - GitHub Actions syntax itself: see the github-docs skill.
 - Workers Builds: enable Preview Builds and confirm the Preview command is `npx wrangler preview`; it comments the Preview URL on GitHub/GitLab PRs.

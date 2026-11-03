@@ -8,7 +8,7 @@ Deploy Workers from GitHub Actions using the official `cloudflare/wrangler-actio
 
 ## Signature / Usage
 
-Adapted (not in the official docs): added a least-privilege `permissions:` block; see Notes.
+Adapted (not in the official docs): added a least-privilege `permissions:` block and pinned actions to commit SHAs; see Notes.
 
 ```yaml
 name: Deploy Worker
@@ -24,12 +24,12 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       # Run your project's build step, if required
       # - name: Build
       #   run: npm ci && npm run build
       - name: Deploy Worker
-        uses: cloudflare/wrangler-action@v4
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -55,7 +55,7 @@ Create the API token (dashboard **Account API tokens** > **Create Token**):
 ## Notes
 
 - Adapted from the official docs: the workflow gains `permissions: contents: read` to limit the default `GITHUB_TOKEN`. It triggers only on pushes to `main`, so secrets are not exposed to fork pull requests; do not switch it to `pull_request_target`.
-- Pin `uses:` to a full commit SHA (e.g. `actions/checkout@<sha> # v6`) before use; tags are mutable. The tags shown (`@v6`, `@v4`) match the official page and no SHA is given there.
+- Adapted from the official docs: actions pinned to the commit SHAs of their tags as of 2026-11-03 (tags are mutable). The official page shows only the tags (`@v6`, `@v4`).
 - GitHub Actions syntax itself: see the github-docs skill.
 - External CI/CD is recommended when you use self-hosted GitHub/GitLab or a Git provider other than Artifacts, GitHub, or GitLab; otherwise Workers Builds is the integrated option.
 - CI is non-interactive, so Wrangler cannot use `wrangler login`; it requires an API token and account ID.
