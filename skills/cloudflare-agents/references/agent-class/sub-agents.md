@@ -105,6 +105,8 @@ const chat = useAgent({
 });
 ```
 
+Adapted (not in the official docs): comment added that the caller must be authenticated and own `userId` before routing (the name comes from the URL).
+
 ```ts
 import { getAgentByName, routeSubAgentRequest } from "agents";
 
@@ -115,6 +117,8 @@ export default {
 		if (!match) return new Response("Not found", { status: 404 });
 
 		const [, userId, rest] = match;
+		// Authenticate the caller and check they own `userId` before routing;
+		// a name taken from the URL alone is not an identity.
 		const parent = await getAgentByName(env.Inbox, userId);
 		return routeSubAgentRequest(request, parent, { fromPath: rest });
 	},

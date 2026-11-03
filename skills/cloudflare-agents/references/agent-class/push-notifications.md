@@ -22,6 +22,8 @@ wrangler secret put VAPID_SUBJECT
 
 Agent (trimmed to the delivery path; the full source also has `unsubscribe`):
 
+Adapted (not in the official docs): `subscribe` validates the endpoint (https, allow-listed push hosts, size limits) and `sendReminder` records transient failures and reschedules instead of reporting success; see Notes.
+
 ```ts
 import { Agent, callable, routeAgentRequest } from "agents";
 import webpush from "web-push";
@@ -47,6 +49,36 @@ type ReminderAgentState = {
 	reminders: Reminder[];
 };
 
+// Allow-list of push-service hosts (extend for the browsers you support).
+const PUSH_HOST_SUFFIXES = [
+	"fcm.googleapis.com",
+	"updates.push.services.mozilla.com",
+	"push.apple.com",
+	"notify.windows.com",
+];
+
+function isAllowedPushEndpoint(sub: Subscription): boolean {
+	if (JSON.stringify(sub).length > 2048) return false;
+	if (typeof sub?.endpoint !== "string" || sub.endpoint.length > 1024) return false;
+	if (typeof sub.keys?.p256dh !== "string" || typeof sub.keys?.auth !== "string") {
+		return false;
+	}
+	let url: URL;
+	try {
+		url = new URL(sub.endpoint);
+	} catch {
+		return false;
+	}
+	return (
+		url.protocol === "https:" &&
+		!url.username &&
+		!url.password &&
+		PUSH_HOST_SUFFIXES.some(
+			(h) => url.hostname === h || url.hostname.endsWith(`.${h}`),
+		)
+	);
+}
+
 export class ReminderAgent extends Agent<Env, ReminderAgentState> {
 	initialState: ReminderAgentState = {
 		subscriptions: [],
@@ -60,6 +92,10 @@ export class ReminderAgent extends Agent<Env, ReminderAgentState> {
 
 	@callable()
 	async subscribe(subscription: Subscription): Promise<{ ok: boolean }> {
+		// Authenticate the user in the Worker before routing to this Agent.
+		if (!isAllowedPushEndpoint(subscription)) {
+			throw new Error("Invalid push subscription");
+		}
 		const exists = this.state.subscriptions.some(
 			(s) => s.endpoint === subscription.endpoint,
 		);
@@ -98,6 +134,7 @@ export class ReminderAgent extends Agent<Env, ReminderAgentState> {
 		);
 
 		const deadEndpoints: string[] = [];
+		let failures = 0;
 
 		await Promise.all(
 			this.state.subscriptions.map(async (sub) => {
@@ -115,6 +152,10 @@ export class ReminderAgent extends Agent<Env, ReminderAgentState> {
 						err instanceof webpush.WebPushError ? err.statusCode : 0;
 					if (statusCode === 404 || statusCode === 410) {
 						deadEndpoints.push(sub.endpoint);
+					} else {
+						// Transient failure (5xx, network): record it so we retry.
+						failures++;
+						console.error("push delivery failed", statusCode, sub.endpoint);
 					}
 				}
 			}),
@@ -127,6 +168,13 @@ export class ReminderAgent extends Agent<Env, ReminderAgentState> {
 					(s) => !deadEndpoints.includes(s.endpoint),
 				),
 			});
+		}
+
+		if (failures > 0) {
+			// Not marked as sent; retry later (this resends to subscriptions that
+			// already succeeded, so the notification `tag` dedupes on the device).
+			await this.schedule(60, "sendReminder", payload);
+			return;
 		}
 
 		this.setState({
@@ -223,6 +271,7 @@ await agent.call("createReminder", ["Check the oven", 300]);
 
 ## Notes
 
+- Adapted from the official docs: (1) the official `subscribe` stored any client-supplied subscription, so the Agent could be made to POST to an attacker-chosen URL (SSRF); it now accepts only https endpoints on allow-listed push-service hosts with size limits, and only authenticated users should reach it. Because `this.state` can be changed by a client `setState()`, keep subscriptions in server-managed SQLite (`this.sql`) in production, or re-run `isAllowedPushEndpoint()` before every send. Do not follow redirects from push services. (2) The official `catch` swallowed every non-404/410 error and still marked the reminder `sent`; transient failures now keep it unsent and reschedule (add a retry cap in production).
 - Store VAPID keys in a `.env`/`.dev.vars` file for local dev (add it to `.gitignore`) and with `wrangler secret put` in production.
 - Subscriptions kept in `this.state` are synced to every connected client of that Agent, exposing endpoints and keys; use one Agent per user (user ID as the name) and authenticate before routing.
 - Handle push-service 404 and 410 by removing the dead subscription; a 5xx can be retried with `this.schedule(60, "retrySendNotification", ...)`.

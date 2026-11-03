@@ -26,13 +26,22 @@ interface RetryOptions {
 }
 ```
 
+Adapted (not in the official docs): `url` is validated (https only, host allowlist, no redirects) before `fetch()`; see Notes.
+
 ```ts
 import { Agent } from "agents";
 
+// Placeholder: list the hosts this Agent may call.
+const ALLOWED_HOSTS = new Set(["api.example.com"]);
+
 export class MyAgent extends Agent {
 	async fetchWithRetry(url: string) {
+		const target = new URL(url); // Throws on an invalid URL.
+		if (target.protocol !== "https:" || !ALLOWED_HOSTS.has(target.hostname)) {
+			throw new Error("URL not allowed");
+		}
 		const response = await this.retry(async () => {
-			const res = await fetch(url);
+			const res = await fetch(target, { redirect: "manual" });
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
 			return res.json();
 		});
@@ -136,6 +145,8 @@ class MyAgent extends Agent {
 Backoff: `delay = random(0, min(2^attempt * baseDelayMs, maxDelayMs))`. With defaults: attempt 1 upper bound 200ms, attempt 2 400ms.
 
 ## Notes
+
+- Adapted from the official docs: the official `fetchWithRetry(url)` fetched any caller-supplied URL (SSRF). It now rejects non-https URLs and hosts outside an allowlist (`ALLOWED_HOSTS` is a placeholder) before calling `this.retry()`, and uses `redirect: "manual"` so redirects are not followed (a 3xx is not `ok` and is retried like any error). The validation runs outside the retried function so a rejected URL is not retried.
 
 - Corrected from the official docs: schedule examples showed `schedule("processTask", 60, ...)`; the signature is `schedule(when, callback, payload?, options?)`.
 - Options are validated eagerly (`retry.maxAttempts must be >= 1`, `retry.baseDelayMs must be > 0`, integer check, `baseDelayMs <= maxDelayMs` after resolving class defaults). E.g. `{ baseDelayMs: 5000 }` throws because the default `maxDelayMs` is 3000.

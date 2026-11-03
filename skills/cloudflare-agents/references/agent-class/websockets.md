@@ -40,6 +40,8 @@ export class ChatAgent extends Agent<Env> {
 
 Readonly connections:
 
+Adapted (not in the official docs): `promote()` now requires a server-verified grant and fails closed; see Notes.
+
 ```ts
 import {
 	Agent,
@@ -64,10 +66,21 @@ export class DocAgent extends Agent<Env, Doc> {
 		this.setState({ text });
 	}
 
+	// Upgrading a connection to writable must be authorized on the server.
+	// Never expose a @callable() that lets the caller clear its own readonly flag.
 	@callable()
-	async promote() {
+	async promote(grantToken: string) {
 		const { connection } = getCurrentAgent();
-		if (connection) this.setConnectionReadonly(connection, false);
+		// verifyGrant is your server-side check (for example a signed, short-lived
+		// grant issued by the Worker after authenticating the user). Fail closed.
+		if (!connection || !(await this.verifyGrant(grantToken))) {
+			throw new Error("Not authorized");
+		}
+		this.setConnectionReadonly(connection, false);
+	}
+
+	private async verifyGrant(_token: string): Promise<boolean> {
+		return false; // Replace with a real verification; denies by default.
 	}
 }
 ```
@@ -108,6 +121,7 @@ Protocol frames sent on connect (and again on change for state and MCP): `cf_age
 
 - Hibernation: an idle Agent hibernates while WebSocket connections stay open; a message wakes it and `onMessage()` runs as usual. Keep data in `this.state`, `connection.state` or SQLite, not class fields. Set `static options = { hibernate: false }` to stay in memory.
 - Readonly is enforced inside `setState()`: it blocks client `setState()` and any `@callable()` that calls `this.setState()`. Other work in a callable still runs for a readonly caller, so write state first or check `isConnectionReadonly()` before side effects. On the client a refused write calls `onStateUpdateError`.
+- Adapted from the official docs: the official `promote()` callable let any caller, including a readonly one, call `setConnectionReadonly(connection, false)` on itself, which defeats readonly. Readonly clients can still invoke callables, so any callable that changes permissions must verify authorization server-side (here a placeholder `verifyGrant()` that denies by default) or be removed.
 - Do not trust a query parameter alone to decide who can write (the `mode=view` example is illustrative); authenticate in the Worker before routing.
 - The protocol decision is made once when the connection is accepted and survives hibernation. A connection without protocol frames still sends/receives your own messages, `broadcast()`, and `@callable()` calls.
 - Connection state, tags and transports: websockets.md (https://developers.cloudflare.com/agents/runtime/capabilities/websockets/). WebSocket Hibernation API details are in the cloudflare-stateful skill.

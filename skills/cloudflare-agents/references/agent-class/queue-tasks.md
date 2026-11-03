@@ -55,11 +55,25 @@ class MyAgent extends Agent {
 
 With retry options:
 
+Adapted (not in the official docs): `payload.url` is validated (https only, host allowlist, no redirects) before `fetch()`; see Notes.
+
 ```ts
+// Placeholder: list the hosts this Agent may call.
+const ALLOWED_HOSTS = new Set(["api.example.com"]);
+
 class RobustAgent extends Agent {
 	async reliableTask(payload: { url: string }, queueItem: QueueItem) {
 		console.log(`Processing task ${queueItem.id}`);
-		const response = await fetch(payload.url);
+		let target: URL;
+		try {
+			target = new URL(payload.url);
+		} catch {
+			return; // Invalid URL: do not retry.
+		}
+		if (target.protocol !== "https:" || !ALLOWED_HOSTS.has(target.hostname)) {
+			return; // Rejected: do not fetch, do not retry.
+		}
+		const response = await fetch(target, { redirect: "manual" });
 		if (!response.ok) {
 			throw new Error(`Request failed: ${response.status}`);
 		}
@@ -97,6 +111,8 @@ Queue vs schedule:
 | Schedule | `cf_agents_schedules` | — | Specific time, cron or recurring |
 
 ## Notes
+
+- Adapted from the official docs: the official `reliableTask` passed `payload.url` straight to `fetch()`. A queued payload can originate from a client, so the example now accepts only https URLs whose host is in an allowlist (`ALLOWED_HOSTS` is a placeholder) and uses `redirect: "manual"`, so a 3xx response is not followed and surfaces as a failed (non-`ok`) response that is retried like any error.
 
 - Corrected from the official docs: the first example used `onMessage(message)`; the Agent hook is `onMessage(connection, message)`. Other source examples referencing helpers such as `this.notificationService` or `this.heavyComputation` are illustrative and omitted here.
 - Placeholders: `Agent`, `Connection`, `WSMessage`, `QueueItem` and `RetryOptions` come from the `agents` package imports (omitted in the snippets); `https://api.example.com/data` and `user@example.com` are example values.
