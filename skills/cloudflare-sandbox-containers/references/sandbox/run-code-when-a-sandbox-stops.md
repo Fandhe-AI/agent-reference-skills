@@ -195,7 +195,7 @@ export default {
 - Keep the inactivity timeout longer than the check interval so the container runs between alarms. While `monitor()` waits the inactivity timeout does not start, so the alarm enforces the idle limit; if alarms stop, the timeout still stops the container after the Durable Object leaves memory. The alarm does not stop a sandbox while a command runs.
 - When the main process fails `monitor()` rejects with an error that has `exitCode`; `destroy(reason)` makes `monitor()` reject with that reason. A deploy while the sandbox runs does not record a stop.
 - A Durable Object has one alarm: merge into an existing `alarm()` and set the earliest time needed.
-- `monitor()` / `destroy()` are in the `containers` category of this skill; alarms and storage in the cloudflare-stateful skill.
+- `monitor()` / `destroy()` are in the `containers` category of this skill; alarms and storage in the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
 
 ## Related
 

@@ -108,7 +108,7 @@ curl http://localhost:8787 --request POST --json '{"argv":["uname","-a"]}'
 - The TOML form of the config is equivalent (`[[containers]]`, `[[durable_objects.bindings]]`, `[exports.MyContainer]`); the `src/index.js` variant drops the type annotations.
 - `wrangler dev` runs the instance in Docker on your machine, so Docker must be running; running `cloudflare/debian-trixie` locally requires a recent Wrangler (see the Wrangler install docs). On deploy each instance runs in its own virtual machine.
 - `enableInternet: false` blocks the sandbox from the Internet. A deploy does not replace a running instance.
-- Containers `start()`/`exec()` API: see the `containers` category of this skill. The Durable Object class API belongs to the cloudflare-stateful skill.
+- Containers `start()`/`exec()` API: see the `containers` category of this skill. The Durable Object class API belongs to the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
 - The minimal sandbox template at https://github.com/cloudflare/sandbox-sdk/tree/main/examples/minimal adds a `Dockerfile`, a sandbox per URL name, and file I/O with `@cloudflare/sandbox`.
 
 ## Related

@@ -237,7 +237,7 @@ export default {
 - Files live under `/var/lib/processes` on the instance disk; logs grow until the process ends and writes fail when the disk is full, so delete old directories or send output to a mounted bucket.
 - The recorded boot ID changes per instance; a snapshot restores the file but process IDs are reused, so `current()` ignores IDs from another instance and a process running at snapshot time becomes `lost`. `lost` also means the recording script was killed (for example `SIGKILL`).
 - A running process does not keep the container running: the alarm checks every minute and each alarm keeps it running; the container stops 10 minutes after the alarm finds the last process ended. A Durable Object has one alarm: merge into an existing `alarm()` and set the earliest time needed. The `process.ended` log goes to Workers Logs; replace it with your own follow-up.
-- The Worker route is unauthenticated in the official example and uses one shared sandbox name; authenticate callers before use (see sandbox-security). The Durable Object alarm API belongs to the cloudflare-stateful skill.
+- The Worker route is unauthenticated in the official example and uses one shared sandbox name; authenticate callers before use (see sandbox-security). The Durable Object alarm API belongs to the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
 
 ## Related
 

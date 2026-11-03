@@ -191,7 +191,7 @@ curl http://localhost:8787 --json '{"question":"How many prime numbers are there
 - Errors (thrown, CPU limit, timeout, `fetch()`) are returned to the model as `{ error }`. Request bodies are validated with Zod; a Workers AI failure (for example a rate limit) logs and returns `502` with the code already run.
 - Under `wrangler dev` the Dynamic Worker runs locally but Workers AI requests always run on Cloudflare and count toward usage. The response shape is `{ "answer": "...", "runs": [{ "code": "...", "output": { "result": 9592, "logs": [] } }] }`.
 - The Worker is unauthenticated in the official tutorial: anyone with the URL can use your Workers AI allowance; authenticate callers before sharing it.
-- Workers AI, the Agents SDK (`agents`), and the AI SDK are not part of this category. Dynamic Workers: https://developers.cloudflare.com/dynamic-workers/ ; Code Mode: cloudflare-agents skill (tools) ; Workers AI: cloudflare-ai skill (workers-ai) ; the `ai` package is the vercel-ai-sdk skill.
+- Workers AI, the Agents SDK (`agents`), and the AI SDK are not part of this category. Dynamic Workers: https://developers.cloudflare.com/dynamic-workers/ ; Code Mode: cloudflare-agents skill (tools; https://developers.cloudflare.com/agents/) ; Workers AI: cloudflare-ai skill (workers-ai; https://developers.cloudflare.com/workers-ai/) ; the `ai` package is the vercel-ai-sdk skill.
 
 ## Related
 

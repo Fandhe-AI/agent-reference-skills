@@ -160,7 +160,7 @@ curl "https://api.cloudflare.com/client/v4/accounts/<ACCOUNT_ID>/containers/appl
 - Adapted from the official docs: `${CLOUDFLARE_API_TOKEN}` replaces `<API_TOKEN>` so the secret is not typed inline in shell history. The token needs the **Containers Read** permission, which covers every Container application in the account: use it for administration and cleanup, not in routes that users call.
 - A sandbox whose container stopped stays in the list with `running: false` until the Worker removes its session. A listing request can wake a restarted Durable Object, which starts without the timeout `exec()` set; the constructor sets it again.
 - The registry lists only the sandboxes your Worker recorded. The API lists every sandbox of the Container application; the application ID is shown by `wrangler containers list` (application is named after the Worker and class, for example `sandbox-linux-mycontainer`). `name_prefix` filters by name start; `state=active` returns starting/running/stopping; stopped sandboxes stay listed; a new sandbox can take a few seconds to appear; `wrangler dev` sandboxes do not appear.
-- Without authentication anyone can list, use, or stop another user's sandboxes: derive the owner from the verified identity. SQLite storage and migrations belong to the cloudflare-stateful skill.
+- Without authentication anyone can list, use, or stop another user's sandboxes: derive the owner from the verified identity. SQLite storage and migrations belong to the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
 
 ## Related
 

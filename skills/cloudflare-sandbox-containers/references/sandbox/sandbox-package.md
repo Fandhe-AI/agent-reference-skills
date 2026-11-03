@@ -112,7 +112,7 @@ export class MyContainer extends DurableObject<Env> {
 
 - Requirements for every class: the image contains `/usr/local/bin/sandbox-shim`, copied from the `cloudflare/sandbox` image whose tag matches the installed package version (a mismatch can cause `SandboxProtocolError`); the helper is a statically linked `linux/amd64` binary that runs in any `linux/amd64` image; the Worker has the `nodejs_compat` compatibility flag; the container is running when a method runs the helper (some methods such as `DirectoryBackup.delete()` do not need it).
 - `wrangler.toml` form is equivalent to the JSONC shown. JS variants drop the type annotations.
-- `start()`, `exec()`, `snapshotContainer()` and `images` belong to the Durable Object container API, documented in the `containers` category of this skill; the Durable Objects API belongs to the cloudflare-stateful skill.
+- `start()`, `exec()`, `snapshotContainer()` and `images` belong to the Durable Object container API, documented in the `containers` category of this skill; the Durable Objects API belongs to the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
 - Classes: `Files`, `S3Mount` (re-export `S3Gateway`), `DirectoryBackup` (re-export `DirectoryBackupGateway`).
 
 ## Related

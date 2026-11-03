@@ -32,7 +32,7 @@ if (container.running) {
 - Deploys keep instances running. A running instance keeps its image, entrypoint, and environment variables; `start()` throws while one runs. To move to a new image, stop the instance (for example `destroy()`) and start a new one. Work in flight during a deploy can keep running on the previous version; make clients such as a browser terminal reconnect. Container rollouts do not replace sandboxes (they apply to the default scheduling policy only).
 - Snapshots (public beta; the API and behavior may change): `snapshotContainer()` saves the writable root filesystem only (not mounts, memory, processes, or `/run`). The new instance runs its entrypoint; process IDs are reused. Your application decides when to snapshot and stores the snapshot (for example in Durable Object storage). A snapshot expires 30 days after creation or last restore.
 - Mounted R2 buckets outlive every instance, are not included in snapshots, and must be mounted again by each new instance.
-- Containers platform API details are in the `containers` category of this skill. The Durable Objects API belongs to the cloudflare-stateful skill.
+- Containers platform API details are in the `containers` category of this skill. The Durable Objects API belongs to the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
 
 ## Related
 

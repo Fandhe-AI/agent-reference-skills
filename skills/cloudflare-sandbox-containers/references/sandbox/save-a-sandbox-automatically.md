@@ -155,7 +155,7 @@ export default {
 - A Durable Object has one alarm: merge these checks into an existing `alarm()` and set the alarm to the earliest time needed.
 - A snapshot saves the writable root filesystem only; a process writing a file during a save can leave a partial file. Each save creates a new snapshot; the container API has no delete, snapshots expire 30 days after creation or last restore; raise `CHECKPOINT_INTERVAL_MS` or drop checkpoints to save fewer.
 - The official route accepts `argv` from any caller. Snapshots can contain credentials: authenticate callers and give each user their own sandbox name (see sandbox-security).
-- Durable Objects alarms are covered by the cloudflare-stateful skill; `snapshotContainer()` / `destroy()` by the `containers` category of this skill.
+- Durable Objects alarms are covered by the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/); `snapshotContainer()` / `destroy()` by the `containers` category of this skill.
 
 ## Related
 

@@ -123,7 +123,9 @@ export default {
 } satisfies ExportedHandler<Env>;
 ```
 
-Browser client (`EventSource` reconnects when a stream ends, which would rerun the command, so it closes on `exit` and on `error`; an abnormal disconnect never reaches `exit`):
+Browser client (`EventSource` reconnects when a stream ends, which would rerun the command, so it closes on `exit` and on `error`; an abnormal disconnect never reaches `exit`).
+
+Adapted (not in the official docs): the `error` listener is added; without it `EventSource` reconnects after a network error or a server-side abort and the GET handler runs the command again.
 
 ```js
 const output = document.querySelector("pre");
@@ -140,8 +142,6 @@ events.addEventListener("exit", (event) => {
 	events.close();
 });
 
-// Adapted (not in the official docs): without this, EventSource reconnects after a
-// network error or a server-side abort and the GET handler runs the command again.
 events.addEventListener("error", () => {
 	events.close();
 });
@@ -158,6 +158,7 @@ const build = ["timeout", "--kill-after=5", "60", "sh", "-c", "npm test"];
 - The method returns the response before the command finishes; `pump()` keeps writing, so the Durable Object must stay active while it streams (a streamed response counts as activity; see the sandbox-lifetime page).
 - Events: `stdout` / `stderr` (JSON string data, possibly partial lines) and `exit` (`{"exitCode":3}`) last. Lines starting with `:` are comments. Both streams are read at the same time because an unread stream can block the process. `TextDecoderStream` keeps multi-byte characters intact.
 - On disconnect the next write fails and `kill()` sends `SIGTERM`; a command can ignore it, so use `timeout` (exit `124`, or `137` after `SIGKILL`). A process that moves to its own process group (for example with `setsid`) keeps running.
+- Adapted from the official docs: the browser client adds an `error` listener that closes the `EventSource`, so a dropped connection does not reconnect and rerun the command.
 - Every GET on this route starts the command again, so any client that reconnects automatically (`EventSource`) repeats side effects. Close it on `error` as in the client above; for commands with side effects or cost, split start (a POST that returns a run id) from log subscription (a GET keyed by that id that never starts a command).
 - The Worker chooses the command; do not run argv read from untrusted requests. Test with `curl .../sandboxes/ada/build --no-buffer`.
 - `exec()` and process streams are documented in the `containers` category of this skill.

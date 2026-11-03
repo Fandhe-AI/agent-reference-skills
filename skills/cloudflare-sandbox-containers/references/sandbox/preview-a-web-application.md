@@ -255,7 +255,7 @@ if (!preview[2] && request.method === "DELETE") {
 - WebSocket traffic that merely passes through the Durable Object does not keep the sandbox running; with `bridge()` (both ends accepted) the sandbox stays running while any page has a connection open.
 - Hot reloading: development servers such as Vite check the `Host` header (add the preview hostname to `server.allowedHosts`, for example `[".example-previews.com"]`; under a path prefix requests arrive with `Host: container`) and build absolute asset/reload URLs from their base path, so use per-preview hostnames. Vite config: `server: { host: "0.0.0.0", port: 8080, allowedHosts: [".example-previews.com"] }`.
 - Sharing: authenticate the `POST /shares/<name>` route (preview code runs on the same hostname and could call it with the visitor's cookies; serve it from another hostname or require a credential the browser cannot send). Anyone with the link can open the preview until expiry; each token belongs to one preview name; revoke early by deleting the `share:<token>` key from Durable Object storage. Test: `curl .../previews/ada/hello` returns `{ "path": "/hello", "uptime": 0 }`; `DELETE /previews/ada` returns `204`.
-- `getTcpPort()` is documented in the `containers` category of this skill; the Durable Objects WebSocket API in the cloudflare-stateful skill.
+- `getTcpPort()` is documented in the `containers` category of this skill; the Durable Objects WebSocket API in the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
 
 ## Related
 
