@@ -118,7 +118,7 @@ export class MyWorkflow extends WorkflowEntrypoint {
 
 ### Keep side effects and non-determinism inside steps
 
-`createDBConnection` is a placeholder for your own function. Adapted (not in the official docs): the "good" step returns the new instance's `id` instead of the `WorkflowInstance` stub (not serializable); see Notes.
+`createDBConnection` is a placeholder for your own function. Adapted (not in the official docs): the "good" step creates the child with a stable ID derived from the parent instance ID and recovers it with `get()` when a retry finds it already created, and returns that `id` instead of the `WorkflowInstance` stub (not serializable); see Notes.
 
 ```js
 export class MyWorkflow extends WorkflowEntrypoint {
@@ -161,9 +161,24 @@ export class MyWorkflow extends WorkflowEntrypoint {
 		const goodInstance = await step.do(
 			"good step that returns state",
 			async () => {
-				const instance = await this.env.ANOTHER_WORKFLOW.create();
+				// Stable child ID derived from the parent ID and this step, so a retry
+				// after a successful create() does not start a second child.
+				const digest = await crypto.subtle.digest(
+					"SHA-256",
+					new TextEncoder().encode(`${event.instanceId}:good-step`),
+				);
+				const id = `child-${[...new Uint8Array(digest)]
+					.map((b) => b.toString(16).padStart(2, "0"))
+					.join("")}`;
+				try {
+					await this.env.ANOTHER_WORKFLOW.create({ id });
+				} catch {
+					// Already created by an earlier attempt: get() recovers it
+					// (and throws if it does not exist).
+					await this.env.ANOTHER_WORKFLOW.get(id);
+				}
 
-				return { id: instance.id };
+				return { id };
 			},
 		);
 	}
@@ -467,6 +482,7 @@ export class MyWorkflow extends WorkflowEntrypoint {
 
 ## Notes
 
+- Adapted from the official docs: moving `create()` into `step.do` alone does not make it idempotent. If `create()` succeeds and the step fails before its result is persisted, the retry would create a second child with a new ID. The "good" example derives the child ID from the parent instance ID and the step (`child-` + SHA-256 hex, 70 characters, never the reserved `cf_` format), and on a retry falls back to `get(id)` (same pattern as [trigger-workflows.md](./trigger-workflows.md)).
 - Corrected from the official docs: the "check if already charged, then charge" example is presented as idempotent, but the GET and the POST are separate requests, so concurrent Workflow instances (or a duplicate trigger) for the same customer can both see `charged: false` and both charge; the `step.do` cache is per instance and does not help. The example sends a stable `Idempotency-Key` built from the customer and billing period and relies on the processor to deduplicate atomically; `payment.processor` and its support for that header are illustrative.
 - Corrected from the official docs: the unique-ID example truncated the UUID to 6 hex characters (24 bits; roughly 50% collision probability after about 4,800 IDs for one user), which makes `create()` fail on a reused ID; it uses the full UUID and keeps the user association in the database. The large-output example wrote every instance to the same R2 key `dataset-123`, so concurrent instances overwrote each other; the key is derived from `event.instanceId`.
 - Adapted from the official docs: the request body is read with `readTextWithLimit()`, which counts bytes while reading the stream and cancels it once the limit is exceeded; `await req.text()` followed by a byte-length check would already have buffered an arbitrarily large body.
