@@ -49,7 +49,9 @@ ws.on("message", (message) => {
 });
 ```
 
-Realtime (OpenAI), also with `send` inside `open`:
+Realtime (OpenAI), also with `send` inside `open`.
+
+Adapted (not in the official docs): `cf-aig-authorization` carries `Bearer <token>`, as on the non-realtime example and the authentication page; the official realtime example passes the bare token.
 
 ```javascript
 import WebSocket from "ws";
@@ -58,7 +60,7 @@ const url =
 	"wss://gateway.ai.cloudflare.com/v1/<account_id>/<gateway>/openai?model=gpt-4o-realtime-preview-2024-12-17";
 const ws = new WebSocket(url, {
 	headers: {
-		"cf-aig-authorization": process.env.CLOUDFLARE_API_KEY,
+		"cf-aig-authorization": `Bearer ${process.env.CLOUDFLARE_API_KEY}`,
 		Authorization: "Bearer " + process.env.OPENAI_API_KEY,
 		"OpenAI-Beta": "realtime=v1",
 	},
@@ -111,6 +113,8 @@ const ws = new WebSocket(
 | Deepgram (Workers AI) | `/workers-ai?model=@cf/deepgram/nova-3` (STT), also `@cf/deepgram/flux`; TTS models |
 
 ## Notes
+
+- Adapted from the official docs: the realtime header example sends `cf-aig-authorization` without the `Bearer ` prefix; it is written as `Bearer <token>` to match the non-realtime example and the AI Gateway authentication contract.
 
 - Authentication: a Cloudflare token with the AI Gateway Run permission on an authenticated gateway. Use headers in non-browser environments; browsers use the `sec-websocket-protocol` subprotocol list (`cf-aig-authorization.<token>`, `xi-api-key.<key>`, `fal-api-key.<key>`).
 - Do not put provider API keys in the URL query string. The official Google AI Studio and Cartesia examples append `?api_key=<...>` to the URL; URLs are commonly logged. Store those keys with BYOK instead (then only `cf-aig-authorization` is required) or use a header/subprotocol where the provider accepts it.

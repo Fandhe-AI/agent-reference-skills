@@ -65,7 +65,7 @@ curl https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id} \
 |------|------|---------|-------------|
 | provider | string | — | Provider name (OpenAI, workers-ai, or any supported provider) |
 | endpoint | string | — | Pathname of the provider API, e.g. `chat/completions` or `@cf/meta/llama-3.1-8b-instruct` |
-| authorization | string | — | Content of the Authorization HTTP header for this provider (usually starts with `Token` or `Bearer`) |
+| headers | object | — | HTTP headers sent to this provider, including `Authorization` (usually starts with `Token` or `Bearer`) and provider-specific headers, as in the examples above |
 | query | object | — | Payload as the provider's official API expects it |
 | config | object | — | Per-provider retry / timeout settings (below) |
 
@@ -79,6 +79,8 @@ curl https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id} \
 | backoff | "constant" \| "linear" \| "exponential" | — | Backoff method |
 
 ## Notes
+
+- Corrected from the official docs: the field list names an `authorization` string, while every official example (and the fallbacks page) puts the credential in `headers.Authorization`; the table documents `headers`.
 
 - Fallback: the array defines the sequence; if an entry fails (error, or timeout when configured), the next entry is tried. Response header `cf-aig-step` is `0` for the primary, `1` for the first fallback, and so on.
 - Retries (max five) happen before fallbacks. On the final retry attempt the gateway waits for the request to complete regardless of duration. Streaming responses satisfy the timeout once the first part arrives.
