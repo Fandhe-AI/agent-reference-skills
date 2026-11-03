@@ -8,7 +8,7 @@ Use `withX402Client` to wrap an Agent's MCP client so it can pay x402-protected 
 
 ## Signature / Usage
 
-Adapted (not in the official docs): the official snippet does not compile (undeclared `x402Client` property, `onPaymentRequired` with no body, untyped `Env` and key) and leaves the confirmation as a comment; this version declares the types and denies payment by default (fail-closed). See Notes.
+Adapted (not in the official docs): the official snippet does not compile (undeclared `x402Client` property, `onPaymentRequired` with no body, untyped `Env` and key) and leaves the confirmation as a comment; this version declares the types and denies payment by default (fail-closed). It also connects with `addMcpServer()` and waits until the server is `ready` instead of the outdated `this.mcp.connect(url)`. See Notes.
 
 ```ts
 import { Agent } from "agents";
@@ -20,10 +20,26 @@ export class MyAgent extends Agent<Env> {
 	private x402Client!: ReturnType<typeof withX402Client>;
 
 	async onStart() {
-		const { id } = await this.mcp.connect(`${this.env.WORKER_URL}/mcp`);
+		const connection = await this.addMcpServer(
+			"x402-server",
+			`${this.env.WORKER_URL}/mcp`,
+		);
+		if (connection.state === "authenticating") {
+			// Send connection.authUrl to the user; retry after OAuth completes.
+			throw new Error(`MCP server needs authorization: ${connection.authUrl}`);
+		}
+
+		await this.mcp.waitForConnections();
+
+		const server = this.getMcpServers().servers[connection.id];
+		const mcpConnection = this.mcp.mcpConnections[connection.id];
+		if (server?.state !== "ready" || !mcpConnection) {
+			throw new Error("MCP server is not ready.");
+		}
+
 		const account = privateKeyToAccount(this.env.MY_PRIVATE_KEY as `0x${string}`);
 
-		this.x402Client = withX402Client(this.mcp.mcpConnections[id].client, {
+		this.x402Client = withX402Client(mcpConnection.client, {
 			network: "base-sepolia",
 			account,
 		});
@@ -67,6 +83,7 @@ npx wrangler secret put MY_PRIVATE_KEY
 
 ## Notes
 
+- Corrected from the official docs: the source connects with `this.mcp.connect(url)`, which is not part of the current `MCPClientManager` API (`registerServer()` / `connectToServer()`; from an Agent, `addMcpServer()`). The example uses `addMcpServer()`, stops on the OAuth `authenticating` state, and wraps the client only after `waitForConnections()` reports the server `ready`, as in the MPP example.
 - Adapted from the official docs: typing added and `onPaymentRequired` returns `false` so the agent cannot spend until you implement approval; the official page leaves the confirmation body as a placeholder.
 - Human-in-the-loop for payments: pass a confirmation callback (never `null`) in production, and cap spend per tool/day in your own code. Guide: [human-in-the-loop.md](../concepts/human-in-the-loop.md)
 - The wallet private key controls funds: keep it in a Workers secret, add `.dev.vars` to `.gitignore`, never place it in tool arguments, prompts, or logs. Use `base-sepolia` and Circle faucet USDC (https://faucet.circle.com/) for testing.
