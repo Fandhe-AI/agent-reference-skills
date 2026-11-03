@@ -136,7 +136,7 @@ if (connectResult.state === "connected") {
 
 | Method | Signature | Purpose |
 |--------|-----------|---------|
-| `registerServer` | `(id, { url, name, callbackUrl, clientOptions?, transportOptions? }) => Promise<string>` | Register without connecting |
+| `registerServer` | `(id, { url, name, callbackUrl, client?, transport? }) => Promise<string>` | Register without connecting |
 | `connectToServer` | `(id) => Promise<MCPConnectionResult>` | `failed` / `authenticating` / `connected` |
 | `discoverIfConnected` | `(serverId, { timeoutMs? }?) => Promise<MCPDiscoverResult \| undefined>` | Discover capabilities; moves `connected` to `ready` |
 | `waitForConnections` | `({ timeout? }?) => Promise<void>` | Wait for in-flight connection and discovery after hibernation |
@@ -265,6 +265,7 @@ RPC transport options: `id` (as above) and `props` (`Record<string, unknown>`, d
 
 ## Notes
 
+- Source inconsistency: the official signature block for `registerServer()` lists `clientOptions?` / `transportOptions?`, while the examples on the same page and the `MCPClientManager` reference (runtime category) pass `client` / `transport`. The table follows the examples and the manager reference (`client?`, `transport?`).
 - Corrected from the official docs: the example omitted `stopWhen`, and AI SDK `generateText` / `streamText` stop after a single step by default, so a tool call is executed but no answer is generated from its result; `stopWhen: stepCountIs(5)` (an example limit) lets the model continue after tool results.
 - Idempotent when name and normalized URL both match an active connection (safe in `onStart()`). Same name with a different URL creates a second connection; call `removeMcpServer(oldId)` first to replace.
 - URL security: private ranges (RFC 1918), unspecified addresses, link-local, IPv6 unique-local, IPv4-mapped private addresses, and `metadata.google.internal` are blocked; loopback (`localhost`, `127.x.x.x`, `[::1]`) is allowed for development.
