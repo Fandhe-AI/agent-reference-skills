@@ -41,7 +41,7 @@ Adapted (not in the official docs): the page's Browser Run / Worker Loader bindi
 
 `src/server.ts`:
 
-Adapted (not in the official docs): a Worker `fetch` export with fail-closed `routeAgentRequest` authentication is added (the page shows only the class). See Notes.
+Adapted (not in the official docs): a Worker `fetch` export with fail-closed `routeAgentRequest` authentication and the required `CodemodeRuntime` export are added (the page shows only the class), and `createBrowserTools` receives `ctx: this.ctx` as on the browser tools reference. See Notes.
 
 ```ts
 import { AIChatAgent } from "@cloudflare/ai-chat";
@@ -54,6 +54,7 @@ export class MyAgent extends AIChatAgent<Env> {
 	async onChatMessage() {
 		const ai = createAI({ binding: this.env.AI });
 		const browserTools = createBrowserTools({
+			ctx: this.ctx,
 			browser: this.env.BROWSER,
 			loader: this.env.LOADER,
 		});
@@ -92,6 +93,9 @@ const check = async (
 	if (route.name !== user.id) return new Response("Forbidden", { status: 403 });
 };
 
+// Required by the legacy browser tools (the @cloudflare/codemode/vite plugin adds it automatically).
+export { CodemodeRuntime } from "agents/browser";
+
 export default {
 	async fetch(request: Request, env: Env) {
 		return (
@@ -117,25 +121,34 @@ async () => {
 
 Code the LLM passes to `browser_execute` (runs CDP commands through the injected `cdp`):
 
+Adapted (not in the official docs): the `cdp` calls use the single-object argument form (`cdp.send({ method, params, sessionId })`, `cdp.attachToTarget({ targetId })` returning `{ sessionId }`) documented on the browser tools reference instead of this page's positional form. See Notes.
+
 ```js
 async () => {
-	const { targetId } = await cdp.send("Target.createTarget", {
-		url: "https://example.com",
+	const { targetId } = await cdp.send({
+		method: "Target.createTarget",
+		params: { url: "https://example.com" },
 	});
-	const sessionId = await cdp.attachToTarget(targetId);
-	const { root } = await cdp.send("DOM.getDocument", {}, { sessionId });
-	const { outerHTML } = await cdp.send(
-		"DOM.getOuterHTML",
-		{ nodeId: root.nodeId },
-		{ sessionId },
-	);
-	await cdp.send("Target.closeTarget", { targetId });
+	const { sessionId } = await cdp.attachToTarget({ targetId });
+	const { root } = await cdp.send({
+		method: "DOM.getDocument",
+		params: {},
+		sessionId,
+	});
+	const { outerHTML } = await cdp.send({
+		method: "DOM.getOuterHTML",
+		params: { nodeId: root.nodeId },
+		sessionId,
+	});
+	await cdp.send({ method: "Target.closeTarget", params: { targetId } });
 	return outerHTML;
 };
 ```
 
 ## Notes
 
+- Deprecated: `createBrowserTools` (and `createBrowserRuntime`, Quick Action tools, `BrowserConnector`) are deprecated legacy APIs that keep working but will not change; new code should use `Browser` with `browserTool` (see [browser.md](../references/tools/browser.md) and [browser-legacy.md](../references/tools/browser-legacy.md)). This sample keeps the example page's legacy API.
+- Source inconsistency: the browser-agent example page documents positional `cdp.send(method, params?, options?)` and `cdp.attachToTarget(targetId)` returning a string, omits `ctx` in `createBrowserTools`, and does not mention the `CodemodeRuntime` export. The browser tools reference documents single-object arguments (`cdp.send({ method, params?, sessionId?, timeoutMs? })`, `cdp.attachToTarget({ targetId, timeoutMs? })` returning `{ sessionId }`), passes `ctx: this.ctx`, and requires `export { CodemodeRuntime } from "agents/browser"` for the legacy tools. The sample follows the tools reference.
 - Adapted from the official docs: the page's install command omits `@cloudflare/ai-chat`, which the example imports for `AIChatAgent`; it is added together with `@ai-sdk/provider`, matching the install commands of the other `AIChatAgent` examples.
 - `createBrowserTools` options: `browser` (Browser Run binding) or `cdpUrl` (custom CDP endpoint, takes priority), `loader` (Worker Loader binding, required), `cdpHeaders`, `timeout` (default 30000 ms). `@cloudflare/codemode` is a required peer dependency.
 - Deployed protections: generated code runs in an isolated Worker per execution with `fetch` / `connect` blocked in the sandbox; the CDP WebSocket stays in the host Worker; responses are truncated to roughly 6,000 tokens. These apply on Cloudflare, not under local Miniflare, which is not a security boundary for untrusted code.
@@ -148,4 +161,5 @@ async () => {
 ## Related
 
 - [Browser](../references/tools/browser.md)
+- [Browser legacy tools](../references/tools/browser-legacy.md)
 - [Code Mode overview](../references/tools/codemode-overview.md)
