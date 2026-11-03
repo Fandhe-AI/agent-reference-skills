@@ -67,7 +67,7 @@ URL, encoding, and text.
 | `text_decoder_cjk_decoder` | `disable_text_decoder_cjk_decoder` | 2026-03-03 | Dedicated CJK `TextDecoder` implementation for CJK encoding overrides and Big5 lead-byte handling (instead of the ICU-only path). |
 | `text_decoder_replace_surrogates` | `disable_text_decoder_replace_surrogates` | 2026-02-24 | The UTF-16le `TextDecoder` replaces lone surrogates with U+FFFD. |
 | `urlpattern_standard` | `urlpattern_original` | 2025-05-01 | Spec-compliant WHATWG `URLPattern` implementation (breaking vs the original). |
-| `urlsearchparams_delete_has_value_arg` | `no_urlsearchparams_delete_has_value_arg` | 2023-07-01 | `URLSearchParams.delete()` / `has()` accept the optional value argument. Beware `forEach(usp.delete.bind(usp))`: pass `(key) => usp.delete(key)` instead. |
+| `urlsearchparams_delete_has_value_arg` | `no_urlsearchparams_delete_has_value_arg` | 2023-07-01 | `URLSearchParams.delete()` / `has()` accept the optional value argument. Beware `usp.forEach(usp.delete.bind(usp))`: the callback receives `(value, key)`, so `delete(value)` runs. To delete every key, copy the keys first: `for (const key of [...new Set(usp.keys())]) usp.delete(key)`. |
 | `url_standard` | `url_original` | 2022-10-31 | WHATWG-compliant `URL` parser (no slash collapsing, different percent-encoding, `URL.canParse()` etc.). |
 
 WebSocket.
@@ -130,6 +130,7 @@ Module system.
 - `web_socket_auto_reply_to_close`: for a Worker created with `new WebSocket(url)` and needing half-open behavior, use `fetch()` with an `Upgrade: websocket` header and call `accept({ allowHalfOpen: true })`.
 - `html_rewriter_treats_esi_include_as_void_tag` is listed on the source page under both flag history and "Experimental flags" and has no default date.
 - Corrected from the official docs: for `blob_standard_mime_type` the official page says "When calling `response.blob.type()`", but `type` is a property of the `Blob` returned by `response.blob()`, not a method; the row now reads `(await response.blob()).type`.
+- Corrected from the official docs: for `urlsearchparams_delete_has_value_arg` the official page suggests `(key) => usp.delete(key)` as the `forEach` callback. `URLSearchParams.forEach` callbacks receive `(value, key)`, so the first parameter is the value; use a keys loop (`for (const key of [...new Set(usp.keys())]) usp.delete(key)`) to delete every key.
 - Node.js module flags are on the Node.js flags page; Durable Object, RPC, Python, and other product flags are on the platform page.
 
 ## Related

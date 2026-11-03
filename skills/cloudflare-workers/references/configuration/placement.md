@@ -68,7 +68,7 @@ Smart Placement status (Workers API `GET /accounts/$ACCOUNT_ID/workers/services/
 - `host` (layer 4, TCP CONNECT checks) and `hostname` (layer 7, HTTP HEAD checks) are probed from public IP ranges (not Cloudflare IP ranges) and rechecked at intervals. Host-based placement is experimental. Probes do not work for broadcast, anycast, multicast, or replicated resources.
 - Limitations (Smart Placement and Placement Hints): placement only affects `fetch` event handlers, not RPC methods or named entrypoints; Workers without a `fetch` handler are ignored; static assets are always served from the location nearest to the request (assets fetched via the static assets binding are served from where the Worker runs).
 - `cf-placement` header is added to all requests when placement is enabled: `remote-LHR` means routed by Smart Placement to a data center near London; `local-EWR` means not routed (ran near Newark). The header may be removed before Smart Placement exits beta.
-- Multiple Workers: split edge logic (authentication, routing) from back-end logic (database queries, API calls) into separate Workers connected by service bindings with type-safe RPC, and enable placement on the back-end Worker. Example back-end config:
+- Multiple Workers: split edge logic (authentication, routing) from back-end logic (database queries, API calls) into separate Workers connected by service bindings, and enable placement on the back-end Worker. Placement applies only to `fetch` handlers (see Limitations above), so the edge Worker should call the placed back-end through its service binding's `fetch()`; RPC method calls and named entrypoints on the back-end are not placed. Example back-end config:
 
 Adapted (not in the official docs): only `region` is active; the mutually exclusive keys are commented out; see Notes.
 
@@ -89,6 +89,7 @@ Adapted (not in the official docs): only `region` is active; the mutually exclus
 
 - Durable Objects provide automatic placement without configuration; SQLite storage queries are effectively zero-latency because compute and data are colocated. Do as much work as possible inside the Durable Object and return a composite result.
 
+- Adapted from the official docs: the official page recommends type-safe RPC between the edge and the placed back-end Worker while also stating that placement does not apply to RPC methods or named entrypoints. The recommendation is narrowed to `fetch()` over the service binding.
 - Adapted from the official docs: the official snippets set `mode`, `region`, `host` and `hostname` all at once even though the comment says they are mutually exclusive (and the TOML variant has no such comment). Only `mode` is left active here; the other keys are commented out so the snippet is a valid single-option configuration.
 
 ## Related

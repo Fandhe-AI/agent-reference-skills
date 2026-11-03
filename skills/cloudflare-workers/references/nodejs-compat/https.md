@@ -109,7 +109,7 @@ export default httpServerHandler({ port: 8080 });
 | Name | Type | Description |
 |------|------|-------------|
 | `enable_nodejs_http_modules` | compat flag | Required with `nodejs_compat` for `https.get`, `https.request`, etc. Auto-enabled for compatibility date `2025-08-15` or later. |
-| `enable_nodejs_http_server_modules` | compat flag | Required with `nodejs_compat` for `https.createServer`, `https.Server`, `https.ServerResponse`. Auto-enabled for compatibility date `2025-09-01` or later. |
+| `enable_nodejs_http_server_modules` | compat flag | Required with `nodejs_compat` for `https.createServer`, `https.Server` (response objects are `http.ServerResponse`; `node:https` has no `ServerResponse` export). Auto-enabled for compatibility date `2025-09-01` or later. |
 | `protocol` (request) | string | Default `https:` |
 | `port` (request) | number | Default `443` |
 | `agent` (request) | Agent | Default `https.globalAgent` |
@@ -128,6 +128,7 @@ compatibility_flags = ["nodejs_compat", "enable_nodejs_http_modules", "enable_no
 - `Server`: secure request handling is provided by Cloudflare infrastructure, so most Workers should use `http.Server`. `closeAllConnections()` / `closeIdleConnections()` not implemented; only `listen()` variants with a port number or no parameters; unsupported server options `maxHeaderSize`, `insecureHTTPParser`, `keepAliveTimeout`, `connectionsCheckingInterval`; TLS options such as `ca`, `cert`, `key`, `pfx`, `rejectUnauthorized`, `secureProtocol` are unsupported. For mTLS, use the mTLS binding.
 - Failing to call `close()` on an HTTPS server may leak it; call `close()` or use `await using`.
 - Other differences: `Connection` headers not used; `Content-Length` handled as in `fetch`; `Expect: 100-continue`, trailing headers, `'continue'` / `'information'` / `'socket'` / `'upgrade'` events and direct `socket` access are unsupported; TLS options like `ca`, `cert`, `key`, `rejectUnauthorized` cannot be configured.
+- Corrected from the official docs: the official page lists `https.ServerResponse` among the APIs gated by `enable_nodejs_http_server_modules`; Node.js `node:https` does not export `ServerResponse` (only `http` does), so the row refers to `http.ServerResponse`.
 - Docs inconsistency: the paragraph under `request` says "Because `get` is a wrapper..." (copy of the `get` text).
 
 ## Related

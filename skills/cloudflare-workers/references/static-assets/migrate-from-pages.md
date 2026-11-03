@@ -71,6 +71,8 @@ npx wrangler pages functions build --outdir=./dist/worker/
 
 - `_routes.json` / Functions middleware: Pages served Functions ahead of assets; Workers serves assets first unless `assets.run_worker_first` is set (required for auth checks, request logging).
 
+Adapted (not in the official docs): added `"binding": "ASSETS"`, which Pages Functions code reaching `env.ASSETS` depends on; see Notes.
+
 ```jsonc
 {
 	"name": "my-worker",
@@ -80,10 +82,13 @@ npx wrangler pages functions build --outdir=./dist/worker/
 	"upload_source_maps": true,
 	"assets": {
 		"directory": "./dist/client/",
+		"binding": "ASSETS",
 		"run_worker_first": true
 	}
 }
 ```
+
+- Adapted from the official docs: the official Pages Functions config omits `"binding": "ASSETS"`. Pages Functions call `env.ASSETS.fetch()` to reach static assets, and in Workers the binding is not created automatically, so it is kept here (valid because `main` is set).
 
 - Starting from scratch: use `WorkerEntrypoint` from `cloudflare:workers`.
 
