@@ -42,6 +42,7 @@ app.get('/config', (c) => c.text(c.env.USERNAME))
 - Static assets: set `assets = { directory = "public" }` in `wrangler.toml`
 - Dev server default port: `8787`; deploy with `npm run deploy`
 - CI/CD: store `CLOUDFLARE_API_TOKEN` as a GitHub Actions secret
+- Workers runtime APIs (handlers, bindings, compatibility flags) are in the cloudflare-workers skill; Wrangler CLI, wrangler.jsonc and the Cloudflare Vite plugin are in the cloudflare-wrangler skill.
 
 ## Related
 
