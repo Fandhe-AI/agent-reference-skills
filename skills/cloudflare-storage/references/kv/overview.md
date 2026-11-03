@@ -75,22 +75,24 @@ curl "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/nam
 
 Or with the Cloudflare TypeScript SDK:
 
+Adapted (not in the official docs): the three results are named `updated`, `fetched` and `deleted` because the official snippet redeclares `const value` three times in one block; see Notes.
+
 ```ts
 const client = new Cloudflare({
 	apiEmail: process.env['CLOUDFLARE_EMAIL'], // This is the default and can be omitted
 	apiKey: process.env['CLOUDFLARE_API_KEY'], // This is the default and can be omitted
 });
 
-const value = await client.kv.namespaces.values.update('<KV_NAMESPACE_ID>', 'KEY', {
+const updated = await client.kv.namespaces.values.update('<KV_NAMESPACE_ID>', 'KEY', {
 	account_id: '<ACCOUNT_ID>',
 	value: 'VALUE',
 });
 
-const value = await client.kv.namespaces.values.get('<KV_NAMESPACE_ID>', 'KEY', {
+const fetched = await client.kv.namespaces.values.get('<KV_NAMESPACE_ID>', 'KEY', {
 	account_id: '<ACCOUNT_ID>',
 });
 
-const value = await client.kv.namespaces.values.delete('<KV_NAMESPACE_ID>', 'KEY', {
+const deleted = await client.kv.namespaces.values.delete('<KV_NAMESPACE_ID>', 'KEY', {
 	account_id: '<ACCOUNT_ID>',
 });
 
@@ -103,6 +105,7 @@ for await (const namespace of client.kv.namespaces.list({ account_id: '<ACCOUNT_
 ## Notes
 
 - Adapted from the official docs: the official REST examples expand `$ACCOUNT_ID`, `$NAMESPACE_ID` and `$KEY_NAME` unquoted in the URL and send `-d '{"value": ...}'` under a `multipart/form-data` header, which does not form a multipart body. Here the URL is double-quoted with `${var}` expansion and the PUT uses `-F 'value=Some Value'` so curl generates the multipart body and boundary. `KEY_NAME` must be URL-encoded if it contains reserved characters (spaces, `/`, `?`, `#`).
+- Corrected from the official docs: the official SDK snippet declares `const value` three times in one block (a redeclaration error); the results are named `updated`, `fetched` and `deleted`. The snippet also assumes `import Cloudflare from 'cloudflare';`.
 - Typical uses: caching API responses, storing user configurations / preferences, storing user authentication details.
 - The REST API and pre-generated SDKs (TypeScript, Python, Go) are documented at the Cloudflare KV REST API reference (`https://developers.cloudflare.com/api/resources/kv/`), which is outside this reference.
 - Related products: R2 (unstructured object storage without egress fees), Durable Objects (scalable compute and permanent, consistent storage), D1 (SQLite-based relational database).

@@ -59,7 +59,7 @@ CREATE TABLE some_table (
 | `json_insert(json, path, value)` | Insert a value at the path. Does not overwrite an existing value. |
 | `json_object(label1, value1, ...)` | Pairs of (keys, values) to a JSON object. `json_object('temp', 45, 'wind_speed_mph', 13)` returns `{"temp":45,"wind_speed_mph":13}` |
 | `json_patch(target, patch)` | JSON MergePatch (RFC 7396) of patch into target. |
-| `json_remove(json, path, ...)` | Remove the key and value at the path. `json_remove('[60,70,80,90]', '$[0]')` returns `70,80,90]` (as printed in the source) |
+| `json_remove(json, path, ...)` | Remove the key and value at the path. `json_remove('[60,70,80,90]', '$[0]')` returns `[70,80,90]` |
 | `json_replace(json, path, value)` | Overwrites an existing value; does not create a new key if it doesn't exist. |
 | `json_set(json, path, value)` | Insert a value at the path, overwriting an existing value. |
 | `json_type(json)` / `json_type(json, path)` | One of `null`, `true`, `false`, `integer`, `real`, `text`, `array`, `object`. |
@@ -79,6 +79,7 @@ CREATE TABLE some_table (
 - Generated columns over JSON can be indexed; index frequently filtered JSON paths for performance.
 - `json_replace` overwrites an existing key; `json_set` sets regardless of existence; `[#]` in a path appends to an array.
 - Corrected from the official docs: the official Worker example uses `SET last_audited = ?` together with `json_each(?1)`, so both placeholders refer to parameter 1 while two values are bound; it is written as `?1` / `?2`. The official generated-column `CREATE TABLE` omits the comma after `raw_data TEXT`, which is a syntax error; a comma is added. The official table says `json_quote('[1, 2, 3]')` returns `[1,2,3]`; SQLite's `json_quote` on a text value returns a quoted JSON string, and `json()` is what minifies a JSON array.
+- Corrected from the official docs: the official `json_remove('[60,70,80,90]', '$[0]')` example prints the result as `70,80,90]` (missing the opening bracket); removing index 0 yields `[70,80,90]`.
 - The source's example `sensor_reading -\-> '$.measurement.o3'` is rendering-escaped `->>`; the `aqi[3]` example comment ("maximum PM2.5") does not match a 3-element array in the sample data.
 
 ## Related

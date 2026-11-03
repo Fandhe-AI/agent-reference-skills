@@ -41,13 +41,15 @@ stmt = self.env.DB.prepare("SELECT * FROM Customers WHERE CompanyName = ?").bind
 - Returns: `D1PreparedStatement`: `Object`, an object which only contains methods. Refer to Prepared statement methods.
 - Guidance: use `bind` to dynamically bind a value into the statement.
 
+Adapted (not in the official docs): the second statement is named `stmt2` because the official snippet redeclares `const stmt` in one block; see Notes.
+
 ```js
 // static statement, no bind
 const stmt = db
 	.prepare("SELECT * FROM Customers WHERE CompanyName = 'Alfreds Futterkiste' AND CustomerId = 1")
 
 // ordered statement using bind
-const stmt = db
+const stmt2 = db
 	.prepare("SELECT * FROM Customers WHERE CompanyName = ? AND CustomerId = ?")
 	.bind("Alfreds Futterkiste", 1);
 ```
@@ -150,7 +152,7 @@ const session = env.DB.withSession("<parameter>");
 
 Retrieves the latest `bookmark` from the D1 Session. Parameters: none. Returns `String | null`: a bookmark identifying the latest version of the database seen by the last query executed within the Session; `null` if no query is executed within a Session.
 
-Adapted (not in the official docs): `getBookmark()` returns the bookmark directly, not an object; see Notes.
+Adapted (not in the official docs): `getBookmark()` returns the bookmark directly, not an object, and the handler returns a `Response` (a Worker `fetch` handler cannot return a bare string); see Notes.
 
 ```js
 const session = env.DB.withSession("first-primary");
@@ -158,7 +160,7 @@ const result = await session
 	.prepare(`SELECT * FROM Customers WHERE CompanyName = 'Bs Beverages'`)
 	.run()
 const bookmark = session.getBookmark();
-return bookmark;
+return new Response(bookmark);
 ```
 
 `D1DatabaseSession.prepare()` and `D1DatabaseSession.batch()` are equivalent to `D1Database::prepare` and `D1Database::batch`.
@@ -181,6 +183,7 @@ Returns `D1DatabaseSession`: an object with `prepare()` and `batch()` similar to
 - To use read replication, you have to use the D1 Sessions API (`withSession`), otherwise all queries continue to be executed only by the primary database.
 - Corrected from the official docs: the official `batch()` example prints `stmt[1].results`, but `stmt` is a `D1PreparedStatement`; `batch()` resolves with an array of `D1Result`, so the result of the second statement is `batchResult[1].results`.
 - Corrected from the official docs: the official `getBookmark` example destructures `{ bookmark }`, but `getBookmark()` returns `String | null` directly (not an object), so it is written as `const bookmark = session.getBookmark();`. It returns `null` until a query has run in the Session.
+- Corrected from the official docs: the official `prepare()` example declares `const stmt` twice in one block (a redeclaration error); the ordered statement is named `stmt2`. The official `getBookmark` example also ends with `return bookmark;`, which a `fetch` handler cannot return; it is wrapped in `new Response(...)` (`bookmark` is `string | null`, and a `null` body yields an empty response).
 - Python Workers use `self.env.DB` instead of `env.DB`.
 - `env` and bindings are covered by the cloudflare-workers skill.
 

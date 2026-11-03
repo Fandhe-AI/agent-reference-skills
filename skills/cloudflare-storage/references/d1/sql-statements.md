@@ -35,15 +35,17 @@ console.log("results: ", results);
 
 Defer foreign key enforcement within a transaction:
 
+Adapted (not in the official docs): the explicit `PRAGMA defer_foreign_keys = off` before the end of the transaction was removed and statements are terminated with `;`; see Notes.
+
 ```sql
 -- Defer foreign key enforcement in this transaction.
-PRAGMA defer_foreign_keys = on
+PRAGMA defer_foreign_keys = on;
 
 -- Run your CREATE TABLE or ALTER TABLE / COLUMN statements
-ALTER TABLE users ...
+ALTER TABLE users ...;
 
--- This is implicit if not set by the end of the transaction.
-PRAGMA defer_foreign_keys = off
+-- Restore consistency before the transaction ends. The setting is reset
+-- implicitly at the end of the transaction; unresolved violations fail there.
 ```
 
 ## Options / Props
@@ -74,6 +76,7 @@ Compatible PRAGMA statements:
 
 - Supported SQLite extensions: FTS5 module for full-text search (including `fts5vocab`), JSON extension (JSON functions and operators), Math functions. Refer to the workerd `sqlite.c++` source for the full list of supported functions.
 - D1 PRAGMA statements only apply to the current transaction.
+- Adapted from the official docs: the official deferral example ends with an explicit `PRAGMA defer_foreign_keys = off` while violations may still be unresolved; it was removed so the example relies on the implicit reset.
 - PRAGMA statements cannot query the contents of a table.
 - D1 does not support `PRAGMA optimize(-1)`.
 - D1 is SQLite-based; for SQL Server see the mssql skill, for Postgres-based Supabase see the supabase skill.

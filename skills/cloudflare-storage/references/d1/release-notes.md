@@ -8,7 +8,9 @@ Chronological D1 feature updates, bug fixes and breaking changes (2023-05 to 202
 
 ## Signature / Usage
 
-Read-only-query automatic retries expose attempts in the result `meta`:
+Sessions API with a bookmark (read replication public beta, 2025-04-10):
+
+Snippet taken from https://developers.cloudflare.com/d1/best-practices/read-replication/
 
 ```ts
 // retrieve bookmark from previous session stored in HTTP header

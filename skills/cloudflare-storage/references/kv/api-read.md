@@ -110,7 +110,7 @@ Response types:
 | `get(key)` | `Promise<string \| Object \| ArrayBuffer \| ReadableStream \| null>` |
 | `get(keys)` | `Promise<Map<string, string \| Object \| null>>` |
 | `getWithMetadata(key)` | `Promise<{ value: string \| Object \| ArrayBuffer \| ReadableStream \| null, metadata: string \| Object \| null }>` |
-| `getWithMetadata(keys)` | `Promise<Map<string, { value: string \| Object \| null, metadata: string \| Object \| null }>` |
+| `getWithMetadata(keys)` | `Promise<Map<string, { value: string \| Object \| null, metadata: string \| Object \| null }>>` |
 
 Value by `type`: `text` returns a `string` (default); `json` an object decoded from a JSON string; `arrayBuffer` an `ArrayBuffer`; `stream` a `ReadableStream`. If there is no metadata associated with the key, `null` is returned for metadata.
 

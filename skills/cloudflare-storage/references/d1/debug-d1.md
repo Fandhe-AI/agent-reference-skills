@@ -8,7 +8,7 @@ D1's `stmt.` and `db.` methods throw an `Error` object on failure. Log `e.messag
 
 ## Signature / Usage
 
-```js
+```ts
 try {
     // This is an intentional misspelling
     await db.exec("INSERTZ INTO my_table (name, employees) VALUES ()");
