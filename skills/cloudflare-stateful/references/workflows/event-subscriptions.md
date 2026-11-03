@@ -44,7 +44,7 @@ Example `instance.completed` event message:
 ## Notes
 
 - All six events share the same shape: `type`, `source` (`type` and `workflowName`), `payload` (`versionId`, `instanceId`), and `metadata` (`accountId`, `eventSubscriptionId`, `eventSchemaVersion`, `eventTimestamp`). The example values above are the official placeholders.
-- Management guide and queue-side details: event-subscriptions.md (https://developers.cloudflare.com/queues/event-subscriptions/).
+- Management guide and queue-side details: [event-subscriptions.md](../queues/event-subscriptions.md).
 - To observe one instance's events from code without a queue, use [subscribe-instance-events.md](./subscribe-instance-events.md).
 
 ## Related

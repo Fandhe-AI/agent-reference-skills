@@ -53,7 +53,7 @@ export class ImageProcessingWorkflow extends WorkflowEntrypoint<Env, Params> {
 - Workflows give: durable multi-step execution without timeouts, pausing for external events or approvals, automatic retries and error handling, and built-in observability.
 - Typical uses named by the docs: reliable AI applications, data pipelines, user lifecycle (emails, trial expirations), and human-in-the-loop approvals.
 - Workflows (Cloudflare Workers durable execution) is a different product from the `inngest` skill (Inngest durable functions).
-- `wrangler workflows` flags are documented in the cloudflare-wrangler skill; Vitest workflow introspection is documented in the cloudflare-wrangler skill (vitest-integration). Related products: Durable Objects ([overview.md](../durable-objects/overview.md)), Queues (overview.md (https://developers.cloudflare.com/queues/)), and the Agents SDK (cloudflare-agents skill (agents; https://developers.cloudflare.com/agents/)).
+- `wrangler workflows` flags are documented in the cloudflare-wrangler skill; Vitest workflow introspection is documented in the cloudflare-wrangler skill (vitest-integration). Related products: Durable Objects ([overview.md](../durable-objects/overview.md)), Queues ([overview.md](../queues/overview.md)), and the Agents SDK (cloudflare-agents skill (agents; https://developers.cloudflare.com/agents/)).
 
 ## Related
 

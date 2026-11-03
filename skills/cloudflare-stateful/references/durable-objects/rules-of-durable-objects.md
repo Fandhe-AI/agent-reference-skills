@@ -430,7 +430,7 @@ export default defineConfig({
 - Call `deleteAll()` to clear storage; before compatibility date 2026-02-24, also call `deleteAlarm()` first.
 - No shutdown hooks exist (they cannot be guaranteed); write state incrementally.
 - Testing uses `@cloudflare/vitest-plugin` with `runInDurableObject` and `runDurableObjectAlarm` from `cloudflare:test` (see cloudflare-wrangler for Vitest integration). Class rename/delete is done via the `exports` field; see the migrations page.
-- Related products: Workflows best practices in rules-of-workflows.md (https://developers.cloudflare.com/workflows/build/rules-of-workflows/). The Agents SDK is covered by cloudflare-agents.
+- Related products: Workflows best practices in [rules-of-workflows.md](../workflows/rules-of-workflows.md). The Agents SDK is covered by cloudflare-agents.
 
 ## Related
 
