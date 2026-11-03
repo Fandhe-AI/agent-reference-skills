@@ -3,7 +3,8 @@ name: cloudflare-workers
 description: >
   Cloudflare Workers (V8 isolate サーバーレス実行環境, workerd) の API リファレンス。
   fetch / scheduled / tail handler、waitUntil、WorkerEntrypoint RPC、service bindings、
-  HTMLRewriter、Request / Response、Cache API、WebSockets。
+  compatibility flags (nodejs_compat)、HTMLRewriter、Request / Response、Cache API、WebSockets、
+  static assets、cron triggers。
   Wrangler は cloudflare-wrangler、KV / D1 / R2 は cloudflare-storage。
 user-invocable: false
 ---
@@ -77,6 +78,36 @@ skills/cloudflare-workers/
       web-crypto.md
       webassembly.md
       web-standards.md
+    nodejs-compat/
+      README.md
+      overview.md
+      buffer.md
+      crypto-zlib.md
+      http.md
+      net.md
+      process.md
+      asynclocalstorage.md
+    configuration/
+      README.md
+      overview.md
+      compatibility-dates.md
+      compatibility-flags.md
+      compatibility-flags-nodejs.md
+      cron-triggers.md
+      routes.md
+      custom-domains.md
+      workers-dev.md
+      placement.md
+    static-assets/
+      README.md
+      overview.md
+      get-started.md
+      binding.md
+      headers.md
+      redirects.md
+      routing-single-page-application.md
+      routing-worker-script.md
+      migrate-from-pages.md
 ```
 
 ## 探索手順
@@ -99,3 +130,10 @@ skills/cloudflare-workers/
 | Request / Response / Headers / `fetch` の仕様を調べたい | web-apis | [references/web-apis/README.md](references/web-apis/README.md) |
 | HTMLRewriter・Cache API・WebSocket・TCP sockets・Streams を使いたい | web-apis | [references/web-apis/README.md](references/web-apis/README.md) |
 | Web Crypto・WebAssembly を使いたい | web-apis | [references/web-apis/README.md](references/web-apis/README.md) |
+| `nodejs_compat` で使える Node.js API を知りたい | nodejs-compat | [references/nodejs-compat/README.md](references/nodejs-compat/README.md) |
+| `node:buffer` / `node:crypto` / `node:http` 等の対応範囲を確認したい | nodejs-compat | [references/nodejs-compat/README.md](references/nodejs-compat/README.md) |
+| compatibility date / flag の設定を調べたい | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| routes・custom domains・workers.dev・cron triggers を設定したい | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| Smart Placement を使いたい | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| static assets の配信・binding・routing を設定したい | static-assets | [references/static-assets/README.md](references/static-assets/README.md) |
+| `_headers` / `_redirects`・SPA ルーティング・Pages からの移行を知りたい | static-assets | [references/static-assets/README.md](references/static-assets/README.md) |
