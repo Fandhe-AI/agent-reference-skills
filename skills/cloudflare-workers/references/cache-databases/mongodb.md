@@ -49,8 +49,10 @@ export default {
 
 Durable Object holding the client:
 
+Adapted (not in the official docs): `DurableObjectState` removed from the `cloudflare:workers` import because it is a global type; see Notes.
+
 ```ts
-import { DurableObject, DurableObjectState } from "cloudflare:workers";
+import { DurableObject } from "cloudflare:workers";
 import { MongoClient } from "mongodb";
 
 interface Env {
@@ -113,6 +115,7 @@ Wrangler configuration:
 ## Notes
 
 - Adapted from the official docs: the official direct-connection example never closes the `MongoClient`; since a plain Worker cannot reuse the connection across requests, it is closed with `ctx.waitUntil(client.close())` in a `finally` block.
+- Corrected from the official docs: the official Durable Object example imports `DurableObjectState` from `cloudflare:workers`, but it is a global type (not a runtime export of that module), so only `DurableObject` is imported and the constructor references the global `DurableObjectState` type.
 - Hyperdrive does not support MongoDB (PostgreSQL and MySQL only). A plain Worker opens a new TCP and TLS connection per invocation (about 300 ms overhead); Workers cannot reuse I/O objects across requests, so pooling does not work. A Durable Object persists the client (about 35 ms warm).
 - Node.js compatibility: for compatibility dates `2026-08-04` or later `nodejs_compat` and `nodejs_compat_v2` are on by default; before that, add `nodejs_compat`. The driver uses `node:net` and `node:tls`, available with `nodejs_compat` and a compatibility date of `2025-03-20` or later. To turn it off for `2026-08-04`+, add both `no_nodejs_compat` and `no_nodejs_compat_v2`.
 - Create the `MongoClient` in the constructor and call `connect()` in the method so a warm Durable Object reuses the connection. Use `locationHint` (`wnam`, `enam`, `sam`, `weur`, `eeur`, `apac`, `oc`, `afr`, `me`) near the cluster.
