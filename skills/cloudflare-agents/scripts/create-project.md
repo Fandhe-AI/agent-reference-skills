@@ -33,9 +33,12 @@ npm create cloudflare@latest chat-agent
 
 Select the "Hello World" Worker when prompted, then install the dependencies.
 
+Adapted (not in the official docs): React, Vite, and the Cloudflare Vite plugin are added because the Hello World template has no frontend; the Vite config, `index.html`, mount code, and `assets` settings are in the chat agent sample ([chat-agent.md](../samples/chat-agent.md)). See Notes.
+
 ```sh
 cd chat-agent
-npm install agents @cloudflare/ai-chat ai @ai-sdk/provider zod
+npm install agents @cloudflare/ai-chat ai @ai-sdk/provider zod react react-dom
+npm install -D @cloudflare/vite-plugin @vitejs/plugin-react vite
 ```
 
 ### Create a voice Agent project (agents-starter template)
@@ -96,6 +99,7 @@ pnpm create cloudflare@latest my-mcp-client --template=cloudflare/ai/demos/hello
 
 ## Notes
 
+- Adapted from the official docs: the chat Agent steps install only the server packages; the React client also needs `react` / `react-dom` and a Vite build (`@cloudflare/vite-plugin`, `@vitejs/plugin-react`, `vite`) to be served.
 - Templates are fetched from GitHub (`cloudflare/ai`, `cloudflare/agents-starter`); review generated code before deploying. The authless MCP template accepts any client, so add OAuth before exposing tools with side effects.
 
 ## Related

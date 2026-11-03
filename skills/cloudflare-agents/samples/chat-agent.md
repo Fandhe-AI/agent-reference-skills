@@ -10,18 +10,27 @@ Streaming Workers AI chat agent with a server-side tool, a client-side tool, and
 
 Install (`npm create cloudflare@latest chat-agent`, pick "Hello World" Worker):
 
+Adapted (not in the official docs): React, Vite, and the Cloudflare Vite plugin are added so the `src/client.tsx` below is built and served by the same Worker (the same frontend setup as the Think getting-started tutorial). See Notes.
+
 ```sh
 cd chat-agent
-npm install agents @cloudflare/ai-chat ai @ai-sdk/provider zod
+npm install agents @cloudflare/ai-chat ai @ai-sdk/provider zod react react-dom
+npm install -D @cloudflare/vite-plugin @vitejs/plugin-react vite
 ```
 
 `wrangler.jsonc`:
+
+Adapted (not in the official docs): the `assets` block serves the built client as a single-page application and runs the Worker first only for `/agents/*`. See Notes.
 
 ```jsonc
 {
 	"name": "chat-agent",
 	"main": "src/server.ts",
 	"upload_source_maps": true,
+	"assets": {
+		"not_found_handling": "single-page-application",
+		"run_worker_first": ["/agents/*"],
+	},
 	// Set this to today's date
 	"compatibility_date": "2026-11-03",
 	"compatibility_flags": ["nodejs_compat"],
@@ -279,16 +288,60 @@ export default function App({ userId }: { userId: string }) {
 }
 ```
 
+Frontend entry: `vite.config.ts`, `index.html`, and `src/main.tsx`.
+
+Adapted (not in the official docs): the page shows only `src/client.tsx`; the Vite config, HTML entry point, and mount code follow the Think getting-started tutorial. `getSignedInUserId()` is a placeholder for your own sign-in flow. See Notes.
+
+```ts
+import { cloudflare } from "@cloudflare/vite-plugin";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+	plugins: [react(), cloudflare()],
+});
+```
+
+```html
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Chat agent</title>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script type="module" src="/src/main.tsx"></script>
+	</body>
+</html>
+```
+
+```tsx
+import { createRoot } from "react-dom/client";
+import App from "./client";
+
+// Placeholder: return the signed-in user's id from your own auth flow.
+declare function getSignedInUserId(): string;
+
+const root = document.getElementById("root");
+if (root) {
+	createRoot(root).render(<App userId={getSignedInUserId()} />);
+}
+```
+
 Run and deploy:
+
+Adapted (not in the official docs): with the Vite plugin, the app runs with `npx vite dev` and is built before deploying. See Notes.
 
 ```sh
 npx wrangler types
-npm run dev
-npx wrangler deploy
+npx vite dev
+npx vite build && npx wrangler deploy
 ```
 
 ## Notes
 
+- Adapted from the official docs: the page creates a Hello World Worker and shows `src/client.tsx`, but the Hello World template has no React or HTML entry point, so the client is never built or served. The sample adds `react` / `react-dom`, `vite` with `@cloudflare/vite-plugin` and `@vitejs/plugin-react`, an `assets` block (`not_found_handling: "single-page-application"`, `run_worker_first: ["/agents/*"]`), `vite.config.ts`, `index.html`, and `src/main.tsx`, following the Think getting-started tutorial ([think-getting-started.md](../references/harnesses/think-getting-started.md)). Requests outside `/agents/*` are served from the built assets, so the Worker's 404 fallback only applies to unmatched Agent routes.
 - Adapted from the official docs: the page's TypeScript tab declares `class ChatAgent extends AIChatAgent` without the `Env` generic, which leaves `this.env.AI` untyped; `<Env>` was added (the Env type comes from `npx wrangler types`).
 - Tool kinds: `getWeather` has `execute` (runs on the server); `getUserTimezone` has no `execute` (the browser answers through `onToolCall`); `calculate` has `execute` plus `needsApproval` (pauses until `addToolApprovalResponse`).
 - For destructive or irreversible tools, set `needsApproval: true` (or a predicate that returns true) so a human must approve before `execute` runs. `calculate` only gates large numbers, as an illustration.
