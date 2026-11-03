@@ -10,6 +10,8 @@ Add approval or input at different layers of an Agent: respond to an MCP server 
 
 Workflow-based approval:
 
+Adapted (not in the official docs): the official example never checked the return value of `waitForApproval()` and went on to process the expense even when it returned a falsy value on timeout; this version stops with `reportError()` and a thrown error, as in the timeout section below.
+
 ```ts
 import { Agent } from "agents";
 import { AgentWorkflow } from "agents/workflows";
@@ -48,7 +50,13 @@ export class ExpenseWorkflow extends AgentWorkflow<
 			timeout: "7 days",
 		});
 
-		console.log(`Approved by: ${approval?.approvedBy}`);
+		if (!approval) {
+			// Timeout expired: stop here instead of processing an unapproved expense
+			await step.reportError("Approval timeout - expense not processed");
+			throw new Error("Approval timeout");
+		}
+
+		console.log(`Approved by: ${approval.approvedBy}`);
 
 		// Step 4: Process the approved expense
 		const result = await step.do("process", async () => {
@@ -286,6 +294,7 @@ Related APIs:
 
 ## Notes
 
+- Adapted from the official docs: the workflow example now checks the `waitForApproval()` result and stops on timeout (falsy return) instead of processing the expense.
 - Adapted from the official docs: `approve()` / `reject()` additionally require `canDecide()` (a fail-closed placeholder: implement your approver policy) and the escalation example adds stub `sendReminder()` / `escalateApproval()` callbacks. `submitForApproval()` still takes `expense: unknown`: validate it and authenticate the caller before use. Approver identity no longer comes from a client argument (`approveMulti(workflowId, userId)` in the page's multi-approver sample has the same flaw and is omitted: collect approvals keyed by a server-verified user ID and call `approveWorkflow()` once `requiredApprovals` is met); `schedule()` now receives `Date` objects (a number means seconds from now). Also omitted for length: the audit-trail SQL sample, the pending-approvals React UI sample, and the full `CodingAgent`/`createCodemodeRuntime` sample. For Code Mode, a connector's `tool(name, tool)` override returns `{ ...tool, requiresApproval: true }` for the gated tool, and the agent exposes `runtime().pending()`, `approve({ executionId })`, and `reject({ executionId, seq })` as callables.
 - Form-mode elicitation collects structured, non-sensitive input; URL mode sends the user through an out-of-band flow (third-party authorization, payment). The `forwardElicitationToUser` stub above throws until you implement it.
 - Best practices: approve only actions with real consequences, show full action arguments, set timeouts and escalation (`schedule()`), record decisions in `this.sql` for audit, keep pending approvals in agent state so they survive disconnects, and define fallback behavior on rejection.

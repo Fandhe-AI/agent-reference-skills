@@ -8,7 +8,7 @@ Experimental. `Streams` from `agents/streams` stores incremental output (such as
 
 ## Signature / Usage
 
-Adapted (not in the official docs): every request now passes a caller check before reading or starting a stream; `isAuthorizedCaller()` is a placeholder that rejects everyone until you implement verification; see Notes.
+Adapted (not in the official docs): every request now passes a caller check before reading or starting a stream; `isAuthorizedCaller()` is a placeholder that rejects everyone until you implement verification. Each POST also opens a new stream under a unique `crypto.randomUUID()` ID, returns it in the 202 response (GET takes it as `?id=`), and answers 409 when `open()` throws instead of a blind 202; see Notes.
 
 ```ts
 import { DurableObject } from "cloudflare:workers";
@@ -16,6 +16,7 @@ import { streamText } from "ai";
 import { Lifecycle } from "agents/lifecycle";
 import { createAI } from "agents/models/ai-sdk";
 import { Streams, sseResponse } from "agents/streams";
+import type { StreamWriter } from "agents/streams";
 
 // Placeholder: rejects every request until you implement verification.
 function isAuthorizedCaller(request: Request): boolean {
@@ -31,20 +32,35 @@ export class ReportAgent extends DurableObject<Env> {
 			return new Response("Unauthorized", { status: 401 });
 		}
 		const url = new URL(request.url);
-		const id = url.searchParams.get("id") ?? "report";
 
 		if (request.method === "POST") {
 			const { prompt } = await request.json<{ prompt: string }>();
-			this.ctx.waitUntil(this.#generate(id, prompt));
+			// A new ID per generation: a settled stream cannot be reopened, and a
+			// shared ID would let two generators write to one stream.
+			const id = crypto.randomUUID();
+			let stream: StreamWriter;
+			try {
+				stream = await this.streams.open(id);
+			} catch (error) {
+				return new Response(`Cannot start stream: ${String(error)}`, {
+					status: 409,
+				});
+			}
+			this.ctx.waitUntil(this.#generate(stream, prompt));
 			return Response.json({ id }, { status: 202 });
+		}
+
+		const id = url.searchParams.get("id");
+		if (!id) return new Response("Missing id", { status: 400 });
+		if ((await this.streams.status(id)) === null) {
+			return new Response("Unknown stream", { status: 404 });
 		}
 
 		// Replay what is stored, then follow live chunks until the stream ends.
 		return sseResponse(this.streams, id, { request });
 	}
 
-	async #generate(id: string, prompt: string): Promise<void> {
-		const stream = await this.streams.open(id);
+	async #generate(stream: StreamWriter, prompt: string): Promise<void> {
 		try {
 			const ai = createAI({ binding: this.env.AI });
 			const result = streamText({
@@ -166,6 +182,7 @@ Read and manage:
 - `onUpToDate` runs once, the first time the reader reaches the end of stored chunks; use it to switch a UI from replay to live.
 - Storage: chunks are stored in blocks (one row up to 256 KB, then a new row). Nothing deletes old streams automatically; use `delete()` or `discard`. The `commit` + `discard` pattern makes it atomic: either the reply is stored and the stream is gone, or `commit` threw and the stream is still live.
 - Adapted from the official docs: the `onRequest()` example originally let any caller start model generation; it now calls a fail-closed `isAuthorizedCaller()` placeholder. Also authenticate in the Worker first. The `id` query parameter selects which stream is read, so scope it to what the caller may see.
+- Adapted from the official docs: the example no longer uses a fixed `report` stream ID. With a fixed ID, a POST after completion would get 202 but `open()` would throw `StreamClosedError` (GET would keep returning the old result), and a second POST during generation would share one stream between two generators. `open()` now runs before the 202 so a failure is reported (409), and GET requires and checks the `id` via `status(id)`.
 - `AIChatAgent` and Think store each in-progress reply in `Streams`. To add it to an `Agent`, construct it as a field and `this.lifecycle.use()` it in the constructor.
 
 ## Related
