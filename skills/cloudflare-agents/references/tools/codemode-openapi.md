@@ -54,7 +54,7 @@ export const ordersOpenApiSpec = {
 } as const;
 ```
 
-Adapted (not in the official docs): the official `path.startsWith("/")` check still allows a protocol-relative path such as `//attacker.example/x`, which `new URL()` resolves to another host and would receive the bearer token; the origin is now verified after resolution. See Notes.
+Adapted (not in the official docs): the official `path.startsWith("/")` check still allows a protocol-relative path such as `//attacker.example/x`, which `new URL()` resolves to another host and would receive the bearer token; the origin is now verified after resolution. Approval is also applied to every tool except an allowlist of read-only operations, so the low-level `request` method cannot create an order without approval. See Notes.
 
 ```ts
 import {
@@ -65,6 +65,9 @@ import {
 import { ordersOpenApiSpec } from "./orders-openapi";
 
 const API_ORIGIN = "https://api.example.com";
+// Fail closed: every tool not listed here (create_order, the low-level
+// `request` escape hatch, operations added to the spec later) needs approval.
+const READ_ONLY_TOOLS = new Set(["get_order"]);
 
 export class OrdersConnector extends OpenApiConnector<Env> {
 	override name() {
@@ -118,10 +121,10 @@ export class OrdersConnector extends OpenApiConnector<Env> {
 	}
 
 	protected override tool(name: string, tool: ConnectorTool): ConnectorTool {
-		if (name === "create_order") {
-			return { ...tool, requiresApproval: true };
+		if (READ_ONLY_TOOLS.has(name)) {
+			return tool;
 		}
-		return tool;
+		return { ...tool, requiresApproval: true };
 	}
 }
 ```
@@ -162,7 +165,7 @@ async () => {
 };
 ```
 
-Low-level escape hatch exposed on every OpenAPI connector:
+Low-level escape hatch exposed on every OpenAPI connector (with the connector above, this call pauses for approval because `request` is not in `READ_ONLY_TOOLS`):
 
 ```js
 const result = await orders.request({
@@ -185,7 +188,7 @@ const result = await orders.request({
 
 - Adapted from the official docs: the origin check after URL resolution is added (see the Adapted marker). Without it a model-supplied `//host/path` could send `ORDERS_API_TOKEN` to an arbitrary host (SSRF / credential leak). The other lines are verbatim.
 - Credentials (`ORDERS_API_TOKEN`) stay in the host Worker as a secret; model code receives only methods and results. `options.headers` is model-influenced; the connector sets `Authorization` last so the model cannot override it.
-- Human-in-the-loop: `create_order` is marked `requiresApproval: true`, so the run pauses before the side effect. Do the same for every mutating operation.
+- Human-in-the-loop: the official example marks only `create_order` with `requiresApproval: true`, but the low-level `request` method reaches the same `request()` with the same token, so model code could call `orders.request({ path: "/orders", method: "POST", body: ... })` and create an order without approval. Adapted from the official docs: `tool()` returns the tool unchanged only for names in the read-only allowlist `READ_ONLY_TOOLS` and adds `requiresApproval: true` to everything else, including `request` and operations added to the spec later. Derived operations and `request` share `request()`, so a method check there cannot tell them apart; gate by tool name in `tool()`.
 - Method names are the sanitized `operationId` (else derived from HTTP method and path; duplicates and names reserved for `request` / `spec` are skipped). Parameters are top-level fields, JSON body under `body`, required OpenAPI parameters are required fields, local `$ref` resolved. Response types are not derived: methods return `unknown`.
 - Publishing an OpenAPI service to external MCP clients via `search` / `execute`: build-codemode-mcp-server.md (https://developers.cloudflare.com/agents/model-context-protocol/guides/build-codemode-mcp-server/)
 

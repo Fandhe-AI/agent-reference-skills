@@ -8,7 +8,9 @@ source: https://developers.cloudflare.com/agents/tools/codemode/mcp/
 
 ## Signature / Usage
 
-Requires the durable runtime setup ([codemode-durable-runtime.md](./codemode-durable-runtime.md)) and an existing MCP connection (see [MCP client tools](./mcp-client-tools.md)). Create the connector; `create_issue` is marked as requiring approval:
+Requires the durable runtime setup ([codemode-durable-runtime.md](./codemode-durable-runtime.md)) and an existing MCP connection (see [MCP client tools](./mcp-client-tools.md)). Create the connector; every tool outside a read-only allowlist requires approval:
+
+Adapted (not in the official docs): the official `tool()` marks only `create_issue` as requiring approval and lets every other tool of the remote MCP server (including other write tools and tools added to the server later) run without approval; it now fails closed with an allowlist. See Notes.
 
 ```ts
 import {
@@ -16,6 +18,10 @@ import {
 	type ConnectorTool,
 	type McpConnectionLike,
 } from "@cloudflare/codemode";
+
+// Fail closed: list only tools you have verified as read-only. Every other
+// tool (create_issue and anything the server adds later) needs approval.
+const READ_ONLY_TOOLS = new Set<string>([]);
 
 export class GithubConnector extends McpConnector<Env> {
 	private connection: McpConnectionLike;
@@ -45,11 +51,11 @@ export class GithubConnector extends McpConnector<Env> {
 		name: string,
 		tool: ConnectorTool,
 	): ConnectorTool {
-		if (name === "create_issue") {
-			return { ...tool, requiresApproval: true };
+		if (READ_ONLY_TOOLS.has(name)) {
+			return tool;
 		}
 
-		return tool;
+		return { ...tool, requiresApproval: true };
 	}
 }
 ```
@@ -139,7 +145,7 @@ const codemode = createCodeTool({
 ## Notes
 
 - Each discovered MCP tool becomes a typed sandbox method (types from MCP schemas) that calls `connection.client.callTool()`. Names are sanitized: `list-pull.requests` becomes `list_pull_requests`, `3d-render` becomes `_3d_render`, `delete` becomes `delete_`.
-- Human-in-the-loop: mark destructive MCP tools with `requiresApproval: true` in `tool()`; the runtime returns a paused execution and the same sandbox program continues after approval. The `createCodeTool(this.mcp.getAITools())` path has no durable pause/approval; use `McpConnector` when tools can cause side effects or need on-demand discovery.
+- Human-in-the-loop: mark side-effecting MCP tools with `requiresApproval: true` in `tool()`; Adapted from the official docs: the example decides by allowlist (`READ_ONLY_TOOLS`, empty by default) rather than naming only `create_issue`, because the remote server's tool list is not under your control; the runtime returns a paused execution and the same sandbox program continues after approval. The `createCodeTool(this.mcp.getAITools())` path has no durable pause/approval; use `McpConnector` when tools can cause side effects or need on-demand discovery.
 - Await `codemodeRuntime()` before calling approval, rejection, rollback, or snippet methods so MCP connections finish restoring after hibernation.
 - Tool results and descriptions from external MCP servers are untrusted input to the model. Connector credentials stay on the host side and are never exposed to sandbox code.
 - `getAITools()` schema conversion is reused while a live connection's catalog is unchanged; use `this.mcp.listTools()` to inspect the raw MCP catalog. The MCP protocol itself is in the mcp-spec skill.
