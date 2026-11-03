@@ -1,0 +1,155 @@
+---
+source: https://developers.cloudflare.com/durable-objects/api/alarms/
+---
+
+# Alarms
+
+Alarms schedule a Durable Object to be woken up at a future time, at which point its `alarm()` handler is called. Alarms are set through the Storage API and follow the same rules as other storage operations.
+
+## Signature / Usage
+
+Adapted (not in the official docs): each registration carries a `gen` token; before each `processEvent()` the handler re-reads the entry and skips it unless the `gen` matches the listed one and it is still due, and afterwards it updates or deletes the entry only if the stored `gen` still matches, so a re-registration made during an await is neither run early nor overwritten; the next alarm is chosen from a fresh `list()`. See Notes.
+
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export class AgentServer extends DurableObject {
+  // Schedule a one-time or recurring event
+  async scheduleEvent(id, runAt, repeatMs = null) {
+    // A fresh gen token marks this registration; it invalidates in-flight alarm() results for the same id.
+    const gen = crypto.randomUUID();
+    await this.ctx.storage.put(`event:${id}`, { id, runAt, repeatMs, gen });
+    const currentAlarm = await this.ctx.storage.getAlarm();
+    if (!currentAlarm || runAt < currentAlarm) {
+      await this.ctx.storage.setAlarm(runAt);
+    }
+  }
+
+  async alarm() {
+    const now = Date.now();
+    const events = await this.ctx.storage.list({ prefix: "event:" });
+
+    // processEvent() awaits external I/O, so scheduleEvent() can run in between.
+    // Only touch the keys handled here; never rewrite state from this stale snapshot.
+    for (const [key, event] of events) {
+      if (event.runAt <= now) {
+        // The listed snapshot may be stale: an earlier processEvent() await can let
+        // scheduleEvent() re-register this key for a later time. Re-read it and run it
+        // only if it is still the same registration (gen) and is due.
+        const latest = await this.ctx.storage.get(key);
+        if (!latest || latest.gen !== event.gen || latest.runAt > Date.now()) continue;
+
+        await this.processEvent(event);
+        // Re-read the current entry; only write if it is still the registration we processed.
+        // Only storage operations run between this get() and the put()/delete(), so
+        // input/output gates keep scheduleEvent() from interleaving.
+        const current = await this.ctx.storage.get(key);
+        if (current && current.gen === event.gen) {
+          if (event.repeatMs) {
+            await this.ctx.storage.put(key, { ...current, runAt: now + event.repeatMs });
+          } else {
+            await this.ctx.storage.delete(key);
+          }
+        }
+      }
+    }
+
+    // Re-read after processing so events added meanwhile are included.
+    // No await between this list() and setAlarm() other than storage ops, so
+    // scheduleEvent() writes are either visible here or lower the alarm itself afterwards.
+    const remaining = await this.ctx.storage.list({ prefix: "event:" });
+    let nextAlarm = null;
+    for (const event of remaining.values()) {
+      if (!nextAlarm || event.runAt < nextAlarm) nextAlarm = event.runAt;
+    }
+    if (nextAlarm) await this.ctx.storage.setAlarm(nextAlarm);
+  }
+
+  async processEvent(event) {
+    // Your event handling logic here
+  }
+}
+```
+
+Adapted (not in the official docs): the official example never returns a `Response` from `fetch()` and does not await `setAlarm`; both are fixed. See Notes.
+
+```js
+import { DurableObject } from "cloudflare:workers";
+
+export default {
+	async fetch(request, env) {
+		return await env.ALARM_EXAMPLE.getByName("foo").fetch(request);
+	},
+};
+
+const SECONDS = 1000;
+
+export class AlarmExample extends DurableObject {
+	constructor(ctx, env) {
+		super(ctx, env);
+		this.storage = ctx.storage;
+	}
+	async fetch(request) {
+		// If there is no alarm currently set, set one for 10 seconds from now
+		let currentAlarm = await this.storage.getAlarm();
+		if (currentAlarm == null) {
+			await this.storage.setAlarm(Date.now() + 10 * SECONDS);
+		}
+		return new Response("Alarm scheduled");
+	}
+	async alarm() {
+		// The alarm handler will be invoked whenever an alarm fires.
+		// You can use this to do work, read from the Storage API, make HTTP calls
+		// and set future alarms to run using this.storage.setAlarm() from within this handler.
+	}
+}
+```
+
+Adapted (not in the official docs): the official snippet logs with a double-quoted string, so `${...}` is never interpolated; backticks are used. See Notes.
+
+```js
+class MyDurableObject extends DurableObject {
+	async alarm(alarmInfo) {
+		if (alarmInfo?.retryCount != 0) {
+			console.log(
+				`This alarm event has been attempted ${alarmInfo?.retryCount} times before.`,
+			);
+		}
+	}
+}
+```
+
+## Options / Props
+
+### Storage methods (`ctx.storage`)
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `getAlarm()` | `Promise<number \| null>` | — | Currently set alarm time in ms since the UNIX epoch, or `null`. If called while an `alarm()` is running, returns `null` unless `setAlarm` has been called since the handler started. |
+| `setAlarm(scheduledTimeMs)` | `Promise<void>` (takes `number`) | — | Sets the alarm time (ms since epoch). Overrides an existing alarm. |
+| `deleteAlarm()` | `Promise<void>` | — | Unsets the alarm. Inside `alarm()` it may prevent retries on a best-effort basis, not guaranteed. |
+
+### Handler
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `alarm(alarmInfo)` | `(Object) => void \| Promise<void>` | — | Called when the alarm time is reached. Only one `alarm()` runs at a time per object instance. Can be `async`. |
+| `alarmInfo.retryCount` | `number` | — | Times this alarm event has been retried. |
+| `alarmInfo.isRetry` | `boolean` | — | `true` if this alarm event is a retry. |
+
+## Notes
+
+- Each Durable Object can have one alarm at a time. Alarms have at-least-once execution, retried on uncaught exceptions with exponential backoff starting at a 2 second delay, up to 6 retries; this only applies to the most recent `setAlarm()` call.
+- To retry indefinitely, catch exceptions in `alarm()` and schedule a new alarm before returning; otherwise a long outage can exhaust the retries and the alarm will not re-run until the next `setAlarm`.
+- If you call `setAlarm` in the constructor, first check whether an alarm is already set: after inactivity the constructor runs before the `alarm()` handler and could interfere with the pending alarm.
+- If an unexpected error terminates the object, `alarm()` may be re-instantiated on another machine and run from the beginning after a short delay.
+- Alarms vs Cron Triggers: alarms are scheduled programmatically from within an object and each object can have one; a Worker can have up to three Cron Triggers, configured through the dashboard or API. Cron Triggers are documented in cloudflare-workers.
+- Adapted (not in the official docs): the first example's `alarm()` no longer computes `nextAlarm` from the initial `list()` snapshot. `processEvent()` awaits external I/O, during which `scheduleEvent()` can add events; the handler now updates only the keys it processed and re-lists after processing to choose the next alarm, so new nearer events are not pushed back. Each registration also stores a `gen` token (`crypto.randomUUID()`); after `processEvent()` the handler re-reads the entry and puts/deletes only if `gen` still matches, so an event re-registered under the same ID during the await is kept as the newer registration (it stays due and is picked up by the final `list()`). Before each `processEvent()` the handler also re-reads the entry and skips it if it was deleted, its `gen` changed, or its `runAt` is now in the future; otherwise, while one event's `processEvent()` awaits, `scheduleEvent()` could move a later listed event to a future time and the loop would still run it from the stale snapshot (skipped entries are picked up by the final `list()`). The get-then-write sequence contains only storage awaits, so input/output gates prevent `scheduleEvent()` from interleaving.
+- Corrected from the official docs: `fetch()` in the example returned nothing (a `Response` is required) and `setAlarm` was not awaited; the retry-log message used a double-quoted string so `${alarmInfo?.retryCount}` was printed literally.
+
+## Related
+
+- [DurableObjectState](./state.md)
+- [SQLite-backed storage API](./sqlite-storage-api.md)
+- [Durable Object base class](./base-class.md)
+- [Durable Object ID](./id.md)
