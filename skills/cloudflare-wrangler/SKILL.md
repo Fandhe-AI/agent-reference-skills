@@ -1,0 +1,80 @@
+---
+name: cloudflare-wrangler
+description: >
+  Cloudflare Workers 開発ツール (Wrangler CLI v4 / @cloudflare/vite-plugin / Vitest 統合 / Miniflare) の
+  リファレンス。wrangler dev / deploy / versions / rollback / tail、wrangler.jsonc、
+  .dev.vars、@cloudflare/vitest-plugin (旧 vitest-pool-workers)、gradual deployments、
+  Workers Builds、Logpush、source maps。
+  ランタイム API は cloudflare-workers、KV / D1 / R2 は cloudflare-storage。
+user-invocable: false
+---
+
+# Cloudflare Workers 開発ツール リファレンス
+
+Wrangler CLI・設定ファイル (wrangler.jsonc / wrangler.toml)・ローカル開発・Vite プラグイン・Vitest 統合・Miniflare・CI/CD・オブザーバビリティを扱う。Workers の開発・テスト・デプロイ・運用を設計・実装するときに参照する。
+
+## 対象バージョン
+
+- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため `cloudflare/cloudflare-docs` production SHA `d0995b91312add6db730afec4f4944cee834abc6` と取得日 2026-11-03 で pin
+- wrangler 4.156.2（依存 workerd 1.20261102.1 / miniflare 5.20261102.0-beta。npm latest の miniflare は 4.20260730.0）
+- @cloudflare/vite-plugin 1.67.0（2.0.0-beta は対象外）
+- @cloudflare/vitest-plugin 1.5.0（公式移行ガイドに「`@cloudflare/vitest-plugin` replaces `@cloudflare/vitest-pool-workers`」と明記。旧パッケージ 0.23.0）
+- 新 `cf` CLI（beta）は対象外
+
+## 他スキルとの使い分け
+
+- cloudflare-workers: ランタイム API（handlers / bindings 概念 / RPC / Web API / Node.js 互換）と、compatibility flags・cron・routes などランタイム側の挙動。本スキルの `configuration` カテゴリは設定ファイルのキー仕様を扱う
+- cloudflare-storage: KV / D1 / R2 / Hyperdrive の API と、`wrangler kv|d1|r2|hyperdrive` のタスク別コマンド。全フラグ表は本スキルの `commands` にもある
+- vite / vitest / github-docs: 各ツール本体の設定 API・構文。本スキルは Cloudflare 連携部分（`@cloudflare/vite-plugin`、`@cloudflare/vitest-plugin`、Workers 向け GitHub Actions）に限る
+- 未収録の Cloudflare 製品は公式 docs を参照する
+
+## ディレクトリ構成
+
+```text
+skills/cloudflare-wrangler/
+  SKILL.md
+  references/
+    commands/
+      README.md
+      overview.md
+      global-flags.md
+      general.md
+      workers.md
+      workers-versions.md
+      workers-for-platforms.md
+      api.md
+      kv.md
+      d1.md
+      r2.md
+      hyperdrive.md
+      queues.md
+      vectorize.md
+      pipelines.md
+      workflows.md
+      secrets-store.md
+      containers.md
+      browser.md
+      vpc.md
+      tunnel.md
+      certificates.md
+      artifacts.md
+      flagship.md
+      pages.md
+```
+
+## 探索手順
+
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
+
+1. 下記マッピング表でタスクに対応するカテゴリを探す
+2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
+
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照 README |
+|--------|---------|------------|
+| `wrangler deploy` / `dev` / `tail` / `secret` / `types` のフラグを調べたい | commands | [references/commands/README.md](references/commands/README.md) |
+| `wrangler versions` / `rollback` のコマンドを知りたい | commands | [references/commands/README.md](references/commands/README.md) |
+| `wrangler kv` / `d1` / `r2` / `queues` / `vectorize` 等のサブコマンド全フラグを調べたい | commands | [references/commands/README.md](references/commands/README.md) |
+| 全コマンド共通のグローバルフラグを知りたい | commands | [references/commands/README.md](references/commands/README.md) |
