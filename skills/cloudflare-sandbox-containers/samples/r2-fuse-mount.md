@@ -10,11 +10,13 @@ Start a Container that mounts an R2 bucket read-only with FUSE (tigrisfs), lists
 
 `wrangler.jsonc` (replace the bucket name and account ID; use R2 API credentials with Object Read access scoped to that bucket):
 
+Adapted (not in the official docs): `main` points to `src/index.js`, the JavaScript file this page creates (the official config says `src/index.ts`). See Notes.
+
 ```jsonc
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "r2-fuse-container",
-  "main": "src/index.ts",
+  "main": "src/index.js",
   "upload_source_maps": true,
   // Set this to today's date
   "compatibility_date": "2026-11-03",
@@ -192,6 +194,7 @@ curl -X POST http://localhost:8787/run -H "Authorization: Bearer ${RUN_TOKEN}"
 
 ## Notes
 
+- Corrected from the official docs: the Wrangler config sets `"main": "src/index.ts"` while the Worker code is given as `src/index.js`; `main` is aligned to `src/index.js` so the entry point exists.
 - Adapted from the official docs: the official route is unauthenticated, but it starts a container that holds R2 credentials. The token check (`RUN_TOKEN`) is added and fails closed.
 - FUSE gives filesystem access to object storage, not local-disk performance or full POSIX semantics. Good for reading datasets, models, and shared assets.
 - `enableInternet: true` is required so tigrisfs can reach the R2 endpoint. A mount failure makes `monitor()` reject.

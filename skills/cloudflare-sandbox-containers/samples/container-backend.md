@@ -10,11 +10,13 @@ Serve a static frontend with Workers Static Assets and route `/api` requests to 
 
 `wrangler.jsonc` (assets are served first except for `/api` paths, which run the Worker):
 
+Adapted (not in the official docs): `main` points to `src/index.js`, the JavaScript file this page creates (the official config says `src/index.ts`). See Notes.
+
 ```jsonc
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "static-frontend-container-backend",
-  "main": "src/index.ts",
+  "main": "src/index.js",
   "upload_source_maps": true,
   // Set this to today's date
   "compatibility_date": "2026-11-03",
@@ -196,6 +198,7 @@ npx wrangler dev
 
 ## Notes
 
+- Corrected from the official docs: the Wrangler config sets `"main": "src/index.ts"` while the Worker code is given as `src/index.js`; `main` is aligned to `src/index.js` so the entry point exists.
 - The official page also ships a small `index.html` (Alpine.js) in `./dist` that fetches `/api/widgets`; it is omitted here. Any static page that calls `/api/widgets` works.
 - The Worker picks one of `instance-0` to `instance-2` at random: a fixed pool, not autoscaling. Keep shared data outside the container filesystem.
 - The instance names come from the Worker, never from the request. Keep it that way if you adapt the routing.

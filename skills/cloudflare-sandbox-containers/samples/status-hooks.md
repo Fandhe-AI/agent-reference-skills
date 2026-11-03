@@ -10,11 +10,13 @@ Log when a Container becomes ready, exits successfully, or fails, using `monitor
 
 `wrangler.jsonc`:
 
+Adapted (not in the official docs): `main` points to `src/index.js`, the JavaScript file this page creates (the official config says `src/index.ts`). See Notes.
+
 ```jsonc
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "container-lifecycle",
-  "main": "src/index.ts",
+  "main": "src/index.js",
   "upload_source_maps": true,
   // Set this to today's date
   "compatibility_date": "2026-11-03",
@@ -151,6 +153,7 @@ Visit `http://localhost:8787/` and inspect the Worker logs.
 
 ## Notes
 
+- Corrected from the official docs: the Wrangler config sets `"main": "src/index.ts"` while the Worker code is given as `src/index.js`; `main` is aligned to `src/index.js` so the entry point exists.
 - `monitor()` resolves without a value after a successful exit and rejects for failures, including nonzero process exits.
 - The constructor restores monitoring and the inactivity timeout when the Durable Object restarts with a running Container.
 - A pending monitor can keep the Durable Object active for up to 15 minutes. The five-minute inactivity timeout starts after the Durable Object becomes inactive, not five minutes after the last HTTP request.

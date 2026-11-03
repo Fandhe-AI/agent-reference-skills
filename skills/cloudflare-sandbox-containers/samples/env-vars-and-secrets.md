@@ -17,11 +17,13 @@ npx wrangler kv key put --binding DEMO_KV KV_VALUE 'Hello from KV!' --remote
 
 `wrangler.jsonc` (replace `<KV_NAMESPACE_ID>` and `<STORE_ID>` with the IDs from setup):
 
+Adapted (not in the official docs): `main` points to `src/index.js`, the JavaScript file this page creates (the official config says `src/index.ts`). See Notes.
+
 ```jsonc
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "container-environment",
-  "main": "src/index.ts",
+  "main": "src/index.js",
   "upload_source_maps": true,
   // Set this to today's date
   "compatibility_date": "2026-11-03",
@@ -230,6 +232,7 @@ Non-secret Docker build arguments use `build_vars` on the named image (declare `
 
 ## Notes
 
+- Corrected from the official docs: the Wrangler config sets `"main": "src/index.ts"` while the Worker code is given as `src/index.js`; `main` is aligned to `src/index.js` so the entry point exists.
 - A running process keeps the environment it started with. Updating a secret or KV value takes effect on the next container start.
 - The local Secrets Store command creates local data only; it does not read or update the deployed secret. Run it with the same store ID and secret name as the configuration.
 - Build arguments do not become runtime environment variables. Keep secrets out of build arguments and container images.

@@ -10,11 +10,13 @@ Distribute HTTP requests across three named Container instances, each started by
 
 `wrangler.jsonc`:
 
+Adapted (not in the official docs): `main` points to `src/index.js`, the JavaScript file this page creates (the official config says `src/index.ts`). See Notes.
+
 ```jsonc
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "stateless-containers",
-  "main": "src/index.ts",
+  "main": "src/index.js",
   "upload_source_maps": true,
   // Set this to today's date
   "compatibility_date": "2026-11-03",
@@ -168,6 +170,7 @@ npx wrangler dev
 
 ## Notes
 
+- Corrected from the official docs: the Wrangler config sets `"main": "src/index.ts"` while the Worker code is given as `src/index.js`; `main` is aligned to `src/index.js` so the entry point exists.
 - This is a fixed pool of three instances, not automatic scaling. Requests can reach different instances, so keep shared state outside the container filesystem.
 - Instances stop after their Durable Objects stay inactive for two hours (`INACTIVITY_TIMEOUT_MS`).
 - The same `Backend` class (start, share the readiness check, forward) is reused by the other container samples in this skill.

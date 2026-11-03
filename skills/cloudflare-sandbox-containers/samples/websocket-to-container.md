@@ -10,11 +10,13 @@ Forward WebSocket upgrade requests through a Durable Object to an echo server ru
 
 `wrangler.jsonc`:
 
+Adapted (not in the official docs): `main` points to `src/index.js`, the JavaScript file this page creates (the official config says `src/index.ts`). See Notes.
+
 ```jsonc
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "websocket-container",
-  "main": "src/index.ts",
+  "main": "src/index.js",
   "upload_source_maps": true,
   // Set this to today's date
   "compatibility_date": "2026-11-03",
@@ -178,6 +180,7 @@ Connect a WebSocket client to `ws://localhost:8787/ws`, send a message, and chec
 
 ## Notes
 
+- Corrected from the official docs: the Wrangler config sets `"main": "src/index.ts"` while the Worker code is given as `src/index.js`; `main` is aligned to `src/index.js` so the entry point exists.
 - An open WebSocket can keep the Durable Object active; the inactivity timeout applies after the Durable Object becomes inactive.
 - This echo server runs no commands and holds no secrets, so it has no auth. Add authentication in the Worker before exposing a container that does more.
 - The Worker always targets the fixed instance name `demo`; do not derive instance names from unverified request input.

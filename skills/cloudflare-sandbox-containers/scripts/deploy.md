@@ -22,7 +22,7 @@ Docker is required when `image` is a Dockerfile path. The Worker is activated fi
 npx wrangler deploy --containers-rollout=immediate
 ```
 
-Targets 100% of container instances in a single step. Use it when the Worker and image must stay compatible.
+Targets 100% of container instances in a single step. Rollouts (gradual or immediate) apply only to the `default` scheduling policy; with `"scheduling_policy": "durable_object"` (as in the samples of this skill) running containers are not replaced by a rollout, and the application must stop and restart them itself. Even an immediate rollout leaves a period where the new Worker version runs against old container instances (and `rollout_active_grace_period` still applies), so keep the Worker and image compatible across versions.
 
 ### Deploy Worker code only
 
@@ -59,6 +59,7 @@ Lists the containers and their status in the account, and the images in the Clou
 
 ## Notes
 
+- Rollouts apply only to the `default` scheduling policy (see Rollouts); for the `durable_object` policy, replacing running containers is up to the application.
 - `wrangler deploy` rolls out containers for the Worker it targets; use a separate Worker or environment for non-production branches.
 - Keep secrets files such as `.secrets.json` out of version control.
 

@@ -10,11 +10,13 @@ Run a short container task every two minutes from a Cron Trigger; the task print
 
 `wrangler.jsonc`:
 
+Adapted (not in the official docs): `main` points to `src/index.js`, the JavaScript file this page creates (the official config says `src/index.ts`). See Notes.
+
 ```jsonc
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "cron-container",
-  "main": "src/index.ts",
+  "main": "src/index.js",
   "upload_source_maps": true,
   // Set this to today's date
   "compatibility_date": "2026-11-03",
@@ -116,6 +118,7 @@ curl 'http://localhost:8787/__scheduled?cron=*/2+*+*+*+*'
 
 ## Notes
 
+- Corrected from the official docs: the Wrangler config sets `"main": "src/index.ts"` while the Worker code is given as `src/index.js`; `main` is aligned to `src/index.js` so the entry point exists.
 - All triggers use the same Durable Object. If a run is still active, another trigger waits for it instead of starting a second task. Overlapping runs are not queued and exactly-once execution is not guaranteed; make tasks idempotent when they modify external data.
 - `monitor()` reports completion or failure, not HTTP readiness. Keep the task short enough to finish within the Cron Trigger execution limits.
 - Check the container logs for the scheduled time. After deployment, Cron Triggers invoke the handler automatically.
