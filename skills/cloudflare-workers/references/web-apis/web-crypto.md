@@ -69,7 +69,7 @@ let keyPair = await crypto.subtle.generateKey(
 | Name | Returns | Description |
 |------|---------|-------------|
 | `crypto.randomUUID()` | string | Generates a new random (version 4) UUID as defined in RFC 4122. |
-| `crypto.getRandomValues(bufferArrayBufferView)` | ArrayBufferView | Fills the passed `ArrayBufferView` with cryptographically sound random values and returns the `buffer`. `buffer` must be an Int8Array \| Uint8Array \| Uint8ClampedArray \| Int16Array \| Uint16Array \| Int32Array \| Uint32Array \| BigInt64Array \| BigUint64Array. |
+| `crypto.getRandomValues(buffer)` | ArrayBufferView | Fills the passed `ArrayBufferView` with cryptographically sound random values and returns the `buffer`. `buffer` must be an Int8Array \| Uint8Array \| Uint8ClampedArray \| Int16Array \| Uint16Array \| Int32Array \| Uint32Array \| BigInt64Array \| BigUint64Array. |
 
 ### `crypto.subtle` methods
 
@@ -86,9 +86,9 @@ Algorithm parameters use algorithm-specific formats documented on MDN.
 | `deriveKey(algorithm, baseKey, derivedKeyAlgorithm, extractable, keyUsages)` | Promise\<CryptoKey> | `algorithm` object; `baseKey` CryptoKey; `derivedKeyAlgorithm` object (algorithm the derived key will be used for); `extractable` bool; `keyUsages` Array. |
 | `deriveBits(algorithm, baseKey, length)` | Promise\<ArrayBuffer> | `algorithm` object; `baseKey` CryptoKey; `length` int (length of the bit string to derive). Like `deriveKey()` but returns an `ArrayBuffer`; `deriveKey()` is essentially `deriveBits()` followed by `importKey()`. |
 | `importKey(format, keyData, algorithm, extractable, keyUsages)` | Promise\<CryptoKey> | `format` string; `keyData` BufferSource, or JsonWebKey when `format` is `"jwk"`; `algorithm` object; `extractable` bool; `keyUsages` Array. Transforms an external portable key into a `CryptoKey`. |
-| `exportKey(formatstring, keyCryptoKey)` | Promise\<ArrayBuffer \| JsonWebKey> | Transforms a `CryptoKey` into a portable format, if `extractable`. Fulfills with a JsonWebKey object when `format` is `"jwk"`, otherwise an ArrayBuffer. |
+| `exportKey(format, key)` | Promise\<ArrayBuffer \| JsonWebKey> | `format` string; `key` CryptoKey. Transforms a `CryptoKey` into a portable format, if `extractable`. Fulfills with a JsonWebKey object when `format` is `"jwk"`, otherwise an ArrayBuffer. |
 | `wrapKey(format, key, wrappingKey, wrapAlgo)` | Promise\<ArrayBuffer> | `format` string; `key` CryptoKey; `wrappingKey` CryptoKey; `wrapAlgo` object. Exports the key then encrypts it with another key. |
-| `unwrapKey(format, key, unwrappingKey, unwrapAlgo, unwrappedKeyAlgo, extractable, keyUsages)` | Promise\<CryptoKey> | `format` string; `key` CryptoKey; `unwrappingKey` CryptoKey; `unwrapAlgo` object; `unwrappedKeyAlgo` object; `extractable` bool; `keyUsages` Array. Transforms a key wrapped by `wrapKey()` back into a `CryptoKey`. |
+| `unwrapKey(format, wrappedKey, unwrappingKey, unwrapAlgo, unwrappedKeyAlgo, extractable, keyUsages)` | Promise\<CryptoKey> | `format` string; `wrappedKey` BufferSource (the bytes produced by `wrapKey()`); `unwrappingKey` CryptoKey; `unwrapAlgo` object; `unwrappedKeyAlgo` object; `extractable` bool; `keyUsages` Array. Transforms a key wrapped by `wrapKey()` back into a `CryptoKey`. |
 | `timingSafeEqual(a, b)` | bool | `a`, `b`: ArrayBuffer \| TypedArray. Compares two buffers resistant to timing attacks. Non-standard extension. |
 
 ### Supported algorithms
@@ -134,6 +134,8 @@ The flag also adds `getPublicKey()` and `SubtleCrypto.supports()`, and supports 
 ## Notes
 
 - Corrected from the official docs: the official table types `importKey` `keyData` as ArrayBuffer and `exportKey` as `Promise<ArrayBuffer>`; per the Web Crypto standard `"jwk"` format uses a JsonWebKey object for both.
+- Corrected from the official docs: the official table types the second `unwrapKey` argument as a `CryptoKey` named `key`; per the Web Crypto standard it is `wrappedKey: BufferSource` (the bytes returned by `wrapKey()`), and the `CryptoKey` is the third argument `unwrappingKey`.
+- Corrected from the official docs: the official table renders the `exportKey` and `getRandomValues` parameter lists with run-together names (`formatstring`, `keyCryptoKey`, `bufferArrayBufferView`); restored to `exportKey(format, key)` and `getRandomValues(buffer)`.
 - Corrected from the official docs: `sign`/`verify`/`digest` are listed with `ArrayBuffer` data (and signature); the standard accepts any BufferSource (ArrayBuffer or views).
 - `getRandomValues` returns the same array that was passed in (typed as the argument's type), and `crypto.getRandomValues` throws a `QuotaExceededError` if more than 65536 bytes are requested per call (standard behaviour).
 - Web Crypto operations are significantly faster than pure-JavaScript implementations; use them for CPU-intensive cryptography.
