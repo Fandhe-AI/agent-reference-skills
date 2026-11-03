@@ -26,6 +26,8 @@ await promisifiedFoo(args);
 
 `callbackify`:
 
+Adapted (not in the official docs): the callback logs the error instead of rethrowing it; see Notes.
+
 ```js
 import { callbackify } from 'node:util';
 
@@ -36,7 +38,10 @@ async function foo(args) {
 const callbackifiedFoo = callbackify(foo);
 
 callbackifiedFoo(args, (err, value) => {
-  if (err) throw err;
+  if (err) {
+    console.error(err);
+    return;
+  }
 });
 ```
 
@@ -84,6 +89,7 @@ console.log(String(myMIME));
 ## Notes
 
 - `promisify` converts a Node.js-style callback function to a Promise-returning function; `callbackify` does the reverse.
+- Adapted from the official docs: the official `callbackify` callback does `if (err) throw err;`. An exception thrown inside a callback invoked from a later tick cannot be caught by the caller and, because `uncaughtException` is not implemented in Workers, is not a reliable error path; the example handles the error in the callback instead.
 - The Workers implementation does not provide `util.types.isExternal()`, `util.types.isProxy()`, `util.types.isKeyObject()`, or `util.type.isWebAssemblyCompiledModule()` (the last is written this way in the source).
 - Corrected from the official docs: the official `MIMEType` example constructs `text/javascript;key=value` but its last comment says `String(myMIME)` prints `application/javascript;key=value`; the stringified form preserves the essence, so the comment now reads `text/javascript;key=value`.
 - Node.js docs: https://nodejs.org/api/util.html

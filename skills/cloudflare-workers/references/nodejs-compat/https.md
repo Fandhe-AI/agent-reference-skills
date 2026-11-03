@@ -32,6 +32,8 @@ export default {
 
 `request`:
 
+Adapted (not in the official docs): the request `'error'` listener is registered before `req.end()`, and assertion failures inside the async callbacks reject the promise; see Notes.
+
 ```js
 import { request } from "node:https";
 import { strictEqual, ok } from "node:assert";
@@ -45,7 +47,12 @@ export default {
 				method: "GET",
 			},
 			(res) => {
-				strictEqual(res.statusCode, 200);
+				try {
+					strictEqual(res.statusCode, 200);
+				} catch (err) {
+					reject(err);
+					return;
+				}
 				let data = "";
 				res.setEncoding("utf8");
 				res.on("data", (chunk) => {
@@ -53,11 +60,16 @@ export default {
 				});
 				res.once("error", reject);
 				res.on("end", () => {
-					ok(data.includes("User-agent"));
-					resolve(new Response(data));
+					try {
+						ok(data.includes("User-agent"));
+						resolve(new Response(data));
+					} catch (err) {
+						reject(err);
+					}
 				});
 			},
 		);
+		req.on("error", reject);
 		req.end();
 		return promise;
 	},
@@ -129,6 +141,7 @@ compatibility_flags = ["nodejs_compat", "enable_nodejs_http_modules", "enable_no
 - Failing to call `close()` on an HTTPS server may leak it; call `close()` or use `await using`.
 - Other differences: `Connection` headers not used; `Content-Length` handled as in `fetch`; `Expect: 100-continue`, trailing headers, `'continue'` / `'information'` / `'socket'` / `'upgrade'` events and direct `socket` access are unsupported; TLS options like `ca`, `cert`, `key`, `rejectUnauthorized` cannot be configured.
 - Corrected from the official docs: the official page lists `https.ServerResponse` among the APIs gated by `enable_nodejs_http_server_modules`; Node.js `node:https` does not export `ServerResponse` (only `http` does), so the row refers to `http.ServerResponse`.
+- Adapted from the official docs: in the `request` example, the official code never listens for `'error'` on the request (a network failure would throw as an unhandled `'error'` event, and `uncaughtException` is not implemented in Workers) and the `strictEqual` / `ok` assertions run inside event callbacks, where a thrown `AssertionError` cannot reach the `fetch` handler and the returned promise would never settle. The request `'error'` listener now rejects the promise before `req.end()`, and assertion failures are caught and passed to `reject`.
 - Docs inconsistency: the paragraph under `request` says "Because `get` is a wrapper..." (copy of the `get` text).
 
 ## Related

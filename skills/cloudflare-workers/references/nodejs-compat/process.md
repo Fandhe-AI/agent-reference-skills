@@ -21,6 +21,8 @@ nextTick(() => {
 
 Populating `process.env` from the Worker `env`:
 
+Adapted (not in the official docs): the handler now returns a `Response`; see Notes.
+
 ```js
 import * as process from "node:process";
 
@@ -33,14 +35,17 @@ export default {
 				return env.FOO;
 			}
 		})();
+		return new Response("ok");
 	},
 };
 ```
 
 Do not replace the whole `process.env` object:
 
+Adapted (not in the official docs): the official example assigns `process.env = {}` through `import * as process`, which throws a `TypeError` because ES module namespace objects are immutable; the default-export object is used instead; see Notes.
+
 ```js
-import * as process from "node:process";
+import process from "node:process";
 import { env } from "node:process";
 
 process.env === env; // true! they are the same object
@@ -59,6 +64,7 @@ process.env === env; // false! they are no longer the same object
 - With Wrangler or the Cloudflare Vite plugin, `process.env.NODE_ENV` is statically replaced at build time and is not a runtime value.
 - Alternative: import `env` from `cloudflare:workers` to access environment variables and all other bindings from anywhere in your code.
 - Replacing the whole `process.env` object with the Cloudflare `env` object is strongly discouraged: previously set variables are lost and other Workers in the same isolate behave unexpectedly (named imports become inconsistent).
+- Adapted from the official docs: the official snippets use `import * as process from "node:process"` for the replacement example. A module namespace object is immutable, so `process.env = {}` on it throws a `TypeError` and never replaces anything. Replacement is only possible on the default export object (`import process from "node:process"`), and a named import (`import { env } ...`) keeps the original binding, which is why the two diverge afterwards. Reading or mutating properties of `process.env` through the namespace import (`process.env.FOO ??= ...`) is fine. The fetch handler example also did not return a `Response`; `return new Response("ok")` was added.
 - `process.nextTick()` is a wrapper for `queueMicrotask()`.
 - Stdio: `process.stdout`, `process.stderr` and `process.stdin` are supported as streams. `stdin` is an empty readable stream. `stdout` / `stderr` are non-TTY writable streams that output to normal logging output with `stdout:` / `stderr:` prefixes. Writes are line-buffered until `\n` or the next microtask.
 - `process.cwd()` is initialized to `/bundle`; `process.chdir()` changes it and is respected by FS operations when using `enable_nodejs_fs_module`.
