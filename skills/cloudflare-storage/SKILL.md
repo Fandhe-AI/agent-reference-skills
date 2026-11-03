@@ -3,7 +3,7 @@ name: cloudflare-storage
 description: >
   Cloudflare 開発者プラットフォームのストレージ (Workers KV / D1 SQLite) の
   リファレンス。KVNamespace、D1Database prepare / batch / withSession、read replication、Time Travel。
-  Upstash Redis・Supabase とは別。
+  Wrangler は cloudflare-wrangler、Upstash Redis・Supabase とは別。
 user-invocable: false
 ---
 
@@ -28,7 +28,7 @@ Cloudflare 開発者プラットフォームのストレージ 4 製品 — Work
 - mssql: Node.js 向け SQL Server クライアント。Hyperdrive は Postgres / MySQL 向けで別物
 - vercel: Blob は別製品
 - 未収録の Cloudflare 製品（Durable Objects / Queues / Workflows / Vectorize 等）は公式 docs を参照
-- cloudflare-workers / cloudflare-wrangler は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-workers: https://developers.cloudflare.com/workers/runtime-apis/、cloudflare-wrangler: https://developers.cloudflare.com/workers/wrangler/）を参照
+- cloudflare-workers は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-workers: https://developers.cloudflare.com/workers/runtime-apis/）を参照
 
 ## ディレクトリ構成
 
