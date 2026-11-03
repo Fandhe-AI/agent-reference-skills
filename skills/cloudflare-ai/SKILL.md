@@ -1,8 +1,10 @@
 ---
 name: cloudflare-ai
 description: >
-  Cloudflare の AI 基盤 (Workers AI) の
-  リファレンス。env.AI.run、REST API、OpenAI 互換エンドポイント、JSON mode、function calling、batch API、LoRA、toMarkdown。
+  Cloudflare の AI 基盤 (Workers AI / Vectorize) の
+  リファレンス。env.AI.run、REST API、OpenAI 互換エンドポイント、JSON mode、function calling、batch API、LoRA、toMarkdown、
+  モデルカタログ (text generation / embeddings / text-to-image / ASR / TTS)、
+  VectorizeIndex insert / upsert / query / metadata filtering。
   Agents SDK は cloudflare-agents、プロバイダー API 本体は openai-api-core / anthropic-api-core / google-gemini-api、Upstash Vector とは別。
 user-invocable: false
 ---
@@ -77,13 +79,46 @@ skills/cloudflare-ai/
       tutorial-rag.md
       tutorial-whisper-chunking.md
       tutorials-index.md
+    workers-ai-models/
+      README.md
+      automatic-speech-recognition.md
+      decision-models.md
+      image-classification.md
+      image-to-text.md
+      text-classification.md
+      text-embeddings.md
+      text-generation-parameters.md
+      text-generation.md
+      text-to-image.md
+      text-to-speech.md
+      translation.md
+    vectorize/
+      README.md
+      binding-api.md
+      changelog.md
+      create-indexes.md
+      distance-metrics.md
+      event-subscriptions.md
+      getting-started.md
+      insert-vectors.md
+      legacy-v1-transition.md
+      limits.md
+      list-vectors.md
+      metadata-filtering.md
+      namespaces.md
+      overview.md
+      pricing.md
+      query-vectors.md
+      what-is-a-vector-database.md
+      workers-ai-embeddings.md
+      wrangler-commands.md
 ```
 
 ## 探索手順
 
 タスクから製品カテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（workers-ai）を探す
+1. 下記マッピング表でタスクに対応するカテゴリ（workers-ai / workers-ai-models / vectorize）を探す
 2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
@@ -95,3 +130,9 @@ skills/cloudflare-ai/
 | JSON mode・function calling・streaming・batch API を使いたい | workers-ai | [references/workers-ai/README.md](references/workers-ai/README.md) |
 | LoRA ファインチューン・toMarkdown による Markdown 変換を扱いたい | workers-ai | [references/workers-ai/README.md](references/workers-ai/README.md) |
 | Workers AI の料金・制限・エラーコードを確認したい | workers-ai | [references/workers-ai/README.md](references/workers-ai/README.md) |
+| text generation のパラメーターやモデル選定基準を知りたい | workers-ai-models | [references/workers-ai-models/README.md](references/workers-ai-models/README.md) |
+| embeddings・text-to-image・ASR・TTS・翻訳・分類モデルの入出力を調べたい | workers-ai-models | [references/workers-ai-models/README.md](references/workers-ai-models/README.md) |
+| Vectorize インデックスを作成して vector を insert / upsert したい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
+| query・metadata filtering・namespaces で検索したい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
+| VectorizeIndex バインディング API・distance metrics を調べたい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
+| Vectorize の制限・料金・v1 からの移行を確認したい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
