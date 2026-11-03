@@ -34,7 +34,7 @@ Bindings (`wrangler.jsonc`). `quickAction` needs a compatibility date of `2026-0
 
 `src/index.ts` (`API_TOKEN` is a secret; `ALLOWED_HOSTS` is a comma-separated secret or var):
 
-Adapted (not in the official docs): the official Worker accepts any `?url=` from any caller, which makes it an open fetch proxy. This version requires a bearer token (fail closed), allows only `https` URLs on the default port whose hostname is listed in `ALLOWED_HOSTS`, rejects an unparsable URL or Browser Run body with a 4xx/502 instead of throwing, and rejects pages over the 4 MB per-item upload limit before uploading. See Notes.
+Adapted (not in the official docs): the official Worker accepts any `?url=` from any caller, which makes it an open fetch proxy. This version requires a bearer token (fail closed), allows only `https` URLs on the default port whose hostname is listed in `ALLOWED_HOSTS`, rejects an unparsable URL or Browser Run body with a 4xx/502 instead of throwing, and rejects pages over the 4 MB per-item upload limit before uploading. Item keys combine a truncated slug with a SHA-256 of the full URL, so different URLs never share a key and keys stay within the 128-character name limit. See Notes.
 
 ```ts
 export interface Env {
@@ -58,13 +58,24 @@ function isAuthorized(request: Request, token: string | undefined): boolean {
 	);
 }
 
-// Build a stable item key that ends in .html, so AI Search converts the HTML
-// to Markdown before indexing it.
-function itemKey(pageUrl: URL): string {
+// Build a stable, unique item key that ends in .html, so AI Search converts
+// the HTML to Markdown before indexing it. A readable slug is truncated and a
+// SHA-256 of the full URL (host, path and query) keeps distinct pages apart;
+// the result stays within the 128-character item name limit.
+async function itemKey(pageUrl: URL): Promise<string> {
+	const digest = await crypto.subtle.digest(
+		"SHA-256",
+		new TextEncoder().encode(pageUrl.href),
+	);
+	const hash = [...new Uint8Array(digest)]
+		.map((b) => b.toString(16).padStart(2, "0"))
+		.join("");
 	const slug = `${pageUrl.hostname}${pageUrl.pathname}`
 		.replace(/[^a-zA-Z0-9]+/g, "-")
-		.replace(/^-+|-+$/g, "");
-	return `${slug || "index"}.html`;
+		.replace(/^-+|-+$/g, "")
+		.slice(0, 48);
+	// 48 (slug) + 1 + 64 (hash) + 5 (".html") = at most 118 characters.
+	return `${slug || "index"}-${hash}.html`;
 }
 
 export default {
@@ -163,7 +174,7 @@ export default {
 		// Upload the rendered HTML to built-in storage. uploadAndPoll waits until
 		// the page is indexed and searchable.
 		const item = await env.AI_SEARCH.get(INSTANCE_NAME).items.uploadAndPoll(
-			itemKey(pageUrl),
+			await itemKey(pageUrl),
 			html,
 			{ timeoutMs: 60_000 },
 		);
@@ -181,7 +192,7 @@ npx wrangler ai-search create my-instance --type builtin --custom-metadata title
 
 ```ts
 const item = await env.AI_SEARCH.get(INSTANCE_NAME).items.uploadAndPoll(
-	itemKey(pageUrl),
+	await itemKey(pageUrl),
 	html,
 	{ timeoutMs: 60_000, metadata },
 );
@@ -204,6 +215,7 @@ curl -H "Authorization: Bearer <TOKEN>" "http://localhost:8787/search?q=what+is+
 
 ## Notes
 
+- Adapted from the official docs: the item key is a slug of host and path (truncated to 48 characters) plus a SHA-256 hex digest of the full URL including the query, ending in `.html`. A plain slug would map `/a/b` and `/a-b` (and URLs differing only in the query) to the same key, which `items.upload()` rejects as a duplicate (error 7042), and long paths would exceed the 128-character item name limit.
 - Adapted from the official docs: bearer-token auth (fail closed), https-only on the default port, a hostname allowlist, `try`/`catch` around `new URL()` and `response.json()`, and a byte-size check against the 4 MB per-item limit before upload; the official page only cautions that fetching arbitrary URLs can become an open proxy. The allowlist checks the requested URL only; Browser Run follows the page's own redirects and subresource loads, so list only hosts you control. Set `ALLOWED_HOSTS` (for example `example.com`) and `API_TOKEN` as secrets; local values go in `.dev.vars`, kept out of git.
 - The `.html` item key makes AI Search convert HTML to Markdown before indexing, dropping boilerplate such as header and footer.
 - Uploaded content is limited to 4 MB per item. An instance supports up to five custom metadata fields (`text`, `number`, `boolean`, `datetime`); changing the schema re-indexes existing documents.
