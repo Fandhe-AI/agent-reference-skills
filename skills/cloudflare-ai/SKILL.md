@@ -12,8 +12,6 @@ user-invocable: false
 
 # Cloudflare AI 基盤 リファレンス
 
-> 分割 PR で順次追加中の部分版。現時点で収録済みなのは下記「ディレクトリ構成」とマッピング表に載っているカテゴリのみ。
-
 Cloudflare 開発者プラットフォームの AI 4 製品 — Workers AI（サーバーレス推論・モデルカタログ）、AI Gateway（LLM リクエストのプロキシ・可観測性・制御）、Vectorize（ベクトルデータベース）、AI Search（旧 AutoRAG、マネージド RAG）— を扱う。各製品の Workers バインディング API、REST API、設定、運用、制限、料金を参照する。
 
 ## 対象バージョン
@@ -32,7 +30,6 @@ Cloudflare 開発者プラットフォームの AI 4 製品 — Workers AI（サ
 - upstash: Upstash Vector は別製品。Vectorize とは別物
 - fandhe-db: Rust 製 vector 特化クエリ DB。Vectorize とは別製品
 - cloudflare-stateful: Durable Objects / Queues / Workflows（`https://developers.cloudflare.com/durable-objects/` ほか）は cloudflare-stateful。いずれにも無い Cloudflare 製品は公式 docs（`https://developers.cloudflare.com/<product>/`）を参照
-- cloudflare-stateful は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-stateful: https://developers.cloudflare.com/durable-objects/ ・ /queues/ ・ /workflows/）を参照
 
 ## ディレクトリ構成
 
@@ -212,14 +209,35 @@ skills/cloudflare-ai/
       website-parse-types.md
       workers-binding-legacy.md
       wrangler-commands.md
+  samples/
+    README.md
+    gateway-first-request-workers-ai.md
+    gateway-replicate-video.md
+    search-add-to-website.md
+    search-bring-your-own-model.md
+    search-chunk-citations.md
+    search-fetch-and-index-pages.md
+    search-human-in-the-loop-kb.md
+    search-multiple-instances.md
+    search-simple-engine.md
+    search-streaming-citations.md
+    search-tenant-filtering.md
+    search-tenant-instances.md
+    search-voice-knowledge-base.md
+  scripts/
+    README.md
+    ai-gateway.md
+    ai-search.md
+    vectorize.md
+    workers-ai.md
 ```
 
 ## 探索手順
 
 タスクから製品カテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（workers-ai / workers-ai-models / ai-gateway / vectorize / ai-search）を探す
-2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
+1. 下記マッピング表でタスクに対応するカテゴリ（workers-ai / workers-ai-models / ai-gateway / vectorize / ai-search / samples / scripts）を探す
+2. そのカテゴリの `references/{category}/README.md`（samples / scripts は直下の `README.md`）を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
 ## タスク → カテゴリ マッピング
@@ -245,3 +263,5 @@ skills/cloudflare-ai/
 | `search` / `chatCompletions` を Workers バインディング・REST API・Python SDK から呼びたい | ai-search | [references/ai-search/README.md](references/ai-search/README.md) |
 | チャンク分割・filtering・reranking・similarity cache を調整したい | ai-search | [references/ai-search/README.md](references/ai-search/README.md) |
 | AutoRAG からの移行・namespaces・マルチテナント構成・公開エンドポイントを設定したい | ai-search | [references/ai-search/README.md](references/ai-search/README.md) |
+| 典型的な使い方を知りたい（AI Gateway 経由の推論・AI Search の実例） | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンド（wrangler・REST 呼び出し）を知りたい | scripts | [scripts/README.md](scripts/README.md) |
