@@ -82,7 +82,7 @@ batch_result = await self.env.DB.batch([
 - Returns: `results`: `Array`, an array of `D1Result` objects, each at the array position of its originating statement.
 
 ```js
-console.log(stmt[1].results);
+console.log(batchResult[1].results);
 ```
 
 ```json
@@ -153,8 +153,8 @@ const session = env.DB.withSession("first-primary");
 const result = await session
 	.prepare(`SELECT * FROM Customers WHERE CompanyName = 'Bs Beverages'`)
 	.run()
-const { bookmark } = session.getBookmark();
-	return bookmark;
+const bookmark = session.getBookmark();
+return bookmark;
 ```
 
 `D1DatabaseSession.prepare()` and `D1DatabaseSession.batch()` are equivalent to `D1Database::prepare` and `D1Database::batch`.
@@ -175,6 +175,8 @@ Returns `D1DatabaseSession`: an object with `prepare()` and `batch()` similar to
 
 - `dump` only works on databases created during D1's alpha period. Check which version your database uses with `wrangler d1 info <DATABASE_NAME>`.
 - To use read replication, you have to use the D1 Sessions API (`withSession`), otherwise all queries continue to be executed only by the primary database.
+- Corrected from the official docs: the official `batch()` example prints `stmt[1].results`, but `stmt` is a `D1PreparedStatement`; `batch()` resolves with an array of `D1Result`, so the result of the second statement is `batchResult[1].results`.
+- Corrected from the official docs: the official `getBookmark` example destructures `{ bookmark }`, but `getBookmark()` returns `String | null` directly (not an object), so it is written as `const bookmark = session.getBookmark();`. It returns `null` until a query has run in the Session.
 - Python Workers use `self.env.DB` instead of `env.DB`.
 - `env` and bindings are covered by the cloudflare-workers skill.
 

@@ -32,7 +32,7 @@ export default {
 			// Read multiple keys with metadata, returns Map of values
 			const valuesWithMetadata = await env.NAMESPACE.getWithMetadata(["first-key", "second-key"]);
 
-			return new Response({
+			return Response.json({
 				value: value,
 				values: Object.fromEntries(values),
 				valueWithMetadata: valueWithMetadata,
@@ -107,7 +107,7 @@ Response types:
 |------|----------|
 | `get(key)` | `Promise<string \| Object \| ArrayBuffer \| ReadableStream \| null>` |
 | `get(keys)` | `Promise<Map<string, string \| Object \| null>>` |
-| `getWithMetadata(key)` | `Promise<{ value: string \| Object \| ArrayBuffer \| ReadableStream \| null, metadata: string \| null }>` |
+| `getWithMetadata(key)` | `Promise<{ value: string \| Object \| ArrayBuffer \| ReadableStream \| null, metadata: string \| Object \| null }>` |
 | `getWithMetadata(keys)` | `Promise<Map<string, { value: string \| Object \| null, metadata: string \| Object \| null }>` |
 
 Value by `type`: `text` returns a `string` (default); `json` an object decoded from a JSON string; `arrayBuffer` an `ArrayBuffer`; `stream` a `ReadableStream`. If there is no metadata associated with the key, `null` is returned for metadata.
@@ -115,6 +115,7 @@ Value by `type`: `text` returns a `string` (default); `json` an object decoded f
 ## Notes
 
 - `get()` and `getWithMetadata()` may return stale values. If a key has recently been read in a location, writes made in other locations may take up to 60 seconds (or the duration of the `cacheTtl`) to appear.
+- Corrected from the official docs: the official example passes a plain object to `new Response(...)`, which would produce `[object Object]`; it is written as `Response.json(...)`. The official single-key `getWithMetadata` response types `metadata` as `string | null`, but metadata stored as a JSON object (see the write page) is returned as an object, matching the multi-key signature; it is written as `string | Object | null`.
 - Reading multiple keys does not support `arrayBuffer` or `stream`. To read multiple keys of those types, call `.get()` for individual keys in parallel with `Promise.all()`.
 - Multi-key response size limit is 25 MB; larger responses fail with a `413 Error` message.
 - Type choice affects latency and CPU for large values. Fastest to slowest: `stream`, `arrayBuffer`, `text`, `json`.

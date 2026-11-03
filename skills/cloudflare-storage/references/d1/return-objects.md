@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/d1/worker-api/return-object/
 
 # Return objects
 
-`D1Result` (returned by `D1PreparedStatement::run` and `D1Database::batch`) and `D1ExecResult` (returned by `D1Database::exec`).
+`D1Result` (returned by `D1PreparedStatement::run`; `D1Database::batch` returns an array of `D1Result`) and `D1ExecResult` (returned by `D1Database::exec`).
 
 ## Signature / Usage
 
@@ -44,11 +44,13 @@ source: https://developers.cloudflare.com/d1/worker-api/return-object/
 
 | D1 Worker Binding API | Return object |
 | --- | --- |
-| `D1PreparedStatement::run`, `D1Database::batch` | `D1Result` |
+| `D1PreparedStatement::run` | `D1Result` |
+| `D1Database::batch` | `D1Result[]` (array of `D1Result`, one per statement) |
 | `D1Database::exec` | `D1ExecResult` |
 
 ## Notes
 
+- Corrected from the official docs: the official table lists `D1Database::batch` as returning a single `D1Result`; the D1Database page documents that `batch()` returns an array of `D1Result` objects, each at the position of its originating statement.
 - Any numeric value in a column is affected by JavaScript's 52-bit precision for numbers. If you store a very large number (`int64`) and retrieve it, the returned value may be less precise than the original.
 
 ## Related

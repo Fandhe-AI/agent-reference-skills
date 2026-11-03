@@ -62,9 +62,9 @@ Actions for `ON UPDATE` and/or `ON DELETE` (may differ per clause):
 
 | Action | Description |
 |--------|-------------|
-| `CASCADE` | Updating or deleting a parent key deletes all child keys (rows) associated to it. |
+| `CASCADE` | `ON DELETE CASCADE`: deleting a parent key deletes all child rows associated to it. `ON UPDATE CASCADE`: updating a parent key propagates the new key value to the child rows' foreign key columns (child rows are not deleted). |
 | `RESTRICT` | A parent key cannot be updated or deleted when any child key refers to it. Unlike default enforcement, errors are returned immediately, not at the end of the transaction. |
-| `SET DEFAULT` | Set the child column(s) to the schema `DEFAULT`. Cannot be used if no `DEFAULT` is set on the child columns. |
+| `SET DEFAULT` | Set the child column(s) to the schema `DEFAULT` (`NULL` if the column has no explicit `DEFAULT`). The resulting value must still satisfy the foreign key and any `NOT NULL` constraint. |
 | `SET NULL` | Set the child column(s) to SQL `NULL`. |
 | `NO ACTION` | Take no action. |
 
@@ -74,6 +74,7 @@ Actions for `ON UPDATE` and/or `ON DELETE` (may differ per clause):
 - `PRAGMA defer_foreign_keys = off` does not disable enforcement outside the current transaction; unresolved violations at the end fail with `FOREIGN KEY constraint failed`.
 - A foreign key can be defined in `CREATE TABLE` or when adding a column via `ALTER TABLE`. Multiple foreign keys per table and references to multiple tables are allowed.
 - `CASCADE` can delete child rows across tables with unintended side effects.
+- Corrected from the official docs: the official table says `CASCADE` on "updating or deleting a parent key deletes all child keys". In SQLite only `ON DELETE CASCADE` deletes child rows; `ON UPDATE CASCADE` copies the changed parent key into the child rows. The official page also says `SET DEFAULT` cannot be used without a `DEFAULT`; in SQLite it can be declared and falls back to `NULL`, so the post-action value must satisfy the foreign key and `NOT NULL` constraints.
 - The official `CREATE TABLE users` snippet in the CASCADE example has a trailing comma after `email_address TEXT,` as written in the source.
 
 ## Related

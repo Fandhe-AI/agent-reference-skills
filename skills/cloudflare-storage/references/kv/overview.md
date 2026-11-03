@@ -60,18 +60,15 @@ Wrangler configuration:
 Access from an external application with the REST API:
 
 ```plaintext
-curl https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/storage/kv/namespaces/$NAMESPACE_ID/values/$KEY_NAME \
+curl "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${NAMESPACE_ID}/values/${KEY_NAME}" \
 		-X PUT \
-		-H 'Content-Type: multipart/form-data' \
-		-H "X-Auth-Email: $CLOUDFLARE_EMAIL" \
-		-H "X-Auth-Key: $CLOUDFLARE_API_KEY" \
-		-d '{
-			"value": "Some Value"
-		}'
+		-H "X-Auth-Email: ${CLOUDFLARE_EMAIL}" \
+		-H "X-Auth-Key: ${CLOUDFLARE_API_KEY}" \
+		-F 'value=Some Value'
 
-curl https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/storage/kv/namespaces/$NAMESPACE_ID/values/$KEY_NAME \
-		-H "X-Auth-Email: $CLOUDFLARE_EMAIL" \
-		-H "X-Auth-Key: $CLOUDFLARE_API_KEY"
+curl "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${NAMESPACE_ID}/values/${KEY_NAME}" \
+		-H "X-Auth-Email: ${CLOUDFLARE_EMAIL}" \
+		-H "X-Auth-Key: ${CLOUDFLARE_API_KEY}"
 ```
 
 Or with the Cloudflare TypeScript SDK:
@@ -103,6 +100,7 @@ for await (const namespace of client.kv.namespaces.list({ account_id: '<ACCOUNT_
 
 ## Notes
 
+- Adapted from the official docs: the official REST examples expand `$ACCOUNT_ID`, `$NAMESPACE_ID` and `$KEY_NAME` unquoted in the URL and send `-d '{"value": ...}'` under a `multipart/form-data` header, which does not form a multipart body. Here the URL is double-quoted with `${var}` expansion and the PUT uses `-F 'value=Some Value'` so curl generates the multipart body and boundary. `KEY_NAME` must be URL-encoded if it contains reserved characters (spaces, `/`, `?`, `#`).
 - Typical uses: caching API responses, storing user configurations / preferences, storing user authentication details.
 - The REST API and pre-generated SDKs (TypeScript, Python, Go) are documented at the Cloudflare KV REST API reference (`https://developers.cloudflare.com/api/resources/kv/`), which is outside this reference.
 - Related products: R2 (unstructured object storage without egress fees), Durable Objects (scalable compute and permanent, consistent storage), D1 (SQLite-based relational database).

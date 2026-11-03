@@ -58,7 +58,7 @@ List by prefix:
 export default {
   async fetch(request, env, ctx) {
     const value = await env.NAMESPACE.list({ prefix: "user:1:" });
-    return new Response(value.keys);
+    return Response.json(value.keys);
   },
 };
 ```
@@ -75,12 +75,12 @@ const next_value = await NAMESPACE.list({ cursor: cursor });
 
 ## Options / Props
 
-`options`: `{ prefix?: string, limit?: string, cursor?: string }`
+`options`: `{ prefix?: string, limit?: number, cursor?: string }`
 
 | Name | Type | Description |
 |------|------|-------------|
 | prefix | `string` | A prefix used to filter all keys. |
-| limit | `string` | Maximum number of keys returned. The default is 1,000 keys, which is the maximum. |
+| limit | `number` | Maximum number of keys returned. The default is 1,000 keys, which is the maximum. |
 | cursor | `string` | Used for paginating responses. |
 
 Response: `Promise<{ keys: { name: string, expiration?: number, metadata?: object }[], list_complete: boolean, cursor: string }>`
@@ -106,6 +106,7 @@ await NAMESPACE.put(key, "", {
 ```
 
 - Other access methods: Wrangler (`kv key list`) and the REST API.
+- Corrected from the official docs: the official page types `limit` as `string`; it is a `number` (for example `list({ limit: 100 })`; maximum and default 1,000). The prefix example passes the `keys` array to `new Response(...)`, which does not serialize it as JSON; it is written as `Response.json(value.keys)`.
 
 ## Related
 

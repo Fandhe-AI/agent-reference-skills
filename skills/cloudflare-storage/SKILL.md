@@ -1,15 +1,15 @@
 ---
 name: cloudflare-storage
 description: >
-  Cloudflare 開発者プラットフォームのストレージ (Workers KV / D1 SQLite / R2 S3 互換 / Hyperdrive) の
-  リファレンス。KVNamespace、D1Database prepare / batch / withSession、read replication、Time Travel、
-  R2Bucket multipart、S3 互換 API、presigned URL、event notifications、
-  Hyperdrive 接続プール・クエリキャッシュ。
+  Cloudflare 開発者プラットフォームのストレージ (Workers KV / D1 SQLite) の
+  リファレンス。KVNamespace、D1Database prepare / batch / withSession、read replication、Time Travel。
   ランタイムは cloudflare-workers、Wrangler は cloudflare-wrangler、Upstash Redis・Supabase とは別。
 user-invocable: false
 ---
 
 # Cloudflare ストレージ リファレンス
+
+> 分割 PR で順次追加中の部分版。現時点で収録済みなのは下記「ディレクトリ構成」とマッピング表に載っているカテゴリのみ。
 
 Cloudflare 開発者プラットフォームのストレージ 4 製品 — Workers KV（グローバル key-value）、D1（SQLite 互換 SQL データベース）、R2（S3 互換オブジェクトストレージ）、Hyperdrive（外部 Postgres / MySQL への接続プール・クエリキャッシュ）— を扱う。各製品の Workers バインディング API、設定、運用、制限、料金を参照する。
 
@@ -28,6 +28,7 @@ Cloudflare 開発者プラットフォームのストレージ 4 製品 — Work
 - mssql: Node.js 向け SQL Server クライアント。Hyperdrive は Postgres / MySQL 向けで別物
 - vercel: Blob は別製品
 - 未収録の Cloudflare 製品（Durable Objects / Queues / Workflows / Vectorize 等）は公式 docs を参照
+- cloudflare-workers / cloudflare-wrangler は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-workers: https://developers.cloudflare.com/workers/runtime-apis/、cloudflare-wrangler: https://developers.cloudflare.com/workers/wrangler/）を参照
 
 ## ディレクトリ構成
 
@@ -102,8 +103,8 @@ skills/cloudflare-storage/
 
 タスクから製品カテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（kv / d1 / r2 / hyperdrive / samples / scripts）を探す
-2. そのカテゴリの `references/{category}/README.md`（samples / scripts は直下の `README.md`）を参照して目的のページを特定する
+1. 下記マッピング表でタスクに対応するカテゴリ（kv / d1）を探す
+2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
 ## タスク → カテゴリ マッピング

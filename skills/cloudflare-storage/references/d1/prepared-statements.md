@@ -130,7 +130,7 @@ const customerId = await stmt.first("CustomerId");
 ```
 
 - Parameter: `columnName`: `String` Optional. Return the value from a specific column of the first row. With no parameter, all columns of the first row are returned.
-- Returns: `firstRow`: `Object` (filtered to a single attribute if `columnName` was specified), or `null` if the query returns no rows.
+- Returns: without `columnName`, `firstRow`: `Object` (all columns of the first row); with `columnName`, the scalar value of that column (for example `11` for `first("CustomerId")`, not `{ CustomerId: 11 }`). `null` if the query returns no rows.
 
 ```json
 {
@@ -153,6 +153,7 @@ Supported parameter syntaxes (SQLite convention):
 
 - Currently D1 only supports Ordered (`?NNNN`) and Anonymous (`?`) parameters. In the future, D1 will support named parameters as well.
 - Prefer prepared statements with `bind()`: it allows reuse of statements and prevents SQL injection attacks.
+- Corrected from the official docs: the official page describes the `columnName` result as an `Object` "filtered to a single attribute". The D1 `first(columnName)` contract returns the column's value itself, matching the `const customerId = await stmt.first("CustomerId")` example.
 - If the query returns rows but `columnName` does not exist, `first()` throws the `D1_ERROR` exception.
 - `first()` does not alter the SQL query. To improve performance, consider appending `LIMIT 1` to your statement.
 - With TypeScript, pass a type parameter to `run`, `raw` and `first` to get typed results.

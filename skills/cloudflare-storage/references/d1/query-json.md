@@ -25,7 +25,7 @@ Expand an array for `IN` queries from a Worker:
 
 ```ts
 const stmt = context.env.DB
-    .prepare("UPDATE users SET last_audited = ? WHERE id IN (SELECT value FROM json_each(?1))")
+    .prepare("UPDATE users SET last_audited = ?1 WHERE id IN (SELECT value FROM json_each(?2))")
 const resp = await stmt.bind(
     "2023-05-16T11:24:08+00:00",
     JSON.stringify([183183, 13913, 94944])
@@ -37,7 +37,7 @@ Generated column from JSON:
 ```sql
 CREATE TABLE some_table (
     -- other columns omitted
-    raw_data TEXT -- JSON: {"measurement":{"aqi":[21,42,58],"wind_mph":"13","location":"US-NY"}}
+    raw_data TEXT, -- JSON: {"measurement":{"aqi":[21,42,58],"wind_mph":"13","location":"US-NY"}}
     location AS (json_extract(raw_data, '$.measurement.location')) STORED
 )
 ```
@@ -60,7 +60,7 @@ CREATE TABLE some_table (
 | `json_set(json, path, value)` | Insert a value at the path, overwriting an existing value. |
 | `json_type(json)` / `json_type(json, path)` | One of `null`, `true`, `false`, `integer`, `real`, `text`, `array`, `object`. |
 | `json_valid(json)` | 0 for invalid JSON, 1 for valid. |
-| `json_quote(value)` | Converts the SQL value into its JSON representation. `json_quote('[1, 2, 3]')` returns `[1,2,3]` |
+| `json_quote(value)` | Converts the SQL value into its JSON representation. `json_quote('[1, 2, 3]')` returns the JSON string `"[1, 2, 3]"` (quoted, not converted to an array); use `json('[1, 2, 3]')` to get the minified array `[1,2,3]` |
 | `json_group_array(value)` | Returns the provided value(s) as a JSON array. |
 | `json_each(value)` / `json_each(value, path)` | Each element as a row; traverses only the top-level object. Columns: `key`, `value`, `type`, `fullkey`, `path`. |
 | `json_tree(value)` / `json_tree(value, path)` | Each element as a row; traverses the full object. |
@@ -73,6 +73,7 @@ CREATE TABLE some_table (
 - Parsing JSON in D1 reduces round-trips (no read, parse, write back).
 - Generated columns over JSON can be indexed; index frequently filtered JSON paths for performance.
 - `json_replace` overwrites an existing key; `json_set` sets regardless of existence; `[#]` in a path appends to an array.
+- Corrected from the official docs: the official Worker example uses `SET last_audited = ?` together with `json_each(?1)`, so both placeholders refer to parameter 1 while two values are bound; it is written as `?1` / `?2`. The official generated-column `CREATE TABLE` omits the comma after `raw_data TEXT`, which is a syntax error; a comma is added. The official table says `json_quote('[1, 2, 3]')` returns `[1,2,3]`; SQLite's `json_quote` on a text value returns a quoted JSON string, and `json()` is what minifies a JSON array.
 - The source's example `sensor_reading -\-> '$.measurement.o3'` is rendering-escaped `->>`; the `aqi[3]` example comment ("maximum PM2.5") does not match a 3-element array in the sample data.
 
 ## Related

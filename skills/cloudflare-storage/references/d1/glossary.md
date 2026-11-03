@@ -11,7 +11,8 @@ Definitions of terms used across the D1 documentation.
 ```ts
 // bookmark and session terms in code
 const session = env.DB.withSession("first-primary");
-const { bookmark } = session.getBookmark();
+await session.prepare("SELECT 1").run(); // run a query first; otherwise getBookmark() returns null
+const bookmark = session.getBookmark(); // string | null
 ```
 
 ## Options / Props
@@ -24,6 +25,10 @@ const { bookmark } = session.getBookmark();
 | read replica | An eventually-replicated copy of the primary database instance serving only read requests. There may be multiple per primary. |
 | replica lag | The time it takes for the primary to replicate its changes to a specific read replica. |
 | session | Encapsulates all the queries from one logical session for your application (e.g. a particular web browser session). |
+
+## Notes
+
+- Corrected from the official docs: the official example destructures `{ bookmark }`, but `getBookmark()` returns `String | null` directly (see D1Database). The `prepare(...).run()` line is added so the bookmark is not `null`.
 
 ## Related
 
