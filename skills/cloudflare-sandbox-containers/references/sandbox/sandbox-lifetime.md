@@ -25,7 +25,7 @@ if (container.running) {
 
 - The same name always reaches the same Durable Object (`getByName()`); `this.ctx.container.start()` starts a new instance (a Linux VM with its own processes and disk).
 - Activity keeps an instance running: the Durable Object is active while it handles a request, runs an alarm, streams a response, or holds an accepted WebSocket. After it goes inactive, the instance keeps running for `setInactivityTimeout()` (up to 6 hours); without one, it stops shortly after. Code running inside the instance does not count as activity; use a Durable Object alarm that checks the work more often than the timeout.
-- An idle running instance is billed for memory and disk. See Containers pricing in pricing.md (https://developers.cloudflare.com/containers/platform/pricing/).
+- An idle running instance is billed for memory and disk. See Containers pricing in [pricing.md](../containers/pricing.md).
 - The timeout does not survive a Durable Object restart; set it again in the constructor when the instance is already running.
 - An instance stops when: the inactivity timeout ends, `destroy()` is called, the main process exits (entrypoint passed to `start()` or the image default; `cloudflare/debian-trixie` exits right away, so use `sleep infinity`), or a platform event occurs (no guaranteed run time). At timeout, processes get `SIGTERM` and the instance stops shortly after; do not rely on a handler to finish work.
 - Cloudflare does not wake the Durable Object when its instance stops. A pending `monitor()` call keeps the Durable Object in memory for up to 15 minutes; on compatibility dates before `2026-10-01` it does not, unless the `durable_object_io_tasks_prevent_eviction` flag is set.

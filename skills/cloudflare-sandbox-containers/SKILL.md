@@ -5,13 +5,11 @@ description: >
   リファレンス。@cloudflare/sandbox、exec / processes / files / preview URLs / terminals / code interpreter、
   coding agents in sandbox、Container class (defaultPort / sleepAfter / getContainer)、
   instance types、image registry、wrangler containers、Sandbox SDK 0.x → 1.0 migration。
-  Wrangler は cloudflare-wrangler、Docker 本体は docker。
+  Durable Objects は cloudflare-stateful、Wrangler は cloudflare-wrangler、Docker 本体は docker。
 user-invocable: false
 ---
 
 # Cloudflare Sandbox SDK / Containers リファレンス
-
-> 分割 PR で順次追加中の部分版。現時点で収録済みなのは下記「ディレクトリ構成」とマッピング表に載っているカテゴリのみ。
 
 Cloudflare 開発者プラットフォームの Sandbox SDK（`@cloudflare/sandbox`。Worker から隔離環境でコマンド・プロセス・ファイル・プレビュー・ターミナル・コードインタープリター・コーディングエージェントを扱う）と Containers（Durable Object から起動・管理するコンテナ。`Container` クラス、`wrangler.jsonc` の `containers` 設定、イメージ、スケーリング、料金・制限）を扱う。Sandbox SDK 0.x から 1.0 への移行手順も収録する。
 
@@ -32,7 +30,6 @@ Cloudflare 開発者プラットフォームの Sandbox SDK（`@cloudflare/sandb
 - docker: Docker Engine / Dockerfile / Compose / Buildx 本体。本スキルは Cloudflare Containers へのイメージ登録・デプロイのみ扱う
 - anthropic-claude-code / openai-codex: エージェント本体（CLI・設定・機能）は各スキル。本スキルはサンドボックス内で動かす方法（`references/sandbox/claude-code.md` / `codex.md` ほか）のみ扱う
 - 未収録の Cloudflare 製品は公式 docs（`https://developers.cloudflare.com/<product>/`）を参照
-- cloudflare-stateful は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-stateful: https://developers.cloudflare.com/durable-objects/ ・ /queues/ ・ /workflows/）を参照
 
 ## ディレクトリ構成
 
@@ -110,14 +107,33 @@ skills/cloudflare-sandbox-containers/
       networking-and-other.md
       overview.md
       plan-and-move.md
+  samples/
+    README.md
+    call-authenticated-api-from-sandbox.md
+    container-backend.md
+    cron-container.md
+    env-vars-and-secrets.md
+    r2-fuse-mount.md
+    run-tests-in-sandbox.md
+    stateless-instances.md
+    status-hooks.md
+    stream-command-output.md
+    websocket-to-container.md
+  scripts/
+    README.md
+    deploy.md
+    dev.md
+    images.md
+    install.md
+    operate.md
 ```
 
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（sandbox / containers / sandbox-migration）を探す
-2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
+1. 下記マッピング表でタスクに対応するカテゴリ（sandbox / containers / sandbox-migration / samples / scripts）を探す
+2. そのカテゴリの `references/{category}/README.md`（samples / scripts は直下の `README.md`）を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
 ## タスク → カテゴリ マッピング
@@ -134,3 +150,5 @@ skills/cloudflare-sandbox-containers/
 | コンテナの環境変数・外向き通信・ローカル開発・SSH・スナップショットを扱いたい | containers | [references/containers/README.md](references/containers/README.md) |
 | Containers の制限・料金・FAQ を確認したい | containers | [references/containers/README.md](references/containers/README.md) |
 | Sandbox SDK 0.x から 1.0 への移行手順・API 対応表を知りたい | sandbox-migration | [references/sandbox-migration/README.md](references/sandbox-migration/README.md) |
+| 典型的な使い方を知りたい（Container バックエンド・cron・WebSocket・サンドボックスでのテスト実行） | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンド（wrangler containers、デプロイ、イメージ、運用）を知りたい | scripts | [scripts/README.md](scripts/README.md) |
