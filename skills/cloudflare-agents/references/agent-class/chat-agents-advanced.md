@@ -10,6 +10,8 @@ Continuation of the chat-agents page for `AIChatAgent`: custom request data, typ
 
 Custom request data:
 
+Adapted (not in the official docs): a comment is added that `options.body` is client-controlled (see Notes).
+
 ```ts
 const { messages, sendMessage } = useAgentChat({
 	agent,
@@ -22,6 +24,9 @@ const { messages, sendMessage } = useAgentChat({
 // Server
 export class ChatAgent extends AIChatAgent {
 	async onChatMessage(_onFinish, options) {
+		// options.body is client-controlled: use it for preferences such as
+		// timezone, never as an identity. Derive the user from the authenticated
+		// connection/route (the Agent name), not from body.userId.
 		const { timezone, userId } = options?.body ?? {};
 		// ...
 	}
@@ -389,6 +394,7 @@ Streaming and storage controls:
 
 ## Notes
 
+- Adapted from the official docs: the custom-data example sends `userId` in `body` and reads it on the server; `body` is supplied by the client, so a comment now warns not to treat it as an identity.
 - Streams resume automatically after reconnect with no configuration: chunks are buffered in SQLite, the server keeps streaming while the client is away, and a reconnecting client receives all buffered chunks and then live data. Generic client stream abort stays local to the browser, so the server turn keeps running.
 - `onData` fires on new messages, stream resumption and cross-tab broadcasts.
 - Row-size protection: tool output compaction first (large outputs replaced with a summary telling the model to re-run the tool), then text truncation. Compacted messages carry `metadata.compactedToolOutputs`.
@@ -398,7 +404,7 @@ Streaming and storage controls:
 - `ToolLoopAgent` is for in-process subagents, not a replacement for `streamText` in `onChatMessage` (which needs `this.env`, `this.messages`, `options.body`). The research agent has its own token budget; only the summary returns to the parent. Durable Object sub-agents are in [sub-agents.md](./sub-agents.md) and retained streaming tools in [agent-tools.md](./agent-tools.md).
 - Each `yield` from an async-generator `execute` updates the client tool part with `preliminary: true`; the last yielded value is the final output.
 - AI SDK concepts (`prepareStep`, `wrapLanguageModel`, `generateObject`, `ToolLoopAgent`, preliminary tool results) belong to the vercel-ai-sdk skill.
-- Placeholders (defined elsewhere in an application): `agent`, `currentUser`, `getToken`, `ai`, `cheapModel`, `expensiveModel`, `searchTool`, `analyzeTool`, `summarizeTool`, `baseModel`, `myModel`, `researchModel`, `orchestratorModel`, `webSearchTool`.
+- Placeholders (defined elsewhere in an application): `pruneMessages` (exported by `ai`), `agent`, `currentUser`, `getToken`, `ai`, `cheapModel`, `expensiveModel`, `searchTool`, `analyzeTool`, `summarizeTool`, `baseModel`, `myModel`, `researchModel`, `orchestratorModel`, `webSearchTool`.
 - The snippets are consecutive excerpts, not one file; JS variants from the source are omitted.
 
 ## Related

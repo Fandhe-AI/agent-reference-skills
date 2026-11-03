@@ -102,6 +102,8 @@ export class ChatAgent extends AIChatAgent {
 
 Server tool, client tool and approval:
 
+Adapted (not in the official docs): the source shows the server tool snippets as separate `tools: {...};` fragments (the client-side one with a stray semicolon inside an object literal), which is invalid code; they are merged into the valid `tools` object below (see Notes).
+
 ```ts
 import { streamText, convertToModelMessages, tool, stepCountIs } from "ai";
 import { z } from "zod";
@@ -144,8 +146,6 @@ export class ChatAgent extends AIChatAgent {
 	}
 }
 ```
-
-Adapted (not in the official docs): the source shows the server tool snippets as separate `tools: {...};` fragments (the client-side one with a stray semicolon inside an object literal), which is invalid code; they are merged into the valid `tools` object above (see Notes).
 
 ```ts
 const { messages, sendMessage } = useAgentChat({

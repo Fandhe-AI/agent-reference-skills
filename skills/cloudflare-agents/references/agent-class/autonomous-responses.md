@@ -48,6 +48,8 @@ export class DigestAgent extends AIChatAgent {
 
 Email-triggered:
 
+Adapted (not in the official docs): the source reads `email.raw`, which `AgentEmail` does not have; `getRaw()` returns a `Uint8Array`, so it is decoded here (see Notes).
+
 ```ts
 async onEmail(email: AgentEmail) {
 	const stable = await this.waitUntilStable({ timeout: 30_000 });
@@ -57,7 +59,9 @@ async onEmail(email: AgentEmail) {
 	}
 
 	const subject = email.headers.get("subject") ?? "(no subject)";
-	const body = await new Response(email.raw).text();
+	// Note: the raw message includes headers and MIME parts; parse it (for
+	// example with postal-mime) if you only want the text body.
+	const body = new TextDecoder().decode(await email.getRaw());
 
 	await this.saveMessages((messages) => [
 		...messages,
@@ -143,6 +147,7 @@ const { messages, sendMessage, isStreaming, isServerStreaming } =
 
 ## Notes
 
+- Corrected from the official docs: the email example used `new Response(email.raw).text()`; `AgentEmail` exposes `getRaw(): Promise<Uint8Array>` (see email.md and internals.md), so the bytes are decoded with `TextDecoder`. Email content and webhook payloads are untrusted input: they can carry prompt injection, so do not give a turn started from them tools with side effects without approval, and verify the sender/signature first.
 - Always call `waitUntilStable()` before reading `this.messages` or calling `saveMessages` from schedule callbacks, webhooks, email handlers and other non-chat entry points.
 - `saveMessages` always uses serialized queue behavior regardless of `messageConcurrency`, so server-driven messages are never dropped, merged or debounced.
 - `onChatResponse` does not nest: a `saveMessages` call inside it completes and the hook fires again sequentially. Messages are persisted before the hook runs.

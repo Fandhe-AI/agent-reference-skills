@@ -26,13 +26,22 @@ interface RetryOptions {
 }
 ```
 
-Adapted (not in the official docs): `url` is validated (https only, host allowlist, no redirects) before `fetch()`; see Notes.
+Adapted (not in the official docs): `url` is validated (https only, host allowlist, no redirects) before `fetch()`, and only transient errors are retried via `shouldRetry`; see Notes.
 
 ```ts
 import { Agent } from "agents";
 
 // Placeholder: list the hosts this Agent may call.
 const ALLOWED_HOSTS = new Set(["api.example.com"]);
+
+class HttpError extends Error {
+	constructor(
+		public status: number,
+		body: string,
+	) {
+		super(`HTTP ${status}: ${body}`);
+	}
+}
 
 export class MyAgent extends Agent {
 	async fetchWithRetry(url: string) {
@@ -42,8 +51,15 @@ export class MyAgent extends Agent {
 		}
 		const response = await this.retry(async () => {
 			const res = await fetch(target, { redirect: "manual" });
-			if (!res.ok) throw new Error(`HTTP ${res.status}`);
+			if (!res.ok) throw new HttpError(res.status, await res.text());
 			return res.json();
+		}, {
+			// Retry transient failures only; 4xx (except 408/429) and 3xx are permanent.
+			shouldRetry: (err) =>
+				!(err instanceof HttpError) ||
+				err.status >= 500 ||
+				err.status === 408 ||
+				err.status === 429,
 		});
 
 		return response;
@@ -146,7 +162,7 @@ Backoff: `delay = random(0, min(2^attempt * baseDelayMs, maxDelayMs))`. With def
 
 ## Notes
 
-- Adapted from the official docs: the official `fetchWithRetry(url)` fetched any caller-supplied URL (SSRF). It now rejects non-https URLs and hosts outside an allowlist (`ALLOWED_HOSTS` is a placeholder) before calling `this.retry()`, and uses `redirect: "manual"` so redirects are not followed (a 3xx is not `ok` and is retried like any error). The validation runs outside the retried function so a rejected URL is not retried.
+- Adapted from the official docs: the official `fetchWithRetry(url)` fetched any caller-supplied URL (SSRF). It now rejects non-https URLs and hosts outside an allowlist (`ALLOWED_HOSTS` is a placeholder) before calling `this.retry()`, and uses `redirect: "manual"` so redirects are not followed (a 3xx is not `ok`). The validation runs outside the retried function so a rejected URL is not retried. The `HttpError` class and the `shouldRetry` filter are additions so that permanent responses (3xx, 4xx other than 408/429) are not retried; `HttpError` in the "Selective retry" snippet below is the same placeholder class.
 
 - Corrected from the official docs: schedule examples showed `schedule("processTask", 60, ...)`; the signature is `schedule(when, callback, payload?, options?)`.
 - Options are validated eagerly (`retry.maxAttempts must be >= 1`, `retry.baseDelayMs must be > 0`, integer check, `baseDelayMs <= maxDelayMs` after resolving class defaults). E.g. `{ baseDelayMs: 5000 }` throws because the default `maxDelayMs` is 3000.

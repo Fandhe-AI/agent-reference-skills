@@ -22,7 +22,7 @@ wrangler secret put VAPID_SUBJECT
 
 Agent (trimmed to the delivery path; the full source also has `unsubscribe`):
 
-Adapted (not in the official docs): `subscribe` validates the endpoint (https, allow-listed push hosts, size limits) and `sendReminder` records transient failures and reschedules instead of reporting success; see Notes.
+Adapted (not in the official docs): `createReminder` bounds its arguments, `subscribe` validates the endpoint (https, allow-listed push hosts, size limits) and `sendReminder` re-validates every endpoint before sending, classifies errors (gone / transient / permanent) and retries only transient failures with backoff and an attempt cap; see Notes.
 
 ```ts
 import { Agent, callable, routeAgentRequest } from "agents";
@@ -113,6 +113,17 @@ export class ReminderAgent extends Agent<Env, ReminderAgentState> {
 		message: string,
 		delaySeconds: number,
 	): Promise<Reminder> {
+		// Callable arguments are client-controlled: bound them.
+		if (
+			typeof message !== "string" ||
+			message.length === 0 ||
+			message.length > 500 ||
+			!Number.isFinite(delaySeconds) ||
+			delaySeconds < 1 ||
+			delaySeconds > 7 * 24 * 60 * 60
+		) {
+			throw new Error("Invalid reminder");
+		}
 		const id = crypto.randomUUID();
 		const scheduledAt = Date.now() + delaySeconds * 1000;
 		const reminder: Reminder = { id, message, scheduledAt, sent: false };
@@ -126,18 +137,37 @@ export class ReminderAgent extends Agent<Env, ReminderAgentState> {
 		return reminder;
 	}
 
-	async sendReminder(payload: { id: string; message: string }) {
+	async sendReminder(payload: {
+		id: string;
+		message: string;
+		attempt?: number;
+		endpoints?: string[];
+	}) {
 		webpush.setVapidDetails(
 			this.env.VAPID_SUBJECT,
 			this.env.VAPID_PUBLIC_KEY,
 			this.env.VAPID_PRIVATE_KEY,
 		);
 
+		const attempt = payload.attempt ?? 0;
 		const deadEndpoints: string[] = [];
-		let failures = 0;
+		const retryEndpoints: string[] = [];
+
+		// Re-validate right before sending: state can be rewritten by clients
+		// (setState) and stored rows may predate the validation in subscribe().
+		const targets = this.state.subscriptions.filter((s) => {
+			if (payload.endpoints && !payload.endpoints.includes(s.endpoint)) {
+				return false; // retry only the subscriptions that failed transiently
+			}
+			if (!isAllowedPushEndpoint(s)) {
+				deadEndpoints.push(s.endpoint); // never send to it; drop it below
+				return false;
+			}
+			return true;
+		});
 
 		await Promise.all(
-			this.state.subscriptions.map(async (sub) => {
+			targets.map(async (sub) => {
 				try {
 					await webpush.sendNotification(
 						sub,
@@ -151,11 +181,19 @@ export class ReminderAgent extends Agent<Env, ReminderAgentState> {
 					const statusCode =
 						err instanceof webpush.WebPushError ? err.statusCode : 0;
 					if (statusCode === 404 || statusCode === 410) {
-						deadEndpoints.push(sub.endpoint);
-					} else {
-						// Transient failure (5xx, network): record it so we retry.
-						failures++;
+						deadEndpoints.push(sub.endpoint); // subscription is gone
+					} else if (
+						statusCode === 0 || // network error (not a WebPushError)
+						statusCode === 408 ||
+						statusCode === 429 ||
+						statusCode >= 500
+					) {
+						// Transient: retry (capped below).
+						retryEndpoints.push(sub.endpoint);
 						console.error("push delivery failed", statusCode, sub.endpoint);
+					} else {
+						// Permanent (400/401/403/413, other 4xx): do not retry.
+						console.error("push rejected permanently", statusCode, sub.endpoint);
 					}
 				}
 			}),
@@ -170,11 +208,20 @@ export class ReminderAgent extends Agent<Env, ReminderAgentState> {
 			});
 		}
 
-		if (failures > 0) {
-			// Not marked as sent; retry later (this resends to subscriptions that
-			// already succeeded, so the notification `tag` dedupes on the device).
-			await this.schedule(60, "sendReminder", payload);
+		const MAX_ATTEMPTS = 5;
+		if (retryEndpoints.length > 0 && attempt + 1 < MAX_ATTEMPTS) {
+			// Retry only the transient failures, with exponential backoff
+			// (60s, 120s, 240s, ...), at most MAX_ATTEMPTS attempts in total.
+			await this.schedule(60 * 2 ** attempt, "sendReminder", {
+				id: payload.id,
+				message: payload.message,
+				attempt: attempt + 1,
+				endpoints: retryEndpoints,
+			});
 			return;
+		}
+		if (retryEndpoints.length > 0) {
+			console.error("giving up on reminder", payload.id, retryEndpoints.length);
 		}
 
 		this.setState({
@@ -271,10 +318,11 @@ await agent.call("createReminder", ["Check the oven", 300]);
 
 ## Notes
 
-- Adapted from the official docs: (1) the official `subscribe` stored any client-supplied subscription, so the Agent could be made to POST to an attacker-chosen URL (SSRF); it now accepts only https endpoints on allow-listed push-service hosts with size limits, and only authenticated users should reach it. Because `this.state` can be changed by a client `setState()`, keep subscriptions in server-managed SQLite (`this.sql`) in production, or re-run `isAllowedPushEndpoint()` before every send. Do not follow redirects from push services. (2) The official `catch` swallowed every non-404/410 error and still marked the reminder `sent`; transient failures now keep it unsent and reschedule (add a retry cap in production).
+- Adapted from the official docs: (1) the official `subscribe` stored any client-supplied subscription, so the Agent could be made to POST to an attacker-chosen URL (SSRF); it now accepts only https endpoints on allow-listed push-service hosts with size limits, and only authenticated users should reach it. Because `this.state` can be changed by a client `setState()` and stored rows may predate the validation, `sendReminder` re-runs `isAllowedPushEndpoint()` on every subscription right before sending and drops invalid ones; in production still prefer server-managed SQLite (`this.sql`) for subscriptions. (2) The official `catch` swallowed every non-404/410 error and still marked the reminder `sent`; errors are now classified: 404/410 remove the subscription, 408/429/5xx/network errors are retried only for the failed subscriptions with exponential backoff (60s doubling) and at most 5 attempts, and other 4xx (400/401/403/413 etc.) are permanent and not retried. After the cap is reached the reminder is still marked `sent` (delivery was abandoned, not confirmed); track failures separately if you need to surface them.
+- Adapted from the official docs: `createReminder` now bounds `message` (1-500 characters) and `delaySeconds` (1 second to 7 days) because callable arguments come from clients; the limits are illustrative.
 - Store VAPID keys in a `.env`/`.dev.vars` file for local dev (add it to `.gitignore`) and with `wrangler secret put` in production.
 - Subscriptions kept in `this.state` are synced to every connected client of that Agent, exposing endpoints and keys; use one Agent per user (user ID as the name) and authenticate before routing.
-- Handle push-service 404 and 410 by removing the dead subscription; a 5xx can be retried with `this.schedule(60, "retrySendNotification", ...)`.
+- Handle push-service 404 and 410 by removing the dead subscription; retry only transient errors (429, 5xx, network) with a capped number of attempts and backoff, never permanent 4xx.
 - Combine `this.broadcast()` for connected clients with Web Push for offline ones. Each device subscription is stored and notified separately.
 - Dependency: `npm install agents web-push`. The source wrangler example sets `"assets": { "not_found_handling": "single-page-application" }` and `main: src/server.ts`.
 

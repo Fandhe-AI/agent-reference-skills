@@ -8,6 +8,8 @@ The `Agent` base class of the `agents` package encapsulates connections, state, 
 
 ## Signature / Usage
 
+Adapted (not in the official docs): `routeAgentRequest(...)` is awaited so the 404 fallback can run (see Notes).
+
 ```ts
 import { Agent, routeAgentRequest } from "agents";
 

@@ -133,6 +133,8 @@ export default {
 
 Respond quickly, process later:
 
+Adapted (not in the official docs): a comment is added that the signature must be verified over the raw body first (see Notes).
+
 ```ts
 class WebhookAgent extends Agent {
 	async onRequest(request: Request): Promise<Response> {

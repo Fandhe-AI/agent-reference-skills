@@ -8,6 +8,8 @@ Spawn child agents as co-located Durable Object facets with their own isolated S
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the source builds the search URL with the raw `query`; it is URL-encoded here (see Notes).
+
 ```ts
 import { Agent } from "agents";
 
@@ -19,17 +21,6 @@ export class Orchestrator extends Agent {
 	}
 }
 
-export class Researcher extends Agent {
-	async search(query: string) {
-		const results = await fetch(`https://api.example.com/search?q=${query}`);
-		return results.json();
-	}
-}
-```
-
-Adapted (not in the official docs): the source builds the URL with the raw `query`; it is URL-encoded here (see Notes).
-
-```ts
 export class Researcher extends Agent {
 	async search(query: string) {
 		const results = await fetch(

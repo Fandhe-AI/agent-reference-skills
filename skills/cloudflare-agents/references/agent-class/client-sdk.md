@@ -73,6 +73,8 @@ useAgent({
 
 Typed stub and streaming:
 
+Adapted (not in the official docs): the streaming callbacks are nested under the `stream` option, matching the `call()` contract in callable-methods.md (see Notes).
+
 ```ts
 import type { MyAgent } from "./agents/my-agent";
 
@@ -85,14 +87,16 @@ const agent = useAgent<MyAgent>({
 const result = await agent.stub.processData({ input: "test" });
 
 await agent.call("generateText", [prompt], {
-	onChunk: (chunk) => {
-		appendToOutput(chunk);
-	},
-	onDone: (finalResult) => {
-		console.log("Complete:", finalResult);
-	},
-	onError: (error) => {
-		console.error("Stream error:", error);
+	stream: {
+		onChunk: (chunk) => {
+			appendToOutput(chunk);
+		},
+		onDone: (finalResult) => {
+			console.log("Complete:", finalResult);
+		},
+		onError: (error) => {
+			console.error("Stream error:", error);
+		},
 	},
 });
 ```
@@ -172,6 +176,7 @@ Shared members of `useAgent` and `AgentClient`:
 
 ## Notes
 
+- Corrected from the official docs: the page passes `onChunk` / `onDone` / `onError` directly as the third argument of `call()`; the call options take them under `stream: { onChunk, onDone, onError }` (see callable-methods.md and websockets.md), so they are nested here.
 - The async `query` cache is re-run when `queryDeps` change, `cacheTtl` expires, the WebSocket closes (automatic invalidation, so tokens refresh on reconnect), or the component remounts.
 - `state` starts `undefined`; `useAgent` re-renders on updates. `setState()` flows: client sends over WebSocket, agent's `onStateChanged()` runs, agent broadcasts, `onStateUpdate` fires with `source: "client"`.
 - `@callable()` is only needed for external runtimes; inside a Worker use Durable Object RPC. Errors thrown by the method reject `call()`; streaming errors go to `onError`.

@@ -8,13 +8,22 @@ Agents can send outbound email through a `send_email` binding, receive inbound m
 
 ## Signature / Usage
 
+Adapted (not in the official docs): `sendWelcomeEmail` validates the recipient and `onEmail` skips automated mail to avoid reply loops; see Notes.
+
 ```ts
 import { Agent, callable, routeAgentEmail } from "agents";
 import { createAddressBasedEmailResolver, type AgentEmail } from "agents/email";
 
+// Placeholder: recipients this Agent may email (callable methods are reachable by clients).
+const ALLOWED_RECIPIENT_DOMAINS = new Set(["yourdomain.com"]);
+
 export class EmailAgent extends Agent {
 	@callable()
 	async sendWelcomeEmail(to: string) {
+		const domain = to.split("@").at(-1)?.toLowerCase() ?? "";
+		if (!ALLOWED_RECIPIENT_DOMAINS.has(domain)) {
+			throw new Error("Recipient not allowed");
+		}
 		await this.sendEmail({
 			binding: this.env.EMAIL,
 			to,
@@ -26,6 +35,11 @@ export class EmailAgent extends Agent {
 	}
 
 	async onEmail(email: AgentEmail) {
+		// Do not auto-reply to automated mail (bounces, mailing lists, other bots).
+		const auto = email.headers.get("auto-submitted");
+		if ((auto && auto.toLowerCase() !== "no") || email.headers.get("list-id")) {
+			return;
+		}
 		await this.replyToEmail(email, {
 			fromName: "Support Agent",
 			body: "Thanks for your email. We received it.",
@@ -75,6 +89,7 @@ remote = true
 
 ## Notes
 
+- Adapted from the official docs: (1) `sendWelcomeEmail` is `@callable()`, so any connected client could make the Agent send mail to an arbitrary address; the recipient is checked against an allowlist (`ALLOWED_RECIPIENT_DOMAINS` is a placeholder) and authenticate callers before routing. (2) `onEmail` replied to every message, which can loop with auto-responders; it now returns early for `Auto-Submitted` (other than `no`) and `List-Id` mail. Inbound `From` can be spoofed, so verify sender authentication before acting on mail content.
 - Inbound email uses an Email Service routing rule that sends messages to your Worker. For reply handling include a stable identifier in the reply address, metadata or headers so follow-ups reach the right instance.
 - The `from` address `support@yourdomain.com` is a placeholder for a domain you have onboarded.
 - Complete walkthrough: https://developers.cloudflare.com/agents/examples/email-agent/. Email Service: https://developers.cloudflare.com/email-service/ and Workers send API https://developers.cloudflare.com/email-service/api/send-emails/workers-api/.
