@@ -33,7 +33,7 @@ export class ResearchAgent extends Agent<Env> {
 
 Survive disconnections (persist the result so a reconnecting client can get it):
 
-Adapted (not in the official docs): the official type annotations used `Connection` and `WSMessage` without importing them; imports added, and a message-shape check added before use; see Notes.
+Adapted (not in the official docs): the official type annotations used `Connection` and `WSMessage` without importing them; imports added, a message-shape check added before use, `connection.send()` failures caught so the model stream is still drained and the full result saved, and an `onConnect()` that replays the latest saved row; see Notes.
 
 ```ts
 import { Agent, type Connection, type WSMessage } from "agents";
@@ -57,12 +57,30 @@ export class MyAgent extends Agent<Env> {
 			prompt,
 		});
 
+		// Keep consuming the model stream even if the client goes away, so the full result is saved.
+		let delivering = true;
 		for await (const chunk of result.textStream) {
-			connection.send(JSON.stringify({ type: "chunk", content: chunk }));
+			if (!delivering) continue;
+			try {
+				connection.send(JSON.stringify({ type: "chunk", content: chunk }));
+			} catch {
+				// Client disconnected: stop delivering chunks, keep draining the stream.
+				delivering = false;
+			}
 		}
 
 		this.sql`INSERT INTO responses (prompt, response, timestamp)
 			VALUES (${prompt}, ${await result.text}, ${Date.now()})`;
+	}
+
+	// A reconnecting client receives the most recently saved result.
+	async onConnect(connection: Connection) {
+		const [latest] = this.sql<{ prompt: string; response: string }>`
+			SELECT prompt, response FROM responses
+			ORDER BY timestamp DESC LIMIT 1`;
+		if (latest) {
+			connection.send(JSON.stringify({ type: "saved", ...latest }));
+		}
 	}
 }
 ```
@@ -147,7 +165,7 @@ export class TriageAgent extends Agent<Env> {
 
 ## Notes
 
-- Adapted from the official docs: the TS variant of `onMessage` used `Connection` / `WSMessage` without imports (added) and cast the message blindly with `JSON.parse(message as string)` (now checked, and a malformed JSON message is ignored instead of throwing); the digest sample omitted its `createAI` / `generateText` imports (added) and called `schedule()` without `await` (now awaited, matching the schedule-tasks page). The `systemPrompt()` helper, the `messages` / `user_preferences` / `articles` / `digests` / `tickets` / `llm_cache` tables, and the `VECTOR_DB` binding are assumed to exist in your app. The caching sample from the page (`CachingAgent.cachedGenerate`, a SELECT on `llm_cache` before the model call and an INSERT after) is summarized rather than reproduced.
+- Adapted from the official docs: the TS variant of `onMessage` used `Connection` / `WSMessage` without imports (added) and cast the message blindly with `JSON.parse(message as string)` (now checked, and a malformed JSON message is ignored instead of throwing); the digest sample omitted its `createAI` / `generateText` imports (added) and called `schedule()` without `await` (now awaited, matching the schedule-tasks page). The disconnect sample also wraps `connection.send()` in try/catch: if the client disconnects mid-stream, `send()` can throw, which would exit the loop before the `INSERT`; the loop now stops sending but keeps consuming the stream so the result is persisted, and `onConnect()` sends the latest `responses` row (a single-row replay; per-prompt lookup is up to your app, and the `responses` table is assumed to exist). The `systemPrompt()` helper, the `messages` / `user_preferences` / `articles` / `digests` / `tickets` / `llm_cache` tables, and the `VECTOR_DB` binding are assumed to exist in your app. The caching sample from the page (`CachingAgent.cachedGenerate`, a SELECT on `llm_cache` before the model call and an INSERT after) is summarized rather than reproduced.
 - Each intermediate result lives in the Agent's memory only for the method's duration. Cache keys on the raw prompt and replaying cached text for authenticated users must be scoped per agent instance (each Agent has its own database).
 - Provider setup and examples: overview.md (https://developers.cloudflare.com/agents/models/) (Workers AI, OpenAI, Anthropic); Workers AI and AI Gateway products are in the cloudflare-ai skill (https://developers.cloudflare.com/workers-ai/). Provider SDKs themselves are covered by vercel-ai-sdk, openai-api-core, anthropic-api-core.
 
