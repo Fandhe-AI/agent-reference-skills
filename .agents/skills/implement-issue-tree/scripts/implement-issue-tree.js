@@ -2461,7 +2461,7 @@ return[
 '対象外ラベルの付いた open issue の番号を機械取得するタスク（判断・補完はしない）。',
 MERGE_CONTEXT_COMMON,
 '次のコマンドを 1 回だけそのまま実行する:',
-`names=$(gh api -X GET ${R}/labels -f per_page=100 --paginate --jq '.[].name') && k=1 || k=0; i=0; for l in ${labels.map(shellSingleQuote).join(' ')}; do i=$((i+1)); x=0; if [ "$k" = 1 ] && ! printf '%s\\n' "$names" | grep -Fxiq -- "$l"; then x=1; fi; out=$(gh api -X GET ${R}/issues -f state=open -f labels="$l" -f per_page=100 --paginate --jq '.[]|select(.pull_request==null)|.number') && printf '%s\\n' "$out" | jq -sc --argjson i "$i" --argjson x "$x" '${q}' || echo "FAILED $i" >&2; done`,
+`names=$(gh api -X GET ${R}/labels -f per_page=100 --paginate --jq '.[].name') && k=1 || k=0; i=0; for l in ${labels.map(shellSingleQuote).join(' ')}; do i=$((i+1)); x=0; if [ "$k" = 1 ] && ! printf '%s\\n' "$names" | grep -Fxiq -- "$l"; then x=1; fi; out=$(gh api -X GET ${R}/issues -f state=open -f labels="$l" -f per_page=100 --paginate --jq '.[]|select(.pull_request==null)|.number') && printf %s "$out" | jq -sc --argjson i "$i" --argjson x "$x" '${q}' || echo "FAILED $i" >&2; done`,
 '標準出力の全行を entries へ出力どおりに転記して返す（推測で追加・変更しない。numbers が空でも行は返す。x はラベルがリポジトリに無いとき 1）。標準エラーに FAILED と出た i は含めない。',
 ].join('\n')
 }
@@ -11686,10 +11686,11 @@ log(`⚠️ blocked の状態ファイル記録: ${blockedStateWrite.unwritten} 
 
 
 const ascending=(a,b)=>a-b
+const waitBlocked=failures.filter((f)=>f.status==='blocked'&&f.outOfTreeDeps?.length>0)
 const blockedWaiting={
-outOfTree:failures.filter((f)=>f.status==='blocked'&&f.outOfTreeDeps?.length>0).map((f)=>f.issue).sort(ascending),
+outOfTree:waitBlocked.map((f)=>f.issue).sort(ascending),
 skippedLabel:[...skipLabelHit.keys()].filter((n)=> !done.has(n)).sort(ascending),
-waitingOn:[...outOfTreeWait].sort(ascending),
+waitingOn:[...new Set(waitBlocked.flatMap((f)=>f.outOfTreeDeps))].sort(ascending),
 }
 if(notifyBlockedEnabled&&(blockedWaiting.outOfTree.length>0||blockedWaiting.skippedLabel.length>0)){
 try{

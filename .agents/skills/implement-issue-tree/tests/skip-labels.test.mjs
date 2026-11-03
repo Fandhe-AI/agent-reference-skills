@@ -422,6 +422,26 @@ test('notifyBlocked: ツリー外の前提で blocked のときも通知し、bl
   assert.ok(!labelsOf(calls).some((l) => l.startsWith('plan:skip-labels')), 'skipLabels 未指定ではラベルを取得しない')
 })
 
+test('notifyBlocked: waitingOn は残っている待ちの前提の和集合（重複なし・昇順）', async () => {
+  const tree = flat([2, 3, 4], { 2: { dependsOn: [99, 98] }, 3: { dependsOn: [99] } })
+  const { result } = await runScript({
+    args: ARGS({ notifyBlocked: true }),
+    override: (label) => (label.startsWith('plan:issue-tree') ? { nodes: tree } : undefined),
+  })
+  assert.deepEqual(result.blockedWaiting, { outOfTree: [2, 3], skippedLabel: [], waitingOn: [98, 99] })
+})
+
+test('notifyBlocked: ツリー外の前提 #99 を宣言した 2 が対象外ラベルで先に待たされたら、誰も待たない #99 は waitingOn に出ない', async () => {
+  // 2 は #99 を dependsOn に持つが、対象外ラベルで blocked になるため #99 待ちの項目（outOfTree）には数えない。
+  // waitingOn が空でないのに outOfTree が空、という不整合を作らない（SKILL.md Step 8 の通知条件と揃える）
+  const tree = flat([2, 3], { 2: { dependsOn: [99] } })
+  const { result } = await runScript({
+    args: ARGS({ skipLabels: ['owner:human'], notifyBlocked: true }),
+    override: skipOverride({ 'owner:human': [2] }, tree),
+  })
+  assert.deepEqual(result.blockedWaiting, { outOfTree: [], skippedLabel: [2], waitingOn: [] })
+})
+
 test('notifyBlocked: 待ちが無ければコメントしないが、blockedWaiting は空で返る', async () => {
   const { result, calls } = await runScript({ args: ARGS({ notifyBlocked: true }), leaves: [2] })
   assert.ok(!labelsOf(calls).includes('notify-blocked'))
