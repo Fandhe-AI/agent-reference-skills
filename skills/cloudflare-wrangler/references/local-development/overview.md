@@ -274,8 +274,10 @@ Wrangler exposes programmatic utilities for tooling authors using Miniflare:
 - `unstable_convertConfigBindingsToStartWorkerBindings`: converts the bindings in an `Unstable_Config` (from `unstable_readConfig`) into a structure passable to `startRemoteProxySession`. This conversion is temporary.
 - `maybeStartOrUpdateRemoteProxySession`: takes an object with either a Wrangler config path (plus optional target environment) or the Worker name and its bindings, the current proxy session details (`null` or omitted if none), and optionally auth data. Returns the session details if started/updated, or `null` if no proxy session is needed (no remote bindings and no existing session).
 
+Adapted (not in the official docs): the official import also lists the type-only `MiniflareOptions`, which does not exist at runtime in a JS module; see Notes.
+
 ```js
-import { Miniflare, MiniflareOptions } from "miniflare";
+import { Miniflare } from "miniflare";
 import { maybeStartOrUpdateRemoteProxySession } from "wrangler";
 
 let mf;
@@ -334,6 +336,7 @@ All Worker code is uploaded to a temporary preview environment on Cloudflare, an
 
 ## Notes
 
+- Corrected from the official docs: the official `remoteProxySessionDetails` example imports the type-only `MiniflareOptions` alongside `Miniflare` in a JS module; only `Miniflare` is imported here.
 - Browser Run conflict inside the official docs: this page (https://developers.cloudflare.com/workers/local-development/) says "There is no current local simulation for Browser Run" and recommends `remote: true`, while the bindings matrix (https://developers.cloudflare.com/workers/local-development/bindings-per-env/, see [bindings-per-env.md](./bindings-per-env.md)) marks Browser Run with both a local simulation and a remote binding connection. The twins carry no dates, so which is newer cannot be determined. Practical rule: set `remote: true` on the `browser` binding for real headless-browser behavior (works under both readings); without it Wrangler issues a warning.
 - Miniflare is not a hardened sandbox. Do not run untrusted or potentially malicious Worker code directly on your machine; run the whole development process inside a secure sandbox such as a virtual machine. This applies to `wrangler dev`, `vite dev`, `vite preview`, direct Miniflare use, and Miniflare-based testing tools.
 - `remote: true` changes which resource your code accesses, but your Worker code still executes locally. Legacy `wrangler dev --remote` executes your code on Cloudflare.

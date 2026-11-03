@@ -56,9 +56,11 @@ MY_VAR = "Production var"
 
 `CLOUDFLARE_ENV=production vite build` outputs a flattened `wrangler.json` for the production environment:
 
+Adapted (not in the official docs): `name` is `my-worker-production` (the environment name is appended to the Worker name); see Notes.
+
 ```json
 {
-	"name": "my-worker",
+	"name": "my-worker-production",
 	"compatibility_date": "2025-04-03",
 	"main": "index.js",
 	"upload_source_maps": true,
@@ -99,6 +101,7 @@ CLOUDFLARE_ENV=production
 
 ## Notes
 
+- Corrected from the official docs: the official page shows `"name": "my-worker"` for the production output; the environment name is appended to the top-level Worker name for environments (as in Wrangler environments), so the output is `my-worker-production`.
 - The flattened output combines top-level only, inheritable, and non-inheritable keys.
 - The default Vite environment name for a Worker is always the top-level Worker name, so it can be referenced consistently in the Vite config across Cloudflare environments.
 - Cloudflare environments also work in development, e.g. `CLOUDFLARE_ENV=development vite dev`. Without `CLOUDFLARE_ENV`, `vite dev` / `vite build` use the default top-level environment.
