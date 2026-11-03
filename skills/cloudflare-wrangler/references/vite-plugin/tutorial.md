@@ -120,10 +120,12 @@ export default {
 
 Explicit routes with `run_worker_first`:
 
+Adapted (not in the official docs): `name` kept as `my-app` (the official page switches it to `cloudflare-vite-tutorial` here); see Notes.
+
 ```jsonc
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "cloudflare-vite-tutorial",
+  "name": "my-app",
   // Set this to today's date
   "compatibility_date": "2026-11-03",
   "main": "./worker/index.ts",
@@ -163,6 +165,7 @@ npx wrangler deploy
 ## Notes
 
 - Adapted from the official docs: the official page only says to open the `cloudflare-vite-tutorial` directory in your editor before `npm i -D ...`; an explicit `cd cloudflare-vite-tutorial` was added so the install and all later commands (`npm run build`, `npx wrangler deploy`) run in the project directory. `npm i -D` also installs the template's existing dependencies, so no separate `npm install` is needed.
+- Corrected from the official docs: the official page uses `"name": "my-app"` in the first two configs but `"name": "cloudflare-vite-tutorial"` in the `run_worker_first` config; deploying would then create a different Worker. `my-app` is used throughout (the project directory is still `cloudflare-vite-tutorial`).
 - Equivalent `wrangler.toml` forms exist for each config shown (e.g. `[assets]` with `not_found_handling = "single-page-application"` and `run_worker_first = ["/api/*"]`).
 - `not_found_handling: "single-page-application"` serves `index.html` for all not-found requests (needed for React Router and other client-side routing). With the plugin, `assets` routing config replaces Vite's default behavior so dev matches production.
 - The `directory` field is not used when configuring assets with Vite; the output config points to the client build output automatically.

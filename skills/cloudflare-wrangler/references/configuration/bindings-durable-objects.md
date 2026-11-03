@@ -71,7 +71,7 @@ storage = "sqlite"
 |------|------|-------------|
 | `name` | `string` required | The name of the binding used to refer to the Durable Object. |
 | `class_name` | `string` required | The exported class name of the Durable Object. |
-| `script_name` | `string` optional | The Worker where the Durable Object is defined, if external to this Worker. Works in local and remote development. In local development you must run the external Worker in a separate process (`wrangler dev`). In remote development the appropriate remote binding must be used. |
+| `script_name` | `string` optional | The Worker where the Durable Object is defined, if external to this Worker. Works in local and remote development. In local development the external Worker must also be running: the recommended way is a single dev command with multiple configs (`wrangler dev -c ./app/wrangler.jsonc -c ./do-worker/wrangler.jsonc`) or the Vite plugin `auxiliaryWorkers` (see [multi-workers.md](../local-development/multi-workers.md)); a separate `wrangler dev` process is the less-compatible alternative. In remote development the appropriate remote binding must be used. |
 | `environment` | `string` optional | The environment of the `script_name` to bind to. |
 
 ### `exports` (Durable Object entries, keyed by class name)
@@ -128,6 +128,7 @@ storage = "sqlite"
 ## Notes
 
 - `migrations` is the legacy imperative configuration; for new Workers prefer the declarative `exports` field. `migrations` and Durable Object entries in `exports` are mutually exclusive.
+- Corrected from the official docs: the official `script_name` row says to run the external Worker in a separate process in local development; the Local Development "multiple Workers" page recommends a single dev command (multiple `-c` configs or Vite `auxiliaryWorkers`) for Durable Object access via `script_name`, so the row was reworded to match.
 - Durable Object runtime APIs and migration semantics are documented by cloudflare-workers / Durable Objects docs, not here.
 - `exports` also declares Workflows; see [bindings-workflows.md](./bindings-workflows.md).
 
