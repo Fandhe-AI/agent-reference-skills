@@ -108,6 +108,34 @@ skills/cloudflare-workers/
       routing-single-page-application.md
       routing-worker-script.md
       migrate-from-pages.md
+    languages/
+      README.md
+      typescript.md
+      rust.md
+      python.md
+      python-basics.md
+      python-packages.md
+      python-fastapi.md
+    platform/
+      README.md
+      overview.md
+      how-workers-works.md
+      limits.md
+      pricing.md
+      security-model.md
+      known-issues.md
+      changelog.md
+      get-started-cli.md
+      get-started-dashboard.md
+    cache-databases/
+      README.md
+      workers-cache.md
+      workers-cache-configuration.md
+      workers-cache-purge.md
+      connecting-to-databases.md
+      neon.md
+      planetscale.md
+      supabase.md
 ```
 
 ## 探索手順
@@ -137,3 +165,9 @@ skills/cloudflare-workers/
 | Smart Placement を使いたい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | static assets の配信・binding・routing を設定したい | static-assets | [references/static-assets/README.md](references/static-assets/README.md) |
 | `_headers` / `_redirects`・SPA ルーティング・Pages からの移行を知りたい | static-assets | [references/static-assets/README.md](references/static-assets/README.md) |
+| TypeScript / Python / Rust で Worker を書きたい | languages | [references/languages/README.md](references/languages/README.md) |
+| Python Workers (FastAPI / Flask / パッケージ / FFI) を使いたい | languages | [references/languages/README.md](references/languages/README.md) |
+| 制限・料金・実行モデル・セキュリティモデルを確認したい | platform | [references/platform/README.md](references/platform/README.md) |
+| 既知の問題・changelog・CLI / dashboard での開始手順を知りたい | platform | [references/platform/README.md](references/platform/README.md) |
+| Workers でのキャッシュ制御・外部データベース接続を知りたい | cache-databases | [references/cache-databases/README.md](references/cache-databases/README.md) |
+| Neon / PlanetScale / Supabase / Turso / Upstash 等と接続したい | cache-databases | [references/cache-databases/README.md](references/cache-databases/README.md) |
