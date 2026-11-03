@@ -99,7 +99,7 @@ npx wrangler d1 delete prod-d1-tutorial
 - A good database name uses ASCII characters, is shorter than 32 characters, uses dashes instead of spaces, describes use-case and environment (for example `staging-db-web`), and is not directly referenced in code.
 - `wrangler d1 execute` without `--remote` initializes the local database only; add `--remote` to run against the production database. You can only develop locally when using Wrangler, not through the dashboard.
 - Use `bind()` to prevent SQL injection.
-- Pages Functions can also bind D1. Cloudflare Pages is not covered by this skill; see https://developers.cloudflare.com/pages/.
+- Pages Functions can also bind D1. Cloudflare Pages is covered by the cloudflare-pages skill (https://developers.cloudflare.com/pages/).
 - Docs inconsistency: the Wrangler snippet's comment says the binding is "available in your Worker on env.DB" while the binding name is `prod_d1_tutorial` (and the Worker code uses `env.prod_d1_tutorial`).
 
 ## Related

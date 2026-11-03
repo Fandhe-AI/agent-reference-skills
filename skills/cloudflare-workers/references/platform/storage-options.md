@@ -48,10 +48,10 @@ export default {
 
 For KV, D1, R2, and Hyperdrive, see the cloudflare-storage skill. Official docs for the others:
 
-- Durable Objects: https://developers.cloudflare.com/durable-objects/
-- Queues: https://developers.cloudflare.com/queues/
+- Durable Objects (cloudflare-stateful skill): https://developers.cloudflare.com/durable-objects/
+- Queues (cloudflare-stateful skill): https://developers.cloudflare.com/queues/
 - K2: https://developers.cloudflare.com/k2/
-- Vectorize: https://developers.cloudflare.com/vectorize/
+- Vectorize (cloudflare-ai skill): https://developers.cloudflare.com/vectorize/
 - Basin Pipelines: https://developers.cloudflare.com/basin-pipelines/
 - Analytics Engine: https://developers.cloudflare.com/analytics/analytics-engine/
 
@@ -62,7 +62,7 @@ For KV, D1, R2, and Hyperdrive, see the cloudflare-storage skill. Official docs 
 - D1 maximum database size is 10 GB; split larger working sets into multiple databases.
 - Queues vs K2: use Queues when each message is a unit of work completed, retried, and tracked individually; use K2 when producing and consuming records in bulk where every record being processed matters more than any one record's state.
 - D1 vs SQLite in Durable Objects: D1 is a managed database ("batteries included": HTTP API, schema management, import/export, query insights; use Smart Placement to reduce latency). SQLite in Durable Objects is a lower-level building block accessed only from Workers, requiring a front-end Worker plus the Durable Object. SQL pricing and limits are intended to be identical between the two.
-- Pages Functions can use the same storage options (see https://developers.cloudflare.com/pages/functions/bindings/).
+- Pages Functions can use the same storage options (Pages Functions bindings are covered by the cloudflare-pages skill; https://developers.cloudflare.com/pages/functions/bindings/).
 - Docs inconsistency: in the source, "Basin Pipelines" is an H2 heading while sibling product overviews are H3.
 - The source page contains no code; the snippet above is borrowed from Workers Best Practices.
 

@@ -56,7 +56,7 @@ npm create cloudflare@latest -- my-react-app --framework=react
 - Caching: the first request fetches the asset from storage and caches it at the nearest Cloudflare location; other data centers can retrieve it from a nearby cache through tiered caching.
 - With the Cloudflare Vite plugin you do not need to specify `assets.directory`; see the cloudflare-wrangler skill (vite-plugin category) for the plugin.
 - The full `assets` key specification lives in the cloudflare-wrangler skill; this category documents the runtime behavior.
-- Cloudflare Pages is not covered by this skill; see https://developers.cloudflare.com/pages/.
+- Cloudflare Pages is covered by the cloudflare-pages skill (https://developers.cloudflare.com/pages/).
 
 ## Related
 

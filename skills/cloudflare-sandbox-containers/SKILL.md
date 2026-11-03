@@ -29,7 +29,7 @@ Cloudflare 開発者プラットフォームの Sandbox SDK（`@cloudflare/sandb
 - cloudflare-agents: Agents SDK 側のサンドボックスツール利用は同スキルが担当。本スキルは Sandbox SDK 自体の API を扱う
 - docker: Docker Engine / Dockerfile / Compose / Buildx 本体。本スキルは Cloudflare Containers へのイメージ登録・デプロイのみ扱う
 - anthropic-claude-code / openai-codex: エージェント本体（CLI・設定・機能）は各スキル。本スキルはサンドボックス内で動かす方法（`references/sandbox/claude-code.md` / `codex.md` ほか）のみ扱う
-- 未収録の Cloudflare 製品は公式 docs（`https://developers.cloudflare.com/<product>/`）を参照
+- cloudflare-ai / cloudflare-pages / cloudflare-storage: Workers AI・AI Gateway 等の AI 基盤、Pages、KV / D1 / R2 / Hyperdrive は各スキル。いずれにも無い Cloudflare 製品は公式 docs（`https://developers.cloudflare.com/<product>/`）を参照
 
 ## ディレクトリ構成
 

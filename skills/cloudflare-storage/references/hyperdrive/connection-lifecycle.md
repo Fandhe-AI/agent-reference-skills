@@ -64,7 +64,7 @@ export default {
 - Always create database clients inside handlers (`fetch`, `queue`, ...), never in global scope. A driver-level pool (`new Pool()`, `createPool()`) in global scope leaves stale connections that cause failed queries and hard errors.
 - Durable Objects can hold clients across requests; each open connection consumes Hyperdrive pool resources. Close connections when idle, use timeouts, and limit the number of Durable Objects holding connections.
 - Hyperdrive uses transaction pooling mode, so long-running transactions hold a connection until they finish and can exhaust the pool. Keep transactions short and avoid external API calls or heavy computation inside them.
-- Durable Objects are not covered by this skill; see https://developers.cloudflare.com/durable-objects/. Workflows are not covered by this skill; see https://developers.cloudflare.com/workflows/. Queues are not covered by this skill; see https://developers.cloudflare.com/queues/.
+- Durable Objects, Workflows and Queues are covered by the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/, https://developers.cloudflare.com/workflows/, https://developers.cloudflare.com/queues/).
 
 ## Related
 

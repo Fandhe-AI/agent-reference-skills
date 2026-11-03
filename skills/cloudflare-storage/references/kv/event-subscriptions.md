@@ -59,7 +59,7 @@ Subscribe to Workers KV change events, published to a Cloudflare Queue that you 
 
 ## Notes
 
-- Event subscriptions are managed through Cloudflare Queues. Cloudflare Queues is not covered by this skill; see https://developers.cloudflare.com/queues/ (event subscriptions guide: https://developers.cloudflare.com/queues/event-subscriptions/).
+- Event subscriptions are managed through Cloudflare Queues. Cloudflare Queues is covered by the cloudflare-stateful skill (https://developers.cloudflare.com/queues/; event subscriptions guide: https://developers.cloudflare.com/queues/event-subscriptions/).
 
 ## Related
 

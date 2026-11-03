@@ -28,7 +28,7 @@ Workers アプリの設計・実装時に参照する。
 - cloudflare-wrangler: Wrangler CLI コマンド、`wrangler.jsonc` のキー仕様、`wrangler dev` / remote bindings、`@cloudflare/vite-plugin`、Vitest 統合 / Miniflare、Workers Builds / versions / gradual deployments、observability
 - cloudflare-storage: KV / D1 / R2 / Hyperdrive の binding API と wrangler サブコマンド
 - binding の配置: env / bindings の概念・一覧、service bindings、RPC、secrets は本スキル（`bindings-rpc`）。各ストレージの API は cloudflare-storage
-- Durable Objects / Queues / Workflows / Workers AI / Vectorize / Agents / Pages 等、第 2 波で未収録の Cloudflare 製品は公式 docs（`https://developers.cloudflare.com/<product>/`）を参照
+- 同ファミリーの他製品: Durable Objects / Queues / Workflows は cloudflare-stateful、Workers AI / AI Gateway / Vectorize / AI Search は cloudflare-ai、Pages / Pages Functions は cloudflare-pages、Sandbox SDK / Containers は cloudflare-sandbox-containers、Agents SDK（Cloudflare 上の MCP サーバーを含む）は cloudflare-agents。本スキルは各製品の binding 一覧・ハンドラー入口のみ扱う
 - フレームワーク本体の API は hono / react-router / tanstack-start / nextjs-app / react / vite スキルが担当。`framework-guides` は Cloudflare 側のデプロイ要点のみ
 
 ## ディレクトリ構成

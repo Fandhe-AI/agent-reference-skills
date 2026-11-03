@@ -164,7 +164,7 @@ export default {
 - For TypeScript, pass both config files to `wrangler types` so Wrangler resolves Worker B's default export; `WORKER_B` is then typed as a `Service` with `add()`. Do not set `entrypoint` to `default`; omitting `entrypoint` selects the default export.
 - RPC requires a compatibility date of `2024-04-03` or later, or the `rpc` compatibility flag (see [rpc.md](./rpc.md)).
 - D1 usage in the named-entrypoint example: see the cloudflare-storage skill.
-- RPC also works between Workers and Durable Objects (https://developers.cloudflare.com/durable-objects/best-practices/create-durable-object-stubs-and-send-requests/#invoke-rpc-methods).
+- RPC also works between Workers and Durable Objects (cloudflare-stateful skill; https://developers.cloudflare.com/durable-objects/best-practices/create-durable-object-stubs-and-send-requests/#invoke-rpc-methods).
 - Complete example (to-do app and Discord bot): https://github.com/cloudflare/js-rpc-and-entrypoints-demo
 
 ## Related

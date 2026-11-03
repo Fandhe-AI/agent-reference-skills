@@ -83,15 +83,15 @@ export default {
 
 | Binding | Details |
 |---------|---------|
-| AI | https://developers.cloudflare.com/workers-ai/get-started/workers-wrangler/#2-connect-your-worker-to-workers-ai |
-| AI Search | https://developers.cloudflare.com/ai-search/api/search/workers-binding/ |
+| AI | cloudflare-ai skill; https://developers.cloudflare.com/workers-ai/get-started/workers-wrangler/#2-connect-your-worker-to-workers-ai |
+| AI Search | cloudflare-ai skill; https://developers.cloudflare.com/ai-search/api/search/workers-binding/ |
 | Analytics Engine | https://developers.cloudflare.com/analytics/analytics-engine/ |
 | Analytics SQL binding | [analytics-sql.md](./analytics-sql.md) |
 | Assets | https://developers.cloudflare.com/workers/static-assets/binding/ |
 | Browser Run | https://developers.cloudflare.com/browser-run/ |
 | D1 | See the cloudflare-storage skill. |
 | Dispatcher (Workers for Platforms) | https://developers.cloudflare.com/cloudflare-for-platforms/workers-for-platforms/configuration/dynamic-dispatch/ |
-| Durable Objects | https://developers.cloudflare.com/durable-objects/api/ |
+| Durable Objects | cloudflare-stateful skill; https://developers.cloudflare.com/durable-objects/api/ |
 | Dynamic Worker Loaders | https://developers.cloudflare.com/workers/runtime-apis/bindings/worker-loader/ |
 | Environment Variables | [environment-variables.md](./environment-variables.md) |
 | Hyperdrive | See the cloudflare-storage skill. |
@@ -99,16 +99,16 @@ export default {
 | KV | See the cloudflare-storage skill. |
 | Media Transformations | https://developers.cloudflare.com/stream/transform-videos/bindings/ |
 | mTLS | [mtls.md](./mtls.md) |
-| Queues | https://developers.cloudflare.com/queues/configuration/javascript-apis/ |
+| Queues | cloudflare-stateful skill; https://developers.cloudflare.com/queues/configuration/javascript-apis/ |
 | R2 | See the cloudflare-storage skill. |
 | Rate Limiting | [rate-limit.md](./rate-limit.md) |
 | Secrets | [secrets.md](./secrets.md) |
 | Secrets Store | https://developers.cloudflare.com/secrets-store/integrations/workers/ |
 | Service bindings | [service-bindings.md](./service-bindings.md) |
 | Stream | https://developers.cloudflare.com/stream/manage-video-library/bindings/ |
-| Vectorize | https://developers.cloudflare.com/vectorize/reference/client-api/ |
+| Vectorize | cloudflare-ai skill; https://developers.cloudflare.com/vectorize/reference/client-api/ |
 | Version metadata | [version-metadata.md](./version-metadata.md) |
-| Workflows | https://developers.cloudflare.com/workflows/ |
+| Workflows | cloudflare-stateful skill; https://developers.cloudflare.com/workflows/ |
 
 ## Notes
 

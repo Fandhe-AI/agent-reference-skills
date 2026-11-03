@@ -73,5 +73,5 @@ export default {
 
 - The endpoint lives at `src/routes/api/users/+server.ts` (served at `/api/users`); the types go in `src/app.d.ts`; the adapter config in `svelte.config.js`. Install with `npm i -D @sveltejs/adapter-cloudflare`.
 - Adapted from the official docs: `export async function GET({ request, platform })` became a typed `RequestHandler` that checks `platform` (typed `App.Platform | undefined` by SvelteKit) before using `platform.env.DB`; the unused `request` parameter was dropped. The query and JSON responses are unchanged.
-- SvelteKit on Pages: https://developers.cloudflare.com/pages/framework-guides/deploy-a-svelte-kit-site/
+- SvelteKit on Pages: see the cloudflare-pages skill (https://developers.cloudflare.com/pages/framework-guides/deploy-a-svelte-kit-site/).
 - Related: [D1 README](../references/d1/README.md), [prepared-statements](../references/d1/prepared-statements.md).

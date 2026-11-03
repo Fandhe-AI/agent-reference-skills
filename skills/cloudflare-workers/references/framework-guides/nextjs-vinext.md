@@ -61,7 +61,7 @@ migrate this project to vinext
 - vinext is in beta; run `npx vinext check` and review the vinext compatibility dashboard before adopting it for production.
 - `vinext init` installs vinext and Vite dependencies, adds vinext scripts, generates the Vite config, and creates the Cloudflare Workers configuration.
 - Bindings: import `env` from `cloudflare:workers` in server components, route handlers, and server actions; generate types with `wrangler types`.
-- Alternatives: [opennext.md](./opennext.md) for existing OpenNext apps; static exports on Cloudflare Pages (see https://developers.cloudflare.com/pages/framework-guides/nextjs/deploy-a-static-nextjs-site/).
+- Alternatives: [opennext.md](./opennext.md) for existing OpenNext apps; static exports on Cloudflare Pages (cloudflare-pages skill; https://developers.cloudflare.com/pages/framework-guides/nextjs/deploy-a-static-nextjs-site/).
 - Next.js APIs: see the nextjs-app skill.
 
 ## Related

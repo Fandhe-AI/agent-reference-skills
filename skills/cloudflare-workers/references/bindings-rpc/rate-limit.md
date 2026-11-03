@@ -87,7 +87,7 @@ const { success: ipSuccess } = await env.MY_RATE_LIMITER.limit({ key: ipAddress 
 - Locality: limits are local to the Cloudflare location the Worker runs in; counts from different locations do not combine into a worldwide limit.
 - Performance: each check uses a locally cached count; the promise resolves with the decision without waiting for cross-instance synchronization.
 - Accuracy: counts are eventually consistent. A burst can result in more than `limit` calls returning `success: true`, even within one Worker or location. Sharing a namespace or awaiting each call does not make the limit strict.
-- Strict limits: implement a rate limiter with Durable Objects (https://developers.cloudflare.com/durable-objects/concepts/what-are-durable-objects/); route requests per credential through the same object and persist the counter in durable storage.
+- Strict limits: implement a rate limiter with Durable Objects (cloudflare-stateful skill; https://developers.cloudflare.com/durable-objects/concepts/what-are-durable-objects/); route requests per credential through the same object and persist the counter in durable storage.
 - Monitoring: bindings are not visible in the dashboard. Use Workers Observability (Workers Logs, Traces) for HTTP 429 responses, or emit Analytics Engine data points when `limit()` returns `{ success: false }`.
 - Backed by the same infrastructure as WAF rate limiting rules (https://developers.cloudflare.com/waf/rate-limiting-rules/).
 

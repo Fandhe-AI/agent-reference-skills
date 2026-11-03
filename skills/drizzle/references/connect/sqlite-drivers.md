@@ -194,7 +194,7 @@ export class MyDurableObject extends DurableObject {
 - Expo SQLite's `useLiveQuery` hook makes a Drizzle query reactive; requires `openDatabaseSync(..., { enableChangeListener: true })`.
 - In the Turso Database Sync example, `url: 'https://<db>.turso.io'` and `authToken: '...'` are placeholders copied verbatim from the official `connect-turso-sync.mdx`; replace them with the values from `turso db show <db>` and `turso db tokens create <db>` (keep the token in an environment variable).
 - Cloudflare D1 requires a `wrangler.json`/`wrangler.toml` with a `d1_databases` binding.
-- Cloudflare D1 binding API itself (D1Database, prepared statements, Time Travel) and Durable Objects storage outside Drizzle: see the cloudflare-storage skill (D1) and https://developers.cloudflare.com/durable-objects/.
+- Cloudflare D1 binding API itself (D1Database, prepared statements, Time Travel) and Durable Objects storage outside Drizzle: see the cloudflare-storage skill (D1) and the cloudflare-stateful skill (Durable Objects; https://developers.cloudflare.com/durable-objects/).
 
 ## Related
 

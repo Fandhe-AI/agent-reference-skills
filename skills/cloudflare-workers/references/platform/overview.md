@@ -26,8 +26,8 @@ Snippet taken from https://developers.cloudflare.com/workers/reference/how-worke
 | --- | --- |
 | Front-end applications | Deploy static assets (https://developers.cloudflare.com/workers/static-assets/) to Cloudflare's CDN & cache |
 | Back-end applications | Build APIs and connect to data stores with Smart Placement (https://developers.cloudflare.com/workers/configuration/placement/) |
-| Serverless AI inference | Workers AI (https://developers.cloudflare.com/workers-ai/) |
-| Background jobs | Cron Triggers (https://developers.cloudflare.com/workers/configuration/cron-triggers/), Workflows (https://developers.cloudflare.com/workflows/), Queues (https://developers.cloudflare.com/queues/) |
+| Serverless AI inference | Workers AI (cloudflare-ai skill; https://developers.cloudflare.com/workers-ai/) |
+| Background jobs | Cron Triggers (https://developers.cloudflare.com/workers/configuration/cron-triggers/), Workflows (cloudflare-stateful skill; https://developers.cloudflare.com/workflows/), Queues (cloudflare-stateful skill; https://developers.cloudflare.com/queues/) |
 | Observability & monitoring | Real-time logs (https://developers.cloudflare.com/workers/observability/logs/) and analytics |
 
 Frameworks, languages: React, Vue, Svelte, Next, Astro, React Router, fate (https://developers.cloudflare.com/workers/framework-guides/); JavaScript, TypeScript, Python, Rust, and anything compiling to WebAssembly.
@@ -38,14 +38,14 @@ Connect to external services via Bindings (https://developers.cloudflare.com/wor
 
 | Group | Product | Description |
 | --- | --- | --- |
-| Storage | Durable Objects (https://developers.cloudflare.com/durable-objects/) | Scalable stateful storage for real-time coordination |
+| Storage | Durable Objects (cloudflare-stateful skill; https://developers.cloudflare.com/durable-objects/) | Scalable stateful storage for real-time coordination |
 | Storage | D1 | Serverless SQL database built for fast, global queries |
 | Storage | KV | Low-latency key-value storage for fast, edge-cached reads |
-| Storage | Queues (https://developers.cloudflare.com/queues/) | Guaranteed delivery with no charges for egress bandwidth |
+| Storage | Queues (cloudflare-stateful skill; https://developers.cloudflare.com/queues/) | Guaranteed delivery with no charges for egress bandwidth |
 | Storage | Hyperdrive | Connect to your external database with accelerated queries, cached at the edge |
-| Compute | Workers AI (https://developers.cloudflare.com/workers-ai/) | Machine learning models powered by serverless GPUs |
-| Compute | Workflows (https://developers.cloudflare.com/workflows/) | Durable, long-running operations with automatic retries |
-| Compute | Vectorize (https://developers.cloudflare.com/vectorize/) | Vector database for AI-powered semantic search |
+| Compute | Workers AI (cloudflare-ai skill; https://developers.cloudflare.com/workers-ai/) | Machine learning models powered by serverless GPUs |
+| Compute | Workflows (cloudflare-stateful skill; https://developers.cloudflare.com/workflows/) | Durable, long-running operations with automatic retries |
+| Compute | Vectorize (cloudflare-ai skill; https://developers.cloudflare.com/vectorize/) | Vector database for AI-powered semantic search |
 | Compute | R2 | Zero-egress object storage for cost-efficient data access |
 | Compute | Browser Run (https://developers.cloudflare.com/browser-run/) | Programmatic serverless browser instances |
 | Media | Cache / CDN (https://developers.cloudflare.com/cache/) | Global caching for high-performance, low-latency delivery |

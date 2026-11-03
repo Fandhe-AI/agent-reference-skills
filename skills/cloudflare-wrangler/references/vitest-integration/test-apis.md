@@ -82,7 +82,7 @@ it("calls scheduled handler", async () => {
 });
 ```
 
-- `createMessageBatch(queueName:string, messages:ServiceBindingQueueMessage[])`: `MessageBatch` - first argument to `queue()` handlers (see https://developers.cloudflare.com/queues/configuration/javascript-apis/#consumer).
+- `createMessageBatch(queueName:string, messages:ServiceBindingQueueMessage[])`: `MessageBatch` - first argument to `queue()` handlers (Queues consumer API: cloudflare-stateful skill; https://developers.cloudflare.com/queues/configuration/javascript-apis/#consumer).
 - `getQueueResult(batch:MessageBatch, ctx:ExecutionContext)`: `Promise<FetcherQueueResult>` - gets the acknowledged/retry state of messages in the batch and waits for all `waitUntil()`ed Promises to settle. Only accepts instances from `createMessageBatch()` and `createExecutionContext()`.
 
 ```ts
@@ -479,7 +479,7 @@ it("introspects instances created through ctx.exports", async () => {
 - Corrected from the official docs: the `introspectWorkflow` example calls `introspector.get()` without `await` although `get()` is documented as returning a Promise (iterating a Promise would throw), so `await` was added. The explicit-disposal example disposes in a `catch` block, which only runs on error, so it was changed to `finally`.
 - The D1 bullet above and `configuration.md` reference `@cloudflare/vitest-plugin/config` for `readD1Migrations`, while the configuration examples import it from `@cloudflare/vitest-plugin`; both subpaths are covered by the rename in migrate-to-vitest-plugin.md.
 - Docs inconsistency: the D1 text says "`migrationsTableName`" while the signature parameter is `migrationTableName`.
-- Vitest itself (test API, config, mocking): see the vitest skill. This package only provides the Workers runtime pool/plugin. For Durable Objects, Queues, Workflows and Secrets Store products, see https://developers.cloudflare.com/durable-objects/ , https://developers.cloudflare.com/queues/ , https://developers.cloudflare.com/workflows/ , https://developers.cloudflare.com/secrets-store/ .
+- Vitest itself (test API, config, mocking): see the vitest skill. This package only provides the Workers runtime pool/plugin. Durable Objects, Queues and Workflows are covered by the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/ , https://developers.cloudflare.com/queues/ , https://developers.cloudflare.com/workflows/ ); for Secrets Store see https://developers.cloudflare.com/secrets-store/ .
 
 ## Related
 

@@ -33,7 +33,7 @@ Output of `info`:
 - Restore is destructive and overwrites the database in place; in-flight queries and transactions are cancelled with an error. The restore returns the previous bookmark so you can undo by restoring to it (or any earlier bookmark from `time-travel info`).
 - Window: 30 days (Workers Paid) / 7 days (Free); max 10 restores per 10 minutes per database (see Limits).
 - Cloning / forking an existing database is not yet supported.
-- Retain state longer than 30 days by exporting D1 to R2 with Workflows (Export and save D1 database example). Cloudflare Workflows is not covered by this skill; see https://developers.cloudflare.com/workflows/examples/backup-d1/.
+- Retain state longer than 30 days by exporting D1 to R2 with Workflows (Export and save D1 database example). Cloudflare Workflows is covered by the cloudflare-stateful skill (https://developers.cloudflare.com/workflows/examples/backup-d1/).
 - `date +%s` gives a Unix timestamp on macOS and Windows per the source.
 - Restores are recorded in audit logs as `TimeTravel`.
 

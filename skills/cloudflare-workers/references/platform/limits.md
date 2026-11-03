@@ -202,7 +202,7 @@ Unbound matches Workers Paid. Bundled matches Workers Paid except: subrequests 5
 - `Memory per isolate` is 128 MB for every plan; a single isolate handles many concurrent requests.
 - Docs inconsistency: the pricing page says Cron Trigger / Queue Consumer CPU is "Max of 15 minutes", while this page distinguishes 30 seconds (< 1 hour interval) from 15 min (>= 1 hour interval).
 - Image Resizing limits are documented in the Images product docs: https://developers.cloudflare.com/images/optimization/transformations/overview/.
-- Related product limits: KV https://developers.cloudflare.com/kv/platform/limits/, Durable Objects https://developers.cloudflare.com/durable-objects/platform/limits/, Queues https://developers.cloudflare.com/queues/platform/limits/.
+- Related product limits: KV https://developers.cloudflare.com/kv/platform/limits/, Durable Objects https://developers.cloudflare.com/durable-objects/platform/limits/, Queues https://developers.cloudflare.com/queues/platform/limits/ (Durable Objects and Queues are covered by the cloudflare-stateful skill).
 
 ## Related
 

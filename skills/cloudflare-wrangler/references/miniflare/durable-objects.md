@@ -81,7 +81,7 @@ console.log(await res.text()); // "1"
 ## Notes
 
 - Using a class exported by another script: Miniflare supports the `script_name` option (the Reference block shows `API_OBJECT: { className: "ApiObject", scriptName: "api" }`); this requires mounting the other worker as described in the Multiple Workers page.
-- Durable Objects product docs: https://developers.cloudflare.com/durable-objects/ and API https://developers.cloudflare.com/durable-objects/api/
+- The Durable Objects product (API and concepts) is covered by the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/, API https://developers.cloudflare.com/durable-objects/api/).
 
 ## Related
 

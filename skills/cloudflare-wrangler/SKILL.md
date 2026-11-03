@@ -27,7 +27,7 @@ Wrangler CLI・設定ファイル (wrangler.jsonc / wrangler.toml)・ローカ�
 - cloudflare-workers: ランタイム API（handlers / bindings 概念 / RPC / Web API / Node.js 互換）と、compatibility flags・cron・routes などランタイム側の挙動。本スキルの `configuration` カテゴリは設定ファイルのキー仕様を扱う
 - cloudflare-storage: KV / D1 / R2 / Hyperdrive の API と、`wrangler kv|d1|r2|hyperdrive` のタスク別コマンド。全フラグ表は本スキルの `commands` にもある
 - vite / vitest / github-docs: 各ツール本体の設定 API・構文。本スキルは Cloudflare 連携部分（`@cloudflare/vite-plugin`、`@cloudflare/vitest-plugin`、Workers 向け GitHub Actions）に限る
-- 未収録の Cloudflare 製品は公式 docs を参照する
+- 同ファミリーの他製品: Durable Objects / Queues / Workflows は cloudflare-stateful、Pages / Pages Functions は cloudflare-pages、Sandbox SDK / Containers は cloudflare-sandbox-containers、Workers AI / AI Gateway / Vectorize / AI Search は cloudflare-ai、Agents SDK は cloudflare-agents。製品スキルは API・概念とタスク別コマンド、`wrangler` の全フラグ表は本スキルの `commands`
 
 ## ディレクトリ構成
 

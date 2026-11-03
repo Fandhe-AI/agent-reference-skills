@@ -43,5 +43,5 @@ export default function Index() {
 ## Notes
 
 - The official page states Remix is no longer recommended for new projects and points to React Router: https://developers.cloudflare.com/workers/framework-guides/web-apps/react-router
-- Remix on Pages setup: https://developers.cloudflare.com/pages/framework-guides/deploy-a-remix-site/. Local dev needs `--d1 DB=<DATABASE_ID>` on `wrangler pages dev <build-output-dir>` (e.g. `npx wrangler pages dev ./public --d1 DB=<DATABASE_ID>`, using your framework's output directory). The official page says `wrangler dev`, but `--d1` is a `wrangler pages dev` flag (see the cloudflare-wrangler skill, `commands/pages.md`).
+- Remix on Pages setup: see the cloudflare-pages skill (https://developers.cloudflare.com/pages/framework-guides/deploy-a-remix-site/). Local dev needs `--d1 DB=<DATABASE_ID>` on `wrangler pages dev <build-output-dir>` (e.g. `npx wrangler pages dev ./public --d1 DB=<DATABASE_ID>`, using your framework's output directory). The official page says `wrangler dev`, but `--d1` is a `wrangler pages dev` flag (see the cloudflare-wrangler skill, `commands/pages.md`).
 - Related: [D1 README](../references/d1/README.md), [prepared-statements](../references/d1/prepared-statements.md).
