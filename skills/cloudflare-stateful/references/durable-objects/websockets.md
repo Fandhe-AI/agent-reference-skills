@@ -261,7 +261,7 @@ export class WebSocketServer extends DurableObject {
 - Validate upgrade requests in the Worker: Workers and Durable Objects are both billed per request, so rejecting invalid requests in the Worker avoids billing them against an object.
 - Connections accepted with the Hibernation API stay connected when the object adopts new code after hibernating. A forced code update (a `deferred` update hitting `max_delay` before hibernation, or the `immediate` strategy) disconnects attached sockets; the Web Standard API prevents hibernation, so its sockets are disconnected on any update.
 - Adapted from the official docs: the official TypeScript attachment example has broken indentation and the Python examples are garbled markdown; only the JavaScript attachment example is reproduced. The `ws.close(...)` inside close handlers is safe on compatibility dates on or after 2026-04-07.
-- Agents SDK (built on Durable Objects) is the cloudflare-agents skill.
+- Agents SDK (built on Durable Objects) is the cloudflare-agents skill (https://developers.cloudflare.com/agents/).
 
 ## Related
 

@@ -28,7 +28,7 @@ const rpcResponse = await stub.sayHello();
 - WebSockets: both the Standard API and the Hibernation API are supported. RPC (Workers Remote-Procedure-Call) is supported.
 - Actor model: each instance can be seen as an actor receiving messages (HTTP/RPC requests), running logic in its own single-threaded context, and sending messages (even to another object). Plan architecture around how much work one object can do (see the limits page).
 - Many Cloudflare products use Durable Objects (blog posts listed on the official page, e.g. Cloudflare Queues, AI Gateway, Workers Builds, Workflows, D1).
-- The Agents SDK is covered by the cloudflare-agents skill.
+- The Agents SDK is covered by the cloudflare-agents skill (https://developers.cloudflare.com/agents/).
 
 ## Related
 

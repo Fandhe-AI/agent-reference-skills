@@ -8,13 +8,17 @@ Alarms schedule a Durable Object to be woken up at a future time, at which point
 
 ## Signature / Usage
 
+Adapted (not in the official docs): each registration carries a `gen` token and `alarm()` updates or deletes an entry only if the stored `gen` still matches after `processEvent()` finishes, so a re-registration made during that await is not overwritten; the next alarm is chosen from a fresh `list()`. See Notes.
+
 ```js
 import { DurableObject } from "cloudflare:workers";
 
 export class AgentServer extends DurableObject {
   // Schedule a one-time or recurring event
   async scheduleEvent(id, runAt, repeatMs = null) {
-    await this.ctx.storage.put(`event:${id}`, { id, runAt, repeatMs });
+    // A fresh gen token marks this registration; it invalidates in-flight alarm() results for the same id.
+    const gen = crypto.randomUUID();
+    await this.ctx.storage.put(`event:${id}`, { id, runAt, repeatMs, gen });
     const currentAlarm = await this.ctx.storage.getAlarm();
     if (!currentAlarm || runAt < currentAlarm) {
       await this.ctx.storage.setAlarm(runAt);
@@ -30,10 +34,16 @@ export class AgentServer extends DurableObject {
     for (const [key, event] of events) {
       if (event.runAt <= now) {
         await this.processEvent(event);
-        if (event.repeatMs) {
-          await this.ctx.storage.put(key, { ...event, runAt: now + event.repeatMs });
-        } else {
-          await this.ctx.storage.delete(key);
+        // Re-read the current entry; only write if it is still the registration we processed.
+        // Only storage operations run between this get() and the put()/delete(), so
+        // input/output gates keep scheduleEvent() from interleaving.
+        const current = await this.ctx.storage.get(key);
+        if (current && current.gen === event.gen) {
+          if (event.repeatMs) {
+            await this.ctx.storage.put(key, { ...current, runAt: now + event.repeatMs });
+          } else {
+            await this.ctx.storage.delete(key);
+          }
         }
       }
     }
@@ -128,7 +138,7 @@ class MyDurableObject extends DurableObject {
 - If you call `setAlarm` in the constructor, first check whether an alarm is already set: after inactivity the constructor runs before the `alarm()` handler and could interfere with the pending alarm.
 - If an unexpected error terminates the object, `alarm()` may be re-instantiated on another machine and run from the beginning after a short delay.
 - Alarms vs Cron Triggers: alarms are scheduled programmatically from within an object and each object can have one; a Worker can have up to three Cron Triggers, configured through the dashboard or API. Cron Triggers are documented in cloudflare-workers.
-- Adapted (not in the official docs): the first example's `alarm()` no longer computes `nextAlarm` from the initial `list()` snapshot. `processEvent()` awaits external I/O, during which `scheduleEvent()` can add events; the handler now updates only the keys it processed and re-lists after processing to choose the next alarm, so new nearer events are not pushed back.
+- Adapted (not in the official docs): the first example's `alarm()` no longer computes `nextAlarm` from the initial `list()` snapshot. `processEvent()` awaits external I/O, during which `scheduleEvent()` can add events; the handler now updates only the keys it processed and re-lists after processing to choose the next alarm, so new nearer events are not pushed back. Each registration also stores a `gen` token (`crypto.randomUUID()`); after `processEvent()` the handler re-reads the entry and puts/deletes only if `gen` still matches, so an event re-registered under the same ID during the await is kept as the newer registration (it stays due and is picked up by the final `list()`). The get-then-write sequence contains only storage awaits, so input/output gates prevent `scheduleEvent()` from interleaving.
 - Corrected from the official docs: `fetch()` in the example returned nothing (a `Response` is required) and `setAlarm` was not awaited; the retry-log message used a double-quoted string so `${alarmInfo?.retryCount}` was printed literally.
 
 ## Related

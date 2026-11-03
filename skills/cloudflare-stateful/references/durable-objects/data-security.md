@@ -8,10 +8,11 @@ Data security properties of Durable Objects: encryption at rest, encryption in t
 
 ## Signature / Usage
 
-Snippet taken from https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/
+Snippet taken from https://developers.cloudflare.com/durable-objects/reference/data-location/ (jurisdiction-restricted namespace, relevant to data residency and compliance)
 
-```ts
-const rows = this.ctx.storage.sql.exec("SELECT * FROM users").toArray();
+```js
+const euSubnamespace = env.MY_DURABLE_OBJECT.jurisdiction("eu");
+const euId = euSubnamespace.newUniqueId();
 ```
 
 ## Notes
@@ -24,3 +25,4 @@ const rows = this.ctx.storage.sql.exec("SELECT * FROM users").toArray();
 
 - [Data location](./data-location.md)
 - [SQLite-backed storage API](./sqlite-storage-api.md)
+- [Durable Object namespace](./namespace.md)

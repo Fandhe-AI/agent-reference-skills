@@ -47,7 +47,7 @@ compatibility_flags = ["experimental", "webgpu"]
 
 - The page's two tables both list `GPUShaderModule` (supported and unsupported); the source does not resolve this.
 - Enable the `experimental` and `webgpu` compatibility flags in the Wrangler configuration of the Durable Object (compatibility flags and local development are covered by the cloudflare-wrangler skill).
-- For ML on Cloudflare's GPUs use Workers AI (cloudflare-ai skill, workers-ai)
+- For ML on Cloudflare's GPUs use Workers AI (cloudflare-ai skill (workers-ai; https://developers.cloudflare.com/workers-ai/)
 - Example from the source: https://github.com/cloudflare/workers-wonnx/ (image classification via WebGPU with the wonnx runtime).
 
 ## Related

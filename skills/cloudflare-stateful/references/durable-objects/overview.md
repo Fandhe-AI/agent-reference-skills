@@ -44,7 +44,7 @@ export default {
 - SQLite-backed Durable Objects are available on the Workers Free plan with the limits on the pricing page. SQLite storage and `sql.exec` are generally available; new classes should use the SQLite storage configuration.
 - Headline features: in-memory state, Storage API, WebSocket Hibernation, Alarms, and RPC.
 - Related products by plain URL: Workers https://developers.cloudflare.com/workers/ (cloudflare-workers skill), D1 https://developers.cloudflare.com/d1/ and R2 https://developers.cloudflare.com/r2/ (cloudflare-storage skill), storage options https://developers.cloudflare.com/workers/platform/storage-options/.
-- The Agents SDK is built on Durable Objects and is covered by the cloudflare-agents skill; `wrangler` configuration and local development are in cloudflare-wrangler.
+- The Agents SDK is built on Durable Objects and is covered by the cloudflare-agents skill (https://developers.cloudflare.com/agents/); `wrangler` configuration and local development are in cloudflare-wrangler.
 
 ## Related
 

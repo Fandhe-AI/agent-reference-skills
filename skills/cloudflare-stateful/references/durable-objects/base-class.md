@@ -97,7 +97,7 @@ export class MyDurableObject extends DurableObject<Env> {
 - RPC is supported as of compatibility date 2024-04-03; RPC methods are preferred over `fetch()` when the application does not follow an HTTP request/response flow.
 - `webSocketClose` and compatibility dates: with the `web_socket_auto_reply_to_close` compatibility flag (enabled by default on compatibility dates on or after `2026-04-07`) the runtime sends the reciprocal Close frame and moves `readyState` to `CLOSED` before the handler runs; calling `ws.close()` is then safe and silently ignored. On older compatibility dates you must call `ws.close(code, reason)` inside the handler, otherwise clients see `1006` abnormal-closure errors.
 - Compatibility flags are set in the Wrangler configuration; the flags and `wrangler` options themselves are documented in the cloudflare-wrangler skill, and the Worker-side handler model in cloudflare-workers.
-- The Agents SDK is built on Durable Objects and is covered by the cloudflare-agents skill.
+- The Agents SDK is built on Durable Objects and is covered by the cloudflare-agents skill (https://developers.cloudflare.com/agents/).
 
 ## Related
 
