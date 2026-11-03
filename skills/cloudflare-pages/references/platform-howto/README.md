@@ -17,7 +17,7 @@
 | Install private packages | Private npm registry tokens and .npmrc | [npm-private-registry.md](./npm-private-registry.md) |
 | Preview Local Projects with Cloudflare Tunnel | Share a local dev server with a Quick Tunnel | [preview-with-cloudflare-tunnel.md](./preview-with-cloudflare-tunnel.md) |
 | Redirect *.pages.dev to a custom domain | Bulk Redirect from pages.dev to a custom domain | [redirect-to-custom-domain.md](./redirect-to-custom-domain.md) |
-| Refactor a Worker to a Pages Function | Convert a form Worker into functions/form.js | [refactor-a-worker-to-pages-functions.md](./refactor-a-worker-to-pages-functions.md) |
+| Refactor a Worker to a Pages Function | Convert a form Worker into functions/submit.js | [refactor-a-worker-to-pages-functions.md](./refactor-a-worker-to-pages-functions.md) |
 | Direct Upload with continuous integration | GitHub Actions, CircleCI and Travis CI deployment | [use-direct-upload-with-continuous-integration.md](./use-direct-upload-with-continuous-integration.md) |
 | Pages Functions A/B testing | Cookie-based A/B split in middleware | [use-worker-for-ab-testing-in-pages.md](./use-worker-for-ab-testing-in-pages.md) |
 | Enable Web Analytics | One-click Web Analytics for Pages | [web-analytics.md](./web-analytics.md) |
