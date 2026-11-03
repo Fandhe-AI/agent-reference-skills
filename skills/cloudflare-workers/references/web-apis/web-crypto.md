@@ -23,9 +23,11 @@ console.log(new Uint8Array(myDigest));
 
 `crypto.DigestStream(algorithm)` (non-standard extension; a `WritableStream` that does not retain data and generates a hash digest when the data flow ends). `algorithm` is a string | object in an algorithm-specific format.
 
+Adapted (not in the official docs): the digest is awaited in `ctx.waitUntil()` while the response is returned, so both `tee()` branches are consumed concurrently and the header is no longer set; see Notes.
+
 ```js
 export default {
-  async fetch(req) {
+  async fetch(req, env, ctx) {
     // Fetch from origin
     const res = await fetch(req);
 
@@ -35,15 +37,16 @@ export default {
     const newRes = new Response(bodyOne, res);
     // Create a SHA-256 digest stream and pipe the body into it
     const digestStream = new crypto.DigestStream("SHA-256");
-    bodyTwo.pipeTo(digestStream);
-    // Get the final result
-    const digest = await digestStream.digest;
-    // Turn it into a hex string
-    const hexString = [...new Uint8Array(digest)]
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('')
-    // Set a header with the SHA-256 hash and return the response
-    newRes.headers.set("x-content-digest", `SHA-256=${hexString}`);
+    ctx.waitUntil((async () => {
+      await bodyTwo.pipeTo(digestStream);
+      // Get the final result
+      const digest = await digestStream.digest;
+      // Turn it into a hex string
+      const hexString = [...new Uint8Array(digest)]
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+      console.log(`x-content-digest: SHA-256=${hexString}`);
+    })());
     return newRes;
   }
 }
@@ -138,6 +141,7 @@ The flag also adds `getPublicKey()` and `SubtleCrypto.supports()`, and supports 
 - Corrected from the official docs: the official table renders the `exportKey` and `getRandomValues` parameter lists with run-together names (`formatstring`, `keyCryptoKey`, `bufferArrayBufferView`); restored to `exportKey(format, key)` and `getRandomValues(buffer)`.
 - Corrected from the official docs: `sign`/`verify`/`digest` are listed with `ArrayBuffer` data (and signature); the standard accepts any BufferSource (ArrayBuffer or views).
 - `getRandomValues` returns the same array that was passed in (typed as the argument's type), and `crypto.getRandomValues` throws a `QuotaExceededError` if more than 65536 bytes are requested per call (standard behaviour).
+- Corrected from the official docs: the official `DigestStream` example awaits the digest of `bodyTwo` before returning the response built from `bodyOne`. `tee()` buffers chunks for the branch that is not being read, so the unconsumed `bodyOne` would buffer the whole body in memory (and a large body can stall or exhaust memory) before the response is even returned. The example now returns immediately and computes the digest in `ctx.waitUntil()`, consuming both branches concurrently. Setting the digest as a response header requires the digest before the headers are sent, which means fully buffering the body (for example `await res.arrayBuffer()` then `crypto.subtle.digest`), so it is only suitable for bodies with a bounded size.
 - Web Crypto operations are significantly faster than pure-JavaScript implementations; use them for CPU-intensive cryptography.
 - The Web Crypto API differs significantly from the Node.js Crypto API. To use Node.js Crypto code, enable the `nodejs_compat` compatibility flag.
 
