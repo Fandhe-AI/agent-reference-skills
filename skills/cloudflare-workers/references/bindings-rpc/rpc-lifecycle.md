@@ -76,7 +76,7 @@ stub[Symbol.dispose](); // disposes the original stub
 ## Notes
 
 - While a stub exists on the caller, the remote object cannot be garbage collected; isolates cannot see each other's GC, so callers should dispose stubs explicitly for best performance.
-- Explicit Resource Management is a Stage 3 TC39 proposal (`using`, `Symbol.dispose`, `Symbol.asyncDispose`). Wrangler v4+ supports `using` natively; with earlier versions dispose manually.
+- Explicit Resource Management is a TC39 proposal (described as Stage 3 in the source; check current status) (`using`, `Symbol.dispose`, `Symbol.asyncDispose`). Wrangler v4+ supports `using` natively; with earlier versions dispose manually.
 - Automatic disposal: (1) at the end of an event handler / execution context (for `fetch()`, when the response is sent; it ends early if the client disconnects, or can be extended by `ctx.waitUntil()`); (2) stubs received as RPC parameters are disposed when the call returns (use `dup()` to keep them longer); (3) disposing a returned object disposes the stubs inside it.
 - An RPC-invoked `WorkerEntrypoint` context ends when the RPC returns, unless stubs were passed, in which case it is extended until all such stubs are disposed and their calls have returned. If the client disconnects, the server context is canceled immediately.
 - Store RPC results that are objects in a `using` declaration (`using result = stub.foo();`), even if no stubs are returned today. Primitive results cannot have disposers.

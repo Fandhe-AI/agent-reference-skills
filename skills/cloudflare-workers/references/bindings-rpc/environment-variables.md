@@ -77,6 +77,7 @@ Per Wrangler environment:
 
 ## Notes
 
+- Caching caveat for the global-access example: changing only bindings (which includes `vars`) may reuse existing isolates (see [bindings-overview.md](./bindings-overview.md)), so a value copied into a module-level constant can be stale after a variable update; read `env.API_HOST` inside the handler when freshness matters.
 - `vars` is a non-inheritable key (https://developers.cloudflare.com/workers/wrangler/configuration/#non-inheritable-keys): environments do not inherit it, so specify it per environment. Use `--env` / `-e`, for example `npx wrangler dev --env staging` and `npx wrangler deploy --env staging`. Key spec: cloudflare-wrangler skill.
 - Dashboard: Workers & Pages > your Worker > Settings > Variables and Secrets > Add > choose Type, name, value > Deploy. Select the Secret type for secrets.
 - Node.js compatibility: with `nodejs_compat` and the `nodejs_compat_populate_process_env` flag (enabled by default for compatibility dates on or after 2025-04-01), variables are on `process.env`, populated lazily on first access of `process`. Text values are exposed directly; JSON values that evaluate to strings are exposed as the parsed value; other JSON values are exposed as the raw JSON string (for `BAZ = { "a": 123 }`, `process.env.BAZ` is the JSON-encoded string `"{ \"a\": 123 }"`). Secrets are also exposed via `process.env`.

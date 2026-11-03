@@ -78,7 +78,7 @@ Event properties:
 |------|------|-------------|
 | `timestamp` | number | Measured in epoch time. |
 | `name` | string | The error type (for example, `Error`, `TypeError`). |
-| `message` | object | The error description (for example, `"x" is not a function`). |
+| `message` | string | The error description (for example, `"x" is not a function`). |
 
 ## Notes
 
@@ -87,6 +87,7 @@ Event properties:
   - Header redaction: the value is the string `"REDACTED"` when the (case-insensitive) header name is `cookie`/`set-cookie` or contains the substring `"auth"`, `"key"`, `"secret"`, `"token"`, or `"jwt"`.
   - URL redaction: for each greedily matched substring of ID characters (a-z, A-Z, 0-9, `+`, `-`, `_`), if it meets the criteria for a hex or base-64 ID, it is replaced with `"REDACTED"`. Hex ID: 32 or more hex digits, containing only hex digits and separators (`+`, `-`, `_`). Base-64 ID: 21 or more characters with at least two uppercase, two lowercase, and two digits.
 - Corrected from the official docs: the official example calls `fetch(...)` without `await`, so the forwarding request is not tied to the invocation lifetime and may be cancelled when `tail()` returns; added `await` (alternatively pass the promise to `ctx.waitUntil()`).
+- Corrected from the official docs: `TailException.message` is typed `object` in the official table; it is an error description string (`TraceException.message: string` in `@cloudflare/workers-types`).
 - Tail Worker setup: see https://developers.cloudflare.com/workers/observability/logs/tail-workers/. The `wrangler tail` command is covered by the cloudflare-wrangler skill.
 
 ## Related

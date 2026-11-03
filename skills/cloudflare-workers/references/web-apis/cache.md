@@ -32,7 +32,7 @@ cache.delete(request, options);
 
 | Method | Returns | Parameters |
 |--------|---------|------------|
-| `put(request, response)` | Promise | `request`: string \| Request (key; a string is interpreted as the URL of a new Request). `response`: Response to store. Attempts to add a response to the cache; resolves to `undefined` regardless of whether the cache successfully stored it. |
+| `put(request, response)` | Promise\<void> | `request`: string \| Request (key; a string is interpreted as the URL of a new Request). `response`: Response to store. Attempts to add a response to the cache; resolves to `undefined` regardless of whether the cache successfully stored it. |
 | `match(request, options)` | Promise `<Response \| undefined>` | `request`: string \| Request (lookup key). `options`: can contain one property, `ignoreMethod` (Boolean); when `true` the request is considered a `GET` regardless of its actual method. |
 | `delete(request, options)` | Promise `<boolean>` | `request`: string \| Request. `options`: object with one possible property, `ignoreMethod` (Boolean). Resolves `true` if the response was cached but is now deleted, `false` if it was not in the cache. |
 

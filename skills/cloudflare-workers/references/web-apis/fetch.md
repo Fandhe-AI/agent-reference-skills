@@ -8,14 +8,17 @@ The Fetch API provides an interface for asynchronously fetching resources via HT
 
 ## Signature / Usage
 
+Adapted (not in the official docs): `return` dropped because a `scheduled()` handler does not return a Response; see Notes.
+
 ```js
 export default {
 	async scheduled(controller, env, ctx) {
-		return await fetch("https://example.com", {
+		const response = await fetch("https://example.com", {
 			headers: {
 				"X-Source": "Cloudflare-Workers",
 			},
 		});
+		console.log(response.status);
 	},
 };
 ```
@@ -33,6 +36,7 @@ export default {
 
 ## Notes
 
+- Adapted from the official docs: the official `scheduled()` example returns the `fetch()` result, but `scheduled()` handlers return nothing useful (a `Response` is ignored); the example logs the status instead.
 - Asynchronous tasks such as `fetch` must be executed within a handler. If you try to call `fetch()` within global scope, your Worker will throw an error.
 - Worker-to-Worker `fetch` requests are possible with Service bindings or by enabling the `global_fetch_strictly_public` compatibility flag.
 - Service Workers are deprecated, but still supported. Module Workers are recommended. New features may not be supported for Service Workers.

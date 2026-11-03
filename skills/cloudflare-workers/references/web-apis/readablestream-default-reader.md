@@ -21,14 +21,14 @@ const reader = readable.getReader();
 
 | Name | Type | Description |
 |------|------|-------------|
-| `reader.closed` | Promise | Indicates if the reader is closed. Fulfilled when the reader stream closes and rejected if there is an error in the stream. |
+| `reader.closed` | Promise\<void> | Indicates if the reader is closed. Fulfilled when the reader stream closes and rejected if there is an error in the stream. |
 
 ### Methods
 
 | Name | Returns | Description |
 |------|---------|-------------|
-| `read()` | Promise | The next available chunk of data being passed through the reader queue. |
-| `cancel(reasonstringoptional)` | void | Cancels the stream. `reason` is an optional human-readable string passed to the underlying source's cancel algorithm; if this readable stream is one side of a `TransformStream`, its cancel algorithm causes the transform's writable side to become errored with `reason`. Any data not yet read is lost. |
+| `read()` | Promise\<{ value: any, done: boolean }> | The next available chunk of data being passed through the reader queue; `done` is `true` (and `value` is `undefined`) once the stream is closed. |
+| `cancel(reasonstringoptional)` | Promise\<void> | Cancels the stream. `reason` is an optional human-readable string passed to the underlying source's cancel algorithm; if this readable stream is one side of a `TransformStream`, its cancel algorithm causes the transform's writable side to become errored with `reason`. Any data not yet read is lost. |
 | `releaseLock()` | void | Releases the lock on the readable stream. A lock cannot be released if the reader has pending read operations; a `TypeError` is thrown and the reader remains locked. |
 
 ## Related

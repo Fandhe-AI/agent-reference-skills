@@ -33,7 +33,7 @@ const timing = end - start; // 0
 | Name | Type | Description |
 |------|------|-------------|
 | `performance.now()` | number | Timestamp in milliseconds, the time elapsed since `performance.timeOrigin`. |
-| `performance.timeOrigin` | read-only | A baseline timestamp to base other measurements off of. In the Workers runtime it returns 0. |
+| `performance.timeOrigin` | number (read-only) | A baseline timestamp to base other measurements off of. In the Workers runtime it returns 0. |
 
 ## Notes
 

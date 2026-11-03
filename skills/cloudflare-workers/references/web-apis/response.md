@@ -32,7 +32,7 @@ let response = new Response(body, init);
 
 | Name | Type | Description |
 |------|------|-------------|
-| `response.body` | Readable Stream | A getter to get the body contents. |
+| `response.body` | ReadableStream \| null | A getter to get the body contents; `null` when there is no body. |
 | `response.bodyUsed` | boolean | Whether the body was used in the response. |
 | `response.headers` | Headers | The headers for the response. |
 | `response.ok` | boolean | Whether the response was successful (status in the range `200`-`299`). |
@@ -46,8 +46,8 @@ let response = new Response(body, init);
 
 | Name | Returns | Description |
 |------|---------|-------------|
-| `Response.json()` | Response | Creates a new response with a JSON-serialized payload. |
-| `Response.redirect()` | Response | Creates a new response with a different URL. |
+| `Response.json(data, init?)` | Response | Creates a new response with a JSON-serialized payload. |
+| `Response.redirect(url, status?)` | Response | Creates a redirect response to `url` (status defaults to `302`). |
 
 ### Instance methods
 
@@ -56,8 +56,8 @@ let response = new Response(body, init);
 | `clone()` | Response | Creates a clone of a `Response` object. |
 | `arrayBuffer()` | Promise\<ArrayBuffer> | Reads the stream to completion and resolves with an `ArrayBuffer`. |
 | `formData()` | Promise\<FormData> | Reads the stream to completion and resolves with a `FormData` object. |
-| `json()` | Promise\<JSON> | Reads the stream to completion and resolves with the result of parsing the body text as JSON. |
-| `text()` | Promise\<USVString> | Reads the stream to completion and resolves with a `USVString` (text). |
+| `json()` | Promise\<any> | Reads the stream to completion and resolves with the result of parsing the body text as JSON. |
+| `text()` | Promise\<string> | Reads the stream to completion and resolves with a string (text). |
 
 ## Notes
 

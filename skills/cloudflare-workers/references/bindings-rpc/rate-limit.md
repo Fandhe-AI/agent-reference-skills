@@ -68,7 +68,7 @@ export default {
 - Multiple rate limiting configurations per Worker are allowed (for example free vs paid tiers with namespaces `"1001"` and `"1002"`).
 - Best practice: key on stable identifiers such as API keys in `Authorization` headers, URL paths or routes, query parameters, user IDs and tenant IDs. IP addresses and locations are not recommended because many users can share them.
 
-Adapted (not in the official docs): `userId` taken from a verified identity instead of a query parameter; see Notes.
+Adapted (not in the official docs): `userId` taken from a verified identity instead of a query parameter, and the second `success` destructuring renamed to avoid a duplicate `const`; see Notes.
 
 ```ts
 // Recommended: use a key that represents a specific user or class of user
@@ -79,10 +79,11 @@ const { success } = await env.MY_RATE_LIMITER.limit({ key: userId });
 // Not recommended:  many users may share a single IP, especially on mobile networks
 // or when using privacy-enabling proxies
 const ipAddress = req.headers.get("cf-connecting-ip") || "";
-const { success } = await env.MY_RATE_LIMITER.limit({ key: ipAddress });
+const { success: ipSuccess } = await env.MY_RATE_LIMITER.limit({ key: ipAddress });
 ```
 
 - Adapted from the official docs: the official example derives `userId` from `url.searchParams.get("userId")`, which a caller can vary per request to evade the limit or set to another user's ID to consume that user's quota; the example now takes the ID from a verified identity (`getVerifiedUserId` is a placeholder for your own authentication).
+- Adapted from the official docs: the official snippet destructures `success` twice in one scope (a duplicate `const`); the "not recommended" IP variant uses `ipSuccess`.
 - Locality: limits are local to the Cloudflare location the Worker runs in; counts from different locations do not combine into a worldwide limit.
 - Performance: each check uses a locally cached count; the promise resolves with the decision without waiting for cross-instance synchronization.
 - Accuracy: counts are eventually consistent. A burst can result in more than `limit` calls returning `success: true`, even within one Worker or location. Sharing a namespace or awaiting each call does not make the limit strict.

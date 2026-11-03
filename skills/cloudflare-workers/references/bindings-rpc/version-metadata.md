@@ -55,9 +55,9 @@ export default {
 
 | Name | Type | Description |
 |------|------|-------------|
-| id | — | Worker version ID. |
-| tag | — | Worker version tag. |
-| timestamp | — | When the version was created. |
+| id | string | Worker version ID. |
+| tag | string | Worker version tag. |
+| timestamp | string | When the version was created (ISO 8601 timestamp string). |
 
 ## Notes
 

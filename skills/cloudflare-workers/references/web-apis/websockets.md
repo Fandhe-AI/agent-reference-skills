@@ -49,6 +49,8 @@ let [client, server] = Object.values(new WebSocketPair());
 
 ## Notes
 
+- Adapted from the official docs: the `binaryType` opt-out example awaited `fetch()` at module top level, which Workers forbid (I/O is only allowed inside a handler); it is wrapped in a `fetch` handler.
+- The `send()` row follows the official text; the standard `send()` accepts only `string`, `ArrayBuffer`, or an `ArrayBufferView`, so stringify other values yourself.
 - WebSocket messages received by a Worker have a size limit of 32 MiB (33,554,432 bytes). A larger message automatically closes the WebSocket with a `1009` "Message is too large" response.
 - Connection lifetime: during routine runtime updates, existing connections can remain open until the grace period for runtime updates ends, after which they are disconnected. Crashes and shutdowns can disconnect clients earlier. Design clients to reconnect and restore application state.
 - Close behavior: with the `web_socket_auto_reply_to_close` compatibility flag (enabled by default on compatibility dates on or after `2026-04-07`), the runtime automatically sends a reciprocal Close frame when it receives one; `readyState` becomes `CLOSED` before the `close` event fires. Calling `close()` inside the `close` handler is silently ignored. On earlier dates (or with `web_socket_manual_reply_to_close`), receiving a Close frame leaves the socket `CLOSING` and your code must call `close()`; otherwise the client may see `1006` abnormal closure.
@@ -84,23 +86,30 @@ server.addEventListener("close", (event) => {
 
 `binaryType` opt-out for a single WebSocket:
 
+Adapted (not in the official docs): wrapped in a `fetch` handler because `fetch()` cannot run in global scope; see Notes.
+
 ```js
-const resp = await fetch("https://example.com", {
-  headers: { Upgrade: "websocket" },
-});
-const ws = resp.webSocket;
+export default {
+  async fetch(request) {
+    const resp = await fetch("https://example.com", {
+      headers: { Upgrade: "websocket" },
+    });
+    const ws = resp.webSocket;
 
-// Opt back into ArrayBuffer delivery for this WebSocket.
-ws.binaryType = "arraybuffer";
-ws.accept();
+    // Opt back into ArrayBuffer delivery for this WebSocket.
+    ws.binaryType = "arraybuffer";
+    ws.accept();
 
-ws.addEventListener("message", (event) => {
-  if (typeof event.data === "string") {
-    // Text frame.
-  } else {
-    // event.data is an ArrayBuffer because we set binaryType above.
-  }
-});
+    ws.addEventListener("message", (event) => {
+      if (typeof event.data === "string") {
+        // Text frame.
+      } else {
+        // event.data is an ArrayBuffer because we set binaryType above.
+      }
+    });
+    return new Response("connected");
+  },
+};
 ```
 
 ## Related

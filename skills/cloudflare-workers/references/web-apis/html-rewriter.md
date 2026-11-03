@@ -129,7 +129,7 @@ Methods:
 | `name` | string | Tag name. Assignable. |
 | `before(content, contentOptions)` | `EndTag` | Inserts content right before the end tag. |
 | `after(content, contentOptions)` | `EndTag` | Inserts content right after the end tag. |
-| `remove()` | `EndTag` | Removes the element with all its content. |
+| `remove()` | `EndTag` | Removes only the end tag, not the element or its content (the content has already been emitted by then). To remove a whole element, call `Element.remove()` in an element handler. |
 
 ### Text chunks
 
@@ -138,7 +138,7 @@ Methods:
 | `removed` | boolean | Whether removed or replaced by a previous handler. |
 | `text` | string (read-only) | Text content of the chunk; may be empty if it is the last chunk. |
 | `lastInTextNode` | boolean (read-only) | Whether the chunk is the last of the text node. |
-| `before` / `after` / `replace` / `remove` | `Element` | Same signatures as the Element methods of the same name. |
+| `before` / `after` / `replace` / `remove` | `TextChunk` | Same signatures as the Element methods of the same name; return the text chunk. |
 
 ### Comments
 
@@ -146,7 +146,7 @@ Methods:
 |------|------|-------------|
 | `comment.removed` | boolean | Whether removed or replaced by a previous handler. |
 | `comment.text` | string | Text of the comment. Assignable. |
-| `before` / `after` / `replace` / `remove` | `Element` | Same signatures as the Element methods of the same name. |
+| `before` / `after` / `replace` / `remove` | `Comment` | Same signatures as the Element methods of the same name; return the comment. |
 
 ### Doctype (document handlers)
 
@@ -189,6 +189,7 @@ Methods:
 
 ## Notes
 
+- Corrected from the official docs: the official page describes `EndTag.remove()` as removing the element with all its content; it only removes the end tag, so the row now says so and points to `Element.remove()`.
 - Adapted from the official docs: the official async handler example calls `new Request("/user")`, but the Workers `Request` constructor has no implicit base URL, so a relative URL throws; the example uses an absolute URL (`https://example.com/user` is a placeholder; alternatively resolve with `new URL("/user", request.url)`).
 - Element handlers are attached with `.on`; they respond to `element`, `comments`, and `text`. Document handler `doctype`, `comments`, `text`, and `end` functions are not scoped by a selector and are called for all content on the page, including content outside the top-level HTML tag.
 - All handler functions can return `void` or `Promise<void>`; async handlers can access external resources such as fetch, Workers KV, Durable Objects, or the cache.

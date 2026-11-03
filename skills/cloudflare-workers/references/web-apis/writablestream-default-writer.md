@@ -27,7 +27,7 @@ writeArrayToStream([1, 2, 3, 4, 5], writableStream)
 
 | Name | Type | Description |
 |------|------|-------------|
-| `writer.desiredSize` | int | The size needed to fill the stream's internal queue. Always returns 1, 0 (if the stream is closed), or `null` (if the stream has errors). |
+| `writer.desiredSize` | number \| null | The size needed to fill the stream's internal queue. For a standard `WritableStream` (constructor available since compatibility date 2022-11-30) this is the queuing strategy's `highWaterMark` minus the total size of queued chunks, so it can be greater than 1 or negative; it is 0 when the stream is closed and `null` when errored. Only for the legacy (pre-2022-11-30) implementation does it always return 1, 0 (if closed), or `null` (if errored). |
 | `writer.closed` | Promise\<void> | Fulfilled when the writer stream is closed, rejected if there is an error in the stream. |
 
 ### Methods
@@ -49,6 +49,10 @@ writer.write(new TextEncoder().encode('foo bar'));
 writer.releaseLock();
 await someResponse.body.pipeTo(writable);
 ```
+
+## Notes
+
+- Corrected from the official docs: the official table says `desiredSize` always returns 1, 0, or `null`; that holds only for the legacy implementation, so standard behaviour (`highWaterMark` minus queued size) is stated and the fixed values are labelled legacy.
 
 ## Related
 

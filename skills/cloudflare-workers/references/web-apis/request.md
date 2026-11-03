@@ -47,9 +47,11 @@ let request = new Request(input, options)
 
 Example:
 
+Adapted (not in the official docs): `event.request` (Service Workers syntax) replaced with the module-syntax `request` parameter; see Notes.
+
 ```js
-// Disable ScrapeShield for this request.
-fetch(event.request, { cf: { scrapeShield: false } })
+// Disable ScrapeShield for this request (inside a fetch handler).
+fetch(request, { cf: { scrapeShield: false } })
 ```
 
 Invalid or incorrectly-named keys in the `cf` object will be silently ignored. Consider using TypeScript and generating types by running `wrangler types`.
@@ -129,7 +131,7 @@ All properties of an incoming `Request` object are read-only. To modify them, cr
 
 | Name | Type | Description |
 |------|------|-------------|
-| `body` | ReadableStream | Stream of the body contents. |
+| `body` | ReadableStream \| null | Stream of the body contents; `null` when the request has no body. |
 | `bodyUsed` | Boolean | Declares whether the body has been used in a response yet. |
 | `cf` | IncomingRequestCfProperties | Properties about the incoming request provided by Cloudflare's global network. Read-only (unless created from an existing `Request`); to modify, pass new values on the `cf` key of the `init` options when creating a new `Request`. |
 | `headers` | Headers | A `Headers` object. Compared to browsers, Workers imposes very few restrictions on headers (for example, `Cookie` can be set; Workers has no special understanding of cookies). |
@@ -218,6 +220,7 @@ In addition to the standard `Request` properties, `request.cf` on an inbound `Re
 
 ## Notes
 
+- Adapted from the official docs: the `cf` example used `event.request` from Service Workers syntax; with module Workers the request is the `request` handler parameter.
 - If the response is a redirect and the redirect mode is `follow`, all headers (including sensitive ones such as `Cookie` and `Authorization`) are forwarded to the redirect destination, even if it is a different hostname or domain. To avoid this, set redirect mode to `manual` and implement your own redirect policy. Redirect mode defaults to `manual` for requests that originated from the Worker's client, so this warning only applies to `fetch()`es made by a Worker that are not proxying the original request.
 - The `request.cf` object is not available in the Cloudflare Workers dashboard or Playground preview editor.
 - The `Request` context starts when the `fetch()` handler is called; asynchronous tasks (such as a subrequest with `fetch()`) can only be run inside it. Using `fetch()` during script startup throws an exception.

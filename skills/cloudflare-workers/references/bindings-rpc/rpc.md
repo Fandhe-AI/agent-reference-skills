@@ -59,7 +59,7 @@ export default {
 		await f(1); // returns 3
 		const count = await f(-5); // returns -2
 
-		return new Response(count);
+		return new Response(String(count));
 	},
 };
 ```
@@ -100,7 +100,7 @@ export default {
 
 		const count = await counter.value; // returns -2
 
-		return new Response(count);
+		return new Response(String(count));
 	},
 };
 ```
@@ -128,6 +128,7 @@ await env.ANOTHER_SERVICE.useCounter(counter);
 
 ## Notes
 
+- Adapted from the official docs: the two counter examples return `new Response(count)` with a number, which is not a valid `BodyInit`; `String(count)` is used. The two counter `fetch` blocks above carry this change.
 - Requires a compatibility date of `2024-04-03` or higher, or the `rpc` compatibility flag.
 - All calls are asynchronous: you must `await`. RPC results are custom thenables (implement `then()`), not real Promises.
 - Supported types: nearly all Structured Cloneable types; plus functions (replaced by stubs), classes extending `RpcTarget` (stubs), `ReadableStream` / `WritableStream` (with flow control), `Request` / `Response`, and RPC stubs themselves. Application-defined classes (custom prototypes) not extending `RpcTarget` cannot be sent at all, unlike Structured Clone.

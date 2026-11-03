@@ -44,7 +44,7 @@ Worker A calls it:
 export default {
 	async fetch(request, env) {
 		const result = await env.WORKER_B.add(1, 2);
-		return new Response(result);
+		return new Response(String(result));
 	},
 };
 ```
@@ -59,6 +59,7 @@ export default {
 
 ## Notes
 
+- Adapted from the official docs: the Worker A example returns `new Response(result)` with a number, which is not a valid `BodyInit`; `String(result)` is used.
 - Interfaces: RPC (recommended for most use cases, `await env.BINDING_NAME.myMethod(arg1)`), HTTP (`env.BINDING_NAME.fetch(request)`), and Connect (forwards a raw TCP connection to the `connect()` handler of another Worker, https://developers.cloudflare.com/workers/runtime-apis/handlers/connect/).
 - Zero overhead: by default both Workers run on the same thread of the same server; no additional cost (https://developers.cloudflare.com/workers/platform/pricing/#service-bindings).
 - Cloudflare Access does not propagate `ctx.access` from Worker A to Worker B (HTTP and RPC). Do not treat the downstream invocation as authenticated by the caller's Access context.

@@ -71,35 +71,53 @@ export default {
 
 StartTLS example:
 
+Adapted (not in the official docs): `connect()` calls moved from module top level into a `fetch` handler; see Notes.
+
 ```typescript
 import { connect } from "cloudflare:sockets"
 
-const address = {
-  hostname: "example-postgres-db.com",
-  port: 5432
-};
-const socket = connect(address, { secureTransport: "starttls" });
-const secureSocket = socket.startTls();
+export default {
+  async fetch(request): Promise<Response> {
+    const address = {
+      hostname: "example-postgres-db.com",
+      port: 5432
+    };
+    const socket = connect(address, { secureTransport: "starttls" });
+    const secureSocket = socket.startTls();
+    // ... use secureSocket.readable / secureSocket.writable
+    return new Response("ok");
+  }
+} satisfies ExportedHandler;
 ```
 
 Closing a connection:
 
-Adapted (not in the official docs): duplicate `const reader` redeclaration removed; see Notes.
+Adapted (not in the official docs): duplicate `const reader` redeclaration removed and the code moved from module top level into a `fetch` handler; see Notes.
 
 ```typescript
 import { connect } from "cloudflare:sockets"
 
-const socket = connect({ hostname: "my-url.com", port: 70 });
-const reader = socket.readable.getReader();
-socket.close();
+export default {
+  async fetch(request): Promise<Response> {
+    const socket = connect({ hostname: "my-url.com", port: 70 });
+    const reader = socket.readable.getReader();
+    socket.close();
 
-// After close() is called, you can no longer read from the readable side of the socket
-socket.readable.getReader(); // This fails
+    // After close() is called, you can no longer read from the readable side of the socket
+    try {
+      socket.readable.getReader(); // This fails
+    } catch (e) {
+      return new Response("readable side is no longer usable: " + e, { status: 500 });
+    }
+    return new Response("unreachable");
+  }
+} satisfies ExportedHandler;
 ```
 
 ## Notes
 
 - Adapted from the official docs: the official "Closing a connection" snippet redeclares `const reader` on the failing line, which is a syntax error before `close()` is ever reached; the redeclaration was dropped so only the failing call remains.
+- Adapted from the official docs: the official StartTLS and "Closing a connection" snippets call `connect()` at module top level, which conflicts with the rule below that sockets must be created inside a handler; both were wrapped in a `fetch` handler (the surrounding handler and return values are not in the official snippets).
 - For PostgreSQL, use Hyperdrive (https://developers.cloudflare.com/hyperdrive/), which provides `connect()` with built-in connection pooling and query caching.
 - Outbound TCP connections are sourced from a prefix that is not part of the published Cloudflare IP ranges. Outbound sockets to Cloudflare IP ranges are blocked.
 - `startTls()` can only be called if `secureTransport` is `starttls`; once called, the initial socket is closed and existing readers/writers no longer work (create new ones from the returned socket). Call it only once per socket.

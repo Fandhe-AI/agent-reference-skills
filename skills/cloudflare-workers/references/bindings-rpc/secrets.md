@@ -8,20 +8,25 @@ Secrets are a type of binding that attach encrypted text values (API keys, auth 
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the database client is created per request inside the handler instead of at the top level; see Notes.
+
 ```ts
 import { env } from "cloudflare:workers";
 import postgres from "postgres";
 
-// Initialize the database client at the top level using a secret
-const sql = postgres(env.DB_CONNECTION_STRING);
-
 export default {
 	async fetch(request: Request): Promise<Response> {
-		const result = await sql`SELECT * FROM products;`;
+		// Create the database client per request using a secret
+		const sql = postgres(env.DB_CONNECTION_STRING);
+		try {
+			const result = await sql`SELECT * FROM products;`;
 
-		return new Response(JSON.stringify(result), {
-			headers: { "Content-Type": "application/json" },
-		});
+			return new Response(JSON.stringify(result), {
+				headers: { "Content-Type": "application/json" },
+			});
+		} finally {
+			await sql.end();
+		}
 	},
 };
 ```
@@ -53,6 +58,7 @@ API_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
 
 ## Notes
 
+- Adapted from the official docs: the official example initializes the `postgres` client at module top level from a secret. A client cached in a global keeps stale credentials if the isolate is reused after a secret update and shares a connection across requests, so the example creates the client inside the handler and closes it with `sql.end()` in `finally`.
 - Access via the `env` parameter of handlers, `import { env } from "cloudflare:workers"`, or `process.env` when Node.js compatibility is enabled. To the Worker, a secret is indistinguishable from an environment variable.
 - `wrangler secret put` / `delete` create a new version and deploy it immediately; with gradual deployments use `wrangler versions secret put` / `delete` and then `wrangler versions deploy`. Wrangler versions before 3.73.0 require `--x-versions`.
 - `--secrets-file` (on `wrangler deploy` or `wrangler versions upload`) takes a JSON or `.env` file, same formats as `wrangler secret bulk`, up to 100 secrets per bulk request for a single version. Secrets not in the file are preserved from the previous version.

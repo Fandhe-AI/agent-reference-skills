@@ -32,7 +32,7 @@ let decoder = new TextDecoder();
 | `decoder.encoding` | DOMString (read-only) | The name of the decoder describing the method the `TextDecoder` uses. |
 | `decoder.fatal` | boolean (read-only) | Whether the error mode is fatal. |
 | `decoder.ignoreBOM` | boolean (read-only) | Whether the byte-order marker is ignored. |
-| `decode()` | DOMString | Decodes using the method specified in the `TextDecoder` object. |
+| `decode(input?, options?)` | string | Decodes the bytes in `input` (a BufferSource) using the method specified in the `TextDecoder` object; pass `{ stream: true }` in `options` when decoding in chunks. |
 
 ## Notes
 
