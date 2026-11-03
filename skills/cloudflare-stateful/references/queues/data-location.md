@@ -42,6 +42,7 @@ curl "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/queues" \
 - Also settable in the dashboard (Queues > Create queue) and with `wrangler queues create --jurisdiction`. The dashboard shows it on the overview and settings pages.
 - A Dead Letter Queue must use the same jurisdiction as its source queue.
 - Keep the API token out of shell history and version control.
+- Adapted from the official docs: the account ID variable is wrapped in braces inside the quoted URL.
 
 ## Related
 

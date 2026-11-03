@@ -66,6 +66,7 @@ base_url = "https://my-zola-project.pages.dev"
 - Hugo theme setup in the guide uses `git submodule add https://github.com/gohugo-ananke/ananke.git themes/ananke` and `echo "theme = 'ananke'" >> hugo.toml`.
 - Zola: preview deployments use branch URLs, so a hard-coded `base_url` can break asset loading; the conditional build command above handles that.
 - Hugo and Zola themselves are out of scope for this skill.
+- Corrected from the official docs: the shell variables are quoted to avoid word splitting (including `$CF_PAGES_URL`), and the fence language is changed from `yaml` to `toml` since `base_url = ...` is TOML.
 
 ## Related
 

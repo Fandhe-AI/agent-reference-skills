@@ -83,6 +83,7 @@ REST error body:
 - For the JavaScript API, operations throw exceptions; the error code is at the end of the `message` property.
 - For the Cloudflare API, the response has an `errors` array with `code` and `message`.
 - The REST error body above is the page's schema placeholder (`"success": true`, placeholder strings). An actual failed request returns `"success": false` with the populated `errors` array; check `success` and the HTTP status rather than the presence of `errors` alone.
+- Adapted from the official docs: the snippet is wrapped in a `fetch` handler so it runs as written; the oversized `delaySeconds` deliberately triggers error 10203.
 
 ## Related
 

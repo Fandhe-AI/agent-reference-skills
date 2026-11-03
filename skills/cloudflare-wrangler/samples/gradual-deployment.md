@@ -44,3 +44,4 @@ Finish by running `npx wrangler versions deploy` again and set the new version t
 - Requests are routed per request by default; use version affinity to pin users to one version.
 - With Durable Objects, use `wrangler deploy` to apply a pending migration (Wrangler before 4.131.0 may return error `10211` on `versions upload`).
 - See [../references/ci-cd-deployments/README.md](../references/ci-cd-deployments/README.md).
+- Adapted from the official docs: the URL is quoted and the variables are braced; set `WORKER_NAME` and `SUBDOMAIN` first.

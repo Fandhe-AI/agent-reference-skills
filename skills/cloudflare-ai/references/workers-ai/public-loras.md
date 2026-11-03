@@ -62,6 +62,7 @@ const answer = await env.AI.run("@cf/mistral/mistral-7b-instruct-v0.1", {
 - Public LoRAs are named `cf-public-x`; the prefix is reserved for Cloudflare. Try them in the playground https://playground.ai.cloudflare.com .
 - Use the prompt template the LoRA was trained on (see the linked Hugging Face repos: predibase/magicoder, predibase/jigsaw, predibase/cnn).
 - Compatible model IDs are copied from the source; confirm they are still listed in the model catalog before relying on them.
+- Adapted from the official docs: a `Content-Type: application/json` header is added so the body is parsed as JSON, and the long article text in the Binding example's prompt is replaced by a placeholder.
 
 ## Related
 

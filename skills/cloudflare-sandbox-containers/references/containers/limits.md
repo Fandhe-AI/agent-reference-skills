@@ -79,6 +79,7 @@ export class AgentComputer extends DurableObject {
 - The 100 MiB outbound limit applies per request body (including encoding and multipart fields), not to total uploaded size. Streaming, chunked transfer encoding and `multipart/form-data` do not bypass it, and the custom-domain "Maximum Upload Size" setting does not control it. To request an increase, contact support stating it concerns outbound HTTP uploads from Containers or Durable Objects, and include account ID and Worker name, the container instance ID or Durable Object namespace and ID, destination hostname, failing body size in bytes and requested limit, failure timestamp, logs and a minimal reproduction.
 - Image storage: delete a tagged image with `wrangler containers images delete IMAGE:TAG` to free space; if you delete an image and then roll back the Worker, that version may stop working.
 - Restoring a snapshot refreshes its 30-day TTL.
+- Corrected from the official docs: the snippet is wrapped in a Durable Object method because the source fragment used `this` at top level.
 
 ## Related
 

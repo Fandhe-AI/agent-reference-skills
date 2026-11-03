@@ -91,6 +91,7 @@ Add the result as an `NPM_TOKEN` environment variable in the Pages project setti
 - The `uses:` references are pinned to full commit SHAs (the version tag is kept as a trailing comment); re-resolve them when you upgrade. The job sets `permissions` with `contents: read` (and `deployments: write` for the Deployment).
 - `wrangler-action` has no `branch` input; the workflow deploys the current git branch unless `--branch=<BRANCH_NAME>` is appended to the `pages deploy` command in `command`. A run on a non-production branch therefore creates a preview deployment.
 - Store `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` only as CI secrets, never in the repository.
+- Adapted from the official docs: the GitHub Actions are pinned to the commit SHAs of their tags as of 2026-11-03.
 
 ## Related
 

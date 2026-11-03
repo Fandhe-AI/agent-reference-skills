@@ -79,6 +79,7 @@ curl https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/ai/tomarkdown \
 - All options are optional and organized by file type.
 - `descriptionLanguage` is not guaranteed: the resulting text may not be in the desired language.
 - `conversionOptions` goes in the second argument of the binding call; over REST it is a form field (`Content-Type: multipart/form-data`).
+- Adapted from the official docs: the official binding example used `...` placeholders, which are replaced here with concrete option values, and the REST example's placeholders are replaced with concrete values with the files given explicitly; run the binding example inside an `async` handler where `files` is a `MarkdownDocument[]`.
 
 ## Related
 

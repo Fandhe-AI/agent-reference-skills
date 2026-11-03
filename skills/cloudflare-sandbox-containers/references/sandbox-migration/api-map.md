@@ -199,6 +199,7 @@ Kind values: Native (call `container` or a platform API directly), Package (a cl
 - Condensed from the official table: its Notes column is dropped except the key behavioural differences kept in the Description above. The 0.12 `enableInternet` default was `true`; in 1.0 it must be passed to `start()`.
 - Retry: the package retries nothing. Retry idempotent calls with a new stub when `error.retryable` is `true`, never when `error.overloaded` is `true`.
 - The 0.x reference is not covered by this skill; see https://developers.cloudflare.com/sandbox/sdk/ for it.
+- Adapted from the official docs: a comment is added; `ENV` is the constants object and `this.container` the getter defined in plan-and-move.md.
 
 ## Related
 

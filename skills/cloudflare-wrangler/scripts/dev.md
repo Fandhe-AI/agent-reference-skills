@@ -159,3 +159,7 @@ CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_<BINDING_NAME>="postgres://user:pa
 ```
 
 The variable name uses the binding name (documented on the system environment variables page; the inline-env form follows that page's inline example).
+
+## Notes
+
+- Adapted from the official docs: the service-token placeholders are quoted so the shell does not treat `<...>` as redirection.
