@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/workers/wrangler/commands/hyperdrive/
 
 # Hyperdrive
 
-Copy-paste `wrangler hyperdrive ...` commands for creating, inspecting, updating, and deleting Hyperdrive configurations, plus local development. For the full flag tables see https://developers.cloudflare.com/hyperdrive/reference/wrangler-commands/. Installing Wrangler, logging in, `dev`, and `deploy` belong to the cloudflare-wrangler skill.
+Copy-paste `wrangler hyperdrive ...` commands for creating, inspecting, updating, and deleting Hyperdrive configurations, plus local development. For the full flag tables see [wrangler-commands.md](../references/hyperdrive/wrangler-commands.md). Installing Wrangler, logging in, `dev`, and `deploy` belong to the cloudflare-wrangler skill.
 
 ## Create a Hyperdrive configuration (PostgreSQL)
 
@@ -64,7 +64,7 @@ Alternatively, create a new configuration and point the Worker's binding at its 
 npx wrangler hyperdrive create my-updated-hyperdrive --connection-string="<YOUR_CONNECTION_STRING>"
 ```
 
-See https://developers.cloudflare.com/hyperdrive/configuration/rotate-credentials/.
+See [rotate-credentials.md](../references/hyperdrive/rotate-credentials.md).
 
 ## Local development with a local database
 
@@ -76,7 +76,7 @@ export CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE="postgres://user
 npx wrangler dev
 ```
 
-See https://developers.cloudflare.com/hyperdrive/configuration/local-development/.
+See [local-development.md](../references/hyperdrive/local-development.md).
 
 ## Remote development session
 
