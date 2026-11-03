@@ -31,7 +31,8 @@ Cloudflare 開発者プラットフォームの AI 4 製品 — Workers AI（サ
 - openai-api-core / anthropic-api-core / google-gemini-api: 各プロバイダー API 本体は別スキル。AI Gateway はそれらを中継する Cloudflare 側の機能のみ
 - upstash: Upstash Vector は別製品。Vectorize とは別物
 - fandhe-db: Rust 製 vector 特化クエリ DB。Vectorize とは別製品
-- 未収録の Cloudflare 製品（Durable Objects / Queues / Workflows 等）は公式 docs を参照
+- cloudflare-stateful: Durable Objects / Queues / Workflows（`https://developers.cloudflare.com/durable-objects/` ほか）は cloudflare-stateful。いずれにも無い Cloudflare 製品は公式 docs（`https://developers.cloudflare.com/<product>/`）を参照
+- cloudflare-stateful は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-stateful: https://developers.cloudflare.com/durable-objects/ ・ /queues/ ・ /workflows/）を参照
 
 ## ディレクトリ構成
 
