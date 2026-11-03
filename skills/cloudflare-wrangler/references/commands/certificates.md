@@ -99,7 +99,7 @@ npx wrangler cert delete
 Example of `cert upload mtls-certificate`:
 
 ```sh
-npx wrangler cert upload --cert cert.pem --key key.pem --name my-origin-cert
+npx wrangler cert upload mtls-certificate --cert cert.pem --key key.pem --name my-origin-cert
 ```
 
 ```sh
@@ -195,6 +195,8 @@ Delete an mTLS certificate
 - Each command also accepts the global flags; see the global flags page.
 - `mtls_certificate` binding runtime usage (`env.MY_CERT.fetch`) belongs to the cloudflare-workers skill; the `mtls_certificates` configuration key belongs to the configuration references.
 - Source inconsistency: the official `cert list` example heading says "upload an mTLS or CA certificate" although the command lists certificates; the `mtls-certificate list` example likewise says "upload". Both examples show listing output.
+
+- Corrected from the official docs: the official `cert upload mtls-certificate` example runs `npx wrangler cert upload --cert cert.pem --key key.pem --name my-origin-cert` without the `mtls-certificate` subcommand, although the same page defines the command as `cert upload mtls-certificate`; the subcommand was added to the example.
 
 ## Related
 

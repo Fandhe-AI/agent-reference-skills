@@ -1,15 +1,16 @@
 ---
 name: cloudflare-wrangler
 description: >
-  Cloudflare Workers 開発ツール (Wrangler CLI v4 / @cloudflare/vite-plugin / Vitest 統合 / Miniflare) の
-  リファレンス。wrangler dev / deploy / versions / rollback / tail、wrangler.jsonc、
-  .dev.vars、@cloudflare/vitest-plugin (旧 vitest-pool-workers)、gradual deployments、
-  Workers Builds、Logpush、source maps。
+  Cloudflare Workers 開発ツール (Wrangler CLI v4) のコマンドリファレンス。
+  wrangler dev / deploy / versions / rollback / tail / secret / types の全フラグ、
+  グローバルフラグ、製品別サブコマンド。
   ランタイム API は cloudflare-workers、KV / D1 / R2 は cloudflare-storage。
 user-invocable: false
 ---
 
 # Cloudflare Workers 開発ツール リファレンス
+
+> 分割 PR で順次追加中の部分版。現時点で収録済みなのは下記「ディレクトリ構成」とマッピング表に載っているカテゴリのみ。
 
 Wrangler CLI・設定ファイル (wrangler.jsonc / wrangler.toml)・ローカル開発・Vite プラグイン・Vitest 統合・Miniflare・CI/CD・オブザーバビリティを扱う。Workers の開発・テスト・デプロイ・運用を設計・実装するときに参照する。
 
@@ -27,6 +28,7 @@ Wrangler CLI・設定ファイル (wrangler.jsonc / wrangler.toml)・ローカ�
 - cloudflare-storage: KV / D1 / R2 / Hyperdrive の API と、`wrangler kv|d1|r2|hyperdrive` のタスク別コマンド。全フラグ表は本スキルの `commands` にもある
 - vite / vitest / github-docs: 各ツール本体の設定 API・構文。本スキルは Cloudflare 連携部分（`@cloudflare/vite-plugin`、`@cloudflare/vitest-plugin`、Workers 向け GitHub Actions）に限る
 - 未収録の Cloudflare 製品は公式 docs を参照する
+- cloudflare-workers / cloudflare-storage は同ファミリーの分割 PR で順次追加中。未マージの間は公式 docs（cloudflare-workers: https://developers.cloudflare.com/workers/runtime-apis/、cloudflare-storage: https://developers.cloudflare.com/kv/ ・ /d1/ ・ /r2/ ・ /hyperdrive/）を参照
 
 ## ディレクトリ構成
 
