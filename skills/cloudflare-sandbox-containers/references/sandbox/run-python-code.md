@@ -137,7 +137,7 @@ export class MyContainer extends DurableObject<Env> {
 - Deploy with `npx wrangler deploy` (Docker must be running locally); run with `curl https://<YOUR_WORKER>.<YOUR_SUBDOMAIN>.workers.dev/sandboxes/ada/python --data-binary @sales.py`. Expected JSON has `stdout`, `stderr`, `exitCode`.
 - The code can read every file in its sandbox: give each user their own sandbox name and authenticate callers first (see the sandbox-security page). The official regex route takes the name from the URL only for brevity.
 - `readFile(name)` above is passed a name that the Worker route fixes (`chart.png`); do not forward caller-supplied paths (see the manage-files page for path handling). The official page also adds a `/sandboxes/<name>/chart.png` route to `fetch()` that returns the bytes with `Content-Type: image/png` (404 when null); it is omitted here.
-- `output()` holds all printed output in Durable Object memory; stream large output instead. `timeout` stops processes that stay in its process group; see "Stop the processes a command starts" in execute-commands.md (https://developers.cloudflare.com/containers/guides/execute-commands/).
+- `output()` holds all printed output in Durable Object memory; stream large output instead. `timeout` stops processes that stay in its process group; see "Stop the processes a command starts" in [execute-commands.md](../containers/execute-commands.md).
 - Other languages: change the base image and the stdin command, for example `FROM ruby:3.4-slim` with `["ruby", "-"]`, or `FROM node:24-slim` with `["node", "-"]`.
 - `exec()` options are documented in the `containers` category of this skill.
 

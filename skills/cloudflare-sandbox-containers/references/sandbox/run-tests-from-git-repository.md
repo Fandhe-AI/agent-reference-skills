@@ -116,7 +116,7 @@ export default {
 
 ## Notes
 
-- `enableInternet: true` lets `git` and `npm` download, and also lets the repository's install and test scripts reach the Internet. Do not pass credentials into this sandbox; to restrict egress to the Git server and package registry, use an outbound handler (outbound-traffic.md (https://developers.cloudflare.com/containers/configuration/outbound-traffic/)).
+- `enableInternet: true` lets `git` and `npm` download, and also lets the repository's install and test scripts reach the Internet. Do not pass credentials into this sandbox; to restrict egress to the Git server and package registry, use an outbound handler ([outbound-traffic.md](../containers/outbound-traffic.md)).
 - The route is unauthenticated and triggers billable container runs: in production authenticate callers and rate-limit before starting a sandbox. The repository and revision are fixed by the Worker here; do not take them from untrusted input without validation. `--` keeps a repository value starting with `-` from being read as an option; `exec()` does not start a shell, so keep each argument in its own array entry.
 - A step longer than 10 minutes exits `124` (or `137` if `timeout` also sends `SIGKILL`). The `finally` block stops the instance.
 - `output()` holds all output in Durable Object memory; stream output for noisy suites.
