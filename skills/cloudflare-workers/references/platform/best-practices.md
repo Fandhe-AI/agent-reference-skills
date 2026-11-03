@@ -225,16 +225,32 @@ export default {
 
 ### Service bindings (RPC)
 
+Adapted (not in the official docs): `verifyToken` fails closed (rejects when no secret is configured, otherwise compares against it in constant time) instead of always returning `valid: true`; see Notes.
+
 ```ts
 import { WorkerEntrypoint } from "cloudflare:workers";
 
 // The "auth" Worker exposes RPC methods
-export class AuthService extends WorkerEntrypoint {
+export class AuthService extends WorkerEntrypoint<{ API_TOKEN?: string }> {
 	async verifyToken(
 		token: string,
 	): Promise<{ userId: string; valid: boolean }> {
-		// Token verification logic
-		return { userId: "user-123", valid: true };
+		// Fail closed: reject when no secret is configured
+		const expected = this.env.API_TOKEN;
+		if (!expected) {
+			return { userId: "", valid: false };
+		}
+
+		// Compare SHA-256 hashes in constant time
+		const encoder = new TextEncoder();
+		const [providedHash, expectedHash] = await Promise.all([
+			crypto.subtle.digest("SHA-256", encoder.encode(token)),
+			crypto.subtle.digest("SHA-256", encoder.encode(expected)),
+		]);
+		const valid = crypto.subtle.timingSafeEqual(providedHash, expectedHash);
+
+		// Replace with a real token-to-user lookup in production
+		return valid ? { userId: "user-123", valid: true } : { userId: "", valid: false };
 	}
 }
 
@@ -532,6 +548,7 @@ describe("KV operations", () => {
 ## Notes
 
 - Adapted from the official docs: the "Concatenate responses" example now takes `ctx` and calls `ctx.waitUntil(pipeline)` (the official pipeline promise was left floating, contradicting the page's own floating-promise rule), and the Hyperdrive example now closes the client with `ctx.waitUntil(client.end())` in a `finally` block.
+- Adapted from the official docs: the service-binding `verifyToken` stub returned `valid: true` for every token (an auth bypass if copied); it now returns `valid: false` when `API_TOKEN` is unset and otherwise compares the token against it in constant time. The fixed `userId` is still a placeholder for a real lookup.
 - Condensed: the source repeats most examples in JS and TS and Wrangler config in JSONC and TOML; this page keeps TS/JSONC variants, and omits the paired anti-pattern ("Bad") snippets, which the source marks with emoji. Consult the source for full good/bad comparisons.
 - Bad patterns the source warns about: buffering with `await response.text()` / `request.arrayBuffer()` (128 MB memory limit); destructuring `ctx` (`const { waitUntil } = ctx` throws "Illegal invocation"); exceeding the 30-second `waitUntil()` limit; module-level request state (causes cross-request leaks and "Cannot perform I/O on behalf of a different request"); floating promises; `Math.random()` for tokens; `===` secret comparison; calling the Cloudflare REST API from a Worker for R2/KV/D1/Queues/Workflows instead of bindings; connecting directly to remote databases without Hyperdrive (often 300-500ms per request).
 - Environments: each is a distinct Worker named `{name}-{env}`; bindings and vars are not inherited (see non-inheritable keys in the cloudflare-wrangler skill). The root Worker is a separate deployment; use `--env` to avoid deploying it unintentionally.

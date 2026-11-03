@@ -10,12 +10,17 @@ Convert Service Worker syntax (`addEventListener`) Workers to ES modules format 
 
 Service Worker format:
 
+Adapted (not in the official docs): the destination is built from a fixed host by copying `pathname` and `search`, because `new URL(request.url, base)` ignores `base` and redirects to itself; see Notes.
+
 ```js
 async function handler(request) {
   const base = 'https://example.com';
   const statusCode = 301;
 
-  const destination = new URL(request.url, base);
+  const source = new URL(request.url);
+  const destination = new URL(base);
+  destination.pathname = source.pathname;
+  destination.search = source.search;
   return Response.redirect(destination.toString(), statusCode);
 }
 
@@ -104,7 +109,7 @@ export default {
 - Service Worker semantics: if a `fetch` handler does not call `respondWith`, the next registered `fetch` handler is tried; if none does, the request goes to the origin (a `*.workers.dev` Worker has no origin, so it must call `respondWith`). `passThroughOnException()` fails open to the origin.
 - Supported `FetchEvent` properties: `type` (always `"fetch"`), `request`, `respondWith()`, `waitUntil()`, `passThroughOnException()`.
 - Source code issue: the Service Worker bindings example (`addEventListener("fetch", async (event) => { return await getTodos() })`) references `event` inside `getTodos`, where it is not in scope; it illustrates globals only.
-- Adapted from the official docs: the ES modules redirect originally used `new URL(source.pathname, base)`; a request path such as `//attacker.example/x` would change the host and become an open redirect. The adapted snippet keeps the host fixed by assigning `pathname` (and `search`) onto `new URL(base)`. The Service Worker snippet's `new URL(request.url, base)` ignores `base` because `request.url` is already absolute.
+- Adapted from the official docs: the ES modules redirect originally used `new URL(source.pathname, base)`; a request path such as `//attacker.example/x` would change the host and become an open redirect. The adapted snippet keeps the host fixed by assigning `pathname` (and `search`) onto `new URL(base)`. The official Service Worker snippet's `new URL(request.url, base)` ignores `base` because `request.url` is already absolute (it redirects the request to itself, causing a redirect loop), so it was changed to the same fixed-host construction.
 - Snippet for the Service Worker `waitUntil` caching example used `event.waitUntil(caches.default.put(event.request, res.clone()))`.
 
 ## Related
