@@ -61,7 +61,9 @@ Handler arguments: `request` (Request), `env` (all bindings), `ctx.containerId` 
 - Handlers run in the Workers runtime outside the container sandbox, so they can hold secrets the container never sees (no token in the container, central rotation, per-host and per-instance rules via `ctx.containerId`). Useful when code in the container is untrusted.
 - Plain HTTP between container and handler stays on the same machine; traffic within the Cloudflare Developer Platform is encrypted by the networking stack.
 - Non-HTTP traffic: only HTTP(S) is intercepted; other ports are never routed through handlers and are denied when `enableInternet = false`. DNS never reaches a public resolver in that mode. With `allowedHosts`, `deniedHosts`, or `outbound` set every hostname resolves (the Worker allows or blocks each request); with only `outboundByHost` only its hostnames resolve; other lookups time out.
-- Trusting the CA: it exists only at runtime, so do not bake it into the image. Copy it into the distro trust store in the entrypoint and refresh the store before starting the app (install `ca-certificates` in the image if missing). Runtimes with their own bundle can use `NODE_EXTRA_CA_CERTS` or `REQUESTS_CA_BUNDLE` pointing at the CA file. Debian/Ubuntu example (this entrypoint runs inside the container, never on the host); for RHEL-family images copy to `/etc/pki/ca-trust/source/anchors/` and run `update-ca-trust`; for Arch copy to `/etc/ca-certificates/trust-source/anchors/` and run `trust extract-compat`; replace `node server.js` with your start command:
+- Trusting the CA: it exists only at runtime, so do not bake it into the image. Copy it into the distro trust store in the entrypoint and refresh the store before starting the app (install `ca-certificates` in the image if missing). Runtimes with their own bundle can use `NODE_EXTRA_CA_CERTS` or `REQUESTS_CA_BUNDLE` pointing at the CA file. Debian/Ubuntu example (this entrypoint runs inside the container, never on the host); for RHEL-family images copy to `/etc/pki/ca-trust/source/anchors/` and run `update-ca-trust`; for Arch copy to `/etc/ca-certificates/trust-source/anchors/` and run `trust extract-compat`; replace `node server.js` with your start command.
+
+Adapted (not in the official docs): a minimal catch-all `outbound` handler is added, because the CA file is created only when a handler is also defined; without one the `cp` fails and the `&&` chain never starts the app. Replace the handler with your own policy.
 
 ```js
 import { Container, ContainerProxy } from "@cloudflare/containers";
@@ -79,6 +81,10 @@ export class MyContainer extends Container {
 		].join(" && "),
 	];
 }
+
+MyContainer.outbound = async (request, env, ctx) => {
+	return fetch(request);
+};
 ```
 
 - Credential injection, with `outboundByHost` plus a per-instance key from KV. Adapted (not in the official docs): fail closed when no key is stored instead of sending an empty or `null` header.
@@ -103,6 +109,7 @@ MyContainer.outboundByHost = {
 };
 ```
 
+- Adapted from the official docs: the CA-trust entrypoint example gained a minimal `MyContainer.outbound` handler (the CA is generated only when a handler is defined, so without it the entrypoint's `cp` fails).
 - Adapted from the official docs: the original sent `authKey` unchecked (a missing key would be sent as a null header); the 403 branch was added. Fragments that referenced undefined helpers (`someWorkersFunction`, `authenticateGitHttpsRequest`) are omitted.
 - Direct API on `ctx.container` (`WorkerEntrypoint`, see durable-object-container.md): in-flight connections pick up a new handler without being dropped.
 

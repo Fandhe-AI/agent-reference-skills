@@ -50,13 +50,14 @@ return new Response(process.stdout, {
 
 Sessions become an options object passed to every call.
 
-Adapted (not in the official docs): the install step's exit code is checked, so a failed `npm ci` does not fall through to the test run; see Notes.
+Adapted (not in the official docs): the install step's output is read with `output()` (stdout and stderr default to pipes, so waiting on `exitCode` alone can stall on large output) and its exit code is checked, so a failed `npm ci` does not fall through to the test run; see Notes.
 
 ```ts
 const build = { cwd: "/workspace/app", env: { ...ENV, CI: "1" } };
 
 const install = await this.container.exec(["npm", "ci"], build);
-if ((await install.exitCode) !== 0) {
+const installResult = await install.output();
+if (installResult.exitCode !== 0) {
 	throw new Error("npm ci failed");
 }
 
@@ -93,7 +94,7 @@ const result = await test.output();
 - Terminals: tmux is added to the image (`apt-get install ... tmux`); a reconnected page shows the redrawn tmux screen rather than 256 KiB of replay; when the shell exits the socket closes with code 1000 and a reason such as `Terminal closed with code 0`; detaching with `CTRL + B` then `D` also closes with 1000; browsers sharing a session share one screen. Terminal WebSockets stop receiving data at the in-place switch without a close event: ask people to reload or add a read timeout. 0.12 shells inherited `envVars` and image `ENV`; `exec()` inherits only `PATH`, so add other variables to `ENV`.
 - Code interpreter: 1.0 has no interpreter. A `runCode()` without `context` used a per-language default context, so plain calls shared variables; if your code relies on that, run a kernel per context. The kernel image adds `python3-ipython`, `python3-matplotlib`, `python3-numpy`, `python3-pandas` (the 0.12 python image included IPython, matplotlib, NumPy and pandas).
 - Adapted from the official docs: the page's `sandbox.startProcess("dev", [...])` call is omitted because `sandbox` and the `startProcess()` helper (a Durable Object method plus helper scripts) are defined only in the official "Run background processes" guide, which this skill does not reproduce.
-- Adapted from the official docs: the sessions example only awaited `install.exitCode` and then ran the tests regardless of the result; it now throws on a non-zero exit code (a non-zero exit does not reject `exitCode`).
+- Adapted from the official docs: the sessions example only awaited `install.exitCode` and then ran the tests regardless of the result; it now throws on a non-zero exit code (a non-zero exit does not reject `exitCode`). It also reads the install step with `output()` instead of awaiting `exitCode` alone, because unread piped stdout/stderr can back-pressure and stall the process; if the output is not needed, pass `stdout: "ignore"` and `stderr: "ignore"` instead.
 - Sandboxes run untrusted or generated code: keep `enableInternet` false unless needed and validate any request-derived sandbox names or process IDs.
 
 ## Related
