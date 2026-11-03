@@ -27,7 +27,7 @@ Cloudflare 開発者プラットフォームのストレージ 4 製品 — Work
 - supabase: Postgres / Storage は別製品（Hyperdrive の接続先としては利用可）
 - mssql: Node.js 向け SQL Server クライアント。Hyperdrive は Postgres / MySQL 向けで別物
 - vercel: Blob は別製品
-- 未収録の Cloudflare 製品（Durable Objects / Queues / Workflows / Vectorize 等）は公式 docs を参照
+- 同ファミリーの他製品: Durable Objects（SQLite storage を含む）/ Queues / Workflows は cloudflare-stateful、Vectorize / AI Search は cloudflare-ai、Pages Functions からの binding 利用は cloudflare-pages
 
 ## ディレクトリ構成
 

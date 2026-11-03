@@ -266,6 +266,7 @@ wrangler containers ssh <INSTANCE_ID> --tty -- top
 
 - `list` has no command-specific arguments or flags in the official page.
 - The "required" / "optional" markers in the Description column come from the official page, which has no separate column for them.
+- The Containers product (the `Container` class, images, limits, pricing) is covered by the cloudflare-sandbox-containers skill (https://developers.cloudflare.com/containers/); this page lists only the `wrangler containers` command flags.
 
 ## Related
 

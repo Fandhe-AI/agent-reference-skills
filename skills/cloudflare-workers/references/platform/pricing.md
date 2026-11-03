@@ -140,7 +140,7 @@ Containers (Paid, billed per 10 ms active): memory 25 GiB-hours/month + $0.00000
 - Docs staleness: the Durable Objects SQLite storage billing note says billing "will be enabled in January 2026", which is already past at the 2026-11-03 fetch date.
 - Custom limits: set the CPU limit via the `limits` Wrangler setting or dashboard (**Workers & Pages** > Worker > **Settings** > **CPU Limits**) to avoid runaway bills. Bundled-model Workers migrated to Standard pricing on March 1, 2024 received an automatic 50 ms CPU limit.
 - Usage models can be changed account-wide or per Worker in the dashboard; this only affects billing.
-- Details for KV, D1, R2, Hyperdrive: see the cloudflare-storage skill. Queues, Workflows, Durable Objects, Vectorize, Containers: https://developers.cloudflare.com/queues/platform/pricing/, https://developers.cloudflare.com/workflows/reference/pricing/, https://developers.cloudflare.com/durable-objects/platform/pricing/, https://developers.cloudflare.com/containers/platform/pricing/.
+- Details for KV, D1, R2, Hyperdrive: see the cloudflare-storage skill. Queues, Workflows, Durable Objects: the cloudflare-stateful skill (https://developers.cloudflare.com/queues/platform/pricing/, https://developers.cloudflare.com/workflows/reference/pricing/, https://developers.cloudflare.com/durable-objects/platform/pricing/). Vectorize: the cloudflare-ai skill. Containers: the cloudflare-sandbox-containers skill (https://developers.cloudflare.com/containers/platform/pricing/).
 - Only requests that hit a Worker count; Workers run before the cache, so cached requests still incur costs.
 
 ## Related

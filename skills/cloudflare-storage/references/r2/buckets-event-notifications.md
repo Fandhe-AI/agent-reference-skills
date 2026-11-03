@@ -77,7 +77,7 @@ Message properties:
 - Queues per-queue throughput is 5,000 messages per second; split rules across multiple queues beyond that.
 - Overlapping or conflicting rules that could trigger multiple notifications for one event are not allowed (e.g. an `object-create` rule without prefix plus another `object-create` rule with prefix `images/`).
 - Adapted from the official docs: the `$ ` shell-prompt prefixes were removed from the filter examples so they can be copy-pasted.
-- Cloudflare Queues is not covered by this skill; see https://developers.cloudflare.com/queues/.
+- Cloudflare Queues is covered by the cloudflare-stateful skill (https://developers.cloudflare.com/queues/).
 
 ## Related
 

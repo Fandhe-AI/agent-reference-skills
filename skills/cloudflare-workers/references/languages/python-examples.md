@@ -196,7 +196,7 @@ class MyWorkflow(WorkflowEntrypoint):
 ## Notes
 
 - Corrected from the official docs: the official Cron Trigger example declares `scheduled(self, controller, env, ctx)` and says all four parameters are required; class-style Python handlers take no `env` / `ctx` parameters (like `fetch(self, request)`), so the signature is `scheduled(self, controller)` and bindings / context are read from `self.env` / `self.ctx`.
-- D1 in depth: https://developers.cloudflare.com/d1/examples/query-d1-from-python-workers/. Durable Objects: https://developers.cloudflare.com/durable-objects/get-started/. Cron Triggers: https://developers.cloudflare.com/workers/configuration/cron-triggers/. Python Workflows: https://developers.cloudflare.com/workflows/python/. Hyperdrive (PostgreSQL/MySQL) from Python Workers: https://developers.cloudflare.com/hyperdrive/examples/python-workers/.
+- D1 in depth: https://developers.cloudflare.com/d1/examples/query-d1-from-python-workers/. Durable Objects (cloudflare-stateful skill): https://developers.cloudflare.com/durable-objects/get-started/. Cron Triggers: https://developers.cloudflare.com/workers/configuration/cron-triggers/. Python Workflows (cloudflare-stateful skill): https://developers.cloudflare.com/workflows/python/. Hyperdrive (PostgreSQL/MySQL) from Python Workers: https://developers.cloudflare.com/hyperdrive/examples/python-workers/.
 - More examples: `git clone https://github.com/cloudflare/python-workers-examples`.
 
 ## Related

@@ -72,7 +72,7 @@ await queue.send("message"); // Logs "message" 1 second later
 ## Notes
 
 - The two `queueProducers` / `queueConsumers` lines in each example show alternative forms (a duplicate key in one object literal is illustrative only).
-- Queues product docs: https://developers.cloudflare.com/queues/
+- The Queues product (API and concepts) is covered by the cloudflare-stateful skill (https://developers.cloudflare.com/queues/).
 
 ## Related
 

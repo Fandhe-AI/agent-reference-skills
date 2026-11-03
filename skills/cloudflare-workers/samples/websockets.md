@@ -40,5 +40,5 @@ export default {
 
 - Adapted from the official docs: the official snippet defines only `handleRequest`; the default export calling it is added here.
 - Return the `client` end in a `101` response and call `accept()` on the `server` end to start receiving events.
-- For coordination across multiple connections (chat rooms, game matches), the official docs recommend Durable Objects: https://developers.cloudflare.com/durable-objects/
+- For coordination across multiple connections (chat rooms, game matches), the official docs recommend Durable Objects, covered by the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/).
 - API details are in `../references/web-apis/websockets.md`.

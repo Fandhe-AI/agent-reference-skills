@@ -20,11 +20,11 @@ export default {
 
 | Handler | Documentation |
 |---------|---------------|
-| Alarm Handler | https://developers.cloudflare.com/durable-objects/api/alarms/ |
+| Alarm Handler | cloudflare-stateful skill; https://developers.cloudflare.com/durable-objects/api/alarms/ |
 | Connect Handler | [connect.md](./connect.md) |
 | Email Handler | https://developers.cloudflare.com/email-service/api/route-emails/email-handler/ |
 | Fetch Handler | [fetch.md](./fetch.md) |
-| Queue Handler | https://developers.cloudflare.com/queues/configuration/javascript-apis/#consumer |
+| Queue Handler | cloudflare-stateful skill; https://developers.cloudflare.com/queues/configuration/javascript-apis/#consumer |
 | Scheduled Handler | [scheduled.md](./scheduled.md) |
 | Tail Handler | [tail.md](./tail.md) |
 

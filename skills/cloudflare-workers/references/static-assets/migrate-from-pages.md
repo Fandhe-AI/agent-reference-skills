@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/workers/static-assets/migration-guides
 
 # Migrate from Pages to Workers
 
-Guide for migrating a Cloudflare Pages project (https://developers.cloudflare.com/pages/) to Workers with static assets, plus a feature compatibility matrix.
+Guide for migrating a Cloudflare Pages project (cloudflare-pages skill; https://developers.cloudflare.com/pages/) to Workers with static assets, plus a feature compatibility matrix.
 
 ## Signature / Usage
 
