@@ -65,9 +65,9 @@ const HandleAirtableData = (body, env) => {
 };
 ```
 
-Adapted (not in the official docs): the official final `submitHandler` passes an undefined `env` to `HandleAirtableData`; this version reads `context.env`. See Notes.
+Adapted (not in the official docs): the official final `submitHandler` passes an undefined `env` to `HandleAirtableData`; this version reads `context.env`. The file is named `functions/submit.js` (the source uses `functions/form.js`) so the route stays `POST /submit`. See Notes.
 
-Refactored Pages Function, saved as `functions/form.js`:
+Refactored Pages Function, saved as `functions/submit.js`:
 
 ```js
 export async function onRequestPost(context) {
@@ -124,6 +124,7 @@ const HandleAirtableData = async function onRequest({ body, env }) {
 
 - Cloudflare's Pages landing page says "Start new projects with Workers" (Workers + static assets supports most Pages use cases); see the cloudflare-workers skill (static-assets/migrate-from-pages).
 - Corrected from the official docs: the page's final Function calls `HandleAirtableData({ body: reqBody, env: env })` inside `submitHandler(context)`, where `env` is not defined (`ReferenceError`); it must be `context.env`.
+- Adapted from the official docs: the source saves the Function as `functions/form.js`, which file-based routing serves at `/form`, while the original Worker and its HTML form post to `/submit`. Naming the file `functions/submit.js` keeps the existing form `action="/submit"` working; if you keep `functions/form.js`, change the form `action` to `/form`.
 - General steps: remove the fetch handler and export the appropriate `onRequest` method, take the `context` argument, and use middleware for logic before or after route handlers. Store Airtable credentials as secrets (Wrangler `secret`), never in code. Validate form input before forwarding in real use.
 - Alternative: place the Worker in the output directory as `_worker.js` (advanced mode, module syntax). Then the entire `/functions` directory, including routing and middleware, is ignored.
 - Use Pages Functions when the logic belongs to one application; if several applications share it, keep a Worker.
