@@ -28,8 +28,9 @@ Manage an installation: **Workers & Pages** > Worker > **Settings** > **Builds**
 
 Reinstall URLs (GitHub):
 
-| **Individual** | `https://github.com/settings/installations` |
+| Account type | URL |
 | --- | --- |
+| **Individual** | `https://github.com/settings/installations` |
 | **Organization** | `https://github.com/organizations/<YOUR_ORGANIZATION_NAME>/settings/installations` |
 
 ## Notes

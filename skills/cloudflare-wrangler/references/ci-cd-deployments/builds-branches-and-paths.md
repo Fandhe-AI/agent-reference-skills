@@ -42,16 +42,20 @@ Build watch paths examples (**Settings** > **Build** > **Build watch paths**; de
 
 Monorepo layout example (`ecommerce-monorepo`, one Workers project per service):
 
-- ecommerce-monorepo/
-  - workers/
-    - product-service/ (`src/`, `wrangler.jsonc`)
-    - order-service/ (`src/`, `wrangler.jsonc`)
-    - notification-service/ (`src/`, `wrangler.jsonc`)
-  - packages/
-    - schema/
-  - README.md
+| Path | Contents |
+| --- | --- |
+| `ecommerce-monorepo/workers/product-service/` | `src/`, `wrangler.jsonc` |
+| `ecommerce-monorepo/workers/order-service/` | `src/`, `wrangler.jsonc` |
+| `ecommerce-monorepo/workers/notification-service/` | `src/`, `wrangler.jsonc` |
+| `ecommerce-monorepo/packages/schema/` | Shared package |
+| `ecommerce-monorepo/README.md` | Repository readme |
 
-Root directory for `product-service`: `/workers/product-service/`. With Turborepo, per-Worker deploy command, e.g. `turbo deploy -F product-service`.
+Settings for `product-service`:
+
+| Setting | Value |
+| --- | --- |
+| Root directory | `/workers/product-service/` |
+| Deploy command (with Turborepo, per Worker) | `turbo deploy -F product-service` |
 
 ## Notes
 

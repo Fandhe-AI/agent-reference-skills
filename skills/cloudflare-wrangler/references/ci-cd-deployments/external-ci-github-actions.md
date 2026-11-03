@@ -44,7 +44,13 @@ Secrets to add to the CI platform:
 | `CLOUDFLARE_ACCOUNT_ID` | The Cloudflare account ID of the account to deploy the Worker to |
 | `CLOUDFLARE_API_TOKEN` | The Cloudflare API token you generated |
 
-Create the API token: dashboard **Account API tokens** > **Create Token** > under **Permission policies** open **Custom** and select **Edit Cloudflare Workers** > name it > scope it.
+Create the API token (dashboard **Account API tokens** > **Create Token**):
+
+| Step | Action |
+| --- | --- |
+| 1 | Under **Permission policies**, open **Custom** and select **Edit Cloudflare Workers** |
+| 2 | Name the token |
+| 3 | Scope the token |
 
 ## Notes
 

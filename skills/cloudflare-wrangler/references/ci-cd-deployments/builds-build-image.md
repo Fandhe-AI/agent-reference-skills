@@ -29,7 +29,12 @@ Runtime:
 | **Python** | 3.14.8 | `PYTHON_VERSION` | .python-version, runtime.txt |
 | **Ruby** | 3.4.11 | `RUBY_VERSION` | .ruby-version |
 
-The build image preinstalls Node.js 22.23.4 and 24.22.1.
+Build image facts:
+
+| Item | Value |
+| --- | --- |
+| Preinstalled Node.js versions | 22.23.4 and 24.22.1 |
+| Build environment | Ubuntu 24.04, x86_64 |
 
 Tools and languages:
 
@@ -46,8 +51,6 @@ Tools and languages:
 | **pipx** | 1.17.2 | | |
 | **bundler** | 2.6.9 | | |
 | **uv** | 0.13.4 | | |
-
-Build environment: Ubuntu 24.04, x86_64.
 
 Skip dependency install:
 

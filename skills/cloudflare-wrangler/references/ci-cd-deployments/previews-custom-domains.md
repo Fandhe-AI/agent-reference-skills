@@ -45,10 +45,14 @@ preview_urls = true
 
 ## Options / Props
 
+Traffic settings:
+
 | Traffic | `previews_enabled` | `enabled` |
 | --- | --- | --- |
 | Preview only | `true` | `false` |
 | Production and Preview | `true` | Omit or set `true` |
+
+URLs by host:
 
 | Host | Preview URL | Unique deployment URL |
 | --- | --- | --- |
