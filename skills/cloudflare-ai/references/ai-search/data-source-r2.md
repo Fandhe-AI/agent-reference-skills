@@ -24,22 +24,9 @@ await env.MY_BUCKET.put("docs/document.pdf", fileContent, {
 });
 ```
 
-Or with Wrangler (`--remote` writes to the real bucket):
-
-Adapted (not in the official docs): added `--remote`, since `wrangler r2 object put` defaults to local; see Notes.
-
-```sh
-wrangler r2 object put your-bucket/docs/document.pdf \
-  --remote \
-  --file=./document.pdf \
-  --header="x-amz-meta-category:documentation" \
-  --header="x-amz-meta-version:2.5" \
-  --header="x-amz-meta-is_public:true"
-```
-
 ## Notes
 
-- Corrected from the official docs: the source omits `--remote`; `wrangler r2 object put` targets the local simulator by default, so production uploads need `--remote`. The AWS SDK example in the source references undefined `accountId`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`; it is omitted (use the S3 `Metadata` option with credentials from your environment).
+- Corrected from the official docs: the source also shows `wrangler r2 object put` with `--header="x-amz-meta-…"` flags, but that command has no option for arbitrary headers or custom metadata, so the example is omitted; set custom metadata with the binding `customMetadata` above or the S3 API `Metadata` option. The AWS SDK example in the source references undefined `accountId`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`; it is omitted (use the S3 `Metadata` option with credentials from your environment).
 - First R2-backed instance: dashboard or Wrangler creates and registers a service API token automatically; with REST or the Workers binding pass `token_id` (see service-api-token.md).
 - Objects without a filename extension need an explicit supported `Content-Type`; missing, unsupported, malformed, or `application/octet-stream` types are not supported.
 - Path filtering example: Include `/docs/**`, Exclude `/docs/drafts/**` (see chunking-and-path-filtering.md).

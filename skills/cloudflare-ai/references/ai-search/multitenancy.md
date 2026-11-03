@@ -23,7 +23,7 @@ Binding:
 }
 ```
 
-Adapted (not in the official docs): the tenant is derived from a verified API key instead of a raw `x-tenant-id` header; the secret `TENANT_KEYS` is a JSON map of tenant ID to key, and the Worker fails closed when it is unset. The upload route also caps `Content-Length` before buffering, and `q` is required. See Notes.
+Adapted (not in the official docs): the tenant is derived from a verified API key instead of a raw `x-tenant-id` header; the secret `TENANT_KEYS` is a JSON map of tenant ID to key, and the Worker fails closed when it is unset. The upload route also caps `Content-Length` before buffering and passes the `File` (a `Blob`) to `items.upload()` instead of an `ArrayBuffer`, and `q` is required. See Notes.
 
 ```ts
 export type Env = {
@@ -92,7 +92,7 @@ export default {
 
 			const item = await env.TENANTS.get(`tenant-${tenantId}`).items.upload(
 				file.name,
-				await file.arrayBuffer(),
+				file,
 			);
 			return Response.json({ success: true, item });
 		}
@@ -123,6 +123,7 @@ export default {
 
 ## Notes
 
+- Corrected from the official docs: the source passes `await file.arrayBuffer()` to `items.upload()`, whose content parameter is documented as `ReadableStream`, `Blob`, or `string` (items-workers-binding.md); the `File` itself is passed, which is a `Blob` and avoids buffering the whole file.
 - Adapted from the official docs: the source reads the tenant from the client-supplied `x-tenant-id` header, which lets any caller impersonate any tenant. Production code must derive the tenant from a verified identity (API key as above, a signed JWT, or Cloudflare Access); the key compare is constant-time and a malformed secret fails closed.
 - Set the secret with `npx wrangler secret put TENANT_KEYS`; for local development use `.dev.vars` and keep it out of version control.
 - Choose instance-per-tenant for strong isolation and runtime tenant churn; choose a shared instance with metadata filtering (and R2 `Include: /customers/<tenant>/**` path scoping per instance) for many small tenants. The official page also covers the shared-instance and R2 variants; they are not reproduced here (https://developers.cloudflare.com/ai-search/how-to/per-tenant-search/).
