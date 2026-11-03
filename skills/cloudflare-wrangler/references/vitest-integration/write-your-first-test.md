@@ -50,6 +50,8 @@ export default defineConfig({
 
 `test/tsconfig.json` types (run `wrangler types` first):
 
+Adapted (not in the official docs): include path changed to the default `wrangler types` output location; see Notes.
+
 ```jsonc
 {
 	"extends": "../tsconfig.json",
@@ -61,7 +63,7 @@ export default defineConfig({
 	},
 	"include": [
 		"./**/*.ts",
-		"../src/worker-configuration.d.ts", // output of `wrangler types`
+		"../worker-configuration.d.ts", // default output of `wrangler types`
 	],
 }
 ```
@@ -129,6 +131,7 @@ The JavaScript variants are identical apart from `const IncomingRequest = Reques
 
 ## Notes
 
+- Corrected from the official docs: the official page includes `../src/worker-configuration.d.ts`, but `wrangler types` without a path writes `./worker-configuration.d.ts` at the project root (see [workers-versions.md](../commands/workers-versions.md) `types`), so the include is `../worker-configuration.d.ts` relative to `test/tsconfig.json`. If you generate into `src/` with `wrangler types src/worker-configuration.d.ts`, keep the `../src/...` include instead.
 - `exports.default.fetch()` runs the Worker in the same context as the test runner, so global mocks apply to it, but it uses the subtly different module resolution behavior provided by Vite.
 - To run the Worker in a fresh environment as close to production as possible, use an auxiliary Worker (example: https://github.com/cloudflare/workers-sdk/blob/main/fixtures/vitest-plugin-examples/basics-integration-auxiliary/vitest.config.ts). Auxiliary Workers have limitations listed under `miniflare.workers` in [configuration.md](./configuration.md).
 - Docs inconsistency: the original page links the auxiliary-Worker limitations to the anchor `#workerspooloptions` on the configuration page, which does not exist there; the limitations are under the `miniflare` option of `CloudflareTestOptions`.
