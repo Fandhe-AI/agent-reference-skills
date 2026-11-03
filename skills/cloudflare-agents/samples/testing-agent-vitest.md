@@ -27,7 +27,7 @@ export default defineConfig({
 });
 ```
 
-Adapted (not in the official docs): a minimal Agent and Wrangler config added so the test below has something to call (the page assumes an existing `MyAgent` that returns `{ hello: "from your agent" }`).
+Adapted (not in the official docs): a minimal Agent and Wrangler config added so the test below has something to call (the page assumes an existing `MyAgent` that returns `{ hello: "from your agent" }`); its `fetch` takes `(request, env, ctx)` to match the test's three-argument call.
 
 ```jsonc
 {
@@ -52,7 +52,8 @@ export class MyAgent extends Agent<Env> {
 }
 
 export default {
-	async fetch(request: Request, env: Env) {
+	// The test calls fetch(request, env, ctx), so the handler declares all three parameters.
+	async fetch(request: Request, env: Env, _ctx: ExecutionContext) {
 		return (
 			(await routeAgentRequest(request, env)) ||
 			new Response("Not found", { status: 404 })
