@@ -41,7 +41,7 @@ export type WorkflowEvent<T> = {
 
 ## Options / Props
 
-`run(event: WorkflowEvent<T>, step: WorkflowStep): Promise<T>` parameters:
+`run(event: WorkflowEvent<T>, step: WorkflowStep): Promise<unknown>` parameters (`T` is the input payload type; the return value is any serializable output, independent of `T`):
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
@@ -60,6 +60,7 @@ export type WorkflowEvent<T> = {
 
 ## Notes
 
+- Corrected from the official docs: the page writes the signature as `run(event: WorkflowEvent<T>, step: WorkflowStep): Promise<T>`, which ties the return type to the input payload type. The output is independent of the input (for example get-started takes `{ name?: string }` and returns `{ name, ipCount }`), so it is written here as `Promise<unknown>`; the returned value must be serializable.
 - A Workflow must extend `WorkflowEntrypoint` and define a `run` method with at least one `step` call to be valid.
 - The value returned by `run` is available when querying instance status (Workers API, REST API, dashboard).
 - Any JS control flow (if, loops, `try...catch`, promises) can manage steps inside `run`.
