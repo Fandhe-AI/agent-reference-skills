@@ -39,6 +39,7 @@ query D1ObservabilitySampleQuery3(
 - Billable usage history is stored for a maximum of 30 days.
 - Usage-based billing notifications are available in the dashboard for Rows Read and Rows Written.
 - The GraphQL snippet above is adapted from the Metrics and analytics page's example by selecting the billing fields (`rowsRead`, `rowsWritten`); the Billing page itself shows no code.
+- Adapted from the official docs: the Billing page shows no code, so the query is taken from the D1 Metrics and analytics page and changed to select the billing fields `rowsRead` and `rowsWritten`.
 
 ## Related
 

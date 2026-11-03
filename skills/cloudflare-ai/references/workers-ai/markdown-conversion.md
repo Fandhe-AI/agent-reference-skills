@@ -96,6 +96,7 @@ const formats = await env.AI.toMarkdown().supported();
 - The binding result field is spelled `mimetype`; the REST response uses `mimeType`.
 - Requires the `ai` binding (see Binding and env.AI.run()); R2 storage is covered by cloudflare-storage.
 - Related products without a skill: Browser Run `/markdown` https://developers.cloudflare.com/browser-run/quick-actions/markdown-endpoint/ and Markdown for Agents https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/
+- Corrected from the official docs: the official snippet imported `Env` from a non-existent `./env` module, assumed the R2 objects exist, and did not declare the R2 binding; this version declares `Env` inline and returns 404 when an object is missing, and requires an `r2_buckets` binding named `R2`.
 
 ## Related
 

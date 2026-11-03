@@ -56,3 +56,4 @@ test("loads a user profile", async ({ expect }) => {
 - Other helpers: `worker.getEnv()` for KV seeding, `worker.getDurableObjectStorage(binding, { name })` with `storage.exec(sql, ...params)`, and `bindingOverrides` to route a binding to a test Worker.
 - `server` is created as in the first-test sample. `ApiEnv` is your own interface for the Worker's `Env` (typing `getEnv()`); the `vitest` import line is added to the official snippet, which omits it.
 - See [../references/miniflare/README.md](../references/miniflare/README.md).
+- Adapted from the official docs: the `vitest` import for `beforeEach` is added.

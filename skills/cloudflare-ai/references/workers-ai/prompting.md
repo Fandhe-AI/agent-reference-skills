@@ -50,6 +50,7 @@ const raw = {
 - Use unscoped prompts for inference with LoRA (recommended in the source).
 - Different LLMs are trained with different templates; check the model documentation (instruct models like Codellama respond to instructions, chat models expect dialog fragments).
 - Role semantics follow the OpenAI messages-and-roles convention; the OpenAI API itself is covered by openai-api-core.
+- Corrected from the official docs: the official snippets were bare object literals ending in `;` (not valid JavaScript) and are bound to `const` variables here, and the raw Mistral template had a literal newline inside a double-quoted string, which is escaped as `\n`.
 
 ## Related
 

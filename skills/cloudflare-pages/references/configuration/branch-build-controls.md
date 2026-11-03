@@ -42,6 +42,7 @@ Exclude Preview branches: (empty)
 - Evaluation order for custom branches: (1) Excludes, (2) Includes, (3) Skip. A branch matching neither is skipped.
 - Source examples: include `fix/*`, `feat/*`, `chore/*` with an empty exclude list; include `*` and exclude `dependabot/*` to avoid dependabot deployments.
 - The PATCH example uses placeholders in the URL and header; supply a real token through your shell or secret store rather than committing it.
+- Adapted from the official docs: the preview-branch example uses an empty exclude list, because excludes are evaluated first and an exclude of `*` would also exclude `release/*`.
 
 ## Related
 

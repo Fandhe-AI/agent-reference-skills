@@ -69,6 +69,7 @@ export default {
 - The sample response in the source (`{ "result": "This is a golden retriever ..." }`) is illustrative.
 - Keep API tokens in environment variables, not in command history shared with others.
 - Deploy with `wrangler deploy` (cloudflare-wrangler).
+- Corrected from the official docs: the source labelled this fence `javascript` although it contains TypeScript (`interface`, `satisfies`); it is labelled `ts` here.
 
 ## Related
 

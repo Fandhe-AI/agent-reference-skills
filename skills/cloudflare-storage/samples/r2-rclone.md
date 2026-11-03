@@ -61,3 +61,4 @@ rclone link r2:my-bucket-name/cat.png --expire 3600
 - With a token limited to object-level permissions, add `no_check_bucket = true` to the remote.
 - Each multipart part is a Class A operation and a multipart upload costs at least 3x a single `PutObject`; tune `--s3-chunk-size` / `--s3-upload-cutoff`.
 - Related: [get-started-s3](../references/r2/get-started-s3.md), [api-tokens](../references/r2/api-tokens.md).
+- Corrected from the official docs: the code-fence language is changed from `toml` to `ini` because rclone config files are INI and `type = s3` is not valid TOML.

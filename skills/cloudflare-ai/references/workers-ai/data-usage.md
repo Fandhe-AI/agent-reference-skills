@@ -41,6 +41,7 @@ const embeddings = await env.AI.run(
 - If you use AI Gateway to send Customer Content to another provider, or connect Workers AI to another third-party service, that provider may process and retain content under its own terms.
 - Legal or safety retention: such content is not used to train AI models or improve Cloudflare or third-party products.
 - Cloudflare does not create or train the third-party models; review each model's license and acceptable use terms.
+- Adapted from the official docs: the snippet from the Batch API Workers binding page is shortened to a single context.
 
 ## Related
 

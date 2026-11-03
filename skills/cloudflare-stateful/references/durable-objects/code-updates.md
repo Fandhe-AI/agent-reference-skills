@@ -101,6 +101,7 @@ curl "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/scripts/
 - Use `immediate` for correctness/security fixes or objects that rarely hibernate.
 - Limitations: `deferred` is best effort (no guarantee operations finish or the object keeps its code for the whole `max_delay`); it does not delay restarts unrelated to code updates, e.g. Workers runtime updates.
 - Diagrams in the source (mermaid flowcharts) are omitted.
+- Adapted from the official docs: the bearer token is sent through a stdin header file so it does not appear in the process argument list.
 
 ## Related
 
