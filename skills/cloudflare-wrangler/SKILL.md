@@ -4,7 +4,8 @@ description: >
   Cloudflare Workers 開発ツール (Wrangler CLI v4 / @cloudflare/vite-plugin / Vitest 統合 / Miniflare) の
   リファレンス。wrangler dev / deploy / versions / rollback / tail / secret / types の全フラグ、
   グローバルフラグ、製品別サブコマンド、wrangler.jsonc、.dev.vars、remote bindings、
-  @cloudflare/vitest-plugin (旧 vitest-pool-workers)、source maps。
+  @cloudflare/vitest-plugin (旧 vitest-pool-workers)、gradual deployments、
+  Workers Builds、Logpush、source maps。
   ランタイム API は cloudflare-workers、KV / D1 / R2 は cloudflare-storage。
 user-invocable: false
 ---
@@ -169,6 +170,52 @@ skills/cloudflare-wrangler/
       test-harness-prepare-test-state.md
       test-harness-interact-with-workers.md
       test-harness-integrations.md
+    ci-cd-deployments/
+      README.md
+      builds-overview.md
+      builds-configuration.md
+      builds-branches-and-paths.md
+      builds-build-image.md
+      builds-git-integration.md
+      builds-api-reference.md
+      builds-deploy-hooks.md
+      builds-event-subscriptions.md
+      builds-troubleshoot.md
+      external-ci-github-actions.md
+      external-ci-gitlab-cicd.md
+      versions-overview.md
+      versions-gradual-deployments.md
+      versions-version-affinity.md
+      versions-version-overrides.md
+      versions-version-urls.md
+      previews-overview.md
+      previews-compare-workflows.md
+      previews-configuration.md
+      previews-custom-domains.md
+      previews-test-and-debug.md
+      previews-examples.md
+      previews-resources.md
+    observability/
+      README.md
+      overview.md
+      workers-logs.md
+      real-time-logs.md
+      tail-workers.md
+      logpush.md
+      traces.md
+      custom-spans.md
+      spans-and-attributes.md
+      opentelemetry-export.md
+      metrics-and-analytics.md
+      query-builder.md
+      errors.md
+      issues.md
+      issues-investigate.md
+      source-maps.md
+      devtools.md
+      cpu-profiling.md
+      memory-profiling.md
+      profiling-in-production.md
 ```
 
 ## 探索手順
@@ -206,3 +253,10 @@ skills/cloudflare-wrangler/
 | Miniflare を Node.js から起動して Worker をテストしたい | miniflare | [references/miniflare/README.md](references/miniflare/README.md) |
 | test harness / `unstable_startWorker` の使い方を知りたい | miniflare | [references/miniflare/README.md](references/miniflare/README.md) |
 | Miniflare の KV / D1 / R2 / DO / Queues シミュレーションを調べたい | miniflare | [references/miniflare/README.md](references/miniflare/README.md) |
+| Workers Builds（Git 連携ビルド）を設定・トラブルシュートしたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
+| GitHub Actions / GitLab CI/CD から Worker をデプロイしたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
+| gradual deployments・version affinity・version overrides を使いたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
+| preview URLs・Preview 環境の設定とカスタムドメインを知りたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
+| Workers Logs / Real-time logs / Logpush / Tail Workers を設定したい | observability | [references/observability/README.md](references/observability/README.md) |
+| traces・custom spans・OpenTelemetry エクスポートを設定したい | observability | [references/observability/README.md](references/observability/README.md) |
+| source maps・CPU / メモリプロファイリング・DevTools でデバッグしたい | observability | [references/observability/README.md](references/observability/README.md) |
