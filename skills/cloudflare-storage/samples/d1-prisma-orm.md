@@ -14,6 +14,15 @@ generator client {
 }
 ```
 
+Adapted (not in the official docs): the `datasource` block is what `npx prisma init --datasource-provider sqlite` generates; shown so `prisma migrate diff --to-schema` has a provider; see Notes.
+
+```prisma
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+```
+
 ```prisma
 model User {
   id    Int     @id @default(autoincrement())
@@ -63,5 +72,6 @@ export default {
 
 - Prisma ORM API itself: see https://www.prisma.io/docs. Prisma Migrate (`migrate dev` / `db push`) does not support D1 in this tutorial; use `wrangler d1 migrations` and `prisma migrate diff` to generate SQL.
 - Install `prisma` (dev) plus `@prisma/client` and `@prisma/adapter-d1`; the Wrangler config needs a `d1_databases` binding named `DB` and `nodejs_compat`. The driver adapter feature is Preview in the tutorial.
+- Adapted from the official docs: the tutorial runs `npx prisma init --datasource-provider sqlite` (creating `prisma/schema.prisma` with the `datasource db` block and a `.env`) but does not show the block; it is included here so the shown commands are self-contained. The `.env` value is not used at runtime because D1 is reached via the binding; gitignore `.env`.
 - Apply migrations to the deployed database with `--remote`.
 - Related: [D1 README](../references/d1/README.md), [local-development](../references/d1/local-development.md).

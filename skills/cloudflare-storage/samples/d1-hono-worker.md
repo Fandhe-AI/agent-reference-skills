@@ -69,5 +69,5 @@ export const onRequest = handle(app);
 ## Notes
 
 - Hono routing API itself: see the hono skill. Pages Functions bindings: see https://developers.cloudflare.com/pages/functions/bindings/#d1-databases.
-- For Pages local development pass `--d1 DB=<DATABASE_ID>` to `wrangler dev`; the binding name must match the name used in code (the official page words this as "should match what call in your code").
+- For Pages local development pass `--d1 DB=<DATABASE_ID>` to `wrangler pages dev <build-output-dir>` (e.g. `npx wrangler pages dev ./dist --d1 DB=<DATABASE_ID>`); the binding name must match the name used in code. The official page says `wrangler dev`, but `--d1` is a `wrangler pages dev` flag (see the cloudflare-wrangler skill, `commands/pages.md`).
 - Related: [D1 README](../references/d1/README.md), [prepared-statements](../references/d1/prepared-statements.md).

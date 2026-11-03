@@ -24,15 +24,16 @@ JSON API on Workers with Hono and D1: create the schema, then GET and POST comme
 }
 ```
 
+Adapted (not in the official docs): the leading `DROP TABLE IF EXISTS comments;` is removed and the index uses `IF NOT EXISTS` so the schema is safe to re-run; see Notes.
+
 ```sql
-DROP TABLE IF EXISTS comments;
 CREATE TABLE IF NOT EXISTS comments (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   author TEXT NOT NULL,
   body TEXT NOT NULL,
   post_slug TEXT NOT NULL
 );
-CREATE INDEX idx_comments_post_slug ON comments (post_slug);
+CREATE INDEX IF NOT EXISTS idx_comments_post_slug ON comments (post_slug);
 
 -- Optionally, uncomment the below query to insert seed data
 -- INSERT INTO comments (author, body, post_slug) VALUES ('Kristian', 'Great post!', 'hello-world');
@@ -95,6 +96,6 @@ export default app;
 ## Notes
 
 - Hono API itself: see the hono skill. Create the database with `npx wrangler@latest d1 create d1-comments-api`; accept the prompt to add the `DB` binding.
-- The schema file begins with `DROP TABLE IF EXISTS comments;`: running it with `--remote` against a database that already has data deletes all comments. `cors()` with no options allows any origin.
+- Adapted from the official docs: the official `schemas/schema.sql` begins with `DROP TABLE IF EXISTS comments;` and uses a plain `CREATE INDEX`; running that with `--remote` against a database with data deletes all comments. It is removed here. If you need a reset, run `DROP TABLE IF EXISTS comments;` as a separate, local-only step (`npx wrangler d1 execute d1-comments-api --local --command "DROP TABLE IF EXISTS comments;"`), never with `--remote` on data you want to keep. `cors()` with no options allows any origin.
 - `bind()` passes the slug as a parameter, which avoids SQL injection. Apply the schema locally first, then with `--remote`.
 - Related: [D1 README](../references/d1/README.md), [prepared-statements](../references/d1/prepared-statements.md), [local-development](../references/d1/local-development.md).
