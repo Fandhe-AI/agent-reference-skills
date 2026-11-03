@@ -37,7 +37,7 @@ export default {
 } satisfies ExportedHandler<Env>;
 ```
 
-Adapted (not in the official docs): `@cf/baai/bge-m3` input shape follows its Parameters section (`query` plus a required `contexts` array) instead of the `text` field its usage example sends; see Notes.
+`@cf/baai/bge-m3` (the official example sends `text`; the `query` / `contexts` variant is listed under Options):
 
 ```ts
 export interface Env {
@@ -46,14 +46,20 @@ export interface Env {
 
 export default {
   async fetch(request, env): Promise<Response> {
-    const contexts = [
-      { text: "This is a story about an orange cloud" },
-      { text: "This is a story about a llama" },
-      { text: "This is a story about a hugging emoji" },
+
+    // Can be a string or array of strings]
+    const stories = [
+      "This is a story about an orange cloud",
+      "This is a story about a llama",
+      "This is a story about a hugging emoji",
     ];
 
-    // Without `query` the model responds with embeddings for the contexts.
-    const embeddings = await env.AI.run("@cf/baai/bge-m3", { contexts });
+    const embeddings = await env.AI.run(
+      "@cf/baai/bge-m3",
+      {
+        text: stories,
+      }
+    );
 
     return Response.json(embeddings);
   },
@@ -78,10 +84,10 @@ export default {
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| text | one of (string or array of strings) | — | Required (bge-base/large/small, embeddinggemma, plamo, per their pages); also the field the qwen3-embedding-0.6b example sends. Not used for bge-m3 (use `contexts`). The text(s) to embed. |
+| text | one of (string or array of strings) | — | Required (bge-base/large/small, embeddinggemma, plamo, per their pages); also the field the qwen3-embedding-0.6b example sends. bge-m3 also accepts it (typed in `@cloudflare/workers-types`, see Notes). The text(s) to embed. |
 | pooling | string | mean | bge-base/large/small only. enum: mean, cls. `cls` pooling generates more accurate embeddings on larger inputs but is not compatible with embeddings generated with `mean` pooling. |
-| query | string | — | bge-m3 only, minLength 1. A query to perform against the provided contexts. If no query is provided the model responds with embeddings for contexts. |
-| contexts | array | — | bge-m3 only. Required. List of provided contexts; the index in this array matters, as the response refers to it. Item fields are not expanded in the source; the snippet above uses `{ text }` objects, as the bge-reranker-base example does. |
+| query | string | — | bge-m3 only (optional), minLength 1. A query to perform against the provided contexts. If no query is provided the model responds with embeddings for contexts. |
+| contexts | array | — | bge-m3 only. Required in the `query` / `contexts` form. List of provided contexts; the index in this array matters, as the response refers to it. Item fields are not expanded on the docs page; `@cloudflare/workers-types` types each item as `{ text?: string }`. |
 | truncate_inputs | boolean | false | bge-m3 only. When a context is too long, whether to error out or truncate it to fit. |
 | queries | one of | — | qwen3-embedding-0.6b. Not expanded in the source. |
 | documents | one of | — | qwen3-embedding-0.6b. Not expanded in the source. |
@@ -93,7 +99,7 @@ Output: `shape` (array) and `data` (array of embeddings, one per input). On plam
 
 ## Notes
 
-- Corrected from the official docs: the `@cf/baai/bge-m3` page's usage example sends `{ text: stories }`, while its Parameters section lists `query` and a required `contexts` array and no `text` field. The bge-m3 snippet above follows the documented parameters; the `contexts` item shape (`{ text }`) is not expanded in the source, so confirm it against the model's raw input schema ("API Schemas (Raw)" on the model page).
+- `@cf/baai/bge-m3` input: the docs page's Parameters section expands only the `query` / `contexts` variant, while its usage example sends `text`. `@cloudflare/workers-types` 5.20261103.1 (`Ai_Cf_Baai_Bge_M3_Input` in `index.d.ts`) types the input as a union of `{ query?: string; contexts: { text?: string }[]; truncate_inputs?: boolean }`, `{ text: string | string[]; truncate_inputs?: boolean }`, and `{ requests: (...)[] }`, so both the `text` example and the `contexts` form are valid.
 - `@cf/qwen/qwen3-embedding-0.6b` lists `queries`/`documents`/`text` as `one of` alternatives in its Parameters section and its example sends `text`; the bge-base snippet's `{ text }` shape therefore applies to it, but the `queries`/`documents` item shapes are not expanded in the source.
 - The bge-base snippet keeps a stray `]` in the comment `// Can be a string or array of strings]` exactly as the official page prints it.
 - Pages note that Workers AI also supports an OpenAI-compatible `/v1/embeddings` endpoint: [openai-compatibility.md](../workers-ai/openai-compatibility.md).
