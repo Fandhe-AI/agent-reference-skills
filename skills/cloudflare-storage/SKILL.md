@@ -1,8 +1,9 @@
 ---
 name: cloudflare-storage
 description: >
-  Cloudflare 開発者プラットフォームのストレージ (Workers KV / D1 SQLite) の
-  リファレンス。KVNamespace、D1Database prepare / batch / withSession、read replication、Time Travel。
+  Cloudflare 開発者プラットフォームのストレージ (Workers KV / D1 SQLite / R2 S3 互換) の
+  リファレンス。KVNamespace、D1Database prepare / batch / withSession、read replication、Time Travel、
+  R2Bucket multipart、S3 互換 API、presigned URL、event notifications。
   Wrangler は cloudflare-wrangler、Upstash Redis・Supabase とは別。
 user-invocable: false
 ---
@@ -97,13 +98,72 @@ skills/cloudflare-storage/
       faq.md
       glossary.md
       release-notes.md
+    r2/
+      README.md
+      overview.md
+      how-r2-works.md
+      get-started.md
+      get-started-cli.md
+      get-started-s3.md
+      get-started-workers-api.md
+      buckets-create.md
+      buckets-delete.md
+      buckets-bucket-locks.md
+      buckets-cors.md
+      buckets-data-access-logs.md
+      buckets-event-notifications.md
+      buckets-local-uploads.md
+      buckets-object-lifecycles.md
+      buckets-public-buckets.md
+      buckets-storage-classes.md
+      objects-overview.md
+      objects-upload.md
+      objects-download.md
+      objects-delete.md
+      api-overview.md
+      api-error-codes.md
+      api-tokens.md
+      s3-api-compatibility.md
+      s3-extensions.md
+      s3-presigned-urls.md
+      s3-temporary-credentials.md
+      workers-api-reference.md
+      workers-api-usage.md
+      workers-multipart-usage.md
+      data-migration-overview.md
+      data-migration-strategies.md
+      data-migration-sippy.md
+      data-migration-super-slurper.md
+      platform-audit-logs.md
+      platform-event-subscriptions.md
+      platform-limits.md
+      platform-metrics-analytics.md
+      platform-troubleshooting.md
+      platform-release-notes.md
+      reference-consistency.md
+      reference-data-location.md
+      reference-data-security.md
+      reference-durability.md
+      reference-snowflake-regions.md
+      reference-unicode-interoperability.md
+      wrangler-commands.md
+      pricing.md
+  scripts/
+    README.md
+    kv.md
+    d1.md
+    d1-migrations.md
+    d1-time-travel.md
+    r2.md
+    r2-s3-clients.md
+    hyperdrive.md
 ```
 
 ## 探索手順
 
 タスクから製品カテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（kv / d1）を探す
+1. 下記マッピング表でタスクに対応するカテゴリ（kv / d1 / r2 / scripts）を探す
 2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
@@ -121,3 +181,9 @@ skills/cloudflare-storage/
 | D1 の migrations・import / export・Time Travel を扱いたい | d1 | [references/d1/README.md](references/d1/README.md) |
 | D1 の read replication・リトライ・ローカル / リモート開発を設定したい | d1 | [references/d1/README.md](references/d1/README.md) |
 | D1 の制限・料金・遅いクエリ調査を確認したい | d1 | [references/d1/README.md](references/d1/README.md) |
+| R2 バケットの作成・CORS・lifecycle・公開設定・bucket locks を扱いたい | r2 | [references/r2/README.md](references/r2/README.md) |
+| R2Bucket の get / put / list / multipart など Workers API を調べたい | r2 | [references/r2/README.md](references/r2/README.md) |
+| R2 の S3 互換 API・presigned URL・一時認証情報・API トークンを扱いたい | r2 | [references/r2/README.md](references/r2/README.md) |
+| R2 event notifications・Sippy / Super Slurper によるデータ移行を知りたい | r2 | [references/r2/README.md](references/r2/README.md) |
+| R2 の制限・料金・整合性・耐久性を確認したい | r2 | [references/r2/README.md](references/r2/README.md) |
+| インストール・CLI コマンド（wrangler kv / d1 / r2 / hyperdrive、aws CLI、rclone）を知りたい | scripts | [scripts/README.md](scripts/README.md) |
