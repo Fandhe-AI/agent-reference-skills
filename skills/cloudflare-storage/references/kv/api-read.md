@@ -16,6 +16,8 @@ env.NAMESPACE.get(key);
 env.NAMESPACE.get(keys);
 ```
 
+Adapted (not in the official docs): the response is built with `Response.json(...)` instead of `new Response(<object>)`; see Notes.
+
 ```js
 export default {
 	async fetch(request, env, ctx) {

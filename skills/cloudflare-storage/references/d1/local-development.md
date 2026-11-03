@@ -64,6 +64,8 @@ console.log(results);
 
 Test with `unstable_dev()`:
 
+Adapted (not in the official docs): `expectedResults` is an object literal because `toMatchObject` requires an object; see Notes.
+
 ```ts
 import { unstable_dev } from "wrangler";
 import type { UnstableDevWorker } from "wrangler";
@@ -87,7 +89,12 @@ describe("Test D1 Worker endpoint", () => {
 
 	it("should return an array of users", async () => {
 		// Our expected results
-		const expectedResults = `{"results": [{"user_id": 1234, "email": "foo@example.com"},{"user_id": 6789, "email": "bar@example.com"}]}`;
+		const expectedResults = {
+				results: [
+					{ user_id: 1234, email: "foo@example.com" },
+					{ user_id: 6789, email: "bar@example.com" },
+				],
+			};
 		// Pass an optional URL to fetch to trigger any routing within your Worker
 		const resp = await worker.fetch("/api/users/?limit=2");
 		if (resp) {
@@ -104,7 +111,9 @@ describe("Test D1 Worker endpoint", () => {
 ## Notes
 
 - `wrangler dev` separates local and production (remote) data; a local session cannot access production data by default. Set `"remote": true` in the D1 binding configuration to use the remote database (changes against a remote database cannot be undone).
-- Pages: you can only develop against a local D1 database; remote D1 development with Pages is not possible.- Corrected from the official docs: the official page says that without `--local`, `wrangler d1 execute` runs against the remote database. Since `wrangler@3.33.0`, `d1 execute` and `d1 migrations apply` default to the local database (see Release notes); pass `--remote` to target the remote database.
+- Pages: you can only develop against a local D1 database; remote D1 development with Pages is not possible.
+- Corrected from the official docs: the official `unstable_dev` test assigns `expectedResults` a JSON string and passes it to `toMatchObject`, which requires an object; it is written as an object literal.
+- Corrected from the official docs: the official page says that without `--local`, `wrangler d1 execute` runs against the remote database. Since `wrangler@3.33.0`, `d1 execute` and `d1 migrations apply` default to the local database (see Release notes); pass `--remote` to target the remote database.
 - Persistence: in Wrangler v3+, data persists across `wrangler dev` runs (start with `DROP TABLE <tablename>` if you assume an empty database). Use `wrangler dev --persist-to=/path/to/file` for a specific location. Wrangler 2.x required `--persist`.
 - Run migrations locally in CI with `wrangler d1 migrations apply your-database --local`; set `preview_database_id` (e.g. `"local-test-db"`) for the local test database.
 - The `unstable_dev` example in the source uses `execSync` and `describe`/`expect` without importing them (test-framework globals; `execSync` from `node:child_process`), as written.

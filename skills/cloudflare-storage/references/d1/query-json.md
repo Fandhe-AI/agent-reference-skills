@@ -23,6 +23,8 @@ WHERE user_id = 'aba0e360-1e04-41b3-91a0-1f2263e1e0fb'
 
 Expand an array for `IN` queries from a Worker:
 
+Adapted (not in the official docs): placeholders are `?1` / `?2` so each bound value has its own parameter; see Notes.
+
 ```ts
 const stmt = context.env.DB
     .prepare("UPDATE users SET last_audited = ?1 WHERE id IN (SELECT value FROM json_each(?2))")
@@ -33,6 +35,8 @@ const resp = await stmt.bind(
 ```
 
 Generated column from JSON:
+
+Adapted (not in the official docs): a comma was added after `raw_data TEXT`; see Notes.
 
 ```sql
 CREATE TABLE some_table (
@@ -67,8 +71,9 @@ CREATE TABLE some_table (
 
 ## Notes
 
-- Placeholders: `json` can be a JSON object, array, string, number or null. `value` accepts string literals only and treats input as a string, even if well-formed JSON (except when nesting `json_*` functions, where the outer function interprets the inner return value as JSON). `path` uses path syntax: `$` top level, `$.key1.key2` nested, `$.key[2]` array index.
+- Placeholders: `json` can be a JSON object, array, string, number or null. `value` is any SQL value: SQL numbers and `NULL` map to the JSON number and `null`, while SQL `TEXT` is treated as a JSON string even if it is well-formed JSON (except when nesting `json_*` functions such as `json(...)`, where the outer function interprets the inner return value as JSON). `path` uses path syntax: `$` top level, `$.key1.key2` nested, `$.key[2]` array index.
 - JSON is stored as `TEXT`. A JSON null is D1 `NULL`; a number is `INTEGER` or `REAL`; `true`/`false` are `1`/`0`; objects and arrays are `TEXT`.
+- Corrected from the official docs: the official placeholder text says `value` accepts string literals only; SQL numbers and `NULL` are also valid and map to JSON types, and the real constraint is that SQL `TEXT` is treated as a JSON string unless wrapped with `json()`.
 - Non-JSON or invalid input (RFC 7159) returns a `malformed JSON` error, e.g. `SELECT json_extract('not valid JSON: just a string', '$')` fails with `ERROR 9015: SQL engine error: query error: Error code 1: SQL error or missing database (malformed JSON)`.
 - Parsing JSON in D1 reduces round-trips (no read, parse, write back).
 - Generated columns over JSON can be indexed; index frequently filtered JSON paths for performance.

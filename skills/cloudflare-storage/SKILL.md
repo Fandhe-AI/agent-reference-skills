@@ -3,7 +3,7 @@ name: cloudflare-storage
 description: >
   Cloudflare 開発者プラットフォームのストレージ (Workers KV / D1 SQLite) の
   リファレンス。KVNamespace、D1Database prepare / batch / withSession、read replication、Time Travel。
-  ランタイムは cloudflare-workers、Wrangler は cloudflare-wrangler、Upstash Redis・Supabase とは別。
+  Upstash Redis・Supabase とは別。
 user-invocable: false
 ---
 

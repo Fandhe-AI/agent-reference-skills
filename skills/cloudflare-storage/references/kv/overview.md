@@ -59,6 +59,8 @@ Wrangler configuration:
 
 Access from an external application with the REST API:
 
+Adapted (not in the official docs): URLs are double-quoted with `${var}` expansion and the PUT uses `-F` for the multipart body; see Notes.
+
 ```plaintext
 curl "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${NAMESPACE_ID}/values/${KEY_NAME}" \
 		-X PUT \

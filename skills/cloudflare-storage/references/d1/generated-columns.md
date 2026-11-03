@@ -52,11 +52,11 @@ Syntax: `column_name AS <expr>` or `column_name GENERATED ALWAYS AS <function> [
 ## Notes
 
 - Can be defined in `CREATE TABLE` or via `ALTER TABLE`; can have indexes defined on them.
-- Definitions cannot be modified directly: use `ALTER TABLE table_name REMOVE COLUMN` then `ADD COLUMN`, or `RENAME COLUMN current_name TO new_name` before adding a new definition.
+- Definitions cannot be modified directly: use `ALTER TABLE table_name DROP COLUMN column_name` then `ADD COLUMN`, or `RENAME COLUMN current_name TO new_name` before adding a new definition.
 - Tables must have at least one non-generated column.
 - Expressions may only reference other columns in the same row and only deterministic functions (no `random()`, sub-queries or aggregates).
 - Columns added via `ALTER TABLE ... ADD COLUMN` must be `VIRTUAL`; you cannot add a `STORED` column to an existing table.
-- The source writes `ALTER TABLE table_name REMOVE COLUMN` (not a standard SQLite keyword form); verify the exact statement supported by D1 before relying on it.
+- Corrected from the official docs: the source writes `ALTER TABLE table_name REMOVE COLUMN`, which is not valid SQLite syntax; the statement is `ALTER TABLE table_name DROP COLUMN column_name`.
 
 ## Related
 

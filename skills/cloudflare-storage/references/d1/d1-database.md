@@ -81,6 +81,8 @@ batch_result = await self.env.DB.batch([
 - Parameters: `statements`: `Array`, an array of `D1PreparedStatement`s.
 - Returns: `results`: `Array`, an array of `D1Result` objects, each at the array position of its originating statement.
 
+Adapted (not in the official docs): the official example reads `stmt[1].results`; the result is read from `batchResult`; see Notes.
+
 ```js
 console.log(batchResult[1].results);
 ```
@@ -147,6 +149,8 @@ const session = env.DB.withSession("<parameter>");
 ### `D1DatabaseSession.getBookmark`
 
 Retrieves the latest `bookmark` from the D1 Session. Parameters: none. Returns `String | null`: a bookmark identifying the latest version of the database seen by the last query executed within the Session; `null` if no query is executed within a Session.
+
+Adapted (not in the official docs): `getBookmark()` returns the bookmark directly, not an object; see Notes.
 
 ```js
 const session = env.DB.withSession("first-primary");

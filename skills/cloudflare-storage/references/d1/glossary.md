@@ -8,6 +8,8 @@ Definitions of terms used across the D1 documentation.
 
 ## Signature / Usage
 
+Adapted (not in the official docs): `getBookmark()` is not destructured and a query is run first; see Notes.
+
 ```ts
 // bookmark and session terms in code
 const session = env.DB.withSession("first-primary");

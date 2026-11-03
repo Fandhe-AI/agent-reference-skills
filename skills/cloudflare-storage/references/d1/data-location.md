@@ -15,9 +15,11 @@ npx wrangler@latest d1 create db-with-jurisdiction --jurisdiction=eu
 
 Create with a jurisdiction via REST API:
 
+Adapted (not in the official docs): `$TOKEN` replaces the official `$TOKENn` typo; see Notes.
+
 ```curl
 curl -X POST "https://api.cloudflare.com/client/v4/accounts/<account_id>/d1/database" \
-     -H "Authorization: Bearer $TOKENn" \
+     -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      --data '{"name": "db-with-jurisdiction", "jurisdiction": "eu" }'
 ```
@@ -52,7 +54,7 @@ Available location hints:
 - Location hints are not supported for South America (`sam`), Africa (`afr`), and the Middle East (`me`); D1 databases do not run there.
 - With read replication enabled, D1 creates a read replica in every available region, including the primary's region. If a jurisdiction is configured, read replicas are only created within it.
 - The dashboard offers equivalents (Create Database > Data location / Location).
-- The docs' REST example uses `$TOKENn` (typo for `$TOKEN`) as written.
+- Corrected from the official docs: the REST example uses `$TOKENn`, a typo that expands an unset variable; it is written as `$TOKEN`.
 
 ## Related
 

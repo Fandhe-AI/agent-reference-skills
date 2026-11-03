@@ -54,6 +54,8 @@ The promise resolves with an object that looks like:
 
 List by prefix:
 
+Adapted (not in the official docs): `Response.json(value.keys)` replaces `new Response(value.keys)`; see Notes.
+
 ```js
 export default {
   async fetch(request, env, ctx) {

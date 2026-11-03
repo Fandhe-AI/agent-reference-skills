@@ -11,7 +11,6 @@ D1 exposes analytics for billing metrics (rows read, rows written, total storage
 Dashboard path: Billing > Billable Usage (daily or month-to-date charts). Programmatic access uses the GraphQL Analytics API (see Metrics and analytics).
 
 Adapted (not in the official docs): the query below is adapted from https://developers.cloudflare.com/d1/observability/metrics-analytics/ by selecting the billing fields `rowsRead` and `rowsWritten`; the Billing page itself shows no code.
-
 ```graphql
 query D1ObservabilitySampleQuery3(
 	$accountTag: string!

@@ -130,12 +130,14 @@ query Viewer(
 
 Variables:
 
+Adapted (not in the official docs): variable keys are `start` / `end` to match the `$start` / `$end` declarations in the query; see Notes.
+
 ```json
 {
 	"accountTag": "<YOUR_ACCOUNT_ID>",
 	"namespaceId": "<YOUR_KV_NAMESPACE_ID>",
-	"date_geq": "2024-07-15",
-	"date_leq": "2024-07-30"
+	"start": "2024-07-15",
+	"end": "2024-07-30"
 }
 ```
 
@@ -150,6 +152,7 @@ Variables:
 
 - Metrics can be queried (and are retained) for the past 31 days.
 - Per-namespace metrics in the dashboard: **Workers KV** > select a namespace > **Metrics** tab (defaults to the last 24 hours).
+- Corrected from the official docs: the official variables JSON uses the keys `date_geq` / `date_leq`, but the query declares `$start` / `$end`; GraphQL variable names must match the declarations, so the keys are `start` / `end`.
 - The `accountTag` filter with your Cloudflare Account ID is required. The GraphQL API supports introspection.
 
 ## Related
