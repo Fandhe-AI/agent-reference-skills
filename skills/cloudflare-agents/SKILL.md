@@ -3,7 +3,7 @@ name: cloudflare-agents
 description: >
   Cloudflare Agents SDK (agents パッケージ、Durable Objects 上のエージェント) の
   リファレンス。Agent class、state / setState、this.sql、schedule、@callable RPC、routeAgentRequest、
-  useAgent / AgentClient、AIChatAgent。
+  useAgent / AgentClient、AIChatAgent、human-in-the-loop。
   OpenAI Agents SDK (openai-agents)・Claude Agent SDK (anthropic-agent-sdk) とは別、MCP 仕様は mcp-spec。
 user-invocable: false
 ---
@@ -66,13 +66,48 @@ skills/cloudflare-agents/
       voice.md
       webhooks.md
       websockets.md
+    runtime/
+      README.md
+      build-a-capability.md
+      capabilities.md
+      custom-routing.md
+      diagnostics-channels.md
+      get-current-agent.md
+      http-sse.md
+      job-queue.md
+      lifecycle-api.md
+      lifecycle.md
+      mcp-client-manager.md
+      overview.md
+      routing-authentication.md
+      routing-options.md
+      routing.md
+      scheduler.md
+      sessions.md
+      state.md
+      streams.md
+      tracing.md
+      websockets.md
+    concepts/
+      README.md
+      agent-skills.md
+      agentic-patterns.md
+      calling-llms.md
+      conversation-state-and-memory.md
+      getting-started.md
+      human-in-the-loop.md
+      limits.md
+      long-running-agents.md
+      tools.md
+      what-are-agents.md
+      workflows.md
 ```
 
 ## 探索手順
 
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-1. 下記マッピング表でタスクに対応するカテゴリ（agent-class）を探す
+1. 下記マッピング表でタスクに対応するカテゴリ（agent-class / runtime / concepts）を探す
 2. そのカテゴリの `references/{category}/README.md`を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
@@ -86,3 +121,11 @@ skills/cloudflare-agents/
 | チャットエージェント（AIChatAgent）・useAgent / AgentClient・WebSocket クライアントを実装したい | agent-class | [references/agent-class/README.md](references/agent-class/README.md) |
 | email・voice・webhooks・push notifications・Workflows 連携を組み込みたい | agent-class | [references/agent-class/README.md](references/agent-class/README.md) |
 | sub-agents・retries・durable execution・queue tasks を扱いたい | agent-class | [references/agent-class/README.md](references/agent-class/README.md) |
+| routeAgentRequest・ルーティングオプション・認証を設定したい | runtime | [references/runtime/README.md](references/runtime/README.md) |
+| Lifecycle・Scheduler・Sessions・streams・tracing・diagnostics channels を調べたい | runtime | [references/runtime/README.md](references/runtime/README.md) |
+| 既存 Durable Object に capability を追加したい（build-a-capability・get-current-agent） | runtime | [references/runtime/README.md](references/runtime/README.md) |
+| MCPClientManager でランタイムから MCP サーバーへ接続したい | runtime | [references/runtime/README.md](references/runtime/README.md) |
+| エージェントの定義・4 要素・クイックスタートを知りたい | concepts | [references/concepts/README.md](references/concepts/README.md) |
+| agentic patterns・long-running agents・human-in-the-loop・Workflows の考え方を知りたい | concepts | [references/concepts/README.md](references/concepts/README.md) |
+| 同時実行・ストレージ・計算時間の制限を確認したい | concepts | [references/concepts/README.md](references/concepts/README.md) |
+| 会話メモリ（Session memory API・compaction）を理解したい | concepts | [references/concepts/README.md](references/concepts/README.md) |
