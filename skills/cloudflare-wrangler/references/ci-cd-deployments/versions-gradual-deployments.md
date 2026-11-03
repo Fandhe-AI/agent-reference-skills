@@ -20,10 +20,12 @@ npx wrangler versions deploy
 
 Follow the prompts to choose percentages; run `wrangler versions deploy` again and set the new version to 100% to finish. Test the split:
 
+Adapted (not in the official docs): the URL is quoted; see Notes.
+
 ```bash
 for j in {1..10}
 do
-    curl -s https://$WORKER_NAME.$SUBDOMAIN.workers.dev
+    curl -s "https://${WORKER_NAME}.${SUBDOMAIN}.workers.dev"
 done
 ```
 
@@ -67,6 +69,7 @@ Durable Object version assignment example (Version A currently deployed, gradual
 
 ## Notes
 
+- Adapted from the official docs: the test-loop URL is quoted as `"https://${WORKER_NAME}.${SUBDOMAIN}.workers.dev"` so variable values cannot be word-split or glob-expanded.
 - Dashboard: Worker > **Edit code** > down arrow next to **Deploy** > **Save** creates a version; **Deployments** > **Promote deployment** creates the split.
 - Version skew: by default each request is routed independently, so consecutive requests (reloads, asset fetches) may hit different versions; use version affinity to pin. Between Workers via service bindings, use version overrides to pin the downstream Worker.
 - Observability: `ScriptVersion` in Logpush; Version metadata binding exposes version ID/tag at runtime.

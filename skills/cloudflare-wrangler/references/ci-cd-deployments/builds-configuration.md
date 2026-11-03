@@ -10,7 +10,7 @@ Build, deploy, and Preview commands, root directory, API token, build variables,
 
 On push, Workers Builds runs: (1) optional **Build command**, (2) **Deploy command** (default `npx wrangler deploy`). Preview builds run the **Preview command** instead (default `npx wrangler preview`). Settings live under **Settings** > **Build**; saved changes apply to the *next* build, and a retried build uses the settings in effect at retry time.
 
-Build-only variables via the Wrangler file `[vars]` (text and JSON):
+Runtime variables via the Wrangler file `vars` / `[vars]` (text and JSON). These are deployed with the Worker and available at runtime; they are not build-only. Build-only variables and secrets are set under **Settings** > **Build** > **Build variables and secrets**.
 
 ```jsonc
 {
@@ -106,6 +106,7 @@ Build cache — frameworks:
 ## Notes
 
 - Corrected from the official docs: the `WORKERS_CI_BRANCH` placeholder is missing its closing `>` on the official page; it is added here.
+- Corrected from the official docs: the official page introduces the Wrangler `vars` example as environment variables for builds. Wrangler `vars` are runtime variables deployed with the Worker (visible in the Worker's `env`); the **Build variables and secrets** setting above is the build-only (not available at runtime) mechanism. Do not put build-only values in `vars`.
 - Workers Builds does not honor [Custom Builds](../configuration/custom-builds.md) settings in the Wrangler configuration file.
 - Changing the Preview command to `npx wrangler versions upload` creates a Worker version and Version URL instead of a Preview (no branch-isolated resources).
 - If the repository has no Wrangler configuration, the deploy command triggers automatic project configuration and opens a pull request (see `builds-overview.md`).

@@ -8,12 +8,16 @@ Deploy Workers from GitHub Actions using the official `cloudflare/wrangler-actio
 
 ## Signature / Usage
 
+Adapted (not in the official docs): added a least-privilege `permissions:` block; see Notes.
+
 ```yaml
 name: Deploy Worker
 on:
   push:
     branches:
       - main
+permissions:
+  contents: read
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -44,6 +48,8 @@ Create the API token: dashboard **Account API tokens** > **Create Token** > unde
 
 ## Notes
 
+- Adapted from the official docs: the workflow gains `permissions: contents: read` to limit the default `GITHUB_TOKEN`. It triggers only on pushes to `main`, so secrets are not exposed to fork pull requests; do not switch it to `pull_request_target`.
+- Pin `uses:` to a full commit SHA (e.g. `actions/checkout@<sha> # v6`) before use; tags are mutable. The tags shown (`@v6`, `@v4`) match the official page and no SHA is given there.
 - GitHub Actions syntax itself: see the github-docs skill.
 - External CI/CD is recommended when you use self-hosted GitHub/GitLab or a Git provider other than Artifacts, GitHub, or GitLab; otherwise Workers Builds is the integrated option.
 - CI is non-interactive, so Wrangler cannot use `wrangler login`; it requires an API token and account ID.

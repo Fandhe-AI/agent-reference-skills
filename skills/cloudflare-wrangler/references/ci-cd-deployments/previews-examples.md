@@ -103,6 +103,8 @@ npx wrangler preview --name "$BRANCH_NAME" --json
 
 ## Notes
 
+- Pin every `uses:` (`actions/checkout@v4`, `actions/upload-artifact@v4`) to a full commit SHA (e.g. `actions/checkout@<sha> # v4`) before use; tags are mutable. The workflow already sets `permissions:` (`contents: read`, `pull-requests: write`) as in the official page.
+- Fork-PR exposure: the `pull_request` workflow passes `CLOUDFLARE_API_TOKEN` to `npx wrangler preview`, which runs code from the PR. Forked PRs do not receive secrets by default; never switch to `pull_request_target`, and keep a same-repository guard such as `if: github.event.pull_request.head.repo.full_name == github.repository` on the jobs so fork PRs never receive secrets.
 - GitHub Actions syntax itself: see the github-docs skill.
 - Workers Builds: enable Preview Builds and confirm the Preview command is `npx wrangler preview`; it comments the Preview URL on GitHub/GitLab PRs.
 - The API token needs permission to edit Workers Scripts and the resources used by the Preview. Repository secrets are unavailable to forked PRs by default; before exposing credentials, verify `github.event.pull_request.head.repo.full_name == github.repository`.
