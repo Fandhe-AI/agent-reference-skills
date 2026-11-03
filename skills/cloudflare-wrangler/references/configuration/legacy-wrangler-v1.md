@@ -8,20 +8,9 @@ Summary of the archived Wrangler v1 documentation (install, authentication, conf
 
 ## Signature / Usage
 
-```jsonc
-{
-	"$schema": "./node_modules/wrangler/config-schema.json",
-	"name": "your-worker",
-	"type": "javascript",
-	"account_id": "your-account-id",
-	"workers_dev": true,
-	"zone_id": "your-zone-id",
-	"routes": ["example.com/*"]
-}
-```
+Adapted (not in the official docs): the official page's JSONC block and the `$schema` line are removed because Wrangler v1 only reads `wrangler.toml`; see Notes.
 
 ```toml
-"$schema" = "./node_modules/wrangler/config-schema.json"
 name = "your-worker"
 type = "javascript"
 account_id = "your-account-id"
@@ -55,6 +44,7 @@ v1 commands: `generate`, `init`, `build`, `login`, `logout`, `config`, `publish`
 
 ## Notes
 
+- Adapted from the official docs: the official v1 configuration page shows a `jsonc` block plus a `toml` block, both starting with a `$schema` entry pointing at `./node_modules/wrangler/config-schema.json`. That JSONC block is an artifact of the docs site's auto-expanded `<WranglerConfig>` component. Wrangler v1 (`@cloudflare/wrangler`, installed globally) reads only `wrangler.toml`; JSON/JSONC configuration support starts at Wrangler v3.91.0 (see [overview.md](./overview.md)), and `node_modules/wrangler/config-schema.json` does not exist for a v1 install. This page therefore keeps only the TOML example, without `$schema`.
 - Install (v1): `npm i @cloudflare/wrangler -g` or `cargo install wrangler` (with `--features sys-openssl` to use system OpenSSL); update with `npm update -g @cloudflare/wrangler` or `cargo install wrangler --force`.
 - Authentication (v1): `login`, `config` (email + API key), `whoami`; or env vars `CF_ACCOUNT_ID` + `CF_API_TOKEN` (or `CF_EMAIL` + `CF_API_KEY`), optional `CF_ZONE_ID`. These `CF_*` variables are deprecated in current Wrangler (use `CLOUDFLARE_*`).
 - Wrangler v1 shipped `webpack@4`; default config is `{ target: "webworker", entry: "./index.js" }` with `entry` taken from `main` in `package.json`; a custom file is set via `webpack_config` (always keep `target: "webworker"`).

@@ -68,6 +68,7 @@ command = "npm run build"
 
 ## Notes
 
+- The `jsonc` variant in step 5 comes from the docs site's auto-expanded `<WranglerConfig>` component. Wrangler v2 itself reads only `wrangler.toml` (JSON/JSONC support starts at Wrangler v3.91.0, see [overview.md](./overview.md)); if you stay on `wrangler@2`, use the TOML block.
 - Adapted from the official docs: the official page runs `npm install -g wrangler`, which installs Wrangler v4 today; `wrangler@2` pins the v1 to v2 target of this guide. To move to the current release afterwards see [migration-v3-to-v4.md](./migration-v3-to-v4.md).
 - Example v2 warnings from `wrangler dev`: ignored `type`; deprecations for `zone_id` and `build.upload.format`; error when `route` is not a string or `{ pattern, zone_id | zone_name }`.
 - Full v1 vs v2 differences: see [deprecations.md](./deprecations.md). Archived Wrangler v1 docs: see [legacy-wrangler-v1.md](./legacy-wrangler-v1.md).

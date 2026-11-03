@@ -110,7 +110,7 @@ Running `wrangler dev -e staging` (or `CLOUDFLARE_ENV=staging vite dev`) runs th
 
 These bindings are recommended to have `remote: true` (they rely on Cloudflare's network or have complex backends not fully simulated locally).
 
-Browser Run (no current local simulation):
+Browser Run (the official text says there is no current local simulation; see Notes for the conflict with the bindings matrix):
 
 ```jsonc
 {
@@ -334,6 +334,7 @@ All Worker code is uploaded to a temporary preview environment on Cloudflare, an
 
 ## Notes
 
+- Browser Run conflict inside the official docs: this page (https://developers.cloudflare.com/workers/local-development/) says "There is no current local simulation for Browser Run" and recommends `remote: true`, while the bindings matrix (https://developers.cloudflare.com/workers/local-development/bindings-per-env/, see [bindings-per-env.md](./bindings-per-env.md)) marks Browser Run with both a local simulation and a remote binding connection. The twins carry no dates, so which is newer cannot be determined. Practical rule: set `remote: true` on the `browser` binding for real headless-browser behavior (works under both readings); without it Wrangler issues a warning.
 - Miniflare is not a hardened sandbox. Do not run untrusted or potentially malicious Worker code directly on your machine; run the whole development process inside a secure sandbox such as a virtual machine. This applies to `wrangler dev`, `vite dev`, `vite preview`, direct Miniflare use, and Miniflare-based testing tools.
 - `remote: true` changes which resource your code accesses, but your Worker code still executes locally. Legacy `wrangler dev --remote` executes your code on Cloudflare.
 - Data modification: writes, deletes, and updates on remote bindings affect actual data (preview or production).

@@ -80,6 +80,7 @@ Supported only in `wrangler dev --remote` — there is no Vite plugin equivalent
 
 ## Notes
 
+- Browser Run conflict inside the official docs: this matrix marks Browser Run as supporting local simulations, but the local development guide (https://developers.cloudflare.com/workers/local-development/, see [overview.md](./overview.md)) states "There is no current local simulation for Browser Run". The twins carry no dates, so which is newer cannot be determined. Practical rule: set `remote: true` on the `browser` binding for real headless-browser behavior; without it Wrangler issues a warning.
 - Footnote 1 (the source table links the marker to a page-level footnote; rendered here as a plain superscript): for Durable Objects and Workflows, see "Using remote resources with Durable Objects and Workflows" in `overview.md` for recommended workarounds.
 
 ## Related
