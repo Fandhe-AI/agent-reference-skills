@@ -68,7 +68,7 @@ Selective Worker-first routing:
 }
 ```
 
-Adapted (not in the official docs): the redirect response sets `status: 302`; see Notes.
+Adapted (not in the official docs): the redirect response sets `status: 302`, and a pathname check forwards every other request to `ASSETS`; see Notes.
 
 ```ts
 import { WorkerEntrypoint } from "cloudflare:workers";
@@ -76,8 +76,11 @@ import { WorkerEntrypoint } from "cloudflare:workers";
 export default class extends WorkerEntrypoint<Env> {
 	async fetch(request: Request) {
 		// The only thing this Worker script does is handle an OAuth callback.
-		// All other requests either serve an asset that matches or serve the index.html fallback, without ever hitting this code.
+		// Other requests (for example non-navigation requests that match no asset) can still reach this code, so pass them on to the assets.
 		const url = new URL(request.url);
+		if (url.pathname !== "/oauth/callback") {
+			return this.env.ASSETS.fetch(request);
+		}
 		const code = url.searchParams.get("code");
 		const state = url.searchParams.get("state");
 
@@ -109,6 +112,7 @@ export default class extends WorkerEntrypoint<Env> {
 - Smart Placement with `run_worker_first`: placement may not be optimized because the entire Worker script is placed as a single unit rather than split edge-first vs smart-placed (a limitation Cloudflare says it is working to resolve).
 - Cloudflare Access: when a Worker has static assets, the internal assets router does not pass `ctx.access` to the user Worker. Access still protects the Worker and its assets. See https://developers.cloudflare.com/workers/configuration/cloudflare-access/#ctxaccess-limitations.
 - Corrected from the official docs: the OAuth callback example sets a `Location` header on a `new Response(null, ...)` without a status, which returns `200` and does not redirect; `status: 302` was added.
+- Corrected from the official docs: the selective example's comment says all other requests never hit the Worker. With a Worker script, requests that match no asset (for example non-navigation requests, which skip the `index.html` fallback) are still invoked on the Worker, so the example checks `url.pathname` and returns `this.env.ASSETS.fetch(request)` for everything except `/oauth/callback`.
 - The OAuth callback example passes the `state` query parameter to `exchangeCodeForToken` without comparing it to a value stored before the redirect. In real code, generate `state` per login, store it (for example in a short-lived cookie), and reject the callback if it does not match.
 - In the examples, `checkIfRequestIsAuthenticated`, `exchangeCodeForToken` and `storeTokenAndGenerateSession` are placeholders and are not defined by the docs.
 
