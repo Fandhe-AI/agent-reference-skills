@@ -32,7 +32,7 @@ try {
 - Code updates are released globally and eventually consistent: a request can reach the latest Worker, which calls an object still on an earlier version. A `deferred` strategy lets an active object run a previous version until it hibernates or hits `max_delay`; gradual deployments can extend the window, and deploying several versions before hibernation can skip intermediate versions. Keep Worker/object APIs forward and backward compatible.
 - `wrangler tail` logs for requests upgraded to WebSockets are delayed until the WebSocket closes; do not attach it to a Worker with heavy traffic.
 - Workers editor (dashboard): an object can only be reached by a preview request if the previewed Worker both exports the class and binds to it.
-- `wrangler dev` can read Durable Object storage but writes are kept in memory and do not affect persistent data, unless the binding sets `script_name` explicitly, in which case writes persist and Wrangler warns.
+- Local development: current `wrangler dev` (local mode) persists Durable Object storage, like other local bindings, in `.wrangler/state` by default (`--persist-to` changes the path; see local-data in the cloudflare-wrangler skill). The upstream page's older statement, that `wrangler dev` writes are kept in memory and only persist with an explicit `script_name` (with a Wrangler warning), describes legacy remote-preview behaviour and should not be relied on for local development.
 - Local alarms: alarm methods may fail after a hot reload; restart `wrangler dev` after editing code when using alarms. `wrangler` details are in the cloudflare-wrangler skill.
 
 ## Related

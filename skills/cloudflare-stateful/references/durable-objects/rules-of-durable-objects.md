@@ -240,7 +240,7 @@ export class ChatRoom extends DurableObject {
 
 Alarm that avoids exhausting retries:
 
-Adapted (not in the official docs): the official example persists `gameActive = false` before `calculateFinalScores()`, so a retry exits early and the work is lost; completion is now recorded only after it succeeds, and the 24-hour alarm performs cleanup. See Notes.
+Adapted (not in the official docs): the official example persists `gameActive = false` before `calculateFinalScores()`, so a retry exits early and the work is lost; completion is now recorded only after it succeeds, and an explicit `phase` / `cleanupAt` pair keeps a duplicate end-of-game alarm from running the 24-hour cleanup early. See Notes.
 
 ```js
 import { DurableObject } from "cloudflare:workers";
@@ -248,7 +248,7 @@ import { DurableObject } from "cloudflare:workers";
 export class GameMatch extends DurableObject {
 	async startGame(durationMs = 60000) {
 		await this.ctx.storage.put("gameStarted", Date.now());
-		await this.ctx.storage.put("gameActive", true);
+		await this.ctx.storage.put("phase", "active");
 
 		// Schedule the game to end after the duration
 		await this.ctx.storage.setAlarm(Date.now() + durationMs);
@@ -256,20 +256,27 @@ export class GameMatch extends DurableObject {
 
 	// Called when the alarm fires
 	async alarm(alarmInfo) {
-		const gameEnded = await this.ctx.storage.get("gameEnded");
-		if (gameEnded) {
-			// The end-of-game work already succeeded; this is the 24-hour cleanup alarm
-			await this.ctx.storage.deleteAll();
+		const phase = await this.ctx.storage.get("phase");
+
+		if (phase === "ended") {
+			// End-of-game work already succeeded. A duplicate or retried end-of-game alarm
+			// also lands here, so only clean up once the stored deadline has passed.
+			const cleanupAt = await this.ctx.storage.get("cleanupAt");
+			if (cleanupAt !== undefined && Date.now() >= cleanupAt) {
+				await this.ctx.storage.deleteAll();
+			} else {
+				// Too early: keep the cleanup alarm in place
+				await this.ctx.storage.setAlarm(cleanupAt ?? Date.now() + 24 * 60 * 60 * 1000);
+			}
 			return;
 		}
 
-		const isActive = await this.ctx.storage.get("gameActive");
-		if (!isActive) {
-			return; // Game was never started
+		if (phase !== "active") {
+			return; // Game was never started (or already cleaned up)
 		}
 
-		// Calculate final scores, notify players, etc.
-		// gameActive stays true until this succeeds, so a retry (or a re-scheduled alarm) runs it again.
+		// Calculate final scores, notify players, etc. (should be idempotent)
+		// phase stays "active" until this succeeds, so a retry (or a re-scheduled alarm) runs it again.
 		try {
 			await this.calculateFinalScores();
 		} catch (err) {
@@ -282,12 +289,13 @@ export class GameMatch extends DurableObject {
 			throw err;
 		}
 
-		// Only now record completion, in one atomic multi-key write
-		await this.ctx.storage.put({ gameActive: false, gameEnded: Date.now() });
+		// Only now record completion and the cleanup deadline, in one atomic multi-key write
+		const cleanupAt = Date.now() + 24 * 60 * 60 * 1000;
+		await this.ctx.storage.put({ phase: "ended", cleanupAt });
 
 		// Schedule the next alarm only if there's more work to do
 		// In this case, schedule cleanup in 24 hours
-		await this.ctx.storage.setAlarm(Date.now() + 24 * 60 * 60 * 1000);
+		await this.ctx.storage.setAlarm(cleanupAt);
 	}
 
 	async calculateFinalScores() {
@@ -354,7 +362,7 @@ export default defineConfig({
 - Sharding arithmetic: `Required DOs = (Total requests/second) / (Requests per DO capacity)`. Example from the page: 50,000 players x 10 updates/s = 500,000 req/s, needing 500-1,000 session objects.
 - Use `getByName()` / `idFromName()` for deterministic routing; creating a stub does not instantiate the object, it is activated when a method is called. Use `newUniqueId()` only when you will store the mapping externally. Use child objects for hierarchical entities so listing only wakes the parent.
 - Location hints are suggestions, not guarantees; see the data-location page.
-- Corrected from the official docs: the alarm example saved `gameActive = false` before `calculateFinalScores()`, so a retry or re-scheduled alarm returned early and lost the scoring/notification work. Completion is now saved only after the work succeeds, and the 24-hour alarm branches on `gameEnded` to clean up. Because alarms are at-least-once, the end-of-game work should itself be idempotent.
+- Corrected from the official docs: the alarm example saved `gameActive = false` before `calculateFinalScores()`, so a retry or re-scheduled alarm returned early and lost the scoring/notification work. Completion is now saved only after the work succeeds, as `phase: "ended"` plus a `cleanupAt` deadline; `alarm()` deletes data only when `phase === "ended"` and `Date.now() >= cleanupAt`, otherwise it re-arms the alarm for `cleanupAt`, so a duplicate or retried end-of-game alarm never cleans up early. Because alarms are at-least-once, the end-of-game work should itself be idempotent.
 - Corrected from the official docs: the transfer example claimed coalesced writes are atomic, but a later statement throwing does not undo earlier ones. The three statements run inside `ctx.storage.transactionSync()`, which rolls back on exception (callback must be synchronous).
 - Adapted from the official docs: the migration steps run in `transactionSync()` so a non-idempotent step (`ALTER TABLE ... ADD COLUMN`) and its marker row cannot be split by a failure.
 - Corrected from the official docs: the seat-booking example never created its `bookings` table; the "write progress as you go" example used `forEach(async ...)` (not awaited/ordered). The page's seat-booking TypeScript and several other TypeScript variants have broken indentation in the source; the JavaScript variants are reproduced.

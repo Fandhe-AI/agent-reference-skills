@@ -24,24 +24,28 @@ export class AgentServer extends DurableObject {
   async alarm() {
     const now = Date.now();
     const events = await this.ctx.storage.list({ prefix: "event:" });
-    let nextAlarm = null;
 
+    // processEvent() awaits external I/O, so scheduleEvent() can run in between.
+    // Only touch the keys handled here; never rewrite state from this stale snapshot.
     for (const [key, event] of events) {
       if (event.runAt <= now) {
         await this.processEvent(event);
         if (event.repeatMs) {
-          event.runAt = now + event.repeatMs;
-          await this.ctx.storage.put(key, event);
+          await this.ctx.storage.put(key, { ...event, runAt: now + event.repeatMs });
         } else {
           await this.ctx.storage.delete(key);
         }
       }
-      // Track the next event time
-      if (event.runAt > now && (!nextAlarm || event.runAt < nextAlarm)) {
-        nextAlarm = event.runAt;
-      }
     }
 
+    // Re-read after processing so events added meanwhile are included.
+    // No await between this list() and setAlarm() other than storage ops, so
+    // scheduleEvent() writes are either visible here or lower the alarm itself afterwards.
+    const remaining = await this.ctx.storage.list({ prefix: "event:" });
+    let nextAlarm = null;
+    for (const event of remaining.values()) {
+      if (!nextAlarm || event.runAt < nextAlarm) nextAlarm = event.runAt;
+    }
     if (nextAlarm) await this.ctx.storage.setAlarm(nextAlarm);
   }
 
@@ -124,6 +128,7 @@ class MyDurableObject extends DurableObject {
 - If you call `setAlarm` in the constructor, first check whether an alarm is already set: after inactivity the constructor runs before the `alarm()` handler and could interfere with the pending alarm.
 - If an unexpected error terminates the object, `alarm()` may be re-instantiated on another machine and run from the beginning after a short delay.
 - Alarms vs Cron Triggers: alarms are scheduled programmatically from within an object and each object can have one; a Worker can have up to three Cron Triggers, configured through the dashboard or API. Cron Triggers are documented in cloudflare-workers.
+- Adapted (not in the official docs): the first example's `alarm()` no longer computes `nextAlarm` from the initial `list()` snapshot. `processEvent()` awaits external I/O, during which `scheduleEvent()` can add events; the handler now updates only the keys it processed and re-lists after processing to choose the next alarm, so new nearer events are not pushed back.
 - Corrected from the official docs: `fetch()` in the example returned nothing (a `Response` is required) and `setAlarm` was not awaited; the retry-log message used a double-quoted string so `${alarmInfo?.retryCount}` was printed literally.
 
 ## Related
