@@ -116,6 +116,8 @@ const stub = env.GAME_SESSION.get(id, { locationHint: region });
 
 Manual schema-version tracking in the constructor (`PRAGMA user_version` is not supported):
 
+Adapted (not in the official docs): each migration step is wrapped in `transactionSync()` so the schema change and its version marker commit together. See Notes.
+
 ```js
 import { DurableObject } from "cloudflare:workers";
 
@@ -145,25 +147,31 @@ export class ChatRoom extends DurableObject {
 			)
 			.one().version;
 
+		// Each migration and its version marker commit together, so a failure never
+		// leaves a non-idempotent step (such as ALTER TABLE) applied without its marker.
 		if (version < 1) {
-			this.ctx.storage.sql.exec(`
-				CREATE TABLE IF NOT EXISTS messages (
-					id INTEGER PRIMARY KEY AUTOINCREMENT,
-					user_id TEXT NOT NULL,
-					content TEXT NOT NULL,
-					created_at INTEGER NOT NULL
-				);
-				CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages(created_at);
-				INSERT INTO _sql_schema_migrations (id) VALUES (1);
-			`);
+			this.ctx.storage.transactionSync(() => {
+				this.ctx.storage.sql.exec(`
+					CREATE TABLE IF NOT EXISTS messages (
+						id INTEGER PRIMARY KEY AUTOINCREMENT,
+						user_id TEXT NOT NULL,
+						content TEXT NOT NULL,
+						created_at INTEGER NOT NULL
+					);
+					CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages(created_at);
+					INSERT INTO _sql_schema_migrations (id) VALUES (1);
+				`);
+			});
 		}
 
 		if (version < 2) {
 			// Future migration: add a new column
-			this.ctx.storage.sql.exec(`
-				ALTER TABLE messages ADD COLUMN edited_at INTEGER;
-				INSERT INTO _sql_schema_migrations (id) VALUES (2);
-			`);
+			this.ctx.storage.transactionSync(() => {
+				this.ctx.storage.sql.exec(`
+					ALTER TABLE messages ADD COLUMN edited_at INTEGER;
+					INSERT INTO _sql_schema_migrations (id) VALUES (2);
+				`);
+			});
 		}
 	}
 }
@@ -171,30 +179,33 @@ export class ChatRoom extends DurableObject {
 
 Gates and write coalescing (all three writes commit atomically):
 
+Adapted (not in the official docs): the official example relies on implicit coalescing, which does not roll back earlier statements if a later one throws; the writes are wrapped in `transactionSync()`. See Notes.
+
 ```js
 import { DurableObject } from "cloudflare:workers";
 
 export class Account extends DurableObject {
 	async transfer(fromId, toId, amount) {
-		// ✅ Good: These writes are coalesced into one atomic transaction
-		this.ctx.storage.sql.exec(
-			"UPDATE accounts SET balance = balance - ? WHERE id = ?",
-			amount,
-			fromId,
-		);
-		this.ctx.storage.sql.exec(
-			"UPDATE accounts SET balance = balance + ? WHERE id = ?",
-			amount,
-			toId,
-		);
-		this.ctx.storage.sql.exec(
-			"INSERT INTO transfers (from_id, to_id, amount, created_at) VALUES (?, ?, ?, ?)",
-			fromId,
-			toId,
-			amount,
-			Date.now(),
-		);
-		// All three writes commit together atomically
+		// ✅ Good: one explicit synchronous transaction; any exception rolls back all three writes
+		this.ctx.storage.transactionSync(() => {
+			this.ctx.storage.sql.exec(
+				"UPDATE accounts SET balance = balance - ? WHERE id = ?",
+				amount,
+				fromId,
+			);
+			this.ctx.storage.sql.exec(
+				"UPDATE accounts SET balance = balance + ? WHERE id = ?",
+				amount,
+				toId,
+			);
+			this.ctx.storage.sql.exec(
+				"INSERT INTO transfers (from_id, to_id, amount, created_at) VALUES (?, ?, ?, ?)",
+				fromId,
+				toId,
+				amount,
+				Date.now(),
+			);
+		});
 	}
 }
 ```
@@ -229,6 +240,8 @@ export class ChatRoom extends DurableObject {
 
 Alarm that avoids exhausting retries:
 
+Adapted (not in the official docs): the official example persists `gameActive = false` before `calculateFinalScores()`, so a retry exits early and the work is lost; completion is now recorded only after it succeeds, and the 24-hour alarm performs cleanup. See Notes.
+
 ```js
 import { DurableObject } from "cloudflare:workers";
 
@@ -243,17 +256,20 @@ export class GameMatch extends DurableObject {
 
 	// Called when the alarm fires
 	async alarm(alarmInfo) {
-		const isActive = await this.ctx.storage.get("gameActive");
-
-		if (!isActive) {
-			return; // Game was already ended
+		const gameEnded = await this.ctx.storage.get("gameEnded");
+		if (gameEnded) {
+			// The end-of-game work already succeeded; this is the 24-hour cleanup alarm
+			await this.ctx.storage.deleteAll();
+			return;
 		}
 
-		// End the game
-		await this.ctx.storage.put("gameActive", false);
-		await this.ctx.storage.put("gameEnded", Date.now());
+		const isActive = await this.ctx.storage.get("gameActive");
+		if (!isActive) {
+			return; // Game was never started
+		}
 
 		// Calculate final scores, notify players, etc.
+		// gameActive stays true until this succeeds, so a retry (or a re-scheduled alarm) runs it again.
 		try {
 			await this.calculateFinalScores();
 		} catch (err) {
@@ -265,6 +281,9 @@ export class GameMatch extends DurableObject {
 			}
 			throw err;
 		}
+
+		// Only now record completion, in one atomic multi-key write
+		await this.ctx.storage.put({ gameActive: false, gameEnded: Date.now() });
 
 		// Schedule the next alarm only if there's more work to do
 		// In this case, schedule cleanup in 24 hours
@@ -335,6 +354,9 @@ export default defineConfig({
 - Sharding arithmetic: `Required DOs = (Total requests/second) / (Requests per DO capacity)`. Example from the page: 50,000 players x 10 updates/s = 500,000 req/s, needing 500-1,000 session objects.
 - Use `getByName()` / `idFromName()` for deterministic routing; creating a stub does not instantiate the object, it is activated when a method is called. Use `newUniqueId()` only when you will store the mapping externally. Use child objects for hierarchical entities so listing only wakes the parent.
 - Location hints are suggestions, not guarantees; see the data-location page.
+- Corrected from the official docs: the alarm example saved `gameActive = false` before `calculateFinalScores()`, so a retry or re-scheduled alarm returned early and lost the scoring/notification work. Completion is now saved only after the work succeeds, and the 24-hour alarm branches on `gameEnded` to clean up. Because alarms are at-least-once, the end-of-game work should itself be idempotent.
+- Corrected from the official docs: the transfer example claimed coalesced writes are atomic, but a later statement throwing does not undo earlier ones. The three statements run inside `ctx.storage.transactionSync()`, which rolls back on exception (callback must be synchronous).
+- Adapted from the official docs: the migration steps run in `transactionSync()` so a non-idempotent step (`ALTER TABLE ... ADD COLUMN`) and its marker row cannot be split by a failure.
 - Corrected from the official docs: the seat-booking example never created its `bookings` table; the "write progress as you go" example used `forEach(async ...)` (not awaited/ordered). The page's seat-booking TypeScript and several other TypeScript variants have broken indentation in the source; the JavaScript variants are reproduced.
 - Not reproduced here (identity from unverified input): the official WebSocket chat example takes `userId`/`username` from query parameters and trusts them. Derive identities from verified authentication in the Worker instead; see the WebSockets page for the attachments pattern.
 - SQLite is recommended; `PRAGMA user_version` is not supported, so track schema versions with a table. Libraries named in the source: `durable-utils` (`SQLSchemaMigrations`) and `@cloudflare/actors` storage utilities.

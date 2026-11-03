@@ -23,6 +23,8 @@ export class Counter extends DurableObject {
 }
 ```
 
+Adapted (not in the official docs): the official constructor uses a plain `INSERT`, which violates the PRIMARY KEY on every restart after the first; `INSERT OR IGNORE` makes the seed idempotent. See Notes.
+
 ```ts
 import { DurableObject } from "cloudflare:workers";
 
@@ -37,7 +39,7 @@ export class MyDurableObject extends DurableObject {
         artistid    INTEGER PRIMARY KEY,
         artistname  TEXT
       );
-      INSERT INTO artist (artistid, artistname) VALUES
+      INSERT OR IGNORE INTO artist (artistid, artistname) VALUES
         (123, 'Alice'),
         (456, 'Bob'),
         (789, 'Charlie');
@@ -186,6 +188,7 @@ ctx.abort();
 
 ## Notes
 
+- Corrected from the official docs: the constructor seed used a plain `INSERT` with fixed primary keys, which throws a constraint error on every constructor run after the first (storage persists across hibernation/restarts); `INSERT OR IGNORE` makes it idempotent. Constructor and migration SQL must always be safe to re-run.
 - Corrected from the official docs: `.columnNames.toArray()` is wrong because `columnNames` is a `string[]`; the PITR snippet used undefined `DAYS_MS` (constant is `DAY_MS`) and did not await the Promise-returning bookmark methods.
 - SQL API is only allowed on SQLite-backed classes and errors on KV-backed classes. KV API methods on SQLite-backed objects store data in a hidden table `__cf_kv`, visible when listing tables but not accessible via SQL.
 - Cloudflare recommends SQLite for all new namespaces; creating new KV-backed namespaces is no longer supported for accounts without an existing KV-backed namespace. SQLite storage billing was scheduled for January 2026 (target January 7, 2026, no earlier); see the pricing page.

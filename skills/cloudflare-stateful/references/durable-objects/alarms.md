@@ -105,9 +105,9 @@ class MyDurableObject extends DurableObject {
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `getAlarm()` | `number \| null` | — | Currently set alarm time in ms since the UNIX epoch, or `null`. If called while an `alarm()` is running, returns `null` unless `setAlarm` has been called since the handler started. |
-| `setAlarm(scheduledTimeMs)` | `number` → `void` | — | Sets the alarm time (ms since epoch). Overrides an existing alarm. |
-| `deleteAlarm()` | `void` | — | Unsets the alarm. Inside `alarm()` it may prevent retries on a best-effort basis, not guaranteed. |
+| `getAlarm()` | `Promise<number \| null>` | — | Currently set alarm time in ms since the UNIX epoch, or `null`. If called while an `alarm()` is running, returns `null` unless `setAlarm` has been called since the handler started. |
+| `setAlarm(scheduledTimeMs)` | `Promise<void>` (takes `number`) | — | Sets the alarm time (ms since epoch). Overrides an existing alarm. |
+| `deleteAlarm()` | `Promise<void>` | — | Unsets the alarm. Inside `alarm()` it may prevent retries on a best-effort basis, not guaranteed. |
 
 ### Handler
 
