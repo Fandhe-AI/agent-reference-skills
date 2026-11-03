@@ -27,6 +27,8 @@ Add a proxied wildcard DNS record on the preview domain (for example `AAAA` name
 
 Run `npx wrangler types`, then route hostnames in the Worker:
 
+Adapted (not in the official docs): the forwarded request drops the visitor's `Cookie`, `Authorization` and `Proxy-Authorization` headers so credentials never reach code in the sandbox; see Notes.
+
 ```ts
 export default {
 	async fetch(request: Request, env: Env): Promise<Response> {
@@ -45,7 +47,13 @@ export default {
 			// Forward with the `http:` scheme, because `getTcpPort().fetch()`
 			// does not accept `https:` URLs
 			url.protocol = "http:";
-			return env.MY_CONTAINER.getByName(name).fetch(new Request(url, request));
+			const forwarded = new Request(url, request);
+			// Authenticate the visitor first (if required), then strip credentials
+			// so the untrusted preview server never receives them.
+			forwarded.headers.delete("Cookie");
+			forwarded.headers.delete("Authorization");
+			forwarded.headers.delete("Proxy-Authorization");
+			return env.MY_CONTAINER.getByName(name).fetch(forwarded);
 		}
 
 		// Other hostnames manage previews.
@@ -73,6 +81,7 @@ Under a subdomain of a domain you already use (record `*.previews` instead of `*
 
 ## Notes
 
+- Adapted from the official docs: the official route forwards `new Request(url, request)`, which copies the visitor's `Cookie` and `Authorization` headers to the preview server. The three `headers.delete()` lines were added so credentials (including those added by an authentication layer, such as an access-gateway token header, which you should delete the same way) are never exposed to untrusted code in the sandbox, matching the preview-a-web-application page.
 - Prerequisites: a Durable Object whose `fetch()` forwards to a web server in its container (see the preview-a-web-application page) and a Cloudflare-managed domain your application does not use. `routes` turns off the `workers.dev` URL, so `workers_dev: true` keeps it for requests that manage previews.
 - Every request to a preview hostname goes to the preview: keep management routes (such as stopping a preview) on other hostnames so preview code cannot call them from its own origin. Authenticate visitors on the preview hostname and do not send your application session cookie there.
 - Universal SSL covers a domain and first-level subdomains only (`ada.example-previews.com`); `ada.previews.example.com` needs Total TLS or an advanced certificate or browsers show certificate errors. A wildcard record named `*.previews` matches only preview hostnames; `*` also matches every other unused subdomain.
