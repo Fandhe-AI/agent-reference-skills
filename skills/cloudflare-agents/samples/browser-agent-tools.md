@@ -8,8 +8,10 @@ Chat agent that gives the LLM `browser_search` and `browser_execute` tools, with
 
 ## Signature / Usage
 
+Adapted (not in the official docs): `@cloudflare/ai-chat` (imported by `src/server.ts`) and its peer `@ai-sdk/provider` are added to the install command. See Notes.
+
 ```sh
-npm install agents @cloudflare/codemode ai zod
+npm install agents @cloudflare/ai-chat @cloudflare/codemode ai @ai-sdk/provider zod
 ```
 
 Adapted (not in the official docs): the page's Browser Run / Worker Loader bindings merged with `name`, `main`, `compatibility_date`, the `ai` binding, and a Durable Object binding so the `src/server.ts` below is deployable. See Notes.
@@ -134,6 +136,7 @@ async () => {
 
 ## Notes
 
+- Adapted from the official docs: the page's install command omits `@cloudflare/ai-chat`, which the example imports for `AIChatAgent`; it is added together with `@ai-sdk/provider`, matching the install commands of the other `AIChatAgent` examples.
 - `createBrowserTools` options: `browser` (Browser Run binding) or `cdpUrl` (custom CDP endpoint, takes priority), `loader` (Worker Loader binding, required), `cdpHeaders`, `timeout` (default 30000 ms). `@cloudflare/codemode` is a required peer dependency.
 - Deployed protections: generated code runs in an isolated Worker per execution with `fetch` / `connect` blocked in the sandbox; the CDP WebSocket stays in the host Worker; responses are truncated to roughly 6,000 tokens. These apply on Cloudflare, not under local Miniflare, which is not a security boundary for untrusted code.
 - Each `browser_execute` call opens a fresh session with no cookies or login state, so multi-step flows must fit in one code block. Page content is untrusted input and can carry prompt injection; the browser can reach any public URL the model chooses, so do not give it credentials.

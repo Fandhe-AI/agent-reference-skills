@@ -10,7 +10,7 @@ Actions are server-side tools with idempotency, human approvals, authorization, 
 
 `refund()` and the other side-effect helpers in this page are your own functions.
 
-Adapted (not in the official docs): the refund requires human approval and is keyed by order id so a retry cannot refund twice. See Notes.
+Adapted (not in the official docs): the refund requires human approval, is keyed by order id, and passes the same key to the payment provider so a lost response followed by a retry cannot refund twice. See Notes.
 
 ```ts
 import { Think, action } from "@cloudflare/think";
@@ -30,7 +30,10 @@ export class Support extends Think<Env> {
 				approvalRisk: "high",
 				idempotencyKey: ({ input }) => `refund:${input.orderId}`,
 				execute: async ({ orderId, amountCents }, ctx) => {
-					const result = await refund(orderId, amountCents);
+					// Same stable key at the provider: a replay after a lost response is deduplicated there.
+					const result = await refund(orderId, amountCents, {
+						idempotencyKey: `refund:${orderId}`,
+					});
 					return { refundId: result.id, status: result.status };
 				},
 			}),
@@ -91,7 +94,7 @@ type ActionContext = {
 - A stale `pending` row (isolate died mid-execute) is reclaimed and re-run once older than `actionLedgerPendingRetryLeaseMs`, only for actions with an explicit `idempotencyKey`; otherwise an `ActionPendingError` result is returned.
 - Approval kinds: approval-gated (default when `approval` is set) pauses the stream with an `approval-requested` part and continues inline after the client responds; `durable-pause` parks the action and ends the turn, resumable later without a live socket. `durable-pause` requires an `approval` policy. Both carry an `ActionApprovalDescriptor` (`{ requestId, toolCallId, action, summary, input, permissions, risk, kind }`). `approveExecution`/`rejectExecution` are idempotent (second call is a no-op).
 - Authorization is opt-in; by default every turn is fully authorized. Actions requiring a permission outside the granted set are denied with `ActionAuthorizationError` and `execute` never runs.
-- Adapted from the official docs: the `refundOrder` and `chargeInvoice` examples move money without `approval`, and the intro `refundOrder` also has no `idempotencyKey`, so a retried turn could refund twice. Payment actions now set `approval: true`, and refunds use `idempotencyKey: refund:<orderId>`. The `deleteAccountAction` comment that suggested `({ input }) => input.userId !== currentUser` (skipping approval for self-deletion) is removed: destructive actions always require approval.
+- Adapted from the official docs: the `refundOrder` and `chargeInvoice` examples move money without `approval`, and the intro `refundOrder` also has no `idempotencyKey`, so a retried turn could refund twice. Payment actions now set `approval: true`, and refunds use `idempotencyKey: refund:<orderId>`. The ledger alone does not prevent a double payment: a timed-out `execute` deletes its row and a stale `pending` row is re-run, so if the provider succeeded but the response was lost, `execute` runs again. The examples therefore pass the same stable key to the payment provider (`refund()` / `charge()` are your own helpers; forward the key to the provider's idempotency mechanism, e.g. an `Idempotency-Key` header) and, when the outcome is unknown, reconcile with the provider by that key before reporting failure. The `deleteAccountAction` comment that suggested `({ input }) => input.userId !== currentUser` (skipping approval for self-deletion) is removed: destructive actions always require approval.
 - Corrected from the official docs: the `deployAction` example sets `kind: "durable-pause"` without an `approval` policy, which this page states `durable-pause` requires; `approval: true` is added.
 - Adapted from the official docs: in the approval and durable-pause examples the action constants were named `deleteAccount` and `deploy`, the same names as the helper functions they call, so the helper would have resolved to the action object itself; they are renamed `deleteAccountAction` and `deployAction`. In the `authorizeTurn` example the source granted `admin` based on `ctx.body?.role`, i.e. a client-supplied, unauthenticated field; the example now reads a role your code set from verified authentication and defaults to a narrow grant.
 - Reply attachments never change the tool output the model sees; they are JSON-normalized, deep-copied on read, capped per turn, discarded if the recording `execute` fails, not re-fired on ledger replay, and `attachReply()` is a no-op from `permissions`/`approval`/`idempotencyKey` callbacks. Built-in `ReplyAttachment` covers `email_draft`, `card`, `voice_note`; any `{ type: string; ... }` is allowed. Override `renderAttachment()` (see think-channels-messengers.md) to deliver them.
@@ -99,7 +102,7 @@ type ActionContext = {
 
 ### Idempotent action
 
-Adapted (not in the official docs): the charge also requires approval. See Notes.
+Adapted (not in the official docs): the charge also requires approval and passes the same idempotency key to the payment provider. See Notes.
 
 ```ts
 const chargeInvoice = action({
@@ -108,7 +111,8 @@ const chargeInvoice = action({
 	approval: true, // a payment: always ask a human
 	// Use a stable domain identifier — never a timestamp, request id, or random value.
 	idempotencyKey: ({ input }) => `invoice:${input.invoiceId}`,
-	execute: async ({ invoiceId }) => charge(invoiceId),
+	execute: async ({ invoiceId }) =>
+		charge(invoiceId, { idempotencyKey: `invoice:${invoiceId}` }),
 });
 ```
 
@@ -152,7 +156,7 @@ await agent.rejectExecution(executionId, "Not this release");
 
 ### Authorization
 
-Adapted (not in the official docs): the role comes from server-verified state rather than the client `ctx.body`, and the refund also requires approval and an idempotency key; see Notes.
+Adapted (not in the official docs): the role comes from server-verified state rather than the client `ctx.body`, and the refund also requires approval and an idempotency key that is passed to the payment provider; see Notes.
 
 ```ts
 const refundOrder = action({
@@ -161,7 +165,8 @@ const refundOrder = action({
 	permissions: ["billing:refund"], // or ({ input }) => [...]
 	approval: true,
 	idempotencyKey: ({ input }) => `refund:${input.orderId}`,
-	execute: async ({ orderId }) => refund(orderId),
+	execute: async ({ orderId }) =>
+		refund(orderId, { idempotencyKey: `refund:${orderId}` }),
 });
 
 export class Support extends Think<Env> {
