@@ -58,6 +58,8 @@ export default {
 
 When a `Promise` rejects and the rejection is unhandled, the async context propagates to the `'unhandledrejection'` event handler:
 
+Adapted (not in the official docs): the callback creates a separate, never-awaited rejected Promise instead of throwing synchronously, and still returns a Response; see Notes.
+
 ```js
 import { AsyncLocalStorage } from "node:async_hooks";
 
@@ -71,8 +73,9 @@ addEventListener("unhandledrejection", (event) => {
 export default {
 	async fetch(req) {
 		return asyncLocalStorage.run(idSeq++, () => {
-			// Cause an unhandled rejection!
-			throw new Error("boom");
+			// Cause an unhandled rejection: a rejected Promise that nothing awaits or catches.
+			Promise.reject(new Error("boom"));
+			return new Response("ok");
 		});
 	},
 };
@@ -175,6 +178,7 @@ console.log(myResource.doSomething()); // prints 123
 - An `AsyncResource` cannot be created with an explicitly identified trigger context; a new `AsyncResource` is always bound to the async context in which it was created.
 - Thenables (non-Promise objects with a `then()` method) are not fully supported; use `AsyncLocalStorage.snapshot()` to capture the context instead.
 - Corrected from the official docs: the first two `fetch` examples use `await` inside non-async arrow callbacks (a syntax error), so the callbacks are marked `async`; the first example also wraps the numeric store in `String(...)` for the `Response` body. The `MyResource.doSomething()` examples (snapshot and `AsyncResource`) did not `return` the result of `runInAsyncScope`, so `console.log(myResource.doSomething())` would print `undefined` rather than `123`; a `return` was added.
+- Adapted from the official docs: the official unhandled-rejection example `throw`s synchronously inside the `run()` callback, which propagates out of `run()` to the fetch handler as a handler failure rather than producing an unhandled Promise rejection. The example now creates a separate rejected Promise that is not awaited and returns a normal `Response`.
 - Enabling only this API: set the `nodejs_als` compatibility flag (see overview).
 
 ## Related

@@ -99,6 +99,8 @@ await channels.tracePromise(
 - Messages forwarded to a Tail Worker pass through the structured clone algorithm, so only cloneable values are supported.
 - Corrected from the official docs: the official `TracingChannel` example binds `const channels = tracingChannel(...)` but calls `channel.tracePromise(...)`, which refers to a different identifier (the `channel()` function). It now calls `channels.tracePromise(...)` and awaits the returned promise.
 
+- Adapted from the official docs: compatibility flag `diagnostics_channel_has_subscribers_getter` (default as of compatibility date 2026-05-19, requires `nodejs_compat`; `no_diagnostics_channel_has_subscribers_getter` disables) makes `Channel.hasSubscribers` and `TracingChannel.hasSubscribers` read-only boolean getters instead of methods called as `ch.hasSubscribers()`. Check the compatibility date before writing either form.
+
 ## Related
 
 - [Node.js compatibility](./overview.md)

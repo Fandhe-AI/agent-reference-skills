@@ -24,6 +24,7 @@ Snippet taken from https://developers.cloudflare.com/workers/runtime-apis/nodejs
   - It is not possible to manually enable or disable FIPS mode.
 - The Web Crypto API is also available in Workers and does not require the `nodejs_compat` compatibility flag.
 - `node:zlib` provides compression implemented using Gzip, Deflate/Inflate, and Brotli.
+- Adapted from the official docs: `node:zlib` is enabled by compatibility flag `nodejs_zlib` (`no_nodejs_zlib` disables), which is on by default with `nodejs_compat` from compatibility date 2024-09-23; for earlier dates enable `nodejs_zlib` explicitly.
 - Full APIs: https://nodejs.org/api/crypto.html and https://nodejs.org/api/zlib.html
 
 ## Related
