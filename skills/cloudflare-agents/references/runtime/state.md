@@ -45,6 +45,8 @@ export default {
 
 Know where a change came from:
 
+Adapted (not in the official docs): a client update replaces the whole state, so the validator now rejects any client change whose `lockedBy` differs from the stored value, including omitting or removing it; see Notes.
+
 ```ts
 import { DurableObject } from "cloudflare:workers";
 import { Lifecycle } from "agents/lifecycle";
@@ -56,8 +58,9 @@ export class DocAgent extends DurableObject<Env> {
 	readonly doc = new State<Doc>({
 		initialState: { title: "Untitled" },
 		validateStateChange: (next: Doc, source: StateChangeSource) => {
-			if (source !== "server" && next.lockedBy !== undefined) {
-				throw new Error("Only the server can lock a document");
+			// Clients may not set, change, or remove lockedBy (omitting it counts).
+			if (source !== "server" && next.lockedBy !== this.doc.get()?.lockedBy) {
+				throw new Error("Only the server can change the document lock");
 			}
 		},
 		onChanged: (state: Doc, source: StateChangeSource) => {
@@ -113,6 +116,7 @@ Methods:
 - When a client calls `setState()`, the change goes through `validateStateChange` with the connection as `source`; a rejected change is logged on the server and the client receives a generic error. `broadcastState(source)` skips `source`, which already has the value. Use readonly connections to refuse changes from some connections.
 - `connection.setState()` is different: it stores a value on one connection and never syncs.
 - Storage is the `cf_agents_state` table; every change rewrites the whole value, so keep large or relational data in your own tables.
+- Adapted from the official docs: the `DocAgent` validator only rejected clients that set `lockedBy`; because a client `setState()` replaces the whole value, a client that omitted `lockedBy` silently dropped a server-set lock. It now compares `next.lockedBy` with the current stored value (`this.doc.get()?.lockedBy`) for non-server sources.
 - The official page also shows a `PUT` handler that stores `await request.json()` straight into state; it is omitted here because it performs no validation or authentication. Validate with `validateStateChange` and authenticate in the Worker.
 - On the `Agent` class, `initialState`, `this.state`, `this.setState()`, `validateStateChange()`, and `onStateChanged()` use a wired `State` and `WebSockets`.
 

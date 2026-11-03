@@ -38,7 +38,7 @@ const response = await stub.fetch(request);
 
 Choose the object on the server:
 
-Adapted (not in the official docs): the official `getUserId()` trusted a client-supplied `x-user-id` header, so any caller could pick any user's object; this placeholder fails closed until you add real verification; see Notes.
+Adapted (not in the official docs): the official `getUserId()` trusted a client-supplied `x-user-id` header, so any caller could pick any user's object; this placeholder fails closed until you add real verification, and the `routeAgentRequest()` fallback now authenticates and requires the object name to equal the user ID via `onBeforeConnect` / `onBeforeRequest`; see Notes.
 
 ```ts
 import { routeAgentRequest } from "agents/routing";
@@ -59,9 +59,21 @@ export default {
 			return env.UserAgent.getByName(userId).fetch(request);
 		}
 
+		// Fail closed: every other request must be authenticated, and the
+		// object name in the URL must equal the authenticated user ID.
+		const check = async (req: Request, route: { name: string }) => {
+			const userId = await getUserId(req);
+			if (!userId) return new Response("Unauthorized", { status: 401 });
+			if (route.name !== userId) {
+				return new Response("Forbidden", { status: 403 });
+			}
+		};
+
 		return (
-			(await routeAgentRequest(request, env)) ??
-			new Response("Not found", { status: 404 })
+			(await routeAgentRequest(request, env, {
+				onBeforeConnect: check,
+				onBeforeRequest: check,
+			})) ?? new Response("Not found", { status: 404 })
 		);
 	},
 } satisfies ExportedHandler<Env>;
@@ -117,7 +129,7 @@ export default {
 
 ## Notes
 
-- Adapted from the official docs: the page read the user from `request.headers.get("x-user-id")`; replaced with a fail-closed verification placeholder.
+- Adapted from the official docs: the page read the user from `request.headers.get("x-user-id")`; replaced with a fail-closed verification placeholder. The fallback `routeAgentRequest(request, env)` also let any caller address `/agents/user-agent/<other-user>`; it now runs `getUserId()` in `onBeforeConnect` / `onBeforeRequest` and returns 401 (unauthenticated) or 403 (object name differs from the user ID). See Routing authentication for the hook contract.
 - A forwarded request starts a cold object, then reaches its capabilities and `onRequest()`. WebSocket upgrades work the same way, so the `WebSockets` capability accepts them.
 - The `props` routing option only works through `routeAgentRequest()`; for a forwarded request, send values with the request or call over RPC.
 - The `WebSockets` capability sends an identity frame on connect, so `agent.name` / `onIdentity` report the server-chosen name; `onIdentityChange` runs if the identity changes on reconnect. The frame includes the object's name; if the name is private, set `protocol: false` on `WebSockets` and send your own frames from `onConnect`.

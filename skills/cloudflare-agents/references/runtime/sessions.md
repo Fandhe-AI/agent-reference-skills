@@ -8,7 +8,7 @@ Experimental. `Sessions` from `agents/sessions` stores conversation history in t
 
 ## Signature / Usage
 
-Adapted (not in the official docs): the official handler appended the request body without checking it; this version validates the message shape and size first and treats client messages as `user` role only; see Notes.
+Adapted (not in the official docs): the official handler appended the request body without checking it; this version validates the message shape (each part checked) and a byte-capped body first and treats client messages as `user` role only; `countToolCalls()` below is also hardened; see Notes.
 
 ```ts
 import { DurableObject } from "cloudflare:workers";
@@ -16,6 +16,16 @@ import { Lifecycle } from "agents/lifecycle";
 import { Sessions, type SessionMessage } from "agents/sessions";
 
 const MAX_MESSAGE_BYTES = 64 * 1024;
+
+function isClientPart(value: unknown): boolean {
+	if (typeof value !== "object" || value === null) return false;
+	const p = value as Record<string, unknown>;
+	if (p.type === "text") return typeof p.text === "string";
+	if (p.type === "file") {
+		return typeof p.url === "string" && typeof p.mediaType === "string";
+	}
+	return false;
+}
 
 function isClientMessage(value: unknown): value is SessionMessage {
 	if (typeof value !== "object" || value === null) return false;
@@ -25,8 +35,40 @@ function isClientMessage(value: unknown): value is SessionMessage {
 		m.id.length > 0 &&
 		m.id.length <= 128 &&
 		m.role === "user" &&
-		Array.isArray(m.parts)
+		Array.isArray(m.parts) &&
+		m.parts.length > 0 &&
+		m.parts.every(isClientPart)
 	);
+}
+
+// Reads the body as bytes and gives up as soon as the cap is exceeded.
+async function readTextCapped(
+	request: Request,
+	maxBytes: number,
+): Promise<string | null> {
+	const declared = Number(request.headers.get("content-length"));
+	if (Number.isFinite(declared) && declared > maxBytes) return null;
+	if (!request.body) return "";
+	const reader = request.body.getReader();
+	const chunks: Uint8Array[] = [];
+	let total = 0;
+	for (;;) {
+		const { done, value } = await reader.read();
+		if (done) break;
+		total += value.byteLength;
+		if (total > maxBytes) {
+			await reader.cancel();
+			return null;
+		}
+		chunks.push(value);
+	}
+	const bytes = new Uint8Array(total);
+	let offset = 0;
+	for (const chunk of chunks) {
+		bytes.set(chunk, offset);
+		offset += chunk.byteLength;
+	}
+	return new TextDecoder().decode(bytes);
 }
 
 export class ConversationAgent extends DurableObject<Env> {
@@ -36,14 +78,17 @@ export class ConversationAgent extends DurableObject<Env> {
 
 	async onRequest(request: Request): Promise<Response> {
 		if (request.method === "POST") {
-			const text = await request.text();
+			const text = await readTextCapped(request, MAX_MESSAGE_BYTES);
+			if (text === null) {
+				return new Response("Payload too large", { status: 413 });
+			}
 			let message: unknown;
 			try {
 				message = JSON.parse(text);
 			} catch {
 				return new Response("Invalid JSON", { status: 400 });
 			}
-			if (text.length > MAX_MESSAGE_BYTES || !isClientMessage(message)) {
+			if (!isClientMessage(message)) {
 				return new Response("Invalid message", { status: 400 });
 			}
 			const result = await this.session.appendMessage(message, {
@@ -58,6 +103,8 @@ export class ConversationAgent extends DurableObject<Env> {
 ```
 
 Write, stream-read, branch, and search:
+
+Adapted (not in the official docs): `countToolCalls()` skips messages without a `parts` array and parts without a string `type`; see Notes.
 
 ```ts
 import type { Session, SessionMessage } from "agents/sessions";
@@ -75,8 +122,9 @@ async function saveUserMessage(session: Session, text: string) {
 async function countToolCalls(session: Session): Promise<number> {
 	let count = 0;
 	for await (const message of session.history()) {
-		count += message.parts.filter((part) =>
-			part.type.startsWith("tool-"),
+		if (!Array.isArray(message.parts)) continue;
+		count += message.parts.filter(
+			(part) => typeof part?.type === "string" && part.type.startsWith("tool-"),
 		).length;
 	}
 	return count;
@@ -193,7 +241,7 @@ Compaction and observation:
 ## Notes
 
 - `sessions.session()` without an ID returns the default session (ID is an empty string). Handles are cached. There is no list of sessions; keep your own directory.
-- Adapted from the official docs: the first example now validates the body (JSON parse, shape, size cap, `user` role only) before `appendMessage()`; the `user`-only restriction and the 64 KB cap are choices made here, not from the page. It also needs a caller check (authenticate in the Worker). Validate the message shape before appending. Pass `source: "client"` for client-originated messages so reserved metadata keys are stripped. `Sessions` does not limit message size; oversized messages are split across rows and can use a lot of storage, so check sizes first. Inline media is stored outside the message row; keep real files in R2 and put a reference in the message.
+- Adapted from the official docs: the first example now validates the body (byte-capped body read that aborts over 64 KB with 413 before `JSON.parse`, JSON parse, shape, each part checked as an object with `type: "text"` plus string `text` or `type: "file"` plus string `url` and `mediaType`, `user` role only; invalid input gets 400). The allowed client part types are a choice made here; widen them for your own client. `countToolCalls()` skips messages without a `parts` array and parts without a string `type` before `appendMessage()`; the `user`-only restriction and the 64 KB cap are choices made here, not from the page. It also needs a caller check (authenticate in the Worker). Validate the message shape before appending. Pass `source: "client"` for client-originated messages so reserved metadata keys are stripped. `Sessions` does not limit message size; oversized messages are split across rows and can use a lot of storage, so check sizes first. Inline media is stored outside the message row; keep real files in R2 and put a reference in the message.
 - Avoid `getHistory()` for an unbounded conversation (loads everything). Breaking out of `history()` early leaves older messages unread; `newestFirst: true` is the cheapest way to find something recent.
 - Branches: an append attaches to the latest message by default. Append `a2` with `parentId: "u1"` for an alternative reply; every read method accepts `leafId`.
 - Compaction stores a summary applied at read time; originals are not deleted. The first three messages and at least the last two are always kept, and a tool call is never separated from its result. If automatic compaction fails it logs and leaves the conversation unchanged.
