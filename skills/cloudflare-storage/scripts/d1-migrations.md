@@ -43,5 +43,5 @@ npx wrangler d1 migrations apply <DATABASE> --remote
 When a migration makes changes that would violate foreign key constraints, run this statement before them.
 
 ```sql
-PRAGMA defer_foreign_keys = true
+PRAGMA defer_foreign_keys = true;
 ```

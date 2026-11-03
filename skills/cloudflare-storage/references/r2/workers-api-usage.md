@@ -25,7 +25,7 @@ npx wrangler r2 bucket list
 }
 ```
 
-Adapted (not in the official docs): calls `authorizeRequest` (defined in the authorization block below) before the `switch`, returns 412 when a conditional `put()` returns `null`, and returns 206 with `Content-Range` / 304 / 412 for range and conditional GETs (`failedPreconditionStatus` evaluates conditions in RFC 9110 order); see Notes.
+Adapted (not in the official docs): calls `authorizeRequest` (defined in the authorization block below) before the `switch`, returns 412 when a conditional `put()` returns `null`, and returns 206 with `Content-Range` / 304 / 412 for range and conditional GETs (`failedPreconditionStatus` evaluates conditions in RFC 9110 order), and ignores `Range` when `If-Range` is present; see Notes.
 
 ```js
 // Decide 412 vs 304 for a GET whose R2 preconditions failed (RFC 9110 order):
@@ -88,9 +88,11 @@ export default {
         return new Response(`Put ${key} successfully!`);
       }
       case "GET": {
+        // R2 does not evaluate If-Range; when it is present, ignore Range
+        // (RFC 9110 allows this) and serve the full object with 200
         const object = await env.MY_BUCKET.get(key, {
           onlyIf: request.headers,
-          range: request.headers,
+          range: request.headers.has("If-Range") ? undefined : request.headers,
         });
 
         if (object === null) {
@@ -112,7 +114,11 @@ export default {
 
         // Range request: 206 with Content-Range
         let status = 200;
-        if (request.headers.has("Range") && object.range) {
+        if (
+          request.headers.has("Range") &&
+          !request.headers.has("If-Range") &&
+          object.range
+        ) {
           const r = object.range;
           const start =
             "suffix" in r ? object.size - r.suffix : (r.offset ?? 0);
@@ -176,6 +182,7 @@ curl https://your-worker.dev/cat-pic.jpg -X PUT --header "X-Custom-Auth-Key: ***
 - Adapted from the official docs: the official Worker example never calls `authorizeRequest`, so it serves the bucket unauthenticated. The `fetch` handler above calls it before the `switch` and returns 403 on denial (the authorization block must be included in the same Worker).
 - Corrected from the official docs: the official example returns "Put successfully" even when a conditional `put()` returned `null` (precondition failed, nothing stored); it now returns 412.
 - Corrected from the official docs: the official example returns 200 for range requests and 412 for every bodyless `get()` result. Range requests now return 206 with `Content-Range`. The 304/412 choice follows RFC 9110 evaluation order: failed `If-Match` / `If-Unmodified-Since` return 412 and take precedence; only failed `If-None-Match` / `If-Modified-Since` (GET/HEAD) return 304; any other bodyless result falls back to 412. A missing object is still 404.
+- Adapted from the official docs: R2 does not evaluate `If-Range`, so honouring `Range` with it present could return a 206 for a representation the client no longer holds. The handler ignores `Range` when `If-Range` is present (RFC 9110 lets a server ignore `Range`) and returns the full object with 200.
 - `wrangler dev` runs against local storage by default; set `"remote": true` on the R2 binding to use a real bucket.
 - A request body can only be read once; use `request.clone()` if `request.formData()` was already used. Workers have a 128 MB memory limit per Worker; prefer Streams for large files.
 - Adding the unauthenticated example code exposes the bucket publicly; define authorization in the Worker.
