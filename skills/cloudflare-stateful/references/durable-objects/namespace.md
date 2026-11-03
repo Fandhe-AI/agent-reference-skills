@@ -49,7 +49,7 @@ const euStub = subnamespace.getByName("foo");
 
 ## Notes
 
-- Creating an ID does not create the object; it is created lazily after a stub is created from the ID.
+- Corrected from the official docs (the source ties creation to making a stub): creating an ID or a stub does not create the object; it starts when the first request or RPC method call reaches it through the stub.
 - `newUniqueId` gives lower request latency at first use: for name-derived IDs the system must check that no instance was created elsewhere, which can take up to a few hundred milliseconds. After first use the location is cached around the world.
 - Idiomatic examples use `getByName`; `idFromName` + `get` are equivalent when you need the ID.
 - Location hints and jurisdictions are documented in the data-location page; `wrangler` binding configuration is in cloudflare-wrangler, and the Agents SDK built on Durable Objects is in cloudflare-agents.

@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/durable-objects/api/id/
 
 # DurableObjectId
 
-A `DurableObjectId` is a 64-digit hexadecimal identifier of a Durable Object. Not every 64-digit hex number is valid; IDs are constructed through `DurableObjectNamespace`. Creating an ID does not create the object; it is created lazily when a stub is made from the ID.
+A `DurableObjectId` is a 64-digit hexadecimal identifier of a Durable Object. Not every 64-digit hex number is valid; IDs are constructed through `DurableObjectNamespace`. Creating an ID or a stub does not create the object; it starts when the first request or RPC method call reaches it through the stub.
 
 ## Signature / Usage
 
@@ -58,6 +58,8 @@ console.assert(euId.jurisdiction === "eu", "jurisdiction matches namespace");
 | `jurisdiction` | `string \| undefined` | — | Jurisdiction the ID is restricted to (e.g. `"eu"`, `"fedramp"`). Also available as `ctx.id.jurisdiction`. |
 
 ## Notes
+
+- Corrected from the official docs: the page says the object is created lazily when a stub is made; getting a stub sends nothing, and the object starts on the first call through it (consistent with the lifecycle page).
 
 - Corrected from the official docs: the `toString`/`idFromString` snippet redeclared `const id`; the second declaration is now `restoredId`, and the assertion line was added to use it.
 - `ctx.id.name` is `undefined` when the caller used `idFromString()` (even if the ID came from `idFromName()`), when the name is longer than 1,024 bytes, or when the object was created with `newUniqueId()`.
