@@ -77,6 +77,8 @@ Run `uv run pywrangler dev`, then `curl http://localhost:8787/` returns `{"Hello
 
 `src/worker.py` with a catch-all route proxying to the assets binding:
 
+Adapted (not in the official docs): the JS `Response` body and headers are converted to Python types (`bytes`, `dict`) before building the FastAPI `Response`; see Notes.
+
 ```python
 from fastapi import FastAPI, Request
 from fastapi.responses import Response
@@ -96,10 +98,13 @@ async def frontend(path: str, request: Request):
     env = request.scope["env"]
     asset_url = f"https://assets.local/{path}"
     resp = await env.ASSETS.fetch(asset_url)
-    body = await resp.bytes()
-    return Response(content=body, status_code=resp.status, headers=resp.headers)
+    # resp is a JavaScript Response (JsProxy): convert body and headers to Python types.
+    body = bytes((await resp.bytes()).to_py())
+    headers = dict(resp.headers.entries())
+    return Response(content=body, status_code=resp.status, headers=headers)
 ```
 
+- Adapted from the official docs: `env.ASSETS.fetch()` returns a JavaScript `Response` (a Pyodide `JsProxy`). The official snippet passed `resp.headers` (a JS `Headers` object) straight to FastAPI's `Response`, which expects a Python mapping. The snippet now converts the body with `.to_py()` (wrapped in `bytes()`) and the headers with `dict(resp.headers.entries())`. See python-ffi.md and https://pyodide.org/en/stable/usage/type-conversions.html for JS-to-Python conversion.
 - Examples: `git clone https://github.com/cloudflare/python-workers-examples`, then `cd python-workers-examples/fastapi` and `uv run pywrangler dev`.
 
 ## Related

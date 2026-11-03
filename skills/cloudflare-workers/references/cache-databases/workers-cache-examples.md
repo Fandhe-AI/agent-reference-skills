@@ -27,7 +27,7 @@ Shared Wrangler configuration: disable caching on the gateway (default) entrypoi
 
 Cache authenticated responses (strip `Authorization` before forwarding):
 
-Adapted (not in the official docs): the gateway copies the cached response and sets `Cache-Control: private, no-store` on the outward response so shared proxies and browsers cannot reuse it without authentication; see Notes.
+Adapted (not in the official docs): `authenticate()` fails closed when `env.API_TOKEN` is unset or the header is malformed; the gateway copies the cached response and sets `Cache-Control: private, no-store` on the outward response so shared proxies and browsers cannot reuse it without authentication; see Notes.
 
 ```ts
 import { WorkerEntrypoint } from "cloudflare:workers";
@@ -72,9 +72,11 @@ export default {
 	},
 } satisfies ExportedHandler<Env>;
 
+// Fail closed: reject when API_TOKEN is not configured or the header is malformed.
 async function authenticate(request: Request, env: Env): Promise<boolean> {
-	const token = request.headers.get("Authorization")?.replace(/^Bearer\s+/, "");
-	return token === env.API_TOKEN;
+	if (!env.API_TOKEN) return false;
+	const match = /^Bearer\s+(\S+)$/.exec(request.headers.get("Authorization") ?? "");
+	return match !== null && match[1] === env.API_TOKEN;
 }
 
 async function loadExpensiveData(request: Request): Promise<unknown> {
@@ -85,7 +87,7 @@ async function loadExpensiveData(request: Request): Promise<unknown> {
 
 Per-user partitioning: pass `props` so the user ID becomes part of the key.
 
-Adapted (not in the official docs): `props` is supplied when the entrypoint binding is created (`ctx.exports.CachedAPI({ props })`), not as a `fetch()` option, and the user ID comes from a separate `authenticateUser()` helper returning `string | null` (the earlier `authenticate()` returns a boolean); see Notes. The gateway also copies the cached response and sets `Cache-Control: private, no-store` on the outward response.
+Adapted (not in the official docs): `props` is supplied when the entrypoint binding is created (`ctx.exports.CachedAPI({ props })`), not as a `fetch()` option, and the user ID comes from a separate `authenticateUser()` helper returning `string | null` (the earlier `authenticate()` returns a boolean) and failing closed when `env.API_TOKEN` is unset or the header is malformed; see Notes. The gateway also copies the cached response and sets `Cache-Control: private, no-store` on the outward response.
 
 ```ts
 export default {
@@ -115,15 +117,20 @@ export default {
 
 // Replace with real verification: return the user ID that the credential
 // verifiably belongs to, or null. Never take it from unverified input.
+// Fail closed: null when API_TOKEN is unset/empty or the header is not a
+// well-formed "Bearer <token>". "user-123" stands in for the user ID your
+// real verification (for example a JWT or session lookup) returns.
 async function authenticateUser(request: Request, env: Env): Promise<string | null> {
-	const token = request.headers.get("Authorization")?.replace(/^Bearer\s+/, "");
-	return token === env.API_TOKEN ? "user-123" : null;
+	if (!env.API_TOKEN) return null;
+	const match = /^Bearer\s+(\S+)$/.exec(request.headers.get("Authorization") ?? "");
+	if (match === null || match[1] !== env.API_TOKEN) return null;
+	return "user-123";
 }
 ```
 
 Cache an origin you do not control (overlay your own `Cache-Control`):
 
-Adapted (not in the official docs): the upstream URL is built from the fixed `ORIGIN` host with `pathname`/`search` assigned separately, and only an allowlist of non-credential headers is forwarded, so the shared cached response is never personalized; see Notes.
+Adapted (not in the official docs): the upstream URL is built from the fixed `ORIGIN` host with `pathname`/`search` assigned separately, and only an allowlist of non-credential headers is forwarded, so the shared cached response is never personalized; upstream `CDN-Cache-Control` / `Cloudflare-CDN-Cache-Control` are removed so the TTL override applies; see Notes.
 
 ```ts
 import { WorkerEntrypoint } from "cloudflare:workers";
@@ -166,6 +173,9 @@ export class CachedOrigin extends WorkerEntrypoint {
 		// whole point of the pattern: you decide how long Workers Caching
 		// stores this response, regardless of what the origin says.
 		const headers = new Headers(response.headers);
+		// Higher-precedence upstream headers would otherwise override the TTL below.
+		headers.delete("Cloudflare-CDN-Cache-Control");
+		headers.delete("CDN-Cache-Control");
 		headers.set("Cache-Control", "public, max-age=300");
 		headers.set("Cache-Tag", "origin:example");
 
@@ -200,6 +210,8 @@ export default {
 - Corrected from the official docs: the per-user snippet shows `ctx.exports.CachedAPI.fetch(forwarded, { props: { userId } })`, but `fetch()` takes no `props` option, so `this.ctx.props` would stay empty and users would share one cache entry. Props are set when creating the entrypoint binding: `ctx.exports.CachedAPI({ props: { userId } }).fetch(forwarded)` (see `handlers-context/context.md`).
 - Adapted from the official docs: the origin snippet originally resolved `new URL(url.pathname + url.search, ORIGIN)` (a pathname such as `//attacker.example/x` changes the host and leaks forwarded credentials) and forwarded all incoming headers (including `Authorization`, `Cookie`, `Host`) and cached the response for every caller. It now assigns `pathname`/`search` onto `new URL(ORIGIN)` and forwards only an allowlist of non-credential headers. If the origin needs credentials, bypass this cached entrypoint for those requests or partition by verified user via `ctx.props`.
 - Adapted from the official docs: the authenticated and per-user snippets originally returned the inner entrypoint's `Cache-Control: public, max-age=...` response straight to the client. After the gateway authenticates the caller, that header would let shared proxies and browsers reuse the response for unauthenticated or different users, so the gateway now copies the response (`new Response(cached.body, cached)`) and sets `Cache-Control: private, no-store` on the outward response. The inner `public` header still governs Workers Cache.
+- Adapted from the official docs: `authenticate()` and `authenticateUser()` originally compared `Authorization` (with an optional `Bearer` prefix stripped) to `env.API_TOKEN`, so an unset secret and a missing header (`undefined === undefined`) would authenticate every caller. They now fail closed: reject when `env.API_TOKEN` is unset or empty, and require a well-formed `Authorization: Bearer <token>` header. `"user-123"` is a placeholder for the verified user ID.
+- Adapted from the official docs: the origin snippet now also deletes `Cloudflare-CDN-Cache-Control` and `CDN-Cache-Control` before setting `Cache-Control`, because those upstream headers take precedence over `Cache-Control` (see workers-cache-configuration.md) and would otherwise defeat the TTL override.
 - Origin pattern extensions: per-path TTL and tags, per-user `ctx.props`, `stale-while-revalidate` for slow or flaky origins, targeted `ctx.cache.purge({ tags: [...] })` on webhooks.
 - The docs describe the composition as "four lenses" while the page contains five example sections (authenticated, per-user, `Accept-Encoding`, Durable Object, origin); the summary table lists four rows.
 

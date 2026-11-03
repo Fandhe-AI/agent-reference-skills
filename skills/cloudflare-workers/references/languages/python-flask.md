@@ -76,6 +76,8 @@ Run `uv run pywrangler dev`; `curl http://localhost:8787/` returns `{"message":"
 }
 ```
 
+Adapted (not in the official docs): the JS `Response` body and headers are converted to Python types (`bytes`, `dict`) before building the Flask `Response`; see Notes.
+
 ```python
 from flask import Flask, Response, request
 from pyodide.ffi import run_sync
@@ -92,16 +94,19 @@ def api_hello():
 def frontend(path=""):
     assets = request.environ["workers.env"].ASSETS
     asset_response = run_sync(assets.fetch(f"https://assets.local/{path}"))
-    body = run_sync(asset_response.bytes())
+    # asset_response is a JavaScript Response (JsProxy): convert body and headers.
+    body = bytes(run_sync(asset_response.bytes()).to_py())
+    headers = dict(asset_response.headers.entries())
     return Response(
         body,
         status=asset_response.status,
-        headers=asset_response.headers,
+        headers=headers,
     )
 
 Default = wsgi.entrypoint(app)
 ```
 
+- Adapted from the official docs: `assets.fetch()` returns a JavaScript `Response` (a Pyodide `JsProxy`). The official snippet passed the JS body and `headers` object directly to Flask's `Response`, which expects Python `bytes` and a Python mapping. The snippet now converts the body with `.to_py()` (wrapped in `bytes()`) and the headers with `dict(asset_response.headers.entries())`. See python-ffi.md and https://pyodide.org/en/stable/usage/type-conversions.html.
 - `run_sync` bridges the asynchronous asset operations into Flask's synchronous handler.
 - Example: clone `cloudflare/python-workers-examples` and see `flask-todo` (README for instructions).
 
