@@ -34,7 +34,7 @@ source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/sql/scan.rs
 //!
 //! 契約の詳細（`LIMIT` の意味・順序保証の有無・取得モードとの無関係性）は
 //! `docs/design/wide-retrieval-scan.md`（spec ビヘイビア ID は SQL-15・TASK-170 として
-//! 付与済み〔fandhe-db-spec#12〕。確定化は TASK-170 が担う。本モジュールは本リポの
+//! 付与済み〔spec 側の issue #12〕。確定化は TASK-170 が担う。本モジュールは本リポの
 //! 実装既定値として動作する）参照。`bound.order_by` が空の場合、順序は同一
 //! スナップショット内の redb 行テーブルの物理走査順（`(tenant_id, id)` 昇順）であり、
 //! `ORDER BY` 相当の意味的順序を持たない。

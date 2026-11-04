@@ -18,7 +18,7 @@ make setup   # サブモジュール → rustup → lefthook（git hooks）を�
 
 ## Notes
 
-- **位置づけ**: リポジトリ本体は公開。仕様・挙動定義は private リポジトリ `fandhe-db-spec`（`docs/spec` submodule）が source of truth。Web API・MCP サーバーはこのリポジトリのスコープ外。
+- **位置づけ**: リポジトリ本体は公開。仕様・挙動定義は private の spec リポジトリ（`docs/spec` submodule）が source of truth。Web API・MCP サーバーはこのリポジトリのスコープ外。
 - **ステータス**（README 記載時点）: 実装はロードマップ承認待ちで未着手。タスク定義は spec リポジトリの `05-tasks.md`（TASK-66〜TASK-165 の 100 タスク）、マイルストーンは `06-roadmap.md`（MS-1〜MS-6）で管理。ただし本スキルが参照した crate ソース（`fandhe-db-engine` / `fandhe-db-wire-server` 0.2.0）には TASK-66 以降の実装が多数存在しており、README のこの記載は公開時点のスナップショットである可能性がある。
 - **注意（`make setup` の内部動作）**: `rustup` が未導入の場合、`make setup` は内部で `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable` を実行する（`Makefile` の `rustup` ターゲット）。取得元スクリプトの内容を事前に確認せずに自動実行する経路のため、CI・自動化環境では rustup を公式手順（https://rustup.rs）で事前導入済みにしておくことを前提とし、`make setup` 実行時にこの curl|sh 経路を経由しないようにする。
 - **実装方針（要点）**:

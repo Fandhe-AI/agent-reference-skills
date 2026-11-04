@@ -86,7 +86,7 @@ Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'
 - メタの CSP では `frame-ancestors`・`report-uri`・`report-to`・`sandbox` が無効で、clickjacking 対策にならない。HTTP ヘッダでの送出を推奨。メタとヘッダの両方を送ると両方が適用され、より厳しい側が効く（片方に寄せるか内容を揃える）
 - `head_node` や body に入れるノードにインラインの style / script を入れない責任は利用者にある。`Document` は渡されたノードを走査・除外しない
 - pre-styled-ui の一部の部品（progress・slider・avatar・splitter など）は `style` 属性（CSS 変数など）を出すため、`style-src 'self'` だけでは表示が崩れる。使う部品を選ぶか `style-src-attr 'unsafe-inline'` を追加する。docs サイトも同じ判断（`docs/design/docs-site-csp-policy.md`）
-- CSRF 対策はハンドラ側で行う: `Sec-Fetch-Site` が `same-origin` 以外なら拒否、`Origin` が自オリジンと一致しなければ拒否（ヘッダ無しは安全側 = 拒否）、Cookie の `SameSite` 属性を設定。判定方針の正は `Fandhe-AI/fandhe-backend-spec#15`。fandhe-frontend は CSRF トークンの発行も検証もしない
+- CSRF 対策はハンドラ側で行う: `Sec-Fetch-Site` が `same-origin` 以外なら拒否、`Origin` が自オリジンと一致しなければ拒否（ヘッダ無しは安全側 = 拒否）、Cookie の `SameSite` 属性を設定。判定方針の正は private の spec リポジトリの issue #15（非公開）。fandhe-frontend は CSRF トークンの発行も検証もしない
 - qr_code の `aria_label` に `otpauth://` URI やシークレットを入れない（「認証アプリ設定用 QR コード」のような汎用ラベルにする）。`title`・`data-*` 属性・ログにも秘密を出さない。QR コード自体に秘密が含まれるため、そのページには `Cache-Control: no-store` が必須
 - fandhe-backend に依存する example は、fandhe-frontend から fandhe-backend への依存を作らないため本リポジトリの `examples/` には置かない。fandhe-backend 側または fandhe-auth-backend 側に置く想定
 

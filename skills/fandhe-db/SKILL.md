@@ -23,7 +23,7 @@ fandhe-db は Rust 製のローカルファースト vector 特化クエリ DB�
 
 公式ドキュメントサイトは存在せず、出典は公開リポジトリ https://github.com/Fandhe-AI/fandhe-db の README・CHANGELOG・`docs/design/` ADR と、crates.io の `.crate` tarball（一次ソース）。docs.rs の `fandhe-db-engine/0.2.0` はレンダリング済み rustdoc ページも取得可能だが、シグネチャの根拠は tarball の `src/` に置く。
 
-**仕様の位置づけ** — 仕様の source of truth は private リポジトリ `Fandhe-AI/fandhe-db-spec`（非公開）にあり、本スキルはそこへアクセスできないため、公開ソース・公開 ADR から追跡できる範囲に限定している。crate ソースの doc comment（rustdoc）は日本語で書かれており、references 本文はそれを日本語で要約し、シグネチャ（型・識別子）部分は英語 verbatim で転記している。private spec 参照 ID のみが残る挙動は各ページ `## Notes` に「spec 非公開のため未記載」と明記している。
+**仕様の位置づけ** — 仕様の source of truth は private の spec リポジトリ（非公開）にあり、本スキルはそこへアクセスできないため、公開ソース・公開 ADR から追跡できる範囲に限定している。crate ソースの doc comment（rustdoc）は日本語で書かれており、references 本文はそれを日本語で要約し、シグネチャ（型・識別子）部分は英語 verbatim で転記している。private spec 参照 ID のみが残る挙動は各ページ `## Notes` に「spec 非公開のため未記載」と明記している。
 
 **他スキルとの使い分け** — `upstash` は @upstash/vector のマネージド SaaS クライアント（REST ベクター API）、`supabase` は pgvector 拡張・Postgres RLS のクライアント利用であり、いずれもベクター DB エンジン本体ではない。`mssql` / `drizzle` / `supabase` は SQL クライアント / ORM であり、本スキルの SQL 表層（`USING PLAN` 等の拡張構文、DDL・JOIN・CTE・トランザクションの DB 側実装）とは別物。`nosql-surface/` の HTTP JSON 表層は DB エンジンが提供する API であり、`upstash`（SaaS の REST クライアント）や `fandhe-backend`（Rust HTTP サーバーフレームワーク）とは別物。本スキルの `performance/` は CPU SIMD（isa / dispatch）と wgpu 経由の GPU バッチカーネルを扱い、`nvidia-cuda` / `apple-silicon` / `amd-rocm` が担う GPU 言語・ランタイム層（CUDA / MSL / HIP）のリファレンスではない。`fandhe-ai` / `fandhe-backend` / `fandhe-frontend` は同じ fandhe org の別ライブラリで API は無関係、ベクター DB エンジン本体を調べる場合は本スキル（`fandhe-db`）を参照すること。
 
