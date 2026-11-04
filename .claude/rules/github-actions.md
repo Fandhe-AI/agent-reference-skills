@@ -42,9 +42,9 @@ paths:
   上回るなら入れない。
 - self-hosted runner ではツールチェーンやパッケージストア・ビルド出力先がジョブをまたいで残る
   ことがあり、GitHub のキャッシュが無意味（復元時間だけかかる）な場合がある。本リポジトリの CI は
-  現在 GitHub ホステッドだが、ジョブを self-hosted へ移すときは特に確かめる。実例: mirror-ui は
+  現在 GitHub ホステッドだが、ジョブを self-hosted へ移すときは特に確かめる。実例: ある repo は
   pnpm キャッシュの復元に 1 ジョブ平均 75 秒かけていたが `downloaded 0` で効果ゼロだったため撤去
-  した。team-hub は `Swatinem/rust-cache` が `./target` を保存対象にしていたが runner の
+  した。別の repo は `Swatinem/rust-cache` が `./target` を保存対象にしていたが runner の
   `CARGO_TARGET_DIR` が別の場所で registry しか保存されておらず、後処理が共有 `CARGO_HOME` の
   crate も消していたため撤去した。
 
