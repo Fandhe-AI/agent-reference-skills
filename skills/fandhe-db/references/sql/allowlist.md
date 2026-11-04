@@ -455,7 +455,7 @@ pub enum Statement {
     /// のいずれも伴わない、ソートなしのフィルタ取得。Issue #454）。`FROM` 単一
     /// テーブルのカタログ存在確認を通過済み。契約の詳細は
     /// `docs/design/wide-retrieval-scan.md`（spec ビヘイビア ID は SQL-15・
-    /// TASK-170 として付与済み〔fandhe-db-spec#12〕。確定化は TASK-170 が担う）参照。
+    /// TASK-170 として付与済み〔spec 側の issue #12〕。確定化は TASK-170 が担う）参照。
     ///
     /// **本 variant の追加は破壊的変更（BREAKING CHANGE）**: 既存の網羅的
     /// `match` はワイルドカードアームの追加が必要。
@@ -854,7 +854,7 @@ pub fn validate_statement(
 - `validate_statement` は `validate_sql`（TASK-161 追加、`Statement` を返し `SELECT`／`SET search_mode`／`CREATE FUNCTION`／`Aggregate`／`Explain`／`Scan` の全 statement 種別を受理する）とは戻り値が異なる: `validate_statement` は TASK-74・TASK-75 が依存していた**旧シグネチャを維持する後方互換 API**で、`ValidatedStatement`（検索 `SELECT` 専用の構造）のみを返す。内部では `validate_sql` へ委譲し、`Statement::Select` 以外（`SetSearchMode` / `CreateFunction` / `Aggregate` / `Explain` / `Scan`）はすべて `SqlSurfaceError::unsupported`（`42601`、「このエントリポイントでは受理しない statement 形」固定文言）で一律拒否する——値そのものが妥当でも、セッションを持たないこのエントリポイントでは意味を持たないための設計（黙った no-op にはしない）。
 - `BinOp` / `Expr` / `MAX_CALL_ARGS` / `MAX_EXPR_DEPTH` / `MAX_EXPR_NODES` / `MAX_UDF_PARAMS` は `crate::sql::udf_call` からの import（sql-execution scope の管轄）。`OperationId` は `crate::sql::using_operation_id`（本 scope、[using-operation-id.md](./using-operation-id.md) 参照）。`EvaluationOrder` / `Stage` は `crate::sql::plan`（本 scope、[plan.md](./plan.md) 参照）。
 - 許可リストは「拒否リスト」ではなく「既知形状のみ許可」の構造。未知の関数名・述語名は fail-closed に拒否される。
-- spec 側の詳細な意味論的検証ルール一覧（private `fandhe-db-spec`）は非公開のため未記載。
+- spec 側の詳細な意味論的検証ルール一覧（private の spec リポジトリ）は非公開のため未記載。
 - Distinct from `mssql` (node-mssql, T-SQL client) / `drizzle` (TypeScript ORM) / `supabase` (Postgres): this is a hand-rolled allowlist parser, not a general SQL grammar; PostgreSQL wire-protocol compatibility does not imply PostgreSQL SQL compatibility.
 
 ## Related
