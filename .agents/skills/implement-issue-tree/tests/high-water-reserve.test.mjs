@@ -4,7 +4,7 @@
 // 以後は remeasureResidualBytesNow の実測で安全側（Math.max・縮めない）へ更新される。しかし
 // 開始直後（クリーンな checkout やビルド成果物削除直後）は見積りが極端に小さくなり得る。最初の
 // parallel 件の implement バッチは実測し直しの反映前に着手してしまうため、ビルド成果物の再生成で
-// ディスクを圧迫し得る（Bugbot 指摘・baby-tasks-app#40）。本 issue はラン単位の高水位フィールド
+// ディスクを圧迫し得る（Bugbot 指摘・example-app#40）。本 issue はラン単位の高水位フィールド
 // （.perWorktreeByteReserveHighWater）を状態ファイルへ永続化し、次回以降のランの開始時見積りの
 // 下限として使うことで軽減する。
 //
