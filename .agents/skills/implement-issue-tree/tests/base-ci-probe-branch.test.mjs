@@ -372,7 +372,7 @@ test('群G: 旧カンマ区切り形式は JSON 不正として fail-closed し 
 // ---------------------------------------------------------------------------
 // 背景: 必須集合に含まれない workflow（`paths` フィルタ付き等）が `skipped`/`neutral` で
 // 完了しても、集計対象が全 push run（$p）のままだと unknown が正になり green へ倒れない
-// （Cursor Bugbot Medium・Fandhe-AI/automation-app#2018 由来）。集計は必須 workflow の
+// （Cursor Bugbot Medium・example-org/sample-repo#2018 由来）。集計は必須 workflow の
 // run（$rp）に限定し、必須外 run の結果は判定に影響させない。ただし必須 workflow 自身が
 // skipped/neutral の場合は従来どおり unknown へ倒す（厳格側の設計は必須集合内で維持）。
 function writeGhMockWithExtraRun(dir, extraRun) {

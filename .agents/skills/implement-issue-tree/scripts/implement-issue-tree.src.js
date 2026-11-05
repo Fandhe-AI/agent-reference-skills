@@ -7871,7 +7871,7 @@ if (!dryRunEnabled) {
         // この raw 値を使う（クランプ後の perWorktreeByteReserve はバイト軸の予算配分専用）。
         // Issue #471: 永続化済み高水位（persistedHighWaterBytes。上で是正済み）を第3の下限として
         // 加える。「過去の実測を知らない」ことに起因する開始直後の過小見積りは、最初の parallel 件
-        // バッチがラン中実測し直しの反映前に着手してしまう問題（Bugbot 指摘・baby-tasks-app#40）の
+        // バッチがラン中実測し直しの反映前に着手してしまう問題（Bugbot 指摘・example-app#40）の
         // 根本原因であり、前回以前のランの実測結果を下限に使うことで軽減する。3値とも Math.max
         // （縮めない）。
         rawPerWorktreeByteReserve = Math.max(mainKib * 1024, avgResidualBytes, persistedHighWaterBytes)

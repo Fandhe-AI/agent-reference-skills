@@ -246,7 +246,7 @@ test('base merge の subject は安全文字集合で検証し、ファイル経
 })
 
 test('fixPrompt(pushAfterFix: true): base fetch 失敗・base merge の失敗返却は commitFailed: true を伴う（prCreate 経路は prNumber: 0 のまま）', () => {
-  // codex P1（articles#52）+ Bugbot（baby-tasks-app#31 / actions#109 / pronunciation-vocab-app#25）: ホストは commitFailed だけで
+  // codex P1（articles#52）+ Bugbot（example-app#31 / actions#109 / sample-repo#25）: ホストは commitFailed だけで
   // 「コミット失敗」と「修正済みで push 不要」を区別する。base merge の失敗が pushed: false のみで返ると no-push ラウンドとして消費され
   // fail-closed 終端を通らない。
   mod.__setBoundaryNonceSeedForTest('a'.repeat(64))

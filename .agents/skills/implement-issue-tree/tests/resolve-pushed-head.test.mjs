@@ -19,7 +19,7 @@
 // が算出した許可リストのみを fix へ渡し、fix は自前確認で対象を広げられない。未 push
 // （未コミット・ローカルのみ）の修正は許可リストに現れないため resolve 対象にならない。
 //
-// 対象バグ2（Low・Fandhe-AI/baby-tasks-app PR #27 reviewThread PRRT_kwDOTqyUz86a_8bW）:
+// 対象バグ2（Low・example-app PR #27 reviewThread PRRT_kwDOTqyUz86a_8bW）:
 // runMergeLoop の fix 結果処理が f.pushed を確認せず resolvedThreadIds を一律
 // 「resolve した」とログ記録していたため、どの前提条件で resolve が実行されたかが記録から
 // 読み取れず、偽りの成功報告と区別できなかった。是正後は純粋関数 resolvedThreadsLogLine が
