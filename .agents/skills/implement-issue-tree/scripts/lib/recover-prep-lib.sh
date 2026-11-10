@@ -89,6 +89,44 @@ rp_resolve() {
   return 0
 }
 
+# ブランチを指さない（detached）live の worktree に残った子孫コミットの取り込み判定（Issue #731）。Review の fix が別 worktree の detached HEAD で
+# コミットし、ブランチの ref へ反映されないまま終わったとき、状態ファイルのブランチ先端が HEAD の祖先なら、ブランチを fast-forward して
+# worktree の HEAD を付け直せば継続・破棄の掃除（worktree-remove.sh --expect-branch）が通る。ここは判断だけを持ち、git は呼ばない。
+
+# `git worktree list --porcelain` の出力 $1 に、ブランチ $2 を checkout 中の worktree があるか（0 = ある / 1 = 無い）。
+# 行全体の完全一致で比べる（feature/a と feature/ab の前方一致を取り違えない）
+rp_branch_in_use() {
+  local line
+  while IFS= read -r line; do
+    [ "${line}" = "branch refs/heads/$2" ] && return 0
+  done <<<"$1"
+  return 1
+}
+
+# 付け直し（adopt）の可否。引数: $1 = 状態ファイルのブランチ名（空 = 記録なし）、$2 = base、$3 = ローカルの refs/heads/<branch> が実在するか（0 / 1）、
+# $4 = そのブランチをどこかの worktree が checkout 中か（0 / 1）、$5 = HEAD に含まれないブランチ側のコミット数（`git rev-list --count HEAD..branch`。
+# 数値でなければ確認不能）、$6 = マージ・cherry-pick・revert・rebase の途中か（0 / 1）。標準出力は固定語:
+#   adopt（付け直してよい）/ no-state-branch / base-branch / no-ref / in-use / in-progress / diverged（ブランチ側に HEAD に無いコミットがある）/ unknown（数を確認できない）
+rp_detached_plan() {
+  if [ -z "$1" ]; then
+    echo no-state-branch
+  elif [ -n "$2" ] && [ "$1" = "$2" ]; then
+    echo base-branch
+  elif [ "$3" != 1 ]; then
+    echo no-ref
+  elif [ "$4" != 0 ]; then
+    echo in-use
+  elif [ "$6" != 0 ]; then
+    echo in-progress
+  else
+    case "$5" in
+      '' | *[!0-9]*) echo unknown ;;
+      0) echo adopt ;;
+      *) echo diverged ;;
+    esac
+  fi
+}
+
 # `git status --porcelain=v2 -z -uall --ignore-submodules=none` を 1 レコード 1 行にした出力（recover-prep.sh の observe が作る。パスは引用されない）から、未マージ行（`u `）の数を RP_UNMERGED に、独立した入れ子の
 # git リポジトリ（未追跡の行 `? <パス>/` のように末尾が / のもの。中身は親の WIP コミットに入らず、ポインタだけが記録される）の数を
 # RP_NESTED に入れる。入力は here-string で渡す。read -r なので末尾が \ のパスでも次の行と連結しない（-r を外すと連結して壊れる。here-string か here-document かは関係しない）

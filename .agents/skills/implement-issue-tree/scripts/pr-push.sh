@@ -50,7 +50,8 @@
 #                  base-not-merged | routing-error | error。pushed・pushed-rewritten・noop・race・unverified は headSha を、pushed-rewritten は replacedSha も添える
 #         pr:      status = created | reused | head-mismatch | base-mismatch | ambiguous | list-failed | create-failed | body-invalid |
 #                  title-invalid | routing-error | head-moved | remote-head-missing | remote-head-unknown | remote-head-mismatch |
-#                  milestone-check-failed | error。prNumber（整数）・milestone（assigned | unassigned | not-used）を添えることがある
+#                  milestone-check-failed | error。prNumber（整数）・milestone（assigned | unassigned | not-used | unknown）・cause（milestone の取得失敗の原因。
+#                  rate-limited | forbidden | not-found | server-error | network | other）・milestoneAttempts（再試行したときだけ）を添えることがある
 # 終了コード: 0 結果の行を出力した / 2 使い方の誤り（引数不足・形式不正・未知の引数）/ 3 実行できる前提が無い（git・gh が無い等）
 # 自衛: push の refspec は HEAD:refs/heads/<branch> の 1 形だけ（--no-follow-tags 付き）。--no-verify は使わない（hook を通す）。
 #       --force 系は、fix の書き直し push の lease 形（--force-with-lease=refs/heads/<branch>:<観測した sha>）の 1 形だけが例外で、
@@ -148,10 +149,13 @@ if [ -n "${subject_file}" ]; then
 fi
 
 msgfile=""
+errfile=""
 # shellcheck disable=SC2329  # trap 経由で呼ばれる
 cleanup() {
   [ -z "${msgfile}" ] || rm -f "${msgfile}"
   msgfile=""
+  [ -z "${errfile}" ] || rm -f "${errfile}"
+  errfile=""
 }
 trap cleanup EXIT
 trap 'cleanup; exit 143' TERM INT HUP
@@ -172,6 +176,9 @@ emit() {
   done
   [ -z "${res_start}" ] || extra="${extra},\"start\":\"${res_start}\""
   [ -z "${res_milestone}" ] || extra="${extra},\"milestone\":\"${res_milestone}\""
+  # 原因は固定語彙だけを通す。再試行したときだけ試行回数（整数）を出す
+  case "${res_cause}" in rate-limited | forbidden | not-found | server-error | network | other) extra="${extra},\"cause\":\"${res_cause}\"" ;; esac
+  [ "${res_ms_attempts}" -le 1 ] || extra="${extra},\"milestoneAttempts\":${res_ms_attempts}"
   printf 'PR_PUSH_RESULT {"mode":"%s","status":"%s"%s}\n' "${mode}" "${status}" "${extra}"
   exit 0
 }
@@ -186,6 +193,8 @@ fail() {
 # gh の -R は ${repo:+-R "${repo}"} で付ける（bash 3.2 は set -u で空配列の展開がエラーになるため配列を使わない）
 res_start=""
 res_milestone=""
+res_cause=""
+res_ms_attempts=0
 
 # base と branch の取得先は『この worktree だけの ref』（refs/worktree/ 配下は linked worktree 間で共有されない）。
 # refs/remotes/origin/ は並列 worktree が共有するため、読まず・書かず・消さない（別の worktree が参照中の ref を消すと、そちらの
@@ -413,27 +422,55 @@ do_push() {
 # ============================ pr ============================
 # Closes 対象 Issue の milestone 確認（create-pr スキル Step 2.5 の手順 3 と同じ判定。判定は lib の pp_milestone_status）。
 #   リポジトリに milestone が 1 件も無ければ非運用とみなして確認しない（not-used）。件数・Issue の milestone を取得できなければ
-#   PR を作らず止まる（fail-closed）。未割当は警告つきで続行する: 自律運転ではユーザーの同意を取れないため、create-pr の
+#   PR を作らず止まる（fail-closed）。ただしレート制限（一過性）だけは有界に再試行し（PR_PUSH_MS_ATTEMPTS 既定 3・待機 PR_PUSH_MS_WAIT_S 既定 5 秒 × 試行番号）、
+#   それでも続くなら unknown として続行し本文に警告を残す（milestone は警告にしか使わないため）。原因は固定語彙の cause で結果に出す。未割当は警告つきで続行する: 自律運転ではユーザーの同意を取れないため、create-pr の
 #   『候補が 1 件なら同意を得て割り当てる』は行わず（milestone を書き換えない）、PR 本文に警告を残す。
 check_milestone() {
-  local count="" vrc=0 title="" api_path
+  local count vrc title api_path cc ic attempt=0 max wait
+  max=${PR_PUSH_MS_ATTEMPTS:-3}
+  wait=${PR_PUSH_MS_WAIT_S:-5}
+  # 環境変数は数値と上限を検証し、不正なら既定へ戻す（再試行の長さを無制限にしない）
+  # 先頭ゼロ付き（08 等）は算術展開で八進数と解釈され異常終了するため、桁数を絞ったうえで 10# で十進へ正規化する
+  case "${max}" in '' | *[!0-9]* | ???*) max=3 ;; *) max=$((10#${max})) ;; esac
+  { [ "${max}" -ge 1 ] && [ "${max}" -le 5 ]; } || max=3
+  case "${wait}" in '' | *[!0-9]* | ???*) wait=5 ;; *) wait=$((10#${wait})) ;; esac
+  [ "${wait}" -le 30 ] || wait=5
   if [ -n "${repo}" ]; then api_path="repos/${repo}/milestones?state=all&per_page=1"; else api_path='repos/{owner}/{repo}/milestones?state=all&per_page=1'; fi
-  count=$(gh api "${api_path}" --jq 'length' 2>/dev/null) || count=""
-  case "${count}" in
-    '' | *[!0-9]* | 0) ;;
-    *)
-      title=$(gh issue view "${issue}" ${repo:+-R "${repo}"} --json milestone --jq '.milestone.title // empty' 2>/dev/null) || vrc=$?
-      ;;
-  esac
-  pp_milestone_status "${count}" "${vrc}" "${title}"
+  errfile=$(mktemp "${TMPDIR:-/tmp}/pr-push-err.XXXXXX") || fail error "一時ファイルを作れない"
+  while :; do
+    attempt=$((attempt + 1))
+    count="" vrc=0 title="" cc=ok ic=ok
+    # 標準エラーは原因の分類にだけ使う（外部由来の文字列なので結果にも診断にも出さない）
+    if ! count=$(gh api "${api_path}" --jq 'length' 2>"${errfile}"); then
+      pp_gh_cause 1 "$(cat "${errfile}")"
+      cc=${PP_CAUSE}
+      count=""
+    fi
+    case "${count}" in
+      '' | *[!0-9]* | 0) ;;
+      *)
+        title=$(gh issue view "${issue}" ${repo:+-R "${repo}"} --json milestone --jq '.milestone.title // empty' 2>"${errfile}") || vrc=$?
+        pp_gh_cause "${vrc}" "$(cat "${errfile}")"
+        ic=${PP_CAUSE}
+        ;;
+    esac
+    pp_milestone_status "${count}" "${vrc}" "${title}" "${cc}" "${ic}" || true
+    # 取得できた（原因が空）か、一過性でない原因、または試行の上限に達したら打ち切る
+    [ -n "${PP_MS_CAUSE}" ] || break
+    pp_cause_retryable "${PP_MS_CAUSE}" || break
+    [ "${attempt}" -lt "${max}" ] || break
+    [ "${wait}" -eq 0 ] || sleep $((wait * attempt))
+  done
+  res_ms_attempts=${attempt}
+  res_cause=${PP_MS_CAUSE}
   case "${PP_MILESTONE}" in
-    not-used | assigned | unassigned) res_milestone=${PP_MILESTONE} ;;
-    *) fail milestone-check-failed "milestone の件数または Closes 対象 Issue の milestone を取得できない" ;;
+    not-used | assigned | unassigned | unknown) res_milestone=${PP_MILESTONE} ;;
+    *) fail milestone-check-failed "milestone の件数または Closes 対象 Issue の milestone を取得できない（原因: ${res_cause}）" ;;
   esac
 }
 
 do_pr() {
-  local title rows out rc local_head create_body
+  local title rows out rc local_head create_body warn_line
   command -v gh >/dev/null 2>&1 || { echo "pr-push: gh が無い" >&2; exit 3; }
   [ -f "${title_file}" ] && [ -r "${title_file}" ] || fail title-invalid "--title-file を読めない"
   [ -f "${body_file}" ] && [ -r "${body_file}" ] && [ -s "${body_file}" ] || fail body-invalid "--body-file を読めない・空"
@@ -470,10 +507,15 @@ do_pr() {
     *) fail error "gh pr list の出力を分類できない" ;;
   esac
   create_body=${body_file}
-  if [ "${res_milestone}" = unassigned ]; then
-    # 未割当の警告を本文へ足した複製で作成する（--body-file の原本は変えない）
+  if [ "${res_milestone}" = unassigned ] || [ "${res_milestone}" = unknown ]; then
+    # 未割当・確認不能の警告を本文へ足した複製で作成する（--body-file の原本は変えない）
     msgfile=$(mktemp "${TMPDIR:-/tmp}/pr-push-body.XXXXXX") || fail error "一時ファイルを作れない"
-    { cat "${body_file}" && printf '\n\n> **警告**: Closes 対象の #%s に milestone が割り当てられていない。\n' "${issue}"; } >"${msgfile}" \
+    if [ "${res_milestone}" = unknown ]; then
+      warn_line="Closes 対象の #${issue} の milestone を確認できなかった（GitHub API のレート制限）。マージ前に手動で確認すること。"
+    else
+      warn_line="Closes 対象の #${issue} に milestone が割り当てられていない。"
+    fi
+    { cat "${body_file}" && printf '\n\n> **警告**: %s\n' "${warn_line}"; } >"${msgfile}" \
       || fail error "一時ファイルへ書けない"
     create_body=${msgfile}
   fi

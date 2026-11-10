@@ -213,19 +213,23 @@ pp_head_status() {
 #   $1 = リポジトリの milestone 件数（gh api の length。closed 含む。取得に失敗したら空）、
 #   $2 = Issue の milestone を取る gh issue view の終了コード（件数 0 のときは見ないので 0 を渡す）、
 #   $3 = Issue の milestone のタイトル（未割当なら空）
+#   $4 = 件数取得の失敗の原因、$5 = Issue 取得の失敗の原因（どちらも pp_gh_cause の語彙。省略時は other）
 # PP_MILESTONE:
 #   not-used      件数 0（milestone 非運用リポジトリ）→ 確認も警告もしない
 #   assigned      割当済み
 #   unassigned    未割当（警告つきで続行。自律運転では milestone を割り当てない）
-#   fetch-failed  件数が数値でない・Issue の取得が失敗 → 止める（fail-closed。取得失敗を非運用や割当済みと読み替えない）
-# return 0 = 続行してよい（not-used / assigned / unassigned）、1 = fetch-failed
+#   unknown       レート制限で件数か Issue の milestone を取得できなかった → 警告つきで続行（確認できなかったことを本文に残す）
+#   fetch-failed  上記以外の原因で件数が数値でない・Issue の取得が失敗 → 止める（fail-closed。取得失敗を非運用や割当済みと読み替えない）
+# PP_MS_CAUSE: 取得に失敗したときの原因（固定語彙）。成功時は空
+# return 0 = 続行してよい（not-used / assigned / unassigned / unknown）、1 = fetch-failed
 pp_milestone_status() {
-  local count=$1 vrc=$2 title=$3
+  local count=$1 vrc=$2 title=$3 ccause=${4:-other} icause=${5:-other}
   PP_MILESTONE=""
+  PP_MS_CAUSE=""
   case "${count}" in
     '' | *[!0-9]*)
-      PP_MILESTONE=fetch-failed
-      return 1
+      pp_ms_unfetched "${ccause}"
+      return
       ;;
   esac
   if [ "${count}" -eq 0 ]; then
@@ -233,8 +237,8 @@ pp_milestone_status() {
     return 0
   fi
   if [ "${vrc}" != 0 ]; then
-    PP_MILESTONE=fetch-failed
-    return 1
+    pp_ms_unfetched "${icause}"
+    return
   fi
   if [ -n "${title}" ]; then
     PP_MILESTONE=assigned
@@ -242,6 +246,49 @@ pp_milestone_status() {
     PP_MILESTONE=unassigned
   fi
   return 0
+}
+
+# milestone を取得できなかったときの扱い。$1 = 原因（pp_gh_cause の語彙）。
+#   milestone の確認は PR 本文の警告にしか使わない（割り当てはしない）ため、レート制限という一過性の原因だけは PR 作成を止めず
+#   unknown で続行する（本文に『確認できなかった』警告を残す）。それ以外（権限・404・原因不明など）は従来どおり fail-closed。
+pp_ms_unfetched() {
+  PP_MS_CAUSE=$1
+  [ "$1" != ok ] || PP_MS_CAUSE=other # gh は成功したが値が数値でない場合は原因不明として扱う
+  if [ "$1" = rate-limited ]; then
+    PP_MILESTONE=unknown
+    return 0
+  fi
+  PP_MILESTONE=fetch-failed
+  return 1
+}
+
+# gh の失敗の原因の分類。$1 = 終了コード、$2 = 標準エラーの本文。PP_CAUSE に固定語彙を入れる:
+#   ok | rate-limited | forbidden | not-found | server-error | network | other
+# 本文は照合にだけ使い、出力へは返さない（外部由来の文字列を結果へ出さない）。レート制限の 403 は forbidden より先に判定する。
+pp_gh_cause() {
+  local rc=$1 t
+  PP_CAUSE=other
+  if [ "${rc}" = 0 ]; then
+    PP_CAUSE=ok
+    return 0
+  fi
+  t=$(printf '%s' "$2" | tr '[:upper:]' '[:lower:]')
+  case "${t}" in
+    *"rate limit"* | *ratelimit* | *rate_limited* | *"abuse detection"* | *"http 429"*) PP_CAUSE=rate-limited ;;
+    *"http 403"*) PP_CAUSE=forbidden ;;
+    *"http 404"*) PP_CAUSE=not-found ;;
+    *"http 500"* | *"http 502"* | *"http 503"* | *"http 504"*) PP_CAUSE=server-error ;;
+    *timeout* | *"timed out"* | *connection* | *"no such host"* | *"tls "* | *eof*) PP_CAUSE=network ;;
+  esac
+  return 0
+}
+
+# 再試行してよい原因か（一過性のもの）。return 0 = 再試行してよい
+pp_cause_retryable() {
+  case "$1" in
+    rate-limited | server-error | network) return 0 ;;
+  esac
+  return 1
 }
 
 # メッセージだけの書き直しの同等性（fix の push が --force-with-lease を使ってよいかの判定。Issue #696）。

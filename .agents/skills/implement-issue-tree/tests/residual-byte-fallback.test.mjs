@@ -170,8 +170,7 @@ test('remeasureResidualBytesNow は buildPhysicalByteMeasureTargets と scanOrph
   assert.ok(fnStart >= 0 && fnEnd > fnStart, 'remeasureResidualBytesNow 本体を特定できること')
   const fnBody = source.slice(fnStart, fnEnd)
   assert.match(fnBody, /buildPhysicalByteMeasureTargets\(/)
-  assert.match(fnBody, /scanOrphanWorktrees\(\)/)
-  assert.match(fnBody, /countWorktreeRecords\(\)/)
+  assert.match(fnBody, /observeWorktreeList\(\)/)
 })
 
 test('フォールバックで得たパスは削除経路（sweepEligiblePaths 等）へ追加されない（測定専用の維持）', () => {

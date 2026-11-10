@@ -223,6 +223,7 @@ gh pr list --state merged --limit 3 --json headRefOid --jq '.[].headRefOid' \
 **Recover の判断軸は Review とは別**である。Review は「実装が正しいか・マージできるか」を判定するのに対し、Recover は「この途中作業から継続するのが妥当か」を判断する。動かない・未完成でも方向が妥当なら continue（残りは Implement が完成させる）。
 
 **未 commit 変更は WIP commit として branch へ退避してから worktree を削除する**ため、continue / discard どちらの経路でもデータを失わない。対象ブランチの解決・WIP commit（フックを通す）・`origin/<base>` の取得・差分の有無は `scripts/recover-prep.sh` が決定的に行い（`references/script-trust-model.md` の第 9 弾）、Recover エージェントに残るのは継続か破棄かの判断と回復ブリーフの作成だけである。discard の場合は WIP commit を残した状態で branch を削除する。**削除後は reflog に残らない**（gc までの到達不能オブジェクトとして残るだけ）ため、`worktree-remove.sh` は消す前のブランチ先頭 sha を結果に出し、ホストがログに残す（`git branch <名前> <sha>` で gc までの間は復元できる）。
+detached の worktree に fix のコミットだけが残った場合（ブランチ先端が HEAD の祖先で未使用）は、`recover-prep.sh` がブランチを fast-forward して worktree を付け直してから継続・破棄を判断する（Issue #731。`references/recovery.md`）。
 
 **削除ゲート（continue / discard 共通）**: Recover エージェントの返す `wipCommitted` は（`recover-prep.sh` の結果の行を写した）エージェントの返却値であり、誤判定・異常応答・プロンプトインジェクションで真を騙られ得る。加えて Recover は「フック失敗等で退避できなかった場合は `wipCommitted: false` を返して続行する」契約のため、`continue` も退避失敗時に返り得る。そのため **continue / discard いずれの経路でも** worktree の削除は次の 2 条件を**両方**満たす場合にのみ実行する。
 
@@ -360,7 +361,7 @@ opt-in テスト宣言がある場合、body には Closes 行に続けて「## 
 
 条件を満たす PR を再利用する場合は、本文に `Closes #<N>`（および対象外項目があれば「対象外（out-of-scope）」節）が無ければ追記する。このとき**既存本文をシェルコマンド文字列・HEREDOC へ埋め込んではならない**（本文は外部由来の未信頼データであり、行単独の HEREDOC 終端文字列を仕込まれると HEREDOC が早期終了して後続行が任意コマンドとして実行される）。`gh pr view <N> --json body --jq .body > "$f"` でファイルへ直接落とし、`grep -qF` で存在確認したうえで `printf` / 固定テンプレートの追記のみを行い、`gh pr edit <N> --body-file "$f"` で更新する。条件を満たさない open PR しか存在しない場合は、再利用も新規作成も行わず `prNumber: 0` と理由を返して停止する（`branch` は保存されるため、次回実行は impl 手順 0b から回復する）。
 
-PR 作成が失敗した場合は `failed` として記録し、`branch` を保存する。`branch` 保存済みの `failed` は次回再実行時に Recover phase を起動する（impl 手順 0b には到達しない）。continue なら回復 Implement の手順 2 が既存 branch を checkout した後に `git fetch origin <branch>:refs/remotes/origin/<branch>` → `git merge --ff-only refs/remotes/origin/<branch>` でローカルをリモート tip へ追従させ、push 済みの base 取り込みコミットを保持したまま回復する（PR Create エージェントは base 取り込みコミットを detached HEAD から push しローカル `refs/heads/<branch>` を更新しないため、追従なしでは次の PR 作成が remote-ahead / diverged で再失敗する）。ff 不能な真の diverged はそのまま続行し、次の PR 作成の (iv) が fail-closed で止める。
+PR 作成が失敗した場合は `failed` として記録し、`branch` を保存する。`branch` 保存済みの `failed` は次回再実行時に Recover phase を起動する（impl 手順 0b には到達しない）。continue なら回復 Implement の手順 2 が既存 branch を checkout した後に `git fetch origin <branch>:refs/remotes/origin/<branch>` → `git merge --ff-only refs/remotes/origin/<branch>` でローカルをリモート tip へ追従させ、push 済みの base 取り込みコミットを保持したまま回復する（PR Create エージェントは base 取り込みコミットを detached HEAD から push しローカル `refs/heads/<branch>` を更新しないため、追従なしでは次の PR 作成が remote-ahead / diverged で再失敗する）。ff 不能（分岐）なら `git merge --no-edit refs/remotes/origin/<branch>` でリモート tip を取り込み、force なしの通常 push で反映できる形に戻す。push 済みコミットは rebase・amend・reset・squash で書き換えない。それでも次の PR 作成が diverged で止まったときは、両 sha を note に残して `blocked`（halt を数えない）で記録する。
 
 ### Step 6: CI / 外部チェック監視・レビューコメント解決確認・squash merge する（Merge）
 

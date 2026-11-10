@@ -26,11 +26,16 @@ const GH_STUB = `#!/bin/sh
 echo "$*" >> "\${GHPR_LOG:?}"
 if [ "$1" = api ]; then
   [ "\${GHPR_MS_API_FAIL:-}" = 1 ] && exit 1
+  if [ -n "\${GHPR_MS_ERR_TEXT:-}" ]; then
+    n=$(grep -c '^api ' "\${GHPR_LOG}")
+    if [ "$n" -le "\${GHPR_MS_ERR_UNTIL:-999}" ]; then echo "\${GHPR_MS_ERR_TEXT}" >&2; exit 1; fi
+  fi
   printf '%s\\n' "\${GHPR_MS_COUNT-0}"
   exit 0
 fi
 if [ "$1" = issue ] && [ "$2" = view ]; then
   [ "\${GHPR_ISSUE_FAIL:-}" = 1 ] && exit 1
+  if [ -n "\${GHPR_ISSUE_ERR_TEXT:-}" ]; then echo "\${GHPR_ISSUE_ERR_TEXT}" >&2; exit 1; fi
   printf '%s\\n' "\${GHPR_ISSUE_MS:-}"
   exit 0
 fi
@@ -74,7 +79,7 @@ function result(r) {
   assert.match(lines[0], /^PR_PUSH_RESULT \{/)
   const v = JSON.parse(lines[0].slice('PR_PUSH_RESULT '.length))
   for (const [k, x] of Object.entries(v)) {
-    if (k === 'prNumber') assert.ok(Number.isInteger(x) && x > 0)
+    if (k === 'prNumber' || k === 'milestoneAttempts') assert.ok(Number.isInteger(x) && x > 0)
     else if (k === 'localSha' || k === 'remoteSha' || k === 'headSha' || k === 'replacedSha') assert.match(x, /^[0-9a-f]{40}$/)
     else assert.match(String(x), /^[a-z-]+$/, `${k}: 固定語彙だけ`)
   }
@@ -170,6 +175,27 @@ export function registerPrPushTests(bash) {
     const sb3 = makeSandbox()
     assert.equal(prepare(sb3, 'pr-create').status, 'local-missing')
     assert.deepEqual(sb3.gitCalls().filter((c) => /^(merge |push )/.test(c)), [])
+  })
+
+  t('prepare pr-create: 分岐したローカルへリモート tip を merge（回復 Implement の手順 2・#730）すれば local ahead になり、force なしの通常 push で反映される', () => {
+    const sb = makeSandbox()
+    localBranch(sb)
+    git(sb.wt, 'checkout', '-q', BRANCH)
+    commitOn(sb.wt, 'mine.txt', 'mine')
+    git(sb.seed, 'checkout', '-q', BRANCH)
+    commitOn(sb.seed, 'theirs.txt', 'theirs')
+    git(sb.seed, 'push', '-q', 'origin', BRANCH)
+    git(sb.wt, 'fetch', '-q', 'origin', `${BRANCH}:refs/remotes/origin/${BRANCH}`)
+    git(sb.wt, 'checkout', '-q', '--detach')
+    assert.equal(prepare(sb, 'pr-create').status, 'diverged', '対照: merge 前は diverged')
+    git(sb.wt, 'checkout', '-q', BRANCH)
+    git(sb.wt, 'merge', '-q', '--no-edit', `refs/remotes/origin/${BRANCH}`)
+    git(sb.wt, 'checkout', '-q', '--detach')
+    assert.deepEqual(prepare(sb, 'pr-create'), { mode: 'prepare', status: 'merged', start: 'local' })
+    const r = push(sb, 'pr-create')
+    assert.equal(r.status, 'pushed')
+    assert.equal(sb.remoteSha(), git(sb.wt, 'rev-parse', 'HEAD'))
+    assert.deepEqual(sb.gitCalls().filter((c) => /^push( |$)/.test(c) && /force|lease|^push .*\+/.test(c)), [])
   })
 
   t('prepare: checkout 後の HEAD が起点の sha と違う（隔離 worktree に残っていた無関係な HEAD）なら sha-mismatch。merge も push もしない（旧 Issue #466 の回帰）', () => {
@@ -662,6 +688,74 @@ export function registerPrPushTests(bash) {
       assert.equal(prRun(sbF, {}, [], env).status, 'milestone-check-failed', JSON.stringify(env))
       assert.ok(!ghCalls(sbF).some((c) => /^pr (list|create)/.test(c)), `${JSON.stringify(env)}: PR を作らない`)
     }
+  })
+
+  tj('pr: レート制限で milestone を取得できなくても failed にせず unknown で続行する。原因は固定語彙で結果に出し、本文に確認不能の警告を足す。再試行は有界で、一過性でない原因は fail-closed', () => {
+    const FAST = { PR_PUSH_MS_WAIT_S: '0' }
+    const RL = 'HTTP 403: API rate limit exceeded for user ID 1. SECRET_EXTERNAL_TEXT'
+    const apiCount = (sb) => ghCalls(sb).filter((c) => c.startsWith('api ')).length
+    // 件数取得が全試行でレート制限: 作成を続け unknown・cause・試行回数。警告つき、原本は不変、一時ファイルは残らない
+    const sb1 = makeSandbox()
+    const r1 = prRun(sb1, {}, [], { ...FAST, GHPR_MS_ERR_TEXT: RL })
+    assert.deepEqual(r1, { mode: 'pr', status: 'created', prNumber: 77, milestone: 'unknown', cause: 'rate-limited', milestoneAttempts: 3 })
+    assert.equal(apiCount(sb1), 3)
+    const body1 = readFileSync(join(sb1.root, 'ghpr', 'calls.log.body'), 'utf8')
+    assert.match(body1, /> \*\*警告\*\*: Closes 対象の #603 の milestone を確認できなかった/)
+    assert.equal(readFileSync(join(sb1.tmp, 'body.md'), 'utf8'), 'body\n\nCloses #603\n')
+    assert.deepEqual(readdirSync(sb1.tmp).filter((f) => f.startsWith('pr-push-')), [], '一時ファイルが残らない')
+    // Issue 取得がレート制限
+    const sb2 = makeSandbox()
+    const r2 = prRun(sb2, {}, [], { ...FAST, GHPR_MS_COUNT: '2', GHPR_ISSUE_ERR_TEXT: 'GraphQL: API rate limit already exceeded (HTTP 403)' })
+    assert.deepEqual(r2, { mode: 'pr', status: 'created', prNumber: 77, milestone: 'unknown', cause: 'rate-limited', milestoneAttempts: 3 })
+    // 1 回目だけレート制限で 2 回目に成功: 再試行して通常の判定に戻る
+    const sb3 = makeSandbox()
+    const r3 = prRun(sb3, {}, [], { ...FAST, GHPR_MS_ERR_TEXT: RL, GHPR_MS_ERR_UNTIL: '1', GHPR_MS_COUNT: '0' })
+    assert.deepEqual(r3, { mode: 'pr', status: 'created', prNumber: 77, milestone: 'not-used', milestoneAttempts: 2 })
+    // 一過性でない原因は再試行せず fail-closed（cause を添える）。PR は作らない
+    const nonRetry = [
+      ['HTTP 403: Resource not accessible by integration', 'forbidden'],
+      ['HTTP 404: Not Found', 'not-found'],
+      ['something odd', 'other'],
+    ]
+    for (const [text, cause] of nonRetry) {
+      const sbF = makeSandbox()
+      const v = prRun(sbF, {}, [], { ...FAST, GHPR_MS_ERR_TEXT: text })
+      assert.deepEqual(v, { mode: 'pr', status: 'milestone-check-failed', cause })
+      assert.equal(apiCount(sbF), 1, `${cause}: 再試行しない`)
+      assert.ok(!ghCalls(sbF).some((c) => /^pr (list|create)/.test(c)))
+    }
+    // 5xx・ネットワークは再試行したうえで、続くなら fail-closed
+    for (const [text, cause] of [['HTTP 503: Service Unavailable', 'server-error'], ['dial tcp: connection reset by peer', 'network']]) {
+      const sbF = makeSandbox()
+      const v = prRun(sbF, {}, [], { ...FAST, GHPR_MS_ERR_TEXT: text })
+      assert.deepEqual(v, { mode: 'pr', status: 'milestone-check-failed', cause, milestoneAttempts: 3 })
+      assert.ok(!ghCalls(sbF).some((c) => /^pr (list|create)/.test(c)))
+    }
+    // 既存 PR の再利用でも milestone: unknown を結果に出す
+    const sbR = makeSandbox()
+    const rr = prRun(sbR, {}, [], { ...FAST, GHPR_MS_ERR_TEXT: RL, GHPR_LIST_JSON: JSON.stringify([{ number: 12, baseRefName: BASE, headRefOid: sbR.remoteSha(), isCrossRepository: false }]) })
+    assert.equal(rr.status, 'reused')
+    assert.equal(rr.milestone, 'unknown')
+    // 無効な試行回数・待機の指定は既定（3 回）へ戻る
+    const sbB = makeSandbox()
+    const rb = prRun(sbB, {}, [], { PR_PUSH_MS_ATTEMPTS: 'x', PR_PUSH_MS_WAIT_S: '-1', GHPR_MS_ERR_TEXT: RL })
+    assert.equal(rb.milestoneAttempts, 3)
+    // 先頭ゼロ付き（08 / 09）は八進数扱いで異常終了せず、十進として結果の行を返す
+    // 待機の 08 / 09 は 1 試行に絞り、最初の失敗で打ち切って実時間の sleep を発生させない（パースだけを通す）
+    for (const w of ['08', '09']) {
+      const sbZ = makeSandbox()
+      const rz = prRun(sbZ, {}, [], { PR_PUSH_MS_ATTEMPTS: '01', PR_PUSH_MS_WAIT_S: w, GHPR_MS_ERR_TEXT: RL })
+      assert.equal(rz.milestoneAttempts, undefined, `WAIT_S=${w}: 1 試行のみ（結果に出ない）`)
+      assert.equal(rz.milestone, 'unknown', `WAIT_S=${w}`)
+    }
+    // 試行回数の 08 / 09 は十進で上限超過 → 既定 3 へ戻る。待機は 0 で sleep しない
+    for (const a of ['08', '09']) {
+      const sbA = makeSandbox()
+      const ra = prRun(sbA, {}, [], { PR_PUSH_MS_ATTEMPTS: a, PR_PUSH_MS_WAIT_S: '00', GHPR_MS_ERR_TEXT: RL })
+      assert.equal(ra.milestoneAttempts, 3, `ATTEMPTS=${a}`)
+    }
+    const sbZ0 = makeSandbox()
+    assert.equal(prRun(sbZ0, {}, [], { PR_PUSH_MS_ATTEMPTS: '03', PR_PUSH_MS_WAIT_S: '00', GHPR_MS_ERR_TEXT: RL }).milestoneAttempts, 3)
   })
 
   t('pr: 入力が不正なら gh を呼ばず止まる（タイトルが空・制御文字、body に「Closes #N」の行が無い・空）', () => {

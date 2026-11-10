@@ -570,7 +570,7 @@ test('配線: 新ラベル state:update-batch は runStateAgent 経由で、sonn
 
 test('配線: dryRun は状態の初期化・孤立記録・残置実測より前で分岐せず、それらをガードし、分岐は dispatch の前にある', () => {
   assert.match(driverPart, /if \(!dryRunEnabled\) await initAllPending\(/)
-  assert.match(driverPart, /\nif \(!dryRunEnabled\) \{\n  const runStartOrphanEntries = await scanOrphanWorktrees\(\)/)
+  assert.match(driverPart, /\nif \(!dryRunEnabled\) \{\n(?:  \/\/[^\n]*\n)*  const residualGateActive = maxResidualWorktrees > 0 \|\| maxResidualWorktreeBytes > 0\n  let runStartOrphanEntries/)
   const branch = driverPart.indexOf('\nif (dryRunEnabled) {')
   const running = driverPart.indexOf('\nconst running = new Map()')
   const initAll = driverPart.indexOf('initAllPending(queue.filter')

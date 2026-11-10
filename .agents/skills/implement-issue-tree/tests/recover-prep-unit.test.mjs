@@ -25,14 +25,15 @@ US=$(printf '\\037')
 nl() { printf '%s' "$1" | sed 's/@@/\\
 /g'; }
 i=0
-while IFS="$US" read -r fn a b c d e; do
+while IFS="$US" read -r fn a b c d e f; do
   rc=0
   out=""
   RP_RESOLVED=x; RP_REASON=x; RP_BRANCH=x; RP_SOURCE=x; RP_WT_MISSING=x; RP_NESTED=x; RP_UNMERGED=x
   case "$fn" in
     rp_resolve) rp_resolve "$a" "$b" "$c" "$d" "$e" ;;
     rp_scan_status) rp_scan_status "$(nl "$a")" ;;
-    *) out=$("$fn" "$a" "$b" "$c" "$d" 2>&1) || rc=$? ;;
+    rp_branch_in_use) rp_branch_in_use "$(nl "$a")" "$b" || rc=$? ;;
+    *) out=$("$fn" "$a" "$b" "$c" "$d" "$e" "$f" 2>&1) || rc=$? ;;
   esac
   printf '%s %s [%s] [%s,%s,%s,%s,%s,%s,%s]\\n' "$i" "$rc" "$out" "$RP_RESOLVED" "$RP_REASON" "$RP_BRANCH" "$RP_SOURCE" "$RP_WT_MISSING" "$RP_NESTED" "$RP_UNMERGED"
   i=$((i + 1))
@@ -186,4 +187,42 @@ check(
     ['rp_is_sha', 'refs/heads/main'],
   ],
   (g, _r, i) => assert.equal(g.rc, i < 2 ? 0 : 1, String(i)),
+)
+
+// rp_detached_plan: [state, base, exists, inUse, ahead, inProgress] → 語（Issue #731）。adopt は全条件を満たしたときだけ
+const DETACHED_ROWS = [
+  ['feat/1-x', 'main', '1', '0', '0', '0', 'adopt'],
+  ['', 'main', '1', '0', '0', '0', 'no-state-branch'],
+  ['main', 'main', '1', '0', '0', '0', 'base-branch'],
+  ['feat/1-x', 'main', '0', '0', '0', '0', 'no-ref'],
+  ['feat/1-x', 'main', '', '0', '0', '0', 'no-ref'],
+  ['feat/1-x', 'main', '1', '1', '0', '0', 'in-use'],
+  ['feat/1-x', 'main', '1', '', '0', '0', 'in-use'],
+  ['feat/1-x', 'main', '1', '0', '0', '1', 'in-progress'],
+  ['feat/1-x', 'main', '1', '0', '2', '0', 'diverged'],
+  ['feat/1-x', 'main', '1', '0', '', '0', 'unknown'],
+  ['feat/1-x', 'main', '1', '0', 'x', '0', 'unknown'],
+  ['feat/1-x', 'main', '1', '0', '-1', '0', 'unknown'],
+  ['feat/1-x', '', '1', '0', '0', '0', 'adopt'],
+]
+check(
+  'rp_detached_plan: 付け直す（adopt）のは全条件を満たすときだけ。それ以外は理由の語（Issue #731）',
+  DETACHED_ROWS.map((r) => ['rp_detached_plan', ...r.slice(0, 6)]),
+  (g, _r, i) => assert.equal(g.out, DETACHED_ROWS[i][6], JSON.stringify(DETACHED_ROWS[i])),
+)
+
+const LIST = ['worktree /r/main', 'HEAD aaa', 'branch refs/heads/main', '', 'worktree /r/wt', 'HEAD bbb', 'detached', '', 'worktree /r/ab', 'HEAD ccc', 'branch refs/heads/feat/1-xy'].join(NL)
+const IN_USE_ROWS = [
+  [LIST, 'main', 0],
+  [LIST, 'feat/1-xy', 0],
+  [LIST, 'feat/1-x', 1],
+  [LIST, 'feat', 1],
+  [LIST, 'xy', 1],
+  ['', 'main', 1],
+  [['worktree /r/wt', 'HEAD bbb', 'detached'].join(NL), 'main', 1],
+]
+check(
+  'rp_branch_in_use: branch 行の完全一致だけ使用中（前方一致・detached・空のリストは使用中ではない）',
+  IN_USE_ROWS.map((r) => ['rp_branch_in_use', r[0], r[1]]),
+  (g, _r, i) => assert.equal(g.rc, IN_USE_ROWS[i][2], JSON.stringify(IN_USE_ROWS[i])),
 )
