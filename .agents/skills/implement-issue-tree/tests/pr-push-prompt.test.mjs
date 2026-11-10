@@ -94,7 +94,7 @@ test('prCreatePrompt: 再利用 PR の本文取得・更新（gh pr view / gh pr
   assert.match(prompt, /gh pr view <番号> -R Fandhe-AI\/agent-cli-skills --json body --jq \.body > "\$f"/)
   assert.match(prompt, /gh pr edit <番号> -R Fandhe-AI\/agent-cli-skills --body-file "\$f" && rm -f "\$f"/)
   assert.match(prompt, /<タイトルファイル>・<本文ファイル> はそれぞれ書いたファイルの絶対パスへ、<headSha> は手順 1 の結果の headSha へ置き換え、他は一字一句そのまま/, '置換対象の列挙に <headSha> を含める')
-  assert.match(prompt, /milestone が unassigned のときは、"\$f" の末尾にも「> \*\*警告\*\*/)
+  assert.match(prompt, /milestone が unassigned \/ unknown のときは、"\$f" の末尾にも「> \*\*警告\*\*/)
 })
 
 test('prCreatePrompt: PR 本文のテンプレートは 1b に 1 箇所だけあり、Closes 行・対象外節を含む。タイトルと本文はファイル経由で渡す', () => {
@@ -139,7 +139,28 @@ test('fixPrompt(pushAfterFix: true): push の status を pushed 判定へ結ぶ�
 test('fixPrompt(pushAfterFix: false): pr-push.sh を呼ばない（push 前の Review ループ。ローカル修正のみ）', () => {
   const text = fixPrompt(item, impl, { summary: 's', unresolvedComments: [] }, false, [])
   assert.doesNotMatch(text, /pr-push\.sh/)
-  assert.match(text, /git branch -f/)
+  // Issue #731: git branch -f は別 worktree が checkout 中だと拒否されるため update-ref で更新し、反映を確認する
+  assert.ok(!text.includes(`git update-ref refs/heads/${B} HEAD`), '旧値なしの update-ref は使わない')
+  assert.match(text, /merge --ff-only/, '使用中 worktree は ff-only で一緒に進める')
+  assert.match(text, /merge --ff-only --no-overwrite-ignore /, 'ignored ファイルを上書きしない（上書きが必要なら失敗して保全）')
+  assert.ok(text.includes(`git update-ref refs/heads/${B} <HEAD の sha> <old>`), '未使用なら旧値つき')
+  assert.ok(text.includes('detach 直後に git rev-parse HEAD の値を <old> として字面で控え'), '旧値は detach 直後の HEAD（ブランチ ref の読み直しは不可）')
+  assert.ok(text.includes('シェル変数不可'))
+  assert.ok(!text.includes(`git rev-parse refs/heads/${B} の値を <old>`))
+  assert.ok(text.includes(`git rev-parse refs/heads/${B} が <old> と違えば中止`))
+  assert.ok(text.includes('HEAD が <old> のときだけ'))
+  assert.doesNotMatch(text, /\$old/)
+  assert.ok(!text.includes('old=$('))
+  assert.ok(!text.includes('ref≠'))
+  assert.match(text, /status --porcelain=v2 -uall/, '使用中 worktree の clean 確認')
+  assert.ok(text.includes(`git rev-parse refs/heads/${B} が HEAD と不一致`))
+  // #751: 先端更新の照合失敗（中止）は条件不成立と同じ pushed: false・commitFailed: true で返す
+  const abortIdx = text.indexOf(`git rev-parse refs/heads/${B} が <old> と違えば中止`)
+  const failLine = `中止・条件不成立・失敗・git rev-parse refs/heads/${B} が HEAD と不一致なら pushed: false・commitFailed: true`
+  assert.ok(text.includes(failLine), '中止が commitFailed の返し方に結ばれていない')
+  assert.ok(abortIdx >= 0 && abortIdx < text.indexOf(failLine))
+  assert.match(text, /commitFailed: true/)
+  assert.doesNotMatch(text, new RegExp(`git branch -f ${B}`))
 })
 
 test('baseMergePrompt（自動 base 取り込み）は pr-push.sh を呼ばない（base-merge.sh のまま）', () => {
@@ -151,7 +172,7 @@ test('baseMergePrompt（自動 base 取り込み）は pr-push.sh を呼ばな�
 test('prCreatePrompt: milestone 警告の追記は最後の gh pr edit より前（更新後に足しても PR へ反映されない）で、最後の更新の列挙にも含む', () => {
   for (const outOfScope of [[], ['対象外の項目 A']]) {
     const prompt = prCreatePrompt(item, impl, outOfScope)
-    const warn = prompt.indexOf('milestone が unassigned のときは、"$f" の末尾にも')
+    const warn = prompt.indexOf('milestone が unassigned / unknown のときは、"$f" の末尾にも')
     const edit = prompt.indexOf(`gh pr edit <番号> -R Fandhe-AI/agent-cli-skills --body-file "$f" && rm -f "$f"`)
     assert.ok(warn >= 0 && edit >= 0)
     assert.ok(warn < edit, `警告の指示(${warn})が gh pr edit(${edit})より後ろにある`)

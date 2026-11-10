@@ -493,7 +493,7 @@ test('未検証 implement の帰属解決は解決直前に物理一覧を取り
   // （Issue #475 4 巡目 Bugbot Medium）。
   assert.match(
     block,
-    /const \[freshEntries, freshIndependentCount\] = await Promise\.all\(\[scanOrphanWorktrees\(\), countWorktreeRecords\(\)\]\)/,
+    /const \[freshEntries, freshIndependentCount\] = await observeWorktreeList\(\)/,
   )
   assert.match(block, /physicalEntries: freshEntries,/)
   assert.match(block, /independentCount: freshIndependentCount,/)

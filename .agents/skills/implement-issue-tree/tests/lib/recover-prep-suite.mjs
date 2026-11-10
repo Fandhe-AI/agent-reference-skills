@@ -53,7 +53,7 @@ export function registerRecoverPrepTests(bash) {
     chmodSync(join(dir, name), 0o755)
   }
   // 結果の全項目を一度に確かめる（余計な項目が増えても気付く）
-  const KEYS = ['resolved', 'reason', 'branch', 'source', 'worktreeMissing', 'wip', 'wipCommitted', 'dirty', 'branchExists', 'branchSha', 'baseFetched', 'baseSha', 'diff', 'commitsAhead', 'filesChanged']
+  const KEYS = ['resolved', 'reason', 'branch', 'source', 'worktreeMissing', 'wip', 'wipCommitted', 'dirty', 'branchExists', 'branchSha', 'baseFetched', 'baseSha', 'diff', 'commitsAhead', 'filesChanged', 'detached']
 
   test(`${tag} clean な live worktree: HEAD のブランチを解決し、WIP は作らず、base を取得して差分が空と判定する`, () => {
     const repo = makeRecoverRepo()
@@ -64,7 +64,7 @@ export function registerRecoverPrepTests(bash) {
     assert.deepEqual(Object.keys(r.result), KEYS)
     assert.deepEqual(r.result, {
       resolved: true, reason: '', branch: a.branch, source: 'worktree', worktreeMissing: false, wip: 'none', wipCommitted: true, dirty: 0,
-      branchExists: true, branchSha: before, baseFetched: true, baseSha: repo.head(repo.main), diff: 'empty', commitsAhead: 0, filesChanged: 0,
+      branchExists: true, branchSha: before, baseFetched: true, baseSha: repo.head(repo.main), diff: 'empty', commitsAhead: 0, filesChanged: 0, detached: 'none',
     })
     assert.equal(r.lines.length, 1, '標準出力は結果の 1 行だけ')
     assert.equal(repo.head(a.path), before)
@@ -434,17 +434,149 @@ export function registerRecoverPrepTests(bash) {
     assert.deepEqual([r.result.resolved, r.result.branch, r.result.branchExists, r.result.branchSha, r.result.diff], [true, 'feat/9-nothing', false, '', 'unknown'])
   })
 
-  test(`${tag} detached HEAD の worktree: 確定せず（detached）、何も書かない。wipCommitted:false`, () => {
-    const repo = makeRecoverRepo()
+  // Issue #731: Review の fix が detached HEAD に残したコミットは、ブランチ先端が HEAD の祖先なら取り込んで継続・破棄できる。
+  // 分岐・先行・使用中・途中状態・記録なしなどは従来どおり確定せず（detached）、何も書かない
+  const DETACHED_KEEP = ['resolved', 'reason', 'branch', 'wip', 'wipCommitted', 'diff', 'detached']
+  const detachedWith = (repo, { commit = true } = {}) => {
     const a = repo.addWorktree('a')
     repo.git(a.path, 'checkout', '-q', '--detach')
-    repo.write(a.path, 'u.txt', 'u\n')
-    const before = repo.head(a.path)
-    const r = prep(repo, a)
-    assert.deepEqual([r.result.resolved, r.result.reason, r.result.branch, r.result.wip, r.result.wipCommitted, r.result.diff], [false, 'detached', '', 'skipped', false, 'unknown'])
-    assert.equal(repo.head(a.path), before)
-    assert.ok(existsSync(join(a.path, 'u.txt')))
+    if (commit) {
+      repo.write(a.path, 'fix.txt', 'fix\n')
+      repo.git(a.path, 'add', 'fix.txt')
+      repo.git(a.path, 'commit', '-q', '-m', 'fix: 指摘への対応')
+    }
+    return a
+  }
+  const expectKept = (repo, a, r, why, before) => {
+    assert.equal(r.status, 0, r.stderr)
+    assert.deepEqual(DETACHED_KEEP.map((k) => r.result[k]), [false, 'detached', '', 'skipped', false, 'unknown', why])
+    assert.equal(repo.head(a.path), before.head, 'worktree の HEAD は動かない')
+    assert.equal(repo.head(repo.main, `refs/heads/${a.branch}`), before.tip, 'ブランチ ref は動かない')
+    assert.equal(repo.git(a.path, 'rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD', 'detached のまま')
     assert.equal(r.result.baseFetched, false, '確定しなければ fetch もしない')
+  }
+  const snap = (repo, a) => ({ head: repo.head(a.path), tip: repo.head(repo.main, `refs/heads/${a.branch}`) })
+
+  test(`${tag} detached の子孫コミット: ブランチを先端まで進めて worktree を付け直し、通常の live として確定する（Issue #731）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    const child = repo.head(a.path)
+    const r = prep(repo, a)
+    assert.equal(r.status, 0, r.stderr)
+    assert.deepEqual(Object.keys(r.result), KEYS)
+    assert.deepEqual([r.result.resolved, r.result.branch, r.result.source, r.result.detached, r.result.wip, r.result.wipCommitted], [true, a.branch, 'worktree', 'attached', 'none', true])
+    assert.equal(repo.head(repo.main, `refs/heads/${a.branch}`), child)
+    assert.equal(repo.git(a.path, 'symbolic-ref', 'HEAD'), `refs/heads/${a.branch}`)
+    assert.equal(repo.git(a.path, 'status', '--porcelain'), '')
+    assert.deepEqual([r.result.branchSha, r.result.diff, r.result.commitsAhead], [child, 'nonempty', 1])
+  })
+
+  test(`${tag} detached の子孫コミットを付け直したあと、worktree-remove.sh の discard（--expect-branch）が通り、コミットはブランチに残る（Issue #731）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    const child = repo.head(a.path)
+    assert.equal(prep(repo, a).result.detached, 'attached')
+    const rm = spawnSync(bash, [join(dirname(SCRIPT), 'worktree-remove.sh'), 'remove', '--mode', 'discard', '--path', a.path, '--expect-branch', a.branch], { cwd: repo.main, encoding: 'utf8', env: gitEnv(repo.root) })
+    const last = rm.stdout.split('\n').filter(Boolean).pop() ?? ''
+    const res = JSON.parse(last.replace(/^WORKTREE_REMOVE_RESULT /, ''))
+    assert.equal(res.ok, true, rm.stdout + rm.stderr)
+    assert.ok(!existsSync(a.path))
+    assert.equal(repo.head(repo.main, `refs/heads/${a.branch}`), child)
+  })
+
+  test(`${tag} detached HEAD がブランチ先端と同一: 付け直すだけで確定する（Issue #731）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo, { commit: false })
+    const r = prep(repo, a)
+    assert.deepEqual([r.result.resolved, r.result.branch, r.result.detached, r.result.diff], [true, a.branch, 'attached', 'empty'])
+    assert.equal(repo.git(a.path, 'symbolic-ref', 'HEAD'), `refs/heads/${a.branch}`)
+  })
+
+  test(`${tag} detached の子孫コミットに未コミット変更がある: 付け直したあと WIP コミットがブランチの先頭に積まれる（Issue #731）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    const child = repo.head(a.path)
+    repo.write(a.path, 'u.txt', 'u\n')
+    const r = prep(repo, a)
+    assert.deepEqual([r.result.resolved, r.result.detached, r.result.wip, r.result.wipCommitted], [true, 'attached', 'committed', true])
+    assert.equal(logSubjects(repo, a.branch)[0], WIP_SUBJECT)
+    assert.equal(repo.git(repo.main, 'rev-parse', `refs/heads/${a.branch}~1`), child)
+    assert.equal(repo.git(a.path, 'status', '--porcelain'), '')
+  })
+
+  test(`${tag} detached でブランチが HEAD と分岐している: 確定せず（detached）、何も動かさない`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    repo.write(repo.main, 'm.txt', 'm\n')
+    repo.git(repo.main, 'add', 'm.txt')
+    repo.git(repo.main, 'commit', '-q', '-m', 'other')
+    repo.git(repo.main, 'update-ref', `refs/heads/${a.branch}`, repo.head(repo.main))
+    const before = snap(repo, a)
+    expectKept(repo, a, prep(repo, a), 'diverged', before)
+  })
+
+  test(`${tag} detached でブランチが HEAD より先行している: 確定せず（detached）、何も動かさない`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo, { commit: false })
+    repo.write(repo.main, 'm.txt', 'm\n')
+    repo.git(repo.main, 'add', 'm.txt')
+    repo.git(repo.main, 'commit', '-q', '-m', 'other')
+    repo.git(repo.main, 'update-ref', `refs/heads/${a.branch}`, repo.head(repo.main))
+    const before = snap(repo, a)
+    expectKept(repo, a, prep(repo, a), 'diverged', before)
+  })
+
+  test(`${tag} detached でブランチを別の worktree が checkout 中: 確定せず（detached）、何も動かさない`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    repo.git(repo.main, 'worktree', 'add', '-q', join(repo.root, 'wts', 'other'), a.branch)
+    const before = snap(repo, a)
+    expectKept(repo, a, prep(repo, a), 'in-use', before)
+  })
+
+  test(`${tag} detached で状態のブランチが無い・ローカルに無い・base と同名: 確定せず（detached）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    const before = snap(repo, a)
+    expectKept(repo, a, run(repo, ['--worktree', a.path, '--base', 'main']), 'no-state-branch', before)
+    expectKept(repo, a, run(repo, ['--worktree', a.path, '--branch', 'feat/9-nothing', '--base', 'main']), 'no-ref', before)
+    expectKept(repo, a, run(repo, ['--worktree', a.path, '--branch', a.branch, '--base', a.branch]), 'base-branch', before)
+  })
+
+  test(`${tag} detached でマージの途中: 確定せず（detached）、何も動かさない`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    writeFileSync(join(repo.git(a.path, 'rev-parse', '--absolute-git-dir'), 'MERGE_HEAD'), `${repo.head(repo.main)}\n`)
+    const before = snap(repo, a)
+    expectKept(repo, a, prep(repo, a), 'in-progress', before)
+  })
+
+  test(`${tag} detached の付け直しの途中で生存 agent が HEAD を進めた: 付け直さず保全し、ブランチも元へ戻す（Issue #731）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    const before = snap(repo, a)
+    // ブランチ ref の更新が確定した直後（symbolic-ref の前）に、worktree の detached HEAD へ空コミットを積む
+    const hook = join(repo.main, '.git', 'hooks', 'reference-transaction')
+    const marker = join(repo.root, 'raced')
+    writeFileSync(hook, `#!/bin/sh\n[ "$1" = committed ] || exit 0\n[ -e '${marker}' ] && exit 0\ngrep -q "refs/heads/${a.branch}" || exit 0\n: > '${marker}'\ngit -C '${a.path}' commit -q --allow-empty -m race </dev/null >/dev/null 2>&1\nexit 0\n`)
+    chmodSync(hook, 0o755)
+    const r = prep(repo, a)
+    assert.ok(existsSync(marker), '競合が注入された')
+    assert.equal(r.status, 0, r.stderr)
+    assert.equal(r.result.detached, 'failed')
+    assert.equal(r.result.resolved, false)
+    assert.equal(repo.git(a.path, 'rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD', 'detached のまま（競合で積まれたコミットを上書きしない）')
+    assert.notEqual(repo.head(a.path), before.head, '競合のコミットが HEAD に残る')
+    assert.equal(repo.head(repo.main, `refs/heads/${a.branch}`), before.head, 'ブランチは観測した HEAD（競合コミットの祖先）まで。競合コミットは含まない')
+    assert.ok(existsSync(a.path), 'worktree は削除されない')
+  })
+
+  test(`${tag} detached でブランチ ref の更新に失敗（lock 競合）: detached:failed で確定せず、HEAD もブランチも動かさない`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    writeFileSync(join(repo.main, '.git', 'refs', 'heads', `${a.branch}.lock`), '')
+    const before = snap(repo, a)
+    expectKept(repo, a, prep(repo, a), 'failed', before)
   })
 
   test(`${tag} メイン worktree のパスを渡されたとき: 確定せず（main-worktree）、メインの変更に触らない`, () => {

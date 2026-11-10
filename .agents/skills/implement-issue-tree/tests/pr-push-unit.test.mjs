@@ -25,7 +25,7 @@ export LC_ALL
 . "$1" || exit 9
 US=$(printf '\\037')
 i=0
-while IFS="$US" read -r fn a b c d; do
+while IFS="$US" read -r fn a b c d e; do
   rc=0
   out=""
   PP_ORIGIN=""; PP_PR_STATUS=""; PP_PR_NUMBER=""; PP_HEAD=""; PP_MILESTONE=""
@@ -37,7 +37,9 @@ while IFS="$US" read -r fn a b c d; do
 /g')" 2>&1) || rc=$?; pp_pr_number_from_output "$(printf '%s' "$a" | sed 's/@@/\\
 /g')" >/dev/null 2>&1; true ;;
     head) out=$(pp_head_status "$a" "$b" "$c" 2>&1) || rc=$?; pp_head_status "$a" "$b" "$c" >/dev/null 2>&1; true ;;
-    milestone) out=$(pp_milestone_status "$a" "$b" "$c" 2>&1) || rc=$?; pp_milestone_status "$a" "$b" "$c" >/dev/null 2>&1; true ;;
+    milestone) out=$(pp_milestone_status "$a" "$b" "$c" $d $e 2>&1) || rc=$?; pp_milestone_status "$a" "$b" "$c" $d $e >/dev/null 2>&1; PP_PR_STATUS=$PP_MS_CAUSE; true ;;
+    cause) out=$(pp_gh_cause "$a" "$b" 2>&1) || rc=$?; pp_gh_cause "$a" "$b" >/dev/null 2>&1; PP_ORIGIN=$PP_CAUSE; true ;;
+    retryable) out=$(pp_cause_retryable "$a" 2>&1) || rc=$?; true ;;
     rewrite) olines=$(printf '%s' "$a" | sed 's/@@/\\
 /g'); nlines=$(printf '%s' "$b" | sed 's/@@/\\
 /g'); out=$(pp_rewrite_equivalent "$olines" "$nlines" "$c" 2>&1) || rc=$?; pp_rewrite_equivalent "$olines" "$nlines" "$c" >/dev/null 2>&1; PP_ORIGIN=$PP_REWRITE; PP_PR_NUMBER=$PP_REWRITE_IMAGE; true ;;
@@ -174,6 +176,44 @@ for (const bash of availableBashes()) {
     const res = table(bash, cases.map(([c, rc, t]) => ['milestone', c, String(rc), t]))
     cases.forEach(([c, vrc, t, rc, status], i) => {
       assert.deepEqual({ rc: res[i].rc, status: res[i].origin, out: res[i].out }, { rc, status, out: '' }, JSON.stringify([c, vrc, t]))
+    })
+  })
+
+  test(`${tag} pp_gh_cause / pp_cause_retryable / pp_milestone_status の原因: レート制限だけが unknown で続行、それ以外は fetch-failed`, () => {
+    const causeCases = [
+      [0, '', 'ok'],
+      [1, 'gh: API rate limit exceeded for user ID 1. (HTTP 403)', 'rate-limited'],
+      [1, 'HTTP 429: Too Many Requests', 'rate-limited'],
+      [1, 'You have exceeded a secondary rate limit', 'rate-limited'],
+      [1, 'GraphQL: RATE_LIMITED', 'rate-limited'],
+      [1, 'HTTP 403: Resource not accessible by integration', 'forbidden'],
+      [1, 'HTTP 404: Not Found', 'not-found'],
+      [1, 'HTTP 502: Bad Gateway', 'server-error'],
+      [1, 'HTTP 503: Service Unavailable', 'server-error'],
+      [1, 'Post "https://api.github.com": dial tcp: connection reset by peer', 'network'],
+      [1, 'context deadline exceeded (Client.Timeout)', 'network'],
+      [1, '', 'other'],
+      [1, 'unexpected thing', 'other'],
+    ]
+    const cres = table(bash, causeCases.map(([rc, t]) => ['cause', String(rc), t]))
+    causeCases.forEach(([rc, t, cause], i) => assert.equal(cres[i].origin, cause, JSON.stringify([rc, t])))
+    const rcases = [['rate-limited', 0], ['server-error', 0], ['network', 0], ['forbidden', 1], ['not-found', 1], ['other', 1], ['ok', 1]]
+    const rres = table(bash, rcases.map(([c]) => ['retryable', c]))
+    rcases.forEach(([c, rc], i) => assert.equal(rres[i].rc, rc, c))
+    // [件数, issue view の終了コード, タイトル, 件数の原因, Issue の原因, 期待 rc, 期待 status, 期待 cause]
+    const cases = [
+      ['', 1, '', 'rate-limited', 'ok', 0, 'unknown', 'rate-limited'],
+      ['2', 1, '', 'ok', 'rate-limited', 0, 'unknown', 'rate-limited'],
+      ['', 1, '', 'forbidden', 'ok', 1, 'fetch-failed', 'forbidden'],
+      ['2', 1, '', 'ok', 'other', 1, 'fetch-failed', 'other'],
+      ['2', 1, '', 'ok', 'server-error', 1, 'fetch-failed', 'server-error'],
+      ['0', 1, '', 'ok', 'rate-limited', 0, 'not-used', ''], // 件数 0 なら Issue の原因は見ない
+      ['abc', 0, '', 'ok', 'ok', 1, 'fetch-failed', 'other'], // gh は成功したが値が不正
+      ['3', 0, 'v1', 'ok', 'ok', 0, 'assigned', ''],
+    ]
+    const res = table(bash, cases.map(([c, vrc, t, cc, ic]) => ['milestone', c, String(vrc), t, cc, ic]))
+    cases.forEach(([c, vrc, t, cc, ic, rc, status, cause], i) => {
+      assert.deepEqual({ rc: res[i].rc, status: res[i].origin, cause: res[i].status }, { rc, status, cause }, JSON.stringify([c, vrc, t, cc, ic]))
     })
   })
 

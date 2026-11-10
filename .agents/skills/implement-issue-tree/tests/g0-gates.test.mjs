@@ -397,7 +397,35 @@ test('recoverImplementPrompt: 手順 2 で checkout 後にリモート tip へ f
   const ffIdx = prompt.indexOf('git merge --ff-only refs/remotes/origin/')
   assert.ok(checkoutIdx >= 0, 'checkout 指示がない')
   assert.ok(ffIdx > checkoutIdx, 'checkout 後の git merge --ff-only refs/remotes/origin/<branch> 追従指示がない')
-  assert.ok(prompt.includes('(iv) が fail-closed で止める'), 'ff 不能（真の diverged）を後続 pr-create の (iv) に委ねる旨がない')
+  // #730: ff 不能（分岐）は続行せず merge でリモート tip を取り込む。push 済みコミットの書き換えは禁止。
+  const mergeIdx = prompt.indexOf('git merge --no-ff --no-edit refs/remotes/origin/')
+  assert.ok(mergeIdx > ffIdx, 'ff 失敗時の git merge --no-ff --no-edit refs/remotes/origin/<branch> がない')
+  assert.ok(prompt.includes('merge-base --is-ancestor refs/remotes/origin/'), '返却前の祖先確認がない')
+  assert.ok(!prompt.includes('(iv) が fail-closed で止める'), '旧文言（ff 不能でも続行）が残っている')
+  assert.match(prompt, /rebase・commit --amend・reset・squash で書き換えない/)
+})
+
+test('祖先確認の省略: Recover は abort 続行時に省略して summary に書き、0b-a には入らない（#751）', () => {
+  const rec = recoverImplementPrompt(item, { done: [], remaining: [], broken: [] }, 'fix/42-noop')
+  assert.match(rec, /返却前（リモートに branch があるとき）git merge-base --is-ancestor [^。]*偽なら merge で取り込み直す（abort して続行した場合は確認を省略し、その旨を summary に書く）。/)
+  const p = implementPrompt(item, { steps: ['noop'] })
+  const sec = p.slice(p.indexOf('0b-a.'), p.indexOf('0b-b.'))
+  assert.ok(!sec.includes('確認を省略'), '0b-a に省略条件が入っている')
+  assert.ok(sec.includes('成功後は git merge-base --is-ancestor'), '0b-a の成功後の祖先確認が消えている')
+})
+
+test('implementPrompt: 0b-a にも push 済みコミットの書き換え禁止が入る', () => {
+  const prompt = implementPrompt(item, 'plan')
+  const i = prompt.indexOf('0b-a.')
+  const j = prompt.indexOf('0b-b.')
+  assert.match(prompt.slice(i, j), /rebase・commit --amend・reset・squash で書き換えない/)
+  assert.match(prompt.slice(i, j), /規約が rebase を求めても、この禁止を優先する/)
+  assert.match(prompt.slice(i, j), /hook 拒否なら conventional な件名を一時ファイルへ書き git commit -F で確定する/)
+})
+
+test('recoverImplementPrompt: 書き換え禁止が規約より優先される', () => {
+  const prompt = recoverImplementPrompt(item, { done: [], remaining: [], broken: [] }, 'fix/42-noop')
+  assert.match(prompt, /規約が rebase を求めても、この禁止を優先する/)
 })
 
 test('implementPrompt: 0b-a で既存 open PR のブランチ取得後にリモート tip へ ff-only 追従する', () => {
@@ -414,6 +442,18 @@ test('implementPrompt: 0b-a で既存 open PR のブランチ取得後にリモ�
   const section0ba = prompt.slice(idx0ba, idx0bb)
   assert.ok(section0ba.includes('open PR の headRefName が安全文字集合に不適合'), 'headRefName 不適合時の fail-closed 理由文言がない')
   assert.ok(section0ba.includes('git fetch origin -- "<branch>:refs/remotes/origin/<branch>"'), 'ff 追従の fetch が -- とクォート付きで書かれていない')
+})
+
+test('implementPrompt: 0b-a は分岐取り込みのコンフリクトを commit --no-edit で確定し、引数つきで祖先確認する', () => {
+  const prompt = implementPrompt(item, { steps: ['noop'] })
+  const sec = prompt.slice(prompt.indexOf('0b-a.'), prompt.indexOf('0b-b.'))
+  assert.match(sec, /git add[^。]*git commit --no-edit/)
+  assert.ok(sec.includes('MERGE_HEAD'), 'MERGE_HEAD を残さない指示がない')
+  assert.ok(sec.includes('--is-ancestor "refs/remotes/origin/<branch>" HEAD'), '引数つきの祖先確認がない')
+  assert.ok(sec.includes('偽なら merge で取り込み直す'), '偽のときの取り込み直しがない')
+  assert.match(sec, /hook 拒否なら conventional な件名を一時ファイルへ書き git commit -F で確定する/)
+  assert.ok(!sec.includes('コンフリクトは解消し確定'), '旧文言が残っている')
+  assert.ok(!sec.includes('--is-ancestor で祖先確認'), '旧文言が残っている')
 })
 
 test('fixPrompt: pushAfterFix の両分岐で commitlint 事前確認の指示を含む', () => {
