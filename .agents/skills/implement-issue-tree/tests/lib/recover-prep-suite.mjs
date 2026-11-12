@@ -10,7 +10,7 @@
 //   - base の取得: 失敗しても差分が空とは言わない（unknown）。stale な追跡 ref が残っていても同じ。
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { spawnSync } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -532,6 +532,243 @@ export function registerRecoverPrepTests(bash) {
     repo.git(repo.main, 'worktree', 'add', '-q', join(repo.root, 'wts', 'other'), a.branch)
     const before = snap(repo, a)
     expectKept(repo, a, prep(repo, a), 'in-use', before)
+  })
+
+  // Issue #755: ブランチを握ったままの使い捨て worktree（Claude Code の lock・clean・HEAD が先端）は、付け直しの前に先端のコミットへ detached にして解放する。
+  // それ以外の握り手は従来どおり in-use のまま保全する（何も書かない）
+  const holderOf = (repo, a, { lock = `claude agent x (pid ${process.pid})`, name = 'holder' } = {}) => {
+    const dir = join(repo.root, 'wts', name)
+    repo.git(repo.main, 'worktree', 'add', '-q', dir, a.branch)
+    if (lock !== null) repo.git(repo.main, 'worktree', 'lock', '--reason', lock, dir)
+    return dir
+  }
+  const holderHeld = (repo, dir, a) => repo.git(dir, 'rev-parse', '--abbrev-ref', 'HEAD') === a.branch
+  const expectHolderKept = (repo, a, h, why) => {
+    const before = snap(repo, a)
+    expectKept(repo, a, prep(repo, a), why, before)
+    assert.ok(holderHeld(repo, h, a), '握り手はブランチ上のまま')
+  }
+
+  for (const [label, lock] of [
+    ['生きた pid（このランのセッション = 祖先）', `claude agent x (pid ${process.pid})`],
+    ['死んだ pid', 'claude agent x (pid 999999)'],
+    ['start つき', `claude agent x (pid ${process.pid} start 123)`],
+    ['session 形', `claude session x (pid ${process.pid})`],
+  ]) {
+    test(`${tag} detached の子孫コミットで握り手が使い捨て（${label}）: 握り手を先端へ detached にして付け直し、ブランチが fix の HEAD へ進む（Issue #755）`, () => {
+      const repo = makeRecoverRepo()
+      const a = detachedWith(repo)
+      const tip = repo.head(repo.main, `refs/heads/${a.branch}`)
+      const child = repo.head(a.path)
+      const h = holderOf(repo, a, { lock })
+      const r = prep(repo, a)
+      assert.equal(r.status, 0, r.stderr)
+      assert.deepEqual(Object.keys(r.result), KEYS)
+      assert.deepEqual([r.result.resolved, r.result.detached, r.result.branch], [true, 'attached', a.branch])
+      assert.equal(repo.head(repo.main, `refs/heads/${a.branch}`), child)
+      assert.equal(repo.git(a.path, 'symbolic-ref', 'HEAD'), `refs/heads/${a.branch}`)
+      assert.equal(repo.git(h, 'rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD', '握り手は detached')
+      assert.equal(repo.head(h), tip, '握り手は先端のコミットに残る')
+      assert.equal(repo.git(h, 'status', '--porcelain'), '')
+      assert.match(r.stderr, /detached にした/)
+    })
+  }
+
+  test(`${tag} 握り手を解放して付け直したあと、fix の worktree の discard が通り、コミットはブランチに残る。別の worktree が同じブランチを checkout できる（Issue #755）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    const child = repo.head(a.path)
+    holderOf(repo, a)
+    assert.equal(prep(repo, a).result.detached, 'attached')
+    const rm = spawnSync(bash, [join(dirname(SCRIPT), 'worktree-remove.sh'), 'remove', '--mode', 'discard', '--path', a.path, '--expect-branch', a.branch], { cwd: repo.main, encoding: 'utf8', env: gitEnv(repo.root) })
+    const res = JSON.parse((rm.stdout.split('\n').filter(Boolean).pop() ?? '').replace(/^WORKTREE_REMOVE_RESULT /, ''))
+    assert.equal(res.ok, true, rm.stdout + rm.stderr)
+    assert.equal(repo.head(repo.main, `refs/heads/${a.branch}`), child)
+    repo.git(repo.main, 'worktree', 'add', '-q', join(repo.root, 'wts', 'again'), a.branch)
+  })
+
+  test(`${tag} 握り手が lock の無い worktree・手動の lock: 解放せず in-use のまま保全する（Issue #755）`, () => {
+    for (const lock of [null, 'manual lock by user']) {
+      const repo = makeRecoverRepo()
+      const a = detachedWith(repo)
+      const h = holderOf(repo, a, { lock })
+      expectHolderKept(repo, a, h, 'in-use')
+    }
+  })
+
+  test(`${tag} 握り手が汚れている（追跡の変更・未追跡）: 解放せず in-use のまま保全する（Issue #755）`, () => {
+    for (const dirty of [(r, h) => r.write(h, 'a.txt', 'changed\n'), (r, h) => r.write(h, 'u.txt', 'u\n')]) {
+      const repo = makeRecoverRepo()
+      const a = detachedWith(repo)
+      const h = holderOf(repo, a)
+      dirty(repo, h)
+      expectHolderKept(repo, a, h, 'in-use')
+    }
+  })
+
+  test(`${tag} 握り手がマージの途中: 解放せず in-use のまま保全する（Issue #755）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    const h = holderOf(repo, a)
+    writeFileSync(join(repo.git(h, 'rev-parse', '--absolute-git-dir'), 'MERGE_HEAD'), `${repo.head(repo.main)}\n`)
+    expectHolderKept(repo, a, h, 'in-use')
+  })
+
+  test(`${tag} 握り手がメイン worktree: 解放せず保全する（Issue #755）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    repo.git(repo.main, 'checkout', '-q', a.branch)
+    const before = snap(repo, a)
+    expectKept(repo, a, prep(repo, a), 'in-use', before)
+    assert.equal(repo.git(repo.main, 'rev-parse', '--abbrev-ref', 'HEAD'), a.branch)
+  })
+
+  test(`${tag} 握り手の登録のパスが worktree 自身でない（.git が無い・別 clone が置かれた）: 何も書かず in-use のまま保全する（Issue #755）`, () => {
+    {
+      const repo = makeRecoverRepo()
+      const a = detachedWith(repo)
+      const h = holderOf(repo, a)
+      rmSync(join(h, '.git'))
+      const before = snap(repo, a)
+      expectKept(repo, a, prep(repo, a), 'in-use', before)
+      assert.equal(repo.git(repo.main, 'rev-parse', '--abbrev-ref', 'HEAD'), 'main')
+    }
+    {
+      const repo = makeRecoverRepo()
+      const a = detachedWith(repo)
+      const h = holderOf(repo, a)
+      rmSync(h, { recursive: true, force: true })
+      repo.git(repo.main, 'clone', '-q', repo.main, h)
+      const cloneHead = repo.head(h)
+      const before = snap(repo, a)
+      expectKept(repo, a, prep(repo, a), 'in-use', before)
+      assert.equal(repo.head(h), cloneHead, '別 clone の HEAD は動かない')
+      assert.equal(repo.git(h, 'rev-parse', '--abbrev-ref', 'HEAD'), 'main')
+    }
+  })
+
+  test(`${tag} 握り手が別 worktree へ移された（gitdir の逆参照がパスと食い違う）: 保全する（Issue #755）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    const h = holderOf(repo, a)
+    const gd = repo.git(h, 'rev-parse', '--absolute-git-dir')
+    writeFileSync(join(gd, 'gitdir'), `${join(repo.root, 'wts', 'elsewhere', '.git')}\n`)
+    const before = snap(repo, a)
+    expectKept(repo, a, prep(repo, a), 'in-use', before)
+    assert.ok(holderHeld(repo, h, a))
+  })
+
+  test(`${tag} 握り手が 2 つで 1 つだけ資格が無い: どちらにも触れず in-use のまま保全する（Issue #755）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    // 同じブランチは 2 つの worktree が同時に checkout できないので --force で作る
+    const dir2 = join(repo.root, 'wts', 'plain')
+    const h1 = holderOf(repo, a)
+    repo.git(repo.main, 'worktree', 'add', '-q', '--force', dir2, a.branch)
+    expectHolderKept(repo, a, h1, 'in-use')
+    assert.ok(holderHeld(repo, dir2, a))
+  })
+
+  test(`${tag} 先端が HEAD の祖先でない（diverged）: Claude の lock の握り手でも解放しない（Issue #755）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    const h = holderOf(repo, a)
+    repo.write(h, 'extra.txt', 'x\n')
+    repo.git(h, 'add', 'extra.txt')
+    repo.git(h, 'commit', '-q', '-m', 'holder own commit')
+    // 握り手のコミットでブランチ先端が動き、fix の HEAD と分岐する。握り手が残るので in-use（握り手は解放されない）
+    expectHolderKept(repo, a, h, 'in-use')
+  })
+
+  test(`${tag} 握り手の HEAD.lock が取られている（解放の瞬間に別の更新が走る競合）: 書かず失敗して保全する。ブランチも握り手も付け直しも動かない（Issue #755）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    const h = holderOf(repo, a)
+    const hh = repo.head(h)
+    const before = snap(repo, a)
+    const lock = join(repo.git(h, 'rev-parse', '--absolute-git-dir'), 'HEAD.lock')
+    writeFileSync(lock, 'other\n')
+    const r = prep(repo, a)
+    assert.equal(r.status, 0, r.stderr)
+    assert.equal(r.result.detached, 'in-use')
+    assert.equal(readFileSync(lock, 'utf8'), 'other\n', '他者のロックは消さない')
+    rmSync(lock)
+    assert.equal(repo.head(repo.main, `refs/heads/${a.branch}`), before.tip)
+    assert.equal(repo.head(a.path), before.head)
+    assert.equal(repo.git(a.path, 'rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD')
+    assert.equal(repo.head(h), hh)
+    assert.ok(holderHeld(repo, h, a))
+  })
+
+  test(`${tag} 握り手の lock が稼働中の別セッション（祖先でない生きた pid）: clean でも解放せず in-use のまま保全する（Issue #755）`, () => {
+    const other = spawn('sleep', ['120'], { detached: true, stdio: 'ignore' })
+    try {
+      const repo = makeRecoverRepo()
+      const a = detachedWith(repo)
+      const h = holderOf(repo, a, { lock: `claude agent x (pid ${other.pid})` })
+      expectHolderKept(repo, a, h, 'in-use')
+    } finally {
+      other.kill()
+    }
+  })
+
+  test(`${tag} --mode free: 使い捨ての握り手を解放して freed。WIP コミットも fetch も行わず、--worktree のパスには触れない（Issue #755）`, () => {
+    const repo = makeRecoverRepo()
+    const a = detachedWith(repo)
+    const h = holderOf(repo, a)
+    repo.write(a.path, 'u.txt', 'u\n')
+    const tip = repo.head(repo.main, `refs/heads/${a.branch}`)
+    const r = run(repo, ['--mode', 'free', '--branch', a.branch, '--base', 'main', '--worktree', a.path])
+    assert.equal(r.status, 0, r.stderr)
+    assert.deepEqual(Object.keys(r.result), KEYS)
+    assert.deepEqual([r.result.resolved, r.result.reason, r.result.detached, r.result.wip, r.result.baseFetched], [false, 'free-only', 'freed', 'skipped', false])
+    assert.equal(repo.git(h, 'rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD')
+    assert.equal(repo.head(h), tip)
+    assert.equal(repo.head(repo.main, `refs/heads/${a.branch}`), tip, 'ブランチは動かさない')
+    assert.equal(repo.git(a.path, 'status', '--porcelain'), '?? u.txt', 'WIP コミットは作らない')
+  })
+
+  // git の rev-parse --show-ref-format だけを差し替える PATH 先頭の git ラッパー（out は標準出力・rc は終了コード）
+  const shimGit = (repo, out, rc) => {
+    const real = spawnSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' }).stdout.trim()
+    const dir = mkdtempSync(join(repo.root, 'shim-'))
+    writeFileSync(join(dir, 'git'), `#!/bin/sh\ncase " $* " in *" rev-parse --show-ref-format "*) printf '%s' '${out}'; exit ${rc};; esac\nexec '${real}' "$@"\n`)
+    chmodSync(join(dir, 'git'), 0o755)
+    return { PATH: `${dir}:${process.env.PATH}` }
+  }
+
+  for (const [label, out, rc, word] of [['Git 2.45 未満（オプションをそのまま返す）', '--show-ref-format', 0, 'freed'], ['Git 2.45 未満（出力が空で非 0）', '', 1, 'freed'], ['reftable が明示された', 'reftable', 0, 'failed']]) {
+    test(`${tag} --mode free: ${label}ときの握り手の解放は ${word}（Issue #755）`, () => {
+      const repo = makeRecoverRepo()
+      const a = detachedWith(repo)
+      const h = holderOf(repo, a)
+      const r = run(repo, ['--mode', 'free', '--branch', a.branch, '--base', 'main', '--worktree', a.path], { env: shimGit(repo, out, rc) })
+      assert.equal(r.status, 0, r.stderr)
+      assert.equal(r.result.detached, word)
+      assert.equal(repo.git(h, 'rev-parse', '--abbrev-ref', 'HEAD') === 'HEAD', word === 'freed')
+    })
+  }
+
+  test(`${tag} --mode free: 握り手なしは none、資格の無い握り手は in-use、ブランチが無ければ no-ref、base と同名は base-branch、--worktree 自身は握り手に数えない（Issue #755）`, () => {
+    const repo = makeRecoverRepo()
+    const a = repo.addWorktree('a')
+    const free = (extra = []) => run(repo, ['--mode', 'free', '--branch', a.branch, '--base', 'main', ...extra]).result.detached
+    assert.equal(free(['--worktree', a.path]), 'none')
+    const h = join(repo.root, 'wts', 'plain')
+    repo.git(repo.main, 'worktree', 'add', '-q', '--force', h, a.branch)
+    assert.equal(free(), 'in-use')
+    assert.ok(holderHeld(repo, h, a))
+    assert.equal(run(repo, ['--mode', 'free', '--branch', 'feat/9-nothing', '--base', 'main']).result.detached, 'no-ref')
+    assert.equal(run(repo, ['--mode', 'free', '--branch', 'main', '--base', 'main']).result.detached, 'base-branch')
+  })
+
+  test(`${tag} 引数検証: --mode の不正値・free で --branch 欠落は exit 2 で結果の行を出さない（Issue #755）`, () => {
+    const repo = makeRecoverRepo()
+    for (const args of [['--mode', 'x', '--branch', 'b', '--base', 'main'], ['--mode', 'free', '--base', 'main', '--worktree', '/tmp/x'], ['--mode', 'free', '--branch', 'b'], ['--mode']]) {
+      const r = run(repo, args)
+      assert.equal(r.status, 2, args.join(' '))
+      assert.equal(r.result, null)
+    }
   })
 
   test(`${tag} detached で状態のブランチが無い・ローカルに無い・base と同名: 確定せず（detached）`, () => {

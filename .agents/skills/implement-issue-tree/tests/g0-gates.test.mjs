@@ -388,6 +388,14 @@ test('recoverImplementPrompt: commitlint 事前確認の指示を含む', () => 
   }
 })
 
+// Review fix は隔離された別 worktree からブランチ先端を更新し、使用中のブランチは動かさずに中止する。実装側（新規・回復）が
+// コミット後に detach してブランチを外さないと、最初の fix が必ず commitFailed で終わる。
+test('implementPrompt / recoverImplementPrompt: コミット後に git checkout --detach でブランチを worktree から外す', () => {
+  for (const prompt of [implementPrompt(item, { steps: ['noop'] }), recoverImplementPrompt(item, { done: [], remaining: [], broken: [] }, 'fix/42-noop')]) {
+    assert.match(prompt, /7\. push・PR 作成はここでは行わない。[^\n]*git checkout --detach を実行して終了する（必須/)
+  }
+})
+
 // Bugbot（PR #436 追補）: pr-create は base 取り込みコミットを detached HEAD から push しローカル
 // refs/heads を更新しないため、PR 作成失敗後の Recover → 回復 Implement が古いローカル tip を掴むと
 // 次の pr-create が remote-ahead / diverged で再失敗しループする。checkout 後の ff 追従を固定する。

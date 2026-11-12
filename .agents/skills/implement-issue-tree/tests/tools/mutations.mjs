@@ -446,4 +446,11 @@ export const MUTATIONS = [
   { id: 'WO1-observe-no-retry', file: SRC, from: 'const WT_OBSERVE_TRIES = 3', to: 'const WT_OBSERVE_TRIES = 1', tests: ['worktree-observe-retry.test.mjs'], note: "#735: 食い違いを取り直さない（並行ランの作成・削除で新規着手が止まる）" },
   { id: 'WO2-observe-never-differs', file: SRC, from: 'Number.isInteger(count) && count !== entries.length', to: 'Number.isInteger(count) && count === entries.length', tests: ['worktree-observe-retry.test.mjs'], note: "#735: 食い違いの判定を反転する" },
   { id: 'WO3-observe-unbounded', file: SRC, from: 'while (++i < WT_OBSERVE_TRIES && worktreeCountsDiffer(...r))', to: 'while (worktreeCountsDiffer(...r))', tests: ['worktree-observe-retry.test.mjs'], note: "#735: 取り直しに上限を設けない" },
+  { id: 'H1-holder-dirty-ignored', file: RP_LIB, from: '  elif [ "$3" -gt 0 ]; then\n    echo dirty', to: '  elif false; then\n    echo dirty', tests: RP_ALL, note: "#755: 汚れた握り手も解放する（握り手の未コミット変更を持つ worktree の HEAD を外す）" },
+  { id: 'H2-holder-not-agent-ignored', file: RP_LIB, from: '  elif ! wr_lock_pid "$5"; then\n    echo not-agent', to: '  elif false; then\n    echo not-agent', tests: RP_ALL, note: "#755: Claude の lock でない握り手（利用者の worktree）も解放する" },
+  { id: 'H3-holder-ahead-precondition-dropped', file: RP, from: 'if [ "${adopt_ahead}" = 0 ] && [ "${adopt_ip}" = 0 ] && [ "${adopt_branch}" != "${base}" ]; then free_holders', to: 'if true; then free_holders', tests: RP_REAL, note: "#755: 先端が HEAD の祖先でなくても握り手を解放する（付け直せないのに握り手だけ外す）" },
+  { id: 'H4-holder-self-counted', file: RP, from: '    [ "${hself}" = 1 ] && continue\n', to: '', tests: RP_REAL, note: "#755: 回復対象自身を握り手に数える（自分自身が in-use の原因になる）" },
+  { id: 'H5-holder-moved-ignored', file: RP_LIB, from: '  elif [ "$2" != 1 ]; then\n    echo moved', to: '  elif false; then\n    echo moved', tests: RP_UNIT, note: "#755: 握り手の HEAD が先端と食い違っても解放する" },
+  { id: 'H6-holder-foreign-ignored', file: RP_LIB, from: '  elif [ "$6" != 1 ]; then\n    echo foreign', to: '  elif false; then\n    echo foreign', tests: RP_ALL, note: "#755: 稼働中の別セッションの worktree も clean なら解放する（解放後のコミットがその detached HEAD に積まれる）" },
+  { id: 'H7-holder-head-lock-dropped', file: RP, from: '  ( set -C; printf', to: '  ( printf', tests: RP_REAL, note: "#755: HEAD.lock の排他作成をやめる（他者のロックを上書きして確認と書き込みの間の切り替えを防げない）" },
 ]
