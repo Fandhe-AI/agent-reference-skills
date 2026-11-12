@@ -223,7 +223,7 @@ gh pr list --state merged --limit 3 --json headRefOid --jq '.[].headRefOid' \
 **Recover の判断軸は Review とは別**である。Review は「実装が正しいか・マージできるか」を判定するのに対し、Recover は「この途中作業から継続するのが妥当か」を判断する。動かない・未完成でも方向が妥当なら continue（残りは Implement が完成させる）。
 
 **未 commit 変更は WIP commit として branch へ退避してから worktree を削除する**ため、continue / discard どちらの経路でもデータを失わない。対象ブランチの解決・WIP commit（フックを通す）・`origin/<base>` の取得・差分の有無は `scripts/recover-prep.sh` が決定的に行い（`references/script-trust-model.md` の第 9 弾）、Recover エージェントに残るのは継続か破棄かの判断と回復ブリーフの作成だけである。discard の場合は WIP commit を残した状態で branch を削除する。**削除後は reflog に残らない**（gc までの到達不能オブジェクトとして残るだけ）ため、`worktree-remove.sh` は消す前のブランチ先頭 sha を結果に出し、ホストがログに残す（`git branch <名前> <sha>` で gc までの間は復元できる）。
-detached の worktree に fix のコミットだけが残った場合（ブランチ先端が HEAD の祖先で未使用）は、`recover-prep.sh` がブランチを fast-forward して worktree を付け直してから継続・破棄を判断する（Issue #731。`references/recovery.md`）。
+detached の worktree に fix のコミットだけが残った場合（ブランチ先端が HEAD の祖先で未使用）は、`recover-prep.sh` がブランチを fast-forward して worktree を付け直してから継続・破棄を判断する（Issue #731。`references/recovery.md`）。ブランチを握ったままの使い捨て worktree（Claude Code の lock・clean・HEAD が先端・途中状態なし）は、付け直しの前に先端へ detached にして解放する（Issue #755。lock の pid が終了済み、またはこのランのセッションの祖先のときだけ。稼働中の別セッションや所有を確認できない握り手があれば何も触れず `in-use` で保全）。最初の Review fix の前にも同じ解放を `recover-prep.sh --mode free` で 1 回試みる（助言的・失敗しても fix は走る）。
 
 **削除ゲート（continue / discard 共通）**: Recover エージェントの返す `wipCommitted` は（`recover-prep.sh` の結果の行を写した）エージェントの返却値であり、誤判定・異常応答・プロンプトインジェクションで真を騙られ得る。加えて Recover は「フック失敗等で退避できなかった場合は `wipCommitted: false` を返して続行する」契約のため、`continue` も退避失敗時に返り得る。そのため **continue / discard いずれの経路でも** worktree の削除は次の 2 条件を**両方**満たす場合にのみ実行する。
 
@@ -278,7 +278,7 @@ detached の worktree に fix のコミットだけが残った場合（ブラ�
    （`scope-enum` を設定したリポでは必ず落ち、Review 3 巡を消費した後の push で初めて検出される）。
    イシューとの紐付けは footer の `Refs #<N>` と PR 本文の `Closes #<N>` で行う。
    push 前 base 最新化ゲート（Step 5・Merge ループの fix）で作る base 取り込みマージコミットの subject も同じ手順で type / scope を決める（固定の `chore:` は `type-enum` / `scope-enum` を持つリポの commit-msg hook に拒否される。拒否されたら `git merge --abort` して push せず fail-closed）
-7. **push・PR 作成はここでは行わない**。ローカルブランチにコミットを積んだ状態で終了し、後続の Review フェーズへ渡す
+7. **push・PR 作成はここでは行わない**。ローカルブランチにコミットを積んだら `git checkout --detach` でブランチを worktree から外して終了し、後続の Review フェーズへ渡す（Review の fix は隔離された別 worktree からブランチ先端を更新する。自分の worktree の外へは触れられないため、ブランチを checkout 中の worktree が残っていると先端を進められず `commitFailed` で終わる）
 
 ```bash
 # 作業ブランチ作成例（並列時の衝突回避のためイシュー番号を含める）

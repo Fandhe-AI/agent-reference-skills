@@ -141,18 +141,21 @@ test('fixPrompt(pushAfterFix: false): pr-push.sh を呼ばない（push 前の R
   assert.doesNotMatch(text, /pr-push\.sh/)
   // Issue #731: git branch -f は別 worktree が checkout 中だと拒否されるため update-ref で更新し、反映を確認する
   assert.ok(!text.includes(`git update-ref refs/heads/${B} HEAD`), '旧値なしの update-ref は使わない')
-  assert.match(text, /merge --ff-only/, '使用中 worktree は ff-only で一緒に進める')
-  assert.match(text, /merge --ff-only --no-overwrite-ignore /, 'ignored ファイルを上書きしない（上書きが必要なら失敗して保全）')
+  // fix は隔離された worktree で動き、自分の worktree の外への git -C・cd をハーネスに拒否される。使用中 worktree を一緒に進める手順
+  // （git -C <path> status / merge --ff-only）を戻すと、実装 worktree がブランチを checkout 中のあいだ必ず commitFailed で終わる
+  const tipStart = text.indexOf('先端更新（')
+  const tip = text.slice(tipStart, text.indexOf('レビュースレッドの resolve は行わない'))
+  assert.ok(tipStart >= 0 && tip.length > 0, '先端更新の節が見つからない')
+  assert.doesNotMatch(tip, /git\s+-C\b|\bcd\s|<path>|merge --ff-only/, '先端更新は自分の worktree の外へ触る手順を持たない')
+  assert.ok(tip.includes('あれば中止（その worktree を含め、カレントの worktree の外には一切触れない'), '使用中 worktree があれば触らずに中止する')
   assert.ok(text.includes(`git update-ref refs/heads/${B} <HEAD の sha> <old>`), '未使用なら旧値つき')
   assert.ok(text.includes('detach 直後に git rev-parse HEAD の値を <old> として字面で控え'), '旧値は detach 直後の HEAD（ブランチ ref の読み直しは不可）')
   assert.ok(text.includes('シェル変数不可'))
   assert.ok(!text.includes(`git rev-parse refs/heads/${B} の値を <old>`))
   assert.ok(text.includes(`git rev-parse refs/heads/${B} が <old> と違えば中止`))
-  assert.ok(text.includes('HEAD が <old> のときだけ'))
   assert.doesNotMatch(text, /\$old/)
   assert.ok(!text.includes('old=$('))
   assert.ok(!text.includes('ref≠'))
-  assert.match(text, /status --porcelain=v2 -uall/, '使用中 worktree の clean 確認')
   assert.ok(text.includes(`git rev-parse refs/heads/${B} が HEAD と不一致`))
   // #751: 先端更新の照合失敗（中止）は条件不成立と同じ pushed: false・commitFailed: true で返す
   const abortIdx = text.indexOf(`git rev-parse refs/heads/${B} が <old> と違えば中止`)

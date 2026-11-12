@@ -103,6 +103,70 @@ rp_branch_in_use() {
   return 1
 }
 
+# `git worktree list --porcelain` の出力 $1 から、ブランチ $2 を checkout 中の、メイン以外の登録を 1 件 1 行（パス TAB HEAD の sha TAB lock の有無 0/1 TAB lock の理由）で
+# 標準出力へ返す（Issue #755）。先頭のエントリはメイン worktree なので除外する。ブランチ名は行全体の完全一致で比べる。パスは空白を含んでよい（TAB を含むパスは出さない）。
+# lock の理由は最後の欄（空のことがある）
+rp_holder_entries() {
+  local line cur="" idx=0 sha="" br=0 lk=0 reason="" tab=$'\t'
+  _rp_holder_flush() {
+    if [ "${idx}" -gt 1 ] && [ "${br}" = 1 ]; then
+      case "${cur}" in
+        *"${tab}"*) ;;
+        *) printf '%s\t%s\t%s\t%s\n' "${cur}" "${sha}" "${lk}" "${reason}" ;;
+      esac
+    fi
+  }
+  while IFS= read -r line; do
+    case "${line}" in
+      'worktree '*)
+        _rp_holder_flush
+        cur=${line#worktree }
+        idx=$((idx + 1))
+        sha=""
+        br=0
+        lk=0
+        reason=""
+        ;;
+      'HEAD '*) sha=${line#HEAD } ;;
+      "branch refs/heads/$2") br=1 ;;
+      'locked' | 'locked '*)
+        lk=1
+        reason=${line#locked}
+        reason=${reason# }
+        ;;
+    esac
+  done <<<"$1"
+  _rp_holder_flush
+  unset -f _rp_holder_flush
+  return 0
+}
+
+# 使用中ブランチの握り手を解放してよいかの判定（Issue #755）。引数: $1 = 握り手が回復対象の worktree 自身か（0 / 1）、$2 = 握り手の HEAD がブランチ先端と一致するか（0 / 1）、
+# $3 = 汚れの行数（-1 = 確認できなかった）、$4 = マージ・cherry-pick・revert・rebase の途中か（0 / 1）、$5 = lock の理由、$6 = このランが所有する、または終了済みの握り手か
+# （0 / 1。lock の pid が死んでいる、またはこのスクリプトの祖先 = 同じセッション、のときだけ 1。確認できなければ 0）。標準出力は固定語:
+#   free（解放してよい）/ self / not-agent（lock が Claude Code の worktree の形でない = 利用者の worktree かもしれない）/ foreign（稼働中の別セッションかもしれない）/
+#   unobservable / dirty / in-progress / moved
+# 稼働中の別の Claude セッションの worktree は、clean な瞬間でも解放しない（解放後のコミットがその worktree の detached HEAD に積まれるため）。所有を確認できなければ保全する
+rp_holder_plan() {
+  if [ "$1" = 1 ]; then
+    echo self
+  elif ! wr_lock_pid "$5"; then
+    echo not-agent
+  elif [ "$6" != 1 ]; then
+    echo foreign
+  elif [ "$3" -lt 0 ]; then
+    echo unobservable
+  elif [ "$3" -gt 0 ]; then
+    echo dirty
+  elif [ "$4" != 0 ]; then
+    echo in-progress
+  elif [ "$2" != 1 ]; then
+    echo moved
+  else
+    echo free
+  fi
+}
+
 # 付け直し（adopt）の可否。引数: $1 = 状態ファイルのブランチ名（空 = 記録なし）、$2 = base、$3 = ローカルの refs/heads/<branch> が実在するか（0 / 1）、
 # $4 = そのブランチをどこかの worktree が checkout 中か（0 / 1）、$5 = HEAD に含まれないブランチ側のコミット数（`git rev-list --count HEAD..branch`。
 # 数値でなければ確認不能）、$6 = マージ・cherry-pick・revert・rebase の途中か（0 / 1）。標準出力は固定語:
