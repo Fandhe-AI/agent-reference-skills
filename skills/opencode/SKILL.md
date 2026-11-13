@@ -2,7 +2,8 @@
 name: opencode
 description: >
   OpenCode (opencode.ai のオープンソース AI コーディングエージェント, v2) の利用リファレンス。
-  opencode.jsonc 設定, permissions, policies, snapshots, compaction, warming,
+  opencode.jsonc 設定, agents (build / plan), models, providers, OpenCode skills, commands, plugins,
+  Ollama ローカルモデル, MCP servers, tools, websearch, network, permissions, policies, snapshots, compaction, warming,
   AGENTS.md instructions, formatters, themes, troubleshooting, V1 移行。
 user-invocable: false
 ---
@@ -55,6 +56,42 @@ skills/opencode/
       attachments.md
       formatters.md
       themes.md
+    agents-models/
+      README.md
+      agents.md
+      agent-options.md
+      models.md
+      model-variants.md
+      model-options-aliases.md
+      model-reasoning-caching.md
+      model-compatibility.md
+      local-models.md
+      providers.md
+      provider-requests.md
+      provider-packages-models.md
+      provider-azure.md
+      provider-bedrock-vertex.md
+      provider-copilot-local-gateways.md
+      provider-errors.md
+      skills.md
+      commands.md
+      plugins.md
+    tools-mcp/
+      README.md
+      tools-overview.md
+      tools-files.md
+      tools-shell-web.md
+      tools-interaction-automation.md
+      tools-browser.md
+      websearch.md
+      network.md
+      mcp-overview.md
+      mcp-local.md
+      mcp-remote.md
+      mcp-oauth.md
+      mcp-timeouts-protocol-pooling.md
+      mcp-permissions-names.md
+      mcp-runtime-behavior.md
     permissions-policies/
       README.md
       permissions.md
@@ -64,6 +101,23 @@ skills/opencode/
       snapshots.md
       compaction.md
       warming.md
+  samples/
+    README.md
+    minimal-config.md
+    config-variables.md
+    custom-provider.md
+    local-models-ollama.md
+    custom-agent.md
+    custom-command.md
+    agent-skill.md
+    agents-md-instructions.md
+    mcp-servers.md
+    permissions-rules.md
+    policies-provider-allowlist.md
+    formatters.md
+    keybinds.md
+    acp-zed.md
+    github-actions-run.md
 ```
 
 ## 探索手順
@@ -83,5 +137,12 @@ skills/opencode/
 | opencode.jsonc の置き場所・スキーマ・変数展開を知りたい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | AGENTS.md instructions・formatters・themes・attachments・worktrees を設定したい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | アクセス制御・ワークスペース・外部連携（MCP / skills / commands / references / plugins / providers キー）・experimental 設定を確認したい | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| agents (build / plan) をカスタマイズしたい、agent options を知りたい | agents-models | [references/agents-models/README.md](references/agents-models/README.md) |
+| models・variants・model options / aliases・reasoning・caching・model compatibility・ローカルモデルを設定したい | agents-models | [references/agents-models/README.md](references/agents-models/README.md) |
+| providers（provider requests / provider packages・models / Azure / Bedrock / Vertex / Copilot / ゲートウェイ）の設定とエラー対処をしたい | agents-models | [references/agents-models/README.md](references/agents-models/README.md) |
+| OpenCode skills・commands・plugins の設定を知りたい | agents-models | [references/agents-models/README.md](references/agents-models/README.md) |
+| tools（ファイル・シェル・Web・ブラウザ）の仕様と websearch・network 設定を知りたい | tools-mcp | [references/tools-mcp/README.md](references/tools-mcp/README.md) |
+| MCP servers（local / remote）の接続・OAuth・タイムアウト・権限名を設定したい | tools-mcp | [references/tools-mcp/README.md](references/tools-mcp/README.md) |
 | permissions のルールを設計したい、policies で組織制約を掛けたい | permissions-policies | [references/permissions-policies/README.md](references/permissions-policies/README.md) |
 | snapshots・compaction・warming などセッション挙動を調整したい | sessions | [references/sessions/README.md](references/sessions/README.md) |
+| 典型的な使い方・設定例を知りたい | samples | [samples/README.md](samples/README.md) |

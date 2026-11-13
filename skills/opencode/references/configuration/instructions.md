@@ -127,6 +127,7 @@ Configured instructions load after `AGENTS.md` files, in the order they are list
 
 ## Notes
 
+- Remote `https://` instructions are fetched when the config loads and are treated as instructions; use URLs only from origins you control and trust.
 - OpenCode V2 recognizes `AGENTS.md` only. It does not use `CLAUDE.md` as a fallback.
 - Local files update like `AGENTS.md` when they change. New files matching a glob load on the next config change.
 - Missing files are skipped. A URL that cannot be fetched is skipped, or keeps its last fetched content.

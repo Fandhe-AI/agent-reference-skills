@@ -83,12 +83,18 @@ Only Anthropic remains available.
 provider ID: `anthropic`, `openai`, `opencode`, or a custom ID from
 [`providers`](https://opencode.ai/docs/providers/).
 
+Adapted (not in the official docs): the official example defines `company-ai` without `models`. A custom provider has no catalog models or credentials, so `env` and a `models` entry are added; replace them with your gateway's key variable and models (omit `env` for a keyless gateway).
+
 ```jsonc
 {
   "providers": {
     "company-ai": {
+      "env": ["COMPANY_AI_API_KEY"],
       "package": "@opencode/ai/providers/openai-compatible",
       "settings": { "baseURL": "https://ai.company.example/v1" },
+      "models": {
+        "coder": { "name": "Company Coder", "modelID": "company-coder" },
+      },
     },
   },
   "policies": [
@@ -337,6 +343,7 @@ Fields of each policy statement:
 
 ## Notes
 
+- Adapted from the official docs: the `company-ai` example adds `env` and a `models` map, because a custom provider has no catalog models and denying every other provider would otherwise leave no usable model.
 - Policies never prompt and never grant access; they only tighten permissions and providers.
 - Admin-enforced restrictions belong in `policies`, not ordinary settings such as `permissions`.
 - Clients older than 2.2.3 (`integration.*`, `mcp.use`, `skill.use`, `plugin.use`) and 2.2.6 (`websearch.use`) ignore the newer actions.
