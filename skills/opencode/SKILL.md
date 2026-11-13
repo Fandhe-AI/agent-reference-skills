@@ -17,7 +17,7 @@ V1（`/v1/docs`）は対象外で、V1 からの移行のみ `references/getting
 
 ## 姉妹スキル
 
-- `opencode-build` — プラグイン開発（`@opencode/plugin` / `@opencode/client` / `@opencode/sdk`、GUI プラグイン、Effect 版、サーバー HTTP API）。TUI プラグインは追加予定（それまでは公式 https://opencode.ai/docs/build/ と https://opencode.ai/docs/api/ を参照）
+- `opencode-build` — プラグイン開発（`@opencode/plugin` / `@opencode/client` / `@opencode/sdk`、TUI / GUI プラグイン、Effect 版、サーバー HTTP API）
 - `opencode-console` — OpenCode Console のゲートウェイ・OpenCode Go・ワークスペース・harnesses
 
 本スキルは利用側（設定・エージェント・モデル・ツール・権限・CLI）を担当し、拡張開発と Console は上記の姉妹スキルを参照する。

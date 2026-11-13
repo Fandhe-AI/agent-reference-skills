@@ -123,6 +123,7 @@ Any other id throws a `TypeError` on the line that names it. Model options inclu
 - The `"demo"` object name is for illustration; choose an object name from an authenticated user or conversation. The example removes OpenCode's local tools (read, write, edit, patch, glob, grep, shell) because they are unsupported in a Worker; the harness does not run a shell on a host.
 - Remote MCP servers are registered through a plugin (`ctx.mcp.transform`). Only register MCP servers you trust: their tools become available to the model.
 - Distinction: this is a harness over a plain Durable Object, not the `Agent` base class (sibling agent-class category). Workers AI models come from the cloudflare-ai skill (workers-ai; https://developers.cloudflare.com/workers-ai/); for a sandboxed execution environment use the cloudflare-sandbox-containers skill (sandbox; https://developers.cloudflare.com/sandbox/).
+- OpenCode itself (CLI, configuration, plugins, `@opencode/sdk/workerd`, HTTP API) is covered by the opencode and opencode-build skills; this page only covers the Cloudflare Agents harness integration.
 
 ### Worker-safe tool plugin (src/worker-tools.ts)
 
