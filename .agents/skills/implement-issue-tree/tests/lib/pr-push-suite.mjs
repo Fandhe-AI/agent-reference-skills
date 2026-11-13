@@ -146,6 +146,46 @@ export function registerPrPushTests(bash) {
     assert.deepEqual(mutatingSince(sb2, n).filter((c) => /^(checkout |merge |push )/.test(c)), [])
   })
 
+  t('prepare: 入れ子の ref だけが有る（本物の branch は無い）なら branch 無しと判定する（Issue #770）', () => {
+    const sb = makeSandbox()
+    localBranch(sb)
+    const main = git(sb.origin, 'rev-parse', 'refs/heads/main')
+    git(sb.origin, 'update-ref', `refs/heads/zzz/refs/heads/${BRANCH}`, main)
+    git(sb.origin, 'update-ref', '-d', `refs/heads/${BRANCH}`)
+    const local = git(sb.wt, 'rev-parse', BRANCH)
+    assert.deepEqual(prepare(sb, 'pr-create'), { mode: 'prepare', status: 'merged', start: 'local' })
+    assert.equal(git(sb.wt, 'rev-parse', 'HEAD^1'), local)
+    const sb2 = makeSandbox()
+    git(sb2.origin, 'update-ref', `refs/heads/zzz/refs/heads/${BRANCH}`, main)
+    git(sb2.origin, 'update-ref', '-d', `refs/heads/${BRANCH}`)
+    const n = sb2.gitCalls().length
+    assert.equal(prepare(sb2, 'fix').status, 'branch-fetch-failed')
+    assert.deepEqual(mutatingSince(sb2, n).filter((c) => /^(checkout |merge |push )/.test(c)), [])
+    assert.deepEqual(sb2.gitCalls().slice(n).filter((c) => c.startsWith('fetch') && c.includes(`refs/heads/${BRANCH}:`)), [])
+  })
+
+  t('prepare: 入れ子の ref と本物の branch が両方あるときは本物の sha を使う（Issue #770）', () => {
+    for (const nested of [`refs/heads/a/refs/heads/${BRANCH}`, `refs/heads/zzz/refs/heads/${BRANCH}`]) {
+      const sb = makeSandbox()
+      localBranch(sb)
+      git(sb.origin, 'update-ref', nested, git(sb.origin, 'rev-parse', 'refs/heads/main'))
+      assert.deepEqual(prepare(sb, 'pr-create'), { mode: 'prepare', status: 'merged', start: 'remote' })
+      assert.equal(git(sb.wt, 'rev-parse', 'HEAD^1'), sb.remoteSha())
+      const sb2 = makeSandbox()
+      git(sb2.origin, 'update-ref', nested, git(sb2.origin, 'rev-parse', 'refs/heads/main'))
+      assert.equal(prepare(sb2, 'fix').status, 'merged')
+      assert.equal(git(sb2.wt, 'rev-parse', 'HEAD^1'), sb2.remoteSha())
+    }
+  })
+
+  t('prepare pr-create: ls-remote の失敗は「branch が無い」と読み替えず branch-fetch-failed で止まる', () => {
+    const sb = makeSandbox()
+    localBranch(sb)
+    const n = sb.gitCalls().length
+    assert.equal(prepare(sb, 'pr-create', [], { FAKE_LS_1: 'fail' }).status, 'branch-fetch-failed')
+    assert.deepEqual(mutatingSince(sb, n).filter((c) => /^(checkout |merge |push )/.test(c)), [])
+  })
+
   t('prepare pr-create: remote ahead（第三者の push と区別できない）・diverged・ローカル欠落は中止する。HEAD は動かず merge も push もしない。両 tip の sha を返す', () => {
     // remote ahead: ローカルが古く、リモートが進んでいる
     const sb = makeSandbox()

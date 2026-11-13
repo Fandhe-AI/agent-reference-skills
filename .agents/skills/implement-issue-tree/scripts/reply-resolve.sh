@@ -12,6 +12,8 @@
 #         2. スレッドごと: 状態を読み、別 PR・別リポジトリ・resolve 済みなら何もしない。自分の同 sha の返信が既にあれば返信せず
 #            resolve だけ行う（返信後に resolve が失敗した再実行で二重投稿しない）。無ければ返信し、返信が SUBMITTED で
 #            成功したときだけ resolve する（返信に失敗したスレッドは resolve しない = 未解決のまま残る）
+#       リモートの refs/heads/<branch> は pv_remote_sha で完全一致に解決する。viewer の pending review があるスレッドは
+#       返信も resolve もせず replyFailed に残す（Issue #769）
 # 入力: --allow はホストが finding.unresolvedComments から検証して作る許可リスト（最大 20 件）。--thread-id は繰り返し可
 #       （最大 20 件）で、各 ID は形式検証を通り --allow に含まれていなければならない（違反は exit 2 で gh を 1 回も呼ばない）。
 # 返信本文: lib の定数テンプレートに sha とブランチ名だけを入れる。レビュー本文・Issue 本文・fix の自由文が入る経路は無い（Issue #145）。
@@ -43,7 +45,7 @@ script_dir=$(cd "$(dirname "$0")" && pwd -P) || exit 3
 # GraphQL の定数（静的ガードが、この 2 行の mutation だけを許可形として許す）
 RR_REPLY_QUERY='mutation($tid:ID!,$body:String!){addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$tid,body:$body}){comment{id state}}}'
 RR_RESOLVE_QUERY='mutation($tid:ID!){resolveReviewThread(input:{threadId:$tid}){thread{id isResolved}}}'
-RR_READ_QUERY='query($tid:ID!){node(id:$tid){... on PullRequestReviewThread{isResolved pullRequest{number repository{nameWithOwner}} comments(last:100){nodes{viewerDidAuthor state body}}}}}'
+RR_READ_QUERY='query($tid:ID!){node(id:$tid){... on PullRequestReviewThread{isResolved pullRequest{number repository{nameWithOwner} reviews(states:[PENDING],first:20){nodes{viewerDidAuthor}}} comments(last:100){nodes{viewerDidAuthor state body}}}}}'
 
 usage() {
   echo "使い方: reply-resolve.sh --pr NUM [--repo OWNER/REPO] --branch BRANCH --allow ID[,ID...] --thread-id ID [--thread-id ID ...]" >&2
@@ -124,8 +126,9 @@ if [ -n "${repo}" ]; then routing_check_remotes "${want}" || rc=$?; fi
 
 local_head=$(git rev-parse HEAD 2>/dev/null) || fail observe-failed "git rev-parse HEAD が失敗"
 pv_is_sha "${local_head}" || fail observe-failed "HEAD の形式が不正"
-remote_row=$(git ls-remote origin "refs/heads/${branch}" 2>/dev/null) || fail observe-failed "git ls-remote が失敗"
-remote_head=${remote_row%%[[:space:]]*}
+# ls-remote のパターンは末尾一致なので入れ子の ref（refs/heads/a/refs/heads/<branch>）にも当たる。ref 名が完全一致する行だけを採る（Issue #769）
+pv_remote_sha "${branch}" || fail observe-failed "git ls-remote が失敗、またはリモートの sha の形式が不正"
+remote_head=${PV_SHA}
 pv_is_sha "${remote_head}" || fail observe-failed "リモートのブランチを解決できない"
 [ "${remote_head}" = "${local_head}" ] || fail head-mismatch "ローカル HEAD とリモートのブランチ先端が不一致"
 
@@ -164,15 +167,17 @@ do_resolve() {
 }
 
 for tid in ${threads}; do
+  # ascii_downcase は jq 1.5 で追加された組み込み関数（1.6 以上専用ではない）
+  # 5 項目め = viewer の pending review の件数。reviews が null・欠落・非配列なら x にして invalid へ倒す（fail-closed）
   row=$(gh api graphql -f query="${RR_READ_QUERY}" -f tid="${tid}" 2>/dev/null \
-    | jq -r --arg m "${prefix}" '.data.node | [(.isResolved | tostring), (.pullRequest.number | tostring), (.pullRequest.repository.nameWithOwner | ascii_downcase), ([.comments.nodes[]? | select(.viewerDidAuthor == true and .state == "SUBMITTED" and ((.body // "") | startswith($m)))] | length | tostring)] | join(" ")' 2>/dev/null) || row=""
-  # shellcheck disable=SC2086  # 空白区切りの固定 4 項目へ分割する
+    | jq -r --arg m "${prefix}" '.data.node | [(.isResolved | tostring), (.pullRequest.number | tostring), (.pullRequest.repository.nameWithOwner | ascii_downcase), ([.comments.nodes[]? | select(.viewerDidAuthor == true and .state == "SUBMITTED" and ((.body // "") | startswith($m)))] | length | tostring), (.pullRequest.reviews.nodes | if type == "array" then ([.[] | select(.viewerDidAuthor == true)] | length | tostring) else "x" end)] | join(" ")' 2>/dev/null) || row=""
+  # shellcheck disable=SC2086  # 空白区切りの固定 5 項目へ分割する
   set -- ${row}
-  if [ $# -ne 4 ]; then
+  if [ $# -ne 5 ]; then
     reply_failed="${reply_failed:+${reply_failed} }${tid}"
     continue
   fi
-  action=$(rr_classify "$1" "$2" "${pr}" "$3" "${want}" "$4")
+  action=$(rr_classify "$1" "$2" "${pr}" "$3" "${want}" "$4" "$5")
   case "${action}" in
     skip)
       skipped="${skipped:+${skipped} }${tid}"
@@ -189,6 +194,12 @@ for tid in ${threads}; do
       esac
       ;;
     resolve-only) ;;
+    pending-review)
+      # 返信の行き先が viewer の下書きになり得るため、返信も resolve もしない（Issue #769）。固定文だけを出す
+      echo "reply-resolve: viewer の pending review があるため返信も resolve もしない" >&2
+      reply_failed="${reply_failed:+${reply_failed} }${tid}"
+      continue
+      ;;
     *)
       reply_failed="${reply_failed:+${reply_failed} }${tid}"
       continue

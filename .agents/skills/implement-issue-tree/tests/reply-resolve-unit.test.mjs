@@ -15,14 +15,14 @@ const MARKER = '<!-- implement-issue-tree:fix-reply -->'
 const DRIVER = `
 . "$1" || exit 9
 US=$(printf '\\037')
-while IFS="$US" read -r fn a b c d e f; do
+while IFS="$US" read -r fn a b c d e f g; do
   rc=0
   case "$fn" in
     valid) out=$(rr_valid_thread_id "$a") || rc=$? ;;
     allow) out=$(rr_in_allow "$a" "$b") || rc=$? ;;
     body) out=$(rr_reply_body "$a" "$b" | base64 | tr -d '\\n') || rc=$? ;;
     prefix) out=$(rr_reply_prefix "$a" | base64 | tr -d '\\n') || rc=$? ;;
-    classify) out=$(rr_classify "$a" "$b" "$c" "$d" "$e" "$f") || rc=$? ;;
+    classify) out=$(rr_classify "$a" "$b" "$c" "$d" "$e" "$f" "$g") || rc=$? ;;
     result) out=$(rr_result "$a" "$b" "$c" "$d" "$e" "$f") || rc=$? ;;
   esac
   printf '%s|%s\\n' "$rc" "$out"
@@ -50,14 +50,20 @@ for (const bash of availableBashes()) {
     }
     for (const [id, ok] of [['PRRT_abc-1', 0], ['', 1], ['a b', 1], ['a;b', 1], ['a$b', 1], ['x'.repeat(100), 0], ['x'.repeat(101), 1], ['a,b', 1], ['日本', 1]]) add(['valid', id], ok, '')
     for (const [id, list, ok] of [['A', 'A,B', 0], ['B', 'A,B', 0], ['C', 'A,B', 1], ['A', 'AA,B', 1], ['A', '', 1]]) add(['allow', id, list], ok, '')
-    add(['classify', 'false', '5', '5', 'o/r', 'o/r', '0'], 0, 'reply')
-    add(['classify', 'false', '5', '5', 'o/r', 'o/r', '2'], 0, 'resolve-only')
-    add(['classify', 'true', '5', '5', 'o/r', 'o/r', '0'], 0, 'skip')
-    add(['classify', 'false', '6', '5', 'o/r', 'o/r', '0'], 0, 'skip')
-    add(['classify', 'false', '5', '5', 'x/y', 'o/r', '0'], 0, 'skip')
-    add(['classify', 'maybe', '5', '5', 'o/r', 'o/r', '0'], 0, 'invalid')
-    add(['classify', 'false', 'null', '5', 'o/r', 'o/r', '0'], 0, 'invalid')
-    add(['classify', 'false', '5', '5', 'o/r', 'o/r', ''], 0, 'invalid')
+    add(['classify', 'false', '5', '5', 'o/r', 'o/r', '0', '0'], 0, 'reply')
+    add(['classify', 'false', '5', '5', 'o/r', 'o/r', '2', '0'], 0, 'resolve-only')
+    add(['classify', 'true', '5', '5', 'o/r', 'o/r', '0', '0'], 0, 'skip')
+    add(['classify', 'false', '6', '5', 'o/r', 'o/r', '0', '0'], 0, 'skip')
+    add(['classify', 'false', '5', '5', 'x/y', 'o/r', '0', '0'], 0, 'skip')
+    add(['classify', 'maybe', '5', '5', 'o/r', 'o/r', '0', '0'], 0, 'invalid')
+    add(['classify', 'false', 'null', '5', 'o/r', 'o/r', '0', '0'], 0, 'invalid')
+    add(['classify', 'false', '5', '5', 'o/r', 'o/r', '', '0'], 0, 'invalid')
+    add(['classify', 'false', '5', '5', 'o/r', 'o/r', '0', '1'], 0, 'pending-review')
+    add(['classify', 'false', '5', '5', 'o/r', 'o/r', '2', '1'], 0, 'pending-review')
+    add(['classify', 'true', '5', '5', 'o/r', 'o/r', '0', '1'], 0, 'skip')
+    add(['classify', 'false', '6', '5', 'o/r', 'o/r', '0', '1'], 0, 'skip')
+    add(['classify', 'false', '5', '5', 'o/r', 'o/r', '0', 'x'], 0, 'invalid')
+    add(['classify', 'false', '5', '5', 'o/r', 'o/r', '0', ''], 0, 'invalid')
     add(['result', 'done', SHA, 'A B', '', 'C', 'D'], 0, `REPLY_RESOLVE_RESULT {"status":"done","sha":"${SHA}","resolved":["A","B"],"replyFailed":[],"resolveFailed":["C"],"skipped":["D"]}`)
     add(['result', 'head-mismatch', '', '', '', '', ''], 0, 'REPLY_RESOLVE_RESULT {"status":"head-mismatch","sha":"","resolved":[],"replyFailed":[],"resolveFailed":[],"skipped":[]}')
     const res = run(bash, rows)

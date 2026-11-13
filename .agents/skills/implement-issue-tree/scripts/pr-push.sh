@@ -236,19 +236,21 @@ do_prepare() {
   pv_is_sha "$(git rev-parse -q --verify "${base_ref}" 2>/dev/null)" || fail base-fetch-failed "base の追跡 ref を読めない"
 
   # ---- 3. 起点の確立 ----
-  # リモートの branch の有無は ls-remote --exit-code で見分ける（0 = あり、2 = なし、それ以外 = 確認不能）
+  # リモートの branch の有無は pv_remote_sha で決める。ls-remote のパターンは末尾一致なので、入れ子の ref
+  # （refs/heads/x/refs/heads/<branch>）でも「あり」になり、続く fetch が失敗する。pv_remote_sha は ref 名が
+  # 完全一致する行だけを採る（Issue #770）。失敗 = 確認不能、成功で空 = なし
   rc=0
-  git ls-remote --exit-code origin "refs/heads/${branch}" >/dev/null 2>&1 || rc=$?
-  case "${rc}" in
-    0)
-      git update-ref -d "${branch_ref}" >/dev/null 2>&1 || true
-      git fetch origin "refs/heads/${branch}:${branch_ref}" >/dev/null 2>&1 || fail branch-fetch-failed "branch の fetch が失敗した"
-      remote_sha=$(git rev-parse -q --verify "${branch_ref}" 2>/dev/null) || remote_sha=""
-      pv_is_sha "${remote_sha}" || fail branch-fetch-failed "branch の追跡 ref を読めない"
-      ;;
-    2) remote_sha="" ;;
-    *) fail branch-fetch-failed "リモートの branch の有無を確認できない" ;;
-  esac
+  pv_remote_sha "${branch}" || rc=$?
+  if [ "${rc}" -ne 0 ]; then
+    fail branch-fetch-failed "リモートの branch の有無を確認できない"
+  elif [ -n "${PV_SHA}" ]; then
+    git update-ref -d "${branch_ref}" >/dev/null 2>&1 || true
+    git fetch origin "refs/heads/${branch}:${branch_ref}" >/dev/null 2>&1 || fail branch-fetch-failed "branch の fetch が失敗した"
+    remote_sha=$(git rev-parse -q --verify "${branch_ref}" 2>/dev/null) || remote_sha=""
+    pv_is_sha "${remote_sha}" || fail branch-fetch-failed "branch の追跡 ref を読めない"
+  else
+    remote_sha=""
+  fi
   if [ "${origin_kind}" = fix ]; then
     # fix: リモートの branch が起点。無ければ（PR のブランチが消えている）止まる
     [ -n "${remote_sha}" ] || fail branch-fetch-failed "リモートに branch が無い"

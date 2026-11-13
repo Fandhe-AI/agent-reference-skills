@@ -24,7 +24,7 @@ echo "git $*" >> "$STUB/log"
 case "$1" in
   remote) echo "\${FAKE_URL:-https://github.com/Fandhe-AI/agent-cli-skills.git}"; exit 0 ;;
   rev-parse) [ "$2" = HEAD ] && { echo "$FAKE_HEAD"; exit 0; } ;;
-  ls-remote) [ -n "$FAKE_LS_FAIL" ] && exit 1; [ -n "$FAKE_REMOTE" ] && printf '%s\\trefs/heads/%s\\n' "$FAKE_REMOTE" "$3" | sed 's#refs/heads/refs/heads/#refs/heads/#'; exit 0 ;;
+  ls-remote) [ -n "$FAKE_LS_FAIL" ] && exit 1; [ -n "$FAKE_NESTED" ] && printf '%s\\trefs/heads/a/%s\\n' "$FAKE_NESTED" "$3"; [ -n "$FAKE_REMOTE" ] && printf '%s\\trefs/heads/%s\\n' "$FAKE_REMOTE" "$3" | sed 's#refs/heads/refs/heads/#refs/heads/#'; exit 0 ;;
 esac
 exec "$REAL_GIT" "$@"
 `
@@ -69,7 +69,7 @@ function setup(bash, { threads, head = SHA, remote = SHA, prview = `OPEN ${BRANC
   writeFileSync(join(dir, 'log'), '')
   writeFileSync(join(dir, 'mut'), '')
   for (const [tid, t] of Object.entries(threads || {})) {
-    const read = { data: { node: { isResolved: t.resolved ?? false, pullRequest: { number: t.pr ?? 5, repository: { nameWithOwner: t.repo ?? REPO } }, comments: { nodes: t.comments ?? [{ viewerDidAuthor: false, body: SECRET_REVIEW }] } } } }
+    const read = { data: { node: { isResolved: t.resolved ?? false, pullRequest: { number: t.pr ?? 5, repository: { nameWithOwner: t.repo ?? REPO }, reviews: t.reviews === undefined ? { nodes: [] } : t.reviews }, comments: { nodes: t.comments ?? [{ viewerDidAuthor: false, body: SECRET_REVIEW }] } } } }
     writeFileSync(join(dir, `read.${tid}`), JSON.stringify(read))
     if (t.reply !== undefined) writeFileSync(join(dir, `reply.${tid}`), t.reply)
     if (t.resolve !== undefined) writeFileSync(join(dir, `resolve.${tid}`), t.resolve)
@@ -100,6 +100,40 @@ for (const bash of availableBashes()) {
     assert.deepEqual(o.result, { status: 'done', sha: SHA, resolved: ['T1'], replyFailed: [], resolveFailed: [], skipped: [] })
     assert.equal(readFileSync(join(o.dir, 'body.T1'), 'utf8'), `${MARKER}\n${SHA} で対応した（ブランチ ${BRANCH}）`)
     leak(o)
+  })
+
+  test(`入れ子の ref が先に並んでも完全一致の行で解決する。ブランチが無く入れ子だけなら observe-failed（${bash}）`, () => {
+    let s = setup(bash, { threads: { T1: { reply: 'C1 SUBMITTED', resolve: 'true' } }, env: { FAKE_NESTED: 'c'.repeat(40) } })
+    let o = s.run(base(['T1']))
+    assert.equal(o.result.status, 'done', o.r.stderr)
+    assert.deepEqual(o.mut, ['read T1', 'reply T1', 'resolve T1'])
+    assert.deepEqual(o.result.resolved, ['T1'])
+    s = setup(bash, { remote: '', threads: { T1: { reply: 'C1 SUBMITTED', resolve: 'true' } }, env: { FAKE_NESTED: SHA } })
+    o = s.run(base(['T1']))
+    assert.equal(o.result.status, 'observe-failed')
+    assert.deepEqual(o.mut, [])
+  })
+
+  test(`viewer の pending review があれば返信も resolve もせず replyFailed に残す。観測できなければ fail-closed、他人の下書きは対象外（${bash}）`, () => {
+    const mine = { viewerDidAuthor: true, state: 'SUBMITTED', body: `${MARKER}\n${SHA} で対応した（ブランチ ${BRANCH}）` }
+    for (const comments of [undefined, [mine]]) {
+      const s = setup(bash, { threads: { T1: { comments, reviews: { nodes: [{ viewerDidAuthor: true }] }, reply: 'C SUBMITTED', resolve: 'true' } } })
+      const o = s.run(base(['T1']))
+      assert.deepEqual(o.mut, ['read T1'])
+      assert.deepEqual(o.result.replyFailed, ['T1'])
+      assert.deepEqual(o.result.resolved, [])
+      assert.equal(o.result.status, 'done')
+      assert.ok(o.log.includes('reviews(states:[PENDING]'), o.log)
+      leak(o)
+    }
+    for (const reviews of [null, { nodes: null }, {}]) {
+      const s = setup(bash, { threads: { T1: { reviews, reply: 'C SUBMITTED', resolve: 'true' } } })
+      const o = s.run(base(['T1']))
+      assert.deepEqual(o.mut, ['read T1'], JSON.stringify(reviews))
+      assert.deepEqual(o.result.replyFailed, ['T1'])
+    }
+    const s = setup(bash, { threads: { T1: { reviews: { nodes: [{ viewerDidAuthor: false }] }, reply: 'C SUBMITTED', resolve: 'true' } } })
+    assert.deepEqual(s.run(base(['T1'])).mut, ['read T1', 'reply T1', 'resolve T1'])
   })
 
   test(`--repo 省略時はカレントのリポジトリを解決して処理し、gh pr view に -R を付けない（${bash}）`, () => {
