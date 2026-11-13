@@ -3,7 +3,7 @@
 #
 # 使い方（通常は run-verified.sh 経由。ホストが nonce 入りのコマンドを組み立てる）:
 #   bash observe-pr.sh --nonce N --mode MODE --pr NUM [--repo OWNER/REPO] [--base BRANCH] [--branch BRANCH]
-#                      [--issue NUM] [--slug APP] [--until review|settled|started] [--thread-id ID] [--peers N,N,…] [--wait --attempt K]
+#                      [--issue NUM] [--slug APP] [--until review|settled|started] [--thread-id ID] [--peers N,N,…] [--allow P,P,…] [--wait --attempt K]
 #
 # 役割: monitor エージェントのプロンプトに書いていた gh / jq の観測コマンド列と、その分類規則を持つ（Issue #603
 #       第 2 弾）。入力と出力を定義できる部分だけを切り出したもので、「ready にしてよいか」の判断は呼び出し側
@@ -48,6 +48,12 @@
 #             判定は lib/added-files-lib.sh（連番 = basename 先頭の 3 桁以上の数字 + - / _、幹 = 最初の . の前。同じディレクトリで
 #             連番が同じで幹が違えば衝突）。payload はパスの文字列を含めず、件数と peers の番号だけ。--peers は 30 個まで・自分と
 #             重複は不可。--wait は取らない
+#   policy-paths
+#             PR と base の差分のファイル一覧（REST pulls/<pr>/files）に、方針パス（.github/workflows/ ・ .github/actions/ ・ CODEOWNERS）の
+#             変更が何件あり、そのうち --allow（計画が宣言した許可。完全一致、/ 終わりは接頭辞）に無いものが何件かを数える（Issue #760。
+#             fix が計画外の CI 構成を変えていないかのマージ前の確認）。判定は lib/policy-paths-lib.sh。state が OPEN でなければ数えない。
+#             一覧が REST の上限で切り詰められた（pulls/<pr> の changed_files が取得件数より多い）ときは truncated:1。payload は
+#             パスの文字列を含めず件数だけ。--allow は 20 個まで・[A-Za-z0-9._/-] だけ・先頭が - や / でなく .. を含まず重複不可。--wait は取らない
 # 出力: 標準出力に 1 行の封筒 {nonce, payload, sha256}（lib/signed-output.sh）。payload は整数と ASCII の固定語彙・
 #       40 桁 16 進だけで、PR のコメント本文・チェック名・context 名のような外部由来の文字列は含めない。共通キー:
 #       - mode         実行したモード
@@ -122,9 +128,12 @@ script_dir=$(cd "$(dirname "$0")" && pwd -P) || exit 2
 # added_files_numbered_dirs / added_files_classify（added-files の判定。純関数）
 # shellcheck source=lib/added-files-lib.sh
 . "${script_dir}/lib/added-files-lib.sh" || exit 3
+# policy_paths_count（policy-paths の判定。純関数）
+# shellcheck source=lib/policy-paths-lib.sh
+. "${script_dir}/lib/policy-paths-lib.sh" || exit 3
 
 usage() {
-  echo "使い方: observe-pr.sh --nonce N --mode pr|checks|required|reviews|threads|threads-detail|push|added-files --pr NUM [--repo O/R] [--base B] [--branch B] [--issue N] [--slug S] [--until review|settled|started] [--thread-id ID] [--peers N,N,…] [--wait --attempt K]" >&2
+  echo "使い方: observe-pr.sh --nonce N --mode pr|checks|required|reviews|threads|threads-detail|push|added-files|policy-paths --pr NUM [--repo O/R] [--base B] [--branch B] [--issue N] [--slug S] [--until review|settled|started] [--thread-id ID] [--peers N,N,…] [--allow P,P,…] [--wait --attempt K]" >&2
   [ $# -eq 0 ] || echo "observe-pr: $1" >&2
   exit 2
 }
@@ -176,12 +185,14 @@ until_cond=""
 thread_id=""
 peers=""
 peers_set=0
+allow=""
+allow_set=0
 wait=0
 attempt=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --wait) wait=1; shift ;;
-    --nonce | --mode | --pr | --repo | --base | --branch | --issue | --slug | --until | --thread-id | --peers | --attempt)
+    --nonce | --mode | --pr | --repo | --base | --branch | --issue | --slug | --until | --thread-id | --peers | --allow | --attempt)
       [ $# -ge 2 ] || usage "$1 に値が無い"
       case "$1" in
         --nonce) nonce=$2 ;;
@@ -195,6 +206,7 @@ while [ $# -gt 0 ]; do
         --until) until_cond=$2 ;;
         --thread-id) thread_id=$2 ;;
         --peers) peers=$2; peers_set=1 ;;
+        --allow) allow=$2; allow_set=1 ;;
         --attempt) attempt=$2 ;;
       esac
       shift 2
@@ -205,7 +217,7 @@ done
 
 so_valid_nonce "${nonce}" || usage "--nonce は小文字英数字 1〜64 文字で指定する"
 case "${mode}" in
-  pr | checks | required | reviews | threads | threads-detail | push | added-files) ;;
+  pr | checks | required | reviews | threads | threads-detail | push | added-files | policy-paths) ;;
   *) usage "--mode が不正: ${mode}" ;;
 esac
 is_uint "${pr}" || usage "--pr は正の整数で指定する"
@@ -235,6 +247,28 @@ if [ "${peers_set}" -eq 1 ]; then
       peer_count=$((peer_count + 1))
     done
     [ "${peer_count}" -le 30 ] || usage "--peers は 30 個まで"
+  fi
+fi
+# --allow: 方針パスの許可（policy-paths だけが取る）。20 個まで・文字集合 [A-Za-z0-9._/-]・先頭 - / 不可・.. 不可・重複不可。空は許可なし
+if [ "${allow_set}" -eq 1 ]; then
+  [ "${mode}" = policy-paths ] || usage "--allow は policy-paths だけが取る"
+  allow_count=0
+  allow_seen=","
+  if [ -n "${allow}" ]; then
+    case "${allow}" in ,* | *, | *,,*) usage "--allow の形式が不正" ;; esac
+    old_ifs=${IFS}
+    IFS=,
+    # shellcheck disable=SC2086
+    set -- ${allow}
+    IFS=${old_ifs}
+    for a in "$@"; do
+      case "${a}" in '' | -* | /* | *//* | *..* | *[!A-Za-z0-9._/-]*) usage "--allow の要素の形式が不正" ;; esac
+      [ "${#a}" -le 200 ] || usage "--allow の要素が長すぎる"
+      case "${allow_seen}" in *",${a},"*) usage "--allow に重複がある" ;; esac
+      allow_seen="${allow_seen}${a},"
+      allow_count=$((allow_count + 1))
+    done
+    [ "${allow_count}" -le 20 ] || usage "--allow は 20 個まで"
   fi
 fi
 case "${until_cond}" in
@@ -296,6 +330,8 @@ nl='
 input_text="observe-pr${nl}${mode}${nl}${pr}${nl}${repo}${nl}${base}${nl}${branch}${nl}${issue}${nl}${slug}${nl}${until_cond}"
 # added-files だけ peers の並び（引数の文字列そのもの）を最後の行に足す（他のモードの入力の定義は変えない）
 [ "${mode}" != added-files ] || input_text="${input_text}${nl}${peers}"
+# policy-paths だけ allow の並び（引数の文字列そのもの）を最後の行に足す
+[ "${mode}" != policy-paths ] || input_text="${input_text}${nl}${allow}"
 input_sha=$(printf '%s' "${input_text}" | so_sha256) || {
   echo "observe-pr: 入力のハッシュを計算できなかった（sha256sum / shasum が無い等）" >&2
   exit 3
@@ -733,6 +769,40 @@ observe_added_files() {
   O_AF_SEQPEERS=$(printf '%s' "${res}" | jq -c '.seqPeers') || { fail "seqPeers"; return 1; }
 }
 
+# policy-paths: PR の state と変更ファイル一覧（REST）を取り、lib の純関数で方針パスの件数を数える。取得・解析の失敗は return 1
+# （『方針パスの変更 0 件』に畳まない）。OPEN でなければ数えない。
+O_PP_STATE=""; O_PP_FILES=0; O_PP_POLICY=0; O_PP_UNPLANNED=0; O_PP_TRUNC=0
+observe_policy_paths() {
+  O_PP_STATE=""; O_PP_FILES=0; O_PP_POLICY=0; O_PP_UNPLANNED=0; O_PP_TRUNC=0
+  local row files res changed
+  gh_api "${repo_path}/pulls/${pr}" || { fail "pulls"; return 1; }
+  row=$(printf '%s' "${OUT}" | jq -r 'if type == "object" and (.state | type) == "string" and (.merged | type) == "boolean" and (.changed_files | type) == "number"
+    then [(if .merged then "MERGED" elif .state == "open" then "OPEN" else "CLOSED" end), (.changed_files | floor)] | map(tostring) | join(" ") else empty end' 2>/dev/null) || { fail "pulls の形式"; return 1; }
+  # shellcheck disable=SC2086
+  set -- ${row}
+  [ $# -eq 2 ] || { fail "pulls の形式"; return 1; }
+  case "$1" in OPEN | MERGED | CLOSED) O_PP_STATE=$1 ;; *) fail "state の語彙"; return 1 ;; esac
+  case "$2" in '' | *[!0-9]*) fail "changed_files の形式"; return 1 ;; esac
+  changed=$2
+  [ "${O_PP_STATE}" = OPEN ] || return 0
+  # --jq でページごとに filename / previous_filename だけへ射影する（各ファイルの patch 本文が stdout 上限と gh の時間制限に掛かり、計画外の変更が無くても取得失敗で止まるのを避ける）
+  gh_api --paginate "${repo_path}/pulls/${pr}/files?per_page=100" --jq '[.[] | {filename, previous_filename}]' || { fail "pulls files"; return 1; }
+  files=$(printf '%s' "${OUT}" | jq -sec '[.[] | if type == "array" then .[] else error("shape") end]
+    | if all(.[]; type == "object" and (.filename | type) == "string") then map({filename, previous_filename: (.previous_filename // null)}) else error("shape") end' 2>/dev/null) || { fail "pulls files の形式"; return 1; }
+  O_PP_FILES=$(printf '%s' "${files}" | jq 'length') || { fail "件数"; return 1; }
+  case "${O_PP_FILES}" in '' | *[!0-9]*) fail "件数の形式"; return 1 ;; esac
+  res=$(printf '%s' "${files}" | policy_paths_count "${allow}") || { fail "方針パスの判定"; return 1; }
+  row=$(printf '%s' "${res}" | jq -r '[.policy, .unplanned] | map(tostring) | join(" ")') || { fail "判定結果の形式"; return 1; }
+  # shellcheck disable=SC2086
+  set -- ${row}
+  [ $# -eq 2 ] || { fail "判定結果の形式"; return 1; }
+  case "$1$2" in '' | *[!0-9]*) fail "件数の形式"; return 1 ;; esac
+  O_PP_POLICY=$1
+  O_PP_UNPLANNED=$2
+  if [ "${changed}" -gt "${O_PP_FILES}" ]; then O_PP_TRUNC=1; fi
+  return 0
+}
+
 # ---- 観測ループ。--wait なしは 1 回だけ観測する ----
 run_observe() {
   case "${mode}" in
@@ -743,6 +813,7 @@ run_observe() {
     reviews) observe_reviews ;;
     threads | threads-detail) observe_threads ;;
     added-files) observe_added_files ;;
+    policy-paths) observe_policy_paths ;;
   esac
 }
 run_met() {
@@ -838,6 +909,7 @@ if [ "${err}" -ne 0 ] || [ "${inconclusive}" -eq 1 ]; then
   O_CR_TOTAL=0; O_CR_PASSED=0; O_CR_RUNNING=0; O_CR_FAILED=0; O_THREADS=0; O_UNRESOLVED=0
   O_AF_STATE=""; O_AF_ADDED=0; O_AF_NUMBERED=0; O_AF_SAMEPATH=0; O_AF_SEQPEER=0; O_AF_SEQBASE=0; O_AF_TRUNC=0
   O_AF_PATHPEERS='[]'; O_AF_SEQPEERS='[]'
+  O_PP_STATE=""; O_PP_FILES=0; O_PP_POLICY=0; O_PP_UNPLANNED=0; O_PP_TRUNC=0
 fi
 
 case "${mode}" in
@@ -887,6 +959,11 @@ case "${mode}" in
       --argjson sb "${O_AF_SEQBASE}" --argjson tr "${O_AF_TRUNC}" --argjson pp "${O_AF_PATHPEERS}" --argjson qp "${O_AF_SEQPEERS}" \
       '{mode: $m, inputSha256: $is, outcome: $oc, err: $e, attempt: $a, maxAttempts: $ma, state: $st, added: $ad, numbered: $nu,
         samePath: $sp, seqPeer: $sq, seqBase: $sb, truncated: $tr, pathPeers: $pp, seqPeers: $qp}')
+    ;;
+  policy-paths)
+    payload=$(jq -cnS --arg m "${mode}" --arg is "${input_sha}" --arg oc "${outcome}" --arg st "${O_PP_STATE}" \
+      --argjson e "${err}" --argjson fi "${O_PP_FILES}" --argjson po "${O_PP_POLICY}" --argjson un "${O_PP_UNPLANNED}" --argjson tr "${O_PP_TRUNC}" \
+      '{mode: $m, inputSha256: $is, outcome: $oc, err: $e, state: $st, files: $fi, policy: $po, unplanned: $un, truncated: $tr}')
     ;;
 esac
 [ -n "${payload:-}" ] || { echo "observe-pr: payload を組み立てられなかった" >&2; exit 3; }

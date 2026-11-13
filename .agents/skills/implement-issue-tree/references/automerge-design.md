@@ -43,6 +43,8 @@ opt-in ランのクライアント側マージは、未信頼のレビュー本�
 
 ### resolve 前提のホスト側決定的照合（Issue #430）
 
+**補足（Issue #759）**: fix への伝達は `reply-resolve.sh` の 1 コマンド（`--allow` はホストが検証した `finding.unresolvedComments` の threadId）。スクリプトが sha を観測して定型の返信を投稿し、返信成功のスレッドだけを resolve する。返信失敗のスレッドは未解決のまま残る。
+
 **背景**: resolve 例外条件 (b)（push なしラウンドでの resolve）の前提「過去 push 済みの
 修正がリモート head に反映済みであること」を fix エージェント自身の `git fetch` +
 `merge-base --is-ancestor` 実行と自己申告に依存させると、fix の申告 sha は形式検証を

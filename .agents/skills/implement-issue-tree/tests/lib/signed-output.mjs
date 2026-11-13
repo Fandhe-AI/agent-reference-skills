@@ -74,6 +74,17 @@ export function hashPrecheckReply(prompt, overrides = {}) {
   return makeEnvelope(nonce, { count, firstBad: 0, inputSha256: inputSha256(m[2]), mismatch: 0, missing: 0, ok: count, ...overrides })
 }
 
+// 方針パスのゲート（observe-pr.sh --mode policy-paths。Issue #760）への正直な応答。コマンドの --pr / --allow から入力のハッシュを作る
+// （repo は空の args を前提）。over で件数を差し替えて計画外の変更・切り詰めを模せる
+export function policyPathsReply(prompt, over = {}) {
+  const pr = /--pr (\d+)/.exec(prompt)[1]
+  const allow = /--allow (\S+)/.exec(prompt)?.[1] ?? ''
+  const input = ['observe-pr', 'policy-paths', pr, '', '', '', '', '', '', allow].join('\n')
+  return makeEnvelope(nonceOf(prompt), {
+    mode: 'policy-paths', inputSha256: inputSha256(input), outcome: 'observed', err: 0, state: 'OPEN', files: 3, policy: 0, unplanned: 0, truncated: 0, ...over,
+  })
+}
+
 export function wrapAgentReply(prompt, value) {
   if (value === null || value === undefined || value instanceof Error) return value
   if (typeof value !== 'object' || Array.isArray(value)) return value

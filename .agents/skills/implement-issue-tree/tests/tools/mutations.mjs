@@ -453,4 +453,7 @@ export const MUTATIONS = [
   { id: 'H5-holder-moved-ignored', file: RP_LIB, from: '  elif [ "$2" != 1 ]; then\n    echo moved', to: '  elif false; then\n    echo moved', tests: RP_UNIT, note: "#755: 握り手の HEAD が先端と食い違っても解放する" },
   { id: 'H6-holder-foreign-ignored', file: RP_LIB, from: '  elif [ "$6" != 1 ]; then\n    echo foreign', to: '  elif false; then\n    echo foreign', tests: RP_ALL, note: "#755: 稼働中の別セッションの worktree も clean なら解放する（解放後のコミットがその detached HEAD に積まれる）" },
   { id: 'H7-holder-head-lock-dropped', file: RP, from: '  ( set -C; printf', to: '  ( printf', tests: RP_REAL, note: "#755: HEAD.lock の排他作成をやめる（他者のロックを上書きして確認と書き込みの間の切り替えを防げない）" },
+  { id: 'PP1-policy-gate-off', file: SRC, from: "if (lastState === 'ready' && fixCount > 0) {\n      const ppReason", to: "if (false) {\n      const ppReason", tests: ['policy-paths-gate.test.mjs'], note: "#760: fix を経た PR の方針パスのゲートを外す（計画外の CI 構成変更がそのままマージへ進む）" },
+  { id: 'PP2-policy-unplanned-ignored', file: SRC, from: "if (p.unplanned > 0) return { kind: 'unplanned'", to: "if (false) return { kind: 'unplanned'", tests: ['policy-paths-gate.test.mjs'], note: "#760: 宣言外の方針パスの件数を無視する" },
+  { id: 'PP3-policy-lib-allow-all', file: 'scripts/lib/policy-paths-lib.sh', from: '[$ps[] | select(ok | not)]', to: '[$ps[] | select(false)]', tests: ['policy-paths-unit.test.mjs', 'observe-pr-policy-paths.test.mjs'], note: "#760: 許可の差し引きをしない（全件を許可済みとみなす）" },
 ]

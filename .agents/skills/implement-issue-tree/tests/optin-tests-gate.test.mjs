@@ -655,7 +655,9 @@ test('optinTestExecutionLines: pr-create 以外の呼び出し（implement / rec
     fixPrompt(cmds, impl, { summary: 's', unresolvedComments: [] }, true),
   ]) {
     assert.match(p, /原因を調査して pass を目指す/)
-    assert.doesNotMatch(p, /git status --porcelain/)
+    // pr-create 専用の push 前不変確認（git status --porcelain 単体）が混入していないこと。
+    // 手順 7 の detach 前確認（--untracked-files=no 付き・Issue #761）は別物なので許す。
+    assert.doesNotMatch(p, /0d\. push 前の不変確認/)
   }
 })
 
