@@ -33,7 +33,7 @@ Excerpt from openapi.json (v2.3.0), `info` block (`_info.json`)
 | credential | 5 | [credential.md](./credential.md) |
 | debug | 3 | [debug.md](./debug.md) |
 | event | 1 | [event.md](./event.md) |
-| experimental | 15 | not yet included in this skill; see https://opencode.ai/docs/api/#tag-experimental |
+| experimental | 15 | [experimental.md](./experimental.md) |
 | filesystem | 6 | [filesystem.md](./filesystem.md) |
 | form | 1 | [generate-form.md](./generate-form.md) |
 | generate | 4 | [generate-form.md](./generate-form.md) |
@@ -43,15 +43,15 @@ Excerpt from openapi.json (v2.3.0), `info` block (`_info.json`)
 | migration | 1 | [migration.md](./migration.md) |
 | model | 2 | [model.md](./model.md) |
 | permission | 8 | [permission.md](./permission.md) |
-| persistentPty | 11 | not yet included in this skill; see https://opencode.ai/docs/api/#tag-persistentpty |
+| persistentPty | 11 | [persistent-pty.md](./persistent-pty.md) |
 | plugin | 4 | [plugin.md](./plugin.md) |
 | project | 2 | [location-project-worktree.md](./location-project-worktree.md) |
 | provider | 2 | [provider.md](./provider.md) |
-| pty | 7 | not yet included in this skill; see https://opencode.ai/docs/api/#tag-pty |
+| pty | 7 | [pty.md](./pty.md) |
 | reference | 1 | [reference-skill-usage.md](./reference-skill-usage.md) |
 | rpc | 1 | [rpc.md](./rpc.md) |
 | server | 3 | [server.md](./server.md) |
-| session | 44 | not yet included in this skill; see https://opencode.ai/docs/api/#tag-session |
+| session | 44 | [session.md](./session.md), [session-messages.md](./session-messages.md), [session-forms.md](./session-forms.md), [session-inbox-revert.md](./session-inbox-revert.md) |
 | shell | 5 | [shell.md](./shell.md) |
 | skill | 1 | [reference-skill-usage.md](./reference-skill-usage.md) |
 | usage | 1 | [reference-skill-usage.md](./reference-skill-usage.md) |

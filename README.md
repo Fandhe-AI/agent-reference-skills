@@ -137,7 +137,7 @@ opencode は OpenCode 本体の利用（設定・権限・セッション・CLI�
 | スキル | 説明 |
 | -------- | ------ |
 | [opencode](skills/opencode/) | OpenCode v2 — opencode.jsonc 設定, AGENTS.md instructions, permissions / policies, snapshots / compaction, V1 移行 |
-| [opencode-build](skills/opencode-build/) | OpenCode v2 拡張開発 — server plugin hooks / transforms / ctx API / RPC, @opencode/client, @opencode/sdk (workerd), GUI plugin (Desktop / Web), server HTTP API (openapi.json), V1 プラグイン移行 |
+| [opencode-build](skills/opencode-build/) | OpenCode v2 拡張開発 — server plugin hooks / transforms / ctx API / RPC, @opencode/client, @opencode/sdk (workerd), GUI plugin (Desktop / Web), Effect 版, server HTTP API (openapi.json / session / PTY), V1 プラグイン移行 |
 | [opencode-console](skills/opencode-console/) | OpenCode Console — Inference / Providers API, API keys・service accounts, OpenCode Go, workspace (SSO / SCIM / budgets / billing), harnesses |
 
 ### Google プラットフォーム
