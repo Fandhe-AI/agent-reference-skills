@@ -10,6 +10,8 @@ To embed an isolated `WebContentsView` in a panel, create it in `main` and rende
 
 To embed an isolated `WebContentsView` in a panel, create it in `main` and render its box from the window.
 
+Adapted (not in the official docs): the official example never closes the page and drops the `windows.on` cleanup; `ctx.onCleanup` closes each page and removes the `"open"` handler when the plugin goes away.
+
 ```ts title="src/gui/main.ts"
 import { type BrowserWindow, WebContentsView } from "electron"
 import type { Plugin } from "@opencode/plugin/gui"
@@ -18,12 +20,13 @@ export const main: Plugin.MainSetup = (ctx) => {
   const attach = (window: BrowserWindow) => {
     const view = new WebContentsView()
     const embed = ctx.embeds.create(view, window)
+    ctx.onCleanup(() => view.webContents.close())
     void view.webContents.loadURL("https://acme.example")
     embed.show(true)
     // Send embed.id to the window over your Ipc.
   }
   ctx.windows.list().forEach(attach)
-  ctx.windows.on("open", attach)
+  ctx.onCleanup(ctx.windows.on("open", attach))
 }
 ```
 
@@ -93,6 +96,7 @@ interface EmbedProps {
 
 ## Notes
 
+- Adapted from the official docs: the `main` example registers `ctx.onCleanup` to close each embedded page and to remove the `windows.on("open")` handler, because `dispose()` does not close the page.
 - Load only content you trust in an embedded `WebContentsView`, and do not expose Node.js or Electron APIs to it.
 - OpenCode GUI plugins are distinct from Claude Code plugins (anthropic-claude-code-extend).
 

@@ -17,6 +17,8 @@ activity alignment, and it does not show in a subagent's session.
 composer, and again when what it reads changes. This plugin lists the open pull requests of each session's directory
 through its server part's [RPC](https://opencode.ai/docs/build/plugins/rpc/), and shows them as one pill:
 
+Adapted (not in the official docs): the official example has no rejection handler; `.catch` clears the list when the server is unreachable instead of leaving an unhandled rejection.
+
 ```tsx
 import { createStore } from "solid-js/store"
 import { ComposerPill, createKeyed } from "@opencode/plugin/gui"
@@ -30,7 +32,8 @@ createKeyed(
     void ctx.client
       .rpc(GitHub)
       .pulls({ directory })
-      .then((list) => setPulls(directory, list)),
+      .then((list) => setPulls(directory, list))
+      .catch(() => setPulls(directory, [])),
 )
 
 ctx.add(ComposerPill, {
@@ -104,6 +107,7 @@ type ComposerPillTone = "success" | "warning" | "danger"
 
 ## Notes
 
+- Adapted from the official docs: the RPC call adds `.catch(() => setPulls(directory, []))`, because client calls reject while the server is unreachable.
 - OpenCode GUI plugins are distinct from Claude Code plugins (anthropic-claude-code-extend).
 
 ## Related
