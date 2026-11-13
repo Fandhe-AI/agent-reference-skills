@@ -69,6 +69,8 @@ V1 frontmatter fields are deprecated. See [Agent files](https://opencode.ai/docs
 
 Define agents under `agents` in any [OpenCode configuration file](https://opencode.ai/docs/config/):
 
+Adapted (not in the official docs): the official example denies only `edit`; the default policy allows `shell`, so a `shell` deny is added to keep the reviewer from changing files through shell commands.
+
 ```jsonc
 // opencode.jsonc
 {
@@ -80,6 +82,7 @@ Define agents under `agents` in any [OpenCode configuration file](https://openco
       "system": "Report findings in severity order.",
       "permissions": [
         { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "shell", "resource": "*", "effect": "deny" },
       ],
     },
   },
@@ -189,6 +192,7 @@ Global `permissions` apply before agent-specific rules, so later agent rules can
 
 ## Notes
 
+- Adapted from the official docs: the JSONC `reviewer` example adds `{ "action": "shell", "resource": "*", "effect": "deny" }`, matching the Markdown example, because the default policy allows `shell`.
 - OpenCode agents are distinct from Claude Code subagents and settings (anthropic-claude-code, anthropic-claude-code-extend, anthropic-claude-code-admin).
 - Per-agent fields (`description`, `model`, `system`, `permissions`, `steps`, `hidden`, `color`, `disabled`, `request`) are documented in the agent options page.
 - Do not use legacy top-level fields such as `temperature`, `top_p`, `prompt`, `permission`, `tools`, `disable`, or `maxSteps` in new V2 agent configuration.

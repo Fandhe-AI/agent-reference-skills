@@ -2,8 +2,8 @@
 name: opencode
 description: >
   OpenCode (opencode.ai のオープンソース AI コーディングエージェント, v2) の利用リファレンス。
-  opencode.jsonc 設定, agents (build / plan), models, providers, OpenCode skills, commands, MCP servers,
-  tools, websearch, network, permissions, policies, snapshots, compaction, warming,
+  opencode.jsonc 設定, agents (build / plan), models, providers, OpenCode skills, commands, plugins,
+  Ollama ローカルモデル, MCP servers, tools, websearch, network, permissions, policies, snapshots, compaction, warming,
   AGENTS.md instructions, formatters, themes, troubleshooting, V1 移行。
 user-invocable: false
 ---
