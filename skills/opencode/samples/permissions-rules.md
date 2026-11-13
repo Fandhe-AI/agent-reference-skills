@@ -31,6 +31,7 @@ Ask before any access outside the project:
 
 ## Notes
 
+- The `git push *` deny matches commands that start with `git push`; variants such as `git -C . push` fall through to the `shell` `ask` rule.
 - The last matching rule wins, so put broad rules first; with no match, OpenCode uses `ask`.
 - V2 uses `permissions`, `shell`, and `subagent` instead of V1 `permission`, `bash`, and `task`.
 - `shell` runs with the host user's authority; prefer a narrow allowlist over patterns meant to catch every dangerous command.

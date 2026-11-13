@@ -15,5 +15,5 @@
 | Local Models (Ollama, LM Studio, vLLM) | Use locally served models; OpenCode discovers them without an account connection. | [local-models-ollama.md](./local-models-ollama.md) |
 | Add MCP Servers | Add a remote and a local MCP server from the CLI or by hand under `mcp.servers`. | [mcp-servers.md](./mcp-servers.md) |
 | Minimal opencode.jsonc | Create a project `opencode.jsonc` with the schema for editor validation and a default model. | [minimal-config.md](./minimal-config.md) |
-| Permission Rules | Ask before shell commands, allow routine Git inspection, and always block pushes. | [permissions-rules.md](./permissions-rules.md) |
+| Permission Rules | Ask before shell commands, allow routine Git inspection, and deny `git push` commands. | [permissions-rules.md](./permissions-rules.md) |
 | Policies: Provider Allowlist | Restrict OpenCode to one custom provider with `provider.use` policy statements. | [policies-provider-allowlist.md](./policies-provider-allowlist.md) |

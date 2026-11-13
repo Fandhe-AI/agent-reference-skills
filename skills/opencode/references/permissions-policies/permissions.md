@@ -11,7 +11,7 @@ Permissions control whether an agent may perform an action on a resource.
 ### Configure
 
 A common setup is to ask before running shell commands, allow routine Git
-inspection, and always block pushes. Add these ordered rules to `opencode.jsonc`:
+inspection, and deny `git push` commands. Add these ordered rules to `opencode.jsonc`:
 
 ```jsonc
 {
@@ -237,6 +237,8 @@ Later global and agent rules override these defaults.
 Put shared rules at the top level and narrower rules under
 `agents.<id>.permissions`:
 
+Adapted (not in the official docs): the official `reviewer` denies only `edit`, which still lets it launch other agents through `subagent` and call MCP tools under the allow-all base policy. It instead denies every action and allows only `read` and `glob`, with `.env` reads denied.
+
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
@@ -249,7 +251,11 @@ Put shared rules at the top level and narrower rules under
       "description": "Review code without changing it",
       "mode": "subagent",
       "permissions": [
-        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "*", "resource": "*", "effect": "deny" },
+        { "action": "read", "resource": "*", "effect": "allow" },
+        { "action": "glob", "resource": "*", "effect": "allow" },
+        { "action": "read", "resource": "*.env", "effect": "deny" },
+        { "action": "read", "resource": "*.env.*", "effect": "deny" },
       ],
     },
   },
@@ -311,6 +317,8 @@ Fields of each permission rule:
 
 ## Notes
 
+- Corrected from the official docs: the Configure intro says the rules "always block pushes"; `git push *` matches only commands that start with `git push`, so variants such as `git -C . push` fall through to the `shell` `ask` rule.
+- Adapted from the official docs: the Agents example's `reviewer` uses a deny-all rule followed by `read` and `glob` allows, because denying only `edit` leaves `subagent` and MCP tools allowed by the base policy.
 - The last matching rule wins; with no match the effect is `ask`.
 - The default base policy allows `external_directory`; V1 asked by default (see Migrate from V1).
 - Corrected from the official docs: the `Scanner` example in the source nests `permissions` inside a `policies` entry. A policy statement requires `action`, `resource`, and `effect`, and invalid statements are dropped, so that form would leave the `rm *` deny unapplied. The example above places the rules in the top-level `permissions` array.

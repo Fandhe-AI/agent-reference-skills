@@ -145,6 +145,7 @@ A successful health response verifies the local client-to-service connection. Ru
 
 ## Notes
 
+- The client-certificate example shows only the `tls` settings. A custom provider such as `company` also needs a `models` map and credentials (for example `env`) to be usable.
 - `opencode service get env` prints persisted values including proxy credentials; do not share its output.
 - A proxy URL with embedded credentials typed in `export` stays in shell history; avoid committing or sharing that history.
 - Remote MCP servers do not present provider client certificates.

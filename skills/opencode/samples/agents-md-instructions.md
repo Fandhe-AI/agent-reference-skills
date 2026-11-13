@@ -28,6 +28,7 @@ Give OpenCode persistent project guidance with `AGENTS.md` and extra configured 
 
 ## Notes
 
+- Remote `https://` instructions are fetched when the config loads and are treated as instructions; use URLs only from origins you control and trust.
 - OpenCode V2 recognizes `AGENTS.md` only; it does not fall back to `CLAUDE.md`.
 - Files from the workspace up to the project root plus `~/.config/opencode/AGENTS.md` are combined; conflicts are not resolved.
 - Configured `instructions` load after `AGENTS.md` files; URLs are fetched with a five-second timeout.

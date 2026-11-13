@@ -10,7 +10,7 @@ Create a Markdown file to add a reusable agent. An agent combines a system promp
 
 This example adds a read-only reviewer that the main agent can launch for code reviews:
 
-Adapted (not in the official docs): the official example denies only `edit` and `shell`. Every agent starts from an allow-all base policy, so the reviewer instead denies every action and allows only `read`, `glob`, and `grep` (still denying `.env` reads). This also blocks `shell`, `subagent`, and MCP tools, which could otherwise change files.
+Adapted (not in the official docs): the official example denies only `edit` and `shell`. Every agent starts from an allow-all base policy, so the reviewer instead denies every action and allows only `read` and `glob` (still denying `.env` reads; `grep` stays denied because its permission resource is the search pattern, not the file path, so a `.env` read deny would not cover it). This also blocks `shell`, `subagent`, and MCP tools, which could otherwise change files.
 
 ```md title=".opencode/agents/reviewer.md"
 ---
@@ -25,9 +25,6 @@ permissions:
     resource: "*"
     effect: allow
   - action: "glob"
-    resource: "*"
-    effect: allow
-  - action: "grep"
     resource: "*"
     effect: allow
   - action: "read"
@@ -83,7 +80,7 @@ V1 frontmatter fields are deprecated. See [Agent files](https://opencode.ai/docs
 
 Define agents under `agents` in any [OpenCode configuration file](https://opencode.ai/docs/config/):
 
-Adapted (not in the official docs): the official example denies only `edit`. Every agent starts from an allow-all base policy, so the reviewer instead denies every action and allows only `read`, `glob`, and `grep` (still denying `.env` reads). This also blocks `shell`, `subagent`, and MCP tools, which could otherwise change files.
+Adapted (not in the official docs): the official example denies only `edit`. Every agent starts from an allow-all base policy, so the reviewer instead denies every action and allows only `read` and `glob` (still denying `.env` reads; `grep` stays denied because its permission resource is the search pattern, not the file path, so a `.env` read deny would not cover it). This also blocks `shell`, `subagent`, and MCP tools, which could otherwise change files.
 
 ```jsonc
 // opencode.jsonc
@@ -98,7 +95,6 @@ Adapted (not in the official docs): the official example denies only `edit`. Eve
         { "action": "*", "resource": "*", "effect": "deny" },
         { "action": "read", "resource": "*", "effect": "allow" },
         { "action": "glob", "resource": "*", "effect": "allow" },
-        { "action": "grep", "resource": "*", "effect": "allow" },
         { "action": "read", "resource": "*.env", "effect": "deny" },
         { "action": "read", "resource": "*.env.*", "effect": "deny" },
       ],
@@ -169,7 +165,7 @@ OpenCode includes these visible agents:
 | **Build** (`build`) | `primary` | Default coding agent. Tools and access outside the workspace are allowed by default; sensitive environment-file reads ask for approval. |
 | **Plan** (`plan`) | `primary` | Explores and plans without editing normal project files. It may write OpenCode plan files when asked, and shell commands remain permission-controlled. |
 | **General** (`general`) | `subagent` | Handles research and multi-step work with broad tool access, but cannot launch more subagents. |
-| **Explore** (`explore`) | `subagent` | Searches and reads code or web sources without editing files. |
+| **Explore** (`explore`) | `subagent` | Searches and reads code or web sources without editing files (its policy still allows `shell`). |
 
 Override a built-in by using the same ID:
 
@@ -210,7 +206,9 @@ Global `permissions` apply before agent-specific rules, so later agent rules can
 
 ## Notes
 
-- Adapted from the official docs: the `reviewer` examples replace the `edit` (and `shell`) denies with a deny-all rule followed by `read`, `glob`, and `grep` allows and `.env` read denies. The last matching rule wins, and the base policy allows every action, so denying only `edit` and `shell` would still let the reviewer use `shell` or launch another agent through `subagent`.
+- The `explainer` example relies on its prompt only; add `permissions` rules to enforce that it does not edit files.
+- With `shell` denied, the reviewer cannot run `git diff`; the parent agent must include the diff or the changed files in the subagent prompt.
+- Adapted from the official docs: the `reviewer` examples replace the `edit` (and `shell`) denies with a deny-all rule followed by `read` and `glob` allows and `.env` read denies. The last matching rule wins, and the base policy allows every action, so denying only `edit` and `shell` would still let the reviewer use `shell` or launch another agent through `subagent`.
 - OpenCode agents are distinct from Claude Code subagents and settings (anthropic-claude-code, anthropic-claude-code-extend, anthropic-claude-code-admin).
 - Per-agent fields (`description`, `model`, `system`, `permissions`, `steps`, `hidden`, `color`, `disabled`, `request`) are documented in the agent options page.
 - Do not use legacy top-level fields such as `temperature`, `top_p`, `prompt`, `permission`, `tools`, `disable`, or `maxSteps` in new V2 agent configuration.
