@@ -1,9 +1,9 @@
 ---
 name: opencode-build
 description: >
-  OpenCode v2 (opencode.ai) の拡張・組み込み開発 (@opencode/plugin / @opencode/client / @opencode/sdk) の
+  OpenCode v2 (opencode.ai) の拡張・組み込み開発 (@opencode/plugin / @opencode/client / @opencode/sdk / HTTP API) の
   リファレンス。server plugin hooks, transforms, ctx API, plugin RPC, GUI plugin (Desktop / Web),
-  Electron main process, Ipc, Cloudflare workerd, V1 プラグイン移行。
+  Electron main process, Ipc, Cloudflare workerd, openapi.json, SSE event, V1 プラグイン移行。
 user-invocable: false
 ---
 
@@ -23,7 +23,7 @@ OpenCode v2 を拡張・組み込みする開発者向けのリファレンス�
 - 組み込み SDK: `@opencode/sdk`（Cloudflare は `@opencode/sdk/workerd`）
 - Effect 版: `@opencode/plugin/effect` 等（effect@4.0.1）
 - HTTP API: `openapi.json`（OpenAPI 3.1.0、info.version 0.0.1、139 paths / 170 operations / 32 tags）
-- 本パートで収録済みのカテゴリは client-sdk / plugins-server / plugins-gui。TUI プラグイン・Effect 版・HTTP API のカテゴリは追加予定（それまでは公式 https://opencode.ai/docs/build/ と https://opencode.ai/docs/api/ を参照）
+- 本パートで収録済みのカテゴリは client-sdk / plugins-server / plugins-gui / http-api（session・PTY・experimental 系のページを除く）。TUI プラグイン・Effect 版と、HTTP API の session / PTY / experimental 系ページは追加予定（それまでは公式 https://opencode.ai/docs/build/ と https://opencode.ai/docs/api/ を参照）
 - V1 プラグイン（`@opencode-ai/plugin`）は移行ページ（`references/plugins-server/migrate-v1.md`、`support-v1.md`）のみ収録
 
 ## 他スキルとの使い分け
@@ -47,6 +47,8 @@ skills/opencode-build/
     plugins-server/    # lifecycle, transforms, ctx.* API, hooks, rpc, migrate-v1, support-v1 ほか
       README.md
     plugins-gui/       # overview, package, build-bundle, registries, command, panel, slot, ipc, main-process ほか
+      README.md
+    http-api/          # overview, agent, model, provider, event, rpc, plugin, mcp, shell ほか
       README.md
 ```
 
@@ -77,3 +79,6 @@ skills/opencode-build/
 | GUI の command / panel / slot / settings page / titlebar item を登録したい | plugins-gui | [references/plugins-gui/README.md](references/plugins-gui/README.md) |
 | GUI プラグインの Vite ビルド・ロード・リロードを知りたい | plugins-gui | [references/plugins-gui/README.md](references/plugins-gui/README.md) |
 | Electron main process 側の `main` setup・`Ipc` を使いたい | plugins-gui | [references/plugins-gui/README.md](references/plugins-gui/README.md) |
+| OpenCode サーバーの HTTP エンドポイント（agent / model / provider / config ほか）を知りたい | http-api | [references/http-api/README.md](references/http-api/README.md) |
+| SSE イベント・`rpc.call` の仕様を知りたい | http-api | [references/http-api/README.md](references/http-api/README.md) |
+| `openapi.json` の構成・tag・operation を確認したい | http-api | [references/http-api/README.md](references/http-api/README.md) |
