@@ -2,8 +2,8 @@
 name: opencode-build
 description: >
   OpenCode v2 (opencode.ai) の拡張・組み込み開発 (@opencode/plugin / @opencode/client / @opencode/sdk) の
-  リファレンス。server plugin hooks, transforms, ctx API, plugin RPC, Cloudflare workerd,
-  V1 プラグイン移行。
+  リファレンス。server plugin hooks, transforms, ctx API, plugin RPC, GUI plugin (Desktop / Web),
+  Electron main process, Ipc, Cloudflare workerd, V1 プラグイン移行。
 user-invocable: false
 ---
 
@@ -23,7 +23,7 @@ OpenCode v2 を拡張・組み込みする開発者向けのリファレンス�
 - 組み込み SDK: `@opencode/sdk`（Cloudflare は `@opencode/sdk/workerd`）
 - Effect 版: `@opencode/plugin/effect` 等（effect@4.0.1）
 - HTTP API: `openapi.json`（OpenAPI 3.1.0、info.version 0.0.1、139 paths / 170 operations / 32 tags）
-- 本パートで収録済みのカテゴリは client-sdk / plugins-server。TUI プラグイン・GUI プラグイン・Effect 版・HTTP API のカテゴリは追加予定（それまでは公式 https://opencode.ai/docs/build/ と https://opencode.ai/docs/api/ を参照）
+- 本パートで収録済みのカテゴリは client-sdk / plugins-server / plugins-gui。TUI プラグイン・Effect 版・HTTP API のカテゴリは追加予定（それまでは公式 https://opencode.ai/docs/build/ と https://opencode.ai/docs/api/ を参照）
 - V1 プラグイン（`@opencode-ai/plugin`）は移行ページ（`references/plugins-server/migrate-v1.md`、`support-v1.md`）のみ収録
 
 ## 他スキルとの使い分け
@@ -45,6 +45,8 @@ skills/opencode-build/
     client-sdk/        # overview, client, sdk, sdk-cloudflare
       README.md
     plugins-server/    # lifecycle, transforms, ctx.* API, hooks, rpc, migrate-v1, support-v1 ほか
+      README.md
+    plugins-gui/       # overview, package, build-bundle, registries, command, panel, slot, ipc, main-process ほか
       README.md
 ```
 
@@ -71,3 +73,7 @@ skills/opencode-build/
 | `ctx.session` / `ctx.storage` / `ctx.permission` などの API を使いたい | plugins-server | [references/plugins-server/README.md](references/plugins-server/README.md) |
 | `Rpc.define` でプラグイン RPC を定義・呼び出したい | plugins-server | [references/plugins-server/README.md](references/plugins-server/README.md) |
 | V1 プラグイン (`@opencode-ai/plugin`) を V2 へ移行したい | plugins-server | [references/plugins-server/README.md](references/plugins-server/README.md) |
+| GUI (Desktop / Web) プラグインを作りたい（experimental） | plugins-gui | [references/plugins-gui/README.md](references/plugins-gui/README.md) |
+| GUI の command / panel / slot / settings page / titlebar item を登録したい | plugins-gui | [references/plugins-gui/README.md](references/plugins-gui/README.md) |
+| GUI プラグインの Vite ビルド・ロード・リロードを知りたい | plugins-gui | [references/plugins-gui/README.md](references/plugins-gui/README.md) |
+| Electron main process 側の `main` setup・`Ipc` を使いたい | plugins-gui | [references/plugins-gui/README.md](references/plugins-gui/README.md) |
