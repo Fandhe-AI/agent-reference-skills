@@ -79,6 +79,12 @@ const refBindingRejected = (line) => refBinding(line) && !REF_ASSIGN_ALLOWED.tes
 const GIT_ADD_COMMIT_CALL = new RegExp(`${GIT_SUB('(?:add|commit)').source}`)
 const GIT_WIP_ALLOWED = /^\s*git -C "\$\{path\}" add -A >&2 && git -C "\$\{path\}" commit -q -m "chore\(recover\): 中断時の未コミット変更を退避" <\/dev\/null >&2 \|\| crc=\$\?\s*$/
 
+// reply-resolve.sh（Issue #759）の 2 つの mutation 定数。返信と resolve の決め打ちの 1 行ずつだけを許可形とし、
+// 本文を引数で受ける形・別の mutation・他スクリプトへのコピーは許さない（許可形が reply-resolve.sh にしか無いことは専用テストで固定）
+const RR_REPLY_MUTATION_ALLOWED = /^RR_REPLY_QUERY='mutation\(\$tid:ID!,\$body:String!\)\{addPullRequestReviewThreadReply\(input:\{pullRequestReviewThreadId:\$tid,body:\$body\}\)\{comment\{id state\}\}\}'$/
+const RR_RESOLVE_MUTATION_ALLOWED = /^RR_RESOLVE_QUERY='mutation\(\$tid:ID!\)\{resolveReviewThread\(input:\{threadId:\$tid\}\)\{thread\{id isResolved\}\}\}'$/
+const RR_MUTATION_ALLOWED = { test: (line) => RR_REPLY_MUTATION_ALLOWED.test(line.trim()) || RR_RESOLVE_MUTATION_ALLOWED.test(line.trim()) }
+
 const PATTERNS = [
   // マージ・クローズ
   re('gh pr merge', /\bgh\b[^\n|;&]*\bpr\b[^\n|;&]*\bmerge\b/),
@@ -88,7 +94,10 @@ const PATTERNS = [
   // 別名・拡張経由の迂回（merge-guard-hook.sh が拒否している類と揃える）
   re('gh alias / gh extension', /\bgh\b[^\n|;&]*\b(alias|extensions?)\b/),
   // 承認
-  re('approve', /--approve\b|\bgh\b[^\n|;&]*\bpr\b[^\n|;&]*\breview\b|\bevent=APPROVE\b|\bAPPROVE\b|submitPullRequestReview|addPullRequestReview/),
+  {
+    label: 'approve',
+    test: (line) => /--approve\b|\bgh\b[^\n|;&]*\bpr\b[^\n|;&]*\breview\b|\bevent=APPROVE\b|\bAPPROVE\b|submitPullRequestReview|addPullRequestReview/.test(line) && !RR_MUTATION_ALLOWED.test(line),
+  },
   // リポジトリ設定・ruleset・branch protection の変更
   // /rulesets は設定変更の経路なので拒否するが、merge-gate.sh の G0 が適用 ruleset 1 件の bypass_actors と enforcement を読む GET
   // （gh_api "${repo_path}/rulesets/${id}" || …。-X・-f などの書き込みは別のパターンが拒否する）だけは、この 1 行の形に限って許す。
@@ -105,7 +114,7 @@ const PATTERNS = [
   // curl / wget による本文付きリクエスト（-d / --data* / -F / --form / -T / --upload-file / --json、wget の --post-data / --post-file / --body-*）。
   // -X / --method は上のパターンが拾う
   re('curl / wget による書き込み系リクエスト', /\bcurl\b[^\n|;&]*\s(-[A-Za-z]*[dFT]|--(data[\w-]*|form[\w-]*|upload-file|json))\b|\bwget\b[^\n|;&]*\s--(post-(data|file)|body-(data|file))\b/),
-  re('GraphQL の mutation', /\bmutation\b/),
+  { label: 'GraphQL の mutation', test: (line) => /\bmutation\b/.test(line) && !RR_MUTATION_ALLOWED.test(line) },
   // gh api は -f / -F / --field / --raw-field / --input を付けると、メソッド指定なしでも暗黙に POST になる。
   // graphql の query 送信（-f query=… -F owner=…）だけは読み取りとして許す（mutation は別パターンが拒否する）。--input は graphql でも拒否する
   {
@@ -193,7 +202,7 @@ function codeLines(text) {
 
 test('走査の対象にスクリプト一式（scripts/*.sh と scripts/lib/*.sh）が含まれ、除外は merge-guard-hook.sh だけ', () => {
   const names = targets().map((t) => t.name)
-  for (const must of ['base-merge.sh', 'observe-pr.sh', 'measure-residual-bytes.sh', 'measure-free-disk.sh', 'run-verified.sh', 'preview-tree.sh', 'pr-push.sh', 'merge-gate.sh', 'worktree-remove.sh', 'recover-prep.sh', 'fetch-tree.sh', 'lib/fetch-tree-lib.sh', 'lib/worktree-remove-lib.sh', 'lib/recover-prep-lib.sh', 'lib/merge-gate-lib.sh', 'lib/signed-output.sh', 'lib/push-verify.sh', 'lib/base-merge-lib.sh', 'lib/pr-push-lib.sh']) {
+  for (const must of ['base-merge.sh', 'observe-pr.sh', 'measure-residual-bytes.sh', 'measure-free-disk.sh', 'run-verified.sh', 'preview-tree.sh', 'pr-push.sh', 'merge-gate.sh', 'worktree-remove.sh', 'recover-prep.sh', 'fetch-tree.sh', 'lib/fetch-tree-lib.sh', 'lib/worktree-remove-lib.sh', 'lib/recover-prep-lib.sh', 'lib/merge-gate-lib.sh', 'lib/signed-output.sh', 'lib/push-verify.sh', 'lib/base-merge-lib.sh', 'lib/pr-push-lib.sh', 'reply-resolve.sh', 'lib/reply-resolve-lib.sh']) {
     assert.ok(names.includes(must), `${must} が走査の対象にない（${names.join(', ')}）`)
   }
   assert.ok(!names.includes('merge-guard-hook.sh'))
@@ -607,4 +616,25 @@ test('merge-gate.sh の gh_api() 本体は run_timed "${gh_timeout}" gh api "$@"
   assert.equal(defs[0][1].trim(), 'run_timed "${gh_timeout}" gh api "$@"', 'ラッパー本体は固定の 1 形。-X / --method / --request などを足さない')
   // GET 以外になり得る環境変数・変数展開を gh api の直前に置く形も拒否する
   assert.ok(!/GH_M\b|\$\{?GH_METHOD/.test(src), 'メソッドを変数で切り替える足場がない')
+})
+
+test('reply-resolve.sh の mutation は返信 1 行・resolve 1 行の決め打ちだけで、reply-resolve.sh 以外のスクリプトに無い（Issue #759）', () => {
+  const found = []
+  for (const { name, path } of targets()) {
+    for (const { n, l } of codeLines(readFileSync(path, 'utf8'))) if (/\bmutation\b|addPullRequestReview|resolveReviewThread/.test(l)) found.push({ name, n, l: l.trim() })
+  }
+  assert.deepEqual(found.map((f) => f.name), ['reply-resolve.sh', 'reply-resolve.sh'], JSON.stringify(found))
+  assert.equal(found.filter((f) => RR_REPLY_MUTATION_ALLOWED.test(f.l)).length, 1)
+  assert.equal(found.filter((f) => RR_RESOLVE_MUTATION_ALLOWED.test(f.l)).length, 1)
+})
+
+test('自己検査: reply-resolve.sh の許可形を崩した行（別の mutation・本文入り・追加の入力）は拒否される', () => {
+  const bad = [
+    `RR_REPLY_QUERY='mutation($tid:ID!,$body:String!){addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$tid,body:"x"}){comment{id state}}}'`,
+    `RR_RESOLVE_QUERY='mutation($tid:ID!){mergePullRequest(input:{threadId:$tid}){thread{id}}}'`,
+    `RR_X='mutation($tid:ID!){resolveReviewThread(input:{threadId:$tid}){thread{id isResolved}}}'`,
+    `RR_REPLY_QUERY='mutation($tid:ID!,$body:String!){addPullRequestReview(input:{pullRequestId:$tid,body:$body,event:APPROVE}){comment{id state}}}'`,
+  ]
+  for (const l of bad) assert.ok(PATTERNS.some((p) => p.test(l)), l)
+  assert.ok(!PATTERNS.some((p) => p.test(`RR_RESOLVE_QUERY='mutation($tid:ID!){resolveReviewThread(input:{threadId:$tid}){thread{id isResolved}}}'`)))
 })

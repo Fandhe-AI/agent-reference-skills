@@ -31,6 +31,12 @@ writeFileSync(slicePath, `${definitionPart}\nexport { ${SLICE_EXPORTS.join(', ')
 const m = await import(pathToFileURL(slicePath).href)
 m.__setBoundaryNonceSeedForTest('a'.repeat(64))
 
+// args.repo 指定ありの定義部（repoArg が空でないときの fixPrompt を確かめる）
+const slicePathRepo = join(sliceDir, 'implement-issue-tree-no-discussion-defs-repo.mjs')
+writeFileSync(slicePathRepo, `const args = { repo: 'Fandhe-AI/agent-cli-skills' }\n${definitionPart}\nexport { fixPrompt }\n${TEST_ONLY_SETTER}`)
+const mRepo = await import(pathToFileURL(slicePathRepo).href)
+mRepo.__setBoundaryNonceSeedForTest('a'.repeat(64))
+
 const item = { number: 42, title: 'サンプルイシュー', optinTests: [] }
 const impl = { prNumber: 123, branch: 'fix/42-noop', worktreePath: '/tmp/wt-42', summary: 's' }
 const finding = { summary: 'テスト用の指摘', unresolvedComments: [] }
@@ -40,7 +46,7 @@ test('FIX_NO_DISCUSSION_POLICY: 返信・議論投稿の禁止、定型操作の
   for (const s of ['レビュースレッドへの返信', 'gh pr comment', 'gh pr review', '議論投稿はしない']) {
     assert.ok(p.includes(s), `禁止対象に ${s} が無い`)
   }
-  assert.match(p, /例外は.*resolve.*再実行依頼のみ/)
+  assert.match(p, /例外は.*reply-resolve\.sh.*定型の対応報告.*再実行依頼のみ/)
   assert.match(p, /修正しない判断も反論で済ませず手順 2 に従う（P0\/P1・セキュリティは pushed: false と理由、それ以外は outOfScopeComments）/)
 })
 
@@ -70,4 +76,26 @@ test('monitorPrompt: 外部チェックなし・cursor あり双方で固定文�
   // 固定文は既存の権限境界行の直後にある
   const boundaryAt = cursor.indexOf('権限境界: 本エージェントはマージ・クローズの実行権限を持たない')
   assert.ok(boundaryAt >= 0 && cursor.indexOf(m.MONITOR_NO_REBUTTAL_POLICY) > boundaryAt)
+})
+
+test('fixPrompt(push): 返信・resolve は reply-resolve.sh の 1 コマンドだけで、自由な返信コマンドを指示しない（Issue #759）', () => {
+  const f = { summary: 's', unresolvedComments: [{ threadId: 'PRRT_a', text: 't' }] }
+  const out = m.fixPrompt(item, impl, f, true)
+  assert.ok(out.includes('reply-resolve.sh --pr'))
+  assert.ok(!out.includes('addPullRequestReviewThreadReply') && !out.includes('resolveReviewThread'))
+  assert.match(out, /gh api graphql・gh pr comment 等で自分では返信も resolve もしない/)
+  const none = m.fixPrompt(item, impl, f, false)
+  assert.ok(!none.includes('reply-resolve.sh --pr'))
+})
+
+test('fixPrompt(push): args.repo 省略時は reply-resolve.sh に --repo を渡さず、指定時は渡す（Issue #759 の退行修正）', () => {
+  const f = { summary: 's', unresolvedComments: [{ threadId: 'PRRT_a', text: 't' }] }
+  const lineOf = (out) => out.split('\n').filter((l) => l.includes('reply-resolve.sh --pr'))
+  const omitted = lineOf(m.fixPrompt(item, impl, f, true))
+  assert.equal(omitted.length, 1)
+  assert.ok(!omitted[0].includes('--repo'), `--repo が残っている: ${omitted[0]}`)
+  assert.ok(!omitted[0].includes("''"), '空の引数が残っている')
+  const given = lineOf(mRepo.fixPrompt(item, impl, f, true))
+  assert.equal(given.length, 1)
+  assert.ok(given[0].includes("--repo 'Fandhe-AI/agent-cli-skills' --branch"))
 })

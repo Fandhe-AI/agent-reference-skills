@@ -229,6 +229,7 @@ test('baseMergePrompt: gh pr merge の実行コマンド形・resolveReviewThrea
   // 権限境界の説明文中に「マージ・クローズは行わない」と書くため、実行可能なコマンド形の不在で判定する
   assert.ok(!prompt.includes('--squash --delete-branch --match-head-commit'), 'マージ実行コマンド形が混入している')
   assert.ok(!prompt.includes('mutation($tid:ID!){resolveReviewThread'), 'resolveReviewThread mutation の実行コマンド行が混入している')
+  assert.ok(!prompt.includes('reply-resolve.sh --pr'), 'reply-resolve.sh の起動が混入している（Issue #759・上の否定は空振りになるため併記）')
 })
 
 // PR #443 codex P0 / P1 の回帰: baseMergePrompt は PR 由来の未信頼コード実行（fmt / lint / build / test 等）を指示せず、

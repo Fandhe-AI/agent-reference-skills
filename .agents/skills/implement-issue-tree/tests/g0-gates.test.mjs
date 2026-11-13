@@ -396,6 +396,20 @@ test('implementPrompt / recoverImplementPrompt: コミット後に git checkout 
   }
 })
 
+// Issue #761: detach の前に追跡ファイルの未コミット変更を確かめる。amend せず追加コミット・未追跡は対象外・失敗にしない。
+test('implementPrompt / recoverImplementPrompt: detach の前に追跡ファイルの clean を確かめる', () => {
+  for (const prompt of [implementPrompt(item, { steps: ['noop'] }), recoverImplementPrompt(item, { done: [], remaining: [], broken: [] }, 'fix/42-noop')]) {
+    const line = prompt.split('\n').find((l) => l.includes('7. push・PR 作成はここでは行わない。'))
+    assert.ok(line, '手順 7 の行が無い')
+    const check = line.indexOf('git status --porcelain --untracked-files=no')
+    assert.ok(check >= 0 && check < line.indexOf('git checkout --detach'), '確認が detach より前に無い')
+    assert.ok(line.includes('git add -u'))
+    assert.ok(line.includes('amend はしない'))
+    assert.ok(line.includes('失敗にはしない'))
+    assert.ok(!line.includes('git add -A') && !line.includes('git add .'))
+  }
+})
+
 // Bugbot（PR #436 追補）: pr-create は base 取り込みコミットを detached HEAD から push しローカル
 // refs/heads を更新しないため、PR 作成失敗後の Recover → 回復 Implement が古いローカル tip を掴むと
 // 次の pr-create が remote-ahead / diverged で再失敗しループする。checkout 後の ff 追従を固定する。
@@ -485,17 +499,16 @@ test('fixPrompt: pushAfterFix の両分岐で commitlint 事前確認の指示�
 // ---------------------------------------------------------------------------
 
 // resolveReviewThread mutation の指示行の有無が「resolve 実行主体か」の判定基準。
-const RESOLVE_MUTATION_MARKER = 'resolveReviewThread'
+// Issue #759: fix は reply-resolve.sh 経由でだけ返信・resolve する。生の mutation は fixPrompt に現れない
+const RESOLVE_MUTATION_MARKER = 'reply-resolve.sh --pr'
 
 test('fixPrompt: pushAfterFix=true はリモート head 反映済み前提の resolveReviewThread mutation 指示と resolvedThreadIds 報告を含む', () => {
   mod.__setBoundaryNonceSeedForTest('a'.repeat(64))
   const finding = { summary: 'テスト用の指摘', unresolvedComments: [{ threadId: 'PRRT_abc123', text: '指摘テキスト' }] }
   const prompt = fixPrompt(item, { ...impl, branch: 'fix/42-noop' }, finding, true)
-  assert.ok(prompt.includes(RESOLVE_MUTATION_MARKER), 'pushAfterFix=true の fixPrompt に resolveReviewThread mutation の指示がない')
-  assert.ok(
-    prompt.includes(`gh api graphql -f query='mutation($tid:ID!){resolveReviewThread(input:{threadId:$tid}){thread{id isResolved}}}' -F tid=<threadId>`),
-    'resolve mutation のコマンド形が期待どおりでない',
-  )
+  assert.ok(prompt.includes(RESOLVE_MUTATION_MARKER), 'pushAfterFix=true の fixPrompt に reply-resolve.sh の指示がない')
+  assert.ok(/reply-resolve\.sh --pr 123(?: --repo '[^']+')? --branch fix\/42-noop --allow 'PRRT_abc123' --thread-id <threadId>/.test(prompt), 'reply-resolve.sh のコマンド形が期待どおりでない')
+  assert.ok(!prompt.includes('resolveReviewThread') && !prompt.includes('addPullRequestReviewThreadReply'), '生の mutation が fixPrompt に残っている')
   assert.ok(prompt.includes('resolvedThreadIds'), 'resolve 済み threadId の報告フィールド（resolvedThreadIds）の指示がない')
   // resolve の前提条件: (a) 今回 push 成功、または (b) ホストが決定的に算出した許可リスト
   // （resolveProof。Issue #430）。fix 自身の反映確認・一覧再取得での対象拡大は禁止する文言を

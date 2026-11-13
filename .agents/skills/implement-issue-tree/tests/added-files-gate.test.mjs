@@ -10,7 +10,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { BASE_ARGS, definitionPart, driverPart, importDefinitions, runScript } from './lib/stub-run.mjs'
-import { inputSha256, makeEnvelope, nonceOf } from './lib/signed-output.mjs'
+import { inputSha256, makeEnvelope, nonceOf, policyPathsReply } from './lib/signed-output.mjs'
 
 const {
   addedFilesPeers, classifyAddedFiles, observeInputText, observeCommand, addedFileSeqFindingSummary, addedFilePathBlockedReason,
@@ -108,7 +108,7 @@ test('ゲートは ready の後・recoveryOnly とマージ実行より前に置
   assert.ok(driverPart.indexOf('const recoveryOnly = ') > gate, 'recoveryOnly（人手マージ待ちの経路）より前')
   assert.ok(driverPart.indexOf('merge-exec:#${item.number}') > gate)
   assert.equal(driverPart.split('__ADDED_FILES_GATE__').length, 2, '目印は 1 つ')
-  assert.ok(definitionPart.includes("label: `merge:added-files:#${item.number}`"))
+  assert.ok(definitionPart.includes("label: `merge:${key}:#${item.number}`") && definitionPart.includes("'added-files', '新規追加ファイルの衝突'"))
 })
 
 // ---- 結合: 2 件のツリーを parallel 1 で回し、#2（PR 1002）の後に #3（PR 1003）を監視する ----
@@ -127,6 +127,7 @@ async function runTree(addedFilesReply, { fixPushed = true } = {}) {
         observed.push({ issue: n, pr: Number(m[1]), peers, model: opts.model })
         return addedFilesReply({ prompt, issue: n, pr: Number(m[1]), peers, call: observed.filter((o) => o.issue === n).length })
       }
+      if (label.startsWith('merge:policy-paths:#')) return policyPathsReply(prompt)
       if (label.startsWith('merge:#')) return { state: 'ready', summary: 'マージ条件充足', headSha: HEAD }
       if (label.startsWith('fix:#')) return { pushed: fixPushed, summary: '改番した', worktreePath: `/repo/wt/f${n}` }
       return undefined

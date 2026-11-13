@@ -103,17 +103,23 @@ test('fixPrompt(pushAfterFix=true): resolve (b) はホスト決定的照合済�
 test('fixPrompt(pushAfterFix=true): 許可リストの内容がプロンプトへそのまま反映され、空なら (b) の resolve を禁止する', () => {
   mod.__setBoundaryNonceSeedForTest('a'.repeat(64))
   const promptWithIds = fixPrompt(item, impl, finding, true, ['PRRT_permitted1', 'PRRT_permitted2'])
-  assert.ok(promptWithIds.includes('PRRT_permitted1, PRRT_permitted2'), '許可リストの threadId がプロンプトに反映されていない')
+  assert.ok(promptWithIds.includes('PRRT_permitted1,PRRT_permitted2'), '許可リストの threadId がプロンプトに反映されていない')
 
   mod.__setBoundaryNonceSeedForTest('a'.repeat(64))
   const promptEmpty = fixPrompt(item, impl, finding, true, [])
   assert.ok(promptEmpty.includes('(空'), '許可リストが空のとき、その旨がプロンプトに明示されない')
+  // Issue #759: (b) は (a) と別コマンド。許可 ID は (a) の --allow に混ざらず、空なら (b) のコマンドを出さない
+  assert.ok(promptWithIds.includes("--allow 'PRRT_permitted1,PRRT_permitted2'"), '(b) の --allow が許可リストの ID だけになっていない')
+  assert.equal((promptEmpty.match(/reply-resolve\.sh --pr/g) || []).length, 1, '許可リストが空なのに (b) のコマンドが出ている')
+  assert.equal((promptWithIds.match(/reply-resolve\.sh --pr/g) || []).length, 2)
 })
 
 test('fixPrompt(pushAfterFix=false): Review ループは引き続き resolve を一切行わない', () => {
   mod.__setBoundaryNonceSeedForTest('a'.repeat(64))
   const prompt = fixPrompt(item, impl, finding, false)
   assert.ok(!prompt.includes('resolveReviewThread'), 'push 前の Review ループ fix に resolve mutation の指示が混入している')
+  // Issue #759: 生の mutation 文字列は fixPrompt から消えたため、上の否定だけでは空振りになる。reply-resolve.sh の不在も確かめる
+  assert.ok(!prompt.includes('run-verified.sh') && !prompt.includes('reply-resolve.sh --pr'), 'push 前の Review ループ fix に reply-resolve.sh の指示が混入している')
   assert.ok(prompt.includes('レビュースレッドの resolve は行わない'), 'Review ループの resolve 禁止文言がない')
 })
 
