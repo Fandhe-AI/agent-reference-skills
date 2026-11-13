@@ -44,6 +44,7 @@ $ opencode run --archived "Review this diff"
 
 ## Notes
 
+- The job uses the default agent, which can edit files and run shell commands on the runner. For review-only runs, commit an agent that denies every action except reads (see the `reviewer` example in the agents page) and pass it with `--agent`.
 - Adapted from the official docs: the GitHub Actions example adds `permissions: contents: read`, `persist-credentials: false`, a commit-SHA pin for `actions/checkout` (v4.4.0), and a version pin for `@opencode/cli`, because the agent can run shell commands with the job's credentials. It runs on pushes to `main` instead of `pull_request` because OpenCode loads project config and `.opencode/plugins/` from the checked-out tree, so pull request code would run with the provider API key.
 - Pass the provider API key as a secret and use `--standalone` so the private server receives it.
 - `--archived` sessions still exist: `opencode session list` includes them and they open by ID.

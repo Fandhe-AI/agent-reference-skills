@@ -3,7 +3,8 @@ name: opencode
 description: >
   OpenCode (opencode.ai のオープンソース AI コーディングエージェント, v2) の利用リファレンス。
   opencode.jsonc 設定, agents (build / plan), models, providers, OpenCode skills, commands, plugins,
-  Ollama ローカルモデル, MCP servers, tools, websearch, network, permissions, policies, snapshots, compaction, warming,
+  Ollama ローカルモデル, MCP servers, tools, websearch, network, permissions, policies,
+  snapshots, compaction, warming, TUI, keybinds, opencode run / serve, ACP,
   AGENTS.md instructions, formatters, themes, troubleshooting, V1 移行。
 user-invocable: false
 ---
@@ -101,6 +102,34 @@ skills/opencode/
       snapshots.md
       compaction.md
       warming.md
+    cli/
+      README.md
+      overview.md
+      tui.md
+      web.md
+      providers.md
+      acp.md
+      config.md
+      theme.md
+      plugins.md
+      keybinds.md
+      commands-run.md
+      commands-mini.md
+      commands-session.md
+      commands-auth.md
+      commands-models.md
+      commands-mcp.md
+      commands-plugin.md
+      commands-stats.md
+      commands-serve.md
+      commands-pair.md
+      commands-service.md
+      commands-reload.md
+      commands-api.md
+      commands-acp.md
+      commands-debug.md
+      commands-upgrade.md
+      commands-uninstall.md
   samples/
     README.md
     minimal-config.md
@@ -118,6 +147,17 @@ skills/opencode/
     keybinds.md
     acp-zed.md
     github-actions-run.md
+  scripts/
+    README.md
+    install.md
+    auth.md
+    cli.md
+    mcp.md
+    plugin.md
+    server.md
+    network.md
+    acp.md
+    troubleshooting.md
 ```
 
 ## 探索手順
@@ -145,4 +185,7 @@ skills/opencode/
 | MCP servers（local / remote）の接続・OAuth・タイムアウト・権限名を設定したい | tools-mcp | [references/tools-mcp/README.md](references/tools-mcp/README.md) |
 | permissions のルールを設計したい、policies で組織制約を掛けたい | permissions-policies | [references/permissions-policies/README.md](references/permissions-policies/README.md) |
 | snapshots・compaction・warming などセッション挙動を調整したい | sessions | [references/sessions/README.md](references/sessions/README.md) |
+| CLI のコマンド（opencode run / serve / auth / mcp / models 等）を引きたい | cli | [references/cli/README.md](references/cli/README.md) |
+| TUI・keybinds・theme・ACP・web・plugins・cli.json Settings・Providers（プロバイダー接続）の CLI 側仕様を知りたい | cli | [references/cli/README.md](references/cli/README.md) |
 | 典型的な使い方・設定例を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
