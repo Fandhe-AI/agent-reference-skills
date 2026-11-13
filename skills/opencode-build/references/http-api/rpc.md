@@ -138,6 +138,8 @@ Excerpt from openapi.json (v2.3.0)
 }
 ```
 
+## Options / Props
+
 ### rpc.call
 
 Dispatch a method to the currently registered RPC at the requested location.

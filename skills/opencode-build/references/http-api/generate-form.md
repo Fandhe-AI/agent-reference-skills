@@ -126,6 +126,8 @@ All four generate operations share the same error responses, listed once here.
 | 502 | ProviderRequestError | `ProviderRequestErrorEncoded` |
 | 503 | ServiceUnavailableError | `ServiceUnavailableErrorEncoded` |
 
+## Options / Props
+
 ### experimental.generate.text
 
 Run one stateless model generation using the server's base configuration and return the assistant text. Uses the base configuration's default model when none is specified.

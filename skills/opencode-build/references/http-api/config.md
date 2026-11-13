@@ -76,6 +76,8 @@ Excerpt from openapi.json (v2.3.0)
 }
 ```
 
+## Options / Props
+
 ### config.get
 
 Return configuration documents and discovery sources for the requested location, from lowest to highest priority.

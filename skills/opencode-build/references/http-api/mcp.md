@@ -112,6 +112,8 @@ Excerpt from openapi.json (v2.3.0)
 
 Every operation accepts the optional `location` query parameter: object `{ directory: string | null }` (deepObject, explode), no description (for `experimental.mcp.client` it has no `style` / `explode`). Every operation also returns 400 `InvalidRequestErrorEncoded` and 401 `UnauthorizedErrorEncoded`; only the other statuses are listed below.
 
+## Options / Props
+
 ### mcp.list
 
 Retrieve configured MCP servers and their connection status.

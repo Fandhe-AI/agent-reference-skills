@@ -111,6 +111,8 @@ Excerpt from openapi.json (v2.3.0)
 }
 ```
 
+## Options / Props
+
 ### command.list
 
 Retrieve currently registered commands.

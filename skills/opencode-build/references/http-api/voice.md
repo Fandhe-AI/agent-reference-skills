@@ -117,6 +117,8 @@ Excerpt from openapi.json (v2.3.0)
 
 Both operations take no parameters and return 400 `InvalidRequestErrorEncoded`, 401 `UnauthorizedErrorEncoded`, 404 `LocationNotFoundErrorEncoded`, 503 `ServiceUnavailableErrorEncoded` in addition to the 200 response below.
 
+## Options / Props
+
 ### experimental.voice.models
 
 List supported voice models, their transports, and whether the server has a usable API key for each provider.

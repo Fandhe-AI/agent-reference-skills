@@ -118,6 +118,8 @@ Excerpt from openapi.json (v2.3.0)
 
 Every operation accepts the optional `location` query parameter: object `{ directory: string | null }` (deepObject, explode), no description. Every operation also returns 400 `InvalidRequestErrorEncoded` and 401 `UnauthorizedErrorEncoded`; only the other statuses are listed below.
 
+## Options / Props
+
 ### vcs.init
 
 Initialize a repository using the selected VCS provider in a markerless project's directory and refresh its location services. Omitting provider defaults to git; built-in git and hg providers support initialization. An unknown provider returns 400; a registered provider without init returns 501.

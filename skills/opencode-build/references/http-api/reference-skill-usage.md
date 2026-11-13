@@ -115,6 +115,8 @@ Excerpt from openapi.json (v2.3.0)
 
 All three operations accept the optional `location` query parameter: object `{ directory: string | null }` (deepObject, explode), no description.
 
+## Options / Props
+
 ### reference.list
 
 List references available in the requested location.

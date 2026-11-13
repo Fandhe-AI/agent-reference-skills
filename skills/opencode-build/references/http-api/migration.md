@@ -117,6 +117,8 @@ Excerpt from openapi.json (v2.3.0), `security` through the 200 response (contigu
       },
 ```
 
+## Options / Props
+
 ### experimental.migration.v1.status
 
 Return the progress of the V1 to V2 session history migration.

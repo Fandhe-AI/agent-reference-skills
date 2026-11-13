@@ -66,6 +66,8 @@ Excerpt from openapi.json (v2.3.0)
 }
 ```
 
+## Options / Props
+
 ### debug.heapDump
 
 Write a JavaScript heap snapshot of the server process into its log directory, or the requested directory, and return the server-local path once the file is complete. Pauses the server while the heap serializes and can temporarily increase its memory use. The snapshot can contain credentials, prompts, and file contents.

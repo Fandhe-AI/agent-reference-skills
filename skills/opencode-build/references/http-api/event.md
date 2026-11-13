@@ -151,6 +151,8 @@ Excerpt from openapi.json (v2.3.0), `security` through `summary` (contiguous ran
     "summary": "Subscribe to events"
 ```
 
+## Options / Props
+
 ### event.subscribe
 
 Subscribe to native events and plugin RPC events across all server locations. Volatile by contract: a slow consumer overflows and fails the stream, and events during disconnection are missed.

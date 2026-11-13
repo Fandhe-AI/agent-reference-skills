@@ -124,6 +124,8 @@ Excerpt from openapi.json (v2.3.0)
 
 Both operations accept the optional `location` query parameter: object `{ directory: string | null }` (deepObject, explode), no description.
 
+## Options / Props
+
 ### provider.list
 
 Retrieve active AI providers so clients can show provider availability and configuration.

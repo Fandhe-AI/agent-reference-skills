@@ -128,6 +128,8 @@ Excerpt from openapi.json (v2.3.0)
 
 Both operations accept the optional `location` query parameter: object `{ directory: string | null }` (deepObject, explode), no description.
 
+## Options / Props
+
 ### model.list
 
 Retrieve the current snapshot of available models of the requested types, chat by default, ordered by release date within each type. The snapshot may precede initial plugin settlement.

@@ -63,6 +63,8 @@ Excerpt from openapi.json (v2.3.0)
 }
 ```
 
+## Options / Props
+
 ### server.info
 
 Return the server identity, connection URLs, paths, and readiness status.

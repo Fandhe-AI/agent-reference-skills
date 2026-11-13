@@ -67,6 +67,8 @@ Excerpt from openapi.json (v2.3.0)
 }
 ```
 
+## Options / Props
+
 ### credential.list
 
 List every stored integration credential, including its secret value.

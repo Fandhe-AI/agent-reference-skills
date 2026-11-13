@@ -71,6 +71,8 @@ Excerpt from openapi.json (v2.3.0)
 }
 ```
 
+## Options / Props
+
 ### location.get
 
 Resolve the requested location or the server default location.

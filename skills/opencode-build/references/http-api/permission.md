@@ -72,6 +72,8 @@ Excerpt from openapi.json (v2.3.0)
 
 Every operation also returns 400 `InvalidRequestErrorEncoded` and 401 `UnauthorizedErrorEncoded`; only the other statuses are listed below.
 
+## Options / Props
+
 ### permission.request.list
 
 Retrieve pending permission requests for a location.

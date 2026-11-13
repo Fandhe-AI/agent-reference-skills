@@ -102,6 +102,8 @@ Excerpt from openapi.json (v2.3.0)
 
 Every operation accepts the optional `location` query parameter: object `{ directory: string | null }` (deepObject, explode), no description. Every operation also returns 400 `InvalidRequestErrorEncoded` and 401 `UnauthorizedErrorEncoded`; only the other statuses are listed below. The path parameter `id` is `Shell.ID` (required, no description).
 
+## Options / Props
+
 ### shell.list
 
 List currently running shell commands for a location. Exited commands are not included.

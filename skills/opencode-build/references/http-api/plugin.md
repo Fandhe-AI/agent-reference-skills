@@ -125,6 +125,8 @@ Excerpt from openapi.json (v2.3.0)
 
 All operations accept the optional `location` query parameter: object `{ directory: string | null }` (deepObject, explode), no description.
 
+## Options / Props
+
 ### plugin.list
 
 Retrieve enabled server plugins and their current status.

@@ -112,6 +112,8 @@ Excerpt from openapi.json (v2.3.0)
 }
 ```
 
+## Options / Props
+
 ### agent.list
 
 Retrieve currently registered agents.

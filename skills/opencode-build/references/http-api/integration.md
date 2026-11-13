@@ -117,6 +117,8 @@ Excerpt from openapi.json (v2.3.0)
 
 Every operation accepts the optional `location` query parameter: object `{ directory: string | null }` (deepObject, explode), no description. Every operation also returns 400 `InvalidRequestErrorEncoded` and 401 `UnauthorizedErrorEncoded`; only the other statuses are listed below. Path parameters `integrationID` is `Integration.ID` and `attemptID` is `Integration.AttemptID` (both required, no description).
 
+## Options / Props
+
 ### integration.list
 
 Retrieve available integrations and their authentication methods.

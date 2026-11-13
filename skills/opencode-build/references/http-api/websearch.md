@@ -143,6 +143,8 @@ Excerpt from openapi.json (v2.3.0)
 
 Both operations accept the optional `location` query parameter: object `{ directory: string | null }` (deepObject, explode), no description.
 
+## Options / Props
+
 ### websearch.providers
 
 Return the registered web search providers.
