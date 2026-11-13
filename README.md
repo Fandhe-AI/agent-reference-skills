@@ -38,7 +38,7 @@ npx skills add Fandhe-AI/agent-reference-skills --skill react-router -g
 
 詳細なディレクトリ構成（`.claude/` の Agent・Rule・ワークフロースキル、`skills/` のスキル構造）は [CLAUDE.md](CLAUDE.md) の「Repository Structure」を参照。
 
-## スキル一覧（全 141 スキル）
+## スキル一覧（全 142 スキル）
 
 ### Apple プラットフォーム
 
@@ -129,6 +129,14 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | [openai-platform-ops](skills/openai-platform-ops/) | OpenAI 運用・管理 — Administration API / RBAC / WIF / Terraform / production ガイド |
 | [openai-codex](skills/openai-codex/) | OpenAI Codex — CLI / IDE / cloud / AGENTS.md / sandbox / administration / Codex Security |
 | [openai-apps-sdk](skills/openai-apps-sdk/) | OpenAI Apps SDK — ChatGPT plugins / window.openai / registerAppTool / ui:// リソース / MCP 公開側 |
+
+### OpenCode
+
+opencode-console は OpenCode Console（モデルゲートウェイ・OpenCode Go サブスク・ワークスペース管理）を担当。Claude Code / Codex / Hermes 本体の設定は各スキルが担当。
+
+| スキル | 説明 |
+| -------- | ------ |
+| [opencode-console](skills/opencode-console/) | OpenCode Console — Inference / Providers API, API keys・service accounts, OpenCode Go, workspace (SSO / SCIM / budgets / billing), harnesses |
 
 ### Google プラットフォーム
 

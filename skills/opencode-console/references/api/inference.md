@@ -1,0 +1,137 @@
+---
+source: https://opencode.ai/docs/console/api/inference/
+---
+
+# Inference API
+
+Console inference serves OpenAI, Anthropic, and Gemini-compatible APIs from `https://opencode.ai/inference`. Send a JSON `POST` request to the endpoint that matches the model's API family.
+
+## Signature / Usage
+
+```bash
+curl -X POST "https://opencode.ai/inference/openai/v1/chat/completions" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "kimi-k3",
+    "messages": [{ "role": "user", "content": "Say hi" }]
+  }'
+```
+
+### Authentication
+
+Replace `<token>` with a [personal API key](./overview.md) or a [service account key](./overview.md) created in the [Console](https://opencode.ai/console). Paid models require the header. Free-tier chat models are only available from within OpenCode; other clients receive HTTP `403`, even with an API key. Use paid models or a [Go](https://opencode.ai/docs/console/go/) subscription from other clients.
+
+```text
+Authorization: Bearer <token>
+```
+
+### Endpoints
+
+| API | Path |
+| --- | --- |
+| OpenAI Chat Completions | `/inference/openai/v1/chat/completions` |
+| OpenAI Responses | `/inference/openai/v1/responses` |
+| Anthropic Messages | `/inference/anthropic/v1/messages` |
+| Gemini | `/inference/google/v1beta/models/<model>:generateContent` |
+
+Each model is served by one API family. See the [model endpoints](https://opencode.ai/docs/console/models/#endpoints) table, or fetch the live list:
+
+```bash
+curl https://opencode.ai/inference/v1/models
+```
+
+#### OpenAI Chat Completions
+
+Open models such as `kimi-k3`, `glm-5.3`, `minimax-m3`, and the free models use the Chat Completions API.
+
+```bash
+curl -X POST "https://opencode.ai/inference/openai/v1/chat/completions" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "glm-5.3",
+    "messages": [{ "role": "user", "content": "Say hi" }]
+  }'
+```
+
+#### OpenAI Responses
+
+GPT models use the Responses API.
+
+```bash
+curl -X POST "https://opencode.ai/inference/openai/v1/responses" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-6.1-sol",
+    "input": "Say hi"
+  }'
+```
+
+#### Anthropic Messages
+
+Claude and Qwen models use the Messages API. `max_tokens` is required.
+
+```bash
+curl -X POST "https://opencode.ai/inference/anthropic/v1/messages" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-sonnet-5-5",
+    "max_tokens": 1024,
+    "messages": [{ "role": "user", "content": "Say hi" }]
+  }'
+```
+
+#### Gemini
+
+Gemini models take the model and method in the path. Replace `:generateContent` with `:streamGenerateContent` to stream the response.
+
+```bash
+curl -X POST "https://opencode.ai/inference/google/v1beta/models/gemini-4-argon:generateContent" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contents": [{ "parts": [{ "text": "Say hi" }] }]
+  }'
+```
+
+### Cost
+
+Every response reports what the request cost you, beside the usage its API already returns: in `usage` for OpenAI and Anthropic, and in `usageMetadata` for Gemini. Streams report it on the event that carries the final usage: the final usage chunk for Chat Completions with `stream_options.include_usage`, `response.completed` for Responses, `message_delta` for Messages, and the last chunk for Gemini.
+
+```json
+"usage": {
+  "prompt_tokens": 1200,
+  "completion_tokens": 300,
+  "cost": 0.00412,
+  "opencode": {
+    "billing_source": "balance",
+    "list_cost": 0.00412,
+    "tokens": { "input": 1200, "output": 300, "reasoning": 120, "cache_read": 8000, "cache_write_5m": 0, "cache_write_1h": 0 }
+  }
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `cost` | US dollars charged to your balance. `0` for free models and for [Go](https://opencode.ai/docs/console/go/) usage within its limits. With your own provider key, an estimate of what your provider charges, unless it reports its own; absent when the model has no price. |
+| `opencode.billing_source` | `free`, `balance`, `go`, `go-plus`, or `byok` (your own provider key). |
+| `opencode.list_cost` | US dollars at the model's price, including peak hours and long-context pricing. |
+| `opencode.estimated` | `true` when `cost` is an estimate at the model's price rather than an amount OpenCode charged. Only set with your own provider key. |
+| `opencode.allowance` | Go only: how much the request counted toward your [usage limits](https://opencode.ai/docs/console/go/#usage-limits), in dollars of the plan's monthly limit. |
+| `opencode.tokens` | The tokens you were billed for. `input` excludes cache reads and writes; `output` includes `reasoning`. |
+
+Image generation reports the same fields on the response, and on each completed image of a stream with the cost so far. The cost is known when the response ends, before your balance or Go usage is updated. If your balance or Go limits run out during a request, you may be charged less than reported, never more.
+
+## Notes
+
+- Distinct from the OpenCode server HTTP API covered by opencode-build.
+- Free-tier chat models return HTTP `403` outside OpenCode, even with an API key.
+- The OpenAI / Anthropic / Gemini request formats are those vendors' own APIs; vendor API details are covered by openai-api-core, anthropic-api-core and google-gemini-api.
+
+## Related
+
+- [API Overview](./overview.md)
+- [Providers API](./providers.md)
