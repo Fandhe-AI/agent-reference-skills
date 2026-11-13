@@ -25,12 +25,14 @@ export default Plugin.define({
 
 Use scoped fibers for background work. The plugin scope interrupts the fiber during cleanup.
 
+Adapted (not in the official docs): the official example passes `storage.set("heartbeat", { time: Date.now() })` directly, so `Date.now()` runs once when the effect is built; `Effect.suspend` reads the time on every repetition.
+
 ```ts
 effect: (ctx) =>
   Effect.gen(function* () {
     const storage = ctx.storage
     yield* Effect.repeat(
-      storage.set("heartbeat", { time: Date.now() }),
+      Effect.suspend(() => storage.set("heartbeat", { time: Date.now() })),
       { schedule: Schedule.spaced("1 minute") },
     ).pipe(Effect.forkScoped)
   }),
@@ -124,6 +126,7 @@ export default Plugin.define({
 
 ## Notes
 
+- Adapted from the official docs: the heartbeat example wraps `storage.set` in `Effect.suspend`, so each repetition stores the current time instead of the time the effect was built.
 - The heartbeat example: `Effect.repeat` ends on the first failure, and a failed `forkScoped` fiber reports to no one, so add `Effect.retry` or `Effect.catch` inside the loop if it must keep running. The snippet omits `import { Schedule } from "effect"`.
 - Effect here is the `effect` npm package (v4), unrelated to React's `useEffect` or similar hooks.
 - OpenCode plugins are distinct from Claude Code plugins (anthropic-claude-code-extend).
