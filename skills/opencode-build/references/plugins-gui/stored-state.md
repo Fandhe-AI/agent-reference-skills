@@ -79,10 +79,6 @@ function DraftView(props: { readonly session: MountedSession }) {
 }
 ```
 
-Adapted (not in the official docs): `DraftView` reads `props.session` once when it is created, so the store keeps the first workspace's scope. If the
-component stays mounted while the panel's session changes, remount it for each session (for example, keyed by the
-session) so the store is opened again for the new scope.
-
 - `scope: "global"`, the default, keeps one value for the app.
 - `scope: { server, directory? }` keeps one value per server, or per workspace directory on it.
 - `scope: { session }` keeps one value per session, opened again when the session moves to a new directory.
@@ -120,7 +116,7 @@ type StorageScope = "global" | { server: string; directory?: string } | { sessio
 
 ## Notes
 
-- Adapted from the official docs: the runtime store example adds a note that the scope is read once, so the component must be remounted when a mounted panel switches sessions.
+- The runtime store example reads `props.session` once when `DraftView` is created. If a panel stays mounted while its session changes, remount the component for each session so the store opens for the new scope.
 - OpenCode GUI plugins are distinct from Claude Code plugins (anthropic-claude-code-extend).
 
 ## Related

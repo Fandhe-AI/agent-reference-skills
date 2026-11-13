@@ -47,6 +47,8 @@ package name (a local directory without a `name` uses the directory name). Read 
 Each process evaluates the whole `./gui-experimental` file and reads its default export. Windows run `setup`, and the
 desktop app's main process runs `main`.
 
+Adapted (not in the official docs): `main` passes the `Cleanup` returned by `ctx.windows.on` to `ctx.onCleanup`.
+
 ```tsx title="src/gui.tsx"
 import { shell } from "electron"
 import { Plugin } from "@opencode/plugin/gui"
@@ -57,7 +59,7 @@ export default Plugin.define({
   },
   main(ctx) {
     // Main code: electron, Node built-ins, ctx.windows.
-    ctx.windows.on("open", () => shell.beep())
+    ctx.onCleanup(ctx.windows.on("open", () => shell.beep()))
   },
 })
 ```
@@ -78,6 +80,7 @@ gets placeholders instead of working values.
 
 ## Notes
 
+- Adapted from the official docs: the `main` example passes the `Cleanup` returned by `ctx.windows.on` to `ctx.onCleanup`, so the handler is removed when the plugin is disabled or reloaded.
 - OpenCode GUI plugins are distinct from Claude Code plugins (anthropic-claude-code-extend).
 
 ## Related
