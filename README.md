@@ -38,7 +38,7 @@ npx skills add Fandhe-AI/agent-reference-skills --skill react-router -g
 
 詳細なディレクトリ構成（`.claude/` の Agent・Rule・ワークフロースキル、`skills/` のスキル構造）は [CLAUDE.md](CLAUDE.md) の「Repository Structure」を参照。
 
-## スキル一覧（全 143 スキル）
+## スキル一覧（全 144 スキル）
 
 ### Apple プラットフォーム
 
@@ -132,11 +132,12 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 
 ### OpenCode
 
-opencode は OpenCode 本体の利用（設定・権限・セッション・CLI）、opencode-console は OpenCode Console（モデルゲートウェイ・OpenCode Go サブスク・ワークスペース管理）を担当。Claude Code / Codex / Hermes 本体の設定は各スキルが担当。
+opencode は OpenCode 本体の利用（設定・権限・セッション・CLI）、opencode-build は拡張・組み込み開発（プラグイン・クライアント / SDK・サーバー HTTP API）、opencode-console は OpenCode Console（モデルゲートウェイ・OpenCode Go サブスク・ワークスペース管理）を担当。Claude Code / Codex / Hermes 本体の設定は各スキルが担当。
 
 | スキル | 説明 |
 | -------- | ------ |
 | [opencode](skills/opencode/) | OpenCode v2 — opencode.jsonc 設定, AGENTS.md instructions, permissions / policies, snapshots / compaction, V1 移行 |
+| [opencode-build](skills/opencode-build/) | OpenCode v2 拡張開発 — server plugin hooks / transforms / ctx API / RPC, @opencode/client, @opencode/sdk (workerd), V1 プラグイン移行 |
 | [opencode-console](skills/opencode-console/) | OpenCode Console — Inference / Providers API, API keys・service accounts, OpenCode Go, workspace (SSO / SCIM / budgets / billing), harnesses |
 
 ### Google プラットフォーム
