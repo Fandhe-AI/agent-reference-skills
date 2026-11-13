@@ -8,8 +8,7 @@ Create a skill to give an agent reusable instructions for a specific task. Put a
 
 ## Signature / Usage
 
-```markdown
-<!-- .opencode/skills/git-release/SKILL.md -->
+```markdown title=".opencode/skills/git-release/SKILL.md"
 ---
 name: Git Release
 description: Prepare release notes, version bumps, and GitHub releases
@@ -127,8 +126,7 @@ Each downloaded skill directory becomes a source root named after the entry, so 
 
 Use frontmatter to name the skill and control where it appears:
 
-```markdown
-<!-- SKILL.md -->
+```markdown title="SKILL.md"
 ---
 name: Git Release
 description: Prepare a repository release

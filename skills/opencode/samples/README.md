@@ -10,7 +10,7 @@
 | Custom Slash Command | Turn a prompt template into a `/review` command with a Markdown file or JSONC entry. | [custom-command.md](./custom-command.md) |
 | Custom OpenAI-Compatible Provider | Add a provider whose API is not in the catalog, defining credential, package, endpoint, and first model together. | [custom-provider.md](./custom-provider.md) |
 | Formatters | Format files after OpenCode's `write`, `edit`, or `patch` tools change them. | [formatters.md](./formatters.md) |
-| GitHub Actions with opencode run | Review the checked-out repository on every pull request using `opencode run` in standalone mode. | [github-actions-run.md](./github-actions-run.md) |
+| GitHub Actions with opencode run | Review the default branch on every push using `opencode run` in standalone mode. | [github-actions-run.md](./github-actions-run.md) |
 | Custom Keybinds | Customize TUI key bindings and the leader key in `cli.json`. | [keybinds.md](./keybinds.md) |
 | Local Models (Ollama, LM Studio, vLLM) | Use locally served models; OpenCode discovers them without an account connection. | [local-models-ollama.md](./local-models-ollama.md) |
 | Add MCP Servers | Add a remote and a local MCP server from the CLI or by hand under `mcp.servers`. | [mcp-servers.md](./mcp-servers.md) |

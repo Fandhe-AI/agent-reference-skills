@@ -8,8 +8,7 @@ Create `.opencode/commands/review.md` to turn a prompt into `/review`.
 
 ## Signature / Usage
 
-```md
-<!-- .opencode/commands/review.md -->
+```md title=".opencode/commands/review.md"
 Review $ARGUMENTS for bugs and missing tests.
 ```
 
@@ -32,8 +31,7 @@ Put global commands in `~/.config/opencode/commands/` and project commands in `.
 
 Only `.md` files are discovered. Nested paths become command names with `/` separators:
 
-```md
-<!-- .opencode/commands/team/review.md -->
+```md title=".opencode/commands/team/review.md"
 Review $ARGUMENTS using the team's checklist.
 ```
 
@@ -41,8 +39,7 @@ Run the nested command as `/team/review src/auth.ts`. The legacy singular direct
 
 Add YAML frontmatter when the command needs metadata. The trimmed Markdown body is always the prompt template.
 
-```md
-<!-- .opencode/commands/review.md -->
+```md title=".opencode/commands/review.md"
 ---
 description: Review code for correctness
 agent: plan
@@ -92,8 +89,7 @@ Do not put `template` in Markdown frontmatter; the body supplies it.
 
 Use `$ARGUMENTS` for the complete argument string exactly as entered.
 
-```md
-<!-- .opencode/commands/component.md -->
+```md title=".opencode/commands/component.md"
 Create a typed React component named $ARGUMENTS.
 ```
 
@@ -103,8 +99,7 @@ For `/component Account Settings`, the placeholder becomes `Account Settings`.
 
 Use `$1`, `$2`, and higher numbers for parsed positional arguments. Single or double quotes group words and are removed.
 
-```md
-<!-- .opencode/commands/check.md -->
+```md title=".opencode/commands/check.md"
 Check $1. Focus on $2.
 ```
 
@@ -112,8 +107,7 @@ For `/check src/auth.ts "error handling"`, `$1` becomes `src/auth.ts` and `$2` b
 
 The highest-numbered placeholder consumes its argument and everything after it. Missing positions become empty strings.
 
-```md
-<!-- .opencode/commands/compare.md -->
+```md title=".opencode/commands/compare.md"
 Compare $1 with $2.
 ```
 
@@ -123,8 +117,7 @@ For `/compare api stable branch`, OpenCode submits `Compare api with stable bran
 
 When a template has no `$ARGUMENTS` or positional placeholder, OpenCode appends non-empty arguments after a blank line.
 
-```md
-<!-- .opencode/commands/explain.md -->
+```md title=".opencode/commands/explain.md"
 Explain this code clearly.
 ```
 
@@ -140,8 +133,7 @@ src/cache.ts
 
 Wrap a shell command in `!` followed by backticks to insert its output before the prompt is submitted.
 
-```md
-<!-- .opencode/commands/review-diff.md -->
+```md title=".opencode/commands/review-diff.md"
 Review this diff:
 
 !`git diff --stat && git diff`
@@ -149,8 +141,7 @@ Review this diff:
 
 OpenCode runs each block with the configured shell in the active project location and inserts its combined output. Argument placeholders are expanded first:
 
-```md
-<!-- .opencode/commands/history.md -->
+```md title=".opencode/commands/history.md"
 Summarize these commits:
 
 !`git log --oneline -$1`
@@ -162,8 +153,7 @@ For `/history 5`, the shell receives `git log --oneline -5`. Do not place untrus
 
 Stored templates do not expand `@path`; it remains ordinary prompt text.
 
-```md
-<!-- .opencode/commands/readme.md -->
+```md title=".opencode/commands/readme.md"
 Review @README.md.
 ```
 
@@ -173,8 +163,7 @@ To attach a file, add it through the composer when invoking the command. OpenCod
 
 Commands expand arguments and shell blocks before submitting a durable user prompt. They run in the current session by default.
 
-```md
-<!-- .opencode/commands/plan.md -->
+```md title=".opencode/commands/plan.md"
 ---
 agent: plan
 ---
@@ -192,8 +181,7 @@ Model selection follows these rules:
 
 For example, this command selects both its agent and an explicit model:
 
-```md
-<!-- .opencode/commands/design.md -->
+```md title=".opencode/commands/design.md"
 ---
 agent: plan
 model: openai/gpt-6.1-sol#high
@@ -206,8 +194,7 @@ Design $ARGUMENTS.
 
 Set `subagent: true` to run a command in a background child session.
 
-```md
-<!-- .opencode/commands/audit.md -->
+```md title=".opencode/commands/audit.md"
 ---
 description: Audit changes
 agent: general
@@ -239,8 +226,7 @@ Markdown and JSON commands share one registry. Later sources replace earlier com
 
 Project sources take precedence over global sources, and nearer project sources take precedence over ancestor sources. A custom definition can also replace an earlier built-in command. OpenCode reloads command files and configuration changes automatically.
 
-```md
-<!-- .opencode/commands/review.md -->
+```md title=".opencode/commands/review.md"
 Review only the staged changes: !`git diff --cached`
 ```
 

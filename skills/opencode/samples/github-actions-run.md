@@ -4,13 +4,15 @@ source: https://opencode.ai/docs/cli/commands/#run
 
 # GitHub Actions with opencode run
 
-Review the checked-out repository on every pull request using `opencode run` in standalone mode.
+Review the default branch on every push using `opencode run` in standalone mode.
 
-Adapted (not in the official docs): the workflow adds read-only `permissions`, pins `actions/checkout` to the v4.4.0 commit SHA with `persist-credentials: false`, and pins `@opencode/cli` to 2.3.0.
+Adapted (not in the official docs): the workflow runs on pushes to the default branch instead of `pull_request`, adds read-only `permissions`, pins `actions/checkout` to the v4.4.0 commit SHA with `persist-credentials: false`, and pins `@opencode/cli` to 2.3.0.
 
 ```yaml
 name: OpenCode review
-on: [pull_request]
+on:
+  push:
+    branches: [main]
 
 permissions:
   contents: read
@@ -42,7 +44,7 @@ $ opencode run --archived "Review this diff"
 
 ## Notes
 
-- Adapted from the official docs: the GitHub Actions example adds `permissions: contents: read`, `persist-credentials: false`, a commit-SHA pin for `actions/checkout` (v4.4.0), and a version pin for `@opencode/cli`, because the agent can run shell commands with the job's credentials.
+- Adapted from the official docs: the GitHub Actions example adds `permissions: contents: read`, `persist-credentials: false`, a commit-SHA pin for `actions/checkout` (v4.4.0), and a version pin for `@opencode/cli`, because the agent can run shell commands with the job's credentials. It runs on pushes to `main` instead of `pull_request` because OpenCode loads project config and `.opencode/plugins/` from the checked-out tree, so pull request code would run with the provider API key.
 - Pass the provider API key as a secret and use `--standalone` so the private server receives it.
 - `--archived` sessions still exist: `opencode session list` includes them and they open by ID.
 - The agent runs with the runner's authority (shell, files, network); restrict it with OpenCode `permissions` rules as well.
