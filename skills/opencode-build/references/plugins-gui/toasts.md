@@ -22,10 +22,15 @@ ctx.toast.show({ variant: "success", title: ctx.t("invite.copied") })
 
 Show a `loading` toast while work runs, and dismiss it when the work ends:
 
+Adapted (not in the official docs): the official example calls `saving.dismiss()` only after `save()` resolves; `try` / `finally` also closes the persistent toast when `save()` rejects.
+
 ```ts
 const saving = ctx.toast.show({ variant: "loading", title: ctx.t("saving"), persistent: true })
-await save()
-saving.dismiss()
+try {
+  await save()
+} finally {
+  saving.dismiss()
+}
 ```
 
 `actions` adds buttons. A click runs the action and closes the toast:
@@ -76,6 +81,7 @@ interface ToastAction {
 
 ## Notes
 
+- Adapted from the official docs: the `loading` toast example wraps `save()` in `try` / `finally` so the persistent toast closes on failure too.
 - OpenCode GUI plugins are distinct from Claude Code plugins (anthropic-claude-code-extend).
 
 ## Related
