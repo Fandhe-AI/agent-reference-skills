@@ -6,7 +6,7 @@
 #             表の全ケースを渡せるようにするため（本体は先頭から実行され exit する）。
 # 内容: rr_valid_thread_id / rr_in_allow（ホストが検証した許可リストとの照合）/ rr_reply_prefix・rr_reply_body（返信本文。
 #       定数のテンプレートと sha・ブランチ名だけで組み立てる = レビュー本文・fix の自由文が入る経路を作らない）/
-#       rr_classify（スレッドの観測値 → skip / reply / resolve-only / invalid）/ rr_json_array / rr_result（結果 JSON）。
+#       rr_classify（スレッドの観測値 → pending-review / skip / reply / resolve-only / invalid）/ rr_json_array / rr_result（結果 JSON）。
 #       どの関数も exit せず、git・gh・ネットワークを呼ばない。
 # 契約: 返信本文のテンプレートは引数や環境変数で差し替えられない。変えるときは tests/reply-resolve-unit.test.mjs の表を同時に直す。
 #       source 元のシェル状態を壊さないため set -e / set -u / trap / exit は置かない。二重 source は無害。
@@ -45,14 +45,18 @@ rr_reply_body() {
 }
 
 # スレッドの観測値から処置を決める。$1 = isResolved（true / false）、$2 = スレッドの PR 番号、$3 = 期待する PR 番号、
-# $4 = スレッドのリポジトリ（小文字）、$5 = 期待するリポジトリ（小文字）、$6 = 自分の同 sha の返信の件数。
-# 出力: skip（resolve 済み・別 PR・別リポジトリ）/ resolve-only（返信が既にある）/ reply / invalid（観測値の形が不正）
+# $4 = スレッドのリポジトリ（小文字）、$5 = 期待するリポジトリ（小文字）、$6 = 自分の同 sha の返信の件数、
+# $7 = viewer の pending review の件数（1 以上なら返信も resolve もしない。既存の返信がある場合も resolve-only より先に判定する）。
+# 出力: pending-review / skip（resolve 済み・別 PR・別リポジトリ）/ resolve-only（返信が既にある）/ reply / invalid（観測値の形が不正）
 rr_classify() {
   case "$1" in true | false) ;; *) echo invalid; return 0 ;; esac
   case "$2" in '' | *[!0-9]*) echo invalid; return 0 ;; esac
   case "$6" in '' | *[!0-9]*) echo invalid; return 0 ;; esac
+  case "$7" in '' | *[!0-9]*) echo invalid; return 0 ;; esac
   if [ "$2" != "$3" ] || [ "$4" != "$5" ] || [ "$1" = true ]; then
     echo skip
+  elif [ "$7" -ge 1 ]; then
+    echo pending-review
   elif [ "$6" -ge 1 ]; then
     echo resolve-only
   else
