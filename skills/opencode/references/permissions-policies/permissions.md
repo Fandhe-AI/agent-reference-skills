@@ -187,16 +187,14 @@ so authorize only trusted directory boundaries.
 
 Shell permission checks use OpenCode's built-in shell scanner across Bash, Zsh, POSIX `sh`, and PowerShell. A command with malformed syntax or dynamic evaluation that the scanner cannot safely analyze returns a scanner error rather than executing unverified subcommands.
 
+Adapted (not in the official docs): the official example nests `permissions` inside a `policies` entry, which is not a valid policy statement; the rules are moved to the top-level `permissions` array here.
+
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "policies": [
-    {
-      "permissions": [
-        { "action": "shell", "resource": "git status *", "effect": "allow" },
-        { "action": "shell", "resource": "rm *", "effect": "deny" },
-      ],
-    },
+  "permissions": [
+    { "action": "shell", "resource": "git status *", "effect": "allow" },
+    { "action": "shell", "resource": "rm *", "effect": "deny" },
   ],
 }
 ```
@@ -315,7 +313,7 @@ Fields of each permission rule:
 
 - The last matching rule wins; with no match the effect is `ask`.
 - The default base policy allows `external_directory`; V1 asked by default (see Migrate from V1).
-- The `Scanner` example in the source nests `permissions` inside a `policies` entry; it is transcribed verbatim.
+- Corrected from the official docs: the `Scanner` example in the source nests `permissions` inside a `policies` entry. A policy statement requires `action`, `resource`, and `effect`, and invalid statements are dropped, so that form would leave the `rm *` deny unapplied. The example above places the rules in the top-level `permissions` array.
 - OpenCode permissions are distinct from Claude Code permissions (anthropic-claude-code / anthropic-claude-code-admin) and Codex approvals (openai-codex).
 
 ## Related
