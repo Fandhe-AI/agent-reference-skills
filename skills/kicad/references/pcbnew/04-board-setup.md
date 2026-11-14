@@ -24,7 +24,7 @@ Configure layer usage, naming, and types:
 
 ### Board Finish
 
-Defines copper finish type and special features (castellations, edge plating). These settings currently affect only Gerber job file outputs.
+Fabrication settings for the board: **Plated board edge**, **Copper finish**, and **Edge card connectors**. These are information for the fabricator; KiCad writes them to the Gerber job file and to board characteristics tables. The copper finish also sets the color of exposed copper in the 3D viewer and in VRML exports.
 
 ### Solder Mask / Paste
 
@@ -132,6 +132,7 @@ Use **Import Settings from Another Board…** (bottom of the dialog) and choose 
 
 ## Notes
 
+- Source: https://docs.kicad.org/10.0/en/pcbnew/pcbnew.html (Board finish; kicad-doc `10.0` branch commit `8acc7624`, fetched 2026-11-14)
 - Board Setup is the primary location for design intent; DRC enforces the rules configured here
 - Constraints are absolute minimums: a net class value below the Constraints minimum is raised to the minimum (e.g. net class clearance 0.1 mm with minimum clearance 0.2 mm gives 0.2 mm). Net classes and custom rules can only set values at or above the minimums; custom rules take precedence over net class values
 

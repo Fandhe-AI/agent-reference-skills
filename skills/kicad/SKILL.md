@@ -14,6 +14,13 @@ user-invocable: false
 KiCad — クロスプラットフォームのオープンソース EDA (Electronic Design Automation) スイート。回路図エディタ・PCB エディタ・Gerber ビューア・各種計算ツール・CLI などから構成される。
 公式ドキュメント (docs.kicad.org/10.0/en/) の 9 マニュアルを構造化。回路設計・PCB 設計・各エディタ操作・CLI 操作時に参照する。
 
+## 対象バージョン
+
+- KiCad 10.0 系（docs.kicad.org/10.0/en/ は点リリースを区別しない。最新は 10.0.8、2026-10-29）
+- 出典: `kicad/services/kicad-doc` の `10.0` ブランチ commit `8acc7624`（2026-11-12、タグ `10.0.8` 以降）。2026-11-14 取得
+- 10.0.7 から 10.0.8 / 同 commit までの docs 差分は pcbnew の Board finish 記述のみで、反映済み
+- CLI オプション（`kicad-cli` マニュアルの全 `--` オプション 173 件）は references / samples / scripts に全件存在を確認済み
+
 ## ディレクトリ構成
 
 ```text
