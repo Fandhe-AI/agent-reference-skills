@@ -3,7 +3,7 @@ name: apple-spatial
 description: >
   visionOS / iOS 空間コンピューティング。RealityKit、ARKit、visionOS SwiftUI、USDKit、Spatial Preview。
   Entity, ModelEntity, AnchorEntity, Component, System, RealityView,
-  MeshDeformerComponent, GaussianSplatComponent, NavigationComponent,
+  MeshDeformerComponent, ShaderGraph, GaussianSplatComponent, NavigationComponent,
   USDStage, SpatialPreviewSession, ImmersiveSpace, Model3D, ARKitSession,
   WorldTrackingProvider, HandTrackingProvider, SceneReconstructionProvider。
 user-invocable: false
@@ -27,6 +27,7 @@ skills/apple-spatial/
       realityview.md
       meshresource.md
       material.md
+      shadergraph.md
       simplematerial.md
       physicallybasedmaterial.md
       transform.md
@@ -144,7 +145,7 @@ skills/apple-spatial/
       spatialpreviewsessionstate.md
 ```
 
-対象: visionOS 27 / iOS 27 SDK（developer.apple.com JSON、取得日 2026-10-16）。
+対象: visionOS 27 / iOS 27 SDK（developer.apple.com JSON、取得日 2026-10-16、ShaderGraph のみ 2026-11-14）。
 
 ## 探索手順
 
@@ -160,7 +161,7 @@ skills/apple-spatial/
 |--------|---------|------------|
 | Entity・ModelEntity・AnchorEntity の作成・操作 | realitykit | [references/realitykit/README.md](references/realitykit/README.md) |
 | Component・System による ECS 設計、EntityAction | realitykit | [references/realitykit/README.md](references/realitykit/README.md) |
-| MeshResource・Material・マテリアル設定、GaussianSplatComponent | realitykit | [references/realitykit/README.md](references/realitykit/README.md) |
+| MeshResource・Material・ShaderGraph（コードでのシェーダーグラフ構築、iOS / visionOS 27+）・マテリアル設定、GaussianSplatComponent | realitykit | [references/realitykit/README.md](references/realitykit/README.md) |
 | ComputeGraphComponent によるパーティクルシミュレーション | realitykit / compute-graph | [references/realitykit/README.md](references/realitykit/README.md)、[references/compute-graph/README.md](references/compute-graph/README.md) |
 | ComputeNodeGraph によるノードグラフ定義、ComputeGraphSimulation によるシミュレーション実行 | compute-graph | [references/compute-graph/README.md](references/compute-graph/README.md) |
 | GaussianSplatResource・GaussianSplatEvents（描画スロットリング） | realitykit | [references/realitykit/README.md](references/realitykit/README.md) |
