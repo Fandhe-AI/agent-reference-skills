@@ -353,7 +353,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Video Stitcher API | `gcp-ai-apis` | `videostitcher` |
 | Vision AI | `gcp-ai-apis` | `visionai` |
 | Visual Inspection AI | `gcp-agent-platform-ml` | `visualinspection` |
-| VM Migration | `gcp-compute` | `vmmigration` |
+| VM Migration | `gcp-hybrid-migration` | `vmmigration` |
 | Web Security Scanner | `gcp-security` | `cloudsecurityscanner` |
 | Workflows | `gcp-messaging-workflows` | `workflows` |
 | Workload Certificate | `gcp-foundation` | `workloadcertificate` |

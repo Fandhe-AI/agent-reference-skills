@@ -16,6 +16,7 @@ Owner skill: `gcp-hybrid-migration` (status: 未収録（予定）). gcloud grou
 | Google Cloud VMware Engine | `vmwareengine.googleapis.com` (v1) | The Google VMware Engine API lets you programmatically manage VMware environments. | `vmware` | `vmwareengine.` | 7 | — | https://cloud.google.com/solutions/vmware-as-a-service | 未収録（予定） |
 | Migrate to Virtual Machines | — | — | — | `cloudmigration.` | 3 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/cloudmigration | 未収録（予定） |
 | Rapid Migration Assessment | `rapidmigrationassessment.googleapis.com` (v1) | The Rapid Migration Assessment service is our first-party migration assessment and planning tool. | — | `rapidmigrationassessment.`, `rma.` | 4 | — | https://cloud.google.com/migration-center | 未収録（予定） |
+| VM Migration | `vmmigration.googleapis.com` (v1, v1alpha1) | Use the Migrate to Virtual Machines API to programmatically migrate workloads. | — | `vmmigration.` | 3 | — | https://cloud.google.com/migrate/virtual-machines | 未収録（予定） |
 
 ```bash
 gcloud help

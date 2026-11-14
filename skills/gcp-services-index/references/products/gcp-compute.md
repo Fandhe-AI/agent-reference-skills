@@ -20,7 +20,6 @@ Owner skill: `gcp-compute` (status: 未収録（予定）). gcloud groups: `batc
 | Confidential Computing | — | — | — | `confidentialcomputing.` | 4 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/confidentialcomputing | 未収録（予定） |
 | Oracle Database@Google Cloud | `oracledatabase.googleapis.com` (v1) | The Oracle Database@Google Cloud API provides a set of APIs to manage Oracle database services, such as Exadata and Autonomous Databases. | `oracle-database` | `oracledatabase.` | 32 | — | https://cloud.google.com/oracle/database/docs | 未収録（予定） |
 | Oracle Database@Google Cloud service agent | — | — | — | `oci.` | 1 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/oci | 未収録（予定） |
-| VM Migration | `vmmigration.googleapis.com` (v1, v1alpha1) | Use the Migrate to Virtual Machines API to programmatically migrate workloads. | — | `vmmigration.` | 3 | — | https://cloud.google.com/migrate/virtual-machines | 未収録（予定） |
 
 ```bash
 gcloud help
