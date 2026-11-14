@@ -15,7 +15,7 @@ user-invocable: false
 Supabase 公式ドキュメントの全 API を網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象バージョン: ドキュメントは supabase.com の Markdown twin (`<page>.md`) と llms/*.txt（取得日 2026-10-16）。Supabase CLI v2.121.0（npm `supabase` latest）、`@supabase/server` 1.9.2（npm latest）。prerelease（supabase 3.0.0-next.x、2.122.0-beta.x、`@supabase/server` の rc / beta / alpha）は対象外。
+対象バージョン: ドキュメントは supabase.com の Markdown twin (`<page>.md`) と llms/*.txt（取得日 2026-10-16）。Supabase CLI は v3.1.0 基準（取得日 2026-11-14。`references/cli/` と一部 `scripts/` のみ反映、周辺ページ（data-api/generating-types・deployment・functions/deploy・client-js/initialization・platform/branching・local-dev 等）と `scripts/{local-dev,project,test}.md` は旧フラグ記述が残り一部未追従）、`@supabase/server` 1.9.2（npm latest）。prerelease（supabase 3.0.0-next.x、2.122.0-beta.x、`@supabase/server` の rc / beta / alpha）は対象外。
 
 ## ディレクトリ構成
 

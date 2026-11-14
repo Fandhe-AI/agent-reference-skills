@@ -73,7 +73,9 @@ export SUPABASE_ACCESS_TOKEN=<access_token>
 | `--debug` | | デバッグ出力を有効化 |
 | `--workdir <path>` | | 作業ディレクトリを指定（デフォルト: カレントディレクトリ） |
 | `--experimental` | | 実験的機能を有効化 |
-| `--project-id <ref>` | `-p` | プロジェクト参照IDを指定 |
+| `--project-id <ref>` | `-p` | プロジェクト参照IDを指定（v3 で `gen types` では deprecated、`--remote=<ref>` を使用） |
+| `--remote[=<ref\|url>]` | | v3 でリモート対象を指定（`db push/pull/diff/reset/dump/lint`、`gen types`、`migration list/repair/squash`、`test db`、`db query`） |
+| `--yes` | | ホスト変更の確認を承認。非対話・JSON・agent 実行では必須（環境変数 `SUPABASE_YES` はシェルで設定した場合のみ有効、`supabase/.env` は不可） |
 | `--dns-resolver <resolver>` | | DNS リゾルバを指定（`native`, `https`） |
 | `--help` | `-h` | ヘルプを表示 |
 
@@ -215,11 +217,16 @@ DNS 解決に問題がある場合（VPN 環境など）に `https` を指定す
 
 ### 実験的: supabase stack
 
-`[experimental] stack = true`（`config.toml`）または `SUPABASE_EXPERIMENTAL_STACK=1` で `supabase stack` コマンド群（list / destroy / prepare / start / status / logs / restart / stop）が有効になり、`supabase start` / `status` / `stop` がそのエイリアスになる。不安定で CLI の互換性保証の対象外。詳細は [ローカル開発コマンド](./local-dev.md) を参照。
+v3 公式 CLI リファレンスには未掲載（ガイドは experimental として現存）。`[experimental] stack = true`（`config.toml`）または `SUPABASE_EXPERIMENTAL_STACK=1` で `supabase stack` コマンド群（list / destroy / prepare / start / status / logs / restart / stop）が有効になり、`supabase start` / `status` / `stop` がそのエイリアスになる。不安定で CLI の互換性保証の対象外。詳細は [ローカル開発コマンド](./local-dev.md) を参照。
 
 ## Notes
 
-- 本ページのコマンド一覧の対象バージョンは CLI v2.121.0（GitHub リリースタグ `v2.121.0` と公式 CLI リファレンスで確認）
+- 本ページの対象バージョンは CLI v3.1.0（npm latest。v3.0.0 = 2026-11-02、取得日 2026-11-14）。コマンド一覧の本体は v2.121.0 時点で確認したもので、v3 では追加分のみ反映している
+- Migration (v2 → v3): データベース系コマンドはローカルが既定。リモート対象は `--remote`（`--remote=<ref>` / `--remote=<url>`）。`--local` は no-op、`--linked` / `--project-ref` / `--db-url` / `gen types --project-id` は deprecated（v4 で削除）。`link` の `--project-ref` は引き続き利用可
+- Migration (v2 → v3): ホストを変更する操作は確認が必須（既定 No）。非対話・JSON・agent 実行は `--yes` が必要。`--output` / `-o` は `pull` / `config pull` / `config diff` で非対応（`--output-format json|stream-json`）
+- Migration (v2 → v3): 削除コマンド・フラグ — `db remote commit` / `db remote changes`、`db branch *`、`gen keys`、`inspect db total-index-size` / `total-table-sizes` / `table-index-sizes`、`db diff --use-pg-schema`、`db pull --use-pg-delta` / `--experimental`、`functions download --legacy-bundle`
+- 新設: `supabase pull`（`config pull` / `db pull` / `migration fetch` / `functions download` をまとめて実行）
+- 旧記述: 本ページのコマンド一覧の対象バージョンは CLI v2.121.0（GitHub リリースタグ `v2.121.0` と公式 CLI リファレンスで確認）
 - 公式 CLI リファレンス（llms/cli.txt）にフラグ表は無いため、新規コマンドのフラグは各コマンド定義（`command.ts`）に記載があるものだけを他ページに掲載
 
 ## 設定ファイル

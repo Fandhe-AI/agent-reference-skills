@@ -71,7 +71,7 @@ supabase start
 | `migra` | マイグレーションツール |
 | `studio` | Supabase Studio |
 | `imgproxy` | 画像変換プロキシ |
-| `inbucket` | メールテスト用サーバー |
+| `inbucket` | メールテスト用サーバー（CLI v3 では config が `[local_smtp]`、URL が `MAILPIT_URL`。`--exclude` に渡すサービス名は公式未確認） |
 | `postgrest` | PostgREST API |
 | `pgbouncer` | コネクションプーラー |
 
@@ -211,7 +211,11 @@ supabase link --project-ref abcdefghijklmnop
 
 ## Notes
 
-- 実験的な `supabase stack` コマンド: `config.toml` に `[experimental] stack = true`（または `SUPABASE_EXPERIMENTAL_STACK=1`）を設定すると、`supabase start` / `status` / `stop` が stack コマンドとして動作する。環境変数は設定ファイルより優先され、`SUPABASE_EXPERIMENTAL_STACK=0` で 1 セッションだけ従来コマンドに戻せる
+- CLI v3.0.0 の削除・改名（公式リリースノートで確認）: `[inbucket]` / `INBUCKET_URL` / `inbucket.url` は `[local_smtp]` / `MAILPIT_URL` / `mailpit.url`（旧 `[inbucket]` が残る config.toml は v3 で読み込めず `start` / `stop` / `status` / `db` 系が失敗する。`[remotes.<name>.inbucket]` も改名、キーは不変）、`[experimental] orioledb_version` は `[db] orioledb_version`（環境変数は `SUPABASE_DB_ORIOLEDB_VERSION`）、`linkedin` / `slack` プロバイダーは `linkedin_oidc` / `slack_oidc`、関数ディレクトリ内の `import_map.json` は `deno.json` または `functions.<slug>.import_map`。`project_id` 未設定時のローカルコンテナ・ボリューム名はプロジェクトのフォルダー名基準（`supabase stop` してから upgrade するか `project_id` を設定）
+- 公式未確認: `supabase start` 出力・`supabase status -o env` の表示ラベル（`Inbucket URL` / `INBUCKET_URL` が v3 で Mailpit 表記になるか）。上の出力例は v2 系のまま
+- Source: https://github.com/supabase/cli/releases/tag/v3.0.0（取得日 2026-11-14）。`--remote` 等のフラグ変更は https://supabase.com/llms/cli.txt
+- `supabase link --project-ref` は v3 公式で引き続き利用可。それ以外のコマンドの `--project-ref` / `--linked` / `--db-url` は deprecated（v4 で削除、`--remote` を使用）。`supabase stop --all` で全ローカルプロジェクトを停止（`--no-backup` 併用で全データ削除）
+- 実験的な `supabase stack` コマンド（v3 公式 CLI リファレンスには未掲載だがガイドは experimental として現存）: `config.toml` に `[experimental] stack = true`（または `SUPABASE_EXPERIMENTAL_STACK=1`）を設定すると、`supabase start` / `status` / `stop` が stack コマンドとして動作する。環境変数は設定ファイルより優先され、`SUPABASE_EXPERIMENTAL_STACK=0` で 1 セッションだけ従来コマンドに戻せる
 - 上記設定時は `--stack <name>` で名前付きローカルプロジェクトを指定できる。stack 専用コマンドは `supabase stack list` / `supabase stack destroy` / `supabase stack stop --all`
 - v2.121.0 以降は `supabase stack destroy` で `--stack-id` を複数回指定でき、確認は 1 回
 - stack モードでは `supabase stop --no-backup` / `--project-id`、`-o` / `--output` は使えない（`--output-format` と `--env` を使う）
@@ -232,13 +236,13 @@ supabase start
 # 4. リモートプロジェクトにリンク
 supabase link --project-ref <ref>
 
-# 5. リモートからスキーマ取得
-supabase db pull
+# 5. リモートからスキーマ取得（v3 は --remote が必要）
+supabase db pull --remote
 
 # 6. ローカルで開発・マイグレーション作成
 
-# 7. リモートにマイグレーション適用
-supabase db push
+# 7. リモートにマイグレーション適用（非対話実行では --yes も必要）
+supabase db push --remote
 
 # 8. 作業終了時に停止
 supabase stop
