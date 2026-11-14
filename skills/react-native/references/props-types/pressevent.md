@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/pressevent
+source: https://reactnative.dev/docs/0.88/pressevent
 ---
 
 # PressEvent Object Type

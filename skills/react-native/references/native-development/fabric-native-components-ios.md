@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/fabric-native-components-ios
+source: https://reactnative.dev/docs/0.88/fabric-native-components-ios
 ---
 
 # Fabric Native Components: iOS
@@ -43,6 +43,7 @@ Podfile
 ...
 Demo
 ├── AppDelegate.swift
+├── SceneDelegate.swift
 ...
 ├── RCTWebView.h
 └── RCTWebView.mm
@@ -196,8 +197,9 @@ To link the WebKit framework in your app:
 - Deviation: the second `cd ios` from the official page is dropped because the previous step already runs inside ios/.
 - The official step list includes "Register the RCTWebView in the application" but the page has no such section; the registration is the ios.componentProvider mapping (CustomWebView -> RCTWebView) in package.json shown in the Fabric Native Components Introduction. The Using Codegen page documents the ios.components form instead.
 - The step numbering in the official page skips from "1. Run Codegen" to "3. Write the `RCTWebView`"; the content above follows the original order.
-- 0.88: React Native 0.88 adds iOS SceneDelegate lifecycle support as an additive change (`RCTReactNativeFactory` gains `startReactNativeWithModuleName:inWindow:connectionOptions:` and `startReactNativeWithModuleName:inWindow:initialProperties:connectionOptions:`), keeping backwards compatibility with the `AppDelegate` path; this iOS guide still shows `AppDelegate.swift`.
+- 0.88: React Native 0.88 adds iOS SceneDelegate lifecycle support as an additive change (`RCTReactNativeFactory` gains `startReactNativeWithModuleName:inWindow:connectionOptions:` and `startReactNativeWithModuleName:inWindow:initialProperties:connectionOptions:`), keeping backwards compatibility with the `AppDelegate` path; the 0.88 iOS guide adds `SceneDelegate.swift` to its project tree but does not otherwise use the SceneDelegate APIs.
 - Cross-skill: UIKit / WebKit / Objective-C++ project APIs belong to apple-uikit / apple-swift; this page covers only the React Native native-component boundary.
+- Source: https://reactnative.dev/docs/0.88/fabric-native-components-ios (react-native-website commit a459a29, retrieved 2026-11-14)
 
 ## Related
 

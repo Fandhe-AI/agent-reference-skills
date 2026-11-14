@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/legacy/native-components-ios
+source: https://reactnative.dev/docs/0.88/legacy/native-components-ios
 ---
 
 # iOS Native UI Components

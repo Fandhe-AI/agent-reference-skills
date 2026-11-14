@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/react-native-gradle-plugin
+source: https://reactnative.dev/docs/0.88/react-native-gradle-plugin
 ---
 
 # React Native Gradle Plugin

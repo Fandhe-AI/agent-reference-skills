@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/the-new-architecture/what-is-codegen
+source: https://reactnative.dev/docs/0.88/the-new-architecture/what-is-codegen
 ---
 
 # What is Codegen?

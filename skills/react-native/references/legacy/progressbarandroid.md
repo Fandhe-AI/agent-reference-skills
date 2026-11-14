@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/progressbarandroid
+source: https://reactnative.dev/docs/0.88/progressbarandroid
 ---
 
 # ProgressBarAndroid

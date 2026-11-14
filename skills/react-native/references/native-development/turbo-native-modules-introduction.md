@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/turbo-native-modules-introduction
+source: https://reactnative.dev/docs/0.88/turbo-native-modules-introduction
 ---
 
 # Native Modules: Introduction
@@ -194,7 +194,7 @@ export default App;
 
 ## Notes
 
-- `SafeAreaView` from react-native used in this sample is deprecated in the 0.87 docs; use react-native-safe-area-context in real apps.
+- `SafeAreaView` from react-native used in this sample is deprecated in the 0.88 docs; use react-native-safe-area-context in real apps.
 - Deviation: command output shown in the same block on the official page is split into a separate text block.
 - Corrected: the official Flow spec imported TurboModule twice and omitted the default export.
 - Docusaurus highlight markers from the official page are removed; snippets show the final code.

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/rect
+source: https://reactnative.dev/docs/0.88/rect
 ---
 
 # Rect Object Type

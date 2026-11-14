@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/upgrading
+source: https://reactnative.dev/docs/0.88/upgrading
 ---
 
 # Upgrade
@@ -9,8 +9,8 @@ Commands for upgrading React Native in a non-Expo project. The docs direct you t
 ## Upgrade dependencies with npm
 
 ```sh
-# RN_VERSION: example value (React Native 0.87). REACT_VERSION: set to the react version shown in the Upgrade Helper package.json diff.
-RN_VERSION=0.87
+# RN_VERSION: example value (React Native 0.88). REACT_VERSION: set to the react version shown in the Upgrade Helper package.json diff.
+RN_VERSION=0.88
 npm install react-native@"${RN_VERSION}"
 npm install react@"${REACT_VERSION:?set REACT_VERSION from the Upgrade Helper diff}"
 ```
@@ -20,7 +20,7 @@ Set `RN_VERSION` to the target version and `REACT_VERSION` to the value shown in
 ## Upgrade dependencies with Yarn
 
 ```sh
-RN_VERSION=0.87
+RN_VERSION=0.88
 yarn add react-native@"${RN_VERSION}"
 yarn add react@"${REACT_VERSION:?set REACT_VERSION from the Upgrade Helper diff}"
 ```

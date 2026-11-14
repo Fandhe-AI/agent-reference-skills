@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/publishing-to-app-store
+source: https://reactnative.dev/docs/0.88/publishing-to-app-store
 ---
 
 # Publishing to Apple App Store

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/global-performance
+source: https://reactnative.dev/docs/0.88/global-performance
 ---
 
 # performance / Performance* globals
@@ -67,15 +67,15 @@ Performance* classes (all "as defined in Web specifications"):
 
 | Name | Description | Official page |
 | --- | --- | --- |
-| `PerformanceObserver` | Global class. Static property `supportedEntryTypes` returns `['mark', 'measure', 'event', 'longtask', 'resource']`. Constructor and instance methods `observe()` / `disconnect()` documented in MDN. | [global-PerformanceObserver](https://reactnative.dev/docs/0.87/global-PerformanceObserver) |
-| `PerformanceObserverEntryList` | Global class. | [global-PerformanceObserverEntryList](https://reactnative.dev/docs/0.87/global-PerformanceObserverEntryList) |
-| `PerformanceEntry` | Global class. | [global-PerformanceEntry](https://reactnative.dev/docs/0.87/global-PerformanceEntry) |
-| `PerformanceMark` | Global class. | [global-PerformanceMark](https://reactnative.dev/docs/0.87/global-PerformanceMark) |
-| `PerformanceMeasure` | Global class. | [global-PerformanceMeasure](https://reactnative.dev/docs/0.87/global-PerformanceMeasure) |
-| `PerformanceEventTiming` | Global class. Partial support: the `cancelable` and `target` properties are not supported yet. | [global-PerformanceEventTiming](https://reactnative.dev/docs/0.87/global-PerformanceEventTiming) |
-| `PerformanceLongTaskTiming` | Global class. Partial support: the value for the `attribution` property is always an empty array. | [global-PerformanceLongTaskTiming](https://reactnative.dev/docs/0.87/global-PerformanceLongTaskTiming) |
-| `PerformanceResourceTiming` | Global class. Partial support, see Notes. | [global-PerformanceResourceTiming](https://reactnative.dev/docs/0.87/global-PerformanceResourceTiming) |
-| `EventCounts` | Global class. | [global-EventCounts](https://reactnative.dev/docs/0.87/global-EventCounts) |
+| `PerformanceObserver` | Global class. Static property `supportedEntryTypes` returns `['mark', 'measure', 'event', 'longtask', 'resource']`. Constructor and instance methods `observe()` / `disconnect()` documented in MDN. | [global-PerformanceObserver](https://reactnative.dev/docs/0.88/global-PerformanceObserver) |
+| `PerformanceObserverEntryList` | Global class. | [global-PerformanceObserverEntryList](https://reactnative.dev/docs/0.88/global-PerformanceObserverEntryList) |
+| `PerformanceEntry` | Global class. | [global-PerformanceEntry](https://reactnative.dev/docs/0.88/global-PerformanceEntry) |
+| `PerformanceMark` | Global class. | [global-PerformanceMark](https://reactnative.dev/docs/0.88/global-PerformanceMark) |
+| `PerformanceMeasure` | Global class. | [global-PerformanceMeasure](https://reactnative.dev/docs/0.88/global-PerformanceMeasure) |
+| `PerformanceEventTiming` | Global class. Partial support: the `cancelable` and `target` properties are not supported yet. | [global-PerformanceEventTiming](https://reactnative.dev/docs/0.88/global-PerformanceEventTiming) |
+| `PerformanceLongTaskTiming` | Global class. Partial support: the value for the `attribution` property is always an empty array. | [global-PerformanceLongTaskTiming](https://reactnative.dev/docs/0.88/global-PerformanceLongTaskTiming) |
+| `PerformanceResourceTiming` | Global class. Partial support, see Notes. | [global-PerformanceResourceTiming](https://reactnative.dev/docs/0.88/global-PerformanceResourceTiming) |
+| `EventCounts` | Global class. | [global-EventCounts](https://reactnative.dev/docs/0.88/global-EventCounts) |
 
 ## Notes
 

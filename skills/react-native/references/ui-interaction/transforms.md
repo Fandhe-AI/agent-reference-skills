@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/transforms
+source: https://reactnative.dev/docs/0.88/transforms
 ---
 
 # Transforms
@@ -90,7 +90,7 @@ Transform origin:
 - Rotate transformations require a string so the transform may be expressed in degrees (`deg`) or radians (`rad`). Skew transformations require a string in degrees (`deg`).
 - `translateX` and `translateY` accept numbers (points) or percentage strings (relative to the element's width for `translateX`, height for `translateY`). Percentage translation is supported on the New Architecture.
 - Matrix transforms are useful for pre-calculated matrices, such as those from animation libraries or UI editor applications. For basic transformations, individual transform properties are more readable.
-- The 0.87 docs matrix snippet ends the transform array with `];` inside the object literal (a syntax error); this page uses `],`.
+- The 0.88 docs matrix snippet ends the transform array with `];` inside the object literal (a syntax error); this page uses `],`.
 - Deprecated: `decomposedMatrix`, `rotation`, `scaleX`, `scaleY`, `transformMatrix`, `translateX`, `translateY` as separate style props. Use the `transform` prop instead.
 - A transform affects the containing block of absolutely positioned descendants (see Layout with Flexbox).
 - Distinct from Motion for React (motion), Jetpack Compose graphicsLayer transforms (android-compose-graphics-animation) and SwiftUI view modifiers (apple-swiftui); these are React Native style properties.

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/pixelratio
+source: https://reactnative.dev/docs/0.88/pixelratio
 ---
 
 # PixelRatio

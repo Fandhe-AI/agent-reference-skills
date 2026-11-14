@@ -1,7 +1,7 @@
 ---
 name: react-native
 description: >
-  React Native (Meta 製クロスプラットフォームネイティブアプリフレームワーク, react-native 0.87 / 0.88) の
+  React Native (Meta 製クロスプラットフォームネイティブアプリフレームワーク, react-native 0.88 / 0.87) の
   リファレンス。View, Text, FlatList, Pressable, TextInput, Animated, StyleSheet, Flexbox, Platform,
   New Architecture (Fabric, TurboModules, Codegen), Hermes, Metro, Fast Refresh, TypeScript,
   React Native DevTools, Android / iOS 統合、upgrade (Upgrade Helper)・0.84〜0.88 差分。
@@ -12,9 +12,9 @@ user-invocable: false
 
 ## 対象バージョン
 
-React Native 0.87 docs（`react/react-native-website` の `website/versioned_docs/version-0.87`、commit `1ec3a68e4c80a97d05fdd5134d42c03597a46b93`、2026-10-16 時点。サイトリポジトリにリリースタグは無い。取得日 2026-10-17）。出典 URL は `https://reactnative.dev/docs/0.87/<id>` に pin している（`/docs/next` 相当の root `docs/` は使用しない）。
+React Native 0.88 docs（`react/react-native-website` の `website/versioned_docs/version-0.88`、commit `a459a29833dd0cdd103ed96b3e58dc78aa94a7f1`、取得日 2026-11-14。サイトリポジトリにリリースタグは無い）。出典 URL は `https://reactnative.dev/docs/0.88/<id>` に pin している（`/docs/next` 相当の root `docs/` は使用しない）。0.87 docs（commit `1ec3a68`）との差分は 14 ファイルのみで、全ページを 0.88 に追従済み。
 
-npm の latest は 0.88.0（2026-10-15）だが 0.88 の docs は未 cut（`versions.json` の先頭は 0.87）。0.88 の差分は [0.88 リリースブログ](https://reactnative.dev/blog/2026/10/19/react-native-0.88)（ユーザー向け breaking change なし）のみを根拠とし、各ページ `## Notes` に `0.88: ...` 形式で記載する。
+npm の latest は 0.88.1（0.88.0 は 2026-10-15）。0.88 docs は 0.87 から iOS SceneDelegate 対応（`integration-with-existing-apps` 6 節・`linking`・`network`・`release-levels` 等）、`fontVariationSettings`・`backgroundSize` / `backgroundPosition` / `backgroundRepeat`（`experimental_` 接頭辞なし）、`FlatList` の `ListItemComponent`、`InputAccessoryView` 非推奨表示、`LayoutAnimation` の Legacy Architecture 限定の注記が加わった。0.88 のユーザー向け breaking change は無く、[0.88 リリースブログ](https://reactnative.dev/blog/2026/10/19/react-native-0.88)由来の内容は各ページ `## Notes` に `0.88: ...` 形式で記載する。`samples/` と `scripts/` は 0.87 前提の記述（`RN_CORE_BRANCH` 等）を 0.88 に更新済みで、SceneDelegate 前提の samples は未追加。
 
 ## ディレクトリ構成
 

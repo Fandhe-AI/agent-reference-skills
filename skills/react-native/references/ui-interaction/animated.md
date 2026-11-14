@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/animated
+source: https://reactnative.dev/docs/0.88/animated
 ---
 
 # Animated
@@ -88,8 +88,8 @@ Properties:
 
 - Don't modify the animated value directly. Use the `useRef` Hook to return a mutable ref object whose `current` property persists throughout the component lifecycle.
 - `Animated` exports the animatable components `Animated.Image`, `Animated.ScrollView`, `Animated.Text`, `Animated.View`, `Animated.FlatList`, `Animated.SectionList`. They bind animated values to properties and do targeted native updates, avoiding React render and reconciliation per frame, and clean up on unmount.
-- The 0.87 docs page shows `loop(animation: CompositeAnimation[])` and `static start/stop/reset`; Animated.d.ts takes a single CompositeAnimation and defines start/stop/reset as CompositeAnimation instance methods. `loop` config also accepts `resetBeforeIteration` (default true).
-- `isInteraction` / interaction handles are documented as on the 0.87 page; `InteractionManager` itself was removed in 0.87 (use `requestIdleCallback`), and the docs do not state the current effect of interaction handles.
+- The 0.88 docs page shows `loop(animation: CompositeAnimation[])` and `static start/stop/reset`; Animated.d.ts takes a single CompositeAnimation and defines start/stop/reset as CompositeAnimation instance methods. `loop` config also accepts `resetBeforeIteration` (default true).
+- `isInteraction` / interaction handles are documented as on the 0.88 page; `InteractionManager` itself was removed in 0.87 (use `requestIdleCallback`), and the docs do not state the current effect of interaction handles.
 - Using the native driver: specify `useNativeDriver: true`; see the Animations guide.
 - Since 0.85: a new Shared Animation Backend powers how animations are applied for both Animated and Reanimated; per the 0.85 release blog, layout props can be animated with the native driver in Animated (experimental channel, available from 0.85.1).
 - This is the React Native `Animated` API; distinct from Motion for React (motion), Jetpack Compose animation (android-compose-graphics-animation) and SwiftUI animation (apple-swiftui).

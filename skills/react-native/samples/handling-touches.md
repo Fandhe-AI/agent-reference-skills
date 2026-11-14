@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/handling-touches
+source: https://reactnative.dev/docs/0.88/handling-touches
 ---
 
 # Handling Touches
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
 export default Touchables;
 ```
 
-`Pressable` (from https://reactnative.dev/docs/0.87/pressable):
+`Pressable` (from https://reactnative.dev/docs/0.88/pressable):
 
 ```tsx
 import {useState} from 'react';

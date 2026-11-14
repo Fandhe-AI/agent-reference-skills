@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/handling-touches
+source: https://reactnative.dev/docs/0.88/handling-touches
 ---
 
 # Handling Touches

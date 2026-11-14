@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/nodes
+source: https://reactnative.dev/docs/0.88/nodes
 ---
 
 # Nodes from refs

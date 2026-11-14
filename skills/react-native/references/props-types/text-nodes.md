@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/text-nodes
+source: https://reactnative.dev/docs/0.88/text-nodes
 ---
 
 # Text nodes

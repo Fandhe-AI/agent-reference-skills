@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/dropshadowvalue
+source: https://reactnative.dev/docs/0.88/dropshadowvalue
 ---
 
 # DropShadowValue Object Type

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/share
+source: https://reactnative.dev/docs/0.88/share
 ---
 
 # Share

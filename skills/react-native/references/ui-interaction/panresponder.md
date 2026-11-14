@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/panresponder
+source: https://reactnative.dev/docs/0.88/panresponder
 ---
 
 # PanResponder
@@ -79,7 +79,7 @@ static create(config: PanResponderCallbacks): PanResponderInstance;
 
 ## Notes
 
-- Interaction handles are documented as on the 0.87 page; `InteractionManager` itself was removed in 0.87 (use `requestIdleCallback`), and the docs do not state the current effect of interaction handles.
+- Interaction handles are documented as on the 0.88 page; `InteractionManager` itself was removed in 0.87 (use `requestIdleCallback`), and the docs do not state the current effect of interaction handles.
 - It provides a predictable wrapper of the responder handlers provided by the gesture responder system. For each handler, it provides a new `gestureState` object alongside the native event object (`onPanResponderMove: (event, gestureState) => {}`). A native event is a synthetic touch event of the form `PressEvent`.
 - In general, for events that have capture equivalents, the gestureState is updated once in the capture phase and can be used in the bubble phase as well.
 - Be careful with `onStartShould*` callbacks. They only reflect updated `gestureState` for start/end events that bubble/capture to the Node. Once the node is the responder, every start/end event is processed by the gesture and `gestureState` is updated accordingly. `numberActiveTouches` may not be totally accurate unless you are the responder.

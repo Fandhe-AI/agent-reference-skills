@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/animatedvaluexy
+source: https://reactnative.dev/docs/0.88/animatedvaluexy
 ---
 
 # Animated.ValueXY
@@ -56,7 +56,7 @@ const panResponder = PanResponder.create({
 ## Notes
 
 - `ValueXY` is a handy way to deal with 2D interactions, such as panning or dragging; it is a drop-in replacement for `Value` in many cases.
-- The 0.87 docs example uses `useNativeDriver: true` for the spring; `getLayout()` binds `left`/`top`, which the native driver only accepts with the experimental Shared Animation Backend, so this page uses `false`.
+- The 0.88 docs example uses `useNativeDriver: true` for the spring; `getLayout()` binds `left`/`top`, which the native driver only accepts with the experimental Shared Animation Backend, so this page uses `false`.
 - This is the React Native `Animated` API; distinct from Motion for React (motion), Jetpack Compose animation (android-compose-graphics-animation) and SwiftUI animation (apple-swiftui).
 
 ## Related

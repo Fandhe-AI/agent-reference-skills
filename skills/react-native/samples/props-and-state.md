@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/state
+source: https://reactnative.dev/docs/0.88/state
 ---
 
 # Props and State
@@ -69,4 +69,4 @@ export default Bananas;
 - Corrected: the official state page says props are "fixed throughout the lifetime of a component"; they are read-only for the child but not constant.
 - Calling the state setter re-renders the component.
 - The effect returns `clearInterval` as cleanup.
-- Sources: `state` (https://reactnative.dev/docs/0.87/state) for the `Blink` example, `props` (https://reactnative.dev/docs/0.87/props) for the `Image` example.
+- Sources: `state` (https://reactnative.dev/docs/0.88/state) for the `Blink` example, `props` (https://reactnative.dev/docs/0.88/props) for the `Image` example.

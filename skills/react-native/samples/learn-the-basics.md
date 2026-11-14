@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/tutorial
+source: https://reactnative.dev/docs/0.88/tutorial
 ---
 
 # Learn the Basics

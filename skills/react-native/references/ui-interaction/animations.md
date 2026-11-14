@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/animations
+source: https://reactnative.dev/docs/0.88/animations
 ---
 
 # Animations
@@ -105,8 +105,8 @@ LayoutAnimation.spring();
 - Native driver: set `useNativeDriver: true` so the whole animation is sent to native before starting and runs on the UI thread. Animations without a `useNativeDriver` property default to false for legacy reasons, but emit a warning (and a typechecking error in TypeScript). Animated values are only compatible with one driver. The native driver also works with `Animated.event` (e.g. `ScrollView#onScroll`), but only with direct events and not bubbling events, so it does not work with `PanResponder`.
 - Caveats: the main limitation is that you can only animate non-layout properties (`transform` and `opacity` work; Flexbox and position properties do not). Since 0.85: the New Animation Backend (experimental, opt-in via the experimental channel, available from 0.85.1) lets you animate Flexbox and position props with the native driver; the limitation no longer applies there. Per the 0.85 release blog.
 - When an animation is running, it can prevent `VirtualizedList` components from rendering more rows. Use `isInteraction: false` in the animation config for long or looping animations.
-- `setLayoutAnimationEnabledExperimental` is a no-op on the New Architecture (the only runtime since 0.82) and is typed optional in UIManager.d.ts; the 0.87 docs page shows an unguarded call.
-- `isInteraction` / interaction handles are documented as on the 0.87 page; `InteractionManager` itself was removed in 0.87 (use `requestIdleCallback`), and the docs do not state the current effect of interaction handles.
+- `setLayoutAnimationEnabledExperimental` is a no-op on the New Architecture (the only runtime since 0.82) and is typed optional in UIManager.d.ts; the 0.88 docs page shows an unguarded call.
+- `isInteraction` / interaction handles are documented as on the 0.88 page; `InteractionManager` itself was removed in 0.87 (use `requestIdleCallback`), and the docs do not state the current effect of interaction handles.
 - While using transform styles such as `rotateY`, `rotateX`, ensure the transform style `perspective` is in place; some animations may not render on Android without it.
 - `LayoutAnimation` globally configures `create` and `update` animations for all views in the next render/layout cycle. It provides much less control than `Animated`.
 - `setNativeProps` and `requestAnimationFrame` are additional notes; look into `setNativeProps`, `shouldComponentUpdate` or the native driver if animations drop below 60 frames per second. Monitor the frame rate with the In-App Dev Menu "FPS Monitor" tool.

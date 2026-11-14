@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/legacy/native-modules-intro
+source: https://reactnative.dev/docs/0.88/legacy/native-modules-intro
 ---
 
 # Native Modules Intro

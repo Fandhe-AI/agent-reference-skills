@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/platform-specific-code
+source: https://reactnative.dev/docs/0.88/platform-specific-code
 ---
 
 # Platform-Specific Code

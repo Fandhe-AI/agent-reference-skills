@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/global-intersectionobserver
+source: https://reactnative.dev/docs/0.88/global-intersectionobserver
 ---
 
 # IntersectionObserver globals
@@ -68,7 +68,7 @@ Constructor `options` (optional object):
 - Experimental (Canary): "This API is currently only available in React Native's Canary and Experimental channels. If you want to try it out, please enable the Canary Channel in your app." Both official pages are titled with the experimental marker.
 - `rnRootThreshold` (option), `rnRootThresholds` and `rnRootIntersectionRatio` are Non-standard: "This is a React Native specific extension."
 - Notifications for a target are generated when any of the thresholds specified in `rnRootThresholds` or `thresholds` are crossed for that target.
-- Page for `IntersectionObserverEntry`: https://reactnative.dev/docs/0.87/global-intersectionobserverentry
+- Page for `IntersectionObserverEntry`: https://reactnative.dev/docs/0.88/global-intersectionobserverentry
 
 ## Related
 

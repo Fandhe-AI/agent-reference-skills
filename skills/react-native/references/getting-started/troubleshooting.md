@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/troubleshooting
+source: https://reactnative.dev/docs/0.88/troubleshooting
 ---
 
 # Troubleshooting
@@ -52,7 +52,7 @@ Adapted (not in the official docs): the official docs run `sudo chown -R $USER ~
 
 ### Missing libraries for React
 
-Legacy: this section is carried over from the 0.87 troubleshooting page and describes the old manual-linking and `React` subspec Podfile setup. Current projects should take the Podfile from the React Native Community Template as described in Integration with Existing Apps (iOS) (see integration-with-existing-apps.md); the subspec Podfile example below does not apply to them.
+Legacy: this section is carried over from the 0.88 troubleshooting page and describes the old manual-linking and `React` subspec Podfile setup. Current projects should take the Podfile from the React Native Community Template as described in Integration with Existing Apps (iOS) (see integration-with-existing-apps.md); the subspec Podfile example below does not apply to them.
 
 If you added React Native manually, include all relevant dependencies you use, like `RCTText.xcodeproj`, `RCTImage.xcodeproj`. The binaries built by these dependencies have to be linked to your app binary using the `Linked Frameworks and Binaries` section in the Xcode project settings (details: `linking-libraries-ios`).
 

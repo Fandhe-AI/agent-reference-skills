@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/the-new-architecture/native-modules-custom-events
+source: https://reactnative.dev/docs/0.88/the-new-architecture/native-modules-custom-events
 ---
 
 # Emitting Events in Native Modules
@@ -292,7 +292,7 @@ NS_ASSUME_NONNULL_END
 
 ## Notes
 
-- `SafeAreaView` from react-native used in this sample is deprecated in the 0.87 docs; use react-native-safe-area-context in real apps.
+- `SafeAreaView` from react-native used in this sample is deprecated in the 0.88 docs; use react-native-safe-area-context in real apps.
 - The official Android diff is titled "NativeLocalStorage"; the file name follows the Turbo Native Modules Android guide (NativeLocalStorageModule.kt).
 - Deviation: command output shown in the same block on the official page is split into a separate text block.
 - Deviation from the official page: the official diff does not match the App.tsx from the Native Modules introduction (named React hook imports, 'myKey' literals); the diff here is rebased onto that file.

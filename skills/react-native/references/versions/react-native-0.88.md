@@ -92,7 +92,7 @@ Swift Package Manager rollout plan: 0.87 introduced experimental support; 0.88 h
 - ArrayBuffer for synchronous methods: inputs can borrow JavaScript memory and are valid only until the method returns; copy with `ArrayBuffer.arrayBufferWithCopiedBytes(data)` to retain. Accessing `ArrayBuffer.bytes` or `.size` after a borrowed buffer is revoked throws `IllegalStateException`.
 - 0.88 is the latest stable and 0.85.x moves to unsupported (per the post). Expo projects get 0.88 as part of Expo SDK 58.
 - Deviation from the release blog: the listener example captures `ref.current` in a local variable so cleanup removes the listener from the same node (the blog reads `ref.current` inside cleanup).
-- 0.88 docs are not cut yet at the pinned snapshot; the reference pages follow 0.87 docs and add `0.88:` lines from this post.
+- The reference pages follow the 0.88 docs (react-native-website commit a459a29, retrieved 2026-11-14); `0.88:` lines in individual pages add release-blog content that the docs pages do not state. npm latest is 0.88.1.
 - Distinct from Apple platform skills (apple-uikit, apple-swift) for native UIScene details.
 
 ## Related

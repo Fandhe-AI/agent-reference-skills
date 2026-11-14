@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/out-of-tree-platforms
+source: https://reactnative.dev/docs/0.88/out-of-tree-platforms
 ---
 
 # Out-of-Tree Platforms

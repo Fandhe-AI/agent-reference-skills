@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/intro-react
+source: https://reactnative.dev/docs/0.88/intro-react
 ---
 
 # React Fundamentals

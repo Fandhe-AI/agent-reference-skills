@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/headless-js-android
+source: https://reactnative.dev/docs/0.88/headless-js-android
 ---
 
 # Headless JS

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/components-and-apis
+source: https://reactnative.dev/docs/0.88/components-and-apis
 ---
 
 # Core Components and APIs

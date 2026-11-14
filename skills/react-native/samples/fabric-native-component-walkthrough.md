@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/fabric-native-components-introduction
+source: https://reactnative.dev/docs/0.88/fabric-native-components-introduction
 ---
 
 # Fabric Native Component Walkthrough

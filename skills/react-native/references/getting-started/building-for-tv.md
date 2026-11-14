@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/building-for-tv
+source: https://reactnative.dev/docs/0.88/building-for-tv
 ---
 
 # Building For TV Devices

@@ -36,7 +36,7 @@ https://github.com/react/react-native/tree/0.88-stable
 ## Notes
 
 - Yoga values are commit hashes in `facebook/yoga`. A dash means the component is not shipped in that release.
-- The table is as published on the 0.87 docs snapshot and includes 0.88-stable. The 0.88 release blog separately states React 19.3.0 is synced into React Native and Hermes moves to 260318099.0.4; these differ from the table row above, so treat the table as the source for branch pins and the blog as release-note text.
+- The table is as published on the unversioned releases page (retrieved 2026-11-14) and includes 0.88-stable. The 0.88 release blog separately states React 19.3.0 is synced into React Native and Hermes moves to 260318099.0.4; these differ from the table row above, so treat the table as the source for branch pins and the blog as release-note text.
 - Hermes here is the Hermes JS engine for React Native; unrelated to the hermes-agent skill.
 
 ## Related

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/signed-apk-android
+source: https://reactnative.dev/docs/0.88/signed-apk-android
 ---
 
 # Publishing to Google Play Store

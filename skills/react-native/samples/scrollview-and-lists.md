@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/using-a-listview
+source: https://reactnative.dev/docs/0.88/using-a-listview
 ---
 
 # ScrollView and List Views
@@ -105,5 +105,5 @@ export default SectionListBasics;
 ## Notes
 
 - `FlatList` requires `data` and `renderItem`, and renders only the elements currently on screen.
-- `ScrollView` (https://reactnative.dev/docs/0.87/using-a-scrollview) renders all children even when off screen; use it for a small number of items, and `FlatList` for long lists.
+- `ScrollView` (https://reactnative.dev/docs/0.88/using-a-scrollview) renders all children even when off screen; use it for a small number of items, and `FlatList` for long lists.
 - `ScrollView` scrolls horizontally with the `horizontal` prop and pages with `pagingEnabled`.

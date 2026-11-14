@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/pressable
+source: https://reactnative.dev/docs/0.88/pressable
 ---
 
 # Pressable
@@ -132,7 +132,7 @@ Ripple effect configuration for the `android_ripple` property (type: object).
 
 - The touch area never extends past the parent view bounds and the Z-index of sibling views always takes precedence if a touch hits two overlapping views.
 - `Pressable` uses React Native's `Pressability` API.
-- The official 0.87 prop table says the children/style functions receive a boolean, but the official example destructures `({pressed})`; the argument is a state object.
+- The official 0.88 prop table says the children/style functions receive a boolean, but the official example destructures `({pressed})`; the argument is a state object.
 - This is the React Native core `Pressable` (imported from `react-native`, rendered as a native view). It is distinct from same-named parts in apple-swiftui / apple-uikit, android-compose-components / android-compose-ui, windows-winui-controls, and the web UI libraries ark-ui / chakra-ui / fandhe-frontend.
 
 ## Related

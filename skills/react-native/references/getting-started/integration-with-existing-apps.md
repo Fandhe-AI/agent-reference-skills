@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/integration-with-existing-apps
+source: https://reactnative.dev/docs/0.88/integration-with-existing-apps
 ---
 
 # Integration with Existing Apps
@@ -32,7 +32,7 @@ Create a new folder for the integrated project, then **move your existing Androi
 In the root directory, copy the template `package.json` (the template branch matches the docs version):
 
 ```shell
-curl -O https://raw.githubusercontent.com/react-native-community/template/refs/heads/0.87-stable/template/package.json
+curl -O https://raw.githubusercontent.com/react-native-community/template/refs/heads/0.88-stable/template/package.json
 ```
 
 Then:
@@ -425,11 +425,11 @@ brew install cocoapods
 Two files are needed: a **Gemfile** (Ruby dependencies) and a **Podfile**. From the project root download the Gemfile; from the `ios` folder download the Podfile (template branch matches the docs version):
 
 ```shell
-curl -O https://raw.githubusercontent.com/react-native-community/template/refs/heads/0.87-stable/template/Gemfile
+curl -O https://raw.githubusercontent.com/react-native-community/template/refs/heads/0.88-stable/template/Gemfile
 ```
 
 ```shell
-curl -O https://raw.githubusercontent.com/react-native-community/template/refs/heads/0.87-stable/template/ios/Podfile
+curl -O https://raw.githubusercontent.com/react-native-community/template/refs/heads/0.88-stable/template/ios/Podfile
 ```
 
 If you created your project with Xcode 16, update the Gemfile:
@@ -457,7 +457,11 @@ Create `index.js` and `App.tsx` exactly as in the Android section above.
 
 #### 5. Integrating with your iOS code
 
-React Native initialization is not bound to any specific part of an iOS app. It can be initialized using `RCTReactNativeFactory`, which handles the React Native lifecycle. Once initialized, you can either start a React Native view providing a `UIWindow` object, or ask the factory to generate a `UIView` to load in any `UIViewController`. The example creates a `ReactViewController` whose `view` is the React Native view. Create a new Cocoa Touch Class file with `UIViewController` as "Subclass of".
+React Native initialization is not bound to any specific part of an iOS app. It can be initialized using `RCTReactNativeFactory`, which handles the React Native lifecycle. :::note[`RCTAppDelegate` is deprecated]
+`RCTAppDelegate` is deprecated and will be removed in a future version of React Native. New apps should bootstrap from an app-owned `SceneDelegate` (see "6. Bootstrapping with SceneDelegate" below). Existing apps that subclass `RCTAppDelegate` should migrate to `RCTReactNativeFactory` directly.
+:::
+
+Once initialized, you can either bootstrap a full app from your `SceneDelegate` (see section 6), or generate a `UIView` from the factory and load it in any `UIViewController` (the approach below). The example creates a `ReactViewController` whose `view` is the React Native view. Create a new Cocoa Touch Class file with `UIViewController` as "Subclass of".
 
 **Objective-C** (`ReactViewController.m`)
 
@@ -466,7 +470,7 @@ React Native initialization is not bound to any specific part of an iOS app. It 
 +#import <React/RCTBundleURLProvider.h>
 +#import <RCTReactNativeFactory.h>
 +#import <RCTDefaultReactNativeFactoryDelegate.h>
-+#import <RCTAppDependencyProvider.h>
++#import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
 
 
 @interface ReactViewController ()
@@ -638,7 +642,216 @@ class ViewController: UIViewController {
 
 Disable Sandbox scripting: in Xcode click your app > build settings, filter for `script`, and set `User Script Sandboxing` to `NO`. This is needed to switch between the Debug and Release version of the Hermes engine (https://github.com/facebook/hermes/blob/main/README.md). Also add the `UIViewControllerBasedStatusBarAppearance` key to `Info.plist` with value `NO`.
 
-#### 6. Test your integration
+#### 6. Bootstrapping with SceneDelegate
+
+:::info[Requires React Native 0.88 or later]
+The `SceneDelegate` APIs described in this section require React Native 0.88 or later. Earlier releases do not provide the `connectionOptions:` overloads of `startReactNative` nor the `SceneDelegate` methods on `RCTLinkingManager`.
+:::
+
+If your app uses the UIScene lifecycle (the default for apps created with recent versions of Xcode), React Native bootstrap happens in your app-owned `SceneDelegate`. Your `AppDelegate` stays as the process entry point (`@main`) and handles `UIApplication`-level callbacks such as push notifications.
+
+To bootstrap React Native with SceneDelegate:
+
+1. Declare `UIApplicationSceneManifest` in `Info.plist` and point it at your `SceneDelegate` class.
+2. Keep `UIApplicationSupportsMultipleScenes` set to `false`. React Native does not support multi-window / multi-instance apps yet.
+3. Subclass `RCTDefaultReactNativeFactoryDelegate`, conform to `UIWindowSceneDelegate`, create an `RCTReactNativeFactory`, and call `startReactNativeWithModuleName:inWindow:connectionOptions:` from `scene:willConnectToSession:options:`.
+4. Forward deep links from your `SceneDelegate` to `RCTLinkingManager`.
+5. Keep push notifications and other `UIApplicationDelegate` callbacks on your `AppDelegate`.
+
+##### Info.plist
+
+Add a scene manifest similar to the Community Template. At minimum you need:
+
+```xml
+<key>UIApplicationSceneManifest</key>
+<dict>
+  <key>UIApplicationSupportsMultipleScenes</key>
+  <false/>
+  <key>UISceneConfigurations</key>
+  <dict>
+    <key>UIWindowSceneSessionRoleApplication</key>
+    <array>
+      <dict>
+        <key>UISceneConfigurationName</key>
+        <string>Default Configuration</string>
+        <key>UISceneDelegateClassName</key>
+        <string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+      </dict>
+    </array>
+  </dict>
+</dict>
+```
+
+For Objective-C apps, use your SceneDelegate class name directly instead of `$(PRODUCT_MODULE_NAME).SceneDelegate`.
+
+##### Create the SceneDelegate
+
+**Objective-C**
+
+Create `SceneDelegate.h`:
+
+```objc title="SceneDelegate.h"
+#import <RCTDefaultReactNativeFactoryDelegate.h>
+#import <RCTReactNativeFactory.h>
+#import <UIKit/UIKit.h>
+
+@interface SceneDelegate : RCTDefaultReactNativeFactoryDelegate <UIWindowSceneDelegate>
+
+@property (nonatomic, strong, nullable) UIWindow *window;
+@property (nonatomic, strong, nullable) RCTReactNativeFactory *reactNativeFactory;
+
+@end
+```
+
+Create `SceneDelegate.m`:
+
+```objc title="SceneDelegate.m"
+#import "SceneDelegate.h"
+
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTLinkingManager.h>
+#import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
+
+@implementation SceneDelegate
+
+- (void)scene:(UIScene *)scene
+    willConnectToSession:(UISceneSession *)session
+                 options:(UISceneConnectionOptions *)connectionOptions
+{
+  if (![scene isKindOfClass:[UIWindowScene class]]) {
+    return;
+  }
+
+  self.dependencyProvider = [RCTAppDependencyProvider new];
+  self.reactNativeFactory = [[RCTReactNativeFactory alloc] initWithDelegate:self];
+
+  UIWindowScene *windowScene = (UIWindowScene *)scene;
+  self.window = [[UIWindow alloc] initWithWindowScene:windowScene];
+
+  [self.reactNativeFactory startReactNativeWithModuleName:@"HelloWorld"
+                                                 inWindow:self.window
+                                        connectionOptions:connectionOptions];
+}
+
+- (void)scene:(UIScene *)scene openURLContexts:(NSSet<UIOpenURLContext *> *)URLContexts
+{
+  [RCTLinkingManager scene:scene openURLContexts:URLContexts];
+}
+
+- (void)scene:(UIScene *)scene continueUserActivity:(NSUserActivity *)userActivity
+{
+  [RCTLinkingManager scene:scene continueUserActivity:userActivity];
+}
+
+- (NSURL *)bundleURL
+{
+#if DEBUG
+  return [RCTBundleURLProvider.sharedSettings jsBundleURLForBundleRoot:@"index"];
+#else
+  return [NSBundle.mainBundle URLForResource:@"main" withExtension:@"jsbundle"];
+#endif
+}
+
+@end
+```
+
+**Swift**
+
+Create `SceneDelegate.swift`:
+
+```swift title="SceneDelegate.swift"
+import React
+import React_RCTAppDelegate
+import ReactAppDependencyProvider
+import UIKit
+
+class SceneDelegate: RCTDefaultReactNativeFactoryDelegate, UIWindowSceneDelegate {
+  var window: UIWindow?
+  var reactNativeFactory: RCTReactNativeFactory?
+
+  func scene(
+    _ scene: UIScene,
+    willConnectTo session: UISceneSession,
+    options connectionOptions: UIScene.ConnectionOptions
+  ) {
+    guard let windowScene = scene as? UIWindowScene else {
+      return
+    }
+
+    dependencyProvider = RCTAppDependencyProvider()
+    reactNativeFactory = RCTReactNativeFactory(delegate: self)
+    window = UIWindow(windowScene: windowScene)
+
+    reactNativeFactory?.startReactNative(
+      withModuleName: "HelloWorld",
+      in: window,
+      connectionOptions: connectionOptions
+    )
+  }
+
+  func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+    RCTLinkingManager.scene(scene, openURLContexts: URLContexts)
+  }
+
+  func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+    RCTLinkingManager.scene(scene, continue: userActivity)
+  }
+
+  override func bundleURL() -> URL? {
+    #if DEBUG
+    RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index")
+    #else
+    Bundle.main.url(forResource: "main", withExtension: "jsbundle")
+    #endif
+  }
+}
+```
+
+##### Application delegate responsibilities
+
+Your `AppDelegate` can remain minimal and only handle callbacks that belong to the application object, such as push notifications:
+
+**Objective-C**
+
+```objc title="AppDelegate.m"
+#import "AppDelegate.h"
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application
+    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+  return YES;
+}
+
+@end
+```
+
+**Swift**
+
+```swift title="AppDelegate.swift"
+import UIKit
+
+@main
+class AppDelegate: UIResponder, UIApplicationDelegate {
+  func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+  ) -> Bool {
+    true
+  }
+}
+```
+
+:::note
+React Native currently supports a single instance per process, so multiple scenes are not supported. Keep `UIApplicationSupportsMultipleScenes` set to `false`.
+:::
+
+:::tip[`reactNativeFactory` field]
+Store the `RCTReactNativeFactory` in a property on your `SceneDelegate` so that it is retained for the lifetime of the scene. If it is only held by a local variable, it is deallocated as soon as `scene:willConnectToSession:options:` returns and React Native tears down with it.
+:::
+
+#### 7. Test your integration
 
 Create `metro.config.js` (same content as Android), and a `.watchmanconfig` containing an empty JSON object:
 
@@ -661,9 +874,43 @@ REACT_NATIVE_XCODE="$REACT_NATIVE_PATH/scripts/react-native-xcode.sh"
 /bin/sh "$WITH_ENVIRONMENT" "$REACT_NATIVE_XCODE"
 ```
 
-#### 7. Passing initial props to the React Native view
+#### 8. Passing initial props to the React Native view
 
 Use the `initialProperties` parameter of the `view(withModuleName:initialProperty)` overload of `RCTReactNativeFactory`. In `App.tsx` change `function App(): React.JSX.Element` to `function App(props): React.JSX.Element` and render `props.userID` and `props.token`; `RCTReactNativeFactory` passes them to the component when it is rendered.
+
+##### SceneDelegate bootstrap
+
+**Objective-C**
+
+Modify `SceneDelegate.m` to pass initial properties when starting React Native:
+
+```diff title="SceneDelegate.m"
+  [self.reactNativeFactory startReactNativeWithModuleName:@"HelloWorld"
+                                                 inWindow:self.window
++                                       initialProperties:@{
++                                         @"userID": @"12345678",
++                                         @"token": @"secretToken"
++                                       }
+                                        connectionOptions:connectionOptions];
+```
+
+**Swift**
+
+Modify `SceneDelegate.swift` to pass initial properties when starting React Native:
+
+```diff title="SceneDelegate.swift"
+    reactNativeFactory?.startReactNative(
+      withModuleName: "HelloWorld",
+      in: window,
++     initialProperties: [
++       "userID": "12345678",
++       "token": "secretToken"
++     ],
+      connectionOptions: connectionOptions
+    )
+```
+
+##### Embedded view controller
 
 **Objective-C**
 
@@ -687,14 +934,15 @@ Use the `initialProperties` parameter of the `view(withModuleName:initialPropert
 
 ## Notes
 
-- The official 0.87 docs still import from `react-native/Libraries/NewAppScreen`, but that path is not shipped in react-native 0.87.0 (moved to the separate `@react-native/new-app-screen` package); the App.tsx snippet here avoids it.
+- The official 0.88 docs still import from `react-native/Libraries/NewAppScreen`, but that path is not shipped in react-native 0.87.0 or 0.88.1 (moved to the separate `@react-native/new-app-screen` package); the App.tsx snippet here avoids it.
 - Adapted (not in the official docs): (1) the Java `MainApplication` diff gained the missing semicolon on `import com.facebook.react.soloader.OpenSourceMergedSoMapping;`; (2) the Objective-C call is `presentViewController:animated:completion:` with `completion:nil` added (the official text omits `completion:`); (3) the Swift initial-props example gained the missing comma after `withModuleName: "HelloWorld"`; (4) the release-build script passes each path as a separately quoted argument, `/bin/sh "$WITH_ENVIRONMENT" "$REACT_NATIVE_XCODE"`, so paths containing spaces work; the official script uses `/bin/sh -c "$WITH_ENVIRONMENT $REACT_NATIVE_XCODE"`.
-- Corrected (differs from the official docs): the official top-level build.gradle diff shows AGP 7.3.1 as unchanged context; it is aligned with the React Native Community Template (`classpath("com.android.tools.build:gradle")` with no version number, from the template's `0.87-stable` android/build.gradle) because 7.3.1 does not support compileSdk 35.
+- Corrected (differs from the official docs): the official top-level build.gradle diff shows AGP 7.3.1 as unchanged context; it is aligned with the React Native Community Template (`classpath("com.android.tools.build:gradle")` with no version number, from the template's `0.88-stable` android/build.gradle) because 7.3.1 does not support compileSdk 35.
 - Corrected (differs from the official docs): the official Java snippet passes `OpenSourceMergedSoMapping` directly; because it is a Kotlin `object`, Java must use `OpenSourceMergedSoMapping.INSTANCE`.
-- Adapted (not in the official docs): the official docs compute the template branch at render time (getTemplateBranchNameForCurrentVersion()); it is written out as `0.87-stable` for this version in the curl commands.
+- Adapted (not in the official docs): the official docs compute the template branch at render time (getTemplateBranchNameForCurrentVersion()); it is written out as `0.88-stable` for this version in the curl commands.
 - Requirements: React Native can be added as a single view or user flow to an existing app; the template `package.json` / `Gemfile` / `Podfile` are fetched from the React Native Community Template branch matching the docs version.
 - The userID / token above are placeholders from the docs; never ship real secrets in initial properties.
-- 0.88: the iOS SceneDelegate lifecycle is supported (additive; the `AppDelegate` path stays compatible). Starting with the iOS 27 SDK, Apple requires the UIScene lifecycle (UIKit apps built with Xcode 27 fail to launch). `RCTReactNativeFactory` gains `startReactNativeWithModuleName:inWindow:connectionOptions:` and `startReactNativeWithModuleName:inWindow:initialProperties:connectionOptions:`. Support is limited to a single scene (keep `UIApplicationSupportsMultipleScenes` set to `false`). Migration: move the React Native entry point from `AppDelegate` to a `SceneDelegate`, forward the scene's URL and user-activity callbacks to `RCTLinkingManager`, and add a `UIApplicationSceneManifest` key to `Info.plist`. Source: React Native 0.88 release blog.
+- 0.88: the iOS SceneDelegate lifecycle is supported (additive; the `AppDelegate` path stays compatible). Starting with the iOS 27 SDK, Apple requires the UIScene lifecycle (UIKit apps built with Xcode 27 fail to launch). Section 6 and the "SceneDelegate bootstrap" example come from the 0.88 docs; single scene only (keep `UIApplicationSupportsMultipleScenes` set to `false`).
+- Source: https://reactnative.dev/docs/0.88/integration-with-existing-apps and https://reactnative.dev/blog/2026/10/19/react-native-0.88 (pinned to react-native-website commit a459a29, retrieved 2026-11-14).
 - Distance: the Android side (Activity, Gradle, manifests) is native Android development, see android-architecture and android-build-gradle; the iOS side (UIViewController, SceneDelegate, CocoaPods, Xcode build phases) is native iOS development, see apple-uikit, apple-swift, and apple-distribution. The React Native specifics (RNGP, `RCTReactNativeFactory`, `ReactActivity`) belong to this skill.
 
 ## Related

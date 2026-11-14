@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/legacy/local-library-setup
+source: https://reactnative.dev/docs/0.88/legacy/local-library-setup
 ---
 
 # Local libraries setup

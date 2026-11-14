@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/linking
+source: https://reactnative.dev/docs/0.88/linking
 ---
 
 # Linking
@@ -54,7 +54,74 @@ Built-in URL schemes (non-exhaustive, both iOS and Android): `mailto` (open mail
   android:launchMode="singleTask">
 ```
 
-- iOS (Objective-C `AppDelegate.mm`): add the `LinkingIOS` folder into your header search paths (step 3 of linking-libraries-ios) and, to listen to incoming app links during execution, forward to `RCTLinkingManager`:
+- iOS: add the `LinkingIOS` folder into your header search paths (step 3 of linking-libraries-ios). To listen to incoming app links during execution, forward deep links from your `SceneDelegate`. If your app declares `UIApplicationSceneManifest` in `Info.plist`, `RCTLinkingManager` ignores the `AppDelegate` linking methods below, so you must forward links from `SceneDelegate` instead.
+
+Objective-C (`SceneDelegate.m`):
+
+```objc
+#import <React/RCTLinkingManager.h>
+
+- (void)scene:(UIScene *)scene openURLContexts:(NSSet<UIOpenURLContext *> *)URLContexts
+{
+  [RCTLinkingManager scene:scene openURLContexts:URLContexts];
+}
+```
+
+If your app is using Universal Links, add the following as well (`SceneDelegate.m`):
+
+```objc
+- (void)scene:(UIScene *)scene continueUserActivity:(NSUserActivity *)userActivity
+{
+  [RCTLinkingManager scene:scene continueUserActivity:userActivity];
+}
+```
+
+Swift (`SceneDelegate.swift`):
+
+```swift
+func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+  RCTLinkingManager.scene(scene, openURLContexts: URLContexts)
+}
+```
+
+```swift
+func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+  RCTLinkingManager.scene(scene, continue: userActivity)
+}
+```
+
+These callbacks only cover links that arrive while the scene is connected. To handle linking in a cold start (the app being launched by a custom URL scheme or a Universal Link), you also need to hand the scene's `UIScene.ConnectionOptions` to React Native when you bootstrap it, otherwise `getInitialURL()` resolves to `null`:
+
+```objc
+- (void)scene:(UIScene *)scene
+    willConnectToSession:(UISceneSession *)session
+                 options:(UISceneConnectionOptions *)connectionOptions
+{
+  // ...
+  [self.reactNativeFactory startReactNativeWithModuleName:@"HelloWorld"
+                                                 inWindow:self.window
+                                        connectionOptions:connectionOptions];
+}
+```
+
+```swift
+func scene(
+  _ scene: UIScene,
+  willConnectTo session: UISceneSession,
+  options connectionOptions: UIScene.ConnectionOptions
+) {
+  // ...
+  reactNativeFactory?.startReactNative(
+    withModuleName: "HelloWorld",
+    in: window,
+    connectionOptions: connectionOptions
+  )
+}
+```
+
+See the Bootstrapping with SceneDelegate section of integration-with-existing-apps for the full `SceneDelegate` setup.
+
+- iOS apps without the UIScene lifecycle (Objective-C `AppDelegate.mm`): if your app does not use `SceneDelegate`, add the following lines to your `AppDelegate` instead:
 
 ```objc
 // iOS 9.x or newer
@@ -68,7 +135,7 @@ Built-in URL schemes (non-exhaustive, both iOS and Android): `mailto` (open mail
 }
 ```
 
-- iOS Universal Links (Objective-C):
+- iOS Universal Links without the UIScene lifecycle (Objective-C):
 
 ```objc
 - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
@@ -80,7 +147,7 @@ Built-in URL schemes (non-exhaustive, both iOS and Android): `mailto` (open mail
 }
 ```
 
-- iOS (Swift `AppDelegate.swift`):
+- iOS without the UIScene lifecycle (Swift `AppDelegate.swift`):
 
 ```swift
 func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -121,6 +188,7 @@ func application(
 - 0.88: iOS SceneDelegate support. `RCTReactNativeFactory` gains SceneDelegate entry points (`startReactNativeWithModuleName:inWindow:connectionOptions:` and `startReactNativeWithModuleName:inWindow:initialProperties:connectionOptions:`). Migration includes forwarding the scene's URL and user-activity callbacks to `RCTLinkingManager`. At launch, React Native forwards only the first URL context or user activity from the scene's connection options. Support in 0.88 is limited to a single scene ([0.88 release blog](https://reactnative.dev/blog/2026/10/19/react-native-0.88)).
 - Android intent example: `Linking.sendIntent('android.intent.action.POWER_USAGE_SUMMARY')`, or with extras `[{key: 'android.provider.extra.APP_PACKAGE', value: 'com.facebook.katana'}]` for `android.settings.APP_NOTIFICATION_SETTINGS`.
 - Distinct from `react-router` / `tanstack-router` (web routers); this is the native app-link API.
+- Source: https://reactnative.dev/docs/0.88/linking (react-native-website commit a459a29, retrieved 2026-11-14)
 
 ## Related
 

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/reactnativeversion
+source: https://reactnative.dev/docs/0.88/reactnativeversion
 ---
 
 # ReactNativeVersion
@@ -11,10 +11,10 @@ Exposes the version of the resolved `react-native` package on the JS side. Apps 
 ```tsx
 import {ReactNativeVersion} from 'react-native';
 
-const version = ReactNativeVersion.getVersionString(); // 0.87.1
+const version = ReactNativeVersion.getVersionString(); // 0.88.1
 const {major, minor, patch, prerelease} = ReactNativeVersion;
 major; // 0
-minor; // 87
+minor; // 88
 patch; // 1
 prerelease; // null
 ```
@@ -32,6 +32,7 @@ prerelease; // null
 ## Notes
 
 - `Platform.constants.reactNativeVersion` also exists, but is the per-platform native-reported React Native version.
+- Source: https://reactnative.dev/docs/0.88/reactnativeversion (react-native-website commit a459a29, retrieved 2026-11-14)
 
 ## Related
 
