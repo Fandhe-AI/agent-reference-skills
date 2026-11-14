@@ -44,6 +44,8 @@ skills/windows-testing-performance/
       static-analysis-dotnet-cpp.md
       telemetry-crash-reporting.md
       version-adaptive-apps.md
+      test-before-you-ship.md
+      ai-assisted-testing.md
     performance/
       README.md
       planning-for-performance.md
@@ -123,6 +125,7 @@ skills/windows-testing-performance/
 | MSTest / xUnit / NUnit で単体テストを書きたい | testing | [references/testing/README.md](references/testing/README.md) |
 | WinAppDriver / Appium / Playwright で UI テストを自動化したい | testing | [references/testing/README.md](references/testing/README.md) |
 | WACK 認定・MSIX サイドローディング・CI でのテスト実行を設定したい | testing | [references/testing/README.md](references/testing/README.md) |
+| リリース前テストの手順（クリーン環境・a11y・WACK・UI 自動化）、AI エージェント + `winapp ui` でのテストをしたい | testing | [references/testing/README.md](references/testing/README.md) |
 | 起動時間・メモリ・GC・XAML レイアウトを最適化したい | performance | [references/performance/README.md](references/performance/README.md) |
 | WPT/WPA/Visual Studio Profiler でプロファイリングしたい | performance | [references/performance/README.md](references/performance/README.md) |
 | ListView / GridView の仮想化・データ読み込みを最適化したい | performance | [references/performance/README.md](references/performance/README.md) |

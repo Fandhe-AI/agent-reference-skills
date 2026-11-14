@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| AI-Assisted Testing | winapp ui commands and the winui-ui-testing skill let an AI agent inspect, test, and generate UI tests | [ai-assisted-testing.md](./ai-assisted-testing.md) |
 | App Actions Testing Playground | Tool for validating App Actions registration and testing runtime behavior | [app-actions-testing.md](./app-actions-testing.md) |
 | Running Windows App Tests in CI | Run builds, analysis, and MSIX packaging in GitHub Actions or Azure Pipelines | [ci-testing.md](./ci-testing.md) |
 | Windows Device Portal (WDP) | Web server for remote deployment and testing on a separate target device | [device-portal.md](./device-portal.md) |
@@ -11,6 +12,7 @@
 | Playwright / WebView2 Testing | Test WebView2-hosted web content with Microsoft Playwright automation | [playwright-webview2-testing.md](./playwright-webview2-testing.md) |
 | Static Analysis for .NET and C++ | Roslyn analyzers and C++ /analyze flag catch bugs and code quality issues | [static-analysis-dotnet-cpp.md](./static-analysis-dotnet-cpp.md) |
 | Telemetry and Crash Reporting | Collect production telemetry and crash data via Application Insights or OpenTelemetry | [telemetry-crash-reporting.md](./telemetry-crash-reporting.md) |
+| Test Your Windows App Before You Ship | Five-step pre-release path: clean device, accessibility, WACK, UI automation, AI assistant | [test-before-you-ship.md](./test-before-you-ship.md) |
 | Testing Troubleshooting | Common test setup and runtime failures and their solutions | [testing-troubleshooting.md](./testing-troubleshooting.md) |
 | UI Testing with WinAppDriver / Appium | Selenium-like UI automation service for Windows desktop apps via WebDriver protocol | [ui-testing-winappdriver.md](./ui-testing-winappdriver.md) |
 | Unit Testing Non-WinUI Code (MSTest / xUnit / NUnit) | Standard .NET testing frameworks for non-XAML application code | [unit-testing-non-winui.md](./unit-testing-non-winui.md) |
