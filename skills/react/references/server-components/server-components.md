@@ -160,7 +160,7 @@ function Comments({commentsPromise}) {
 - The official example renders `{sanitizeHtml(marked(content))}` as a child, which React escapes as text; adjusted to `dangerouslySetInnerHTML` so the sanitized HTML is actually rendered.
 - The `import {useState} from 'react';` line in the `Expandable` Client Component snippet is added; the original omits it.
 
-- Snippets corrected from the original: note is a record object (note.authorId), so the examples render note.content instead of the object itself; the Expandable example passes it as children.
+- Snippets were corrected here from the original (`note` is a record object, so the examples render `note.content` instead of the object itself; the Expandable example passes it as children). react.dev commit `46a54e0` (fetched 2026-11-14) carries the same fixes for the Note examples.
 - While React Server Components in React 19 are stable and will not break between minor versions, the underlying APIs used to implement a React Server Components bundler or framework do not follow semver and may break between minors in React 19.x.
 - To support React Server Components as a bundler or framework, pin to a specific React version, or use the Canary release.
 - Server Components can run once at build time on your CI server, or for each request using a web server; a web server is not required when they run at build time.

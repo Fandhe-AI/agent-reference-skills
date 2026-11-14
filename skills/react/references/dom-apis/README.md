@@ -16,4 +16,5 @@
 | preinitModule | `preinitModule` lets you eagerly fetch and evaluate an ESM module. | [preinitModule.md](./preinitModule.md) |
 | preload | `preload` lets you eagerly fetch a resource such as a stylesheet, font, or external script that you expect to use. | [preload.md](./preload.md) |
 | preloadModule | `preloadModule` lets you eagerly fetch an ESM module that you expect to use. | [preloadModule.md](./preloadModule.md) |
+| requestFormReset | `requestFormReset` lets you reset a React-managed form after an Action or Transition finishes. | [requestFormReset.md](./requestFormReset.md) |
 | useFormStatus | `useFormStatus` is a Hook that gives you status information of the last form submission. | [useFormStatus.md](./useFormStatus.md) |

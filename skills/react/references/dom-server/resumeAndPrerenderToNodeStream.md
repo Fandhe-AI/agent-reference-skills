@@ -25,7 +25,7 @@ Returns a Promise:
 
 - If rendering is successful, the Promise resolves to an object containing:
   - `prelude`: a stream of HTML. You can use this stream to send a response in chunks, or you can read the entire stream into a string. (The source page describes it as a Web Stream, although this is the Node.js variant.)
-  - `postponed`: a JSON-serializeable, opaque object that can be passed to `resumeToNodeStream` or `resumeAndPrerenderToNodeStream` if `resumeAndPrerenderToNodeStream` is aborted.
+  - `postponed`: a JSON-serializeable, opaque object that can be passed to `resumeToPipeableStream` or `resumeAndPrerenderToNodeStream` if `resumeAndPrerenderToNodeStream` is aborted.
 - If rendering fails, the Promise is rejected.
 
 ## Options / Props
@@ -43,7 +43,7 @@ Returns a Promise:
 - `nonce` is not an available option when prerendering. Nonces must be unique per request and if you use nonces to secure your application with CSP it would be inappropriate and insecure to include the nonce value in the prerender itself.
 - The static `resumeAndPrerenderToNodeStream` API is used for static server-side generation (SSG). Unlike `renderToString`, it waits for all data to load before resolving. To stream content as it loads, use a streaming SSR API like `renderToReadableStream`.
 - It can be aborted and later either continued with another `resumeAndPrerenderToNodeStream` or resumed with `resume` to support partial pre-rendering.
-- The source page refers to `resumeToNodeStream`; the Node.js resume API documented in this skill is `resumeToPipeableStream`.
+- Earlier revisions of the source page (commit `046f17d`) referred to `resumeToNodeStream`; the page now says `resumeToPipeableStream`, which is the Node.js resume API documented in this skill. Source: https://react.dev/reference/react-dom/static/resumeAndPrerenderToNodeStream (react.dev commit `46a54e0592729712b7640308b53268e84fdc7c9f`, fetched 2026-11-14).
 - It behaves similarly to `prerender` but can be used to continue a previously started prerendering process that was aborted. See the `resume` page for resuming a prerendered tree.
 
 ## Related

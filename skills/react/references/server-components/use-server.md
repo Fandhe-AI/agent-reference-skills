@@ -106,7 +106,7 @@ function LikeButton() {
   return (
     <>
       <p>Total Likes: {likeCount}</p>
-      <button onClick={onClick} disabled={isPending}>Like</button>;
+      <button onClick={onClick} disabled={isPending}>Like</button>
     </>
   );
 }

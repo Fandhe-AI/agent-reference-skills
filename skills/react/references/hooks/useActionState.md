@@ -42,7 +42,64 @@ async function reducerAction(previousState, actionPayload) {
 }
 ```
 
+Displaying validation errors and preserving form values: return validation errors and submitted values from the Action to display an error without clearing the affected fields.
+
+```js
+import { useActionState } from 'react';
+import { updateName } from './api.js';
+
+const initialState = {
+  error: null,
+  submitted: null,
+};
+
+export default function UpdateName() {
+  const [state, submitAction, isPending] = useActionState(
+    updateName,
+    initialState
+  );
+
+  return (
+    <form action={submitAction}>
+      <label>
+        Name:{' '}
+        <input
+          name="name"
+          defaultValue={state.submitted?.get('name') ?? ''}
+          disabled={isPending}
+        />
+      </label>
+      <button type="submit" disabled={isPending}>Save</button>
+      {state.error && <p>{state.error}</p>}
+    </form>
+  );
+}
+```
+
+The `updateName` function in `api.js`:
+
+```js
+export async function updateName(previousState, formData) {
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  const name = formData.get('name');
+  if (typeof name !== 'string' || name.trim().length < 3) {
+    return {
+      error: 'Name must be at least three characters long',
+      submitted: formData,
+    };
+  }
+  return {
+    error: null,
+    submitted: null,
+  };
+}
+```
+
+When validation fails, `updateName` returns an error and the submitted `FormData`. The component uses the submitted name as the input's new `defaultValue`, so React's automatic form reset preserves it. When validation succeeds, `submitted` is `null`, so the automatic reset clears the field.
+
 ## Notes
+
+- Source: https://react.dev/reference/react/useActionState (react.dev commit `46a54e0592729712b7640308b53268e84fdc7c9f`, fetched 2026-11-14). The validation-errors example above was added upstream after commit `046f17d`. To display the error and preserve the submitted name before JavaScript loads, make `updateName` a Server Function and keep passing `submitAction` to the form's `action` prop (see the `<form>` page, "Preserving form values before JavaScript loads").
 
 - Call it only at the top level of your component or your own Hooks. You can't call it inside loops or conditions.
 - React queues and executes multiple calls to `dispatchAction` sequentially. Each call to `reducerAction` receives the result of the previous call.
@@ -67,3 +124,4 @@ async function reducerAction(previousState, actionPayload) {
 - [useReducer](./useReducer.md)
 - [startTransition](../apis/startTransition.md)
 - [form](../dom-components/form.md)
+- [requestFormReset](../dom-apis/requestFormReset.md)

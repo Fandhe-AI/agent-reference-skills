@@ -12,7 +12,7 @@ user-invocable: false
 
 対象バージョン: React 19.3.1 (npm `react` / `react-dom` latest、2026-10-14 公開。versions.md の表記は "Latest version: 19.3")。
 関連パッケージ: babel-plugin-react-compiler 1.0.0 / eslint-plugin-react-hooks 7.1.1 / @types/react 19.3.0 / react-devtools 8.0.0。
-ドキュメント出典: reactjs/react.dev（リリースタグなしのため main の commit `046f17d04295ba047bb5739026b4ac3110f17028`（2026-10-06）に pin）。取得日 2026-10-16。
+ドキュメント出典: reactjs/react.dev（リリースタグなしのため main の commit `46a54e0592729712b7640308b53268e84fdc7c9f`（2026-11-11）に pin）。取得日 2026-11-14（requestFormReset・DevTools for agents・`<form>`・useActionState・useFormStatus・Server Functions ほか差分ページは 46a54e0 から再取得。その他のページは前 pin `046f17d` / 取得日 2026-10-16 のまま、`046f17d`→`46a54e0` の差分は typo・リンク修正のみ）。
 
 ## ディレクトリ構成
 
@@ -58,6 +58,7 @@ skills/react/
       hydrateRoot.md
       createPortal.md
       flushSync.md
+      requestFormReset.md
       useFormStatus.md
       preload.md
       ...
@@ -96,6 +97,7 @@ skills/react/
       lint-exhaustive-deps.md
       lint-rules-of-hooks.md
       react-developer-tools.md
+      react-devtools-cdt-mcp.md
       typescript.md
       react-performance-tracks.md
       ...
@@ -153,14 +155,14 @@ skills/react/
 | Suspense / Activity / ViewTransition / StrictMode / Profiler / Fragment を使う | components | [references/components/README.md](references/components/README.md) |
 | `<form>` / `<input>` / `<select>` / `<link>` / `<script>` / `<title>` などの DOM コンポーネントを調べる | dom-components | [references/dom-components/README.md](references/dom-components/README.md) |
 | `createRoot` / `hydrateRoot` / `createPortal` / `flushSync` を使う | dom-apis | [references/dom-apis/README.md](references/dom-apis/README.md) |
-| `preload` / `preinit` / `preconnect` などのリソースプリロード、`useFormStatus` を調べる | dom-apis | [references/dom-apis/README.md](references/dom-apis/README.md) |
+| `preload` / `preinit` / `preconnect` などのリソースプリロード、`useFormStatus`・`requestFormReset` を調べる | dom-apis | [references/dom-apis/README.md](references/dom-apis/README.md) |
 | サーバーレンダリング・ストリーミング・prerender・resume を調べる | dom-server | [references/dom-server/README.md](references/dom-server/README.md) |
 | Server Components・Server Functions・`'use client'` / `'use server'` を調べる | server-components | [references/server-components/README.md](references/server-components/README.md) |
 | Hooks のルール・純粋性など Rules of React を確認する | rules-of-react | [references/rules-of-react/README.md](references/rules-of-react/README.md) |
 | React Compiler の導入・設定・段階的導入・デバッグ | compiler | [references/compiler/README.md](references/compiler/README.md) |
 | `"use memo"` / `"use no memo"` / compilationMode / gating を調べる | compiler | [references/compiler/README.md](references/compiler/README.md) |
 | eslint-plugin-react-hooks のルール・設定を調べる | tooling | [references/tooling/README.md](references/tooling/README.md) |
-| React DevTools・TypeScript 型・Performance tracks を使う | tooling | [references/tooling/README.md](references/tooling/README.md) |
+| React DevTools（エージェント向け react-devtools-cdt-mcp を含む）・TypeScript 型・Performance tracks を使う | tooling | [references/tooling/README.md](references/tooling/README.md) |
 | クラスコンポーネント・`forwardRef`・`createElement` などレガシー API を調べる | legacy | [references/legacy/README.md](references/legacy/README.md) |
 | 19.x のリリースノート・アップグレード手順・脆弱性告知を確認する | versions | [references/versions/README.md](references/versions/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |

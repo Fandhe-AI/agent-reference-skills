@@ -75,6 +75,7 @@ export async function removeFromCart(count) {
 ## Notes
 
 - Unlike `onSubmit`, an `action` runs in a Transition and `e.preventDefault()` is not needed; after the `action` function succeeds, all uncontrolled field elements in the form are reset.
+- To keep submitted values after the reset, or to control when the reset runs (including `requestFormReset` for manual `onSubmit` handling), see the `<form>` and `requestFormReset` reference pages. Source: https://react.dev/reference/react-dom/components/form (react.dev commit `46a54e0592729712b7640308b53268e84fdc7c9f`, fetched 2026-11-14).
 - `useActionState` returns exactly three items: current state, an action dispatcher, and a pending state. Calling the dispatcher outside an Action prop needs `startTransition`.
 - `src/Total.js` (formats `quantity * 9999` as USD) is omitted here; see the useActionState source page.
 - This is React's built-in `<form action>`; it is separate from React Hook Form (`useForm`) and from the `<Form>` components of React Router and Next.js (see the react-hook-form, react-router, and nextjs-app skills).

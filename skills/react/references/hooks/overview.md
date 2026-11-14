@@ -20,7 +20,7 @@ Hook groups:
 
 | Group | Hooks | Purpose |
 |-------|-------|---------|
-| State Hooks | `useState`, `useReducer` | *State* lets a component "remember" information like user input. |
+| State Hooks | `useState`, `useReducer`, `useOptimistic` | *State* lets a component "remember" information like user input. |
 | Context Hooks | `useContext` | *Context* lets a component receive information from distant parents without passing it as props. |
 | Ref Hooks | `useRef`, `useImperativeHandle` | *Refs* let a component hold some information that isn't used for rendering, like a DOM node or a timeout ID. |
 | Effect Hooks | `useEffect`, `useLayoutEffect`, `useInsertionEffect`, `useEffectEvent` | *Effects* let a component connect to and synchronize with external systems. |
@@ -29,6 +29,7 @@ Hook groups:
 
 - [`useState`](./useState.md) declares a state variable that you can update directly.
 - [`useReducer`](./useReducer.md) declares a state variable with the update logic inside a reducer function.
+- [`useOptimistic`](./useOptimistic.md) lets you show a different state while an async action is pending.
 - [`useContext`](./useContext.md) reads and subscribes to a context.
 - [`useRef`](./useRef.md) declares a ref. You can hold any value in it, but most often it's used to hold a DOM node.
 - [`useImperativeHandle`](./useImperativeHandle.md) lets you customize the ref exposed by your component. This is rarely used.
@@ -49,7 +50,6 @@ General behavior:
 
 - Effects are an "escape hatch" from the React paradigm. Don't use Effects to orchestrate the data flow of your application. If you're not interacting with an external system, you might not need an Effect.
 - You can also define your own custom Hooks as JavaScript functions.
-- `useOptimistic` ([useOptimistic.md](./useOptimistic.md)) is not listed on the official hooks overview page but has its own reference page in `reference/react`.
 
 ## Related
 
