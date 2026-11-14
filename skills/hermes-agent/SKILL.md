@@ -329,7 +329,7 @@ skills/hermes-agent/
 | インストール、クイックスタート、学習パス、Nix / Termux、更新、サポート対象プラットフォーム階層、公式ドメイン・フィッシング対策 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | CLI 起動オプション、TUI、スラッシュコマンド、profile コマンド、全 CLI コマンドリファレンス | cli | [references/cli/README.md](references/cli/README.md) |
 | config.yaml 設定、Terminal Backend (Docker/SSH/Modal 等)、モデル設定、managed scope、Remote Config、TTS/STT、Compression | configuration | [references/configuration/README.md](references/configuration/README.md) |
-| Hermes Desktop、Bot Mode、Profiles、Sessions、Docker、Git worktrees、Local Models、Windows、Claude Code / Codex からの移行 | user-guide | [references/user-guide/README.md](references/user-guide/README.md) |
+| Hermes Desktop、Bot Mode、Profiles、Sessions、Docker、Git worktrees、Local Models、Windows、OpenClaw / Claude Code / Codex / Cursor からの移行 (agent-importers, import-agent) | user-guide | [references/user-guide/README.md](references/user-guide/README.md) |
 | Tools & Toolsets、Memory、Skills、MCP、Voice Mode、Plugin Catalog、Browser、Computer Use、Web Dashboard、Personality | features | [references/features/README.md](references/features/README.md) |
 | Cron、Delegation、Kanban、Goals、Hooks、Loops、Heartbeat、Batch、Code Execution | automation | [references/automation/README.md](references/automation/README.md) |
 | Messaging Gateway、各プラットフォーム個別ページ (Telegram / Discord / Slack / WhatsApp / Teams / IRC 等)、サービス管理 | messaging | [references/messaging/README.md](references/messaging/README.md) |

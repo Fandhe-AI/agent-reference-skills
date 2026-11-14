@@ -121,3 +121,4 @@ hermes import-agent
 v0.23 の変更: 初回 `hermes setup` に他エージェントのインポート提案が加わった。`hermes setup model` 等のセクション指定、`hermes config` / `hermes doctor` / `hermes status` のコマンドは変更なし。
 
 - Source: https://hermes-agent.nousresearch.com/docs/reference/cli-commands (pinned to v0.23.1)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/import-from-other-agents (pinned to v0.23.1)
