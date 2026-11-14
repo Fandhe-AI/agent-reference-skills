@@ -28,7 +28,7 @@ Adapted (not in the official docs): `thresholdRules` is an array of rule objects
   "displayName": "Keep my spending down",
   "budgetFilter": {
     "projects": [
-      "projects/budget-scope-project-id"
+      "projects/budget-scope-project-number"
     ],
     "calendar_period": "QUARTER"
   },
@@ -62,7 +62,7 @@ Adapted (not in the official docs): the PATCH body is the Budget resource itself
   "displayName": "My fancy budget",
   "budgetFilter": {
     "projects": [
-      "projects/budget-scope-project-id"
+      "projects/budget-scope-project-number"
     ],
     "calendar_period": "QUARTER"
   },
@@ -123,6 +123,7 @@ curl -X DELETE \
 
 ## Notes
 
+- Adapted from the official docs: `budgetFilter.projects` takes `projects/<PROJECT_NUMBER>` (project number, not ID).
 - Adapted from the official docs: `thresholdRules` is a repeated field, so the rule is wrapped in an array; the PATCH body is the Budget itself (no `budget` wrapper).
 - An alerts-only budget does not cap spend; it only notifies. Defaults in the console are 50%, 90%, 100% of actual spend.
 - The official samples use `calendar_period` in request bodies and `calendarPeriod` in responses; verify against the REST reference before relying on either.

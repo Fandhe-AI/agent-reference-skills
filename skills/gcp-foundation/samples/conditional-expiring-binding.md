@@ -14,7 +14,7 @@ Grant a role that expires, applies only in working hours, or applies only to res
 gcloud projects get-iam-policy project-id --format=json > filepath
 ```
 
-Edit the file (gcloud sets the version automatically):
+Edit the file (gcloud sets the version automatically). Adapted (not in the official docs): the already-expired 2020 date is replaced with `EXPIRY_DATE` / `EXPIRY_TIMESTAMP` placeholders; use a future RFC 3339 time.
 
 ```json
 {
@@ -31,9 +31,9 @@ Edit the file (gcloud sets the version automatically):
       ],
       "role": "roles/iam.securityReviewer",
       "condition": {
-        "title": "Expires_July_1_2020",
-        "description": "Expires on July 1, 2020",
-        "expression": "request.time < timestamp('2020-07-01T00:00:00.000Z')"
+        "title": "Expires_EXPIRY_DATE",
+        "description": "Expires on EXPIRY_DATE",
+        "expression": "request.time < timestamp('EXPIRY_TIMESTAMP')"
       }
     }
   ],
@@ -84,10 +84,10 @@ POST https://cloudresourcemanager.googleapis.com/v1/projects/PROJECT_ID:setIamPo
           "group:my-group@example.com"
         ],
         "condition": {
-          "title": "Expires_July_1_2020",
-          "description": "Expires on July 1, 2020",
+          "title": "Expires_EXPIRY_DATE",
+          "description": "Expires on EXPIRY_DATE",
           "expression":
-            "request.time < timestamp('2020-07-01T00:00:00.000Z')"
+            "request.time < timestamp('EXPIRY_TIMESTAMP')"
         }
       }
     ]
@@ -133,6 +133,7 @@ resource.type != 'compute.googleapis.com/Instance' ||
 ## Notes
 
 - Conditional bindings do not override unconditional ones; conditions are not allowed with legacy basic roles (Owner, Editor, Viewer) or `allUsers` / `allAuthenticatedUsers`. The Owner binding above is the official sample's unconditional neighbor, so use a throwaway project.
+- Adapted from the official docs: the official expiry (`2020-07-01T00:00:00.000Z`) is already in the past, so the condition uses the placeholders `EXPIRY_DATE` and `EXPIRY_TIMESTAMP`; set them to a future RFC 3339 time such as `2030-01-01T00:00:00.000Z` (the binding's title, description and expression must agree).
 - Adapted from the official docs: the REST example first reads the policy (version 3) and writes back all existing bindings plus the conditional one, because `setIamPolicy` replaces the entire policy.
 - Always send `version: 3` and the `etag` when writing via REST; omitting them can drop all conditions.
 - Scope conditions with `resource.type` / `resource.service`; attributes a resource does not provide never grant access.
