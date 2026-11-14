@@ -11,7 +11,7 @@ const { status, body, headers } = await context.call<ResultType>("fetch-data", {
   body: JSON.stringify({ key: "value" }),
   headers: { "Content-Type": "application/json" },
   retries: 3,
-  timeout: 30,
+  timeout: "30s",
 })
 ```
 
@@ -24,9 +24,9 @@ const { status, body, headers } = await context.call<ResultType>("fetch-data", {
 | `method` | `string` | HTTP verb; defaults to `"GET"` |
 | `body` | `string` | Request payload as a string |
 | `headers` | `Record<string, string>` | Custom request headers |
-| `retries` | `number` | Number of retry attempts |
+| `retries` | `number` | Number of retry attempts if the request fails; default `0` (no retries) |
 | `retryDelay` | `number \| string` | Delay between retries in ms; supports expressions using `retried` variable |
-| `timeout` | `number` | Response wait duration in seconds |
+| `timeout` | `string` | Maximum time to wait for a response, duration string such as `"10s"`; with retries it applies to each attempt |
 | `flowControl` | `object` | Rate limiting and concurrency controls (key, rate, parallelism, period) |
 | `workflow` | `WorkflowObject` | With `serveMany`, call another workflow defined in the same `serveMany` in a type-safe way |
 
@@ -40,6 +40,8 @@ const { status, body, headers } = await context.call<ResultType>("fetch-data", {
 
 ## Notes
 
+- The official `context.call` page documents `timeout` as a duration string (e.g. `"10s"`) and the `flowControl` `rate` as "maximum number of allowed requests per second"
+- Source: https://upstash.com/docs/workflow/steps/call (fetched 2026-11-14; no version pin on the site)
 - Returns responses for all status codes including non-2xx; inspect `status` to handle errors
 - Cannot reach `localhost` or internal Upstash QStash services without a local tunnel
 - Use the generic type parameter `context.call<MyType>(...)` for type-safe response bodies

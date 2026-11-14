@@ -8,6 +8,7 @@ Upstash Search is a standalone, AI-powered search product combining full-text an
 - Setup is plug-and-play with sensible presets; designed for serverless architectures and frameworks like Next.js
 - Built on the same LLM/vector expertise as Upstash Vector and Redis
 - Scales to large datasets; Upstash reports indexing Wikipedia across seven languages as a capability demonstration
+- Creating new Upstash Search databases is no longer supported (getting-started page warning); for new projects the official docs point to Upstash Vector
 - The official docs recommend Redis Search instead for new projects that want to keep data and search in one Redis database
 
 ## Related

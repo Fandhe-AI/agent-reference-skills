@@ -48,7 +48,8 @@ CLAUDE_KEY=sk-ant-...
 
 ## Notes
 
-- `Box.create()` provisions an isolated container with its own filesystem, shell, and network stack; passing `agent` attaches a coding-agent harness (`Agent.ClaudeCode`, `Agent.Codex`, or `Agent.OpenCode`) to the box
+- `Box.create()` provisions an isolated container with its own filesystem, shell, and network stack; passing `agent` attaches a coding-agent harness (`Agent.ClaudeCode`, `Agent.Codex`, `Agent.OpenCode`, or `Agent.Cursor`) to the box
 - `box.agent.run()` awaits a single completion and returns `{ result, cost, ... }`; use `box.agent.stream()` instead to consume incremental output chunks
 - `box.exec.command()` runs a raw shell command inside the box and returns `{ result, exitCode }`
 - Always call `box.delete()` when done—idle boxes pause automatically but are not deleted, so unused boxes keep accruing storage until explicitly removed
+- Since `@upstash/box` 0.8.0 Upstash no longer provides model API keys for agents: this sample passes your own provider key (`CLAUDE_KEY`); alternatively omit `apiKey` or pass `BoxApiKey.StoredKey` to use the key saved in the Upstash Console, otherwise runs fail with `agent API key is required` (Source: https://upstash.com/docs/box/overall/agent, fetched 2026-11-14; no version pin on the site; https://github.com/upstash/box/releases, release notes checked 2026-11-14)

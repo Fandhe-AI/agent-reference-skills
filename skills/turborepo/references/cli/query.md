@@ -33,11 +33,12 @@ turbo query --schema                     # print the GraphQL schema
   turbo query ls --affected --filter=web
   turbo query ls --filter=web... --output json
   ```
-- `turbo query affected` — which packages or tasks are affected between two git refs. With no flags it returns affected tasks (task-level detection: a task is affected only if its `inputs` match a changed file or an upstream task dependency is affected). If the checkout is too shallow, all packages are considered changed (check out with `--filter=blob:none --depth=0`).
+- `turbo query affected` — which packages or tasks are affected between two git refs. With no flags it returns affected tasks (task-level detection: a task is affected only if its `inputs` match a changed file or an upstream task dependency is affected). If the checkout is too shallow, all packages are considered changed (use a blobless clone with full history: `git clone --filter=blob:none` without `--depth`).
   ```bash
   turbo query affected [flags]
   ```
-- The official docs suggest `--filter=blob:none --depth=0`, but Git rejects `--depth=0` (`fatal: depth 0 is not a positive number`). To get full history, omit `--depth` on a fresh `git clone --filter=blob:none`, run `git fetch --unshallow` on an existing shallow checkout, or set `fetch-depth: 0` on `actions/checkout` (a GitHub Actions input, not a Git flag).
+- Official docs (v2.11.11): a blobless clone with full history (`git clone --filter=blob:none`, without `--depth`) gives the comparison the history it needs. With `actions/checkout`, set `filter: blob:none` and `fetch-depth: 0`. (Earlier v2.11.8 docs suggested `--filter=blob:none --depth=0`, which Git rejects with `fatal: depth 0 is not a positive number`.) To get full history on an existing shallow checkout, run `git fetch --unshallow`.
+- Source: https://turborepo.dev/docs/reference/query (vercel/turborepo tag v2.11.11, fetched 2026-11-14).
 
   | Flag | Description |
   |---|---|
@@ -101,6 +102,22 @@ query {
 
 Task predicates support `and` / `or` / `not` and `equal` / `notEqual` on `NAME`, `FULL_NAME`, and `EXPERIMENTAL_CI` (compares resolved `experimentalCI` metadata as JSON: boolean, object, or `null`; objects use structural equality; an omitted `value` equals `null`). The task `filter` is available on package task lists, dependency/dependent lists, and `withDependencies`. For affected tasks pass `taskFilter` next to the package `filter` or task-name `tasks` arguments; those filters intersect before required prerequisites are added, so prerequisites may lack the tag. Filters on dependency/dependent lists and `withDependencies` apply after traversal and do not prune traversal.
 
+### Task log files and hashes
+
+- `logFile` is the path to the log the task writes, relative to the repository root, and matches the `logFile` that `turbo run --dry=json` reports for that task. It is `null` when the task sets `cache: false`.
+- `hash` is the hash the task contributes to cache lookups and matches the dry run's `hash` for the same repository state, environment, and configuration. It is `null` when it cannot be known before the task runs (for example, inputs include files that dependencies produce); `hashReason` then explains why (matching the dry run's `hashReason`) and is `null` when the hash is known up front.
+- Source: https://turborepo.dev/docs/reference/query (vercel/turborepo tag v2.11.11, fetched 2026-11-14).
+
+```graphql
+query {
+  package(name: "web") {
+    tasks { items { fullName logFile hash hashReason } }
+  }
+}
+```
+
+Adapted (not in the official docs): the query above is a minimal illustration of the fields; the official page documents the fields in prose only.
+
 ### Understanding affected-package reasons
 
 The `reason.__typename` explains why a package is included (diagnostic output, not a `turbo.json` value). Repository-wide reasons include every package. `RootInternalDepChanged` also changes the global hash, so every cacheable task misses cache. Run `turbo query --schema` for the exact schema of the installed version.
@@ -152,7 +169,7 @@ if [ "$count" -gt 0 ]; then echo "affected, proceeding"; else echo "skipping"; e
 
 - Adapted from the official turbo-ignore migration example; `set -euo pipefail`, `jq -e`, and a numeric check were added so a failed query does not skip CI. Alternatively use `--exit-code` (2 on errors).
 
-- `turbo query` is not marked Experimental in the v2.11.8 docs (only `ls --output` is); the docs do not state the version it became stable.
+- `turbo query` is not marked Experimental in the v2.11.11 docs (only `ls --output` is); the docs do not state the version it became stable.
 
 ## Related
 

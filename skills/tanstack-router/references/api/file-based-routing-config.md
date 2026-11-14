@@ -31,7 +31,7 @@ tanstackRouter({
 | `indexToken` | `string \| { regex, flags? } \| RegExp` | `index` | Identifies the index route file |
 | `quoteStyle` | `'single' \| 'double'` | `single` | Quote style for the generated route tree and newly created route files |
 | `semicolons` | `boolean` | `false` | Whether the generated route tree and new route files use semicolons |
-| `autoCodeSplitting` | `boolean` | `false` | Automatic code-splitting for non-critical route configuration items. Only available with the TanStack Router Bundler Plugin |
+| `autoCodeSplitting` | `boolean` | `false` | Automatic code-splitting for non-critical route configuration items. Only available with the TanStack Router Bundler Plugin with Vite, Rspack/Rsbuild or Webpack. With Esbuild, setting it to `true` is an error |
 | `disableTypes` | `boolean` | `false` | If `true`, the generated route tree has no types and is written as `.js` |
 | `addExtensions` | `boolean \| string` | `false` | `false` strips extensions from import paths (`'./routes/posts'`); `true` keeps original extensions (`'./routes/posts.tsx'`); a string replaces the extension (`'js'` gives `'./routes/posts.js'`) |
 | `disableLogging` | `boolean` | `false` | Turns off console logging for route generation |
@@ -47,6 +47,7 @@ tanstackRouter({
 - `routeToken` examples with equal runtime URL: `src/routes/posts.tsx`, `src/routes/posts.route.tsx`, `src/routes/posts/route.tsx` all map to `/posts`. For `indexToken`: `src/routes/posts.index.tsx` and `src/routes/posts/index.tsx` both map to `/posts/`.
 - Regex tokens: in `tsr.config.json` use `{ "routeToken": { "regex": "[a-z]+-layout", "flags": "i" } }`; in code use a native `RegExp` (`routeToken: /[a-z]+-layout/i`). The regex is matched against the entire final segment of the route path (`dashboard.main-layout.tsx` matches; `dashboard.my-layout-extra.tsx` does not). To keep a literal segment that would match a regex `indexToken`, wrap it in square brackets, e.g. `[home-page].tsx`.
 - Ignore the generated route tree file in your linter and formatter to avoid conflicts with `quoteStyle` / `semicolons`.
+- Source for the `autoCodeSplitting` bundler availability: https://github.com/TanStack/router/blob/release-2026-11-08-0104/docs/router/api/file-based-routing.md (fetched 2026-11-14)
 - Next major release (v2) is planned to default `autoCodeSplitting` to `true`.
 
 ## Related

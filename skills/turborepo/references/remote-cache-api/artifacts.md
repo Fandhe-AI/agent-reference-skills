@@ -61,7 +61,7 @@ Error body (400 / 401 / 403 / 404) is JSON `{ "code": string, "message": string 
 - `GET`: the client verifies the `Content-Length` header against the response body size.
 - `PUT`: the request body is a gzip-compressed tarball (`application/octet-stream`) of the task outputs; the server should store it and serve it on later downloads. The 200 response is described as an alternative success response to 202.
 - `POST /artifacts` is optional for basic cache functionality; it lets the client query multiple artifacts in one request.
-- Source: https://turborepo.dev/docs/openapi/artifacts (spec `apps/docs/lib/remote-cache-openapi.json`, vercel/turborepo tag v2.11.8).
+- Source: https://turborepo.dev/docs/openapi/artifacts (spec `apps/docs/lib/remote-cache-openapi.json`, vercel/turborepo tag v2.11.11).
 
 ## Related
 

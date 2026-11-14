@@ -12,7 +12,8 @@ curl REST_URL/COMMAND/arg1/arg2/../argN
 
 ## Notes
 
-- Source: https://upstash.com/docs/redis/overall/compatibility (Redis protocol 8.4, command families, connectivity) and https://upstash.com/docs/redis/overall/changelog ("Recent additions" dates) (fetched 2026-10; no version pin on the site).
+- Source: https://upstash.com/docs/redis/overall/compatibility (Redis protocol 8.4, command families, connectivity) and https://upstash.com/docs/redis/overall/changelog ("Recent additions" dates) (fetched 2026-11-14; no version pin on the site).
+- The category list below covers the native Redis protocol. Over the REST API the following are not supported: blocking list / sorted-set / stream commands (`BLPOP`, `BRPOP`, `BRPOPLPUSH`, `BZPOPMAX`, `BZPOPMIN`, blocking `XREAD` / `XREADGROUP`), `WATCH` / `UNWATCH` / `DISCARD`, and Connection commands other than `PING` and `ECHO`; Cluster is not supported (see REST API page, https://upstash.com/docs/redis/features/restapi, fetched 2026-11-14)
 - The `Usage` snippet is taken from https://upstash.com/docs/redis/features/restapi ("API Semantics").
 
 ### Upstash command families (extensions)
@@ -25,6 +26,7 @@ curl REST_URL/COMMAND/arg1/arg2/../argN
 - April 2025: hash field expiration (`HEXPIRE`, `HPEXPIRE`, `HEXPIREAT`, `HPEXPIREAT`, `HTTL`, `HPTTL`, `HEXPIRETIME`, `HPEXPIRETIME`, `HPERSIST`)
 - December 2025: Redis Functions (`FCALL`, `FCALL_RO`, `FUNCTION DELETE` / `FLUSH` / `KILL` / `LIST` / `LOAD` / `STATS`); `HGETDEL`, `HGETEX`, `HSETEX`; `XDELEX`, `XACKDEL`; `BITOP DIFF` / `DIFF1` / `ANDOR` / `ONE`
 - March 2026: Redis Search (`SEARCH.*`)
+- October 2026: hybrid search (`HYBRID` fields) and retrievers (`$rrf`, `$ann`, `$standard`) for Search; `$mustNot`-only queries now match every document they do not exclude (score `0`), and inside `$should` they match the documents they do not exclude (before, both matched no documents); Insights tab in the console for databases with Prod Pack
 - September 2026: Vector, Array commands, expanded Search (searchable streams, multi-value text and keyword fields, composite aggregations), `MSETEX`, `SDIFFCARD`, `SUNIONCARD`
 
 ### Supported Command Categories

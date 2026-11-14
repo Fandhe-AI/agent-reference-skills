@@ -42,9 +42,13 @@ result = pipeline.exec()
 
 - Pipeline results are returned as an ordered array matching the command sequence
 - Transactions guarantee atomicity — use when operations must be consistent with each other
-- Auto-pipelining (TypeScript) can automatically batch commands sent in the same event loop tick
+- Auto-pipelining (TypeScript) is **enabled by default**: the client queues commands and sends them as one PIPELINE request when no more commands are added or one of them is awaited. Disable with `enableAutoPipelining: false` in the constructor / `Redis.fromEnv({...})`
+- Awaiting every command separately triggers one PIPELINE call each; use `Promise.all([redis.get("foo"), redis.get("bar")])` to batch them into a single call (results keep the written order)
+- Auto-pipelining helps where simultaneous requests are limited (Vercel Edge, Cloudflare Workers allow 6)
+- Pipeline example from the docs: `p.hset("key2", { field: { hello: "world" } }).hvals("key2")` chains inline; `redis.multi()` has the same API but executes atomically
+- Source: https://upstash.com/docs/redis/sdks/ts/pipelining/pipeline-transaction and https://upstash.com/docs/redis/sdks/ts/pipelining/auto-pipeline (fetched 2026-11-14; no version pin on the site)
 - The REST API equivalents are `/pipeline` (non-atomic) and `/multi-exec` (atomic)
-- Pipelines count as a single HTTP request for billing purposes
+- Billing is per command (the official REST page states pricing is based on per command/request); the docs do not state a single-request discount for pipelines
 
 ## Related
 

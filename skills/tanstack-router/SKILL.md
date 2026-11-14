@@ -15,7 +15,7 @@ user-invocable: false
 TanStack Router (`@tanstack/react-router`) の公式ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象 `@tanstack/react-router` 1.170.44（TanStack/router のリリースタグ release-2026-10-14-1451 で docs を pin、取得日 2026-10-17）。
+対象 `@tanstack/react-router` 1.170.46（TanStack/router のリリースタグ release-2026-11-08-0104 で docs を pin、取得日 2026-11-14）。
 
 ## ディレクトリ構成
 

@@ -25,6 +25,8 @@ XAML (Extensible Application Markup Language) is the declarative markup language
 - XAML is case-sensitive and only supports UTF-8/UTF-16 encoding.
 - You can't set breakpoints in `.xaml` files; parse failures throw `XamlParseException` at runtime with line-number context.
 - C# and C++/WinRT are supported for both WinUI 3 / Windows App SDK and UWP apps. C++/CX applies to UWP only and isn't supported for WinUI 3.
+- Windows App SDK 2.6.4 fixed false IntelliSense errors on XAML-generated members (such as `InitializeComponent` and `x:Name` fields) in WinUI 3 C# projects edited in VS Code with C# Dev Kit. To opt out, set the `EnableWinUIDesignTimeGeneratedXamlCompileItems` property to `false`.
+- Source: https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0?pivots=stable (fetched 2026-11-14)
 
 ## Related
 

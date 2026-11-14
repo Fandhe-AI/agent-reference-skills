@@ -44,6 +44,25 @@ await context.run("validate-user", async () => {
 
 Formula: `delay = min(86400, e^(2.5 * n))` seconds
 
+### Retries for a Single Step
+
+Since `@upstash/workflow` 1.5.0 the run's retry configuration can be overridden for a single `context.run` step by passing `retries` and `retryDelay` as the third argument:
+
+```typescript
+export const { POST } = serve(async (context) => {
+  await context.run(
+    "call flaky service",
+    () => callFlakyService(),
+    {
+      retries: 5,
+      retryDelay: "1000",
+    }
+  );
+});
+```
+
+Fields left unset fall back to the configuration the run was triggered with; step-level options can be combined with step-level flow control (see [flow-control](./flow-control.md)).
+
 ### Stopping Retries
 
 | Method | Effect |
@@ -57,8 +76,11 @@ Formula: `delay = min(86400, e^(2.5 * n))` seconds
 - After all retries are exhausted, the failed run is moved to the Dead Letter Queue (DLQ) for manual inspection and recovery
 - DLQ operations: `client.dlq.restart()` (restart from scratch) or `client.dlq.resume()` (resume from failure point)
 
+- Source: https://upstash.com/docs/workflow/features/retries (fetched 2026-11-14; no version pin on the site)
+
 ## Related
 
 - [failures](./failures.md)
 - [client.trigger](./client-trigger.md)
+- [context.run](./context-run.md)
 - [client](./client.md)

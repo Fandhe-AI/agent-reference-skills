@@ -4,6 +4,7 @@
 |------|-------------|------|
 | Advertising ID and App Set ID | Two user-resettable device identifiers with distinct privacy scopes for ad targeting and cross-app analytics. | [advertising-and-app-set-id.md](./advertising-and-app-set-id.md) |
 | Automatic Permission Reset for Unused Apps | If an app targets Android 11 or higher and is unused for months, the system resets runtime permissions. | [automatic-permission-reset.md](./automatic-permission-reset.md) |
+| Contact Picker | Android 17 (API 37) system picker that shares only selected contacts and data fields, as an alternative to `READ_CONTACTS`. | [contact-picker.md](./contact-picker.md) |
 | Data Safety Section and Privacy Policy (Overview) | Google Play requires disclosure of collected data and linking a privacy policy in the Data safety section. | [data-safety-and-privacy-policy.md](./data-safety-and-privacy-policy.md) |
 | Declaring Permissions in the Manifest | Permissions must be declared with `<uses-permission>` before being checked or requested at runtime. | [declaring-permissions.md](./declaring-permissions.md) |
 | Permissions Used Only in Default Handlers | Some permissions are granted only to the app set as default handler for call/SMS functions. | [default-handler-permissions.md](./default-handler-permissions.md) |

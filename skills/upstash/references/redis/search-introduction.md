@@ -5,8 +5,7 @@ Full-text search built into Upstash Redis, powered by Tantivy (Rust-based). Enab
 ## Signature / Usage
 
 ```ts
-import { Redis } from "@upstash/redis"
-import { s } from "@upstash/redis/search"
+import { Redis, s } from "@upstash/redis"
 
 const redis = Redis.fromEnv()
 
@@ -52,6 +51,10 @@ const results = await index.query({
 - `SEARCH.*` commands are separate from, and incompatible with, RediSearch `FT.*` commands
 - The Tantivy engine provides boolean operators, fuzzy matching, phrase queries, and regex support
 - This is Upstash's first extension beyond the standard Redis spec
+- Since `@upstash/redis` 1.41.0 (October 2026) Search also covers hybrid search: `HYBRID` fields (`s.hybrid()`) searched by meaning with the `$ann` retriever and merged with full-text results by `$rrf` (see Hybrid Search and Retrievers pages)
+- `s` is exported from `@upstash/redis` itself (`import { Redis, s } from "@upstash/redis"`), as in the official Search pages; earlier versions of this page imported it from `@upstash/redis/search`, which the official docs do not use
+- Official feature list: works with JSON, hashes, strings and streams; auto-synchronization of writes; type-safe JSON query syntax (boolean operators, fuzzy, phrase, regex); hybrid search; Tantivy-based performance
+- Source: https://upstash.com/docs/redis/search/introduction (fetched 2026-11-14; no version pin on the site)
 
 ## Related
 
@@ -61,6 +64,10 @@ const results = await index.query({
 - [Redis Search: Schema Definition](./search-schema-definition.md)
 - [Redis Search: Querying](./search-querying.md)
 - [Redis Search: Index Management](./search-index-management.md)
+- [Redis Search: Hybrid Search](./search-hybrid-search.md)
+- [Redis Search: Retrievers](./search-retrievers.md)
+- [Redis Search: Recipes](./search-recipes.md)
+- [Redis Search: Troubleshooting](./search-troubleshooting.md)
 - [Redis Search: Searching Streams](./search-streams.md)
 - [Redis Search: Adapters](./search-adapters.md)
 - [Commands: JSON](./commands-json.md)

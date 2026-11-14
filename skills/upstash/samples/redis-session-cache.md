@@ -2,6 +2,8 @@
 
 Cache session data in Next.js API routes using Upstash Redis with TTL-based expiry.
 
+Adapted (not in the official docs): curated sample; the `Set-Cookie` header adds `Secure; SameSite=Lax` to `HttpOnly`, and the `POST` handler stores the request body only to keep the example short.
+
 ```typescript
 // app/api/session/route.ts
 import { Redis } from "@upstash/redis";
@@ -36,7 +38,7 @@ export async function POST(req: NextRequest) {
     { sessionId },
     {
       headers: {
-        "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=3600`,
+        "Set-Cookie": `session_id=${sessionId}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=3600`,
       },
     }
   );
@@ -54,3 +56,7 @@ UPSTASH_REDIS_REST_TOKEN=...
 - `set(key, value, { ex: 3600 })` sets TTL in seconds; session auto-expires without manual cleanup
 - `get<T>()` deserializes JSON into the given type; no need to `JSON.parse` manually
 - HTTP-based client requires no persistent connection, safe for Edge Runtime and serverless
+- Demonstration only: the `POST` handler stores the request body as the session. In a real application build the session object on the server after authenticating the user (never accept a client-supplied `userId` / `role`), and keep the REST token in server-side environment variables
+- Adapted (not in the official docs): the example is a curated sample, and the `Set-Cookie` header adds `Secure; SameSite=Lax` to the usual `HttpOnly` flag
+- Since `@upstash/redis` 1.40.0 the client requests plain (non-base64) responses by default (`responseEncoding: false`), so `get` returns the stored value without extra decoding
+- Source: https://upstash.com/docs/redis/sdks/ts/getstarted and https://upstash.com/docs/redis/sdks/ts/troubleshooting (fetched 2026-11-14; no version pin on the site)

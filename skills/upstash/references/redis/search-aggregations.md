@@ -108,9 +108,14 @@ Response: `{ buckets: [{ key, docCount }], afterKey }`. Pass `afterKey` back ver
 - `$terms`, `$range`, `$histogram`, `$dateHistogram`, and `$composite` support nested `$aggs` for per-bucket sub-metrics; `$facet` and metric operators do not
 - Metric aggregations return `{ value: number }`; bucket aggregations return `{ buckets: [{ key, docCount, ... }] }`
 - Results are keyed by the alias name provided in the `aggregations` object
-- Source: https://upstash.com/docs/redis/search/aggregation-operators/bucket-aggregations/composite , https://upstash.com/docs/redis/search/aggregations (fetched 2026-10-17; no version pin on the site).
+- `filter` uses the same syntax as queries, but `$ann` is not supported; `$rrf` / `$standard` are accepted when the `$rrf` has no `$ann` retriever (since `@upstash/redis` 1.41.0): all documents matching any of its queries take part, `window` and `weight` do not apply
+- Python: `index.aggregate(filter={"inStock": True}, aggregations={"avg_price": {"$avg": {"field": "price"}}})`; CLI: `SEARCH.AGGREGATE products '{"inStock": true}' '{"avg_price": {"$avg": {"field": "price"}}}'` (filter first, then the aggregations JSON; pass both as strings in a REST array body)
+- Metric aggregations need `FAST` fields, require a `field` property, and do not support nested `$aggs`; see the Aggregation Operators page for per-operator arguments
+- Source: https://upstash.com/docs/redis/search/aggregation-operators/bucket-aggregations/composite , https://upstash.com/docs/redis/search/aggregations (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 
 - [Redis Search: Query Operators](./search-query-operators.md)
+- [Redis Search: Aggregation Operators](./search-aggregation-operators.md)
+- [Redis Search: Retrievers](./search-retrievers.md)
 - [Redis Search: Getting Started](./search-getting-started.md)

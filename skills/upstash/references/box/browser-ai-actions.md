@@ -53,10 +53,10 @@ result = tab.run(
 
 ## Notes
 
-- Source: https://upstash.com/docs/box/overall/browser/ai-actions (fetched 2026-10-17; no version pin on the site).
-- All AI action methods use an LLM and are metered; need a provider API key (Anthropic, OpenAI, OpenRouter, Vercel, or OpenCode) on the box or account. Every method accepts a provider-prefixed `model` override (e.g. `"openai/gpt-4o"`); without one it uses the box's configured model, falling back to `anthropic/claude-sonnet-4-5`
+- Source: https://upstash.com/docs/box/overall/browser/ai-actions (fetched 2026-11-14; no version pin on the site).
+- All AI action methods use an LLM and are metered; need a provider API key (Anthropic, OpenAI, OpenRouter, Vercel, OpenCode, Bedrock, or Neon) on the box or account; Cursor models are not supported. Every method accepts a provider-prefixed `model` override (e.g. `"openai/gpt-4o"`); without one it uses the box's configured model, falling back to `anthropic/claude-sonnet-4-5`
 - LLM-free replay is the exception to metering: resolve once with `observe()` (metered), then pass the element to `act(el)` as many times as needed
-- The current official AI Actions page (as of 2026-10-17) documents only `observe` and `act`; the `run` row above is kept from the earlier version and was not re-confirmed
+- The official AI Actions page (re-checked 2026-11-14) documents only `observe` and `act` (the Recordings and Overview pages no longer mention `run` either); the `run` row above is kept from the earlier version and was not re-confirmed, so prefer `observe` / `act`
 - For fully scripted, no-LLM-in-the-loop control, connect over CDP with Playwright/Puppeteer instead — both drive the same tabs, so scripted and AI steps can be mixed
 
 ## Related

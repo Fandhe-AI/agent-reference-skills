@@ -38,13 +38,13 @@ tab.close()
 | Name | Type | Description |
 |------|------|-------------|
 | `waitUntil` | `"load" \| "domcontentloaded" \| "networkidle"` (default `"load"`) | When `tab.create` navigation counts as done |
-| `timeout` | `number` (default `30000`) | Navigation timeout in ms for `tab.create`; pass `0` to disable |
+| `timeout` | `number` (default `30000`) | Navigation timeout in ms for `tab.create`; pass `0` to wait up to the server cap of about 295 seconds |
 
 ## Notes
 
-- Source: https://upstash.com/docs/box/overall/browser/tabs (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/browser/tabs (fetched 2026-11-14; no version pin on the site).
 - `tab.create` boots Chromium on its first call if not already running
-- `goto` has no `waitUntil`/`timeout` options — it waits for load with a fixed 60-second deadline
+- `goto` has no `waitUntil`/`timeout` options — it waits up to 15 seconds for the page's load event, then returns whatever has loaded
 - Tab handles are addressed by a stable CDP target id, so an id can be stored and re-attached later, even from a different process, via `getTab`
 - A handle's `url`/`title` are last-known values from `create`/`listTabs`, not live — use `tab.content()` for current page state
 - Multiple tabs can be open independently at once, useful for side-by-side comparisons or sequential AI tasks

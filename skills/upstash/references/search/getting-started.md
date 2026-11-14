@@ -63,6 +63,8 @@ scores = index.search(query="space opera", limit=2)
 - A database is created from the dashboard (`Vector` tab → `Search Database` under `Create`); name it and pick a region
 - Documents can be added via dashboard, SDKs (TypeScript/Python), or the REST API
 - An `index` (analogous to a table) groups documents; use one index for a single search space, or one index per tenant for multi-tenant isolation
+- Creating new Upstash Search databases is no longer supported; for new projects the official docs point to Upstash Vector (and recommend Redis Search for keeping data and search together)
+- Source: https://upstash.com/docs/search/overall/getstarted (fetched 2026-11-14; no version pin on the site)
 - This product is separate from Upstash **Redis Search** (`references/redis/search-*.md` in this skill), the full-text search extension built into Redis databases
 
 ## Related

@@ -57,6 +57,7 @@ pr = box.git.create_pr(title="fix: handle empty state", body="Fixes the dashboar
 | `diff()` | — | Returns uncommitted changes as a patch string |
 | `commit({ message, authorName?, authorEmail? })` | — | Creates a commit; per-commit author overrides omit the box's configured identity |
 | `push({ branch? })` | — | Pushes the current or a specified branch |
+| `createIssue({ title, body })` (Python: `create_issue`) | — | Opens an issue on the cloned repository; attachments are uploaded and referenced from the body; returns `{ url, ... }` |
 | `createPR({ title, body, base })` | — | Opens a pull request; returns `{ url, ... }` |
 | `checkout({ branch })` | — | Switches branches |
 | `exec({ args })` | `string[]` | Runs a raw git command, returns output |
@@ -64,10 +65,33 @@ pr = box.git.create_pr(title="fix: handle empty state", body="Fixes the dashboar
 
 ## Notes
 
-- Source: https://upstash.com/docs/box/overall/git (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/git (fetched 2026-11-14; no version pin on the site).
 - Omitting `token` is fine for public repositories where push access is not required
 - `updateConfig()` applies immediately in Running/Idle boxes (equivalent to `git config --global`); at least one field must be provided, the other retains its current value
+- Fine-grained token permissions sufficient for basic usage: Contents, Pull requests, Issues (all Read and write)
 - A configured `agent` also has full git access, useful when the exact git steps (branch name, commit message, push flow) aren't known ahead of time — the agent can inspect, decide, and drive the whole flow itself
+
+### Open an issue
+
+- Source: https://upstash.com/docs/box/overall/git (fetched 2026-11-14; no version pin on the site)
+
+```typescript
+const issue = await box.git.createIssue({
+  title: "Search returns nothing on staging",
+  body: "Reproduced on the staging deploy.",
+})
+
+console.log(issue.url)
+```
+
+```python
+issue = box.git.create_issue(
+    title="Search returns nothing on staging",
+    body="Reproduced on the staging deploy.",
+)
+
+print(issue.url)
+```
 
 ## Related
 

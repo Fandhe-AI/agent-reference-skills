@@ -53,6 +53,13 @@ const ex = await redis.hgetex("user:123", { ex: 60 }, "name", "email") // option
 await redis.hsetex("user:123", { conditional: "FNX", expiration: { ex: 3600 } }, { name: "John" }) // returns number of fields set
 ```
 
+```ts
+const randomField = await redis.hrandfield("key");
+const [newCursor, fields] = await redis.hscan("key", 0, { match: "user*" });
+await redis.hsetnx("key", "id", 1)
+const length = await redis.hstrlen("key", "field")
+```
+
 ## Notes
 
 - Hash field expiration commands were added in April 2025; `HGETDEL`, `HGETEX`, `HSETEX` in December 2025 (Upstash Redis changelog)
@@ -86,6 +93,14 @@ Return values (`number[]`, one per field): set commands return `-2` (field or ke
 | `hgetdel` | `key, ...fields` | `Record<string, TValue \| null> \| null`; values are returned and the fields deleted atomically; missing fields are `null`, `null` if hash or all fields are missing |
 | `hgetex` | `key, options, ...fields` | Same shape as `hgetdel`. `options`: exactly one of `ex` (seconds), `px` (ms), `exat` (Unix seconds), `pxat` (Unix ms), `persist: true`; pass `{}` to read without changing expiration |
 | `hsetex` | `key, options, fields` | Number of fields set (`0` if the condition is not met). `options.conditional`: `FNX` (only if none of the given fields exist) / `FXX` (only if all of them exist), case-insensitive. `options.expiration`: `ex`, `px`, `exat`, `pxat`, or `keepttl: true`. Pass `undefined` for no options |
+
+### Additional commands (official TypeScript SDK command pages)
+
+- `HRANDFIELD key [count] [withValues]`: a random field, or `count` fields (optionally with values)
+- `HSCAN key cursor { match, count }`: returns `[newCursor, [field, value, field, value, ...]]`; a returned cursor of `0` means the iteration is complete
+- `HSETNX key field value`: sets the field only if it does not exist; `1` if set, `0` if it already existed
+- `HSTRLEN key field`: string length of a field value; `0` if the hash or field does not exist
+- Source: https://upstash.com/docs/redis/sdks/ts/commands/hash/hrandfield, /hscan, /hsetnx, /hstrlen (fetched 2026-11-14; no version pin on the site)
 
 ## Related
 

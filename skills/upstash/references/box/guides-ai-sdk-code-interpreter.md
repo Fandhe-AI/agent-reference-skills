@@ -158,7 +158,7 @@ export const runCode = tool({
 
 ## Notes
 
-- Source: https://upstash.com/docs/box/guides/ai-sdk-setup (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/guides/ai-sdk-setup (fetched 2026-11-14; no version pin on the site).
 - Official guide title is now "Vercel AI SDK Code Interpreter and Shell Tools". The URL was renamed from `/box/guides/ai-sdk-code-interpreter` to `/box/guides/ai-sdk-setup` (this file keeps its original name)
 - `Box.get(name)` is kept verbatim from the official guide. In the `@upstash/box` SDK, `Box.getByName` is an alias of `Box.get` (`static getByName = Box.get;` in https://github.com/upstash/box/blob/%40upstash%2Fbox%400.7.9/packages/sdk/src/client.ts), so passing a box name to `Box.get` resolves the same box; `Box.getByName(name)` is the equivalent, more explicit spelling used in the how-it-works and CopilotKit guides
 - A box name is an address: never take `userId` or the box name from the request body; derive it from the server-side session

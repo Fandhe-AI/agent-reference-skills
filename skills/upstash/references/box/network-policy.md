@@ -52,11 +52,14 @@ type NetworkPolicy =
 
 ## Notes
 
-- Source: https://upstash.com/docs/box/overall/network-policy (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/network-policy (fetched 2026-11-14; no version pin on the site).
 - `allowedDomains` supports exact matches (`api.github.com`) and wildcard `*.suffix` form (`*.githubusercontent.com`)
 - In `custom` mode, `deniedCidrs` takes precedence over allowed CIDRs
+- `allowedDomains` must be lowercase; `*.github.com` does not match `github.com` itself
+- A `custom` policy with only `deniedCidrs` blocks everything; a resolved IP in a denied range is blocked even when its domain is allowed
+- A box restored from a snapshot does not inherit the source box's policy: pass `networkPolicy` again on restore
 - Private IP ranges are always blocked, even if explicitly allowed
-- `updateNetworkPolicy()` applies immediately without requiring box recreation; `networkPolicy` is also supported in `Box.fromSnapshot()` and `EphemeralBox`
+- `updateNetworkPolicy()` applies immediately without requiring box recreation; `networkPolicy` is also supported in `Box.fromSnapshot()` and `EphemeralBox` (`updateNetworkPolicy()` is not available on `EphemeralBox`)
 
 ## Related
 

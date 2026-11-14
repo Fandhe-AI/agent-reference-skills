@@ -49,4 +49,5 @@ QSTASH_NEXT_SIGNING_KEY=...
 - `publishJSON()` serializes `body` as JSON and sets `Content-Type: application/json` automatically
 - `verifySignatureAppRouter` rejects requests that do not carry a valid QStash signature, preventing unauthorized invocations
 - QStash retries failed deliveries with exponential backoff; design the handler to be idempotent
+- `Client.fromEnv()` (`@upstash/qstash` 2.12.1+) reads `QSTASH_TOKEN` / `QSTASH_URL` from the environment; `devMode: true` / `QSTASH_DEV=true` runs a local dev server for development
 - Set `delay` or `notBefore` in `publishJSON` options to schedule deferred execution

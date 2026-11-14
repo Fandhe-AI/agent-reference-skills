@@ -75,8 +75,8 @@ stream = await box.agent.stream({
 - The system prompt is set when the conversation starts and stays for the rest of it
 - Before production: identify users from your auth session (the box name decides whose files the agent reaches); protect thread routes (`InMemoryAgentRunner` records no owner); persist chat history outside server memory; one conversation per user (thread ID is not sent to the box)
 - Troubleshooting: `BoxAgent` not assignable to `AbstractAgent` (`@ag-ui/client` version mismatch); permission denied (agent writes only under `/workspace/home`); `Box cannot start a run in its current state` (one prompt at a time); no tool cards with OpenCode (text only); box limit reached (delete boxes or upgrade plan)
-- The install line keeps the guide's tested pin `@upstash/box@0.7.7` verbatim; other Box pages in this skill reference `@upstash/box` 0.7.9 (npm latest as of 2026-10-17).
-- Source: https://upstash.com/docs/box/guides/copilotkit (fetched 2026-10-17; no version pin on the site).
+- The install line keeps the guide's tested pin `@upstash/box@0.7.7` verbatim; the current `@upstash/box` release is 0.8.0 (release notes checked 2026-11-14), so the guide's pin is older than the latest.
+- Source: https://upstash.com/docs/box/guides/copilotkit (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 

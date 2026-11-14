@@ -140,7 +140,7 @@ go test ./...
 - Go reports normal output-name conflicts (a main package in `./server` cannot produce `./server`); use an explicit `-o` command override.
 - Affectedness: source changes affect the owning module and internal dependents; `go.mod` / `go.work` changes trigger rediscovery; `go.sum` / `go.work.sum` changes invalidate resolution. `--affected`, dependency filters, `^task`, `turbo query`, and `turbo watch` use the same relationships.
 - Prune rewrites `go.work` with deterministic explicit members, preserves `go`, `toolchain`, and applicable replacement directives, and copies `go.work.sum` plus retained module directories.
-- Source: turborepo v2.11.8 docs, https://turborepo.dev/docs/guides/tools/go
+- Source: turborepo v2.11.11 docs, https://turborepo.dev/docs/guides/tools/go
 
 ## Related
 

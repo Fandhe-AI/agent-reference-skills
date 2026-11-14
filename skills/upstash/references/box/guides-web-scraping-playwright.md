@@ -121,7 +121,7 @@ await box.delete() // when done with the target site
 - Validate the harvest on every run (row count, non-empty fields, price format); when it fails the layout changed, so recompile the recipe with one `extract` call
 - A browser box has nothing to install, so there is no setup to snapshot; keep the box id to preserve cached recipes, cookies, and logged-in sessions. The box pauses when idle and bills until deleted
 - The official install line omits `dotenv`, which the examples import via `dotenv/config` (or run with `node --env-file=.env`)
-- Source: https://upstash.com/docs/box/guides/web-scraping-playwright (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/guides/web-scraping-playwright (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 

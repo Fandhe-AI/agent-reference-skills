@@ -45,10 +45,19 @@ await redis.sdiffstore("dest", "set1", "set2")
 await redis.smove("src", "dst", "member")
 ```
 
+```ts
+const [newCursor, fields] = await redis.sscan("key", 0, { match: "a*"});
+```
+
 ## Notes
 
 - Sets do not preserve insertion order; use Sorted Sets for ordered unique collections
 - `SRANDMEMBER` with a negative count may return duplicate members
+
+### Additional commands (official TypeScript SDK command pages)
+
+- `SSCAN key cursor { match, count }`: returns `[newCursor, members]`; a returned cursor of `0` means the iteration is complete
+- Source: https://upstash.com/docs/redis/sdks/ts/commands/set/sscan (fetched 2026-11-14; no version pin on the site)
 
 ## Related
 

@@ -55,3 +55,4 @@ QSTASH_NEXT_SIGNING_KEY=...
 - `context.sleep("label", "1d")` suspends execution without holding a server connection; supports units `s`, `m`, `h`, `d`
 - `serve()` returns a Next.js App Router handler; equivalent adapters exist for Cloudflare Workers and other runtimes
 - `workflowRunId` can be used to query or cancel the run via the Upstash console or API
+- Since `@upstash/workflow` 1.5.0 a single step can override the run's retries and flow control via the third argument of `context.run()` (see the `context.run()` reference page)

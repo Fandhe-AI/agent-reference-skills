@@ -46,7 +46,7 @@ Query / header parameters (all optional):
 ## Notes
 
 - This endpoint is optional; it enables cache hit/miss analytics that implementers can use to track cache effectiveness and optimize storage.
-- Source: https://turborepo.dev/docs/openapi/artifacts/record-events (spec `apps/docs/lib/remote-cache-openapi.json`, vercel/turborepo tag v2.11.8).
+- Source: https://turborepo.dev/docs/openapi/artifacts/record-events (spec `apps/docs/lib/remote-cache-openapi.json`, vercel/turborepo tag v2.11.11).
 
 ## Related
 

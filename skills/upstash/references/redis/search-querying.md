@@ -35,7 +35,7 @@ SEARCH.QUERY products '{"inStock": true}' ORDERBY rating DESC LIMIT 5
 | Option (TS / CLI) | Description | Default / Constraints |
 |-------------------|-------------|-----------------------|
 | `limit` / `LIMIT` | Number of results to return | 10; between 1 and 1000 |
-| `offset` / `OFFSET` | Number of results to skip | 0; non-negative |
+| `offset` / `OFFSET` | Number of results to skip | 0; between 0 and 10,000 |
 | `orderBy` / `ORDERBY field ASC\|DESC` | Sort by a FAST field | score then reflects the sort field value |
 | `select` / `SELECT n field...` | Return only listed fields; `select: {}` / `NOCONTENT` returns keys and scores only | all content |
 | `scoreFunc` / `SCOREFUNC` | Adjust relevance using numeric FAST field values | cannot be combined with `ORDERBY` |
@@ -78,14 +78,21 @@ await products.query({
 - `LIMIT` and `OFFSET` are separate keywords, unlike RediSearch's `LIMIT <offset> <count>`; `LIMIT 0 10` returns an error.
 - Only `.fast()` fields can be used for sorting; only `.fast()` fields of type `i64` / `u64` / `f64` can be used with score functions.
 - Highlighting only works for operators that resolve to terms (term or phrase queries).
+- There is no separate limit on the length of a filter or on its nesting depth; a query is bounded only by the plan's maximum request size (10 MB on the free plan).
+- Hybrid search: retrievers add semantic search to queries. `$ann` searches `HYBRID` fields by meaning and `$rrf` merges several retrievers into one list (since `@upstash/redis` 1.41.0); `ORDERBY` is not supported with retrievers, `SCOREFUNC` only changes the full-text part of `$rrf`, and `HIGHLIGHT` works with `$rrf` but not with `$ann` at the root. See the Hybrid Search and Retrievers pages.
+- `$mustNot` alone (or inside `$should`) matches every document it does not exclude, with score `0` (changed October 2026; previously it matched nothing).
+- Score function and `ORDERBY` examples from the official page: `scoreFunc: "popularity"`, `scoreFunc: { field: "popularity", modifier: "log1p", factor: 2.0 }`, `scoreFunc: { field: "rating", scoreMode: "replace" }` (Python `score_func=...`); `MISSING * FACTOR` is the contribution when both the field value and `MISSING` are invalid for the modifier.
+- Python SDK: `index.query(filter=..., order_by={"price": "ASC"}, select={"name": True}, highlight={"fields": [...], "preTag": "!!", "postTag": "**"}, score_func=...)`.
 - With aliased fields: use the alias name in filters and `highlight`; use the actual document field name in `select`.
 - For stream indexes the key in results is the stream entry ID; for hash indexes content is all fields and values.
-- Source: https://upstash.com/docs/redis/search/querying (fetched 2026-10; no version pin on the site).
+- Source: https://upstash.com/docs/redis/search/querying (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 
 - [Redis Search: Query Operators](./search-query-operators.md)
 - [Redis Search: Schema Definition](./search-schema-definition.md)
 - [Redis Search: Index Management](./search-index-management.md)
+- [Redis Search: Field Operators](./search-field-operators.md)
+- [Redis Search: Retrievers](./search-retrievers.md)
 - [Redis Search: Aggregations](./search-aggregations.md)
 - [Redis Search: Searchable Streams](./search-streams.md)
