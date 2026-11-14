@@ -1,44 +1,44 @@
 # Templates
 
-Vercel テンプレートの検索・要件確認・デプロイ（GitHub リポジトリ作成 + プロジェクト作成）・中断後の再開
+Search Vercel templates, check requirements, deploy (create a GitHub repository + create a project), and resume after an interruption
 
-ローカルにサンプルプロジェクトを作るだけなら `vercel init`（[setup.md](./setup.md) 参照）。`vercel templates` は GitHub に新しいリポジトリを作り、テンプレートのプロジェクトをデプロイする。検索結果にはファイアウォールやルーティングのルールなど CLI でデプロイできない種別も含まれる（`inspect` で可否と理由を確認する）。
+To just create a sample project locally, use `vercel init` (see [setup.md](./setup.md)). `vercel templates` creates a new repository on GitHub and deploys the template's projects. Search results also include types that cannot be deployed from the CLI, such as firewall and routing rules (check feasibility and the reason with `inspect`).
 
 ## Signature / Usage
 
-### テンプレートの検索
+### Searching templates
 
-名前・説明で検索し、`--framework` / `--type` で絞り込む。結果はスラッグ・名前・フレームワーク・デプロイ可否の表で、標準出力が端末でない場合はタブ区切り（ヘッダー行付き）になる。`--limit` はデフォルト 20（100 を超える値は 100 に丸められる）。
+Search by name and description, and filter with `--framework` / `--type`. Results are a table of slug, name, framework, and deployability; when stdout is not a terminal, output is tab-separated (with a header row). `--limit` defaults to 20 (values over 100 are rounded down to 100).
 
 ```sh
 vercel templates search "AI chatbot" --framework next.js --limit 10
 ```
 
-### 要件の確認
+### Checking requirements
 
-テンプレートのスラッグまたはテンプレート ID を渡し、デプロイ前に必要な環境変数・Marketplace リソース・Blob ストア・接続を確認する。`--json` は README（`overview`）と各プロジェクトのビルド・インストールコマンドも含む。
+Pass a template slug or template ID to check the environment variables, Marketplace resources, Blob stores, and connections required before deploying. `--json` also includes the README (`overview`) and each project's build and install commands.
 
 ```sh
 vercel templates inspect nextjs-boilerplate --json
 ```
 
-### テンプレートのデプロイ
+### Deploying a template
 
-事前に GitHub アカウントを Vercel に接続し、デプロイ先アカウントに Vercel GitHub App をインストールしておく。`acme` を GitHub のアカウントまたは組織、`your-team` を Vercel のチームスラッグに置き換える。デフォルトで private リポジトリを作成し（`--public` で公開）、新しいプロジェクトの初回デプロイは production に行われる。
+Beforehand, connect your GitHub account to Vercel and install the Vercel GitHub App on the target account. Replace `acme` with your GitHub account or organization and `your-team` with your Vercel team slug. By default a private repository is created (use `--public` to make it public), and the first deployment of a new project goes to production.
 
 ```sh
 vercel templates deploy nextjs-boilerplate --repo acme/my-site --scope your-team
 ```
 
-対話形式でデプロイ先リポジトリや接続（Vercel Connect を必要とするテンプレートなど）を選ぶ。
+Choose the destination repository and connections interactively (e.g. for templates that require Vercel Connect).
 
 ```sh
 vercel templates deploy eve-memory-agent
 ```
 
-### 設定ファイルによる入力
+### Input via a config file
 
-`--config` に JSON ファイルを渡し、プロジェクト名・リソース選択・環境変数の参照を指定する。キー名は `vercel templates inspect <template-slug> --json` の出力に合わせる。次の `template-inputs.json` は、`starter` プロジェクトと `products-0` の Marketplace リソースを持つテンプレートを前提にした例（キーと環境変数名はテンプレートに合わせて調整する）。
+Pass a JSON file with `--config` to specify project names, resource selections, and environment variable references. Match the key names to the output of `vercel templates inspect <template-slug> --json`. The following `template-inputs.json` is an example for a template with a `starter` project and a `products-0` Marketplace resource (adjust the keys and environment variable names to the template).
 
 ```json
 {
@@ -63,11 +63,11 @@ vercel templates deploy eve-memory-agent
 }
 ```
 
-シークレットはコマンド引数に書かず、環境変数またはファイルから読ませる。
+Do not write secrets in command arguments; read them from environment variables or files.
 
-### 非対話実行
+### Non-interactive execution
 
-必要な入力をすべて渡し、`--yes` で作成を確定する（`--yes` はプロバイダーの認可や法的条件への同意の代わりにはならない）。`eve-inputs.json` で認可済みコネクタと private Blob ストアを指定した例。
+Pass all required inputs and confirm creation with `--yes` (`--yes` does not replace provider authorization or agreement to legal terms). Example with an authorized connector and a private Blob store specified in `eve-inputs.json`.
 
 ```sh
 vercel templates deploy eve-memory-agent \
@@ -77,11 +77,11 @@ vercel templates deploy eve-memory-agent \
   --prod --yes --non-interactive --json
 ```
 
-終了コードは `0` が成功、`1` が運用上の失敗・不正な設定・必要なセットアップ（`reason` / `message` / `data` は標準エラー出力の JSON）、`2` が引数不正・必須入力の欠落、`130` がプロンプトのキャンセル。
+Exit codes: `0` is success, `1` is an operational failure, invalid configuration, or required setup (`reason` / `message` / `data` are JSON on stderr), `2` is invalid arguments or missing required input, and `130` is a cancelled prompt.
 
-### 中断後の再開
+### Resuming after an interruption
 
-デプロイが途中で止まった場合、CLI が実行 ID・チーム・設定のパスを含む再開コマンドを表示する（JSON エラーでは `next`）。表示されたセットアップ手順を完了してから実行する。
+If a deployment stops midway, the CLI prints a resume command containing the run ID, team, and config path (`next` in JSON errors). Complete the setup steps shown before running it.
 
 ```sh
 vercel templates deploy eve-memory-agent \
@@ -89,7 +89,7 @@ vercel templates deploy eve-memory-agent \
   --scope your-team --config eve-inputs.json --yes
 ```
 
-リクエストが受領確認なしでタイムアウトした場合は、保留中の操作を確認したうえで元の設定に `reconcile` エントリを追加して再開する（`project:eve-memory-agent` は例。確認済みのリソース ID を `receipt` に入れる）。
+If a request times out without an acknowledgment, check the pending operation, then resume with a `reconcile` entry added to the original config (`project:eve-memory-agent` is an example; put the confirmed resource ID in `receipt`).
 
 ```json
 {
@@ -103,4 +103,4 @@ vercel templates deploy eve-memory-agent \
 ## Notes
 
 - Source: https://vercel.com/docs/cli/templates (fetched 2026-11-14)
-- 不確実な作成操作を新しい実行として再試行しない。再開は同じ実行 ID を使う。
+- Do not retry an uncertain create operation as a new run. Resume uses the same run ID.

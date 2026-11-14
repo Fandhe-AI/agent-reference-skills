@@ -1,80 +1,80 @@
 # Drains
 
-Drains（ログ・トレース・Web Analytics・Speed Insights を外部エンドポイントへ転送）の一覧・作成・更新・一時停止・削除
+List, create, update, pause, and delete Drains (forward logs, traces, Web Analytics, and Speed Insights to external endpoints)
 
-`vercel login` またはトークンで認証し、現在のチームを使う（別のチームは `--scope`）。サブコマンドなしの `vercel drains` は一覧表示。全サブコマンドが `--json` に対応する。`<drain>` には `list` で表示された drain ID を渡す。
+Authenticate with `vercel login` or a token; the current team is used (use `--scope` for another team). `vercel drains` without a subcommand lists drains. All subcommands support `--json`. Pass the drain ID shown by `list` as `<drain>`.
 
 ## Signature / Usage
 
-### 一覧
+### Listing
 
 ```sh
 vercel drains
 vercel drains list --scope my-team
 ```
 
-プロジェクトで絞り込み、JSON 形式で出力（`drains` と `pagination`）。
+Filter by project and output as JSON (`drains` and `pagination`).
 
 ```sh
 vercel drains list --project my-app --json
 ```
 
-次のページを取得（`pagination.next` のカーソルを `--next` に渡す。最後のページでは `null`）。
+Fetch the next page (pass the `pagination.next` cursor to `--next`; it is `null` on the last page).
 
 ```sh
 vercel drains list --limit 10 --json
 vercel drains list --limit 10 --next your_next_cursor_here --json
 ```
 
-### 詳細確認
+### Inspecting details
 
-テキスト出力はエンドポイントのホストのみ表示（パスとクエリは `--show-full-url`）。JSON 出力にはクレデンシャルを含みうる完全な URL が入る（署名シークレットは含まれず、配信ヘッダー値はマスクされる）。
+Text output shows only the endpoint host (use `--show-full-url` for the path and query). JSON output includes the full URL, which may contain credentials (the signing secret is not included, and delivery header values are masked).
 
 ```sh
 vercel drains inspect drn_example
 vercel drains inspect drn_example --json
 ```
 
-### 作成
+### Creating
 
-カスタム HTTP エンドポイント向けに作成。`--name` / `--type` / `--url` が必須。`--type` は `logs` / `traces` / `analytics` / `speed-insights`、`--encoding` のデフォルトは `json`（`logs` / `analytics` / `speed-insights` は `json` / `ndjson`、`traces` は `json` / `proto`）。
+Create for a custom HTTP endpoint. `--name` / `--type` / `--url` are required. `--type` is `logs` / `traces` / `analytics` / `speed-insights`; `--encoding` defaults to `json` (`json` / `ndjson` for `logs` / `analytics` / `speed-insights`, `json` / `proto` for `traces`).
 
 ```sh
 vercel drains create --name app-logs --type logs --url https://example.com/drain
 ```
 
-プロジェクト・環境・ソースで絞り込み（`--environment` と `--source` はログのみ）。
+Filter by project, environment, and source (`--environment` and `--source` apply to logs only).
 
 ```sh
 vercel drains create --name production-logs --type logs --url https://example.com/drain --project my-app,my-api --environment production --source lambda
 ```
 
-トレースの 10% を Protobuf エンコードで OTLP HTTP エンドポイントへ送信。
+Send 10% of traces to an OTLP HTTP endpoint with Protobuf encoding.
 
 ```sh
 vercel drains create --name app-traces --type traces --url https://example.com/v1/traces --encoding proto --sample-rate 10
 ```
 
-署名シークレット（`x-vercel-signature` ヘッダー用）は `--secret` で渡す。`-` を指定すると stdin から読むため、コマンドライン引数に残さずに済む。配信ヘッダーは `--header "Name: value"`（繰り返し可）。エンドポイントの認証と署名は [securing drains](https://vercel.com/docs/drains/security) を参照。
+Pass the signing secret (for the `x-vercel-signature` header) with `--secret`. Specifying `-` reads it from stdin, so it does not remain in command-line arguments. Delivery headers use `--header "Name: value"` (repeatable). For endpoint authentication and signing, see [securing drains](https://vercel.com/docs/drains/security).
 
-### 更新
+### Updating
 
-drain ID と変更するオプションを 1 つ以上渡す（`--type` 以外の作成オプションが使える。`--header` / `--project` / `--source` / `--environment` は追加ではなく置き換え）。
+Pass the drain ID and at least one option to change (creation options other than `--type` can be used; `--header` / `--project` / `--source` / `--environment` replace the existing values rather than adding to them).
 
 ```sh
 vercel drains update drn_example --url https://example.com/new-drain
 vercel drains update drn_example --sample-rate 100
 ```
 
-全プロジェクトのデータを再び送る（`--project` とは併用不可）。
+Send data for all projects again (cannot be combined with `--project`).
 
 ```sh
 vercel drains update drn_example --all
 ```
 
-### 一時停止・再開
+### Pausing and resuming
 
-一時停止中に生成されたデータは送信されず、再開しても取り戻せない。`pause` は確認を求めるため、スクリプトや `--json` では `--yes`（`-y`）を付ける。`resume` は確認不要。
+Data generated while paused is not sent and cannot be recovered after resuming. `pause` asks for confirmation, so add `--yes` (`-y`) in scripts or with `--json`. `resume` needs no confirmation.
 
 ```sh
 vercel drains pause drn_example
@@ -85,15 +85,15 @@ vercel drains resume drn_example
 vercel drains pause drn_example --yes --json
 ```
 
-### 削除
+### Deleting
 
-> **警告**: 削除は永続的で、取り消せない。
+> **Warning**: Deletion is permanent and cannot be undone.
 
 ```sh
 vercel drains delete drn_example
 ```
 
-スクリプトや JSON 出力では `--yes`（`-y`）で確認を省略する。
+In scripts or with JSON output, skip confirmation with `--yes` (`-y`).
 
 ```sh
 vercel drains delete drn_example --yes --json
@@ -102,4 +102,4 @@ vercel drains delete drn_example --yes --json
 ## Notes
 
 - Source: https://vercel.com/docs/cli/drains (fetched 2026-11-14)
-- `create` が不明な結果で失敗した場合は、再試行前に `vercel drains list` で既に作成されていないか確認する。
+- If `create` fails with an unknown result, check with `vercel drains list` that it was not already created before retrying.

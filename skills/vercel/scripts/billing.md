@@ -1,132 +1,132 @@
 # Billing
 
-チームの請求まわり（billing overview / invoices / budgets / contract / usage）の確認・Spend Management 予算の管理
+View a team's billing (billing overview / invoices / budgets / contract / usage) and manage Spend Management budgets
 
-`vercel billing` をサブコマンドなしで実行するとサブコマンド一覧を表示する。オプションはサブコマンドの前後どちらにも置ける（例: `vercel billing --json budgets alerts`）。
+Running `vercel billing` without a subcommand lists the subcommands. Options can go before or after the subcommand (e.g. `vercel billing --json budgets alerts`).
 
 ## Signature / Usage
 
-### プラン・残高の概要（overview）
+### Plan and balance overview (overview)
 
-プラン・請求ステータス・請求サイクル・未払い残高・期限超過の請求書を表示（`vercel@65.15.0` 以降）。請求書へのアクセス権がない場合は `Balance Due` / `Overdue` が出ず警告のみ表示される（終了コードは 0）。
+Shows the plan, billing status, billing cycle, balance due, and overdue invoices (`vercel@65.15.0` or later). Without access to invoices, `Balance Due` / `Overdue` are not shown and only a warning is printed (exit code 0).
 
 ```sh
 vercel billing overview
 ```
 
-JSON 形式で出力（アクセス権がない場合は `billing.balance` が `null`）。
+Output as JSON (`billing.balance` is `null` without invoice access).
 
 ```sh
 vercel billing overview --json
 ```
 
-### 請求書の確認（invoices）
+### Viewing invoices (invoices)
 
-新しい順に一覧表示（サブコマンドなしの `vercel billing invoices` も同じ）。デフォルトのステータスは `open` / `paid` / `uncollectible`、表示件数は 20（最大 100）。
+Lists newest first (`vercel billing invoices` without a subcommand is equivalent). Default statuses are `open` / `paid` / `uncollectible`; default page size is 20 (max 100).
 
 ```sh
 vercel billing invoices list --limit 3
 ```
 
-ステータスで絞り込み（繰り返し指定可: `draft` / `open` / `paid` / `uncollectible` / `void`）。
+Filter by status (repeatable: `draft` / `open` / `paid` / `uncollectible` / `void`).
 
 ```sh
 vercel billing invoices list --status open --status uncollectible
 ```
 
-次のページを取得（`<NEXT_CURSOR>` は前ページの出力のカーソルに置き換える。`--status` との併用は不可）。
+Fetch the next page (replace `<NEXT_CURSOR>` with the cursor from the previous page's output; cannot be combined with `--status`).
 
 ```sh
 vercel billing invoices list --limit 3 --next <NEXT_CURSOR>
 ```
 
-請求書の詳細・明細を表示。`<INVOICE_ID>` は `list` で表示された完全な請求書 ID に置き換える。
+Show invoice details and line items. Replace `<INVOICE_ID>` with the full invoice ID shown by `list`.
 
 ```sh
 vercel billing invoices inspect <INVOICE_ID>
 ```
 
-次回請求書の見積もりを表示（`vercel@65.10.0` 以降。金額は請求期間の終了まで変動する。表示は最大 5 明細で、全件は `--json`）。
+Show an estimate of the upcoming invoice (`vercel@65.10.0` or later; amounts change until the end of the billing period; at most 5 line items are shown, use `--json` for all).
 
 ```sh
 vercel billing invoices upcoming
 ```
 
-請求書を PDF で保存（既存ファイルは上書きされない。`-o -` で標準出力へ出力）。
+Save an invoice as a PDF (existing files are not overwritten; `-o -` writes to stdout).
 
 ```sh
 vercel billing invoices download <INVOICE_ID> --output invoice.pdf
 ```
 
-### 使用量・コスト（usage）
+### Usage and cost (usage)
 
-Vercel CLI 65.11.0 以降。旧名 `vercel usage` は動作するが非推奨警告が出る。
+Vercel CLI 65.11.0 or later. The old name `vercel usage` still works but prints a deprecation warning.
 
 ```sh
 vercel billing usage
 ```
 
-期間を指定（`--since` は `YYYY-MM-DD`・ISO 8601・相対期間、`--until` には `--since` が必要）。
+Specify a period (`--since` accepts `YYYY-MM-DD`, ISO 8601, or a relative period; `--until` requires `--since`).
 
 ```sh
 vercel billing usage --since 2025-01-01 --until 2025-01-31
 ```
 
-日別・週別・月別の内訳（`daily` / `weekly` / `monthly`。最大 1 年）。
+Daily, weekly, or monthly breakdown (`daily` / `weekly` / `monthly`; up to 1 year).
 
 ```sh
 vercel billing usage --since 2025-01-01 --until 2025-01-31 --breakdown weekly
 ```
 
-プロジェクトまたはリージョン別に集計（`project` / `region`。`--breakdown` とは併用不可）。
+Aggregate by project or region (`project` / `region`; cannot be combined with `--breakdown`).
 
 ```sh
 vercel billing usage --group-by project
 ```
 
-JSON 形式で出力（旧 `--format json` は非推奨）。
+Output as JSON (the old `--format json` is deprecated).
 
 ```sh
 vercel billing usage --json
 ```
 
-### 契約コミットメントの確認（contract）
+### Viewing contract commitments (contract)
 
-Enterprise 契約のコミットメントを契約 ID ごとの表で表示する（他のプランでは表示するコミットメントがない）。
+Shows Enterprise contract commitments in a table per contract ID (other plans have no commitments to show).
 
 ```sh
 vercel billing contract
 ```
 
-JSON 形式で出力（`context` / `commitments` / `totalCommitments`）。
+Output as JSON (`context` / `commitments` / `totalCommitments`).
 
 ```sh
 vercel billing contract --json
 ```
 
-### Spend Management 予算（budgets）
+### Spend Management budgets (budgets)
 
-詳細は [budgets のページ](https://vercel.com/docs/cli/budgets) を参照。予算の変更には Owner または Billing ロールが必要。対象は無指定でチーム、`--project <name or ID>`（`-p`）でプロジェクト、`--product <name or ID>` でプロダクト、`--organization <slug or ID>` で組織。
+See [the budgets page](https://vercel.com/docs/cli/budgets) for details. Changing budgets requires the Owner or Billing role. The target is the team by default, `--project <name or ID>` (`-p`) for a project, `--product <name or ID>` for a product, or `--organization <slug or ID>` for an organization.
 
-予算の一覧（サブコマンドなしの `vercel billing budgets` も同じ）。
+List budgets (`vercel billing budgets` without a subcommand is equivalent).
 
 ```sh
 vercel billing budgets list
 ```
 
-今サイクルの支出を予算と照らして表示。
+Show this cycle's spend against the budget.
 
 ```sh
 vercel billing budgets inspect --project my-app
 ```
 
-予算を作成・更新（作成時は `--amount`（ドル）が必須。`--pause` で上限到達時に本番デプロイを一時停止、`--webhook <url>` でしきい値到達時に HTTPS POST）。
+Create or update a budget (`--amount` (in dollars) is required on create; `--pause` pauses production deployments when the limit is reached; `--webhook <url>` sends an HTTPS POST when a threshold is reached).
 
 ```sh
 vercel billing budgets set --amount 200 --pause --webhook https://example.com/spend
 ```
 
-プロジェクト・プロダクト・組織の予算を設定（プロダクト・組織の予算は一時停止できず、通知と webhook のみ）。
+Set budgets for a project, product, or organization (product and organization budgets cannot pause; they only notify and call webhooks).
 
 ```sh
 vercel billing budgets set --project my-app --amount 100 --pause
@@ -134,17 +134,17 @@ vercel billing budgets set --product "Fast Data Transfer" --amount 50
 vercel billing budgets set --organization my-org --amount 10000
 ```
 
-> **注記**: webhook を追加した `set` は webhook のシークレットを一度だけ表示する。表示時に保管し、ログや CI 出力に残さない。
+> **Note**: `set` with a webhook shows the webhook secret only once. Store it when shown, and do not leave it in logs or CI output.
 
-予算の削除（スクリプトでは確認を省略する `--yes` が必要）。
+Remove a budget (scripts need `--yes` to skip confirmation).
 
-> **警告**: 削除した予算の通知・一時停止は設定されなくなる。削除済み予算のアラート履歴は `alerts` に残る。
+> **Warning**: A removed budget no longer sends notifications or pauses deployments. Alert history for removed budgets remains in `alerts`.
 
 ```sh
 vercel billing budgets remove --project my-app --yes
 ```
 
-アラート履歴を新しい順に表示（`--since` / `--until` は ISO 8601 または `7d` 等の相対時間、`--limit` は 1〜100）。
+Show alert history, newest first (`--since` / `--until` take ISO 8601 or relative times such as `7d`; `--limit` is 1 to 100).
 
 ```sh
 vercel billing budgets alerts --since 7d --limit 20
