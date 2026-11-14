@@ -1,6 +1,6 @@
 # Folders
 
-Endpoints for listing team folders, subfolders, files within a folder, and lightweight folder metadata.
+Endpoints for listing team folders, subfolders, files within a folder, lightweight folder metadata, and (Enterprise, private OAuth apps) creating a top-level team folder.
 
 ## Signature / Usage
 
@@ -79,6 +79,34 @@ X-Figma-Token: <token>
 
 **Error Codes:** 403, 404, 429 (rate-limited)
 
+---
+
+### POST team folder
+
+`POST /v1/teams/:team_id/folders` — Creates a top-level folder in a team. The team must belong to the Enterprise plan associated with the private OAuth app, and the authenticated user must be allowed to create a folder in the team.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `team_id` | String (path) | The ID of the team in which to create the folder |
+| `name` | String (body) | The name of the folder |
+| `sharing_audience_control` | String (body) | The audience that can access the folder: `plan_view`, `plan_edit`, `invite_only`, `workspace_view`, or `workspace_edit`. Workspace audiences require the specified team to belong to a workspace |
+
+**Scope:** `folders:write` | **Rate Limit:** Tier 2. Available only to private OAuth apps associated with an Enterprise plan.
+
+**Return value:** the created Folder, including `sharing_audience_control` and `created_at`.
+
+**Error Codes:** 400, 401, 403 (no permission to create the folder), 404, 429, 500
+
+### Folder type
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | String | The ID of the folder |
+| `name` | String | The name of the folder |
+| `parent_folder_id` | String | The ID of the parent folder, or null for a top-level folder in the team |
+| `sharing_audience_control` | String | `plan_view`, `plan_edit`, `invite_only`, `workspace_view`, or `workspace_edit` |
+| `created_at` | String | The UTC ISO 8601 timestamp at which the folder was created |
+
 ## Notes
 
 - Endpoints requiring the `folders:read` scope cannot be used with public OAuth apps. GET folder metadata (`folder_metadata:read`) is available to all OAuth apps.
@@ -86,11 +114,14 @@ X-Figma-Token: <token>
 - Use GET folder subfolders to traverse below the top-level folders returned by GET team folders.
 - GET folder metadata is the v2 replacement for the project metadata endpoint. `thumbnail_url` may be null if the folder has no files.
 - Paths use `/v2/`, unlike the `/v1/` Projects endpoints.
-- Source: https://developers.figma.com/docs/rest-api/folders-endpoints/ (fetched 2026-10-17)
+- `POST /v1/teams/:team_id/folders` uses `/v1/` and was added 2026-10-22; the list/metadata endpoints above use `/v2/`.
+- Source: https://developers.figma.com/docs/rest-api/folders-endpoints/ (fetched 2026-11-14)
+- Source: https://developers.figma.com/docs/rest-api/folders-types/ (fetched 2026-11-14)
 
 ## Related
 
 - [Projects](./projects.md)
+- [Teams](./teams.md)
 - [Files](./files.md)
 - [Scopes](./scopes.md)
 - [Rate Limits](./rate-limits.md)

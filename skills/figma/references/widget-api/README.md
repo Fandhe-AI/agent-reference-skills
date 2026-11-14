@@ -5,6 +5,7 @@
 | Overview | Component-based Widget API: components, functions, hooks; destructuring pattern | [overview.md](./overview.md) |
 | Manifest | `manifest.json` fields: name, widgetApi, main, documentAccess, editorType, networkAccess | [manifest.md](./manifest.md) |
 | Setup Guide | tsconfig.json, jsxFactory, project structure, development workflow | [setup-guide.md](./setup-guide.md) |
+| Making Network Requests | Fetch API in widgets, testing network access, `networkAccess` allowedDomains in the manifest | [making-network-requests.md](./making-network-requests.md) |
 | How Widgets Run | Execution model: sync rendering vs async state-update code, lifecycle | [how-widgets-run.md](./how-widgets-run.md) |
 | Widget State & Multiplayer | useSyncedState vs useSyncedMap for concurrent multi-user scenarios | [widget-state-and-multiplayer.md](./widget-state-and-multiplayer.md) |
 | Figma and FigJam Widgets | editorType, editor differences, FigJam-only features | [figma-figjam-widgets.md](./figma-figjam-widgets.md) |

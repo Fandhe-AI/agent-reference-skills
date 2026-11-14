@@ -164,7 +164,8 @@ npx figma connect migrate [options]
 - Use `--exit-on-unreadable-files` in CI/CD pipelines to catch configuration errors early
 - v2.0.0 (2026-08-18) and later: framework-specific parser files can only be used by `migrate` and `unpublish`; other commands exit with guidance to migrate to template files. Use `npm install --save-dev @figma/code-connect@1` to keep the parser
 - v2.0.2 (2026-10-14): `publish` sends preflight validation failure counts to Figma (set `DO_NOT_TRACK=1` to disable); network failures show the underlying reason (timeout, connection error), and `--verbose` prints the stack trace; `create` always generates a parserless template; `preview --output json` includes each connection's source file; `migrate` leaves existing template files unchanged and reports success when nothing needs migrating
-- Source for version notes: https://github.com/figma/code-connect/blob/v2.0.2/CHANGELOG.md
+- v2.1.0 (2026-10-26): the interactive setup wizard was removed; running `figma connect` with no command now shows the available commands. The changelog recommends the `figma-code-connect` skill (included in the Figma plugin for AI coding agents) as its replacement. Parser rejection errors now list matched files that were not recognized as templates (and explain separately when no files matched the configuration), and CLI network requests identify the package and installed version
+- Source for version notes: https://github.com/figma/code-connect/blob/v2.1.0/CHANGELOG.md (fetched 2026-11-14; v2.0.2 entries are in the same file)
 - v1.5.0: `--delete` for `migrate`, `preview --inspect` / `--props` / `--all` / `--max-combinations`
 
 ## Related

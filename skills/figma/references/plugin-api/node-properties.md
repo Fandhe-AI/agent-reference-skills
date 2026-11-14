@@ -57,6 +57,8 @@ const raw = node.getPluginData('key')
 | `absoluteRenderBounds` | `Rect \| null` (readonly) | Bounding box including effects |
 | `constraints` | `Constraints` | Resize constraints within parent frame |
 | `constrainProportions` | `boolean` | Lock aspect ratio |
+| `transform3d` | `Transform3d` | (beta, Update 142) 3D transform; default `{ type: 'NONE' }`. Assign a new `FIXED_ORDER` object to update it; assigning `FREEFORM` throws. See Notes |
+| `transformOrigin` | `TransformOrigin` | (beta, Update 142) Origin of the 3D transform, like CSS `transform-origin`; default 50% / 50% |
 
 #### Auto-layout child properties
 
@@ -160,6 +162,15 @@ const raw = node.getPluginData('key')
 - `absoluteBoundingBox` is axis-aligned (ignores rotation); `absoluteRenderBounds` includes effects like drop shadows.
 - `pluginData` values are always strings; serialize objects with `JSON.stringify`.
 - Prefer async style-setting methods (`setFillStyleIdAsync`, `setEffectStyleIdAsync`, etc.) over synchronous setters for compatibility with `documentAccess: "dynamic-page"`.
+
+### 3D transforms (Update 142, beta)
+
+- 3D transforms are available in beta and the API is subject to change. `transform3d` and `transformOrigin` are supported on BooleanOperationNode, ComponentNode, EllipseNode, FrameNode, GroupNode, HighlightNode, InstanceNode, LineNode, PolygonNode, RectangleNode, SlideNode, SlotNode, StampNode, StarNode, TextNode, TextPathNode, TransformGroupNode, VectorNode, and WashiTapeNode. Types are in [data-types](./data-types.md); perspective is configured on a container with `scene3d` ([FrameNode](./node-frame.md)).
+- A 3D transform changes how the layer looks on the canvas; it does not change layout size or `relativeTransform`.
+- Motion keyframes: `applyManualKeyframeTrack` accepts the property names `TRANSFORM_3D_TRANSLATION_Z`, `TRANSFORM_3D_ROTATION_X`, `TRANSFORM_3D_ROTATION_Y`, `TRANSFORM_3D_ROTATION_Z` (pixels / degrees) and `SCENE_3D_PERSPECTIVE` (pixels; keyframe and base values must be nonnegative). 3D tracks require a `FIXED_ORDER` transform; imported `FREEFORM` transforms cannot be keyframed. Timeline positions are in seconds.
+- Source: https://developers.figma.com/docs/plugins/api/properties/nodes-transform3d/ (fetched 2026-11-14)
+- Source: https://developers.figma.com/docs/plugins/api/properties/nodes-transformorigin/ (fetched 2026-11-14)
+- Source: https://developers.figma.com/docs/plugins/api/Motion/ (fetched 2026-11-14)
 
 ## Related
 
