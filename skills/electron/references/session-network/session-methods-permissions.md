@@ -84,17 +84,22 @@ Sets the handler which can be used to respond to permission requests for the `se
 
 Both `media` and `display-capture` requests carry a MediaAccessPermissionRequest as `details`. A `media` request is for camera and/or microphone devices, while a `display-capture` request is for the screen, a window or a tab (whether made through `getDisplayMedia` or through `getUserMedia` with `chromeMediaSource` constraints). Applications that allow camera and microphone access but want to control screen sharing separately should handle the two permissions individually:
 
+Adapted (not in the official docs): the official example grants every `media` request unconditionally; this version checks `details.requestingUrl` against an origin allowlist.
+
 ```js
 const { session } = require('electron')
 
+const allowedOrigins = new Set(['https://meet.example.com'])
+
 session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
+  const origin = new URL(details.requestingUrl).origin
   if (permission === 'media') {
     // Camera / microphone. `details.mediaTypes` lists which of them was requested.
-    return callback(true)
+    return callback(allowedOrigins.has(origin))
   }
   if (permission === 'display-capture') {
     // Screen, window or tab capture.
-    return callback(new URL(details.requestingUrl).origin === 'https://meet.example.com')
+    return callback(allowedOrigins.has(origin))
   }
   callback(false)
 })
@@ -414,6 +419,7 @@ app.whenReady().then(() => {
 ## Notes
 
 * Adapted (not in the official docs): the official example grants every permission except notifications from one host and checks webContents.getURL(), which does not identify subframe requesters; this page checks details.requestingUrl and grants only allowlisted origin/permission pairs, denying everything else.
+* Adapted from the official docs: the `media` / `display-capture` example grants a request only when `new URL(details.requestingUrl).origin` is in an allowlist (the official v45 example returns `callback(true)` for every `media` request, which would expose the camera and microphone to any page or untrusted iframe loaded in the default session).
 * Implement both `setPermissionRequestHandler` and `setPermissionCheckHandler` for complete permission handling; most web APIs do a check and then a request if the check is denied.
 * Migration: `setDevicePermissionHandler` — the handler is no longer passed a `WebFrameMain` frame but the `origin` checking for device permission ([breaking-changes-v22-v15](../breaking-changes/breaking-changes-v22-v15.md)). `setPermissionCheckHandler` — the first parameter `webContents` can now sometimes be `null`; use `requestingOrigin`, `embeddingOrigin` and `securityOrigin` instead ([breaking-changes-v14-v2](../breaking-changes/breaking-changes-v14-v2.md)). Cross-origin iframes must specify features via the `allow` attribute (Permission Policy, Electron 30.0; [breaking-changes-v30-v29](../breaking-changes/breaking-changes-v30-v29.md)).
 * Adapted (not in the official docs): the official example compares `vendorId` / `productId` to number literals in the serial branch, but `SerialPort.vendorId` / `productId` are strings, so it is changed to string comparison.
