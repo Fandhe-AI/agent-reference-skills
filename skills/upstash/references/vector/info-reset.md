@@ -53,9 +53,11 @@ await index.reset({ all: true });
 
 ## Notes
 
+- REST `GET /info` also returns `indexType` (`DENSE`, `SPARSE` or `HYBRID`) and, per index kind, `denseIndex` / `sparseIndex` configuration objects; `dimension` and `similarityFunction` describe the dense component. Info is updated eventually, so changes may take some time to show
 - `pendingVectorCount` reflects vectors that have been upserted but are not yet available for querying (eventual consistency)
 - `reset` is irreversible — all vectors and metadata in the targeted scope are permanently deleted
 - Pass no arguments to `reset()` to clear the default namespace only
+- Source: https://upstash.com/docs/vector/api/endpoints/info (fetched 2026-11-14; no version pin on the site)
 
 ## Related
 

@@ -75,7 +75,9 @@ Index methods shown: `search.createIndex()`, `search.index()`, `index.query()`, 
 - `search.index()` returns a client for an existing index without making a Redis call. Any key matching the index prefix is indexed automatically.
 - Index updates are batched; call `waitIndexing()` when queries must reflect recent writes.
 - This is a client-library choice, distinct from the `@upstash/redis` REST client covered in the TypeScript SDK page.
-- Source: https://upstash.com/docs/redis/search/adapters/node-redis and https://upstash.com/docs/redis/search/adapters/ioredis (fetched 2026-10; no version pin on the site).
+- Versions: `@upstash/search-redis` and `@upstash/search-ioredis` are at 5.0.0 (release notes checked 2026-11-14). The two adapter pages in the official docs (fetched 2026-11-14) do not mention `s.hybrid()` or retrievers; they only state that the adapter exposes the same search API as `@upstash/redis`, so confirm hybrid support against the 5.0.0 package before relying on it
+- Source: https://upstash.com/docs/redis/search/adapters/node-redis and https://upstash.com/docs/redis/search/adapters/ioredis (fetched 2026-11-14; no version pin on the site).
+- Source: https://github.com/upstash/redis-js/releases (adapter 5.0.0 release notes, checked 2026-11-14)
 
 ## Related
 

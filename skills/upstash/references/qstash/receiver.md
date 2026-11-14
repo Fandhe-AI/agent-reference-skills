@@ -55,6 +55,7 @@ export const POST = verifySignatureAppRouter(handler);
 
 ## Notes
 
+- `devMode: true` on `Receiver` / `verifySignature*` verifies with the local dev server's keys (see local-development.md); since `@upstash/qstash` 2.12.1 the h3 / svelte / solid helpers also respect dev mode
 - Always pass the **raw body string**; re-serializing a parsed object may break the SHA-256 body hash check
 - JWT claims verified: `iss === "Upstash"`, `sub === url`, `exp` / `nbf` timestamps, `body` SHA-256 hash
 - JWT lifetime defaults to 5 minutes (`exp` - `iat`)

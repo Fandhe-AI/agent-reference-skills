@@ -56,3 +56,4 @@ UPSTASH_BOX_API_KEY=abx_...
 - Running a language not matching the box's `runtime` (e.g. `lang: "python"` on a `runtime: "node"` box) fails—create the box with the matching runtime for that language
 - `exitCode` is `0` on success and non-zero on a thrown error; `result` contains stdout on success or the stack trace on failure
 - Unlike `box.agent.run()`, `exec.code()` has no agent/model cost—use it for deterministic scripted transformations rather than open-ended tasks
+- `box.exec.code()` needs only the Box API key; no model provider key is involved, so the 0.8.0 agent API key requirement (`agent API key is required`) does not apply (Source: https://upstash.com/docs/box/overall/agent, fetched 2026-11-14; no version pin on the site)

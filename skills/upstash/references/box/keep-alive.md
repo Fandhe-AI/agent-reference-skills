@@ -35,9 +35,9 @@ box = Box.create(
 
 | Size | CPU | Memory | Storage |
 |------|-----|--------|---------|
-| `small` | 2 vCPU | 4 GB | 5 GB |
-| `medium` | 4 vCPU | 8 GB | 10 GB |
-| `large` | 8 vCPU | 16 GB | 20 GB |
+| `small` | 2 vCPU | 4 GB | 10 GB |
+| `medium` | 4 vCPU | 8 GB | 20 GB |
+| `large` | 8 vCPU | 16 GB | 30 GB |
 
 ## Notes
 
@@ -45,7 +45,9 @@ box = Box.create(
 - Init command is a startup script the box runs once each time its container starts. It is not a keep-alive feature: every box can have one, and get/set/delete work on any box, including a paused one
 - Console: enable Keep alive and choose Size at creation; manage the Init Command later from the box settings page
 - Avoid keep-alive when you only need a reusable workspace; default lifecycle plus Snapshots is usually enough
-- Source: https://upstash.com/docs/box/overall/keep-alive (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/keep-alive (fetched 2026-11-14; no version pin on the site).
+- Keep-alive boxes require a paid plan; on the free plan creating a box with `keepAlive: true` fails with a `403` error
+- Init commands are not a keep-alive feature: every box can have one, and get / set / delete work on any box including a paused one
 
 ## Related
 

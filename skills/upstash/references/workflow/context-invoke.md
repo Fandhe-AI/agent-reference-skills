@@ -48,6 +48,8 @@ const parentWorkflow = createWorkflow(async (context) => {
 ## Notes
 
 - Workflows can only invoke other workflows served together in the same `serveMany` definition
+- `retryDelay` / `flowControl` / `retries` configure the invoked workflow run (docs default for `retries`: 3 with exponential backoff)
+- Source: https://upstash.com/docs/workflow/steps/invoke (fetched 2026-11-14; no version pin on the site)
 - Use `createWorkflow()` (not `serve()`) for workflows intended to be invoked
 - Migration (0.x → 1.0.0): `stringifyBody` removed; `body` must be a string, e.g. `body: JSON.stringify({ key: "value" })`
 

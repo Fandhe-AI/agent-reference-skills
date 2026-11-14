@@ -99,11 +99,11 @@ data: {"output":"Hello","input_tokens":10,"output_tokens":4,"total_cost_usd":0.0
 
 ## Notes
 
-- Custom agents do not use managed provider keys; pass secrets through `env` on `Box.create()` or configure them inside the box
+- Custom agents do not use the built-in agent `apiKey` (Upstash provides no model keys since `@upstash/box` 0.8.0); pass secrets through `env` on `Box.create()` or configure them inside the box
 - The command must be a binary name from `PATH` or an absolute path under `/workspace/home/` or `/home/boxuser/`; it runs as `boxuser` inside the existing sandbox
 - `configureCustomHarness` only works for boxes created with `agent.harness: Agent.Custom`
 - Ready-to-run examples for Pi, Gemini, Copilot CLI, Aider, Goose, Amp, CrewAI, Pydantic AI are summarized in the Custom Harness Examples page
-- Source: https://upstash.com/docs/box/overall/custom-agent (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/custom-agent (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 

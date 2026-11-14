@@ -54,6 +54,9 @@ const results = await index.namespace("my-namespace").fetch(["id-1"]);
 
 - Returns an array ordered to match the input `ids`; missing IDs produce `null` at that position
 - For large prefix-based scans, prefer `range` with a `prefix` filter (stateless pagination)
+- Fetching by ID prefix returns at most `1000` vectors; if there are more, use `range` with a prefix
+- REST: `GET https://{endpoint}/fetch/{namespace}`; `includeMetadata`, `includeVectors` and `includeData` default to `false`
+- Source: https://upstash.com/docs/vector/api/endpoints/fetch (fetched 2026-11-14; no version pin on the site)
 
 ## Related
 

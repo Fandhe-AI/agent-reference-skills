@@ -55,6 +55,7 @@ await index.upsert({
 - Upsert semantics: existing vectors with the same ID are overwritten
 - Maximum 1,000 non-zero dimensions per sparse vector
 - Namespaces are created implicitly on first upsert — no separate create step needed
+- Updating an existing vector in place (vector / data / metadata, with metadata patching) is covered in `update.md`
 
 ## Related
 

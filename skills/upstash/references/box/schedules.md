@@ -62,7 +62,8 @@ box.schedule.delete(schedules[0].id)
 
 ## Notes
 
-- Source: https://upstash.com/docs/box/overall/schedules (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/schedules (fetched 2026-11-14; no version pin on the site).
+- `box-cli` 0.4.0 adds `--effort <level>` to `box run`, `box schedule agent`, and `box schedule update` (Source: https://github.com/upstash/box/releases, release notes checked 2026-11-14)
 - `list()` returns all non-deleted schedules; `get(id)`, `pause(id)`, `resume(id)`, `delete(id)` operate on a single schedule
 - Standard 5-field cron syntax in UTC, e.g. `0 9 * * 1-5` for weekday mornings at 9 AM
 

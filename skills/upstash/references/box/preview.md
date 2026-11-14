@@ -51,7 +51,7 @@ box.delete_public_url(3000)
 - The SDK still supports `getPreviewUrl`, `listPreviews`, `deletePreview` as deprecated aliases of `getPublicURL`, `listPublicURLs`, `deletePublicURL`
 - Not available on EphemeralBox
 - The docs print token / password for illustration; do not log them in real code
-- Source: https://upstash.com/docs/box/overall/preview (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/preview (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 

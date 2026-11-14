@@ -30,10 +30,10 @@ print(page.title)
 
 ## Notes
 
-- Source: https://upstash.com/docs/box/overall/browser/overview (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/browser/overview (fetched 2026-11-14; no version pin on the site).
 - The browser can only be provisioned at box creation; it cannot be enabled on an existing box — create a new box with `browser: true` instead
 - `box.browser` manages the browser itself (opening/listing tabs, recordings, the CDP endpoint); page-level operations live on a `Tab` handle returned by `tab.create`, `listTabs`, or `getTab`, addressed by its CDP target id so it stays valid across navigations
-- AI-powered operations (`extract`, `observe`, `act`, `run`) use an LLM and are metered; they need a provider API key (Anthropic, OpenAI, OpenRouter, Vercel, or OpenCode) on the box or account
+- AI-powered operations (`extract`, `observe`, `act`) use an LLM and are metered; they need a provider API key (Anthropic, OpenAI, OpenRouter, Vercel, OpenCode, Bedrock, or Neon) on the box or account; Cursor models are not supported
 - Everything is headless — no desktop, no VNC, nothing to install; also viewable/controllable from the **Browser** tab in the Upstash Console
 
 ## Related
