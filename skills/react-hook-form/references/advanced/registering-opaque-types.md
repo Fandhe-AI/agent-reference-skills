@@ -1,42 +1,140 @@
-# Registering Opaque Types
+# Opaque types
 
-Advanced Usage: https://react-hook-form.com/advanced-usage#RegisteringOpaqueTypes
+Advanced Usage: https://react-hook-form.com/advanced-usage/opaque-types
 
-Forms often store richer values than plain strings and numbers — a date picker backed by [Day.js](https://day.js.org/)'s `Dayjs`, a price field backed by [Decimal.js](https://mikemcl.github.io/decimal.js/)'s `Decimal`, or a range backed by Luxon's `DateTime`. React Hook Form's type helpers (`Path`, `DeepPartial`, `FieldErrors`, and others) walk every property of `TFieldValues` to build up field-path inference, and by default that walk recurses into those classes too — their internal properties, getters, and methods included.
+Treat rich values such as Dayjs or Decimal as single fields in TypeScript.
 
-For a small form this is harmless. For a large form, or one nested a few levels deep, that extra recursion can be expensive enough to slow down editor type-checking, and in the worst case trip TypeScript's "Type instantiation is excessively deep and possibly infinite" diagnostic.
+Forms often hold richer values than strings and numbers: a date backed by [Day.js](https://day.js.org/)'s `Dayjs`, a price backed by [Decimal.js](https://mikemcl.github.io/decimal.js/)'s `Decimal`, or a Luxon `DateTime`. React Hook Form's type helpers, such as `Path`, `DeepPartial`, and `FieldErrors`, walk every property of your form type to infer field paths. By default, that walk also goes into those classes: their internal properties and every method.
 
 ## Signature / Usage
 
-Register `Dayjs` as an opaque type once, in a `.d.ts` file that's part of your program (or any file the module augmentation can reach):
+### The problem
+
+Given this form type:
 
 ```tsx
 import type { Dayjs } from "dayjs"
+import type Decimal from "decimal.js"
+
+type BookingValues = {
+  guest: { name: string }
+  stay: { checkIn: Dayjs; checkOut: Dayjs }
+  deposit: Decimal
+}
+```
+
+`Path<BookingValues>` accepts `"stay.checkIn.year"` and `"deposit.d"`, which are a Dayjs method and a Decimal internal. Those are never real form fields. Each class adds dozens of paths, and in a large or deeply nested form the extra recursion slows down editor type-checking. In the worst case, TypeScript reports "Type instantiation is excessively deep and possibly infinite".
+
+### Register the types once
+
+Add the classes to the `OpaqueTypes` interface with declaration merging, in a `.d.ts` file that is part of your TypeScript program:
+
+```tsx
+// react-hook-form.d.ts
+import type { Dayjs } from "dayjs"
+import type Decimal from "decimal.js"
 
 declare module "react-hook-form" {
   interface OpaqueTypes {
     dayjs: Dayjs
+    decimal: Decimal
   }
 }
 ```
 
-With that in place, `stay.checkIn` and `stay.checkOut` are treated as single leaf values — the same way `Date` already is — instead of objects to traverse:
+The keys (`dayjs`, `decimal`) are only labels. The registration is global, so it applies to every form in the project. `Date`, `File`, and `FileList` are already treated as single values and don't need registering.
+
+### What changes
+
+With the registration in place, `Path<BookingValues>` is exactly `"guest" | "guest.name" | "stay" | "stay.checkIn" | "stay.checkOut" | "deposit"`. Errors for these fields are typed as one `FieldError`, so `errors.stay?.checkOut?.message` works as for any other field.
+
+Registration changes types only. At runtime, React Hook Form already stores class instances by reference, without copying or walking into them, so `handleSubmit` receives the same `Dayjs` and `Decimal` objects you set.
+
+### Use the values in a form
+
+Rich values usually come from a controlled component such as a date picker, so connect them with [`Controller`](https://react-hook-form.com/docs/usecontroller/controller) or [`useController`](https://react-hook-form.com/docs/usecontroller). Validation functions receive the instance, so you can use its methods directly:
 
 ```tsx
-const { register, control } = useForm<BookingForm>()
+import dayjs, { type Dayjs } from "dayjs"
+import Decimal from "decimal.js"
+import { Controller, useForm } from "react-hook-form"
 
-// "stay.checkIn" and "stay.checkOut" are valid, fully-inferred field
-// paths; TypeScript no longer descends into Dayjs's own properties
-// to compute them.
-register("stay.checkIn")
-register("guest.address.city")
+type BookingValues = {
+  guest: { name: string }
+  stay: { checkIn: Dayjs; checkOut: Dayjs }
+  deposit: Decimal
+}
+
+export default function BookingForm({
+  onSubmit,
+}: {
+  onSubmit: (values: BookingValues) => void
+}) {
+  const today = dayjs().startOf("day")
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<BookingValues>({
+    defaultValues: {
+      guest: { name: "" },
+      stay: { checkIn: today, checkOut: today.add(1, "day") },
+      deposit: new Decimal("0"),
+    },
+  })
+
+  return (
+    <form noValidate onSubmit={handleSubmit(onSubmit)}>
+      <label htmlFor="name">Name</label>
+      <input
+        id="name"
+        {...register("guest.name", { required: "Enter a name." })}
+      />
+
+      <Controller
+        control={control}
+        name="stay.checkOut"
+        rules={{
+          validate: (checkOut, values) =>
+            checkOut.isAfter(values.stay.checkIn) ||
+            "Check-out must be after check-in.",
+        }}
+        render={({ field }) => (
+          <>
+            <label htmlFor="checkOut">Check-out</label>
+            <input
+              id="checkOut"
+              type="date"
+              ref={field.ref}
+              name={field.name}
+              onBlur={field.onBlur}
+              value={field.value.format("YYYY-MM-DD")}
+              onChange={(event) => field.onChange(dayjs(event.target.value))}
+            />
+          </>
+        )}
+      />
+      {errors.stay?.checkOut && (
+        <p role="alert">{errors.stay.checkOut.message}</p>
+      )}
+
+      <button type="submit">Book</button>
+    </form>
+  )
+}
 ```
+
+Before sending the values to a server, convert them to a wire format, for example `checkOut.format("YYYY-MM-DD")` and `deposit.toString()`. `JSON.stringify` does not preserve class instances.
 
 ## Notes
 
-- The registration is global to your project (declaration merging on `OpaqueTypes` applies wherever `react-hook-form`'s types are used), so it only needs to happen once — typically alongside your other global type declarations — even if `Dayjs`, `Decimal`, or similar rich value types show up in many different forms.
-- See the `OpaqueTypes` TypeScript reference (https://react-hook-form.com/ts#OpaqueTypes) for the type definition and further details.
+- Source: https://react-hook-form.com/advanced-usage/opaque-types (documentation master c0511c9, fetched 2026-11-14)
+- Available since v7.87.0.
+- See the `OpaqueTypes` TypeScript reference (https://react-hook-form.com/ts#OpaqueTypes) for the type definition.
 
 ## Related
 
+- [controller](../api/controller.md)
+- [usecontroller](../api/usecontroller.md)
 - [useform](../api/useform.md)

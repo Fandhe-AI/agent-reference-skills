@@ -1,85 +1,233 @@
 # Smart Form Component
 
-Advanced Usage: https://react-hook-form.com/advanced-usage#SmartFormComponent
+Advanced Usage: https://react-hook-form.com/advanced-usage/smart-form-component
 
-The idea here is that you can easily compose your form using input components. We are going to create a `Form` component to automatically collect form data.
+Most forms in an app repeat the same structure: a `<form>` that calls `handleSubmit`, and fields that each render a label, an input, and an error message. Move that structure into components once, and each form becomes a short list of fields.
+
+The challenge is keeping the components type-safe. A generic `<TextField name="..." />` accepts any string, so a typo in a field name only shows up at runtime. The pattern below creates components bound to one form type, so TypeScript checks every `name`.
 
 ## Signature / Usage
 
-```javascript
-import { Form, Input, Select } from "./Components"
+### A typed form factory
 
-export default function App() {
-  const onSubmit = (data) => console.log(data)
+`createForm<T>()` returns a set of components that know your form's values type. `Form` creates the form and provides it through [`FormProvider`](../api/formprovider.md), and each field reads it with [`useFormContext`](../api/useformcontext.md):
 
-  return (
-    <Form onSubmit={onSubmit}>
-      <Input name="firstName" />
-      <Input name="lastName" />
-      <Select name="gender" options={["female", "male", "other"]} />
+```tsx
+// create-form.tsx
+import type { ReactNode } from "react"
+import {
+  FormProvider,
+  get,
+  useForm,
+  useFormContext,
+  useFormState,
+  type DefaultValues,
+  type FieldError,
+  type FieldPath,
+  type FieldValues,
+  type RegisterOptions,
+  type Resolver,
+  type SubmitHandler,
+} from "react-hook-form"
 
-      {/* not routed through the custom Input — it has no `name`, so `Form` won't inject `register` for it */}
-      <input type="submit" value="Submit" />
-    </Form>
-  )
+export function createForm<T extends FieldValues>() {
+  function Form({
+    defaultValues,
+    resolver,
+    onSubmit,
+    children,
+  }: {
+    defaultValues: DefaultValues<T>
+    resolver?: Resolver<T>
+    onSubmit: SubmitHandler<T>
+    children: ReactNode
+  }) {
+    const methods = useForm<T>({ defaultValues, resolver })
+
+    return (
+      <FormProvider {...methods}>
+        <form noValidate onSubmit={methods.handleSubmit(onSubmit)}>
+          {children}
+        </form>
+      </FormProvider>
+    )
+  }
+
+  // Subscribes to one field's error, so a new error re-renders only that field.
+  function useFieldError(name: FieldPath<T>) {
+    const { errors } = useFormState<T>({ name })
+    return get(errors, name) as FieldError | undefined
+  }
+
+  function TextField({
+    name,
+    label,
+    type = "text",
+    rules,
+  }: {
+    name: FieldPath<T>
+    label: string
+    type?: "text" | "email" | "password" | "tel" | "url"
+    rules?: RegisterOptions<T, FieldPath<T>>
+  }) {
+    const { register } = useFormContext<T>()
+    const error = useFieldError(name)
+
+    return (
+      <div>
+        <label htmlFor={name}>{label}</label>
+        <input
+          id={name}
+          type={type}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${name}-error` : undefined}
+          {...register(name, rules)}
+        />
+        {error?.message && (
+          <p id={`${name}-error`} role="alert">
+            {error.message}
+          </p>
+        )}
+      </div>
+    )
+  }
+
+  function SelectField({
+    name,
+    label,
+    options,
+    rules,
+  }: {
+    name: FieldPath<T>
+    label: string
+    options: readonly { value: string; label: string }[]
+    rules?: RegisterOptions<T, FieldPath<T>>
+  }) {
+    const { register } = useFormContext<T>()
+    const error = useFieldError(name)
+
+    return (
+      <div>
+        <label htmlFor={name}>{label}</label>
+        <select
+          id={name}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${name}-error` : undefined}
+          {...register(name, rules)}
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        {error?.message && (
+          <p id={`${name}-error`} role="alert">
+            {error.message}
+          </p>
+        )}
+      </div>
+    )
+  }
+
+  function SubmitButton({ children }: { children: ReactNode }) {
+    const { isSubmitting } = useFormState<T>()
+    return (
+      <button type="submit" disabled={isSubmitting}>
+        {children}
+      </button>
+    )
+  }
+
+  return { Form, TextField, SelectField, SubmitButton }
 }
 ```
 
-`Form`: The `Form` component's responsibility is to inject all `react-hook-form` methods into the child component.
+### Using it
 
-```javascript
-import { Children, createElement, isValidElement } from "react"
-import { useForm } from "react-hook-form"
+```tsx
+import { createForm } from "./create-form"
 
-export default function Form({ defaultValues, children, onSubmit }) {
-  const methods = useForm({ defaultValues })
-  const { handleSubmit } = methods
+type SignupValues = {
+  firstName: string
+  email: string
+  plan: "free" | "pro"
+}
 
+// Create the components once, outside any component.
+const Signup = createForm<SignupValues>()
+
+export default function SignupForm({
+  onSubmit,
+}: {
+  onSubmit: (values: SignupValues) => Promise<void>
+}) {
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {Children.map(children, (child) => {
-        return isValidElement(child) && child.props.name
-          ? createElement(child.type, {
-              ...{
-                ...child.props,
-                register: methods.register,
-                key: child.props.name,
-              },
-            })
-          : child
-      })}
-    </form>
+    <Signup.Form
+      defaultValues={{ firstName: "", email: "", plan: "free" }}
+      onSubmit={onSubmit}
+    >
+      <Signup.TextField
+        name="firstName"
+        label="First name"
+        rules={{ required: "Enter your first name." }}
+      />
+      <Signup.TextField
+        name="email"
+        label="Email"
+        type="email"
+        rules={{ required: "Enter your email address." }}
+      />
+      <Signup.SelectField
+        name="plan"
+        label="Plan"
+        options={[
+          { value: "free", label: "Free" },
+          { value: "pro", label: "Pro" },
+        ]}
+      />
+      <Signup.SubmitButton>Create account</Signup.SubmitButton>
+    </Signup.Form>
   )
 }
+
+// @ts-expect-error "emial" is not a field of SignupValues.
+export const typo = <Signup.TextField name="emial" label="Email" />
 ```
 
-`Input` / `Select`: The responsibility of these input components is to register themselves with `react-hook-form`.
+How it fits together:
 
-```javascript
-export function Input({ register, name, ...rest }) {
-  return <input {...register(name)} {...rest} />
-}
+- `name` is typed as `FieldPath<SignupValues>`, so `"emial"` is a type error.
+- Fields can be nested anywhere inside `Signup.Form`, in your own layout components, because they read the form from context.
+- Each field calls `useFormState({ name })`, so a new error re-renders only that field, not the whole form.
+- `SubmitButton` subscribes only to `isSubmitting`.
+- Every field renders a label, `aria-invalid`, and a linked error message, so each form gets [accessible errors](./accessibility.md) for free.
 
-export function Select({ register, options, name, ...rest }) {
-  return (
-    <select {...register(name)} {...rest}>
-      {options.map((value) => (
-        <option key={value} value={value}>
-          {value}
-        </option>
-      ))}
-    </select>
-  )
-}
-```
+Call `createForm` at module level, not inside a component. Calling it during render would create new component types on every render, and React would remount every field.
+
+### Extending it
+
+- **Controlled components**: add a field that calls [`useController`](../api/usecontroller.md), such as a date picker or the star rating in [Controlled and uncontrolled inputs](./controlled-mixed-uncontrolled.md).
+- **Schema validation**: pass `resolver={zodResolver(schema)}` to `Form`, and leave out `rules`.
+- **Access to the methods**: add a `useForm` hook to the factory that returns `useFormContext<T>()`, as in [Connect form](./connect-form.md).
+- **Your design system**: replace the plain elements with your own input components. Forward the `ref` from `register` to the native input so focus on error works.
+
+### Why not clone children?
+
+An older version of this pattern had `Form` loop over its children with `React.Children.map` and inject `register` into any child with a `name` prop. Avoid it:
+
+- It only reaches direct children. A field inside a `<div>` or a layout component is skipped.
+- `name` is an untyped string, and the injected props are invisible to TypeScript.
+- Cloning elements is fragile, and the React docs [recommend alternatives](https://react.dev/reference/react/cloneElement#alternatives).
+
+Context, as above, reaches fields at any depth and keeps them typed.
 
 ## Notes
 
-- With the `Form` component injecting `react-hook-form`'s `props` into the child component, you can easily create and compose complex forms in your app.
-- A child element without `name` does not receive an injected `register`.
-- Adapted from the official example: an `isValidElement` guard is added so that null / boolean / string children (e.g. `{show && <Input />}`) are passed through instead of throwing.
+- Source: https://react-hook-form.com/advanced-usage/smart-form-component (documentation master c0511c9, fetched 2026-11-14)
 
 ## Related
 
-- [useform-register](../api/useform-register.md)
+- [formprovider](../api/formprovider.md)
+- [useformcontext](../api/useformcontext.md)
 - [connect-form](./connect-form.md)

@@ -1,0 +1,181 @@
+# Handling Server Errors
+
+Advanced Usage: https://react-hook-form.com/advanced-usage/server-errors
+
+Client validation gives quick feedback, but only the server knows whether a username is taken or a request succeeded, and the server must validate every submission anyway. React Hook Form shows server errors through the same `errors` object as client errors, using [`setError`](../api/useform-seterror.md).
+
+## Signature / Usage
+
+### Where each error goes
+
+| The server says…                                    | Show it with                                                          |
+| --------------------------------------------------- | --------------------------------------------------------------------- |
+| A specific field is invalid ("username taken")      | `setError("username", { type: "server", message })`                   |
+| The request failed for a reason not tied to a field | `setError("root.server", { type: "500", message })`                   |
+| The network request itself failed                   | `setError("root.server", ...)` with a "check your connection" message |
+| The save succeeded                                  | Your own success state, such as a status message                      |
+
+`root` errors don't belong to any input. Use any key under `root`, such as `root.server` or `root.payment`.
+
+### How long server errors stay
+
+- A **field error** stays until that field is validated again. Editing the field clears it, and editing other fields does not.
+- A **`root` error** stays until the user submits again.
+- Server errors do not block submission. `handleSubmit` re-validates with your client rules, so the user can retry without changing anything.
+
+### A reusable helper
+
+Map field errors from the server only onto fields the form knows about, and focus the first one so keyboard and screen reader users land on the problem:
+
+```tsx
+// apply-server-errors.ts
+import type { FieldPath, FieldValues, UseFormSetError } from "react-hook-form"
+
+// Applies field errors from the server to known fields, focusing the first.
+// Returns the names it applied, so the caller can handle the rest.
+export function applyServerErrors<T extends FieldValues>(
+  setError: UseFormSetError<T>,
+  fieldErrors: Record<string, string | undefined>,
+  fields: readonly FieldPath<T>[]
+): FieldPath<T>[] {
+  const applied = fields.filter((name) => fieldErrors[name])
+  applied.forEach((name, index) =>
+    setError(
+      name,
+      { type: "server", message: fieldErrors[name] },
+      { shouldFocus: index === 0 }
+    )
+  )
+  return applied
+}
+```
+
+`fields` is checked against your form type, so a renamed field is a type error. Unknown keys in the response are ignored instead of creating errors no input displays.
+
+### Example
+
+This form expects `PUT /api/profile` to return HTTP 200 when saved, or HTTP 422 with `{ "fieldErrors": { "username": "That username is taken." } }`. Any other status shows a general message, using the server's `message` when it sends one.
+
+```tsx
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { applyServerErrors } from "./apply-server-errors"
+
+type ProfileValues = { username: string; email: string }
+
+// The API contract: 200 on success, 422 with field messages on validation failure.
+type ErrorResponse = { fieldErrors?: Record<string, string>; message?: string }
+
+const fields = ["username", "email"] as const
+
+export default function ProfileForm() {
+  const [saved, setSaved] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<ProfileValues>({ defaultValues: { username: "", email: "" } })
+
+  const onSubmit = async (values: ProfileValues) => {
+    setSaved(false)
+    let response: Response
+    try {
+      response = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      })
+    } catch {
+      setError("root.server", {
+        type: "network",
+        message:
+          "You appear to be offline. Check your connection and try again.",
+      })
+      return
+    }
+
+    if (response.ok) {
+      setSaved(true)
+      return
+    }
+
+    const body: ErrorResponse = await response.json().catch(() => ({}))
+    if (response.status === 422 && body.fieldErrors) {
+      const applied = applyServerErrors(setError, body.fieldErrors, fields)
+      if (applied.length === Object.keys(body.fieldErrors).length) return
+    }
+    setError("root.server", {
+      type: String(response.status),
+      message:
+        body.message ?? "We couldn't save your profile. Please try again.",
+    })
+  }
+
+  return (
+    <form noValidate onSubmit={handleSubmit(onSubmit)}>
+      <label htmlFor="username">Username</label>
+      <input
+        id="username"
+        aria-invalid={!!errors.username}
+        aria-describedby={errors.username ? "username-error" : undefined}
+        {...register("username", { required: "Enter a username." })}
+      />
+      {errors.username && (
+        <p id="username-error" role="alert">
+          {errors.username.message}
+        </p>
+      )}
+
+      <label htmlFor="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        aria-invalid={!!errors.email}
+        aria-describedby={errors.email ? "email-error" : undefined}
+        {...register("email", { required: "Enter your email address." })}
+      />
+      {errors.email && (
+        <p id="email-error" role="alert">
+          {errors.email.message}
+        </p>
+      )}
+
+      {errors.root?.server && <p role="alert">{errors.root.server.message}</p>}
+      {saved && <p role="status">Profile saved.</p>}
+
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Saving…" : "Save profile"}
+      </button>
+    </form>
+  )
+}
+```
+
+How it fits together:
+
+- `await` the request inside the submit handler, so `isSubmitting` stays `true` and the button stays disabled until the response arrives.
+- `fetch` only rejects when the request can't be made. Check `response.ok` and the status yourself.
+- When the response contains a field the form doesn't have, the helper skips it and the form falls back to a general error, so the user is never left without feedback.
+- `shouldFocus` needs the input's `ref`, so keep the input enabled and the ref attached.
+
+## Notes
+
+- Source: https://react-hook-form.com/advanced-usage/server-errors (documentation master c0511c9, fetched 2026-11-14)
+- Caveat on the official example (verbatim): when the response has an empty `fieldErrors` object the helper returns without showing anything; fall back to `root.server` (for example with `body.message`) unless at least one field error was applied.
+- Server errors use the same `errors` object as client errors; `root` errors do not belong to any input. For Next.js Server Action wiring beyond React Hook Form, see the nextjs-app skill.
+
+### Things to watch
+
+- **Validate on the server too.** Client rules can be bypassed. With a [schema resolver](../integrations/resolvers.md), share the same schema with the server, as in the [multi-step form example](./wizard-form.md).
+- **Don't show raw server messages.** Map technical errors to messages a user can act on. Never show stack traces or internal details.
+- **Server Actions.** With React 19 Server Actions, the same mapping applies to the action's return value. See [Server Actions](./server-actions.md).
+- **Accessibility.** Render `root` errors with `role="alert"` so they are announced. See [Accessibility](./accessibility.md).
+
+## Related
+
+- [useform-seterror](../api/useform-seterror.md)
+- [useform-handlesubmit](../api/useform-handlesubmit.md)
+- [server-actions](./server-actions.md)
+- [accessibility](./accessibility.md)
+- [resolvers](../integrations/resolvers.md)
