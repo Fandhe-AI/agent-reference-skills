@@ -67,4 +67,4 @@ except Exception as e:
 
 - Swift equivalent: the `Tool` protocol, see `../references/tools/tool.md`.
 - A tool needs `name`, `description`, an `arguments_schema` property, and an async `call(self, args)` method; arguments are read with `args.value(type, for_property=...)`.
-- Package `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`).
+- Package `apple-fm-sdk` 0.2.2 (GitHub tag `v0.2.2`).

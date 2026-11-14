@@ -1,10 +1,10 @@
 ---
-source: https://raw.githubusercontent.com/apple/python-apple-fm-sdk/v0.2.1/README.md, https://raw.githubusercontent.com/apple/python-apple-fm-sdk/v0.2.1/docs/source/getting_started.rst, https://raw.githubusercontent.com/apple/python-apple-fm-sdk/v0.2.1/docs/source/index.rst
+source: https://raw.githubusercontent.com/apple/python-apple-fm-sdk/v0.2.2/README.md, https://raw.githubusercontent.com/apple/python-apple-fm-sdk/v0.2.2/docs/source/getting_started.rst, https://raw.githubusercontent.com/apple/python-apple-fm-sdk/v0.2.2/docs/source/index.rst
 ---
 
 # python-sdk-install
 
-Install commands for the Foundation Models SDK for Python (`apple-fm-sdk` 0.2.1, GitHub tag `v0.2.1`). For the API itself, see `references/python-sdk/`.
+Install commands for the Foundation Models SDK for Python (`apple-fm-sdk` 0.2.2, GitHub tag `v0.2.2`). For the API itself, see `references/python-sdk/`.
 
 ## Requirements
 

@@ -20,7 +20,7 @@ Apple Intelligence の開発者向け API を扱うリファレンススキル�
 - Evaluations: 27.0+（Xcode 27.0+）
 - `Data*Representable`: Beta（iOS 27.2+）
 - `ImageCreator`: 27.0 で deprecated
-- Foundation Models SDK for Python: https://github.com/apple/python-apple-fm-sdk のタグ v0.2.1（https://github.com/apple/python-apple-fm-sdk/releases/tag/v0.2.1 、2026-06-29 リリース）。PyPI 最新 `apple-fm-sdk` 0.2.1（https://pypi.org/project/apple-fm-sdk/ ）と一致
+- Foundation Models SDK for Python: https://github.com/apple/python-apple-fm-sdk のタグ v0.2.2（https://github.com/apple/python-apple-fm-sdk/releases/tag/v0.2.2 、2026-11-11 リリース、commit 618da8f）。PyPI 最新 `apple-fm-sdk` 0.2.2（https://pypi.org/project/apple-fm-sdk/ ）と一致
 - `foundation-models-utilities` は beta タグのみのため未収録
 
 ## ディレクトリ構成

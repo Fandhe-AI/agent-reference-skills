@@ -1,5 +1,5 @@
 ---
-source: https://apple.github.io/python-apple-fm-sdk/api/tools.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.1/src/apple_fm_sdk/tool.py
+source: https://apple.github.io/python-apple-fm-sdk/api/tools.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.2/src/apple_fm_sdk/tool.py
 ---
 
 # Tool (Python)
@@ -73,7 +73,7 @@ session = LanguageModelSession(
 
 ## Notes
 
-- Package: `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`). Swift equivalent: Tool (see tools/tool.md). Unlike Swift, `call` takes a `GeneratedContent` and returns a `str`.
+- Package: `apple-fm-sdk` 0.2.2 (GitHub tag `v0.2.2`). Swift equivalent: Tool (see tools/tool.md). Unlike Swift, `call` takes a `GeneratedContent` and returns a `str`.
 - `call()` must be an async function (coroutine) even if it performs no async operations; the constructor raises `TypeError` otherwise. `name` and `description` must be strings and `arguments_schema` a `GenerationSchema`.
 - Exceptions raised in `call()` are caught and reported to the model as an error message (`Tool error: ...`), so the model can adapt its response. Raise descriptive exceptions. Non-string results are converted with `str()`.
 - Tool names should be descriptive and follow snake_case convention. Multiple tools can be registered with a single session.

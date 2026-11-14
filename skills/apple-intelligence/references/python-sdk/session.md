@@ -1,5 +1,5 @@
 ---
-source: https://apple.github.io/python-apple-fm-sdk/api/session.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.1/src/apple_fm_sdk/session.py
+source: https://apple.github.io/python-apple-fm-sdk/api/session.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.2/src/apple_fm_sdk/session.py
 ---
 
 # LanguageModelSession (Python)
@@ -73,12 +73,14 @@ response = await session.respond("What is a Swift?")
 
 ## Notes
 
-- Package: `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`). Swift equivalent: LanguageModelSession (see sessions/languagemodelsession.md).
+- Package: `apple-fm-sdk` 0.2.2 (GitHub tag `v0.2.2`). Swift equivalent: LanguageModelSession (see sessions/languagemodelsession.md).
 - The session is thread-safe for sequential requests but does not support concurrent requests. Sessions use an internal lock; concurrent `respond()` calls on the same session are serialized. To handle multiple requests simultaneously, create multiple session instances.
 - Only one of `generating`, `schema`, or `json_schema` can be specified. Passing both `generating` and `schema` raises `ValueError`, as does a `generating` type that is not a valid `Generable`.
 - `stream_response()` supports basic text responses only; for guided generation use `respond()`. The transcript is updated only after streaming completes. Breaking out of the `async for` loop early cleans up resources.
 - `respond()` raises `FoundationModelsError` if the response fails or times out, and `asyncio.CancelledError` if cancelled.
 - `from_transcript()`: tool mentions loaded from a Transcript are historical only. Pass tool instances in `tools` to let the model make new tool calls. The transcript already contains the session instructions, so they need not be passed again. The new session shares the transcript object with the original.
+- 0.2.2: `respond()` now forwards `options` (`GenerationOptions`) in every path, including `generating=` (type-constrained) responses; in 0.2.1 the `generating=` path did not pass them on to the schema-based call. 0.2.2 also releases the internal `ComposedPrompt` pointer in all `respond` paths (internal fix, no API change).
+- Source: https://github.com/apple/python-apple-fm-sdk/releases/tag/v0.2.2 ("Forward `GenerationOptions` in all `respond` paths (#22)", "Release `ComposedPrompt` pointer in all `respond` paths (#18)"), diff v0.2.1...v0.2.2 of `src/apple_fm_sdk/session.py` (retrieved 2026-11-14).
 - Prompt may be a string, an `Attachment`, or a list mixing the two (see attachment.md).
 
 ## Related

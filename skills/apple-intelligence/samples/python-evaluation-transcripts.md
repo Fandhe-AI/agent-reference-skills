@@ -1,5 +1,5 @@
 ---
-source: https://apple.github.io/python-apple-fm-sdk/evaluation.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.1/examples/transcript_processing.py
+source: https://apple.github.io/python-apple-fm-sdk/evaluation.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.2/examples/transcript_processing.py
 ---
 
 # Python Evaluation with Transcripts
@@ -93,4 +93,4 @@ def extract_text_from_contents(contents: List[Dict[str, Any]]) -> str:
 - The listings come from the evaluation guide and `examples/transcript_processing.py`; the example file also contains `analyze_transcript`, `compare_transcripts`, and `export_analysis_to_jsonl`, not reproduced here.
 - Each inference call is processed one at a time at the macOS hardware level, so large batch evaluations take time.
 - The guide's batch pattern passes `json_schema=` to `session.respond` for structured responses and compares against an `expected` value per test case.
-- Package `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`).
+- Package `apple-fm-sdk` 0.2.2 (GitHub tag `v0.2.2`).

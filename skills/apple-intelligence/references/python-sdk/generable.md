@@ -1,5 +1,5 @@
 ---
-source: https://apple.github.io/python-apple-fm-sdk/api/generable.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.1/src/apple_fm_sdk/generable_utils.py, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.1/src/apple_fm_sdk/generation_guide.py
+source: https://apple.github.io/python-apple-fm-sdk/api/generable.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.2/src/apple_fm_sdk/generable_utils.py, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.2/src/apple_fm_sdk/generation_guide.py
 ---
 
 # generable / guide / GenerationSchema (Python)
@@ -137,7 +137,7 @@ class GenerationSchema(_ManagedObject):
 
 ## Notes
 
-- Package: `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`). Swift equivalents: Generable and GenerationSchema (see structured-output/generable.md and structured-output/generation-schema.md); `guide()` mirrors Swift's `@Guide` (structured-output/guide-macro.md).
+- Package: `apple-fm-sdk` 0.2.2 (GitHub tag `v0.2.2`). Swift equivalents: Generable and GenerationSchema (see structured-output/generable.md and structured-output/generation-schema.md); `guide()` mirrors Swift's `@Guide` (structured-output/guide-macro.md).
 - `@generable` works without parentheses (`@fm.generable`), with empty parentheses, or with a description string. It applies `@dataclass` automatically if the class is not already a dataclass, adds `generation_schema()`, `ConvertibleFromGeneratedContent` / `ConvertibleToGeneratedContent` support, and creates a `PartiallyGenerated` inner class for streaming (all fields optional, default `None`, plus an `id`).
 - The class must have type-annotated fields; otherwise `GenerableDecoratorError` (a subclass of `InvalidGenerationSchemaError`) is raised. Mutable defaults need `field(default_factory=...)`; quote self-references in forward references.
 - Subclassing the `Generable` protocol directly raises `TypeError`; use `@fm.generable()` instead.

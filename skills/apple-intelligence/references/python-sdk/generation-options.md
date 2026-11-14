@@ -1,5 +1,5 @@
 ---
-source: https://apple.github.io/python-apple-fm-sdk/api/generation_options.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.1/src/apple_fm_sdk/generation_options.py
+source: https://apple.github.io/python-apple-fm-sdk/api/generation_options.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.2/src/apple_fm_sdk/generation_options.py
 ---
 
 # GenerationOptions (Python)
@@ -71,13 +71,14 @@ class SamplingMode:
 
 ## Notes
 
-- Package: `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`). Swift equivalent: GenerationOptions (see sessions/generation-options.md).
+- Package: `apple-fm-sdk` 0.2.2 (GitHub tag `v0.2.2`). Swift equivalent: GenerationOptions (see sessions/generation-options.md).
 - Only use `maximum_response_tokens` to protect against unexpectedly verbose responses. A strict token limit can lead to malformed or grammatically incorrect results.
 - All input to the model (instructions, prompt, tool definitions, Generable types, and the model's responses) contributes tokens to the context window. Exceeding it raises `ExceededContextWindowSizeError`.
 - `SamplingMode.random()` raises `ValueError` if both `top` and `probability_threshold` are given, or if values are out of range; if neither is given, all tokens are considered.
 - `GenerationOptions.__post_init__` raises `ValueError` for a non-numeric or negative `temperature`, a non-positive or non-integer `maximum_response_tokens`, or a `sampling` that is not a `SamplingMode`.
 - `to_dict()` serializes the options for the C bindings layer (for example `sampling` becomes `{'mode': 'random', 'top_k': ...}`).
 - Options passed to `respond()` / `stream_response()` apply to that request.
+- 0.2.2: `respond(generating=...)` now forwards `options` to generation; in 0.2.1 options were not applied on that path. Source: https://github.com/apple/python-apple-fm-sdk/releases/tag/v0.2.2 (#22, retrieved 2026-11-14).
 
 ## Related
 

@@ -1,5 +1,5 @@
 ---
-source: https://apple.github.io/python-apple-fm-sdk/streaming.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.1/examples/streaming_example.py
+source: https://apple.github.io/python-apple-fm-sdk/streaming.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.2/examples/streaming_example.py
 ---
 
 # Python Streaming
@@ -69,6 +69,6 @@ async for snapshot in session.stream_response("Show me an example"):
 
 - `session.stream_response` returns an async iterator. Each yielded value is the complete response text generated so far, not the delta from the previous chunk (per the `stream_response` docstring in `session.py`); like `respond`, it keeps session context across calls.
 - Because values are cumulative snapshots, a consumer that needs only the new text must compute the difference from the previous value itself.
-- The upstream example (examples/streaming_example.py v0.2.1) prints each snapshot with `print(chunk, end="")`, which repeats text because snapshots are cumulative; this sample prints only the new suffix.
+- The upstream example (examples/streaming_example.py v0.2.2) prints each snapshot with `print(chunk, end="")`, which repeats text because snapshots are cumulative; this sample prints only the new suffix.
 - Swift equivalent: streaming responses on `LanguageModelSession`, see `../references/sessions/response-stream.md`.
-- Package `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`).
+- Package `apple-fm-sdk` 0.2.2 (GitHub tag `v0.2.2`).

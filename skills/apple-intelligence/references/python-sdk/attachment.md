@@ -1,5 +1,5 @@
 ---
-source: https://apple.github.io/python-apple-fm-sdk/api/attachment.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.1/src/apple_fm_sdk/prompt.py
+source: https://apple.github.io/python-apple-fm-sdk/api/attachment.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.2/src/apple_fm_sdk/prompt.py
 ---
 
 # Attachment (Python)
@@ -48,7 +48,7 @@ response = await session.respond([
 
 ## Notes
 
-- Package: `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`). Swift equivalent: Attachment (see attachments/attachment.md).
+- Package: `apple-fm-sdk` 0.2.2 (GitHub tag `v0.2.2`). Swift equivalent: Attachment (see attachments/attachment.md).
 - `Attachment` is an abstract base class; use `ImageAttachment`. Supported image formats depend on the underlying model capabilities.
 - `ImageAttachment` raises `ImagePromptError` if the file does not exist. Adding the attachment to a prompt raises `ImagePromptError` if the runtime OS does not support attachment prompts ("the current OS does not support attachment prompts"), or if the Xcode version used to build the package does not include macOS 27 SDKs.
 - `PromptError` is raised when a prompt component is not a `str` or `Attachment`.
