@@ -33,6 +33,8 @@ Practical RFT case studies, grouped by task pattern, plus best-practice guidance
 ## Notes
 
 - Dataset sizes in these case studies were often modest (e.g. <50 samples for ChipStack); several companies did not disclose exact sizes.
+- As of 2026-11-14 the official RFT use-cases guide is no longer published (`https://developers.openai.com/api/docs/guides/rft-use-cases.md` resolves to the Fine Tuning API reference and the guide is absent from `llms.txt`); this page keeps the content fetched on 2026-10-16.
+- Source: https://developers.openai.com/api/docs/llms.txt (fetched 2026-11-14)
 - Subject to the same platform wind-down as other fine-tuning methods (see [model-optimization.md](./model-optimization.md) Notes).
 
 ## Related
