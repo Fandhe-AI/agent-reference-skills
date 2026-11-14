@@ -90,7 +90,7 @@ const root = createRoot(container, {
 | Change | Detail |
 | --- | --- |
 | Ref callback implicit returns rejected | `ref={current => (instance = current)}` becomes `ref={current => {instance = current}}` (preset codemod `no-implicit-ref-callback-return`) |
-| `useRef` requires an argument | `useRef()` errors; `useRef(undefined)` passes; all refs are mutable; `MutableRef` deprecated in favor of `RefObject<T>` (`refobject-defaults`) |
+| `useRef` requires an argument | `useRef()` errors; `useRef(undefined)` passes; all refs are mutable; `MutableRefObject` deprecated in favor of `RefObject<T>` (`refobject-defaults`) |
 | `ReactElement["props"]` defaults to `unknown` instead of `any` | Pass a type argument to `ReactElement` (`react-element-default-any-props`) |
 | Global `JSX` namespace removed in favor of `React.JSX` | Wrap JSX namespace augmentation in `declare module "react"` (module specifier depends on `tsconfig` `jsx`: `react-jsx` -> `react/jsx-runtime`, `react-jsxdev` -> `react/jsx-dev-runtime`, `react`/`preserve` -> `react`) (`scoped-jsx`) |
 | `useReducer` typings | Do not pass `React.Reducer<State, Action>` as a type argument; use `useReducer(reducer, initialArg)` or `useReducer<State, [Action]>(reducer, initialArg)` |

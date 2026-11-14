@@ -32,7 +32,7 @@ Returns a `status` object with the following properties:
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `pending` | boolean | If `true`, the parent `<form>` is pending submission. Otherwise, `false`. |
+| `pending` | boolean | `true` while the parent `<form>` is submitting an Action or running a Transition from `onSubmit`. Otherwise, `false`. |
 | `data` | FormData or null | An object implementing the `FormData` interface that contains the data the parent `<form>` is submitting. If there is no active submission or no parent `<form>`, it will be `null`. |
 | `method` | `'get'` or `'post'` | Whether the parent `<form>` is submitting with a `GET` or `POST` HTTP method. By default, a `<form>` will use the `GET` method and can be specified by the `method` property. |
 | `action` | function or null | A reference to the function passed to the `action` prop on the parent `<form>`. If there is no parent `<form>`, the property is `null`. If there is a URI value provided to the `action` prop, or no `action` prop specified, `status.action` will be `null`. |
@@ -59,7 +59,60 @@ export default function UsernameForm() {
 }
 ```
 
+Displaying a pending state with an `onSubmit` handler: if you need to handle form submission in an `onSubmit` event handler instead of passing a function to the `<form action>` prop, call `event.preventDefault()` and start a Transition in the same event handler. A component inside the form can then use `useFormStatus` to read the pending state while the Action is running.
+
+```js
+import { startTransition } from 'react';
+import { useFormStatus } from 'react-dom';
+import { submitForm } from './submitForm.js';
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button type='submit' disabled={pending}>
+      {pending ? 'Submitting...' : 'Submit'}
+    </button>
+  );
+}
+
+function Form({ submitAction }) {
+  function handleSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    startTransition(async () => {
+      await submitAction(formData);
+    });
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name='query' />
+      <SubmitButton />
+    </form>
+  );
+}
+
+export default function App() {
+  async function submitAction(formData) {
+    await submitForm(formData);
+  }
+
+  return <Form submitAction={submitAction} />;
+}
+```
+
+The `submitForm` function in `submitForm.js`:
+
+```js
+export async function submitForm(formData) {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+}
+```
+
 ## Notes
+
+- Source: https://react.dev/reference/react-dom/hooks/useFormStatus (react.dev commit `46a54e0592729712b7640308b53268e84fdc7c9f`, fetched 2026-11-14). The `onSubmit` example and the updated `pending` description were added upstream after commit `046f17d`.
+- Unlike a function passed to the `<form action>` prop, handling submission through `onSubmit` does not automatically reset the form (see the `<form>` page, "Other ways to control form resets", and `requestFormReset`).
 
 - The `useFormStatus` Hook must be called from a component that is rendered inside a `<form>`.
 - `useFormStatus` will only return status information for a parent `<form>`. It will not return status information for any `<form>` rendered in that same component or children components.

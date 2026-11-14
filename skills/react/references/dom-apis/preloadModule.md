@@ -44,6 +44,7 @@ function CallToAction() {
 | `options.crossOrigin` | string | The CORS policy to use. Possible values are `anonymous` and `use-credentials`. |
 | `options.integrity` | string | A cryptographic hash of the module, to verify its authenticity. |
 | `options.nonce` | string | A cryptographic nonce to allow the module when using a strict Content Security Policy. |
+| `options.fetchPriority` | string | Suggests a relative priority for fetching the resource. Possible values are `auto` (the default), `high`, and `low`. |
 
 ## Notes
 

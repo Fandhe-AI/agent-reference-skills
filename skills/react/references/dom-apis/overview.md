@@ -19,6 +19,7 @@ APIs (rarely used):
 
 - `createPortal` lets you render child components in a different part of the DOM tree.
 - `flushSync` lets you force React to flush a state update and update the DOM synchronously.
+- `requestFormReset` lets you request a form reset when handling submissions with custom Actions or Transitions.
 
 Resource Preloading APIs (React-based frameworks frequently handle resource loading for you; consult your framework's documentation):
 
@@ -47,6 +48,7 @@ Entry points:
 
 - [createPortal](./createPortal.md)
 - [flushSync](./flushSync.md)
+- [requestFormReset](./requestFormReset.md)
 - [browser](./browser.md)
 - [preload](./preload.md)
 - [Client React DOM APIs](./client-overview.md)

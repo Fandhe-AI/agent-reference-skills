@@ -20,6 +20,7 @@
 | static-components | Validates that components are static, not recreated every render. | [lint-static-components.md](./lint-static-components.md) |
 | unsupported-syntax | Validates against syntax that React Compiler does not support. | [lint-unsupported-syntax.md](./lint-unsupported-syntax.md) |
 | use-memo | Validates that the `useMemo` hook is used with a return value. | [lint-use-memo.md](./lint-use-memo.md) |
+| React DevTools for agents | `react-devtools-cdt-mcp` gives AI coding agents the same view of your app that React DevTools gives you: the component tree, props, hooks, owners, source locations, and render timing. | [react-devtools-cdt-mcp.md](./react-devtools-cdt-mcp.md) |
 | React Developer Tools | Use React Developer Tools to inspect React components, edit props and state, and identify performance problems. | [react-developer-tools.md](./react-developer-tools.md) |
 | React Performance tracks | React Performance tracks are specialized custom entries that appear on the Performance panel's timeline in your browser developer tools. | [react-performance-tracks.md](./react-performance-tracks.md) |
 | Using TypeScript | TypeScript is a popular way to add type definitions to JavaScript codebases. | [typescript.md](./typescript.md) |

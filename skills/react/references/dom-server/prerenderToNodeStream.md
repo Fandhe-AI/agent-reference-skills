@@ -85,7 +85,7 @@ async function renderToString() {
 | options.namespaceURI | string | (optional) The root namespace URI for the stream. Defaults to regular HTML. Pass `'http://www.w3.org/2000/svg'` for SVG or `'http://www.w3.org/1998/Math/MathML'` for MathML. |
 | options.onBrowserBailout | function | (optional) Called when React recovers from `browser()` by leaving a Suspense fallback for the browser to replace. Receives an `Error` describing the browser-only render and an `errorInfo` object containing the `componentStack`. If a reason was passed to `browser`, it is available as `error.cause`. By default, React does nothing. |
 | options.onError | function | (optional) Fires whenever there is a server error, whether recoverable or not. By default, this only calls `console.error`. If you override it to log crash reports, make sure that you still call `console.error`. You can also use it to adjust the status code before the shell is emitted. |
-| options.onHeaders | function | (optional) Fires when React has determined the resource hints for the document, such as preconnects and stylesheet, font, or high-priority image preloads. It receives a `Headers` instance containing the corresponding `Link` header value, so you can send it as an HTTP response header or as a 103 Early Hints response. React calls it even when there are no resource hints to send. The header content is capped by `maxHeadersLength`. |
+| options.onHeaders | function | (optional) Fires when React has determined the resource hints for the document, such as preconnects and stylesheet, font, or high-priority image preloads. It receives an object with a `Link` property containing the corresponding `Link` header value, so you can send it as an HTTP response header or as a 103 Early Hints response. React calls it even when there are no resource hints to send. The header content is capped by `maxHeadersLength`. |
 | options.progressiveChunkSize | number | (optional) The number of bytes in a chunk. |
 | options.signal | AbortSignal | (optional) An abort signal that lets you abort prerendering and render the rest on the client. |
 
@@ -97,6 +97,7 @@ async function renderToString() {
 - `prerenderToNodeStream` can be aborted and resumed later with `resumeToPipeableStream` to support partial pre-rendering. Any Suspense boundaries with incomplete children are included in the prelude in the fallback state.
 - Only data read from a source that activates a Suspense boundary, such as a Promise read with `use`, will suspend during rendering. Suspense does not detect data fetched inside an Effect or event handler.
 - Troubleshooting: the response waits for the entire app to finish rendering, including all Suspense boundaries, before resolving. To stream content as it loads, use `renderToPipeableStream`.
+- `onHeaders` receives an object with a `Link` property on this page (react.dev commit `46a54e0`, fetched 2026-11-14); the Web Streams `prerender` page still describes a `Headers` instance. Source: https://react.dev/reference/react-dom/static/prerenderToNodeStream
 - Distinct from framework SSG: nextjs-app, tanstack-start and react-router wrap these APIs in their own skills; this page documents the raw `react-dom/static` API.
 
 ## Related
