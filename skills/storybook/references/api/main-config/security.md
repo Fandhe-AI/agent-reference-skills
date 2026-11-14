@@ -36,7 +36,7 @@ export default config;
 
 - `insecureIframeMessaging`: by default the manager only accepts messages from its own preview iframes, and a preview in dev mode only accepts messages from a manager on a local host such as `localhost` or `127.0.0.1`. In dev mode, both also address their messages to the expected origin. This prevents other websites from sending messages to your Storybook or reading the ones it sends
 - With `insecureIframeMessaging` on, any website that embeds your Storybook can exchange messages with it. To compose a dev-mode Storybook from a Storybook opened on another host, the safe alternative is to build the composed Storybook and compose the build output
-- `insecureRemoteIframeEmbed`: by default the dev server's manager and preview can only be embedded in iframes by pages served on `localhost` or `127.0.0.1`, preventing malicious websites from embedding your local Storybook
+- `insecureRemoteIframeEmbed`: by default the dev server's manager and preview can only be embedded in iframes by pages served on `localhost` or `127.0.0.1`, preventing malicious websites from embedding your local Storybook. This restriction does not apply in a WebContainer, such as StackBlitz, which shows the dev server in an iframe on its own page
 - With `insecureRemoteIframeEmbed` on, any website you visit can embed your local Storybook. The safe alternative is to build your composed Storybook and compose the build output
 
 ```typescript
@@ -47,7 +47,7 @@ const config: StorybookConfig = {
   },
 };
 ```
-- Source: https://storybook.js.org/docs/api/main-config/main-config-security (Storybook v10.6.2).
+- Source: https://storybook.js.org/docs/api/main-config/main-config-security (Storybook v10.6.7, fetched 2026-11-14).
 
 ## Related
 

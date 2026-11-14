@@ -48,6 +48,14 @@ The per-framework pages in the official docs (13): Angular (Webpack), Angular (V
 - Use `npm create storybook@latest --type <framework>` to install a specific framework
 - Framework-specific setup guides are available in the official documentation
 - The community actively maintains additional frameworks beyond those listed here
+- Source: https://storybook.js.org/docs/contribute/framework (Storybook v10.6.7, fetched 2026-11-14).
+
+### Community frameworks and `storybook init`
+
+- Some community frameworks, such as those for Astro, Nuxt, Qwik and SolidJS, are integrated into `storybook init`. The Storybook maintainers choose which ones based on popularity, stability, and implementation quality
+- Community framework packages are versioned and released independently of Storybook. By convention, `storybook init` picks an npm dist-tag based on the running Storybook version: a stable release installs `latest`; a prerelease installs `next` when it exists and is more recent than `latest`, otherwise `latest`
+- To support a Storybook prerelease, a framework author publishes prerelease versions under the `next` dist-tag and declares a `storybook` peer dependency range that includes the prerelease (for example `"storybook": "^11.0.0-0"`); when the Storybook release becomes stable, the stable version is published under `latest`
+- A `next` tag left over from an earlier release cycle is ignored because it points to an older version than `latest`
 
 ## Related
 
