@@ -11,6 +11,8 @@ user-invocable: false
 
 対象は macOS 27 SDK のドキュメント（developer.apple.com の JSON を 2026-10-16 に取得）。プラットフォーム版数は各ページに記載。
 
+2026-11-14 に DocC JSON の全子要素と macOS 27 / 27.2 / 27.3 リリースノートを再照合し、27.3 beta の `NSWindow.disablesDirectTouchSystemGestures` とメニュー項目画像の挙動を追記。
+
 ## ディレクトリ構成
 
 ```text

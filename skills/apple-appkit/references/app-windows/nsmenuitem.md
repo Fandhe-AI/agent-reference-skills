@@ -58,6 +58,8 @@ menu.addItem(.sectionHeader(title: "Format"))
 - macOS 10.0+. `separator()` and `sectionHeader(title:)` are type methods returning pre-configured items.
 - Setting `view` gives full control over item rendering; the standard keyboard shortcut display is then suppressed.
 - Item enabling/disabling can be automated via `NSMenu.autoenablesItems` and `validateMenuItem(_:)` on the action target.
+- For apps linked on the macOS 27 SDK, both symbol and non-symbol menu item images are automatically hidden. For apps linked on earlier SDKs, non-symbol images remain automatically visible, and `NSMenu` shows item images when the title and attributed title are both empty. Use `preferredImageVisibility` to keep images visible.
+- Source: https://developer.apple.com/documentation/macos-release-notes/macos-27-release-notes (AppKit, fetched 2026-11-14)
 
 ## Related
 
