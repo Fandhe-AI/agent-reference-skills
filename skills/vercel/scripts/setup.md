@@ -4,7 +4,7 @@
 
 ## コーディングエージェントのセットアップ
 
-Claude Code / Codex 向け Vercel プラグインのインストールと、ローカルのコーディングエージェントの AI Gateway 接続を行う。各ステップの前に確認が入り、マシン上に無いエージェントはスキップされる。
+Claude Code / Codex / OpenCode 向け Vercel プラグインのインストールと、ローカルのコーディングエージェントの AI Gateway 接続を行う。各ステップの前に確認が入り、マシン上に無いエージェントはスキップされる。
 
 ```sh
 vercel setup
@@ -13,13 +13,25 @@ vercel setup
 AI Gateway への接続のみ実行（プラグインのステップをスキップ）。
 
 ```sh
-vercel setup --gateway
+vercel setup gateway
 ```
 
 Vercel プラグインのみを Codex 向けにインストール。
 
 ```sh
-vercel setup --plugin --agent codex
+vercel setup plugin --agent codex
+```
+
+インストール中の CLI バージョンに合う Vercel CLI スキルを `~/.agents/skills/vercel-cli` に書き出す（CLI のアップグレード後に再実行）。
+
+```sh
+vercel setup skills
+```
+
+出力先を指定して書き出す。
+
+```sh
+vercel setup skills --output .agents/skills/vercel-cli
 ```
 
 変更内容のプレビュー（ファイルは書き込まない）。
@@ -119,13 +131,13 @@ vercel open
 プロジェクト一覧を表示。
 
 ```sh
-vercel project ls
+vercel project list
 ```
 
-プロジェクトを追加。
+プロジェクトを作成。
 
 ```sh
-vercel project add
+vercel project create <name>
 ```
 
 プロジェクトの詳細を確認。
@@ -139,5 +151,5 @@ vercel project inspect [project-name]
 > **警告**: 削除したプロジェクトは元に戻せない。関連するデプロイメントもすべて削除される。
 
 ```sh
-vercel project rm
+vercel project delete <name>
 ```

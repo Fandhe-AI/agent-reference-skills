@@ -17,16 +17,6 @@ Branch-to-environment mapping after integration is set up:
 | `main` (production branch) | Production | `your-project.vercel.app` |
 | any other branch | Preview | `your-project-git-<branch>-<team>.vercel.app` |
 
-To trigger a manual deployment from a specific Git ref via CLI:
-
-```bash
-# Deploy the latest commit on a branch
-vercel --prod --git-branch main
-
-# Deploy a specific commit SHA
-vercel --prod --git-commit <sha>
-```
-
 To change the production branch from `main` to another branch:
 
 ```text
@@ -40,3 +30,4 @@ To change the production branch from `main` to another branch:
 - Only commit authors who are Vercel team members can trigger deployments from private repositories on Pro teams.
 - Instant rollback is available from the Vercel dashboard — select any previous deployment and click **Promote to Production**.
 - The production branch defaults to `main`, then `master`, then the repo's default branch.
+- The earlier manual-deploy example (`vercel --prod --git-branch main` / `--git-commit <sha>`) was removed: those options are not documented on the current `vercel deploy` page (not confirmed in official docs, fetched 2026-11-14). Use a Deploy Hook (`vercel deploy-hooks create <name> --git-branch <branch>`) to trigger a deployment of a branch from an external system.

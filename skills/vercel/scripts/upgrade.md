@@ -20,17 +20,49 @@ vercel upgrade
 vercel upgrade --dry-run
 ```
 
-## 自動更新の有効化・無効化
+## バージョンの指定
+
+完全な `major.minor.patch` で指定してインストール。
 
 ```sh
-vercel upgrade --enable-auto
+vercel upgrade 59.11.7
+```
+
+パッケージマネージャーの設定（最小リリース経過日数など）が許す最新リリースをインストール。
+
+```sh
+vercel upgrade latest
+```
+
+## 最小リリース経過日数チェックのバイパス
+
+npm / pnpm の最小リリース経過日数の設定で最新版が止められている場合に、チェックを飛ばして最新版をインストール（npm / pnpm のみ。以降の手動アップグレードでも記憶される）。
+
+```sh
+vercel upgrade --bypass-min-release-age
+```
+
+チェックを元に戻す（設定のみ変更し、アップグレードは実行しない）。
+
+```sh
+vercel upgrade --no-bypass-min-release-age
+```
+
+## 自動更新の有効化・無効化
+
+設定のみを変更し、アップグレードは実行しない。
+
+```sh
+vercel upgrade --autoupdate
 ```
 
 ```sh
-vercel upgrade --disable-auto
+vercel upgrade --no-autoupdate
 ```
 
 ## ネイティブバイナリ実行の有効化・無効化
+
+> **注記**: `--enable-binary` / `--disable-binary` は現行の公式 `vercel upgrade` ページに記載がなく、現行の公式ドキュメントでは未確認。
 
 インストール済みの実験的ネイティブバイナリを使う設定を保存する（別パッケージはインストールしない。`vercel` のインストール時に optional dependencies を有効にしておく）。
 
@@ -53,5 +85,5 @@ vercel upgrade --disable-binary
 `--dry-run` を暗黙的に含む（実際のアップグレードは行われない）。
 
 ```sh
-vercel upgrade --format=json
+vercel upgrade --json
 ```

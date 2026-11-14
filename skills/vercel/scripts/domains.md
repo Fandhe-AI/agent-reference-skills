@@ -5,19 +5,19 @@
 ## ドメイン一覧の表示
 
 ```sh
-vercel domains ls
+vercel domains list
 ```
 
 表示件数を指定（デフォルト 20、最大 100）。
 
 ```sh
-vercel domains ls --limit 100
+vercel domains list --limit 100
 ```
 
 ページネーション（前のレスポンスのタイムスタンプを渡す）。
 
 ```sh
-vercel domains ls --next 1584722256178
+vercel domains list --next 1584722256178
 ```
 
 ## ドメインの詳細確認
@@ -62,7 +62,7 @@ vercel domains search acme --next [cursor]
 JSON 出力。
 
 ```sh
-vercel domains search acme --format=json
+vercel domains search acme --json
 ```
 
 ## ドメインの追加
@@ -82,13 +82,13 @@ vercel domains add my-domain.com my-project --force
 > **警告**: 削除したドメインはプロジェクトから外れ、Vercel の管理下から削除される。
 
 ```sh
-vercel domains rm [domain]
+vercel domains remove [domain]
 ```
 
 確認をスキップして削除。
 
 ```sh
-vercel domains rm [domain] --yes
+vercel domains remove [domain] --yes
 ```
 
 ## ドメインの購入
@@ -123,14 +123,14 @@ vercel domains renew example.com --scope my-team --amount 20.00 --json
 
 ## 自動更新の切り替え
 
-ドメインと `on|off` の両方が必須。
+`enable` / `disable` とドメインの両方が必須（`enable` / `disable` は Vercel CLI 65.1.0 以降）。
 
 ```sh
-vercel domains auto-renew [domain] [on|off]
+vercel domains auto-renew [enable|disable] [domain]
 ```
 
 ```sh
-vercel domains auto-renew my-domain.com on --format=json
+vercel domains auto-renew enable my-domain.com --json
 ```
 
 ## ドメインの価格確認
@@ -178,7 +178,7 @@ vercel alias set [deployment-url] [custom-domain]
 エイリアスの一覧表示。
 
 ```sh
-vercel alias ls
+vercel alias list
 ```
 
 エイリアスの削除。
@@ -186,7 +186,7 @@ vercel alias ls
 > **警告**: エイリアスを削除すると、そのカスタムドメインへのルーティングが失われる。
 
 ```sh
-vercel alias rm [custom-domain]
+vercel alias remove [custom-domain]
 ```
 
 ## DNS レコードの管理
@@ -194,13 +194,13 @@ vercel alias rm [custom-domain]
 ドメインの DNS レコード一覧表示。
 
 ```sh
-vercel dns ls [domain]
+vercel dns list [domain]
 ```
 
 DNS レコードの追加。
 
 ```sh
-vercel dns add [domain] [name] [type] [value]
+vercel dns add [domain] [subdomain] [type] [value]
 ```
 
 DNS レコードの削除。
@@ -208,7 +208,7 @@ DNS レコードの削除。
 > **警告**: DNS レコードを削除するとドメインのルーティングに影響が生じる。
 
 ```sh
-vercel dns rm [record-id]
+vercel dns remove [record-id]
 ```
 
 ## SSL 証明書の管理
@@ -216,7 +216,7 @@ vercel dns rm [record-id]
 証明書の一覧表示。
 
 ```sh
-vercel certs ls
+vercel certs list
 ```
 
 証明書の発行。
@@ -228,5 +228,5 @@ vercel certs issue [domain]
 証明書の削除。
 
 ```sh
-vercel certs rm [certificate-id]
+vercel certs delete [certificate-id]
 ```

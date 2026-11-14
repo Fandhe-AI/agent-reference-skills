@@ -5,24 +5,24 @@
 ## 環境変数の一覧表示
 
 ```sh
-vercel env ls
+vercel env list
 ```
 
-特定環境の変数を一覧表示。
+特定環境の変数を一覧表示（`--environment` / `--git-branch` は Vercel CLI 64.6.0 以降。`add` / `update` / `remove` も同様）。
 
 ```sh
-vercel env ls [environment]
+vercel env list --environment [environment]
 ```
 
 特定環境の特定ブランチの変数を一覧表示。
 
 ```sh
-vercel env ls [environment] [gitbranch]
+vercel env list --environment preview --git-branch [gitbranch]
 ```
 
 ## 環境変数の追加
 
-対話形式で追加（全環境）。
+対話形式で追加（環境は CLI が選択を促す）。
 
 ```sh
 vercel env add [name]
@@ -31,19 +31,25 @@ vercel env add [name]
 特定環境に追加。
 
 ```sh
-vercel env add [name] [environment]
+vercel env add [name] --environment [environment]
 ```
 
-特定環境の特定ブランチに追加。
+複数環境に追加（カンマ区切り）。
 
 ```sh
-vercel env add [name] [environment] [gitbranch]
+vercel env add [name] --environment production,preview
+```
+
+特定環境の特定ブランチに追加（Preview のみブランチ指定可能）。
+
+```sh
+vercel env add [name] --environment preview --git-branch [gitbranch]
 ```
 
 ファイルの内容を値として追加（シークレット向け）。
 
 ```sh
-vercel env add [name] [environment] < [file]
+vercel env add [name] --environment [environment] < [file]
 ```
 
 ## 環境変数の種別（Secret / Config）
@@ -53,25 +59,25 @@ vercel env add [name] [environment] < [file]
 Secret として追加。
 
 ```sh
-vercel env add API_KEY production --value "sk_live_..." --sensitive --yes
+vercel env add API_KEY --environment production --value "sk_live_..." --sensitive --yes
 ```
 
 Config として追加。
 
 ```sh
-vercel env add API_URL production --value "https://api.example.com" --no-sensitive --yes
+vercel env add API_URL --environment production --value "https://api.example.com" --no-sensitive --yes
 ```
 
 Development に Secret として追加。
 
 ```sh
-vercel env add DEV_API_KEY development --value "sk_test_..." --sensitive --yes
+vercel env add DEV_API_KEY --environment development --value "sk_test_..." --sensitive --yes
 ```
 
 `--type` で種別を明示（`config` または `secret`）。
 
 ```sh
-vercel env add API_URL production --type config --yes
+vercel env add API_URL --environment production --type config --yes
 ```
 
 `--sensitive` / `--no-sensitive` と矛盾する `--type` を併用するとエラーになる。`NEXT_PUBLIC_` など公開フレームワークプレフィックスの変数は Config として保存される。従来の「Enforce Sensitive Environment Variables」チームポリシーは非推奨で、CLI はローカルで強制しない。
@@ -79,7 +85,7 @@ vercel env add API_URL production --type config --yes
 既存の環境変数を確認なしで上書き。
 
 ```sh
-vercel env add API_TOKEN production --force
+vercel env add API_TOKEN --environment production --force
 ```
 
 ## 環境変数の更新
@@ -91,19 +97,19 @@ vercel env update [name]
 特定環境の変数を更新。
 
 ```sh
-vercel env update [name] [environment]
+vercel env update [name] --environment [environment]
 ```
 
 特定環境の特定ブランチの変数を更新。
 
 ```sh
-vercel env update [name] [environment] [gitbranch]
+vercel env update [name] --environment preview --git-branch [gitbranch]
 ```
 
-stdin から値を更新（例: npmrc ファイルの内容）。
+stdin から値を更新（例: npmrc ファイルの内容）。パイプ入力では確認に答えられないため `--yes` が必要。
 
 ```sh
-cat ~/.npmrc | vercel env update NPM_RC preview
+cat ~/.npmrc | vercel env update NPM_RC --environment preview --yes
 ```
 
 Secret として更新。
@@ -115,13 +121,13 @@ vercel env update API_TOKEN --sensitive
 種別を明示して更新。
 
 ```sh
-vercel env update API_TOKEN production --type secret
+vercel env update API_TOKEN --environment production --type secret
 ```
 
 確認をスキップして更新。
 
 ```sh
-vercel env update API_TOKEN production --yes
+vercel env update API_TOKEN --environment production --yes
 ```
 
 ## 環境変数の削除
@@ -129,13 +135,13 @@ vercel env update API_TOKEN production --yes
 > **警告**: 削除した環境変数はデプロイメントから参照できなくなる。
 
 ```sh
-vercel env rm [name] [environment]
+vercel env remove [name] --environment [environment]
 ```
 
 確認をスキップして削除。
 
 ```sh
-vercel env rm [name] --yes
+vercel env remove [name] --yes
 ```
 
 ## 環境変数をローカルファイルに書き出し

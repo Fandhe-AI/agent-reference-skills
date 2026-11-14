@@ -8,17 +8,7 @@ Vercel CLI の認証・ログイン・チーム切り替え
 vercel login
 ```
 
-## メールアドレスを指定してログイン
-
-```sh
-vercel login [email]
-```
-
-## GitHub 認証でログイン
-
-```sh
-vercel login --github
-```
+> **注記**: 現行の公式ページに記載があるのは `vercel login` のみ。`vercel login [email]` / `--github` は現行の公式ドキュメントでは未確認。アカウント未作成の場合は `vercel signup`。
 
 ## ログアウト
 
@@ -55,7 +45,7 @@ Vercel ダッシュボードの [Tokens ページ](https://vercel.com/account/to
 vercel switch
 ```
 
-チーム名を指定して切り替え。
+チームのスラッグを指定して切り替え（`vercel teams switch [slug]` と同じ）。
 
 ```sh
 vercel switch [team-name]
@@ -69,14 +59,18 @@ vercel switch [team-name]
 vercel teams list
 ```
 
-新しいチームを追加。
+新しいチームを作成（非対話では `--slug` と `--name` が必須）。
 
 ```sh
-vercel teams add
+vercel teams create
 ```
 
-メンバーを招待。
+```sh
+vercel teams create --slug acme --name "Acme Corp"
+```
+
+メンバーを招待（非対話では 1 件以上のメールアドレスが必須）。
 
 ```sh
-vercel teams invite [email]
+vercel teams invite [email...]
 ```

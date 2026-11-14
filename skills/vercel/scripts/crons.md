@@ -7,13 +7,13 @@ Cron Jobs の追加・一覧・手動トリガー（beta）
 デフォルトサブコマンド（`vercel crons` のみでも同じ）。
 
 ```sh
-vercel crons ls
+vercel crons list
 ```
 
 JSON 形式で出力。
 
 ```sh
-vercel crons ls --format json
+vercel crons list --json
 ```
 
 ## Cron Job の追加

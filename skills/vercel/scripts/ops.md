@@ -11,13 +11,13 @@ vercel activity
 全アクティビティを過去 30 日分表示。
 
 ```sh
-vercel activity ls --all --since 30d
+vercel activity --all --since 30d
 ```
 
 デプロイメント種別のアクティビティを過去 7 日分表示。
 
 ```sh
-vercel activity ls --type deployment --since 7d
+vercel activity --type deployment --since 7d
 ```
 
 ## アラートの確認
@@ -76,32 +76,40 @@ vercel cache dangerously-delete --tag foo
 
 ## 使用量・コストの確認
 
+`vercel billing usage`（Vercel CLI 65.11.0 以降。旧名 `vercel usage` は動作するが非推奨警告が出る）。詳細は [billing.md](./billing.md)。
+
 ```sh
-vercel usage
+vercel billing usage
 ```
 
 期間を指定して確認（`--since` は `YYYY-MM-DD`・ISO 8601・相対期間（例: `7d`）、`--until` の指定には `--since` が必要）。
 
 ```sh
-vercel usage --since 2025-01-01 --until 2025-01-31
+vercel billing usage --since 2025-01-01 --until 2025-01-31
 ```
 
 過去 7 日間を確認。
 
 ```sh
-vercel usage --since 7d
+vercel billing usage --since 7d
 ```
 
 日別内訳で表示（`daily` / `weekly` / `monthly`）。
 
 ```sh
-vercel usage --breakdown daily
+vercel billing usage --breakdown daily
 ```
 
-JSON 形式で出力。
+プロジェクトまたはリージョン別に集計（`project` / `region`。`--breakdown` とは併用不可）。
 
 ```sh
-vercel usage --format json
+vercel billing usage --group-by project
+```
+
+JSON 形式で出力（旧 `--format json` は非推奨）。
+
+```sh
+vercel billing usage --json
 ```
 
 `--from` / `--to` は引き続き動作するが非推奨警告が出る。新規には `--since` / `--until` を使う。
@@ -114,13 +122,17 @@ vercel usage --format json
 vercel firewall overview
 ```
 
-ファイアウォールルールの公開。
+下書きのファイアウォール変更を本番へ公開。ターミナルでは確認プロンプトが出る。スクリプトではプロジェクト名を `--confirm-name` に渡す（名前が一致しなければ何も公開されない）。
 
 ```sh
 vercel firewall publish
 ```
 
-IP ブロックの追加。
+```sh
+vercel firewall publish --confirm-name my-app
+```
+
+IP ブロックの追加（下書きとして保存され、`vercel firewall publish` で公開するまで反映されない）。
 
 ```sh
 vercel firewall ip-blocks block <ip>
@@ -132,21 +144,15 @@ vercel firewall ip-blocks block <ip>
 vercel firewall rules list
 ```
 
-攻撃モードの有効化。
+攻撃モードの有効化（公開操作なしで即時反映。`--duration` は `1h`（デフォルト）/ `6h` / `24h`）。
 
-> **警告**: 攻撃モードを有効にすると、疑わしいトラフィックが積極的にブロックされる。正常なリクエストに影響が出る可能性がある。
+> **警告**: 攻撃モードを有効にすると、訪問者にセキュリティチャレンジが課される（既知の正規ボットは通過）。正常なリクエストに影響が出る可能性がある。
 
 ```sh
-vercel firewall attack-mode enable
+vercel firewall attack-mode enable --duration 24h --yes
 ```
 
 ## Git 接続の管理
-
-Git プロバイダー接続の一覧。
-
-```sh
-vercel git ls
-```
 
 Git プロバイダーに接続。
 
@@ -157,7 +163,7 @@ vercel git connect
 Git プロバイダーの切断。
 
 ```sh
-vercel git disconnect [provider]
+vercel git disconnect
 ```
 
 ## デプロイメントの二分探索（障害調査）
@@ -189,15 +195,15 @@ vercel webhooks create <url> --event <event>
 Webhook の詳細確認。
 
 ```sh
-vercel webhooks get <id>
+vercel webhooks inspect <id>
 ```
 
-Webhook の削除。
+Webhook の削除（確認プロンプトを省略するには `--yes`）。
 
 > **警告**: Webhook を削除するとそのエンドポイントへのイベント配信が停止される。
 
 ```sh
-vercel webhooks rm <id>
+vercel webhooks delete <id>
 ```
 
 ## テレメトリの管理

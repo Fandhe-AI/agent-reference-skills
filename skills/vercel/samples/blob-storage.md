@@ -124,6 +124,27 @@ const { presignedUrl } = await presignUrl(token, {
 const res = await fetch(presignedUrl);
 ```
 
+Expire blobs automatically with `ttlDays` and change the TTL later with `setTtl()` (`@vercel/blob` 2.9.0 and later):
+
+```ts
+import { put, setTtl, head } from '@vercel/blob';
+
+// Delete this export 7 days after it was uploaded
+const blob = await put('exports/report.csv', csv, {
+  access: 'private',
+  ttlDays: 7,
+});
+
+// Keep it for 30 days instead, still counted from the upload
+await setTtl(blob.url, { ttlDays: 30 });
+
+// Keep it indefinitely
+await setTtl(blob.url, { ttlDays: null });
+
+// Check when a blob will be deleted
+const { expiresAt } = await head(blob.url);
+```
+
 ## Notes
 
 - OIDC (`BLOB_STORE_ID` + `VERCEL_OIDC_TOKEN`) is the default authentication on Vercel and is more secure than the long-lived `BLOB_READ_WRITE_TOKEN`; connect the store to a project (include Development to use it locally via `vercel env pull`). Use the static read-write token when code runs outside Vercel or when generating client tokens for browser uploads.
@@ -131,3 +152,5 @@ const res = await fetch(presignedUrl);
 - Public blobs are served directly via CDN URL; private blobs must be streamed through a Vercel Function using `get()`.
 - CDN cache TTL defaults to one month; use `cacheControlMaxAge` on `put()` to shorten it (minimum 60 s). Treat blobs as immutable when possible; overwrites can take up to 60 seconds to propagate through the cache.
 - `ifMatch` throws `BlobPreconditionFailedError` when the ETag no longer matches. `issueSignedToken()` calls the Blob control API, so cache the result until near expiry; `presignUrl()` signs locally and accepts `'get'`, `'head'`, `'put'`, `'delete'`.
+- `ttlDays` accepts whole numbers from 1 to 730, is counted from the upload, and is applied once a day at UTC midnight. Overwriting a blob without `ttlDays` removes its TTL, and `copy()` / `rename()` never carry the TTL over. TTL deletions are not restorable.
+- Source: https://vercel.com/docs/vercel-blob/using-blob-sdk (fetched 2026-11-14; `setTtl` confirmed in the `@vercel/blob` 2.9.0 package, absent from 2.8.2)

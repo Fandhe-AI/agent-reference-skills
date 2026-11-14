@@ -28,6 +28,8 @@ bun add -g vercel
 
 ## ネイティブバイナリの有効化（実験的）
 
+> **注記**: `--enable-binary` / `--disable-binary` は現行の公式 `vercel upgrade` ページに記載がなく、現行の公式ドキュメントでは未確認。
+
 標準の `vercel` パッケージは、対応プラットフォーム向けのネイティブバイナリを optional dependencies として同梱する。optional dependencies を有効にしたままパッケージマネージャーで `vercel` をインストールしたうえで、ネイティブ実行を opt-in する。
 
 ```sh

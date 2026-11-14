@@ -10,13 +10,13 @@ vercel env pull
 vercel env add API_KEY
 
 # Add a variable non-interactively (pipe the value)
-echo "my-secret-value" | vercel env add API_KEY production
+echo "my-secret-value" | vercel env add API_KEY --environment production
 
 # List all variables (shows name, environments, and scope)
-vercel env ls
+vercel env list
 
 # Remove a variable from a specific environment
-vercel env rm API_KEY production
+vercel env remove API_KEY --environment production
 ```
 
 Reading variables in code (Node.js example):
@@ -31,23 +31,23 @@ Separating Preview and Production values for the same key:
 
 ```bash
 # Add a production value
-echo "prod-db-url" | vercel env add DATABASE_URL production
+echo "prod-db-url" | vercel env add DATABASE_URL --environment production
 
 # Add a preview value (applies to all non-production branches)
-echo "preview-db-url" | vercel env add DATABASE_URL preview
+echo "preview-db-url" | vercel env add DATABASE_URL --environment preview
 
 # Add a branch-specific preview value (overrides the generic preview value)
-echo "staging-db-url" | vercel env add DATABASE_URL preview --git-branch staging
+echo "staging-db-url" | vercel env add DATABASE_URL --environment preview --git-branch staging
 ```
 
 Choosing the Config or Secret type explicitly:
 
 ```bash
 # Config: value stays readable after saving
-vercel env add API_URL production --type config --yes
+vercel env add API_URL --environment production --type config --yes
 
 # Secret: value is write-only after saving
-vercel env add API_KEY production --value "sk_live_..." --type secret --yes
+vercel env add API_KEY --environment production --value "sk_live_..." --type secret --yes
 ```
 
 ## Notes
