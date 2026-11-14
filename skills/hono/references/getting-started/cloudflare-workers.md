@@ -43,6 +43,8 @@ app.get('/config', (c) => c.text(c.env.USERNAME))
 - Dev server default port: `8787`; deploy with `npm run deploy`
 - CI/CD: store `CLOUDFLARE_API_TOKEN` as a GitHub Actions secret
 - Workers runtime APIs (handlers, bindings, compatibility flags) are in the cloudflare-workers skill; Wrangler CLI, wrangler.jsonc and the Cloudflare Vite plugin are in the cloudflare-wrangler skill.
+- Testing: the official page now recommends `@cloudflare/vitest-plugin` (previously `@cloudflare/vitest-pool-workers`); see guides/testing.md and samples/testing.md.
+- Source: https://hono.dev/docs/getting-started/cloudflare-workers (honojs/website@20aab4e0, retrieved 2026-11-14)
 
 ## Related
 

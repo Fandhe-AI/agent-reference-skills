@@ -79,8 +79,9 @@ Use the RPC `hc` client with the exported app type for end-to-end type-safe test
 ## Notes
 
 - Always set `Content-Type: application/json` when sending JSON; without it Hono cannot parse the body.
-- For Cloudflare Workers, the recommended test runner is Vitest with `@cloudflare/vitest-pool-workers`.
+- For Cloudflare Workers, the recommended test runner is Vitest with `@cloudflare/vitest-plugin` (the official docs switched from `@cloudflare/vitest-pool-workers` in honojs/website#934). See [Cloudflare Testing](../../samples/testing.md) for the config.
 - `app.request()` accepts either a path string or a full `Request` object.
+- Source: https://hono.dev/docs/guides/testing (honojs/website@20aab4e0, retrieved 2026-11-14)
 
 ## Related
 

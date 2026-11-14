@@ -150,6 +150,7 @@ Automatically adds a global `fetch` event listener for Service Worker environmen
 - Generic type parameters `Bindings` and `Variables` enable type-safe `c.env` and `c.var` access
 - `notFound()` and `onError()` are only effective when registered on the top-level app
 - `app.mount()` is deprecated since v4.13.13 (use `mount()` from `hono/mount`, see [mount.md](../middleware/mount.md)); it will be removed in v5
+- v5 (release candidate): `onError()` takes middleware with the `(c, next)` signature (read the error from `c.error`) and `notFound()` accepts an optional path and multiple middleware; `app.fire()` is removed (use `fire()` from `@hono/service-worker`). See guides/migrating-to-v5.md.
 
 ## Related
 

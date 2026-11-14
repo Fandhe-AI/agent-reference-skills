@@ -46,8 +46,11 @@ Must implement:
 
 - Route-to-path mapping: `/` → `index.html`, `/path` → `path.html`, `/path/` → `path/index.html`
 - File extension is derived from the route's `Content-Type` response header
-- By default, `defaultPlugin` skips routes that return non-200 status codes
-- Custom plugins must explicitly include `defaultPlugin` to retain the default skip behavior
+- By default, `defaultPlugin()` skips routes that return non-200 status codes
+- Custom plugins must explicitly include `defaultPlugin()` to retain the default skip behavior
+- `defaultPlugin` is a function: write `plugins: [defaultPlugin()]` (the official examples were corrected from `defaultPlugin` to `defaultPlugin()`).
+- v5 (release candidate): the `beforeRequestHook`, `afterResponseHook`, and `afterGenerateHook` options of `toSSG()` are removed; pass them as a plugin, e.g. `{ plugins: [{ beforeRequestHook }, defaultPlugin()] }`. `SSG_DISABLED_RESPONSE` is removed in favor of `X_HONO_DISABLE_SSG_HEADER_KEY`. See guides/migrating-to-v5.md.
+- Source: https://hono.dev/docs/helpers/ssg (honojs/website@20aab4e0, retrieved 2026-11-14)
 
 ## Related
 

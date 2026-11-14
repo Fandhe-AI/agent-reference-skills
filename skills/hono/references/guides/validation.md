@@ -107,6 +107,7 @@ app.post('/author', sValidator('json', schema), (c) => {
 - `json` and `form` validators require the correct `Content-Type` header on the request; without it the body is empty.
 - Header names must be **lowercase** when used as validation keys (e.g., `'idempotency-key'`, not `'Idempotency-Key'`).
 - Validated data is accessed via `c.req.valid(target)` in the handler — not `c.req.json()` or `c.req.formData()`.
+- Since v4.13.16 / v4.13.18 `validator('form')` and `validator('json')` decide by the media type alone (as `c.req.parseBody()` does), so a `Content-Type` with extra parameters, whitespace before `;`, or a trailing `;` no longer skips validation (GHSA-4h7h-rv7c-7m2v, GHSA-92p4-j3wq-jmqx). Source: https://github.com/honojs/hono/releases/tag/v4.13.16, https://github.com/honojs/hono/releases/tag/v4.13.18
 
 ## Related
 

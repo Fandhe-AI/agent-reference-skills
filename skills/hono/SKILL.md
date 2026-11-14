@@ -1,7 +1,7 @@
 ---
 name: hono
 description: >
-  Hono (軽量・マルチランタイム対応 Web フレームワーク) リファレンス。
+  Hono (軽量・マルチランタイム対応 Web フレームワーク, v4.13 / v5 RC 移行ガイド, Hono CLI) リファレンス。
   Hono App, Context (c.req / c.json / c.text / c.html), HonoRequest, Routing, HTTPException、
   Built-in Middleware (JWT, CORS, CSRF, Cache, Logger, Compress, Basic / Bearer Auth, Mount)、
   Helpers (Cookie, Streaming, WebSocket, Factory, RPC)、
@@ -15,7 +15,7 @@ Hono — Web Standards ベースの軽量・高速 Web フレームワーク。
 マルチランタイム（Cloudflare Workers, Deno, Bun, Node.js 等）で動作する。
 API 設計・ミドルウェア選定・ルーティング実装時に参照する。
 
-対象 Hono v4.13.13 / ランタイムアダプター @hono/* 1.0.x（docs: honojs/website 7838d779, 2026-10-13）。
+対象 Hono v4.13.18 / ランタイムアダプター @hono/* 1.0.x（docs: honojs/website 20aab4e0, 2026-11-14）。v5 は RC（`hono@next`、v5.0.0-rc.1）のため `references/guides/migrating-to-v5.md` にのみ記載し、他ページは v4.13.x の記述（v5 での変更は各ページ Notes に `v5 (release candidate)` として明記）。`samples/` `scripts/` は v4.13.x 前提で、v5 RC の `@hono/*` 移行は未追従。
 
 ## ディレクトリ構成
 
@@ -45,6 +45,10 @@ skills/hono/
       cloudflare-workers-vite.md
       webassembly-wasi.md
       cloudbase.md
+    agents/
+      README.md
+      index.md
+      cli.md
     api/
       README.md
       hono.md
@@ -117,6 +121,7 @@ skills/hono/
       jsx.md
       jsx-dom.md
       middleware.md
+      migrating-to-v5.md
       others.md
       rpc.md
       testing.md
@@ -159,6 +164,7 @@ skills/hono/
 | 設計思想、Web Standards、ミドルウェア概念、ルーター種類、Stacks | concepts | [references/concepts/README.md](references/concepts/README.md) |
 | 認証 (JWT / Basic / Bearer)、CORS、CSRF、Cache、Logger、Compress、ETag 等、Mount（他フレームワーク製アプリの組み込み。app.mount() は非推奨）、Third-party middleware（バリデーター・OpenAPI・認証・監視） | middleware | [references/middleware/README.md](references/middleware/README.md) |
 | Cookie、Streaming、WebSocket、Proxy、Factory、SSG、Testing、ConnInfo | helpers | [references/helpers/README.md](references/helpers/README.md) |
-| ベストプラクティス、カスタムミドルウェア、JSX、バリデーション、RPC、テスト | guides | [references/guides/README.md](references/guides/README.md) |
+| ベストプラクティス、カスタムミドルウェア、JSX、バリデーション、RPC、テスト、v4 → v5 (RC) 移行・破壊的変更 | guides | [references/guides/README.md](references/guides/README.md) |
+| コーディングエージェント向け機能 (Hono CLI `hono routes` / `request` / `batch` / `snapshot` / `diff`、Markdown ドキュメント、llms.txt、Hono Skills) | agents | [references/agents/README.md](references/agents/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

@@ -84,6 +84,8 @@ const signedStr = await generateSignedCookie('session', 'abc123', 'secret')
 - `maxAge` values greater than 400 days will throw an error per RFC best practices
 - `sameSite` and `priority` options are validated against their allowed values; invalid values throw a `TypeError`
 - Cookie prefix rules: `__Secure-` requires `secure: true`; `__Host-` requires `secure: true`, `path: '/'`, and no `domain`
+- Since v4.13.17 the `__Secure-` and `__Host-` prefixes are matched case-insensitively (also in `CookieConstraint`). Source: https://github.com/honojs/hono/releases/tag/v4.13.17
+- Source: https://hono.dev/docs/helpers/cookie (honojs/website@20aab4e0, retrieved 2026-11-14)
 
 ## Related
 
