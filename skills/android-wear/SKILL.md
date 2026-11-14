@@ -3,7 +3,7 @@ name: android-wear
 description: >
   Wear OS (Kotlin) の androidx.wear API・Watch Face Format (WFF) リファレンス。
   Wear Compose の CurvedLayout, rotary input, ambient mode, ScalingLazyColumn。
-  Tiles / Material3TileService / ProtoLayout, ComplicationDataSourceService,
+  Tiles / Material3TileService / ProtoLayout, ComplicationDataSourceService, ComplicationData,
   Health Services (MeasureClient, ExerciseClient, PassiveMonitoringClient),
   Data Layer (ChannelClient), WFF の XML 要素・式・コンプリケーション・Watch Face Designer。
 user-invocable: false
