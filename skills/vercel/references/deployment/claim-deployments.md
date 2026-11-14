@@ -29,10 +29,16 @@ Flow for an automated AI-generated deployment:
 
 - In the claim URL, `xxx` values are placeholders (verbatim from the official docs): `code` is the transfer-request code returned by step 3, and `returnUrl` is the URL to return to after the claim.
 - Associated resources from Neon, Supabase, and Prisma (Marketplace) are transferred with the claimed deployment and keep their connection to the project.
+- Claim a temporary deployment before it expires; after expiry it can't be claimed and an account is needed to deploy again. Don't share the claim URL: anyone with it can claim the project.
+- A demo with resource claims is also listed: `https://claim-deployments-demo-with-resource.vercel.app/`.
 - When transferring a project between two teams owned by the same user, the Project Transfer flow is recommended instead of Claim Deployments.
 - Use cases: team restructuring, migrating personal projects to a company account.
 - Templates: `https://github.com/vercel/claim-deployments-demo` (demo: `https://claim-deployments-demo.vercel.app`).
-- Source: https://vercel.com/docs/deployments/claim-deployments
+- Source: https://vercel.com/docs/deployments/claim-deployments (fetched 2026-11-14)
+
+### Claim a temporary deployment
+
+Deploying without an account (Vercel Drop or `vercel deploy --temporary`) yields a claim URL. To claim: open the URL (in Vercel Drop select **Claim Project**; in the CLI open the URL that `vercel deploy --temporary` prints), log in or create a free account, select the team, then select **Transfer** (select **Accept and Transfer** if terms are shown). The project moves to your team and stops expiring; run `vercel login` to keep deploying it from the CLI.
 
 ## Related
 

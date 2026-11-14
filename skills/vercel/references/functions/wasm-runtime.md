@@ -35,7 +35,7 @@ export async function GET(request: Request) {
 - In Edge Runtime, `WebAssembly.instantiate` requires the Wasm source to be provided via an import statement; a buffer or byte array cannot be used to compile the module dynamically at runtime
 - Works in production and locally with `vercel dev`
 - The official page labels the file `api/wasm/route.ts`; the named `GET` export and the three-levels-up `add.wasm` type import match a Next.js App Router route at `app/api/wasm/route.ts`, which serves `/api/wasm`.
-- Source: https://vercel.com/docs/functions/runtimes/wasm
+- Source: https://vercel.com/docs/functions/runtimes/wasm (fetched 2026-11-14)
 
 ## Related
 

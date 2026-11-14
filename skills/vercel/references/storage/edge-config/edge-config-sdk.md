@@ -75,6 +75,9 @@ All methods throw errors when:
 ## Notes
 
 - Package renamed from `@vercel/edge-config` to `@vercel/global-config`; connection-string env var renamed from `EDGE_CONFIG` to `GLOBAL_CONFIG`. Confirmed in the migration guide: `@vercel/global-config` is a drop-in replacement; it reads `GLOBAL_CONFIG` by default and falls back to `EDGE_CONFIG`. `@vercel/edge-config` keeps working but reads only `EDGE_CONFIG` by default, so a project still on it cannot read a newly connected store (upgrade the SDK before connecting a new store). Custom env var names read with `createClient` work with both packages
+- The SDK is compatible with Node.js, the Edge Runtime, and the browser. Requirements: a created Global Config, a read access token, and a connection string stored as an environment variable. Any env var name works via `createClient`.
+- The digest's creation may change, so it is not documented: a matching digest means unchanged content; a different digest suggests changes but does not guarantee them.
+- Source: https://vercel.com/docs/global-config/global-config-sdk (fetched 2026-11-14)
 - The SDK cannot write to Global Config; use the [Vercel REST API](./vercel-api.md) for writes
 - Writing requires Vercel Access Tokens; reading uses Global Config read tokens — these are separate
 - For high write volumes, consider Upstash Redis from the Marketplace instead

@@ -2,34 +2,34 @@
 
 Rolling Releases allow you to gradually shift traffic from your current production deployment to a new release candidate, monitoring metrics between stages before full promotion.
 
-> Requires Pro or Enterprise plan.
+> Requires Pro or Enterprise plan. Pro teams can use Rolling Releases for one project; Enterprise limits are custom.
 
 ## Signature / Usage
 
 ```bash
 # Configure rolling release stages
-vercel rolling-release configure --cfg '{"enabled":true,"advancementType":"automatic","stages":[{"targetPercentage":10,"duration":5},{"targetPercentage":50,"duration":10},{"targetPercentage":100}]}'
+vercel rolling-release update --cfg '{"enabled":true,"advancementType":"automatic","stages":[{"targetPercentage":10,"duration":5},{"targetPercentage":50,"duration":10},{"targetPercentage":100}]}'
 
-# Deploy to production (triggers rolling release)
+# Deploy to production (starts the rolling release automatically if the project auto-assigns custom domains)
 vercel deploy --prod
 
-# Start the rolling release
-vercel rolling-release start --dpl <deployment-url>
+# Start the rolling release (idempotent if the deploy already started it)
+vercel rolling-release start --deployment <deployment-url>
 
 # Check status (`fetch` is a deprecated alias of `inspect`)
 vercel rolling-release inspect
 
 # Advance to next stage (manual approval mode)
-vercel rolling-release approve --dpl <deployment-url> --currentStageIndex 0
+vercel rolling-release approve --deployment <deployment-url> --currentStageIndex 0
 
 # Complete rollout (100% traffic)
-vercel rolling-release complete --dpl <deployment-url>
+vercel rolling-release complete --deployment <deployment-url>
 
-# Abort and revert to previous deployment
-vercel rolling-release abort --dpl <deployment-url>
+# Abort and revert to the previous production deployment (pass the previous deployment, not the new one)
+vercel rolling-release abort --deployment <previous-production-deployment-url>
 
 # Disable rolling releases
-vercel rolling-release configure --cfg 'disable'
+vercel rolling-release update --no-enable
 ```
 
 ## Stage Configuration
@@ -54,8 +54,10 @@ vercel rolling-release configure --cfg 'disable'
 | GET | `/v1/projects/{idOrName}/rolling-release/billing` | Get billing info |
 | GET | `/v1/projects/{idOrName}/rolling-release` | Get active rolling release status |
 | POST | `/v1/projects/{idOrName}/rolling-release/approve-stage` | Advance to next stage |
+| POST | `/v1/projects/{idOrName}/rolling-release/start` | Start a rolling release (body `{ "canaryDeploymentId": "dpl_..." }`; idempotent) |
 | POST | `/v1/projects/{idOrName}/rolling-release/complete` | Complete rollout (promote to 100%) |
 | POST | `/v1/projects/{projectId}/rollback/{deploymentId}` | Abort by rolling back |
+| PATCH | `/v1/projects/{projectId}/rollback/{deploymentId}/update-description` | Update the description of a project rollback |
 
 ## Traffic Cookie
 
@@ -76,6 +78,13 @@ Cookie value format: `<canaryDeploymentId>|<bucketPercent>[|forced]`. The first 
 
 ## Notes
 
+- Any action that promotes a deployment to production starts a rolling release when the feature is enabled: a commit to the production branch (if auto-promotion applies), **Promote** on the Deployments page, or `vercel promote`. If a rolling release is in progress and a different deployment is promoted, project state does not change. Promoting the current release candidate while its rollout is in progress completes the rollout to 100%.
+- CI/CD: use `vercel rolling-release start` / `vercel rolling-release complete` or the matching REST endpoints; avoid the promote API (`POST /v10/projects/{projectId}/promote/{deploymentId}`) and `vercel promote` for start and complete steps. The start endpoint is idempotent: if a rolling release is already active for the same `canaryDeploymentId` it returns the current state without advancing stages. Call start again when auto-assign custom domains already started a rollout on deploy ready. Complete: `POST /v1/projects/{idOrName}/rolling-release/complete` with body `{ "canaryDeploymentId": "dpl_..." }`.
+- Aborting: use the Abort button, Instant Rollback to any prior deployment (leaves the project in a rolled-back state until a new rolling release completes), or `POST /v1/projects/{projectId}/rollback/{deploymentId}` with the previous production deployment ID.
+- Observability: the Deployments page shows rolling release status, the candidate is badged "Canary" with its traffic fraction, and the project's **Observability** tab has a Rolling Releases section with traffic mix and comparative metrics. For metrics stored outside Vercel, propagate Vercel's deployment ID to your observability systems so base and canary can be distinguished.
+- Bucket assignment uses client-identifying information such as IP, so the same device sees the same deployment even in incognito. Observed request fractions may not match the configured fraction (high-traffic users, small session counts).
+- Configure in **Project Settings** > **Build & Deployment** > **Rolling Releases**.
+- Source: https://vercel.com/docs/rolling-releases (fetched 2026-11-14)
 - Strongly recommended to enable **Skew Protection** alongside Rolling Releases to ensure backend API requests from a given page are served by the matching deployment's backend.
 - Disabling Rolling Releases via the API while a rollout is in progress does not stop the active rollout — you must still call `complete` or `rollback`.
 - Each new rolling release clones the project's current configuration; editing the configuration does not affect in-progress rollouts.

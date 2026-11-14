@@ -56,6 +56,11 @@ One request: 4s active CPU, 10s instance lifetime:
 
 ## Notes
 
+- Source: https://vercel.com/docs/functions/usage-and-pricing (fetched 2026-11-14)
+- Hobby includes monthly allowances (4 hours Active CPU, 360 GB-hrs Provisioned Memory, 1 million invocations); Pro usage is billed on demand and the monthly Pro usage credit can offset those charges
+- Invocations count regardless of request success or failure; example Pro rate on the page: $0.60 per million invocations, subject to the monthly Pro usage credit
+- Active CPU is measured in milliseconds and billed per CPU-hour; after all requests complete the instance is paused with no CPU or memory charges until the next invocation
+- The official regional pricing table lists 19 regions; the `dxb1` row above is not on it (not confirmed in the fetched official docs)
 - I/O wait (AI model calls, database queries) does not count toward Active CPU time
 - Provisioned Memory billing continues even during I/O, as the instance is kept alive
 - Memory billing stops after the last in-flight request completes; no charge during idle

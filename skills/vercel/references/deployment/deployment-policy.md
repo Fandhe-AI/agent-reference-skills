@@ -39,7 +39,9 @@ Deployment Sources (allow or block each):
 - Leave the repository/project field empty to allow any repository under that organization or namespace.
 - Projects inherit the team policy by default; switch back to **Inherit** to stop overriding (inherited rules show as read-only summary).
 - Example: require production to accept deployments only from a specific repository while preview stays open.
-- Source: https://vercel.com/docs/deployments/deployment-policy
+- Users with the Owner role can access this feature.
+- Deployment Sources: select the sources to allow and clear a source to block it.
+- Source: https://vercel.com/docs/deployments/deployment-policy (fetched 2026-11-14)
 
 ## Related
 

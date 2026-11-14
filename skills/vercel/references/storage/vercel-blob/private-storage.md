@@ -7,8 +7,10 @@ Vercel Blob private stores require authentication for all read and write operati
 ```bash
 # Dashboard: Storage > Create Database > Blob > Private
 # CLI:
-vercel blob create-store my-store --access private
+vercel blob create-store my-private-store --access private --yes
 ```
+
+The `--yes` flag connects the new store to the linked project in all environments (run from the linked project directory).
 
 ## Uploading Files
 
@@ -109,8 +111,17 @@ Per download through a Function:
 
 - Not recommended for files > 100 MB when traffic is high
 - For large public media, use [public storage](./public-storage.md) (3x cheaper data transfer)
-- Cannot be indexed by search engines
+- Cannot be indexed by search engines (all read access requires authentication)
+- Without a `Cache-Control` header on the Function response, Vercel sends `public, max-age=0, must-revalidate` (the browser always revalidates, so your auth logic runs on every request)
+- For sensitive data use `Cache-Control: private, no-store`: nothing is stored on disk and every request is a full fetch
+- Official examples also set `X-Content-Type-Options: nosniff` on the Function response when serving blobs
+- Python: the official page has FastAPI equivalents of these examples and a guide at https://vercel.com/kb/guide/python-and-vercel-blob
+- Source: https://vercel.com/docs/vercel-blob/private-storage (fetched 2026-11-14)
 - `next/image` does not work directly with private blob URLs; serve through a Function route
+
+### Custom Domains
+
+Private blobs are delivered through your own Functions, so they can be served from any custom domain. A common pattern is a dedicated project (e.g. "assets"): create it with a route handler that serves private blobs, connect the private store to it, and assign a custom domain (e.g. `content.mywebsite.com`). Requests such as `content.mywebsite.com/api/file?pathname=documents/report.pdf` then go through your auth logic and stream the blob.
 
 ## Related
 

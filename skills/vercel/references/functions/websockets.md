@@ -1,6 +1,6 @@
 # WebSockets
 
-Vercel Functions can serve WebSocket connections (Beta, all plans) for realtime features such as AI streaming, chat, and collaboration.
+Vercel Functions can serve WebSocket connections (all plans) for realtime features such as AI streaming, chat, and collaboration.
 
 ## Signature / Usage
 
@@ -95,7 +95,7 @@ async def websocket_endpoint(websocket: fastapi.WebSocket):
 - Python frameworks need no Vercel-specific upgrade API
 - Pricing and limits follow Vercel Functions, plus Fast Data Transfer and Fast Origin Transfer for data sent over the connection
 - Requires Fluid compute (default for new projects created on or after April 23, 2025)
-- Source: https://vercel.com/docs/functions/websockets
+- Source: https://vercel.com/docs/functions/websockets (fetched 2026-11-14; the page labels WebSockets as available on all plans, with no Beta label)
 
 ## Related
 

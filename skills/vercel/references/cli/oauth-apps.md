@@ -24,7 +24,8 @@ vercel oauth-apps remove inst_abc123 --yes
 
 ## Notes
 
-- Docs status (checked 2026-10-16): the official page `/docs/cli/oauth-apps` returns 404 and `oauth-apps` is no longer in the command list of the CLI overview. This page is kept from earlier docs; confirm the command's current status with `vercel oauth-apps --help` before relying on it. This does not mean the command was removed
+- Docs status (checked 2026-11-14): legacy page. The official URL `https://vercel.com/docs/cli/oauth-apps` now resolves to the "Sign in with Vercel" page (`/docs/sign-in-with-vercel`), not a CLI reference, and `oauth-apps` is absent from the CLI overview command list. In addition, the strings `oauth-apps` and `list-requests` are not found in the `strings` output of the native vercel 65.16.0 binary, so the command was likely removed; this is not confirmed in official release notes. The subcommand details below are kept from earlier docs; do not rely on them with CLI 65.16.0 or later
+- Source: https://vercel.com/docs/cli/oauth-apps (resolves to Sign in with Vercel; fetched 2026-11-14)
 - These subcommands act on team-scoped resources; confirm the current scope or pass `--scope <team>`
 - `install --permission` is required and repeatable (e.g. `--permission read:project`)
 

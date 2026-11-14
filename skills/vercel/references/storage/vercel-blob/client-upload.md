@@ -110,6 +110,8 @@ export async function POST(request: Request) {
 | `addRandomSuffix` | Add random suffix to pathname |
 | `allowOverwrite` | Allow overwriting existing blob |
 | `cacheControlMaxAge` | Cache duration in seconds |
+| `ifMatch` | ETag for a conditional write; the upload succeeds only if the blob's current ETag matches |
+| `ttlDays` | Whole days (1 to 730) after which the blob is deleted automatically (in the `@vercel/blob` 2.9.0 type definitions; not in the docs table) |
 | `callbackUrl` | Custom webhook URL for `onUploadCompleted` |
 | `tokenPayload` | String forwarded to `onUploadCompleted` |
 
@@ -138,6 +140,8 @@ Connected stores use OIDC by default: `BLOB_STORE_ID` plus a short-lived, auto-r
 
 - Client uploads have **no data transfer charges** for the upload itself
 - `handleUpload` requires `BLOB_READ_WRITE_TOKEN`; OIDC is not accepted (use `handleUploadPresigned` for OIDC)
+- `onBeforeGenerateToken(pathname, clientPayload, multipart)` also receives a `multipart` boolean
+- Source: https://vercel.com/docs/vercel-blob/client-upload (fetched 2026-11-14)
 - Without authentication in `onBeforeGenerateToken`, your upload route accepts anonymous uploads
 - `pathname` and `clientPayload` are sent by the browser: treat them as untrusted and authorize the destination (and anything `clientPayload` references) before returning a token
 

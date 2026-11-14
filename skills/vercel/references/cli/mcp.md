@@ -21,8 +21,11 @@ vercel mcp --project
 
 - Does not deploy any MCP server; only adjusts client-side configuration on your machine
 - For Claude.ai and Claude for desktop, prints manual setup instructions
-- For Claude Code, Cursor, VS Code with Copilot, configures the client directly
-- Without `--clients`, launches an interactive client picker
+- For Claude Code, adds Vercel MCP to the client; for Cursor and VS Code with Copilot, opens the client's one-click installer and you follow the prompts there; for other clients see the Vercel MCP setup docs
+- Without `--clients`, launches an interactive client picker; in non-interactive environments such as CI, `--clients` is required
+- `--project` scopes the MCP session to the linked project; if the directory is not linked, run `vercel link` first
+- After the command finishes, complete any authentication the client asks for (in Claude Code, run `/mcp`)
+- Source: https://vercel.com/docs/cli/mcp (fetched 2026-11-14)
 
 ## Related
 

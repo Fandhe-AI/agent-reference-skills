@@ -34,6 +34,7 @@ const blob = await put('pathname/file.jpg', body, {
 | `addRandomSuffix` | No | Add random suffix to pathname to avoid conflicts. Default: `false` |
 | `allowOverwrite` | No | Allow overwriting existing blob at same pathname. Default: `false` |
 | `cacheControlMaxAge` | No | Cache duration in seconds. Default: 1 month. Min: 60s |
+| `ttlDays` | No | Whole days (1 to 730) after which the blob is deleted automatically; counted from the upload and applied at UTC midnight (the blob lives at least this many days). Not set by default. See Expire blobs automatically |
 | `contentType` | No | MIME type; extracted from pathname extension by default |
 | `multipart` | No | Enable multipart upload for large files |
 | `ifMatch` | No | ETag for conditional write (throws `BlobPreconditionFailedError` on mismatch) |
@@ -71,7 +72,7 @@ const blob = await putImage('avatars/user-123.webp', request.body, {
 });
 ```
 
-`putImage(pathname, bodyOrUrl, options)`: `bodyOrUrl` is image content (`ReadableStream`, `String`, `ArrayBuffer`, `Blob`) or a `URL` instance pointing to a public http(s) image that Vercel fetches server-side (strings are always treated as image content). Options: `access` (required), `optimizeImage` (required), `addRandomSuffix`, `allowOverwrite`, `cacheControlMaxAge`, `ifMatch`, `oidcToken`, `storeId`, `abortSignal`, `onUploadProgress`. `contentType` and `multipart` are not available.
+`putImage(pathname, bodyOrUrl, options)`: `bodyOrUrl` is image content (`ReadableStream`, `String`, `ArrayBuffer`, `Blob`) or a `URL` instance pointing to a public http(s) image that Vercel fetches server-side (strings are always treated as image content). Options: `access` (required), `optimizeImage` (required), `addRandomSuffix`, `allowOverwrite`, `cacheControlMaxAge`, `ttlDays`, `ifMatch`, `oidcToken`, `storeId`, `abortSignal`, `onUploadProgress`. `contentType` and `multipart` are not available.
 
 | `optimizeImage` | Required | Description |
 |-----------------|----------|-------------|
@@ -176,11 +177,12 @@ const blob = await copy('source/file.jpg', 'destination/file.jpg', { access: 'pu
 | `addRandomSuffix` | No | Default: `false` (unlike `put()`) |
 | `allowOverwrite` | No | Default: `false` |
 | `cacheControlMaxAge` | No | Cache duration in seconds |
+| `ttlDays` | No | Whole days (1 to 730) after which the new blob is deleted automatically; the source blob's TTL is never carried over |
 | `ifMatch` | No | ETag for conditional copy |
 | `abortSignal` | No | `AbortSignal` to cancel |
 | `token` / `oidcToken` / `storeId` | No | Auth overrides |
 
-Note: `contentType` and `cacheControlMaxAge` are NOT copied from source; set them explicitly.
+Note: `contentType`, `cacheControlMaxAge` and `ttlDays` are NOT copied from source; set them explicitly.
 
 ## rename()
 
@@ -194,7 +196,7 @@ const blob = await rename('user-uploads/avatar-old.png', 'user-uploads/avatar.pn
 });
 ```
 
-`rename(fromUrlOrPathname, toPathname, options)`: like `copy()`, `contentType` and `cacheControlMaxAge` are not carried over. Throws if a blob already exists at `toPathname` unless `allowOverwrite: true` (or `addRandomSuffix: true`). If the source cannot be deleted after a successful copy, the method throws and the blob exists at both paths; retry with `allowOverwrite: true`. Cannot be called with a client token.
+`rename(fromUrlOrPathname, toPathname, options)`: like `copy()`, `contentType`, `cacheControlMaxAge` and `ttlDays` are not carried over (`ttlDays` is also accepted as an option). Throws if a blob already exists at `toPathname` unless `allowOverwrite: true` (or `addRandomSuffix: true`). If the source cannot be deleted after a successful copy, the method throws and the blob exists at both paths; retry with `allowOverwrite: true`. Cannot be called with a client token.
 
 ## Multipart Uploads
 
@@ -239,7 +241,9 @@ const blob = await uploader.complete([part1]);
 // uploader: { key, uploadId, uploadPart(partNumber, body), complete(parts) }
 ```
 
-`createMultipartUploader` options: `access` (required), `contentType`, `token`, `oidcToken`, `storeId`, `addRandomSuffix` (default `true`), `cacheControlMaxAge`, `abortSignal`.
+`createMultipartUploader` options: `access` (required), `contentType`, `token`, `oidcToken`, `storeId`, `addRandomSuffix` (default `true`), `cacheControlMaxAge`, `ttlDays`, `abortSignal`.
+
+`ttlDays` (1 to 730; the completed blob is deleted automatically) is passed to `createMultipartUpload()` / `createMultipartUploader()`; the other multipart methods do not read it.
 
 ## Signed URLs
 
@@ -309,7 +313,7 @@ const jsonResponse = await handleUpload({
 });
 ```
 
-`onBeforeGenerateToken` return options:
+`onBeforeGenerateToken(pathname, clientPayload, multipart)` also receives a `multipart` boolean. Return options:
 
 | Parameter | Description |
 |-----------|-------------|
@@ -319,6 +323,8 @@ const jsonResponse = await handleUpload({
 | `addRandomSuffix` | Add random suffix to pathname |
 | `allowOverwrite` | Allow overwriting existing blobs |
 | `cacheControlMaxAge` | Cache duration in seconds |
+| `ttlDays` | Whole days (1 to 730) after which the blob is deleted automatically (present in the `@vercel/blob` 2.9.0 type definitions; not in the docs table) |
+| `ifMatch` | ETag for a conditional write |
 | `callbackUrl` | Custom URL for `onUploadCompleted` webhook |
 | `tokenPayload` | String forwarded to `onUploadCompleted` |
 
@@ -337,10 +343,46 @@ try {
 
 ## Notes
 
+- `@vercel/blob` 2.9.0 adds TTL: `ttlDays` on write options, `expiresAt` on results, and `setTtl()` (confirmed in the 2.9.0 type definitions; 2.8.2 has none). `expiresAt` appears on the `head()`, `copy()` and `rename()` results and, per the 2.9.0 `PutBlobResult` type, on write results; the docs page says only `head()` returns it
+- Source: https://vercel.com/docs/vercel-blob/using-blob-sdk (fetched 2026-11-14)
 - `handleUpload` always requires a read-write token (`BLOB_READ_WRITE_TOKEN`); OIDC is not accepted (use `handleUploadPresigned` for OIDC)
 - Conditional options: `ifMatch` (put, putImage, copy, del single URL) and `ifNoneMatch` (get) as documented in the current Blob docs
 - `onUploadCompleted` callback does not fire on localhost; use ngrok for local testing
 - Set `VERCEL_BLOB_CALLBACK_URL` env var to override the callback URL locally
+
+### Expire blobs automatically
+
+Pass `ttlDays` when you write a blob to delete it automatically after that many days. It works with `put()`, `putImage()`, `copy()`, `rename()`, `createMultipartUpload()`, `createMultipartUploader()`, client upload tokens and presigned URLs. Use `setTtl()` to change or remove the TTL of an existing blob.
+
+```ts
+import { put, setTtl, head } from '@vercel/blob';
+
+// Delete this export 7 days after it was uploaded
+const blob = await put('exports/report.csv', csv, {
+  access: 'private',
+  ttlDays: 7,
+});
+
+// Keep it for 30 days instead, still counted from the upload
+await setTtl(blob.url, { ttlDays: 30 });
+
+// Keep it indefinitely
+await setTtl(blob.url, { ttlDays: null });
+
+// Check when a blob will be deleted
+const { expiresAt } = await head(blob.url);
+```
+
+- `ttlDays` accepts whole numbers from 1 to 730. The TTL is counted from the moment the blob was uploaded, not from when you set it. Expirations are applied once a day at UTC midnight.
+- `head()` returns the deletion date as `expiresAt`. A blob whose `expiresAt` is in the past is pending deletion and is usually gone within a day (the dashboard labels it **Pending Deletion**). Blobs deleted by their TTL are not restorable, like `del()`.
+- Overwriting a blob without `ttlDays` removes its TTL. `copy()` and `rename()` never carry the TTL over from the source; pass `ttlDays` again.
+- Setting a TTL adds one Advanced Operation per started 60 days of TTL on top of the write (1 to 60 days: one extra; 61 to 120: two; 730 days: 13). `setTtl()` is billed only this charge; clearing a TTL is free.
+
+#### setTtl()
+
+`setTtl(urlOrPathname, options)` changes or removes the TTL of an existing blob without rewriting it. Returns `{ url, pathname, ttlDays }` (`ttlDays` is `number | null`) or throws `BlobNotFoundError` if the blob does not exist. Options: `ttlDays` (required; 1 to 730, or `null` to remove the TTL, counted from the upload), `token`, `oidcToken`, `storeId`, `abortSignal`.
+
+Batch form (from the `@vercel/blob` 2.9.0 type definitions; the docs page does not describe it): `setTtl(urlsOrPathnames: string[], options)` updates up to 1,000 blobs in one request and returns an array; a blob that cannot be updated comes back as `{ url, pathname, error: { code, message } }` (`code` is `not_found` if it does not exist) instead of failing the whole batch.
 
 ## Related
 

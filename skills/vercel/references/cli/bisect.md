@@ -19,13 +19,15 @@ vercel bisect --run ./test.sh
 | `--bad` | `-b` | Known bad deployment URL or alias; skips the prompt |
 | `--path` | `-p` | Subpath appended to each deployment URL during bisect |
 | `--open` | `-o` | Auto-open each deployment URL in the browser |
-| `--run` | `-r` | Shell script to automate bisect; exit 0=good, non-0=bad, 125=skip |
+| `--run` | `-r` | Path to an executable script, run per deployment with the URL as first argument; exit 0=good, non-0=bad, 125=skip |
 
 ## Notes
 
 - Good and bad deployments must be **production** deployments
 - If an alias URL is used, it resolves to the current alias target at the time of bisect
 - Manual steps: at each deployment prompt, mark it good or bad
+
+- Source: https://vercel.com/docs/cli/bisect (fetched 2026-11-14)
 
 ## Related
 

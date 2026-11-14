@@ -42,6 +42,8 @@ export default {
 | `getCache` | `{ keyHashFunction?, namespace?, namespaceSeparator? }` | Returns a `RuntimeCache` (separator defaults to `$`) |
 | `upgradeWebSocket` | `handler: (ws: WebSocket) => void \| Promise<void>, options?: UpgradeWebSocketOptions` | Upgrades an HTTP GET to a WebSocket. Needs `@vercel/functions` 3.10.0+ and `ws` |
 | `attachDatabasePool` | `dbPool: DbPool` | Call right after creating a DB pool so idle clients are released before functions suspend (Fluid compute) |
+| `unstable_getAffinityId` | none; returns `string \| undefined` | Experimental. Affinity ID from the current invocation's `x-vercel-affinity-id` header, `undefined` when unavailable |
+| `unstable_getAffinityHeaders` | `options: { affinityId: string; oidc?: boolean }`; returns `Promise<Record<string, string>>` | Experimental. Request headers (`x-vercel-affinity-id`, plus `x-vercel-trusted-oidc-idp-token` when `oidc: true`) for invoking a function with an explicit affinity ID |
 
 `RuntimeCache` methods:
 
@@ -75,6 +77,24 @@ export default {
 };
 ```
 
+Experimental affinity helpers (`@vercel/functions` 3.11.0 and later; may change without notice):
+
+```js
+import { unstable_getAffinityHeaders } from '@vercel/functions';
+
+const headers = await unstable_getAffinityHeaders({
+  affinityId: 'room:123',
+  oidc: true,
+});
+
+const response = await fetch('https://my-project.vercel.app/api/actor', {
+  method: 'POST',
+  headers: { ...headers, 'content-type': 'application/json' },
+  body: JSON.stringify({ action: 'join' }),
+  redirect: 'error',
+});
+```
+
 ## OIDC methods
 
 | Method | Package | Description |
@@ -101,6 +121,13 @@ const s3Client = new s3.S3Client({
 - Runtime Cache: isolated per environment (`preview` / `production`); per project on Pro and Enterprise, shared across the team on Hobby. Max item size 2 MB, 128 tags, 256-byte tags. No first-class ISR integration (tags and TTLs do not apply to ISR; `revalidatePath` / `revalidateTag` do not invalidate it). Usage is charged
 - `upgradeWebSocket()`: with Next.js Cache Components, call `connection()` from `next/server` before it. Local dev for Next.js needs `vc dev` (Vercel CLI 54.14.2+) instead of `next dev`; no other framework supports local dev. Prefer native Node.js WebSocket handling when possible
 - `attachDatabasePool` supports pg, MySQL2, MariaDB, MongoDB, ioredis, cassandra-driver, and other compatible pools
+- `unstable_getAffinityId()` / `unstable_getAffinityHeaders()` are marked `@experimental` in the package typings: "may change without notice". `affinityId` must be 1 to 256 visible ASCII characters without spaces. `oidc` defaults to `false`; enable it only for a trusted destination (service-binding URLs do not need it) and avoid forwarding the token through redirects to untrusted destinations. Source: `@vercel/functions` 3.11.3 package typings (`affinity.d.ts`) and CHANGELOG (3.11.0)
+- `@vercel/functions` 3.11.3: PostgreSQL pool cleanup is associated with the request that checked out the connection; repeated `attachDatabasePool` on the same PostgreSQL pool is idempotent. Source: `@vercel/functions` 3.11.3 CHANGELOG
+- Function signature: Vercel Functions use a Web Handler; `request` is a web `Request` (`NextRequest` in Next.js). The `context` parameter is deprecated in favor of `@vercel/functions` (`waitUntil`). `export default { fetch(request) {...} }` is also supported (Hono, ElysiaJS, H3, etc.)
+- Request cancellation (Node.js runtime only, opt-in): set `"supportsCancellation": true` for the matching paths under `functions` in `vercel.json`. On client disconnect `request.signal` (an `AbortSignal`) fires and the function is terminated, whether or not the code listens for the signal; wrap must-finish work in `waitUntil` or `after`
+- `SIGTERM`: sent before scale-down termination on the Node.js, Bun, Rust, and Python runtimes and container images; code may run up to 500 ms (30 s for container images) afterward
+- Next.js 16.3+: setting `runtime` to `edge` is no longer supported
+- Source: https://vercel.com/docs/functions/functions-api-reference (fetched 2026-11-14)
 - Python equivalent is vercel.functions (see vercel-sdk-python.md)
 - Source: https://vercel.com/docs/functions/functions-api-reference/vercel-functions-package, https://vercel.com/docs/functions/functions-api-reference
 

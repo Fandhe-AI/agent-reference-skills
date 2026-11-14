@@ -56,7 +56,9 @@ await vercel.deployments.deleteDeployment({ id: 'deployment-id' });
 - Hobby (changelog 2026-09-16): Hobby teams get 10 GB of Deployment Storage and retain fewer deployments past the 30-day window. Each Hobby project keeps its 3 most recent production deployments plus its 3 most recent deployments of any type regardless of age; preview deployments no longer get their own protection; the current production deployment is never deleted, and aliased and active-branch deployments stay protected. If the team is over 10 GB, deployments outside the exceptions are deleted immediately instead of after 30 days
 - Billable duration and CPU minutes (changelog 2026-09-21): deployments show them in the dashboard, `vc inspect` (Vercel CLI 59.23.1 or later) and the REST API. Billable duration is build plus post-build time combined, rounded up to the next whole minute; CPU minutes are that figure multiplied by the machine's vCPUs (e.g. `270 minutes (9m x 30vCPU)`)
 - Deployment protection (Vercel Authentication, Trusted IPs, Password Protection) can restrict access to deployments.
-- Trusted IPs and Password Protection require Enterprise; Password Protection is also available as a paid Pro add-on.
+- Vercel Authentication can protect preview and production deployments on all plans at no additional cost. Password Protection costs $20 per month per protected project on Pro and is included on Enterprise; Trusted IPs is available on Enterprise.
+- Redeploying: the **Redeploy to Production** window lets you choose whether to use the existing Build Cache.
+- Source: https://vercel.com/docs/deployments/managing-deployments (fetched 2026-11-14)
 
 ## Related
 

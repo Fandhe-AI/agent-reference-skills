@@ -69,6 +69,10 @@ Define dependencies in `pyproject.toml` (with or without `uv.lock`), `requiremen
 
 ## Notes
 
+- Python bytecode: Vercel compiles Python source to `.pyc` during deployment builds and includes it in the bundle when space allows (no configuration)
+- Official FastAPI example `pyproject.toml` uses `requires-python = ">=3.12"` and `dependencies = ["fastapi>=0.117.1"]`; a `requirements.txt` example is `fastapi==0.117.1`
+- Migration guides exist for moving a FastAPI/Flask/Django API from Heroku, Render or Railway; guides exist for Vercel Queues, Blob, Connect, durable workflows, Sandbox and the AI SDK from Python (see the Vercel KB)
+- `tool.vercel.entrypoint` is also the key used in `functions` in `vercel.json`
 - Framework presets are detected from `requirements.txt`, `pyproject.toml`, or `Pipfile`
 - For Django, a `manage.py` that sets `DJANGO_SETTINGS_MODULE` is also detected (including in an immediate subdirectory); the app is resolved from `WSGI_APPLICATION` or `ASGI_APPLICATION`
 - `[project.scripts] app = "module:variable"` is still supported for existing projects; use `tool.vercel.entrypoint` for new projects
@@ -78,7 +82,22 @@ Define dependencies in `pyproject.toml` (with or without `uv.lock`), `requiremen
 - Relative paths in `open()` resolve against the project base directory, not the file's directory
 - Existing projects can still define file-based functions in an `/api` directory (documented on a separate page `/docs/functions/runtimes/python/api-directory`)
 - Python and a frontend can be combined in one project with Services
-- Source: https://vercel.com/docs/functions/runtimes/python
+- Source: https://vercel.com/docs/functions/runtimes/python (fetched 2026-11-14)
+
+### Routing Middleware in Python
+
+To redirect, rewrite, or answer requests before they reach the Python app, set `proxy` in `vercel.json` to a `module:attribute` entrypoint:
+
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "proxy": {
+    "entrypoint": "proxy:proxy"
+  }
+}
+```
+
+The middleware runs separately from the app, with only the packages in the `vercel.proxy` dependency group installed. See the Python reference of Routing Middleware (https://vercel.com/docs/routing-middleware/python-reference).
 
 ## Related
 

@@ -18,6 +18,23 @@ export function GET(request: Request) {
 }
 ```
 
+```ts
+// api/hello.ts — run work after the response (within max duration)
+import { waitUntil } from '@vercel/functions';
+
+async function getProducts() {
+  const response = await fetch('https://api.vercel.app/products');
+  return response.json();
+}
+
+export default {
+  fetch() {
+    waitUntil(getProducts().then((json) => console.log({ json })));
+    return new Response('Accepted', { status: 202 });
+  },
+};
+```
+
 ## Lifecycle
 
 1. User sends request → Vercel routes to function
@@ -42,6 +59,13 @@ export function GET(request: Request) {
 - Fluid compute is enabled by default for new projects (as of April 23, 2025)
 - Deploy a Node.js server via a `server.{js,ts}` entrypoint; individual functions go in `/api`
 - Static assets are always served from the nearest CDN region regardless of function region
+
+- Use `waitUntil` for short tasks that continue after the response, within the function's maximum duration; for retries, durable waits or a continuous worker, compare the background worker options (https://vercel.com/docs/background-workers)
+- Use Vercel Workflows or eve when an agent must preserve progress across pauses or deployments
+- To stream responses with Next.js you must use Route Handlers in the App Router, even if the rest of the app uses the Pages Router
+- Metrics (Active CPU, Provisioned Memory, Invocations, savings from optimized concurrency) are under project **Observability** → **Vercel Functions**
+- Pricing is based on active CPU, provisioned memory and invocations; projects not on fluid compute use the legacy pricing docs
+- Source: https://vercel.com/docs/functions (fetched 2026-11-14)
 
 ## Related
 

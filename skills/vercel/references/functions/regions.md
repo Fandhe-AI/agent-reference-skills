@@ -86,6 +86,10 @@ Functions should execute close to their data source to minimize latency. Default
 
 ## Notes
 
+- Vercel lists 19 compute-capable regions and 126 Points of Presence (PoPs); `dxb1` in the table above is not in the 19-region list on the global network page (not confirmed in the fetched official docs)
+- Local development (`vercel dev`) runs in region `dev1` (localhost)
+- Default region `iad1` failover order (P0 to P18): `iad1`, `cle1`, `yul1`, `sfo1`, `pdx1`, `dub1`, `lhr1`, `cdg1`, `fra1`, `arn1`, `gru1`, `hnd1`, `kix1`, `icn1`, `bom1`, `syd1`, `hkg1`, `sin1`, `cpt1`; traffic is rerouted to the next closest region during regional downtime
+- Source: https://vercel.com/docs/regions (fetched 2026-11-14)
 - Deploying to more regions than plan allows causes the deployment to fail before build
 - Choosing regions far from external services increases latency
 - ISR cache region is tied to the project's default function region

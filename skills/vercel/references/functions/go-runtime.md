@@ -57,6 +57,26 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 ```json
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "build": {
+    "env": {
+      "GO_BUILD_FLAGS": "-ldflags '-s -w'"
+    }
+  }
+}
+```
+
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "go build -o server ./cmd/api"
+}
+```
+
+Adapted (not in the official docs): `$VERCEL_OUTPUT_FILE` is quoted in the following example.
+
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "make build && cp out/myapp \"${VERCEL_OUTPUT_FILE}\""
 }
 ```
@@ -69,8 +89,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 - Files in `/api` that export an `http.HandlerFunc` each become a separate Vercel Function; any exported identifier works as the function name
 - To deploy a Go server alongside a frontend in the same project, use Services
 - Private packages support GitHub, GitLab, Bitbucket, and self-hosted Git servers
-- The buildCommand example quotes "${VERCEL_OUTPUT_FILE}" (the official snippet leaves it unquoted).
-- Source: https://vercel.com/docs/functions/runtimes/go
+- Adapted from the official docs: the last buildCommand example quotes "${VERCEL_OUTPUT_FILE}" (the official snippet leaves it unquoted as `$VERCEL_OUTPUT_FILE`).
+- After a custom `buildCommand`, Vercel looks for the compiled binary in the project root and `bin/`; `GO_BUILD_FLAGS` `-ldflags '-s -w'` removes debug info and is the default
+- With GitHub, `GIT_CREDENTIALS` needs a personal token with access to the private repository
+- Source: https://vercel.com/docs/functions/runtimes/go (fetched 2026-11-14)
 
 ## Related
 

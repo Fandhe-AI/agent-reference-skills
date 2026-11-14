@@ -8,6 +8,7 @@ Build a Vercel Project locally or in a CI environment. Output is placed in `.ver
 vercel build
 vercel build --prod
 vercel build --target=staging
+vercel build --environment=staging
 vercel build --output ./custom-output
 ```
 
@@ -18,6 +19,7 @@ vercel build --output ./custom-output
 | `--prod` | Build using Production environment variables (default: Preview) |
 | `--yes` | Skip confirmation; auto-pull env vars and project settings if not found locally |
 | `--target` | Target environment: `production`, `preview`, or a custom environment name |
+| `--environment` | Environment to build against: production, preview, or a custom environment; `--prod` equals `--environment=production` |
 | `--output` | Custom output directory (default: `.vercel/output`) |
 | `--standalone` | Standalone build: all dependencies inlined into function output folders so artifacts are fully contained within `.vercel` |
 
@@ -28,6 +30,9 @@ vercel build --output ./custom-output
 - System environment variables are not available at build time with `--prebuilt`; avoid using it if your framework relies on them
 - Schedules: `vercel build` combines Schedules defined in `vercel.json` with schedules framework builders emit in Build Output `config.json`. Names must be unique across both sources; a duplicate fails the build with `SCHEDULE_NAME_CONFLICT`
 - A schedule targeting a function in a service sets `service` to the service name and `function` to its build-output function identifier without `.func` (e.g. `service: "worker"`, `function: "index"` targets `.vercel/output/services/worker/functions/index.func`). `service` applies only to function targets, not `path` or `topic`. Service-hosted function schedules run after deployment; `vercel dev` rejects them with `DEV_SCHEDULE_SERVICE_FUNCTION_UNSUPPORTED`
+
+- `--target` is documented in the previous page revision; the current official page documents `--environment` (not confirmed whether `--target` remains an alias)
+- Source: https://vercel.com/docs/cli/build (fetched 2026-11-14)
 
 ## Related
 

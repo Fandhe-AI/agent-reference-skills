@@ -68,8 +68,8 @@ Takes the `{ delegationToken, clientSigningToken }` returned by `issueSignedToke
 
 Operation-specific extra fields:
 
-- `'put'`: `allowedContentTypes`, `maximumSizeInBytes`, `addRandomSuffix`, `allowOverwrite`, `cacheControlMaxAge`, `ifMatch`, `onUploadCompleted`.
-- `'get'`: `useCache`. Set `false` to append `cache=0` so fetches bypass the CDN cache and read from origin storage.
+- `'put'`: `allowedContentTypes`, `maximumSizeInBytes`, `addRandomSuffix`, `allowOverwrite`, `cacheControlMaxAge`, `ttlDays`, `ifMatch`, `onUploadCompleted`.
+- `'get'`: `useCache`. Set `false` to append `cache=0` so fetches bypass the CDN cache and read from origin storage. Applies to private blobs only: `presignUrl()` ignores `useCache` when `access` is `'public'`.
 - `'delete'`: `ifMatch` to require a specific ETag.
 - `'head'`: no additional fields.
 
@@ -219,7 +219,8 @@ const result = await uploadPresigned(file.name, file, {
 - Production: also authorize the requested pathname inside getSignedToken (e.g. require a per-user prefix and have the browser send the same prefixed pathname); the official example only authenticates the user.
 - Adapted: the official example ships a stub authenticate() that always returns a user; this page replaces it with an app-specific helper that rejects unauthenticated requests.
 - Python SDK does not support Signed URLs.
-- Source: https://vercel.com/docs/vercel-blob/vercel-signed-urls
+- `ttlDays` on a presigned `PUT` (1 to 730) makes the uploaded blob expire automatically; see blob-sdk.md (Expire blobs automatically)
+- Source: https://vercel.com/docs/vercel-blob/vercel-signed-urls (fetched 2026-11-14)
 
 ## Related
 

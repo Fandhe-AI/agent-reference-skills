@@ -6,11 +6,11 @@ Make authenticated HTTP requests to the Vercel API from the terminal. Beta comma
 
 ```bash
 vercel api /v2/user
-vercel api /v9/projects -X POST -F name=my-project
+vercel api /v10/projects -X POST -F name=my-project
 vercel api /v6/deployments --paginate
 vercel api   # interactive endpoint discovery
 vercel api ls  # list all available endpoints (alias of `list`)
-vercel api ls --format json
+vercel api list --json
 vercel api /v2/user --generate=curl
 vercel api /v13/deployments/dpl_abc123 -X DELETE --dangerously-skip-permissions
 ```
@@ -36,9 +36,13 @@ vercel api /v13/deployments/dpl_abc123 -X DELETE --dangerously-skip-permissions
 ## Notes
 
 - Running without an endpoint enters interactive mode with OpenAPI-based discovery
-- `vercel api ls` (alias of the `list` subcommand) lists all available API endpoints; add `--format json` for scripting
+- `vercel api list` (`ls` in the earlier text of this page) lists all available API endpoints; add `--json` for scripting (the current official page documents `--json`, not `--format json`)
 - `--generate=curl` prints a curl command with an authentication placeholder instead of executing; `--dangerously-skip-permissions` skips confirmation prompts for DELETE operations (use with caution)
 - The current docs page no longer carries a beta banner (checked against the 2026-10 docs source)
+- When stdout is piped or captured, JSON responses automatically print as single-line JSON (same as `--raw`); use `--raw` to force this in a terminal. JSON Lines responses print as text
+- A DELETE request asks for confirmation; where the CLI cannot prompt (for example CI) it fails unless `--dangerously-skip-permissions` is passed
+- `--refresh` also refreshes the spec cache used by the `list` subcommand; `--scope <team>` (global option) targets a team, e.g. `vercel api /v9/projects --scope my-team`
+- Source: https://vercel.com/docs/cli/api (fetched 2026-11-14)
 - Authentication uses the current CLI session automatically
 
 ## Related

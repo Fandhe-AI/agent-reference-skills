@@ -40,7 +40,7 @@ Pro and Enterprise teams can run individual functions for up to 1800s (30 minute
 | Pro | 300s | 800s | 1800s (Beta) |
 | Enterprise | 300s | 800s | 1800s (Beta) |
 
-Supported runtime versions during the beta: `nodejs22.x`, `nodejs24.x`, Bun `1.x` and `1.4.x`, `python3.12`, `python3.13`, `python3.14`. The Bun runtime is included (changelog "Bun runtime now supports large functions and extended max duration"). Secure Compute and Static IPs do not support durations above 800s during the beta.
+Supported runtime versions during the beta: `nodejs22.x`, `nodejs24.x`, `nodejs26.x`, Bun `1.x` and `1.4.x`, `python3.12`, `python3.13`, `python3.14`. The Bun runtime is included (changelog "Bun runtime now supports large functions and extended max duration"). Secure Compute and Static IPs are supported; BYOC does not support durations above 800s during the beta.
 
 ```json
 {
@@ -51,6 +51,8 @@ Supported runtime versions during the beta: `nodejs22.x`, `nodejs24.x`, Bun `1.x
 ```
 
 For Next.js App Router functions on a supported Node.js or Bun runtime, set `export const maxDuration = 1800;` in the route file. For Python framework apps, key the entry on the resolved entrypoint file (e.g. `app/main.py`) instead of an `/api` route.
+
+For long-running handlers holding an HTTP/2 connection open, Vercel sends connection-level HTTP/2 `PING` frames while the response is idle. HTTP/1.1 has no equivalent, so clients and intermediaries may still close idle connections; stream progress or heartbeat data while work is running.
 
 ### Edge Runtime
 
@@ -86,10 +88,19 @@ Via `vercel.json`:
 
 ## Notes
 
+- Source: https://vercel.com/docs/functions/configuring-functions/duration (fetched 2026-11-14)
 - Duration is "wall-clock time" — includes all time from start to finish, including I/O waits
 - Glob pattern order in `vercel.json` matters; more specific patterns should come first
 - For unlimited execution time, use Vercel Workflows instead
 - `src/` directory Next.js projects must prefix paths with `/src/` in `vercel.json`
+
+### Checking a Deployment's Max Duration
+
+```bash
+vercel inspect <deployment-url> --json
+```
+
+The JSON output lists each function's max duration as `timeout` and memory size as `memorySize`; the default `vercel inspect` output does not show them.
 
 ## Related
 

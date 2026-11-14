@@ -29,7 +29,9 @@ Determines how much memory and CPU a function can use. Configurable via the dash
 - Hobby users always use 2 GB / 1 vCPU (managed by Vercel on fluid compute, minimum 1 vCPU)
 - Increasing memory also increases CPU allocation, which can reduce execution time for CPU-intensive tasks
 - Projects created before 2019-11-08 have legacy defaults: 1024 MB / 0.6 vCPU (Hobby) or 3008 MB / 1.67 vCPU (Pro/Enterprise)
-- Memory is not directly billed; it affects Provisioned Memory billing (GB × instance lifetime hours)
+- Memory is not directly billed; it affects two fluid compute pricing dimensions: Active CPU (more CPU can reduce Active CPU time for CPU-bound work) and Provisioned Memory (larger settings increase the GB-hour rate); Invocations are billed separately
+- To view a function's memory size: dashboard project > Deployments > a deployment > Resources > open the function in Observability and hover the information icon next to its name
+- Source: https://vercel.com/docs/functions/configuring-functions/memory (fetched 2026-11-14)
 
 ## Related
 

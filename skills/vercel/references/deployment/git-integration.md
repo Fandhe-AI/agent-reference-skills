@@ -1,6 +1,6 @@
 # Git Integration
 
-Vercel automatically deploys on every branch push and merge to the production branch for GitHub, GitLab, Bitbucket, and Azure DevOps repositories.
+Vercel automatically deploys on every branch push and merge to the production branch for GitHub, GitLab, Bitbucket, Origin, and Azure DevOps repositories.
 
 ## Signature / Usage
 
@@ -21,6 +21,7 @@ git push origin main              # → production deployment
 | Self-Managed GitLab | All | Via GitLab Pipelines |
 | Bitbucket Free / Standard / Premium | All | Full integration with PR comments |
 | Bitbucket Data Center (Self-Hosted) | All | Via Bitbucket Pipelines |
+| Origin | All | Public beta; see Notes |
 | Azure DevOps Pipelines | All | Via Vercel Deployment Extension |
 
 ## Deployment Behavior
@@ -48,13 +49,18 @@ To customize: **Project Settings → Environments → Production → Branch Trac
 
 | Plan | Requirement |
 |------|-------------|
-| Hobby | Commit author must be the Hobby team owner |
-| Pro | Commit author must be a member of the Vercel Pro team |
+| Hobby | Commit author must be the Hobby team owner; private repositories in a GitHub organization, GitLab group, or Bitbucket workspace cannot deploy to a Hobby team |
+| Pro / Enterprise | Commit author must be a member of the Vercel team (Auto Approval or Manual Approval for private-repository committers) |
 
 For forks of public repositories, Vercel requires authorization from a team member before deploying a PR.
 
 ## Notes
 
+- Origin is listed as a supported Git provider in public beta (Vercel for Origin page; not distilled in this skill).
+- Notification sources: Git provider emails are managed in the provider's own notification settings; Vercel bot comments and the GitHub `deployment_status` events control are in the project's **Git** settings; Vercel-sent notifications are in Vercel notification preferences. Changing bot-comment or deployment-event settings affects everyone on the project.
+- The private-repository check applies to commit authors on GitHub organizations, GitLab groups, and non-personal Bitbucket workspaces, not to personal Git accounts. If the author has a Vercel account but is not a team member, they may be added automatically or need approval per the team's collaboration settings; authors without an account must create one and link their Git provider.
+- Providers not listed can deploy through the Vercel CLI.
+- Source: https://vercel.com/docs/git (fetched 2026-11-14)
 - Configure `github.autoJobCancellation = false` in `vercel.json` to disable automatic cancellation of queued builds.
 - Vercel sends `repository_dispatch` events to GitHub on deployment status changes (`vercel.deployment.ready`, `.success`, `.error`, `.canceled`, `.pending`, `.failed`, `.promoted`, `.skipped`, `.ignored`).
 - Commit authors on private repositories must have a Vercel account with linked Git credentials.
