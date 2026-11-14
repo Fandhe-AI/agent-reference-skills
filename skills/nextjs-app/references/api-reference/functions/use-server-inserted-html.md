@@ -42,7 +42,7 @@ export default function StyledJsxRegistry({
 - On a client navigation the hook does nothing; the CSS-in-JS library injects rules in the browser itself.
 - Prefer declaring inline scripts in Server Components (see the preventing-flash-before-hydration guide). A script returned from the hook is included in `<head>` only while nothing above it has suspended, so a tree change can silently move it into `<body>`. If you use the hook for a script, guard the callback with a `useRef` flag so it is inserted once. Neither a script returned from the hook nor an inline script in JSX runs on a client navigation. React warns in development about a script written in JSX; the hook skips it silently.
 - Next.js does not add a nonce to a script you return, so a `script-src` policy that requires one blocks it.
-- Source: https://nextjs.org/docs/app/api-reference/functions/use-server-inserted-html (v16.4.6, vercel/next.js tag `docs/01-app/03-api-reference/04-functions/use-server-inserted-html.mdx`; new in v16.4.6 relative to v16.4.6)
+- Source: https://nextjs.org/docs/app/api-reference/functions/use-server-inserted-html (v16.4.6, vercel/next.js tag `docs/01-app/03-api-reference/04-functions/use-server-inserted-html.mdx`; new in v16.4.6 relative to v16.4.2)
 
 ## Related
 

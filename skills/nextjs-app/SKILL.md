@@ -12,7 +12,7 @@ user-invocable: false
 
 ## 対象バージョン
 
-対象 Next.js v16.4.6（2026-11-09 リリース）。出典: https://nextjs.org/docs/app 、原本 vercel/next.js tag v16.4.6 `docs/01-app/`。v16.4.6 からの差分（docs 37 ファイル）を反映済み。
+対象 Next.js v16.4.6（2026-11-09 リリース）。出典: https://nextjs.org/docs/app 、原本 vercel/next.js tag v16.4.6 `docs/01-app/`。v16.4.2 からの差分（docs 37 ファイル）を反映済み。
 
 ## 対象範囲
 
