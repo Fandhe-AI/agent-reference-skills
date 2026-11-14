@@ -4,7 +4,7 @@ source: https://ui.shadcn.com/docs/cli
 
 # CLI
 
-Main subcommands of the `shadcn` CLI (4.22.0). Source: the official cli page (retrieved 2026-10-16). Run commands that modify files in a disposable environment or a clean Git-tracked working tree.
+Main subcommands of the `shadcn` CLI (4.23.0). Source: the official cli page (retrieved 2026-10-16). Run commands that modify files in a disposable environment or a clean Git-tracked working tree.
 
 ## Initialize a project (init)
 

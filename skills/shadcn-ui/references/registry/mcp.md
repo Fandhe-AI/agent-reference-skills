@@ -36,6 +36,7 @@ args = ["shadcn@latest", "mcp"]
 - Per client: Claude Code (restart, `/mcp` to debug), Cursor (enable the MCP server in Cursor Settings), VS Code (open `.vscode/mcp.json`, click Start; prompts run with GitHub Copilot), Codex (edit `config.toml` manually, restart), OpenCode (restart). Example prompts: "Show me the components in the acme registry", "Create a landing page using items from the acme registry".
 - Best practices: clear concise descriptions, accurate `dependencies`, `registryDependencies` for relationships, consistent kebab-case names.
 - The shadcn MCP server is a provider; MCP client configuration itself is covered by skills anthropic-claude-code-extend / openai-codex. Consumer-side server docs are in the shadcn-ui cli-config category (`mcp.md`).
+- Changed in CLI 4.23.0: `shadcn mcp` serves MCP protocol 2026-07-28 as well as earlier versions (the client's first message picks the version). The `shadcn/mcp` export is now an `McpServer` and a new `createServer()` export returns a fresh instance per connection; code that called `server.setRequestHandler(...)` on the old `Server` export should use `server.registerTool(...)` or `server.server.setRequestHandler(...)`. Source: https://github.com/shadcn-ui/ui/blob/shadcn%404.23.0/packages/shadcn/CHANGELOG.md (tag `shadcn@4.23.0`, retrieved 2026-11-14).
 
 ## Related
 

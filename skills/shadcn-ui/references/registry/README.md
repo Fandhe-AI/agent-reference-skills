@@ -9,6 +9,7 @@
 | Examples | Example registry items by type: `registry:style`,… | [examples.md](./examples.md) |
 | Getting Started | Set up, build, serve, test and publish your own… | [getting-started.md](./getting-started.md) |
 | GitHub Registries | Any `github.com` repository with a root `registry.json`… | [github.md](./github.md) |
+| FAQ | Frequently asked questions about running a registry:… | [faq.md](./faq.md) |
 | Registry Health | How registries listed in the shadcn/ui Registry… | [health.md](./health.md) |
 | MCP Server | MCP support for registry developers: the shadcn MCP… | [mcp.md](./mcp.md) |
 | Namespaces | Namespaced registries (`@namespace/resource-name`)… | [namespace.md](./namespace.md) |

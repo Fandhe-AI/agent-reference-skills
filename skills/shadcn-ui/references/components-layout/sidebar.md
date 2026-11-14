@@ -108,7 +108,9 @@ Also documented: `SidebarMenuSubItem`, `SidebarMenuSubButton`, `SidebarMenuSkele
 - Keyboard shortcut: `cmd+b` (Mac) / `ctrl+b` (Windows); configured by `SIDEBAR_KEYBOARD_SHORTCUT = "b"`.
 - With `variant="inset"`, wrap main content in `SidebarInset`.
 - `SidebarMenuButton` renders a button by default; use `render={<a href="#" />}` for links and `isActive` to mark the active item. Make a `SidebarGroup` collapsible by wrapping it in `Collapsible` and using `SidebarGroupLabel render={<CollapsibleTrigger />}`.
-- Theming uses `--sidebar-background`, `--sidebar-foreground`, `--sidebar-primary`, `--sidebar-primary-foreground`, `--sidebar-accent`, `--sidebar-accent-foreground`, `--sidebar-border`, `--sidebar-ring` (the docs' Theming snippet shows HSL values in `:root` and `.dark`).
+- Theming uses `--sidebar`, `--sidebar-foreground`, `--sidebar-primary`, `--sidebar-primary-foreground`, `--sidebar-accent`, `--sidebar-accent-foreground`, `--sidebar-border`, `--sidebar-ring`, with `oklch()` values in `:root` and `.dark` (the docs' Theming snippet at tag `shadcn@4.23.0`).
+- Changed in 4.23.0: the Theming snippet previously used HSL values inside `@layer base` and named the first variable `--sidebar-background`; it now uses `oklch()` values and `--sidebar`. Check which name your installed `sidebar.tsx` references before editing.
+- Source: https://ui.shadcn.com/docs/components/base/sidebar (Markdown twin retrieved 2026-11-14; the Theming snippet matches `apps/v4/content/docs/components/base/sidebar.mdx` at tag `shadcn@4.23.0`, and the Radix and React Aria variants carry the same change).
 - RTL changelog: add `dir` prop to `Sidebar` (forwarded to `SheetContent`), `data-side={side}` on the container, data-attribute positioning classes, and `rtl:rotate-180` on the `SidebarTrigger` icon; then `<Sidebar dir="rtl" side="right">`.
 - Radix variant (https://ui.shadcn.com/docs/components/radix/sidebar): uses `asChild` (e.g. `SidebarMenuButton asChild`) instead of `render`.
 - React Aria variant: https://ui.shadcn.com/docs/components/aria/sidebar (installs `react-aria-components`).

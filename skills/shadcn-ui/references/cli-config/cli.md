@@ -116,6 +116,7 @@ Other command options (from the docs):
 - `migrate radix` moves `@radix-ui/react-*` imports to the unified `radix-ui` package.
 - `eject` inlines `shadcn/tailwind.css` (added by `init`) into your global CSS and removes the `shadcn` dependency. It is irreversible; later CLI updates to that file will not apply.
 - shadcn/ui is a copy-in component CLI, distinct from `@ark-ui/react` (skill ark-ui), `@chakra-ui/react` (skill chakra-ui) and the Rust fandhe-frontend crates (skill fandhe-frontend).
+- Changed in CLI 4.22.1: `shadcn add --all` and the component picker only include components available for the project's style. 4.22.2 only updates the `undici` dependency (7.30.1). Source: https://github.com/shadcn-ui/ui/blob/shadcn%404.23.0/packages/shadcn/CHANGELOG.md (tag `shadcn@4.23.0`, retrieved 2026-11-14).
 
 ## Related
 
