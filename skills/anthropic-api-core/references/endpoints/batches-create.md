@@ -13,7 +13,7 @@ POST /v1/messages/batches
 ```bash
 curl https://api.anthropic.com/v1/messages/batches \
     -H 'Content-Type: application/json' \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -d '{
           "requests": [
@@ -52,6 +52,7 @@ Returns a `MessageBatch` object — same shape as [batches-retrieve.md](./batche
 ## Notes
 
 - Each `requests[].params` object accepts the identical schema as [messages-create.md](./messages-create.md); no batch-specific fields are added there.
+- Migration (2023-06-01 → 2026-10-21): the Messages API breaking changes apply to each request in a batch created with `2026-10-21` — `temperature`, `top_p`, `top_k` are removed (400), `document` blocks directly in `assistant` messages return 400, and `citations` on user `text` blocks return 400. See [versioning.md](../api-basics/versioning.md).
 - Fetch completed results via [batches-results.md](./batches-results.md) once `processing_status` is `"ended"`.
 
 ## Related

@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/messages/create.md / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/messages/create.md / last verified: 2026-11-14 -->
 <!-- source: https://platform.claude.com/docs/en/api/messages/count_tokens.md / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/api/messages/batches/create.md / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/api/messages/batches/list.md / last verified: 2026-08-07 -->
@@ -6,7 +6,7 @@
 <!-- source: https://platform.claude.com/docs/en/api/messages/batches/results.md / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/api/messages/batches/cancel.md / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/api/messages/batches/delete.md / last verified: 2026-08-07 -->
-<!-- source: https://platform.claude.com/docs/en/api/models/list.md / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/models/list.md / last verified: 2026-11-14 -->
 <!-- source: https://platform.claude.com/docs/en/api/models/retrieve.md / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/api/files/upload.md / last verified: 2026-10-17 -->
 <!-- source: https://platform.claude.com/docs/en/api/files/list.md / last verified: 2026-10-17 -->
@@ -23,7 +23,7 @@ Copy-pasteable `curl` calls for the main Claude API endpoints. All examples assu
 ```bash
 curl https://api.anthropic.com/v1/messages \
     -H 'Content-Type: application/json' \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     --max-time 600 \
     -d '{
@@ -41,7 +41,7 @@ curl https://api.anthropic.com/v1/messages \
 ```bash
 curl https://api.anthropic.com/v1/messages/count_tokens \
     -H 'Content-Type: application/json' \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -d '{
           "model": "claude-opus-5-5",
@@ -54,7 +54,7 @@ curl https://api.anthropic.com/v1/messages/count_tokens \
 ```bash
 curl https://api.anthropic.com/v1/messages/batches \
     -H 'Content-Type: application/json' \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -d '{
           "requests": [
@@ -74,7 +74,7 @@ curl https://api.anthropic.com/v1/messages/batches \
 
 ```bash
 curl https://api.anthropic.com/v1/messages/batches \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -82,7 +82,7 @@ curl https://api.anthropic.com/v1/messages/batches \
 
 ```bash
 curl https://api.anthropic.com/v1/messages/batches/$MESSAGE_BATCH_ID \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -92,7 +92,7 @@ curl https://api.anthropic.com/v1/messages/batches/$MESSAGE_BATCH_ID \
 
 ```bash
 curl https://api.anthropic.com/v1/messages/batches/$MESSAGE_BATCH_ID/results \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -101,7 +101,7 @@ curl https://api.anthropic.com/v1/messages/batches/$MESSAGE_BATCH_ID/results \
 ```bash
 curl https://api.anthropic.com/v1/messages/batches/$MESSAGE_BATCH_ID/cancel \
     -X POST \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -112,7 +112,7 @@ curl https://api.anthropic.com/v1/messages/batches/$MESSAGE_BATCH_ID/cancel \
 ```bash
 curl https://api.anthropic.com/v1/messages/batches/$MESSAGE_BATCH_ID \
     -X DELETE \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -120,7 +120,7 @@ curl https://api.anthropic.com/v1/messages/batches/$MESSAGE_BATCH_ID \
 
 ```bash
 curl https://api.anthropic.com/v1/models \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -128,7 +128,7 @@ curl https://api.anthropic.com/v1/models \
 
 ```bash
 curl https://api.anthropic.com/v1/models/$MODEL_ID \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -137,7 +137,7 @@ curl https://api.anthropic.com/v1/models/$MODEL_ID \
 ```bash
 curl https://api.anthropic.com/v1/files \
     -H 'Content-Type: multipart/form-data' \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -F 'file=@/path/to/file'
 ```
@@ -148,7 +148,7 @@ curl https://api.anthropic.com/v1/files \
 
 ```bash
 curl https://api.anthropic.com/v1/files \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -156,7 +156,7 @@ curl https://api.anthropic.com/v1/files \
 
 ```bash
 curl https://api.anthropic.com/v1/files/$FILE_ID \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -164,7 +164,7 @@ curl https://api.anthropic.com/v1/files/$FILE_ID \
 
 ```bash
 curl https://api.anthropic.com/v1/files/$FILE_ID/content \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -175,6 +175,6 @@ curl https://api.anthropic.com/v1/files/$FILE_ID/content \
 ```bash
 curl https://api.anthropic.com/v1/files/$FILE_ID \
     -X DELETE \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```

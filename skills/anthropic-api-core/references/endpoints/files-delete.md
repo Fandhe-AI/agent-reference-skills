@@ -13,7 +13,7 @@ DELETE /v1/files/{file_id}
 ```bash
 curl https://api.anthropic.com/v1/files/$FILE_ID \
     -X DELETE \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 

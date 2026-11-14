@@ -10,7 +10,7 @@ Required headers on every request:
 
 ```
 x-api-key: <api-key>        # or Authorization: Bearer <token> (WIF)
-anthropic-version: 2023-06-01
+anthropic-version: 2026-10-21
 content-type: application/json
 ```
 

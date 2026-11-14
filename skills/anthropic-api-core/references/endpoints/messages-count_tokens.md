@@ -13,7 +13,7 @@ POST /v1/messages/count_tokens
 ```bash
 curl https://api.anthropic.com/v1/messages/count_tokens \
     -H 'Content-Type: application/json' \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -d '{
           "model": "claude-opus-5-5",
@@ -40,6 +40,7 @@ curl https://api.anthropic.com/v1/messages/count_tokens \
 ## Notes
 
 - Accepts the same request body shape as `POST /v1/messages` (see [messages-create.md](./messages-create.md)) minus `max_tokens`/sampling params, but does not create a Message or consume generation quota.
+- Migration (2023-06-01 → 2026-10-21): the Messages API breaking changes also apply to token counting. A request that sends `temperature`, `top_p`, or `top_k` returns a 400 error, a `document` block directly in an `assistant` message returns 400, and a `text` block with a non-empty `citations` array in a `user` message returns 400. See [versioning.md](../api-basics/versioning.md).
 
 ## Related
 

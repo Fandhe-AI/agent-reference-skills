@@ -1,7 +1,7 @@
 ---
 name: anthropic-api-core
 description: >
-  Claude API (platform.claude.com) の Messages API リファレンス。
+  Claude API (platform.claude.com) の Messages API リファレンス (anthropic-version 2026-10-21、temperature / top_p / top_k 削除)。
   streaming (SSE), thinking (adaptive) / preserved thinking / effort, prompt caching, context editing,
   compaction (on-demand / threshold), structured outputs, Message Batches, token counting,
   vision / PDF, Files API, citations, embeddings (Voyage AI), errors, rate limits, beta headers,
@@ -19,7 +19,9 @@ prompt caching・structured outputs・Message Batches・vision/PDF・Files API �
 Tool use・Agent Skills (SKILL.md)・MCP connector は `anthropic-api-tools-mcp`、Claude Code 本体は `anthropic-claude-code`、
 Agent SDK は `anthropic-agent-sdk` を参照（本スキルは Claude API 本体の呼び出し方を担当）。
 
-対象: platform.claude.com Markdown twins の取得日 2026-10-16（URL にバージョンが無いため取得日を pin とする）。`scripts/` の `setup.md` / `headers.md` と `curl-endpoints.md` の files エンドポイントは 2026-10-17 に再確認。
+対象: platform.claude.com Markdown twins の取得日 2026-10-16（URL にバージョンが無いため取得日を pin とする）。`scripts/` の `setup.md` / `headers.md` と `curl-endpoints.md` の files エンドポイントは 2026-10-17 に再確認。API version `2026-10-21`（`anthropic-version` ヘッダー、`temperature` / `top_p` / `top_k` 削除）は 2026-11-14 に api/versioning・api/migration-2026-10-21・api/messages/create・api/models/list で確認し、`api-basics/versioning.md` と `endpoints/` ほか該当ページ・`samples/` `scripts/` のヘッダーに反映（残りのページは 2026-10-16 時点）。
+
+未反映の範囲: 2026-10-21 移行ガイド（`api/migration-2026-10-21`）と Google Cloud 側の対応ページは未収録（`platforms/claude-on-vertex-ai.md` は 2026-10-16 時点のまま）。`samples/` のコードは `temperature` / `top_p` / `top_k` と SDK の追従が完了していないため、実行前に `api-basics/versioning.md` と照合する。
 
 ## ディレクトリ構成
 

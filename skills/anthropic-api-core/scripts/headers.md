@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/versioning / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/versioning / last verified: 2026-11-14 -->
 <!-- source: https://platform.claude.com/docs/en/api/beta-headers / last verified: 2026-10-17 -->
 <!-- source: https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand / last verified: 2026-10-17 -->
 
@@ -11,19 +11,19 @@
 ```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-version: 2026-10-21" \
   -H "content-type: application/json" \
   -d '{"model": "claude-opus-5-5", "max_tokens": 1024, "messages": [{"role":"user","content":"Hello, Claude"}]}'
 ```
 
-最新版 `2023-06-01` を使う。過去バージョン（`2023-01-01`）は非推奨で新規ユーザーには提供されない場合がある。
+最新版 `2026-10-21` を使う（`2023-06-01` の後継）。`temperature` / `top_p` / `top_k` を送ると全モデルで 400 になるため、リクエストから外す。非デフォルト値に依存するリクエストは `2023-06-01` のまま据え置く。Amazon Bedrock の `2026-10-21` は Claude 4.7 以降のモデルのみで、4.6 以前は現在のバージョンを維持する。過去バージョン（`2023-01-01`）は非推奨で新規ユーザーには提供されない場合がある。
 
 ## anthropic-beta の指定（curl / 単一 beta 機能）
 
 ```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-version: 2026-10-21" \
   -H "anthropic-beta: context-management-2025-06-27" \
   -H "content-type: application/json" \
   -d '{
@@ -40,7 +40,7 @@ curl https://api.anthropic.com/v1/messages \
 ```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-version: 2026-10-21" \
   -H "anthropic-beta: feature1,feature2,feature3" \
   -H "content-type: application/json" \
   -d '{"model": "claude-opus-5-5", "max_tokens": 1024, "messages": [{"role":"user","content":"Hello, Claude"}]}'
@@ -51,7 +51,7 @@ curl https://api.anthropic.com/v1/messages \
 ```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-version: 2026-10-21" \
   -H "anthropic-beta: feature1" \
   -H "anthropic-beta: feature2" \
   -H "anthropic-beta: feature3" \
@@ -92,7 +92,7 @@ response = client.beta.messages.create(
 # max_tokens caps the whole call, including any thinking, so allow several thousand tokens.
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-version: 2026-10-21" \
   -H "anthropic-beta: compact-2026-09-04" \
   -H "content-type: application/json" \
   -d '{

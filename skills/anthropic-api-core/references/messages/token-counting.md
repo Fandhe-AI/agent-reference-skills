@@ -17,7 +17,7 @@ print(response.json())  # {"input_tokens": 14}
 
 ```bash
 curl https://api.anthropic.com/v1/messages/count_tokens \
-  -H "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2026-10-21" \
   -H "content-type: application/json" \
   -d '{"model": "claude-opus-5-5", "messages": [{"role": "user", "content": "Hello, Claude"}]}'
 ```
