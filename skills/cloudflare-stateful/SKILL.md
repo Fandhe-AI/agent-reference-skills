@@ -1,11 +1,11 @@
 ---
 name: cloudflare-stateful
 description: >
-  Cloudflare Workers のステートフル基盤 (Durable Objects / Queues / Workflows) の
-  リファレンス。DurableObject、ctx.storage SQL / KV API、alarms、WebSocket hibernation、
-  stub 自動リトライ retryable()、spending limit、Queues producer / consumer、DLQ、pull consumers、
-  WorkflowEntrypoint、step.do / sleep / waitForEvent、concurrency.limit。
-  ランタイムは cloudflare-workers、Wrangler は cloudflare-wrangler、Agents SDK は cloudflare-agents、Upstash QStash・Inngest・BullMQ とは別。
+  Cloudflare Workers のステートフル基盤 (Durable Objects/Queues/Workflows) の
+  リファレンス。DurableObject、ctx.storage SQL/KV API、alarms、WebSocket hibernation、
+  自動リトライ retryable()、spending limit、Queues producer/consumer、DLQ、pull consumers、
+  WorkflowEntrypoint、step.do/sleep/waitForEvent、concurrency.limit。
+  ランタイムは cloudflare-workers、Wrangler は cloudflare-wrangler、Agents SDK は cloudflare-agents、QStash・Inngest・BullMQ とは別。
 user-invocable: false
 ---
 
