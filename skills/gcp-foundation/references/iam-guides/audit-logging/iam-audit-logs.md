@@ -10,14 +10,26 @@ Cloud Audit Logs for IAM, Security Token Service (STS), and Service Account Cred
 
 ### Logs Explorer queries
 
+Adapted (not in the official docs): the official list is a set of alternative filters; each line below is a separate query (paste one at a time). Putting several lines in one query ANDs them and returns nothing.
+
 ```text
+# Query 1: IAM service
 protoPayload.serviceName="iam.googleapis.com"
+
+# Query 2: STS
 protoPayload.serviceName="sts.googleapis.com"
+
+# Query 3: Service Account Credentials
 protoPayload.serviceName="iamcredentials.googleapis.com"
+
+# Query 4: a single method (replace per method)
 protoPayload.methodName="google.iam.admin.v1.CreateRole"
-protoPayload.methodName="google.iam.admin.v1.CreateServiceAccount"
-protoPayload.methodName="google.iam.admin.v1.CreateServiceAccountKey"
-protoPayload.methodName="google.identity.sts.v1.SecurityTokenService.ExchangeToken"
+# Other methods: google.iam.admin.v1.CreateServiceAccount,
+# google.iam.admin.v1.CreateServiceAccountKey,
+# google.identity.sts.v1.SecurityTokenService.ExchangeToken
+
+# Or combine alternatives with OR
+protoPayload.methodName="google.iam.admin.v1.CreateServiceAccount" OR protoPayload.methodName="google.iam.admin.v1.CreateServiceAccountKey"
 ```
 
 Every method has a filter of the form `protoPayload.methodName="<method>"`.

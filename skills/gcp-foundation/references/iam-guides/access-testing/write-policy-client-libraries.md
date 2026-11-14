@@ -8,10 +8,10 @@ Quickstart that uses the Resource Manager API IAM methods to read a project's al
 
 ## Signature / Usage
 
-Install (Python):
+Install (Python). Adapted (not in the official docs): `google-cloud-resource-manager` added because the sample imports `google.cloud.resourcemanager_v3`, which the official command does not install:
 
 ```
-pip install --upgrade google-api-python-client google-auth google-auth-httplib2
+pip install --upgrade google-cloud-resource-manager google-api-python-client google-auth google-auth-httplib2
 ```
 
 Python sample (Resource Manager v3 client):
@@ -136,10 +136,11 @@ if __name__ == "__main__":
 | C# | `install-package Google.Apis.Iam.v1`, `install-package Google.Apis.CloudResourceManager.v1` |
 | Go | `go get golang.org/x/oauth2/google`, `go get google.golang.org/api/cloudresourcemanager/v1` |
 | Java | Maven artifacts `google-api-services-cloudresourcemanager` (`v3-rev20240128-2.0.0`), `google-auth-library-oauth2-http`, `google-http-client-jackson2`, `google-api-services-iam` (`v1-rev20240118-2.0.0`) |
-| Python | `pip install --upgrade google-api-python-client google-auth google-auth-httplib2` |
+| Python | `pip install --upgrade google-cloud-resource-manager google-api-python-client google-auth google-auth-httplib2` |
 
 ## Notes
 
+- Adapted from the official docs: `google-cloud-resource-manager` is added to the Python install because the v3 sample needs it.
 - Replace `your-project` with the project ID and the principal with an identifier such as `user:my-user@example.com`.
 - Use a new project: running this against an existing project temporarily grants some users access to its resources.
 - This is a read-modify-write on the project allow policy; when conditional bindings may exist, request policy version 3 and keep the `etag` (see troubleshoot-conditional-bindings).

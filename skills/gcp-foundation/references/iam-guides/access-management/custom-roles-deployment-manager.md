@@ -59,6 +59,7 @@ gcloud deployment-manager manifests describe your-manifest-id \
 
 ## Notes
 
+- Deprecation: Deployment Manager is deprecated; support ends and new usage is restricted, with Infrastructure Manager as the successor (see the gcp-services-index skill, `references/lifecycle/shutdown-and-deprecated.md`; confirm the current dates there). Prefer Infrastructure Manager (Terraform) or `gcloud iam roles create` for new custom-role automation. 公式未確認 for exact shutdown dates on this page.
 - Custom roles are maintained by your organization: new permissions are not added automatically, so beta features stay unavailable until the permissions are added. Config files plus source control support auditing, launch stage promotion (`ALPHA` to `BETA`), and sharing patterns.
 - Deployment Manager config types: configurations (YAML resources), schemas (properties and defaults; project and organization variants), templates (Jinja or Python).
 - Prerequisite: enable the IAM and Deployment Manager APIs (needs Service Usage Admin, `roles/serviceusage.serviceUsageAdmin`) and grant the Role Administrator role to the "Google APIs service agent" principal so it can manage roles. That grant is powerful; remove it once the deployment is complete if not needed.

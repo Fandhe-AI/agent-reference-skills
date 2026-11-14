@@ -40,10 +40,12 @@ Create a budget (`POST .../budgets`, request body saved to `request.json`, quart
   "amount": {
     "lastPeriodAmount": {}
   },
-  "thresholdRules": {
-    "thresholdPercent": 0.8,
-    "spendBasis": "CURRENT_SPEND"
-  }
+  "thresholdRules": [
+    {
+      "thresholdPercent": 0.8,
+      "spendBasis": "CURRENT_SPEND"
+    }
+  ]
 }
 ```
 
@@ -56,28 +58,30 @@ curl -X POST \
      "https://billingbudgets.googleapis.com/v1/billingAccounts/billing-account-id/budgets"
 ```
 
-Update a budget (`PATCH .../budgets/budget-id`, body wrapped in `budget`):
+Update a budget (`PATCH .../budgets/budget-id`, body is the Budget resource itself):
+
+Adapted (not in the official docs): the official example wraps the body in a `budget` object; the PATCH body is the Budget itself, so the wrapper is removed.
 
 ```json
 {
-  "budget": {
-    "displayName": "My fancy budget",
-    "budgetFilter": {
-      "projects": [
-        "projects/budget-scope-project-id"
-      ],
-      "calendar_period": "QUARTER"
-    },
-   "amount": {
-      "specifiedAmount": {
-        "units": 500
-      }
-    },
-    "thresholdRules": {
+  "displayName": "My fancy budget",
+  "budgetFilter": {
+    "projects": [
+      "projects/budget-scope-project-id"
+    ],
+    "calendar_period": "QUARTER"
+  },
+  "amount": {
+    "specifiedAmount": {
+      "units": 500
+    }
+  },
+  "thresholdRules": [
+    {
       "thresholdPercent": 0.8,
       "spendBasis": "CURRENT_SPEND"
     }
-  }
+  ]
 }
 ```
 
@@ -162,6 +166,7 @@ For single-project budgets the caller may instead have `resourcemanager.projects
 
 ## Notes
 
+- Adapted from the official docs: `thresholdRules` is a repeated field; the create and update request examples above wrap the rule in an array (the official examples show a bare object). The update example also drops the official `budget` wrapper because the PATCH body is the Budget resource itself.
 - Two budget types: alerts-only (all services; actual spend, calculated typically within 24 hours) and spend-cap (limited eligible services; pauses new usage of the service in the project when gross estimated spend exceeds the budget, so it triggers faster).
 - Use up to 50,000 budgets per billing account; a budget belongs to one billing account; a project is linked to one billing account at a time.
 - Setup: use a separate FinOps/billing administration project, ensure billing is enabled on it, enable `billingbudgets.googleapis.com` (needs `serviceusage.services.enable`, for example Service Usage Admin), authenticate as a principal with Billing Account Administrator (`roles/billing.admin`) or a narrower role covering the permissions above. The API is free; programmatic notifications incur standard Pub/Sub prices. Client libraries are recommended; REST and gRPC are also available.

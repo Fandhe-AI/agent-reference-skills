@@ -10,16 +10,25 @@ Respond to Pub/Sub budget notifications by stopping specific resources or by dis
 
 Disable billing when cost exceeds budget (Node.js function `stopBilling`, from the official single-script example). The function decodes the base64 Pub/Sub payload, compares `costAmount` with `budgetAmount`, then removes the billing account from the project.
 
+Adapted (not in the official docs): the official sample reads a 1st-gen `pubsubEvent.data`, but the deploy command uses `--gen2` (CloudEvent). The handler is registered with `functions.cloudEvent` and reads `cloudEvent.data.message.data`; it also ignores notifications from budgets other than the dedicated one (`BUDGET_ID`), and `updateProjectBillingInfo` takes `projectBillingInfo` instead of `resource`.
+
 ```javascript
+const functions = require('@google-cloud/functions-framework');
 const {CloudBillingClient} = require('@google-cloud/billing');
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const PROJECT_NAME = `projects/${PROJECT_ID}`;
+const BUDGET_ID = process.env.BUDGET_ID;
 const billing = new CloudBillingClient();
 
-exports.stopBilling = async pubsubEvent => {
+functions.cloudEvent('stopBilling', async cloudEvent => {
+  const message = cloudEvent.data.message;
+  // Only act on notifications of the dedicated budget for this project
+  if (!BUDGET_ID || !message.attributes || message.attributes.budgetId !== BUDGET_ID) {
+    return 'Ignored: notification from a different budget';
+  }
   const pubsubData = JSON.parse(
-    Buffer.from(pubsubEvent.data, 'base64').toString()
+    Buffer.from(message.data, 'base64').toString()
   );
   if (pubsubData.costAmount <= pubsubData.budgetAmount) {
     return `No action necessary. (Current cost: ${pubsubData.costAmount})`;
@@ -35,7 +44,7 @@ exports.stopBilling = async pubsubEvent => {
   } else {
     return 'Billing already disabled';
   }
-};
+});
 
 const _isBillingEnabled = async projectName => {
   try {
@@ -52,13 +61,13 @@ const _isBillingEnabled = async projectName => {
 const _disableBillingForProject = async projectName => {
   const [res] = await billing.updateProjectBillingInfo({
     name: projectName,
-    resource: {billingAccountName: ''}, // Disable billing
+    projectBillingInfo: {billingAccountName: ''}, // Disable billing
   });
   return `Billing disabled: ${JSON.stringify(res)}`;
 };
 ```
 
-Deploy and wire up (commands from the official script; the doc comments inside the functions are omitted above):
+Deploy and wire up (commands from the official script, with the Adapted changes below; the doc comments inside the functions are omitted above). Adapted (not in the official docs): the budget is scoped with `--filter-projects` to the target project only; create it first, then pass its ID to the function as `BUDGET_ID` (the `budgetId` Pub/Sub message attribute is checked by the handler). The `functions-framework` dependency (`@google-cloud/functions-framework`) must be in the function's `package.json`.
 
 ```bash
 gcloud services enable billingbudgets.googleapis.com \
@@ -79,15 +88,18 @@ gcloud functions deploy stop-billing-function \
     --region="${REGION}" \
     --trigger-topic="${TOPIC_ID}" \
     --entry-point=stopBilling \
-    --set-env-vars GOOGLE_CLOUD_PROJECT="${PROJECT_ID}" \
+    --set-env-vars GOOGLE_CLOUD_PROJECT="${PROJECT_ID}",BUDGET_ID="${BUDGET_ID}" \
     --source=./billing_function \
     --project="${PROJECT_ID}"
 
+# Create this dedicated budget (scoped to the target project) BEFORE the deploy above
+# and capture its ID as BUDGET_ID.
 gcloud billing budgets create \
     --billing-account="${BILLING_ACCOUNT_ID}" \
     --display-name="Budget for ${PROJECT_ID}" \
+    --filter-projects="projects/${PROJECT_ID}" \
     --budget-amount="${BUDGET_AMOUNT}" \
-    --threshold-rule=percent=100 \
+    --threshold-rule=percent=1.0 \
     --notifications-rule-pubsub-topic="projects/${PROJECT_ID}/topics/${TOPIC_ID}"
 ```
 
@@ -168,6 +180,7 @@ def __stop_instances(project_id, zone, instance_names, instances):
 
 - Warning: disabling billing terminates all Google Cloud services in the project (including Free Tier services); resources may be irretrievably deleted. Re-enabling needs manual configuration with no guarantee of recovery. Use only in disposable or capped projects.
 - Warning: the official script grants `roles/billing.admin` to the function's service account, which is very broad (it can manage all billing account settings and IAM). Consider a narrower custom role limited to the permissions needed to unlink a project (see the project-billing-link and managing-access pages), and restrict who can publish to or invoke the function.
+- Adapted from the official docs: the official sample uses the 1st-gen `pubsubEvent.data` signature and `resource:` with `--gen2`; corrected to a CloudEvent handler (`cloudEvent.data.message.data`) and `projectBillingInfo`, and the budget is scoped to one project with `--filter-projects` plus a `budgetId` check, so spend in other projects cannot disable this project's billing.
 - Doc comments and docstrings of the official samples are omitted for brevity; the code otherwise matches the official text.
 - Notifications are delayed, so spend can exceed the budget; set the maximum budget below available funds. Handlers must be idempotent because Pub/Sub is at-least-once.
 - A project locked to its billing account cannot have billing disabled; unlock it first.

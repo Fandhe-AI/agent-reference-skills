@@ -295,8 +295,12 @@ curl -X DELETE \
 
 REST/client-library mutations return an LRO. Poll with truncated exponential backoff until `done` is `true`.
 
+Adapted (not in the official docs): the official URL omits `denypolicies/POLICY_ID`, but the returned operation name contains it; append the returned `name` value as-is.
+
 ```
-GET https://iam.googleapis.com/v2/policies/ENCODED_ATTACHMENT_POINT/operations/OPERATION_ID
+GET https://iam.googleapis.com/v2/OPERATION_NAME
+# OPERATION_NAME = the `name` returned by the mutation, e.g.
+# policies/ENCODED_ATTACHMENT_POINT/denypolicies/POLICY_ID/operations/OPERATION_ID
 ```
 
 ```
@@ -306,7 +310,7 @@ GET https://iam.googleapis.com/v2/policies/ENCODED_ATTACHMENT_POINT/operations/O
 }
 ```
 
-`OPERATION_ID` is the hexadecimal value at the end of the operation name (for example `89cb3e508bf1ff01`).
+Use the full returned operation `name` as the path after `/v2/`; its last segment is the hexadecimal operation ID (for example `89cb3e508bf1ff01`).
 
 ## Options / Props
 

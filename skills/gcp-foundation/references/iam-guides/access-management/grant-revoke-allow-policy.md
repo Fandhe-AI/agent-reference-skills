@@ -63,6 +63,8 @@ POST https://iam.googleapis.com/v1/projects/PROJECT_ID/serviceAccounts/SA_ID:set
 
 Role binding format used when editing a policy:
 
+Adapted (not in the official docs): the official text spells the field `"conditions:" {`; the IAM `Binding` field is the singular `condition` followed by a colon.
+
 ```json
 {
   "role": "ROLE_NAME",
@@ -72,7 +74,7 @@ Role binding format used when editing a policy:
     ...
     "PRINCIPAL_N"
   ],
-  "conditions:" {
+  "condition": {
     CONDITIONS
   }
 }
@@ -139,6 +141,7 @@ For resources other than projects/folders/organizations/service accounts, find t
 
 ## Notes
 
+- Adapted from the official docs: the binding field is `condition` (singular, with a colon); the official text shows `"conditions:" {`.
 - Always use read-modify-write; `setIamPolicy` permanently overwrites the policy. Keep the `etag` so concurrent changes are not lost. Store the returned policy (not the sent one) if you keep policies in version control. Role bindings with no principals are an error.
 - To grant Owner (`roles/owner`) to a user outside your organization, or on a project without an organization, you must use the console (not gcloud). This is a high-risk grant; avoid it.
 - Granting access is a sensitive action and may require reauthentication.
