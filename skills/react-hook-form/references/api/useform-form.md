@@ -276,10 +276,13 @@ When values are encoded as `FormData`, nested objects and arrays use dot-notatio
 ## Notes
 
 - Source: https://react-hook-form.com/docs/useform/form (documentation master c0511c9, fetched 2026-11-14)
+- Adapted from the official docs: the `onSubmit` snippet under "To prepare or omit submission data" passes `control={control}` to `Form`.
 - The `createPost` Server Action above is verbatim and illustrative only: a real action must authenticate and authorize the caller and validate `title` (type, non-empty, length) on the server, because client-side `required` can be bypassed by calling the action directly.
 - By default a POST request is sent with the form submission data as `FormData`. Progressively enhanced form; supports both React Web and React Native.
 - Data serialization: the `<Form>` component focuses on form submission, not custom data serialization. Type-specific transformations (e.g. `Date`, `Dayjs`, or custom objects) should be handled at the application level before submission. The component is kept lightweight and avoids additional serialization rules.
 - To prepare or omit submission data, use `handleSubmit` or `onSubmit`:
+
+Adapted (not in the official docs): `control={control}` is added to the `Form` in the snippet below, since `Form` needs a `control` unless inside a `FormProvider`.
 
 ```javascript
 const { handleSubmit, control } = useForm();
@@ -287,6 +290,7 @@ const onSubmit =(data) => callback(prepareData(data))
 <form onSubmit={handleSubmit(onSubmit)} />
 // or
 <Form
+  control={control}
   onSubmit={({ data }) => {
     console.log(data)
   }}
