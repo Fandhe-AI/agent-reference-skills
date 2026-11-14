@@ -103,7 +103,7 @@ Dimensions of `workflowsAdaptiveGroups`:
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| WORKFLOW_QUEUED | label | — | Queued, not running (for example at the concurrency limit) |
+| WORKFLOW_QUEUED | label | — | Queued, not running (for example when the account or the Workflow is at its concurrency limit) |
 | WORKFLOW_START | label | — | Started and running |
 | WORKFLOW_SUCCESS | label | — | Finished without errors |
 | WORKFLOW_FAILURE | label | — | Failed (exhausted retries, errors thrown, etc.) |
@@ -129,9 +129,11 @@ Dimensions of `workflowsAdaptiveGroups`:
 - The official metrics table lists a single metric, `readQueries` ("Read Queries (qps)... read queries issued against a database"), which reads like text carried over from a database product; the official example queries use `count`, `sum { wallTime }`, and `eventType`-filtered counts instead.
 - The variable types `string!` / `string` are the lowercase scalar spelling used by the official examples (the same spelling as the Queues and KV analytics queries). The second official example (`WorkflowInvocationsExample2`) defines `stepCount` with the same `WORKFLOW_START` filter as `instanceRuns`, so it does not count steps; it is omitted here.
 - Rollback event types let you tell forward failures from compensation failures.
+- Source: https://developers.cloudflare.com/workflows/observability/metrics-analytics/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 
+- [concurrency-limits.md](./concurrency-limits.md)
 - [subscribe-instance-events.md](./subscribe-instance-events.md)
 - [rollback.md](./rollback.md)
 - [limits.md](./limits.md)

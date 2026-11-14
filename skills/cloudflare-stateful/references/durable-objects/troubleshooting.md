@@ -18,6 +18,7 @@ const doStub = env.ErrorThrowingObject.getByName(userId);
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
+| `Exceeded the account's spending cap for Durable Objects` | error | — | The account reached a Durable Objects spending limit. Raise it above current spend, turn it off or remove it under Billing > Spend Management (changes can take a few minutes); the block also expires at the next billing period. Review alarm recovery before resuming. |
 | `Error: Durable Object is overloaded. Too many requests queued.` | error | — | Total count of queued requests is too high. |
 | `Error: Durable Object is overloaded. Too much data queued.` | error | — | Total size of data in queued requests is too high. |
 | `Error: Durable Object is overloaded. Requests queued for too long.` | error | — | The oldest queued request has waited too long. |
@@ -37,10 +38,13 @@ const doStub = env.ErrorThrowingObject.getByName(userId);
 - Code-update reset: "reset" refers to in-memory state only; data persisted with `ctx.storage` is unaffected. Make operations retryable and persist important state. Applies to `immediate` strategies and `deferred` ones reaching `max_delay`.
 - Storage timeout: in objects with many key-value pairs `deleteAll()` can exceed the time limit; each call makes progress and it is safe to retry until it succeeds.
 - Concurrent storage operations: back off, and use the multi-key `get(keys)` instead of many single `get(key)` calls.
+- Spending cap: held alarms older than seven days are deleted; see the spend-management page.
+- Source: https://developers.cloudflare.com/durable-objects/observability/troubleshooting/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 
 - [Error handling](./error-handling.md)
+- [Spending limits](./spend-management.md)
 - [Code updates](./code-updates.md)
 - [Known issues](./known-issues.md)
 - [Limits](./limits.md)

@@ -424,13 +424,14 @@ export default defineConfig({
 - Input gates only protect during storage operations; `fetch()` or R2 I/O lets other requests interleave. Use optimistic locking (read a version before the external call, verify it before writing). With the legacy KV backend use `transaction()` for read-modify-write.
 - `blockConcurrencyWhile()` unconditionally blocks all concurrency: at ~5 ms per call an object is limited to ~200 req/s. Reserve it for constructor initialization and migrations, never across I/O (`fetch()`, KV, R2). For atomic read-modify-write during requests prefer `transaction()`.
 - Prefer RPC methods for compatibility dates 2024-04-03 or later. Always `await` RPC calls: unawaited calls swallow errors and lose return values.
-- Wrap risky operations in `try...catch`; uncaught exceptions can terminate the instance and lose in-memory state (SQLite stays intact). Errors may carry `.retryable` / `.overloaded`.
+- Wrap risky operations in `try...catch`; uncaught exceptions can terminate the instance and lose in-memory state (SQLite stays intact). The runtime retries some failed calls automatically (see the automatic-retries page); errors that reach your code may carry `.retryable` / `.overloaded`.
 - Hibernatable WebSockets: handlers `webSocketMessage`, `webSocketClose`, `webSocketError`. On compatibility dates before 2026-04-07 you must call `ws.close()` in `webSocketClose` to avoid `1006`.
 - Alarms do not repeat automatically; schedule only when there is work. Alarms may rarely fire more than once, so make handlers idempotent (check state before acting).
 - Call `deleteAll()` to clear storage; before compatibility date 2026-02-24, also call `deleteAlarm()` first.
 - No shutdown hooks exist (they cannot be guaranteed); write state incrementally.
 - Testing uses `@cloudflare/vitest-plugin` with `runInDurableObject` and `runDurableObjectAlarm` from `cloudflare:test` (see cloudflare-wrangler for Vitest integration). Class rename/delete is done via the `exports` field; see the migrations page.
 - Related products: Workflows best practices in [rules-of-workflows.md](../workflows/rules-of-workflows.md). The Agents SDK is covered by cloudflare-agents.
+- Source: https://developers.cloudflare.com/durable-objects/best-practices/rules-of-durable-objects/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

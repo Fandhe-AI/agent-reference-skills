@@ -156,7 +156,9 @@ Trigger paths:
 ## Notes
 
 - `schedules` accepts up to 100 cron expressions per account; each matching expression creates a new instance and sets `event.schedule` (`cron` and `scheduledTime`). On Workers Paid, scheduled instances can run up to one hour per firing without consuming a concurrency slot, after which they enter the normal queue on resume. See [workflow-configuration.md](./workflow-configuration.md).
-- `resume` on a non-paused instance has no effect; at the concurrency limit a resumed instance is queued.
+- `resume` on a non-paused instance has no effect; if the account or the Workflow's own concurrency limit is reached, a resumed instance is queued until a slot is free.
+- Instances created by `schedules` are not held back by a per-Workflow concurrency limit during the one-hour window; after it they are queued until both the account and the Workflow have a free slot.
+- Source: https://developers.cloudflare.com/workflows/build/trigger-workflows/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 - Once terminated, an instance cannot be resumed.
 - `restart()` cancels in-progress steps, erases intermediate state, and keeps the previous concurrency slot; calling it recursively without a condition runs forever and effectively removes a slot. The official page also shows a long R2-chunk pipeline that restarts itself while keeping a cursor object in R2; its key point is to keep any state that must survive a restart outside the instance. See https://developers.cloudflare.com/workflows/build/trigger-workflows/#restart-a-workflow .
 - `deleteBatch` accepts 1 to 100 IDs. Wrangler `instances delete` takes one or more IDs or a file with a top-level JSON array of strings (combined up to 100 IDs); `latest` deletes the most recent instance. With `--local` it targets a `wrangler dev` session.
@@ -167,6 +169,7 @@ Trigger paths:
 
 ## Related
 
+- [concurrency-limits.md](./concurrency-limits.md)
 - [workflow-binding.md](./workflow-binding.md)
 - [workflow-instance.md](./workflow-instance.md)
 - [call-workflows-from-pages.md](./call-workflows-from-pages.md)

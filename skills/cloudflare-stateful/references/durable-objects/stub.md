@@ -56,10 +56,13 @@ console.assert(namedStub.name === "foo", "This should always be true");
 
 - Durable Objects have E-order semantics: multiple calls to the same object are delivered in the order made, implemented by the Cap'n Proto RPC protocol. There are no ordering guarantees between different stubs.
 - If a stub throws an exception, all in-flight and future calls on it fail; recreate the stub to continue.
+- The runtime may retry a failed call before the exception reaches your code; see the automatic-retries page.
+- Source: https://developers.cloudflare.com/durable-objects/api/stub/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 
 - [DurableObjectNamespace](./namespace.md)
 - [DurableObjectId](./id.md)
 - [Create stubs and send requests](./create-stubs-and-send-requests.md)
+- [Automatic retries](./automatic-retries.md)
 - [Troubleshooting](./troubleshooting.md)

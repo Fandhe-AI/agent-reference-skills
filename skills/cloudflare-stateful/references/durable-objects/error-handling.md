@@ -77,7 +77,7 @@ export class ErrorThrowingObject extends DurableObject {
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `.retryable` | `boolean` | — | When `true`, retry if requests are idempotent. Use exponential backoff. |
+| `.retryable` | `boolean` | — | When `true`, the failure is transient. If it reaches your code, the runtime ran out of retries or the failure happened after the request reached the object; retry it yourself only if requests are idempotent. Use exponential backoff. |
 | `.overloaded` | `boolean` | — | When `true`, do not retry; retrying worsens the overload and raises the error rate. |
 | `.remote` | `boolean` | — | `true` when the exception was thrown in the object's own code (including constructor), or by infrastructure when the object exceeds memory or CPU limits. |
 
@@ -87,9 +87,12 @@ export class ErrorThrowingObject extends DurableObject {
 - Many exceptions leave a stub broken, so every later call fails with the original exception. Create a new stub for subsequent requests.
 - Infrastructure exceptions include transient internal errors, too many requests to a single object, and too many requests queued by slow or excessive I/O in one object.
 - If requests are not idempotent, decide per application whether to retry.
+- The runtime retries some failures before they reach your code (see the automatic-retries page). The runtime also retries each attempt in the backoff loop above, so three attempts here can become up to 15 attempts in total. Keep the attempt count low, or set `retry: { maxRetries: 0 }` on the stub if the loop should be the only source of retries.
+- Source: https://developers.cloudflare.com/durable-objects/best-practices/error-handling/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 
 - [Troubleshooting](./troubleshooting.md)
+- [Automatic retries](./automatic-retries.md)
 - [DurableObjectStub](./stub.md)
 - [Create stubs and send requests](./create-stubs-and-send-requests.md)
