@@ -35,7 +35,7 @@ Adapted (not in the official docs): `thresholdRules` is a repeated field, so the
   "displayName": "Keep my spending down",
   "budgetFilter": {
     "projects": [
-      "projects/budget-scope-project-id"
+      "projects/budget-scope-project-number"
     ],
     "calendar_period": "QUARTER"
   },
@@ -69,7 +69,7 @@ Adapted (not in the official docs): the official example wraps the body in a `bu
   "displayName": "My fancy budget",
   "budgetFilter": {
     "projects": [
-      "projects/budget-scope-project-id"
+      "projects/budget-scope-project-number"
     ],
     "calendar_period": "QUARTER"
   },
@@ -168,6 +168,7 @@ For single-project budgets the caller may instead have `resourcemanager.projects
 
 ## Notes
 
+- Adapted from the official docs: `budgetFilter.projects` entries must be `projects/<PROJECT_NUMBER>` (the numeric project number, not the project ID); the placeholder is renamed `budget-scope-project-number`.
 - Adapted from the official docs: `thresholdRules` is a repeated field; the create and update request examples above wrap the rule in an array (the official examples show a bare object). The update example also drops the official `budget` wrapper because the PATCH body is the Budget resource itself.
 - Two budget types: alerts-only (all services; actual spend, calculated typically within 24 hours) and spend-cap (limited eligible services; pauses new usage of the service in the project when gross estimated spend exceeds the budget, so it triggers faster).
 - Use up to 50,000 budgets per billing account; a budget belongs to one billing account; a project is linked to one billing account at a time.

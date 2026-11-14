@@ -50,4 +50,4 @@ Required role for the quickstart: Project IAM Admin on the project (and Project 
 
 - [grant-revoke-allow-policy.md](./grant-revoke-allow-policy.md)
 - [conditional-role-bindings.md](./conditional-role-bindings.md)
-- [../policy-guardrails/deny-policies.md](../policy-guardrails/deny-policies.md)
+- [../access-policies/deny-policies.md](../access-policies/deny-policies.md)

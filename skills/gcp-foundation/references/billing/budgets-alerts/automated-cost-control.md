@@ -16,7 +16,7 @@ Adapted (not in the official docs): the official sample reads a 1st-gen `pubsubE
 const functions = require('@google-cloud/functions-framework');
 const {CloudBillingClient} = require('@google-cloud/billing');
 
-const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
+const PROJECT_ID = process.env.TARGET_PROJECT_ID;
 const PROJECT_NAME = `projects/${PROJECT_ID}`;
 const BUDGET_ID = process.env.BUDGET_ID;
 const billing = new CloudBillingClient();
@@ -82,11 +82,14 @@ gcloud services enable billingbudgets.googleapis.com \
 
 gcloud pubsub topics create "${TOPIC_ID}" --project="${PROJECT_ID}"
 
+# The budget project filter takes a project NUMBER, not a project ID.
+PROJECT_NUMBER=$(gcloud projects describe "${PROJECT_ID}" --format="value(projectNumber)")
+
 # Create the dedicated budget (scoped to the target project) first and capture its ID.
 BUDGET_NAME=$(gcloud billing budgets create \
     --billing-account="${BILLING_ACCOUNT_ID}" \
     --display-name="Budget for ${PROJECT_ID}" \
-    --filter-projects="projects/${PROJECT_ID}" \
+    --filter-projects="projects/${PROJECT_NUMBER}" \
     --budget-amount="${BUDGET_AMOUNT}" \
     --threshold-rule=percent=1.0 \
     --notifications-rule-pubsub-topic="projects/${PROJECT_ID}/topics/${TOPIC_ID}" \
@@ -100,7 +103,7 @@ gcloud functions deploy stop-billing-function \
     --region="${REGION}" \
     --trigger-topic="${TOPIC_ID}" \
     --entry-point=stopBilling \
-    --set-env-vars GOOGLE_CLOUD_PROJECT="${PROJECT_ID}",BUDGET_ID="${BUDGET_ID}" \
+    --set-env-vars TARGET_PROJECT_ID="${PROJECT_ID}",BUDGET_ID="${BUDGET_ID}" \
     --source=./billing_function \
     --project="${PROJECT_ID}"
 ```
@@ -182,6 +185,7 @@ def __stop_instances(project_id, zone, instance_names, instances):
 
 - Warning: disabling billing terminates all Google Cloud services in the project (including Free Tier services); resources may be irretrievably deleted. Re-enabling needs manual configuration with no guarantee of recovery. Use only in disposable or capped projects.
 - Warning: the official script grants `roles/billing.admin` to the function's service account, which is very broad (it can manage all billing account settings and IAM). Consider a narrower custom role limited to the permissions needed to unlink a project (see the project-billing-link and managing-access pages), and restrict who can publish to or invoke the function.
+- Adapted from the official docs: `GOOGLE_CLOUD_PROJECT` is a reserved variable that `--set-env-vars` rejects, so the target project uses the custom variable `TARGET_PROJECT_ID`; the budget filter uses the project number (`projects/<PROJECT_NUMBER>`).
 - Adapted from the official docs: the official sample uses the 1st-gen `pubsubEvent.data` signature and `resource:` with `--gen2`; corrected to a CloudEvent handler (`cloudEvent.data.message.data`) and `projectBillingInfo`, and the budget is scoped to one project with `--filter-projects` plus a `budgetId` check, so spend in other projects cannot disable this project's billing.
 - Doc comments and docstrings of the official samples are omitted for brevity; the code otherwise matches the official text.
 - Notifications are delayed, so spend can exceed the budget; set the maximum budget below available funds. Handlers must be idempotent because Pub/Sub is at-least-once.
