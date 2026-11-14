@@ -3,7 +3,7 @@ name: cloudflare-storage
 description: >
   Cloudflare 開発者プラットフォームのストレージ (Workers KV / D1 SQLite / R2 S3 互換 / Hyperdrive) の
   リファレンス。KVNamespace、D1Database prepare / batch / withSession、read replication、Time Travel、
-  R2Bucket multipart、S3 互換 API、presigned URL、event notifications、
+  R2Bucket multipart、S3 互換 API、条件付き書き込み (If-None-Match)、ローカル開発 (local S3 endpoint)、presigned URL、event notifications、
   Hyperdrive 接続プール・クエリキャッシュ。
   ランタイムは cloudflare-workers、Wrangler は cloudflare-wrangler、Upstash Redis・Supabase とは別。
 user-invocable: false
