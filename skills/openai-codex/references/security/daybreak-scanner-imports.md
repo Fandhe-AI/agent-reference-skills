@@ -4,12 +4,13 @@ Import findings into Daybreak Defense Factory by connecting a scanner (Wiz, Snyk
 
 ## Signature / Usage
 
-Open **Settings → Integrations** (or **Import** from **Findings**). CLI import of a saved export:
+Open **Settings → Integrations** (or **Import** from **Findings**). CLI import of a saved export (the official page describes these flags in prose only, without a code block).
+
+Adapted (not in the official docs): the flags named in the prose are assembled into two complete commands.
 
 ```text
-codex-security publish findings
---to local --dry-run
---to cloud --dry-run --format json
+codex-security publish findings --to local --dry-run
+codex-security publish findings --to cloud --dry-run --format json
 ```
 
 Inspect the preview before removing `--dry-run` and confirming. A cloud preview contacts Daybreak and needs a file-backed ChatGPT login. A `privateImport` entry saves to your private inbox; entries in `requests` publish to the listed repository environments.
@@ -39,6 +40,8 @@ Choices when saving an upload: **Save without assessment** / **Save privately**;
 - Reopen imports via **My recent imports** or from a row in **Scans**; **Assess** a private finding (outcomes **Reportable**, **Deferred**, **Suppressed**, **Not applicable**) and **Publish to shared findings** to share. Disconnecting a scanner stops new reads but saved imports remain.
 - Repeat imports: unchanged IDs and evidence from the same Endor/Wiz connection and project can reuse the private observation; a new connected Snyk import captures new observations; identical Snyk CSV uploads reuse accepted rows; duplicate scanner IDs within one report are flagged. Published matches in the same repository and environment merge evidence under **Observations**.
 - Source: https://learn.chatgpt.com/docs/security/scanner-imports (retrieved 2026-11-14).
+
+- Adapted from the official docs: the two preview commands are assembled from the page's prose; the page shows no code block.
 
 ## Related
 
