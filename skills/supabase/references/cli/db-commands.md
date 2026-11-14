@@ -22,9 +22,10 @@ supabase db diff
 |-------|------|
 | `-f, --file <name>` | 出力マイグレーションファイル名 |
 | `--schema <schemas>` | 対象スキーマ（カンマ区切り。デフォルト: `public`） |
-| `--linked` | リモートプロジェクトとの差分 |
+| `--remote` | リモートプロジェクトとの差分（CLI v3。`--from` / `--to` とは併用不可） |
+| `--linked` | deprecated（v3、v4 で削除）。`--remote` を使用 |
 | `--use-migra` | migra ツールを使用（デフォルト: pgAdmin） |
-| `--use-pg-schema` | pg_schema_diff を使用 |
+| `--use-pg-schema` | 削除（v3 で削除済み） |
 
 ### 使用例
 
@@ -39,10 +40,10 @@ supabase db diff -f add_users_table
 supabase db diff --schema public,auth
 
 # リモートとの差分
-supabase db diff --linked
+supabase db diff --remote
 
 # リモートとの差分をマイグレーションファイルに保存
-supabase db diff --linked -f sync_remote_changes
+supabase db diff --remote -f sync_remote_changes
 ```
 
 ### 出力例
@@ -77,6 +78,7 @@ supabase db dump
 | `-f, --file <path>` | 出力ファイルパス |
 | `--data-only` | データのみダンプ（スキーマなし） |
 | `--role-only` | ロール定義のみダンプ |
+| `--remote` | リモートデータベースをダンプ（CLI v3。ローカルが既定） |
 | `--schema <schema>` | 対象スキーマ |
 | `--use-copy` | COPY 文を使用（大量データ向け） |
 | `--keep-comments` | コメントを保持 |
@@ -110,7 +112,9 @@ supabase db lint
 | フラグ | 説明 |
 |-------|------|
 | `--schema <schemas>` | 対象スキーマ（カンマ区切り） |
-| `--level <level>` | 出力レベル（`warning`, `error`） |
+| `--level <level>` | 出力レベル（`warning`, `error`。既定 `warning`） |
+| `--remote` | リモートデータベースをリント（CLI v3。ローカルが既定） |
+| `--fail-on <none\|warning\|error>` | 指定レベル以上で非ゼロ終了（既定 `none`） |
 
 ### 使用例
 
@@ -146,6 +150,8 @@ supabase db pull
 
 | フラグ | 説明 |
 |-------|------|
+| `--remote` | リモートデータベースから取得（CLI v3。ローカルが既定のためリモートからの pull には必要） |
+| `--yes` | 確認プロンプトを承認（非対話・JSON・agent 実行では必須） |
 | `--schema <schemas>` | 対象スキーマ（カンマ区切り） |
 | `--declarative` | schema ファイル（既定 `supabase/schemas/`）を選択した DB から置き換える。migration は作成せず migration history にも触れない |
 | `--diff-engine <pg-delta\|migra>` | 1 回の実行で diff エンジンを切り替える |
@@ -186,6 +192,8 @@ supabase db push
 
 | フラグ | 説明 |
 |-------|------|
+| `--remote` | リモートデータベースへ適用（CLI v3。ローカルが既定のためリモート適用には必要） |
+| `--yes` | 確認プロンプトを承認（非対話・JSON・agent 実行では必須） |
 | `--dry-run` | 実行せずに適用されるマイグレーションを表示 |
 | `--include-all` | 既にリモートで適用済みのものも含めて実行 |
 | `--include-roles` | ロール定義も含めて適用 |
@@ -228,7 +236,10 @@ supabase db reset
 
 | フラグ | 説明 |
 |-------|------|
-| `--linked` | リモートデータベースをリセット（注意: データが全削除される） |
+| `--remote` | リモートデータベースをリセット（CLI v3。注意: データが全削除される） |
+| `--linked` | deprecated（v3、v4 で削除）。`--remote` を使用 |
+| `--yes` | 確認プロンプトを承認（非対話・JSON・agent 実行では必須） |
+| `--no-seed` | seed を実行しない |
 | `--version <version>` | 指定したバージョンまでのマイグレーションのみ適用 |
 
 ### 使用例
@@ -309,9 +320,10 @@ Exports the schema of a live database (local, linked, or custom URL) into SQL fi
 | `--output-dir <dir>` | Write the generated declarative schema to this directory without changing the configured declarative schema path. |
 | `--reset` | Reset local database before generating (local data will be lost).（既定: false） |
 | `-s, --schema <schemas>` | Comma separated list of schema to include. |
-| `--db-url <url>` | Generates declarative schema from the database specified by the connection string (must be percent-encoded). |
-| `--linked` | Generates declarative schema from the linked project. |
-| `--local` | Generates declarative schema from the local database. |
+| `--remote` | Generates declarative schema from the remote database（CLI v3。`--remote=<url>` で接続文字列を指定）。 |
+| `--db-url <url>` | Generates declarative schema from the database specified by the connection string (must be percent-encoded). v3 で deprecated（v4 で削除）、`--remote=<url>` を使用。 |
+| `--linked` | Generates declarative schema from the linked project. v3 で deprecated（v4 で削除）、`--remote` を使用。 |
+| `--local` | Generates declarative schema from the local database. v3 で deprecated（v4 で削除）、ローカルが既定。 |
 | `-p, --password <password>` | Password to your remote Postgres database. |
 
 ### 出力レイアウト
@@ -325,7 +337,7 @@ Exports the schema of a live database (local, linked, or custom URL) into SQL fi
 ### Notes
 
 - migration ファイルは作らず、migration history も更新しない。宣言ファイルのみを置き換える
-- 非対話実行では `--local` / `--linked` / `--db-url` のいずれかを明示する
+- 非対話実行では対象を明示する（v3 ではローカルが既定、リモートは `--remote`。`--local` / `--linked` / `--db-url` は deprecated）
 - 出力 SQL は `db pull` と同じ既定フォーマット（大文字キーワード、indent 2、width 180）。`[experimental.pgdelta] format_options` で変更、`format_options = "null"` で raw statements
 
 ## コマンド使い分けガイド
@@ -333,13 +345,21 @@ Exports the schema of a live database (local, linked, or custom URL) into SQL fi
 | シナリオ | コマンド |
 |---------|---------|
 | ローカルで GUI 操作後にマイグレーション生成 | `supabase db diff -f <name>` |
-| リモートの現在のスキーマを取得 | `supabase db pull` |
-| ローカルのマイグレーションをリモートに適用 | `supabase db push` |
+| リモートの現在のスキーマを取得 | `supabase db pull --remote` |
+| ローカルのマイグレーションをリモートに適用 | `supabase db push --remote` |
 | ローカルをクリーンな状態に戻す | `supabase db reset` |
-| リモートの完全なスキーマダンプ | `supabase db dump -f schema.sql` |
+| リモートの完全なスキーマダンプ | `supabase db dump --remote -f schema.sql` |
 | スキーマの問題を検出 | `supabase db lint` |
 | 宣言的スキーマ（pg-delta）から migration 生成 | `supabase db schema declarative sync -f <name> --no-apply` |
-| 本番スキーマを宣言ファイルへ export | `supabase db schema declarative generate --linked` |
+| 本番スキーマを宣言ファイルへ export | `supabase db schema declarative generate --remote` |
+
+## Notes (CLI v3 での変更)
+
+- v3 はローカル既定。`db push` / `db pull` / `db diff` / `db reset` / `db dump` / `db lint` でリモートを対象にするには `--remote` を付ける（`--remote=<ref>` / `--remote=<url>` で別プロジェクト・DB URL）
+- `--linked` / `--local` / `--project-ref` / `--db-url` は deprecated（v4 で削除）。`--local` は no-op
+- ホストを変更する操作（`db push` / `db pull` / `db reset --remote`）は確認が必須。非対話・JSON 出力・agent 実行では `--yes`（または `SUPABASE_YES`、シェルで設定したもののみ有効）が必要
+- 削除済み: `db remote commit` / `db remote changes`、`db branch *`、`db diff --use-pg-schema`、`db pull --use-pg-delta` / `--experimental`
+- 取得元: 公式 CLI リファレンス（supabase.com/llms/cli.txt、取得日 2026-11-14、CLI v3.1.0）
 
 ## Related
 

@@ -39,7 +39,7 @@ supabase functions serve --inspect-mode brk
 ## 特定の Edge Function をデプロイ
 
 ```sh
-supabase functions deploy <function-name>
+supabase functions deploy <function-name>   # v3: 非対話・agent 実行では --yes が必要
 ```
 
 ## 全 Edge Functions をデプロイ

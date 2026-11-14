@@ -71,7 +71,7 @@ supabase start
 | `migra` | マイグレーションツール |
 | `studio` | Supabase Studio |
 | `imgproxy` | 画像変換プロキシ |
-| `inbucket` | メールテスト用サーバー |
+| `inbucket` | メールテスト用サーバー（CLI v3 では Mailpit。config は `[local_smtp]`、`--exclude` 名は v3 で未確認） |
 | `postgrest` | PostgREST API |
 | `pgbouncer` | コネクションプーラー |
 
@@ -97,7 +97,7 @@ Started supabase local development setup.
      GraphQL URL: http://127.0.0.1:54321/graphql/v1
           DB URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
       Studio URL: http://127.0.0.1:54323
-    Inbucket URL: http://127.0.0.1:54324
+    Inbucket URL: http://127.0.0.1:54324  （v3 では Mailpit URL 表示）
       JWT secret: super-secret-jwt-token-with-at-least-32-characters
         anon key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 service_role key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -169,7 +169,7 @@ API_URL=http://127.0.0.1:54321
 GRAPHQL_URL=http://127.0.0.1:54321/graphql/v1
 DB_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
 STUDIO_URL=http://127.0.0.1:54323
-INBUCKET_URL=http://127.0.0.1:54324
+INBUCKET_URL=http://127.0.0.1:54324  # v3 では MAILPIT_URL
 JWT_SECRET=super-secret-jwt-token-with-at-least-32-characters
 ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -211,7 +211,9 @@ supabase link --project-ref abcdefghijklmnop
 
 ## Notes
 
-- 実験的な `supabase stack` コマンド: `config.toml` に `[experimental] stack = true`（または `SUPABASE_EXPERIMENTAL_STACK=1`）を設定すると、`supabase start` / `status` / `stop` が stack コマンドとして動作する。環境変数は設定ファイルより優先され、`SUPABASE_EXPERIMENTAL_STACK=0` で 1 セッションだけ従来コマンドに戻せる
+- CLI v3（3.1.0）の変更: `config.toml` の `[inbucket]` は `[local_smtp]` に改名、`INBUCKET_URL` は `MAILPIT_URL`、`[experimental] orioledb_version` は `[db] orioledb_version`、`linkedin` / `slack` プロバイダーは `linkedin_oidc` / `slack_oidc`、functions の `import_map.json` は `deno.json`。`project_id` 未設定時のコンテナ名はフォルダー名基準（出典: check 時の公式 v3 リリース調査。config リファレンス本文との突合は未実施）
+- `supabase link --project-ref` は v3 公式で引き続き利用可。それ以外のコマンドの `--project-ref` / `--linked` / `--db-url` は deprecated（v4 で削除、`--remote` を使用）。`supabase stop --all` で全ローカルプロジェクトを停止（`--no-backup` 併用で全データ削除）
+- 実験的な `supabase stack` コマンド（v3 公式 CLI リファレンスには未掲載だがガイドは experimental として現存）: `config.toml` に `[experimental] stack = true`（または `SUPABASE_EXPERIMENTAL_STACK=1`）を設定すると、`supabase start` / `status` / `stop` が stack コマンドとして動作する。環境変数は設定ファイルより優先され、`SUPABASE_EXPERIMENTAL_STACK=0` で 1 セッションだけ従来コマンドに戻せる
 - 上記設定時は `--stack <name>` で名前付きローカルプロジェクトを指定できる。stack 専用コマンドは `supabase stack list` / `supabase stack destroy` / `supabase stack stop --all`
 - v2.121.0 以降は `supabase stack destroy` で `--stack-id` を複数回指定でき、確認は 1 回
 - stack モードでは `supabase stop --no-backup` / `--project-id`、`-o` / `--output` は使えない（`--output-format` と `--env` を使う）
@@ -232,13 +234,13 @@ supabase start
 # 4. リモートプロジェクトにリンク
 supabase link --project-ref <ref>
 
-# 5. リモートからスキーマ取得
-supabase db pull
+# 5. リモートからスキーマ取得（v3 は --remote が必要）
+supabase db pull --remote
 
 # 6. ローカルで開発・マイグレーション作成
 
-# 7. リモートにマイグレーション適用
-supabase db push
+# 7. リモートにマイグレーション適用（非対話実行では --yes も必要）
+supabase db push --remote
 
 # 8. 作業終了時に停止
 supabase stop

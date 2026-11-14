@@ -130,7 +130,9 @@ supabase functions deploy [function-name]
 |-------|------|
 | `--no-verify-jwt` | JWT 検証を無効化してデプロイ |
 | `--import-map <path>` | Import Map ファイルのパス |
-| `--project-ref <ref>` | プロジェクト参照ID |
+| `--prune` | ローカルに無いリモート関数も削除（CLI v3） |
+| `--yes` | ホスト変更の確認を承認（CLI v3。非対話・JSON・agent 実行では必須） |
+| `--project-ref <ref>` | プロジェクト参照ID。v3 で deprecated（v4 で削除）、`--remote` を使用 |
 
 ### 使用例
 
@@ -147,8 +149,8 @@ supabase functions deploy hello-world --no-verify-jwt
 # Import Map 付きでデプロイ
 supabase functions deploy hello-world --import-map ./supabase/functions/import_map.json
 
-# プロジェクト指定
-supabase functions deploy hello-world --project-ref <ref>
+# プロジェクト指定（v3 では deprecated の --project-ref ではなく --remote）
+supabase functions deploy hello-world --remote=<ref> --yes
 ```
 
 ### 出力例
@@ -172,7 +174,8 @@ supabase functions delete <function-name>
 
 | フラグ | 説明 |
 |-------|------|
-| `--project-ref <ref>` | プロジェクト参照ID |
+| `--yes` | 削除の確認を承認（CLI v3。非対話・JSON・agent 実行では必須） |
+| `--project-ref <ref>` | プロジェクト参照ID。v3 で deprecated（v4 で削除）、`--remote` を使用 |
 
 ### 使用例
 
@@ -192,13 +195,15 @@ supabase functions download <function-name>
 
 | フラグ | 説明 |
 |-------|------|
-| `--project-ref <ref>` | プロジェクト参照ID |
+| `--project-ref <ref>` | プロジェクト参照ID。v3 で deprecated（v4 で削除）、`--remote` を使用 |
 
 ### 使用例
 
 ```bash
 supabase functions download hello-world
 ```
+
+v3 で `--legacy-bundle` は削除された。`supabase pull` が `functions download` を含む取得をまとめて実行する。
 
 ダウンロードされたファイルは `supabase/functions/<function-name>/` に保存される。
 

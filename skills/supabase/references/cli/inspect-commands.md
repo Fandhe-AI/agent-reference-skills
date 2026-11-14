@@ -28,8 +28,8 @@
 | `table-index-sizes` | テーブルとインデックスのサイズ（deprecated: `table-stats` を使用、v3 で削除） |
 | `table-record-counts` | テーブルのレコード数（deprecated: `table-stats` を使用） |
 | `table-sizes` | テーブルサイズ（deprecated: `table-stats` を使用） |
-| `total-index-size` | インデックスの合計サイズ（deprecated: `index-stats` を使用、v3 で削除） |
-| `total-table-sizes` | テーブルの合計サイズ（deprecated: `table-stats` を使用、v3 で削除） |
+| `total-index-size` | インデックスの合計サイズ（v3 で削除済み: `index-stats` を使用） |
+| `total-table-sizes` | テーブルの合計サイズ（v3 で削除済み: `table-stats` を使用） |
 | `traffic-profile` | ブロック I/O に基づくテーブルの読み書き比率 |
 | `unused-indexes` | 未使用インデックス（deprecated: `index-stats` を使用） |
 | `vacuum-stats` | VACUUM 統計 |
@@ -353,6 +353,7 @@ supabase inspect report --output-dir ./reports
   - `role-connections` / `role-configs` -> `role-stats`
   - `table-sizes` / `table-record-counts` / `table-index-sizes` / `total-table-sizes` -> `table-stats`
 - `table-index-sizes` / `total-index-size` / `total-table-sizes` は「removed in v3」（コマンド定義の説明文より）
+- CLI v3.0.0 で `table-index-sizes` / `total-index-size` / `total-table-sizes` は実際に削除された（check 時に確認）。`index-stats` / `table-stats` を使う
 - 旧一覧の `total-table-size` は v2.121.0 のコマンド名では `total-table-sizes`
 
 ## 共通フラグ
@@ -361,8 +362,9 @@ supabase inspect report --output-dir ./reports
 
 | フラグ | 説明 |
 |-------|------|
-| `--linked` | リンク済みプロジェクトに対して実行 |
-| `--db-url <url>` | DB 接続URLを直接指定 |
+| `--remote` | リモートデータベースに対して実行（CLI v3。ローカルが既定。`--remote=<url>` で DB URL 指定。v3 公式 CLI リファレンスの inspect 個別記載は未確認） |
+| `--linked` | リンク済みプロジェクトに対して実行。v3 で deprecated（v4 で削除）、`--remote` を使用 |
+| `--db-url <url>` | DB 接続URLを直接指定。v3 で deprecated（v4 で削除）、`--remote=<url>` を使用 |
 | `--password <password>` | DB パスワード |
 
 ## Related

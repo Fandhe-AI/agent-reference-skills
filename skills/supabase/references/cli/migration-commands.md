@@ -125,13 +125,14 @@ supabase migration list
 
 | フラグ | 説明 |
 |-------|------|
+| `--remote` | リモートの履歴を対象にする（CLI v3。ローカルが既定。出力の 2 列目は `Remote` / `Local DB`） |
 | `--password <password>` | DB パスワード（リモート比較時） |
 
 ### 使用例
 
 ```bash
 # ローカルとリモートのマイグレーション状態を比較
-supabase migration list
+supabase migration list --remote
 ```
 
 ### 出力例
@@ -162,12 +163,14 @@ supabase migration fetch [flags]
 
 | フラグ | 説明 |
 |-------|------|
-| `--db-url <url>` | Fetches migrations from the database specified by the connection string (must be percent-encoded). |
-| `--linked` | Fetches migration history from the linked project.（既定: true） |
-| `--local` | Fetches migration history from the local database.（既定: false） |
-| `--project-ref <ref>` | Project ref of the Supabase project.（TS 実装のみの上書きフラグ） |
+| `--db-url <url>` | Fetches migrations from the database specified by the connection string (must be percent-encoded). v3 で deprecated（v4 で削除）。 |
+| `--linked` | Fetches migration history from the linked project.（既定: true）v3 で deprecated（v4 で削除）。 |
+| `--local` | Fetches migration history from the local database.（既定: false）v3 で deprecated（v4 で削除）。 |
+| `--project-ref <ref>` | Project ref of the Supabase project.（TS 実装のみの上書きフラグ）v3 で deprecated（v4 で削除）。 |
 
 ### Notes
+
+- v3 公式 CLI リファレンスはフラグ表を載せていない。上記 deprecated は v3 の横断的な記述（`--linked` / `--local` / `--project-ref` / `--db-url` は v4 で削除、`--remote` を使用）に基づく。v3 では `supabase pull` が `config pull` / `db pull` / `migration fetch` / `functions download` をまとめて実行する
 
 - `--project-ref` は CLI v2.121.0 のソース（`fetch.command.ts`）で "TS-only override of the linked project ref" とコメントされており、公式 CLI リファレンス（llms/cli.txt）にはフラグ表が無い
 - 公式 CLI リファレンスの記載は説明文と `supabase migration fetch [flags]` のみ
@@ -184,6 +187,8 @@ supabase migration repair
 
 | フラグ | 説明 |
 |-------|------|
+| `--remote` | リモートの履歴を修復（CLI v3） |
+| `--yes` | 確認プロンプトを承認（非対話・JSON・agent 実行では必須） |
 | `--status <status>` | マイグレーションのステータスを設定（`applied`, `reverted`） |
 | `--version <version>` | 対象のマイグレーションバージョン |
 | `--password <password>` | DB パスワード |
@@ -256,7 +261,7 @@ supabase migration new create_users_table
 supabase migration up
 
 # 4. リモートにプッシュ
-supabase db push
+supabase db push --remote
 ```
 
 ### パターン2: GUI 操作からマイグレーション生成
@@ -271,7 +276,7 @@ supabase db diff -f create_users_table
 # 3. 生成されたマイグレーションを確認・修正
 
 # 4. リモートにプッシュ
-supabase db push
+supabase db push --remote
 ```
 
 ### パターン3: リモートからローカルに同期
@@ -281,7 +286,7 @@ supabase db push
 supabase link --project-ref <ref>
 
 # 2. リモートのスキーマをマイグレーションとして取得
-supabase db pull
+supabase db pull --remote
 
 # 3. ローカルに適用
 supabase db reset

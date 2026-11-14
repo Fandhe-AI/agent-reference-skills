@@ -19,7 +19,7 @@ supabase migration up
 ## マイグレーション一覧の確認（ローカル vs リモート）
 
 ```sh
-supabase migration list
+supabase migration list --remote
 ```
 
 ## マイグレーション履歴テーブルからマイグレーションファイルを取得
@@ -45,7 +45,7 @@ supabase migration down --count 3
 ## マイグレーション履歴の修復
 
 ```sh
-supabase migration repair --status applied --version <timestamp>
+supabase migration repair --remote --yes --status applied --version <timestamp>
 ```
 
 ## マイグレーションの統合
@@ -71,13 +71,13 @@ supabase db diff -f <migration-name>
 ## リモートとのスキーマ差分を表示
 
 ```sh
-supabase db diff --linked
+supabase db diff --remote
 ```
 
 ## リモートからスキーマをマイグレーションとして取得
 
 ```sh
-supabase db pull
+supabase db pull --remote
 ```
 
 ## リモートスキーマを宣言型スキーマのツリーとして取得
@@ -85,7 +85,7 @@ supabase db pull
 > **警告**: pg-delta を有効化していないプロジェクト（legacy `migra` エンジン）では実行しない。`[db.migrations].schema_paths` が書き出したツリーを指すようになり、次回の `db diff` が依存順序を解決できず失敗する。
 
 ```sh
-supabase db pull --declarative
+supabase db pull --remote --declarative
 ```
 
 マイグレーションは作成せず、`supabase/schemas`（`experimental.pgdelta.declarative_schema_path` で変更可）のスキーマファイルを置き換える。
@@ -103,27 +103,27 @@ supabase db schema declarative sync -f <name> --no-apply
 > **警告**: `--overwrite` は確認なしで既存の宣言型スキーマファイルを上書きする。
 
 ```sh
-supabase db schema declarative generate --linked --overwrite
+supabase db schema declarative generate --remote --overwrite
 ```
 
-`--experimental` フラグまたは `[experimental.pgdelta] enabled = true` が必要。スクリプトでは対象（`--local` / `--linked` / `--db-url`）を明示する。
+`--experimental` フラグまたは `[experimental.pgdelta] enabled = true` が必要。スクリプトでは対象を明示する（CLI v3 はローカルが既定、リモートは `--remote`。`--local` / `--linked` / `--db-url` は deprecated）。
 
 ## ローカルのマイグレーションをリモートに適用
 
 ```sh
-supabase db push
+supabase db push --remote
 ```
 
 ## リモート適用前の確認（ドライラン）
 
 ```sh
-supabase db push --dry-run
+supabase db push --remote --dry-run
 ```
 
 ## シードデータも含めてリモートに適用
 
 ```sh
-supabase db push --include-seed
+supabase db push --remote --include-seed
 ```
 
 ## ローカルデータベースのリセット
@@ -137,13 +137,13 @@ supabase db reset
 ## リモートデータベースのスキーマをダンプ
 
 ```sh
-supabase db dump -f schema.sql
+supabase db dump --remote -f schema.sql
 ```
 
 ## データのみダンプ
 
 ```sh
-supabase db dump --data-only -f data.sql
+supabase db dump --remote --data-only -f data.sql
 ```
 
 ## データベーススキーマのリント

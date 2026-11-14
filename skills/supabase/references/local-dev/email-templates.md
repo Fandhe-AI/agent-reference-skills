@@ -131,6 +131,8 @@ content_path = "./supabase/templates/email_change.html"
 
 ローカル開発環境では Inbucket がメールサーバーとして動作する。送信されたメールはすべて Inbucket でキャプチャされる。
 
+> CLI v3 では `config.toml` の `[inbucket]` が `[local_smtp]` に改名され、`INBUCKET_URL` は `MAILPIT_URL` になった（Mailpit）。v3 でのポート・UI の詳細は未突合。
+
 ### Inbucket UI
 
 - URL: http://localhost:54324

@@ -20,40 +20,45 @@ supabase gen types typescript
 
 | フラグ | 説明 |
 |-------|------|
-| `--linked` | リンク済みリモートプロジェクトから型生成 |
-| `--local` | ローカルデータベースから型生成 |
-| `--db-url <url>` | 直接 DB 接続URLを指定して型生成 |
+| `--remote` | リモート（リンク済みプロジェクト）から型生成（CLI v3）。`--remote=<ref>` で別プロジェクト、`--remote=<url>` で DB URL を指定 |
 | `--schema <schemas>` | 対象スキーマ（カンマ区切り。デフォルト: `public`） |
-| `--project-id <ref>` | プロジェクト参照ID |
+| `--linked` | deprecated（v3、v4 で削除）。`--remote` を使用 |
+| `--local` | deprecated（v3、v4 で削除）。v3 ではローカルが既定のため no-op |
+| `--db-url <url>` | deprecated（v3、v4 で削除）。`--remote=<url>` を使用 |
+| `--project-id <ref>` | deprecated（v3、v4 で削除）。`--remote=<ref>` を使用 |
 
 ### ソース別の使い方
+
+CLI v3 ではローカルデータベースが既定。リモートを対象にするときは `--remote` が必要。
 
 #### ローカルデータベースから生成
 
 ```bash
-supabase gen types typescript --local > src/types/database.types.ts
+supabase gen types typescript > src/types/database.types.ts
 ```
 
 #### リモートプロジェクトから生成
 
 ```bash
 # リンク済みプロジェクトから
-supabase gen types typescript --linked > src/types/database.types.ts
+supabase gen types typescript --remote > src/types/database.types.ts
 
 # プロジェクトID直接指定
-supabase gen types typescript --project-id <ref> > src/types/database.types.ts
+supabase gen types typescript --remote=<ref> > src/types/database.types.ts
 ```
 
 #### DB URL を直接指定
 
 ```bash
-supabase gen types typescript --db-url "postgresql://postgres:password@host:5432/postgres" > src/types/database.types.ts
+supabase gen types typescript --remote="postgresql://postgres:password@host:5432/postgres" > src/types/database.types.ts
 ```
+
+v2 の `--local` / `--linked` / `--project-id` / `--db-url` は v3 で deprecated（v4 で削除）。
 
 ### 複数スキーマ
 
 ```bash
-supabase gen types typescript --local --schema public,auth > src/types/database.types.ts
+supabase gen types typescript --schema public,auth > src/types/database.types.ts
 ```
 
 ### 出力例
@@ -230,7 +235,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: supabase/setup-cli@v1
-      - run: supabase gen types typescript --project-id ${{ secrets.SUPABASE_PROJECT_REF }} > src/types/database.types.ts
+      - run: supabase gen types typescript --remote=${{ secrets.SUPABASE_PROJECT_REF }} > src/types/database.types.ts
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       - uses: stefanzweifel/git-auto-commit-action@v5
@@ -243,8 +248,8 @@ jobs:
 ```json
 {
   "scripts": {
-    "gen:types": "supabase gen types typescript --local > src/types/database.types.ts",
-    "gen:types:remote": "supabase gen types typescript --linked > src/types/database.types.ts"
+    "gen:types": "supabase gen types typescript > src/types/database.types.ts",
+    "gen:types:remote": "supabase gen types typescript --remote > src/types/database.types.ts"
   }
 }
 ```

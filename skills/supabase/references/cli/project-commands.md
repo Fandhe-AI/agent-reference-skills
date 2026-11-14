@@ -43,6 +43,7 @@ supabase projects create <name>
 | `--region <region>` | リージョン（必須） |
 | `--db-password <password>` | DB パスワード |
 | `--plan <plan>` | プラン（`free`, `pro`） |
+| `--yes` | 確認を承認（CLI v3。非対話・JSON・agent 実行では必須。create は既定 Yes） |
 
 #### 使用例
 
@@ -61,6 +62,8 @@ supabase projects create "My New App" \
 supabase projects delete --ref <project-ref>
 ```
 
+CLI v3 では確認プロンプトの既定が No。非対話・JSON・agent 実行では `--yes` が必須。
+
 ### supabase projects api-keys
 
 プロジェクトの API キーを表示する。
@@ -68,6 +71,8 @@ supabase projects delete --ref <project-ref>
 ```bash
 supabase projects api-keys --project-ref <ref>
 ```
+
+`--project-ref` は CLI v3 で deprecated（v4 で削除）。`--remote` を使用（`link` の `--project-ref` は v3 公式で非 deprecated 扱い）。
 
 #### 出力例
 
@@ -194,7 +199,7 @@ supabase secrets list
 
 | フラグ | 説明 |
 |-------|------|
-| `--project-ref <ref>` | プロジェクト参照ID |
+| `--project-ref <ref>` | プロジェクト参照ID。v3 で deprecated（v4 で削除）、`--remote` を使用 |
 
 ### supabase secrets set
 
@@ -222,7 +227,8 @@ supabase secrets set --env-file .env.production
 | フラグ | 説明 |
 |-------|------|
 | `--env-file <path>` | .env ファイルからシークレットを読み込み |
-| `--project-ref <ref>` | プロジェクト参照ID |
+| `--yes` | ホスト変更の確認を承認（CLI v3。非対話・JSON・agent 実行では必須） |
+| `--project-ref <ref>` | プロジェクト参照ID。v3 で deprecated（v4 で削除）、`--remote` を使用 |
 
 ### supabase secrets unset
 
@@ -237,6 +243,14 @@ supabase secrets unset <NAME> [NAME2 ...]
 ```bash
 supabase secrets unset MY_API_KEY OLD_SECRET
 ```
+
+#### フラグ（CLI v3）
+
+| フラグ | 説明 |
+|-------|------|
+| `--yes` | ホスト変更の確認を承認（非対話・JSON・agent 実行では必須） |
+| `--dry-run` | 削除せず対象を表示 |
+| `--all` | 全シークレットを削除（check 時レポートでは unset に必須と記載。公式 CLI リファレンス本文では未確認） |
 
 ## ログイン
 
@@ -363,9 +377,10 @@ supabase test db [path] [flags]
 
 | フラグ | 説明 |
 |-------|------|
-| `--db-url <string>` | 接続文字列で特定のデータベースをテスト |
-| `--linked` | リンクされたプロジェクトに対してテスト実行 |
-| `--local` | ローカルデータベースに対してテスト実行 |
+| `--remote` | リモートデータベースに対してテスト実行（CLI v3。ローカルが既定） |
+| `--db-url <string>` | 接続文字列で特定のデータベースをテスト。v3 で deprecated（v4 で削除）、`--remote=<url>` を使用 |
+| `--linked` | リンクされたプロジェクトに対してテスト実行。v3 で deprecated（v4 で削除）、`--remote` を使用 |
+| `--local` | ローカルデータベースに対してテスト実行。v3 で deprecated（v4 で削除）、ローカルが既定 |
 
 #### テストファイル例
 
@@ -414,7 +429,7 @@ supabase branches create [name] [flags]
 | `--with-data` | メインプロジェクトのデータを引き継ぐ |
 | `--persistent` | 永続的なブランチとして作成 |
 | `--notify-url <url>` | ブランチ作成完了通知先 URL |
-| `--project-ref <ref>` | 対象プロジェクト参照ID |
+| `--project-ref <ref>` | 対象プロジェクト参照ID。v3 で deprecated（v4 で削除）、`--remote` を使用 |
 
 ### supabase branches list
 
@@ -487,8 +502,8 @@ supabase seed buckets [flags]
 
 | フラグ | 説明 |
 |-------|------|
-| `--linked` | リンクされたプロジェクトにシード |
-| `--local` | ローカルデータベースにシード |
+| `--linked` | リンクされたプロジェクトにシード。v3 で deprecated（v4 で削除）、`--remote` を使用 |
+| `--local` | ローカルデータベースにシード。v3 で deprecated（v4 で削除）、ローカルが既定 |
 
 ## 設定管理
 
@@ -504,7 +519,7 @@ supabase config push [flags]
 
 | フラグ | 説明 |
 |-------|------|
-| `--project-ref <ref>` | プロジェクト参照ID |
+| `--project-ref <ref>` | プロジェクト参照ID。v3 で deprecated（v4 で削除）、`--remote` を使用 |
 
 ## SSO
 
