@@ -191,6 +191,7 @@ Do not call `reset` on every render, or every time a query library returns a new
 ## Notes
 
 - Source: https://react-hook-form.com/advanced-usage/editing-saved-data (documentation master c0511c9, fetched 2026-11-14)
+- Caveat on the official example (verbatim): inputs stay editable while `saveProfile` is pending, so edits typed during the request are overwritten by `reset(saved)` and `isDirty` becomes false. Disable the inputs while saving or reset only to the saved values you want to keep as the new baseline.
 - `defaultValues` is read once at mount, so load the record in a parent and key the form by record id; `dirtyFields` and `isDirty` compare against `defaultValues`.
 - `reset` is called in an effect, not in the submit handler, because `handleSubmit` updates the submission state after the handler returns.
 

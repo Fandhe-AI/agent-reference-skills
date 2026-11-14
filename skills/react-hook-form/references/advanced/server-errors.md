@@ -162,6 +162,7 @@ How it fits together:
 ## Notes
 
 - Source: https://react-hook-form.com/advanced-usage/server-errors (documentation master c0511c9, fetched 2026-11-14)
+- Caveat on the official example (verbatim): when the response has an empty `fieldErrors` object the helper returns without showing anything; fall back to `root.server` (for example with `body.message`) unless at least one field error was applied.
 - Server errors use the same `errors` object as client errors; `root` errors do not belong to any input. For Next.js Server Action wiring beyond React Hook Form, see the nextjs-app skill.
 
 ### Things to watch
