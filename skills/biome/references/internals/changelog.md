@@ -16,6 +16,7 @@ Entries can be searched and filtered by version range (v1.x / v2.x / next).
 ## Notes
 
 - Latest patch release: `@biomejs/biome` 2.5.15 (GitHub release dated 30 Sep 2026). The latest minor release is 2.5.0, whose highlights include the `concise` reporter, `--watch` for `check` / `lint` / `format`, `biome upgrade`, linter / assist `preset`, promotion of 73 nursery rules to stable groups, SVG support, and the `delimiterSpacing` formatter option
+- Update (2.6.x): the latest release is `@biomejs/biome` 2.6.7 (11 Nov 2026), and the latest minor is 2.6.0. Entries from 2.6.2 include `biome init --git`, `biome migrate stylelint`, `biome inspect config|file|plugins`, `--profile-type-inference`, and the `tailwind.stylesheet` option. 2.6.7 removes the JS plugin `semantic()` query (use `ast()` with `{ semantic: true }`) and adds `grit()` queries to JS plugins. The 2.6.0 / 2.6.1 sections were not read; the paragraph above remains the 2.5.15-era snapshot
 - The separate Changelog v1 page (`/internals/changelog_v1`) covers v1.x and is not transcribed here
 - Since the latest changes are updated continuously, this page does not transcribe individual version contents. Refer directly to the official Version History page or GitHub releases for current information
 
