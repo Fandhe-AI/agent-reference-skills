@@ -100,7 +100,7 @@ curl -X POST \
      "https://iam.googleapis.com/v3/organizations/ORG_ID/locations/global/principalAccessBoundaryPolicies?principalAccessBoundaryPolicyId=PAB_POLICY_ID"
 ```
 
-Apply it to a principal set with a policy binding (`RESOURCE_TYPE` is `project`, `folder` or `organization`; `CONDITION_DETAILS` optional):
+Apply it to a principal set with a policy binding (gcloud `RESOURCE_TYPE` is `project`, `folder` or `organization`; the REST path uses the plural collection `RESOURCE_COLLECTION`, which is `projects`, `folders` or `organizations`; `CONDITION_DETAILS` optional):
 
 ```bash
 gcloud iam policy-bindings create BINDING_ID \
@@ -111,8 +111,10 @@ gcloud iam policy-bindings create BINDING_ID \
     CONDITION_DETAILS
 ```
 
+Adapted (not in the official docs): the REST path uses `RESOURCE_COLLECTION` (plural) instead of the singular gcloud `RESOURCE_TYPE`.
+
 ```text
-POST https://iam.googleapis.com/v3/RESOURCE_TYPE/RESOURCE_ID/locations/global/policyBindings?policyBindingId=BINDING_ID
+POST https://iam.googleapis.com/v3/RESOURCE_COLLECTION/RESOURCE_ID/locations/global/policyBindings?policyBindingId=BINDING_ID
 GET https://iam.googleapis.com/v3/OPERATION_NAME
 ```
 

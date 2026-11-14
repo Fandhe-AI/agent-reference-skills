@@ -8,7 +8,7 @@ Create entitlements, and configure resource-wide PAM settings (automated approve
 
 ## Signature / Usage
 
-Entitlement file `entitlement.yaml`:
+Entitlement file `entitlement.yaml`. Adapted (not in the official docs): the first approver list is re-indented to sit under `principals` (and the second step's `approverEmailRecipients` list likewise), as in the second approver step.
 
 ```yaml
 privilegedAccess:
@@ -35,12 +35,12 @@ approvalWorkflow:
       - APPROVER_EMAIL_ADDRESSES_2
       approvers:
       - principals:
-       - APPROVING_MEMBER_1
-       - APPROVING_MEMBER_2
+        - APPROVING_MEMBER_1
+        - APPROVING_MEMBER_2
     - approvalsNeeded: APPROVALS_NEEDED_2
       approverEmailRecipients:
-       - APPROVER_EMAIL_ADDRESSES_3
-       - APPROVER_EMAIL_ADDRESSES_4
+      - APPROVER_EMAIL_ADDRESSES_3
+      - APPROVER_EMAIL_ADDRESSES_4
       approvers:
       - principals:
         - APPROVING_MEMBER_3

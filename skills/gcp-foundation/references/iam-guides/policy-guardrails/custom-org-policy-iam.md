@@ -8,14 +8,15 @@ Use Organization Policy custom constraints on `iam.googleapis.com/AllowPolicy` t
 
 ## Signature / Usage
 
-Constraint file format:
+Constraint file format. Adapted (not in the official docs): `resourceTypes` is shown as a list, as in the concrete examples below.
 
 ```yaml
 name: organizations/ORGANIZATION_ID/customConstraints/CONSTRAINT_NAME
-resourceTypes: RESOURCE_NAME
+resourceTypes:
+  - RESOURCE_NAME
 methodTypes:
   - CREATE
-  - UPDATE 
+  - UPDATE
 condition: "CONDITION"
 actionType: ACTION
 displayName: DISPLAY_NAME
