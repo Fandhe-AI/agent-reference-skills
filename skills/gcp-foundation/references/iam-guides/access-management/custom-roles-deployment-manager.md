@@ -10,6 +10,8 @@ Describe IAM custom roles as config-as-code using Cloud Deployment Manager confi
 
 `project_custom_role.yaml`:
 
+Adapted (not in the official docs): `stage: GA` is added because the template reads `properties["stage"]` and the official config does not define it (an undefined property fails expansion).
+
 ```yaml
 imports:
 - path: project_custom_role.jinja
@@ -21,6 +23,7 @@ resources:
     roleId: myCustomRole
     title: My Title
     description: My description.
+    stage: GA
     includedPermissions:
     - iam.roles.get
     - iam.roles.list
@@ -59,6 +62,7 @@ gcloud deployment-manager manifests describe your-manifest-id \
 
 ## Notes
 
+- Adapted from the official docs: `stage: GA` added to `project_custom_role.yaml`; the template references `properties["stage"]`. Use `ALPHA` / `BETA` / `GA` as needed.
 - Deprecation: Deployment Manager is deprecated; support ends and new usage is restricted, with Infrastructure Manager as the successor (see the gcp-services-index skill, `references/lifecycle/shutdown-and-deprecated.md`; confirm the current dates there). Prefer Infrastructure Manager (Terraform) or `gcloud iam roles create` for new custom-role automation. Not confirmed in the official docs for exact shutdown dates on this page.
 - Custom roles are maintained by your organization: new permissions are not added automatically, so beta features stay unavailable until the permissions are added. Config files plus source control support auditing, launch stage promotion (`ALPHA` to `BETA`), and sharing patterns.
 - Deployment Manager config types: configurations (YAML resources), schemas (properties and defaults; project and organization variants), templates (Jinja or Python).
