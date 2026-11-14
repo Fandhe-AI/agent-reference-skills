@@ -70,6 +70,8 @@ curl https://api.stripe.com/v1/billing_portal/sessions \
 | `customer.subscription.updated` | Customer changes plan in portal |
 | `customer.subscription.deleted` | Customer cancels in portal |
 | `payment_method.attached` | Customer adds a payment method |
+- Subscription pausing (`2026-10-28.endive`, non-breaking): in the redesigned customer portal, set `features.subscription_pause.enabled` to `true` (and optionally `features.subscription_pause.duration`) in a portal configuration. A portal session with `flow_data.type=subscription_pause` and `flow_data.subscription_pause.subscription` opens the pause flow for one subscription. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/customer-portal-subscription-pausing, retrieved 2026-11-14)
+- Session recovery (`2026-10-28.endive`, non-breaking): `after_expiration.type=customer_login` on create portal session lets a customer verify their email and receive a replacement session with the original configuration; `after_expiration.customer_login.expires_at` sets the recovery deadline. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/session-recovery-for-expired-customer-portal-sessions, retrieved 2026-11-14)
 
 ## Related
 

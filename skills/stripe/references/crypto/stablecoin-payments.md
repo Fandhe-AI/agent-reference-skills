@@ -35,6 +35,7 @@ Account.capabilities.crypto_payments == "active"
 - Connect: each connected account must have the crypto payment method enabled.
 - This is the stablecoin payment method (Payment Intents / Checkout). The fiat-to-crypto onramp is a separate product; see the onramp pages.
 - Source: https://docs.stripe.com/payments/stablecoin-payments (retrieved 2026-10).
+- `ousd` (`2026-10-28.endive`, non-breaking): Open USD is a new value of `crypto.token_currency` on Charges, Payment Attempt Records and Payment Records. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/ousd-token-currency, retrieved 2026-11-14)
 
 ## Related
 

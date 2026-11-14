@@ -63,6 +63,7 @@ curl -G https://api.stripe.com/v1/treasury/transactions \
 - The `flow_type` field identifies what caused the transaction (e.g., `outbound_payment`, `received_credit`, `inbound_transfer`).
 - `balance_impact` values are signed integers: positive = credit, negative = debit.
 - This page covers the v1 Treasury API, now the legacy path. The official llms.txt recommends Treasury for Platforms (v2, public preview) for new integrations; v1 docs remain available for existing integrations. (Source: https://docs.stripe.com/llms.txt)
+- Regulatory receipts (`2026-10-28.endive`, non-breaking, API v2 Transactions): `regulatory_receipt` holds a hosted receipt URL valid until `regulatory_receipt.url_expires_at`; call `refresh_regulatory_receipt` for a new URL. It replaces `receipt_url` on the Adjustment, InboundTransfer, OutboundPayment, OutboundTransfer, ReceivedCredit and ReceivedDebit flow objects. See `money-management-v2.md`. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/transaction-regulatory-receipts, retrieved 2026-11-14)
 
 ## Related
 
