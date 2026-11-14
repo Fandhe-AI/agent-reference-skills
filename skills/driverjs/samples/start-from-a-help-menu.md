@@ -45,3 +45,8 @@ document
 - `drive(index)` starts at that step; Previous still goes back to the earlier ones
 - If the tour is already running, `driverObj.moveTo(index)` jumps to a step without starting over; since 1.12.0 `moveTo()` also starts the tour when it is not running
 - Source: https://driverjs.com/docs/start-from-a-help-menu (driver.js 1.14.0 docs source, apps/docs/src/content/guides/start-from-a-help-menu.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

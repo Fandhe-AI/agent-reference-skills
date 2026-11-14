@@ -50,3 +50,8 @@ driverObj.drive();
 - When the dialog closes mid-step, the overlay and the popover move back to the page
 - `advanceOn` needs 1.11.0+, `popover.instruction` 1.12.0+
 - Source: https://driverjs.com/docs/steps-inside-a-dialog (driver.js 1.14.0 docs source, apps/docs/src/content/guides/steps-inside-a-dialog.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

@@ -33,3 +33,8 @@ driverObj.drive();
 - Other `PopoverDOM` properties: `wrapper`, `arrow`, `title`, `description`, `footer`, `progress`, `previousButton`, `nextButton`, `closeButton`
 - Use `showButtons` / `disableButtons` arrays to show or hide the built-in `'next'`, `'previous'`, `'close'` buttons
 - `PopoverDOM` also has `instruction` / `instructionIndicator` only on steps with `popover.instruction` (since 1.12.0) and `feedback` only after `nudge("...")` showed a message; check for `undefined` before using them
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

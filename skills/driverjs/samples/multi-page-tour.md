@@ -72,3 +72,8 @@ if (savedStep !== null) {
 - The explicit `destroy()` in the hand-off matters for single-page apps, where the old page's tour would otherwise stay on screen
 - The saved index is hardcoded for clarity; compute it with `driverObj.getActiveIndex() + 1` or store a step id and look up its index
 - Put `waitForElement` on the first resumed step so the tour does not fall back to the centered popover while the page hydrates
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

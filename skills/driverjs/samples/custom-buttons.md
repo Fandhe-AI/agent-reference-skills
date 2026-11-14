@@ -68,3 +68,8 @@ const driverObj = driver({
 - `closeBtnLabel` (the close button's accessible label) is since 1.9.0
 - Previously covered by the custom-popover-buttons sample (single Skip button); this one adds Restart and translation
 - Source: https://driverjs.com/docs/custom-buttons (driver.js 1.14.0 docs source, apps/docs/src/content/guides/custom-buttons.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

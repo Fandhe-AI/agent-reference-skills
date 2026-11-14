@@ -25,3 +25,8 @@ driverObj.drive();
 - `showProgress: true` displays "1 of 4" style text inside the popover
 - `title` and `description` both accept HTML strings
 - Omitting `element` from a step shows the popover as a centered modal (no highlight)
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

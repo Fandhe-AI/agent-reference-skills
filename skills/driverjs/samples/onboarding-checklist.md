@@ -55,3 +55,8 @@ onboarding.refresh();
 - `tour` items tick only when the user finishes the tour; `href` ticks on click; `action` runs then ticks; an item with `completeWhen` ticks only when it returns `true`
 - The checklist stores nothing itself: restore with `completed`, persist with `onProgress`
 - Use `complete(id)` / `refresh()` from your app; `launcher: false` (1.10.1) lets you open the panel yourself with `open()` / `toggle()`
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

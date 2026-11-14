@@ -31,3 +31,8 @@ driverObj.drive(Number(localStorage.getItem(STEP_KEY) ?? 0));
 - A finished tour clears the saved step, so it starts from the beginning next time
 - For a tour that continues on another page, see the multi-page-tour sample
 - Source: https://driverjs.com/docs/resume-a-tour (driver.js 1.14.0 docs source, apps/docs/src/content/guides/resume-a-tour.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

@@ -96,3 +96,8 @@ export function TourButton() {
 - When your framework replaces a highlighted element, the step follows the new one (automatic since 1.12.0; `onElementReplaced` since 1.13.0)
 - Prefer selectors over refs in steps: a selector finds the new element after a re-render, a stored element does not
 - Source: https://driverjs.com/docs/react-and-vue (driver.js 1.14.0 docs source, apps/docs/src/content/guides/react-and-vue.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

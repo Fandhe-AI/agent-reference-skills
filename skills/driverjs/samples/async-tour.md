@@ -38,3 +38,8 @@ driverObj.drive();
 - Step-level hooks override only that step; driver-level hooks apply to all steps
 - `onDeselected` is the right place to clean up DOM elements added for a specific step
 - `onPrevClick` follows the same pattern: override requires a manual `driverObj.movePrevious()` call
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

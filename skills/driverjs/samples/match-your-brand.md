@@ -60,3 +60,8 @@ driverObj.drive();
 - Hints and checklists take the same approach with `--driver-hint-color` and `--driver-checklist-color`
 - See also the custom-theme sample for a minimal `popoverClass` example
 - Source: https://driverjs.com/docs/match-your-brand (driver.js 1.14.0 docs source, apps/docs/src/content/guides/match-your-brand.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

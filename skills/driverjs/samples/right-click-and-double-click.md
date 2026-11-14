@@ -49,3 +49,8 @@ driverObj.drive();
 - `strict` blocks the other clicks on the element only. Clicks in `allowedElements`, like the menu, still work
 - iOS Safari never fires `contextmenu`. On touch devices, accept another event too, like `["contextmenu", "dblclick"]`, or offer a button that opens the same menu
 - Source: https://driverjs.com/docs/right-click-and-double-click (driver.js 1.14.0 docs source, apps/docs/src/content/guides/right-click-and-double-click.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

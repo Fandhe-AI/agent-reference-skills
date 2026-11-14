@@ -46,3 +46,8 @@ driverObj.drive();
 - When the highlighted item leaves the page, because the user picked another item or pressed Escape, `"previousAction"` goes back to the step that opens the menu
 - To block one item with a message, like Delete, see "Let the User Use a Menu" in the Action-Driven Tours guide
 - Source: https://driverjs.com/docs/walk-through-a-menu (driver.js 1.14.0 docs source, apps/docs/src/content/guides/walk-through-a-menu.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

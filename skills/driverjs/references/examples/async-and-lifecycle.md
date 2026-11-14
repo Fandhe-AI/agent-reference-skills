@@ -38,80 +38,6 @@ driverObj.drive();
 
 Hooks can be set at driver level (all steps) or step level (individual step only).
 
-## When Next Does the Work
-
-To load something before the next step, take over the Next button with `onNextClick` and call `moveNext()` when you're ready. `updatePopover()` shows that it's loading in the meantime. `onNextClick` replaces the button's default action, so the tour only moves when you call `moveNext()`. `onPrevClick` works the same way for going back.
-
-```js
-const driverObj = driver({
-  steps: [
-    {
-      element: "#reports",
-      popover: {
-        title: "Your weekly report",
-        description: "Next loads the report first.",
-        onNextClick: async () => {
-          driverObj.updatePopover({
-            nextBtnText: "Loading…",
-            disableButtons: ["next"],
-          });
-          await loadReport();
-          driverObj.moveNext();
-        },
-      },
-    },
-    {
-      element: "#report",
-      popover: { title: "Here it is" },
-      onDeselected: () => unloadReport(),
-    },
-  ],
-});
-```
-
-To keep a step open until your app finishes a save or request, call `driverObj.advance()` from the app's event. `onHighlighted` gets a `signal` that aborts when the step is left, so the listener removes itself. With `advanceDelay`, the instruction turns green for the pause first.
-
-```js
-const driverObj = driver({
-  showButtons: ["next", "close"],
-  steps: [
-    {
-      element: "#save",
-      advanceDelay: 600,
-      onHighlighted: (element, step, { signal, driver }) => {
-        window.addEventListener(
-          "profile-saved",
-          () => driver.advance(),
-          { signal }
-        );
-      },
-      popover: {
-        title: "Save your profile",
-        instruction: "Click <b>Save</b>.",
-      },
-    },
-    {
-      element: "#saved",
-      popover: { title: "Saved", showButtons: ["next"] },
-    },
-  ],
-});
-
-driverObj.drive();
-```
-
-Your app fires the event when the request comes back:
-
-```js
-async function saveProfile(profile) {
-  await fetch("/api/profile", {
-    method: "POST",
-    body: JSON.stringify(profile),
-  });
-  window.dispatchEvent(new Event("profile-saved"));
-}
-```
-
 ## Confirm on Exit
 
 Use this when leaving halfway would lose something, like a setup the user has to finish. `onDestroyStarted` runs when the tour is about to end. Once you set it, the tour only ends when you call `destroy()`. The example only asks when the user leaves early.
@@ -194,7 +120,99 @@ A `destroy()` you call from a hook keeps the reason of the user action that star
 - `allowClose: false` disables closing via backdrop click, Escape and the close button
 - `advance()`, `advanceDelay` and `popover.instruction` are available since 1.12.0; `updatePopover()` since 1.11.0.
 - In 1.14.0 these patterns live on the Confirm Before Closing and Wait for a Save recipe pages; the Async Tour section above is kept from the 1.10.1 page.
+- Adapted: the `saveProfile` example checks `response.ok` before firing the event, and the `onNextClick` example restores the Next button when `loadReport()` rejects; the official examples do neither.
 - Source: https://driverjs.com/docs/confirm-before-closing and https://driverjs.com/docs/wait-for-a-save (driver.js 1.14.0 docs source, apps/docs/src/content/guides/confirm-before-closing.mdx and wait-for-a-save.mdx at tag 1.14.0).
+
+### When Next Does the Work
+
+To load something before the next step, take over the Next button with `onNextClick` and call `moveNext()` when you're ready. `updatePopover()` shows that it's loading in the meantime. `onNextClick` replaces the button's default action, so the tour only moves when you call `moveNext()`. `onPrevClick` works the same way for going back.
+
+Adapted (not in the official docs): wraps `loadReport()` in `try`/`catch` and restores the Next button on failure, so a rejected load does not leave the tour stuck.
+
+```js
+const driverObj = driver({
+  steps: [
+    {
+      element: "#reports",
+      popover: {
+        title: "Your weekly report",
+        description: "Next loads the report first.",
+        onNextClick: async () => {
+          driverObj.updatePopover({
+            nextBtnText: "Loading…",
+            disableButtons: ["next"],
+          });
+          try {
+            await loadReport();
+          } catch (error) {
+            // Restore the button so the user can retry or close the tour.
+            driverObj.updatePopover({
+              nextBtnText: "Next",
+              disableButtons: [],
+            });
+            return;
+          }
+          driverObj.moveNext();
+        },
+      },
+    },
+    {
+      element: "#report",
+      popover: { title: "Here it is" },
+      onDeselected: () => unloadReport(),
+    },
+  ],
+});
+```
+
+To keep a step open until your app finishes a save or request, call `driverObj.advance()` from the app's event. `onHighlighted` gets a `signal` that aborts when the step is left, so the listener removes itself. With `advanceDelay`, the instruction turns green for the pause first.
+
+```js
+const driverObj = driver({
+  showButtons: ["next", "close"],
+  steps: [
+    {
+      element: "#save",
+      advanceDelay: 600,
+      onHighlighted: (element, step, { signal, driver }) => {
+        window.addEventListener(
+          "profile-saved",
+          () => driver.advance(),
+          { signal }
+        );
+      },
+      popover: {
+        title: "Save your profile",
+        instruction: "Click <b>Save</b>.",
+      },
+    },
+    {
+      element: "#saved",
+      popover: { title: "Saved", showButtons: ["next"] },
+    },
+  ],
+});
+
+driverObj.drive();
+```
+
+Your app fires the event when the request comes back:
+
+Adapted (not in the official docs): checks `response.ok` so the event only fires when the save succeeded, since `fetch` resolves on HTTP 4xx/5xx.
+
+```javascript
+async function saveProfile(profile) {
+  const response = await fetch("/api/profile", {
+    method: "POST",
+    body: JSON.stringify(profile),
+  });
+  if (!response.ok) {
+    // Keep the step open and let the user retry.
+    return;
+  }
+  window.dispatchEvent(new Event("profile-saved"));
+}
+```
 
 ## Related
 

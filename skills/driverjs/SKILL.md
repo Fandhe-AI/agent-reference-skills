@@ -1,10 +1,9 @@
 ---
 name: driverjs
 description: >
-  Driver.js v1.14 (プロダクトツアー・要素ハイライト) リファレンス。
-  driver(), highlight, tour steps, popover, overlay, hints (beacon), onboarding checklist,
-  action steps (instruction), advanceOn, headless (driver.js/headless), onInteraction,
-  DestroyReason, advanceOnClick, waitForElement, skipMissingElement,
+  Driver.js v1.14 (プロダクトツアー・要素ハイライト) リファレンス。driver(), advanceOn, action steps (instruction),
+  onInteraction, headless (driver.js/headless), highlight, tour steps, popover, overlay, hints (beacon),
+  onboarding checklist, DestroyReason, advanceOnClick, waitForElement, skipMissingElement,
   theming, configuration, コールバック, 1.5〜1.14 (1.10 含む) 変更点。
 user-invocable: false
 ---

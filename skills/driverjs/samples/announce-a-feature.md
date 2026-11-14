@@ -59,3 +59,8 @@ productHints.show();
 - Hints (`driver.js/hints`, `dist/hints.css`) need 1.8.0+
 - Add the next feature to `newFeatures` with its own `id`, and only users who have not seen it get a beacon
 - Source: https://driverjs.com/docs/announce-a-feature (driver.js 1.14.0 docs source, apps/docs/src/content/guides/announce-a-feature.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

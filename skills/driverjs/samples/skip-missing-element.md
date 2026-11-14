@@ -35,3 +35,8 @@ driver({
 - Combined with `waitForElement`, a timed-out wait skips the step instead of showing the fallback
 - Skipping goes in the direction of travel, so Previous skips missing steps backwards too
 - For a highlighted element that disappears mid-step, use `onElementMissing` (since 1.11.0; the `"stay"`, `"previous"` and `"previousAction"` presets since 1.12.0) and `waitForRemovedElement` (since 1.14.0); see the walk-through-a-menu sample
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

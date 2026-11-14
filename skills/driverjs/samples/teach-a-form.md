@@ -79,5 +79,10 @@ driverObj.drive();
 - First snippet: `highlight()` on focus shows help next to the field the user is in
 - Second snippet: `advanceOn` with `when` checks the field on every event, so the step completes the moment the value is valid (`advanceOn` and `when` since 1.11.0; `popover.instruction` and `advanceDelay` since 1.12.0)
 - `advanceDelay` shows the done state before moving on
-- To say what is wrong instead of waiting, call `driver.nudge("...")` from `when` and return `false` (`nudge()` since 1.11.0; see the Action-Driven Tours guide)
+- To say what is wrong instead of waiting, call `driver.nudge("...")` from `when` and return `false` (`nudge()` since 1.11.0, `nudge("message")` since 1.12.0; see the Action-Driven Tours guide)
 - Source: https://driverjs.com/docs/teach-a-form (driver.js 1.14.0 docs source, apps/docs/src/content/guides/teach-a-form.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

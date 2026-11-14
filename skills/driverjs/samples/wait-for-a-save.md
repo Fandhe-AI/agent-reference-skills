@@ -33,17 +33,25 @@ driverObj.drive();
 
 Your app fires the event when the request comes back:
 
+Adapted (not in the official docs): checks `response.ok` so the event only fires when the save succeeded, since `fetch` resolves on HTTP 4xx/5xx.
+
 ```javascript
 async function saveProfile(profile) {
-  await fetch("/api/profile", {
+  const response = await fetch("/api/profile", {
     method: "POST",
     body: JSON.stringify(profile),
   });
+  if (!response.ok) {
+    // Keep the step open and let the user retry.
+    return;
+  }
   window.dispatchEvent(new Event("profile-saved"));
 }
 ```
 
 When Next does the work, take over the Next button with `onNextClick` and call `moveNext()` when ready:
+
+Adapted (not in the official docs): wraps `loadReport()` in `try`/`catch` and restores the Next button on failure, so a rejected load does not leave the tour stuck.
 
 ```javascript
 const driverObj = driver({
@@ -58,7 +66,16 @@ const driverObj = driver({
             nextBtnText: "Loading…",
             disableButtons: ["next"],
           });
-          await loadReport();
+          try {
+            await loadReport();
+          } catch (error) {
+            // Restore the button so the user can retry or close the tour.
+            driverObj.updatePopover({
+              nextBtnText: "Next",
+              disableButtons: [],
+            });
+            return;
+          }
           driverObj.moveNext();
         },
       },
@@ -78,4 +95,10 @@ const driverObj = driver({
 - `onHighlighted` gets a `signal` (since 1.11.0) that aborts when the step is left, so the listener removes itself
 - `updatePopover()` changes the popover text in place (since 1.11.0)
 - `onNextClick` replaces the button's default action, so the tour only moves when you call `moveNext()`; `onPrevClick` works the same way for going back
+- Adapted: the `saveProfile` example checks `response.ok` before firing the event, and the `onNextClick` example restores the Next button when `loadReport()` rejects; the official examples do neither.
 - Source: https://driverjs.com/docs/wait-for-a-save (driver.js 1.14.0 docs source, apps/docs/src/content/guides/wait-for-a-save.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

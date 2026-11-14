@@ -26,3 +26,8 @@ driverObj.drive();
 - `index` in hook options is available since 1.7.0
 - Count `tour_ended` events with `reason: "done"` for your completion rate, and the `step` of the others to see where people leave
 - Source: https://driverjs.com/docs/track-tour-analytics (driver.js 1.14.0 docs source, apps/docs/src/content/guides/track-tour-analytics.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

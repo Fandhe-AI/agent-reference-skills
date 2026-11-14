@@ -33,3 +33,8 @@ document
 - For signed-in users, save the flag on the user record instead, so it follows them to other devices
 - Start the tour once the page has rendered; in React or Vue see the react-and-vue sample
 - Source: https://driverjs.com/docs/first-run-onboarding (driver.js 1.14.0 docs source, apps/docs/src/content/guides/first-run-onboarding.mdx at tag 1.14.0).
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

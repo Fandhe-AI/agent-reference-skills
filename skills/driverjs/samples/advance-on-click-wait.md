@@ -40,3 +40,8 @@ driverObj.drive();
 - The element's own click behavior still runs; on the last step, clicking the element ends the tour like the done button
 - `showButtons: ['close']` makes the highlighted element the only way forward; `advanceOn` has no effect where `disableActiveInteraction` blocks clicks (since 1.12.0 driver.js warns about this in the console); to drop the Next button and show an instruction row instead, see the action-step samples (`popover.instruction`, since 1.12.0)
 - If the element never appears, the wait times out into the usual missing-element behavior: the centered fallback popover, or a skip when `skipMissingElement` is set
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)
