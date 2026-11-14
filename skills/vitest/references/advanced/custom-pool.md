@@ -119,7 +119,7 @@ Built-in pool runners:
 - To use different pools for different tests, use `test.projects` with a `pool` per project (e.g. a built-in pool name such as `'threads'` in one project and a custom pool initializer imported from your pool package in another).
 - Your pool runner controls the worker lifecycle and communication channel, e.g. launching a `node:worker_threads` `Worker` and communicating via `Worker.postMessage` and `parentPort`.
 - See the `vitest-pool-example` package for an example implementation.
-- Source: Vitest v5.0.5 docs, https://vitest.dev/guide/advanced/pool
+- Source: Vitest v5.1.0 docs, https://vitest.dev/guide/advanced/pool
 
 ## Related
 

@@ -210,7 +210,7 @@ expect(nameSpy).toHaveBeenCalledTimes(1)
 
 ## Notes
 
-- Source: https://vitest.dev/guide/mocking/classes (docs at tag `v5.0.5`).
+- Source: https://vitest.dev/guide/mocking/classes (docs at tag `v5.1.0`).
 - If a non-primitive is returned from the constructor function, that value becomes the result of the `new` expression and `[[Prototype]]` may not be correctly bound. Prefer the class syntax over the function.
 - Assigning on `MockedDog.prototype` (not `OriginalDog.prototype`) leaves the original class untouched; lookup order is instance, `MockedDog.prototype`, `OriginalDog.prototype`. Instances created before the assignment also see the mock, but all share a single call history (class fields give each instance its own mock).
 - The mock's `prototype` always follows the current implementation: it is re-pointed when a new implementation is set, when a queued `mockImplementationOnce` class is constructed, and when the mock is reset. If one mock uses different class implementations, instances created by earlier implementations lose access to their prototype methods once a newer implementation takes over. Own properties assigned in the constructor or via class fields are not affected.

@@ -98,7 +98,7 @@ await expect(element).toMatchScreenshot('button', {
 - Chromatic plugin (`@chromatic-com/vitest`, `chromaticPlugin`, `takeSnapshot`, `configure`) requires Vitest 4.0.0+ and `@vitest/browser-playwright`; run `npx chromatic --vitest -t=<YOUR_PROJECT_TOKEN>` after tests. Never commit `PLAYWRIGHT_SERVICE_ACCESS_TOKEN`.
 - The official project-split snippet leaves out `enabled` and `provider` (it is a partial config); they are added above and required for Browser Mode, see browser-config.md.
 - Playwright CI browser install step: `npx --no playwright install --with-deps --only-shell`.
-- Source: https://vitest.dev/guide/browser/visual-regression-testing (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/browser/visual-regression-testing (Vitest v5.1.0)
 
 ## Related
 

@@ -95,7 +95,7 @@ await createVitest(
 - After reporters are initialised, use `runTestSpecifications` or `rerunTestSpecifications` for manual runs. Default Vitest already reruns tests on file changes; the rerun example is for when default watcher behaviour is disabled.
 - `getModuleSpecifications` does not resolve test files unless already processed by `globTestSpecifications`. For newly created files, use `project.matchesGlobPattern(file)` and `project.createSpecification(file)` across `vitest.projects`.
 - `server.watch: null` works since Vite 5.3; alternatively use `server.watch: { ignored: ['*/*'] }`.
-- Source: Vitest v5.0.5 docs, https://vitest.dev/guide/advanced/tests
+- Source: Vitest v5.1.0 docs, https://vitest.dev/guide/advanced/tests
 
 ## Related
 

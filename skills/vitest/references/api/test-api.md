@@ -243,7 +243,7 @@ Type: `'notice' | 'warning' | 'error'` (defaults to `'notice'`)
 
 ## Notes
 
-- Vitest 5 (removed): `test.sequential`, `describe.sequential`, and the `sequential` option were removed. Use `concurrent: false` instead, either as an option object or in the options argument of `test` / `describe`, e.g. `test('runs sequentially', { concurrent: false }, async () => { ... })`. The v4 rows above are kept for projects still on v4. Source: Migrating to Vitest 5.0 (vitest.dev/guide/migration), docs at tag `v5.0.5`.
+- Vitest 5 (removed): `test.sequential`, `describe.sequential`, and the `sequential` option were removed. Use `concurrent: false` instead, either as an option object or in the options argument of `test` / `describe`, e.g. `test('runs sequentially', { concurrent: false }, async () => { ... })`. The v4 rows above are kept for projects still on v4. Source: Migrating to Vitest 5.0 (vitest.dev/guide/migration), docs at tag `v5.1.0`.
 - Vitest 5: `test.each` / `test.for` titles and inspected values are formatted with `pretty-format` instead of `loupe`; string `$` placeholders are no longer quoted, and truncation length is set by `taskTitleValueFormatTruncate` (default `40`).
 - `test.describe` (4.1.0): scoped `describe`. `test.suite` (4.1.0): alias for `suite`. See the describe API.
 - `test.scoped` (3.1.0, alias `it.scoped`) is Deprecated in favor of `test.override` (above) and will be removed in a future major version.

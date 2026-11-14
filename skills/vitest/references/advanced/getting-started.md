@@ -64,7 +64,7 @@ await vitest.close()
   - With `extends: false`, an inline project resolves only its own options. With `extends: './path'`, the referenced file is re-executed instead and `viteOverrides` are not merged.
   - Never inherited: `plugins` from `viteOverrides`; `test.browser` and `test.tagsFilter` from `viteOverrides`; `name` and `projects`; root `globalSetup`. A project's own `tags` replace (not concatenate with) the extended config's `tags`.
   - A fixed subset of CLI options that configure how tests run (`--testTimeout`, `--retry`, `--pool`, and similar) applies to every project at highest priority. Every project receives the root's resolved `coverage`, `attachmentsDir`, and `mergeReportsLabel`.
-- Source: Vitest v5.0.5 docs, https://vitest.dev/guide/advanced/
+- Source: Vitest v5.1.0 docs, https://vitest.dev/guide/advanced/
 
 ## Related
 

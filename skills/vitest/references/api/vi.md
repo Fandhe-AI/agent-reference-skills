@@ -86,6 +86,8 @@ expect(spied.simple()).toBe('value')
 expect(spied.simple).toHaveBeenCalled()
 ```
 
+With `spy: true`, `vi.mockObject` does not copy objects. It returns the same `original` object and replaces its methods, including the methods of nested objects and class prototypes, with spies in place (v5.1.0).
+
 ### vi.when() (v5.0.0)
 
 Defines per-argument behaviors on a spy, replacing its implementation for the duration of the `when` chain.
@@ -174,6 +176,12 @@ vi.mock('./utils', async (importOriginal) => {
   }
 })
 ```
+
+Without a factory, Vitest looks for a file with the same name in a `__mocks__` folder (v5.1.0 resolution rules):
+
+- If the path is a package name, such as `axios` or `@company/utils/format`, Vitest looks in the `__mocks__` folder in the project root (default `process.cwd()`) for a file with this path and any extension, for example `__mocks__/@company/utils/format.ts`. This also applies to a package linked from outside `node_modules`, such as a workspace package in a monorepo.
+- If the module resolves to a file outside `node_modules`, Vitest looks in the `__mocks__` folder next to that file for a file with the same name and extension, for example `src/__mocks__/increment.js` for `src/increment.js`. For a package name, Vitest does this only if the root `__mocks__` folder does not have the file.
+- Files in other `deps.moduleDirectories` are treated like files in `node_modules`.
 
 ### vi.doMock()
 
@@ -275,7 +283,7 @@ vi.useFakeTimers(config?: FakeTimerInstallOpts): void
 | `vi.runAllTimersAsync()` | Async version |
 | `vi.runOnlyPendingTimers()` | Runs only timers currently in the queue |
 | `vi.runOnlyPendingTimersAsync()` | Async version |
-| `vi.setSystemTime(date)` | Fixes `Date.now()` / `new Date()` to a given value |
+| `vi.setSystemTime(date)` | Fixes `Date.now()` / `new Date()` to a given value; accepts `string \| number \| Date \| Temporal.Instant \| Temporal.ZonedDateTime` (Temporal types: v5.1.0) |
 | `vi.getRealSystemTime()` | Gets the actual system time |
 | `vi.getMockedSystemTime()` | Gets the mocked Date (`null` if not mocked) |
 | `vi.getTimerCount()` | Number of timers in the queue |
@@ -337,12 +345,28 @@ await vi.waitFor(() => {
 }, { timeout: 5000, interval: 100 })
 ```
 
+The `message` option (v5.1.0) describes what the callback waits for. If the wait fails, Vitest adds the message to the start of the error; the message also names the step in the trace timeline (`experimental.traceTimeline`).
+
+```ts
+await vi.waitFor(() => server.ping(), { message: 'server started' })
+// Error: server started: connect ECONNREFUSED
+```
+
+If `vi.useFakeTimers` is used, `vi.waitFor` automatically calls `vi.advanceTimersByTime(interval)` in every check callback.
+
 ### vi.waitUntil()
 
 Waits until a callback returns a truthy value.
 
 ```ts
 const result = await vi.waitUntil(() => fetchStatus() === 'ready')
+```
+
+Like `vi.waitFor`, `vi.waitUntil` accepts a `message` option (v5.1.0) that prefixes the error and names the step in the trace timeline. With fake timers it also calls `vi.advanceTimersByTime(interval)` in every check callback.
+
+```ts
+await vi.waitUntil(() => db.users.findByName('alice'), { message: 'user saved' })
+// Error: user saved: Timed out in waitUntil!
 ```
 
 ### vi.mocked()
@@ -392,13 +416,21 @@ test('is positive', () => {
 
 ## Notes
 
-Vitest 5 changes (source: Migrating to Vitest 5.0, vitest.dev/guide/migration, and the `vi` API page; docs at tag `v5.0.5`):
+Vitest 5 changes (source: Migrating to Vitest 5.0, vitest.dev/guide/migration, and the `vi` API page; docs at tag `v5.1.0`):
 
 - `vi.mock`, `vi.unmock`, and `vi.hoisted` called inside a function, block, or `describe` / `test` callback now throw (previously a warning). Move them to the top level of the file. `vi.doMock` and `vi.doUnmock` are not hoisted and can still be called anywhere.
 - Class mocks keep prototype methods: instances created from `vi.fn(Dog)`, `vi.spyOn`, or `mockImplementation(class ...)` chain to the implementation class's prototype and pass `instanceof` checks against the original class. Overriding methods on the mock's prototype still works, and `mockReset` reverts the chain.
 - Browser mode: exports of a `vi.mock` call without a factory return `undefined` by default; pass `{ spy: true }` or provide a factory.
 - Fake timers and `vi.setSystemTime()` also mock `Temporal` (`Temporal.Now`) when it is available globally; `Temporal` is in the default `toFake` set. Keep it native with `vi.useFakeTimers({ toNotFake: ['Temporal'] })`. Without fake timers, `vi.setSystemTime()` mocks only `Date.*` and `Temporal.Now.*`.
 - `clearMocks` defaults to `true`: `vi.clearAllMocks()` runs before each test (see [Config](../guide/config.md)).
+
+### Vitest 5.1 changes
+
+- `vi.setSystemTime()` and the `now` option of `vi.useFakeTimers()` accept `Temporal.Instant` and `Temporal.ZonedDateTime`. Vitest uses the moment represented by a `ZonedDateTime` as the mocked time and leaves the environment's time zone unchanged.
+- `vi.useFakeTimers({ fakeNodeBuiltins: true })` also fakes `node:timers` and `node:timers/promises` (`fakeTimers.fakeNodeBuiltins`, default `false`).
+- `vi.waitFor` / `vi.waitUntil` accept `message`; fake timers advance automatically while `vi.waitFor`, `vi.waitUntil`, and `expect.poll` wait (see [Mocking timers](../patterns/mocking-timers.md)).
+- `vi.mock` without a factory resolves `__mocks__` files by the rules above; `vi.mockObject(..., { spy: true })` mutates the original object in place.
+- Source: https://vitest.dev/api/vi (Vitest v5.1.0)
 
 ## Related
 

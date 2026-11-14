@@ -53,8 +53,9 @@ describe('purchasing flow', () => {
 
 ## Notes
 
-- Source: https://vitest.dev/guide/mocking/dates (docs at tag `v5.0.5`).
+- Source: https://vitest.dev/guide/mocking/dates (docs at tag `v5.1.0`).
 - Vitest 5: fake timers and `vi.setSystemTime()` also mock `Temporal`; opt out with `vi.useFakeTimers({ toNotFake: ['Temporal'] })`.
+- v5.1.0: `vi.setSystemTime()` also accepts `Temporal.Instant` and `Temporal.ZonedDateTime`.
 
 ## Related
 

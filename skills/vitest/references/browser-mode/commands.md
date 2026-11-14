@@ -111,7 +111,7 @@ Command context properties by provider:
 - Custom commands override built-ins with the same name. They run in the Node process and do not inherit the built-in path / write protections: validate browser-provided input (use `isFileLoadingAllowed` from `vitest/node`, check `api.allowWrite` / `api.allowExec`).
 - `context.mark` is a no-op when browser tracing is off or no test is running; unlike `page.mark` it has no callback form.
 - Locator arguments are serialized automatically when passed to commands (see `locator.serialize()`).
-- Source: https://vitest.dev/api/browser/commands (Vitest v5.0.5)
+- Source: https://vitest.dev/api/browser/commands (Vitest v5.1.0)
 
 ## Related
 

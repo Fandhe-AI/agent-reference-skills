@@ -1,11 +1,11 @@
 ---
 name: vitest
 description: >
-  Vitest 5 (Vite ネイティブテストフレームワーク) リファレンス。
-  test, describe, it, expect, vi.fn, vi.mock, vi.spyOn, vi.when、
+  Vitest 5.1 (Vite ネイティブテストフレームワーク) リファレンス。test, describe, it, expect,
+  vi.fn, vi.mock, vi.spyOn, vi.when、--since-last-run / --last-failed、fake timers、
+  Browser Mode (trace view, locators, expect.element, vitest-browser-react)、
   beforeEach / afterEach、test.extend fixtures、test tags / annotations、
-  coverage (v8 / istanbul)、snapshot、vitest.config.ts、projects (old workspace)、
-  Vitest Browser Mode (vitest-browser-react, locators, expect.element)、UI モード、bench fixture。
+  coverage (v8 / istanbul)、snapshot、vitest.config.ts、projects (old workspace)、UI モード、bench fixture。
 user-invocable: false
 ---
 
@@ -14,7 +14,7 @@ user-invocable: false
 Vitest — Vite ネイティブのテストフレームワーク。
 テスト作成・レビュー・リファクタリング時に参照する。
 
-Target: Vitest v5.0.5 (vitest-dev/vitest tag v5.0.5; Node ^22.12.0 / ^24 / >=26, Vite ^6.4 / ^7 / ^8 as a peer dependency)
+Target: Vitest v5.1.0 (vitest-dev/vitest tag v5.1.0, commit 7a38449; Node ^22.12.0 / ^24 / >=26, Vite ^6.4 / ^7 / ^8 as a peer dependency)
 
 ## ディレクトリ構成
 
@@ -61,6 +61,7 @@ skills/vitest/
       mocking.md
       mocking-classes.md
       mocking-dates.md
+      mocking-timers.md
       mocking-file-system.md
       mocking-globals.md
       mocking-requests.md
@@ -83,6 +84,7 @@ skills/vitest/
       playwright-traces.md
     recipes/
       README.md
+      affected-tests.md
       browser-locators.md
       cancellable.md
       conditional-mocking.md
@@ -151,11 +153,16 @@ skills/vitest/
 | よくあるエラーの原因と対処を知りたい | guide | [references/guide/README.md](references/guide/README.md) |
 | v4 → v5 / Jest / Mocha からの移行手順を知りたい | guide | [references/guide/README.md](references/guide/README.md) |
 | モックパターン (vi.fn, vi.mock, vi.spyOn, 部分モック) を知りたい | patterns | [references/patterns/README.md](references/patterns/README.md) |
-| 日付・グローバル・ファイルシステム・HTTP リクエスト・クラスを詳細にモックしたい | patterns | [references/patterns/README.md](references/patterns/README.md) |
-| 非同期テスト・フェイクタイマーのパターンを知りたい | patterns | [references/patterns/README.md](references/patterns/README.md) |
+| 日付・タイマー・グローバル・ファイルシステム・HTTP リクエスト・クラスを詳細にモックしたい | patterns | [references/patterns/README.md](references/patterns/README.md) |
+| 非同期テスト・フェイクタイマー（自動 advance・tick mode）のパターンを知りたい | patterns | [references/patterns/README.md](references/patterns/README.md) |
 | Browser Mode (locators, interactivity, expect.element, component testing) を使いたい | browser-mode | [references/browser-mode/README.md](references/browser-mode/README.md) |
-| Browser Mode の visual regression・trace view・browser 設定を調べたい | browser-mode | [references/browser-mode/README.md](references/browser-mode/README.md) |
-| 実践レシピ (DB transaction, vi.when, using, wait-for, isolation) を知りたい | recipes | [references/recipes/README.md](references/recipes/README.md) |
+| Browser Mode の visual regression・trace view (failure-only)・browser 設定 (importMapMocks / headless と UI) を調べたい | browser-mode | [references/browser-mode/README.md](references/browser-mode/README.md) |
+| 実践レシピ (DB transaction, vi.when, using, wait-for, isolation, affected tests) を知りたい | recipes | [references/recipes/README.md](references/recipes/README.md) |
 | プログラマティック API・カスタム reporter・カスタム pool・benchmark provider を実装したい | advanced | [references/advanced/README.md](references/advanced/README.md) |
 | 典型的な使い方・実例を参照したい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンド・セットアップ手順を知りたい | scripts | [scripts/README.md](scripts/README.md) |
+
+## 未追従（v5.1.0）
+
+- `references/advanced/` は 5 ページのみ。v5.1.0 の Advanced API 追加分（`TestCase.attempts()` / `TaskResultAttempt`、`TestSpecification.testNames`、`VCSProvider` の `resolver` 以外の Runner / Task API 拡張）は未収録（config.md の Notes で `vcsProvider` のみ記載）。
+- `browser.importMapMocks` の詳細（`config/browser/importmapmocks`）は browser-config.md の表と patterns/mocking.md の Notes に要点のみ。

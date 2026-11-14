@@ -65,7 +65,7 @@ test.aroundEach(async (runTest, { db }) => {
 - By default every test file runs in its own worker, so `scope: 'file'` and `scope: 'worker'` behave identically. With `isolate: false`, workers are reused across files (capped by `maxWorkers`), so a worker-scoped fixture is created once per worker (e.g. 8 connections instead of 200 for 200 files on 8 workers).
 - With isolation off, files share module instances inside the worker; top-level mutable state can leak to the next file. Per-test rollback protects database data only, not module state.
 - `vmThreads` and `vmForks` always run isolated regardless of `isolate`, so worker-scoped fixtures fall back to per-file behavior in those pools.
-- Source: https://vitest.dev/guide/recipes/db-transaction (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/recipes/db-transaction (Vitest v5.1.0)
 
 ## Related
 

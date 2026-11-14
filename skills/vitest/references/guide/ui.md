@@ -47,12 +47,13 @@ export default defineConfig({
     REPORT_URL: https://viewer.vitest.dev/?url=${{ steps.upload-report.outputs.artifact-url }}
 ```
 
-- Tags can be filtered by starting the UI filter with `tag:`. Coverage shows in both Live UI and HTML reports. With `browser.traceView` enabled the UI replays recorded browser interactions.
+- Tags can be filtered by starting the UI filter with `tag:`. Coverage shows in both Live UI and HTML reports. 
+- `ui.theme` (5.0.4, experimental): `'auto'` (default) follows the system preference and remembers the theme you toggle; `'light'` / `'dark'` open the UI with that theme on every page load. It also applies to the Browser Mode UI and does not enable Vitest UI. With `browser.traceView` (default `'failure-only'` since 5.1.0) the UI replays recorded browser traces.
 - Module Graph tab: shows the graph of the selected test file; with over 50 modules only the first two levels are shown ("Show Full Graph" expands); right-click or Shift+click expands a node; `node_modules` hidden by default ("Hide node_modules").
 - Module Info (click a node): full module ID, "cached"/"not cached" badge when `fsModuleCache` is enabled, Self Time, Total Time, Transform time. Inlined modules additionally show Source, Transformed, and Source Map (v3). Imports slower than the `experimental.importDurations.thresholds` `danger` (default 500ms) show red, `warn` (default 100ms) orange. Type-only imports show no duration and cannot be opened.
 - Import Breakdown: top 10 modules by Total Time (change with `experimental.importDurations.limit`).
 - Integrations can use `vitest.experimental_getSourceModuleDiagnostic` to fetch module diagnostics.
-- Source: https://vitest.dev/guide/ui (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/ui (Vitest v5.1.0)
 
 ## Related
 

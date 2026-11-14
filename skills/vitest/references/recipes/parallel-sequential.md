@@ -72,7 +72,7 @@ export default defineConfig({
 - `fileParallelism: false` at project level is a shorthand for `maxWorkers: 1`; the two are equivalent.
 - By default projects run in parallel with each other, so the sequential project's first file may overlap with parallel files holding the same resource; `sequence.groupOrder` makes the parallel batch finish first.
 - `fileParallelism: false` does not make tests inside a file concurrent (sequential by default), and `concurrent` does not affect file scheduling.
-- Source: https://vitest.dev/guide/recipes/parallel-sequential (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/recipes/parallel-sequential (Vitest v5.1.0)
 
 ## Related
 

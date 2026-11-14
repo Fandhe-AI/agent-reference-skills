@@ -95,8 +95,9 @@ Matchers (all return `Promise<void>` and are used as `await expect.element(locat
 - `toHaveClass`: RegExp matches individual classes, and `exact: true` cannot be used with only RegExp arguments.
 - `toHaveSelection` expects a string, not range indices.
 - When both `allowedMismatchedPixels` and `allowedMismatchedPixelRatio` are set the stricter limit applies. `toMatchScreenshot` retries until two consecutive captures match; update references with `u` in watch mode or `-u` / `--update`. Global defaults: config `browser.expect.toMatchScreenshot`.
+- With fake timers enabled (5.1.0), `expect.element` advances them while it retries; see Mocking timers (Automatic Advancing).
 - ARIA snapshot matchers (`toMatchAriaSnapshot`) are documented in the ARIA Snapshots guide.
-- Source: https://vitest.dev/api/browser/assertions (Vitest v5.0.5)
+- Source: https://vitest.dev/api/browser/assertions (Vitest v5.1.0)
 
 ## Related
 

@@ -63,7 +63,7 @@ test('worker completes the job', async () => {
 | Retries on thrown error | yes                      | yes                                  | no, fails fast                          |
 | Resolves with           | the assertion            | callback's return value              | callback's return value                 |
 
-Each accepts `{ timeout, interval }`, defaulting to a 1000 ms timeout and 50 ms interval. `vi.waitFor` and `vi.waitUntil` also accept a number as shorthand for the timeout.
+Each accepts `{ timeout, interval, message }` (`message` is new in v5.1.0 for `vi.waitFor` and `vi.waitUntil`; on all three it prefixes the error and names the step in the trace timeline), defaulting to a 1000 ms timeout and 50 ms interval. `vi.waitFor` and `vi.waitUntil` also accept a number as shorthand for the timeout.
 
 ## Notes
 
@@ -71,8 +71,9 @@ Each accepts `{ timeout, interval }`, defaulting to a 1000 ms timeout and 50 ms 
 - `waitUntil` narrows the resolved type (e.g. `JobResult | undefined` becomes `JobResult`).
 - In browser mode, prefer locators (`page.getByRole` and the other `getBy*` methods; Vitest has no `page.locator()`) and `expect.element` over `waitUntil` for DOM queries; locators retry on their own.
 - The official recipe writes `page.locator`, which does not exist in the browser-mode `page` API.
-- If `vi.useFakeTimers` is active, `vi.waitFor` automatically calls `vi.advanceTimersByTime(interval)` between attempts.
-- Source: https://vitest.dev/guide/recipes/wait-for (Vitest v5.0.5)
+- If `vi.useFakeTimers` is active, `vi.waitFor` and `vi.waitUntil` advance timers by `interval` on every check, and `expect.poll` calls it after every failed attempt (v5.1.0 documents the behavior for all three).
+- Source: https://vitest.dev/api/vi#vi-waitfor and https://vitest.dev/guide/mocking/timers#automatic-advancing (Vitest v5.1.0)
+- Source: https://vitest.dev/guide/recipes/wait-for (Vitest v5.1.0)
 
 ## Related
 
