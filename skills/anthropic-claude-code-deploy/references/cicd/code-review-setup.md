@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/code-review-setup.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/code-review-setup.md / last verified: 2026-11-14 -->
 
 # Set up Code Review
 
@@ -56,6 +56,9 @@ Review runs (per repository):
 - Cover a whole GitHub organization: set **Review runs** on the organization's row. Requires the connected account to be an owner of that GitHub organization, the organization on github.com (GitHub Enterprise Server instances and personal accounts aren't eligible), and a monthly spend limit set for the Claude organization or for Code Review. It applies to every repository the app can access, including later ones, and overrides individually set repositories (repositories turned off on their own rows stay off). A repository later set differently is marked **Custom**. An organization row has no review level of its own. This can raise spend significantly.
 - Turn off: **Edit** a repository row and turn off **Code review** (stays listed as Off); **Remove repository** (stops reviews and lets another Claude organization set it up; not possible while its GitHub organization is covered as a whole); select **Off** on an organization row; or turn off **Allow code review** to stop all new reviews while keeping the repository list.
 - If **Allow code review** turns on with no dialog, the organization already has the Claude GitHub App linked or repositories added. The app's permission set is broader than a review uses and is shared by other Claude features such as GitHub Actions.
+
+- The **Review runs** column of the **Repositories** table shows the setting shortened to Once per PR, Every push, or Manual; the choice saves as soon as you select it.
+- Source: https://code.claude.com/docs/en/code-review-setup.md, fetched 2026-11-14
 
 ## Related
 

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/code-review.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/code-review.md / last verified: 2026-11-14 -->
 
 # Code Review
 
@@ -50,9 +50,11 @@ Review the local branch without the GitHub App (see `code-review-local.md`):
 | :- | :- | :- | :- |
 | Code Review | Pull request activity as each repository is set, or an `@claude review` comment | Anthropic infrastructure | Team or Enterprise organizations with GitHub repositories, once an Owner turns it on |
 | `/code-review` | You run the command on your branch | Your Claude Code session | Anyone, on any plan |
-| Ultrareview | You start it from Claude Code | A cloud sandbox | Requires a claude.ai account sign-in |
+| Ultrareview | You start it from Claude Code | A cloud sandbox | Requires signing in with a claude.ai account; see Ultrareview for where it isn't available |
 | Claude in your own CI (GitHub Actions / GitLab CI/CD) | Your pipeline's events | Your own CI runners | Anyone with a Claude API key or cloud provider credentials |
 | Your own reviewer as a subagent or skill | You or Claude invoke it in a session | Wherever you run Claude Code | Anyone who writes one |
+
+- Source: https://code.claude.com/docs/en/code-review.md, fetched 2026-11-14
 
 ## Related
 

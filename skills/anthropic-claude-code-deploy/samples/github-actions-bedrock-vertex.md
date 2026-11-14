@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/github-actions-cloud-providers.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/github-actions-cloud-providers.md / last verified: 2026-11-14 -->
 
 # Route GitHub Actions through Amazon Bedrock or Vertex
 

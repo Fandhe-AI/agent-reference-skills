@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/code-review-local.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/code-review-local.md / last verified: 2026-11-14 -->
 
 # Review locally with /code-review
 
@@ -56,6 +56,8 @@ To stop Claude and scheduled tasks from starting the review while keeping it ava
   }
 }
 ```
+
+- Source: https://code.claude.com/docs/en/code-review-local.md, fetched 2026-11-14
 
 ## Related
 

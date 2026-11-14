@@ -1,7 +1,7 @@
-<!-- source: https://code.claude.com/docs/en/amazon-bedrock.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/claude-platform-on-aws.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/google-vertex-ai.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/microsoft-foundry.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/amazon-bedrock.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/claude-platform-on-aws.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/google-vertex-ai.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/microsoft-foundry.md / last verified: 2026-11-14 -->
 
 # cloud-env-setup
 
@@ -17,6 +17,11 @@ aws configure
 # SSO プロファイル
 aws sso login --profile=your-profile-name
 export AWS_PROFILE=your-profile-name
+```
+
+```bash
+# AWS Management Console 認証情報（AWS CLI 2.32.0 以降、セッションは最大 12 時間）
+aws login
 ```
 
 ```bash
@@ -39,7 +44,12 @@ export ANTHROPIC_DEFAULT_SONNET_MODEL='us.anthropic.claude-sonnet-4-6'
 export ANTHROPIC_DEFAULT_HAIKU_MODEL='us.anthropic.claude-haiku-4-5-20251001-v1:0'
 ```
 
-Unpinned `opus`/`sonnet` aliases resolve to Claude Code's built-in Bedrock default, which can lag or be unavailable in-account.
+Unpinned `opus`/`sonnet` aliases resolve to Claude Code's built-in Bedrock default (Opus 5.5 / Sonnet 4.5), which can lag or be unavailable in-account.
+
+```bash
+# Keep built-in defaults, change only the inference-profile prefix (us | eu | apac | jp | au | global)
+export ANTHROPIC_BEDROCK_REGION_PREFIX=global
+```
 
 ## Amazon Bedrock: リージョン切り分け（トラブルシュート）
 
@@ -117,6 +127,13 @@ az login
 
 ```bash
 export ANTHROPIC_FOUNDRY_API_KEY=your-azure-api-key
+```
+
+## Microsoft Foundry: Bearer トークン認証
+
+```bash
+# takes precedence over ANTHROPIC_FOUNDRY_API_KEY and the default credential chain
+export ANTHROPIC_FOUNDRY_AUTH_TOKEN=your-entra-access-token
 ```
 
 ## Microsoft Foundry: モデルバージョンの固定

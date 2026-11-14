@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/code-review-customize.md, https://code.claude.com/docs/en/code-review-pull-requests.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/code-review-customize.md, https://code.claude.com/docs/en/code-review-pull-requests.md / last verified: 2026-11-14 -->
 
 # Tune Code Review with REVIEW.md and parse its check run
 
@@ -33,8 +33,10 @@ Report at most five Nits per review.
 ```
 
 ```bash parse the check run's severity summary
-gh api repos/OWNER/REPO/check-runs/CHECK_RUN_ID \
-  --jq '.output.text | split("bughunter-severity: ")[1] | split(" -->")[0] | fromjson'
+gh api repos/OWNER/REPO/check-runs/CHECK_RUN_ID --jq '
+  (.output.text | split("\n") | last
+    | scan("^<!-- bughunter-severity: (.*) -->$")[0] | fromjson)?
+  // error("no severity line")'
 ```
 
 ## Notes
@@ -43,6 +45,8 @@ gh api repos/OWNER/REPO/check-runs/CHECK_RUN_ID \
 - `REVIEW.md` is read from the pull request's base branch or from the default branch, never from the pull request's own changes; merge the `REVIEW.md` change first. Lowering severity, excluding paths, and capping nits are honored only from the root file on a protected default branch (classic rule or ruleset; any other branch needs a ruleset).
 - `CLAUDE.md` is also read during review as project context; a change that violates one of its rules becomes a finding at whichever severity level fits. The local `/code-review` command reads `CLAUDE.md` and not `REVIEW.md`, so put guidance you want in both places in `CLAUDE.md`.
 - The check run named **Claude Code Review** concludes as neutral (or skipped), never as a failure, so it never blocks merging by itself; gate merges by parsing the severity JSON (e.g. `{"nit": 1, "normal": 2, "pre_existing": 0}`) in your own CI, where `normal` is the Important count. The counts include findings from earlier reviews whose threads are still open.
-- If the `bughunter-severity:` line is missing, treat it as no verdict, not as zero findings: failed, timed-out, canceled, or superseded reviews have no such line, and some completed reviews have none either.
+- If the `bughunter-severity:` line is missing, the command prints an error containing `no severity line` and exits non-zero. Treat that as no verdict, not as zero findings: failed, timed-out, canceled, or superseded reviews have no such line, and some completed reviews have none either. Parse the last line of the Details text only (the lines above can include file names from the PR).
+- When a push keeps the earlier result, the check run title starts with `Code review not repeated` (Important findings still open; no severity line; read the title with `--jq .output.title`) or ends with `no new changes` (no open Important finding; the counts then leave out nits and pre-existing findings). Gate on `normal` above zero, where `normal` is the Important count.
+- Subdirectory `REVIEW.md` files and `@file` / `@.claude/skills/<folder>/SKILL.md` include lines apply only when `REVIEW.md` is read from a protected branch; see `code-review-customize.md`.
 - Find `CHECK_RUN_ID` with `gh api repos/OWNER/REPO/commits/<commit-sha>/check-runs --jq '.check_runs[] | {id, name}'` and take the `Claude Code Review` entry's `id`.
 - Code Review is a managed GitHub App service (Team/Enterprise, not available with Zero Data Retention) distinct from running Claude in your own CI — see `github-actions-workflow.md` and `gitlab-ci.md` for self-hosted alternatives.

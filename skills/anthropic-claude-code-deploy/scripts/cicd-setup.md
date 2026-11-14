@@ -1,12 +1,12 @@
-<!-- source: https://code.claude.com/docs/en/github-actions.md / last verified: 2026-10-16 -->
-<!-- source: https://code.claude.com/docs/en/github-actions-cloud-providers.md / last verified: 2026-10-16 -->
-<!-- source: https://code.claude.com/docs/en/github-enterprise-server.md / last verified: 2026-10-16 -->
-<!-- source: https://code.claude.com/docs/en/gitlab-ci-cd.md / last verified: 2026-10-16 -->
-<!-- source: https://code.claude.com/docs/en/code-review.md / last verified: 2026-10-16 -->
-<!-- source: https://code.claude.com/docs/en/code-review-local.md / last verified: 2026-10-16 -->
-<!-- source: https://code.claude.com/docs/en/code-review-pull-requests.md / last verified: 2026-10-16 -->
-<!-- source: https://code.claude.com/docs/en/ultrareview.md / last verified: 2026-10-16 -->
-<!-- source: https://code.claude.com/docs/en/slack.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/github-actions.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/github-actions-cloud-providers.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/github-enterprise-server.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/gitlab-ci-cd.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/code-review.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/code-review-local.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/code-review-pull-requests.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/ultrareview.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/slack.md / last verified: 2026-11-14 -->
 
 # cicd-setup
 
@@ -18,7 +18,7 @@ Setup commands, workflow examples, and trigger phrases for running Claude Code t
 /install-github-app
 ```
 
-Installs the Claude GitHub App, adds the `ANTHROPIC_API_KEY`/`CLAUDE_CODE_OAUTH_TOKEN` secret, and opens a workflow PR. Manual setup instead: install the app, add the secret, copy `examples/claude.yml`.
+Installs the Claude GitHub App, adds the `ANTHROPIC_API_KEY`/`CLAUDE_CODE_OAUTH_TOKEN` secret, and opens a workflow PR. Manual setup instead: install the app, add the secret, copy `examples/claude.yml`. `CLAUDE_CODE_OAUTH_TOKEN` (from `claude setup-token`) is available on Pro, Max, Ultra, Team, and Enterprise plans. `/install-github-app` works only with github.com repositories and needs the GitHub CLI authenticated with `gh auth login`.
 
 ## GitHub Actions ワークフロー（最小構成）
 
@@ -165,7 +165,7 @@ Exit codes: `0` review completed (with or without findings); `1` failed to launc
 
 `@Claude connect` is the command named in the retirement notice that the earlier Claude Code in Slack shows when the workspace is connected to Claude Tag; it is the starting point for connecting the workspace (Claude Tag is available on Team and Enterprise plans), followed by "Set up Claude Tag".
 
-The earlier Claude Code in Slack (documented in `slack.md`) answers channel mentions only from Pro and Max accounts, in workspaces not connected to Claude Tag:
+The earlier Claude Code in Slack (documented in `slack.md`) answers channel mentions only from Pro, Max, and Ultra accounts, in workspaces not connected to Claude Tag:
 
 ```text
 /invite @Claude
@@ -180,6 +180,8 @@ Works only in channels (public or private) via explicit `@Claude` mentions after
 ## GitLab CI/CD: ジョブ定義
 
 > **警告**: `--permission-mode acceptEdits` lets Claude apply edits without per-change prompts inside the job.
+
+Adapted (not in the official docs): the official `curl -fsSL https://claude.ai/install.sh | bash` is split into download, syntax check, and run steps.
 
 ```yaml
 stages:
@@ -196,7 +198,11 @@ claude:
   before_script:
     - apk update
     - apk add --no-cache git curl bash
-    - curl -fsSL https://claude.ai/install.sh | bash
+    - curl -fsSL -o /tmp/claude-install.sh https://claude.ai/install.sh
+    - bash -n /tmp/claude-install.sh
+    - bash /tmp/claude-install.sh
+    # The installer places claude in ~/.local/bin, which isn't on PATH in this image
+    - export PATH="$HOME/.local/bin:$PATH"
   script:
     - /bin/gitlab-mcp-server || true
     - >
@@ -211,6 +217,7 @@ Quick setup: add `ANTHROPIC_API_KEY` as a masked CI/CD variable, then add this j
 
 ## Notes
 
+- Adapted from the official docs: the installer line is split into download, `bash -n` check, and run instead of piping `curl` into `bash`; the official page uses the piped form.
 - Manage run cost with `--max-turns`, workflow/job-level timeouts, and GitHub's/GitLab's concurrency controls.
 - GitHub doesn't trigger workflows on commits made with the default `GITHUB_TOKEN`; use a custom app token if CI must run on Claude's own commits.
 - The Code Review **Claude Code Review** check always completes with a neutral conclusion, so it never blocks merges via branch protection. To gate merges, parse its machine-readable `bughunter-severity` JSON in your own CI via `gh api ... | jq` (the literal API path is elided in the source docs — 要確認).

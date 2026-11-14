@@ -1,8 +1,10 @@
-<!-- source: https://code.claude.com/docs/en/gitlab-ci-cd.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/gitlab-ci-cd.md / last verified: 2026-11-14 -->
 
 # Run Claude Code in GitLab CI/CD
 
 Minimal `.gitlab-ci.yml` job that installs Claude Code and runs it against the Claude API, triggered from a web pipeline or a merge request event.
+
+Adapted (not in the official docs): the official `curl -fsSL https://claude.ai/install.sh | bash` is split into download, syntax check, and run steps.
 
 ```yaml .gitlab-ci.yml
 stages:
@@ -19,7 +21,11 @@ claude:
   before_script:
     - apk update
     - apk add --no-cache git curl bash
-    - curl -fsSL https://claude.ai/install.sh | bash
+    - curl -fsSL -o /tmp/claude-install.sh https://claude.ai/install.sh
+    - bash -n /tmp/claude-install.sh
+    - bash /tmp/claude-install.sh
+    # The installer places claude in ~/.local/bin, which isn't on PATH in this image
+    - export PATH="$HOME/.local/bin:$PATH"
   script:
     # Optional: start a GitLab MCP server if your setup provides one
     - /bin/gitlab-mcp-server || true
@@ -35,7 +41,10 @@ claude:
 
 ## Notes
 
+- Adapted from the official docs: the installer line is split into download, `bash -n` check, and run instead of piping `curl` into `bash`; the official page uses the piped form.
 - Requires an `ANTHROPIC_API_KEY` masked (and protected, as needed) CI/CD variable under **Settings > CI/CD > Variables**.
 - This integration is maintained by GitLab, not Anthropic, and is currently in beta; it is built on the Claude Code CLI and Agent SDK.
 - The `rules` block controls triggers; adjust to fit manual runs, merge request events, or web/API triggers where a comment contains `@claude` via a project webhook that calls the pipeline trigger API.
-- For Amazon Bedrock or Google Cloud's Agent Platform instead of the Claude API, add `AWS_ROLE_TO_ASSUME` / `AWS_REGION` or `GCP_WORKLOAD_IDENTITY_PROVIDER` / `GCP_SERVICE_ACCOUNT` variables and exchange the GitLab OIDC token for cloud credentials in `before_script` (see `github-actions-bedrock-vertex.md` for the equivalent GitHub Actions credential exchange pattern).
+- For Amazon Bedrock or Google Cloud's Agent Platform instead of the Claude API, add `AWS_ROLE_TO_ASSUME` / `AWS_REGION` or `GCP_WORKLOAD_IDENTITY_PROVIDER` / `GCP_SERVICE_ACCOUNT` variables and exchange the GitLab OIDC token for cloud credentials in `before_script` (see `github-actions-bedrock-vertex.md` for the equivalent GitHub Actions credential exchange pattern). The official provider jobs mint the token with an `id_tokens:` block (`GITLAB_OIDC_TOKEN`, `aud` set to the audience configured in AWS / the Workload Identity Pool, e.g. your GitLab instance URL) and set `CLAUDE_CODE_USE_BEDROCK: "1"` / `CLAUDE_CODE_USE_VERTEX: "1"`.
+- The installer places `claude` in `~/.local/bin`, which isn't on `PATH` in the `node:24-alpine3.21` image, hence the `export PATH` line.
+- Source: https://code.claude.com/docs/en/gitlab-ci-cd.md, fetched 2026-11-14.

@@ -13,5 +13,5 @@
 | Claude Code GitHub Actions | Run Claude Code in GitHub Actions workflows to respond to `@claude` mentions, automate tasks, and turn issues into pull requests | [github-actions.md](./github-actions.md) |
 | Claude Code with GitHub Enterprise Server | Connect Claude Code to your self-hosted GitHub Enterprise Server instance for cloud sessions, code review, and plugin marketplaces. | [github-enterprise-server.md](./github-enterprise-server.md) |
 | Claude Code GitLab CI/CD | Learn about integrating Claude Code into your development workflow with GitLab CI/CD | [gitlab-ci-cd.md](./gitlab-ci-cd.md) |
-| Claude Code in Slack | Delegate coding tasks from Slack. This earlier version answers channel mentions only from Pro and Max accounts in workspaces not connected to Claude Tag. | [slack.md](./slack.md) |
+| Claude Code in Slack | Delegate coding tasks from Slack. This earlier version answers channel mentions only from Pro, Max, and Ultra accounts in workspaces not connected to Claude Tag. | [slack.md](./slack.md) |
 | Find bugs with ultrareview | Run a deep, multi-agent code review in the cloud with /code-review ultra to find and verify bugs before you merge. | [ultrareview.md](./ultrareview.md) |

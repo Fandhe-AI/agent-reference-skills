@@ -1,9 +1,9 @@
-<!-- source: https://code.claude.com/docs/en/claude-apps-gateway.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/claude-apps-gateway-config.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/claude-apps-gateway.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/claude-apps-gateway-config.md / last verified: 2026-11-14 -->
 <!-- source: https://code.claude.com/docs/en/claude-apps-gateway-deploy.md / last verified: 2026-08-07 -->
 <!-- source: https://code.claude.com/docs/en/claude-apps-gateway-on-aws.md / last verified: 2026-08-07 -->
 <!-- source: https://code.claude.com/docs/en/claude-apps-gateway-on-gcp.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/claude-apps-gateway-spend-limits.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/claude-apps-gateway-spend-limits.md / last verified: 2026-11-14 -->
 <!-- source: https://code.claude.com/docs/en/llm-gateway-connect.md / last verified: 2026-08-07 -->
 <!-- source: https://code.claude.com/docs/en/llm-gateway-rollout.md / last verified: 2026-08-07 -->
 
@@ -33,6 +33,12 @@ curl -s https://claude-gateway.internal.example.com/.well-known/oauth-authorizat
 curl -s -X POST https://claude-gateway.internal.example.com/oauth/device_authorization | jq
 ```
 
+A running gateway also serves its protocol reference at `GET /protocol`:
+
+```bash
+curl https://claude-gateway.internal.example.com/protocol
+```
+
 ## Claude apps gateway: AWS 上のデプロイ準備 (ECS/EKS + Amazon Bedrock)
 
 ```bash
@@ -51,14 +57,26 @@ export PROJECT_ID=<your-project>
 export REGION=us-east5
 gcloud config set project "$PROJECT_ID"
 
-gcloud services enable aiplatform.googleapis.com artifactregistry.googleapis.com \
-  sqladmin.googleapis.com secretmanager.googleapis.com run.googleapis.com container.googleapis.com
+gcloud services enable \
+  aiplatform.googleapis.com \
+  artifactregistry.googleapis.com \
+  sqladmin.googleapis.com \
+  secretmanager.googleapis.com \
+  iamcredentials.googleapis.com \
+  iam.googleapis.com \
+  compute.googleapis.com \
+  servicenetworking.googleapis.com \
+  run.googleapis.com \
+  container.googleapis.com
 
 gcloud iam service-accounts create claude-gateway --display-name="Claude apps gateway"
+SA="claude-gateway@${PROJECT_ID}.iam.gserviceaccount.com"
+
 gcloud projects add-iam-policy-binding "$PROJECT_ID" \
-  --member="serviceAccount:claude-gateway@${PROJECT_ID}.iam.gserviceaccount.com" \
-  --role="roles/aiplatform.user" --condition=None
+  --member="serviceAccount:${SA}" --role="roles/aiplatform.user" --condition=None
 ```
+
+`compute` and `servicenetworking` are needed for the private-IP Cloud SQL path, `run` for Cloud Run only, and `container` for GKE only.
 
 A companion Terraform/`setup.sh` bundle at `examples/gateway/gcp` automates the Cloud Run path (Cloud SQL for PostgreSQL, Secret Manager, service-account auth).
 
@@ -107,5 +125,6 @@ Confirms the `Anthropic base URL` and `Auth token`/`API key` lines are active fo
 
 - Required `gateway.yaml` sections (`listen` / `oidc` / `session` / `store` / `upstreams`) and optional blocks are covered by `references/apps-gateway/claude-apps-gateway-config.md`.
 - JWT secret rotation has no dedicated command, only a procedure: prepend the new secret to the array, roll, wait `ttl_hours` plus margin, then drop the old secret. There is no per-session revocation otherwise.
-- The official docs describe no Dockerfile or Helm chart ("no admin UI or Helm chart"). The container command is `claude gateway --config /etc/claude/gateway.yaml`; the image requirement is a glibc-based `claude` binary with a writable `CLAUDE_CONFIG_DIR`.
+- There is no Helm chart (the gateway runs as a standard stateless Deployment) and the admin UI covers spend limits only. The container command is `claude gateway --config /etc/claude/gateway.yaml`; the image requirement is a glibc-based `claude` binary with a writable `CLAUDE_CONFIG_DIR`. The `examples/gateway/aws` and `examples/gateway/gcp` bundles in `anthropics/claude-code` include a `Dockerfile` (distroless runtime image on GCP) and are working examples, not a supported production artifact.
+- Upstream providers in `gateway.yaml` are `anthropic`, `bedrock`, `mantle`, `anthropicAws` (Claude Platform on AWS), `vertex` (Google Cloud's Agent Platform), and `foundry` (Microsoft Foundry); see `references/apps-gateway/claude-apps-gateway-config.md`.
 - Claude apps gateway sign-in is the browser device flow only, with no service-token flow, so unattended CI pipelines cannot authenticate through it directly (connect CI to the provider or a third-party gateway instead).

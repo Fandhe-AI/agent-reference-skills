@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/code-review-costs.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/code-review-costs.md / last verified: 2026-11-14 -->
 
 # Code Review costs and usage
 
@@ -39,6 +39,7 @@ Analytics sections:
 | PRs reviewed | Daily count of PRs reviewed over the selected range |
 | Code Review cost | Code Review spend so far this month |
 | Feedback | Count of review comments auto-resolved because a developer addressed the issue |
+| Code Review findings | Daily count of findings by severity level, from reviews Claude posted over the selected range |
 | Repository breakdown | Per-repo PRs reviewed, comments resolved, review runs, estimated cost, and a per-PR view |
 
 ## Notes
@@ -49,6 +50,8 @@ Analytics sections:
 - Pilot: set a monthly spend limit, enable a few representative repositories with Once or Manual, then read each repository's **Average cost** column in **Repositories** (Admin settings > Claude Code, **Code review** section). The average moves with PR size and review level.
 - Code Review skips reviews when the Code Review spend limit (resets next billing period), the organization spend limit, or the usage credits balance runs out, and also when what's left is less than the expected cost of one review. Developers see a PR comment naming the cause and linking to usage settings.
 - The Code Review cost card shows an amount only for the current month. Analytics costs can differ from your invoice (estimated at list price, before discounts or credits, and only for reviews Claude posted on a PR); use your Anthropic bill for accurate spend.
+
+- Source: https://code.claude.com/docs/en/code-review-costs.md, fetched 2026-11-14
 
 ## Related
 
