@@ -2,6 +2,8 @@
 
 curl collection for Images API (`/v1/images/*`) generation and editing, plus the OpenAI CLI equivalents. See openai-api-core's `scripts/install.md` / `scripts/auth.md` for SDK installation and authentication setup.
 
+> **Note**: The examples below use `gpt-image-2.5-sunburst`; `gpt-image-2.6-sunburst` / `gpt-image-2.6-flare` (changelog 2026-11-04) can be set as `model` directly in the Images API. `gpt-image-1` was removed on 2026-10-23.
+>
 > **Note**: `/v1/images/variations` is retired and no longer available. Use the image edits endpoint with a GPT Image model instead (see the API reference). `dall-e-2` / `dall-e-3` were removed on 2026-05-12. The `## Image variations` section below is kept as a legacy record only.
 
 ## Image generation (generations)
@@ -109,6 +111,23 @@ curl -s -N -X POST "https://api.openai.com/v1/images/edits" \
   -F "image[]=@soap.png" \
   -F 'prompt=Create a lovely gift basket with these four items in it' \
   -F "stream=true"
+```
+
+## Image editing (edits) — markup overlay (GPT-Image-2.6 / 2.5)
+
+Send a transparent PNG annotation layer as `markup` (same pixel size as the first image; do not combine with `mask`). Official example (`gpt-image-2.6-flare`, retrieved 2026-11-14, https://developers.openai.com/api/docs/guides/image-generation):
+
+```bash
+set -euo pipefail
+
+curl --fail --silent --show-error https://api.openai.com/v1/images/edits \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -F model=gpt-image-2.6-flare \
+  -F quality=medium \
+  -F 'image=@kitchen.webp;type=image/webp' \
+  -F 'markup=@markup-vase-overlay-gpt-image-2-6.png;type=image/png' \
+  -F 'prompt=Recolor the striped vase inside the red circle to solid cobalt blue ceramic. Keep its shape, the dried stems, and the rest of the kitchen unchanged. Remove the red circle from the finished photo.' |
+  jq -er '.data[0].b64_json' | base64 --decode > vase.png
 ```
 
 ## Image variations (legacy, retired)

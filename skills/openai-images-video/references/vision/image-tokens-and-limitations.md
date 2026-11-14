@@ -119,6 +119,7 @@ For `gpt-image-1`: use tile-based image sizing, but scale the shortest side down
 ## Notes
 
 - Earlier revisions of this page listed `gpt-5.4-mini` = 1.62x and `gpt-5.4-nano` = 2.46x; the official multiplier table now lists 1.2 for both (1.62 / 2.46 belong to `gpt-4.1-mini` / `gpt-4.1-nano`).
+- Changelog Sep 25 (2026): a bug in image encoding that degraded image understanding in GPT-6 Sol and GPT-6 Luna was fixed; the changelog recommends rerunning evaluations and retrying affected workflows that use image inputs. Source: https://developers.openai.com/api/docs/changelog (retrieved 2026-11-14).
 - Each processed image counts toward tokens-per-minute (TPM) limits like text.
 - The tile table no longer lists `gpt-5-chat-latest`, `gpt-4.5`, or `computer-use-preview` (65/129); they were removed from the official table.
 - For per-request estimates of one image, see `image-cost-calculator.md` (vision models only; it does not estimate GPT Image generation or editing).
