@@ -45,7 +45,8 @@ uv init [OPTIONS] [PATH]
 
 ## Notes
 
-- Packaged-by-default applications: the CLI reference and concepts/projects/init.md (0.13.1) describe packaged applications as the default since v0.12 ("Prior to v0.12, uv did not define a build system for applications by default"), but the generated preview-features list still includes `packaged-init` ("`uv init` creates a packaged application by default"). The official docs are inconsistent; verify with the pinned 0.13.1 release (e.g. `uv init` with and without `--preview-features packaged-init`) before relying on either.
+- Packaged-by-default applications: the CLI reference and concepts/projects/init.md (0.13.8) describe packaged applications as the default since v0.12 ("Prior to v0.12, uv did not define a build system for applications by default"), but the generated preview-features list still includes `packaged-init` ("`uv init` creates a packaged application by default"). The official docs are inconsistent; verify with the pinned 0.13.8 release (e.g. `uv init` with and without `--preview-features packaged-init`) before relying on either.
+- `UV_INIT_BUILD_BACKEND` only sets a default build backend, so it yields to `--no-package` and `--script` instead of conflicting with them like `--build-backend` does (0.13.6: "Allow `uv init --no-package` and `uv init --script` when `UV_INIT_BUILD_BACKEND` is set"). Source: https://github.com/astral-sh/uv/blob/0.13.8/CHANGELOG.md (tag 0.13.8; fetched 2026-11-14).
 - Global options are listed in uv.md (project-commands).
 
 ## Related

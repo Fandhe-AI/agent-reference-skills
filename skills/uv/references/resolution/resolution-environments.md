@@ -98,7 +98,7 @@ Each configured libc version needs coverage in `required-environments`. If a req
 ## Notes
 
 - `environments` entries must be disjoint.
-- `minimum-libc-version` is a preview feature in 0.13.1.
+- `minimum-libc-version` is a preview feature in 0.13.8.
 
 ## Related
 

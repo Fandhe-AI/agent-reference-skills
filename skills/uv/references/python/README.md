@@ -3,7 +3,7 @@
 | Name | Description | Path |
 |------|-------------|------|
 | Installing and upgrading Python | uv bundles a list of downloadable CPython and PyPy distributions for macOS, Linux, and Windows, and can install and upgrade uv-managed Python versions. | [installing-python.md](./installing-python.md) |
-| Managed Python distributions | Where uv-managed CPython, PyPy and Pyodide distributions come from, plus x86_64 emulation on aarch64 and Windows registry registration. | [managed-distributions.md](./managed-distributions.md) |
+| Managed Python distributions | Where uv-managed CPython, PyPy, GraalPy and Pyodide distributions come from, plus x86_64 emulation on aarch64 and Windows registry registration. | [managed-distributions.md](./managed-distributions.md) |
 | Python discovery | How uv searches for a Python interpreter that satisfies a request. | [python-discovery.md](./python-discovery.md) |
 | Python downloads and preferences | Control automatic Python downloads and whether managed or system Python installations are preferred. | [python-preferences.md](./python-preferences.md) |
 | Python support policy | Tier 1 / 2 / 3 support levels for Python versions and implementations in uv. | [python-support-policy.md](./python-support-policy.md) |

@@ -16,7 +16,7 @@ $ uv lock
 
 PEP 625 specifies that packages must distribute source distributions as gzip tarball (`.tar.gz`) archives. Prior to this specification, other archive formats, which need to be supported for backward compatibility, were also allowed.
 
-As of 0.12, uv rejects source distributions that do not confirm to PEP 625's extension requirements with the exception of `.zip` archives, which are still accepted for backward compatibility.
+As of 0.12, uv rejects source distributions that do not conform to PEP 625's extension requirements with the exception of `.zip` archives, which are still accepted for backward compatibility.
 
 ## Lockfile versioning
 

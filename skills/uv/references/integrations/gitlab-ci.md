@@ -10,7 +10,7 @@ Using uv in GitLab CI/CD: the uv Docker image, cache persistence, and the `uv pi
 
 ```yaml
 variables:
-  UV_VERSION: "0.13.1"
+  UV_VERSION: "0.13.8"
   PYTHON_VERSION: "3.12"
   BASE_LAYER: trixie-slim
   # GitLab CI creates a separate mountpoint for the build directory,
@@ -56,18 +56,10 @@ variables:
 
 ## Notes
 
-- With a distroless image, specify an empty entrypoint:
-
-```yaml
-uv:
-  image:
-    name: ghcr.io/astral-sh/uv:$UV_VERSION
-    entrypoint: [""]
-  # ...
-```
-
-- Per the official GitLab guide, a distroless image requires an empty entrypoint. Note that distroless images contain nothing but the uv binaries (see [Docker](./docker.md)), so a job whose `script` needs a shell should use a derived image such as `ghcr.io/astral-sh/uv:$UV_VERSION-python$PYTHON_VERSION-$BASE_LAYER` as in the example above.
+- Use a derived image with a shell, such as the Debian-based image above, so GitLab Runner can execute the job's `script`. Distroless images contain nothing but the uv binaries (see [Docker](./docker.md)).
+- Migration (0.13.1 → 0.13.8): the 0.13.1 guide documented an empty-entrypoint override (`entrypoint: [""]`) for distroless images; the 0.13.8 guide removed that note and instead documents the shell requirement (CHANGELOG 0.13.8: "Document the shell requirement for GitLab CI job images").
 - When persisting the cache with `uv pip`, you may want `requirements.txt` or `pyproject.toml` as cache key files instead of `uv.lock`.
+- Source: https://github.com/astral-sh/uv/blob/0.13.8/docs/guides/integration/gitlab.md (tag 0.13.8; fetched 2026-11-14)
 
 ## Related
 

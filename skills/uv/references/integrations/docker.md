@@ -10,7 +10,7 @@ Using uv in Docker: official images, installing uv and projects, development mou
 
 ```dockerfile
 FROM python:3.12-slim-trixie
-COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.8 /uv /uvx /bin/
 
 # Copy the project into the image
 COPY . /app
@@ -27,9 +27,9 @@ CMD ["uv", "run", "my_app"]
 
 ## Images
 
-- Distroless (uv binaries only): `ghcr.io/astral-sh/uv:latest`, `ghcr.io/astral-sh/uv:{major}.{minor}.{patch}` (e.g. `0.13.1`), `ghcr.io/astral-sh/uv:{major}.{minor}` (e.g. `0.13`, latest patch).
+- Distroless (uv binaries only): `ghcr.io/astral-sh/uv:latest`, `ghcr.io/astral-sh/uv:{major}.{minor}.{patch}` (e.g. `0.13.8`), `ghcr.io/astral-sh/uv:{major}.{minor}` (e.g. `0.13`, latest patch).
 - Derived images (OS with uv pre-installed): `alpine` (`alpine3.23`, `alpine3.22`), `debian-slim` / `trixie-slim`, `debian` / `trixie` (buildpack-deps), `alpine-dhi` / `debian-dhi`, `python3.x-dhi`, `python3.x-alpine`, `python3.x-trixie`, `python3.x-trixie-slim`.
-- Derived images are also published as `ghcr.io/astral-sh/uv:{major}.{minor}.{patch}-{base}` and `{major}.{minor}-{base}` (e.g. `0.13.1-alpine`).
+- Derived images are also published as `ghcr.io/astral-sh/uv:{major}.{minor}.{patch}-{base}` and `{major}.{minor}-{base}` (e.g. `0.13.8-alpine`).
 - Starting with `0.8`, each derived image sets `UV_TOOL_BIN_DIR` to `/usr/local/bin`.
 
 ```console
@@ -59,9 +59,9 @@ ENV PATH="/root/.local/bin/:$PATH"
 Pin a specific uv version (or a SHA256 digest for reproducible builds):
 
 ```dockerfile
-COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /uvx /bin/
-ADD https://astral.sh/uv/0.13.1/install.sh /uv-installer.sh
-COPY --from=ghcr.io/astral-sh/uv@sha256:2381d6aa60c326b71fd40023f921a0a3b8f91b14d5db6b90402e65a635053709 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.8 /uv /uvx /bin/
+ADD https://astral.sh/uv/0.13.8/install.sh /uv-installer.sh
+COPY --from=ghcr.io/astral-sh/uv@sha256:32a7bb39b496babbd997b0a39a4d66c126bdaf5661b302bf6f06abda8deca6ff /uv /uvx /bin/
 ```
 
 ## Using the environment and tools
@@ -262,8 +262,10 @@ $ gh attestation verify --owner astral-sh oci://ghcr.io/astral-sh/uv:latest
 
 - Add `.venv` to `.dockerignore`: the project virtual environment is platform-dependent and should be created from scratch in the image.
 - `UV_PROJECT_ENVIRONMENT` can be set before syncing to install into the system Python environment and skip activation.
-- Best practice: verify attestations for a specific version tag (e.g. `ghcr.io/astral-sh/uv:0.13.1`) or image digest rather than `latest`.
+- Best practice: verify attestations for a specific version tag (e.g. `ghcr.io/astral-sh/uv:0.13.8`) or image digest rather than `latest`.
 - Official example project: `astral-sh/uv-docker-example`.
+- Python 3.9 and 3.10 based derived images (`python3.9-*`, `python3.10-*`) are no longer listed in the 0.13.8 guide: uv 0.13.5 stopped publishing Docker images based on Python 3.9 and 3.10 images that no longer receive upstream updates.
+- Source: https://github.com/astral-sh/uv/blob/0.13.8/CHANGELOG.md (0.13.5, Security; fetched 2026-11-14)
 
 ## Related
 

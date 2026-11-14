@@ -56,7 +56,7 @@ $ UV_INDEX_FOO_USERNAME=user UV_INDEX_FOO_PASSWORD=pass uv sync
 | `UV_INDEX_{name}_PASSWORD` | 0.4.23 | HTTP Basic authentication password for a named index. For an index named `foo`, the key is `UV_INDEX_FOO_PASSWORD`. |
 | `UV_INDEX_{name}_USERNAME` | 0.4.23 | HTTP Basic authentication username for a named index. For an index named `foo`, the key is `UV_INDEX_FOO_USERNAME`. |
 | `UV_INIT_BARE` | 0.10.7 | Equivalent to `--bare` for `uv init`. Only create a `pyproject.toml`. |
-| `UV_INIT_BUILD_BACKEND` | 0.8.2 | Equivalent to `--build-backend` for `uv init`. Default backend when creating a new project. |
+| `UV_INIT_BUILD_BACKEND` | 0.8.2 | Equivalent to `--build-backend` for `uv init`. Default backend when creating a new project. Yields to `--no-package` and `--script` (0.13.6). |
 | `UV_INSECURE_HOST` | 0.3.5 | Equivalent to `--allow-insecure-host`. |
 | `UV_INSECURE_NO_ZIP_VALIDATION` | 0.8.6 | Disable ZIP validation for streamed wheels and ZIP-based source distributions. WARNING: can expose your system to security risks by bypassing integrity checks. If uv rejects a ZIP file due to failing validation, the file is likely malformed. |
 | `UV_INSTALLER_GHE_BASE_URL` | 0.5.0 | URL from which to download uv using the standalone installer and `self update`, in lieu of the default GitHub Enterprise URL. Takes precedence over `UV_ASTRAL_MIRROR_URL` for `uv self update`. |
@@ -77,7 +77,7 @@ $ UV_INDEX_FOO_USERNAME=user UV_INDEX_FOO_PASSWORD=pass uv sync
 ## Notes
 
 - `UV_INDEX_{name}_USERNAME` / `UV_INDEX_{name}_PASSWORD` provide registry credentials for named indexes; this is package-registry authentication, not application authentication (see better-auth, supabase for app auth).
-- The timing of the malware check is inconsistent in the official docs: the environment-variable reference says it runs after `uv sync` (after every lockfile sync), while the preview-features page (`malware-check`) says installation commands check packages before installing. The check is a preview feature; verify the behavior against the pinned 0.13.1 release before relying on it as a pre-install gate.
+- The timing of the malware check is inconsistent in the official docs: the environment-variable reference says it runs after `uv sync` (after every lockfile sync), while the preview-features page (`malware-check`) says installation commands check packages before installing. The check is a preview feature; verify the behavior against the pinned 0.13.8 release before relying on it as a pre-install gate.
 - Changed in 0.13.0: `UV_LEGACY_TAR_BACKEND` was added as the compatibility fallback for the new default tar backend (`tar-codec`).
 
 ## Related

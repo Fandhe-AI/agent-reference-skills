@@ -27,7 +27,7 @@ $ wget -qO "${installer}" https://astral.sh/uv/install.sh
 Request a specific version by including it in the URL:
 
 ```console
-$ curl -LsSf https://astral.sh/uv/0.13.1/install.sh -o "${installer}"
+$ curl -LsSf https://astral.sh/uv/0.13.8/install.sh -o "${installer}"
 ```
 
 Step 2: run the reviewed installer, then remove it.
@@ -47,7 +47,7 @@ PS> Invoke-WebRequest -Uri https://astral.sh/uv/install.ps1 -OutFile $installer
 PS> more $installer
 ```
 
-For a specific version, use `https://astral.sh/uv/0.13.1/install.ps1` as the URI.
+For a specific version, use `https://astral.sh/uv/0.13.8/install.ps1` as the URI.
 
 Step 2: run the reviewed installer, then remove it.
 

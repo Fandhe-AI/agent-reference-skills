@@ -4,7 +4,7 @@ source: https://docs.astral.sh/uv/concepts/python-versions/#managed-python-distr
 
 # Managed Python distributions
 
-Where uv-managed CPython, PyPy and Pyodide distributions come from, plus x86_64 emulation on aarch64 and Windows registry registration.
+Where uv-managed CPython, PyPy, GraalPy and Pyodide distributions come from, plus x86_64 emulation on aarch64 and Windows registry registration.
 
 ## Signature / Usage
 
@@ -23,8 +23,13 @@ $ py -V:Astral/CPython3.13.1
 
 ### PyPy distributions
 
-- PyPy versions lag behind CPython and currently only supports Python versions up to 3.11.
+- PyPy versions lag behind CPython and currently only support Python versions up to 3.11.
+- Inconsistency in the official sources: the 0.13.8 CHANGELOG (0.13.2, Python) lists PyPy 3.11.17 and 3.12.15 as added, while the concepts page still says PyPy supports versions up to 3.11. Source: https://github.com/astral-sh/uv/blob/0.13.8/CHANGELOG.md (fetched 2026-11-14).
 - PyPy distributions are provided by the PyPy project.
+
+### GraalPy distributions
+
+- uv supports downloading and installing GraalPy distributions (the 0.13.8 concepts page lists GraalPy alongside CPython, PyPy, and Pyodide as managed distributions; 0.13.8 updates GraalPy 3.13.0 to build 25.5.5). Source: https://docs.astral.sh/uv/concepts/python-versions/ and https://github.com/astral-sh/uv/blob/0.13.8/CHANGELOG.md (fetched 2026-11-14).
 
 ### Pyodide distributions
 

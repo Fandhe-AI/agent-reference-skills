@@ -14,8 +14,8 @@ uv (Astral 製 高速 Python パッケージ / プロジェクトマネージャ
 
 ## 対象バージョン
 
-uv 0.13.1 (GitHub tag `0.13.1` = commit `62faed3351cfee2121b3c28b937b1f4b93233a93`, released 2026-10-14; main は使用禁止)。
-生成ページ（reference/cli・reference/settings・reference/environment・concepts の preview 一覧）はリポジトリに未コミットのため、docs.astral.sh の Markdown twin（`<path>/index.md`）から 2026-10-16 に取得。live の installation ページが install.sh 0.13.1 を配布しており、live サイトと tag の一致を確認済み。
+uv 0.13.8 (GitHub tag `0.13.8` = commit `3d97a6aad5ad989c1b4fc89406d54f0dce370b72`, released 2026-11-12; main は使用禁止)。0.13.1 からの差分は tag 間の `docs/` diff・CHANGELOG・`crates/uv-cli` / `uv-settings` / `uv-static` の diff で確認済み。
+生成ページ（reference/cli・reference/settings・reference/environment・concepts の preview 一覧）はリポジトリに未コミットのため、docs.astral.sh の Markdown twin（`<path>/index.md`）から取得（初回 2026-10-16、0.13.8 追従分は 2026-11-14 に再確認）。live の installation ページが install.sh 0.13.8 を配布しており、live サイトと tag の一致を確認済み。
 
 ## ディレクトリ構成
 

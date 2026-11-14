@@ -49,6 +49,7 @@ There are no breaking changes to the configuration of the uv build backend. If y
 
 - Python added in 0.13.0: CPython 3.15.0. Preview feature added: `--require-build-hashes` requires hashes for build dependencies, including transitive dependencies (#21411).
 - 0.13.1 (released 2026-10-14) adds CPython 3.16.0a1 and ignores `Requires-Python` upper bounds in `uv pip check` and `uv pip install --strict`; Python 3.15-based uv Docker images are published under stable tags.
+- 0.13.2 to 0.13.8 (released 2026-10-19 to 2026-11-12): the CHANGELOG entries for these releases contain no `Breaking` sections. Python additions: PyPy 3.11.17 and 3.12.15 (0.13.2); CPython 3.15.1, 3.14.9 and 3.13.17 (0.13.5); CPython 3.11.18, 3.12.16, 3.13.18, 3.14.10 and 3.15.2 (0.13.6); CPython 3.16.0a2 (0.13.8). 0.13.5 stopped publishing uv Docker images based on Python 3.9 and 3.10 images and notes that upstream CPython 3.9 and 3.10 still bundle pip releases whose certificate bundles trust the affected eMudhra/emSign root; Astral recommends migrating off those versions. Source: https://github.com/astral-sh/uv/blob/0.13.8/CHANGELOG.md (tag 0.13.8; fetched 2026-11-14).
 - Cache versions are internal to uv and may change in minor or patch releases.
 
 ## Related

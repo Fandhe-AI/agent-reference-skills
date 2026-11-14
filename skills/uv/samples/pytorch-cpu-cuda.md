@@ -49,4 +49,4 @@ $ UV_TORCH_BACKEND=cu130 uv pip install torch torchvision
 - This sample only covers choosing the wheel index; it is not about GPU programming (see nvidia-cuda / amd-rocm skills).
 - `explicit = true` restricts an index to the packages pinned to it; other dependencies stay on PyPI.
 - Without extra configuration, `uv add torch torchvision` installs from PyPI: CPU-only wheels on Windows and macOS, GPU wheels on Linux.
-- The PyTorch guide states `--torch-backend` is only available in the `uv pip` interface; the 0.13.1 CLI reference also lists it for `uv tool run` / `uv tool install`. It is not available on project commands (`uv add` / `uv sync`).
+- The PyTorch guide states `--torch-backend` is only available in the `uv pip` interface; the 0.13.8 CLI reference also lists it for `uv tool run` / `uv tool install`. It is not available on project commands (`uv add` / `uv sync`).

@@ -75,7 +75,7 @@ preview-features = ["foo", "bar"]
 | `toml-backwards-compatibility` | The uv build backend rewrites `pyproject.toml` as TOML 1.0 in source distributions; the original is included as `pyproject.toml.orig`. |
 | `tool-install-locks` | uv stores a `uv.lock` alongside each installed tool and reuses it for installs and upgrades. |
 | `venv-safe-clear` | `uv venv --clear` refuses to clear a directory without `pyvenv.cfg`; `--force` overrides. |
-| `wheel-variants` | Experimental support for wheel variants (PEP 825). Variant wheels are not yet selectable. |
+| `wheel-variants` | Experimental support for wheel variants (PEP 825). |
 | `workspace-dir` | `uv workspace dir` prints the workspace root (`--package` for a member). |
 | `workspace-list` | `uv workspace list` lists workspace member names (`--paths` for paths). |
 | `workspace-list-scripts` | `uv workspace list --scripts` lists standalone scripts with inline metadata under the workspace root. |
@@ -84,7 +84,7 @@ preview-features = ["foo", "bar"]
 ## Notes
 
 - Often preview features can be used without changing preview settings if the behavior change is gated by user interaction. For example, while `pylock.toml` support is in preview, `uv pip install` with a `pylock.toml` works without additional configuration, but a warning is displayed; enabling the feature silences it.
-- The timing of the `malware-check` preview feature is inconsistent in the official docs: this page says installation commands check packages before installing, while the environment-variable reference (`UV_MALWARE_CHECK`) says the check runs after `uv sync` (after every lockfile sync). Verify the behavior against the pinned 0.13.1 release before relying on it as a pre-install gate.
+- The timing of the `malware-check` preview feature is inconsistent in the official docs: this page says installation commands check packages before installing, while the environment-variable reference (`UV_MALWARE_CHECK`) says the check runs after `uv sync` (after every lockfile sync). Verify the behavior against the pinned 0.13.8 release before relying on it as a pre-install gate.
 - Some preview features take effect before configuration files are loaded and cannot be enabled from configuration.
 - For backwards compatibility, enabling preview features that do not exist warns but does not error, regardless of the source.
 

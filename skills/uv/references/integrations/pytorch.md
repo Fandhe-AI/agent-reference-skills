@@ -194,7 +194,7 @@ $ UV_TORCH_BACKEND=cu130 uv pip install torch torchvision
 ## Notes
 
 - Some features in this guide require uv 0.5.3 or later.
-- The PyTorch integration guide states: "At present, `--torch-backend` is only available in the `uv pip` interface." The 0.13.1 CLI reference also lists `--torch-backend` on `uv tool run` and `uv tool install` (preview).
+- The PyTorch integration guide states: "At present, `--torch-backend` is only available in the `uv pip` interface." The 0.13.8 CLI reference also lists `--torch-backend` on `uv tool run` and `uv tool install` (preview).
 - This page covers wheel index selection only (CUDA/ROCm/XPU variants); GPU programming itself is covered by the nvidia-cuda and amd-rocm skills.
 
 ## Related

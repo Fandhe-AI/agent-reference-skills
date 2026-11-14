@@ -9,7 +9,7 @@ How to write a minimal reproducible example (MRE) for a uv bug report: Docker im
 ## Signature / Usage
 
 ```Dockerfile
-FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:0.13.0-debian-slim
+FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:0.13.8-debian-slim
 
 RUN uv init /mre
 WORKDIR /mre
@@ -34,13 +34,13 @@ Remove as many dependencies, settings, and files as possible. Test the reproduct
 **Docker image** (best when the issue reproduces on Linux). Start from one of uv's Docker images and pin to a specific uv version. uv publishes images for `linux/amd64` and `linux/arm64`; set the platform explicitly:
 
 ```Dockerfile
-FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:0.13.0-debian-slim
+FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:0.13.8-debian-slim
 ```
 
 Write files inline:
 
 ```Dockerfile
-FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:0.13.0-debian-slim
+FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:0.13.8-debian-slim
 
 COPY <<EOF /mre/pyproject.toml
 [project]

@@ -28,7 +28,7 @@ keyring-provider = "subprocess"
 
 ## The uv credentials store
 
-uv can read and write credentials from a store using the `uv auth` commands. Credentials are stored in a plaintext file in uv's state directory, e.g., `~/.local/share/uv/credentials/credentials.toml` on Unix. This file is currently not intended to be edited manually.
+uv can read and write credentials from a store using the `uv auth` commands. Credentials are stored in a plaintext file in uv's state directory, e.g., `~/.local/share/uv/credentials/credentials.toml` on Unix. This file is currently not intended to be edited manually. On Unix, uv restricts the plaintext credentials file to owner-only permissions (0.13.8).
 
 A secure, system native storage mechanism is in preview (experimental). When enabled, uv uses the secret storage native to the OS: Keychain Services on macOS, Windows Credential Manager on Windows, the DBus-based Secret Service API on Linux. uv only searches the native store for credentials it has added; it does not retrieve credentials persisted by other applications. Set `UV_PREVIEW_FEATURES=native-auth` to use it.
 
@@ -47,7 +47,8 @@ When using `uv add`, uv does not persist index credentials to `pyproject.toml` o
 ## Notes
 
 - If credentials were attached to an index URL during `uv add`, uv may fail to fetch dependencies from indexes which require authentication on subsequent operations; see Index authentication.
-- The upstream docs (0.13.1) print the direct-URL example as `username:password:example.com` (typo); the correct form uses `@` before the host.
+- Source for the owner-only permissions note: https://github.com/astral-sh/uv/blob/0.13.8/CHANGELOG.md (0.13.8, Bug fixes; fetched 2026-11-14). 0.13.2 also retries dropped GET and HEAD requests when fetching package and index data.
+- The upstream docs (0.13.8) print the direct-URL example as `username:password:example.com` (typo); the correct form uses `@` before the host.
 - Differences from `pip` are described in the pip compatibility guide (registry authentication section).
 
 ## Related
