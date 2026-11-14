@@ -316,6 +316,7 @@ Hooks: `after_checkout`, `before_install_node_modules`, `after_install_node_modu
 - Distinct from GitHub Actions: pre-packaged jobs are Expo Workflows YAML job types, not GitHub Actions actions. See github-docs for GitHub Actions.
 - Maestro tests are alpha per the official page.
 - General hook syntax (`jobs.<job_id>.hooks`) is in the syntax page. Custom builds are described in the official Custom builds docs.
+- The Email example is a verbatim fragment from the official page: `needs.build_ios_simulator` refers to a `build_ios_simulator` job defined elsewhere in the same workflow, so `send_email` must list it under `needs` (and use `after` with a failure condition if the email is only a failure notification) when assembled into a full workflow.
 - Only the syntax, parameters, outputs, and hooks sections are reproduced; the official page also has example workflows for each job (build with environment variables, deploy on merges, get-build lookups, Slack Block Kit, GitHub comment modes, approval flows, fingerprint with repack).
 - Source: https://docs.expo.dev/eas/workflows/pre-packaged-jobs/ (docs/pages/eas/workflows/pre-packaged-jobs.mdx at tag expo@58.0.25). The Email job, Maestro `maestro_version` defaults, update `branch` default, and the require-approval 30-day window come from this page.
 

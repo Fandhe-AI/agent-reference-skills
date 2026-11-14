@@ -172,5 +172,6 @@ const styles = StyleSheet.create({
 - `MediaLibrary.usePermissions({ writeOnly: true })` returns `[permissionResponse, requestPermission]`; the app only saves images, so it asks for write access without read access. `permissionResponse` is `null` until the user has answered.
 - `captureRef()` returns a promise resolving to the captured file URI, which is passed to `MediaLibrary.Asset.create()` on Android and iOS. On web, `result: 'data-uri'` returns a data URL that is downloaded through a link element, because `expo-media-library` works only on Android and iOS.
 - `collapsable={false}` on the captured `View` keeps it from being flattened so only the background image and sticker are captured.
+- Error handling: the official tutorial at this tag logs failures with `console.log(e)` in both `catch` blocks and has no failure alert; production apps should surface a save failure to the user (for example with `alert`).
 - Migration: the previous version of this sample used `MediaLibrary.saveToLibraryAsync()` imported from `expo-media-library/legacy` and `ImagePicker.useMediaLibraryPermissions()`; the tutorial at tag `expo@58.0.25` uses `MediaLibrary.Asset.create()` and `MediaLibrary.usePermissions({ writeOnly: true })` from `expo-media-library`.
 - Source: https://docs.expo.dev/tutorial/screenshot/ (docs/pages/tutorial/screenshot.mdx at tag expo@58.0.25).
