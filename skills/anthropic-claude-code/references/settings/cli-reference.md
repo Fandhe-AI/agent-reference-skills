@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/cli-reference.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/cli-reference.md / last verified: 2026-11-14 -->
 
 # CLI reference
 
@@ -60,7 +60,7 @@ If you mistype a subcommand, Claude Code suggests the closest match and exits wi
 
 | Flag | Description |
 | --- | --- |
-| `--add-dir` | Add additional working directories (file access only, not config discovery); persist via `permissions.additionalDirectories` |
+| `--add-dir` | Add additional working directories (file access only, not config discovery); persist via `permissions.additionalDirectories`. Validates that each path exists as a directory |
 | `--advisor <model>` | Enable the server-side advisor for this session (`opus`/`sonnet`/full ID; not `fable`) |
 | `--agent` | Specify an agent for the session (overrides `agent` setting) |
 | `--agents` | Define custom subagents via JSON (same fields as frontmatter, plus `prompt`) |
@@ -150,6 +150,9 @@ By default Claude Code builds the system prompt once, on a conversation's first 
 - `claude project purge [path]` was renamed to `claude purge [path]` in v2.1.288 (the claude-directory page states "Before v2.1.288, the command was `claude project purge`").
 - `--enable-auto-mode` was removed in v2.1.111; use `--permission-mode auto` instead.
 - Session-scoped flags (`--model`, `--effort`, `--fallback-model`) apply only to the session launched with them and don't persist as a saved default; use `/model`, `/effort`, or the corresponding settings key to persist.
+- Changelog 2.1.325 (2026-11-13): read-only git commands ask first in a repository that isn't the project's or one you trusted; name that repository with `--add-dir`, not the `additionalDirectories` setting, to run them without prompts.
+- `--permission-mode auto` (or `auto` from a settings file or the built-in default) starts the session in Manual when auto mode isn't available to the session. Source: https://code.claude.com/docs/en/permission-modes.md (retrieved 2026-11-14).
+- Source: https://code.claude.com/docs/en/cli-reference.md and https://code.claude.com/docs/en/changelog.md (retrieved 2026-11-14)
 
 ## Related
 

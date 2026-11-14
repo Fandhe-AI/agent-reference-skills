@@ -21,6 +21,10 @@ Skills / MCP / subagents / hooks / plugins の拡張機能は `anthropic-claude-
 Agent SDK（ライブラリとして組み込む場合）は `anthropic-agent-sdk`、Messages API 直接呼び出しは
 `anthropic-api-core` を参照（本スキルは Claude Code CLI 本体の使い方・設定・運用を担当）。
 
+## 対象バージョン
+
+Claude Code 2.1.325（changelog 2026-11-13 時点）。`settings-reference` / `env-vars` / `model-config` / `fast-mode` / `cli-reference` / `remote-control` / `auto-mode-config` / `feature-availability` / `statusline` は 2026-11-14 に公式 `.md` twin と changelog で再取得（Fable 5.2・`permissions.denyInsteadOfPrompting` 等を反映）。それ以外のページの `last verified` は据え置き（2026-10-16〜17 時点、再照合は未実施）。公式ページと changelog が食い違う箇所（`sandbox.autoAllowBashIfSandboxed` の既定値変更版、未認識モデル ID の context window）は各ページの `## Notes` に併記。
+
 ## ディレクトリ構成
 
 ```text

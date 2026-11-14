@@ -105,6 +105,7 @@ Runs through Git Bash if installed, else PowerShell. Use forward slashes in `com
 - Scripts that exit non-zero or hang leave the status line blank/stale; a slow script blocks updates until it completes or is cancelled by the next trigger.
 - Test with mock input: `echo '{"model":{"display_name":"Opus"},...}' | ./statusline.sh`.
 - Community projects `ccstatusline` and `starship-claude` provide pre-built configurations.
+- `subagentStatusLine` was removed in Claude Code v2.1.323 (changelog: "Removed the `subagentStatusLine` setting: subagent rows always use the default look, and settings files that still hold the key load as before"). The "Subagent status lines" section above describes the behavior up to v2.1.322 and is no longer on the official statusline page. Source: https://code.claude.com/docs/en/changelog.md (retrieved 2026-11-14).
 
 ## Related
 

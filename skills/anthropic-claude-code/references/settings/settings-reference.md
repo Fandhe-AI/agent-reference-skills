@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/settings-reference.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/settings-reference.md / last verified: 2026-11-14 -->
 
 # All settings
 
@@ -99,6 +99,7 @@ Sections of the official page that hold each key's entry (the Topic column below
 | `disabledMcpjsonServers` | Reject specific servers from a project's `.mcp.json` | MCP | Any file |
 | `disableMobileSimulatorTools` | Block Claude's tools in the desktop iOS Simulator pane | Tools | Managed |
 | `disableRemoteControl` | Turn off Remote Control everywhere it can start | Remote, desktop, and notifications | Any file |
+| `disableRemotePreviewScripts` | Turn off scripts in the desktop app's HTML previews in SSH and WSL sessions | Remote, desktop, and notifications | Managed |
 | `disableSideloadFlags` | Reject the CLI flags that sideload plugins, subagents, and MCP servers | Enterprise and managed settings | Managed |
 | `disableSkillShellExecution` | Stop skills and custom commands from running inline shell | Plugins and skills | Any file |
 | `disableWorkflows` | Turn dynamic workflows off for everyone; use `enableWorkflows` for yourself | Hooks and automation | Any file |
@@ -157,8 +158,10 @@ Sections of the official page that hold each key's entry (the Topic column below
 | `permissions.allow` | Approve listed tool uses without a prompt | Permission settings | Any file |
 | `permissions.ask` | Always prompt before listed tool uses | Permission settings | Any file |
 | `permissions.blockReadsOutsideWorkingDirectories` | Make the file tools refuse reads outside the working directories in every permission mode | Permission settings | Any file |
+| `permissions.blockWritesOutsideWorkingDirectories` | Make the `Write`, `Edit`, and `NotebookEdit` tools refuse paths outside the working directories in every permission mode, apart from some of Claude Code's own files | Permission settings | Any file |
 | `permissions.defaultMode` | Set the permission mode new sessions start in | Permission settings | Any file |
 | `permissions.deny` | Block listed tool uses, including reads of files that hold secrets | Permission settings | Any file |
+| `permissions.denyInsteadOfPrompting` | Deny tool calls that would wait on a permission prompt, so a session nobody is watching keeps working | Permission settings | User or managed |
 | `permissions.disableBypassPermissionsMode` | Prevent anyone from entering bypassPermissions mode | Permission settings | Any file |
 | `plansDirectory` | Choose where plan mode writes plan files | Memory and context | Any file |
 | `pluginConfigs` | Store the answers you gave a plugin's configuration dialog | Plugins and skills | User or managed |
@@ -184,6 +187,7 @@ Sections of the official page that hold each key's entry (the Topic column below
 | `respondToBashCommands` | Stop Claude from responding after a `!` shell command runs | Interface and terminal | Any file |
 | `sandbox` | Isolate Bash commands from your filesystem and network on macOS, Linux, and WSL2 | Sandbox settings | Any file |
 | `sandbox.allowAppleEvents` | Let sandboxed commands send Apple Events on macOS | Sandbox settings | User or managed |
+| `sandbox.allowNestedUserNamespaces` | Let sandboxed commands create user namespaces on Linux and WSL2 | Sandbox settings | User or managed |
 | `sandbox.allowUnsandboxedCommands` | Let Claude retry a blocked command outside the sandbox, or forbid it | Sandbox settings | Any file |
 | `sandbox.autoAllowBashIfSandboxed` | Run sandboxed commands without a permission prompt | Sandbox settings | Any file |
 | `sandbox.bwrapPath` | Point the sandbox at a bubblewrap binary outside `PATH` | Sandbox settings | Managed |
@@ -234,6 +238,7 @@ Sections of the official page that hold each key's entry (the Topic column below
 | `spinnerTipsOverride` | Add your own tips to the spinner rotation, or replace the built-in tips | Interface and terminal | Any file |
 | `spinnerVerbs` | Add or replace the verbs shown while a turn runs | Interface and terminal | Any file |
 | `sshConfigs` | Add SSH connections to the Desktop environment dropdown | Remote, desktop, and notifications | User or managed |
+| `sshHostCommands` | Add SSH connections whose host comes from a command to the Desktop environment selector | Remote, desktop, and notifications | User or managed |
 | `sshHostAllowlist` | Limit which hosts Desktop SSH sessions can reach | Remote, desktop, and notifications | Managed |
 | `statusLine` | Run your own command to render a status line below the prompt | Interface and terminal | Any file |
 | `strictKnownMarketplaces` | Allowlist the marketplace sources users can add and install from | Plugins and skills | Managed |
@@ -243,7 +248,7 @@ Sections of the official page that hold each key's entry (the Topic column below
 | `strictPluginOnlyCustomization.mcp` | Lock MCP servers to plugin and managed sources | Plugins and skills | Managed |
 | `strictPluginOnlyCustomization.skills` | Lock skills to plugin and managed sources | Plugins and skills | Managed |
 | `subagentPromptCacheTtl` | Choose the prompt cache lifetime for subagents and other requests outside the main conversation | Model and responses | Any file |
-| `subagentStatusLine` | Rewrite rows in the subagent task display with your own command | Interface and terminal | Any file |
+| `subagentStatusLine` | Rewrite rows in the subagent task display with your own command (removed in v2.1.323; see Notes) | Interface and terminal | Any file |
 | `switchModelsOnFlag` | Switch models automatically or pause when a safety classifier flags a request | Model and responses | Any file |
 | `syncClaudeAiPlugins` | Stop loading the plugins enabled on your claude.ai account and stop downloading new ones | Plugins and skills | User, local, or managed |
 | `syncClaudeAiSkills` | Stop loading the skills enabled on your claude.ai account and stop downloading new ones | Plugins and skills | User, local, or managed |
@@ -289,7 +294,7 @@ Type and Default per key, copied from each key's entry on the official page. `un
 | `effortLevel` | string: `"low"`, `"medium"`, `"high"`, `"xhigh"` | unset |
 | `enforceAvailableModels` | Boolean | `false` |
 | `fallbackModel` | array of model aliases or IDs; `"default"` expands to the default model | unset |
-| `fastMode` | Boolean | unset (off) |
+| `fastMode` | Boolean (on Fable 5.2 it has no effect until you run `/fast` while using Fable 5.2) | unset (off) |
 | `fastModePerSessionOptIn` | Boolean | `false` |
 | `language` | string, any language name such as `"japanese"`; not validated | unset |
 | `maxEffortLevel` | string: `"low"`, `"medium"`, `"high"`, `"xhigh"`, `"max"` (`"max"` sets no cap) | unset (no cap) |
@@ -308,19 +313,21 @@ Type and Default per key, copied from each key's entry on the official page. `un
 | `autoMode` | object with `environment`, `allow`, `soft_deny`, `hard_deny` arrays of prose rules, plus `classifyAllShell` Boolean | unset (built-in rules only) |
 | `autoMode.classifyAllShell` | Boolean | `false` |
 | `disableAutoMode` | the string `"disable"` | unset |
-| `permissions` | object with `allow`, `ask`, `deny`, `additionalDirectories`, `blockReadsOutsideWorkingDirectories`, `defaultMode`, `disableBypassPermissionsMode`, `disableAutoMode` | unset |
+| `permissions` | object with `allow`, `ask`, `deny`, `additionalDirectories`, `blockReadsOutsideWorkingDirectories`, `blockWritesOutsideWorkingDirectories`, `defaultMode`, `denyInsteadOfPrompting`, `disableBypassPermissionsMode`, `disableAutoMode` | unset |
 | `useAutoModeDuringPlan` | Boolean | `true` |
 | `permissions.allow` / `.ask` / `.deny` | array of permission rule strings | unset |
 | `permissions.additionalDirectories` | array of directory paths | unset |
 | `permissions.blockReadsOutsideWorkingDirectories` | Boolean | unset (follows permission mode) |
+| `permissions.blockWritesOutsideWorkingDirectories` | Boolean | unset (follows permission mode) |
 | `permissions.defaultMode` | string: `"default"`, `"acceptEdits"`, `"plan"`, `"auto"`, `"dontAsk"`, `"bypassPermissions"`, `"manual"` (alias for `"default"`) | unset |
+| `permissions.denyInsteadOfPrompting` | Boolean | unset |
 | `permissions.disableBypassPermissionsMode` | the string `"disable"` | unset |
 | `skipAutoPermissionPrompt` | Boolean | unset (notice appears once) |
 | `skipDangerousModePermissionPrompt` | Boolean | unset (dialog appears) |
-| `sandbox` | object with `enabled`, `failIfUnavailable`, `autoAllowBashIfSandboxed`, `excludedCommands`, `allowUnsandboxedCommands`, `enableWeakerNestedSandbox`, `enableWeakerNetworkIsolation`, `allowAppleEvents`, `bwrapPath`, `socatPath`, `ignoreViolations`, `ripgrep`, plus `filesystem`, `network`, `credentials` objects | unset (no sandbox) |
+| `sandbox` | object with `enabled`, `failIfUnavailable`, `autoAllowBashIfSandboxed`, `excludedCommands`, `allowUnsandboxedCommands`, `enableWeakerNestedSandbox`, `enableWeakerNetworkIsolation`, `allowAppleEvents`, `allowNestedUserNamespaces`, `bwrapPath`, `socatPath`, `ignoreViolations`, `ripgrep`, plus `filesystem`, `network`, `credentials` objects | unset (no sandbox) |
 | `sandbox.enabled` | Boolean | `false` |
 | `sandbox.failIfUnavailable` | Boolean | `false` |
-| `sandbox.autoAllowBashIfSandboxed` | Boolean | `true` |
+| `sandbox.autoAllowBashIfSandboxed` | Boolean | `false` (before v2.1.324: `true`) |
 | `sandbox.excludedCommands` | array of command patterns | unset |
 | `sandbox.allowUnsandboxedCommands` | Boolean | `true` |
 | `sandbox.filesystem` | object with `allowWrite`, `denyWrite`, `denyRead`, `allowRead` arrays, plus `allowManagedReadPathsOnly` and `disabled` Booleans | unset |
@@ -331,6 +338,7 @@ Type and Default per key, copied from each key's entry on the official page. `un
 | `sandbox.enableWeakerNestedSandbox` | Boolean | `false` |
 | `sandbox.enableWeakerNetworkIsolation` | Boolean | `false` |
 | `sandbox.allowAppleEvents` | Boolean | `false` |
+| `sandbox.allowNestedUserNamespaces` | Boolean | `false` |
 | `sandbox.ripgrep` | object with `command` (path to ripgrep binary) and optional `args` array | unset |
 | `sandbox.bwrapPath` / `sandbox.socatPath` | string, an absolute path (relative path dropped; falls back to `PATH` lookup) | unset |
 | `sandbox.credentials` | object with `files`, `envVars`, `allowPlaintextInject`, `awsPairs`, `sigv4` | unset |
@@ -444,6 +452,7 @@ Type and Default per key, copied from each key's entry on the official page. `un
 | `remote.defaultEnvironmentId` | string, an environment ID such as `env_...` or `ccpool_...` | unset |
 | `remoteControlAtStartup` | Boolean | unset |
 | `sshConfigs` | array of objects with required `id`, `name`, `sshHost`, optional `sshPort`, `sshIdentityFile` | unset |
+| `sshHostCommands` | array of objects with required `id`, `name`, `command`, optional `sshIdentityFile`, `startDirectory` | unset |
 | `sshHostAllowlist` | array of hostname patterns | unset (any host allowed) |
 | `allowedProviders` | array of strings: `"anthropic"`, `"bedrock"`, `"vertex"`, `"foundry"`, `"anthropicAws"`, `"mantle"`, `"customEndpoint"`, `"gateway"` | unset (any provider) |
 | `apiKeyHelper` / `awsAuthRefresh` / `awsCredentialExport` / `gcpAuthRefresh` | string, a shell command line | unset |
@@ -482,8 +491,12 @@ Type and Default per key, copied from each key's entry on the official page. `un
 
 - Global config keys (`autoConnectIde`, `autoInstallIdeExtension`, `claudeInChromeDefaultEnabled`, `copyFullResponse`, `copyOnSelect`, `defaultToAgentsView`, `diffTool`, `externalEditorContext`, `leftArrowOpensAgents`, `prStatusFooterEnabled`, plus removed `permissionExplainerEnabled` and `teammateDefaultModel`) go in `~/.claude.json`, not a settings file; Claude Code ignores them in `settings.json`. Claude Code and `/config` write most of them for you.
 - Removed keys: `permissionExplainerEnabled` removed in v2.1.257 (with the `Ctrl+E` command explanation on Bash and PowerShell permission prompts); `teammateDefaultModel` removed in v2.1.234 (with its `/config` row); `taskOutputMaxChars` removed in v2.1.277 (with the `TaskOutput` tool it sized). Setting them has no effect on current versions.
+- Removed key: `subagentStatusLine` is no longer a setting as of v2.1.323: subagent rows always use the default look, and settings files that still hold the key load as before. The key is no longer listed on the official settings page.
+- New keys (2026-11-14): `permissions.denyInsteadOfPrompting` (v2.1.319+, `User or managed` scope; denies calls that would wait on a permission prompt, also leaves out `AskUserQuestion` / `EnterPlanMode` / `ExitPlanMode` and cancels MCP elicitation unless an `Elicitation` hook answers; `--permission-prompts none` with `-p` does the same for one run), `permissions.blockWritesOutsideWorkingDirectories` (v2.1.314+; `Write` / `Edit` / `NotebookEdit` refuse paths outside the working directories in every permission mode; does not limit shell commands, MCP tools or hooks; also removes `EnterWorktree` / `ExitWorktree`), `sandbox.allowNestedUserNamespaces` (v2.1.305+; `User or managed`; turns off a security boundary, so prefer `excludedCommands` for rootless Podman / Buildah), `disableRemotePreviewScripts` (Managed; desktop app only, Claude Desktop v5.1231.0+), `sshHostCommands` (Desktop only; `command` is not read as shell syntax).
+- `sandbox.autoAllowBashIfSandboxed` default: the official settings page states the default is `false` and "Before v2.1.324, the default was `true`", while the 2.1.325 changelog entry (2026-11-13) lists the same change ("Changed sandboxed Bash commands to follow the normal permission flow by default"). Both are kept as published. To set `true` in managed settings, put it in the `sandbox` block of the highest-ranked managed source.
+- Source: https://code.claude.com/docs/en/settings-reference.md (retrieved 2026-11-14); https://code.claude.com/docs/en/changelog.md (2.1.319 to 2.1.325, retrieved 2026-11-14)
 - Deprecated keys: `disableArtifact` (use `enableArtifact`), `includeCoAuthoredBy` (use `attribution`), `keybindingFlavor` (no effect; word-editing shortcuts always follow readline conventions).
-- `permissions` object: nests `allow`, `ask`, `deny`, `additionalDirectories`, `blockReadsOutsideWorkingDirectories`, `defaultMode`, `disableBypassPermissionsMode`, and `disableAutoMode`. The three rule arrays share one syntax; permission rules merge across scopes rather than override.
+- `permissions` object: nests `allow`, `ask`, `deny`, `additionalDirectories`, `blockReadsOutsideWorkingDirectories`, `blockWritesOutsideWorkingDirectories`, `defaultMode`, `denyInsteadOfPrompting`, `disableBypassPermissionsMode`, and `disableAutoMode`. The three rule arrays share one syntax; permission rules merge across scopes rather than override.
 - `permissions.allow` entries: in an MCP rule, `*` can appear only in the tool name after the `mcp__<server>__` prefix (such as `mcp__github__get_*`), never in the server name. `--allowedTools` adds allow rules for one session; a deny rule from any settings file still blocks a tool it names.
 - `useAutoModeDuringPlan` (User, local, or managed) cannot be turned off by a repository; a `false` in any of those files turns it off.
 - `enableArtifact`: a `false` in any file turns the Artifact tool off and no file can turn it back on.

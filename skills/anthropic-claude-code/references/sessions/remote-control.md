@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/remote-control.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/remote-control.md / last verified: 2026-11-14 -->
 # Remote Control
 
 Connects claude.ai/code or the Claude mobile app to a Claude Code session running on your machine, so you can start a task at your desk and continue it from your phone or another browser. Claude keeps running locally the entire time — code execution and filesystem access never leave your machine. Research preview, available on all plans (off by default for Team/Enterprise until an Owner enables it).
@@ -25,6 +25,7 @@ claude --remote-control "My Project"         # same, with a custom session title
 | `--[no-]create-session-in-dir` | flag | Pre-create one session in the current directory at server start (on by default) |
 | `--remote-control-session-name-prefix <prefix>` | flag | Prefix for auto-generated session names when no explicit name is set (default: hostname, e.g. `myhost-graceful-unicorn`); `CLAUDE_REMOTE_CONTROL_SESSION_NAME_PREFIX` has the same effect |
 | `--permission-mode <mode>` | flag | Starting permission mode for the server's sessions; accepts `manual` as an alias for `default`; an unrecognized mode stops the server at startup |
+| `--settings <file>` | flag | Apply a JSON settings file to the server's sessions, at the same precedence as `claude --settings`; give a file path, not a JSON string. Requires v2.1.321+ |
 | `--chrome` / `--no-chrome` | flag | Turn Chrome integration on or off in the sessions the server creates. Without either flag, the pre-created session and sessions you start from claude.ai/code or the Claude app begin with Chrome off. Requires v2.1.273+ |
 | `-d`, `--debug[=<filter>]` | flag | Debug logging for the server, optionally filtered by category; pass a filter only in the `=` form, such as `--debug=api,hooks`. Requires v2.1.282+ |
 | `--debug-file <path>` | flag | Write debug logs to the given file |
@@ -45,6 +46,9 @@ claude --remote-control "My Project"         # same, with a custom session title
 - **Commands that take arguments from the remote client**: `/advisor` (from v2.1.260; pass a model, e.g. `/advisor opus`, or `off`; applies to the current session only; with no argument it prints the current advisor as text), `/output-style` (from v2.1.269; pass the style name or run with no argument to list; from mobile and web only built-in styles can be listed and selected), `/focus` (from v2.1.281; `on` or `off`, or no argument to toggle; current session only).
 - Some commands are local-terminal-only (`/plugin`, `/resume`); text-output commands (`/compact`, `/clear`, `/context`, `/usage`, `/recap`, `/reload-plugins`) and `/model`, `/effort`, `/fast`, `/color`, `/rename`, `/mcp`, `/config`, `/autocompact` work from mobile/web with adapted argument-passing.
 - Compare with Claude Code on the web (cloud infra, no local filesystem), Dispatch (message a task to spawn a Desktop session), and Channels (push external events into a session).
+- `claude remote-control` exit status (changelog 2.1.325, 2026-11-13): it exits with status 4 when it stops by itself (single-session runs still exit 0) and 69 when it can't register, so a service manager can start it again. The official remote-control page does not list exit codes.
+- Changelog 2.1.325: `/resume` and `/teleport` disconnect first when the connected session has a share link or when that can't be checked; run `/remote-control` to connect again.
+- Source: https://code.claude.com/docs/en/remote-control.md and https://code.claude.com/docs/en/changelog.md (retrieved 2026-11-14)
 
 ## Related
 
