@@ -101,25 +101,25 @@ upstash redis create --name=cli-powered-db --region=eu-central-1
 ## Redis データベースの詳細取得（認証情報を隠す）
 
 ```sh
-upstash redis get --db-id $DB_ID
-upstash redis get --db-id $DB_ID --hide-credentials
+upstash redis get --db-id "${DB_ID}"
+upstash redis get --db-id "${DB_ID}" --hide-credentials
 ```
 
 ## Redis ブランチの作成（CLI 1.7.0 以降）
 
 ```sh
-upstash redis create-branch --db-id $DB_ID --name $BRANCH_NAME
+upstash redis create-branch --db-id "${DB_ID}" --name "${BRANCH_NAME}"
 ```
 
 ## Redis バックアップの操作
 
 ```sh
-upstash redis backup list --db-id $DB_ID
-upstash redis backup create --db-id $DB_ID --name $NAME
-upstash redis backup delete --db-id $DB_ID --backup-id $BACKUP_ID --dry-run
-upstash redis backup restore --db-id $DB_ID --backup-id $BACKUP_ID
-upstash redis backup enable-daily --db-id $DB_ID
-upstash redis backup disable-daily --db-id $DB_ID
+upstash redis backup list --db-id "${DB_ID}"
+upstash redis backup create --db-id "${DB_ID}" --name "${NAME}"
+upstash redis backup delete --db-id "${DB_ID}" --backup-id "${BACKUP_ID}" --dry-run
+upstash redis backup restore --db-id "${DB_ID}" --backup-id "${BACKUP_ID}"
+upstash redis backup enable-daily --db-id "${DB_ID}"
+upstash redis backup disable-daily --db-id "${DB_ID}"
 ```
 
 `backup delete` は `--dry-run` で確認してから `--dry-run` なしで実行する。`enable-daily` / `disable-daily` は CLI 1.6.0 以降 PATCH で送信される。
@@ -172,12 +172,12 @@ upstash qstash stats --qstash-id <QSTASH_ID> --period 7d
 
 ```sh
 upstash blob list
-upstash blob get --bucket-id $BUCKET_ID --hide-credentials
-upstash blob create --name $NAME --visibility private
-upstash blob create --name $NAME --cors $ORIGIN $ORIGIN
-upstash blob cors $BUCKET $ORIGIN $ORIGIN
-upstash blob delete --bucket-id $BUCKET_ID --dry-run
-upstash blob credentials --bucket-id $BUCKET_ID
+upstash blob get --bucket-id "${BUCKET_ID}" --hide-credentials
+upstash blob create --name "${NAME}" --visibility private
+upstash blob create --name "${NAME}" --cors "${ORIGIN}" "${ORIGIN}"
+upstash blob cors "${BUCKET}" "${ORIGIN}" "${ORIGIN}"
+upstash blob delete --bucket-id "${BUCKET_ID}" --dry-run
+upstash blob credentials --bucket-id "${BUCKET_ID}"
 ```
 
 `--visibility` は `private`（既定）/ `public`、`--cors` は空白区切りのオリジン、`blob cors` は CORS オリジンの置換（`*` で全許可）、`blob credentials` はバケットトークンを一時的なバケット限定 S3 認証情報に交換する。

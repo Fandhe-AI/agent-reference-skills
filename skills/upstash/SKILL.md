@@ -3,7 +3,7 @@ name: upstash
 description: >
   Upstash サーバーレスデータプラットフォーム (JS SDK)。
   @upstash/redis (REST, pipelining, JSON, Redis Search hybrid),
-  @upstash/ratelimit (Sliding Window),
+  @upstash/ratelimit (Sliding Window, Token Bucket),
   QStash (publishJSON, schedules, queues, DLQ),
   @upstash/vector (upsert, query, reranking),
   @upstash/workflow (serve, context.run),

@@ -26,13 +26,89 @@ curl -X POST "https://qstash.upstash.io/v2/publish/https://example.com/api/handl
 
 ## Options / Props
 
-Publish / enqueue headers (all optional): `Content-Type`, `Upstash-Forward-*`, `Upstash-Method` (`GET` \| `POST` \| `PUT` \| `PATCH` \| `DELETE`, default `POST`), `Upstash-Timeout`, `Upstash-Retries` (default 3), `Upstash-Retry-Delay` (expression with `retried`), `Upstash-Delay` and `Upstash-Not-Before` (publish only; `Not-Before` wins), `Upstash-Label` (comma-separated), `Upstash-Flow-Control-Key` + `Upstash-Flow-Control-Value` (`parallelism=<v>, rate=<v>, period=<v>`; publish only), `Upstash-Deduplication-Id`, `Upstash-Content-Based-Deduplication`, `Upstash-Callback` / `Upstash-Callback-Forward-*` / `Upstash-Callback-*`, `Upstash-Failure-Callback` / `-Forward-*` / `-*`, `Upstash-Redact-Fields` (`body`, `headers`, `header[name]`). Body: `text/plain`, `application/json` or `application/octet-stream`, passed as is. `destination` is a URL (with `http://` or `https://`) or a URL Group name (one message per endpoint, response has `messages`).
+### Publish / enqueue headers (all optional)
 
-Batch body: array of `{ destination (required), body, headers, queue }`; `headers` accept everything the single publish API supports.
+| Header | Description |
+| --- | --- |
+| `Content-Type` | Body type |
+| `Upstash-Forward-*` | Forwarded headers |
+| `Upstash-Method` | `GET` \| `POST` \| `PUT` \| `PATCH` \| `DELETE`, default `POST` |
+| `Upstash-Timeout` | Timeout |
+| `Upstash-Retries` | Default 3 |
+| `Upstash-Retry-Delay` | Expression with `retried` |
+| `Upstash-Delay` | Publish only; `Not-Before` wins |
+| `Upstash-Not-Before` | Publish only; `Not-Before` wins |
+| `Upstash-Label` | Comma-separated |
+| `Upstash-Flow-Control-Key` + `Upstash-Flow-Control-Value` | `parallelism=<v>, rate=<v>, period=<v>`; publish only |
+| `Upstash-Deduplication-Id` | Deduplication ID |
+| `Upstash-Content-Based-Deduplication` | Content-based deduplication |
+| `Upstash-Callback` / `Upstash-Callback-Forward-*` / `Upstash-Callback-*` | Callback |
+| `Upstash-Failure-Callback` / `-Forward-*` / `-*` | Failure callback |
+| `Upstash-Redact-Fields` | `body`, `headers`, `header[name]` |
 
-Bulk cancel query parameters: `messageIds` (other filters ignored when set), `topicName`, `queueName`, `url`, `host`, `path`, `label`, `flowControlKey`, `scheduleId`, `callerIp` (`callerIP` deprecated), `fromDate` / `toDate` (unix ms, inclusive), `async` (default `false`; filter-based only, returns an `actionId` immediately), `count` (deprecated, ignored). Response 202: `cancelled` (by IDs) or `actionId` (`async=true`). `412`: too many bulk actions in progress (up to 1000). `429`: the bulk action did not finish within one minute but keeps running; track it via `GET /v2/bulkActions`.
+Body: `text/plain`, `application/json` or `application/octet-stream`, passed as is. `destination` is a URL (with `http://` or `https://`) or a URL Group name (one message per endpoint, response has `messages`).
 
-Get-message response fields: `messageId`, `url`, `topicName`, `endpointName`, `method`, `header`, `body` / `bodyBase64`, `maxRetries`, `notBefore`, `createdAt`, `callback`, `failureCallback`, `queueName`, `scheduleId`, `callerIP`, `labels` (`label` deprecated), `flowControlKey`, `rate`, `period`, `parallelism`.
+### Batch body
+
+Array of objects:
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `destination` | string | Required |
+| `body` | string | Body |
+| `headers` | object | Accept everything the single publish API supports |
+| `queue` | string | Queue |
+
+### Bulk cancel query parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `messageIds` | array | Other filters ignored when set |
+| `topicName` | string | Filter |
+| `queueName` | string | Filter |
+| `url` | string | Filter |
+| `host` | string | Filter |
+| `path` | string | Filter |
+| `label` | string | Filter |
+| `flowControlKey` | string | Filter |
+| `scheduleId` | string | Filter |
+| `callerIp` | string | Filter (`callerIP` deprecated) |
+| `fromDate` / `toDate` | unix ms | Inclusive |
+| `async` | boolean | Default `false`; filter-based only, returns an `actionId` immediately |
+| `count` | integer | Deprecated, ignored |
+
+### Bulk cancel responses
+
+| Status | Description |
+| --- | --- |
+| `202` | `cancelled` (by IDs) or `actionId` (`async=true`) |
+| `412` | Too many bulk actions in progress (up to 1000) |
+| `429` | The bulk action did not finish within one minute but keeps running; track it via `GET /v2/bulkActions` |
+
+### Get-message response fields
+
+| Name | Description |
+| --- | --- |
+| `messageId` | Message ID |
+| `url` | URL |
+| `topicName` | Topic name |
+| `endpointName` | Endpoint name |
+| `method` | Method |
+| `header` | Headers |
+| `body` / `bodyBase64` | Body |
+| `maxRetries` | Maximum retries |
+| `notBefore` | Not before |
+| `createdAt` | Creation time |
+| `callback` | Callback |
+| `failureCallback` | Failure callback |
+| `queueName` | Queue name |
+| `scheduleId` | Schedule ID |
+| `callerIP` | Caller IP |
+| `labels` | Labels (`label` deprecated) |
+| `flowControlKey` | Flow control key |
+| `rate` | Rate |
+| `period` | Period |
+| `parallelism` | Parallelism |
 
 ## Notes
 

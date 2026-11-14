@@ -5,8 +5,8 @@ Upstash Vector REST API: authentication, response format and endpoint list. Ever
 ## Signature / Usage
 
 ```shell
-curl $UPSTASH_VECTOR_REST_URL/upsert \
-  -H "Authorization: Bearer $UPSTASH_VECTOR_REST_TOKEN" \
+curl "${UPSTASH_VECTOR_REST_URL}/upsert" \
+  -H "Authorization: Bearer ${UPSTASH_VECTOR_REST_TOKEN}" \
   -d '{"id": "id-0", "vector": [0.87, 0.99]}'
 ```
 

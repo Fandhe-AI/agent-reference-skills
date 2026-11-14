@@ -17,7 +17,22 @@ curl "https://qstash.upstash.io/v2/logs?state=ERROR&count=50" \
 
 ## Options / Props
 
-Query parameters: `cursor`, `messageId`, `state`, `url`, `topicName`, `scheduleId`, `queueName`, `fromDate` / `toDate` (unix ms, inclusive), `count` (default 100), `label` (multi-value).
+### Query parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `cursor` | string | Pagination cursor |
+| `messageId` | string | Filter |
+| `state` | enum | See the state table below |
+| `url` | string | Filter |
+| `topicName` | string | Filter |
+| `scheduleId` | string | Filter |
+| `queueName` | string | Filter |
+| `fromDate` / `toDate` | unix ms | Inclusive |
+| `count` | integer | Default 100 |
+| `label` | string | Multi-value |
+
+### State values
 
 | `state` | Meaning |
 | --- | --- |
@@ -30,7 +45,32 @@ Query parameters: `cursor`, `messageId`, `state`, `url`, `topicName`, `scheduleI
 | `CANCEL_REQUESTED` | Cancel recorded |
 | `CANCELLED` | Cancel honored |
 
-Log entry fields: `time`, `messageId`, `header`, `body` (base64), `state`, `error`, `nextDeliveryTime`, `url`, `topicName`, `endpointName`, `scheduleId`, `queueName`, `responseStatus` / `responseBody` / `responseHeaders` (only for `ERROR`), `timeout`, `method`, `callback`, `callbackHeaders`, `failureCallback`, `failureCallbackHeaders`, `maxRetries`, `retryDelayExpression`, `labels`.
+### Log entry fields
+
+| Name | Description |
+| --- | --- |
+| `time` | Time |
+| `messageId` | Message ID |
+| `header` | Headers |
+| `body` | Base64 |
+| `state` | State |
+| `error` | Error |
+| `nextDeliveryTime` | Next delivery time |
+| `url` | URL |
+| `topicName` | Topic name |
+| `endpointName` | Endpoint name |
+| `scheduleId` | Schedule ID |
+| `queueName` | Queue name |
+| `responseStatus` / `responseBody` / `responseHeaders` | Only for `ERROR` |
+| `timeout` | Timeout |
+| `method` | Method |
+| `callback` | Callback |
+| `callbackHeaders` | Callback headers |
+| `failureCallback` | Failure callback |
+| `failureCallbackHeaders` | Failure callback headers |
+| `maxRetries` | Maximum retries |
+| `retryDelayExpression` | Retry delay expression |
+| `labels` | Labels |
 
 ## Notes
 

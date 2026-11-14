@@ -22,9 +22,34 @@ curl "https://qstash.upstash.io/v2/dlq?count=50&responseStatus=500" \
 
 ## Options / Props
 
-List / bulk query parameters: `cursor`, `messageId`, `url`, `topicName`, `scheduleId`, `queueName`, `fromDate` / `toDate` (unix ms, inclusive), `responseStatus` (status of the last attempt), `callerIp`, `label` (array filters accept multiple values), `count` (default 100; list and bulk delete). `flowControlKey` is accepted by bulk retry and bulk delete only (not by the list endpoint). `dlqIds` (bulk only) overrides all other filters.
+### List / bulk query parameters
 
-DLQ message fields: all message fields (`messageId`, `url`, `topicName`, `endpointName`, `method`, `header`, `body` / `bodyBase64`, `maxRetries`, `notBefore`, `createdAt`, `callback`, `failureCallback`, `queueName`, `scheduleId`, `callerIP`, `labels`, flow control fields) plus `responseStatus`, `responseHeader`, `responseBody` / `responseBodyBase64`. The list response wraps them in `messages` with a `cursor`.
+| Name | Type | Description |
+| --- | --- | --- |
+| `cursor` | string | Pagination cursor |
+| `messageId` | string | Filter (array filters accept multiple values) |
+| `url` | string | Filter (array filters accept multiple values) |
+| `topicName` | string | Filter (array filters accept multiple values) |
+| `scheduleId` | string | Filter (array filters accept multiple values) |
+| `queueName` | string | Filter (array filters accept multiple values) |
+| `fromDate` / `toDate` | unix ms | Inclusive |
+| `responseStatus` | integer | Status of the last attempt |
+| `callerIp` | string | Filter (array filters accept multiple values) |
+| `label` | string | Filter (array filters accept multiple values) |
+| `count` | integer | Default 100; list and bulk delete |
+| `flowControlKey` | string | Accepted by bulk retry and bulk delete only (not by the list endpoint) |
+| `dlqIds` | array | Bulk only; overrides all other filters |
+
+### DLQ message fields
+
+| Name | Description |
+| --- | --- |
+| All message fields | `messageId`, `url`, `topicName`, `endpointName`, `method`, `header`, `body` / `bodyBase64`, `maxRetries`, `notBefore`, `createdAt`, `callback`, `failureCallback`, `queueName`, `scheduleId`, `callerIP`, `labels`, flow control fields |
+| `responseStatus` | Additional DLQ field |
+| `responseHeader` | Additional DLQ field |
+| `responseBody` / `responseBodyBase64` | Additional DLQ field |
+
+The list response wraps them in `messages` with a `cursor`.
 
 ## Notes
 

@@ -23,7 +23,20 @@ curl -X POST "https://qstash.upstash.io/v2/topics/my-group/endpoints" \
 
 ## Options / Props
 
-Upsert / remove body: `endpoints` array of `{ url, name? }` (for removal either `name` or `url` must be given). Get / list response: `name`, `createdAt`, `updatedAt` (unix ms), `endpoints` (`name`, `url`).
+### Upsert / remove body
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `endpoints` | array | Array of `{ url, name? }`; for removal either `name` or `url` must be given |
+
+### Get / list response fields
+
+| Name | Description |
+| --- | --- |
+| `name` | URL Group name |
+| `createdAt` | Unix ms |
+| `updatedAt` | Unix ms |
+| `endpoints` | Endpoints (`name`, `url`) |
 
 ## Notes
 

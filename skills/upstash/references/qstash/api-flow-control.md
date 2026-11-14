@@ -24,7 +24,35 @@ curl -X POST "https://qstash.upstash.io/v2/flowControl/my-key/pin?parallelism=3&
 
 ## Options / Props
 
-Key response fields: `flowControlKey`, `waitListSize`, `parallelismMax`, `parallelismCount`, `rateMax`, `rateCount`, `ratePeriod` (seconds), `ratePeriodStart` (unix seconds), `isPinnedParallelism`, `isPinnedRate`, `isPaused`. Global parallelism response: `{ parallelismMax, parallelismCount }`. `400` is returned for an invalid flow-control key on the action endpoints; `resetRate` can also return `500`.
+### Key response fields
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `flowControlKey` | string | Flow control key |
+| `waitListSize` | integer | Wait list size |
+| `parallelismMax` | integer | Maximum parallelism |
+| `parallelismCount` | integer | Current parallelism count |
+| `rateMax` | integer | Maximum rate |
+| `rateCount` | integer | Current rate count |
+| `ratePeriod` | integer | Seconds |
+| `ratePeriodStart` | integer | Unix seconds |
+| `isPinnedParallelism` | boolean | Pinned parallelism |
+| `isPinnedRate` | boolean | Pinned rate |
+| `isPaused` | boolean | Paused |
+
+### Global parallelism response
+
+| Name | Description |
+| --- | --- |
+| `parallelismMax` | Maximum parallelism |
+| `parallelismCount` | Current parallelism count |
+
+### Errors
+
+| Status | Description |
+| --- | --- |
+| `400` | Invalid flow-control key on the action endpoints |
+| `500` | `resetRate` can also return this |
 
 ## Notes
 

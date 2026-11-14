@@ -4,6 +4,8 @@ Run Vercel AI SDK calls durably by routing the model's HTTP requests through `co
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the `context.call` request body stays a string and the response `headers` / `body` follow the 1.x `{ status, headers, body }` shape (see context-call.md), instead of the official example's `JSON.parse` of the body and `responseInfo.header` arrays.
+
 ```typescript
 import { createOpenAI } from '@ai-sdk/openai';
 import { HTTPMethods } from '@upstash/qstash';
@@ -20,7 +22,7 @@ export const createWorkflowOpenAI = (context: WorkflowContext) => {
           : {};
 
         // Prepare body from init.body
-        const body = init?.body ? JSON.parse(init.body as string) : undefined;
+        const body = init?.body as string | undefined;
 
         // Make network call
         const responseInfo = await context.call("openai-call-step", {
@@ -31,18 +33,16 @@ export const createWorkflowOpenAI = (context: WorkflowContext) => {
         });
 
         // Construct headers for the response
-        const responseHeaders = new Headers(
-          Object.entries(responseInfo.header).reduce((acc, [key, values]) => {
-            acc[key] = values.join(", ");
-            return acc;
-          }, {} as Record<string, string>)
-        );
+        const responseHeaders = new Headers(responseInfo.headers);
 
         // Return the constructed response
-        return new Response(JSON.stringify(responseInfo.body), {
-          status: responseInfo.status,
-          headers: responseHeaders,
-        });
+        return new Response(
+          typeof responseInfo.body === "string" ? responseInfo.body : JSON.stringify(responseInfo.body),
+          {
+            status: responseInfo.status,
+            headers: responseHeaders,
+          }
+        );
       } catch (error) {
         if (error instanceof WorkflowAbort) {
           throw error
@@ -106,9 +106,9 @@ Install: `npm install @ai-sdk/openai ai zod`.
 
 ## Notes
 
+- Adapted from the official docs: the official `createWorkflowOpenAI` example parses `init.body` into an object and reads `responseInfo.header` as arrays of values, which does not match the `@upstash/workflow` 1.x `context.call` contract (string `body`, `{ status, headers, body }` result); the fetch wrapper above follows the 1.x contract
 - Not yet available in `workflow-py`
 - Using `context.call` as the fetch implementation makes Upstash perform the HTTP request and wait for the response, even if the LLM is slow; the pattern can be generalized to other LLM SDKs (Anthropic, Google)
-- The official snippet reads `responseInfo.header` while the `context.call` response documents `headers`; the snippet is kept verbatim
 - Model IDs (`gpt-3.5-turbo`) and the `compatibility` / `maxTokens` options come verbatim from the official page and may be outdated for current AI SDK versions
 - Distinct from the `vercel-ai-sdk` skill (AI SDK itself) and from the Agents API (see agents)
 - Source: https://upstash.com/docs/workflow/integrations/aisdk (fetched 2026-11-14; no version pin on the site)

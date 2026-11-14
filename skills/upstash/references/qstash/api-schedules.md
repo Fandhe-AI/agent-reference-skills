@@ -25,9 +25,58 @@ curl -X POST "https://qstash.upstash.io/v2/schedules/https://example.com/api/cro
 
 ## Options / Props
 
-Create headers: `Upstash-Cron` (required; `CRON_TZ=America/New_York */5 * * * *` form allowed), `Upstash-Schedule-Id` (custom ID; only alphanumerics, hyphens, periods, underscores, otherwise 400), `Content-Type`, `Upstash-Method`, `Upstash-Timeout`, `Upstash-Retries`, `Upstash-Retry-Delay`, `Upstash-Delay`, `Upstash-Forward-*`, `Upstash-Callback` / `-Forward-*` / `-*`, `Upstash-Failure-Callback` / `-Forward-*` / `-*`, `Upstash-Redact-Fields`, `Upstash-Label`. Body: `application/json`, `text/plain` or `application/octet-stream`. Other responses: `412` when the maximum number of schedules is exceeded.
+### Create headers
 
-Get / list response fields: `scheduleId`, `cron`, `destination`, `createdAt` (ms), `method`, `header`, `body`, `retries`, `delay` (seconds), `callback`, `failureCallback`, `callerIp`, `isPaused`, `flowControlKey`, `parallelism`, `rate`, `period`, `retryDelayExpression`, `labels` (`label` deprecated), `lastScheduleTime`, `nextScheduleTime`, `lastScheduleStates`.
+| Header | Description |
+| --- | --- |
+| `Upstash-Cron` | Required; `CRON_TZ=America/New_York */5 * * * *` form allowed |
+| `Upstash-Schedule-Id` | Custom ID; only alphanumerics, hyphens, periods, underscores, otherwise 400 |
+| `Content-Type` | Body type |
+| `Upstash-Method` | Method |
+| `Upstash-Timeout` | Timeout |
+| `Upstash-Retries` | Retries |
+| `Upstash-Retry-Delay` | Retry delay |
+| `Upstash-Delay` | Delay |
+| `Upstash-Forward-*` | Forwarded headers |
+| `Upstash-Callback` / `-Forward-*` / `-*` | Callback |
+| `Upstash-Failure-Callback` / `-Forward-*` / `-*` | Failure callback |
+| `Upstash-Redact-Fields` | Redact fields |
+| `Upstash-Label` | Label |
+
+Body: `application/json`, `text/plain` or `application/octet-stream`.
+
+### Other responses
+
+| Status | Description |
+| --- | --- |
+| `412` | Maximum number of schedules exceeded |
+
+### Get / list response fields
+
+| Name | Description |
+| --- | --- |
+| `scheduleId` | Schedule ID |
+| `cron` | Cron expression |
+| `destination` | Destination |
+| `createdAt` | ms |
+| `method` | Method |
+| `header` | Headers |
+| `body` | Body |
+| `retries` | Retries |
+| `delay` | Seconds |
+| `callback` | Callback |
+| `failureCallback` | Failure callback |
+| `callerIp` | Caller IP |
+| `isPaused` | Paused |
+| `flowControlKey` | Flow control key |
+| `parallelism` | Parallelism |
+| `rate` | Rate |
+| `period` | Period |
+| `retryDelayExpression` | Retry delay expression |
+| `labels` | Labels (`label` deprecated) |
+| `lastScheduleTime` | Last schedule time |
+| `nextScheduleTime` | Next schedule time |
+| `lastScheduleStates` | Last schedule states |
 
 ## Notes
 

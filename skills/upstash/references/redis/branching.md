@@ -5,7 +5,7 @@ A branch is an independent copy of a database's data with its own endpoint and p
 ## Signature / Usage
 
 ```bash
-upstash redis create-branch --db-id $DB_ID --name staging
+upstash redis create-branch --db-id "${DB_ID}" --name staging
 ```
 
 ## Options / Props

@@ -24,9 +24,30 @@ curl -X POST "https://qstash.upstash.io/v2/queues" \
 
 ## Options / Props
 
-Upsert body: `queueName` (string), `parallelism` (integer, greater than 0). Errors: `400` invalid queue name (check the page for allowed characters), `412` (exceeded the maximum number of queues or the maximum parallelism per queue).
+### Upsert body
 
-Get / list response fields: `name`, `createdAt`, `updatedAt` (unix ms), `parallelism`, `paused`, `lag` (unprocessed messages).
+| Name | Type | Description |
+| --- | --- | --- |
+| `queueName` | string | Queue name |
+| `parallelism` | integer | Greater than 0 |
+
+### Errors
+
+| Status | Description |
+| --- | --- |
+| `400` | Invalid queue name (check the page for allowed characters) |
+| `412` | Exceeded the maximum number of queues or the maximum parallelism per queue |
+
+### Get / list response fields
+
+| Name | Description |
+| --- | --- |
+| `name` | Queue name |
+| `createdAt` | Unix ms |
+| `updatedAt` | Unix ms |
+| `parallelism` | Parallelism |
+| `paused` | Paused |
+| `lag` | Unprocessed messages |
 
 ## Notes
 

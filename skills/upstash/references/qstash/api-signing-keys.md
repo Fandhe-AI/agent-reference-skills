@@ -18,7 +18,14 @@ curl "https://qstash.upstash.io/v2/keys" \
 
 ## Options / Props
 
-No parameters. Both endpoints return `current` and `next` (strings) on 200. The values map to `QSTASH_CURRENT_SIGNING_KEY` / `QSTASH_NEXT_SIGNING_KEY` used by the receiver.
+No parameters.
+
+### Response fields (200, both endpoints)
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `current` | string | Maps to `QSTASH_CURRENT_SIGNING_KEY` used by the receiver |
+| `next` | string | Maps to `QSTASH_NEXT_SIGNING_KEY` used by the receiver |
 
 ## Notes
 

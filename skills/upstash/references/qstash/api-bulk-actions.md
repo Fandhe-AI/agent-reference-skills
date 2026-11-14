@@ -18,9 +18,35 @@ curl "https://qstash.upstash.io/v2/bulkActions?state=IN_PROGRESS" \
 
 ## Options / Props
 
-List query parameters: `cursor`, `count` (default 100, scanned per page; values above 1000 are treated as 1000), `state` (`IN_PROGRESS` \| `FINISHED`). `400` for invalid `count`, `cursor` or `state`. List response: `bulkActions[]` and `cursor`.
+### List query parameters
 
-Bulk action fields: `actionId`, `kind` (`cancel`), `state`, `total` (in-progress messages matched at creation), `processed`, `createdAt`, `completedAt` (only when finished), `filter` (the filter parameters used).
+| Name | Type | Description |
+| --- | --- | --- |
+| `cursor` | string | Pagination cursor |
+| `count` | integer | Default 100, scanned per page; values above 1000 are treated as 1000 |
+| `state` | enum | `IN_PROGRESS` \| `FINISHED` |
+
+`400` for invalid `count`, `cursor` or `state`.
+
+### List response fields
+
+| Name | Description |
+| --- | --- |
+| `bulkActions[]` | Bulk actions |
+| `cursor` | Pagination cursor |
+
+### Bulk action fields
+
+| Name | Description |
+| --- | --- |
+| `actionId` | Action ID |
+| `kind` | `cancel` |
+| `state` | State |
+| `total` | In-progress messages matched at creation |
+| `processed` | Processed count |
+| `createdAt` | Creation time |
+| `completedAt` | Only when finished |
+| `filter` | The filter parameters used |
 
 ## Notes
 

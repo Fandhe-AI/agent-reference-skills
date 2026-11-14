@@ -23,9 +23,12 @@ https://qstash.upstash.io/v2/publish/https://example.com/api/webhook?qstash_toke
 
 Default headers on a URL Group (for example forward all headers):
 
+Adapted (not in the official docs): added the missing line continuation after the Authorization header and a JSON `Content-Type` header so the request body is sent.
+
 ```bash
 curl -X PATCH https://qstash.upstash.io/v2/topics/<URL_GROUP_NAME> \
-    -H "Authorization: Bearer <QSTASH_TOKEN>"
+    -H "Authorization: Bearer <QSTASH_TOKEN>" \
+    -H "Content-Type: application/json" \
     -d '{
         "headers": {
             "Upstash-Header-Forward": ["true"],
@@ -48,6 +51,7 @@ curl -X PATCH https://qstash.upstash.io/v2/topics/<URL_GROUP_NAME> \
 
 - Headers prefixed `Upstash-Forward-` are forwarded to the endpoint by default; set `Upstash-Header-Forward: true` (or `?upstash-header-forward=true`) to forward all incoming request headers, since most webhook services cannot prefix headers
 - The official page says the failure callback is called "if the message fails to be published"; see callbacks.md for the exact semantics (it fires after all retries are exhausted)
+- Adapted from the official docs: the PATCH example is missing the line continuation after the Authorization header and a `Content-Type: application/json` header, so the body would not be sent as written
 - Source: https://upstash.com/docs/qstash/howto/handling-failures (fetched 2026-11-14; no version pin on the site)
 - Source: https://upstash.com/docs/qstash/howto/webhook (fetched 2026-11-14; no version pin on the site)
 
