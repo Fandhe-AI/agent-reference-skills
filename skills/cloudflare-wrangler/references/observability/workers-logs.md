@@ -137,6 +137,11 @@ Pricing (included in both Free and Paid Workers plans):
 - To send logs to a third party, use OpenTelemetry export (recommended), Workers Logpush, or Tail Workers. To group exceptions and failed invocations, use Workers Issues.
 - Service Workers syntax is deprecated; use Module Workers.
 
+### Data location
+
+Cloudflare-stored Workers logs, including invocation logs, follow your account's Customer Metadata Boundary setting when one is configured. If no boundary is configured, they may be stored in Cloudflare's core data centers globally. Viewing availability is subject to the Customer Metadata Boundary limitations in Data Localization compatibility.
+- Source: https://developers.cloudflare.com/workers/observability/logs/workers-logs/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
+
 ## Related
 
 - [real-time-logs.md](./real-time-logs.md)

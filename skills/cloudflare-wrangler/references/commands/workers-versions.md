@@ -276,6 +276,7 @@ Use the summary and CPU profile to understand where your Worker spends time duri
 | `--strict-vars` | boolean, optional | true | Control the types that Wrangler generates for `vars` bindings. If `true`, (the default) Wrangler generates literal and union types for bindings (e.g. `myVar: 'my dev variable' \| 'my prod variable'`). If `false`, Wrangler generates generic types (e.g. `myVar: string`). This is useful when variables change frequently, especially when working across multiple environments. |
 | `--check` | boolean, optional | — | Compare the generated file's recorded environment/configuration hash and runtime header with the current Wrangler configuration and runtime inputs. This does not compare or validate the generated file body or regenerate the file. Exits with code 0 if types are up-to-date, or code 1 if types are out-of-date. Useful for CI/CD pipelines and pre-commit hooks to detect input changes that require regeneration. |
 | `--config`, `-c` | string[], optional | — | Path(s) to Wrangler configuration file. If the Worker you are generating types for has service bindings or bindings to Durable Objects, you can also provide the paths to those configuration files so that the generated `Env` type will include RPC types. |
+| `--include-main-module` | boolean | — | Release-note-only (wrangler 4.159.0): `--include-main-module=false` omits the Worker entrypoint import from the generated types (for generated build output that should not be type-checked as source); this opts out of module-derived `ctx.exports` typing while keeping runtime types, environment bindings and Durable Object namespace declarations. |
 
 ### `check startup`
 
@@ -290,6 +291,7 @@ Use the summary and CPU profile to understand where your Worker spends time duri
 - `rollback`, `types`, and `check startup` list the reduced global flag set (`--help`, `--config` annotated "not supported by Pages" in the source without further scoping, `--cwd`); the other commands accept the full global flags (see the global flags page).
 - For Wrangler versions greater than `3.66.0` but below `4.0.0`, `wrangler types` needed `--experimental-include-runtime`. During its experimental release, runtime types were output to a separate file (`.wrangler/types/runtime.d.ts` by default). With older Wrangler, runtime types are available through the `@cloudflare/workers-types` package.
 - Docs inconsistency: the `wrangler types` `--config` description in the official page's Options list restates the multi-config example with `-c wrangler.toml`; the `--check` flag is listed under Options with no minimum version.
+- `wrangler types --include-main-module` is documented only in the wrangler 4.159.0 release notes (https://github.com/cloudflare/workers-sdk/releases/tag/wrangler%404.159.0); the official commands page does not list it. The default `true` is inferred from the release note's wording ("explicit opt-out"), not stated verbatim.
 - `versions secret put|delete|bulk` only create a new version (use `wrangler secret ...` to create and deploy immediately).
 
 ## Related

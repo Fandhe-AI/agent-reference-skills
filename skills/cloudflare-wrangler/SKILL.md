@@ -4,7 +4,7 @@ description: >
   Cloudflare Workers 開発ツール (Wrangler CLI v4 / @cloudflare/vite-plugin / Vitest 統合 / Miniflare) の
   リファレンス。wrangler dev / deploy / versions / rollback / tail / secret / types の全フラグ、
   wrangler.jsonc、.dev.vars、remote bindings、
-  @cloudflare/vitest-plugin (旧 vitest-pool-workers)、gradual deployments、
+  @cloudflare/vitest-plugin (旧 vitest-pool-workers)、gradual deployments / version skew、
   Workers Builds、source maps。
   ランタイム API は cloudflare-workers、KV / D1 / R2 は cloudflare-storage。
 user-invocable: false
@@ -16,10 +16,10 @@ Wrangler CLI・設定ファイル (wrangler.jsonc / wrangler.toml)・ローカ�
 
 ## 対象バージョン
 
-- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため `cloudflare/cloudflare-docs` production SHA `d0995b91312add6db730afec4f4944cee834abc6` と取得日 2026-11-03 で pin
-- wrangler 4.156.2（依存 workerd 1.20261102.1 / miniflare 5.20261102.0-beta。npm latest の miniflare は 4.20260730.0）
-- @cloudflare/vite-plugin 1.67.0（2.0.0-beta は対象外）
-- @cloudflare/vitest-plugin 1.5.0（公式移行ガイドに「`@cloudflare/vitest-plugin` replaces `@cloudflare/vitest-pool-workers`」と明記。旧パッケージ 0.23.0）
+- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため `cloudflare/cloudflare-docs` production SHA `34d908abc615fdf22eeb386b171b9657b9abcf38` と取得日 2026-11-14 で pin（旧 pin `d0995b9` / 2026-11-03 から更新。例中の `compatibility_date: 2026-11-03` は公式例の値のまま）
+- wrangler 4.162.0（依存 workerd 1.20261113.1 / miniflare 5.20261113.0-beta。npm latest の miniflare は 4.20260730.0）。旧 pin 4.156.2 からの差分のうち公式 docs に載っていないもの（`CLOUDFLARE_AUTH_PROFILE` / `d1 export --compatibility` / `wrangler types --include-main-module` 等）はリリースノートのみを根拠に該当ページの Notes に記載
+- @cloudflare/vite-plugin 1.69.1（2.0.0-beta.v.17 は対象外。公式の v2 beta ページは未収録）
+- @cloudflare/vitest-plugin 1.8.2（公式移行ガイドに「`@cloudflare/vitest-plugin` replaces `@cloudflare/vitest-pool-workers`」と明記。旧パッケージ 0.23.0）
 - 新 `cf` CLI（beta）は対象外
 
 ## 他スキルとの使い分け
@@ -113,6 +113,7 @@ skills/cloudflare-wrangler/
       README.md
       overview.md
       get-started.md
+      vite-plus.md
       tutorial.md
       api.md
       programmatic-configuration.md
@@ -185,6 +186,7 @@ skills/cloudflare-wrangler/
       versions-gradual-deployments.md
       versions-version-affinity.md
       versions-version-overrides.md
+      versions-version-skew.md
       versions-version-urls.md
       previews-overview.md
       previews-compare-workflows.md
@@ -271,7 +273,7 @@ skills/cloudflare-wrangler/
 | `.dev.vars` / `.env` と環境別 bindings を設定したい | local-development | [references/local-development/README.md](references/local-development/README.md) |
 | 複数 Worker のローカル連携・ローカル tunnel・Local Explorer を使いたい | local-development | [references/local-development/README.md](references/local-development/README.md) |
 | wrangler dev と Vite 開発サーバーのどちらを使うか決めたい | local-development | [references/local-development/README.md](references/local-development/README.md) |
-| `@cloudflare/vite-plugin` を導入・設定したい | vite-plugin | [references/vite-plugin/README.md](references/vite-plugin/README.md) |
+| `@cloudflare/vite-plugin` / Vite+ (`vp`) を導入・設定したい | vite-plugin | [references/vite-plugin/README.md](references/vite-plugin/README.md) |
 | Vite の Cloudflare environments・静的アセット・secrets を扱いたい | vite-plugin | [references/vite-plugin/README.md](references/vite-plugin/README.md) |
 | `wrangler dev` から Vite プラグインへ移行したい | vite-plugin | [references/vite-plugin/README.md](references/vite-plugin/README.md) |
 | `@cloudflare/vitest-plugin` で Workers のテストを書きたい | vitest-integration | [references/vitest-integration/README.md](references/vitest-integration/README.md) |
@@ -282,7 +284,7 @@ skills/cloudflare-wrangler/
 | Miniflare の KV / D1 / R2 / DO / Queues シミュレーションを調べたい | miniflare | [references/miniflare/README.md](references/miniflare/README.md) |
 | Workers Builds（Git 連携ビルド）を設定・トラブルシュートしたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
 | GitHub Actions / GitLab CI/CD から Worker をデプロイしたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
-| gradual deployments・version affinity・version overrides を使いたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
+| gradual deployments・version affinity・version overrides・version skew（静的アセットの不整合）を扱いたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
 | preview URLs・Preview 環境の設定とカスタムドメインを知りたい | ci-cd-deployments | [references/ci-cd-deployments/README.md](references/ci-cd-deployments/README.md) |
 | Workers Logs / Real-time logs / Logpush / Tail Workers を設定したい | observability | [references/observability/README.md](references/observability/README.md) |
 | traces・custom spans・OpenTelemetry エクスポートを設定したい | observability | [references/observability/README.md](references/observability/README.md) |

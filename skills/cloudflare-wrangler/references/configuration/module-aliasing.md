@@ -67,9 +67,10 @@ export function readFile() {
 ## Notes
 
 - Any `import` or `require()` of the aliased module points to your replacement.
-- With the Cloudflare Vite plugin, `alias` is replaced by Vite's `resolve.alias`.
+- With the Cloudflare Vite plugin or the Workers Vitest integration, `alias` is replaced by Vite's `resolve.alias`.
 - Bundling issues: before aliasing a dependency that fails to resolve, verify the package is correctly installed (direct or transitive). Options: an alternative Worker-compatible implementation; a no-op module (empty file); or a runtime-error module (a single top-level `throw`) if the module must never be used (e.g. security vulnerabilities).
 - `node-fetch` does not work on Workers because it relies on unsupported Node.js `http`/`https` APIs, and is unnecessary since `fetch()` is built in. Node.js API support is documented by cloudflare-workers.
+- Source: https://developers.cloudflare.com/workers/wrangler/configuration/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
 
 ## Related
 
