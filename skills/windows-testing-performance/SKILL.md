@@ -3,7 +3,7 @@ name: windows-testing-performance
 description: >
   Windows アプリ開発 (WinUI 3 / Windows App SDK) のテスト・性能・アクセシビリティ・スレッド。
   MSTest, xUnit, NUnit, WinAppDriver, Appium, WebView2 テスト, WACK,
-  MSIX サイドローディング。LoggingChannel / ETW, プロファイリング,
+  winapp ui, AI 支援テスト, リリース前テスト, MSIX サイドローディング。LoggingChannel / ETW, プロファイリング,
   起動性能, XAML 最適化, ListView/GridView 仮想化。UI Automation, AutomationProperties,
   ハイコントラスト, Narrator。DispatcherQueue,
   DispatcherQueueTimer, async/await, ConfigureAwait, STA/MTA,
