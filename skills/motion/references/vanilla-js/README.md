@@ -12,6 +12,7 @@
 | curtains (Motion+) | curtains() runs a page transition that covers the viewport with an effect, swaps your content while it's hidden, then reveals it. | [curtains.md](./curtains.md) |
 | delay | delay() is a setTimeout replacement that fires in tandem with Motion's frame loop. | [delay.md](./delay.md) |
 | distance / distance2D | distance() and distance2D() measure how far apart two values or points are. | [distance.md](./distance.md) |
+| drag() | drag() makes elements draggable, with momentum, constraints and direction locking built in. | [drag.md](./drag.md) |
 | Easing functions | Motion's built-in easing functions and modifiers, from cubicBezier to anticipate. | [easing-functions.md](./easing-functions.md) |
 | frame | frame() schedules tasks on Motion's animation loop, batching reads, updates, and renders. | [frame.md](./frame.md) |
 | hover() | hover() fires callbacks when a hover gesture starts and ends. | [hover.md](./hover.md) |
@@ -19,6 +20,7 @@
 | mapValue | mapValue() maps a motion value's output range to numbers, colours, or complex strings. | [map-value.md](./map-value.md) |
 | mix | mix() interpolates between two values: numbers, colours, complex strings, arrays, and objects. | [mix.md](./mix.md) |
 | motionValue() | Motion values track the state and velocity of an animated property. | [motion-value.md](./motion-value.md) |
+| pinch() | pinch() lets users zoom and rotate elements with two fingers or a trackpad, around the point between their fingers. | [pinch.md](./pinch.md) |
 | pipe | pipe() combines functions into one, passing each result to the next. | [pipe.md](./pipe.md) |
 | press() | press() detects press gestures, with keyboard support and pointer filtering built in. | [press.md](./press.md) |
 | progress | progress() returns how far a value is through a range, as a number from 0 to 1. | [progress.md](./progress.md) |
@@ -26,6 +28,7 @@
 | Quick start (JavaScript) | Install Motion and animate HTML, SVG, or WebGL with springs. | [quick-start.md](./quick-start.md) |
 | resize | resize() reacts to size changes on the viewport or any element, via ResizeObserver. | [resize.md](./resize.md) |
 | resolveElements | resolveElements() turns a selector, element or list of elements into an array of elements. | [resolve-elements.md](./resolve-elements.md) |
+| scopeMotion | scopeMotion() groups animations, gestures and scroll listeners, so you can stop or cancel them together. | [scope-motion.md](./scope-motion.md) |
 | scrambleText (Motion+) | scrambleText() animates text by scrambling characters, with stagger and timing controls. | [scramble-text.md](./scramble-text.md) |
 | scroll() | scroll() binds animations to scroll progress, hardware-accelerated where supported. | [scroll.md](./scroll.md) |
 | splitText (Motion+) | splitText() breaks text into characters, words, and lines for granular text animation. | [split-text.md](./split-text.md) |

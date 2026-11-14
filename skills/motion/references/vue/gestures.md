@@ -35,6 +35,8 @@ UI gesture recognition — hover, press, pan, drag, and inView — with event li
 - Direction locking available with `dragDirectionLock`.
 - Gestures don't work on SVG `filter` elements (no physical presence).
 - Child events can stop propagation using `onPointerDownCapture`.
+- motion-v 2.12.0 adds the vanilla `pinch` / `addPinchListeners` gesture utilities (pinch and rotate on touch, trackpad and Safari gesture events) and the `press` options `count`, `hold` and `repeat`; see `vanilla-js/pinch.md` and `vanilla-js/press.md` for the option reference. The Vue docs pages do not describe them (release notes: https://github.com/motiondivision/motion-vue/releases/tag/v2.12.0).
+- motion-v 2.11.1: children that mount after a parent gesture variant (`whileHover`, `whileInView`, `whileTap`) activates now adopt it (release notes: https://github.com/motiondivision/motion-vue/releases/tag/v2.11.1).
 
 ## Related
 

@@ -2,15 +2,17 @@
 name: motion
 description: >
   Motion (旧 Framer Motion) アニメーションライブラリ リファレンス。motion/react, vanilla JS, Vue 版 motion-v。
-  AnimatePresence, LayoutGroup, LazyMotion, MotionConfig, Reorder, useAnimate, useScroll,
-  useSpring, useTransform, useMotionValue, useInView, animate, scroll, inView, stagger, spring,
-  layout animation, drag, gestures, SVG, Motion+ Carousel / Cursor / Ticker, Lenis 連携。
+  AnimatePresence, LayoutGroup, LazyMotion, MotionConfig, Reorder, useAnimate, useScopeMotion,
+  useScroll, useSpring, useTransform, useMotionValue, useInView, animate, scroll, inView, stagger, spring,
+  layout animation, drag, pinch, gestures, SVG, Motion+ Carousel / Cursor / Ticker / AnimateSuspense, Lenis 連携。
 user-invocable: false
 ---
 
 # motion
 
-対象バージョン: motion 14.3.0 / motion-v 2.8.0（docs は 2026-10-17 に motion.dev の `.md` twin から取得）。
+対象バージョン: motion 14.14.0 / motion-v 2.12.0（docs は 2026-11-14 に motion.dev の `.md` twin から取得。変更履歴は `motiondivision/motion` タグ `v14.14.0` の CHANGELOG と `motiondivision/motion-vue` のリリースノート）。
+
+未追従: Vue 版 `useScopeMotion`（motion-v 2.9.0 で追加、motion.dev に専用ページ無し）と、docs ページに記載の無い CHANGELOG のみの項目（`transition.out` / `mixer` / `processFrame` / `stepFrames` 等）は該当ページの Notes に出典付きで記載のみ。GSAP vs Motion 比較・WAAPI 改善ガイド・AI Kit / Studio 系ページは未収録。
 
 Motion (旧 Framer Motion) のリファレンススキル。React 向け (`motion/react`) と vanilla JS (`motion`) の両 API、アニメーション概念、ガイドを収録する。
 
@@ -26,6 +28,7 @@ skills/motion/
       animate-presence.md
       animate-view.md
       animate-activity.md
+      animate-suspense.md
       layout-group.md
       lazy-motion.md
       motion-config.md
@@ -54,6 +57,7 @@ skills/motion/
       use-time.md
       use-page-in-view.md
       use-curtains.md
+      use-scope-motion.md
     animation/
       README.md
       overview.md
@@ -79,6 +83,9 @@ skills/motion/
       in-view.md
       hover.md
       press.md
+      drag.md
+      pinch.md
+      scope-motion.md
       stagger.md
       spring.md
       timeline.md
@@ -152,6 +159,7 @@ skills/motion/
       reduce-bundle-size.md
       3d-transforms.md
       troubleshooting.md
+      faqs.md
       upgrade-guide.md
       migrate-from-gsap.md
       tailwind.md
@@ -199,8 +207,8 @@ skills/motion/
 |--------|---------|------------|
 | `<motion.div>` で要素をアニメーションさせたい | react-components | [references/react-components/README.md](references/react-components/README.md) |
 | マウント / アンマウント時の exit アニメーション (AnimatePresence) | react-components | [references/react-components/README.md](references/react-components/README.md) |
-| LayoutGroup / LazyMotion / MotionConfig / Reorder / AnimateView を使いたい | react-components | [references/react-components/README.md](references/react-components/README.md) |
-| useAnimate / useScroll / useSpring / useTransform などフックを使いたい | react-hooks | [references/react-hooks/README.md](references/react-hooks/README.md) |
+| LayoutGroup / LazyMotion / MotionConfig / Reorder / AnimateView / AnimateSuspense を使いたい | react-components | [references/react-components/README.md](references/react-components/README.md) |
+| useAnimate / useScopeMotion / useScroll / useSpring / useTransform などフックを使いたい | react-hooks | [references/react-hooks/README.md](references/react-hooks/README.md) |
 | React の Motion+ コンポーネント (Carousel, Cursor, Ticker, Typewriter, AnimateNumber, ScrambleText, Gallery) | react-components | [references/react-components/README.md](references/react-components/README.md) |
 | View Transitions (AnimateView / animateView)・AnimateActivity | react-components / vanilla-js / vue | [references/react-components/README.md](references/react-components/README.md) / [references/vanilla-js/README.md](references/vanilla-js/README.md) / [references/vue/README.md](references/vue/README.md) |
 | useCurtains | react-hooks | [references/react-hooks/README.md](references/react-hooks/README.md) |
@@ -208,15 +216,15 @@ skills/motion/
 | ビューポート進入検知 (useInView) / Reduced Motion 検知 | react-hooks | [references/react-hooks/README.md](references/react-hooks/README.md) |
 | transition (tween/spring/inertia/stagger) の指定方法 | animation | [references/animation/README.md](references/animation/README.md) |
 | layout / layoutId による位置・サイズ・共有要素アニメーション | animation | [references/animation/README.md](references/animation/README.md) |
-| スクロール連動 / hover・tap などジェスチャー / drag / SVG パス | animation | [references/animation/README.md](references/animation/README.md) |
+| スクロール連動 / hover・tap・pinch などジェスチャー / drag / SVG パス | animation | [references/animation/README.md](references/animation/README.md) |
 | React 非依存の素の JS で animate / scroll / inView を使いたい | vanilla-js | [references/vanilla-js/README.md](references/vanilla-js/README.md) |
-| hover / press / stagger / spring / timeline / motionValue (vanilla) | vanilla-js | [references/vanilla-js/README.md](references/vanilla-js/README.md) |
+| hover / press (double・long press) / drag / pinch / stagger / spring / timeline (mutable) / scopeMotion / motionValue (vanilla) | vanilla-js | [references/vanilla-js/README.md](references/vanilla-js/README.md) |
 | vanilla のレイアウトアニメーション (animateLayout)・arc・tween / easing / CSS 変数 | vanilla-js | [references/vanilla-js/README.md](references/vanilla-js/README.md) |
 | 値ユーティリティ (mix, transform, clamp, wrap, progress, frame 等) と effect 系 (styleEffect / attrEffect / svgEffect / propEffect) | vanilla-js | [references/vanilla-js/README.md](references/vanilla-js/README.md) |
 | Three.js・vgpu 連携、splitText / scrambleText / typewriter (vanilla) | vanilla-js | [references/vanilla-js/README.md](references/vanilla-js/README.md) |
 | Vue で `<motion>` / `v-motion` ディレクティブ / composable を使いたい | vue | [references/vue/README.md](references/vue/README.md) |
 | Vue で Motion+ 限定コンポーネント (Carousel, Cursor, Ticker, Typewriter, AnimateNumber) を使いたい | vue | [references/vue/README.md](references/vue/README.md) |
-| インストール・アクセシビリティ・パフォーマンス・バンドル削減・トラブルシューティング | guides | [references/guides/README.md](references/guides/README.md) |
+| インストール・アクセシビリティ・パフォーマンス・バンドル削減・トラブルシューティング・FAQ | guides | [references/guides/README.md](references/guides/README.md) |
 | Framer Motion / GSAP からの移行・アップグレード | guides | [references/guides/README.md](references/guides/README.md) |
 | Motion UI (Motion+) の install、Tailwind / Radix / Base UI / Lenis / Svelte 連携 | guides | [references/guides/README.md](references/guides/README.md) |
 | Framer / Webflow / WordPress / Squarespace / Figma での利用 | guides | [references/guides/README.md](references/guides/README.md) |

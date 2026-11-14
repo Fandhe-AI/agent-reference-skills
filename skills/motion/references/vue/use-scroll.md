@@ -29,6 +29,7 @@ const { scrollYProgress } = useScroll()
 - Content size tracking is disabled by default because the scrollable area usually remains stable.
 - Accepts intersection values as numbers, named shortcuts, pixels, percentages, or viewport units.
 - Compose returned motion values with `useTransform` and `useSpring` for advanced animations.
+- motion-v 2.9.0 also returns `scrollXLength` and `scrollYLength` MotionValues: the maximum scroll offset of each axis (release notes: https://github.com/motiondivision/motion-vue/releases/tag/v2.9.0). The Vue docs page does not list them yet; the React docs describe them as the container's scrollable size minus its visible size (https://motion.dev/docs/react-use-scroll, fetched 2026-11-14).
 
 ## Related
 

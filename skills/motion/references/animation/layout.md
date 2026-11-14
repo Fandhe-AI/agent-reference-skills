@@ -36,6 +36,24 @@ The `layout` prop animates size/position changes automatically using CSS `transf
 - Inline elements won't animate; ensure `display` is not `inline`.
 - Combine with `AnimatePresence` + `layoutId` for smooth enter/exit shared transitions.
 - Use `scrollbar-gutter: stable` to prevent scrollbar-driven layout jumps.
+- Layout springs preserve velocity from the animation they interrupt (14.13.0, CHANGELOG: https://github.com/motiondivision/motion/blob/v14.14.0/CHANGELOG.md).
+- Source: https://motion.dev/docs/react-layout-animations (fetched 2026-11-14).
+
+### Mass from size
+
+Set `mass: "auto"` and a layout spring takes its mass from the element's size: big elements move with more weight, small ones feel light. Damping scales with the mass, so a bigger element settles later but bounces the same amount. Each element takes its mass from its own size, so in a group, small children react faster than their parent.
+
+```tsx
+<motion.div
+  layout
+  transition={{
+    type: "spring",
+    visualDuration: 0.4,
+    bounce: 0.2,
+    mass: "auto"
+  }}
+/>
+```
 
 ### LayoutGroup
 

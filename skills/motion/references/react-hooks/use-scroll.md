@@ -22,10 +22,16 @@ function Section() {
 }
 ```
 
-Returns four motion values:
+Returns six motion values:
 
 - `scrollX` / `scrollY` — absolute scroll position in pixels per axis.
 - `scrollXProgress` / `scrollYProgress` — normalized progress `0`–`1` within the defined offsets.
+- `scrollXLength` / `scrollYLength` — the maximum scroll position of the `container`, in pixels (its scrollable size minus its visible size).
+
+```tsx
+const { scrollY, scrollYLength } = useScroll()
+const remaining = useTransform(() => scrollYLength.get() - scrollY.get())
+```
 
 ## Options / Props
 
@@ -42,6 +48,8 @@ Returns four motion values:
 - Offsets accept named edges (`start`, `center`, `end`), percentages, pixels, and viewport units.
 - Returned values are motion values, composable with `useTransform` and `useSpring`.
 - GPU-accelerated when driving `opacity`, `transform`, `clipPath`, or `filter`.
+- `scrollXLength` and `scrollYLength` always measure the `container`, even when a `target` is set. They were added in motion 14.7.0 (CHANGELOG: https://github.com/motiondivision/motion/blob/v14.14.0/CHANGELOG.md).
+- Source: https://motion.dev/docs/react-use-scroll (fetched 2026-11-14).
 
 ## Related
 
