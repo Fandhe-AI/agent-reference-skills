@@ -62,7 +62,12 @@ In the dashboard, select **D1 Database** as the data source, choose the database
 |------|------|---------|-------------|
 | `query` | string | — | Required. Read-only `SELECT` or `WITH` query that returns an `id` column; up to 10,000 characters. |
 | `template` | string | `labelled` | `labelled`, `content_only`, `key_value`, or `json` (dashboard: **Labelled**, **Content only**, **Key-value**, **JSON**). An update that omits it keeps the stored template. |
-| `include_items` / `exclude_items` | string[] | — | Path filters matched against each row's item key, such as `42.md`. |
+
+`source_params` (sibling of `d1`, not inside it):
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `source_params.include_items` / `source_params.exclude_items` | string[] | — | Path filters matched against each row's item key, such as `42.md`. |
 
 Instance-level fields: `type: "d1"` (never inferred), `source` = D1 database ID (UUID, cannot be changed after creation), `token_id` (required).
 
@@ -165,7 +170,7 @@ The regular AI Search limits apply (the files-per-instance limit gives an effect
 - To filter by date, return a Unix timestamp (for example `CAST(strftime('%s', published_at) AS INTEGER) AS meta_published_at`) and filter with `{ "published_at": { "$gte": 1767225600 } }` in `ai_search_options.retrieval.filters`.
 - Path filtering: rules match the row's item key (such as `42.md`) with the same syntax as R2 path filters, for example Exclude `drafts-*.md`. AI Search still reads excluded rows from D1, so filtering with `WHERE` in the query is usually simpler and reads fewer rows.
 - Syncing: D1-backed instances sync on the instance sync interval. New rows are indexed, changed rows are re-indexed (unchanged rows skipped), and rows the query no longer returns are deleted, but only after AI Search reads the full result. If the query fails or returns no rows, the sync job ends with an error and the indexed items are kept. Every sync reads the full query result at least twice with your service API token (once to check the `id` values, then in pages), so it counts toward your D1 rows read.
-- Updating: use the Update instance API to change the query, template, or path filters. A `query` or `template` omitted from `source_params.d1` keeps its current value, but a `source_params` object replaces `include_items` and `exclude_items`, so send them again to keep them. A change starts a sync. The `source` database cannot be changed. Before it creates the instance, AI Search checks the database, the token, the query, and the result columns; a failed check returns an error and creates no instance.
+- Updating: use the Update instance API to change the query, template, or path filters. A `query` or `template` omitted from `source_params.d1` keeps its current value, but a `source_params` object replaces `source_params.include_items` and `source_params.exclude_items`, so send them again to keep them. A change starts a sync. The `source` database cannot be changed. Before it creates the instance, AI Search checks the database, the token, the query, and the result columns; a failed check returns an error and creates no instance.
 - Storage: rows are stored as Markdown items in built-in storage automatically. List items with the Items API; download an item to see the Markdown rendered for a row.
 - Best practices: select only the columns you need and leave out volatile ones (view counters, `updated_at`) because a changed value re-indexes the row; use a stable, indexed `id` (the primary key; a computed `id` can make D1 scan the full result for every page); filter with `WHERE`.
 - Example queries: `SELECT tenant_id || ':' || slug AS id, title, body AS content FROM pages` (text and composite keys); `SELECT t.ticket_id AS id, t.subject AS title, c.name AS customer FROM tickets t JOIN customers c ON c.customer_id = t.customer_id` (joins with unique aliases); `SELECT slug AS id, title, body AS content FROM posts WHERE status = 'published'` (published rows only).

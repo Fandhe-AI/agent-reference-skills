@@ -51,8 +51,8 @@ Connect a data source at creation time:
 Index the rows returned by a read-only query against a D1 database (the `token_id` of a service API token is always required):
 
 ```bash
-curl -X POST "https://api.cloudflare.com/client/v4/accounts/<ACCOUNT_ID>/ai-search/namespaces/default/instances" \
-  -H "Authorization: Bearer <API_TOKEN>" \
+curl -X POST "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai-search/namespaces/default/instances" \
+  -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
   -H "Content-Type: application/json" \
   --data '{
     "id": "my-instance",
