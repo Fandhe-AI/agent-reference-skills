@@ -14,7 +14,7 @@ user-invocable: false
 Biome（biomejs.dev）の全ドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象 Biome 2.5.15（`@biomejs/biome@2.5.15`、2026-09-30）。ドキュメントは biomejs/website commit `c5cb3eb4`（2.5.15 release sync、ルール / アクション / ドメイン表）と `49293f2`（2026-10-16、本文ページ、取得日 2026-10-17）。
+対象 Biome 2.5.15 基準（`@biomejs/biome@2.5.15`、2026-09-30）。2.6.2〜2.6.7 の変更は `references/linter/plugins.md`・`references/linter/javascript-rules.md`・`references/internals/changelog.md` の Notes に反映済み。2.6.0 / 2.6.1 の変更は未反映で、本文・設定例・スキーマ URL の「2.5.15」表記は references / samples / scripts に残る（全面的に 2.6.7 追従ではない）。ドキュメントは biomejs/website commit `c5cb3eb4`（2.5.15 release sync、ルール / アクション / ドメイン表）と `49293f2`（2026-10-16、本文ページ、取得日 2026-10-17）。
 
 ## ディレクトリ構成
 

@@ -97,3 +97,14 @@ language css;
 | message | ○ | 表示メッセージ |
 | severity | ✕ | 重大度（hint, info, warn, error）。デフォルト: error |
 | fix_kind | ✕ | 書き換え修正の安全性（safe / unsafe）。`=>` 併用時のみ有効。デフォルト: unsafe |
+
+## Notes
+
+### 2.6.x での変更
+
+出典: [`@biomejs/biome` CHANGELOG（タグ 2.6.7 pin）](https://github.com/biomejs/biome/blob/%40biomejs/biome%402.6.7/packages/%40biomejs/biome/CHANGELOG.md)。各項目は CHANGELOG 本文と照合済み。節見出しと PR は項目ごとに記載。
+
+- 2.6.2（Minor Changes）: オブジェクト形式のプラグインエントリに `resolutionKind` オプション（`"config"` / `"project"`、省略時 `project`）が追加された（[#10711](https://github.com/biomejs/biome/pull/10711)）。Grit `range()` パターンで構文ノードを `start_line` / `start_column` / `end_line` / `end_column` の範囲で絞り込める（[#11713](https://github.com/biomejs/biome/pull/11713)）。名前付き Grit ルール・ルールプリセット・設定をマニフェスト付きパッケージ経由で配布できる（[#11408](https://github.com/biomejs/biome/pull/11408)）。`biome inspect plugins` で解決済みルールをプラグイン別に一覧できる（[#11634](https://github.com/biomejs/biome/pull/11634)）
+- 2.6.2: プラグイン `includes` のグロブは、設定ファイルのあるディレクトリからの相対パスで照合される（`files.includes` / `overrides[].includes` と同じ。[#12264](https://github.com/biomejs/biome/pull/12264)）
+- 2.6.7（Patch Changes）: JavaScript プラグインに `grit()` クエリが追加された（[#12952](https://github.com/biomejs/biome/pull/12952)）。構文 kind を `ast()` で列挙する代わりに GritQL パターンで `run()` に渡すノードを選べ、Grit クエリのプラグインも semantic model を要求できる
+- 2.6.7（破壊的）: JavaScript プラグイン API の `semantic()` クエリ関数が削除された（[#13066](https://github.com/biomejs/biome/pull/13066)）。semantic model が必要なルールは `ast()` に `{ semantic: true }` を渡す（`grit()` も同じオプションを受け付ける）。`semantic()` を使う既存プラグインは書き換えが必要

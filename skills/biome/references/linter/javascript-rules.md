@@ -119,6 +119,11 @@ Biome は JS/TS 向けに 8 グループ・469 ルールを提供する（Biome 
 - 配置の訂正: `useAnchorContent` は a11y、`noCommaOperator` は complexity に属する（security / style ではない）
 - `noInvalidNewBuiltin` は 2.0.0 で削除された（非推奨ルールの一括削除）。`noInvalidBuiltinInstantiation` は correctness に属する
 - ドキュメント HEAD では次のリリースでグループ間のさらなる移動が予定されている（2.5.15 の一覧には未反映）
+- 2.6.x 追従（CHANGELOG 由来。上記のルール数・グループ表は 2.5.15 のまま未更新）:
+  - 出典: [`@biomejs/biome` CHANGELOG（タグ 2.6.7 pin）](https://github.com/biomejs/biome/blob/%40biomejs/biome%402.6.7/packages/%40biomejs/biome/CHANGELOG.md)。以下は CHANGELOG 本文と照合済み
+  - `useWhile` は `for (;;)` ループも報告し `while (true)` へ修正するようになった（2.6.7 Patch Changes, [#12788](https://github.com/biomejs/biome/pull/12788)）
+  - nursery ルール `useWhileLoopCondition` が追加された。`while (true)` / `for (;;)` のうち先頭が単独 `break` のみの `if` で始まるループを報告し、その条件を `while` 文へ移す（2.6.4 Patch Changes, [#12472](https://github.com/biomejs/biome/pull/12472)）
+  - 2.6.5〜2.6.7 の Patch Changes で nursery に多数のルールが追加された。確認できた例: `noArrayForEach` / `noSyncMethods` / `useObjectFromEntries`（2.6.5）、`noUselessAwait`（2.6.5, [#12772](https://github.com/biomejs/biome/pull/12772)）、`noConstantComparisons`（2.6.6, [#12877](https://github.com/biomejs/biome/pull/12877)）、`noErasingOperation`（2.6.6）、`useCatchErrorName`（2.6.7）、`noVue*` / `useVue*` 多数。一覧は網羅ではなく、各ルールの group・全件は公式ルール一覧ページを参照
 
 ## Related
 
