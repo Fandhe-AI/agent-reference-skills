@@ -124,12 +124,14 @@ destination.port < 3001
 
 ### URL path and host (IAP, Cloud Run)
 
+Adapted (not in the official docs): `endsWith("example.com")` changed to `endsWith(".example.com")` so it does not also match unrelated domains such as `attackerexample.com`; it also excludes the bare `example.com` host (add `request.host == "example.com"` if needed).
+
 ```text
 request.path == "/admin"
 request.path.startsWith("/admin")
 request.path.endsWith("/payroll.js")
 request.host == "hr.example.com"
-request.host.endsWith("example.com")
+request.host.endsWith(".example.com")
 ```
 
 ### extract()
@@ -185,6 +187,7 @@ Examples against `projects/_/buckets/acme-orders-aaa/objects/data_lake/orders/or
 
 ## Notes
 
+- Corrected from the official docs: the host example `request.host.endsWith("example.com")` also matches unrelated domains (for example `attackerexample.com`); it is shown as `.example.com`.
 - Use exact equality or inequality for `resource.service` and `resource.type`; prefix/suffix checks can give unexpected results.
 - When using `resource.name`, restrict it with `resource.type`, not `resource.service`, so new resource types added later do not change the condition scope.
 - A part of a condition using an attribute a resource does not provide never grants access (for example `resource.name` on IAM resources).

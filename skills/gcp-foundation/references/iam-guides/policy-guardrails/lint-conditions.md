@@ -56,18 +56,22 @@ curl -X POST \
      "https://iam.googleapis.com/v1/iamPolicies:lintPolicy"
 ```
 
-Response contains `LintResult` objects:
+Response contains a `lintResults` array of `LintResult` objects.
+
+Adapted (not in the official docs): the official REST sample shows a single `lint_results` object with snake_case fields and an invalid `\'` escape; rewritten as the `lintResults` array with the same camelCase field names as the gcloud output above.
 
 ```json
 {
-  "lint_results": {
-    "level": "CONDITION",
-    "validation_unit_name": "LintValidationUnits/ConditionCompileCheck",
-    "severity": "ERROR",
-    "field_name": "condition.expression",
-    "location_offset": "2",
-    "debug_message": "ERROR: Parse expression:1:2: mismatched input \'<EOF>\' ..."
-  }
+  "lintResults": [
+    {
+      "level": "CONDITION",
+      "validationUnitName": "LintValidationUnits/ConditionCompileCheck",
+      "severity": "ERROR",
+      "fieldName": "condition.expression",
+      "locationOffset": 2,
+      "debugMessage": "ERROR: Parse expression:1:2: mismatched input '<EOF>' ..."
+    }
+  ]
 }
 ```
 
@@ -115,6 +119,7 @@ Response contains `LintResult` objects:
 
 ## Notes
 
+- Corrected from the official docs: the REST response sample is shown as a `lintResults` array with camelCase fields (the source page shows a single `lint_results` object containing an invalid `\'` escape).
 - Alpha, subject to Pre-GA terms. Only `google.iam.v1.Binding.condition` is linted.
 - Needs `SERVICE.RESOURCE_TYPE.get`, `.getIamPolicy`, `.setIamPolicy` (e.g. `resourcemanager.projects.*`); Security Admin (`roles/iam.securityAdmin`) includes them. The IAM API must be enabled.
 - In the console, open the principal's role condition and click Run Linter; errors must be fixed before saving.

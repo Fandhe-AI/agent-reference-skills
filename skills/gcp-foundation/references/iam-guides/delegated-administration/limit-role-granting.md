@@ -61,7 +61,7 @@ gcloud resource-type get-iam-policy resource-id --format=json > path
 gcloud resource-type set-iam-policy resource-id path
 ```
 
-REST read and write (`API_VERSION` is `v1` for projects and organizations, `v2` for folders):
+REST read and write (`API_VERSION` is `v1` for projects and organizations, `v2` for folders). Adapted (not in the official docs): `RESOURCE_TYPE` here is the REST collection (`projects`, `folders`, or `organizations`), not a gcloud command group:
 
 ```
 POST https://cloudresourcemanager.googleapis.com/API_VERSION/RESOURCE_TYPE/RESOURCE_ID:getIamPolicy
