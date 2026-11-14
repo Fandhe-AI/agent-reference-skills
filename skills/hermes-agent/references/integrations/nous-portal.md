@@ -9,7 +9,7 @@ Nous Research's unified subscription gateway and the recommended way to run Herm
 - **No credentials in your dotfiles**: the refresh token at `~/.hermes/auth.json` is the only credential on disk; Hermes mints short-lived JWTs from it per request.
 - **Cross-platform parity**: one OAuth covers the model and every gateway tool, notably smoothing native Windows setup.
 
-| Family | Models (as listed in the v0.22.2 docs) |
+| Family | Models (as listed in the v0.23.1 docs (unchanged from v0.22.2)) |
 |--------|--------|
 | Anthropic Claude | Opus 4.7, Opus 4.6, Sonnet 4.6, Haiku 4.5 |
 | OpenAI | GPT-5.5, GPT-5.5 Pro, GPT-5.4 Mini, GPT-5.4 Nano, GPT-5.3 Codex |
@@ -65,7 +65,7 @@ Per the v0.22.0 release notes: a first Desktop install with no provider or Nous 
 | Web search & extract | Nous-managed | No search API key |
 | Image generation | FAL | Nine models: FLUX 2 Klein 9B, FLUX 2 Pro, Z-Image Turbo, Nano Banana Pro (Gemini 3 Pro Image), GPT Image 1.5, GPT Image 2, Ideogram V3, Recraft V4 Pro, Qwen Image |
 | Text-to-speech | OpenAI TTS | Enables voice mode across messaging platforms |
-| Cloud browser automation | Browser Use | Headless Chromium for `browser_navigate`, `browser_click`, `browser_type`, `browser_vision` |
+| Cloud browser automation | Browser Use | Headless cloud Chromium sessions that `browser_exec` drives over CDP |
 | Cloud terminal sandbox | Modal | Optional add-on |
 
 The gateway is opt-in per tool: pick "Nous Subscription" per category in `hermes tools` while keeping other backends (e.g. a Browserbase account). Managed backends show in `hermes tools` even when not logged in; choosing one before authenticating runs the Portal login inline without changing your inference provider.
@@ -106,7 +106,11 @@ Hermes mints a short-lived JWT from the stored refresh token on each inference c
 - A note on Hermes 4: Hermes-4-70B and Hermes-4-405B are available at heavily discounted rates but are frontier hybrid-reasoning chat models and are **not recommended inside Hermes Agent**; they are tuned for chat and reasoning, not the rapid-fire tool-calling loop. Use a frontier agentic model (`anthropic/claude-sonnet-4.6`, `openai/gpt-5.5-pro`, `google/gemini-3-pro-preview`, `deepseek/deepseek-v4-pro`) for agent work. The Portal's own model info page carries the same warning.
 - Subscription management: `portal.nousresearch.com/manage-subscription` or `hermes portal open`.
 - The Tool Gateway feature page has the full per-tool configuration matrix; the Subscription Proxy lets non-Hermes tools use your Portal subscription.
-- Source: https://hermes-agent.nousresearch.com/docs/integrations/nous-portal (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/integrations/nous-portal (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- The cloud-browser row of the Tool Gateway no longer lists `browser_navigate` / `browser_click` / `browser_type` / `browser_vision`; browser automation is now `browser_exec` over CDP.
 
 ## Related
 

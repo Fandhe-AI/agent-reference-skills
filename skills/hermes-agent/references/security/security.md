@@ -8,7 +8,7 @@ Hermes Agent implements a defense-in-depth architecture across five distinct sec
 |-------|----------|---------|
 | 1 | **User Authorization** | Controls who can interact via allowlists and DM pairing |
 | 2 | **Dangerous Command Approval** | Human-in-the-loop gate for destructive operations |
-| 3 | **Container Isolation** | Docker/Singularity/Modal sandboxing with hardened settings |
+| 3 | **Container Isolation** | Docker/Modal (and the Singularity plugin) sandboxing with hardened settings |
 | 4 | **MCP Credential Filtering** | Environment variable isolation for MCP subprocesses |
 | 5 | **Context File Scanning** | Prompt injection detection in project files |
 | 6 | **Cross-Session Isolation** | Session data separation and path traversal hardening |
@@ -26,13 +26,15 @@ Configured via `approvals.mode` in `~/.hermes/config.yaml`:
 |------|----------|
 | `manual` (default) | Always prompts the user for approval on dangerous commands |
 | `smart` | Uses auxiliary LLM to assess risk; auto-approves low-risk, auto-denies dangerous, escalates uncertain |
-| `off` | Disables all approval checks; equivalent to `--yolo` flag |
+| `off` | Disables all approval checks; equivalent to `--yolo` flag. Also lets write calls on `trust: untrusted` MCP servers run without the trust prompt; an MCP server's declared spend limit still asks |
 
 ```yaml
 approvals:
   mode: manual    # manual | smart | off
   timeout: 300    # seconds to wait for user response (default: 300 in v0.22.2 docs, fail-closed on timeout)
   deny: []        # glob patterns blocked unconditionally, before --yolo / mode: off
+  discord_prompt_timeout: 300   # seconds Discord interactive buttons stay clickable; minimum 30
+  approvers: ["*"]              # who may answer a pending approval from a messaging chat
 ```
 
 An expired prompt cannot be reopened and a timeout is not counted as a denial; send a new message to make the agent raise a fresh approval card.
@@ -59,6 +61,8 @@ Bypasses all dangerous command approval prompts for the session.
 | Environment variable | `HERMES_YOLO_MODE=1` |
 
 Use only in fully trusted environments.
+
+YOLO and `approvals.mode: off` also skip the `trust: untrusted` MCP prompt (a write-capable tool on an untrusted server runs without asking). `/yolo` covers only the chat it was typed in; `--yolo` and `HERMES_YOLO_MODE` cover the sessions of the Hermes process they were given to; `approvals.mode: off` covers every chat and cron job of that profile. They do not skip: an MCP server's declared `spend_limit` (still asks; refused where nobody can answer, e.g. a cron job or `hermes chat -q`); questions from an MCP server (elicitation); payment-card fill prompts from the credential vault; and MCP event subscriptions.
 
 **Note:** Even with YOLO mode enabled, a hardline blocklist remains always active. Catastrophic operations (e.g., `rm -rf /`, `rm -rf --no-preserve-root /`, the bash fork bomb, `mkfs.*` on a mounted root device, `dd if=/dev/zero of=/dev/sd*`, piping untrusted URLs to `sh` at the rootfs top level) are blocked unconditionally, before the approval layer sees them, regardless of `--yolo`, `approvals.mode: off`, headless cron `approve` mode, or "allow always". The floor also fails closed on a command whose shell quoting cannot be parsed (`malformed executable payload`).
 
@@ -97,7 +101,11 @@ The following patterns trigger the approval flow:
 | `pkill`/`killall` hermes/gateway | Self-termination prevention |
 | `gateway run` with `&`/`disown`/`nohup`/`setsid` | Starting gateway outside service manager |
 
-**Note:** When running in `docker`, `singularity`, `modal`, or `daytona` backends, dangerous command checks are skipped — the container itself provides the security boundary.
+**Note:** When running in `docker`, `modal`, `daytona`, or `vercel_sandbox` backends (or a container plugin backend such as `singularity` or `sprites`), dangerous command checks are skipped — the container itself provides the security boundary.
+
+#### `execute_code` scripts
+
+A script run by `execute_code` can call `subprocess`, `os` or `shutil` directly, bypassing the patterns above. Messaging, API and other gateway sessions therefore ask once for the whole script before it starts; a denied or unanswered script never runs. `cron_mode`, `single_query_mode` and `unattended_mode` decide the script at once; YOLO and `mode: off` skip the prompt. Local sessions (classic CLI, TUI, Desktop, ACP editor) under `manual` / `smart` get no whole-script approval for a turn the session's viewer typed while a viewer who can answer approvals is attached: only the script's `terminal()` calls ask. Whole-script approval is kept for turns nobody typed (plugin `inject_message`, delegation completions, background-process and watch-pattern notices, `/loop` ticks, heartbeats, hosted-room tasks), `delegate_task` children and `/bg` / `/btw` side tasks, and a viewer's turn with no approving viewer attached.
 
 ### Approval Flow (CLI)
 
@@ -122,6 +130,12 @@ Dangerous command details are sent to chat. Respond with:
 - **Deny:** `no`, `n`, `deny`, `cancel`
 
 `HERMES_EXEC_ASK=1` is set automatically when running via the gateway.
+
+A messaging approval never asks you to approve a command you cannot read in full: when the command is too long for the card, Hermes first sends the whole command as its own message(s) and the card says the preview was shortened. If the full command cannot be shown (the send fails, or the command contains a triple-backtick fence), the card offers Deny only. On platforms that cut long messages instead of splitting them (ntfy, DingTalk, Photon, LINE), the plain-text prompt puts the answer instructions before the command and offers only `/deny` when it would still be cut.
+
+#### Who can answer an approval in a shared chat (`approvals.approvers`)
+
+Default `["*"]`: any admitted member answers. With `approvers` narrowed (`[]` or a list of platform user ids), only the user whose message started the turn, the listed ids (each platform's own id form, e.g. Slack `U…`, Telegram numeric id, Matrix `@user:server`) and the platform admins of that chat (`allow_admin_from` in a DM, `group_allow_admin_from` in a group) can approve or deny. Identical commands raised by two different requesters get one prompt each; a turn merged from two members' messages goes to the listed approvers and admins only. Anyone else gets "Only <name> can answer this approval." and the command stays pending (private reply where the platform supports it: Slack ephemeral, Discord ephemeral, Telegram callback alert, Feishu toast, Teams card response; Matrix, WhatsApp and the relay post it in the chat). Read when the approval is raised, so each multiplexed profile's own `config.yaml` decides; host surfaces (CLI, TUI, Desktop, API server) are unaffected. Matrix keeps its stricter `MATRIX_APPROVAL_REQUIRE_SENDER` (default on); QQBot accepts clicks only from the session's own user.
 
 ### Permanent Allowlist
 
@@ -263,9 +277,11 @@ terminal:
 | `local` | None — runs on host | Yes | Development, trusted users |
 | `ssh` | Remote machine | Yes | Running on a separate server |
 | `docker` | Container | Skipped (container is boundary) | Production gateway |
-| `singularity` | Container | Skipped | HPC environments |
+| `singularity` (plugin) | Container | Skipped | HPC environments |
+| `sprites` (plugin) | Cloud microVM | Skipped | Stateful cloud sandboxes |
 | `modal` | Cloud sandbox | Skipped | Scalable cloud isolation |
 | `daytona` | Cloud sandbox | Skipped | Persistent cloud workspaces |
+| `vercel_sandbox` | Cloud microVM | Skipped | Cloud execution with snapshot persistence |
 
 For production deployments, prefer `docker`, `modal`, or `daytona` to isolate agent commands from the host.
 
@@ -386,7 +402,7 @@ security:
       - "/etc/hermes/blocked-sites.txt"
 ```
 
-Enforced across `web_search`, `web_extract`, `browser_navigate`, and all URL-capable tools. Blocked URLs return an error explaining the domain is blocked by policy.
+Enforced across `web_search`, `web_extract`, `browser_exec`, and all URL-capable tools. Blocked URLs return an error explaining the domain is blocked by policy.
 
 ---
 
@@ -405,7 +421,9 @@ All URL-capable tools validate URLs before fetching to prevent Server-Side Reque
 
 SSRF protection is always active and cannot be disabled by default. DNS failures are treated as blocked (fail-closed). Redirect chains are re-validated at each hop to prevent redirect-based bypasses.
 
-To intentionally allow internal network access (e.g., self-hosted services), set `allow_private_urls: true` in configuration. Use only in controlled environments.
+To intentionally allow internal network access (e.g., self-hosted services), set `allow_private_urls: true` in configuration. Use only in controlled environments. With it on, web tools, the browser, vision URL fetches and gateway media downloads no longer reject RFC 1918 / loopback / link-local / CGNAT destinations, but cloud-metadata endpoints (`169.254.169.254`, `metadata.google.internal`, and the like) stay blocked. The host-substring guard (lookalike Unicode domains) stays on regardless.
+
+What `allow_private_urls` covers when `false`: `web_extract` is refused before any backend is called (with it `true`, hosted extract backends still fetch from their own servers and cannot reach your LAN); `vision_analyze` URL fetches, image/video downloads and gateway media downloads are refused; `browser_exec` is refused (`Blocked: URL targets a private or internal address`) on a cloud provider with `browser.auto_local_for_private_urls: false`, on a `/browser connect` (CDP) endpoint, or with a Docker/SSH/Modal terminal backend; `browser_cdp` raw CDP calls on those same backends are refused while a private page is open or when an absolute `http(s)://` URL the call fetches is private (a scheme-relative `//host` URL is checked for cloud metadata only). It opens, by design: `browser_exec` on a cloud provider with `browser.auto_local_for_private_urls: true` (the default; opens in a local Chromium sidecar on the Hermes host), `browser_exec` on local Chromium with a local terminal backend, and `terminal` (no URL guard). Cloud-metadata endpoints are refused on every row except `terminal`, sidecar and local Chromium included; the check reads URL literals the agent writes, not URLs assembled at run time, and does not watch redirects, so also block the metadata service at the network (IMDSv2 hop limit 1, a firewall rule). To keep the agent's browser off private hosts while a cloud provider is configured, set `browser.auto_local_for_private_urls: false` (matters most on hosted installs).
 
 ---
 
@@ -414,7 +432,7 @@ To intentionally allow internal network access (e.g., self-hosted services), set
 The dangerous-command detector flags two content-level shapes a destructive-verb list misses, both going through the normal approval flow:
 
 - A `curl` / `wget` request body that carries a secret (a secret-named variable such as `-d "k=$OPENAI_API_KEY"`, or a credential file such as `-F file=@.env`, `-T ~/.ssh/id_rsa`, `--post-file=/etc/passwd`, or a credential file piped into an uploading `curl`/`wget`). An `Authorization` header is ordinary API use and is not flagged.
-- Invisible or bidirectional Unicode control characters (zero-width spaces, right-to-left overrides, isolates). Emoji joiner sequences are not flagged.
+- Invisible or bidirectional Unicode control characters (zero-width spaces, right-to-left overrides, isolates, and variation selectors that do not follow an emoji). Emoji joiner sequences, keycap emoji and an emoji's own presentation selector are not flagged.
 
 Removed: earlier releases bundled the external tirith scanner here (`security.tirith_enabled`, `tirith_path`, `tirith_timeout`, `tirith_fail_open`). It was removed in v0.22.0; upgrading drops the `security.tirith_*` settings and enables nothing in its place.
 
@@ -461,7 +479,7 @@ Blocked files display a warning instead of their content:
 
 Before `write_file` or `patch` touches disk, Hermes checks the target against a denylist and an optional sandbox. Blocked writes return an error immediately; there is no approval prompt and no override from the chat UI.
 
-- Always blocked: OS credential stores (`~/.ssh/`, `~/.aws/`, `~/.kube/`, `/etc/sudoers`, `~/.netrc`), Hermes secret stores under `HERMES_HOME` (`.env`, `.anthropic_oauth.json`, `vault/`, `browser-profile/`, `mcp-tokens/`, `pairing/`, Bitwarden cache), and Windows NT/device-namespace paths (`\??\...`, `\\.\...`; rejected for reads and writes). `auth.json`, `config.yaml`, `webhook_subscriptions.json` are read-denied but writable. Project-local `.env`, `.env.local`, `.env.production`, `.envrc` are read-denied anywhere but writable.
+- Always blocked: OS credential stores (`~/.ssh/`, `~/.aws/`, `~/.kube/`, `/etc/sudoers`, `~/.netrc`), Hermes secret stores under `HERMES_HOME` (`.env`, `.anthropic_oauth.json`, `vault/`, `browser-profile/`, `mcp-tokens/`, `pairing/`, Bitwarden and 1Password caches (`bws_cache.json`, `bws_cache.enc.json`, `op_cache.json`), the Photon sidecar token `photon-sidecar.json`), and Windows NT/device-namespace paths (`\??\...`, `\\.\...`; rejected for reads and writes). `auth.json`, `config.yaml`, `webhook_subscriptions.json` are read-denied but writable. Project-local `.env`, `.env.local`, `.env.production`, `.envrc` are read-denied anywhere but writable.
 - `~/.ssh/config` is approval-gated (once/session/always), not hard-blocked; private keys and `authorized_keys` stay blocked. Non-interactive callers fail closed.
 - `HERMES_WRITE_SAFE_ROOT` (optional; set to `/opt/data` in the official Docker image; multiple roots separated by `:` on Unix, `;` on Windows) restricts writes to listed prefixes. Do not set it casually: it blocks `~/.hermes/cron/jobs.json` and other Hermes state. Use `cronjob_manage`, `hermes cron`, or `/cron` instead of patching `jobs.json`.
 - Defense-in-depth only: the `terminal` tool runs as the same OS user and can still overwrite denied paths. `display.file_mutation_verifier` (default on) appends a verifier footer; trust it over the assistant's summary.
@@ -522,6 +540,17 @@ terminal:
 ```
 
 This keeps messaging connections separate from command execution.
+
+## Notes
+
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/security (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- Singularity is no longer a built-in terminal backend (plugin backend, alongside `sprites`); container bypass of dangerous-command checks applies to the plugin backends too.
+- Secret-store paths: the Bitwarden cache moved from `cache/bws_cache*.json` to `bws_cache.json` / `bws_cache.enc.json` directly under HERMES_HOME, and the 1Password cache is `op_cache.json`.
+- `browser_navigate` is replaced by `browser_exec` in the website-blocklist enforcement list.
+- `allow_private_urls: true` no longer opens cloud-metadata endpoints (v0.22 text listed "cloud metadata debugging" among its use cases and said cloud-metadata destinations were no longer rejected).
 
 ## Related
 

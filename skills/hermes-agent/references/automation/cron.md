@@ -23,6 +23,7 @@ cronjob(action="update", job_id="...")
 cronjob(action="pause", job_id="...")
 cronjob(action="resume", job_id="...")
 cronjob(action="run", job_id="...")
+cronjob(action="cancel", job_id="...")
 cronjob(action="remove", job_id="...")
 ```
 
@@ -52,10 +53,11 @@ hermes cron list
 hermes cron pause <job_id_or_name>
 hermes cron resume <job_id_or_name>
 hermes cron run <job_id_or_name>
+hermes cron cancel <job_id_or_name> [--reason "..."]   # stop the current run, schedule untouched
 hermes cron remove <job_id_or_name>
 hermes cron edit <job_id_or_name> [...flags]
 hermes cron status
-hermes cron tick
+hermes cron tick                          # needs a running gateway for agent jobs
 hermes cron runs [job-id] --limit 20      # alias: history
 hermes cron incidents                     # filter: --state detected|alerted|resolved|closed; ack <id>
 hermes cron doctor                        # read-only fleet health check; exits 1 while any finding stands
@@ -63,6 +65,17 @@ hermes pause [--reason ...]               # global emergency stop (hermes resume
 ```
 
 Chat equivalents: `/cron list | pause | resume | run | remove | edit <job_id> ...`.
+
+Per-job timezone and catch-up (new in v0.23):
+
+```bash
+hermes cron create "0 9 * * 1-5" --timezone Asia/Hong_Kong "HK market open brief"
+hermes cron create "0 9 * * 1-5" --timezone America/New_York "US market open brief"
+hermes cron edit market-open --grace-minutes 0    # never catch up: skip a missed occurrence
+hermes cron edit market-open --grace-minutes 180  # run up to 3h late
+hermes cron create "0 7 * * 1-5" "Morning brief" --catch-up off   # a stale brief is useless: skip
+hermes cron edit <job> --catch-up on                                # always run once on return
+```
 
 Edit flags: `--schedule`, `--prompt`, `--skill` (repeated replaces list), `--add-skill`, `--remove-skill`, `--clear-skills`, `--pin` / `--unpin`, `--provider` / `--model`, `--reasoning-effort`, `--workdir`, `--continuity` / `--no-continuity`. Create-only: `--paused [--paused-reason ...]`, `--no-agent --script <file>`, `--deliver <target>`, `--name`, `--interpreter`.
 
@@ -119,13 +132,20 @@ The agent's final response is delivered automatically; the agent does not send m
 | `script_timeout_seconds` | 3600 | Pre-run script timeout (env `HERMES_CRON_SCRIPT_TIMEOUT` wins). |
 | `cleanup_timeout_seconds` | 10 | Post-run cleanup bound; 0 = legacy unbounded. |
 | `media_send_timeout_seconds` | 300 | Per-attachment upload bound (env `HERMES_CRON_MEDIA_SEND_TIMEOUT`). |
-| `bot_chat_delivery_timeout_seconds` | 600 | Bot Chat delivery bound. |
+| `bot_chat_delivery_timeout_seconds` | removed in v0.23 | Retired: Bot Chat deliveries are admitted to the target profile's running gateway and tracked by receipt; config migration v51 removes the key |
 | `standalone_send_timeout_seconds` | 60 | Standalone sender bound. |
 | `max_parallel_jobs` | unset | Limit total cron concurrency. |
 
 ## Notes
 
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/cron (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/cron (pinned to v0.23.1)
+- Per-job timezone (v0.23): `--timezone <IANA zone>` pins the cron expression to that zone's wall clock (stays at 09:00 across that zone's DST changes); omit it (or `--timezone ""` on edit) to inherit the profile `timezone:`. An offset-less one-shot timestamp is read in the job's zone; one with its own offset is already an instant. Changing the zone recomputes `next_run_at` at once. No effect on `interval` jobs.
+- Catch-up (v0.23): a missed cron occurrence runs late only inside a window of half the job's period, clamped to 2 minutes-2 hours; `--grace-minutes` (0-1440; `0` never catches up; `""` restores the computed window) overrides it per job and only applies to cron expressions. `--catch-up on|off` (agent tool `catch_up: true|false`; Desktop editor "Missed runs") overrides `cron.catch_up_missed` per job, beats `--grace-minutes`, and makes a one-shot fire once late instead of being dropped after its 120-second grace. Every passed-over slot is booked as a `missed ×N` row in the execution ledger (visible in `hermes cron runs <job>` and run history).
+- `hermes cron cancel <job>` (v0.23) stops only the current run; the job stays enabled and its next fire is unchanged. Script jobs get the whole process tree terminated (`SIGTERM` to the process group, then `SIGKILL` after a grace period); agent jobs have the turn interrupted at its next checkpoint. It is a request recorded against the run's execution id; the run books a `cancelled` row with its reason, sends no failure notice and does not count toward the failure streak. Also `POST /api/cron/jobs/{id}/cancel`, the agent's `cronjob_manage` action `cancel`, and **Stop** in the Desktop job header. Removing a job cancels its live run ("job removed while running"). Cancelling an idle job is a no-op; a cancel cannot roll back side effects.
+- `hermes cron run` (v0.23) is an extra fire: the scheduled run still happens and the `repeat` count is not spent; it exits nonzero for a known synchronous execution failure (background dispatch is not a terminal verdict). `hermes cron tick` runs one scheduler pass and exits but never starts a gateway: with none running, agent jobs are skipped with a logged reason (in `hermes cron list`) without advancing or penalising their schedule, and fire on the next tick after `hermes gateway start`; `no_agent` script jobs still run from a bare tick.
+- Admission recovery (v0.23): agent-backed runs keep their fire identity until output and a durable delivery handoff are recorded; the scheduler reconciles unfinished receipts each tick (also after an owner restart), hands a known terminal result to the delivery queue without re-running the agent, and leaves delivery interrupted after a send claim `unknown` (not retried). An interrupted execution or an unfindable prepared fire stays paused for operator review; paused jobs are never auto-resumed.
+- Bot Chat delivery (v0.23): admitted to the target profile's running gateway; a profile with no Bot Chat gets one on first delivery. If that gateway is not running the run is recorded `delivery_failed` (output stays in `hermes cron runs`, not redelivered) and cron never starts its own Bot Chat turn. For agent jobs the run settles to `ok` once the gateway hands the send to the bot (accepted, not answered; `last_delivery_queued` keeps the receipt) and a refused hand-off settles to `delivery_failed`; script-only (`no_agent`) deliveries stay `delivery_queued`. The `cron/bot_chat_pending` file lane and `hermes chat -c "Bot Chat"` fallback of v0.22 are gone.
+- Script jobs (v0.23): `script` is always a file, never a command line; `--script "echo hi"` is refused at creation (write it to `~/.hermes/scripts/hi.sh` and pass `hi.sh`).
 - Cron-run sessions cannot create more cron jobs unless `cron.allow_agent_scheduling: true`; then `deliver: origin` is resolved at create time to the creating job's concrete target.
 - Each run model: per-job pin, `cron.model`, main model at fire time. Per-job reasoning effort (`none` ... `ultra`) via `--reasoning-effort`; not exposed on the agent tool. A pinned job never falls back to `fallback_providers`; credential-pool rotation applies to all jobs.
 - No-agent example: `hermes cron create "every 5m" --no-agent --script memory-watchdog.sh --deliver telegram --name "memory-watchdog"`. Empty stdout = silent tick; non-zero exit or timeout = error alert; `{"wakeAgent": false}` on the last stdout line skips the agent (default `true`). `.sh`/`.bash` run under bash, others under the current Python interpreter; subprocess env is sanitized. Credentials go through `terminal.env_passthrough` (Hermes-managed provider credentials cannot be declared).
@@ -137,6 +157,10 @@ The agent's final response is delivered automatically; the agent does not send m
 - Cron store not writable (ENOSPC / EROFS / EACCES): due jobs are skipped, not double-fired later; surfaced by `hermes cron status`, `hermes doctor`, home-channel notices, and metrics `hermes.cron.store.writable` / `hermes.cron.store.skipped_runs`.
 - Prompts are scanned for prompt-injection and credential-exfiltration patterns at create/update time.
 - Event-triggered cron (webhook route with `cron_job` set) is documented on the webhooks messaging page.
+
+### Migration (v0.22 -> v0.23): Bot Chat delivery timeout removed
+
+- `cron.bot_chat_delivery_timeout_seconds` (v0.22 default 600) is retired; there is no cron-side turn left to time out. Config migration v51 removes the key with a one-time note. See the Bot Chat delivery note above and the Updating page's gateway-owned session runtime section for legacy `cron/bot_chat_pending/*.json` records.
 
 ## Related
 

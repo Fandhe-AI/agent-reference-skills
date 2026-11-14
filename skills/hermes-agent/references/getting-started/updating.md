@@ -54,11 +54,11 @@ For an admitted source checkout, `hermes update` runs:
 
 1. Pre-update snapshot (per-profile `state-snapshots/`; best-effort)
 2. Code update (configured branch or stable release tag, plus submodules); gateways from this install are paused first on Linux/macOS
-3. Post-pull syntax validation with auto-rollback to the pre-pull commit on failure
-4. Dependency preparation through PM; incompatible plugins are added to `plugins.disabled` rather than failing the update
+3. Syntax validation before and after the move (the startup files the target lists in `pyproject.toml` `[tool.hermes] update-startup-files`), with auto-rollback to the pre-pull commit on failure
+4. Dependency preparation through PM; incompatible plugins are moved from `plugins.enabled` to `plugins.disabled` (recorded under `plugins.disabled_by_update`, retried on later updates) rather than failing the update
 5. Config migration (new options prompted)
 6. Desktop rebuild (stage-and-swap) if the Desktop app was built from this checkout
-7. Gateway auto-restart (service-managed via systemd/launchd; manual gateways relaunched when mapped to a profile)
+7. Gateway auto-restart (each profile's gateway service definition that no longer matches the updated install is rewritten first; service-managed via systemd/launchd; manual gateways relaunched when mapped to a profile)
 8. Multiplex migration for multi-profile installs when nothing blocks it
 
 ## Notes
@@ -80,7 +80,17 @@ For an admitted source checkout, `hermes update` runs:
 - Nix is best-effort only; update with `nix flake update hermes-agent` or `nix profile upgrade hermes-agent`, roll back with `nix profile rollback`.
 - Uninstall: review `hermes uninstall --dry-run` for source installs. Default removal can preserve config and data; `--full` also removes data; `--data` removes user data without deleting package-owned code. These are destructive, so back up first (`hermes backup`; `hermes profile export` packs one profile without credentials). MSIX/Store use Windows Settings, macOS moves the app to Trash, and Docker / Nix / Termux use their own package manager.
 - If you installed the gateway as a system service, stop it first: `hermes gateway stop` (Linux: `systemctl --user disable hermes-gateway`; macOS: `launchctl remove ai.hermes.gateway`). Manual uninstall removes the `~/.local/bin/hermes` launcher (`rm -f ~/.local/bin/hermes`) and the checkout directory. Do not delete `~/.hermes` by hand: it holds config, credentials, sessions, skills and memory. Use `hermes uninstall --dry-run` and then `--full` / `--data` after `hermes backup`.
-- Source: https://hermes-agent.nousresearch.com/docs/getting-started/updating (pinned to v0.22.2)
+- The installers (`install.sh`, `install.ps1`, Hermes-Setup) put a new install on the latest stable release. Re-running one over an install that never chose a channel moves it onto that release only when the release descends from its checkout; any other checkout stays put and `hermes update` decides (it refuses a release that predates the session stores the checkout already uses). Over an install that chose a channel other than `main`, a rerun keeps the checkout. To install the tip of `main`, pass `--channel main` (`-Channel main` for `install.ps1`, or `HERMES_INSTALL_CHANNEL=main` before the PowerShell one-liner); the choice is saved like `hermes update --set-channel main`. An explicit `--commit` pin still applies.
+- `hermes update` stops with "This Hermes checkout's git data is damaged" (`not a git repository`) when `.git` exists but git rejects it (lost or empty `HEAD`, `.git` file pointing at a missing folder). Gateways the update paused restart on the unchanged code. Re-run the installer (the error prints the exact command; a checkout in a non-default location needs `--dir <path>` / `-InstallDir <path>` again): it moves the damaged checkout aside as `hermes-agent.broken-<timestamp>` (nothing deleted) and clones fresh; config and sessions live outside the checkout and are kept. Delete the `.broken-*` folder once Hermes works.
+- Hermes keeps the git commit-graph current itself: each `hermes update` (after the new code is in place) and each `hermes -w` launch refreshes a missing or day-old graph in the background at most once every 6 hours (`git commit-graph write --reachable --split --no-changed-paths`, never downloads trees); a write still running after 10 minutes is stopped. A repo with `core.commitGraph=false` is left without one. Stale `commit-graph.lock` / `multi-pack-index.lock` files older than 10 minutes are swept like `index.lock` when no git process is running.
+- Source: https://hermes-agent.nousresearch.com/docs/getting-started/updating (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23): gateway-owned session runtime
+
+- One gateway per host now owns every local session (CLI, TUI, Desktop, API, ACP, cron, Bot Chat). `cron.bot_chat_delivery_timeout_seconds` is retired; config migration v51 removes the key with a one-time note. Without a running gateway a Bot Chat delivery is recorded `delivery_failed` and not redelivered automatically.
+- Legacy Bot Chat pending records (`cron/bot_chat_pending/*.json`) are handed to the target's live owner on later scheduler ticks; a `claimed` record is never resent.
+- Work interrupted by the cutover restart is never replayed: a mid-turn (`started`) input and any running managed worker become `unknown`, and queued inputs wait. Inspect the session, then acknowledge with `/discard <admission_id>` in `hermes chat` (or the Desktop/TUI equivalent), or `hermes sessions discard <session> --yes` from a script.
+- Rolling back is unsupported once the new gateway has written `state.db`: `hermes update` refuses a target that predates the gateway runtime while any profile's `state.db` holds gateway runtime history; an older release run on the upgraded store cannot delete or prune such sessions (`Refused to delete a session that has gateway runtime history`); a running gateway moved back to such a release stops itself within about 30 seconds. To go back: `hermes gateway stop`, check out the older release, then restore the newest pre-update snapshot (`/snapshot restore <id>`) or a full backup taken with `hermes update --backup` (`hermes import <backup.zip>`). Quick snapshots skip a `state.db` larger than 1 GiB. Sessions created after the update are not in that snapshot.
 
 ## Related
 

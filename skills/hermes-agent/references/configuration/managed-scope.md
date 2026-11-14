@@ -63,7 +63,8 @@ Precedence (highest wins, for pinned keys only):
 - Changes take effect on next Hermes start. A malformed managed file is logged and ignored (never blocks startup); verify with `hermes doctor`.
 - v1 limitations: the managed `.env` is world-readable (`0644`), so use it for non-sensitive values only; the agent's own subprocess shell can set a different env value; root or a user with write access makes it advisory.
 - Out of scope for v1: hard boundary against the agent, native macOS/Windows locations, `managed.d/` drop-ins, signed files, MDM delivery, group-scoped secret permissions.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/managed-scope (v0.22.2 docs source)
+- When the managed `config.yaml` pins a non-empty `terminal.backend`, a profile `.env` that exists but cannot be read (a sandbox launcher withholds it and passes the keys as environment) loads as absent with a warning; without that pin the read error still stops Hermes.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/managed-scope (pinned to v0.23.1)
 
 ## Related
 

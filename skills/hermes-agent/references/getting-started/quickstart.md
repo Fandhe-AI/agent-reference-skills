@@ -4,12 +4,18 @@ Go from install to a verified working chat with Hermes Agent: install, choose a 
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the official one-liners pipe the remote script straight into the shell (`curl ... | bash`, `iex (irm ...)`); here they are split into download, inspect, run.
+
 ```bash
 # Install (Linux / macOS / WSL2)
-curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+curl -fsSL -o install.sh https://hermes-agent.nousresearch.com/install.sh
+less install.sh   # inspect before running
+bash install.sh
 
 # Install (Windows PowerShell)
-iex (irm https://hermes-agent.nousresearch.com/install.ps1)
+irm https://hermes-agent.nousresearch.com/install.ps1 -OutFile install.ps1
+Get-Content install.ps1   # inspect before running
+.\install.ps1
 
 # Configure provider
 hermes model
@@ -154,6 +160,10 @@ In order: `hermes doctor`, `hermes model`, `hermes setup`, `hermes sessions list
 - Python dependency commands on the upstream page assume a PM-prepared source checkout; after a dependency change, reactivate the checkout and restart Hermes.
 - `hermes backup` migrates your whole setup to another machine (see the FAQ).
 - The upstream quickstart (v0.22.2) says "-c 65536 for Ollama", but Ollama has no such flag; set the context via a Modelfile "PARAMETER num_ctx" as in guides/local-ollama-setup.md.
+- New in v0.23: coming from OpenClaw, Claude Code, Codex CLI or Cursor, a fresh `hermes setup` that finds one of them first offers to import your setup (it installs the `agent-importers` plugin for that).
+- The v0.23.1 provider table no longer lists GitHub Copilot / GitHub Copilot ACP rows on the quickstart page (still see the Providers page for the current catalog).
+- Adapted from the official docs: the install one-liners were split into download, inspect and run steps instead of piping the remote script into the shell.
+- Source: https://hermes-agent.nousresearch.com/docs/getting-started/quickstart (pinned to v0.23.1)
 
 ## Related
 
