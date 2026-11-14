@@ -131,7 +131,7 @@ content_path = "./supabase/templates/email_change.html"
 
 ローカル開発環境では Inbucket がメールサーバーとして動作する。送信されたメールはすべて Inbucket でキャプチャされる。
 
-> CLI v3 では `config.toml` の `[inbucket]` が `[local_smtp]` に改名され、`INBUCKET_URL` は `MAILPIT_URL` になった（Mailpit）。v3 でのポート・UI の詳細は未突合。
+> CLI v3.0.0 では `config.toml` の `[inbucket]`（`[remotes.<name>.inbucket]` 含む）が `[local_smtp]` に、`INBUCKET_URL` / `inbucket.url` が `MAILPIT_URL` / `mailpit.url` に改名された（キーは不変。旧 `[inbucket]` が残る config は読み込めない）。Source: https://github.com/supabase/cli/releases/tag/v3.0.0（取得日 2026-11-14）。以下の Inbucket UI・ポート 54324 は v2 系の記述で、v3 での UI・ポートは公式未確認。
 
 ### Inbucket UI
 
