@@ -14,7 +14,7 @@ user-invocable: false
 
 GitHub 公式ドキュメント (docs.github.com) の主要セクションを網羅したスキル。
 
-出典: docs.github.com Article Body API (free-pro-team@latest)、取得日 2026-10-17。REST は X-GitHub-Api-Version 2026-03-10 で記述（ヘッダー省略時の既定は 2022-11-28）。
+出典: docs.github.com Article Body API (free-pro-team@latest)、取得日 2026-10-17（`pull_request_target` 既定ブロック・ARM32 廃止・Copilot code review API・AI Scan `repository_scan` に関する記述のみ 2026-11-14 に再取得）。REST は X-GitHub-Api-Version 2026-03-10 で記述（ヘッダー省略時の既定は 2022-11-28）。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
@@ -143,6 +143,7 @@ skills/github-docs/
       copilot/
         README.md
         cloud-agent-management.md
+        code-review.md
         coding-agent-management.md
         content-exclusion-management.md
         spaces.md
@@ -303,7 +304,7 @@ skills/github-docs/
 | アクティビティ API（イベント・通知・スター・ウォッチ） | rest-api/activity | [references/rest-api/README.md](references/rest-api/README.md) |
 | チェック API（check-runs・check-suites） | rest-api/checks | [references/rest-api/checks/README.md](references/rest-api/checks/README.md) |
 | Codespaces API | rest-api/codespaces | [references/rest-api/README.md](references/rest-api/README.md) |
-| Copilot API（利用状況メトリクス・ユーザー管理・Spaces・cloud agent 管理・content exclusion） | rest-api/copilot | [references/rest-api/copilot/README.md](references/rest-api/copilot/README.md) |
+| Copilot API（利用状況メトリクス・ユーザー管理・Spaces・cloud agent 管理・code review 設定・content exclusion） | rest-api/copilot | [references/rest-api/copilot/README.md](references/rest-api/copilot/README.md) |
 | Dependency graph API（dependency review / submission / SBOM） | rest-api/dependency-graph | [references/rest-api/dependency-graph/README.md](references/rest-api/dependency-graph/README.md) |
 | Agent tasks API（Copilot cloud agent タスク） | rest-api/agent-tasks | [references/rest-api/agent-tasks/README.md](references/rest-api/agent-tasks/README.md) |
 | Agents secrets / variables API | rest-api/agents | [references/rest-api/agents/README.md](references/rest-api/agents/README.md) |

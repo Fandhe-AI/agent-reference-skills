@@ -58,6 +58,31 @@
 
 - classic PAT は `security_events` スコープ（public リポジトリのみなら `public_repo` スコープでも可）が必要
 - SARIF アップロードは非同期処理。`GET /sarifs/{sarif_id}` でステータスをポーリングする
+- Source: https://docs.github.com/en/rest/code-scanning/code-scanning （Article Body API、取得日 2026-11-14）
+
+### AI Scan（public preview）
+
+| メソッド | パス | 説明 |
+|---|---|---|
+| GET | `/orgs/{org}/code-scanning/ai-scan` | organization の AI Scan 設定取得（`pr_scan` / `repository_scan`） |
+| PATCH | `/orgs/{org}/code-scanning/ai-scan` | organization の AI Scan 設定更新 |
+| GET | `/repos/{owner}/{repo}/code-scanning/ai-scan` | repository の AI Scan 有効状態取得 |
+| PATCH | `/repos/{owner}/{repo}/code-scanning/ai-scan` | repository の AI Scan 有効状態更新 |
+
+```curl
+curl -L \
+  -X PATCH \
+  https://api.github.com/orgs/ORG/code-scanning/ai-scan \
+  -d '{
+  "pr_scan": "enabled",
+  "repository_scan": "enabled"
+}'
+```
+
+- `pr_scan` は pull request 向け、`repository_scan`（2026-11-13 追加）はリポジトリ全体スキャン向けで、値は `enabled` / `disabled`。organization が無効化するとリポジトリは有効化できず、有効化するとリポジトリは継承しつつ個別に opt out できる
+- enterprise ポリシーが AI Scan を許可しない場合、有効化は `422`。両設定を同一リクエストで更新でき、片方がブロックされると両方とも変更されない
+- 権限: organization は owner / security manager（`admin:org`・`repo`・`write:org`。security manager は `write:org`）、repository は `repo`（public のみなら `public_repo`）
+- Source: https://github.blog/changelog/2026-11-13-manage-ai-scan-for-repositories-using-the-rest-api （取得日 2026-11-14）
 
 ## Related
 

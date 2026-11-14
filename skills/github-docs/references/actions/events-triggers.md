@@ -286,6 +286,13 @@ PR イベント（ベースブランチのコンテキストで実行）。
 - **フィルタ**: `branches`, `branches-ignore`, `paths`, `paths-ignore`
 - セキュリティ注意: デフォルトブランチのコンテキストで実行されるため、信頼できないコードの実行に注意
 
+#### Notes (default block, 2026-12-02)
+
+- 2026-12-02 から、GitHub Actions は public リポジトリの `pull_request_target` イベントを既定でブロックする（適用される Actions event policy が明示的に許可している場合を除く。private / internal リポジトリは対象外。GitHub Free / Team / Enterprise Cloud が対象で Enterprise Server は対象外）。当初の enforcement 予定は 2026-11-02 だった
+- 2026-12-02 までは evaluate mode（警告付きで実行）。ブラウンアウト（ブロックされ失敗 run になる）は 2026-11-09 と 2026-11-16 の 16:00-18:00 UTC
+- 対応: Insights で影響する run を確認し、ブロックを受け入れるか、依存するワークフローを event policy（workflow file targeting 可）で明示許可する
+- Source: https://github.blog/changelog/2026-11-02-pull_request_target-blocked-by-default-december-2 （取得日 2026-11-14）
+
 ### push
 
 コミットのプッシュ時。
