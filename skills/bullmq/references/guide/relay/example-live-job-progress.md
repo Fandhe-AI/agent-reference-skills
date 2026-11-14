@@ -6,10 +6,10 @@ Workers publish job progress as retained messages; only the API servers with a v
 
 ### Worker
 
-Adapted (not in the official docs): the `failed` handler publishes the terminal `failed` status only when the job has no retry left (`UnrecoverableError` or `attemptsMade` reached `opts.attempts`), because the worker's `failed` event also fires for failed attempts that will be retried; the rest of the snippet is verbatim.
+Adapted (not in the official docs): the `failed` handler publishes the terminal `failed` status only when `job.finishedOn` is set, because the worker's `failed` event also fires for failed attempts that will be retried; the rest of the snippet is verbatim.
 
 ```typescript
-import { Relay, UnrecoverableError, Worker } from 'bullmq';
+import { Relay, Worker } from 'bullmq';
 
 const connection = { host: 'redis.internal', port: 6379 };
 const relay = new Relay({ connection });
@@ -44,12 +44,8 @@ worker.on('completed', (job, result) => {
 });
 
 worker.on('failed', (job, err) => {
-  // Publish a terminal status only when no retry is left.
-  const isFinal =
-    job &&
-    (err instanceof UnrecoverableError ||
-      job.attemptsMade >= (job.opts.attempts ?? 1));
-  if (job && isFinal) {
+  // finishedOn is only set when the job moved to the failed state for good.
+  if (job?.finishedOn) {
     void relay.publish(
       topic(job.id!, 'status'),
       { state: 'failed', reason: err.message },
@@ -135,7 +131,7 @@ events.addEventListener('status', e => showResult(JSON.parse(e.data)));
 - Scenario: users upload videos, workers transcode them, and each video page shows a live progress bar; the browser is connected to one of the API servers (Server-Sent Events) while the job runs on any worker. Exact-topic subscriptions deliver the retained value first, so opening the page shows the current progress at once.
 - Why the Relay: only API servers with a viewer receive updates, and only for watched jobs (with `QueueEvents` every API server would read every event of the queue); it works the same with any number of API servers and workers.
 - Validate and authorize the job id before building a topic from it (see Values in topics in topics-and-patterns.md). Publish when the percentage changes or at most a few times per second. Keep calling `job.updateProgress()` as well if you also need the progress on the job itself (for example for `queue.getJob(id)`).
-- Adapted from the official example: the `failed` handler (see the note above the worker snippet). It relies on `job.attemptsMade` counting the attempt that just failed; a retried job keeps its previous retained status until it completes or fails for good.
+- Adapted from the official example: the `failed` handler (see the note above the worker snippet). In BullMQ v6.7.6 `Job.moveToFailed` sets `finishedOn` only when the job is moved to the failed state (an `UnrecoverableError`, exhausted `attempts`, or a backoff strategy returning -1), not when it is scheduled for a retry (source: src/classes/job.ts at tag v6.7.6); a retried job keeps its previous retained status until it completes or fails for good.
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/relay/examples/live-job-progress.md (tag v6.7.6, fetched 2026-11-14). Official page: https://docs.bullmq.io/guide/relay/examples/live-job-progress
 
 ### Refreshing viewers after a recovery

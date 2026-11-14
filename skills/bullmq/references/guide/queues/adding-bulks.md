@@ -27,11 +27,6 @@ const jobs = await queue.addBulk([
 | `data` | `object` | ジョブデータ |
 | `opts` | `JobsOptions` | ジョブオプション（任意） |
 
-## Benefits
-
-- **Performance**: fewer roundtrips to the backend when adding many jobs at once
-- **Atomicity is conditional**: on PostgreSQL the TypeScript, Python and .NET SDKs add a batch in a single transaction, but on Redis a failed bulk call must not be assumed to have added no jobs (see Notes)
-
 ## Notes
 
 - Bulk-add atomicity depends on the SDK and backend (v6.7.6 official page):

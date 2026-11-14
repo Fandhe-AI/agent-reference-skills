@@ -6,7 +6,7 @@ Each API server subscribes to the notification topic of every connected user; an
 
 ### API server
 
-Adapted (not in the official docs): the `authenticate(request)` call is wrapped in `try` / `catch`, because the `async` connection listener is not awaited by the `WebSocketServer` and a rejection (for example an authentication store outage) would otherwise be an unhandled promise rejection that can terminate the Node.js process and drop every user's connection.
+Adapted (not in the official docs): an `'error'` listener is registered on each socket before authentication (an unhandled `'error'` event of an `EventEmitter` terminates the process, and `ws` emits it for example on malformed frames), and the `authenticate(request)` call is wrapped in `try` / `catch`, because the `async` connection listener is not awaited by the `WebSocketServer` and a rejection (for example an authentication store outage) would otherwise be an unhandled promise rejection that can terminate the Node.js process and drop every user's connection.
 
 ```typescript
 import { WebSocketServer, WebSocket } from 'ws';
@@ -24,6 +24,9 @@ const users = new Map<string, ConnectedUser>();
 const userTopic = (userId: string) => `users.${userId}.notifications`;
 
 wss.on('connection', async (socket, request) => {
+  // An unhandled 'error' event on a socket would terminate the process.
+  socket.on('error', err => console.error(err));
+
   let userId: string | undefined;
   try {
     userId = await authenticate(request); // e.g. from a session cookie
@@ -111,7 +114,7 @@ export async function notify(userId: string, notification: Notification) {
 - Scenario: users keep a WebSocket open to one of several API servers behind a load balancer, and any part of the system needs to notify a user in real time without knowing which server holds the connection. Each API server subscribes once per connected user while at least one of their sockets is open.
 - `endpoints` in the publish result is the number of subscriptions that received the message (here, the API servers holding a socket for that user); `0` lets you fall back to another channel such as a mobile push through a queue.
 - User ids must be valid topic segments; encode them otherwise. The Relay delivers live messages only, so store notifications in your database as well. Group notifications can use a shared topic (`tenants.acme.announcements`).
-- Adapted from the official example: error handling around `authenticate(request)` (see the note above the API server snippet); the rest of the snippet is verbatim.
+- Adapted from the official example: the socket `'error'` listener and the error handling around `authenticate(request)` (see the note above the API server snippet); the rest of the snippet is verbatim.
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/relay/examples/realtime-notifications.md (tag v6.7.6, fetched 2026-11-14). Official page: https://docs.bullmq.io/guide/relay/examples/realtime-notifications
 
 ## Related

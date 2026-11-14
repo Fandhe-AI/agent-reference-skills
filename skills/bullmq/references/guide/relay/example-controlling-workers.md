@@ -51,13 +51,15 @@ if (!worker.isRunning()) {
 
 ### Changing the settings
 
+Adapted (not in the official docs): the log line reports `result.endpoints` as the number of subscriptions the message was delivered to; the official snippet says "applied by N workers", but `publish` does not wait for the listeners, so it does not confirm that the settings were applied.
+
 ```typescript
 const result = await relay.publish(
   'workers.emails.settings',
   { concurrency: 2, paused: false },
   { retain: 7 * 24 * 60 * 60 * 1000 },
 );
-console.log(`applied by ${result.endpoints} workers`);
+console.log(`delivered to ${result.endpoints} subscriptions`);
 ```
 
 ### Targeting some workers
@@ -88,6 +90,7 @@ relay.on('recovered', () => {
 });
 ```
 
+- Adapted from the official example: the log message after `publish` (see the note above that snippet).
 - Adapted from the official example: a worker disconnected for longer than `leaseDuration` while the settings changed would otherwise keep running with stale `concurrency` / `paused` until the next publish, because retained messages are not redelivered after a recovery.
 
 ## Related
