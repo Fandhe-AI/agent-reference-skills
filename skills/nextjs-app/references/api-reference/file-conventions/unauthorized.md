@@ -39,6 +39,7 @@ export default async function DashboardPage() {
 
 - This feature is currently **experimental** and not recommended for production.
 - Introduced in `v15.1.0`.
+- Next.js sends each `unauthorized.js` file with every route under its segment, even when `unauthorized()` is never called, and loads the Client Components it imports on those pages; prefer Server Components and `<Link>` over interactive UI.
 
 ## Related
 

@@ -1,6 +1,6 @@
 # Install
 
-`create-next-app` CLI で Next.js App Router プロジェクトを作成するコマンド集。対象 Next.js v16.4.2。
+`create-next-app` CLI で Next.js App Router プロジェクトを作成するコマンド集。対象 Next.js v16.4.6。
 
 ## デフォルト設定で新規プロジェクトを作成する
 

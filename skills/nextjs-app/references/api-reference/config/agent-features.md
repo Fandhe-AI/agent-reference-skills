@@ -37,7 +37,7 @@ export default nextConfig
 
 ## Notes
 
-- Source: https://nextjs.org/docs/app/api-reference/config/next-config-js/agentRules, https://nextjs.org/docs/app/api-reference/config/next-config-js/agentUpgrade, https://nextjs.org/docs/app/api-reference/config/next-config-js/agentFeedback (v16.4.2)
+- Source: https://nextjs.org/docs/app/api-reference/config/next-config-js/agentRules, https://nextjs.org/docs/app/api-reference/config/next-config-js/agentUpgrade, https://nextjs.org/docs/app/api-reference/config/next-config-js/agentFeedback (v16.4.6)
 
 ### agentRules
 

@@ -42,5 +42,6 @@ export default function StyledComponentsRegistry({ children }: { children: React
 
 ## Related
 
+- [useServerInsertedHTML](../api-reference/functions/use-server-inserted-html.md)
 - [Tailwind CSS v3](./tailwind-v3-css.md)
 - [Sass](./sass.md)

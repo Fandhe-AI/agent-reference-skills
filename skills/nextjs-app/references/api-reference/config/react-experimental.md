@@ -88,7 +88,7 @@ module.exports = {
 ```
 
 - Enables Next.js-side integration (e.g. triggering transitions on route navigation) for React's `<ViewTransition>` component (imported from `react` directly).
-- Removed in `v16.3.0`: the `experimental.viewTransition` config page no longer exists in the `v16.3.0` / `v16.4.2` docs. View transitions now work in the App Router with no configuration (React 19.3 ships `<ViewTransition>` and `addTransitionType`); see the View Transitions guide.
+- Removed in `v16.3.0`: the `experimental.viewTransition` config page no longer exists in the `v16.3.0` / `v16.4.6` docs. View transitions now work in the App Router with no configuration (React 19.3 ships `<ViewTransition>` and `addTransitionType`); see the View Transitions guide.
 
 ## authInterrupts
 

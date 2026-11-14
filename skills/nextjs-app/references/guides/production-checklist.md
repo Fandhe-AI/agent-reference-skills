@@ -16,7 +16,7 @@ Enabled by default, no configuration required:
 
 | Area | Recommendations |
 | --- | --- |
-| Routing/rendering | Use layouts for shared UI, `<Link>` for navigation, custom `error.js`/`not-found.js`, mind `"use client"` boundaries, wrap Request-time APIs (`cookies`, `searchParams`) in `<Suspense>` |
+| Routing/rendering | Use layouts for shared UI, `<Link>` for navigation, custom `error.js`/`not-found.js`, mind `"use client"` boundaries, wrap Request-time APIs (`cookies`, `searchParams`) in `<Suspense>` so the rest of the route can prerender (without Cache Components they opt the whole route into dynamic rendering) |
 | Data fetching | Fetch in Server Components, use Route Handlers only from Client Components, stream with `loading.js`/Suspense, fetch in parallel, cache non-`fetch` requests with `unstable_cache` |
 | UI/accessibility | Server Actions for forms, `global-error.tsx`/`global-not-found.tsx`, Font Module, `<Image>`, `<Script>`, `eslint-plugin-jsx-a11y` |
 | Security | Taint sensitive data, verify auth inside each Server Action (not just Proxy/layout checks), keep `.env.*` out of git, add a Content Security Policy |

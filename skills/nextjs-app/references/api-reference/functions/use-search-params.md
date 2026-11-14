@@ -28,6 +28,7 @@ export default function SearchBar() {
 
 - Not supported in Server Components (would risk stale values during partial rendering) — use the Page's `searchParams` prop instead and pass values down.
 - Calling it in a prerendered route client-side-renders the component tree up to the nearest `<Suspense>` boundary; wrap components using it in `<Suspense>` so the rest of the page can still prerender. Production builds fail with a "Missing Suspense boundary" error otherwise.
+- With Cache Components, the boundary is client-side rendered only when the rest of the route is prerendered; if any component on the route reads request data such as `cookies()`, Next.js renders the boundary on the server at request time with the real search params. To keep a component that reads browser-only APIs (e.g. `sessionStorage`) out of the server render, use `use(browser())` (single-page-applications guide) instead of relying on the boundary.
 - In dynamically rendered routes, values are available during the initial server render too (e.g. after calling `connection()` in a Server Component parent).
 - Layouts (Server Components) do not receive a `searchParams` prop (to avoid staleness since layouts aren't re-rendered on navigation) — use the Page's `searchParams` prop or this hook in a Client Component instead.
 - In apps with a `/pages` directory, may return `ReadonlyURLSearchParams | null`.

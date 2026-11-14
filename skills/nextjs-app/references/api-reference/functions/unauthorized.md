@@ -1,6 +1,6 @@
 # unauthorized
 
-`unauthorized` throws an error that renders a Next.js 401 error page, useful for handling authorization errors.
+`unauthorized` throws an error that renders the unauthorized UI, useful for handling authorization errors.
 
 ## Signature / Usage
 
@@ -24,7 +24,8 @@ export default async function DashboardPage() {
 - Cannot be called in the root layout.
 - Injects `<meta name="robots" content="noindex" />`. Call it in the render path (a component, or a function a component `await`s); a call left in an un-awaited promise renders no unauthorized UI.
 - Inside `<Suspense>`: streaming has already started, so the status stays `200` and `noindex` is added. Calling it before streaming starts returns `401`.
-- If `unauthorized()` is reached during prerendering, the route can remain `○` Static and serve a `401`. A request-time check can run in Proxy.
+- `unauthorized()` returns a `401` when it runs before the response starts, including during prerendering (the route can remain `○` Static and serve a `401`). See loading.js status codes.
+- In a Route Handler, `unauthorized()` returns an empty `401` response (no unauthorized UI is rendered).
 - Customize the rendered UI via the `unauthorized.js` file convention.
 - Introduced in `v15.1.0`.
 

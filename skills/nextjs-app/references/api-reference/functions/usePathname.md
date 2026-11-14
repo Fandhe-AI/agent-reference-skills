@@ -20,7 +20,7 @@ export default function ExampleClientComponent() {
 - Takes no parameters; returns a string (e.g. `/dashboard` for `/dashboard?v=2` — query string excluded).
 - Reading the current URL from a Server Component is not supported (by design, to preserve layout state across navigations).
 - When `cacheComponents` is enabled, may require a `Suspense` boundary if the route has a dynamic param (optional if using `generateStaticParams`).
-- With rewrites (via `next.config` or Proxy), the client-read pathname may differ from the server-rendered one, risking hydration mismatches — isolate the pathname-dependent UI and update it after mount to avoid this.
+- A prerendered page's HTML is generated for its own path (e.g. `/blog/hello` for `app/blog/[slug]/page.tsx`); when a rewrite in `next.config` or Proxy serves it at a different URL, the browser keeps the requested URL and `usePathname()` reads that browser URL, not the rewrite destination, risking hydration mismatches — isolate the pathname-dependent UI and update it after mount to avoid this.
 - Returns `null` in Pages Router contexts before the router is initialized (e.g. fallback routes).
 - Introduced in `v13.0.0`.
 

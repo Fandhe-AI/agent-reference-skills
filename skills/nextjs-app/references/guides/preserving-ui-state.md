@@ -34,7 +34,7 @@ function SettingsDropdown() {
 - Use `useLayoutEffect` cleanup (runs synchronously before hiding) to reset transient state like open dropdowns or stale status messages; derive dialog-open state from a search param instead of local state if it must re-trigger init effects.
 - Media elements (`<video>`, `<audio>`) keep playing under `display: none` — pause them explicitly in a `useLayoutEffect` cleanup.
 - Local component state (`useState`) persists across auth changes since props changing does not reset existing state; use `window.location.href` for logout to force a full reload, or key components by user ID.
-- Hidden Activity content remains in the DOM for e2e tests — use visibility-aware selectors (Playwright `getByRole`, `.filter({ visible: true })`; Cypress `.should('be.visible')`).
+- Hidden Activity content remains in the DOM for e2e tests — use visibility-aware selectors. Playwright `getByRole` excludes hidden elements by default, whereas `getByLabel`, `getByPlaceholder` and `.locator()` can match hidden elements, so add `.filter({ visible: true })`; a query matching both a visible and a hidden element is a strict mode violation in Playwright. Which locators match hidden elements varies by tool and version (Cypress: `.should('be.visible')`).
 - Prefer `data-*` attributes over broad `:has()` selectors to avoid leaking global styles from hidden pages into visible ones.
 - Effects re-run on every hide-to-visible transition, not just first mount — use a ref to distinguish first mount from re-show.
 

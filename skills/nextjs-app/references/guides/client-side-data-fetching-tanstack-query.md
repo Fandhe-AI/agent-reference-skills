@@ -79,7 +79,7 @@ function ProductData({ id }: { id: string }) {
 
 ## Notes
 
-- Source: https://nextjs.org/docs/app/guides/client-side-data-fetching/tanstack-query (v16.4.2)
+- Source: https://nextjs.org/docs/app/guides/client-side-data-fetching/tanstack-query (v16.4.6)
 
 - This page covers only how to integrate TanStack Query with Next.js App Router. The TanStack Query APIs themselves (`useQuery`, `QueryClient`, `HydrationBoundary`, etc.) belong to the tanstack-query skill.
 - Create a new `QueryClient` for each server render and reuse one in the browser.

@@ -92,7 +92,7 @@ return mutate(
 
 ## Notes
 
-- Source: https://nextjs.org/docs/app/guides/client-side-data-fetching/swr (v16.4.2)
+- Source: https://nextjs.org/docs/app/guides/client-side-data-fetching/swr (v16.4.6)
 
 - A conditional key (`null`) delays the request until an input exists. With an unconditional key and `suspense: true`, `data` is defined after Suspense resolves. Request errors go to the nearest error boundary.
 - With `suspense: true`, later revalidation for the same key keeps current data rendered (no fallback again); use `isValidating` for background refresh feedback. Independent Suspense reads in sibling components start in parallel; multiple reads in one component run sequentially.

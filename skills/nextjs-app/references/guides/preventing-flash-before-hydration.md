@@ -27,6 +27,8 @@ Use a synchronous inline `<script>` (via `dangerouslySetInnerHTML`) that runs du
 - Without `suppressHydrationWarning`, React treats a mismatch as a hydration error and client-renders from the nearest error/Suspense boundary, discarding other inline-script corrections within that boundary.
 - Reusable component pattern uses `useId()` for stable per-instance IDs, and toggles `type="text/javascript"` (server) vs `type="text/plain"` (client, ignored) so soft navigations format directly in the browser instead.
 - Theme preference: read `localStorage` (or a cookie, for SSR-visible values) in a `<script>` inside `<head>` and set a `data-theme` attribute on `<html>` before paint; reading a cookie via `cookies()` in the root layout opts the whole app out of static prerendering.
+- Correcting server-rendered HTML after the browser has painted produces a flash of unstyled content (FOUC).
+- `useServerInsertedHTML` (in a Client Component, guarded by a `useRef` flag so it inserts once) can also return the theme script and avoids the script warning, but it inserts ahead of the component's markup, so it cannot replace the inline script for elements like `<time>` that must exist first; the script runs on the initial document only.
 - Sync React state (e.g. an accordion's open section) with a **lazy `useState` initializer** reading the same source (`localStorage`) as the inline script so initial state matches the DOM.
 - In development, React Strict Mode's remount resets `<html>`/`<head>`/`<body>` to only JSX-managed attributes, clearing what the script set — re-apply in a `useLayoutEffect` (no-op in production).
 - Inline scripts with `dangerouslySetInnerHTML` are blocked by strict CSPs without `'unsafe-inline'`; use a nonce.

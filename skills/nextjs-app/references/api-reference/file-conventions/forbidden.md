@@ -26,6 +26,7 @@ export default function Forbidden() {
 
 - This feature is currently **experimental** and not recommended for production.
 - Introduced in `v15.1.0`.
+- Next.js sends each `forbidden.js` file with every route under its segment, even when `forbidden()` is never called, and loads the Client Components it imports on those pages; prefer Server Components and `<Link>` over interactive UI.
 
 ## Related
 

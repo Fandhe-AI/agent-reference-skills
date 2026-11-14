@@ -37,7 +37,7 @@ export default function Page() {
 | `onError` | Function | - | Callback invoked if the image fails to load (Client Component required) |
 | `loading` | String | - | `'lazy'` (default) or `'eager'` |
 | `blurDataURL` | String | - | Data URL used as blur placeholder; auto-set for static imports of jpg/png/webp/avif |
-| `unoptimized` | Boolean | - | Serves the source as-is without optimization. Default `false` |
+| `unoptimized` | Boolean | - | Skips the Image Optimization API and serves the source as-is. Default `false` |
 | `overrideSrc` | String | - | Overrides the generated `src` attribute while keeping the generated `srcset` |
 | `decoding` | String | - | `'async'` (default), `'sync'`, or `'auto'` |
 | `onLoadingComplete` | Function | Deprecated (use `onLoad`) | Callback with a reference to the `<img>` element |
@@ -71,7 +71,7 @@ Other props are passed through to the underlying `<img>` element except `srcSet`
 
 - Must set both `width` and `height` unless the image is statically imported or uses `fill`.
 - `getImageProps()` (stable since v14.1.0) returns the props that would go on `<img>`, useful for `<picture>`/art-direction or CSS `image-set()` backgrounds; incompatible with `placeholder`.
-- SVGs are not optimized by default; use `unoptimized` (automatic when `src` ends in `.svg`) or enable `dangerouslyAllowSVG` with `contentSecurityPolicy`.
+- Next.js never optimizes SVG images; use `unoptimized` (automatic when `src` ends in `.svg`), which serves the SVG directly from the source. The default `dangerouslyAllowSVG: false` rejects SVG images in the Image Optimization API; only if `unoptimized` is not possible and you accept the risks, enable SVG pass-through with `dangerouslyAllowSVG: true` together with `contentSecurityPolicy` (and `contentDispositionType`).
 - Known browser quirks: Safari 15–16.3 shows a gray border while lazy-loading; Firefox 67+ shows a white background while loading (mitigate with `placeholder` or AVIF `formats`).
 - `priority` prop is deprecated since v16 in favor of `preload`.
 

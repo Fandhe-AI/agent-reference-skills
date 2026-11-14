@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 |------|------|-------------|
 | `use(promise)` | React API | Unwraps a Promise passed via context/props inside a Client Component, suspending until resolved |
 | `next/dynamic({ ssr: false })` | function option | Renders a component browser-only (no prerendering) |
-| `window.history.pushState` / `.replaceState` | browser API | Shallow-routes and integrates with the Next.js router (`usePathname`, `useSearchParams`) without a full navigation |
+| `window.history.pushState` / `.replaceState` | browser API | Shallow-routes without a full navigation; components using `usePathname` / `useSearchParams` update on URL change. Read `window.location` in an event handler instead of calling the hooks when only the handler needs the URL (both hooks affect prerendering) |
 | `output: 'export'` | `next.config.js` | Generates a fully static site (per-route HTML instead of one `index.html`) |
 
 ## Notes

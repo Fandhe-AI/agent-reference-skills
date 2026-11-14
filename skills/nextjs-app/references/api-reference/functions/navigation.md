@@ -57,7 +57,7 @@ export default nextConfig
 
 ## Notes
 
-- Source: https://nextjs.org/docs/app/api-reference/functions/navigation (v16.4.2)
+- Source: https://nextjs.org/docs/app/api-reference/functions/navigation (v16.4.6)
 
 - Parameters: none. Returns a `Promise<void>` that is not meant to be consumed.
 - Requires Cache Components (`cacheComponents: true`); throws without it. Meant for routes using Partial Prefetching (`partialPrefetching`), enabled globally or per route.

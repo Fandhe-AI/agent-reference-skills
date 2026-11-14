@@ -42,7 +42,7 @@ export default function Loading() {
 
 - Static routes are fully prefetched; dynamic routes skip prefetching unless `loading.tsx` exists (partial prefetch)
 - `<Link>` is a Client Component and must hydrate before prefetching starts; reduce bundle size to hydrate sooner
-- `window.history.pushState`/`replaceState` integrate with the Next.js router and sync with `usePathname`/`useSearchParams`
+- `window.history.pushState`/`replaceState` integrate with the Next.js router, so components that render with `usePathname`/`useSearchParams` update when the URL changes. When an event handler is the only place a component needs the URL, read `window.location` (e.g. `new URLSearchParams(window.location.search)`) in the handler instead of calling the hooks; both hooks affect prerendering (v16.4.6 docs)
 - Disabling prefetch entirely trades off instant navigation for reduced resource usage
 
 ## Related

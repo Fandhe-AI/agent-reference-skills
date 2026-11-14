@@ -1,6 +1,6 @@
 # Bundle Analyzer
 
-App Router アプリケーションのバンドルサイズを解析するコマンド集（Turbopack 版 `next analyze` / `@next/bundle-analyzer` Webpack プラグイン版）。対象 Next.js v16.4.2。
+App Router アプリケーションのバンドルサイズを解析するコマンド集（Turbopack 版 `next analyze` / `@next/bundle-analyzer` Webpack プラグイン版）。対象 Next.js v16.4.6。
 
 ## Turbopack Bundle Analyzer を起動する
 
@@ -8,7 +8,7 @@ App Router アプリケーションのバンドルサイズを解析するコマ
 npx next analyze
 ```
 
-ブラウザでインタラクティブなモジュールグラフを開く。ルート・client/server ビューで絞り込み、モジュールの import chain を辿れる。アプリケーションビルドは生成しない。`next experimental-analyze`（v16.1.0 で追加）は `next analyze` に置き換わった（v16.4.2 の CLI リファレンスには `next analyze` のみ記載）。
+ブラウザでインタラクティブなモジュールグラフを開く。ルート・client/server ビューで絞り込み、モジュールの import chain を辿れる。アプリケーションビルドは生成しない。`next experimental-analyze`（v16.1.0 で追加）は `next analyze` に置き換わった（v16.4.6 の CLI リファレンスには `next analyze` のみ記載）。
 
 ## 解析結果をファイルに書き出す（サーバー起動なし）
 

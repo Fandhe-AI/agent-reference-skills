@@ -1,6 +1,6 @@
 # forbidden
 
-`forbidden` throws an error that renders a Next.js 403 error page, useful for handling authorization errors.
+`forbidden` throws an error that renders the forbidden UI, useful for handling authorization errors.
 
 ## Signature / Usage
 
@@ -24,7 +24,7 @@ export default async function AdminPage() {
 - Cannot be called in the root layout.
 - Injects `<meta name="robots" content="noindex" />`. Call it in the render path (a component, or a function a component `await`s); a call left in an un-awaited promise renders no forbidden UI.
 - Inside `<Suspense>`: streaming has already started, so the status stays `200` and `noindex` is added. Calling it before streaming starts returns `403`.
-- If `forbidden()` is reached during prerendering, the route can remain `○` Static and serve a `403`. A request-time check can run in Proxy.
+- `forbidden()` returns a `403` when it runs before the response starts, including during prerendering (the route can remain `○` Static and serve a `403`). See loading.js status codes.
 - Customize the rendered UI via the `forbidden.js` file convention.
 - Introduced in `v15.1.0`.
 
