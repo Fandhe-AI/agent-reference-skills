@@ -113,13 +113,15 @@ gcloud iam workforce-pools providers create-saml WORKFORCE_PROVIDER_ID \
 
 Example SAML attribute mapping and condition:
 
+Adapted (not in the official docs): SAML attribute values are lists, so the first element (`[0]`) is taken where a string is required.
+
 ```
-google.subject=assertion.attributes['http://schemas.microsoft.com/identity/claims/objectidentifier'],
+google.subject=assertion.attributes['http://schemas.microsoft.com/identity/claims/objectidentifier'][0],
 attribute.costcenter=assertion.attributes.costcenter[0]
 ```
 
 ```
-assertion.attributes.ipaddr.startsWith('98.11.12.')
+assertion.attributes.ipaddr[0].startsWith('98.11.12.')
 ```
 
 ### 4. Optional: encrypted SAML assertions
@@ -257,6 +259,8 @@ gcloud storage ls --project="TEST_PROJECT_ID"
 | `WORKFORCE_POOL_USER_PROJECT` | Project for quota and billing; principal needs `serviceusage.services.use`. |
 
 ## Notes
+
+- Corrected from the official docs: SAML `assertion.attributes[...]` values are lists; the example mappings/conditions index `[0]` where a string is required.
 
 - Required role: `roles/iam.workforcePoolAdmin` on the organization. Workforce Identity Federation is no-cost; detailed audit logging uses Cloud Logging pricing.
 - This guide maps up to 150 Entra groups; for up to 400 groups see the scalable-groups guide (https://docs.cloud.google.com/iam/docs/workforce-sign-in-microsoft-entra-id-scalable-groups). Extra attributes (Microsoft Graph) can be enabled in the console to increase group count.
