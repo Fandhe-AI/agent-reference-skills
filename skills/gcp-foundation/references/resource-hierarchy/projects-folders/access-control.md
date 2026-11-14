@@ -65,6 +65,8 @@ Adapted (not in the official docs): added the missing comma before `etag`.
 
 Grant a role by editing the policy file and setting it (the read-modify-write cycle; keep the `etag`):
 
+Adapted (not in the official docs): trailing commas removed so the JSON is valid.
+
 ```json
 {
     "bindings": [

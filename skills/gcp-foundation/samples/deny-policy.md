@@ -91,11 +91,10 @@ curl -X POST \
 
 The call returns a long-running operation; poll it until `done` is `true`:
 
-Adapted (not in the official docs): use the full `name` returned by the mutation (it includes `denypolicies/POLICY_ID`).
+Adapted (not in the official docs): use the full `name` returned by the mutation as `OPERATION_NAME` (for example `policies/ENCODED_ATTACHMENT_POINT/denypolicies/POLICY_ID/operations/OPERATION_ID`, which includes `denypolicies/POLICY_ID`).
 
-```
+```text
 GET https://iam.googleapis.com/v2/OPERATION_NAME
-# OPERATION_NAME = e.g. policies/ENCODED_ATTACHMENT_POINT/denypolicies/POLICY_ID/operations/OPERATION_ID
 ```
 
 ## Options / Props
@@ -110,6 +109,7 @@ GET https://iam.googleapis.com/v2/OPERATION_NAME
 
 ## Notes
 
+- Adapted from the official docs: the operation poll uses the full operation `name` returned by the mutation (including `denypolicies/POLICY_ID`).
 - Deny policies are inherited down the hierarchy and override allow policies. Limit: 500 deny policies and 500 deny rules per resource.
 - Deleting a deny policy is permanent; pass `etag` for a conditional delete. Test on a throwaway project before attaching at the organization.
 - If denied principals include service agents (for example `principalSet://goog/public:all`), add your service agents as exceptions so services keep working.

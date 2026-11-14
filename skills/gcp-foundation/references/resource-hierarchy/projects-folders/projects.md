@@ -24,6 +24,8 @@ gcloud projects create PROJECT_ID --folder=FOLDER_ID
 
 REST create (does not link billing; use `projects.updateBillingInfo` for that):
 
+Adapted (not in the official docs): the v3 `Project` uses `displayName` for the display name (`name` is the output-only `projects/PROJECT_NUMBER` resource name), and the poll response below uses the v3 fields (`name`, `displayName`, `state`) with valid JSON.
+
 ```restructuredtext
 POST https://cloudresourcemanager.googleapis.com/v3/projects/
 Authorization: *************
@@ -31,7 +33,7 @@ Content-Type: application/json
 
 {
     "projectId": "our-project-123",
-    "name": "my project",
+    "displayName": "my project",
     "labels": {
       "mylabel": "prod"
     }
@@ -60,14 +62,14 @@ Content-Type: application/json
     "done": true,
     "response": {
         "@type": "type.googleapis.com/google.cloudresourcemanager.v3.Project",
-        "projectNumber": "464036093014",
+        "name": "projects/464036093014",
         "projectId": "our-project-123",
-        "lifecycleState": "ACTIVE",
-        "name": "my project",
+        "state": "ACTIVE",
+        "displayName": "my project",
         "labels": {
-        "mylabel": "prod"
+            "mylabel": "prod"
         },
-    "createTime": "2016-01-07T21:59:43.314Z"
+        "createTime": "2016-01-07T21:59:43.314Z"
     }
 }
 ```
@@ -82,22 +84,20 @@ gcloud projects create PROJECT_ID --organization=ORGANIZATION_ID --tags=KEY_VALU
 
 `KEY_VALUE_PAIRS` example: `123/environment=production, 456/create=testresource` (`123` / `456` are the IDs of the organization or folder defining the tag keys).
 
-```restructuredtext
-  POST https://cloudresourcemanager.googleapis.com/v3/projects/
-  Authorization: *************
-  Content-Type: application/json
+Adapted (not in the official docs): valid JSON using the v3 `displayName` field and a single `tags` map of tag key to value (the official sample repeats `tags` and omits commas).
 
-  {
-    "projectId": "our-project-456",
-    "name": "my project",
-    "parent": "organizations/123",
-    "tags": {
-      "key": "123/environment"
-      "value": "production"
-    },
-"tags": {
-      "key": "123/costCenter"
-      "value": "marketing"
+```restructuredtext
+POST https://cloudresourcemanager.googleapis.com/v3/projects/
+Authorization: *************
+Content-Type: application/json
+
+{
+  "projectId": "our-project-456",
+  "displayName": "my project",
+  "parent": "organizations/123",
+  "tags": {
+    "123/environment": "production",
+    "123/costCenter": "marketing"
   }
 }
 ```
@@ -117,7 +117,7 @@ Environment badges in the console project picker (tag key `environment`): Prod =
 - Permission needed: `resourcemanager.projects.create` (for example Project Creator `roles/resourcemanager.projectCreator`, granted by default to the whole domain of a new organization and to free trial users). The console billing-account picker needs Billing Account User (`roles/billing.user`).
 - Do not put sensitive information (PII, security data) in project names or IDs; the ID appears in many resource names.
 - Service accounts can create projects but only inside an organization and must specify the parent.
-- The official tag REST sample is not valid JSON as written (duplicate `tags` key, missing commas); treat it as a shape illustration only.
+- Adapted from the official docs: the REST examples use the v3 `Project` fields (`displayName` in the request; `name` = `projects/PROJECT_NUMBER`, `displayName`, `state` in the response), and the official tag sample (duplicate `tags` key, missing commas) is rewritten as valid JSON with a tag key/value map.
 - Quota: creating outside an organization uses the user's quota; inside an organization, both user and organization quotas are checked (either with remaining quota is sufficient). Soft-deleted projects count until fully deleted after 30 days. Request an increase on Quotas & System Limits: filter Metric `cloudresourcemanager.googleapis.com/projects_count`, select Cloud Resource Manager API, Edit quota. Without an organization use the Request Project Quota Increase form.
 - Source: https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.

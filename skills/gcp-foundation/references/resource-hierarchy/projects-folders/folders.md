@@ -18,13 +18,14 @@ gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
 
 REST (policy shape and request):
 
-Adapted (not in the official docs): the shell assignment has no space after `=`, the JSON keys are quoted with no trailing commas, and the role IDs use the full `roles/resourcemanager.folder*` names.
+Adapted (not in the official docs): the shell assignment has no space after `=`, the JSON keys are quoted with no trailing commas, the role IDs use the full `roles/resourcemanager.folder*` names, and the body is a read-modify-write. `setIamPolicy` replaces the whole policy, so first read the current policy (`getIamPolicy` with `"options": {"requestedPolicyVersion": 3}`), keep every existing binding, condition and the `etag`, and add only the bindings below. `CURRENT_BINDINGS...` and `ETAG_FROM_GETIAMPOLICY` are placeholders for that existing content.
 
 ```bash
 request_json='{
   "policy": {
-    "version": 1,
+    "version": 3,
     "bindings": [
+      CURRENT_BINDINGS_FROM_GETIAMPOLICY,
       {
         "role": "roles/resourcemanager.folderAdmin",
         "members": ["user:admin@myorganization.com"]
@@ -37,7 +38,8 @@ request_json='{
         "role": "roles/resourcemanager.folderMover",
         "members": ["user:admin@myorganization.com"]
       }
-    ]
+    ],
+    "etag": "ETAG_FROM_GETIAMPOLICY"
   }
 }'
 ```
@@ -122,10 +124,12 @@ https://cloudresourcemanager.googleapis.com/v3/operations/fc.123456789
 
 Tags at creation (Preview; requires Tag User role):
 
+Adapted (not in the official docs): added the missing space before the line-continuation backslash after `--organization=ORGANIZATION_ID`.
+
 ```bash
 gcloud resource-manager folders create \
     --display-name=DISPLAY_NAME \
-    --organization=ORGANIZATION_ID\
+    --organization=ORGANIZATION_ID \
     --tags=KEY_VALUE_PAIRS
 ```
 
@@ -171,13 +175,14 @@ gcloud resource-manager folders \
     set-iam-policy FOLDER_ID POLICY_FILE
 ```
 
-Adapted (not in the official docs): valid shell assignment and JSON (quoted keys).
+Adapted (not in the official docs): valid shell assignment and JSON (quoted keys); the URL includes the `folders/` collection (`FOLDER_ID` is the numeric ID); and the body is a read-modify-write. `setIamPolicy` replaces the whole policy, so first read the current policy (`getIamPolicy` with `"options": {"requestedPolicyVersion": 3}`), keep existing bindings, conditions and the `etag`, and change only the binding you need. The placeholders stand for that existing content.
 
 ```bash
 request_json='{
   "policy": {
-    "version": 1,
+    "version": 3,
     "bindings": [
+      CURRENT_BINDINGS_FROM_GETIAMPOLICY,
       {
         "role": "roles/resourcemanager.folderEditor",
         "members": [
@@ -185,7 +190,8 @@ request_json='{
           "user:email2@example.com"
         ]
       }
-    ]
+    ],
+    "etag": "ETAG_FROM_GETIAMPOLICY"
   }
 }'
 ```
@@ -194,7 +200,7 @@ request_json='{
 curl -X POST -H "Content-Type: application/json" \
 -H "Authorization: Bearer ${bearer_token}" \
 -d "$request_json" \
-https://cloudresourcemanager.googleapis.com/v3/FOLDER_ID:setIamPolicy
+https://cloudresourcemanager.googleapis.com/v3/folders/FOLDER_ID:setIamPolicy
 ```
 
 Long-running operations with `--async` (supported only for `folders create` and `folders move`):
@@ -243,6 +249,7 @@ response:
 ## Notes
 
 - Folder Admin can create, edit, delete, move folders, change IAM on folders, and move projects between folders; initially only the Organization Admin can assign it for the organization. To let users see the structure, grant Organization Viewer and Folder Viewer at the organization; to limit visibility, grant Folder Viewer on specific folders.
+- Adapted from the official docs: the setIamPolicy examples are read-modify-write (existing bindings and `etag` preserved, version 3), the folder setIamPolicy URL is `/v3/folders/FOLDER_ID:setIamPolicy`, and the tagged `folders create` command has a space before its line-continuation backslash.
 - Adapted from the official docs: the REST `request_json` examples are corrected to valid shell and JSON, and the folder role IDs use `roles/resourcemanager.folderAdmin` / `folderCreator` / `folderMover` (the official sample's `roles/folderAdmin` etc. are not valid role IDs).
 - Start with a single sandbox folder to experiment; model departments, applications, or environments with nested folders.
 - Console offers Standard folders and Compliant (Assured Workloads) folders.

@@ -24,6 +24,8 @@ gcloud projects create PROJECT_ID --folder=FOLDER_ID
 
 `projects.create` does not link billing; billing is handled separately.
 
+Adapted (not in the official docs): the v3 `Project` uses `displayName` for the display name (`name` is the output-only `projects/PROJECT_NUMBER` resource name), and the poll response below uses the v3 fields (`name`, `displayName`, `state`) with valid JSON.
+
 ```restructuredtext
 POST https://cloudresourcemanager.googleapis.com/v3/projects/
 Authorization: *************
@@ -31,7 +33,7 @@ Content-Type: application/json
 
 {
     "projectId": "our-project-123",
-    "name": "my project",
+    "displayName": "my project",
     "labels": {
       "mylabel": "prod"
     }
@@ -60,14 +62,14 @@ Content-Type: application/json
     "done": true,
     "response": {
         "@type": "type.googleapis.com/google.cloudresourcemanager.v3.Project",
-        "projectNumber": "464036093014",
+        "name": "projects/464036093014",
         "projectId": "our-project-123",
-        "lifecycleState": "ACTIVE",
-        "name": "my project",
+        "state": "ACTIVE",
+        "displayName": "my project",
         "labels": {
-        "mylabel": "prod"
+            "mylabel": "prod"
         },
-    "createTime": "2016-01-07T21:59:43.314Z"
+        "createTime": "2016-01-07T21:59:43.314Z"
     }
 }
 ```
@@ -112,6 +114,7 @@ gcloud beta billing accounts describe ACCOUNT_ID
 
 ## Notes
 
+- Adapted from the official docs: the REST request and response use the v3 `Project` fields (`displayName`; `name` = `projects/PROJECT_NUMBER`; `state`) with valid JSON.
 - Creating needs `resourcemanager.projects.create` (for example `roles/resourcemanager.projectCreator`). Linking billing needs permissions on both the project and the billing account (for example Billing Account User on the account).
 - Do not put sensitive information in project names or IDs; the ID appears in many resource names.
 - Linking is done in the console (Billing > My projects > Actions > Change billing) or with `projects.updateBillingInfo`; this reference carries no gcloud link command, so none is shown here.
