@@ -29,7 +29,7 @@ $ flutter build web --wasm --enable-wasm-deferred-loading
 
 To customize how deferred `.wasm` modules are downloaded at runtime, provide a `wasmDeferredModulesLoader` callback in your Flutter web app initialization configuration.
 
-## Production debugging
+### Production debugging
 
 By default Wasm release builds strip debug symbols and omit source maps to minimize binary size.
 
@@ -44,7 +44,7 @@ $ flutter build web --wasm --source-maps
 $ flutter build web --wasm --no-strip-wasm
 ```
 
-## Verify the app runs with Wasm
+### Verify the app runs with Wasm
 
 Even with `--wasm`, Flutter still compiles the application to JavaScript. If WasmGC support is not detected at runtime, the JavaScript output is used. Check the `dart2wasm` environment variable (preferred):
 
@@ -58,7 +58,7 @@ Alternatively, test the native (Wasm) number representation:
 final isRunningWithWasm = identical(double.nan, double.nan);
 ```
 
-## Serving headers
+### Serving headers
 
 Flutter web WebAssembly can use multiple threads, which requires specific HTTP response headers:
 
@@ -67,7 +67,7 @@ Flutter web WebAssembly can use multiple threads, which requires specific HTTP r
 | `Cross-Origin-Embedder-Policy` | `credentialless` or `require-corp` |
 | `Cross-Origin-Opener-Policy` | `same-origin` |
 
-## Browser compatibility
+### Browser compatibility
 
 In Flutter 3.50 and later, running a Flutter app compiled to WebAssembly (`dart2wasm`) requires a browser that supports WasmGC, JS String Builtins (`wasm:js-string`), and Phase 4 Exception Handling (`try_table` and `exnref`). At startup, `flutter_bootstrap.js` probes the browser's WebAssembly engine for these features and checks the `wasmAllowList` configuration before selecting the Wasm build. When a browser does not support these features or is not enabled in `wasmAllowList`, Flutter falls back to the JavaScript (`dart2js`) and CanvasKit build produced by `flutter build web --wasm`.
 
@@ -77,7 +77,7 @@ In Flutter 3.50 and later, running a Flutter app compiled to WebAssembly (`dart2
 | WebKit (Safari macOS & iOS, all iOS browsers) | Safari 26.2+ (macOS & iOS 26.2+) | Falls back to `dart2js` + CanvasKit by default (`wasmAllowList.webkit: false`). | Set `wasmAllowList: { webkit: true }` in Flutter web app initialization. Safari `<= 26.1` falls back via runtime feature detection. |
 | Gecko (Firefox) | Firefox 147+ | Falls back to `dart2js` + CanvasKit by default (`wasmAllowList.gecko: false`). | Set `wasmAllowList: { gecko: true }` in Flutter web app initialization. Firefox `< 147` falls back automatically. |
 
-## Compatible JS interop libraries
+### Compatible JS interop libraries
 
 Code using `dart:html` or `package:js` cannot compile to Wasm. Use:
 
@@ -88,7 +88,7 @@ Legacy Dart SDK web and JS interop libraries (`dart:html`, `dart:js`, `dart:js_u
 
 Be aware of runtime differences in JS interop types (`is` / `as` type casts and Zone propagation in callbacks).
 
-### Diagnosing Wasm compilation errors
+#### Diagnosing Wasm compilation errors
 
 1. Early detection: `flutter build web` without `--wasm` still performs a Wasm dry run (pass `--no-wasm-dry-run` to suppress it) and emits a non-fatal warning:
 
@@ -125,12 +125,64 @@ import 'fallback.dart'
   if (dart.library.js_interop) 'wasm_web_interop.dart';
 ```
 
+### Interoperate with host pages and browser APIs
+
+Communicate with the host page through custom DOM events (`package:web`), instead of coupling Dart to global JavaScript functions:
+
+```dart
+import 'dart:js_interop';
+import 'package:web/web.dart' as web;
+
+void notifyHostPage(String eventName, Map<String, Object?> payload) {
+  web.window.dispatchEvent(
+    web.CustomEvent(
+      eventName,
+      web.CustomEventInit(detail: payload.jsify(), bubbles: true),
+    ),
+  );
+}
+```
+
+On the host page, listen for the custom event:
+
+```js
+window.addEventListener('flutter:view-ready', (event) => {
+  console.log('Flutter view ready:', event.detail);
+});
+```
+
+Record startup and frame milestones with the User Timing API (visible in the Chrome DevTools Performance panel and `PerformanceObserver`):
+
+```dart
+import 'dart:js_interop';
+import 'package:flutter/widgets.dart';
+import 'package:web/web.dart' as web;
+
+void main() {
+  web.window.performance.mark('flutter_main_start');
+  WidgetsFlutterBinding.ensureInitialized();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    web.window.performance.mark('flutter_first_frame');
+    web.window.performance.measure(
+      'flutter_first_frame_render',
+      'flutter_main_start'.toJS,
+      'flutter_first_frame',
+    );
+  });
+
+  runApp(const MyApp());
+}
+```
+
 ## Notes
 
 - The source suggests deleting the contents of `web/` and running `flutter create . --platforms web`; this page instead regenerates the template in a separate directory and merges it, so custom bootstrap code, JavaScript, icons and uncommitted changes in `web/` are not lost.
 - Updated to Flutter 3.50 against the docs.flutter.dev Markdown twin (2026-11-14). The pre-3.50 WasmGC / WebKit bug-based compatibility text was replaced by the 3.50 browser table; deferred loading is no longer experimental in 3.50.
-- Not covered here yet: the 3.50 pages on deploying Wasm in production (`/deployment/web#deploy-webassembly-in-production`), host-page `CustomEvent` messaging and User Timing API snippets at the end of the official page.
+- The `flutter_first_frame` mark records a timestamp relative to navigation start (`performance.timeOrigin`); the `flutter_first_frame_render` measure tracks Dart execution from `main()` (after engine and `.wasm` module instantiation) to the first rendered frame. For `@JS()` extension-type syntax, WasmGC representation details, and boundary performance guidelines see "WebAssembly support in JS interop" and "Dart WebAssembly compilation" on dart.dev.
+- Deploying Wasm in production (server headers, compression, cold-start latency, CDN) is covered in the Build and release a web app page (`/deployment/web#deploy-webassembly-in-production`).
 - Flutter Wasm here means Dart compiled with dart2wasm for Flutter web; it is distinct from Rust-to-Wasm toolchains (see the rust skill).
+- Source: https://docs.flutter.dev/platform-integration/web/wasm (flutter/website `acea420`, fetched 2026-11-14).
 
 ## Related
 

@@ -77,4 +77,6 @@ Decoupled localizations: `localizationsDelegates: GlobalMaterialLocalizations.de
 
 - [Breaking changes and migration guides](./breaking-changes.md)
 - [Page transition builders reorganization](./decouple-page-transition-builders.md)
+- [What's new in Flutter 3.50](./whats-new-3-50.md)
 - [What's new in Flutter 3.47](./whats-new-3-47.md)
+- [Added enabled to DropdownButtonFormField and made onChanged optional](./dropdownbuttonformfield-enabled-parameter.md)

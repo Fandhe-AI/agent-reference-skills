@@ -69,4 +69,5 @@ Distribution format of dynamic libraries: Android: set of `.so` (ELF) files, one
 ## Related
 
 - [bind-native-code](./bind-native-code.md)
+- [Native interop](./interop-overview.md)
 - [platform-channels](./platform-channels.md)

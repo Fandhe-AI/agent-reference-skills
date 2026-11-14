@@ -4,7 +4,7 @@ description: >
   Flutter (Google 製 Dart クロスプラットフォーム UI フレームワーク, 3.50) のリファレンス。
   StatelessWidget / StatefulWidget / BuildContext, Sliver, Material / Cupertino, Impeller,
   flutter CLI, pubspec.yaml, hot reload, flutter fix / dart fix, DevTools, Widget Previewer,
-  MVVM, platform channels / dart:ffi, add-to-app, Flutter Web / Wasm, GenUI SDK / AI Toolkit。
+  MVVM, platform channels / dart:ffi, add-to-app, Flutter Web / Wasm (--web-content-hash), Native interop (FFIgen / JNIgen / Pigeon), GenUI SDK / AI Toolkit。
 user-invocable: false
 ---
 
@@ -16,6 +16,7 @@ user-invocable: false
 - ドキュメント原本: flutter/website（リリースタグなし）を commit [`acea4202cfbaa99aa520a154b34603cd420776ae`](https://github.com/flutter/website/tree/acea4202cfbaa99aa520a154b34603cd420776ae) に pin
 - API リファレンス: [api.flutter.dev](https://api.flutter.dev/)（dartdoc HTML、URL に版なし）。一部ページは 3.47 stable 時点の取得で 3.50 では未再照合（各ページ `## Notes` に記載）
 - `llms.txt` は版数の根拠にしない（更新が遅れる）
+- samples / scripts: 公式 cookbook 由来の samples は DartPad 互換の `package:flutter/material.dart` import を原文どおり残している（3.50 で deprecated だが動作する。`material_ui` 版は各サンプルの Notes と `release/material-ui-and-cupertino-ui.md`）。samples は 3.50 の cookbook へ一括再同期していない（未追従）。scripts は `--web-content-hash` を追記済みで、install 手順は 3.50 向けに再確認していない
 - 「Not yet released to stable」の breaking changes は第一級に扱わない。例外は material_ui / cupertino_ui で、3.47 から opt-in 可能、3.50 で `package:flutter/material.dart` / `cupertino.dart` が正式 deprecated（移行は `dart fix --apply --code=migrate_design_widgets`）
 
 ## ディレクトリ構成
@@ -36,7 +37,7 @@ skills/flutter/
       README.md
     architecture-data/       # アプリアーキテクチャ・状態管理・ネットワーク・永続化・Firebase（21 ページ）
       README.md
-    platform-integration/    # プラットフォームチャネル・FFI・add-to-app・Android/iOS/macOS/Windows 統合（23 ページ）
+    platform-integration/    # プラットフォームチャネル・FFI・Native interop（FFIgen / JNIgen / Pigeon）・add-to-app・Android/iOS/macOS/Windows 統合（28 ページ）
       README.md
     packages-deployment/     # パッケージ・flavors・各プラットフォーム配布・難読化・SwiftPM（17 ページ）
       README.md
@@ -46,9 +47,9 @@ skills/flutter/
       README.md
     web/                     # Flutter Web・Wasm・初期化・埋め込み・デプロイ（11 ページ）
       README.md
-    ai/                      # GenUI SDK・AI Toolkit・AI 開発ツール（10 ページ）
+    ai/                      # GenUI SDK・AI Toolkit・AI 開発ツール・AI best practices（14 ページ）
       README.md
-    release/                 # リリースノート・breaking changes・移行ガイド（21 ページ）
+    release/                 # リリースノート・breaking changes・移行ガイド（29 ページ）
       README.md
   samples/                   # 動く実例（23 件）
     README.md
@@ -88,7 +89,7 @@ skills/flutter/
 | 状態管理（ephemeral / app state・provider）を選びたい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
 | HTTP 通信・JSON シリアライズ・SQL / key-value 永続化・オフラインファーストを実装したい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
 | Firebase・データベース選定を調べたい | architecture-data | [references/architecture-data/README.md](references/architecture-data/README.md) |
-| platform channels・dart:ffi でネイティブコードを呼びたい | platform-integration | [references/platform-integration/README.md](references/platform-integration/README.md) |
+| platform channels・dart:ffi・Native interop（FFIgen / JNIgen / Pigeon）でネイティブコードを呼びたい | platform-integration | [references/platform-integration/README.md](references/platform-integration/README.md) |
 | 既存アプリへ Flutter を組み込みたい（add-to-app）・Platform Views を使いたい | platform-integration | [references/platform-integration/README.md](references/platform-integration/README.md) |
 | Android（predictive back・スプラッシュ）/ iOS（拡張・起動画面）/ デスクトップ固有機能を扱いたい | platform-integration | [references/platform-integration/README.md](references/platform-integration/README.md) |
 | パッケージ・プラグインを使う/開発する | packages-deployment | [references/packages-deployment/README.md](references/packages-deployment/README.md) |
@@ -98,8 +99,8 @@ skills/flutter/
 | デバッグ・エラー処理・パフォーマンス計測・Impeller・isolates を調べたい | testing-performance | [references/testing-performance/README.md](references/testing-performance/README.md) |
 | flutter CLI・pubspec・hot reload・flutter fix を使いたい | tools | [references/tools/README.md](references/tools/README.md) |
 | DevTools（inspector・CPU・メモリ・ネットワーク）・Widget Previewer を使いたい | tools | [references/tools/README.md](references/tools/README.md) |
-| Flutter Web のビルド・Wasm・初期化・埋め込み・デプロイを行いたい | web | [references/web/README.md](references/web/README.md) |
-| GenUI SDK・AI Toolkit（LlmChatView）・AI 開発ツールを使いたい | ai | [references/ai/README.md](references/ai/README.md) |
-| 3.50 の breaking changes・3.47 の新機能・移行ガイド（material_ui / cupertino_ui 移行含む）を確認したい | release | [references/release/README.md](references/release/README.md) |
+| Flutter Web のビルド・Wasm・content hashing・初期化・埋め込み・本番デプロイを行いたい | web | [references/web/README.md](references/web/README.md) |
+| GenUI SDK・AI Toolkit（LlmChatView）・AI 開発ツール・Firebase AI Logic のベストプラクティスを使いたい | ai | [references/ai/README.md](references/ai/README.md) |
+| 3.50 の breaking changes（7 件）・3.50 / 3.47 の新機能・移行ガイド（material_ui / cupertino_ui 移行含む）を確認したい | release | [references/release/README.md](references/release/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

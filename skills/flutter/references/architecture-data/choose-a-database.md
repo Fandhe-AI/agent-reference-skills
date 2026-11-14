@@ -33,6 +33,7 @@ $ flutter pub add firebase_data_connect
 - On-device packages store data only on the local device: not synced across devices or preserved on uninstall without a backup or sync service. Use a cloud database if users expect cross-device access.
 - You can combine cloud and local storage (e.g. Firestore for shared data plus `shared_preferences` for a dark mode toggle); see Offline-first support. Both cloud options work with Firebase Authentication (`firebase_auth`), Cloud Storage for Firebase (`firebase_storage`), and Firebase AI Logic (`firebase_ai`). Custom backend logic can be written in Cloud Functions for Firebase or backend servers in Dart, sharing a Dart package for models, serialization, and validation.
 - This page covers choosing a database from Flutter. Database engines and their own APIs are covered by other skills such as supabase (Postgres/BaaS) and drizzle (TypeScript ORM); they are not Flutter packages.
+- Source: https://docs.flutter.dev/data-and-backend/persistence/choose-a-database (flutter/website `acea420`, fetched 2026-11-14).
 
 ## Related
 
