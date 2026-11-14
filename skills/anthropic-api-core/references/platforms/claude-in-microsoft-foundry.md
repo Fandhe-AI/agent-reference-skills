@@ -24,7 +24,7 @@ message = client.messages.create(
 
 ```bash
 curl https://{resource}.services.ai.azure.com/anthropic/v1/messages \
-  -H "api-key: YOUR_AZURE_API_KEY" -H "anthropic-version: 2023-06-01" \
+  -H "api-key: YOUR_AZURE_API_KEY" -H "anthropic-version: 2026-10-21" \
   -d '{"model": "claude-opus-5-5", "max_tokens": 1024, "messages": [{"role":"user","content":"Hello!"}]}'
 ```
 

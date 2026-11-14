@@ -57,7 +57,7 @@ Response shape:
 - **Preserved thinking**: starting with Fable 5.1, the API checks each `thinking` / `redacted_thinking` block's `signature` for the producing model and for an unchanged prefix (`system`, `tools`, earlier messages). The prefix check is enforced by default for accounts created on or after 2026-08-31 00:00 UTC; on older accounts only on requests that set `thinking.block_binding.prefix_mismatch_behavior`. Keep history append-only. Sonnet 5.5 and Haiku 5.5 blocks are also tied to the producing account. See preserved-thinking.md.
 - **Prompt caching**: thinking config and resolved `effort` are rendered into the prompt, so changing either invalidates cache breakpoints (see caching-context/prompt-caching.md).
 - **Redacted thinking blocks**: `redacted_thinking` blocks (safety-redacted reasoning) must also be passed back unmodified; filtering by `block.type == "thinking"` alone silently drops them and breaks the round trip.
-- Non-default `temperature`/`top_p`/`top_k` return a 400 error on the newest models regardless of thinking; on older models this restriction applies only while thinking is on.
+- Non-default `temperature`/`top_p`/`top_k` return a 400 error on the newest models regardless of thinking; on older models this restriction applies only while thinking is on. Migration (2023-06-01 → 2026-10-21): on API version `2026-10-21` these three parameters are removed and any request that sends them returns 400 on every model (see api-basics/versioning.md).
 - Claude Fable 5 / Claude Mythos 5 never return the raw chain of thought; both models can refuse (`stop_details.category: "reasoning_extraction"`) if a request tries to elicit internal reasoning as response text.
 
 ## Related

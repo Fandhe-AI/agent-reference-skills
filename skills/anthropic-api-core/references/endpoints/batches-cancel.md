@@ -13,7 +13,7 @@ POST /v1/messages/batches/{message_batch_id}/cancel
 ```bash
 curl https://api.anthropic.com/v1/messages/batches/$MESSAGE_BATCH_ID/cancel \
     -X POST \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 

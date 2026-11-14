@@ -12,7 +12,7 @@ GET /v1/files
 
 ```bash
 curl https://api.anthropic.com/v1/files \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 

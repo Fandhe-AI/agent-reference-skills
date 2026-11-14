@@ -84,6 +84,7 @@ Claude reads text and images in requests. Image `source` types: `base64`, `url`,
 
 ## Notes
 
+- Migration (2023-06-01 → 2026-10-21): on API version `2026-10-21`, `temperature`, `top_p`, and `top_k` are removed entirely; a request that sends any of them (even at the default) returns 400 on every model. On `2023-06-01` the row above still applies. See api-basics/versioning.md.
 - Refusal responses (`stop_reason: "refusal"`) include a `stop_details` object identifying the policy category; see Handling stop reasons.
 - Tool use・Agent Skills・MCP の詳細は anthropic-api-tools-mcp スキルを参照。
 

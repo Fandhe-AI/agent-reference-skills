@@ -11,7 +11,7 @@ Opt into the controls with the beta header `thinking-binding-controls-2026-08-01
 ```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-version: 2026-10-21" \
   -H "anthropic-beta: thinking-binding-controls-2026-08-01" \
   -H "content-type: application/json" \
   -d '{

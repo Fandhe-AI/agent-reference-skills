@@ -9,7 +9,7 @@ Access experimental features and new model capabilities before general availabil
 ```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-version: 2026-10-21" \
   -H "anthropic-beta: context-management-2025-06-27" \
   -H "content-type: application/json" \
   -d '{"model": "claude-opus-5-5", "max_tokens": 1024, "messages": [{"role":"user","content":"Hello, Claude"}]}'

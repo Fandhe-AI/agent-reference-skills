@@ -23,7 +23,7 @@ curl https://bedrock-mantle.us-east-1.api.aws/anthropic/v1/messages \
   --aws-sigv4 "aws:amz:us-east-1:bedrock-mantle" \
   --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" \
   -H "x-amz-security-token: $AWS_SESSION_TOKEN" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-version: 2026-10-21" \
   -d '{"model": "anthropic.claude-opus-5-5", "max_tokens": 1024, "messages": [{"role":"user","content":"Hello, Claude"}]}'
 ```
 
