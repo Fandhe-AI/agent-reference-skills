@@ -38,4 +38,4 @@ Authentication: Hermes Cloud uses the Nous access token in the profile's `auth.j
 
 - [Managed Scope](./managed-scope.md)
 - [Configuration](./configuration.md)
-- [Config Backend Seam](../architecture/config-backend.md)
+- Config Backend Seam (architecture category, `config-backend.md`)
