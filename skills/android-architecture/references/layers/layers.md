@@ -24,6 +24,8 @@ class NewsViewModel(
 - Good architecture principles: separation of concerns, drive UI from data models, single source of truth (SSOT), unidirectional data flow (UDF).
 - Don't put application data or state directly in app components (Activity, Service, BroadcastReceiver) — host UI only.
 - Reduce dependencies on Android framework classes for testability; abstract them behind interfaces.
+- For adaptive UIs, state holders such as `ViewModel` expose UI state that adapts to window size classes; `currentWindowAdaptiveInfo()` can derive it, and components such as `NavigationSuiteScaffold` switch between `NavigationBar`, `NavigationRail` and `NavigationDrawer` based on the available space.
+- Source: https://developer.android.com/topic/architecture (fetched 2026-11-14).
 
 ## Related
 

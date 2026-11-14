@@ -52,6 +52,8 @@ class MyFragment : Fragment() {
 - `navGraphViewModels(id)` is equivalent to `viewModels { findNavController().getBackStackEntry(id) }` — both retrieve the `NavBackStackEntry` of the graph and use its `ViewModelStore`.
 - In Compose, the same scoping choice is made by passing a `viewModelStoreOwner` argument to `viewModel()` (see viewModel() (Compose)) instead of using a property delegate; scoping a Compose ViewModel to a nested Navigation graph is done by passing that graph route's `NavBackStackEntry` — covered by the android-navigation skill (`hiltViewModel`, `NavBackStackEntry`).
 - Package: `androidx.fragment.app` / `androidx.activity` / `androidx.navigation` (module varies per API, see table above).
+- Navigation 3: `ViewModelStoreNavEntryDecorator` accepts a `ViewModelStoreOwner` (so the parent's `CreationExtras` and factory reach nested ViewModels), and `removeViewModelStoreOnPop` / `ViewModelStoreNavEntryDecoratorDefaults` are deprecated since 2.11.0-alpha03; all decorator state is cleared together on pop, and `rememberDecoratedNavEntries` keeps it outside a `NavDisplay`. Release notes for 2.11.0 also list a `rememberViewModelStoreNavEntryDecorator` overload taking a `ViewModelStoreProvider`.
+- Source: https://developer.android.com/jetpack/androidx/releases/lifecycle (fetched 2026-11-14).
 
 ## Related
 
