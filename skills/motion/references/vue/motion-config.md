@@ -30,6 +30,7 @@ import { motion, MotionConfig } from "motion-v"
 ## Notes
 
 - When reduced motion is enabled, transform and layout animations are disabled, though opacity and backgroundColor animations continue.
+- motion-v 2.11.0: `MotionConfig` forwards `skipAnimations` to `motion` components and `v-motion` elements so descendants skip animations, and a nested `MotionConfig` that omits `skipAnimations` keeps the parent value instead of resetting it to `false` (release notes: https://github.com/motiondivision/motion-vue/releases/tag/v2.11.0). The Vue docs page does not list this prop.
 
 ## Related
 

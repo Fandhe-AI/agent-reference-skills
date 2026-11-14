@@ -38,6 +38,7 @@ import { motion } from "motion-v"
 | `layout` | boolean \| "position" \| "size" | Animate layout changes |
 | `layoutId` | string | Shared element transition identifier |
 | `variants` | object | Named animation states |
+| `layoutAnchor` | `{ x, y }` \| `false` | Where on the parent a layout animation is anchored; `false` disables relative projection (forwarded to `motion` components since motion-v 2.10.0, release notes: https://github.com/motiondivision/motion-vue/releases/tag/v2.10.0; not on the Vue docs page) |
 | `style` | object | Supports motion values and independent transforms |
 | `onAnimationStart` / `onAnimationComplete` | function | Animation lifecycle callbacks |
 

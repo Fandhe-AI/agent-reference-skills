@@ -5,6 +5,7 @@
 | AnimateActivity (Motion+ early access) | Add enter, exit, and layout animations to components inside React's Activity boundaries. | [animate-activity.md](./animate-activity.md) |
 | AnimateNumber (Motion+) | Number ticker and countdown animations for React. | [animate-number.md](./animate-number.md) |
 | AnimatePresence | Run exit animations on React components when they're removed from the page. | [animate-presence.md](./animate-presence.md) |
+| AnimateSuspense (Motion+ early access) | AnimateSuspense animates React Suspense fallbacks in and out, including server-rendered fallbacks replaced by streamed content. | [animate-suspense.md](./animate-suspense.md) |
 | AnimateView | View transitions and page animations for React, with the AnimateView component. | [animate-view.md](./animate-view.md) |
 | Carousel (Motion+) | A performant, accessible, and infinitely scrollable carousel for React. | [carousel.md](./carousel.md) |
 | Cursor (Motion+) | Custom cursor and follow-along effects for React. | [cursor.md](./cursor.md) |

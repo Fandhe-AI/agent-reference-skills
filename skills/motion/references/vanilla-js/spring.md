@@ -32,6 +32,8 @@ const { value, done } = generator.next(10) // sample at 10ms
 ## Notes
 
 - Prefer `bounce` + `visualDuration` for intuitive tuning, or `stiffness` / `damping` / `mass` for physics-based control.
+- Unlike `duration`, a `visualDuration` spring incorporates the velocity of any animation or gesture it interrupts. A spring set with `duration` always lasts exactly its duration, so it starts from rest and ignores `velocity`. In 14.12.0, `visualDuration` / `bounce` springs started respecting `velocity` (CHANGELOG: https://github.com/motiondivision/motion/blob/v14.14.0/CHANGELOG.md).
+- Source: https://motion.dev/docs/spring (fetched 2026-11-14).
 
 ## Related
 

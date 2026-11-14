@@ -12,6 +12,7 @@
 | useMotionValue | Create a `MotionValue`, a composable signal-like value that updates… | [use-motion-value.md](./use-motion-value.md) |
 | usePageInView | Track document visibility state to pause animations, video, or… | [use-page-in-view.md](./use-page-in-view.md) |
 | useReducedMotion | Detect whether the device has the Reduced Motion accessibility… | [use-reduced-motion.md](./use-reduced-motion.md) |
+| useScopeMotion | Run animations, gestures and scroll listeners scoped to a React component, with automatic cleanup. | [use-scope-motion.md](./use-scope-motion.md) |
 | useScroll | Create scroll-linked animations by tracking scroll progress as… | [use-scroll.md](./use-scroll.md) |
 | useSpring | Create a motion value that animates to its latest target using… | [use-spring.md](./use-spring.md) |
 | useTime | Create a motion value that updates every frame with the elapsed… | [use-time.md](./use-time.md) |

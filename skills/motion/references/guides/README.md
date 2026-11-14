@@ -5,6 +5,7 @@
 | 3D transforms | How the z axis, perspective and preserve-3d work on the web, and how to animate them with Motion. | [3d-transforms.md](./3d-transforms.md) |
 | Accessibility | Respect users' Reduced Motion preferences with the reducedMotion option and useReducedMotion hook. | [accessibility.md](./accessibility.md) |
 | Base UI & Motion | Animate Base UI components with Motion. | [base-ui.md](./base-ui.md) |
+| FAQs | Browser support and why an animation might finish instantly. | [faqs.md](./faqs.md) |
 | Figma Motion | Animate in Figma Motion and export to real Motion code for React. Or use Motion directly inside Figma Sites. | [figma.md](./figma.md) |
 | Motion x Framer | Add animations to your Framer project, in Code Components and Overrides. | [framer.md](./framer.md) |
 | Installation | Install Motion in your React project. | [installation.md](./installation.md) |
