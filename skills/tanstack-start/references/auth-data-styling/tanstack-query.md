@@ -85,6 +85,7 @@ const mutation = useMutation({
 - Create the QueryClient inside `getRouter`, not at module scope. Start creates a router per SSR request; a process-wide QueryClient could reuse one reader's cached data in another reader's HTML.
 - Declare `queryClient: QueryClient` in the root route's `createRootRouteWithContext` type so child loaders can access it. The integration supplies the Query provider and handles SSR dehydration, hydration, and streaming. Do not add a second QueryClient or dehydrate the same cache independently. If you already own the provider wrapper, use the integration's `wrapQueryClient: false` option.
 - The example uses Query 5.102 or newer, including `queryClient.query`.
+- The official page's frontmatter records the recipe as tested with `@tanstack/react-start` 1.168.52, `@tanstack/react-query` 5.102.0, `react` 19.2.3, and `vite` 8.0.14 (updated 2026-09-11).
 - `defaultPreloadStaleTime: 0` lets Query decide whether a preload needs data. The 30-second `staleTime` is an example value, not a universal setting.
 - Privileged reads belong in a server function, because a normal route loader can also run in the browser during navigation.
 - For parameterized resources include identity in the key (e.g. `['post', postId]`). If search values affect the result, validate them and include them in both `loaderDeps` and the query key. Keep secrets out of keys and serialized query data.

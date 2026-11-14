@@ -8,7 +8,7 @@
 | CSS Styling | TanStack Start supports whatever CSS patterns the bundler supports, plus SSR-aware route asset discovery and production controls (Early Hints, CSS inlining). | [css-styling.md](./css-styling.md) |
 | Databases | TanStack Start works with any database provider: call the database's adapter, client, or driver from a server function or server route. | [databases.md](./databases.md) |
 | Generative Engine Optimization (GEO) | Structuring content and data so AI systems (ChatGPT, Claude, Perplexity, etc.) can accurately understand, cite, and recommend it. | [geo.md](./geo.md) |
-| Rendering Markdown | Two methods for importing and rendering markdown: static via `content-collections` (build-time) and dynamic markdown fetched at runtime, sharing a `unified`-based pipeline. | [rendering-markdown.md](./rendering-markdown.md) |
+| Rendering Markdown | Rendering Markdown with TanStack Markdown (`@tanstack/markdown`): static posts via Content Collections, remote content via a server function, TanStack Highlight syntax highlighting and table of contents. | [rendering-markdown.md](./rendering-markdown.md) |
 | SEO | Technical SEO building blocks in TanStack Start: SSR, static prerendering, document head management (meta/Open Graph/canonical/JSON-LD), sitemaps, and robots.txt. | [seo.md](./seo.md) |
 | Tailwind CSS Integration | Setting up Tailwind CSS v4 (recommended) or v3 (legacy) in a TanStack Start project with Vite or Rsbuild. | [tailwind-integration.md](./tailwind-integration.md) |
 | TanStack Query | Use TanStack Query with TanStack Start for request-isolated SSR, hydration, route preloading, streaming, and mutation invalidation. | [tanstack-query.md](./tanstack-query.md) |

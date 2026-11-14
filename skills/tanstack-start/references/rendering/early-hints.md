@@ -41,8 +41,10 @@ Supported link relations: `preload`, `modulepreload`, `preconnect`, `dns-prefetc
 - Browsers generally process only the first `103` response per navigation — write at most one.
 - `rel: 'stylesheet'` route `head().links` entries are converted to `rel=preload; as=style` for Early Hints.
 - Static hints follow `transformAssets` URL rewrites/`crossOrigin` (see CDN Asset URLs); JS hints use `modulepreload` (module output) or `preload; as=script` (IIFE output).
+- JavaScript hints carry `fetchpriority=low`, matching the generated HTML preload links, so they don't compete with render-blocking stylesheets (added after 1.169.2).
 - Only forward `responseLinkHeader` links that are public and cache-stable per the response's cache boundary; use `responseLinkHeader.filter` to exclude private/short-lived/user-specific links.
 - Skipped in the Start dev server; requires the runtime/proxy in front of the app to support HTTP `103`.
+- Source: https://github.com/TanStack/router/blob/release-2026-11-08-0104/docs/start/framework/react/guide/early-hints.md (tag `release-2026-11-08-0104`, `@tanstack/react-start` 1.169.5, fetched 2026-11-14)
 
 ## Related
 

@@ -16,7 +16,7 @@ user-invocable: false
 TanStack Start (`@tanstack/react-start`) の API ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象 `@tanstack/react-start` 1.169.2 (初の stable、2026-10-14)。docs は TanStack/router のタグ `@tanstack/react-start@1.169.2` に pin。
+対象 `@tanstack/react-start` 1.169.5 (1.169 系は初の stable、1.169.2 が 2026-10-14)。docs は TanStack/router のタグ `release-2026-11-08-0104` (commit `7dbce08`、取得日 2026-11-14) に pin。`@tanstack/react-start@1.169.2` 比で `docs/start` の差分は 5 ページのみ (early-hints / environment-functions / hosting の Cloudflare 節 / rendering-markdown / tanstack-query)。差分の無いページは 1.169.2 時点の内容のまま。
 ルーティングは tanstack-router スキル、`useQuery` / `QueryClient` 自体は tanstack-query スキルを参照（本スキルは Start 側の SSR 連携のみ）。
 
 ## ディレクトリ構成
