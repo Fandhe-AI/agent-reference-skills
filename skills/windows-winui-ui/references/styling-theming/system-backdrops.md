@@ -66,6 +66,8 @@ DynamicBackdropHost.SystemBackdrop = backdropType switch
 - `SystemBackdropElement` was named `SystemBackdropHost` in the Windows App SDK 2.0 Experimental period (renamed in the 2.0.0-Experimental4 release notes).
 - `SystemBackdropElement` is for applying a material to a bounded in-page region (e.g. a card); it is independent of and can be combined with the window-level `Window.SystemBackdrop`.
 - When using the manual controller APIs, always check `IsSupported()` first, dispose the controller in the window's `Closed` handler, and update `SystemBackdropConfiguration.Theme`/`IsInputActive` in response to `ActualThemeChanged`/`Activated` events.
+- Windows App SDK 2.6.5 (stable, released November 2, 2026): system backdrops for content islands and XAML windows are not supported when using the System Composition Engine. 2.6.5 reverted the 2.6.4 change that had added this support, to address wrong-thread exceptions.
+- Source: https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0?pivots=stable (fetched 2026-11-14)
 
 ## Related
 
