@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/security.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/security.md / last verified: 2026-11-14 -->
 
 # Plugin security and trust
 
@@ -44,6 +44,11 @@ In a session, `/plugin` > select plugin > details pane shows **Will install** (c
 - Trust warning text: "Make sure you trust a plugin before installing, updating, or using it. Anthropic does not control what MCP servers, files, or other software are included in plugins and cannot verify that they will work as intended or that they won't change." Managed setting `pluginTrustMessage` appends text.
 - Admin controls (managed settings): allowlist/blocklist marketplaces, force-enable plugins, disable `--plugin-dir` / `--plugin-url` / `CLAUDE_CODE_PLUGIN_DIRS`, limit hooks to managed settings and force-enabled plugins, `syncClaudeAiPlugins`.
 - Telemetry: plugin loaded event reports official-tier names as-is; community and third-party names are the literal `third-party` unless `OTEL_LOG_TOOL_DETAILS=1`. The plugin installed event omits name fields for non-official plugins unless set.
+
+- Changelog 2.1.325: the add-marketplace confirmations, plugin recommendation prompts and plugin install warning now say that plugins can run code on your computer, with access to your files and shell. Plugins of a remote marketplace that managed settings declare, enable and list in `prependPlugins` or `appendPlugins` count as the organization's; `pluginDigests` is deprecated and ignored.
+- Changelog 2.1.321: with managed `extraKnownMarketplaces`, a declared name can't be added from another source.
+- Source: https://code.claude.com/docs/en/plugins/security.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.321, 2.1.325, retrieved 2026-11-14)
 
 ## Related
 

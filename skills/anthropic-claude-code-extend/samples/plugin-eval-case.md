@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugin-evals.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugin-evals.md / last verified: 2026-11-14 -->
 
 # Plugin eval case
 
@@ -47,3 +47,6 @@ claude plugin eval . --case <case-name> --runs 1 --ablation none
 - Replace `your-skill-name` with the skill's directory name under `skills/`, and the `criteria.md` placeholders with concrete PASS / FAIL conditions.
 - Each case runs three times with the plugin and three times without it by default; a positive `Δ` in the summary means the plugin raised the score.
 - Requires git 2.31 or later if git is installed; `claude plugin eval` loads and runs the plugin's code, so evaluate only plugins you trust.
+- Changelog 2.1.325: `claude plugin eval --output-dir ''` exits with an error instead of writing the report into the current folder. Changelog 2.1.319: eval warnings no longer suggest `max: 0` for a tool that must not be called; use `min: 0` and `max: 0` on a `tool_used` grader (with `arm: both` so it is scored in both arms).
+- Source: https://code.claude.com/docs/en/plugin-evals.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.319, 2.1.325, retrieved 2026-11-14)

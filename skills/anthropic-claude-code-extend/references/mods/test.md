@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/mods/test / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/mods/test / last verified: 2026-11-14 -->
 
 # Test a mod
 
@@ -48,6 +48,7 @@ What a stub returns, by call or event:
 | `prompt.fill` | `() => ({ isFilled: true })` |
 | `$.prompt.read` | `() => ({ value: { text: '...', cursor: 0 } })` |
 | `$.ui.copy` | `() => ({ value: { isCopied: true } })` |
+| `$.ui.notify` | `() => ({ value: { isSent: true, channel: 'terminal_bell' } })` (text is `e.text`, title is `e.title`) |
 | `$.session.messages` | `() => ({ value: [{ role: 'assistant', text: '...', toolUses: [] }] })` |
 | `$.session.id`, `$.agent.list` | `() => ({ value: 'abc123' })`, `() => ({ value: [] })` |
 | `session.send` | `() => ({ isDelivered: true })` |
@@ -74,6 +75,7 @@ Kit mocks and clock:
 | `input({ key, text })` | Types and presses Enter (`kind: 'change'` to type without submitting) |
 | `select({ key, value })` | Picks an option |
 | `find({ key })` / `find({ type, text })` | First matching `{ type, props, children }` or `undefined`; `text` string or regex |
+| `keepsBeneath()` | With no `ui.render` stub, resolves `true` when the drawing includes what `next(e)` returned and `false` when your hook left it out; with a stub, use `find` (v2.1.321+) |
 | `unmount()` | Removes the drawing |
 
 `expect` assertions: `toBe`, `toEqual`, `toMatch`, `toMatchObject`, `toContain`, `toBeDefined`, `toBeUndefined`, `toThrow`, and `.not`.
@@ -83,7 +85,7 @@ Kit mocks and clock:
 - The test's `$` acts as Claude Code and is not the mods API a hook receives: each method fires the same-named event (`$.tool.call`, `$.command.run`, `$.prompt.submit`, `$.session.start`, `$.turn.complete`, `$.classic.Stop`). A test cannot fire a mods API call such as `ui.close` directly.
 - Register every stub before the test's first call on `$` (otherwise `on("ui.render") after the test first called $`).
 - `session.start` does not run by itself; fire `$.session.start({ surface: 'terminal', isInteractive: true, cwd: '/work' })` and stub `command.register` if the hook depends on it. Without a stub the call rejects with `no implementation for command.register` and the kit skips the hook.
-- A `ui.render` hook that returns `next(e)` needs a `ui.render` stub or mounting fails with `no implementation for ui.render`.
+- A `ui.render` hook that returns `next(e)` mounts without a `ui.render` stub from v2.1.321; register a stub to choose what `next(e)` returns (before v2.1.321 the mount fails with `no implementation for ui.render`). On v2.1.323+, for the band, pass your mod's name as the second argument to `on` (`{ plugin: 'my-mod' }`), otherwise the stub doesn't answer your `next(e)`.
 - A `turn.step` stub is an async generator; read the stream with `stream.next()` until `done`.
 - Stub errors: `returned neither { value } nor { deny }` (bare value returned) and `no implementation for <name>`; failed output includes a block headed `the engine reported:`. A stub that throws is skipped.
 - The kit answers `$.ui.invalidate`, `$.state`, and `$.session.append` itself. `$.clock` calls need `mock.clock(on)`.
@@ -91,6 +93,8 @@ Kit mocks and clock:
 - A drawing test checks the returned tree and its validity for the app, not how the app paints it.
 - When mods cannot load in the shell, `claude plugin test` prints `claude plugin test: hooks modules are turned off` with a reason and exits 1. Default per-test timeout is 5 s.
 - When the mod under test refuses another mod (policy mod), the first call on `$` throws with a message such as `runner: refused by acme-guard: Acme policy: mods may not call process.run`.
+- Fire `$.session.receive({ origin: { kind: 'peer-send-message' }, text })` for `session.receive`; `e.to` of a `session.send` stub arrives as a string even when the mod passed `{ sessionId }`; `$.turn.complete({ turnId, answer, durationMs, isAborted: false, usage: null })` fires `turn.complete`.
+- Source: https://code.claude.com/docs/en/plugins/mods/test.md (retrieved 2026-11-14)
 
 ## Related
 

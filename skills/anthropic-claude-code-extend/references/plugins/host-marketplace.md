@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/host-marketplace.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/host-marketplace.md / last verified: 2026-11-14 -->
 
 # Host and maintain a marketplace
 
@@ -68,6 +68,12 @@ Archive extraction limits: 100,000 entries; 512 MiB per file; 1 GiB total uncomp
 - Changing a `command` source's command or `mode` requires each user to accept it again.
 - `headersHelper` command: at most 500 printable ASCII characters; prints one JSON object of string values on stdout, exit 0 within 10 s; run through `sh` (or `cmd.exe`) in the config directory; credential-like env vars are removed when set in marketplace entries or project settings; skipped for non-`https://` marketplace URLs, off-origin redirects, `--add-dir` settings, or when `disableCommandPluginSources` / `allowManagedHooksOnly` block it.
 - No marketplace field exists for: audience-specific entries, deprecation state, forced install, git credentials.
+- Release lines: two marketplaces whose entries point at different refs (for example `"ref": "stable"` and `"ref": "latest"`) of one plugin; give the two refs different `plugin.json` versions, or omit `version` so the commit SHA distinguishes them, because updates are detected by comparing versions and a ref that moves without a version change leaves users on the cached copy. A shared-directory marketplace reads relative-path plugins in place; edits show at the next session start or `/reload-plugins`.
+- Changelog 2.1.325: marketplace `ref` accepts the full ID of any commit on a branch or tag; clients before this version can't clone such a pin, so a marketplace pinned this way stops loading there.
+- Changelog 2.1.323: one malformed entry in a marketplace's `renames` map no longer makes Claude Code ignore the marketplace's other renames. Marketplace and plugin installs fail when a git submodule isn't on the commit its repository records.
+- Changelog 2.1.325: the `HTTPS authentication failed` message for private plugin marketplaces now says git's terminal prompts and askpass programs are disabled.
+- Source: https://code.claude.com/docs/en/plugins/host-marketplace.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.323, 2.1.325, retrieved 2026-11-14)
 
 ## Related
 

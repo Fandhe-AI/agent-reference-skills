@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/dependencies.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/dependencies.md / last verified: 2026-11-14 -->
 
 # Constrain plugin dependency versions
 
@@ -53,6 +53,10 @@ claude plugin list --json         # inspect dependency errors
 - Combining constraints from several plugins resolves to the highest version satisfying all ranges (`^2.0` + `>=2.1` installs the highest `2.x` at or above `2.1.0`; `~2.1` + `~3.0` fails with `has conflicting version requirements`; `=2.1.0` keeps the dependency at `2.1.0` and auto-update skips newer versions). Auto-update fetches at the highest tag satisfying every installed plugin's range; non-overlapping ranges leave the dependency in place and show an **Errors** tab entry; when the last constraining plugin is uninstalled the dependency resumes tracking its marketplace entry.
 - Dependencies when the plugin loads from claude.ai (`<name>@synced`, no marketplace): an entry that names a marketplace counts as met if the user has the dependency from that marketplace installed and enabled (version range checked against the installed copy), or a same-named claude.ai plugin enabled (a plugin with no `version` passes). Tell users to turn the dependency on in claude.ai too, or install it from its marketplace.
 - Bundle example: `backend-standard` with `dependencies: ["secrets-vault", "deploy-kit", { "name": "db-migrate", "version": "^3.0" }, "oncall-runbook"]`; publish a new bundle version to add a plugin (marketplaces without auto-update need `claude plugin update backend-standard` and `/reload-plugins`). Administrators deploy a bundle through `enabledPlugins` in managed settings.
+
+- Changelog 2.1.319: `claude plugin update` and `/plugin` "Update now" install dependencies added by the new plugin version, and background plugin auto-update does the same (previously not installed). Run `claude plugin update backend-standard` then `/reload-plugins` to pick up dependencies a bundle adds.
+- Source: https://code.claude.com/docs/en/plugins/dependencies.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.319, retrieved 2026-11-14)
 
 ## Related
 

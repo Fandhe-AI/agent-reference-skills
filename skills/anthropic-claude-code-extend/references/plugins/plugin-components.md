@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/components.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/components.md / last verified: 2026-11-14 -->
 
 # Add components to a plugin
 
@@ -96,7 +96,12 @@ my-plugin/
 - LSP: validate does not read `.lsp.json`; one invalid entry skips the whole file (`Invalid LSP server config for ".lsp.json"`). The plugin does not install the binary; two servers claiming one extension means the first registered wins (`LSP server "<name>" is not used for <ext> files`). Log to stderr; headers over 64 KiB or bodies over 32 MiB disconnect the server and count as a crash for `restartOnCrash` / `maxRestarts`.
 - `bin/` comes after the user's own `PATH` entries, so a plugin cannot shadow system commands; claude.ai and Cowork do not install a plugin with a top-level `bin/`.
 - Default settings: `settings.json` beats the manifest `settings` key; user settings beat plugin defaults; when two plugins set the same key the last loaded wins. Plugin themes are read-only (edits save as a user copy).
-- Monitors start only in interactive sessions (not `-p`), run outside the sandbox with full user permissions, never accept `${user_config.*}`, and are not stopped when the plugin is disabled mid-session.
+- Monitors start only in interactive sessions (not `-p`), run outside the sandbox with full user permissions, never accept `${user_config.*}`, and are not stopped when the plugin is disabled mid-session. On Amazon Bedrock, Claude Platform on AWS, Google Cloud's Agent Platform, or Microsoft Foundry, or with `DISABLE_TELEMETRY` or `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` set (feature-flag fetching off), monitors require Claude Code v2.1.310 or later.
+- `bin/` files are also on the `PATH` of a PowerShell tool command run outside the sandbox; a sandboxed PowerShell command doesn't find them. A packaged `.mcpb` server takes its name from the `name` in the bundle's manifest; a bundle's own `user_config` is filled in through **Configure** in `/plugin` or `--config <server>.<key>=<value>` (v2.1.285+, bundle packaged inside the plugin only).
+- The official components page of 2026-11-14 no longer lists a "Default settings" component or the `settings` manifest key; the table row above is kept from the earlier page. Changelog 2.1.323: the plugin `agent` setting is deprecated (still applies, warns at startup, in `claude plugin list` and `claude plugin validate`). Changelog 2.1.319: `${CLAUDE_PLUGIN_ROOT}` is substituted in a plugin-provided `subagentStatusLine` command, which can reference the plugin's own scripts.
+- Changelog 2.1.325: `.mcpb` / `.dxt` bundles unpack under the plugins directory, not `.mcpb-cache` in the plugin's folder, so read-only plugin folders load. Changelog 2.1.323: `tool.list` plugin hooks' added or removed tools apply to the model and every agent; plugin `LSP` servers that can't start now produce a warning naming the server and what to check.
+- Source: https://code.claude.com/docs/en/plugins/components.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.310, 2.1.319, 2.1.323, 2.1.325, retrieved 2026-11-14)
 - `userConfig`: `"sensitive": true` masks input and uses secure storage. The dialog opens on install in `/plugin`, `/plugin install <plugin>@<marketplace>`, or enabling from the Installed tab; reopen with `/plugin configure <plugin>@<marketplace>`. `claude plugin install` never prompts: pass `--config KEY=VALUE` or pipe JSON to `claude plugin configure --values-stdin`.
 - On Windows substituted paths use forward slashes. Marketplace-installed plugins get eligible Node.js dependencies installed automatically; otherwise install into `${CLAUDE_PLUGIN_DATA}` from a `SessionStart` hook and point `NODE_PATH` at `${CLAUDE_PLUGIN_DATA}/node_modules`.
 

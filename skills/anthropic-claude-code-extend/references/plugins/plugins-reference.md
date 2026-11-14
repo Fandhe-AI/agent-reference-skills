@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/manifest-reference.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/manifest-reference.md / last verified: 2026-11-14 -->
 
 # Plugin manifest reference
 
@@ -66,8 +66,9 @@ Fields (top-level keys in `plugin.json`; `name` is the only required key):
 | `termsOfServiceUrl` | String | Terms of service link for the plugin's listing in Anthropic's directory. Claude Code doesn't read it |
 | `defaultEnabled` | Boolean | Whether the plugin starts enabled when the user hasn't set it. Defaults to `true` |
 | `dependencies` | Array of strings or objects | Plugins that must be enabled for this one to work |
-| `settings` | Object | Settings Claude Code applies while the plugin is enabled. Only `agent` and `subagentStatusLine` take effect |
+| `settings` | Object | Settings Claude Code applies while the plugin is enabled. Only `agent` and `subagentStatusLine` take effect. `agent` is deprecated (2.1.323; see Notes) |
 | `userConfig` | Object | Values Claude Code prompts the user for when the plugin is enabled |
+| `engines` | Object | `engines["claude-code"]`: the Claude Code version range the plugin supports (2.1.323; see Notes) |
 | `types` | Path | A `.d.ts` file that declares the `$.state` values and `$` nouns of a mod |
 | `channels` | Array of objects | Message channels the plugin provides, each bound to one of its MCP servers |
 | `skills` | Path, or array of paths | Directories to scan for skills, each a directory of `<name>/SKILL.md` folders or one folder holding `SKILL.md` directly. `"."` names the plugin root. Adds to the default `skills/` scan |
@@ -80,7 +81,7 @@ Fields (top-level keys in `plugin.json`; `name` is the only required key):
 | `workflows` | Path, or array of paths | Workflow `.js` files or directories. Replaces the default `workflows/` scan |
 | `experimental` | Object | Container for `themes`, `monitors`, and `evals`, whose manifest shape may still change |
 | `experimental.themes` | Path, or array of paths | Theme files or directories. Replaces the default `themes/` scan. A top-level `themes` key still loads, with a `claude plugin validate` warning |
-| `experimental.monitors` | Path, or inline array | A `.json` file holding the monitors array, or the array itself. Defaults to `monitors/monitors.json`. A top-level `monitors` key still loads, with a warning. Monitors run only in interactive sessions, and not on Amazon Bedrock, Google Cloud's Agent Platform, or Microsoft Foundry |
+| `experimental.monitors` | Path, or inline array | A `.json` file holding the monitors array, or the array itself. Defaults to `monitors/monitors.json`. A top-level `monitors` key still loads, with a warning. Monitors don't start with the `-p` flag |
 | `experimental.evals` | Path, or array of paths | Directory that holds the plugin's eval cases when it isn't the default `evals/`. `claude plugin eval --eval-dir` overrides it |
 
 `commands` object map (each value sets exactly one of `source` or `content`; an entry that sets both or neither fails validation):
@@ -155,6 +156,15 @@ Standard layout (default locations when the manifest doesn't point elsewhere): `
 - `${...}` references resolve in: hook `command` / `args`; monitor `command`; MCP stdio `command`, `args`, `env`; MCP http / sse / ws `url`, `headers`, `headersHelper`; LSP `command`, `args`, `env`, `workspaceFolder`; skill, command and agent Markdown bodies. They are not present in the environment of commands Claude runs through the Bash tool. Use exec-form hooks with `args`, or double-quote the variable in shell-form commands; on Windows substituted paths use forward slashes.
 - A `CLAUDE.md` at the plugin root isn't loaded as context (`claude plugin validate` warns); put instructions in a skill.
 - Marketplace entries: an entry accepts its own fields (including `strict`, default `true`) and every manifest field except the directory listing fields. No `plugin.json`: the entry is the manifest (entry `hooks` only as an inline object). `plugin.json` present with `strict` unset or `true`: the entry's `commands`, `agents`, `skills`, `outputStyles`, `themes` are appended and its `hooks` matchers replace the manifest's matchers for the same event. `strict: false` with entry-declared components is a conflict (`Plugin <name> has conflicting manifests`). The entry's `defaultEnabled` and display fields override the manifest's; the manifest's `version` overrides the entry's. See marketplace-reference.md.
+
+- Changelog 2.1.323: `plugin.json` accepts `engines["claude-code"]`; a plugin outside its stated Claude Code version range is not installed, updated or loaded, and install and update pick the newest version that fits. The official manifest page of 2026-11-14 does not list the key yet.
+- Changelog 2.1.323: `claude plugin validate` type-checks a plugin's TypeScript hooks module; each finding is a warning, and `--strict` fails on it. It also reports the `$` nouns a mod's `engine.create` hook adds, withholds or replaces, and fails a mod whose `engine.create` hook isn't written in the one accepted form (installed mods keep loading).
+- Changelog 2.1.323: the plugin `agent` setting is deprecated; it still applies, and warns at startup, in `claude plugin list` and in `claude plugin validate`. The official manifest page of 2026-11-14 no longer lists the `settings` field; the row above is kept from the earlier page.
+- Changelog 2.1.325: `.mcpb` / `.dxt` MCP bundles unpack under the plugins directory, not `.mcpb-cache` in the plugin's folder, so read-only plugin folders load; a bundle fetched by URL downloads again once. The official page still describes `.mcpb-cache/` under the plugin root.
+- Changelog 2.1.325: plugin loading skips, and `claude plugin validate` reports, some unsafe paths and links in a plugin's folder.
+- Changelog 2.1.304: removed the notes from `claude plugin validate` that predicted where a mod's hooks would run.
+- Source: https://code.claude.com/docs/en/plugins/manifest-reference.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.323, 2.1.325, retrieved 2026-11-14)
 
 ## Related
 

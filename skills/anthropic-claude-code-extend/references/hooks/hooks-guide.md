@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/hooks-guide / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/hooks-guide / last verified: 2026-11-14 -->
 
 # Automate actions with hooks (guide)
 
@@ -55,6 +55,11 @@ Agent-based hooks (`type: "agent"`, experimental): spawns a subagent with tool a
 - A mod's `tool.check` handler can approve a call that your `PreToolUse` hook blocked, unless the hook is in managed settings (see the mods pages of the Claude Code plugins docs).
 - Stop hooks: the 8-consecutive-continuation cap can be raised with `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` when a hook legitimately needs more iterations; guard against loops by checking `stop_hook_active`.
 - Shell-form command hooks that source a profile with unconditional `echo` can corrupt the JSON on stdout — guard profile echoes with an interactive-shell check (`[[ $- == *i* ]]`).
+- `Notification` matcher versions: `auth_storage_failure` requires v2.1.288+; `permission_prompt` for a sandboxed command's network request in terminal sessions requires v2.1.246+; `agent_needs_input` for a teammate's terminal setup question requires v2.1.248+.
+- With an exit code other than 0 or 2 and no valid JSON output, the action proceeds on most events unless the hook's failure blocks the action (for example `onFailure: "block"`, v2.1.295+, on `command` and `http` hooks). For an HTTP hook, any other status or a failed request is likewise non-blocking unless `onFailure: "block"` is set.
+- Prompt and agent hooks run at most 24 at a time per session, sub-agents included (2.1.312); `PostToolUse` hooks still run, with 10 seconds to finish, on a tool call that finishes after a `Ctrl+Enter` message ends the turn (2.1.319). See `hooks.md` for details.
+- Source: https://code.claude.com/docs/en/hooks-guide (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.312, 2.1.319, retrieved 2026-11-14)
 - This is a Claude Code CLI feature. For the Agent SDK equivalent, see anthropic-agent-sdk. For the Claude API (Messages API) Agent Skills / tool use, see anthropic-api-tools-mcp.
 
 ## Related

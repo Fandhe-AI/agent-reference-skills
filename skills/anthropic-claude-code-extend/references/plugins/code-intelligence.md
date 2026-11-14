@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/code-intelligence.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/code-intelligence.md / last verified: 2026-11-14 -->
 
 # Code intelligence plugins
 
@@ -48,6 +48,9 @@ The server starts the first time Claude edits a file with one of the plugin's ex
 - Works in terminal sessions only; cloud sessions do not start plugin language servers.
 - The recommendation dialog appears at most once per session, when a matching binary is on `PATH` but the plugin is not installed; official marketplace plugin is offered first; never for cloud sessions. Unanswered for 30 seconds counts as ignored; after five ignored dialogs recommendations stop.
 - To re-enable: remove `lspRecommendationDisabled` and `lspRecommendationIgnoredCount` from `~/.claude.json`; for a "never" choice remove its `name@marketplace` from `lspRecommendationNeverPlugins`.
+- Changelog 2.1.323: Claude Code shows a warning when a plugin's language server can't start, naming the server and what to check. Source for `liquid-lsp`: github.com/Shopify/liquid-skills (`plugins/liquid-lsp`); the other plugins live under `anthropics/claude-plugins-official` (`plugins/<name>`).
+- Source: https://code.claude.com/docs/en/plugins/code-intelligence.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.323, retrieved 2026-11-14)
 - For a language without an official plugin, write a plugin with an `.lsp.json` (server command + file extensions) and load it with `--plugin-dir` or publish it.
 
 ## Related

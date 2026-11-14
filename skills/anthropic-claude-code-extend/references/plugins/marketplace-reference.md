@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/marketplace-reference.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/marketplace-reference.md / last verified: 2026-11-14 -->
 
 # Marketplace reference
 
@@ -84,6 +84,8 @@ Complete reference for `marketplace.json` fields, plugin entries, plugin source 
 | `settings` | `name`, `plugins`, `owner` | Inline catalog; relative-path sources rejected |
 | `skills-dir`, `hostPattern`, `pathPattern` | | Policy lists only |
 
+`github` / `git` marketplace sources also accept `skipLfs` (accepted, no effect). A `settings` source's `plugins` items take `name`, `source`, `description`, `version`, `strict`, `headers`, `headersHelper`; `name` must equal the `extraKnownMarketplaces` key and can't be a reserved name. `sparsePaths` is what `marketplace add --sparse` sets.
+
 | `strict` | `plugin.json` | Entry component fields | Result |
 | --- | --- | --- | --- |
 | any | absent | any | Entry is the manifest |
@@ -103,6 +105,14 @@ Complete reference for `marketplace.json` fields, plugin entries, plugin source 
 - `url`, `git`, `github` mean different things as marketplace sources vs plugin sources; `git-subdir`, `archive`, `command` exist only as plugin sources. `hostPattern`, `pathPattern`, `skills-dir`, and `owner/*` repo form are valid only in `strictKnownMarketplaces` / `blockedMarketplaces`.
 - `claude plugin validate <path>` takes the marketplace root or file; messages name entries as `plugins[i]`. Key errors: `Marketplace must have a name`, spaces in names, `Duplicate plugin name "x" found in marketplace`, `plugins.i.source: Invalid input`, `Invalid string: must start with "./"` (v2.1.285+; earlier printed `Invalid input`), `Path contains ".."`, `Plugin "x" sets headersHelper but is not "strict": false`, `renames.<old>: chain does not resolve`. Warnings include `Unknown field 'x'`, `Marketplace has no plugins defined`, missing description, `Entry declares version "x" but <path>/plugin.json says "y"`, archive `headersHelper` with no `sha256` pin, and Claude Desktop name restrictions (letters, digits, `.`, `_`, `-`; max 128 chars).
 - Validation misses load-time failures such as entry `hooks` file paths and source fetch errors.
+- Official reserved marketplace names (reserved unless the marketplace comes from a `github` or `git` source under `github.com/anthropics/`): `claude-code-marketplace`, `claude-code-plugins`, `claude-plugins-official`, `anthropic-marketplace`, `anthropic-plugins`, `agent-skills`, `anthropic-agent-skills`, `life-sciences`, `knowledge-work-plugins`, `claude-for-legal`, `claude-for-financial-services`, `financial-services-plugins`, `first-party-plugins`, `claude-tag-plugins`. A registered marketplace whose name imitates an official one stops loading, and `claude plugin list` / `/plugin` report `Claude Code refuses the marketplace name "<name>"` (v2.1.282+; the message lists the rename steps for an inline-declared one on v2.1.292+). Removing it uninstalls its plugins and deletes their data, options, and secrets.
+- Git submodules (v2.1.295+): when cloning a marketplace repository, Claude Code fetches only the submodules that hold plugin files (plugin inside the submodule, submodule inside the plugin, or a symlink into it). A plugin at the root (`"source": "./"`) gets every submodule or none: all are fetched when a component directory, a configured path, a symlink, or text in plugin files points into any submodule, or when a root `SKILL.md` or an unreadable file prevents telling. `--sparse` / `sparsePaths` fetch no submodule. Earlier versions fetch every submodule, which can exceed the clone timeout.
+- Additional `claude plugin validate` messages: warning `Plugin "x" sets headers/headersHelper, which only apply to "archive" sources`; warning `Header "x" is a request-routing/identity header that catalog entries may not set; Claude Code drops it at download time.`; warning `Local source "x" is or traverses a symlink, so <path> was not read`; error `target "x" is not a valid plugin name (PluginIdSchema)` on `renames.<old>`; warnings for `relevance` / `metadata` / `experimental` entries that are not objects; Claude Desktop rejects marketplace names `org`, `org-provisioned`, `unknown`.
+- Changelog 2.1.325: marketplace `ref` accepts the full ID of any commit on a branch or tag; clients before this version can't clone such a pin, so a marketplace pinned this way stops loading there. The official page of 2026-11-14 still describes `ref` as a branch or tag only.
+- Changelog 2.1.323: one malformed entry in a marketplace's `renames` map no longer makes Claude Code ignore the marketplace's other renames. Marketplace and plugin installs fail when a git submodule isn't on the commit its repository records. Marketplaces named `npm`, `pip`, `uv`, `cargo`, `github` or `gh` were being refused as reserved names (a fix); the official page still lists them as reserved (v2.1.275+).
+- Changelog 2.1.321: managed `extraKnownMarketplaces`: a declared name can't be added from another source, an entry from elsewhere is hidden, and plugins the declared marketplace lists are reinstalled from it (see plugins-org.md).
+- Source: https://code.claude.com/docs/en/plugins/marketplace-reference.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.321, 2.1.323, 2.1.325, retrieved 2026-11-14)
 
 ## Related
 

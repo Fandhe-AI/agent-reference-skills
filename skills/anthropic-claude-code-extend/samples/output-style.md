@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/output-styles.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/output-styles.md / last verified: 2026-11-14 -->
 
 # Output style definition
 
@@ -30,4 +30,6 @@ Set the active style without opening the picker:
 - Switch with `/output-style <style>` (for example `/output-style concise`; no argument lists the styles). It also works in non-interactive mode and Agent SDK sessions, and via Remote Control (built-in styles only), from v2.1.269. Alternatively use `/config` or edit `outputStyle`.
 - A mid-session switch applies from the next message (v2.1.251+; earlier versions needed `/clear` or a new session). Style files are read at startup, so restart Claude Code after creating or editing one.
 - The `outputStyle` value is case-sensitive: `explanatory` does not match and gives the Default style, while the `/output-style` command ignores case.
+- `keep-coding-instructions` only matters on the full system prompt (set `CLAUDE_CODE_SIMPLE_SYSTEM_PROMPT=0` to select it on any model). Project styles load from every `.claude/output-styles/` between the working directory and the repository root, the closest one winning on a name clash.
+- Source: https://code.claude.com/docs/en/output-styles.md (retrieved 2026-11-14)
 - This is a Claude Code CLI feature. Agent SDK system-prompt customization is covered by anthropic-agent-sdk.

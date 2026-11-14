@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/mods/overview / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/mods/overview / last verified: 2026-11-14 -->
 
 # Mods overview
 
@@ -56,7 +56,7 @@ Where mods run:
 | `claude` in a terminal (incl. editor terminal, JetBrains plugin) | Yes | Yes |
 | Code tab of the Desktop app, except WSL | Yes | Yes, except terminal-only elements |
 | WSL session in the Desktop app | No (plugins unavailable) | No |
-| VS Code extension chat panel | Yes | Yes, extension 2.1.299+ in a session that fetches feature flags |
+| VS Code extension chat panel | Yes | Yes, extension 2.1.299+; a session that does not fetch feature flags (such as one on Amazon Bedrock) needs 2.1.304+ |
 | `claude -p` and the Agent SDK | Yes | No |
 | Remote Control | Yes, in the session on your machine | In the terminal on your machine |
 | Cloud session | Yes, for a plugin that reaches the cloud session | No |
@@ -98,6 +98,9 @@ Turning mods off:
 - `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS` from early access is ignored in v2.1.287+; setting it to `0` does not keep mods off.
 - Sample mods (unsupported) live in `claude-code/mods` of the `anthropics/claude-code-playground` repo: `token-weather`, `blast-radius`, `replay-theater`. Built-in mod sources are in the `mods` directory of the `anthropics/claude-code` repo (`diff`, `agents-md`, `sec-default`, `telemetry`).
 - Try a mod for one session with `claude --plugin-dir <dir>`.
+- A mod can approve many tool calls that your `deny` or `ask` rules or `PreToolUse` hooks would stop unless the built-in guard prevents it; with the guard loaded, a user's mod by default can't. `cc-plugin-sec-default` on the **Installed** tab of `/plugin` means the guard is loaded in a local terminal session.
+- In the Desktop app, check the Claude Code version with `/status` in a local session in the Code tab (mods need 2.1.286+).
+- Source: https://code.claude.com/docs/en/plugins/mods/overview.md (retrieved 2026-11-14)
 
 ## Related
 

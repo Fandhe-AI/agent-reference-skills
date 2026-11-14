@@ -1,8 +1,8 @@
-<!-- source: https://code.claude.com/docs/en/advisor / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/advisor / last verified: 2026-11-14 -->
 
 # Advisor tool
 
-Experimental server-side tool that pairs the main model with a stronger advisor model Claude consults at key moments — before committing to an approach, when stuck on a recurring error, or before declaring a task complete. The advisor receives the full conversation, including every tool call and result, and returns guidance Claude applies before continuing. Anthropic API only; not available on Amazon Bedrock, Claude Platform on AWS, Google Cloud's Agent Platform, or Microsoft Foundry.
+Experimental server-side tool that pairs the main model with a stronger advisor model Claude consults at key moments — before committing to an approach, when stuck on a recurring error, or before declaring a task complete. The advisor receives the full conversation, including every tool call and result, and returns guidance Claude applies before continuing. Requires the Anthropic API or Claude Platform on AWS (v2.1.300+ there); not available on Amazon Bedrock, Google Cloud's Agent Platform, or Microsoft Foundry.
 
 ## Signature / Usage
 
@@ -34,10 +34,11 @@ Accepted advisor per main model (advisor must be at least as capable as the main
 | Opus 4.7 or Opus 4.8 | Fable, Opus 4.7 or later, Sonnet 5.5 |
 | Sonnet 5.5 | Fable, Opus 5 or later, Sonnet 5.5 |
 | Opus 5 or Opus 5.5 | Fable, Opus 5 or later |
-| Fable 5 | Fable 5.1 or Fable 5 |
-| Fable 5.1 | Fable 5.1 |
+| Fable 5 | Fable 5.2, Fable 5.1, or Fable 5 |
+| Fable 5.1 | Fable 5.2 or Fable 5.1 |
+| Fable 5.2 | Fable 5.2 |
 
-Fable 5.1 requires Claude Code v2.1.257+. Sonnet 5.5 as the advisor for an Opus 4.7 / 4.8 main model requires v2.1.287+. Haiku 5.5 as the main model or as the advisor requires v2.1.293+. Fable models require Fable access. Haiku 4.5 can call the advisor but can't act as one.
+Fable 5.2 requires Claude Code v2.1.321+, and Fable 5.1 requires v2.1.257+. Sonnet 5.5 as the advisor for an Opus 4.7 / 4.8 main model requires v2.1.287+. Haiku 5.5 as the main model or as the advisor requires v2.1.293+. Fable models require Fable access. Haiku 4.5 can call the advisor but can't act as one.
 
 ## Notes
 
@@ -50,7 +51,10 @@ Fable 5.1 requires Claude Code v2.1.257+. Sonnet 5.5 as the advisor for an Opus 
 - Advisor tokens bill at the advisor model's rates in addition to the main model's usage; counts toward `/usage` and plan limits.
 - Toggling `/advisor` mid-session does not invalidate the main model's prompt cache.
 - Requires a supported main model: Fable, Opus 4.6+, Sonnet 4.6+, Haiku 4.5, or Haiku 5.5.
-- Requires feature-flag fetching: the advisor is turned on through a feature flag fetched from Anthropic, so it stays off when a variable that turns flag fetching off (such as `DISABLE_TELEMETRY`) is set.
+- Requires feature-flag fetching unless you're on Claude Platform on AWS: the advisor is turned on through a feature flag fetched from Anthropic, so it stays off when a variable that turns flag fetching off (such as `DISABLE_TELEMETRY`) is set.
+- `/advisor off` (or **No advisor** in the picker) turns the advisor off. Aliases `fable`, `opus`, `sonnet` resolve to Claude Code's built-in default version for each family, or pass a full model ID such as `claude-opus-5-5`.
+- A saved advisor the current main model doesn't support is kept and activates after switching to a compatible main model with `/model`; if the API already refused it in the conversation, it stays off until `/clear` or `/compact`. An advisor ranking below the main model is not attached to the main model's requests (subagents whose own model satisfies the pairing may still use it); if the API refuses an attached pairing, Claude Code resends without the advisor with no error shown. Through an LLM gateway, availability depends on the gateway forwarding the advisor tool intact.
+- Source: https://code.claude.com/docs/en/advisor (retrieved 2026-11-14)
 - `CLAUDE_CODE_DISABLE_ADVISOR_TOOL=1` disables the tool entirely; `/advisor` becomes unavailable and `advisorModel` is ignored.
 - Compare with `opusplan` (stronger model during plan mode only), subagents with `model` set (stronger model for a whole delegated subtask), and `/model` (switches for all subsequent turns).
 

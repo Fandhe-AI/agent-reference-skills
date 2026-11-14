@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/prompt-library / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/prompt-library / last verified: 2026-11-14 -->
 
 # Prompt library
 
@@ -30,6 +30,19 @@ Categories (SDLC phase → tags), representative prompts per phase:
 
 - Curly-brace tokens such as `{path}`, `{feature}`, `{behavior}`, `{target}`, `{goal}`, `{steps}`, `{branch}`, `{test}` and `{name}` are intentional fill-in slots in the prompt text, not unreplaced template placeholders; substitute your own value before sending.
 - Six recurring patterns make these prompts work: describe the outcome not the steps; give Claude a way to check its own work (run/test/compare/verify); point at a reference file or pattern to match; state a measurable target; paste the artifact (error/log/screenshot) directly or `@`-mention a file; say how you want the answer formatted (pair with an output style for a lasting default).
+- The 2026-11-14 twin lists no prompt cards (tags are now "task and role"); only the six patterns above, each with one example prompt. The Options / Props table above comes from the 2026-08-07 capture and could not be re-verified against the twin. Example prompts per pattern, verbatim:
+
+  | Pattern | Example prompt |
+  | --- | --- |
+  | Describe the outcome, not the steps | `add rate limiting to the public API and make sure existing tests still pass` |
+  | Give it a way to check its own work | `write the migration, run it against the dev database, and confirm the schema matches` |
+  | Point at a reference | `add a settings page that follows the same layout as the profile page` |
+  | State the measurable target | `get the bundle size under 200KB and show me what you removed` |
+  | Give it the artifact | `why is the build failing? @build.log` |
+  | Say how you want the answer | `explain how the payment retry logic works as an HTML page with a diagram, then open it in my browser` |
+
+- To check a finished change against the running app, run `/verify`; plan mode shows the file list before any edits for larger or riskier changes. Sources of the prompts: Common workflows, Best practices, "How Anthropic teams use Claude Code", and the Scaling agentic coding guide.
+- Source: https://code.claude.com/docs/en/prompt-library.md (retrieved 2026-11-14)
 - This page renders as an interactive filterable widget on the live site; the content above is the underlying prompt set, not a literal page transcript.
 - This is a Claude Code CLI feature. For the Agent SDK equivalent, see anthropic-agent-sdk. For the Claude API (Messages API) Agent Skills / tool use, see anthropic-api-tools-mcp.
 

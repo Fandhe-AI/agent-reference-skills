@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/relevance.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/relevance.md / last verified: 2026-11-14 -->
 
 # Recommend plugins for your org
 
@@ -52,6 +52,9 @@ Add a relevance block to marketplace plugin entries so Claude Code suggests them
 - Surfaces: spinner tip (`Working with <topic>? Install the <plugin> plugin`), session-start notification (`cwd` signal only), and a pinned entry in the `/plugin` Discover tab.
 - Requires Claude Code v2.1.152+; older clients ignore `relevance`.
 - Claude Code never installs a plugin automatically — the user always confirms.
+- Changelog 2.1.325: plugin recommendation prompts now say that plugins can run code on your computer, with access to your files and shell.
+- Source: https://code.claude.com/docs/en/plugins/relevance.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.325, retrieved 2026-11-14)
 
 ## Related
 

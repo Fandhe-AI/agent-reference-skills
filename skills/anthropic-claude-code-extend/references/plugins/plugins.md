@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/create.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/create.md / last verified: 2026-11-14 -->
 
 # Create a Claude Code plugin
 
@@ -65,6 +65,11 @@ Ways to develop without a marketplace:
 - To get it to other people: send the directory or a `.zip`, list it in your own marketplace, or submit it to Anthropic's directory; see publish-plugin.md. The per-component details are in plugin-components.md.
 - The old URL `/docs/en/plugins.md` now serves the Plugins overview (see plugins-overview.md); this page's canonical source is `/docs/en/plugins/create`.
 - Loading a plugin from the SDK is a distinct integration surface; for details see the Agent SDK plugin-loading docs (`anthropic-agent-sdk`).
+- Managed settings can turn off `--plugin-dir` and `CLAUDE_CODE_PLUGIN_DIRS` (see plugin-cli-reference.md). `claude plugin list` prints session-only and skills-directory plugins in their own sections with `Status: ✔ loaded` or the load error; if a skills-directory plugin is missing with no error, see the managed-settings block in plugin-loading.md.
+- Changelog 2.1.325: `.claude/skills` folders in `--plugin-dir` plugins no longer load from a session started above them; start Claude Code in the plugin folder instead.
+- Changelog 2.1.321: `--plugin-dir .` and `--plugin-dir ./builtin` no longer write generated type files for Claude Code's built-in plugins into a `builtin` folder. A `--plugin-dir` folder of plugins no longer loads as one plugin when an empty `.mcp.json` sits at its top (fix listed in 2.1.310).
+- Source: https://code.claude.com/docs/en/plugins/create.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.310, 2.1.321, 2.1.325, retrieved 2026-11-14)
 
 ## Related
 

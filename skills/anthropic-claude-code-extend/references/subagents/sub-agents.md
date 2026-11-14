@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/sub-agents / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/sub-agents / last verified: 2026-11-14 -->
 
 # Subagents
 
@@ -51,15 +51,15 @@ Supported YAML frontmatter fields (only `name` and `description` required):
 | `disallowedTools` | string list | Denylist, removed from inherited/specified tools; applied before `tools` |
 | `model` | string | `sonnet` \| `opus` \| `haiku` \| `fable` \| full model ID \| `inherit` (main conversation's model). When omitted, resolved in order: per-invocation `model` parameter → frontmatter `model` → `CLAUDE_CODE_SUBAGENT_MODEL` → main conversation's model |
 | `permissionMode` | string | `default` \| `acceptEdits` \| `auto` \| `dontAsk` \| `bypassPermissions` \| `plan` \| `manual` (alias of `default`). Ignored for plugin subagents |
-| `maxTurns` | number | Max agentic turns before the subagent stops |
+| `maxTurns` | number | Max agentic turns before the subagent stops. At the limit the returned output is marked partial and Claude can resume the subagent (partial marking requires v2.1.246+) |
 | `autoCompactWindow` | number | Lower the auto-compact window for this subagent, `100000` to `1000000` (plain integer, not `200k`). Requires v2.1.296+; ignored when `CLAUDE_CODE_AUTO_COMPACT_WINDOW` is a positive integer |
-| `skills` | string list | Skills preloaded (full content) into context at startup |
+| `skills` | string list | Skills preloaded (full content) into context at startup, up to the first 32 distinct names. Skills with `disable-model-invocation: true` (e.g. bundled `/verify`) can't be preloaded; unlisted skills stay invocable via the Skill tool; a missing or disabled skill is skipped with a debug-log warning |
 | `mcpServers` | list | MCP servers scoped to this subagent (name reference or inline config). Ignored for plugin subagents |
 | `hooks` | object | Lifecycle hooks scoped to this subagent (`PreToolUse`, `PostToolUse`, `Stop`→`SubagentStop`). Ignored for plugin subagents |
 | `memory` | string | `user` \| `project` \| `local` — persistent memory directory across sessions |
 | `omitClaudeMd` | boolean | `true` starts the subagent without the user, project and local CLAUDE.md files (managed policy files still load, except for managed subagents). Ignored when run as main session agent via `--agent` or the `agent` setting. Requires v2.1.271+ |
 | `background` | boolean | Keep this subagent in the background even when Claude asks for the foreground. Where fork mode is on, Claude Code already runs spawned subagents in the background |
-| `effort` | string | `low` \| `medium` \| `high` \| `xhigh` \| `max`; overrides session effort but not `CLAUDE_CODE_EFFORT_LEVEL`; available levels depend on the model |
+| `effort` | string | `low` \| `medium` \| `high` \| `xhigh` \| `max`; overrides session effort but not `CLAUDE_CODE_EFFORT_LEVEL`; available levels depend on the model. Claude can also pass a per-invocation `effort` parameter on a non-fork subagent (overrides the field, persists on resume, v2.1.292+) |
 | `isolation` | string | `worktree` — run in an isolated git worktree |
 | `color` | string | Display color in task list/transcript: `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, `cyan` |
 | `initialPrompt` | string | Auto-submitted first user turn when run as main session agent via `--agent`. Ignored for plugin subagents |
@@ -86,6 +86,31 @@ Supported YAML frontmatter fields (only `name` and `description` required):
 - Resume a finished subagent via `SendMessage` addressed to its agent ID/name to continue with full history instead of starting over. Built-in Explore and Plan are one-shot (no agent ID) and cannot be resumed.
 - `Agent(agent-name)` syntax in `tools` restricts which subagent types a `--agent`-run main thread can spawn; `permissions.deny: ["Agent(name)"]` blocks a specific subagent globally.
 - Subagent output is scanned before Claude reads it (v2.1.210+): text imitating Claude Code output (e.g. a `<system-reminder>` tag, `Human:` / `Assistant:` lines) gets a backslash inserted, and instruction-shaped matches get a `[harness: ...]` marker line; nothing is removed or reworded.
+
+### Updates (2026-11)
+
+- Fork mode is on by default from v2.1.302 (in an interactive terminal session from v2.1.232). While it is on, Claude can't wait for a subagent in interactive terminal, VS Code or desktop sessions; set `CLAUDE_CODE_FORK_SUBAGENT=0` to let it wait (Ctrl+B moves a waiting subagent to the background). `Agent(fork)` in `permissions.deny` stops forks only. A fork can't spawn further forks; with `isolation: "worktree"` on the Agent call its edits go to a separate worktree.
+- Model order: per-invocation `model` parameter (alias only) → definition `model` → `CLAUDE_CODE_SUBAGENT_MODEL` → parent's model. Set `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1` as well (v2.1.257+) to force one model on every subagent, teammate and workflow agent; the definition's `model` is then ignored. `/tasks` shows each subagent's model and effort (v2.1.242+). A nested subagent defaults to its spawning subagent's model; an `availableModels` allowlist falls back to the newest permitted version of the alias, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the parent's model.
+- Tools: every subagent loses `AskUserQuestion`, `EndConversation`, `EnterPlanMode`, `ExitPlanMode` (unless `permissionMode: plan`), `ScheduleWakeup`, `WaitForMcpServers`, `Workflow`, and `Agent` at the depth limit. Background subagents (the default) keep every MCP tool but only a smaller built-in set (`Read`, `Grep`, `Glob`, `LSP`, `Bash`, `PowerShell`, `Edit`, `Write`, `NotebookEdit`, `WebFetch`, `WebSearch`, `TodoWrite`, `Skill`, `ToolSearch`, `EnterWorktree`, `ExitWorktree`, `Monitor`, `TaskStop`, `SendMessage`, `Artifact`, plus `SubagentHandback`). `disallowedTools` entries with a specifier such as `Bash(git push *)` still remove the whole tool; use a `permissions.deny` Bash rule instead.
+- `--agents` JSON: `prompt` may be empty and the argument may be a file path in `-p` mode (v2.1.281+); `color` and `experimental` are ignored there. `--append-subagent-system-prompt` (v2.1.205+) / `--append-subagent-system-prompt-file` (v2.1.261+) append text to every subagent's prompt in non-interactive mode.
+- Files that Claude Code silently skips: no `name`, opening `---` not on the first line, `name` starting with `-` / containing `:` / over 256 characters, no `description`, or unparsable YAML. `claude plugin validate <agents dir>` finds unparsable frontmatter (v2.1.233+); `claude --debug` reports unrecognized frontmatter fields (v2.1.296+). Combined subagent descriptions over 15,000 tokens trigger a startup warning.
+- Trust: inline `mcpServers` and frontmatter `hooks` of a project-level (or `--add-dir`) agent file load only after the folder is trusted (inline MCP servers: v2.1.238+); `~/.claude/agents/`, `--agents` and managed definitions skip this check.
+- Permission modes: if the main conversation is in `bypassPermissions`, `acceptEdits` or auto mode the subagent uses that mode and ignores `permissionMode`; in `plan` it stays in plan mode; in `default` / `dontAsk` it uses its own value, except `bypassPermissions` (v2.1.267+) and `auto` when auto mode is unavailable. Background subagents surface every permission prompt in the main session, and a lasting answer applies to the whole session.
+- `/tasks`: a finished background subagent's row is removed immediately with a `/tasks to see subagents` footer hint for 30 seconds (v2.1.232+); failed or stopped ones keep the row for 30 seconds.
+- Resume: `SendMessage` resumes a finished subagent in the background with its full history; a subagent stopped by you with `x` in `/tasks` isn't auto-resumed. Names given from the main conversation survive a restart only if assigned after the last compaction (v2.1.299+; otherwise use the agent ID from `agent-{agentId}.meta.json`). Transcripts live in `~/.claude/projects/{project}/{sessionId}/subagents/agent-{agentId}.jsonl` and follow `cleanupPeriodDays`.
+- Subagents don't inherit the main conversation's output style (except forks) or auto memory, and their context window is sized by their own model.
+- Concurrent limit 20 (`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`); resumes and `/subtask` forks aren't blocked by it, and ultracode sessions are exempt.
+- Fork panel: `Enter` opens a fork's transcript, `x` stops it, `Ctrl+Enter` / `Ctrl+X Ctrl+S` sends a message so the agent reads it before its pending work finishes (v2.1.286+); `/btw` answers from the open transcript (v2.1.314+).
+- 2.1.325: subagents cut off at the output token limit are now asked for the whole answer again, more briefly, instead of returning only its end.
+- 2.1.323: added `CLAUDE_CODE_DISABLE_AGENT_PROGRESS_SUMMARIES` (available since 2.1.318); set to `1` to turn off subagent progress summaries and the requests that write them. Removed the `subagentStatusLine` setting: subagent rows always use the default look, and settings files that still hold the key load as before.
+- 2.1.319: added `permissions.denyInsteadOfPrompting`: a tool call that would wait on a permission prompt is denied and the turn continues, in terminal sessions, subagents and teammates. Also: after safeguards stop a subagent, Claude is told to retry with a narrower prompt or tell you instead of doing the work itself.
+- 2.1.319: added an "Earlier in this session" row to `/tasks` that lists finished subagents so you can reopen one and message it even after it leaves the list or you restart.
+- 2.1.318: background subagents move a shell command to the background after 3 minutes on all providers, so the prompt cache doesn't expire while it runs; subagents stop instead of switching models when "Switch models when a message is flagged" is set to "Ask each time".
+- 2.1.317: subagents and teammates on a different model from the main conversation use that model's saved effort level or its default, not the session's effort level.
+- 2.1.316: added `CLAUDE_CODE_SUBAGENT_EFFORT` to set the effort level subagents run at when nothing else names one, instead of inheriting the session's.
+- 2.1.312: a subagent's `autoCompactWindow` now lowers the window set by `CLAUDE_CODE_AUTO_COMPACT_WINDOW`; it still never raises it.
+- Source: https://code.claude.com/docs/en/sub-agents.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.312–2.1.325, retrieved 2026-11-14)
 
 ## Related
 
