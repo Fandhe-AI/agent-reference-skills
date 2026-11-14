@@ -6,6 +6,8 @@ Upstash Workflow is pay-as-you-go on top of QStash: a workflow run consists of s
 
 Snippet taken from https://upstash.com/docs/workflow/steps/call (a `context.call` step generates two messages).
 
+Adapted (not in the official docs): the official snippet sends `OPENAI_API_KEY` to the example third-party endpoint; a credential variable dedicated to that service is used instead.
+
 ```typescript
 const { status,  headers,  body } = await context.call("sync-user-data", {
     url: "https://my-third-party-app", // Endpoint URL
@@ -15,7 +17,7 @@ const { status,  headers,  body } = await context.call("sync-user-data", {
       name
     }),
     headers: {
-      authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      authorization: `Bearer ${process.env.THIRD_PARTY_API_KEY}`,
     },
   }
 );
@@ -32,6 +34,7 @@ const { status,  headers,  body } = await context.call("sync-user-data", {
 
 ## Notes
 
+- Adapted from the official docs: the `Authorization` header of the `context.call` snippet uses `THIRD_PARTY_API_KEY` for the destination service instead of the official `OPENAI_API_KEY`, so an OpenAI credential is not sent to an unrelated endpoint
 - No charge when the app receives no traffic; current message usage and costs are shown in the console Overview tab of QStash
 - Plan details: https://upstash.com/pricing/workflow
 - Plan-dependent limits seen elsewhere: DLQ retention (dlq) and `waitForEvent` maximum timeout (wait-for-event)

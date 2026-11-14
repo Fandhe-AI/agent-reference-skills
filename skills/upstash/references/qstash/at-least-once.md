@@ -4,34 +4,44 @@ QStash guarantees at-least-once delivery: no message is lost, but in rare cases 
 
 ## Signature / Usage
 
-Adapted (not in the official docs): wrapped the business logic in try/catch that removes the processed marker on failure, so a redelivery is not skipped when the first attempt did not finish.
+Adapted (not in the official docs): the official example (an unauthenticated `GET` that stores a processed marker before the business logic) is changed to verify the QStash signature (`verifySignatureAppRouter`), require `Upstash-Message-Id`, distinguish `processing` from `done` (a concurrent redelivery gets a retryable 409, only a finished message is skipped with 200), and remove the claim when the logic throws.
 
 ```typescript title="api/handler/route.ts"
 import { Redis } from "@upstash/redis";
+import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 
 const redis = Redis.fromEnv();
 
-export async function GET(request: Request): Promise<Response> {
+async function handler(request: Request): Promise<Response> {
   const messageId = request.headers.get("Upstash-Message-Id");
+  if (!messageId) {
+    return Response.json({ message: "Missing Upstash-Message-Id" }, { status: 400 });
+  }
+  const key = `processed:${messageId}`;
 
-  const isNew = await redis.set(`processed:${messageId}`, "true", {
-    nx: true,
-    ex: 60 * 60 * 24,
-  });
-
-  if (!isNew) {
-    return Response.json({ message: "Message already processed" }, { status: 200 });
+  // claim the message; "processing" expires so a crashed attempt can be retried
+  const claimed = await redis.set(key, "processing", { nx: true, ex: 60 * 5 });
+  if (!claimed) {
+    const state = await redis.get(key);
+    if (state === "done") {
+      return Response.json({ message: "Message already processed" }, { status: 200 });
+    }
+    // another attempt is still running: ask QStash to retry later
+    return Response.json({ message: "Message is being processed" }, { status: 409 });
   }
 
   try {
     // critical business logic here
   } catch (error) {
-    await redis.del(`processed:${messageId}`);
+    await redis.del(key);
     throw error;
   }
 
+  await redis.set(key, "done", { ex: 60 * 60 * 24 });
   return Response.json({ message: "Message processed" }, { status: 200 });
 }
+
+export const POST = verifySignatureAppRouter(handler);
 ```
 
 ## Options / Props
@@ -49,7 +59,7 @@ Strategies for duplicate deliveries:
 - A duplicate can occur when the QStash server shuts down mid-delivery, cannot determine the final delivery status after restart, and delivers again to avoid losing the message
 - True exactly-once delivery cannot be guaranteed in distributed systems; at-least-once plus idempotent handlers is the common approach
 - Distinct from publish-time deduplication (`Upstash-Deduplication-Id`), which prevents duplicate enqueueing; see deduplication.md
-- Adapted from the official docs: the official example records the message as processed before running the business logic, so a crash after the `SET NX` would make the redelivery return 200 without the work done. The `try/catch` only covers thrown errors; for a process crash use a transactional write or a resumable processing state keyed by `Upstash-Message-Id`
+- Adapted from the official docs: the official example records the message as processed before running the business logic and has no signature check, so a crash or a concurrent redelivery could return 200 without the work done. The adapted example covers thrown errors only; for a process crash the `processing` claim expires after 5 minutes (use a transactional write or a business-side idempotency key for stronger guarantees)
 - Source: https://upstash.com/docs/qstash/features/at-least-once (fetched 2026-11-14; no version pin on the site)
 
 ## Related

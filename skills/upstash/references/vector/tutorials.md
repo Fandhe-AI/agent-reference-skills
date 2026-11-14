@@ -6,8 +6,11 @@ Official end-to-end tutorials for Upstash Vector (Python): semantic search, Lang
 
 Simple semantic search with Upstash-hosted embeddings:
 
+Adapted (not in the official docs): the official snippet passes the raw text as the second tuple element (the vector slot); it is registered with `Data(id=..., data=..., metadata=...)` instead, the input type for indexes with an embedding model (see embedding-models.md).
+
 ```python
 from upstash_vector import Index
+from upstash_vector.types import Data
 from dotenv import load_dotenv
 import time
 
@@ -33,7 +36,7 @@ index.reset()
 for doc in documents:
     index.upsert(
         vectors=[
-            (doc["id"], doc["text"], {"text": doc["text"]})
+            Data(id=doc["id"], data=doc["text"], metadata={"text": doc["text"]})
         ]
     )
     print(f"Document {doc['id']} inserted.")
@@ -67,6 +70,7 @@ for result in results:
 
 ## Notes
 
+- Adapted from the official docs: the "Simple Semantic Search" upsert uses `upstash_vector.types.Data` instead of a `(id, text, metadata)` tuple, because the vector slot of a tuple takes numeric vectors (`Data` signature checked against the `upstash/vector-py` source on 2026-11-14)
 - Each tutorial reads `UPSTASH_VECTOR_REST_URL` and `UPSTASH_VECTOR_REST_TOKEN` from a `.env` file
 - Vector is eventually consistent, hence the short wait before querying in the sample
 - Source: https://upstash.com/docs/vector/tutorials/semantic_search (and sibling tutorial pages: langchain, huggingface-embeddings, llamaindex, llamaparse, gradio-application) (fetched 2026-11-14; no version pin on the site)

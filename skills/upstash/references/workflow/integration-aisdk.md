@@ -33,7 +33,10 @@ export const createWorkflowOpenAI = (context: WorkflowContext) => {
         });
 
         // Construct headers for the response
-        const responseHeaders = new Headers(responseInfo.headers);
+        const responseHeaders = new Headers();
+        for (const [key, value] of Object.entries(responseInfo.headers)) {
+          responseHeaders.set(key, Array.isArray(value) ? value.join(", ") : value);
+        }
 
         // Return the constructed response
         return new Response(
@@ -106,6 +109,7 @@ Install: `npm install @ai-sdk/openai ai zod`.
 
 ## Notes
 
+- The official pages disagree on the response header value type: `context.call` documents `Record<string, string>` while the official AI SDK example (and the workflow run log types) treat values as string arrays; the adapted wrapper accepts both
 - Adapted from the official docs: the official `createWorkflowOpenAI` example parses `init.body` into an object and reads `responseInfo.header` as arrays of values, which does not match the `@upstash/workflow` 1.x `context.call` contract (string `body`, `{ status, headers, body }` result); the fetch wrapper above follows the 1.x contract
 - Not yet available in `workflow-py`
 - Using `context.call` as the fetch implementation makes Upstash perform the HTTP request and wait for the response, even if the LLM is slow; the pattern can be generalized to other LLM SDKs (Anthropic, Google)
