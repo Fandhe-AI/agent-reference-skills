@@ -13,9 +13,10 @@ user-invocable: false
 
 ## 対象バージョン
 
-- shadcn CLI 4.22.0（GitHub release tag `shadcn@4.22.0`、commit `ad0a097d30cf9524ac4a3b5294c9513c5c344672`、2026-10-16）
-- Markdown twin（`https://ui.shadcn.com/<path>.md`）を 2026-10-16 に取得。preview ページを除き、タグ時点の `.mdx` とバイト一致を確認済み
-- 同梱パッケージ: `@shadcn/react` 0.3.1 / `@shadcn/helpers` 0.3.0 / `@shadcn/registry` 0.2.0
+- shadcn CLI 4.23.0（GitHub release tag `shadcn@4.23.0`、commit `96da9cc7f1aa10580a3741664e2a77c721206c00`、2026-10-27）
+- 4.22.0 からの差分は MCP サーバーの MCP 2026-07-28 対応（`shadcn/mcp` export が `McpServer`、`createServer()` 追加）、サイドバーのテーマ変数（`--sidebar` + oklch）、Registry FAQ の GitHub 非公開リポジトリ回答。`references/registry/faq.md` を追加
+- Markdown twin（`https://ui.shadcn.com/<path>.md`）を 2026-10-16 に取得し、差分のあった sidebar / registry faq は 2026-11-14 に再取得。registry faq の twin はタグ 4.23.0 時点の `.mdx` とバイト一致、sidebar は Theming 節がタグ時点の `.mdx` と一致（twin は ComponentPreview を展開済み）を確認（それ以外のページは 4.22.0 → 4.23.0 で `.mdx` の変更なしを `diff -r` で確認）
+- 同梱パッケージ: `@shadcn/react` 0.3.1 / `@shadcn/helpers` 0.3.0 / `@shadcn/registry` 0.2.1
 - ドキュメントサイトの依存（タグ時点）: `@base-ui/react` 1.6.0 / `radix-ui` ^1.4.3 / `react-aria-components` 1.20.0 / `tailwindcss` ^4.3.0 / `react` 19.2.3
 - canary / beta / rc は対象外
 
@@ -45,7 +46,7 @@ skills/shadcn-ui/
       README.md
     ai-elements/            # 22 ページ: ai-elements, chat, message, prompt-input, tool, reasoning, ...
       README.md
-    registry/               # 15 ページ: registry, getting-started, registry-json, registry-item-json, namespace, mcp, ...
+    registry/               # 16 ページ: registry, faq, getting-started, registry-json, registry-item-json, namespace, mcp, ...
       README.md
     packages/               # 4 ページ: helpers-ai-sdk, helpers-tanstack-ai, react-message-scroller, react-questionnaire
       README.md
@@ -103,7 +104,7 @@ skills/shadcn-ui/
 | チャット UI（Message / Bubble / Message Scroller / Questionnaire / Trace） | components-chat | [references/components-chat/README.md](references/components-chat/README.md) |
 | エージェント UI パターン（Prompt Input / Tool / Reasoning / Plan / Terminal） | ai-elements | [references/ai-elements/README.md](references/ai-elements/README.md) |
 | 自前レジストリの作成・配信（registry.json / registry-item.json） | registry | [references/registry/README.md](references/registry/README.md) |
-| 名前空間・認証・GitHub レジストリ・Open in v0・レジストリ MCP | registry | [references/registry/README.md](references/registry/README.md) |
+| 名前空間・認証・GitHub レジストリ・Open in v0・レジストリ MCP・レジストリ FAQ | registry | [references/registry/README.md](references/registry/README.md) |
 | `@shadcn/helpers` / `@shadcn/react` パッケージの API | packages | [references/packages/README.md](references/packages/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

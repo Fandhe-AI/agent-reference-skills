@@ -4,7 +4,7 @@ source: https://ui.shadcn.com/docs/installation
 
 # Install
 
-Commands to create a project, initialize shadcn/ui and add components. Source: the installation pages of the official documentation (retrieved 2026-10-16, `shadcn` CLI 4.22.0).
+Commands to create a project, initialize shadcn/ui and add components. Source: the installation pages of the official documentation (retrieved 2026-10-16, `shadcn` CLI 4.23.0).
 
 ## Initialize an existing project
 

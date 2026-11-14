@@ -60,6 +60,7 @@ API_KEY=your_api_key_here
 - Claude Code: restart, then run `/mcp`; `Connected` means ready. Cursor: enable the server in Cursor Settings. VS Code: click Start next to the server in `.vscode/mcp.json`. Codex / OpenCode: restart.
 - Troubleshooting: verify config and enablement, restart the client, ensure `shadcn` is installed, check registry URLs, env vars and namespace syntax (`@namespace/component`). For `No tools or prompts`, run `npx clear-npx-cache`, re-enable the server, check logs (Cursor: View -> Output, `MCP: project-*`).
 - The shadcn MCP server is a provider; MCP client configuration itself is covered by skills anthropic-claude-code-extend / openai-codex.
+- Changed in CLI 4.23.0: `shadcn mcp` serves MCP protocol 2026-07-28 as well as earlier versions (the client's first message picks the version). The `shadcn/mcp` export is now an `McpServer` and a new `createServer()` export returns a fresh instance per connection; code that called `server.setRequestHandler(...)` on the old `Server` export should use `server.registerTool(...)` or `server.server.setRequestHandler(...)`. Source: https://github.com/shadcn-ui/ui/blob/shadcn%404.23.0/packages/shadcn/CHANGELOG.md (tag `shadcn@4.23.0`, retrieved 2026-11-14).
 
 ## Related
 
