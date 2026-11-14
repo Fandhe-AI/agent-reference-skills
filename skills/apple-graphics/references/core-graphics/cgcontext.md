@@ -127,7 +127,9 @@ Available on iOS 2.0+, macOS 10.0+, tvOS 9.0+, watchOS 2.0+, visionOS 1.0+.
 
 PDF tagging (marked content) methods are available on iOS / macOS / visionOS 27.0+ (no tvOS entry): `addStructureTreeRootChild(_:)`, `beginMarkedContentSequence(_:)` / `endMarkedContentSequence()`, `beginNonStructuralMarkedContentSequence(_:)`, `beginObjectReference()` / `endObjectReference()`.
 
-In the iOS 27.2 beta SDK (beta at the time of retrieval), the two `init(data:...space: CGColorSpace, bitmapInfo: UInt32)` overloads are deprecated ("update space parameter to CGColorSpace?, bitmapInfo parameter to CGBitmapInfo"); use the typed overloads listed under Bitmap Context Initializers.
+In the 27.3 beta SDK (beta at the time of retrieval, 2026-11-14; an earlier retrieval listed 27.2), the two `init(data:...space: CGColorSpace, bitmapInfo: UInt32)` overloads are deprecated ("update space parameter to CGColorSpace?, bitmapInfo parameter to CGBitmapInfo"); use the typed overloads listed under Bitmap Context Initializers.
+
+- Source: https://developer.apple.com/documentation/coregraphics/cgcontext (retrieved 2026-11-14)
 
 ## Related
 

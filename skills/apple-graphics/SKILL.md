@@ -10,6 +10,12 @@ description: >
 user-invocable: false
 ---
 
+## 対象バージョン
+
+- 出典は developer.apple.com の DocC JSON（URL に版が無いため取得日で pin）。最終照合日 2026-11-14、SDK は iOS / macOS 27（27.2 リリース済み、27.3 beta）
+- SceneKit は 26.0 で全面 deprecated（RealityKit への移行が前提）。SpriteKit / Core Animation / Core Graphics / Core Image / Metal は非 deprecated
+- 27.3 beta SDK で `CADisplayLink.preferredFramesPerSecond`、`CGBitmapInfo` の旧メンバー、`CGContext` の旧 bitmap 初期化子が deprecated 表示。該当ページの `## Notes` に記載
+
 ## ディレクトリ構成
 
 ```text

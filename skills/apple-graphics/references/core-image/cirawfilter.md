@@ -61,7 +61,8 @@ let outputImage = filter.outputImage
 
 - iOS 15.0+, iPadOS 15.0+, macOS 12.0+, Mac Catalyst 15.0+, tvOS 15.0+, visionOS 1.0+
 - Query `is*Supported` properties (e.g. `isLensCorrectionSupported`, `isDetailSupported`) before enabling the corresponding adjustment, since RAW support varies by camera/decoder.
-- `downloadAllResources(timeout:completionHandler:)` (class method, `-> Progress`) is listed in the 27.2 beta SDK only (beta at the time of retrieval).
+- `downloadAllResources(timeout:completionHandler:)` (class method, `-> Progress`) is available from iOS / iPadOS / Mac Catalyst / macOS / tvOS / visionOS 27.2 (`introducedAt` 27.2; `downloadResources(timeout:completionHandler:)` is 27.0).
+- Source: https://developer.apple.com/documentation/coreimage/cirawfilter/downloadallresources(timeout:completionhandler:) (retrieved 2026-11-14)
 - Inherits from `CIFilter`; use in conjunction with `CIContext` for rendering.
 
 ## Related

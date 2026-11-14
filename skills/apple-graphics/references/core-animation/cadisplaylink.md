@@ -45,7 +45,8 @@ func invalidate()                                        // Unschedule from all 
 ## Notes
 
 - iOS 3.1+, iPadOS 3.1+, macOS 14.0+, tvOS 9.0+, visionOS 1.0+, Mac Catalyst 13.1+
-- Per the official page, `preferredFramesPerSecond` is deprecated at iOS / tvOS / visionOS 27.2 (beta SDK at the time of retrieval) with the message "Use preferredFrameRateRange instead".
+- Per the official page, `preferredFramesPerSecond` is deprecated at iOS / iPadOS / Mac Catalyst / tvOS / visionOS 27.3 (27.3 beta SDK at the time of retrieval, 2026-11-14; an earlier retrieval listed 27.2) with the message "Use preferredFrameRateRange instead".
+- Source: https://developer.apple.com/documentation/quartzcore/cadisplaylink/preferredframespersecond (retrieved 2026-11-14)
 - Do not subclass `CADisplayLink`.
 - Always use `targetTimestamp` (not `timestamp`) for computing the state of animations to prevent a one-frame lag.
 - On ProMotion devices, actual frame rates are factors of the maximum refresh rate (e.g., 15, 20, 30, 60, 80, 120 Hz on a 120 Hz display).

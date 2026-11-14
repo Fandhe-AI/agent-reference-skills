@@ -69,7 +69,9 @@ Combine with `CGBitmapInfo` using bitwise OR:
 
 Available on iOS 2.0+, macOS 10.0+, tvOS 9.0+, watchOS 2.0+, visionOS 1.0+. Conforms to `OptionSet`. Incorrect byte-order settings produce misread colors; on most Apple hardware `byteOrder32Little` with `premultipliedFirst` (BGRA layout) is the most efficient format for bitmap contexts. Check `CGImage.bitmapInfo` and `CGImage.alphaInfo` to read these values from an existing image.
 
-In the iOS 27.2 beta SDK (beta at the time of retrieval), `byteOrderDefault` / `byteOrder16Little` / `byteOrder16Big` / `byteOrder32Little` / `byteOrder32Big` are renamed to `CGImageByteOrderInfo.order*`, and `floatComponents` is renamed to `CGImageComponentInfo.float`. `alphaInfoMask` / `byteOrderMask` / `floatInfoMask` are deprecated ("Use .alpha / .byteOrder / .component instead"), and `init(_:)` (Sequence) is deprecated ("Use init(alpha:component:byteOrder:pixelFormat:) instead").
+In the 27.3 beta SDK (beta at the time of retrieval, 2026-11-14; an earlier retrieval listed 27.2), `byteOrderDefault` / `byteOrder16Little` / `byteOrder16Big` / `byteOrder32Little` / `byteOrder32Big` are renamed to `CGImageByteOrderInfo.order*`, and `floatComponents` is renamed to `CGImageComponentInfo.float`. `alphaInfoMask` / `byteOrderMask` / `floatInfoMask` are deprecated ("Use .alpha / .byteOrder / .component instead"), and `init(_:)` (Sequence) is deprecated ("Use init(alpha:component:byteOrder:pixelFormat:) instead"). All of these members show `deprecatedAt` 27.3 in the DocC metadata.
+
+- Source: https://developer.apple.com/documentation/coregraphics/cgbitmapinfo (retrieved 2026-11-14)
 
 ## Related
 
