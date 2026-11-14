@@ -126,7 +126,7 @@ export class MyContainer extends DurableObject<Env> {
 
 ## Notes
 
-- Adapted from the official docs: `KvGateway` prefixes keys with `props.containerId` (the official version lets the container read any key in the shared namespace); keys are therefore stored as `<containerId>/<key>`; a missing key returns 404. Without scoping, one container could read other instances' data.
+- Adapted from the official docs: `KvGateway` prefixes keys with `props.containerId` (the official version lets the container read any key in the shared namespace); keys are therefore stored as `<containerId>/<key>`; a missing key returns 404. `startContainer()` in both snippets is also wrapped so concurrent calls share one startup promise (the original body is unchanged inside `#startContainer()`). Without scoping, one container could read other instances' data.
 - Source: https://developers.cloudflare.com/containers/configuration/workers-connections/ (cloudflare-docs production 34d908a, fetched 2026-11-14).
 - The container calls `http://my.kv/some-key` and the entrypoint resolves it using the KV binding. A call to `http://my.r2/file.png` reads from R2, scoped to the current container instance.
 - An intercept lasts until the container stops. Register intercepts each time you start the container.
