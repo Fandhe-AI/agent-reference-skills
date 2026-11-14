@@ -4,7 +4,9 @@ Drains（ログ・トレース・Web Analytics・Speed Insights を外部エン�
 
 `vercel login` またはトークンで認証し、現在のチームを使う（別のチームは `--scope`）。サブコマンドなしの `vercel drains` は一覧表示。全サブコマンドが `--json` に対応する。`<drain>` には `list` で表示された drain ID を渡す。
 
-## 一覧
+## Signature / Usage
+
+### 一覧
 
 ```sh
 vercel drains
@@ -24,7 +26,7 @@ vercel drains list --limit 10 --json
 vercel drains list --limit 10 --next your_next_cursor_here --json
 ```
 
-## 詳細確認
+### 詳細確認
 
 テキスト出力はエンドポイントのホストのみ表示（パスとクエリは `--show-full-url`）。JSON 出力にはクレデンシャルを含みうる完全な URL が入る（署名シークレットは含まれず、配信ヘッダー値はマスクされる）。
 
@@ -33,7 +35,7 @@ vercel drains inspect drn_example
 vercel drains inspect drn_example --json
 ```
 
-## 作成
+### 作成
 
 カスタム HTTP エンドポイント向けに作成。`--name` / `--type` / `--url` が必須。`--type` は `logs` / `traces` / `analytics` / `speed-insights`、`--encoding` のデフォルトは `json`（`logs` / `analytics` / `speed-insights` は `json` / `ndjson`、`traces` は `json` / `proto`）。
 
@@ -55,7 +57,7 @@ vercel drains create --name app-traces --type traces --url https://example.com/v
 
 署名シークレット（`x-vercel-signature` ヘッダー用）は `--secret` で渡す。`-` を指定すると stdin から読むため、コマンドライン引数に残さずに済む。配信ヘッダーは `--header "Name: value"`（繰り返し可）。エンドポイントの認証と署名は [securing drains](https://vercel.com/docs/drains/security) を参照。
 
-## 更新
+### 更新
 
 drain ID と変更するオプションを 1 つ以上渡す（`--type` 以外の作成オプションが使える。`--header` / `--project` / `--source` / `--environment` は追加ではなく置き換え）。
 
@@ -70,7 +72,7 @@ vercel drains update drn_example --sample-rate 100
 vercel drains update drn_example --all
 ```
 
-## 一時停止・再開
+### 一時停止・再開
 
 一時停止中に生成されたデータは送信されず、再開しても取り戻せない。`pause` は確認を求めるため、スクリプトや `--json` では `--yes`（`-y`）を付ける。`resume` は確認不要。
 
@@ -83,7 +85,7 @@ vercel drains resume drn_example
 vercel drains pause drn_example --yes --json
 ```
 
-## 削除
+### 削除
 
 > **警告**: 削除は永続的で、取り消せない。
 

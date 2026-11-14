@@ -4,7 +4,9 @@ Vercel テンプレートの検索・要件確認・デプロイ（GitHub リポ
 
 ローカルにサンプルプロジェクトを作るだけなら `vercel init`（[setup.md](./setup.md) 参照）。`vercel templates` は GitHub に新しいリポジトリを作り、テンプレートのプロジェクトをデプロイする。検索結果にはファイアウォールやルーティングのルールなど CLI でデプロイできない種別も含まれる（`inspect` で可否と理由を確認する）。
 
-## テンプレートの検索
+## Signature / Usage
+
+### テンプレートの検索
 
 名前・説明で検索し、`--framework` / `--type` で絞り込む。結果はスラッグ・名前・フレームワーク・デプロイ可否の表で、標準出力が端末でない場合はタブ区切り（ヘッダー行付き）になる。`--limit` はデフォルト 20（100 を超える値は 100 に丸められる）。
 
@@ -12,7 +14,7 @@ Vercel テンプレートの検索・要件確認・デプロイ（GitHub リポ
 vercel templates search "AI chatbot" --framework next.js --limit 10
 ```
 
-## 要件の確認
+### 要件の確認
 
 テンプレートのスラッグまたはテンプレート ID を渡し、デプロイ前に必要な環境変数・Marketplace リソース・Blob ストア・接続を確認する。`--json` は README（`overview`）と各プロジェクトのビルド・インストールコマンドも含む。
 
@@ -20,7 +22,7 @@ vercel templates search "AI chatbot" --framework next.js --limit 10
 vercel templates inspect nextjs-boilerplate --json
 ```
 
-## テンプレートのデプロイ
+### テンプレートのデプロイ
 
 事前に GitHub アカウントを Vercel に接続し、デプロイ先アカウントに Vercel GitHub App をインストールしておく。`acme` を GitHub のアカウントまたは組織、`your-team` を Vercel のチームスラッグに置き換える。デフォルトで private リポジトリを作成し（`--public` で公開）、新しいプロジェクトの初回デプロイは production に行われる。
 
@@ -34,7 +36,7 @@ vercel templates deploy nextjs-boilerplate --repo acme/my-site --scope your-team
 vercel templates deploy eve-memory-agent
 ```
 
-## 設定ファイルによる入力
+### 設定ファイルによる入力
 
 `--config` に JSON ファイルを渡し、プロジェクト名・リソース選択・環境変数の参照を指定する。キー名は `vercel templates inspect <template-slug> --json` の出力に合わせる。次の `template-inputs.json` は、`starter` プロジェクトと `products-0` の Marketplace リソースを持つテンプレートを前提にした例（キーと環境変数名はテンプレートに合わせて調整する）。
 
@@ -63,7 +65,7 @@ vercel templates deploy eve-memory-agent
 
 シークレットはコマンド引数に書かず、環境変数またはファイルから読ませる。
 
-## 非対話実行
+### 非対話実行
 
 必要な入力をすべて渡し、`--yes` で作成を確定する（`--yes` はプロバイダーの認可や法的条件への同意の代わりにはならない）。`eve-inputs.json` で認可済みコネクタと private Blob ストアを指定した例。
 
@@ -77,7 +79,7 @@ vercel templates deploy eve-memory-agent \
 
 終了コードは `0` が成功、`1` が運用上の失敗・不正な設定・必要なセットアップ（`reason` / `message` / `data` は標準エラー出力の JSON）、`2` が引数不正・必須入力の欠落、`130` がプロンプトのキャンセル。
 
-## 中断後の再開
+### 中断後の再開
 
 デプロイが途中で止まった場合、CLI が実行 ID・チーム・設定のパスを含む再開コマンドを表示する（JSON エラーでは `next`）。表示されたセットアップ手順を完了してから実行する。
 

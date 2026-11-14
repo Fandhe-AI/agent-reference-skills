@@ -4,7 +4,9 @@
 
 `vercel monitors` は非推奨の `vercel alerts rules` を置き換える（オプションとリクエスト本文は同じ。JSON 出力のキーは `rules` → `monitors`、`ruleTypes` → `monitorTypes`、`rule` → `monitor`、`ruleId` → `monitorId` に変わる）。モニター ID は `add` が返し `ls` が表示する。
 
-## モニターの一覧
+## Signature / Usage
+
+### モニターの一覧
 
 リンク中のプロジェクトに影響するモニターを表示（エイリアス `list`）。
 
@@ -30,7 +32,7 @@ JSON 形式で出力（`{ "monitors": [...] }`）。
 vercel monitors ls --all --format json
 ```
 
-## スキーマの確認
+### スキーマの確認
 
 利用可能なモニター種別を一覧表示。種別を指定すると、作成・更新で使えるフィールド・制約・例を表示する。
 
@@ -49,7 +51,7 @@ vercel monitors schema --type custom --format json
 vercel metrics schema <metric-or-prefix>
 ```
 
-## モニターの追加
+### モニターの追加
 
 JSON ファイルから追加する。本文の `type` は `built-in` または `custom` が必須。対象プロジェクトは本文の `ruleScope`、`--project <name-or-id>`、`--all`（組み込みモニターのみ）のいずれか 1 つで指定する（`ruleScope` と `--project` / `--all` は併用不可。リンク中のプロジェクトは自動では使われない）。カスタムモニターは `--project` が必須で `--all` は使えない。
 
@@ -109,7 +111,7 @@ vercel monitors add --project my-app --body ./monitor.json
 vercel monitors add --project my-app --body ./monitor.json
 ```
 
-## モニターの詳細確認・更新・削除
+### モニターの詳細確認・更新・削除
 
 ```sh
 vercel monitors inspect ar_abc123
@@ -147,7 +149,7 @@ vercel monitors rm ar_abc123
 vercel monitors rm ar_abc123 --yes
 ```
 
-## 通知先（Slack / webhook）の管理
+### 通知先（Slack / webhook）の管理
 
 `vercel login` またはトークンで認証する。リンク中のプロジェクトのチームを使い、別のチームは `--scope <team>` で指定する。サブコマンドなしで `ls` を実行する。
 

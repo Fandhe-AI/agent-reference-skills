@@ -4,7 +4,9 @@
 
 `vercel billing` をサブコマンドなしで実行するとサブコマンド一覧を表示する。オプションはサブコマンドの前後どちらにも置ける（例: `vercel billing --json budgets alerts`）。
 
-## プラン・残高の概要（overview）
+## Signature / Usage
+
+### プラン・残高の概要（overview）
 
 プラン・請求ステータス・請求サイクル・未払い残高・期限超過の請求書を表示（`vercel@65.15.0` 以降）。請求書へのアクセス権がない場合は `Balance Due` / `Overdue` が出ず警告のみ表示される（終了コードは 0）。
 
@@ -18,7 +20,7 @@ JSON 形式で出力（アクセス権がない場合は `billing.balance` が `
 vercel billing overview --json
 ```
 
-## 請求書の確認（invoices）
+### 請求書の確認（invoices）
 
 新しい順に一覧表示（サブコマンドなしの `vercel billing invoices` も同じ）。デフォルトのステータスは `open` / `paid` / `uncollectible`、表示件数は 20（最大 100）。
 
@@ -56,7 +58,7 @@ vercel billing invoices upcoming
 vercel billing invoices download <INVOICE_ID> --output invoice.pdf
 ```
 
-## 使用量・コスト（usage）
+### 使用量・コスト（usage）
 
 Vercel CLI 65.11.0 以降。旧名 `vercel usage` は動作するが非推奨警告が出る。
 
@@ -88,7 +90,7 @@ JSON 形式で出力（旧 `--format json` は非推奨）。
 vercel billing usage --json
 ```
 
-## 契約コミットメントの確認（contract）
+### 契約コミットメントの確認（contract）
 
 Enterprise 契約のコミットメントを契約 ID ごとの表で表示する（他のプランでは表示するコミットメントがない）。
 
@@ -102,7 +104,7 @@ JSON 形式で出力（`context` / `commitments` / `totalCommitments`）。
 vercel billing contract --json
 ```
 
-## Spend Management 予算（budgets）
+### Spend Management 予算（budgets）
 
 詳細は [budgets のページ](https://vercel.com/docs/cli/budgets) を参照。予算の変更には Owner または Billing ロールが必要。対象は無指定でチーム、`--project <name or ID>`（`-p`）でプロジェクト、`--product <name or ID>` でプロダクト、`--organization <slug or ID>` で組織。
 
