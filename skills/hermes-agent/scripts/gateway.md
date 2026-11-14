@@ -57,7 +57,28 @@ hermes gateway restart
 hermes gateway status
 ```
 
+```bash
+hermes gateway stop --yes
+hermes gateway restart --yes
+hermes gateway restart --detach
+```
+
+`stop` / `restart` は gateway がチャットターン・cron ジョブ・バックグラウンド委譲を実行中だと一覧を出して `y/N` を確認する。`--yes`（別名 `--interrupt`）で確認を省略する。端末が無い環境（スクリプト・cron）では `--yes` 無しだと拒否される。`--detach` は `restart` 時にサービス未導入ならバックグラウンドで置換起動する。
+
+> **警告**: `--yes` は実行中のターン・cron ジョブ・委譲を中断する。
+
 Windows では `start` が非表示で起動し、`stop` がドレインして停止し、`status` が登録内容のずれ（テンプレートとの差）も表示する。Task Scheduler の RestartOnFailure は launcher の失敗のみを対象とし、外部から kill された gateway は自動復旧しない。
+
+## ローカルのセッションランタイムの検出・取得（ensure / attach）
+
+```bash
+hermes gateway ensure --json --timeout 60
+hermes gateway attach --json
+hermes gateway attach --json --start
+hermes gateway attach --json --recover
+```
+
+`ensure` は既存または起動中のオーナーを待つだけで、サービスの導入も置換もしない（終了コード `0` が ready、それ以外は拒否またはタイムアウト）。`attach` は `ensure` の JSON に加え、attach 可能になると `url`（`ws://127.0.0.1:<port>/api/ws`）・`protocol`（`hermes-gateway-v1`）・`protocols`・単回使用の `ticket`（30 秒で失効）を出力する。`--start` は gateway が無ければ起動、`--recover` は ready でない場合のみ起動または旧版の gateway を置換する。
 
 ## 全プロファイルの gateway を対象にした操作
 
@@ -135,3 +156,10 @@ hermes webhook list
 hermes webhook remove <name>
 hermes webhook test <name>
 ```
+
+## 注記
+
+v0.23 で追加・変更されたコマンド: `hermes gateway ensure` / `attach`、`stop` / `restart` の `-y` / `--yes` と `restart --detach`（いずれも `reference/cli-commands` の `hermes gateway` 節）。TUI と古典 CLI は同じ attach 経路でプロファイルの共有 gateway に接続する。
+
+- Source: https://hermes-agent.nousresearch.com/docs/reference/cli-commands (pinned to v0.23.1)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/tui (pinned to v0.23.1)

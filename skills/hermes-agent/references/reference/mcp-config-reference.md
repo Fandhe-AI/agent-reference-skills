@@ -52,7 +52,11 @@ Reload after changes with `/reload-mcp`.
 | `tools` | mapping | both | Filtering and utility-tool policy |
 | `auth` | string | HTTP | `oauth` enables OAuth 2.1 with PKCE |
 | `sampling` / `elicitation` | mapping | both | Server-initiated LLM requests / user-input requests (`elicitation.enabled` default true, `timeout` default 300) |
-| `trust` | string | both | `full` (default) or `untrusted`; untrusted servers require approval for every tool without `readOnlyHint: true`. Unrecognized values are treated as `untrusted` |
+| `events` | bool | both | Experimental MCP events client with webhook delivery (default `false`). Registers `list_event_types`, `subscribe_event` and `unsubscribe_event` for this server; needs `platforms.webhook.extra.public_url` (HTTPS) and a running gateway. With `lazy: true` or `idle_timeout_seconds` a subscription can lapse until the next connection resubscribes it |
+| `trust` | string | both | `full` (default) or `untrusted`; untrusted servers require approval for every tool without `readOnlyHint: true`. The prompt offers Allow Once, Session (that tool, for the chat) and Always (written to `command_allowlist` as `mcp:<server>/<tool>`); YOLO and `approvals.mode: off` skip this prompt, but a declared `spend_limit` still asks. Unrecognized values are treated as `untrusted` |
+| `tool_costs` | mapping | both | What each tool spends, keyed by the MCP tool name: a non-negative number, a `[min, max]` range, or `{credits: <number or range>, note: "per animation"}`. The approval prompt names the cost and the chat's running total; undeclared and zero-cost tools are unaffected |
+| `spend_limit` | number | both | Per-chat budget for this server's costed tools (`0`/absent = no limit). A costed call that would take the chat past it asks first, even on a `trust: full` server, and is refused where nobody can answer (cron, `chat -q`) |
+| `cost_unit` | string | both | Label shown with costs and totals (default `credits`) |
 
 `tools` keys:
 
@@ -76,12 +80,12 @@ Add-to-Hermes deep link: `hermes://mcp/install?name=NAME&config=BASE64` (`name` 
 ## Notes
 
 - If both `include` and `exclude` are set, `include` wins. If filtering removes every native tool and no utility tools register, no empty MCP toolset is created.
-- Utility tools register only when the server actually exposes resources / prompts capability.
+- Utility tools register only when the server actually exposes resources / prompts capability. The event utilities (`list_event_types`, `subscribe_event`, `unsubscribe_event`) are the exception: the MCP SDK drops a server's `events` capability while parsing it, so Hermes registers them whenever `events: true` is set.
 - Tool names become `mcp__<server>__<tool>`; non letter/digit/underscore characters in server and tool names become `_`. Write `include` / `exclude` filters with the original MCP tool name, not the sanitized one.
-- An unset `${VAR}` in a remote server's `url` or `headers` fails the connect closed instead of sending the literal placeholder.
+- An unset (or empty) `${VAR}` keeps its literal placeholder, with two exceptions. In a remote server's `url` or `headers` the connect fails closed instead of sending the literal placeholder. A stdio server's `env` entry whose whole value is one reference to an unset variable (`GHIDRA_INSTALL_DIR: "${GHIDRA_INSTALL_DIR}"`) is treated as if the entry weren't there; a value that merely contains a reference (`"${OPT_DIR}/bin"`) is still passed with the placeholder, and a variable that is set is always passed as is.
 - OAuth tokens persist to `~/.hermes/mcp-tokens/<server>.json` (named profiles use `~/.hermes/profiles/<name>/mcp-tokens/`). Hermes pins the CIMD callback to ports `27890`-`27894` unless the flow reverts to a random port.
 - `ssl_verify: false` should not be used with real services.
-- Source: https://hermes-agent.nousresearch.com/docs/reference/mcp-config-reference (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/reference/mcp-config-reference (pinned to v0.23.1)
 
 ## Related
 
