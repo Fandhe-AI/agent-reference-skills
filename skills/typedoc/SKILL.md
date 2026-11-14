@@ -13,6 +13,10 @@ user-invocable: false
 TypeDoc (TypeScript ドキュメントジェネレーター) の全 API ドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
+## 対象バージョン
+
+TypeDoc 0.28.20（2026-07-05、GitHub タグ `v0.28.20`）。出典は `TypeStrong/typedoc` の同タグ `site/` 配下ソースと typedoc.org（取得日 2026-11-14 に再照合）。`master` は使用しない。0.29 / 1.0 は未リリース。
+
 ## ディレクトリ構成
 
 ```text
@@ -104,6 +108,7 @@ skills/typedoc/
       other.md
       output.md
       validation.md
+      package-options.md
     themes/
       README.md
       built-in.md
@@ -117,6 +122,8 @@ skills/typedoc/
       plugin-development.md
       custom-themes.md
       internationalization.md
+      local-storage.md
+      third-party-symbols.md
     api/
       README.md
       application.md
@@ -164,10 +171,10 @@ skills/typedoc/
 | @param, @returns, @example, @category, @group 等のブロックタグ | tags-block | [references/tags-block/README.md](references/tags-block/README.md) |
 | @hidden, @internal, @override, @alpha, @beta 等のモディファイアタグ | tags-modifier | [references/tags-modifier/README.md](references/tags-modifier/README.md) |
 | @link, @inheritDoc, @include 等のインラインタグ | tags-inline | [references/tags-inline/README.md](references/tags-inline/README.md) |
-| typedoc.json, entryPoints, out, theme 等の設定オプション | options | [references/options/README.md](references/options/README.md) |
+| typedoc.json, entryPoints, out, theme 等の設定オプション（packages モードの Root / Package 配置は package-options） | options | [references/options/README.md](references/options/README.md) |
 | デフォルトテーマ・コミュニティテーマ・カスタム CSS | themes | [references/themes/README.md](references/themes/README.md) |
 | コミュニティプラグイン一覧 | plugins | [references/plugins/README.md](references/plugins/README.md) |
-| カスタムテーマ開発・プラグイン開発・国際化・アーキテクチャ | development | [references/development/README.md](references/development/README.md) |
+| カスタムテーマ開発・プラグイン開発・国際化・アーキテクチャ・外部シンボルリンク (third-party symbols)・local storage 無効化 | development | [references/development/README.md](references/development/README.md) |
 | Application, Converter, Renderer, Reflection 等のプログラマティック API | api | [references/api/README.md](references/api/README.md) |
 | 典型的な使い方・設定例・ユースケースを知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンド・出力・バリデーション等の実行コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

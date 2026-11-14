@@ -2,7 +2,9 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| Disabling Local Storage | Toggling the browser local storage used by generated HTML via `window.TypeDoc`. | [local-storage.md](./local-storage.md) |
+| Third Party Symbols | Linking to third party symbols with `externalSymbolLinkMappings` and `addUnknownSymbolResolver`. | [third-party-symbols.md](./third-party-symbols.md) |
+| TypeDoc Architecture Overview | High-level architecture and processing flow of TypeDoc. | [overview.md](./overview.md) |
 | TypeDoc Custom Themes | How to extend TypeDoc's theme system to produce custom HTML output. | [custom-themes.md](./custom-themes.md) |
 | TypeDoc Internationalization | Internationalization feature introduced in TypeDoc v0.26. Controls the language of console output and generated HTML/JSON. | [internationalization.md](./internationalization.md) |
-| TypeDoc Architecture Overview | High-level architecture and processing flow of TypeDoc. | [overview.md](./overview.md) |
 | TypeDoc Plugin Development | How to write TypeDoc plugins, the event system, and adding custom options. | [plugin-development.md](./plugin-development.md) |
