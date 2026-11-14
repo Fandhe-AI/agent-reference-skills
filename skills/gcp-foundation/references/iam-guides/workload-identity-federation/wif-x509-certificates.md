@@ -183,24 +183,26 @@ REQUEST_BODY="$(jq -n --arg chain "${TRUST_CHAIN}" '{
     subject_token: $chain
 }')"
 
-curl --key CLIENT_CERT_KEY \
+STS_RESPONSE="$(curl -s --key CLIENT_CERT_KEY \
 --cert CLIENT_CERT \
 --request POST 'https://sts.mtls.googleapis.com/v1/token' \
 --header "Content-Type: application/json" \
---data-raw "${REQUEST_BODY}"
+--data-raw "${REQUEST_BODY}")"
+STS_TOKEN="$(printf '%s' "${STS_RESPONSE}" | jq -r '.access_token')"
 ```
 
-Regional endpoint form: `https://sts.REGION.rep.mtls.googleapis.com/v1/token`. Optional impersonation:
+Regional endpoint form: `https://sts.REGION.rep.mtls.googleapis.com/v1/token`. Optional impersonation (Adapted (not in the official docs): the response is captured in a variable and the token is not printed):
 
-```
-curl -X POST 'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/SERVICE_ACCOUNT_EMAIL:generateAccessToken' \
+```bash
+ACCESS_TOKEN="$(curl -s -X POST 'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/SERVICE_ACCOUNT_EMAIL:generateAccessToken' \
     -H "Content-Type: application/json; charset=utf-8" \
-    -H "Authorization: Bearer STS_TOKEN" \
-    -d '{"scope": ["https://www.googleapis.com/auth/cloud-platform"]}'
+    -H "Authorization: Bearer ${STS_TOKEN}" \
+    -d '{"scope": ["https://www.googleapis.com/auth/cloud-platform"]}' \
+  | jq -r '.accessToken')"
 ```
 
 ```bash
-curl -X GET 'https://storage.googleapis.com/my_object' -H "Authorization: Bearer $ACCESS_TOKEN"
+curl -X GET 'https://storage.googleapis.com/my_object' -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
 ## Options / Props
@@ -238,7 +240,7 @@ Limits:
 - Token lifetimes over one hour need the `constraints/iam.allowServiceAccountCredentialLifetimeExtension` org policy constraint. Prefer regional STS endpoints (for example `https://sts.us-central1.rep.mtls.googleapis.com`).
 - Grant access (direct resource access or `roles/iam.workloadIdentityUser` impersonation) exactly as in the grant-access page.
 - Client library minimums: Go `cloud.google.com/go/auth` 0.16.0 with `google.golang.org/api` 0.189.0; other languages are listed in the source.
-- Adapted from the official docs: the REST token-exchange example builds the request body with `jq --arg` so the generated `TRUST_CHAIN` is actually sent as `subject_token` (the official sample sends the literal string `TRUST_CHAIN`).
+- Adapted from the official docs: the REST token-exchange example builds the request body with `jq --arg` so the generated `TRUST_CHAIN` is actually sent as `subject_token` (the official sample sends the literal string `TRUST_CHAIN`). The STS and `generateAccessToken` responses are captured in variables (`STS_TOKEN`, `ACCESS_TOKEN`) instead of being printed, so short-lived tokens do not reach logs.
 - Source: https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-x509-certificates (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
