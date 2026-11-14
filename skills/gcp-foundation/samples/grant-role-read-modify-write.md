@@ -60,8 +60,10 @@ gcloud projects set-iam-policy my-project ~/policy.json
 
 ### REST
 
+Adapted (not in the official docs): the REST URL uses `REST_COLLECTION` (`projects`, `folders`, or `organizations`), separate from the gcloud `RESOURCE_TYPE`.
+
 ```text
-POST https://cloudresourcemanager.googleapis.com/API_VERSION/RESOURCE_TYPE/RESOURCE_ID:getIamPolicy
+POST https://cloudresourcemanager.googleapis.com/API_VERSION/REST_COLLECTION/RESOURCE_ID:getIamPolicy
 ```
 
 ```json
@@ -73,7 +75,7 @@ POST https://cloudresourcemanager.googleapis.com/API_VERSION/RESOURCE_TYPE/RESOU
 ```
 
 ```text
-POST https://cloudresourcemanager.googleapis.com/API_VERSION/RESOURCE_TYPE/RESOURCE_ID:setIamPolicy
+POST https://cloudresourcemanager.googleapis.com/API_VERSION/REST_COLLECTION/RESOURCE_ID:setIamPolicy
 ```
 
 ```json
@@ -100,7 +102,8 @@ If the `etag` no longer matches, the REST API returns `409`; retry the whole rea
 
 | Item | Detail |
 |---|---|
-| `RESOURCE_TYPE` | `projects`, `resource-manager folders`, or `organizations` |
+| `RESOURCE_TYPE` (gcloud) | `projects`, `resource-manager folders`, or `organizations` |
+| `REST_COLLECTION` (REST URL) | `projects`, `folders`, or `organizations` |
 | `API_VERSION` | `v1` for projects and organizations; `v2` for folders |
 | `PRINCIPAL` | `PRINCIPAL_TYPE:ID`, for example `user:my-user@example.com` |
 | `ROLE_NAME` | `roles/SERVICE.IDENTIFIER`, `projects/PROJECT_ID/roles/IDENTIFIER`, or `organizations/ORG_ID/roles/IDENTIFIER` |
@@ -108,6 +111,7 @@ If the `etag` no longer matches, the REST API returns `409`; retry the whole rea
 
 ## Notes
 
+- Adapted from the official docs: the REST URLs use a separate `REST_COLLECTION` placeholder (`folders` for folders) because `resource-manager folders` is a gcloud command group, not a REST collection.
 - `setIamPolicy` permanently overwrites the policy; always read first and keep the `etag`. Omitting `etag` with a version 1 body can wipe conditional bindings.
 - Prefer predefined or custom roles; avoid `roles/owner` in production and use a disposable project when trying basic roles.
 - `get-iam-policy` does not show inherited roles. Changes usually take effect within 2 minutes, sometimes 7 minutes or more.

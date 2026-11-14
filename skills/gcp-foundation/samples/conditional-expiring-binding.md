@@ -48,16 +48,36 @@ gcloud projects set-iam-policy project-id filepath
 
 ### Expiring access (REST)
 
+Adapted (not in the official docs): `setIamPolicy` replaces the whole policy, and `etag` only detects concurrent changes. First read the current policy with `requestedPolicyVersion: 3`, then send back every existing binding and condition together with the new binding. The Owner binding below stands for the existing bindings returned by `getIamPolicy`.
+
+```text
+POST https://cloudresourcemanager.googleapis.com/v1/projects/PROJECT_ID:getIamPolicy
 ```
+
+```json
+{
+  "options": {
+    "requestedPolicyVersion": 3
+  }
+}
+```
+
+```text
 POST https://cloudresourcemanager.googleapis.com/v1/projects/PROJECT_ID:setIamPolicy
 ```
 
-```
+```json
 {
   "policy": {
     "version": 3,
     "etag": "BwWKmjvelug=",
     "bindings": [
+      {
+        "role": "roles/owner",
+        "members": [
+          "user:my-user@example.com"
+        ]
+      },
       {
         "role": "roles/iam.securityReviewer",
         "members": [
@@ -113,6 +133,7 @@ resource.type != 'compute.googleapis.com/Instance' ||
 ## Notes
 
 - Conditional bindings do not override unconditional ones; conditions are not allowed with legacy basic roles (Owner, Editor, Viewer) or `allUsers` / `allAuthenticatedUsers`. The Owner binding above is the official sample's unconditional neighbor, so use a throwaway project.
+- Adapted from the official docs: the REST example first reads the policy (version 3) and writes back all existing bindings plus the conditional one, because `setIamPolicy` replaces the entire policy.
 - Always send `version: 3` and the `etag` when writing via REST; omitting them can drop all conditions.
 - Scope conditions with `resource.type` / `resource.service`; attributes a resource does not provide never grant access.
 - `list` permissions are checked on the parent, so a prefix condition alone does not allow listing.
