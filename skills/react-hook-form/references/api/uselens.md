@@ -9,7 +9,7 @@ npm install @hookform/lenses
 ```
 
 ```tsx
-import { useForm, useController } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { Lens, useLens } from "@hookform/lenses"
 import { useFieldArray } from "@hookform/lenses/rhf"
 
@@ -69,9 +69,7 @@ function PersonForm({
 }
 
 function StringInput({ lens }: { lens: Lens<string> }) {
-  const { field } = useController(lens.interop())
-
-  return <input {...field} />
+  return <input {...lens.interop((ctrl, name) => ctrl.register(name))} />
 }
 ```
 
@@ -91,7 +89,7 @@ Lens methods (`Lens<T>`):
 | `focus` | Focuses on a specific field path (`lens.focus("profile.email")`, `lens.focus("users.0.name")`). Type-safe with autocomplete. | `Lens<PathValue>` |
 | `reflect` | Transform and reshape the lens structure with complete type inference. First argument is a proxy of lenses (instantiated on property access), second is the original lens. Supports object, array (pass an array with a single item as the template), merging, and spread. | `Lens<NewStructure>` |
 | `map` | Iterate over array fields with `useFieldArray` integration; requires `fields` from `useFieldArray`. Callback receives `(value, lens, index, array, originLens)`. | `R[]` |
-| `interop` | Connect to React Hook Form's control system: `lens.interop()` returns `{ control, name }`; `lens.interop((control, name) => <Controller control={control} name={name} render={({ field }) => <input {...field} />} />)` uses a callback. Spreading `lens.interop()` onto `Controller` (`<Controller {...lens.focus("name").interop()} render={({ field }) => <input {...field} />} />`) also works. The return value can be passed to `useController`. | `{ control, name }` |
+| `interop` | Connect to React Hook Form's control system: `lens.interop()` returns `{ control, name }`; `lens.interop((ctrl, name) => ctrl.register(name))` uses a callback. The return value can be passed to `useController`. | `{ control, name }` |
 | `narrow` | Type-safe narrowing of union types: `narrow<string>()` or discriminant `narrow("type", "dog")`. Type-level only. | `Lens<SubType>` |
 | `assert` | Type assertion convincing TypeScript the current lens is already the subtype: `assert<string>()` or `assert("type", "success")`. No runtime validation. | `void` |
 | `defined` | Exclude `null` and `undefined` from the lens type (equivalent to `narrow<NonNullable<T>>()`). | `Lens<NonNullable>` |
@@ -105,33 +103,6 @@ Lens methods (`Lens<T>`):
 - Use the enhanced `useFieldArray` from `@hookform/lenses/rhf` for array handling with lenses.
 - Lenses can be created without the hook: `LensCore.create(control, new LensesStorage(control))` (from `@hookform/lenses`). Custom methods are added by extending the `LensBase<T>` interface (module augmentation in a `.d.ts`) and subclassing `LensCore`.
 - Motivation: type-safe `name` props are nearly impossible for reusable components, `useFormContext()` couples components to a form schema, and string-concatenated field paths are error-prone.
-- Inline functions passed to `reflect` have a new identity on every render. Because that function is part of the cache key, the reflected lens is also recreated and a memoized component still re-renders; memoize the function or define it outside the component:
-
-  ```tsx
-  const selectContact = useCallback(
-    ({ profile }) => ({
-      name: profile.focus("contact.firstName"),
-      phone: profile.focus("contact.phone"),
-    }),
-    []
-  )
-
-  const contactLens = lens.reflect(selectContact)
-  ```
-
-- The standard `useFieldArray` expects `{ control, name }`, while the lenses package provides an enhanced hook designed to accept `lens.interop()` and work with `lens.map`. Import it from `@hookform/lenses/rhf`; render its `fields` with `itemsLens.map` and keep the generated field identifier as the React key:
-
-  ```tsx
-  import { useFieldArray } from "@hookform/lenses/rhf"
-
-  const itemsLens = lens.focus("items")
-  const fieldArray = useFieldArray(itemsLens.interop())
-  ```
-
-- `cast` changes only the TypeScript type. It does not parse, validate, or transform the underlying form value; validate or convert the data before treating it as the new type, and prefer `narrow`, `assert`, or a schema resolver when the runtime shape is not already guaranteed.
-- To read a lens value outside of `control.getValues`, pass the lens name to `getValues` from `useForm`: `validateEmail(getValues(validEmailLens.interop().name))`.
-- A custom method added to the lens can call a hook: for example a `useValue()` method that returns `useWatch({ control: this.control, name: this.path })` subscribes to the current value at the lens path (only call it during render).
-- Source: https://react-hook-form.com/docs/uselens (documentation master c0511c9, fetched 2026-11-14)
 
 ## Related
 

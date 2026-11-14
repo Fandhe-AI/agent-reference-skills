@@ -200,17 +200,10 @@ export type UseFormSetFocus<TFieldValues extends FieldValues> = <
 UseFormGetValues (overloaded: no arguments, a single field name, or an array of field names):
 
 ```tsx
-// Only one of `dirtyFields` or `touchedFields` can be set at a time
-type EitherOption<T> = {
-  [K in keyof T]: {
-    [P in K]: T[P]
-  } & Partial<Record<Exclude<keyof T, K>, never>>
-}[keyof T]
-
-export type GetValuesConfig = EitherOption<{
-  dirtyFields: boolean
-  touchedFields: boolean
-}>
+export type GetValuesConfig = {
+  dirtyFields?: boolean
+  touchedFields?: boolean
+}
 
 export type UseFormGetValues<TFieldValues extends FieldValues> = {
   (name?: undefined, config?: GetValuesConfig): TFieldValues
@@ -294,7 +287,7 @@ export type UseFormTrigger<TFieldValues extends FieldValues> = (
 
 ## Notes
 
-- `UseFormHandleSubmit` signature taken from react-hook-form v7.90.0 `src/types/form.ts` (https://github.com/react-hook-form/react-hook-form/blob/v7.90.0/src/types/form.ts); the previous /ts page showed `Promise<void>`, and the current /ts page (documentation master c0511c9) now matches the `TResult` form.
+- `UseFormHandleSubmit` signature taken from react-hook-form v7.90.0 `src/types/form.ts` (https://github.com/react-hook-form/react-hook-form/blob/v7.90.0/src/types/form.ts); the /ts page still shows `Promise<void>`.
 - Source: https://react-hook-form.com/ts#UseFormRegister, https://react-hook-form.com/ts#UseFormRegisterReturn, https://react-hook-form.com/ts#UseFormUnregister, https://react-hook-form.com/ts#UseFormWatch, https://react-hook-form.com/ts#UseFormSubscribe, https://react-hook-form.com/ts#UseFormHandleSubmit, https://react-hook-form.com/ts#UseFormReset, https://react-hook-form.com/ts#UseFormResetField, https://react-hook-form.com/ts#UseFormResetDefaultValues, https://react-hook-form.com/ts#UseFormSetError, https://react-hook-form.com/ts#UseFormClearErrors, https://react-hook-form.com/ts#UseFormSetValue, https://react-hook-form.com/ts#UseFormSetValues, https://react-hook-form.com/ts#UseFormSetFocus, https://react-hook-form.com/ts#UseFormGetValues, https://react-hook-form.com/ts#UseFormGetErrors, https://react-hook-form.com/ts#UseFormGetFieldState, https://react-hook-form.com/ts#UseFormTrigger
 
 ## Related

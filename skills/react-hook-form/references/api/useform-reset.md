@@ -82,36 +82,6 @@ useEffect(() => {
 - Calling `reset` with `values` updates the form's `defaultValues` unless `options.keepDefaultValues` is set. A later `reset()` or `reset({})` resets to the last `values` provided instead of the initial `defaultValues`.
 - With `Controller`, pass values to `reset({ firstName: "bill", lastName: "luo" })`.
 - With `useFieldArray`, call `reset({ names: [...] })` in `useEffect` to replace the array.
-- Avoid calling `reset` inside `onSubmit`. `handleSubmit` updates `isSubmitted`, `isSubmitSuccessful` and `submitCount` after your handler finishes, so a `reset` there clears the values but not the submission state. Reset in a `useEffect` when `formState.isSubmitSuccessful` becomes `true` instead (the official "Submit with Reset" example).
-- Source: https://react-hook-form.com/docs/useform/reset (documentation master c0511c9, fetched 2026-11-14)
-
-### Tips
-
-- For a "Discard changes" button, call `reset()` with no arguments. The form goes back to the last default values.
-- After a successful save, call `reset(savedData)` so the saved data becomes the new baseline and `isDirty` goes back to `false`. If you only want to move the dirty baseline and keep errors, touched fields, and submission state, use [resetDefaultValues](./useform-resetdefaultvalues.md).
-- When the server sends fresh data while the user is editing, use `reset(newData, { keepDirtyValues: true })`. Fields the user changed keep their values, and the other fields are updated.
-- To load data once from an API, use `useForm({ values })` instead of `reset` in a `useEffect`. See `values` in [useForm](./useform.md).
-
-### Troubleshooting
-
-#### `reset()` clears the form instead of going back to the loaded data
-
-- Why: `reset()` with no arguments goes back to the default values. If you loaded the data with `setValue`, the default values never changed, so the form is reset to the original empty values.
-- Fix: Load the data with `reset(data)` or `values` (see [useForm](./useform.md)). The loaded data then becomes the default values, and a later `reset()` returns to it.
-
-### Changes since v7.90
-
-From the v7.91.0 release notes:
-
-- "Fix stale asynchronous validation results after `reset()` and `unregister()` (#13908, #13912, #13934)"
-- "Fix `isValid` not updating correctly after `reset()` and subsequent changes (#13847, #13930)"
-- "Fix `useFieldArray` losing validation rules after `reset()` (#13940)"
-
-From the v7.92.0 release notes:
-
-- "Fix `reset` not updating `isValid` after cancelling pending validation (#13994)"
-- "Fix repeated `reset()` calls and error focusing with `keepFieldsRef` and memoized inputs (#14023)"
-- "Fix `handleSubmit` incorrectly updating form state after `reset()` during asynchronous callbacks (#13991)"
 
 ## Related
 

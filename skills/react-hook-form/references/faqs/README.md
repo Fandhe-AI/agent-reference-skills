@@ -2,4 +2,4 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
-| FAQs | React Hook Form FAQ: performance, accessibility, reset, initialization, ref sharing, React Compiler. | [faqs.md](./faqs.md) |
+| faqs | React Hook Form の FAQ 集（パフォーマンス、アクセシビリティ、リセット、初期化、ref 共有、Formik/Redux Form 比較等） | [faqs.md](./faqs.md) |

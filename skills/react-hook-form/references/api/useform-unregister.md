@@ -8,36 +8,25 @@ Unregisters a single input or an array of inputs. Since 7.0.0 it takes a second 
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 
-type FormInputs = {
-  name: string
-  addPhone: boolean
-  phone?: string
+interface IFormInputs {
+  firstName: string
+  lastName?: string
 }
 
 export default function App() {
-  const { register, handleSubmit, unregister, watch } = useForm<FormInputs>({
-    defaultValues: { name: "", addPhone: false, phone: "" },
-  })
-  const addPhone = watch("addPhone")
-  const onSubmit = (data: FormInputs) => console.log(data)
+  const { register, handleSubmit, unregister } = useForm<IFormInputs>()
+  const onSubmit = (data: IFormInputs) => console.log(data)
 
   useEffect(() => {
-    // the phone input is already unmounted here, so the field stays removed
-    if (!addPhone) unregister("phone")
-  }, [addPhone, unregister])
+    register("lastName")
+  }, [register])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register("name")} placeholder="Name" />
-
-      <label>
-        <input type="checkbox" {...register("addPhone")} />
-        Add a phone number
-      </label>
-
-      {addPhone && <input {...register("phone")} placeholder="Phone" />}
-
-      <button type="submit">Submit</button>
+      <button type="button" onClick={() => unregister("lastName")}>
+        unregister
+      </button>
+      <input type="submit" />
     </form>
   )
 }
@@ -83,30 +72,6 @@ Options:
 
   {show && <input {...register("test")} />}
   ```
-- Source: https://react-hook-form.com/docs/useform/unregister (documentation master c0511c9, fetched 2026-11-14)
-
-### Tips
-
-- For fields that show and hide, try the `shouldUnregister: true` option (on `useForm`, see [useForm](./useform.md), or on `register`, see [register](./useform-register.md)) before you call `unregister` by hand. The field is removed when its input unmounts.
-- With a resolver, `unregister` does not change the schema. Make the schema conditional instead, for example with a discriminated union or `.optional()`, so hidden fields are not validated.
-
-### Troubleshooting
-
-#### The field comes back right after `unregister`
-
-- Why: The input is still rendered. On the next render, its `register` call registers the field again, with the value still in the input.
-- Fix: Remove the input from the page first, then call `unregister`. Or use the `shouldUnregister: true` option, which unregisters the field automatically when its input unmounts.
-
-### Changes since v7.90
-
-From the v7.91.0 release notes:
-
-- "Fix stale asynchronous validation results after `reset()` and `unregister()` (#13908, #13912, #13934)"
-- "Fix `unregister` retaining validation rules when using `keepValue` (#13891)"
-
-From the v7.92.0 release notes:
-
-- "Fix `unregister` retaining descendant registrations when removing a parent (#13976)"
 
 ## Related
 

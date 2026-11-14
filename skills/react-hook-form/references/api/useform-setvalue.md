@@ -85,49 +85,6 @@ setValue("firstName", "Bill", {
   register("notRegisteredInput.test2")
   setValue("notRegisteredInput", { test: "1", test2: "2" }) // sugar syntax to setValue twice
   ```
-- By default, `setValue` only updates the value and notifies [watch](./useform-watch.md), [useWatch](./usewatch.md) and [subscribe](./useform-subscribe.md). It does **not** validate the field (even after the form has been submitted) or mark it as dirty or touched. Pass the options you need:
-
-  ```javascript
-  setValue("firstName", "Bill", {
-    shouldValidate: true, // update errors and isValid
-    shouldDirty: true, // update dirtyFields and isDirty
-    shouldTouch: true, // update touchedFields
-  })
-  ```
-
-- Source: https://react-hook-form.com/docs/useform/setvalue (documentation master c0511c9, fetched 2026-11-14)
-
-### Tips
-
-- When a value comes from the user through a custom widget, such as a map picker or a rich-text editor, pass `{ shouldDirty: true, shouldTouch: true, shouldValidate: true }`. The field then behaves the same as a native input that the user typed in.
-- To update several fields at once, use [setValues](./useform-setvalues.md). It updates them with a single re-render, while calling `setValue` many times can cause more renders.
-- Do not call `setValue` during render. Call it in an event handler or an effect.
-
-### Troubleshooting
-
-#### `isDirty` and errors don't change after `setValue`
-
-- Why: By default, `setValue` only updates the value. It does not validate the field or mark it as dirty or touched.
-- Fix: Pass the options you need:
-
-```javascript
-setValue("email", value, {
-  shouldValidate: true,
-  shouldDirty: true,
-  shouldTouch: true,
-})
-```
-
-### Changes since v7.90
-
-From the v7.91.0 release notes:
-
-- "Fix `useFieldArray` not updating rows when using `setValue` or `setValues` (#13842, #13939)"
-- "Fix `setValue` handling null-prototype objects (#13916)"
-
-From the v7.92.0 release notes:
-
-- "Fix `setValue` not selecting checkbox options with empty string values (#13950)"
 
 ## Related
 

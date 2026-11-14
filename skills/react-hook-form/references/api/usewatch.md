@@ -76,51 +76,6 @@ Return:
   ```
 
 - The result is optimized for the render phase instead of `useEffect` dependencies; use an external custom hook for value comparison to detect updates.
-- Not sure whether to use `useWatch`, `watch`, `subscribe` or `getValues`? See [which API to use for reading values](https://react-hook-form.com/faqs#watchvsgetValuesvsstate).
-- Use `compute` to derive a small value from the form. The component re-renders only when the computed result changes (compared deeply), not on every key press:
-
-  ```javascript
-  const isAdult = useWatch({
-    control,
-    name: "age",
-    compute: (age) => Number(age) >= 18,
-  })
-  ```
-
-- For totals in a field array, watch the array in a small child component, so typing in one row does not re-render the whole list:
-
-  ```javascript
-  function Total({ control }) {
-    const total = useWatch({
-      control,
-      name: "items",
-      compute: (items = []) =>
-        items.reduce((sum, item) => sum + Number(item.price || 0), 0),
-    })
-    return <p>Total: {total}</p>
-  }
-  ```
-
-- Pass `name` to watch only what you need. `useWatch()` with no `name` watches the whole form.
-- Source: https://react-hook-form.com/docs/usewatch (documentation master c0511c9, fetched 2026-11-14)
-
-### Troubleshooting
-
-#### `useWatch` returns `undefined` on the first render
-
-- Why: `useWatch` runs before the input registers, so on the first render it returns the field's default value. With no default value, that is `undefined`.
-- Fix: Set the field in `defaultValues` on `useForm`, or pass `defaultValue` to `useWatch`.
-
-#### `Cannot read properties of null (reading '_getWatch')`
-
-- Why: `useWatch` could not find a form: no `control` was passed and the component is not inside a [`FormProvider`](./formprovider.md).
-- Fix: Pass `control` from `useForm`, or wrap the tree in `<FormProvider {...methods}>`.
-
-### Changes since v7.90
-
-- v7.91.0: "Fix `useWatch` not updating default values when the watched name changes (#13859)"
-- v7.92.0: "Fix `useWatch` missing `reset()` updates on mount in React Native (#13974)"
-- v7.92.0: "Fix `useWatch` compute cache not synchronizing when `compute` is removed (#13987)"
 
 ## Related
 
