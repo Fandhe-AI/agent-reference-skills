@@ -50,7 +50,7 @@ dart format path1 path2 [...]
 
 Source: https://docs.flutter.dev/release/breaking-changes/material-ui-and-cupertino-ui
 
-Opt-in in Flutter 3.47. The in-framework Material and Cupertino libraries are scheduled for formal deprecation in an upcoming stable release and are not deprecated in 3.47.7.
+Opt-in since Flutter 3.47. The in-framework Material and Cupertino libraries are formally deprecated in Flutter 3.50.
 
 ```sh
 dart fix --apply --code=migrate_design_widgets

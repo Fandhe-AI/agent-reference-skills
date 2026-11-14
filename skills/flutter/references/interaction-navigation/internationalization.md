@@ -673,7 +673,7 @@ $ dart run intl_translation:generate_from_arb \
 ## Notes
 
 - Migration (3.32): localized messages are generated into source, not a synthetic `package:flutter_gen`; the `synthetic-package` option is deprecated (see /release/breaking-changes/flutter-generate-i10n-source).
-- Flutter projects will soon be encouraged to use the `material_ui` and `cupertino_ui` packages, but `flutter create` hasn't yet been updated to do this by default. To migrate now, run `dart fix --apply --code=migrate_design_widgets`. (Opt-in in Flutter 3.47; see the release category.)
+- Flutter projects will soon be encouraged to use the `material_ui` and `cupertino_ui` packages, but `flutter create` hasn't yet been updated to do this by default. To migrate now, run `dart fix --apply --code=migrate_design_widgets`. (Opt-in since Flutter 3.47, in-framework libraries formally deprecated in 3.50; see the release category. The 3.50 migration guide also replaces the three-delegate `localizationsDelegates` list with `GlobalMaterialLocalizations.delegates` from `material_ui`.)
 - If your app is based on `CupertinoApp`, use `GlobalCupertinoLocalizations.delegates`. If it is based on `WidgetsApp`, use `flutter_localizations.GlobalWidgetsLocalizations.delegate` (import `package:flutter_localizations/flutter_localizations.dart` as `flutter_localizations`).
 - `GlobalMaterialLocalizations.delegate` provides localized strings and other values for the Material Components library; `GlobalWidgetsLocalizations.delegate` defines the default text direction (left-to-right or right-to-left) for `widgets.dart`.
 - The full `Locale.fromSubtags` constructor is preferred as it supports `scriptCode`, though the `Locale` default constructor is still fully valid.

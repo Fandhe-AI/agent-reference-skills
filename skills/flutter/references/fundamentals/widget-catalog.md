@@ -158,7 +158,7 @@ Hero, Navigator.
 ## Notes
 
 - Catalog quirk kept as in the data: the `Stack` entry has `categories: ['Stack']`, which is not one of the categories defined in `index.yml`, and `Text`, `Icon`, and `Image` appear in two categories.
-- Catalog `link` values for Material widgets point at `pub.dev/documentation/material_ui/latest/material_ui/<Widget>-class.html`, while the widgets-layer widgets point at `api.flutter.dev/flutter/widgets/<Widget>-class.html`. The standalone `material_ui` / `cupertino_ui` packages are available to opt in to in Flutter 3.47; in-framework Material / Cupertino is not yet deprecated at 3.47.7.
+- Catalog `link` values for Material widgets point at `pub.dev/documentation/material_ui/latest/material_ui/<Widget>-class.html`, while the widgets-layer widgets point at `api.flutter.dev/flutter/widgets/<Widget>-class.html`. The standalone `material_ui` / `cupertino_ui` packages have been available since Flutter 3.47; in-framework Material / Cupertino is formally deprecated in Flutter 3.50.
 - These are Flutter (Dart) widgets; same-named components in Jetpack Compose (android-compose-ui / android-compose-components), SwiftUI (apple-swiftui), WinUI (windows-winui-controls), Ark UI / Chakra UI (ark-ui / chakra-ui) and fandhe-frontend are different APIs.
 
 ## Related

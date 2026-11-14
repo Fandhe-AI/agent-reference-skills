@@ -1,7 +1,7 @@
 ---
 name: flutter
 description: >
-  Flutter (Google 製 Dart クロスプラットフォーム UI フレームワーク, 3.47) のリファレンス。
+  Flutter (Google 製 Dart クロスプラットフォーム UI フレームワーク, 3.50) のリファレンス。
   StatelessWidget / StatefulWidget / BuildContext, Sliver, Material / Cupertino, Impeller,
   flutter CLI, pubspec.yaml, hot reload, flutter fix / dart fix, DevTools, Widget Previewer,
   MVVM, platform channels / dart:ffi, add-to-app, Flutter Web / Wasm, GenUI SDK / AI Toolkit。
@@ -12,11 +12,11 @@ user-invocable: false
 
 ## 対象バージョン
 
-- Flutter 3.47.7 stable / Dart 3.13.5（[`releases_macos.json`](https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json) の `current_release.stable` = `abaf9c523780a608bd46686fd5e53740a07077f8` = flutter/flutter tag [`3.47.7`](https://github.com/flutter/flutter/releases/tag/3.47.7)、2026-10-08 リリース）
-- ドキュメント原本: flutter/website（リリースタグなし）を main HEAD [`ed9d404eab2ebb9c0e230bdbac0a1a0fc837021c`](https://github.com/flutter/website/tree/ed9d404eab2ebb9c0e230bdbac0a1a0fc837021c)（2026-10-15T18:05:42Z）に pin、2026-10-16 取得
-- API リファレンス: [api.flutter.dev](https://api.flutter.dev/)（dartdoc HTML、URL に版なし）を 2026-10-16 取得
-- `llms.txt` は 3.44 のままのため版数の根拠にしない
-- 「Not yet released to stable」の breaking changes は第一級に扱わない。例外は material_ui / cupertino_ui で、3.47 から opt-in 可能（opt-in として記載）
+- Flutter 3.50.0 stable / Dart 3.14.0
+- ドキュメント原本: flutter/website（リリースタグなし）を commit [`acea4202cfbaa99aa520a154b34603cd420776ae`](https://github.com/flutter/website/tree/acea4202cfbaa99aa520a154b34603cd420776ae) に pin
+- API リファレンス: [api.flutter.dev](https://api.flutter.dev/)（dartdoc HTML、URL に版なし）。一部ページは 3.47 stable 時点の取得で 3.50 では未再照合（各ページ `## Notes` に記載）
+- `llms.txt` は版数の根拠にしない（更新が遅れる）
+- 「Not yet released to stable」の breaking changes は第一級に扱わない。例外は material_ui / cupertino_ui で、3.47 から opt-in 可能、3.50 で `package:flutter/material.dart` / `cupertino.dart` が正式 deprecated（移行は `dart fix --apply --code=migrate_design_widgets`）
 
 ## ディレクトリ構成
 
@@ -100,6 +100,6 @@ skills/flutter/
 | DevTools（inspector・CPU・メモリ・ネットワーク）・Widget Previewer を使いたい | tools | [references/tools/README.md](references/tools/README.md) |
 | Flutter Web のビルド・Wasm・初期化・埋め込み・デプロイを行いたい | web | [references/web/README.md](references/web/README.md) |
 | GenUI SDK・AI Toolkit（LlmChatView）・AI 開発ツールを使いたい | ai | [references/ai/README.md](references/ai/README.md) |
-| 3.47 の新機能・breaking changes・移行ガイド（material_ui opt-in 含む）を確認したい | release | [references/release/README.md](references/release/README.md) |
+| 3.50 の breaking changes・3.47 の新機能・移行ガイド（material_ui / cupertino_ui 移行含む）を確認したい | release | [references/release/README.md](references/release/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

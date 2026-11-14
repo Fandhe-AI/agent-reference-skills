@@ -17,7 +17,7 @@ dart fix --apply --code=migrate_design_widgets
 ## Notes
 
 - The source page contains no code example. To learn more about Material Design and Flutter, it points to the Material.io developer documentation for Flutter (`material.io/develop/flutter`).
-- Opt-in (Flutter 3.47): the Material library (`package:flutter/material.dart`) is also available as the standalone `material_ui` package (1.0), and the in-framework library is scheduled for formal deprecation in an upcoming stable release. `dart fix --apply --code=migrate_design_widgets` migrates imports. Contributions to Material and Cupertino inside the core SDK were frozen starting in Flutter 3.44.
+- Deprecated in Flutter 3.50 (opt-in since 3.47): the in-framework Material library (`package:flutter/material.dart`) is formally deprecated; use the standalone `material_ui` package (migration: release/material-ui-and-cupertino-ui). `dart fix --apply --code=migrate_design_widgets` migrates imports. Contributions to Material and Cupertino inside the core SDK were frozen starting in Flutter 3.44.
 - Flutter's Material widgets (Dart). Distinct from Jetpack Compose Material3 (`MaterialTheme`, `Scaffold`) in the android-compose-components skill, and from SwiftUI / UIKit in apple-swiftui and apple-uikit.
 
 ## Related

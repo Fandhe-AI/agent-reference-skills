@@ -20,7 +20,7 @@ flutter run lib/cupertino/switch/cupertino_switch.0.dart
 
 - Previously, Cupertino was part of the core Flutter SDK, but it has been decoupled from the framework. You can access Cupertino from the `cupertino_ui` package on pub.dev.
 - The source page lists widget-of-the-week videos for `CupertinoRadio`, `CupertinoSheetRoute`, `CupertinoSlidingSegmentedControl`, `CupertinoCheckbox`, and `CupertinoSwitch`, and links to the (mostly visual) Cupertino widget catalog, the Cupertino library page on pub.dev, and the Cupertino API examples in flutter/flutter.
-- Opt-in (Flutter 3.47): standalone `cupertino_ui` 1.0 is published alongside `material_ui`; the in-framework `package:flutter/cupertino.dart` is scheduled for formal deprecation in an upcoming stable release. `dart fix --apply --code=migrate_design_widgets` migrates imports.
+- Deprecated in Flutter 3.50 (opt-in since 3.47): standalone `cupertino_ui` is published alongside `material_ui`; the in-framework `package:flutter/cupertino.dart` is formally deprecated in 3.50. `dart fix --apply --code=migrate_design_widgets` migrates imports.
 - Flutter Cupertino widgets (Dart) imitate iOS design in Flutter; they are not native iOS UI. Use the apple-swiftui and apple-uikit skills for SwiftUI / UIKit APIs.
 
 ## Related

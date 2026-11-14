@@ -354,7 +354,7 @@ Follow the iOS Device Testing instructions in the `integration_test` README. Cre
 
 - Changed from the official page, which uses a placeholder action username/xvfb-action@v1.1.2; replaced with a direct xvfb-run call.
 - Corrected: the official page imports `package:how_to/main.dart` (left over from its code-excerpt source); the package name matches the app created with `flutter create counter_app`.
-- The sample app and test import `package:material_ui/material_ui.dart` as written in the official page. Per the Flutter 3.47 notes, `material_ui` / `cupertino_ui` are standalone packages you can opt in to; the in-framework `package:flutter/material.dart` is not yet deprecated in 3.47.7.
+- The sample app and test import `package:material_ui/material_ui.dart` as written in the official page. `material_ui` / `cupertino_ui` are the standalone packages (opt-in since 3.47); the in-framework `package:flutter/material.dart` is formally deprecated in Flutter 3.50.
 - Added `flutter pub add material_ui` to the setup: the official steps import package:material_ui but never add the dependency; alternatively import package:flutter/material.dart.
 - A standard `--release` build will not include `package:integration_test`, so use `--debug` when building the APK for Firebase Test Lab.
 - The `ChromeDriver` version shown in the sample output is from the page's example; use the stable install command shown.
