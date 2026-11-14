@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/code-review-troubleshooting.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/code-review-troubleshooting.md / last verified: 2026-11-14 -->
 
 # Troubleshoot Code Review
 
@@ -22,6 +22,7 @@ Check run title:
 | **Code review found no issues** | Finished, nothing flagged | Nothing |
 | A title saying issues were found | Finished with findings | If not visible on the diff, check Details, Files changed annotations, and the review body |
 | **Code review skipped — no new changes** | An automatic review didn't run on your latest push | Comment `@claude review` |
+| **Code review not repeated — earlier findings still open** | An automatic review didn't run on your latest push, and Important findings from the earlier review are still open | Push a fix, or comment `@claude review` to get a review anyway |
 | **Code review failed** / **Code review timed out** | Review didn't finish | Retrigger (see Notes) |
 | **Code review declined** | Review didn't run | Read the summary; if it names a budget or spend limit, see budget messages |
 | No check run | No review started | Comment `@claude review`; if still none, see causes below |
@@ -41,7 +42,9 @@ Budget message wording (comment begins "⚠️ Code review skipped", links `clau
 - If the check run summary says "The review session was interrupted before it could finish. A new review of this commit has been queued automatically.", do nothing; it is retried once.
 - Retrigger a **Code review failed** / **Code review timed out**: comment `@claude review` (fresh review, no subscription to future pushes), or click **Re-run** on the check in GitHub's **Checks** tab when the PR isn't from a fork (covers the current head commit; no subscription).
 - Findings not inline: open **Details** next to the check (severity table with file, line, summary regardless of inline acceptance); the **Files changed** tab (annotations on the lines concerned); or the review body under an **Additional findings** heading (findings with no inline location or outside the current diff).
-- `REVIEW.md` messages: "This review applied the repository's review instructions (REVIEW.md) from its default branch, which is not protected against direct pushes." means only the root file was read; "were not applied to this review: branch protection could not be confirmed" means no `REVIEW.md` was read.
+- `REVIEW.md` messages: "This review applied the repository's review instructions (REVIEW.md) from its default branch, which is not protected against direct pushes." means only the root file was read; "were not applied to this review: branch protection could not be confirmed" means no `REVIEW.md` was read; "they link to a file this pull request modifies, or carry more links than the review checks" means the review skipped the root `REVIEW.md` (or the number of subdirectory files the message gives) — causes: more than 64 Markdown links, a malformed link, or a link to a file or folder the PR changes (write the rule in `REVIEW.md` itself); "include line(s) in the root REVIEW.md were skipped on this review" means the root file applied but the files those lines name didn't (check the include and skill-file rules in `code-review-customize.md`).
+- **Code review found no issues** on a non-first review: look in the review body for a count of findings the review left out.
+- Source: https://code.claude.com/docs/en/code-review-troubleshooting.md, fetched 2026-11-14
 - Setup: a repository missing from **Add a repository** — search by name first (the dialog doesn't load a long list in full); it lists only repositories the Claude GitHub App can access, so click **Install GitHub App** and grant access. No check run on the test PR — confirm **Allow code review** is on, the repository is listed under **Repositories**, and the app has access; automatic reviews skip drafts, and a Manual repository needs an `@claude review` comment.
 
 ## Related

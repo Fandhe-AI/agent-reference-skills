@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/self-hosted-environments-deploy.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/self-hosted-environments-deploy.md / last verified: 2026-11-14 -->
 
 # Run a self-hosted runner fleet on Kubernetes
 
@@ -40,6 +40,8 @@ spec:
             - /etc/claude/environment-secret
             - --capacity
             - "4"
+            - --base-dir
+            - /workspace
           volumeMounts:
             - name: environment-secret
               mountPath: /etc/claude
@@ -70,4 +72,8 @@ spec:
 - `terminationGracePeriodSeconds: 90` matters: the runner's drain path (stop taking work, finish in-flight turns, run the `post-session` hook) needs up to ~80s at defaults, and Kubernetes' own 30s default kills the pod mid-cleanup.
 - `--capacity 4` lets one container serve up to four concurrent sessions from the same locked account; it does not provide per-session isolation. Before connecting to production systems, use `--capacity 1` with one container per session, or switch to on-demand runners.
 - `replicas` is a floor on concurrent users, not throughput: each runner locks to one account for the session's duration, so the minimum replica count is the number of users expected active at once.
-- `/healthz` on port 8080 only reports the process is alive, not that it's still polling; alert on the `last_poll_age_seconds` Prometheus metric to catch a stuck runner.
+- `/healthz` on port 8080 (`--health-port`) only reports the process is alive, not that it's still polling; alert on the `last_poll_age_seconds` Prometheus metric to catch a stuck runner. Nothing answers on the health port until the runner has registered and finished startup checks; if the liveness probe fails during startup, raise `initialDelaySeconds` or add a `startupProbe`.
+- `--base-dir /workspace` is passed explicitly; use the same `--base-dir` and `--capacity` on every runner in an environment so a resumed session's working directory doesn't change.
+- The manifest sets no CPU or memory `resources`; starting point per session is a request of 2 CPU / 4 GiB memory and a limit of 4 CPU / 4 GiB (multiply by capacity).
+- Adding `--use-anthropic-git-proxy` requires `--capacity 1` (the runner otherwise exits at startup).
+- Source: https://code.claude.com/docs/en/self-hosted-environments-deploy.md, fetched 2026-11-14

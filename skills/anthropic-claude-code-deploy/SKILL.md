@@ -1,8 +1,8 @@
 ---
 name: anthropic-claude-code-deploy
 description: >
-  Claude Code (code.claude.com) デプロイ・CI/CD リファレンス。
-  Amazon Bedrock / Vertex AI / Microsoft Foundry / Claude Platform on AWS、
+  Claude Code (code.claude.com) デプロイ・CI/CD リファレンス (2.1.325)。
+  Amazon Bedrock / Vertex AI (Agent Platform) / Microsoft Foundry / Claude Platform on AWS、
   Claude apps gateway、LLM gateway、
   GitHub Actions (claude-code-action) / GitLab CI/CD / GHES、
   Code Review (REVIEW.md・@claude review always)、/code-review、ultrareview、
@@ -15,6 +15,10 @@ user-invocable: false
 Claude Code (code.claude.com) を組織にデプロイする際のクラウドプラットフォーム連携・gateway・CI/CD・非対話実行環境のリファレンス。
 
 Messages API を直接クラウドプラットフォームで呼ぶ場合は `anthropic-api-core` の platforms、CLI 本体の使い方・設定は `anthropic-claude-code`、権限・セキュリティ・エンタープライズ管理は `anthropic-claude-code-admin` を参照（本スキルはデプロイ経路と CI/CD 統合を担当）。
+
+## 対象バージョン
+
+出典は code.claude.com の各ページの `.md` twin（取得日 2026-11-14、Claude Code 2.1.325 時点。各ページ先頭コメントに `last verified` を記載）。`scripts/gateway-setup.md` の一部出典（deploy / on-aws / on-gcp / llm-gateway-connect / rollout）は 2026-08-07 のまま（今回は references 側のみ全文照合）。
 
 ## ディレクトリ構成
 

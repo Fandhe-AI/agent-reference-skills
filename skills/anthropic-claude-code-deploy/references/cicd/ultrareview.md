@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/ultrareview.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/ultrareview.md / last verified: 2026-11-14 -->
 
 # Find bugs with ultrareview
 
@@ -20,6 +20,7 @@ Non-interactive (CI/script):
 claude ultrareview
 claude ultrareview 1234
 claude ultrareview origin/main
+claude ultrareview 1234 --trust-workspace
 ```
 
 ## Options / Props
@@ -34,6 +35,7 @@ claude ultrareview origin/main
 | `--timeout <minutes>` | `claude ultrareview` flag | Maximum minutes to wait for the review; default 45 |
 | `--post` | `claude ultrareview` flag / `/code-review ultra` arg | Posts the finished findings to a `github.com` pull request as one plain comment from your GitHub account; ignored with a notice on other targets. Requires v2.1.227+ |
 | `--no-post` | `claude ultrareview` flag | Don't post (the default); if both flags are passed, nothing is posted. Requires v2.1.227+ |
+| `--trust-workspace` | `claude ultrareview` flag | Trusts the current folder for this run only, without asking, so a script or CI job can review a checkout you haven't trusted. Takes no value: put a PR number or base branch before it. Requires v2.1.309+ |
 
 ## Notes
 
@@ -43,9 +45,14 @@ claude ultrareview origin/main
 - Diff limits: branch review up to 500 changed files / 8,000 changed lines by default; oversized PRs are refused the same way. Nothing to review (empty diff) is refused with the compared branch/commit named. No merge base falls back to reviewing every tracked file (full clone, same limits, needs launch-dialog confirmation or the `claude ultrareview` subcommand; refused in `claude -p`). A checkout with no branches, such as a detached HEAD, is refused.
 - First commit: reviewed whole only after confirming in the launch dialog; refused if untracked files exist; the `claude ultrareview` subcommand and `claude -p` refuse it (v2.1.277+).
 - When Claude runs the `claude ultrareview` subcommand for you (for example through the Bash tool), Claude Code refuses the whole-repository review.
-- Pricing: the table lists Pro and Max with 3 free runs each (one-time per account, no refresh); after that billed as usage credits, typically $5 to $25 depending on change size. A run counts once the cloud session starts; a stopped or failed review still uses a free run, and a paid review bills only for the portion that ran. Usage credits must be turned on to launch a paid review; check with `/usage-credits`. Billing is confirmed once per conversation (again after `/clear`).
-- A review typically takes 15 to 25 minutes and runs as a background task; use `/tasks` to track, view, or stop it. Stopping archives the cloud session and returns no partial findings. Claude reports a review as stopped (session stopped or archived) or not found (session deleted, or a different account/organization is signed in); after switching accounts, sign back in and use `claude --resume` to re-attach.
+- Pricing: the table lists Pro, Max, and Ultra with 3 free runs each (one-time per account, no refresh); after that billed as usage credits, typically $5 to $25 depending on change size. A run counts once the cloud session starts; a stopped or failed review still uses a free run, and a paid review bills only for the portion that ran. Usage credits must be turned on to launch a paid review; check with `/usage-credits`. Billing is confirmed once per conversation (again after `/clear`).
+- A review typically takes 5 to 15 minutes and runs as a background task; use `/tasks` to track, view, or stop it. Stopping archives the cloud session and returns no partial findings. Claude reports a review as stopped (session stopped or archived) or not found (session deleted, or a different account/organization is signed in); after switching accounts, sign back in and use `claude --resume` to re-attach.
 - `claude ultrareview` blocks until the remote review finishes and exits 0 (completed) / 1 (failed to launch, stopped, session error, or timeout) / 130 (Ctrl-C); progress goes to stderr so stdout stays parseable as `--json`. Re-running starts a new review. Before v2.1.218, `/code-review ultra` in a non-interactive session ran a local review.
+- Trust prompt: `claude ultrareview` asks `Trust <folder>? [y/N]`; answer `y` only if you trust the folder's code, because git and Claude Code can then run programs named in its git configuration and project settings. Where it can't ask (CI, output to a file) it exits with `Error: Workspace not trusted`; append `--trust-workspace`. Answering `n`, pressing Enter, or Ctrl-C at the trust question exits 1 (Ctrl-C while launching, waiting, or sending the `--post` comment exits 130). To review an untrusted PR, run `claude ultrareview <PR number> --trust-workspace` from a branch you trust; the PR is cloned in the cloud.
+- The launch dialog shows the review scope (file and line count for a branch review), remaining free runs, and estimated cost. A branch review uploads the repo under the rules for sending local repositories without GitHub (including uncommitted changes to credential-like files such as `.env` / `*.tfvars`); PR review uploads nothing from your machine. If the repository is too large to bundle, use PR mode (push the branch, open a draft PR).
+- No merge base on a checkout with no branches or refs (for example a detached HEAD after checking out `FETCH_HEAD`): Claude Code refuses and suggests creating a branch first.
+- With `--post`, the subcommand posts right after printing the findings and prints the link to stderr; if the review completes but the comment isn't posted, the reason goes to stderr and findings stay on stdout.
+- Source: https://code.claude.com/docs/en/ultrareview.md, fetched 2026-11-14
 - How it compares to `/code-review`:
 
 | | `/code-review` | `/code-review ultra` |
@@ -53,7 +60,7 @@ claude ultrareview origin/main
 | Target | working diff, a pull request, a branch, or a path | working diff or a pull request |
 | Runs | locally in your session | in a cloud sandbox |
 | Depth | scales with the effort argument | multi-agent fleet with independent verification |
-| Duration | seconds to a few minutes | roughly 15 to 25 minutes |
+| Duration | seconds to a few minutes | roughly 5 to 15 minutes |
 | Cost | counts toward normal usage | free runs, then roughly $5 to $25 per review as usage credits |
 | Best for | quick feedback while iterating | pre-merge confidence on substantial changes |
 

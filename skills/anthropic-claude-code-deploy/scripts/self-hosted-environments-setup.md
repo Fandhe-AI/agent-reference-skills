@@ -1,6 +1,6 @@
-<!-- source: https://code.claude.com/docs/en/self-hosted-environments-quickstart.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/self-hosted-environments-deploy.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/self-hosted-environments-testing.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/self-hosted-environments-quickstart.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/self-hosted-environments-deploy.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/self-hosted-environments-testing.md / last verified: 2026-11-14 -->
 
 # self-hosted-environments-setup
 
@@ -20,7 +20,7 @@ Requires Claude Code v2.1.224 or later; the `self-hosted-runner` subcommand does
 claude self-hosted-runner setup
 ```
 
-Run on a machine signed in with `claude auth login` using an Owner-or-admin account; walks through creating the environment, starting a local runner, and writes a cheat sheet to `./runner-setup/CHEAT-SHEET.md`. Not available with API keys or third-party model providers.
+Run on a machine signed in with `claude auth login` using an account that holds an Owner role; walks through creating the environment, starts a local runner with the secret file you save, confirms registration, and writes a cheat sheet to `./runner-setup/CHEAT-SHEET.md`. With only an API key or a third-party model provider the session starts but its organization checks fail. It doesn't start a test session (start one at claude.ai/code); its last step stops the runner it started, so restart it with the command in the cheat sheet.
 
 ## Manual setup: runner の起動
 
@@ -36,12 +36,10 @@ mkdir -p /etc/claude
 ```
 
 ```bash
-mkdir -p '<writable-dir>'
-```
-
-```bash
 claude self-hosted-runner --environment-secret-file '/etc/claude/environment-secret' --base-dir '<writable-dir>'
 ```
+
+Use a directory dedicated to the runner for `<writable-dir>` (the runner creates it at startup and treats `<writable-dir>/<repo-owner>/<repo>` as its own clone, which it can reset or overwrite).
 
 Environment secret is issued once from claude.ai admin settings (**Cloud environments** page → **New** → **Copy environment key**) and cannot be retrieved again; it expires 365 days after creation.
 
@@ -58,7 +56,7 @@ claude -p "your message" --cloud <session-id>
 ```dockerfile
 FROM debian:bookworm-slim
 ARG CLAUDE_CODE_VERSION
-RUN apt-get update && apt-get install -y --no-install-recommends git curl ca-certificates openssh-client \
+RUN apt-get update && apt-get install -y --no-install-recommends git curl ca-certificates openssh-client jq python3 \
  && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL "https://downloads.claude.ai/claude-code-releases/${CLAUDE_CODE_VERSION:?set with --build-arg CLAUDE_CODE_VERSION}/linux-x64/claude" \
       -o /usr/local/bin/claude && chmod +x /usr/local/bin/claude
@@ -68,11 +66,16 @@ RUN git config --system user.name "Claude" \
 ENTRYPOINT ["claude"]
 ```
 
-Swap `linux-x64` for `linux-arm64`/`linux-x64-musl`/`linux-arm64-musl` to match the node architecture and libc.
+Swap `linux-x64` for `linux-arm64`/`linux-x64-musl`/`linux-arm64-musl` to match the node architecture and libc. `python3` must stay on `PATH` in images that serve Claude Tag sessions (runner v2.1.229+).
 
 ```bash
-docker build --build-arg CLAUDE_CODE_VERSION=2.1.224 -t <your-registry>/claude-runner:latest .
+# If your model needs a newer release, change stable to latest in the URL
+docker build \
+  --build-arg CLAUDE_CODE_VERSION="$(curl -fsSL https://downloads.claude.ai/claude-code-releases/stable)" \
+  -t <your-registry>/claude-runner:latest .
 ```
+
+The command substitution looks up the current `stable` release; pass a version number directly as `CLAUDE_CODE_VERSION` to pin for reproducible builds.
 
 > **警告**: The recipe's `--capacity 4` lets one container serve multiple sessions from the same locked account, which is not the per-session isolation the official hardening guidance requires before connecting production systems. Use `--capacity 1` with one ephemeral container per session (default `--drain-grace-sec 0`) in production, or use on-demand runners.
 
@@ -114,6 +117,8 @@ spec:
             - /etc/claude/environment-secret
             - --capacity
             - "4"
+            - --base-dir
+            - /workspace
           volumeMounts:
             - name: environment-secret
               mountPath: /etc/claude
@@ -153,6 +158,8 @@ services:
       - /run/secrets/environment-secret
       - --capacity
       - "4"
+      - --base-dir
+      - /workspace
     secrets:
       - environment-secret
     restart: always

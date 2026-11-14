@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/devcontainer.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/devcontainer.md / last verified: 2026-11-14 -->
 
 # Development containers
 
@@ -44,7 +44,14 @@ COPY managed-settings.json /etc/claude-code/managed-settings.json
 - Under `--dangerously-skip-permissions`, a malicious project can exfiltrate anything reachable inside the container, including credentials in `~/.claude`; avoid mounting host secrets like `~/.ssh` or cloud credential files.
 - Cloud-provider auth (Bedrock/Vertex/Foundry) uses env vars/workload identity passed via `containerEnv` rather than mounted host credential files.
 - The Dev Container Feature always installs the latest Claude Code; to pin a version, install via `npm install -g @anthropic-ai/claude-code@X.Y.Z` in the Dockerfile and set `DISABLE_AUTOUPDATER`.
-- A maintained reference container (CLI + firewall + persistent volumes) lives at `anthropics/claude-code/.devcontainer` as a working example, not a maintained base image.
+- A reference container (CLI + firewall + persistent volumes + Zsh shell; `devcontainer.json`, `Dockerfile`, `init-firewall.sh`) lives at `anthropics/claude-code/.devcontainer` as a working example, not a maintained base image. The firewall script and its `NET_ADMIN` / `NET_RAW` capabilities are not required for Claude Code itself.
+- The feature installs Node.js itself when the base image lacks it; if the build stops with `Failed to install Node.js and npm`, add `"ghcr.io/devcontainers/features/node:1": {}` to `features` above the Claude Code feature and rebuild.
+- To isolate `~/.claude` state per project, include `${devcontainerId}` in the volume source name (the reference config uses `source=claude-code-config-${devcontainerId}`). In GitHub Codespaces `~/.claude` survives stop/start but is cleared on rebuild; carry auth across codespaces with a Codespaces secret holding `ANTHROPIC_API_KEY` or a `CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token`.
+- `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` also disables the feature-flag evaluation that Remote Control and other feature-flag-dependent features need, so sessions in the container can't use them.
+- Dockerfile-delivered `managed-settings.json` can be changed by anyone with repo write access; for policy engineers can't bypass use server-managed settings or MDM. Define MCP servers at project scope in `.mcp.json`, install stdio-server binaries in the Dockerfile, and allowlist remote server domains.
+- To block `--dangerously-skip-permissions` entirely, set `permissions.disableBypassPermissionsMode` to `"disable"` in managed settings; auto mode is the lower-risk alternative to skipping prompts. Pair unattended runs with egress restrictions.
+- If the Anthropic sign-in opens no browser or ends in a `localhost` error, use the login URL above the paste prompt and paste the returned code.
+- Source: https://code.claude.com/docs/en/devcontainer.md, fetched 2026-11-14
 
 ## Related
 

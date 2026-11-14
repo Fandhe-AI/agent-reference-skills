@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/github-actions.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/github-actions.md / last verified: 2026-11-14 -->
 
 # Run the code-review plugin with claude-code-action
 
@@ -24,8 +24,8 @@ jobs:
       - uses: anthropics/claude-code-action@f27be6b65a4652f08a2ba3cff79114829b588967  # v1.0.252
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
-          plugins: "code-review@claude-code-plugins"
+          plugin_marketplaces: "https://github.com/anthropics/claude-plugins-official.git"
+          plugins: "code-review@claude-plugins-official"
           prompt: "/code-review:code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
           claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment"'
 ```
@@ -38,4 +38,6 @@ jobs:
 - On public repositories GitHub withholds secrets from fork pull request runs, so the review runs only on PRs from branches in the same repository. Claude skips draft and closed PRs, PRs it judges not to need review, and PRs that already have a comment from Claude.
 - The `plugins` input takes `plugin-name@marketplace-name`, where the marketplace name comes from the marketplace's own manifest rather than its repository URL. For a skill in the repo's own `.claude/skills/`, run `actions/checkout` first and pass `/skill-name` as `prompt`.
 - The official example references actions/checkout@v6 and anthropics/claude-code-action@v1 by mutable tag; this sample pins them to full commit SHAs (version in the trailing comment) to avoid tag-swap supply-chain risk. Bump the SHA when upgrading.
+- The official example now uses the `claude-plugins-official` marketplace (`code-review@claude-plugins-official`); earlier versions of this sample used `anthropics/claude-code.git` with `code-review@claude-code-plugins`.
+- Source: https://code.claude.com/docs/en/github-actions.md, fetched 2026-11-14.
 - This is self-managed. The managed Code Review GitHub App service (no workflow file to maintain) is described in `references/cicd/code-review.md` within this skill.
