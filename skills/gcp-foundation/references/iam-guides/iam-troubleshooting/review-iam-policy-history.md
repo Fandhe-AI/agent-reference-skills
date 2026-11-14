@@ -23,12 +23,12 @@ protoPayload.methodName:SetIamPolicy
 protoPayload.serviceData.policyDelta.bindingDeltas.member:"EMAIL_ADDRESS"
 ```
 
-gcloud (Linux, macOS, or Cloud Shell):
+gcloud (Linux, macOS, or Cloud Shell). Adapted (not in the official docs): `methodName=SetIamPolicy` changed to `methodName:SetIamPolicy` (substring match, as in the Logs Explorer queries above) so qualified method names such as `google.iam.v1.IAMPolicy.SetIamPolicy` are not missed.
 
 ```bash
 gcloud logging read \
     'logName:RESOURCE_TYPE/RESOURCE_ID/logs/cloudaudit.googleapis.com%2Factivity
-    AND protoPayload.methodName=SetIamPolicy' \
+    AND protoPayload.methodName:SetIamPolicy' \
     --freshness=TIME_PERIOD \
     --RESOURCE_TYPE_SINGULAR=RESOURCE_ID
 ```

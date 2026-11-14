@@ -25,12 +25,15 @@ resource.name.endsWith(".jpg")
 resource.name.extract("projects/{project}/")
 ```
 
-Scope `resource.name` to the intended types (conditions on a type without a name attribute never grant):
+Scope `resource.name` to the intended types (conditions on a type without a name attribute never grant).
+
+Adapted (not in the official docs): the bucket match is made exact (`==`) and objects are matched by the `/objects/` prefix, so `example-bucket-other` is not matched by a bare `startsWith('.../example-bucket')`.
 
 ```text
 (resource.type != 'storage.googleapis.com/Bucket' &&
  resource.type != 'storage.googleapis.com/Object') ||
-resource.name.startsWith('projects/_/buckets/example-bucket')
+resource.name == 'projects/_/buckets/example-bucket' ||
+resource.name.startsWith('projects/_/buckets/example-bucket/objects/')
 ```
 
 Inherited conditions at organization/folder/project level:
