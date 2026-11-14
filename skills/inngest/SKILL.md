@@ -1,17 +1,16 @@
 ---
 name: inngest
 description: >
-  Inngest イベント駆動 Durable Execution リファレンス。バックグラウンドジョブ、長時間ワークフロー。
+  Inngest イベント駆動 Durable Execution。バックグラウンドジョブ、長時間ワークフロー。
   createFunction, step.run, step.sleep, step.waitForEvent, step.invoke,
   step.sendEvent, step.ai.infer, inngest.send, serve, checkpointing, Inngest CLI。
-  concurrency, throttle, debounce, rate-limit, batching, idempotency, singleton フロー制御。
-  Realtime (channels, topics, useRealtime)、
-  Agent Evals、MCP。
-  デプロイ先 Next.js, Hono, Cloudflare Workers。
+  concurrency, throttle, debounce, rate-limit, batching, idempotency, singleton。
+  Realtime (channels, topics, useRealtime)、Sandbox (step.sandbox)、Agent Evals、MCP。
+  Next.js, Hono, Cloudflare Workers。
 user-invocable: false
 ---
 
-対象: TypeScript SDK `inngest` v4.24.0（npm latest）／公式ドキュメント https://www.inngest.com/docs-markdown/（取得日 2026-10-16）
+対象: TypeScript SDK `inngest` v4.26.2（npm latest）／公式ドキュメント https://www.inngest.com/docs-markdown/（取得日 2026-11-14。Sandboxes と 4.25〜4.26 の差分ページのみ 2026-11-14、その他は 2026-10-16 時点の v4.24.0 から据え置き）
 
 ## ディレクトリ構成
 
@@ -166,6 +165,28 @@ skills/inngest/
       step-ai-infer.md
       step-ai-wrap.md
       sub-agent-delegation.md
+    sandboxes/
+      README.md
+      base-images.md
+      best-practices.md
+      cloning.md
+      commands.md
+      custom-images.md
+      durable-filesystems.md
+      features-overview.md
+      guides.md
+      isolation-and-security.md
+      limits.md
+      managed-lifecycle.md
+      overview.md
+      pause-and-resume.md
+      quick-start.md
+      reference.md
+      secrets.md
+      snapshots-and-restore.md
+      ssh.md
+      tools.md
+      traces.md
     realtime/
       README.md
       channels.md
@@ -255,6 +276,7 @@ skills/inngest/
 | useRealtime での購読・subscription token の発行 | realtime | [references/realtime/README.md](references/realtime/README.md) |
 | AI 応答のストリーミング・サーバー側購読 | realtime | [references/realtime/README.md](references/realtime/README.md) |
 | Realtime の制限・トラブルシュート | realtime | [references/realtime/README.md](references/realtime/README.md) |
+| Sandboxes（step.sandbox・microVM・snapshot / clone・secrets・tools・commands・limits）の利用 | sandboxes | [references/sandboxes/README.md](references/sandboxes/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンド・デプロイ手順を知りたい | scripts | [scripts/README.md](scripts/README.md) |
 | Inngest CLI（Cloud の run / trace 取得）・Docker で動かしたい | scripts | [scripts/README.md](scripts/README.md) |

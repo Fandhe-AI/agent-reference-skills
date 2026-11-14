@@ -66,6 +66,7 @@ INNGEST_DEV=1
   "no-discovery": true
 }
 ```
+- A Dev Server older than inngest/inngest#4992 rejects the per-name score and warning metadata kinds that TypeScript SDK 4.26.0+ sends (400, or lost scores and warnings); update the Dev Server (`inngest-cli@latest`) when scoring locally. Source: https://github.com/inngest/inngest-js/releases/tag/inngest@4.26.0 (retrieved 2026-11-14)
 
 ## Related
 

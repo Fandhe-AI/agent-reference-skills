@@ -37,6 +37,7 @@ const connection = await connect({
 - Kubernetes health check: expose an HTTP endpoint returning 200 when `connection.state === ACTIVE`; configure `readinessProbe` for orchestration
 - Self-hosted Inngest: ensure port 8289 (Connect gateway) is accessible; set `gatewayUrl` if the default is not reachable
 - Observability: Inngest Cloud dashboard shows per-worker metrics (instance ID, connection status, heartbeat, app version)
+- As of TypeScript SDK 4.26.1, `connect()` without `functions` warns and uses the latest definition rather than throwing `Duplicate function ID` when functions with the same ID were re-created. Source: https://github.com/inngest/inngest-js/releases/tag/inngest@4.26.1 (retrieved 2026-11-14)
 
 ## Related
 

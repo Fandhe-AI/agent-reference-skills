@@ -52,6 +52,7 @@ Configuration can also be provided via environment variables (prefix `INNGEST_`,
 - Connect gateway runs on port 8289; ensure this port is accessible when using the Connect (workers) API
 - Custom gateway URL for Connect can be specified via the `gatewayUrl` parameter in the SDK
 - Inngest support does not guarantee direct support for self-hosted instances; enterprise options available for dedicated support
+- TypeScript SDK 4.26.0+ writes scores and warnings as per-name metadata kinds; self-hosted servers older than inngest/inngest#4992 reject them (400, or lost when sent with a checkpointed step). Upgrade the server before the SDK if you use Agent Evals scoring. Source: https://github.com/inngest/inngest-js/releases/tag/inngest@4.26.0 (retrieved 2026-11-14)
 
 ## Related
 
