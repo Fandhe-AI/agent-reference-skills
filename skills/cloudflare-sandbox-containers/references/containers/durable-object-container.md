@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/containers/api/durable-object-containe
 
 # Durable Object Container API
 
-`this.ctx.container` inside any Durable Object class with a container binding gives direct control over the container process. Recommended for new applications.
+`this.ctx.container` inside any Durable Object class with a container binding gives direct control over the container process.
 
 ## Signature / Usage
 
@@ -259,12 +259,14 @@ export class MyDurableObject extends DurableObject {
 - `monitor()` resolves on exit code `0` or on `destroy()` with no value; rejects with an `Error` carrying `exitCode` for other codes, with the `destroy()` value if given, or with a description otherwise. A pending `monitor()` prevents eviction for up to 15 minutes. It does not survive a Durable Object restart; call it again if `running` is `true` at startup. Throws when the instance has no container.
 - `snapshotContainer()` throws `Error` when not running and `TypeError` when `options` is omitted. There is no list method, so store the returned `id`. Snapshots are immutable with an implicit 30-day TTL refreshed on restore; a container restored from one runs its entrypoint again (see snapshots.md).
 - Intercepts: shared limit of 128 entries per container (hostname or glob, including `*`, uses 2; IP, IP:port or CIDR uses 1; `interceptAllOutboundHttp()` uses 2; at most 64 hostname targets or 128 IP/CIDR targets). Re-registering a target replaces its handler and uses no extra entries; intercepts last until the container stops and cannot be removed. Overflow throws `You can't configure more than 128 egress interceptors`. With `enableInternet: false` only intercepted hostnames resolve (a `*` target or `interceptAllOutboundHttp()` makes every hostname resolve); other lookups time out. `interceptAllOutboundHttp()` covers only port 80; add `interceptOutboundHttps("*")` for HTTPS. Register hostname intercepts before `interceptAllOutboundHttp()`. HTTPS interception requires the container to trust `/etc/cloudflare/certs/cloudflare-containers-ca.crt`.
+- Existing applications that use the deprecated `Container` class from `@cloudflare/containers` migrate to this API; see api-comparison.md (official migration guide, updated 2026-11-09).
+- Source: https://developers.cloudflare.com/containers/api/durable-object-container/ (cloudflare-docs production `34d908a`, fetched 2026-11-14).
 - Corrected from the official docs: the `getTcpPort`, `snapshotContainer` and `interceptOutboundHttp` fragments are wrapped in classes and methods so they run; `MyWorker` is a minimal entrypoint (its `ctx.props` usage is illustrative) and must be exported from the Worker entry module for `ctx.exports` to expose it.
 - Adapted from the official docs: the request-signal example, the TCP `connect()` fragment and the TypeScript copies are omitted (the former lacked the `cloudflare:workers` import; the latter used undefined variables outside a function).
 
 ## Related
 
-- [Container class](./container-class.md)
+- [Container class (deprecated)](./container-class.md)
 - [API comparison](./api-comparison.md)
 - [Execute commands](./execute-commands.md)
 - [Snapshots](./snapshots.md)
