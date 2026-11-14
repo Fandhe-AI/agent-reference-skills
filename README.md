@@ -38,7 +38,7 @@ npx skills add Fandhe-AI/agent-reference-skills --skill react-router -g
 
 詳細なディレクトリ構成（`.claude/` の Agent・Rule・ワークフロースキル、`skills/` のスキル構造）は [CLAUDE.md](CLAUDE.md) の「Repository Structure」を参照。
 
-## スキル一覧（全 144 スキル）
+## スキル一覧（全 152 スキル）
 
 ### Apple プラットフォーム
 
@@ -145,6 +145,21 @@ opencode は OpenCode 本体の利用（設定・権限・セッション・CLI�
 | スキル | 説明 |
 | -------- | ------ |
 | [google-gemini-api](skills/google-gemini-api/) | Google Gemini API (ai.google.dev) — Interactions API, generateContent, Google GenAI SDK, Live API, Managed Agents, function calling / grounding, Veo / Nano Banana, Batch API |
+
+### Cloudflare プラットフォーム
+
+cloudflare-workers はランタイム API、cloudflare-wrangler は Wrangler CLI・設定ファイル・テスト、製品別スキル（storage / stateful / pages / ai / sandbox-containers / agents）は各製品の API と概念を担当。Upstash・Supabase・Vercel・Docker 本体は各スキルが担当。
+
+| スキル | 説明 |
+| -------- | ------ |
+| [cloudflare-workers](skills/cloudflare-workers/) | Cloudflare Workers ランタイム — fetch / scheduled / tail handler, waitUntil, WorkerEntrypoint RPC, service bindings, compatibility flags, static assets, framework guides |
+| [cloudflare-wrangler](skills/cloudflare-wrangler/) | Wrangler CLI v4 — dev / deploy / versions / tail / secret / types, wrangler.jsonc, @cloudflare/vite-plugin, @cloudflare/vitest-plugin, Miniflare, gradual deployments, Workers Builds |
+| [cloudflare-storage](skills/cloudflare-storage/) | Workers KV / D1 / R2 / Hyperdrive — KVNamespace, D1Database, read replication, R2Bucket multipart, S3 互換 API, 接続プール |
+| [cloudflare-stateful](skills/cloudflare-stateful/) | Durable Objects / Queues / Workflows — ctx.storage SQL, alarms, WebSocket hibernation, DLQ, WorkflowEntrypoint, step.do |
+| [cloudflare-pages](skills/cloudflare-pages/) | Cloudflare Pages — Pages Functions, `_routes.json`, `_headers` / `_redirects`, preview deployments, Direct Upload（新規は Workers 推奨） |
+| [cloudflare-ai](skills/cloudflare-ai/) | Workers AI / AI Gateway / Vectorize / AI Search — env.AI.run, モデルカタログ, caching / fallbacks / BYOK, VectorizeIndex query |
+| [cloudflare-sandbox-containers](skills/cloudflare-sandbox-containers/) | Sandbox SDK 1.0 / Containers — exec / files / preview URLs / code interpreter, Container class, instance types, 0.x → 1.0 移行 |
+| [cloudflare-agents](skills/cloudflare-agents/) | Cloudflare Agents SDK — Agent class, state / setState, @callable RPC, useAgent, AIChatAgent, McpAgent, MCPClientManager |
 
 ### AI / LLM 横断
 
