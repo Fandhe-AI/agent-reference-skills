@@ -167,23 +167,27 @@ export LEAF_CERT=$(openssl x509 -in leaf.cert -out leaf.der -outform DER && cat 
 export INTERMEDIATE_CERT=$(openssl x509 -in int.cert -out int.der -outform DER && cat int.der | openssl enc -base64 -A)
 ```
 
+Adapted (not in the official docs): the trust chain is built as a JSON array of the base64 certificates and embedded as the `subject_token` string with `jq --arg`. The official sample sends the literal text `TRUST_CHAIN` because the variable sits inside a single-quoted body and is never expanded.
+
 ```bash
-export TRUST_CHAIN="[\\\"${LEAF_CERT}\\\", \\\"${INTERMEDIATE_CERT}\\\"]"
+export TRUST_CHAIN="[\"${LEAF_CERT}\", \"${INTERMEDIATE_CERT}\"]"
 ```
 
-```
+```bash
+REQUEST_BODY="$(jq -n --arg chain "${TRUST_CHAIN}" '{
+    subject_token_type: "urn:ietf:params:oauth:token-type:mtls",
+    grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+    audience: "WORKLOAD_IDENTITY_POOL_URI",
+    requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
+    scope: "https://www.googleapis.com/auth/cloud-platform",
+    subject_token: $chain
+}')"
+
 curl --key CLIENT_CERT_KEY \
 --cert CLIENT_CERT \
 --request POST 'https://sts.mtls.googleapis.com/v1/token' \
 --header "Content-Type: application/json" \
---data-raw '{
-    "subject_token_type": "urn:ietf:params:oauth:token-type:mtls",
-    "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
-    "audience": "WORKLOAD_IDENTITY_POOL_URI",
-    "requested_token_type": "urn:ietf:params:oauth:token-type:access_token",
-    "scope": "https://www.googleapis.com/auth/cloud-platform",
-    "subject_token": "TRUST_CHAIN"
-}'
+--data-raw "${REQUEST_BODY}"
 ```
 
 Regional endpoint form: `https://sts.REGION.rep.mtls.googleapis.com/v1/token`. Optional impersonation:
@@ -234,6 +238,7 @@ Limits:
 - Token lifetimes over one hour need the `constraints/iam.allowServiceAccountCredentialLifetimeExtension` org policy constraint. Prefer regional STS endpoints (for example `https://sts.us-central1.rep.mtls.googleapis.com`).
 - Grant access (direct resource access or `roles/iam.workloadIdentityUser` impersonation) exactly as in the grant-access page.
 - Client library minimums: Go `cloud.google.com/go/auth` 0.16.0 with `google.golang.org/api` 0.189.0; other languages are listed in the source.
+- Adapted from the official docs: the REST token-exchange example builds the request body with `jq --arg` so the generated `TRUST_CHAIN` is actually sent as `subject_token` (the official sample sends the literal string `TRUST_CHAIN`).
 - Source: https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-x509-certificates (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
 ## Related
