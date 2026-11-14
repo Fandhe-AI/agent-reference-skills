@@ -29,7 +29,7 @@ ps.prepare('select @param as value', err => {
 
 ## Notes
 
-- Errors: `ENOTPREPARED` (`PreparedStatementError`) - Statement is not prepared
+- Errors: `ENOTPREPARED` (`PreparedStatementError`) - Statement is not prepared. `EREQINPROG` (`TransactionError`) - Can't unprepare the statement. There is a request in progress
 - Releases the connection reserved by the prepared statement back to the pool
 - This is a SQL Server / TDS prepared statement, unrelated to Redis (`upstash`) or Stripe (`stripe`) transaction concepts
 

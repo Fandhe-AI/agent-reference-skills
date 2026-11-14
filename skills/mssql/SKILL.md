@@ -11,7 +11,7 @@ user-invocable: false
 
 # mssql API リファレンス
 
-mssql (node-mssql) — tediousjs 製の Node.js 向け Microsoft SQL Server クライアント（対象バージョン v12.7.9）。
+mssql (node-mssql) — tediousjs 製の Node.js 向け Microsoft SQL Server クライアント（対象バージョン v12.7.14）。
 tedious / msnodesqlv8 ドライバー、ConnectionPool、Request / Transaction / PreparedStatement による
 T-SQL 実行、データ型・エラー処理・診断を中核とする API 設計・実装時に参照する。
 

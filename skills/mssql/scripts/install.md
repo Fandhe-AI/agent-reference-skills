@@ -20,7 +20,7 @@ Tedious is a pure JavaScript implementation supporting Windows / macOS / Linux, 
 npm install mssql msnodesqlv8
 ```
 
-MSNodeSQLv8 is a Node V8 native driver (v2-v5) by Microsoft / Contributors, supporting only Windows or Linux/macOS 64bit.
+MSNodeSQLv8 is a Node V8 native driver (v2-v6) by Microsoft / Contributors, supporting only Windows or Linux/macOS 64bit. msnodesqlv8 6 needs Node.js 22 or later; on an older Node.js, install msnodesqlv8 5 (`npm install mssql msnodesqlv8@5`).
 
 ## SQL Server prerequisites
 

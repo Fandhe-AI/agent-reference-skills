@@ -24,7 +24,7 @@ ps.prepare('select @param as value', err => {
 
 ## Notes
 
-- Errors: `ENOCONN` (`PreparedStatementError`) - No connection is specified for that prepared statement. `ECONNCLOSED` (`ConnectionError`) - Connection is closed. `EALREADYPREPARED` (`PreparedStatementError`) - Statement is already prepared. `ENOTBEGUN` (`TransactionError`) - Transaction has not begun
+- Errors: `ENOCONN` (`PreparedStatementError`) - No connection is specified for that prepared statement. `ECONNCLOSED` (`ConnectionError`) - Connection is closed. `EALREADYPREPARED` (`PreparedStatementError`) - Statement is already prepared. `ENOTBEGUN` (`TransactionError`) - Transaction has not begun. `EREQINPROG` (`TransactionError`) - Can't acquire connection for the request. There is another request in progress
 - Release notes (v12.7.9): `prepare()` rejects with `ENOCONN` when there is no pool and with `ECONNCLOSED` when the pool is not connected (previously `ENOTOPEN` was listed here)
 - This is a SQL Server / TDS prepared statement, unrelated to Redis (`upstash`) or Stripe (`stripe`) transaction concepts
 
