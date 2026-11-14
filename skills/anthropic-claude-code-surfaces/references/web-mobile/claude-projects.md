@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/claude-projects.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/claude-projects.md / last verified: 2026-11-14 -->
 
 # Let Claude coordinate ongoing work with Projects
 
@@ -41,6 +41,7 @@ Project settings (changed at claude.ai/code or in the desktop app, not in `setti
 | Plugins | Plugins | The plugins that load into each new cloud thread |
 | Usage | Usage | Token use by thread and by model |
 | Memory | Memory | The project's memory files |
+| Auto-continue when usage limits reset | General | Whether a thread or the conversation that stops at a usage limit continues on its own when the limit resets (on by default; applies to the whole project) |
 | Restart Claude | General | Restarts the project conversation when Claude stops responding there |
 | Pause, Archive, Delete | General | Stops, hides, or removes the project |
 
@@ -57,25 +58,37 @@ Project settings (changed at claude.ai/code or in the desktop app, not in `setti
 
 What threads pick up from repositories:
 
-| In each repository | One repository | Several repositories |
-| --- | --- | --- |
-| `CLAUDE.md` | Loaded when the thread starts | Loaded from every repository |
-| Skills, agents, and commands under `.claude/` | Loaded | Loaded from every repository |
-| Plugins enabled in `.claude/settings.json` | Not loaded; add in **Project settings > Plugins** | Not loaded; add in **Project settings > Plugins** |
-| Permission rules, hooks, and `env` in `.claude/settings.json` | Apply, except `env` keys no cloud session honors | Don't apply in an Anthropic-hosted environment; self-hosted environments follow their own configuration |
+| In each repository | In a cloud thread |
+| --- | --- |
+| `CLAUDE.md`, `.claude/CLAUDE.md`, `.claude/rules/` at the repository root | Loaded from every repository when the thread starts; subdirectory `CLAUDE.md` files and path-specific rules aren't loaded |
+| Skills under `.claude/skills/` | Not loaded; enable the skill for your claude.ai account instead |
+| Agents and commands under `.claude/` | Not loaded; run the thread on your own computer |
+| MCP servers in `.mcp.json` | Not loaded; use the connectors on your claude.ai account |
+| Plugins enabled in `.claude/settings.json` | Not loaded; add in **Project settings > Plugins** |
+| Permission rules, hooks, and `env` in `.claude/settings.json` | Not applied / not run; approve inside the thread, set variables in the cloud environment, or run the thread on your own computer |
 
 ## Notes
 
-- Public beta on Pro and Max plans, rolling out gradually; not available on Team or Enterprise plans yet. If **Projects** doesn't appear in the sidebar at claude.ai/code or in the desktop app Code tab, join the waitlist.
+- Public beta on Pro, Max, and Ultra plans, rolling out gradually; not available on Team or Enterprise plans yet. If **Projects** doesn't appear in the sidebar at claude.ai/code or in the desktop app Code tab, check under **More**, then join the waitlist. If the button reads **Get started** instead of **New project**, upgrade or archive the listed existing claude.ai projects first.
 - Available at claude.ai/code, in the desktop app, and in the Claude mobile app (iOS / Android); not in the terminal CLI, the VS Code extension, or the JetBrains plugin, and not through Amazon Bedrock, Google Cloud's Agent Platform, or Microsoft Foundry.
-- Create from scratch via **New project** (only Name is required; Goal and Context are optional), or from an existing cloud session via **Continue as project** / **Move to project**. A local session has neither option.
+- Create from scratch via **New project** (only Name is required; goal and **Context** are optional), or from an existing cloud session via **Continue in project** in its sidebar menu, then **Continue as new project** or an existing project. A local session connected through Remote Control gets the same menu at claude.ai/code, unless **Require trusted devices** is on for your account.
+- On your first project, Claude takes a turn on its own (using your plan): it may start a read-only exploring thread and post **Setup recommendations** (repositories, scheduled tasks), which you switch off or accept with **Update setup**. Routing: quick questions are answered in place, new work goes to a new or existing thread, and Claude can propose threads in a **Suggested threads** list.
+- GitHub setup: connect GitHub once, install the Claude GitHub App on the repositories (an organization owner must approve on organization-owned repositories), and authorize SSO for organizations that enforce SAML SSO. Cloud thread repository errors: `Couldn't start the session — Claude doesn't have GitHub access to this project's repository`, `Unable to access your repository`, and `Claude can't access` a repository (install or reconnect link). Claude can only add repositories from a GitHub owner the project already uses; a thread can add a repository to itself (that thread only, clone happens mid-task so its `CLAUDE.md` isn't loaded at start). A project doesn't need a repository; threads deliver files to the project's **Library**.
+- Running a thread on your computer: needs Claude Code v2.1.280 or later; connect the folder via the desktop app (**Use this computer from your phone and claude.ai** under **Settings > Code**) or `claude remote-control` (with `--spawn worktree` for per-thread worktrees), choose **Work locally** from the **+** menu, then **Allow once** on the card. The thread uses auto mode unless `claude remote-control` is started with `--settings` and `permissions.defaultMode` picks another mode, and uses that machine's files, MCP servers, hooks, and permission rules.
+- Tuning: preferences you give Claude (thread limits, update cadence, "propose before starting") are saved to project memory and followed, but are not hard caps.
+- Skills, plugins, connectors in threads: enable skills for your claude.ai account (repository `.claude/skills/` don't load); add plugins in **Project settings > Plugins**; MCP tools come from your claude.ai connectors (the project conversation itself has none); install CLI tools in the environment's setup script. Turning a connector off from the **+** menu in a thread saves that as your account default.
+- **Overview** pane: reopen with the **Threads** button (dot when something waits on you); also **Library** and **Scheduled tasks**. Desktop app notifications are configurable under **Notifications** in the project's sidebar menu. Open a thread to read it, steer it in its own message box, answer prompts, or **Stop** / Esc.
+- **Pause** interrupts everything; **Archive** hides the project and archives its threads (scheduled tasks don't run); **Delete** is permanent (branches and PRs on GitHub are unaffected).
+- Usage: cache lifetime is an hour on Pro, Max, and Ultra within plan limits, so reviving an old idle thread re-reads its whole conversation; prefer a fresh thread. Threads stopped at the five-hour or weekly limit auto-continue after reset unless **Auto-continue when usage limits reset** is off. Going past plan limits needs usage credits. A thread watching a PR wakes and uses your plan when CI fails or a comment arrives.
+- Common messages: `Claude hasn't responded` (**Restart Claude**), `Claude ran out of context on this turn`, `Claude is out of date on your device` (Claude Code older than v2.1.280), `Reached the turn limit` (`CLAUDE_CODE_MAX_TURNS`), `The project's environment was removed`, `Lost contact with your folder` (wake the computer or restart the desktop app / `claude remote-control`).
+- Source: https://code.claude.com/docs/en/claude-projects.md (fetched 2026-11-14)
 - Prerequisites for code work: GitHub repositories on github.com (not GitHub Enterprise Server, GitLab, or Bitbucket), push access for your connected GitHub account, and the Claude GitHub App installed. A `/web-setup` token alone is not enough for a project's cloud threads.
 - A new project runs every thread on Opus at high effort (conversation at low effort), which draws on your plan fastest.
-- Cloud threads work on a new branch from the default branch, and watch their pull request with auto-fix turned on. The enforced limit is 200 new threads per day across your projects; a thread limit you ask for is a preference, not a cap.
+- Cloud threads work on a new branch from the default branch, and watch their pull request with auto-fix turned on. The enforced limit is 500 new threads per day across your projects; a thread limit you ask for is a preference, not a cap.
 - Threads run in auto mode when the thread's model supports it. A permission prompt is answered inside that thread; telling Claude in the project conversation to go ahead doesn't reach it.
 - Project memory (files under **Project settings > Memory**, listed under **Auto memory**, indexed by `MEMORY.md`) is separate from Claude Code's local auto memory and from repository `CLAUDE.md`. A thread run on your computer starts with project instructions but not memory files.
-- Files and folders: Library tab accepts up to 100 files and 2 GB per pick (single file up to 480 MB); the New project dialog skips files over 30 MB; a folder copy holds the first 100 files up to 200 MB (no hidden files or `node_modules`); up to 10 folders and Google Drive folders combined.
-- A thread on your computer can't run while **Require trusted devices** is on for your account, and it pauses while the computer is asleep.
+- Files and folders (uploaded files appear under `/mnt/project-files`): up to 1,000 files and 2 GB at a time, single file up to 480 MB; uploaded folders skip hidden files and `node_modules`; up to 10 folders and Google Drive folders combined (single files don't count). Uploads are copies; re-upload and choose **Replace** to update.
+- A thread on your computer can't run while **Require trusted devices** is on for your account, and it pauses while the computer is asleep (the desktop app has **Keep this computer awake for Remote Control**).
 - A project belongs to one user: no sharing, no organization-level controls during the beta, no moving threads between projects, no merging projects. A local session you started yourself can't be added to a project.
 - A cloud thread's sandbox pauses between turns; if it can't be resumed, the thread continues from a fresh clone and uncommitted changes can be lost.
 - Distinct from Claude Tag (Slack-channel Claude for Team and Enterprise), subagents (side tasks inside one session), agent teams, and the earlier claude.ai chat / Cowork Projects.

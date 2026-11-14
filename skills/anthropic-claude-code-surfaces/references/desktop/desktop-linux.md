@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/desktop-linux.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/desktop-linux.md / last verified: 2026-11-14 -->
 
 # Claude Desktop on Linux (beta)
 
@@ -42,6 +42,8 @@ Cowork runs tasks in a virtual machine the desktop app hosts with QEMU and KVM.
 | QEMU and UEFI firmware | x86_64: `qemu-system-x86`, `ovmf`, `virtiofsd`. arm64: `qemu-system-arm`, `qemu-efi-aarch64`, `virtiofsd`. Installed by default as recommended packages by `apt install claude-desktop`; `--no-install-recommends` (or a minimal image) drops them and the tab reports "Cowork requires QEMU". Ubuntu 22.04 has no `virtiofsd` package; the app uses a bundled copy there |
 | `/dev/kvm` and `/dev/vhost-vsock` | Add your user to the `kvm` group (`sudo usermod -aG kvm "${USER}"`), then log out and back in. Cowork needs `/dev/vhost-vsock`, which only `kvm` group members can open, even if `/dev/kvm` already works |
 
+Adapted (not in the official docs): the user variable in `usermod` is quoted as `"${USER}"`.
+
 ```bash
 sudo usermod -aG kvm "${USER}"
 sudo modprobe vhost_vsock                                                  # current boot only
@@ -58,6 +60,11 @@ The app checks these requirements once at launch: restart it after installing pa
 - Not yet available in the Linux beta: Computer Use, voice dictation (use CLI [voice dictation](../terminal-ux/voice-dictation.md) instead), Fedora/RHEL support (Fedora and Arch users should run the CLI). The Quick Entry global hotkey works on X11, and on native Wayland it works when the desktop environment provides the GlobalShortcuts portal
 - The official page writes the `usermod` command with an unquoted user variable; it is quoted here (`"${USER}"`) per this repository's shell-quoting convention, with no change in behavior
 - `E: Unable to locate package claude-desktop` usually means the repository entry wasn't written or the architecture isn't `amd64`/`arm64`
+- Sign-in uses the same methods as macOS and Windows (claude.ai subscription or organization SSO); for a Claude API key, Amazon Bedrock, Google Cloud's Agent Platform, Microsoft Foundry, or an LLM gateway, see Claude Desktop on 3P (`https://claude.com/docs/third-party/claude-desktop/overview`)
+- The desktop app doesn't update itself on Linux; updates arrive through `apt update && apt upgrade` or the graphical software updater. Uninstalling the package also removes the repository entry and signing key it registered; if you added the repository entry yourself, also `sudo rm /etc/apt/sources.list.d/claude-desktop.list`. The `.deb` bundles the signing key at `/usr/share/keyrings/claude-desktop-archive-keyring.asc` and, unless `CLAUDE_DESKTOP_ADD_REPO` is turned off, registers the repository
+- "Your sign-in won't be saved on this device": the sign-in is kept in the desktop keyring (GNOME Keyring or KDE Wallet). With no keyring installed on a non-KDE desktop (for example after `--no-install-recommends`), `sudo apt install gnome-keyring`. On KDE Plasma with GNOME Keyring also installed, the two conflict: `sudo apt remove gnome-keyring`, then restart the computer. If the keyring is locked, unlock it. Then restart the app, sign in, quit, and relaunch to confirm the sign-in persists
+- If the repository lookup in the `.deb` download fails with `Remote file name has no length`, the repository index couldn't be fetched (for example `downloads.claude.ai` is blocked) or no package exists for the architecture
+- Source: https://code.claude.com/docs/en/desktop-linux.md (fetched 2026-11-14)
 
 ## Related
 
