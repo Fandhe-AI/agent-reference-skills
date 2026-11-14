@@ -10,7 +10,7 @@ Owner skill: `gcp-storage` (status: 未収録（予定）). gcloud groups: `back
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Docs | Status |
 |---|---|---|---|---|---|---|---|---|
-| Backup and Disaster Recovery | `backupdr.googleapis.com` (v1, v1beta) | — | — | `backupdr.` | 21 | — | https://cloud.google.com/backup-disaster-recovery | 未収録（予定） |
+| Backup and Disaster Recovery | `backupdr.googleapis.com` (v1, v1beta) | — | `backup-dr` | `backupdr.` | 21 | — | https://cloud.google.com/backup-disaster-recovery | 未収録（予定） |
 | Cloud Storage | `storage.googleapis.com` (v1) | Stores and retrieves potentially large, immutable data objects. | `storage` | `storage.` | 21 | — | https://developers.google.com/storage/docs/json_api/ | 未収録（予定） |
 | Dell EMC Cloud OneFS | — | — | — | `dellemccloudonefs.` | 3 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/dellemccloudonefs | 未収録（予定） |
 | Filestore | `file.googleapis.com` (v1, v1beta1) | The Cloud Filestore API is used for creating and managing cloud file servers. | — | `file.` | 4 | — | https://cloud.google.com/filestore/ | 未収録（予定） |

@@ -17,7 +17,7 @@ Owner skill: `gcp-observability` (status: 未収録（予定）). gcloud groups:
 | Cloud Trace | `cloudtrace.googleapis.com` (v1, v2, v2beta1) | Sends application trace data to Cloud Trace for viewing. Trace data is collected for all App Engine applications by default. Trace data from other applications can be provided using this API. This library is used to interact with the Cloud Trace API directly. If you are looking to instrument your application for Cloud Trace, we recommend using OpenTelemetry. | `trace` | `cloudtrace.` | 3 | — | https://cloud.google.com/trace/ | 未収録（予定） |
 | Error Reporting | — | — | — | `errorreporting.` | 4 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/errorreporting | 未収録（予定） |
 | Google Cloud Observability | `observability.googleapis.com` (v1) | Provides functionality for configuring the observability scope, which controls the log, metric, and trace data that you can view. | `observability` | `observability.` | 7 | — | https://cloud.google.com/stackdriver/docs/ | 未収録（予定） |
-| Personalized Service Health | — | — | — | `servicehealth.` | 2 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/servicehealth | 未収録（予定） |
+| Personalized Service Health | — | — | `service-health` | `servicehealth.` | 2 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/servicehealth | 未収録（予定） |
 | Telemetry API | — | — | — | `telemetry.` | 11 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/telemetry | 未収録（予定） |
 
 ```bash

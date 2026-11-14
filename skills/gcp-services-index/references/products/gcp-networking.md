@@ -16,12 +16,12 @@ Owner skill: `gcp-networking` (status: 未収録（予定）). gcloud groups: `d
 | Distributed Cloud Edge Container | — | — | — | `edgecontainer.` | 23 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/edgecontainer | 未収録（予定） |
 | Distributed Cloud Edge Network | — | — | — | `edgenetwork.` | 3 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/edgenetwork | 未収録（予定） |
 | Firewall Insights | — | — | — | `firewallinsights.` | 1 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/firewallinsights | 未収録（予定） |
-| Network Connectivity Center | `networkconnectivity.googleapis.com` (v1, v1alpha1) | This API enables connectivity with and between Google Cloud resources. | — | `networkconnectivity.` | 18 | — | https://cloud.google.com/network-connectivity/docs/reference/networkconnectivity/rest | 未収録（予定） |
-| Network Management API | `networkmanagement.googleapis.com` (v1, v1beta1) | The Network Management API provides a collection of network performance monitoring and diagnostic capabilities. | — | `networkmanagement.` | 7 | — | https://cloud.google.com/ | 未収録（予定） |
-| Network Security | `networksecurity.googleapis.com` (v1, v1beta1) | — | — | `networksecurity.` | 22 | — | https://cloud.google.com/networking | 未収録（予定） |
-| Network Services | `networkservices.googleapis.com` (v1, v1beta1) | — | — | `networkservices.` | 6 | — | https://cloud.google.com/networking | 未収録（予定） |
+| Network Connectivity Center | `networkconnectivity.googleapis.com` (v1, v1alpha1) | This API enables connectivity with and between Google Cloud resources. | `network-connectivity` | `networkconnectivity.` | 18 | — | https://cloud.google.com/network-connectivity/docs/reference/networkconnectivity/rest | 未収録（予定） |
+| Network Management API | `networkmanagement.googleapis.com` (v1, v1beta1) | The Network Management API provides a collection of network performance monitoring and diagnostic capabilities. | `network-management` | `networkmanagement.` | 7 | — | https://cloud.google.com/ | 未収録（予定） |
+| Network Security | `networksecurity.googleapis.com` (v1, v1beta1) | — | `network-security` | `networksecurity.` | 22 | — | https://cloud.google.com/networking | 未収録（予定） |
+| Network Services | `networkservices.googleapis.com` (v1, v1beta1) | — | `network-services` | `networkservices.` | 6 | — | https://cloud.google.com/networking | 未収録（予定） |
 | Serverless VPC Access | `vpcaccess.googleapis.com` (v1, v1beta1) | API for managing VPC access connectors. | — | `vpcaccess.` | 4 | — | https://cloud.google.com/vpc/docs/configure-serverless-vpc-access | 未収録（予定） |
-| Service Directory | `servicedirectory.googleapis.com` (v1, v1beta1) | Service Directory is a platform for discovering, publishing, and connecting services. | — | `servicedirectory.` | 6 | — | https://cloud.google.com/service-directory | 未収録（予定） |
+| Service Directory | `servicedirectory.googleapis.com` (v1, v1beta1) | Service Directory is a platform for discovering, publishing, and connecting services. | `service-directory` | `servicedirectory.` | 6 | — | https://cloud.google.com/service-directory | 未収録（予定） |
 | Service Extensions | — | — | — | `networkactions.` | 1 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/networkactions | 未収録（予定） |
 
 ```bash

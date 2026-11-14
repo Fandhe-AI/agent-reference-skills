@@ -19,9 +19,8 @@ Owner skill: `gcp-bigquery` (status: 未収録（予定）). gcloud groups: `big
 | BigQuery Migration API | — | — | — | `bigquerymigration.` | 9 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/bigquerymigration | 未収録（予定） |
 | BigQuery Omni | — | — | — | `bigqueryomni.` | 1 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/bigqueryomni | 未収録（予定） |
 | BigQuery sharing | `analyticshub.googleapis.com` (v1, v1beta1) | Exchange data and analytics assets securely and efficiently. | — | `analyticshub.` | 8 | — | https://cloud.google.com/bigquery/docs/analytics-hub-introduction | 未収録（予定） |
-| Data Catalog | `datacatalog.googleapis.com` (v1, v1beta1) | A fully managed and highly scalable data discovery and metadata management service. | — | `datacatalog.` | 19 | — | https://cloud.google.com/data-catalog/docs/ | 未収録（予定） |
+| Data Catalog | `datacatalog.googleapis.com` (v1, v1beta1) | A fully managed and highly scalable data discovery and metadata management service. | `data-catalog` | `datacatalog.` | 19 | — | https://cloud.google.com/data-catalog/docs/ | 未収録（予定） |
 | Data Lineage API | `datalineage.googleapis.com` (v1) | — | `datalineage` | `datalineage.` | 4 | — | https://cloud.google.com/data-catalog | 未収録（予定） |
-| Data Studio | — | — | — | `datastudio.`, `lookerstudio.` | 11 | Looker Studio | https://docs.cloud.google.com/iam/docs/roles-permissions/datastudio | 未収録（予定） |
 | Dataform | `dataform.googleapis.com` (v1, v1beta1) | Service to develop, version control, and operationalize SQL pipelines in BigQuery. | — | `dataform.` | 15 | — | https://cloud.google.com/dataform/docs | 未収録（予定） |
 | Dataprep by Trifacta | — | — | — | `dataprep.` | 3 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/dataprep | 未収録（予定） |
 | Gemini Data Analytics | — | — | — | `geminidataanalytics.` | 9 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/geminidataanalytics | 未収録（予定） |

@@ -10,10 +10,10 @@ Owner skill: `gcp-iac` (status: 未収録（予定）). gcloud groups: `deployme
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Docs | Status |
 |---|---|---|---|---|---|---|---|---|
-| Cloud Deployment Manager | `deploymentmanager.googleapis.com` (alpha, v2, v2beta) | The Google Cloud Deployment Manager v2 API provides services for configuring, deploying, and viewing Google Cloud services and APIs via templates which specify deployments of Cloud resources. | — | `clouddeploymentmanager.`, `deploymentmanager.` | 6 | — | https://cloud.google.com/deployment-manager | 未収録（予定） |
+| Cloud Deployment Manager | `deploymentmanager.googleapis.com` (alpha, v2, v2beta) | The Google Cloud Deployment Manager v2 API provides services for configuring, deploying, and viewing Google Cloud services and APIs via templates which specify deployments of Cloud resources. | `deployment-manager` | `clouddeploymentmanager.`, `deploymentmanager.` | 6 | — | https://cloud.google.com/deployment-manager | 未収録（予定） |
 | Cloud Runtime Configuration API | `runtimeconfig.googleapis.com` (v1, v1beta1) | The Runtime Configurator allows you to dynamically configure and expose variables through Google Cloud Platform. In addition, you can also set Watchers and Waiters that will watch for changes to your data and return based on certain conditions. | — | `runtimeconfig.` | 3 | — | https://cloud.google.com/deployment-manager/runtime-configurator/ | 未収録（予定） |
 | Config Delivery | — | — | — | `configdelivery.` | 6 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/configdelivery | 未収録（予定） |
-| Infrastructure Manager | `config.googleapis.com` (v1) | Creates and manages Google Cloud Platform resources and infrastructure. | `config` | `config.` | 4 | — | https://cloud.google.com/infrastructure-manager/docs | 未収録（予定） |
+| Infrastructure Manager | `config.googleapis.com` (v1) | Creates and manages Google Cloud Platform resources and infrastructure. | `infra-manager` | `config.` | 4 | — | https://cloud.google.com/infrastructure-manager/docs | 未収録（予定） |
 
 ```bash
 gcloud help

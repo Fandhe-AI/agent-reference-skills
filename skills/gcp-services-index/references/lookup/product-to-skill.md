@@ -13,6 +13,8 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Access Transparency | 対象外 | `axt` |
 | Actions | 対象外 | `actions` |
 | Advisory Notifications | `gcp-foundation` | `advisorynotifications` |
+| Agent Platform (Gemini Enterprise Agent Platform) (formerly Gemini Enterprise Agent Platform) | `gcp-agent-platform` | `aiplatform` |
+| Agent Search (formerly Discovery Engine) | `gcp-agent-platform` | `discoveryengine` |
 | AI Commerce Search API | `gcp-ai-apis` | `retail` |
 | AI Edge Portal | 対象外 | `aiedgeportal` |
 | AI Platform | `gcp-agent-platform` | `ml` |
@@ -99,6 +101,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Cloud Quotas | `gcp-foundation` | `cloudquotas` |
 | Cloud Run | `gcp-run` | `run` |
 | Cloud Run functions | `gcp-run` | `cloudfunctions` |
+| Cloud Run functions (formerly Cloud Run functions) | `gcp-run` | `cloudfunctions` |
 | Cloud Runtime Configuration API | `gcp-iac` | `runtimeconfig` |
 | Cloud Scheduler | `gcp-run` | `cloudscheduler` |
 | Cloud Security Compliance | `gcp-security` | `cloudsecuritycompliance` |
@@ -108,7 +111,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Cloud SQL | `gcp-databases-relational` | `cloudsql` |
 | Cloud Storage | `gcp-storage` | `storage` |
 | Cloud Tasks | `gcp-run` | `cloudtasks` |
-| Cloud Tool Results | `gcp-devops` | `cloudtoolresults` |
+| Cloud Tool Results | 対象外 | `cloudtoolresults` |
 | Cloud TPU | `gcp-compute` | `tpu` |
 | Cloud Trace | `gcp-observability` | `cloudtrace` |
 | Cloud Workstations | `gcp-run` | `workstations` |
@@ -138,7 +141,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Data Lineage API | `gcp-bigquery` | `datalineage` |
 | Data Pipelines | `gcp-data-pipelines` | `datapipelines` |
 | Data Security Posture Management | `gcp-security` | `dspm` |
-| Data Studio | `gcp-bigquery` | `datastudio` |
+| Data Studio | 対象外 | `datastudio` |
 | Database Center | `gcp-foundation` | `databasecenter` |
 | Database Insights | `gcp-databases-relational` | `databaseinsights` |
 | Database Migration Service | `gcp-databases-relational` | `datamigration` |
@@ -149,7 +152,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Datastream | `gcp-data-pipelines` | `datastream` |
 | Dell EMC Cloud OneFS | `gcp-storage` | `dellemccloudonefs` |
 | Developer Connect | `gcp-devops` | `developerconnect` |
-| Device Streaming API | `gcp-devops` | `devicestreaming` |
+| Device Streaming API | 対象外 | `devicestreaming` |
 | Dialogflow | `gcp-ai-apis` | `dialogflow` |
 | Discovery Engine | `gcp-agent-platform` | `discoveryengine` |
 | Distributed Cloud Edge Container | `gcp-networking` | `edgecontainer` |
@@ -185,10 +188,11 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Firebase Remote Config | 対象外 | `cloudconfig` |
 | Firebase Security Rules | 対象外 | `firebaserules` |
 | Firebase Storage | 対象外 | `firebasestorage` |
-| Firebase Test Lab | `gcp-devops` | `cloudtestservice` |
+| Firebase Test Lab | 対象外 | `cloudtestservice` |
 | Firestore | `gcp-databases-nosql` | `firestore` |
 | Firewall Insights | `gcp-networking` | `firewallinsights` |
 | FleetEngine | `gcp-ai-apis` | `fleetengine` |
+| Fraud Defense (reCAPTCHA Enterprise) (formerly Google Cloud Fraud Defense) | `gcp-ai-apis` | `recaptchaenterprise` |
 | Game Servers | 対象外 | `gameservices` |
 | GDC Hardware Management API | `gcp-hybrid-migration` | `gdchardwaremanagement` |
 | Gemini Cloud Assist | `gcp-agent-platform` | `geminicloudassist` |
@@ -205,6 +209,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Google Cloud | `gcp-foundation` | `cloud` |
 | Google Cloud Contact Center as a Service | `gcp-agent-platform` | `contactcenteraiplatform` |
 | Google Cloud Fraud Defense | `gcp-ai-apis` | `recaptchaenterprise` |
+| Google Cloud Lakehouse (formerly BigLake) | `gcp-bigquery` | `biglake` |
 | Google Cloud Managed Lustre | `gcp-storage` | `lustre` |
 | Google Cloud Managed Service for Apache Kafka | `gcp-messaging-workflows` | `managedkafka` |
 | Google Cloud Migration Center | `gcp-hybrid-migration` | `migrationcenter` |
@@ -228,13 +233,16 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Infrastructure Manager | `gcp-iac` | `config` |
 | Knative serving | `gcp-gke` | `kuberun` |
 | Knowledge Catalog | `gcp-bigquery` | `dataplex` |
+| Knowledge Catalog (formerly Knowledge Catalog) | `gcp-bigquery` | `dataplex` |
 | KRM API Hosting | `gcp-gke` | `krmapihosting` |
 | Kubernetes Metadata API | `gcp-gke` | `kubernetesmetadata` |
 | Live Stream | `gcp-ai-apis` | `livestream` |
 | Looker | 対象外 | `looker` |
 | Maintenance API | `gcp-foundation` | `maintenance` |
 | Managed Service for Apache Airflow | `gcp-data-pipelines` | `composer` |
+| Managed Service for Apache Airflow (formerly Managed Service for Apache Airflow) | `gcp-data-pipelines` | `composer` |
 | Managed Service for Apache Spark | `gcp-data-pipelines` | `dataproc` |
+| Managed Service for Apache Spark (formerly Managed Service for Apache Spark) | `gcp-data-pipelines` | `dataproc` |
 | Managed Service for Apache Spark Resource Manager | `gcp-data-pipelines` | `dataprocrm` |
 | Managed Service for Microsoft Active Directory | `gcp-foundation` | `managedidentities` |
 | Mandiant | `gcp-security` | `mandiant` |
@@ -293,7 +301,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | SaaS Service Management | 対象外 | `saasservicemgmt` |
 | SecLM | `gcp-agent-platform` | `seclm` |
 | Secret Manager | `gcp-security` | `secretmanager` |
-| Secure Source Manager | `gcp-security` | `securesourcemanager` |
+| Secure Source Manager | `gcp-devops` | `securesourcemanager` |
 | Secured Landing Zone | `gcp-security` | `securedlandingzone` |
 | Security Center Management API | `gcp-security` | `securitycentermanagement` |
 | Security Command Center | `gcp-security` | `securitycenter` |

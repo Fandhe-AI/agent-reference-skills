@@ -10,7 +10,7 @@ Owner skill: `gcp-api-management` (status: 未収録（予定）). gcloud groups
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Docs | Status |
 |---|---|---|---|---|---|---|---|---|
-| API Gateway | `apigateway.googleapis.com` (v1, v1beta) | — | — | `apigateway.`, `apigateway_management.` | 5 | — | https://cloud.google.com/api-gateway/docs | 未収録（予定） |
+| API Gateway | `apigateway.googleapis.com` (v1, v1beta) | — | `api-gateway` | `apigateway.`, `apigateway_management.` | 5 | — | https://cloud.google.com/api-gateway/docs | 未収録（予定） |
 | API Hub | `apihub.googleapis.com` (v1) | — | `apihub` | `apihub.` | 10 | — | https://cloud.google.com/apigee/docs/api-hub/what-is-api-hub | 未収録（予定） |
 | Apigee | `apigee.googleapis.com` (v1) | Use the Apigee API to programmatically develop and manage APIs with a set of RESTful operations. Develop and secure API proxies, deploy and undeploy API proxy revisions, monitor APIs, configure environments, manage users, and more. Note: This product is available as a free trial for a time period of 60 days. | `apigee` | `apigee.` | 24 | — | https://cloud.google.com/apigee-api-management/ | 未収録（予定） |
 | Apigee Connect | — | — | — | `apigeeconnect.` | 3 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/apigeeconnect | 未収録（予定） |

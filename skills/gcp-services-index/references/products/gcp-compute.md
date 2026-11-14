@@ -6,7 +6,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 
 ## Signature / Usage
 
-Owner skill: `gcp-compute` (status: 未収録（予定）). gcloud groups: `batch`, `bms`, `cluster-director`, `compute`, `oracle-database`, `vmware`.
+Owner skill: `gcp-compute` (status: 未収録（予定）). gcloud groups: `batch`, `bms`, `cluster-director`, `compute`, `oracle-database`.
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Docs | Status |
 |---|---|---|---|---|---|---|---|---|
@@ -18,7 +18,7 @@ Owner skill: `gcp-compute` (status: 未収録（予定）). gcloud groups: `batc
 | Cluster Director | `hypercomputecluster.googleapis.com` (v1) | The Cluster Director API lets you deploy, manage, and monitor clusters that run artificial intelligence (AI), machine learning (ML), or high performance computing (HPC) workloads. | — | `hypercomputecluster.` | 3 | — | https://docs.cloud.google.com/cluster-director/docs | 未収録（予定） |
 | Compute Engine | `compute.googleapis.com` (alpha, beta, preview, v1) | Creates and runs virtual machines on Google Cloud Platform. | `compute` | `compute.` | 40 | — | https://cloud.google.com/compute/ | 未収録（予定） |
 | Confidential Computing | — | — | — | `confidentialcomputing.` | 4 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/confidentialcomputing | 未収録（予定） |
-| Oracle Database@Google Cloud | `oracledatabase.googleapis.com` (v1) | The Oracle Database@Google Cloud API provides a set of APIs to manage Oracle database services, such as Exadata and Autonomous Databases. | — | `oracledatabase.` | 32 | — | https://cloud.google.com/oracle/database/docs | 未収録（予定） |
+| Oracle Database@Google Cloud | `oracledatabase.googleapis.com` (v1) | The Oracle Database@Google Cloud API provides a set of APIs to manage Oracle database services, such as Exadata and Autonomous Databases. | `oracle-database` | `oracledatabase.` | 32 | — | https://cloud.google.com/oracle/database/docs | 未収録（予定） |
 | Oracle Database@Google Cloud service agent | — | — | — | `oci.` | 1 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/oci | 未収録（予定） |
 | VM Migration | `vmmigration.googleapis.com` (v1, v1alpha1) | Use the Migrate to Virtual Machines API to programmatically migrate workloads. | — | `vmmigration.` | 3 | — | https://cloud.google.com/migrate/virtual-machines | 未収録（予定） |
 

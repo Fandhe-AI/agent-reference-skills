@@ -12,18 +12,16 @@ Owner skill: `gcp-devops` (status: 未収録（予定）). gcloud groups: `app-l
 |---|---|---|---|---|---|---|---|---|
 | App Hub | `apphub.googleapis.com` (v1, v1alpha) | App Hub lets you build, operate, and manage applications on Google Cloud. | `apphub` | `apphub.` | 4 | — | https://cloud.google.com/app-hub/docs/ | 未収録（予定） |
 | Application Design Center | — | — | — | `designcenter.` | 8 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/designcenter | 未収録（予定） |
-| Artifact Registry | `artifactregistry.googleapis.com` (v1, v1beta1, v1beta2) | Store and manage build artifacts in a scalable and integrated service built on Google infrastructure. | — | `artifactregistry.` | 12 | — | https://cloud.google.com/artifacts/docs/ | 未収録（予定） |
-| Cloud Build | `cloudbuild.googleapis.com` (v1, v2) | Creates and manages builds on Google Cloud Platform. | — | `cloudbuild.` | 20 | — | https://cloud.google.com/cloud-build/docs/ | 未収録（予定） |
+| Artifact Registry | `artifactregistry.googleapis.com` (v1, v1beta1, v1beta2) | Store and manage build artifacts in a scalable and integrated service built on Google infrastructure. | `artifacts` | `artifactregistry.` | 12 | — | https://cloud.google.com/artifacts/docs/ | 未収録（予定） |
+| Cloud Build | `cloudbuild.googleapis.com` (v1, v2) | Creates and manages builds on Google Cloud Platform. | `builds` | `cloudbuild.` | 20 | — | https://cloud.google.com/cloud-build/docs/ | 未収録（予定） |
 | Cloud Deploy | `clouddeploy.googleapis.com` (v1) | — | `deploy` | `clouddeploy.` | 12 | — | https://cloud.google.com/deploy/ | 未収録（予定） |
 | Cloud Source Repositories | — | — | `source` | `source.`, `sourcerepo.` | 6 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/source | 未収録（予定） |
-| Cloud Tool Results | — | — | — | — | 0 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/cloudtoolresults | 未収録（予定） |
 | Container Registry | — | — | — | `containerregistry.` | 1 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/containerregistry | 未収録（予定） |
-| Developer Connect | `developerconnect.googleapis.com` (v1) | Connect third-party source code management to Google | — | `developerconnect.` | 14 | — | http://cloud.google.com/developer-connect/docs/overview | 未収録（予定） |
-| Device Streaming API | — | — | — | `devicestreaming.` | 2 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/devicestreaming | 未収録（予定） |
-| Firebase Test Lab | — | — | — | `cloudtestservice.` | 6 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/cloudtestservice | 未収録（予定） |
+| Developer Connect | `developerconnect.googleapis.com` (v1) | Connect third-party source code management to Google | `developer-connect` | `developerconnect.` | 14 | — | http://cloud.google.com/developer-connect/docs/overview | 未収録（予定） |
 | Progressive Rollout | — | — | — | `progressiverollout.` | 1 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/progressiverollout | 未収録（予定） |
 | Remote Build Execution | — | — | — | `remotebuildexecution.` | 13 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/remotebuildexecution | 未収録（予定） |
-| Workload Manager | `workloadmanager.googleapis.com` (v1) | Workload Manager is a service that provides tooling for enterprise workloads to automate the deployment and validation of your workloads against best practices and recommendations. | — | `workloadmanager.` | 10 | — | https://cloud.google.com/workload-manager/docs | 未収録（予定） |
+| Secure Source Manager | `securesourcemanager.googleapis.com` (v1) | Regionally deployed, single-tenant managed source code repository hosted on Google Cloud. | `source-manager` | `securesourcemanager.` | 15 | — | https://cloud.google.com/secure-source-manager | 未収録（予定） |
+| Workload Manager | `workloadmanager.googleapis.com` (v1) | Workload Manager is a service that provides tooling for enterprise workloads to automate the deployment and validation of your workloads against best practices and recommendations. | `workload-manager` | `workloadmanager.` | 10 | — | https://cloud.google.com/workload-manager/docs | 未収録（予定） |
 
 ```bash
 gcloud help

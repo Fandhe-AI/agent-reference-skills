@@ -17,7 +17,7 @@ Owner skill: `gcp-ai-apis` (status: 未収録（予定）). gcloud groups: `dial
 | Dialogflow | `dialogflow.googleapis.com` (v2, v2beta1, v3, v3beta1) | Builds conversational interfaces (for example, chatbots, and voice-powered apps and devices). | `dialogflow` | `dialogflow.` | 22 | — | https://cloud.google.com/dialogflow/ | 未収録（予定） |
 | Document AI | — | — | — | `documentai.`, `documentaicore.` | 5 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/clouddocumentai | 未収録（予定） |
 | FleetEngine | — | — | — | `fleetengine.` | 12 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/fleetengine | 未収録（予定） |
-| Google Cloud Fraud Defense | `recaptchaenterprise.googleapis.com` (v1) | Help protect your website from fraudulent activity, spam, and abuse without creating friction. | — | `recaptchaenterprise.` | 4 | reCAPTCHA Enterprise | https://cloud.google.com/recaptcha-enterprise/ | 未収録（予定） |
+| Google Cloud Fraud Defense | `recaptchaenterprise.googleapis.com` (v1) | Help protect your website from fraudulent activity, spam, and abuse without creating friction. | `recaptcha` | `recaptchaenterprise.` | 4 | reCAPTCHA Enterprise | https://cloud.google.com/recaptcha-enterprise/ | 未収録（予定） |
 | Live Stream | — | — | — | `livestream.` | 4 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/livestream | 未収録（予定） |
 | Media Asset | — | — | — | `mediaasset.` | 1 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/mediaasset | 未収録（予定） |
 | Route Optimization | — | — | — | `routeoptimization.` | 4 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/routeoptimization | 未収録（予定） |

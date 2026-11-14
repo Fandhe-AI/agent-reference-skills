@@ -20,6 +20,9 @@ These products are not covered by any gcp-* skill (status: 対象外). Use the o
 | Care Studio | — | — | — | `carestudio.` | 2 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/carestudio | 対象外 |
 | Cloud Healthcare API | `healthcare.googleapis.com` (v1, v1beta1) | Manage, store, and access healthcare data in Google Cloud Platform. | `healthcare` | `healthcare.` | 32 | — | https://cloud.google.com/healthcare | 対象外 |
 | Cloud Life Sciences | — | — | — | `genomics.`, `lifesciences.` | 10 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/lifesciences | 対象外 |
+| Cloud Tool Results | — | — | — | — | 0 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/cloudtoolresults | 対象外 |
+| Data Studio | — | — | — | `datastudio.`, `lookerstudio.` | 11 | Looker Studio | https://docs.cloud.google.com/iam/docs/roles-permissions/datastudio | 対象外 |
+| Device Streaming API | — | — | — | `devicestreaming.` | 2 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/devicestreaming | 対象外 |
 | Enterprise Knowledge Graph | — | — | — | `enterpriseknowledgegraph.` | 4 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/enterpriseknowledgegraph | 対象外 |
 | Financial Services | — | — | — | `financialservices.` | 2 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/financialservices | 対象外 |
 | Firebase | `firebase.googleapis.com` (v1beta1) | The Firebase Management API enables programmatic setup and management of Firebase projects, including a project's Firebase resources and Firebase apps. | `firebase` | `firebase.` | 15 | — | https://firebase.google.com | 対象外 |
@@ -42,9 +45,10 @@ These products are not covered by any gcp-* skill (status: 対象外). Use the o
 | Firebase Mods | — | — | — | `firebasemods.` | 1 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/firebasemods | 対象外 |
 | Firebase Performance Monitoring | — | — | — | `firebaseperformance.` | 2 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/firebaseperformance | 対象外 |
 | Firebase Realtime Database | `firebasedatabase.googleapis.com` (v1beta) | The Firebase Realtime Database API enables programmatic provisioning and management of Realtime Database instances. | — | `firebasedatabase.` | 3 | — | https://firebase.google.com/docs/reference/rest/database/database-management/rest/ | 対象外 |
-| Firebase Remote Config | — | — | `config` | `cloudconfig.` | 3 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/cloudconfig | 対象外 |
+| Firebase Remote Config | — | — | — | `cloudconfig.` | 3 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/cloudconfig | 対象外 |
 | Firebase Security Rules | `firebaserules.googleapis.com` (v1) | Creates and manages rules that determine when a Firebase Rules-enabled service should permit a request. | — | `firebaserules.` | 4 | — | https://firebase.google.com/docs/storage/security | 対象外 |
 | Firebase Storage | `firebasestorage.googleapis.com` (v1beta) | The Cloud Storage for Firebase API enables programmatic management of Cloud Storage buckets for use in Firebase projects | — | `firebasestorage.` | 3 | — | https://firebase.google.com/docs/storage | 対象外 |
+| Firebase Test Lab | — | — | — | `cloudtestservice.` | 6 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/cloudtestservice | 対象外 |
 | Game Servers | — | — | — | `gameservices.` | 1 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/gameservices | 対象外 |
 | Google Analytics | — | — | — | — | 0 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/firebaseanalytics | 対象外 |
 | Google Earth | — | — | — | `earth.` | 4 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/earth | 対象外 |

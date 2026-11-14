@@ -11,7 +11,7 @@ Owner skill: `gcp-run` (status: 未収録（予定）). gcloud groups: `app`, `f
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Docs | Status |
 |---|---|---|---|---|---|---|---|---|
 | App Development Experience | — | — | — | `appdevelopmentexperience.` | 1 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/appdevelopmentexperience | 未収録（予定） |
-| App Engine | `appengine.googleapis.com` (v1, v1alpha, v1beta) | Provisions and manages developers' App Engine applications. | — | `appengine.` | 12 | — | https://cloud.google.com/appengine/docs/admin-api/ | 未収録（予定） |
+| App Engine | `appengine.googleapis.com` (v1, v1alpha, v1beta) | Provisions and manages developers' App Engine applications. | `app` | `appengine.` | 12 | — | https://cloud.google.com/appengine/docs/admin-api/ | 未収録（予定） |
 | App Engine flexible environment | — | — | — | `appengineflex.` | 1 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/appengineflex | 未収録（予定） |
 | Cloud Run | `run.googleapis.com` (v1, v2) | Deploy and manage user provided container images that scale automatically based on incoming requests. The Cloud Run Admin API v1 follows the Knative Serving API specification, while v2 is aligned with Google Cloud AIP-based API standards, as described in https://google.aip.dev/. | `run` | `run.` | 14 | — | https://cloud.google.com/run/ | 未収録（予定） |
 | Cloud Run functions | `cloudfunctions.googleapis.com` (v1, v2, v2alpha, v2beta) | Manages lightweight user-provided functions executed in response to events. | `functions` | `cloudfunctions.` | 7 | Cloud Functions | https://cloud.google.com/functions | 未収録（予定） |

@@ -6,15 +6,15 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 
 ## Signature / Usage
 
-Owner skill: `gcp-hybrid-migration` (status: 未収録（予定）). gcloud groups: `device-run`, `migration`, `mps`.
+Owner skill: `gcp-hybrid-migration` (status: 未収録（予定）). gcloud groups: `device-run`, `migration`, `mps`, `vmware`.
 
 | Product | REST service (Discovery) | Overview | gcloud group | IAM role prefix | Roles | Former name | Docs | Status |
 |---|---|---|---|---|---|---|---|---|
 | Appliance Activation Service | — | — | — | `applianceactivation.` | 5 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/applianceactivation | 未収録（予定） |
 | GDC Hardware Management API | — | — | — | `gdchardwaremanagement.` | 4 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/gdchardwaremanagement | 未収録（予定） |
 | Google Cloud Migration Center | `migrationcenter.googleapis.com` (v1, v1alpha1) | A unified platform that helps you accelerate your end-to-end cloud journey from your current on-premises or cloud environments to Google Cloud. | — | `migrationcenter.` | 5 | — | https://cloud.google.com/migration-center | 未収録（予定） |
-| Google Cloud VMware Engine | `vmwareengine.googleapis.com` (v1) | The Google VMware Engine API lets you programmatically manage VMware environments. | — | `vmwareengine.` | 7 | — | https://cloud.google.com/solutions/vmware-as-a-service | 未収録（予定） |
-| Migrate to Virtual Machines | — | — | `migration` | `cloudmigration.` | 3 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/cloudmigration | 未収録（予定） |
+| Google Cloud VMware Engine | `vmwareengine.googleapis.com` (v1) | The Google VMware Engine API lets you programmatically manage VMware environments. | `vmware` | `vmwareengine.` | 7 | — | https://cloud.google.com/solutions/vmware-as-a-service | 未収録（予定） |
+| Migrate to Virtual Machines | — | — | — | `cloudmigration.` | 3 | — | https://docs.cloud.google.com/iam/docs/roles-permissions/cloudmigration | 未収録（予定） |
 | Rapid Migration Assessment | `rapidmigrationassessment.googleapis.com` (v1) | The Rapid Migration Assessment service is our first-party migration assessment and planning tool. | — | `rapidmigrationassessment.`, `rma.` | 4 | — | https://cloud.google.com/migration-center | 未収録（予定） |
 
 ```bash

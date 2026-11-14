@@ -172,7 +172,7 @@ All 172 top-level groups of gcloud 593.0.0 (141 have GA commands).
 | `transfer` | `gcp-storage` | 26 | 38 | 0 |
 | `vector-search` | `gcp-agent-platform` | 32 | 0 | 32 |
 | `version` | `gcp-cli` | 1 | 0 | 0 |
-| `vmware` | `gcp-compute` | 117 | 0 | 0 |
+| `vmware` | `gcp-hybrid-migration` | 117 | 0 | 0 |
 | `web-security-scanner` | `gcp-security` | 0 | 15 | 0 |
 | `workbench` | `gcp-agent-platform-ml` | 34 | 0 | 34 |
 | `workflows` | `gcp-messaging-workflows` | 14 | 0 | 14 |
@@ -190,7 +190,7 @@ gcloud meta list-commands | awk '{print $2}' | sort -u
 ## Notes
 
 - Counts are the numbers of commands listed by `gcloud meta list-commands` (593.0.0, 2026-11-14); `alpha` / `beta` are command tracks counted per group.
-- `bq` and `gsutil` are separate CLIs (not gcloud groups); `bq` is owned by `gcp-bigquery`, `gcloud storage` replaces `gsutil` and is owned by `gcp-storage`.
+- The standalone `bq` and `gsutil` programs are separate CLIs, not part of gcloud; `bq` is owned by `gcp-bigquery`, and `gcloud storage` (which replaces `gsutil`) is owned by `gcp-storage`. The `bq` row above is the `gcloud bq` group inside gcloud, which is a different thing from the standalone `bq` program.
 - Source: https://docs.cloud.google.com/sdk/gcloud/reference (retrieved 2026-11-14)
 
 ## Related
