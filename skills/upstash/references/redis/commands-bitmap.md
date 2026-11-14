@@ -28,7 +28,7 @@ await redis.bitop("not", "destKey", "sourceKey");
 ## Notes
 
 - `not` accepts exactly one source key
-- `diff`, `diff1`, `andor` and `one` were added in December 2025 and correspond to Redis 8.2+ (the official page labels the DIFF example "Redis 8.2+"): `DIFF` sets a bit when it is set in all source bitmaps (per the changelog wording), `DIFF1` when set in the first key but not in the others, `ANDOR` when set in X and in one or more of Y1, Y2, ..., `ONE` when set in exactly one source key
+- `diff`, `diff1`, `andor` and `one` were added in December 2025 and correspond to Redis 8.2+ (the official page labels the DIFF example "Redis 8.2+"): the official BITOP page describes `DIFF` as "set in all source bitmaps" (an intersection), which reads like AND and is not consistent with the `DIFF1` wording, so the exact `DIFF` semantics are unverified here (check the Redis 8.2 `BITOP` command reference before relying on it), `DIFF1` when set in the first key but not in the others, `ANDOR` when set in X and in one or more of Y1, Y2, ..., `ONE` when set in exactly one source key
 - Binary results can contain invalid UTF-8; see the REST API page for how responses are encoded (base64 option)
 - Source: https://upstash.com/docs/redis/sdks/ts/commands/bitmap/bitcount, /bitpos, /getbit, /setbit, /bitop and https://upstash.com/docs/redis/overall/changelog (fetched 2026-11-14; no version pin on the site)
 

@@ -13,13 +13,15 @@ docker run \
     hiett/serverless-redis-http:latest
 ```
 
+Adapted (not in the official docs): the Redis port is published on `127.0.0.1` only, so an unauthenticated Redis is not exposed on every host interface.
+
 ```yml
 version: "3"
 services:
   redis:
     image: redis
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
   serverless-redis-http:
     ports:
       - "8079:80"
@@ -40,6 +42,7 @@ services:
 
 ## Notes
 
+- Adapted from the official docs: the official Compose file publishes Redis as `"6379:6379"` (all interfaces, no password); it is bound to `127.0.0.1` here
 - SRH is a Redis proxy and connection pooler that speaks HTTP instead of the Redis binary protocol, aiming to be fully compatible with Upstash
 - Use cases: CI pipelines with many parallel runs, Kubernetes or networks where Redis is not internet-exposed, local development or offline work
 - Point the SDK at it with `UPSTASH_REDIS_REST_URL=http://srh:80` (CI service) and `UPSTASH_REDIS_REST_TOKEN` equal to `SRH_TOKEN`

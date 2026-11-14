@@ -50,6 +50,7 @@ Pin and unpin: normally every message carries its own flow control configuration
 
 ## Notes
 
+- The official Workflow API pages spell the response field `waitlistSize`, while the QStash pages and SDK responses (qstash flow-control.md, api-flow-control.md) spell it `waitListSize`; both are kept as published, so confirm against a real response before relying on the casing
 - The REST API belongs to Upstash Workflow (OpenAPI title "Upstash Workflow REST API", version 2.0.0); base URL `https://qstash-{region}.upstash.io` with `region` `us-east-1` or `eu-central-1` (default `eu-central-1`); authenticate with the QStash token as Bearer token (`bearerAuth`) or as the `qstash_token` query parameter (`bearerAuthQuery`)
 - This is the Workflow endpoint family (`/v2/workflows/...`, `/v2/trigger/...`); the plain QStash message API is covered by the qstash category of this skill
 - The official docs list a second page titled "Get Flow Control Key" (`flow-control/get-flow-control-key-1`) whose OpenAPI path is `GET /v2/keys/rotate` with a `flowControlKey` path parameter; this looks like a documentation inconsistency and is not reproduced here
