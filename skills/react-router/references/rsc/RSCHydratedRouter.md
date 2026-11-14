@@ -52,7 +52,7 @@ function RSCHydratedRouter({
 - Data Mode only (RSC Data Mode). Experimental (`unstable_`): subject to breaking changes in minor/patch releases.
 - Distinct from Framework Mode's `HydratedRouter` (imported from `react-router/dom`).
 - `getFormState` in the docs example is user-defined, not a React Router export.
-- Source: https://reactrouter.com/api/rsc/RSCHydratedRouter (docs/api/rsc/RSCHydratedRouter.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/rsc/RSCHydratedRouter.md)
+- Source: https://reactrouter.com/api/rsc/RSCHydratedRouter (docs/api/rsc/RSCHydratedRouter.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/api/rsc/RSCHydratedRouter.md)
 
 ## Related
 

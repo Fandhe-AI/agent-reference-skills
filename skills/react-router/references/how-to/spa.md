@@ -49,6 +49,8 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 - `ssr: false` disables **runtime** server rendering only; the root route is still rendered at build time — code must be SSR-safe (no bare `window` access during initial render)
 - `headers` and `action` exports are not allowed in SPA mode (no runtime server)
 - Non-root route `loader` exports are not allowed unless you also configure `prerender`
+- If you want a SPA frontend backed by React Router server loaders and actions, see experimental API-only Mode in [Rendering](../start/rendering.md) (`ssr: "unstable_api-only"`, 8.5.0)
+- Source: https://reactrouter.com/how-to/spa (docs/how-to/spa.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/how-to/spa.md)
 
 ## Related
 

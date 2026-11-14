@@ -4,6 +4,7 @@
 |------|-------------|------|
 | Accessibility | React Router renders standard HTML elements by default… | [accessibility.md](./accessibility.md) |
 | Client Data | Use `clientLoader` and `clientAction` to fetch and mutate… | [client-data.md](./client-data.md) |
+| Custom Fetch | Customize JavaScript-issued manifest and data requests with the `unstable_fetch` prop of `HydratedRouter`. | [custom-fetch.md](./custom-fetch.md) |
 | Data Strategy | Low-level API for controlling how `action`/`loader` runs… | [data-strategy.md](./data-strategy.md) |
 | Error Boundary | Error boundaries automatically catch errors thrown in loaders… | [error-boundary.md](./error-boundary.md) |
 | Error Reporting | Send errors to external monitoring services from both the server… | [error-reporting.md](./error-reporting.md) |
@@ -20,6 +21,7 @@
 | Presets | Presets package React Router configuration so that tools and hosting providers… | [presets.md](./presets.md) |
 | React Server Components | Experimental support for React Server Components (RSC), enabling server-side rendering… | [react-server-components.md](./react-server-components.md) |
 | Resource Routes | Routes that serve non-UI resources (PDFs, images, JSON APIs, webhooks)… | [resource-routes.md](./resource-routes.md) |
+| Route Discovery | Application-controlled route discovery with `unstable_useRouteDiscovery`: discover destinations, complete the route tree, handle manifest mismatches. | [route-discovery.md](./route-discovery.md) |
 | Route Module Type Safety | React Router automatically generates route-specific TypeScript types… | [route-module-type-safety.md](./route-module-type-safety.md) |
 | Security | Key security considerations for React Router applications, focusing on CSP nonce… | [security.md](./security.md) |
 | Server Bundles | Split the server build into multiple bundles, each handling a subset of routes. | [server-bundles.md](./server-bundles.md) |

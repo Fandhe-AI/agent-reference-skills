@@ -9,7 +9,7 @@ Defer non-critical data by returning unawaited promises from loaders, unblocking
 1. Return an unawaited `Promise` as a value inside the loader's return object (do NOT return a bare promise)
 2. Await critical data inline; leave non-critical data as a promise
 3. Wrap the consuming component in `<React.Suspense fallback={<p>Loading...</p>}>` with `<Await resolve={promise}>`
-4. With React 19, use `React.use(promise)` inside a separate child component instead of `<Await>`
+4. With React 19, use `React.use(promise)` inside a separate child component instead of `<Await>`, or opt into `use()` under the hood with the experimental `<Await unstable_promise>`
 
 ```tsx
 // loader — return promise without awaiting
@@ -42,11 +42,26 @@ export default function MyComponent({ loaderData }: Route.ComponentProps) {
 }
 ```
 
+### Opt into React's `use()` API (unstable)
+
+```tsx
+<React.Suspense fallback={<div>Loading...</div>}>
+  <Await
+    unstable_promise={nonCriticalData}
+    errorElement={<LoadingError />}
+  >
+    {(value) => <h3>Non critical value: {value}</h3>}
+  </Await>
+</React.Suspense>
+```
+
 ## Notes
 
 - You cannot return a bare promise from a loader — it must be wrapped in an object
 - Default stream timeout is **4950 ms**; configure via `export const streamTimeout = 10_000` in `entry.server.tsx`
 - With React 19, place `React.use(promise)` in a child component so the `Suspense` boundary is above it
+- `<Await unstable_promise>` (8.5.1, experimental) behaves largely like `<Await resolve>` while avoiding the legacy React Router promise tracking, and supports render-prop children, `useAsyncValue`, and `useAsyncError`. One notable difference: `errorElement` only handles promise rejections; errors thrown while rendering children bubble to the nearest React error boundary. The prop may change in minor or patch releases
+- Source: https://reactrouter.com/how-to/suspense (docs/how-to/suspense.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/how-to/suspense.md)
 
 ## Related
 

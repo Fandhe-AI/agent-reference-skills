@@ -14,10 +14,9 @@ function useLinkClickHandler<E extends Element = HTMLAnchorElement>(
     state?: any;
     preventScrollReset?: boolean;
     relative?: RelativeRoutingType;
-    viewTransition?: boolean;
     defaultShouldRevalidate?: boolean;
     useTransitions?: boolean;
-  },
+  } & Pick<NavigateOptions, "viewTransition">,
 ): (event: React.MouseEvent<E, MouseEvent>) => void
 ```
 
@@ -43,7 +42,7 @@ const CustomLink = React.forwardRef(function CustomLink(
 | `state` | `any` | `undefined` | State to add to the History entry for this navigation |
 | `preventScrollReset` | `boolean` | `false` | Prevent scroll position from resetting to top on navigation (with `ScrollRestoration`) |
 | `relative` | `RelativeRoutingType` | `"route"` | The relative routing type for the link |
-| `viewTransition` | `boolean` | `false` | Enable the View Transition API for this navigation |
+| `viewTransition` | `boolean` | `false` | **Deprecated** (8.5.0). Enable the View Transition API for this navigation. Use React's `<ViewTransition>` component instead |
 | `defaultShouldRevalidate` | `boolean` | `undefined` | Specify default revalidation behavior for the navigation |
 | `mask` | `To` | `undefined` | Masked location to display in browser instead of router location |
 | `useTransitions` | `boolean` | `false` | Wrap navigation in `React.startTransition` for concurrent rendering |
@@ -51,6 +50,8 @@ const CustomLink = React.forwardRef(function CustomLink(
 ## Notes
 
 - Available in all modes: Framework, Data, and Declarative
+- `viewTransition` is now typed through `Pick<NavigateOptions, "viewTransition">` and is deprecated in favor of React's `<ViewTransition>` component; see [View Transitions](../how-to/view-transitions.md)
+- Source: https://reactrouter.com/api/hooks/useLinkClickHandler (docs/api/hooks/useLinkClickHandler.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/api/hooks/useLinkClickHandler.md)
 
 ## Related
 

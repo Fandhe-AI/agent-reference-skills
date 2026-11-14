@@ -20,7 +20,8 @@ export default {
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `ssr` | `boolean` | `true` | Enable server-side rendering. Set to `false` for SPA mode (pre-renders to `index.html`) |
+| `ssr` | `boolean \| "unstable_api-only"` | `true` | Enable server-side rendering. Set to `false` for SPA mode (pre-renders to `index.html`). `"unstable_api-only"` (8.5.0, experimental) keeps a runtime server for loaders, actions, and route discovery without production document rendering |
+| `unstable_apiServerOrigin` | `string` | `undefined` | Experimental (8.5.0). Origin for API-only loader, action, and route discovery requests (API-only Mode only) |
 | `basename` | `string` | `"/"` | URL prefix for the entire app |
 | `appDirectory` | `string` | `"app"` | Path to the app directory, relative to project root |
 | `buildDirectory` | `string` | `"build"` | Path to the build output directory |
@@ -85,6 +86,14 @@ export default {
 } satisfies Config;
 ```
 
+```typescript
+import type { Config } from "@react-router/dev/config";
+
+export default {
+  future: { unstable_customRouteDiscovery: true },
+} satisfies Config;
+```
+
 ### Other Options
 
 | Name | Type | Description |
@@ -95,10 +104,12 @@ export default {
 
 ## Notes
 
-- v8: content confirmed current against `reactrouter.com/api/framework-conventions/react-router.config.ts` (v8.4.0). No renames/removals; `prerender` gained an object form (`{ paths, concurrency }`) for concurrency control.
+- v8: content confirmed current against `reactrouter.com/api/framework-conventions/react-router.config.ts` (v8.5.1). No renames/removals; `prerender` gained an object form (`{ paths, concurrency }`) for concurrency control.
 - Setting `ssr: false` puts the app in SPA mode — no server is required, but loaders/actions still run at build time for prerendered pages.
 - `prerender` requires `ssr: true` or acts as the only output in SPA mode.
 - `serverBundles` enables splitting the server into multiple deployable units (useful for edge deployments).
+- 8.5.0 (experimental, [`@react-router/dev` CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router-dev/CHANGELOG.md), [PR #15601](https://github.com/remix-run/react-router/pull/15601) / [PR #15602](https://github.com/remix-run/react-router/pull/15602)): `ssr: "unstable_api-only"`, `unstable_apiServerOrigin` and `future.unstable_customRouteDiscovery` were added. See [Rendering](../start/rendering.md), [Pre-Rendering](../how-to/pre-rendering.md) and [Route Discovery](../how-to/route-discovery.md). The official `react-router.config.ts` API page at 8.5.1 does not list these options; the descriptions above come from the guides and the CHANGELOG
+- Source: https://reactrouter.com/how-to/route-discovery (docs/how-to/route-discovery.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/how-to/route-discovery.md)
 
 ## Related
 

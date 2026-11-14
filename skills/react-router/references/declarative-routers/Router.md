@@ -32,7 +32,7 @@ function Router({
 
 - You usually won't render a `<Router>` directly. Render a router specific to your environment, such as `BrowserRouter` in web browsers or `ServerRouter` for server rendering.
 - `<Route>` elements cannot be direct children of the router; wrap them in `<Routes>` (see Routes / Route).
-- Source: https://reactrouter.com/api/declarative-routers/Router (docs/api/declarative-routers/Router.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/declarative-routers/Router.md)
+- Source: https://reactrouter.com/api/declarative-routers/Router (docs/api/declarative-routers/Router.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/api/declarative-routers/Router.md)
 
 ## Related
 
