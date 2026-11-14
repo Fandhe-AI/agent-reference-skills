@@ -9,7 +9,7 @@ Ergogen accepts configuration input in multiple formats and produces output file
 | JSON | Standard JSON configuration file |
 | YAML | YAML configuration file |
 | JavaScript | JS module that exports/produces an object |
-| ZIP / EKB | Bundle format; can include custom footprints |
+| ZIP / EKB | Bundle format; can include custom footprints. The main config inside must be named `config.yaml`, `config.yml`, `config.json` or `config.js` (`.yml` since v4.2.0) |
 
 ## Output Formats
 
@@ -28,6 +28,7 @@ Ergogen accepts configuration input in multiple formats and produces output file
 - PCB output does **not** include a KiCad schema (`.kicad_sch`) or project file (`.kicad_pro`); these must be created separately in KiCad if needed.
 - Case output uses the JSCAD format, which can be opened and rendered at [Cadhub](https://cadhub.xyz/) or with a local OpenJSCAD installation.
 - Input bundles (ZIP/EKB) allow packaging a config together with custom footprints for sharing or reuse.
+- Source: https://github.com/ergogen/ergogen/blob/v4.2.1/src/io.js (tag `v4.2.1`, fetched 2026-11-14)
 
 ## Related
 

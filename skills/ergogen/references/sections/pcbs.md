@@ -62,6 +62,7 @@ Parameters support `{{key}}` template syntax to access point attributes (e.g., `
 |------|------|-------------|
 | `ref` | string | Component designator + index (e.g., `D4`). |
 | `ref_hide` | boolean | Whether the silkscreen reference is hidden. |
+| `point` | object | The `Point` the footprint is placed at (since v4.2.0; includes its `meta`). |
 | `x` / `y` / `r` | number | Position and rotation. |
 | `rot` | number | Deprecated synonym for `r`. |
 | `xy` | string | `"${x} ${y}"` |
@@ -107,6 +108,7 @@ Each unique net string is assigned a numeric index for KiCad.
 
 - Generated `.kicad_pcb` files are un-routed; all pads and nets are defined but traces are not drawn.
 - The template `body` function receives a `parts` object containing: `name`, `version`, `author`, `nets`, `footprints`, `outlines`, and `custom` (user-supplied parameters from `pcbs.<pcb_name>.params`).
+- Source for `point`: https://github.com/ergogen/ergogen/blob/v4.2.1/src/pcbs.js (tag `v4.2.1`, fetched 2026-11-14)
 - `version` and `author` in the output come from the `meta` section.
 
 ## Related

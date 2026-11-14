@@ -119,7 +119,7 @@ Use the `$unset` directive to remove an inherited value.
 | `autobind` | number | 10 | Automatic binding reach. |
 | `skip` | boolean | false | Exclude this key from output. |
 | `asym` | string | `"both"` | Side assignment: `"source"`, `"clone"`, or `"both"`. |
-| `mirror` | object | {} | Attribute overrides applied only to mirrored copy. |
+| `mirror` | object | {} | Attribute overrides applied only to mirrored copy. Overridden `width` / `height` accept units and variables (resolved since v4.2.0). |
 | `colrow` | string | auto | Auto-generated as `{{col.name}}_{{row}}`. |
 | `name` | string | auto | Auto-generated as `{{zone.name}}_{{colrow}}`. |
 | `width` / `height` | unit | 18 | Keycap size for visualization only. |
@@ -174,6 +174,11 @@ Common template expressions:
 | `{{zone.name}}` | Zone name of the point |
 | `{{colrow}}` | Auto-generated `{{col.name}}_{{row}}` |
 | `{{name}}` | Global point name `{{zone.name}}_{{colrow}}` |
+
+## Notes
+
+- Since v4.2.0, `width` / `height` set under a key's `mirror` override are evaluated with the units and variables of the config (for example `width: key_width`), like the non-mirrored `width` / `height`.
+- Source: https://github.com/ergogen/ergogen/blob/v4.2.1/src/points.js (tag `v4.2.1`, fetched 2026-11-14)
 
 ## Related
 
