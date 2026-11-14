@@ -24,3 +24,6 @@
 | UNUserNotificationCenter | Central object for managing notification authorization, scheduling, and delivery | [UNUserNotificationCenter.md](./UNUserNotificationCenter.md) |
 | UNUserNotificationCenterDelegate | Protocol for processing incoming notifications and responding to actions | [UNUserNotificationCenterDelegate.md](./UNUserNotificationCenterDelegate.md) |
 | requestAuthorization | Requesting user permission to display notifications; UNAuthorizationOptions reference | [requestAuthorization.md](./requestAuthorization.md) |
+| UNNotificationActionIcon | An icon associated with a notification action | [UNNotificationActionIcon.md](./UNNotificationActionIcon.md) |
+| UNNotificationSoundName | A string providing the name of a sound file | [UNNotificationSoundName.md](./UNNotificationSoundName.md) |
+| UNNotificationAttributedMessageContext | Context pairing a send-message intent with attributed content for a notification | [UNNotificationAttributedMessageContext.md](./UNNotificationAttributedMessageContext.md) |

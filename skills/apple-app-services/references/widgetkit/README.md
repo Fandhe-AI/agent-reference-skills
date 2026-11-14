@@ -19,3 +19,4 @@
 | StaticControlConfiguration | Control configuration with no user-configurable options | [staticcontrolconfiguration.md](./staticcontrolconfiguration.md) |
 | ActivityConfiguration | WidgetKit configuration object describing a Live Activity's UI | [activityconfiguration.md](./activityconfiguration.md) |
 | Activity (ActivityKit) | ActivityKit class for starting, updating, and ending Live Activities | [activitykit-activity.md](./activitykit-activity.md) |
+| WidgetPreviewContext | A specification for the context of a widget preview. | [widgetpreviewcontext.md](./widgetpreviewcontext.md) |

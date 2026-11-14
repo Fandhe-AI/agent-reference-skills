@@ -19,3 +19,6 @@
 | CKSubscription | Abstract base class for persistent server-side queries… | [cksubscription.md](./cksubscription.md) |
 | CKSyncEngine | Manages continuous synchronization of local and remote CloudKit records… | [cksyncengine.md](./cksyncengine.md) |
 | CKUserIdentity | The identity of an iCloud user (name, user record ID, lookup info)… | [ckuseridentity.md](./ckuseridentity.md) |
+| CKOperationGroup | An explicit association between two or more operations. | [ckoperationgroup.md](./ckoperationgroup.md) |
+| CKFetchWebAuthTokenOperation | An operation that creates an authentication token for use with CloudKit web services. | [ckfetchwebauthtokenoperation.md](./ckfetchwebauthtokenoperation.md) |
+| CKShareRequestAccessOperation | An operation that requests access to shares by URL. | [cksharerequestaccessoperation.md](./cksharerequestaccessoperation.md) |

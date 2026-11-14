@@ -19,7 +19,11 @@ skills/apple-app-services/
       README.md
       appstore.md
       apptransaction.md
+      displaymessageaction.md
       message.md
+      paymentmethodbinding.md
+      redeemoption.md
+      storedownloaderextension.md
       product-promotioninfo.md
       product-purchaseerror.md
       product-purchaseoption.md
@@ -39,6 +43,9 @@ skills/apple-app-services/
     cloudkit/
       README.md
       ckcontainer.md
+      ckoperationgroup.md
+      ckfetchwebauthtokenoperation.md
+      cksharerequestaccessoperation.md
       ckdatabase.md
       ckrecord.md
       ckrecord-id.md
@@ -70,6 +77,7 @@ skills/apple-app-services/
       widgetcenter.md
       widgetbundle.md
       widgetfamily.md
+      widgetpreviewcontext.md
       controlwidget.md
       staticcontrolconfiguration.md
       activityconfiguration.md
@@ -81,6 +89,9 @@ skills/apple-app-services/
       UNMutableNotificationContent.md
       UNNotification.md
       UNNotificationAction.md
+      UNNotificationActionIcon.md
+      UNNotificationAttributedMessageContext.md
+      UNNotificationSoundName.md
       UNNotificationAttachment.md
       UNNotificationCategory.md
       UNNotificationContent.md
@@ -168,18 +179,23 @@ skills/apple-app-services/
 | Transaction の検証・権利確認を行いたい | storekit | [references/storekit/README.md](references/storekit/README.md) |
 | プロモーション表示・購入エラーハンドリング・関連サブスクリプション判定を行いたい | storekit | [references/storekit/README.md](references/storekit/README.md) |
 | App Store の評価・レビューを依頼したい（SwiftUI requestReview / RequestReviewAction） | storekit | [references/storekit/README.md](references/storekit/README.md) |
+| App Store メッセージの表示タイミングを制御したい（DisplayMessageAction / Message） | storekit | [references/storekit/README.md](references/storekit/README.md) |
+| 外部サーバー起点の支払い方法バインド・オファーコード引き換えオプション・Apple-hosted asset pack の自動ダウンロード拡張を扱いたい（PaymentMethodBinding / RedeemOption / StoreDownloaderExtension） | storekit | [references/storekit/README.md](references/storekit/README.md) |
 | CloudKit でレコードを読み書き・クエリしたい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
 | iCloud データをデバイス間で同期したい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
 | CloudKit のプッシュ通知サブスクリプションを設定したい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
 | CKSyncEngine で継続的な双方向同期を実装したい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
 | CloudKit 共有参加者・ユーザーの identity（CKUserIdentity）を扱いたい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
+| 複数 CloudKit 操作のグループ化・Web サービス用認証トークン取得・共有へのアクセス要求をしたい（CKOperationGroup / CKFetchWebAuthTokenOperation / CKShareRequestAccessOperation） | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
 | ホーム画面ウィジェットを作成・更新したい | widgetkit | [references/widgetkit/README.md](references/widgetkit/README.md) |
 | Live Activity / Dynamic Island を実装したい | widgetkit | [references/widgetkit/README.md](references/widgetkit/README.md) |
 | コントロールセンター用 ControlWidget を作りたい | widgetkit | [references/widgetkit/README.md](references/widgetkit/README.md) |
+| Xcode でウィジェットをプレビューしたい（WidgetPreviewContext） | widgetkit | [references/widgetkit/README.md](references/widgetkit/README.md) |
 | TimelineProvider でウィジェットの更新スケジュールを制御したい | widgetkit | [references/widgetkit/README.md](references/widgetkit/README.md) |
 | ローカル通知をスケジュールしたい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | 通知の権限リクエスト・設定状態を確認したい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | 通知アクションボタン・カテゴリ・テキスト入力アクションを定義したい | notifications | [references/notifications/README.md](references/notifications/README.md) |
+| 通知アクションのアイコン・カスタム通知サウンド名・メッセージ通知のコンテキスト（UNNotificationActionIcon / UNNotificationSoundName / UNNotificationAttributedMessageContext）を扱いたい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | 地理領域トリガーで通知を送りたい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | リモート通知のコンテンツを配信前に加工したい（Notification Service Extension） | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | 現在地の取得・位置情報の許可を管理したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
@@ -193,3 +209,7 @@ skills/apple-app-services/
 | Sign in with Apple を実装したい | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |
 | SwiftUI から Sign in with Apple / passkey を async で実行したい（AuthorizationController） | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |
 | OAuth / OpenID Connect の Web 認証フローを実装したい | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |
+
+## 対象バージョン
+
+出典は developer.apple.com の DocC JSON（`/tutorials/data/documentation/<framework>/<path>.json`）。URL に版が無いため取得日で pin する。既存ページは過去取得分（個別の取得日は未記録）、2026-11-14 に追加した 11 ページ（`displaymessageaction` / `paymentmethodbinding` / `redeemoption` / `storedownloaderextension` / `ckoperationgroup` / `ckfetchwebauthtokenoperation` / `cksharerequestaccessoperation` / `UNNotificationActionIcon` / `UNNotificationSoundName` / `UNNotificationAttributedMessageContext` / `widgetpreviewcontext`）は各 Notes の `Source:` に取得日を記載。

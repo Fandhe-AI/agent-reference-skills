@@ -21,3 +21,7 @@
 | Transaction.updates | An asynchronous sequence that emits transactions created or updated outside the app or on other devices. | [transaction-updates.md](./transaction-updates.md) |
 | Transaction | Information that represents the customer's purchase of a product in your app. | [transaction.md](./transaction.md) |
 | VerificationResult | A type describing the result of StoreKit's automatic JWS verification. | [verificationresult.md](./verificationresult.md) |
+| DisplayMessageAction | An instance that asks StoreKit to display an App Store message, if appropriate. | [displaymessageaction.md](./displaymessageaction.md) |
+| PaymentMethodBinding | A binding that makes payment methods available in apps for an Apple Account. | [paymentmethodbinding.md](./paymentmethodbinding.md) |
+| RedeemOption | An option that customizes the behavior of an offer code redemption. | [redeemoption.md](./redeemoption.md) |
+| StoreDownloaderExtension | An app extension that schedules Apple-hosted asset-pack downloads automatically. | [storedownloaderextension.md](./storedownloaderextension.md) |
