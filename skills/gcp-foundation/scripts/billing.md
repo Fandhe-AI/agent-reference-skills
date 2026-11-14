@@ -128,7 +128,7 @@ curl -X DELETE \
 ## Notes
 
 - Warning: use a disposable billing account or test project for the budget `DELETE` call and for `add-iam-policy-binding` on a billing account; always name the exact `budget-id` and account, and never omit the target.
-- Disabling or changing the billing link of a project has no gcloud command in the fetched sources (the console, `projects.updateBillingInfo`, or the official Cloud Run function do it); disabling billing stops all services and some resources may be unrecoverable, so it is not included here.
+- The fetched official pages show no gcloud command for disabling or changing a project's billing link (the console, `projects.updateBillingInfo`, or the official Cloud Run function do it); disabling billing stops all services and some resources may be unrecoverable, so it is not included here. `gcloud billing projects link PROJECT_ID --billing-account=ACCOUNT_ID` exists per its `--help` (moves the project if already linked) but is not a documented example here; see https://docs.cloud.google.com/billing/docs/how-to/modify-project.
 - Adapted from the official docs: `--threshold-rule` `percent` is a ratio between 0.0 and 1.0 per `gcloud billing budgets create --help`; `percent=100` would mean 10,000% of the budget.
 - The Budget API request needs `x-goog-user-project` set to the project where the API is enabled.
 - Source: https://docs.cloud.google.com/billing/docs/how-to/verify-billing-enabled (retrieved 2026-11-14)

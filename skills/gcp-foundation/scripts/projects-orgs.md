@@ -201,7 +201,7 @@ gcloud resource-manager capabilities update folders/FOLDER_ID/capabilities/app-m
 - Adapted from the official transcript, which shows `gcloud projects delete $project`: the command above uses `PROJECT_ID`.
 - `gcloud projects delete` can fail with `FAILED_PRECONDITION` when Cloud Endpoints services, a lien, or a folder management project block deletion.
 - Project labels apply to projects only and do not propagate to child resources; use tags for policy conditions.
-- `gcloud projects create` does not link a billing account; see `billing.md` for the billing link commands.
+- `gcloud projects create` does not link a billing account; link one with `gcloud billing projects link PROJECT_ID --billing-account=ACCOUNT_ID` (per `gcloud billing projects link --help`; see also https://docs.cloud.google.com/billing/docs/how-to/modify-project).
 - Source: https://docs.cloud.google.com/resource-manager/docs/creating-managing-projects (retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/resource-manager/docs/creating-managing-folders (retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/resource-manager/docs/creating-managing-organization (retrieved 2026-11-14)
