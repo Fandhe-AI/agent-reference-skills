@@ -66,6 +66,8 @@ import { ScrollArea } from "@chakra-ui/react"
 - For both directions, include two `Scrollbar` components with different orientations
 - Use `useScrollArea()` hook with `RootProvider` for programmatic scrolling
 - Supports virtualization with `@tanstack/react-virtual`
+- 3.38.0: the vertical scrollbar no longer shows when content only overflows horizontally, and vice versa.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

@@ -71,6 +71,7 @@
 | Select | Accessible dropdown select with support for single and multiple selection. | [select.md](./collections/select.md) |
 | Tree View | Hierarchical tree structure with expand/collapse, selection, and async loading support. | [tree-view.md](./collections/tree-view.md) |
 | Action Bar | Floating action bar that appears when items are selected, typically docked at the bottom of the viewport. | [action-bar.md](./overlays/action-bar.md) |
+| Command | Used to build searchable command menus, search dialogs, and pickers (3.38.0). Composed of `Command.Provider`, `Command.Dialog`, `Command.Root`, `Command.Input`, `Command.List`, `Command.Item`, etc. | [command.md](./overlays/command.md) |
 | Dialog | Modal dialog with backdrop, focus trapping, and multiple size/placement options. | [dialog.md](./overlays/dialog.md) |
 | Drawer | Slide-in panel from any edge of the viewport, similar to Dialog. | [drawer.md](./overlays/drawer.md) |
 | Floating Panel | Non-modal floating window that supports drag, resize, and stage (minimize/maximize) interactions. | [floating-panel.md](./overlays/floating-panel.md) |

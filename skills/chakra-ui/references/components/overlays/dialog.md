@@ -120,6 +120,8 @@ Focus goes to `initialFocusEl`, then `[data-autofocus]`, then the first tabbable
 - 3.37.0: `Dialog.ActionTrigger` now runs the `onClick` handler passed to it before the dialog closes, and has `type="button"` (no unintended form submission inside a `<form>`).
 - 3.37.0: scroll lock now works on layouts where `<html>` is the scroll container (it previously targeted `<body>` only).
 - 3.37.0: Next.js 15 production builds no longer fail on the optional React `Activity` export; `hideMode="activity"` falls back to `display-none` when the React build does not expose it.
+- 3.38.0 (Ark UI 5.39.3): `initialFocusEl` can return `false` to open without moving focus.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

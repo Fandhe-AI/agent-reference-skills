@@ -74,6 +74,8 @@ For i18n, pass a function:
 - `Pagination.PageText` with `format="long"` shows a range like "1–10 of 50"
 - Use `usePaginationContext()` to access pagination state from descendant components
 - `siblingCount` controls how many page numbers appear on either side of the active page
+- 3.38.0 (Ark UI 5.39.3 / 5.40.0): the Ark UI pagination API gained `api.type` and `api.getPageUrl(page)`, and items and triggers render as anchors when `type="link"`.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

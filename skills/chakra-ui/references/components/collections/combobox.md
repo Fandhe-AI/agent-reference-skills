@@ -85,6 +85,9 @@ const frameworks = createListCollection({
 - Use `createListCollection` to create the required `collection` prop.
 - Wrap `Combobox.Positioner` in `Portal` to prevent overflow clipping.
 - For async/filtered items, update the collection on `onInputValueChange`.
+- 3.38.0 (Ark UI 5.40.0): `Combobox.Root` gained a `loading` prop that sets `aria-busy` on the list and holds back the empty state while loading; the content stays visible while loading, so a loading indicator shows even when there are no items. `onSelect` details gained `modifiers`, and `onSelect` is called when a link item is modifier-clicked (also for Menu).
+- For a searchable command menu that runs actions instead of keeping a selected value, see Command (added in 3.38.0).
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

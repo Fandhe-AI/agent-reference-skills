@@ -67,6 +67,8 @@ import { FloatingPanel } from "@chakra-ui/react"
 - 3.36.1: `FloatingPanel.Root` defaults `minSize` to `{ width: 240, height: 100 }` so the panel cannot be resized to zero. Pass your own `minSize` to override it.
 - 3.37.0: fixed a closed panel staying on the stack (the next panel now becomes topmost) and stack order not being applied to the positioner (focusing a panel raises it above its siblings).
 - Ark UI equivalent: `@ark-ui/react` `FloatingPanel` — this page documents the Chakra UI v3 styled import (`@chakra-ui/react`), not `@ark-ui/react`.
+- 3.38.0 (Ark UI 5.39.3): `initialFocusEl` can return `false` to open without moving focus. `strategy="absolute"` no longer places the panel outside its boundary, and the panel follows its boundary when an ancestor scrolls.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

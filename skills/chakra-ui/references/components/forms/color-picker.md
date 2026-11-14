@@ -56,6 +56,11 @@ import { ColorPicker } from "@chakra-ui/react"
 - **sizes**: `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`
 - **variants**: `outline`, `subtle`
 
+## Notes
+
+- 3.38.0 (Ark UI 5.39.3): `initialFocusEl` can return `false` to open without moving focus. Helper and error text in a `Field` are now announced (Ark UI 5.40.0).
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
+
 ## Related
 
 - [color-swatch.md](./color-swatch.md)
