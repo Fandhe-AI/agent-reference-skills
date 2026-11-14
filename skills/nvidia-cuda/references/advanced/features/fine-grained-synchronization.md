@@ -58,6 +58,8 @@ __global__ void producer_kernel(const float4 *__restrict__ in, float4 *__restric
 
 Consumer: a copy with a validity report mechanism on a layout v1 barrier, re-issued while the report predicate is set; all threads wait on the conditional phase:
 
+Adapted (not in the official docs): `ptx::fence_proxy_async(ptx::space_shared);` is added after `mbarrier_init` so the barrier initialization is visible to the async proxy before the bulk copy is issued.
+
 ```cpp
 // Relaxed, device-scope bulk-asynchronous copy from global to shared memory
 // that compares a sampled element of each aligned 16-byte chunk with the
@@ -85,6 +87,7 @@ __global__ void consumer_kernel(const float *produced, float *__restrict__ resul
     if (threadIdx.x == 0)
     {
         ptx::mbarrier_init(ptx::layout_v1, &bar, 1);   // one arrival per phase: the issuing thread
+        ptx::fence_proxy_async(ptx::space_shared);
     }
     __syncthreads();
     const float *src = produced + blockIdx.x * TILE_ELEMS;
@@ -235,6 +238,7 @@ if (threadIdx.x == 0) {
 - Guidelines: it can benefit chains of short kernels; long throughput-bound kernels can gain little. A leaked sentinel (unwritten padding, NaN results when NaN is the sentinel) hangs the consumer; a missing initialization gives wrong results instead of a hang because the copy reports nothing for stale data.
 - Warp-specialized kernels: a retry warp can wait on each stage's primary phase (separate parity per stage) and re-issue the stage's copies, while compute warps wait only on the conditional phase.
 - Source: https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/fine-grained-synchronization.html (CUDA Programming Guide v13.5, retrieved 2026-11-14). New in CPG 13.5.
+- Adapted from the official docs: the consumer kernel adds a proxy fence (`ptx::fence_proxy_async(ptx::space_shared)`) after initializing the mbarrier, because `__syncthreads()` alone does not make a generic-proxy initialization visible to the async proxy.
 
 ## Related
 

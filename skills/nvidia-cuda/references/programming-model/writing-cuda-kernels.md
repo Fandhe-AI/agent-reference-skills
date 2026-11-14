@@ -36,6 +36,8 @@ Thread Block Clusters, introduced in compute capability 9.0 and facilitated by C
 
 The official histogram example gains a second launch tab that uses `cuda::arch_traits` from the CUDA C++ Standard Library to verify that the architecture supports thread block clusters (`cluster_supported`) and that the shared memory required by each block is supported (`max_shared_memory_per_block_optin`). It uses `cudaFuncSetAttribute` to opt in to dynamic shared memory above 48 KB and `cudaLaunchKernelEx` to launch the kernel with the cluster dimension attribute (`clusterHist_kernel` is the kernel defined in the same official example):
 
+Adapted (not in the official docs): an input check is added so `nbins` and the block count are non-zero multiples of `cluster_size`, which the cluster launch requires.
+
 ```cpp
 #include <cuda/devices>
 #include <cuda_runtime.h>
@@ -57,6 +59,11 @@ cudaError_t launch_cluster_histogram(int* bins, int nbins, const int* input,
     // ( cluster_size == 1 ) implies no distributed shared memory, just thread block
     // local shared memory
     int cluster_size    = 2; // size 2 is an example here
+    if (threads_per_block <= 0 || nbins <= 0 || nbins % cluster_size != 0 ||
+        array_size / threads_per_block == 0 ||
+        (array_size / threads_per_block) % cluster_size != 0) {
+        return cudaErrorInvalidValue;
+    }
     int nbins_per_block = nbins / cluster_size;
     cudaLaunchConfig_t config = {};
     // The grid dimension is the number of blocks, a multiple of cluster_size.
@@ -126,6 +133,7 @@ static_assert(traits.max_threads_per_block == 1024);
 ```
 
 - Source: https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/writing-cuda-kernels.html (CPG v13.5, retrieved 2026-11-14)
+- Adapted from the official docs: `launch_cluster_histogram` rejects `nbins` and block counts that are not non-zero multiples of `cluster_size` (the official example assumes this silently).
 
 ## Related
 
