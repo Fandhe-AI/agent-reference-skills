@@ -76,6 +76,7 @@ setError("root.serverError", { type: String(response.status) })
 - Avoid `type`, `root`, `ref`, `types`, `message`, or `form` as field names; they collide with the internal shape of `FieldError`/`GlobalError`.
 - `setError` sets exactly one error per call.
 - Source: https://react-hook-form.com/docs/useform/seterror (documentation master c0511c9, fetched 2026-11-14)
+- Scope of the official troubleshooting statement above (verbatim): it describes re-validation of registered fields and `root.*` errors; an error set with `setError` on a path that is not registered is kept until `clearErrors` is called and still blocks submission, as stated in the other notes on this page.
 - `error.type` for a server error is a string: the official server-error example now sets `type: String(response.status)` and compares with `errors.root?.serverError?.type === "400"`.
 
 ### Tips

@@ -368,6 +368,7 @@ Do not wrap `render()` in `act()` just to hide the warning. See the complete tes
 - The official page also shows a JS tab for the "How to share ref usage?" example (same code without type annotations); only the TS version is kept here.
 - The reference-style Japanese summary that earlier versions of this page held (performance, form-reset table, Formik size table) was replaced by the redesigned official page; the Formik / Redux Form size figures are no longer in the official text.
 - Source: https://react-hook-form.com/faqs (documentation master c0511c9, fetched 2026-11-14)
+- In the manual-validation example (verbatim), the unregistered `lastName` input never updates the form value on its own, so call `setValue` for every change and use `setError` only for the forbidden value; otherwise `onSubmit` can run with a stale value.
 - In the shared-ref example (verbatim), assigning `input.value = ""` only changes the DOM and does not update React Hook Form's internal value or dirty state; use `setValue` or `resetField` to clear a value and keep the shared ref for focus or scroll.
 
 ## Related
