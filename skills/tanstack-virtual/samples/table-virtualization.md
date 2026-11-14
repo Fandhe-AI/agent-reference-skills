@@ -85,6 +85,26 @@ function ReactTableVirtualized<TData>({
 }
 ```
 
+Stylesheet (from `examples/react/table/src/index.css`, relevant rules only): `.container` bounds the scroll parent and `thead` is pinned.
+
+```css
+.container {
+  height: 600px;
+  overflow: auto;
+  overflow-anchor: none;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  background: white;
+}
+```
+
 ## Notes
 
 - `count` is `rows.length` from `table.getRowModel()`, not the raw data length, so it stays correct through sorting/filtering.
@@ -92,4 +112,6 @@ function ReactTableVirtualized<TData>({
 - Changed since `@tanstack/react-virtual@3.14.21`: that version wrapped the table in a `getTotalSize()`-high `<div>` and offset each row with `translateY(virtualRow.start - index * virtualRow.size)`; the spacer-row approach replaces it.
 - The sample condenses the official example (sorting handlers and header sort indicators are omitted). Pinned to the `@tanstack/react-virtual@3.14.26` tag (fetched 2026-11-14).
 - Source: https://github.com/TanStack/virtual/blob/@tanstack/react-virtual@3.14.26/examples/react/table/src/main.tsx
+- Source: https://github.com/TanStack/virtual/blob/@tanstack/react-virtual@3.14.26/examples/react/table/src/index.css (fetched 2026-11-14)
+- The `.container` rule (fixed `height`, `overflow: auto`) is required for virtualization to work, and `thead { position: sticky }` keeps the header in place.
 - Sorting/column state (`useReactTable`'s `state`/`onSortingChange`) is independent of virtualization — wire it up as usual on the table instance.
