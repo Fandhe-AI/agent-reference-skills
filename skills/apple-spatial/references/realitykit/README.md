@@ -26,6 +26,7 @@
 | PhysicsBodyComponent | A component that defines how an entity behaves in the… | [physicsbodycomponent.md](./physicsbodycomponent.md) |
 | RealityView | A SwiftUI view that hosts RealityKit 3D content. | [realityview.md](./realityview.md) |
 | Scene | A container that holds the collection of entities an AR… | [scene.md](./scene.md) |
+| ShaderGraph | A class that builds a RealityKit shader graph from nodes and edges. | [shadergraph.md](./shadergraph.md) |
 | SimpleMaterial | A basic material that responds to lighting in the scene. | [simplematerial.md](./simplematerial.md) |
 | System | A protocol for objects that apply behavior to multiple… | [system.md](./system.md) |
 | Transform | A component that defines the scale, rotation, and… | [transform.md](./transform.md) |
