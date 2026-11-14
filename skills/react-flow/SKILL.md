@@ -10,6 +10,12 @@ user-invocable: false
 
 # React Flow リファレンス
 
+## 対象バージョン
+
+- `@xyflow/react` 12.12.1（2026-11-02 公開、`@xyflow/system` 0.0.84）。API reference は reactflow.dev（取得日 2026-11-14、各ページ最終更新 2026-10-11）
+- 12.12.1 の挙動修正は CHANGELOG（タグ `@xyflow/react@12.12.1`）を根拠に各ページ Notes へ記載
+- 追跡トリガー: `@xyflow/react` 12.13.0 または 13.0.0 の公開時に `/update-skill react-flow check`
+
 React Flow ライブラリの全 API ドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 

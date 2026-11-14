@@ -62,7 +62,7 @@ useReactFlow<
 | `setCenter` | `(x: number, y: number, options?: ViewportHelperFunctionOptions & { zoom?: number }) => Promise<boolean>` | ビューポートを指定座標に中央揃えする |
 | `fitView` | `(options?: FitViewOptions) => Promise<boolean>` | ノードに合わせてビューをフィットさせる |
 | `fitBounds` | `(bounds: Rect, options?: ViewportHelperFunctionOptions & { padding?: number }) => Promise<boolean>` | 指定矩形にビューをフィットさせる |
-| `screenToFlowPosition` | `(clientPosition: XYPosition, options?: { snapToGrid: boolean }) => XYPosition` | スクリーン座標をフロー座標に変換する |
+| `screenToFlowPosition` | `(clientPosition: XYPosition, options?: { snapToGrid?: boolean; snapGrid?: SnapGrid }) => XYPosition` | スクリーン座標をフロー座標に変換する |
 | `flowToScreenPosition` | `(flowPosition: XYPosition) => XYPosition` | フロー座標をスクリーン座標に変換する |
 
 ### プロパティ
@@ -98,6 +98,8 @@ export function NodeCounter() {
 - `useNodes` / `useEdges` と異なり、**状態変化時に自動で再レンダリングしない**
 - 初回レンダリング時は未初期化のため、`useEffect` や `useCallback` の依存配列に含めること
 - カスタムノード型・エッジ型のジェネリクス引数に対応
+- `screenToFlowPosition` options: `snapToGrid?: boolean` and `snapGrid?: SnapGrid` (added in @xyflow/react 12.10.2, [xyflow/xyflow#5722](https://github.com/xyflow/xyflow/pull/5722)). Source: https://reactflow.dev/api-reference/types/react-flow-instance (fetched 2026-11-14), https://github.com/xyflow/xyflow/blob/%40xyflow/react%4012.10.2/packages/react/CHANGELOG.md
+- Since @xyflow/react 12.12.1 ([xyflow/xyflow#6090](https://github.com/xyflow/xyflow/pull/6090)): `getIntersectingNodes` and `isNodeIntersecting` respect `nodeOrigin` when a node object is passed instead of `{ id }`. Source: https://github.com/xyflow/xyflow/blob/%40xyflow/react%4012.12.1/packages/react/CHANGELOG.md (fetched 2026-11-14)
 
 ## 関連
 

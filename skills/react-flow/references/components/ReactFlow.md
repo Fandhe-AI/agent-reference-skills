@@ -240,6 +240,7 @@ export default function Flow() {
 - Individual node/edge properties override the corresponding global props set on `<ReactFlow />`.
 - The `<ReactFlow />` container must have an explicit width and height (e.g. via CSS or inline styles).
 - Props are exported as the `ReactFlowProps` type for TypeScript users.
+- Since @xyflow/react 12.12.1 ([xyflow/xyflow#6068](https://github.com/xyflow/xyflow/pull/6068)): clicking the pane cancels a pending click connection and calls `onClickConnectEnd`. Source: https://github.com/xyflow/xyflow/blob/%40xyflow/react%4012.12.1/packages/react/CHANGELOG.md (fetched 2026-11-14)
 
 ## 関連
 
