@@ -192,7 +192,7 @@ provide proper isolation between origins.
 
 - Source: https://github.com/electron/electron/blob/v45.3.2/docs/tutorial/local-ai-handler.md (tag v45.3.2). Not present in v44.8.0. Relative links are converted to https://www.electronjs.org/docs/latest/ URLs.
 - The official quick start requires `webPreferences.enableBlinkFeatures: 'AIPromptAPI'` on every `BrowserWindow` that uses the API; the guide also names `AIPromptAPIMultimodalInput` for multi-modal inputs.
-- Security: the `details` object (`webContentsId`, `securityOrigin`) is the only caller information given to the handler; the official guide says to use it to decide whether to handle a request and when to reuse a model instance.
+- Security: the guide names `webContentsId` and `securityOrigin` from the handler `details` as the values to use when deciding whether to handle a request and when to reuse a model instance. The API reference ([localAIHandler](./local-ai-handler.md)) also lists `frameToken` and `renderProcessId`, which identify the calling frame and its renderer process.
 - Distinction: this guide covers Chromium's on-device Prompt API wiring; cloud LLM APIs are covered by anthropic-api-core, openai-api-core and google-gemini-api, and on-device Apple models by apple-intelligence.
 
 ## Related
