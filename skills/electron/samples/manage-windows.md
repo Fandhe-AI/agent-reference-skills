@@ -1,5 +1,5 @@
 ---
-source: https://github.com/electron/electron/tree/v44.8.0/docs/fiddles/windows/manage-windows
+source: https://github.com/electron/electron/tree/v45.3.2/docs/fiddles/windows/manage-windows
 ---
 
 # Manage Windows (New Window, Bounds Events, Focus Events)

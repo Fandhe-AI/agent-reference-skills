@@ -55,5 +55,5 @@ func()
 
 - Never expose the whole `ipcRenderer` module via `contextBridge`; wrap each call in a helper function so the renderer cannot send arbitrary IPC messages.
 - Register `ipcMain.handle` before loading the HTML so the handler exists when the renderer calls `invoke`.
-- Since Electron 20 preload scripts are sandboxed by default: a polyfilled `require` with Electron renderer modules, `events`, `timers`, `url`, and polyfilled globals `Buffer`, `process`, `clearImmediate`, `setImmediate`.
+- Since Electron 20 preload scripts are sandboxed by default. v45: a sandboxed preload runs with `require` (loads only the `electron` module, also `electron/renderer` / `electron/common`), a reduced `process` and `global`; no Node.js built-in modules (`events`, `timers`, `url`) or globals such as `Buffer` / `setImmediate` are available (v44.8.0 polyfilled them). Source: https://github.com/electron/electron/blob/v45.3.2/docs/tutorial/sandbox.md
 - The tutorial's `renderer.js` reads `versions.chrome()` etc. and writes them into an element with id `info`; see the `docs/fiddles/tutorial-preload` fiddle for the full set.

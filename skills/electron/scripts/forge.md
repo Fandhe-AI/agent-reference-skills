@@ -4,16 +4,15 @@ source: https://www.electronjs.org/docs/latest/tutorial/tutorial-packaging
 
 # Electron Forge
 
-Packaging, publishing, and auto-update with Electron Forge. Sources: tutorial-packaging and tutorial-publishing-updating (`https://www.electronjs.org/docs/latest/tutorial/tutorial-publishing-updating`), taken from the original text at tag v44.8.0. The Forge import instructions have been reworded on the 44-x-y branch (unreleased); this file follows the v44.8.0 tag.
+Packaging, publishing, and auto-update with Electron Forge. Sources: tutorial-packaging and tutorial-publishing-updating (`https://www.electronjs.org/docs/latest/tutorial/tutorial-publishing-updating`), taken from the original text at tag v45.3.2 (v44.8.0 used `@electron-forge/cli` + `electron-forge import` and a `publish` script; v45 uses `create-electron-app import` and a `release` script).
 
 ## Install the Forge CLI and import the project
 
 ```sh
-npm install --save-dev @electron-forge/cli
-npx electron-forge import
+npx create-electron-app@latest import
 ```
 
-With Yarn: `yarn add --dev @electron-forge/cli` and `yarn electron-forge import`. After import, `start` / `package` / `make` scripts and `forge.config.js` are added.
+With Yarn: `yarn create electron-app import`. The conversion script also installs Forge's CLI in `devDependencies`. After import, `start` / `package` / `make` scripts and `forge.config.js` are added.
 
 ## Create distributables
 
@@ -36,10 +35,10 @@ Configure it under `publishers` in `forge.config.js`. The auth token is read fro
 > **Warning**: This actually uploads the artifacts of the configured makers to a GitHub release. The official config example uses `draft: true` (draft release). Try it on a disposable repository before a real one.
 
 ```sh
-npm run publish
+npm run release
 ```
 
-Add `"publish": "electron-forge publish"` to `package.json` first. By default only the host OS and architecture are published.
+Add `"release": "electron-forge release"` to `package.json` first. By default only the host OS and architecture are published.
 
 ## Install the auto-update module
 

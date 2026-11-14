@@ -36,12 +36,13 @@ This document uses the following convention to categorize breaking changes:
 
 ## Notes
 
-- Source document: `docs/breaking-changes.md` at tag `v45.3.2`. The tagged document has no `Planned Breaking API Changes` section; the first section is `Breaking API Changes (45.0)` (not yet distilled into a page; the 44.0 section onward is covered by the sibling pages).
-- Each major version is split across the sibling pages: v44, v43, v42, v41-v40, v39, v38, v37, v36, v35, v34-v33, v32-v31, v30-v29, v28, v27-v26, v25-v23, v22-v15, v14-v2.
+- Source document: `docs/breaking-changes.md` at tag `v45.3.2`. The tagged document has no `Planned Breaking API Changes` section; the first section is `Breaking API Changes (45.0)`, covered by [breaking-changes-v45.md](./breaking-changes-v45.md).
+- Each major version is split across the sibling pages: v45, v44, v43, v42, v41-v40, v39, v38, v37, v36, v35, v34-v33, v32-v31, v30-v29, v28, v27-v26, v25-v23, v22-v15, v14-v2.
 - The code snippet above is quoted from the 35.0 section (https://www.electronjs.org/docs/latest/breaking-changes#breaking-api-changes-350); the conventions section itself contains no code.
 
 ## Related
 
+- [Breaking API Changes (45.0)](./breaking-changes-v45.md)
 - [Breaking API Changes (44.0)](./breaking-changes-v44.md)
 - [Breaking API Changes (43.0)](./breaking-changes-v43.md)
 - [Breaking API Changes (35.0)](./breaking-changes-v35.md)

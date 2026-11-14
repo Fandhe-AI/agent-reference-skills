@@ -30,7 +30,7 @@ npm install electron@alpha --save-dev
 npm install electron@beta --save-dev
 ```
 
-`electron-nightly` tracks the latest changes on `main`; alpha / beta carry changes for the next major. This skill targets v44.8.0, so prereleases may have a different API.
+`electron-nightly` tracks the latest changes on `main`; alpha / beta carry changes for the next major. This skill targets v45.3.2, so prereleases may have a different API.
 
 ## Run once with npx
 
