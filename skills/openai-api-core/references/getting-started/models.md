@@ -22,17 +22,19 @@ response = client.responses.create(
 | --- | --- |
 | GPT-6 Astra | Flagship model for complex reasoning and coding. Start here if unsure. |
 | GPT-6.1 Sol | Balances intelligence and cost (near-Astra performance for complex work at a lower cost). |
+| GPT-6.1 Terra | Fast, efficient model for visual reasoning, precise computer use, and clear, natural writing. |
 | GPT-6 Luna | Optimized for cost-sensitive, high-volume workloads. |
 
 ### Details
 
 - The full model catalog (100+ models spanning GPT, o-series reasoning, embeddings, moderation, audio/realtime, image, and more) is listed at `models/all` — see [All models](./models-all.md). Sora 2 video generation models and the Videos API were shut down on 2026-09-24 and are no longer in the catalog.
 - GPT-6 migration points (from the "Using GPT-6" guide, `/api/docs/guides/latest-model`):
-  - GPT-6 Astra and GPT-6.1 Sol do not support `reasoning.effort: none` (HTTP 400); GPT-6.1 Sol also does not support `minimal` and defaults to `medium`. GPT-6 Sol and GPT-6 Luna support `none`.
+  - GPT-6 Astra and GPT-6.1 Sol do not support `reasoning.effort: none` (HTTP 400); GPT-6.1 Sol also does not support `minimal` and defaults to `medium`. GPT-6.1 Terra, GPT-6 Sol, and GPT-6 Luna support `none`.
   - When reasoning effort is not `none`, remove `temperature`, `top_p`, and `top_logprobs`; for Responses, also remove `message.output_text.logprobs` from `include` (for Chat Completions, remove `logprobs`).
-  - Tool calling on GPT-6 Astra and GPT-6.1 Sol requires the Responses API; Chat Completions is accepted only for requests without tools.
+  - Tool calling on GPT-6 Astra, GPT-6.1 Sol, and GPT-6.1 Terra requires the Responses API; Chat Completions is accepted only for requests without tools.
   - When migrating from GPT-5.5 or earlier, replace `prompt_cache_retention` with `prompt_cache_options.ttl` set to `"30m"`.
-- Source for the GPT-6 notes: https://developers.openai.com/api/docs/guides/latest-model (retrieved 2026-10-17).
+- Source for the GPT-6 notes: https://developers.openai.com/api/docs/guides/latest-model (retrieved 2026-11-14).
+- GPT-6.1 Terra (`gpt-6.1-terra`, released 2026-10-26): `reasoning.effort` supports `none`, `low`, `medium` (default), `high`, `xhigh`, and `max`; 1,050,000 context window, 128,000 max output tokens; cached input is priced at 5% of the uncached rate. When moving from GPT-5.6 Terra, compare both models on representative images and workflows at the same reasoning effort. Source: https://developers.openai.com/api/docs/models/gpt-6.1-terra (retrieved 2026-11-14).
 - For context window / max output / supported-endpoint comparisons, see [Compare models](./models-compare.md).
 - Deprecated models are tracked separately on the deprecations page (out of scope here).
 

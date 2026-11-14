@@ -2,7 +2,7 @@
 name: openai-api-core
 description: >
   OpenAI API (developers.openai.com) の Responses API リファレンス。
-  text generation, embeddings, gpt-6-astra / gpt-6.1-sol / gpt-6-luna,
+  text generation, embeddings, gpt-6-astra/gpt-6.1-sol/gpt-6.1-terra/gpt-6-luna,
   structured outputs, streaming, function calling,
   conversation state, prompt caching, reasoning,
   background mode, WebSocket mode,
@@ -107,7 +107,7 @@ GPT-Live（`/v1/live/sessions`）は `openai-realtime-audio` スキル、
 Fast / Ultrafast mode と misalignment monitoring は `openai-platform-ops` スキルの担当。
 本スキルは Responses API 本体の呼び出し方・構造化出力・ストリーミング・webhooks・公式 SDK・レガシー移行を担当する。
 
-出典: developers.openai.com/api/docs（Markdown twin、取得日 2026-10-17）。サイトに版タグなし。
+出典: developers.openai.com/api/docs（Markdown twin、取得日 2026-10-17。models / deprecations / prompt-caching / 関連ページは 2026-11-14 に更新）。サイトに版タグなし。
 
 ## タスク → カテゴリ マッピング
 
