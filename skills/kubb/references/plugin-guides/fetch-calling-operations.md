@@ -28,7 +28,7 @@ await updatePet({
 })
 ```
 
-各キーは任意で、operation が宣言したものだけ現れる。パラメーターなしは空オブジェクト `getStatus({})` で呼ぶ。
+各キーは operation が宣言したものだけ現れる。必須パラメーターのない operation は引数なしで `getStatus()` と呼べる。
 
 ### Read the result
 
@@ -40,6 +40,7 @@ type RequestResult = {
   data: TData // the parsed success body, undefined on an error result
   error: TError // the parsed error body, undefined on a success result
   contentType: string | undefined // the negotiated response media type
+  headers: Headers // the response headers
   request: Request // the native request
   response: Response // the native response
 }
@@ -60,7 +61,7 @@ console.info(response.headers.get('x-ratelimit-remaining'))
 const result = await getPetById({ path: { petId: 1 } })
 
 if (result.status === 200) {
-  console.info(result.data.name)
+  console.info(result.data)
 }
 ```
 
@@ -105,7 +106,7 @@ content type が 1 つだけ宣言された operation は組み込み済みで�
 
 ### Pass native client options
 
-native fetch 設定（`cache` / `mode` / `redirect` / `keepalive` / `duplex` / `next`）は `options` で渡す:
+native fetch 設定（`cache` / `mode` / `redirect` / `keepalive` / `next`）は `options` で渡す:
 
 ```typescript
 await getPetById({ path: { petId: 1 }, options: { cache: 'no-store' } })
@@ -130,8 +131,12 @@ const url = client.getUrl({
 
 ## Notes
 
+- 例は adapter に [`integerType: 'number'`](https://kubb.dev/extensions/kubb-labs/adapter-oas/options#integertype) を設定しており、`petId` のような `int64` の id は `number` になる。既定では `bigint` で、呼び出しには `1n` を渡す
+- `headers` はレスポンスの `Headers`（`contentType` の次のキー）。ヘッダーを宣言した operation では、`status` を絞り込んだ後 `get` がその名前を補完し、値は文字列のまま
+- `trace` operation の呼び出しも生成されるが、`fetch` と ky は `TRACE` メソッドを拒否する。`@kubb/plugin-axios` か custom transport を使う
 - `request` / `response` は native の `Request` / `Response`（plugin-axios 版は `AxiosRequestConfig` / `AxiosResponse`）
-- Source: https://kubb.dev/extensions/kubb-labs/plugin-fetch/guides/calling-operations （`@kubb/plugin-fetch@5.6.5`）
+- Migration (5.x → 6.0): every result and thrown `ResponseError` now carries the response's `Headers` as `headers`; a `responseType` on a call is replaced by `parseAs`; a call to an operation with its own `servers` goes to that server unless `baseURL` is passed on the call (6.0.0 CHANGELOG and migrate-to-v6)
+- Source: https://kubb.dev/extensions/kubb-labs/plugin-fetch/guides/calling-operations （`@kubb/plugin-fetch@6.0.1`、取得日 2026-11-14）
 
 ## Related
 
@@ -139,3 +144,4 @@ const url = client.getUrl({
 - [fetch-transport](./fetch-transport.md)
 - [fetch-serialization](./fetch-serialization.md)
 - [axios-calling-operations](./axios-calling-operations.md)
+- [fetch-migrate-to-v6](./fetch-migrate-to-v6.md)

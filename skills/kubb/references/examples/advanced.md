@@ -45,6 +45,8 @@ export default defineConfig({
       },
       arrayType: 'generic',
       enum: { type: 'asConst' },
+      // Only schema types: consumers print operation types such as `AddPetOptions` inline.
+      operations: 'inline',
       override: [
         {
           type: 'operationId',
@@ -100,7 +102,9 @@ export default defineConfig({
           },
         },
       ],
-      group: { type: 'tag' },
+      // A custom name keeps one folder per tag. Without it the `payment` tag nests under its `parent` tag `store`, and the
+      // relative `query.importPath` below fits one folder depth only.
+      group: { type: 'tag', name: ({ group }) => group },
       query: {
         importPath: '../../../../tanstack-query-hook',
       },
@@ -245,14 +249,14 @@ export default defineConfig({
     "@kubb/plugin-react-query": "workspace:*",
     "@kubb/plugin-redoc": "workspace:*",
     "@kubb/plugin-zod": "workspace:*",
-    "@modelcontextprotocol/server": "^2.3.1",
-    "@tanstack/query-core": "^5.104.2",
-    "@tanstack/react-query": "^5.104.2",
-    "axios": "^1.20.0",
-    "cypress": "^16.1.1",
-    "msw": "^2.15.0",
-    "react": "^19.3.0",
-    "zod": "^4.6.6"
+    "@modelcontextprotocol/server": "^2.4.0",
+    "@tanstack/query-core": "^5.107.1",
+    "@tanstack/react-query": "^5.107.1",
+    "axios": "^1.21.1",
+    "cypress": "^16.2.1",
+    "msw": "^3.0.4",
+    "react": "^19.3.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@kubb/adapter-oas": "catalog:",
@@ -267,11 +271,12 @@ export default defineConfig({
 
 ## Notes
 
-- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@5.5.15/examples/advanced — `examples/advanced` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`configs/kubb.config.ts`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
-- Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14, `@kubb/plugin-axios` 5.6.5, `@kubb/plugin-cypress` 5.0.14, `@kubb/plugin-faker` 5.1.9, `@kubb/plugin-mcp` 5.2.3, `@kubb/plugin-msw` 5.1.3, `@kubb/plugin-react-query` 5.5.3, `@kubb/plugin-redoc` 5.0.12, `@kubb/plugin-zod` 5.4.12; `typescript`: use your project's version
+- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@6.0.1/examples/advanced — `examples/advanced` of kubb-labs/plugins at tag `@kubb/plugin-client@6.0.1` (commit 8e70d907e7bb968e612990f1c8c31347257ac9ee, fetched 2026-11-14) (`configs/kubb.config.ts`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Versions outside the monorepo (the releases published with the pinned tags): `kubb` 5.20.0, `@kubb/adapter-oas` 5.20.0, `@kubb/plugin-ts` 5.5.1, `@kubb/plugin-axios` 6.0.1, `@kubb/plugin-cypress` 5.3.1, `@kubb/plugin-faker` 5.4.1, `@kubb/plugin-mcp` 5.5.1, `@kubb/plugin-msw` 6.2.1, `@kubb/plugin-react-query` 5.10.1, `@kubb/plugin-redoc` 5.2.2, `@kubb/plugin-zod` 5.9.1; `typescript`: use your project's version
+- Migration (5.11 → 5.20): `@kubb/plugin-ts` 5.2.0 added `operations: 'inline'` (emit only schema types) and 5.5.0 nests a tag group in the folders of its OpenAPI 3.2 `parent` tags (a `payment` tag whose `parent` is `store` now writes to `store/payment/`); the example sets `operations: 'inline'` and `group: { type: 'tag', name: ({ group }) => group }` for `@kubb/plugin-react-query` to keep one folder per tag so the relative `query.importPath` still fits. See [../plugins/plugin-ts.md](../plugins/plugin-ts.md) and the `@kubb/plugin-ts` CHANGELOG
 - Uses the v5 config shape (`kubb/config`, `adapterOas`, `output.postGenerate`, `barrel`). The `query.importPath` `'../../../../tanstack-query-hook'` and the `override` entries are specific to the example repository layout
 - The `tanstack-query-hook` module referenced by that `importPath` is a local wrapper module that is not included here; set `importPath` to `'@tanstack/react-query'` or your own module so the example is self-contained
-- `package.json` declares `node >=22.12`. Its scripts include `generate` (`KUBB_DISABLE_TELEMETRY=1 kubb generate`), `validate`, `mcp`, `studio`, and `typecheck` (`tsc`)
+- `package.json` declares `node >=22.22`. Its scripts include `generate` (`KUBB_DISABLE_TELEMETRY=1 kubb generate`), `validate`, `mcp`, `studio`, and `typecheck` (`tsc`)
 
 ## Related
 

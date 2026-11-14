@@ -1,6 +1,6 @@
 # @kubb/plugin-mcp
 
-OpenAPI 仕様から MCP（Model Context Protocol）サーバーを生成するプラグイン。各 operation が AI アシスタントから呼べる型付き MCP ツールになり、入出力に `@kubb/plugin-zod` のスキーマを使う（plugin-mcp 5.2.3 の docs に準拠）。
+OpenAPI 仕様から MCP（Model Context Protocol）サーバーを生成するプラグイン。各 operation が AI アシスタントから呼べる型付き MCP ツールになり、入出力に `@kubb/plugin-zod` のスキーマを使う（plugin-mcp 5.5.1 の docs に準拠）。
 
 各ツールハンドラーは、クライアントプラグインが生成した operation 関数を呼ぶ。`output.path` のルートに `server.ts` / `start.ts` / `.mcp.json` を書き出し、`start.ts` が `server.ts` の `startServer()` を呼び、`.mcp.json` が stdio サーバーとして `start.ts` を起動する。
 
@@ -11,7 +11,7 @@ npm install --save-dev @kubb/plugin-mcp
 npm install @modelcontextprotocol/server zod
 ```
 
-`@kubb/plugin-ts`・`@kubb/plugin-zod`・クライアントプラグイン（`@kubb/plugin-fetch` / `@kubb/plugin-axios` / `@kubb/plugin-client`）をあわせて登録し、クライアント側で `sdk` を未設定にする。サーバーを動かすアプリに `@modelcontextprotocol/server` v2 と `zod` 4.2 以降の v4 を入れる（`@kubb/plugin-axios` 使用時は `axios` も）。生成される `.mcp.json` は `npx tsx` を実行するため `tsx` などの TypeScript ランナーが必要。
+`@kubb/plugin-zod`・`@kubb/plugin-ts`（`pluginZod({ inferred: 'codec' })` なら任意）・クライアントプラグイン（`@kubb/plugin-fetch` / `@kubb/plugin-axios` / `@kubb/plugin-client`）をあわせて登録し、クライアント側で `sdk` を未設定にする。サーバーを動かすアプリに `@modelcontextprotocol/server` v2 と `zod` 4.2 以降の v4 を入れる（`@kubb/plugin-axios` 使用時は `axios` も）。生成される `.mcp.json` は `npx tsx` を実行するため `tsx` などの TypeScript ランナーが必要。
 
 ## 設定オプション（v5）
 
@@ -52,9 +52,12 @@ export default defineConfig({
 ## Notes
 
 - 各ハンドラーは grouped `{ path, query, headers, body }` を渡す。常に `throwOnError: true` を渡すため、クライアントの `throwOnErrorDefault` に関わらず非 2xx は throw されツールエラーになる
-- ハンドラーはクライアントの `returnType` に従う。`'full'`（既定）または `@kubb/plugin-client` の通常結果では `res.data` から成功ボディを読み、`'data'` では解決結果をそのままツールレスポンスボディにする
+- ハンドラーはクライアントの `returnType` に従う。`'full'`（既定）または `@kubb/plugin-client` の通常結果では `res.data` から成功ボディを読み、`'data'` では解決結果をツールレスポンスボディとして使う
 - Migration (v4 → v5): ハンドラーは grouped `*Options` と MCP の `ServerContext` を受け取り、生成クライアント operation に委譲して `res.data` を読む。`paramsCasing` は削除
 - `.mcp.json` の `args` パスは Kubb の `root` からの `start.ts` の相対パス。MCP クライアントが別フォルダーで起動する場合は絶対パスにするか、`startServer()` 前にセットアップするため独自エントリを指す。生成された `.mcp.json` のサーバーエントリは、MCP クライアントが読む `.mcp.json`（Claude Code ならプロジェクトルート）へコピーする
+- MCP クライアントは JSON を送りファイルを送れないため、binary request body を持つ operation は `exclude` で除外する
+- tool 一覧では `int64` フィールドは integer、binary フィールドは型なしの値として表示される（`bigint` と `Blob` に JSON Schema の形が無いため）。`text/event-stream` や JSON Lines のようにレスポンスをストリームする operation には tool が生成されない（tool は 1 つの JSON 結果を返すため）
+- Source: https://kubb.dev/extensions/kubb-labs/plugin-mcp/options （`@kubb/plugin-mcp@5.5.1`、取得日 2026-11-14）
 - 詳細は [mcp-server](../plugin-guides/mcp-server.md) を参照
 
 ## Related

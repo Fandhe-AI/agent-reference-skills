@@ -11,7 +11,7 @@ query composable はグループ化リクエストパラメーターを第 1 引
 ```typescript
 import { useGetPetById } from './gen/hooks/useGetPetById'
 
-const { data, error, isLoading } = useGetPetById({ path: { petId: 1n } })
+const { data, error, isLoading } = useGetPetById({ path: { petId: 1 } })
 ```
 
 第 2 引数は 2 つの任意グループ。`query` は任意の TanStack Query オプション、`query.client` は使う `QueryClient`。トップレベルの `client` はこの呼び出し用のリクエスト設定（`baseURL` 等）:
@@ -58,7 +58,7 @@ const { mutate } = useUpdatePetWithForm({
   mutation: { onSuccess: () => queryClient.invalidateQueries() },
 })
 
-mutate({ path: { petId: 1n }, query: { name: 'Fluffy' } })
+mutate({ path: { petId: 1 }, query: { name: 'Fluffy' } })
 ```
 
 ### Customize cache keys
@@ -85,12 +85,11 @@ pluginVueQuery({
 ```
 
 ```typescript
-import { useInfiniteQuery } from '@tanstack/vue-query'
-import { findPetsByTagsInfiniteQueryOptions } from './gen/hooks/useFindPetsByTagsInfinite'
+import { useFindPetsByTagsInfinite } from './gen/hooks/useFindPetsByTagsInfinite'
 
-const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
-  findPetsByTagsInfiniteQueryOptions({ query: () => ({ tags: ['dog'] }) }),
-)
+const { data, fetchNextPage, hasNextPage } = useFindPetsByTagsInfinite({
+  query: () => ({ tags: ['dog'] }),
+})
 ```
 
 ### Refetch when parameters change
@@ -122,10 +121,12 @@ tags.value = ['cat']
 - 既定では composable は生成されず factory ヘルパーのみ。`use*` composable が必要なら `hooks: true`（原文 IMPORTANT）
 - 各生成 composable は client 関数を `throwOnError: true` で呼ぶ。失敗は TanStack Query の `error` に入り、型は spec のエラーレスポンスから付く。base URL・認証・interceptor・serialization・検証は client プラグイン側で設定する（plugin-client の場合は自前 client モジュール）
 - `queryKey` の例は全呼び出しに同一キー（例 `['getUserByName']`）を与える。path / query の値で取得データが変わる場合はキーに加える（原文 WARNING）
-- `nextParam` はドット記法またはキー配列。API のレスポンスに合わせて変える。`getNextPageParam` / `nextParam` / `cursorParam` がなければ、空配列を返すまでページ番号を増やす
+- `nextParam` はドット記法またはキー配列。API のレスポンスに合わせて変え、`initialPageParam` は query パラメーターと同じ型にする。`getNextPageParam` / `nextParam` / `cursorParam` がなければ、空配列を返すまでページ番号を増やす
 - `tags.value` を変更すると query key が更新され、対応するリソースが fetch される
 - 上記 mutation 例の `useQueryClient` は `@tanstack/vue-query` から import する（react-query 版は `@tanstack/react-query`）
-- Source: https://kubb.dev/extensions/kubb-labs/plugin-vue-query/guides/calling-operations （`@kubb/plugin-vue-query@5.5.3`）
+- 例は adapter に `integerType: 'number'` を設定しているため `int64` の `petId` は `number`（既定では `bigint` で `1n` を渡す）
+- Migration (5.5 → 5.10): the infinite example now calls the generated `useFindPetsByTagsInfinite` composable instead of `useInfiniteQuery(findPetsByTagsInfiniteQueryOptions(...))`; the resolver's infinite composable name is `useGetPetsInfinite` (no `Query` suffix) per the 5.10.1 options docs
+- Source: https://kubb.dev/extensions/kubb-labs/plugin-vue-query/guides/calling-operations （`@kubb/plugin-vue-query@5.10.1`、取得日 2026-11-14）
 
 ## Related
 

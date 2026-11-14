@@ -28,7 +28,7 @@ await updatePet({
 })
 ```
 
-各キーは任意で、operation が宣言したものだけ現れる。パラメーターなしは空オブジェクト `getStatus({})` で呼ぶ。
+各キーは operation が宣言したものだけ現れる。必須パラメーターのない operation は引数なしで `getStatus()` と呼べる。
 
 ### Read the result
 
@@ -40,6 +40,7 @@ type RequestResult = {
   data: TData // the parsed success body, undefined on an error result
   error: TError // the parsed error body, undefined on a success result
   contentType: string | undefined // the negotiated response media type
+  headers: Headers // the response headers
   request: AxiosRequestConfig // the native request config
   response: AxiosResponse // the native response
 }
@@ -60,7 +61,7 @@ console.info(response.headers['x-ratelimit-remaining'])
 const result = await getPetById({ path: { petId: 1 } })
 
 if (result.status === 200) {
-  console.info(result.data.name)
+  console.info(result.data)
 }
 ```
 
@@ -130,8 +131,11 @@ const url = client.getUrl({
 
 ## Notes
 
+- 例は adapter に [`integerType: 'number'`](https://kubb.dev/extensions/kubb-labs/adapter-oas/options#integertype) を設定しており、`petId` のような `int64` の id は `number` になる。既定では `bigint` で、呼び出しには `1n` を渡す
+- `headers` はレスポンスの `Headers`（`contentType` の次のキー）。ヘッダーを宣言した operation では、`status` を絞り込んだ後 `get` がその名前を補完し、値は文字列のまま
 - `request` は `AxiosRequestConfig`、`response` は `AxiosResponse`（plugin-fetch 版は native の `Request` / `Response`）。ヘッダー参照は `response.headers['x-...']`
-- Source: https://kubb.dev/extensions/kubb-labs/plugin-axios/guides/calling-operations （`@kubb/plugin-axios@5.6.5`）
+- Migration (5.x → 6.0): every result and thrown `ResponseError` now carries the response's `Headers` as `headers`; a `responseType` on a call is replaced by `parseAs`; a call to an operation with its own `servers` goes to that server unless `baseURL` is passed on the call (6.0.0 CHANGELOG and migrate-to-v6)
+- Source: https://kubb.dev/extensions/kubb-labs/plugin-axios/guides/calling-operations （`@kubb/plugin-axios@6.0.1`、取得日 2026-11-14）
 
 ## Related
 
@@ -139,3 +143,4 @@ const url = client.getUrl({
 - [axios-transport](./axios-transport.md)
 - [axios-serialization](./axios-serialization.md)
 - [fetch-calling-operations](./fetch-calling-operations.md)
+- [axios-migrate-to-v6](./axios-migrate-to-v6.md)
