@@ -4,7 +4,7 @@ source: https://ai.google.dev/gemini-api/docs/computer-use
 
 # Computer use
 
-Preview. The Computer Use tool lets you build browser, mobile, and desktop control agents: from screenshots the model "sees" the screen and "acts" by generating UI actions (clicks, keystrokes). Like function calling, you implement the client-side execution environment that receives and executes the actions.
+The Computer Use tool lets you build browser, mobile, and desktop control agents: from screenshots the model "sees" the screen and "acts" by generating UI actions (clicks, keystrokes). Like function calling, you implement the client-side execution environment that receives and executes the actions.
 
 ## Signature / Usage
 
@@ -16,7 +16,7 @@ from google import genai
 client = genai.Client()
 
 interaction = client.interactions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     input="Search for 'Gemini API' on Google.",
     tools=[{"type": "computer_use", "environment": "browser"}]
 )
@@ -30,7 +30,7 @@ import { GoogleGenAI } from '@google/genai';
 const ai = new GoogleGenAI();
 
 const interaction = await ai.interactions.create({
-  model: 'gemini-3.8-flash',
+  model: 'gemini-4-hydrogen',
   input: "Search for 'Gemini API' on Google.",
   tools: [{ type: "computer_use", environment: "browser" }]
 });
@@ -44,7 +44,7 @@ curl -X POST \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gemini-3.8-flash",
+    "model": "gemini-4-hydrogen",
     "input": "Find me a flight from SF to Hawaii on Jun 30th, coming back on Jul 6th. Start by navigating directly to flights.google.com",
     "tools": [
       {
@@ -179,7 +179,7 @@ Agent loop (continue with `previous_interaction_id`):
 
 ```python
 interaction = client.interactions.create(
-    model='gemini-3.8-flash',
+    model='gemini-4-hydrogen',
     input=[
         {"type": "text", "text": USER_PROMPT},
         {"type": "image", "data": base64.b64encode(initial_screenshot).decode("utf-8"), "mime_type": "image/png"}
@@ -207,7 +207,7 @@ for i in range(turn_limit):
     function_responses = get_function_responses(page, results)
 
     interaction = client.interactions.create(
-        model='gemini-3.8-flash',
+        model='gemini-4-hydrogen',
         previous_interaction_id=interaction.id,
         input=function_responses,
         tools=[{
@@ -238,7 +238,7 @@ yield_to_user_tool = {
 }
 
 interaction = client.interactions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     input="Click the submit button. If you need a second factor authentication code, ask me.",
     tools=[
         {
@@ -304,12 +304,12 @@ Safety policy categories (Gemini 3.x):
 | `USER_CONSENT_MANAGEMENT` | Requires user takeover for cookie consent banners and privacy prompts |
 | `LEGAL_TERMS_AND_AGREEMENTS` | Prevents the model from autonomously accepting Terms of Service or legally binding contracts |
 
-Model versions: Gemini 3.8 Flash (`gemini-3.8-flash`, recommended), Gemini 3.5 Flash-Lite (`gemini-3.5-flash-lite`), Gemini 3 Flash Preview (`gemini-3-flash-preview`).
+Model versions: Gemini 4 Carbon (`gemini-4-carbon`), Gemini 4 Argon (`gemini-4-argon`), Gemini 4 Hydrogen (`gemini-4-hydrogen`), Gemini 3.8 Flash (`gemini-3.8-flash`, previous-generation Flash), Gemini 3.5 Flash-Lite (`gemini-3.5-flash-lite`), Gemini 3 Flash Preview (`gemini-3-flash-preview`, preview model).
 
 ## Notes
 
-- Preview capability; may contain errors and security vulnerabilities. Supervise closely, and avoid it for critical decisions, sensitive data, or actions where serious errors cannot be corrected.
-- Loop: (1) send request with the tool, config, prompt, and a screenshot; (2) receive a `function_call` UI action (Gemini 3.x also returns an `intent`, and possibly a `safety_decision`: regular/allowed, `require_confirmation`, or blocked); (3) execute client-side (scale normalized coordinates); (4) capture a new screenshot and send it in a `function_result`. If multiple parallel actions ran, send a `function_result` for each. Append model responses and your function responses to history at every step.
+- Computer Use is generally available (GA) across the Interactions and GenerateContent APIs (release notes 2026-10-30), but it may contain errors and security vulnerabilities. Supervise closely, and avoid it for critical decisions, sensitive data, or actions where serious errors cannot be corrected.
+- Loop: (1) send request with the tool, config, prompt, and a screenshot; (2) receive a `function_call` UI action (Gemini 4 and Gemini 3.x also return an `intent`, and possibly a `safety_decision`: regular/allowed, `require_confirmation`, or blocked); (3) execute client-side (scale normalized coordinates); (4) capture a new screenshot and send it in a `function_result`. If multiple parallel actions ran, send a `function_result` for each. Append model responses and your function responses to history at every step.
 - No display size is needed in the request; the model predicts coordinates scaled to the screen. The example uses `google-genai` Python SDK version `2.7.0` or higher.
 - Run the agent in a sandboxed VM or container. The reference implementation `https://github.com/google/computer-use-preview` includes a Docker-based sandbox. The examples use Playwright (`pip install google-genai playwright`, `playwright install chromium`).
 - Safety decisions: when `safety_decision` is `require_confirmation`, prompt the end user and, if confirmed, set `safety_acknowledgement` in the `function_result`. Overrides express a preference only; the model may still return `require_confirmation`, so always implement safety decision handling.
@@ -319,7 +319,7 @@ Model versions: Gemini 3.8 Flash (`gemini-3.8-flash`, recommended), Gemini 3.5 F
 - The tool-combination source table says `function_response`; the schema and this page's examples use `function_result`.
 - `execute_function_calls` is abridged from the source (only click/navigate shown); the `safety_decision` check is adapted (see next line). The source's `get_safety_confirmation` always returns `CONTINUE`; this page waits for explicit user input and terminates unless the user confirms. The source checks only for the presence of `safety_decision`; this page instead branches on `decision` (only `require_confirmation` prompts; blocked or other values halt with no execution, per "If the action is blocked, your client should halt the execution or handle the interruption"). On refusal or halt this page also stops the outer agent loop (no further requests or actions), which the source does not show. The source example excludes the predefined `click` on purpose while its prompt says "Click the submit button"; the model must use another action or call `yield_to_user`.
 - Distinct from `anthropic-api-tools-mcp` (Claude computer use tool) and `openai-agents` (OpenAI computer use); this is Gemini's `computer_use` tool. Playwright itself is covered by the `playwright` skill.
-- API surface: Interactions API, v1beta only per the api-versions table; a generateContent version is under `generate-content/` (grounding-tools). Docs fetched 2026-10-16.
+- API surface: Interactions API, available in `v1` and `v1beta` per the api-versions table (fetched 2026-11-14); a generateContent version is under `generate-content/` (grounding-tools). Docs fetched 2026-11-14 (https://aistudio.google.com/docs/computer-use); the source examples now use `gemini-4-hydrogen`.
 
 ## Related
 

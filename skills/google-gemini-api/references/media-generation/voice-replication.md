@@ -179,5 +179,6 @@ client.voices.delete(id=replicated_voice.id)
 
 ## Related
 
+- [voice-remixing.md](./voice-remixing.md)
 - [voice-design.md](./voice-design.md)
 - [speech-generation.md](./speech-generation.md)

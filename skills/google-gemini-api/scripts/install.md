@@ -54,6 +54,7 @@ NuGet package `Google.GenAI`. Repository: `googleapis/dotnet-genai`.
 
 ## Notes
 
-- Versions measured on 2026-10-16 (registry lookups, not from the docs page): `google-genai` 2.31.0 (PyPI), `@google/genai` 2.30.0 (npm `latest`), `google.golang.org/genai` v1.75.0, `com.google.genai:google-genai` 1.57.0 (Maven Central), `Google.GenAI` 1.26.1 (NuGet). The Maven `1.0.0` above is the docs example, not the current version.
+- Versions measured on 2026-11-14 (registry lookups, not from the docs page): `google-genai` 3.3.0 (PyPI), `@google/genai` 3.3.0 (npm `latest`), `google.golang.org/genai` v1.77.0, `com.google.genai:google-genai` 2.3.0 (Maven Central), `Google.GenAI` 2.1.0 (NuGet). The 2026-10-16 baseline was 2.31.0 / 2.30.0 / v1.75.0 / 1.57.0 / 1.26.1.
+- `@google/genai` 3.x requires Node.js >=22; on Node.js 20 pin `@google/genai@^2` (per the JS 3.0.0 release notes, https://github.com/googleapis/js-genai/releases/tag/v3.0.0, fetched 2026-11-14). Python `google-genai` 3.x installs `httpx2` instead of `httpx` by default. The Maven `1.0.0` above is the docs example, not the current version.
 - The legacy libraries (for example `google-generativeai`, `@google/generative-ai`) were deprecated as of November 30th, 2025; do not install them for new projects. See `references/migration/migrate-genai-sdk.md`.
 - Install commands modify the current Python / Node / Go / .NET environment. Run them inside a virtual environment or project directory.

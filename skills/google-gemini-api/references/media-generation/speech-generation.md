@@ -234,7 +234,7 @@ Custom voice limits:
 
 ## Notes
 
-- Per the deprecations page, `gemini-3.1-flash-tts-preview`, `gemini-2.5-flash-preview-tts` and `gemini-2.5-pro-preview-tts` shut down on November 17, 2026 (replacements: `gemini-3.8-flash-tts` / `gemini-3.8-flash-lite-tts`); the model cards do not show this.
+- Per the deprecations page, `gemini-3.1-flash-tts-preview`, `gemini-2.5-flash-preview-tts` and `gemini-2.5-pro-preview-tts` shut down on December 18, 2026 (replacements: `gemini-3.8-flash-tts` / `gemini-3.8-flash-lite-tts`); the model cards do not show this.
 - TTS models accept text-only inputs and produce audio-only outputs. TTS differs from Live API speech, which is for interactive, unstructured audio; TTS is for exact text recitation (podcast, audiobook).
 - `text` is treated strictly as a verbatim transcript. Put sustained turn-level delivery (emotion, pacing, prosody) in `speech_metadata.style`; put point-in-time vocal events inline with angle brackets (for example `<short pause>`, `<sigh>`, `<laugh>`, `<cough>`, `<breath>`, `<long pause>`). Use English inline tags even for non-English transcripts. Capitalize words for emphasis. Wrap listener reactions in pipes (`|oh hmm|`) for backchannels in multi-speaker turns.
 - `speech_config` is an array (`[{"voice": "..."}]`) for single speaker and an object (`{"speakers": [...]}`) for multi-speaker. REST also supports `"mode": "conversational"` inside `speech_config`.

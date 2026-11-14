@@ -15,7 +15,7 @@ Source page has no code; spend-based limits and usage tiers from the page:
 |---|---|
 | Free | N/A |
 | Tier 1 | $10 |
-| Tier 2 | $50 |
+| Tier 2 | $200 |
 | Tier 3 | $200 |
 ```
 
@@ -32,6 +32,24 @@ Usage tiers:
 | Tier 2 | Paid $100 + 3 days from first successful payment | $2,000 |
 | Tier 3 | Paid $1,000 + 30 days from first successful payment | $20,000 - $100,000+ |
 
+`gemini-omni-1.2-flash` standard interactive rate limits:
+
+| Usage tier | Requests per minute (RPM) | Requests per day (RPD) |
+|---|---|---|
+| Free | Not supported | Not supported |
+| Tier 1 | 8 | 40 |
+| Tier 2 | 16 | 200 |
+| Tier 3 | 40 | 2,000 |
+
+Gemini Decision 1 (`gemini-decision-1`, Decisions API) standard interactive rate limits (the Batch API is not supported):
+
+| Usage tier | RPM | TPM | RPD |
+|---|---|---|---|
+| Free | 200 | 50,000 | 10,000 |
+| Tier 1 | 1,500 | 1,000,000 | 50,000 |
+| Tier 2 | 5,000 | 4,000,000 | Unlimited |
+| Tier 3 | 15,000 | 10,000,000 | Unlimited |
+
 Batch API limits (separate from non-batch calls):
 
 | Limit | Value |
@@ -41,18 +59,19 @@ Batch API limits (separate from non-batch calls):
 | File storage limit | 20GB |
 | Enqueued tokens per model | per-tier tables (e.g. Tier 1 Gemini 3.8 Flash 3,000,000; Tier 2 400,000,000; Tier 3 1,000,000,000) |
 
-Other tier tables on the page list per-model batch enqueued tokens for Tier 1 / 2 / 3 (e.g. Gemini 4 Argon 5,000,000 / 500,000,000 / 1,000,000,000; Gemini Embedding 500,000 / 5,000,000 / 10,000,000).
+Other tier tables on the page list per-model batch enqueued tokens for Tier 1 / 2 / 3 (e.g. Gemini 4 Carbon 5,000,000 / 500,000,000 / 1,000,000,000; Gemini 4 Argon 5,000,000 / 500,000,000 / 1,000,000,000; Gemini 4 Hydrogen 3,000,000 / 400,000,000 / 1,000,000,000; Gemini Embedding 500,000 / 5,000,000 / 10,000,000).
 
 ## Notes
 
 - `RESOURCE_EXHAUSTED` is the status name used by this page; the Interactions API reports 429 with snake_case codes such as `rate_limit_exceeded` or `quota_exceeded` (see api-errors.md).
+- Built-in tools have their own limits; for example Grounding with Google Search on Gemini 3 and newer models has a default limit of 1,500 requests per day (RPD) per project on the Gemini Developer API.
 - Limits apply per project, not per API key. RPD quotas reset at midnight Pacific time.
 - Limits vary by model; experimental and preview models are more restricted. Specified limits are not guaranteed.
 - Spend-based limits use a rolling 10-minute window; exceeding returns `429 RESOURCE_EXHAUSTED`. Resolve by waiting and retrying, reducing expensive requests, or requesting an increase.
 - Tier 2 / 3 qualification is based on cumulative spending on Google Cloud services for the linked billing account. Free to Tier 1 upgrades typically take effect instantly; later upgrades within 10 minutes.
 - Priority inference has its own limits: default 0.3x the standard rate limit for each model and tier. Flex traffic counts toward general limits only.
 - Rate limit increase requests go through a form; no guarantee is offered.
-- Docs fetched 2026-10-16.
+- Source: https://aistudio.google.com/docs/rate-limits (fetched 2026-11-14). Corrected the Tier 2 spend rate limit from $50 to $200 per 10 minutes to match the current page; added the Omni 1.2 Flash and Decision 1 tables and the Carbon / Hydrogen batch rows.
 
 ## Related
 

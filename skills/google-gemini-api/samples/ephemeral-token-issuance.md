@@ -70,6 +70,7 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/auth_tokens" \
 
 ## Notes
 
+- Migration (SDK 2.x to 3.x): this sample uses Ephemeral Tokens (Live API), which the API-versions table marks `v1beta` only, and the code does not set an API version. SDK 3.x defaults to `v1`, so construct the client with `http_options={"api_version": "v1beta"}` (Python) or `httpOptions: { apiVersion: "v1beta" }` (JS), or set `GOOGLE_GENAI_API_VERSION=v1beta`. Source: https://aistudio.google.com/api-reference/api-versions (fetched 2026-11-14).
 - Preview feature, compatible only with the Live API and only with the `v1beta` API version.
 - By default the token has 1 minute to start new sessions (`newSessionExpireTime`) and 30 minutes to send messages (`expireTime`).
 - The official JavaScript connect snippet elides the callbacks (`callbacks: { ... }`); this sample fills in `onopen` / `onmessage` / `onerror` / `onclose` as in the Live API tools guide.

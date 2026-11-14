@@ -214,6 +214,34 @@ Lifecycle:
 
 Resources: CPU 4 cores, Memory 16 GB (fixed per environment).
 
+### Self-hosted environments
+
+Instead of the Google-managed sandbox, a self-hosted environment lets managed agents execute tools inside compute infrastructure you control. Your sandbox connects over outbound HTTPS using the open-source Gemini API CLI (`gemini-api`), and requires no inbound firewall ports.
+
+1. Call `POST /v1beta/environments` with `{"mode": "self_hosted"}` to get an environment `id` and a one-time `environment_key`.
+2. Run `gemini-api environments connect` (from `google-gemini/gemini-api-cli`) inside your sandbox with that `environment_key`.
+3. Pass the environment `id` in `environment` when calling `interactions.create`.
+
+Adapted (not in the official docs): this request is assembled from the `mode` field of the CreateEnvironment reference; the guide only states `{"mode": "self_hosted"}`.
+
+```bash
+curl -X POST https://generativelanguage.googleapis.com/v1beta/environments \
+  -H "x-goog-api-key: $GEMINI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"mode": "self_hosted"}'
+```
+
+`CreateEnvironment` fields for self-hosted mode (Environments API reference):
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `mode` | `on_demand` or `self_hosted` | The compute lifecycle mode for this environment. |
+| `system_instruction` | string (optional) | System instruction applied to interactions running in this environment. Only supported for `self_hosted` environments, where it is recommended. |
+| `custom_config` | object (optional) | Arbitrary customer-defined JSON configuration passed through to the self-hosted environment poller. Only supported when `mode` is `self_hosted`. Also returned on the Environment resource for self-hosted environments when configured. |
+| `environment_key` | string (output only) | Secret token generated at creation for `self_hosted` environments, used by the self-hosted sandbox daemon to authenticate polling and streaming requests. Only returned in the CreateEnvironment response; omitted from GetEnvironment and ListEnvironments. |
+
+Supported provider examples (in the `gemini-api-cli` repository under `docs/self-hosted/`): Google Cloud Run, Agent Substrate, Cloudflare Sandbox, Daytona, E2B, Fly.io (Sprites and Machines), Modal, Vercel Sandbox, plus Docker or rootless Podman containers and a local mode for testing. Local mode runs `execute_bash` directly on your host unless you pass `--disable-bash`.
+
 File endpoints behavior matrix:
 
 | Request | `alt` | `recursive` | `extract` | `overwrite` | Response |
@@ -250,6 +278,10 @@ File entry fields: `name`, `path` (relative to environment root), `type` (`FILE`
 - The list request uses `page_size` as in the API reference (ListEnvironments) and the SDK examples; the guide's REST example writes `pageSize`.
 - `--fail` is added to the download curl so an HTTP error (e.g. 404 for an expired environment ID) is not saved as the tar file; the original example omits it.
 - Limitations: preview (features and schemas may change); provisioning takes up to ~5 seconds; expired or invalid environment ID returns `404 Not Found`; the agent reads text and image files only (binary support not yet available). Environment compute is not billed during preview.
+- The self-hosted `curl` request in this page is adapted from the CreateEnvironment reference (the guide gives only the `{"mode": "self_hosted"}` body).
+- Hosted-sandbox options (`sources`, `network`, `env`, and `/files` snapshots) apply only to Google-hosted environments. Self-hosted environments reject them with `400 INVALID_ARGUMENT`. Self-hosted mode, `system_instruction`, `custom_config`, and `environment_key` were added to the SDKs and CLI in google-genai (Python) and @google/genai (JavaScript) 3.2.0.
+- Source: https://aistudio.google.com/docs/agent-environment (fetched 2026-11-14)
+- Source: https://aistudio.google.com/api-reference/environments/create-environment (fetched 2026-11-14)
 - Hooks configuration (`.agents/hooks.json`) can be mounted as a source; see `hooks.md`.
 - API surface: managed agents via the Interactions API, REST `v1beta/environments`. Java and Go tabs exist on the official page for the interaction examples.
 - Distinct from other skills: anthropic-managed-agents has its own environments resource; this page is the Gemini API only. See also anthropic-agent-sdk, openai-agents, hermes-agent for other agent runtimes.

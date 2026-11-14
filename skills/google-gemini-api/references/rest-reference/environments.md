@@ -55,6 +55,7 @@ Other parameters:
 - An environment can be referenced from an interaction via the `environment` request field (see interactions-v1beta.md) and used as `base_environment` of an agent (see agents.md).
 - Hosted Gemini sandbox, distinct from anthropic-managed-agents environments.
 - Docs fetched 2026-10-16.
+- The current create-environment reference (https://aistudio.google.com/api-reference/environments/create-environment, fetched 2026-11-14) also documents `mode` (`on_demand` or `self_hosted`), `system_instruction`, `custom_config` (only when `mode` is `SELF_HOSTED`) and `environment_key`; see `references/managed-agents/environments.md` for the self-hosted guide. The request and resource tables above were not re-transcribed.
 
 ## Related
 

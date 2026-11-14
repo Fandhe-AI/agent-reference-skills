@@ -1,10 +1,10 @@
 ---
 name: google-gemini-api
 description: >
-  Google Gemini API (Gemini Developer API, ai.google.dev) の
-  Interactions API (v1 / v1beta), generateContent, Google GenAI SDK (google-genai / @google/genai),
-  Live API, ephemeral tokens, Managed Agents, Deep Research, function calling, Google Search grounding,
-  File Search, Files API, thought signatures, Nano Banana, Veo, Lyria, Batch API, Flex / Priority inference, OpenAI 互換。
+  Google Gemini API (Gemini Developer API) の Interactions API, generateContent,
+  GenAI SDK (google-genai / @google/genai 3.x), Gemini 4 Carbon / Hydrogen, Decisions API, Live API,
+  ephemeral tokens, Managed Agents, Deep Research, function calling, Google Search grounding, File Search,
+  Files API, thought signatures, Nano Banana, Omni, Veo, Lyria, Batch API, Flex / Priority, OpenAI 互換, gemini-api CLI。
 user-invocable: false
 ---
 
@@ -14,15 +14,18 @@ Google Gemini API (Gemini Developer API, `ai.google.dev`) のリファレンス�
 
 ## 対象バージョン
 
-- Docs fetched 2026-10-16（URL に版なし。Markdown twin は `<url>.md.txt`）
-- API: Interactions API v1 (GA) / v1beta (SDK 既定)
-- SDK（2026-10-16 実測）:
-  - `google-genai` 2.31.0 (PyPI)
-  - `@google/genai` 2.30.0 (npm latest)
-  - `google.golang.org/genai` v1.75.0
-  - `com.google.genai:google-genai` 1.57.0 (Maven)
-  - `Google.GenAI` 1.26.1 (NuGet)
-- SDK の GitHub 原本はタグ `python-genai@v2.31.0` / `js-genai@v2.30.0` / `go-genai@v1.75.0` のみ
+- Docs fetched 2026-11-14（URL に版なし。Markdown twin は `https://aistudio.google.com/docs/<slug>.md`）。公式ドキュメントは `ai.google.dev/gemini-api/docs` から `aistudio.google.com/docs`（API リファレンスは `aistudio.google.com/api-reference`）へ移転済みで、旧 URL は 301 で解決する。既存ページの `source:` は旧 `ai.google.dev` URL のまま（新規ページは新ホスト）。
+- API: Interactions API v1 (GA) / v1beta。SDK 3.x の既定は `v1`（2.x は `v1beta`）。Live API・Ephemeral Tokens・Agents / Managed Agents・Webhooks・Explicit Context Caching は `v1beta` のみのため、SDK 3.x では `api_version="v1beta"` を明示する（`migration/api-versions.md`）
+- 最新モデル: Gemini 4 Carbon（2026-11-10 GA）/ Gemini 4 Hydrogen（11-12 GA、`xhigh` thinking level）/ Gemini 4 Argon（10-13 GA）/ Gemini 3.8 系。Decisions API（Gemini Decision 1、11-11）。Gemini API CLI `gemini-api`（beta）
+- SDK（2026-11-14 実測。2026-10-16 の baseline は括弧内）:
+  - `google-genai` 3.3.0 (PyPI)（2.31.0）
+  - `@google/genai` 3.3.0 (npm latest)（2.30.0）
+  - `google.golang.org/genai` v1.77.0（v1.75.0）
+  - `com.google.genai:google-genai` 2.3.0 (Maven)（1.57.0）
+  - `Google.GenAI` 2.1.0 (NuGet)（1.26.1）
+- SDK 3.0 の破壊的変更: 既定 API version が `v1`、Python は既定 HTTP クライアントが `httpx2`、JS は Node.js 22 以上必須、`CodeExecutionResultStep.result` が union 型（`getting-started/libraries.md`）
+- SDK の GitHub 原本はタグ `python-genai@v3.3.0` / `js-genai@v3.3.0` / `go-genai@v1.77.0`（リポジトリ googleapis/python-genai 等のタグ `v3.3.0`）。旧 baseline は `python-genai@v2.31.0` / `js-genai@v2.30.0` / `go-genai@v1.75.0`
+- 未追従: 2026-10-16 取得の既存ページのうち、changelog（2026-10-26 〜 11-12）に変更が載っていないページは再取得していない。Maven / NuGet の 2.x の破壊的変更は未調査
 
 ## 近接スキルとの棲み分け
 
@@ -44,12 +47,12 @@ skills/google-gemini-api/
     getting-started/
       README.md
       overview.md  get-started.md  interactions-overview.md  libraries.md
-      api-key.md  oauth.md  available-regions.md  coding-agents.md
+      api-key.md  oauth.md  available-regions.md  coding-agents.md  cli.md
     interactions-core/
       README.md
       text-generation.md  streaming.md  structured-output.md  thinking.md
       background-execution.md  implicit-caching.md  long-decode.md  optimization.md
-      prompting-strategies.md  safety-guidance.md  safety-settings.md
+      prompting-strategies.md  safety-guidance.md  safety-settings.md  decisions-api.md
     generate-content/
       README.md
       overview.md  get-started.md  text-generation.md  structured-output.md
@@ -74,7 +77,7 @@ skills/google-gemini-api/
     media-generation/
       README.md
       image-generation.md  omni.md  veo.md  speech-generation.md
-      voice-design.md  voice-replication.md  music-generation.md  lyria-prompt-guide.md
+      voice-design.md  voice-replication.md  voice-remixing.md  music-generation.md  lyria-prompt-guide.md
     managed-agents/
       README.md
       agents-overview.md  quickstart.md  antigravity-agent.md  custom-agents.md
@@ -87,7 +90,8 @@ skills/google-gemini-api/
     models/
       README.md
       models-catalog.md  gemini-4-3-models.md  gemini-2-models.md  gemini-3-developer-guide.md
-      whats-new-gemini-4-argon.md  whats-new-gemini-3-7.md  whats-new-gemini-3-6.md  whats-new-gemini-3-5.md
+      whats-new-gemini-4-carbon.md  whats-new-gemini-4-hydrogen.md  whats-new-gemini-4-argon.md
+      whats-new-gemini-3-8.md  whats-new-gemini-3-7.md  whats-new-gemini-3-6.md  whats-new-gemini-3-5.md
       agent-models.md  audio-live-models.md  image-video-models.md  music-models.md
       embedding-models.md  specialized-models.md
     migration/
@@ -98,7 +102,7 @@ skills/google-gemini-api/
       README.md
       overview.md  all-methods.md  interactions-v1.md  interactions-v1beta.md
       generate-content.md  models.md  tokens.md  files.md  caching.md  embeddings.md  batch.md
-      file-search-stores.md  file-search-documents.md  live.md  live-music.md
+      decisions.md  file-search-stores.md  file-search-documents.md  live.md  live-music.md
       agents.md  environments.md  credentials.md  triggers.md  webhooks.md  voices.md
   samples/
     README.md
@@ -129,17 +133,17 @@ skills/google-gemini-api/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
-| Gemini API の全体像・クイックスタート・SDK・API キー・OAuth・提供地域を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
-| Interactions API でテキスト生成・ストリーミング・構造化出力・thinking を使いたい | interactions-core | [references/interactions-core/README.md](references/interactions-core/README.md) |
+| Gemini API の全体像・クイックスタート・SDK (3.x の破壊的変更含む)・`gemini-api` CLI・API キー・OAuth・提供地域を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| Interactions API でテキスト生成・ストリーミング・構造化出力・thinking (`xhigh` 含む)・Decisions API (Gemini Decision 1) を使いたい | interactions-core | [references/interactions-core/README.md](references/interactions-core/README.md) |
 | background 実行・implicit caching・long decode・safety settings・プロンプト設計 | interactions-core | [references/interactions-core/README.md](references/interactions-core/README.md) |
 | 旧 generateContent API の使い方（thought signatures・explicit caching・トークン計数） | generate-content | [references/generate-content/README.md](references/generate-content/README.md) |
 | 画像・音声・動画・PDF の理解、Files API、media resolution、embeddings | multimodal-input | [references/multimodal-input/README.md](references/multimodal-input/README.md) |
 | function calling・Google Search / Maps grounding・URL context・code execution・computer use・File Search | tools-grounding | [references/tools-grounding/README.md](references/tools-grounding/README.md) |
 | Live API（WebSocket / SDK）・セッション管理・ephemeral tokens・live translate / transcribe | live-realtime | [references/live-realtime/README.md](references/live-realtime/README.md) |
-| 画像生成 (Nano Banana)・Omni・Veo・TTS・音楽生成 (Lyria)・voice design | media-generation | [references/media-generation/README.md](references/media-generation/README.md) |
+| 画像生成 (Nano Banana)・Omni・Veo・TTS・音楽生成 (Lyria)・voice design / remixing | media-generation | [references/media-generation/README.md](references/media-generation/README.md) |
 | Managed Agents・Antigravity agent・Deep Research・environments・credentials・hooks | managed-agents | [references/managed-agents/README.md](references/managed-agents/README.md) |
 | Batch API・Flex / Priority inference・webhooks・rate limits・pricing・エラー対処 | platform-ops | [references/platform-ops/README.md](references/platform-ops/README.md) |
-| モデル一覧・世代別 what's new・埋め込み / 音声 / 画像動画 / agent モデル | models | [references/models/README.md](references/models/README.md) |
+| モデル一覧・世代別 what's new (Gemini 4 Carbon / Hydrogen / Argon, 3.8)・埋め込み / 音声 / 画像動画 / agent モデル | models | [references/models/README.md](references/models/README.md) |
 | generateContent から Interactions への移行・SDK 移行・破壊的変更・非推奨・OpenAI 互換 | migration | [references/migration/README.md](references/migration/README.md) |
 | REST エンドポイント・リクエスト / レスポンス仕様 (v1 / v1beta) を確認したい | rest-reference | [references/rest-reference/README.md](references/rest-reference/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |

@@ -217,7 +217,7 @@ MTEB scores by MRL dimension for `gemini-embedding-001`: 2048: 68.16, 1536: 68.1
 - Migration from `gemini-embedding-001`: the embedding spaces are incompatible; re-embed all existing data when upgrading.
 - Storing embeddings: the page lists Google Cloud options and third-party vector database tutorials (ChromaDB, Qdrant, Weaviate, Pinecone). A managed RAG alternative is the File Search tool (tools-grounding category). Vector database skills in this repo: upstash (Vector) and fandhe-db (a separate Rust vector database), which are not Gemini products.
 - Page also has Java and Go examples; not reproduced here.
-- API availability: `embedContent` (v1beta REST `models/{model}:embedContent`), separate from Interactions API generation. Docs fetched 2026-10-16.
+- API availability: `embedContent` (v1beta REST `models/{model}:embedContent`), separate from Interactions API generation. Docs fetched 2026-11-14 (https://aistudio.google.com/docs/embeddings). `gemini-embedding-2-preview` is deprecated and routes to `gemini-embedding-2` as of 2026-11-06 (same API schema, pricing, and embedding space; no re-indexing needed); the examples already use `gemini-embedding-2`.
 
 ## Related
 

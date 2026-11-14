@@ -142,7 +142,7 @@ Sections covered by the guide (each with before/after snippets per language):
 - The Configuration example sets `temperature` / `top_p` / `top_k` on `gemini-3.8-flash` as in the source; from Gemini 3.6 onward these sampling parameters are deprecated and ignored (future generations return HTTP 400), so drop them when migrating (see models/whats-new-gemini-3-6.md).
 - All required arguments are keyword arguments; all optional inputs go in `config`.
 - The Go examples omit imports and other boilerplate (as stated in the source).
-- Java version `1.67.0` is transcribed from the source; SDK versions measured on 2026-10-16 were `com.google.genai:google-genai` 1.57.0 (Maven), `google-genai` 2.31.0 (PyPI), `@google/genai` 2.30.0 (npm), `google.golang.org/genai` v1.75.0, `Google.GenAI` 1.26.1 (NuGet). Do not treat the source's example version as current.
+- Java version `1.67.0` is transcribed from the source; SDK versions measured on 2026-11-14 were `com.google.genai:google-genai` 2.3.0 (Maven), `google-genai` 3.3.0 (PyPI), `@google/genai` 3.3.0 (npm), `google.golang.org/genai` v1.77.0, `Google.GenAI` 2.1.0 (NuGet); the 2026-10-16 baseline was 1.57.0 / 2.31.0 / 2.30.0 / v1.75.0 / 1.26.1. SDK 3.x defaults the Gemini Developer API version to `v1` (see `api-versions.md`). Do not treat the source's example version as current.
 - This is a client SDK migration for the Gemini Developer API; the OpenAI SDK compatibility layer is a separate page (see `openai-compatibility.md`; OpenAI's own SDK is covered by openai-api-core).
 
 ## Related

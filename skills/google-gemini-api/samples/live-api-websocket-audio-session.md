@@ -86,6 +86,7 @@ if __name__ == "__main__":
 
 ## Notes
 
+- SDK 2.x to 3.x: this sample uses a raw WebSocket and names `v1beta` explicitly in `WS_URL`, so the SDK 3.x change of the default API version to `v1` does not affect it. If you switch to the GenAI SDK Live client, set `api_version` to `v1beta` (the Live API is `v1beta` only per https://aistudio.google.com/api-reference/api-versions, fetched 2026-11-14).
 - Live API is v1beta only. The first message must be `BidiGenerateContentSetup` (`setup`); audio is raw 16-bit PCM, 16 kHz, little-endian with `mimeType: "audio/pcm;rate=16000"`.
 - The official snippet hardcodes the API key and handles `toolCall` with a `handle_tool_call` helper defined in the page's Handle tool calls section; this sample reads the key from `GEMINI_API_KEY` and omits the tool-call branch.
 - The official websocket quickstart puts `responseModalities` directly under `setup`; per the BidiGenerateContentSetup reference it belongs in `generationConfig`, so the sample nests it there.

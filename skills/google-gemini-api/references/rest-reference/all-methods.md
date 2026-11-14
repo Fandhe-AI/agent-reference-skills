@@ -102,10 +102,17 @@ Methods (as tabulated in the source):
 | environments | GetEnvironment | `GET /v1beta/environments/{id}` | Gets an environment. |
 | environments | StartEnvironmentFileUpload | `PUT /upload/v1beta/environments/{environment}/files/{path}` | Starts a resumable upload session for a file in an environment workspace. |
 | environments | DeleteEnvironment | `DELETE /v1beta/environments/{id}` | Deletes an environment. |
+| voices | CreateVoice | `POST /v1beta/voices` | Creates a custom voice from a natural-language prompt (`VOICE_TYPE_PROMPTED`) or from reference and consent audio recordings (`VOICE_TYPE_REPLICATED`). |
+| voices | ListVoices | `GET /v1beta/voices` | Lists custom stored voices owned by the caller (ordered newest first) followed by prebuilt system voices from Google's voice catalog. |
+| voices | GetVoice | `GET /v1beta/voices/{voicesId}` | Gets a custom stored voice (`store = true`) by resource name. |
+| voices | DeleteVoice | `DELETE /v1beta/voices/{voicesId}` | Deletes a custom stored voice (`store = true`) by resource name. |
+| decisions | CreateDecision | `POST /v1beta/decisions` | Evaluates a batch of structured decision questions against a shared input. |
 
 ## Notes
 
 - All paths on this page are `v1beta`; v1 surfaces (Interactions API v1 and the v1 routes in the api-versions table) are not tabulated here. Source page lists `corpora`, `generatedFiles`, `tunedModels`, `dynamic` and their `operations` / `permissions` resources in its index but tabulates no methods for them in the fetched text.
+- Voices and Decisions rows (`voices.*`, `decisions.create`) were added on 2026-11-14 from the current official all-methods page (https://aistudio.google.com/api-reference/all-methods), which lists Voices and Decisions as their own resource groups. The current page writes some path parameters differently (for example `{agentsId}`, `{triggerId}`, `{model}`); the rows above keep the earlier notation.
+- Source: https://aistudio.google.com/api-reference/all-methods (fetched 2026-11-14)
 - Docs fetched 2026-10-16. The `tokens` / `embeddings` / `batch` / `files` / `caching` / `file-search` pages in this directory give per-resource detail.
 
 ## Related

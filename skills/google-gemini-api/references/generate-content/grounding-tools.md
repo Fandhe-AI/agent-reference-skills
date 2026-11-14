@@ -288,8 +288,8 @@ Notes:
 
 - Loop: send request with screenshot, receive `function_call` (with `intent` for Gemini 3.x and optional `safety_decision`: allowed, `require_confirmation`, or blocked), execute it client-side (scale normalized coordinates; e.g. Playwright), then send a new screenshot in a `function_result`. Run in a sandboxed VM or container.
 - The page says it needs the `google-genai` Python SDK version `2.7.0` or higher for the `ComputerUse` configuration shown; `enable_prompt_injection_detection=True` opts in to screenshot scanning; safety policy categories include `FINANCIAL_TRANSACTIONS`.
-- Source warning: "As a Preview capability, Computer Use may contain errors and security vulnerabilities."
-- Models: Gemini 3.8 Flash (`gemini-3.8-flash`, recommended), Gemini 3.5 Flash-Lite (`gemini-3.5-flash-lite`), Gemini 3 Flash Preview (`gemini-3-flash-preview`). Computer Use is a client-side tool with built-in context circulation.
+- Computer Use reached general availability (GA) across the Interactions and GenerateContent APIs on 2026-10-30 (release notes); the current source still warns that "Computer Use may contain errors and security vulnerabilities" and recommends close supervision. The older "As a Preview capability" wording no longer applies.
+- Models (per the current Computer Use guide, https://aistudio.google.com/docs/computer-use, fetched 2026-11-14): Gemini 4 Carbon (`gemini-4-carbon`), Gemini 4 Argon (`gemini-4-argon`), Gemini 4 Hydrogen (`gemini-4-hydrogen`), Gemini 3.8 Flash (`gemini-3.8-flash`), Gemini 3.5 Flash-Lite (`gemini-3.5-flash-lite`), Gemini 3 Flash Preview (`gemini-3-flash-preview`). Computer Use is a client-side tool with built-in context circulation.
 
 ### File Search
 

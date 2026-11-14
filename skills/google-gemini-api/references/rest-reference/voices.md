@@ -88,7 +88,7 @@ curl -X POST https://generativelanguage.googleapis.com/v1beta/voices \
 | Name | Type | Description |
 |------|------|-------------|
 | type | VoiceType | Required. `replicated` (from reference audio and a speaker consent recording), `prompted` (from a natural-language prompt, optionally editing or remixing a `base_voice`), `prebuilt` (built-in catalog voice, e.g. `Puck`, `Charon`; returned in responses only). |
-| prompted | PromptedVoice | Required in `CreateVoice` when `type` is `"prompted"`: `input` (string, required; the natural-language prompt describing the desired voice). |
+| prompted | PromptedVoice | Required in `CreateVoice` when `type` is `"prompted"`: `input` (string, required; the natural-language prompt describing the desired voice) and `base_voice` (string, optional; name or ID of an existing voice to edit or remix, e.g. `Puck` or `voice_abc123`; when present, `input` describes relative alterations to the base voice). |
 | id | string | Output only. Generated ID with prefix `voice_` for stored custom voices; for prebuilt voices, the speaker name. Pass `{id}` to `SpeechConfig.voice_config.voice` (or `SpeechConfig.voice`) during synthesis. |
 | key | string | Output only. Client-managed voice replication key (prefix `voicekey_`); returned only by `CreateVoice` when `type` is `"replicated"` and `store` is `false`. |
 | model | string | Model used to design or replicate the voice. Created voices can be synthesized across any supported TTS synthesis model. |
@@ -110,6 +110,8 @@ Other methods:
 - Availability: v1beta (the source states "This API is in Beta. Endpoints are under `/v1beta/`.").
 - Voice replication involves reference audio and speaker consent recordings; see the Voice Design and Voice Replication guides in this skill's speech-generation pages.
 - Distinct from openai-realtime-audio (OpenAI TTS voices); these are Gemini TTS custom voices.
+- Voice remixing: set `voice.prompted.base_voice` on a `prompted` `CreateVoice` request. The Voices API reference says `base_voice` can be any prompted or replicated voice the caller has access to (or a prebuilt voice name), while the Voice remixing guide lists prebuilt / Extended Voice Library voices and stored `prompted` voices; see the voice-remixing page in media-generation. Using a stored voice as `base_voice` extends its `expire_time`.
+- Source: https://aistudio.google.com/api-reference/voices (fetched 2026-11-14)
 - Docs fetched 2026-10-16.
 
 ## Related

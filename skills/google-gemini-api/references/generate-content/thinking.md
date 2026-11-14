@@ -147,6 +147,7 @@ print("Output tokens:", response.usage_metadata.candidates_token_count)
 - API surface: generateContent (REST `generationConfig.thinkingConfig`).
 - `minimal` "does not guarantee that thinking is off". You cannot disable thinking for Gemini 4 Argon; Gemini 3 Flash and Flash-Lite also do not support full thinking-off. Gemini 2.5 models do not support `thinkingLevel`; use `thinkingBudget`.
 - `thinkingLevel` is "required for Gemini 4 and recommended for Gemini 3 models". Gemini 4 (`gemini-4-argon`) supports `low`, `medium` (default), `high`.
+- `xhigh` (Gemini 4 Hydrogen, `gemini-4-hydrogen`): a fourth thinking level alongside `low`, `medium`, and the default `high`; the REST `thinkingLevel` enum lists `MINIMAL`, `LOW`, `MEDIUM`, `HIGH`, `XHIGH`. Reserve it for hard, multi-step coding and agentic problems where `high` falls short; it increases latency and token use and can cause overthinking on simpler prompts. `gemini-4-hydrogen` defaults to `high` and rejects `minimal` with an error; Carbon and Argon default to `medium` and cap at `high`. Source: whats-new-gemini-4-hydrogen and the GenerateContent API reference (the generateContent thinking guide page itself was not re-fetched, so the table above has no Hydrogen / Carbon columns).
 - Deprecated (Gemini 4 models): `thinkingBudget` / `thinking_budget`. If passed alone it maps to the nearest `thinkingLevel` with a warning; sending `thinkingBudget` and `thinkingLevel` together returns a `400` error.
 - Thought summaries: set `includeThoughts` to `true`, iterate `parts` and check the `thought` boolean. Levels and budgets apply to raw thoughts, not summaries. Pricing is based on the full thought tokens (`thoughtsTokenCount`), not only the summary; summaries are available in free and paid tiers; thought signatures sent back increase billed input tokens.
 - `max_output_tokens` includes thought tokens and is a hard cutoff; hitting it while reasoning stops with `finish_reason: MAX_TOKENS` and may return truncated or empty output (thinking tokens still billed). Lower `thinking_level` instead of setting a small `max_output_tokens`.
@@ -154,6 +155,8 @@ print("Output tokens:", response.usage_metadata.candidates_token_count)
 - Thought signatures: the Google GenAI SDK returns them automatically; manage manually only when modifying history or using REST. Do not concatenate parts with signatures or merge a signed part with an unsigned one.
 - Thinking is supported on all 4, 3, and 2.5 series models and works with all tools.
 - Distinct from Claude extended thinking (anthropic-api-core skill) and OpenAI reasoning effort (openai-api-core skill).
+
+- Source: https://aistudio.google.com/docs/whats-new-gemini-4-hydrogen and https://aistudio.google.com/api-reference/generate-content/generate-content (fetched 2026-11-14)
 
 ## Related
 

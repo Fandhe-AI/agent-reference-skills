@@ -155,9 +155,12 @@ client.voices.delete(id=created_voice.id)
 - Best practices: put permanent vocal traits (age, gender, timbre, vocal texture, regional accent) in Voice design, not in `style`; reserve `speech_metadata.style` for situational emotion (for example, `"whispered urgently"`); use a clear 1-2 sentence description.
 - Per the Voices API reference, `store` is required to be `true` when `voice.type` is `"prompted"` (otherwise `INVALID_ARGUMENT`); the default is `false`.
 - Availability: Voices endpoint is `v1beta`; synthesis uses the Interactions API. The interactive Voice Design studio is in Google AI Studio.
+- Voice remixing (edit a prebuilt or designed voice with natural-language instructions via `prompted.base_voice`) is covered in voice-remixing.md.
+- Source: https://aistudio.google.com/docs/voice-design (fetched 2026-11-14)
 - Distinct from OpenAI / Realtime TTS voices: see openai-realtime-audio for OpenAI's Realtime API and TTS.
 
 ## Related
 
 - [voice-replication.md](./voice-replication.md)
+- [voice-remixing.md](./voice-remixing.md)
 - [speech-generation.md](./speech-generation.md)

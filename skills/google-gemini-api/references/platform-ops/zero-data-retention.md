@@ -12,7 +12,7 @@ Interactions API stores state by default; opt out per request (from the logs pag
 
 ```python
 interaction = client.interactions.create(
-    model="gemini-3.8-flash",
+    model="gemini-4-hydrogen",
     input="Explain quantum entanglement in simple terms.",
     store=False
 )
@@ -26,6 +26,7 @@ interaction = client.interactions.create(
 | Grounding with Google Search | Prompts, contextual information, and output stored for 30 days; no way to disable storage when using it |
 | Grounding with Google Maps | Stored for 30 days (reliability engineering only); no way to disable storage when using it |
 | Interactions API | State storage is enabled by default; set `store` to `false` to opt out |
+| Generate Content API (`generateContent`, `streamGenerateContent`, `batchGenerateContent`) | Since October 26, 2026, new paid-tier projects store requests by default (`store=true`); projects created earlier keep their setting. Set `store=false` per request or turn off Generate Content API logging in the AI Studio Logs and Datasets Settings panel to opt out |
 | Live API | Do not configure `SessionResumptionConfig`; if a session handle is generated, conversation state (text, audio, video) is retained up to 24 hours |
 | File API storage | Files stored at rest until deleted or expired; delete files manually |
 | Explicit context caching | The `cached_content` context is stored with a user-defined `ttl` or `expire_time`; do not use it for an absolute zero-data footprint |
@@ -36,7 +37,7 @@ interaction = client.interactions.create(
 - Training restriction: under Paid Services, Google does not use prompts (including system instructions, cached content, and files) or responses to improve its products.
 - Enterprise-grade, self-serve ZDR controls are described in the Gemini Enterprise Agent Platform zero data retention guide (Google Cloud side, out of scope for this skill).
 - The `store=False` snippet is taken from the logs-datasets page (Interactions API example); the ZDR page itself contains no code.
-- Docs fetched 2026-10-16.
+- Release notes 2026-10-26 and https://aistudio.google.com/docs/logs-datasets (fetched 2026-11-14) state that Generate Content API storage is on by default for new paid-tier projects. The `zdr` page itself was not re-fetched; the other rows above are as of 2026-10-16.
 
 ## Related
 
