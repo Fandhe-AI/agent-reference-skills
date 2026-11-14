@@ -110,6 +110,12 @@ r.cleanup();
 
 Set `enablePerfMarks: true` in the constructor to emit `performance.mark` / `performance.measure` entries (WASM fetch, renderer instantiation, `.riv` parse/load, first frames); view them in the Chrome DevTools Performance panel. `enablePerfMarks` is also available on `RuntimeLoader` and `RiveFile`.
 
+### Focus
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `clearFocus` | `() => void` | Clears focus from the focus nodes of every playing state machine that has them; does not move browser focus off the `<canvas>` |
+
 ### Deprecated
 
 | Method | Signature | Description |
@@ -119,7 +125,6 @@ Set `enablePerfMarks: true` in the constructor to emit `performance.mark` / `per
 | `setBooleanStateAtPath` / `setNumberStateAtPath` / `fireStateAtPath` | `(inputName, value?, path)` | Set/fire inputs on nested artboards by path (e.g. `"group/nested"`) |
 | `getTextRunValueAtPath` / `setTextRunValueAtPath` | `(textName, [value,] path)` | Text runs on nested artboards by path |
 | `getTextRunValue` / `setTextRunValue` | `(textRunName, [textValue])` | Text runs on the active artboard |
-| `clearFocus` | `() => void` | Clears focus from the focus nodes of every playing state machine that has them; does not move browser focus off the `<canvas>` |
 | `setupRiveListeners` / `removeRiveListeners` | `(options?: { isTouchScrollEnabled?: boolean }) => void` / `() => void` | (Re)attach / remove canvas pointer/touch listeners for Rive Listeners; normally automatic |
 
 ### Related module exports
