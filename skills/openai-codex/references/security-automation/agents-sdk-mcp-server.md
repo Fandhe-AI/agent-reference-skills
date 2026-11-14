@@ -36,7 +36,7 @@ codex mcp list
 - Codex continues to support external MCP servers; the removal affects hosting Codex as an MCP server.
 - Historical (no longer supported): the former server exposed two tools via `tools/list`, `codex` (start a session; `prompt`, `approval-policy`, `sandbox`, `model`, `cwd`, `config`, `base-instructions`, `developer-instructions`, `compact-prompt`) and `codex-reply` (continue via `threadId`), and was driven from the OpenAI Agents SDK through `MCPServerStdio`. Don't build new integrations on it.
 - For automation or CI, use the Codex SDK instead of driving app-server directly.
-- Source: https://learn.chatgpt.com/docs/mcp-server (retrieved 2026-10).
+- Source: https://learn.chatgpt.com/docs/mcp-server (retrieved 2026-11-14; still states removal).
 
 ## Related
 

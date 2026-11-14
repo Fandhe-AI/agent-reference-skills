@@ -1,48 +1,78 @@
 # Plugin controls
 
-Understand plugin availability, connector-backed capabilities, actions, and connected-system access.
+Decide who can use each plugin and what its apps can do: member permissions, installation settings, app access and actions, content restrictions, and member-experience checks.
 
-## Overview
+## Signature / Usage
 
-Workspace administrators govern plugin availability and connector access in ChatGPT and Codex through six distinct layers.
+A plugin can include **Skills** (instructions, templates, reference material) and **Apps** (tools and information from services such as Google Drive or Slack, limited by app settings and the connected account's permissions). Admin console: https://admin.openai.com > workspace > **Plugins**. Member permissions: **Permissions & roles**, search **plugins**.
 
-## Control layers
+Public catalog export (Enterprise owners/admins): **Plugins** > **Public** > **Export CSV**, producing:
 
-| Layer | Governs |
-|-------|---------|
-| Plugin availability | Whether plugins are accessible to users |
-| Bundled skills | Reusable instructions shipped with installed plugins |
-| Connector access | Whether connector-backed capabilities can be used |
-| Connector actions | Which operations users can perform (read-only vs. custom vs. all) |
-| Source authorization | External data access through authenticated identities in the connected service |
-| Runtime permissions | Agent capabilities during execution |
+```text
+public-plugins-security-review.csv
+```
 
-## Management locations
+## Options / Props
 
-- Workspace settings (web and desktop surfaces)
-- CLI plugin browser (command-line installations)
-- Workspace apps / Permissions & Roles sections
+### What each control does
 
-## Capability chain and rollout
+| What you want to control | Where to look |
+| --- | --- |
+| Who can use, upload, share, or publish plugins | Member permissions |
+| Who can install a plugin and who gets it by default | Installation settings |
+| Who can use an app and which actions it allows | App access and actions |
+| When ChatGPT asks before using an app | The app's **Permissions** settings |
+| Files, records, and actions an account can reach | Permissions in the connected service |
+| Extra limits on content ChatGPT can access | Content restrictions (**Safety & Security Controls**), where supported |
+| What an agent can do on a computer or cloud environment | Environment permissions |
 
-- Terminology: **app** and **MCP server** refer to the same connected integration; UI labels such as **Workspace apps** and **App permissions** keep "app". A member can use an MCP server's capabilities only when the plugin and MCP server are available to their role and the authenticated account has access to the connected service (for a shared credential, the member also needs permission to use it). Installing a plugin for everyone doesn't, by itself, provide a shared account (see workspace connections guidance). Plugins in Sites let each visitor use their own connected accounts, with a separate Sites permission per plugin.
-- Plugins work in Chat and Work across ChatGPT on the web, desktop, and mobile, in Codex in the ChatGPT desktop app, and through the Codex CLI plugin browser; they aren't available in the IDE extension. ChatGPT and Codex share one public plugin directory.
-- Capability chain (use as a two-step rollout: first make the right plugins available, then configure capabilities and permissions): availability (workspace settings for web and desktop; the CLI plugin browser for CLI), included skills (the plugin package and skill controls), MCP server access (**Workspace apps** and **Permissions & roles**), actions and permissions (**Action control** and **App permissions**), service authorization (the connected service and its identity provider), runtime permissions (runtime, sandbox, and approval controls).
-- Step 1: workspace plugin controls determine which roles can use or install a plugin; the Codex CLI uses its own plugin browser; import workspace plugins from GitHub with plugin-management.md. Export the public catalog: eligible Enterprise owners and admins open **Admin > Plugins**, select **Public**, and select **Export CSV**; the file `public-plugins-security-review.csv` contains `Plugin Name`, `Plugin Description`, `Date Added (UTC)`, `OpenAI Verified`, `Developer Name`, `Version`, `App Name(s)`, `App Description(s)`, `Skill Name(s)`, `Skill Description(s)` (semicolons separate multiple values); it uses a snapshot up to 48 hours old, includes only public plugins visible to the workspace (not plugins created for it), and isn't available in FedRAMP workspaces.
-- Step 2: Manage capabilities from **Workspace apps** and **Permissions & roles**: enable MCP server connections by workspace role; for connections supporting **Action control** allow read-only actions or an approved custom set (including how newly added actions are handled); set **App permissions** for when ChatGPT asks before using a connection. Making an MCP server or plugin available doesn't grant access to files, records, or actions in the connected service; check the workspace role, approved action settings, then the account's permissions in the service. Conversation sync doesn't grant additional access; for Local computer access with Work Cloud, Agent Security's enterprise `apps` and `plugins` requirements apply to local executors (configure through TOML). Hook support is separate from plugin availability: command hooks and hooks from local configuration or plugins don't run under cloud orchestration even when the plugin is allowed.
-- Managed settings: `features.plugins = false` disables plugins, and the managed `[marketplaces]` / `[plugins]` / `[skills]` settings control marketplace sources and plugin defaults (see managed-configuration.md and plugin-management.md).
-- Restrict company app accounts to authorized workspaces: when activated, verified-domain restrictions prevent users from creating new connections to supported apps with company-domain accounts in personal or other unauthorized workspaces; verifying a domain doesn't activate the restriction, and existing connections aren't automatically disconnected.
-- Choose a focused initial set: enable plugins for an approved business need, set each plugin's audience, complete required review; for each connected service record the business owner, permitted data, approved read or write actions, authentication method, and support or removal contact; start with read actions and everyday categories (email, calendar, file and document systems); before enabling write actions identify the plugin owner, review MCP server scopes and service permissions, confirm data access, and document external effects and a recovery path; test with an account that has only the intended permissions.
-- Data flow: non-synced data from Chat and deep research is processed transiently and not indexed; synced connections index selected content in advance (the mode doesn't replace chat-retention controls); conversations using these connections remain available through the Compliance API. Connected-service guidance documents encryption in transit and at rest, per-user authorization, role and action controls, restricted network access, and no model training for Business, Enterprise, and Edu customers; the connected service's own policies also apply. For locally configured MCP servers see mcp-config.md.
+### Member permissions
+
+| Permission | Allows |
+| --- | --- |
+| Use plugins | Use plugins and apps available to the workspace |
+| Upload plugins | Create plugins by uploading ZIP files |
+| Upload plugins with custom MCP servers | Upload or update plugins with custom tool connections (still needs permission to create or edit the plugin) |
+| Share plugins | Share owned plugins with people, groups, or anyone in the workspace with a link |
+| Publish plugins to workspace | Add owned plugins to the workspace plugin directory |
+| Create plugins with MCPs | Use developer mode to create custom app connections |
+
+### Installation settings (bulk edit menu)
+
+| Setting | What it changes |
+| --- | --- |
+| Available for installation | Members can install the plugin |
+| Installed for workspace | Installs by default, keeping role-specific settings |
+| Customize by role | Sets availability for a custom role where supported |
+| Disable | Sets the workspace default to disabled (review role overrides) |
+
+### App access and actions
+
+| Control | Purpose |
+| --- | --- |
+| **App access** | Who can use the app |
+| **Tools** / **Actions** | Allow actions that read or change data (where supported) |
+| **New tools** / **New actions** | Whether actions added later are allowed; doesn't turn off already-enabled actions |
+| **Permissions** | When ChatGPT asks before using the app |
 
 ## Notes
 
-- For an initial rollout, start with everyday plugin categories (email, calendar, file/document systems such as Google Drive or Notion), read-only actions before write access, and review ownership/scopes/data impact first.
-- Connectors operate transiently for non-synced use and respect per-user authorization; chats that use plugins remain available through the Compliance API regardless of sync status.
-- Business, Enterprise, and Edu customer data isn't used for model training through plugin connectors.
+- Installing a plugin doesn't grant access to its apps or external data; allow the required apps, and the connected account must have service-side permission. **Manage Legacy Apps** opens the older app settings page where available.
+- Per-plugin role settings: **Workspace default** uses the workspace setting; **Off** for an ordinary custom role means no access from that role, but another role (including via groups) may still grant it. Role changes can take up to five minutes. Select several plugins and **Edit** for bulk changes.
+- Workspace connections: members need permission to use the shared account; installing a plugin for everyone doesn't create one. Plugins in Sites use each visitor's connected accounts with a separate Sites permission.
+- Write actions: check what they can change and how to review or correct results; confirmation prompts don't replace access restrictions.
+- Test with the member's account (not an owner's): find the plugin, use an included app, try the team's task, test content restrictions (allowed vs restricted item), test a write on a disposable record.
+- "Disabled by admin": check **Plugins** availability (**Apps** in FedRAMP; Business uses workspace-wide availability), **Permissions & roles** (**Use plugins** / **Allow members to use plugins**; **Use apps** in FedRAMP) across every assigned role, app access and enabled actions, and Lockdown Mode roles (which don't affect Codex network access).
+- Catalog export: uses data up to 48 hours old, includes public plugins visible to the workspace (not plugins created for it), isn't available in FedRAMP workspaces, and doesn't show per-member access. Columns: Plugin Name, Plugin Description, Date Added (UTC), OpenAI Verified, Developer Name, Version, App Name(s), App Description(s), Skill Name(s), Skill Description(s); semicolons separate multiple values.
+- Verified-domain restrictions can block new connections to supported apps with company-domain accounts in personal or unauthorized workspaces; verifying a domain doesn't activate them, and existing connections aren't disconnected.
+- Hooks can run at specific points but a hook failure doesn't necessarily stop the action; keep access restrictions in place. Retire a plugin by reviewing installation settings and app access separately (disabling an app doesn't uninstall the plugin).
+- Locally configured MCP servers are covered by the Codex MCP configuration docs.
+- Source: https://learn.chatgpt.com/docs/enterprise/apps-and-connectors (retrieved 2026-11-14). Updated from the previous revision of this page, which described six control layers and a capability chain no longer present in the official page.
 
 ## Related
 
 - [Skill controls](./skill-controls.md)
+- [Shared connections](./shared-connections.md)
+- [Plugin management](./plugin-management.md)
 - [Roles and workspace permissions](./roles-and-workspace-permissions.md)
 - [Admin rollout guide](./admin-rollout-guide.md)

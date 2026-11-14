@@ -19,11 +19,13 @@ Recommended model and reasoning-effort pairings, as listed on the page:
 ## Notes
 
 - If you don't need to think about usage or how long a task takes, you can default to Astra. To optimize usage, use the pairings above.
+- Consider GPT-6.1 Terra for concise writing based on supplied material, computer-use tasks with a defined outcome, and scoped code fixes. Provide clear inputs, requirements, and a way to verify the result (e.g. checking saved records or running regression tests). Compare it with GPT-6.1 Sol on the same inputs and reasoning effort: for writing, judge audience fit, voice, and useful detail as well as accuracy and length; for computer use, check the saved result and the accuracy of the completion report. API model page: `https://developers.openai.com/api/docs/models/gpt-6.1-terra`.
 - Consider GPT-6.1 Sol for complex projects where cost matters (e.g. a board presentation from financial results, a website from a product brief); compare it with Astra on the same task to assess the quality/cost tradeoff.
 - Availability, tools, reasoning settings, and usage limits differ by product and model version. See the models available in ChatGPT and the API model catalog (`https://developers.openai.com/api/docs/models`; GPT-6.1 Sol: `https://developers.openai.com/api/docs/models/gpt-6.1-sol`).
 - The page also embeds an interactive model overview and a model recommender; their content is not present in the markdown source and is not reproduced here.
 - Experiment: consider how often the workflow runs, how quickly you need the result, how the output will be used, and how important quality is. Compare results on the same inputs and keep the lightest setting that meets your quality bar.
-- Source: https://learn.chatgpt.com/docs/model-selection (retrieved 2026-10).
+- Choose acceptance criteria before comparing models: writing (required facts, qualifications, audience, voice), computer use (reopen the affected record or page to verify saved changes, confirm unrelated data is preserved, compare the completion report with the actual result), code and interfaces (run regression tests; for interactive apps inspect the rendered result on desktop and mobile). Repeat across representative tasks, measure completion time including review/repair time, then vary reasoning effort with model and inputs fixed.
+- Source: https://learn.chatgpt.com/docs/model-selection (retrieved 2026-11-14).
 
 ## Related
 

@@ -15,8 +15,8 @@ Mention `@Computer` or `@AppName` (for example `@Chrome`), or ask ChatGPT to use
 ### Setup
 
 1. In the desktop app, select ChatGPT and switch to Work, or select Codex.
-2. Open **Plugins > Computer Use**, select **Install plugin** (or **Enable**), turn on the Computer Use server and skill toggles, then **Try now**.
-3. Review app access in **Settings > Computer use** (**Always-allowed apps**; connected browser controls have **Manage**).
+2. Open **Settings > Computer use**. Under **Control**, find **Any App**. If the row shows **Install**, select it and follow the prompts; if the switch is off, turn it on. If your app shows a **Computer Use** plugin page instead, follow the setup prompts on that page.
+3. Start a Computer Use task. ChatGPT asks for permission before it uses an app; apps you approve for future tasks appear under **Always-allowed apps** in the same settings. If you don't see **Any App**, separate browser or per-app controls don't grant access to other desktop apps; in a managed workspace ask your administrator.
 4. macOS: grant **Screen Recording** (see the app) and **Accessibility** (click, type, navigate). Windows: keep the target app visible on the active desktop.
 
 ### Windows app policy
@@ -40,7 +40,11 @@ Enable in **Settings > Computer Use**. Installs an Apple authorization plug-in s
 - It cannot automate terminal apps or ChatGPT itself, cannot authenticate as administrator, and cannot approve security and privacy permission prompts.
 - Changes made through desktop apps may not appear in the review pane until saved to disk and tracked by the project.
 - For visual-judgment tasks the source recommends GPT-6 Astra when available in the model selector.
-- Source: https://learn.chatgpt.com/docs/computer-use (retrieved 2026-10).
+- On macOS, a scoped task can run in the background while you keep working elsewhere. Good fits: testing a desktop app or iOS simulator flow, tasks that need your web browser, reproducing GUI-only bugs, changing app settings, reading data not available via a plugin, multi-app workflows.
+- `Always allow` entries can be removed in the **Computer Use** section of the app settings. Admins can restrict which apps Computer Use may access and whether approvals can be saved (managed browser and Computer Use controls).
+- If macOS can't see or control an app, check **System Settings > Privacy & Security** > **Screen Recording** and **Accessibility** for **Codex Computer Use**.
+- If ChatGPT uses your browser it can act in pages where you're signed in; to keep using your browser meanwhile, ask it to use a different browser. Screenshots taken by Computer Use fall under your ChatGPT data controls.
+- Source: https://learn.chatgpt.com/docs/computer-use (retrieved 2026-11-14).
 
 ## Related
 

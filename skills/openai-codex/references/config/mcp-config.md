@@ -46,7 +46,7 @@ Each server is a `[mcp_servers.<server-name>]` table. In the TUI, `/mcp` lists a
 | `env` | map<string,string> | Environment variables set for the server. |
 | `env_vars` | array<string \| {name, source}> | Env vars to allow/forward. String entries and `source = "local"` read Codex's local environment; `source = "remote"` reads a remote executor environment (requires remote MCP stdio). |
 | `cwd` | string | Working directory to start the server from. |
-| `experimental_environment` | `remote` | Start the stdio server through a remote executor environment when available. |
+| `experimental_environment` | `remote` | Start the stdio server through a remote executor environment when available (not listed on the 2026-11-14 official page; see `environment_id`). |
 
 ```toml
 env_vars = ["LOCAL_TOKEN", { name = "REMOTE_TOKEN", source = "remote" }]
@@ -74,7 +74,10 @@ If no credential source resolves, Codex can connect without authentication. Run 
 | `startup_timeout_sec` | number | Server start timeout. Default `10`. |
 | `tool_timeout_sec` | number | Tool run timeout. Default `60`. |
 | `enabled` | boolean | Set `false` to disable a server without deleting it. |
-| `required` | boolean | Set `true` to fail startup if this enabled server can't initialize. |
+| `environment_id` | string | Environment for a stdio or Streamable HTTP server. Default `local`; use a registered environment ID to connect through a remote executor. |
+| `required` | boolean | Set `true` to fail startup if this enabled server isn't ready. |
+| `startup_readiness` | `connection` \| `catalog` | With `required = true`: default `connection` requires a live connection; `catalog` lets a valid cached tool catalog satisfy startup while the server connects (tool calls still need a live connection). |
+| `scopes` | array<string> | OAuth scopes for this server (`mcp_servers.<server-name>.scopes`). Override for one login with `codex mcp login <name> --scopes read,write`. |
 | `enabled_tools` | array<string> | Tool allow list. |
 | `disabled_tools` | array<string> | Tool deny list, applied after `enabled_tools`. |
 | `default_tools_approval_mode` | `auto` \| `prompt` \| `writes` \| `approve` | Default approval behavior for this server's tools. `writes` prompts only for tools not marked read-only. |
@@ -107,7 +110,11 @@ mcp_oauth_callback_port = 5555
 mcp_oauth_callback_url = "https://devbox.example.internal/callback"
 ```
 
-`mcp_oauth_callback_port` fixes the local callback port (ephemeral if unset). `mcp_oauth_callback_url` sets a base callback URL for the OAuth `redirect_uri`; Codex appends a server-specific callback ID, so register the full derived URI with the OAuth provider, not just the base host/path. If the MCP server advertises `scopes_supported`, Codex prefers those scopes over `config.toml`-configured ones.
+`mcp_oauth_callback_port` fixes the local callback port (ephemeral if unset). `mcp_oauth_callback_url` sets a custom callback path or remote Devbox ingress URL. Whether it is used unchanged or with the server-specific callback ID appended depends on issuer support and on whether `client_id` / `callback_url` are configured; see the callback selection table under Notes, and register the exact callback printed by `codex mcp add`.
+
+For a terminal without a local browser, run `codex mcp login <server-name> --no-browser`, open the printed authorization URL elsewhere, and paste the full redirect URL back into the terminal even if the browser can't load the callback page.
+
+Scope selection when `scopes` is not set: Codex requests the scopes in the server's initial `WWW-Authenticate` challenge, else the scopes advertised in the protected resource metadata when available. An empty list (`scopes = []`) still lets the OAuth library choose scopes (it can add `offline_access` when supported).
 
 ## Config examples
 
@@ -146,6 +153,23 @@ enabled_tools = ["read", "search"]
 approval_mode = "approve"
 ```
 
+Plugin-provided HTTP MCP servers can declare OAuth settings in `.mcp.json` (camelCase fields):
+
+```json
+{
+  "mcpServers": {
+    "sample": {
+      "type": "http",
+      "url": "https://mcp.example.com/mcp",
+      "oauth": {
+        "clientId": "my-pre-registered-client",
+        "callbackUrl": "http://127.0.0.1/callback/registered"
+      }
+    }
+  }
+}
+```
+
 ## Configure without editing TOML directly
 
 - **ChatGPT desktop app**: Settings > MCP servers > Add server (STDIO or Streamable HTTP) > Restart. `/mcp` in the composer lists connected servers.
@@ -169,8 +193,24 @@ approval_mode = "approve"
 - `codex mcp-server` and the standalone `codex-mcp-server` binary have been removed; hosting Codex as an MCP server is no longer supported. Integrations that need authentication, conversation history, approvals, and streamed events should use the Codex app server (see app-server.md in the security-automation category). `codex mcp` continues to manage external MCP servers.
 - Supported MCP features on a Codex host: STDIO servers (environment variables); Streamable HTTP servers (bearer token, OAuth including Client ID Metadata Documents (CIMD) and Dynamic Client Registration (DCR), ChatGPT session auth for trusted first-party servers); server instructions (the `instructions` field read at initialization).
 - OAuth registration: by default (`auto`) Codex chooses CIMD when the authorization server advertises `client_id_metadata_document_supported: true`, includes `none` in `token_endpoint_auth_methods_supported`, and the callback is a supported loopback URL; otherwise DCR when available. A configured OAuth client ID always takes precedence and skips registration. `--oauth-client-registration` applies only to the current login and isn't stored.
-- Callback URLs: newly added pre-registered clients use a stable callback only when the authorization server advertises `authorization_response_iss_parameter_supported: true` with a metadata `issuer`; otherwise Codex appends a server-specific callback ID (e.g. `http://127.0.0.1/callback/XuuuHAzzHOni`). Register the exact callback displayed by `codex mcp add`. A mismatched `iss` always rejects the response; a missing `iss` rejects it when issuer support is advertised. For `http://127.0.0.1` callbacks without an explicit port, the active listener port is inserted during authorization. An explicit port in the callback URL doesn't configure the listener; use `mcp_oauth_callback_port` or `oauth.callback_port`.
+- Callback URLs: newly added pre-registered clients use a stable callback only when the authorization server advertises `authorization_response_iss_parameter_supported: true` with a metadata `issuer`; otherwise Codex appends a server-specific callback ID (e.g. `http://127.0.0.1/callback/XuuuHAzzHOni`). Register the exact callback displayed by `codex mcp add`; for configured callbacks, the selection table below decides whether the stored URL is reused or ignored. A mismatched `iss` always rejects the response; a missing `iss` rejects it when issuer support is advertised. For `http://127.0.0.1` callbacks without an explicit port, the active listener port is inserted during authorization. An explicit port in the callback URL doesn't configure the listener; use `mcp_oauth_callback_port` or `oauth.callback_port`.
 - Plugin-provided HTTP MCP servers can declare OAuth in `.mcp.json` with camelCase `clientId`, `callbackUrl`, `callbackPort` under `oauth`; a plugin's `callbackPort` overrides the global `mcp_oauth_callback_port`, and the same callback-selection rules apply.
+### OAuth callback selection during login (2026-11-14 official page)
+
+| OAuth configuration | Issuer support | Callback used |
+| --- | --- | --- |
+| `callback_url` without `client_id` | Supported | Configured callback used for client registration. |
+| `callback_url` without `client_id` | Unsupported | Configured callback used for registration with the server-specific callback ID appended. |
+| `client_id` and `callback_url` | Supported | Configured callback reused; the authorization response must contain the matching `iss`. |
+| `client_id` and a `callback_url` ending in the correct callback ID | Unsupported | Configured callback reused unchanged. |
+| `client_id` and a `callback_url` missing the correct callback ID | Unsupported | Configured callback ignored; uses `mcp_oauth_callback_url` (or `http://127.0.0.1/callback` when unset) with the callback ID appended. |
+| `client_id` without `callback_url` | Either | Global or default callback with the callback ID appended. |
+
+- The fallback doesn't modify the stored callback URL. The callback ID is derived from the MCP server URL (path and query included). Same rules for automatic and explicit login. Authorization servers must accept variable loopback ports (RFC 8252, Section 7.3); the port substitution applies only to `http://127.0.0.1` callbacks without an explicit port (not `localhost`, IPv6, HTTPS, or callbacks with a port). Local callback URLs bind to the local interface, non-local ones to `0.0.0.0`. A malformed callback URL, or issuer support advertised without a metadata `issuer`, is a hard failure.
+- CIMD: without issuer-bound responses Codex CLI uses a per-server ChatGPT-hosted document `https://chatgpt.com/oauth/codex/<callback_id>/client.json` (loopback redirect `http://127.0.0.1:<port>/callback/<callback_id>`); with `authorization_response_iss_parameter_supported: true`, a valid `issuer`, and a matching `iss`, it uses the stable shared document `https://chatgpt.com/oauth/codex/client.json` with the shared `/callback` path. Custom callback hosts, paths, or query parameters require DCR or a configured OAuth client ID.
+- Plugin `oauth.callbackPort` overrides the global `mcp_oauth_callback_port` (ephemeral if neither). The port inside `callbackUrl` doesn't select the listener; for a fixed direct loopback port configure both to match, e.g. `"callbackUrl": "http://127.0.0.1:4321/callback/registered", "callbackPort": 4321`. A proxied callback may intentionally use an external port that differs from the local listener port.
+- Official page also covers building an MCP plugin with Plugin Creator and Sites and replacing GPT custom actions (ChatGPT Work scope; not distilled here), and notes that in Local computer access with Work Cloud admin-defined MCP hooks run on the cloud coordinator while command hooks and plugin/local-config hooks are not supported.
+- Source: https://learn.chatgpt.com/docs/extend/mcp (retrieved 2026-11-14).
 - Server authors: use `instructions` for cross-tool workflows, constraints, and rate limits, and keep the first 512 characters self-contained.
 - ChatGPT web uses remote MCP tools through plugins and doesn't read local Codex configuration files. In Local computer access with Work Cloud, managed `mcp_servers` requirements apply to local executors only (ChatGPT Work specifics are out of this skill's scope).
 - For the full key list (types, defaults) alongside every other `config.toml` key, see [Configuration Reference](./config-reference.md).

@@ -1,18 +1,19 @@
 ---
 name: openai-codex
 description: >
-  OpenAI Codex (CLI / IDE / cloud / ChatGPT desktop app) リファレンス。
+  OpenAI Codex (CLI / IDE / cloud / desktop app) リファレンス。
   codex exec, スラッシュコマンド, AGENTS.md, rules, subagents, approvals, sandbox,
-  permission profiles, config.toml, MCP 設定, git worktrees, GitHub Action, Codex SDK, App Server (JSON-RPC),
-  Codex skills (.agents/skills), plugins, scheduled tasks, Browser, Computer Use,
-  administration, compliance API, Codex Security 脆弱性スキャン (SARIF)。
+  permission profiles, config.toml, MCP 設定, GPT-6.1 Terra, git worktrees, GitHub Action, SDK,
+  App Server (JSON-RPC), Codex skills (.agents/skills), plugins, scheduled tasks, Browser, WebMCP,
+  Computer Use, administration, compliance API, Codex Security 脆弱性スキャン (SARIF)。
 user-invocable: false
 ---
 
 # openai-codex
 
 OpenAI Codex — `codex` CLI / IDE 拡張 / ChatGPT desktop app（公式表記は Codex in the ChatGPT desktop app）/ cloud からなる OpenAI 公式のコーディングエージェント製品。
-対象は learn.chatgpt.com/docs の取得日 2026-10-16 時点（URL に版なし。対象モデル世代は GPT-6 系: gpt-6-astra / gpt-6.1-sol / gpt-6-sol / gpt-6-luna）。
+対象は learn.chatgpt.com/docs の取得日 2026-11-14 時点（URL に版なし。対象モデル世代は GPT-6 系: gpt-6-astra / gpt-6.1-sol / gpt-6.1-terra / gpt-6-sol / gpt-6-luna。GPT-6.1 Terra は CLI 0.159.0 以降）。
+既存ページのうち本回で再取得したのは models / model-selection / browser / computer-use / mcp-config / plugin-controls / skill-controls / agents-sdk-mcp-server のみで、他は取得日 2026-10 のまま（未追従の差分がありうる）。pricing・security-cookbook（enterprise）・dots / sites / space / ChatGPT Work 系は未収録。
 CLI・IDE・desktop app・cloud への導入、CLI / IDE / desktop app のコマンドと設定、AGENTS.md/rules/subagents/memories によるエージェント設定、
 Fast / Ultrafast mode、config.toml/MCP 設定、approvals・sandbox・GitHub Action・Codex SDK・App Server による自動化、
 plugins・Codex skills 作成・scheduled tasks・Browser・Computer Use・web search による拡張、
@@ -50,6 +51,13 @@ skills/openai-codex/
       codex-micro.md
       best-practices.md
       troubleshooting.md
+      feature-maturity.md
+      glossary.md
+      open-source.md
+      notifications.md
+      working-with-agents.md
+      skills-and-plugins.md
+      web.md
     commands/
       README.md
       cli-global-flags.md
@@ -93,6 +101,8 @@ skills/openai-codex/
       codex-sdk.md
       app-server.md
       agents-sdk-mcp-server.md
+      cyber-safety.md
+      cyber-safety-recommended-configuration.md
     administration/
       README.md
       administration.md
@@ -121,6 +131,15 @@ skills/openai-codex/
       gateway-compatibility.md
       sign-in-with-chatgpt-through-a-gateway.md
       bedrock-through-litellm.md
+      dynamic-groups.md
+      configuration-server.md
+      cloud-local-access.md
+      desktop-browser-policies.md
+      user-lifecycle.md
+      admin-plugin.md
+      prisma-airs.md
+      teams.md
+      shared-connections.md
     security/
       README.md
       overview.md
@@ -146,6 +165,11 @@ skills/openai-codex/
       cli-ci.md
       cli-ci-gitlab.md
       sdk.md
+      daybreak-setup.md
+      daybreak-faq.md
+      daybreak-notifications.md
+      daybreak-scanner-imports.md
+      daybreak-findings-and-fixes.md
     environments/
       README.md
       cloud-environments.md
@@ -153,6 +177,7 @@ skills/openai-codex/
       git-worktrees.md
       local-environment.md
       modes.md
+      network-file-systems.md
     extend/
       README.md
       plugins.md
@@ -162,6 +187,17 @@ skills/openai-codex/
       computer-use.md
       web-search.md
       record-and-replay.md
+      webmcp.md
+      chrome-extension.md
+      annotations-extensibility.md
+      appshots.md
+      image-generation.md
+      image-inputs.md
+      long-running-work.md
+      visualizations.md
+      pets.md
+      voice.md
+      composer-predictions.md
     third-party/
       README.md
       github.md
@@ -212,6 +248,7 @@ skills/openai-codex/
 | Codex CLI / IDE 拡張 / desktop app / cloud の導入・違いを知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | CLI の出力・エイリアスをカスタマイズしたい、desktop app（Windows / Linux）・リモート接続から使いたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | モデル選択（GPT-6 系・Codex Micro 含む）・reasoning effort・ベストプラクティス・トラブルシュートを知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| 機能の成熟度ラベル・用語集・通知・web 版・agent への委譲の考え方・skills と plugins の違いを知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | CLI のフラグ・サブコマンド・スラッシュコマンド、IDE / desktop app のコマンドと設定を引きたい | commands | [references/commands/README.md](references/commands/README.md) |
 | AGENTS.md / prompting / subagents / memories ワークフローを設定したい | agent-configuration | [references/agent-configuration/README.md](references/agent-configuration/README.md) |
 | サンドボックス外で実行するコマンドを rules（`.rules` / Starlark `prefix_rule`）で許可したい、hooks でエージェントのライフサイクルにフックしたい | agent-configuration | [references/agent-configuration/README.md](references/agent-configuration/README.md) |
@@ -220,16 +257,21 @@ skills/openai-codex/
 | 環境変数の一覧を知りたい | config | [references/config/README.md](references/config/README.md) |
 | approvals / sandbox / permission profiles / permission modes を設計したい | security-automation | [references/security-automation/README.md](references/security-automation/README.md) |
 | codex exec を CI/GitHub Action/Codex SDK から自動実行したい、Windows/WSL 上のサンドボックスを設定したい | security-automation | [references/security-automation/README.md](references/security-automation/README.md) |
+| サイバー領域の Trusted Access・推奨構成（permission profile / Auto-review）を知りたい | security-automation | [references/security-automation/README.md](references/security-automation/README.md) |
 | App Server でカスタムクライアントを作りたい（旧 MCP server からの移行） | security-automation | [references/security-automation/README.md](references/security-automation/README.md) |
 | ワークスペースの roles / provisioning / analytics / compliance を管理したい | administration | [references/administration/README.md](references/administration/README.md) |
+| dynamic groups・user lifecycle・configuration server・desktop browser policies・Prisma AIRS・Teams / workspace connections を設定したい | administration | [references/administration/README.md](references/administration/README.md) |
 | Enterprise ロールアウト・アクセストークン運用を知りたい | administration | [references/administration/README.md](references/administration/README.md) |
 | LLM gateway 経由の利用・service accounts・Agent Security・plugin 管理を設定したい | administration | [references/administration/README.md](references/administration/README.md) |
 | リポジトリの脆弱性スキャン・トリアージ・修復（Codex Security）を行いたい、PR/差分のセキュリティレビューをしたい | security | [references/security/README.md](references/security/README.md) |
 | 検出結果の SARIF/CSV/JSON エクスポート・CI（GitLab 含む）連携・threat model 調整をしたい | security | [references/security/README.md](references/security/README.md) |
+| Daybreak Defense Factory のセットアップ・scanner imports・webhook 通知・findings と fix を扱いたい | security | [references/security/README.md](references/security/README.md) |
 | Cloud / Local / Worktree 環境の設定・切り替え、git worktree でチャットを分離したい | environments | [references/environments/README.md](references/environments/README.md) |
+| NFS ホームディレクトリで Codex を動かしたい | environments | [references/environments/README.md](references/environments/README.md) |
 | 新 Cloud environments と Legacy の違いを知りたい | environments | [references/environments/README.md](references/environments/README.md) |
 | plugins・Codex skills 作成（.agents/skills）・scheduled tasks（automations）・Browser・Computer Use・web search を使いたい | extend | [references/extend/README.md](references/extend/README.md) |
 | ワークフローを録画してスキル化したい（Record & Replay） | extend | [references/extend/README.md](references/extend/README.md) |
+| Site tools（WebMCP）・Chrome 拡張・ブラウザ annotation API・Appshots・画像生成 / 入力・long-running work（`/goal`）・Visualizations・pets・Voice を使いたい | extend | [references/extend/README.md](references/extend/README.md) |
 | GitHub / GitLab / Linear / Slack（ChatGPT in Slack）から Codex を呼び出したい | third-party | [references/third-party/README.md](references/third-party/README.md) |
 | GitLab MR レビュー・code review 全般を設定したい | third-party | [references/third-party/README.md](references/third-party/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
