@@ -5,7 +5,7 @@ description: >
   createFunction, step.run, step.sleep, step.waitForEvent, step.invoke,
   step.sendEvent, step.ai.infer, inngest.send, serve, checkpointing, Inngest CLI。
   concurrency, throttle, debounce, rate-limit, batching, idempotency, singleton。
-  Realtime (channels, topics, useRealtime)、Sandboxes、Agent Evals、MCP。
+  Realtime (channels, topics, useRealtime)、Sandbox (step.sandbox)、Agent Evals、MCP。
   Next.js, Hono, Cloudflare Workers。
 user-invocable: false
 ---

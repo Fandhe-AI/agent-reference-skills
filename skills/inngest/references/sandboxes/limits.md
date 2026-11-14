@@ -14,6 +14,8 @@ const sandbox = await step.sandbox.create("create-sandbox", {
   runningTimeout: false, // return before readiness; call waitUntilRunning separately
 });
 
+await sandbox.waitUntilRunning("wait-for-sandbox", { timeout: "60s" });
+
 await sandbox.commands.run("agent", "node agent.js", {
   tools: { getCustomer },
   toolOptions: { maxCalls: 200, toolTimeout: "1m" },
