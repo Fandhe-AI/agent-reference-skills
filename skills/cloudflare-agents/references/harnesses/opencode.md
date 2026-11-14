@@ -2,7 +2,7 @@
 source: https://developers.cloudflare.com/agents/harnesses/opencode/
 ---
 
-# OpenCode harness (OpenCodeHarness, experimental)
+# OpenCode harness (OpenCodeHarness)
 
 `OpenCodeHarness` runs OpenCode 2.0's Workerd SDK inside a plain Durable Object. OpenCode owns the agent loop, transcript, tools, and session recovery; the harness supplies SQLite storage (tables and indexes prefixed `opencode_`) and wakes the object after an interrupted run. The `agents/models/opencode` provider connects OpenCode to Workers AI, AI Gateway catalog models, and dynamic routes through the `AI` binding.
 

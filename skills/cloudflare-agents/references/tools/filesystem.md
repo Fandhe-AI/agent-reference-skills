@@ -93,13 +93,13 @@ Run JavaScript against workspace files in a Dynamic Worker (requires a `worker_l
 
 ```ts
 import { Workspace } from "@cloudflare/computer";
-import { WorkerJavaScriptBackend } from "@cloudflare/computer/backends/worker-javascript";
+import { CodemodeBackend } from "@cloudflare/computer/backends/codemode";
 import { DurableObject } from "cloudflare:workers";
 
 export class NotesAgent extends DurableObject<Env> {
 	workspace = new Workspace({
 		storage: this.ctx.storage,
-		backends: [new WorkerJavaScriptBackend({ loader: this.env.LOADER })],
+		backends: [new CodemodeBackend({ loader: this.env.LOADER })],
 	});
 }
 ```
@@ -120,13 +120,13 @@ export default async function (input) {
 }
 ```
 
-Host modules under `ws:` expose your functions to that code (validate inputs: they come from the model):
+Host modules under `codemode:` expose your functions to that code (validate inputs: they come from the model):
 
 ```ts
-new WorkerJavaScriptBackend({
+new CodemodeBackend({
 	loader: this.env.LOADER,
 	modules: {
-		"ws:orders": {
+		"codemode:orders": {
 			// Arguments arrive as an array of JSON-compatible values.
 			lookup: ([orderId]) => this.lookUpOrder(String(orderId)),
 		},
@@ -137,11 +137,11 @@ new WorkerJavaScriptBackend({
 Waiting for approval from inside a replayable run (experimental):
 
 ```ts
-new WorkerJavaScriptBackend({
+new CodemodeBackend({
 	loader: this.env.LOADER,
 	onInterrupt: "replay",
 	modules: {
-		"ws:github": {
+		"codemode:github": {
 			postComment: async ([issue, body], ctx) => {
 				const { approved } = await ctx.interrupt<{ approved: boolean }>({
 					issue,
@@ -174,7 +174,7 @@ Tool adapter options (`createAITools`, `createPiTools`, `createTanStackTools`):
 | `read` | object | Default caps | Limits for `read` (`maxBytes`, `maxLines`, `includeLineNumbers`). |
 | `write` | object | Default caps | Limits for `write`. |
 | `edit` | object | Default caps | Limits for `edit`. |
-| `exec` | object | Every backend | Map of backend ID to `{ description }`; `{}` leaves out the `exec` tool. |
+| `exec` | object | Every backend | Set `exec.backends` to a map from backend ID to `{ description }`; `exec: { backends: {} }` leaves out the `exec` tool. |
 
 `new Workspace(options)`:
 
@@ -188,18 +188,18 @@ Tool adapter options (`createAITools`, `createPiTools`, `createTanStackTools`):
 | `artifacts` | `{ binding }` | — | Artifacts binding. |
 | `output` | — | — | Where long command output is saved and how much `result()` keeps. |
 
-`WorkerJavaScriptBackend` options:
+`CodemodeBackend` options:
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `loader` | Worker Loader binding | Required | The Worker Loader binding. |
-| `id` | string | `"worker-javascript"` | Backend ID used by `exec` and `runtime.exec()`. |
+| `id` | string | `"codemode"` | Backend ID used by `exec` and `runtime.exec()`. |
 | `root` | string | `/workspace` | Directory code can access; paths outside are rejected. |
 | `access` | string | `"read-write"` | `"read"` lets code read but not change files. |
 | `defaultTimeoutMs` | number | `60000` | Run time when the caller sets no timeout. |
 | `maxTimeoutMs` | number | `180000` | Longest timeout a caller can request. |
 | `globalOutbound` | Fetcher or null | `null` | Receives every outbound request; `null` blocks network access. |
-| `modules` | object | — | Extra importable modules (e.g. `ws:` host modules). |
+| `modules` | object | — | Extra importable modules (e.g. `codemode:` host modules). |
 | `onInterrupt` | `"fail"`, `"restart"`, `"replay"` | `"fail"` | What happens to runs a restart interrupts. |
 | `onWait` | function | — | Called when a host module call starts waiting for an answer. |
 
@@ -207,7 +207,7 @@ Tool adapter options (`createAITools`, `createPiTools`, `createTanStackTools`):
 
 `workspace.runtime` methods: `exec(source, options?)`, `getExec`, `killExec`, `disposeExec`, `backends`, `recover` (experimental), `pending` (experimental), `respond` (experimental). `exec()` options: `backend`, `input`, `encoding`, `cwd`, `env`, `stdin`, `timeoutMs`, `onInterrupt`. Results contain `status`, `exitCode`, `stdout`, `stderr`, `value`, and `truncated`. Declare handles with `using`.
 
-Host module factories: `createGitModule()` (`ws:git`, pass `{ allowNetwork: true }` to clone/fetch/push), `createArtifactsModule()` (`ws:artifacts`), `createToolBindings()` (`ws:tools`).
+Host module factories: `createGitModule()` (`codemode:git`, pass `{ allowNetwork: true }` to clone/fetch/push), `createArtifactsModule()` (`codemode:artifacts`), `createToolBindings()` (`codemode:tools`).
 
 ## Notes
 

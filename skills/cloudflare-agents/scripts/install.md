@@ -34,7 +34,7 @@ Export the Durable Object class from the Worker's main module, then run `npx wra
 npm i agents @earendil-works/pi-durable @earendil-works/pi-ai @earendil-works/chord @cloudflare/computer
 ```
 
-The Pi packages are optional peer dependencies of `agents` (`~1.4.0`). Pi Durable is experimental, and each `agents` release supports one Pi minor version. Install the versions your package manager resolves for `agents`.
+The Pi packages are optional peer dependencies of `agents` (`~1.5.0`). Pi Durable is experimental, and each `agents` release supports one Pi minor version. Install the versions your package manager resolves for `agents`.
 
 ### OpenCode harness packages
 

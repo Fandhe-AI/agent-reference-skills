@@ -38,7 +38,7 @@ Components of agent systems: decision engine (usually an LLM), tool integration 
 ## Notes
 
 - Platform properties: each agent has a durable identity, local SQL storage (own SQLite database), real-time connections (state changes broadcast over WebSockets), scheduled work, recoverable execution, hibernation when idle, and global edge deployment.
-- The Pi harness runs the Pi agent loop durably in a Durable Object and uses the Lifecycle's job queue so a run continues after eviction. The Pi packages are optional peer dependencies of `agents` at `~1.4.0`; Pi Durable is experimental and its API can change in minor releases, so each `agents` release supports one Pi minor version. Examples use Workers AI through the `AI` binding (no API keys).
+- The Pi harness runs the Pi agent loop durably in a Durable Object and uses the Lifecycle's job queue so a run continues after eviction. The Pi packages are optional peer dependencies of `agents` at `~1.5.0`; Pi Durable is experimental and its API can change in minor releases, so each `agents` release supports one Pi minor version. Examples use Workers AI through the `AI` binding (no API keys).
 - The `Agent` class is a preset Durable Object with the Lifecycle and a set of capabilities already installed. Example agents: Pi, chat, Slack, voice, browser, email.
 - "Agent" here is the Cloudflare `agents` package; it is not the OpenAI Agents SDK (openai-agents skill) nor the Claude Agent SDK (anthropic-agent-sdk skill). Durable Object concepts: cloudflare-stateful; Workers AI and AI Gateway: cloudflare-ai skill (workers-ai, ai-gateway; https://developers.cloudflare.com/ai-gateway/).
 
