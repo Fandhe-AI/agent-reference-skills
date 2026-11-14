@@ -12,6 +12,19 @@ The page set covers four topics, each with its own page in this skill: prompting
 
 Model the LLM like a user, not a function: treat what it returns as nondeterministic, often wrong (partially or wholly) and sometimes random, and build the same guardrails around LLM input as around user input.
 
+Snippet taken from https://docs.flutter.dev/ai/best-practices/structure-output (parse the model's JSON response):
+
+```dart
+final response = await _crosswordModel.generateContent(content);
+
+final json = jsonDecode(response.text!);
+final width = json['width'] as int;
+final height = json['height'] as int;
+final gridData = json['grid'] as List;
+final cluesData = json['clues'] as Map<String, dynamic>;
+...
+```
+
 ## Options / Props
 
 Which parts of the sample suit an LLM vs plain code (from the page):

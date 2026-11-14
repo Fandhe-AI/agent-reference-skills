@@ -11,13 +11,13 @@ On native platforms, text now draws a hyphen when a line breaks at a soft hyphen
 Keep soft hyphens invisible. Code before migration:
 
 ```dart
-Text('inter­national')
+Text('inter\u00ADnational')
 ```
 
 Code after migration:
 
 ```dart
-Text('inter­national', hyphens: Hyphens.hidden)
+Text('inter\u00ADnational', hyphens: Hyphens.hidden)
 ```
 
 Update overrides of `getParagraphStyle`. Code before migration:

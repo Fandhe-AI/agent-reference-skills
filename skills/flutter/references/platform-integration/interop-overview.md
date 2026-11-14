@@ -8,11 +8,11 @@ Overview of Flutter's tools for calling platform-specific code: FFIgen and JNIge
 
 ## Signature / Usage
 
-Package options named on the page:
+Package options named on the page are `flutter create --template=plugin` (plugin) and `flutter create --template=package_ffi` (FFI package). Snippet taken from https://docs.flutter.dev/interop/bind-native-code:
 
 ```console
-$ flutter create --template=plugin
-$ flutter create --template=package_ffi
+$ flutter create --template=package_ffi native_add
+$ cd native_add
 ```
 
 Tool selection by target language:

@@ -16,7 +16,7 @@ user-invocable: false
 - ドキュメント原本: flutter/website（リリースタグなし）を commit [`acea4202cfbaa99aa520a154b34603cd420776ae`](https://github.com/flutter/website/tree/acea4202cfbaa99aa520a154b34603cd420776ae) に pin
 - API リファレンス: [api.flutter.dev](https://api.flutter.dev/)（dartdoc HTML、URL に版なし）。一部ページは 3.47 stable 時点の取得で 3.50 では未再照合（各ページ `## Notes` に記載）
 - `llms.txt` は版数の根拠にしない（更新が遅れる）
-- samples / scripts: 公式 cookbook 由来の samples は DartPad 互換の `package:flutter/material.dart` import を原文どおり残している（3.50 で deprecated だが動作する。`material_ui` 版は各サンプルの Notes と `release/material-ui-and-cupertino-ui.md`）。samples は 3.50 の cookbook へ一括再同期していない（未追従）。scripts は `--web-content-hash` を追記済みで、install 手順は 3.50 向けに再確認していない
+- samples / scripts: 公式 cookbook 由来の samples は DartPad 互換の `package:flutter/material.dart` import を原文どおり残している（3.50 で deprecated だが動作する。`material_ui` 版の経緯は一部サンプルの Notes と `release/material-ui-and-cupertino-ui.md`）。samples は 3.50 の cookbook へ一括再同期していない（未追従）。scripts は `--web-content-hash` を追記済みで、install 手順は 3.50 向けに再確認していない
 - 「Not yet released to stable」の breaking changes は第一級に扱わない。例外は material_ui / cupertino_ui で、3.47 から opt-in 可能、3.50 で `package:flutter/material.dart` / `cupertino.dart` が正式 deprecated（移行は `dart fix --apply --code=migrate_design_widgets`）
 
 ## ディレクトリ構成

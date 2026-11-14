@@ -37,9 +37,9 @@ The page is a flat PR list, not an API description. These lines are copied verba
 
 ## Notes
 
-- Section headings and what they contain: Framework (widgets, slivers, text input, windowing API, images, accessibility), Material, iOS (touch latency, devicectl, SwiftPM, Xcode 27), Android (HCPP, AGP 9.3.1, Intent hardening), Windows, Linux, Web (`--web-content-hash`, Wasm, WebParagraph), Tooling (`flutter_tools`, `flutter create` templates, skills lint), Documentation, Other changes (engine-level Impeller, Flutter GPU, tests), New contributors.
+- Section headings on the page, in order: Framework, Material, iOS, Android, Windows, Linux, Web, Tooling, Documentation, Other changes, then New contributors. The entries above are a selection from several of these sections (for example the `--web-content-hash` entries appear under Framework and Tooling, and the skills-lint entries under Other changes).
 - The page ends with "Full Changelog: https://github.com/flutter/flutter/compare/3.47.0...3.50.0".
-- The page holds roughly 1,200 PR entries, many of which are reverts and relands. This skill reproduces only the user-visible entries above; for narrative see the What's new in Flutter 3.50 page and for breaking changes see the breaking changes index.
+- The page is a long flat PR list (the announcement post cites over 1,200 commits in the release cycle). This skill reproduces only the user-visible entries above; for narrative see the What's new in Flutter 3.50 page and for breaking changes see the breaking changes index.
 - Bug-fix releases after 3.50.0 are not covered by this page.
 - Source: https://docs.flutter.dev/release/release-notes/release-notes-3.50.0 (flutter/website `acea420`, fetched 2026-11-14).
 

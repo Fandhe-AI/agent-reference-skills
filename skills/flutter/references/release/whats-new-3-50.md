@@ -10,6 +10,8 @@ Announcement for Flutter 3.50 (published 2026-11-11, with Dart 3.14): direct nat
 
 Upgrade and the commands the post introduces:
 
+Adapted (not in the official docs): the commands are collected from separate passages of the post into one block.
+
 ```bash
 flutter upgrade
 dart fix --apply --code=migrate_design_widgets

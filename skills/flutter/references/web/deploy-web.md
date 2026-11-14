@@ -10,6 +10,11 @@ Prepare and release a web app. During development `flutter run -d chrome` builds
 
 ```console
 flutter build web
+```
+
+To build with WebAssembly (Wasm), pass the `--wasm` flag:
+
+```console
 flutter build web --wasm
 ```
 
@@ -69,11 +74,15 @@ Inline the bootstrap script in `web/index.html` by replacing the external `<scri
 
 To serve assets from a CDN, configure `assetBase` and `entrypointBaseUrl` in `_flutter.loader.load({ config: ... })` (and `canvasKitBaseUrl` when self-hosting engine binaries), or reference the `$FLUTTER_STATIC_ASSETS_URL` placeholder in `web/index.html` and pass the CDN prefix with the trailing `/`:
 
+Adapted (not in the official docs): the command is assembled from the page's prose (flag, example URL and trailing `/`).
+
 ```console
 flutter build web --static-assets-url=https://cdn.example.com/
 ```
 
 ### Deploying to Firebase Hosting
+
+Adapted (not in the official docs): the four commands are combined from separate blocks of the page.
 
 ```console
 npm install -g firebase-tools
@@ -132,7 +141,7 @@ Server configuration for production Wasm:
 - Overlay deployments: when release `N` is deployed, open tabs still running `N-1` may lazily fetch assets carrying `N-1` hashes. Retain at least the previous release's hashed `main.dart.*` and `assets/**` files alongside release `N` (or prune old hashes after a 24-72 hour grace window), update `index.html` and `flutter_bootstrap.js` atomically last, and exclude `/assets/**`, `/canvaskit/**`, `/icons/**`, and `/main.dart.*` from SPA `/index.html` catch-all rewrites so missing assets return a genuine `404` instead of `200 text/html`.
 - With `--no-web-resources-cdn`, Flutter's rendering engine files are bundled into `build/web/canvaskit/` instead of fetched from `gstatic.com`; with `--web-content-hash` those files stay unhashed and need revalidating cache headers. With `--enable-wasm-deferred-loading` and custom asset routing, provide a `wasmDeferredModulesLoader` callback to fetch deferred `.wasm` modules from the CDN.
 - Render an HTML loading shell in `web/index.html` (or update the DOM from the `onEntrypointLoaded` callback in `flutter_bootstrap.js`) so users get feedback while the engine initializes. Release builds tree-shake font icons automatically (`--no-tree-shake-icons` only when debugging dynamic icon code points).
-- The `--static-assets-url` command line is assembled from the page's prose (the flag, the example URL and the trailing-`/` requirement are verbatim).
+- Adapted from the official docs: the `--static-assets-url` command line is assembled from the page's prose (flag, example URL and trailing-`/` requirement are verbatim), and the Firebase commands are combined from separate blocks.
 - For a complete `firebase.json` caching example see the Web FAQ page ("How do I configure my cache headers?").
 - An existing app whose `web/index.html` already has `viewport-fit=cover` is honored in Flutter 3.50 and later (the app renders behind cutouts unless wrapped in `SafeArea`); see the viewport-fit-cover breaking change page. In 3.50 and later, route strings passed to `SystemNavigator.routeInformationUpdated` preserve percent-encoded sequences (such as `%2F`, `%26`, `%23`, `%20`) in the browser URL bar and history instead of decoding them with `Uri.decodeComponent`.
 - Other hosting options named in the source: GitHub Pages and Google Cloud Hosting.

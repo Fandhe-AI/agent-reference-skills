@@ -12,7 +12,7 @@ Developer flow: create the Pigeon definition file in Dart (typically outside `li
 
 For the native interop option, the page says to set these in the `@ConfigurePigeon` section of the definition file: `appDirectory`, `swiftOptions: SwiftOptions(useFfi: true, ffiModuleName: 'Runner')`, and `kotlinOptions: KotlinOptions(useJni: true)`. Create the client with:
 
-```dart
+```text
 <MyApi>.createWithNativeInteropApi()
 ```
 

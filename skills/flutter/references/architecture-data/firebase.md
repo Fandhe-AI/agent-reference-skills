@@ -161,7 +161,7 @@ $ flutter pub add firebase_data_connect
 
 ## Notes
 
-- Install the Firebase CLI and sign in with `firebase login` first; detailed platform setup is in "Add Firebase to your Flutter app" (`firebase.google.com/docs/flutter/setup`). The complete plugin list is "Available Firebase Flutter plugins" (`firebase.google.com/docs/flutter/setup#available-plugins`).
+- Install the Firebase CLI and sign in with `firebase login` first; detailed platform setup is in "Add Firebase to your Flutter app" (https://firebase.google.com/docs/flutter/setup). The complete plugin list is "Available Firebase Flutter plugins" (https://firebase.google.com/docs/flutter/setup#available-plugins).
 - Firebase Authentication supports email and password, phone numbers, anonymous sessions, and federated providers such as Google, Apple, and GitHub.
 - Cloud Firestore is the recommended default for a scalable NoSQL database with realtime sync and offline caching (chat apps, collaborative tools, field service apps). Offline persistence is enabled by default on Android and Apple platforms and can be enabled on the web.
 - Firebase SQL Connect (formerly Firebase Data Connect) provides a managed PostgreSQL database and a generated type-safe Dart SDK built on `firebase_data_connect`; see the choose-a-database page for comparison.

@@ -8,10 +8,11 @@ source: https://docs.flutter.dev/interop/dart-ffi
 
 ## Signature / Usage
 
-Run blocking FFI calls in a background isolate so the UI thread doesn't freeze or drop frames:
+Run blocking FFI calls in a background isolate (`Isolate.run`) so the UI thread doesn't freeze or drop frames. The generated bindings of an FFI package contain `@Native() external` functions that resolve at runtime against the code asset produced by the build hook. Snippet taken from https://docs.flutter.dev/interop/bind-native-code (project layout created by the package_ffi template):
 
-```dart
-Isolate.run
+```console
+$ flutter create --template=package_ffi native_add
+$ cd native_add
 ```
 
 ## Options / Props
@@ -26,7 +27,7 @@ Isolate.run
 - Dart memory is garbage collected while native C memory is manually managed: use `package:ffi` to allocate space on the system heap for native arguments and free it when done, and to convert Dart strings into C strings.
 - FFI calls are synchronous and run on the calling thread; a heavy or blocking C function on the main UI thread can freeze the app, so run it inside a background isolate using `Isolate.run`.
 - Resources named on the page: the Dart C interop guide, the `dart:ffi` API reference, and `package:ffi` on pub.dev.
-- The page contains no code block; the snippet above is the name taken verbatim from its prose, not a complete example.
+- The page contains no code block; the snippet above is borrowed from the related bind-native-code page (see the line before it).
 - Source: https://docs.flutter.dev/interop/dart-ffi (flutter/website `acea420`, fetched 2026-11-14).
 
 ## Related

@@ -169,6 +169,8 @@ With source maps for crash-reporting symbolication:
 flutter build web --source-maps
 ```
 
+> **Warning**: Source maps expose un-minified symbol names and local paths if deployed publicly. Exclude `*.map` files from public hosting, for example `"ignore": ["**/*.map"]` in `firebase.json`.
+
 With content hashing (Flutter 3.50 or later), for cache-busting across deployments:
 
 ```sh
@@ -176,8 +178,6 @@ flutter build web --wasm --web-content-hash
 ```
 
 Hashed files can use `Cache-Control: public, max-age=31536000, immutable`; keep `index.html` and `flutter_bootstrap.js` on `no-cache`. Add `--static-assets-url=https://cdn.example.com/` (with the trailing `/`) to inject a CDN prefix, and `--no-web-resources-cdn` to bundle the rendering engine into `build/web/canvaskit/`.
-
-> **Warning**: Source maps expose un-minified symbol names and local paths if deployed publicly. Exclude `*.map` files from public hosting, for example `"ignore": ["**/*.map"]` in `firebase.json`.
 
 Validate a release build locally by serving `build/web` (the docs name `python -m http.server 8000` or the `dhttpd` package).
 

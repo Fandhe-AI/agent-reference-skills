@@ -22,14 +22,15 @@ final disabledDropdown = DropdownButtonFormField<String>(
 
 Code after migration:
 
-```dart
-final disabledDropdown = DropdownButtonFormField<String>(
-  initialValue: 'Option 1',
-  items: const [
-    DropdownMenuItem(value: 'Option 1', child: Text('Option 1')),
-  ],
-  enabled: false,
-);
+```dart diff
+  final disabledDropdown = DropdownButtonFormField<String>(
+    initialValue: 'Option 1',
+    items: const [
+      DropdownMenuItem(value: 'Option 1', child: Text('Option 1')),
+    ],
+-   onChanged: null, // This was the only way to disable it.
++   enabled: false,
+  );
 ```
 
 Code before migration (conditionally disabled):
@@ -46,15 +47,16 @@ final conditionalDropdown = DropdownButtonFormField<String>(
 
 Code after migration:
 
-```dart
-final conditionalDropdown = DropdownButtonFormField<String>(
-  initialValue: 'Option 1',
-  items: const [
-    DropdownMenuItem(value: 'Option 1', child: Text('Option 1')),
-  ],
-  onChanged: (value) { ... },
-  enabled: condition,
-);
+```dart diff
+  final conditionalDropdown = DropdownButtonFormField<String>(
+    initialValue: 'Option 1',
+    items: const [
+      DropdownMenuItem(value: 'Option 1', child: Text('Option 1')),
+    ],
+-   onChanged: condition ? (value) { ... } : null,
++   onChanged: (value) { ... },
++   enabled: condition,
+  );
 ```
 
 ## Options / Props

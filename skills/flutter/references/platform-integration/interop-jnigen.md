@@ -16,8 +16,8 @@ dart run tool/jnigen.dart
 
 Trace JNI allocation bugs such as `DoubleReleaseError` and `UseAfterReleaseError`:
 
-```dart
-Jni.captureStackTraceOnRelease = true;
+```text
+Jni.captureStackTraceOnRelease = true
 ```
 
 ## Options / Props

@@ -20,7 +20,7 @@ flutter build windows --flavor flavor_a
 flutter build linux --flavor flavor_a
 ```
 
-Experimental, main channel only (not available on stable 3.47.x; deferred loading is no longer experimental in 3.50):
+Experimental, main channel only (not available on the 3.47 stable; deferred loading is no longer experimental in 3.50):
 
 ```bash
 flutter build web --release --wasm --enable-wasm-deferred-loading
