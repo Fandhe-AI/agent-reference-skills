@@ -47,8 +47,8 @@ AI レビューが 1 PR あたり 2〜4 ラウンド指摘した型の集約。�
   旧版文字列を grep し、残すなら SKILL.md と PR 本文に「未追従」と書く。
 - README の前置き文は、`anthropic-*` / `openai-*` のように CLAUDE.md が README レベル距離線を定めたファミリーでは意図的。
   構造検証の指摘でも消さない（それ以外のスキルでは H1 + 索引表のみ）。
-- **新規ページには fenced code block を最低 1 つ**: 公式にコードが無ければ `Adapted (not in the official docs):` 付きのスニペットと、Notes の対応する英語 1 行を置く。
-- **Adapted は 1 行の安全上の修正だけ**: 大きい直しは Notes に書く。Adapted を重ねると Codex が毎ラウンド新しい指摘を出す。Notes は日本語スキルでも英語混在を避け、追記は英語で揃える。
+- **新規ページには fenced code block を最低 1 つ**: 公式にコードが無ければ、担当範囲内の関連ページから verbatim で借りて `Snippet taken from <URL>` と出典を明記する（無関係な借用は不可、その場合はページを統合する）。原文に無いコードの捏造は禁止で、Adapted は公式例の安全性・正しさの修正にのみ使う。
+- **Adapted は 1 行の安全上の修正だけ**: 大きい直しは Notes に書く。Adapted を重ねると Codex が毎ラウンド新しい指摘を出す。Notes の通常の追記は各スキル本文の言語に合わせ（日本語本文のスキルでは日本語）、`Adapted` / `Source:` 行など固定表記だけを英語にする。
 - **ページ間の矛盾を push 前に潰す**: 変更した事実ごとにスキル全ページを grep する（「〜しない」のような一括の断定文も）。版数を一括置換したら、基準版・履歴の言及（`changes since vX`）を元に戻す。
 - **全フェンスを公式原典と機械照合**してから CI 待ちに入る。`curl | bash` は download → inspect → run の 3 段のみ、第三者 Action / reusable workflow は可変タグでなくコミット SHA に固定して Adapted 行を付ける。
 - **版指定が要る機能の例は API version を正しく指定**する。非同期の例は `response.ok` 確認・古い結果の破棄・認証済み ID からのインスタンス名 / KV キー導出・並行呼び出しの Promise 共有・冪等性を最初から書く。
