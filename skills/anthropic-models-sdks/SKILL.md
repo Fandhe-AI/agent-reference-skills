@@ -2,7 +2,7 @@
 name: anthropic-models-sdks
 description: >
   Claude API (platform.claude.com) のモデル・SDK。
-  model ID・選択基準、Fable・Mythos 5.1 / Opus・Sonnet・Haiku 5.5 移行・破壊的変更、
+  model ID・選択基準、Fable・Mythos 5.2 / 5.1 / Opus・Sonnet・Haiku 5.5 移行・破壊的変更、
   コスト最適化 (effort / caching / batch / advisor)、pricing、deprecation、
   公式 SDK 7 言語 (Python / TypeScript / Java / Go / Ruby / C# / PHP)、
   Claude API 用 CLI `ant` (Claude Code CLI とは別。authentication, scripting, `ant apply`)、
@@ -23,9 +23,10 @@ Agent SDK は `anthropic-agent-sdk` を参照（本スキルはモデル選定�
 
 ## 対象バージョン
 
-- 取得日 2026-10-17（出典 platform.claude.com の Markdown twin、URL に版なし。last verified 2026-10-17）
-- 現行モデル: `claude-fable-5-1` / `claude-mythos-5-1`（検証済み組織のみ）/ `claude-opus-5-5` / `claude-sonnet-5-5` / `claude-haiku-5-5`
-- `ant` CLI 1.42.0（`ant apply` は 1.30.0+、`sessions connect` は 1.32.0+ が必要）、Java SDK `com.anthropic:anthropic-java:2.73.0`
+- 取得日 2026-11-14（出典 platform.claude.com の Markdown twin、URL に版なし。last verified 2026-11-14。一部ページ（モデル別 whats-new / migration、`cli-*` 本文、`sdk-*` の changelog 等）は 2026-10-17 取得のまま。Fable 5.2 / Mythos 5.2 専用の whats-new / migration ページは未収録で、概要は `overview.md` / `choosing-a-model.md` / `pricing-lifecycle/` を参照）
+- 現行モデル: `claude-fable-5-2` / `claude-mythos-5-2`（検証済み組織のみ）/ `claude-opus-5-5` / `claude-sonnet-5-5` / `claude-haiku-5-5`（`claude-fable-5-1` 以前は legacy）
+- API version `2026-10-21`（SDK 新メジャー: Python 2.0.0 / TypeScript 1.0.0 / C# 13.0.0 / Go 2.0.0 / Java 3.0.0 / PHP 1.0.0 / Ruby 2.0.0 が既定で送る。SDK・CLI は Apache 2.0）
+- `ant` CLI 2.9.0（Go module は `github.com/anthropics/anthropic-cli/v2`。`ant apply` は 1.30.0+、`sessions connect` は 1.32.0+ が必要）、Java SDK `com.anthropic:anthropic-java:3.8.0`、Go SDK `github.com/anthropics/anthropic-sdk-go/v2`
 - モデルページの出典 URL は `/docs/en/models/<model>/` 配下へ移動（旧 `about-claude/models/*` は `/models/overview`・`/models/fable-5/overview`・`/models/opus-5/overview`・`/models/sonnet-5/overview` へリダイレクト）
 
 ## ディレクトリ構成
@@ -97,7 +98,8 @@ skills/anthropic-models-sdks/
 |--------|---------|------------|
 | モデル一覧・性能比較・アプリに最適なモデルの選び方を知りたい | models | [references/models/README.md](references/models/README.md) |
 | model ID の構造・バージョニング（dateless format）・旧モデルからの移行を知りたい | models | [references/models/README.md](references/models/README.md) |
-| Claude Fable 5.1 / Mythos 5.1 / Opus 5.5 / Sonnet 5.5 / Haiku 5.5 の新機能・破壊的変更（旧世代の Fable 5 / Opus 5 / Sonnet 5 も含む）を知りたい | models | [references/models/README.md](references/models/README.md) |
+| Claude Fable 5.1 / Opus 5.5 / Sonnet 5.5 / Haiku 5.5 の新機能・破壊的変更（旧世代の Fable 5 / Opus 5 / Sonnet 5 も含む）を知りたい | models | [references/models/README.md](references/models/README.md) |
+| Fable 5.2 / Mythos 5.2 の概要・モデル選択を知りたい（専用 whats-new・migration ページは未収録） | models | [references/models/README.md](references/models/README.md)（overview / choosing-a-model） |
 | モデル別の移行チェックリスト（Opus 5 → 5.5、Sonnet 5 → 5.5、Haiku 4.5 → 5.5、Fable 5 → 5.1）を知りたい | models | [references/models/README.md](references/models/README.md) |
 | コストと知能のトレードオフ（effort 調整・キャッシュ・バッチ・モデル併用）を最適化したい | models | [references/models/README.md](references/models/README.md) |
 | モデル・機能の価格を知りたい | pricing-lifecycle | [references/pricing-lifecycle/README.md](references/pricing-lifecycle/README.md) |

@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/about-claude/model-deprecations / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/about-claude/model-deprecations / last verified: 2026-11-14 -->
 
 # Model deprecations
 
@@ -19,6 +19,8 @@ Dates on this page apply to Anthropic-operated platforms (Claude API, Claude Pla
 
 | API model name | Current state | Deprecated | Tentative retirement date |
 | --- | --- | --- | --- |
+| claude-fable-5-2 | Active | N/A | Not sooner than November 9, 2027 |
+| claude-mythos-5-2 | Active | N/A | Not sooner than November 9, 2027 |
 | claude-fable-5-1 | Active | N/A | Not sooner than September 1, 2027 |
 | claude-mythos-5-1 | Active | N/A | Not sooner than September 1, 2027 |
 | claude-fable-5 | Active | N/A | Not sooner than June 9, 2027 |
@@ -78,9 +80,9 @@ model = "claude-sonnet-5-5"
 
 | Parameter | Status | Behavior | Recommended replacement |
 | --- | --- | --- | --- |
-| `temperature`, `top_p`, `top_k` | Deprecated (Claude 4.7 and later models) | Returns a 400 error when set to a non-default value on Claude 4.7 and later models and Claude Mythos Preview | Omit and use prompting to guide model behavior |
+| `temperature`, `top_p`, `top_k` | Removed in API version `2026-10-21` | Returns a 400 error. Earlier API versions return it when set to a non-default value on Claude 4.7 and later models and Claude Mythos Preview. | Omit and use prompting to guide model behavior |
 
-Most SDKs keep deprecated parameters in their request types so existing code continues to type-check. The Python SDK (v1.0 and later) removes `temperature`, `top_p`, and `top_k`, so passing them raises a `TypeError`.
+A new API version can remove a deprecated parameter for every model (see `https://platform.claude.com/docs/en/api/migration-2026-10-21#sampling-parameters`). Most SDKs keep deprecated parameters in their request types so existing code continues to type-check. The Python SDK (v1.0 and later) removes `temperature`, `top_p`, and `top_k`, so passing them raises a `TypeError`.
 
 ## Notes
 

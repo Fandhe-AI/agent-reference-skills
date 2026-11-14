@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart / last verified: 2026-11-14 -->
 
 # CLI quickstart
 
@@ -15,7 +15,7 @@ Installation:
 brew install anthropics/tap/ant
 
 # curl (Linux/WSL)
-VERSION=1.42.0
+VERSION=2.9.0
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 case $(uname -m) in
   x86_64) ARCH=amd64 ;;
@@ -24,8 +24,8 @@ esac
 curl -fsSL "https://github.com/anthropics/anthropic-cli/releases/download/v${VERSION}/ant_${VERSION}_${OS}_${ARCH}.tar.gz" \
   | sudo tar -xz -C /usr/local/bin ant
 
-# Go (Go 1.25 or later)
-go install github.com/anthropics/anthropic-cli/cmd/ant@latest
+# Go (Go 1.26.10 or later)
+go install github.com/anthropics/anthropic-cli/v2/cmd/ant@latest
 
 # Check the installation
 ant --version

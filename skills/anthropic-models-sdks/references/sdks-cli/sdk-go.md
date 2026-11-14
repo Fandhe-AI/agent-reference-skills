@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go / last verified: 2026-11-14 -->
 
 # Go SDK
 
@@ -7,7 +7,7 @@ Install and configure the Anthropic Go SDK with context-based cancellation and f
 ## Signature / Usage
 
 ```bash
-go get github.com/anthropics/anthropic-sdk-go
+go get github.com/anthropics/anthropic-sdk-go/v2
 ```
 
 ```go
@@ -17,8 +17,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/anthropics/anthropic-sdk-go"
-	"github.com/anthropics/anthropic-sdk-go/option"
+	"github.com/anthropics/anthropic-sdk-go/v2"
+	"github.com/anthropics/anthropic-sdk-go/v2/option"
 )
 
 func main() {
@@ -83,7 +83,7 @@ if err := stream.Err(); err != nil {
 - Non-streaming Messages requests time out after 10 minutes by default via context; other requests have no default timeout. Context timeout does not restart on retry — use `option.WithRequestTimeout()` for per-retry limits.
 - Pagination via `.ListAutoPaging()` iterators or manual `.List()` + `.GetNextPage()`.
 - File uploads use `io.Reader`, typically wrapped with `anthropic.File(reader, filename, contentType)`.
-- Platform integrations: `vertex` (Google Cloud), `bedrock` (Mantle vs `bedrock-runtime`), `aws` (imported as `anthropicaws` to avoid collision, beta); Foundry: `import "github.com/anthropics/anthropic-sdk-go/foundry"`, build a client with `foundry.NewClient(cfg)` and a `foundry.ClientConfig` value (set `APIKey`, or `AzureADTokenProvider` for Microsoft Entra ID, and `Resource` on the config, or the `ANTHROPIC_FOUNDRY_API_KEY` and `ANTHROPIC_FOUNDRY_RESOURCE` environment variables).
+- Platform integrations: `vertex` (Google Cloud), `bedrock` (Mantle vs `bedrock-runtime`), `aws` (imported as `anthropicaws` to avoid collision, beta); Foundry: `import "github.com/anthropics/anthropic-sdk-go/v2/foundry"`, build a client with `foundry.NewClient(cfg)` and a `foundry.ClientConfig` value (set `APIKey`, or `AzureADTokenProvider` for Microsoft Entra ID, and `Resource` on the config, or the `ANTHROPIC_FOUNDRY_API_KEY` and `ANTHROPIC_FOUNDRY_RESOURCE` environment variables).
 
 ## Related
 
