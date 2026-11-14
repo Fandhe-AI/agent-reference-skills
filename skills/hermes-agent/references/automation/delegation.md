@@ -50,6 +50,8 @@ Per-task fields: `goal`, `context`, `images` (up to 8 local paths / `http(s)` / 
 | `child_timeout_seconds` | 0 | Opt-in inactivity cap (floor 30s); 0 or negative = none |
 | `surface_child_process_notifications` | false | Show child background-process notifications in the parent chat |
 | `compression_threshold_tokens` | 0 (off) | Absolute cap on a child's compaction trigger (at least 16000 to enable) |
+| `backend` | `default` | Delegation strategy (`default` \| plugin strategies `model_map` / `profile_routes`); settings under `delegation.backends.<name>` |
+| `gateway_mode` | `auto` | `auto` \| `inline` \| `background` (alias `async`): whether gateway sessions join children inside the turn (see Notes) |
 
 Related: `auxiliary.review.{provider,model}` pins the `/review` model.
 
@@ -61,7 +63,7 @@ delegation:
 
 ## Notes
 
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/delegation (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/delegation (pinned to v0.23.1)
 - Subagents know nothing: pass everything needed in `goal` / `context`. If the parent has a workspace, the child's system prompt embeds project context files (`.hermes.md` > AGENTS.md chain > CLAUDE.md > `.cursorrules`; SOUL.md excluded).
 - `output_schema`: child gets one bounded correction turn on validation failure; result gains `schema_valid` and, on failure, `schema_errors` / `schema_note` while keeping `status: completed` with the raw text in `summary`.
 - Blocked for leaf subagents: `delegate_task`, `clarify`, `memory`, `send_message`, `cronjob`. Orchestrators keep `delegate_task`. Both roles keep `execute_code`.
@@ -75,6 +77,21 @@ delegation:
 - Worktree isolation is git-only and local-terminal-only; otherwise silently degrades. Result gains `worktree` (`path`, `branch`, `commits`, `dirty`, `pruned`, `inspection_failed`); empty clean worktrees are pruned.
 - `/review [extra instructions]` spawns a full-privilege background reviewer over the last 10 user/assistant messages; distinct from `/refine` (reviews conversation to update memory and skills). `/agents` (alias `/tasks`) lists background delegations; TUI overlay and classic CLI monitor via Ctrl+T / F6 with steer and stop controls.
 - Worker cost strategy: keep the parent on a frontier model and pin `delegation.model` to an inexpensive one; the pin is global, so use kanban's per-task model override for quality-sensitive subtasks.
+
+### Delegation strategies, finite runs and inline mode (new in v0.23)
+
+- Strategies: with the default strategy `delegate_task` has no per-task model parameter. The official `advanced-delegation` plugin adds `model_map` (named options each with description and provider/model, the model picks per task) and `profile_routes` (each child runs as one of your profiles with its model, credentials, skills and persona), plus `hermes delegation config` and `/delegation`. While either is active, `delegation.model` / `delegation.provider` are inactive. The model sees only configured names and descriptions; each routed result carries `route` (backend, option/profile, provider, model, reasoning effort, speed tier, `fallback_activated: true` when a fallback took over). Listing a profile in `profile_routes` lets this profile's subagents use that profile's credentials, credential pool, `SOUL.md` and terminal policy.
+- Failures are explicit: a missing or unavailable backend makes `delegate_task` return a tool error and start no subagent (never a silent run on the default route). A task its backend cannot route (unknown option, unsupported parameter, missing profile, unoffered `service_tier`, unknown `reasoning_effort`, missing credentials) is refused alone with `status: "error"` and `route.refused: true`. A model route without `fallback_providers` uses `delegation.fallback_providers`; `[]` on the route disables fallback.
+- Switching back: `/delegation default` saves `delegation.backend` and applies from the next session (`/new`); `/delegation <backend> --now` rebuilds the current chat's tools at its next turn (one prompt-cache miss). Without the plugin: `hermes config set delegation.backend default`.
+- Desktop: **Settings → Model → Subagents** edits the same keys for the profile chosen under **Applies to**; it affects only subagents launched after **Apply**.
+- Finite chat runs (`-Q`, `chat --oneshot`, or a query with non-TTY stdio): `delegate_task` waits for its children and returns results in the same turn (no opt-in). Interactive TTY chat keeps background delegation. A one-shot's schema omits the live-control parameters (`action`, `subagent_id`, `message`). `approvals.single_query_mode` and delegation limits still apply; joining does not auto-approve commands.
+- `delegation.gateway_mode`: `auto` joins children inside the turn when the messaging chat's resolved `display.interim_assistant_messages` is off (chats with interim messages on, the API server, local sessions and webhooks keep background delegation); `inline` joins for every gateway session; `background` keeps background delegation everywhere. An inline session's schema omits the live-control parameters; `/stop` or a follow-up under `busy_input_mode: interrupt` stops the children. The periodic "still working" notice (`agent.gateway_notify_interval`, 180 s) is controlled by `display.long_running_notifications`. The mode is pinned per session: changes apply from `/new`. Listing `delegate_task` in `tools.tool_search.defer` turns inline off for that session.
+- Cancellation (changed in v0.23): follow-up messages and stopping the current turn (Ctrl+C, Esc, the Desktop/TUI Stop button, an ACP cancel) do not cancel background children; the `/stop` command (gateway or CLI) or closing/resetting the owning session does. In the CLI and TUI the gateway owns the session: when the last viewer exits or runs `/new`, background children are interrupted at once and new ones are refused until a viewer opens the session again; a plain detach (closing Desktop, a dropped connection, exiting while another viewer is attached) cancels nothing. A completion arriving while no viewer is attached is written into the session as a note instead of starting a turn (messaging chats are unchanged).
+- `/review` on the gateway reads the last 10 messages from the stored transcript when the agent was released after `agent.agent_cache.idle_ttl_secs` (default one hour).
+
+### Migration (v0.22 -> v0.23): cancellation wording
+
+- v0.22.2 listed Ctrl+C / Esc / the Stop button / an ACP cancel together with `/stop` as ending background children; v0.23.1 says those only end the turn and only `/stop` or session close/reset ends the children.
 
 ## Related
 

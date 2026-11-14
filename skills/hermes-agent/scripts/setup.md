@@ -105,3 +105,19 @@ chmod 600 ~/.hermes/.env
 ```
 
 > **警告**: `~/.hermes/.env` に API キーを保存する。バージョン管理には絶対にコミットしない。
+
+## 他エージェントの設定を持ち込む（初回セットアップ）
+
+```bash
+hermes setup
+hermes migrate
+hermes import-agent
+```
+
+初回の `hermes setup` が `~/.openclaw` / `~/.claude` / `~/.codex` / `~/.cursor` を検出すると、最初に「Import your setup from …?」（既定は yes）を尋ね、`agent-importers` プラグインを導入してインポートを実行する。設定済みの環境では `hermes migrate`（または `hermes import-agent`）を使う。`--non-interactive` ではこの質問もプラグイン導入も行われない。
+
+## 注記
+
+v0.23 の変更: 初回 `hermes setup` に他エージェントのインポート提案が加わった。`hermes setup model` 等のセクション指定、`hermes config` / `hermes doctor` / `hermes status` のコマンドは変更なし。
+
+- Source: https://hermes-agent.nousresearch.com/docs/reference/cli-commands (pinned to v0.23.1)

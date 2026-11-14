@@ -123,7 +123,13 @@ window.__HERMES_PLUGINS__.registerSlot("my-plugin", "sidebar", MySidebar);
 - A plugin has up to 2 seconds after script load to call `register()`. The `name` passed to `register()` must match `manifest.json` `name`.
 - `colorOverrides` are scoped to the active theme and cleared on switch. A re-registered `(plugin, slot)` replaces the earlier one.
 - Dashboard plugins are installed by directory layout, not pip entry point.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/extending-the-dashboard (pinned to v0.22.2)
+- Don't block the event loop: with the default `plugins.isolation: in_process`, API handlers run on the gateway's event loop shared with every other dashboard, Desktop and chat request, so a blocking handler (`time.sleep`, a synchronous HTTP client, a long file scan) delays them all (a 3 s sleep delays an unrelated `/api/status` by seconds and can time out Desktop's connection). Use `async def` with async I/O, or `await asyncio.to_thread(...)` (a plain `def` handler also runs in a worker thread). `plugins.isolation: host` runs handlers in a separate plugin host process: a slow handler delays only that profile's hosted plugin requests, and one with no answer after 60 s gets HTTP 504.
+- On a gateway serving several profiles, a request for a profile other than the gateway's own sees that profile's `plugins/<name>/dashboard/`, then the root `~/.hermes/plugins/<name>/dashboard/` (the profile's own copy wins a same-name conflict), then the bundled ones, gated by that profile's `plugins.enabled` / `plugins.disabled`. Its plugin API (a root plugin's included) runs in that profile's plugin host, never inside the gateway.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/extending-the-dashboard (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- Doc wording changed from "no `npm run build`" to "no `pnpm run build`"; the drop-in runtime model is unchanged.
 
 ## Related
 

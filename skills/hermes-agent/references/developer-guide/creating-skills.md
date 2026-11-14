@@ -28,7 +28,7 @@ metadata:
     requires_toolsets: [web]
     requires_tools: [web_search]
     fallback_for_toolsets: [browser]
-    fallback_for_tools: [browser_navigate]
+    fallback_for_tools: [browser_exec]
     config:
       - key: my.setting
         description: "What this setting controls"
@@ -112,7 +112,12 @@ Trust levels: `builtin`, `official` (`optional-skills/`), `trusted` (openai/skil
 - Placement: `skills/` for broadly useful, `optional-skills/` for official but niche, Skills Hub / tap for community.
 - Installing a skill with a `blueprint:` block registers a suggested cron job (opt-in) reviewed via `/suggestions` (`accept N`, `dismiss N`, `catalog`). Sources: `catalog`, `blueprint`, `usage`, `integration`. Accepting calls `cron.jobs.create_job`; suggestions never auto-create jobs.
 - The hub scanner checks data exfiltration, prompt injection, destructive commands and shell injection. External sources: GitHub identifiers, `skills.sh` identifiers, `/.well-known/skills/index.json` endpoints.
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/creating-skills (pinned to v0.22.2)
+- `fallback_for_*` use case: a skill that works around a missing primary tool, e.g. a curl-based search skill with `fallback_for_tools: [web_search]` shows only when the `web_search` tool is disabled (v0.22.2 used a `duckduckgo-search` example tied to an unconfigured API key).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/creating-skills (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- The browser tool example in the frontmatter (`fallback_for_tools`) now names `browser_exec` instead of `browser_navigate`.
 
 ## Related
 

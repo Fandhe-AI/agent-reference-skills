@@ -75,6 +75,14 @@ agent:
 - MCP servers from `mcp_servers`: by default ACP gets every enabled server; listing server names in `platform_toolsets.acp` restricts to those; `no_mcp` drops them all. `hermes tools` has no ACP entry, so edit `config.yaml` directly.
 - MCP servers sent by the editor via `session/new` are separate and always added.
 
+## Editor-provided MCP servers
+
+On gateways advertising `acp-session-mcp-v1`, editor `mcpServers` belong to the canonical session, not the ACP viewer process; registry namespaces are separate even when two editors supply the same server name, and closing an editor does not cancel another session's MCP execution. Discovery is eager and bounded before the first model turn; selected tool schemas stay frozen for the conversation (server tool-list changes need a new session). MCP transports are released after each execution without stopping sibling sessions or the shared MCP loop. The editor transport specification (command arguments, environment values, HTTP headers) is kept only in gateway memory; durable session policy holds a fingerprint plus the selected schemas. After a gateway restart the editor must supply the same `mcpServers` on load/resume: missing credentials refuse execution, a changed specification or secret refuses reattachment. Start a new session when changing server configuration. Commands and paths run on the gateway host.
+
+## Service-tier picker
+
+ACP clients that render `configOptions` can select **Service tier** for a supported model route: **Normal**, **Fast**, **Auto**, **Cold**, and **Ultrafast** when model and account eligibility checks permit. The gateway supplies and validates the choices; unsupported routes show no picker. The selection applies to that session's next turn (not every session), does not write `config.yaml`, survives editor reload while the gateway session lives, and changes from another attached client update the picker. See the `/fast` slash-command reference for the bounded Auto and Cold modes.
+
 ## Browser tools (optional)
 
 ```bash
@@ -82,15 +90,17 @@ hermes acp --setup-browser           # interactive (prompts before ~400 MB downl
 hermes acp --setup-browser --yes     # accept the download non-interactively
 ```
 
-Installs Node.js 26 into `~/.hermes/node/` if missing, `npm install -g agent-browser @askjo/camofox-browser` into that prefix, and Playwright Chromium (or a detected system Chrome/Chromium). Idempotent. `hermes acp --setup` (terminal-auth flow) also offers it after model selection.
+Browser tools (`browser_exec` and the CDP tools `browser_cdp`, `browser_dialog`, `browser_vault`) need a local Chromium, which is not part of the Python wheel. The command installs Hermes' pinned Chromium (the `chromium` package) through the package manager, with no Node.js or npm involved; Hermes launches it itself when `browser_exec` first needs a browser. Idempotent. `hermes acp --setup` (terminal-auth flow) also offers it after model selection.
 
 ## Host integration variable
 
-Set by an ACP host process on the Hermes subprocess it spawns; not user configuration.
+Older ACP hosts may still set this variable on the Hermes subprocess they spawn; not user configuration.
 
 | Name | Type | Description |
 |------|------|-------------|
-| `HERMES_ACP_SKIP_CONFIGURED_MCP` | `1` | Skip starting globally configured MCP servers from `config.yaml` before the ACP JSON-RPC loop. MCP servers supplied via `session/new` are still registered. Any other value keeps default behavior. |
+| `HERMES_ACP_SKIP_CONFIGURED_MCP` | `1` | No effect: Hermes no longer reads it. `hermes acp` / `hermes-acp` runs as a viewer of the gateway daemon and never starts the `config.yaml` MCP servers itself. |
+
+The ACP process does no MCP discovery. The gateway daemon starts the `mcp_servers` from its own profile's `config.yaml` once at boot, and ACP sessions get them through the `platform_toolsets.acp` rules above; use `platform_toolsets.acp` or `no_mcp` to keep configured servers out of ACP sessions. The editor's `session/new` `mcpServers` are attached to the canonical session whether or not the variable is set.
 
 ## Approvals
 
@@ -113,7 +123,12 @@ On timeout or error the approval bridge denies the request. The wait is `approva
 - Buzz Desktop: discovery resolves `hermes-acp` (`command -v hermes-acp || command -v hermes`); manual fallback is agent command `hermes` with args `["acp"]`. Buzz Desktop v0.5.1+ renders Hermes' full model menu; entry IDs are `provider:model` or `custom:<name>:<model>`.
 - Security: Buzz creates agents as "Owner only"; keep it. The `hermes-acp` toolset includes `terminal` and `execute_code`, and Buzz's ACP bridge answers permission requests itself with `allow_once`, so shell commands run without prompting. `approvals.mode: manual` does not help; narrow the toolset via `platform_toolsets.acp` or `agent.disabled_toolsets` instead. Even `platform_toolsets.acp: []` still adds enabled plugin toolsets. `!shutdown` from the owner stops the agent.
 - Troubleshooting: check that the host command points at `hermes acp`, Hermes is on PATH, and the ACP extra is installed; run `hermes acp --version`, `hermes acp --check`, `hermes doctor`, `hermes status`; configure credentials with `hermes model`.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/acp (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/acp (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- `HERMES_ACP_SKIP_CONFIGURED_MCP=1` no longer has any effect (ACP no longer starts configured MCP servers itself).
+- `hermes acp --setup-browser` no longer installs Node.js 26, `agent-browser` or `@askjo/camofox-browser`; it installs the pinned `chromium` package only. The old `browser_navigate` / `browser_click` tool names are replaced by `browser_exec` plus `browser_cdp` / `browser_dialog` / `browser_vault`.
 
 ## Related
 

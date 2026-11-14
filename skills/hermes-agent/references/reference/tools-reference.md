@@ -1,6 +1,6 @@
 # Tools Reference
 
-Authoritative list of Hermes built-in tools, grouped by toolset. Availability varies by platform, credentials, and enabled toolsets (about 100 tools in the registry).
+Authoritative list of Hermes built-in tools, grouped by toolset. Availability varies by platform, credentials, and enabled toolsets (about 85 tools in the registry).
 
 ## Signature / Usage
 
@@ -17,8 +17,8 @@ hermes chat --toolsets web,file,terminal
 
 | Toolset | Tools | Notes |
 |---------|-------|-------|
-| `browser` | `browser_back`, `browser_click`, `browser_console`, `browser_get_images`, `browser_navigate`, `browser_press`, `browser_scroll`, `browser_snapshot`, `browser_type`, `browser_vision` | `browser_navigate` must be called first; `browser_click` / `browser_type` take ref IDs (e.g. `@e5`) from `browser_snapshot` |
-| `browser` (CDP-gated) | `browser_cdp`, `browser_dialog` | Register only when a CDP endpoint is reachable at session start (`/browser connect`, `browser.cdp_url`, Browserbase, Camofox) |
+| `browser` | `browser_exec`, `browser_vault` | `browser_exec` drives a real browser by running Python with pre-imported helpers (`new_tab`, `goto_url`, `wait_for_load`, `page_info`, `js`, `fill_input`, `click_at_xy`, `capture_screenshot`, `cdp`, `ensure_real_tab`); browser state persists across calls, Python variables do not; `session` isolates concurrent work; `timeout_s` defaults to 300 (max 1800); requires the `terminal` toolset. `browser_vault` uses saved logins, passwords, cards, addresses and one-time codes without secrets entering the conversation (actions `list`, `fill`, `save_login`, `enter_code`, `unlock`) |
+| `browser` (CDP-gated) | `browser_cdp`, `browser_dialog` | Offered only while a CDP endpoint is configured (`/browser connect`, `BROWSER_CDP_URL` or `browser.cdp_url`); absent for launched and cloud sessions. `browser_dialog(action='accept'\|'dismiss')` takes `prompt_text` for `prompt()` and `dialog_id` when several are queued |
 | `clarify` | `clarify` | Takes `questions` (1-5 entries); each is single-select (up to 4 choices), multi-select (`multi_select=true`) or open-ended. Result `{responses, outcome}`; outcome is `submitted`, `cancelled`, `timed_out` or `undelivered` |
 | `connections` | `manage_connections` | Managed connectors via the Nous gateway or local MCP servers; present only when the Nous Portal enabled connectors for the account |
 | `code_execution` | `execute_code` | Run a Python script that calls Hermes tools programmatically |
@@ -44,13 +44,17 @@ hermes chat --toolsets web,file,terminal
 | `x_search` | `x_search` | Read-only X search via xAI; off by default; needs `XAI_API_KEY` or xAI Grok OAuth |
 | `tts` | `text_to_speech` | Returns a `MEDIA:` path; CLI saves to `~/voice-memos/` |
 | `discord` / `discord_admin` | `discord`, `discord_admin` | Gateway-only on `hermes-discord`; need `DISCORD_BOT_TOKEN` (admin also needs bot permissions) |
-| `hermes-yuanbao` | `yb_query_group_info`, `yb_query_group_members`, `yb_send_dm`, `yb_search_sticker`, `yb_send_sticker` | Yuanbao credentials |
 
 ## Notes
 
 - Honcho tools, Home Assistant tools (`ha_*`) and Spotify tools (`spotify_*`) are no longer built-in; they come from catalog plugins (`hermes plugins install honcho|homeassistant|spotify`).
 - The `desktop_ui` toolset also exposes the `data-tour` HTML attribute convention for stable tour targets; `gui_tour` and `show_tip` can be switched off with `display.in_app_tours` / `display.in_app_tips`.
-- Source: https://hermes-agent.nousresearch.com/docs/reference/tools-reference (pinned to v0.22.2)
+- Yuanbao tools (`yb_query_group_info`, `yb_query_group_members`, `yb_send_dm`, `yb_search_sticker`, `yb_send_sticker`, toolset `yuanbao`) are no longer built-in; they come from the `yuanbao` Hermes Labs plugin (`hermes plugins install yuanbao`).
+- Source: https://hermes-agent.nousresearch.com/docs/reference/tools-reference (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+Migration (v0.22 -> v0.23): the per-action browser tools listed in v0.22 (`browser_back`, `browser_click`, `browser_console`, `browser_get_images`, `browser_navigate`, `browser_press`, `browser_scroll`, `browser_snapshot`, `browser_type`, `browser_vision`) are no longer in the tools reference; the `browser` toolset is `browser_exec`, `browser_cdp`, `browser_dialog` and `browser_vault`, and disabling the toolset turns browsing off. The registry count is about 85 (was about 100).
 
 ## Related
 

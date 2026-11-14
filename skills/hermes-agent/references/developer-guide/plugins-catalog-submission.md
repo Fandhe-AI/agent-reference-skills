@@ -21,7 +21,7 @@ Before you submit:
 | Public surfaces only | hooks, middleware, `ctx.register_*`, provider plugins, Desktop plugin SDK; never patch Hermes code or Desktop markup |
 | Local validation passes | checks manifest / `requires_hermes`, loading, declared `capabilities`, `config_schema`, `requires_env`, Python dependencies, install security scan, `desktop surface`, `no core override` |
 
-Admission rules (summary of the 17 mirrored rules):
+Admission rules (summary of the 18 mirrored rules):
 
 | # | Rule |
 |---|------|
@@ -32,16 +32,17 @@ Admission rules (summary of the 17 mirrored rules):
 | 5 | Owner or major-contributor submissions, or maintainer-curated sweeps |
 | 6 | Declared `capabilities` must match what is registered at the pinned commit |
 | 7 | Install scanner runs at admission (`dangerous` fails; `caution` warns) |
-| 8 | Desktop plugins stay inside the SDK surface (no prototype patching, `eval`, foreign `import()`, script injection, DOM reaching) |
-| 9 | No runtime overrides of Hermes core |
+| 8 | Desktop plugins stay inside the SDK surface (no prototype patching of renderer or browser objects (checked by hand, not by the lint), `eval`, foreign `import()`, script injection, DOM reaching; `hermes plugins validate` also warns on raw `window.hermesDesktop` bridge calls and on the app's markup selected any other way) |
+| 9 | No runtime overrides of Hermes core (`hermes plugins validate` also warns on each call to a private method of a core object the plugin is handed, e.g. `db._execute_write(...)`) |
 | 10 | Dependency security policy is the plugin's (bounds, oldest compatible floor) |
-| 11 | Credentials come through Hermes (`agent.secret_scope.get_secret`, `credentialed_provider_request`), never from files |
+| 11 | Credentials come through Hermes (`agent.secret_scope.get_secret`, `credentialed_provider_request`), never from files; a third-party OAuth client is declared under `oauth:` in `plugin.yaml` (`https` only `authorize_url` / `token_url` / `hosts`), signed in with `hermes auth add <plugin>:<id>` |
 | 12 | Approvals and unattended runs respected (no auto-approve, no hanging under cron/gateway) |
 | 13 | Risky behaviour disclosed in PR description and README; telemetry opt-in |
-| 14 | Compatibility metadata truthful (`requires_hermes` is a SemVer floor such as `">=0.21.5"`, never CalVer, never newer than current release) |
+| 14 | Compatibility metadata truthful (`requires_hermes` is a SemVer floor such as `">=0.21.5"`, never CalVer, never newer than current release; the catalog entry's `requires_hermes` is enforced on install by catalog name and on `hermes plugins update`; declare the same floor in `plugin.yaml` too; a portable `plugin.json` package has no such field, so the catalog entry is its only floor) |
 | 15 | No skins or forks of bundled plugins |
 | 16 | One listing per plugin lineage (forks only if materially different; name origin as `Derived from <entry>`) |
 | 17 | No unscannable executable payloads (compiled binaries, `.pyc`, opaque archives); native components need public GitHub Actions build with `actions/attest-build-provenance` |
+| 18 | Password managers come from their vendor: a plugin registering a `browser_vault` login backend (`ctx.register_login_backend`) is listed only at `tier: verified` (submitted by the vendor from its own repository) or `tier: official`; community-tier, fork and third-party listings are declined. Hermes enforces it at load: only a bundled plugin or a catalog install at `verified` / `official` tier at the reviewed pin is accepted; local-directory, Git URL, `--ref`, `--allow-removed`, project and pip installs are refused |
 
 ## Notes
 
@@ -50,7 +51,7 @@ Admission rules (summary of the 17 mirrored rules):
 - Updating an entry: new PR bumping `sha`, bump `version` in the same PR, re-pin `image` / `screenshots` URLs embedding the old sha. `hermes plugins list --json` reports `update_available`.
 - Delisting deletes the entry file (existing installs keep the plugin); removal adds it to `plugin-catalog/removed.yaml` (blocklist for security/policy incidents; installers refuse it).
 - If a needed hook is missing, open an issue on `NousResearch/hermes-agent` rather than patching.
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/plugins/catalog-submission (pinned to v0.22.2). The rule text above is abbreviated; the full wording is in the source page.
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/plugins/catalog-submission (pinned to v0.23.1; rule 18 added since v0.22.2). The rule text above is abbreviated; the full wording is in the source page.
 
 ## Related
 

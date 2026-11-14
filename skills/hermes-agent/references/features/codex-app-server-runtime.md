@@ -54,8 +54,8 @@ wire_api = "responses"
 |---|---|
 | Codex built-ins | `shell`, `apply_patch`, `update_plan`, `view_image`, `web_search` |
 | Native Codex plugins | Auto-migrated from `codex plugin` installs via `plugin/list` (Linear, GitHub, Gmail, Calendar, Canva, ...) as `[plugins."<name>@openai-curated"]` |
-| Hermes callback MCP server (`hermes-tools`) | `web_search`, `web_extract`, `browser_navigate`, `browser_click`, `browser_type`, `browser_press`, `browser_snapshot`, `browser_scroll`, `browser_back`, `browser_get_images`, `browser_console`, `browser_vision`, `vision_analyze`, `image_generate`, `skill_view`, `skills_list`, `text_to_speech`; kanban worker tools |
-| Not available | `delegate_task`, `memory`, `session_search`, `todo` (need the running agent loop; use `/codex-runtime auto`) |
+| Hermes callback MCP server (`hermes-tools`) | `web_search`, `web_extract`, `vision_analyze`, `image_generate`, `skill_view`, `skills_list`, `text_to_speech`; kanban worker tools |
+| Not available | `delegate_task`, `memory`, `session_search`, `todo`, and the browser tools (`browser_exec`, `browser_cdp`, `browser_dialog`, `browser_vault`) (need the running agent loop; use `/codex-runtime auto`) |
 
 ## Permission profiles
 
@@ -87,7 +87,11 @@ hermes -p work codex-runtime migrate    # a named profile
 - `fallback_providers` fail over only on quota and rate-limit failures; auth failures, timeouts and unknown-model errors do not fail over.
 - The codex thread id is stored on the session row (`codex_thread_id`) and resumed with `thread/resume`; if it cannot be resumed Hermes starts a new thread (`Codex thread could not be resumed; starting a new one.`).
 - Status: opt-in beta, validated against Hermes Agent 2026.5 and Codex CLI 0.130.0.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/codex-app-server-runtime (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/codex-app-server-runtime (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- Browser automation is no longer exposed through the `hermes-tools` MCP callback: v0.22.2 listed `browser_navigate` / `browser_click` / `browser_type` / `browser_press` / `browser_snapshot` / `browser_scroll` / `browser_back` / `browser_get_images` / `browser_console` / `browser_vision` as available. In v0.23.1 the browser tools (`browser_exec`, `browser_cdp`, `browser_dialog`, `browser_vault`) are not available on the codex runtime; use the default Hermes runtime (`/codex-runtime auto`) for browsing. Kanban workers on this runtime get web, vision, image_gen, skills and TTS via the callback.
 
 ## Related
 

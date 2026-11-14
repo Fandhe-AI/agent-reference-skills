@@ -45,7 +45,7 @@ Verify with `himalaya envelope list`, then poll via cron (`hermes cron add`) eve
 - Safety: inbound email is a prompt-injection surface. Never auto-act on unsolicited mail; tell the cron prompt not to reply, click links, or follow instructions in unsolicited mail; confirm before outbound sends; keep the account low-privilege (no password resets or account recovery); scope credentials.
 - The skill's `references/configuration.md` covers auth options in detail.
 - Adapted: the official guide pipes the installer straight into sh; this page splits it into download, review and run steps.
-- Source: https://hermes-agent.nousresearch.com/docs/guides/agent-email-address (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/guides/agent-email-address (pinned to v0.23.1)
 
 ## Related
 

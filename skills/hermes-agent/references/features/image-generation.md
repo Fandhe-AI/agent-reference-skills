@@ -52,17 +52,18 @@ Tool inputs: `image_url` (primary source image to edit), `reference_image_urls` 
 ## Notes
 
 - `provider: fal` without `FAL_KEY` errors rather than silently rerouting; change providers via `hermes tools`, not by adding or removing keys. The legacy `use_gateway` boolean is still read as `nous` when true but never written.
-- Nous Subscription is the only managed row; its picker spans the FAL catalog, native Krea 2 (`krea-2-medium`, `krea-2-large`, `krea-2-medium-turbo`) and Nous Portal image models. Free tool-pool accounts see FAL models only.
+- Nous Subscription is the only managed row; its picker spans the FAL catalog, native Krea 3 (`krea-3`), native Krea 2 (`krea-2-medium`, `krea-2-large`, `krea-2-medium-turbo`) and Nous Portal image models. Free tool-pool accounts see FAL models only; Krea and Portal models are paid-subscription.
+- Krea 3 selected: `image_url` is a picture to edit (up to 4 reference images in total; an edit keeps the picture's own framing) and `image_generate` offers `thinking` (`fast` or `high`) and `resolution` (`1K` or `2K`). Krea 2 selected: it offers `creativity` plus `intensity`, `complexity` and `movement` sliders (-100 to 100) instead.
 - `gpt-image-1.5` and `gpt-image-2` quality is pinned to `medium`. GPT Image 2 maps to 4:3 presets because its minimum pixel count is 655,360.
 - GPT Image 2.5 on FAL: `openai/gpt-image-2.5/flare/text-to-image` and `openai/gpt-image-2.5/sunburst/text-to-image` (edit endpoints chosen automatically, up to 16 source images). The OpenAI (Codex auth) provider does not offer 2.5; use the direct OpenAI API provider or FAL.
 - Meta Model API: `image_gen.provider: meta-ai`, model `muse-image-1.0` (~10s, $0.01/image), key `MODEL_API_KEY` (aliases `META_API_KEY`, `META_MODEL_API_KEY`), base URL override `META_BASE_URL`; text-to-image only.
 - OpenRouter lists its live Image API catalog (40+ ids) fetched from `GET /images/models` and `GET /models`.
-- Editing backends: FAL edit-capable models (`flux-2/klein/9b`, `flux-2-pro`, `nano-banana-pro`, `gpt-image-1.5`, `gpt-image-2`, `ideogram/v3`, `qwen-image`, GPT Image 2.5), OpenAI (up to 16 references), xAI Grok Imagine (1 reference), Krea 2 (up to 10), OpenAI Codex auth (up to 16; backend treats quality and size as advisory), OpenRouter. Text-only FAL models (`z-image/turbo`, `recraft`, `krea/*`) reject image inputs.
+- Editing backends: FAL edit-capable models (`flux-2/klein/9b`, `flux-2-pro`, `nano-banana-pro`, `gpt-image-1.5`, `gpt-image-2`, `ideogram/v3`, `qwen-image`, GPT Image 2.5), OpenAI (up to 16 references), xAI Grok Imagine (1 reference), Krea 3 (up to 4; instruction-following edit via `image_urls`, local files embedded in the request up to 3 MB in total), Krea 2 (up to 10; reference-guided generation via `image_style_references`), OpenAI Codex auth (up to 16; backend treats quality and size as advisory), OpenRouter. Text-only FAL models (`z-image/turbo`, `recraft`, `krea/*`) reject image inputs.
 - Upscaling is opt-in per call (`upscale: true`): FAL uses Clarity Upscaler (2x, +$0.03/MP; creativity 0.35, resemblance 0.6, guidance 4, steps 18), Krea uses Krea Enhance; other backends return native resolution. If upscaling fails the original is returned and `upscaled: false` is reported. `video_generate` on FAL can chain SeedVR2 (2x, $0.001/MP).
 - Resolution of the FAL model: `image_gen.model`, then `FAL_IMAGE_MODEL`, then `fal-ai/flux-2/klein/9b`. Returned URLs are temporary; Hermes materializes them to the local cache and delivers via `MEDIA:<url>`.
 - Token-billed image models (OpenRouter, OpenAI `gpt-image`) are recorded in `session_model_usage` as task `image_generation`; per-image backends are not.
 - Delivery: CLI prints markdown `![](url)`; Telegram photo with caption; Discord embed; Slack unfurl; WhatsApp media; others plain URL.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/image-generation (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/image-generation (pinned to v0.23.1)
 
 ## Related
 

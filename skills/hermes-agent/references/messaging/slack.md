@@ -40,6 +40,7 @@ Setup: create the app (from the generated manifest, or from scratch), add bot to
 | `platforms.slack.typing_status_text` | string (default `"is thinking..."`) | Working-state status line (needs `assistant:write`) |
 | `display.live_status` | `full` (default) / `verb` / `off` | Per-tool live status |
 | `slack.require_mention` / `strict_mention` / `thread_require_mention` / `require_mention_channels` / `ignore_other_user_mentions` | bool / list | Mention gating options (compose; see Notes) |
+| `slack.thread_followup_silence` / `SLACK_THREAD_FOLLOWUP_SILENCE` | bool (default `false`) | New in v0.23. Let a bare silence marker stand on unaddressed replies in a channel thread the bot follows; otherwise Hermes posts the "model returned only a silence marker" notice. DMs (1:1 and group), @mentions of the bot and flat (`reply_in_thread: false`) channels are unaffected |
 | `slack.free_response_channels` / `SLACK_FREE_RESPONSE_CHANNELS` | list | Channels exempt from @mention |
 | `slack.mention_patterns` / `reply_prefix` | list / string | Extra triggers / outgoing prefix |
 | `slack.reaction_triggers` / `reaction_trigger_target` | bool or list / string | Route reactions to the agent (needs `reactions:read`, `reaction_added` / `reaction_removed`) |
@@ -60,7 +61,8 @@ Setup: create the app (from the generated manifest, or from scratch), add bot to
 - Cron `deliver:` targets: `slack`, `slack:C0123456789`, `slack:U0123456789` (DM, needs `im:write`).
 - For Codex-backed peer-agent channels prefer `agent.reasoning_effort: high` or lower; `xhigh` can spend the whole turn in hidden reasoning.
 - Always set `SLACK_ALLOWED_USERS`; without it the gateway denies all messages.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/slack (pinned to v0.22.2)
+- `slack.channel_prompts` (v0.23): the ephemeral prompt also applies to slash-command turns (`/hermes <question>` and native `/<command>`). `slack.channel_skill_bindings`: a session started by a slash command (`/hermes <question>`) loads the binding too.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/slack (pinned to v0.23.1)
 
 ## Related
 

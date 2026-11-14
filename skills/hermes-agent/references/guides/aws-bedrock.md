@@ -40,7 +40,7 @@ API routing by model family:
 | Model family | API route |
 |---|---|
 | Anthropic Claude | Anthropic SDK (`AnthropicBedrock`) — prompt caching, thinking budgets |
-| OpenAI GPT-6 (Astra, Sol, Luna), GPT-6.1 Sol, GPT-5.6 (Sol, Terra, Luna), GPT-5.5 with a bare `openai.*` ID | Bedrock Mantle OpenAI Responses endpoint (`bedrock-mantle.<region>.api.aws/openai/v1`) |
+| OpenAI GPT-6 (Astra, Sol, Luna), GPT-6.1 (Sol, Terra), GPT-5.6 (Sol, Terra, Luna), GPT-5.5, GPT-5.4 with a bare `openai.*` ID | Bedrock Mantle OpenAI Responses endpoint (`bedrock-mantle.<region>.api.aws/openai/v1`) |
 | Same OpenAI models with `us.` / `global.` profile ID | Native Converse API (`bedrock-runtime`) |
 | Everything else (Nova, DeepSeek, Llama, GPT-OSS, ...) | Native Converse API |
 
@@ -56,10 +56,11 @@ Models (as listed in the guide):
 | Claude Opus 4.6 | `us.anthropic.claude-opus-4-6-v1` |
 | Claude Haiku 4.5 | `us.anthropic.claude-haiku-4-5-20251001-v1:0` |
 | OpenAI GPT-6 Astra | `openai.gpt-6-astra` |
-| OpenAI GPT-6.1 Sol | `openai.gpt-6.1-sol` |
+| OpenAI GPT-6.1 Sol / Terra | `openai.gpt-6.1-sol` / `openai.gpt-6.1-terra` (1,050,000-token window) |
 | OpenAI GPT-6 Sol / Luna | `openai.gpt-6-sol` / `openai.gpt-6-luna` |
 | OpenAI GPT-5.6 Sol / Terra / Luna | `openai.gpt-5.6-sol` / `openai.gpt-5.6-terra` / `openai.gpt-5.6-luna` |
 | OpenAI GPT-5.5 | `openai.gpt-5.5` (Mantle only, no inference profiles) |
+| OpenAI GPT-5.4 | `openai.gpt-5.4` (1,050,000-token window) |
 | Amazon Nova Pro / Micro | `us.amazon.nova-pro-v1:0` / `us.amazon.nova-micro-v1:0` |
 | DeepSeek V3.2 | `deepseek.v3.2` |
 | Llama 4 Scout 17B | `us.meta.llama4-scout-17b-instruct-v1:0` |
@@ -73,11 +74,11 @@ IAM permissions: `bedrock:InvokeModel`, `bedrock:InvokeModelWithResponseStream`,
 - Guardrails apply on Converse and Claude routes, not on the Mantle Responses endpoint (bare `openai.gpt-*` IDs); use a `us.` / `global.` OpenAI profile when a guardrail is required. `stream_processing_mode` applies to Converse only. A blocked request surfaces as a content-filter refusal.
 - Bare `openai.*` IDs are in-Region and go to Mantle in the configured region; GPT-6.1 Sol Mantle in-Region access is `us-east-1` only.
 - Prompt caching: Converse `cachePoint` markers are added only for an allowlist (Anthropic Claude and Amazon Nova); Claude normally uses the AnthropicBedrock SDK's own caching.
-- Context window: unknown models fall back to 128,000 tokens with a WARNING; set `model.context_length`. Application inference profile ARNs are sized via `bedrock:GetInferenceProfile` from the wrapped model.
+- Context window: when the static Bedrock table has no row for an Anthropic, OpenAI or xAI model, Hermes uses that family's window from its general model catalog (`agent/model_metadata.py`); other vendors do not borrow catalog windows (e.g. Llama 3 8B is 8K on Bedrock). Models nothing knows fall back to 128,000 tokens with a WARNING, and the banner, status bar, `/usage`, `/model` and the gateway session line mark that window `fallback`; set `model.context_length` (or `model_overrides.bedrock.<model id>.context_window`). Application inference profile ARNs are sized via `bedrock:GetInferenceProfile` from the wrapped model.
 - Error "Invocation of model ID ... with on-demand throughput isn't supported": use an inference profile ID (`us.` / `global.`) instead of the bare model ID. `ThrottlingException` is retried with backoff; request quota increases in Service Quotas.
 - Works with all gateway platforms (`hermes gateway setup`, `hermes gateway start`).
 - One-click CloudFormation sample: JiaDe-Wu/sample-hermes-agent-on-aws-with-bedrock.
-- Source: https://hermes-agent.nousresearch.com/docs/guides/aws-bedrock (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/guides/aws-bedrock (pinned to v0.23.1)
 
 ## Related
 

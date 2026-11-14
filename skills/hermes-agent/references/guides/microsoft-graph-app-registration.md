@@ -75,7 +75,7 @@ Common errors:
 - Caveat: Microsoft Graph's own permission table for POST /teams/{id}/channels/{id}/messages lists ChannelMessage.Send as a delegated permission only, and application permissions (Teamwork.Migrate.All) are supported only for message import/migration — app-only (client-credentials) posting to channels or chats is not supported by Graph, so graph delivery_mode as described here may fail; verify against https://learn.microsoft.com/en-us/graph/api/channel-post-messages before relying on it.
 - Secret rotation: create a second secret, update `MSGRAPH_CLIENT_SECRET`, `hermes gateway restart`, verify, then delete the old secret.
 - Follow-up pages (webhook listener, pipeline configuration, outbound delivery) were described in the source as landing with later PRs.
-- Source: https://hermes-agent.nousresearch.com/docs/guides/microsoft-graph-app-registration (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/guides/microsoft-graph-app-registration (pinned to v0.23.1)
 
 ## Related
 

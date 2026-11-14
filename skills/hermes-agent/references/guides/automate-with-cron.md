@@ -77,7 +77,7 @@ Job management:
 - The upstream guide (v0.22.2) lists bare `30m`/`1d` as one-shot (and says natural language is unsupported); the user-guide Cron page states bare durations are recurring and one-shots need the `in` prefix — this page follows the user guide.
 - Skills load in the order given before the prompt runs.
 - Test with `/cron run <job_id>` before waiting for the schedule.
-- Source: https://hermes-agent.nousresearch.com/docs/guides/automate-with-cron (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/guides/automate-with-cron (pinned to v0.23.1)
 
 ## Related
 

@@ -35,8 +35,9 @@ bot_desktop:
 | `terminal.backend` | `placement: auto` | Meaning |
 |---|---|---|
 | `local` | gateway host | Terminal, screen, browser and `computer_use` share the gateway machine |
-| `docker`, `ssh`, `singularity` | inside the sandbox | Xvnc + Xfce, Chromium and cua-driver run in the container / SSH host |
-| `modal`, `daytona`, `vercel_sandbox` | refused | These backends cannot host a display yet; use `placement: gateway` |
+| `docker`, `ssh`, `singularity` (plugin) | inside the sandbox | Xvnc + Xfce, Chromium and cua-driver run in the container / SSH host |
+| A plugin backend that declares `supports_streams` | inside the sandbox | Same, through the plugin's own exec channel |
+| `modal`, `daytona`, `vercel_sandbox`, other plugin backends | refused | These backends cannot host a display yet; use `placement: gateway` |
 
 `placement: gateway` forces the screen onto the gateway host; `placement: terminal` forces the sandbox and errors when it cannot host one.
 
@@ -66,10 +67,16 @@ terminal:
 - While a human holds control, the bot's `computer_use` and browser tools are refused with `human_has_control`. This is a tool-level fence, not an OS boundary; screens are work surfaces, not security boundaries (bots share the host user account, files and network).
 - A dropped connection keeps control with you until you reconnect and hand back; **Hand back (force)** clears a stale hold. Two viewers: the most recent **Take over** wins.
 - Control lease is a file under `<HERMES_HOME>/bot-desktop/`; no file means the bot holds control; an unreadable file fails closed. Xvnc listens only on a `0600` Unix socket (no TCP port, no VNC password).
-- Browser: one persistent user-data-dir per bot at `<HERMES_HOME>/bot-desktop/browser-profile` (override with `AGENT_BROWSER_PROFILE`); `AGENT_BROWSER_EXECUTABLE_PATH` picks the Chromium. Set `browser.headed: true` to show the bot's browsing on the screen. The dock is seeded once, guarded by `xfce4-panel.xml`.
+- Browser: the dock's Browser icon and the bot's `browser_exec` share one Chromium with one persistent user-data-dir per bot at `<HERMES_HOME>/bot-desktop/browser-profile` (override with `browser.user_data_dir`; `~` expands and a relative path resolves against that bot's `HERMES_HOME`); `browser.executable_path` picks the Chromium (otherwise the PM-managed Chromium, falling back to a system `chromium` / `google-chrome`; reversed on Ubuntu 23.10+ non-root hosts with `kernel.apparmor_restrict_unprivileged_userns=1`). The official Docker image records PM's pinned Chromium in `/etc/hermes/chromium-executable-path`; set `browser.executable_path: /usr/bin/chromium` in the bot's `config.yaml` on hosts that refuse its sandbox (`-desktop` tags carry the distro `chromium`). Set `browser.headed: true` to show the bot's browsing on the screen. The dock is seeded once, guarded by `xfce4-panel.xml`; changing `browser.executable_path` / `browser.user_data_dir` does not re-pin the icon unless that file is deleted.
+- Idle stop: the screen applies `bot_desktop.idle_stop_minutes` itself, so it also stops when the gateway that started it is gone and never restarts. A screen a human has taken over is kept while their viewer keeps it in use; once nothing has used it for four windows and at least 10 minutes (a viewer whose link dropped), it stops and control returns to the agent.
 - Troubleshooting: read `<HERMES_HOME>/bot-desktop/launcher.log` when the screen starts then stops. The screen runs a US keymap, so layout-dependent keys on non-US keyboards land as US counterparts during takeover.
 - WSL2 is a supported host, but WSLg mounts `/tmp/.X11-unix` read-only; replace the mount with a writable directory before the first start (`sudo umount /tmp/.X11-unix`, then `sudo mkdir -p /tmp/.X11-unix && sudo chmod 1777 /tmp/.X11-unix`).
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/bot-screen (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/bot-screen (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- `AGENT_BROWSER_PROFILE` -> `browser.user_data_dir`; `AGENT_BROWSER_EXECUTABLE_PATH` -> `browser.executable_path` (set in the bot's `config.yaml` rather than the gateway environment). `agent-browser` is no longer part of the sandbox image or the SSH host requirements (they need TigerVNC, Xfce, `cua-driver` and a headed Chromium); `nousresearch/hermes-sandbox:desktop` still ships a headed Chromium and `cua-driver`.
+- The Chrome DevTools port is advertised by every Chromium Hermes launches (previously "every agent-browser launch"); it remains reachable by any local user on the host.
 
 ## Related
 

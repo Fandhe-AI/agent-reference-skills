@@ -22,6 +22,14 @@ In-session commands:
 | `/rollback <N> --all` | Full restore, overwrites your hand-edits too |
 | `/rollback diff <N>` | Preview diff between checkpoint N and current state |
 | `/rollback <N> <file>` | Restore a single file from checkpoint N |
+| `/undo` | Rewinds the conversation only; with checkpoints on and files changed by the undone turns, adds one line naming them and pointing at `/rollback` |
+
+Official example of the `/undo` output:
+
+```
+/undo
+↶ Files changed in the undone turns: app.js, notes.md. Run /rollback to see checkpoints and restore them.
+```
 
 Store management from the shell:
 
@@ -61,10 +69,11 @@ checkpoints:
 - Storage: one shared bare git repo at `~/.hermes/checkpoints/store/` (per-project refs `refs/hermes/<project-hash>`, indexes, `projects/<hash>.json`); the real project `.git` is never touched. v1 per-project shadow repos are moved to `legacy-<timestamp>/` on first v2 run.
 - `/rollback <N>` verifies the commit, takes a pre-rollback snapshot, restores only files Hermes itself wrote (agent-write ledger; changed-since files are skipped and listed), and undoes the last conversation turn. An empty ledger falls back to full restore.
 - Nested git repositories are stored as gitlinks and not captured; a rollback whose checkpoint contains gitlinks is refused before changing files.
-- Container terminal backends (`docker`, `singularity`, `modal`, `daytona`, `vercel_sandbox`, container plugins): no checkpoints are taken and diff/restore are refused (list still works). Local and SSH backends are unaffected.
-- Guards: git missing from `PATH` disables checkpoints; root `/` and `$HOME` skipped; directories over 50,000 files skipped; no-change snapshots skipped; snapshot failures never block tools.
+- `/undo` never touches files. The listed files are best effort (project compared with the checkpoint taken around when the undone turns started) and say only what changed, not what a restore will bring back; the line names no checkpoint (run `/rollback` to pick one), is not printed with checkpoints off or when no undone turn took a checkpoint, and the editor (ACP) and gateway chat client print no line. A whole-tree `/rollback` undoes the newest remaining chat turn only when that turn made the checkpoint or came after it; after `/undo`, turns that ended before the checkpoint stay. Each checkpoint records its exact time (older-version checkpoints only the second, so a kept turn in the same second is kept too).
+- Container terminal backends (`docker`, `modal`, `daytona`, `vercel_sandbox`, container plugins such as `singularity`): no checkpoints are taken and diff/restore are refused (list still works). Local and SSH backends are unaffected.
+- Guards: git missing from `PATH` disables checkpoints; root `/`, `$HOME` and every directory that contains your home (such as `/home` or `/Users`) skipped, and the checkpoint store itself is never snapshotted (even when the project is `~/.hermes`); directories over 50,000 files skipped, with excluded directories (`node_modules/`, `.venv/`, `build/`, Hermes' browser profiles and the rest of the exclude list) not counted; no-change snapshots skipped; snapshot failures never block tools.
 - `.checkpoints.lock` coordinates processes; do not remove it while Hermes runs.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/checkpoints-and-rollback (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/checkpoints-and-rollback (pinned to v0.23.1)
 
 ## Related
 

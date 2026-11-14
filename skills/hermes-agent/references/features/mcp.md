@@ -48,6 +48,8 @@ MCP servers are defined in `~/.hermes/config.yaml` under `mcp_servers`.
 | `lazy` | both | `true` registers tools from the on-disk schema cache and starts/connects on first tool call (default `false`; needs one prior live connect) |
 | `idle_timeout_seconds` / `max_lifetime_seconds` | stdio | Recycle a server after idle / total age (`0` = never, default); restarts transparently on next call |
 | `sampling` / `elicitation` | both | Per-server sampling and elicitation settings (see below) |
+| `events` | both | `true` registers the experimental MCP events tools for this server (default `false`; see Notes) |
+| `tool_costs` / `spend_limit` / `cost_unit` | both | Declared per-tool cost, per-chat budget and prompt label (see Notes) |
 
 ```yaml
 mcp_servers:
@@ -116,7 +118,7 @@ Sampling is enabled by default; disable it per server in config. Full per-server
 
 ## Elicitation
 
-MCP servers can ask the user for structured input mid-tool-call (`elicitation/create`, mcp Python SDK >= 1.11.0). Form-mode requests go through Hermes' approval surface (CLI/TUI prompt, or buttons on gateway platforms); URL-mode requests are declined as unsupported. Enabled by default:
+MCP servers can ask the user for structured input mid-tool-call (`elicitation/create`, mcp Python SDK >= 1.11.0). Form-mode requests go through Hermes' approval surface (CLI/TUI prompt, or buttons on gateway platforms); each answer covers that one request (only Allow Once and Deny), and YOLO / `approvals.mode: off` do not answer them for you; URL-mode requests are declined as unsupported. Enabled by default:
 
 ```yaml
 mcp_servers:
@@ -146,21 +148,77 @@ mcp_servers:
 
 ## Hermes as MCP Server
 
-Hermes can expose itself as an MCP server, making its messaging capabilities available to other MCP-compatible agents (Claude Code, Cursor, etc.).
+Hermes can also be an MCP server, so Claude Code, Claude Desktop, Cursor, Codex or any MCP client can list and read messaging conversations, wait for new messages and send messages across connected platforms, and optionally call Hermes' own web, browser, vision, image generation, skills and TTS tools. Since v0.23 this ships as the official **mcp-serve** plugin:
 
 ```bash
-hermes mcp serve
+hermes plugins install mcp-serve
 ```
 
-**Exposed tools:** conversation listing, message reading, event polling, message sending, permission management.
+```json
+{
+  "mcpServers": {
+    "hermes": {
+      "command": "hermes",
+      "args": ["mcp-serve"]
+    }
+  }
+}
+```
 
-**Event system:** supports polling and long-polling for near-real-time message awareness.
-
-**Current limitations:** stdio transport only; text-only sends; no media attachment support.
+It used to be built in as `hermes mcp serve`. A client configured with `"args": ["mcp", "serve"]` changes them to `["mcp-serve"]`; tool names and parameters are unchanged, and `hermes mcp serve` now prints the new spelling and the install line. Tools, the `--tools` mode and safety limits are documented in the plugin's README: https://github.com/NousResearch/hermes-official-plugins/tree/main/mcp-serve
 
 ## Notes
 
-- The v0.22.2 user-guide/features/mcp.md still shows the legacy single-underscore form `mcp_<server>_<tool>`, but the Tools Reference, the Toolsets Reference, and the v0.22.2 source `tools/mcp_tool_schema.py` (`MCP_TOOL_NAME_PREFIX = "mcp__"`) use the double-underscore form `mcp__<server>__<tool>`; this page follows the latter.
+- The v0.22.2 user-guide/features/mcp.md still shows the legacy single-underscore form `mcp_<server>_<tool>`, but the Tools Reference, the Toolsets Reference, and the v0.22.2 source `tools/mcp_tool_schema.py` (`MCP_TOOL_NAME_PREFIX = "mcp__"`) use the double-underscore form `mcp__<server>__<tool>`; this page follows the latter. v0.23.1 mcp.md still names the display prefix `mcp_<server>_` in the `tool_costs` paragraph; the same discrepancy stands.
+- `hermes import-agent claude-code` (migrates `mcpServers` from `~/.claude.json` to `mcp_servers`, plus skills and instructions) comes from the `agent-importers` plugin.
+- Server responses: Hermes accepts up to 10 MiB per HTTP response or per SSE event of a streamed response. On the legacy SSE transport (`transport: sse`) the MCP SDK caps each event at 1 MiB with no way to raise it; if the server also serves Streamable HTTP, remove `transport: sse` from its entry.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp (pinned to v0.23.1)
+
+### Tool costs and spend limits
+
+Servers that spend money or credits per call can declare costs and a per-chat budget:
+
+```yaml
+mcp_servers:
+  renders:
+    command: "render-mcp"
+    trust: untrusted
+    tool_costs:
+      create_image: 20                                   # about 20 credits per call
+      animate: {credits: [5, 20], note: "per animation"}  # a range, with a short note
+      get_status: 0                                       # free; same as leaving it out
+    spend_limit: 100     # per chat; 0 or absent = no limit
+    cost_unit: credits   # label in prompts (default: credits)
+```
+
+- The approval prompt names the cost (`Costs about 20 credits.`), plus the running total once the chat has spent something. Hermes keeps an in-memory running total per chat and per server (top of a range counted for every approved costed call; declined or blocked calls add nothing); it is a conversation budget, not the vendor's bill. The total follows compression and `/branch`, restarts on `/new` (not on messaging platforms, where it belongs to the chat), each cron run has its own, and a Hermes restart resets all.
+- With `spend_limit`, a costed call that would cross the limit asks first, even on `trust: full`, and every further costed call in that chat asks again with only Allow Once / Deny; where nobody can answer (cron, `hermes chat -q`, no approver) the call is refused. Below the limit `trust: full` still runs without asking. YOLO and `approvals.mode: off` skip the `trust: untrusted` prompt but not the spend limit.
+- A malformed `tool_costs` / `spend_limit` / `cost_unit` skips the server with an error naming the key; an unknown `tool_costs` key is named in a connect-time warning (use the server's own tool names). A portable plugin package can declare the same table; your same-name `mcp_servers` entry overrides only the keys it sets (`spend_limit: 0` turns the package limit off, `tool_costs: {}` drops its costs).
+
+### MCP Events (experimental)
+
+For servers that notify the agent of upstream events via the `events/*` methods (a working-group draft proposal), Hermes implements the **webhook** delivery mode: the server POSTs each event to the gateway's webhook listener and each event starts an agent run. Needs `events: true` on the server and a public HTTPS `platforms.webhook.extra.public_url`:
+
+```yaml
+mcp_servers:
+  ambush:
+    url: "https://example.com/mcp"
+    events: true          # registers the event utility tools for this server
+
+platforms:
+  webhook:
+    enabled: true
+    extra:
+      public_url: "https://hermes.example.com"
+```
+
+- Extra utility tools: `list_event_types`, `subscribe_event` (event arguments, `instructions` up to 2000 characters, `deliver`, `deliver_chat_id`; every subscription needs your approval), `unsubscribe_event`.
+- Each subscription is a dynamic webhook route (`hermes webhook list`) with its own `whsec_` secret; the grant and replay cursor are kept in `mcp_event_subscriptions.json`. Events dedupe by `eventId`, subscriptions refresh before the granted lifetime ends while the connection is up (may lapse with `lazy: true` / `idle_timeout_seconds`), and events only arrive while `hermes gateway run` is running. Payloads reach the run whole up to 32,000 characters of JSON; the listener's per-route `rate_limit` (default 30 a minute) also applies.
+- Not supported yet: `poll` and `push` delivery modes, and subscriptions from a secondary profile under `gateway.multiplex_profiles`.
+
+### Migration (v0.22 -> v0.23)
+
+- `hermes mcp serve` (built-in MCP server) moved to the `mcp-serve` plugin: `hermes plugins install mcp-serve`, client args `["mcp", "serve"]` -> `["mcp-serve"]`. The 10-tool list and event-bridge description from v0.22.2 now live in the plugin README, so they are not reproduced here.
 
 ## Related
 

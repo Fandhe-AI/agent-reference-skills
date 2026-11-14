@@ -1,6 +1,6 @@
 # Install
 
-Hermes Agent のインストールと依存パッケージ（PM 管理）の操作。対象は v0.22.2 の公式ドキュメント。
+Hermes Agent のインストールと依存パッケージ（PM 管理）の操作。対象は v0.23.1 の公式ドキュメント（インストーラーの手順そのものは v0.22.2 から変更なし）。
 
 ## クイックインストール（Linux / macOS / WSL2）
 
@@ -31,17 +31,18 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 | 入力を要するステージを省略 | `--non-interactive` | `-NonInteractive` |
 | デスクトップをソースからビルド | `--include-desktop` | `-IncludeDesktop` |
 | 詳細ログを出力 | `--verbose` | `-Verbose` |
+| main の先頭を導入（既定は最新 stable リリース） | `--channel main` | `-Channel main` |
 
-既定では `agent-browser`（pin 済み Chromium 付き）と `cua-driver` も PM がインストールする。除外した選択は記憶され、以降のインストールや `hermes update` でも再追加されない。オプションの渡し方（引数の与え方）は公式に例示がないため、各スクリプトの `--help` 等で確認する（要確認）。
+既定では `chromium`（Hermes が起動するブラウザ）と `cua-driver` も PM がインストールする（v0.22 の `agent-browser` から改称。ブラウザの除外は旧名 `--without agent-browser` も受け付けられ `chromium` として扱われる）。除外した選択は記憶され、以降のインストールや `hermes update` でも再追加されない。オプションの渡し方（引数の与え方）は公式に例示がないため、各スクリプトの `--help` 等で確認する（要確認）。
 
 ## 除外したツールの後付けインストール
 
 ```bash
-hermes pm install agent-browser
+hermes pm install chromium
 hermes pm install cua-driver
 ```
 
-名前を指定すると、以前に除外した選択が取り消される。
+名前を指定すると、以前に除外した選択が取り消される。除外した Python extra（`[all]` に含まれないもの。例: `matrix`）は `hermes pm install --extra <EXTRA>` で戻す（`hermes pm install --without <EXTRA>` で外す）。
 
 ## インストール後の確認
 
@@ -95,11 +96,12 @@ cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['voice'], expli
 
 ```bash
 hermes pm doctor
+hermes pm doctor --repair
 hermes pm status
 hermes pm repair
 ```
 
-`doctor` は固定済みツールの状態を lock と照合し、`status` は直近の sync / update レシートを JSON で表示し、`repair` は記録済みの Python 依存セットを新しい世代として再構築する。
+`doctor` は固定済みツールの状態を lock と照合し（PM の uv キャッシュの破損エントリも検出し、`--repair` で除去して再取得させる）、`status` は直近の sync / update レシートを JSON で表示し、`repair` は記録済みの Python 依存セットを新しい世代として再構築する。
 
 ## Android / Termux
 
@@ -131,3 +133,11 @@ hermes uninstall
 ソースインストールでは `--dry-run` で事前確認する。MSIX / Store は Windows の設定 → アプリ、macOS はアプリを削除、Docker / Nix / Termux はインストール元のマネージャーで削除する。
 
 > **警告**: `--full` は設定・メモリ・セッションを含むデータも削除する。`--data` はコード本体を残してユーザーデータのみ削除する。いずれも破壊的なため、事前に `hermes backup` を取る。`--yes` は確認プロンプトをスキップする。
+
+## 注記
+
+v0.23 の変更: PM のブラウザ用 optional package は `agent-browser` から `chromium` に改称。JavaScript ツールは npm から pnpm に移行（開発者向けコマンドは `pnpm install --frozen-lockfile` など）。`hermes pm doctor --repair`、`hermes pm install --without <EXTRA>` / `--extra <EXTRA>` が追加。インストーラーは新規インストールを最新 stable リリースに置き、main の先頭には `--channel main`（Windows は `-Channel main`）を渡す。Termux の `chromium` はシステムの `pkg install chromium` があれば使われる（無ければブラウザツールは使えない）。
+
+- Source: https://hermes-agent.nousresearch.com/docs/reference/package-management (pinned to v0.23.1)
+- Source: https://hermes-agent.nousresearch.com/docs/getting-started/updating (pinned to v0.23.1)
+- Source: https://hermes-agent.nousresearch.com/docs/getting-started/termux (pinned to v0.23.1)

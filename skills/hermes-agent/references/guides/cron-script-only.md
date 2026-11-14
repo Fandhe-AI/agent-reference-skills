@@ -97,7 +97,7 @@ Comparison:
 - The upstream guide (v0.22.2) lists bare `30m`/`1d` as one-shot (and says natural language is unsupported); the user-guide Cron page states bare durations are recurring and one-shots need the `in` prefix — this page follows the user guide.
 - No running gateway is required at script-run time for bot-token platforms (Telegram, Discord, Slack, Signal, SMS, WhatsApp).
 - Agents choose `no_agent=True` when the script's stdout already is the message.
-- Source: https://hermes-agent.nousresearch.com/docs/guides/cron-script-only (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/guides/cron-script-only (pinned to v0.23.1)
 
 ## Related
 

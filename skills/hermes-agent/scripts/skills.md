@@ -23,7 +23,7 @@ hermes skills search https://mintlify.com/docs --source well-known
 
 ```bash
 hermes skills install <identifier>
-hermes skills install official/migration/openclaw-migration
+hermes skills install official/mcp/fastmcp
 hermes skills install skills-sh/anthropics/skills/pdf --force
 hermes skills install https://example.com/SKILL.md --name my-skill
 ```
@@ -128,3 +128,8 @@ hermes skills tap
 ## 注記
 
 `hermes sync` コマンドの削除は、v0.22.2 の公式ドキュメント内で確認できなかったため記載しない。
+
+v0.23 の変更: インストール例を `official/migration/openclaw-migration`（optional skills カタログから削除済み。OpenClaw 移行は `hermes import-agent openclaw`）から `official/mcp/fastmcp` に変更した。信頼できる（`trusted`）レジストリに `wandb/skills`・`qdrant/skills`・`pinecone-io/skills`・`makenotion/skills`・`Airtable/skills`・`Shopify/Shopify-AI-Toolkit` が追加された。`hermes skills` のサブコマンド自体は変更なし。
+
+- Source: https://hermes-agent.nousresearch.com/docs/reference/cli-commands (pinned to v0.23.1)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/skills (pinned to v0.23.1)

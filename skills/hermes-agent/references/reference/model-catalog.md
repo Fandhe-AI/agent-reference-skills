@@ -15,7 +15,7 @@ Live manifest URL: `https://hermes-agent.nousresearch.com/docs/api/model-catalog
     "openrouter": {
       "metadata": {},
       "models": [
-        {"id": "z-ai/glm-5.2",         "description": "default", "default": true},
+        {"id": "z-ai/glm-5.3",         "description": "default", "default": true},
         {"id": "moonshotai/kimi-k3",   "description": "recommended", "metadata": {}},
         {"id": "openai/gpt-5.4",       "description": ""}
       ]
@@ -23,7 +23,7 @@ Live manifest URL: `https://hermes-agent.nousresearch.com/docs/api/model-catalog
     "nous": {
       "metadata": {},
       "models": [
-        {"id": "z-ai/glm-5.2", "default": true},
+        {"id": "z-ai/glm-5.3", "default": true},
         {"id": "anthropic/claude-opus-4.7"},
         {"id": "moonshotai/kimi-k3"}
       ]
@@ -67,7 +67,7 @@ Fetch behaviour: `/model` or `hermes model` fetches only when the disk cache is 
 - GUI pickers read `~/.hermes/provider_models_cache.json` and refresh in the background; `/model --refresh` busts the cache and probes every provider live.
 - Maintainers regenerate the manifest with `python scripts/build_model_catalog.py`, then PR `website/static/api/model-catalog.json`.
 - Model IDs above are copied from the schema example in the docs, not a current recommendation.
-- Source: https://hermes-agent.nousresearch.com/docs/reference/model-catalog (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/reference/model-catalog (pinned to v0.23.1). The only change from v0.22.2 is the schema example's default model id, `z-ai/glm-5.2` -> `z-ai/glm-5.3`.
 
 ## Related
 

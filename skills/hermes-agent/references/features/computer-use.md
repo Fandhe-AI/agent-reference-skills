@@ -71,20 +71,24 @@ computer_use:
 
 ## Notes
 
-- Acts on the machine the bot's screen lives on (gateway host with `terminal.backend: local`; inside the sandbox for `docker` / `ssh` / `singularity`). `modal`, `daytona`, `vercel_sandbox` refuse unless `bot_desktop.placement: gateway`.
+- Acts on the machine the bot's screen lives on (gateway host with `terminal.backend: local`; inside the sandbox for `docker` / `ssh` or a plugin backend that declares `supports_streams`, such as `singularity`). `modal`, `daytona`, `vercel_sandbox` refuse unless `bot_desktop.placement: gateway`.
 - cua-driver is a default PM package (`pm/lock.json`); skip with `--skip-computer-use` / `-SkipComputerUse` or `hermes pm install --without cua-driver`.
 - Browser work, including signed-in profiles, goes through the `browser` toolset (`browser_exec`). `computer_use.grant_existing_profile` was removed; a leftover key is ignored.
 - `smart` approval stays `standard`. YOLO/unrestricted mode does not protect against prompt injection; use only in a disposable VM.
 - Destructive actions (click, type, drag, scroll, key, focus_app) go through the approval gate; grants are keyed `cua:<action>:<background|foreground>`. Unattended runs (cron, single-query, headless) are refused rather than auto-approved. Hard-blocked key combos (empty trash, force delete, lock screen, log out) and type patterns (`curl | bash`, `sudo rm -rf /`, fork bombs).
 - SOM element indices are valid only until the next `capture`; wrapper `element_token`s detect stale indices.
-- Token efficiency: oldest screenshots replaced with `[screenshot removed to save context]` at the per-request image limit (20 images or 24 MB); each image counted at ~1500 tokens.
+- Token efficiency: on every provider, screenshots ride each request until a per-request image limit would be crossed; then the oldest batch becomes `[screenshot removed to save context]` placeholders. The block limit is 100 images when every image is at most 2000 px per side (Hermes embeds its own screenshots at 1568 px or less) and 20 when any image is larger (above 20 images Anthropic holds every image to the stricter per-side cap); a 24 MB image-data budget applies either way. Below the limit nothing is rewritten, so the prompt-cache prefix survives. Images you attach count against the limit but are never removed; when they alone exceed it, screenshots are still retired in whole batches. A retired screenshot stays retired for the rest of the session. Context compression also strips image parts from old multimodal tool results, and each image is counted at ~1500 tokens.
 - Text-only models work degraded with `mode="ax"`.
 - Windows: elevated (admin) windows cannot be driven from a normal-integrity agent (UIPI); a cua-driver under `C:\Program Files\WindowsApps` may fail `doctor` with "Access is denied" (set `HERMES_CUA_DRIVER_CMD`).
 - macOS stale grants: `tccutil reset Accessibility com.trycua.driver`, `tccutil reset ScreenCapture com.trycua.driver`, then `hermes computer-use permissions grant`.
 - The overlay cursor is cosmetic and disabled automatically on macOS, headless Linux / WSL2 / containers, and Linux X11; Wayland and Windows keep it.
 - `cua-driver skills install` installs Cua's skill pack (`SKILL.md`, `MACOS.md`, `WINDOWS.md`, `LINUX.md`, `RECORDING.md`, `WEB_APPS.md`, `TESTS.md`); Hermes autodetection is a planned follow-up.
 - On attachment-capable surfaces you can ask for a screenshot; the last 20 captures are kept and never sent automatically.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/computer-use (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/computer-use (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- Screenshot eviction threshold: v0.22.2 documented a fixed limit of 20 image blocks or 24 MB per request; v0.23.1 uses 100 images when all images are at most 2000 px per side, else 20, plus the 24 MB budget.
 
 ## Related
 

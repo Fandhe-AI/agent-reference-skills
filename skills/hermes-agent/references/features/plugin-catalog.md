@@ -24,14 +24,14 @@ Desktop deep link: `hermes://plugin/install?catalog=NAME` (reviewed pin) or `her
 | `repo` | Public git repository |
 | `sha` | Exact 40-hex commit reviewed; installs use this pin |
 | `subdir` | Path inside the repo for monorepos (`[A-Za-z0-9._/-]+`, no `..`) |
-| `tier` | `official` (NousResearch) or `community` |
+| `tier` | `official` (NousResearch), `verified` (verified by the Nous team to come from the reputable company whose product it integrates) or `community`. Only Nous maintainers set `official` or `verified` |
 | `category` | `desktop` (default), `memory`, `platform`, `web`, `tools`, `voice`, `automation`, `models`, `general` |
 | `maintainer` | Plugin owner |
 | `capabilities` | Declared tools, hooks, middleware, required env vars |
-| `requires_hermes` | Minimum Hermes version, e.g. `>=0.19` |
+| `requires_hermes` | Minimum Hermes version, e.g. `>=0.19`. Enforced: install on an older Hermes is refused with the version needed; `hermes plugins update` keeps the installed version until Hermes is updated; `search` / `info` still list the entry, marked as needing a newer Hermes |
 | `platforms` | OS restrictions (empty = all) |
 | `title` | Human name on cards |
-| `onboarding` | `true` offers it on the desktop onboarding card (official entries only; default `false`) |
+| `onboarding` | `true` offers it on the desktop onboarding card (official or verified entries only; default `false`) |
 | `docs_url` | External documentation |
 | `known_issues` | Notes shown at install prompt; never block installs |
 | `version` | Cosmetic label for the pinned sha |
@@ -48,7 +48,8 @@ Desktop deep link: `hermes://plugin/install?catalog=NAME` (reviewed pin) or `her
 - Live refresh: the catalog is published at `https://hermes-agent.nousresearch.com/docs/api/plugin-catalog.json`, fetched at most every six hours and cached under `~/.hermes/cache/`; offline cache is used for up to 24 hours.
 - Submission is a pull request adding one `plugin-catalog/<name>.yaml`; the plugin must be public, pin an exact commit, pass `hermes plugins validate`, never update itself, and extend Hermes only through public hooks and the Desktop SDK.
 - Examples: `snyk` entry pins the Snyk CLI MCP server and bundles `snyk-security-scan`.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/plugin-catalog (pinned to v0.22.2)
+- Tier filters on the browse page are Official / Verified / Community. The `desktop surface` lint no longer lists "patching built-in prototypes" among refused moves (still refuses `eval` and imports other than `@hermes/plugin-sdk` / `react`, including remote scripts).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/plugin-catalog (pinned to v0.23.1)
 
 ## Related
 
