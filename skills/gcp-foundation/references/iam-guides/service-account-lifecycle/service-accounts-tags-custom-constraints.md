@@ -83,9 +83,12 @@ gcloud org-policies set-policy POLICY_PATH --update-mask=spec
 
 Example constraint and its denial message:
 
+Adapted (not in the official docs): `resourceTypes` is a list.
+
 ```yaml
 name: organizations/ORG_ID/customConstraints/custom.denyServiceAccountCreation
-resourceTypes: iam.googleapis.com/ServiceAccount
+resourceTypes:
+  - iam.googleapis.com/ServiceAccount
 methodTypes:
   - CREATE
   - UPDATE
@@ -101,13 +104,15 @@ Operation denied by custom org policy: ["customConstraints/custom.denyServiceAcc
 
 Common use cases (from the official table):
 
+Adapted (not in the official docs): CEL boolean literal written as lowercase `true`.
+
 ```yaml
 name: organizations/ORGANIZATION_ID/customConstraints/custom.disableServiceAccountCreation
 resourceTypes:
 - iam.googleapis.com/ServiceAccount
 methodTypes:
 - CREATE
-condition: "True"
+condition: "true"
 actionType: DENY
 displayName: Deny all service account creation.
 ```

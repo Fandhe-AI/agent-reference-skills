@@ -19,6 +19,8 @@ principalSet://iam.googleapis.com/locations/global/workforcePools/POOL_ID/*
 
 Attribute mapping examples:
 
+Adapted (not in the official docs): the workforce `principalSet` omits `projects/PROJECT_NUMBER/` because workforce pools are organization-scoped.
+
 ```text
 principalSet://iam.googleapis.com/locations/global/workforcePools/WORKFORCE_POOL_ID/attribute.costcenter/1234
 attribute.username=assertion.email.split("@")[0]
@@ -57,6 +59,8 @@ gcloud auth login
 ```
 
 Delegating pool administration to a partner (allow policy on the partner pool):
+
+Adapted (not in the official docs): an individual subject uses `principal://` instead of `principalSet://`.
 
 ```json
 {

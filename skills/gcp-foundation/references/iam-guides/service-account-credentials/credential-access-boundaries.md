@@ -68,7 +68,7 @@ Reads and listing under a prefix (listing evaluates against the bucket name, so 
 
 Folders (hierarchical namespace buckets):
 
-Adapted (not in the official docs): bucket name `example-bucket` and folder prefix `example-folder` are used consistently across `availableResource` and every condition.
+Adapted (not in the official docs): bucket name `example-bucket` and folder prefix `example-folder/` (with trailing slash, so sibling folders such as `example-folder-private/` are not matched) are used consistently across `availableResource` and every condition; the folder resource itself is matched exactly and its contents by prefix.
 
 ```json
 {
@@ -80,7 +80,7 @@ Adapted (not in the official docs): bucket name `example-bucket` and folder pref
         ],
         "availableResource": "//storage.googleapis.com/projects/_/buckets/example-bucket",
         "availabilityCondition": {
-          "expression" : "resource.name.startsWith('projects/_/buckets/example-bucket/objects/example-folder') || resource.name.startsWith('projects/_/buckets/example-bucket/folders/example-folder') || api.getAttribute('storage.googleapis.com/objectListPrefix', '').startsWith('example-folder')"
+          "expression" : "resource.name.startsWith('projects/_/buckets/example-bucket/objects/example-folder/') || resource.name == 'projects/_/buckets/example-bucket/folders/example-folder/' || resource.name.startsWith('projects/_/buckets/example-bucket/folders/example-folder/') || api.getAttribute('storage.googleapis.com/objectListPrefix', '').startsWith('example-folder/')"
         }
       }
     ]

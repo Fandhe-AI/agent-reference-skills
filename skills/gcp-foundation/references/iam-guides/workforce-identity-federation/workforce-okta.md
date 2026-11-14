@@ -211,7 +211,7 @@ Console (federated): `https://auth.cloud.google/signin?continueUrl=https://conso
 
 ## Notes
 
-- Corrected from the official docs: the OIDC mapping example lacked a comma after `google.subject=...`, and referenced non-standard claims (`oid`, `subject`); the example now uses `assertion.sub`. Whether Okta `sub` carries an email-style value depends on your configuration (公式未確認); adjust the condition to a claim you actually issue.
+- Corrected from the official docs: the OIDC mapping example lacked a comma after `google.subject=...`, and referenced non-standard claims (`oid`, `subject`); the example now uses `assertion.sub`. Whether Okta `sub` carries an email-style value depends on your configuration (not confirmed in the official docs); adjust the condition to a claim you actually issue.
 
 - Required role: `roles/iam.workforcePoolAdmin` on the organization. No-cost feature; detailed audit logging incurs Cloud Logging charges.
 - The IdP must provide signed authentication info (OIDC JWT or signed SAML response).

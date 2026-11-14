@@ -119,6 +119,8 @@ gcloud iam workforce-pools providers undelete PROVIDER_ID \
 
 Example mappings:
 
+Adapted (not in the official docs): a comma is added after `google.subject=assertion.oid` so entries are separated.
+
 ```text
 google.subject=assertion.oid,
 google.groups=assertion.groups,
