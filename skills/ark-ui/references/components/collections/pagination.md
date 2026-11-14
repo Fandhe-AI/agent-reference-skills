@@ -65,6 +65,9 @@ const App = () => (
 - API additions in 5.39.3: `api.type` (`"button" | "link"`, the type of the pagination controls) and `api.getPageUrl(page)` (`(page: number) => string | undefined`, returns the url for the given page, or `undefined` when `getPageUrl` is not provided), so custom parts can tell buttons from links and build a page's URL.
 - Programmatic access via `Pagination.Context` or `usePaginationContext`: `page`, `totalPages`, `pageRange`, `goToNextPage()`, `goToPrevPage()`, `goToFirstPage()`, `goToLastPage()`, `slice()`.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
+- 5.40.0: with `type="link"`, `Pagination.Item`, `PrevTrigger`, `NextTrigger`, `FirstTrigger` and `LastTrigger` render as anchors, and link triggers are marked disabled when they cannot navigate.
+- Source: https://ark-ui.com/react/docs/components/pagination (Ark UI @ark-ui/react 5.40.0, fetched 2026-11-14)
+- Source: https://github.com/chakra-ui/ark/blob/9a3f857e79d5e891afb928781c2c8a0559f49181/packages/react/CHANGELOG.md (@ark-ui/react 5.40.0, fetched 2026-11-14)
 
 ## Related
 

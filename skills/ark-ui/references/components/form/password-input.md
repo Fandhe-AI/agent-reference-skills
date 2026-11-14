@@ -43,6 +43,8 @@ import { PasswordInput } from '@ark-ui/react/password-input'
 - Supports controlled and uncontrolled visibility modes
 - Can integrate with password strength libraries for real-time validation feedback
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
+- 5.40.0: the visibility trigger is keyboard accessible and no longer sets `aria-expanded`.
+- Source: https://github.com/chakra-ui/ark/blob/9a3f857e79d5e891afb928781c2c8a0559f49181/packages/react/CHANGELOG.md (@ark-ui/react 5.40.0, fetched 2026-11-14)
 
 ## Related
 

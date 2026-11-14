@@ -63,6 +63,8 @@ const tour = useTour({ steps: [/* ... */] })
 - `Tour.Root` also accepts `hideMode` (`'display-none'` default, or `'activity'` with React 19+; 5.38.0).
 - 5.39.3 exports the Tour types, including `TourStepsChangeDetails` for `onStepsChange`, plus flat `Tour*` aliases for the step, action, and callback detail types; `Tour.Spotlight` now keeps its exit animation when the tour closes.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
+- 5.40.0: adds `scrollToTargetFn` and `data-instant`, uses the `dialog` role for the content, and names an action trigger by its label instead of its translation.
+- Source: https://github.com/chakra-ui/ark/blob/9a3f857e79d5e891afb928781c2c8a0559f49181/packages/react/CHANGELOG.md (@ark-ui/react 5.40.0, fetched 2026-11-14)
 
 ## Related
 
