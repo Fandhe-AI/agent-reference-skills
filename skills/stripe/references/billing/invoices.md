@@ -82,6 +82,7 @@ curl -X POST https://api.stripe.com/v1/invoices/in_xxx/pay \
 | `invoice.upcoming` | Advance notice before auto-charge |
 | `invoice.voided` | Invoice voided |
 | `invoice.marked_uncollectible` | Marked as bad debt |
+- `sequra` (`2026-10-28.endive`, non-breaking): accepted in `payment_settings.payment_method_types` on Invoices and Subscriptions (buy now, pay later for customers in Spain). It is single-use: use it with the `send_invoice` collection method only, not `charge_automatically`, and it cannot be saved for future payments. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/sequra-payment-method-support-invoices-subscriptions, retrieved 2026-11-14)
 
 ## Related
 

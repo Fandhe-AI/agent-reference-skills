@@ -199,6 +199,7 @@ curl https://api.stripe.com/v1/treasury/credit_reversals \
 
 - Reversing creates a new `CreditReversal` object — the original `ReceivedCredit` is not modified.
 - Endpoints: `POST /v1/treasury/credit_reversals`, `GET /:id`, `GET` (list).
+- API v2 (`2026-10-28.endive`): Inbound Transfers, Received Credits, Financial Addresses, Outbound Payments, Payout Intents and Recipient Verifications also exist under `/v2/money_management/`. They are summarized in `money-management-v2.md` and `payout-intents.md`; the endpoints above are the v1 Treasury resources. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/inbound-transfers-v2-api, retrieved 2026-11-14)
 
 ## Related
 

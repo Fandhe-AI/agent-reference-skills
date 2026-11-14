@@ -88,6 +88,8 @@ res.redirect(303, session.url);
 | `GET` | `/v1/checkout/sessions/:id/line_items` | List session line items |
 | `GET` | `/v1/checkout/sessions` | List all sessions |
 | `POST` | `/v1/checkout/sessions/:id/expire` | Expire a session early |
+- Update with `payment_intent_data` (`2026-10-28.endive`, non-breaking): for `mode=payment` with `ui_mode=elements`, updating an active Checkout Session accepts `payment_intent_data` with `description`, `metadata`, `setup_future_usage`, `statement_descriptor` and `statement_descriptor_suffix`. When updating `setup_future_usage`, wrap the update in `runServerUpdate` on the client and await it. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/adds-payment-intent-data-configuration-when-updating-checkout-sessions, retrieved 2026-11-14)
+- `subscription_data.invoice_settings` (`2026-10-28.endive`, non-breaking): gains `account_tax_ids`, `custom_fields`, `description` and `footer`, consistent with the Subscriptions API. The same parameters are available for Payment Links. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/invoice-settings-parameters-checkout-sessions-payment-links-subscriptions, retrieved 2026-11-14)
 
 ## Related
 

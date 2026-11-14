@@ -66,6 +66,7 @@ curl https://api.stripe.com/v1/refunds \
 - The Stripe-generated `reason` value `expired_uncaptured_charge` is set automatically and cannot be user-provided.
 - Webhook events: `refund.created`, `refund.updated`, `refund.failed`. For payment-method-specific updates, listen to `charge.refund.updated` instead of `refund.updated`.
 - Pending refunds (e.g., ACH) can be canceled via `POST /v1/refunds/:id/cancel`.
+- Refund references (`2026-10-28.endive`, non-breaking): `destination_details.<type>.reference` and `reference_status` (`pending`, `available` or `unavailable`) are now returned for Klarna, PayPal and Afterpay Clearpay refunds, and `refund.updated` events include them. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/refund-reference-klarna-paypal-afterpay, retrieved 2026-11-14)
 
 ## Related
 

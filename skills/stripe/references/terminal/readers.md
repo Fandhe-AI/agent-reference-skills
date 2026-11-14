@@ -68,6 +68,8 @@ curl https://api.stripe.com/v1/terminal/readers \
 - Use `GET /v1/terminal/readers` with `location` and `status` filters to list readers at a site
 - Test readers can be created with `registration_code=simulated-wpe` (WisePOS E) or `simulated-stripe-s700`
 - Webhook events: `terminal.reader.action_failed`, `terminal.reader.action_succeeded`, `terminal.reader.action_updated`
+- Stripe Reader T600 (`2026-10-28.endive`, non-breaking): `stripe_t600` and `simulated_stripe_t600` are valid `device_type` filter values for all Terminal API integrations and can appear on a Reader. The Terminal configuration `stripe_t600.splashscreen` customizes its splash screen. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/stripe-terminal-t600-reader-availability, retrieved 2026-11-14)
+- Admin menu passcode (`2026-10-28.endive`, non-breaking): Terminal Configuration `reader_security[admin_menu_passcode]` sets the passcode for a reader's admin menu (readers default to a 5-digit passcode); set it to an empty string to remove it. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/terminal-configuration-admin-menu-passcode, retrieved 2026-11-14)
 
 ## Related
 

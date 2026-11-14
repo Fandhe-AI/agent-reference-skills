@@ -62,6 +62,8 @@ console.log(paymentLink.url); // Share this URL with customers
 | `POST` | `/v1/payment_links/:id` | Update a Payment Link |
 | `GET` | `/v1/payment_links` | List all Payment Links |
 | `GET` | `/v1/payment_links/:id/line_items` | List line items for a Payment Link |
+- `scalapay` (`2026-10-28.endive`, non-breaking): accepted in `payment_method_types` on create and update and returned on the Payment Link. Previously Scalapay was available only through dynamic payment methods. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/scalapay-payment-method-support-payment-links, retrieved 2026-11-14)
+- `subscription_data.invoice_settings` (`2026-10-28.endive`, non-breaking): `account_tax_ids`, `custom_fields`, `description` and `footer` can be set for subscriptions created by Payment Links. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/invoice-settings-parameters-checkout-sessions-payment-links-subscriptions, retrieved 2026-11-14)
 
 ## Related
 

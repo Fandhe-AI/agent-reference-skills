@@ -93,6 +93,7 @@ curl https://api.stripe.com/v1/issuing/cards \
 - Card-level `spending_controls` are intersected with cardholder-level controls — the more restrictive rule always wins.
 - New cards default to `status: inactive`; set `status: active` at create time or update afterward.
 - To replace a lost/stolen card, create a new card with `replacement_for` and `replacement_reason`; the original card is automatically canceled.
+- Shipping timestamps (`2026-10-28.endive`, non-breaking): `shipping.shipped_at` and `shipping.delivered_at` are nullable Unix timestamps that stay null until Stripe records them. They also appear on the nested `card` object of Issuing Authorizations and Treasury Transactions and Transaction Entries. In a sandbox they are set when you transition a card to `shipped` or `delivered`. (Source: https://docs.stripe.com/changelog/endive/2026-10-28/issuing-cards-shipping-timestamps, retrieved 2026-11-14)
 
 ## Test Mode Helpers
 

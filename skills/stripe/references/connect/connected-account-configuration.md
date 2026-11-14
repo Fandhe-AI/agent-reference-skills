@@ -7,7 +7,7 @@ Configure funds flows, loss liability, Dashboard access, and KYC responsibility 
 ```bash
 curl -X POST https://api.stripe.com/v2/core/accounts \
   -H "Authorization: Bearer <<YOUR_SECRET_KEY>>" \
-  -H "Stripe-Version: 2026-09-30.preview" \
+  -H "Stripe-Version: 2026-10-28.preview" \
   --json '{
     "dashboard": "express",
     "configuration": { "merchant": { "capabilities": { "card_payments": { "requested": true } } } },

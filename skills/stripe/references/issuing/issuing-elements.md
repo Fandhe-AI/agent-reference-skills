@@ -16,7 +16,7 @@ app.post('/ephemeral-keys', async (request, response) => {
     nonce: nonce,
     issuing_card: card_id,
   }, {
-    apiVersion: '2026-09-30.endive',
+    apiVersion: '2026-10-28.endive',
   });
 
   response.json({
