@@ -40,6 +40,6 @@ Helpers in `hermes_cli/config_backend.py`:
 
 ## Related
 
-- [Remote Config](../configuration/remote-config.md)
+- Remote Config (configuration category, `remote-config.md`)
 - [Managed Scope](../configuration/managed-scope.md)
 - [Configuration](../configuration/configuration.md)

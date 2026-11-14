@@ -162,6 +162,7 @@ Middleware kinds (`ctx.register_middleware(kind, fn)`, canonical list `VALID_MID
 
 ## Notes
 
+- Adapted from the official docs: the `ask_choice` example registers `delegate-mode` instead of the official `delegation`, because `/delegation` is a built-in command and plugins cannot register built-in names.
 - Adapted from the official docs: the calling-session context example registers `callerinfo` instead of the official `whoami`, because `/whoami` is a built-in command and plugins cannot register built-in names.
 - `register()` runs exactly once at startup; if it crashes the plugin is disabled and Hermes continues. Handlers must never raise and must always return a JSON string.
 - Plugins are opt-in: `hermes plugins enable <name>`. Layout: `~/.hermes/plugins/<name>/plugin.yaml` (flat) or one category level; deeper is ignored. Portable packages use root `plugin.json`.
@@ -283,6 +284,8 @@ def register(ctx):
 
 ### Asking the user to pick: `ctx.ask_choice`
 
+Adapted (not in the official docs): the official example registers `delegation`, a built-in command name; it is renamed `delegate-mode` (including the usage string).
+
 ```python
 _MODES = [
     {"value": "default", "label": "Default", "description": "delegation.model / parent model"},
@@ -294,11 +297,11 @@ def register(ctx):
     def delegation(raw_args: str) -> str:
         mode = raw_args.strip() or ctx.ask_choice("Delegation mode", _MODES)
         if mode not in {m["value"] for m in _MODES}:
-            return "Usage: /delegation default|model_map|profile_routes"
+            return "Usage: /delegate-mode default|model_map|profile_routes"
         ctx.set_config("mode", mode)
         return f"Delegation mode: {mode}"
 
-    ctx.register_command("delegation", delegation, description="Switch the delegation mode",
+    ctx.register_command("delegate-mode", delegation, description="Switch the delegation mode",
                          args_hint="[mode]")
 ```
 
