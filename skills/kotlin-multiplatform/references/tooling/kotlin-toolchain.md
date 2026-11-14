@@ -69,7 +69,7 @@ settings:
 
 ## Notes
 
-- Alpha: Kotlin Toolchain is in Alpha (version 0.13 in the pinned docs); feedback goes to YouTrack (project KTC).
+- Alpha: Kotlin Toolchain is in Alpha (version 0.13 in the pinned docs); feedback goes to YouTrack (project KTC) and to a dedicated Slack channel (https://kotlinlang.slack.com/archives/C062WG3A7T8).
 - Download and review the installer before running it; SDKMAN! (`sdk install kotlintoolchain`) is the recommended route.
 - Install via SDKMAN! or the installer script. Building iOS apps requires Xcode and the necessary SDK; the CLI displays Xcode setup instructions when a build or run actually needs it.
 - The project ID is used for Kotlin package names, the Android namespace and application ID, and the iOS bundle ID. A Git repository is initialized by default.
@@ -78,6 +78,8 @@ settings:
 - IDE support needs both the Kotlin Multiplatform plugin and the Kotlin Toolchain plugin (the latter recognizes the project structure and generates run configurations). With both installed, a project can be created via File | New | Project, Kotlin Multiplatform, Build system switch set to Kotlin Toolchain.
 - Publishing: Android and iOS apps are documented in the Kotlin Toolchain docs (user guide, product types, android-app / ios-app, Publishing). JVM and Wasm apps can be packaged, but publishing for these targets is not fully supported yet.
 - This is a separate build tool from the Gradle-based setup described in the Gradle DSL pages of this skill.
+- Android Studio: to use the full Kotlin Toolchain functionality on Android Studio, the docs recommend the latest stable version, "Android Studio Rabbit" (https://developer.android.com/studio/releases).
+- Source: https://github.com/JetBrains/kotlin-multiplatform-dev-docs/blob/54ca714a853f25f193b016207b89e09edfded5e6/topics/tools/kotlin-toolchain.md (pinned, fetched 2026-11-14)
 
 ## Related
 

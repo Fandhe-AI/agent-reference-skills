@@ -9,7 +9,9 @@
 | Native application entry points | Native entry points (activity, view controller, window, or container) that host the common `App()` function on each platform. | [entry-points.md](./entry-points.md) |
 | Layout basics | Layout construction basics: composable functions, `Column` / `Row` / `Box`, flow layouts, and modifiers. | [layout-basics.md](./layout-basics.md) |
 | Working with modifiers | Modifiers that change size, layout, behavior, and appearance, add accessibility labels, handle user input, and add high-level interactions. | [layout-modifiers.md](./layout-modifiers.md) |
+| Display PDF files | Third-party PDF libraries for Compose Multiplatform: Nucleus PDF reader, KitePDF document engine, PdfKmp generator and viewer, plus platform viewers. | [pdf.md](./pdf.md) |
 | Popups | Non-modal floating `Popup()` containers that render above the current UI, unlike the modal, centered `Dialog()`. | [popups.md](./popups.md) |
 | Compose UI previews | Preview composables render UI in the IDE without an emulator; Compose Hot Reload shows code changes in a live desktop app. | [previews.md](./previews.md) |
+| Sharing content | Share text, URLs, and files via community libraries (KMP Sharing, FileKit) or native Android, iOS, desktop, and web APIs; `UriHandler` for links. | [sharing-content.md](./sharing-content.md) |
 | Testing Compose Multiplatform UI | UI testing with the Jetpack Compose testing API, using `runComposeUiTest` and the `ComposeUiTest` receiver instead of JUnit's `TestRule`. | [testing.md](./testing.md) |
 | Setting up the viewport | Web setup: `ComposeViewport` renders to an HTML canvas, and the host container needs explicit CSS so the canvas sizes correctly. | [web-css-styles.md](./web-css-styles.md) |

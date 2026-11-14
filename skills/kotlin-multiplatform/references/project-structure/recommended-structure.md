@@ -130,8 +130,9 @@ kotlin {
 - iOS integration: the iOS entry point is not a Gradle module; keep it in any module. In Xcode's "Compile Kotlin Framework" build phase name the module that produces the iOS framework (in this page's example `./gradlew :sharedUI:embedAndSignAppleFrameworkForXcode`; `:shared:` for a single `shared` module layout). The Swift import follows the framework `baseName`, not the module name.
 - The official page tells you to replace `composeApp` with `sharedUi` but shows `:shared:embedAndSignAppleFrameworkForXcode`; use the module that actually produces the framework.
 - The official page writes the resource paths without `src/` (`composeApp/commonMain/composeResources`); the standard Compose resources location is `<module>/src/commonMain/composeResources`.
-- The page also lists an optional split of `sharedLogic` (with `kotlinx-datetime` 0.8.0 and `npm("@js-joda/timezone", "2.22.0")` for `webMain`) and `sharedUI`; see the official page for the full step lists.
+- The page also lists an optional split of `sharedLogic` (with `kotlinx-datetime` 0.8.0 and `npm("@js-joda/timezone", "^2.25.2")` for `webMain`) and `sharedUI`; see the official page for the full step lists.
 - Distance line: Gradle/AGP configuration in general belongs to android-build-gradle; this page covers module layout for KMP projects.
+- Source: https://github.com/JetBrains/kotlin-multiplatform-dev-docs/blob/54ca714a853f25f193b016207b89e09edfded5e6/topics/development/multiplatform-project-recommended-structure.md (pinned, fetched 2026-11-14). The docs use the variable `%js-joda-timezone%`, which `v.list` at this commit sets to `^2.25.2` (previously a fixed `2.22.0` in the page text).
 
 ## Related
 

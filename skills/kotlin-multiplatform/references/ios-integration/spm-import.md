@@ -12,7 +12,7 @@ SwiftPM import lets the Kotlin Gradle plugin import Objective-C APIs from SwiftP
 
 ```toml
 [versions]
-kotlin = "2.5.0-Beta1"
+kotlin = "2.5.0-RC"
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -100,7 +100,7 @@ kotlin {
 ## Notes
 
 - Alpha: this feature is in Alpha; feedback goes to the Kotlin Slack channel #kmp-swift-package-manager.
-- Requires the Kotlin Multiplatform Gradle plugin version 2.5.0-Beta1 (the docs' `kotlinEapVersion`, a pre-release; the latest stable in the pinned docs is 2.4.21).
+- Requires the Kotlin Multiplatform Gradle plugin version 2.5.0-RC (the docs' `kotlinEapVersion` at pin 54ca714 (fetched 2026-11-14), previously 2.5.0-Beta1, a pre-release; the latest stable in the pinned docs is 2.4.21).
 - Transitive consumers get the machine code from SwiftPM dependencies automatically (for example for Kotlin/Native tests or framework linking).
 - Export of KMP modules using SwiftPM import as a Swift package is not yet supported (YouTrack KT-84420); see spm-export.md.
 - Imported Objective-C APIs live in namespaces starting with `swiftPMImport` followed by the Gradle group and project names.
