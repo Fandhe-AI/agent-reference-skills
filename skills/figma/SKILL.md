@@ -1,11 +1,11 @@
 ---
 name: figma
 description: >
-  Figma REST API / Plugin API / Widget API / Code Connect / MCP Server / Dev Mode リファレンス。
-  OAuth / PAT, variables, webhooks, Dev Resources, FrameNode, TextNode, ComponentNode,
-  figma.variables, figma.codegen, Widget useSyncedState / usePropertyMenu / AutoLayout,
-  Code Connect template files (.figma.ts) / custom parsers / Storybook,
-  MCP Code to Canvas, html_to_figma。
+  Figma REST API (teams/file duplicate)/Plugin API (transform3d)/Widget API (fetch,
+  networkAccess)/Code Connect/MCP Server/Dev Mode リファレンス。OAuth/PAT, variables, webhooks,Dev
+  Resources, FrameNode, TextNode, ComponentNode, figma.variables, figma.codegen, Widget
+  useSyncedState/usePropertyMenu/AutoLayout, Code Connect template files (.figma.ts)/custom
+  parsers/Storybook, MCP Code to Canvas,html_to_figma。
 user-invocable: false
 ---
 
