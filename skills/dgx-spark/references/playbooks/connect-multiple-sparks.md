@@ -10,6 +10,11 @@ cd spark-vllm-docker
 ./setup-cluster.sh 192.168.1.11 192.168.1.12 --topology direct --mtu 9000 --dry-run
 ./setup-cluster.sh 192.168.1.11 192.168.1.12 --topology direct --mtu 9000
 ./setup-cluster.sh --doctor --dry-run
+```
+
+Rollback only (do not run as part of a normal setup; it undoes the network and SSH configuration made above using the manifest on the head node and backups on each device):
+
+```bash
 ./setup-cluster.sh --restore
 ```
 

@@ -118,16 +118,19 @@ sudo dd if=/path/to/repacked.iso of="$USB" bs=4M status=progress conv=fsync
 
 > **Warning**: Partitioning and formatting erase data on the target. Verify the device with `lsblk` before every command; selecting the wrong device or an existing boot partition can erase data.
 
-Adapted (not in the official docs): the partition-creation step uses `sgdisk` as in the official script that adds OEMDATA to recovery media (`DISK` is the whole USB device, not a partition; partition 2 is created in the free space after the written image).
+Adapted (not in the official docs): the official script that adds OEMDATA to recovery media creates partition number 2, which is only valid when that number is free. For an ISO written with `dd`, inspect the partition table first and create the partition in the free space with the lowest unused number; format only the partition you just created.
 
 ```sh
 DISK=/dev/<USB-device>
 lsblk -o NAME,SIZE,FSTYPE,LABEL,PARTLABEL,TRAN "$DISK"
-sudo sgdisk -n 2:0:0 -t 2:0700 -c 2:OEMDATA "$DISK"
+sudo sgdisk -p "$DISK"          # list used partition numbers and free space
+N=<unused-partition-number>     # for example 3 if partitions 1 and 2 exist
+sudo sgdisk -n "${N}:0:0" -t "${N}:0700" -c "${N}:OEMDATA" "$DISK"   # fails if N is in use or there is no free space; stop then
 sudo partprobe "$DISK"
+lsblk -o NAME,SIZE,FSTYPE,LABEL,PARTLABEL "$DISK"   # identify the new OEMDATA partition
 ```
 
-Official format commands (use the new partition, for example `${DISK}2`, or `${DISK}p2` for NVMe-style names):
+Official format commands (use only the new partition identified above, for example `${DISK}${N}` or `${DISK}p${N}` for NVMe-style names):
 
 ```sh
 sudo wipefs -a /dev/<partition>
