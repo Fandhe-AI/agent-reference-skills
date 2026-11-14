@@ -199,6 +199,7 @@ Wrap radio buttons and related checkboxes in a `<fieldset>` with a `<legend>`. T
 ## Notes
 
 - Source: https://react-hook-form.com/advanced-usage/accessibility (documentation master c0511c9, fetched 2026-11-14)
+- Discrepancy in the official docs: the radio-group paragraph says rules passed to a later `register` call for the same name replace earlier ones, while `useform-register.md` documents that options for the same field name are merged and omitted rules are kept. The text above is verbatim; prefer the merge behavior documented in `useform-register.md` and, as the page recommends, spread a single `register` result onto every input of the group.
 
 ## Related
 

@@ -31,8 +31,20 @@ React Hook Form works with schema validators, controlled UI components, and mode
 
 For the fundamentals, begin with [Get Started](https://react-hook-form.com/get-started). Continue to [Advanced Usage](https://react-hook-form.com/advanced-usage) for accessibility, testing, reusable components, and Server Action patterns.
 
+Snippet taken from https://react-hook-form.com/integrations/resolvers :
+
+```tsx
+import { useForm } from "react-hook-form"
+import { libraryResolver } from "@hookform/resolvers/library"
+
+const form = useForm({
+  resolver: libraryResolver(schema),
+})
+```
+
 ## Notes
 
+- The snippet above is borrowed from the resolvers page because the overview page has no code of its own.
 - Source: https://react-hook-form.com/integrations (documentation master c0511c9, fetched 2026-11-14)
 - Index page for the integration guides; each linked guide has its own page in this category.
 

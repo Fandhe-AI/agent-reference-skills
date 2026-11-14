@@ -643,6 +643,7 @@ Whichever version you use, the server is the final check. It must validate and a
 ## Notes
 
 - Source: https://react-hook-form.com/advanced-usage/multi-step-forms (documentation master c0511c9, fetched 2026-11-14)
+- The multi-step example is illustrative and has gaps in the official docs (text above is verbatim): the page-split example has no `password` field although the shared endpoint's `signupSchema` requires one; `useServerErrors` passes all server errors to every step, so an error for a field a step does not register is not cleared by that step's revalidation; `PlanStep` does not render server errors for `plan`; and its Back action does not call `getValues()` before navigating. Adapt these when reusing the code.
 
 ## Related
 

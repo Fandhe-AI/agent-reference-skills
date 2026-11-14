@@ -195,6 +195,7 @@ The form stores `"30"` and `" A@B.CO "`, and `handleSubmit` receives `{ age: 30,
 ## Notes
 
 - Source: https://react-hook-form.com/advanced-usage/transform-and-parse (documentation master c0511c9, fetched 2026-11-14)
+- Caveats on the official statements (the text above is verbatim): a native `required` rule also checks the empty DOM value, so an empty numeric input is still reported by `required` even though `valueAsNumber` yields `NaN`; `validate` is still needed for non-empty values that do not parse. For fields registered with `register`, `setValue` goes through `valueAsNumber` / `valueAsDate` / `setValueAs` as well, whereas values for unregistered fields are stored as given.
 
 ## Related
 
