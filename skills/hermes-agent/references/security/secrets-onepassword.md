@@ -55,9 +55,13 @@ secrets:
 - Auth: service account (headless, recommended for servers/CI) or interactive/desktop session (`op signin`; `OP_SESSION_*` passed through and part of the cache key). Hermes never authenticates for you or downloads `op`.
 - The service-account token must be in `os.environ` of every resolving process (cron, subprocesses, launchd, Docker). Options in precedence order: `~/.hermes/.env` (via `setup --token`), `~/.hermes/.op.env` (gitignored, loaded after `.env`, never overrides an existing token; `chmod 600`), or systemd `EnvironmentFile=-/home/youruser/.hermes/.op.env`. Tokens only in an interactive shell are not inherited by cron or fresh subprocesses.
 - Never blocks startup; failures print a one-line warning with a `→` remediation hint. Empty field values are never applied.
-- Cache: `<hermes_home>/cache/op_cache.json` (0600, atomic), values only, invalidated when token/account/`OP_SESSION_*`/references change, not written on per-reference errors.
+- Cache: `<hermes_home>/op_cache.json` (0600, atomic), values only, invalidated when token/account/`OP_SESSION_*`/references change, not written on per-reference errors.
 - Security: the `op` child gets a minimal allowlisted env (auth/session vars, `PATH`, `HOME`, `OP_CONFIG_DIR`, `XDG_CONFIG_HOME`); set `OP_CONFIG_DIR` when `~/.config` is not writable. References must start with `op://` and are passed after `--`. Hermes refuses to overwrite the token env var itself.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/secrets/onepassword (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/secrets/onepassword (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- The cache file moved from `<hermes_home>/cache/op_cache.json` to `<hermes_home>/op_cache.json`.
 
 ## Related
 

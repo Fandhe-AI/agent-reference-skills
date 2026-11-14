@@ -50,7 +50,8 @@ provider_routing:
 - Shortcuts (from the Providers page): append `:nitro` to a model name for throughput sorting, `:floor` for price sorting.
 - With no `provider_routing` section the aggregator uses its own default routing.
 - Provider routing controls sub-providers behind OpenRouter; for failover to a different provider see Fallback Providers.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/provider-routing (pinned to v0.22.2)
+- Gateway mode: the config file is the same. Messaging-platform turns use the copy loaded when the gateway starts; a local `hermes chat` / TUI session reads it from its own profile when the gateway creates the session, so an edit applies to the next new session without a gateway restart, and open sessions keep the values they were created with.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/provider-routing (pinned to v0.23.1)
 
 ## Related
 

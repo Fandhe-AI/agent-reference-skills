@@ -29,8 +29,6 @@ Inside a chat session, `/model` only switches among already-configured providers
 |----------|-------|
 | Nous Portal (`nous`) | `hermes model` (OAuth subscription); `hermes setup --portal` on fresh install |
 | OpenAI Codex (`openai-codex`) | `hermes model`, "ChatGPT or Codex Subscription" (ChatGPT OAuth) |
-| GitHub Copilot (`copilot`) | OAuth device code, `COPILOT_GITHUB_TOKEN`, `GH_TOKEN`, or `gh auth token` |
-| GitHub Copilot ACP (`copilot-acp`) | Spawns local `copilot --acp --stdio` |
 | Anthropic (`anthropic`) | `hermes model` (Claude Max + extra usage credits via OAuth), `ANTHROPIC_API_KEY`, or setup-token `ANTHROPIC_TOKEN` |
 | OpenRouter (`openrouter`) | `OPENROUTER_API_KEY`, or `hermes auth add openrouter --type oauth` |
 | Ramp Router (`router`) | `RAMP_ROUTER_API_KEY` |
@@ -155,10 +153,10 @@ Hermes requires at least 64,000 tokens of context for agent use; smaller windows
 ## Notes
 
 - Subscription plans: Anthropic OAuth only works on Claude Max with purchased extra usage credits (base Max allowance is not consumed); Claude Pro cannot use it, use `ANTHROPIC_API_KEY`. Codex plan-quota semantics, xAI inference quota beyond X Search, and Google consumer plans are stated as not currently documented upstream. xAI OAuth may return HTTP 403 for tier restrictions; switch to `XAI_API_KEY`.
-- Copilot: classic PATs (`ghp_*`) are not supported; use `gho_` OAuth, `github_pat_` fine-grained (needs Copilot Requests permission), or `ghu_`. GPT-5+ models (except `gpt-5-mini`) use the Responses API; others use Chat Completions. `HERMES_COPILOT_ACP_COMMAND` / `HERMES_COPILOT_ACP_ARGS` override the CLI binary and args.
+- GitHub Copilot (labs plugin): the `copilot` (Copilot API) and `copilot-acp` (Copilot CLI over ACP) providers are no longer built in; they ship as the `github-copilot` labs plugin (built by Nous Research, not supported): `hermes plugins install github-copilot`. Profiles already using them (main model, fallback, auxiliary, delegation, MoA, cron) get it installed automatically by `hermes update` or at the next agent/gateway start. Sign in with `hermes auth add copilot` (device-code), or set `COPILOT_GITHUB_TOKEN`, `GH_TOKEN` or `GITHUB_TOKEN`; `gh` CLI / Copilot CLI logins are no longer read. Setup, models and env vars: https://github.com/NousResearch/hermes-labs-plugins/tree/main/github-copilot
 - Codex: device code by default; `hermes auth add openai-codex --browser` or `auth.codex_login_flow: browser` uses PKCE on fixed `localhost:1455` (needs `ssh -N -L 1455:127.0.0.1:1455 user@host` over SSH). `auth.adopt_external_logins` controls automatic adoption of Codex CLI / Claude Code logins.
 - Nous Portal requests carry a `client=hermes-client-v<version>` tag and prefer scoped `inference:invoke` JWTs.
-- Auxiliary tasks (vision, web summarization, MoA) default to the main chat model (`auxiliary.*.provider: "auto"`).
+- Auxiliary tasks (vision, compression, MoA) default to the main chat model (`auxiliary.*.provider: "auto"`).
 - xAI: Responses API (`codex_responses` transport); `x-grok-conv-id` header enables prompt caching automatically for `x.ai` base URLs. Upstream notes xAI retiring `grok-4*`, `grok-3`, `grok-code-fast-1`, `grok-imagine-image-pro` on 2026-05-15; `hermes migrate xai` (dry run) and `hermes migrate xai --apply` rewrite config.
 - `LLM_MODEL` in `.env` is removed; `config.yaml` is the single source of truth. `OPENAI_BASE_URL` is honored only for `openai-api`.
 - Legacy `custom_providers:` list still works and auto-migrates to `providers:` (config v12; `model` becomes `default_model`, `api_mode` becomes `transport`).
@@ -169,8 +167,14 @@ Hermes requires at least 64,000 tokens of context for agent use; smaller windows
 - OpenRouter shortcuts: `:nitro` (throughput) and `:floor` (price); `openrouter/pareto-code` with `openrouter.min_coding_score` (default 0.65, only sent for that model).
 - WSL2: mirrored networking (`networkingMode=mirrored` in `.wslconfig`, Windows 11 22H2+) or the Windows host IP; NAT mode needs servers bound to `0.0.0.0` (Ollama `OLLAMA_HOST=0.0.0.0`, llama-server/SGLang `--host 0.0.0.0`, LM Studio "Serve on Network") and a firewall rule.
 - Optional API keys: `FIRECRAWL_API_KEY` / `FIRECRAWL_API_URL`, `BROWSERBASE_API_KEY` / `BROWSERBASE_PROJECT_ID`, `FAL_KEY`, `ELEVENLABS_API_KEY`, `VOICE_TOOLS_OPENAI_KEY`, `MISTRAL_API_KEY`, `HONCHO_API_KEY`, `SUPERMEMORY_API_KEY`. Self-hosted Firecrawl: `hermes config set FIRECRAWL_API_URL http://localhost:3002`.
-- Model examples in this page (model IDs such as `claude-sonnet-4-6`, `glm-5`) are copied from upstream v0.22.2 docs verbatim and are not verified against provider catalogs.
-- Source: https://hermes-agent.nousresearch.com/docs/integrations/providers (pinned to v0.22.2)
+- Model examples in this page (model IDs such as `claude-sonnet-4-6`, `glm-5`) are copied from upstream v0.23.1 docs verbatim and are not verified against provider catalogs.
+- Source: https://hermes-agent.nousresearch.com/docs/integrations/providers (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- `copilot` / `copilot-acp` providers moved out of core into the `github-copilot` labs plugin and were removed from the built-in provider table and the fallback "Supported providers" list; `hermes auth add copilot` replaces `gh auth token` / Copilot CLI session pickup, and the in-page Copilot token-type, API-routing and `HERMES_COPILOT_ACP_COMMAND` / `HERMES_COPILOT_ACP_ARGS` documentation was dropped (refer to the plugin docs).
+- Context-length example now reads "smaller through some resellers and aggregators" instead of citing 128K on GitHub Copilot for `claude-opus-4.6`.
+- The OpenCode `x-opencode-session` header list no longer mentions skills-hub lookups (the `auxiliary.skills_hub` task is gone, see Fallback Providers).
 
 ## Related
 

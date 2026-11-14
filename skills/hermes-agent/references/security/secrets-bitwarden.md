@@ -50,7 +50,7 @@ secrets:
 | project_id | "" | Project UUID to sync from |
 | server_url | "" | Empty = US Cloud; `https://vault.bitwarden.eu` for EU; own URL for self-hosted (passed as `BWS_SERVER_URL`) |
 | cache_ttl_seconds | 300 | Fetch result reuse; 0 disables fresh-cache reuse |
-| encrypted_cache.enabled | false | AES-GCM cache at `~/.hermes/cache/bws_cache.enc.json` |
+| encrypted_cache.enabled | false | AES-GCM cache at `~/.hermes/bws_cache.enc.json` |
 | encrypted_cache.max_stale_seconds | 0 | Max age of encrypted cache usable after network/timeout failures; auth failures never use stale secrets |
 | override_existing | true | Bitwarden values overwrite env |
 | auto_install | true | Request the PM-pinned `bws` package when absent |
@@ -63,7 +63,11 @@ secrets:
 - Binary: a `bws` on `PATH` is honored before PM selection; PM verifies SHA-256 from `pm/lock.json` and a mismatch aborts installation.
 - Not recommended for single-machine setups, air-gapped environments, or CI/CD with existing secret injection.
 - Also usable as the egress proxy credential source (`hermes egress setup --from-bitwarden`).
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/secrets/bitwarden (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/secrets/bitwarden (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- The cache file moved from `~/.hermes/cache/bws_cache.enc.json` to `~/.hermes/bws_cache.enc.json`. A successful encrypted write removes the plaintext `bws_cache.json` (v0.22.2 docs named the legacy plaintext path `cache/bws_cache.json`).
 
 ## Related
 

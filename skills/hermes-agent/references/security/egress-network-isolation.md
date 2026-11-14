@@ -109,7 +109,7 @@ Treat any other status code or exit code as FAIL. Check (c) only succeeds as a b
 - DNS: the `internal` network can still resolve external names unless a local resolver blocks them.
 - Not a substitute for sandbox terminal backends (Docker, Modal, Daytona); the local backend runs commands in the same container.
 - Platform adapters need egress; add new adapters' API endpoints to the proxy allowlist.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/egress/network-isolation (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/egress/network-isolation (pinned to v0.23.1)
 
 ## Related
 

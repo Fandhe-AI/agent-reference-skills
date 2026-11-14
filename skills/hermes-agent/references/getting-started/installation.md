@@ -4,12 +4,18 @@ Install Hermes Agent via a Desktop package or a one-line script (Linux, macOS, W
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the official one-liners pipe the remote script straight into the shell (`curl ... | bash`, `iex (irm ...)`); here they are split into download, inspect, run.
+
 ```bash
 # Linux / macOS / WSL2
-curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+curl -fsSL -o install.sh https://hermes-agent.nousresearch.com/install.sh
+less install.sh   # inspect before running
+bash install.sh
 
 # Windows (PowerShell)
-iex (irm https://hermes-agent.nousresearch.com/install.ps1)
+irm https://hermes-agent.nousresearch.com/install.ps1 -OutFile install.ps1
+Get-Content install.ps1   # inspect before running
+.\install.ps1
 
 # After installation
 hermes
@@ -32,10 +38,11 @@ hermes desktop
 
 ## What the source installer does
 
-- Clones the source, bootstraps uv, and delegates dependency preparation to PM (`hermes pm`). PM provides pinned Python, Node.js, npm, ripgrep, and FFmpeg.
+- Clones the source, bootstraps uv, and delegates dependency preparation to PM (`hermes pm`). PM provides pinned Python, Node.js, npm, pnpm, ripgrep, and FFmpeg.
 - Selects the `all` Python extra, not every optional extra.
-- Installs `agent-browser` with its pinned Chromium, and `cua-driver` (computer-use driver; macOS, Windows, glibc Linux) by default. If a download fails the install still completes and prints the retry command.
-- The default browser driver (browser-harness) is a regular Python dependency, so every install already has it.
+- Installs a pinned Chromium (Chrome for Testing) that Hermes launches for local browsing, and `cua-driver` (computer-use driver; macOS, Windows, glibc Linux) by default. If a download fails the install still completes and prints the retry command. Where PM has no Chromium build (Android/Termux, musl Linux), Hermes uses a system `chromium` on `PATH` instead.
+- The browser driver behind `browser_exec` (browser-harness) is a regular Python dependency, so every install already has it.
+- A new install lands on the latest stable release, the channel `hermes update` follows from then on. To install the tip of `main`, pass `--channel main` (POSIX) or `-Channel main` (Windows), or set `HERMES_INSTALL_CHANNEL=main` first for the one-liners.
 - Creates a launcher and prepares the data directory. Interactive runs also invoke setup and gateway configuration.
 
 ## Options / Props
@@ -48,7 +55,7 @@ hermes desktop
 | `--include-desktop` / `-IncludeDesktop` | Build the desktop from source |
 | `--verbose` / `-Verbose`, `HERMES_INSTALL_VERBOSE=1` | Stream all output |
 
-Skip choices are remembered; later installs and `hermes update` do not add them back. Run `hermes pm install agent-browser` or `hermes pm install cua-driver` to install them and undo the choice. On a terminal the scripts show one status line per step and write git / uv / build output to `logs/install.log` under the Hermes data directory.
+Skip choices are remembered; later installs and `hermes update` do not add them back. Run `hermes pm install chromium` or `hermes pm install cua-driver` to install them and undo the choice (v0.22.2 said `hermes pm install agent-browser`; v0.23.1 names `chromium`). On a terminal the scripts show one status line per step and write git / uv / build output to `logs/install.log` under the Hermes data directory.
 
 Add an optional extra to an existing install:
 
@@ -91,10 +98,12 @@ cd ~/.hermes/hermes-agent && python -c "import pm; pm.sync_venv(['voice'], expli
 - The macOS installer is Apple Silicon only (Intel: see Platform Support).
 - Nix is no longer an explicitly supported install path (best-effort only); see the Nix & NixOS setup guide.
 - Manual / developer installation: the former 10-step manual procedure is no longer in the docs; a source checkout follows the PM developer workflow (reference/package-management). Extras are no longer installed with `uv pip install -e ".[...]"`; use `pm.sync_venv([...], explicit=True)`.
-- Non-sudo / service user installs: run the source installer as the service user, add `$HOME/.local/bin` to PATH, run `hermes doctor`, and for a Linux user service surviving logout run `sudo loginctl enable-linger SERVICE_USER` as an administrator. The installer does not run Playwright's `--with-deps`; the administrator supplies system libraries.
+- Non-sudo / service user installs: run the source installer as the service user, add `$HOME/.local/bin` to PATH, run `hermes doctor`, and for a Linux user service surviving logout run `sudo loginctl enable-linger SERVICE_USER` as an administrator. The installer does not run Playwright's `--with-deps`; the administrator supplies the Linux libraries Chromium needs (only if the service will browse locally).
 - Symlinked `HERMES_HOME` and subdirectories (`hooks`, `skills`, `sessions`, `logs`) are supported and preserved. If a link target is missing or not a directory, initialization stops with a storage error rather than recreating it; `hermes doctor` reports it as a storage problem.
 - Install method auto-detection: source checkouts use the managed Git update path; Desktop bundles, Docker, Nix, and Termux packages retain their package owner's update mechanism.
 - If `hermes` is not found after install, reload your shell (`source ~/.bashrc` or `source ~/.zshrc`).
+- Adapted from the official docs: the install one-liners were split into download, inspect and run steps instead of piping the remote script into the shell.
+- Source: https://hermes-agent.nousresearch.com/docs/getting-started/installation (pinned to v0.23.1)
 
 ## Related
 

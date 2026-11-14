@@ -34,7 +34,7 @@ fallback_providers:
 | `auxiliary.<task>.fallback_chain` | list | Per-task fallback policy. Entries need `provider`; `model`, `base_url`, `api_key`, `timeout` (seconds) optional |
 | `delegation.fallback_providers` | list | Subagent fallback; `[]` disables |
 
-Supported provider values (primary fallback): `ai-gateway`, `openrouter`, `nous`, `openai-codex`, `copilot`, `copilot-acp`, `anthropic`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth`, `deepseek`, `nvidia`, `gmi`, `upstage` (alias `solar`), `stepfun`, `ollama-cloud`, `gemini` (also `google`, `google-gemini`, `google-ai-studio`), `xai` (alias `grok`), `xai-oauth` (alias `grok-oauth`), `bedrock`, `qwen-oauth`, `opencode-zen`, `opencode-go`, `commandcode` (Claude via `commandcode-anthropic`), `kilocode`, `router` (Ramp Router), `xiaomi`, `arcee`, `nebius-token-factory`, `alibaba`, `alibaba-coding-plan`, `tencent-tokenhub`, `tencent-tokenplan`, `azure-foundry`, `lmstudio`, `llamacpp`, `huggingface`, `custom`, `moa` (Mixture of Agents preset; runs the whole preset).
+Supported provider values (primary fallback): `ai-gateway`, `openrouter`, `nous`, `openai-codex`, `anthropic`, `zai`, `kimi-coding`, `kimi-coding-cn`, `minimax`, `minimax-cn`, `minimax-oauth`, `deepseek`, `nvidia`, `gmi`, `upstage` (alias `solar`), `stepfun`, `ollama-cloud`, `gemini` (also `google`, `google-gemini`, `google-ai-studio`), `xai` (alias `grok`), `xai-oauth` (alias `grok-oauth`), `bedrock`, `qwen-oauth`, `opencode-zen`, `opencode-go`, `commandcode` (Claude via `commandcode-anthropic`), `kilocode`, `router` (Ramp Router), `xiaomi`, `arcee`, `nebius-token-factory`, `alibaba`, `alibaba-coding-plan`, `tencent-tokenhub`, `tencent-tokenplan`, `azure-foundry`, `lmstudio`, `llamacpp`, `huggingface`, `custom`, `moa` (Mixture of Agents preset; runs the whole preset).
 
 ## Auxiliary tasks
 
@@ -42,7 +42,6 @@ Supported provider values (primary fallback): `ai-gateway`, `openrouter`, `nous`
 |------|-----------|
 | Vision | `auxiliary.vision` |
 | Compression | `auxiliary.compression` |
-| Skills Hub | `auxiliary.skills_hub` |
 | MCP | `auxiliary.mcp` |
 | Approval | `auxiliary.approval` |
 | Title Generation | `auxiliary.title_generation` |
@@ -76,7 +75,12 @@ Auto chain with `provider: auto`: main provider + main model, then `auxiliary.<t
 - Cron: unpinned jobs inherit the chain; a job with its own provider/model/base_url never falls back to it. Subagents inherit the parent chain unless pinned.
 - A custom provider entry naming a `providers.<name>` block inherits its `transport` / `api_mode` unless the entry sets `api_mode` (alias `transport`).
 - The upstream example uses `provider: glm`, which is not in the documented auxiliary provider values above; the main-provider ID for z.ai / GLM is `zai` (integrations/providers.md). Prefer a documented value (e.g. `openrouter` with its model ID), or set an explicit `base_url` + `api_key` for GLM.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/fallback-providers (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/fallback-providers (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- `auxiliary.skills_hub` (Skills Hub auxiliary task and its default-config / behavior-table rows) is removed from the v0.23.1 page; web extraction is no longer listed among the built-in text discovery chain tasks (now compression, title generation, etc.).
+- `copilot` / `copilot-acp` are removed from the page's provider table and from the Providers page's fallback list (and from the "Supported provider values" list above); they moved to the `github-copilot` labs plugin (see Providers).
 
 ## Related
 

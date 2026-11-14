@@ -67,9 +67,9 @@ Core options of `services.hermes-agent` (NixOS module; the Home Manager module s
 | `extraPackages` | `listOf package` | `[]` | Extra packages available to the agent |
 | `extraPlugins` | `listOf package` | `[]` | Directory plugin packages symlinked into `$HERMES_HOME/plugins/` (each needs `plugin.yaml`) |
 | `extraPythonPackages` | `listOf package` | `[]` | Python packages added to PYTHONPATH for entry-point plugin discovery |
-| `extraDependencyGroups` | `listOf str` | `[]` | pyproject.toml optional extras for the sealed venv (e.g. `["voice"]`) |
+| `extraDependencyGroups` | `listOf str` | `[]` | pyproject.toml optional extras added to the groups `package` already ships (e.g. `["google-meet"]`) |
 | `restart` / `restartSec` | `str` / `int` | `"always"` / `5` | systemd `Restart=` / `RestartSec=` (not used on macOS) |
-| `backend.mode` | `enum ["none" "serve" "dashboard"]` | `"none"` | `serve` gives `/api/ws` and `/api/pty`; `dashboard` also serves the browser panel. Not usable with `container.enable` |
+| `backend.mode` | `enum ["none" "serve" "dashboard"]` | `"none"` | Runs the process a remote Desktop connection and the dashboard connect to. `serve` gives `/api/ws` and `/api/pty`; `dashboard` also serves the browser panel. Not usable with `container.enable` |
 | `backend.host` / `backend.port` | `str` / `port` | `"127.0.0.1"` / `9119` | Bind address (non-loopback starts the authentication gate) / port |
 | `backend.extraArgs` | `listOf str` | `[]` | More arguments for the backend command |
 | `container.enable` | `bool` | `false` | Enable OCI container mode (NixOS only) |
@@ -92,7 +92,7 @@ Home Manager only:
 
 ## Optional Dependency Groups
 
-Used with `extraDependencyGroups` (the table lists common groups; `pyproject.toml` is authoritative):
+Groups the `default` package already ships (naming one in `extraDependencyGroups` changes nothing; the table lists common groups, `pyproject.toml` is authoritative):
 
 | Group | What it enables |
 |-------|-----------------|
@@ -117,9 +117,17 @@ Used with `extraDependencyGroups` (the table lists common groups; `pyproject.tom
 - Home Manager: container mode and the NixOS-style `addToSystemPackages` do not apply. Enable linger (`users.users.<name>.linger = true` or `sudo loginctl enable-linger <name>`) or the user service stops at logout.
 - Nix-declared `settings` keys win over `config.yaml` on disk, but user-added keys Nix does not touch are preserved. `nix build .#configKeys && cat result` lists every leaf config key.
 - Update with `nix flake update hermes-agent` then `sudo nixos-rebuild switch` (NixOS) or `home-manager switch` (Home Manager). In container mode only the `current-package` symlink changes.
-- Dev shell: `nix develop` provides an editable Python environment; `HERMES_PYTHON` points to its interpreter. `nix flake check` runs the flake checks.
+- Dev shell: `nix develop` provides an editable Python venv with the `dev` group on the interpreter `pm/lock.json` pins; `HERMES_PYTHON` and `VIRTUAL_ENV` point at it (no `PYTHONPATH` needed) and the shell hook uses pnpm. `nix flake check` runs the flake checks.
 - `services.hermes-agent.installPackage` was removed in favor of `programs.hermes-agent` (Home Manager).
-- Source: https://hermes-agent.nousresearch.com/docs/getting-started/nix-setup (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/getting-started/nix-setup (pinned to v0.23.1)
+
+### Changes in v0.23 (from v0.22.2)
+
+- `extraDependencyGroups` / `extraPythonPackages` (and `pkgs.hermes-agent.override { extraDependencyGroups = [ ... ]; }`) only add to the groups the selected package ships. The `default` package already ships `messaging`, `voice`, `exa` and the other listed groups, so naming those changes nothing. For a smaller build use `package = inputs.hermes-agent.packages.${system}.minimal;` (or `#messaging`), or `.override { defaultDependencyGroups = [ ]; }` to drop the shipped groups. The official troubleshooting table still suggests `extraDependencyGroups = [ "messaging" ]` for `No adapter available for discord`; with the `default` package that has no effect, so prefer the `#messaging` / `minimal` package route.
+- Dev shell: `hermes` stays your installed Hermes; `hermes-checkout` runs the checkout's code with the same arguments. Use a separate `HERMES_HOME` when a change touches stored state, because both read the same one by default.
+- A Desktop running on the same host attaches to the gateway itself via `hermes gateway ensure`; only a remote Desktop connection and the dashboard need `backend.mode`.
+- Webapp: the package ships the Webapp prebuilt. Enable it with `settings.webapp = { enabled = true; host = "127.0.0.1"; port = 9120; }` (with `gateway.enable = true`) and open it with `hermes webapp`. A non-loopback `host` or a `public_url` needs one of the dashboard's sign-in providers. The wrapper points `HERMES_WEBAPP_DIST` at the bundle, so `hermes webapp --force-build` has nothing to rebuild. `nix build .#webapp` builds it alone.
+- After a `pnpm-lock.yaml` change that adds, removes or re-resolves a package, run `nix run .#update-pnpm-lockfile` from the checkout to refresh `nix/pnpm-deps-hash` (otherwise every frontend build fails with a hash mismatch).
 
 ## Related
 

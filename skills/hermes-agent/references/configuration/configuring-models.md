@@ -44,7 +44,7 @@ hermes portal info
 
 ## Options / Props
 
-Auxiliary task slots (11, each defaults to `provider: auto`, `model: ''` = use main model):
+Auxiliary task slots (one dashboard row per task; plugins can register more; each defaults to `provider: auto`, `model: ''` = use main model):
 
 | Task | When to override |
 |------|------------------|
@@ -52,9 +52,9 @@ Auxiliary task slots (11, each defaults to `provider: auto`, `model: ''` = use m
 | Vision | Main model lacks vision (e.g. `google/gemini-2.5-flash`, `gpt-4o-mini`) |
 | Compression | Avoid burning reasoning tokens on summarization |
 | Approval | `approval_mode: smart` — fast/cheap model decides auto-approval |
-| Web Extract | Heavy `web_extract` use |
-| Skills Hub | `hermes skills search`; usually `auto` |
+| Review | The `/review` reviewer subagent; `auto` uses the main model, pin a different (often stronger) model for reviews |
 | MCP | MCP tool routing; usually `auto` |
+| Voice Chat | Spoken voice-chat replies; point at a faster model (reasoning is off on voice turns by default); GPT-Live voice chat ignores this slot |
 | Triage Specifier | `hermes kanban specify` |
 | Kanban Decomposer | Splits a triage task into child tasks |
 | Profile Describer | `hermes profile describe --auto` |
@@ -141,6 +141,8 @@ curl -X POST -H "Content-Type: application/json" -H "X-Hermes-Session-Token: $TO
 - A fresh install has `model: ""`; `hermes setup` / `hermes model` upgrades it to a mapping with `provider`, `default`, `base_url`, `api_mode`.
 - `auto` for an auxiliary task tries the main model, then `auxiliary.<task>.fallback_chain`, then top-level `fallback_providers` / `fallback_model`. It never falls through to a provider you did not configure; the task is skipped with a warning.
 - Mid-session model switches reset the prompt cache (the next message re-reads the whole conversation at full input price). Confirmation is requested when the session exceeds `model.switch_context_confirm_tokens`.
+- An explicit `/model` switch also rewrites the `Model:` (and `Provider:`) line inside the system prompt; the first request after the switch misses the cached prefix once, and everything after the system prompt stays byte-identical. Automatic fallbacks rewrite the same line only in memory, so the stored session keeps the primary's labels and a restored primary replays a byte-identical prompt.
+- The dashboard auxiliary list no longer shows Web Extract and Skills Hub rows in v0.23.1; tasks the dashboard doesn't list remain configurable in `config.yaml` (see the Configuration page, Auxiliary Models).
 - `--once` breaks the prompt-cache prefix twice (out and back); may cost more in long cached sessions.
 - `-contributor` models (vendor may train on prompts): non-interactive startups (Kanban workers, cron) fail closed unless `hermes config set security.allow_data_training_tiers_noninteractive true`; revoke with `hermes config unset ...`.
 - Subscription speed: `agent.service_tier` is `normal`, `fast` or `ultrafast`. `GPT-6.1 Sol-900k` is a local context choice; the `-900k` suffix is removed from the model ID sent to OpenAI.
@@ -148,7 +150,11 @@ curl -X POST -H "Content-Type: application/json" -H "X-Hermes-Session-Token: $TO
 - Legacy top-level `custom_providers:` (with `base_url`) is auto-migrated to the `providers:` dict on `hermes update` (config v12).
 - `model_aliases:` entries take precedence over `model.aliases:`; user aliases shadow built-in short names. If an alias sets neither `api_key` nor `key_env`, the key resolves from the alias host, never from the previously active provider.
 - The REST session token is injected into the dashboard HTML at startup and rotates on every server restart.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/configuring-models (v0.22.2 docs source)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/configuring-models (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- Migration (v0.22 -> v0.23): the dashboard auxiliary table drops the Web Extract and Skills Hub rows and adds Review and Voice Chat; the "11 task slots" count is replaced by "one row per auxiliary task". The v0.23.1 page does not state that the underlying `web_extract` / skills-search slots were removed.
 
 ## Related
 

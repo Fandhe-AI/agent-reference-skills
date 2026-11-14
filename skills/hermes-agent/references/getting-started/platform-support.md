@@ -15,10 +15,9 @@ Hermes Agent classifies supported platforms into tiers by maintenance priority: 
 
 ## Build targets and support priority
 
-- Stable releases build the macOS desktop bundle for Apple Silicon (`arm64`) only.
-- The Intel macOS (`x64`) bundle and the Termux APT package are not built by default: a release includes them only when cut with `release.py release --with macos-intel` or `--with termux`.
-- A release without macOS Intel replaces the shared macOS stable update feed with an arm64-only feed, so Intel Macs installed from a desktop bundle get no update until a release is cut with `--with macos-intel`. A release without Termux leaves the Termux APT channel on its previous release.
-- The `Hermes-Setup.dmg` bootstrap installer is Apple Silicon only; on an Intel Mac it reports "not supported on this Mac". Intel Macs can install the CLI and run `hermes desktop`, or use a `darwin-x64` bundle from a release that included it.
+- Releases build the macOS desktop bundle for Apple Silicon (`arm64`) only; no release or CI workflow builds or tests an Intel macOS (`x64`) bundle. The macOS update feed is arm64-only, so Intel Macs installed from an older desktop bundle get no update.
+- The Termux APT package is not built by default: a release includes it only when cut with `release.py release --with termux`. A release without Termux leaves the Termux APT channel on its previous release.
+- The `Hermes-Setup.dmg` bootstrap installer is Apple Silicon only; on an Intel Mac it reports "not supported on this Mac". Intel Macs can install the CLI and run `hermes desktop`.
 - Linux desktop packaging is disabled in the release workflow, although local AppImage builds and native Linux PM bundle checks exist.
 
 ## Unsupported Methods
@@ -27,7 +26,7 @@ Not supported; PRs to fix them are not accepted and compatibility code may be re
 
 - Android / Termux on non-aarch64 devices (aarch64 is supported via the APT package)
 - Installs via the AUR
-- 32-bit x86 macOS (Intel x86_64 desktop bundles are built only for releases cut with `--with macos-intel`)
+- 32-bit x86 macOS, and Intel x86_64 macOS desktop bundles (none are built)
 - Installs via `pypi` (e.g. `uv tool install hermes-agent`, `pip install hermes-agent`)
 - Installs via `brew` (`brew install hermes-agent`)
 
@@ -36,6 +35,8 @@ Not supported; PRs to fix them are not accepted and compatibility code may be re
 - Tier 1 platforms receive top priority for bug fixes and regressions; Tier 2 platforms "may break, and we can't promise we'll fix them promptly when they break."
 - Users on unsupported distribution methods are directed to switch to a supported installation method.
 - Updated against Hermes docs v0.22.2: the earlier "macOS on Intel is unsupported" line became a conditional build (see Build targets above), and the Nix note changed from a stability remark to "Nix owns runtime installation and updates".
+- Changed in v0.23.1: the conditional Intel macOS build (`release.py release --with macos-intel`) is gone; no Intel macOS (`x64`) bundle is built or tested. The Tier 2 Android / Termux row still mentions `--with termux` (and `windows` and `macos-arm64`) from the v0.22.2 table, which this diff did not touch.
+- Source: https://hermes-agent.nousresearch.com/docs/getting-started/platform-support (pinned to v0.23.1)
 
 ## Related
 
