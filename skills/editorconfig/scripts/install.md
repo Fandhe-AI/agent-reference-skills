@@ -72,13 +72,13 @@ pip install editorconfig-checker
 
 ## Notes
 
-- 取得日: 2026-11-14。editorconfig-checker は最新リリース v4.0.2（`0adfdb0`）、editorconfig-core-js は v4.0.0（`63b38ab`）の README に基づく。
-- Migration (v3 → v4): editorconfig-checker の Go モジュールパスは `/v3/` から `/v4/` に変わった。旧パス `.../v3/cmd/editorconfig-checker@latest` は v3 系列のモジュールを指す。
-- Docker イメージは README がバージョン付きタグを案内している（`ghcr.io/editorconfig-checker/editorconfig-checker:4.0.2` または `mstruebing/editorconfig-checker:4.0.2`）。
-- npm / Yarn / PHP Composer / pip は README の言語別ラッパー（npm package / PyPI package / Composer package）で、各パッケージのドキュメントを参照する。
-- Source: https://github.com/editorconfig-checker/editorconfig-checker/blob/v4.0.2/README.md （取得日 2026-11-14）
-- Source: https://github.com/editorconfig/editorconfig-core-js/blob/v4.0.0/README.md （取得日 2026-11-14）
+- Based on the READMEs of editorconfig-checker v4.0.2 (`0adfdb0`, latest release) and editorconfig-core-js v4.0.0 (`63b38ab`), fetched 2026-11-14.
+- Migration (v3 → v4): the editorconfig-checker Go module path changed from `/v3/` to `/v4/`; the old path `.../v3/cmd/editorconfig-checker@latest` refers to the v3 module line.
+- The README gives Docker images with a version tag (`ghcr.io/editorconfig-checker/editorconfig-checker:4.0.2` or `mstruebing/editorconfig-checker:4.0.2`).
+- npm / Yarn / PHP Composer / pip are the README's language-specific wrappers (npm package / PyPI package / Composer package); see each package's documentation.
+- Source: https://github.com/editorconfig-checker/editorconfig-checker/blob/v4.0.2/README.md (fetched 2026-11-14)
+- Source: https://github.com/editorconfig/editorconfig-core-js/blob/v4.0.0/README.md (fetched 2026-11-14)
 
 ## Related
 
-- [validate](./validate.md) — editorconfig-checker の実行
+- [validate](./validate.md) — Running editorconfig-checker

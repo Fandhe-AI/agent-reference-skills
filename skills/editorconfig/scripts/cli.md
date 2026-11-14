@@ -68,16 +68,16 @@ editorconfig.py /path/to/file.md
 
 ## Notes
 
-- 取得日: 2026-11-14。editorconfig-core-js v4.0.0（`63b38ab`）の README と `src/cli.ts`、editorconfig-checker v4.0.2 の README に基づく。
-- 複数パスを渡すと、各ファイルの前に `[<path>]` 行が出力される（`src/cli.ts`）。`-f` は設定ファイル名（既定 `.editorconfig`）の指定で、editorconfig-checker の `-f`（出力形式）とは別物。
-- `--unset` は最終値が `unset` のプロパティを出力から取り除く（`src/cli.ts` のオプション定義。v4.0.0 の README の usage には未掲載）。
-- `editorconfig.py` コマンドは editorconfig-core-py の README にコマンド名の記載がなく、公式未確認。
-- Source: https://github.com/editorconfig/editorconfig-core-js/blob/v4.0.0/README.md （取得日 2026-11-14）
-- Source: https://github.com/editorconfig/editorconfig-core-js/blob/v4.0.0/src/cli.ts （取得日 2026-11-14）
-- Source: https://github.com/editorconfig-checker/editorconfig-checker/blob/v4.0.2/README.md （取得日 2026-11-14）
-- Source: https://github.com/editorconfig/editorconfig-core-py/blob/v0.17.1/README.rst （取得日 2026-11-14）
+- Based on the editorconfig-core-js v4.0.0 (`63b38ab`) README and `src/cli.ts`, and the editorconfig-checker v4.0.2 README, fetched 2026-11-14.
+- With several paths, a `[<path>]` line precedes each file's output (`src/cli.ts`). `-f` selects the config file name (default `.editorconfig`) and is unrelated to editorconfig-checker's `-f` (output format).
+- `--unset` removes properties whose final value is `unset` from the output (option defined in `src/cli.ts`; not listed in the v4.0.0 README usage).
+- The `editorconfig.py` command name is not stated in the editorconfig-core-py README (not confirmed upstream).
+- Source: https://github.com/editorconfig/editorconfig-core-js/blob/v4.0.0/README.md (fetched 2026-11-14)
+- Source: https://github.com/editorconfig/editorconfig-core-js/blob/v4.0.0/src/cli.ts (fetched 2026-11-14)
+- Source: https://github.com/editorconfig-checker/editorconfig-checker/blob/v4.0.2/README.md (fetched 2026-11-14)
+- Source: https://github.com/editorconfig/editorconfig-core-py/blob/v0.17.1/README.rst (fetched 2026-11-14)
 
 ## Related
 
-- [install](./install.md) — コアのインストール
-- [validate](./validate.md) — editorconfig-checker の検証
+- [install](./install.md) — Installing the cores
+- [validate](./validate.md) — Validating with editorconfig-checker

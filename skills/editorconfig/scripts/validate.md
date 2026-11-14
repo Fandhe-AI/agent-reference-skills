@@ -144,14 +144,14 @@ editorconfig-checker -format github-actions
 
 ## Notes
 
-- 取得日: 2026-11-14。editorconfig-checker v4.0.2（`0adfdb0`）の README に基づく。
-- `-exclude` は単一の正規表現を受け取る。複数パターンは `|` で結合する（`-exclude "vendor|testdata"`）。`--exclude` を複数回並べる形は README の例にない。
-- `-f` と `-format` はどちらも出力形式の指定（`default`, `codeclimate`, `gcc`, `github-actions`）。
-- Docker イメージは README がバージョン付きタグ（`4.0.2`）で案内している。`-fix` が扱うのは `trim_trailing_whitespace = true`、`end_of_line`、`insert_final_newline` のみ。インデント・`indent_size`・`max_line_length`・`charset` の違反は検査のみ（README は `--fix` と記載）。
-- 旧版にあった `ec` エイリアスの記述は v4.0.2 の README に見当たらないため削除した（公式未確認）。
-- `-fix` はファイルを直接書き換える。変更が追跡できるよう、作業ツリーをコミット済みにしてから実行する。- Source: https://github.com/editorconfig-checker/editorconfig-checker/blob/v4.0.2/README.md （取得日 2026-11-14）
+- Based on the editorconfig-checker v4.0.2 (`0adfdb0`) README, fetched 2026-11-14.
+- `-exclude` takes a single regular expression; combine patterns with `|` (`-exclude "vendor|testdata"`). Repeating `--exclude` is not shown in the README.
+- `-f` and `-format` both select the output format (`default`, `codeclimate`, `gcc`, `github-actions`).
+- The README gives the Docker image with the version tag `4.0.2`. `-fix` handles only `trim_trailing_whitespace = true`, `end_of_line` and `insert_final_newline`; indentation, `indent_size`, `max_line_length` and `charset` violations are check-only (the README writes the flag as `--fix`).
+- The `ec` alias mentioned in an earlier version of this page is not in the v4.0.2 README and was removed (not confirmed upstream).
+- `-fix` rewrites files in place; run it on a committed working tree so changes can be reviewed.- Source: https://github.com/editorconfig-checker/editorconfig-checker/blob/v4.0.2/README.md (fetched 2026-11-14)
 
 ## Related
 
-- [install](./install.md) — editorconfig-checker のインストール
-- [generate](./generate.md) — 設定ファイルの生成
+- [install](./install.md) — Installing editorconfig-checker
+- [generate](./generate.md) — Generating a configuration file

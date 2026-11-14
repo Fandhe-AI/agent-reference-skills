@@ -2,113 +2,107 @@
 source: https://spec.editorconfig.org/
 ---
 
-# EditorConfig 仕様
+# EditorConfig Specification
 
-EditorConfig ファイルフォーマットの正式仕様。ファイル発見アルゴリズム、行の種類、キーバリューペアの解析、空ファイルの扱い。
+The EditorConfig file format: file discovery, line types, key-value pair parsing and empty files.
 
 ## Signature / Usage
 
 ```ini
-# プリアンブル（最初のセクションヘッダーより前）
+# Preamble (before the first section header)
 root = true
 
-# セクション
+# Section
 [*.js]
 indent_style = space
 indent_size = 2
 ```
 
-- **プリアンブル**: 最初のセクションヘッダーより前の部分。省略可能で、キーバリューペア・コメント・空行を含められる（`root` 以外のペアは効果を持たない）
-- **セクション名**: 先頭の `[` と末尾の `]` の間の文字列（グロブ）
-- **セクション**: セクションヘッダーから次のセクションヘッダーまたはファイル末尾まで
+- **Preamble**: the lines before the first section header. Optional; may contain key-value pairs, comments and blank lines.
+- **Section name**: the string between the beginning `[` and the ending `]` (a glob).
+- **Section**: the lines from a section header until the next section header or the end of the file.
 
-### ファイル発見アルゴリズム
+### File discovery
 
-1. 開いたファイルのディレクトリと全親ディレクトリから `.editorconfig` を検索（存在しないディレクトリは「存在して空」として扱う）
-2. 見つかった全ファイルから、ファイル名にマッチするセクション名を持つセクションを探す
-3. 以下のいずれかで検索を停止:
-   - プリアンブルで `root = true` を持つ `.editorconfig` を発見
-   - ファイルシステムのルートに到達
+1. Search the directory of the given file and all parent directories for `.editorconfig` files. Non-existing directories are treated as if they exist and are empty.
+2. Search all found files for sections whose names match the filename.
+3. Stop when a file with `root = true` in the preamble is found, or when the root filesystem directory is reached.
 
-### 優先順位
+### Precedence
 
-- ファイルは上から下へ読まれ、後に見つかったペアが優先
-- 1 つの `.editorconfig` 内で複数セクションにマッチする場合、後ろのセクションのペアが前のセクションより優先
-- 複数の `.editorconfig` にマッチするセクションがある場合、近いファイルが最後に読まれるため優先
+- Files are read top to bottom and the most recent pairs found take precedence.
+- When a file matches several sections of one `.editorconfig`, pairs from the later section take precedence over pairs from the earlier section.
+- When several `.editorconfig` files have matching sections, the closer file is read last, so its pairs take precedence.
 
-### 行の種類
+### Line types
 
-各行は前後の空白を除去してから処理する。
+Each line is trimmed of leading and trailing whitespace, then processed by type.
 
-| 種類 | 説明 |
-|------|------|
-| 空行 | 何も含まない行。無視される |
-| コメント | `;` または `#` で始まる行。無視される |
-| セクションヘッダー | `[` で始まり `]` で終わる行。括弧内は任意の文字（`[` `]` 空白・タブも可）。パス区切りは `/`（`\` は Windows でも不可） |
-| キーバリューペア | `=` で区切られたキーと値 |
-| 無効行 | 上記のいずれにも該当しない行 |
+| Type | Description |
+|------|-------------|
+| Blank | Contains nothing. Ignored |
+| Comment | Starts with `;` or `#`. Ignored |
+| Section header | Starts with `[` and ends with `]`. Any characters may be between the brackets (including `[`, `]`, spaces and tabs). `/` is the path separator; `\` is not allowed as a path separator, even on Windows |
+| Key-value pair | A key and a value separated by `=` |
+| Invalid | Any other line |
 
-- ファイルは UTF-8、行区切りは LF または CRLF
+- Files must be UTF-8 encoded, with LF or CRLF line separators.
 
-### インラインコメントなし
+### No inline comments
 
-`;` や `#` は **行頭にある場合のみ** コメント。行中の `;` や `#` はテキストの一部で、エスケープ機構はない。
+A `;` or `#` anywhere other than at the beginning of a line does not start a comment; it is part of the text of that line. There is no escaping mechanism for `;` or `#`.
 
 ```ini
 [*.txt]
 foo = editorconfig ;)
 ```
 
-`*.txt` で `foo` の値は `editorconfig ;)`（`editorconfig` ではない）。旧パーサーはインラインコメントを許す場合がある（0.15.0 で変更）。
+For `*.txt` files, `foo` has the value `editorconfig ;)`, not `editorconfig`.
 
-### キーバリューペアの解析
+### Key-value pair parsing
 
-- **キー**: 行の最初の `=` より前の部分
-- **値**: 行の最初の `=` より後の部分（あれば）。値が無い場合は空文字列
-- キーと値は前後の空白をトリムし、非空白文字の間の空白は保持
-- キーは大文字小文字を区別せず、パース後に小文字化
+- Key: the part before the first `=` on the line.
+- Value: the part, if any, after the first `=` on the line. If no value is provided, the value is an empty string.
+- Keys and values are trimmed of leading and trailing whitespace but keep whitespace between non-whitespace characters.
+- Keys are case-insensitive and lowercased after parsing.
 
-### 長さ制約
+### Empty `.editorconfig` files
 
-| 要素 | 最小受理長 |
-|------|-----------|
-| セクション名 | 1024 文字 |
-| キー | 1024 文字 |
-| 値 | 4096 文字 |
-
-### 空の `.editorconfig`
-
-空行とコメント行のみ（または 0 行）のファイルは、`root = false` の 1 行だけのファイルと等価。
+A file containing only blank and comment lines, or no lines at all, is equivalent to a file containing only `root = false`.
 
 ## Options / Props
 
-用語（0.15.1 で整理）:
+Terminology (since 0.15.1):
 
-| 用語 | 意味 |
-|------|------|
-| EditorConfig files | `.editorconfig`（小文字）。セクションとキーバリューペアを格納 |
-| Cores | ファイルをパースし、キーバリューペアをプラグインへ渡す |
-| Plugins | コアからペアを受け取り、エディタ設定を更新 |
-| Editors | ファイルを編集し、プラグインで設定を更新 |
+| Term | Meaning |
+|------|---------|
+| EditorConfig files | Files named `.editorconfig` (lowercase) that store sections of key-value pairs |
+| Cores | Parse EditorConfig files and provide key-value pairs to plugins |
+| Plugins | Receive pairs from cores and update an editor's settings |
+| Editors | Edit files and use plugins to update settings |
 
-バージョニング（0.14.0 以降）:
+Minimum accepted lengths:
 
-- 仕様は SemVer 2.0.0 に従い、`specification` リポジトリのタグで版を示す。各版は `editorconfig-core-test` の同版に対応
-- コアはテストを通すため `-b`（互換版指定）を処理し、`-v` / `--version` で仕様版を報告する必要がある
-- コア・プラグイン・エディタ自身の版数は仕様版と独立
+| Element | Length |
+|---------|--------|
+| Section name | 1024 characters |
+| Key | 1024 characters |
+| Value | 4096 characters |
+
+Versioning (since 0.14.0): the specification follows Semantic Versioning 2.0.0, is tagged in the specification repository, and each version corresponds to the same version of the core-tests repository. To pass the core tests a core must process the `-b` switch and report the specification version for `-v` / `--version`. Core, plugin and editor version numbers are independent of the specification version.
 
 ## Notes
 
-- ファイル名の大文字小文字: `.editorconfig` は小文字。大文字小文字を区別しないファイルシステムなどでは、コアは `.editorConfig` のような異なる表記も小文字扱いで受理してよい（informative）。この節は仕様のタグ v0.17.2 には無く、master にのみある（下記）。
-- 版の扱い: spec.editorconfig.org は「version 0.17.2」と表示するが、2026-11-14 時点で master `f580513`（タグ v0.17.2 = `329077a` の 15 コミット後、未リリース）からビルドされている。上記のうち空ファイル節・ファイル名の大文字小文字節・値省略時の空文字列・複数セクションの優先順位・先頭 `/` の扱いは master のみの記述で、タグ v0.17.2 の `index.rst` には無い。
-- 先頭・末尾の空白除去や「セクションヘッダー括弧内は任意の文字」「`\` は区切りに使えない」は v0.17.2 のタグに存在する。
-- 仕様はプラグイン作者向けの節が TODO で、代わりに wiki の Plugin Guidelines を参照するよう案内している。
-- Source: https://spec.editorconfig.org/ （取得日 2026-11-14、master `f580513`）
-- Source: https://github.com/editorconfig/specification/blob/v0.17.2/index.rst （最新タグ v0.17.2 / `329077a`、取得日 2026-11-14）
+- Capitalization of the file name: `.editorconfig` is lowercase. On platforms where opening a differently capitalized name (for example `.editorConfig`) opens the same file, such as case-insensitive filesystems, a core may also accept that capitalization as if it were lowercase (informative).
+- Version caveat: spec.editorconfig.org shows "version 0.17.2" but, as of 2026-11-14, is built from master `f580513`, 15 commits after the latest tag v0.17.2 (`329077a`). The following are only in master and not in the tag's `index.rst`: the empty-file section, the file-name capitalization section, the empty-string value when no value is provided, the within-file precedence rule for multiple matching sections, and the leading-slash rule (see glob-patterns).
+- The tag v0.17.2 does contain: trimming of leading and trailing whitespace, any characters between section header brackets, the `\` separator restriction, the no-inline-comments rule, and non-existing directories being treated as empty.
+- The section "Suggestions for Plugin Developers" is TODO in the specification and points to the Plugin Guidelines wiki page.
+- Source: https://spec.editorconfig.org/ (fetched 2026-11-14, master `f580513`)
+- Source: https://github.com/editorconfig/specification/blob/v0.17.2/index.rst (latest tag v0.17.2 / `329077a`, fetched 2026-11-14)
 
 ## Related
 
-- [properties](./properties.md) — 全プロパティ詳細
-- [glob-patterns](./glob-patterns.md) — グロブパターン仕様
-- [indentation](./indentation.md) — インデント関連プロパティの挙動
-- [best-practices](./best-practices.md) — 設定例・FAQ
+- [properties](./properties.md) — All properties
+- [glob-patterns](./glob-patterns.md) — Glob pattern syntax
+- [indentation](./indentation.md) — How the indentation properties combine
+- [best-practices](./best-practices.md) — Examples and FAQ

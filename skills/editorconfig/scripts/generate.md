@@ -14,9 +14,9 @@ editorconfig-checker -init
 
 ## Notes
 
-- 取得日: 2026-11-14。editorconfig-checker v4.0.2 の README に基づく。`-init` は設定を作成し、`-config` でパスを指定した場合はそこに作成される。
-- Source: https://github.com/editorconfig-checker/editorconfig-checker/blob/v4.0.2/README.md （取得日 2026-11-14）
+- Based on the editorconfig-checker v4.0.2 README, fetched 2026-11-14. `-init` creates a configuration; if a `-config` path is given it is created there.
+- Source: https://github.com/editorconfig-checker/editorconfig-checker/blob/v4.0.2/README.md (fetched 2026-11-14)
 
 ## Related
 
-- [validate](./validate.md) — editorconfig-checker の検証
+- [validate](./validate.md) — Validating with editorconfig-checker

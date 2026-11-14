@@ -53,12 +53,12 @@ Plug 'editorconfig/editorconfig-vim'
 
 ## Notes
 
-- 取得日: 2026-11-14。Vim プラグインは editorconfig-vim の最新タグ v1.2.1（`3c2813f`）の README の記載（Vim 8 package・Vundle・vim-plug）に基づく。
-- `:help editorconfig` と `:helptags ALL` は同 README にある（`:helptags ALL` は Vim が editorconfig.txt を認識するために必要な場合がある）。
-- ネイティブサポート済み・プラグイン要のエディタ一覧は editorconfig.org トップページが一次情報。
-- Source: https://github.com/editorconfig/editorconfig-vim/blob/v1.2.1/README.md （取得日 2026-11-14）
-- Source: https://editorconfig.org/ （取得日 2026-11-14）
+- The Vim plugin steps (Vim 8 package, Vundle, vim-plug) follow the README of editorconfig-vim v1.2.1 (`3c2813f`, latest tag), fetched 2026-11-14.
+- `:help editorconfig` and `:helptags ALL` are in the same README (`:helptags ALL` may be needed so that Vim knows editorconfig.txt).
+- The editorconfig.org front page is the primary source for which editors support EditorConfig natively and which need a plugin.
+- Source: https://github.com/editorconfig/editorconfig-vim/blob/v1.2.1/README.md (fetched 2026-11-14)
+- Source: https://editorconfig.org/ (fetched 2026-11-14)
 
 ## Related
 
-- [install](./install.md) — コアのインストール
+- [install](./install.md) — Installing the cores
