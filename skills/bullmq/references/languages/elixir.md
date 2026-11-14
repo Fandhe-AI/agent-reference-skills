@@ -161,3 +161,4 @@ BullMQ for Elixir leverages OTP patterns for reliability:
 - [Introduction](../guide/introduction.md)
 - [Guide](../guide/README.md)
 - [PostgreSQL backend](../guide/postgresql-backend/postgresql-backend.md)
+- [Elixir introduction (official, v6.7.6)](https://docs.bullmq.io/elixir/introduction)

@@ -1,6 +1,6 @@
 # BullMQ — Relay: Reference
 
-`Relay` のコンストラクタオプション、メソッド、namespace 検査用 getter、イベント、`RelayError` コード。
+`Relay` constructor options, methods, namespace inspection getters, events and `RelayError` codes.
 
 ## Signature / Usage
 
@@ -106,3 +106,4 @@ Events:
 - [getting-started.md](./getting-started.md)
 - [nodes-and-failures.md](./nodes-and-failures.md)
 - [messages.md](./messages.md)
+- [Relay: reference (official, v6.7.6)](https://docs.bullmq.io/guide/relay/reference)

@@ -1,6 +1,6 @@
 # BullMQ — Relay example: Live job progress
 
-ワーカーがジョブ進捗を retained message として publish し、ユーザーが見ている API サーバーだけがそのジョブのトピックを subscribe して SSE で配信する例。
+Workers publish job progress as retained messages; only the API servers with a viewer subscribe to that job's topics and relay the updates to browsers over Server-Sent Events.
 
 ## Signature / Usage
 
@@ -130,8 +130,23 @@ events.addEventListener('status', e => showResult(JSON.parse(e.data)));
 - Validate and authorize the job id before building a topic from it (see Values in topics in topics-and-patterns.md). Publish when the percentage changes or at most a few times per second. Keep calling `job.updateProgress()` as well if you also need the progress on the job itself (for example for `queue.getJob(id)`).
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/relay/examples/live-job-progress.md (tag v6.7.6, fetched 2026-11-14). Official page: https://docs.bullmq.io/guide/relay/examples/live-job-progress
 
+### Refreshing viewers after a recovery
+
+Adapted (not in the official docs): retained messages are not delivered again when the API server's relay node recovers, so a status published while it was disconnected (for example a job that completed) would never reach clients that are still connected. `activeStreams` and `sendCurrentState` are placeholders for your own bookkeeping of open SSE responses and a lookup of the job's current state (for example from the queue or your database).
+
+```typescript
+relay.on('recovered', () => {
+  for (const stream of activeStreams) {
+    void sendCurrentState(stream).catch(console.error);
+  }
+});
+```
+
+- Adapted from the official example: the official API server code does not handle the `'recovered'` event; this is an addition for correctness after a lease expiry.
+
 ## Related
 
 - [overview.md](./overview.md)
 - [retained-messages.md](./retained-messages.md)
 - [topics-and-patterns.md](./topics-and-patterns.md)
+- [Example: live job progress (official, v6.7.6)](https://docs.bullmq.io/guide/relay/examples/live-job-progress)

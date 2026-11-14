@@ -68,7 +68,7 @@ async fn main() -> bullmq::Result<()> {
 ## Notes
 
 - Install: the crate is published as `bullmq-official` and imported in code as `bullmq` (`use bullmq::{Queue, Worker};`); the `bullmq`, `bullmq-rust` and `bullmq-rs` names on crates.io belong to unrelated third-party crates (official page, v6.7.6). A previous version of this page showed `bullmq = "0.1"` / `cargo add bullmq`, which would install an unrelated crate.
-- Node.js / Python / Elixir / .NET / PHP 版と同じ Lua スクリプトおよび Redis データ構造を使用するため、言語間で完全に互換性がある（Redis Cluster でも同じ prefix なら相互運用可能）
+- It uses the same Lua scripts and Redis data structures as the Node.js, Python, Elixir, .NET and PHP SDKs, so the SDKs are fully interoperable (also on Redis Cluster, as long as they use the same prefix).
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/rust/introduction.md (tag v6.7.6, fetched 2026-11-14)
 - 並行数は `worker.set_concurrency(n)` でランタイムに変更可能
 - イベントは EventEmitter ではなく `mpsc::UnboundedReceiver<WorkerEvent>` で受け取る
@@ -77,7 +77,7 @@ async fn main() -> bullmq::Result<()> {
 
 ### Redis Cluster
 
-`cluster_nodes` にシードノード URL を 1 つ以上指定する（残りのトポロジーは自動検出）。cluster モードでは `url` / `host` / `port` / `db` は無視され、`username` / `password` / `tls` / `tls_certs` は全ノードに適用される。BullMQ の Lua スクリプトは 1 キューの複数キーに同時アクセスするため、すべてが同一ハッシュスロットに載る必要がある。Node.js / Python 版と同様に prefix（またはキュー名）に hash tag を使う。複数キューにまたがるフローは共有 prefix に hash tag が必要。
+To connect to a Redis Cluster, set `cluster_nodes` to one or more seed node URLs; the rest of the topology is discovered automatically. In cluster mode `url`, `host`, `port` and `db` are ignored, while `username`, `password`, `tls` and `tls_certs` apply to every node. BullMQ's Lua scripts access several keys of a queue at once, so all of them must live in the same hash slot: as with the Node.js and Python versions, use a hash tag in the prefix (or in the queue name). Flows spanning several queues require the hash tag in the shared prefix.
 
 ```rust
 use bullmq::{Queue, QueueOptions, Worker, WorkerOptions};

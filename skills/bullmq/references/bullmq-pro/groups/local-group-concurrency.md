@@ -43,7 +43,7 @@ const worker = new WorkerPro('myQueue', processFn, {
 ## Notes
 
 - **Worker インスタンスレベルでグループ concurrency を必ず設定すること**。これが機能の前提条件であり、ローカル concurrency が未設定のグループのデフォルト値にもなる
-- Worker のデフォルト（`groupConcurrency`）は[実行時に変更できる](./concurrency.md)。ローカル concurrency を持つグループには影響しない
+- The worker-level default (`groupConcurrency`) can be [changed at runtime](./concurrency.md) without affecting the groups that have a local concurrency.
 - ローカル concurrency の値は Redis に保存されるため、不要になった場合は手動でクリーンアップが必要
 - API リファレンス: `QueuePro.setGroupConcurrency()`, `QueuePro.getGroupConcurrency()`
 

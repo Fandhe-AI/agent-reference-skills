@@ -1,6 +1,6 @@
 # BullMQ — Relay: Nodes and failures
 
-ノード（`Relay` インスタンス）の lease / heartbeat、障害時の挙動、`'recovered'` による復旧、sweep、graceful shutdown。
+Nodes (`Relay` instances), leases and heartbeats, behavior on failures, recovery (`'recovered'`), sweeping and graceful shutdown.
 
 ## Signature / Usage
 
@@ -68,3 +68,4 @@ What happens when:
 - [messages.md](./messages.md)
 - [retained-messages.md](./retained-messages.md)
 - [backends.md](./backends.md)
+- [Relay: nodes and failures (official, v6.7.6)](https://docs.bullmq.io/guide/relay/nodes-and-failures)

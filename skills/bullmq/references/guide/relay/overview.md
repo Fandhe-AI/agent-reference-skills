@@ -1,6 +1,6 @@
 # BullMQ — Relay
 
-BullMQ 6.4.0 で追加された experimental のリアルタイムメッセージング機能。BullMQ が既に使っているデータストア（Redis または PostgreSQL）を介して、プロセス間でトピック単位のメッセージを publish / subscribe する。
+Experimental real-time messaging between the processes of a system through the datastore BullMQ already uses (Redis or PostgreSQL): publish a message on a topic and every matching subscription receives it, on whatever machine it runs. Available since the v6.4.0 docs.
 
 ## Signature / Usage
 
@@ -46,3 +46,4 @@ await relay.publish('orders.42.status', { status: 'shipped' });
 - [nodes-and-failures.md](./nodes-and-failures.md)
 - [backends.md](./backends.md)
 - [relay-vs-kafka.md](./relay-vs-kafka.md)
+- [Relay: overview (official, v6.7.6)](https://docs.bullmq.io/guide/relay)

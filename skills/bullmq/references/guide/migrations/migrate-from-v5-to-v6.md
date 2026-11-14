@@ -76,7 +76,7 @@ await queue.resume();
 
 ## Requirements
 
-- Node.js **14.18.0** 以上（v6.3.15 の公式ページでは 14.17.0 と記載されていたが、v6.7.6 の公式ページで 14.18.0 に変更されている。理由は公式未確認）
+- Node.js **14.18.0** or newer (the v6.3.15 page said 14.17.0; the v6.7.6 official page says 14.18.0 and gives no reason for the change)
 
 ## Migration Steps
 

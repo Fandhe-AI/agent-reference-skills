@@ -1,6 +1,6 @@
 # BullMQ — Relay: Topics and patterns
 
-トピック（ドット区切りの keypath）とワイルドカードパターン（`*` / `>`）の規則、トピックに値を埋め込む際のエンコード、設計指針。
+Topic keypath rules, the `*` and `>` wildcard patterns, encoding values into topic segments, and topic design guidance.
 
 ## Signature / Usage
 
@@ -74,3 +74,4 @@ Wildcards (valid in subscriptions only):
 - [getting-started.md](./getting-started.md)
 - [messages.md](./messages.md)
 - [retained-messages.md](./retained-messages.md)
+- [Relay: topics and patterns (official, v6.7.6)](https://docs.bullmq.io/guide/relay/topics-and-patterns)

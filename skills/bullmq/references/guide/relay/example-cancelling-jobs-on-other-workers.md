@@ -1,6 +1,6 @@
 # BullMQ — Relay example: Cancelling jobs on other workers
 
-API サーバーが `jobs.<queue>.cancel` トピックへ publish し、各ワーカーが購読して `worker.cancelJob()` で実行中ジョブを中断する例。
+The API server publishes on a `jobs.<queue>.cancel` topic and each worker subscribes to it and aborts the running job with `worker.cancelJob()`.
 
 ## Signature / Usage
 
@@ -88,3 +88,4 @@ export async function cancelExport(
 - [overview.md](./overview.md)
 - [retained-messages.md](./retained-messages.md)
 - [topics-and-patterns.md](./topics-and-patterns.md)
+- [Example: cancelling jobs on other workers (official, v6.7.6)](https://docs.bullmq.io/guide/relay/examples/cancelling-jobs-on-other-workers)

@@ -126,10 +126,10 @@ $queue = new Queue('myQueue', [
 
 ## Notes
 
-- PHP 版は Queue クラス（プロデューサー側）のみを実装。ワーカー処理には Node.js / Python / Elixir / .NET / Rust が必要
-- 繰り返しジョブやスケジュールジョブは、job scheduler をサポートする SDK（Node.js / Python / Elixir / .NET / Rust）で作成する。PHP クライアントは個別ジョブの追加向けで、スケジューラ管理は対象外（v6.7.6 の公式記述）
-- Node.js / Python / Elixir / .NET / Rust と同じ Redis データ構造を共有し、ポリグロットなキュー処理が可能
-- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/php/introduction.md (tag v6.7.6, fetched 2026-11-14)
+- The PHP package only implements the Queue class (producer side); use Node.js, Python, Elixir, .NET or Rust workers to process the jobs.
+- Repeatable/scheduled jobs (cron patterns) should be created with one of the SDKs that support job schedulers, such as Node.js, Python, Elixir, .NET or Rust. The PHP client is designed for adding individual jobs, not managing schedulers (official note, v6.7.6).
+- It shares the same Redis data structures as the Node.js, Python, Elixir, .NET and Rust SDKs, which enables polyglot queue processing.
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/php/introduction.md (tag v6.7.6, fetched 2026-11-14).
 
 ## Related
 

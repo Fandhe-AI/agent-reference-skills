@@ -1,6 +1,6 @@
 # BullMQ — Relay: Relay compared to Kafka
 
-Relay（アプリ内プロセス間のライブメッセージング）と Kafka（永続・再生可能なイベントログ）の比較と使い分け。
+How the Relay (live messaging between the processes of an application) differs from Kafka (a durable, replayable event log), and when to use which.
 
 ## Signature / Usage
 
@@ -49,3 +49,4 @@ await relay.publish('jobs.exports.cancel', { jobId: '1', reason: 'cancelled by u
 - [overview.md](./overview.md)
 - [retained-messages.md](./retained-messages.md)
 - [messages.md](./messages.md)
+- [Relay: relay vs kafka (official, v6.7.6)](https://docs.bullmq.io/guide/relay/relay-vs-kafka)

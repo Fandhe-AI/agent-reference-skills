@@ -229,8 +229,8 @@ await queue.remove(job.id);
 - フローは `FlowProducer` クラスを使って追加する必要があります
 - 親キューと子キューは同じキューである必要はありません
 - `jobId` オプションにコロン `:` を含めないでください（セパレータとして扱われます）
-- フローノードで deduplication オプションを使わないこと。子が既存ジョブに対して deduplicate されると親にアタッチされない場合があり、その子の処理完了前に親が実行可能になり得る。将来の破壊的リリースですべてのフローノードでの deduplication が拒否される予定で、各子の追加には依存関係を確実にアタッチできる既知のジョブ ID が必要（公式の警告、v6.7.6）
-- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/flows/README.md (tag v6.7.6、取得日 2026-11-14)
+- Do not use deduplication options on flow nodes. When a child is deduplicated against an existing job, it may not be attached to its parent, so the parent can become eligible before that requested child work completes. A future breaking release will reject deduplication on every flow node; each child addition must have a known job ID so its dependency can be attached reliably (official warning, v6.7.6).
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/flows/README.md (tag v6.7.6, fetched 2026-11-14).
 - キューオプションは第2引数で指定してください（インスタンスのコンテキストで定義されるため）
 
 ## Related

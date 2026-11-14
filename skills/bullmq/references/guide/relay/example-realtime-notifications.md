@@ -1,6 +1,6 @@
 # BullMQ — Relay example: Real-time notifications for WebSocket servers
 
-各 API サーバーが接続中ユーザーのトピックを subscribe し、システムのどこからでもユーザーのトピックへ publish して通知する例。
+Each API server subscribes to the notification topic of every connected user; any part of the system publishes on the user's topic to notify them in real time.
 
 ## Signature / Usage
 
@@ -110,3 +110,4 @@ export async function notify(userId: string, notification: Notification) {
 - [overview.md](./overview.md)
 - [retained-messages.md](./retained-messages.md)
 - [topics-and-patterns.md](./topics-and-patterns.md)
+- [Example: realtime notifications (official, v6.7.6)](https://docs.bullmq.io/guide/relay/examples/realtime-notifications)

@@ -29,6 +29,6 @@ process.on('SIGINT', async () => {
 ## Notes
 
 - `worker.close()` は新しいジョブの取得を停止し、現在処理中のジョブが完了するまでブロックする
-- TypeScript の `close()` 自体はタイムアウトしないため、ジョブが適切な時間内に完了するよう設計する必要がある（Rust / Elixir は既定で最大 30 秒待つなど SDK ごとに異なる。`references/guide/workers/graceful-shutdown.md` 参照）
+- In TypeScript, `close()` itself does not time out, so design jobs to finish in a timely manner (Rust and Elixir wait up to 30 seconds by default and other SDKs differ; see `references/guide/workers/graceful-shutdown.md`)
 - 強制終了が発生した場合でも stalled メカニズムにより別の Worker がジョブを引き継ぐ
 - BullMQ 2.0 以降、stalled ジョブの検出に `QueueScheduler` は不要

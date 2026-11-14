@@ -1,6 +1,6 @@
 # BullMQ — Relay example: Controlling workers
 
-キューのワーカー群の concurrency や pause を、retained message の設定トピックでデプロイなしに変更する例。
+Changing the concurrency or pausing a fleet of workers at runtime through a retained settings topic, without redeploying.
 
 ## Signature / Usage
 
@@ -76,8 +76,23 @@ await relay.subscribe(`workers.emails.regions.${region}.settings`, onSettings);
 - `worker.pause()` waits for the active jobs to finish; `worker.pause(true)` stops fetching new jobs without waiting. To stop specific running jobs rather than whole workers, see example-cancelling-jobs-on-other-workers.md.
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/relay/examples/controlling-workers.md (tag v6.7.6, fetched 2026-11-14). Official page: https://docs.bullmq.io/guide/relay/examples/controlling-workers
 
+### Re-applying settings after a recovery
+
+Adapted (not in the official docs): the example above relies on the retained message, which is not delivered again when a node recovers; this handler re-reads the latest settings from your source of truth (`loadSettings` is a placeholder for your own storage) and applies them through the same ordered chain.
+
+```typescript
+relay.on('recovered', () => {
+  applying = applying
+    .then(async () => apply(await loadSettings()))
+    .catch(err => logger.error(err, 'could not re-apply worker settings'));
+});
+```
+
+- Adapted from the official example: a worker disconnected for longer than `leaseDuration` while the settings changed would otherwise keep running with stale `concurrency` / `paused` until the next publish, because retained messages are not redelivered after a recovery.
+
 ## Related
 
 - [overview.md](./overview.md)
 - [retained-messages.md](./retained-messages.md)
 - [topics-and-patterns.md](./topics-and-patterns.md)
+- [Example: controlling workers (official, v6.7.6)](https://docs.bullmq.io/guide/relay/examples/controlling-workers)

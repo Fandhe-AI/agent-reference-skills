@@ -1,6 +1,6 @@
 # BullMQ — Relay example: Live configuration and feature flags
 
-フィーチャーフラグ等の設定を retained message として publish し、新規インスタンスも subscribe 時に現在値を取得する例。
+Configuration and feature flags are published as retained messages so running instances apply changes at once and new instances get the current value when they subscribe.
 
 ## Signature / Usage
 
@@ -86,3 +86,4 @@ new Worker(
 - [overview.md](./overview.md)
 - [retained-messages.md](./retained-messages.md)
 - [topics-and-patterns.md](./topics-and-patterns.md)
+- [Example: live configuration (official, v6.7.6)](https://docs.bullmq.io/guide/relay/examples/live-configuration)

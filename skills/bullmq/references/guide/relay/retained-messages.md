@@ -1,6 +1,6 @@
 # BullMQ — Relay: Retained messages
 
-トピックの最後の値を一定時間保持し、新規サブスクライバーへ即時配信する retained message（`publish` の `retain` オプション）。
+Retained messages keep the last value published on a topic for a while so that new subscribers get it straight away (the `retain` option of `publish`).
 
 ## Signature / Usage
 
@@ -42,3 +42,4 @@ Typical retention:
 - [messages.md](./messages.md)
 - [nodes-and-failures.md](./nodes-and-failures.md)
 - [reference.md](./reference.md)
+- [Relay: retained messages (official, v6.7.6)](https://docs.bullmq.io/guide/relay/retained-messages)

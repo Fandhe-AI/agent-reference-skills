@@ -49,25 +49,25 @@ const completed = await myQueue.getJobs(['completed'], 0, 100, true);
 
 ## Notes
 
-- `getDelayedCount(timestamp)` はカットオフちょうどのジョブを除外する。引数なしは未来にスケジュールされたものを含むすべての delayed ジョブを数え、すでに waiting / active へ昇格したジョブは含まれない（release: https://github.com/taskforcesh/bullmq/releases/tag/v6.7.0）
-- `getWaiting()` は waiting ステータスのジョブのみ取得する。delayed のジョブを調べるには `getJobs(['delayed'], start, end)` を使う
-- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/jobs/getters.md (tag v6.7.6、取得日 2026-11-14)
+- `getDelayedCount(timestamp)` excludes jobs scheduled exactly at the cutoff. Calling it without an argument still counts all delayed jobs, including those scheduled for the future; jobs already promoted to waiting or active are not included (feature added in v6.7.0, https://github.com/taskforcesh/bullmq/releases/tag/v6.7.0).
+- `getWaiting()` only retrieves jobs in waiting status. To inspect jobs that are still delayed, use `getJobs(['delayed'], start, end)`.
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/jobs/getters.md (tag v6.7.6, fetched 2026-11-14).
 - `getJobCounts` は複数のステータスを同時に指定できる
 - `getJobs` はページネーションに対応しており、大量のジョブがある場合でも効率的に取得可能
 - Repeatable Job の設定情報は `getJobs()` には表示されない。`getRepeatableJobs()` を使用すること
 
-### Delayed ジョブ数のタイムスタンプ指定（v6.7.0+、TypeScript）
+### Count overdue delayed jobs (v6.7.0+, TypeScript)
 
-`getDelayedCount` に Unix タイムスタンプ（ミリ秒）を渡すと、そのカットオフより厳密に前にスケジュールされた delayed ジョブだけを数える。
+Pass a Unix timestamp in milliseconds to `getDelayedCount` to count delayed jobs scheduled strictly before that time:
 
 ```typescript
 const overdue = await myQueue.getDelayedCount(Date.now());
 const allDelayed = await myQueue.getDelayedCount();
 ```
 
-### Waiting と delayed の滞留
+### Waiting jobs and delayed backlogs
 
-`getWaiting()` / `getWaitingCount()` は、スケジュール時刻を過ぎていても delayed ステータスのままのジョブを含まない。Worker の処理が追いつかないと期限超過の delayed ジョブが大量に溜まり得るため、waiting 件数が少なくても残作業が少ないとは限らない。TypeScript では両方を監視する。
+`getWaiting()` and `getWaitingCount()` do not include jobs that are still in delayed status, even when their scheduled time has passed. If workers cannot process jobs fast enough, a large backlog of overdue delayed jobs can accumulate, so a small waiting count does not necessarily mean there is little work left. In TypeScript, monitor both the waiting count and the overdue delayed count:
 
 ```typescript
 const waiting = await myQueue.getWaitingCount();

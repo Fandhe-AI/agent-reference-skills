@@ -1,6 +1,6 @@
 # BullMQ — Relay: Getting started
 
-`Relay` インスタンスの作成（Redis / PostgreSQL）、subscribe / publish、close、namespace、エラー処理。
+Creating a `Relay` (Redis and PostgreSQL), subscribing, publishing, closing, namespaces and error handling.
 
 ## Signature / Usage
 
@@ -106,3 +106,4 @@ relay.on('error', err => logger.error(err, 'relay error'));
 - [messages.md](./messages.md)
 - [reference.md](./reference.md)
 - [../postgresql-backend/postgresql-backend.md](../postgresql-backend/postgresql-backend.md)
+- [Relay: getting started (official, v6.7.6)](https://docs.bullmq.io/guide/relay/getting-started)

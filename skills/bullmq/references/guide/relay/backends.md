@@ -1,6 +1,6 @@
 # BullMQ — Relay: Backends (Redis and PostgreSQL)
 
-Relay の Redis / PostgreSQL バックエンド（キー構造・テーブル・Redis Cluster・クリーンアップ・接続）とカスタムバックエンド（`IRelayBackend`）。
+The Redis and PostgreSQL backends of the Relay (keys, tables, Redis Cluster, cleanup, connections) and custom backends (`IRelayBackend`).
 
 ## Signature / Usage
 
@@ -91,3 +91,4 @@ PostgreSQL tables:
 - [nodes-and-failures.md](./nodes-and-failures.md)
 - [../postgresql-backend/postgresql-backend.md](../postgresql-backend/postgresql-backend.md)
 - [../redis-compatibility/redis-compatibility.md](../redis-compatibility/redis-compatibility.md)
+- [Relay: backends (official, v6.7.6)](https://docs.bullmq.io/guide/relay/backends)

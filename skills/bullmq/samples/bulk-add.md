@@ -1,6 +1,6 @@
 # Bulk Add
 
-複数ジョブを一括追加し、バックエンドへのラウンドトリップを削減する。`queue.addBulk()` の原子性は SDK とバックエンドに依存する（Notes 参照）。
+Add many jobs in one call to reduce roundtrips to the backend. Whether `queue.addBulk()` is atomic depends on the SDK and backend (see Notes).
 
 ```typescript
 import { FlowProducer, Queue } from 'bullmq';
@@ -13,7 +13,7 @@ await queue.addBulk([
   { name: 'job3', data: { color: 'green' }, opts: { priority: 1 } },
 ]);
 
-// 複数キューへの一括追加 (FlowProducer.addBulk)
+// Bulk add across several queues (FlowProducer.addBulk)
 const flow = new FlowProducer({ connection });
 const trees = await flow.addBulk([
   {
@@ -32,8 +32,8 @@ const trees = await flow.addBulk([
 ## Notes
 
 - `queue.addBulk()` は単一キュー専用
-- 複数キューへの一括追加には `FlowProducer.addBulk()` を使用する
+- Use `FlowProducer.addBulk()` for adding jobs to several queues in one call
 - `FlowProducer.addBulk()` は全件追加か 0 件かのどちらかで、部分的な追加は発生しない
-- 一括追加によりバックエンドへのラウンドトリップを削減しパフォーマンスが向上する
-- `queue.addBulk()` の原子性: PostgreSQL では TypeScript / Python / .NET が 1 バッチを単一トランザクションで追加する。Redis では失敗したバルク呼び出しが 0 件追加であるとは仮定できず、一部のジョブだけ追加されている可能性があるため、再試行前にキューを確認する（v6.7.6 公式ページ、reference は `references/guide/queues/adding-bulks.md`）。以前この例は「アトミック」と記載していた
+- Bulk adding reduces roundtrips to the backend and improves throughput
+- Atomicity of `queue.addBulk()`: on PostgreSQL the TypeScript, Python and .NET SDKs add a batch in a single transaction; on Redis a failed bulk call must not be assumed to have added no jobs, so check the queue before retrying (v6.7.6 official page; details in `references/guide/queues/adding-bulks.md`). This sample previously described the call as atomic. The `FlowProducer.addBulk()` note in the official flows page still says all or none of the flows are added.
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/queues/adding-bulks.md、guide/flows/adding-bulks.md (tag v6.7.6)

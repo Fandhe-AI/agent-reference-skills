@@ -34,7 +34,7 @@ npm install redis
 
 BullMQ の node-redis adapter を使う場合に必要。BullMQ は peer dependency として `redis >= 5.0.0`（v5 以降）を宣言している。
 
-## yarn / pnpm / Bun によるインストール
+## Installing with yarn / pnpm / Bun
 
 ```sh
 yarn add bullmq
@@ -48,15 +48,17 @@ pnpm add bullmq
 bun add bullmq
 ```
 
-公式 quick-start（v6.7.6）に記載のインストールコマンド。Bun は Bun の組み込み Redis クライアント経由でも利用できる。
+Install commands from the official quick-start (v6.7.6). Bun can also be used through Bun's built-in Redis client.
 
-## ローカル開発用 Redis の起動（Docker）
+## Starting a local development Redis (Docker)
+
+Adapted (not in the official docs): the official quick-start publishes `-p 6379:6379` on all interfaces; here the port is bound to loopback only.
 
 ```sh
-docker run -d --name redis -p 6379:6379 redis:latest
+docker run -d --name redis -p 127.0.0.1:6379:6379 redis:latest
 ```
 
-公式 quick-start の記載。ローカル開発用の使い捨て Redis を前提とし、本番の永続化・`maxmemory-policy=noeviction` 設定は `references/guide/going-to-production.md` を参照。
+From the official quick-start, adapted for local development (disposable Redis, loopback only, no authentication). For production persistence and the `maxmemory-policy=noeviction` setting see `references/guide/going-to-production.md`.
 
 ## Python (pip) によるインストール
 
@@ -64,25 +66,25 @@ docker run -d --name redis -p 6379:6379 redis:latest
 pip install bullmq
 ```
 
-PostgreSQL backend を使う場合は `postgres` extra（psycopg ドライバー）を付ける（v6.7.6 の Python introduction）:
+To use the PostgreSQL backend, add the `postgres` extra (psycopg driver) (v6.7.6 Python introduction):
 
 ```sh
 pip install "bullmq[postgres]"
 ```
 
-## .NET (NuGet) によるインストール
+## Installing .NET (NuGet)
 
 ```sh
 dotnet add package BullMQ
 ```
 
-## Rust (Cargo) によるインストール
+## Installing Rust (Cargo)
 
 ```sh
 cargo add bullmq-official --rename bullmq
 ```
 
-クレート名は `bullmq-official`、コード内では `bullmq` として import する（`bullmq` 等の crates.io 名は無関係の第三者クレート）。
+The crate is published as `bullmq-official` and imported in code as `bullmq` (the `bullmq` name on crates.io belongs to an unrelated third-party crate).
 
 ## BullMQ Pro のインストール（npm）
 

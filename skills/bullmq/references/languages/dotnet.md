@@ -136,7 +136,7 @@ Read more about how this backend works in the PostgreSQL backend category of thi
 
 Queues created with the .NET package are fully interoperable with the other BullMQ SDKs (Node.js, Python, Elixir, Rust and PHP) as long as they use the same backend and prefix (Redis) or schema (PostgreSQL).
 
-For more details, see the [.NET README](https://github.com/taskforcesh/bullmq/tree/master/dotnet) on GitHub.
+For more details, see the [.NET README](https://github.com/taskforcesh/bullmq/tree/v6.7.6/dotnet) on GitHub.
 
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/dotnet/introduction.md (tag v6.7.6, fetched 2026-11-14). Official page: https://docs.bullmq.io/dotnet/introduction. The page first appears in the docs between v6.3.15 and v6.7.6; the .NET SDK package is NuGet `BullMQ`.
 - Requires .NET 8.0 or newer and Redis 6.2+ (or a compatible server such as Valkey or Dragonfly) or PostgreSQL 13+.
@@ -146,3 +146,4 @@ For more details, see the [.NET README](https://github.com/taskforcesh/bullmq/tr
 - [Introduction](../guide/introduction.md)
 - [Guide](../guide/README.md)
 - [PostgreSQL backend](../guide/postgresql-backend/postgresql-backend.md)
+- [.NET introduction (official, v6.7.6)](https://docs.bullmq.io/dotnet/introduction)

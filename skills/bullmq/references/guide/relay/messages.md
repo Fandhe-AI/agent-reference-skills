@@ -1,6 +1,6 @@
 # BullMQ — Relay: Publishing and subscribing
 
-ペイロード、配信対象、順序、配信保証、リスナーの扱い、遅いサブスクライバー（`inboxMaxLength` / `'lag'`）、unsubscribe。
+Payloads, who receives a message, ordering, delivery guarantees, listeners, slow subscribers (`inboxMaxLength` / `'lag'`) and unsubscribing.
 
 ## Signature / Usage
 
@@ -65,3 +65,4 @@ await subscription.unsubscribe();
 - [retained-messages.md](./retained-messages.md)
 - [nodes-and-failures.md](./nodes-and-failures.md)
 - [reference.md](./reference.md)
+- [Relay: messages (official, v6.7.6)](https://docs.bullmq.io/guide/relay/messages)

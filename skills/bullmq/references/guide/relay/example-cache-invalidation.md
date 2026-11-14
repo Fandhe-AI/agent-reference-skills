@@ -1,6 +1,6 @@
 # BullMQ — Relay example: Cache invalidation
 
-各インスタンスのインメモリキャッシュを、更新時に publish したトピックで一斉に無効化する例。
+Every service instance subscribes to invalidation topics; the code that updates an entry publishes on its topic so every instance drops it from its in-memory cache.
 
 ## Signature / Usage
 
@@ -65,3 +65,4 @@ export async function updateUser(id: string, changes: Partial<User>) {
 - [overview.md](./overview.md)
 - [retained-messages.md](./retained-messages.md)
 - [topics-and-patterns.md](./topics-and-patterns.md)
+- [Example: cache invalidation (official, v6.7.6)](https://docs.bullmq.io/guide/relay/examples/cache-invalidation)
