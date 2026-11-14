@@ -26,6 +26,7 @@ e.Use(middleware.BodyLimitWithConfig(middleware.BodyLimitConfig{
 
 - Enforcement checks both the `Content-Length` header and actual streamed content, preventing bypass via spoofed headers.
 - Commonly used to prevent resource exhaustion from oversized uploads.
+- Since v5.4.1, the overflow check is corrected (included in the BodyLimit overflow-check fix merged after v5.4.0). Source: https://github.com/labstack/echo/releases/tag/v5.4.1 (fetched 2026-11-14).
 
 ## Related
 

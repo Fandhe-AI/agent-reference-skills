@@ -37,6 +37,8 @@ e.Use(middleware.Proxy(middleware.NewRoundRobinBalancer([]*middleware.ProxyTarge
 - `Rewrite`/`RegexRewrite` can be combined for path transformation before forwarding.
 - Since v5.4.0 (v4.16.0), Proxy sets `X-Forwarded-Proto` from `Context#Scheme()` and removes `X-Forwarded-Ssl`, `X-Forwarded-Protocol`, and `X-Url-Scheme` before forwarding. In v5, Proxy also sets `X-Real-IP` from `Context#RealIP()` rather than forwarding a client-supplied value.
 - For a chain such as nginx -> Echo Proxy -> upstream, configure `Echo#SchemeExtractor` for the trusted proxy chain (see Request Scheme and Trusted Proxies) and `Echo#IPExtractor` for the trusted incoming IP header (see IP Address Resolution).
+- Since v5.4.1, Proxy removes incoming `Forwarded` headers (use the headers generated from the configured IP extractor and scheme instead), and WebSocket requests honor the configured proxy transport, response modifier, target path and query like HTTP requests; upstream WebSocket upgrade responses are validated, and both connections are closed when either side disconnects. Source: https://github.com/labstack/echo/releases/tag/v5.4.1 (fetched 2026-11-14).
+- Since v5.4.4, the derived `X-Real-IP` header is retained when the incoming request includes `Connection: X-Real-IP` (mixed-case and duplicate values included), across retries and balancer request replacement, and on WebSocket upgrades. Source: https://github.com/labstack/echo/releases/tag/v5.4.4 (fetched 2026-11-14).
 
 ## Related
 

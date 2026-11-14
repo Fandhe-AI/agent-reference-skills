@@ -39,6 +39,7 @@ e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 - Security in v5.4.0: files are resolved from the same form of the path that the router matched. File names requested with non-default escaping (such as `%2C`, `%40`, or lowercase hex) need `EnablePathUnescaping`. Paths containing `.`, `..`, or empty segments (for example `/assets//app.js`) return 404, but HTML5 mode still serves the index. Enabling path unescaping decodes encoded slashes too, so do not combine it with route-based access control for subdirectories.
 - In v5.4.0, HTML5 mode serves the index for a router-level 404. A matched route's own 404 passes through.
 - Caution: `e.Use(middleware.Static(...))` runs before route and group middleware, so route guards do not protect the files it serves. Keep protected files outside its root, or serve them with `Echo#Static` behind the guard.
+- Since v5.4.3, a static route-guard bypass involving encoded empty path segments (non-default path-matching or unescaping configurations) is fixed: raw and decoded request paths and wildcard boundaries are validated, and correctly escaped filenames and static prefixes such as `/assets*` are preserved (GHSA-v97q-3xf5-rj74). Source: https://github.com/labstack/echo/releases/tag/v5.4.3 (fetched 2026-11-14).
 
 ## Related
 

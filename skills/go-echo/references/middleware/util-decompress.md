@@ -27,6 +27,7 @@ e.Use(middleware.DecompressWithConfig(middleware.DecompressConfig{
 
 - Decompressed bodies are held in memory until garbage collection.
 - Set `MaxDecompressedSize` to `-1` to disable the limit (not recommended).
+- Since v5.4.1, a decompressed body exactly at the configured limit is accepted; overflow errors stay sticky. Source: https://github.com/labstack/echo/releases/tag/v5.4.1 (fetched 2026-11-14).
 
 ## Related
 

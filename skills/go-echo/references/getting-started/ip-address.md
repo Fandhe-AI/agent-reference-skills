@@ -35,6 +35,8 @@ e.IPExtractor = echo.ExtractIPFromRealIPHeader()
 - The request scheme (HTTP/HTTPS) has a separate trust setting (`Echo#SchemeExtractor`). See [Request Scheme and Trusted Proxies](./request-scheme.md) when configuring a reverse proxy, HTTPS redirect, or HSTS.
 - Always configure the outermost proxy at the edge of the infrastructure to strip any client-supplied `X-Forwarded-For` / `X-Real-IP` headers before they reach Echo; otherwise a client can forge its IP by sending these headers directly.
 - By default, internal address ranges defined in RFC 6890, RFC 4291, and RFC 4193 are trusted when scanning XFF/`X-Real-IP`.
+- Since v5.4.1, `ExtractIPFromRealIPHeader` validates the sending peer against the trust options before accepting `X-Real-IP`; an untrusted peer yields the direct peer address (GHSA-h53f-rm2w-w7rg). In v5.4.4 the Proxy middleware keeps its derived `X-Real-IP` even when the incoming request sends `Connection: X-Real-IP`. Source: https://github.com/labstack/echo/releases/tag/v5.4.1 and https://github.com/labstack/echo/releases/tag/v5.4.4 (fetched 2026-11-14).
+- Behavior change in v5.4.5: `Context#RealIP()` and `ExtractIPDirect()` return a zoned link-local peer without its zone (`fe80::1`, not `fe80::1%eth0`); update logs, allowlists or rate-limit keys that store the zoned form. `ExtractIPFromXFFHeader` and `ExtractIPFromRealIPHeader` trust zoned link-local proxy peers such as `[fe80::1%eth0]:8080`, with or without a port. Source: https://github.com/labstack/echo/releases/tag/v5.4.5 (fetched 2026-11-14); `ip.go` at tag v5.4.5 (`stripIPv6Zone`).
 
 ## Related
 
