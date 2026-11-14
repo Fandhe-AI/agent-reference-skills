@@ -64,7 +64,7 @@ box exec --box my-box -- 'tail -n 50 /workspace/home/app.log'
 
 ```typescript
 const box = await Box.get("my-box", { apiKey: process.env.READ_ONLY_BOX_KEY })
-const { stdout } = await box.exec.command("tail -n 50 /workspace/home/app.log")
+const { result } = await box.exec.command("tail -n 50 /workspace/home/app.log")
 ```
 
 ## Related

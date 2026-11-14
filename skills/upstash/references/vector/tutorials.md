@@ -6,7 +6,7 @@ Official end-to-end tutorials for Upstash Vector (Python): semantic search, Lang
 
 Simple semantic search with Upstash-hosted embeddings:
 
-Adapted (not in the official docs): the official snippet passes the raw text as the second tuple element (the vector slot); it is registered with `Data(id=..., data=..., metadata=...)` instead, the input type for indexes with an embedding model (see embedding-models.md).
+Adapted (not in the official docs): the official snippet passes the raw text as the second tuple element (the vector slot); it is registered with `Data(id=..., data=..., metadata=...)` instead, the input type for indexes with an embedding model (see embedding-models.md). The official `index.reset()` call is dropped, because it erases all data in the default namespace of the index named in `.env`; the documents are upserted into and queried from a tutorial-only namespace instead.
 
 ```python
 from upstash_vector import Index
@@ -29,15 +29,16 @@ documents = [
     {"id": "5", "text": "Cloud computing allows for scalable and flexible resource management."}
 ]
 
-# Reset the index to remove previous data
-index.reset()
+# Tutorial-only namespace, so data already in the index is never touched
+NAMESPACE = "tutorial-semantic-search"
 
 # Upsert documents into Upstash (embeddings are generated automatically)
 for doc in documents:
     index.upsert(
         vectors=[
             Data(id=doc["id"], data=doc["text"], metadata={"text": doc["text"]})
-        ]
+        ],
+        namespace=NAMESPACE,
     )
     print(f"Document {doc['id']} inserted.")
 
@@ -46,7 +47,7 @@ time.sleep(1)
 
 # Search for documents similar to the query
 query = "What is Python?"
-results = index.query(data=query, top_k=3, include_metadata=True)
+results = index.query(data=query, top_k=3, include_metadata=True, namespace=NAMESPACE)
 
 # Display search results
 print("Search Results:")
@@ -61,7 +62,7 @@ for result in results:
 
 | Tutorial | Install | Notes |
 | --- | --- | --- |
-| Simple Semantic Search | `pip install upstash-vector python-dotenv` | Index with an embedding model; `index.reset()` then `upsert` and `query(data=...)` |
+| Simple Semantic Search | `pip install upstash-vector python-dotenv` | Index with an embedding model; `upsert` and `query(data=...)` in a tutorial-only namespace |
 | Semantic Search with LangChain | `pip install upstash-vector python-dotenv langchain langchain-community` | Uploads a global warming document and runs a similarity search |
 | Hugging Face Embeddings | `pip install langchain sentence_transformers upstash-vector python-dotenv langchain-community langchain-huggingface` | Local embeddings; use Python 3.9 to avoid `torch` compatibility issues |
 | RAG with LlamaIndex | `pip install llama-index upstash-vector llama-index-vector-stores-upstash python-dotenv` | Index dimensions 1536, cosine; needs `OPENAI_API_KEY` |
@@ -70,6 +71,7 @@ for result in results:
 
 ## Notes
 
+- Adapted from the official docs: the official "Simple Semantic Search" calls `index.reset()` before upserting, which irreversibly deletes the default namespace of the index configured in `.env`; the adapted example uses a dedicated `NAMESPACE` for `upsert` and `query` and never resets
 - Adapted from the official docs: the "Simple Semantic Search" upsert uses `upstash_vector.types.Data` instead of a `(id, text, metadata)` tuple, because the vector slot of a tuple takes numeric vectors (`Data` signature checked against the `upstash/vector-py` source on 2026-11-14)
 - Each tutorial reads `UPSTASH_VECTOR_REST_URL` and `UPSTASH_VECTOR_REST_TOKEN` from a `.env` file
 - Vector is eventually consistent, hence the short wait before querying in the sample
