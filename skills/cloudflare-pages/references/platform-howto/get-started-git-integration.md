@@ -32,6 +32,8 @@ npm create cloudflare@latest -- --platform=pages
 
 - Cloudflare's Pages landing page says "Start new projects with Workers" (Workers + static assets supports most Pages use cases); see the cloudflare-workers skill (static-assets/migrate-from-pages).
 - A Git-integrated project cannot be switched to Direct Upload later, but automatic deployments can be disabled and Wrangler used.
+- The GitHub repository list only includes repositories that your GitHub user can access (see the GitHub integration page, repository access).
+- Source: https://developers.cloudflare.com/pages/get-started/git-integration/ (fetched 2026-11-14, cloudflare-docs 34d908a)
 - GitLab sign-in grants Pages access to all repositories on your account and other members of a multi-user Cloudflare account can deploy them; the **Maintainer** role or higher is required. Public and private repositories are supported.
 - DNS errors on the first visit may be propagation delay; wait or try another device or network.
 - Delete a project in **Settings** > **Delete project**. With a custom domain, delete the CNAME record first, otherwise DNS keeps pointing at a project that no longer exists.

@@ -15,8 +15,8 @@ user-invocable: false
 
 ## 対象バージョン
 
-- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `d0995b91312add6db730afec4f4944cee834abc6` と取得日 2026-11-03 で pin
-- 参考: wrangler 4.156.2 系（`wrangler pages` コマンドの確認バージョン）
+- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `34d908abc615fdf22eeb386b171b9657b9abcf38`（34d908a）と取得日 2026-11-14 で pin（旧 pin d0995b9 / 2026-11-03 から Pages 配下 8 ページと 1 partial の文言差分を反映）
+- 参考: wrangler 4.156.2 系（`wrangler pages` コマンドの確認バージョン。npm latest は 4.162.0 だが `pages` コマンドの差分は未追従）
 
 ## 他スキルとの使い分け
 
