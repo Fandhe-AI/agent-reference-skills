@@ -1,4 +1,4 @@
-# Azure Trusted Signing (Azure Artifact Signing)
+# Azure Artifact Signing (formerly Azure Trusted Signing)
 
 Microsoft's managed code signing service — renamed **Azure Artifact Signing**, formerly **Azure Trusted Signing** — is the recommended option for signing MSIX packages distributed outside the Microsoft Store. Reputation accumulates against your verified publisher identity rather than a single certificate, certificates are short-lived (issued daily, valid ~3 days), and it integrates directly with SignTool and CI/CD pipelines without a hardware token.
 

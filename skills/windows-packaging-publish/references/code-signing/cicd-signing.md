@@ -69,6 +69,6 @@ msbuild MyApp.wapproj /p:Configuration=Release /p:Platform=x64 ^
 ## Related
 
 - [Sign Your MSIX Package: End-to-End Guide](./msix-signing-guide.md)
-- [Azure Trusted Signing](./azure-trusted-signing.md)
+- [Azure Artifact Signing (formerly Azure Trusted Signing)](./azure-trusted-signing.md)
 - [SignTool Sign Command](./signtool-sign.md)
 - [SignTool Timestamp Options](./signtool-timestamp.md)

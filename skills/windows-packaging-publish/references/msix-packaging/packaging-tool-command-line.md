@@ -89,7 +89,7 @@ Template parameters:
 - The source sample declares `xmlns:V2`-`V5` (uppercase) but uses `v2:` / `v5:` attributes; prefixes are case-sensitive, so they are aligned to lowercase here.
 
 - Generate a template from the tool: in Settings enable "Generate a command line file with each package", then run the Application Package workflow with an installer (an `.exe` needs a silent flag). The template is saved beside the MSIX unless a separate location is set on the Create package page.
-- Device Guard Signing Service v2 became unavailable with the retirement of Microsoft Store for Business/Education (March 31, 2023). For current signing use Azure Artifact Signing (Azure Trusted Signing) or a certificate (.pfx); see the code-signing device-guard-signing page.
+- Device Guard Signing Service v2 became unavailable with the retirement of Microsoft Store for Business/Education (March 31, 2023). For current signing use Azure Artifact Signing (formerly Azure Trusted Signing) or a certificate (.pfx); see the code-signing device-guard-signing page.
 - App-V 5.x conversion is supported through the command line, including capabilities.
 - `Application::Id` is the package-relative app identifier: alphanumeric fields separated by periods, each starting with an ASCII letter; reserved names such as `CON`, `PRN`, `AUX`, `NUL`, `COM1`-`COM9`, `LPT1`-`LPT9` are not allowed as field values.
 - Sample PowerShell and Bash scripts for packaging, signing, managing and distributing MSIX are in the `Scripts` folder of the MSIX Toolkit (GitHub).

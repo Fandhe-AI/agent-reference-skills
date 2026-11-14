@@ -5,7 +5,7 @@ description: >
   MSIX, AppxManifest, MakeAppx, MSIX Packaging Tool, App Attach,
   PSF (Package Support Framework), Package Identity, スパースパッケージ,
   App Installer, サイドローディング, Windows App SDK Bootstrapper,
-  SignTool, Azure Trusted Signing, CI/CD 署名, msstore CLI,
+  SignTool, Azure Artifact Signing (旧 Azure Trusted Signing), CI/CD 署名, msstore CLI,
   Partner Center, アプリ送信,
   段階的ロールアウト, StoreContext。
 user-invocable: false
@@ -17,7 +17,7 @@ Windows アプリを MSIX 化して配布・デプロイし、Microsoft Store �
 パッケージ作成、パッケージ ID、配置アーキテクチャ、コード署名、ストア送信・審査・分析までを網羅する。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-出典: learn.microsoft.com (en-us)、取得日 2026-10-16（/windows/msix は MicrosoftDocs/msix-docs e07277d、/windows/apps はレンダリング版）。
+出典: learn.microsoft.com (en-us)、取得日 2026-11-14（/windows/msix は MicrosoftDocs/msix-docs 01b8c55（2026-11-09）、/windows/apps はレンダリング版・ms.date 比較で取得日 2026-10-16 から変更なし）。
 
 ## ディレクトリ構成
 
@@ -249,7 +249,7 @@ skills/windows-packaging-publish/
 | パッケージの改ざん検知（Tamper Protection）・パッケージフォールディング・共有パッケージコンテナを理解したい | deployment | [references/deployment/README.md](references/deployment/README.md) |
 | SignTool でパッケージに署名・タイムスタンプ・検証したい | code-signing | [references/code-signing/README.md](references/code-signing/README.md) |
 | MSIX 署名の手順・要件（ガイド）を知りたい | code-signing | [references/code-signing/README.md](references/code-signing/README.md) |
-| 証明書の種類（自己署名 / OV / EV / Azure Trusted Signing）を選定したい | code-signing | [references/code-signing/README.md](references/code-signing/README.md) |
+| 証明書の種類（自己署名 / OV / EV / Azure Artifact Signing（旧 Trusted Signing））を選定したい | code-signing | [references/code-signing/README.md](references/code-signing/README.md) |
 | CI/CD パイプラインで自動署名を組み込みたい | code-signing | [references/code-signing/README.md](references/code-signing/README.md) |
 | SmartScreen の評判メカニズムを理解したい | code-signing | [references/code-signing/README.md](references/code-signing/README.md) |
 | Partner Center でアプリを送信・審査に出したい | store-publish | [references/store-publish/README.md](references/store-publish/README.md) |

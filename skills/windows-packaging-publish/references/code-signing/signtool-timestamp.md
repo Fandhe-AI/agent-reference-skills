@@ -42,5 +42,5 @@ signtool timestamp /tr http://timestamp.digicert.com /td SHA256 package.msix
 ## Related
 
 - [SignTool Sign Command](./signtool-sign.md)
-- [Azure Trusted Signing](./azure-trusted-signing.md)
+- [Azure Artifact Signing (formerly Azure Trusted Signing)](./azure-trusted-signing.md)
 - [MSIX Signing Requirements](./msix-signing-requirements.md)
