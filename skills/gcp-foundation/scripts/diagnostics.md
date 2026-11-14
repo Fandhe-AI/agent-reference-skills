@@ -26,12 +26,12 @@ gcloud asset get-effective-iam-policy \
 
 ### Review IAM policy changes
 
-Audit log entries for `SetIamPolicy`:
+Audit log entries for `SetIamPolicy`. Adapted (not in the official docs): `methodName:SetIamPolicy` is a substring match so qualified method names are included.
 
 ```bash
 gcloud logging read \
     'logName:RESOURCE_TYPE/RESOURCE_ID/logs/cloudaudit.googleapis.com%2Factivity
-    AND protoPayload.methodName=SetIamPolicy' \
+    AND protoPayload.methodName:SetIamPolicy' \
     --freshness=TIME_PERIOD \
     --RESOURCE_TYPE_SINGULAR=RESOURCE_ID
 ```
