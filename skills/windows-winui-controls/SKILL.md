@@ -6,7 +6,7 @@ description: >
   TextBox, AutoSuggestBox, NumberBox, ListView, GridView,
   ItemsRepeater, TreeView, ComboBox, NavigationView, TabView, SplitView,
   ContentDialog, Flyout, CommandBar, TeachingTip, InfoBar,
-  WebView2, CalendarView, DatePicker, TitleBar。
+  WebView2, CalendarView, DatePicker, TitleBar, TableView (experimental)。
 user-invocable: false
 ---
 
@@ -69,6 +69,7 @@ skills/windows-winui-controls/
       semantic-zoom.md
       item-container.md
       scroll-view.md
+      table-view.md
     navigation-controls/
       README.md
       navigationview.md
@@ -145,6 +146,7 @@ skills/windows-winui-controls/
 | ListView / GridView / ComboBox / ListBox で選択可能な一覧を実装したい | collections | [references/collections/README.md](references/collections/README.md) |
 | ItemsView / ItemsRepeater でカスタムレイアウトの仮想化コレクションを構築したい | collections | [references/collections/README.md](references/collections/README.md) |
 | TreeView / FlipView / SelectorBar / ScrollView で階層表示・スワイプ・スクロールを実装したい | collections | [references/collections/README.md](references/collections/README.md) |
+| TableView (experimental) で行列表形式のデータ表示・ソート・フィルター・グループ化・セル編集を実装したい | collections | [references/collections/README.md](references/collections/README.md) |
 | NavigationView / TabView / Pivot でアプリのトップレベルナビゲーションを実装したい | navigation-controls | [references/navigation-controls/README.md](references/navigation-controls/README.md) |
 | Frame / SplitView / BreadcrumbBar でページ遷移・パンくず・折りたたみペインを実装したい | navigation-controls | [references/navigation-controls/README.md](references/navigation-controls/README.md) |
 | MenuBar / PipsPager でメニューバー・ページネーションを実装したい | navigation-controls | [references/navigation-controls/README.md](references/navigation-controls/README.md) |
@@ -159,5 +161,10 @@ skills/windows-winui-controls/
 | Expander / AnimatedIcon / SwipeControl / RefreshContainer / TitleBar でその他の UI 挙動を実装したい | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
 | TitleBar のドラッグ領域 (TitleBar.IsDragRegion / RecomputeDragRegions) を調整したい | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
 | InkCanvas / InkToolbar でペン入力を実装したい (experimental チャネル限定) | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
+
+## 対象バージョン
+
+- 公式 index (learn.microsoft.com en-us, 取得日 2026-11-14) に追従。Windows App SDK Stable は 2.6.5。
+- Experimental 限定コントロールは `InkCanvas` / `InkToolbar` と `TableView` (2.5.4-experimental 以降) のみ収録。公式 index に載る `Chart` (`Microsoft.UI.Xaml.Controls.Charts`) は API リファレンスのみでガイドページが無い (404) ため未収録。
 
 このスキルは WinUI 3 / Windows App SDK 固有のコントロール API のみを扱う。同名の Button / TextBox / NavigationView 等は apple-swiftui, ark-ui, chakra-ui, fandhe-frontend, android-compose-components とは無関係の別 API であり、Windows レイアウト・ウィンドウ管理・データバインディングなど他の windows-* スキルが存在する場合はそちらが担当する。

@@ -15,4 +15,5 @@
 | ScrollView | Provides scroll, pan, and zoom support for a single content element. The modern counterpart to `ScrollViewer`, built on `InteractionTracker` with animation-driven view changes, designed for full compatibility with `ItemsRepeater`. | [scroll-view.md](./scroll-view.md) |
 | SemanticZoom | A control that lets users pinch-zoom between two synchronized views of the same data — a detailed `ZoomedInView` and a higher-level `ZoomedOutView` (e.g. group headers). | [semantic-zoom.md](./semantic-zoom.md) |
 | SelectorBar | A lightweight bar that lets a user switch between a small, fixed number of sets/views of data (icon + text items), with exactly one item selected at a time. | [selector-bar.md](./selector-bar.md) |
+| TableView | Experimental (Windows App SDK 2.5.4-experimental and later) control that displays items in sortable, filterable, groupable rows and columns with resizable and freezable columns and opt-in cell editing. | [table-view.md](./table-view.md) |
 | TreeView | Displays a hierarchical list with expanding/collapsing nodes, using indentation and chevron icons to show parent/child relationships. | [tree-view.md](./tree-view.md) |
