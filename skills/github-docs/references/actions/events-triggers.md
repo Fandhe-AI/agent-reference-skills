@@ -288,10 +288,10 @@ PR イベント（ベースブランチのコンテキストで実行）。
 
 #### Notes (default block, 2026-12-02)
 
-- 2026-12-02 から、GitHub Actions は public リポジトリの `pull_request_target` イベントを既定でブロックする（適用される Actions event policy が明示的に許可している場合を除く。private / internal リポジトリは対象外。GitHub Free / Team / Enterprise Cloud が対象で Enterprise Server は対象外）。当初の enforcement 予定は 2026-11-02 だった
-- 2026-12-02 までは evaluate mode（警告付きで実行）。ブラウンアウト（ブロックされ失敗 run になる）は 2026-11-09 と 2026-11-16 の 16:00-18:00 UTC
-- 対応: Insights で影響する run を確認し、ブロックを受け入れるか、依存するワークフローを event policy（workflow file targeting 可）で明示許可する
-- Source: https://github.blog/changelog/2026-11-02-pull_request_target-blocked-by-default-december-2 （取得日 2026-11-14）
+- Starting December 2, 2026, GitHub Actions blocks `pull_request_target` events by default in all public repositories, unless an applicable Actions event policy explicitly allows them. Enforcement was previously scheduled for November 2, 2026. Private and internal repositories are not affected; the change applies to GitHub Free, Team and Enterprise Cloud, not Enterprise Server
+- Until then the default rule runs in evaluate mode (workflows run with warnings). Two brownouts temporarily enforce it (blocked runs fail with an error annotation): November 9, 2026 and November 16, 2026, 16:00-18:00 UTC
+- To prepare: use Insights to see which runs the rule would block, then either keep the block or explicitly allow `pull_request_target` in an applicable Actions event policy (workflow file targeting can limit this to specific workflows)
+- Source: https://github.blog/changelog/2026-11-02-pull_request_target-blocked-by-default-december-2 (fetched 2026-11-14)
 
 ### push
 

@@ -1,25 +1,23 @@
 # Copilot Code Review API
 
-Copilot code review のポリシー・runner 構成・設定を enterprise / organization / repository 単位で取得・更新するエンドポイント。
-
-公式ドキュメント: https://docs.github.com/en/rest/copilot/copilot-code-review
+Endpoints to read and update Copilot code review policy, runner configuration and settings at enterprise, organization and repository level.
 
 ## Signature / Usage
 
-| メソッド | パス | 説明 |
+| Method | Path | Description |
 |---|---|---|
-| GET | `/enterprises/{enterprise}/copilot/policies/code-review` | enterprise の code review ポリシー取得 |
-| PUT | `/enterprises/{enterprise}/copilot/policies/code-review` | enterprise の code review ポリシー設定 |
-| GET | `/orgs/{org}/copilot/policies/code-review` | organization のポリシー（configured / effective）取得 |
-| PUT | `/orgs/{org}/copilot/policies/code-review` | organization のポリシー設定 |
-| GET | `/orgs/{org}/copilot/code-review/runner` | organization の runner 構成取得 |
-| PUT | `/orgs/{org}/copilot/code-review/runner` | organization の runner 構成設定 |
-| GET | `/orgs/{org}/copilot/code-review/settings` | organization の設定（default review effort）取得 |
-| PATCH | `/orgs/{org}/copilot/code-review/settings` | organization の設定更新 |
-| GET | `/repos/{owner}/{repo}/copilot/code-review/settings` | repository の設定取得 |
-| PATCH | `/repos/{owner}/{repo}/copilot/code-review/settings` | repository の設定更新 |
+| GET | `/enterprises/{enterprise}/copilot/policies/code-review` | Get the enterprise policy |
+| PUT | `/enterprises/{enterprise}/copilot/policies/code-review` | Set the enterprise policy |
+| GET | `/orgs/{org}/copilot/policies/code-review` | Get the organization policy (configured and effective) |
+| PUT | `/orgs/{org}/copilot/policies/code-review` | Set the organization policy |
+| GET | `/orgs/{org}/copilot/code-review/runner` | Get the organization runner configuration |
+| PUT | `/orgs/{org}/copilot/code-review/runner` | Set the organization runner configuration |
+| GET | `/orgs/{org}/copilot/code-review/settings` | Get organization settings (default review effort) |
+| PATCH | `/orgs/{org}/copilot/code-review/settings` | Update organization settings |
+| GET | `/repos/{owner}/{repo}/copilot/code-review/settings` | Get repository settings |
+| PATCH | `/repos/{owner}/{repo}/copilot/code-review/settings` | Update repository settings |
 
-`X-GitHub-Api-Version: 2026-03-10` を指定する（公式の curl 例はこのヘッダーを省略）。
+Send `X-GitHub-Api-Version: 2026-03-10` (the official curl examples omit this header).
 
 ```curl
 curl -L \
@@ -37,23 +35,23 @@ curl -L \
 
 ## Options / Props
 
-| エンドポイント | 主なボディ / レスポンス項目 |
+| Endpoint | Body / response fields |
 |---|---|
 | enterprise policy | `policy_state`: `enabled_for_all_organizations` / `disabled_for_all_organizations` / `configured_by_organization_admins` |
-| organization policy | PUT は `enabled` / `disabled`。GET は `configured_state`・`effective_state`・`managed_by`（`enterprise` / `organization`） |
-| organization runner | `runner_type`（`standard` / `labeled`）・`runner_labels`・`runner_group_name`・`allow_repository_customization`。GET は `configured_by`（`code_review` / `coding_agent`）も返す |
-| organization settings | `default_review_effort`（`inherit` で組織値をクリア）。GET は `available_review_efforts` も返す |
-| repository settings | `review_effort`（`inherit` で解除）・`severity_filter`（`no_filter` / `low` / `low_and_medium`）・`custom_instructions_enabled`・`mcp_enabled` |
+| organization policy | PUT body `enabled` / `disabled`. GET returns `configured_state`, `effective_state`, `managed_by` (`enterprise` / `organization`) |
+| organization runner | `runner_type` (`standard` / `labeled`), `runner_labels`, `runner_group_name`, `allow_repository_customization`; GET also returns `configured_by` (`code_review` / `coding_agent`) |
+| organization settings | `default_review_effort` (`inherit` clears the organization value); GET also returns `available_review_efforts` |
+| repository settings | `review_effort` (`inherit` clears it), `severity_filter` (`no_filter` / `low` / `low_and_medium`), `custom_instructions_enabled`, `mcp_enabled` |
 
 ## Notes
 
-- 認可: enterprise 系は enterprise owner または `read_enterprise_ai_controls` / `write_enterprise_ai_controls` 権限。OAuth app トークン・PAT (classic) は読み取り `read:enterprise`、書き込み `admin:enterprise`。GitHub App トークンと fine-grained PAT は非対応。organization 系は organization owner（`manage_billing:copilot` または `read:org` / `admin:org`）、repository 系は repository admin（`repo` スコープ）
-- organization runner を保存するまで、GET は Copilot coding agent の runner 構成から継承した値を `configured_by: coding_agent` で返す。PUT 成功後は `code_review` になる
-- `labeled` runner には `runner_labels` か `runner_group_name` が最低 1 つ必要。`standard` runner はラベル・runner group を受け付けない
-- repository settings は Copilot code review の有効化そのものは行わない。enterprise / organization のポリシーが無効でも保存できる
-- organization settings の PATCH は、組織側で変更不可の設定を送ると `409`（コード `SETTING_NOT_EDITABLE`）になる。リクエスト全体が検証されてから適用されるため、無効な入力では何も変わらない
-- Copilot cloud agent の設定は `coding-agent-management.md`、利用状況は `usage-metrics.md`
-- Source: https://docs.github.com/en/rest/copilot/copilot-code-review （Article Body API、取得日 2026-11-14）
+- Authorization: enterprise endpoints need an enterprise owner or the `read_enterprise_ai_controls` / `write_enterprise_ai_controls` permission; OAuth app tokens and classic PATs need `read:enterprise` (read) or `admin:enterprise` (write); GitHub App tokens and fine-grained PATs are not supported. Organization endpoints need an organization owner (`manage_billing:copilot`, or `read:org` / `admin:org`). Repository endpoints need a repository administrator (`repo` scope)
+- Until an organization saves a runner configuration, GET reports the values inherited from the Copilot coding agent runner configuration with `configured_by: coding_agent`; after a successful PUT it becomes `code_review`
+- A `labeled` runner requires at least one label in `runner_labels` or a `runner_group_name`; a `standard` runner accepts neither
+- Repository settings do not enable Copilot code review, and can be stored while an enterprise or organization policy disables it
+- Organization settings PATCH fails with `409` and code `SETTING_NOT_EDITABLE` when the organization cannot change a submitted setting. The whole request is validated before any change, so invalid input changes nothing
+- For cloud agent configuration see `coding-agent-management.md`; for usage reports see `usage-metrics.md`
+- Source: https://docs.github.com/en/rest/copilot/copilot-code-review (Article Body API, fetched 2026-11-14)
 
 ## Related
 

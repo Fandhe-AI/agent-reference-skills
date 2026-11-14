@@ -194,7 +194,7 @@ steps:
 
 - **`GITHUB_TOKEN` 以外のシークレット**はフォークからの PR のランナーに渡されない
 - **`GITHUB_TOKEN`** はフォーク PR でも利用可能だが、読み取り専用（制限付き権限）
-- `pull_request_target` イベントではデフォルトブランチのコンテキストで実行されるためシークレットにアクセスできるが、セキュリティリスクに注意。public リポジトリでは 2026-12-02 から既定でブロックされる（`events-triggers.md` 参照）
+- `pull_request_target` イベントではデフォルトブランチのコンテキストで実行されるためシークレットにアクセスできるが、セキュリティリスクに注意。Blocked by default in public repositories from 2026-12-02 (see `events-triggers.md`)
 
 ---
 

@@ -124,7 +124,7 @@ permissions: {}
 | イベント | 特記事項 |
 |---|---|
 | `pull_request` from fork | 読み取り専用（`contents: read` のみ） |
-| `pull_request_target` | デフォルトブランチの権限で実行（public リポジトリでは 2026-12-02 から既定ブロック。`events-triggers.md` 参照） |
+| `pull_request_target` | デフォルトブランチの権限で実行(blocked by default in public repositories from 2026-12-02; see `events-triggers.md`) |
 | `workflow_call` | 呼び出し元のパーミッション設定を継承（制限のみ可能） |
 
 ---

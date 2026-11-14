@@ -58,16 +58,16 @@
 
 - classic PAT は `security_events` スコープ（public リポジトリのみなら `public_repo` スコープでも可）が必要
 - SARIF アップロードは非同期処理。`GET /sarifs/{sarif_id}` でステータスをポーリングする
-- Source: https://docs.github.com/en/rest/code-scanning/code-scanning （Article Body API、取得日 2026-11-14）
+- Source: https://docs.github.com/en/rest/code-scanning/code-scanning (Article Body API, fetched 2026-11-14)
 
-### AI Scan（public preview）
+### AI Scan (public preview)
 
-| メソッド | パス | 説明 |
+| Method | Path | Description |
 |---|---|---|
-| GET | `/orgs/{org}/code-scanning/ai-scan` | organization の AI Scan 設定取得（`pr_scan` / `repository_scan`） |
-| PATCH | `/orgs/{org}/code-scanning/ai-scan` | organization の AI Scan 設定更新 |
-| GET | `/repos/{owner}/{repo}/code-scanning/ai-scan` | repository の AI Scan 有効状態取得 |
-| PATCH | `/repos/{owner}/{repo}/code-scanning/ai-scan` | repository の AI Scan 有効状態更新 |
+| GET | `/orgs/{org}/code-scanning/ai-scan` | Get the AI Scan setting for an organization (`pr_scan` / `repository_scan`) |
+| PATCH | `/orgs/{org}/code-scanning/ai-scan` | Update the AI Scan setting for an organization |
+| GET | `/repos/{owner}/{repo}/code-scanning/ai-scan` | Get AI Scan enablement for a repository |
+| PATCH | `/repos/{owner}/{repo}/code-scanning/ai-scan` | Update AI Scan enablement for a repository |
 
 ```curl
 curl -L \
@@ -79,10 +79,10 @@ curl -L \
 }'
 ```
 
-- `pr_scan` は pull request 向け、`repository_scan`（2026-11-13 追加）はリポジトリ全体スキャン向けで、値は `enabled` / `disabled`。organization が無効化するとリポジトリは有効化できず、有効化するとリポジトリは継承しつつ個別に opt out できる
-- enterprise ポリシーが AI Scan を許可しない場合、有効化は `422`。両設定を同一リクエストで更新でき、片方がブロックされると両方とも変更されない
-- 権限: organization は owner / security manager（`admin:org`・`repo`・`write:org`。security manager は `write:org`）、repository は `repo`（public のみなら `public_repo`）
-- Source: https://github.blog/changelog/2026-11-13-manage-ai-scan-for-repositories-using-the-rest-api （取得日 2026-11-14）
+- `pr_scan` covers AI Scan for pull requests; `repository_scan` (added 2026-11-13) covers AI Scan for repositories. Values are `enabled` / `disabled`. A disabled organization prevents its repositories from enabling it; an enabled organization lets repositories inherit it and opt out individually
+- When an enterprise policy does not allow AI Scan, enabling returns `422`. Both settings can be updated in one request; if either change is blocked, neither changes
+- Permissions: organization endpoints need an owner or security manager (`admin:org`, `repo` or `write:org`; security managers need `write:org`); repository endpoints need `repo` (or `public_repo` for public-only)
+- Source: https://github.blog/changelog/2026-11-13-manage-ai-scan-for-repositories-using-the-rest-api (fetched 2026-11-14)
 
 ## Related
 

@@ -4,7 +4,7 @@
 |------|-------------|------|
 | Copilot Cloud Agent Repository Management API | リポジトリ単位の Copilot cloud agent 設定を取得するエンドポイント。 | [cloud-agent-management.md](./cloud-agent-management.md) |
 | Copilot Cloud Agent Management API | Copilot cloud agent の設定（enterprise ポリシー・organization の対象リポジトリ）を管理… | [coding-agent-management.md](./coding-agent-management.md) |
-| Copilot Code Review API | Copilot code review のポリシー・runner 構成・設定を enterprise / organization / repository 単位で取得・更新… | [code-review.md](./code-review.md) |
+| Copilot Code Review API | Policy, runner configuration and settings endpoints for Copilot code review. | [code-review.md](./code-review.md) |
 | Copilot Content Exclusion Management API | organization の Copilot content exclusion path ルールを取得・設定する… | [content-exclusion-management.md](./content-exclusion-management.md) |
 | Copilot Spaces API | Organization・ユーザー所有の Copilot Spaces を CRUD 操作するエンドポイント。 | [spaces.md](./spaces.md) |
 | Copilot Usage Metrics API | Enterprise・Organization 単位で Copilot の利用状況メトリクスレポートを取得… | [usage-metrics.md](./usage-metrics.md) |

@@ -202,7 +202,7 @@ GitHub ホステッドランナーの使用には、最低 70 kbps のアップ�
 
 ## Notes
 
-### ARM32 job execution の廃止
+### ARM32 job execution retirement
 
-- GitHub ホステッドランナーでの Windows / Linux の ARM32 ジョブ実行サポートは 2026-12-08 までに終了する。ネイティブ AArch32 ユーザー空間実行のサポート削除を含む。node20 のサポート終了（Node 24 は ARM32 非対応）に続く措置
-- Source: https://github.blog/changelog/2026-11-12-actions-for-arm32-linux-windows-retirement （取得日 2026-11-14）
+- GitHub-hosted runners end support for ARM32 job execution on Windows and Linux by December 8, 2026. This includes removing support for native AArch32 user-space execution, and follows the end of support for node20 (Node 24 does not support ARM32)
+- Source: https://github.blog/changelog/2026-11-12-actions-for-arm32-linux-windows-retirement (fetched 2026-11-14)
