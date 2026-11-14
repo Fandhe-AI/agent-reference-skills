@@ -42,6 +42,11 @@ export const customersView = pgView("customers_view").as((qb) =>
 - Refresh a materialized view at runtime with `db.refreshMaterializedView(view)`, optionally `.concurrently()` or `.withNoData()`
 - Parameters inside a view's query are always inlined into the generated SQL rather than passed as `$1`, `$2`, etc.
 
+### rc.5 changes
+
+- Migration (rc.4 → rc.5): `View` exports moved from `drizzle-orm/sql/sql` to `drizzle-orm/view`; the `View` class now takes a `Table`-like object config for its type template and has a typed `schema` property. `getTableUniqueName` no longer prefixes aliased views or tables with their `schema` and no longer adds a `public.` prefix to entities without `schema`.
+- Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
+
 ## Related
 
 - [Schema declaration](./sql-schema-declaration.md)

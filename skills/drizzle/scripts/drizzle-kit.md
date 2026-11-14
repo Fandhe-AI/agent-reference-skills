@@ -30,10 +30,16 @@ Empty custom migration file (for hand-written SQL / seeding):
 npx drizzle-kit generate --custom --name=seed-users
 ```
 
-Skip commutativity conflict checks:
+Skip commutativity conflict checks (rc.5: the `postgresql` dialect rejects `--ignore-conflicts`; use `--fix-conflicts` instead):
 
 ```sh
 npx drizzle-kit generate --ignore-conflicts
+```
+
+PostgreSQL (rc.5): preview the repair of conflicting migration branches without changing files:
+
+```sh
+npx drizzle-kit generate --fix-conflicts --explain
 ```
 
 Use a specific config file:
@@ -144,7 +150,7 @@ npx drizzle-kit check --dialect=postgresql
 npx drizzle-kit check --dialect=postgresql --out=./migrations-folder
 ```
 
-Skip commutativity conflict checks:
+Skip commutativity conflict checks (rc.5: rejected for the `postgresql` dialect):
 
 ```sh
 npx drizzle-kit check --ignore-conflicts

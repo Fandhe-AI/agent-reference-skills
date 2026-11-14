@@ -41,6 +41,24 @@ const result = await db.query.users.findMany({
 - Prepared statements support placeholders in `where`, `limit`, and `offset` via `sql.placeholder(...)`.
 - Migration (v0 → v1): the `where` and `orderBy` clauses moved from callback-array syntax (`where: (users, { eq }) => eq(users.id, 1)`) to object syntax (`where: { id: 1 }`, `orderBy: { id: "asc" }`); filtering by related tables and `offset` on nested `with` entries are new in v1 (Relational Queries v2 API). See relations-v1-v2 for the full diff.
 
+### rc.5 additions
+
+- Migration (rc.4 → rc.5): `where` throws on an explicit `undefined`; use `EmptyFilter` (`import { EmptyFilter } from 'drizzle-orm/relations'`) when an absent filter is intended. Relation filters with no conditions (`{}`) are skipped; use `true` / `false` to filter by presence / absence.
+- Migration (rc.4 → rc.5): `orderBy` can order by related rows (`orderBy: { posts: { createdAt: 'desc(max)' } }`, `orderBy: { posts: 'asc(count)' }`, `orderBy: { author: { isAdmin: 'desc' }, createdAt: 'desc' }`).
+- Migration (rc.4 → rc.5): for `mysql`, `postgres`, `cockroach`, `mssql` RQBv2 uses a new query build strategy; opt out per query with `strategy: 'basic'`. Raw SQL `where` / `orderBy` that references relation aliases (for example `"comments"."r"`) can become unreachable.
+- Migration (rc.4 → rc.5): relational queries are cached by caches with the `all` strategy (`global: true`); use `withCache: true` to cache explicitly or `withCache: false` to opt out.
+
+```ts
+db.query.users.findMany({ where: { isActive: params.isActive ?? EmptyFilter } })
+
+// Select users sorted by post count
+db.query.users.findMany({ orderBy: { posts: 'asc(count)' } })
+
+db.query.users.findMany({ with: { posts: true }, withCache: true })
+```
+
+- Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
+
 ## Related
 
 - [Drizzle Relations](./relations.md)

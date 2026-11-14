@@ -51,4 +51,4 @@ main();
 
 - Even with `posts.authorId` referencing `users.id` via `.references(...)`, `with` throws `"posts" table doesn't have a reference to "users" table` unless the relation object is also passed into the seed schema map: declare `postsRelations` and call `seed(db, { users, posts, postsRelations })`.
 - The `count` under the parent key (`users: { count: 2, with: { posts: 3 } }`) always describes "one parent has many children" — you cannot flip it to generate many parents per one child, and a table cannot use `with` on itself when the self-reference is one-to-one.
-- The docs' relation examples for this seeding option still use the v1 `relations(table, ({ one }) => ({ ... }))` helper. For RQB (`db.query.*`), relations on drizzle-orm/drizzle-kit 1.0.0-rc.4 are declared with the v2 `defineRelations` API instead — see `rqb-avoid-n-plus-one.md`.
+- The docs' relation examples for this seeding option still use the v1 `relations(table, ({ one }) => ({ ... }))` helper. For RQB (`db.query.*`), relations on drizzle-orm/drizzle-kit 1.0.0-rc.4 and rc.5 are declared with the v2 `defineRelations` API instead — see `rqb-avoid-n-plus-one.md`.

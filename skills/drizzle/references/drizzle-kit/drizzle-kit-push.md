@@ -50,7 +50,11 @@ Under the hood: reads the schema and composes a JSON snapshot, introspects the c
 
 - Migration (v0 → v1): `schemaFilter` now defaults to **all schemas** (previously only `public` by default) and supports glob patterns (e.g. `"app_*"`). The `--strict` flag has been removed — confirmation-prompting for data-loss statements is now always the default unless `--force` is passed; use `--explain` to preview SQL before running.
 
-## Related
+### rc.5 changes
+
+- Migration (rc.4 → rc.5): `push` asks to confirm a dropped column only when the column has a non-null value (earlier, PostgreSQL, CockroachDB, MySQL, SingleStore and SQLite asked when the table had a row). Data loss warnings use the same texts in all dialects, quote every name as in SQL, show the table under the name the database has before the push, and add `(would become ...)` when the push renames or moves it. A data loss check on a renamed table, a table moved to another schema or a table in a renamed schema no longer fails with a database error.
+- Migration (rc.4 → rc.5): SQLite push no longer glues a table's FOREIGN KEY clause onto a generated-column `ALTER ADD`, and table recreation keeps `UNIQUE` on a column that also has a plain index; with `provider: "neon"` push no longer tries to drop Neon system roles.
+- Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
 
 - [drizzle-kit-generate](./drizzle-kit-generate.md)
 - [drizzle-kit-pull](./drizzle-kit-pull.md)

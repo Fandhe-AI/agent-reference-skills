@@ -196,6 +196,65 @@ export class MyDurableObject extends DurableObject {
 - Cloudflare D1 requires a `wrangler.json`/`wrangler.toml` with a `d1_databases` binding.
 - Cloudflare D1 binding API itself (D1Database, prepared statements, Time Travel) and Durable Objects storage outside Drizzle: see the cloudflare-storage skill (D1) and the cloudflare-stateful skill (Durable Objects; https://developers.cloudflare.com/durable-objects/).
 
+### rc.5 changes
+
+- Migration (rc.4 → rc.5): `sqlite-proxy` was reworked. `callback` / `batchCallback` are replaced by a `SqliteProxyExecutors` object that must provide `run`, `all`, `get` handlers and an optional `batch` handler; handlers return the data directly instead of `{ rows: Result[] }`; `rowMode: 'array' | 'object'` was added for `all` / `get` (and per item in `batch`); the `values` execute method was dropped (use array-mode `all`); `TRunResult` is inferred from the return type of `run`.
+- Migration (rc.4 → rc.5): `get` in `sqlite-proxy` returns `data | undefined` at runtime and now in types (previously `data[]`). `db.get(sql)` and `.get()` of `returning()` queries include `| undefined`.
+- Migration (rc.4 → rc.5): `expo-sqlite/async` was added for async querying; `expo-sqlite` now finalizes prepared statements; `op-sqlite` was bumped to v17 and its transactions are no longer handled as synchronous. `blob` columns on React Native drivers no longer require `Buffer` (reads are `Uint8Array`; override the type with `blob(...).$type<Uint8Array>()`).
+- Migration (rc.4 → rc.5): `sqlite` now respects `.$defaultFn(...)` on insert when `.default(...)` is also present; the Turso Database drivers support transaction configs.
+- Migration (rc.4 → rc.5): official guide for the SQLite proxy: replace the `drizzle(callback, config)` or `drizzle(callback, batchCallback, config)` setup with `drizzle(executors, config)`. The executor object requires `run`, `all` and `get`, and optionally accepts `batch`. Return results directly instead of wrapping them in `{ rows: ... }`; `all` returns an array of rows and `get` returns one row or `undefined`; honor the `rowMode` argument (`'array'` or `'object'`) in `all` and `get`; replace the old `values` method with `all` in array mode; a batch result must match each item's method and row mode. The return type of your `run` executor determines the database's run-result type. (The official guide gives no code example for the executors.)
+- Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 and https://orm.drizzle.team/docs/sqlite/v0-v1-changes (docs repo commit 55f7f9e, retrieved 2026-11-14)
+
+### Turso Database transaction modes
+
+Set the transaction mode with the `behavior` option; Drizzle passes it to the driver, which opens the transaction with `BEGIN <mode>`. Without `behavior`, a plain `BEGIN` is used, which SQLite runs as `deferred`. The same option exists for `drizzle-orm/tursodatabase/database`, `drizzle-orm/tursodatabase-serverless` and `drizzle-orm/tursodatabase-sync`.
+
+```typescript
+import { drizzle } from 'drizzle-orm/tursodatabase/database';
+import { users } from './schema';
+
+const db = drizzle('sqlite.db');
+
+await db.transaction(async (tx) => {
+  await tx.insert(users).values({ name: 'Dan' });
+}, {
+  behavior: 'immediate', // 'deferred' | 'immediate' | 'exclusive' | 'concurrent'
+});
+```
+
+```typescript
+import { drizzle } from 'drizzle-orm/tursodatabase-serverless';
+import { users } from './schema';
+
+const db = drizzle({ connection: { url: process.env.TURSO_URL, authToken: process.env.TURSO_TOKEN } });
+
+await db.transaction(async (tx) => {
+  await tx.insert(users).values({ name: 'Dan' });
+}, {
+  behavior: 'immediate', // 'deferred' | 'immediate' | 'exclusive' | 'concurrent'
+});
+```
+
+```typescript
+import { drizzle } from 'drizzle-orm/tursodatabase-sync';
+import { users } from './schema';
+
+const db = drizzle({ connection: { path: 'local.db', url: 'https://<db>.turso.io', authToken: '...' } });
+
+await db.transaction(async (tx) => {
+  await tx.insert(users).values({ name: 'Dan' });
+}, {
+  behavior: 'immediate', // 'deferred' | 'immediate' | 'exclusive' | 'concurrent'
+});
+```
+
+- `deferred` - takes the lock on the first read or write
+- `immediate` - takes the write lock at the start of the transaction
+- `exclusive` - takes the write lock at the start and blocks other connections
+- `concurrent` - lets several write transactions run at the same time. It needs MVCC to be turned on in Turso Database
+- Nested `tx.transaction()` calls use savepoints and don't take a `behavior` option.
+- Source: https://orm.drizzle.team/docs/connect-turso-database, https://orm.drizzle.team/docs/connect-turso-serverless, https://orm.drizzle.team/docs/connect-turso-sync (docs repo commit 55f7f9e, retrieved 2026-11-14). In the sync snippet `url` / `authToken` are placeholders copied verbatim from the official page; keep the token in an environment variable.
+
 ## Related
 
 - [PostgreSQL](./get-started-postgresql.md)
