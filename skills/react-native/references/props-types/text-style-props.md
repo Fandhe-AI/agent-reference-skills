@@ -70,19 +70,18 @@ Excerpt from the official example (the values come from `useState` hooks driven 
 
 ## Notes
 
-- 0.88: `fontVariationSettings` is now supported on both `Text` and `TextInput`, on Android and iOS, per the 0.88 release blog. It is documented on the 0.88 docs page (not on the 0.88 page). Both the CSS string form and an object form are accepted; object keys are four-character axis tags with finite numeric values:
+- 0.88: `fontVariationSettings` is now supported on both `Text` and `TextInput`, on Android and iOS, per the 0.88 release blog. It is documented on the 0.88 docs page (not on the 0.87 page). Both the CSS string form and an object form are accepted; object keys are four-character axis tags with finite numeric values:
 
 The 0.88 docs page example (the object and string forms are equivalent; both set the wght axis to 500):
 
+Adapted (not in the official docs): the official example sets `fontVariationSettings` twice in one style object; it is split into two separate snippets.
+
 ```tsx
-<Text
-  style={{
-    fontVariationSettings: {wght: 500},
-    // Equivalent CSS-compatible string:
-    fontVariationSettings: "'wght' 500",
-  }}>
-  Variable font
-</Text>
+<Text style={{fontVariationSettings: {wght: 500}}}>Variable font</Text>
+```
+
+```tsx
+<Text style={{fontVariationSettings: "'wght' 500"}}>Variable font</Text>
 ```
 
 Further examples (from the 0.88 release blog):
@@ -92,7 +91,7 @@ Further examples (from the 0.88 release blog):
 <Text style={{fontVariationSettings: "'wght' 700, 'slnt' -10"}}>String form</Text>
 ```
 
-- The first 0.88 docs example repeats the `fontVariationSettings` key within one style object (verbatim from the page); use only one form per style.
+- Adapted from the official docs: the 0.88 docs example sets the `fontVariationSettings` key twice in one style object (object form plus a comment-introduced string form); it is split into separate snippets above because a duplicate key is rejected by TypeScript.
 - Style objects are interpreted by React Native, not by a CSS engine. `Text`'s `style` prop accepts these Text Style Props plus View Style Props (see the Text component page).
 - Source: https://reactnative.dev/docs/0.88/text-style-props (react-native-website commit a459a29, retrieved 2026-11-14)
 
