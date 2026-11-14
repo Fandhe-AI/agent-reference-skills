@@ -28,6 +28,11 @@ class ConditionalNode extends Node {
 |--------|---------|-------------|
 | `generateNodeType(builder)` | `string` | Infers the node type from the if/else nodes (overrides `Node#generateNodeType`) |
 
+## Notes
+
+- Source: https://threejs.org/docs/pages/ConditionalNode.html (three.js r187, `src/nodes/math/ConditionalNode.js`; JSDoc from tag r187 / commit 7e89746)
+- When the condition is a vector (e.g. the `bvec3` of `value.greaterThan( vec3( 1.0 ) )`), `select()` resolves per component: each output lane picks independently from its own condition component, like WGSL `select()` / GLSL `mix( x, y, bvecN )`. The condition and values are converted to the largest vector width and scalar values are broadcast (https://github.com/mrdoob/three.js/pull/34425).
+
 ## Related
 
 - [MathNode](./MathNode.md)

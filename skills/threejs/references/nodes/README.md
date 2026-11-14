@@ -21,7 +21,7 @@
 | LoopNode | Loops in TSL with count, range, nested, and while-like forms. | [LoopNode.md](./LoopNode.md) |
 | MaterialNode | Node access to material properties, updated automatically. | [MaterialNode.md](./MaterialNode.md) |
 | MaterialReferenceNode | Links a material property to a node value. | [MaterialReferenceNode.md](./MaterialReferenceNode.md) |
-| MathNode | Shader math methods such as sin, dot, and mix. Extends TempNode. | [MathNode.md](./MathNode.md) |
+| MathNode | Shader math methods such as sin, dot, and mix. Extends Node. | [MathNode.md](./MathNode.md) |
 | ModelNode | Object3DNode variant with an extended set of model metrics. | [ModelNode.md](./ModelNode.md) |
 | MRTNode | Sets up a multiple render targets (MRT) context. | [MRTNode.md](./MRTNode.md) |
 | Node | Base class for all nodes in the TSL node system. | [Node.md](./Node.md) |
@@ -34,6 +34,7 @@
 | PMREMNode | Preprocessed environment map (PMREM) for PBR materials. | [PMREMNode.md](./PMREMNode.md) |
 | PointShadowNode | Shadow implementation for point light nodes. | [PointShadowNode.md](./PointShadowNode.md) |
 | PropertyNode | Explicitly defines a shader property and assigns its value. | [PropertyNode.md](./PropertyNode.md) |
+| ReferenceAttributeNode | Binds a buffer attribute of the rendered object (e.g. instance matrices) so objects share a program. | [ReferenceAttributeNode.md](./ReferenceAttributeNode.md) |
 | ReferenceNode | Links a node value to a property of another object. | [ReferenceNode.md](./ReferenceNode.md) |
 | ReflectorNode | Implements mirror-like flat reflective surfaces. | [ReflectorNode.md](./ReflectorNode.md) |
 | RenderOutputNode | Applies tone mapping and color space conversion at any point in a post-processing chain. | [RenderOutputNode.md](./RenderOutputNode.md) |

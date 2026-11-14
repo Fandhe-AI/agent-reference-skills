@@ -5,7 +5,7 @@ Represents a color space conversion: converts a color value from a source to a t
 ## Signature / Usage
 
 ```js
-class ColorSpaceNode extends TempNode {
+class ColorSpaceNode extends Node {
 	constructor( colorNode, source, target ) {}
 }
 ```
@@ -26,7 +26,8 @@ class ColorSpaceNode extends TempNode {
 
 ## Notes
 
-- Source: https://threejs.org/docs/pages/ColorSpaceNode.html (three.js r186, `src/nodes/display/ColorSpaceNode.js`)
+- Source: https://threejs.org/docs/pages/ColorSpaceNode.html (three.js r187, `src/nodes/display/ColorSpaceNode.js`; JSDoc from tag r187 / commit 7e89746)
+- Migration (r186 → r187): extends `Node` instead of `TempNode`; `TempNode` is deprecated in r187 ("Extend Node instead").
 
 ## Related
 

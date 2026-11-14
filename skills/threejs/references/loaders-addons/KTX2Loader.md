@@ -30,6 +30,9 @@ const texture = await loader.loadAsync( 'diffuse.ktx2' );
 - Requires Web Assembly support.
 - `detectSupport()` must be called with a `WebGLRenderer` or `WebGPURenderer` before any load.
 - Used by `GLTFLoader` automatically when `KHR_texture_basisu` extension is present.
+- Migration (r186 → r187): `Loader` gained `priority` and `cache` (HTTP cache mode) with `setPriority()` / `setCache()`; `KTX2Loader` forwards them to its internal loaders (https://github.com/mrdoob/three.js/pull/34936)
+- r187: `isKTX2Loader` flag added (type testing; `true`). The parsed texture is a `CompressedCubeTexture` for cube-map containers (`faceCount === 6`) and a `CompressedTexture` otherwise.
+- Source: https://threejs.org/docs/pages/KTX2Loader.html (three.js r187, `examples/jsm/loaders/KTX2Loader.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

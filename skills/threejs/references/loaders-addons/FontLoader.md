@@ -26,6 +26,8 @@ scene.add( new THREE.Mesh( geometry ) );
 ## Notes
 
 - Pre-converted fonts are available in `three/examples/fonts/`.
+- Migration (r186 → r187): `Loader` gained `priority` and `cache` (HTTP cache mode) with `setPriority()` / `setCache()`; `FontLoader` forwards them to its internal `FileLoader` (https://github.com/mrdoob/three.js/pull/34936)
+- Source: https://threejs.org/docs/pages/FontLoader.html (three.js r187, `examples/jsm/loaders/FontLoader.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

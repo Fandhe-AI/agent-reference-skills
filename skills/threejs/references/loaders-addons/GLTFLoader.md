@@ -46,7 +46,7 @@ gltf.animations.forEach( clip => mixer.clipAction( clip ).play() );
 
 - `KHR_draco_mesh_compression`, `KHR_meshopt_compression`
 - `KHR_lights_punctual`
-- `KHR_materials_*` (anisotropy, clearcoat, dispersion, emissive_strength, ior, specular, transmission, iridescence, unlit, volume)
+- `KHR_materials_*` (anisotropy, diffuse_roughness, clearcoat, dispersion, emissive_strength, ior, specular, transmission, iridescence, unlit, volume)
 - `KHR_mesh_quantization`, `KHR_texture_basisu`, `KHR_texture_transform`
 - `EXT_materials_bump`, `EXT_mesh_gpu_instancing`, `EXT_texture_avif`, `EXT_texture_webp`
 
@@ -58,6 +58,9 @@ gltf.animations.forEach( clip => mixer.clipAction( clip ).play() );
 
 - Image bitmaps created during loading are not automatically garbage collected — dispose them explicitly when no longer needed.
 - Always call `setDRACOLoader()` before loading Draco-compressed glTF files.
+- Migration (r186 → r187): `GLTFLoader` forwards `priority`, `cache` and `withCredentials` to the internal buffer / texture / bitmap loaders, so credentials also reach buffers and `ImageBitmapLoader` textures (https://github.com/mrdoob/three.js/pull/35025; `Loader` priority / cache: https://github.com/mrdoob/three.js/pull/34936).
+- Migration (r186 → r187): when `KTX2Loader` is used for an image stored in a `bufferView`, the data is passed to `KTX2Loader#parse()` directly instead of via a Blob / object URL (https://github.com/mrdoob/three.js/pull/35193).
+- Source: https://threejs.org/docs/pages/GLTFLoader.html (three.js r187, `examples/jsm/loaders/GLTFLoader.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

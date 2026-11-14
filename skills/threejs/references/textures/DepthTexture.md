@@ -23,8 +23,8 @@ renderer.render(scene, camera);
 | `mapping` | number | `Texture.DEFAULT_MAPPING` | Mapping mode |
 | `wrapS` | number | `ClampToEdgeWrapping` | Horizontal wrapping |
 | `wrapT` | number | `ClampToEdgeWrapping` | Vertical wrapping |
-| `magFilter` | number | `LinearFilter` | Magnification filter |
-| `minFilter` | number | `LinearFilter` | Minification filter |
+| `magFilter` | number | `NearestFilter` | Magnification filter |
+| `minFilter` | number | `NearestFilter` | Minification filter |
 | `anisotropy` | number | `Texture.DEFAULT_ANISOTROPY` | Anisotropic filtering |
 | `format` | number | `DepthFormat` | Texture format (`DepthFormat` or `DepthStencilFormat`) |
 | `depth` | number | `1` | Texture depth |
@@ -43,6 +43,8 @@ renderer.render(scene, camera);
 - Attach to a `WebGLRenderTarget` via `renderTarget.depthTexture`.
 - Use `DepthFormat` for depth-only or `DepthStencilFormat` for combined depth+stencil.
 - Setting `compareFunction` enables hardware depth comparison (useful for shadow sampling).
+- Corrected from the JSDoc: the `magFilter` / `minFilter` constructor defaults are `NearestFilter` (the r186 JSDoc said `LinearFilter`).
+- Source: https://threejs.org/docs/pages/DepthTexture.html (three.js r187, `src/textures/DepthTexture.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

@@ -19,7 +19,7 @@ mesh.customDepthMaterial = depthMaterial;
 | `map` | Texture | `null` | Color map; alpha channel used with `transparent`/`alphaTest` |
 | `alphaMap` | Texture | `null` | Grayscale opacity map (black = transparent, white = opaque) |
 | `displacementMap` | Texture | `null` | Vertex displacement texture (white = max displacement) |
-| `displacementScale` | number | `0` | Displacement intensity `[0,1]` |
+| `displacementScale` | number | `1` | Displacement intensity `[0,1]` |
 | `displacementBias` | number | `0` | Offset added to scaled displacement values |
 | `wireframe` | boolean | `false` | Render as wireframe |
 | `wireframeLinewidth` | number | `1` | Wireframe thickness (ignored by WebGL/WebGPU, always 1px) |
@@ -32,6 +32,8 @@ mesh.customDepthMaterial = depthMaterial;
 - Inherits all properties from [Material](./material.md)
 - Assign to `Object3D#customDepthMaterial` to customise shadow casting depth
 - `RGBADepthPacking` provides more precision than `BasicDepthPacking`
+- Corrected from the JSDoc: `displacementScale` default is `1` (the r186 JSDoc said `0`; the constructor has always set `1`).
+- Source: https://threejs.org/docs/pages/MeshDepthMaterial.html (three.js r187, `src/materials/MeshDepthMaterial.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

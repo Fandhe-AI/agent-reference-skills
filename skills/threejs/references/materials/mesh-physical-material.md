@@ -23,7 +23,7 @@ const material = new THREE.MeshPhysicalMaterial({
 |------|------|---------|-------------|
 | `anisotropy` | number | `0` | Anisotropy strength `[0,1]` |
 | `anisotropyMap` | Texture | `null` | R/G = direction, B = strength in tangent space |
-| `anisotropyRotation` | number | `1` | Rotation (radians CCW from tangent) |
+| `anisotropyRotation` | number | `0` | Rotation (radians CCW from tangent) |
 
 ### Clearcoat
 
@@ -36,6 +36,13 @@ const material = new THREE.MeshPhysicalMaterial({
 | `clearcoatNormalMap` | Texture | `null` | Clearcoat layer normal map |
 | `clearcoatNormalScale` | Vector2 | `(1,1)` | Clearcoat normal intensity `[0,1]` |
 
+### Diffuse Roughness
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `diffuseRoughness` | number | `0` | Roughness of the diffuse layer `[0,1]`. `0` uses Lambertian diffuse reflection; values above `0` use the EON energy-preserving rough diffuse model |
+| `diffuseRoughnessMap` | Texture | `null` | Red channel is multiplied against `diffuseRoughness` for per-pixel control; non-color data (`NoColorSpace`) |
+
 ### Iridescence
 
 | Name | Type | Default | Description |
@@ -44,7 +51,9 @@ const material = new THREE.MeshPhysicalMaterial({
 | `iridescenceIOR` | number | `1.3` | Iridescence layer IOR `[1.0, 2.333]` |
 | `iridescenceMap` | Texture | `null` | Iridescence mask (red channel) |
 | `iridescenceThicknessMap` | Texture | `null` | Thickness map (green channel) |
-| `iridescenceThicknessRange` | number[] | `[100,400]` | Min/max thickness in nm |
+| `iridescenceThicknessMinimum` | number | `100` | Minimum thickness of the iridescence layer in nanometers |
+| `iridescenceThicknessMaximum` | number | `400` | Maximum thickness of the iridescence layer in nanometers; used as the thickness when no `iridescenceThicknessMap` is defined |
+| `iridescenceThicknessRange` | number[] | `[100,400]` | Deprecated since r187. Getter/setter pair over `iridescenceThicknessMinimum` / `iridescenceThicknessMaximum` (warns once) |
 
 ### Transmission & Volume
 
@@ -98,8 +107,12 @@ const material = new THREE.MeshPhysicalMaterial({
 - When `transmission > 0`, set `opacity = 1`
 - `reflectivity` has no effect when `metalness = 1.0`
 - Always provide an `envMap` for best results
-- Map color spaces: color maps (`sheenColorMap`, `specularColorMap`) must be assigned a `colorSpace`, most set `SRGBColorSpace`. Non-color maps (`anisotropyMap`, `clearcoatMap`, `clearcoatNormalMap`, `clearcoatRoughnessMap`, `iridescenceMap`, `iridescenceThicknessMap`, `sheenRoughnessMap`, `specularIntensityMap`, `thicknessMap`, `transmissionMap`) use `NoColorSpace` (default)
+- Map color spaces: color maps (`sheenColorMap`, `specularColorMap`) must be assigned a `colorSpace`, most set `SRGBColorSpace`. Non-color maps (`anisotropyMap`, `clearcoatMap`, `clearcoatNormalMap`, `clearcoatRoughnessMap`, `diffuseRoughnessMap`, `iridescenceMap`, `iridescenceThicknessMap`, `sheenRoughnessMap`, `specularIntensityMap`, `thicknessMap`, `transmissionMap`) use `NoColorSpace` (default)
 - Inherits from [MeshStandardMaterial](./mesh-standard-material.md) → [Material](./material.md)
+- `iridescenceThicknessMap`: `0.0` in the green channel gives `iridescenceThicknessMinimum`, `1.0` gives `iridescenceThicknessMaximum`, values in between interpolate linearly.
+- Migration (r186 → r187): `iridescenceThicknessRange` is deprecated; use `iridescenceThicknessMinimum` and `iridescenceThicknessMaximum` (https://github.com/mrdoob/three.js/pull/35039). `diffuseRoughness` / `diffuseRoughnessMap` (EON rough diffuse BRDF) are new (https://github.com/mrdoob/three.js/pull/34379).
+- Corrected from the JSDoc: `anisotropyRotation` default is `0` (the previous table said `1`).
+- Source: https://threejs.org/docs/pages/MeshPhysicalMaterial.html (three.js r187, `src/materials/MeshPhysicalMaterial.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

@@ -33,13 +33,15 @@ class ContextNode extends Node {
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `generateNodeType(builder)` | `string` | Returns the type of `ContextNode#node` |
-| `getFlowContextData()` | `Object` | Gathers the context data from all parent context nodes |
+| `getFlowContextData()` | `Object` | Gathers the context data from all parent context nodes; the data and the node overrides of nested contexts are merged with `mergeContext()` |
 | `getMemberType(builder, name)` | `string` | Returns the member type of `ContextNode#node` |
 | `getScope()` | `Node` | Returns the reference to `ContextNode#node` |
 
 ## Notes
 
-- Source: https://threejs.org/docs/pages/ContextNode.html (three.js r186, `src/nodes/core/ContextNode.js`)
+- Source: https://threejs.org/docs/pages/ContextNode.html (three.js r187, `src/nodes/core/ContextNode.js`; JSDoc from tag r187 / commit 7e89746)
+- `mergeContext( target, source )` (`NodeUtils`, new in r187) merges two node build contexts into a new one: the data of `source` takes precedence, and the `overrideNodes` maps of both contexts are merged, so the overrides of `target` still apply unless `source` overrides the same node (https://github.com/mrdoob/three.js/pull/35108).
+- `overrideNodes( overrides, flowNode, shaderStage )` (`OverrideContextNode`, r187) accepts an optional `shaderStage` (default `null`: all stages); the overrides then apply only in that stage, and with `'fragment'` all varyings of the context are evaluated in the fragment stage, e.g. if the surface is reconstructed per fragment (https://github.com/mrdoob/three.js/pull/35109). `OverrideContextNode` no longer overrides `getFlowContextData()`.
 
 ## Related
 

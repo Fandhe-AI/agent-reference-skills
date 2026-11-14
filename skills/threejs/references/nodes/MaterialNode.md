@@ -32,6 +32,11 @@ class MaterialNode extends Node {
 | `getTexture(property)` | `MaterialReferenceNode` | Texture-typed reference node |
 | `setup(builder)` | `Node` | Builds the node depending on `scope` (overrides `Node#setup`) |
 
+## Notes
+
+- Source: https://threejs.org/docs/pages/MaterialNode.html (three.js r187, `src/nodes/accessors/MaterialNode.js`; JSDoc from tag r187 / commit 7e89746)
+- r187 adds the TSL object `materialDiffuseRoughness` (the diffuse roughness of the current material, composed via `diffuseRoughness` * `diffuseRoughnessMap.r`) and the shader property `diffuseRoughness` (`PropertyNode<float>`).
+
 ## Related
 
 - [TextureNode](./TextureNode.md)

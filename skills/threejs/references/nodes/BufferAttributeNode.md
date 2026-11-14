@@ -30,7 +30,7 @@ class BufferAttributeNode extends InputNode {
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `value` | `BufferAttribute \| InterleavedBuffer \| TypedArray` | — | The attribute data |
+| `value` | `BufferAttribute \| InterleavedBufferAttribute \| InterleavedBuffer \| TypedArray` | — | The attribute data |
 | `bufferType` | `string` | `null` | The buffer type (e.g. `'vec3'`) |
 | `bufferStride` | `number` | `0` | The buffer stride |
 | `bufferOffset` | `number` | `0` | The buffer offset |
@@ -48,14 +48,15 @@ class BufferAttributeNode extends InputNode {
 | `generateNodeType(builder)` | `string` | Node type inferred from the buffer attribute |
 | `getHash(builder)` | `string` | Overridden so shared attribute data shares the hash |
 | `getInputType(builder)` | `string` | Fixed value `'bufferAttribute'` |
+| `getObjectAttribute(object)` | `?(BufferAttribute \| InterleavedBufferAttribute)` | Returns the buffer attribute to bind when rendering the given object; nodes that bind attributes of the rendered object, like `ReferenceAttributeNode`, overwrite it |
 | `setInstanced(value)` | `BufferAttributeNode` | Sets `instanced` |
 | `setUsage(value)` | `BufferAttributeNode` | Sets `usage` |
 | `setup(builder)` | `void` | If no `BufferAttribute` instance was passed, creates and configures an internal attribute |
 
 ## Notes
 
-- The r186 docs example uses the undefined variable `position.count`; corrected here to `positionAttribute.count`.
-- Source: https://threejs.org/docs/pages/BufferAttributeNode.html (three.js r186, `src/nodes/accessors/BufferAttributeNode.js`)
+- The r186/r187 docs example uses the undefined variable `position.count`; corrected here to `positionAttribute.count`.
+- Source: https://threejs.org/docs/pages/BufferAttributeNode.html (three.js r187, `src/nodes/accessors/BufferAttributeNode.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

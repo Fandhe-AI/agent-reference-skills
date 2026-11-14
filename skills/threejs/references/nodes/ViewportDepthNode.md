@@ -26,7 +26,9 @@ Scopes:
 
 ## Notes
 
-- Source: https://threejs.org/docs/pages/ViewportDepthNode.html (three.js r186, `src/nodes/display/ViewportDepthNode.js`)
+- Source: https://threejs.org/docs/pages/ViewportDepthNode.html (three.js r187, `src/nodes/display/ViewportDepthNode.js`; JSDoc from tag r187 / commit 7e89746)
+- `projectionDepth( depth, near, far )` (TSL function, new in r187): returns the depth value as produced by the camera's projection matrix; with `logarithmicDepthBuffer` it converts the stored logarithmic depth back to perspective depth, otherwise it returns `depth` unchanged. It is named `projectionDepth()` (not `getProjectionDepth()`) (https://github.com/mrdoob/three.js/pull/35230).
+- In r187 the `DEPTH` and `LINEAR_DEPTH` scopes treat every camera that is not an `OrthographicCamera` as perspective (previously `isPerspectiveCamera` was tested), and the logarithmic depth conversion uses `EPSILON` as its minimum near value.
 
 ## Related
 

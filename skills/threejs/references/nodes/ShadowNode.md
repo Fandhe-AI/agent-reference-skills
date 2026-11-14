@@ -16,7 +16,7 @@ class ShadowNode extends ShadowBaseNode {
 |------|------|---------|-------------|
 | `light` | `Light` | — | The shadow casting light |
 | `shadow` | `LightShadow` | `null` | Defines the properties of the light's shadow |
-| `depthLayer` | `number` (readonly) | — | Index usable when overriding `setupRenderTarget` with a RenderTarget Array to specify the depth layer |
+| `depthLayer` | `number` (readonly) | `0` | Index usable when overriding `setupRenderTarget` with a RenderTarget Array to specify the depth layer |
 | `isShadowNode` | `boolean` (readonly) | `true` | Type-testing flag |
 | `shadowMap` | `RenderTarget` | `null` | Reference to the shadow map |
 | `vsmMaterialHorizontal` | `NodeMaterial` | `null` | VSM only: material for the second VSM pass |
@@ -41,7 +41,7 @@ class ShadowNode extends ShadowBaseNode {
 
 ## Notes
 
-- Source: https://threejs.org/docs/pages/ShadowNode.html (three.js r186, `src/nodes/lighting/ShadowNode.js`)
+- Source: https://threejs.org/docs/pages/ShadowNode.html (three.js r187, `src/nodes/lighting/ShadowNode.js`; JSDoc from tag r187 / commit 7e89746)
 - Inheritance: EventDispatcher > Node > ShadowBaseNode > ShadowNode.
 
 ## Related

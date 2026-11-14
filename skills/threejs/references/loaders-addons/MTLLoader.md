@@ -36,6 +36,11 @@ scene.add( object );
 | `normalizeRGB` | boolean | `false` | Normalise RGB values |
 | `ignoreZeroRGBs` | boolean | `false` | Ignore zero-value RGB channels |
 
+## Notes
+
+- Migration (r186 → r187): `Loader` gained `priority` and `cache` (HTTP cache mode) with `setPriority()` / `setCache()`; `MTLLoader` and its `MaterialCreator` forward them to internal file and texture loading (https://github.com/mrdoob/three.js/pull/34936)
+- Source: https://threejs.org/docs/pages/MTLLoader.html (three.js r187, `examples/jsm/loaders/MTLLoader.js`; JSDoc from tag r187 / commit 7e89746)
+
 ## Related
 
 - [OBJLoader](./OBJLoader.md)

@@ -19,6 +19,7 @@ new StorageArrayTexture( width: number, height: number, depth: number )
 | isStorageTexture | boolean (readonly) | Type-test flag. Default `true`. |
 | magFilter | number | Default is `THREE.LinearFilter`. Overrides `Texture#magFilter`. |
 | minFilter | number | Default is `THREE.LinearFilter`. Overrides `Texture#minFilter`. |
+| mipmapsAutoUpdate | boolean | Whether the renderer regenerates the mipmaps automatically. Overwritten and set to `false` by default. Default `false`. Overrides `Texture#mipmapsAutoUpdate`. |
 
 ## Methods
 
@@ -30,7 +31,8 @@ new StorageArrayTexture( width: number, height: number, depth: number )
 
 - Can only be used with `WebGPURenderer` and a WebGPU backend.
 - Inherits from `EventDispatcher` -> `Texture`.
-- Source: https://threejs.org/docs/pages/StorageArrayTexture.html (three.js r186, `src/renderers/common/StorageArrayTexture.js`)
+- Source: https://threejs.org/docs/pages/StorageArrayTexture.html (three.js r187, `src/renderers/common/StorageArrayTexture.js`; JSDoc from tag r187 / commit 7e89746)
+- Migration (r186 → r187): `mipmapsAutoUpdate` is now overwritten on this class and defaults to `false`.
 
 ## Related
 

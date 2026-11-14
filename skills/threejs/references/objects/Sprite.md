@@ -33,6 +33,8 @@ scene.add(sprite);
 - Sprites are always camera-aligned; they do not respond to `rotation` in the usual sense.
 - `center` is in `[0,1]` UV space: `(0,0)` is bottom-left, `(1,1)` is top-right.
 - Use `scale.set(w, h, 1)` to control displayed size in world units.
+- Migration (r186 → r187): `center` is now serialized by `toJSON()` and restored by `ObjectLoader` (https://github.com/mrdoob/three.js/pull/35162).
+- Source: https://threejs.org/docs/pages/Sprite.html (three.js r187, `src/objects/Sprite.js`; JSDoc from tag r187 / commit 7e89746)
 - For many sprites with per-instance attributes, `Points` with a `PointsMaterial` map is more performant.
 
 ## Related

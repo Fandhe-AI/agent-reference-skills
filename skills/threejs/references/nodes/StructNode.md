@@ -27,9 +27,10 @@ class StructNode extends Node {
 
 ## Notes
 
-- The r186 docs page documents only the constructor (no listed properties or methods).
-- The r186 docs example lists both creation styles in the same scope (two `const bb` declarations); here the style 2 line is commented out as an alternative so the snippet is valid JavaScript.
-- Source: https://threejs.org/docs/pages/StructNode.html (three.js r186, `src/nodes/core/StructNode.js`)
+- The r187 docs page documents only the constructor (no listed properties or methods).
+- The r187 docs example lists both creation styles in the same scope (two `const bb` declarations); here the style 2 line is commented out as an alternative so the snippet is valid JavaScript.
+- Source: https://threejs.org/docs/pages/StructNode.html (three.js r187, `src/nodes/core/StructNode.js`; JSDoc from tag r187 / commit 7e89746)
+- Migration (r186 → r187): struct storage buffers are always arrays. With `storage( buffer, StructType )`, access members through `storage.element( index )` (e.g. `storage.element( 0 ).get( 'member' )`), not `storage.get( 'member' )` (https://github.com/mrdoob/three.js/pull/34807).
 
 ## Related
 

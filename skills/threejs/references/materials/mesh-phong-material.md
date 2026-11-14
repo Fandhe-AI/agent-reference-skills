@@ -29,7 +29,7 @@ const material = new THREE.MeshPhongMaterial({
 | `normalMapType` | Constant | `TangentSpaceNormalMap` | `TangentSpaceNormalMap` or `ObjectSpaceNormalMap` |
 | `normalScale` | Vector2 | `(1,1)` | Normal map influence `[0,1]` |
 | `displacementMap` | Texture | `null` | Vertex displacement texture |
-| `displacementScale` | number | `0` | Displacement intensity |
+| `displacementScale` | number | `1` | Displacement intensity |
 | `displacementBias` | number | `0` | Displacement offset |
 | `emissive` | Color | `(0,0,0)` | Emissive color, unaffected by lighting |
 | `emissiveIntensity` | number | `1` | Emissive brightness |
@@ -59,6 +59,8 @@ const material = new THREE.MeshPhongMaterial({
 - Non-physically based (Blinn-Phong); faster than `MeshStandardMaterial`/`MeshPhysicalMaterial`
 - Uses per-fragment shading
 - Inherits all properties from [Material](./material.md)
+- Corrected from the JSDoc: `displacementScale` default is `1` (the r186 JSDoc said `0`; the constructor has always set `1`).
+- Source: https://threejs.org/docs/pages/MeshPhongMaterial.html (three.js r187, `src/materials/MeshPhongMaterial.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

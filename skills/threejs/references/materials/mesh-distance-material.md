@@ -20,7 +20,7 @@ mesh.customDistanceMaterial = distanceMaterial;
 | `map` | Texture | `null` | Color map; alpha channel used with `transparent`/`alphaTest` |
 | `alphaMap` | Texture | `null` | Grayscale opacity map (black = transparent, white = opaque) |
 | `displacementMap` | Texture | `null` | Vertex displacement texture (white = max displacement) |
-| `displacementScale` | number | `0` | Displacement intensity |
+| `displacementScale` | number | `1` | Displacement intensity |
 | `displacementBias` | number | `0` | Offset added to scaled displacement values |
 | `isMeshDistanceMaterial` | boolean | `true` | Read-only type testing flag |
 
@@ -30,6 +30,8 @@ mesh.customDistanceMaterial = distanceMaterial;
 
 - Inherits all properties from [Material](./material.md)
 - Intended for point-light shadow maps only; directional/spot lights use [MeshDepthMaterial](./mesh-depth-material.md)
+- Corrected from the JSDoc: `displacementScale` default is `1` (the r186 JSDoc said `0`; the constructor has always set `1`).
+- Source: https://threejs.org/docs/pages/MeshDistanceMaterial.html (three.js r187, `src/materials/MeshDistanceMaterial.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

@@ -21,6 +21,7 @@ class Node extends EventDispatcher {
 | `name` | `string` | `''` | The node's name |
 | `needsUpdate` | `boolean` | `false` | Set to `true` to force node regeneration |
 | `updateType` / `updateBeforeType` / `updateAfterType` | `string` | `'none'` | Controls when `update()` / `updateBefore()` / `updateAfter()` run |
+| `assignable` | `boolean` | `false` | Whether this node can be assigned: it is generated as an expression until it is assigned, then it is declared as a variable where it was created |
 | `uuid` | `string` (readonly) | — | Node UUID |
 | `version` | `number` (readonly) | `0` | Increases whenever `needsUpdate` is set |
 
@@ -36,7 +37,10 @@ class Node extends EventDispatcher {
 | `update(frame)` / `updateBefore(frame)` / `updateAfter(frame)` | Update node state around rendering |
 | `getUpdateType(frame: NodeFrame)` / `getUpdateBeforeType(frame: NodeFrame)` / `getUpdateAfterType(frame: NodeFrame)` | Return the `NodeUpdateType` of `update()` / `updateBefore()` / `updateAfter()` for the given `NodeFrame` |
 | `onUpdate(callback, updateType)` / `onFrameUpdate(callback)` / `onObjectUpdate(callback)` / `onRenderUpdate(callback)` | Register update callbacks |
-| `traverse(callback)` / `getChildren()` | Traverse the node hierarchy |
+| `traverse(callback)` / `getChildren()` | Traverse the node hierarchy; `getChildren()` returns an array of child nodes (r186: a generator) |
+| `isCacheable(builder)` | Whether this node allows caching its result in a temporary variable (default `true`); override to disable it |
+| `toAssignable()` | Makes this node assignable and adds it to the current stack; only use it with nodes that are not shared |
+| `isAssignable(builder)` / `isAssign(builder)` | Whether the node is assignable without a forced declaration / is the target of an assignment |
 | `getHash(builder)` / `getCacheKey(force, ignores)` | Identity/cache keys for the node |
 | `serialize(json)` / `deserialize(json)` | JSON (de)serialization |
 | `dispose()` | Dispatches a dispose event for cleanup |
@@ -44,6 +48,8 @@ class Node extends EventDispatcher {
 ## Notes
 
 - `Node` is abstract in practice — TSL code rarely instantiates it directly, instead using TSL helper functions (`float()`, `texture()`, etc.) that return concrete `Node` subclasses.
+- Source: https://threejs.org/docs/pages/Node.html (three.js r187, `src/nodes/core/Node.js`; JSDoc from tag r187 / commit 7e89746)
+- Migration (r186 → r187): nodes are their own variable intents. `VarNode#intent` / `setIntent()` / `isIntent()`, `VarIntent()`, `toVarIntent()` and `nodeProxyIntent()` / `nodeObjectIntent()` were replaced by `assignable` / `setAssignable()` / `toAssignable()`, `nodeProxyAssignable()` and `nodeObjectAssignable()` (https://github.com/mrdoob/three.js/pull/34815). `TempNode` is deprecated in r187 (extend `Node` instead).
 
 ## Related
 

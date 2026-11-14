@@ -31,6 +31,8 @@ renderer.render(scene, camera);
 - Scene inherits all `Object3D` methods such as `add()`, `remove()`, and `getObjectByName()`.
 - Since r184, the rotation of background and environment maps (`backgroundRotation` / `environmentRotation`) is aligned with how 3D objects are rotated (https://github.com/mrdoob/three.js/pull/33077, https://github.com/mrdoob/three.js/pull/33232).
 - Setting `environment` does not override a material's own `envMap` property.
+- Migration (r186 → r187): `copy()` now resets `background`, `environment`, `fog` and `overrideMaterial` to `null` when the source has none, instead of keeping the target's previous values (https://github.com/mrdoob/three.js/pull/34691).
+- Source: https://threejs.org/docs/pages/Scene.html (three.js r187, `src/scenes/Scene.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

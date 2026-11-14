@@ -13,6 +13,7 @@
 | ReadbackBuffer | A readback buffer transfers data from the GPU… | [ReadbackBuffer.md](./ReadbackBuffer.md) |
 | RenderPipeline | Manages the rendering pipeline setup in apps… | [RenderPipeline.md](./RenderPipeline.md) |
 | Renderer | Base class for the modern node-based… | [Renderer.md](./Renderer.md) |
+| StandardDrawingPipeline | Decides which objects of a scene are rendered and… | [StandardDrawingPipeline.md](./StandardDrawingPipeline.md) |
 | Storage3DTexture | A special texture intended for compute shaders… | [Storage3DTexture.md](./Storage3DTexture.md) |
 | StorageArrayTexture | A special texture intended for compute shaders… | [StorageArrayTexture.md](./StorageArrayTexture.md) |
 | StorageBufferAttribute | A special buffer attribute intended for compute… | [StorageBufferAttribute.md](./StorageBufferAttribute.md) |
