@@ -152,13 +152,15 @@ const second = await generateText({
 
 Multi-step agent with an existing client-side `weather` tool (use `prepareStep` to select only new messages):
 
+Adapted (not in the official docs): the official example uses `stepCountIs`, which v7 renamed to `isStepCount`; the import and call below use the v7 name.
+
 ```ts
-import { ToolLoopAgent, stepCountIs } from 'ai';
+import { ToolLoopAgent, isStepCount } from 'ai';
 
 const agent = new ToolLoopAgent({
   model,
   tools: { weather },
-  stopWhen: stepCountIs(5),
+  stopWhen: isStepCount(5),
   prepareStep: ({ steps }) => {
     const previous = steps.at(-1);
     if (previous == null) {
@@ -329,6 +331,7 @@ const { text, reasoningText } = await generateText({
 
 ## Notes
 
+- Adapted from the official docs: the thread multi-step example uses `isStepCount` (v7 name) instead of the official `stepCountIs`; see the migration guide in this skill.
 - Message threads: the provider adds the `message-threads-2026-08-12` beta header. On continuation it omits `system` and tool definitions from the request, even if supplied (Anthropic retains them from the create request), and emits a compatibility warning; if the create request used tools you must still supply identical tool definitions on continuation for tool name mapping, execution, tool choice and tool beta headers. Start a new thread to change instructions, tools, model, thinking, tool choice, output format, context management, top-level cache control or beta headers, and after a fallback model responded (`fallback_message` in `providerMetadata.anthropic.iterations`) or a refusal (`finishReason === 'content-filter'` or `rawFinishReason === 'refusal'`). Conversation management is explicit: keep a full local copy of the history, and on continuation send only new messages (for tool calls, only the new tool results); passing the entire history can duplicate messages or cause an API error. Continue only from the latest response ID, which can be continued once; with `streamText` fully consume the stream, then use `await result.response`, and check `await result.finishReason` is not `'interrupted'`. Pin content-dependent beta headers (for example `anthropicBeta: ['pdfs-2024-09-25']`) on the create request and every continuation. Threads expire five minutes after their last request; inspect `APICallError.data.error.details.error_code` and, on `thread_not_found`, `thread_already_continued` or `thread_continue_in_flight`, replay the full conversation once with `thread: { type: 'create' }` (do not treat every 404 as an expired thread; remove cache breakpoints from older replayed messages to stay within the four-breakpoint limit). `generateText` / `streamText` currently reject empty `messages`, so `pause_turn` continuations (`rawFinishReason === 'pause_turn'`) need the provider-level `doGenerate` / `doStream`. Supported on the native Claude API and compatible Anthropic-managed endpoints and by the `@ai-sdk/anthropic-aws` provider (with SigV4 use the same IAM role or user throughout); `@ai-sdk/amazon-bedrock/anthropic` and `@ai-sdk/google-vertex/anthropic` do not support threads. Threads do not support Message Batches, compaction, or context editing other than `clear_thinking_20251015` with `keep: 'all'`, are not eligible for zero data retention or HIPAA readiness, are encrypted in memory and deleted within one hour of last use, and cannot be listed, read or deleted.
 - Streaming heartbeats: pings are transient stream events (no generated output, usage change, model-output timeout reset or response content), omitted from text projections and UI message streams; raw pings remain available through `include.rawChunks`; workflow durable streams record them. Applies to the Anthropic Messages implementation (including wrappers using it); Amazon Bedrock Converse does not emit typed Anthropic pings. Enable only when all normalized stream consumers support the `ping` part (a Gateway server must negotiate support before forwarding to older SDK clients); it does not add transport keepalives to UI responses.
 - Workload identity federation: the AI SDK resolves `authToken` before each request and sends it as a bearer credential; set the `oauth-2025-04-20` beta explicitly (a bearer token or callback alone does not imply federation). The example covers Messages API inference only, not the Files, Skills or Batch APIs. In the pinned helper version, `getToken()` starts a background exchange when at most two minutes remain and waits for one when at most 30 seconds remain; concurrent requests share the pending exchange; federation renews by exchanging another identity token (no refresh token). Your identity provider must supply fresh identity tokens (the file helper rereads the file but does not rotate it; Anthropic rejects `jti` reuse by default). This does not enable automatic credential discovery or retry on HTTP 401; keep the helper version pinned.

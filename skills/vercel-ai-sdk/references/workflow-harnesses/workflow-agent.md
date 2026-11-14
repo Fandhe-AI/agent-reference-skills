@@ -152,6 +152,8 @@ In addition to the options in the table, `stream()` accepts the generation setti
 
 ## Notes
 
+- `toolOrder`: the official reference page for `WorkflowAgent` (ai@7.0.173) lists it as an option, while the official WorkflowAgent guide's comparison table says it is "Not supported" for `WorkflowAgent`. The official pages disagree and both are kept as published; the `WorkflowAgent` settings type in `packages/workflow/src/workflow-agent.ts` at ai@7.0.173 declares `toolOrder`. Source: https://github.com/vercel/ai/blob/ai@7.0.173/packages/workflow/src/workflow-agent.ts
+- `experimental_refineToolInput`: the refined input is used for execution, output parts, lifecycle callbacks and telemetry, except that the `tool-call` chunk written by `stream()` for a tool without its own runtime validator and the input of provider-executed tool calls keep the unrefined value (see the WorkflowAgent guide in this directory).
 - Use the result API inside workflow code and return selected serializable fields (e.g. `text`, `usage`) through `run.returnValue`; returning the whole result class is not supported. Performance data currently measures the model response; complete tool/step timing is not yet reported.
 - `generate()` rejects on failure; the end callback runs before complete-output parsing, so a parsing failure can reject after `onEnd` has run.
 - Approval requests appear in `content` and `responseMessages` without requiring a writable. To continue, append `responseMessages` to the original history and add a tool message with the user's `tool-approval-response`; preserve the request signature and tool-call input and use the same `experimental_toolApprovalSecret` reference.

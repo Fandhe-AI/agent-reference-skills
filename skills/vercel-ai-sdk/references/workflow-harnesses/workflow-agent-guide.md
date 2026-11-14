@@ -108,6 +108,7 @@ Lifecycle callbacks (constructor or `stream()`; both fire, constructor first): `
 
 ## Notes
 
+- `toolOrder`: the comparison table below (as published) says "Not supported", but the official `WorkflowAgent` reference page and the `WorkflowAgent` settings type at ai@7.0.173 list `toolOrder`. See the WorkflowAgent reference page in this directory.
 - Tools as steps: mark tool `execute` functions with `'use step'` for automatic retries (default: 3 attempts), persistence, and per-step observability. Tools without `'use step'` run as regular in-memory functions without durability guarantees.
 - `WorkflowAgent.stream()` expects `ModelMessage[]`, not `UIMessage[]`; call `convertToModelMessages` first.
 - `createModelCallToUIChunkTransform()` also forwards `reset-step` events emitted on retries; clients remove partial parts from the failed model-call step before processing the retried output.
