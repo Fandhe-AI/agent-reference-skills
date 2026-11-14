@@ -78,6 +78,11 @@ Worker がジョブ追加時に稼働していなくても、接続された時�
 - BullMQ は分散処理をサポートしており、複数マシンにまたがるスケーラブルなアーキテクチャを構築可能
 - ジョブデータは Redis に保存されるため、シリアライズ可能なデータである必要がある
 - Queue, Worker, QueueEvents はそれぞれ独立した Redis 接続を使用できる
+- v6.7.6 の公式ガイドでは Queue は job scheduler（cron 式または固定間隔の繰り返しジョブ）の作成にも使われ、QueueEvents は任意のプロセスから全ワーカーの[イベント](./events/README.md)を購読し、FlowProducer は親子依存のあるジョブツリー（[flows](./flows/README.md)）を追加する
+- Redis と PostgreSQL の 2 つのバックエンドがある。クラスはデータストア非依存で、各操作を backend に委譲する。Redis は Redis 6.2 以上と Valkey / Dragonfly 等の互換サーバー（ioredis / node-redis / Bun の Redis クライアント / Valkey GLIDE）、PostgreSQL は 13 以上。特記がない限りガイドは両方に適用され、差異は PostgreSQL backend の feature parity 節に記載される
+- 6.4.0 で追加された experimental の Relay（プロセス間リアルタイムメッセージング）は [relay/](./relay/README.md) を参照
+- 公式ガイドは TypeScript パッケージ（Node.js / Bun）を使う。Python / Elixir / .NET / Rust / PHP の SDK も同じデータモデルを共有し、同じキュー上で言語をまたいで協調できる（[languages](../languages/README.md)）
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/introduction.md (tag v6.7.6、取得日 2026-11-14)
 
 ## 関連
 

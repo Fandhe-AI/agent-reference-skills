@@ -45,7 +45,7 @@ const worker = new Worker(
 
 ### Delaying
 
-To delay a job while it is being processed, use `moveToDelayed`. While a worker processes a job it keeps a lock on it with a token value; for the TypeScript `moveToDelayed` to work, pass the token so it can unlock without error. Then exit the processor by throwing `DelayedError` (`DelayedException` in .NET) to signal the worker that the job has been delayed, so it does not try to complete or fail it.
+To delay a job while it is being processed, use `moveToDelayed`. While a worker processes a job it keeps a lock on it with a token value; for the TypeScript and Python `moveToDelayed` methods to work, pass the token so it can unlock without error (in .NET `job.MoveToDelayedAsync` uses the job's token automatically when none is given, and in Rust `job.move_to_delayed` always uses it). Then exit the processor by throwing `DelayedError` (TypeScript and Python), `DelayedException` (.NET) or returning `Error::Delayed` (Rust) to signal the worker that the job has been delayed, so it does not try to complete or fail it.
 
 ```typescript
 import { DelayedError, Worker } from 'bullmq';
@@ -251,7 +251,7 @@ const worker = new Worker(
 ## Notes
 
 - Manually moving jobs using special errors does not increment `attemptsMade`. That property is incremented on regular job completion or failure (including retries using a backoff strategy). This applies to `DelayedError`, `RateLimitError`, `WaitingChildrenError` and `WaitingError`. To control how many times a job is allowed to start processing, use the `maxStartedAttempts` option.
-- The official page also has .NET, Python and Rust tabs. In .NET, use `job.UpdateDataAsync`; `job.MoveToDelayedAsync(ts)` uses the job's own token automatically when none is given, and `DelayedException` (the counterpart of TypeScript's `DelayedError`) is thrown to signal the delay. The TypeScript `moveToDelayed` still needs the token to unlock.
+- The official page also has .NET, Python and Rust tabs. In .NET, use `job.UpdateDataAsync`; `job.MoveToDelayedAsync(ts)` uses the job's own token automatically when none is given, and `DelayedException` (the counterpart of TypeScript's `DelayedError`) is thrown to signal the delay. The TypeScript and Python `moveToDelayed` still need the token to unlock; in Rust `job.move_to_delayed` always uses it and the processor returns `Error::Delayed` (v6.7.6 official page).
 - Save the step with `job.updateData` after each step completes; otherwise a retry re-executes from the beginning.
 - BullMQ Pro: this pattern can be handled with observables, in which case the next step does not need to be saved.
 

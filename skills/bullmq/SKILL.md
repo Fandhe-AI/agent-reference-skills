@@ -1,10 +1,10 @@
 ---
 name: bullmq
 description: >
-  BullMQ (Node.js ジョブキュー、Redis / PostgreSQL バックエンド対応) リファレンス。
-  Queue, Worker, Job, FlowProducer, QueueEvents、PostgreSQL backend、
-  createPostgresBackend, withBackend、レート制限、cron、delayed / repeatable / priority ジョブ、
-  再試行、デッドレター、フロー、バッチ処理、メトリクス。Python / Elixir / PHP / Rust 対応。
+  BullMQ (Node.js ジョブキュー v6.7、Redis / PostgreSQL バックエンド) リファレンス。
+  Queue, Worker, Job, FlowProducer, QueueEvents, Relay (プロセス間リアルタイムメッセージング),
+  PostgreSQL backend, createPostgresBackend, withBackend、レート制限、cron、delayed / repeatable / priority ジョブ、
+  再試行、デッドレター、フロー、バッチ処理、メトリクス。Python / Elixir / .NET / PHP / Rust 対応。
 user-invocable: false
 ---
 
@@ -13,7 +13,9 @@ user-invocable: false
 BullMQ (Node.js ジョブキューライブラリ、Redis / PostgreSQL バックエンド対応) の全ドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象: BullMQ v6.3.15（docs/gitbook @ tag v6.3.15）
+対象: BullMQ v6.7.6（docs/gitbook @ tag v6.7.6、commit `2353552`、取得日 2026-11-14。npm `bullmq` latest 6.7.6）
+
+追従メモ: v6.3.15 → v6.7.6 の差分（Relay 新設、.NET SDK、deduplication `reschedule`、`getDelayedCount(timestamp)`、SDK 別の一括追加・shutdown・pause 挙動、Pro のグループ concurrency 実行時変更 等）を反映済み。各言語タブ（Python / Elixir / Rust / .NET）が加わった共有ガイドページは TypeScript 中心の要約のままで、他言語の API は `references/languages/` と公式ページを参照。samples / scripts は旧版から変更なし（v6.7.6 の公式と照合して API の差異なしを確認、Relay の samples は未収録）。
 
 ## ディレクトリ構成
 
@@ -103,6 +105,23 @@ skills/bullmq/
         README.md
         aws-elasticache.md
         aws-memorydb.md
+      relay/
+        README.md
+        overview.md
+        getting-started.md
+        topics-and-patterns.md
+        messages.md
+        retained-messages.md
+        nodes-and-failures.md
+        backends.md
+        reference.md
+        relay-vs-kafka.md
+        example-live-job-progress.md
+        example-realtime-notifications.md
+        example-cache-invalidation.md
+        example-live-configuration.md
+        example-controlling-workers.md
+        example-cancelling-jobs-on-other-workers.md
       telemetry/
         README.md
         getting-started.md
@@ -168,6 +187,7 @@ skills/bullmq/
         observables.md
     languages/
       README.md
+      dotnet.md
       elixir.md
       php.md
       python.md
@@ -214,6 +234,7 @@ skills/bullmq/
 | PostgreSQL バックエンド（createPostgresBackend、withBackend、runMigrations によるスキーマ移行、Redis なし運用） | guide/postgresql-backend | [references/guide/postgresql-backend/README.md](references/guide/postgresql-backend/README.md) |
 | メトリクス収集、Prometheus 連携 | guide/metrics | [references/guide/metrics/README.md](references/guide/metrics/README.md) |
 | OpenTelemetry、トレース、Jaeger 連携 | guide/telemetry | [references/guide/telemetry/README.md](references/guide/telemetry/README.md) |
+| Relay（プロセス間リアルタイムメッセージング、topic / pattern、retained message、lease / recovery、Redis・PostgreSQL バックエンド、`Relay` API、ライブ進捗・通知・キャッシュ無効化・設定配信・ワーカー制御・他ワーカーのジョブキャンセル例。experimental、v6.4.0+） | guide/relay | [references/guide/relay/README.md](references/guide/relay/README.md) |
 | Redis 互換性、Dragonfly 対応 | guide/redis-compatibility | [references/guide/redis-compatibility/README.md](references/guide/redis-compatibility/README.md) |
 | AWS MemoryDB / ElastiCache でのホスティング | guide/redis-hosting | [references/guide/redis-hosting/README.md](references/guide/redis-hosting/README.md) |
 | NestJS との統合、Queue インジェクション | guide/nestjs | [references/guide/nestjs/README.md](references/guide/nestjs/README.md) |
@@ -223,6 +244,6 @@ skills/bullmq/
 | BullMQ Pro グループ（並行数・レート制限・優先度） | bullmq-pro/groups | [references/bullmq-pro/groups/README.md](references/bullmq-pro/groups/README.md) |
 | BullMQ Pro Observable（キャンセル） | bullmq-pro/observables | [references/bullmq-pro/observables/README.md](references/bullmq-pro/observables/README.md) |
 | BullMQ Pro NestJS 統合 | bullmq-pro/nestjs | [references/bullmq-pro/nestjs/README.md](references/bullmq-pro/nestjs/README.md) |
-| Python / Elixir / PHP / Rust での利用 | languages | [references/languages/README.md](references/languages/README.md) |
+| Python / Elixir / .NET / PHP / Rust での利用 | languages | [references/languages/README.md](references/languages/README.md) |
 | 典型的な使い方を知りたい（最小構成・フロー・スケジューラ等） | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンド、テレメトリセットアップ | scripts | [scripts/README.md](scripts/README.md) |

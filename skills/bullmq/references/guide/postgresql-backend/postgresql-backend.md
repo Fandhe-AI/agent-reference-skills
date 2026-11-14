@@ -202,7 +202,7 @@ try {
 - **Idempotent**: running it again is a no-op.
 - **Concurrency-safe**: a transaction-scoped advisory lock (namespaced per schema) serializes concurrent starters, so many workers or instances booting at once still migrate exactly once.
 
-Schema compatibility is scoped to BullMQ major versions. The migration ledger records the minimum client major required by the schema. The initial migration split is a same-major exception; future schema migrations are breaking changes and require a new BullMQ major version. A client older than the recorded major fails with `SchemaVersionMismatchError`. Schema downgrades are not supported.
+Schema compatibility is scoped to BullMQ major versions. The migration ledger records the minimum client major required by the schema. A new migration only requires a new BullMQ major when applying it would break instances still running the previous library code. Migrations that keep existing code working (for example, ones that only add new tables and functions) stay within the same major: instances that haven't upgraded keep working normally and simply don't get the new features. A client older than the recorded major fails with `SchemaVersionMismatchError`. Schema downgrades are not supported.
 
 ## How it works
 
@@ -245,8 +245,8 @@ The figures below are a rough illustration measured on an Apple Silicon laptop (
 
 ## Notes
 
-- Figures in "Indicative numbers" come from the official BullMQ v6.3.15 docs ([docs/gitbook/guide/postgresql.md @ v6.3.15](https://github.com/taskforcesh/bullmq/blob/v6.3.15/docs/gitbook/guide/postgresql.md)).
-- The official v6.3.15 guide groups `off` and `local` together as removing the per-commit fsync wait; per the PostgreSQL docs, only `off` skips the local WAL flush, while `local` skips only the synchronous-standby wait ([synchronous_commit](https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT)).
+- Figures in "Indicative numbers" come from the official BullMQ v6.7.6 docs ([docs/gitbook/guide/postgresql.md @ v6.7.6](https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/postgresql.md)).
+- The official v6.3.15 and v6.7.6 guides group `off` and `local` together as removing the per-commit fsync wait; per the PostgreSQL docs, only `off` skips the local WAL flush, while `local` skips only the synchronous-standby wait ([synchronous_commit](https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT)).
 - Migration (v6.0 → v6.1): automatic migrations on first connect were removed; call `runMigrations` explicitly from a deployment step (see Migrations)
 - The backend implements the full datastore-agnostic API (queues, workers, flows, job schedulers, rate limiting, prioritization, delayed jobs, deduplication, metrics and events), so application code is identical across backends. Redis-specific concerns (Redis Cluster, `maxmemory-policy`, etc.) don't apply; the relevant knob on PostgreSQL is `max_connections`.
 - `getBackend()` always returns the currently configured backend. Redis-only escape hatches (raw Redis `client`, `redisVersion`, and similar) exist only when the backend is Redis.
@@ -259,4 +259,4 @@ The figures below are a rough illustration measured on an Apple Silicon laptop (
 - [Connections](../connections.md)
 - [Migrate from v5 to v6](../migrations/migrate-from-v5-to-v6.md)
 - [Architecture](../architecture.md)
-- [PostgreSQL (official, v6.3.15)](https://docs.bullmq.io/guide/postgresql)
+- [PostgreSQL (official, v6.7.6)](https://docs.bullmq.io/guide/postgresql)

@@ -118,4 +118,5 @@ Common events (see the Worker Listener, Queue Listener and QueueEvents Listener 
 ## Related
 
 - [Create custom events](./create-custom-events.md)
+- [Relay (process-to-process real-time messaging)](../relay/overview.md)
 - [Working with batches](../queues/batches.md)

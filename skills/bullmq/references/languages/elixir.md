@@ -1,74 +1,163 @@
 # Elixir
 
-BullMQ の Elixir バインディング。Erlang/OTP の並行処理モデルと BullMQ のジョブキューを組み合わせ、GenServer / Supervisor ベースで動作する。
+BullMQ for Elixir is a robust, feature-rich message queue and job scheduling library that runs on top of Redis™ or PostgreSQL. It's a port of the popular [BullMQ](https://bullmq.io) library, providing full compatibility with existing BullMQ queues from Node.js, Python, .NET, Rust and PHP.
 
-## インストール
+## Signature / Usage
+
+### Installation
+
+Add BullMQ to your `mix.exs`:
 
 ```elixir
-# mix.exs
-defp deps do
+def deps do
   [
-    {:bullmq, "~> 1.0"}
+    {:bullmq, "~> 2.3"},
+    {:redix, "~> 1.2"}  # Redis client
   ]
 end
 ```
 
-## 要件
+Then run:
 
-- Elixir 1.15 以上
-- Erlang/OTP 26 以上
-- Redis 6.0 以上
-
-## 基本的な使い方
-
-### キューへのジョブ追加
-
-```elixir
-{:ok, queue} = BullMQ.Queue.new("myQueue", connection: connection)
-BullMQ.Queue.add(queue, "myJob", %{foo: "bar"})
+```bash
+mix deps.get
 ```
 
-### ワーカーでの処理
+### Quick Start
+
+#### Setting Up Redis Connection
+
+Add a Redix connection to your supervision tree:
 
 ```elixir
-defmodule MyWorker do
-  use BullMQ.Worker
+defmodule MyApp.Application do
+  use Application
 
-  def process(job) do
-    IO.inspect(job.data)
-    :ok
+  def start(_type, _args) do
+    children = [
+      {Redix, name: :my_redis, host: "localhost", port: 6379}
+    ]
+
+    Supervisor.start_link(children, strategy: :one_for_one)
   end
 end
 ```
 
-### Supervision ツリーへの統合
+#### Adding Jobs
+
+```elixir
+# Add a job to a queue
+{:ok, job} = BullMQ.Queue.add("emails", "send-welcome", %{
+  to: "user@example.com",
+  template: "welcome"
+}, connection: :my_redis)
+
+IO.puts("Created job: #{job.id}")
+```
+
+#### Processing Jobs
+
+```elixir
+defmodule MyApp.EmailWorker do
+  def process(%BullMQ.Job{name: "send-welcome", data: data}) do
+    MyApp.Mailer.send_welcome(data["to"], data["template"])
+    {:ok, %{sent: true}}
+  end
+end
+
+# Start the worker
+{:ok, worker} = BullMQ.Worker.start_link(
+  queue: "emails",
+  connection: :my_redis,
+  processor: &MyApp.EmailWorker.process/1,
+  concurrency: 5,
+  on_completed: fn job, result ->
+    Logger.info("Job #{job.id} completed")
+  end
+)
+```
+
+### PostgreSQL Backend
+
+The high-level modules (`Queue`, `Worker`, `Job`, `QueueEvents`, `FlowProducer` and `JobScheduler`) are backend agnostic. To use PostgreSQL instead of Redis, add [Postgrex](https://hex.pm/packages/postgrex) to your dependencies:
+
+```elixir
+def deps do
+  [
+    {:bullmq, "~> 2.3"},
+    {:postgrex, "~> 0.22"}
+  ]
+end
+```
+
+Start a PostgreSQL connection in your supervision tree. The required tables and functions are migrated automatically when the connection starts:
 
 ```elixir
 children = [
-  {MyWorker, connection: connection, queue: "myQueue"}
+  {BullMQ.Backends.Postgres.Connection,
+   name: :my_pg, url: "postgresql://localhost:5432/mydb", schema: "bullmq"}
 ]
-
-Supervisor.start_link(children, strategy: :one_for_one)
 ```
 
-## サポートされる機能
+Then select the backend per call, or globally with `config :bullmq, :backend, BullMQ.Backends.Postgres`:
 
-- リトライロジック（指数バックオフ対応）
-- 遅延ジョブ、cron ベースのスケジューリング
-- 優先度付きジョブ処理
-- レート制限
-- 親子ジョブ（フロー）
-- リアルタイムイベントストリーミング
-- 停滞ジョブの自動検出とリカバリ
-- OTP 統合（GenServer / Supervisor）
-- テレメトリ統合
+```elixir
+{:ok, job} =
+  BullMQ.Queue.add("emails", "send-welcome", %{to: "user@example.com"},
+    connection: :my_pg,
+    backend: BullMQ.Backends.Postgres
+  )
 
-## 注意点
+{:ok, worker} =
+  BullMQ.Worker.start_link(
+    queue: "emails",
+    connection: :my_pg,
+    backend: BullMQ.Backends.Postgres,
+    processor: &MyApp.EmailWorker.process/1
+  )
+```
 
-- API リファレンスは HexDocs (hexdocs.pm/bullmq) で公開
-- Node.js / Python と同じ Redis データ構造を共有し、言語間でジョブの相互運用が可能
+Read more about how this backend works in the PostgreSQL backend category of this skill's guide.
 
-## 関連
+## Notes
 
-- [Quick Start](../start/quick-start.md)
+### Features
+
+- **High Performance**: Optimized backends for Redis and PostgreSQL
+- **Job Scheduling**: Schedule jobs to run at specific times or intervals
+- **Priority Queues**: Process high-priority jobs first
+- **Retry Strategies**: Automatic retries with configurable backoff
+- **Rate Limiting**: Control job processing rates
+- **Parent-Child Jobs**: Create complex job hierarchies with dependencies
+- **Real-time Events**: Subscribe to job lifecycle events via Worker callbacks or QueueEvents
+- **Concurrency Control**: Process multiple jobs simultaneously with true BEAM parallelism
+- **Stalled Job Recovery**: Automatically recover jobs from crashed workers
+- **Telemetry Integration**: Built-in observability with Telemetry
+- **OTP Design**: Built using GenServers, Supervisors, and other OTP patterns
+- **Pluggable Backends**: Run the same API on Redis or PostgreSQL
+- **Cross-language Compatibility**: Share queues between Elixir, Node.js, Python, .NET, Rust and PHP
+
+### Architecture
+
+BullMQ for Elixir leverages OTP patterns for reliability:
+
+- **GenServer** for stateful components (Worker, QueueEvents)
+- **Supervisor** for fault tolerance
+- **Telemetry** for observability
+- **True Parallelism** using multiple BEAM processes for concurrent job processing
+
+### Requirements
+
+- Elixir 1.15 or later
+- Erlang/OTP 26 or later
+- Redis 6.0 or later (6.2+ recommended), or PostgreSQL 13 or later when using the PostgreSQL backend
+
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/elixir/introduction.md (tag v6.7.6, fetched 2026-11-14). Official page: https://docs.bullmq.io/elixir/introduction
+- Rewritten from the official page: the previous version of this page (`{:bullmq, "~> 1.0"}`, `BullMQ.Queue.new/2`, `use BullMQ.Worker`) did not match the official v6.3.15 introduction; the examples above are verbatim from v6.7.6 (package `~> 2.3`).
+- The Hex package has its own version line (changelog `vex2.x`, 2.4.0 on 2026-11-04 adds the deduplication `schedule` option); API reference: https://hexdocs.pm/bullmq. In the v6.7.6 docs the shared guide pages carry Elixir tabs (for example cancelling jobs, getters, flows); this skill's guide pages summarize the TypeScript API only.
+
+## Related
+
+- [Introduction](../guide/introduction.md)
 - [Guide](../guide/README.md)
+- [PostgreSQL backend](../guide/postgresql-backend/postgresql-backend.md)

@@ -15,8 +15,8 @@ await worker.close();
 
 ## 注意点
 
-- `close()` 自体はタイムアウトしない。ジョブが適切な時間内に完了するよう設計する必要がある
-- `close()` が失敗した場合、または完了できなかった場合、保留中のジョブは stalled としてマークされ、他の Worker によって再処理される（適切な stalled オプションが設定されている場合）
+- シャットダウンの挙動とタイムアウトは SDK ごとに異なる（v6.7.6）。TypeScript / Python / .NET は組み込みタイムアウトなしでアクティブジョブの完了を待つ。Rust の `close(30_000)` は最大 30 秒待ち、期限を過ぎると未完了の処理を中断する。Elixir は既定で最大 30 秒待ち、`timeout: milliseconds` で期限を変更、`force: true` で待機をスキップできる。TypeScript では `close()` 自体はタイムアウトしないため、ジョブが適切な時間内に完了するよう設計する必要がある
+- シャットダウンがアクティブジョブの完了前に終わった場合（`close()` が失敗・未完了を含む）、ジョブは他の Worker によって stalled として回復され得る（stalled チェックが設定されている場合）
 - 「ungraceful shutdown」（プロセスの強制終了など）が発生しても、BullMQ の stalled メカニズムにより新しい Worker がジョブを引き継いで処理を継続できる
 - BullMQ 2.0 以前では、stalled ジョブの検出に `QueueScheduler` が必要だった。2.0 以降では不要
 

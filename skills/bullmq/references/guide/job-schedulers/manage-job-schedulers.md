@@ -33,6 +33,15 @@ const schedulers = await queue.getJobSchedulers(0, 9, true);
 console.log('Current job schedulers:', schedulers);
 ```
 
+取得したスケジューラを削除する場合は、その `key` を `removeJobScheduler` に渡す:
+
+```typescript
+const [scheduler] = await queue.getJobSchedulers(0, 0);
+if (scheduler) {
+  await queue.removeJobScheduler(scheduler.key);
+}
+```
+
 ### getJobSchedulers パラメータ
 
 | Name | Type | Description |
@@ -52,7 +61,9 @@ console.log('Current job scheduler:', scheduler);
 
 ## 注意点
 
+- `upsertJobScheduler` に渡したスケジューラ ID は、`getJobScheduler` / `getJobSchedulers` の戻り値では `key` プロパティとして返される。取得・更新・削除には `key` を使う。`key` はスケジューラの `name` や生成されるジョブの ID とは別物で、`JobSchedulerJson` の任意の `id` プロパティはスケジューラ識別子ではない（公式記述、v6.7.6）
 - `removeJobScheduler` はスケジューラが存在しない場合 `false` を返す（エラーにはならない）
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/job-schedulers/manage-job-schedulers.md (tag v6.7.6、取得日 2026-11-14)
 - `getJobSchedulers` はページネーションに対応しており、大量のスケジューラがある場合でも効率的に取得可能
 - スケジューラの更新には `upsertJobScheduler` を使用する（同じ ID で呼び出すと既存設定が上書きされる）
 - スケジューラのレポートやダッシュボード生成には `getJobSchedulers` が有用

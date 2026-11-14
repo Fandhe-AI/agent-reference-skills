@@ -1,0 +1,88 @@
+# BullMQ — Relay example: Live configuration and feature flags
+
+フィーチャーフラグ等の設定を retained message として publish し、新規インスタンスも subscribe 時に現在値を取得する例。
+
+## Signature / Usage
+
+### Every instance
+
+```typescript
+import { Relay } from 'bullmq';
+
+const relay = new Relay({ connection: { host: 'redis.internal', port: 6379 } });
+
+let flags: FeatureFlags = DEFAULT_FLAGS;
+let flagsGeneration = 0;
+
+async function reloadFlags() {
+  const generation = ++flagsGeneration;
+  const loaded = await db.settings.get('feature-flags');
+  // Ignore reads superseded by a message or a newer reload.
+  if (generation === flagsGeneration) {
+    flags = loaded;
+  }
+}
+
+async function loadFlags() {
+  let received = false;
+  await relay.subscribe('config.feature-flags', message => {
+    received = true;
+    flagsGeneration++;
+    flags = message.data as FeatureFlags;
+  });
+  // The retained value, if any, is delivered before subscribe() resolves.
+  if (!received) {
+    await reloadFlags();
+  }
+}
+
+// Retained messages are not delivered again after a recovery.
+relay.on('recovered', () => {
+  void reloadFlags().catch(console.error);
+});
+
+await loadFlags();
+
+export const isEnabled = (flag: keyof FeatureFlags) => flags[flag];
+```
+
+### Admin service
+
+```typescript
+const MONTH = 30 * 24 * 60 * 60 * 1000;
+
+export async function setFlags(next: FeatureFlags) {
+  await db.settings.set('feature-flags', next); // source of truth
+  await relay.publish('config.feature-flags', next, { retain: MONTH });
+}
+```
+
+### Republishing periodically
+
+```typescript
+await queue.upsertJobScheduler('republish-flags', {
+  every: 24 * 60 * 60 * 1000,
+});
+
+new Worker(
+  queue.name,
+  async () => {
+    const current = await db.settings.get('feature-flags');
+    await relay.publish('config.feature-flags', current, { retain: MONTH });
+  },
+  { connection },
+);
+```
+
+## Notes
+
+- Scenario: an admin changes a feature flag or setting and every running instance must apply it within moments, without a restart; instances that start later must get the current value too. Subscribers to the exact topic receive the retained value before `subscribe()` resolves, then every change, atomically.
+- Keep the database as the source of truth and the retained message as a fast, pushed copy; retained messages are not delivered again after a recovery, so reload on `'recovered'`. Use one topic per independent setting.
+- To keep the retained value from expiring, republish it periodically, for example with a job scheduler (third snippet).
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/relay/examples/live-configuration.md (tag v6.7.6, fetched 2026-11-14). Official page: https://docs.bullmq.io/guide/relay/examples/live-configuration
+
+## Related
+
+- [overview.md](./overview.md)
+- [retained-messages.md](./retained-messages.md)
+- [topics-and-patterns.md](./topics-and-patterns.md)

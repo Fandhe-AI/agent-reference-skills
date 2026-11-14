@@ -3,7 +3,7 @@
 | Name | Description | Path |
 |------|-------------|------|
 | Basic Queue and Worker | Queue にジョブを追加し、Worker で処理する最小構成。 | [basic-queue-and-worker.md](./basic-queue-and-worker.md) |
-| Bulk Add | 複数ジョブをアトミックに一括追加し、Redis へのラウンドトリップを削減する。 | [bulk-add.md](./bulk-add.md) |
+| Bulk Add | 複数ジョブを一括追加し、バックエンドへのラウンドトリップを削減する（原子性は SDK / バックエンド依存）。 | [bulk-add.md](./bulk-add.md) |
 | Concurrency | Worker の concurrency オプションで単一プロセスが同時処理するジョブ数を制御する。 | [concurrency.md](./concurrency.md) |
 | Delayed Jobs | ジョブの処理を指定時間後まで遅らせる設定。 | [delayed-jobs.md](./delayed-jobs.md) |
 | Flow Producer | FlowProducer で親子関係を持つジョブを定義し、子が全て完了したら親を実行するワークフロー。 | [flow-producer.md](./flow-producer.md) |

@@ -88,11 +88,15 @@ const worker = new Worker(
 RRULE を使用したカスタム戦略の例:
 
 ```typescript
-import { Queue, Worker } from 'bullmq';
+import { JobSchedulerRepeatOptions, Queue, Worker } from 'bullmq';
 import { rrulestr } from 'rrule';
 
 const settings = {
-  repeatStrategy: (millis: number, opts: RepeatOptions, _jobName: string) => {
+  repeatStrategy: (
+    millis: number,
+    opts: JobSchedulerRepeatOptions,
+    _jobName: string,
+  ) => {
     const currentDate =
       opts.startDate && new Date(opts.startDate) > new Date(millis)
         ? new Date(opts.startDate)
@@ -146,6 +150,8 @@ const worker = new Worker(
 - cron 式のオプションの秒フィールドにより、標準 cron より精密なスケジューリングが可能
 - `repeatStrategy` 設定は Queue と Worker の**両方**に提供する必要がある（初回はキューで次回タイミングを計算し、以降はワーカーが引き継ぐため）
 - 1つのキューにつき1つの `repeatStrategy` のみ定義可能
+- `repeatStrategy` が受け取る repeat options（`JobSchedulerRepeatOptions`）には、これまでに生成したイテレーション数を示す読み取り専用の `count` が含まれる。内部管理で、Worker が次のイテレーションをスケジュールするためにジョブを取得した時点（そのジョブの processor 実行前）にのみ定義され、`upsertJobScheduler` では設定できない（公式記述、v6.7.6）
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/job-schedulers/repeat-strategies.md (tag v6.7.6、取得日 2026-11-14)
 
 ## 関連
 

@@ -1,8 +1,8 @@
 # Connections
 
-A connection to a Redis instance is required to work with a Queue. By default BullMQ creates connections with ioredis, and the options you pass to BullMQ are passed to the ioredis constructor. If you provide no options, it defaults to `localhost` and port 6379.
+A connection to a datastore is required to work with a Queue. By default BullMQ uses Redis (or a compatible server such as Valkey or Dragonfly), and this page describes how to configure those connections; for PostgreSQL see the PostgreSQL backend category. By default BullMQ creates Redis connections with ioredis, and the options you pass to BullMQ are passed to the ioredis constructor. If you provide no options, it defaults to `localhost` and port 6379.
 
-BullMQ can also use other Redis clients through its Redis client adapter interface. The package includes adapters for ioredis, node-redis, and Bun's built-in Redis client. You can provide your own adapter by implementing the `IRedisClient` interface.
+BullMQ can also use other Redis clients through its Redis client adapter interface. The package includes adapters for ioredis, node-redis, Bun's built-in Redis client and Valkey GLIDE. You can provide your own adapter by implementing the `IRedisClient` interface.
 
 Every class consumes at least one Redis connection, but connections can be reused in some situations. Classes that need blocking Redis commands, such as `Worker` and `QueueEvents`, create duplicated connections internally, so the client or adapter must support `duplicate()`.
 

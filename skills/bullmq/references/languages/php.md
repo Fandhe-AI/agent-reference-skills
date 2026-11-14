@@ -1,6 +1,6 @@
 # PHP
 
-BullMQ の PHP バインディング。Queue クラス（プロデューサー側）のみを実装しており、ワーカーには Node.js / Python / Elixir が必要。
+BullMQ の PHP バインディング。Queue クラス（プロデューサー側）のみを実装しており、ワーカーには Node.js / Python / Elixir / .NET / Rust が必要。
 
 ## インストール
 
@@ -126,11 +126,12 @@ $queue = new Queue('myQueue', [
 
 ## 注意点
 
-- PHP 版は Queue クラス（プロデューサー側）のみを実装。ワーカー処理には Node.js / Python / Elixir が必要
-- 繰り返しジョブやスケジュールジョブは Node.js の JobScheduler から作成する必要がある
-- Node.js / Python / Elixir と同じ Redis データ構造を共有し、ポリグロットなキュー処理が可能
+- PHP 版は Queue クラス（プロデューサー側）のみを実装。ワーカー処理には Node.js / Python / Elixir / .NET / Rust が必要
+- 繰り返しジョブやスケジュールジョブは、job scheduler をサポートする SDK（Node.js / Python / Elixir / .NET / Rust）で作成する。PHP クライアントは個別ジョブの追加向けで、スケジューラ管理は対象外（v6.7.6 の公式記述）
+- Node.js / Python / Elixir / .NET / Rust と同じ Redis データ構造を共有し、ポリグロットなキュー処理が可能
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/php/introduction.md (tag v6.7.6, fetched 2026-11-14)
 
 ## 関連
 
-- [Quick Start](../start/quick-start.md)
+- [Introduction](../guide/introduction.md)
 - [Guide](../guide/README.md)

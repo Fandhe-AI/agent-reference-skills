@@ -24,9 +24,9 @@ await myQueue.resume();
 await myWorker.pause();
 ```
 
-上記の呼び出しは、Worker が現在処理中のすべてのジョブが完了（または失敗）するまで待機する。
+上記の呼び出し（TypeScript / Python）は、Worker が現在処理中のすべてのジョブが完了（または失敗）するまで待機する。Rust と Elixir の pause は即座に返り、アクティブジョブは実行を継続する（Rust に `force` オプションはなく、Elixir の `force` は現状効果なし）。
 
-処理中のジョブを待たずに即座に一時停止する場合:
+TypeScript / Python で処理中のジョブを待たずに即座に返す場合:
 
 ```typescript
 await myWorker.pause(true);
@@ -49,7 +49,8 @@ myWorker.resume();
 
 - グローバル一時停止は Queue インスタンスの `pause()` メソッドを使用し、ローカル一時停止は Worker インスタンスの `pause()` メソッドを使用する
 - 一時停止中の Worker はアイドル状態となり、再開されるまで新しいジョブを処理しない
-- 処理中のジョブが完了するまで待機するデフォルトの動作は、graceful shutdown と同様の考え方に基づく
+- 処理中のジョブが完了するまで待機するデフォルトの動作（TypeScript / Python）は、graceful shutdown と同様の考え方に基づく
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/workers/pausing-queues.md、graceful-shutdown.md（tag v6.7.6、取得日 2026-11-14）
 
 ## 関連
 
