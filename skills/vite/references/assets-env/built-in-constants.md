@@ -15,7 +15,7 @@ if (import.meta.env.DEV) {
 }
 ```
 
-Type definition (`packages/vite/types/importMeta.d.ts`, tag v8.3.4):
+Type definition (`packages/vite/types/importMeta.d.ts`, tag v8.3.8):
 
 ```ts
 interface ImportMetaEnv extends Record<ImportMetaEnvFallbackKey, any> {

@@ -41,7 +41,7 @@ Minimum range still required when a lower `build.target` is set (Vite relies on 
 
 - Custom targets are specified via the `build.target` config option; the lowest target is `es2015`.
 - By default Vite only handles syntax transforms and does not cover polyfills. The page points to https://cdnjs.cloudflare.com/polyfill/ , which generates polyfill bundles from the user's UserAgent string.
-- Legacy browsers can be supported via `@vitejs/plugin-legacy`, which automatically generates legacy chunks and corresponding ES language feature polyfills. The legacy chunks are conditionally loaded only in browsers without native ESM support (source: https://github.com/vitejs/vite/tree/v8.3.4/packages/plugin-legacy).
+- Legacy browsers can be supported via `@vitejs/plugin-legacy`, which automatically generates legacy chunks and corresponding ES language feature polyfills. The legacy chunks are conditionally loaded only in browsers without native ESM support (source: https://github.com/vitejs/vite/tree/v8.3.8/packages/plugin-legacy).
 - Migration (v7 → v8): the default browser target changed in this major; see the migration pages in migration-troubleshooting.
 
 ## Related

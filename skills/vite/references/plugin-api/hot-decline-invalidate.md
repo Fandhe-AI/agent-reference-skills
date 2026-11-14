@@ -32,7 +32,7 @@ import.meta.hot.accept((module) => {
 - `hot.decline()` is currently a noop, there for backward compatibility; it could change if a new usage appears. To indicate that a module is not hot-updatable, use `hot.invalidate()`.
 - `hot.invalidate()`: a self-accepting module that cannot handle an HMR update at runtime makes the HMR server invalidate the caller's importers, as if the caller were not self-accepting.
 - Always call `import.meta.hot.accept` even if you plan to call `invalidate` immediately afterwards, or the HMR client will not listen for future changes. Recommended: call `invalidate` within the `accept` callback.
-- `hot.decline` is not declared on `ViteHotContext` in the v8.3.4 `types/hot.d.ts`; the guide page documents it as a no-op.
+- `hot.decline` is not declared on `ViteHotContext` in the v8.3.8 `types/hot.d.ts`; the guide page documents it as a no-op.
 
 ## Related
 

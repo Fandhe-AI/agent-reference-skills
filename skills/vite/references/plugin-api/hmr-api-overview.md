@@ -66,7 +66,7 @@ TypeScript IntelliSense via `tsconfig.json`:
 - The manual HMR API is primarily intended for framework and tooling authors; end users usually get HMR from framework starter templates.
 - Always guard all HMR API usage with `if (import.meta.hot)` so the code can be tree-shaken in production.
 - Type definitions for `import.meta.hot` live in `vite/client.d.ts`.
-- The `ModuleNamespace` type is `Record<string, any> & { [Symbol.toStringTag]: 'Module' }` (from `vite/types/hot.d.ts`). The same `.d.ts` at v8.3.4 also declares `acceptExports(exportNames, cb?)` on `ViteHotContext`, which the guide page does not document.
+- The `ModuleNamespace` type is `Record<string, any> & { [Symbol.toStringTag]: 'Module' }` (from `vite/types/hot.d.ts`). The same `.d.ts` at v8.3.8 also declares `acceptExports(exportNames, cb?)` on `ViteHotContext`, which the guide page does not document.
 - Further reading: "Hot Module Replacement is Easy" (bjornlu.com/blog/hot-module-replacement-is-easy).
 
 ## Related

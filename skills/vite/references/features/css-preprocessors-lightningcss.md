@@ -12,7 +12,8 @@ No Vite-specific plugins are needed, but the pre-processor itself must be instal
 
 ```bash
 # .scss and .sass
-npm add -D sass-embedded # or sass
+npm add -D sass-embedded # recommended for performance
+npm add -D sass # if the platform is not supported
 
 # .less
 npm add -D less
