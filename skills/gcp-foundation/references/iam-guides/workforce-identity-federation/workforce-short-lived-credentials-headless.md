@@ -190,15 +190,18 @@ Storage storageService = StorageOptions.newBuilder().setProjectId("project-id")
 
 ### REST (Security Token Service)
 
+Adapted (not in the official docs): the response is captured in a variable so the access token is not printed to the terminal or logs; the response shape is shown below.
+
 ```bash
-curl https://sts.googleapis.com/v1/token \
+STS_RESPONSE="$(curl -s https://sts.googleapis.com/v1/token \
     --data-urlencode "audience=//iam.googleapis.com/locations/global/workforcePools/WORKFORCE_POOL_ID/providers/WORKFORCE_PROVIDER_ID" \
     --data-urlencode "grant_type=urn:ietf:params:oauth:grant-type:token-exchange" \
     --data-urlencode "requested_token_type=urn:ietf:params:oauth:token-type:access_token" \
     --data-urlencode "scope=https://www.googleapis.com/auth/cloud-platform" \
     --data-urlencode "subject_token_type=SUBJECT_TOKEN_TYPE" \
     --data-urlencode "subject_token=EXTERNAL_SUBJECT_TOKEN"  \
-    --data-urlencode "options={\"userProject\":\"BILLING_PROJECT_NUMBER\"}"
+    --data-urlencode "options={\"userProject\":\"BILLING_PROJECT_NUMBER\"}")"
+ACCESS_TOKEN="$(printf '%s' "${STS_RESPONSE}" | jq -r '.access_token')"
 ```
 
 ```json
@@ -248,6 +251,7 @@ gcloud config set account principal://iam.googleapis.com/locations/global/workfo
 - Looker integrations use `https://auth.cloud.google/authorize` and the Cloud OAuth API (`cloudoauth.googleapis.com`) instead of STS.
 - Omitted because the source markup is corrupted: the SAML URL-sourced `--credential-source-url` command and the SAML interactive config JSON (contain stray `<var>` markup); the Go and Node.js client samples (contain `#` comments that are not valid in those languages). Use the corresponding OIDC patterns above and the official page for these.
 - The source text names one flag `--exeutable-interactive-timeout-millis` (typo) in prose; the correct flag in the command is `--executable-interactive-timeout-millis`.
+- Adapted from the official docs: the REST STS exchange `curl` captures the response in a variable instead of printing the access token.
 - Source: https://docs.cloud.google.com/iam/docs/workforce-obtaining-short-lived-credentials (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
 ## Related

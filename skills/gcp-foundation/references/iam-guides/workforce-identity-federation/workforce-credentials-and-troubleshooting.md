@@ -62,15 +62,18 @@ gcloud auth login --cred-file=/path/to/config.json
 
 ### Token exchange with the Security Token Service
 
+Adapted (not in the official docs): the response is captured in a variable so the access token is not printed to the terminal or logs; the response shape is shown below.
+
 ```bash
-curl https://sts.googleapis.com/v1/token \
+STS_RESPONSE="$(curl -s https://sts.googleapis.com/v1/token \
     --data-urlencode "audience=//iam.googleapis.com/locations/global/workforcePools/WORKFORCE_POOL_ID/providers/WORKFORCE_PROVIDER_ID" \
     --data-urlencode "grant_type=urn:ietf:params:oauth:grant-type:token-exchange" \
     --data-urlencode "requested_token_type=urn:ietf:params:oauth:token-type:access_token" \
     --data-urlencode "scope=https://www.googleapis.com/auth/cloud-platform" \
     --data-urlencode "subject_token_type=SUBJECT_TOKEN_TYPE" \
     --data-urlencode "subject_token=EXTERNAL_SUBJECT_TOKEN"  \
-    --data-urlencode "options={\"userProject\":\"BILLING_PROJECT_NUMBER\"}"
+    --data-urlencode "options={\"userProject\":\"BILLING_PROJECT_NUMBER\"}")"
+ACCESS_TOKEN="$(printf '%s' "${STS_RESPONSE}" | jq -r '.access_token')"
 ```
 
 ```json
@@ -141,6 +144,7 @@ Set `web-sso-response-type` and `web-sso-assertion-claims-behavior` when creatin
 - gcloud transparently refreshes the Google Cloud token while the IdP credential is still valid; once the IdP credential expires you must re-authenticate. Administrators can revoke all sessions for a subject (see revoke sessions in the official docs). The Looker integration uses `https://auth.cloud.google/authorize` and the Cloud OAuth API.
 - During a 429 outage use an emergency administrator that does not authenticate through Workforce Identity Federation (for example a Cloud Identity super administrator). Throttled exchanges are rejected before validation and do not appear in Cloud Audit Logs; find the source from IdP sign-in logs or workload configurations. Deleting a subject does not reduce quota consumption. Prevent recurrence by moving workloads to Workload Identity Federation, retrying with exponential backoff and jitter, alerting at 80% quota, and requesting an increase in advance.
 - Requests for HAR files from users: ask them to remove PII and cookies first.
+- Adapted from the official docs: the STS exchange `curl` captures the response in a variable instead of printing the access token.
 - Source: https://docs.cloud.google.com/iam/docs/workforce-obtaining-short-lived-credentials
 - Source: https://docs.cloud.google.com/iam/docs/troubleshooting-workforce-identity-federation
 - Retrieved 2026-11-14. Content CC BY 4.0; code samples Apache 2.0.
