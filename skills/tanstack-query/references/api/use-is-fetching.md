@@ -19,12 +19,17 @@ const isFetchingPosts = useIsFetching({ queryKey: ['posts'] })
 
 | Name | Type | Description |
 |------|------|-------------|
-| `filters` | `QueryFilters` | Apply query filtering criteria to narrow results |
+| `filters` | `Omit<QueryFilters, "fetchStatus">` | Apply query filtering criteria to narrow results |
 | `queryClient` | `QueryClient` | Custom QueryClient instance; defaults to the nearest context provider |
 
 ## Returns
 
 `number` — count of queries actively loading or fetching in the background.
+
+## Notes
+
+- `filters` accepts `QueryFilters` without the `fetchStatus` property
+- Source: https://raw.githubusercontent.com/TanStack/query/release-2026-11-06-2304/docs/framework/react/reference/functions/useIsFetching.md (tag `release-2026-11-06-2304`, fetched 2026-11-14)
 
 ## Related
 

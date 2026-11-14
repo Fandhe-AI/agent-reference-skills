@@ -44,8 +44,8 @@ const queryClient = new QueryClient({
 | `cancelQueries(filters, options)` | Cancels ongoing query requests (useful for optimistic updates) |
 | `removeQueries(filters)` | Removes queries from cache entirely |
 | `resetQueries(filters, options)` | Resets queries to initial state; notifies subscribers and refetches active queries |
-| `isFetching(filters?)` | Returns integer count of currently fetching queries |
-| `isMutating(filters?)` | Returns integer count of currently fetching mutations |
+| `isFetching(filters?)` (`filters` omits `fetchStatus`) | Returns integer count of currently fetching queries |
+| `isMutating(filters?)` (`filters` omits `status`) | Returns integer count of currently fetching mutations |
 | `getDefaultOptions()` | Retrieves currently configured default options |
 | `setDefaultOptions(options)` | Dynamically updates global default options |
 | `getQueryDefaults(queryKey)` | Retrieves defaults set for specific query keys |
@@ -76,6 +76,8 @@ const queryClient = new QueryClient({
   - `fetchInfiniteQuery` - use `queryClient.infiniteQuery(options)` instead
   - `prefetchInfiniteQuery` - use `queryClient.infiniteQuery(options)` instead; swallow errors with `.catch(noop)`
   - `ensureInfiniteQueryData` - use `queryClient.infiniteQuery({ ...options, staleTime: 'static' })` instead
+- `refetchQueries`: the returned promise does not reject on individual query failures unless `throwOnError` is `true`; refetches that are initially paused do not delay the promise, and their later errors are handled even when `throwOnError` is `true`
+- Source: https://raw.githubusercontent.com/TanStack/query/release-2026-11-06-2304/docs/framework/react/reference/classes/QueryClient.md (tag `release-2026-11-06-2304`, fetched 2026-11-14)
 
 ## Related
 

@@ -38,5 +38,6 @@ test('useCustomHook resolves', async () => {
 
 - Create a new `QueryClient` per test (not module-scoped) so cached results from one test don't leak into another.
 - Set `retry: false` in the test client's `defaultOptions.queries`; otherwise asserting failure states waits through the default retry/backoff schedule.
-- React 18+ gets `renderHook`/`waitFor` directly from `@testing-library/react`; `@testing-library/react-hooks` is only needed for React 17 and earlier.
+- `renderHook`/`waitFor` come from `@testing-library/react` (install `@testing-library/react @testing-library/dom`); the older `@testing-library/react-hooks` is not used in the current official guide.
+- Source: https://raw.githubusercontent.com/TanStack/query/release-2026-11-06-2304/docs/framework/react/guides/testing.md (tag `release-2026-11-06-2304`, fetched 2026-11-14)
 - Set `gcTime: Infinity` in Jest environments to silence the "Jest did not exit one second after the test run completed" warning from pending timers.

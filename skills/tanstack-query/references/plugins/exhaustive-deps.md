@@ -46,7 +46,8 @@ useQuery({
 ## Notes
 
 - Function references themselves are excluded — only their call arguments are considered query key dependencies
-- Recommended and auto-fixable in most cases
+- Recommended; not automatically fixable, but provides editor suggestions (`Has suggestions`)
+- Source: https://raw.githubusercontent.com/TanStack/query/release-2026-11-06-2304/docs/eslint/exhaustive-deps.md (tag `release-2026-11-06-2304`, fetched 2026-11-14)
 
 ## Related
 

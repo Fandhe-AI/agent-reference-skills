@@ -31,6 +31,8 @@ useQuery({
 
 - Functions that don't return a value can lead to unexpected behavior and often indicate an implementation mistake
 - Recommended, not automatically fixable
+- Requires typed linting (https://typescript-eslint.io/getting-started/typed-linting/); the rule reports nothing without it
+- Source: https://raw.githubusercontent.com/TanStack/query/release-2026-11-06-2304/docs/eslint/no-void-query-fn.md (tag `release-2026-11-06-2304`, fetched 2026-11-14)
 
 ## Related
 
