@@ -120,7 +120,7 @@ const worker = new WorkerPro(
 
 ## Related
 
-- [Working with batches (official, v6.3.15)](https://docs.bullmq.io/guide/queues/batches)
+- [Working with batches (official, v6.7.6)](https://docs.bullmq.io/guide/queues/batches)
 - [BullMQ Pro: Batches (official)](https://docs.bullmq.io/bullmq-pro/batches)
 - [Adding jobs in bulk](./adding-bulks.md)
 - [Adding flows in bulk](../flows/adding-bulks.md)

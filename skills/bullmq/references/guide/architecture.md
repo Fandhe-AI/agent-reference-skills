@@ -1,6 +1,6 @@
 # Architecture
 
-An overview of how BullMQ is implemented on top of Redis. From the moment a producer calls `add` on a `Queue` instance, a job enters a lifecycle where it is in different states until its completion or failure (technically a failed job can be retried and get a new lifecycle).
+An overview of how BullMQ is implemented, from the lifecycle of a job to the backends (Redis or PostgreSQL) that store it. From the moment a producer calls `add` on a `Queue` instance, a job enters a lifecycle where it is in different states until its completion or failure (technically a failed job can be retried and get a new lifecycle).
 
 ## Signature / Usage
 
@@ -86,11 +86,14 @@ const queue = new Queue('myqueue', { connection: {} }, myBackendFactory);
 - `waiting-children` is a separate state used only by flows (`FlowProducer`): the parent job is not processed directly and moves to `wait`, `delayed` or `prioritized` once its last child completes. `failed` also results from a job stalling or the processor throwing.
 - Active jobs hold a lock so other workers do not process the same job; the lock is renewed periodically by the worker (default lock duration 30 seconds).
 - Redis must be configured with `maxmemory-policy=noeviction` (Redis backend).
+- Layers (v6.7.6 official page): (1) high-level classes (`Queue`, `Worker`, `QueueEvents`, `FlowProducer`, …) implement the public API, are datastore agnostic and depend only on the backend contract `IQueueBackend`; (2) backends implement every queue operation and perform each state transition atomically: the Redis backend (default) as Lua scripts, with workers blocking on a marker key (no polling) and working with Valkey and Dragonfly, and the PostgreSQL backend as SQL functions in a transaction, with workers blocking on a dedicated `LISTEN` connection and woken by producers using `NOTIFY`; (3) datastore clients handle the connections (ioredis, node-redis, Bun's Redis client or Valkey GLIDE for Redis, node-postgres for PostgreSQL).
+- The Lua and SQL scripts are shared by all the BullMQ SDKs (TypeScript, Python, Elixir, Rust, .NET and PHP), which are thin layers on top of them; this is what gives identical semantics across languages and lets one language add jobs and another process them on the same backend.
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/architecture.md (tag v6.7.6, fetched 2026-11-14).
 - Migration (v5 → v6): the `Connection` class parameter formerly injectable as the third constructor argument was replaced by the optional `BackendFactory` argument (the `connection` option itself still takes `{ host, port }` etc.). APIs exposing Redis internals such as `Queue#client`, `Queue#redisVersion`, `Queue#databaseType`, `Worker#blockingClient` and `FlowProducer#client` were removed; reach the raw Redis client through `getBackend()` (a `RedisQueueBackend`).
 
 ## Related
 
 - [Going to production](./going-to-production.md)
-- [Architecture (official, v6.3.15)](https://docs.bullmq.io/guide/architecture)
+- [Architecture (official, v6.7.6)](https://docs.bullmq.io/guide/architecture)
 - [Parallelism and concurrency](./parallelism-and-concurrency.md)
 - [Troubleshooting](./troubleshooting.md)

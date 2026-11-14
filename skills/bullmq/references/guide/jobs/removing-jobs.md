@@ -29,9 +29,10 @@ BullMQ tries to remove all pending descendants first.
 
 ## Notes
 
-- Locked jobs (in active state) cannot be removed. In TypeScript and Python an error is thrown; in Rust `Queue::remove` returns `Ok(false)` (`true` = removed, `false` = the job or one of its dependencies is locked and could not be removed).
+- Locked jobs (in active state) cannot be removed. In TypeScript and Python an error is thrown, while the other SDKs report it in the return value (for example, in Rust `Queue::remove` returns `Ok(false)`) (`true` = removed, `false` = the job or one of its dependencies is locked and could not be removed).
 - Processed values are kept in the parent's processed `hset` if the child is in completed state at the time it is removed.
 - If any of the children are locked, the deletion process is stopped.
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/jobs/removing-job.md (tag v6.7.6, fetched 2026-11-14).
 
 ## Related
 

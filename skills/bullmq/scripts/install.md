@@ -34,17 +34,57 @@ npm install redis
 
 BullMQ の node-redis adapter を使う場合に必要。BullMQ は peer dependency として `redis >= 5.0.0`（v5 以降）を宣言している。
 
-## yarn によるインストール
+## Installing with yarn / pnpm / Bun
 
 ```sh
 yarn add bullmq
 ```
+
+```sh
+pnpm add bullmq
+```
+
+```sh
+bun add bullmq
+```
+
+Install commands from the official quick-start (v6.7.6). Bun can also be used through Bun's built-in Redis client.
+
+## Starting a local development Redis (Docker)
+
+Adapted (not in the official docs): the official quick-start publishes `-p 6379:6379` on all interfaces; here the port is bound to loopback only.
+
+```sh
+docker run -d --name redis -p 127.0.0.1:6379:6379 redis:latest
+```
+
+From the official quick-start, adapted for local development (disposable Redis, loopback only, no authentication). For production persistence and the `maxmemory-policy=noeviction` setting see `references/guide/going-to-production.md`.
 
 ## Python (pip) によるインストール
 
 ```sh
 pip install bullmq
 ```
+
+To use the PostgreSQL backend, add the `postgres` extra (psycopg driver) (v6.7.6 Python introduction):
+
+```sh
+pip install "bullmq[postgres]"
+```
+
+## Installing .NET (NuGet)
+
+```sh
+dotnet add package BullMQ
+```
+
+## Installing Rust (Cargo)
+
+```sh
+cargo add bullmq-official --rename bullmq
+```
+
+The crate is published as `bullmq-official` and imported in code as `bullmq` (the `bullmq` name on crates.io belongs to an unrelated third-party crate).
 
 ## BullMQ Pro のインストール（npm）
 

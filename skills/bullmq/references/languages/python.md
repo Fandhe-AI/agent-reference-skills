@@ -1,6 +1,6 @@
 # Python
 
-BullMQ is also available as an experimental Python package. It is delivered as a pip package and uses asyncio to implement concurrency and provide efficient processing of jobs.
+BullMQ is available as a native Python package (running on Redis or PostgreSQL). It is delivered as a pip package and uses asyncio to implement concurrency and provide efficient processing of jobs. Requires Python 3.10 or newer, and Redis 6.2 or newer (or a compatible server such as Valkey or Dragonfly), or PostgreSQL 13 or newer when using the PostgreSQL backend. Queues are fully interoperable with the other BullMQ SDKs (Node.js, Elixir, .NET, Rust and PHP).
 
 ## Signature / Usage
 
@@ -70,9 +70,51 @@ if __name__ == "__main__":
 ## Notes
 
 - The API is asyncio-based, so `async` / `await` (running inside an event loop such as `asyncio.run`) is required; `await` cannot be used at module top level in a plain script.
-- The official v6.3.15 Python introduction writes `return doSomethingAsync(job)` without `await`; when the helper is a coroutine function it must be awaited, otherwise the processor returns an un-awaited coroutine instead of the result.
+- The official v6.3.15 and v6.7.6 Python introductions write `return doSomethingAsync(job)` without `await`; when the helper is a coroutine function it must be awaited, otherwise the processor returns an un-awaited coroutine instead of the result.
 - If Redis responses are in binary format, pass the `decode_responses` option as `True`.
 - In the official Python section, the Flow Producer, Job Scheduler, Lock Manager, Global Concurrency and Rate Limit, Job Cancellation and Queue Events pages are stubs that point to the language tabs of the shared guides (`guide/flows`, `guide/job-schedulers`, `guide/workers/cancelling-jobs` and `stalled-jobs`, `guide/queues/global-concurrency` and `global-rate-limit`, `guide/events`). For Python-specific implementation see the official repository's `python/bullmq/*.py` (`flow_producer.py`, `job_scheduler.py`, `lock_manager.py`, `queue.py`, `abort_controller.py`, `worker.py`, `queue_events.py`, `queue_events_producer.py`).
+
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/python/introduction.md (tag v6.7.6, fetched 2026-11-14). The v6.3.15 page described Python as "an experimental python package"; v6.7.6 describes it as native, with the sections below added.
+
+### Redis Cluster
+
+Pass a `redis.asyncio.cluster.RedisCluster` client as the `connection`, and put a hash tag in the prefix so every key of a queue lands in one slot (see the Redis Cluster pattern in this skill):
+
+```python
+from bullmq import Queue, Worker
+from redis.asyncio.cluster import RedisCluster
+
+connection = RedisCluster(host="<host>", port=6379, decode_responses=True)
+queue = Queue("myQueue", {"connection": connection, "prefix": "{myprefix}"})
+worker = Worker("myQueue", process, {"connection": connection, "prefix": "{myprefix}"})
+```
+
+### PostgreSQL backend
+
+The `Queue`, `Worker` and `FlowProducer` APIs can run on PostgreSQL instead of Redis. Python `QueueEvents` remains Redis-only and cannot consume PostgreSQL events. Install the package with the `postgres` extra, which adds the [psycopg](https://www.psycopg.org) driver:
+
+```
+$ pip install "bullmq[postgres]"
+```
+
+Then set `backend` to `"postgres"` and pass a PostgreSQL connection string (or a dict with `host`, `port`, `dbname`, `user` and `password`) as the `connection`:
+
+```python
+from bullmq import Queue, Worker
+
+opts = {
+    "backend": "postgres",
+    "connection": "postgresql://postgres:postgres@localhost:5432/mydb",
+    # "schema": "bullmq",  # optional, this is the default
+}
+
+queue = Queue("myQueue", opts)
+await queue.add("myJob", {"foo": "bar"})
+
+worker = Worker("myQueue", process, opts)
+```
+
+All BullMQ objects live in a dedicated schema (`bullmq` by default), and the required tables and functions are migrated automatically on first use. Note that the `prefix` option is not supported on PostgreSQL, use `schema` to namespace your queues instead. Read more about this backend in the PostgreSQL backend category of this skill's guide.
 
 ## Related
 

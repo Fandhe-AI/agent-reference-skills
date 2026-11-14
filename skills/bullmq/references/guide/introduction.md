@@ -73,13 +73,19 @@ const flow = await flowProducer.add({
 
 Worker がジョブ追加時に稼働していなくても、接続された時点でキュー内のジョブを自動的に処理する。
 
-## 注意点
+## Notes
 
-- BullMQ は分散処理をサポートしており、複数マシンにまたがるスケーラブルなアーキテクチャを構築可能
-- ジョブデータは Redis に保存されるため、シリアライズ可能なデータである必要がある
-- Queue, Worker, QueueEvents はそれぞれ独立した Redis 接続を使用できる
+- BullMQ supports distributed processing, so scalable architectures spanning several machines can be built.
+- Job data is stored in the datastore, so it must be serializable.
+- Queue, Worker and QueueEvents can each use their own independent Redis connection.
+- In the v6.7.6 guide, Queue is also used to create [job schedulers](./job-schedulers/README.md) (repeatable jobs from a cron expression or a fixed interval), QueueEvents listens from any process to the [events](./events/README.md) of all workers of a queue, and FlowProducer adds [flows](./flows/README.md) (trees of jobs with parent-child dependencies).
+- Redis version requirements (v6.7.6): the code enforces a hard minimum of Redis 5.0.0 (`RedisConnection.minimumVersion`) and treats 6.2.0 as the recommended minimum (`recommendedMinimumVersion`), warning below it; only the Relay refuses to start below 6.2. The official introduction and Relay pages therefore state different numbers ("6.2 or newer" is the recommended version for queues, "queues still run on 5.0" is the hard minimum) (source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/src/classes/redis-connection.ts).
+- There are two backends, Redis and PostgreSQL. The classes are datastore agnostic and delegate every operation to a backend. Redis: 6.2 or newer and compatible servers such as Valkey and Dragonfly, with ioredis, node-redis, Bun's Redis client or Valkey GLIDE (see [Connections](./connections.md)); PostgreSQL: 13 or newer (see [PostgreSQL backend](./postgresql-backend/postgresql-backend.md)). Unless stated otherwise the guide applies to both; differences are listed in the feature parity section of the PostgreSQL backend.
+- The experimental [Relay](./relay/README.md) (process-to-process real-time messaging, available in the v6.4.0 docs) lets the processes of a system exchange messages through the datastore used by the queues.
+- The guide uses the TypeScript package (Node.js and Bun). BullMQ is also available for Python, Elixir, .NET, Rust and PHP (see the languages category); all SDKs share the same data model, so producers and workers written in different languages can work together on the same queues.
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/introduction.md (tag v6.7.6, fetched 2026-11-14).
 
-## 関連
+## Related
 
 - [Connections](./connections.md)
 - [Queues](./queues/README.md)
