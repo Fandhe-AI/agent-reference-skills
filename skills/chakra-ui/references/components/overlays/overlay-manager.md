@@ -85,6 +85,8 @@ if (result) {
 - 3.37.0: `createOverlay<Props, TReturn>` — `TReturn` defaults to `unknown`, so untyped `open()` calls may need narrowing. The result can also be `undefined`, since `close(id, value)` doesn't require a value.
 - 3.36.1: `createOverlay` return value gained `has()`.
 - 3.35.0: fixed `document.body` scroll lock and `pointer-events` not being restored when overlays are used under React `StrictMode`.
+- 3.38.0: `remove` and `removeAll` no longer leave the promises from `open`, `close` and `waitForExit` pending forever. They now resolve with `undefined`.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

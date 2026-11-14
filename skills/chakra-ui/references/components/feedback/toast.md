@@ -94,6 +94,8 @@ toaster.promise(myPromise, {
   ```
 - `toaster.isVisible(id)` checks if a specific toast is currently shown
 - Render `<Toaster>` once at the app root inside a `<Portal>`
+- 3.38.0 (Ark UI 5.39.3 / 5.40.0): the toaster no longer ignores `dir` and `getRootNode`, and focus moves to the next toast when a focused toast is dismissed.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

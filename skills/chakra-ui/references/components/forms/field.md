@@ -48,6 +48,9 @@ import { Field } from "@chakra-ui/react"
 - `Field.RequiredIndicator` renders a `*` marker when `required` is `true`.
 - 3.35.0 (Ark UI 5.36.0): `Field.Item` and `target` on `Field.Root` support fields with multiple controls (re-exported as `FieldItem` / `Field.Item`).
 - Accessibility attributes (`aria-describedby`, `aria-invalid`, etc.) are applied automatically to child form elements.
+- 3.38.0 (Ark UI 5.39.3): `Field.ErrorText` is now linked to the input via `aria-describedby` instead of `aria-errormessage`, so VoiceOver and Narrator announce it. Tests asserting `toHaveAccessibleErrorMessage` should use `toHaveAccessibleDescription`.
+- 3.38.0 (Ark UI 5.40.0): helper and error text are now announced on Select, Tags Input, Color Picker, File Upload, Rating Group and Pin Input.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

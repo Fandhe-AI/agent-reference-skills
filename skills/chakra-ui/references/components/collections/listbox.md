@@ -71,6 +71,8 @@ const frameworks = createListCollection({
 - Unlike `Select`, `Listbox` renders items inline (no dropdown), making it suitable for visible selection panels.
 - `selectionMode: "extended"` allows range selection with Shift+click.
 - 3.35.0 (Ark UI 5.36.0): `keyboardPriority` for Home/End and arrow keys in the input, and the api methods `highlightFirst`, `highlightLast`, `highlightNext` and `highlightPrevious`.
+- 3.38.0 (Ark UI 5.39.3): `Listbox.ItemText` now renders a `span` instead of a `div` (ref typed as `HTMLSpanElement`), and Shift+click range selection anchors on the clicked item instead of the highlighted one. Listbox items use `tokens.cursor.option`.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

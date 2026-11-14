@@ -77,6 +77,8 @@ Add `data-autofocus` and `data-no-autofocus` to pick what gets focus when the dr
 - Set `contained={true}` to render the drawer within a positioned parent container rather than the viewport.
 - 3.37.0: `Drawer.ActionTrigger` now runs the `onClick` handler passed to it before the drawer closes, and has `type="button"`.
 - 3.37.0: scroll lock now works on layouts where `<html>` is the scroll container.
+- 3.38.0 (Ark UI 5.39.3): `initialFocusEl` can return `false` to open without moving focus.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

@@ -96,6 +96,8 @@ Set `resizeBehavior` on a panel to control how it reacts when the parent group r
 - Use `useSplitter()` hook with `RootProvider` for programmatic control
 - Supports nested splitters for complex layouts
 - Keyboard accessible: focus the resize trigger and use arrow keys
+- 3.38.0 (Ark UI 5.39.3): fixed slow dragging in large documents.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 

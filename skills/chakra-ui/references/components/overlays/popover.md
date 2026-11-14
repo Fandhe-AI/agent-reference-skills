@@ -93,6 +93,8 @@ Don't mount a popover per button. Put `value` on each `Trigger` under one `Root`
 - Unlike `Tooltip`, `Popover` supports interactive content (buttons, forms, links) inside.
 - Use `Popover.Anchor` to anchor the popover to a different element than the trigger.
 - Wrap `Popover.Positioner` in `Portal` to prevent overflow clipping.
+- 3.38.0 (Ark UI 5.39.3): `Popover.Title` now renders an `h2` instead of a `div`, and its ref is typed as `HTMLHeadingElement`. `initialFocusEl` can return `false` to open without moving focus. `autoFocus={false}` is no longer ignored for modal popovers. A stylesheet `z-index` on the positioner is no longer ignored.
+- Source: https://github.com/chakra-ui/chakra-ui/blob/f0387b6e832a41663eb7186a375db7879337724e/packages/react/CHANGELOG.md (3.38.0 entry, tag @chakra-ui/react@3.38.0, retrieved 2026-11-14)
 
 ## Related
 
