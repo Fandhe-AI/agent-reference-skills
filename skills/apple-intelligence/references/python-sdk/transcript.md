@@ -1,5 +1,5 @@
 ---
-source: https://apple.github.io/python-apple-fm-sdk/api/transcript.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.1/src/apple_fm_sdk/transcript.py
+source: https://apple.github.io/python-apple-fm-sdk/api/transcript.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.2/src/apple_fm_sdk/transcript.py
 ---
 
 # Transcript (Python)
@@ -68,7 +68,7 @@ session = fm.LanguageModelSession.from_transcript(transcript)
 
 ## Notes
 
-- Package: `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`). Swift equivalent: Transcript (see transcripts/transcript.md).
+- Package: `apple-fm-sdk` 0.2.2 (GitHub tag `v0.2.2`). Swift equivalent: Transcript (see transcripts/transcript.md).
 - Transcript instances are created automatically by `LanguageModelSession`; do not create them directly. The transcript shares the session's internal pointer and is read-only; accessing it does not affect session state.
 - Updated after each `respond()` call completes successfully, after each `stream_response()` completes, and after tool invocations are processed. Not updated during streaming, and not if a request fails or is cancelled.
 - `to_dict()` is async and returns a snapshot; call it again after new interactions. It raises `GenerationError` if fetching fails. Large sessions may produce large dictionaries.

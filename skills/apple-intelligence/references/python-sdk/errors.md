@@ -1,5 +1,5 @@
 ---
-source: https://apple.github.io/python-apple-fm-sdk/api/errors.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.1/src/apple_fm_sdk/errors.py
+source: https://apple.github.io/python-apple-fm-sdk/api/errors.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.2/src/apple_fm_sdk/errors.py
 ---
 
 # Errors (Python)
@@ -75,7 +75,7 @@ except fm.FoundationModelsError as e:
 
 ## Notes
 
-- Package: `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`). Swift equivalents: `GenerationError` corresponds to LanguageModelSession.GenerationError (sessions/session-errors.md); `ToolCallError` corresponds to LanguageModelSession.ToolCallError (tools/tool-call-error.md). `InvalidGenerationSchemaError` is unique to the Python SDK and has no direct Swift equivalent: it means a schema failed to compile in the underlying Swift.
+- Package: `apple-fm-sdk` 0.2.2 (GitHub tag `v0.2.2`). Swift equivalents: `GenerationError` corresponds to LanguageModelSession.GenerationError (sessions/session-errors.md); `ToolCallError` corresponds to LanguageModelSession.ToolCallError (tools/tool-call-error.md). `InvalidGenerationSchemaError` is unique to the Python SDK and has no direct Swift equivalent: it means a schema failed to compile in the underlying Swift.
 - `GuardrailViolationError` and `RefusalError`: for the guardrails and refusals, see the Swift article "Improving the safety of generative model output" (guides/safety.md).
 - `RateLimitedError`: rate limits do not apply to the on-device `SystemLanguageModel` on macOS, so you should not encounter this error.
 - `ConcurrentRequestsError`: the Python SDK does not enforce concurrency limits, so you should not encounter this error.

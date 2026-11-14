@@ -1,5 +1,5 @@
 ---
-source: https://apple.github.io/python-apple-fm-sdk/basic_usage.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.1/examples/simple_inference.py
+source: https://apple.github.io/python-apple-fm-sdk/basic_usage.html, https://github.com/apple/python-apple-fm-sdk/blob/v0.2.2/examples/simple_inference.py
 ---
 
 # Python Basic Usage
@@ -78,7 +78,7 @@ async def safe_generation():
 
 ## Notes
 
-- Package `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`); module imported as `apple_fm_sdk`.
+- Package `apple-fm-sdk` 0.2.2 (GitHub tag `v0.2.2`); module imported as `apple_fm_sdk`.
 - Swift equivalent: the Foundation Models framework, see `../references/sessions/languagemodelsession.md` and `../references/models/system-language-model.md`.
 - `session.is_responding` reports whether a session is currently generating; sessions keep context across `respond` calls.
 - On supported macOS versions an image can be passed as `session.respond(["What kind of bird is this:", fm.ImageAttachment(path=image_path)])` instead of a string.

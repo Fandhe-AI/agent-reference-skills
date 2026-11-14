@@ -1,10 +1,10 @@
 ---
-source: https://raw.githubusercontent.com/apple/python-apple-fm-sdk/v0.2.1/docs/README.md, https://raw.githubusercontent.com/apple/python-apple-fm-sdk/v0.2.1/docs/Makefile
+source: https://raw.githubusercontent.com/apple/python-apple-fm-sdk/v0.2.2/docs/README.md, https://raw.githubusercontent.com/apple/python-apple-fm-sdk/v0.2.2/docs/Makefile
 ---
 
 # python-sdk-docs
 
-Commands for building the Foundation Models SDK for Python documentation (Sphinx) locally from a clone of the repository at tag `v0.2.1`. Only needed to modify or preview the SDK docs; for reading the API use `references/python-sdk/`. Run the install commands from the repository root.
+Commands for building the Foundation Models SDK for Python documentation (Sphinx) locally from a clone of the repository at tag `v0.2.2`. Only needed to modify or preview the SDK docs; for reading the API use `references/python-sdk/`. Run the install commands from the repository root.
 
 ## Install documentation dependencies (uv)
 

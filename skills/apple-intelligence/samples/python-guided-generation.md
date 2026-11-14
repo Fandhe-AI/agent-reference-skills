@@ -83,4 +83,4 @@ async def safe_guided_generation(prompt: str, MyGenerable: Optional[type] = None
 - Only classes decorated with `@generable` can be passed as `generating=`; the decorator applies Python dataclasses, so the class must be dataclass-compatible.
 - Supported `fm.guide()` constraints shown in the docs: `anyOf`, `range`, `count`, and `regex`. `SystemLanguageModel` only supports simple regex patterns such as `\d+` or `\w+`.
 - A Swift-exported schema can be used with `session.respond(prompt, json_schema=swift_schema)`.
-- Package `apple-fm-sdk` 0.2.1 (GitHub tag `v0.2.1`).
+- Package `apple-fm-sdk` 0.2.2 (GitHub tag `v0.2.2`).
