@@ -31,7 +31,7 @@ function io(): Promise<void>
 - Requires [Cache Components](../config/caching.md) to have any effect; during a request, inside `"use cache"` scopes, in the browser, and in apps without Cache Components, `io()` resolves immediately.
 - In Client Components, pair with React's `use` hook: `use(io())`.
 - Not needed when the component already uses a Request-time API (`cookies()`, `headers()`) or awaits a `fetch`/DB query inside `<Suspense>` — those are themselves the suspension point.
-- Differs from `connection()`: `connection()` stays suspended until a real user request reaches the server (blocking prefetches); `io()` suspends like any async function, so code after it can still be wrapped in `"use cache"` and prefetched/cached on the client. Prefer `io()` over `connection()`.
+- Differs from `connection()`: `io()` also works inside a `"use cache"` scope, where it resolves immediately, so a function calling it can run in cached and uncached code alike; `connection()` inside a cache scope throws. Outside a cache scope the two behave the same: code after either is excluded from every prerender, at build time or for a prefetch. Prefer `io()` over `connection()`.
 - Added in `v16.3.0`.
 
 ## Related

@@ -53,7 +53,7 @@ const adapter = {
 
 ## Notes
 
-- Source: https://nextjs.org/docs/app/api-reference/adapters/immutable-static-assets (v16.4.2)
+- Source: https://nextjs.org/docs/app/api-reference/adapters/immutable-static-assets (v16.4.6)
 
 - Immutable assets are requested without the `?dpl` query parameter and live in a shared namespace across deployments.
 - They must not change (even after a new deployment) or be deleted for as long as active deployments use them.

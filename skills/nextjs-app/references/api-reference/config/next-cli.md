@@ -128,7 +128,7 @@ Added `v16.4.0`. Streams an existing snapshot as JSON Lines (one JSON object per
 - Set `PORT` via env var instead of `.env` — the HTTP server boots before `.env` is loaded.
 - `next dev --experimental-https` uses `mkcert` for a locally-trusted cert; only for development.
 - Node args can be passed via `NODE_OPTIONS`, e.g. `NODE_OPTIONS='--inspect' next dev`.
-- The `v16.4.2` docs document only `next analyze` (the former `next experimental-analyze` name appears in the `v16.3.0` docs); the Version History records only `v16.1.0` "Add the `next experimental-analyze` command", so the rename version is not stated. `next build --no-lint` is no longer listed in the `v16.4.2` docs (linting was removed from `next build` in Next 16).
+- The `v16.4.6` docs document only `next analyze` (the former `next experimental-analyze` name appears in the `v16.3.0` docs); the Version History records only `v16.1.0` "Add the `next experimental-analyze` command", so the rename version is not stated. `next build --no-lint` is no longer listed in the `v16.4.6` docs (linting was removed from `next build` in Next 16).
 - Version history: `next upgrade` and `next experimental-analyze` added in `v16.1.0`; `next analyze export` added in `v16.4.0`; bundle size metrics removed from `next build` output in `v16.0.0`; `next typegen` added in `v15.5.0`; `--debug-prerender` added in `v15.4.0`.
 
 ## Related

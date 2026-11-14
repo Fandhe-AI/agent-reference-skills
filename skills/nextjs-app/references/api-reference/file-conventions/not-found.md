@@ -62,6 +62,7 @@ export default function GlobalNotFound() {
 - `not-found.js` is a Server Component by default and can be marked `async` to fetch data; Client Component hooks like `usePathname` require client-side data fetching instead.
 - Next.js auto-injects `<meta name="robots" content="noindex">` on pages returning a 404 status, including `global-not-found.js`.
 - Version history: `v15.4.0` `global-not-found.js` introduced (experimental); `v13.3.0` root `not-found` began handling global unmatched URLs; `v13.0.0` `not-found` introduced.
+- Next.js sends each `not-found.js` file with every route under its segment, not only with pages that are not found, and loads the Client Components it imports; for the root `app/not-found.js` that is every page of the app, so prefer Server Components and `<Link>` over interactive UI.
 
 ## Related
 

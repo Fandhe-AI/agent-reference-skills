@@ -42,6 +42,7 @@ To call a Server Function from a Client Component, define it in a dedicated file
 - Always authenticate/authorize inside the Server Function (read auth from cookies/headers rather than accepting tokens as parameters).
 - Return values are serialized and sent to the client — return only the data the UI needs, not raw database records.
 - For Next.js-specific Server Action behaviors (response model, security, configuration, deployment), see [Server Actions and Mutations](https://nextjs.org/docs/app/guides/server-actions).
+- Proxy does not apply directive transforms, so `use server` has no effect in Proxy: a function that is a Server Function elsewhere runs as an ordinary function when Proxy imports it.
 
 ## Related
 

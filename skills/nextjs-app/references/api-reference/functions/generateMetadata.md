@@ -61,7 +61,7 @@ export async function generateMetadata(
 - File-based metadata (icons, OG images, etc.) overrides the `metadata` object / `generateMetadata` function.
 - `redirect()` and `notFound()` can be called inside `generateMetadata`.
 - Metadata from multiple segments is shallowly merged (root to leaf); duplicate keys are replaced, nested objects like `openGraph` are overwritten wholesale by the last segment defining them.
-- Since `v15.2.0`, unresolved metadata streams after initial HTML for JS-executing bots; HTML-limited bots (configurable via `htmlLimitedBots`) still block on metadata.
+- Since `v15.2.0`, unresolved metadata streams after initial HTML for JS-executing bots; for HTML-limited bots (configurable via `htmlLimitedBots`) Next.js waits for `generateMetadata` before starting the response, so metadata is in `<head>`; after it resolves the remaining page content can stream.
 - With Cache Components enabled, metadata using runtime data (`cookies()`, `headers()`, `params`, `searchParams`) or uncached fetches defers to request time; wrap in `use cache` if the data isn't request-specific, or add a dynamic marker component if it genuinely needs runtime data.
 - When `generateMetadata` uses `'use cache'`, its return value must be serializable: `URL` instances are not supported by Cache Functions, so return values such as `metadataBase` as strings (for example `url.toString()`).
 - Version history: `v14.0.0` deprecated the `viewport`, `themeColor`, and `colorScheme` fields in `metadata` in favor of `generateViewport`; `v13.2.0` introduced `metadata` and `generateMetadata`.

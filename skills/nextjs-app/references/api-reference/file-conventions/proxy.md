@@ -54,8 +54,9 @@ export function proxy(req: NextRequest, event: NextFetchEvent) {
 - `event: NextFetchEvent` extends the native `FetchEvent` and exposes `waitUntil(promise)`. The `NextProxy` type infers both `request` (`NextRequest`) and `event` (`NextFetchEvent`).
 - Advanced flags (added in `v13.1`): `skipProxyUrlNormalize` (formerly `skipMiddlewareUrlNormalize`) and `skipTrailingSlashRedirect`, set in `next.config.js` (see the routing config page: `config/routing.md`). `skipTrailingSlashRedirect` disables Next.js trailing-slash redirects so Proxy can handle them; `skipProxyUrlNormalize` disables URL normalization so direct visits and client transitions are handled the same.
 - Even when `_next/data` is excluded via a negative matcher, proxy still runs for `_next/data` routes intentionally, to avoid accidentally leaving data routes unprotected.
-- Unit testing is experimental (`v15.1`+) via `next/experimental/testing/server` (`unstable_doesProxyMatch`, `isRewrite`, `getRewrittenUrl`).
+- Unit testing is experimental (`v15.1`+) via `next/experimental/testing/server` (`unstable_doesMiddlewareMatch`, `isRewrite`, `getRewrittenUrl`; the v16.4.6 docs name the function `unstable_doesMiddlewareMatch`, where v16.4.2 docs wrote `unstable_doesProxyMatch`).
 - Static export is not supported for proxy (Node.js server / Docker: yes; Static export: no; Adapters: platform-specific).
+- Directives (`use cache`, `use server`) and `fetch` caching options have no effect in Proxy; see the Proxy getting-started page, section "Limitations" (v16.4.6).
 
 ## Related
 

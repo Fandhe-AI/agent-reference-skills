@@ -12,7 +12,7 @@ user-invocable: false
 
 ## 対象バージョン
 
-対象 Next.js v16.4.2（2026-10-15 リリース）。出典: https://nextjs.org/docs/app 、原本 vercel/next.js tag v16.4.2 `docs/01-app/`。
+対象 Next.js v16.4.6（2026-11-09 リリース）。出典: https://nextjs.org/docs/app 、原本 vercel/next.js tag v16.4.6 `docs/01-app/`。v16.4.2 からの差分（docs 37 ファイル）を反映済み。
 
 ## 対象範囲
 
@@ -171,6 +171,7 @@ skills/nextjs-app/
         use-offline.md
         use-params.md
         usePathname.md
+        use-server-inserted-html.md
         useReportWebVitals.md
         useRouter.md
         use-search-params.md
@@ -329,7 +330,7 @@ skills/nextjs-app/
 | `cookies` / `headers` / `redirect` / `notFound` の使い方を知りたい | api-reference/functions | [references/api-reference/functions/README.md](references/api-reference/functions/README.md) |
 | `revalidatePath` / `revalidateTag` / `updateTag` / `unstable_cache` でキャッシュ制御したい | api-reference/functions | [references/api-reference/functions/README.md](references/api-reference/functions/README.md) |
 | `generateMetadata` / `generateStaticParams` / `generateViewport` を書きたい | api-reference/functions | [references/api-reference/functions/README.md](references/api-reference/functions/README.md) |
-| `useRouter` / `usePathname` / `useSearchParams` / `useParams` を使いたい | api-reference/functions | [references/api-reference/functions/README.md](references/api-reference/functions/README.md) |
+| `useRouter` / `usePathname` / `useSearchParams` / `useParams` / `useServerInsertedHTML`（CSS-in-JS レジストリ）を使いたい | api-reference/functions | [references/api-reference/functions/README.md](references/api-reference/functions/README.md) |
 | ランタイム処理の遅延（`navigation` / `prefetch` / `io`）、`catchError`、`next/root-params`、`use-offline` を使いたい | api-reference/functions | [references/api-reference/functions/README.md](references/api-reference/functions/README.md) |
 
 ### ファイル規約

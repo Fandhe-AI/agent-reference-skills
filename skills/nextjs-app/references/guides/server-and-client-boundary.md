@@ -54,7 +54,7 @@ export function Modal({
 
 ## Notes
 
-- Source: https://nextjs.org/docs/app/guides/server-and-client-boundary (v16.4.2)
+- Source: https://nextjs.org/docs/app/guides/server-and-client-boundary (v16.4.6)
 
 - Both Server and Client Components render on the server to produce HTML (build time with SSG, after build with ISR, or per request with SSR). "Server-rendered" describes how HTML was produced; "Server Component" describes where the code runs and whether it ships to the browser.
 - On a direct visit a Client Component renders on the server and again in the browser during hydration. On a client-side navigation it renders in the browser from the RSC Payload.

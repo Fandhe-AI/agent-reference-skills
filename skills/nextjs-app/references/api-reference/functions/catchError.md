@@ -47,7 +47,7 @@ export default catchError(ErrorFallback)
 - Can only be called from Client Components.
 - Handles `redirect()`/`notFound()` internally so they aren't accidentally caught.
 - Error state automatically clears on client navigation to a different route.
-- The `v16.4.2` docs also contain a Pages Router section where `ErrorInfo` has only `error` and `reset()` (out of scope for this skill).
+- The `v16.4.6` docs also contain a Pages Router section where `ErrorInfo` has only `error` and `reset()` (out of scope for this skill).
 - Do not wrap `error.js` default exports with this — `error.js` already renders inside a built-in error boundary.
 
 ## Related

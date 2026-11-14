@@ -67,7 +67,7 @@ updateTag(`notes:${userId}`)
 
 ## Notes
 
-- Source: https://nextjs.org/docs/app/guides/authentication-with-cache-components (v16.4.2)
+- Source: https://nextjs.org/docs/app/guides/authentication-with-cache-components (v16.4.6)
 
 - Requires `cacheComponents: true` in `next.config.ts`. Examples use iron-session, but the patterns apply to any session library.
 - Neither plain `use cache` nor `use cache: remote` can call `cookies()`. `use cache: private` accepts `cookies()`, `headers()`, and `searchParams`, but not `connection()`.

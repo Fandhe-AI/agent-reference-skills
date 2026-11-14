@@ -26,7 +26,7 @@ export default async function Component({ userID }) {
 
 ## Notes
 
-- **Superseded**: replaced by the `use cache` directive in Next.js 16 — prefer opting into Cache Components and `use cache` instead.
+- **Largely superseded**: for most use cases `use cache` replaces it in Next.js 16 — prefer opting into Cache Components and `use cache`. Continue using `unstable_cache` for non-`fetch` data that must persist across deployments: `use cache` and `use cache: remote` entries do not carry over to a new deployment because their cache keys include the build ID or `deploymentId`.
 - Accessing uncached data sources like `headers()`/`cookies()` inside the cached function scope is not supported; read them outside and pass as arguments.
 - Unsupported operations: the cached function cannot depend on the incoming request, so it cannot call `connection()`, enable or disable draft mode, call `revalidateTag()` / `updateTag()` / `revalidatePath()` during cache execution, or call a function that uses `use cache: private`. Do request-dependent work (cookies/headers) beforehand and pass values as arguments; do mutations and revalidation afterward in a Server Action or Route Handler.
 - Persists results across requests and deployments via Next.js' built-in cache.

@@ -46,7 +46,8 @@ export default async function Page() {
 ## Notes
 
 - Asynchronous — must use `async/await` or React's `use()`. (Synchronous access still works in v15 for backwards compatibility with v14 but is deprecated.)
-- A Request-time API — using it in a layout/page opts the route into dynamic rendering.
+- A Request-time API whose values cannot be known ahead of time.
+- With Cache Components, calling `cookies()` inside a `<Suspense>` boundary streams only that subtree at request time and the rest of the route is prerendered; outside a boundary it prevents the route from being prerendered. Without Cache Components, using it in a layout/page opts the route into dynamic rendering.
 - `.set`/`.delete` can only be called in a Server Function or Route Handler (not during Server Component rendering), since HTTP disallows setting cookies after streaming starts.
 - `.delete` requires the same domain (exact match for wildcard subdomains) and protocol as `.set`.
 - To refresh cached data after mutating cookies, call `revalidatePath` or `revalidateTag`.

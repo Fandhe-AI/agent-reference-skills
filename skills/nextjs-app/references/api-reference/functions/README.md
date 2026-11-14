@@ -45,4 +45,5 @@
 | usePathname | `usePathname` is a Client Component hook that reads the… | [usePathname.md](./usePathname.md) |
 | useReportWebVitals | `useReportWebVitals` reports Core Web Vitals, for use with an… | [useReportWebVitals.md](./useReportWebVitals.md) |
 | useRouter | `useRouter` allows programmatic route changes inside Client… | [useRouter.md](./useRouter.md) |
+| useServerInsertedHTML | `useServerInsertedHTML` is a Client Component hook that injects… | [use-server-inserted-html.md](./use-server-inserted-html.md) |
 | userAgent | `userAgent` extends the Web Request API with additional… | [userAgent.md](./userAgent.md) |

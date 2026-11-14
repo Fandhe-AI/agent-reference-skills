@@ -31,6 +31,7 @@ export default function Page() {
 - `@next/playwright` exports an `instant()` test helper for e2e regression tests. The testing API is available automatically in development; for a production test build, enable `experimental.exposeTestingApiInProductionBuild`.
 - Differs from `ensureStatic`: `instant` validates whether a navigation shows UI immediately, while `ensureStatic` requires selected server-rendered output to be static. A route can be fully static and still block a navigation (for example a Client Component that loads data in the browser).
 - Version history: `v16.3.0` stabilized `instant`, replacing `unstable_instant` (Cache Components only).
+- `instant = false` controls instant-navigation validation only; the route still uses prerendering and streaming (see the loading.js status codes note).
 
 ## Related
 

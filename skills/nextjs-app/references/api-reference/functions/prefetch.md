@@ -61,7 +61,7 @@ export default nextConfig
 
 ## Notes
 
-- Source: https://nextjs.org/docs/app/api-reference/functions/prefetch (v16.4.2)
+- Source: https://nextjs.org/docs/app/api-reference/functions/prefetch (v16.4.6)
 
 - Parameters: none. Returns a `Promise<void>` that is not meant to be consumed.
 - Requires Cache Components (`cacheComponents: true`) and throws if not enabled. Without Partial Prefetching a route has no App Shell, so the function has no effect.

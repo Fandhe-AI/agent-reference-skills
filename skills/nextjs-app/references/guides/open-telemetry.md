@@ -41,6 +41,7 @@ export async function fetchGithubStars() {
 
 - Default Next.js spans include the root request span (`[http.method] [next.route]`), `render route (app)`, `fetch`, `executing api route (app)`, `generateMetadata`, and others, all under the `next.*` attribute namespace.
 - Manual `NodeSDK` configuration must be conditionally imported only when `process.env.NEXT_RUNTIME === 'nodejs'` (not Edge-compatible); use `@vercel/otel` if Edge support is required.
+- Spans created while the `instrumentation` file loads or inside `register` do not automatically join a request trace: spans started before the tracer provider is installed (before `registerOTel`) are not recorded, and spans started in `register` after it typically become separate root traces. Create spans in code that runs while handling the request (page render, Route Handler).
 - Custom spans use the standard `@opentelemetry/api` `trace.getTracer().startActiveSpan()` pattern.
 - Test locally with an OpenTelemetry collector + compatible backend; works out of the box when deployed to Vercel.
 

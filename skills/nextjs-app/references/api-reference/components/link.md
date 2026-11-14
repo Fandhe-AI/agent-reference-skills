@@ -30,6 +30,7 @@ export default function Page() {
 - Prefetching only happens in production and triggers when the link enters the viewport or on hover; expired prefetch data is refetched on hover.
 - `onNavigate` differs from `onClick`: it does not fire for modifier-key clicks (new tab), external URLs, or `download` links.
 - Scroll behavior skips sticky/fixed and non-visible elements when locating the scroll target; use CSS `scroll-padding-top` to offset for sticky headers.
+- In the official Proxy rewrite example for a `/dashboard` route, the `proxy` argument is typed `NextRequest` and the cookie is checked with `request.cookies.has('authToken')` (v16.4.6 docs; v16.4.2 docs read `request.cookies.authToken`).
 - When used behind a Proxy that rewrites routes, pass both the displayed `href` and use the underlying route for prefetching correctness.
 - Since `v13.0.0`, `<Link>` no longer requires a child `<a>` tag (codemod available). Since `v10.0.0`, dynamic route `href`s are automatically resolved without an `as` prop.
 - `transitionTypes` added in `v16.2.0`; `onNavigate` added in `v15.3.0`; `"auto"` alias added in `v15.4.0`.

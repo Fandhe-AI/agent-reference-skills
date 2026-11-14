@@ -1,6 +1,6 @@
 # CLI
 
-`next` CLI で App Router アプリケーションを開発・ビルド・起動・lint・型生成するコマンド集。対象 Next.js v16.4.2。
+`next` CLI で App Router アプリケーションを開発・ビルド・起動・lint・型生成するコマンド集。対象 Next.js v16.4.6。
 
 > npm 経由でフラグを渡す場合は `npm run dev -- --port 4000` のように `--` を挟む必要がある（pnpm / yarn / bun は不要）。
 

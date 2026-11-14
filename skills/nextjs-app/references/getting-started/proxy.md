@@ -29,7 +29,8 @@ export const config = {
 
 - Only one `proxy.ts` file is supported per project; split logic into modules and import them into the main file
 - For simple redirects, prefer the `redirects` config in `next.config.ts`; use Proxy when request data or complex logic is needed
-- Proxy is not intended for slow data fetching, and `fetch` options like `cache`, `next.revalidate`, `next.tags` have no effect inside it
+- Proxy is not intended for slow data fetching, and `fetch` options like `cache`, `next.revalidate`, `next.tags` do not cache responses inside it. To reuse cached data in Proxy, use an external cache or data store, or move the work to a Server Component or Route Handler
+- Directives such as `use cache` and `use server` have no effect in Proxy, because Proxy does not apply directive transforms
 - Not a full session-management/authorization solution — useful for optimistic permission checks only
 
 ## Related

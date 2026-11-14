@@ -58,6 +58,7 @@ async function getProduct(slug: string) {
 - Test both initial page load (`page.goto()`) and client navigation (`<Link>` click) since a `<Suspense>` boundary can cover one without covering the other. For client navigations wait for the destination URL before asserting on its UI.
 - Run `instant()` e2e tests against `next dev` (testing API enabled automatically). For CI against a production build, enable `experimental.exposeTestingApiInProductionBuild` only for the test build (`const exposeTestingApi = process.env.EXPOSE_TESTING_API === '1'`) and set `EXPOSE_TESTING_API=1` when running `next build`; setting it only for `next start` does not add the testing API to an existing build.
 - See the Optimizing the static shell guide (`optimizing-the-static-shell.md`) for patterns to reduce fallback coverage and make more completed UI available immediately.
+- `useSearchParams()` suspends during prerendering (search params are unavailable at build time), but on a client navigation the router already has the params and the hook resolves synchronously, so the same component can render immediately on a client navigation and sit behind a fallback on a page load.
 
 ## Related
 
