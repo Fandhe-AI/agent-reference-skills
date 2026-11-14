@@ -15,8 +15,11 @@ const rive = new Rive({
     allowFocusInterrupt: true,
   },
 });
+```
 
-// Remove focus from the focus nodes in the graphic (does not move browser focus)
+Remove focus from the focus nodes in the graphic (does not move browser focus):
+
+```js
 rive.clearFocus();
 ```
 
