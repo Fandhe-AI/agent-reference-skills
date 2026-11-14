@@ -1,32 +1,41 @@
 # openapi-import
 
-`*.openapi.yaml` を TypeScript モジュールのように import し、`kubb.config.ts` の全 plugin の出力（型・enum など）を生成ファイル無しで得る [`openapi-import`](https://github.com/kubb-labs/openapi-import)。
-
-## Signature / Usage
+[`openapi-import`](https://github.com/kubb-labs/openapi-import) lets you import a spec like a TypeScript module and get the output of every plugin in your `kubb.config.ts`, without generated files:
 
 ```ts
 import { type Pet, petStatusEnum } from './petStore.openapi.yaml'
 ```
 
-`openapi-import` は [TypeScript content mapper](https://github.com/microsoft/typescript-go/pull/4712) で、`tsc` とエディターが spec の代わりに plugin 出力を型チェックする。定義へ移動・ホバー・リネームは生成された型と spec のキーの間で機能する。
+`openapi-import` is a [TypeScript content mapper](https://github.com/microsoft/typescript-go/pull/4712), so `tsc` and your editor type-check the plugin output in place of the spec. Go to definition, hover, and rename jump between the generated types and the keys in the spec.
 
-experimental で、TypeScript 7.1.0-beta 以降と `--runExternalCode` が必要。
+> [!WARNING]
+> `openapi-import` is experimental. It needs TypeScript 7.1.0-beta or later with `--runExternalCode`.
 
-### Install
+::steps{level="2"}
 
-```shell
+## Signature / Usage
+
+### Install openapi-import
+
+Install it with Kubb and the TypeScript beta:
+
+:::code-group{sync="package-manager"}
+
+```shell [pnpm]
 pnpm add -D kubb openapi-import typescript@beta
 ```
 
-```shell
+```shell [npm]
 npm install -D kubb openapi-import typescript@beta
 ```
 
+:::
+
 ### Register the extension
 
-content mapper を `tsconfig.json` に追加し、spec を `<name>.openapi.yaml` と名付ける:
+Add the content mapper to `tsconfig.json`, and name the spec `<name>.openapi.yaml`:
 
-```json
+```json [tsconfig.json]
 {
   "compilerOptions": {
     "module": "ESNext",
@@ -41,25 +50,33 @@ content mapper を `tsconfig.json` に追加し、spec を `<name>.openapi.yaml`
 
 ### Run the type check
 
-```shell
+:::code-group{sync="package-manager"}
+
+```shell [pnpm]
 pnpm tsc --noEmit --runExternalCode
 ```
 
-```shell
+```shell [npm]
 node node_modules/typescript/bin/tsc --noEmit --runExternalCode
 ```
 
-npm では素の `tsc` が TypeScript 6 を実行するため、`typescript` のバイナリを直接呼ぶ。VS Code は信頼されたワークスペースでのみ `--runExternalCode` を渡す。
+:::
+
+With npm, a bare `tsc` runs TypeScript 6, so call the binary from `typescript`.
+
+VS Code only passes `--runExternalCode` in trusted workspaces.
+
+::
 
 ### Choose the plugins
 
-plugin オプションの設定や他の plugin の実行には `kubb.config.ts` を追加し、import する plugin をそれぞれインストールする:
+Add a `kubb.config.ts` to set plugin options or to run other plugins, and install each plugin it imports:
 
-```shell
+```shell [Terminal]
 pnpm add -D @kubb/plugin-ts
 ```
 
-```ts
+```ts [kubb.config.ts]
 import { pluginTs } from '@kubb/plugin-ts'
 import { defineConfig } from 'kubb/config'
 
@@ -69,13 +86,13 @@ export default defineConfig({
 })
 ```
 
-`tsconfig.json` の `include` に `./kubb.config.ts` を追加する。mapper は CLI と同様に config を探し、変更時に再読み込みする。config が複数ある場合、spec は `input` が一致するものを使う。
+Add `./kubb.config.ts` to `include` in `tsconfig.json`. The mapper finds the config like the CLI does and reloads it when it changes. With several configs, a spec uses the one whose `input` matches it.
 
 ### Load the spec at run time
 
-TypeScript は spec を JavaScript に出力しないため、`petStatusEnum` のような値にはバンドラーが要る。[ビルドツール連携](./overview.md) の `kubb()` を `config` オプション無しで追加すると、`tsc` と同じ `kubb.config.ts` を読む:
+TypeScript does not emit the spec to JavaScript, so values such as `petStatusEnum` need a bundler. Add `kubb()` from any [build tool integration](/docs/5.x/integrations/overview#build-tools) without a `config` option, so it reads the same `kubb.config.ts` as `tsc`:
 
-```ts
+```ts [vite.config.ts]
 import kubb from 'kubb/vite'
 import { defineConfig } from 'vite'
 
@@ -84,9 +101,9 @@ export default defineConfig({
 })
 ```
 
-型と値は同じ import から得られる:
+The types and the values then come from the same import:
 
-```ts
+```ts [src/pets.ts]
 import { type GetPetByIdPath, type GetPetByIdResponse, petStatusEnum } from '../petStore.openapi.yaml'
 
 export async function getAvailablePet({ petId }: GetPetByIdPath): Promise<GetPetByIdResponse | undefined> {
@@ -97,16 +114,28 @@ export async function getAvailablePet({ petId }: GetPetByIdPath): Promise<GetPet
 }
 ```
 
-`input` を持つ config はビルド時に生成ファイルも書く。spec の import だけにするなら `input` を省く。バンドラーは `kubb.config.ts` を 1 度だけ読むため、config を変えたら再起動する。
+A config with an `input` also writes the generated files at build time. Leave `input` out to import specs only. The bundler reads `kubb.config.ts` once, so restart it after you change the config.
+
+### Limits
+
+- Code a plugin writes to a separate file, such as a bundled client runtime, is not included. Point imports like the client's `importPath` at a package.
+- Files that `kubb.config.ts` imports are not watched. Restart the TypeScript server after you change them.
+- A changed spec runs a full Kubb build: about 0.4 s for a 10 KB spec and 2.6 s for a 1.4 MB spec.
+
+### See also
+
+- [Build tool integrations](/docs/5.x/integrations/overview#build-tools)
+- [Vite integration](/docs/5.x/integrations/vite)
+- [Configuration reference](/docs/5.x/reference/configuration)
+- [`openapi-import` on GitHub](https://github.com/kubb-labs/openapi-import), with a working pet-store example
 
 ## Notes
 
-- 制限: plugin が別ファイルに書くコード（バンドルされた client ランタイム等）は含まれない。client の `importPath` のような import はパッケージを指す。`kubb.config.ts` が import するファイルは監視されないため、変更後は TypeScript サーバーを再起動する。spec が変わると Kubb のフルビルドが走る（10 KB の spec で約 0.4 秒、1.4 MB の spec で約 2.6 秒）。
-- 関係: これは TypeScript 側の型チェック用連携。ビルドツール連携（`unplugin-kubb`、`kubb/vite` など）の `*.openapi.yaml` import は overview.md の "Import a spec" と unplugin.md を参照。bundler 側が実行時の値を、`openapi-import` が `tsc` / エディターの型を担う。
-- Migration (5.11 → 5.20): the `*.openapi.yaml` import via `kubb()` without a `config` option was added in 5.12.6 (unplugin-kubb, #4402), and `root` defaults to the folder of `kubb.config.ts` with a `*.openapi.yaml` import using only a config whose `input` is that spec in 5.12.7 (#4409). The `openapi-import` page itself is new in the 5.20.0 docs.
-- Source: https://kubb.dev/docs/5.x/integrations/openapi-import （kubb@5.20.0 の docs/5.x/integrations/openapi-import.md、取得日 2026-11-14）
+- Relation: this is the TypeScript-side type-check integration. For `*.openapi.yaml` imports through bundler integrations (`unplugin-kubb`, `kubb/vite`, ...) see the "Import a spec" section of [overview](./overview.md) and `helpers/unplugin.md`. The bundler covers runtime values; `openapi-import` covers types for `tsc` and the editor
+- Migration (5.11 → 5.20): the `*.openapi.yaml` import via `kubb()` without a `config` option was added in 5.12.6 (unplugin-kubb, #4402), and `root` defaults to the folder of `kubb.config.ts` with a `*.openapi.yaml` import using only a config whose `input` is that spec in 5.12.7 (#4409). The `openapi-import` page itself is new in the 5.20.0 docs
+- Source: https://kubb.dev/docs/5.x/integrations/openapi-import (kubb@5.20.0, docs/5.x/integrations/openapi-import.md, retrieved 2026-11-14)
 
 ## Related
 
-- [overview.md](./overview.md)
-- [unplugin.md](../helpers/unplugin.md)
+- [overview](./overview.md)
+- [unplugin](../helpers/unplugin.md)

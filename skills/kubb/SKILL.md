@@ -4,7 +4,7 @@ description: >
   Kubb (OpenAPI / Swagger コードジェネレーター) リファレンス。
   kubb.config.ts、TypeScript 型・TanStack Query フック・Zod・Faker・MSW モック生成プラグイン、
   Fetch / Axios / SWR / React Query クライアント、plugin-client (自前クライアント)。
-  CLI 9 コマンド、拡張レジストリ (kubb add)、Kubb Studio、Kit (kubb/kit)、
+  CLI 9 コマンド (kubb remove 含む)、拡張レジストリ (kubb add)、openapi-import (*.openapi.yaml)、Kubb Studio、Kit (kubb/kit)、
   parser-ts / parser-md、adapter-oas、diagnostics、プラグインベース、モノレポ対応。
   TanStack Query 本体の API は tanstack-query スキル。
 user-invocable: false
