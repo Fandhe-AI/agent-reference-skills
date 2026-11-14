@@ -6,8 +6,7 @@ description: >
   Mesh, InstancedMesh, SkinnedMesh, MeshStandardMaterial, MeshPhysicalMaterial,
   ShaderMaterial, node-materials (TSL), DirectionalLight, PMREMGenerator,
   GLTFLoader, AnimationMixer, AnimationClip, Vector3, Quaternion, Raycaster,
-  OrbitControls, WebXRManager, NodeMaterialInstance, StandardDrawingPipeline,
-  ReferenceAttributeNode, JXLLoader。
+  OrbitControls, WebXRManager, JXLLoader。
 user-invocable: false
 ---
 
