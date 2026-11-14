@@ -10,6 +10,8 @@ Outbound intercepts let you intercept and modify HTTP traffic from a container w
 
 An intercept sends matching requests from the container to a `WorkerEntrypoint` in your Worker. Register intercepts on `ctx.container` with an entrypoint from `ctx.exports`. An intercept lasts until the container stops, so register intercepts each time the Durable Object starts the container. `ctx.exports` requires a compatibility date of `2025-11-17` or later, or the `enable_ctx_exports` compatibility flag.
 
+Adapted (not in the official docs): `startContainer()` is wrapped so that concurrent calls share one startup promise (the official version can start twice when several requests arrive while the container is stopped, and `start()` throws on a running container); the original body is unchanged inside `#startContainer()`.
+
 ```js
 import { DurableObject, WorkerEntrypoint } from "cloudflare:workers";
 
@@ -24,7 +26,16 @@ export class OutboundHandler extends WorkerEntrypoint {
 }
 
 export class MyContainer extends DurableObject {
-	async startContainer() {
+	#starting;
+
+	startContainer() {
+		this.#starting ??= this.#startContainer().finally(() => {
+			this.#starting = undefined;
+		});
+		return this.#starting;
+	}
+
+	async #startContainer() {
 		const container = this.ctx.container;
 		if (container.running) return;
 
@@ -41,6 +52,8 @@ export class MyContainer extends DurableObject {
 }
 ```
 
+Adapted (not in the official docs): `startContainer()` is wrapped so that concurrent calls share one startup promise (the official version can start twice when several requests arrive while the container is stopped, and `start()` throws on a running container); the original body is unchanged inside `#startContainer()`.
+
 ```ts
 import { DurableObject, WorkerEntrypoint } from "cloudflare:workers";
 
@@ -55,7 +68,16 @@ export class OutboundHandler extends WorkerEntrypoint<Env> {
 }
 
 export class MyContainer extends DurableObject<Env> {
-	async startContainer(): Promise<void> {
+	#starting: Promise<void> | undefined;
+
+	startContainer(): Promise<void> {
+		this.#starting ??= this.#startContainer().finally(() => {
+			this.#starting = undefined;
+		});
+		return this.#starting;
+	}
+
+	async #startContainer(): Promise<void> {
 		const container = this.ctx.container!;
 		if (container.running) return;
 
@@ -84,6 +106,7 @@ export class MyContainer extends DurableObject<Env> {
 
 ## Notes
 
+- Adapted from the official docs: each `startContainer()` example shares one startup promise between concurrent callers (the official version checks `running`, awaits the intercept registrations and then calls `start()`, so overlapping calls can both pass the check and the second `start()` throws).
 - Source: https://developers.cloudflare.com/containers/configuration/outbound-traffic/ (cloudflare-docs production 34d908a, fetched 2026-11-14).
 - `enableInternet` takes effect when the container starts. You can register intercepts before or after `start()`, and changes to intercepts affect a running container without a restart.
 - Handler precedence: (1) `interceptOutboundHttp()` and `interceptAllOutboundHttp()` handle HTTP, `interceptOutboundHttps()` handles HTTPS. (2) A hostname intercept registered before `interceptAllOutboundHttp()` or a `*` target receives requests for that hostname; one registered after the broader rule on the same protocol and port receives no requests, so register specific hostnames first. (3) If no intercept matches, the request reaches the public Internet when the container started with `enableInternet: true`, otherwise it is denied.
@@ -116,6 +139,8 @@ container.start({
 
 Start the container with `enableInternet: false`, then intercept each allowed host with an entrypoint that forwards the request. For HTTPS, the intercept matches the TLS server name and the request URL always comes from the Host header.
 
+Adapted (not in the official docs): `startContainer()` is wrapped so that concurrent calls share one startup promise (the official version can start twice when several requests arrive while the container is stopped, and `start()` throws on a running container); the original body is unchanged inside `#startContainer()`.
+
 ```js
 import { DurableObject, WorkerEntrypoint } from "cloudflare:workers";
 
@@ -132,7 +157,16 @@ export class AllowHosts extends WorkerEntrypoint {
 }
 
 export class MyContainer extends DurableObject {
-	async startContainer() {
+	#starting;
+
+	startContainer() {
+		this.#starting ??= this.#startContainer().finally(() => {
+			this.#starting = undefined;
+		});
+		return this.#starting;
+	}
+
+	async #startContainer() {
 		const container = this.ctx.container;
 		if (container.running) return;
 
@@ -150,6 +184,8 @@ export class MyContainer extends DurableObject {
 }
 ```
 
+Adapted (not in the official docs): `startContainer()` is wrapped so that concurrent calls share one startup promise (the official version can start twice when several requests arrive while the container is stopped, and `start()` throws on a running container); the original body is unchanged inside `#startContainer()`.
+
 ```ts
 import { DurableObject, WorkerEntrypoint } from "cloudflare:workers";
 
@@ -166,7 +202,16 @@ export class AllowHosts extends WorkerEntrypoint<Env> {
 }
 
 export class MyContainer extends DurableObject<Env> {
-	async startContainer(): Promise<void> {
+	#starting: Promise<void> | undefined;
+
+	startContainer(): Promise<void> {
+		this.#starting ??= this.#startContainer().finally(() => {
+			this.#starting = undefined;
+		});
+		return this.#starting;
+	}
+
+	async #startContainer(): Promise<void> {
 		const container = this.ctx.container!;
 		if (container.running) return;
 
@@ -188,6 +233,8 @@ export class MyContainer extends DurableObject<Env> {
 
 By default, a container started with `enableInternet: true` can reach any host. To block specific hosts or IP ranges, intercept them with an entrypoint that rejects every request. These intercepts cover HTTP and HTTPS requests to the denied hostnames and HTTP requests to the denied IP ranges; while `enableInternet` is `true`, all other connections (including other ports) reach the Internet directly. To block a destination on every port, use `enableInternet: false` and allow only what the container needs.
 
+Adapted (not in the official docs): `startContainer()` is wrapped so that concurrent calls share one startup promise (the official version can start twice when several requests arrive while the container is stopped, and `start()` throws on a running container); the original body is unchanged inside `#startContainer()`.
+
 ```js
 import { DurableObject, WorkerEntrypoint } from "cloudflare:workers";
 
@@ -201,7 +248,16 @@ export class DenyHost extends WorkerEntrypoint {
 }
 
 export class MyContainer extends DurableObject {
-	async startContainer() {
+	#starting;
+
+	startContainer() {
+		this.#starting ??= this.#startContainer().finally(() => {
+			this.#starting = undefined;
+		});
+		return this.#starting;
+	}
+
+	async #startContainer() {
 		const container = this.ctx.container;
 		if (container.running) return;
 
@@ -222,6 +278,8 @@ export class MyContainer extends DurableObject {
 }
 ```
 
+Adapted (not in the official docs): `startContainer()` is wrapped so that concurrent calls share one startup promise (the official version can start twice when several requests arrive while the container is stopped, and `start()` throws on a running container); the original body is unchanged inside `#startContainer()`.
+
 ```ts
 import { DurableObject, WorkerEntrypoint } from "cloudflare:workers";
 
@@ -235,7 +293,16 @@ export class DenyHost extends WorkerEntrypoint<Env> {
 }
 
 export class MyContainer extends DurableObject<Env> {
-	async startContainer(): Promise<void> {
+	#starting: Promise<void> | undefined;
+
+	startContainer(): Promise<void> {
+		this.#starting ??= this.#startContainer().finally(() => {
+			this.#starting = undefined;
+		});
+		return this.#starting;
+	}
+
+	async #startContainer(): Promise<void> {
 		const container = this.ctx.container!;
 		if (container.running) return;
 
@@ -400,9 +467,20 @@ const entrypoint = [
 
 ### Change policies at runtime
 
+Adapted (not in the official docs): `startContainer()` is wrapped so that concurrent calls share one startup promise (the official version can start twice when several requests arrive while the container is stopped, and `start()` throws on a running container); the original body is unchanged inside `#startContainer()`.
+
 ```ts
 export class MyContainer extends DurableObject<Env> {
-	async startContainer(): Promise<void> {
+	#starting: Promise<void> | undefined;
+
+	startContainer(): Promise<void> {
+		this.#starting ??= this.#startContainer().finally(() => {
+			this.#starting = undefined;
+		});
+		return this.#starting;
+	}
+
+	async #startContainer(): Promise<void> {
 		const container = this.ctx.container!;
 		if (container.running) return;
 
