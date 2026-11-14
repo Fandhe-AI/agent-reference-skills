@@ -69,7 +69,7 @@ my-plugin/
 | MCP servers | `.mcp.json` | `mcpServers` (inline map, path, or array; manifest wins on same name) | Server `plugin:<plugin>:<server>`; tool `mcp__plugin_<plugin>_<server>__<tool>` |
 | LSP servers | `.lsp.json` | `lspServers` (adds; manifest wins on same name) | `command`, `args`, `extensionToLanguage` (extensions start with `.`) |
 | Executables | `bin/` | | On `PATH` of the Bash tool's shell while enabled |
-| Default settings | `settings.json` | `settings` | Only `agent` and `subagentStatusLine` take effect |
+| Default settings | `settings.json` | `settings` | Only `agent` takes effect (deprecated, 2.1.323); `subagentStatusLine` was removed in 2.1.323 (it took effect through 2.1.322) |
 | Themes | `themes/<slug>.json` | `experimental.themes` | Appears in `/theme` under file `name` |
 | Output styles | `output-styles/<name>.md` | `outputStyles` | `/output-style` as `<plugin>:<name>` |
 | Channels | manifest `channels` entry bound to an `mcpServers` key | `channels` | Per-channel `userConfig` |

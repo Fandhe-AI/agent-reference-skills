@@ -66,7 +66,7 @@ Fields (top-level keys in `plugin.json`; `name` is the only required key):
 | `termsOfServiceUrl` | String | Terms of service link for the plugin's listing in Anthropic's directory. Claude Code doesn't read it |
 | `defaultEnabled` | Boolean | Whether the plugin starts enabled when the user hasn't set it. Defaults to `true` |
 | `dependencies` | Array of strings or objects | Plugins that must be enabled for this one to work |
-| `settings` | Object | Settings Claude Code applies while the plugin is enabled. Only `agent` and `subagentStatusLine` take effect. `agent` is deprecated (2.1.323; see Notes) |
+| `settings` | Object | Settings Claude Code applies while the plugin is enabled. Only `agent` takes effect; `agent` is deprecated (2.1.323; see Notes). `subagentStatusLine` was removed in 2.1.323 (it took effect through 2.1.322) |
 | `userConfig` | Object | Values Claude Code prompts the user for when the plugin is enabled |
 | `engines` | Object | `engines["claude-code"]`: the Claude Code version range the plugin supports (2.1.323; see Notes) |
 | `types` | Path | A `.d.ts` file that declares the `$.state` values and `$` nouns of a mod |
