@@ -61,7 +61,7 @@ pod deintegrate
 
 ## Notes
 
-- Alpha: this migration relies on the Alpha SwiftPM import feature and the Kotlin Gradle plugin version 2.5.0-Beta1 (the docs' `kotlinEapVersion`; the latest stable in the pinned docs is 2.4.21).
+- Alpha: this migration relies on the Alpha SwiftPM import feature and the Kotlin Gradle plugin version 2.5.0-RC (the docs' `kotlinEapVersion` at pin 54ca714 (fetched 2026-11-14), previously 2.5.0-Beta1; the latest stable in the pinned docs is 2.4.21).
 - Three steps: update the build script (add `swiftPMDependencies {}` without removing CocoaPods yet), reconfigure the Xcode project to direct integration via SwiftPM import tooling, then remove the CocoaPods KMP integration.
 - If the pod and Swift package offer the same APIs, only update Kotlin imports, from `cocoapods.FirebaseAnalytics.FIRAnalytics` to `swiftPMImport.org.example.package.FIRAnalytics`.
 - Reconfiguring Xcode: open the project in Xcode, build (it should fail; the error contains the command; View | Navigators | Report, filter Errors Only), then run the command in `/path/to/project/iosApp`. In IntelliJ IDEA, then use Tools | Swift Package Manager | Resolve Dependencies.

@@ -1,10 +1,10 @@
 ---
 name: kotlin-multiplatform
 description: >
-  Kotlin Multiplatform (KMP) / Compose Multiplatform (JetBrains, Kotlin) の公式リファレンス。
+  Kotlin Multiplatform (KMP) / Compose Multiplatform (JetBrains) の公式リファレンス。
   expect/actual, source set hierarchy, Multiplatform Gradle DSL, org.jetbrains.compose, Compose Resources (Res),
   Compose for iOS / Compose Desktop (Window, nativeDistributions) / Web, iOS 統合 (SwiftPM export, CocoaPods),
-  Navigation / ViewModel / Lifecycle,
+  Navigation / ViewModel / Lifecycle, PDF 表示, 共有 (share),
   Maven Central 公開, AGP 9 移行, 互換性表。
 user-invocable: false
 ---
@@ -15,8 +15,9 @@ JetBrains の `kotlin-multiplatform-dev-docs`（`kotlinlang.org/docs/multiplatfo
 
 ## 対象バージョン
 
-- 原本: `JetBrains/kotlin-multiplatform-dev-docs` @ `3ad4b025b32d3d42ded178df50f1cc0964ac64cf`（2026-10-15、コミット "Compose Multiplatform 1.12.2 (#796)"）。タグ・リリースは存在せず、`master` 直参照は禁止。公開サイトと `llms.txt` は 2026-10-16 に取得
+- 原本: `JetBrains/kotlin-multiplatform-dev-docs` @ `54ca714a853f25f193b016207b89e09edfded5e6`（2026-11-12、コミット "update: add the Kotlin Slack channel for Toolchain (#807)"）。タグ・リリースは存在せず、`master` 直参照は禁止。公開サイトと `llms.txt` は 2026-10-16 に取得。旧 pin `3ad4b02`（2026-10-15）との差分は 11 ファイルのみで、差分の無いページは再取得せず `3ad4b02` 時点の記述のまま（pin 間で原本が不変であることを `git diff` で確認済み）
 - Kotlin 2.4.21 / Compose Multiplatform 1.12.2 / Kotlin Toolchain 0.13（Alpha）/ lifecycle 2.11.0
+- stable は pin 更新後も不変。EAP 側は Kotlin 2.5.0-RC / Compose Multiplatform 1.13.0-beta02 に進んだが、1.13 の What's new ページ（`whats-new-compose-113.md`）は未収録（stable 化後に収録予定）。iOS の content-based sizing（EAP）のみ `compose-ios/` に収録
 - navigation 2.10.0-rc01 と material3 1.12.0-alpha03 は公式ドキュメント自身が pin するプレリリース（stable ではない）
 - Gradle 7.6.3-9.7.0 / AGP 8.5.2-9.3.1 / Xcode 26.4（`v.list` 記載の対応範囲）
 
@@ -84,6 +85,8 @@ skills/kotlin-multiplatform/
       accessibility.md
       previews.md
       testing.md
+      pdf.md
+      sharing-content.md
       android-only-components.md
       web-css-styles.md
     compose-architecture/
@@ -199,7 +202,7 @@ skills/kotlin-multiplatform/
 | Compose compiler プラグインの更新方法を知りたい | gradle-dsl | [references/gradle-dsl/README.md](references/gradle-dsl/README.md) |
 | compilation 設定・ネイティブバイナリ・テスト実行・ライブラリ / アプリ公開 | build-test-publish | [references/build-test-publish/README.md](references/build-test-publish/README.md) |
 | ビルド・実行、Hot Reload、Kotlin Toolchain、CI（GitHub Actions / TeamCity）を設定したい | tooling | [references/tooling/README.md](references/tooling/README.md) |
-| 共通 UI の entry point・レイアウト・modifier・popup・drag-and-drop・preview・テスト | compose-ui | [references/compose-ui/README.md](references/compose-ui/README.md) |
+| 共通 UI の entry point・レイアウト・modifier・popup・drag-and-drop・preview・テスト・PDF 表示・コンテンツ共有（share） | compose-ui | [references/compose-ui/README.md](references/compose-ui/README.md) |
 | Web（ComposeViewport）の viewport / CSS、Android 専用コンポーネントの扱い | compose-ui | [references/compose-ui/README.md](references/compose-ui/README.md) |
 | lifecycle・ViewModel・Navigation・deep link・Navigation 3 を使いたい | compose-architecture | [references/compose-architecture/README.md](references/compose-architecture/README.md) |
 | 画像・文字列・フォントなどの multiplatform resources とローカライズ | compose-resources | [references/compose-resources/README.md](references/compose-resources/README.md) |

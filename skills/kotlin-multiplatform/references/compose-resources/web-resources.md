@@ -24,12 +24,11 @@ Use a `<link>` tag with the `rel="preload"` attribute:
 
 ### Preload using the Compose Multiplatform preload API
 
-Browser-preloaded resources are cached as raw bytes that still need conversion to `FontResource` / `DrawableResource`. Compose Multiplatform has its own internal cache for these higher-level representations, which can be preloaded. Compose Multiplatform 1.8.0 introduced an experimental API for fonts and images on web targets: `preloadFont()`, `preloadImageBitmap()`, and `preloadImageVector()`.
+Browser-preloaded resources are cached as raw bytes that still need conversion to `FontResource` / `DrawableResource`. Compose Multiplatform has its own internal cache for these higher-level representations, which can be preloaded. Compose Multiplatform 1.8.0 introduced an API for fonts and images on web targets: `preloadFont()`, `preloadImageBitmap()`, and `preloadImageVector()`.
 
 To control which fallback font is used, specify it manually with `FontFamily.Resolver.preload()`. Web targets support TTF, OTF, TTC, variable, and WOFF/WOFF2 fonts.
 
 ```kotlin
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalResourceApi::class)
 @Composable
 fun App() {
     val icon by preloadImageVector(Res.drawable.heavy_vector_icon)
@@ -60,7 +59,8 @@ Compose Multiplatform uses the Web Cache API to cache successful responses and a
 
 ## Notes
 
-- Experimental: the preload API (`preloadFont()`, `preloadImageBitmap()`, `preloadImageVector()`), automatic font fallback (since 1.12.0), and web resource caching.
+- Experimental: automatic font fallback (since 1.12.0) and web resource caching. The preload API (`preloadFont()`, `preloadImageBitmap()`, `preloadImageVector()`) no longer carries the Experimental label in the docs, and its example no longer uses `@OptIn`.
+- Source: https://github.com/JetBrains/kotlin-multiplatform-dev-docs/blob/54ca714a853f25f193b016207b89e09edfded5e6/topics/compose/compose-web-resources.md (pinned, fetched 2026-11-14)
 - Web-only; `wasmJs` browser targets. Kotlin/Wasm and Kotlin/JS language topics belong to the kotlin skill.
 
 ## Related

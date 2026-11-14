@@ -117,6 +117,70 @@ UIKitView(
 
 The page also contains an advanced `RealDeviceCamera` composable (photo capture with `AVCapturePhotoOutput`, GPS metadata, a native `UIView` preview) and an advanced `WebViewWithDelegate` composable (`WKNavigationDelegateProtocol` plus `update`). See the source page and the ImageViewer sample for full code.
 
+### Size Compose views to fit their content (EAP)
+
+A Compose view can report its preferred size through `sizeThatFits()`; no separate sizing configuration is needed. This sizing example uses a Kotlin function `MainComposeView()` defined in `main.ios.kt`:
+
+```kotlin
+fun MainComposeView(): UIView = ComposeUIView {
+    Text(
+        "This Compose view wraps text to fit the available width",
+        modifier = Modifier.fillMaxWidth().padding(16.dp)
+    )
+}
+```
+
+In Swift, constrain the view's width with Auto Layout and pass that width to `sizeThatFits()`. Use `UIView.noIntrinsicMetric` for the height to let Compose determine it from the content, then apply the returned height through the view's height constraint. When the available space or content changes, schedule another layout pass to measure again and update the constraint. If your app changes Compose content, call `view.setNeedsLayout()` after Compose processes the change.
+
+```swift
+import UIKit
+
+class ComposeContentViewController: UIViewController {
+    // Uses the bridge name generated for your Kotlin file
+    // for example, main.ios.kt -> Main_iosKt
+    private let composeView = Main_iosKt.MainComposeView()
+    private var heightConstraint: NSLayoutConstraint!
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        composeView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(composeView)
+
+        // Provisional height until Compose has measured its content
+        heightConstraint = composeView.heightAnchor.constraint(equalToConstant: 1)
+
+        NSLayoutConstraint.activate([
+            composeView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            composeView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            composeView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            heightConstraint
+        ])
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        guard composeView.bounds.width > 0 else { return }
+
+        // The initial result may be a fallback; measure again on subsequent layout passes
+        let preferredSize = composeView.sizeThatFits(
+            CGSize(
+                // For a fixed height, swap width and height here and in the layout constraints
+                width: composeView.bounds.width,
+                height: UIView.noIntrinsicMetric
+            )
+        )
+
+        if heightConstraint.constant != preferredSize.height {
+            heightConstraint.constant = preferredSize.height
+            view.setNeedsLayout()
+        }
+    }
+}
+```
+
+If your Kotlin function returns a `UIViewController`, add it to a container view controller and call `sizeThatFits()` on its `view`.
+
 ## Notes
 
 - The official camera example never stops the session; this page adds `onRelease` to call `stopRunning()` when the view leaves the composition. The same applies to the advanced `RealDeviceCamera` composable.
@@ -125,6 +189,8 @@ The page also contains an advanced `RealDeviceCamera` composable (photo capture 
 - To test the camera examples on a real device, add the `NSCameraUsageDescription` key to the app's `Info.plist` file. Without it, the app will crash at runtime.
 - In `WebViewWithDelegate`, the delegate object is `remember`ed across recompositions, and `update` reloads the page when the requested URL changes.
 - Distinct from the apple-uikit skill, which covers UIKit APIs themselves; this page covers only the Compose Multiplatform side (`UIKitView`, `ComposeUIViewController`). Common Compose UI APIs belong to the android-compose-ui skill.
+- Content-based sizing via `sizeThatFits()` is labelled EAP in the docs at this pin (Compose Multiplatform 1.13.0-beta02), not the stable 1.12.2 release. The code blocks above are verbatim from the source page.
+- Source: https://github.com/JetBrains/kotlin-multiplatform-dev-docs/blob/54ca714a853f25f193b016207b89e09edfded5e6/topics/compose/ios/compose-uikit-integration.md (pinned, fetched 2026-11-14)
 
 ## Related
 
