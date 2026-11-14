@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/flatlist
+source: https://reactnative.dev/docs/0.88/flatlist
 ---
 
 # FlatList
@@ -204,6 +204,7 @@ Inherits [VirtualizedList Props](./virtualizedlist.md#options--props).
 | ListFooterComponentStyle | View Style | No | Styling for internal View for `ListFooterComponent`. |
 | ListHeaderComponent | component, element | No | Rendered at the top of all the items. |
 | ListHeaderComponentStyle | View Style | No | Styling for internal View for `ListHeaderComponent`. |
+| ListItemComponent | component, element | No | Each data item is rendered using this element, as an alternative to `renderItem`. It receives the same props, and takes precedence over `renderItem` when both are provided. |
 | columnWrapperStyle | View Style | No | Optional custom style for multi-item rows generated when `numColumns > 1`. |
 | extraData | any | No | A marker property for telling the list to re-render (it implements `PureComponent`). Put anything outside `data` that your `renderItem`, Header, Footer, etc. depend on here and treat it immutably. |
 | getItemLayout | `(data, index) => {length: number, offset: number, index: number}` | No | Optional optimization that skips measurement of dynamic content if you know item sizes ahead of time. Efficient for fixed size items, e.g. `getItemLayout={(data, index) => ({length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index})}`. Include separator length in the offset calculation if you specify `ItemSeparatorComponent`. |
@@ -319,8 +320,9 @@ scrollToOffset(params: {
 - Content is rendered asynchronously offscreen, so it is possible to scroll faster than the fill rate and momentarily see blank content.
 - By default, the list looks for a `key` prop on each item and uses that for the React key; alternatively provide a custom `keyExtractor`.
 - `removeClippedSubviews`: using this property may lead to bugs (missing content) in some circumstances - use at your own risk.
-- 0.88: TypeScript declarations are added for `FlatList`'s `strictMode` prop (the [0.88 release blog](https://reactnative.dev/blog/2026/10/19/react-native-0.88) states only that the declaration was added).
+- 0.88: `ListItemComponent` is documented on the FlatList page (the 0.88 docs page did not list it). TypeScript declarations are added for `FlatList`'s `strictMode` prop (the [0.88 release blog](https://reactnative.dev/blog/2026/10/19/react-native-0.88) states only that the declaration was added).
 - This is a React Native core component (imported from `react-native`, rendered as native views). It is distinct from web virtual-scroll libraries (tanstack-virtual) and Compose Lazy layouts (android-compose-ui LazyColumn), and from same-named UI parts in apple-swiftui / apple-uikit, android-compose-components, windows-winui-controls, and ark-ui / chakra-ui / fandhe-frontend.
+- Source: https://reactnative.dev/docs/0.88/flatlist (react-native-website commit a459a29, retrieved 2026-11-14)
 
 ## Related
 

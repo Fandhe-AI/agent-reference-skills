@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/release-levels
+source: https://reactnative.dev/docs/0.88/release-levels
 ---
 
 # Release Levels
@@ -15,7 +15,21 @@ DefaultNewArchitectureEntryPoint.releaseLevel = ReleaseLevel.CANARY
 DefaultNewArchitectureEntryPoint.load()
 ```
 
-**iOS** — `RCTReactNativeFactory` has an initializer that accepts a `releaseLevel` parameter.
+**iOS** — `RCTReactNativeFactory` has an initializer that accepts a `releaseLevel` parameter. Create the factory from your `SceneDelegate` (or `AppDelegate` if you are not using the UIScene lifecycle).
+
+**Objective-C** (`SceneDelegate.m`)
+
+```objc
+self.reactNativeFactory = [[RCTReactNativeFactory alloc] initWithDelegate:self releaseLevel:Canary];
+```
+
+**Swift** (`SceneDelegate.swift`)
+
+```swift
+reactNativeFactory = RCTReactNativeFactory(delegate: self, releaseLevel: RCTReleaseLevel.Canary)
+```
+
+Apps without the UIScene lifecycle:
 
 **Objective-C** (`AppDelegate.mm`)
 
@@ -45,6 +59,7 @@ let factory = RCTReactNativeFactory(delegate: delegate, releaseLevel: RCTRelease
 - On iOS, the system ensures that only one release level is active per app instance, and will crash if multiple factories are created with different release levels.
 - 0.88: `RCTReactNativeFactory` also gains SceneDelegate entry points `startReactNativeWithModuleName:inWindow:connectionOptions:` and `startReactNativeWithModuleName:inWindow:initialProperties:connectionOptions:` (additive; the `AppDelegate` path remains supported; single scene only). The release blog does not describe release-level changes.
 - Distinct from iOS native lifecycle details: UIKit and Swift topics belong to the apple-uikit and apple-swift skills.
+- Source: https://reactnative.dev/docs/0.88/release-levels (react-native-website commit a459a29, retrieved 2026-11-14)
 
 ## Related
 

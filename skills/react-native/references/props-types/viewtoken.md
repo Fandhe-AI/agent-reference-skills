@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/viewtoken
+source: https://reactnative.dev/docs/0.88/viewtoken
 ---
 
 # ViewToken Object Type

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/element-nodes
+source: https://reactnative.dev/docs/0.88/element-nodes
 ---
 
 # Element nodes

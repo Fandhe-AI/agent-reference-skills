@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/stylesheet
+source: https://reactnative.dev/docs/0.88/stylesheet
 ---
 
 # StyleSheet

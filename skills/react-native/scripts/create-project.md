@@ -1,10 +1,10 @@
 ---
-source: https://reactnative.dev/docs/0.87/get-started-without-a-framework
+source: https://reactnative.dev/docs/0.88/get-started-without-a-framework
 ---
 
 # Create Project
 
-Commands for environment setup and project creation, as written in the official docs. Other sources: https://reactnative.dev/docs/0.87/set-up-your-environment and https://reactnative.dev/docs/0.87/environment-setup.
+Commands for environment setup and project creation, as written in the official docs. Other sources: https://reactnative.dev/docs/0.88/set-up-your-environment and https://reactnative.dev/docs/0.88/environment-setup.
 
 ## Create a new Expo project (recommended Framework)
 

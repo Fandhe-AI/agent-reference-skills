@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/images
+source: https://reactnative.dev/docs/0.88/images
 ---
 
 # Images
@@ -84,7 +84,7 @@ iOS asset catalog opt-in (`Info.plist`):
 <true/>
 ```
 
-iOS image cache limits (call from native AppDelegate code, e.g. in `didFinishLaunchingWithOptions`):
+iOS image cache limits (call early during app startup from your `SceneDelegate` in `scene:willConnectToSession:options:`, or from `AppDelegate` if you are not using the UIScene lifecycle, for example within `application:didFinishLaunchingWithOptions:`):
 
 ```objectivec
 RCTSetImageCacheLimits(4*1024*1024, 200*1024*1024);
@@ -124,9 +124,10 @@ RCTSetImageCacheLimits(4*1024*1024, 200*1024*1024);
 - `source` is an object with a `uri` attribute rather than a string, so metadata can be attached (for example `require` adds location and size; don't rely on this, it might change in the future).
 - iOS may ignore the corner specific border radius styles `borderTopLeftRadius`, `borderTopRightRadius`, `borderBottomLeftRadius`, `borderBottomRightRadius` on images.
 - Image decoding is done in a different thread, not the main thread.
-- 0.88: iOS SceneDelegate lifecycle support is added (Apple requires the UIScene lifecycle with the iOS 27 SDK); for UIScene apps the next docs call `RCTSetImageCacheLimits` from `scene:willConnectToSession:options:` instead of `didFinishLaunchingWithOptions`. The `Image` JS API is unchanged. See the 0.88 release blog.
+- 0.88: iOS SceneDelegate lifecycle support is added (Apple requires the UIScene lifecycle with the iOS 27 SDK); the 0.88 docs call `RCTSetImageCacheLimits` from `scene:willConnectToSession:options:` for UIScene apps. The `Image` JS API is unchanged. See the 0.88 release blog.
 - Deviation from official docs: the background-image snippet uses `require('./background.png')` in place of the official placeholder `source={...}`, which is not valid JSX.
-- The 0.88 release blog lists `RCTUseAssetCatalog` as a 0.88 change although the 0.87 docs snapshot already documents it; confirm that your react-native version supports it before relying on it.
+- The 0.88 release blog lists `RCTUseAssetCatalog` as a 0.88 change although the 0.87 and 0.88 docs pages already document it; confirm that your react-native version supports it before relying on it.
+- Source: https://reactnative.dev/docs/0.88/images (react-native-website commit a459a29, retrieved 2026-11-14)
 
 ## Related
 

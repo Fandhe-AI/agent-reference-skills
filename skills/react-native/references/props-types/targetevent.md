@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/targetevent
+source: https://reactnative.dev/docs/0.88/targetevent
 ---
 
 # TargetEvent Object Type

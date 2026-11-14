@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/javascript-environment
+source: https://reactnative.dev/docs/0.88/javascript-environment
 ---
 
 # JavaScript Environment
@@ -78,7 +78,7 @@ Many standard functions are also available on all the supported JavaScript runti
 
 ## Notes
 
-- Since 0.84: Hermes V1 is the default engine (see the Hermes page). The "Chrome debugging" environment is the original wording of the 0.87 docs; Remote JavaScript Debugging was removed as of React Native 0.79 (see other-debugging-methods.md), so on 0.87 code runs in Hermes (or JavaScriptCore via the community package).
+- Since 0.84: Hermes V1 is the default engine (see the Hermes page). The "Chrome debugging" environment is the original wording of the 0.88 docs; Remote JavaScript Debugging was removed as of React Native 0.79 (see other-debugging-methods.md), so on 0.87 code runs in Hermes (or JavaScriptCore via the community package).
 
 ## Related
 

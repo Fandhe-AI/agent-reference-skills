@@ -1,10 +1,10 @@
 ---
-source: https://reactnative.dev/docs/0.87/signed-apk-android
+source: https://reactnative.dev/docs/0.88/signed-apk-android
 ---
 
 # Build Release
 
-Commands for signing, release builds and publishing. Other sources: https://reactnative.dev/docs/0.87/publishing-to-app-store and https://reactnative.dev/docs/0.87/debugging-release-builds.
+Commands for signing, release builds and publishing. Other sources: https://reactnative.dev/docs/0.88/publishing-to-app-store and https://reactnative.dev/docs/0.88/debugging-release-builds.
 
 > **警告**: 署名鍵とパスワードは実値を書かず、公式ドキュメントのプレースホルダのまま扱う。キーストアと `gradle.properties` のパスワードはコミットしない。検証は使い捨て環境で行う。
 

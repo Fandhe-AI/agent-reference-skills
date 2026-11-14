@@ -1,10 +1,10 @@
 ---
-source: https://reactnative.dev/docs/0.87/running-on-device
+source: https://reactnative.dev/docs/0.88/running-on-device
 ---
 
 # Run and Dev
 
-Commands for starting Metro and running the app on emulators, simulators and devices. Other sources: https://reactnative.dev/docs/0.87/get-started-without-a-framework, https://reactnative.dev/docs/0.87/running-on-simulator-ios, https://reactnative.dev/docs/0.87/troubleshooting.
+Commands for starting Metro and running the app on emulators, simulators and devices. Other sources: https://reactnative.dev/docs/0.88/get-started-without-a-framework, https://reactnative.dev/docs/0.88/running-on-simulator-ios, https://reactnative.dev/docs/0.88/troubleshooting.
 
 ## Start the Metro development server
 
@@ -106,7 +106,7 @@ Recommended method for Android 5.0 or newer with USB debugging. Set `DEVICE_SERI
 adb shell input keyevent 82
 ```
 
-Source: https://reactnative.dev/docs/0.87/debugging.
+Source: https://reactnative.dev/docs/0.88/debugging.
 
 ## Allow the Android device through udev (Linux)
 

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/turbo-native-modules-introduction
+source: https://reactnative.dev/docs/0.88/turbo-native-modules-introduction
 ---
 
 # Turbo Native Module Walkthrough
@@ -380,4 +380,4 @@ npm run ios
 - The official page initializes SoLoader with (this, false); updated to OpenSourceMergedSoMapping as required since RN 0.76 merged native libraries.
 - The 0.87 app template's MainApplication uses getDefaultReactHost(applicationContext, packageList = PackageList(this).packages.apply { add(...) }) and loadReactNative(this); the DefaultReactNativeHost form shown is the official page's older shape (isHermesEnabled is deprecated and ignored, isNewArchEnabled=false is unsupported since 0.82).
 - NS_ASSUME_NONNULL_END added; the official header snippet leaves the nonnull region open.
-- SafeAreaView from react-native used in this sample is deprecated in the 0.87 docs; use react-native-safe-area-context in real apps.
+- SafeAreaView from react-native used in this sample is deprecated in the 0.88 docs; use react-native-safe-area-context in real apps.

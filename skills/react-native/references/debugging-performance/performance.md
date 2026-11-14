@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/performance
+source: https://reactnative.dev/docs/0.88/performance
 ---
 
 # Performance Overview

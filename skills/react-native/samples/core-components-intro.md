@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/intro-react-native-components
+source: https://reactnative.dev/docs/0.88/intro-react-native-components
 ---
 
 # Core Components and Native Components

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/i18nmanager
+source: https://reactnative.dev/docs/0.88/i18nmanager
 ---
 
 # I18nManager

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/pushnotificationios
+source: https://reactnative.dev/docs/0.88/pushnotificationios
 ---
 
 # PushNotificationIOS
@@ -101,9 +101,10 @@ Instance getters on a received notification:
 - Applies to projects with native code only. For the managed Expo workflow, the page points to the Notifications guide in the Expo documentation (see expo).
 - If a tapped notification was already handled in `willPresentNotification`, notify `RCTPushNotificationManager` in only one of the two callbacks.
 - `finish()` is superseded by `UNUserNotificationCenterDelegate` and is no longer invoked if both `application:didReceiveRemoteNotification:fetchCompletionHandler:` and the newer handlers are implemented; if you still use the old handler you must call it as soon as possible.
-- 0.88: React Native 0.88 adds iOS SceneDelegate lifecycle support (`RCTReactNativeFactory` SceneDelegate entry points; a single scene only), which applies to native iOS entry-point code like the `AppDelegate.m` snippets above (0.88 release blog).
-- The 0.87 docs show `permissions?: PushNotificationPermissions[]`, but the Flow implementation (Libraries/PushNotificationIOS/PushNotificationIOS.js) takes a permissions object `{alert?, badge?, sound?}` and only requests truthy keys; the array overload in the .d.ts returns void. Example: `PushNotificationIOS.requestPermissions({alert: true, badge: true, sound: false})`.
+- 0.88: Push notification registration and delivery callbacks belong to `UIApplicationDelegate`, so implement them in your `AppDelegate` even when React Native is bootstrapped from `SceneDelegate` (0.88 docs). React Native 0.88 adds iOS SceneDelegate lifecycle support (single scene only) (0.88 release blog).
+- The 0.88 docs show `permissions?: PushNotificationPermissions[]`, but the Flow implementation (Libraries/PushNotificationIOS/PushNotificationIOS.js) takes a permissions object `{alert?, badge?, sound?}` and only requests truthy keys; the array overload in the .d.ts returns void. Example: `PushNotificationIOS.requestPermissions({alert: true, badge: true, sound: false})`.
 - iOS-native notification APIs themselves (UserNotifications, APNs): see apple-app-services and apple-uikit.
+- Source: https://reactnative.dev/docs/0.88/pushnotificationios (react-native-website commit a459a29, retrieved 2026-11-14)
 
 ## Related
 

@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/react-native-devtools
+source: https://reactnative.dev/docs/0.88/react-native-devtools
 ---
 
 # React Native DevTools

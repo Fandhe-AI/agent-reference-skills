@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/image-style-props
+source: https://reactnative.dev/docs/0.88/image-style-props
 ---
 
 # Image Style Props

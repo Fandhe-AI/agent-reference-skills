@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/height-and-width
+source: https://reactnative.dev/docs/0.88/height-and-width
 ---
 
 # Height and Width

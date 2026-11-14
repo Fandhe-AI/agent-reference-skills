@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/global-console
+source: https://reactnative.dev/docs/0.88/global-console
 ---
 
 # console

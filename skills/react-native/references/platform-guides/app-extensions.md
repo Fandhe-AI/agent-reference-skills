@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/app-extensions
+source: https://reactnative.dev/docs/0.88/app-extensions
 ---
 
 # App Extensions

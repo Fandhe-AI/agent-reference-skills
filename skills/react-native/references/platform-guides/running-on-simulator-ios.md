@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/running-on-simulator-ios
+source: https://reactnative.dev/docs/0.88/running-on-simulator-ios
 ---
 
 # Running On Simulator
@@ -83,7 +83,7 @@ yarn ios --udid "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
 
 ## Notes
 
-- The default device name `"iPhone 14"` is quoted from the 0.87 docs as written.
+- The default device name `"iPhone 14"` is quoted from the 0.88 docs as written.
 - `xcrun simctl` and Simulator itself are Xcode tooling; see the apple-distribution and apple-uikit skills for general iOS tooling.
 
 ## Related

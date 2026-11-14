@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/alertios
+source: https://reactnative.dev/docs/0.88/alertios
 ---
 
 # Removed APIs
@@ -17,16 +17,16 @@ Use Alert instead.
 
 | API | Original replacement guidance | Source |
 | --- | --- | --- |
-| AlertIOS | Use `Alert` instead. | https://reactnative.dev/docs/0.87/alertios |
-| AsyncStorage | Use one of the community packages instead (search: storage). | https://reactnative.dev/docs/0.87/asyncstorage |
-| CheckBox | Use one of the community packages instead (search: checkbox). | https://reactnative.dev/docs/0.87/checkbox |
-| Clipboard | Use one of the community packages instead (search: clipboard). | https://reactnative.dev/docs/0.87/clipboard |
-| DatePickerAndroid | Use one of the community packages instead (search: datepicker). | https://reactnative.dev/docs/0.87/datepickerandroid |
-| DatePickerIOS | Use one of the community packages instead (search: datepicker). | https://reactnative.dev/docs/0.87/datepickerios |
-| ImagePickerIOS | Use one of the community packages instead (search: image picker). | https://reactnative.dev/docs/0.87/imagepickerios |
-| SegmentedControlIOS | Use one of the community packages instead (search: segmentedcontrol). | https://reactnative.dev/docs/0.87/segmentedcontrolios |
-| StatusBarIOS | Use `StatusBar` for mutating the status bar. | https://reactnative.dev/docs/0.87/statusbarios |
-| TimePickerAndroid | Use one of the community packages instead (search: timepicker). | https://reactnative.dev/docs/0.87/timepickerandroid |
+| AlertIOS | Use `Alert` instead. | https://reactnative.dev/docs/0.88/alertios |
+| AsyncStorage | Use one of the community packages instead (search: storage). | https://reactnative.dev/docs/0.88/asyncstorage |
+| CheckBox | Use one of the community packages instead (search: checkbox). | https://reactnative.dev/docs/0.88/checkbox |
+| Clipboard | Use one of the community packages instead (search: clipboard). | https://reactnative.dev/docs/0.88/clipboard |
+| DatePickerAndroid | Use one of the community packages instead (search: datepicker). | https://reactnative.dev/docs/0.88/datepickerandroid |
+| DatePickerIOS | Use one of the community packages instead (search: datepicker). | https://reactnative.dev/docs/0.88/datepickerios |
+| ImagePickerIOS | Use one of the community packages instead (search: image picker). | https://reactnative.dev/docs/0.88/imagepickerios |
+| SegmentedControlIOS | Use one of the community packages instead (search: segmentedcontrol). | https://reactnative.dev/docs/0.88/segmentedcontrolios |
+| StatusBarIOS | Use `StatusBar` for mutating the status bar. | https://reactnative.dev/docs/0.88/statusbarios |
+| TimePickerAndroid | Use one of the community packages instead (search: timepicker). | https://reactnative.dev/docs/0.88/timepickerandroid |
 
 ## Notes
 

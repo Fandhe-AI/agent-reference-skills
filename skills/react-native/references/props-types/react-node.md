@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/react-node
+source: https://reactnative.dev/docs/0.88/react-node
 ---
 
 # React Node Object Type

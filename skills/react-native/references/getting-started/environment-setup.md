@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/environment-setup
+source: https://reactnative.dev/docs/0.88/environment-setup
 ---
 
 # Get Started with React Native

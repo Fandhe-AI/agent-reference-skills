@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/easing
+source: https://reactnative.dev/docs/0.88/easing
 ---
 
 # Easing
@@ -42,7 +42,7 @@ Animated.timing(opacity, {
 ## Notes
 
 - Groups: predefined animations (`back`, `bounce`, `ease`, `elastic`), standard functions (`linear`, `quad`, `cubic`; `poly` for higher powers), additional functions (`bezier`, `circle`, `sin`, `exp`) and the helpers `in`, `inOut`, `out`.
-- The 0.87 docs page writes `easing: number` for in/out/inOut; Easing.d.ts types the parameter and return value as `EasingFunction`.
+- The 0.88 docs page writes `easing: number` for in/out/inOut; Easing.d.ts types the parameter and return value as `EasingFunction`.
 - A cubic bezier curve visualization tool: https://cubic-bezier.com/.
 - This is the React Native `Easing` module; distinct from Motion for React (motion), Jetpack Compose animation (android-compose-graphics-animation) and SwiftUI animation (apple-swiftui).
 

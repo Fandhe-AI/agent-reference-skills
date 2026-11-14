@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/debugging-release-builds
+source: https://reactnative.dev/docs/0.88/debugging-release-builds
 ---
 
 # Debugging Release Builds

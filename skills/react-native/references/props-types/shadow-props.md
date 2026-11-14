@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/shadow-props
+source: https://reactnative.dev/docs/0.88/shadow-props
 ---
 
 # Shadow Props

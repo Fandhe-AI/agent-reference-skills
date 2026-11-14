@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/legacy/native-modules-setup
+source: https://reactnative.dev/docs/0.88/legacy/native-modules-setup
 ---
 
 # Native Modules NPM Package Setup

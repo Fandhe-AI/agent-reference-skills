@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/the-new-architecture/pure-cxx-modules
+source: https://reactnative.dev/docs/0.88/the-new-architecture/pure-cxx-modules
 ---
 
 # Cross-Platform Native Modules (C++)
@@ -158,7 +158,7 @@ Modify `SampleApp/android/app/build.gradle`, within the existing `android` block
 From the project root (`SampleApp`), download the original `OnLoad.cpp` into the `jni` folder (the official page interpolates the core branch name for the current version into the URL):
 
 ```sh
-RN_CORE_BRANCH="0.87-stable"
+RN_CORE_BRANCH="0.88-stable"
 curl -fsSL -o android/app/src/main/jni/OnLoad.cpp "https://raw.githubusercontent.com/react/react-native/${RN_CORE_BRANCH}/packages/react-native/ReactAndroid/cmake-utils/default-app-setup/OnLoad.cpp"
 ```
 
@@ -356,10 +356,10 @@ export default App;
 - Deviation: the official page runs `curl -O` from android/app/src/main/jni; here curl runs from the project root with -f so an HTTP error is not saved as OnLoad.cpp.
 - Deviation: the second `cd ios` from the official page is dropped because the previous step already runs inside ios/.
 - The official page labels the CMakeLists.txt snippet as shell; relabeled as cmake.
-- `SafeAreaView` from react-native used in this sample is deprecated in the 0.87 docs; use react-native-safe-area-context in real apps.
-- The Turbo Native Modules (iOS) and Fabric Native Components guides map names with `ios.modulesProvider` / `ios.componentProvider`; the Using Codegen page documents `ios.modules` / `ios.components`. Both forms appear in the 0.87 docs.
+- `SafeAreaView` from react-native used in this sample is deprecated in the 0.88 docs; use react-native-safe-area-context in real apps.
+- The Turbo Native Modules (iOS) and Fabric Native Components guides map names with `ios.modulesProvider` / `ios.componentProvider`; the Using Codegen page documents `ios.modules` / `ios.components`. Both forms appear in the 0.88 docs.
 - Docusaurus highlight markers from the official page are removed; snippets show the final code.
-- The official page interpolates the core branch name for the current docs version at build time; here it is a quoted shell variable (`RN_CORE_BRANCH`) set to the 0.87 branch name.
+- The official page interpolates the core branch name for the current docs version at build time; here it is a quoted shell variable (`RN_CORE_BRANCH`) set to the 0.88 branch name.
 - All Native Turbo Module spec files must have the prefix `Native`, otherwise Codegen will ignore them.
 - The `codegenConfig` tells Codegen to look for spec files in the `specs` folder, to only generate code for `modules`, and to namespace the generated code as `AppSpecs`.
 - `NativeSampleModule` lives in the `facebook::react` namespace to access all types in that namespace; it extends `NativeSampleModuleCxxSpec`, which contains glue and boilerplate code. The constructor accepts a pointer to the `CallInvoker` to communicate with JS if needed.

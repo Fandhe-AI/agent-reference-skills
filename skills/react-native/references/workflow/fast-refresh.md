@@ -1,5 +1,5 @@
 ---
-source: https://reactnative.dev/docs/0.87/fast-refresh
+source: https://reactnative.dev/docs/0.88/fast-refresh
 ---
 
 # Fast Refresh
