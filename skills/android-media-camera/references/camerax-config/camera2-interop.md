@@ -48,6 +48,8 @@ val hardwareLevel = Camera2CameraInfo.from(camera.cameraInfo)
 - All interop APIs are gated behind the `@ExperimentalCamera2Interop` opt-in annotation.
 - Only usable when CameraX is initialized with the Camera2 implementation (`Camera2Config`), not `CameraPipeConfig`.
 - Artifact: `androidx.camera:camera-camera2`.
+- CameraX 1.7.0-rc01: `UseCaseCamera2Interop`, `ImageCaptureCamera2Interop`, `SessionConfigCamera2Interop` and `CameraControlCamera2Interop` were converted from interfaces into abstract classes (pre-release API; the page above documents the `Camera2Interop` / `Camera2CameraControl` / `Camera2CameraInfo` APIs).
+- Source: https://developer.android.com/jetpack/androidx/releases/camera (retrieved 2026-11-14)
 
 ## Related
 

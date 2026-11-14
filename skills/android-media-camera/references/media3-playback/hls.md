@@ -106,6 +106,8 @@ val hlsMediaSource =
 - Ad resumption: `getAdsResumptionStates()` before releasing the player and `addAdResumptionState()` after recreation; `AdsResumptionState` is bundleable (`toBundle` / `fromBundle`) so it can go into `onSaveInstanceState`. Resumption is only supported for VOD streams.
 - Chunkless preparation (default) uses only the multivariant playlist and works if `#EXT-X-STREAM-INF` tags contain `CODECS`. Disable it if segments contain muxed closed captions not declared with `#EXT-X-MEDIA:TYPE=CLOSED-CAPTIONS`; this increases start-up time, so declaring them in the multivariant playlist is preferable.
 - Content guidelines: precise segment durations; a continuous media stream; `#EXT-X-INDEPENDENT-SEGMENTS`; prefer demuxed streams; include all information in the multivariant playlist. For live: `#EXT-X-PROGRAM-DATE-TIME`, `#EXT-X-DISCONTINUITY-SEQUENCE`, and a long live window (one minute or more).
+- Media3 1.11.0 added HLS Content Steering and Pathway Cloning support in the HLS extension; DASH Content Steering is from 1.12.0-alpha01 (pre-release).
+- Source: https://developer.android.com/jetpack/androidx/releases/media3 (release notes, retrieved 2026-11-14)
 
 ## Related
 

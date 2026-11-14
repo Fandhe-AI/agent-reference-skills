@@ -14,6 +14,16 @@ user-invocable: false
 Android の Media3 (再生・セッション) と CameraX (撮影) の公式ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
+## 対象バージョン
+
+取得日 2026-11-14。出典は developer.android.com のガイドページと androidx リリースノート。
+
+- Media3: 1.11.1（stable）。1.12.0-beta01 は pre-release のため本文未追従（`C.DEFAULT_BUFFER_SEGMENT_SIZE` 変更・`Timeline.getPeriodPosition` 削除等）
+- CameraX: 公式ガイドの記載どおり 1.7.0-rc02（stable は 1.6.2）
+- MediaRouter: 版数は各ページ未記載（stable 1.8.1、1.9.0-rc01 は未追従）
+- `developer.android.com/reference/**` は取得不可のため、シグネチャはガイドページとリリースノートに基づく
+- 追跡トリガー: Media3 1.12.0 stable、CameraX 1.7.0 stable、MediaRouter 1.9.0 stable の公開時に `/update-skill android-media-camera check`
+
 ## ディレクトリ構成
 
 ```text
