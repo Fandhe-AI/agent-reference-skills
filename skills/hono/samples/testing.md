@@ -67,7 +67,7 @@ test('GET /posts with env binding', async () => {
 - Pass mock bindings as the third argument to simulate Cloudflare Workers environment (KV, D1, etc.)
 - For Cloudflare Workers, the recommended test runner is Vitest with `@cloudflare/vitest-plugin`
 
-## Cloudflare Workers with @cloudflare/vitest-plugin
+### Cloudflare Workers with @cloudflare/vitest-plugin
 
 Official example config (verbatim from hono.dev Examples > Cloudflare Testing). Inside tests, `import { env } from 'cloudflare:workers'` gives the bindings from the Wrangler config, and `cloudflare:test` provides helpers such as `createExecutionContext()`.
 
@@ -101,4 +101,4 @@ export default defineConfig({
 }
 ```
 
-Source: https://hono.dev/examples/cloudflare-vitest (honojs/website@20aab4e0, retrieved 2026-11-14).
+- Source: https://hono.dev/examples/cloudflare-vitest (honojs/website@20aab4e0, retrieved 2026-11-14).

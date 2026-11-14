@@ -29,6 +29,7 @@ app.use('/api/long-process', timeout(60000, (c) =>
 - Timeout middleware cannot be used with streaming responses. For streams, use `setTimeout` and `stream.close()` manually.
 - Be cautious of middleware ordering when combining with error-handling middleware.
 - The path must be a wildcard such as `/api/*` to cover sub-paths (the official example was corrected from `/api`).
+
 ### Fresh error stacks
 
 Use a factory when timeout errors are reported to an observability service; passing an exception instance reuses its construction-time stack for every timeout, which can affect stack attribution and error fingerprinting.
@@ -39,4 +40,5 @@ timeout(
   () => new HTTPException(504, { message: 'Gateway Timeout' })
 )
 ```
+
 - Source: https://hono.dev/docs/middleware/builtin/timeout (honojs/website@20aab4e0, retrieved 2026-11-14)
