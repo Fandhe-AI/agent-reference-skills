@@ -53,8 +53,9 @@ Cloud APIs:
 ## Notes
 
 - Adapted (not in the official docs): the Signature block lists the sample repository and demo URLs given in the official page.
-- When adding new AI features, first check for model availability, and review Responsible Generative AI Development on Windows. Text Content Moderation is enabled across all Windows AI APIs to minimize potentially harmful content.
+- When adding new AI features, first check for model availability, and review Responsible Generative AI Development on Windows. The official page states: "Text Content Moderation is enabled across all Windows AI APIs to minimize potentially harmful content." Scope caveat: [App Content Search](./app-content-search.md) states that semantic indexing and search apply no content moderation, so do not assume moderation covers every API or search results.
 - More cloud-based API samples are in the Azure AI services documentation.
+- The Whisper on the web row is reproduced from the official page ("GPU or NPU with DirectML"). Other pages in this skill describe DirectML as a DirectX 12 GPU path rather than an NPU path (see [Choose your Windows AI solution](./choose-your-windows-ai-solution.md)); the sample uses WebNN with ONNX Runtime web, so treat the NPU claim as WebNN-specific and verify on the demo page before relying on it.
 - Source: https://learn.microsoft.com/en-us/windows/ai/samples/ (retrieved 2026-11-14)
 
 ## Related
