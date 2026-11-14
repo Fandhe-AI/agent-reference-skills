@@ -76,7 +76,7 @@ curl https://api.openai.com/v1/responses \
 
 - This is an OpenAI LLM-evaluation/fine-tuning example; unrelated to a JS/TS test runner's `evals`.
 - RFT currently supports only `o4-mini-2025-04-16` as the base model. Unlike SFT, a `grader` assigns a numeric reward instead of matching a fixed correct answer.
-- Base-model shutdown (deprecations page (https://developers.openai.com/api/docs/deprecations)): `o4-mini-2025-04-16` and `ft-o4-mini-2025-04-16` are scheduled to shut down on October 23, 2026.
+- Base-model shutdown (deprecations page (https://developers.openai.com/api/docs/deprecations)): `o4-mini-2025-04-16` and `ft-o4-mini-2025-04-16` were scheduled to shut down on October 23, 2026 (date passed as of 2026-11-14; still listed on the deprecations page fetched 2026-11-14). The official RFT guide this example comes from is no longer published as of 2026-11-14.
 - Monitor `train_reward_mean` (average reward on the training batch), `valid_reward_mean` (average reward on the validation set, more stable), and `reasoning_tokens_mean` during training.
 - The example grader model `gpt-4o-2024-08-06` is scheduled to shut down on 2027-01-14 (deprecations page).
 - RFT is a poor fit when the model already scores at the absolute minimum/maximum, or when qualified human experts don't agree on the correct answer.
