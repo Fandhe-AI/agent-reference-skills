@@ -46,6 +46,9 @@ onView(withId(R.id.button)).perform(click())
 - Each new process gets its own `AndroidJUnitRunner`, which registers Espresso and performs a handshake with the other running instances to establish communication channels.
 - Distinct from WorkManager's multi-process configuration (a different, unrelated API) despite the same filename appearing under the android-background-work skill.
 
+- Version note: the AndroidX Test release page lists `espresso-remote` 3.7.0 as the latest stable release (2025-07-30); the snippet above shows the guide's 3.6.1.
+- Source: https://developer.android.com/jetpack/androidx/releases/test (fetched 2026-11-14)
+
 ## Related
 
 - [Espresso.onView](./onview.md)

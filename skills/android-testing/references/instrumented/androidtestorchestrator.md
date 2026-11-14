@@ -32,6 +32,8 @@ dependencies {
 - Isolated crashes: a crash in one test doesn't take down the rest of the suite.
 - `clearPackageData: 'true'` clears all app and shared state between tests for complete cleanup.
 - Gradle dependencies: `androidx.test:runner` and `androidx.test:orchestrator` (as `androidTestUtil`).
+- Version note: the snippet shows the guide's `1.1.0` verbatim. The AndroidX Test release page lists `androidx.test:orchestrator` 1.6.1 and `androidx.test:runner` 1.7.0 as the latest stable releases (checked 2026-11-14).
+- Source: https://developer.android.com/jetpack/androidx/releases/test (fetched 2026-11-14)
 
 ## Related
 

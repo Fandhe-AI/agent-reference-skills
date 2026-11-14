@@ -79,6 +79,8 @@ adb shell am instrument -e disableAnalytics true
 
 - The official example Gradle build uses `compileSdkVersion 36`, `minSdkVersion 23`, `targetSdkVersion 36`, with `androidx.test:runner:1.6.1` and `espresso-core:3.6.1`.
 - Source: https://developer.android.com/training/testing/espresso/setup
+- Version note: the dependency versions above are verbatim from the guide. The AndroidX Test release page lists newer stable releases (2026-11-14): `espresso-core` 3.7.0 (2025-07-30, minSdkVersion 24), `androidx.test:runner` / `rules` 1.7.0, `androidx.test.ext:junit` 1.3.0 (unchanged).
+- Source: https://developer.android.com/jetpack/androidx/releases/test (fetched 2026-11-14)
 
 ## Related
 
