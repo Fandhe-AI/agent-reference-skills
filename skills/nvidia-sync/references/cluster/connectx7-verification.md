@@ -51,6 +51,8 @@ ip -br addr
 - Be careful when removing remotely: management access can continue over Wi-Fi, Ethernet, or Tailscale rather than the ConnectX-7 network.
 - To restore the configuration, move `99-nvidia-sync-cluster.yaml` back from `/root/netplan-disabled/` to `/etc/netplan/` and re-run `sudo netplan generate` and `sudo netplan try` (not described on the official page; inverse of the removal steps).
 - Release 0.117.3-9: the generated netplan now includes a UUID.
+- The Cluster Assistant configures the underlying network only; it does not configure distributed workloads, orchestration systems, or workload runtimes such as NCCL or vLLM.
+- Source: https://docs.nvidia.com/sync/latest/cluster-network-inspection.html (NVIDIA Sync 0.148.0-153, last updated Oct 30, 2026, retrieved 2026-11-14).
 
 ## Related
 

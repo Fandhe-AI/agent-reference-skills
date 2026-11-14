@@ -6,12 +6,33 @@ NVIDIA Sync release history, newest version first. The NVIDIA Sync application l
 
 ```text
 Component     Version
-NVIDIA Sync   0.117.3-9   (Current Version)
+NVIDIA Sync   0.148.0-153   (Current Version)
 ```
 
 ## Notes
 
-- **0.117.3-9 (current)** What's New: Resource Monitor reports CPU, memory, and GPU utilization for a single device or a cluster; node-to-node SSH configuration files now include aliases for the ConnectX-7 sub-interface IP addresses.
+- **0.148.0-153 (current)** What's New:
+  - Model Launcher: NVIDIA Sync can set up a model on a supported DGX Spark, a Spark cluster, or a single DGX Station. You start, stop, and check the model in NVIDIA Sync. Model Launcher is a beta feature.
+  - OpenCode: Model setup installs OpenCode and skills for the device, and sets OpenCode up to use the local model.
+  - Docker group access: After you add a device with a username and password, NVIDIA Sync can ask to add that user to the device's existing docker group. Confirm adds the user. Skip leaves the account unchanged. Membership in the docker group can grant root-level control of the device.
+  - Codex: NVIDIA Sync can open a remote folder in the Codex desktop app. Install Codex desktop version 26.818.22352 or later on your laptop.
+- 0.148.0-153 Fixed Issues:
+  - Versioned VS Code on Windows: NVIDIA Sync detects VS Code installations whose launcher uses a versioned folder.
+  - Special characters in folder paths: opening a remote folder no longer fails when the path contains special characters.
+  - Main-window banners stay tall enough for their content when the window has many items.
+  - Tailscale enrollment on macOS: the enrollment terminal stays open until enrollment finishes.
+  - Custom port cleanup: closing a custom port stops the remote processes for that port, including a cleanup that failed earlier.
+  - Cluster Assistant on a slow connection: NVIDIA Sync prepares every node's probe before topology discovery starts, so a slow connection to one node does not use up another node's discovery time.
+  - Network test latency phase: the Cluster Assistant network test shows the latency phase while that phase is running.
+  - Cluster Assistant device rename: renaming a device updates the device name and its SSH alias together.
+  - Custom app launch: a custom app no longer stays stuck launching when its address check does not finish. Each check stops after two seconds.
+  - Disconnect: a device stays disconnected after you disconnect it. A status check that was already running no longer connects it again.
+  - Onboarding window: after you reach device detection, the onboarding window no longer returns to an earlier onboarding step because a device was added from Settings.
+  - Tailscale browser sign-in: the sign-in screen says the browser can take a few minutes to open. If you close the browser too soon, select Resend the request.
+  - Cluster delete: if one node fails while you delete a cluster, NVIDIA Sync continues the delete and shows that node's error.
+  - Onboarding after you add a device from Settings: adding or importing a device from Settings completes onboarding, so the onboarding window does not open again on the next launch.
+  - Smaller interface and wording corrections.
+- **0.117.3-9** What's New: Resource Monitor reports CPU, memory, and GPU utilization for a single device or a cluster; node-to-node SSH configuration files now include aliases for the ConnectX-7 sub-interface IP addresses.
 - 0.117.3-9 Fixed Issues:
   - Cluster Assistant documentation links now point to valid pages.
   - Device discovery no longer lists the local machine.
@@ -71,7 +92,7 @@ NVIDIA Sync   0.117.3-9   (Current Version)
   - macOS no longer opens an extra terminal window in some cases; window positioning corrected.
   - Windows: corrects the timeout that hides the window; the main pop-up window no longer jitters on Windows 11.
   - Input fields no longer flash white when the window opens.
-- Source: https://docs.nvidia.com/sync/latest/release-notes.html (retrieved 2026-10-17).
+- Source: https://docs.nvidia.com/sync/latest/release-notes.html (NVIDIA Sync 0.148.0-153, last updated Oct 30, 2026, retrieved 2026-11-14).
 
 ## Related
 
