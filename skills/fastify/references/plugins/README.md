@@ -1,6 +1,6 @@
 # plugins
 
-対象 Fastify v5.12.7。
+対象 Fastify v5.12.8。
 
 ここの plugin / register は avvio ベースの Fastify カプセル化ツリー（`fastify-plugin` で break out）。`hono` の middleware・`fandhe-backend` のプラグイン・`vercel` / `storybook` のプラグインとは別物。
 

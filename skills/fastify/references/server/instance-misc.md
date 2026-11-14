@@ -26,7 +26,7 @@ fastify.routing(req, res)
 
 ## Notes
 
-- `initialConfig` exposes: `connectionTimeout`, `keepAliveTimeout`, `handlerTimeout`, `bodyLimit`, `caseSensitive`, `http2`, `https` (boolean or `{ allowHTTP1 }`), `disableRequestLogging`, `onProtoPoisoning`, `onConstructorPoisoning`, `pluginTimeout`, `requestIdHeader`, `requestIdLogLabel`, `http2SessionTimeout`, and a nested `routerOptions` object (`allowUnsafeRegex`, `buildPrettyMeta`, `caseSensitive`, `constraints`, `defaultRoute`, `ignoreDuplicateSlashes`, `ignoreTrailingSlash`, `maxParamLength`, `onBadUrl`, `querystringParser`, `useSemicolonDelimiter`).
+- `initialConfig` exposes: `connectionTimeout`, `keepAliveTimeout`, `handlerTimeout`, `bodyLimit`, `caseSensitive`, `http2`, `https` (boolean or `{ allowHTTP1 }`), `disableRequestLogging`, `onProtoPoisoning`, `onConstructorPoisoning`, `pluginTimeout`, `requestIdHeader`, `requestIdLogLabel`, `http2SessionTimeout`, and a nested `routerOptions` object (`allowUnsafeRegex`, `buildPrettyMeta`, `caseSensitive`, `compile`, `constraints`, `defaultRoute`, `ignoreDuplicateSlashes`, `ignoreTrailingSlash`, `maxParamLength`, `onBadUrl`, `querystringParser`, `useSemicolonDelimiter`).
 
 ## Related
 

@@ -18,7 +18,7 @@ yarn add fastify
 
 ## Notes
 
-- Target version for this skill: v5.12.7
+- Target version for this skill: v5.12.8
 - If using ECMAScript Modules (ESM), add `"type": "module"` to `package.json`:
 
   ```json

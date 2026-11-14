@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Serverless/
 
 # Serverless
 
-Target: Fastify v5.12.7. Run serverless applications and REST APIs using an existing Fastify application. Platforms with long-running processes (Google Cloud Run, AWS Fargate, Azure Container Instances, Vercel) make full use of Fastify's features; short-lived FaaS platforms need an adapter.
+Target: Fastify v5.12.8. Run serverless applications and REST APIs using an existing Fastify application. Platforms with long-running processes (Google Cloud Run, AWS Fargate, Azure Container Instances, Vercel) make full use of Fastify's features; short-lived FaaS platforms need an adapter.
 
 ## Signature / Usage
 
@@ -47,7 +47,10 @@ exports.handler = proxy
 - **Google Cloud Run**: a container platform, so little/no code changes needed; must listen on `0.0.0.0` and `process.env.PORT`
 - **Netlify Lambda**: reuses the AWS Lambda handler behind a Webpack build (`netlify-lambda`)
 - **Vercel**: fully supports Fastify; [Fluid compute](https://vercel.com/docs/fluid-compute) combines server-like concurrency with autoscaling (opt-in)
-- **Genezio**: has its own dedicated Fastify deployment guide
+- **Genezio**: a platform designed to simplify the deployment of serverless applications to the cloud (v5.12.8 no longer links a dedicated Fastify guide)
+
+- **Observability on Cloud Functions**: when a Fastify instance is wrapped with a single `onRequest()` handler, all routes are handled through a single Cloud Function entry point, so logs, metrics, and analytics in the Cloud Console are grouped under that single function rather than split per route. To get per-function grouping, export multiple `onRequest()` handlers instead of routing everything through one Fastify instance; alternatively deploy the single Fastify application to Cloud Run, where Fastify's built-in logging provides per-route observability.
+- Source: https://raw.githubusercontent.com/fastify/fastify/v5.12.8/docs/Guides/Serverless.md (tag v5.12.8, fetched 2026-11-14)
 
 ## Related
 

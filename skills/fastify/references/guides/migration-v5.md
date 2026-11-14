@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Migration-Guide-V5/
 
 # Migration Guide V5
 
-Target: Fastify v5.12.7. Fastify v5 requires Node.js v20+ (v4 supported until 2025-06-30). Fix all v4 deprecation warnings before upgrading — every deprecated v4 API listed below has been removed and no longer works.
+Target: Fastify v5.12.8. Fastify v5 requires Node.js v20+ (v4 supported until 2025-06-30). Fix all v4 deprecation warnings before upgrading — every deprecated v4 API listed below has been removed and no longer works.
 
 ## Signature / Usage
 

@@ -1,6 +1,6 @@
 # hooks-lifecycle
 
-対象 Fastify v5.12.7。
+対象 Fastify v5.12.8。
 
 ここの hooks は Fastify のリクエスト／アプリケーションライフサイクルフック。`lefthook`（git hooks）・`react-hook-form`（React hooks）・`anthropic-claude-code-extend`（Claude Code hooks）とは別物。
 
