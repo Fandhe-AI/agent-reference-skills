@@ -80,6 +80,12 @@ voice:
   silence_threshold: 200   # RMS level
   silence_duration: 3.0    # seconds
   auto_tts: false
+stt:
+  language: "en"           # global hint for every provider; set "" to auto-detect
+  local:
+    language: ""           # blank = stt.language, then HERMES_LOCAL_STT_LANGUAGE, then auto-detect
+  groq:
+    language: ""           # blank = stt.language, then HERMES_LOCAL_STT_LANGUAGE, then auto-detect
 ```
 
 ```bash
@@ -121,6 +127,12 @@ Hermes installed via the install script, an LLM provider configured (`hermes mod
 - **Hallucination filter**: Removes 26 known phantom transcription phrases produced from silence.
 - **Real-time level display**: Shows microphone input as `● [▁▂▃▅▇▇▅▂] ❯`
 - **Continuous mode**: Recording auto-restarts after agent responses without requiring another key press.
+
+## Notes
+
+- STT language hint: blank provider language settings inherit the global `stt.language` (default `"en"`) before `HERMES_LOCAL_STT_LANGUAGE`; they do not select auto-detection (set `stt.language: ""` for that). Details: https://hermes-agent.nousresearch.com/docs/user-guide/configuration (Speech-to-Text section).
+- The Webapp (the desktop UI in a browser) always uses the relay path (`/api/audio/transcribe` and the speech WebSocket): a browser tab cannot call a provider that disallows cross-origin requests (such as Nous-managed audio), and its keys stay on the host. Desktop client-direct otherwise falls back to the relay for gateway-only providers (local whisper, `edge` TTS, command providers, plugins).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/voice-mode (pinned to v0.23.1)
 
 ## Related
 

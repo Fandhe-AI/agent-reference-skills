@@ -107,7 +107,7 @@ gateway:
       on_compaction: false  # rotate after context compaction
       max_turns: 0          # 0 = unlimited; N = turns per segment
 ```
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/built-in-plugins (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/built-in-plugins (pinned to v0.23.1)
 
 ## Related
 

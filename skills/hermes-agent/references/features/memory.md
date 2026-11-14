@@ -119,7 +119,7 @@ memory:
 ```
 
 - Setting both `memory_enabled` and `user_profile_enabled` to `false` turns the built-in stores off and drops the `memory` tool from the schema; an external provider set via `memory.provider` is unaffected. Listing `memory` under `agent.disabled_toolsets` also hides external provider tools.
-- With only `memory_enabled: false` (user profile still on), the tool stays because it backs the profile store; the tool schema advertises only the `user` target and writes to `MEMORY.md` are rejected. The inverse configuration advertises only `memory` and rejects `USER.md` writes. (Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/memory, pinned to v0.22.2 — troubleshooting step 4 and Configuration section.)
+- With only `memory_enabled: false` (user profile still on), the tool stays because it backs the profile store; the tool schema advertises only the `user` target and writes to `MEMORY.md` are rejected. The inverse configuration advertises only `memory` and rejects `USER.md` writes. (Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/memory, pinned to v0.23.1 — troubleshooting step 4 and Configuration section.)
 - `memory.prefetch_spill_enabled: true` replaces oversized external recall with a head/tail preview and file path (restart after changing).
 
 ## Controlling memory writes (`write_approval`)
@@ -144,6 +144,8 @@ Approval applies to exactly the entry targeted when staged; if it changed since,
 ## Notes
 
 - Deprecation (v0.22.2): RetainDB and ByteRover leave core on October 15, 2026; their standalone repositories are unmaintained and open for a new maintainer. Provider name, settings, data directory and tools stay the same; `hermes update` installs the catalog plugin for profiles that name them. See [Memory Providers](./memory-providers.md). (Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers)
+- With the background refine review disabled (`enabled: false`), automatic post-turn forks do not spawn; manual `/refine` still works, with or without focus text (clarified in v0.23.1).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/memory (pinned to v0.23.1)
 
 ## Related
 

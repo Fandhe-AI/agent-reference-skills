@@ -128,7 +128,13 @@ Supermemory (`$HERMES_HOME/supermemory.json`). Env: `SUPERMEMORY_API_KEY`, `SUPE
 - Mem0 setup flags: `hermes memory setup mem0 --mode <platform|selfhosted|oss> [--host ...] [--api-key ...] [--oss-llm ...] [--oss-vector ...] [--dry-run]`. The mem0ai SDK sends anonymous telemetry unless `MEM0_TELEMETRY=false`.
 - Provider data is isolated per profile (local paths under `$HERMES_HOME/`, per-profile config files, profile-scoped project names for RetainDB, per-profile `.env` for OpenViking).
 - Memori's `hermes-memori` is an external integration, not a `hermes pm install` package; do not let an external installer pip-install into Hermes's environment.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers (pinned to v0.22.2)
+- Honcho per-profile host blocks: `hermes profile create coder --clone` (carries `memory.provider: honcho`) lets the Honcho plugin create a `hermes_coder` host block in `honcho.json` (`aiPeer: "coder"`, shared `workspace`, inherited `peerName` / `recallMode` / `writeFrequency` / `observation`); `hermes profile rename` re-keys that block, keeping its peers. Both need a Honcho plugin version with the profile hooks. `hermes honcho sync` backfills host blocks and AI peers for profiles without one (idempotent).
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/memory-providers (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- `hermes update` no longer backfills Honcho host blocks for existing profiles: run `hermes honcho sync` once for profiles created before Honcho was set up.
+- The cloned-profile host block key is now `hermes_coder` (v0.22.2 docs said `hermes.coder`).
 
 ## Related
 
