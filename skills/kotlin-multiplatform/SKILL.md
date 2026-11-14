@@ -1,10 +1,10 @@
 ---
 name: kotlin-multiplatform
 description: >
-  Kotlin Multiplatform (KMP) / Compose Multiplatform (JetBrains, Kotlin) の公式リファレンス。
+  Kotlin Multiplatform (KMP) / Compose Multiplatform (JetBrains) の公式リファレンス。
   expect/actual, source set hierarchy, Multiplatform Gradle DSL, org.jetbrains.compose, Compose Resources (Res),
   Compose for iOS / Compose Desktop (Window, nativeDistributions) / Web, iOS 統合 (SwiftPM export, CocoaPods),
-  Navigation / ViewModel / Lifecycle,
+  Navigation / ViewModel / Lifecycle, PDF 表示, 共有 (share),
   Maven Central 公開, AGP 9 移行, 互換性表。
 user-invocable: false
 ---

@@ -99,7 +99,9 @@ context.startActivity(Intent.createChooser(intent, "Share with"))
 
 ### iOS
 
-For UIKit-based UIs, present a `UIActivityViewController` in the native `iosApp` project:
+For UIKit-based UIs, present a `UIActivityViewController` in the native `iosApp` project.
+
+Adapted (not in the official docs): added the `popoverPresentationController` line, because on iPad the share sheet is shown as a popover and crashes without a source view or bar button item.
 
 ```swift
 let items: [Any] = [URL(string: "https://kotlinlang.org")!]
@@ -108,6 +110,8 @@ let controller = UIActivityViewController(
     activityItems: items,
     applicationActivities: nil
 )
+
+controller.popoverPresentationController?.sourceView = viewController.view
 
 viewController.present(controller, animated: true)
 ```
@@ -172,6 +176,7 @@ Button(onClick = { uriHandler.openUri("mailto:user@example.com?subject=Hello") }
 
 - Sharing is not a Compose Multiplatform API: the docs recommend community libraries (KMP Sharing, FileKit; more on klibs.io) or the native APIs of each platform. The examples are verbatim from the official page and were not compiled here.
 - The `sharingUri()` helper above builds `file://` URIs from raw paths, as in the official page. On Android, exposing a `file://` URI to another app can fail with `FileUriExposedException` (API 24 and later), and the Android section of the same page says to use `content://` URIs with a temporary read grant; prefer `content://` URIs for files on Android.
+- Adapted: the iOS example adds `controller.popoverPresentationController?.sourceView = viewController.view` (not in the official page) because iPad presents the share sheet as a popover and requires a source view (or `barButtonItem`); anchor it to the tapped share button's view and `sourceRect` in a real app.
 - The Web Share API calls are JavaScript; call them from Kotlin through JavaScript interop (language-level interop belongs to the kotlin skill).
 - Other related features named on the page: drag and drop (see the drag-and-drop page) and the Jetpack Compose `Clipboard` interface, whose use from common code is limited (tracked as CMP-7624 in YouTrack).
 - Android intents and chooser behavior belong to the `android-*` skills; `UIActivityViewController` and `ShareLink` belong to the `apple-*` skills. This page covers only the Compose Multiplatform side.
