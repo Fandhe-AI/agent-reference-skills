@@ -99,6 +99,8 @@ Image models used by the tool (`model` field): `gpt-image-2.5-sunburst`, `gpt-im
 
 - Distinct from `images.generate` / `images.edit` on the standalone Images API (`image-generation.md`) — the tool adds multi-turn editing and accepts File IDs as input images, but Responses API requests also bill the mainline model's own token usage.
 - For GPT Image 2 and GPT Image 2.5, cached input pricing applies only through this tool in the Responses API (not to direct Images API requests). Cached token counts aren't included in the response's `usage`.
+- GPT-Image-2.6 (`gpt-image-2.6-sunburst` / `gpt-image-2.6-flare`, changelog Nov 4, 2026) is documented for the Images API (`image-generation.md`). As of 2026-11-14 the official tool guide still names only the GPT-Image-2.5 models for this tool (the image generation guide says markup edits through the Responses API should use a mask instead). Source: https://developers.openai.com/api/docs/guides/tools-image-generation (retrieved 2026-11-14).
+- `gpt-image-1` was removed from the API on 2026-10-23, so it is no longer a valid `model` value even though the list above still names it; see `image-generation.md` Notes for the other shutdown dates.
 - The base request/response shape of the Responses API (`tools`, `tool_choice`, streaming events unrelated to images) is covered by the `openai-agents` / `openai-api-core` skills, not here.
 
 ## Related

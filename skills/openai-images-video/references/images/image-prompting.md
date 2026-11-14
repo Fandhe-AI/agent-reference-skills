@@ -65,7 +65,28 @@ Path("extract-product-gpt-image-2.png").write_bytes(
 
 ## Choose a model
 
-GPT Image 2.5 has two models:
+### GPT-Image-2.6 (`gpt-image-2.6-flare`, `gpt-image-2.6-sunburst`)
+
+GPT-Image-2.6 Flare is the smaller model for workflows where speed matters most; GPT-Image-2.6 Sunburst is the base model for workflows that need more detail or precise edits. Both support image generation, editing, and transparent backgrounds. For a new workflow, start with Flare if response time matters most, or Sunburst if the image must meet demanding requirements for detail, layout, or edit accuracy.
+
+| Your current workflow | Start by testing |
+| --- | --- |
+| Your existing GPT-Image-2 workflow meets your quality requirements, or you use GPT-Image-2.5 Flare | `gpt-image-2.6-flare`. Check quality and response time on the prompts you already use. |
+| GPT-Image-2 falls short on a complex task, or you use GPT-Image-2.5 Sunburst | `gpt-image-2.6-sunburst`. Check the details that determine whether you can use the image. |
+
+If Sunburst meets your requirements, try Flare with the same prompts, reference images, dimensions, and quality setting and compare the results and response times.
+
+Model parameters for 2.6: `model`; `quality` (`auto`, `low`, `medium`, `high`, `xhigh`, `max`); `complexity` (`low` / `medium` / `high`, default `high` for both models); `size` (`auto` or a supported size; custom sizes use multiples of 16 and an aspect ratio from 1:3 to 3:1); `background` (`auto` / `opaque` / `transparent`, SVG also supports transparency); `output_format` (`png` / `jpeg` / `webp`; generations also `svg` and `gif`; only JPEG and WebP support `output_compression`); `markup` (edits: a transparent PNG overlay with the same pixel dimensions as the first input image). Omit `input_fidelity` on image edits. GPT-Image-2.6 does not support `reasoning.summary`.
+
+To compare complexity levels, keep `quality` fixed. If the layout is correct but small text is hard to read, compare quality settings at the same complexity. When a prompt leaves design decisions open, try `high` complexity; for fully specified designs higher complexity may make little visible difference; for targeted edits start with `low` and check that the surrounding details stay intact.
+
+Migrating to 2.6: save a baseline of representative prompts and outputs; for a 2.5 Flare workflow try 2.6 Flare first, for 2.5 Sunburst try 2.6 Sunburst first; keep the first comparison consistent (same prompt, reference images, size, quality, output format; leave complexity at the default); tune one setting (quality or complexity) at a time; roll out by workflow while tracking response time, failures, retries, and cost per accepted image.
+
+Scenario prompts on the official page that are 2.6-specific: "Compare complexity" (paper-cut football scene at `size="1024x1536"`, `quality="medium"`), "Generate SVG output" (Field & Flour bakery logo, `output_format="svg"`, `n=1`), "Generate a looping GIF" (`gpt-image-2.6-sunburst`, `size="512x512"`, `quality="high"`, `frame_count=9`, `frame_duration_ms=200`; loop lasts 1.8 seconds), and "Guide an edit with markup" (circle the striped vase on a kitchen photo; send `image` and `markup` in one multipart request, omit `mask`). The request shapes are in `image-generation.md`.
+
+### GPT Image 2.5
+
+The official guide keeps the GPT Image 2.5 text below as a legacy section. GPT Image 2.5 has two models:
 
 - `gpt-image-2.5-flare`: the small model, optimized for speed; image quality comparable to GPT Image 2.
 - `gpt-image-2.5-sunburst`: the base model, optimized for quality; higher image quality than GPT Image 2.
@@ -164,7 +185,8 @@ Repeated edits can still change details you intended to preserve. Restate those 
 
 ## Notes
 
-- Deprecations: `gpt-image-1` shuts down on October 23, 2026; `gpt-image-1.5`, `gpt-image-1-mini`, and `chatgpt-image-latest` on December 1, 2026 (official deprecations page). Validate existing workflows with `gpt-image-2` (or a GPT Image 2.5 model) before migrating.
+- Deprecations (official deprecations page, retrieved 2026-11-14): `gpt-image-1` was removed on October 23, 2026; `gpt-image-1.5`, `gpt-image-1-mini`, and `chatgpt-image-latest` are removed on December 1, 2026; `gpt-image-2` on February 10, 2027. The deprecations page lists `gpt-image-2.6-sunburst` or `gpt-image-2.6-flare` as the replacement for the latter three groups. The tab text below that still says "validate with `gpt-image-2`" is the guide's own earlier wording.
+- Source (2.6 sections): https://developers.openai.com/api/docs/guides/image-prompting (`.md` twin retrieved 2026-11-14). The guide opens with the GPT-Image-2.6 guide and keeps a second, GPT Image 2.5 copy of the same sections (`data-legacy-heading-model="gpt-image-2.5"`); this page's GPT Image 2.5 / 2 / 1.5 material comes from the legacy copy and reference tabs.
 - The guide also contains scenario examples (style and lighting, infographics, exact-text ads, reusable logos, comic strips, UI mockups, slides and charts, translation with layout preservation, style transfer, identity-preserving clothing edits, reference combining, transparent cutouts, sketch-to-render, object removal, multi-turn refinement). Each has a sample prompt and settings on the official page; they are not reproduced here. Original prompts and runnable workflows: the pinned cookbook notebook, https://github.com/openai/openai-cookbook/blob/d310dfa05d20fb653caa9c1c4b89ac1a4aeeeae4/examples/multimodal/image-gen-models-prompting-guide.ipynb
 
 ## Related
