@@ -6,6 +6,12 @@ What self-hosted Claude Managed Agents sends outside your network, where its log
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the source page has no code example; this `.env` line is built from its prose ("set `CMA_PUBLISH_ADDRESS` in `.env`"), with a placeholder address.
+
+```text
+CMA_PUBLISH_ADDRESS=<address-to-publish-port-8400-on>
+```
+
 Where the server listens:
 
 | Listener | On by default | Default address | What it asks for |
@@ -64,6 +70,7 @@ Multitenancy:
 - Roles limit only requests a caller makes with their own token. Code an agent runs can call the server with any credential its sandbox holds, and an environment key can read events and post tool results in every session in its environment. Run each session in its own sandbox and keep the environment key out of it (the Compose and Kubernetes stacks do this). The server API key reaches every environment.
 - Secret manager, single sign-on, model gateway: keep deployments apart in each. For single sign-on give each deployment `audiences` entries no other deployment lists, give a role only to callers allowed at that level, and set no `default_role`. For a model gateway give each deployment its own value for a header such as `x-tenant-id` under `inference.headers`.
 - Source: https://platform.claude.com/docs/en/managed-agents/self-hosted-data-and-access.md (fetched 2026-11-14).
+- Adapted from the official docs: the Signature / Usage snippet is a minimal illustration of the `CMA_PUBLISH_ADDRESS` setting described in the source, which has no code blocks.
 
 ## Related
 
