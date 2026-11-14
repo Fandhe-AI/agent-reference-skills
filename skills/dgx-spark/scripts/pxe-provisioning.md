@@ -116,18 +116,33 @@ sudo dd if=/path/to/repacked.iso of="$USB" bs=4M status=progress conv=fsync
 
 ## Create and format an OEMDATA partition on USB
 
-> **Warning**: The following procedure removes existing filesystem signatures from the selected partition. Verify the device and partition names with `lsblk` before running `wipefs` or `mkfs.vfat`. Selecting the wrong device can erase data.
+> **Warning**: Partitioning and formatting erase data on the target. Verify the device with `lsblk` before every command; selecting the wrong device or an existing boot partition can erase data.
+
+Adapted (not in the official docs): the partition-creation step uses `sgdisk` as in the official script that adds OEMDATA to recovery media (`DISK` is the whole USB device, not a partition; partition 2 is created in the free space after the written image).
+
+```sh
+DISK=/dev/<USB-device>
+lsblk -o NAME,SIZE,FSTYPE,LABEL,PARTLABEL,TRAN "$DISK"
+sudo sgdisk -n 2:0:0 -t 2:0700 -c 2:OEMDATA "$DISK"
+sudo partprobe "$DISK"
+```
+
+Official format commands (use the new partition, for example `${DISK}2`, or `${DISK}p2` for NVMe-style names):
 
 ```sh
 sudo wipefs -a /dev/<partition>
 sudo mkfs.vfat -F 32 -n OEMDATA /dev/<partition>
 ```
 
-## Populate OEMDATA partition (debs, firmware, hook script)
+## Populate OEMDATA partition (seed, debs, firmware, hook script)
+
+`meta-data` and `user-data` are both required in the partition root; `hook.sh`, `debs/`, and `firmware/` are optional.
 
 ```sh
 sudo mkdir -p /tmp/usb-data
 sudo mount /dev/<partition> /tmp/usb-data
+sudo install -m 0644 <seed-directory>/meta-data /tmp/usb-data/meta-data
+sudo install -m 0644 <seed-directory>/user-data /tmp/usb-data/user-data
 sudo mkdir -p /tmp/usb-data/debs /tmp/usb-data/firmware
 sudo cp /path/to/*.deb /tmp/usb-data/debs/
 sudo cp /path/to/*.cab /path/to/*.cap /tmp/usb-data/firmware/
