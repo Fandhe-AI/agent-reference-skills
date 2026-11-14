@@ -52,9 +52,9 @@ const completed = await myQueue.getJobs(['completed'], 0, 100, true);
 - `getDelayedCount(timestamp)` excludes jobs scheduled exactly at the cutoff. Calling it without an argument still counts all delayed jobs, including those scheduled for the future; jobs already promoted to waiting or active are not included (feature added in v6.7.0, https://github.com/taskforcesh/bullmq/releases/tag/v6.7.0).
 - `getWaiting()` only retrieves jobs in waiting status. To inspect jobs that are still delayed, use `getJobs(['delayed'], start, end)`.
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/jobs/getters.md (tag v6.7.6, fetched 2026-11-14).
-- `getJobCounts` は複数のステータスを同時に指定できる
-- `getJobs` はページネーションに対応しており、大量のジョブがある場合でも効率的に取得可能
-- Repeatable Job の設定情報は `getJobs()` には表示されない。`getRepeatableJobs()` を使用すること
+- `getJobCounts` accepts several statuses at once.
+- `getJobs` supports pagination, so it stays efficient with a large number of jobs.
+- The configuration of repeatable jobs is not returned by `getJobs()`; use `getRepeatableJobs()`.
 
 ### Count overdue delayed jobs (v6.7.0+, TypeScript)
 

@@ -146,10 +146,10 @@ const worker = new Worker(
 
 ## Notes
 
-- cron 式はタイムゾーンの違いや夏時間の切り替えをシームレスに処理できる
-- cron 式のオプションの秒フィールドにより、標準 cron より精密なスケジューリングが可能
-- `repeatStrategy` 設定は Queue と Worker の**両方**に提供する必要がある（初回はキューで次回タイミングを計算し、以降はワーカーが引き継ぐため）
-- 1つのキューにつき1つの `repeatStrategy` のみ定義可能
+- Cron expressions handle time zone differences and daylight saving changes seamlessly.
+- The optional seconds field of cron expressions allows more precise scheduling than standard cron.
+- The `repeatStrategy` setting must be provided to **both** the Queue and the Worker (the queue computes the first next timing and the worker takes over afterwards).
+- Only one `repeatStrategy` can be defined per queue.
 - The strategy receives the scheduler's repeat options (`JobSchedulerRepeatOptions`), which also include a read-only `count` with the number of iterations already produced. It is managed internally, is only defined when the worker picks up a job to schedule the next iteration (before that job's processor runs), and cannot be set through `upsertJobScheduler` (official note, v6.7.6).
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/job-schedulers/repeat-strategies.md (tag v6.7.6, fetched 2026-11-14).
 

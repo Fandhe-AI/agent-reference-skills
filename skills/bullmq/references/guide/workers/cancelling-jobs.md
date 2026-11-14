@@ -85,9 +85,9 @@ worker.on('lockRenewalFailed', (jobIds: string[]) => {
 
 ## Notes
 
-- この機能は完全に後方互換。`signal` パラメータを持たない既存のプロセッサはそのまま動作する
-- `cancelJob` は Worker がそのジョブを処理中の場合にのみ有効
-- `UnrecoverableError` を使用すると、リトライせずにジョブを即座に失敗させることができる
+- The feature is fully backward compatible: existing processors without the `signal` parameter keep working.
+- `cancelJob` only has an effect when the Worker is currently processing that job.
+- Use `UnrecoverableError` to fail the job immediately without retrying.
 - `worker.cancelJob()` only reaches the jobs run by that `Worker` instance. To cancel a job from another process (typically the API server where a user clicked "cancel"), whichever worker runs it, use the Relay (see example-cancelling-jobs-on-other-workers.md in the relay category).
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/workers/cancelling-jobs.md (tag v6.7.6, fetched 2026-11-14).
 

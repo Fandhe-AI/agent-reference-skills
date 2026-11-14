@@ -47,10 +47,10 @@ myWorker.resume();
 
 ## Notes
 
-- グローバル一時停止は Queue インスタンスの `pause()` メソッドを使用し、ローカル一時停止は Worker インスタンスの `pause()` メソッドを使用する
-- 一時停止中の Worker はアイドル状態となり、再開されるまで新しいジョブを処理しない
+- Global pause uses the `pause()` method of the Queue instance; local pause uses the `pause()` method of the Worker instance.
+- A paused worker is idle and does not process new jobs until it is resumed.
 - The default behavior of waiting for in-flight jobs (TypeScript and Python) follows the same idea as graceful shutdown.
-- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/workers/pausing-queues.md and guide/workers/graceful-shutdown.md (tag v6.7.6, fetched 2026-11-14).
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/workers/pausing-queues.md and https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/workers/graceful-shutdown.md (tag v6.7.6, fetched 2026-11-14).
 
 ## Related
 

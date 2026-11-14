@@ -62,11 +62,11 @@ console.log('Current job scheduler:', scheduler);
 ## Notes
 
 - The scheduler ID passed to `upsertJobScheduler` is returned as the `key` property by `getJobScheduler` and `getJobSchedulers`. Use this `key` when retrieving, updating, or removing a scheduler. It is distinct from the scheduler's `name` and the IDs of the jobs it produces; the optional `id` property on `JobSchedulerJson` is not the scheduler identifier (official note, v6.7.6).
-- `removeJobScheduler` はスケジューラが存在しない場合 `false` を返す（エラーにはならない）
+- `removeJobScheduler` returns `false` when the scheduler does not exist (it does not throw).
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/job-schedulers/manage-job-schedulers.md (tag v6.7.6, fetched 2026-11-14).
-- `getJobSchedulers` はページネーションに対応しており、大量のスケジューラがある場合でも効率的に取得可能
-- スケジューラの更新には `upsertJobScheduler` を使用する（同じ ID で呼び出すと既存設定が上書きされる）
-- スケジューラのレポートやダッシュボード生成には `getJobSchedulers` が有用
+- `getJobSchedulers` supports pagination, so it stays efficient with a large number of schedulers.
+- Use `upsertJobScheduler` to update a scheduler (calling it with the same ID overwrites the existing settings).
+- `getJobSchedulers` is useful for generating scheduler reports or dashboards.
 
 ## Related
 

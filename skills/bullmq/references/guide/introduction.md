@@ -75,9 +75,9 @@ Worker がジョブ追加時に稼働していなくても、接続された時�
 
 ## Notes
 
-- BullMQ は分散処理をサポートしており、複数マシンにまたがるスケーラブルなアーキテクチャを構築可能
-- ジョブデータは Redis に保存されるため、シリアライズ可能なデータである必要がある
-- Queue, Worker, QueueEvents はそれぞれ独立した Redis 接続を使用できる
+- BullMQ supports distributed processing, so scalable architectures spanning several machines can be built.
+- Job data is stored in the datastore, so it must be serializable.
+- Queue, Worker and QueueEvents can each use their own independent Redis connection.
 - In the v6.7.6 guide, Queue is also used to create [job schedulers](./job-schedulers/README.md) (repeatable jobs from a cron expression or a fixed interval), QueueEvents listens from any process to the [events](./events/README.md) of all workers of a queue, and FlowProducer adds [flows](./flows/README.md) (trees of jobs with parent-child dependencies).
 - There are two backends, Redis and PostgreSQL. The classes are datastore agnostic and delegate every operation to a backend. Redis: 6.2 or newer and compatible servers such as Valkey and Dragonfly, with ioredis, node-redis, Bun's Redis client or Valkey GLIDE (see [Connections](./connections.md)); PostgreSQL: 13 or newer (see [PostgreSQL backend](./postgresql-backend/postgresql-backend.md)). Unless stated otherwise the guide applies to both; differences are listed in the feature parity section of the PostgreSQL backend.
 - The experimental [Relay](./relay/README.md) (process-to-process real-time messaging, available in the v6.4.0 docs) lets the processes of a system exchange messages through the datastore used by the queues.

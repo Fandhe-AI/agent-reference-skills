@@ -33,10 +33,10 @@ const worker = new WorkerPro('myQueue', processFn, {
 - `groupConcurrency` is a property of the worker instance and is not stored in Redis: you need to update every running worker, and workers started later use the value passed in their constructor options. Pub/Sub messages are not stored, so a process that is disconnected or starts later can miss an update; keep the latest value in your application configuration or in a Redis key and apply it when workers start or reconnect. Use a dedicated Redis connection for the subscriber.
 - API reference: https://api.bullmq.pro/classes/v7.WorkerPro.html#groupconcurrency
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/bullmq-pro/groups/concurrency.md (tag v6.7.6, fetched 2026-11-14).
-- グループ concurrency はレート制限とは独立して動作する
-- レート制限を設定していても、グループ concurrency を設定しないとグループ内で無制限に並列実行される
-- Worker 全体の `concurrency` とグループの `concurrency` は別の概念
-- ローカルグループ並行処理で個別のグループに異なる値を設定する場合は [local-group-concurrency.md](./local-group-concurrency.md) を参照
+- Group concurrency works independently of rate limiting.
+- Setting a rate limit without a group concurrency still allows unlimited parallel processing within a group.
+- The worker-level `concurrency` and the group `concurrency` are different concepts.
+- To give individual groups different values, see [local-group-concurrency.md](./local-group-concurrency.md).
 
 ### Changing the group concurrency at runtime
 

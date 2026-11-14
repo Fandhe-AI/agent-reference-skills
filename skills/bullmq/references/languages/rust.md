@@ -70,10 +70,10 @@ async fn main() -> bullmq::Result<()> {
 - Install: the crate is published as `bullmq-official` and imported in code as `bullmq` (`use bullmq::{Queue, Worker};`); the `bullmq`, `bullmq-rust` and `bullmq-rs` names on crates.io belong to unrelated third-party crates (official page, v6.7.6). A previous version of this page showed `bullmq = "0.1"` / `cargo add bullmq`, which would install an unrelated crate.
 - It uses the same Lua scripts and Redis data structures as the Node.js, Python, Elixir, .NET and PHP SDKs, so the SDKs are fully interoperable (also on Redis Cluster, as long as they use the same prefix).
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/rust/introduction.md (tag v6.7.6, fetched 2026-11-14)
-- 並行数は `worker.set_concurrency(n)` でランタイムに変更可能
-- イベントは EventEmitter ではなく `mpsc::UnboundedReceiver<WorkerEvent>` で受け取る
-- エラーハンドリングは例外ではなく `Result<T, Error>` 型で行う
-- Tokio マルチスレッドランタイムにより、Node.js と異なり全 CPU コアを活用できる
+- Concurrency can be changed at runtime with `worker.set_concurrency(n)`.
+- Events are received through `mpsc::UnboundedReceiver<WorkerEvent>` instead of an EventEmitter.
+- Errors are handled with the `Result<T, Error>` type instead of exceptions.
+- The multi-threaded Tokio runtime can use all CPU cores, unlike Node.js.
 
 ### Redis Cluster
 
