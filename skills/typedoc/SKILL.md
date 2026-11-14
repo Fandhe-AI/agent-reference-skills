@@ -1,8 +1,9 @@
 ---
 name: typedoc
 description: >
-  TypeDoc (TypeScript API ドキュメントジェネレーター) リファレンス。
-  typedoc.json、TSDoc タグ、CLI オプション、entryPoints、
+  TypeDoc 0.28 (TypeScript API ドキュメントジェネレーター) リファレンス。
+  typedoc.json、TSDoc タグ、CLI オプション、entryPoints、packageOptions、
+  externalSymbolLinkMappings (third-party symbols)、window.TypeDoc local storage、
   テーマ (default / markdown)、プラグイン開発、
   TSDoc / JSDoc コメントから HTML / Markdown ドキュメント生成。
 user-invocable: false
