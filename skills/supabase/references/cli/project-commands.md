@@ -250,7 +250,6 @@ supabase secrets unset MY_API_KEY OLD_SECRET
 |-------|------|
 | `--yes` | ホスト変更の確認を承認（非対話・JSON・agent 実行では必須） |
 | `--dry-run` | 削除せず対象を表示 |
-| `--all` | 全シークレットを削除（check 時レポートでは unset に必須と記載。公式 CLI リファレンス本文では未確認） |
 
 ## ログイン
 

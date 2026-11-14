@@ -174,6 +174,7 @@ supabase migration fetch [flags]
 
 - `--project-ref` は CLI v2.121.0 のソース（`fetch.command.ts`）で "TS-only override of the linked project ref" とコメントされており、公式 CLI リファレンス（llms/cli.txt）にはフラグ表が無い
 - 公式 CLI リファレンスの記載は説明文と `supabase migration fetch [flags]` のみ
+- v3 の対象指定（ローカル / リモート、`--remote` の要否）は公式で未確認
 
 ## supabase migration repair
 
@@ -197,10 +198,10 @@ supabase migration repair
 
 ```bash
 # リモートのマイグレーション履歴を「適用済み」に修正
-supabase migration repair --status applied --version 20240101120000
+supabase migration repair --remote --status applied --version 20240101120000
 
 # リモートのマイグレーション履歴を「未適用」に修正
-supabase migration repair --status reverted --version 20240103150000
+supabase migration repair --remote --status reverted --version 20240103150000
 ```
 
 ### ユースケース

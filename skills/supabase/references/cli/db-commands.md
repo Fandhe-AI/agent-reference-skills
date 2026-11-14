@@ -68,7 +68,7 @@ ALTER TABLE ONLY public.users
 リモートデータベースのスキーマまたはデータをダンプする。
 
 ```bash
-supabase db dump
+supabase db dump --remote
 ```
 
 ### フラグ
@@ -86,18 +86,20 @@ supabase db dump
 ### 使用例
 
 ```bash
-# スキーマをファイルに出力
-supabase db dump -f schema.sql
+# リモートのスキーマをファイルに出力
+supabase db dump --remote -f schema.sql
 
 # データのみダンプ
-supabase db dump --data-only -f data.sql
+supabase db dump --remote --data-only -f data.sql
 
 # ロールのみダンプ
-supabase db dump --role-only -f roles.sql
+supabase db dump --remote --role-only -f roles.sql
 
 # 特定スキーマのみ
-supabase db dump --schema public -f public_schema.sql
+supabase db dump --remote --schema public -f public_schema.sql
 ```
+
+`--remote` を省くとローカル DB のダンプになる（v3 の既定）。
 
 ## supabase db lint
 
@@ -143,7 +145,7 @@ ERROR: relation "nonexistent_table" does not exist
 リモートデータベースからスキーマをマイグレーションとして取得する。初回リンク後にリモートのスキーマをローカルに同期する際に使用。
 
 ```bash
-supabase db pull
+supabase db pull --remote
 ```
 
 ### フラグ
@@ -160,13 +162,13 @@ supabase db pull
 
 ```bash
 # リモートスキーマを取得
-supabase db pull
+supabase db pull --remote
 
 # 特定スキーマのみ
-supabase db pull --schema public,auth
+supabase db pull --remote --schema public,auth
 
 # 宣言的スキーマのツリーをリモートから更新（pg-delta 前提）
-supabase db pull --declarative
+supabase db pull --remote --declarative
 ```
 
 ### Notes
@@ -185,7 +187,7 @@ supabase db pull --declarative
 ローカルのマイグレーションをリモートデータベースに適用する。
 
 ```bash
-supabase db push
+supabase db push --remote
 ```
 
 ### フラグ
@@ -204,16 +206,16 @@ supabase db push
 
 ```bash
 # マイグレーションをリモートに適用
-supabase db push
+supabase db push --remote
 
 # ドライラン（確認のみ）
-supabase db push --dry-run
+supabase db push --remote --dry-run
 
 # シードデータも含めて適用
-supabase db push --include-seed
+supabase db push --remote --include-seed
 
 # パスワード指定
-supabase db push --password your-db-password
+supabase db push --remote --password your-db-password
 ```
 
 ### 出力例
