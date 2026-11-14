@@ -76,7 +76,7 @@ Example standard label set (best practices): `environment` = prod / dev / stagin
 
 - Folders and organizations do not support labels. Labels on a project are not inherited by service resources; label service resources (Compute Engine, Cloud Storage, Pub/Sub topics / subscriptions) individually. Egress billing SKUs do not support labels.
 - Labels flow to billing for cost breakdown; enable billing export to BigQuery to group costs by label (for example `costcenter`, `service`, `environment`). When filtering billing by label keys, labels applied to a project cannot be selected.
-- Do not put sensitive information or PII in labels. Avoid many unique labels (timestamps, per-call values); keep to about ten standard keys; apply labels programmatically (scripts, Terraform) with a consistent case-sensitive format; allow optional non-standard labels such as `version:5.0.1`, `replica:primary`.
+- Do not put sensitive information or PII in labels. Avoid many unique labels (timestamps, per-call values); keep to about ten standard keys; apply labels programmatically (scripts, Terraform) with a consistent case-sensitive format; allow optional non-standard labels such as `version:5_0_1`, `replica:primary` (the official page writes `version:5.0.1`, but label values cannot contain periods; corrected here).
 - Old network tags on a VM appear as labels without a value.
 - Labels vs tags: labels are queryable annotations; tags (IAM-governed, inherited) can condition policies (see `../organization-policy/tags-condition.md`).
 - Project labels can also be edited in the console Labels page or Manage resources info panel (multi-select supported).

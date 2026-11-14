@@ -172,8 +172,10 @@ gcloud organizations list
 
 Shows `DISPLAY_NAME`, `ID` (organization ID), and `DIRECTORY_CUSTOMER_ID` (the Google Workspace customer ID). API lookup:
 
+Adapted (not in the official docs): `query` is passed as a URL query parameter (`?query=domain%3Aaltostrat.com`); the official sample writes `{query=domain:altostrat.com}`, which is not a valid request URL.
+
 ```text
-GET https://cloudresourcemanager.googleapis.com/v3/organizations:search{query=domain:altostrat.com}
+GET https://cloudresourcemanager.googleapis.com/v3/organizations:search?query=domain%3Aaltostrat.com
 ```
 
 Organization principal set format: `principalSet://iam.googleapis.com/organizations/01234567890123`. Workspace Directory API:
@@ -286,6 +288,7 @@ What entering an identifier allows:
 - Forcing access with the legacy constraint (use sparingly; it temporarily removes the guardrail): remove the policy, grant access, re-apply the policy; or create a Google group in an allowed domain, turn off domain restriction for that group in Workspace admin, add the service account, and grant the group access.
 - Policy simulation is not available for legacy managed constraints. Sharing publicly (`allUsers`) requires custom constraints; granting it weakens the guardrail, so scope it by tag.
 - Adapted from the official docs: `rules` nested under `spec` in the managed-constraint example; the public-sharing example now registers and enforces the custom constraint and adds the unconditional restriction rule required beside the conditional `allowAll` rule.
+- Adapted from the official docs: the organization search request passes `query` as `?query=domain%3Aaltostrat.com`.
 - Official inconsistency (kept verbatim): the official prose names the CEL functions `memberInPrincipalSet` / `memberTypeMatches` / `memberSubjectMatches` (lower camelCase), while the official code samples call `MemberInPrincipalSet(...)` / `MemberSubjectMatches(...)` (capitalized). CEL identifiers are case-sensitive; if `set-custom-constraint` rejects one spelling, try the other. Not verified against the service (公式未確認).
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/restricting-domains
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.

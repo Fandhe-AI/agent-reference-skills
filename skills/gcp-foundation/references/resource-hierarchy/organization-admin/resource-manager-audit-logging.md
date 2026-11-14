@@ -34,9 +34,11 @@ organizations/ORGANIZATION_ID/logs/cloudaudit.googleapis.com%2Fpolicy
 
 Logs Explorer sample queries:
 
+Adapted (not in the official docs): `methodName:"CreateProject"` (substring match, as in the DeleteProject query below) replaces the exact match `methodName="CreateProject"`, because v3 audit logs record fully qualified names such as `google.cloud.resourcemanager.v3.Projects.CreateProject`.
+
 ```sql
 log_id("cloudaudit.googleapis.com/activity")
-protoPayload.methodName="CreateProject"
+protoPayload.methodName:"CreateProject"
 resource.labels.project_id="PROJECT_ID"
 ```
 
@@ -63,6 +65,7 @@ Service name: `cloudresourcemanager.googleapis.com`; resource type: `project` fo
 - Tag operations in other services (for example `cloudsql.instances.listEffectiveTags`) are written to the resource's parent and included in Resource Manager audit logs, not in the service's own logs.
 - `GetContactInfo` / `UpdateContactInfo` support the GDPR ContactInfo service (EU Representative and Data Protection Officer, edited on the Privacy & Security page).
 - The Organization Policy v2 API has its own audit log description (see `orgpolicy.googleapis.com`).
+- Adapted from the official docs: the CreateProject Logs Explorer query uses `methodName:"CreateProject"` (substring) instead of an exact match.
 - Source: https://docs.cloud.google.com/resource-manager/docs/audit-logging
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.
 

@@ -14,8 +14,10 @@ Find the organization ID:
 gcloud organizations list
 ```
 
-```bash
-GET https://cloudresourcemanager.googleapis.com/v3/organizations:search{query=domain:altostrat.com}
+Adapted (not in the official docs): `query` is passed as a URL query parameter (`?query=domain%3Aaltostrat.com`); the official sample writes `{query=domain:altostrat.com}`, which is not a valid request URL.
+
+```text
+GET https://cloudresourcemanager.googleapis.com/v3/organizations:search?query=domain%3Aaltostrat.com
 ```
 
 Add an Organization Administrator:
@@ -98,6 +100,7 @@ Other limits: a resource can have at most 50 tag key-value pairs; at most 1000 t
 - The super admin who creates the organization is assigned Organization Administrator by default; delegate it to another user or group for separation of duties. Organization Administrator manages allow / deny policies and sees the hierarchy; it does not include creating folders or projects.
 - Do not use super admin accounts for day-to-day management. "This domain is already in use" errors need the Workspace domain-ownership resolution steps.
 - Disabling baseline policies weakens the posture: review before deleting. Use `gcloud org-policies delete` (the older `gcloud resource-manager org-policies` surface appears in the official page only for listing).
+- Adapted from the official docs: the organization search request passes `query` as `?query=domain%3Aaltostrat.com`.
 - Source: https://docs.cloud.google.com/resource-manager/docs/creating-managing-organization
 - Source: https://docs.cloud.google.com/resource-manager/docs/secure-by-default-organizations
 - Source: https://docs.cloud.google.com/resource-manager/docs/default-access-control
