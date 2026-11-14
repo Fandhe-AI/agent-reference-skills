@@ -12,8 +12,10 @@ Required roles: Project IAM Admin (`roles/resourcemanager.projectIamAdmin`) for 
 
 ### Expiring access (console condition editor)
 
+Adapted (not in the official docs): the already-expired 2020 date in the expiry examples on this page is replaced with `EXPIRY_DATE` / `EXPIRY_TIMESTAMP` placeholders; use a future RFC 3339 time.
+
 ```text
-request.time < timestamp("2020-07-01T00:00:00.000Z")
+request.time < timestamp("EXPIRY_TIMESTAMP")
 ```
 
 ### Expiring access (gcloud, read-modify-write)
@@ -39,9 +41,9 @@ Edit the file (gcloud sets the version automatically):
       ],
       "role": "roles/iam.securityReviewer",
       "condition": {
-        "title": "Expires_July_1_2020",
-        "description": "Expires on July 1, 2020",
-        "expression": "request.time < timestamp('2020-07-01T00:00:00.000Z')"
+        "title": "Expires_EXPIRY_DATE",
+        "description": "Expires on EXPIRY_DATE",
+        "expression": "request.time < timestamp('EXPIRY_TIMESTAMP')"
       }
     }
   ],
@@ -92,10 +94,10 @@ POST https://cloudresourcemanager.googleapis.com/v1/projects/PROJECT_ID:setIamPo
           "group:my-group@example.com"
         ],
         "condition": {
-          "title": "Expires_July_1_2020",
-          "description": "Expires on July 1, 2020",
+          "title": "Expires_EXPIRY_DATE",
+          "description": "Expires on EXPIRY_DATE",
           "expression":
-            "request.time < timestamp('2020-07-01T00:00:00.000Z')"
+            "request.time < timestamp('EXPIRY_TIMESTAMP')"
         }
       }
     ]
@@ -196,6 +198,7 @@ Check both disks and instances (other types not granted):
 
 ## Notes
 
+- Adapted from the official docs: the official expiry `2020-07-01T00:00:00.000Z` is already in the past, so the expiry examples use `EXPIRY_DATE` / `EXPIRY_TIMESTAMP` placeholders (future RFC 3339 time).
 - Conditional bindings do not override unconditional ones; conditions are not allowed with legacy basic roles (Owner, Editor, Viewer) or `allUsers` / `allAuthenticatedUsers`.
 - The console (condition builder) offers **Expiring Access** with operator **by**; use the Condition editor for expressions; `extract()` is available only in the editor, not the builder. **Run Linter** validates CEL.
 - When using a version 3 policy via REST, set `version` to `3`. If you keep policies in version control, store the policy returned by IAM, not the one you sent.

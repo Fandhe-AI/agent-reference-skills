@@ -8,7 +8,9 @@ A principal represents one or more identities that have authenticated to Google 
 
 ## Signature / Usage
 
-Examples from the page for a single principal across policy types:
+Examples from the page for a single principal across policy types.
+
+Adapted (not in the official docs): in the GKE example the pool name and cluster path use the project ID (`example-project`) instead of the project number, since the GKE workload pool is `PROJECT_ID.svc.id.goog`; only the `projects/` segment before `locations/global/workloadIdentityPools` is the project number.
 
 ```text
 Allow policies:  user:alex@example.com
@@ -25,7 +27,7 @@ Deny policies:   principalSet://goog/cloudIdentityCustomerId/C01Abc35
 PAB policies:    //iam.googleapis.com/locations/global/workspace/C01Abc35
 
 All GKE Pods in a cluster (allow policy):
-principalSet://iam.googleapis.com/projects/123456789012/locations/global/workloadIdentityPools/123456789012.svc.id.goog/kubernetes.cluster/https://container.googleapis.com/v1/projects/123456789012/locations/global/clusters/example-gke-cluster
+principalSet://iam.googleapis.com/projects/123456789012/locations/global/workloadIdentityPools/example-project.svc.id.goog/kubernetes.cluster/https://container.googleapis.com/v1/projects/example-project/locations/global/clusters/example-gke-cluster
 
 Project principal set (PAB policy):
 //cloudresourcemanager.googleapis.com/projects/example-project
@@ -56,6 +58,7 @@ Principal types and policy support:
 
 ## Notes
 
+- Corrected from the official docs: the GKE example used the project number in the workload pool name and cluster path; the pool is `PROJECT_ID.svc.id.goog` and the cluster path uses the project ID (see `principal-identifier-formats.md`).
 - Email aliases of a Google Account are replaced with the primary email in policies.
 - Google groups and domains have no credentials and cannot establish identity for a request.
 - Domains are tracked by customer ID, so primary and secondary domains cannot be managed separately; a secondary domain name in an allow policy is replaced by the primary one.

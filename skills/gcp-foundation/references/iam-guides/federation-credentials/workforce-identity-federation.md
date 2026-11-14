@@ -97,11 +97,13 @@ Set the ACS (redirect) URL to the same `https://auth.cloud.google/signin-callbac
       --location=global
 ```
 
+Adapted (not in the official docs): entries are comma-separated, and the list-valued `ipaddr` attribute is indexed with `[0]` before calling a string method.
+
 ```text
-google.subject=assertion.subject
+google.subject=assertion.subject,
 attribute.costcenter=assertion.attributes.costcenter[0]
 
-assertion.attributes.ipaddr.startsWith('98.11.12.')
+assertion.attributes.ipaddr[0].startsWith('98.11.12.')
 ```
 
 ### Encrypted SAML assertions (keys)
@@ -153,6 +155,8 @@ gcloud projects add-iam-policy-binding my-project \
 OIDC keywords: `assertion.NAME` (claim in the ID token payload). SAML keywords: `assertion.subject` (NameID) and `assertion.attributes.NAME` (list of values).
 
 ## Notes
+
+- Corrected from the official docs: the SAML mapping example is comma-separated, and the list-valued `ipaddr` attribute is indexed with `[0]` in the condition.
 
 - Workforce identity pools are organization-level and available across all projects and folders.
 - The prefix `gcp-` is reserved and cannot be used in pool or provider IDs. Providers can take a few minutes to accept requests.
