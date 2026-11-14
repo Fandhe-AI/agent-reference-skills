@@ -9,7 +9,7 @@ description: >
 user-invocable: false
 ---
 
-対象: Apple developer documentation（取得日 2026-10-16、iOS 27.0 SDK 時点）。Core AI / Media Intelligence / Music Understanding は iOS 27.0+。Speech の SpeechAnalyzer 系は 26.0+（AssetInputSequenceProvider / CaptureInputSequenceProvider / AnalyzerInputConverter のみ 27.0+）。
+対象: Apple developer documentation（取得日 2026-10-16、iOS 27.0 SDK 時点。Speech `AnalysisContext` / Music Understanding `AnalysisType` の 2 ページのみ取得日 2026-11-14）。Core AI / Media Intelligence / Music Understanding は iOS 27.0+。Speech の SpeechAnalyzer 系は 26.0+（AssetInputSequenceProvider / CaptureInputSequenceProvider / AnalyzerInputConverter のみ 27.0+）。
 
 Core ML と Core AI の境界: 公式の文言では Core ML は decision trees / tabular などニューラルネット以外のモデル向け、Core AI は最新アーキテクチャ向けで、モデル形式は `.aimodel`。`.mlmodel` / `.mlpackage` との互換は未確認。
 
@@ -194,6 +194,7 @@ skills/apple-ml/
     speech/
       README.md
       speechanalyzer.md
+      analysiscontext.md
       speechtranscriber.md
       dictationtranscriber.md
       speechdetector.md
@@ -235,6 +236,7 @@ skills/apple-ml/
       musicunderstandingsession-sessionresult.md
       musicunderstandingsession-timedvalue.md
       musicunderstandingsession-rangedvalue.md
+      analysistype.md
       rhythmresult.md
       keyresult.md
       loudnessresult.md
