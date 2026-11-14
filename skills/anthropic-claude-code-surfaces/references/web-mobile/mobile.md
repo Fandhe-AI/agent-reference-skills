@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/mobile.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/mobile.md / last verified: 2026-11-14 -->
 
 # Claude Code on mobile
 
@@ -27,7 +27,7 @@ Sign in to the Claude app with the same claude.ai account and organization used 
 | Claude Code on the web | A cloud session on Anthropic-managed infrastructure | Repo is on GitHub; task should keep running after you close the app |
 | Projects | A conversation where Claude coordinates parallel threads of work and reports back; runs in the cloud | A stream of related work rather than one task; see which threads finished or need you |
 | Remote Control | A Claude Code session on your computer | Work needs local filesystem, tools, or MCP servers |
-| Dispatch | The Desktop app on your computer | Message a task and let Dispatch decide how to run it (Pro/Max only) |
+| Dispatch | The Desktop app on your computer | Message a task and let Dispatch decide how to run it (Pro, Max, or Ultra only) |
 
 ## Notes
 
@@ -38,7 +38,9 @@ Sign in to the Claude app with the same claude.ai account and organization used 
 - Local-only commands such as `/plugin` and `/resume` don't work from the app.
 - Mode selection from the app: cloud sessions offer Accept edits / Plan / Auto; Remote Control sessions offer Manual / Accept edits / Plan / Auto. Bypass permissions is unavailable from the app in either case.
 - Remote Control itself (requirements, invocation modes, limitations) is documented in the anthropic-claude-code skill.
-- Dispatch requires a Pro or Max plan; not available on Team or Enterprise.
+- Dispatch requires a Pro, Max, or Ultra plan; not available on Team or Enterprise.
+- Claude Code has no separate mobile app: cloud sessions and Remote Control live in the **Code** tab of the Claude app, and Dispatch is a task you message in the app. If the Code tab is missing, your plan or organization may not include these features (see availability by subscription plan in the feature-availability docs). Dispatch sends its own notification when a Code session it spawned finishes or needs approval.
+- Source: https://code.claude.com/docs/en/mobile.md (fetched 2026-11-14)
 
 ## Related
 

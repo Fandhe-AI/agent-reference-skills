@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/desktop-wsl.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/desktop-wsl.md / last verified: 2026-11-14 -->
 
 # Claude Code Desktop in WSL
 
@@ -23,10 +23,15 @@ Run Code sessions inside a WSL 2 distribution on Windows. The session's Claude C
 
 ## Notes
 
+- Use a WSL session when the repository lives inside the distribution's filesystem; working on those files from Windows goes through a network filesystem, which is slow and breaks file watching
+- The environment selector is under the prompt box (above it in the earlier layout); the session starts in the distribution's home directory. The first session in a distribution takes a little longer while Claude sets up inside it. A `\\wsl.localhost\...` folder opened from the normal folder picker reopens inside that distribution
 - Trust is granted per distribution and folder; a folder trusted in one distribution or on Windows itself is not automatically trusted elsewhere
 - "Open in editor" opens VS Code connected via Remote - WSL
-- Parallel sessions, side chats, visual diff review, branch/PR status, and worktrees all work; the integrated terminal, connectors, plugins, session forking, the file browser pane, and `@`-mention file suggestions are not yet available in WSL sessions
-- On organization-managed devices, WSL sessions may be disabled by administrator policy
+- Parallel sessions, side chats, visual diff review, branch/PR status, and worktrees all work, backed by the git and toolchain inside the distribution
+- Limits in WSL sessions: plugins are not available; the file pane is view-only (ask Claude to edit); if the **+** menu shows **Add image** in place of **Add files or photos**, only images can be attached (@mention other files from the session's folder)
+- The integrated terminal and connectors may be missing: with a Claude account the two features roll out separately (select **Help > Check for Updates…**; if still missing after updating there is nothing to do); with a third-party provider WSL sessions don't get them and updating doesn't change that
+- On organization-managed devices, WSL sessions may be unavailable; if session start fails with a message that the device is managed, it is controlled by your administrator (see `admin-setup.md#decide-how-settings-reach-devices` in the official docs)
+- Source: https://code.claude.com/docs/en/desktop-wsl.md (fetched 2026-11-14)
 
 ## Related
 
