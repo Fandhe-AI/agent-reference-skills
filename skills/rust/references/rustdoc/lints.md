@@ -25,6 +25,7 @@ Rustdoc provides lints to catch documentation quality issues. They are namespace
 | `rustdoc::bare_urls` | warn | URL not formatted as a Markdown link |
 | `rustdoc::unescaped_backticks` | allow | Backtick that likely indicates a broken inline code span |
 | `rustdoc::redundant_explicit_links` | warn | Explicit link identical to the auto-generated intra-doc link |
+| `rustdoc::invalid_markdown_table` | warn | Unescaped pipe (`\|`) in a table row that discards the remaining cells (new in 1.100) |
 
 ## Examples
 
@@ -43,6 +44,11 @@ pub fn bar() {}
 /// See http://example.org for details.
 pub fn baz() {}
 
+// invalid_markdown_table — unescaped pipe in a table row (escape it as `\|`)
+//! | col1 |
+//! | ---- |
+//! | `code_with(|arg| arg)` |
+
 // missing_docs — enable to enforce full coverage
 #![warn(missing_docs)]
 pub fn undocumented() {}
@@ -53,6 +59,7 @@ pub fn undocumented() {}
 - `missing_docs` is from `rustc`, not rustdoc; the others are rustdoc-specific.
 - `rustdoc::missing_doc_code_examples` is nightly-only.
 - Use `#[allow(rustdoc::missing_docs)]` on individual items to suppress selectively.
+- Source (`invalid_markdown_table`): https://doc.rust-lang.org/rustdoc/lints.html#invalid_markdown_table (pinned: https://raw.githubusercontent.com/rust-lang/rust/1.100.0/src/doc/rustdoc/src/lints.md)
 
 ## Related
 

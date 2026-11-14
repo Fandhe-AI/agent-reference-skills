@@ -19,6 +19,7 @@ Specify the calling convention on `extern` functions and blocks:
 | `"sysv64"` | x86-64 System V AMD64 ABI |
 | `"aapcs"` | ARM calling convention |
 | `"efiapi"` | UEFI calling convention |
+| `"custom"` | Unknown custom ABI (`unsafe extern "custom"`); stable since 1.100; only callable via inline assembly |
 
 ```rust
 extern "C" fn c_function(x: i32) -> i32 { x }
@@ -121,6 +122,35 @@ By default, Rust symbols are mangled and not exported to C. To export:
 - The `"Rust"` ABI is **not stable** across compiler versions; never rely on it for FFI.
 - Symbol collisions caused by `no_mangle` or `export_name` produce undefined behavior.
 - `link_section` requires the programmer to ensure the section name is valid on all target platforms.
+
+### `repr(C)` field-less enums
+
+For a field-less enum with the `C` representation, the discriminant values must either all be representable by the `int` type in the target platform's C ABI or all by its `unsigned int` type; it has the same size and alignment as a C enum with the same discriminant values and no fixed underlying type. `rustc` accepts enums that do not meet this requirement but lints against them (this will become an error in the future). For maximum portability, prefer a primitive representation (such as `repr(u8)`) on the Rust side and a fixed underlying type (introduced in C23) on the C side. A field-less enum with a primitive representation has the same size and alignment as that primitive type. `repr(Rust)` enums with no variants are zero sized (and uninhabited).
+
+- Source: https://doc.rust-lang.org/reference/type-layout.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/e24eecf97b0c9a6dbac67191098204dc8a190aaa/src/type-layout.md, reference@e24eecf, retrieved 2026-11-14)
+
+### `extern "custom"` (stable in 1.100)
+
+An `extern "custom"` function has an unknown, custom ABI; the only way to call it is via inline assembly. It must be `unsafe`, have no parameters, and return the unit type (return type omitted or written explicitly as `()`; a type alias is rejected). Its definition must be a naked function. The `safe` qualifier is rejected in `extern "custom"` blocks, and the `cold` attribute may not be applied to an `extern "custom"` function.
+
+Adapted (not in the official docs): the fence below is the `increment` function of the official example, without the calling `asm!` block and doc comment.
+
+```rust
+# #[cfg(target_arch = "x86_64")] {
+# use core::arch::naked_asm;
+#[unsafe(naked)]
+unsafe extern "custom" fn increment() {
+    naked_asm!(
+        "add rax, 1",
+        "ret",
+    )
+}
+# }
+```
+
+- The example above is shortened from the official one (calling `asm!` block and doc comment omitted).
+- Source: https://doc.rust-lang.org/reference/items/functions.html#extern-custom (pinned: https://raw.githubusercontent.com/rust-lang/reference/e24eecf97b0c9a6dbac67191098204dc8a190aaa/src/items/functions.md, reference@e24eecf, retrieved 2026-11-14)
+- Source: https://doc.rust-lang.org/reference/items/external-blocks.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/e24eecf97b0c9a6dbac67191098204dc8a190aaa/src/items/external-blocks.md)
 
 ## Related
 

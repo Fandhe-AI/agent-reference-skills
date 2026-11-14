@@ -58,12 +58,13 @@ let vec = [1, 2, 3].iter().map(|n| n * 2).collect::<Vec<_>>();
 | Uncovered type | Type that does not appear as an argument to another type (`T` is uncovered; `T` in `Vec<T>` is covered). |
 | Undefined behavior | Compile-time or run-time behavior that is not specified. |
 | Uninhabited | Type with no constructors, e.g. `!` or `enum Never { }`. |
-| Zero-sized type (ZST) | Type whose size is 0; has at most one possible value (unit type, function items, tuple-like struct/variant constructors, field-less or all-ZST-field structs, zero-length arrays, arrays and unions of ZSTs, etc.). |
+| Zero-sized type (ZST) | Type whose size is 0; has at most one possible value (unit type, function items, tuple-like struct/variant constructors, field-less or all-ZST-field structs, zero-length arrays, arrays and unions of ZSTs, `repr(Rust)` enums with no variants, etc.). |
 
 ## Notes
 
+- Uninhabited types are not necessarily zero sized: `enum Never { }` is uninhabited and zero sized, but `(u8, Never)` is uninhabited and not zero sized.
 - The original page's ZST section includes a long `assert_eq!(0, size_of::<...>())` example covering each ZST category; it is not reproduced here.
-- Source: https://doc.rust-lang.org/reference/glossary.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/82da570bafd9efed421bdbae0f8603ede8dd308b/src/glossary.md)
+- Source: https://doc.rust-lang.org/reference/glossary.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/e24eecf97b0c9a6dbac67191098204dc8a190aaa/src/glossary.md, reference@e24eecf, retrieved 2026-11-14)
 
 ## Related
 

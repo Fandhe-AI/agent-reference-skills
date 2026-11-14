@@ -55,7 +55,7 @@ FOLLOW(M) for any other M is the intersection of FOLLOW(t) as t ranges over LAST
 - The "tokens that can begin a type" list in the original is explicitly noted as possibly incomplete.
 - Condensed: the original's tree-structured FIRST/LAST worked examples and the justification prose are omitted; see the official page for the full derivation.
 - The formal spec text (from RFC 550) lists `|` in FOLLOW(pat); since Rust 2021 `pat` accepts top-level or-patterns and may not be followed by `|` — see the normative follow-set restrictions in Macros By Example (macros.md).
-- Source: https://doc.rust-lang.org/reference/macro-ambiguity.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/82da570bafd9efed421bdbae0f8603ede8dd308b/src/macro-ambiguity.md)
+- Source: https://doc.rust-lang.org/reference/macro-ambiguity.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/e24eecf97b0c9a6dbac67191098204dc8a190aaa/src/macro-ambiguity.md)
 
 ### Matcher invariants
 

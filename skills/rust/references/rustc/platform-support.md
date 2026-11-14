@@ -9,7 +9,7 @@ Rust organizes platform support into three tiers, each with different guarantees
 - Official binary releases are provided for each target.
 - Automated testing ensures the target builds and passes tests after every change.
 - Full standard library support.
-- All current Tier 1 targets also have host tool support (can run `rustc` and `cargo` natively).
+- Tier 1 is split into "with host tools" (can run `rustc` and `cargo` natively) and "without host tools" (compilation target; `i686-pc-windows-msvc`).
 
 **Examples:**
 
@@ -19,6 +19,7 @@ Rust organizes platform support into three tiers, each with different guarantees
 | `aarch64-unknown-linux-gnu` | ARM64 Linux (kernel 4.1+, glibc 2.17+) |
 | `x86_64-pc-windows-msvc` | 64-bit MSVC (Windows 10+) |
 | `x86_64-unknown-linux-gnu` | 64-bit Linux (kernel 3.2+, glibc 2.17+) |
+| `i686-pc-windows-msvc` | 32-bit MSVC (Tier 1 without host tools) |
 
 ### Tier 2 — Guaranteed to Build
 
@@ -42,6 +43,8 @@ Rust organizes platform support into three tiers, each with different guarantees
 | `aarch64-apple-ios` | ARM64 iOS |
 | `x86_64-unknown-freebsd` | 64-bit x86 FreeBSD |
 | `wasm32-unknown-unknown` | WebAssembly |
+| `wasm32-wasip3` | WebAssembly with WASIp3 (Tier 2 since 1.100) |
+| `i686-pc-windows-gnu` | 32-bit MinGW (Tier 2 without host tools since 1.100) |
 
 ### Tier 3 — Best-Effort Support
 
@@ -57,6 +60,7 @@ Rust organizes platform support into three tiers, each with different guarantees
 | `aarch64-nintendo-switch-freestanding` | ARM64 Nintendo Switch |
 | `m68k-unknown-linux-gnu` | Motorola 680x0 Linux |
 | `riscv64gc-unknown-hermit` | RISC-V 64-bit Hermit OS |
+| `powerpc64-sony-ps3` | PowerPC64 (BE) Sony PlayStation 3 (new in 1.100) |
 
 ## Standard Library Support Key
 
@@ -91,7 +95,10 @@ rustup target add wasm32-unknown-unknown
 - Targets are identified by a **target triple** such as `x86_64-unknown-linux-gnu` (arch-vendor-OS-ABI).
 - Tier membership can change as targets gain or lose maintainers.
 - The detailed tier policy is described in the Target Tier Policy document.
+- Promoting or demoting a target follows the procedures on the Rust Forge (https://forge.rust-lang.org/compiler/proposals-and-stabilization.html#targets).
+- Rust 1.100 moved `i686-pc-windows-gnu` to Tier 2 without host tools, promoted `wasm32-wasip3` to Tier 2, and added `powerpc64-sony-ps3` as Tier 3.
 - Component availability (std, rustfmt, clippy, etc.) per target is tracked at https://rust-lang.github.io/rustup-components-history/
+- Source: https://doc.rust-lang.org/rustc/platform-support.html (pinned: https://raw.githubusercontent.com/rust-lang/rust/1.100.0/src/doc/rustc/src/platform-support.md); Rust 1.100.0 release notes: https://github.com/rust-lang/rust/blob/1.100.0/RELEASES.md
 
 ## Related
 

@@ -15,7 +15,9 @@ user-invocable: false
 Rust — システムプログラミング言語。所有権・借用・ライフタイム・型システムによりメモリ安全性とスレッド安全性を保証する。
 公式ドキュメント (doc.rust-lang.org) から主要 14 リソースを構造化。
 言語仕様・コード記述・ビルド（Cargo）・Unsafe Rust・組込み・CLI 開発時に参照する。
-対象: Rust 1.99.1 (2026-10-13)。The Reference / Edition Guide / rustc Book / rustdoc Book は rust-lang/rust タグ 1.99.1 の同梱版（reference@82da570、edition-guide@5a14f72）。
+対象: Rust 1.100.0 (2026-11-12)。The Reference / Edition Guide / rustc Book / rustdoc Book は rust-lang/rust タグ 1.100.0 の同梱版（reference@e24eecf、edition-guide@ab8544a）、Cargo Book は同タグ同梱の cargo@3acc79c。
+1.100 の主な変更（never type `!` 安定化、`extern "custom"`、Cargo lints `[lints.cargo]`・min publish age・`cargo install` の同梱 Cargo.lock 利用、`-Cprofile-sample-use`、custom allocators 等）は reference / rustc / cargo / edition-guide / rustdoc / stdlib の該当ページに反映済み。
+未追従: The Rust Programming Language（book）・Rust by Example・Rustonomicon・Embedded Rust Book・rustlings・CLI Book は別リポジトリ由来で、従来の内容のまま（1.100.0 同梱版との差分は book の出力例・版表記のみ、nomicon は lifetime-mismatch 章の削除のみ）。errors（エラーコード）・samples・scripts の 1.100 対応は未確認。
 
 ## ディレクトリ構成
 

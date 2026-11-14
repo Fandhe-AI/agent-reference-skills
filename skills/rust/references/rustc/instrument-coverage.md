@@ -55,7 +55,7 @@ Unstable fine-grained coverage control (nightly only). See the Unstable Book for
 rustup component add llvm-tools-preview
 
 # Install rustfilt demangler (optional, for readable stack traces)
-cargo install rustfilt
+cargo install --locked rustfilt
 ```
 
 ## Generating Reports
