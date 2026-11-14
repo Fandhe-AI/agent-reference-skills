@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Errors/
 
 # Fastify Error Codes
 
-All `FST_ERR_*` error codes thrown by Fastify's core (as of v5.12.7), exposed via the `errorCodes` export for `instanceof` matching in a custom error handler.
+All `FST_ERR_*` error codes thrown by Fastify's core (as of v5.12.8), exposed via the `errorCodes` export for `instanceof` matching in a custom error handler.
 
 ## Signature / Usage
 
@@ -117,11 +117,11 @@ const errorCodes = require('fastify').errorCodes
 
 ## Notes
 
-- List reflects the `FST_ERR_*` codes documented on `docs/Reference/Errors.md` at tag `v5.12.7`. Codes are added/removed between minor versions; re-run `/update-skill fastify check` if a code used in application code is missing here.
+- List reflects the `FST_ERR_*` codes documented on `docs/Reference/Errors.md` at tag `v5.12.8`. Codes are added/removed between minor versions; re-run `/update-skill fastify check` if a code used in application code is missing here.
 - Every code is a subclass of `Error` reachable via `Fastify.errorCodes.<CODE_NAME>` for `instanceof` matching (see [error-handling](./error-handling.md)).
 - Several codes are logger-configuration guards introduced for the v5 `logger` / `loggerInstance` split (`FST_ERR_LOG_INVALID_LOGGER_INSTANCE`, `FST_ERR_LOG_INVALID_LOGGER_CONFIG`, `FST_ERR_LOG_LOGGER_AND_LOGGER_INSTANCE_PROVIDED`) — see [logging](./logging.md) `## Notes` for the v4 → v5 change.
 - `FST_ERR_ERROR_HANDLER_ALREADY_SET`'s upstream "How to solve" text on `docs/Reference/Errors.md` ("By default, `setErrorHandler` can only be called once per encapsulation context") does not match `docs/Reference/Server.md`'s `allowErrorHandlerOverride` section, which states the factory default is `true` (multiple calls allowed) and the restrictive behavior only applies when it is explicitly set to `false`. The table cell above has been corrected to match the verified `Server.md` default rather than the outdated `Errors.md` wording.
-- The upstream `Errors.md` table (v5.12.1 – v5.12.7) lists the descriptions of `FST_ERR_CTP_EMPTY_JSON_BODY` and `FST_ERR_CTP_INVALID_JSON_BODY` swapped; this page follows the messages defined in `lib/errors.js`.
+- The upstream `Errors.md` table (v5.12.1 – v5.12.8) lists the descriptions of `FST_ERR_CTP_EMPTY_JSON_BODY` and `FST_ERR_CTP_INVALID_JSON_BODY` swapped; this page follows the messages defined in `lib/errors.js`.
 
 ## Related
 

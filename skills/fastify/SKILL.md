@@ -10,7 +10,7 @@ user-invocable: false
 
 # Fastify API リファレンス
 
-Fastify — Node.js ネイティブの高速 HTTP サーバーフレームワーク（対象バージョン v5.12.7）。
+Fastify — Node.js ネイティブの高速 HTTP サーバーフレームワーク（対象バージョン v5.12.8）。
 encapsulation されたプラグインツリー・decorators・ライフサイクルフック・JSON Schema ベースの
 validation/serialization を中核とする API 設計・実装時に参照する。
 

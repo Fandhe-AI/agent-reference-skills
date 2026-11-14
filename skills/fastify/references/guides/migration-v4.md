@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Migration-Guide-V4/
 
 # Migration Guide V4
 
-Target: Fastify v5.12.7 (historical guide for the v3 -> v4 migration). Fix all v3 deprecation warnings before upgrading — every deprecated v3 API was removed in v4. Official codemods are available for the largest changes.
+Target: Fastify v5.12.8 (historical guide for the v3 -> v4 migration). Fix all v3 deprecation warnings before upgrading — every deprecated v3 API was removed in v4. Official codemods are available for the largest changes.
 
 ## Signature / Usage
 

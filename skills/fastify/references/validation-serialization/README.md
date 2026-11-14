@@ -1,6 +1,6 @@
 # validation-serialization
 
-対象 Fastify v5.12.7。
+対象 Fastify v5.12.8。
 
 Fastify の validation / serialization は JSON Schema + Ajv / fast-json-stringify が標準。`zod` はスキーマライブラリ本体（Fastify では type provider 経由で接続）、`react-hook-form` はフォーム側、`kubb` はコード生成側で別物。
 

@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Migration-Guide-V3/
 
 # Migration Guide V3
 
-Target: Fastify v5.12.7 (historical guide for the v2 -> v3 migration). Fix all v2 deprecation warnings before upgrading — every deprecated v2 API was removed in v3.
+Target: Fastify v5.12.8 (historical guide for the v2 -> v3 migration). Fix all v2 deprecation warnings before upgrading — every deprecated v2 API was removed in v3.
 
 ## Signature / Usage
 

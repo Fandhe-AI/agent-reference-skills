@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Encapsulation/
 
 # Encapsulation
 
-A fundamental feature of Fastify is the "encapsulation context." It governs which decorators, registered hooks, and plugins are available to routes. Target version: v5.12.7.
+A fundamental feature of Fastify is the "encapsulation context." It governs which decorators, registered hooks, and plugins are available to routes. Target version: v5.12.8.
 
 ## Signature / Usage
 

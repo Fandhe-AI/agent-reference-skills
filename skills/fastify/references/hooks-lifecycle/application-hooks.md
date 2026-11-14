@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Hooks/
 
 # Application Hooks
 
-Target: Fastify v5.12.7. Hooks into the application lifecycle rather than the per-request lifecycle: `onReady`, `onListen`, `onClose`, `preClose`, `onRoute`, `onRegister`.
+Target: Fastify v5.12.8. Hooks into the application lifecycle rather than the per-request lifecycle: `onReady`, `onListen`, `onClose`, `preClose`, `onRoute`, `onRegister`.
 
 ## Signature / Usage
 
@@ -55,7 +55,16 @@ fastify.addHook('onClose', (instance, done) => {
 fastify.addHook('onClose', async (instance) => {
   await closeDatabaseConnections()
 })
+
+// or disposable object style (Explicit Resource Management)
+fastify.addHook('onClose', {
+  async [Symbol.asyncDispose] () {
+    await closeDatabaseConnections()
+  }
+})
 ```
+
+An object implementing `Symbol.asyncDispose` or `Symbol.dispose` can also be registered as an `onClose` hook; Fastify invokes the appropriate disposal method when closing the server.
 
 **Execution order**: when multiple `onClose` hooks are registered across plugins, child-plugin hooks execute before parent-plugin hooks.
 
@@ -180,6 +189,8 @@ fastify.addHook('onRegister', (instance, opts) => {
 
 ## Notes
 
+- `onClose` also accepts a disposable object (`Symbol.asyncDispose` / `Symbol.dispose`) as of v5.12.8.
+- Source: https://raw.githubusercontent.com/fastify/fastify/v5.12.8/docs/Reference/Hooks.md (tag v5.12.8, fetched 2026-11-14)
 - `onClose` is the only hook not affected by encapsulation scoping (see `hook-scope.md`).
 - `onListen` does not run under `fastify.inject()` / `fastify.ready()`.
 

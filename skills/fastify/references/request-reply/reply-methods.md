@@ -35,8 +35,10 @@ fastify.get('/', options, function (request, reply) {
 | `.hasHeader(key)` | Returns a boolean indicating if the specified header has been set. |
 | `.writeEarlyHints(hints, callback)` | Sends an early hints informational response so the client can preload/preconnect resources while the final response is prepared. |
 | `.type(contentType)` | Shortcut for `reply.header('Content-Type', contentType)`. |
-| `.log` | The logger instance of the incoming request. |
-| `.request` | The incoming request. |
+| `.log` | The logger instance of the incoming request. It is the same instance as `request.log`, so every log line includes the request id. |
+| `.request` | The `Request` object of the incoming request this reply belongs to. |
+| `.routeOptions` | A read-only reference to the route options of the incoming request. It is the same object as `request.routeOptions`. |
+| `.getDecorator(name)` | Returns the value of a reply decorator declared with `decorateReply`. If the decorator is a function, it is returned bound to the reply. Throws `FST_ERR_DEC_UNDECLARED` if the decorator has not been declared. |
 
 ## Notes
 
@@ -49,6 +51,40 @@ reply.writeEarlyHints({
   Link: '</styles.css>; rel=preload; as=style'
 })
 ```
+
+### Reply properties and decorators
+
+```js
+fastify.addHook('onSend', async function (request, reply, payload) {
+  reply.header('x-request-url', reply.request.url)
+})
+```
+
+```js
+fastify.get('/', function (request, reply) {
+  reply.log.info('sending the response')
+  reply.send({ hello: 'world' })
+})
+```
+
+```js
+fastify.get('/', { config: { foo: 'bar' } }, function (request, reply) {
+  reply.send(reply.routeOptions.config.foo) // bar
+})
+```
+
+```js
+fastify.decorateReply('helper', function () {
+  return this.statusCode
+})
+
+fastify.get('/', function (request, reply) {
+  const helper = reply.getDecorator('helper')
+  reply.code(201).send({ statusCode: helper() }) // { statusCode: 201 }
+})
+```
+
+- Source: https://raw.githubusercontent.com/fastify/fastify/v5.12.8/docs/Reference/Reply.md (tag v5.12.8, fetched 2026-11-14)
 
 ## Related
 
