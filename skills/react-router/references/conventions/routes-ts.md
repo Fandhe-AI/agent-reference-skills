@@ -69,7 +69,7 @@ export default flatRoutes() satisfies RouteConfig;
 
 ## Notes
 
-- v8: content confirmed current against `reactrouter.com/api/framework-conventions/routes.ts` (v8.4.0). No renames/removals.
+- v8: content confirmed current against `reactrouter.com/api/framework-conventions/routes.ts` (v8.5.1). No renames/removals.
 - `index` routes cannot have children.
 - `prefix` does not create a layout boundary — children are siblings that share a path prefix only.
 - Children render through `<Outlet />` in the parent route module.

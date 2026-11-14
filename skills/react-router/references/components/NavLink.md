@@ -32,7 +32,7 @@ import { NavLink } from "react-router";
 | `relative` | `"route" \| "path"` | Relative path resolution. Default: `"route"`. |
 | `reloadDocument` | `boolean` | Use browser navigation instead of client-side routing. |
 | `preventScrollReset` | `boolean` | Prevent scroll reset on navigation. Framework & Data modes. |
-| `viewTransition` | `boolean` | Enable View Transition API for navigation. Framework & Data modes. |
+| `viewTransition` | `boolean` | **Deprecated** (8.5.0). Enable View Transition API for navigation. Framework & Data modes. Use React's `<ViewTransition>` component instead. |
 | `prefetch` | `"none" \| "intent" \| "render" \| "viewport"` | Prefetching strategy. Framework mode only. |
 | `discover` | `"render" \| "none"` | Route discovery behavior. Framework mode only. |
 
@@ -42,7 +42,7 @@ import { NavLink } from "react-router";
 |------|------|-------------|
 | `isActive` | `boolean` | Whether the link's route is currently active. |
 | `isPending` | `boolean` | Whether a navigation to this route is pending (Framework & Data modes only). |
-| `isTransitioning` | `boolean` | Whether a view transition is currently in progress. |
+| `isTransitioning` | `boolean` | **Deprecated** (8.5.0). Whether a view transition is currently in progress. |
 
 ## Notes
 
@@ -50,6 +50,9 @@ import { NavLink } from "react-router";
 - `<NavLink to="/">` matches every URL by default. The `end` prop does not fully constrain root-path matching.
 - `isPending` is only available in Framework and Data modes, not in Declarative mode.
 - When using `prefetch`, `<link rel="prefetch">` tags are inserted after the element — use `nav :last-of-type` instead of `nav :last-child` in CSS.
+- `viewTransition`, the `isTransitioning` render prop and the `transitioning` class are deprecated and only track React Router's legacy view transitions. Use React's `<ViewTransition>` component instead; see [View Transitions](../how-to/view-transitions.md)
+- Source: https://reactrouter.com/api/components/NavLink (docs/api/components/NavLink.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/api/components/NavLink.md)
+- Source: https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md (8.5.0 deprecation of view transition APIs, PR #15493)
 
 ## Related
 

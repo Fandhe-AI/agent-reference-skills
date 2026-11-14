@@ -50,7 +50,7 @@ Returns a `StaticHandler` that can be used to query data for the provided routes
 ## Notes
 
 - The official snippet omits `status`; without it errors caught by route ErrorBoundaries are returned with 200. The second fence (`status: context.statusCode`) is the adapted version, not from the official docs.
-- Source: https://reactrouter.com/api/data-routers/createStaticHandler (docs/api/data-routers/createStaticHandler.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/data-routers/createStaticHandler.md)
+- Source: https://reactrouter.com/api/data-routers/createStaticHandler (docs/api/data-routers/createStaticHandler.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/api/data-routers/createStaticHandler.md)
 
 ## Related
 

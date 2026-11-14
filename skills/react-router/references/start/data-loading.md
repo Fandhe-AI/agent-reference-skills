@@ -83,6 +83,8 @@ Supported return types: primitives (string, number, boolean), collections (Array
 - URLs not covered by `prerender()` fall back to SSR
 - `clientLoader.hydrate = true as const` also runs `clientLoader` on initial page load
 - No breaking changes to the loader APIs between v7 and v8
+- Authentication and authorization: matched route loaders run in parallel and can be requested independently (for example during fetcher calls or navigations that do not revalidate every matched route), so a parent loader cannot "protect" child route loaders or actions. Unless guarded by server middleware, each protected loader and action must authenticate the request and authorize access to the data or operation before proceeding. Any permissions not enforced by middleware must still be checked in the individual loader or action (see [Middleware](../how-to/middleware.md))
+- Source: https://reactrouter.com/start/data-loading (docs/start/framework/data-loading.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/start/framework/data-loading.md)
 
 ## Related
 

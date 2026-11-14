@@ -32,7 +32,7 @@ import { Link } from "react-router";
 | `state` | `any` | Persistent client-side state passed to the next location via `history.state`. |
 | `reloadDocument` | `boolean` | Uses document navigation instead of client-side routing. |
 | `preventScrollReset` | `boolean` | Prevents scroll reset to top when clicked (requires `<ScrollRestoration>`). Framework & Data modes. |
-| `viewTransition` | `boolean` | Enables View Transition API for the navigation. Framework & Data modes. |
+| `viewTransition` | `boolean` | **Deprecated** (8.5.0). Enables View Transition API for the navigation. Framework & Data modes. Use React's `<ViewTransition>` component instead. |
 | `prefetch` | `"none" \| "intent" \| "render" \| "viewport"` | Prefetching strategy. Default: `"none"`. Framework mode only. |
 | `discover` | `"render" \| "none"` | Lazy route discovery behavior. Default: `"render"`. Framework mode only. |
 | `mask` | `string` | Displays a different URL in the address bar than the actual navigation target. Framework & Data modes; SPA/SSR renders only. |
@@ -45,6 +45,9 @@ import { Link } from "react-router";
 - `state` is client-side only (stored in `history.state`) and is not accessible on the server.
 - `mask` only works in SPA mode and SSR renders; sharing a masked URL loads only the masked location without context.
 - `defaultShouldRevalidate={false}` skips loader revalidation for this navigation. Routes without a `shouldRevalidate` export use the value directly; routes that export one receive it as `defaultShouldRevalidate` and still decide. See [Revalidation Optimization](../how-to/optimize-revalidation.md).
+- `viewTransition` is deprecated in favor of React's `<ViewTransition>` component (React 19.3+); see [View Transitions](../how-to/view-transitions.md)
+- Source: https://reactrouter.com/api/components/Link (docs/api/components/Link.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/api/components/Link.md)
+- Source: https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md (8.5.0 deprecation of view transition APIs, PR #15493)
 
 ## Related
 

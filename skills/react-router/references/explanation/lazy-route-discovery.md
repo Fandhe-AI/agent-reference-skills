@@ -60,6 +60,8 @@ export default {
 - When caching the manifest endpoint via CDN, include the `version` and `paths` query parameters in the cache key
 - When running multiple React Router apps on the same domain, set a unique `manifestPath` per app to avoid conflicts
 - Applications with many routes benefit most from this optimization
+- 8.5.0 (experimental): use `unstable_useRouteDiscovery` (with `future.unstable_customRouteDiscovery`) to discover selected destinations, complete the route tree after startup, or control manifest-mismatch recovery. See [Route Discovery](../how-to/route-discovery.md)
+- Source: https://reactrouter.com/explanation/lazy-route-discovery (docs/explanation/lazy-route-discovery.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/explanation/lazy-route-discovery.md)
 
 ## Related
 

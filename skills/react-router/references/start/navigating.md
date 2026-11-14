@@ -75,6 +75,8 @@ navigate("/logout");
 - Prefer `useFetcher()` over `<Form method="post">` when a POST submission shouldn't cause navigation
 - `useNavigate()` should be avoided for user-triggered navigation — use `<Link>`/`<NavLink>` instead
 - No breaking changes to the navigation APIs between v7 and v8
+- 8.5.0: the `isTransitioning` render prop and the `transitioning` class are deprecated in favor of React's `<ViewTransition>` component; for animated navigations see [View Transitions](../how-to/view-transitions.md). The official 8.5.1 NavLink examples no longer use `isTransitioning`
+- Source: https://reactrouter.com/start/framework/navigating (docs/start/framework/navigating.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/start/framework/navigating.md)
 
 ## Related
 

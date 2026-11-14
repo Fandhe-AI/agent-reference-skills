@@ -5,7 +5,9 @@ Renders a deferred (unawaited) Promise returned from a loader, providing automat
 ## Signature / Usage
 
 ```tsx
-function Await<Resolve>({ children, errorElement, resolve }: AwaitProps<Resolve>)
+function Await<Resolve>(
+  props: AwaitProps<Resolve> | AwaitPromiseProps<Resolve>,
+)
 
 import { Await, useLoaderData } from "react-router";
 
@@ -37,6 +39,7 @@ export default function Book() {
 | `resolve` | `Promise<Resolve>` | The Promise to resolve. Typically an unawaited value from `useLoaderData()`. |
 | `children` | `ReactNode \| (resolvedValue: Resolve) => ReactNode` | Content to render when resolved. Accepts a render function that receives the resolved value, or a React element that calls `useAsyncValue()`. |
 | `errorElement` | `ReactNode` | Rendered when the Promise rejects. Use `useAsyncError()` inside it for the rejection value. |
+| `unstable_promise` | `Promise<Resolve>` | Experimental (8.5.1). A promise (or value) to read using React's `use()` API in client components. Accepts promise-like values without modifying the source promise. Pass exactly one of `unstable_promise` or `resolve`. |
 
 ## Notes
 
@@ -44,6 +47,9 @@ export default function Book() {
 - Unawaited loader Promises enable streaming (data arrives after initial HTML). Awaited Promises block navigation until resolved.
 - If `errorElement` is omitted, a rejected Promise bubbles to the nearest route-level `ErrorBoundary` (accessible via `useRouteError()`).
 - Available in Framework and Data modes; **not** available in Declarative mode.
+- `unstable_promise` (8.5.1, experimental, may change in minor or patch releases) opts into React's `use()` implementation instead of `resolve`. With it, `errorElement` handles only promise rejections, while errors thrown by children bubble to the nearest React error boundary. In React Server Components, `resolve` already has this error-handling behavior
+- Both props accept promise-like values without modifying the source promise and treat a falsy `errorElement` as absent (the rejection propagates); pass an empty fragment to handle a rejection without rendering any content
+- Source: https://reactrouter.com/api/components/Await (docs/api/components/Await.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/api/components/Await.md)
 
 ## Related
 

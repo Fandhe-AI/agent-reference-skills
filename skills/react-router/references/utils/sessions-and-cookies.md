@@ -160,6 +160,7 @@ export const cookie = createCookie("user-prefs", {
 - Always use mutations (session writes) inside `action`, never inside `loader` — avoids CSRF vulnerabilities
 - When multiple nested route loaders run in parallel, be careful with `session.flash()` and `session.unset()` to avoid race conditions where one loader clears data before another reads it
 - Available in **Framework Mode** and **Data Mode** only (not Declarative Mode)
+- 8.5.1 ([CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.5.1/packages/react-router/CHANGELOG.md), PR #15639): `destroySession` skips `deleteData` when the session has no ID
 
 ## Related
 

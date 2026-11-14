@@ -23,7 +23,7 @@ function StaticRouter({
 ## Notes
 
 - Declarative mode only.
-- Source: https://reactrouter.com/api/declarative-routers/StaticRouter (docs/api/declarative-routers/StaticRouter.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/declarative-routers/StaticRouter.md)
+- Source: https://reactrouter.com/api/declarative-routers/StaticRouter (docs/api/declarative-routers/StaticRouter.md at tag react-router@8.5.1: https://github.com/remix-run/react-router/blob/react-router@8.5.1/docs/api/declarative-routers/StaticRouter.md)
 
 ## Related
 
