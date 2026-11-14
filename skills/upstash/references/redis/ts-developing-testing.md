@@ -4,16 +4,18 @@ Run a local Redis behind an Upstash-compatible HTTP proxy so `@upstash/redis` wo
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the `docker run` port mapping is bound to `127.0.0.1`.
+
 ```bash
 docker run \
-    -it -d -p 8080:80 --name srh \
+    -it -d -p 127.0.0.1:8080:80 --name srh \
     -e SRH_MODE=env \
     -e SRH_TOKEN=your_token_here \
     -e SRH_CONNECTION_STRING="redis://your_server_here:6379" \
     hiett/serverless-redis-http:latest
 ```
 
-Adapted (not in the official docs): the Redis port is published on `127.0.0.1` only, so an unauthenticated Redis is not exposed on every host interface.
+Adapted (not in the official docs): the Redis and SRH ports (`docker run -p` and the Compose `ports`) are published on `127.0.0.1` only, so neither the unauthenticated Redis nor the example-token proxy is exposed on every host interface.
 
 ```yml
 version: "3"
@@ -24,7 +26,7 @@ services:
       - "127.0.0.1:6379:6379"
   serverless-redis-http:
     ports:
-      - "8079:80"
+      - "127.0.0.1:8079:80"
     image: hiett/serverless-redis-http:latest
     environment:
       SRH_MODE: env
@@ -42,7 +44,7 @@ services:
 
 ## Notes
 
-- Adapted from the official docs: the official Compose file publishes Redis as `"6379:6379"` (all interfaces, no password); it is bound to `127.0.0.1` here
+- Adapted from the official docs: the official Compose file publishes Redis as `"6379:6379"` (all interfaces, no password); the Redis and SRH ports are bound to `127.0.0.1` here (the official `docker run` also uses `-p 8080:80`)
 - SRH is a Redis proxy and connection pooler that speaks HTTP instead of the Redis binary protocol, aiming to be fully compatible with Upstash
 - Use cases: CI pipelines with many parallel runs, Kubernetes or networks where Redis is not internet-exposed, local development or offline work
 - Point the SDK at it with `UPSTASH_REDIS_REST_URL=http://srh:80` (CI service) and `UPSTASH_REDIS_REST_TOKEN` equal to `SRH_TOKEN`

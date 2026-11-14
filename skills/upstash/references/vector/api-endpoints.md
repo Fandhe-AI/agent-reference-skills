@@ -42,10 +42,11 @@ HTTP status codes:
 | `200 OK` | Request accepted and executed |
 | `400 Bad Request` | Syntax error, invalid or unsupported command, or execution failure |
 | `401 Unauthorized` | Missing or invalid auth token |
-| `405 Method Not Allowed` | Only `HEAD`, `GET`, `POST` and `PUT` are allowed |
+| `405 Method Not Allowed` | The official page states that only `HEAD`, `GET`, `POST` and `PUT` are allowed (the delete, reset and delete-namespace endpoints above are documented as `DELETE` on the same site) |
 
 ## Notes
 
+- The official pages are inconsistent: the status-code table says only `HEAD`, `GET`, `POST` and `PUT` are allowed, yet the delete, reset and delete-namespace endpoints are documented with `DELETE`; both are kept as published, so use the method documented per endpoint
 - Success responses carry a single `result` field; errors carry `error` and `status`
 - Query / fetch / range flags `includeMetadata`, `includeVectors` and `includeData` default to `false`; `topK` defaults to `10`
 - The REST API is the Upstash Vector index endpoint (`UPSTASH_VECTOR_REST_URL`); it is separate from the Upstash Redis REST API

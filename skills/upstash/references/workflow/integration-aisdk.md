@@ -105,10 +105,11 @@ export const { POST } = serve<{ prompt: string }>(async (context) => {
 | Error handling | Use the `ToolExecutionError` / `WorkflowAbort` rethrow pattern exactly as shown |
 | Tools | Each tool's `execute` must be wrapped in `context.run()` with a descriptive step name; `maxSteps` must be greater than 1 when using tools |
 
-Install: `npm install @ai-sdk/openai ai zod`.
+Install (Adapted, not in the official docs; the example targets AI SDK 4.x): `npm install @ai-sdk/openai@1 ai@4 zod@3`.
 
 ## Notes
 
+- Adapted from the official docs: the install line pins `ai@4` / `@ai-sdk/openai@1` / `zod@3` because the example uses AI SDK 4.x APIs (`compatibility: "strict"`, `maxTokens`, `maxSteps`, `openai('gpt-3.5-turbo')`); the official page only says "4.0.12 or higher". For AI SDK 5 and later (`maxOutputTokens`, Responses API default) see the `vercel-ai-sdk` skill
 - The official pages disagree on the response header value type: `context.call` documents `Record<string, string>` while the official AI SDK example (and the workflow run log types) treat values as string arrays; the adapted wrapper accepts both
 - Adapted from the official docs: the official `createWorkflowOpenAI` example parses `init.body` into an object and reads `responseInfo.header` as arrays of values, which does not match the `@upstash/workflow` 1.x `context.call` contract (string `body`, `{ status, headers, body }` result); the fetch wrapper above follows the 1.x contract
 - Not yet available in `workflow-py`
