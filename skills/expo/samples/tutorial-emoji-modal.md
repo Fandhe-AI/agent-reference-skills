@@ -4,12 +4,12 @@ source: https://docs.expo.dev/tutorial/create-a-modal/
 
 # Create a Modal with an Emoji List
 
-Build a reusable bottom-sheet style `Modal` that hosts a horizontal `FlatList` of selectable images.
+Build an emoji picker with the Expo UI `BottomSheet` component that hosts a three-column `FlatList` of selectable images.
 
 ```tsx src/components/emoji-picker.tsx
-import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
 import { PropsWithChildren } from 'react';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { StyleSheet, Text, View } from 'react-native';
+import { BottomSheet, RNHostView } from '@expo/ui';
 
 type Props = PropsWithChildren<{
   isVisible: boolean;
@@ -18,82 +18,61 @@ type Props = PropsWithChildren<{
 
 export default function EmojiPicker({ isVisible, children, onClose }: Props) {
   return (
-    <View>
-      <Modal animationType="slide" transparent={true} visible={isVisible}>
-        <View style={styles.modalContent}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Choose a sticker</Text>
-            <Pressable onPress={onClose}>
-              <MaterialIcons name="close" color="#fff" size={22} />
-            </Pressable>
-          </View>
+    <BottomSheet
+      isPresented={isVisible}
+      onDismiss={onClose}
+      snapPoints={['half']}
+      containerColor="#25292e">
+      <RNHostView>
+        <View>
+          <Text style={styles.title}>Choose a sticker</Text>
           {children}
         </View>
-      </Modal>
-    </View>
+      </RNHostView>
+    </BottomSheet>
   );
 }
 
 const styles = StyleSheet.create({
-  modalContent: {
-    height: '25%',
-    width: '100%',
-    backgroundColor: '#25292e',
-    borderTopRightRadius: 18,
-    borderTopLeftRadius: 18,
-    position: 'absolute',
-    bottom: 0,
-  },
-  titleContainer: {
-    height: '16%',
-    backgroundColor: '#464C55',
-    borderTopRightRadius: 10,
-    borderTopLeftRadius: 10,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
   title: {
     color: '#fff',
     fontSize: 16,
+    marginBottom: 20,
   },
 });
 ```
 
 ```tsx src/components/emoji-list.tsx
-import { useState } from 'react';
-import { ImageSourcePropType, StyleSheet, FlatList, Platform, Pressable } from 'react-native';
-import { Image } from 'expo-image';
+import { FlatList, Pressable, StyleSheet } from 'react-native';
+import { Image, type ImageSource } from 'expo-image';
 
 type Props = {
-  onSelect: (image: ImageSourcePropType) => void;
+  onSelect: (image: ImageSource) => void;
   onCloseModal: () => void;
 };
 
-export default function EmojiList({ onSelect, onCloseModal }: Props) {
-  const [emoji] = useState<ImageSourcePropType[]>([
-    require("@/assets/images/emoji1.png"),
-    require("@/assets/images/emoji2.png"),
-    require("@/assets/images/emoji3.png"),
-    require("@/assets/images/emoji4.png"),
-    require("@/assets/images/emoji5.png"),
-    require("@/assets/images/emoji6.png"),
-  ]);
+const emoji: ImageSource[] = [
+  require('@/assets/images/emoji1.png'),
+  require('@/assets/images/emoji2.png'),
+  require('@/assets/images/emoji3.png'),
+  require('@/assets/images/emoji4.png'),
+  require('@/assets/images/emoji5.png'),
+  require('@/assets/images/emoji6.png'),
+];
 
+export default function EmojiList({ onSelect, onCloseModal }: Props) {
   return (
     <FlatList
-      horizontal
-      showsHorizontalScrollIndicator={Platform.OS === 'web'}
       data={emoji}
-      contentContainerStyle={styles.listContainer}
-      renderItem={({ item, index }) => (
+      numColumns={3}
+      columnWrapperStyle={styles.row}
+      renderItem={({ item }) => (
         <Pressable
           onPress={() => {
             onSelect(item);
             onCloseModal();
           }}>
-          <Image source={item} key={index} style={styles.image} />
+          <Image source={item} style={styles.image} />
         </Pressable>
       )}
     />
@@ -101,27 +80,45 @@ export default function EmojiList({ onSelect, onCloseModal }: Props) {
 }
 
 const styles = StyleSheet.create({
-  listContainer: {
-    borderTopRightRadius: 10,
-    borderTopLeftRadius: 10,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  row: {
+    justifyContent: 'space-around',
+    marginBottom: 20,
   },
   image: {
     width: 100,
     height: 100,
-    marginRight: 20,
   },
 });
 ```
 
-Wire the modal into the screen:
+```tsx src/components/emoji-sticker.tsx
+import { View } from 'react-native';
+import { Image, type ImageSource } from 'expo-image';
+
+type Props = {
+  imageSize: number;
+  stickerSource: ImageSource;
+};
+
+export default function EmojiSticker({ imageSize, stickerSource }: Props) {
+  return (
+    <View style={{ top: -350 }}>
+      <Image source={stickerSource} style={{ width: imageSize, height: imageSize }} />
+    </View>
+  );
+}
+```
+
+Wire the bottom sheet into the screen (excerpt of `src/app/(tabs)/index.tsx`; the full screen also contains the image picker, `Button`, `IconButton`, and `CircleButton` from earlier steps):
 
 ```tsx src/app/(tabs)/index.tsx
+import type { ImageSource } from 'expo-image';
+import EmojiPicker from '@/components/emoji-picker';
+import EmojiList from '@/components/emoji-list';
+import EmojiSticker from '@/components/emoji-sticker';
+
 const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-const [pickedEmoji, setPickedEmoji] = useState<ImageSourcePropType | undefined>(undefined);
+const [pickedEmoji, setPickedEmoji] = useState<ImageSource | undefined>(undefined);
 
 const onAddSticker = () => {
   setIsModalVisible(true);
@@ -131,7 +128,10 @@ const onModalClose = () => {
   setIsModalVisible(false);
 };
 
-// ...inside the returned JSX, after the options / footer block:
+// ...inside the returned JSX, inside the image container:
+{pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
+
+// ...inside the returned JSX, at the bottom of SafeAreaView:
 <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
   <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
 </EmojiPicker>
@@ -139,7 +139,9 @@ const onModalClose = () => {
 
 ## Notes
 
-- `visible` is controlled by the parent via `isVisible`; `animationType="slide"` enters from the bottom and `transparent` keeps the underlying screen visible.
-- `EmojiList` calls `onSelect(item)` then `onCloseModal()` on press; `showsHorizontalScrollIndicator` is enabled only on web through `Platform.OS`.
-- Image assets (`emoji1.png` ... `emoji6.png`) and the `@/` path alias come from the tutorial project template.
-- Source: https://docs.expo.dev/tutorial/create-a-modal/ (fetched 2026-10-17, modificationDate September 25, 2026).
+- `BottomSheet` and `RNHostView` come from `@expo/ui`, which the default template includes. On Android it is a Material 3 bottom sheet, on iOS a SwiftUI sheet, on web a sheet at the bottom of the page. `RNHostView` displays React Native views inside the sheet; `BottomSheet` creates its own `Host`, so do not wrap it in one.
+- `isPresented` is controlled by the parent via `isVisible`; `onDismiss` calls `onClose` on swipe-down or outside tap (Android back button and web Esc also close it). `snapPoints={['half']}` opens it at about half of the screen height.
+- Image assets (`emoji1.png` ... `emoji6.png`) and the `@/` path alias come from the tutorial project template. `EmojiSticker` is positioned with a fixed `top: -350` offset in the tutorial.
+- The tutorial also builds `circle-button` and `icon-button` components with one file per platform (`.android.tsx` / `.ios.tsx` / web `.tsx`); they are omitted here.
+- Migration: the previous version of this sample used React Native `Modal` with a horizontal `FlatList`; the tutorial at tag `expo@58.0.25` replaced it with Expo UI `BottomSheet` and a three-column grid.
+- Source: https://docs.expo.dev/tutorial/create-a-modal/ (docs/pages/tutorial/create-a-modal.mdx at tag expo@58.0.25).

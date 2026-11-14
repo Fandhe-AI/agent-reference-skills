@@ -65,11 +65,12 @@ export default function MyComponent(props: { ref: Ref<DOMRef>; dom?: import('exp
 - Marshalled props must be serializable (`number`, `string`, `boolean`, `null`, `undefined`, `Array`, `Object`), travel over an asynchronous bridge and re-render the whole React tree. Functions must be top-level props, asynchronous, with serializable arguments. `children` cannot be passed.
 - SDK 53 and later (React 19) pass `ref` as a prop; SDK 52 and earlier use `forwardRef`. Refs are flaky; prefer native actions.
 - Routing: `<Link />` (`expo-router/link`) and `useRouter` work. `useLocalSearchParams`, `useGlobalSearchParams`, `usePathname`, `useSegments`, `useRootNavigation`, `useRootNavigationState`, `router.canGoBack()` and `router.canDismiss()` are not supported automatically; read them natively and pass as props. Layout routes (`_layout`) can never be DOM components. Avoid `<a />` for navigation.
-- Public assets: root **public** is copied into the native binary; reference with `process.env.EXPO_BASE_URL`. Not supported in EAS Update (use `require()`).
+- Public assets: root **public** is copied into the native binary; reference with `process.env.EXPO_BASE_URL`. Not supported in Expo Update (use `require()`).
 - Only single-page rendering (no SSR / SSG). With React Server Components, `'use dom'` behaves like `'use client'`; Server Functions cannot be used inside DOM components.
 - Secure context: release builds (`file://`) are secure; debug builds can tunnel over HTTPS with `npx expo start --tunnel`.
 - Limitations: no native views inside DOM components, no shared global state across JS engines, DOM components are slower to start than Hermes bytecode; prefer truly native views when possible.
 - The Expo "Skills" mentioned in the source (expo-dom, expo-web-to-native) are Expo's AI agent skills, not this repository's skills.
+- Source: https://docs.expo.dev/guides/dom-components/ (docs/pages/guides/dom-components.mdx at tag expo@58.0.25); the official docs now name the services Expo Hosting / Expo Update / Expo Build (previously EAS Hosting / EAS Update / EAS Build).
 - Pinned: documentation fetched 2026-10-17, Expo SDK 58.
 
 ## Related

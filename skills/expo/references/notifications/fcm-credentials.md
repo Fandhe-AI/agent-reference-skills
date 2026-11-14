@@ -4,7 +4,7 @@ source: https://docs.expo.dev/push-notifications/fcm-credentials/
 
 # Obtain Google Service Account Keys using FCM V1
 
-How to create or reuse a Google Service Account Key and upload it to EAS so Expo Push Notifications can send Android notifications through FCM V1.
+How to create or reuse a Google Service Account Key and upload it to Expo Services so Expo Push Notifications can send Android notifications through FCM V1.
 
 ## Signature / Usage
 
@@ -23,7 +23,7 @@ How to create or reuse a Google Service Account Key and upload it to EAS so Expo
 1. Create a Firebase project for your app in the Firebase Console (skip if you already have one).
 2. In the Firebase Console, open **Settings** > **Service accounts** for your project.
 3. Click **Generate new private key**, then confirm with **Generate key**. Securely store the JSON file.
-4. Upload the JSON file to EAS using EAS CLI or the EAS dashboard.
+4. Upload the JSON file to Expo Services using EAS CLI or the Expo dashboard.
 
 EAS CLI:
 
@@ -46,13 +46,14 @@ expo.dev:
 
 1. Open the IAM Admin page in Google Cloud Console. On the **Allow** tab, locate the **Principal** to modify and click **Edit principal**.
 2. Click **Add another role**, select **Firebase Cloud Messaging API Admin**, and click **Save**.
-3. Tell EAS which JSON credential to use (EAS CLI or dashboard, same steps as above); upload a new JSON file or select a previously uploaded file.
+3. Tell Expo Services which JSON credential to use (EAS CLI or Expo dashboard, same steps as above); upload a new JSON file or select a previously uploaded file.
 4. Configure `google-services.json` and `expo.android.googleServicesFile` as above (skip if already set up).
 
 ## Notes
 
 - Add the service account JSON file to your version control ignore file (for example `.gitignore`); it contains sensitive data. `google-services.json` contains public-facing identifiers from your Firebase project and may be committed.
 - If the API key in `google-services.json` (the `client.api_key.current_key` field) is restricted, check it in the Google Cloud Console. Under **API restrictions**, allow the **FCM Registration API** and the **Firebase Installations API**, or leave the key unrestricted. Under **Application restrictions**, use the SHA-1 from **Release** > **Setup** > **App Integrity** > **App signing key certificate** in the Google Play Console, not your upload key. A mismatch makes the Firebase Installations API return `403 PERMISSION_DENIED: Requests from this Android client application are blocked`, and the app never receives a push token.
+- Source: https://docs.expo.dev/push-notifications/fcm-credentials/ (docs/pages/push-notifications/fcm-credentials.mdx at tag expo@58.0.25); the official docs now say Expo Services / Expo dashboard where they previously said EAS / EAS dashboard (the CLI is still EAS CLI).
 - Page modificationDate: October 13, 2026 (unversioned guide, fetched 2026-10-17).
 - Distance line: FCM / Android platform behavior itself is covered by `android-platform-core`.
 

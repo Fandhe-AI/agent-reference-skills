@@ -4,7 +4,7 @@ source: https://docs.expo.dev/eas/cli/
 
 # EAS CLI
 
-EAS CLI commands. Targets eas-cli 25.0.0, which is versioned separately from the Expo SDK (not tied to SDK 58).
+EAS CLI commands. Targets eas-cli 27.10.0 (npm latest, 2026-11-13), which is versioned separately from the Expo SDK (not tied to SDK 58). Since 27.0.0, the reason a command failed is written to stderr instead of stdout.
 
 > **Warning**: The `eas` commands in this file modify resources on EAS (builds, updates, environment variables, store submissions). Run them against a throwaway test project and account, and verify the impact before running them on a production project. Authenticate with an interactive login, or in CI set the `EXPO_TOKEN` environment variable (never write its value into the repository).
 
@@ -272,7 +272,18 @@ eas workflow:create [NAME] --template build
 eas workflow:run .eas/workflows/build.yml --wait
 ```
 
-Use `-F, --input` for workflow inputs and `--ref` for a Git reference. `--ssh` is EXPERIMENTAL.
+Use `-F, --input` for workflow inputs and `--ref` for a Git reference. `--ssh` is EXPERIMENTAL. `--git-branch` and `--git-commit-hash` (added in 27.7.0) record the branch and commit of the uploaded project; each requires the other, and neither can be used with `--ref`.
+
+## Open an SSH session on a workflow job worker
+
+> **Warning**: `eas workflow:ssh` is EXPERIMENTAL and opens a shell on a remote EAS worker. Use it only with a throwaway project.
+
+```sh
+eas workflow:ssh <ID>
+eas workflow:ssh --show-connect <ID>
+```
+
+Use the ID in the job logs ("Start SSH session" step). `--show-connect` prints the ssh command to connect (host and token) instead of opening the session.
 
 ## Check and cancel workflow runs
 
@@ -283,3 +294,11 @@ eas workflow:view [ID]
 eas workflow:logs [ID] --all-steps
 eas workflow:cancel
 ```
+
+`eas workflow:cancel` prompts to select in-progress or queued runs when no workflow run IDs are given.
+
+## Notes
+
+- Command names, flags, and descriptions follow the generated EAS CLI reference (eas-cli 27.7.2 at tag `expo@58.0.25`); `workflow:run --git-branch` / `--git-commit-hash` and `workflow:ssh` are in that reference, and the version-by-version changes are in the eas-cli CHANGELOG.
+- Source: https://docs.expo.dev/eas/cli/ (docs/pages/eas/cli.mdx and docs/ui/components/EASCLIReference/data/eas-cli-commands.json at tag expo@58.0.25).
+- Source: https://github.com/expo/eas-cli/blob/main/CHANGELOG.md (27.0.0: failure reasons are written to stderr; 27.7.0: `--git-branch` / `--git-commit-hash`; 25.0.0: browser-based `eas login` default, `--environment` required for `eas update` on SDK 55+).

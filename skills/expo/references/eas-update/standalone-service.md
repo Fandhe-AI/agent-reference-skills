@@ -2,30 +2,30 @@
 source: https://docs.expo.dev/eas-update/standalone-service/
 ---
 
-# Using EAS Update without other EAS services
+# Using Expo Update without other Expo Services
 
-Use EAS Update independently of other EAS services, such as EAS Build.
+Use Expo Update independently of other Expo Services, such as Expo Build.
 
 ## Signature / Usage
 
 ```sh
-# Create a channel named `production` (for example, which points to the production EAS Update branch by default)
+# Create a channel named `production` (for example, which points to the production Expo Update branch by default)
 # Your channel names may vary depending on release process
 eas channel:create production
 ```
 
-### Using EAS Update without EAS Build
+### Using Expo Update without Expo Build
 
-Most installation and configuration steps are identical whether or not you use EAS Build. The primary difference is how the update channel is configured. With EAS Build, the channel from **eas.json** is added to your build's **AndroidManifest.xml** and **Expo.plist** at build time. Without it, set the request header in the app config (`updates.requestHeaders`, see [Get started with EAS Update](./getting-started.md)), then create the channel on the server manually.
+Most installation and configuration steps are identical whether or not you use Expo Build. The primary difference is how the update channel is configured. With Expo Build, the channel from **eas.json** is added to your build's **AndroidManifest.xml** and **Expo.plist** at build time. Without it, set the request header in the app config (`updates.requestHeaders`, see [Get started with Expo Update](./getting-started.md)), then create the channel on the server manually.
 
 ## Notes
 
 - All main features are designed to be agnostic of the build pipeline.
-- Downsides: EAS Build helps with bookkeeping for the runtime version and channel. Builds that use the same channel and runtime version are grouped into a **Deployments** section on expo.dev; these bookkeeping and insights features are unavailable without other EAS services.
-- Source modificationDate: February 13, 2025 (fetched 2026-10-17).
+- Downsides: Expo Build helps with bookkeeping for the runtime version and channel. Builds that use the same channel and runtime version are grouped into a **Deployments** section on expo.dev; these bookkeeping and insights features are unavailable without other Expo Services.
+- Source: https://docs.expo.dev/eas-update/standalone-service/ (docs/pages/eas-update/standalone-service.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [Get started with EAS Update](./getting-started.md)
+- [Get started with Expo Update](./getting-started.md)
 - [Manage branches and channels with EAS CLI](./branches-channels-cli.md)
 - [Debugging](./debug.md)

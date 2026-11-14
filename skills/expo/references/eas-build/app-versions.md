@@ -21,7 +21,7 @@ Learn about different version types and how to manage them remotely or locally.
 }
 ```
 
-Sync existing versions to EAS (remote source):
+Sync existing versions to Expo Build (remote source):
 
 ```sh
 eas build:version:set
@@ -40,18 +40,18 @@ eas build:version:sync
 | `version` | User-facing version visible in stores. Android `versionName` in **android/app/build.gradle**; iOS `CFBundleShortVersionString` in **Info.plist**. |
 | `android.versionCode` | Developer-facing build version for Android (`versionCode` in **android/app/build.gradle**). |
 | `ios.buildNumber` | Developer-facing build version for iOS (`CFBundleVersion` in **Info.plist**). |
-| `cli.appVersionSource` | `remote` (EAS servers store and manage `android.versionCode` / `ios.buildNumber`; recommended from EAS CLI `12.0.0`) or `local` (local project source is the source of truth). |
+| `cli.appVersionSource` | `remote` (Expo servers store and manage `android.versionCode` / `ios.buildNumber`; recommended from EAS CLI `12.0.0`) or `local` (local project source is the source of truth). |
 
 ## Notes
 
 - Show the user-facing version in-app with `Application.nativeApplicationVersion` and the build version with `Application.nativeBuildVersion` from `expo-application`.
 - Update `version` yourself on production release; auto increment developer-facing build versions to avoid duplicate-version store rejections.
 - Remote: the remote version is initialized with the local value (e.g. `android.versionCode` 1 becomes 2 on the next build); when enabled, build version values in app config are ignored and not updated. `eas build:version:set` asks "Do you want to set app version source to remote now?" and the version to initialize with.
-- Remote limitations: `eas build:version:sync` on Android does not support existing React Native projects with multiple flavors; `autoIncrement` does not support the `version` option; not supported with EAS Update runtime policy `"runtimeVersion": { "policy": "nativeVersion" }` (use the `"appVersion"` policy instead).
-- Local: EAS reads app version values and builds as-is, it does not write to the project. With `autoIncrement` you must commit changes on every build to persist them (hard on CI). For existing React Native projects, native code values take precedence; prefer `expo-application` to read versions. Gradle multiple flavors: `autoIncrement` not supported.
-- Source modificationDate: September 25, 2026 (fetched 2026-10-17).
+- Remote limitations: `eas build:version:sync` on Android does not support existing React Native projects with multiple flavors; `autoIncrement` does not support the `version` option; not supported with Expo Update runtime policy `"runtimeVersion": { "policy": "nativeVersion" }` (use the `"appVersion"` policy instead).
+- Local: Expo Build reads app version values and builds as-is, it does not write to the project. With `autoIncrement` you must commit changes on every build to persist them (hard on CI). For existing React Native projects, native code values take precedence; prefer `expo-application` to read versions. Gradle multiple flavors: `autoIncrement` not supported.
+- Source: https://docs.expo.dev/build-reference/app-versions/ (docs/pages/build-reference/app-versions.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [Configure EAS Build with eas.json](./build-eas-json.md)
+- [Configure Expo Build with eas.json](./build-eas-json.md)
 - [Configuration with eas.json](./eas-json.md)

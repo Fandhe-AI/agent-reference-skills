@@ -25,7 +25,7 @@ await Updates.reloadAsync();
 
 Available in Expo SDK 54 with `expo-updates` 0.29.0 and later. The primary use case is channel surfing: switching the `expo-channel-name` request header at runtime. For example, override it to point a production build at a `preview` channel. Another use case is giving different updates to different users (for example employees first).
 
-Call `Updates.setUpdateRequestHeadersOverride`, then `fetchUpdateAsync()` and `reloadAsync()` (or wait for the next launch). To override `expo-channel-name`, the native build must include it: a build profile in **eas.json** that defines `channel` sets it automatically, while builds created outside EAS Build (for example `npx expo run:android`) must declare it in `updates.requestHeaders` in app config and be rebuilt. Any other header you override must also be declared in `updates.requestHeaders`. The object passed replaces all custom request headers from the build, so include every header the app still needs.
+Call `Updates.setUpdateRequestHeadersOverride`, then `fetchUpdateAsync()` and `reloadAsync()` (or wait for the next launch). To override `expo-channel-name`, the native build must include it: a build profile in **eas.json** that defines `channel` sets it automatically, while builds created outside Expo Build (for example `npx expo run:android`) must declare it in `updates.requestHeaders` in app config and be rebuilt. Any other header you override must also be declared in `updates.requestHeaders`. The object passed replaces all custom request headers from the build, so include every header the app still needs.
 
 ### Override both update URL and request headers
 
@@ -62,11 +62,11 @@ function overrideUpdateURLAndHeaders() {
 - Use `disableAntiBrickingMeasures` only in preview builds; do not enable it in production. If the loaded update crashes, `expo-updates` cannot recover automatically because embedded updates are disabled; the user would need to reinstall the app.
 - Security: with anti-bricking disabled, a compromised employee able to publish updates could change the update URL and headers to point to their own server and take over installations. Mitigate (not eliminate) with code signing and limited key access.
 - Switching channels can cause compatibility issues when updates use different migrations or data shapes.
-- Source modificationDate: October 01, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas-update/override/ (docs/pages/eas-update/override.mdx at tag expo@58.0.25).
 
 ## Related
 
 - [Updates](./updates.md)
 - [Preview updates](./preview.md)
-- [End-to-end code signing with EAS Update](./code-signing.md)
+- [End-to-end code signing with Expo Update](./code-signing.md)
 - [Downloading updates](./download-updates.md)

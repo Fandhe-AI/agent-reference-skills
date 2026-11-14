@@ -2,9 +2,9 @@
 source: https://docs.expo.dev/eas/environment-variables/manage/
 ---
 
-# Create and manage environment variables in EAS
+# Create and manage environment variables in Expo Services
 
-Learn how to create, scope, and consume environment variables with the EAS dashboard and EAS CLI.
+Learn how to create, scope, and consume environment variables with the Expo dashboard and EAS CLI.
 
 ## Signature / Usage
 
@@ -58,9 +58,10 @@ eas env:set --name EXPO_PUBLIC_API_URL --value https://example.app/staging --env
 - `eas env:pull --environment production` writes `.env.local`; secret variables are written as a comment (`# GOOGLE_SERVICES_JSON=***** (secret variables are not available for reading)`). Keep generated `.env` files in `.gitignore`.
 - A custom environment appears as a selectable option for all variables of the account or project as long as at least one variable is linked to it.
 - Source modificationDate: July 21, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas/environment-variables/manage/ (docs/pages/eas/environment-variables/manage.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [Environment variables in EAS](./eas-environment-variables.md)
-- [Using environment variables in EAS](./eas-environment-variables-usage.md)
+- [Environment variables in Expo Services](./eas-environment-variables.md)
+- [Using environment variables in Expo Services](./eas-environment-variables-usage.md)
 - [EAS CLI reference](./eas-cli.md)

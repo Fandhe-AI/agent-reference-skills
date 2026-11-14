@@ -77,9 +77,9 @@ import { Directory, File, Paths } from 'expo-file-system';
 const file = new File(Paths.document, 'example.txt');
 file.create();
 const copiedFile = new File(Paths.cache, 'example-copy.txt');
-file.copySync(copiedFile);
-file.moveSync(Paths.cache);
-file.moveSync(new Directory(Paths.cache, 'newFolder'));
+await file.copy(copiedFile); // or `file.copySync(copiedFile);` for synchronous call
+await file.move(Paths.cache); // or `file.moveSync(Paths.cache);` for synchronous call
+await file.move(new Directory(Paths.cache, 'newFolder'));
 ```
 
 Previewing files (Android opens an installed app for the MIME type; iOS uses Quick Look):
@@ -276,8 +276,9 @@ Enums: `EncodingType` (`Base64 = "base64"`, `UTF8 = "utf8"`); `FileMode` (`ReadO
 - `File.downloadFileAsync` and a directory picker (`pickDirectoryAsync`) are used in the source examples and prose, but the generated API listing of this page does not include entries for them.
 - Preview details: `File.canPreview()` resolves `false` when the platform cannot preview or a checked file is missing or has an unsupported type, and rejects on invalid or unreadable files; keep files available until the viewer closes; on a single file, `mimeType` defaults to the file's `type` (pass it explicitly if the extension does not identify the type, particularly on Android). If a share sheet is useful, compose with `expo-sharing` when previewing fails.
 - Existing React Native apps (no CNG): add `LSSupportsOpeningDocumentsInPlace` and `UIFileSharingEnabled` (`<true/>`) to `ios/[app]/Info.plist`.
-- The source example calls copy()/move() without await although they are documented as returning Promise<void>; the sync variants are used here.
+- The Moving and copying snippet is verbatim from the official page (it awaits `copy()` / `move()` and notes the `copySync()` / `moveSync()` alternatives); the file picker example in the official page now reads `const result = await File.pickFileAsync(); if (!result.canceled) { console.log(result.result.textSync()); }`.
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-file-system
+- Source: https://docs.expo.dev/versions/v58.0.0/sdk/filesystem/ (docs/pages/versions/v58.0.0/sdk/filesystem.mdx at tag expo@58.0.25).
 
 ## Related
 

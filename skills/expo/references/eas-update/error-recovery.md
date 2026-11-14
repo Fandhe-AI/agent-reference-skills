@@ -8,7 +8,7 @@ Built-in error recovery in `expo-updates` as an extra safeguard against accident
 
 ## Signature / Usage
 
-If you published a broken update, publish a new update with a fix as soon as possible (though not before you are 100% confident in the fix). The first thing to try is rolling back to an older update known to work, using `republish` from the EAS dashboard or EAS CLI:
+If you published a broken update, publish a new update with a fix as soon as possible (though not before you are 100% confident in the fix). The first thing to try is rolling back to an older update known to work, using `republish` from the Expo dashboard or EAS CLI:
 
 ```sh
 eas update:republish --group [update-group-id]
@@ -55,7 +55,7 @@ On iOS the trace shows `-[EXUpdatesAppController throwException:]` and `-[EXUpda
 ## Notes
 
 - Disclaimer from the source: the documented behavior is subject to change and should not be relied upon. Test thoroughly in production-like environments before publishing updates.
-- Source modificationDate: May 23, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas-update/error-recovery/ (docs/pages/eas-update/error-recovery.mdx at tag expo@58.0.25).
 
 ## Related
 

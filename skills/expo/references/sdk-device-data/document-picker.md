@@ -86,11 +86,12 @@ Config plugin properties:
 ## Notes
 
 - Platforms (frontmatter `platforms`): Android, iOS, Web, Included in Expo Go.
-- To enable iCloud storage features set `expo.ios.usesIcloudStorage` to `true` in app config. Running EAS Build locally uses iOS capabilities signing to enable the required capabilities. Apps without EAS Build must manually configure the iCloud service with CloudKit support for their bundle identifier.
+- To enable iCloud storage features set `expo.ios.usesIcloudStorage` to `true` in app config. Running Expo Build locally uses iOS capabilities signing to enable the required capabilities. Apps without Expo Build must manually configure the iCloud service with CloudKit support for their bundle identifier.
 - Using with `expo-file-system`: the file system may not be able to read a file immediately after it is picked, so keep `copyToCacheDirectory` set to `true`.
 - Web: the system UI can only be shown after user activation (e.g. a button press), so calling `getDocumentAsync` in `componentDidMount` will not work. The `cancel` event is not returned in the browser.
 - The source lists getDocumentAsync under Component with type React.Element<DocumentPickerOptions> (a docs generator artifact); it is a function returning Promise<DocumentPickerResult>.
 - Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-document-picker
+- Source: https://docs.expo.dev/versions/v58.0.0/sdk/document-picker/ (docs/pages/versions/v58.0.0/sdk/document-picker.mdx at tag expo@58.0.25); the docs now say "Expo Build" (formerly "EAS Build").
 
 ## Related
 

@@ -2,9 +2,9 @@
 source: https://docs.expo.dev/eas/workflows/syntax/
 ---
 
-# Syntax for EAS Workflows
+# Syntax for Expo Workflows
 
-Reference for the EAS Workflows configuration file syntax (`.eas/workflows/*.yml`).
+Reference for the Expo Workflows configuration file syntax (`.eas/workflows/*.yml`).
 
 ## Signature / Usage
 
@@ -31,8 +31,8 @@ defaults:
     node: latest
 
 concurrency:
-  cancel_in_progress: true
   group: ${{ workflow.filename }}-${{ github.ref }}
+  cancel_in_progress: true
 
 jobs:
   test:
@@ -55,12 +55,12 @@ jobs:
 
 | Key | Description |
 | --- | --- |
-| `name` | Human-friendly workflow name shown on the EAS dashboard |
+| `name` | Human-friendly workflow name shown on the Expo dashboard |
 | `run_name` | Title of an individual run; string with `${{ }}` expressions (contexts `github`, `app_store_connect`, `inputs`, `workflow`, `app`, `account`; no `success()`, `failure()`, `hashFiles()`); rendered text over 255 characters is truncated to 254 plus an ellipsis; an unsupported context makes the run store an error and no custom title |
-| `on` | Triggers. Any workflow can also be run with `eas workflow:run` regardless of `on` |
+| `on` | Events that start a run: GitHub events, a schedule, App Store Connect events, or a call from another workflow (`workflow_call`). Any workflow can also be run with `eas workflow:run` or the REST API regardless of `on` |
 | `jobs` | One or more jobs |
 | `defaults` | Defaults for all jobs: `hooks`, `image`, `run.working_directory`, `tools` |
-| `concurrency` | `cancel_in_progress` (boolean or expression; cancels in-progress runs for the same branch) and `group` (placeholder; custom groups not supported yet) |
+| `concurrency` | `group` (required), `cancel_in_progress`, and `queue`; see Concurrency below |
 
 ### Triggers (`on`)
 
@@ -68,12 +68,13 @@ jobs:
 | --- | --- |
 | `push` | `branches` (default `['*']` if neither `branches` nor `tags`), `tags` (default `[]`), `paths`, `if`. Globs supported; `!` prefix ignores (need at least one non-negated pattern) |
 | `ref_delete` | `branches`, `tags`, `if`. Requires a linked GitHub repository; the workflow file is read from the default branch HEAD at deletion time |
-| `pull_request` | `branches` (default `['*']`), `types` (default `opened`, `reopened`, `synchronize`; supported: `opened`, `edited`, `base_ref_changed`, `ready_for_review`, `reopened`, `synchronize`, `labeled`), `paths`, `if`. Fork PRs do not trigger runs |
+| `pull_request` | `branches` (default `['*']`; the run uses the workflow files and code from the head commit of the PR branch, not the base branch), `types` (default `opened`, `reopened`, `synchronize`; supported: `opened`, `edited`, `base_ref_changed`, `ready_for_review`, `reopened`, `synchronize`, `labeled`), `paths`, `if`. Fork PRs do not trigger runs |
 | `pull_request_labeled` | `labels` (default `[]`; may also be given directly as a list), `if` |
 | `pull_request_comment` | `types` (default `['created']`; `created`, `edited`, `deleted`), `if`. Open, unmerged PRs only; no `branches` / `paths` filter; fork PRs do not trigger |
-| `app_store_connect` | At least one domain: `app_version.states`, `build_upload.states` (`complete`, `failed`, `processing`, `awaiting_upload`), `external_beta.states`, `beta_feedback.types` (`crash`, `screenshot`); each domain accepts `if`. Filter values are lowercase and case-sensitive. Requires the App Store Connect connection in the EAS dashboard |
+| `app_store_connect` | At least one domain: `app_version.states`, `build_upload.states` (`complete`, `failed`, `processing`, `awaiting_upload`), `external_beta.states`, `beta_feedback.types` (`crash`, `screenshot`; the `app_store_connect` context of this event has only `id`, `type`, `url`, and the feedback is read with `eas testflight:feedback "${{ app_store_connect.beta_feedback.url }}" --json` after `eas/checkout`); each domain accepts `if`. Filter values are lowercase and case-sensitive. Requires the App Store Connect connection in the Expo dashboard |
 | `schedule` | `cron` list (unix-cron). Paid plans; only runs from the default branch; GMT time zone; may be delayed under high load |
 | `workflow_dispatch` | `inputs` (see below) |
+| `workflow_call` | `inputs` and `outputs`; lets other workflows of the same project call this one (see below) |
 
 `app_version.states`: `accepted`, `developer_rejected`, `in_review`, `invalid_binary`, `metadata_rejected`, `pending_apple_release`, `pending_developer_release`, `prepare_for_submission`, `processing_for_distribution`, `ready_for_distribution`, `ready_for_review`, `rejected`, `replaced_with_new_version`, `waiting_for_export_compliance`, `waiting_for_review`.
 
@@ -91,6 +92,32 @@ jobs:
 | `default` | varies | no | Must match the input type |
 | `options` | `string[]` | yes for `choice` | Available options |
 
+### `on.workflow_call`
+
+Lets other workflows in the same project call this one; a job calls it by setting `uses` to the path of this file. `inputs` use the same properties as `workflow_dispatch.inputs` and are read as `${{ inputs.<input_name> }}`. `outputs` define the values the called run returns to the calling job: each output has an optional `description` and a `value` expression of at most 250 characters, for example `${{ jobs.<job_id>.outputs.<output_name> }}`; the calling run reads it as `${{ needs.<job_id>.outputs.<output_name> }}` where `<job_id>` is the calling job.
+
+```yaml
+on:
+  workflow_call:
+    inputs:
+      profile:
+        type: string
+        required: true
+    outputs:
+      build_id:
+        description: 'ID of the Android build'
+        value: ${{ jobs.build_android.outputs.build_id }}
+
+jobs:
+  build_android:
+    type: build
+    params:
+      platform: android
+      profile: ${{ inputs.profile }}
+```
+
+### Providing `workflow_dispatch` inputs
+
 Provide inputs with `-F key=value` flags, JSON via stdin, or interactive prompts:
 
 ```sh
@@ -103,14 +130,16 @@ eas workflow:run .eas/workflows/deploy.yml -F environment=production -F debug=tr
 | --- | --- |
 | `jobs.<job_id>` | Unique ID within the workflow (alphanumerics and underscores) |
 | `name` | Human-friendly job name |
-| `type` | Pre-packaged job type: `build`, `deploy`, `fingerprint`, `get-build`, `submit`, `testflight`, `update`, `update-rollout`, `branch-delete`, `maestro`, `maestro-cloud`, `slack`, `github-comment`, `apple-device-registration-request`, `require-approval`, `doc`, `repack` |
+| `type` | Pre-packaged job type: `build`, `deploy`, `fingerprint`, `get-build`, `submit`, `testflight`, `update`, `update-rollout`, `branch-delete`, `maestro`, `maestro-cloud`, `slack`, `email`, `github-comment`, `apple-device-registration-request`, `require-approval`, `doc`, `repack` |
 | `params` | Parameters of the pre-packaged job |
-| `environment` | EAS environment: `production`, `preview`, or `development` |
-| `env` | Job environment variables (not available on `apple-device-registration-request`, `branch-delete`, `doc`, `get-build`, `github-comment`, `require-approval`, `slack`, `update-rollout`) |
+| `environment` | Expo Services environment: `production`, `preview`, or `development` |
+| `env` | Job environment variables (not available on `apple-device-registration-request`, `branch-delete`, `doc`, `email`, `get-build`, `github-comment`, `require-approval`, `slack`, `update-rollout`) |
 | `hooks` | Steps before/after the main action for `build`, `deploy`, `fingerprint`, `maestro`, `maestro-cloud`, `repack`, `submit`, `testflight`, `update`; hook names are job-specific. `defaults.hooks` sets defaults; a job-level key overrides the same default key; an empty array opts a job out |
 | `needs` | Job IDs that must succeed first |
 | `after` | Job IDs that must finish (success or not) first |
 | `if` | Skips the job when false; downstream jobs that list it in `needs` do not run |
+| `uses` | Path of a reusable workflow file to call (`./.eas/workflows/<name>.yml` or `.yaml`; literal path, no subdirectory, no `${{ }}`). A job with `uses` accepts only `name`, `needs`, `after`, `if`, `uses`, `with` |
+| `with` | Input values for the called workflow, from its `on.workflow_call.inputs`. Cannot use `env`. A `null` expression result selects the input default; a missing required input or a type mismatch fails the calling job |
 | `steps` | Only on custom jobs and `build` jobs |
 | `outputs` | Outputs for downstream jobs: `needs.<job_id>.outputs.<name>` / `after.<job_id>.outputs.<name>` |
 | `image` | VM image, `auto` by default (`sdk-XX` tags recommended) |
@@ -118,6 +147,28 @@ eas workflow:run .eas/workflows/deploy.yml -F environment=production -F debug=tr
 | `defaults.run.working_directory` | Directory for all steps in the job |
 
 Workers: `linux-medium` 4 vCPU / 16 GiB / 14 GiB SSD; `linux-large` 8 vCPU / 32 GiB / 28 GiB; `linux-medium-nested-virtualization` 4 vCPU / 16 GiB / 14 GiB; `linux-large-nested-virtualization` 4 vCPU / 32 GiB / 28 GiB; `macos-medium` 5 efficiency cores / 20 GiB / 125 GiB; `macos-large` 10 / 40 GiB / 125 GiB. Android Emulator jobs need a `linux-*-nested-virtualization` worker; iOS builds and simulator jobs need a `macos-*` worker.
+
+### Concurrency
+
+| Property | Type | Required | Description |
+| --- | --- | --- | --- |
+| `group` | `string` | yes | Group key: literal text and `${{ }}` expressions (contexts `github`, `app_store_connect`, `inputs`, `workflow`, `app`, `account`; no job-level contexts, `success()`, `failure()`, `hashFiles()`). Template at most 250 characters; rendered key at most 2048 bytes; an empty or non-scalar key fails the run |
+| `cancel_in_progress` | `boolean` or expression | no | Whether a new run cancels the active and waiting runs of its group instead of waiting. Default `false`. One `${{ }}` block of at most 250 characters, evaluated once at run creation |
+| `queue` | `single` or `max` | no | How many runs can wait. `single` (default): only the newest waits and replaces the waiting one. `max`: up to 100 wait and start in creation order; a run beyond 100 is canceled. `queue: max` cannot be combined with `cancel_in_progress: true` |
+
+Runs of the same project with the same rendered key share one group, even across workflow files; each new run applies its own `cancel_in_progress` and `queue` to the whole group, so use the same settings in every file that shares a group. A missing value renders as an empty string (use `||` for a fallback). A waiting run uses no build minutes or concurrency slot until it starts. A run needing user action (for example `require-approval`) holds its group until it succeeds, fails, or is canceled.
+
+```yaml
+concurrency:
+  group: ${{ workflow.filename }}-${{ github.ref }}
+  cancel_in_progress: ${{ github.ref_name != 'main' }}
+```
+
+```yaml
+concurrency:
+  group: migrate-production
+  queue: max
+```
 
 ### `defaults.tools`
 
@@ -145,15 +196,35 @@ Workers: `linux-medium` 4 vCPU / 16 GiB / 14 GiB SSD; `linux-large` 8 vCPU / 32 
 | `uses` | Built-in `eas/*` function, or a custom function path starting with `./` or `../` |
 | `with` | Inputs for the function |
 
-Built-in functions: `eas/checkout` (input `ref`: branch, qualified tag, or full commit SHA; shallow fetch; set on the job's first checkout step only; needs a Git-based project source), `eas/install_node_modules`, `eas/download_build`, `eas/prebuild`, `eas/restore_cache`, `eas/save_cache`, `eas/send_slack_message`, `eas/use_npm_token`, `eas/upload_artifact`, `eas/download_artifact`, `eas/posthog_capture_event`, `eas/posthog_flag_rollout`, `eas/posthog_wait_for_metric`, `eas/posthog_wait_for_query`, `eas/posthog_annotation`, `eas/posthog_upload_sourcemaps`.
+Built-in functions: `eas/checkout` (input `ref`: branch, qualified tag, or full commit SHA; shallow fetch; set on the job's first checkout step only; needs a Git-based project source), `eas/install_node_modules`, `eas/download_build`, `eas/prebuild`, `eas/restore_cache`, `eas/save_cache`, `eas/send_slack_message`, `eas/use_npm_token`, `eas/upload_artifact`, `eas/download_artifact`, `eas/posthog_capture_event`, `eas/posthog_flag_rollout`, `eas/posthog_wait_for_metric`, `eas/posthog_wait_for_query`, `eas/posthog_annotation`, `eas/posthog_upload_sourcemaps`. Custom functions can call built-in `eas/*` functions.
 
 ### Interpolation contexts and functions
 
-Use `${{ expression }}`. Contexts: `after`, `needs`, `steps`, `inputs`, `github`, `workflow` (`id`, `name`, `filename`, `url`), `app` (`id`, `slug`), `account` (`id`, `name`), `app_store_connect`, `env`. `steps`, `env`, and `hashFiles` are only available within a job.
+Use `${{ expression }}`. Contexts: `after`, `needs`, `steps`, `inputs`, `github`, `workflow` (`id`, `name`, `filename`, `url`), `app` (`id`, `slug`), `account` (`id`, `name`), `app_store_connect`, `env`, and `jobs` (only in `on.workflow_call.outputs`). `inputs` also holds the inputs a calling job sets in `with`. A called run gets the `github` context of the run that called it.
+
+Operators: `==`, `!=`, `===`, `!==`, `<`, `>`, `<=`, `>=`, `&&`, `||`, `!`, and the ternary `condition ? a : b`. Quote a value that contains a ternary, because `:` is also YAML syntax; do not put an `if:` condition in a `|` block (the trailing newline breaks it).
+
+Expressions are evaluated at four points. Run creation: `run_name`, `on.<trigger>.if`, `concurrency.group`, `concurrency.cancel_in_progress`. Job: every job field except `steps`, `hooks`, `outputs` (for example `if`, `env`, `params`). Steps: `steps`, `hooks`, `outputs` of a job. Called run outputs: `on.workflow_call.outputs`.
+
+| Context or function | Run creation | Job | Steps | Called run outputs |
+| --- | --- | --- | --- | --- |
+| `github`, `inputs`, `workflow`, `app`, `account` | yes | yes | yes | yes |
+| `app_store_connect` | yes | yes | yes (`build` jobs only) | yes |
+| `needs`, `after` | no | yes | yes | yes |
+| `jobs` | no | no | no | yes |
+| `env` | no | yes | yes | no |
+| `steps` | no | no | yes | no |
+| `always()`, `never()` | yes | yes | yes | yes |
+| `success()`, `failure()` | no | yes | yes | yes |
+| `fromJSON()`, `toJSON()`, `contains()`, `startsWith()`, `endsWith()`, `replaceAll()`, `substring()` | yes | yes | yes | yes |
+| `hashFiles()` | no | no | yes | no |
+
+`env` becomes available after the job's `environment` is determined and cannot be used in `jobs.<job_id>.environment`. For a `build`, `repack`, `submit`, or `testflight` job without explicit `environment`, `params` are evaluated first and cannot use `env`; set `environment` explicitly to use `env` there. Unavailable contexts in `on.<trigger>.if` and `concurrency` are rejected at validation; an unavailable one in `run_name` fails the run when the title is rendered.
 
 | Function | Description |
 | --- | --- |
 | `success()` / `failure()` | Whether all previous jobs succeeded / any previous job failed |
+| `always()` / `never()` | Always `true` / always `false`. `always()` in a step's `if` runs the step even after an earlier step failed; in a job's `if` it does not override `needs` (use `after`). `never()` keeps a job or step in the file without running it |
 | `fromJSON(value)` / `toJSON(value)` | `JSON.parse` / `JSON.stringify` |
 | `contains(value, substring)`, `startsWith(value, prefix)`, `endsWith(value, suffix)` | String checks |
 | `hashFiles(...globs)` | Hash of files matching globs (useful for cache keys); only within a job's steps |
@@ -206,16 +277,20 @@ jobs:
 ## Notes
 
 - The official examples write these `run` values unquoted.
-- Distinct from GitHub Actions: this syntax is specific to EAS Workflows. The `github` context exists to ease migration from GitHub Actions. See github-docs for GitHub Actions workflow syntax.
+- Reuse: `workflow_call` + `jobs.<job_id>.uses` / `with` reuse whole jobs across workflow files (see Reusable workflows); custom functions reuse step sequences only.
+- `maestro` / `maestro-cloud` `maestro_version`: if omitted, the version preinstalled on the image is used when found, otherwise the latest; set `latest` to always install the newest.
+- Pre-packaged job `email` sends an email to members of the account that owns the project (`usernames` or `emails`, `subject`, `body`); see the pre-packaged jobs page.
+- Distinct from GitHub Actions: this syntax is specific to Expo Workflows. The `github` context exists to ease migration from GitHub Actions. See github-docs for GitHub Actions workflow syntax.
 - Skip `push` and `pull_request` triggered runs by including `[eas skip]`, `[skip eas]`, or `[no eas]` in the commit message.
 - Custom function call steps accept `id`, `name`, `with`, `if`, `env`; the path must be a static literal without `${{ }}` or backslashes; do not set `working_directory` on the call step.
 - Per-job parameters and outputs of the pre-packaged jobs are documented in the pre-packaged jobs page. The `github` and `app_store_connect` context field lists are in the environment page; this page lists them only by name.
 - The built-in function details for `eas/*` (inputs of cache, artifact, Slack, npm token, and PostHog functions) are not reproduced here; see the official page.
-- Source modificationDate: October 12, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas/workflows/syntax/ (docs/pages/eas/workflows/syntax.mdx at tag expo@58.0.25). Sections used: on.workflow_call, Workflow call jobs, concurrency, Interpolation (Operators, Context availability, always / never), on.pull_request, on.app_store_connect.beta_feedback.types.
 
 ## Related
 
-- [Pre-packaged jobs in EAS Workflows](./workflows-pre-packaged-jobs.md)
-- [Custom functions in EAS Workflows](./workflows-custom-functions.md)
-- [Environment variables in EAS Workflows](./workflows-environment.md)
-- [EAS Workflows limitations](./workflows-limitations.md)
+- [Pre-packaged jobs in Expo Workflows](./workflows-pre-packaged-jobs.md)
+- [Custom functions in Expo Workflows](./workflows-custom-functions.md)
+- [Environment variables in Expo Workflows](./workflows-environment.md)
+- [Expo Workflows limitations](./workflows-limitations.md)
+- [Reusable workflows in Expo Workflows](./workflows-reusable-workflows.md)

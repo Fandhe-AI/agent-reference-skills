@@ -2,7 +2,7 @@
 source: https://docs.expo.dev/eas/workflows/pre-packaged-jobs/
 ---
 
-# Pre-packaged jobs in EAS Workflows
+# Pre-packaged jobs in Expo Workflows
 
 Ready-to-use workflow jobs (`type:` values) that automate common tasks such as building, submitting, updating, and testing an app.
 
@@ -86,9 +86,9 @@ jobs:
 | message | string | Message attached to the build (`--message` of `eas build`) |
 | refresh_ad_hoc_provisioning_profile | boolean | Refresh the managed ad hoc provisioning profile before an iOS internal build (`--refresh-ad-hoc-provisioning-profile`) |
 
-Outputs: `build_id`, `app_build_version`, `app_identifier`, `app_version`, `channel`, `distribution` (`internal` or `store`), `fingerprint_hash`, `git_commit_hash`, `platform`, `profile`, `runtime_version`, `sdk_version`, `simulator`. Hooks: `before_install_node_modules`, `after_install_node_modules`. Environment variables come from the `env` of the eas.json profile, pulled from EAS environment variables. Prerequisite: eas.json contains the profile and signing credentials are configured (`eas credentials:configure-build -p <platform> -e <profile>`).
+Outputs: `build_id`, `app_build_version`, `app_identifier`, `app_version`, `channel`, `distribution` (`internal` or `store`), `fingerprint_hash`, `git_commit_hash`, `platform`, `profile`, `runtime_version`, `sdk_version`, `simulator`. Hooks: `before_install_node_modules`, `after_install_node_modules`. Environment variables come from the `env` of the eas.json profile, pulled from Expo Services environment variables. Prerequisite: eas.json contains the profile and signing credentials are configured (`eas credentials:configure-build -p <platform> -e <profile>`).
 
-### Deploy (`type: deploy`, EAS Hosting)
+### Deploy (`type: deploy`, Expo Hosting)
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -100,7 +100,7 @@ Outputs: `deploy_json` (output of `npx eas-cli deploy --json`), `deploy_url`, `d
 
 ### Fingerprint (`type: fingerprint`)
 
-Calculates a fingerprint of the project. Only supports CNG workflows (committed `android` / `ios` directories break it). Use the same `environment` as the build profile so fingerprints match; prefer EAS environment variables over inline `env`.
+Calculates a fingerprint of the project. Only supports CNG workflows (committed `android` / `ios` directories break it). Use the same `environment` as the build profile so fingerprints match; prefer Expo Services environment variables over inline `env`.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -146,7 +146,7 @@ Alternative to the iOS submit job for controlling groups, changelog, and Beta Ap
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| build_id | string | Required for the upload variant. ID of the iOS EAS Build (must be `distribution: store`) |
+| build_id | string | Required for the upload variant. ID of the iOS Expo Build (must be `distribution: store`) |
 | asc_build_id | string | Required for the already-uploaded variant. ID of a build in App Store Connect |
 | profile | string | Upload variant only. Submit profile; defaults to `production` |
 | internal_groups | string[] | Internal group names; only groups without automatic distribution |
@@ -163,10 +163,10 @@ Outputs (upload variant): `apple_app_id`, `ios_bundle_identifier`; (already-uplo
 | --- | --- | --- |
 | message | string | Update message; the commit message if omitted |
 | platform | string | `android`, `ios`, or `all` (default) |
-| branch | string | Branch; defaults to the workflow run branch (manual runs must provide one, e.g. `${{ github.ref_name \|\| 'testing' }}`). Provide either branch or channel |
+| branch | string | Branch; defaults to the workflow run branch. If the run has no branch (for example a run that `eas workflow:run` starts from local project files without `--git-branch`), provide one, e.g. `${{ github.ref_name \|\| 'testing' }}`. Provide either branch or channel |
 | channel | string | Channel. Provide either branch or channel |
 | rollout_percentage | number | Integer 0 to 100 (`--rollout-percentage`) |
-| private_key_path | string | PEM private key path for code signing (`--private-key-path`); a file-type EAS environment variable can be referenced as `"$VARIABLE_NAME"` |
+| private_key_path | string | PEM private key path for code signing (`--private-key-path`); a file-type Expo Services environment variable can be referenced as `"$VARIABLE_NAME"` |
 | upload_sentry_sourcemaps | boolean | `true` uploads and fails if upload fails; `false` skips; unset tries when `@sentry/react-native` is installed and does not fail on error |
 
 Outputs: `first_update_group_id`, `updates_json`. Hooks: `after_checkout`, `before_install_node_modules`, `after_install_node_modules`, `before_update`, `after_update`. Prerequisite: `npx eas-cli@latest update:configure` and new builds.
@@ -184,7 +184,7 @@ Outputs: `update_group_id`, `rollout_percentage`, `updates_json`.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| branch_name | string | Required. EAS Update branch to delete (same as `eas branch:delete`) |
+| branch_name | string | Required. Expo Update branch to delete (same as `eas branch:delete`) |
 | fail_on_missing | boolean | `false` (default): succeed if missing; `true`: fail if missing |
 
 Outputs: `branch_id` (null if missing and `fail_on_missing` is false), `branch_name`.
@@ -202,7 +202,7 @@ Runs Maestro tests on an Android Emulator or iOS Simulator build. `environment` 
 | retry_failed_only | boolean | Default `true` |
 | record_screen | boolean | Default `false`; may impact emulator performance |
 | include_tags / exclude_tags | string or string[] | Passed to Maestro as `--include-tags` / `--exclude-tags` |
-| maestro_version | string | Defaults to latest |
+| maestro_version | string | Defaults to the version preinstalled on the runner image when found, otherwise the latest. Set `latest` to always install the newest |
 | android_system_image_package | string | Emulator system image (choose an `x86_64` variant), e.g. `system-images;android-36;google_apis;x86_64` |
 | device_identifier | string or `{ android?: string, ios?: string }` | Device to use, e.g. `pixel_6`, `iPhone 16 Plus` |
 | output_format | string | Report format passed as `--format`; default `junit` |
@@ -221,7 +221,7 @@ Requires a Maestro Cloud account and Cloud Plan subscription. `environment` defa
 | flows | string | Required. Flow file or directory (`--flows`) |
 | maestro_api_key | string | Defaults to `$MAESTRO_CLOUD_API_KEY` |
 | include_tags / exclude_tags | string or string[] | Tag filters |
-| maestro_version | string | Maestro version |
+| maestro_version | string | Maestro version, for example `1.30.0`. Defaults to the version preinstalled on the image when found, otherwise the latest. Use `latest` to always install the newest |
 | maestro_config | string | Path to Maestro `config.yaml` (`--config`) |
 | device_locale / device_model / device_os | string | Device settings (`maestro list-cloud-devices` lists supported values) |
 | skip_build_check | boolean | Default `false` |
@@ -238,6 +238,28 @@ Outputs: `maestro_cloud_url`, `total_flows_count`, `successful_flows_count`, `fa
 | webhook_url | string | Required. Slack webhook URL, e.g. `${{ env.SLACK_WEBHOOK_URL }}` |
 | message | string | Required if `payload` is not provided |
 | payload | object | Required if `message` is not provided. Slack Block Kit payload |
+
+### Email (`type: email`)
+
+Sends a plain-text email to members of the account that owns the project; each email ends with a footer linking to the workflow run. Recipients who are not account members or have no verified email address are skipped, which fails the job and lists them (other recipients still receive the email). Hourly limits: each account can send up to 100 emails and each member can receive up to 10 (1,000 and 60 on the Production and Enterprise plans); a recipient who would exceed a limit is skipped. `env` is not available on this job.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| usernames | string[] | Required if `emails` is not provided. Usernames of account members; up to 50 recipients across `usernames` and `emails` |
+| emails | string[] | Required if `usernames` is not provided. Email addresses of account members; up to 50 recipients in total |
+| subject | string | Required. Up to 255 characters |
+| body | string | Required. Plain-text body, up to 20,000 characters |
+
+```yaml
+jobs:
+  send_email:
+    type: email
+    params:
+      usernames: [alice, bob]
+      subject: 'Maestro tests failed'
+      body: |
+        Maestro tests failed for build ${{ needs.build_ios_simulator.outputs.build_id }}.
+```
 
 ### GitHub Comment (`type: github-comment`)
 
@@ -263,7 +285,7 @@ Outputs after approval: `apple_device_id`, `identifier` (UDID), `name`, `model`,
 
 ### Require Approval (`type: require-approval`)
 
-No parameters. A user approves (success) or rejects (failure).
+No parameters. A user approves (success) or rejects (failure). Approve within 30 days after the workflow run was created; later approval makes the run fail before its next job starts (a called run uses the same window as the run that calls it). Jobs after approval use the access of the user or robot that started the run, not the approver's; if that access is lost, the run fails. To continue after such a failure, re-run the workflow from its failed jobs (the new run reuses the approval); see Manage workflow runs.
 
 ### Doc (`type: doc`)
 
@@ -291,15 +313,16 @@ Hooks: `after_checkout`, `before_install_node_modules`, `after_install_node_modu
 
 ## Notes
 
-- Distinct from GitHub Actions: pre-packaged jobs are EAS Workflows YAML job types, not GitHub Actions actions. See github-docs for GitHub Actions.
+- Distinct from GitHub Actions: pre-packaged jobs are Expo Workflows YAML job types, not GitHub Actions actions. See github-docs for GitHub Actions.
 - Maestro tests are alpha per the official page.
 - General hook syntax (`jobs.<job_id>.hooks`) is in the syntax page. Custom builds are described in the official Custom builds docs.
 - Only the syntax, parameters, outputs, and hooks sections are reproduced; the official page also has example workflows for each job (build with environment variables, deploy on merges, get-build lookups, Slack Block Kit, GitHub comment modes, approval flows, fingerprint with repack).
-- Source modificationDate: August 05, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas/workflows/pre-packaged-jobs/ (docs/pages/eas/workflows/pre-packaged-jobs.mdx at tag expo@58.0.25). The Email job, Maestro `maestro_version` defaults, update `branch` default, and the require-approval 30-day window come from this page.
 
 ## Related
 
-- [Syntax for EAS Workflows](./workflows-syntax.md)
-- [Custom functions in EAS Workflows](./workflows-custom-functions.md)
-- [Environment variables in EAS Workflows](./workflows-environment.md)
+- [Syntax for Expo Workflows](./workflows-syntax.md)
+- [Custom functions in Expo Workflows](./workflows-custom-functions.md)
+- [Manage workflow runs](./workflows-manage-runs.md)
+- [Environment variables in Expo Workflows](./workflows-environment.md)
 - [Distribute an iOS app with TestFlight](./testflight.md)

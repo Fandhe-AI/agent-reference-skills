@@ -94,12 +94,13 @@ Then enter the generated `ExpoPushToken` into the Expo push notifications tool a
 ## Notes
 
 - Libraries: `expo-notifications` requests permission and obtains the `ExpoPushToken`; `expo-constants` gets the `projectId` from app config.
-- `projectId` attributes the Expo push token to the specific project (for EAS projects it is the project UUID). It is set automatically when a development build is created, but the guide recommends setting it manually via `expo-constants`. Attributing the token to the project ID means it doesn't change when a project is transferred between accounts or the account is renamed.
+- `projectId` attributes the Expo push token to the specific project (for projects using Expo Services it is the project UUID). It is set automatically when a development build is created, but the guide recommends setting it manually via `expo-constants`. Attributing the token to the project ID means it doesn't change when a project is transferred between accounts or the account is renamed.
 - Test devices: a physical Android or iOS device, an Android Emulator with Google Play services, or an iOS Simulator on Xcode 14 or later (macOS 13+, iOS 16+).
-- The guide uses EAS Build because the EAS project also holds the notification credentials; `expo-notifications` can also be used with local builds.
+- The guide uses Expo Build because the Expo Services project also holds the notification credentials; `expo-notifications` can also be used with local builds.
 - Android credentials: configure FCM and follow the FCM V1 credentials page.
 - iOS credentials: a paid Apple Developer Account is required. Register the iOS device before the first `eas build`. On the first development build, answer yes to "Setup Push Notifications for your project" and "Generating a new Apple Push Notifications service key". Without EAS Build, run `eas credentials` manually.
 - To use FCM / APNs directly instead of the Expo push notification service, the `expo-notifications` API is push-service agnostic; see the custom sending page.
+- Source: https://docs.expo.dev/push-notifications/push-notifications-setup/ (docs/pages/push-notifications/push-notifications-setup.mdx at tag expo@58.0.25); the official docs now say Expo Services / Expo Build / Expo dashboard where they previously said EAS / EAS Build / EAS Dashboard.
 - Page modificationDate: July 28, 2026 (unversioned guide, fetched 2026-10-17).
 - Distance line: APNs key / entitlement concepts are covered by `apple-app-services`; FCM / Android notification channels by `android-platform-core`.
 

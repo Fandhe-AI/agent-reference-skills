@@ -70,11 +70,11 @@ setupBackgroundUpdates();
 - Support for calling `Updates.reloadAsync()` while the app is backgrounded is experimental; monitor for crashes when first enabled. Downloading an update in the background is safe. Unless you persist and restore state, the user will experience a cold boot on reopening.
 - The background task example is adapted: the official guide returns `Promise.resolve()`, while the expo-background-task reference requires tasks to return `BackgroundTaskResult.Success` or `Failed`.
 - A rollback directive is returned from `checkForUpdateAsync()` with `isAvailable: false` and `isRollBackToEmbedded: true` (`UpdateCheckResultRollBack`). `fetchUpdateAsync()` then returns `UpdateFetchResultRollBackToEmbedded`, and `reloadAsync()` applies the rollback. The official example checks only `isAvailable`.
-- Source modificationDate: July 21, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas-update/download-updates/ (docs/pages/eas-update/download-updates.mdx at tag expo@58.0.25).
 
 ## Related
 
 - [Updates](./updates.md)
 - [Override update configuration at runtime](./override.md)
-- [Bundle diffing for EAS Update](./bundle-diffing.md)
+- [Bundle diffing for Expo Update](./bundle-diffing.md)
 - [Deploy updates](./deployment.md)

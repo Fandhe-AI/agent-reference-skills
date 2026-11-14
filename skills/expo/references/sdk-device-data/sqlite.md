@@ -236,6 +236,19 @@ const db = await SQLite.openDatabaseAsync('databaseName');
 await db.execAsync(`PRAGMA key = 'password'`);
 ```
 
+Check for SQLCipher before adding a password (`PRAGMA key` is silently ignored when SQLCipher is missing):
+
+```ts
+const db = await SQLite.openDatabaseAsync('databaseName');
+const cipher = await db.getFirstAsync<{ cipher_version: string }>('PRAGMA cipher_version');
+if (cipher == null) {
+  throw new Error(
+    'SQLCipher is not available in this build, so the database would not be encrypted. Set `useSQLCipher` in the expo-sqlite config plugin and rebuild the app.'
+  );
+}
+await db.execAsync(`PRAGMA key = 'password'`);
+```
+
 ## Options / Props
 
 Config plugin properties (Android and iOS; `android` / `ios` sub-objects override the shared values):
@@ -356,13 +369,15 @@ Common API cheatsheet:
 - Distinct from ORMs: this page is the `expo-sqlite` driver API itself. The drizzle skill covers Drizzle ORM and its expo-sqlite driver connection; this page links Drizzle ORM and Knex.js (`knex-expo-sqlite-dialect`) only as third-party integrations.
 - Security: SQL injection is possible when user input is passed to SQLite unescaped. Prepared statements (and the `sql` tagged template API) bind parameters safely; `execAsync()` / `execSync()` do not escape queries.
 - Async transactions: with `withTransactionAsync()`, any query that runs while the transaction is active is included in it, even queries written outside the scope function. Use `withExclusiveTransactionAsync()` for strict scoping. Tip: enable WAL journal mode (`PRAGMA journal_mode = WAL`) when creating a new database.
-- Web setup: configure Metro to support wasm files and serve `Cross-Origin-Embedder-Policy` and `Cross-Origin-Opener-Policy` headers for `SharedArrayBuffer` (run `npx expo customize metro.config.js` if there is no metro.config.js). On EAS Hosting the headers can be set through the `expo-router` plugin `headers` option (`"Cross-Origin-Embedder-Policy": "credentialless"`, `"Cross-Origin-Opener-Policy": "same-origin"`). The config plugin properties such as `enableFTS` apply only to Android and iOS; web uses a prebuilt WebAssembly build without FTS (build your own from `expo/wa-sqlite` with Emscripten and pass it to `configureWeb({ wasmURL })`).
+- Web setup: configure Metro to support wasm files and serve `Cross-Origin-Embedder-Policy` and `Cross-Origin-Opener-Policy` headers for `SharedArrayBuffer` (run `npx expo customize metro.config.js` if there is no metro.config.js). On Expo Hosting the headers can be set through the `expo-router` plugin `headers` option (`"Cross-Origin-Embedder-Policy": "credentialless"`, `"Cross-Origin-Opener-Policy": "same-origin"`). The config plugin properties such as `enableFTS` apply only to Android and iOS; web uses a prebuilt WebAssembly build without FTS (build your own from `expo/wa-sqlite` with Emscripten and pass it to `configureWeb({ wasmURL })`).
 - `import 'expo-sqlite/localStorage/install'` is a no-op on web and is excluded from the production JS bundle.
 - SQLCipher is supported on Android, iOS and macOS, and is not supported in Expo Go.
 - Dev tools: `expo-sqlite` includes a DevTools inspector plugin enabled automatically in development (press Shift + M in the Expo CLI terminal and select Open expo-sqlite); the `drizzle-studio-expo` plugin is an alternative.
 - The Provider example omits `onInit` and adds import lines relative to the official snippet; the Suspense example is a fragment with imports added.
 - The source example calls withExclusiveTransactionAsync without await; await was added because it returns a Promise.
-- Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-sqlite
+- `withExclusiveTransactionAsync()` runs on a new database connection, so connection settings made on the original database, such as `PRAGMA foreign_keys = ON`, do not apply inside it. `PRAGMA foreign_keys` has no effect inside a transaction, so it cannot be turned back on from `txn`. Use `withTransactionAsync()` when foreign key enforcement is needed.
+- If the app binary does not include SQLCipher, `PRAGMA key` has no effect and does not throw: SQLite ignores unrecognized pragmas and stores the database unencrypted. This happens in Expo Go, when `useSQLCipher` changed without `npx expo prebuild` and a rebuild, or when `useSQLCipher` is `false` for the current platform. Query `PRAGMA cipher_version` first; it returns a row only when the app uses SQLCipher (see the snippet in Signature / Usage).
+- Source: https://docs.expo.dev/versions/v58.0.0/sdk/sqlite/ (docs/pages/versions/v58.0.0/sdk/sqlite.mdx at tag expo@58.0.25); the docs now say "Expo Hosting" (formerly "EAS Hosting").- Source code: https://github.com/expo/expo/tree/sdk-58/packages/expo-sqlite
 
 ## Related
 

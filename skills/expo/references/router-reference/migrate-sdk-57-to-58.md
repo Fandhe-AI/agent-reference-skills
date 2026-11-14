@@ -242,7 +242,7 @@ To navigate somewhere else, keep the `disablePrevention` function returned by `u
 
 #### iOS header appearance
 
-In SDK 58, `Stack` headers on iOS 26 and later use the system bar appearance by default (transparent with Liquid Glass, content under the header). The default `headerTransparent` is `{ ios: true, android: false, web: false }`; on iOS it applies only when Liquid Glass is available and the screen does not set `headerStyle.backgroundColor` or `headerBackground`. Earlier iOS versions and apps with Liquid Glass off keep the opaque header; Android is unchanged. If content is hidden under the header, add `contentInsetAdjustmentBehavior="automatic"` to the root `ScrollView`, `FlatList`, or `SectionList`; for a screen without a scroll view use `SafeAreaView`; to keep an opaque header set `headerTransparent: false`. Headers now use system fonts instead of theme fonts on iOS 26+; set `fontFamily` in `headerTitleStyle`, `headerBackTitleStyle`, or `headerLargeTitleStyle` to keep a custom font. To restore the previous appearance for all screens:
+In SDK 58, `Stack` headers on iOS 26 and later use the system bar appearance by default (transparent with Liquid Glass, content under the header). The default `headerTransparent` is `{ ios: true, android: false, web: false }`; on iOS it applies only when Liquid Glass is available and the screen does not set `headerStyle.backgroundColor` or `headerBackground`. Earlier iOS versions and apps with Liquid Glass off keep the opaque header; Android is unchanged. If content is hidden under the header, add `contentInsetAdjustmentBehavior="automatic"` to the root `ScrollView`, `FlatList`, or `SectionList`; for a screen without a scroll view set `headerTransparent: false` in its options (the header is then opaque and the content starts below it). Do not use `SafeAreaView` from `react-native-safe-area-context` to move content below the header: it applies only the status bar inset, so with a transparent header content stays under the header and with an opaque header it adds a second top inset. Headers now use system fonts instead of theme fonts on iOS 26+; set `fontFamily` in `headerTitleStyle`, `headerBackTitleStyle`, or `headerLargeTitleStyle` to keep a custom font. To restore the previous appearance for all screens:
 
 ```tsx
 import { enableLegacyHeaderAppearance, Stack } from 'expo-router';
@@ -255,6 +255,18 @@ export default function RootLayout() {
 ```
 
 `enableLegacyHeaderAppearance()` is deprecated; in a future release the native iOS header appearance becomes the only behavior and the function will be removed.
+
+#### Native tabs search activation on iOS
+
+In SDK 58, a `NativeTabs.Trigger` with `role="search"` is a native search tab on iOS 26.1 and later. When the screen has a search bar, selecting the tab activates the search bar of its nested stack and opens the keyboard. To leave the search field inactive when the tab is selected, set `disableAutomaticSearchActivation` on the layout trigger:
+
+```tsx
+<NativeTabs.Trigger name="search" role="search" disableAutomaticSearchActivation>
+  <NativeTabs.Trigger.Label>Search</NativeTabs.Trigger.Label>
+</NativeTabs.Trigger>
+```
+
+On iOS 27, this prop also removes the separate placement of the search tab. If `role` changes to or from `"search"` while the tab is rendered, Expo Router remounts the tab and resets its local state.
 
 ### Advanced migrations
 
@@ -320,11 +332,11 @@ for (const routeName of state.routeNames) {
 - `StackNavigationState.preloadedRoutes` is removed; preloaded routes are appended to `state.routes` after the focused index.
 - `TabNavigationState.preloadedRouteKeys` is removed; preloaded tabs are unfocused entries with `isPreloaded: true`, lazy routes may be absent. Iterate `state.routeNames` for declared order.
 - `DrawerNavigationState.default` is removed; use `useDrawerStatus` from `expo-router/drawer`. `getDrawerStatusFromState` is deprecated and requires the router's default status as its second argument.
-- Persisted initial state must be complete: every nested state needs a state key, route keys, `routeKeySeq`, `routeNames`, `index`, and `stale: false`; Expo Router throws on incomplete persisted state. `CommonActions.reset` also requires `stale: false`, but generates omitted route keys and fills an omitted `routeKeySeq`.
+- Persisted initial state must be complete: every nested state needs a state key, route keys, `routeKeySeq`, `routeNames`, `index`, and `stale: false`; Expo Router throws on incomplete persisted state. `CommonActions.reset` also requires `stale: false` and the navigator's current `routeNames`, but generates omitted route keys and fills an omitted `routeKeySeq`.
 
 #### Custom routers
 
-Create custom routers by extending `StackRouter` or `TabRouter` with `extendRouter` or `extendRouterActions`.
+Create custom routers by extending `StackRouter` or `TabRouter` with `extendRouter` or `extendRouterActions`. A custom navigator that uses `TabRouter` needs to call `unstable_useReconcileTabHistory` in its content component, to save the back history in the navigation state (see the Custom navigators page, section Tab back history).
 
 | SDK 57 API | SDK 58 migration |
 | --- | --- |
@@ -450,7 +462,7 @@ Import base and native stack helpers from `expo-router`; navigator-specific help
 
 - Expo Router tests: see the Testing page for SDK 58 helpers.
 - Original page lists a pull request number per removed API; omitted here.
-- Source: https://docs.expo.dev/router/migrate/sdk-57-to-58/ (unversioned guide, fetched 2026-10-17, modificationDate October 15, 2026).
+- Source: https://docs.expo.dev/router/migrate/sdk-57-to-58/ (docs/pages/router/migrate/sdk-57-to-58.mdx at tag expo@58.0.25).
 
 ## Related
 

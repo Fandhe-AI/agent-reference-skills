@@ -52,12 +52,12 @@ An update may rely on native code that the build does not support (for example, 
 
 - **Use a policy that updates automatically**: `"appVersion"` increments the runtime version when the app version is incremented, but forgetting to bump the app version causes a mismatch. `"fingerprint"` increments whenever anything that may impact the native runtime changes, making incompatible updates extremely unlikely at the cost of creating builds more often.
 - **Manually increment** the `"runtimeVersion"` property in app config whenever installing or updating native code.
-- **Roll out gradually**: use [rollouts](./rollouts.md) to a small percentage of users and monitor the error rate on the EAS dashboard; cancel the rollout on high error rates, or [roll back](./rollbacks.md) if fully rolled out.
+- **Roll out gradually**: use [rollouts](./rollouts.md) to a small percentage of users and monitor the error rate on the Expo dashboard; cancel the rollout on high error rates, or [roll back](./rollbacks.md) if fully rolled out.
 - **Manually verify with a smaller group**: create a preview build that uses the same runtime but points to a different channel, or opt in certain users with channel surfing.
 
 ## Notes
 
-- Source modificationDate: July 03, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas-update/runtime-versions/ (docs/pages/eas-update/runtime-versions.mdx at tag expo@58.0.25).
 
 ## Related
 

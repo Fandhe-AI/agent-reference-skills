@@ -19,7 +19,7 @@ eas update --channel production --environment production
 
 ### Configuring your project
 
-Run `eas update:configure` if you have not already. With EAS Build, each profile points to a channel of the same name. Approximate configuration:
+Run `eas update:configure` if you have not already. With Expo Build, each profile points to a channel of the same name. Approximate configuration:
 
 ```json
 {
@@ -38,7 +38,7 @@ Run `eas update:configure` if you have not already. With EAS Build, each profile
 }
 ```
 
-Without EAS Build, modify the channel in your native project configuration (set "production" for production releases and "preview" for staging).
+Without Expo Build, modify the channel in your native project configuration (set "production" for production releases and "preview" for staging).
 
 `eas update:configure` sets `"runtimeVersion": { "policy": "appVersion" }` by default, so the runtime version equals the app version shown in the store (without build number or version code; `"1.0.0"`, not `"1.0.0(1)"`):
 
@@ -66,10 +66,10 @@ The `"fingerprint"` policy is experimental and not yet widely recommended in thi
 ## Notes
 
 - The official guide examples omit `--environment`; it is required for SDK 55+ (EAS CLI reference). The `--environment` values shown here are adapted, not from the official guide.
-- The `staging` build profile sets no `environment`, so with the default `store` distribution EAS Build uses `production`; pass the same environment to `eas update`, or set `build.staging.environment` explicitly. A `staging` EAS environment would be a custom environment, available only on Enterprise and Production plans (EAS environment variables usage / manage pages).
+- The `staging` build profile sets no `environment`, so with the default `store` distribution Expo Build uses `production`; pass the same environment to `eas update`, or set `build.staging.environment` explicitly. A `staging` EAS environment would be a custom environment, available only on Enterprise and Production plans (EAS environment variables usage / manage pages).
 - Each binary version must always point to a single channel, and you cannot change the channel embedded in a build after you create it. On SDK 54 and later, channel surfing lets an installed release build request updates from a different channel at runtime.
 - As an escape hatch you can host your own update service compatible with the Expo Updates Protocol; only "Runtime Version" and "Platform" exist at the protocol level.
-- Source modificationDate: August 11, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/eas-update/deployment/ (docs/pages/eas-update/deployment.mdx at tag expo@58.0.25).
 
 ## Related
 
@@ -77,4 +77,4 @@ The `"fingerprint"` policy is experimental and not yet widely recommended in thi
 - [Rollouts](./rollouts.md)
 - [Rollbacks](./rollbacks.md)
 - [Runtime versions and updates](./runtime-versions.md)
-- [Bundle diffing for EAS Update](./bundle-diffing.md)
+- [Bundle diffing for Expo Update](./bundle-diffing.md)

@@ -4,7 +4,7 @@ source: https://docs.expo.dev/eas/cli/
 
 # EAS CLI reference
 
-EAS CLI is a command-line tool that allows you to interact with Expo Application Services (EAS) from your terminal.
+EAS CLI is a command-line tool that allows you to interact with Expo Services from your terminal.
 
 ## Signature / Usage
 
@@ -83,7 +83,7 @@ eas metadata:push [-e <value>] [--non-interactive]
 | Group | Commands |
 | --- | --- |
 | Account | `account:audit`, `account:login` (alias `login`), `account:logout` (alias `logout`), `account:usage`, `account:view` (alias `whoami`), `analytics`, `autocomplete`, `billing:manage`, `billing:subscribe` |
-| Branch / channel (EAS Update) | `branch:create\|delete\|list\|rename\|view`, `channel:create\|delete\|edit\|insights\|list\|pause\|protect\|resume\|rollout\|unprotect\|view` |
+| Branch / channel (Expo Update) | `branch:create\|delete\|list\|rename\|view`, `channel:create\|delete\|edit\|insights\|list\|pause\|protect\|resume\|rollout\|unprotect\|view` |
 | Build | `build`, `build:cancel`, `build:configure`, `build:delete`, `build:dev`, `build:download`, `build:inspect`, `build:list`, `build:resign`, `build:run`, `build:submit`, `build:version:get\|set\|sync`, `build:view` |
 | Credentials / devices | `credentials`, `credentials:configure-build`, `device:create\|delete\|list\|rename\|view` |
 | Config / diagnostics | `browse`, `config`, `diagnostics`, `help`, `fingerprint:compare`, `fingerprint:generate` |
@@ -93,15 +93,16 @@ eas metadata:push [-e <value>] [--non-interactive]
 | Integrations | `integrations:asc:connect\|disconnect\|status`, `integrations:convex:*`, `integrations:posthog:connect\|dashboard\|disconnect`, `integrations:supabase:advisors\|connect\|dashboard\|disconnect` |
 | Metadata | `metadata:lint`, `metadata:pull`, `metadata:push` |
 | Observe | `observe:errors`, `observe:event`, `observe:events`, `observe:metrics`, `observe:metrics-summary`, `observe:routes`, `observe:session`, `observe:versions` |
-| Simulator (EXPERIMENTAL) | `simulator`, `simulator:availability\|egress\|events\|exec\|get\|list\|start\|stop` and the `sim:*` equivalents |
+| Simulator (EXPERIMENTAL) | `simulator`, `simulator:availability\|devices\|egress\|events\|exec\|get\|list\|start\|stop` and the `sim:*` equivalents |
 | Submit / TestFlight | `submit` (alias `build:submit`), `submit:cancel`, `submit:list`, `submit:retry`, `submit:status`, `submit:view`, `testflight:crashes`, `testflight:feedback` |
 | Update | `update`, `update:configure`, `update:delete`, `update:edit`, `update:embedded:delete\|list\|upload\|view`, `update:insights`, `update:list`, `update:republish`, `update:revert-update-rollout`, `update:roll-back-to-embedded`, `update:rollback`, `update:view` |
 | Webhooks | `webhook:create`, `webhook:delete`, `webhook:list`, `webhook:update`, `webhook:view` |
-| Workflows | `workflow:cancel`, `workflow:create`, `workflow:insights`, `workflow:insights:maestro`, `workflow:logs`, `workflow:run`, `workflow:runs`, `workflow:status`, `workflow:validate`, `workflow:view` |
+| Workflows | `workflow:cancel`, `workflow:create`, `workflow:insights`, `workflow:insights:maestro`, `workflow:logs`, `workflow:run`, `workflow:runs`, `workflow:ssh`, `workflow:status`, `workflow:validate`, `workflow:view` |
 
 ## Notes
 
-- EAS CLI version 25.0.0 (separate versioning from the Expo SDK). Source modificationDate: October 16, 2026 (fetched 2026-10-17).
+- The official reference documents EAS CLI 27.7.2 (`cliVersion` in docs/pages/eas/cli.mdx at tag expo@58.0.25); npm latest is 27.10.0. EAS CLI is versioned separately from the Expo SDK. Source: https://docs.expo.dev/eas/cli/ (docs/pages/eas/cli.mdx at tag expo@58.0.25).
+- Since 27.0.0, the reason a command fails is written to `stderr` instead of `stdout`. Source: https://github.com/expo/eas-cli/blob/v27.10.0/CHANGELOG.md
 - Node.js 20 support is deprecated: EAS CLI prints a warning on Node.js 20, and a future release will require Node.js 22 or later.
 - Most listing commands accept `--json` (non-JSON messages go to `stderr`; implies `--non-interactive`) and `--non-interactive`.
 - `eas submit` is an alias target of `eas build:submit`.
@@ -110,8 +111,8 @@ eas metadata:push [-e <value>] [--non-interactive]
 
 ## Related
 
-- [Configure EAS Submit with eas.json](./submit-eas-json.md)
-- [Environment variables in EAS](./eas-environment-variables.md)
+- [Configure Expo Submit with eas.json](./submit-eas-json.md)
+- [Environment variables in Expo Services](./eas-environment-variables.md)
 - [Webhooks](./webhooks.md)
-- [EAS Metadata](./eas-metadata.md)
+- [Expo Metadata](./eas-metadata.md)
 - [Automating EAS CLI commands](./workflows-automating-eas-cli.md)

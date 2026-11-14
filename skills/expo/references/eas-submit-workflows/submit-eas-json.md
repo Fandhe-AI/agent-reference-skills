@@ -2,13 +2,13 @@
 source: https://docs.expo.dev/submit/eas-json/
 ---
 
-# Configure EAS Submit with eas.json
+# Configure Expo Submit with eas.json
 
-Learn how to configure your project for EAS Submit with `eas.json`.
+Learn how to configure your project for Expo Submit with `eas.json`.
 
 ## Signature / Usage
 
-`eas.json` is generated when `eas build:configure` first runs and sits next to `package.json`. It is not mandatory for EAS Submit, but simplifies switching configurations. The `production` profile below is required to run Android and iOS submissions in CI/CD such as EAS Workflows:
+`eas.json` is generated when `eas build:configure` first runs and sits next to `package.json`. It is not mandatory for Expo Submit, but simplifies switching configurations. The `production` profile below is required to run Android and iOS submissions in CI/CD such as Expo Workflows:
 
 ```json
 {
@@ -56,11 +56,12 @@ eas submit --platform ios --profile <profile-name>
 - Running `eas submit` without a profile name uses `production` if defined; if it has no values, EAS CLI prompts interactively.
 - When you select a build for submission, the profile used for that build is chosen; if the profile does not exist, `production` is used.
 - `extends` can be chained up to a depth of 5; circular dependencies are not allowed.
-- Per-platform options (for example Android `track`, `releaseStatus`, `serviceAccountKeyPath`; iOS `ascAppId`) are listed in the EAS Submit section of the official eas.json schema reference, which is not part of this page.
+- Per-platform options (for example Android `track`, `releaseStatus`, `serviceAccountKeyPath`; iOS `ascAppId`) are listed in the Expo Submit section of the official eas.json schema reference, which is not part of this page.
 - Source modificationDate: September 25, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/submit/eas-json/ (docs/pages/submit/eas-json.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [Submit to the Google Play Store with EAS Submit](./submit-android.md)
-- [Submit to the Apple App Store with EAS Submit](./submit-ios.md)
+- [Submit to the Google Play Store with Expo Submit](./submit-android.md)
+- [Submit to the Apple App Store with Expo Submit](./submit-ios.md)
 - [EAS CLI reference](./eas-cli.md)

@@ -4,7 +4,7 @@ source: https://docs.expo.dev/tutorial/cicd/preview-builds/
 
 # PR Preview Update Workflow
 
-Publish an EAS Update on every pull request and comment on the PR with a link or QR code to test it.
+Publish an Expo Update on every pull request and comment on the PR with a link or QR code to test it.
 
 ```sh
 npx expo install expo-updates
@@ -51,7 +51,8 @@ jobs:
 ## Notes
 
 - Reviewers need a preview build that already embeds `expo-updates` and the matching channel from **eas.json**; `eas update:configure` adds the update URL, runtime version and a `channel` per build profile.
-- EAS Workflows reads workflow files from the repository's default branch, so push the workflow to `main` before testing.
+- Expo Workflows reads workflow files from the repository's default branch, so push the workflow to `main` before testing.
 - The `github-comment` pre-packaged job posts the update link / QR code on the pull request after the `update` job succeeds.
-- EAS Workflows YAML is not GitHub Actions syntax; see the github-docs skill for Actions workflows.
-- Sources (fetched 2026-10-17): https://docs.expo.dev/tutorial/cicd/preview-builds/ , https://docs.expo.dev/eas/workflows/examples/publish-preview-update/
+- Expo Workflows YAML is not GitHub Actions syntax; see the github-docs skill for Actions workflows.
+- Naming: the docs at tag `expo@58.0.25` call this product "Expo Workflows" (previously "EAS Workflows"); the `eas workflow:*` CLI commands and `.eas/workflows/` paths are unchanged.
+- Sources (docs/pages/tutorial/cicd/preview-builds.mdx at tag expo@58.0.25): https://docs.expo.dev/tutorial/cicd/preview-builds/ , https://docs.expo.dev/eas/workflows/examples/publish-preview-update/

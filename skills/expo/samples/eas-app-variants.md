@@ -83,4 +83,4 @@ export default ({ config }) => ({
 - The `ios-simulator` build profile in the tutorial extends `development`, so it inherits `APP_VARIANT`.
 - Start the dev server with `npm run dev` so the local **app.config.js** evaluation sees `APP_VARIANT=development`.
 - Keep static values in **app.json** and put only dynamic values in **app.config.js**.
-- Source: https://docs.expo.dev/tutorial/eas/multiple-app-variants/ (fetched 2026-10-17).
+- Source: https://docs.expo.dev/tutorial/eas/multiple-app-variants/ (docs/pages/tutorial/eas/multiple-app-variants.mdx at tag expo@58.0.25).

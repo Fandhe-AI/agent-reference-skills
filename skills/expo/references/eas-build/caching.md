@@ -4,7 +4,7 @@ source: https://docs.expo.dev/build-reference/caching/
 
 # Cache dependencies
 
-Speed up EAS Build by caching JavaScript, Android, iOS dependencies and native compilation artifacts.
+Speed up Expo Build by caching JavaScript, Android, iOS dependencies and native compilation artifacts.
 
 ## Signature / Usage
 
@@ -48,15 +48,15 @@ build:
 
 ## Notes
 
-- Yarn 1 (Classic) needs a workaround to use the npm cache (see the npm-cache-with-yarn page of the official docs). In EAS Workflows set these variables in a job's `env`.
-- EAS Workflows: use `eas/restore_cache` / `eas/save_cache` (custom `key`, `restore_keys`, `path`) or `eas/restore_build_cache` / `eas/save_build_cache` (automatically generated key from a hash of the package manager lock file). Example ccache paths: `/home/expo/.cache/ccache` (Android), `/Users/expo/Library/Caches/ccache` (iOS).
+- Yarn 1 (Classic) needs a workaround to use the npm cache (see the npm-cache-with-yarn page of the official docs). In Expo Workflows set these variables in a job's `env`.
+- Expo Workflows: use `eas/restore_cache` / `eas/save_cache` (custom `key`, `restore_keys`, `path`) or `eas/restore_build_cache` / `eas/save_build_cache` (automatically generated key from a hash of the package manager lock file). Example ccache paths: `/home/expo/.cache/ccache` (Android), `/Users/expo/Library/Caches/ccache` (iOS).
 - The custom build schema reference marks `inputs.key` and `inputs.path` of `eas/restore_build_cache` / `eas/save_build_cache` as required, whereas the example above calls them without inputs.
 - Key matching order: exact match of the key, then `restore_keys` prefix matches (most recent creation date wins). Partial matches restore but may perform less effectively.
 - Cache restrictions: GitHub-triggered builds scope caches to the branch (can restore from the current branch and the default branch `main` / `master`); `eas-cli` builds scope caches to the user and fall back to default-branch GitHub caches. Shared user-actors (access tokens, GitHub Actions) lose isolation; avoid restoring cache for production builds under a shared user and use designated jobs that only save clean caches (`EAS_RESTORE_CACHE: "0"`, `EAS_SAVE_CACHE: "1"`). Setting `EAS_SAVE_CACHE` does not make saving exclusive to a job.
 - CocoaPods cache is bypassed automatically if you provide your own **.netrc** or **.curlrc**. Caching **Podfile.lock** (via `cache.paths`) helps determinism when generating **ios** remotely, but may require clearing the cache on build errors.
-- Source modificationDate unknown here (header not recorded); fetched 2026-10-17.
+- Source: https://docs.expo.dev/build-reference/caching/ (docs/pages/build-reference/caching.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [Configure EAS Build with eas.json](./build-eas-json.md)
+- [Configure Expo Build with eas.json](./build-eas-json.md)
 - [Custom build configuration schema](./custom-builds-schema.md)

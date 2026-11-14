@@ -4,7 +4,7 @@ source: https://docs.expo.dev/build/building-on-ci/
 
 # Trigger builds from CI
 
-Learn how to trigger builds on EAS for your app from a CI environment such as GitHub Actions and more.
+Learn how to trigger builds with Expo Build for your app from a CI environment such as GitHub Actions and more.
 
 ## Signature / Usage
 
@@ -16,7 +16,7 @@ npx eas-cli build --platform all --non-interactive --no-wait
 
 Authenticate by storing a personal access token in the `EXPO_TOKEN` environment variable in the CI settings.
 
-EAS Workflows (**.eas/workflows/build.yml**):
+Expo Workflows (**.eas/workflows/build.yml**):
 
 ```yaml
 name: Build
@@ -42,7 +42,7 @@ jobs:
 GitHub Actions (**.github/workflows/eas-build.yml**):
 
 ```yaml
-name: EAS Build
+name: Expo Build
 on:
   workflow_dispatch:
   push:
@@ -60,14 +60,14 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - name: Setup Expo and EAS
+      - name: Setup Expo and EAS CLI
         uses: expo/expo-github-action@c7b66a9c327a43a8fa7c0158e7f30d6040d2481e # 8.2.1
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Install dependencies
         run: npm ci
-      - name: Build on EAS
+      - name: Build with Expo Build
         run: eas build --platform all --non-interactive --no-wait
 ```
 
@@ -88,10 +88,10 @@ Optional environment variables for repairing iOS credentials on CI (ASC API key)
 - Third-party actions are pinned to full commit SHAs here; the official example uses major tags (`@v5` / `@v6` / `@v8`).
 - `permissions: contents: read` is added for least privilege; the official example omits `permissions`.
 - Prerequisite: run `eas build -p [all|android|ios]` locally first so interactive configuration (projectId, **eas.json**, `android.packageName` / `ios.bundleIdentifier`, credentials) is available for non-interactive runs.
-- `--no-wait` exits the step once the build is triggered; you are not billed for CI time while EAS builds. CI passes only if triggering succeeds. Remove the flag if another CI step must run after build completion.
+- `--no-wait` exits the step once the build is triggered; you are not billed for CI time while Expo Build performs the build. CI passes only if triggering succeeds. Remove the flag if another CI step must run after build completion.
 - For internal distribution builds with ad hoc provisioning on CI, refresh the profile with `--refresh-ad-hoc-provisioning-profile` and `--non-interactive` (`eas build`), or `refresh_ad_hoc_provisioning_profile: true` in the Workflows build job `params`.
 - Travis CI, GitLab CI, Bitbucket Pipelines and CircleCI examples on the source page run the same `npx eas-cli build --platform all --non-interactive --no-wait` step after `npm ci` (`apk add --no-cache bash` is used with `node:alpine` images).
-- Source modificationDate: July 29, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/build/building-on-ci/ (docs/pages/build/building-on-ci.mdx at tag expo@58.0.25).
 
 ## Related
 

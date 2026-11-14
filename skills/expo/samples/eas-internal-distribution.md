@@ -32,4 +32,4 @@ eas build --platform ios --profile preview
 - A newly registered device on a new or recently renewed Apple Developer Program membership may take Apple up to 24-72 hours to process; rerun the build if it fails right after registration.
 - `eas build:resign` can re-sign an existing iOS **.ipa** with a new ad hoc provisioning profile without a full rebuild.
 - To distribute both enterprise and App Store builds, use distinct bundle identifiers (see the app variants sample).
-- Source: https://docs.expo.dev/tutorial/eas/internal-distribution-builds/ (fetched 2026-10-17).
+- Source: https://docs.expo.dev/tutorial/eas/internal-distribution-builds/ (docs/pages/tutorial/eas/internal-distribution-builds.mdx at tag expo@58.0.25).

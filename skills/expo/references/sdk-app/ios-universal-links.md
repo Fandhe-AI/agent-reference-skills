@@ -51,7 +51,7 @@ App config (do not include the protocol `https` in the value):
 | Create AASA file | Specifies the Apple Developer Team ID, bundle identifier, and supported paths. `appID` syntax is `<APPLE_TEAM_ID>.<BUNDLE_ID>`. The `*` wildcard does not match domain or path separators (periods and slashes). `activitycontinuation` and `webcredentials` are optional but recommended. |
 | `details` format (iOS 13+) | Use `appIDs` instead of `appID` and an array of `components` (fragments `#`, path `/`, query `?`, `exclude`, `comment`). To support all iOS versions provide both formats in `details`, with the more recent format first. |
 | Host AASA file | Serve over HTTPS from your domain. |
-| Native app configuration | Add `ios.associatedDomains` to the app config. Build with EAS Build so the entitlement is registered with Apple automatically. |
+| Native app configuration | Add `ios.associatedDomains` to the app config. Build with Expo Build so the entitlement is registered with Apple automatically. |
 | Native app verification | Install the app on an iOS device to trigger verification. |
 
 Manual native configuration (no EAS and no `npx expo prebuild`): configure the Associated Domains capability for the bundle identifier manually and add to **ios/[app]/[app].entitlements**:
@@ -92,6 +92,7 @@ Type the custom domain link in the device browser to open the app.
 - iOS downloads the AASA when the app is first installed or when updates are installed from the App Store, and does not refresh frequently afterwards. Changing AASA paths for a production app requires a full App Store update.
 - The uncompressed AASA file cannot be larger than 128kb. Serve over HTTPS. If you update web files, rebuild the native app to trigger a server update on the vendor side (Apple).
 - Source modificationDate: October 13, 2026 (unversioned guide, fetched 2026-10-17).
+- Source: https://docs.expo.dev/linking/ios-universal-links/ (docs/pages/linking/ios-universal-links.mdx at tag expo@58.0.25); the docs now say "Expo Build" (formerly "EAS Build"). Without Expo Build or Continuous Native Generation (`npx expo prebuild`), manually configure the Associated Domains capability.
 
 ## Related
 

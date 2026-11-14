@@ -65,4 +65,5 @@ eas workflow:run .eas/workflows/preview.yml
 - Jobs default to the `production` environment; `environment: preview` is what makes the `SLACK_WEBHOOK_URL` variable (created for the `preview` environment, visibility `secret`) available.
 - The `slack` job takes `webhook_url` and `message`, or a `payload` for Slack Block Kit formatting. The webhook value above is a placeholder.
 - The Slack section is optional; drop the `notify` job if Slack is not used.
-- Source: https://docs.expo.dev/tutorial/cicd/preview-builds/ (fetched 2026-10-17).
+- Naming: the docs at tag `expo@58.0.25` call this product "Expo Workflows" (previously "EAS Workflows"); the `eas workflow:*` CLI commands and `.eas/workflows/` paths are unchanged.
+- Source: https://docs.expo.dev/tutorial/cicd/preview-builds/ (docs/pages/tutorial/cicd/preview-builds.mdx at tag expo@58.0.25).

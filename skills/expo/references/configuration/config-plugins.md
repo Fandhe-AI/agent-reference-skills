@@ -182,8 +182,9 @@ Using a library plugin:
 - Install `tsx` (`npm install --save-dev tsx`) to write plugins in TypeScript; rename **app.json** to **app.config.ts** and add `import 'tsx/cjs'` at the top.
 - Plugins in the `plugins` array run in order; the output of one is the input to the next. The array uses `withPlugins` under the hood. Chaining is also supported in **app.json**.
 - Library plugins are installed like any library (`npx expo install expo-camera`); each Expo library with a plugin documents its options in its API reference.
-- Changes do not take effect until the native project is rebuilt. In CNG projects, plugins are applied during the prebuild step in EAS Build or when running `npx expo prebuild|android|ios` locally.
+- Changes do not take effect until the native project is rebuilt. In CNG projects, plugins are applied during the prebuild step in Expo Build or when running `npx expo prebuild|android|ios` locally.
 - Source modificationDate not recorded here (unversioned guide, fetched 2026-10-17).
+- Source: https://docs.expo.dev/config-plugins/plugins/ (docs/pages/config-plugins/plugins.mdx at tag expo@58.0.25); the docs now say "Expo Build" (formerly "EAS Build").
 
 ## Related
 

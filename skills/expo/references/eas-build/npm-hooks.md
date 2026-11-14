@@ -4,11 +4,11 @@ source: https://docs.expo.dev/build-reference/npm-hooks/
 
 # Build lifecycle hooks
 
-Learn how to use the EAS Build lifecycle hooks with npm to customize your build process.
+Learn how to use the Expo Build lifecycle hooks with npm to customize your build process.
 
 ## Signature / Usage
 
-EAS Build lifecycle npm hooks run scripts before or after the build process. Set them in **package.json** `scripts`.
+Expo Build lifecycle npm hooks run scripts before or after the build process. Set them in **package.json** `scripts`.
 
 ```json
 {
@@ -48,11 +48,21 @@ elif [[ "$EAS_BUILD_PLATFORM" == "ios" ]]; then
 fi
 ```
 
+Because the hook calls `./pre-install` directly, the **pre-install** file needs execute permission. Set the permission and commit the change, so that Git records it with the file:
+
+```sh
+chmod +x pre-install
+git add pre-install
+git commit -m "Make pre-install executable"
+```
+
+Without execute permission, the hook fails with a `Permission denied` error. Another option is to call the script with `bash`, as in `"eas-build-pre-install": "bash ./pre-install"`. Then the file does not need execute permission.
+
 ## Options / Props
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `eas-build-pre-install` | script | Executed before EAS Build runs `npm install`. |
+| `eas-build-pre-install` | script | Executed before Expo Build runs `npm install`. |
 | `eas-build-post-install` | script | Android: runs once after `npm install` and `npx expo prebuild` (if needed). iOS: runs once after `npm install`, `npx expo prebuild` (if needed), and `pod install`. |
 | `eas-build-on-success` | script | Triggered at the end of the build if it was successful. |
 | `eas-build-on-error` | script | Triggered at the end of the build if it failed. |
@@ -64,9 +74,9 @@ fi
 - Six hooks are available.
 - Lifecycle hooks are not executed by the build process in custom builds; they need to be manually extracted and called by the build steps.
 - Example: a pre-install script that installs `git-lfs` on macOS workers (useful when required to install certain CocoaPods) checks `brew list git-lfs` and otherwise runs `HOMEBREW_NO_AUTO_UPDATE=1 brew install git-lfs` then `git lfs install`, guarded by `EAS_BUILD_PLATFORM == ios`.
-- Source modificationDate: April 02, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/build-reference/npm-hooks/ (docs/pages/build-reference/npm-hooks.mdx at tag expo@58.0.25).
 
 ## Related
 
 - [Custom build configuration schema](./custom-builds-schema.md)
-- [Configure EAS Build with eas.json](./build-eas-json.md)
+- [Configure Expo Build with eas.json](./build-eas-json.md)

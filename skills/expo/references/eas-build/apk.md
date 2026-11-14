@@ -4,11 +4,11 @@ source: https://docs.expo.dev/build-reference/apk/
 
 # Build APKs for Android Emulators and devices
 
-Learn how to configure and install a .apk for Android Emulators and devices when using EAS Build.
+Learn how to configure and install a .apk for Android Emulators and devices when using Expo Build.
 
 ## Signature / Usage
 
-The default file format used when building Android apps with EAS Build is an Android App Bundle (AAB/**.aab**). AABs can't be installed directly on a device; build an APK instead. Add one of the following properties to a build profile in **eas.json**:
+The default file format used when building Android apps with Expo Build is an Android App Bundle (AAB/**.aab**). AABs can't be installed directly on a device; build an APK instead. Add one of the following properties to a build profile in **eas.json**:
 
 - `developmentClient` to `true` (**default**)
 - `distribution` to `internal`
@@ -71,10 +71,10 @@ eas build:run -p android --latest
 - The **default** marker on `developmentClient` refers to the `development` profile that `eas build:configure` generates with `"developmentClient": true`; the field itself defaults to `false` (see build-eas-json.md).
 - Profile names are arbitrary (`preview`, `local`, `emulator`, ...).
 - Production builds are `.aab` by default and recommended for store submission; see build-eas-json.md.
-- Source modificationDate: October 08, 2025 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/build-reference/apk/ (docs/pages/build-reference/apk.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [Configure EAS Build with eas.json](./build-eas-json.md)
+- [Configure Expo Build with eas.json](./build-eas-json.md)
 - [Build for iOS Simulators](./simulators.md)
 - [Internal distribution](./internal-distribution.md)

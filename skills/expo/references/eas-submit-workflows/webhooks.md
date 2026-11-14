@@ -4,7 +4,7 @@ source: https://docs.expo.dev/eas/webhooks/
 
 # Webhooks
 
-EAS can alert you via a webhook as soon as your build or submission completes. Webhooks are configured per project.
+Expo Services can alert you via a webhook as soon as your build or submission completes. Webhooks are configured per project.
 
 ## Signature / Usage
 
@@ -66,7 +66,7 @@ Adapted (not in the official docs): abridged from the official build webhook pay
     "appVersion": "1.0.2",
     "buildProfile": "production",
     "distribution": "store",
-    "channel": "default" // available for EAS Update
+    "channel": "default" // available for Expo Update
   },
   "error": { "message": "Unknown error. Please see logs.", "errorCode": "UNKNOWN_ERROR" }, // available for failed builds
   "priority": "high" // or: "normal", "low"
@@ -92,19 +92,20 @@ Adapted (not in the official docs): abridged from the official build webhook pay
 | Submit | `id`, `accountName`, `projectName`, `submissionDetailsPageUrl`, `appId`, `archiveUrl`, `initiatingUserId` | Identification of the submission |
 | Submit | `parentSubmissionId` | Available for submission retries |
 | Submit | `cancelingUserId` | Available for canceled submissions |
-| Submit | `turtleBuildId` | Available when submitting a build from EAS |
+| Submit | `turtleBuildId` | Available when submitting a build from Expo Build |
 | Submit | `platform`, `status` | `android` / `ios`; `errored` / `finished` / `canceled` |
 | Submit | `submissionInfo` | `error` (`message`, `errorCode`) and `logsUrl`; available for failed submissions |
 | Submit | `createdAt`, `updatedAt`, `completedAt`, `maxRetryTimeMinutes` | Timestamps and max retry time |
 
 ## Notes
 
-- EAS calls the webhook with an HTTP POST and a JSON body. If the webhook responds with a status code outside 200-399, delivery is retried a few more times with exponential back-off.
-- The signing secret must be at least 16 characters long. EAS sends an `expo-signature` HTTP header: a hex-encoded HMAC-SHA1 digest of the request body using the secret as the HMAC key, prefixed `sha1=` in the verification example.
+- Expo Services calls the webhook with an HTTP POST and a JSON body. If the webhook responds with a status code outside 200-399, delivery is retried a few more times with exponential back-off.
+- The signing secret must be at least 16 characters long. Expo Services sends an `expo-signature` HTTP header: a hex-encoded HMAC-SHA1 digest of the request body using the secret as the HMAC key, prefixed `sha1=` in the verification example.
 - To test locally, forward `localhost:8080` with a tunnel service such as ngrok.
 - Source modificationDate: January 15, 2025 (fetched 2026-10-17). Examples in the official payloads contain 2021 dates and old SDK versions; treat them as shape illustrations only.
+- Source: https://docs.expo.dev/eas/webhooks/ (docs/pages/eas/webhooks.mdx at tag expo@58.0.25).
 
 ## Related
 
 - [EAS CLI reference](./eas-cli.md)
-- [Submit to the Apple App Store with EAS Submit](./submit-ios.md)
+- [Submit to the Apple App Store with Expo Submit](./submit-ios.md)

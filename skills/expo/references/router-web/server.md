@@ -64,7 +64,7 @@ Methods (platform: Server):
 | `createServerLoader(fn)` | `fn: (request: ImmutableRequest, params: Record<string, string \| string[]>) => T \| Promise<T>`; returns `LoaderFunction<T>` | Loader needing the request. Throws if called during SSG. |
 | `createStaticLoader(fn)` | `fn: (params) => T \| Promise<T>`; returns `LoaderFunction<T>` | Loader needing only route params; safe for SSG and SSR. |
 | `deferTask(fn)` | `fn: () => void \| Promise<unknown>`; returns `void` | Run after the response is sent; not run if the handler rejects. |
-| `environment()` | returns `string \| null` | Request environment name; `null` for production. On EAS Hosting it is the alias or deployment identifier. |
+| `environment()` | returns `string \| null` | Request environment name; `null` for production. On Expo Hosting it is the alias or deployment identifier. |
 | `origin()` | returns `string \| null` | Current request URL / origin. Does not use the `Origin` header in development (untrusted). |
 | `requestHeaders()` | returns `ImmutableHeaders` | Immutable copy of the current request's headers. |
 | `runTask(fn)` | `fn: () => Promise<unknown>`; returns `void` | Run immediately and keep the handler alive until it finishes. |

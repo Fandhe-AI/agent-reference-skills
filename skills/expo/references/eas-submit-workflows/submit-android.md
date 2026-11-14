@@ -2,9 +2,9 @@
 source: https://docs.expo.dev/submit/android/
 ---
 
-# Submit to the Google Play Store with EAS Submit
+# Submit to the Google Play Store with Expo Submit
 
-EAS Submit is the recommended way to upload your Android app to the Google Play Store. `eas submit` works the same on your machine and inside CI/CD.
+Expo Submit is the recommended way to upload your Android app to the Google Play Store. `eas submit` works the same on your machine and inside CI/CD.
 
 ## Signature / Usage
 
@@ -27,7 +27,7 @@ Prerequisite in app config:
 }
 ```
 
-Automate with EAS Workflows (`.eas/workflows/submit-android.yml`):
+Automate with Expo Workflows (`.eas/workflows/submit-android.yml`):
 
 ```yaml
 name: Submit Android
@@ -58,16 +58,17 @@ Trigger it manually with `eas workflow:run submit-android.yml`.
 ## Notes
 
 - Prerequisites: a Google Play Developer account, an app created in Google Play Console, a Google Service Account key uploaded to EAS, an `android.package` in app config, and EAS CLI logged in.
-- Upload the key via the EAS dashboard (Credentials > Android > Application identifier > Service credentials > Google service account key for EAS Submit) or via `eas credentials --platform android` (select the production profile, then Google Service Account > Manage your Google Service Account Key for Play Store Submissions). One key is assigned per Android application identifier and can be reused for other apps in the account.
+- Upload the key via the Expo dashboard (Credentials > Android > Application identifier > Service credentials > Google service account key for Expo Submit) or via `eas credentials --platform android` (select the production profile, then Google Service Account > Manage your Google Service Account Key for Play Store Submissions). One key is assigned per Android application identifier and can be reused for other apps in the account.
 - A production `.aab` is required. The default `production` profile produces an `.aab`; a profile only produces an `.apk` when `android.buildType` is `apk`, and that cannot be submitted to Google Play.
 - First-time submission works out of the box and creates the first release on the internal testing track. The app stays in draft status in Play Console until the store listing and setup tasks are completed. Set `releaseStatus` to `draft` in the submit profile to upload without rolling out.
 - Other CI/CD services: set `EXPO_TOKEN` (personal access token) so `eas submit --platform android --profile production` can run non-interactively.
 - With `--non-interactive`, `eas submit` and `eas build --auto-submit` cannot prompt for a Google Service Account key. Unless the submit profile sets `serviceAccountKeyPath`, they use the key assigned to the app; if none is assigned they fail with `Google Service Account Keys cannot be set up in --non-interactive mode.`
 - Source modificationDate not recorded in the saved original; fetched 2026-10-17.
+- Source: https://docs.expo.dev/submit/android/ (docs/pages/submit/android.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [Configure EAS Submit with eas.json](./submit-eas-json.md)
-- [Submit to the Apple App Store with EAS Submit](./submit-ios.md)
-- [Syntax for EAS Workflows](./workflows-syntax.md)
+- [Configure Expo Submit with eas.json](./submit-eas-json.md)
+- [Submit to the Apple App Store with Expo Submit](./submit-ios.md)
+- [Syntax for Expo Workflows](./workflows-syntax.md)
 - [EAS CLI reference](./eas-cli.md)

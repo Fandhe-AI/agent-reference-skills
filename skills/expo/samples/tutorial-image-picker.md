@@ -11,9 +11,10 @@ npx expo install expo-image-picker
 ```
 
 ```tsx src/app/(tabs)/index.tsx
-import { View, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
+import { Platform, View, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import * as ImagePicker from 'expo-image-picker';
 
 import Button from '@/components/button';
 import ImageViewer from '@/components/image-viewer';
@@ -24,7 +25,7 @@ export default function Index() {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined);
 
   const pickImageAsync = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
       quality: 1,
@@ -38,15 +39,15 @@ export default function Index() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
         <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
       </View>
       <View style={styles.footerContainer}>
         <Button theme="primary" label="Choose a photo" onPress={pickImageAsync} />
-        <Button label="Use this photo" />
+        <Button label="Use this photo" onPress={() => alert('You pressed a button.')} />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -58,6 +59,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
+    paddingTop: Platform.select({ web: 96, default: 20 }),
   },
   footerContainer: {
     flex: 1 / 3,
@@ -67,11 +69,11 @@ const styles = StyleSheet.create({
 ```
 
 ```tsx src/components/image-viewer.tsx
-import { ImageSourcePropType, StyleSheet } from 'react-native';
-import { Image } from 'expo-image';
+import { StyleSheet } from 'react-native';
+import { Image, type ImageSource } from 'expo-image';
 
 type Props = {
-  imgSource: ImageSourcePropType;
+  imgSource: ImageSource;
   selectedImage?: string;
 };
 
@@ -92,8 +94,9 @@ const styles = StyleSheet.create({
 
 ## Notes
 
-- `launchImageLibraryAsync()` takes an `ImagePickerOptions` object; `allowsEditing: true` lets the user crop on Android and iOS.
-- The result contains an `assets` array whose first item carries the `uri`; check `result.canceled` before reading it.
+- `launchImageLibraryAsync()` takes an `ImagePickerOptions` object; `allowsEditing: true` lets the user crop on Android and iOS. On web, the browser's file picker opens without a crop step.
+- The result contains an `assets` array whose first item carries the `uri`; check `result.canceled` before reading it. On web the `uri` is a `blob:` URL.
 - The picked image is a `uri` string, not a local asset, so `ImageViewer` switches between `{ uri }` and the placeholder `require()` source.
 - `Button` (themed `primary` variant with an `onPress` prop) and the `src/` layout come from the earlier chapters of the same tutorial.
-- Source: https://docs.expo.dev/tutorial/image-picker/ (fetched 2026-10-17, modificationDate September 03, 2026).
+- Migration: the tutorial at tag `expo@58.0.25` wraps the screen in `SafeAreaView` (from `react-native-safe-area-context`), applies `paddingTop: Platform.select({ web: 96, default: 20 })` to `imageContainer`, and types `imgSource` as `ImageSource` from `expo-image` instead of `ImageSourcePropType`.
+- Source: https://docs.expo.dev/tutorial/image-picker/ (docs/pages/tutorial/image-picker.mdx at tag expo@58.0.25).

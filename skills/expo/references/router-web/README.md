@@ -5,7 +5,7 @@
 | API Routes | Learn how to create server endpoints with Expo Router. | [api-routes.md](./api-routes.md) |
 | Async routes | Learn how to speed up development with async bundling in Expo Router. | [async-routes.md](./async-routes.md) |
 | Data loaders | Learn how to fetch data on the server using data loaders in Expo Router. | [data-loaders.md](./data-loaders.md) |
-| DOM components | Learn about rendering React DOM components in Expo native apps using the 'use dom' directive. | [dom-components.md](./dom-components.md) |
+| Using React DOM in Expo native apps | Learn about rendering React DOM components in Expo native apps using the 'use dom' directive. | [dom-components.md](./dom-components.md) |
 | Server middleware | Learn how to create middleware that runs for every request to the server in Expo Router. | [middleware.md](./middleware.md) |
 | Publish websites | Learn how to deploy Expo websites for production. | [publishing-websites.md](./publishing-websites.md) |
 | Using React Server Components in Expo Router apps | Learn about rendering React components on the server in Expo. | [server-components.md](./server-components.md) |

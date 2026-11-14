@@ -57,6 +57,7 @@ iOS Simulator builds with EAS need `ios.simulator` set to `true` in the `develop
 - Existing React Native projects that do not use CNG need further configuration after installing `expo-dev-client`.
 - Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: September 10, 2026). The page's AI-agent prompt blocks and Expo Skills promotion are not transcribed.
+- Source: https://docs.expo.dev/develop/development-builds/introduction/ (docs/pages/develop/development-builds/introduction.mdx at tag expo@58.0.25); the launcher UI description now refers to updates published with Expo Update (formerly "EAS Update").
 
 ## Related
 

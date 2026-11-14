@@ -4,7 +4,7 @@ source: https://docs.expo.dev/app-signing/local-credentials/
 
 # Using local credentials
 
-Learn how to configure and use local credentials when using EAS.
+Learn how to configure and use local credentials when using Expo Build.
 
 ## Signature / Usage
 
@@ -68,7 +68,7 @@ Select the credentials source in a build profile:
 | `ios.provisioningProfilePath` | string | Provisioning Profile location (relative or absolute). |
 | `ios.distributionCertificate.path` | string | Distribution Certificate location (relative or absolute). |
 | `ios.distributionCertificate.password` | string | Password for the Distribution Certificate. |
-| `credentialsSource` (eas.json) | `local` \| `remote` | `local` uses **credentials.json**; `remote` resolves from EAS servers. Defaults to `remote`. |
+| `credentialsSource` (eas.json) | `local` \| `remote` | `local` uses **credentials.json**; `remote` resolves from Expo servers. Defaults to `remote`. |
 
 ## Notes
 
@@ -77,11 +77,11 @@ Select the credentials source in a build profile:
 - Multi-target iOS projects (App Extensions such as Share or Widget) need credentials for every Xcode target, keyed by target name under `ios` (each with `provisioningProfilePath` and `distributionCertificate`), because each extension has its own bundle identifier.
 - CI: convert the file to base64 (`base64 credentials.json`), store it in an environment variable such as `CREDENTIALS_JSON_BASE64`, and restore with `printf '%s' "${CREDENTIALS_JSON_BASE64}" | base64 -d > credentials.json`. Keystore, provisioning profile and certificate must also exist on the CI file system at the paths defined in **credentials.json**.
 - The official documentation writes this restore command with an unquoted `echo $CREDENTIALS_JSON_BASE64 | base64 -d > credentials.json`; the quoted `printf` form above is used here to avoid word splitting.
-- Source modificationDate: December 08, 2025 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/app-signing/local-credentials/ (docs/pages/app-signing/local-credentials.mdx at tag expo@58.0.25).
 
 ## Related
 
 - [Using automatically managed credentials](./managed-credentials.md)
 - [App credentials](./app-credentials.md)
 - [Trigger builds from CI](./building-on-ci.md)
-- [Run EAS Build locally with local flag](./local-builds.md)
+- [Run Expo Build locally with local flag](./local-builds.md)

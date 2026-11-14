@@ -55,7 +55,7 @@ Website verification file at **/.well-known/assetlinks.json** (Expo Router / mod
 | Step | Description |
 | --- | --- |
 | Add `intentFilters` | Set `android.intentFilters` in the app config and set `autoVerify` to `true` (required for Android App Links to work correctly). Use the regular `https` scheme, since App Links differ from standard deep links. |
-| Create assetlinks.json | `package_name` comes from `android.package` in the app config. `sha256_cert_fingerprints` comes from the app signing certificate. With EAS Build: run `eas credentials -p android`, select the build profile, and copy the value under `SHA256 Fingerprint`. Without EAS: Google Play Console > Release > Setup > App Signing > Digital Asset Links JSON snippet. |
+| Create assetlinks.json | `package_name` comes from `android.package` in the app config. `sha256_cert_fingerprints` comes from the app signing certificate. With Expo Build: run `eas credentials -p android`, select the build profile, and copy the value under `SHA256 Fingerprint`. Without Expo Build managing code signing: Google Play Console > Release > Setup > App Signing > Digital Asset Links JSON snippet. |
 | Host assetlinks.json | Serve from your domain over HTTPS with content-type `application/json`. |
 | Native app verification | Install the app on an Android device to trigger Android app verification. |
 
@@ -77,6 +77,7 @@ adb shell am start -a android.intent.action.VIEW  -c android.intent.category.BRO
 - Troubleshooting: serve the site over HTTPS with content-type `application/json`; Android verification may take 20 seconds or longer; if you update the web files, rebuild the native app to trigger a server update on the vendor side (Google).
 - After the app opens, handle the inbound link as described in the "Linking into your app" page.
 - Source modificationDate: September 25, 2026 (unversioned guide, fetched 2026-10-17).
+- Source: https://docs.expo.dev/linking/android-app-links/ (docs/pages/linking/android-app-links.mdx at tag expo@58.0.25); the docs now name the cloud build service "Expo Build" (formerly "EAS Build"); the `eas` CLI commands are unchanged.
 
 ## Related
 

@@ -2,7 +2,7 @@
 source: https://docs.expo.dev/tutorial/cicd/e2e-tests/
 ---
 
-# Maestro E2E Tests in EAS Workflows
+# Maestro E2E Tests in Expo Workflows
 
 Build an unsigned APK and an iOS simulator build, then run Maestro flows against both from a workflow.
 
@@ -96,4 +96,5 @@ eas workflow:run .eas/workflows/e2e-tests.yml
 - Replace `com.yourname.yourapp` in `appId` with `android.package` or `ios.bundleIdentifier` from the app config.
 - `withoutCredentials: true` skips credential setup for the E2E profile; iOS builds as a simulator build and Android as an unsigned APK.
 - `pull_request_labeled` runs the workflow only when one of the listed labels is added to a pull request.
-- Source: https://docs.expo.dev/tutorial/cicd/e2e-tests/ (fetched 2026-10-17). A shorter variant exists at https://docs.expo.dev/eas/workflows/examples/e2e-tests/
+- Naming: the docs at tag `expo@58.0.25` call this product "Expo Workflows" (previously "EAS Workflows"); the `eas workflow:*` CLI commands and `.eas/workflows/` paths are unchanged.
+- Source: https://docs.expo.dev/tutorial/cicd/e2e-tests/ (docs/pages/tutorial/cicd/e2e-tests.mdx at tag expo@58.0.25). A shorter variant exists at https://docs.expo.dev/eas/workflows/examples/e2e-tests/

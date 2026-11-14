@@ -2,9 +2,9 @@
 source: https://docs.expo.dev/eas-update/getting-started/
 ---
 
-# Get started with EAS Update
+# Get started with Expo Update
 
-Learn how to get started with the setup required to configure and use EAS Update in your project.
+Learn how to get started with the setup required to configure and use Expo Update in your project.
 
 ## Signature / Usage
 
@@ -19,7 +19,7 @@ eas update --channel [channel-name] --message "[message]" --environment [environ
 
 #### Prerequisites
 
-- An Expo account (EAS Update is available regardless of plan; paid subscribers can publish updates to more users and use more bandwidth and storage).
+- An Expo account (Expo Update is available regardless of plan; paid subscribers can publish updates to more users and use more bandwidth and storage).
 - A React Native project, for example:
 
 ```sh
@@ -31,11 +31,11 @@ npx create-expo-app@latest my-app --template default@sdk-58
 
 #### Install EAS CLI and log in
 
-EAS CLI is the command-line app for EAS services. `npx eas-cli@latest` may be used instead of `eas`. Check login with `eas whoami`.
+EAS CLI is the command-line app for Expo Services. `npx eas-cli@latest` may be used instead of `eas`. Check login with `eas whoami`.
 
 #### Configure your project
 
-`eas update:configure` updates app.json with `runtimeVersion` and `updates.url`, and adds `extra.eas.projectId` if the project did not use EAS services previously. In a project that does not use CNG, it also changes native projects:
+`eas update:configure` updates app.json with `runtimeVersion` and `updates.url`, and adds `extra.eas.projectId` if the project did not use Expo Services previously. In a project that does not use CNG, it also changes native projects:
 
 ```xml
 <!-- android/app/src/main/AndroidManifest.xml -->
@@ -57,7 +57,7 @@ If you use Xcode to create builds, make sure `Expo.plist` is added to your Xcode
 
 #### Configure the update channel
 
-With EAS Build, `eas update:configure` sets the `channel` property on the `preview` and `production` profiles in **eas.json** (set manually if you use different profile names):
+With Expo Build, `eas update:configure` sets the `channel` property on the `preview` and `production` profiles in **eas.json** (set manually if you use different profile names):
 
 ```json
 {
@@ -72,7 +72,7 @@ With EAS Build, `eas update:configure` sets the `channel` property on the `previ
 }
 ```
 
-Without EAS Build and with CNG, configure the channel with `updates.requestHeaders` in app.json; it is applied the next time you run `npx expo prebuild`:
+Without Expo Build and with CNG, configure the channel with `updates.requestHeaders` in app.json; it is applied the next time you run `npx expo prebuild`:
 
 ```json
 {
@@ -104,9 +104,9 @@ and in an iOS native project (**Expo.plist**):
 
 #### Create a build, make changes, publish
 
-Create a build for Android or iOS (a `preview` profile build is recommended first). Iterate locally with `npx expo start`, then publish with `eas update`, specifying a channel, a `message`, and the `--environment` flag to select which EAS environment variables to use (required in SDK 55 and later).
+Create a build for Android or iOS (a `preview` profile build is recommended first). Iterate locally with `npx expo start`, then publish with `eas update`, specifying a channel, a `message`, and the `--environment` flag to select which Expo Services environment variables to use (required in SDK 55 and later).
 
-Publishing generates a new update bundle and uploads it to EAS servers. The channel name is used to locate the correct branch. For a build pulling from the `preview` channel, `eas update --channel preview` creates a branch (called `preview` by default) on the `preview` channel. Behind the scenes it runs `npx expo export` to generate a **dist** directory and a local update bundle.
+Publishing generates a new update bundle and uploads it to Expo servers. The channel name is used to locate the correct branch. For a build pulling from the `preview` channel, `eas update --channel preview` creates a branch (called `preview` by default) on the `preview` channel. Behind the scenes it runs `npx expo export` to generate a **dist** directory and a local update bundle.
 
 #### Test the update
 
@@ -117,13 +117,13 @@ Publishing generates a new update bundle and uploads it to EAS servers. The chan
 
 ## Notes
 
-- If you plan to use EAS Update with EAS Build, follow the EAS Build setup guide first; EAS Update can also be used without other EAS services (see [Using EAS Update without other EAS services](./standalone-service.md)).
-- The official page's "Set up EAS Update with an AI agent" prompt block is not reproduced.
-- Source modificationDate: October 16, 2026 (fetched 2026-10-17).
+- If you plan to use Expo Update with Expo Build, follow the Expo Build setup guide first; Expo Update can also be used without other Expo Services (see [Using Expo Update without other Expo Services](./standalone-service.md)).
+- The official page's "Set up Expo Update with an AI agent" prompt block is not reproduced.
+- Source: https://docs.expo.dev/eas-update/getting-started/ (docs/pages/eas-update/getting-started.mdx at tag expo@58.0.25).
 
 ## Related
 
 - [Debugging](./debug.md)
 - [Preview updates](./preview.md)
 - [Deploy updates](./deployment.md)
-- [Using EAS Update without other EAS services](./standalone-service.md)
+- [Using Expo Update without other Expo Services](./standalone-service.md)

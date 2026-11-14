@@ -119,6 +119,7 @@ npx expo install expo-camera
 npx expo install --check
 npx expo run:ios --configuration Release --device generic --output ./build
 ```
+- Source: https://docs.expo.dev/more/expo-cli/ (docs/pages/more/expo-cli.mdx at tag expo@58.0.25). In Expo Build (formerly "EAS Build"), use a matching Gradle command such as `:app:assembleDebugOptimized` in **eas.json** for the `debugOptimized` variant; production builds code-signed for the stores are recommended through Expo Build. `--no-ssg` is documented as `--no-ssg, --api-only`.
 
 ## Related
 

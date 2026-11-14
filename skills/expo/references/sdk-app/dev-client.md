@@ -12,7 +12,7 @@ source: https://docs.expo.dev/versions/v58.0.0/sdk/dev-client/
 npx expo install expo-dev-client
 ```
 
-EAS Build requires `developmentClient: true` on the build profile in **eas.json**; without it a standalone build with no development tools is produced:
+Expo Build requires `developmentClient: true` on the build profile in **eas.json**; without it a standalone build with no development tools is produced:
 
 ```json
 {
@@ -87,9 +87,10 @@ All: Android, iOS, tvOS.
 
 - Platforms: android, ios, tvos (not included in Expo Go).
 - Plugin properties set build-time defaults. For a single launch, add `__expo_disable_onboarding=1`, `__expo_disable_fab=1`, or `__expo_disable_auto_launch=1` to the launch URL.
-- TV support: Android TV supports all operations like an Android phone; Apple TV supports basic operations with a local or tunneled packager (EAS authentication and listing EAS builds / updates not yet supported).
+- TV support: Android TV supports all operations like an Android phone; Apple TV supports basic operations with a local or tunneled packager (authentication to Expo Services and listing of builds and updates not yet supported).
 - Existing React Native app: install `expo` first, then follow "Install `expo-dev-client` in an existing React Native project" in the official docs.
 - Source: `sdk-58` branch `packages/expo-dev-client`; modificationDate October 02, 2026.
+- Source: https://docs.expo.dev/versions/v58.0.0/sdk/dev-client/ (docs/pages/versions/v58.0.0/sdk/dev-client.mdx at tag expo@58.0.25); the docs now say "Expo Build" (formerly "EAS Build").
 
 ## Related
 

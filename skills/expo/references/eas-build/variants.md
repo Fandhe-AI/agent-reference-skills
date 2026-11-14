@@ -118,14 +118,14 @@ The Podfile must use an `abstract_target 'common'` containing a `target` per var
 
 - Extra per-variant customizations: separate configuration for services tied to the application ID (Google Maps, FCM); with development builds, set the `expo-dev-client` plugin option `addGeneratedScheme: !!IS_DEV` so QR-code URLs always launch the development build.
 - `APP_VARIANT` changes only the app name, Android package name and iOS bundle identifier; it does not affect compilation. If a native directory is present, `expo run` skips regenerating it, so run `prebuild --clean` when switching variants. Regenerating is safe when the directories are in **.gitignore** (Continuous Native Generation).
-- With EAS Update, set the correct environment variables for the variant being published when running `eas update`.
+- With Expo Update, set the correct environment variables for the variant being published when running `eas update`.
 - In an existing React Native project, migrate to Continuous Native Generation and add `android` and `ios` to **.gitignore** if the app config should be the source of truth; otherwise the wrong variant may run or development builds may not be detected.
 - Android: EAS CLI supports only the `applicationId` field; `applicationIdSuffix` in `productFlavors` or `buildTypes` is not detected correctly.
 - Flavor extras: per-flavor `strings.xml` (`android/app/src/development/res/values/strings.xml`), `mipmap-*` icons, `google-services.json` in `android/app/src/{flavor}/`, Sentry `flavorAware: true` with `android/sentry-{flavor}-{buildType}.properties`. iOS display name via `$(DISPLAY_NAME)` user-defined build setting and app icon via `Primary App Icon Set Name`.
-- Source modificationDate: September 25, 2026 (fetched 2026-10-17).
+- Source: https://docs.expo.dev/build-reference/variants/ (docs/pages/build-reference/variants.mdx at tag expo@58.0.25).
 
 ## Related
 
-- [Configure EAS Build with eas.json](./build-eas-json.md)
+- [Configure Expo Build with eas.json](./build-eas-json.md)
 - [Build APKs for Android Emulators and devices](./apk.md)
 - [iOS App Extensions](./app-extensions.md)

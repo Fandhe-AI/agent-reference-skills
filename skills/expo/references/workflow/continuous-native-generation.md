@@ -29,9 +29,9 @@ npx expo prebuild --template /path/to/template.tgz
 
 ## Notes
 
-- Expo enables CNG by combining: app config, `npx expo prebuild` arguments, the installed `expo` version and its prebuild template, Autolinking, native subscribers, and EAS Credentials.
+- Expo enables CNG by combining: app config, `npx expo prebuild` arguments, the installed `expo` version and its prebuild template, Autolinking, native subscribers, and credentials managed by Expo Build (for code signing additional targets and entitlements).
 - Do not edit generated directories manually; use config plugins (functions that modify native projects during prebuild). Non-idempotent plugins (for example multiple "dangerous modifiers") are why `--clean` is the safest option.
-- EAS Build runs Prebuild only if the project has no **android** and **ios** directories (default for `create-expo-app` projects). To force it, add `/android` and `/ios` to **.gitignore** or **.easignore**.
+- Expo Build runs Prebuild only if the project has no **android** and **ios** directories (default for `create-expo-app` projects). To force it, add `/android` and `/ios` to **.gitignore** or **.easignore**.
 - `npx expo run:android|ios` runs prebuild once for the platform if native directories are absent; re-run `npx expo prebuild --clean` on later runs to resync.
 - Templates come from the npm package `expo-template-bare-minimum`, per Expo SDK version. A warning is shown when React / React Native versions differ from the template's `dependencies`. Private-registry environments must pass a locally available template.
 - Side effects outside **android** / **ios**: replaces `expo start --android` / `--ios` with `expo run:android` / `expo run:ios` in `package.json` `scripts`, and modifies `dependencies`.
@@ -40,6 +40,7 @@ npx expo prebuild --template /path/to/template.tgz
 - The terms "ejecting" and "managed vs bare workflow" are deprecated; the page presents CNG (Prebuild) as the current model, while projects with manually managed native directories can still opt out (see above).
 - Distinct from React itself and from React Native core components (View, Text, FlatList); see the react / react-native skills for those.
 - Source pinned by fetch date 2026-10-17 (modificationDate: September 25, 2026).
+- Source: https://docs.expo.dev/workflow/continuous-native-generation/ (docs/pages/workflow/continuous-native-generation.mdx at tag expo@58.0.25); the docs now say "Expo Build" / "Expo Services" (formerly "EAS Build" / "EAS").
 
 ## Related
 

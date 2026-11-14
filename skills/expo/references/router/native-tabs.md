@@ -134,6 +134,26 @@ Hide the whole tab bar, minimize on scroll, separate search tab, bottom accessor
 <NativeTabs tabBarRespectsIMEInsets>
 ```
 
+Different rendering modes for default and selected icons (SDK 58 and later):
+
+```tsx
+<NativeTabs.Trigger name="weather">
+  {/* Single-color symbol by default, multicolor symbol when selected */}
+  <NativeTabs.Trigger.Icon
+    sf={{ default: 'cloud.sun', selected: 'cloud.sun.fill' }}
+    renderingMode={{ default: 'template', selected: 'original' }}
+  />
+</NativeTabs.Trigger>
+```
+
+Hide and show the tab bar immediately instead of animating (iOS 18 and later), a sidebar placement (iOS 27 and later, SDK 58 and later), and a prominent tab (iOS 27 and later, SDK 58 and later):
+
+```tsx
+<NativeTabs hidden={isTabBarHidden} disableHiddenAnimation>
+<NativeTabs preferredPlacement="sidebar">
+<NativeTabs.Trigger name="radio" prominent>
+```
+
 Search input in the tab bar: nest a `Stack` in the search route and use `Stack.SearchBar`:
 
 ```tsx
@@ -192,7 +212,8 @@ const styles = StyleSheet.create({
 | --- | --- | --- |
 | `NativeTabs.Trigger` `name` | string | Route name; tabs are not added automatically, each must have a `Trigger` |
 | `NativeTabs.Trigger.Icon` `sf` / `md` | string or `{ default, selected }` | SF Symbols (iOS) / Material Symbols (Android) |
-| `NativeTabs.Trigger.Icon` `src` | image source or `{ default, selected }` | Custom images; `renderingMode` (`template` default, or `original`) is iOS only (SDK 55 and later) |
+| `NativeTabs.Trigger.Icon` `src` | image source or `{ default, selected }` | Custom images; `renderingMode` (`template` or `original`, or `{ default, selected }` in SDK 58 and later) applies on iOS from SDK 55 and on Android from SDK 58 (also for `drawable` and `md` icons). When not set on iOS, the mode is picked per tab state: `template` when an icon color applies (`iconColor`, `tintColor`, `selectedColor`), otherwise `original`; on Android an unset mode tints the icon like `template`. `md` icons are white glyphs, so they render white with `original`. An image with an opaque background renders as a solid shape with `template`, so use a transparent background |
+| `NativeTabs.Trigger.Icon` `sf` `renderingMode` | `'template'` or `'original'` | SDK 58 and later, iOS. `template`: monochrome, drawn in the tab's icon color; `original`: multicolor rendering; not set: system default rendering |
 | `NativeTabs.Trigger.Icon` `xcasset` | string or `{ default, selected }` | Xcode asset catalog icon (iOS, SDK 55 and later); `renderingMode` has no effect |
 | `NativeTabs.Trigger.Label` `hidden` | boolean | Hide the label. Without a label the route name is used |
 | `NativeTabs.Trigger.Badge` | children | Badge on the tab item |
@@ -202,9 +223,13 @@ const styles = StyleSheet.create({
 | `NativeTabs.Trigger` `disableScrollToTop` | boolean | Android, SDK 55 and later. Tapping an active root tab otherwise scrolls to top |
 | `NativeTabs.Trigger` `disableAutomaticContentInsets` | boolean | SDK 55 and later. Manage safe area insets manually |
 | `NativeTabs.Trigger` `disableTransparentOnScrollEdge` | boolean | Keep the iOS 18-and-earlier tab bar from turning transparent at the scroll end |
-| `NativeTabs.Trigger` `role` | `'search'` | iOS 26: separate search tab (compile with Xcode 26 or higher) |
+| `NativeTabs.Trigger` `role` | `'search'` | iOS 26: separate search tab (compile with Xcode 26 or higher). If `role` changes to or from `"search"` while the tab is rendered, Expo Router remounts the tab and resets its local state |
+| `NativeTabs.Trigger` `disableAutomaticSearchActivation` | boolean | SDK 58 and later, iOS 26.1 and later. Selecting a search tab otherwise activates the search field when the screen has a search bar; set this to leave it inactive. On iOS 27 the search tab appears separately only while search activation is enabled |
+| `NativeTabs.Trigger` `prominent` | boolean | SDK 58 and later, iOS 27 and later (compile with Xcode 27 or higher). Shows the tab on its own surface; it stays visible when the tab bar minimizes. Only one tab can be prominent: with several, the first visible one is prominent and a development warning is shown. Set it in the layout file |
 | `NativeTabs.Trigger` `contentStyle` | style | Use for a specific background color |
 | `NativeTabs` `hidden` | boolean | SDK 55 and later. Hide the tab bar |
+| `NativeTabs` `disableHiddenAnimation` | boolean | iOS 18 and later. The tab bar animates when it hides and shows (`hidden`); set to hide and show it immediately |
+| `NativeTabs` `preferredPlacement` | string | SDK 58 and later, iOS 27 and later (compile with Xcode 27 or higher). When the device can show only the sidebar or only the tab bar, selects which one shows, for example `"sidebar"` |
 | `NativeTabs` `minimizeBehavior` | string | iOS 26. For example `"onScrollDown"` |
 | `NativeTabs` `tabBarRespectsIMEInsets` | boolean | Android, SDK 56 and later. Lift the tab bar above the keyboard; needs Android 11 or later and `android.softwareKeyboardLayoutMode` set to `"resize"` |
 | `NativeTabs` `labelStyle`, `tintColor`, `iconColor` | style / color | Label and icon styling; use `DynamicColorIOS` / `PlatformColor` for liquid glass |
@@ -221,9 +246,11 @@ const styles = StyleSheet.create({
 - All tab screens render eagerly; defer expensive content with `useIsFocused` or a `useFocusEffect` flag.
 - White flash on iOS 26 and liquid glass header flicker in dark mode: wrap in `ThemeProvider` from `expo-router` (SDK 56 and later; SDK 55 imports `ThemeProvider`, `DarkTheme`, `DefaultTheme` from `@react-navigation/native`).
 - Scroll to top and large-title behavior need the `ScrollView` to be the first child (or `collapsable={false}` on the wrapper).
-- Known limitations: default and selected image icons share one rendering mode on iOS; maximum of 5 tabs on Android; tab bar height cannot be measured; no nested native tabs (JavaScript tabs can nest inside); limited FlatList support; no dynamically adding or removing tabs.
+- Known limitations: maximum of 5 tabs on Android; tab bar height cannot be measured; no nested native tabs (JavaScript tabs can nest inside); limited FlatList support; no dynamically adding or removing tabs.
 - On web there is no system tab bar; native tabs fall back to a basic implementation. Use headless tabs from `expo-router/ui` via `_layout.web.tsx` or a shared component with platform extensions.
 - Expo Router is file-based and built on React Navigation; its `Tabs` and `Link` differ from same-named APIs in react-router and tanstack-router.
+- In SDK 57 and earlier Android tints all image icons and `renderingMode` affects only iOS; in SDK 57 and earlier, when `renderingMode` is not set both iOS tab states must resolve to the same mode, so set a color for both states or set `renderingMode`. The former "default and selected image icons share one rendering mode on iOS" known limitation is no longer listed in the official docs for SDK 58.
+- Source: https://docs.expo.dev/router/advanced/native-tabs/ (docs/pages/router/advanced/native-tabs.mdx at tag expo@58.0.25)
 - Page modification date: September 30, 2026. Source fetched 2026-10-17.
 
 ## Related

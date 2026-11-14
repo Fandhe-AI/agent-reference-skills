@@ -47,8 +47,9 @@ Reference for Expo-specific properties, set by adding an `expo` field in **packa
 }
 ```
 
-- `appConfigFieldsNotSyncedCheck`: when **android** or **ios** directories are present, EAS Build does not sync app config properties to the native projects; Expo Doctor warns if the directories exist but are not in **.gitignore** or **.easignore** and an app config exists (project configured to use Prebuild).
+- `appConfigFieldsNotSyncedCheck`: when **android** or **ios** directories are present, Expo Build does not sync app config properties to the native projects; Expo Doctor warns if the directories exist but are not in **.gitignore** or **.easignore** and an app config exists (project configured to use Prebuild).
 - Source modificationDate: September 15, 2026 (SDK 58, `/versions/v58.0.0/`).
+- Source: https://docs.expo.dev/versions/v58.0.0/config/package-json/ (docs/pages/versions/v58.0.0/config/package-json.mdx at tag expo@58.0.25); the docs now say "Expo Build" (formerly "EAS Build").
 
 ## Related
 

@@ -18,4 +18,5 @@
 | Upgrade Expo SDK | Incrementally upgrade the Expo SDK version in a project… | [upgrading-expo-sdk.md](./upgrading-expo-sdk.md) |
 | Use a development build | Start the dev server, connect from the launcher screen, rebuild… | [use-development-builds.md](./use-development-builds.md) |
 | Using Expo SDK, React Native, and third-party libraries | How to use React Native core libraries, Expo SDK libraries… | [using-libraries.md](./using-libraries.md) |
+| "Filename longer than 260 characters" error on Windows | Fix the "Filename longer than 260 characters" error that can fail the native (C++) build when building an Android app on Windows. | [windows-long-paths.md](./windows-long-paths.md) |
 | Develop an app with Expo | Overview of the development process of building an Expo app… | [workflow-overview.md](./workflow-overview.md) |
