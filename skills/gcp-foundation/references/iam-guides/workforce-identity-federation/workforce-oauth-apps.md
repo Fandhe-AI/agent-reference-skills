@@ -152,8 +152,10 @@ curl -X POST \
   "https://iam.googleapis.com/v1/projects/PROJECT_ID/locations/global/oauthClients/APP_OAUTH_CLIENT_ID/credentials?oauthClientCredentialId=APP_OAUTH_CLIENT_CREDENTIAL_ID"
 ```
 
+Adapted (not in the official docs): `disabled` is sent as a JSON boolean.
+
 ```bash
-curl -d'{"disabled":"true"}' \
+curl -d'{"disabled":true}' \
   -H "Content-Type: application/json" -X PATCH \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
   -H "X-Goog-User-Project: PROJECT_ID" \
@@ -187,7 +189,7 @@ curl -X DELETE \
 - Prerequisites: an organization, and a workforce identity pool and provider in the same organization (see the Entra ID and Okta pages). Required role: `roles/iam.oauthClientAdmin` on the project.
 - For Looker, redirect users to `https://auth.cloud.google/authorize` to get an authorization code, then exchange codes or refresh tokens with the Cloud OAuth API using the client credentials.
 - Security: a leaked client ID and secret allows impersonation, unauthorized access, and phishing. Restrict IAM access to the OAuth client API. To rotate the secret: create a new credential, securely distribute the new `clientSecret` to the application and switch it over and verify code exchange and token refresh work with it, and only then disable the old credential and delete it. Store the `clientSecret` securely.
-- Corrected from the official docs: the `credentials update` `--client-id` flag is `--oauth-client`; the REST create bodies use valid JSON; `allowedRedirectUris` is an array in the PATCH example.
+- Corrected from the official docs: the `credentials update` `--client-id` flag is `--oauth-client`; the REST create bodies use valid JSON; `allowedRedirectUris` is an array in the PATCH example; `disabled` is a JSON boolean in the credential PATCH example.
 - The source's REST list-credentials example uses `$PROJECT_ID` in the URL while other examples use `PROJECT_ID`; substitute your project ID consistently.
 - Source: https://docs.cloud.google.com/iam/docs/workforce-manage-oauth-app and https://docs.cloud.google.com/iam/docs/workforce-oauth-app (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 
