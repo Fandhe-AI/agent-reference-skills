@@ -45,6 +45,8 @@ AppNotificationManager.Default.Show(notification);
 - `AppNotificationManager` depends on the Singleton package; self-contained (unpackaged) apps have extra deployment considerations (additional MSIX packages).
 - You must call `Register` before `Microsoft.Windows.AppLifecycle.AppInstance.GetActivatedEventArgs`, and you must register `NotificationInvoked` handlers before calling `Register` to avoid a `COMException` at runtime.
 - App notifications aren't supported for elevated (admin) apps; `Show` fails silently in that case.
+- Windows App SDK 2.6.4 fixed a crash when calling some `AppNotificationManager` and `AppInstance` APIs (RuntimeCompatibilityChange: `AppNotification_AppInstance_FixStackOverflowCrash`), and self-contained apps failing to load `Microsoft.WindowsAppRuntime.Insights.Resource.dll` when registering an `AppNotification` callback (`VersionInfo_MissingInsightsResourceDll`).
+- Source (2.6.4): https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0 (fetched 2026-11-14)
 
 ## Related
 
