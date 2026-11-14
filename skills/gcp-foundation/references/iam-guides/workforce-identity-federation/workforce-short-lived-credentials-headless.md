@@ -164,6 +164,12 @@ Point gcloud at the file with `CLOUDSDK_AUTH_LOGIN_CONFIG_FILE`, `gcloud config 
 
 ### Client libraries
 
+Adapted (not in the official docs): `gcloud auth login --cred-file` does not configure Application Default Credentials for client libraries; set `GOOGLE_APPLICATION_CREDENTIALS` to the generated credential configuration file before running the examples.
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/generated/config.json
+```
+
 ```python
 from google.cloud import storage
 import google.auth
@@ -243,6 +249,8 @@ gcloud config set account principal://iam.googleapis.com/locations/global/workfo
 | Minimum client library versions | bq tool: gcloud CLI 390.0.0; gcloud: 392.0.0; C++ 2.31.0 (gRPC 1.42.0); .NET `Google.Apis.Auth` 1.58.0; Go `cloud.google.com/go/auth` v0.1.0; Java `google-auth-library-oauth2-http` 1.2.0; Node.js `google-auth-library` 7.10.0; PHP `google/auth` 1.35.0; Python `google-auth` 2.3.0; Ruby `googleauth` 1.6.0; Rust `google-cloud-auth` 1.7.0. |
 
 ## Notes
+
+- Adapted from the official docs: the Client libraries examples are preceded by `export GOOGLE_APPLICATION_CREDENTIALS=...` pointing at the generated config, since `gcloud auth login` does not set up ADC for client libraries.
 
 - Workforce pools belong to an organization, not a project, so Node.js `GoogleAuth` and Python storage clients must be given a project ID explicitly (or `GOOGLE_CLOUD_PROJECT`).
 - Neither the gcloud CLI nor the bq tool supports executable-sourced credential types.
