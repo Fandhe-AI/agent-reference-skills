@@ -79,6 +79,7 @@ Top-level response fields (all always present, `null` when no value; times have 
 | `review_due` | end date has come |
 | `setting_changed` | check fails on a value other than the accepted one, or accepted risk already recorded as ended |
 | `check_passing` | check passes, so no risk to accept |
+| `null` | only on a manual control, and only when end dates do not apply to the organization; the attestation is then in effect |
 
 | `comments_status` | Meaning |
 | --- | --- |
@@ -102,11 +103,13 @@ Errors:
 
 ## Notes
 
-- A `null` `attestation` does not prove nobody attested. The response shows: Completed and Accepted risk attestations on manual controls; Accepted risk attestations on automatic controls whose check failed (on an automatic control whose check passed, an Accepted risk attestation is `null` while the check passes on the accepted value); and, while an attestation is not in effect, one whose value an earlier row shows (with a `state` other than `in_force`). It never shows Failed (`control_failed`) attestations, Completed attestations on automatic controls, or any attestation on information-only controls. Every attestation shown on an automatic control is an accepted risk.- Counting by `rating`: `passed` includes accepted risks in effect (look for `failed_check_accepted_risk` and `attested_accepted_risk`); `failed` includes controls attested Failed and failing automatic checks with a Completed attestation (page shows Passed); `descriptive` can hide `not_evaluated`; a control missing from the response is not Passed and is not named, so compare `id` values with ones seen before. Count unknown `status` by its `rating`; read unknown `rating` as not Passed and unknown `state` as not in effect. The `review` status is unrelated to the `review_due` state.
+- A `null` `attestation` does not prove nobody attested. The response shows: Completed and Accepted risk attestations on manual controls; Accepted risk attestations on automatic controls whose check failed (on an automatic control whose check passed, an Accepted risk attestation is `null` while the check passes on the accepted value); and, while an attestation is not in effect, one whose value an earlier row shows (with a `state` other than `in_force`). It never shows Failed (`control_failed`) attestations, Completed attestations on automatic controls, or any attestation on information-only controls. Every attestation shown on an automatic control is an accepted risk.
+- Counting by `rating`: `passed` includes accepted risks in effect (look for `failed_check_accepted_risk` and `attested_accepted_risk`); `failed` includes controls attested Failed and failing automatic checks with a Completed attestation (page shows Passed); `descriptive` can hide `not_evaluated`; a control missing from the response is not Passed and is not named, so compare `id` values with ones seen before. Count unknown `status` by its `rating`; read unknown `rating` as not Passed and unknown `state` as not in effect, but `state: null` as in effect (see the `null` row of the state table). The `review` status is unrelated to the `review_due` state.
 - `attested_by` is filled only for `read:compliance_user_data` together with `read:compliance_org_data`, or `read:org_audit`; `read:compliance_user_data` alone gets 403. Its `user_id` equals the feed activity's `actor.user_id`; names and emails come from List organization users. The endpoint returns no comments: every `comment` is `null`, and `comments_status` is `not_enabled` or `not_permitted` in that case.
 - When several state reasons apply the response gives the first of `check_passing`, `setting_changed`, `review_due`. From 00:00 UTC on its end date an attestation is not in effect; the response has no end date, so `state` decides.
 - Freshness: every control is evaluated per call (`evaluated_at`); changes from the last few minutes might not show; results can change with no setting changed; a rewording of a current value ends an accepted risk on it; a call stores nothing and ends no attestation. A request with a parent or single-organization key on Claude Enterprise records one `compliance_api_accessed` activity (`url` names the organization read; `organization_uuid` is `null` for a parent key).
-- This is the Compliance API security-posture feature (not Claude Code security review).- Source: https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/results-reference (retrieved 2026-11-14)
+- This is the Compliance API security-posture feature (not Claude Code security review).
+- Source: https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/results-reference (retrieved 2026-11-14)
 
 ## Related
 

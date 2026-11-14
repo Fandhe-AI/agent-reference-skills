@@ -16,11 +16,12 @@ Create, list, retrieve, update and delete user profiles (records of end-users or
 | POST | `/v1/user_profiles/{user_profile_id}/enrollment_url` | Create Enrollment URL |
 | POST | `/v1/user_profiles/{user_profile_id}/action_urls` | Create Action URL |
 
+Adapted (not in the official docs): the `anthropic-beta: user-profiles-2026-08-18` header is removed from this create example, because under that legacy header `external_user_details` is not accepted; the legacy `external_id` / `external_user_onboarded_at` fields are removed from the response below for the same reason.
+
 ```bash
 curl https://api.anthropic.com/v1/user_profiles \
     -H 'Content-Type: application/json' \
     -H 'anthropic-version: 2026-10-21' \
-    -H 'anthropic-beta: user-profiles-2026-08-18' \
     -H "Authorization: Bearer $ANTHROPIC_API_KEY" \
     -d '{
           "external_user_details": {
@@ -51,7 +52,6 @@ Response (200):
   "type": "user_profile",
   "updated_at": "2026-03-15T10:00:00Z",
   "access_type": "application",
-  "external_id": "user_12345",
   "external_user_details": {
     "account_status": "active",
     "country": "US",
@@ -60,15 +60,14 @@ Response (200):
     "name_hash": null,
     "onboarded_at": "2024-11-02T08:15:00Z",
     "reference_id": "user_12345"
-  },
-  "external_user_onboarded_at": "2024-11-02T08:15:00Z"
+  }
 }
 ```
 
 Create Action URL:
 
 ```bash
-curl https://api.anthropic.com/v1/user_profiles/$USER_PROFILE_ID/action_urls \
+curl "https://api.anthropic.com/v1/user_profiles/${USER_PROFILE_ID}/action_urls" \
     -H 'Content-Type: application/json' \
     -H 'anthropic-version: 2026-10-21' \
     -H 'anthropic-beta: user-profiles-2026-08-18' \
@@ -165,6 +164,7 @@ Create Action URL body: `action` (required) = `{ "type": "enroll_end_user" }` (`
 - Beta: these pages are under `/docs/en/api/beta/user_profiles/`. The official examples send `anthropic-beta: user-profiles-2026-08-18` and `Authorization: Bearer $ANTHROPIC_API_KEY`; the guide examples (see the admin-api user-profiles guide) use `x-api-key` and no `anthropic-beta` header.
 - Under the legacy `user-profiles-2026-03-24` / `user-profiles-2026-08-18` headers the response carries top-level `external_id` (and `external_user_onboarded_at` under `2026-08-18`) instead of `external_user_details`; without a legacy header the values live in `external_user_details.reference_id` / `.onboarded_at`.
 - The guide documents `programs` (keys `cyber`, `efs`) and `enforcement_status` / `enforcement_actions` fields on profiles; these beta reference pages show `trust_grants` and do not list the enforcement fields. Treat the guide as authoritative for the non-beta-header shape.
+- Adapted from the official docs: the official create example sends `anthropic-beta: user-profiles-2026-08-18` together with `external_user_details` (and shows legacy `external_id` in the response), which contradicts the field table of the same page; the example here drops the beta header and the legacy response fields.
 - Create Enrollment URL (`/enrollment_url`) is the Claude Platform on AWS variant (guide: send `anthropic-beta: user-profiles-2026-08-18`, no body); `/action_urls` is the Claude API variant.
 - Source: https://platform.claude.com/docs/en/api/beta/user_profiles/create and sibling pages listed above (retrieved 2026-11-14)
 

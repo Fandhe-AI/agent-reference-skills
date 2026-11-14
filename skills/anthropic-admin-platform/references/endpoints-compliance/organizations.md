@@ -75,7 +75,7 @@ curl https://api.anthropic.com/v1/compliance/organizations \
 - A page may hold fewer than `limit` rows, or none at all, without being the last page, because the server bounds the work per request; follow `next_page` until it is `null`.
 
 ```bash
-curl https://api.anthropic.com/v1/compliance/organizations/$ORG_UUID/user_preferences \
+curl "https://api.anthropic.com/v1/compliance/organizations/${ORG_UUID}/user_preferences" \
     -H 'anthropic-version: 2026-10-21' \
     -H "Authorization: Bearer $ANTHROPIC_COMPLIANCE_API_KEY"
 ```

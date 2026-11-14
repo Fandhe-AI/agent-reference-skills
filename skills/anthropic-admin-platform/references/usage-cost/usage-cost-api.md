@@ -17,8 +17,10 @@ bucket_width=1d" \
 
 Cost report grouped by workspace and description:
 
+Adapted (not in the official docs): `--globoff` added so curl does not treat `[]` in `group_by[]` as a glob range.
+
 ```bash
-curl "https://api.anthropic.com/v1/organizations/cost_report?\
+curl --globoff "https://api.anthropic.com/v1/organizations/cost_report?\
 starting_at=2025-01-01T00:00:00Z&\
 ending_at=2025-01-31T00:00:00Z&\
 group_by[]=workspace_id&\
@@ -80,6 +82,7 @@ Which API (Claude product):
 
 ## Notes
 
+- Adapted from the official docs: the cost report example adds `--globoff` so curl does not interpret `group_by[]` as a glob.
 ### Legacy
 
 - "The Usage and Cost API (`/v1/organizations/usage_report/messages` and `/v1/organizations/cost_report`) is a legacy API and remains supported. For new integrations, use the Usage and Cost Analytics API, which reports usage and cost with more grouping and filtering dimensions."

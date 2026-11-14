@@ -15,6 +15,8 @@ Manage organization-level webhook endpoints (endpoints that belong to the organi
 | DELETE | `/v1/organizations/webhooks/{webhook_endpoint_id}` | Delete Organization Webhook Endpoint |
 | POST | `/v1/organizations/webhooks/{webhook_endpoint_id}/regenerate_signing_secret` | Regenerate Organization Webhook Endpoint Signing Secret |
 
+Adapted (not in the official docs): `url` is a valid HTTPS example URL (the official example sends `"x"`, which the validation rules reject).
+
 ```bash
 curl https://api.anthropic.com/v1/organizations/webhooks \
     -H 'Content-Type: application/json' \
@@ -25,7 +27,7 @@ curl https://api.anthropic.com/v1/organizations/webhooks \
           "enabled_events": [
             "user_profile.enforcement_action_opened"
           ],
-          "url": "x"
+          "url": "https://example.com/anthropic-webhooks"
         }'
 ```
 
@@ -124,6 +126,7 @@ Event payload (`BetaWebhookEvent`): `type` (`"event"`), `id` (unique event ident
 
 ## Notes
 
+- Adapted from the official docs: the create example `url` is an HTTPS example URL instead of the official `"x"`, which fails the HTTPS URL requirement.
 - Beta; every request must include `anthropic-beta: webhooks-2026-10-07`. A request without it returns `404`, exactly as if the API did not exist. Anthropic turns organization webhook endpoints on per organization; until then requests also return `404`. Not available to organizations with HIPAA readiness enabled.
 - The `enabled_events` enum on these endpoints lists three values (including `user_profile.program_status_updated`), while the organization-webhooks guide describes two event types (`user_profile.enforcement_action_opened` / `user_profile.enforcement_action_resolved`) and says other types are rejected with `400`. The two official pages differ; the guide's two are the documented accepted types.
 - The full `data.type` list above comes from the shared webhook event domain types page, which also covers workspace-level events such as sessions, vaults, and agents; only the `user_profile.*` types are documented for organization endpoints.
