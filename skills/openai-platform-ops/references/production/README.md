@@ -4,6 +4,7 @@
 |------|-------------|------|
 | Safety in Building Agents | Risk types and mitigations for multi-agent workflows built with Agent Builder. | [agent-builder-safety.md](./agent-builder-safety.md) |
 | Cost Optimization | Strategies for reducing OpenAI API spend beyond basic prompt/token hygiene. | [cost-optimization.md](./cost-optimization.md) |
+| CSAM Guidance | Practical child-safety guidance for developers building on OpenAI services: prevent, detect, respond and report. OpenAI developed it with input from the Tech Coalition, Thorn, NCMEC (National Center for Missing & Exploited Children), and the IWF (Internet Watch Foundation). | [csam-guidance.md](./csam-guidance.md) |
 | Cybersecurity Checks | Automated safeguards that apply to models classified as High Cybersecurity Capability under OpenAI's Preparedness Framework (GPT-5.3-Codex and newer, including GPT-5.4/GPT-5.5) when used via the API. | [cybersecurity-checks.md](./cybersecurity-checks.md) |
 | API Deployment Checklist | Checklist of Responses API production levers, each tagged with its expected impact on quality, cost, latency, or reliability. | [deployment-checklist.md](./deployment-checklist.md) |
 | Fast Mode | Opt-in service tier delivering up to 2.5x faster, more consistent latency for high-value, user-facing, latency-critical traffic, while keeping pay-as-you-go pricing. | [fast-mode.md](./fast-mode.md) |

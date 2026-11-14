@@ -1,14 +1,16 @@
 ---
 name: openai-platform-ops
 description: >
-  OpenAI API (developers.openai.com) の運用・管理リファレンス。
-  Administration API, admin API keys, RBAC, projects, spend limits, audit logs,
-  usage / costs API, Terraform provider (openai/openai),
-  workload identity federation (WIF, OIDC / SPIFFE), moderation API,
-  safety / production best practices, cost / latency optimization。
-  rate limits・webhooks は openai-api-core、Codex は openai-codex。
+  OpenAI API (developers.openai.com) 運用・管理。Administration API, RBAC, projects, WIF (OIDC / SPIFFE),
+  Private Safety Processing (OCI), CSAM guidance, service tier 制限, admin API keys, spend limits, audit logs,
+  usage / costs API, Terraform provider, moderation API, safety / production best practices,
+  cost / latency 最適化。rate limits・webhooks は openai-api-core、Codex は openai-codex。
 user-invocable: false
 ---
+
+## 対象バージョン
+
+OpenAI 公式ドキュメント（developers.openai.com/api/docs）は版タグを持たないため取得日で pin する。初回収録 2026-10-17、更新 2026-11-14（CSAM guidance 追加、Private Safety Processing の OCI Object Storage / Modified Abuse Monitoring、service tier 制限、12 時間 prompt caching の反映）。samples は意図的に未作成、scripts は 2026-10-17 時点のまま（OCI 登録の curl は `references/administration/private-safety-processing.md` を参照）。追跡は changelog（`/api/docs/changelog`）の新規項目で行う。
 
 ## ディレクトリ構成
 
@@ -49,6 +51,7 @@ skills/openai-platform-ops/
       safety-checks.md
       agent-builder-safety.md
       cybersecurity-checks.md
+      csam-guidance.md
       misalignment-monitoring.md
       safety-enforcement.md
       under-18-guidance.md
@@ -91,8 +94,10 @@ skills/openai-platform-ops/
 | プロダクション投入前のチェックリスト・デプロイ準備を知りたい | production | [references/production/README.md](references/production/README.md) |
 | コスト最適化・レイテンシ最適化・fast mode・Realtime API コストを知りたい | production | [references/production/README.md](references/production/README.md) |
 | Ultrafast mode / fast mode で service tier を選びたい | production | [references/production/README.md](references/production/README.md) |
+| CSAM 対策・児童安全ガイダンス (hash matching / 報告) を知りたい | production | [references/production/README.md](references/production/README.md) |
 | misalignment monitoring・safety enforcement webhook・under-18 対応を知りたい | production | [references/production/README.md](references/production/README.md) |
-| ZDR with Private Safety Processing の外部ストレージを登録したい | administration | [references/administration/README.md](references/administration/README.md) |
+| プロジェクト / 組織で使用可能な service tier を制限したい (400 `service_tier` エラー) | administration | [references/administration/README.md](references/administration/README.md) |
+| ZDR with Private Safety Processing の外部ストレージ (AWS / Azure / GCP / OCI) を登録したい | administration | [references/administration/README.md](references/administration/README.md) |
 | WIF を X.509 証明書または Idira で構成したい | administration | [references/administration/README.md](references/administration/README.md) |
 | Admin API / Terraform / moderation の curl コマンドをコピペしたい | scripts | [scripts/README.md](scripts/README.md) |
 | safety alerts / cases の curl コマンドをコピペしたい | scripts | [scripts/README.md](scripts/README.md) |
