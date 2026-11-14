@@ -59,6 +59,7 @@ export function createRouter() {
 - The official snippets call `createRouter` inside a function also named `createRouter` and read a module-scope `queryClient` in the loader; this page aliases the import as `createTanstackRouter` and reads `queryClient` from loader context.
 - `queryClient.ensureQueryData` / `queryClient.prefetchQuery` are deprecated in TanStack Query in favor of `queryClient.query` (noted in the TanStack Query integration guide).
 - If a custom `errorComponent` receives `error` as `unknown`, narrow it before use, e.g. `error instanceof Error ? error.message : String(error)`.
+- Router can coordinate loaders and an existing API without Start. If you also want an integrated server runtime and typed server functions for your React application, see the "TanStack Query with Start" guide (tanstack-start skill). Source: https://github.com/TanStack/router/blob/release-2026-11-08-0104/docs/router/guide/external-data-loading.md (fetched 2026-11-14)
 - For full-stack React apps, see the "TanStack Query with Start" guide in the tanstack-start skill (request-scoped SSR, hydration, and mutation invalidation).
 
 ## Related

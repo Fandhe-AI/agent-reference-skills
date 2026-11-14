@@ -102,10 +102,12 @@ import { tanstackRouter } from '@tanstack/router-plugin/esbuild'
 
 export default {
   plugins: [
-    tanstackRouter({ target: 'react', autoCodeSplitting: true }),
+    tanstackRouter({ target: 'react' }),
   ],
 }
 ```
+
+Esbuild では自動コード分割（`autoCodeSplitting: true`）は使えず、true にするとプラグインがエラーを投げる（ルート生成は通常どおり動作）。Source: https://github.com/TanStack/router/blob/release-2026-11-08-0104/docs/router/installation/with-esbuild.md (fetched 2026-11-14)
 
 ## Esbuild に設定する（Solid、watch モード込み）
 
@@ -124,10 +126,7 @@ const ctx = await esbuild.context({
   format: 'esm',
   target: ['esnext'],
   sourcemap: true,
-  plugins: [
-    solidPlugin(),
-    tanstackRouter({ target: 'solid', autoCodeSplitting: true }),
-  ],
+  plugins: [solidPlugin(), tanstackRouter({ target: 'solid' })],
 })
 
 if (isDev) {
