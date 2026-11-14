@@ -92,6 +92,9 @@ skills/gcp-services-index/
     renames/
       README.md
       renamed-products.md
+    lifecycle/
+      README.md
+      shutdown-and-deprecated.md
 ```
 
 ## 探索手順
@@ -102,6 +105,9 @@ skills/gcp-services-index/
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 4. 担当の深層スキルが未収録（予定）の間は、公式ドキュメントを確認する前提で索引情報のみ使う
+5. 製品ページ（`references/products/`）の Lifecycle 列と Notes を見て、終了済み・廃止予定かを確認する
+
+提供状況の記載は公式ページで確認できた製品のみ。記載が無い製品が提供中であるとは限らないため、利用前に公式の製品ページで確認する。
 
 ## タスク → カテゴリ マッピング
 
@@ -112,3 +118,4 @@ skills/gcp-services-index/
 | 収録対象外のプロダクトか確認したい | products | [references/products/README.md](references/products/README.md) |
 | gcloud グループの担当スキルを知りたい | gcloud-groups | [references/gcloud-groups/README.md](references/gcloud-groups/README.md) |
 | 旧名・改称前の名前から現行名を引きたい | renames | [references/renames/README.md](references/renames/README.md) |
+| 製品が終了済み・廃止予定か知りたい | lifecycle | [references/lifecycle/README.md](references/lifecycle/README.md) |
