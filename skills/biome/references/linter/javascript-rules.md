@@ -120,10 +120,10 @@ Biome は JS/TS 向けに 8 グループ・469 ルールを提供する（Biome 
 - `noInvalidNewBuiltin` は 2.0.0 で削除された（非推奨ルールの一括削除）。`noInvalidBuiltinInstantiation` は correctness に属する
 - ドキュメント HEAD では次のリリースでグループ間のさらなる移動が予定されている（2.5.15 の一覧には未反映）
 - 2.6.x 追従（CHANGELOG 由来。上記のルール数・グループ表は 2.5.15 のまま未更新）:
-  - 出典（タグ pin、タグ実在は WebFetch で確認済み）: 2.6.4 = https://github.com/biomejs/biome/blob/%40biomejs/biome%402.6.4/packages/%40biomejs/biome/CHANGELOG.md 、2.6.5 = https://github.com/biomejs/biome/blob/%40biomejs/biome%402.6.5/packages/%40biomejs/biome/CHANGELOG.md 、2.6.7 = https://github.com/biomejs/biome/blob/%40biomejs/biome%402.6.7/packages/%40biomejs/biome/CHANGELOG.md 。取得ツールが CHANGELOG 本文を返さなかったため PR 番号の個別照合は未実施（個別 PR の出典 URL 未確認）
-  - `useWhile`（complexity）は `for (;;)` ループも報告し `while (true)` へ修正するようになった（2.6.7, #12788）
-  - 2.6.4 で `while (true)` / `for (;;)` が先頭の `if` 内の単独 `break` で始まるループを報告するルールが追加・拡張された（#12472。対象ルール名は CHANGELOG 抜粋では未確認）
-  - 2.6.5〜2.6.7 で nursery に多数のルールが追加された（例: `noArrayForEach` / `noSyncMethods` / `noUselessAwait` / `useObjectFromEntries` / `noConstantComparisons` / `noErasingOperation` / `useCatchErrorName` / `noVue*` / `useVue*`）。ルール名は一次情報の抜粋に基づく概数で、正確な一覧・各ルールの group は公式ルール一覧ページを参照
+  - 出典: [`@biomejs/biome` CHANGELOG（タグ 2.6.7 pin）](https://github.com/biomejs/biome/blob/%40biomejs/biome%402.6.7/packages/%40biomejs/biome/CHANGELOG.md)。以下は CHANGELOG 本文と照合済み
+  - `useWhile` は `for (;;)` ループも報告し `while (true)` へ修正するようになった（2.6.7 Patch Changes, [#12788](https://github.com/biomejs/biome/pull/12788)）
+  - nursery ルール `useWhileLoopCondition` が追加された。`while (true)` / `for (;;)` のうち先頭が単独 `break` のみの `if` で始まるループを報告し、その条件を `while` 文へ移す（2.6.4 Patch Changes, [#12472](https://github.com/biomejs/biome/pull/12472)）
+  - 2.6.5〜2.6.7 の Patch Changes で nursery に多数のルールが追加された。確認できた例: `noArrayForEach` / `noSyncMethods` / `useObjectFromEntries`（2.6.5）、`noUselessAwait`（2.6.5, [#12772](https://github.com/biomejs/biome/pull/12772)）、`noConstantComparisons`（2.6.6, [#12877](https://github.com/biomejs/biome/pull/12877)）、`noErasingOperation`（2.6.6）、`useCatchErrorName`（2.6.7）、`noVue*` / `useVue*` 多数。一覧は網羅ではなく、各ルールの group・全件は公式ルール一覧ページを参照
 
 ## Related
 
