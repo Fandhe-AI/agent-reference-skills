@@ -39,9 +39,10 @@ Snippet taken from https://developers.cloudflare.com/workflows/build/workers-api
 
 - Per the page, billing for Workflows steps and storage applies starting 2026-08-10 (the page was fetched 2026-11-03). Check the linked changelog post (https://developers.cloudflare.com/changelog/post/2026-07-07-workflows-billing-updates/) for the current state.
 - CPU time and requests use Workers Standard pricing. CPU limit can be raised to 5 minutes per Workflow via `limits.cpu_ms`.
-- Storage is billed like Durable Objects SQL storage, calculated across all instances (running, errored, sleeping, completed). Default retention is 3 days on Free and 30 days on Paid; shorten with `default_retention` or per-instance `retention`. Deleting instances (Workers API, Wrangler, REST API, dashboard) frees storage, which may take a few minutes to update.
+- Storage is billed like Durable Objects SQL storage, calculated across all instances (running, errored, sleeping, completed). Default retention is 3 days on Free and 7 days on Paid (Paid Workflows created before the default changed keep 30 days; Paid retention is configurable up to 30 days); change it with `default_retention` or per-instance `retention`. Deleting instances (Workers API, Wrangler, REST API, dashboard) frees storage, which may take a few minutes to update.
 - On Workers Free, an instance that tries to store state after reaching the storage limit throws an error.
 - See [limits.md](./limits.md) for non-billing limits.
+- Source: https://developers.cloudflare.com/workflows/reference/pricing/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

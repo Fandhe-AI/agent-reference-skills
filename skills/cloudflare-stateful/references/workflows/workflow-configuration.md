@@ -220,8 +220,9 @@ Subrequest limit (top-level Wrangler key):
 | class_name | `string` | — | Class extending `WorkflowEntrypoint` (must match the exported class) |
 | script_name | `string` | — | Worker that defines the Workflow; required for cross-script binding |
 | limits.steps | `number` | `10000` | Maximum steps per instance on Workers Paid; configurable up to 25,000 |
-| default_retention.success_retention | duration string or ms number | account maximum | Retention for completed and terminated instances |
-| default_retention.error_retention | duration string or ms number | account maximum | Retention for errored instances |
+| default_retention.success_retention | duration string or ms number | account default, else plan default (Free 3 days, Paid 7 days) | Retention for completed and terminated instances |
+| default_retention.error_retention | duration string or ms number | account default, else plan default (Free 3 days, Paid 7 days) | Retention for errored instances |
+| concurrency.limit | positive integer | none | Caps running instances of this Workflow; see [concurrency-limits.md](./concurrency-limits.md) |
 | schedules | `string[]` | — | Cron expressions that create instances (up to 100 per account, 256 characters each) |
 | jurisdiction | `"eu" \| "us" \| "fedramp"` | — | Restrict instances and their data to a region; see [data-location.md](./data-location.md) |
 
@@ -231,11 +232,13 @@ Subrequest limit (top-level Wrangler key):
 |------|------|---------|-------------|
 | type | `"workflow"` | — | Marks the export as a Workflow |
 | name | `string` | — | Workflow name |
-| limits, schedules, default_retention, jurisdiction | — | — | Same settings as a `workflows` binding |
+| limits, concurrency, schedules, default_retention, jurisdiction | — | — | Same settings as a `workflows` binding |
 
 ## Notes
 
 - `default_retention` cannot be combined with `script_name`; set it on the Worker that defines the Workflow. Precedence: instance-level `retention` > binding `default_retention` > account default; retention cannot exceed the account limit.
+- Workers Paid Workflows created before the Paid default changed (see the changelog post https://developers.cloudflare.com/changelog/post/2026-09-10-paid-retention-default/) keep a 30-day default retention; new ones default to 7 days.
+- Source: https://developers.cloudflare.com/workflows/build/workers-api/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 - `step.sleep` does not count toward the steps limit. Workers Free is limited to 1,024 steps.
 - Workflows declared in `exports` are called from the declaring Worker through `ctx.exports`, keyed by class name (same API as a binding). Other Workers use a cross-script binding with `script_name` and `class_name` set to the export key. Local development of `ctx.exports.<Workflow>` needs Wrangler 4.142.0+, `@cloudflare/vite-plugin` 1.61.0+, or `@cloudflare/vitest-plugin` 1.3.0+. `wrangler types` (4.142.0+) types it as `Workflow<Params>`.
 - A binding and an export with the same `name` share instances, so a Workflow can move from binding to export without losing instances. Both declarations must use the same class and must not set the same setting to different values. A binding to a Workflow in another Worker cannot use the same `name` as an export in this Worker.
@@ -248,6 +251,7 @@ Subrequest limit (top-level Wrangler key):
 
 ## Related
 
+- [concurrency-limits.md](./concurrency-limits.md)
 - [workflow-binding.md](./workflow-binding.md)
 - [trigger-workflows.md](./trigger-workflows.md)
 - [limits.md](./limits.md)

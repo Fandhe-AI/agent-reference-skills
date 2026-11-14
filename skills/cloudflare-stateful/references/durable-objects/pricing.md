@@ -58,10 +58,13 @@ await durableObjectStub.cat(); // billed as a request
 - Key-value units: a 9 KB write consumes 3 write units; a list returning 80 KB of keys and values is 20 read units, an empty list is 1; cache hits and multi-key `get`/`put`/`delete` are billed as individual requests per key.
 - Worked examples (excluding calling Workers, plus the $5/month minimum): (1) 1.5 million requests, 1,000,000 active seconds: 500,000 billable requests rounded to 1,000,000 x $0.15 = $0.15; 128,000 GB-s is within the 400,000 included, total $5.15. (2) 100 objects x 50 WebSockets, a message per minute for 8 h/day: 150,000 + 72,000,000 / 20 = 3.75 million requests, 2.75 million billable, rounded to 3,000,000 x $0.15 = $0.45; 86,400,000 s x 0.128 = 11,059,200 GB-s, minus 400,000 = 10,659,200, rounded to 11,000,000 x $12.50 = $137.50, total $142.95. (3) 100 objects with one WebSocket, a message per second all month: 12,960,100 requests, 11,960,100 billable rounded to 12,000,000 x $0.15 = $1.80; 33,177,600 GB-s minus 400,000 = 32,777,600 rounded to 33,000,000 x $12.50 = $412.50, total $419.30. (4) Hibernation, 100 objects x 100 sockets, 10 ms per message, one message per minute per socket: 10,000 + 432,000,000 / 20 = 21,610,000 requests, 20,610,000 billable rounded to 21,000,000 x $0.15 = $3.15; 552,960 GB-s minus 400,000 = 152,960 rounded to 1,000,000 x $12.50 = $12.50, total $20.65.
 - Compute and storage backends: see Workers and D1 pricing at https://developers.cloudflare.com/d1/platform/pricing/ (cloudflare-storage skill covers D1).
+- Control usage costs: a Durable Objects spending limit covers requests, duration and storage operations after included usage; stored data charges are excluded and can continue during a pause. Review the operations that can continue (spend-management page) before relying on a limit. For email without blocking usage, configure an email alert.
+- Source: https://developers.cloudflare.com/durable-objects/platform/pricing/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 
 - [Limits](./limits.md)
+- [Spending limits](./spend-management.md)
 - [Durable Object lifecycle](./durable-object-lifecycle.md)
 - [WebSockets](./websockets.md)
 - [FAQ](./faq.md)

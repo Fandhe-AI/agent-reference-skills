@@ -20,6 +20,7 @@
 | Call Workflows from Pages | Service binding or fetch from Pages Functions | [call-workflows-from-pages.md](./call-workflows-from-pages.md) |
 | Local development | wrangler dev, --local commands, Local Explorer | [local-development.md](./local-development.md) |
 | Visualize Workflows | Dashboard diagram node types (beta) | [visualizer.md](./visualizer.md) |
+| Concurrency limits | Per-Workflow concurrency limit, queueing, change or remove | [concurrency-limits.md](./concurrency-limits.md) |
 | Limits | Plan limits for steps, payloads, concurrency, retention | [limits.md](./limits.md) |
 | Pricing | Requests, CPU time, storage, and steps billing | [pricing.md](./pricing.md) |
 | Data location | jurisdiction settings for instance data | [data-location.md](./data-location.md) |

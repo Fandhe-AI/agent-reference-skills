@@ -46,10 +46,11 @@ Subrequest limit raised:
 | Maximum `step.sleep` duration | time | 365 days (1 year) on both | — |
 | Maximum steps per Workflow | count | Free: 1,024; Paid: 10,000 (default), configurable up to 25,000 | `step.sleep` does not count |
 | Maximum Workflow executions | count | Free: 100,000 per day (shared with Workers daily limit); Paid: Unlimited | — |
-| Concurrent Workflow instances per account | count | Free: 100; Paid: 50,000 | Only `running` instances count; `waiting` instances are excluded |
+| Concurrent Workflow instances per account | count | Free: 100; Paid: 50,000 | `waiting` and `paused` instances do not count |
+| Concurrent Workflow instances per Workflow | count | Free and Paid: no limit by default; configurable up to the account limit | See the concurrency-limits page; instances above a limit are queued |
 | Maximum instance creation rate | rate | Free: 100 per second; Paid: 300 per second per account, 100 per second per workflow | Each created or restarted instance counts; exceeding returns HTTP 429 |
 | Maximum queued instances | count | Free: 100,000; Paid: 2,000,000 | — |
-| Retention of completed instance state | time | Free: 3 days; Paid: 30 days | Shorten with `default_retention` or per-instance `retention` |
+| Retention of completed instance state | time | Free: 3 days; Paid: 7 days (default), configurable up to 30 days | Workflows on Paid created before the default changed keep a 30-day default; change with `default_retention` or per-instance `retention` |
 | Maximum Workflow name length | characters | 64 on both | Pattern `^[a-zA-Z0-9_][a-zA-Z0-9-_]*$` |
 | Maximum instance ID length | characters | 100 on both | Pattern `^[a-zA-Z0-9_][a-zA-Z0-9-_]*$` |
 | Maximum subrequests per Workflow instance | count | Free: 50/request; Paid: 10,000/request (default), configurable up to 10 million | — |
@@ -71,8 +72,10 @@ Wall time limits by invocation type:
 ## Notes
 
 - Workflows cannot be deployed to Workers for Platforms namespaces.
-- `waiting` instances (sleeping, waiting for retry, or waiting for an event) do not count toward concurrency, so very large numbers can sleep at once. If the running limit is reached, a waking instance is queued; when an instance moves from `running` to `waiting`, queued instances are scheduled (usually the oldest, best effort; a very short wait may skip this transition). The official page's prose mentions a 10,000 concurrent running limit while its table lists 50,000 on Workers Paid; the table value is recorded here, so verify against the live page.
-- On Workers Paid, cron-`schedules` instances get a separate one-hour concurrency budget per firing; after that they yield into the normal queue and are not failed or terminated.
+- `waiting` instances (sleeping, waiting for retry, or waiting for an event) do not count toward concurrency, so very large numbers can sleep at once. If the running limit is reached, a waking instance is queued; when an instance moves from `running` to `waiting`, queued instances are scheduled (usually the oldest, best effort; a very short wait may skip this transition). The earlier (2026-11-03) page prose mentioned a 10,000 concurrent running limit while its table listed 50,000; the 2026-11-14 prose refers only to the account limit.
+- On Workers Paid, cron-`schedules` instances get a separate one-hour concurrency budget per firing; after that they yield into the normal queue and are not failed or terminated. During the budget an instance is also not held back by a per-Workflow concurrency limit.
+- When a `waiting` instance resumes, it is queued if the account or the Workflow is already at its concurrency limit.
+- Source: https://developers.cloudflare.com/workflows/reference/limits/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 - Exceeding CPU time throws `Error: Worker exceeded CPU time limit.` (`exceededCpu` in `wrangler tail`, `exceededResources` in Workers metrics). Exceeding subrequests throws `Error: Too many subrequests.` (`exception` in `wrangler tail`). Workers Free keeps 50 external subrequests and 1,000 subrequests to Cloudflare services per invocation.
 - A Workflow instance can run forever as long as each step stays within the CPU limit and the step count limit. For large binary output in JavaScript, return a `ReadableStream<Uint8Array>`; for very large or long-lived artifacts use external storage such as R2.
 - Request a higher limit with Cloudflare's Limit Increase Request Form (linked from the official page).
@@ -81,6 +84,7 @@ Wall time limits by invocation type:
 ## Related
 
 - [pricing.md](./pricing.md)
+- [concurrency-limits.md](./concurrency-limits.md)
 - [workflow-configuration.md](./workflow-configuration.md)
 - [rules-of-workflows.md](./rules-of-workflows.md)
 - [changelog.md](./changelog.md)

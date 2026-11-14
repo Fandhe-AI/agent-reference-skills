@@ -43,8 +43,8 @@ const euStub = subnamespace.getByName("foo");
 | `idFromName(name)` | `(string) => DurableObjectId` | — | Deterministic ID for a named object. Most common way to address an object. |
 | `newUniqueId(options?)` | `({ jurisdiction?: string }?) => DurableObjectId` | — | Random unique ID. Store it as a string (KV, another object, a cookie) to reach the same object later. |
 | `idFromString(id)` | `(string) => DurableObjectId` | — | Rebuilds an ID from a string made by `toString()`. Throws if the ID is invalid, e.g. not created from the same namespace. |
-| `get(id, options?)` | `(DurableObjectId, { locationHint?: string }?) => DurableObjectStub` | — | Returns a stub immediately, often before a connection is established. |
-| `getByName(name, options?)` | `(string, { locationHint?: string }?) => DurableObjectStub` | — | Returns a stub for the named object immediately. |
+| `get(id, options?)` | `(DurableObjectId, { locationHint?: string, retry?: { maxRetries?: number, timeoutMs?: number } }?) => DurableObjectStub` | — | Returns a stub immediately, often before a connection is established. `retry` sets the retry limits for calls through the stub: `maxRetries` integer 0 to 10 (default 4), `timeoutMs` integer 500 to 60000 (default 10000). |
+| `getByName(name, options?)` | `(string, { locationHint?: string, retry?: { maxRetries?: number, timeoutMs?: number } }?) => DurableObjectStub` | — | Returns a stub for the named object immediately. Takes the same options as `get`. |
 | `jurisdiction(jurisdiction)` | `(string) => DurableObjectNamespace` | — | Subnamespace whose IDs and references are restricted to the jurisdiction. |
 
 ## Notes
@@ -53,10 +53,13 @@ const euStub = subnamespace.getByName("foo");
 - `newUniqueId` gives lower request latency at first use: for name-derived IDs the system must check that no instance was created elsewhere, which can take up to a few hundred milliseconds. After first use the location is cached around the world.
 - Idiomatic examples use `getByName`; `idFromName` + `get` are equivalent when you need the ID.
 - Location hints and jurisdictions are documented in the data-location page; `wrangler` binding configuration is in cloudflare-wrangler, and the Agents SDK built on Durable Objects is in cloudflare-agents.
+- `retry` is a newer option on `get()` and `getByName()`; see the automatic-retries page.
+- Source: https://developers.cloudflare.com/durable-objects/api/namespace/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 
 - [DurableObjectId](./id.md)
 - [DurableObjectStub](./stub.md)
+- [Automatic retries](./automatic-retries.md)
 - [Data location](./data-location.md)
 - [Create stubs and send requests](./create-stubs-and-send-requests.md)

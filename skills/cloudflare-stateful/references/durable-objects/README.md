@@ -17,6 +17,7 @@
 | WebGPU | WebGPU API subset for Durable Objects in local development only | [webgpu.md](./webgpu.md) |
 | Access storage | SQLite class creation, initialization, deleteAll, typed SQL, indexes, vs D1 | [access-storage.md](./access-storage.md) |
 | Create stubs and send requests | Invoke RPC methods or fetch handler via stubs | [create-stubs-and-send-requests.md](./create-stubs-and-send-requests.md) |
+| Automatic retries | Runtime retries of stub calls, retry limits option, retryable() | [automatic-retries.md](./automatic-retries.md) |
 | Error handling | Retryable and overloaded errors, stub recreation, backoff | [error-handling.md](./error-handling.md) |
 | Rules of Durable Objects | Design guidelines: sharding, storage, gates, RPC, WebSockets, alarms, testing | [rules-of-durable-objects.md](./rules-of-durable-objects.md) |
 | WebSockets | Hibernation and standard WebSocket APIs, attachments, batching | [websockets.md](./websockets.md) |
@@ -29,6 +30,7 @@
 | Code updates | deferred and immediate code update strategies, max_delay | [code-updates.md](./code-updates.md) |
 | Limits | Account, storage, SQL, CPU, outbound body and wall time limits | [limits.md](./limits.md) |
 | Pricing | Compute and storage billing with worked examples | [pricing.md](./pricing.md) |
+| Spending limits | Account-wide spending limit: counted charges, blocked operations, alarm recovery | [spend-management.md](./spend-management.md) |
 | Known issues | Global uniqueness, code updates, development tool limitations | [known-issues.md](./known-issues.md) |
 | FAQ | Pricing, limits, CPU, SQLITE_FULL, log identification | [faq.md](./faq.md) |
 | Glossary | Definitions of Durable Objects terms | [glossary.md](./glossary.md) |

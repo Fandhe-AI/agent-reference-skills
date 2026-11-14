@@ -101,6 +101,8 @@ npx wrangler deploy
 - The `exports` field declares each Durable Object class so Cloudflare provisions a namespace on first deploy and manages rename/delete/transfer later. For Workers using the legacy `migrations` array, see the legacy migrations page.
 - Corrected from the official docs: the page's Python Worker snippet defines `async def fetch(request)` without `self` while using `self.env`, and one TypeScript block has an unsupported MDX placeholder; only the JavaScript/TypeScript-correct forms are reproduced.
 - `wrangler` commands and local development (Miniflare) are documented in the cloudflare-wrangler skill; the Worker handler model is in cloudflare-workers.
+- Control usage costs: set a spending limit or email alert for Durable Objects (and a separate Workers limit if the application also uses Workers); these limits apply across the whole account. See the spend-management page.
+- Source: https://developers.cloudflare.com/durable-objects/get-started/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

@@ -175,7 +175,7 @@ interface WorkflowInstanceCreateOptions {
 	params?: unknown;
 	/**
 	 * The retention policy for the Workflow instance.
-	 * Defaults to the maximum retention period available for the owner's account.
+	 * Defaults to the Workflow's `default_retention`, then the account default, then the plan default (3 days on Workers Free, 7 days on Workers Paid).
 	 */
 	retention?: {
 		/**
@@ -213,8 +213,8 @@ const { created, errors } = await env.MY_WORKFLOW.createBatch({
 |------|------|---------|-------------|
 | id | `string` | generated | Instance ID, unique within the Workflow; up to 100 characters, pattern `^[a-zA-Z0-9_][a-zA-Z0-9-_]*$` |
 | params | `unknown` | — | Event payload (JSON-serializable) the instance is triggered with |
-| retention.successRetention | `WorkflowRetentionDuration` | binding `default_retention`, else account maximum | State retention after success or termination |
-| retention.errorRetention | `WorkflowRetentionDuration` | binding `default_retention`, else account maximum | State retention after an errored end |
+| retention.successRetention | `WorkflowRetentionDuration` | binding `default_retention`, else account default, else plan default (Free 3 days, Paid 7 days; 30 days for older Paid Workflows) | State retention after success or termination |
+| retention.errorRetention | `WorkflowRetentionDuration` | binding `default_retention`, else account default, else plan default (Free 3 days, Paid 7 days; 30 days for older Paid Workflows) | State retention after an errored end |
 
 `createBatch` options:
 
@@ -241,6 +241,8 @@ const { created, errors } = await env.MY_WORKFLOW.createBatch({
 - `get` throws if the instance ID does not exist or is invalid.
 - Binding from a Worker requires compatibility date `2024-10-22` or later. Call `wrangler types` after editing the Wrangler config.
 - Adapted from the official docs: the typed-binding example used an unquoted `user@example.com`, and it created an instance on every request from any caller; it now requires `Authorization: Bearer <TRIGGER_TOKEN>` (rejected when the secret is unset), the same check as [trigger-workflows.md](./trigger-workflows.md).
+- Corrected for version drift: the 2026-11-03 snapshot said retention defaults to the account maximum; the 2026-11-14 docs say the Workflow `default_retention`, then the account default, then the plan default.
+- Source: https://developers.cloudflare.com/workflows/build/workers-api/index.md (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

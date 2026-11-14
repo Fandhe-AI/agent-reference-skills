@@ -15,7 +15,7 @@ Cloudflare Workers 上のステートフル 3 製品 — Durable Objects（強�
 
 ## 対象バージョン
 
-- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `d0995b91312add6db730afec4f4944cee834abc6` と取得日 2026-11-03 で pin
+- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `34d908a`（2026-11-14 取得、旧 pin `d0995b9` は 2026-11-03 取得）と取得日 2026-11-14 で pin。Queues は d0995b9 → 34d908a 間で差分なし
 - binding 型製品のため npm パッケージの版数は無い
 
 ## 他スキルとの使い分け
@@ -38,6 +38,7 @@ skills/cloudflare-stateful/
       README.md
       access-storage.md
       alarms.md
+      automatic-retries.md
       base-class.md
       class-migrations-legacy.md
       code-updates.md
@@ -62,6 +63,7 @@ skills/cloudflare-stateful/
       overview.md
       pricing.md
       rules-of-durable-objects.md
+      spend-management.md
       sqlite-storage-api.md
       state.md
       stub.md
@@ -97,6 +99,7 @@ skills/cloudflare-stateful/
       README.md
       call-workflows-from-pages.md
       changelog.md
+      concurrency-limits.md
       data-location.md
       durable-agents.md
       event-subscriptions.md
@@ -165,7 +168,7 @@ skills/cloudflare-stateful/
 | DurableObject クラス・stub・namespace・ID の API を調べたい | durable-objects | [references/durable-objects/README.md](references/durable-objects/README.md) |
 | ctx.storage の SQL API / KV API を使いたい | durable-objects | [references/durable-objects/README.md](references/durable-objects/README.md) |
 | alarms・WebSocket hibernation・in-memory state を扱いたい | durable-objects | [references/durable-objects/README.md](references/durable-objects/README.md) |
-| Durable Objects の migrations・制限・料金・トラブルシュートを確認したい | durable-objects | [references/durable-objects/README.md](references/durable-objects/README.md) |
+| Durable Objects の migrations・制限・料金・spending limit・stub 呼び出しの自動リトライ・トラブルシュートを確認したい | durable-objects | [references/durable-objects/README.md](references/durable-objects/README.md) |
 | Queues に Worker からメッセージを送信（producer）したい | queues | [references/queues/README.md](references/queues/README.md) |
 | Queues の consumer・バッチ・リトライ・並行数を設定したい | queues | [references/queues/README.md](references/queues/README.md) |
 | dead letter queue・pull consumer・pause / purge を扱いたい | queues | [references/queues/README.md](references/queues/README.md) |
@@ -173,6 +176,6 @@ skills/cloudflare-stateful/
 | Workflow を WorkflowEntrypoint で定義し最初のインスタンスを動かしたい | workflows | [references/workflows/README.md](references/workflows/README.md) |
 | step.do / step.sleep / step.waitForEvent の API・リトライ設定を調べたい | workflows | [references/workflows/README.md](references/workflows/README.md) |
 | Workflow インスタンスの起動・状態取得・イベント送信・rollback を扱いたい | workflows | [references/workflows/README.md](references/workflows/README.md) |
-| Workflows の制限・料金・Python SDK・ローカル開発を確認したい | workflows | [references/workflows/README.md](references/workflows/README.md) |
+| Workflows の制限・per-Workflow concurrency limit・料金・Python SDK・ローカル開発を確認したい | workflows | [references/workflows/README.md](references/workflows/README.md) |
 | 典型的な使い方を知りたい（Durable Objects / Queues / Workflows の実例） | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンド（wrangler の queues / workflows / Durable Objects 関連）を知りたい | scripts | [scripts/README.md](scripts/README.md) |
