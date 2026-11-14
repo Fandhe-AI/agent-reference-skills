@@ -13,7 +13,7 @@ user-invocable: false
 
 Android (Kotlin / Jetpack Compose) の画面遷移に関する公式ドキュメントの主要 API を網羅したスキル。
 Navigation 3 は新規 Compose 実装の現行 stable な選択肢、Navigation Compose は既存の 2.x グラフおよび Fragment ベースのナビゲーションを担う。
-対象バージョン: Navigation 3 1.2.0 stable / Navigation 2.10.2 (developer.android.com、2026-10-17 取得)。
+対象バージョン: Navigation 3 1.2.1 stable / Navigation 2.10.2 (developer.android.com、2026-11-14 取得)。
 Navigation 2 (androidx.navigation) は公式にメンテナンスモード (重大な修正のみ、新機能なし) のため、新規 Compose 実装は Navigation 3 を第一候補とする。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
