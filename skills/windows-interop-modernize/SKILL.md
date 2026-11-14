@@ -25,6 +25,8 @@ skills/windows-interop-modernize/
   references/
     migration-planning/
       README.md
+      cross-framework.md
+      ios-to-winui.md
       migration-decision-guide.md
       migration-terminology.md
       modernize-overview.md
@@ -178,6 +180,7 @@ skills/windows-interop-modernize/
 |--------|---------|------------|
 | 既存アプリを upgrade / modernize in place / WinUI 3 移行のどれで進めるか判断したい、用語 (upgrade / migrate / port / modernize) を確認したい | migration-planning | [references/migration-planning/README.md](references/migration-planning/README.md) |
 | 既存 WPF / WinForms / Win32 アプリに追加できる Windows 機能と、Windows App SDK・package identity の要否を知りたい | migration-planning | [references/migration-planning/README.md](references/migration-planning/README.md) |
+| React Native / Electron / .NET MAUI / Flutter / iOS (UIKit・SwiftUI) アプリを WinUI 3 へ移行する際の考慮点・API 対応表を知りたい | migration-planning | [references/migration-planning/README.md](references/migration-planning/README.md) |
 | CreateWindowExW / WNDPROC / メッセージループで生の Win32 ウィンドウを作成したい | win32-com | [references/win32-com/README.md](references/win32-com/README.md) |
 | COM オブジェクトの初期化・生成・参照カウント管理 (CoInitializeEx, CoCreateInstance, IUnknown, ComPtr) を行いたい | win32-com | [references/win32-com/README.md](references/win32-com/README.md) |
 | C# から CsWin32 / P/Invoke で Win32 API を呼びたい、Rust から windows-rs を使いたい | win32-com | [references/win32-com/README.md](references/win32-com/README.md) |
