@@ -5,11 +5,9 @@ description: >
   @tanstack/react-start) の API リファレンス。Next.js とは別フレームワーク。
   createServerFn (validator / handler), createMiddleware, server routes,
   createServerOnlyFn / createIsomorphicFn、SSR / selective SSR / SPA mode /
-  static prerendering / ISR、streaming、hydration、server entry / client entry、
-  TanStack Query 連携 (setupRouterSsrQueryIntegration)、RC → stable 移行、
-  hosting (Cloudflare Workers / Netlify / Vercel / Node / Bun / Docker)、
-  production checklist、authentication / session、Tailwind、SEO、
-  environment variables。ルーティングは tanstack-router スキルを参照。
+  static prerendering / ISR、
+  TanStack Query 連携 (setupRouterSsrQueryIntegration)、hosting。
+  ルーティングは tanstack-router スキルを参照。
 user-invocable: false
 ---
 

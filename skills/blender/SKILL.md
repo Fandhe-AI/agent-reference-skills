@@ -2,10 +2,10 @@
 name: blender
 description: >
   Blender Python API リファレンス。bpy / bmesh / mathutils / gpu / bpy_extras モジュール、
-  bpy.data / bpy.context / bpy.ops / bpy.types / bpy.props / bpy.msgbus / bpy.path コア API。
+  bpy.data / bpy.context / bpy.ops / bpy.types / bpy.props コア API。
   Mesh / Modifier / Geometry Nodes / Armature / Keyframe / Driver / Shape Key / NLA、
-  Cycles / EEVEE / Shader Nodes / Rigid Body / Cloth / Fluid / Compositor Nodes / AOV、
-  headless CLI レンダリング、add-on 開発、Extensions システム、MCP Server (Model Context Protocol)。
+  Cycles / EEVEE / Shader Nodes / Rigid Body / Cloth / Fluid / Compositor Nodes、
+  headless CLI レンダリング、add-on 開発、Extensions、MCP Server (Model Context Protocol)。
 user-invocable: false
 ---
 

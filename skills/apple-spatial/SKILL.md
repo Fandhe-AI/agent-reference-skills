@@ -2,14 +2,10 @@
 name: apple-spatial
 description: >
   visionOS / iOS 空間コンピューティング。RealityKit、ARKit、visionOS SwiftUI、USDKit、Spatial Preview。
-  Entity, ModelEntity, AnchorEntity, Component, System, RealityView, MeshResource, Material,
-  EntityAction, MeshDeformerComponent, GaussianSplatComponent, ComputeGraphComponent,
-  ComputeNodeGraph, PhysicsJointsComponent, ForceEffectComponent, ClothBodyComponent,
-  NavigationComponent, NavigationMeshComponent, NavigationController,
-  USDStage, SpatialPreviewSession, ImmersiveSpace, ImmersionStyle, WindowGroup,
-  VolumetricWindowStyle, Model3D, ARKitSession, ARSession, ARWorldTrackingConfiguration,
-  WorldTrackingProvider, HandTrackingProvider, ImageTrackingProvider, AccessoryTrackingProvider,
-  CameraFrameProvider, ObjectTrackingProvider, RoomTrackingProvider, SceneReconstructionProvider。
+  Entity, ModelEntity, AnchorEntity, Component, System, RealityView,
+  MeshDeformerComponent, GaussianSplatComponent, NavigationComponent,
+  USDStage, SpatialPreviewSession, ImmersiveSpace, Model3D, ARKitSession,
+  WorldTrackingProvider, HandTrackingProvider, SceneReconstructionProvider。
 user-invocable: false
 ---
 

@@ -7,7 +7,6 @@ description: >
   coverage (v8 / istanbul)、snapshot、vitest.config.ts、projects (old workspace)、
   Vitest Browser Mode (vitest-browser-react, locators, expect.element)、UI モード、bench fixture。
 user-invocable: false
-model: sonnet
 ---
 
 # Vitest API リファレンス

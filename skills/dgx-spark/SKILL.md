@@ -2,13 +2,10 @@
 name: dgx-spark
 description: >
   NVIDIA DGX Spark User Guide リファレンス。GB10 Grace Blackwell Superchip 仕様、
-  first-boot / UEFI、ConnectX-7 Networking (旧 Spark Stacking)、複数 Spark 接続、
+  first-boot / UEFI、ConnectX-7 Networking、複数 Spark 接続、
   NVIDIA Sync Cluster Assistant、DGX OS / NGC / container runtime、
-  Release Notes (DGX OS 7.5.0)、known issues、PXE / cloud-init、fleet 運用、
-  apt / fwupdmgr、recovery、PSIRT、
-  NVIDIA Developer Forums 由来 troubleshooting、
-  build.nvidia.com/spark playbook (vLLM / vLLM cluster / TensorRT-LLM / Ollama /
-  ComfyUI / NIM / NeMo / VLM fine-tuning / NVIDIA PAIR / NCCL)、Tailscale、VS Code。
+  Release Notes (DGX OS 7.5.0)、known issues、PXE / cloud-init、fleet 運用、recovery、
+  build.nvidia.com/spark playbook (vLLM / TensorRT-LLM / Ollama / ComfyUI / NIM / NeMo / NCCL)、Tailscale。
 user-invocable: false
 ---
 

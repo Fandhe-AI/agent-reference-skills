@@ -1,5 +1,5 @@
 ---
-name: opencode
+name: opencode-usage
 description: >
   OpenCode (opencode.ai のオープンソース AI コーディングエージェント, v2) の利用リファレンス。
   opencode.jsonc 設定, agents (build / plan), models, providers, OpenCode skills, commands, plugins,
@@ -9,7 +9,7 @@ description: >
 user-invocable: false
 ---
 
-# opencode
+# opencode-usage
 
 OpenCode v2 — opencode.ai のオープンソース AI コーディングエージェント（CLI / TUI / Desktop / Web）の利用側リファレンス。npm パッケージは `@opencode/cli`。
 出典は https://opencode.ai/docs/ と https://opencode.ai/docs/cli/ 、原本は anomalyco/opencode のタグ v2.3.0（commit a6b15d3、2026-11-13）の `services/site/src/docs/content/*.mdx` と `cli/*.mdx`。
@@ -31,7 +31,7 @@ V1（`/v1/docs`）は対象外で、V1 からの移行のみ `references/getting
 ## ディレクトリ構成
 
 ```text
-skills/opencode/
+skills/opencode-usage/
   SKILL.md
   references/
     getting-started/

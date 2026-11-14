@@ -7,7 +7,6 @@ description: >
   trim_trailing_whitespace, insert_final_newline, max_line_length,
   spelling_language。
 user-invocable: false
-model: sonnet
 ---
 
 # EditorConfig リファレンス

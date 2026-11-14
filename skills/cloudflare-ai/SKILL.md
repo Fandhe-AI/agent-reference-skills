@@ -2,11 +2,11 @@
 name: cloudflare-ai
 description: >
   Cloudflare の AI 基盤 (Workers AI / AI Gateway / Vectorize / AI Search) の
-  リファレンス。env.AI.run、REST API、OpenAI 互換エンドポイント、JSON mode、function calling、batch API、LoRA、toMarkdown、
+  リファレンス。env.AI.run、REST API、OpenAI 互換エンドポイント、function calling、batch API、LoRA、
   モデルカタログ (text generation / embeddings / text-to-image / ASR / TTS)、
-  AI Gateway (caching / rate limiting / fallbacks / logs / BYOK / dynamic routing)、
-  VectorizeIndex insert / upsert / query / metadata filtering、AI Search (旧 AutoRAG) search / chatCompletions。
-  Agents SDK は cloudflare-agents、プロバイダー API 本体は openai-api-core / anthropic-api-core / google-gemini-api、Upstash Vector とは別。
+  AI Gateway (caching / rate limiting / fallbacks / BYOK)、
+  VectorizeIndex (upsert / query)、AI Search (旧 AutoRAG)。
+  Agents SDK は cloudflare-agents、Upstash Vector・各社 API 本体とは別。
 user-invocable: false
 ---
 

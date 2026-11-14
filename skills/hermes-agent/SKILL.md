@@ -2,11 +2,10 @@
 name: hermes-agent
 description: >
   Hermes Agent (Nous Research の AI CLI エージェント)。インストール、
-  CLI コマンド (chat, model, gateway, config, cron, webhook, mcp, skills, profile, hermes pm)、
-  Configuration (Terminal Backends, Memory, TTS / STT, Auxiliary Models, Compression, Display, Local Models llama.cpp, Egress / Secrets)、
-  Features (Tools, Skills, Hooks, Delegation, Kanban, Cron, Voice Mode, Personality, Context Files)、
-  Messaging Gateway (Platform Support, Bot Mode, Connectors)、Security、Architecture、
-  Hermes Desktop、Plugin Catalog、Profiles、Developer Guide、Nous Portal (Tool Gateway)。
+  CLI コマンド (chat, model, gateway, config, cron, webhook, mcp, skills, profile)、
+  Configuration (Terminal Backends, Memory, TTS / STT, Auxiliary Models, Local Models llama.cpp)、
+  Features (Tools, Skills, Hooks, Delegation, Kanban, Voice Mode, Personality)、
+  Messaging Gateway (Platform Support, Connectors)、Security、Hermes Desktop、Nous Portal。
 user-invocable: false
 ---
 

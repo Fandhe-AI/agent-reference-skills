@@ -3,12 +3,11 @@ name: github-docs
 description: >
   GitHub 公式ドキュメント (docs.github.com)。REST API, GraphQL, Webhooks,
   GitHub Apps, OAuth Apps, gh CLI, PAT / GITHUB_TOKEN, Actions (jobs, steps,
-  expressions, workflow commands, concurrency, OIDC, artifact attestations, lockfile),
-  pull requests, issues, Projects v2, immutable releases, Codespaces, Packages,
-  Copilot API / cloud agent, code scanning, secret scanning, Dependabot,
-  Dependency graph / SBOM, Teams, Billing, activity (events / notifications)。
+  expressions, workflow commands, concurrency, OIDC, artifact attestations),
+  pull requests, issues, Projects v2, Codespaces, Packages,
+  Copilot API, code scanning, secret scanning, Dependabot,
+  SBOM, Teams, Billing, events / notifications。
 user-invocable: false
-model: sonnet
 ---
 
 # GitHub Docs リファレンス

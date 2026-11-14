@@ -3,11 +3,10 @@ name: cadquery
 description: >
   CadQuery (Python 製 3D CAD スクリプティングライブラリ) リファレンス。
   Workplane API (lineTo / extrude / revolve / sweep / loft / fillet / chamfer / shell)、
-  Sketch API、Assemblies (Constraint solver)、Free Function API (hollow / prism / draft / offset2D, History)、
-  Selectors、Shape / Vertex / Edge / Wire / Face / Shell / Solid、
-  Import / Export (STEP / DXF / STL / glTF / SVG)、Visualization (VTK, cadquery.fig 非ブロッキング, Jupyter)、CQGI。
+  Sketch API、Assemblies (Constraint solver)、Free Function API (hollow / prism / draft / offset2D)、
+  Selectors、Shape / Vertex / Edge / Wire / Face / Solid、
+  Import / Export (STEP / DXF / STL / glTF / SVG)、Visualization (VTK, Jupyter)、CQGI。
 user-invocable: false
-model: sonnet
 ---
 
 # CadQuery リファレンス

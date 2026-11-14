@@ -2,12 +2,12 @@
 name: windows-packaging-publish
 description: >
   Windows アプリ開発 (MSIX / Microsoft Store) のパッケージング・配置・公開リファレンス。
-  MSIX, MSIX Core, AppxManifest, MakeAppx, MSIX Packaging Tool, パッケージボリューム, Package Bundles, App Attach,
-  PSF (Package Support Framework), Package Identity, PackageFamilyName, スパースパッケージ,
-  App Installer, サイドローディング, PackageManager, Windows App SDK Bootstrapper, 自己完結型デプロイ,
-  SignTool, 証明書, Azure Trusted Signing (Azure Artifact Signing), CI/CD 署名, GitHub Actions, msstore CLI,
-  Partner Center ロール, アプリ送信, ストアリスティング, 年齢レーティング, 認定プロセス,
-  段階的ロールアウト, StoreContext, 分析レポート。
+  MSIX, AppxManifest, MakeAppx, MSIX Packaging Tool, App Attach,
+  PSF (Package Support Framework), Package Identity, スパースパッケージ,
+  App Installer, サイドローディング, Windows App SDK Bootstrapper,
+  SignTool, Azure Trusted Signing, CI/CD 署名, msstore CLI,
+  Partner Center, アプリ送信,
+  段階的ロールアウト, StoreContext。
 user-invocable: false
 ---
 

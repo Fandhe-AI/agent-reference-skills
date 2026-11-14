@@ -32,9 +32,14 @@ skills/<library-name>/
 
 | フィールド | 値 | 備考 |
 | --- | --- | --- |
-| `name` | ディレクトリ名と一致 | ハイフン区切り小文字 |
+| `name` | ディレクトリ名と一致 | `^[a-z0-9]+(-[a-z0-9]+)*$`・64 字以内（Agent Skills 標準 / OpenCode 推奨。`_` 不可） |
 | `description` | 日本語・`>` ブロックスカラー | description-style.md 準拠 |
 | `user-invocable` | `false`（通常） | Claude が自動参照する場合は false |
+
+配布スキルは Claude Code（`.claude/skills/`）に加え Codex・OpenCode（`.agents/skills/`）にも導入されるため、以下を守る。
+
+- frontmatter は上表の 3 キーのみ。`model` / `effort` / `allowed-tools` / `context` 等の Claude Code 固有の実行制御キーは書かない（Codex・OpenCode では無視され、Claude Code では `model` が自動読み込みのたびにそのターンのモデルを上書きする）
+- `name` は各ツールの組み込みスキル ID と衝突させない。OpenCode は同じ ID を後勝ちで解決し、`.agents/skills` の同名スキルが組み込みを置き換える（実測: 組み込み `opencode`）。Codex は同名スキルをマージしない（公式 docs）。Codex 組み込みは `skill-creator` / `skill-installer` / `openai-docs` / `imagegen`（実測）。製品名そのものを名前にする場合は `<product>-usage` 等の接尾辞を付ける
 
 ## SKILL.md 本文の構成
 

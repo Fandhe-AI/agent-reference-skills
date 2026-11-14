@@ -7,7 +7,6 @@ description: >
   segments (ui / model / api / lib / config)、steiger、Next.js、TanStack Query 連携。
   コードレビュー・リファクタリング時に自動参照。
 user-invocable: false
-model: sonnet
 ---
 
 # Feature-Sliced Design ガイドライン

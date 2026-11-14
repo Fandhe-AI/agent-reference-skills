@@ -2,12 +2,12 @@
 name: inngest
 description: >
   Inngest イベント駆動 Durable Execution リファレンス。バックグラウンドジョブ、長時間ワークフロー。
-  createFunction, step.run, step.sleep, step.waitForEvent, step.waitForSignal, step.invoke,
-  step.sendEvent, step.sleepUntil, step.fetch, step.ai.infer, step.ai.wrap, step.metadata, inngest.send, serve, connect, checkpointing, Inngest CLI。
-  concurrency, throttle, debounce, rate-limit, batching, priority, idempotency, singleton, multi-tenancy フロー制御。
-  Realtime（channels, topics, publish, subscribe, subscription tokens, useRealtime）、
-  Agent Evals（scoring, group.experiment）、MCP（Dev Server / Cloud）。
-  デプロイ先 Next.js, Express, Hono, Cloudflare Workers, Vercel, Netlify, DigitalOcean, Render。
+  createFunction, step.run, step.sleep, step.waitForEvent, step.invoke,
+  step.sendEvent, step.ai.infer, inngest.send, serve, checkpointing, Inngest CLI。
+  concurrency, throttle, debounce, rate-limit, batching, idempotency, singleton フロー制御。
+  Realtime (channels, topics, useRealtime)、
+  Agent Evals、MCP。
+  デプロイ先 Next.js, Hono, Cloudflare Workers。
 user-invocable: false
 ---
 

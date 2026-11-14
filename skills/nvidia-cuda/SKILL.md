@@ -2,12 +2,11 @@
 name: nvidia-cuda
 description: >
   NVIDIA CUDA GPU 並列コンピューティングリファレンス。
-  CUDA C++ / CUDA Python, kernel, nvcc, Unified Memory, CUDA Graphs,
+  CUDA C++ / CUDA Python, nvcc, Unified Memory, CUDA Graphs,
   Cooperative Groups, Green Contexts, Driver API, マルチ GPU。
-  PTX ISA 命令セット, state space, MMA 命令。
-  Blackwell チューニング, Streaming Multiprocessor, NVLink,
-  Locality Domains, Compute Fabric Transport。
-  CUTLASS / CuTe DSL / CuTe C++ GEMM, Tensor Core, tcgen05, Task Scheduling,
+  PTX ISA 命令セット, MMA 命令。
+  Blackwell チューニング, Streaming Multiprocessor, NVLink。
+  CUTLASS / CuTe DSL / CuTe C++, Tensor Core, tcgen05,
   Operator API, nvMatmulHeuristics, nsight-compute, compute-sanitizer。
 user-invocable: false
 ---

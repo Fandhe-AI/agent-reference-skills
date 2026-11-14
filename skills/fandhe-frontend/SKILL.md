@@ -2,9 +2,9 @@
 name: fandhe-frontend
 description: >
   Rust 製フロントエンドフレームワーク fandhe-frontend のリファレンス。
-  SSR / SPA / SSG / View Transitions、hydration、Document builder(SSR 組み込み)、CSP meta、単一実行ファイル配布、Vercel、既定エスケープ。
+  SSR / SPA / SSG / View Transitions、hydration、Document builder(SSR 組み込み)、単一実行ファイル配布。
   クレート core / app / interactive / server(generate_pages) /
-  headless-ui(Primitives, AutocompleteToken, passkey) / pre-styled-ui(Themes, motion) /
+  headless-ui(Primitives, AutocompleteToken) / pre-styled-ui(Themes, motion) /
   wireframe-ui(Wireframes) / animation(data-* 属性) / wasm-full。
   Blocks(Hero / Pricing / Cart 等セクション例 335 件)。CLI fw。
 user-invocable: false

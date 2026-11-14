@@ -2,15 +2,10 @@
 name: windows-platform-integration
 description: >
   Windows アプリ開発 (Windows App SDK / WinRT) の OS 統合 API リファレンス。
-  DeviceInformation, DeviceWatcher, センサー (Accelerometer, Gyrometer, Pedometer, Compass,
-  OrientationSensor, ActivitySensor), Bluetooth LE, USB, Serial, HID, Battery,
-  HttpClient, StreamSocket, WebSocket, BackgroundDownloader/Uploader, NetworkInformation,
-  PointerInput, KeyboardInput, IME/TextInput, FocusManager, DragAndDrop,
-  ResourceLoader (多言語化・地域化), Calendar, DateTimeFormatter, CurrencyFormatter,
-  PasswordVault, OAuth2Manager, Web Account Manager (WAM) / MSAL, WebAuthenticationBroker,
-  WindowsHello/Passkeys, Age signals, CryptographicBuffer, Clipboard, DataTransferManager,
-  Launcher, ProtocolActivation, JumpList, TaskbarManager, SecondaryTile, StartupTask,
-  Smart App Control, Phone Link。
+  DeviceInformation, センサー (Accelerometer, Gyrometer, Pedometer), Bluetooth LE, USB, Serial, HID,
+  HttpClient, StreamSocket, WebSocket, BackgroundDownloader, PointerInput, KeyboardInput,
+  ResourceLoader, PasswordVault, OAuth2Manager, WAM / MSAL, WebAuthenticationBroker,
+  Clipboard, Launcher, JumpList, StartupTask。
 user-invocable: false
 ---
 

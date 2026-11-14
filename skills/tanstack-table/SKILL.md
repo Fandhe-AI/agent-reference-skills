@@ -2,12 +2,10 @@
 name: tanstack-table
 description: >
   TanStack Table (React Table) v9 ヘッドレステーブル (@tanstack/react-table) の API リファレンス。
-  ark-ui / chakra-ui のスタイル付き Table とは別。
   useTable, createTableHook, tableFeatures, createColumnHelper, flexRender, createCoreRowModel,
-  table.Subscribe, atoms, React Compiler, custom features, sorting, column / global / fuzzy filtering,
-  faceting, pagination, row selection, expanding, grouping / aggregation,
-  column / row の ordering・pinning・sizing・visibility, virtualization。
-  v8 legacy (useReactTable / getCoreRowModel) と v9 移行。
+  atoms, sorting, filtering (column / global / fuzzy), faceting, pagination, row selection,
+  grouping / aggregation, ordering / pinning / sizing / visibility,
+  v8 legacy (useReactTable) と v9 移行。ark-ui / chakra-ui の Table とは別。
 user-invocable: false
 ---
 

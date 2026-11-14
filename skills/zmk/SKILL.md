@@ -2,13 +2,12 @@
 name: zmk
 description: >
   ZMK Firmware (オープンソースキーボードファームウェア) リファレンス。
-  Getting Started (hardware, user-setup, customization, zmk-cli)、
+  Getting Started (hardware, user-setup, zmk-cli)、
   Features (bluetooth, split keyboards, encoders, displays, lighting, pointing, studio, low-power)、
   Keymaps (keycodes, modifiers, combos, conditional layers)、
   Behaviors (タップ・ホールド、レイヤー、マクロ、tap-dance, sticky-key)、
-  Input Processors、Hardware Integration、Troubleshooting (building, flashing, connection, hardware issues)。
+  Input Processors、Hardware Integration、Troubleshooting (building, flashing)。
 user-invocable: false
-model: sonnet
 ---
 
 # ZMK Firmware リファレンス

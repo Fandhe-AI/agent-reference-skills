@@ -8,7 +8,6 @@ description: >
   Supabase MCP サーバー、RLS (Row Level Security)、migrations。
   SQL Server / node-mssql は別スキル mssql。
 user-invocable: false
-model: sonnet
 ---
 
 # Supabase リファレンス

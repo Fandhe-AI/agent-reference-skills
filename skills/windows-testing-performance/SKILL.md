@@ -2,12 +2,12 @@
 name: windows-testing-performance
 description: >
   Windows アプリ開発 (WinUI 3 / Windows App SDK) のテスト・性能・アクセシビリティ・スレッド。
-  MSTest, xUnit, NUnit, WinAppDriver, Appium, Playwright, WebView2 テスト, CI, WACK,
-  MSIX サイドローディング, version adaptive。LoggingChannel / ETW, WPT, WPA, プロファイリング,
-  GC, 起動性能, XAML 最適化, ListView/GridView 仮想化。UI Automation, AutomationProperties,
-  automation peers, キーボード操作性, ハイコントラスト, Narrator。DispatcherQueue,
-  DispatcherQueueTimer, WinRT 非同期パターン, async/await, ConfigureAwait, スレッドプール, STA/MTA,
-  デッドロック回避, バックグラウンドタスク。
+  MSTest, xUnit, NUnit, WinAppDriver, Appium, WebView2 テスト, WACK,
+  MSIX サイドローディング。LoggingChannel / ETW, プロファイリング,
+  起動性能, XAML 最適化, ListView/GridView 仮想化。UI Automation, AutomationProperties,
+  ハイコントラスト, Narrator。DispatcherQueue,
+  DispatcherQueueTimer, async/await, ConfigureAwait, STA/MTA,
+  デッドロック回避。
 user-invocable: false
 ---
 

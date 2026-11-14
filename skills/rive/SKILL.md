@@ -4,9 +4,8 @@ description: >
   Rive アニメーションランタイム (Web / React)。
   useRive, useRiveFile, useStateMachineInput, RiveComponent, State Machine,
   Data Binding, ViewModel / ViewModelInstance, Events, Layout / Fit / Alignment, .riv。
-  @rive-app/canvas / webgl2 / react-canvas / react-webgl2、enableGPUCanvas、
-  Semantics, Rive CLI。Scripting (Luau), Artboard, Property, Path / Paint / Renderer,
-  WGSL Shaders, GPU pipeline, Node / Layout / Converter スクリプト。
+  @rive-app/canvas / webgl2 / react-canvas / react-webgl2、enableGPUCanvas、Rive CLI。
+  Scripting (Luau), Artboard, Path / Paint / Renderer, WGSL Shaders。
 user-invocable: false
 ---
 

@@ -1,15 +1,10 @@
 ---
 name: apple-distribution
 description: >
-  App Store Connect API 4.5.1 (REST) アプリ配布リファレンス。JWT 認証、API キー作成・失効、
-  Apps, Builds, Bundle IDs, Bundle ID Capabilities, Certificates, Devices, Provisioning Profiles,
-  Users, User Invitations, Merchant IDs, Pass Type IDs、TestFlight (Beta Groups / Testers)、
-  Sandbox Testers、App Review, Review Submissions, Customer Reviews, Custom Product Pages,
-  Phased Release、In-App Purchases, Subscriptions, Subscription Groups, App Price Points,
-  Promotional Offers, Win-back Offers, Sales Reports、App Asset Library (screenshots / app previews)、
-  Webhooks / Webhook Events / Deliveries、Xcode Cloud (Workflows, Build Runs, Artifacts)、
-  Alternative Distribution (EU マーケットプレイス / Web Distribution)、
-  Game Center (Achievements, Leaderboards, Challenges)、Analytics / 診断レポート。
+  App Store Connect API 4.5.1 (REST) アプリ配布リファレンス。JWT 認証, Apps, Builds, Bundle IDs,
+  Certificates, Devices, Provisioning Profiles, TestFlight (Beta Groups / Testers), Sandbox Testers,
+  App Review, In-App Purchases, Subscriptions, Promotional Offers, Sales Reports, Webhooks,
+  Xcode Cloud, Alternative Distribution, Game Center, Custom Product Pages, Phased Release, Analytics。
 user-invocable: false
 ---
 

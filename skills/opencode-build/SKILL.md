@@ -28,7 +28,7 @@ OpenCode v2 を拡張・組み込みする開発者向けのリファレンス�
 
 ## 他スキルとの使い分け
 
-- `opencode`: 利用者向け CLI・`opencode.jsonc`・agents / models / MCP の設定。プラグインを導入する側は `opencode` の `agents-models/plugins.md`。本スキルはプラグインを作る側
+- `opencode-usage`: 利用者向け CLI・`opencode.jsonc`・agents / models / MCP の設定。プラグインを導入する側は `opencode-usage` の `agents-models/plugins.md`。本スキルはプラグインを作る側
 - `opencode-console`: OpenCode Console ゲートウェイ。Console の Inference API は本スキルの HTTP API（OpenCode サーバーの API）とは別
 - `anthropic-claude-code-extend`: Claude Code の plugins / hooks。OpenCode の plugin hooks とは別物
 - `anthropic-agent-sdk` / `openai-agents`: 各社の Agent SDK。`@opencode/sdk` は OpenCode 本体を組み込む SDK

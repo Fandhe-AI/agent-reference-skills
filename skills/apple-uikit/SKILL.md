@@ -2,14 +2,11 @@
 name: apple-uikit
 description: >
   UIKit iOS/iPadOS UI フレームワーク。
-  UIViewController, UINavigationController, UITabBarController, UISplitViewController,
-  UIView, UILabel, UIButton, UITextField, UIScrollView, UIStackView,
-  UITableView, UICollectionView, diffable data source, NSDiffableDataSourceSnapshot,
-  UICollectionViewCompositionalLayout, Auto Layout, NSLayoutConstraint, NSLayoutAnchor,
-  UILayoutGuide, intrinsicContentSize。
-  UIArrangementViewController, UISplitArrangement, UIOverlayArrangement, UIView.ReservedRegion,
-  UIHingeInteraction, 縦軸バー, iPhone Duo adaptive layout (iOS 27.1+),
-  scene-based life cycle 移行, UISceneAccessory。SwiftUI ArrangementView とは別 API。
+  UIViewController, UINavigationController, UITabBarController, UITableView, UICollectionView,
+  diffable data source, UICollectionViewCompositionalLayout, UIView, UIStackView, Auto Layout, NSLayoutConstraint,
+  UIArrangementViewController, UISplitArrangement, UIHingeInteraction,
+  iPhone Duo adaptive layout (iOS 27.1+), scene-based life cycle。
+  SwiftUI ArrangementView とは別 API。
 user-invocable: false
 ---
 

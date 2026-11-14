@@ -1,8 +1,8 @@
 # Agent Reference Skills
 
-Claude Code 用のスキル（リファレンスドキュメント）とエージェント定義のコレクション。
+Claude Code / Codex / OpenCode 用のスキル（リファレンスドキュメント）とエージェント定義のコレクション。
 
-公式ドキュメントから抽出・構造化した markdown をスキルとして提供する。Claude Code がコード作成・レビュー時に自動でライブラリの API リファレンスを参照できるようになる。
+公式ドキュメントから抽出・構造化した markdown を [Agent Skills](https://agentskills.io) 形式（`SKILL.md`）のスキルとして提供する。コーディングエージェントがコード作成・レビュー時に自動でライブラリの API リファレンスを参照できるようになる。
 
 [vercel-labs/skills](https://github.com/vercel-labs/skills) CLI を使用してインストールする。
 
@@ -20,19 +20,50 @@ npx skills add Fandhe-AI/agent-reference-skills --skill vitest
 # 複数のスキルを追加
 npx skills add Fandhe-AI/agent-reference-skills --skill vitest --skill zod --skill biome
 
-# すべてのスキルを追加
+# すべてのスキルを、対応する全エージェントへ追加（--skill '*' --agent '*' -y の短縮形。各エージェント固有のディレクトリも作られる）
 npx skills add Fandhe-AI/agent-reference-skills --all
 ```
 
-デフォルトではプロジェクトの `.claude/skills/` にシンボリックリンクで追加される。`--copy` フラグでファイルコピーに変更可能。
+### 導入先エージェントの指定（Claude Code / Codex / OpenCode）
+
+`-a`（`--agent`）で導入先を指定する。省略すると対話で選択する（`-y` 付きで省略した場合、実測では `.agents/skills/` と `.claude/skills/` の symlink が作られた）。
+
+```bash
+# Claude Code + Codex + OpenCode に導入
+npx skills add Fandhe-AI/agent-reference-skills --skill vitest -a claude-code -a codex -a opencode
+
+# Codex と OpenCode のみ
+npx skills add Fandhe-AI/agent-reference-skills --skill vitest -a codex -a opencode
+```
+
+| 指定 | 配置 |
+| --- | --- |
+| `-a codex` / `-a opencode` | 実体を `.agents/skills/<name>/` に配置（両ツール共通で読む） |
+| 上記と `-a claude-code` を併用 | 実体は `.agents/skills/<name>/`、`.claude/skills/<name>` はそこへのシンボリックリンク |
+| `-a claude-code` のみ | `.claude/skills/<name>/` に配置 |
+
+`--copy` フラグでシンボリックリンクの代わりにファイルコピーにできる。OpenCode は `.claude/skills/` も互換パスとして読むが、Codex は `.agents/skills/` のみを読む。
+
+### 必要なスキルだけを入れる
+
+Codex はスキル一覧の description を導入数に応じて切り詰める（一覧の予算はコンテキストの 2%、不明時 8,000 字）。実測（codex-cli 0.164.0、Codex 組み込み 4 スキルを含む）では 1 件あたりの表示がおよそ 10 件導入で約 270 字、20 件で約 200 字、50 件で約 160 字まで縮んだ（値はモデルのコンテキスト長と他の導入済みスキルで変わる）ため、プロジェクトで使うライブラリのスキルだけを `--skill` で選んで入れる。多く入れる場合は Codex の `~/.codex/config.toml` で `skills.max_context_tokens`（最大 10,000 トークン）を引き上げる。
 
 ### グローバルインストール
 
-`-g` フラグで `~/.claude/skills/` にインストールすると、すべてのプロジェクトで利用できる。
+`-g` フラグでユーザーレベル（Codex / OpenCode は `~/.agents/skills/`、Claude Code は `~/.claude/skills/` からの symlink。`CLAUDE_CONFIG_DIR` 設定時はその配下）にインストールすると、すべてのプロジェクトで利用できる。
 
 ```bash
 npx skills add Fandhe-AI/agent-reference-skills --skill react-router -g
 ```
+
+### スキル名の変更
+
+| 旧名 | 新名 | 理由 |
+| --- | --- | --- |
+| `kicad_10` | `kicad` | Agent Skills 標準の名前規則（小文字英数字とハイフンのみ）に合わせた |
+| `opencode` | `opencode-usage` | OpenCode 組み込みの `opencode` スキルと ID が衝突し、上書きしてしまうため |
+
+旧名で導入済みの場合は `npx skills remove <旧名>` の後、新名で `npx skills add` し直す。
 
 ## リポジトリ構成
 
@@ -132,11 +163,11 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 
 ### OpenCode
 
-opencode は OpenCode 本体の利用（設定・権限・セッション・CLI）、opencode-build は拡張・組み込み開発（プラグイン・クライアント / SDK・サーバー HTTP API）、opencode-console は OpenCode Console（モデルゲートウェイ・OpenCode Go サブスク・ワークスペース管理）を担当。Claude Code / Codex / Hermes 本体の設定は各スキルが担当。
+opencode-usage は OpenCode 本体の利用（設定・権限・セッション・CLI）、opencode-build は拡張・組み込み開発（プラグイン・クライアント / SDK・サーバー HTTP API）、opencode-console は OpenCode Console（モデルゲートウェイ・OpenCode Go サブスク・ワークスペース管理）を担当。Claude Code / Codex / Hermes 本体の設定は各スキルが担当。
 
 | スキル | 説明 |
 | -------- | ------ |
-| [opencode](skills/opencode/) | OpenCode v2 — opencode.jsonc 設定, AGENTS.md instructions, permissions / policies, snapshots / compaction, V1 移行 |
+| [opencode-usage](skills/opencode-usage/) | OpenCode v2 — opencode.jsonc 設定, AGENTS.md instructions, permissions / policies, snapshots / compaction, V1 移行 |
 | [opencode-build](skills/opencode-build/) | OpenCode v2 拡張開発 — server plugin hooks / transforms / ctx API / RPC, @opencode/client, @opencode/sdk (workerd), TUI / GUI plugin (Desktop / Web), Effect 版, server HTTP API (openapi.json / session / PTY), V1 プラグイン移行 |
 | [opencode-console](skills/opencode-console/) | OpenCode Console — Inference / Providers API, API keys・service accounts, OpenCode Go, workspace (SSO / SCIM / budgets / billing), harnesses |
 
@@ -258,7 +289,7 @@ react-native / expo / flutter / kotlin-multiplatform のネイティブ側 API �
 
 | スキル | 説明 |
 | -------- | ------ |
-| [kicad_10](skills/kicad_10/) | KiCad 10.0 — EDA スイート, 回路図設計, 基板設計, kicad-cli, ガーバー出力 |
+| [kicad](skills/kicad/) | KiCad 10.0 — EDA スイート, 回路図設計, 基板設計, kicad-cli, ガーバー出力 |
 | [ergogen](skills/ergogen/) | Ergogen — 自作キーボード設計, YAML 設定, points / outlines / cases / pcbs |
 | [zmk](skills/zmk/) | ZMK Firmware — キーボードファームウェア, keymap, behaviors, bluetooth, split |
 | [dgx-spark](skills/dgx-spark/) | DGX Spark — GB10 Grace Blackwell, セットアップ, ConnectX-7 クラスタ, ローカル LLM, プレイブック |

@@ -6,7 +6,6 @@ description: >
   Continuation (CheckedContinuation)、Observable、@Observable、Observations、ObservationRegistrar、
   Span、InlineArray、RangeSet、Equatable、Hashable、Comparable、Identifiable、Optional、Codable、Result、generics、some/any。
 user-invocable: false
-model: sonnet
 ---
 
 # Apple Swift リファレンス

@@ -2,10 +2,10 @@
 name: anthropic-agent-sdk
 description: >
   Claude Agent SDK (code.claude.com/docs/en/agent-sdk) の TypeScript / Python リファレンス。
-  query(), ClaudeAgentOptions / Options, fallbackModel, maxTurns, maxBudgetUsd,
+  query(), ClaudeAgentOptions / Options, maxTurns,
   custom tools (in-process MCP), createSdkMcpServer, hooks, permissions (canUseTool), subagents,
   sessions (resume / fork), streaming, structured outputs, Agent Skills (SKILL.md),
-  slash commands (/compact, /clear), tool search, hosting / observability。
+  hosting / observability。
 user-invocable: false
 ---
 

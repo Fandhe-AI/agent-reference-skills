@@ -3,10 +3,10 @@ name: windows-winui-controls
 description: >
   Windows アプリ開発 (WinUI 3 / Windows App SDK) のコントロール API リファレンス。
   Microsoft.UI.Xaml.Controls。Button, CheckBox, RadioButtons, ToggleSwitch, Slider,
-  TextBox, RichEditBox, AutoSuggestBox, NumberBox, ListView, GridView, ItemsView,
-  ItemsRepeater, TreeView, ComboBox, NavigationView, TabView, Frame, SplitView,
-  BreadcrumbBar, ContentDialog, Flyout, CommandBar, TeachingTip, InfoBar,
-  MediaPlayerElement, WebView2, CalendarView, DatePicker, ColorPicker, TitleBar。
+  TextBox, AutoSuggestBox, NumberBox, ListView, GridView,
+  ItemsRepeater, TreeView, ComboBox, NavigationView, TabView, SplitView,
+  ContentDialog, Flyout, CommandBar, TeachingTip, InfoBar,
+  WebView2, CalendarView, DatePicker, TitleBar。
 user-invocable: false
 ---
 

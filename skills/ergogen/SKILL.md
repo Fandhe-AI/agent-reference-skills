@@ -7,7 +7,6 @@ description: >
   Anchors, Zones, Adjustments, Preprocessing, Footprints, Traces。
   キーレイアウト、ケース設計、PCB 生成。
 user-invocable: false
-model: sonnet
 ---
 
 # Ergogen リファレンス

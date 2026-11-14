@@ -2,8 +2,8 @@
 name: fandhe-ai
 description: >
   Rust 製 AI/ML ライブラリ fandhe-ai のリファレンス。Burn / candle / tch 非依存の from-scratch 実装。
-  tape(), tape_for, Tape, Gradients, Tensor, Var, LinearVars, autodiff, kernel fusion, FusionPlan, BackendOps,
-  Device (Cpu / Cuda / Metal), DeviceParamStore, compat::array, compat::Sequential, nn::Module,
+  tape(), Tape, Gradients, Tensor, autodiff, kernel fusion, FusionPlan, BackendOps,
+  Device (Cpu / Cuda / Metal), compat::array, compat::Sequential, nn::Module,
   optim (AdamW / GradScaler), data::DataLoader, ONNX import / export, safetensors,
   inference::generate / KvCache, guardrail / self-repair CLI。
 user-invocable: false

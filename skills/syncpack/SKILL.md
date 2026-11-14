@@ -7,7 +7,6 @@ description: >
   catalog プロトコル, semverRangeOnly, minimumReleaseAge, severity,
   sourceMode, package.json 整列、依存バージョン揃え、CI 連携。
 user-invocable: false
-model: sonnet
 ---
 
 # Syncpack リファレンス

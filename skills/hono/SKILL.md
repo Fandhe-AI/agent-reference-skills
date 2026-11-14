@@ -7,7 +7,6 @@ description: >
   Helpers (Cookie, Streaming, WebSocket, Factory, RPC)、
   Cloudflare Workers / Deno / Bun / Node.js / AWS Lambda 対応、@hono/* アダプターパッケージ。
 user-invocable: false
-model: sonnet
 ---
 
 # Hono API リファレンス

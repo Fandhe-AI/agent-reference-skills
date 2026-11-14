@@ -2,13 +2,13 @@
 name: windows-data-storage
 description: >
   Windows アプリ開発 (Windows App SDK / WinRT) のファイル・設定・データ保存リファレンス。
-  Windows.Storage の StorageFile, StorageFolder, IStorageItem, FileIO, PathIO,
-  CachedFileManager, DataReader, DataWriter, BasicProperties。ApplicationData,
-  ApplicationDataContainer, ApplicationDataCompositeValue のローカル・ローミング設定。
+  Windows.Storage の StorageFile, StorageFolder, FileIO,
+  CachedFileManager, DataWriter。ApplicationData,
+  ApplicationDataContainer のローカル・ローミング設定。
   FileOpenPicker, FileSavePicker, FolderPicker, KnownFolders,
-  StorageApplicationPermissions (FutureAccessList / MostRecentlyUsedList)。
-  JsonObject, JsonArray, XmlDocument, SQLite, EF Core,
-  Microsoft.Data.SqlClient (SQL Server), Cosmos DB, MySQL, MongoDB 接続。
+  StorageApplicationPermissions。
+  JsonObject, SQLite, EF Core,
+  Microsoft.Data.SqlClient, MongoDB 接続。
 user-invocable: false
 ---
 
