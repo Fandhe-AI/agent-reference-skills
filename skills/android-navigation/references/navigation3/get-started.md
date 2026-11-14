@@ -8,7 +8,7 @@ Add the Navigation 3 runtime and UI libraries, plus optional add-ons (ViewModel 
 
 ```toml
 [versions]
-nav3Core = "1.2.0"
+nav3Core = "1.2.1"
 lifecycleViewmodelNav3 = "2.12.0-alpha04"
 kotlinSerialization = "2.2.21"
 kotlinxSerializationCore = "1.9.0"
@@ -61,10 +61,11 @@ dependencies {
 ## Notes
 
 - Update the compile SDK to 36 or later (`compileSdk = "36"` in `libs.versions.toml`).
-- Version numbers above are the ones shown in the official guide at the time of retrieval (2026-10); check the AndroidX release pages for current versions. Some add-ons are alpha (`lifecycle-viewmodel-navigation3` 2.12.0-alpha04, `adaptive-navigation3` 1.4.0-alpha03).
+- Version numbers above are the ones shown in the official guide at the time of retrieval (2026-11-14); check the AndroidX release pages for current versions. Some add-ons are alpha (`lifecycle-viewmodel-navigation3` 2.12.0-alpha04, `adaptive-navigation3` 1.4.0-alpha03).
+- Navigation 3 1.2.1 (November 04, 2026) only lowers `compileSdk` from 37 to 36 (1.2 depends on Compose 1.10, which does not require compileSdk 37); no API changes. Source: https://developer.android.com/jetpack/androidx/releases/navigation3 (retrieved 2026-11-14)
 - Only the runtime and UI artifacts are required; the other libraries are optional add-ons.
 - This is the Android Navigation 3 (Kotlin, `androidx.navigation3`) API — distinct from the same-named SwiftUI / React Router / Next.js navigation API.
-- Source: https://developer.android.com/guide/navigation/navigation-3/get-started (retrieved 2026-10-17; Navigation 3 1.2.0)
+- Source: https://developer.android.com/guide/navigation/navigation-3/get-started (retrieved 2026-11-14; Navigation 3 1.2.1)
 
 ## Related
 
