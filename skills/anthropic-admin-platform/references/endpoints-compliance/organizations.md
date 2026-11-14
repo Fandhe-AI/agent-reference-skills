@@ -2,7 +2,7 @@
 
 # Organizations Compliance API
 
-Directory endpoints covering linked organizations, their RBAC roles/permissions, effective settings, and user membership across a Claude Enterprise tenant.
+Directory endpoints covering linked organizations, their RBAC roles/permissions, effective settings, and user membership across a Claude Enterprise tenant, plus per-organization security posture results and members' personal preferences (beta).
 
 ## Signature / Usage
 

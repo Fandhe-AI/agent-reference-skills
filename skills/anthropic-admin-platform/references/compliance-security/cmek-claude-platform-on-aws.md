@@ -2,7 +2,7 @@
 
 # Set up CMEK on Claude Platform on AWS
 
-Create an AWS KMS key in your AWS account and attach it to a workspace on Claude Platform on AWS. Use this page if your Claude Console sidebar shows Account managed by AWS; otherwise use the AWS KMS setup page. Access is granted to the AWS service principal `aws-external-anthropic.amazonaws.com`, not to Anthropic's IAM role.
+Create an AWS KMS key in your AWS account and attach it to a workspace on Claude Platform on AWS. Use this page if your Claude Console sidebar shows Account managed by AWS; otherwise use the AWS KMS setup page. The key policy gives access to the AWS service principal `aws-external-anthropic.amazonaws.com`.
 
 ## Signature / Usage
 

@@ -29,6 +29,7 @@ Customer-managed encryption key is disabled or revoked. Re-enable the key to res
 - Unreachable key (for example a KMS outage): requests that store data under your key might still succeed for up to 1 hour, then fail until Anthropic can reach the key again; on Claude Enterprise this includes messages in chat and voice mode. On the Messages API such requests return a 503 error with code `cmek_key_unreachable` and can be retried; the Message Batches API retries them until the key is available or the batch expires.
 - A workspace or organization can't switch to a different key or go back to none. On Claude Platform create a new workspace with a different key or no key and move traffic; on Claude Enterprise there is no way to change keys or stop using CMEK within the organization.
 - Source: https://platform.claude.com/docs/en/manage-claude/cmek-key-lifecycle (retrieved 2026-11-14)
+- Source (snippet): https://platform.claude.com/docs/en/manage-claude/cmek-troubleshooting (retrieved 2026-11-14)
 
 ## Related
 

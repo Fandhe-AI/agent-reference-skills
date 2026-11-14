@@ -54,6 +54,7 @@ Encrypted with Anthropic's key (features stay available; you can turn off some i
 
 - For Claude Enterprise see the Claude Enterprise coverage page. This page covers Claude Platform only.
 - Source: https://platform.claude.com/docs/en/manage-claude/cmek-coverage-claude-platform (retrieved 2026-11-14)
+- Source (snippet): https://platform.claude.com/docs/en/manage-claude/cmek-troubleshooting (retrieved 2026-11-14)
 
 ## Related
 

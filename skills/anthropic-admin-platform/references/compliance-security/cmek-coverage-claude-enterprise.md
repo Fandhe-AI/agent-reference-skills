@@ -49,12 +49,22 @@ Turned off or changed:
 | Cloud scheduled tasks (research preview) | Off; an admin can turn them on for the unified Claude experience |
 | Standalone Claude Design app (being deprecated) | Not supported |
 
-Encrypted with Anthropic's key (features stay available; you can turn off some in Settings): existing data before key setup; standalone Claude Design app at claude.ai/design (closing; Claude Design in conversations and the Artifacts tab is under your key); personal preferences ("Instructions for Claude") and Cowork Global instructions (account level, shared across a user's organizations); account data (names, email addresses, profile pictures); preserved records (three narrow cases); Claude Code telemetry when connecting through an LLM gateway or proxy (custom `ANTHROPIC_BASE_URL`; set `DISABLE_TELEMETRY` to `1` to turn it off).
+Encrypted with Anthropic's key (features stay available; you can turn off some in Settings):
+
+| Data | Details |
+| --- | --- |
+| Existing data before key setup | Written before the key takes effect |
+| Standalone Claude Design app (being deprecated) | claude.ai/design is not supported with CMEK and its data might not be under your key; the app is closing. Claude Design in conversations and the Artifacts tab is under your key |
+| Personal preferences and Cowork Global instructions | "Instructions for Claude" section and Cowork Global instructions; account level, shared across all of a user's organizations |
+| Account data for users | Names, email addresses, profile pictures |
+| Preserved records | Anthropic can preserve specific records in three narrow cases |
+| Claude Code telemetry | Through an LLM gateway or proxy (custom `ANTHROPIC_BASE_URL`) CMEK does not apply; set `DISABLE_TELEMETRY` to `1` to turn it off |
 
 ## Notes
 
 - For Claude Platform see the Claude Platform coverage page.
 - Source: https://platform.claude.com/docs/en/manage-claude/cmek-coverage-claude-enterprise (retrieved 2026-11-14)
+- Source (snippet): https://platform.claude.com/docs/en/manage-claude/cmek-troubleshooting (retrieved 2026-11-14)
 
 ## Related
 

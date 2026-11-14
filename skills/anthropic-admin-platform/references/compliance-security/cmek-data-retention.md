@@ -27,6 +27,7 @@ CMEK keys can only be attached to workspaces in this organization that have infe
 - Outside CSAM screening, preservation requires a human reviewer's explicit decision and follows Anthropic's retention policy for commercial data. Each preservation generates a Compliance API Activity Feed event with a reason code; see CMEK content preservation on the Access Transparency page.
 - Safety screening metadata (records derived from automated safety scans, such as pattern identifiers and match indicators, not conversation content) is retained under Anthropic-managed encryption and remains readable after key revocation.
 - Source: https://platform.claude.com/docs/en/manage-claude/cmek-data-retention (retrieved 2026-11-14)
+- Source (snippet): https://platform.claude.com/docs/en/manage-claude/cmek-troubleshooting (retrieved 2026-11-14)
 
 ## Related
 

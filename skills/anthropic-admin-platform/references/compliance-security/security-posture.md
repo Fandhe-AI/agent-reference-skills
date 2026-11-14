@@ -37,6 +37,7 @@ curl --fail-with-body -sS \
 - Feed activities record the user ID, email address at the time, IP address and user agent of the attester, remain readable after the user leaves or is deleted, and are retained 6 years. Tell people who attest before you collect this personal data.
 - Anthropic stores one attestation per control (value, time, end date, attester account) until cleared or deleted with the organization; CMEK, ZDR for Claude Code and a HIPAA-ready Enterprise plan do not shorten this and CMEK does not encrypt these fields. Some organizations (CMEK or ZDR) cannot save a comment; the page then shows no comment box.
 - Source: https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/overview (retrieved 2026-11-14)
+- Source (snippet): https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/results-reference (retrieved 2026-11-14)
 
 ## Related
 

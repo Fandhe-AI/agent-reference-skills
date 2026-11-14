@@ -74,7 +74,7 @@ aws kms create-key \
 - Each check of the key adds four expected access-denied errors to CloudTrail; the troubleshooting page shows how to filter them.
 - In Claude on Claude Platform: Encryption keys on the Data retention page > Add key, Display name, select AWS KMS, Continue; paste the KMS key ARN after checking your policy contains the Organization ID for the key policy shown; Verify (Connected, or Connection failed); select the workspace, under Encryption key select the key, Save, confirm the checkbox and Confirm (Workspace settings updated). In a ZDR organization select Standard data retention first and Accept the data retention terms after Save.
 - In Claude on Claude Enterprise: CMEK applies to the whole organization and you can add only one key. Go to claude.ai > Organization settings > Data and privacy, Encryption keys > Add key, Display name, select AWS KMS, tick the checkbox, Continue, paste the key ARN, Add. The check can take up to 30 seconds; Encryption key configured. then Done. Adding the key turns off or changes some features for every user; to try CMEK first use a separate organization.
-- Adding or attaching can't be undone; the key can't be removed or replaced, and if it is deleted Anthropic can't recover the data. To script this on Claude Platform use the Admin API (the Claude Platform on AWS endpoints are described on its own setup page).
+- Adding or attaching can't be undone; the key can't be removed or replaced, and if it is deleted Anthropic can't recover the data. To script the Claude part on Claude Platform use the Admin API (see the Admin API page).
 - Source: https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms (retrieved 2026-11-14)
 
 ## Related

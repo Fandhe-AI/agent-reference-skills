@@ -33,6 +33,9 @@ Use a key you hold in your own AWS KMS, Google Cloud KMS, or Azure Key Vault to 
 - Limited preservation outside your key can occur in three narrow cases (legal requirement, exigent risk of serious harm, Commercial Terms Section D.4 violations); each generates a Compliance API Activity Feed `cmek_preserve` event (see the access-transparency page for the reason codes).
 - Disabling the key or removing Anthropic's access can take up to 1 hour to apply; in-flight requests during that hour might still succeed.
 - Source: https://platform.claude.com/docs/en/manage-claude/cmek (retrieved 2026-11-14)
+- Source (preservation event `cmek_preserve`): https://platform.claude.com/docs/en/manage-claude/access-transparency and https://platform.claude.com/docs/en/manage-claude/cmek-data-retention (retrieved 2026-11-14)
+- Source (1-hour delay, disabled-key behavior): https://platform.claude.com/docs/en/manage-claude/cmek-key-lifecycle (retrieved 2026-11-14)
+- Source (local session transcripts): https://platform.claude.com/docs/en/manage-claude/cmek-coverage-claude-enterprise (retrieved 2026-11-14)
 
 ## Related
 

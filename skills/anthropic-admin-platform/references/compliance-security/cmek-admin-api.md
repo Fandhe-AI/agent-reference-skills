@@ -51,7 +51,11 @@ curl -sS -X POST "https://api.anthropic.com/v1/organizations/workspaces/<workspa
 | `provider_config.tenant_id` | `azure` | the vault's tenant ID |
 | `external_key_id` (workspace update) | all | `ekey_<id>`; workspace ID starts with `wrkspc_` |
 
-Responses: create returns `{"type": "external_key", "id": "ekey_<id>", "display_name": "<friendly-name>"}`; validate returns `{ "type": "external_key_validation", "status": "success", "error": null }`; the workspace response shows `external_key_id`.
+| Call | Response |
+| --- | --- |
+| create | `{"type": "external_key", "id": "ekey_<id>", "display_name": "<friendly-name>"}` (copy `id` for the next two steps) |
+| validate | `{ "type": "external_key_validation", "status": "success", "error": null }` |
+| workspace update | shows the attached key's ID in `external_key_id` |
 
 ## Notes
 

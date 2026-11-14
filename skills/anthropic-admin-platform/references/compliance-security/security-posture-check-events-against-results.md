@@ -17,8 +17,6 @@ curl --fail-with-body -sS \
 
 ## Options / Props
 
-Run steps (after the day's daily re-read completes): (1) list linked organizations for each `uuid`; (2) call the endpoint per organization (200, or 404 means not read this run; keep the `evaluated_at` of the first 200 as the first run); (3) set aside per S1-S4; (4) group remaining stored activities by control and take the newest by `created_at`; (5) find the decision row; (6) act on a Look into only when the next run reading the organization shows it again (row 6 at once; rows 10 and 11 follow the placeholder rules).
-
 Field matching:
 
 | Response | Activity | Relation |
@@ -61,6 +59,7 @@ Decision table (newest stored activity / response entry -> verdict):
 
 ## Notes
 
+- Run steps (start after the day's daily re-read completes, so late activities are stored): (1) list linked organizations for each `uuid`; (2) call the endpoint once per organization (200, or 404 meaning the organization is not read this run; keep the `evaluated_at` of the first 200 as your first run); (3) set aside per S1-S4; (4) group remaining stored activities by control and take the newest by `created_at`; (5) find the decision row; (6) act on a Look into only when the next run that reads the organization shows it again (row 6 at once; rows 10 and 11 follow the placeholder rules). A run that did not read the organization neither counts nor restarts the wait.
 - Key: Compliance Access Key covering the organization with `read:compliance_org_data` (endpoint) and `read:compliance_activities` (feed), or `read:org_audit` for both. Pace calls and handle 429; an organization whose calls fail after retries is not read on that run, and a failed call is not a change.
 - Row 10 placeholders are keyed on control + `attested_at`: re-read from the newest stored activity (15 days counted from `attested_at`), build the placeholder from the entry marked as having no activity, update `status`/`state` each run, replace it when an activity with `created_at` equal to `attested_at` arrives, resolve it when two runs in a row do not show the attestation (flag unless explained), and reopen the same placeholder if it shows again. A run that did not read the organization, or shows `not_evaluated`, neither counts toward nor restarts those two runs. On the first run store it at once, with no review.
 - Row 9, 11 and 15 placeholders are keyed on the control alone; for row 11 the 15 days count from the first run that shows the `status`; resolve on a newer activity, the attestation showing, or two runs fitting another row. Flag a row 9 placeholder once if it resolves as `failed_check_accepted_risk` (the risk is in effect).
@@ -68,6 +67,7 @@ Decision table (newest stored activity / response entry -> verdict):
 - An organization that returned 200 and then 404 on several runs in a row needs a person once: ask whether the page was turned off, else contact your Anthropic representative; resolve its placeholders with no review, keep calling, reopen if it returns 200.
 - This is the Compliance API security-posture feature (not Claude Code security review).
 - Source: https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/check-events-against-results (retrieved 2026-11-14)
+- Source (snippet): https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/results-reference (retrieved 2026-11-14)
 
 ## Related
 

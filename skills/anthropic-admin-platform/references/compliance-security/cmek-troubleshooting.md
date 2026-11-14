@@ -37,7 +37,14 @@ Verification failures:
 | Azure Key Vault | Role assignment not yet in effect | can take a few minutes; wait, retry |
 | Azure Key Vault | Vault network rules block Anthropic | check against the vault settings Anthropic needs |
 
-Claude Platform on AWS (no Verify step; problems show when you attach): key policy mismatch (compare `get-key-policy` output with the setup page policy); condition mismatch (any `EncryptionContext` or `aws:SourceArn` condition must include this workspace); key state or location (enabled, single-Region, same AWS account and region as the workspace); missing permissions (`kms:DescribeKey`, `kms:Encrypt`, `kms:Decrypt` on the key). If it still fails, find the denied `kms:` event in CloudTrail in the key's account, fix, and click Save again.
+Attaching fails on Claude Platform on AWS (no Verify step, so a key problem shows when you attach):
+
+| Cause | Fix |
+| --- | --- |
+| Key policy mismatch | Print the key policy with `get-key-policy` and compare it with the policy on the setup page |
+| Condition mismatch | Any `EncryptionContext` or `aws:SourceArn` condition must include this workspace |
+| Key state or location | The key must be enabled, single-Region, and in the same AWS account and region as the workspace |
+| Missing permissions | The signed-in principal needs `kms:DescribeKey`, `kms:Encrypt` and `kms:Decrypt` on the key |
 
 Refusals when attaching or adding a key:
 
@@ -51,6 +58,7 @@ Refusals when attaching or adding a key:
 
 ## Notes
 
+- If attaching on Claude Platform on AWS still fails, find the denied `kms:` event in CloudTrail in the key's account (it shows the calling principal and, for cryptographic calls, the encryption context), fix the cause, then click Save again.
 - A feature that stopped working might be one CMEK turns off; check the Claude Platform or Claude Enterprise coverage list. If nothing fits, contact your Anthropic account team.
 - For a key that already protects data, when replacing its policy add a statement so Anthropic can still decrypt; list the compartment ID of every workspace the key is or was attached to:
 
