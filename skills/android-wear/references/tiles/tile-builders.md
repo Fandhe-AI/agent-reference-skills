@@ -84,6 +84,7 @@ override fun onTileResourcesRequest(
 ## Notes
 
 - `TileRequest.deviceConfiguration.rendererSchemaVersion` (major/minor) indicates the on-device ProtoLayout renderer capability; check it before using APIs annotated `@RequiresSchemaVersion` (e.g. `DashedArcLine` requires 1.500+).
+- ProtoLayout 1.4.1 and later enforce a 2048px dimension limit and a 20MB raw size maximum on images, so keep tile image resources within those limits. Source: https://developer.android.com/jetpack/androidx/releases/wear-protolayout (fetched 2026-11-14)
 - Package: `androidx.wear.tiles` (`TileBuilders`, `RequestBuilders`, `ResourceBuilders`), with the Kotlin migration surface under `androidx.wear.protolayout`.
 
 ## Related

@@ -15,6 +15,12 @@ Wear OS 公式ドキュメントの主要 API を網羅したスキル。
 `androidx.wear.compose.*` はモバイルの `androidx.compose.*` とは別 API であり、同名コンポーネントでも取り違えに注意する。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
+## 対象バージョン
+
+- 取得日 2026-11-14 時点の AndroidX stable: `androidx.wear.compose:compose-material3` 1.7.1、`androidx.wear.tiles:tiles` 1.6.2、`androidx.wear.protolayout:protolayout` 1.4.2。
+- Wear Compose 1.8.0-alpha（alpha03 まで）、`glance.wear` / `wear.compose.remote` / `compose.remote` の alpha は stable 基調のため大半が未収録（wear-widgets は alpha を各ページに明記）。
+- `health-services-client` と Watch Face Format の最新版は未確認。
+
 ## ディレクトリ構成
 
 ```text

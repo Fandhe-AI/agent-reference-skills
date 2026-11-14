@@ -52,6 +52,15 @@ override fun onTileRequest(
 - Test across renderer versions using different Wear OS emulator system images and Android Studio's Tile Preview (which can target different embedded ProtoLayout renderer versions); physical devices cannot be forced to a specific renderer version.
 - Package: `androidx.wear.protolayout.DeviceParametersBuilders.DeviceParameters`, `androidx.wear.protolayout.expression.VersionInfo`, `androidx.wear.protolayout.expression.RequiresSchemaVersion`.
 
+### Library release notes (security fixes)
+
+- Tiles 1.6.1 (2026-07-01) fixed a potential `IllegalStateException` race condition in `TilesConnectionBinder` during service connection callbacks called from unexpected threads; Tiles 1.6.2 (2026-07-29) has no changes from 1.6.1.
+- ProtoLayout 1.4.1 (2026-07-01): enforces a 2048px dimension limit and a 20MB raw size maximum on images; fixes a bug that let deep layouts skip layout depth enforcement during fingerprint optimizations; prevents an array bounds crash from unbounded gap parameters in `DashedArcLine`; replaces uncaught `IllegalArgumentException`s with error logging and node invalidation in the expression pipeline; fixes an uncaught `NullPointerException` on malformed image URIs.
+- ProtoLayout 1.4.2 (2026-07-29): invalid cubic bezier parameters in animations fall back to a default interpolator instead of crashing the expression pipeline; the renderer wraps exception handling to guard against non-finite values or invalid animations.
+- Current stable versions as of 2026-11-14: `androidx.wear.tiles` 1.6.2, `androidx.wear.protolayout` 1.4.2.
+- Source: https://developer.android.com/jetpack/androidx/releases/wear-protolayout (fetched 2026-11-14)
+- Source: https://developer.android.com/jetpack/androidx/releases/wear-tiles (fetched 2026-11-14)
+
 ## Related
 
 - [tile-builders](./tile-builders.md)

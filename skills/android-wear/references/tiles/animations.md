@@ -82,6 +82,7 @@ val lottieImage = ResourceBuilders.ImageResource.Builder()
 - Maximum 4 concurrent animations per tile: if more than 4 elements would animate at once, the excess elements skip animation and render at their end state. Renderers may also globally disable tile animations.
 - Never rely on animation duration or motion itself to convey information — when animations are disabled, elements immediately show the animation's end value.
 - Lottie playback requires renderer schema 1.500+; validate the Lottie JSON with the Skottie validator (skottie.skia.org, "Low Power Profile" checks) before shipping, and always provide `setAndroidResourceByResId` as a static fallback for older renderers.
+- ProtoLayout 1.4.2 and later fall back to a default interpolator when a cubic bezier easing has invalid parameters, instead of crashing. Source: https://developer.android.com/jetpack/androidx/releases/wear-protolayout (fetched 2026-11-14)
 - Package: `androidx.wear.protolayout.expression.AnimationParameterBuilders.AnimationParameters` / `.AnimationSpec`, `androidx.wear.protolayout.ModifiersBuilders.DefaultContentTransitions` / `.AnimatedVisibility` / `.EnterTransition` / `.ExitTransition` / `.Transformation`, `androidx.wear.protolayout.ResourceBuilders.AndroidLottieResourceByResId`.
 
 ## Related
