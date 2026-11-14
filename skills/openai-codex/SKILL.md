@@ -1,9 +1,9 @@
 ---
 name: openai-codex
 description: >
-  OpenAI Codex (CLI / IDE / cloud / ChatGPT desktop app) リファレンス。
+  OpenAI Codex (CLI / IDE / cloud / desktop app) リファレンス。
   codex exec, スラッシュコマンド, AGENTS.md, rules, subagents, approvals, sandbox,
-  permission profiles, config.toml, MCP 設定, GPT-6.1 Terra, git worktrees, GitHub Action, Codex SDK,
+  permission profiles, config.toml, MCP 設定, GPT-6.1 Terra, git worktrees, GitHub Action, SDK,
   App Server (JSON-RPC), Codex skills (.agents/skills), plugins, scheduled tasks, Browser, WebMCP,
   Computer Use, administration, compliance API, Codex Security 脆弱性スキャン (SARIF)。
 user-invocable: false
