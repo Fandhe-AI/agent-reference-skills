@@ -92,7 +92,7 @@ Check status values:
 |--------|---------|
 | `failing` | One or more violations found |
 | `passing` | No violations found |
-| `muted` | Every finding for the check is muted |
+| `muted` | The whole check is muted |
 | `no access` | Your role lacks permission to read the data for this check |
 | `error` | The check could not be computed |
 
