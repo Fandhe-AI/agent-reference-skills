@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/versioning / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/versioning / last verified: 2026-11-14 -->
 <!-- source: https://platform.claude.com/docs/en/api/beta-headers / last verified: 2026-10-17 -->
 <!-- source: https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand / last verified: 2026-10-17 -->
 

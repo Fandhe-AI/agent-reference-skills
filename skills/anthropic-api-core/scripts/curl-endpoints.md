@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/messages/create.md / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/messages/create.md / last verified: 2026-11-14 -->
 <!-- source: https://platform.claude.com/docs/en/api/messages/count_tokens.md / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/api/messages/batches/create.md / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/api/messages/batches/list.md / last verified: 2026-08-07 -->
@@ -6,7 +6,7 @@
 <!-- source: https://platform.claude.com/docs/en/api/messages/batches/results.md / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/api/messages/batches/cancel.md / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/api/messages/batches/delete.md / last verified: 2026-08-07 -->
-<!-- source: https://platform.claude.com/docs/en/api/models/list.md / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/models/list.md / last verified: 2026-11-14 -->
 <!-- source: https://platform.claude.com/docs/en/api/models/retrieve.md / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/api/files/upload.md / last verified: 2026-10-17 -->
 <!-- source: https://platform.claude.com/docs/en/api/files/list.md / last verified: 2026-10-17 -->
