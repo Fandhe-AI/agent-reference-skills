@@ -34,7 +34,7 @@ if (alarmManager.canScheduleExactAlarms()) {
 - Exact alarms are for user-facing, time-critical features only (alarm clocks, timers, calendar reminders); inexact alarms or WorkManager should be used otherwise.
 - Check `canScheduleExactAlarms()` before calling an exact-alarm method rather than assuming access is granted.
 - For testing, the `REQUIRE_EXACT_ALARM_PERMISSION` compat change can be toggled via `adb shell am compat disable REQUIRE_EXACT_ALARM_PERMISSION <package>` on debuggable builds.
-- `SCHEDULE_EXACT_ALARM` is not pre-granted to fresh installs targeting Android 13 (API 33)+; it is denied after a backup-and-restore to an Android 14 device, but an existing app that already holds it keeps it when the device upgrades to Android 14.
+- `SCHEDULE_EXACT_ALARM` is not pre-granted to fresh installs of apps targeting Android 13 (API 33)+ on Android 14 (API 34)+ devices; it is denied after a backup-and-restore to an Android 14 device, but an existing app that already holds it keeps it when the device upgrades to Android 14.
 - An exact alarm set with an `OnAlarmListener` (for example the `setExact` overload taking one) does not require `SCHEDULE_EXACT_ALARM`.
 - When `SCHEDULE_EXACT_ALARM` is revoked, the app is stopped and all its future exact alarms are canceled. Send users to the "Alarms & reminders" screen with an intent using `ACTION_REQUEST_SCHEDULE_EXACT_ALARM` after explaining why the app needs it. After `ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED`, re-check `canScheduleExactAlarms()` (the user may have revoked it again) before rescheduling.
 - Exact alarms are not affected by foreground service launch restrictions.
