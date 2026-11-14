@@ -4,6 +4,7 @@
 |------|-------------|------|
 | android {} block | Top-level DSL block in the module `build.gradle.kts` that declares Android-specific build configuration (SDK versions, namespace, nested blocks). | [android-block.md](./android-block.md) |
 | Android Settings Plugin (com.android.settings) | The settings plugin centralizes common build properties (`compileSdk`, `minSdk`, `targetSdk`) for all modules in `settings.gradle`. | [android-settings-plugin.md](./android-settings-plugin.md) |
+| Automated backup and restore tests | Experimental AGP 9.5 `testOptions.backupTests` suite: JUnit 5 host tests seed, back up, restore, and verify app data on connected devices. | [backup-tests.md](./backup-tests.md) |
 | buildFeatures | Nested block inside `android { }` that turns on/off UI-related and code-generation features per module. | [build-features.md](./build-features.md) |
 | buildTypes | Nested block inside `android { }` that defines how a build is packaged and signed; combined with product flavors into build variants. | [build-types.md](./build-types.md) |
 | compileOptions, kotlinOptions, and kotlin { jvmToolchain() } | Controls the Java/Kotlin language version used for compilation and the JDK toolchain that runs the build. | [compile-kotlin-options.md](./compile-kotlin-options.md) |

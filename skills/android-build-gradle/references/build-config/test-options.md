@@ -32,7 +32,9 @@ android {
 
 - This page covers only the DSL declaration; test authoring itself is owned by the `android-testing` skill.
 - `testInstrumentationRunner` (the instrumented test runner class) is declared in `defaultConfig`, not `testOptions`.
+- AGP 9.5 adds an experimental `testOptions.backupTests` block for automated backup and restore test suites; see the backup tests page. Source: https://developer.android.com/build/releases/agp-9-5-0-release-notes (fetched 2026-11-14).
 
 ## Related
 
 - [defaultConfig](./default-config.md)
+- [Automated backup and restore tests](./backup-tests.md)

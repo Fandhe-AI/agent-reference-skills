@@ -22,6 +22,8 @@ android.enableJetifier=false
 | `android.useAndroidX` | `Boolean` | `true` (AGP 9.0.0+; `false` on earlier AGP) | Makes the Android plugin use AndroidX libraries instead of the legacy Support Library. Planned to no longer be settable to `false` in AGP 10. |
 | `android.newDsl.optOut` | module path list (e.g. `:example-lib1`) | — | AGP 9.4: temporarily opts specific modules out of the new Variant API, which is mandatory for all projects from AGP 10. |
 | `android.enforceDynamicFeatureVariantMatching` | `Boolean` | warning mode | AGP 9.4: `true` promotes the strict 1:1 flavor-dimension parity check between app and dynamic feature modules from build warnings to an execution error; enforced by default from AGP 10.0. |
+| `android.experimental.testSuiteSupport` | `Boolean` | — | AGP 9.5 (experimental): set to `true` together with `android.experimental.enableBackupTest` to enable test suites for automated backup and restore testing. |
+| `android.experimental.enableBackupTest` | `Boolean` | — | AGP 9.5 (experimental): set to `true` to enable automated backup and restore tests (`testOptions.backupTests`). |
 | `android.settings.executionProfile` | `String` | — | Overrides the default R8 execution profile declared via the settings plugin (`android { execution { profiles { ... } } }`). |
 
 ## Notes
