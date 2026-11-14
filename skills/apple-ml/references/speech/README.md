@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| AnalysisContext | Contextual information that may be shared among analyzers. | [analysiscontext.md](./analysiscontext.md) |
 | AnalyzerInput | Time-coded audio data supplied to a `SpeechAnalyzer`. | [analyzerinput.md](./analyzerinput.md) |
 | AnalyzerInputConverter | Converts audio buffers to a format suitable for analysis… | [analyzerinputconverter.md](./analyzerinputconverter.md) |
 | AssetInputSequenceProvider | Reads from an audio file or asset, providing audio for analysis… | [assetinputsequenceprovider.md](./assetinputsequenceprovider.md) |

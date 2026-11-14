@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
+| AnalysisType | The analysis type for each session. | [analysistype.md](./analysistype.md) |
 | InstrumentActivityResult | A structure containing the activity levels and… | [instrumentactivityresult.md](./instrumentactivityresult.md) |
 | KeyResult | A value describing the musical key detected over… | [keyresult.md](./keyresult.md) |
 | LoudnessResult | A structure that contains perceptual loudness measurements… | [loudnessresult.md](./loudnessresult.md) |
