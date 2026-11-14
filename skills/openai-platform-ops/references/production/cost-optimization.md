@@ -11,6 +11,8 @@ Strategies for reducing OpenAI API spend beyond basic prompt/token hygiene.
 
 ## Notes
 
+- 12-hour prompt caching (changelog 2026-10-20): in the Responses API you can choose a 12-hour minimum cache lifetime (`"12h"`, via `prompt_cache_options.ttl` or a per-breakpoint `prompt_cache_breakpoint.ttl`) instead of the default 30 minutes (`"30m"`). For GPT-5.6 and later, a 12-hour cache write costs 2.5x the ordinary input-token rate versus 1.25x for 30 minutes; cache reads cost the same for both lifetimes. Usage details live in the openai-api-core skill. Source: https://developers.openai.com/api/docs/guides/prompt-caching and https://developers.openai.com/api/docs/changelog (fetched 2026-11-14).
+- Administrators can restrict which service tiers a project may use; see [Projects](../administration/projects.md).
 - rate limits and error-handling patterns are covered by openai-api-core, not duplicated here.
 - Prompt caching (`prompt_cache_key`, cache breakpoints) is covered by openai-api-core; see the [Deployment checklist](./deployment-checklist.md) for its production-tuning guidance.
 

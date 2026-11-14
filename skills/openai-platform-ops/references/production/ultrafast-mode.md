@@ -95,6 +95,7 @@ GPT-6 Astra (tokens per minute):
 ## Notes
 
 - Source: https://developers.openai.com/api/docs/guides/ultrafast-mode (fetched 2026-10-17).
+- Project and organization service tier restrictions (changelog 2026-10-21) are documented for the `default`, `flex`, `priority` and `fast` tiers in the official error-codes guide; whether `ultrafast` is governed by them is not stated there (official docs unconfirmed). Source: https://developers.openai.com/api/docs/guides/error-codes (fetched 2026-11-14).
 - Available to all API users for GPT-6 Astra and GPT-6.1 Sol.
 - Ultrafast has separate rate limits from Standard and Fast modes. Check the organization's limits before increasing traffic; organizations with an OpenAI account team can contact them to request higher limits.
 - Data residency: GPT-6.1 Sol supports US and EU data residency and global processing. GPT-6 Astra Ultrafast supports US data residency and global processing only.

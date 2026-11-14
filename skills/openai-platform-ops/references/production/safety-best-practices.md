@@ -43,7 +43,7 @@ response = client.chat.completions.create(
 - `safety_identifier` is recommended, not required, for products with individual end users.
 - Safety identifiers do not carry over between APIs/sessions — pass the same stable value separately in each Images API request and when you create or connect each Realtime session.
 - Images API: include `safety_identifier` on each image generation (`POST /v1/images/generations`) and image edit (`POST /v1/images/edits`) request (JSON property, or form field for multipart edits); keep it to 128 characters or fewer. The Images API `user` parameter is deprecated; a nonempty `safety_identifier` takes precedence if both are sent.
-- CSAM guidance: OpenAI worked with child safety experts, including NCMEC and Thorn, to offer developers practical guidance for protecting children (official page `/api/docs/guides/csam-guidance`).
+- CSAM guidance: see [CSAM guidance](./csam-guidance.md).
 - If the application serves minors, also follow [Under-18 guidance](./under-18-guidance.md).
 - Report security/safety issues via the [Coordinated Vulnerability Disclosure Program](https://openai.com/security/disclosure/).
 
@@ -53,4 +53,5 @@ response = client.chat.completions.create(
 - [Safety checks](./safety-checks.md)
 - [Deployment checklist](./deployment-checklist.md)
 - [Under-18 guidance](./under-18-guidance.md)
+- [CSAM guidance](./csam-guidance.md)
 - [Safety enforcement notifications](./safety-enforcement.md)

@@ -108,7 +108,7 @@ curl --fail-with-body -sS -X POST "$OPENAI_STORAGE_URL" \
   }'
 ```
 
-The Azure (`"type": "azure"`) and GCP (`"type": "gcp"`) payloads use different `provider` fields. See the Private Safety Processing guide for those request bodies.
+The Azure (`"type": "azure"`), GCP (`"type": "gcp"`) and OCI (`"type": "oci"`, with `tenancy_ocid`, `region`, `bucket`) payloads use different `provider` fields. See the Private Safety Processing guide (and `references/administration/private-safety-processing.md` for the OCI body) for those request bodies.
 
 ## Validate external storage (PSP)
 
