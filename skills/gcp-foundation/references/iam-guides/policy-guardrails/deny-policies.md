@@ -190,6 +190,6 @@ Deny policies require the IAM `v2` permission format `SERVICE_FQDN/RESOURCE.ACTI
 
 ## Related
 
-- [pab-enforcement-versions.md](./pab-enforcement-versions.md)
+- [pab-blocked-permissions.md](../principal-access-boundary/pab-blocked-permissions.md)
 - [custom-org-policy-iam.md](./custom-org-policy-iam.md)
 - [permission-errors-and-resource-names.md](./permission-errors-and-resource-names.md)

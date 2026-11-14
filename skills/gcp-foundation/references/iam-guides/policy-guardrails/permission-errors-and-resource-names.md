@@ -86,4 +86,4 @@ REST error:
 ## Related
 
 - [deny-policies.md](./deny-policies.md)
-- [pab-enforcement-versions.md](./pab-enforcement-versions.md)
+- [pab-blocked-permissions.md](../principal-access-boundary/pab-blocked-permissions.md)
