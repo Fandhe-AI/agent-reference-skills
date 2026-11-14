@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/sandboxing.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/sandboxing.md / last verified: 2026-11-14 -->
 
 # Configure the sandboxed Bash tool
 
@@ -27,6 +27,7 @@ Built-in per-command OS-level sandbox (Seatbelt on macOS, bubblewrap on Linux/WS
 |---|---|
 | `sandbox.enabled` | Turn the sandbox on |
 | `sandbox.failIfUnavailable` | Refuse to start instead of silently falling back when deps are missing |
+| `sandbox.autoAllowBashIfSandboxed` | `true` selects auto-allow mode (sandboxed commands run without prompting); by default (v2.1.325+) sandboxed Bash follows the normal permission flow. Managed settings that enable the sandbox must set it in the highest-ranking managed source to keep auto-allow |
 | `sandbox.allowUnsandboxedCommands` (Overrides tab: **Strict sandbox mode** when `false`) | Whether the `dangerouslyDisableSandbox` escape hatch may retry a failed command unsandboxed |
 | `sandbox.filesystem.allowWrite` / `denyWrite` / `allowRead` / `denyRead` | Path-level filesystem grants/denies; more specific read rule wins on overlap |
 | `sandbox.filesystem.disabled` | Skip filesystem isolation while keeping network isolation (user/managed/`--settings` only, v2.1.216+) |
@@ -75,6 +76,11 @@ Built-in per-command OS-level sandbox (Seatbelt on macOS, bubblewrap on Linux/WS
 - Sandbox settings automatically deny writes to Claude Code's own `settings.json` files, managed settings, and `.mcp.json` (including symlink targets) — even inside the sandbox — unless filesystem isolation is disabled.
 - Scope: isolates Bash subprocesses only. Read/Edit/Write built-in tools use the permission system directly, not the sandbox; computer-use / desktop control runs outside it entirely; subagents inherit the parent session's sandbox config.
 - Organizational enforcement: deliver `sandbox` keys via managed settings; `allowManagedReadPathsOnly` / `allowManagedDomainsOnly` lock array keys to the managed values only (boolean keys like `enabled` are always managed-value-wins; array keys otherwise merge across scopes, so developers can widen them).
+- Default change (v2.1.325): sandboxed Bash commands follow the normal permission flow by default; set `sandbox.autoAllowBashIfSandboxed: true` to keep running them without prompts (auto-allow mode). Managed settings that turn the sandbox on must set `sandbox.autoAllowBashIfSandboxed: true` in the highest-ranking managed source to keep commands running without prompts. Before v2.1.325 the behavior described under "Two modes" above (auto-allow) was the default when the sandbox was enabled; the live sandboxing page now describes auto-allow as a mode you choose.
+- v2.1.325: the sandbox refuses sandboxed writes to `.claude` settings, skills, agents, commands and hooks in added directories, as it does in the launch folder; Claude Code's own helper programs started by the sandbox (such as its network bridge) run without Claude Code's sign-in tokens and API keys in their environment.
+- Hosted sessions (v2.1.325): Claude Code on the web, cloud scheduled tasks and Cowork cloud sessions start despite `sandbox.failIfUnavailable` because the hosted container has no command sandbox.
+- v2.1.323: on macOS, Linux and WSL the Bash sandbox ignores write access granted through a symlink in a writable folder that leads elsewhere or to a missing path (grant the real path instead); `git worktree add`, `move` and `remove` fail read-only inside the sandbox, as do commits in a worktree the session wasn't started in or given; start-up stops when a `--settings` file isn't valid JSON and has a `sandbox` key, even one that turns the sandbox off (and `claude -p` / the Agent SDK stop at start-up naming the invalid setting instead of running Bash unsandboxed).
+- Source: https://code.claude.com/docs/en/sandboxing.md (fetched 2026-11-14); https://code.claude.com/docs/en/changelog.md (2.1.323 / 2.1.325, fetched 2026-11-14)
 
 ## Related
 

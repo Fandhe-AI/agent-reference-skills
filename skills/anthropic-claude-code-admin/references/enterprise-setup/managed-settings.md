@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/managed-settings.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/managed-settings.md / last verified: 2026-11-14 -->
 
 # Deploy managed settings
 
@@ -99,6 +99,11 @@ Turn telemetry off for the organization via the managed `env` block:
 - A managed file, drop-in, MDM plist, or HKLM value that is present but not a parseable JSON object makes Claude Code refuse to start. Invalid individual entries are repaired or dropped with a warning (visible in a startup dialog, `-p` stderr, or `claude doctor`). Keys with a single restrictive value fail closed (v2.1.282+); per-field `sandbox` handling requires v2.1.283+.
 - `requiredMinimumVersion` and `requiredMaximumVersion` fail open: an invalid value is dropped.
 - Starter MDM templates (Jamf, Iru, Intune, Group Policy) are in the `anthropics/claude-code` repository under `examples/mdm`.
+- Plugins (v2.1.325): plugins of a remote marketplace that managed settings declare, enable and list in `prependPlugins` or `appendPlugins` count as the organization's; `pluginDigests` is deprecated and ignored.
+- `extraKnownMarketplaces` (v2.1.321): a declared name can't be added from another source, an entry from elsewhere is hidden, and plugins the declared marketplace lists are reinstalled from it; saved data from a take-over by an undeclared source is set aside for `cleanupPeriodDays`, and options and secrets until `claude plugin restore-set-aside`.
+- `policyHelper` (v2.1.323): no longer takes environment variables from user or `--settings` files; set what it needs in managed `env` or the launching shell.
+- Sandbox (v2.1.325): managed settings that turn the sandbox on must set `sandbox.autoAllowBashIfSandboxed: true` in the highest-ranking managed source to keep sandboxed commands running without prompts.
+- Source: https://code.claude.com/docs/en/managed-settings.md (fetched 2026-11-14); https://code.claude.com/docs/en/changelog.md (2.1.321 / 2.1.323 / 2.1.325, fetched 2026-11-14)
 
 ## Related
 

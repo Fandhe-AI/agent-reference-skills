@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/permissions.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/permissions.md / last verified: 2026-11-14 -->
 
 # Configure permissions
 
@@ -71,6 +71,10 @@ Read/Edit path patterns use gitignore syntax with four anchor types: `//path` (f
 - `permissions.allow` rules and `additionalDirectories` in a project's `.claude/settings.json` only take effect after the workspace trust dialog is accepted for that workspace.
 - Managed settings support locks such as `allowManagedPermissionRulesOnly`, `allowManagedMcpServersOnly`, `disableBypassPermissionsMode`, `disableAutoMode` that user/project settings cannot override.
 - The Agent SDK's `canUseTool` permission callback is a distinct programmatic permission mechanism for SDK agents; see anthropic-agent-sdk for that API. The `settings.json` basics covered here (permission rules, modes, managed settings) belong to Claude Code itself; see anthropic-claude-code for general settings usage.
+- `permissions.blockReadsOutsideWorkingDirectories` / `permissions.blockWritesOutsideWorkingDirectories`: when `true`, the file tools refuse reads / writes outside the working directories in every permission mode, including `bypassPermissions`, apart from files Claude Code itself needs (e.g. plan files). They don't limit shell commands, MCP tools or hook programs; use sandboxing for those. `blockWritesOutsideWorkingDirectories` requires v2.1.314+. To keep one outside directory reachable, add it as a working directory.
+- `permissions.denyInsteadOfPrompting` (v2.1.319): a tool call that would wait on a permission prompt is denied and the turn continues, in terminal sessions, subagents and teammates. Not described on the live permissions page as of 2026-11-14; source is the changelog.
+- v2.1.325: scheduled tasks and `/loop` ask before running a skill that declares `allowed-tools` or hooks; add `Skill(name)` to `permissions.allow` to run it unattended.
+- Source: https://code.claude.com/docs/en/permissions.md (fetched 2026-11-14); https://code.claude.com/docs/en/changelog.md (2.1.319 / 2.1.325, fetched 2026-11-14)
 
 ## Related
 

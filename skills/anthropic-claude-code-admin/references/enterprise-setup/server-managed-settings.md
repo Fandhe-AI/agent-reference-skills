@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/server-managed-settings.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/server-managed-settings.md / last verified: 2026-11-14 -->
 
 # Configure server-managed settings
 
@@ -47,6 +47,8 @@ Configured at **Admin Settings > Claude Code > Managed settings** (`https://clau
 - Audit events for settings changes are available through the compliance API or audit log export (contact your Anthropic account team). Server-managed settings are a client-side control, not a security boundary.
 - A configured `policyHelper` preempts every other managed source including server-managed settings; `policyHelper` and `wslInheritsWindowsSettings` are OS-level-only and not honored when delivered here.
 - A `managed-mcp.json` file can't be distributed through server-managed settings; deliver `allowedMcpServers` / `deniedMcpServers` instead. On v2.1.259+ you can also provide remote servers with `managedMcpServers` (`http` and `sse` only; doesn't take exclusive control like the file). A `managed-mcp.json` deployed at its system path still applies.
+- Proxy for the settings fetch: if it needs a proxy, set `HTTPS_PROXY` (endpoint-managed `env` block, shell environment, or user settings) even if `ALL_PROXY` already names the proxy. Since v2.1.323 organization settings and policy requests no longer use a proxy set only by `ALL_PROXY`.
+- Source: https://code.claude.com/docs/en/server-managed-settings.md (fetched 2026-11-14); https://code.claude.com/docs/en/changelog.md (2.1.323, fetched 2026-11-14)
 
 ## Related
 
