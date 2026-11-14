@@ -6,6 +6,7 @@
 | Best Practices | Performance and usage considerations for Rive in React. | [best-practices.md](./best-practices.md) |
 | Caching a Rive File | Loads a `.riv` file once via `useRiveFile` and reuses it across multiple `useRive` component instances, avoiding redundant fetches. | [caching-a-rive-file.md](./caching-a-rive-file.md) |
 | Data Binding | Connects React application state to Rive animated elements through View Models and View Model Instances. Replaces the deprecated `useStateMachineInput` pattern. | [data-binding.md](./data-binding.md) |
+| Focus (React) | Keyboard focus navigation (Tab / arrow keys), `tabIndex`, `focusOptions.allowFocusInterrupt` and `rive.clearFocus()` with `useRive`. | [focus.md](./focus.md) |
 | Fonts (React) | Loading and replacing fonts at runtime, and supplying fallback fonts for glyphs the active font cannot render. | [fonts.md](./fonts.md) |
 | GPU Canvas (React) | Opt a Rive component into GPU Canvas to render 3D and shader content in React. Experimental; available in `@rive-app/react-webgl2` `4.34.0+`. | [gpu-canvas.md](./gpu-canvas.md) |
 | Layout Props | Controls how a Rive artboard scales and positions itself within its container. Pass a `Layout` instance to the `layout` prop of the `Rive` component or the `useRive` hook. | [layout.md](./layout.md) |
@@ -18,3 +19,4 @@
 | Semantics (React) | Expose Rive graphics to screen readers by opting into semantics through `useRive`. | [semantics.md](./semantics.md) |
 | useRive | Primary hook for accessing the Rive runtime with full control. Returns a `RiveComponent` for rendering and the underlying `rive` instance for imperative control. | [use-rive.md](./use-rive.md) |
 | useStateMachineInput | Hook to retrieve a named input from an active state machine, enabling boolean, number, and trigger interactions from React code. | [use-state-machine-input.md](./use-state-machine-input.md) |
+| Text and key input (React) | Key and text input delivery to focused nodes via a hidden `<input>`, IME and on-screen keyboard behavior (`v4.36.0+`). | [text-and-key-input.md](./text-and-key-input.md) |

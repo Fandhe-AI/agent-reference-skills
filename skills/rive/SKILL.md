@@ -6,10 +6,11 @@ description: >
   Data Binding, ViewModel / ViewModelInstance, Events, Layout / Fit / Alignment, .riv。
   @rive-app/canvas / webgl2 / react-canvas / react-webgl2、enableGPUCanvas、Rive CLI。
   Scripting (Luau), Artboard, Path / Paint / Renderer, WGSL Shaders。
+  Focus / Gamepad / Text input, Script fetch / Security。
 user-invocable: false
 ---
 
-対象バージョン: Rive docs ([rive.app/docs](https://rive.app/docs/llms.txt)、版数なし) を 2026-10-16 取得。参考版は `@rive-app/webgl2` 2.44.2 / `@rive-app/react-webgl2` 4.36.0。`stateMachine` パラメーターと非推奨化は Web v2.41.0、GPU Canvas (`enableGPUCanvas`) は v2.42.0、`useStateMachineInput` の非推奨化は React v4.33.0。
+対象バージョン: Rive docs ([rive.app/docs](https://rive.app/docs/llms.txt)、版数なし) を 2026-11-14 に再取得（初回取得は 2026-10-16）。参考版は `@rive-app/webgl2` 2.50.0 / `@rive-app/react-webgl2` 4.39.0（npm `latest`、2026-11-09 公開）。`stateMachine` パラメーターと非推奨化は Web v2.41.0、GPU Canvas (`enableGPUCanvas`) は v2.42.0、Web のテキスト入力 (hidden input) は v2.44.0・Gamepad 入力は `2.48.0+`、React のテキスト入力は v4.36.0、`useStateMachineInput` の非推奨化は React v4.33.0。
 
 ## ディレクトリ構成
 
@@ -36,6 +37,9 @@ skills/rive/
       canvas-vs-webgl.md
       semantics.md
       gpu-canvas.md
+      focus.md
+      text-and-key-input.md
+      gamepad.md
       faq.md
       low-level-api-usage.md
       migration-guides.md
@@ -57,6 +61,8 @@ skills/rive/
       gpu-canvas.md
       preloading-wasm.md
       playing-audio.md
+      focus.md
+      text-and-key-input.md
     concepts/
       README.md
       state-machine.md
@@ -156,6 +162,7 @@ skills/rive/
       mesh.md
       file-format.md
       artboard-drawable.md
+      security.md
   samples/
     README.md
     web-basic.md
@@ -205,5 +212,7 @@ skills/rive/
 | React でフォント・アセット・WASM・音声を読み込みたい（useRiveFile 含む） | runtimes-react | [references/runtimes-react/README.md](references/runtimes-react/README.md) |
 | Open URL Events・コンポーネントサイズ指定を知りたい | concepts | [references/concepts/README.md](references/concepts/README.md) |
 | Scripting のテキストレイアウト・Mesh インスタンシング・ユニットテスト・独自ファイル形式を扱いたい | scripting-api-reference | [references/scripting-api-reference/README.md](references/scripting-api-reference/README.md) |
+| キーボードフォーカス（Tab / 矢印キー）・テキスト / キー入力・ゲームパッド入力を Web / React で扱いたい | runtimes-web / runtimes-react | [references/runtimes-web/README.md](references/runtimes-web/README.md) / [references/runtimes-react/README.md](references/runtimes-react/README.md) |
+| スクリプトのサンドボックス・署名・script fetch・`.riv` の安全な配布を知りたい | scripting-api-reference | [references/scripting-api-reference/README.md](references/scripting-api-reference/README.md) |
 | 典型的な使い方を知りたい（Web Data Binding 含む） | samples | [samples/README.md](samples/README.md) |
 | インストール・パッケージ追加・Rive CLI（create / preview / push / pull）を知りたい | scripts | [scripts/README.md](scripts/README.md) |

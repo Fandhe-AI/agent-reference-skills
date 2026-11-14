@@ -36,7 +36,9 @@ local anim = instance:animation('Idle')
 | `node(name) -> NodeReadData?` | Fetches a named node, or nil |
 | `pointerDown/pointerUp/pointerMove/pointerExit(event)` | Pointer event handlers; return a hit-test result |
 | `pointerScroll(event: ScrollEvent) -> number` | Scroll handler; returns a hit-test result (0 = no hit), non-zero when a `ScrollConstraint` view inside the artboard took the scroll. Claim the outer event (`event:hit()`) when it does, so the gesture stays with this node |
-| `gamepadConnected/gamepadEvent/gamepadDisconnected(event)` | Gamepad event handlers |
+| `gamepadConnected/gamepadEvent/gamepadDisconnected(event) -> number` | Forward a gamepad connection, change or disconnection to the artboard: its focused control first, then every scripted node that did not take it. Returns how many scripted nodes received it |
+| `keyboardEvent(event: KeyboardEvent) -> boolean` | Forwards a key press, repeat or release to the artboard's focused control, such as a text input. Returns true when something inside took it; return that from the host's `keyboardEvent` to stop it propagating. The host only receives keys while it holds focus itself |
+| `textEvent(event: TextInput) -> boolean` | Forwards typed text to the artboard's focused text input, the same way as `keyboardEvent` |
 | `addToPath(path, transform?)` | Adds the artboard's geometry into a `Path`, optionally transformed |
 
 ## Notes
