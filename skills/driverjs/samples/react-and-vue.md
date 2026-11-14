@@ -58,6 +58,8 @@ onBeforeUnmount(() => driverObj.destroy());
 </template>
 ```
 
+Adapted (not in the official docs): the Next.js example tracks whether the component is still mounted and skips creating the driver when the dynamic import finishes after unmount.
+
 ```tsx
 "use client";
 
@@ -67,13 +69,22 @@ import "driver.js/dist/driver.css";
 
 export function TourButton() {
   const driverRef = useRef<Driver | null>(null);
+  const mounted = useRef(true);
 
   useEffect(() => {
-    return () => driverRef.current?.destroy();
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      driverRef.current?.destroy();
+    };
   }, []);
 
   async function startTour() {
     const { driver } = await import("driver.js");
+
+    if (!mounted.current) {
+      return;
+    }
 
     driverRef.current = driver({
       steps: [
@@ -95,6 +106,7 @@ export function TourButton() {
 - A step's `element` is looked up when the step starts, so selectors can point at elements that render later
 - When your framework replaces a highlighted element, the step follows the new one (automatic since 1.12.0; `onElementReplaced` since 1.13.0)
 - Prefer selectors over refs in steps: a selector finds the new element after a re-render, a stored element does not
+- Adapted: the Next.js `TourButton` checks a `mounted` ref after `await import("driver.js")`, so leaving the page before the import resolves does not start an orphaned tour.
 - Source: https://driverjs.com/docs/react-and-vue (driver.js 1.14.0 docs source, apps/docs/src/content/guides/react-and-vue.mdx at tag 1.14.0).
 
 ## Related

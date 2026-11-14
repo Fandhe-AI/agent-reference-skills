@@ -28,6 +28,8 @@ document
   .addEventListener("focus", () => driverObj.destroy());
 ```
 
+Adapted (not in the official docs): the terms step uses `advanceOn: { event: "change", when: element => element.checked }` so unchecking the box does not complete the step.
+
 ```javascript
 const driverObj = driver({
   showButtons: ["next", "close"],
@@ -46,7 +48,7 @@ const driverObj = driver({
     },
     {
       element: "#terms",
-      advanceOn: "change",
+      advanceOn: { event: "change", when: element => element.checked },
       popover: {
         title: "The fine print",
         instruction: "Accept the terms.",
@@ -80,6 +82,7 @@ driverObj.drive();
 - Second snippet: `advanceOn` with `when` checks the field on every event, so the step completes the moment the value is valid (`advanceOn` and `when` since 1.11.0; `popover.instruction` and `advanceDelay` since 1.12.0)
 - `advanceDelay` shows the done state before moving on
 - To say what is wrong instead of waiting, call `driver.nudge("...")` from `when` and return `false` (`nudge()` since 1.11.0, `nudge("message")` since 1.12.0; see the Action-Driven Tours guide)
+- Adapted: the "Accept the terms" step checks `element.checked` in `when`; the official example uses `advanceOn: "change"`, which also completes the step when the box is unchecked.
 - Source: https://driverjs.com/docs/teach-a-form (driver.js 1.14.0 docs source, apps/docs/src/content/guides/teach-a-form.mdx at tag 1.14.0).
 
 ## Related

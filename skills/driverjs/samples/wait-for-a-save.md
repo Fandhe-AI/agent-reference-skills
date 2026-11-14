@@ -51,13 +51,18 @@ async function saveProfile(profile) {
 
 When Next does the work, take over the Next button with `onNextClick` and call `moveNext()` when ready:
 
-Adapted (not in the official docs): wraps `loadReport()` in `try`/`catch` and restores the Next button on failure, and ignores the result when the tour was closed or moved on while `loadReport()` was pending (`getActiveIndex()` no longer matches).
+Adapted (not in the official docs): wraps `loadReport()` in `try`/`catch` and restores the Next button on failure, and ignores the result when the step was left or a newer load started while `loadReport()` was pending (a `loadRun` counter is bumped in `onDeselected` and on each Next click).
 
 ```javascript
+let loadRun = 0;
+
 const driverObj = driver({
   steps: [
     {
       element: "#reports",
+      onDeselected: () => {
+        loadRun++;
+      },
       popover: {
         title: "Your weekly report",
         description: "Next loads the report first.",
@@ -66,12 +71,12 @@ const driverObj = driver({
             nextBtnText: "Loading…",
             disableButtons: ["next"],
           });
-          const stepIndex = driverObj.getActiveIndex();
+          const run = ++loadRun;
           try {
             await loadReport();
           } catch (error) {
-            // Ignore a result that arrives after the tour was closed or moved on.
-            if (driverObj.getActiveIndex() !== stepIndex) {
+            // Ignore a result from an earlier load or from a step that was left.
+            if (run !== loadRun) {
               return;
             }
             // Restore the button so the user can retry or close the tour.
@@ -81,7 +86,7 @@ const driverObj = driver({
             });
             return;
           }
-          if (driverObj.getActiveIndex() !== stepIndex) {
+          if (run !== loadRun) {
             return;
           }
           driverObj.moveNext();
