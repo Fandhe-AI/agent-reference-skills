@@ -29,6 +29,8 @@ setup("authenticate", async ({ page }) => {
 });
 ```
 
+If your application stores authentication tokens in IndexedDB, such as Firebase Authentication, enable `indexedDB` when saving the state: `await page.context().storageState({ path: authFile, indexedDB: true })`. IndexedDB is not included in the snapshot by default. Source: https://playwright.dev/docs/auth (microsoft/playwright v1.65.1 `docs/src/auth.md`)
+
 ## Project Dependencies Configuration
 
 In `playwright.config.ts`, declare the setup project as a dependency so it runs first. Every dependent project automatically uses the saved `storageState`:

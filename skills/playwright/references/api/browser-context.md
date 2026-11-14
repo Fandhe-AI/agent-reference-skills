@@ -313,3 +313,12 @@ Removed in v1.60 (release notes "Breaking changes"):
 `recordVideo` object fields (`recordVideo` context option, JS): `dir?` (defaults to `artifactsDir`), `size?`, `fps?` (default `25`), `showActions?` (`duration`, `position`, `fontSize` (deprecated, use `style.title`), `cursor`, `style` with `point` / `highlight` / `title` CSS declarations). In Python / Java / C# the flat options are `recordVideoDir`, `recordVideoSize` and `recordVideoFps` (also accepted by `launchPersistentContext`). Make sure to await `BrowserContext.close()` for videos to be saved.
 
 Added in v1.59–v1.60: `BrowserType.launch` `artifactsDir` (v1.59), `connectOverCDP` `noDefaults` (v1.60) and `artifactsDir` (v1.61), `Browser` `context` event (v1.60), `Tracing.startHar` / `stopHar` (v1.60).
+### Changes in v1.65
+
+- `CDPSession.send()` accepts `timeout` (milliseconds to wait for the response, default `0` = no timeout) and, in JavaScript, `signal` (an `AbortSignal` that cancels the operation and makes it throw).
+- Cookie matching follows RFC 6265. With a URL, `browserContext.cookies()` and `apiRequestContext.cookies()` no longer return host-only cookies for subdomains or `Path=/api` cookies for `/apiv2`, and a `Path=/foo/` cookie does not match `/foo`. `APIRequestContext` sends a cookie without a name as `Cookie: x` instead of `Cookie: =x`, and stores `Set-Cookie: token` as a cookie without a name.
+- The credentials in the `proxy` launch / context option now answer only proxy challenges and are no longer sent to websites. To authenticate on a website, use `httpCredentials`.
+- `BrowserType.connectOverCDP` `endpointURL` may also be a browser channel name such as `chrome` or `msedge`, to connect to a browser with remote debugging enabled in its default user data directory. On Linux, Playwright uses `CHROME_USER_DATA_DIR` when set; otherwise it uses `CHROME_CONFIG_HOME`, then `XDG_CONFIG_HOME`, then `~/.config`.
+- Source: https://playwright.dev/docs/api/class-cdpsession (microsoft/playwright v1.65.1 `docs/src/api/class-cdpsession.md`)
+- Source: https://playwright.dev/docs/release-notes (microsoft/playwright v1.65.1 `docs/src/release-notes-js.md`)
+- Source: https://playwright.dev/docs/api/class-browsertype (microsoft/playwright v1.65.1 `docs/src/api/class-browsertype.md`)

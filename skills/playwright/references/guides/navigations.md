@@ -39,6 +39,8 @@ Playwright splits showing a new document into **navigation** and **loading**.
 - Hydration: if an action seemingly does nothing or typed text disappears, the page likely has poor hydration (controls enabled before listeners are attached). To verify, use Chrome DevTools "Slow 3G" network emulation and reload. The recommended fix is to keep interactive controls disabled until hydration completes.
 - Back/Forward Cache (BFCache): Playwright disables BFCache in all browsers by default. Even if explicitly enabled, testing BFCache restorations is not supported: a restore skips the network fetch phase, so `commit`, `domcontentloaded` and `load` do not fire, `Page` state desynchronizes (e.g. after `page.goBack()`), and subsequent interactions time out or fail.
 - Source: https://playwright.dev/docs/navigations (microsoft/playwright v1.64.1 `docs/src/navigations.md`)
+- In Firefox, a navigation triggered by the page can interrupt `page.goto()` with an `NS_BINDING_ABORTED` error. This is a known Firefox limitation (microsoft/playwright issue 20749).
+- Source: https://playwright.dev/docs/navigations (microsoft/playwright v1.65.1 `docs/src/navigations.md`, v1.65.1)
 
 ## Related
 

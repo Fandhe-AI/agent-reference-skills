@@ -118,6 +118,8 @@ Standalone server client config:
 - Full config schema: `config.d.ts` in the microsoft/playwright-mcp repository.
 - This is the MCP (tool-schema, persistent-state) route. For token-efficient, skill-based agent workflows, see the `playwright-cli` page.
 - Source: https://playwright.dev/docs/getting-started-mcp (microsoft/playwright v1.64.1 `docs/src/getting-started-mcp.md`)
+- With `--isolated`, cookies and storage kept in memory are lost on an idle close. Each client has its own timer: the context of an idle client is closed while other clients keep working, and the browser is closed once no client has a context (v1.65 docs).
+- Source (v1.65.1 recheck): https://playwright.dev/docs/getting-started-mcp (microsoft/playwright v1.65.1 `docs/src/getting-started-mcp.md`). The page still lists Node.js 20 or newer for `@playwright/mcp`.
 
 ## Related
 

@@ -107,7 +107,7 @@ await page.clock.setSystemTime(new Date("2024-06-15T14:00:00"));
 | `resume` | `clock.resume(): Promise<void>` | Resumes natural time flow after a pause |
 | `setSystemTime` | `clock.setSystemTime(time: number \| string \| Date): Promise<void>` | Sets system time without triggering timers |
 
-`ticks` accepts milliseconds or a human-readable string (`"08"`, `"01:00"`, `"02:34:10"`).
+`ticks` accepts a finite number of milliseconds or a human-readable string (`"08"`, `"01:00"`, `"02:34:10"`). Source: https://playwright.dev/docs/api/class-clock (microsoft/playwright v1.65.1 `docs/src/api/class-clock.md`, v1.65.1: "a finite number of milliseconds").
 
 ## Notes
 

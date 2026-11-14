@@ -33,6 +33,7 @@ Playwright reads `tsconfig.json` by traversing the directory structure upward fr
 | `references` | Project references for composite projects  |
 | `extends`    | Inherit from another tsconfig               |
 | `jsx`, `jsxFactory`, `jsxFragmentFactory`, `jsxImportSource` | JSX compilation of `.tsx` / `.jsx` files (v1.64) |
+| `useDefineForClassFields` | Class field semantics (v1.65); `target` is only used to determine this option |
 
 Other compiler options are ignored by Playwright's internal transformer.
 
@@ -115,3 +116,28 @@ Configure `package.json` to compile then run:
 ```
 
 The `--incremental` flag speeds up subsequent compilations. The `-c tests-out` flag tells Playwright to look for tests in the compiled output directory.
+
+## Notes
+
+### Changes in v1.65
+
+- TypeScript class fields follow `useDefineForClassFields` from `tsconfig.json`, the same as `tsc`. When it is not specified, it is enabled for `ES2022` and later targets, and when `target` is not specified. Field initializers then run before the constructor body and cannot access constructor parameter properties; a field initializer that reads a constructor parameter property now fails with a `TypeError`. Move the initialization to the constructor, or disable the option to keep the legacy TypeScript semantics:
+
+```json
+{
+  "compilerOptions": {
+    "useDefineForClassFields": false
+  }
+}
+```
+
+- `.css`, `.less` and `.scss` imports in test files now load as empty modules instead of being removed, so the imported file must exist.
+- Bun: the test runner runs under Bun, which transpiles TypeScript itself (no Babel, no compilation cache). Pass the `--bun` flag, because without it `bunx playwright test` runs on Node.js:
+
+```bash
+bunx --bun playwright test
+```
+
+- Under Bun there is no watch mode (UI mode does not rerun on file changes and `--only-changed` does not follow imports); `--tsconfig` and the JSX options in `tsconfig.json` have no effect and custom ESM loaders are not supported; stack traces lack async frames and API names omit the class name (`click` instead of `locator.click`), which changes some step locations, titles and error messages; test console output does not get into the trace and UI mode.
+- Source: https://playwright.dev/docs/test-typescript (microsoft/playwright v1.65.1 `docs/src/test-typescript-js.md`)
+- Source: https://playwright.dev/docs/release-notes (microsoft/playwright v1.65.1 `docs/src/release-notes-js.md`)

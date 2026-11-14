@@ -239,3 +239,8 @@ export default defineConfig({
   },
 });
 ```
+
+## Notes
+
+- Since v1.65 the error messages read `Test timeout of 30000ms exceeded.` for the test timeout and `Timed out waiting 3600s for the test suite to run` for `globalTimeout`.
+- Source: https://playwright.dev/docs/test-timeouts (microsoft/playwright v1.65.1 `docs/src/test-timeouts-js.md`, v1.65.1)
