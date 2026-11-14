@@ -277,7 +277,7 @@ const sql = postgres(env.HYPERDRIVE.connectionString, {
 - Adapted from the official docs: install commands are quoted with `>=` (the official `pg@>8.16.3` form is a shell redirection when unquoted and would exclude the stated minimum 8.16.3; same for `postgres@>3.4.5`).
 - Adapted from the official docs: the Prisma ORM 8 sample's `john.doe.${Date.now()}@example.com` is replaced with a `crypto.randomUUID()` suffix, because two requests in the same millisecond would produce the same email (a unique-constraint failure if the schema has `@unique`).
 - Adapted from the official docs: the official Postgres.js catch block returns `Response.error()` (a network-error response with no status or body); it is replaced with the same 500 response the node-postgres example uses.
-- Clients are created per request and not closed explicitly: Hyperdrive cleans up the client connection when the request ends (see [connection-lifecycle](./connection-lifecycle.md)); do not add `client.end()` or module-level clients.
+- Clients are created per request. For the node-postgres, Postgres.js, Drizzle and Kysely examples they are not closed explicitly (the Prisma ORM 8 example is the exception: it closes the client with `ctx.waitUntil(db.close())`, as shown above): Hyperdrive cleans up the client connection when the request ends (see [connection-lifecycle](./connection-lifecycle.md)); do not add `client.end()` to those drivers, and do not share module-level clients.
 - Wrangler config and bindings in general: see the cloudflare-wrangler and cloudflare-workers skills.
 
 ## Related
