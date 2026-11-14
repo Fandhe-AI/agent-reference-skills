@@ -48,6 +48,8 @@ TypeDoc options controlling how doc comments are parsed and rendered.
     }
   }
   ```
+- If tags are defined in a `tsdoc.json` file (instead of `blockTags` / `inlineTags` / `modifierTags`), the file must be placed alongside `tsconfig.json`; it can extend `typedoc/tsdoc.json` and uses `tagDefinitions` entries with a `tagName` and `syntaxKind`.
+- Source: https://typedoc.org/documents/Tags.html (TypeDoc v0.28.20, fetched 2026-11-14)
 
 ## Related
 

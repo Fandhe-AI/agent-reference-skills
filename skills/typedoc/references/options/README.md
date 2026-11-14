@@ -8,4 +8,5 @@
 | Options: Organization | TypeDoc options controlling how reflections are grouped, categorized, and sorted. | [organization.md](./organization.md) |
 | Options: Other | TypeDoc options for watch mode, CLI info, and diagnostics. | [other.md](./other.md) |
 | Options: Output | TypeDoc options controlling generated output targets, theming, and rendering. | [output.md](./output.md) |
+| Options: Package Options | Where each option must be set (root, package, or both) in `entryPointStrategy: "packages"` mode. | [package-options.md](./package-options.md) |
 | Options: Validation | TypeDoc options controlling documentation validation and required-documentation checks. | [validation.md](./validation.md) |
