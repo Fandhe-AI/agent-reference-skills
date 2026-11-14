@@ -94,6 +94,7 @@ The object returned from the `setWindowOpenHandler` handler (original page: `api
 
 * The `preload: 'my-child-window-preload-script.js'` in the official example is abbreviated; `webPreferences.preload` must be an absolute path (see web-preferences.md), so in practice write something like `path.join(__dirname, 'my-child-window-preload-script.js')`.
 * `webContents.setWindowOpenHandler` is documented on the webContents page (web-contents category) and runs in the main process, which is why it has the final say over renderer-supplied `features`.
+* Clarification (not in the official docs): process sharing applies to same-site content (v45 wording; v44 said same-origin), but direct DOM access between parent and child still requires same-origin. For example, `https://a.example.com` and `https://b.example.com` are same-site but cross-origin, so the same-origin policy still restricts DOM access between them.
 * Distinct from plain browser `window.open`: Electron additionally pairs the DOM `Window` with a BrowserWindow and applies the precedence rules above.
 
 ## Related
