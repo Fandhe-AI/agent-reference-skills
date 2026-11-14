@@ -38,6 +38,7 @@ const inngest = new Inngest({
 - In **Dev Mode**, signature verification is disabled and the client targets `http://localhost:8288`.
 - For projects requiring both Node.js middleware and edge-compatible builds, maintain separate client instances.
 - Prefer environment variables (`INNGEST_EVENT_KEY`, `INNGEST_SIGNING_KEY`) over hardcoding credentials in client options.
+- Experimental (SDK 4.26.0): `inngest.globals()` returns a typed `step` and `group` that can be imported anywhere instead of being passed around; they include sandbox, fetch and middleware-added tools. Source: https://github.com/inngest/inngest-js/releases/tag/inngest@4.26.0 (retrieved 2026-11-14)
 
 ## Related
 

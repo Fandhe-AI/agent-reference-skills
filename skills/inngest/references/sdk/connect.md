@@ -42,6 +42,8 @@ const connection = await connect({
 - The SDK automatically handles `SIGTERM`/`SIGINT` for graceful shutdown.
 - Free plan: 3 concurrent worker connections; paid plans: 20; maximum 10 apps per connection.
 - Set `INNGEST_DEV=1` to connect to the local dev server without credentials.
+- As of SDK 4.26.1, calling `connect()` without `functions` warns and uses the latest definition when functions with the same ID were re-created, instead of throwing `Duplicate function ID`; the new definition replaces the old one in `client.funcs`.
+- Source: https://github.com/inngest/inngest-js/releases/tag/inngest@4.26.1 (retrieved 2026-11-14)
 
 ## Related
 

@@ -58,6 +58,8 @@ return result;
 - For AI model or prompt experiments, `experimentRef` is the cleanest way to attribute a score back to the variant, including from a separate later run — pass it to `defer()` or `inngest.score.experiment()`.
 - Weights are relative: `{ control: 9, candidate: 1 }` and `{ control: 90, candidate: 10 }` produce the same split.
 - Part of the Agent Evals workflow: run → preserve context → attach scores → compare changes via experiments.
+- As of SDK 4.26.0, `inngest.score.experiment()` is run-scoped and no longer accepts `stepId`; see Scoring.
+- Source: https://github.com/inngest/inngest-js/releases/tag/inngest@4.26.0 (retrieved 2026-11-14)
 
 ## Related
 
