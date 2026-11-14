@@ -39,6 +39,8 @@ if (!keyInstance.IsCurrent())
 - `RedirectActivationToAsync` must not block the STA thread; if calling from `WinMain`/STA startup code, run the async call on a background thread and wait on a non-blocking synchronization primitive (e.g. `Semaphore`).
 - `Restart` returns an `AppRestartFailureReason` (`RestartPending`, `InvalidUser`, `Other`, or none on success) — check the return value rather than assuming success.
 - Keys are automatically unregistered when the process terminates, but call `UnregisterKey()` proactively before planned termination to avoid a race where another instance redirects to an already-exiting instance.
+- Windows App SDK 2.6.4 fixed `AppInstance.GetInstances` failing with `E_INVALIDARG` while enumerating application instances (RuntimeCompatibilityChange: `AppLifecycle_GetInstancesProcessHandleFix`) and a crash when calling some `AppNotificationManager` and `AppInstance` APIs (`AppNotification_AppInstance_FixStackOverflowCrash`).
+- Source (2.6.4): https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0 (fetched 2026-11-14)
 
 ## Related
 
