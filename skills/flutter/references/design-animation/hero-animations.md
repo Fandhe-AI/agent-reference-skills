@@ -145,7 +145,7 @@ static RectTween _createRectTween(Rect? begin, Rect? end) {
   ```
 
   Then run `flutter run`.
-- The samples import `package:material_ui/material_ui.dart`, the opt-in standalone Material package available in Flutter 3.47.
+- The samples import `package:material_ui/material_ui.dart`, the standalone Material package (opt-in since Flutter 3.47; the in-framework library is formally deprecated in Flutter 3.50).
 - Flutter `Hero` (shared element transition between `Navigator` routes, Dart). Distinct from Motion layout/shared-layout animation (JS), Jetpack Compose shared element transitions, Rive, and Theatre.js; use the motion, android-compose-graphics-animation, rive, or theatrejs skills for those.
 
 ## Related

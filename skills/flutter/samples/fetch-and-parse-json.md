@@ -157,7 +157,7 @@ class Photo {
 
 ## Notes
 
-- This source imports `package:material_ui/material_ui.dart`, the standalone Material package that Flutter 3.47 lets you opt in to; other recipes import `package:flutter/material.dart` (in-framework Material).
+- This source imports `package:material_ui/material_ui.dart`, the standalone Material package (opt-in since Flutter 3.47; the in-framework library is formally deprecated in Flutter 3.50); other recipes import `package:flutter/material.dart` (in-framework Material).
 - Added `flutter pub add material_ui`: the official recipe imports package:material_ui but never adds the dependency; alternatively import package:flutter/material.dart.
 - Android requires `<uses-permission android:name="android.permission.INTERNET" />` in `AndroidManifest.xml`; macOS requires the `com.apple.security.network.client` entitlement (`<true/>`) in `DebugProfile.entitlements` and `Release.entitlements`.
 - Call `fetchAlbum()` in `initState()` or `didChangeDependencies()`, never inside `build()`, which runs repeatedly.

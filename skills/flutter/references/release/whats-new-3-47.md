@@ -20,7 +20,7 @@ flutter build windows --flavor flavor_a
 flutter build linux --flavor flavor_a
 ```
 
-Experimental, main channel only (not available on stable 3.47.7):
+Experimental, main channel only (not available on the 3.47 stable; deferred loading is no longer experimental in 3.50):
 
 ```bash
 flutter build web --release --wasm --enable-wasm-deferred-loading
@@ -51,7 +51,7 @@ flutter:
 - GenUI: `genui` 0.10.0 with a new `a2ui_core` package and A2UI client-side functions.
 - Android verified dependency matrix: Java 17 (minimum), KGP 2.4.0, AGP 9.1.0, Gradle 9.3.1; defaults `flutter.compileSdkVersion` 36, `flutter.targetSdkVersion` 36, `flutter.minSdkVersion` 24.
 - Framework: `MediaQueryData.highContrast` and `MediaQueryData.invertColors` on Android; `ImageIcon` `useOriginalColors: true`; `AnimatedCrossFade` clip behavior; `ImageStreamListener` error tracking; fragment shaders targeting OpenGLES no longer need conditional coordinate flipping (see the OpenGL ES breaking change page).
-- Pinned stable for this skill is 3.47.7; this post describes 3.47.0.
+- This post describes 3.47.0; this skill's pinned stable is now 3.50.0 (see the 3.50 page).
 
 ## Related
 

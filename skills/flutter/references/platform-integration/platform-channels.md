@@ -294,5 +294,7 @@ Common channels and codecs:
 ## Related
 
 - [bind-native-code](./bind-native-code.md)
+- [Native interop](./interop-overview.md)
+- [Pigeon](./interop-pigeon.md)
 - [android-platform-views](./android-platform-views.md)
 - [ios-platform-views](./ios-platform-views.md)

@@ -136,6 +136,6 @@ Text(
 - Extend rather than replace a parent theme with `Theme.of(context).copyWith(...)`.
 - Supported font formats are `.ttc`, `.ttf`, `.otf`; `.woff` / `.woff2` are not supported on desktop platforms.
 - Flutter does not infer weight or style from file names; declare `weight` / `style` in `pubspec.yaml`, otherwise the engine only simulates them. `google_fonts` is a pub.dev package that requires `flutter pub add google_fonts`.
-- Flutter `ThemeData` / `MaterialApp` (`package:flutter/material.dart`, Dart) is distinct from Compose Material3 `MaterialTheme` and SwiftUI / UIKit theming. `package:material_ui/material_ui.dart` is the standalone opt-in package in Flutter 3.47.
+- Flutter `ThemeData` / `MaterialApp` (`package:flutter/material.dart`, Dart) is distinct from Compose Material3 `MaterialTheme` and SwiftUI / UIKit theming. `package:material_ui/material_ui.dart` is the standalone package (opt-in since Flutter 3.47, the default for new projects in Flutter 3.50).
 - Passed title: to MyHomePage in the fonts snippet; the official fonts recipe uses a different MyHomePage without a title parameter.
 - Migration (Flutter 3.44): see the decouple-page-transition-builders breaking change for `ThemeData` page transitions.

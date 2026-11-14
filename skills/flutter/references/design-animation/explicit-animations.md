@@ -178,7 +178,7 @@ with `animation = CurvedAnimation(parent: controller, curve: Curves.easeIn)` plu
 - Looping: `addStatusListener()` is useful for reacting to status changes, but to loop continuously use `controller.repeat(reverse: true)`. Calling `stop()` doesn't change the animation's status, so it doesn't notify status listeners.
 - The simultaneous-animations example is for illustration only: for opacity animations in production prefer `FadeTransition` to avoid rebuilding widgets every frame; for size changes consider `SizeTransition` when animating how much of a child is revealed.
 - Next steps named by the page: implicit animations and `TweenAnimationBuilder`; specialized `Tween` subclasses (`ColorTween`, `RectTween`, `IntTween`); staggered animations; hero animations; physics simulations and `fling()`; `ReverseAnimation` and the Animations overview.
-- The tutorial's runnable sources import `package:material_ui/material_ui.dart`, the opt-in standalone Material package available in Flutter 3.47.
+- The tutorial's runnable sources import `package:material_ui/material_ui.dart`, the standalone Material package (opt-in since Flutter 3.47; the in-framework library is formally deprecated in Flutter 3.50).
 - Flutter animation framework (Dart). Distinct from Motion (JS), Jetpack Compose animation APIs, Rive, and Theatre.js; use the motion, android-compose-graphics-animation, rive, or theatrejs skills for those.
 
 ## Related

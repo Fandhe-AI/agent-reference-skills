@@ -1,5 +1,5 @@
 ---
-source: https://docs.flutter.dev/platform-integration/bind-native-code
+source: https://docs.flutter.dev/interop/bind-native-code
 ---
 
 # Bind to native code using FFI
@@ -106,7 +106,11 @@ void main(List<String> args) async {
 - The generated package includes a unit test in `test/native_add_test.dart`.
 - This page covers Dart-to-C binding from Flutter (`dart:ffi` / build hooks). The source describes C code only and does not mention Rust.
 
+- Source: https://docs.flutter.dev/interop/bind-native-code (moved from `/platform-integration/bind-native-code` into the Native interop section; flutter/website `acea420`, fetched 2026-11-14).
+
 ## Related
 
+- [Native interop](./interop-overview.md)
+- [Interact with native memory using dart:ffi](./interop-dart-ffi.md)
 - [legacy-ffi-plugin](./legacy-ffi-plugin.md)
 - [platform-channels](./platform-channels.md)

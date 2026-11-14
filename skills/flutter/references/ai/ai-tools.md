@@ -47,9 +47,13 @@ Invoke the accessibility agent in Antigravity:
 - The Dart and Flutter MCP server (https://github.com/dart-lang/ai/tree/main/pkgs/dart_mcp_server) implements MCP over standard I/O (stdio). Capabilities listed: static analysis and diagnostics, symbol resolution, runtime introspection of a running Flutter app during debugging sessions, package management (search pub.dev, manage `pubspec.yaml`), and testing and formatting (unit and widget tests, `dart format`).
 - The Developer Knowledge MCP server (https://developers.google.com/knowledge/mcp) covers docs.flutter.dev, dart.dev, and official API references.
 - Specialized agents (called custom agents in platforms like Antigravity) run in isolated contexts. The Flutter Accessibility (`a11y`) agent audits widget trees: semantic label inspection (for example `IconButton` or `InkWell` without labels), touch target validation (hit test areas smaller than 48x48 logical pixels), contrast and focus-indicator checks, and automated code fixes (for example wrapping widgets in `Semantics`). It is currently available in Google Antigravity, selectable from the agent picker, by mentioning `@flutter_a11y_agent`, or by asking for an accessibility review.
+- Quality assurance: use `package:skills_lint` (pub.dev) to validate in-repository skills (such as those under `.agents/skills/`) and published package skills against the Agent Skills specification; it checks `SKILL.md` YAML frontmatter, directory structure, naming conventions, and relative file paths. Setup is in "Validate and lint skills" at https://dart.dev/tools/pub/package-skills.
+- Package skills: see https://dart.dev/ai/package-skills to discover and install them and https://dart.dev/tools/pub/package-skills to bundle skills with your own package.
 - Official rules live in the `rules` directory of the flutter/agent-plugins repository.
+- Source: https://docs.flutter.dev/ai/tools (flutter/website `acea420`, fetched 2026-11-14).
 - Distinction: these Flutter and Dart agent plugins, skills, and MCP servers are specific to Flutter development. They are not Claude Code Agent Skills or MCP as documented by the anthropic-claude-code-extend skill, nor the anthropic-api-tools-mcp, openai-agents, openai-apps-sdk, or hermes-agent skills.
 
 ## Related
 
 - [Get started developing with AI](./get-started.md)
+- [Flutter AI best practices](./ai-best-practices.md)

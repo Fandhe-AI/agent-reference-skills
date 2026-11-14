@@ -37,7 +37,7 @@ The page is a flat PR list, not an API description. These lines are copied verba
 - Dart SDK constraint: the list contains both "[pubspec] Bump Dart SDK constraint to ^3.13.0 by @bkonyi in 186957" (line in Framework) and "Revert "[pubspec] Bump Dart SDK constraint to ^3.13.0 (#186957)" by @Piinks in 187209". The page does not show a later reland, so do not read the constraint bump as effective from this page alone. The Dart version bundled with the pinned stable release 3.47.7 is Dart 3.13.5 (from the Flutter release manifest).
 - The list ends with cherry-pick entries for the 3.47 release candidate (for example "[flutter-3.47-candidate.0] Update Flutter DEPS to Dart 171019fea4e9662698a006b1747bf78bfecbd041" and "[flutter-3.47-candidate.0] Sync engine.version to f88005a259ba379c2c1156178aa1870936be7b7f").
 - The page holds roughly 900 PR entries, many of which are reverts and relands. This skill reproduces only the user-visible entries above; for narrative see the What's new in Flutter 3.47 page and for breaking changes see the breaking changes index.
-- Bug-fix releases after 3.47.0 (the latest stable is 3.47.7) are not covered by this page.
+- Bug-fix releases after 3.47.0 (3.47.7 was the last 3.47 patch this skill pinned; the latest stable is now 3.50.0) are not covered by this page.
 
 ## Related
 

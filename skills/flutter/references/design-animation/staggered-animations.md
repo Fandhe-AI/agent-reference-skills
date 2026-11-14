@@ -213,7 +213,7 @@ void main() {
 - The stateless widget (`StaggerAnimation`) specifies the tweens, defines the `Animation` objects, and builds the animating widget tree; the stateful widget (`StaggerDemo`) creates the controller (2000 ms), plays the animation, and builds the non-animating tree. Taps during playback are ignored so the sequence can finish.
 - The example uses an `Opacity` widget inside `AnimatedBuilder` to keep all animated properties in one builder; when animating opacity alone prefer `FadeTransition` to avoid rebuilding the child on each frame.
 - `EdgeInsetsTween` extends `Tween<EdgeInsets>` (non-nullable), so `animate()` yields `Animation<EdgeInsets>`; `BorderRadiusTween` and `ColorTween` are nullable, hence `Animation<BorderRadius?>` / `Animation<Color?>`.
-- The sample imports `package:material_ui/material_ui.dart`, the opt-in standalone Material package available in Flutter 3.47.
+- The sample imports `package:material_ui/material_ui.dart`, the standalone Material package (opt-in since Flutter 3.47; the in-framework library is formally deprecated in Flutter 3.50).
 - Flutter animation framework (Dart). Distinct from Motion (JS) keyframes/sequences, Jetpack Compose animation APIs, Rive, and Theatre.js sequences; use the motion, android-compose-graphics-animation, rive, or theatrejs skills for those.
 
 ## Related

@@ -32,4 +32,4 @@ Widget mySampleText() {
 }
 ```
 
-`package:material_ui` is an opt-in package in Flutter 3.47; run `flutter pub add material_ui` first, or import `package:flutter/material.dart` instead (`Text` itself comes from `package:flutter/widgets.dart`).
+`package:material_ui` is the standalone Material package (opt-in since Flutter 3.47, the default for new projects in Flutter 3.50); run `flutter pub add material_ui` first, or import `package:flutter/material.dart` instead (`Text` itself comes from `package:flutter/widgets.dart`).
