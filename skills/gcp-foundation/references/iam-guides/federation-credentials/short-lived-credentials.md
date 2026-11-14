@@ -91,15 +91,15 @@ POST https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/PRIV_SA
 }
 ```
 
-`JWT_PAYLOAD` is a JSON object serialized as a string, so its quotes are escaped. Adapted (not in the official docs): shown embedded in the full `signJwt` request body so the JSON is valid.
+`JWT_PAYLOAD` is a JSON object serialized as a string, so its quotes are escaped. Adapted (not in the official docs): shown embedded in the full `signJwt` request body so the JSON is valid, and the fixed `iat` is replaced by an `IAT` placeholder.
 
 ```json
 {
-  "payload": "{ \"iss\": \"PRIV_SA\", \"sub\": \"PRIV_SA\", \"aud\": \"https://firestore.googleapis.com/\", \"iat\": 1529350000, \"exp\": EXP }"
+  "payload": "{ \"iss\": \"PRIV_SA\", \"sub\": \"PRIV_SA\", \"aud\": \"https://firestore.googleapis.com/\", \"iat\": IAT, \"exp\": EXP }"
 }
 ```
 
-Replace `EXP` with the numeric expiry (Unix time) before sending.
+Replace `IAT` with the current Unix time in seconds and `EXP` with a later Unix time within the allowed lifetime (at most 1 hour after `IAT` for Google APIs) before sending. The source sample uses a fixed 2018 `iat` (`1529350000`), which would make the token invalid.
 
 ```
 POST https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/PRIV_SA:signBlob

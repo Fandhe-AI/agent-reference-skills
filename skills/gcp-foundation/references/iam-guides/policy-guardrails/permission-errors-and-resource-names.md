@@ -62,7 +62,7 @@ REST error:
 | Compute Engine instances | `//compute.googleapis.com/projects/PROJECT_ID/zones/ZONE/instances/INSTANCE_ID` |
 | Compute Engine networks | `//compute.googleapis.com/projects/PROJECT_ID/global/networks/NETWORK` |
 | Compute Engine subnetworks | `//compute.googleapis.com/projects/PROJECT_ID/regions/REGION/subnetworks/SUBNETWORK` |
-| GKE clusters | `//container.googleapis.com/projects/PROJECT_ID/clusters/CLUSTER_ID` |
+| GKE clusters | `//container.googleapis.com/projects/PROJECT_ID/locations/LOCATION/clusters/CLUSTER_ID` (or `.../zones/ZONE/clusters/CLUSTER_ID` for zonal clusters); corrected from the official table, which omits the location segment |
 | IAM service accounts | `//iam.googleapis.com/projects/PROJECT_ID/serviceAccounts/SERVICE_ACCOUNT_EMAIL` |
 | IAM service account keys | `//iam.googleapis.com/projects/PROJECT_ID/serviceAccounts/SERVICE_ACCOUNT_EMAIL/keys/KEY_ID` |
 | IAP App Engine app service | `//iap.googleapis.com/projects/PROJECT_NUMBER/iap_web/appengine-PROJECT_ID/services/APP_SERVICE_ID` |

@@ -10,7 +10,7 @@ A principal represents one or more identities that have authenticated to Google 
 
 Examples from the page for a single principal across policy types.
 
-Adapted (not in the official docs): in the GKE example the pool name and cluster path use the project ID (`example-project`) instead of the project number, since the GKE workload pool is `PROJECT_ID.svc.id.goog`; only the `projects/` segment before `locations/global/workloadIdentityPools` is the project number.
+Adapted (not in the official docs): in the GKE example the pool name and cluster path use the project ID (`example-project`) instead of the project number, since the GKE workload pool is `PROJECT_ID.svc.id.goog`; the cluster location is the cluster's real region or zone (`us-central1` here) rather than `global`; only the `projects/` segment before `locations/global/workloadIdentityPools` is the project number.
 
 ```text
 Allow policies:  user:alex@example.com
@@ -27,7 +27,7 @@ Deny policies:   principalSet://goog/cloudIdentityCustomerId/C01Abc35
 PAB policies:    //iam.googleapis.com/locations/global/workspace/C01Abc35
 
 All GKE Pods in a cluster (allow policy):
-principalSet://iam.googleapis.com/projects/123456789012/locations/global/workloadIdentityPools/example-project.svc.id.goog/kubernetes.cluster/https://container.googleapis.com/v1/projects/example-project/locations/global/clusters/example-gke-cluster
+principalSet://iam.googleapis.com/projects/123456789012/locations/global/workloadIdentityPools/example-project.svc.id.goog/kubernetes.cluster/https://container.googleapis.com/v1/projects/example-project/locations/us-central1/clusters/example-gke-cluster
 
 Project principal set (PAB policy):
 //cloudresourcemanager.googleapis.com/projects/example-project
