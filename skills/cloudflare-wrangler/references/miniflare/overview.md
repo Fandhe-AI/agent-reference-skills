@@ -31,7 +31,7 @@ await mf.dispose();
 
 ## Notes
 
-- Wrangler 4.156.2 depends on miniflare 5.20261102.0-beta while npm latest is 4.x.
+- Wrangler 4.162.0 depends on miniflare 5.20261113.0-beta while npm latest is 4.x (4.20260730.0). Baseline: Wrangler 4.156.2 depended on miniflare 5.20261102.0-beta.
 - Most users should use Wrangler (`wrangler dev`) to build, run, and deploy Workers; the Miniflare API is only relevant for advanced use cases.
 - Miniflare is not a hardened sandbox. Do not run untrusted or potentially malicious Worker code directly on your machine; run the whole development process inside a secure sandbox such as a virtual machine.
 - The warning applies to default local execution with `wrangler dev`, `vite dev`, `vite preview`, direct Miniflare use, and Miniflare-based testing tools. Setting `remote: true` on a binding changes which resource your code accesses, but Worker code still executes locally. Legacy `wrangler dev --remote` executes Worker code on Cloudflare.

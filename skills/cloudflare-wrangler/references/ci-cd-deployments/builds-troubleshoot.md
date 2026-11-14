@@ -47,6 +47,19 @@ Builds API errors:
 
 - Build limits are in `builds-overview.md`.
 
+### Pull request comment shows "No Preview URL"
+
+A preview build can succeed while the pull request or merge request comment shows **No Preview URL**; Workers Builds did not receive a Preview URL from your Preview command. Check: (1) a Preview host is enabled (a custom domain enabled for Preview traffic, `workers.dev` Preview URLs, or both; `workers.dev` is not needed if a custom domain is enabled for Previews; see `previews-custom-domains.md`); (2) your Preview command reports the Preview to Workers Builds, which reads Preview and Deployment URLs from the Preview command output.
+
+| Command | Minimum version |
+| --- | --- |
+| `npx wrangler preview` | Wrangler 4.135.0 |
+| `npx cf previews deploy` | `cf` 1.0.0-beta.18 |
+
+Earlier versions of `cf previews deploy` print the Preview URLs in the build log but do not report them to Workers Builds; update the version in your `package.json`. To confirm the Preview was created, find its URLs in the build log or in the **Previews** section of your Worker.
+
+- Source: https://developers.cloudflare.com/workers/ci-cd/builds/troubleshoot/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
+
 ## Related
 
 - [builds-overview.md](./builds-overview.md)

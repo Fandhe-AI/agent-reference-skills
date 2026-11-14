@@ -57,6 +57,7 @@ schedules = [ "0 * * * *" ]
 | `script_name` | `string` optional | Worker script where the Workflow class is defined. Only required if defined in a different Worker. |
 | `schedules` | `string[]` optional | Cron schedules that create new instances automatically. Use instead of top-level `triggers.crons` plus a separate `scheduled` handler. Use a Wrangler release that supports Workflow schedules. |
 | `default_retention` | `object` optional | How long to retain state of finished instances; applied to instances that do not set their own `retention`. `success_retention` (`string \| number`): instances that complete successfully or are terminated, as a duration string such as `"3 days"` or a whole number of milliseconds. `error_retention` (`string \| number`): instances that end errored, such as `"7 days"`. Capped at the account's retention limit. |
+| `concurrency` | `object` optional | `limit` (`number`, optional): maximum number of instances of this Workflow that can run at the same time; a positive integer no higher than the account's concurrency limit; instances above the limit are queued. Cannot be combined with `script_name`. Requires Wrangler 4.127.0 or above. |
 | `jurisdiction` | `string` optional | Jurisdiction instances run and store data in: `"eu"`, `"fedramp"`, `"us"`. Set at creation, cannot be changed afterwards, cannot be combined with `script_name`. Requires Wrangler 4.152.0 or above. |
 
 ### Workflow `exports` entries (keyed by class name extending `WorkflowEntrypoint`)
@@ -67,6 +68,7 @@ schedules = [ "0 * * * *" ]
 | `name` | `string` required | The Workflow name. Two entries in `exports` cannot use the same name. |
 | `limits` | `object` optional | `steps` (`number`): maximum number of steps a Workflow instance can run. |
 | `schedules` | `string \| string[]` optional | One or more cron schedules that create new instances automatically. |
+| `concurrency` | `object` optional | `limit` (`number`, optional): same values as the `workflows` binding. |
 | `default_retention` | `object` optional | Same `success_retention` / `error_retention` fields as the `workflows` binding. |
 | `jurisdiction` | `string` optional | Same values as the `workflows` binding. Requires Wrangler 4.152.0 or above. |
 
@@ -76,6 +78,8 @@ schedules = [ "0 * * * *" ]
 - A `workflows` binding to a Workflow in another Worker cannot use the same `name` as a Workflow export in this Worker; Workflow names are unique per account.
 - The Worker calls each exported Workflow through `ctx.exports`, keyed by class name.
 - Workflows API behavior is documented by the Workflows docs, not here.
+- Docs vs release notes (kept both; the official page's wording in the first bullet above is verbatim and has not been updated): the wrangler 4.162.0 release notes say Wrangler now rejects settings on a `workflows` binding to a Workflow declared in `exports` (so from 4.162.0 put `schedules`, `concurrency`, retention and `jurisdiction` on the `exports` entry only, not on the binding), and uploads Workflow export settings with the Worker. Before 4.162.0 the same-value rule in the first bullet applied. Source: https://github.com/cloudflare/workers-sdk/releases/tag/wrangler%404.162.0
+- Source: https://developers.cloudflare.com/workers/wrangler/configuration/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

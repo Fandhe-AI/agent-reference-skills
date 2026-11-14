@@ -74,8 +74,13 @@ index_name = "<INDEX_NAME>"
 | Name | Type | Description |
 |------|------|-------------|
 | `binding` | `string` required | Binding name used to refer to the R2 bucket. |
-| `bucket_name` | `string` required | The name of this R2 bucket. |
+| `bucket_name` | `string` optional | The name of this R2 bucket. |
 | `jurisdiction` | `string` optional | The jurisdiction where this R2 bucket is located, if specified. |
+| `remote` | `boolean` optional | Connect this binding to the deployed bucket during local development. Defaults to `false`. |
+| `local_dev` | `object` optional | Settings that apply only to local development. |
+| `local_dev.experimental_s3_credentials` | `object` optional | Serve this local bucket through the experimental S3-compatible endpoint at `/cdn-cgi/local/r2/s3`. Requires Wrangler 4.115.0 or later. Ignored when `remote` is `true`. |
+| `local_dev.experimental_s3_credentials.accessKeyId` | `string` required | An access key ID you choose for local AWS Signature Version 4 authentication. |
+| `local_dev.experimental_s3_credentials.secretAccessKey` | `string` required | A secret access key you choose for local AWS Signature Version 4 authentication. These local credentials do not grant access to deployed R2 buckets. |
 | `preview_bucket_name` | `string` optional | Preview name. If provided, `wrangler dev` uses it; otherwise `bucket_name`. Required when using `wrangler dev --remote` (not required with remote bindings). |
 
 ### Hyperdrive (`hyperdrive`)
@@ -99,6 +104,12 @@ index_name = "<INDEX_NAME>"
 - Binding runtime APIs (D1, KV, R2, Hyperdrive, Vectorize) belong to cloudflare-storage; this page documents only the configuration keys.
 - Bindings are non-inheritable and must be redefined in each environment (see [environments.md](./environments.md)).
 - KV, R2, D1 can be auto-provisioned; see [automatic-provisioning.md](./automatic-provisioning.md).
+
+### Release-note-only (D1)
+
+- `jurisdiction` on a D1 binding without a `database_id` creates the database in that jurisdiction during automatic provisioning, for example `{"d1_databases":[{"binding":"DB","jurisdiction":"eu"}]}` (wrangler 4.159.0; not yet on the official configuration page). Source: https://github.com/cloudflare/workers-sdk/releases/tag/wrangler%404.159.0
+
+- Source: https://developers.cloudflare.com/workers/wrangler/configuration/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

@@ -88,7 +88,7 @@ The `default` policy stores the image and instance configuration on the Containe
 | `instance_type` | `string \| object` optional | `"lite"` (default), `"basic"`, `"standard-1"`, `"standard-2"`, `"standard-3"`, `"standard-4"`, or a custom object (see below). |
 | `max_instances` | `number` optional | Maximum concurrent container instances (stopped ones do not count). Defaults to 20. Only enforced in production, not local development. If a start request exceeds the limit, it errors. |
 | `image_build_context` | `string` optional | Build context; defaults to the directory of `image`. |
-| `image_vars` | `Record<string, string>` optional | Build-time variables, like `--build-arg` with `docker build`. For runtime variables use secret bindings or `envVars` on the Container class. |
+| `image_vars` | `Record<string, string>` optional | Build-time variables, like `--build-arg` with `docker build`. For runtime variables, pass them to `ctx.container.start()`. |
 | `rollout_active_grace_period` | `number` optional | During a rollout, minimum seconds an instance must already have been connected to its Durable Object before it may be replaced. Defaults to `0`. Still applies with `--containers-rollout=immediate`. |
 | `rollout_step_percentage` | `number \| number[]` optional | Percentage of instances updated per rollout step. A single number (`5`, `10`, `20`, `25`, `50`, or `100`), or an array of ascending integers from `10` through `100`, ending in `100`, at most 10 entries and no more than `max_instances`; values are cumulative. Defaults to `100` if `max_instances` is omitted or less than `2`; otherwise `[10, 100]`. Override for one deploy with `--containers-rollout=immediate`. |
 | `observability` | `object` optional | Overrides the root Worker observability for this application; if omitted, the top-level `observability` is the fallback. |
@@ -153,6 +153,8 @@ Configuration for SSH access to a Container instance through Wrangler. Applies t
 - Each Container application must link to a Durable Object defined in the same Worker. Set `class_name` on the Container entry, or set `name` and reference it from `exports.<Class>.container`. Configure exactly one of these linkage directions.
 - Docs quirk: the `observability` option is listed twice in the source option list (once as "Overrides the root Worker observability configuration", once with the sub-keys); merged here.
 - Container runtime behavior and the Durable Object Container API are documented by the Containers docs.
+- Container runtime variables: the 2026-11-14 official page says to pass them to `ctx.container.start()`; the previous revision pointed to secret bindings or `envVars` on the Container class.
+- Source: https://developers.cloudflare.com/workers/wrangler/configuration/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

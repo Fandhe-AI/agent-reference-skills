@@ -17,6 +17,7 @@
 | Gradual Deployments | Percentage traffic split, Durable Objects behavior | [versions-gradual-deployments.md](./versions-gradual-deployments.md) |
 | Version Affinity | Cloudflare-Workers-Version-Key header | [versions-version-affinity.md](./versions-version-affinity.md) |
 | Version Overrides | Cloudflare-Workers-Version-Overrides header | [versions-version-overrides.md](./versions-version-overrides.md) |
+| Version Skew and Static Assets | Related requests across versions, propagation, older pages | [versions-version-skew.md](./versions-version-skew.md) |
 | Version URLs | URLs for uploaded versions and aliases | [versions-version-urls.md](./versions-version-urls.md) |
 | Worker Previews | Branch-isolated Previews with wrangler preview | [previews-overview.md](./previews-overview.md) |
 | Compare Preview Workflows | Previews vs Version URLs vs environments | [previews-compare-workflows.md](./previews-compare-workflows.md) |

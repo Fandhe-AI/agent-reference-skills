@@ -126,9 +126,7 @@ instance_type = "basic"
 With an `env` container binding:
 
 ```ts
-import { getContainer } from "@cloudflare/containers";
-
-const container = getContainer(env.MY_CONTAINER, "tenant-a");
+const container = env.MY_CONTAINER.getByName("tenant-a");
 return container.fetch(request);
 ```
 
@@ -277,6 +275,8 @@ D1 per-branch override:
 - Containers: generated app name includes Worker, Preview, and class names (e.g. `my-worker_feature-login_MyContainer`). Preview container config is not inherited; declare in top-level `containers` and `previews.containers`. Deleting a Preview removes its record and DO namespace, but the container app can remain in `wrangler containers list`; delete leftovers by ID. Do not delete container apps by Worker name alone. Container support in Previews is partial; verify the process starts. Review IDs before using the automated cleanup pattern broadly.
 - D1: set `migrations_dir` in `wrangler.preview-migrations.jsonc` (default `migrations`); both files must point to the same physical database; run the migration command once per shared `database_id`; apply migrations before `wrangler preview`.
 - Limitations: service bindings from a Preview reach only the production bound Worker (use `ctx.exports` to stay within the Preview). Workflow bindings do not create Workflows (a new name fails with `workflow.not_found`; Previews bound to one Workflow share instances; automatic per-Preview provisioning is planned). Previews can produce to Queues but cannot consume (one consumer per queue); messages to a production queue can be consumed by production. Cron Triggers target production (test via a function callable from `scheduled()` and a test route). Production routes, custom domains, and Queue consumers are not taken over by Previews; use Preview URLs.
+- The `env` container binding example now uses `env.MY_CONTAINER.getByName("tenant-a")` instead of `getContainer()` from `@cloudflare/containers` (cloudflare-docs change "Replace @cloudflare/containers with ctx.container").
+- Source: https://developers.cloudflare.com/workers/previews/resources/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

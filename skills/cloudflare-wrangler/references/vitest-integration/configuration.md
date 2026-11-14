@@ -8,6 +8,23 @@ The Workers Vitest integration adds configuration on top of Vitest's usual optio
 
 ## Signature / Usage
 
+For a project with a `cloudflare.config.ts` file (the new `cf` CLI, beta), set the `config` option:
+
+```ts
+import { cloudflareTest } from "@cloudflare/vitest-plugin";
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+	plugins: [
+		cloudflareTest({
+			config: true,
+		}),
+	],
+});
+```
+
+If your project uses a Wrangler configuration file, set the `wrangler` option instead of `config`:
+
 ```ts
 import { cloudflareTest } from "@cloudflare/vitest-plugin";
 import { defineConfig } from "vitest/config";
@@ -137,9 +154,10 @@ type SourcelessWorkerOptions = Omit<
 
 | Name | Type | Description |
 |------|------|-------------|
-| `main` | `string` (optional) | Entry point to the Worker run in the same isolate/context as tests. Required to use Durable Objects without an explicit `scriptName` if classes are defined in the same Worker. Goes through Vite transforms and can be TypeScript. `import module from "<path-to-main>"` inside tests gives exactly the same `module` instance used internally for `exports` and Durable Object bindings. If `wrangler.configPath` is defined and this is not, it is read from the `main` field in that config file. |
-| `miniflare` | `SourcelessWorkerOptions & { workers?: WorkerOptions[]; }` (optional) | Configuration normally stored in the Wrangler config file (bindings, compatibility dates, compatibility flags). Use `main` instead of Miniflare `script`, `scriptPath`, or `modules`. If no `compatibility_date` is provided, the latest locally available date is used. The `workers` array configures auxiliary Workers that run in the same `workerd` process as tests and can be bound to. |
-| `wrangler` | `{ configPath?: string; environment?: string; }` (optional) | `configPath`: Wrangler config file to load `main`, compatibility settings and bindings from (accepts `.toml` and `.json` files). Merged with `miniflare`, with `miniflare` values taking precedence (e.g. a `serviceBindings: { SERVICE(request) { return new Response("body"); } }` entry overrides a `SERVICE` service binding from the Wrangler config). `environment`: Wrangler environment to pick up bindings and variables from. |
+| `config` | `boolean \| string` (optional) | Load the entry point, compatibility settings, bindings, triggers and exports from a `cloudflare.config.ts` file. Pass `true` to load `cloudflare.config.ts` from the project root, or a path relative to the project root. Cannot be used together with `wrangler`. If `cloudflare.config.ts` exports a function, it receives the Vitest mode as `ctx.mode` (default `test`; change with `vitest --mode <MODE>`). |
+| `main` | `string` (optional) | Entry point to the Worker run in the same isolate/context as tests. Required to use Durable Objects without an explicit `scriptName` if classes are defined in the same Worker. Goes through Vite transforms and can be TypeScript. `import module from "<path-to-main>"` inside tests gives exactly the same `module` instance used internally for `exports` and Durable Object bindings. If this option is not set, the entry point from your configuration file is used: `main` in a Wrangler configuration file, or `entrypoint` in `cloudflare.config.ts`. |
+| `miniflare` | `SourcelessWorkerOptions & { workers?: WorkerOptions[]; }` (optional) | Configuration normally stored in the Wrangler config file (bindings, compatibility dates, compatibility flags). Use `main` instead of Miniflare `script`, `scriptPath`, or `modules`. If no `compatibility_date` is provided, the latest locally available date is used. If you also set `config` or `wrangler`, these options are merged with the configuration from that file, and `miniflare` values take precedence. The `workers` array configures auxiliary Workers that run in the same `workerd` process as tests and can be bound to. |
+| `wrangler` | `{ configPath?: string; environment?: string; }` (optional) | `configPath`: Wrangler config file to load `main`, compatibility settings and bindings from (accepts `.toml` and `.json` files). Merged with `miniflare`, with `miniflare` values taking precedence (e.g. a `serviceBindings: { SERVICE(request) { return new Response("body"); } }` entry overrides a `SERVICE` service binding from the Wrangler config). `environment`: Wrangler environment to pick up bindings and variables from. The Wrangler `alias` field is not read; set the same aliases in Vite's `resolve.alias` in your Vitest configuration. Cannot be used together with `config`. |
 
 Auxiliary Workers (`miniflare.workers`), unlike the `main` Worker:
 
@@ -157,6 +175,12 @@ Auxiliary Workers (`miniflare.workers`), unlike the `main` Worker:
 - `createPagesEventContext()` is mentioned but not defined on this page. The `additionalExports` option appears in [known-issues.md](./known-issues.md) but is not listed in the `CloudflareTestOptions` section of this page.
 - Vitest itself (test API, config, mocking): see the vitest skill. This package only provides the Workers runtime pool/plugin.
 - Miniflare `WorkerOptions` interface: https://github.com/cloudflare/workers-sdk/tree/main/packages/miniflare#interface-workeroptions. D1 recipe: https://github.com/cloudflare/workers-sdk/tree/main/fixtures/vitest-plugin-examples/d1. Hyperdrive recipe: https://github.com/cloudflare/workers-sdk/tree/main/fixtures/vitest-plugin-examples/hyperdrive.
+- `cloudflare.config.ts` and the `cf` CLI are outside this skill (new `cf` CLI beta is not covered); see https://developers.cloudflare.com/cf/projects/cloudflare-config/ .
+- Source: https://developers.cloudflare.com/workers/testing/vitest-integration/configuration/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
+
+### Release notes (@cloudflare/vitest-plugin 1.6.0 to 1.8.2)
+
+- 1.7.0 runs the Containers that the Wrangler configuration attaches to Durable Objects; 1.8.0 does the same for `cloudflare.config.ts`; 1.6.0 adds local Artifacts support. Source: https://github.com/cloudflare/workers-sdk/releases/tag/%40cloudflare%2Fvitest-plugin%401.6.0 , https://github.com/cloudflare/workers-sdk/releases/tag/%40cloudflare%2Fvitest-plugin%401.7.0 and https://github.com/cloudflare/workers-sdk/releases/tag/%40cloudflare%2Fvitest-plugin%401.8.0
 
 ## Related
 

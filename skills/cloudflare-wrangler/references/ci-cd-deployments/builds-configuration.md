@@ -71,6 +71,7 @@ Preview command examples:
 | --- | --- |
 | `yarn exec wrangler preview` | Customize the package manager used to run Wrangler. |
 | `npx wrangler preview --env staging` | Preview for a Wrangler environment Worker. |
+| `npx cf previews deploy` | Deploy a Preview with the `cf` CLI. Use `cf` 1.0.0-beta.18 or later; earlier versions do not report Preview URLs to Workers Builds, so pull request comments show **No Preview URL**. |
 
 Default variables injected (can be overridden):
 
@@ -114,6 +115,7 @@ Build cache — frameworks:
 - API token: only user tokens are supported (account-owned tokens "coming soon"). **Create new token** grants: Account: Account Settings (read), Workers Scripts (edit), Workers KV Storage (edit), Workers R2 Storage (edit); Zone: Workers Routes (edit) for all zones; User: User Details (read), Memberships (read). Use the same token across all uploads/deployments of a Worker.
 - Build cache: enable at **Settings** > **Build** > **Build cache** > **Enable**; **Clear Cache** there too. Package manager and framework are auto-detected from `package.json`. A non-default pnpm store directory is not cached. Retention: purged 7 days after last read (unread artifacts 7 days after creation). Storage: 10 GB per project; least recently read artifacts are deleted first.
 - Framework setup guides are in the Workers framework guides (automatic configuration, React + Vite, Astro, Next.js, SvelteKit, Hono, etc.); see the official docs.
+- Source: https://developers.cloudflare.com/workers/ci-cd/builds/configuration/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

@@ -96,7 +96,8 @@ it("calls queue handler", async () => {
     {
       id: "message-1",
       timestamp: new Date(1000),
-      body: "body-1"
+      body: "body-1",
+      attempts: 1
     }
   ]);
   const ctx = createExecutionContext();
@@ -295,8 +296,6 @@ it("should disable all sleeps, mock an event and complete", async () => {
 
 - `introspectWorkflow(workflow: Workflow)`: `Promise<WorkflowIntrospector>` - introspector for a Workflow whose instance IDs are unknown beforehand; modifications apply to all subsequently created instances.
 
-Adapted (not in the official docs): `introspector.get()` is awaited because it returns a Promise; see Notes.
-
 ```ts
 import { env, exports } from "cloudflare:workers";
 import { introspectWorkflow } from "cloudflare:test";
@@ -350,9 +349,7 @@ The instance need not be created directly in the test; the introspector captures
 | `mockEvent(event: { type: string; payload: unknown })` | Resolves `step.waitForEvent()` with the payload; `type` must match the `waitForEvent` type. |
 | `forceEventTimeout(step: { name: string; index?: number })` | Forces `step.waitForEvent()` to time out instantly, failing the step. |
 
-Explicit disposal example (`try` / `finally` with `instance.dispose()`), adapted from the original page:
-
-Adapted (not in the official docs): `catch` replaced by `finally` so the instance is always disposed; see Notes.
+Explicit disposal example (`try` / `finally` with `instance.dispose()`):
 
 ```ts
 import { env } from "cloudflare:workers";
@@ -476,7 +473,8 @@ it("introspects instances created through ctx.exports", async () => {
 - Corrected from the official docs: the official page points to `startDevWorker()` for testing Assets, which is not a public Wrangler API; the documented public APIs are `createTestHarness()` (recommended) and the deprecated `unstable_startWorker()` / `unstable_dev()` (see [api.md](../commands/api.md) and [test-harness-overview.md](../miniflare/test-harness-overview.md)). The same applies to the `startDevWorker()` mention in [migrate-from-vitest-3-to-vitest-4.md](./migrate-from-vitest-3-to-vitest-4.md).
 - The official page describes both modules as plugin-provided and test-file-only; only `cloudflare:test` has that restriction. `cloudflare:workers` is a runtime module also used from Worker source.
 - `SELF` and `env` from `cloudflare:test` are deprecated in favor of `cloudflare:workers` (see [migrate-from-vitest-3-to-vitest-4.md](./migrate-from-vitest-3-to-vitest-4.md)).
-- Corrected from the official docs: the `introspectWorkflow` example calls `introspector.get()` without `await` although `get()` is documented as returning a Promise (iterating a Promise would throw), so `await` was added. The explicit-disposal example disposes in a `catch` block, which only runs on error, so it was changed to `finally`.
+- As of cloudflare-docs production `34d908a` (fetched 2026-11-14) the official `introspectWorkflow` example uses `await introspector.get()` and the explicit-disposal example disposes in `finally`; earlier revisions called `get()` without `await` and disposed in `catch`, which this page had corrected. The queue `createMessageBatch` example now includes `attempts: 1`.
+- Source: https://developers.cloudflare.com/workers/testing/vitest-integration/test-apis/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
 - The D1 bullet above and `configuration.md` reference `@cloudflare/vitest-plugin/config` for `readD1Migrations`, while the configuration examples import it from `@cloudflare/vitest-plugin`; both subpaths are covered by the rename in migrate-to-vitest-plugin.md.
 - Docs inconsistency: the D1 text says "`migrationsTableName`" while the signature parameter is `migrationTableName`.
 - Vitest itself (test API, config, mocking): see the vitest skill. This package only provides the Workers runtime pool/plugin. Durable Objects, Queues and Workflows are covered by the cloudflare-stateful skill (https://developers.cloudflare.com/durable-objects/ , https://developers.cloudflare.com/queues/ , https://developers.cloudflare.com/workflows/ ); for Secrets Store see https://developers.cloudflare.com/secrets-store/ .

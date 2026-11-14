@@ -3,6 +3,7 @@
 | Name | Description | Path |
 |------|-------------|------|
 | Vite plugin overview | Full-featured Vite and Workers runtime integration, features, use cases | [overview.md](./overview.md) |
+| Vite+ on Workers | Using Vite+ (`vp`) with the Cloudflare Vite plugin | [vite-plus.md](./vite-plus.md) |
 | Get started | Create a standalone Worker with Vite and the plugin | [get-started.md](./get-started.md) |
 | Tutorial | React SPA with an API Worker, build, preview, deploy | [tutorial.md](./tutorial.md) |
 | API | `cloudflare()`, `PluginConfig`, `AuxiliaryWorkerConfig` options | [api.md](./api.md) |
