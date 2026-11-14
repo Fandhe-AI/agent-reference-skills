@@ -19,7 +19,7 @@ OpenCode Console（opencode.ai/console）を扱う。従量課金モデルのゲ
 
 ## 他スキルとの使い分け
 
-- opencode: OpenCode CLI・`opencode.jsonc` 設定・agents / models / MCP 等の利用者向け。本スキルは Console（ホスト型ゲートウェイ・Go・ワークスペース）側のみ扱う
+- opencode-usage: OpenCode CLI・`opencode.jsonc` 設定・agents / models / MCP 等の利用者向け。本スキルは Console（ホスト型ゲートウェイ・Go・ワークスペース）側のみ扱う
 - opencode-build: `@opencode/plugin` / `@opencode/client` / `@opencode/sdk` と OpenCode サーバー HTTP API。本スキルの Inference API（`/inference`）は OpenCode サーバー HTTP API とは別物
 - anthropic-claude-code / openai-codex / hermes-agent: harness 本体の設定・機能は各スキル。本スキルの `references/harnesses/` は Console を接続先にする手順のみ
 - anthropic-api-core / openai-api-core / google-gemini-api: 各社 API 本体の仕様は各スキル。本スキルは Console が互換エンドポイントとして提供する部分のみ

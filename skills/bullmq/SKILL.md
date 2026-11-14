@@ -6,7 +6,6 @@ description: >
   createPostgresBackend, withBackend、レート制限、cron、delayed / repeatable / priority ジョブ、
   再試行、デッドレター、フロー、バッチ処理、メトリクス。Python / Elixir / PHP / Rust 対応。
 user-invocable: false
-model: sonnet
 ---
 
 # BullMQ リファレンス

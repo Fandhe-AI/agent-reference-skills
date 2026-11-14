@@ -2,13 +2,12 @@
 name: windows-interop-modernize
 description: >
   Windows アプリ開発 (Win32 / WPF / WinForms 相互運用) の相互運用・近代化。
-  Win32 API (CreateWindowExW, WNDPROC, メッセージループ), COM (IUnknown, CoCreateInstance, ComPtr),
-  CsWin32, windows-rs, C++/WinRT (winrt::com_ptr, IAsyncOperation, IDL, ABI 相互運用),
-  C#/WinRT (cswinrt, ComWrappers, AOT/trimming, WindowNative),
-  XAML Islands (DesktopWindowXamlSource, DesktopChildSiteBridge, WindowsXamlManager),
+  Win32 API (CreateWindowExW, WNDPROC), COM (IUnknown, CoCreateInstance),
+  CsWin32, windows-rs, C++/WinRT (winrt::com_ptr), C#/WinRT (cswinrt, ComWrappers),
+  XAML Islands (DesktopWindowXamlSource),
   HwndHost, HwndSource, WindowsFormsHost, ElementHost,
-  UWP から Windows App SDK / WinUI 3 への移行 (namespace mapping, AppWindow, DispatcherQueue, .NET Upgrade Assistant)、
-  移行判断 (upgrade / modernize / migrate)、WinForms → WinUI 3 パターン対応、GitHub Copilot upgrade。
+  UWP から Windows App SDK / WinUI 3 への移行 (.NET Upgrade Assistant)、
+  WinForms → WinUI 3。
 user-invocable: false
 ---
 

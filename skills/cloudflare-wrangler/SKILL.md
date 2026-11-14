@@ -3,9 +3,9 @@ name: cloudflare-wrangler
 description: >
   Cloudflare Workers 開発ツール (Wrangler CLI v4 / @cloudflare/vite-plugin / Vitest 統合 / Miniflare) の
   リファレンス。wrangler dev / deploy / versions / rollback / tail / secret / types の全フラグ、
-  グローバルフラグ、製品別サブコマンド、wrangler.jsonc、.dev.vars、remote bindings、
+  wrangler.jsonc、.dev.vars、remote bindings、
   @cloudflare/vitest-plugin (旧 vitest-pool-workers)、gradual deployments、
-  Workers Builds、Logpush、source maps。
+  Workers Builds、source maps。
   ランタイム API は cloudflare-workers、KV / D1 / R2 は cloudflare-storage。
 user-invocable: false
 ---

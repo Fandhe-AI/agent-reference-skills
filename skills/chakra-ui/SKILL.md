@@ -7,7 +7,6 @@ description: >
   レイアウト、フォーム、オーバーレイ、チャート、テーマ、レシピ、
   スタイルプロップ、レスポンシブ、ダークモード、Chakra UI Pro ブロック。
 user-invocable: false
-model: sonnet
 ---
 
 # Chakra UI v3 リファレンス

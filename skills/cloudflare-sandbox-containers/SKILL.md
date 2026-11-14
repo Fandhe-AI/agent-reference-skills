@@ -3,8 +3,8 @@ name: cloudflare-sandbox-containers
 description: >
   Cloudflare Sandbox SDK 1.0 / Containers (Durable Object から起動するコンテナ) の
   リファレンス。@cloudflare/sandbox、exec / processes / files / preview URLs / terminals / code interpreter、
-  coding agents in sandbox、Container class (defaultPort / sleepAfter / getContainer)、
-  instance types、image registry、wrangler containers、Sandbox SDK 0.x → 1.0 migration。
+  Container class (defaultPort / sleepAfter / getContainer)、
+  instance types、wrangler containers、Sandbox SDK 0.x → 1.0 migration。
   Durable Objects は cloudflare-stateful、Wrangler は cloudflare-wrangler、Docker 本体は docker。
 user-invocable: false
 ---

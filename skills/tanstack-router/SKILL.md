@@ -1,12 +1,12 @@
 ---
 name: tanstack-router
 description: >
-  TanStack Router (型安全 React ルーター、@tanstack/react-router) の API リファレンス。
-  React Router (react-router) とは別ライブラリ。
-  createRouter, createFileRoute, createRootRoute, createLazyFileRoute, createLazyRoute, Link, Outlet,
-  useNavigate, useParams, useSearch, useLoaderData, useBlocker, loader, beforeLoad,
-  validateSearch, redirect, notFound, Await, file-based routing, routeTree.gen.ts,
-  router-plugin, tsr CLI, code splitting, SSR, TanStack Query 統合, eslint-plugin-router。
+  TanStack Router (型安全 React ルーター、@tanstack/react-router) の リファレンス。
+  React Router (react-router) とは別。
+  createRouter, createFileRoute, createRootRoute, Link, Outlet,
+  useNavigate, useParams, useSearch, useLoaderData, loader, beforeLoad,
+  validateSearch, notFound, file-based routing, routeTree.gen.ts,
+  router-plugin, tsr CLI, code splitting (createLazyRoute / createLazyFileRoute), SSR, TanStack Query 統合。
 user-invocable: false
 ---
 

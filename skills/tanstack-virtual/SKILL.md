@@ -3,8 +3,8 @@ name: tanstack-virtual
 description: >
   TanStack Virtual (React 仮想スクロール、@tanstack/react-virtual) の API リファレンス。
   useVirtualizer, useWindowVirtualizer, Virtualizer, VirtualItem, estimateSize,
-  measureElement, rangeExtractor, overscan, lanes, getVirtualItems, getTotalSize,
-  scrollToIndex。固定/可変/動的計測、grid、sticky header、infinite scroll、table、
+  measureElement, rangeExtractor, overscan, lanes, getVirtualItems,
+  scrollToIndex。固定/可変/動的計測、grid、infinite scroll、
   window scroll 仮想化。別名 react-virtual, virtual-core。
   react-flow / Compose LazyColumn / WinUI ListView とは別（DOM 向けヘッドレス仮想化）。
 user-invocable: false

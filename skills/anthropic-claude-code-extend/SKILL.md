@@ -2,11 +2,10 @@
 name: anthropic-claude-code-extend
 description: >
   Claude Code (code.claude.com) の拡張機能リファレンス。
-  Agent Skills (SKILL.md), slash commands, output styles, subagents (cross-session messaging),
-  agent teams, agent view, workflows, routines, scheduled tasks, hooks (PreToolUse / PostToolUse),
-  mods (Claude Code mods), plugins, plugin eval, plugin marketplace (marketplace.json),
-  MCP 設定 (.mcp.json / claude mcp add), managed MCP,
-  channels (--channels / claude/channel push events, webhook / telegram / discord / imessage), tools-reference, advisor, ultrareview。
+  Agent Skills (SKILL.md), slash commands, output styles, subagents, agent teams,
+  workflows, routines, scheduled tasks, hooks (PreToolUse / PostToolUse), plugins,
+  plugin marketplace (marketplace.json), MCP 設定 (.mcp.json / claude mcp add),
+  channels (--channels, webhook / telegram / discord / imessage), tools-reference, advisor, ultrareview。
 user-invocable: false
 ---
 

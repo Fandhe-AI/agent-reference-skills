@@ -7,7 +7,6 @@ description: >
   resolver (Zod / Yup / Joi)、バリデーション、Server Actions / useActionState、
   DevTools (@hookform/devtools)、TypeScript 型。
 user-invocable: false
-model: sonnet
 ---
 
 # React Hook Form v7 リファレンス

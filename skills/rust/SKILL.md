@@ -8,7 +8,6 @@ description: >
   Edition Guide、Standard Library、Error Index。
   所有権、ライフタイム、トレイト、async / await、エラーハンドリング、マクロ。
 user-invocable: false
-model: sonnet
 ---
 
 # Rust リファレンス

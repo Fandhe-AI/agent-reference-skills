@@ -3,12 +3,11 @@ name: apple-swiftui
 description: >
   Apple SwiftUI 宣言的 UI フレームワークリファレンス。
   View, VStack, HStack, ZStack, List, NavigationStack, TabView, toolbar, State, Binding,
-  Bindable, Environment, EnvironmentObject, sheet, fullScreenCover, modifier,
-  animation, Animation, withAnimation, Transition, matchedGeometryEffect, PhaseAnimator,
-  KeyframeAnimator, swipeActions, reorderable, AsyncImage, DocumentGroup, Document,
-  Liquid Glass, iPhone Duo 対応 (ArrangementView, ReservedRegion, DeviceHinge)。
+  Bindable, Environment, EnvironmentObject, sheet, fullScreenCover,
+  Animation, withAnimation, Transition, matchedGeometryEffect, PhaseAnimator,
+  KeyframeAnimator, swipeActions, AsyncImage, DocumentGroup,
+  Liquid Glass, iPhone Duo 対応 (ArrangementView, DeviceHinge)。
 user-invocable: false
-model: sonnet
 ---
 
 # SwiftUI リファレンス

@@ -6,7 +6,6 @@ description: >
   アドオン (a11y, controls, viewport, themes), Vitest addon, test-runner,
   Storybook MCP server, components manifest, アドオン作成, upgrade / migration。
 user-invocable: false
-model: sonnet
 ---
 
 # Storybook リファレンス

@@ -6,7 +6,6 @@ description: >
   カスタムノード / エッジ、Controls / MiniMap / Background、
   レイアウトアルゴリズム (dagre, elkjs)、ドラッグ&ドロップ、エッジ接続。
 user-invocable: false
-model: sonnet
 ---
 
 # React Flow リファレンス

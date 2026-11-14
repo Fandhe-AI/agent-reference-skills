@@ -3,12 +3,11 @@ name: turborepo
 description: >
   Turborepo (高速モノレポビルドシステム) リファレンス。
   turbo.json、turbo run、dependsOn、task tags、キャッシュ (local / remote)、
-  workspaces (pnpm / npm / yarn / bun / nub / aube)、Rust / Python / Go ワークスペース (実験的)、
+  workspaces (pnpm / npm / yarn / bun / nub / aube)、
   --filter、turbo query affected、turbo prune、turbo gen、watch、parallel 実行、
   Remote Cache (Vercel / 自前ホスト Remote Cache API)、devEngines.packageManager、
   エラー診断 (recursive turbo invocations, missing root task, invalid env prefix)。
 user-invocable: false
-model: sonnet
 ---
 
 # Turborepo リファレンス

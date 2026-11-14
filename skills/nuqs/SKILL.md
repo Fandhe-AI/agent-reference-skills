@@ -7,7 +7,6 @@ description: >
   createStandardSchemaV1, inferParserType、shallow routing、history 制御、SSR、
   URL 長さ制限 (limits)、Zod / Effect / Sury 連携。
 user-invocable: false
-model: sonnet
 ---
 
 # nuqs API リファレンス

@@ -5,7 +5,6 @@ description: >
   rules 設定、plugins、shareable-config、@commitlint/config-conventional、
   Husky / lefthook / simple-git-hooks 連携、CI 統合、custom rules。
 user-invocable: false
-model: sonnet
 ---
 
 # commitlint リファレンス

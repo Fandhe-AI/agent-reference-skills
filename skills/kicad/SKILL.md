@@ -1,5 +1,5 @@
 ---
-name: kicad_10
+name: kicad
 description: >
   KiCad 10.0 (オープンソース EDA スイート) リファレンス。
   Project Manager、Schematic Editor (Eeschema)、PCB Editor (PCBnew)、
@@ -7,7 +7,6 @@ description: >
   PCB Calculator、Command-Line Interface (kicad-cli)。
   回路図設計、基板設計、ガーバー出力、フットプリント、シンボル、3D ビューア。
 user-invocable: false
-model: sonnet
 ---
 
 # KiCad 10.0 リファレンス
@@ -18,7 +17,7 @@ KiCad — クロスプラットフォームのオープンソース EDA (Electro
 ## ディレクトリ構成
 
 ```text
-skills/kicad_10/
+skills/kicad/
   SKILL.md
   references/
     introduction/

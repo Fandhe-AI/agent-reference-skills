@@ -6,7 +6,6 @@ description: >
   DestroyReason, advanceOnClick, waitForElement, skipMissingElement,
   theming, configuration, コールバック, 1.5〜1.10 変更点。
 user-invocable: false
-model: sonnet
 ---
 
 # Driver.js API リファレンス

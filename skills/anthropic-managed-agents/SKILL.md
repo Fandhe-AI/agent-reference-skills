@@ -2,10 +2,10 @@
 name: anthropic-managed-agents
 description: >
   Claude Managed Agents (platform.claude.com) リファレンス。Agents / Sessions / Environments API,
-  SSE event streaming, event deltas, session threads, session budgets,
-  multiagent orchestration (subagents, dynamic workflows, workflow runs, advisor),
+  SSE event streaming, session threads, session budgets,
+  multiagent orchestration (subagents, dynamic workflows, advisor),
   deployments (cron), dreams, vaults, memory stores, self-hosted sandboxes, webhooks,
-  web search / fetch ドメイン制限, secure deployment, permission policies,
+  web search / fetch ドメイン制限, permission policies,
   Agent Skills, MCP connector, user profiles。
 user-invocable: false
 ---

@@ -4,10 +4,9 @@ description: >
   Google Workspace CLI (gws) リファレンス。Rust 製。
   `gws <service> <resource> <method>` 形式で Gmail / Drive / Calendar / Sheets /
   Docs / Chat 等 19 サービスを統一操作。Google Discovery Service 経由の動的コマンド生成。
-  `+` プレフィックスのヘルパーコマンド（+send, +agenda, +upload, +triage 等）、
-  ワークフロー合成（+standup-report, +meeting-prep, +weekly-digest）、
-  OAuth / サービスアカウント / CI ヘッドレス認証、env vars / .env / keyring 設定、
-  グローバルフラグ（--dry-run, --page-all, --sanitize）、exit codes、Model Armor 統合。
+  ヘルパーコマンド (+send, +agenda, +upload, +triage)、
+  ワークフロー (+standup-report, +meeting-prep, +weekly-digest)、
+  OAuth / サービスアカウント / CI ヘッドレス認証、--dry-run, --page-all, --sanitize、Model Armor 統合。
 user-invocable: false
 ---
 

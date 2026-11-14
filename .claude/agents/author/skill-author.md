@@ -61,7 +61,7 @@ user-invocable: {user-invocable}
 ---
 ```
 
-- `description` は2〜4行・体言止め・主要 API/概念を名詞で列挙する
+- `description` は上限 400 字（先頭 160 字に要点、description-style.md）・体言止め・主要 API/概念を名詞で列挙する
 - `#` で始まる/含む語は YAML コメント化しないよう `'...'` でクォートするか言い換える
 
 ### Step 3: 本文の作成

@@ -7,7 +7,6 @@ description: >
   @deprecated, @see, @throws。TypeDoc 互換、TSDoc 標準タグ + TypeDoc 拡張 (@category, @since, linkcode, linkplain)。
   コード作成・レビュー時に自動参照。
 user-invocable: false
-model: sonnet
 ---
 
 # TSDoc コメント ガイドライン

@@ -7,7 +7,6 @@ description: >
   auth 永続化、Credentials (passkeys / WebAuthn)、WebStorage、WebMCP、
   Playwright MCP / playwright-cli、trace viewer、screencast、test locks、codegen、UI モード。
 user-invocable: false
-model: sonnet
 ---
 
 # Playwright E2E テストフレームワーク リファレンス

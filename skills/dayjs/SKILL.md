@@ -6,7 +6,6 @@ description: >
   query (isBefore / isAfter / isSame)、duration, relativeTime、
   timezone, utc, plugin システム、locale、i18n。
 user-invocable: false
-model: sonnet
 ---
 
 # Day.js API リファレンス

@@ -8,7 +8,6 @@ description: >
   エラー処理、Zod 4 移行・Zod Mini (@zod/mini)。
   createInsertSchema / createSelectSchema (drizzle-zod、Drizzle テーブルからのスキーマ生成) は別スキル drizzle。
 user-invocable: false
-model: sonnet
 ---
 
 # Zod リファレンス
