@@ -2,6 +2,8 @@
 
 コードスキャンのアラート・解析結果・CodeQL データベース・SARIF アップロードを管理するエンドポイント。
 
+公式ドキュメント: https://docs.github.com/en/rest/code-scanning/code-scanning
+
 ## エンドポイント
 
 ### アラート

@@ -2,6 +2,8 @@
 
 Endpoints to read and update Copilot code review policy, runner configuration and settings at enterprise, organization and repository level.
 
+公式ドキュメント: https://docs.github.com/en/rest/copilot/copilot-code-review
+
 ## Signature / Usage
 
 | Method | Path | Description |
