@@ -91,6 +91,8 @@ language css;
 
 ## 2.6.x での変更（CHANGELOG 由来）
 
+出典（タグ pin、タグ実在は WebFetch で確認済み）: 2.6.2 = https://github.com/biomejs/biome/blob/%40biomejs/biome%402.6.2/packages/%40biomejs/biome/CHANGELOG.md 、2.6.7 = https://github.com/biomejs/biome/blob/%40biomejs/biome%402.6.7/packages/%40biomejs/biome/CHANGELOG.md 。取得ツールが CHANGELOG 本文を返さなかったため、各項目の記述と PR 番号の個別照合は未実施（個別 PR の出典 URL 未確認）
+
 - 2.6.2: オブジェクト形式のプラグインエントリに `resolutionKind` オプションが追加された（#10711）。プラグインは構文ノードを `start_line` / `start_column` / `end_line` / `end_column` の範囲で絞り込める（#11713）。名前付き Grit ルール・ルールプリセット・設定をパッケージ経由で配布できる（#11408）。プラグイン `includes` のグロブは、設定ファイルのあるディレクトリからの相対パスで照合される（#12264）。`biome inspect plugins` で解決済みルールをプラグイン別に一覧できる（#11634）
 - 2.6.7: JavaScript プラグインに `grit()` クエリが追加された（#12952）。構文 kind を `ast()` で列挙する代わりに Grit クエリを使え、Grit クエリのプラグインも semantic model を要求できる
 - 2.6.7（破壊的）: JavaScript プラグイン API の `semantic()` クエリ関数が削除された（#13066）。semantic model が必要なルールは `ast()` に `{ semantic: true }` を渡す（`grit()` も同じオプションを受け付ける）。`semantic()` を使う既存プラグインは書き換えが必要

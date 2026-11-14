@@ -120,6 +120,7 @@ Biome は JS/TS 向けに 8 グループ・469 ルールを提供する（Biome 
 - `noInvalidNewBuiltin` は 2.0.0 で削除された（非推奨ルールの一括削除）。`noInvalidBuiltinInstantiation` は correctness に属する
 - ドキュメント HEAD では次のリリースでグループ間のさらなる移動が予定されている（2.5.15 の一覧には未反映）
 - 2.6.x 追従（CHANGELOG 由来。上記のルール数・グループ表は 2.5.15 のまま未更新）:
+  - 出典（タグ pin、タグ実在は WebFetch で確認済み）: 2.6.4 = https://github.com/biomejs/biome/blob/%40biomejs/biome%402.6.4/packages/%40biomejs/biome/CHANGELOG.md 、2.6.5 = https://github.com/biomejs/biome/blob/%40biomejs/biome%402.6.5/packages/%40biomejs/biome/CHANGELOG.md 、2.6.7 = https://github.com/biomejs/biome/blob/%40biomejs/biome%402.6.7/packages/%40biomejs/biome/CHANGELOG.md 。取得ツールが CHANGELOG 本文を返さなかったため PR 番号の個別照合は未実施（個別 PR の出典 URL 未確認）
   - `useWhile`（complexity）は `for (;;)` ループも報告し `while (true)` へ修正するようになった（2.6.7, #12788）
   - 2.6.4 で `while (true)` / `for (;;)` が先頭の `if` 内の単独 `break` で始まるループを報告するルールが追加・拡張された（#12472。対象ルール名は CHANGELOG 抜粋では未確認）
   - 2.6.5〜2.6.7 で nursery に多数のルールが追加された（例: `noArrayForEach` / `noSyncMethods` / `noUselessAwait` / `useObjectFromEntries` / `noConstantComparisons` / `noErasingOperation` / `useCatchErrorName` / `noVue*` / `useVue*`）。ルール名は一次情報の抜粋に基づく概数で、正確な一覧・各ルールの group は公式ルール一覧ページを参照
