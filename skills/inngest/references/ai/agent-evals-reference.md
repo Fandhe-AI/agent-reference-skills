@@ -36,7 +36,7 @@ Other signatures:
 | `defer(id, { function, data, experiment? })` | Starts the scorer separately; returns `void`. Pass `experimentRef` via `experiment` to credit a variant. |
 | `group.experiment(id, { variants, select })` | Runs one variant and returns `{ result, variant, experimentRef }`. |
 | `experiment.weighted(weights)` / `bucket(value, { weights? })` / `custom(fn)` / `fixed(variantName)` | Selectors, imported from `inngest`. |
-| `inngest.score.experiment({ name, value, experiment, runId?, stepId? })` | Credits a score to a variant. |
+| `inngest.score.experiment({ name, value, experiment, runId? })` | Credits a score to a variant. |
 
 ## Notes
 
@@ -47,7 +47,7 @@ Other signatures:
 - Availability: signatures describe TypeScript SDK v4. The Python SDK release after 0.5.19 adds `meta={"sessions": ...}`, `inngest_client.score()` and `score_experiment()` (both take `run_id`), `ctx.group.experiment()` with `experiment.bucket()` / `experiment.fixed()`, and `create_defer()` / `ctx.defer()`; it has no `step.score()`, `createScorer()`, `experiment.weighted()`, or `experiment.custom()`. The Go SDK does not support Agent Evals.
 - Application code decides which runs to score; Agent Evals does not sample scores or cap score spend.
 - Source: https://www.inngest.com/docs-markdown/agent-evals/reference (fetched 2026-10).
-- Release notes for SDK 4.26.0 say `inngest.score.experiment()` no longer accepts `stepId` (experiment scores must be run-scoped), while this reference page still lists `stepId?` for it; the table above keeps the official wording. Scores and warnings are written as per-name metadata kinds, which needs a server that accepts them (older self-hosted or Dev Server builds reject them with a 400). Source: https://github.com/inngest/inngest-js/releases/tag/inngest@4.26.0 (retrieved 2026-11-14).
+- Release notes for SDK 4.26.0 say `inngest.score.experiment()` no longer accepts `stepId` (experiment scores must be run-scoped), while the official reference page (retrieved 2026-11-14) still lists `stepId?` for it; the table above follows the 4.26.0 release notes. Scores and warnings are written as per-name metadata kinds, which needs a server that accepts them (older self-hosted or Dev Server builds reject them with a 400). Source: https://github.com/inngest/inngest-js/releases/tag/inngest@4.26.0 (retrieved 2026-11-14).
 
 ## Related
 

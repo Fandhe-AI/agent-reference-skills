@@ -84,45 +84,6 @@ await sb.commands.run("agent", "node agent.js", {
 });
 ```
 
-Call home for a credential: a credential helper asks a tool for a token on demand.
-
-```typescript
-const gitToken = tool.step({
-  output: z.object({ password: z.string() }),
-  run: async () => {
-    const { data } = await appOctokit.rest.apps.createInstallationAccessToken({
-      installation_id: installationId,
-      repositories: ["box"],
-      permissions: { contents: "write" },
-    });
-
-    return { password: data.token };
-  },
-});
-
-await sb.commands.run(
-  "push",
-  ["git", "-c", "credential.helper=!node /opt/git-credential.js", "push", "origin", "HEAD"],
-  { tools: { gitToken } },
-);
-```
-
-```js
-// /opt/git-credential.js
-const { tools } = require("inngest_tools");
-
-(async () => {
-  if (process.argv[2] !== "get") {
-    return;
-  }
-
-  const { password } = await tools.gitToken();
-
-  console.log("username=x-access-token");
-  console.log(`password=${password}`);
-})();
-```
-
 A `*_BASE_URL` points an SDK at a route on your server; the route adds the real key and forwards the request.
 
 ```typescript
@@ -233,7 +194,7 @@ Decide in this order: (1) Can a tool do the work? Use it. (2) Can the credential
 - Tool: `input` is validated before `run` starts (arguments come from untrusted code, so constrain them). The result is stored with the run, so return ids and status, never tokens. Tools receive an `idempotencyKey` as their second argument; pass it to APIs that deduplicate writes. A tool that fails runs again.
 - Per-command `env`: the SDK records the step with every value replaced by `[redacted]`, then restores the real values before running it. A command run with `tools` records no environment at all. The command can read and print the value; redaction hides it from the trace, not from the code. Read the value from your app's environment (if it comes from a step's return value, it is stored with the run). Only `environment` values are redacted; the command text, step ID, and output are not. Values are literal strings; a selected workspace secret cannot be passed by name per command. The same redaction applies to `step.sandbox.create` and `processes.start`. A Create `environment` is also stored as Sandbox configuration, so never put a secret there.
 - Mint, use, and revoke in one place: a token returned from `step.run` is stored with the run, so mint and use it inside one tool. The code cannot pick the command (it supplies a validated branch name only). Return an exit code and a trimmed tail, never raw output. Use the Sandbox your run created; do not look one up from untrusted input. Raise `toolTimeout` (defaults to 30 seconds). `inngest.sandboxes` is the direct client; it has no step replay, which is why the token stays in the tool's memory.
-- Credential helper: Git also calls the helper with `store` and `erase`, so the script answers only `get`. Put the helper in your image or write it once with `files.write`; it holds no secret. The tool result is stored with the run, so keep the token short-lived and scoped.
+- Omitted example: the official page shows a git credential helper whose tool returns a GitHub installation token. It is not reproduced here because a tool's result is stored with the run, so a token returned from a tool would be persisted; see the official page and the "Mint, use, and revoke in one place" note above.
 - `*_BASE_URL`: `runToken` is a per-run token that only your route accepts. The Sandbox can use the route while it is reachable, so expire the token, allowlist what it can call, and rate limit it.
 - Workspace secrets: for keys that are cheap to rotate and cheap to leak (a capped LLM key, a read-only token). Selection is in the open beta and its API can change before launch. Secret injection is not output redaction: any code in the Sandbox can read selected values, and a value printed to stdout, stderr, logs, or files can be returned by the Sandbox APIs. Create the secrets in the same Inngest workspace that will create the Sandbox; the public Sandbox REST API and JavaScript SDK select existing secrets and do not create, list, rotate, or archive them. Save a secret under the variable name your application expects (for example `OPENAI_API_KEY`). The SDK and API send only names; values are injected under those names and inherited by commands and managed processes. Selection is supported only for a fresh Sandbox: a snapshot clone restores the environment captured by its snapshot and cannot select new secrets.
 - Environment precedence: (1) guest defaults; (2) literal Sandbox `environment` values and selected secret values; (3) command- or process-specific `environment` values. An operation-specific value can override a selected secret for that operation. A Create request cannot include the same key in both `environment` and `secrets`.
