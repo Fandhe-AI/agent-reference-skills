@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/model-config.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/model-config.md / last verified: 2026-11-14 -->
 
 # Model configuration
 
@@ -15,7 +15,7 @@ The `model` setting accepts a **model alias** or a **model name** (Anthropic API
 | Alias | Behavior |
 | --- | --- |
 | `default` | Special value that clears any model override and reverts to the runtime default for your account. Not itself a model alias |
-| `best` | Uses the model the `fable` alias resolves to where Fable is available to you, otherwise the same model as `opus` |
+| `best` | Uses the same model as `opus` (v2.1.321+; earlier versions use the model `fable` resolves to, where Fable is available) |
 | `fable` | Uses the Fable model for your provider, for the hardest and longest-running tasks |
 | `sonnet` | Latest Sonnet, for daily coding |
 | `opus` | Latest Opus, for complex reasoning |
@@ -33,7 +33,7 @@ The `opus`, `sonnet`, and `haiku` aliases resolve to the newest version on the A
 | Amazon Bedrock, Google Cloud's Agent Platform | Opus 5.5 | Sonnet 4.5 | Haiku 4.5 |
 | Microsoft Foundry | Opus 4.6 | Sonnet 4.5 | Haiku 4.5 |
 
-Unless you set `ANTHROPIC_DEFAULT_FABLE_MODEL`, the `fable` alias resolves to Fable 5.1, except in Claude apps gateway sessions, where `fable` and `best` resolve to Fable 5. A gateway that isn't configured to serve `claude-fable-5-1` rejects requests for that model; select it with `/model claude-fable-5-1` through a gateway that serves it.
+Unless you set `ANTHROPIC_DEFAULT_FABLE_MODEL`, the `fable` alias resolves to Fable 5 in Claude apps gateway sessions and to Fable 5.2 everywhere else. A gateway that isn't configured to serve `claude-fable-5-2` rejects requests for that model; to use Fable 5.2 through a gateway that serves it, select it with `/model claude-fable-5-2`.
 
 Where `opus` or `sonnet` resolves to an older model, newer models are available by selecting the full model name or setting `ANTHROPIC_DEFAULT_OPUS_MODEL` / `ANTHROPIC_DEFAULT_SONNET_MODEL`. Aliases point to the recommended version for your provider and update over time; to pin a version, use the full model name, for example `claude-opus-5-5`, or the corresponding environment variable.
 
@@ -41,12 +41,12 @@ Sonnet 5.5 requires Claude Code v2.1.284 or later, Opus 5.5 requires v2.1.280 or
 
 ### Work with Fable
 
-Claude Fable 5.1 and Claude Fable 5 are the most capable models in Claude Code, suited to tasks larger than a single sitting. Neither is the account-type default on any plan or provider; select one explicitly:
+Claude Fable models are the most capable models in Claude Code, suited to tasks larger than a single sitting. No Fable model is the account-type default on any plan or provider; select one explicitly:
 
-- **Fable 5.1**: `/model fable`, or `claude --model fable`. In Claude apps gateway sessions (where the alias resolves to Fable 5), run `/model claude-fable-5-1`.
-- **Fable 5**: select by model ID. On the Anthropic API, `/model claude-fable-5` or `claude --model claude-fable-5`. On other providers, use your provider's Fable 5 model ID or pin it with `ANTHROPIC_DEFAULT_FABLE_MODEL`.
+- **Fable 5.2**: `/model fable`, or `claude --model fable`. In Claude apps gateway sessions, run `/model claude-fable-5-2` instead.
+- **Fable 5.1 or Fable 5**: select by model ID. On the Anthropic API, `/model claude-fable-5-1` or `/model claude-fable-5`, or `claude --model claude-fable-5-1`. On other providers, use your provider's model ID or pin it with `ANTHROPIC_DEFAULT_FABLE_MODEL`.
 
-If you connect to the Anthropic API directly and your user settings hold `claude-fable-5` or `claude-fable-5[1m]` as the model (for example selected in the `/model` picker before v2.1.257), Claude Code changes that saved value to the `fable` or `fable[1m]` alias the first time you run v2.1.257 or later; the startup model line shows `(auto-updated)` once. A `claude-fable-5` value in project, local, or managed settings stays as it is. Fable 5.1 requires v2.1.257 or later. Requests that a Fable model's safety classifiers flag trigger automatic model fallback.
+If you connect to the Anthropic API directly and your user settings hold `claude-fable-5` or `claude-fable-5[1m]` as the model (for example selected in the `/model` picker before v2.1.257), Claude Code changes that saved value to the `fable` or `fable[1m]` alias the first time you run v2.1.257 or later; the startup model line shows `(auto-updated)` once. A `claude-fable-5` value in project, local, or managed settings stays as it is. Fable 5.1 requires v2.1.257 or later, and Fable 5.2 requires v2.1.321 or later. On Pro, Max, Ultra, Team, and Enterprise plans, a `claude-fable-5-1` model saved in your user settings moves to the `fable` alias: on Pro, Max, or Ultra the first time you run v2.1.321 or later (the startup model line can show `(auto-updated)` once); on Team or Enterprise the move waits for your organization's settings and shows no `(auto-updated)` line. After the move, sessions start at Fable 5.2's default effort unless you've set a level for it. Console accounts, third-party providers, and project, local, or managed settings keep `claude-fable-5-1`. Requests that a Fable model's safety classifiers flag trigger automatic model fallback.
 
 #### Fable and usage credits
 
@@ -80,7 +80,7 @@ Usual causes: you chose it for one session (`s`, `--model`, `-p` `/model`); some
 
 ## Restrict model selection
 
-Admins use `availableModels` in managed/policy settings to allowlist models (matches a family alias, a version prefix, or a full ID). A version prefix also matches later IDs that extend it: `claude-fable-5` permits both Fable 5 and Fable 5.1, while `claude-fable-5-1` permits Fable 5.1 only.
+Admins use `availableModels` in managed/policy settings to allowlist models (matches a family alias, a version prefix, or a full ID). A version prefix also matches later IDs that extend it: `claude-fable-5` permits Fable 5, Fable 5.1, and Fable 5.2, while `claude-fable-5-1` permits Fable 5.1 only.
 
 ```json
 { "availableModels": ["sonnet", "haiku"] }
@@ -166,7 +166,7 @@ Tries each model in order on overload / unavailable / non-retryable server error
 
 Content-based fallback. Fable models, Opus 5.5, Sonnet 5.5, and Opus 5 run safety classifiers (cybersecurity / biology):
 
-- Fable 5.1, Fable 5, Opus 5.5: biology re-runs on Opus 5, cybersecurity re-runs on Opus 4.8.
+- Fable models, Opus 5.5: biology re-runs on Opus 5, cybersecurity re-runs on Opus 4.8.
 - Sonnet 5.5: cybersecurity re-runs on Sonnet 5; biology ends in a refusal (no fallback model).
 - Opus 5: cybersecurity re-runs on Opus 4.8; biology ends in a refusal.
 
@@ -178,11 +178,11 @@ On Bedrock, Agent Platform, and Foundry, fallback operates only when Claude Code
 
 | Model | Levels |
 | --- | --- |
-| Fable 5.1 and Fable 5 | `low`, `medium`, `high`, `xhigh`, `max` |
+| Fable models | `low`, `medium`, `high`, `xhigh`, `max` |
 | Opus 5.5, Sonnet 5.5, Haiku 5.5, Opus 5, Sonnet 5, Opus 4.8, Opus 4.7 | `low`, `medium`, `high`, `xhigh`, `max` |
 | Opus 4.6, Sonnet 4.6 | `low`, `medium`, `high`, `max` |
 
-Default is `high`, except Opus 5.5, Sonnet 5.5, and Haiku 5.5 default to `medium` and Opus 4.7 defaults to `xhigh` (an organization can set a default effort for its organization default model). A level the model doesn't support falls back to the highest supported level at or below it. Resolution order: (1) explicit choice: `CLAUDE_CODE_EFFORT_LEVEL`, `--effort`, or `/effort`; (2) your settings: the level saved per model under `modelSettings`, or `effortLevel`; (3) the model's default. A top-level `effortLevel` in user settings doesn't count for Opus 5.5 and later models (it's the older form, kept for Opus 5, Fable 5.1, and earlier); one in project, local, or managed settings or `--settings` applies to every model.
+Default is `high`, except Fable 5.2, Opus 5.5, Sonnet 5.5, and Haiku 5.5 default to `medium` and Opus 4.7 defaults to `xhigh` (an organization can set a default effort for its organization default model). A level the model doesn't support falls back to the highest supported level at or below it. Resolution order: (1) explicit choice: `CLAUDE_CODE_EFFORT_LEVEL`, `--effort`, or `/effort`; (2) your settings: the level saved per model under `modelSettings`, or `effortLevel`; (3) the model's default. A top-level `effortLevel` in user settings doesn't count for Opus 5.5 and later models (it's the older form, kept for Opus 5, Fable 5.1, and earlier); one in project, local, or managed settings or `--settings` applies to every model.
 
 `Enter` in the `/effort` slider or `/model` picker saves the level as the default; `s` applies it to this session only (v2.1.257+). `max` is session-only unless set through `CLAUDE_CODE_EFFORT_LEVEL`. In `-p` runs and from a Remote Control device (v2.1.234+) a level applies to that session only. `/effort auto` clears your saved level for the active model. `effortLevel` / `modelSettings` accept `low`/`medium`/`high`/`xhigh` (not `max` or `ultracode`); skill / subagent frontmatter `effort:` overrides the session level but not the env var; `maxEffortLevel` and organization caps still limit it.
 
@@ -305,6 +305,8 @@ The Claude Code version at which each model alias changed the model it resolves 
 
 | Version | Change |
 | --- | --- |
+| v2.1.321 | `fable` resolves to Fable 5.2, except in Claude apps gateway sessions |
+| v2.1.321 | `best` resolves to the same model as `opus`. Earlier versions use the model `fable` resolves to, where Fable is available |
 | v2.1.293 | `haiku` resolves to Haiku 5.5 on the Anthropic API |
 | v2.1.284 | `sonnet` resolves to Sonnet 5.5 on the Anthropic API |
 | v2.1.280 | `opus` resolves to Opus 5.5 on the Anthropic API, Claude Platform on AWS, Amazon Bedrock, and Google Cloud's Agent Platform |
@@ -319,9 +321,12 @@ The Claude Code version at which each model alias changed the model it resolves 
 
 - Example model IDs (`claude-opus-4-8`, `claude-opus-5-5`, `claude-sonnet-5`) are copied as they appear in the official page; the page itself uses `claude-opus-4-8` in the Pin models table and `claude-opus-5-5` in the pin and custom-option examples.
 - This is a condensed reference; the official page is much longer (about 1050 lines as of 2026-10), notably the Surface coverage, organization restriction, and gateway context-window sections.
+- Fable 5.2 (alias `fable` since v2.1.321), `best` now resolving like `opus`, and the Fable 5.2 default effort `medium` were added on 2026-11-14.
+- Official-page vs changelog mismatch, kept as published: the context-window text above says Claude Code assumes 200K for an unrecognized model ID, while the changelog (2.1.323, 2026-11-12) says "Changed the context window assumed for a model ID that Claude Code doesn't recognize from 200K to 1M; use `/autocompact` to compact earlier, or `CLAUDE_CODE_DISABLE_1M_CONTEXT=1` to keep 200K". The changelog for 2.1.325 also says `CLAUDE_CODE_MAX_CONTEXT_TOKENS` now sets the context window of unrecognized `claude-*` model IDs, such as a gateway's `claude-sonnet-latest`; the "doesn't start with `claude-`" condition above predates that change.
+- Source: https://code.claude.com/docs/en/model-config.md and https://code.claude.com/docs/en/changelog.md (retrieved 2026-11-14)
 
 ## Related
 
 - [settings.md](./settings.md): where `model`, `availableModels`, `fallbackModel`, `effortLevel` live in the settings file
-- [fast-mode.md](./fast-mode.md): the Opus-only fast mode toggle that interacts with model switching
+- [fast-mode.md](./fast-mode.md): the fast mode toggle (Fable 5.2, Opus 5.5, Opus 5, Opus 4.8) that interacts with model switching
 - [statusline.md](./statusline.md): displaying the current model/effort in a status line

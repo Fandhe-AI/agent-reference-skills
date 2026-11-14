@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/auto-mode-config.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/auto-mode-config.md / last verified: 2026-11-14 -->
 
 # Configure auto mode
 
@@ -117,6 +117,9 @@ Denials appear under `/permissions` → **Recently denied**; press `r` to mark f
 ## Notes
 
 - `/auto-mode-setup` and the `/permissions` **Auto mode** tab were added after the previous revision of this page (see their version requirements above).
+- Related variables (see env-vars.md): `CLAUDE_CODE_AUTO_MODE_MODEL` sets the model for the classifier requests (a full model ID such as `claude-sonnet-4-6`; requires v2.1.302+; changelog 2.1.323 adds support in managed settings for Claude Desktop sessions on third-party providers); `CLAUDE_CODE_AUTO_MODE_SERVER=0` makes Claude Code use its own classifier requests instead of asking the server to review auto mode actions (requires v2.1.271+).
+- When the `--permission-mode auto` flag, a settings file, or the built-in default selects `auto` but auto mode isn't available to the session, Claude Code starts the session in Manual instead (source: https://code.claude.com/docs/en/permission-modes.md, retrieved 2026-11-14).
+- Source: https://code.claude.com/docs/en/auto-mode-config.md and https://code.claude.com/docs/en/changelog.md (retrieved 2026-11-14)
 
 ## Related
 

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/feature-availability.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/feature-availability.md / last verified: 2026-11-14 -->
 
 # Feature availability
 
@@ -21,7 +21,7 @@ export ANTHROPIC_BASE_URL=<gateway-or-provider-host>
 | CLI capability | Claude subscription | Console | Bedrock | Claude Platform on AWS | Google Cloud's Agent Platform | Microsoft Foundry |
 |---|---|---|---|---|---|---|
 | Web search | v | v | x | v | see note (fn1) | v |
-| Fast mode | v (Owner-enabled on Team and Enterprise) | v (provisioned organizations) | x | x | x | x |
+| Fast mode | v (Owner-enabled on Team and Enterprise) | v (Opus 5 and 4.8 need provisioning) | x | x | v (Fable 5.2, with conditions) | x |
 | Auto mode | v | v | see note (fn2) | v | see note (fn2) | see note (fn2) |
 | Advisor | v | v | x | x | x | x |
 | Cross-session messaging | v (fn5) | v, same machine (fn5) | v, same machine (fn5) | v, same machine (fn5) | v, same machine (fn5) | v, same machine (fn5) |
@@ -48,6 +48,8 @@ export ANTHROPIC_BASE_URL=<gateway-or-provider-host>
 - fn5 (cross-session messaging): requires Claude Code v2.1.224 or later on macOS and Linux (including Linux inside WSL 2); on native Windows, v2.1.234 or later. With API key authentication, messaging is same-machine only. On Amazon Bedrock, Claude Platform on AWS, Google Cloud's Agent Platform, and Microsoft Foundry, messaging is same-machine only and requires v2.1.248 or later. Claude can find your cloud sessions and your sessions on other machines only from a session connected to Remote Control (claude.ai sign-in and the other Remote Control requirements).
 - Provider-specific differences among features that work everywhere: claude.ai connectors load only when your claude.ai subscription is the active authentication method; MCP tool search is off by default when `ANTHROPIC_BASE_URL` points to a non-first-party host; when the main conversation runs Fable, the built-in Explore subagent runs on Opus with a Claude subscription, an Anthropic Console account, or an LLM gateway reached through `ANTHROPIC_BASE_URL`, and on Fable on other providers (including Claude Platform on AWS); `/design-sync` and `/import` (with `claude import`) are unavailable on Bedrock, Agent Platform, Foundry, Claude Platform on AWS, and through a Claude apps gateway; `/voice` requires a claude.ai account.
 - If authenticating through an LLM gateway, feature availability matches the underlying provider the gateway forwards to; Anthropic-only features like Advisor work only if the gateway forwards requests intact to the Anthropic API.
+- Fast mode on Google Cloud's Agent Platform: Fable 5.2 in the `global`, `us`, and `eu` regions, or standard speed if Agent Platform refuses fast mode.
+- Source: https://code.claude.com/docs/en/feature-availability.md (retrieved 2026-11-14)
 
 ## Related
 
