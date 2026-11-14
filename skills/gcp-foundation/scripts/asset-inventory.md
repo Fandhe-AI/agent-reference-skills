@@ -103,7 +103,7 @@ gcloud asset list \
     --project=my-project \
     --asset-types=compute.googleapis.com/Instance \
     --content-type=resource \
-    --snapshot-time="2024-01-30"
+    --snapshot-time="SNAPSHOT_TIME"
 ```
 
 ```bash
@@ -111,8 +111,8 @@ gcloud asset get-history \
     --project=my-project \
     --asset-names=//compute.googleapis.com/projects/my-project/zones/us-central1-a/instances/my-instance \
     --content-type=resource \
-    --start-time="2024-01-30" \
-    --end-time="2024-02-05"
+    --start-time="START_TIME" \
+    --end-time="END_TIME"
 ```
 
 ### Effective IAM policy
@@ -151,7 +151,7 @@ gcloud asset export \
     --project=my-project \
     --billing-project=my-project \
     --content-type=resource \
-    --snapshot-time="2024-01-30" \
+    --snapshot-time="SNAPSHOT_TIME" \
     --output-path="gs://my-bucket/my-file.txt"
 ```
 
@@ -161,7 +161,7 @@ To BigQuery:
 gcloud asset export \
     --project=my-project \
     --content-type=resource \
-    --snapshot-time="2024-01-30" \
+    --snapshot-time="SNAPSHOT_TIME" \
     --bigquery-table=projects/my-project/datasets/my-dataset/tables/my-table \
     --output-bigquery-force
 ```
@@ -230,6 +230,7 @@ gcloud asset analyze-move --project=PROJECT_ID \
 
 ## Notes
 
+- Adapted from the official docs: the fixed `2024-01-30` times are replaced with `SNAPSHOT_TIME` / `START_TIME` / `END_TIME` placeholders; use a time within the last 35 days.
 - Warning: use a disposable project and feed for `gcloud asset feeds delete` and for `export` with `--output-bigquery-force`, which overwrites the target table; always pass the exact feed ID and destination, and never omit the target.
 - Enable the Cloud Asset Inventory API and hold the matching `cloudasset.*` permission before running these commands.
 - `gcloud asset query` needs Security Command Center Premium or Enterprise, or Gemini Cloud Assist.

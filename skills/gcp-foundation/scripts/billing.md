@@ -39,7 +39,7 @@ gcloud billing budgets create \
     --billing-account="${BILLING_ACCOUNT_ID}" \
     --display-name="Budget for ${PROJECT_ID}" \
     --budget-amount="${BUDGET_AMOUNT}" \
-    --threshold-rule=percent=100 \
+    --threshold-rule=percent=1.0 \
     --notifications-rule-pubsub-topic="projects/${PROJECT_ID}/topics/${TOPIC_ID}"
 ```
 
@@ -120,13 +120,14 @@ curl -X DELETE \
 | --- | --- | --- |
 | `--billing-account` | `billing budgets create` | Billing account that owns the budget |
 | `--budget-amount` | `billing budgets create` | Budget amount |
-| `--threshold-rule` | `billing budgets create` | Alert threshold, for example `percent=100` |
+| `--threshold-rule` | `billing budgets create` | Alert threshold, for example `percent=1.0` (a 0.0-1.0 ratio; 1.0 = 100% of the budget) |
 | `--notifications-rule-pubsub-topic` | `billing budgets create` | Pub/Sub topic for budget notifications |
 
 ## Notes
 
 - Warning: use a disposable billing account or test project for the budget `DELETE` call and for `add-iam-policy-binding` on a billing account; always name the exact `budget-id` and account, and never omit the target.
 - Disabling or changing the billing link of a project has no gcloud command in the fetched sources (the console, `projects.updateBillingInfo`, or the official Cloud Run function do it); disabling billing stops all services and some resources may be unrecoverable, so it is not included here.
+- Adapted from the official docs: `--threshold-rule` `percent` is a ratio between 0.0 and 1.0 per `gcloud billing budgets create --help`; `percent=100` would mean 10,000% of the budget.
 - The Budget API request needs `x-goog-user-project` set to the project where the API is enabled.
 - Source: https://docs.cloud.google.com/billing/docs/how-to/verify-billing-enabled (retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/billing/docs/how-to/disable-billing-with-notifications (retrieved 2026-11-14)

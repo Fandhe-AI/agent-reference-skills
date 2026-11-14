@@ -57,7 +57,7 @@ gcloud services disable bigquery.googleapis.com pubsub.googleapis.com
 ### Set the quota project
 
 ```bash
-gcloud auth application-default set-quota-project
+gcloud auth application-default set-quota-project QUOTA_PROJECT_ID
 ```
 
 ```bash
@@ -176,7 +176,7 @@ gcloud quotas adjuster settings update --project=PROJECT_ID_OR_NUMBER --enableme
 - Warning: use a disposable project for `gcloud services disable` and `quotas preferences create` / `update`; always pass the exact service and project, and never omit the target. Disabling a service can delete or stop its data and resources.
 - `gcloud quotas ...` needs the Cloud Quotas API (`cloudquotas.googleapis.com`) enabled; adjuster settings need `cloudquotas.quotas.update` and `cloudquotas.quotas.get`.
 - `--reconciling-only=true` lists the preferences that still have pending adjustments (as described in the Cloud Quotas reference).
-- Org-level folder and organization adjuster settings are available through gcloud beta commands or the REST API only (the console toggles project level).
+- The official page says folder and organization adjuster settings are available through gcloud beta commands or the REST API only (the console toggles project level); the GA `gcloud quotas adjuster settings update` / `describe` help in the pinned gcloud SDK also lists `--folder` and `--organization`, so the commands above are shown on the GA track. If your installed gcloud rejects them, use `gcloud beta quotas adjuster settings ...` with the same flags.
 - Source: https://docs.cloud.google.com/service-usage/docs/enable-disable (retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/service-usage/docs/list-services (retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/service-usage/docs/access-control (retrieved 2026-11-14)

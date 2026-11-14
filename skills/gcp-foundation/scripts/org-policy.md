@@ -80,7 +80,7 @@ gcloud policy-intelligence simulate orgpolicy \
   --policies=POLICY_PATH
 ```
 
-Then apply the live part:
+Then apply the live part. Adapted (not in the official docs): `--update-mask=spec` applies only the `spec` field, and `dryRunSpec` is not converted to `spec`, so `POLICY_PATH` must also contain the reviewed rules under `spec`:
 
 ```bash
 gcloud org-policies set-policy POLICY_PATH \
@@ -139,7 +139,7 @@ gcloud org-policies delete CONSTRAINT_NAME \
   --RESOURCE_TYPE=RESOURCE_ID
 ```
 
-`RESOURCE_TYPE` is `organizations`, `folders`, or `projects`; this deletes both the live and the dry-run policy.
+Replace `--RESOURCE_TYPE` with `--organization`, `--folder`, or `--project` (singular); this deletes both the live and the dry-run policy.
 
 ### Delete a custom constraint
 
