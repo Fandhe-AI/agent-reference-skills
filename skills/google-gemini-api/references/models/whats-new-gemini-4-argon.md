@@ -1,5 +1,5 @@
 ---
-source: https://ai.google.dev/gemini-api/docs/latest-model
+source: https://aistudio.google.com/docs/whats-new-gemini-4-argon
 ---
 
 # What's new in Gemini 4 Argon
