@@ -9,3 +9,5 @@
 | Registry Versioning | Rules for the `version` string of servers published to the MCP Registry. | [registry-versioning.md](./registry-versioning.md) |
 | Remote Servers | Remote MCP servers are published via the `remotes` property in `server.json`. | [remote-servers.md](./remote-servers.md) |
 | server.json | Publishing flow for the MCP Registry using the `mcp-publisher` CLI: add verification info to the package, publish the package, create `server.json`, authenticate, publish. | [server-json.md](./server-json.md) |
+| Registry FAQ | Terminology, unpublishing, metadata updates, custom `_meta` publisher metadata (4KB limit) and abuse reporting for the official MCP Registry. | [registry-faq.md](./registry-faq.md) |
+| Registry Moderation Policy | The official MCP Registry removes only illegal content, malware, spam and non-functioning servers; removal sets `status` to `"deleted"`. | [registry-moderation-policy.md](./registry-moderation-policy.md) |
