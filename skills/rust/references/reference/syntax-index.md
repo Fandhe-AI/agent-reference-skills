@@ -182,7 +182,7 @@ match v.first() { Some(&x) if x > 0 => {}, _ => {} }          // match guard, wi
 
 - Condensed from the original index: the original links each row to the defining section of the Reference; those cross-links are omitted here. See the corresponding pages in this category.
 - The upstream Syntax Index lists `impl Type for Trait {…}` (order reversed); corrected here to `impl Trait for Type {…}`.
-- Source: https://doc.rust-lang.org/reference/syntax-index.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/82da570bafd9efed421bdbae0f8603ede8dd308b/src/syntax-index.md)
+- Source: https://doc.rust-lang.org/reference/syntax-index.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/e24eecf97b0c9a6dbac67191098204dc8a190aaa/src/syntax-index.md)
 
 ## Related
 

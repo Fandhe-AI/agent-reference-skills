@@ -162,6 +162,8 @@ Recognized tool namespaces: `clippy`, `rustfmt`, `diagnostic`, `miri`, `rust_ana
 
 - Inner attributes are only allowed in specific positions: crate root, module bodies, block expressions, function bodies, `extern` blocks, and inside `impl`/`trait`.
 - Attributes on generic parameters and function parameters are supported in limited contexts.
+- The `cold` attribute may not be applied to an `extern "custom"` function. A naked function whose assembly does not follow a known ABI should be declared `extern "custom"`.
+- Source: https://doc.rust-lang.org/reference/attributes/codegen.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/e24eecf97b0c9a6dbac67191098204dc8a190aaa/src/attributes/codegen.md, reference@e24eecf, retrieved 2026-11-14)
 
 ## Related
 

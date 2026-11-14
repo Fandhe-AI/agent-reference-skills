@@ -91,6 +91,19 @@ token = "…"
 protocol = "sparse"               # "sparse" | "git"
 ```
 
+Minimum publish age (dependency cooldown, stable since 1.100):
+
+```toml
+[resolver]
+incompatible-publish-age = "deny"  # Specifies how resolver treats recently published versions
+
+[registries.<name>]  # registries other than crates.io
+min-publish-age = "7 days" # Override `registry.global-min-publish-age` for this registry
+
+[registry]
+global-min-publish-age = "7 days" # The time span allowed for registry packages to use by default.
+```
+
 ### `[source]`
 
 ```toml
@@ -194,6 +207,8 @@ token = "…"
 
 - Cargo does NOT read config files from individual crate directories when invoked from a workspace root.
 - The `.cargo/config.toml` file closest to the project takes precedence over parent directories.
+- `resolver.incompatible-publish-age` (`allow` \| `deny`, default `deny`; env `CARGO_RESOLVER_INCOMPATIBLE_PUBLISH_AGE`), `registries.<name>.min-publish-age` (env `CARGO_REGISTRIES_<name>_MIN_PUBLISH_AGE`) and `registry.global-min-publish-age` (default `"0"`; env `CARGO_REGISTRY_GLOBAL_MIN_PUBLISH_AGE`) control which recently published versions the resolver ignores; see reference-resolver.md. Registries that do not support `pubtime` ignore `min-publish-age`.
+- Source: https://doc.rust-lang.org/cargo/reference/config.html (pinned: https://raw.githubusercontent.com/rust-lang/cargo/3acc79c0c841844675bc53a605922dbfc441e750/doc/book/src/reference/config.md, cargo@3acc79c, retrieved 2026-11-14)
 - `CARGO_ENCODED_RUSTFLAGS` uses the `0x1f` (ASCII unit separator) delimiter instead of spaces — useful when flags may contain spaces.
 
 ## Related

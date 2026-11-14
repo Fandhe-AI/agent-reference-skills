@@ -169,7 +169,7 @@ cargo init                             # initialize in current directory
 cargo install ripgrep                  # install from crates.io
 cargo install --path .                 # install from local package
 cargo install --git https://...        # install from git
-cargo install --locked ripgrep         # use Cargo.lock if present
+cargo install --locked ripgrep         # as of 1.100 the packaged Cargo.lock is used by default; --locked warns if none exists
 cargo install --root ~/.local          # install to custom directory
 cargo install --version 13.0.0 ripgrep
 ```

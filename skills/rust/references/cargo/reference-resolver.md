@@ -153,6 +153,23 @@ foo = { path = "../foo" }   # valid: bar only needs foo for its tests
 - Avoid `*` on crates.io and overly broad bounds (`>=2.0`).
 - Use `=` version pinning for tightly coupled crate pairs (library + proc-macro).
 - The `links` field in `Cargo.toml` ensures only one copy of a native library is linked per build.
+- Source (Publish Age): https://doc.rust-lang.org/cargo/reference/resolver.html#publish-age (pinned: https://raw.githubusercontent.com/rust-lang/cargo/3acc79c0c841844675bc53a605922dbfc441e750/doc/book/src/reference/resolver.md, cargo@3acc79c, retrieved 2026-11-14); introduced in the 1.100.0 release notes (RFC 3923 dependency cooldowns).
+
+### Publish Age (stable since 1.100)
+
+Versions with a publish time newer than the configured `min-publish-age` are considered pubtime-incompatible. When `resolver.incompatible-publish-age` is `deny` (the default), the resolver ignores these versions unless they already exist in `Cargo.lock`. Setting it to `allow` disables the check; combined with `cargo update --precise`, Cargo would pull in a specific version and its transitive dependencies.
+
+Official config reference lines (config.md, "Configuration format" example):
+
+```toml
+[resolver]
+incompatible-publish-age = "deny"  # Specifies how resolver treats recently published versions
+
+[registry]
+global-min-publish-age = "7 days" # The time span allowed for registry packages to use by default.
+```
+
+`min-publish-age` accepts an integer followed by "seconds", "minutes", "hours", "days", "weeks", or "months", or `"0"` to allow all packages (default `"0"`). It can be overridden per registry with `registries.<name>.min-publish-age`. See reference-config.md.
 
 ## Related
 

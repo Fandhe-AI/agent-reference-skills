@@ -59,7 +59,7 @@ Primitives are built into the language; `std` documents their methods.
 | `pointer` | Raw pointers `*const T` / `*mut T` |
 | `reference` | References `&T` / `&mut T` |
 | `unit` | The `()` type; returned by expressions with no value |
-| `never` | `!` — the type of diverging expressions (experimental) |
+| `never` | `!` — the type of diverging computations (stable since 1.100; `Infallible` is an alias for `!`) |
 
 ## Key Macros
 
@@ -125,6 +125,18 @@ The standard library docs at https://doc.rust-lang.org/std/ are organized into t
 - Press **"Summary"** to collapse verbose prose into a skimmable outline.
 - Each item page links to its **source code** — reading it is encouraged.
 - Some primitives have a companion module (e.g., `char` primitive vs. `std::char` module): the primitive page lists methods; the module page documents associated iterator and error types.
+
+## Notes
+
+### Stabilized in Rust 1.100 (highlights)
+
+- Custom allocators: `std::alloc::Allocator`, `Global`, `System`, and the `_in` / `allocator` methods such as `Box::new_in`, `Vec::new_in`, `Vec::with_capacity_in`, `Box::allocator`, `Vec::allocator`.
+- `bool::toggle`, `Box::take`, `Box::map`, `Rc::map`, `Arc::map`, `Vec::from_fn`.
+- `str::trim_prefix` / `str::trim_suffix`, the same pair on `[T]`, and `Path::trim_prefix`.
+- `core::mem::DropGuard`, `core::mem::conjure_zst`, `UnsafeCell::replace`.
+- The standard library now uses Unicode 18.0.0; `ENOTSUP` maps to `ErrorKind::Unsupported`; `Infallible` is now a type alias to `!`.
+
+- Source: https://github.com/rust-lang/rust/blob/1.100.0/RELEASES.md ("Stabilized APIs" and "Compatibility Notes" of Version 1.100.0, 2026-11-12)
 
 ## Related
 

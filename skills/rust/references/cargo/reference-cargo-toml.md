@@ -78,7 +78,8 @@ With `Cargo.lock` committed, running `cargo build` always uses the same resolved
 
 ## Notes
 
-- `cargo install` uses latest dependencies unless you pass `--locked` (uses `Cargo.lock`)
+- `cargo install` uses the `Cargo.lock` included with the package if it is available (as of 1.100; the earlier default ignored it). If no lockfile is available, including for packages published with Cargo before 1.37, Cargo resolves the dependencies normally. `--locked` does not currently change dependency resolution for `cargo install`; without a `Cargo.lock` it emits a warning.
+- Source (cargo install): https://doc.rust-lang.org/cargo/commands/cargo-install.html (pinned: https://raw.githubusercontent.com/rust-lang/cargo/3acc79c0c841844675bc53a605922dbfc441e750/doc/book/src/commands/cargo-install.md, cargo@3acc79c, retrieved 2026-11-14)
 - `cargo build --locked` errors if `Cargo.lock` is out of date (useful in CI)
 - `cargo build --frozen` errors if `Cargo.lock` needs updating or network access is required
 

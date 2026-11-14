@@ -75,7 +75,7 @@ Files may start with a shebang on the first line; it is stripped before parsing:
 #!/usr/bin/env rustx
 ```
 
-If `#!` is immediately followed (ignoring whitespace/comments) by `[`, it is treated as an inner attribute rather than a shebang.
+If `#!` is immediately followed (ignoring whitespace and non-doc comments) by `[`, it is treated as an inner attribute rather than a shebang. Doc comments are not ignored for this check: `#! /*! */ [allow(unused)]` at the start of a file is a shebang, and `#!/*` is a shebang line rather than an unterminated-comment error.
 
 ## Uncaught Foreign Unwinding
 
@@ -84,6 +84,7 @@ If foreign unwinding (e.g., C++ exceptions) propagates past `main`, the process 
 ## Notes
 
 - Source files use `.rs` extension.
+- Source (shebang rules): https://doc.rust-lang.org/reference/shebang.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/e24eecf97b0c9a6dbac67191098204dc8a190aaa/src/shebang.md, reference@e24eecf, retrieved 2026-11-14)
 - `include!` applies source preprocessing (BOM removal, CRLF normalization, shebang removal); `include_str!` and `include_bytes!` do not.
 
 ## Related

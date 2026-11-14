@@ -48,7 +48,7 @@ cargo -Z help
 | `panic-abort-tests` | Compile tests with `panic = "abort"` strategy |
 | `host-config` | Separate configuration for host and target build platforms |
 | `checksum-freshness` | Use checksums instead of mtimes to detect stale build artifacts |
-| `build-dir-new-layout` | Enable new build directory filesystem layout |
+| `build.fingerprint` | Config: select `mtime` (default) or `content` for detecting source input changes |
 
 ### Resolver and Dependencies
 
@@ -59,7 +59,9 @@ cargo -Z help
 | `avoid-dev-deps` | Skip downloading dev-dependencies when not needed |
 | `public-dependency` | Mark dependencies as `public` or `private` to control re-exports |
 | `msrv-policy` | MSRV-aware resolver and version selection |
-| `update-breaking` | Allow `cargo update` to make SemVer-incompatible upgrades |
+| `prerelease` | Allow `update --precise` to select pre-release versions not named by `Cargo.toml` |
+| `builtin-dependencies` | Declare standard library crates as dependencies (`std = { builtin = true }`), pairs with `-Zbuild-std` |
+| `feature-metadata` | Define features with a metadata table (`foo = { enables = [] }`, `doc` field) |
 
 ### Output and Artifacts
 
@@ -83,7 +85,6 @@ cargo -Z help
 |---------|-------------|
 | `trim-paths` | Sanitize file paths embedded in binaries and diagnostics |
 | `per-package-target` | Set `--target` per package via `forced-target` in `Cargo.toml` |
-| `lockfile-path` | Specify a custom lockfile location |
 
 ### Advanced
 
@@ -121,6 +122,18 @@ cargo +nightly build -Z build-std
 - Feature availability and behavior can change without notice.
 - Check the official [Unstable Features page](https://doc.rust-lang.org/cargo/reference/unstable.html) for the current status of each feature and links to tracking issues.
 - Some unstable features eventually become default behavior without explicit opt-in after stabilization.
+
+### Stabilized or removed (as of Rust 1.100)
+
+- `lockfile-path` (`resolver.lockfile-path`): stabilized in 1.97.0.
+- `build.warnings` config field: stabilized in 1.97.
+- `update-breaking`: the `cargo update -Zunstable-options --breaking` flag was removed in 1.99-nightly.
+- `build-dir-new-layout`: stabilized in 1.100.0.
+- `[lints.cargo]` (Cargo's linting system): stabilized in 1.100.
+- `min-publish-age`: stabilized in 1.100.
+- The unstable feature previously listed as `precise-pre-release` appears as `prerelease` in the Cargo reference at 1.100.0.
+
+- Source: https://doc.rust-lang.org/cargo/reference/unstable.html (pinned: https://raw.githubusercontent.com/rust-lang/cargo/3acc79c0c841844675bc53a605922dbfc441e750/doc/book/src/reference/unstable.md, cargo@3acc79c, retrieved 2026-11-14)
 
 ## Related
 
