@@ -208,6 +208,8 @@ func authenticateWithAPIKey(w io.Writer, apiKey string) error {
 
 Node.js:
 
+Adapted (not in the official docs): the final call passes `process.env.API_KEY` (the official sample calls `authenticateWithAPIKey()` with no argument).
+
 ```javascript
 const {
   v1: {LanguageServiceClient},

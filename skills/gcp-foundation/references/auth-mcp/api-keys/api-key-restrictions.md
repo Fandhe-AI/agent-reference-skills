@@ -29,6 +29,8 @@ curl -X GET \
 "https://apikeys.googleapis.com/v2/projects/PROJECT_ID/locations/global/keys/"
 ```
 
+Adapted (not in the official docs): `updateMask=restrictions.apiTargets` (instead of `restrictions`) so other restriction types on the key are not cleared.
+
 ```json
 curl -X PATCH \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
@@ -45,7 +47,7 @@ curl -X PATCH \
 ]
 }
 }' \
-"https://apikeys.googleapis.com/v2/projects/PROJECT_ID/locations/global/keys/KEY_ID?updateMask=restrictions"
+"https://apikeys.googleapis.com/v2/projects/PROJECT_ID/locations/global/keys/KEY_ID?updateMask=restrictions.apiTargets"
 ```
 
 ### Application restrictions
@@ -76,6 +78,8 @@ gcloud services api-keys update KEY_ID \
  --allowed-referrers="ALLOWED_REFERRER_1"
 ```
 
+Adapted (not in the official docs): `updateMask=restrictions.browserKeyRestrictions` (instead of `restrictions`) so API restrictions on the key are not cleared.
+
 ```json
 curl -X PATCH \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
@@ -87,7 +91,7 @@ curl -X PATCH \
 }
 }
 }' \
-"https://apikeys.googleapis.com/v2/projects/PROJECT_ID/locations/global/keys/KEY_ID?updateMask=restrictions"
+"https://apikeys.googleapis.com/v2/projects/PROJECT_ID/locations/global/keys/KEY_ID?updateMask=restrictions.browserKeyRestrictions"
 ```
 
 #### IP addresses
@@ -101,6 +105,8 @@ gcloud services api-keys update KEY_ID \
 --allowed-ips="ALLOWED_IP_ADDR_1"
 ```
 
+Adapted (not in the official docs): `updateMask=restrictions.serverKeyRestrictions` (instead of `restrictions`) so API restrictions on the key are not cleared.
+
 ```json
 curl -X PATCH \
 -H "Authorization: Bearer $(gcloud auth print-access-token)" \
@@ -112,7 +118,7 @@ curl -X PATCH \
   }
 }
 }' \
-"https://apikeys.googleapis.com/v2/projects/PROJECT_ID/locations/global/keys/KEY_ID?updateMask=restrictions"
+"https://apikeys.googleapis.com/v2/projects/PROJECT_ID/locations/global/keys/KEY_ID?updateMask=restrictions.serverKeyRestrictions"
 ```
 
 #### Android apps
@@ -124,6 +130,8 @@ gcloud services api-keys update KEY_ID \
 --allowed-application=sha1_fingerprint=SHA1_FINGERPRINT_1,package_name=PACKAGE_NAME_1 \
 --allowed-application=sha1_fingerprint=SHA1_FINGERPRINT_2,package_name=PACKAGE_NAME_2
 ```
+
+Adapted (not in the official docs): `updateMask=restrictions.androidKeyRestrictions` (instead of `restrictions`) so API restrictions on the key are not cleared.
 
 ```json
 curl -X PATCH \
@@ -141,7 +149,7 @@ curl -X PATCH \
 }
 }
 }' \
-"https://apikeys.googleapis.com/v2/projects/PROJECT_ID/locations/global/keys/KEY_ID?updateMask=restrictions"
+"https://apikeys.googleapis.com/v2/projects/PROJECT_ID/locations/global/keys/KEY_ID?updateMask=restrictions.androidKeyRestrictions"
 ```
 
 #### iOS apps
@@ -152,6 +160,8 @@ Provide each app's bundle ID; requests must send the `X-Ios-Bundle-Identifier` H
 gcloud services api-keys update KEY_ID \
 --allowed-bundle-ids=ALLOWED_BUNDLE_ID_1,ALLOWED_BUNDLE_ID_2
 ```
+
+Adapted (not in the official docs): `updateMask=restrictions.iosKeyRestrictions` (instead of `restrictions`) so API restrictions on the key are not cleared.
 
 ```json
 curl -X PATCH \
@@ -164,7 +174,7 @@ curl -X PATCH \
 }
 }
 }' \
-"https://apikeys.googleapis.com/v2/projects/PROJECT_ID/locations/global/keys/KEY_ID?updateMask=restrictions"
+"https://apikeys.googleapis.com/v2/projects/PROJECT_ID/locations/global/keys/KEY_ID?updateMask=restrictions.iosKeyRestrictions"
 ```
 
 ### List API keys that don't have restrictions
@@ -197,6 +207,7 @@ gcloud asset list \
 - Every restriction update replaces the existing list of that type; send the full set each time. REST `keys.patch` returns a long-running operation to poll.
 - The literal `allowedReferers` spelling appears in the website scenario table of the source, while the REST field is `allowedReferrers`; both are reproduced as published.
 - Android and iOS restrictions are easy to bypass; combine with API restrictions and monitoring. Treat key strings as secrets regardless of restrictions.
+- Adapted from the official docs: each REST PATCH example uses a narrowed `updateMask` (for example `restrictions.apiTargets`) so updating one restriction type does not clear the other types.
 - Java, Python sample code for restrictions is not reproduced (fetched copies corrupted); per-language code belongs to the `gcp-client-libraries` skill.
 - Source: https://docs.cloud.google.com/docs/authentication/api-keys (retrieved 2026-11-14; text CC BY 4.0, code samples Apache 2.0)
 

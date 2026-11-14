@@ -129,6 +129,8 @@ func authenticateWithAPIKey(w io.Writer, apiKey string) error {
 
 Node.js:
 
+Adapted (not in the official docs): the final call passes `process.env.API_KEY` (the official sample calls `authenticateWithAPIKey()` with no argument).
+
 ```javascript
 const {
   v1: {LanguageServiceClient},
@@ -216,6 +218,7 @@ end
 ## Notes
 
 - Keep API keys secure in storage and transmission; publicly exposing them can lead to unexpected charges. Prefer keyless auth (ADC) when the API supports it; never hard-code keys in client code or repositories.
+- Adapted from the official docs: the Node.js sample calls `authenticateWithAPIKey(process.env.API_KEY)`; the official sample calls it with no argument, which would pass `undefined` as the key.
 - In the fetched twin, the Go/Node.js/Python/Ruby samples have corrupted inline reference URLs; the code above uses the same code as the clean copy on the client-libraries authentication page. The C# and C++ samples are in that page's source too and are not reproduced.
 - Source: https://docs.cloud.google.com/docs/authentication/api-keys-use (retrieved 2026-11-14; text CC BY 4.0, code samples Apache 2.0)
 
