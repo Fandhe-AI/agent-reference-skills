@@ -44,7 +44,7 @@ if (result.Status == Microsoft.Windows.AI.Text.Experimental.GenerateStructuredJs
 |------|-------------|
 | `LanguageModelExperimental` | Wraps a `LanguageModel` instance; exposes experimental features including structured JSON output and LoRA adapter loading. |
 | `GenerateStructuredJsonResponseAsync(String prompt, String jsonSchema, LanguageModelOptionsExperimental)` | Generates a response constrained to conform to the provided JSON Schema; returns `IAsyncOperationWithProgress<GenerateStructuredJsonResponseResult, String>` (`Microsoft.Windows.AI.Text.Experimental.GenerateStructuredJsonResponseResult`) for token-by-token progress. |
-| `LanguageModelOptionsExperimental` | `Temperature`, `TopP`, `TopK`, `ContentFilterOptions`, `LoraAdapter` — same tuning surface as `LanguageModelOptions`, for experimental generation methods. |
+| `LanguageModelOptionsExperimental` | `Temperature`, `TopP`, `TopK`, `ContentFilterOptions`, `LowRankAdapter` — same tuning surface as `LanguageModelOptions`, for experimental generation methods. |
 
 Supported JSON Schema subset:
 
@@ -65,10 +65,15 @@ Supported JSON Schema subset:
 - Throws `ArgumentException` if `jsonSchema` is empty, not valid JSON, or not a JSON object (e.g. passing a JSON array).
 - Check `result.Status` against `Microsoft.Windows.AI.Text.Experimental.GenerateStructuredJsonResponseStatus` (a distinct enum from the stable-namespace `Microsoft.Windows.AI.Text.GenerateStructuredJsonResponseStatus` returned by the stable `LanguageModel` method): `Complete` means the JSON was validated against the schema; `ResponseInvalidJson` means the model's text didn't conform (still available via `result.Text`, but may not match the schema); other values are `InProgress`, `BlockedByPolicy`, `PromptLargerThanContext`, `PromptBlockedByContentModeration`, `ResponseBlockedByContentModeration`, and `Error`.
 - Expect higher latency than `GenerateResponseAsync` due to the iterative constrained-decoding strategy used to enforce the schema.
+- The method returns `IAsyncOperationWithProgress`, so token-by-token progress can be reported during generation. Wrap calls in try/catch to handle an invalid schema gracefully.
+- Watermarking: if you generate JSON with `GenerateResponseAsync` instead of this structured output API, your parsing logic must handle the invisible watermark inserted in AI text output starting October 2026. See [Watermarking in Windows AI text APIs](./text-watermarking.md).
+- The experimental-channel page's own example checks `result.Status == LanguageModelResponseStatus.Complete` (and says the stable `LanguageModel` class doesn't expose structured output yet), while the status enum and stable-API notes above come from the stable API reference. Verify the status type your SDK package exposes.
 - Phi Silica features are not available in China.
+- Source: https://learn.microsoft.com/en-us/windows/ai/apis/phi-silica-structured-output (retrieved 2026-11-14)
 
 ## Related
 
+- [Watermarking in Windows AI text APIs](./text-watermarking.md)
 - [LanguageModel](./language-model.md)
 - [LanguageModelOptions / ContentFilterOptions](./language-model-options.md)
 - [LanguageModelContext](./language-model-context.md)

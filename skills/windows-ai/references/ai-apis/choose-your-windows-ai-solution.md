@@ -49,9 +49,13 @@ else
 
 - Terminology has shifted: **Copilot Runtime APIs** (2024) → **Windows AI APIs** (current name, same functionality). **Windows Copilot Runtime** / **Windows AI Foundry** (former umbrella terms) → **Microsoft Foundry on Windows** (current umbrella brand covering Windows AI APIs + Foundry Local + Windows ML). **Microsoft Foundry** (cloud platform) is a different product from **Microsoft Foundry on Windows**, despite the similar name.
 - **Phi Silica** is the NPU-optimized Windows-inbox version of Microsoft's Phi model family, accessed via Windows AI APIs; it is also available on non-Copilot+ PCs with a supported NVIDIA or AMD GPU; general **Phi** models (Phi-4-mini, etc.) are available on Azure AI and via Foundry Local.
-- **DirectML** is in sustained engineering (no longer actively developed); Windows ML IHV-specific execution providers are its replacement, achieving higher performance by working natively with Windows hardware.
+- **DirectML** is a low-level DirectX 12 machine learning API for GPU execution. Windows ML includes it as a legacy GPU execution provider; it isn't an NPU execution path or the universal acceleration layer. Windows ML IHV-specific execution providers (hardware-vendor providers for supported CPUs, GPUs, and NPUs) are acquired separately and work natively with Windows hardware; dynamically acquired providers require Windows 11, version 24H2 (build 26100), or later plus compatible hardware and drivers.
+- **Windows ML** (old) is the legacy WinRT-based inference API, inbox since Windows 10 1809: still works, no new investment. **Windows ML** (new) is the ONNX Runtime-based NuGet package and is actively developed.
+- Foundry Toolkit for Visual Studio Code and AI Dev Gallery are developer tooling in Microsoft Foundry on Windows, alongside Windows AI APIs, Foundry Local, and Windows ML.
 - **Copilot+ PC** is a hardware category (NPU with 40+ TOPS, 16GB+ RAM, specific SoCs) required for most Windows AI APIs; a growing number of APIs (Phi Silica on GPU, Speech Recognition, Video Super Resolution) also run on non-Copilot+ Windows 11 PCs. Not required for Foundry Local or Windows ML.
 - These options are not mutually exclusive — the combine-fallback pattern above tries Windows AI APIs first, then Foundry Local, then cloud, to give Copilot+ users the best experience while keeping the feature working on all hardware.
+- Source: https://learn.microsoft.com/en-us/windows/ai/windows-ai-comparison (retrieved 2026-11-14)
+- Source: https://learn.microsoft.com/en-us/windows/ai/overview (retrieved 2026-11-14)
 
 ## Related
 

@@ -2,8 +2,10 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| Use any ONNX LLM in the AI Dev Gallery | Tutorial for running any ONNX Runtime GenAI-format large language model through the AI Dev… | [ai-dev-gallery-onnx-llm.md](./ai-dev-gallery-onnx-llm.md) |
 | AI Dev Gallery app | An open-source Windows app offering 25+ interactive samples… | [ai-dev-gallery.md](./ai-dev-gallery.md) |
-| Tutorial: Semantic Search quickstart (App Content Search) | Create a semantic index of in-app content with AppContentIndexer… | [app-content-search-tutorial.md](./app-content-search-tutorial.md) |
+| Semantic Search quickstart (App Content Search) | Create a semantic index of in-app content with AppContentIndexer… | [app-content-search-tutorial.md](./app-content-search-tutorial.md) |
+| App Content Search | App Content Search lets apps index their own text and image content with the `AppContentIndexer`… | [app-content-search.md](./app-content-search.md) |
 | Choose your Windows AI solution | A scenario-based decision guide for picking between Windows AI APIs… | [choose-your-windows-ai-solution.md](./choose-your-windows-ai-solution.md) |
 | Content moderation with Windows AI APIs | Content moderation classifies and filters potentially harmful… | [content-moderation.md](./content-moderation.md) |
 | Copilot+ PCs developer guide | Developer guidance for Windows 11 Copilot+ PCs NPU… | [copilot-plus-developer-guide.md](./copilot-plus-developer-guide.md) |
@@ -20,10 +22,10 @@
 | ImageScaler | Resizes and increases resolution up to 8x… | [image-scaler.md](./image-scaler.md) |
 | Imaging overview for Windows AI APIs | Overview of on-device imaging: super resolution, description… | [imaging-overview.md](./imaging-overview.md) |
 | Imaging walkthrough (Image Super Resolution) | .NET MAUI sample that scales and sharpens an image with ImageScaler… | [imaging-tutorial.md](./imaging-tutorial.md) |
-| LanguageModel | Local small language model (Phi Silica) generating… | [language-model.md](./language-model.md) |
 | Language Model best practices | Usage guidance covering non-deterministic output,… | [language-model-best-practices.md](./language-model-best-practices.md) |
 | LanguageModelContext | Defines tokens processable at one time, model's… | [language-model-context.md](./language-model-context.md) |
 | LanguageModelOptions / ContentFilterOptions | Options affecting model responses and content… | [language-model-options.md](./language-model-options.md) |
+| LanguageModel | Local small language model (Phi Silica) generating… | [language-model.md](./language-model.md) |
 | Ready-to-use local LLMs on Windows | Decision guide comparing Phi Silica, Foundry Local,… | [local-llms.md](./local-llms.md) |
 | Phi Silica LoRA fine-tuning | Low Rank Adaptation fine-tunes Phi Silica for… | [phi-silica-lora.md](./phi-silica-lora.md) |
 | Generate structured JSON output with Phi Silica | LanguageModel exposes GenerateStructuredJsonResponseAsync… | [phi-silica-structured-output.md](./phi-silica-structured-output.md) |
@@ -44,5 +46,7 @@
 | Text Intelligence Skills (TextSummarizer / TextRewriter / TextToTableConverter) | Text-transformation classes for summarizing,… | [text-intelligence-skills.md](./text-intelligence-skills.md) |
 | Text recognizer (OCR) walkthrough | WinForms sample that runs TextRecognizer OCR on an image file… | [text-recognition-tutorial.md](./text-recognition-tutorial.md) |
 | TextRecognizer | AI-based OCR detecting/extracting text… | [text-recognizer.md](./text-recognizer.md) |
+| Watermarking in Windows AI text APIs | Starting in October 2026, output from some APIs in the `Microsoft.Windows.AI.Text` namespace… | [text-watermarking.md](./text-watermarking.md) |
 | Windows AI API troubleshooting | Diagnostic checklist for hardware/software… | [troubleshooting.md](./troubleshooting.md) |
 | VideoScaler | AI-based video upscaling for real-time streams… | [video-scaler.md](./video-scaler.md) |
+| AI on Windows code samples and tutorials | Index of official samples that add AI to Windows apps using local APIs and ML models, DirectML… | [windows-ai-code-samples.md](./windows-ai-code-samples.md) |

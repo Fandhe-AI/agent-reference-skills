@@ -4,7 +4,7 @@ description: >
   Windows アプリ開発 (Windows AI Foundry) の AI/ML 統合リファレンス。
   Windows AI APIs、LanguageModel, TextRecognizer, ImageObjectExtractor,
   ImageDescriptionGenerator, SemanticSearch、
-  Phi Silica、Windows ML、Windows ML Runtime API、ONNX Runtime、
+  Phi Silica、Windows ML、Windows ML CLI (winml-cli)、Windows ML Runtime API、ONNX Runtime、
   execution providers、LearningModel、
   Foundry Local (CLI / REST API / SDK)、MCP サーバー、App Actions、IActionProvider、
   DirectML、NPU。
@@ -18,7 +18,7 @@ Windows AI Foundry を中心とした Windows 上の AI/ML 開発機能の公式
 エージェント連携 (MCP / App Actions)、低レベル GPU 推論 (DirectML)、NPU ハードウェア・プロファイリング (Copilot+ PC / WPR / WPA) を扱う。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象版: MS Learn 取得日 2026-10-16〜17、Windows ML 2.4.89 (ORT 1.27.1) / Windows ML Runtime API 2.7.2021-experimental (ORT 1.30.0)。
+対象版: MS Learn 取得日 2026-11-14 (en-us)、Windows ML 2.5.96 (ORT 1.28.3) / Windows ML Runtime API 2.7.2021-experimental (ORT 1.30.0)。
 
 ## ディレクトリ構成
 
@@ -72,6 +72,10 @@ skills/windows-ai/
       imaging-tutorial.md
       imaging-overview.md
       phi-silica-transparency-note.md
+      ai-dev-gallery-onnx-llm.md
+      app-content-search.md
+      text-watermarking.md
+      windows-ai-code-samples.md
     windows-ml/
       README.md
       runtime-overview.md
@@ -117,6 +121,36 @@ skills/windows-ai/
       update-eps.md
       webgpu-ep-experimental.md
       winml-cli.md
+      accelerate-ai-models.md
+      third-party-notices.md
+      winml-cli-agent-skill.md
+      winml-cli-cmd-analyze.md
+      winml-cli-cmd-build.md
+      winml-cli-cmd-catalog.md
+      winml-cli-cmd-compile.md
+      winml-cli-cmd-config.md
+      winml-cli-cmd-eval.md
+      winml-cli-cmd-export.md
+      winml-cli-cmd-inspect.md
+      winml-cli-cmd-optimize.md
+      winml-cli-cmd-perf.md
+      winml-cli-cmd-quantize.md
+      winml-cli-cmd-sys.md
+      winml-cli-commands-overview.md
+      winml-cli-concepts-fundamentals.md
+      winml-cli-concepts-pipeline.md
+      winml-cli-config-schema.md
+      winml-cli-contributing.md
+      winml-cli-installation.md
+      winml-cli-output-layout.md
+      winml-cli-privacy.md
+      winml-cli-python-api.md
+      winml-cli-quickstart.md
+      winml-cli-samples.md
+      winml-cli-supported-models.md
+      winml-cli-troubleshooting.md
+      winml-cli-tutorials.md
+      winml-cli-ui-quickstart.md
     foundry-local/
       README.md
       architecture.md
@@ -232,7 +266,7 @@ skills/windows-ai/
 |--------|---------|------------|
 | LanguageModel でオンデバイス生成 AI (Phi Silica) を呼び出したい | ai-apis | [references/ai-apis/README.md](references/ai-apis/README.md) |
 | TextRecognizer / ImageScaler / ImageObjectExtractor / ImageDescriptionGenerator で画像・OCR 処理を実装したい | ai-apis | [references/ai-apis/README.md](references/ai-apis/README.md) |
-| SemanticSearch / ContentModeration / responsible AI ガイドラインを適用したい | ai-apis | [references/ai-apis/README.md](references/ai-apis/README.md) |
+| SemanticSearch / App Content Search (AppContentIndexer) / ContentModeration / テキスト API ウォーターマーク / responsible AI ガイドラインを適用したい | ai-apis | [references/ai-apis/README.md](references/ai-apis/README.md) |
 | Copilot+ PC 向け開発ガイド・AI Dev Gallery・Foundry Toolkit で AI 機能を選定・試作したい | ai-apis | [references/ai-apis/README.md](references/ai-apis/README.md) |
 | Windows ML で ONNX モデルをローカル推論したい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
 | execution providers の選択・登録・インストール・トラブルシューティングをしたい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
@@ -242,6 +276,8 @@ skills/windows-ai/
 | Windows ML Runtime API (experimental, C++/Python) でパイプライン・ステージ・テンソル・GGUF (llama.cpp) を明示制御したい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
 | 自前の LM / Whisper モデルで Text Generation / Speech Recognition (experimental) を使いたい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
 | モデル配布 (同梱 / 別途ダウンロード / アプリ間共有)・推論の効率化・複数 ORT 版の同居を設計したい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
+| Windows ML CLI (`winml`: sys / inspect / catalog / config / export / analyze / optimize / quantize / compile / build / perf / eval) でモデルを変換・量子化・EP 向けコンパイル・ベンチマークしたい (winml-cli-*) | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
+| Windows ML の EP による高速化の概要・サードパーティライセンスを確認したい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
 | Foundry Local を WinUI / C# アプリに組み込みたい | foundry-local | [references/foundry-local/README.md](references/foundry-local/README.md) |
 | Foundry Local で LLM をローカルホストしたい | foundry-local | [references/foundry-local/README.md](references/foundry-local/README.md) |
 | Foundry Local の CLI / REST API / SDK / model catalog / キャッシュ管理を使いたい | foundry-local | [references/foundry-local/README.md](references/foundry-local/README.md) |
