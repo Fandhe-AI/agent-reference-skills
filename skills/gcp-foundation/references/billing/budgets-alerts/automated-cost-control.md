@@ -67,7 +67,7 @@ const _disableBillingForProject = async projectName => {
 };
 ```
 
-Deploy and wire up (commands from the official script, with the Adapted changes below; the doc comments inside the functions are omitted above). Adapted (not in the official docs): the budget is scoped with `--filter-projects` to the target project only; the budget is created before the deploy and its ID is captured from the `name` output, then passed to the function as `BUDGET_ID` (the `budgetId` Pub/Sub message attribute is checked by the handler). The `functions-framework` dependency (`@google-cloud/functions-framework`) must be in the function's `package.json`.
+Deploy and wire up (commands from the official script, with the Adapted changes below; the doc comments inside the functions are omitted above). Adapted (not in the official docs): the budget is scoped with `--filter-projects` to the target project only; the budget is created before the deploy and its ID is captured from the `name` output, then passed to the function as `BUDGET_ID` (the `budgetId` Pub/Sub message attribute is checked by the handler). Topic publish permissions for Cloud Billing are not covered by the fetched pages (公式未確認); check the console's topic-permission prompt or the Cloud Billing programmatic-notifications docs. The `functions-framework` dependency (`@google-cloud/functions-framework`) must be in the function's `package.json`.
 
 ```bash
 gcloud services enable billingbudgets.googleapis.com \

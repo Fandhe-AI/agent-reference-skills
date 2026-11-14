@@ -42,7 +42,9 @@ def quickstart(project_id: str, principal: str) -> None:
 
     # Gets the project's policy and prints all principals with the 'Log Writer' role.
     policy = get_policy(crm_service, project_id)
-    binding = next(b for b in policy.bindings if b.role == role)
+    binding = next(
+        b for b in policy.bindings if b.role == role and not b.HasField("condition")
+    )
     print(f"Role: {(binding.role)}")
     print("Members: ")
     for m in binding.members:
@@ -90,7 +92,7 @@ def modify_policy_add_role(
     policy = get_policy(crm_service, project_id)
 
     for bind in policy.bindings:
-        if bind.role == role:
+        if bind.role == role and not bind.HasField("condition"):
             bind.members.append(principal)
             break
     else:
@@ -113,7 +115,7 @@ def modify_policy_remove_principal(
     policy = get_policy(crm_service, project_id)
 
     for bind in policy.bindings:
-        if bind.role == role:
+        if bind.role == role and not bind.HasField("condition"):
             if principal in bind.members:
                 bind.members.remove(principal)
             if not bind.members:
@@ -143,6 +145,7 @@ if __name__ == "__main__":
 
 ## Notes
 
+- Adapted from the official docs: bindings are selected by role AND absence of a `condition` (`not b.HasField("condition")`), so unconditional grants/revocations never touch a conditional binding of the same role.
 - Adapted from the official docs: `get_policy` sets `request.options.requested_policy_version = 3` (the returned policy keeps its `etag`, which `set_policy` sends back via `CopyFrom`), and `modify_policy_remove_principal` deletes a binding whose `members` became empty (an empty binding is rejected by `setIamPolicy`).
 - Adapted from the official docs: `google-cloud-resource-manager` is added to the Python install because the v3 sample needs it.
 - Replace `your-project` with the project ID and the principal with an identifier such as `user:my-user@example.com`.
