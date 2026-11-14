@@ -91,8 +91,11 @@ curl -X POST \
 
 The call returns a long-running operation; poll it until `done` is `true`:
 
+Adapted (not in the official docs): use the full `name` returned by the mutation (it includes `denypolicies/POLICY_ID`).
+
 ```
-GET https://iam.googleapis.com/v2/policies/ENCODED_ATTACHMENT_POINT/operations/OPERATION_ID
+GET https://iam.googleapis.com/v2/OPERATION_NAME
+# OPERATION_NAME = e.g. policies/ENCODED_ATTACHMENT_POINT/denypolicies/POLICY_ID/operations/OPERATION_ID
 ```
 
 ## Options / Props

@@ -27,8 +27,10 @@ gcloud iam principal-access-boundary-policies create PAB_POLICY_ID \
 
 REST:
 
+Adapted (not in the official docs): added the missing `principalAccessBoundaryPolicies` collection segment to the create URL.
+
 ```text
-POST https://iam.googleapis.com/v3/organizations/ORG_ID/locations/global?principalAccessBoundaryPolicyId=PAB_POLICY_ID
+POST https://iam.googleapis.com/v3/organizations/ORG_ID/locations/global/principalAccessBoundaryPolicies?principalAccessBoundaryPolicyId=PAB_POLICY_ID
 ```
 
 ```json
@@ -93,6 +95,7 @@ principal.subject != 'special-admin@example.com'
 - Keep principals subject to at least one PAB policy at all times; removing all policies makes them eligible for everything again.
 - `latest` is not recommended because principals may lose access unexpectedly; pin an enforcement version. Evaluation fails closed, so test on a throwaway project and organization subset first.
 - The policy and the principal set of a binding cannot be changed after creation.
+- Adapted from the official docs: the REST create URL includes the `principalAccessBoundaryPolicies` collection segment.
 - Source: https://docs.cloud.google.com/iam/docs/principal-access-boundary-policies (retrieved 2026-11-14)
 - Source: https://docs.cloud.google.com/iam/docs/principal-access-boundary-policies-create (retrieved 2026-11-14)
 

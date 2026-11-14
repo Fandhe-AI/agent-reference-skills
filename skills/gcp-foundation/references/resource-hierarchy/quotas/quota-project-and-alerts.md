@@ -24,7 +24,7 @@ billing/quota_project   (gcloud configuration property)
 ADC quota project for local development (user credentials):
 
 ```text
-gcloud auth application-default set-quota-project
+gcloud auth application-default set-quota-project QUOTA_PROJECT_ID
 ```
 
 Per-language environment variable (client libraries):

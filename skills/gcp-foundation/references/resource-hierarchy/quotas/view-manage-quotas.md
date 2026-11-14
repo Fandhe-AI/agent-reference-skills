@@ -104,7 +104,7 @@ gcloud quotas preferences create --project=PROJECT_ID_OR_NUMBER \
     "quotaId":"QUOTA_ID",
     "reconciling":true,
     "service":"SERVICE_NAME",
-    "updateTime":"UPDATE_TIME",
+    "updateTime":"UPDATE_TIME"
 }
 ```
 

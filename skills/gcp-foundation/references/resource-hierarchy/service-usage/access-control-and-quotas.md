@@ -25,8 +25,8 @@ Required permissions per method:
 | `services.disable` | On the project `serviceusage.services.disable` |
 | `services.get` | `serviceusage.services.get` |
 | `services.list` | `serviceusage.services.list` |
-| `consumerQuotaMetrics` list / get (v1beta1), limits get, consumerOverrides / adminOverrides list | On the project `serviceusage.quota.get`; on the service `servicemanagement.services.bind` |
-| consumerOverrides / adminOverrides create / patch / delete | On the project `serviceusage.quota.update`; on the service `servicemanagement.services.bind` |
+| `consumerQuotaMetrics` list / get (v1beta1), limits get, consumerOverrides / adminOverrides list | On the project `serviceusage.quotas.get`; on the service `servicemanagement.services.bind` |
+| consumerOverrides / adminOverrides create / patch / delete | On the project `serviceusage.quotas.update`; on the service `servicemanagement.services.bind` |
 | Use a project for quota and billing | On the project `serviceusage.services.use` |
 
 Roles:
@@ -53,6 +53,7 @@ Service Usage rate quotas:
 
 ## Notes
 
+- Adapted from the official docs: the method table writes `serviceusage.quota.get` / `serviceusage.quota.update`; the permission names are `serviceusage.quotas.get` / `serviceusage.quotas.update` (as in the role table of the same official page).
 - Three relevant resources: the service, the project, and the long-running operation.
 - Quotas have adjustable defaults; system limits are fixed. Quotas apply per project and are shared across all applications and IP addresses in the project. Adjust through the Quotas & System Limits page (see `../quotas/` pages).
 - API key lifecycle belongs to the API Keys product; handle key values as secrets (see gcp-security).

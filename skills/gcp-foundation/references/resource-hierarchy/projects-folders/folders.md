@@ -16,13 +16,30 @@ gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
 --role=roles/resourcemanager.folderAdmin
 ```
 
-REST (policy shape and request; `folderAdmin` roles shown as written in the official sample):
+REST (policy shape and request):
 
-```restructuredtext
-request_json= '{ policy: { version: "1", bindings: [ { role: "roles/folderAdmin",
-members: [ "user:admin@myorganization.com", ] }, { role: "roles/folderCreator",
-members: [ "user:admin@myorganization.com", ] } , { role: "roles/folderMover",
-members: [ "user:admin@myorganization.com", ] } , ] } }'
+Adapted (not in the official docs): the shell assignment has no space after `=`, the JSON keys are quoted with no trailing commas, and the role IDs use the full `roles/resourcemanager.folder*` names.
+
+```bash
+request_json='{
+  "policy": {
+    "version": 1,
+    "bindings": [
+      {
+        "role": "roles/resourcemanager.folderAdmin",
+        "members": ["user:admin@myorganization.com"]
+      },
+      {
+        "role": "roles/resourcemanager.folderCreator",
+        "members": ["user:admin@myorganization.com"]
+      },
+      {
+        "role": "roles/resourcemanager.folderMover",
+        "members": ["user:admin@myorganization.com"]
+      }
+    ]
+  }
+}'
 ```
 
 ```restructuredtext
@@ -48,10 +65,12 @@ gcloud resource-manager folders create \
 
 REST:
 
-```json
-request_json= '{
-  display_name: DISPLAY_NAME,
-  parent: ORGANIZATION_NAME
+Adapted (not in the official docs): valid shell assignment and JSON (quoted keys and values).
+
+```bash
+request_json='{
+  "display_name": "DISPLAY_NAME",
+  "parent": "ORGANIZATION_NAME"
 }'
 ```
 
@@ -152,16 +171,18 @@ gcloud resource-manager folders \
     set-iam-policy FOLDER_ID POLICY_FILE
 ```
 
-```json
-request_json= '{
-  policy: {
-    version: "1",
-    bindings: [
+Adapted (not in the official docs): valid shell assignment and JSON (quoted keys).
+
+```bash
+request_json='{
+  "policy": {
+    "version": 1,
+    "bindings": [
       {
-        role: "roles/resourcemanager.folderEditor",
-        members: [
+        "role": "roles/resourcemanager.folderEditor",
+        "members": [
           "user:email1@example.com",
-          "user:email2@example.com",
+          "user:email2@example.com"
         ]
       }
     ]
@@ -222,6 +243,7 @@ response:
 ## Notes
 
 - Folder Admin can create, edit, delete, move folders, change IAM on folders, and move projects between folders; initially only the Organization Admin can assign it for the organization. To let users see the structure, grant Organization Viewer and Folder Viewer at the organization; to limit visibility, grant Folder Viewer on specific folders.
+- Adapted from the official docs: the REST `request_json` examples are corrected to valid shell and JSON, and the folder role IDs use `roles/resourcemanager.folderAdmin` / `folderCreator` / `folderMover` (the official sample's `roles/folderAdmin` etc. are not valid role IDs).
 - Start with a single sandbox folder to experiment; model departments, applications, or environments with nested folders.
 - Console offers Standard folders and Compliant (Assured Workloads) folders.
 - New folders can take minutes to appear in the console (propagation delay); verify immediately with gcloud or the API.

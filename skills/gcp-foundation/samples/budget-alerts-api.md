@@ -21,6 +21,8 @@ curl -X GET \
 
 ### Create (`request.json`)
 
+Adapted (not in the official docs): `thresholdRules` is an array of rule objects.
+
 ```json
 {
   "displayName": "Keep my spending down",
@@ -33,10 +35,12 @@ curl -X GET \
   "amount": {
     "lastPeriodAmount": {}
   },
-  "thresholdRules": {
-    "thresholdPercent": 0.8,
-    "spendBasis": "CURRENT_SPEND"
-  }
+  "thresholdRules": [
+    {
+      "thresholdPercent": 0.8,
+      "spendBasis": "CURRENT_SPEND"
+    }
+  ]
 }
 ```
 
@@ -51,26 +55,28 @@ curl -X POST \
 
 ### Update (`PATCH .../budgets/budget-id`)
 
+Adapted (not in the official docs): the PATCH body is the Budget resource itself, so the `budget` wrapper object is removed, and `thresholdRules` is an array.
+
 ```json
 {
-  "budget": {
-    "displayName": "My fancy budget",
-    "budgetFilter": {
-      "projects": [
-        "projects/budget-scope-project-id"
-      ],
-      "calendar_period": "QUARTER"
-    },
-   "amount": {
-      "specifiedAmount": {
-        "units": 500
-      }
-    },
-    "thresholdRules": {
+  "displayName": "My fancy budget",
+  "budgetFilter": {
+    "projects": [
+      "projects/budget-scope-project-id"
+    ],
+    "calendar_period": "QUARTER"
+  },
+  "amount": {
+    "specifiedAmount": {
+      "units": 500
+    }
+  },
+  "thresholdRules": [
+    {
       "thresholdPercent": 0.8,
       "spendBasis": "CURRENT_SPEND"
     }
-  }
+  ]
 }
 ```
 
@@ -117,6 +123,7 @@ curl -X DELETE \
 
 ## Notes
 
+- Adapted from the official docs: `thresholdRules` is a repeated field, so the rule is wrapped in an array; the PATCH body is the Budget itself (no `budget` wrapper).
 - An alerts-only budget does not cap spend; it only notifies. Defaults in the console are 50%, 90%, 100% of actual spend.
 - The official samples use `calendar_period` in request bodies and `calendarPeriod` in responses; verify against the REST reference before relying on either.
 - Delete is destructive; run it only against a test budget.

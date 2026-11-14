@@ -118,7 +118,7 @@ Condition length up to 1,500 characters for this service.
 ## Notes
 
 - Preview feature. Requires Organization Policy Administrator (`roles/orgpolicy.policyAdmin`) on the organization. Most resource types support up to 20 custom constraints; see `../organization-policy/custom-constraints.md` for the general constraint format.
-- Enforcement only covers operations that create or update `QuotaPreference` resources. Quota changes made through the Service Usage API or the Google Cloud console do not create `QuotaPreference` resources and are not blocked; to restrict those use an IAM deny policy on `serviceusage.quota.update`.
+- Enforcement only covers operations that create or update `QuotaPreference` resources. Quota changes made through the Service Usage API or the Google Cloud console do not create `QuotaPreference` resources and are not blocked; to restrict those use an IAM deny policy on `serviceusage.quotas.update`. (Adapted from the official docs: the page writes `serviceusage.quota.update`; the permission name used elsewhere in the docs, for example the Service Usage access-control and Cloud Quotas permissions pages, is `serviceusage.quotas.update`.)
 - Source: https://docs.cloud.google.com/docs/quotas/custom-constraints
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.
 

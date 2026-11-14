@@ -16,18 +16,20 @@ ORGANIZATION_ID --format json > \
 FILENAME.JSON
 ```
 
+Adapted (not in the official docs): the official output is shown without indentation and with a stray quote; the YAML below is the same policy with valid structure.
+
 ```yaml
 bindings:
 - members:
-- user:testuser1@gcp-test.com
-role: roles/editor
+  - user:testuser1@gcp-test.com
+  role: roles/editor
 - members:
-- user:admin@gcp-test.com
-role:roles/resourcemanager.organizationAdmin
+  - user:admin@gcp-test.com
+  role: roles/resourcemanager.organizationAdmin
 - members:
-- user:testuser2@gcp-test.com
-role: roles/resourcemanager.projectCreator
-etag": "BwU1aRxWk30="
+  - user:testuser2@gcp-test.com
+  role: roles/resourcemanager.projectCreator
+etag: BwU1aRxWk30=
 ```
 
 REST get / set (v3):
@@ -36,6 +38,8 @@ REST get / set (v3):
 POST
 https://cloudresourcemanager.googleapis.com/v3/organizations/12345:getIamPolicy
 ```
+
+Adapted (not in the official docs): added the missing comma before `etag`.
 
 ```json
 {
@@ -54,7 +58,7 @@ https://cloudresourcemanager.googleapis.com/v3/organizations/12345:getIamPolicy
             "serviceAccount:my-other-app@appspot.gserviceaccount.com"
         ]
     }
-    ]
+    ],
     "etag": "BwUjHYKHHiQ="
 }
 ```
@@ -82,7 +86,7 @@ Grant a role by editing the policy file and setting it (the read-modify-write cy
             "user:testuser20@gcp-test.com"
         ],
         "role": "roles/resourcemanager.projectCreator"
-    },
+    }
     ],
     "etag": "BwU1aRxWk30="
 }
@@ -95,21 +99,36 @@ ORGANIZATION_ID policy.json
 
 REST set:
 
-```json
+The official page's REST example is truncated in the retrieved copy. Adapted (not in the official docs): the body below is completed using the bindings and `etag` from the getIamPolicy example above.
+
+```text
 POST https://cloudresourcemanager.googleapis.com/v3/organizations/12345:setIamPolicy
-{
-    "policy": {
-    "version": "0",
-    "bindings": [
-    {
-        "role": "roles/resourcemanager.organizationAdmin",
-        "members": [
-            "user:email1@gmail.com"
-        ]
-    },
 ```
 
-(The official page's REST example is truncated here in the retrieved copy.)
+```json
+{
+  "policy": {
+    "version": 1,
+    "bindings": [
+      {
+        "role": "roles/resourcemanager.organizationAdmin",
+        "members": [
+          "user:email1@gmail.com"
+        ]
+      },
+      {
+        "role": "roles/resourcemanager.projectCreator",
+        "members": [
+          "user:email2@gmail.com",
+          "user:email3@gmail.com",
+          "serviceAccount:my-other-app@appspot.gserviceaccount.com"
+        ]
+      }
+    ],
+    "etag": "BwUjHYKHHiQ="
+  }
+}
+```
 
 ## Options / Props
 
@@ -147,6 +166,7 @@ Project management permissions (granted on the containing organization or folder
 
 ## Notes
 
+- Adapted from the official docs: the policy YAML structure and the missing comma before `etag` are corrected, and the truncated `setIamPolicy` body is completed.
 - Allow policies are additive and inherited: moving a resource into a folder can grant extra roles; moving it out can remove roles. Plan and test the hierarchy first (use a test folder).
 - Use groups; avoid basic roles (owner / editor / viewer); a role granted on a folder applies to every resource underneath (for example `roles/compute.admin` on a folder gives full control of Compute Engine in all its projects).
 - Creating a folder automatically grants the creator Folder Admin and Folder Editor. Folder Creator alone cannot delete.

@@ -56,8 +56,20 @@ protoPayload.metadata.liveResult = "ALLOWED"
 
 ### Enforce after reviewing
 
+Adapted (not in the official docs): `--update-mask=spec` applies only the `spec` field of the file, and `dryRunSpec` is not converted to `spec`. Create a second file whose `spec` holds the rules you reviewed in dry-run, then apply that file.
+
+```yaml
+name: projects/123456789012/policies/gcp.restrictServiceUsage
+spec:
+  rules:
+  - values:
+      allowedValues:
+      - compute.googleapis.com
+      - appengine.googleapis.com
+```
+
 ```bash
-gcloud org-policies set-policy POLICY_PATH \
+gcloud org-policies set-policy ENFORCE_POLICY_PATH \
   --update-mask=spec
 ```
 
@@ -83,8 +95,10 @@ gcloud org-policies reset CONSTRAINT_NAME \
 
 ```bash
 gcloud org-policies delete CONSTRAINT_NAME \
-  --RESOURCE_TYPE=RESOURCE_ID
+  --project=PROJECT_ID
 ```
+
+Use `--organization=ORGANIZATION_ID` or `--folder=FOLDER_ID` instead of `--project` for those resources.
 
 ## Options / Props
 
@@ -103,6 +117,7 @@ gcloud org-policies delete CONSTRAINT_NAME \
 
 ## Notes
 
+- Adapted from the official docs: the enforce step uses a separate file with the reviewed rules under `spec` (the dry-run file only has `dryRunSpec`).
 - Omitting `--update-mask` on an existing policy is an error; `set-policy` overwrites whatever is attached, so run `describe` first.
 - Only some constraints support dry run (`gcp.restrictServiceUsage`, custom and managed constraints, some Assured Workloads constraints).
 - Changes can take up to 15 minutes to be fully enforced; most enforcement is not retroactive.

@@ -42,7 +42,7 @@ The response is a long-running operation:
 
 ```restructuredtext
 {
-    "name": "operations/pc.123456789",
+    "name": "operations/pc.123456789"
 }
 ```
 
