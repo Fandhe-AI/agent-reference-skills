@@ -56,6 +56,8 @@ Under the hood: reads the schema and composes a JSON snapshot, introspects the c
 - Migration (rc.4 → rc.5): SQLite push no longer glues a table's FOREIGN KEY clause onto a generated-column `ALTER ADD`, and table recreation keeps `UNIQUE` on a column that also has a plain index; with `provider: "neon"` push no longer tries to drop Neon system roles.
 - Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
 
+## Related
+
 - [drizzle-kit-generate](./drizzle-kit-generate.md)
 - [drizzle-kit-pull](./drizzle-kit-pull.md)
 - [drizzle-config-file](./drizzle-config-file.md)

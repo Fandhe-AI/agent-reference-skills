@@ -117,7 +117,8 @@ Logical replication needs the PostgreSQL setting `wal_level = logical`, which yo
 ## Notes
 
 - Source: https://orm.drizzle.team/docs/realtime-overview (docs repo commit 55f7f9e, retrieved 2026-11-14)
-- Drizzle Pulse is PostgreSQL-only realtime for `drizzle-orm@rc` (`^1.0.0-rc.6`). It is distinct from Supabase Realtime (skill `supabase`) and Upstash (skill `upstash`).
+- Drizzle Pulse is PostgreSQL-only realtime for `drizzle-orm@rc`. It is distinct from Supabase Realtime (skill `supabase`) and Upstash (skill `upstash`).
+- Version mismatch (not resolved by the official docs): the official page above requires `drizzle-orm` `^1.0.0-rc.6`, but at retrieval (2026-11-14) npm has no `1.0.0-rc.6` (dist-tag `rc` = `1.0.0-rc.5`, which is this skill's target) and the published `drizzle-pulse@0.5.0` (dist-tag `latest`) declares the peer dependency `drizzle-orm: ^1.0.0-rc.5` (checked with `npm view drizzle-pulse peerDependencies`). The `npm i drizzle-pulse drizzle-orm@rc` command therefore resolves to rc.5; treat the `^1.0.0-rc.6` requirement as the docs getting ahead of the registry and re-check once `1.0.0-rc.6` is published. This category describes the docs at commit 55f7f9e and was not run against rc.5.
 - Prerequisites listed by the official page: database connection basics with Drizzle, schema declaration, and a PostgreSQL database.
 - Transcribed from `pg/realtime-overview.mdx` (pg is the canonical dialect). The `<Npm>` blocks are rendered as `npm i` commands.
 

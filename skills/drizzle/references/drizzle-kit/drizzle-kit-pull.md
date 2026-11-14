@@ -50,5 +50,7 @@ export default defineConfig({
 - Migration (rc.4 → rc.5): `pull` writes SQL text containing a backslash, a backtick or `${` into the schema file with proper escaping (check constraints, views, generated columns, policies, index expressions / predicates and default expressions written as `sql` templates), so the pulled schema compiles. `pull --init` no longer writes comments into `migration.sql`. `schemaFilters` is no longer ignored by `pull` / introspection, and single-column PK / FK constraint names are kept in the pulled schema. PlanetScale's `__neki` schema is filtered for the `postgresql` dialect.
 - Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
 
+## Related
+
 - [drizzle-kit-push](./drizzle-kit-push.md)
 - [drizzle-config-file](./drizzle-config-file.md)

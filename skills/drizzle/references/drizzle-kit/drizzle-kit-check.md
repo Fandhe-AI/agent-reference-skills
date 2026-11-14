@@ -42,5 +42,7 @@ export default defineConfig({
 - Migration (rc.4 → rc.5): the `postgresql` dialect rejects `--ignore-conflicts` in `generate`, `check` and `migrate`; use `drizzle-kit generate --fix-conflicts` to repair conflicting migration branches (preview with `--explain`). The flag is still listed above for other dialects.
 - Source: https://orm.drizzle.team/docs/v0-v1-changes (docs repo commit 55f7f9e, retrieved 2026-11-14)
 
+## Related
+
 - [drizzle-kit-generate](./drizzle-kit-generate.md)
 - [kit-migrations-for-teams](./kit-migrations-for-teams.md)

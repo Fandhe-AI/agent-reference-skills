@@ -31,6 +31,7 @@ rc.5 の主な挙動変更（relational filter の `undefined` が throw・`Empt
 `db.$replica`、`DrizzleQueryError` の `paramsInErrors`、PostgreSQL の `--fix-conflicts`）は
 `references/migration/v0-v1-changes.md` と `references/getting-started/latest-releases.md` に集約している。
 公式の `read-replicas` ページ本文は rc.5 の挙動と食い違うため verbatim のまま残し、Notes で補足している。
+`references/realtime/`（Drizzle Pulse）は公式ページが `drizzle-orm` `^1.0.0-rc.6` を要求するが npm には rc.6 が未公開（`drizzle-pulse@0.5.0` の peer は `^1.0.0-rc.5`）のため、本スキル対象の rc.5 では未検証。詳細は `realtime-overview.md` の Notes。
 
 v0.x → v1.0 の破壊的変更は `references/migration/v0-v1-changes.md` に一覧があり、影響を受ける
 個別ページ（`drizzle-kit/` の各コマンド、`relational-queries/rqb.md` / `relations.md`、

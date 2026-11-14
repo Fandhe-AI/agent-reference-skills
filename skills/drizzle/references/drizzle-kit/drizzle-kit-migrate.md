@@ -47,6 +47,8 @@ It reads `.sql` migration files in the migrations folder, fetches applied-migrat
 - Migration (rc.4 → rc.5): the `postgresql` dialect rejects `--ignore-conflicts` in `migrate` as well as `generate` and `check`; `drizzle-kit generate --fix-conflicts` replaces it.
 - Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
 
+## Related
+
 - [drizzle-kit-generate](./drizzle-kit-generate.md)
 - [drizzle-kit-up](./drizzle-kit-up.md)
 - [drizzle-config-file](./drizzle-config-file.md)

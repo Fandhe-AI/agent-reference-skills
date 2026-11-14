@@ -56,6 +56,8 @@ drizzle-kit generate --fix-conflicts --explain
 
 - Source: https://orm.drizzle.team/docs/v0-v1-changes and https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
 
+## Related
+
 - [drizzle-kit-migrate](./drizzle-kit-migrate.md)
 - [kit-custom-migrations](./kit-custom-migrations.md)
 - [drizzle-config-file](./drizzle-config-file.md)

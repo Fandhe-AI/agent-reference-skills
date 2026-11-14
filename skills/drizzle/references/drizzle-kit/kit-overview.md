@@ -60,6 +60,8 @@ drizzle-kit push --config=drizzle-prod.drizzle.config
 - Migration (rc.4 → rc.5): the bundled agent skills are one skill named `drizzle`; `drizzle-kit skills` removes the seven older skills (`drizzle-generate`, `drizzle-push`, `drizzle-pull`, `drizzle-migrations`, `drizzle-hints`, `drizzle-output-modes`, `drizzle-responses-and-errors`). `generateMigration` / `pushSchema` from `drizzle-kit/payload/*` and `drizzle-kit/api-postgres` accept `{ hints }` as the last argument and throw `code: 'missing_hints'` when a decision has no hint. PGLite custom options are supported; `drizzle-orm` is listed as a peer dependency.
 - Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc4 and https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
 
+## Related
+
 - [drizzle-kit-generate](./drizzle-kit-generate.md)
 - [drizzle-kit-migrate](./drizzle-kit-migrate.md)
 - [drizzle-config-file](./drizzle-config-file.md)
