@@ -6,6 +6,7 @@ How to access and configure UEFI on DGX Spark: WiFi/Bluetooth, USB boot, Secure 
 
 ```text
 Wireless LAN & Bluetooth : Advanced -> Advanced Menu -> IO Port Access -> Wireless LAN & Bluetooth
+Display Reserved Memory : Advanced -> Advanced Menu -> Display Reserved Memory
 USB boot (persistent)    : Boot -> Boot Option Priorities
 USB boot (one-time)      : Save & Exit -> Boot Override
 Secure Boot              : Security -> Secure Boot
@@ -28,6 +29,22 @@ Detailed information about UEFI settings and configuration options can be found 
 Path: **Advanced → Advanced Menu → IO Port Access → Wireless LAN & Bluetooth**
 
 Toggling this setting disables/enables both WiFi and Bluetooth together. To disable only one individually, use the OS settings instead.
+
+### Change Display Reserved Memory
+
+DGX Spark reserves 2 GB of system memory for the display by default. If you use DGX Spark without a display (headless), you can make more memory available to applications.
+
+1. Run `free -h` and record the total memory.
+2. Restart DGX Spark.
+3. Immediately press and hold Esc or Del until the UEFI setup menu appears.
+4. Go to **Advanced → Advanced Menu → Display Reserved Memory**.
+5. Select one of these options:
+   - **Auto**: UEFI sizes the reservation from the displays that are connected at boot. A headless system reserves 0.5 GB.
+   - **0.5 GB, 1 GB, 2 GB, or 4 GB**: UEFI reserves the selected amount.
+6. Go to **Save & Exit** and select **Save Changes and Reset**.
+7. After DGX Spark restarts, run `free -h` again and compare the total memory with the value you recorded.
+
+For more information, see Display Reserved Memory in the DGX Spark UEFI Manual.
 
 ### Boot from a USB Device
 
@@ -76,7 +93,8 @@ Prerequisite: disable Secure Boot, or enroll the `grubnetaa64.efi.signed` bootlo
 
 - Always save UEFI configuration changes from the **Save & Exit** menu so the system restarts with the new settings applied.
 - The official page has a "UEFI Documentation" section pointing to the DGX Spark UEFI Manual (https://docs.nvidia.com/dgx/dgx-spark-uefi/) for detailed settings and options.
-- Release notes (July 2026): Display Reserved Memory can be toggled between 2GB (default) and 4GB through the system BIOS. Users in appliance mode do not need to change the default.
+- Release notes (July 2026): Display Reserved Memory can be toggled between 2GB (default) and 4GB through the system BIOS. Users in appliance mode do not need to change the default. The October 2026 Release notes add Dynamic Display Reserved Memory (a UEFI option that optimizes the carveout to match display usage; headless systems can drop to the minimum carveout of 512 MB), and the UEFI Settings page lists the Auto / 0.5 GB / 1 GB / 2 GB / 4 GB options above. The pages differ in the option range; both are kept as published.
+- Source: https://docs.nvidia.com/dgx/dgx-spark/uefi-settings.html (retrieved 2026-11-14)
 - Release notes (January 2026): Wi-Fi and Bluetooth can be disabled in UEFI for environments requiring additional security (covered by "Enable or Disable WiFi and Bluetooth" above).
 
 ## Related

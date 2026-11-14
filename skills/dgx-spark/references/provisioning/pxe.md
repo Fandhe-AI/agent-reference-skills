@@ -135,6 +135,8 @@ Before PXE boot, either disable Secure Boot in UEFI or enroll the `grubnetaa64.e
 
 - The PXE process requires manual configuration of TFTP, HTTP, and DHCP components; there is no automated setup path.
 - Secure Boot must be disabled or the GRUB certificate enrolled before PXE boot will succeed.
+- Recovery media for the PXE server: the official page downloads the recovery archive from `https://developer.nvidia.com/downloads/dgx-spark/dgx-spark-recovery-image-1.135.29.tar.gz` and renames it to `usb.customer.tar.gz` (the file name on the download page changes with each recovery image release; see [System Recovery](../system-update/system-recovery.md)).
+- Source: https://docs.nvidia.com/dgx/dgx-spark/pxe.html (retrieved 2026-11-14)
 
 ## Related
 

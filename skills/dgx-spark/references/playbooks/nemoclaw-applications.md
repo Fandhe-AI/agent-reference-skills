@@ -22,9 +22,10 @@ nemoclaw policy-add --from-file <policy.yaml>
 ## Notes
 
 - Requires a completed NemoClaw install with active OpenShell gateway and working sandbox
-- Filesystem mounts use `tar` streams over `nemoclaw exec`; hard read-only walls require `filesystem_policy` rebuild
+- Filesystem mounts use `tar` streams over `nemoclaw exec --stdin` (the flag forwards the archive from the host into the sandbox); hard read-only walls require `filesystem_policy` rebuild
 - Dev agent has no outbound network access beyond local inference
 - Cleanup via `nemoclaw policy-remove`
+- Source: https://github.com/NVIDIA/dgx-spark-playbooks/blob/3088315/nvidia/playbook-nemoclaw-applications/README.md (commit 3088315, 2026-10-23)
 
 ## Related
 

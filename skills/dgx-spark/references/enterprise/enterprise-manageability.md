@@ -5,7 +5,7 @@ Overview of fleet-scale operations for DGX Spark systems in enterprise IT enviro
 ## Key Sections
 
 - **Enterprise Lifecycle Integration** — fleet management tooling: asset identity clearing (7 tools), controlled software/firmware updates (1 tool), remote operations and remediation (2 tools), SSH execution patterns for management-platform integration.
-- **Custom Installation with Cloud-Init** — air-gapped/custom deployment patterns: BaseOS image customization, USB partitioning and OEMDATA layout, local APT repository hosting, Ubuntu Ports and LVFS mirroring, client configuration.
+- **Custom Installation with Cloud-Init** — air-gapped/custom deployment patterns with native cloud-init (October 2026 Release and later): OEMDATA volume layout and first-boot conditions, USB partitioning, local APT repository hosting, Ubuntu Ports and LVFS mirroring, client configuration (`hook.sh`).
 
 ## Notes
 

@@ -90,6 +90,10 @@ Reference implementations for Canonical Landscape "remote script execution" (req
 - No resident management agent is required on endpoints; existing platforms orchestrate SSH execution and ingest JSON results.
 - Treat stdout truncation as a correctness failure — keep output bounded and use artifacts with pointers for large evidence.
 
+- Cloud-init for DGX Spark (official section): cloud-init is an initialization framework that runs early in boot, normally once per instance, and applies configuration at first power-on (hostname and identity, administrator accounts and SSH keys, networking or Wi-Fi profiles, packages or update policies, corporate certificates or proxy settings, enrollment with enterprise management platforms). On DGX Spark it implements first-boot provisioning in the Initial Provisioning stage; procedures are in [Custom Installation with Cloud-Init](./enterprise-custom-install.md). General module reference: https://docs.cloud-init.io/en/latest/.
+- The official lifecycle page still describes first-boot automation as "cloud-init with repacked BaseOS media" and mentions "repack scripts", while the October 2026 revision of the custom-installation page uses native cloud-init with an OEMDATA volume and no longer mentions the repack scripts. Both are kept as published.
+- Source: https://docs.nvidia.com/dgx/dgx-spark/enterprise-fleet-lifecycle.html (retrieved 2026-11-14)
+
 ## Related
 
 - [Enterprise Manageability](./enterprise-manageability.md)

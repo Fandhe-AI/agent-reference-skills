@@ -14,6 +14,10 @@ DGX Spark incorporates NVIDIA Grace Blackwell architecture with an integrated GP
 | Connectivity | 4x USB Type-C, 1x HDMI 2.1a, HDMI multichannel audio |
 | Video Processing | 1x NVENC, 1x NVDEC |
 
+## Notes
+
+- The Hardware Overview page lists 128 GB of memory. The October 2026 Release notes state that the system software supports both 64 GB and 128 GB configurations, and several playbooks list "64GB or 128GB Unified Memory"; both statements are kept as published (see [Release Notes](../release-notes/release-notes.md)).
+
 ## Related
 
 - [Physical Specifications](./physical-specs.md)
