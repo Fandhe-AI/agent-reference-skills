@@ -2,7 +2,7 @@
 name: anthropic-models-sdks
 description: >
   Claude API (platform.claude.com) のモデル・SDK。
-  model ID・選択基準、Fable・Mythos 5.2 / Opus・Sonnet・Haiku 5.5 移行・破壊的変更、
+  model ID・選択基準、Fable・Mythos 5.2 / 5.1 / Opus・Sonnet・Haiku 5.5 移行・破壊的変更、
   コスト最適化 (effort / caching / batch / advisor)、pricing、deprecation、
   公式 SDK 7 言語 (Python / TypeScript / Java / Go / Ruby / C# / PHP)、
   Claude API 用 CLI `ant` (Claude Code CLI とは別。authentication, scripting, `ant apply`)、
