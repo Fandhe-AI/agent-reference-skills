@@ -3,8 +3,8 @@ name: android-data
 description: >
   Android アプリ開発 (Kotlin) のデータ層リファレンス。Jetpack androidx。
   Room / Room 3 (androidx.room3) (Entity, Dao, Query, Migration, prepopulate, createFromAsset),
-  DataStore (Preferences/Proto, Direct Boot), MediaStore, SharedPreferences,
-  スコープ付きストレージ, Retrofit, OkHttp。
+  DataStore 1.3 (Preferences/Proto, Direct Boot, DataStore.Builder, datastore-tink 暗号化, Web storage),
+  MediaStore, SharedPreferences, スコープ付きストレージ, Retrofit, OkHttp。
 user-invocable: false
 ---
 
@@ -12,6 +12,10 @@ user-invocable: false
 
 Android アプリ開発 (Kotlin) のデータ層公式ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+## 対象バージョン
+
+取得日 2026-11-14。Room 3 は stable 3.0.3 (3.1.0-alpha03 は Notes のみ)、DataStore は stable 1.3.0 (2026-10-21)。Cronet / Retrofit / OkHttp / files-storage は今回未再確認（据え置き）。
 
 ## ディレクトリ構成
 
@@ -49,6 +53,9 @@ skills/android-data/
       README.md
       datastore.md
       datastore-factory.md
+      datastore-builder.md
+      datastore-tink.md
+      web-storage.md
       preferences-datastore.md
       preferences.md
       preferences-keys.md
@@ -113,6 +120,7 @@ skills/android-data/
 | Room 2.x (androidx.room) から Room 3.0 (androidx.room3) へ移行したい | room | [references/room/README.md](references/room/README.md) |
 | アセット / ファイルの既存 DB で Room を初期データ投入（prepopulate）したい | room | [references/room/README.md](references/room/README.md) |
 | @Relation / @Fts4 / @DatabaseView で関連データや全文検索を扱いたい | room | [references/room/README.md](references/room/README.md) |
+| DataStore.Builder / datastore-tink (AeadSerializer 暗号化) / Web storage (1.3.0) を使いたい | datastore | [references/datastore/README.md](references/datastore/README.md) |
 | Preferences DataStore / Proto DataStore でキー値・型付きデータを永続化したい | datastore | [references/datastore/README.md](references/datastore/README.md) |
 | DataStore を Direct Boot（device protected storage）で使いたい | datastore | [references/datastore/README.md](references/datastore/README.md) |
 | SharedPreferences から DataStore へ移行したい | datastore | [references/datastore/README.md](references/datastore/README.md) |

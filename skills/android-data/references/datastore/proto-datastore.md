@@ -72,7 +72,8 @@ val Context.dataStore: DataStore<Settings> by dataStore(
 - Proto DataStore requires a `.proto` schema (Gradle `com.google.protobuf:protobuf-kotlin-lite`) with compile-time code generation. JSON DataStore instead uses a `@Serializable` data class with `kotlinx.serialization`, following the same `Serializer<T>` shape.
 - `dataStore(...)` follows the same single-call-site rule as `preferencesDataStore`: declare once at the top level, reuse the same instance.
 - `deviceProtectedDataStore(...)` creates the DataStore in device protected storage so it can be used during Direct Boot.
-- Encryption via `AeadSerializer` (`datastore-tink`) is planned for 1.3.0 (currently RC).
+- Encryption via `AeadSerializer` (`datastore-tink`) is available since 1.3.0 stable (2026-10-21); see [datastore-tink / AeadSerializer](./datastore-tink.md).
+- Source: https://developer.android.com/jetpack/androidx/releases/datastore (retrieved 2026-11-14)
 - Package: `androidx.datastore.core` (`Serializer`), `androidx.datastore` (`dataStore` delegate).
 
 ## Related
