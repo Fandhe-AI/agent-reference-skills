@@ -1,8 +1,10 @@
 # Zod Codec Example
 
-`@kubb/plugin-zod` の `inferred: 'codec'` とカスタム `printer.nodes`（`customCodecs`）で、`date` / `date-time` を `Date`、`int64` を `bigint`、`uri` を `URL` として扱う codec を生成し、`@kubb/plugin-fetch` の `validator` で params・body・response の全スロットに通す設定例。アプリ側はドメイン値、通信上は wire 値（文字列）のまま。
+Generates codecs with `@kubb/plugin-zod` (`inferred: 'codec'` and a custom `printer.nodes` / `customCodecs`) that treat `date` / `date-time` as `Date`, `int64` as `bigint`, and `uri` as `URL`, and runs them on every slot (params, body, response) through the `validator` of `@kubb/plugin-fetch`. The app works with domain values; the wire format stays strings.
 
-## kubb.config.ts
+## Signature / Usage
+
+### kubb.config.ts
 
 ```typescript
 import { adapterOas } from '@kubb/adapter-oas'
@@ -52,7 +54,7 @@ export default defineConfig({
 })
 ```
 
-## codecs.ts
+### codecs.ts
 
 ```typescript
 import type { PrinterZodNodes } from '@kubb/plugin-zod'
@@ -83,7 +85,7 @@ export const customCodecs: PrinterZodNodes = {
 }
 ```
 
-## 依存関係
+### Dependencies
 
 ```json
 {

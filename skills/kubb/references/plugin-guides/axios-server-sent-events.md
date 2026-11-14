@@ -419,6 +419,7 @@ import type { ServerSentEvent } from './gen/.kubb/client'
 - Migration (5.x → 6.0): an operation whose only success content type is JSON Lines now returns a `StreamResult` with one parsed item per line (it used to return the whole body as one string); a stream response that declares headers returns `StreamResultWithHeaders`, or `UnwrappedStreamResultWithHeaders` with `returnType: 'data'`; a stream call sends `Accept: text/event-stream` (or the JSON Lines media type); an aborted call or stream rejects with the signal's reason (migrate-to-v6)
 - Migration (5.12 → 5.13): a successful stream call with a body that is not a stream, such as a JSON body, throws a `TypeError` with the body as its `cause`, and an event the server ends without a blank line is dropped, as browser `EventSource` does, so end every event with a blank line (migrate-to-v6, "From 5.12 or earlier")
 - Source: https://kubb.dev/extensions/kubb-labs/plugin-axios/guides/server-sent-events （`@kubb/plugin-axios@6.0.1`、取得日 2026-11-14）
+- The official reconnect example assigns `lastEventId = result.lastEventId || lastEventId` while the same page says an empty `id:` field clears the last event ID; the example is kept verbatim, so assign `result.lastEventId` directly if you need an empty `id:` to reset the resume position (upstream inconsistency)
 
 ## Related
 

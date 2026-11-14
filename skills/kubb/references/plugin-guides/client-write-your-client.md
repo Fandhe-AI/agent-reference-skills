@@ -38,7 +38,7 @@ fetch / axios クライアントの runtime を、自前のリクエストパイ
 | `NativeResponse` | The response object on a result and a `ResponseError`.  | `Response`    | `AxiosResponse`      |
 | `NativeOptions`  | The `options` a call passes to your HTTP library as is. | `RequestInit` | `AxiosRequestConfig` |
 
-[`@kubb/plugin-fetch/templates/client.ts`](https://github.com/kubb-labs/plugins/blob/main/packages/plugin-fetch/templates/client.ts) が完全な例。
+[`@kubb/plugin-fetch/templates/client.ts`](https://github.com/kubb-labs/plugins/blob/%40kubb%2Fplugin-fetch%406.0.1/packages/plugin-fetch/templates/client.ts) が完全な例（公式は `blob/main` を指す。ここでは `@kubb/plugin-fetch@6.0.1` タグに固定）。
 
 ### What a generated function looks like
 

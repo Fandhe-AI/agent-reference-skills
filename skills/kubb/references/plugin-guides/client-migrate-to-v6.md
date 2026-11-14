@@ -1,34 +1,47 @@
 # plugin-client: Migrate to v6
 
-`@kubb/plugin-client` 6 は自前の client を型引数付きで呼び、stream は `client.stream` で送る。モジュールの `client` export を更新してから再生成する。自分のコードを下の表で探し、該当セクションに従う。
+`@kubb/plugin-client` 6 calls your client with type arguments and streams through `client.stream`. Update the `client` export of your module, then regenerate. Find your code in the table, then follow its section.
 
 ## Signature / Usage
 
+### What to change
+
+| Your code                                                                       | What to do                                                                                                                                                                   |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Exports a `client` that takes no type arguments                                 | Make it generic. See [A generic client call](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#a-generic-client-call).                                |
+| Exports `toEventStream` or `EventStreamResult`                                  | Add a `stream` method to `client`. See [A stream method](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#a-stream-method-instead-of-toeventstream). |
+| Declares `responseType` on `RequestConfig`, or lacks `contentType` or `cookies` | Add the new fields. See [New fields on the request config](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#new-fields-on-the-request-config).       |
+| Reads `security` entries as single schemes                                      | Handle arrays and the new fields. See [Security requirements](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#security-requirements).               |
+| Imports a `…Status2XX` type, or writes a `'2XX'` key                            | Write the range in lower case. See [Status ranges](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#status-ranges).                                  |
+| Groups by tag in an OpenAPI 3.2 document whose tags set `parent`                | Update the import paths. See [Tag folders](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#tag-folders).                                            |
+| Has `servers` on a path or operation, or reads XML, YAML, CSV, or binary bodies | Check [Behavior changes](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#behavior-changes). It compiles.                                            |
+| Wants `.unwrap()` or a call that resolves to the body                           | Set `returnType`. See [Return type](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#return-type). This is optional.                                 |
+
 ### Upgrade steps
 
-1. `kubb` と `@kubb/plugin-client` を一緒にアップグレードする。v6 は Kubb 5.18.4 以降が必要:
+1. Upgrade `kubb` and `@kubb/plugin-client` together. v6 needs Kubb 5.18.4 or later:
 
-```bash
-npm install --save-dev kubb@latest @kubb/plugin-client@6
-```
+   ```bash
+   npm install --save-dev kubb@latest @kubb/plugin-client@6
+   ```
 
-2. 下のセクションに沿って client モジュールを更新する。
+2. Update your client module with the sections below.
 
-3. operation ファイルを再生成する:
+3. Regenerate the operation files:
 
-```bash
-npx kubb generate
-```
+   ```bash
+   npx kubb generate
+   ```
 
-4. 型チェックを実行する。client モジュールの export やフィールドの不足は、生成ファイルのコンパイルエラーとして現れる:
+4. Run the type checker. A missing export or field in your client module shows up as a compile error in the generated files:
 
-```bash
-npx tsc --noEmit
-```
+   ```bash
+   npx tsc --noEmit
+   ```
 
 ### A generic client call
 
-生成関数は `client<TResponses, ThrowOnError>(config)` を呼ぶようになった。`client` をジェネリックにする:
+A generated function now calls `client<TResponses, ThrowOnError>(config)`. Make `client` generic:
 
 ```typescript
 export const client = <TResponses, ThrowOnError extends boolean = true>(config: RequestConfig) =>
@@ -37,7 +50,7 @@ export const client = <TResponses, ThrowOnError extends boolean = true>(config: 
 
 ### A stream method instead of toEventStream
 
-Server-Sent Events または JSON Lines の operation は `client.stream<TResponses, ThrowOnError, TItem>(config)` を呼ぶ。`toEventStream` と `EventStreamResult` を削除し、`client` に `stream` を追加し、`StreamResult` / `SuccessOf` / `TypedEvent` / `ServerSentEvent` を export する:
+A Server-Sent Events or JSON Lines operation calls `client.stream<TResponses, ThrowOnError, TItem>(config)`. Remove `toEventStream` and `EventStreamResult`, add `stream` to `client`, and export `StreamResult`, `SuccessOf`, `TypedEvent`, and `ServerSentEvent`:
 
 ```typescript
 export type StreamResult<TResponses, ThrowOnError extends boolean = true, TEvent = ServerSentEvent<SuccessOf<TResponses>>> = {
@@ -56,11 +69,11 @@ client.stream = async <TResponses, ThrowOnError extends boolean = true, TEvent =
 }
 ```
 
-Server-Sent Events の呼び出しは `eventShape: 'event'` または `'data'` も渡す。`application/jsonl` / `application/x-ndjson` のような JSON Lines の呼び出しは media type を `contentType.response` に渡し、1 行 1 パース済み item を期待する。client-write-your-client ページも参照。
+A Server-Sent Events call also passes `eventShape: 'event'` or `'data'`. A JSON Lines call, such as `application/jsonl` or `application/x-ndjson`, passes the media type in `contentType.response` and expects one parsed item per line. See [Write your client](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/write-your-client).
 
 ### New fields on the request config
 
-`RequestConfig` に次のフィールドを追加する。さもないと生成関数がコンパイルに失敗する:
+Add these fields to your `RequestConfig`, or the generated functions fail to compile:
 
 ```typescript
 export type RequestConfig = {
@@ -76,13 +89,13 @@ export type RequestConfig = {
 }
 ```
 
-OpenAPI 3.2 の `cookie` style を持つ cookie パラメーターは `styles` に `style: 'cookie'` を渡す。値は percent-encoding なしで送る。
+A cookie parameter with the OpenAPI 3.2 `cookie` style passes `style: 'cookie'` in `styles`. Send its values without percent-encoding. See [Serialize parameters](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/write-your-client#serialize-parameters).
 
 ### Security requirements
 
-1 つの requirement が API キーとセッション cookie のように複数 scheme を同時に要求する場合、`security` エントリーは配列になる。全てを送るか、そのエントリーをスキップする。
+A `security` entry is an array when one requirement needs several schemes together, such as an API key and a session cookie. Send all of them, or skip the entry.
 
-`oauth2` scheme は `flows` と `metadataUrl` も渡し、`openIdConnect` scheme は `url` を渡す。auth の型で受け取る:
+An `oauth2` scheme now also passes `flows` and `metadataUrl`, and an `openIdConnect` scheme passes `url`. Accept them on your auth type:
 
 ```typescript
 export type Auth = {
@@ -99,7 +112,7 @@ export type Auth = {
 
 ### Status ranges
 
-status range は生成される名前とキーで小文字になる。import と、手書きの responses record や `validator.error` マップの range キーをリネームする。`'2XX'` のような大文字キーは読まれなくなる:
+A status range is written in lower case in generated names and keys. Rename the imports, and the range keys in a responses record or `validator.error` map you wrote by hand. An upper-case key such as `'2XX'` is no longer read:
 
 ```diff
 - import type { ListPetsStatus4XX } from './gen/types/ListPets'
@@ -108,7 +121,7 @@ status range は生成される名前とキーで小文字になる。import と
 
 ### Tag folders
 
-`group: { type: 'tag' }` では、OpenAPI 3.2 の `parent` が `store` のタグは `payment/` ではなく `store/payment/` に書き込まれる。`importPath` は与えたとおり全ファイルに書き込まれるため、`store/` と `store/payment/` のように深さの違うファイルを 1 つの相対パスでは賄えない。タグごとに 1 フォルダーを保つよう `group.name` を渡すか、全フォルダーから解決できるパッケージ名やエイリアスを `importPath` に設定する:
+With `group: { type: 'tag' }`, a tag whose OpenAPI 3.2 `parent` is `store` now writes to `store/payment/` instead of `payment/`. `importPath` is written into every file as given, so one relative path cannot serve files at two depths, such as `store/` and `store/payment/`. Pass `group.name` to keep one folder per tag, or set `importPath` to a package name or alias that resolves from every folder:
 
 ```typescript
 pluginClient({ importPath: '../../../client', group: { type: 'tag', name: ({ group }) => group } })
@@ -116,37 +129,22 @@ pluginClient({ importPath: '../../../client', group: { type: 'tag', name: ({ gro
 
 ### Behavior changes
 
-これらはエラーなしでコンパイルされるため、手で確認する:
+These compile without errors, so check them by hand:
 
-- path または operation が独自の `servers` を持つ場合、その server が呼び出しの `baseURL` として渡される。client は `config.baseURL` が設定されていればそれを使う必要がある
-- `2xx` レスポンスキーは成功で、`200` のような正確なコードは、それより前に列挙された range に優先する
-- XML / YAML / CSV レスポンスは `string` 型。画像・音声・動画・PDF・`application/octet-stream` レスポンスは `Blob` 型。成功 content type が全てバイナリなら、呼び出しは `parseAs: 'blob'` を渡す
-- 成功 content type が JSON Lines のみの operation は、本文全体の 1 文字列ではなく `StreamResult` を返す
+- A path or operation with its own `servers` passes that server as `baseURL` on the call. Your client must use `config.baseURL` when it is set.
+- A `2xx` response key is a success, and an exact code such as `200` wins over a range listed before it.
+- An XML, YAML, or CSV response is typed `string`. An image, audio, video, PDF, or `application/octet-stream` response is typed `Blob`. When every success content type is binary, the call passes `parseAs: 'blob'`.
+- An operation whose only success content type is JSON Lines returns a `StreamResult`, not the whole body as one string.
 
 ### Return type
 
-`returnType` は新しく、既定は `'plain'` なので既存コードはそのまま動く。`'full'` では生成された呼び出しが結果を `withUnwrap` で包むので、モジュールは `withUnwrap` / `resolveThrowOnError` と `Unwrappable` 型も export する必要がある。`'data'` では `throwOnError` が `true` のとき呼び出しは本文へ resolve し、`false` のときは完全な result へ resolve する。このときモジュールは `unwrapResult` / `resolveThrowOnError` / `UnwrappedResult` 型を export する必要がある。stream operation は、`'full'` では `StreamResult` と共に、`'data'` では `UnwrappedStreamResult` と共に `StreamOptions` も import する。どちらのモードも `data` と `error` を持つ `StreamResult` が必要で（`@kubb/plugin-client/templates/core.ts` のもののように）、上の最小の型では足りない。これらは全て `@kubb/plugin-client/templates/core.ts` が export する。
-
-## Options / Props
-
-### What to change
-
-| Your code                                                                       | What to do                                                                                                                                                                   |
-| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Exports a `client` that takes no type arguments                                 | Make it generic. See [A generic client call](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#a-generic-client-call).                                |
-| Exports `toEventStream` or `EventStreamResult`                                  | Add a `stream` method to `client`. See [A stream method](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#a-stream-method-instead-of-toeventstream). |
-| Declares `responseType` on `RequestConfig`, or lacks `contentType` or `cookies` | Add the new fields. See [New fields on the request config](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#new-fields-on-the-request-config).       |
-| Reads `security` entries as single schemes                                      | Handle arrays and the new fields. See [Security requirements](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#security-requirements).               |
-| Imports a `…Status2XX` type, or writes a `'2XX'` key                            | Write the range in lower case. See [Status ranges](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#status-ranges).                                  |
-| Groups by tag in an OpenAPI 3.2 document whose tags set `parent`                | Update the import paths. See [Tag folders](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#tag-folders).                                            |
-| Has `servers` on a path or operation, or reads XML, YAML, CSV, or binary bodies | Check [Behavior changes](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#behavior-changes). It compiles.                                            |
-| Wants `.unwrap()` or a call that resolves to the body                           | Set `returnType`. See [Return type](https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6#return-type). This is optional.                                 |
+`returnType` is new and defaults to `'plain'`, so existing code keeps working. With `'full'`, generated calls wrap the result in `withUnwrap`, so your module must also export `withUnwrap`, `resolveThrowOnError`, and the `Unwrappable` type. With `'data'`, calls resolve to the body when `throwOnError` is `true`, and to the full result when it is `false`. Your module must then export `unwrapResult`, `resolveThrowOnError`, and the `UnwrappedResult` type. A stream operation also imports `StreamOptions` with `StreamResult` for `'full'`, or with `UnwrappedStreamResult` for `'data'`. Both modes need a `StreamResult` with `data` and `error`, as the one in `@kubb/plugin-client/templates/core.ts` has, so the minimal type above is not enough. `@kubb/plugin-client/templates/core.ts` exports all of these. See [returnType](https://kubb.dev/extensions/kubb-labs/plugin-client/options#returntype).
 
 ## Notes
 
-- 対象は `kubb` 5.18.4 以降。`@kubb/plugin-fetch` / `@kubb/plugin-axios` の移行は各ページを参照
+- Requires `kubb` 5.18.4 or later (stated in the official upgrade steps).
 - Migration (5.x → 6.0): a generated function now calls `client<TResponses, ThrowOnError>(config)` (make `client` generic) and streams through `client.stream`; `toEventStream` and `EventStreamResult` are removed; `RequestConfig` gains `contentType`, `parseAs` (replacing `responseType`), `eventShape`, `cookies`, and `styles`; a `security` entry may be an array of schemes and `oauth2` / `openIdConnect` entries carry `flows` / `metadataUrl` / `url`; status ranges are written in lower case (`ListPetsStatus4xx`); with `group: { type: 'tag' }` a tag whose `parent` is `store` writes to `store/payment/`; `returnType` is new and defaults to `'plain'` (6.0.0 CHANGELOG and migrate-to-v6)
-- Source: https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6 （`@kubb/plugin-client@6.0.1`、取得日 2026-11-14）
+- Source: https://kubb.dev/extensions/kubb-labs/plugin-client/guides/migrate-to-v6 (`@kubb/plugin-client@6.0.1`, retrieved 2026-11-14)
 
 ## Related
 
