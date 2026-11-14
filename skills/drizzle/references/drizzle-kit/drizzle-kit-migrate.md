@@ -42,6 +42,11 @@ It reads `.sql` migration files in the migrations folder, fetches applied-migrat
 
 - Migration (v0 → v1): the migrations log table gained two new columns — `name` (full migration folder name, e.g. `20250220153045_brave_wolverine`) and `applied_at` (timestamp; pre-existing rows backfilled with `NULL`). Migrations are now matched by full folder name instead of timestamp, and the migrator applies **every** missing migration regardless of timestamp ordering (previously only migrations newer than the last applied one were considered). Running `drizzle-kit up` performs the table upgrade/backfill.
 
+### rc.5 changes
+
+- Migration (rc.4 → rc.5): the `postgresql` dialect rejects `--ignore-conflicts` in `migrate` as well as `generate` and `check`; `drizzle-kit generate --fix-conflicts` replaces it.
+- Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
+
 ## Related
 
 - [drizzle-kit-generate](./drizzle-kit-generate.md)

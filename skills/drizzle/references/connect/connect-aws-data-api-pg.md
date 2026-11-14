@@ -54,6 +54,11 @@ await db.select().from(/* ... */);
 
 - Transcribed from `pg/connect-aws-data-api-pg.mdx`.
 
+### rc.5 changes
+
+- Migration (rc.4 → rc.5): array params are sent as `pg` array literals, object params as JSON with a `JSON` type hint, multidimensional array results are no longer returned as raw `ArrayValue` objects, `char(n)` params are no longer truncated by the `::char` cast, `inet` values no longer gain a full-width netmask, and `time({ withTimezone: true })` values keep their offset.
+- Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
+
 ## Related
 
 - [PostgreSQL](./get-started-postgresql.md)

@@ -84,6 +84,16 @@ const db = drizzle(process.env.DB_URL!, { cache: new TestGlobalCache() });
 - Temporary limitations (may be lifted): Relational Queries (`db.query.*.findMany()`), AWS Data API drivers, and views are not cached
 - Transcribed from `pg/cache.mdx` (pg is the canonical dialect)
 
+### rc.5 changes
+
+- Migration (rc.4 → rc.5): relational queries (`db.query`) are now cached by caches with the `all` strategy (`global: true`); opt out per query with `withCache: false`, or opt in explicitly with `withCache: true`. Cached query invalidation was fixed for tables in nested SQL and subqueries, aliased and `tableCreator`-prefixed tables, tables defined on schemas and tables used in filters, selected fields, order clauses, set operators and CTEs; `getCacheKey(table)` returns the name the cache tracks a table by. A local `sha256` fallback is used for query hashing where `globalThis.crypto` is unavailable.
+
+```ts
+db.query.users.findMany({ with: { posts: true }, withCache: true })
+```
+
+- Source: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1rc5 (docs repo commit 55f7f9e, retrieved 2026-11-14)
+
 ## Related
 
 - [Transactions](./transactions.md)
