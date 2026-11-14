@@ -36,7 +36,7 @@ Roll back with `wrangler rollback` (flags: see the commands reference). Dashboar
 - Rollbacks: creates a new deployment with the chosen version at 100% for your Worker's routes and domains; works from single-version or split deployments (the other version is removed from the deployment, and version overrides naming the removed version are ignored). The change takes time to reach every location, and pages loaded before the rollback can still request the newer version's assets; check whether the older version includes those files (see `versions-version-skew.md`). Only the 100 most recently published versions; with Wrangler you can also pass the version ID directly.
 - Rollback restrictions: resources connected via bindings are not changed. Rollback is not allowed if a Durable Object class lifecycle change occurred between the active and target versions, or if the target binds to an R2 bucket, KV namespace, or queue that no longer exists. Data structure changes can cause errors in prior code.
 - `wrangler versions` / `deployments` / `rollback` flags: see [workers-versions.md](../commands/workers-versions.md).
-- Source: https://developers.cloudflare.com/workers/versions-and-deployments/ , /deployment-management/ and /rollbacks/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
+- Source: https://developers.cloudflare.com/workers/versions-and-deployments/ , https://developers.cloudflare.com/workers/versions-and-deployments/deployment-management/ and https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
 
 ## Related
 
