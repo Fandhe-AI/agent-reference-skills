@@ -23,6 +23,8 @@ description: DESCRIPTION
 
 Example constraint:
 
+Adapted (not in the official docs): `description` is written as an indented folded block (`>`); the official sample's continuation line is unindented, which is invalid YAML.
+
 ```yaml
 name: organizations/1234567890123/customConstraints/custom.disableGkeAutoUpgrade
 resourceTypes: container.googleapis.com/NodePool
@@ -36,8 +38,6 @@ description: >
   Only allow GKE NodePool resource to be created or updated if
   AutoUpgrade is not enabled where this custom constraint is enforced.
 ```
-
-Adapted (not in the official docs): `description` is written as an indented folded block (`>`); the official sample's continuation line is unindented, which is invalid YAML.
 
 Set up, verify, update, delete:
 
@@ -141,6 +141,8 @@ resource.nestedValue.nestedStringValue == "foo"
 
 List:
 
+Adapted (not in the official docs): the `all` example uses `value == "foo"`; the official sample uses `value.contains("foo")`, which is a substring match and does not match its "exactly foo" comment.
+
 ```text
 resource.listValue.size() >= 1 && resource.listValue[0] == "bar"
 // listValue has size greater than or equal to one, and the first element is "bar".
@@ -148,7 +150,7 @@ resource.listValue.size() >= 1 && resource.listValue[0] == "bar"
 resource.listValue.exists(value, value == "foo")
 // listValue has at least one element that is exactly "foo".
 
-resource.listValue.all(value, value.contains("foo"))
+resource.listValue.all(value, value == "foo")
 // listValue is a list of values that are all exactly "foo".
 ```
 
@@ -193,7 +195,7 @@ Constraint fields and limits:
 | `displayName` | Up to 200 characters; may appear in error messages, so no PII |
 | `description` | Up to 2000 characters; used as the violation error message, so say how to resolve; no PII |
 
-Required roles on the organization: `roles/orgpolicy.policyAdmin`; to enable APIs, `roles/serviceusage.serviceUsageConsumer`.
+Required roles on the organization: `roles/orgpolicy.policyAdmin`; to enable APIs, a role that includes `serviceusage.services.enable` on the project, such as `roles/serviceusage.serviceUsageAdmin` (the official page names `roles/serviceusage.serviceUsageConsumer`, which does not include that permission).
 
 ## Notes
 
@@ -204,6 +206,7 @@ Required roles on the organization: `roles/orgpolicy.policyAdmin`; to enable API
 - Cross-service effect: an error message for a custom policy violation can surface in a different service (for example a Dataproc action blocked by a Compute Engine custom constraint).
 - Tags on organization, folder, or project resources are supported by custom constraints (per-service support varies). Mandatory tags can be enforced with a custom constraint (Preview).
 - Test with Policy Simulator and dry-run (30-day look-ahead of violations) before enforcing. Sample constraints: custom organization policy library on GitHub (GoogleCloudPlatform/professional-services).
+- Adapted from the official docs: the example constraint's `description` is an indented folded block (valid YAML); the list `all` example uses `value == "foo"` (exact match) instead of `contains`; and the API-enabling role note points to a role containing `serviceusage.services.enable` (`roles/serviceusage.serviceUsageAdmin`) instead of `serviceUsageConsumer`.
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/creating-managing-custom-constraints
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.
 

@@ -45,17 +45,18 @@ spec:
   rules:
   - values:
       deniedValues:
-      - in:us-west1
+      - in:us-west1-locations
 ```
 
 Legacy Resource Manager v1 API call:
 
+Adapted (not in the official docs): the request body is valid JSON (quoted keys, no line-continuation backslashes inside the body), the `in:` value in the inheritance example above is the value group `in:us-west1-locations`, and the token is expanded quoted.
+
 ```bash
-curl -X POST -H "Content-Type: application/json" -H "Authorization: \
-Bearer ${bearer_token}" -d '{policy: {etag: "BwVtXec438Y=", constraint: \
-"constraints/gcp.resourceLocations", list_policy: {denied_values: \
-["in:europe-locations", "in:southamerica-locations"] }}}' \
-https://cloudresourcemanager.googleapis.com/v1/organizations/123456789:setOrgPolicy
+curl -X POST -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${bearer_token}" \
+  -d '{"policy": {"etag": "BwVtXec438Y=", "constraint": "constraints/gcp.resourceLocations", "list_policy": {"denied_values": ["in:europe-locations", "in:southamerica-locations"]}}}' \
+  https://cloudresourcemanager.googleapis.com/v1/organizations/123456789:setOrgPolicy
 ```
 
 ### Allow or deny VMs in AI zones (custom constraint)

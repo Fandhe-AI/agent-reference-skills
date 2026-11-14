@@ -209,16 +209,19 @@ gcloud logging read 'protoPayload.metadata.dryRunResult = "DENIED" AND protoPayl
 
 ### Aggregate logs into BigQuery
 
+Adapted (not in the official docs): the filter uses `log_id("cloudaudit.googleapis.com/policy")` so policy audit logs from all child projects are aggregated (the official filter matches one `PROJECT_ID` log name only), and `sinks describe` uses `--organization` to look up the organization sink.
+
 ```none
 gcloud logging sinks create SINK_NAME \
   bigquery.googleapis.com/projects/PROJECT_ID/datasets/DATASET_ID \
   --include-children \
   --organization=ORGANIZATION_ID \
-  --log-filter='logName="projects/PROJECT_ID/logs/cloudaudit.googleapis.com%2Fpolicy" AND protoPayload.metadata.@type:OrgPolicyDryRunAuditMetadata'
+  --log-filter='log_id("cloudaudit.googleapis.com/policy") AND protoPayload.metadata.@type:OrgPolicyDryRunAuditMetadata'
 ```
 
 ```none
-gcloud logging sinks describe SINK_NAME
+gcloud logging sinks describe SINK_NAME \
+  --organization=ORGANIZATION_ID
 ```
 
 If the output has a `writerIdentity` (for example `serviceAccount:service-123456789012@gcp-sa-logging.iam.gserviceaccount.com`), grant it write access:
@@ -271,6 +274,7 @@ Required roles on the organization: `roles/orgpolicy.policyAdmin`; for aggregate
 | Project Y | None | `enforced: false` | `enforced: true` | `enforced: true` |
 
 - Adapted from the official docs: the `gcloud logging read` filter is quoted as a single argument (the official sample is unquoted), and the live + dry-run example uses `enforce` / `parameters.allowedSchemes` for the managed constraint.
+- Adapted from the official docs: the aggregated sink filter uses `log_id("cloudaudit.googleapis.com/policy")` (organization-wide) and `sinks describe` passes `--organization=ORGANIZATION_ID`.
 - Dry-run changes still affect audit-log volume; the aggregated sink grants `roles/bigquery.dataEditor` to the sink writer identity, so scope it to the destination project only.
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/dry-run-policy
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.

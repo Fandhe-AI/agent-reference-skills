@@ -113,6 +113,7 @@ Rules:
 - Violations: new policies are usually not retroactive. A pre-existing violating state is considered in violation but the service does not stop; fix manually. Retroactive constraints are labeled as such in the constraints list.
 - Policy Intelligence tools: test changes (Policy Simulator, Preview), dry-run policies, analyze existing policies. Testing and dry-running all changes is recommended.
 - Common use cases: limit resource sharing by domain, limit IAM service accounts, restrict resource locations.
+- Adapted from the official docs: the `allowedDomains` values (`"@example.com"`, `"@altostrat.com"`) are quoted because a YAML plain scalar cannot start with `@`.
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/overview
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/understanding-hierarchy
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.

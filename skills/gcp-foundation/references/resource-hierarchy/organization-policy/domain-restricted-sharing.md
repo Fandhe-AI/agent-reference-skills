@@ -74,7 +74,8 @@ Restrict grants to your organization (`memberInPrincipalSet`):
 
 ```yaml
 name: organizations/ORG_ID/customConstraints/custom.allowInternalIdentitiesOnly
-resourceTypes: iam.googleapis.com/AllowPolicy
+resourceTypes:
+- iam.googleapis.com/AllowPolicy
 methodTypes:
   - CREATE
   - UPDATE
@@ -93,7 +94,8 @@ Refine with `memberInPrincipalSet`, `memberTypeMatches`, `memberSubjectMatches` 
 
 ```yaml
 name: organizations/ORG_ID/customConstraints/custom.allowInternalIdentitiesOnly
-resourceTypes: iam.googleapis.com/AllowPolicy
+resourceTypes:
+- iam.googleapis.com/AllowPolicy
 methodTypes:
   - CREATE
   - UPDATE
@@ -202,7 +204,8 @@ gcloud resource-manager tags values create True \
 
 ```yaml
 name: organizations/ORGANIZATION_ID/customConstraints/custom.allowInternalAndSpecialIdentitiesOnly
-resourceTypes: iam.googleapis.com/AllowPolicy
+resourceTypes:
+- iam.googleapis.com/AllowPolicy
 methodTypes:
   - CREATE
   - UPDATE

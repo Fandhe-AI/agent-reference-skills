@@ -91,12 +91,14 @@ google.subject=assertion.sub
 google.subject=assertion.sub.extract('/eid1/c/pub/t/{sub_claim}')
 ```
 
-Inspect Azure token claims from a VM with a managed identity, then paste into `https://jwt.ms/`:
+Inspect Azure token claims from a VM with a managed identity:
+
+Adapted (not in the official docs): the official sample prints the raw access token (and pastes it into `https://jwt.ms/`); this version decodes the JWT payload locally and prints only selected claims, so the token itself is never written to logs or pasted into an external site.
 
 ```bash
-curl \
+curl -s \
   "http://169.254.169.254/metadata/identity/oauth2/token?resource=APP_ID_URI&api-version=2018-02-01" \
-  -H "Metadata: true" | jq -r .access_token
+  -H "Metadata: true" | jq -r '.access_token | split(".")[1] | gsub("-";"+") | gsub("_";"/") | @base64d | fromjson | {iss, aud, sub, oid, tid}'
 ```
 
 ### Kubernetes (AKS / EKS / self-managed)
@@ -183,6 +185,8 @@ kubectl create configmap CONFIGMAP_NAME \
   --namespace NAMESPACE
 ```
 
+Adapted (not in the official docs): the Pod command quotes `"${GOOGLE_APPLICATION_CREDENTIALS}"`.
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -219,6 +223,8 @@ spec:
       name: CONFIGMAP_NAME
 ```
 
+Adapted (not in the official docs): `gcloud auth list` replaces `gcloud auth print-access-token` so the access token is not printed.
+
 ```bash
 kubectl exec example --namespace NAMESPACE -- gcloud auth list
 ```
@@ -245,6 +251,7 @@ kubectl exec example --namespace NAMESPACE -- gcloud auth list
 - The self-managed Kubernetes provider command does not validate the uploaded JWKS; a malformed or stale JWKS yields `Error connecting to the given credential's issuer`. Refresh the JWKS when cluster keys rotate.
 - Direct resource access is recommended; fall back to service account impersonation where an API has federation limitations. Use the project number, not the project ID, in principal identifiers. Grant least-privilege roles.
 - Warning: `--condition=None` on `add-iam-policy-binding` is required by the official command when the policy already has conditional bindings; it grants an unconditional binding on the project.
+- Adapted from the official docs: the Azure managed-identity token check decodes the JWT claims locally instead of printing and pasting the raw access token.
 - Adapted from the official docs: the Pod command quotes `${GOOGLE_APPLICATION_CREDENTIALS}`, and the verification step uses `gcloud auth list` instead of `gcloud auth print-access-token` so the access token is not printed to logs.
 - Client library minimum versions and `GOOGLE_APPLICATION_CREDENTIALS` / `gcloud auth login --cred-file` usage are the same as in the OIDC and SAML page.
 - Source: https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds
