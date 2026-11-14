@@ -69,6 +69,8 @@ init(navigationBarClass: AnyClass?, toolbarClass: AnyClass?)
 - `UINavigationItem.navigationBarMinimization: UIBarMinimization` is available in iOS 27.0+.
 - `UINavigationItem.verticalBarCompressionBehavior: UIVerticalBarCompressionBehavior` (iOS 27.1+, default `.automatic`) controls which items compress first when the tab bar and navigation/toolbar items are rendered together in the vertical bar.
 - Source: https://developer.apple.com/documentation/uikit/uinavigationitem
+- `barContainerBehavior: UIBarContainerBehavior` (iOS 27.3+ beta, also iPadOS / Mac Catalyst / tvOS / visionOS 27.3 beta; default `.automatic`) controls whether the navigation controller renders its own bar. `.automatic`: the system decides whether it renders the bar or integrates its bar content into a single bar of a parent container such as a split view controller. `.local`: it reads the bar content of its child view controllers and always renders a distinct local bar. Apple's example: when a split view column holds a view controller with several child `UINavigationController`s, set `.local` on each child so each renders its own toolbar. Beta API; may change before release.
+- Source: https://developer.apple.com/documentation/uikit/uinavigationcontroller/barcontainerbehavior and https://developer.apple.com/documentation/uikit/uibarcontainerbehavior (DocC JSON fetched 2026-11-14)
 
 ## Related
 
