@@ -127,7 +127,7 @@ A `destroy()` you call from a hook keeps the reason of the user action that star
 
 To load something before the next step, take over the Next button with `onNextClick` and call `moveNext()` when you're ready. `updatePopover()` shows that it's loading in the meantime. `onNextClick` replaces the button's default action, so the tour only moves when you call `moveNext()`. `onPrevClick` works the same way for going back.
 
-Adapted (not in the official docs): wraps `loadReport()` in `try`/`catch` and restores the Next button on failure, so a rejected load does not leave the tour stuck.
+Adapted (not in the official docs): wraps `loadReport()` in `try`/`catch` and restores the Next button on failure, and ignores the result when the tour was closed or moved on while `loadReport()` was pending (`getActiveIndex()` no longer matches).
 
 ```js
 const driverObj = driver({
@@ -142,14 +142,22 @@ const driverObj = driver({
             nextBtnText: "Loading…",
             disableButtons: ["next"],
           });
+          const stepIndex = driverObj.getActiveIndex();
           try {
             await loadReport();
           } catch (error) {
+            // Ignore a result that arrives after the tour was closed or moved on.
+            if (driverObj.getActiveIndex() !== stepIndex) {
+              return;
+            }
             // Restore the button so the user can retry or close the tour.
             driverObj.updatePopover({
               nextBtnText: "Next",
               disableButtons: [],
             });
+            return;
+          }
+          if (driverObj.getActiveIndex() !== stepIndex) {
             return;
           }
           driverObj.moveNext();

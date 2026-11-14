@@ -278,6 +278,8 @@ Your own highlight: a dashed ring that glides between elements, with a sticky no
 
 `spotlight.js`:
 
+Adapted (not in the official docs): adds `onElementReplaced: () => place()` so the ring and note are placed again when the app re-renders the highlighted element.
+
 ```js
 import { driver } from "driver.js/headless";
 
@@ -313,6 +315,7 @@ export function startSpotlightTour() {
       back.hidden = opts.driver.isFirstStep();
       next.textContent = opts.driver.isLastStep() ? "Done" : "Next";
     },
+    onElementReplaced: () => place(),
     onDestroyed: () => {
       listeners.abort();
       ring.remove();
@@ -422,6 +425,7 @@ export function startSpotlightTour() {
 }
 ```
 
+- Adapted: the Hand-Drawn Spotlight example also calls `place()` from `onElementReplaced` (1.13.0), which the official example does not, so the ring follows a re-rendered element before the next scroll or resize.
 - `getBoundingClientRect()` on `tour.getActiveElement()` places the ring, so it stays on the element even after a re-render. A CSS transition on `translate`, `width` and `height` makes it glide.
 - The note's buttons are built once and only their text changes, so keyboard focus stays on Next between steps.
 - The headless build doesn't scroll or listen to keys, so the code does both: `scrollIntoView()`, then the arrow keys and Escape, skipped while the user types in a field.
