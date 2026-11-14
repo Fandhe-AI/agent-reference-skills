@@ -43,6 +43,16 @@ val dataStore = dataStore(
 )
 ```
 
+Adapted (not in the official docs): `dataStore(...)` returns a `ReadOnlyProperty<Context, DataStore<T>>`, not a `DataStore<T>`, so declare it as a top-level property delegate and read the instance through a `Context`.
+
+```kotlin
+val Context.settingsDataStore: DataStore<Settings> by dataStore(
+    fileName = "settings.json",
+    serializer = aeadSerializer,
+    scope = scope,
+)
+```
+
 ## Options / Props
 
 | Name | Type | Default | Description |
@@ -55,7 +65,7 @@ val dataStore = dataStore(
 
 - Introduced in 1.3.0-alpha07 (2026-03-11); stable in 1.3.0 (2026-10-21). `AeadSerializer` is available on JVM and Android targets.
 - `GeneralSecurityException` thrown in `AeadSerializer` is wrapped in `CorruptionException` since 1.3.0-alpha10, so a `CorruptionHandler` can handle it.
-- The snippets are verbatim from the official release notes; the Tink keyset and `ExistingSerializer` are the caller's own.
+- The first three snippets are verbatim from the official release notes (the release-note `val dataStore = dataStore(...)` form is not directly usable; use the delegate form above); the Tink keyset and `ExistingSerializer` are the caller's own.
 - Source: https://developer.android.com/jetpack/androidx/releases/datastore (1.3.0-alpha07 section, retrieved 2026-11-14)
 
 ## Related
