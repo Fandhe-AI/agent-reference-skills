@@ -38,7 +38,7 @@ sheet.sequence.play()
 __experimental_getExistingObject<Props extends UnknownShorthandCompoundProps>(key: string): ISheetObject<Props> | undefined;
 ```
 
-- Source: https://github.com/theatre-js/theatre/compare/0.7.0...0.7.1 (commit 368aa3f "Implement sheet.__experimental_getExistingObject()") and the `@theatre/core@0.7.2` npm package `dist/index.d.ts` (fetched 2026-11-14)
+- Source: https://github.com/theatre-js/theatre/compare/0.7.0...0.7.1 (commit 368aa3f "Implement sheet.__experimental_getExistingObject()") and https://unpkg.com/@theatre/core@0.7.2/dist/index.d.ts (fetched 2026-11-14)
 
 ## Related
 

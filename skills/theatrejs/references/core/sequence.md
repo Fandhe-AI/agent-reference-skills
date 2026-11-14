@@ -70,7 +70,7 @@ pointer: Pointer<{
 }>;
 ```
 
-- Source: `@theatre/core@0.7.2` npm package `dist/index.d.ts` (fetched 2026-11-14); `subUnitsPerUnit` is absent from the 0.7.1 declaration
+- Source: https://unpkg.com/@theatre/core@0.7.2/dist/index.d.ts (fetched 2026-11-14); `subUnitsPerUnit` is absent from the 0.7.1 declaration
 
 ## Related
 
