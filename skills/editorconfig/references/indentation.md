@@ -55,6 +55,7 @@ def func():
 ## Notes
 
 - The section is marked "(Non-Normative)"; the normative text is the `indent_style` row of Supported Pairs (see properties).
+- The Python snippet is verbatim from the specification, where the `return` line's 8-column indentation is rendered with space characters; with `indent_style = tab` and `tab_width = 8` the actual file would use one tab character for that line.
 - This section exists in the specification's master (`f580513`, rendered by spec.editorconfig.org on 2026-11-14) but not in the `index.rst` of the latest tag v0.17.2 (`329077a`).
 - Source: https://spec.editorconfig.org/#indentation-non-normative (fetched 2026-11-14, master `f580513`)
 - Source: https://github.com/editorconfig/specification/blob/f58051318a657b52b73ff2d7774a66fa6c296bd8/index.rst (fetched 2026-11-14)
