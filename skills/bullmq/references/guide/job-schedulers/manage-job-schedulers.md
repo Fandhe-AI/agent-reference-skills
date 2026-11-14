@@ -59,7 +59,7 @@ const scheduler = await queue.getJobScheduler('test');
 console.log('Current job scheduler:', scheduler);
 ```
 
-## 注意点
+## Notes
 
 - `upsertJobScheduler` に渡したスケジューラ ID は、`getJobScheduler` / `getJobSchedulers` の戻り値では `key` プロパティとして返される。取得・更新・削除には `key` を使う。`key` はスケジューラの `name` や生成されるジョブの ID とは別物で、`JobSchedulerJson` の任意の `id` プロパティはスケジューラ識別子ではない（公式記述、v6.7.6）
 - `removeJobScheduler` はスケジューラが存在しない場合 `false` を返す（エラーにはならない）
@@ -68,7 +68,7 @@ console.log('Current job scheduler:', scheduler);
 - スケジューラの更新には `upsertJobScheduler` を使用する（同じ ID で呼び出すと既存設定が上書きされる）
 - スケジューラのレポートやダッシュボード生成には `getJobSchedulers` が有用
 
-## 関連
+## Related
 
 - [Job Schedulers](./job-schedulers.md)
 - [Repeat Strategies](./repeat-strategies.md)

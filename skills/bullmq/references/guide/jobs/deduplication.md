@@ -138,7 +138,7 @@ await myQueue.removeDeduplicationKey('customValue');
 const isRemoved = await job.removeDeduplicationKey();
 ```
 
-## 注意点
+## Notes
 
 - `reschedule` は TTL 管理とは独立している。`ttl` と `extend: true` を組み合わせると deduplication ウィンドウも更新される。deduplication キーが期限切れの場合は通常どおり新しいジョブが追加される
 - すでに delayed でないジョブは reschedule されず、既存の deduplication 動作（`keepLastIfActive` を含む）は維持される。`replace: true` も指定した場合は replace が reschedule より優先される。reschedule は通常の `deduplicated` イベントに加え、既存ジョブに対する `delayed` イベントも発火する
@@ -151,7 +151,7 @@ const isRemoved = await job.removeDeduplicationKey();
 - Throttle モードは短時間に大量の同一リクエストが発生するシナリオに適している
 - Debounce モードは最新のデータのみを処理したい場合に適している
 
-## 関連
+## Related
 
 - [Job IDs](./job-ids.md)
 - [Delayed](./delayed.md)

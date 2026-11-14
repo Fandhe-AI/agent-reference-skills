@@ -73,7 +73,7 @@ const flow = await flowProducer.add({
 
 Worker がジョブ追加時に稼働していなくても、接続された時点でキュー内のジョブを自動的に処理する。
 
-## 注意点
+## Notes
 
 - BullMQ は分散処理をサポートしており、複数マシンにまたがるスケーラブルなアーキテクチャを構築可能
 - ジョブデータは Redis に保存されるため、シリアライズ可能なデータである必要がある
@@ -84,7 +84,7 @@ Worker がジョブ追加時に稼働していなくても、接続された時�
 - 公式ガイドは TypeScript パッケージ（Node.js / Bun）を使う。Python / Elixir / .NET / Rust / PHP の SDK も同じデータモデルを共有し、同じキュー上で言語をまたいで協調できる（[languages](../languages/README.md)）
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/introduction.md (tag v6.7.6、取得日 2026-11-14)
 
-## 関連
+## Related
 
 - [Connections](./connections.md)
 - [Queues](./queues/README.md)

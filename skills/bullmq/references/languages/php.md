@@ -124,14 +124,14 @@ $queue = new Queue('myQueue', [
 ]);
 ```
 
-## 注意点
+## Notes
 
 - PHP 版は Queue クラス（プロデューサー側）のみを実装。ワーカー処理には Node.js / Python / Elixir / .NET / Rust が必要
 - 繰り返しジョブやスケジュールジョブは、job scheduler をサポートする SDK（Node.js / Python / Elixir / .NET / Rust）で作成する。PHP クライアントは個別ジョブの追加向けで、スケジューラ管理は対象外（v6.7.6 の公式記述）
 - Node.js / Python / Elixir / .NET / Rust と同じ Redis データ構造を共有し、ポリグロットなキュー処理が可能
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/php/introduction.md (tag v6.7.6, fetched 2026-11-14)
 
-## 関連
+## Related
 
 - [Introduction](../guide/introduction.md)
 - [Guide](../guide/README.md)

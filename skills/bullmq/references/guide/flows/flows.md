@@ -224,7 +224,7 @@ await job.remove();
 await queue.remove(job.id);
 ```
 
-## 注意点
+## Notes
 
 - フローは `FlowProducer` クラスを使って追加する必要があります
 - 親キューと子キューは同じキューである必要はありません
@@ -233,7 +233,7 @@ await queue.remove(job.id);
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/flows/README.md (tag v6.7.6、取得日 2026-11-14)
 - キューオプションは第2引数で指定してください（インスタンスのコンテキストで定義されるため）
 
-## 関連
+## Related
 
 - [./adding-bulks.md](./adding-bulks.md) — 複数フローの一括追加
 - [./get-flow-tree.md](./get-flow-tree.md) — フローツリーの取得

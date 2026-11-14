@@ -144,7 +144,7 @@ const worker = new Worker(
 );
 ```
 
-## 注意点
+## Notes
 
 - cron 式はタイムゾーンの違いや夏時間の切り替えをシームレスに処理できる
 - cron 式のオプションの秒フィールドにより、標準 cron より精密なスケジューリングが可能
@@ -153,7 +153,7 @@ const worker = new Worker(
 - `repeatStrategy` が受け取る repeat options（`JobSchedulerRepeatOptions`）には、これまでに生成したイテレーション数を示す読み取り専用の `count` が含まれる。内部管理で、Worker が次のイテレーションをスケジュールするためにジョブを取得した時点（そのジョブの processor 実行前）にのみ定義され、`upsertJobScheduler` では設定できない（公式記述、v6.7.6）
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/job-schedulers/repeat-strategies.md (tag v6.7.6、取得日 2026-11-14)
 
-## 関連
+## Related
 
 - [Job Schedulers](./job-schedulers.md)
 - [Repeat Options](./repeat-options.md)

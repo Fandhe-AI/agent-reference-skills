@@ -13,7 +13,7 @@ await worker.close();
 1. Worker を「closing」状態としてマークし、新しいジョブの取得を停止する
 2. 現在処理中のすべてのジョブが完了（または失敗）するまで待機する
 
-## 注意点
+## Notes
 
 - シャットダウンの挙動とタイムアウトは SDK ごとに異なる（v6.7.6）。TypeScript / Python / .NET は組み込みタイムアウトなしでアクティブジョブの完了を待つ。Rust の `close(30_000)` は最大 30 秒待ち、期限を過ぎると未完了の処理を中断する。Elixir は既定で最大 30 秒待ち、`timeout: milliseconds` で期限を変更、`force: true` で待機をスキップできる。TypeScript では `close()` 自体はタイムアウトしないため、ジョブが適切な時間内に完了するよう設計する必要がある
 - シャットダウンがアクティブジョブの完了前に終わった場合（`close()` が失敗・未完了を含む）、ジョブは他の Worker によって stalled として回復され得る（stalled チェックが設定されている場合）
@@ -31,7 +31,7 @@ process.on('SIGTERM', async () => {
 });
 ```
 
-## 関連
+## Related
 
 - [Stalled Jobs](./stalled-jobs.md)
 - [Workers](./workers.md)

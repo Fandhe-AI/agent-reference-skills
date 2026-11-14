@@ -1,10 +1,10 @@
 ---
 name: bullmq
 description: >
-  BullMQ (Node.js ジョブキュー v6.7、Redis / PostgreSQL バックエンド) リファレンス。
+  BullMQ (Node.js ジョブキュー v6.7、Redis / PostgreSQL バックエンド対応、Python / Elixir / .NET / PHP / Rust 対応) リファレンス。
   Queue, Worker, Job, FlowProducer, QueueEvents, Relay (プロセス間リアルタイムメッセージング),
   PostgreSQL backend, createPostgresBackend, withBackend、レート制限、cron、delayed / repeatable / priority ジョブ、
-  再試行、デッドレター、フロー、バッチ処理、メトリクス。Python / Elixir / .NET / PHP / Rust 対応。
+  再試行、デッドレター、フロー、バッチ処理、メトリクス。
 user-invocable: false
 ---
 
@@ -15,7 +15,7 @@ BullMQ (Node.js ジョブキューライブラリ、Redis / PostgreSQL バック
 
 対象: BullMQ v6.7.6（docs/gitbook @ tag v6.7.6、commit `2353552`、取得日 2026-11-14。npm `bullmq` latest 6.7.6）
 
-追従メモ: v6.3.15 → v6.7.6 の差分（Relay 新設、.NET SDK、deduplication `reschedule`、`getDelayedCount(timestamp)`、SDK 別の一括追加・shutdown・pause 挙動、Pro のグループ concurrency 実行時変更 等）を反映済み。各言語タブ（Python / Elixir / Rust / .NET）が加わった共有ガイドページは TypeScript 中心の要約のままで、他言語の API は `references/languages/` と公式ページを参照。samples / scripts は旧版から変更なし（v6.7.6 の公式と照合して API の差異なしを確認、Relay の samples は未収録）。
+追従メモ: v6.3.15 → v6.7.6 の差分（Relay 新設、.NET SDK、deduplication `reschedule`、`getDelayedCount(timestamp)`、SDK 別の一括追加・shutdown・pause 挙動、Pro のグループ concurrency 実行時変更 等）を references に反映済み。各言語タブ（Python / Elixir / Rust / .NET）が加わった共有ガイドページは TypeScript 中心の要約のままで、他言語の API は `references/languages/` と公式ページを参照。samples / scripts の更新は `samples/bulk-add.md`・`samples/graceful-shutdown.md`（Notes のみ）と `scripts/install.md`（pnpm / Bun / Docker Redis / Python postgres extra / .NET / Rust 追加）に限る。それ以外の samples / scripts は v6.7.6 との照合を行っておらず未追従の可能性がある（Relay の samples も未収録）。
 
 ## ディレクトリ構成
 

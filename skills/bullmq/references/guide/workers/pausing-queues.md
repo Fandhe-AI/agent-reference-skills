@@ -45,14 +45,14 @@ myWorker.resume();
 | グローバル一時停止 | 全 Worker | 完了まで処理を継続 | 取得しない |
 | ローカル一時停止 | 該当 Worker のみ | 完了まで処理を継続（`true` で即時停止） | 取得しない |
 
-## 注意点
+## Notes
 
 - グローバル一時停止は Queue インスタンスの `pause()` メソッドを使用し、ローカル一時停止は Worker インスタンスの `pause()` メソッドを使用する
 - 一時停止中の Worker はアイドル状態となり、再開されるまで新しいジョブを処理しない
 - 処理中のジョブが完了するまで待機するデフォルトの動作（TypeScript / Python）は、graceful shutdown と同様の考え方に基づく
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/workers/pausing-queues.md、graceful-shutdown.md（tag v6.7.6、取得日 2026-11-14）
 
-## 関連
+## Related
 
 - [Graceful Shutdown](./graceful-shutdown.md)
 - [Workers](./workers.md)

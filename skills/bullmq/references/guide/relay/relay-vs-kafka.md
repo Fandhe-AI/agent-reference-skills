@@ -40,6 +40,7 @@ await relay.publish('jobs.exports.cancel', { jobId: '1', reason: 'cancelled by u
 
 - Mapping to BullMQ: consumer-group semantics (each message processed once, with retries) are BullMQ queues (delays, priorities, per-job retries with backoff, rate limits, flows); fan-out to live processes is the Relay; a compacted topic (latest value per key) is roughly a retained message; a replayable log has no equivalent by design.
 - Use Kafka for event sourcing, analytics and ETL, change data capture, many independent consumers that each process the full history, very high volumes. Use the Relay for small, targeted signals that are only useful now (cancel this job, show this progress, invalidate this cache entry, apply this configuration, notify this user). They work well together.
+- Adapted (not in the official docs): the snippet under Signature / Usage is an illustrative sketch of the queue-vs-Relay division of roles (the official page has no code); it only uses `Queue.add`, `Relay#publish` and the topic naming shown elsewhere in the Relay pages.
 - Kafka here is a comparison only; this skill does not cover Kafka.
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/relay/relay-vs-kafka.md (tag v6.7.6, fetched 2026-11-14). Official page: https://docs.bullmq.io/guide/relay/relay-vs-kafka
 

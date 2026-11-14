@@ -40,14 +40,14 @@ const worker = new WorkerPro('myQueue', processFn, {
 });
 ```
 
-## 注意点
+## Notes
 
 - **Worker インスタンスレベルでグループ concurrency を必ず設定すること**。これが機能の前提条件であり、ローカル concurrency が未設定のグループのデフォルト値にもなる
 - Worker のデフォルト（`groupConcurrency`）は[実行時に変更できる](./concurrency.md)。ローカル concurrency を持つグループには影響しない
 - ローカル concurrency の値は Redis に保存されるため、不要になった場合は手動でクリーンアップが必要
 - API リファレンス: `QueuePro.setGroupConcurrency()`, `QueuePro.getGroupConcurrency()`
 
-## 関連
+## Related
 
 - [./concurrency.md](./concurrency.md) - グループ並行処理の基本
 - [./local-group-rate-limit.md](./local-group-rate-limit.md) - ローカルグループレート制限

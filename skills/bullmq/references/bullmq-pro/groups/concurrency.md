@@ -26,7 +26,19 @@ const worker = new WorkerPro('myQueue', processFn, {
 - Worker が1台でも10台でも、あるグループのジョブは最大3つまでしか同時実行されない
 - 異なるグループのジョブは制限なく並列実行可能
 
-## ランタイムでの変更
+## Notes
+
+- `groupConcurrency` は整数かつ 0 より大きい値でなければエラーになる。`group.concurrency` オプション付きで作成した Worker でのみ変更できる（なしで作成した Worker はグループごとのアクティブジョブを追跡しないため、設定するとエラー）
+- 値を上げると、旧上限に達していたグループは、アクティブジョブが 1 つ終了した時点で新しい値を採用する。値を下げても実行中のジョブには影響せず、以降に開始するジョブに新しい上限が適用される
+- `groupConcurrency` は Worker インスタンスのプロパティで Redis には保存されない。稼働中の全 Worker を更新する必要があり、後から起動する Worker はコンストラクタオプションの値を使う。Pub/Sub メッセージは保存されないため、切断中や後から起動したプロセスは更新を取り逃がし得る。最新値はアプリ設定や Redis キーに保持し、Worker の起動・再接続時に適用する。Pub/Sub の subscriber には専用の Redis 接続を使う
+- API リファレンス: https://api.bullmq.pro/classes/v7.WorkerPro.html#groupconcurrency
+- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/bullmq-pro/groups/concurrency.md (tag v6.7.6、取得日 2026-11-14)
+- グループ concurrency はレート制限とは独立して動作する
+- レート制限を設定していても、グループ concurrency を設定しないとグループ内で無制限に並列実行される
+- Worker 全体の `concurrency` とグループの `concurrency` は別の概念
+- ローカルグループ並行処理で個別のグループに異なる値を設定する場合は [local-group-concurrency.md](./local-group-concurrency.md) を参照
+
+### ランタイムでの変更
 
 Worker の `groupConcurrency` プロパティで、Worker を作り直さずにグループ concurrency を実行時に更新できる。
 
@@ -82,19 +94,7 @@ await subscriber.subscribe(channel);
 await publisher.publish(channel, String(nextConcurrency));
 ```
 
-## 注意点
-
-- `groupConcurrency` は整数かつ 0 より大きい値でなければエラーになる。`group.concurrency` オプション付きで作成した Worker でのみ変更できる（なしで作成した Worker はグループごとのアクティブジョブを追跡しないため、設定するとエラー）
-- 値を上げると、旧上限に達していたグループは、アクティブジョブが 1 つ終了した時点で新しい値を採用する。値を下げても実行中のジョブには影響せず、以降に開始するジョブに新しい上限が適用される
-- `groupConcurrency` は Worker インスタンスのプロパティで Redis には保存されない。稼働中の全 Worker を更新する必要があり、後から起動する Worker はコンストラクタオプションの値を使う。Pub/Sub メッセージは保存されないため、切断中や後から起動したプロセスは更新を取り逃がし得る。最新値はアプリ設定や Redis キーに保持し、Worker の起動・再接続時に適用する。Pub/Sub の subscriber には専用の Redis 接続を使う
-- API リファレンス: https://api.bullmq.pro/classes/v7.WorkerPro.html#groupconcurrency
-- Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/bullmq-pro/groups/concurrency.md (tag v6.7.6、取得日 2026-11-14)
-- グループ concurrency はレート制限とは独立して動作する
-- レート制限を設定していても、グループ concurrency を設定しないとグループ内で無制限に並列実行される
-- Worker 全体の `concurrency` とグループの `concurrency` は別の概念
-- ローカルグループ並行処理で個別のグループに異なる値を設定する場合は [local-group-concurrency.md](./local-group-concurrency.md) を参照
-
-## 関連
+## Related
 
 - [./local-group-concurrency.md](./local-group-concurrency.md) - ローカルグループ並行処理
 - [./rate-limiting.md](./rate-limiting.md) - グループ単位のレート制限

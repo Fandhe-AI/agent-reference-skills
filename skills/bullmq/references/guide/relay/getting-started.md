@@ -41,7 +41,11 @@ const subscription = await relay.subscribe('orders.*.status', message => {
   console.log(message.topic); // 'orders.42.status'
   console.log(message.data); // { status: 'shipped' }
 });
+```
 
+To stop receiving messages:
+
+```typescript
 await subscription.unsubscribe();
 ```
 
