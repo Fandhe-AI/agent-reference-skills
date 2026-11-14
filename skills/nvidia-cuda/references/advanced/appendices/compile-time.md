@@ -52,12 +52,14 @@ __device__ void parent() {
 
 Source change: disable unrolling with `#pragma unroll 1` on an outermost loop whose array index is thread-dependent (the array stays in local memory even when unrolled):
 
+Adapted (not in the official docs): the index `i%threadIdx.x` of the official example is replaced by `(i + threadIdx.x) % 32`, which stays thread-dependent but avoids a division by zero for `threadIdx.x == 0`.
+
 ```cuda
 int arr[32]{};
 
 #pragma unroll    // problematic unroll for compile time
 for(int i = 0; i < 32; ++i) {
-  arr[i%threadIdx.x] = large_func(i); // runtime dependent
+  arr[(i + threadIdx.x) % 32] = large_func(i); // runtime dependent
                                       // index
 }
 ...
@@ -97,6 +99,7 @@ for (int i = 0; i < 32; ++i) {
 - The official page also contains images (flame chart examples) and a recommended-workflow figure that are not reproduced here.
 - Section numbering: this page is Section 5.5 of the CPG; since 13.5 the Floating-Point Computation, Device-Callable APIs and CUDA C++ Memory Model appendices are Sections 5.6, 5.7 and 5.8.
 - Source: https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/compile-time.html (CPG v13.5, retrieved 2026-11-14)
+- Adapted from the official docs: the official example indexes `arr` with `i%threadIdx.x` (division by zero for thread 0); the snippet above uses `(i + threadIdx.x) % 32` instead. The official text describes the index as thread-dependent (`i%threadIdx.x`).
 
 ## Related
 
