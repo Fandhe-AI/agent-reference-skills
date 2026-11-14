@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools / last verified: 2026-11-14 -->
 
 # Custom Tool Definition and Round Trip
 
@@ -66,7 +66,9 @@ for block in follow_up.content:
 
 ## Notes
 
-- `name` must match `^[a-zA-Z0-9_-]{1,64}$`; `input_schema` is a standard JSON Schema object.
+- `name` must match `^[a-zA-Z0-9_-]{1,128}$`; `input_schema` is a standard JSON Schema object.
 - `tool_choice: {"type": "tool", "name": "..."}` forces Claude to call that exact tool with no preceding natural-language text.
+- Forced `tool_choice` (`any` / `tool`) returns a 400 error on Claude Fable 5.2, Mythos 5.2, Fable 5.1, Mythos 5.1, Opus 5.5 and Sonnet 5.5, and with manual extended thinking (`thinking: {type: "enabled"}`); use `auto` there. This sample uses `claude-opus-5`, which accepts forcing.
+- Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools (fetched 2026-11-14)
 - The `tool_result` block's `tool_use_id` must match the `id` of the corresponding `tool_use` block, and it must immediately follow it in the message history.
 - On error, return `{"content": "...", "is_error": true}` in the `tool_result` instead of raising — Claude retries with corrections 2-3 times.

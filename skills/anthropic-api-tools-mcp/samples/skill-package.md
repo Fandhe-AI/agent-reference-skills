@@ -1,6 +1,6 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/quickstart / last verified: 2026-10-17 -->
-<!-- source: https://platform.claude.com/docs/en/api/skills/create / last verified: 2026-10-17 -->
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/skills-guide / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/quickstart / last verified: 2026-11-14 -->
+<!-- source: https://platform.claude.com/docs/en/api/skills/create / last verified: 2026-11-14 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/skills-guide / last verified: 2026-11-14 -->
 
 # Agent Skills: Package, Upload, and Use via the API
 
@@ -25,7 +25,7 @@ See FORMS.md, REFERENCE.md, EXAMPLES.md (bundled in the same skill directory)
 # Upload the SKILL.md package
 curl https://api.anthropic.com/v1/skills \
     -H 'Content-Type: multipart/form-data' \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -F 'files[]=@/path/to/file'
 ```

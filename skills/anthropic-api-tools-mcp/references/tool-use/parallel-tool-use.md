@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use / last verified: 2026-11-14 -->
 
 # Parallel tool use
 
@@ -22,11 +22,13 @@ By default, Claude may return several `tool_use` blocks in one assistant turn; t
 - Always return one `tool_result` per `tool_use` block, all together in the next user message, matched by `tool_use_id`, with every `tool_result` block before any text. If a call wasn't executed (e.g. sequential batch stopped after an earlier failure), still return its `tool_result` with `is_error: true` and a brief explanation.
 - Computer use and browser use are stricter: when Claude returns several of their member calls in one turn (a batch action), run them sequentially in the order they appear and stop at the first failure; each tool defines the exact text to return for the skipped calls (see computer-use-tool.md).
 - Claude Fable 5.1 may issue fewer parallel tool calls than earlier models, most noticeably in long agent loops where the next reads are only implied (custom coding agents, bash and text editor harnesses, computer use). Standard function calling is unaffected; for the batching instruction, see the Claude Fable 5.1 prompting guide (anthropic-prompt-eval skill, by name).
-- `disable_parallel_tool_use: true` with `tool_choice` type `any` or `tool` makes Claude call exactly one tool, but Claude Opus 5.5, Sonnet 5.5, Fable 5.1, and Mythos 5.1 do not support those `tool_choice` types (see define-tools.md, Forcing tool use).
+- `disable_parallel_tool_use: true` with `tool_choice` type `any` or `tool` makes Claude call exactly one tool, but Claude Fable 5.2, Mythos 5.2, Fable 5.1, Mythos 5.1, Opus 5.5, and Sonnet 5.5 do not support those `tool_choice` types (400 error) (see define-tools.md, Forcing tool use).
 - Claude 4+ models call tools in parallel by default when beneficial. To increase the rate further, add to the system prompt: `"For maximum efficiency, whenever you need to perform multiple independent operations, invoke all relevant tools simultaneously rather than sequentially."` — or the stronger `<use_parallel_tool_calls>` block variant for more aggressive parallelism.
 - User-message phrasing also nudges parallelism: "Check the weather in Paris and London simultaneously" outperforms "What's the weather in Paris? Also check London."
 - Troubleshooting: the most common cause of Claude avoiding parallel calls is sending each `tool_result` in a separate user message instead of all together in one — this "teaches" Claude away from parallelism. Measure success via average tool_use blocks per tool-calling message (should be > 1.0).
 - To reduce accidental batching of dependent calls, add: `"Only batch tool calls that are independent of each other."`
+- Availability: on by default in the Messages API on all supported platforms (Claude API, Bedrock incl. bedrock-runtime, Claude Platform on AWS, Claude Models on Google Cloud (Google managed), Microsoft Foundry); in Managed Agents it is always on (beta).
+- Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use (fetched 2026-11-14)
 - The SDK Tool Runner handles multi-call responses and result formatting automatically — use the manual pattern on this page only when you need custom batching, ordering, or error handling.
 
 ## Related

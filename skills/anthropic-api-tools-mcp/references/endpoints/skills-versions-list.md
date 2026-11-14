@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/skills/versions/list / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/api/skills/versions/list / last verified: 2026-11-14 -->
 
 # List Skill Versions
 
@@ -10,9 +10,11 @@ Lists the versions of a Skill, with pagination. GA endpoint (no beta header).
 GET /v1/skills/{skill_id}/versions
 ```
 
+Adapted (not in the official docs): the official example sends `-H "Authorization: Bearer $ANTHROPIC_API_KEY"`; this page keeps `X-Api-Key`.
+
 ```bash
 curl https://api.anthropic.com/v1/skills/$SKILL_ID/versions \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -36,6 +38,8 @@ curl https://api.anthropic.com/v1/skills/$SKILL_ID/versions \
 ## Notes
 
 - Versions are listed newest first (default `limit` 20). Under the beta header `skills-2025-10-02` the list is oldest first, the response is `{ data, has_more, next_page }`, and versions have `directory` and an epoch `version`. Page cursors from one shape are not valid on the other.
+- Adapted from the official docs: the example authenticates with `X-Api-Key: $ANTHROPIC_API_KEY` instead of the official `Authorization: Bearer $ANTHROPIC_API_KEY` header.
+- Source: https://platform.claude.com/docs/en/api/skills/versions/list (fetched 2026-11-14)
 - This is the Claude API Skills API (management of SKILL.md packages), distinct from this repository's own skills concept and from Claude Code Skills.
 
 ## Related

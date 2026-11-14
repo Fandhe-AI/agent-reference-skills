@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/reference / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/reference / last verified: 2026-11-14 -->
 
 # MCP tunnels reference
 
@@ -28,7 +28,7 @@ routes:
 | `tunnel_domain` | Required when `routes` keys are bare subdomains |
 | `tls.cert_file` / `tls.key_file` | Required |
 | `routes` (flat `map[string]string`, values `scheme://host:port`, no path) | Required |
-| `upstream.allowed_ips` | RFC1918 private ranges |
+| `upstream.allowed_ips` (IPv4 CIDRs or single addresses; mutually exclusive with `disable_ip_validation`) | RFC1918 private ranges |
 | `upstream.disable_ip_validation` | `false` |
 | `upstream.tls.ca_file` / `include_system_cas` | None / `false` |
 
@@ -36,7 +36,7 @@ routes:
 | --- | --- |
 | Base path | `/v1/tunnels` |
 | Auth | Bearer token with `workspace:manage_tunnels` scope via WIF (Admin API keys not accepted) |
-| Headers | `Authorization`, `anthropic-version: 2023-06-01`, `anthropic-beta: mcp-tunnels-2026-06-22` |
+| Headers | `Authorization`, `anthropic-version: 2026-10-21`, `anthropic-beta: mcp-tunnels-2026-06-22` |
 
 | `setup init` flag | Default |
 | --- | --- |
@@ -44,9 +44,15 @@ routes:
 | `--tunnel-id` | None (creates a tunnel) |
 | `--output` (`dir:/path` or `k8s-secret:NAME`) | `k8s-secret:mcp-tunnel` in-cluster |
 | `--cert-duration` | `2160h` (90 days) |
-| `--token-version` | None |
+| `--token-version` (change-detection string; a new value triggers token rotation on re-run) | None (Helm and Compose examples pass `1`) |
 
 ## Notes
+
+- Source: https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/reference (fetched 2026-11-14)
+- Tunnels API required headers: `Authorization: Bearer <WIF-exchanged token>`, `anthropic-version: 2026-10-21` (the page previously showed `2023-06-01`), `anthropic-beta: mcp-tunnels-2026-06-22`. Endpoints cover create / list / archive tunnels, CA certificates (`POST /v1/tunnels/{tunnel_id}/certificates`), reveal / rotate token; see the `endpoints/tunnels-*` pages.
+- Routes: lookup is exact hostname first, then with the `tunnel_domain` suffix stripped; only the hostname matters (path and query are forwarded unchanged). Each value must be exactly `scheme://host:port` (port mandatory); a path is rejected at config load with `invalid upstream (must be scheme://host:port)`. `log_level`: `debug`, `info`, `warn`, `error`. When `tunnel_domain` is empty, `routes` keys must be full hostnames.
+- Server cert also needs `AuthorityKeyIdentifier` matching the CA's `SubjectKeyIdentifier`; if `ExtendedKeyUsage` is present it must include `serverAuth`. The setup component itself generates an ECDSA P-256 CA (5-year validity) and an RSA 4096-bit server cert with wildcard SAN (90-day validity).
+- `setup renew-cert` flags: `--output`, `--cert-duration` (default `2160h`), `--renew-before` (default `0` = always renew).
 
 - Server certificate SAN must include `<route>.<tunnel-domain>` (wildcard `*.<tunnel-domain>` covers all routes); signed directly by a registered CA (no intermediates); RSA ≥2048-bit or ECDSA ≥P-256 with SHA-256+.
 - CA certificate: PEM, ≤8 kB, `BasicConstraints CA:TRUE` (critical), `SubjectKeyIdentifier` present, `KeyUsage` includes `keyCertSign`; a tunnel holds up to 2 active CAs.

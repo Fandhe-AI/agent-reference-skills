@@ -20,6 +20,8 @@ Claude Code CLI の Skills / MCP 設定は `anthropic-claude-code-extend`、Agen
 `anthropic-agent-sdk`、skill の usage analytics は `anthropic-admin-platform` を参照（本スキルは Claude API 側の
 tool use / Agent Skills / MCP 定義を担当）。
 
+対象: platform.claude.com の `.md` twin を取得日 2026-11-14 で照合（`anthropic-version: 2026-10-21`、MCP connector beta ヘッダー `mcp-client-2026-09-15`、Tunnels API beta ヘッダー `mcp-tunnels-2026-06-22`。各ページ先頭コメントに出典 URL と last verified を記載）。
+
 ## ディレクトリ構成
 
 ```text

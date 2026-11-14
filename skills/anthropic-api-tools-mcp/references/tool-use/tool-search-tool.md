@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool / last verified: 2026-11-14 -->
 
 # Tool search tool
 
@@ -28,11 +28,14 @@ Server tool: Claude discovers and loads tools on demand from a large catalog ins
 - Continuing the conversation: pass the assistant content back unchanged (including `server_tool_use`/`tool_search_tool_result`), add your `tool_result` for the discovered tool, resend the same full `tools` array. Never return a `tool_result` for the search's `srvtoolu_...` id.
 - Custom client-side tool search is supported: return standard `tool_result` with `tool_reference` content blocks from your own search tool (e.g. embeddings-based) — every referenced tool must still have a `defer_loading: true` definition in `tools`.
 - MCP toolsets configure `defer_loading` once on `mcp_toolset`'s `default_config` (or per-tool in `configs`), not per individual tool.
+- At least one tool (normally the tool search tool itself) must stay non-deferred. `input_examples` on a deferred tool are expanded along with its definition when discovered. Deferred tools are excluded from the prompt prefix; strict-mode grammar is built from the full tool list, so `defer_loading` does not force recompilation.
+- Regex variant uses Python `re.search()` patterns (e.g. `get_.*_data`), BM25 uses natural language. Search covers tool names, descriptions, argument names and argument descriptions.
 - Errors: 400 `invalid_request_error` if all tools are deferred or a `tool_reference` has no matching definition; 200-with-error-body `tool_search_tool_result_error` codes `invalid_tool_input`, `unavailable`, `too_many_requests`, `execution_time_exceeded`.
 - A `defer_loading: true` tool cannot also carry `cache_control` (400 error) — put the cache breakpoint on a non-deferred tool instead; prompt-cache prefix is preserved regardless since deferred tools are excluded from it (see tool-use-with-prompt-caching.md).
 - Use when 10+ tools, tool defs exceed ~10k tokens, selection accuracy is degrading, aggregating 200+ MCP tools, or the toolset grows over time. Not worth it below 10 tools / <100 tokens of definitions / every tool used every request. Keep the 3-5 most-used tools non-deferred.
 - Not separately metered — loaded tool definitions count as normal input tokens; `usage.server_tool_use` has no tool-search-specific field.
-- Model support (both regex and bm25): Claude Fable 5.1, Mythos 5.1, Fable 5, Mythos 5, Opus 5.5, Opus 5, Sonnet 5.5, Sonnet 5, Haiku 5.5, Opus 4.8, Opus 4.7, Opus 4.6, Sonnet 4.6, Opus 4.5, Sonnet 4.5 (deprecated), Haiku 4.5. Claude Opus 4.1 and earlier are not supported. Bedrock supports it only via InvokeModel, not Converse; Claude Platform on AWS works identically to the Claude API (no InvokeModel / Converse distinction).
+- Model support (both regex and bm25): Claude Fable 5.2, Mythos 5.2, Fable 5.1, Mythos 5.1, Fable 5, Mythos 5, Opus 5.5, Opus 5, Sonnet 5.5, Sonnet 5, Haiku 5.5, Opus 4.8, Opus 4.7, Opus 4.6, Sonnet 4.6, Opus 4.5, Sonnet 4.5 (deprecated), Haiku 4.5. Claude Opus 4.1 and earlier are not supported. Bedrock supports it only via InvokeModel, not Converse; Claude Platform on AWS works identically to the Claude API (no InvokeModel / Converse distinction). Also available on Claude Models on Google Cloud (Google managed) and Microsoft Foundry; not available in Managed Agents. Zero data retention: eligible (excludes Covered Models); HIPAA: not eligible.
+- Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool (fetched 2026-11-14)
 - Limits: at most 10,000 deferred tools per request; each search returns up to 5 matching tools by default, and Claude can set `limit` in its search input to an integer from 1 to 10,000; regex pattern max 200 characters, BM25 query max 500 characters.
 - Client toolsets (computer use / browser use): set `defer_loading` per member inside `configs`, with the same value on every enabled member, and declare a non-deferred tool search tool in the same request (see tool-reference.md, Client toolsets).
 

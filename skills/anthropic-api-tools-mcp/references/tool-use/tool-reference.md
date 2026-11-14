@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference / last verified: 2026-11-14 -->
 
 # Tool reference
 
@@ -30,10 +30,10 @@ Directory of Anthropic-provided tools (`type` strings, execution location, statu
 | --- | --- | --- |
 | cache_control | Set a prompt-cache breakpoint at this tool definition | All tools (on `computer_toolset_20260801` / `browser_toolset_20260801`, set it on the toolset entry, not inside member `configs`) |
 | strict | Guarantee schema validation on tool names and inputs | All tools except `mcp_toolset`, `computer_toolset_20260801`, `browser_toolset_20260801` |
-| defer_loading | Exclude the tool from the initial system prompt; loaded on demand via tool search | All tools (on the computer / browser toolsets, set it per member inside `configs`) |
+| defer_loading | Exclude the tool from the initial system prompt; loaded on demand via tool search | All tools (for `mcp_toolset` see MCP toolset configuration in mcp-connector.md; on the computer / browser toolsets, set it per member inside `configs`) |
 | allowed_callers | Restrict which callers (`direct` / `code_execution_20260120`) can call the tool | All tools except `mcp_toolset` (on the computer / browser toolsets only `["direct"]`) |
 | input_examples | Example input objects | User-defined and Anthropic-schema client tools, except the computer / browser toolsets; not server tools |
-| eager_input_streaming | Enable fine-grained (unbuffered) input streaming | User-defined tools only |
+| eager_input_streaming | Enable fine-grained input streaming (`true`) or keep standard buffered streaming (`false`) for this tool | User-defined tools only |
 
 ## Notes
 
@@ -43,9 +43,12 @@ Directory of Anthropic-provided tools (`type` strings, execution location, statu
 - Client toolsets (computer use, browser use): one `tools` entry declares a fixed set of member tools; the entry takes no `name`. Optional: `configs`, `cache_control`, `allowed_callers` (`["direct"]` only). Not available in Claude Managed Agents. `configs` keys are member names and each value accepts only `enabled` and `defer_loading`; an unknown member, another field, or a `configs` that disables every member is rejected. A disabled member is removed from the tools Claude sees (return an error `tool_result` if Claude still names it). Set `defer_loading` per member, with the same value on every enabled member; when all defer, declare a non-deferred tool search tool in the same request, and do not put `cache_control` on an entry whose members defer. Member calls are `tool_use` blocks with `name` = member and `toolset_name` = `computer` / `browser`: dispatch on the (`toolset_name`, `name`) pair; only member results echo `toolset_name`. New members arrive only with a new dated `type`.
 - Rejected on toolset entries (`invalid_request_error`): `strict: true` or `input_examples`; `defer_loading` on the entry or differing values across enabled members; a code execution caller in `allowed_callers`; the legacy `fine-grained-tool-streaming-2025-05-14` beta header (each member's `input` arrives as one complete `input_json_delta`); `tool_choice` of type `tool` naming the toolset or a member (use `auto`, `any`, or `none`); two entries of the same toolset, or another tool named `computer` / `browser` alongside it (the two toolsets can be declared together).
 - MCP connector: `mcp-client-2025-11-20` is the header listed in the table. The `mcp-client-2026-09-15` header (Claude API only) additionally lets the tool list be pinned; see mcp-connector.md.
-- Properties compose: `defer_loading`, `cache_control`, and `strict` can all be set on the same tool.
+- Properties combine freely with two exceptions: a tool with `defer_loading: true` can't also carry `cache_control`, and a user-defined tool with `strict: true` can't list a code execution caller in `allowed_callers`.
+- `allowed_callers` defaults to `["direct"]` when omitted, except `web_search` / `web_fetch` at `_20260209` and later, which default to code execution callers (dynamic filtering); pass `["direct"]` explicitly to disable that (see web-search-tool.md and server-tools.md); the `tool_use` block's `caller` field identifies who called.
+- Model support varies per tool and tool version; see each tool's page. To check programmatically whether a model accepts web search or code execution, use the Models API (https://platform.claude.com/docs/en/models/overview#using-the-models-api).
 - `allowed_callers` omitting `"direct"` guides Claude to call the tool only from code execution; `"code_execution_20260120"` and `"code_execution_20260521"` are interchangeable in this field, and response `caller` fields always tag `code_execution_20260120` regardless.
 - `defer_loading: true` tools are stripped before the cache key is computed, so adding deferred tools never invalidates an existing prompt cache; discovered tools expand inline as `tool_reference` blocks in the conversation body, not in the prefix.
+- Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference (fetched 2026-11-14)
 
 ## Related
 

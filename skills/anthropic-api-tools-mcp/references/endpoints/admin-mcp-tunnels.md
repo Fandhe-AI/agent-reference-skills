@@ -1,8 +1,8 @@
-<!-- source: https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/list, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/retrieve, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/archive, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/reveal_token, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/rotate_token, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/create, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/list, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/retrieve, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/archive / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/list, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/retrieve, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/archive, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/reveal_token, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/rotate_token, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/create, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/list, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/retrieve, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/archive / last verified: 2026-11-14 -->
 
 # MCP Tunnels Admin API (deprecated predecessor)
 
-Org-scoped `/v1/organizations/tunnels` endpoints that predate the Claude API's `/v1/tunnels` surface documented in [Get Tunnel](./tunnels-retrieve.md), [List Tunnels](./tunnels-list.md), and related pages in this category. **Deprecated**, remains available during a migration window.
+Org-scoped `/v1/organizations/tunnels` endpoints that predate the Claude API's `/v1/tunnels` surface documented in [Get Tunnel](./tunnels-retrieve.md), [List Tunnels](./tunnels-list.md), and related pages in this category. **Deprecated**; will be removed after a migration window.
 
 ## Signature / Usage
 
@@ -20,9 +20,9 @@ Org-scoped `/v1/organizations/tunnels` endpoints that predate the Claude API's `
 
 ```bash
 curl https://api.anthropic.com/v1/organizations/tunnels \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H 'anthropic-beta: mcp-tunnels-2026-05-19' \
-    -H "Authorization: Bearer $ANTHROPIC_OAUTH_TOKEN"
+    -H "Authorization: Bearer $ANTHROPIC_API_KEY"
 ```
 
 ## Options / Props
@@ -102,6 +102,8 @@ curl https://api.anthropic.com/v1/organizations/tunnels \
 - Archiving a Tunnel is irreversible: it archives every non-archived certificate in the same operation, retires the hostname permanently (never re-allocated), and invalidates the tunnel token. Retrying against an already-archived tunnel returns the existing record unchanged.
 - Archiving the last non-archived certificate is permitted but leaves the tunnel unable to serve MCP traffic until a new certificate is added.
 - Overlapping resource-level coverage of this same deprecated surface exists in the `anthropic-admin-platform` skill (`references/endpoints-admin/mcp-tunnels.md`); this page frames the same endpoints from the migration/predecessor angle for readers of the `/v1/tunnels` pages in this category.
+
+- Source: https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/list (fetched 2026-11-14). The official example sends `$ANTHROPIC_API_KEY` as a Bearer `Authorization` header; despite the variable name, the token must be a WIF-exchanged token with the `org:manage_tunnels` scope (see the migration note above) with `anthropic-version: 2026-10-21`; existing integrations keep working with the `mcp-tunnels-2026-05-19` header and `org:manage_tunnels` scope during the migration window, and new integrations should use `/v1/tunnels`.
 
 ## Related
 

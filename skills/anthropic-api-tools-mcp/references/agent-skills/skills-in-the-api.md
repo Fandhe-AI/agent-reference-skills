@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/skills-guide / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/skills-guide / last verified: 2026-11-14 -->
 
 # Using Agent Skills with the API
 
@@ -9,7 +9,7 @@ Use Anthropic-managed and custom Agent Skills through the Messages API `containe
 ```bash
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-version: 2026-10-21" \
   -H "content-type: application/json" \
   -d '{
     "model": "claude-opus-5-5",
@@ -39,7 +39,7 @@ Upload a custom Skill (directory with top-level `SKILL.md`):
 ```bash
 curl -X POST "https://api.anthropic.com/v1/skills" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-version: 2026-10-21" \
   -F "files[]=@financial_skill/SKILL.md;filename=financial_skill/SKILL.md" \
   -F "files[]=@financial_skill/analyze.py;filename=financial_skill/analyze.py"
 ```
@@ -74,7 +74,10 @@ Limits:
 - Long-running work: handle the `pause_turn` stop reason by appending the prior response `content` as the assistant turn and re-sending in the same container until `stop_reason` is no longer `pause_turn`.
 - Custom Skills are workspace-scoped, not scoped to an end user, conversation, or session: any API key with workspace access can read, invoke, and delete every custom Skill in it. For multi-tenant platforms use one workspace per tenant.
 - A new Skill version is a complete snapshot, not a delta: upload the full file set each time; omitted files are not carried over, and the `name` in `SKILL.md` must match the existing Skill name. `POST /v1/skills/{skill_id}/versions` creates a version.
-- Agent Skills are not covered by ZDR arrangements. With the Compliance API enabled, its Activity Feed records Skill and Skill version creation and deletion.
+- Agent Skills are not covered by ZDR arrangements. With the Compliance API enabled, its Activity Feed records Skill and Skill version creation and deletion made with a Claude API key or from the Claude Console; operations performed while the Compliance API is off are not recorded and cannot be recovered later.
+- Production: pin a specific version. Omitting `version` or using `"latest"` means a version uploaded by anyone in the workspace immediately changes what production runs; version IDs are strings, so quote them in JSON/YAML. Changing the Skills list in `container` breaks the prompt cache (Skills render into the system prompt in a fixed order). A Skill-related request failure returns HTTP 400 with the reason in `error.message`. Skills require a model listed in the code execution tool's availability section; the official examples use `code_execution_20250825` and `claude-opus-5-5`.
+- Workspace isolation: every service account and every user whose role allows API access can use the Default Workspace; keep separate Skills in their own workspace with workspace-scoped keys. Each organization can have up to 100 workspaces by default.
+- Source: https://platform.claude.com/docs/en/build-with-claude/skills-guide (fetched 2026-11-14)
 - Distinct from Claude Code's SKILL.md skills (`anthropic-claude-code-extend`); this page covers the Skills API on the Claude API only.
 - Migration (`skills-2025-10-02` beta -> GA): migrating is optional. Requests still sending `anthropic-beta: skills-2025-10-02` keep working and keep returning the beta response shapes; removing the header switches to the GA shapes below.
 
@@ -93,7 +96,7 @@ Limits:
 | Response types | `CreateSkillResponse`, `GetSkillResponse`, one type per operation | `Skill`, `SkillVersion`, `DeletedSkill`, `DeletedSkillVersion` |
 
 - Migration steps: (1) drop the beta header and call `client.skills` instead of `client.beta.skills`; (2) rename `display_title` -> `display_name`, `latest_version` -> `latest_version_id`, read `source.type`; (3) store version `id` (or use `latest`) instead of epoch-microsecond versions; (4) review delete calls, since `DELETE /v1/skills/{skill_id}` now removes every version with the Skill.
-- SDK beta namespace: from Python SDK 1.2.0, TypeScript SDK 0.122.0, Go SDK 1.68.0, Java SDK 2.59.0, Ruby SDK 1.67.0, and C# SDK 12.44.0, `client.beta.skills` no longer sends `skills-2025-10-02` and returns the same shapes as `client.skills` with `Beta`-prefixed type names (`BetaSkill`, `BetaSkillVersion`, `BetaDeletedSkill`, `BetaDeletedSkillVersion`); the beta Messages container Skill reference type is renamed `BetaSkill` -> `BetaContainerSkill`. Earlier releases send the header from `client.beta.skills`.
+- SDK beta namespace: from Python SDK 1.2.0, TypeScript SDK 0.122.0, Go SDK 1.68.0, Java SDK 2.59.0, PHP SDK 0.45.0, Ruby SDK 1.67.0, and C# SDK 12.44.0, `client.beta.skills` no longer sends `skills-2025-10-02` and returns the same shapes as `client.skills` with `Beta`-prefixed type names (`BetaSkill`, `BetaSkillVersion`, `BetaDeletedSkill`, `BetaDeletedSkillVersion`); the beta Messages container Skill reference type is renamed `BetaSkill` -> `BetaContainerSkill`. Earlier releases send the header from `client.beta.skills`.
 - A Skill whose versions were all deleted under the beta has no current version: `GET /v1/skills/{skill_id}` returns 400 and the Skill is omitted from list responses until a version is uploaded; it can still be deleted.
 
 ## Related

@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/skills/create / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/api/skills/create / last verified: 2026-11-14 -->
 
 # Create Skill
 
@@ -10,10 +10,12 @@ Creates a new Skill from an uploaded SKILL.md package. GA endpoint (no beta head
 POST /v1/skills
 ```
 
+Adapted (not in the official docs): the official example sends `-H "Authorization: Bearer $ANTHROPIC_API_KEY"`; this page keeps `X-Api-Key`.
+
 ```bash
 curl https://api.anthropic.com/v1/skills \
     -H 'Content-Type: multipart/form-data' \
-    -H 'anthropic-version: 2023-06-01' \
+    -H 'anthropic-version: 2026-10-21' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -F 'files[]=@/path/to/file'
 ```
@@ -51,6 +53,8 @@ Skill object:
 ## Notes
 
 - Sending the beta header `skills-2025-10-02` keeps the old beta shape (`display_title`, `latest_version`, string `source`, files inside a top-level directory matching the Skill `name`). Migration from the beta shape: see [skills-in-the-api.md](../agent-skills/skills-in-the-api.md) (migration notes and steps).
+- Adapted from the official docs: the example authenticates with `X-Api-Key: $ANTHROPIC_API_KEY` instead of the official `Authorization: Bearer $ANTHROPIC_API_KEY` header.
+- Source: https://platform.claude.com/docs/en/api/skills/create (fetched 2026-11-14)
 - This is the Claude API Skills API (management of SKILL.md packages), distinct from this repository's own skills concept and from Claude Code Skills.
 
 ## Related

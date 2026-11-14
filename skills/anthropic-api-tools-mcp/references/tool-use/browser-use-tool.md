@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool / last verified: 2026-11-14 -->
 
 # Browser use tool
 
@@ -90,7 +90,7 @@ Targets: `CoordinateTarget` is `{"type": "coordinate", "x", "y"}` (integer viewp
 
 ## Notes
 
-- Status GA. Supported platforms: Claude API and Google Cloud. ZDR eligible (excludes Covered Models). Supported model IDs listed on the source page: `claude-fable-5-1`, `claude-mythos-5-1`, `claude-fable-5`, `claude-mythos-5`, `claude-opus-5-5`, `claude-opus-5`, `claude-sonnet-5-5`, `claude-sonnet-5`, `claude-opus-4-8`, `claude-haiku-5-5`. Not currently available in Claude Managed Agents.
+- Status GA. Supported platforms: Claude API, Google Cloud (Google managed), Claude Platform on AWS, Microsoft Foundry, Amazon Bedrock and Bedrock (bedrock-runtime). ZDR eligible (excludes Covered Models); not covered under HIPAA readiness (requests with the tool are not blocked). Supported model IDs: `claude-fable-5-2`, `claude-mythos-5-2`, `claude-fable-5-1`, `claude-mythos-5-1`, `claude-fable-5`, `claude-mythos-5`, `claude-mythos-preview`, `claude-opus-5-5`, `claude-opus-5`, `claude-sonnet-5-5`, `claude-sonnet-5`, `claude-haiku-5-5`, `claude-opus-4-8` (Mythos Preview only on Claude API / Google Cloud; Bedrock lists no 5.2 models; `bedrock-runtime` lists no Mythos 5.1 / Mythos 5). Not currently available in Claude Managed Agents.
 - The Python and TypeScript SDKs have a beta browser toolset class that runs the loop for you; see browser-use-sdk. Use this page as the tool reference or when you handle tool calls yourself.
 - Distinct from the computer use tool (`computer_20251124`, whole desktop via screenshots and coordinates only) and from the web fetch / web search server tools (run by the API, no browser to operate). Browser use works through the accessibility tree plus screenshots; coordinates are viewport pixels (origin top left of the rendered page).
 - Run a batch in order, stop at the first failure, and answer every later call with `is_error: true` and the exact text `Not executed: an earlier action in this turn failed.` Answer every `tool_use`, or the next request is rejected. Dispatch on (`toolset_name`, `name`), not `name` alone.
@@ -103,6 +103,8 @@ Targets: `CoordinateTarget` is `{"type": "coordinate", "x", "y"}` (integer viewp
 - Tab titles, URLs, and download `url` / `path` / `error` are untrusted (prompt-injection surface); the API renders URLs verbatim, so sanitize them. Do not pre-escape titles.
 - Security: run the browser and executor in a dedicated minimal-privilege container or VM with a fresh credential-free profile; enforce a domain allowlist at the network layer and re-check it in `navigate` after redirects; accept only `http` / `https` (refuse `javascript:`, `file:`, `data:`, `chrome:` with a URL parser, not a string prefix); keep `javascript_exec` and `file_upload` disabled unless needed; require human confirmation for consequential actions. Anthropic prompt-injection classifiers scan browser results automatically (opt out via support).
 - `file_upload` should resolve paths (symlinks and `..`) and accept only a dedicated, allowlisted upload directory, never the browser's download directory.
+- `read_page` (executor-side convention): omitted `filter` returns every visible element, `"interactive"` only visible interactive ones, `"all"` also off-viewport; cap output at 50,000 characters and say so so Claude narrows with `depth` / `ref`. `navigate` treats a URL without scheme as `https://`. Input bounds in the member descriptions are stated to Claude, not enforced by the API, so validate inputs (including coordinates against your viewport) in your executor. Any non-tab-management result may also carry a post-action `image` (screenshot) block.
+- Source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool (fetched 2026-11-14)
 - Pricing: standard tool use pricing. Declaring the toolset with default members adds about 6,600 input tokens (about 6,670 on Claude Sonnet 5, about 6,610 on other supported models); enabling all four optional members adds about 880 more. Screenshots and text results are billed as input.
 
 ## Related

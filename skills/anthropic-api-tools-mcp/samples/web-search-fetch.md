@@ -1,5 +1,5 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool / last verified: 2026-08-07 -->
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool / last verified: 2026-11-14 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool / last verified: 2026-11-14 -->
 
 # Web Search and Web Fetch Server Tools
 
@@ -9,7 +9,7 @@ Give Claude direct access to current web content: `web_search` finds pages with 
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5-5",
     max_tokens=4096,
     messages=[
         {

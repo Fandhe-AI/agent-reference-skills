@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/quickstart / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/quickstart / last verified: 2026-11-14 -->
 
 # MCP tunnels quickstart
 
@@ -37,6 +37,12 @@ services:
 | 7. Call from Claude | Managed Agents > Sessions > + MCP Server, subdomain `echo`, path `mcp` |
 
 ## Notes
+
+- Source: https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/quickstart (fetched 2026-11-14)
+- Each tunnel belongs to one workspace (pick it in the Console workspace picker; page `platform.claude.com/settings/workspaces/default/mcp-tunnels`). Leave "Set up programmatic access" off for this path. After registering `ca.crt` via Add certificate, the "Needs certificate" badge disappears.
+- Server cert SAN covers `${TUNNEL_DOMAIN}` and `*.${TUNNEL_DOMAIN}`, `extendedKeyUsage = serverAuth`, 90-day validity; the guide also has PowerShell variants of every step.
+- Expected logs: one `route configured` line for `echo` and four `Registered tunnel connection` lines (rerun if empty at first).
+- If the Console warns that the environment blocks MCP servers, see the Console guide's "Use the tunnel in an agent". To swap in your own server: add it to Compose, add a route in `config/mcp-proxy.yaml`, then `docker compose restart mcp-proxy`.
 
 - Requires Docker + Docker Compose, a Console role that can manage tunnels, and OpenSSL 1.1.1+.
 - This is a local-testing path (manual credentials); production deployments use Helm or hardened Docker Compose (see deploy-helm.md / deploy-compose.md).
