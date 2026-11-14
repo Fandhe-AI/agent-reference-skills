@@ -134,7 +134,7 @@ new DevEnvironment(name, config, {
 - By default `HotChannel` transports have `server.fs` restrictions applied. If the transport is not exposed over the network (worker threads, in-process calls), set `skipFsCheck: true` on the `HotChannel` to bypass them.
 - To ease runtime-agnostic framework code, implement the most flexible communication level possible (Runnable > Fetchable > raw).
 - The `createWorkerd*` names are illustrative examples from the docs, not Vite exports.
-- Upstream v8.3.4 snippet passes the listener as the first argument (`on: (listener) => ...`), which does not match the `HotChannel` `on(event, handler)` contract; the example above follows the `workerHotChannel` pattern from the ModuleRunnerTransport page (`connection` is an illustrative placeholder; its `close` event name is an assumption of this example).
+- Upstream v8.3.8 snippet passes the listener as the first argument (`on: (listener) => ...`), which does not match the `HotChannel` `on(event, handler)` contract; the example above follows the `workerHotChannel` pattern from the ModuleRunnerTransport page (`connection` is an illustrative placeholder; its `close` event name is an assumption of this example).
 - Release Candidate: the Environment API is generally in the release candidate phase.
 
 ## Related

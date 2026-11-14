@@ -39,6 +39,7 @@ export default defineConfig({
 - Default for `allow`: Vite searches for the potential workspace root (a `workspaces` field in `package.json`, or `lerna.json` / `pnpm-workspace.yaml`), otherwise falls back to the project root.
 - `allow` accepts absolute paths or paths relative to the project root, e.g. `allow: ['..']` to allow one level up.
 - When `server.fs.allow` is specified, auto workspace root detection is disabled. Use `searchForWorkspaceRoot` (as above) to extend the original behavior.
+- Setting `server.fs.deny` replaces the default list entirely. Include any default patterns you want to keep in your custom list.
 - The deny blocklist does not apply to the public directory: all files there are served without filtering.
 - The deny filter is applied against the module id and the id with query parameters stripped. A plugin can read any file in its load hook (including resolving symlinks to denied paths), so Vite cannot guarantee a denied file is inaccessible through an alternative path; add alternative paths to the deny list as well.
 

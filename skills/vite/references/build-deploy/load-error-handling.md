@@ -17,6 +17,7 @@ window.addEventListener('vite:preloadError', (event) => {
 ## Notes
 
 - `event.payload` contains the original import error. Calling `event.preventDefault()` stops the error from being thrown.
+- Browsers that support retriable module loading (see the MDN `import()` browser compatibility table) allow an application or framework to retry the original dynamic import after a transient network or HTTP error. Older browsers require a page reload because they cache the failure in the module map.
 - After a new deployment, the hosting service may delete assets from previous deployments. A user who visited before the deployment may then hit an import error, because the code running on their device tries to import an old, deleted chunk. This event is useful for that situation.
 - In that case, set `Cache-Control: no-cache` on the HTML file, otherwise the old assets will still be referenced.
 

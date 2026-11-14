@@ -23,7 +23,7 @@ export default defineConfig({
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `server.forwardConsole` | `boolean \| { unhandledErrors?: boolean, logLevels?: ('error' \| 'warn' \| 'info' \| 'log' \| 'debug')[] }` | auto (`true` when an AI coding agent is detected based on `@vercel/detect-agent`, otherwise `false`) | `true` enables forwarding unhandled errors and `console.error` / `console.warn` logs |
+| `server.forwardConsole` | `boolean \| { unhandledErrors?: boolean, logLevels?: ('error' \| 'warn' \| 'info' \| 'log' \| 'debug')[] }` | auto (`true` when an AI coding agent is detected based on `std-env`, otherwise `false`) | `true` enables forwarding unhandled errors and `console.error` / `console.warn` logs |
 | `unhandledErrors` | boolean | — | Forward uncaught exceptions and unhandled promise rejections |
 | `logLevels` | array | — | Which `console.*` calls are forwarded |
 

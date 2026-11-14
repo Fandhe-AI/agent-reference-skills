@@ -1,5 +1,5 @@
 ---
-source: https://github.com/vitejs/vite/tree/v8.3.4/packages/plugin-legacy
+source: https://github.com/vitejs/vite/tree/v8.3.8/packages/plugin-legacy
 ---
 
 # @vitejs/plugin-legacy

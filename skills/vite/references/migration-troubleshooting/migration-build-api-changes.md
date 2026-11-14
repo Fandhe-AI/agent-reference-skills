@@ -29,14 +29,15 @@ import fs from 'node:fs'
 
 const plugin = {
   name: 'txt-loader',
-  load(id) {
-    if (id.endsWith('.txt')) {
+  load: {
+    filter: { id: /\.txt$/ },
+    handler(id) {
       const content = fs.readFileSync(id, 'utf-8')
       return {
         code: `export default ${JSON.stringify(content)}`,
         moduleType: 'js', // [!code ++]
       }
-    }
+    },
   },
 }
 ```
@@ -59,7 +60,7 @@ const plugin = {
 - Deprecated options "will be removed in the future".
 - `BundleError` change only affects JS API users. Module type change only affects plugin authors.
 - Rolldown has experimental support for Module types (similar to esbuild's `loader` option) and automatically sets a module type from the extension of the resolved id.
-- Upstream v8.3.4 snippet uses `fs.readFile(id, 'utf-8')` synchronously; use `fs.readFileSync` (or `await fs.promises.readFile` in an async `load`).
+- The `load` hook example uses the object form (`filter` + `handler`) as of the v8.3.8 docs; the v8.3.4 docs used a plain `load(id)` function with a synchronous `fs.readFile`.
 - Migration (v7 -> v8): see also `config-build/build-rolldown-options.md`, `javascript-api/build.md`, `config-build/worker-options.md`.
 
 ## Related

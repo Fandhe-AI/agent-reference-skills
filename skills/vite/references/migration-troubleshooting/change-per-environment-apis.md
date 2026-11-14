@@ -35,7 +35,7 @@ future: {
 - Future deprecation: the `Environment` instance was first introduced at v6.0. The deprecation of `server.moduleGraph` and other methods now in environments is planned for a future major. Moving away from server methods is not recommended yet; set the `future` flags above to identify usage.
 - Motivation: in Vite v5 and before, a dev server always had two environments (`client` and `ssr`), `server.moduleGraph` mixed modules from both (connected through `clientImportedModules` / `ssrImportedModules`), and a transformed module was represented by an `id` and a `ssr` boolean. In v6 any number of custom environments can exist, so these methods moved to the environment instance, allowing them to be called without a Vite dev server.
 - Listed under "Considering" on the breaking changes index: experimental, not recommended yet.
-- The upstream page (v8.3.4) lists the replacement as `server.client.environment.hot`; the actual property path is `server.environments.client.hot` (as used in the SSR guide).
+- The upstream page (v8.3.8) lists the replacement as `server.client.environment.hot`; the actual property path is `server.environments.client.hot` (as used in the SSR guide).
 - Feedback: Environment API feedback discussion (https://github.com/vitejs/vite/discussions/16358).
 
 ## Related
