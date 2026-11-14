@@ -35,8 +35,19 @@ mcp_servers:
 # Reload after config changes (inside a session)
 /reload-mcp
 
-# Expose Hermes itself as an MCP server
-hermes mcp serve
+# Expose Hermes itself as an MCP server (official mcp-serve plugin)
+hermes plugins install mcp-serve
+```
+
+```json
+{
+  "mcpServers": {
+    "hermes": {
+      "command": "hermes",
+      "args": ["mcp-serve"]
+    }
+  }
+}
 ```
 
 ## Notes
@@ -45,4 +56,5 @@ hermes mcp serve
 - Prefer whitelists (`tools.include`) for financial or destructive operations.
 - Set `enabled: false` to preserve a config block without connecting.
 - Ensure `npx` (JS servers) and `uvx` (Python servers) are available in `$PATH`.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp (pinned to v0.22.2)
+- Migration (v0.22 -> v0.23): running Hermes as an MCP server moved from the built-in `hermes mcp serve` to the `mcp-serve` plugin (`hermes plugins install mcp-serve`, then `hermes mcp-serve`). An MCP client configured with `"args": ["mcp", "serve"]` changes them to `["mcp-serve"]`; tool names and parameters are unchanged, and `hermes mcp serve` now prints the new spelling and the install line.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp (pinned to v0.23.1)

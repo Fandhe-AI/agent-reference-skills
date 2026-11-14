@@ -1,9 +1,9 @@
 ---
 name: hermes-agent
 description: >
-  Hermes Agent (Nous Research の AI CLI エージェント)。インストール、
+  Hermes Agent v0.23 (Nous Research の AI CLI エージェント)。インストール、
   CLI コマンド (chat, model, gateway, config, cron, webhook, mcp, skills, profile)、
-  Configuration (Terminal Backends, Memory, TTS / STT, Auxiliary Models, Local Models llama.cpp)、
+  Configuration (Terminal Backends, Memory, TTS/STT, Auxiliary Models, Local Models llama.cpp)、
   Features (Tools, Skills, Hooks, Delegation, Kanban, Voice Mode, Personality)、
   Messaging Gateway (Platform Support, Connectors)、Security、Hermes Desktop、Nous Portal。
 user-invocable: false
@@ -15,7 +15,7 @@ Hermes Agent — Nous Research が開発したオープンソース AI CLI エ�
 マルチ LLM プロバイダー対応、メッセージングプラットフォーム統合、MCP 連携、音声モード、スキルシステムを備える。
 CLI 操作・設定カスタマイズ・機能活用・デプロイ時に参照する。
 
-対象: Hermes Agent v0.22.2（2026-10-15、GitHub タグ v0.22.2 の website/docs/）
+対象: Hermes Agent v0.23.1（2026-11-10、GitHub タグ v0.23.1 の website/docs/）。v0.22.2（2026-10-15）から追従済み（旧版の記述は各ページ Notes の `Migration (v0.22 -> v0.23)` と履歴言及としてのみ残す）。ただし `samples/` のうち v0.22.2 のまま pin を残す 6 件（skills-install / memory-management / docker-terminal / voice-mode / basic-chat / messaging-gateway）は差分がコマンド・設定に影響しないことのみ確認済み。v0.23.1 で改名・削除された機能は各ページ Notes の `Migration (v0.22 -> v0.23)` に記載。v0.23.1 で新設の Packaging & Releases 系 developer-guide ページ（contributing / stable-releases 等）は未収録。
 
 ## ディレクトリ構成
 
@@ -30,6 +30,7 @@ skills/hermes-agent/
       learning-path.md
       platform-support.md
       nix-setup.md
+      official-domains.md
       termux.md
       updating.md
     cli/
@@ -45,6 +46,7 @@ skills/hermes-agent/
       configuration.md
       configuring-models.md
       managed-scope.md
+      remote-config.md
     user-guide/
       README.md
       desktop.md
@@ -218,6 +220,10 @@ skills/hermes-agent/
       README.md
       architecture.md
       agent-loop.md
+      config-backend.md
+      gateway-local-sessions.md
+      gateway-classic-cli.md
+      gateway-command-parity.md
       prompt-assembly.md
       context-compression-and-caching.md
       micro-compaction.md
@@ -246,6 +252,10 @@ skills/hermes-agent/
       adding-tools.md
       adding-providers.md
       adding-platform-adapters.md
+      browser-vault-plugin.md
+      delegation-provider-plugin.md
+      hosted-profile-owners.md
+      plugins-public-api.md
       creating-skills.md
       extending-the-cli.md
       programmatic-integration.md
@@ -316,17 +326,17 @@ skills/hermes-agent/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
-| インストール、クイックスタート、学習パス、Nix / Termux、更新、サポート対象プラットフォーム階層 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| インストール、クイックスタート、学習パス、Nix / Termux、更新、サポート対象プラットフォーム階層、公式ドメイン・フィッシング対策 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | CLI 起動オプション、TUI、スラッシュコマンド、profile コマンド、全 CLI コマンドリファレンス | cli | [references/cli/README.md](references/cli/README.md) |
-| config.yaml 設定、Terminal Backend (Docker/SSH/Modal 等)、モデル設定、managed scope、TTS/STT、Compression | configuration | [references/configuration/README.md](references/configuration/README.md) |
-| Hermes Desktop、Bot Mode、Profiles、Sessions、Docker、Git worktrees、Local Models、Windows、Claude Code / Codex からの移行 | user-guide | [references/user-guide/README.md](references/user-guide/README.md) |
+| config.yaml 設定、Terminal Backend (Docker/SSH/Modal 等)、モデル設定、managed scope、Remote Config、TTS/STT、Compression | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| Hermes Desktop、Bot Mode、Profiles、Sessions、Docker、Git worktrees、Local Models、Windows、OpenClaw / Claude Code / Codex / Cursor からの移行 (agent-importers, import-agent) | user-guide | [references/user-guide/README.md](references/user-guide/README.md) |
 | Tools & Toolsets、Memory、Skills、MCP、Voice Mode、Plugin Catalog、Browser、Computer Use、Web Dashboard、Personality | features | [references/features/README.md](references/features/README.md) |
 | Cron、Delegation、Kanban、Goals、Hooks、Loops、Heartbeat、Batch、Code Execution | automation | [references/automation/README.md](references/automation/README.md) |
 | Messaging Gateway、各プラットフォーム個別ページ (Telegram / Discord / Slack / WhatsApp / Teams / IRC 等)、サービス管理 | messaging | [references/messaging/README.md](references/messaging/README.md) |
 | セキュリティモデル、Dangerous Command Approval、egress proxy、secrets (Bitwarden / 1Password)、Container Isolation | security | [references/security/README.md](references/security/README.md) |
 | MCP 実践ガイド、Voice Mode、Bedrock / Azure / Gemini / Vertex、OAuth、cron 運用、Tips | guides | [references/guides/README.md](references/guides/README.md) |
-| agent loop、prompt assembly、compression、gateway / session storage / provider runtime 内部 | architecture | [references/architecture/README.md](references/architecture/README.md) |
-| plugin 開発、provider / tool / platform adapter 追加、Desktop Plugin SDK、Subagent Lifecycle API、skill 作成 | developer-guide | [references/developer-guide/README.md](references/developer-guide/README.md) |
+| agent loop、prompt assembly、compression、gateway / session storage / provider runtime、Config Backend、gateway local sessions / classic CLI / command parity 内部 | architecture | [references/architecture/README.md](references/architecture/README.md) |
+| plugin 開発、provider / tool / platform adapter 追加、Desktop Plugin SDK、Subagent Lifecycle API、Public Plugin API、browser vault / delegation provider プラグイン、skill 作成 | developer-guide | [references/developer-guide/README.md](references/developer-guide/README.md) |
 | FAQ、env vars、tools / toolsets、MCP config、model catalog、skills catalog、package management | reference | [references/reference/README.md](references/reference/README.md) |
 | Nous Portal、プロバイダー、provider routing、fallback、credential pools、ACP、API server | integrations | [references/integrations/README.md](references/integrations/README.md) |
 | 典型的な使い方を知りたい（チャット、MCP、音声、Docker、cron、webhook、Python library、移行等） | samples | [samples/README.md](samples/README.md) |

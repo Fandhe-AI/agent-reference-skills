@@ -112,13 +112,23 @@ hermes usage --json
 ## OpenClaw からの移行（ドライラン）
 
 ```bash
-hermes claw migrate --dry-run
+hermes plugins install agent-importers
+hermes import-agent openclaw --dry-run
 ```
 
 ## OpenClaw からの移行（全データ）
 
 ```bash
-hermes claw migrate --preset full
+hermes import-agent openclaw --preset full
 ```
 
-> **警告**: `hermes claw migrate` は `~/.openclaw` から `~/.hermes` へ設定を書き込む。`--overwrite` を指定すると既存ファイルを上書きする。実行前に `--dry-run` で確認することを推奨する。
+旧綴り `hermes claw migrate [options]` は同じインポートを実行する。移行後の残骸ディレクトリ整理は `hermes claw cleanup [--source <path>] [--dry-run] [--yes]`（`*.pre-migration` へリネーム）。API キー・bot トークンは `--migrate-secrets` 指定時のみ取り込まれる。
+
+> **警告**: `hermes import-agent openclaw`（`hermes claw migrate`）は `~/.openclaw` から `~/.hermes` へ設定を書き込む。`--overwrite` を指定すると既存ファイルを上書きし、`--migrate-secrets` は API キーを取り込む。実行前に `--dry-run` で確認することを推奨する。`hermes claw cleanup` は OpenClaw のディレクトリをリネームするため、移行完了後にのみ実行する（元に戻すには名前を戻す）。
+
+## 注記
+
+v0.23 の変更: OpenClaw 移行は `agent-importers` プラグインの `hermes import-agent openclaw`（`hermes claw` の綴りも維持）。`hermes login` / `hermes logout` 削除と `hermes auth` 系コマンドは変更なし。
+
+- Source: https://hermes-agent.nousresearch.com/docs/reference/cli-commands (pinned to v0.23.1)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/import-from-other-agents (pinned to v0.23.1)

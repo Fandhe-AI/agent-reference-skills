@@ -44,7 +44,11 @@ hermes plugins install <identifier> --ref <commit-sha>
 
 ```bash
 hermes plugins update <name>
+hermes plugins update
+hermes plugins update --yes
 ```
+
+名前なしの `update` は更新可能なプラグインを一覧し、`Update all N? [Y/n]` を確認してから 1 つずつ更新する（1 件の失敗で残りは止まらず、失敗があれば終了コード 1）。端末が無い場合は `--yes` を付けない限り何も更新されない。`--yes` でも新しい capability は未許可のまま（fail-closed）。
 
 ## プラグインの削除
 
@@ -108,3 +112,20 @@ hermes honcho mode hybrid
 ```
 
 Honcho は catalog plugin 化されており（v0.22.0〜）、`hermes plugins install honcho` 後、かつ `memory.provider` が honcho でアクティブな場合のみ `hermes honcho ...` が登録される。非アクティブなプロバイダーのサブコマンドは公開されない。従来の `hermes honcho setup` は `hermes memory setup` へリダイレクトされる。
+
+## 公式プラグインの導入例（v0.23）
+
+```bash
+hermes plugins install agent-importers
+hermes plugins install mcp-serve
+```
+
+`agent-importers` は `hermes import-agent` / `hermes claw` を、`mcp-serve` は `hermes mcp-serve` を提供する。
+
+## 注記
+
+v0.23 の変更: `hermes plugins update`（名前なし）で更新可能なプラグインを一括更新できる。
+
+- Source: https://hermes-agent.nousresearch.com/docs/reference/cli-commands (pinned to v0.23.1)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/import-from-other-agents (pinned to v0.23.1)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp (pinned to v0.23.1)

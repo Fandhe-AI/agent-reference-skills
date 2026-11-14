@@ -159,7 +159,7 @@ Search GitHub Issues, ask on the Nous Research Discord, or file a bug report wit
 ## Notes
 
 - Adapted: official docs pipe the installer straight into the shell; this page downloads and reviews it first.
-- Source: https://hermes-agent.nousresearch.com/docs/reference/faq (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/reference/faq (pinned to v0.23.1)
 
 ## Related
 
