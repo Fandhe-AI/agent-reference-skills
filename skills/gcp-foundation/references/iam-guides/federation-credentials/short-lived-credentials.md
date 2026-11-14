@@ -176,12 +176,15 @@ Manual exchange with the Security Token Service:
 POST https://sts.googleapis.com/v1/token
 ```
 
+Adapted (not in the official docs): the response is captured in a variable so the access token is not printed to the terminal or logs; the response shape is shown below.
+
 ```bash
-curl -H "Content-Type:application/x-www-form-urlencoded" \
+STS_RESPONSE="$(curl -s -H "Content-Type:application/x-www-form-urlencoded" \
     -X POST \
     https://sts.googleapis.com/v1/token \
     -d "grant_type=urn:ietf:params:oauth:grant-type:token-exchange&subject_token_type=urn:ietf:params:oauth:token-type:access_token&requested_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=original-token" \
-    --data-urlencode "options=$(cat ./access-boundary.json)"
+    --data-urlencode "options=$(cat ./access-boundary.json)")"
+DOWNSCOPED_TOKEN="$(printf '%s' "${STS_RESPONSE}" | jq -r '.access_token')"
 ```
 
 ```
@@ -226,6 +229,7 @@ Response: `access_token`, `expires_in` (only if the original token represents a 
 - The `accessBoundary` sample on the source page is missing a comma after `availableResource`; the version above adds it so the JSON is valid.
 - Access tokens are bearer tokens; downscope before passing to other components.
 - In the official Python sample, the lifetime is set to 300 seconds; samples are for local development where the caller is a user account.
+- Adapted from the official docs: the manual STS exchange `curl` captures the response in a variable instead of printing the access token.
 - Source: https://docs.cloud.google.com/iam/docs/create-short-lived-credentials-direct (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 - Source: https://docs.cloud.google.com/iam/docs/create-short-lived-credentials-delegated (retrieved 2026-11-14; CC BY 4.0)
 - Source: https://docs.cloud.google.com/iam/docs/create-downscoped-short-lived-credentials (retrieved 2026-11-14; CC BY 4.0)
