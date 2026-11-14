@@ -102,12 +102,13 @@ turbo run [tasks] [options] [-- [args passed to tasks]]
   ```bash
   turbo run web#lint
   ```
-- `--affected` is equivalent to `--filter=...[main...HEAD]` by default. Override with `TURBO_SCM_BASE` / `TURBO_SCM_HEAD`. If the checkout is too shallow, all packages are considered changed (use `--filter=blob:none --depth=0` when checking out). It works at package level; enable `futureFlags.affectedUsingTaskInputs` to filter by each task's `inputs` globs instead.
+- `--affected` is equivalent to `--filter=...[main...HEAD]` by default. Override with `TURBO_SCM_BASE` / `TURBO_SCM_HEAD`. If the checkout is too shallow, all packages are considered changed (use a blobless clone with full history: `git clone --filter=blob:none` without `--depth`). It works at package level; enable `futureFlags.affectedUsingTaskInputs` to filter by each task's `inputs` globs instead.
   ```bash
   turbo run build --affected --filter=!docs
   TURBO_SCM_BASE=development turbo run build --affected
   ```
-- The official docs suggest `--filter=blob:none --depth=0`, but Git rejects `--depth=0` (`fatal: depth 0 is not a positive number`). To get full history, omit `--depth` on a fresh `git clone --filter=blob:none`, run `git fetch --unshallow` on an existing shallow checkout, or set `fetch-depth: 0` on `actions/checkout` (a GitHub Actions input, not a Git flag).
+- Official docs (v2.11.11): a blobless clone with full history (`git clone --filter=blob:none`, without `--depth`) gives the comparison the history it needs. With `actions/checkout`, set `filter: blob:none` and `fetch-depth: 0`. (Earlier v2.11.8 docs suggested `--filter=blob:none --depth=0`, which Git rejects with `fatal: depth 0 is not a positive number`.) To get full history on an existing shallow checkout, run `git fetch --unshallow`.
+- Source: https://turborepo.dev/docs/reference/run (vercel/turborepo tag v2.11.11, fetched 2026-11-14).
 - Advanced filter examples:
   ```bash
   turbo run build --filter={./apps/*}[HEAD^1]      # changed packages in apps

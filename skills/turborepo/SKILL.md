@@ -15,7 +15,7 @@ user-invocable: false
 Turborepo — JavaScript / TypeScript モノレポ向け高性能ビルドシステム。
 turbo.json の設定、タスク管理、キャッシュ、各種ツール統合時に参照する。
 
-対象: Turborepo v2.11.8 (source: vercel/turborepo apps/docs/content/docs @ v2.11.8)
+対象: Turborepo v2.11.11 (source: vercel/turborepo apps/docs/content/docs @ v2.11.11)
 
 ## ディレクトリ構成
 
