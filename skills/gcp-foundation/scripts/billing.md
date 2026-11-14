@@ -34,6 +34,8 @@ gcloud services enable billingbudgets.googleapis.com \
 
 ### Create a budget with a Pub/Sub notification
 
+Adapted (not in the official docs): `--threshold-rule=percent=1.0` replaces `percent=100`, because `percent` is a 0.0-1.0 ratio per `gcloud billing budgets create --help`.
+
 ```bash
 gcloud billing budgets create \
     --billing-account="${BILLING_ACCOUNT_ID}" \

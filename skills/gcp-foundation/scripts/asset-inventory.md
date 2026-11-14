@@ -98,6 +98,8 @@ gcloud asset search-all-iam-policies \
 
 ### List assets and get history
 
+Adapted (not in the official docs): the fixed `2024-01-30` times are replaced with the `SNAPSHOT_TIME` / `START_TIME` / `END_TIME` placeholders (use a time within the last 35 days).
+
 ```bash
 gcloud asset list \
     --project=my-project \
@@ -146,6 +148,8 @@ gcloud asset query \
 
 To Cloud Storage:
 
+Adapted (not in the official docs): the fixed `2024-01-30` snapshot time is replaced with the `SNAPSHOT_TIME` placeholder.
+
 ```bash
 gcloud asset export \
     --project=my-project \
@@ -156,6 +160,8 @@ gcloud asset export \
 ```
 
 To BigQuery:
+
+Adapted (not in the official docs): the fixed `2024-01-30` snapshot time is replaced with the `SNAPSHOT_TIME` placeholder.
 
 ```bash
 gcloud asset export \
