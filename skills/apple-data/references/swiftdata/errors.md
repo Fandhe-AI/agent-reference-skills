@@ -54,6 +54,12 @@ DataStoreError (cases, "Getting error codes")
 - `DataStoreError` is the error type for custom `DataStore` implementations
 - Source: https://developer.apple.com/documentation/swiftdata/swiftdataerror , https://developer.apple.com/documentation/swiftdata/datastoreerror (fetched 2026-10-16, iOS 27 SDK docs)
 
+### iOS 27.0: `unknownDataStoreSchema`
+
+- Thrown when a `ModelContainer` loads a data store whose schema matches neither the current schema nor any schema in the provided migration plan. The official page suggests adding the missing schema version to the `SchemaMigrationPlan`, providing a custom migration stage, or deciding whether to recreate the store
+- Only thrown by processes linked on or after iOS 27 / macOS 27; on earlier versions `loadIssueModelContainer` is thrown instead
+- Source: https://developer.apple.com/documentation/swiftdata/swiftdataerror/unknowndatastoreschema (fetched 2026-11-14, DocC JSON of the iOS & iPadOS 27.3 beta SDK)
+
 ## Related
 
 - [DataStore / DataStoreBatching](./data-store-protocol.md)

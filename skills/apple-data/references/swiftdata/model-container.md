@@ -51,7 +51,7 @@ init(for schema: Schema, migrationPlan: (any SchemaMigrationPlan.Type)?, configu
 
 | Method | Description |
 |--------|-------------|
-| `deleteAllData()` | Removes all persisted data from storage. Deprecated in iOS/iPadOS/Mac Catalyst/macOS/tvOS/visionOS/watchOS 27.2 — renamed to `erase()`: "deleteAllData has been replaced by `erase`. Use `erase` to completely remove all of the data from a store." |
+| `deleteAllData()` | Removes all persisted data from storage. Deprecated in iOS/iPadOS/Mac Catalyst/macOS/tvOS/visionOS/watchOS 27.3 (27.2 in the 2026-10-16 fetch) — renamed to `erase()`: "deleteAllData has been replaced by `erase`. Use `erase` to completely remove all of the data from a store." |
 | `erase() throws` | Erases the container's store. iOS 18.0+, iPadOS 18.0+, Mac Catalyst 18.0+, macOS 15.0+, tvOS 18.0+, visionOS 2.0+, watchOS 11.0+ |
 | `storeIdentifier(forConfigurationNamed:) -> String?` | Returns the on-disk store identifier for the given `ModelConfiguration` name (`nil` if no store is associated or after `invalidate()`). iOS 27.0+ and the other OSes at 27.0+ |
 | `configurationName(forStoreIdentifier:) -> String?` | Returns the configuration name for a store identifier. iOS 27.0+ and the other OSes at 27.0+ |
@@ -63,6 +63,11 @@ init(for schema: Schema, migrationPlan: (any SchemaMigrationPlan.Type)?, configu
 - Store identifiers are not configuration names; use `storeIdentifier(forConfigurationNamed:)` to filter a `HistoryDescriptor` or interpret `PersistentIdentifier.storeIdentifier` (default configuration name is `"default"`)
 - `mainContext` is suitable for UI reads; create additional contexts for background work
 - Source: https://developer.apple.com/documentation/swiftdata/modelcontainer (fetched 2026-10-16, iOS 27 SDK docs); `deleteAllData()` deprecation: https://developer.apple.com/documentation/swiftdata/modelcontainer/deletealldata()
+
+### Update (2026-11-14)
+
+- `deleteAllData()` deprecation: the DocC JSON now gives `deprecatedAt` 27.3 on every platform (the 2026-10-16 fetch of this page recorded 27.2). The iOS & iPadOS 27.3 release notes do not mention it. Use `erase()`.
+- Source: https://developer.apple.com/documentation/swiftdata/modelcontainer/deletealldata() , https://developer.apple.com/documentation/swiftdata/modelcontainer/erase() (fetched 2026-11-14, DocC JSON of the iOS & iPadOS 27.3 beta SDK)
 
 ## Related
 

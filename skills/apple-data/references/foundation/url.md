@@ -58,6 +58,28 @@ let child = url.appending(path: "detail").appending(queryItems: [URLQueryItem(na
 - Bridges to `NSURL`.
 - Prefer URL-based APIs over string paths for file-system access.
 
+### Deprecated in 27.3
+
+DocC `deprecatedAt` 27.3 (iOS & iPadOS 27.3 beta SDK) with the official replacement message:
+
+| Deprecated | Use instead |
+|------------|-------------|
+| `init(fileURLWithPath:)`, `init(fileURLWithPath:isDirectory:)`, `init(fileURLWithPath:relativeTo:)`, `init(fileURLWithPath:isDirectory:relativeTo:)` | `init(filePath:directoryHint:relativeTo:)` |
+| `host`, `path`, `user`, `password`, `query`, `fragment` (properties) | `host(percentEncoded:)`, `path(percentEncoded:)`, `user(percentEncoded:)`, `password(percentEncoded:)`, `query(percentEncoded:)`, `fragment(percentEncoded:)` |
+| `appendPathComponent(_:)`, `appendPathComponent(_:isDirectory:)` | `append(path:directoryHint:)` |
+| `appendingPathComponent(_:)`, `appendingPathComponent(_:isDirectory:)` | `appending(path:directoryHint:)` |
+
+Adapted (not in the official docs): the snippet below is composed from the replacement signatures in the table, not copied from an official example.
+
+```swift
+let fileURL = URL(filePath: "/Users/me/Documents/file.txt")
+let child = fileURL.appending(path: "notes.txt", directoryHint: .notDirectory)
+```
+
+- Related deprecations at 27.3: `URLComponents.percentEncodedHost` (use `encodedHost`) and `URLSession.streamTask(with:)` (use `nw_connection_t` in Network framework instead)
+- Adapted: the example above combines the replacement APIs listed in the table; it is not an official sample
+- Source: https://developer.apple.com/documentation/foundation/url/init(fileurlwithpath:) , https://developer.apple.com/documentation/foundation/url/appendingpathcomponent(_:) , https://developer.apple.com/documentation/foundation/url/path , https://developer.apple.com/documentation/foundation/urlcomponents/percentencodedhost , https://developer.apple.com/documentation/foundation/urlsession/streamtask(with:) (fetched 2026-11-14, DocC JSON of the iOS & iPadOS 27.3 beta SDK)
+
 ## Related
 
 - [URLComponents](./urlcomponents.md)

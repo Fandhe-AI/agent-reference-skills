@@ -70,6 +70,16 @@ Event types:
 - `initializeCloudKitSchema(options:)` creates representative `CKRecord` instances for all CloudKit-using stores and uploads them. After a successful upload the schema is visible in the CloudKit Dashboard and the container deletes the representative records. It also validates the managed object model for CloudKit, so a validation error may be returned.
 - Source: https://developer.apple.com/documentation/coredata/nspersistentcloudkitcontainer , https://developer.apple.com/documentation/coredata/nspersistentcloudkitcontaineroptions (fetched 2026-10-16, iOS 27 SDK docs)
 
+### iOS 27.0: `EventChangedMessage`
+
+```swift
+struct EventChangedMessage
+let event: NSPersistentCloudKitContainer.Event
+```
+
+- Typed `NotificationCenter` message nested in `NSPersistentCloudKitContainer`; posted when a CloudKit event occurs, on the CloudKit private serial queue. It is the message-API counterpart of `eventChangedNotification`
+- Source: https://developer.apple.com/documentation/coredata/nspersistentcloudkitcontainer/eventchangedmessage (fetched 2026-11-14, DocC JSON of the iOS & iPadOS 27.3 beta SDK)
+
 ## Related
 
 - [NSPersistentContainer](./nspersistentcontainer.md)

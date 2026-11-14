@@ -55,6 +55,16 @@ protocol DataStoreBatching : DataStore {
 - Conform additionally to `DataStoreBatching` to support efficient batch deletes without fetching snapshots first
 - Conform to `HistoryProviding` alongside `DataStore` to expose change history for the custom store
 
+### iOS 27.0: `DataStoreSaveChangesResult.historyToken`
+
+```swift
+init(for storeIdentifier: String, remappedIdentifiers: [PersistentIdentifier : PersistentIdentifier] = [:], snapshotsToReregister: [PersistentIdentifier : T] = [:], historyToken: (any HistoryToken)?)
+final let historyToken: (any HistoryToken)?
+```
+
+- The result of `save(_:)` can now carry the `HistoryToken` produced by the save; see History tracking for the matching `ModelContext.NotificationKey.historyTokens`
+- Source: https://developer.apple.com/documentation/swiftdata/datastoresavechangesresult/historytoken (fetched 2026-11-14, DocC JSON of the iOS & iPadOS 27.3 beta SDK)
+
 ## Related
 
 - [ModelContainer](./model-container.md)

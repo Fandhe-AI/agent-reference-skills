@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| Adopting SwiftData for a Core Data app | Sample-project walkthrough for moving a Core Data app to SwiftData, or running both stacks (Core Data host app plus SwiftData widget) against one store file. | [adopting-swiftdata.md](./adopting-swiftdata.md) |
 | @FetchRequest (SwiftUI) | SwiftUI property wrapper that executes a Core Data fetch request and provides live-updating results to a view. Re-renders the view whenever the fetched data changes. | [fetchrequest-swiftui.md](./fetchrequest-swiftui.md) |
 | NSAsynchronousFetchRequest / NSAsynchronousFetchResult | A fetch request that retrieves results asynchronously and supports progress notification. `NSAsynchronousFetchResult` is the result object that encompasses the response from an executed asynchronous fetch request. | [nsasynchronousfetchrequest.md](./nsasynchronousfetchrequest.md) |
 | NSBatchDeleteRequest | Deletes managed objects directly at the SQLite store level without loading them into memory. Efficient for bulk deletions; bypasses context change tracking. | [nsbatchdeleterequest.md](./nsbatchdeleterequest.md) |
