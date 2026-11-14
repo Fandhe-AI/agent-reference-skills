@@ -117,6 +117,8 @@ skills/mcp-spec/
       registry-authentication.md
       registry-versioning.md
       registry-aggregators.md
+      registry-faq.md
+      registry-moderation-policy.md
     security/             # セキュリティベストプラクティス・攻撃類型
       README.md
       security-best-practices.md
@@ -202,7 +204,7 @@ skills/mcp-spec/
 | sampling・elicitation（form / URL）・roots を実装したい | client-features | [references/client-features/README.md](references/client-features/README.md) |
 | MRTR・`subscriptions/listen`・cancellation・progress のパターンを知りたい | patterns | [references/patterns/README.md](references/patterns/README.md) |
 | MCP Apps・Tasks 拡張・認可拡張・拡張の対応クライアントを知りたい | extensions | [references/extensions/README.md](references/extensions/README.md) |
-| MCP Registry への公開・`server.json`・package types・認証・バージョニングを知りたい | registry | [references/registry/README.md](references/registry/README.md) |
+| MCP Registry への公開・`server.json`・package types・認証・バージョニング・FAQ・モデレーション方針を知りたい | registry | [references/registry/README.md](references/registry/README.md) |
 | confused deputy・token passthrough・SSRF・ローカルサーバー侵害などの対策を知りたい | security | [references/security/README.md](references/security/README.md) |
 | SDK 一覧・Inspector・デバッグ・クライアント実装指針・コーディングアシスタント向け Agent Skills を知りたい | tooling | [references/tooling/README.md](references/tooling/README.md) |
 | メソッド別のスキーマ型（フィールド・必須性）を確認したい | schema | [references/schema/README.md](references/schema/README.md) |
