@@ -1,30 +1,193 @@
 # Error Messages
 
-Advanced Usage: https://react-hook-form.com/advanced-usage#ErrorMessages
+Advanced Usage: https://react-hook-form.com/advanced-usage/error-messages
 
-Error messages are visual feedback to our users when there are issues with their inputs. React Hook Form provides an `errors` object to let you retrieve errors easily. There are several different ways to improve error presentation on the screen.
+Validation errors live in [`formState.errors`](../api/useform-formstate.md), keyed by the same path you registered. Each error has a `type` (the rule that failed, such as `required`) and a `message`. This page covers where messages come from, how to render them, and how to show every failed rule at once.
 
 ## Signature / Usage
 
-Register: You can simply pass the error message to `register`, via the `message` attribute of the validation rule object, like this:
+### Write the message in the rule
 
-```javascript
-<input {...register('test', { maxLength: { value: 2, message: "error message" } })} />
+Every built-in rule accepts a message. Pass a string instead of `true`, or an object with `value` and `message`:
+
+```tsx
+register("username", {
+  required: "Enter a username.",
+  minLength: { value: 3, message: "Use at least 3 characters." },
+})
 ```
 
-Optional Chaining: The `?.` [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) operator permits reading the `errors` object without worrying about causing another error due to `null` or `undefined`.
+A `validate` function returns `true` when the value is valid, or the message to show. Use an object of named functions when a field has several custom checks, so each one gets its own error `type`:
 
-```javascript
-errors?.firstName?.message
+```tsx
+register("password", {
+  validate: {
+    length: (value) => value.length >= 8 || "Use at least 8 characters.",
+    number: (value) => /\d/.test(value) || "Include a number.",
+  },
+})
 ```
 
-Lodash `get`: If your project is using [lodash](https://lodash.com), then you can leverage the lodash [get](https://lodash.com/docs/4.17.15#get) function. Eg:
+With a [schema resolver](https://react-hook-form.com/integrations/resolvers), messages come from the schema instead, for example `z.string().min(3, "Use at least 3 characters.")`.
 
-```javascript
-get(errors, 'firstName.message')
+### Render messages
+
+Read a message with optional chaining. Nested fields follow the registered path, so `address.city` is at `errors.address?.city`:
+
+```tsx
+{
+  errors.address?.city && <p role="alert">{errors.address.city.message}</p>
+}
 ```
+
+The [`ErrorMessage`](https://react-hook-form.com/docs/useformstate/errormessage) component does the lookup for you. It accepts any registered path as a string, renders nothing when the field is valid, and reads errors from `control` or the nearest [`FormProvider`](../api/formprovider.md).
+
+### Show every failed rule
+
+By default, validation stops at the first failed rule for each field. Set `criteriaMode: "all"` to collect every failure. They appear in `errors.<field>.types`, keyed by rule, and `ErrorMessage` passes them to `render` as `messages`. This is useful for password rules that the user fixes one by one.
+
+The example below combines all three: rule messages, every failed password rule, and a nested field.
+
+```tsx
+import { ErrorMessage, useForm } from "react-hook-form"
+
+type FormValues = {
+  username: string
+  password: string
+  address: { city: string }
+}
+
+export default function SignupForm() {
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({
+    criteriaMode: "all",
+    defaultValues: { username: "", password: "", address: { city: "" } },
+  })
+
+  return (
+    <form noValidate onSubmit={handleSubmit(console.log)}>
+      <label htmlFor="username">Username</label>
+      <input
+        id="username"
+        aria-invalid={!!errors.username}
+        aria-describedby="username-error"
+        {...register("username", {
+          required: "Enter a username.",
+          minLength: { value: 3, message: "Use at least 3 characters." },
+        })}
+      />
+      <ErrorMessage
+        control={control}
+        name="username"
+        render={({ message }) => (
+          <p id="username-error" role="alert">
+            {message}
+          </p>
+        )}
+      />
+
+      <label htmlFor="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        aria-invalid={!!errors.password}
+        aria-describedby="password-errors"
+        {...register("password", {
+          required: "Enter a password.",
+          validate: {
+            length: (value) =>
+              value.length >= 8 || "Use at least 8 characters.",
+            number: (value) => /\d/.test(value) || "Include a number.",
+          },
+        })}
+      />
+      <ErrorMessage
+        control={control}
+        name="password"
+        render={({ messages }) =>
+          messages && (
+            <ul id="password-errors" role="alert">
+              {Object.entries(messages).map(([type, message]) => (
+                <li key={type}>{message}</li>
+              ))}
+            </ul>
+          )
+        }
+      />
+
+      <label htmlFor="city">City</label>
+      <input
+        id="city"
+        aria-invalid={!!errors.address?.city}
+        {...register("address.city", { required: "Enter a city." })}
+      />
+      {errors.address?.city && (
+        <p role="alert">{errors.address.city.message}</p>
+      )}
+
+      <button type="submit">Sign up</button>
+    </form>
+  )
+}
+```
+
+### A reusable message component
+
+Destructuring `formState.errors` in the form component re-renders the whole form whenever any error changes. In a large form, render each message in a small component that subscribes only to its own field with [`useFormState`](../api/useformstate.md):
+
+```tsx
+import {
+  get,
+  useFormState,
+  type FieldError,
+  type FieldPath,
+  type FieldValues,
+} from "react-hook-form"
+
+export function FieldMessage<T extends FieldValues>({
+  name,
+}: {
+  name: FieldPath<T>
+}) {
+  // Subscribes to this field's errors only, so only this message re-renders.
+  const { errors } = useFormState<T>({ name })
+  const error: FieldError | undefined = get(errors, name)
+  if (!error?.message) return null
+
+  return (
+    <p id={`${name}-error`} role="alert">
+      {error.message}
+    </p>
+  )
+}
+```
+
+Use it inside a `FormProvider`, for example `<FieldMessage<FormValues> name="address.city" />`. Point the input's `aria-describedby` at the same `id` so screen readers read the message with the field. The `get` helper exported by `react-hook-form` resolves dotted paths such as `address.city`, which plain property access cannot.
+
+### Errors that don't belong to one field
+
+- **Server and request errors**: set them with `setError("root.server", ...)` and read them from `errors.root?.server`. See [Handling server errors](https://react-hook-form.com/advanced-usage/server-errors).
+- **Field array rules**: a `rules` error on [`useFieldArray`](../api/usefieldarray.md) appears at `errors.<arrayName>?.root`.
+
+### Accessibility checklist
+
+- Set `aria-invalid` on the input when it has an error.
+- Link the message with `aria-describedby`, using an `id` that is unique on the page.
+- Render the message in an element with `role="alert"` so it is announced when it appears.
+- Keep messages specific and actionable: "Use at least 8 characters" rather than "Invalid".
+
+See [Accessibility](./accessibility.md) for focus management and testing with a screen reader.
+
+## Notes
+
+- Source: https://react-hook-form.com/advanced-usage/error-messages (documentation master c0511c9, fetched 2026-11-14)
 
 ## Related
 
 - [errormessage](../api/errormessage.md)
 - [useform-formstate](../api/useform-formstate.md)
+- [accessibility](./accessibility.md)

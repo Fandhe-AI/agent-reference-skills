@@ -1,49 +1,204 @@
-# Transform and Parse
+# Transform and parse
 
-Advanced Usage: https://react-hook-form.com/advanced-usage#TransformandParse
+Advanced Usage: https://react-hook-form.com/advanced-usage/transform-and-parse
 
-Native inputs return values in `string` format unless `valueAsNumber` or `valueAsDate` is used; you can read more in [this section](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement). However, it's not perfect, as we still have to deal with `NaN` or `null` values. Therefore, it's better to handle transformations at the custom hook level. In the following example, we use the `Controller` to handle input and output transformations. You can also achieve a similar result with a custom `register`.
+Convert between input strings and the types your form stores.
+
+Native inputs always hold strings. Your form values often need other types: a number for a quantity, `null` for an empty optional field, an array for a tag list. This page shows where to convert between the two, and which option fits each case.
 
 ## Signature / Usage
 
-```javascript
-import { Controller } from "react-hook-form"
+### Choose where to convert
 
-const ControllerPlus = ({ control, transform, name, defaultValue }) => (
-  <Controller
-    defaultValue={defaultValue}
-    control={control}
-    name={name}
-    render={({ field }) => (
-      <input
-        {...field}
-        onChange={(e) => field.onChange(transform.output(e))}
-        value={transform.input(field.value)}
-      />
-    )}
-  />
-)
+| Need                                           | Use                                                                                                 |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| A required number from `<input type="number">` | `valueAsNumber: true` in [`register`](https://react-hook-form.com/docs/useform/register)                                       |
+| A date from `<input type="date">`              | `valueAsDate: true`                                                                                 |
+| Any other conversion on a native input         | `setValueAs`                                                                                        |
+| A controlled component that displays text      | Keep the text in local state and store the parsed value with [`useController`](https://react-hook-form.com/docs/usecontroller) |
+| Conversion rules shared with the server        | A schema transform, such as `z.coerce` with [Zod](https://react-hook-form.com/integrations/zod)                                |
 
-// usage below:
-<ControllerPlus
-  transform={{
-    input: (value) => (isNaN(value) || value === 0 ? "" : value.toString()),
-    output: (e) => {
-      const output = parseInt(e.target.value, 10)
-      return isNaN(output) ? 0 : output
+### Native inputs
+
+`valueAsNumber`, `valueAsDate`, and `setValueAs` run when React Hook Form reads the input. The input keeps the raw text the user typed, so partial input like `-` or `1.` is never rewritten.
+
+- `valueAsNumber` returns `NaN` for an empty or non-numeric input. Check for it with `Number.isNaN` or `Number.isInteger` in `validate`. `required` does not catch it, because `NaN` is a value.
+- `setValueAs` receives the input's text, and also your default value when the field registers. Handle both types, as the `tags` field in the example does.
+- `setValueAs` is ignored when `valueAsNumber` or `valueAsDate` is set.
+- These options apply to native inputs only. Values set with [`setValue`](https://react-hook-form.com/docs/useform/setvalue) are stored as given.
+
+### Controlled components
+
+A controlled input shows `field.value`. If you format that number back to text on every keystroke, partial input breaks: typing `12.5` shows `12` after the dot, and the next key gives `125`. Keep the text the user typed in local state and store the parsed value in the form. The `PriceInput` component below does this.
+
+The local text initializes once. If you call [`reset`](https://react-hook-form.com/docs/useform/reset) or [`setValue`](https://react-hook-form.com/docs/useform/setvalue) on that field, also update the text, or remount the component with a new `key`.
+
+```tsx
+import { useState } from "react"
+import { useController, useForm, type Control } from "react-hook-form"
+
+type FormValues = {
+  quantity: number
+  discount: number | null
+  price: number | null
+  tags: string[]
+}
+
+// For controlled components: keep what the user typed as text, and store
+// the parsed number (or null) in the form.
+function PriceInput({ control }: { control: Control<FormValues> }) {
+  const { field, fieldState } = useController({
+    control,
+    name: "price",
+    rules: {
+      validate: (value) =>
+        value === null || value > 0 || "Enter a price above 0.",
     },
-  }}
-  control={control}
-  name="number"
-  defaultValue=""
-/>
+  })
+  const [text, setText] = useState(field.value?.toString() ?? "")
+
+  return (
+    <>
+      <label htmlFor="price">Price</label>
+      <input
+        id="price"
+        inputMode="decimal"
+        name={field.name}
+        ref={field.ref}
+        onBlur={field.onBlur}
+        value={text}
+        onChange={(event) => {
+          setText(event.target.value)
+          const trimmed = event.target.value.trim()
+          field.onChange(trimmed === "" ? null : Number(trimmed))
+        }}
+      />
+      {fieldState.error && <p role="alert">{fieldState.error.message}</p>}
+    </>
+  )
+}
+
+export default function OrderForm({
+  onSubmit,
+}: {
+  onSubmit: (values: FormValues) => void
+}) {
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({
+    defaultValues: { quantity: 1, discount: null, price: null, tags: [] },
+  })
+
+  return (
+    <form noValidate onSubmit={handleSubmit(onSubmit)}>
+      <label htmlFor="quantity">Quantity</label>
+      <input
+        id="quantity"
+        type="number"
+        {...register("quantity", {
+          valueAsNumber: true,
+          validate: (value) =>
+            (Number.isInteger(value) && value >= 1) || "Enter a whole number.",
+        })}
+      />
+      {errors.quantity && <p role="alert">{errors.quantity.message}</p>}
+
+      <label htmlFor="discount">Discount (%), optional</label>
+      <input
+        id="discount"
+        inputMode="decimal"
+        {...register("discount", {
+          setValueAs: (value: string | number | null) =>
+            value === "" || value === null ? null : Number(value),
+          validate: (value) =>
+            value === null ||
+            (value >= 0 && value <= 100) ||
+            "Enter a number from 0 to 100.",
+        })}
+      />
+      {errors.discount && <p role="alert">{errors.discount.message}</p>}
+
+      <PriceInput control={control} />
+
+      <label htmlFor="tags">Tags (comma separated)</label>
+      <input
+        id="tags"
+        {...register("tags", {
+          setValueAs: (value: string | string[]) =>
+            Array.isArray(value)
+              ? value
+              : value
+                  .split(",")
+                  .map((tag) => tag.trim())
+                  .filter(Boolean),
+        })}
+      />
+
+      <button type="submit">Save</button>
+    </form>
+  )
+}
 ```
+
+For valid input, `handleSubmit` receives values such as `{ quantity: 3, discount: 12.5, price: 12.5, tags: ["a", "b", "c"] }`. An empty discount or price is stored as `null`.
+
+### Schema transforms
+
+With a [resolver](https://react-hook-form.com/integrations/resolvers), the schema can parse values for you. The input type (what the inputs hold) and the output type (what the schema returns) then differ. Pass both to `useForm`, and `handleSubmit` receives the parsed output:
+
+```tsx
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+
+const schema = z.object({
+  age: z.coerce.number().int().min(18, "You must be 18 or older."),
+  email: z.string().trim().toLowerCase().email("Enter a valid email."),
+})
+
+type FormInput = z.input<typeof schema> // what the inputs hold
+type FormOutput = z.output<typeof schema> // what handleSubmit receives
+
+export default function SignupForm({
+  onSubmit,
+}: {
+  onSubmit: (values: FormOutput) => void
+}) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormInput, unknown, FormOutput>({
+    resolver: zodResolver(schema),
+    defaultValues: { age: "", email: "" },
+  })
+
+  return (
+    <form noValidate onSubmit={handleSubmit(onSubmit)}>
+      <label htmlFor="age">Age</label>
+      <input id="age" inputMode="numeric" {...register("age")} />
+      {errors.age && <p role="alert">{errors.age.message}</p>}
+      <label htmlFor="email">Email</label>
+      <input id="email" type="email" {...register("email")} />
+      {errors.email && <p role="alert">{errors.email.message}</p>}
+      <button type="submit">Sign up</button>
+    </form>
+  )
+}
+```
+
+The form stores `"30"` and `" A@B.CO "`, and `handleSubmit` receives `{ age: 30, email: "a@b.co" }`. Rules run on the parsed values, so `min(18)` checks the number, not the string. Use the same schema on the server to parse the request.
 
 ## Notes
 
-- Spread `field` onto the input before overriding `onChange`/`value`, so `onBlur`, `name`, and `ref` are still forwarded — without `ref`, RHF can't focus the input on a validation error, and without `onBlur`, `isTouched` never updates.
+- Source: https://react-hook-form.com/advanced-usage/transform-and-parse (documentation master c0511c9, fetched 2026-11-14)
 
 ## Related
 
-- [controller](../api/controller.md)
 - [useform-register](../api/useform-register.md)
+- [usecontroller](../api/usecontroller.md)
+- [useform-setvalue](../api/useform-setvalue.md)
+- [useform-reset](../api/useform-reset.md)

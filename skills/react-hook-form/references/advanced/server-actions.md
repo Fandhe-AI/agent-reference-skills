@@ -1,98 +1,190 @@
-# Server Actions / useActionState
+# Server Actions
 
-Advanced Usage: https://react-hook-form.com/advanced-usage#ServerActionsuseActionState
+Advanced Usage: https://react-hook-form.com/advanced-usage/server-actions
 
-Next.js Server Actions and React's [`useActionState`](https://react.dev/reference/react/useActionState) work well together, but combining them with React Hook Form can look convoluted if you try to sync state between them with `useEffect`. You don't need to: `useActionState` returns a plain dispatch function, so you can call it directly inside `handleSubmit`, and only after client-side validation has passed. Client-side validation is for UX only: a Server Action can be invoked directly, so the server must validate the data again on its own.
+Validate on the client, then submit to a Server Action with useActionState.
+
+React 19 [Server Actions](https://react.dev/reference/rsc/server-functions) and [`useActionState`](https://react.dev/reference/react/useActionState) pair well with React Hook Form. React Hook Form validates on the client and gives instant feedback. The action validates again on the server, saves, and returns a result. `useActionState` tracks the pending state and the result, so you don't need to sync them with `useEffect`.
 
 ## Signature / Usage
 
-`actions.js`: a Server Action that receives the previous state and the validated form data.
+### The flow
 
-```javascript
-"use server"
+1. `handleSubmit` runs client validation. If it fails, the action never runs.
+2. On success, call the dispatch function from `useActionState` inside [`startTransition`](https://react.dev/reference/react/startTransition), so React tracks `isPending`.
+3. The action parses the input again, saves, and returns a typed result.
+4. Field errors in the result become form errors through `useForm`'s [`errors`](https://react-hook-form.com/docs/useform#errors) option.
 
+### Example
+
+This example works with the Next.js App Router or any React 19 framework that supports Server Actions.
+
+**`schema.ts`**: shared by the client and the action, with the result type.
+
+```tsx
 import { z } from "zod"
 
-const profileSchema = z.object({ name: z.string().min(1) })
+export const profileSchema = z.object({
+  name: z.string().trim().min(1, "Enter your name."),
+  username: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9_]{3,20}$/, "Use 3–20 lowercase letters, numbers, or _."),
+})
 
-export async function updateProfile(previousState, data) {
-  // replace with your app's auth/session lookup
-  const user = await getCurrentUser()
-  if (!user) {
-    return { success: false, error: "Unauthorized." }
+export type ProfileValues = z.infer<typeof profileSchema>
+export type ProfileField = keyof ProfileValues
+
+export type ActionState =
+  | { status: "idle" }
+  | { status: "success"; savedAt: string }
+  | {
+      status: "error"
+      message?: string
+      fieldErrors?: Partial<Record<ProfileField, string>>
+    }
+```
+
+**`actions.ts`**: the Server Action. It parses its input with the same schema, because anyone can call a Server Action with any payload.
+
+```tsx
+"use server"
+
+import { profileSchema, type ActionState, type ProfileField } from "./schema"
+// Replace with your application's authentication and data modules.
+import { requireUser } from "./auth"
+import { isUsernameTaken, updateUser } from "./db"
+
+export async function updateProfile(
+  _previous: ActionState,
+  input: unknown
+): Promise<ActionState> {
+  // The input is untrusted, even though the client validated it.
+  const result = profileSchema.safeParse(input)
+  if (!result.success) {
+    const fieldErrors: Partial<Record<ProfileField, string>> = {}
+    for (const issue of result.error.issues) {
+      const name = issue.path[0] as ProfileField
+      fieldErrors[name] ??= issue.message
+    }
+    return { status: "error", fieldErrors }
   }
-  const parsed = profileSchema.safeParse(data)
-  if (!parsed.success) {
-    return { success: false, error: "Invalid input." }
+
+  const user = await requireUser()
+  if (await isUsernameTaken(result.data.username, user.id)) {
+    return {
+      status: "error",
+      fieldErrors: { username: "That username is taken." },
+    }
   }
+
   try {
-    // persist only the explicitly allowed fields, scoped to the authenticated user
-    await db.user.update({
-      where: { id: user.id },
-      data: { name: parsed.data.name },
-    })
-    return { success: true }
+    await updateUser(user.id, result.data)
+    return { status: "success", savedAt: new Date().toISOString() }
   } catch {
-    return { success: false, error: "Something went wrong. Please try again." }
+    return { status: "error", message: "We couldn't save your profile." }
   }
 }
 ```
 
-`profile-form.jsx`: `handleSubmit` runs validation first, then calls the action dispatcher (`submitAction`) with the already-parsed data, so there is no need to re-parse `FormData` on the server or bridge state with `useEffect`.
+**`profile-form.tsx`**: a Client Component.
 
-```javascript
+```tsx
 "use client"
 
-import { useForm } from "react-hook-form"
-import { useActionState, startTransition } from "react"
+import { startTransition, useActionState, useMemo } from "react"
+import { useForm, type FieldErrors } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { updateProfile } from "./actions"
+import { profileSchema, type ActionState, type ProfileValues } from "./schema"
 
-export default function ProfileForm() {
-  const [state, submitAction, isPending] = useActionState(updateProfile, null)
+const initialState: ActionState = { status: "idle" }
+
+export function ProfileForm({ profile }: { profile: ProfileValues }) {
+  const [state, submitAction, isPending] = useActionState(
+    updateProfile,
+    initialState
+  )
+
+  // Turn the action's field errors into form errors. useMemo keeps the
+  // object stable between renders, as the errors option requires.
+  const serverErrors = useMemo(() => {
+    if (state.status !== "error" || !state.fieldErrors) return undefined
+    const errors: FieldErrors<ProfileValues> = {}
+    for (const [name, message] of Object.entries(state.fieldErrors)) {
+      errors[name as keyof ProfileValues] = { type: "server", message }
+    }
+    return errors
+  }, [state])
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm()
+  } = useForm<ProfileValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: profile,
+    errors: serverErrors,
+  })
 
   return (
-    <form onSubmit={handleSubmit((data) => startTransition(() => submitAction(data)))}>
-      <input {...register("name", { required: "Name is required" })} />
-      {errors.name && <span role="alert">{errors.name.message}</span>}
+    <form
+      noValidate
+      onSubmit={handleSubmit((values) => {
+        startTransition(() => submitAction(values))
+      })}
+    >
+      <label htmlFor="name">Name</label>
+      <input id="name" aria-invalid={!!errors.name} {...register("name")} />
+      {errors.name && <p role="alert">{errors.name.message}</p>}
+
+      <label htmlFor="username">Username</label>
+      <input
+        id="username"
+        aria-invalid={!!errors.username}
+        {...register("username")}
+      />
+      {errors.username && <p role="alert">{errors.username.message}</p>}
+
+      {state.status === "error" && state.message && (
+        <p role="alert">{state.message}</p>
+      )}
+      {state.status === "success" && <p role="status">Profile saved.</p>}
 
       <button type="submit" disabled={isPending}>
-        {isPending ? "Saving..." : "Save"}
+        {isPending ? "Saving…" : "Save"}
       </button>
-
-      {state?.success && <p>Profile updated.</p>}
-      {state?.error && <p role="alert">{state.error}</p>}
     </form>
   )
 }
 ```
 
-If the server needs to report field-level errors (for example, "email already in use"), map them onto React Hook Form's error state with `setError`. This is a legitimate use of `useEffect`, since you are synchronizing an external state source (the action's returned `state`) into the form rather than working around missing render-time state:
+How it fits together:
 
-```javascript
-useEffect(() => {
-  if (state?.fieldErrors) {
-    for (const [name, message] of Object.entries(state.fieldErrors)) {
-      setError(name, { type: "server", message })
-    }
-  }
-}, [state, setError])
-```
+- `isPending` is `true` from dispatch until the action returns, so the button can't be pressed twice.
+- The action receives a plain object, not `FormData`, because `handleSubmit` passes the validated values.
+- `serverErrors` is rebuilt only when `state` changes. The `errors` option needs a stable object, because a new object on every render would update the form repeatedly.
+- A server error on `username` clears as soon as the user edits that field, like any other error.
+- `state.message` covers failures that don't belong to a field.
+
+### Without JavaScript
+
+This pattern needs client JavaScript, because `handleSubmit` runs in the browser. If the form must work before hydration, use a native form action: pass the action to `<form action={...}>` and read `FormData` on the server. React Hook Form's [`Form`](https://react-hook-form.com/docs/useform/form) component can also submit to an action through its `action` prop.
 
 ## Notes
 
-- Adapted from the official example (advanced-usage#ServerActionsuseActionState): server-side validation (zod `safeParse`), explicit field selection, authentication / authorization check and server-derived `where: { id }` added, and `startTransition` wrapping added.
-- `isPending` and `state` come straight from `useActionState` and are read directly in the JSX, so there's nothing to synchronize: `isPending` replaces a manual loading `useState`, and `state.success` / `state.error` replace a manual result `useState`. The client calls the Server Action only once `handleSubmit` has confirmed the form is valid, but that check is a UX aid and does not protect the server; validate again inside the action.
-- Server Actions can be invoked directly, so validate again on the server (e.g. `schema.safeParse`) and persist only explicitly selected fields. Also authenticate the caller and scope the update to the authenticated user's record (use the server-side ID, never one sent by the client).
-- Calling the `useActionState` dispatch outside a transition does not update `isPending`; wrap it as `startTransition(() => submitAction(data))`.
-- If you don't need `useActionState`'s pending/result state at all, React Hook Form's own `Form` component can submit directly to a Server Action through its `action` prop, with progressive enhancement handled for you.
+- Source: https://react-hook-form.com/advanced-usage/server-actions (documentation master c0511c9, fetched 2026-11-14)
+
+### Things to watch
+
+- **Authorize in the action.** A Server Action is a public endpoint. Check the user's session and permissions inside it, as `requireUser` does here.
+- **Return data, don't throw.** Return expected failures, such as validation errors, as values. A thrown error reaches the nearest error boundary instead of the form.
+- **Reset after saving.** To make the saved values the new baseline, call [`reset`](https://react-hook-form.com/docs/useform/reset) when `state.status` becomes `"success"`, for example in an effect keyed on `state`.
+- **Next.js setup.** See the [Next.js guide](https://react-hook-form.com/integrations/nextjs) for Client and Server Component boundaries, and [React 19](https://react-hook-form.com/integrations/react-19) for form actions.
 
 ## Related
 
-- [useform-form](../api/useform-form.md)
-- [useform-seterror](../api/useform-seterror.md)
+- [useform](../api/useform.md)
 - [useform-handlesubmit](../api/useform-handlesubmit.md)
+- [useform-form](../api/useform-form.md)
+- [useform-reset](../api/useform-reset.md)

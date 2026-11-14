@@ -16,8 +16,8 @@ React Hook Form v7 の全 API ドキュメントを網羅したスキル。
 
 ## 対象バージョン
 
-- ライブラリ: react-hook-form v7.90.0（GitHub Releases の latest stable、2026-10-10 公開。v8.0.0-beta.4 は prerelease のため対象外）
-- ドキュメント原本: GitHub `react-hook-form/documentation` の master commit `2ab1b24db1292116df5f5611253017a5eafd4833`（現行リリースタグは v1〜v3 のみのため commit pin）、2026-10-16 取得
+- ライブラリ: react-hook-form v7.92.0（GitHub Releases の latest stable、2026-11-11 公開。v8.0.0-beta.5 は prerelease のため対象外）
+- ドキュメント原本: GitHub `react-hook-form/documentation` の master commit `c0511c9`（現行リリースタグは v1〜v3 のみのため commit pin）、2026-11-14 取得。docs 再設計後の構成（`/advanced-usage/<slug>`、`/integrations/<slug>`）に追従
 - 参照先: https://react-hook-form.com（`/docs/...`、`/get-started`、`/ts`、`/advanced-usage`、`/dev-tools`）
 - `ErrorMessage` は v7.88 から本体内蔵。`FormState`（旧 `FormStateSubscribe`）のファイル名は `formstatesubscribe.md` を維持
 
@@ -97,7 +97,11 @@ skills/react-hook-form/
     advanced/
       README.md
       accessibility.md
-      wizard-form.md
+      wizard-form.md          # Multi-step forms
+      editing-saved-data.md
+      server-errors.md
+      conditional-fields.md
+      isolating-subscriptions.md
       smart-form-component.md
       error-messages.md
       connect-form.md
@@ -109,6 +113,15 @@ skills/react-hook-form/
       transform-and-parse.md
       server-actions.md
       registering-opaque-types.md
+    integrations/
+      README.md
+      overview.md
+      nextjs.md
+      react-19.md
+      resolvers.md
+      shadcn-ui.md
+      yup.md
+      zod.md
     faqs/
       README.md
       faqs.md
@@ -153,6 +166,8 @@ skills/react-hook-form/
 | 型定義、ジェネリクス、Resolver / SubmitHandler / UseFormReturn / FieldErrors / RegisterOptions / OpaqueTypes、FieldPath | typescript | [references/typescript/README.md](references/typescript/README.md) |
 | Server Actions / useActionState、Smart Form、Connect Form、FormProvider のパフォーマンス、Transform and Parse | advanced | [references/advanced/README.md](references/advanced/README.md) |
 | アクセシビリティ、ウィザードフォーム、テスト、仮想リスト | advanced | [references/advanced/README.md](references/advanced/README.md) |
+| 保存済みデータの編集 (dirtyFields)、サーバーエラー処理、条件付きフィールド、購読の分離 (isolating subscriptions) | advanced | [references/advanced/README.md](references/advanced/README.md) |
+| Zod / Yup resolver、shadcn/ui、Next.js、React 19 との統合 | integrations | [references/integrations/README.md](references/integrations/README.md) |
 | パフォーマンス、クラスコンポーネント、watch vs getValues、条件付きレンダリング | faqs | [references/faqs/README.md](references/faqs/README.md) |
 | DevTools のインストール・デバッグ | dev-tools | [references/dev-tools/README.md](references/dev-tools/README.md) |
 | 典型的な使い方を知りたい、実装例を参照したい | samples | [samples/README.md](samples/README.md) |
