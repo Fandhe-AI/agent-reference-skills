@@ -45,6 +45,10 @@ let videoTracks = try await asset.loadTracks(withMediaType: .video)
 - All properties use the async `load(_:)` API; do not access them synchronously on the main thread.
 - Properties are loaded lazily; cancel loading with `cancelLoading()` when no longer needed.
 - Conforms to `AVAsynchronousKeyValueLoading`.
+- `AVAssetImageGenerator.dynamicRangePolicy` (iOS 18.0+, macOS 15.0+) preserves HDR data in generated images when set to match the source video (June 2024 Updates).
+- Source: https://developer.apple.com/documentation/avfoundation/avassetimagegenerator/dynamicrangepolicy-swift.property (DocC JSON, fetched 2026-11-14)
+- The synchronous accessors for the properties above (for example `duration`, `tracks`, `isPlayable`) are deprecated in iOS 16.0 / macOS 13.0; use `load(_:)`. `AVAssetTrack`'s synchronous accessors (for example `timeRange`) are deprecated at the same versions.
+- Source: https://developer.apple.com/documentation/avfoundation/avasset/duration (DocC JSON, fetched 2026-11-14)
 
 ## Related
 

@@ -52,6 +52,8 @@ let player = AVPlayer(playerItem: item)
 - Inherits all async loading APIs from `AVAsset`; use `load(_:)` for properties like `tracks`, `duration`.
 - Use `resourceLoader` to implement custom URL schemes or FairPlay Streaming (DRM).
 - `AVURLAssetPreferPreciseDurationAndTimingKey` can significantly increase initialization time for MP4 files; only set when precise seeking is required.
+- `AVAssetResourceLoader.sendsCommonMediaClientDataAsHTTPHeaders` (iOS 18.0+, macOS 15.0+), reached through `resourceLoader`, sends Common Media Client Data (CMCD) as HTTP headers when enabled.
+- Source: https://developer.apple.com/documentation/avfoundation/avassetresourceloader/sendscommonmediaclientdataashttpheaders (DocC JSON, fetched 2026-11-14)
 
 ## Related
 
