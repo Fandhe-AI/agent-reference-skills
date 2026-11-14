@@ -15,4 +15,6 @@
 | mpsgraph-tensor | MPSGraphTensor / MPSGraphTensorData / MPSGraphOperation / MPSGraphShapedType | [mpsgraph-tensor.md](./mpsgraph-tensor.md) |
 | mpsgraph-executable | MPSGraphExecutable / MPSGraphCompilationDescriptor / serialization / deployment target | [mpsgraph-executable.md](./mpsgraph-executable.md) |
 | mpsgraph-operations | MPSGraph op families (arithmetic / convolution / RNN / FFT / random / sort・topK / control flow) | [mpsgraph-operations.md](./mpsgraph-operations.md) |
+| mpsgraph-attention | MPSGraphSDPADescriptor and `scaledDotProductAttention` (scale / mask / causal / attention sinks) | [mpsgraph-attention.md](./mpsgraph-attention.md) |
+| mpsf-color-conversion | MPSFColorConversion / MPSFunction: color-space conversion MSL function generation | [mpsf-color-conversion.md](./mpsf-color-conversion.md) |
 | ray-tracing | MPSRayIntersector / acceleration structures for GPU ray tracing | [ray-tracing.md](./ray-tracing.md) |

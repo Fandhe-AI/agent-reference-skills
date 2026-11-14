@@ -22,6 +22,10 @@ let results = graph.run(with: commandQueue, feeds: feeds, targetTensors: [z], ta
 | `constant(_:shape:dataType:)` | `(Double, [NSNumber], MPSDataType) -> MPSGraphTensor` | Declares a constant tensor |
 | `run(with:feeds:targetTensors:targetOperations:)` | `(MTLCommandQueue, [MPSGraphTensor: MPSGraphTensorData], [MPSGraphTensor], [MPSGraphOperation]?) -> [MPSGraphTensor: MPSGraphTensorData]` | Synchronously executes the graph and returns results |
 | `runAsync(with:feeds:targetTensors:targetOperations:executionDescriptor:)` | — | Non-blocking variant with a completion-capable `MPSGraphExecutionDescriptor` |
+| `runAsync(on:feeds:targetTensors:targetOperations:executionDescriptor:)` (27.0+) | `(any MTL4CommandQueue, [MPSGraphTensor: MPSGraphTensorData], [MPSGraphTensor], [MPSGraphOperation]?, MPSGraphExecutionDescriptor?) -> [MPSGraphTensor: MPSGraphTensorData]` | Metal 4 variant; asynchronous, returns immediately if a completion handler is set |
+| `runAsync(on:feeds:targetOperations:resultsDictionary:executionDescriptor:)` (27.0+) | `(any MTL4CommandQueue, [MPSGraphTensor: MPSGraphTensorData], [MPSGraphOperation]?, [MPSGraphTensor: MPSGraphTensorData], MPSGraphExecutionDescriptor?)` | Metal 4 variant that fills a caller-provided results dictionary |
+| `scaledDotProductAttention(query:key:value:descriptor:name:)` (27.0+) | `(MPSGraphTensor, MPSGraphTensor, MPSGraphTensor, MPSGraphSDPADescriptor, String?) -> MPSGraphTensor` | Scaled dot product attention; see [mpsgraph-attention](./mpsgraph-attention.md) |
+| `planarTensor(tensor:name:)` (26.3+) | `(MPSGraphTensor, String?) -> MPSGraphTensor` | Real-valued tensor from a complex-valued tensor with real and imaginary planes separated (`<3xcomplex<f16>>` becomes `<6xf16>`); a real-valued input is returned unchanged |
 | `encode(to:feeds:targetTensors:targetOperations:executionDescriptor:)` | `(MPSCommandBuffer, ...) -> [MPSGraphTensor: MPSGraphTensorData]` | Encodes the graph onto an existing `MPSCommandBuffer` alongside other MPS kernels |
 | `placeholderTensors` | `[MPSGraphTensor]` | All placeholder tensors declared on this graph |
 
@@ -33,9 +37,12 @@ let results = graph.run(with: commandQueue, feeds: feeds, targetTensors: [z], ta
 - Unrelated to the Compute Graph framework ("Build and run custom particle effects and compute simulations for RealityKit using a programmable node graph", iOS/macOS 27.0+; covered by the apple-spatial skill). A pre-trained model can also run on the GPU timeline through a Metal 4 machine-learning pass (see `metal-compute/machine-learning-passes.md`).
 - Distinct from Core ML's graph/model API (apple-ml skill): `MPSGraph` builds and executes an ad-hoc tensor graph directly against `MTLCommandQueue`/`MTLDevice`, with no `.mlmodel` involved.
 
+- Source (retrieved 2026-11-14; DocC JSON, no beta flag): https://developer.apple.com/documentation/metalperformanceshadersgraph/mpsgraph/runasync(on:feeds:targettensors:targetoperations:executiondescriptor:), https://developer.apple.com/documentation/metalperformanceshadersgraph/mpsgraph/runasync(on:feeds:targetoperations:resultsdictionary:executiondescriptor:), https://developer.apple.com/documentation/metalperformanceshadersgraph/mpsgraph/scaleddotproductattention(query:key:value:descriptor:name:), https://developer.apple.com/documentation/metalperformanceshadersgraph/mpsgraph/planartensor(tensor:name:)
+
 ## Related
 
 - [mpsgraph-tensor](./mpsgraph-tensor.md)
 - [mpsgraph-executable](./mpsgraph-executable.md)
 - [mpsgraph-operations](./mpsgraph-operations.md)
+- [mpsgraph-attention](./mpsgraph-attention.md)
 - [mpsnngraph](./mpsnngraph.md)
