@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/sessions.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/sessions.md / last verified: 2026-11-14 -->
 
 # Work with sessions
 
@@ -61,6 +61,7 @@ for await (const message of query({
 | `forkSession` (`fork_session`) | boolean | Combined with `resume`, creates a new session starting from a copy of the original's history. |
 | `continue` (`continue_conversation`) | boolean | Resumes the most recent session in the current directory. |
 | `persistSession` (TypeScript only) | boolean | When `false`, the session exists only in memory for the call's duration. |
+| `sessionStore` (`session_store`) | adapter | Mirror transcripts to your own backend so another host can resume them (see session-storage). |
 
 ## Notes
 
@@ -72,6 +73,12 @@ for await (const message of query({
 - Forking branches the conversation history, not the filesystem — file edits made by a forked agent are real and visible to any session working in the same directory.
 - The experimental V2 session API (`createSession()` with `send`/`stream`) was removed in TypeScript Agent SDK 0.3.142; use `query()` and the session options described here.
 - To resume sessions across machines or in serverless environments, mirror transcripts to shared storage with a `SessionStore` adapter.
+- Resume across hosts, three options: (1) pass a `sessionStore` / `session_store` adapter (the store key derives from the working directory, so resume from a matching `cwd`); (2) move the session file `~/.claude/projects/<encoded-cwd>/<session-id>.jsonl` into any directory under `~/.claude/projects/` on the new host before calling `resume`; (3) skip resume and pass the results you need (analysis, decisions, diffs) into a fresh session's prompt, which is often more robust.
+- Resume is same-machine only unless one of the above is used: the session file must exist on the current machine. Before Claude Code v2.1.223 the lookup was scoped to the current project directory and its git worktrees; SDK versions bundling an older CLI still behave this way.
+- A working directory whose converted name exceeds 200 characters is truncated with an appended hash, so match the first 200 characters of the converted name when listing `projects/`.
+- Resume is also the way to recover from `error_max_turns` / `error_max_budget_usd` with a higher limit. A single-shot `query()` raises after yielding that error result, so catch the error before resuming. A fork's ID is on the init `SystemMessage` (TypeScript) or the result message `session_id`; it differs from the original.
+- Within a single `query()` call, permission prompts and `AskUserQuestion` are handled in-loop and don't end the call.
+- Source: https://code.claude.com/docs/en/agent-sdk/sessions.md (fetched 2026-11-14)
 - `listSessions()`/`list_sessions()`, `getSessionMessages()`/`get_session_messages()`, `get_session_info()`/`getSessionInfo()`, `rename_session()`/`renameSession()`, and `tag_session()`/`tagSession()` are available for enumerating, reading, and organizing sessions on disk.
 
 ## Related

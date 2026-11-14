@@ -1,5 +1,5 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/quickstart.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/agent-sdk/overview.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/quickstart.md / last verified: 2026-11-14 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/overview.md / last verified: 2026-11-14 -->
 
 # setup
 
@@ -15,7 +15,7 @@ npm install @anthropic-ai/claude-agent-sdk
 npm install -D tsx
 ```
 
-Node.js 18 以上が必要。`tsx` は開発時に TypeScript を直接実行するための依存。
+Node.js 18.14 以上が必要。`tsx` は開発時に TypeScript を直接実行するための依存。
 
 ## Python SDK のインストール（uv）
 
@@ -24,6 +24,8 @@ uv add claude-agent-sdk
 ```
 
 Python 3.10 以上が必要。
+
+TypeScript / Python のどちらの SDK もネイティブの Claude Code バイナリを同梱するため、通常は別途 Claude Code のインストールは不要。バイナリが無いのは、pip が wheel ではなくソース配布物を入れた場合（例: ARM64 Windows）や、`npm ci --omit=optional` のように optional dependencies を省いた場合。その場合は Claude Code をネイティブインストールし、TypeScript では `pathToClaudeCodeExecutable` にパスを渡す（Python は `PATH` 上から探す）。
 
 ## Python SDK のインストール（pip）
 

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/configuration.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/configuration.md / last verified: 2026-11-14 -->
 
 # Configure your agent
 
@@ -92,7 +92,7 @@ Mid-session setters (streaming input only; TypeScript: methods on the object `qu
 
 | Name | Description |
 |------|-------------|
-| `setModel()` / `set_model()` | Switch the model; call with no model to return to Claude Code's default model |
+| `setModel()` / `set_model()` | Switch the model; call with no model to return to Claude Code's default model. If the session is in auto mode and the new model doesn't support it, the session changes to `default` mode |
 | `setPermissionMode()` / `set_permission_mode()` | Switch the permission mode |
 | `applyFlagSettings()` (TypeScript) | Apply settings at runtime; takes settings-file keys, not options fields |
 | `updateSettings()` (TypeScript) | Write one allowlisted key to a settings file (`"localSettings"`, or `"userSettings"` for `effortLevel` only) |
@@ -100,6 +100,26 @@ Mid-session setters (streaming input only; TypeScript: methods on the object `qu
 ## Notes
 
 - Model selection order, aliases, and fallback chain cap are defined in the Claude Code model configuration docs (Setting your model / Model aliases / Fallback model chains). In TypeScript, a fallback equal to `model` throws at startup.
+- Example fallback chain (TypeScript list; Python takes a single fallback in the official example):
+
+  ```typescript
+  const options = {
+    model: "claude-fable-5",
+    fallbackModel: "claude-opus-5,claude-sonnet-5",
+  };
+  ```
+
+  ```python
+  options = ClaudeAgentOptions(
+      model="claude-fable-5",
+      fallback_model="claude-opus-5",
+  )
+  ```
+
+- `settings` precedence is documented under "Settings precedence" in the TypeScript and Python references. Python and TypeScript both accept a path or inline JSON string.
+- `applyFlagSettings()` example from the official page: `await session.applyFlagSettings({ effortLevel: "high" })`; `updateSettings("localSettings", { outputStyle: "Explanatory" })` takes effect on the next request and persists for later sessions that load `local` settings; `"userSettings"` accepts only `effortLevel`, saved as the default for the session's current model without changing the running session's effort.
+- `maxTurns: 0` means no limit; `maxBudgetUsd: 0` is rejected by the CLI at startup so the session never runs.
+- Source: https://code.claude.com/docs/en/agent-sdk/configuration.md (fetched 2026-11-14)
 - Messages API parameters `temperature`, `top_p`, and `max_tokens` have no fields on the options object in either language. Set the effort level or a spend cap instead, or call the Messages API directly.
 - `env`: in TypeScript it replaces the subprocess environment (spread `process.env` to keep `PATH`, `HOME`, `ANTHROPIC_API_KEY`); in Python the SDK merges your values over the inherited environment. Unset: the subprocess inherits your environment in both languages.
 - Example gateway routing:

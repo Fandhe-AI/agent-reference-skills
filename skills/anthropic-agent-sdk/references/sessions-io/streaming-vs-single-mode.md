@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/streaming-vs-single-mode.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/streaming-vs-single-mode.md / last verified: 2026-11-14 -->
 
 # Streaming Input
 
@@ -56,6 +56,11 @@ try {
 - In Python, a generator exception is logged at debug level and the session stalls without raising; enable debug logging if a streaming session hangs with no output.
 - Single Message Input does **not** support direct image attachments, dynamic message queueing, real-time interruption, or natural multi-turn conversation.
 - A single-shot `query()` call raises/throws after yielding a final error result (e.g. `error_max_turns`); wrap the loop in a try block if your code needs to continue.
+- In Python, streaming input goes through `ClaudeSDKClient`: `await client.query(message_generator())` then `client.receive_response()`. Its loop ends at the first result message, so to read multiple responses use one `query()` / `receive_response()` pair per message. Python user messages use the dict shape `{"type": "user", "message": {"role": "user", "content": ...}}`; images are base64 `image` content blocks (`media_type: "image/png"`) alongside a `text` block.
+- If an image block's `source` is missing or not an object, the SDK reports no error: Claude Code sends Claude a text note such as `[Image could not be processed: image block has no source object]` and the session continues.
+- Continuing after a single-shot call: `continue: true` (TypeScript) / `continue_conversation=True` (Python). Python raises on an error result (the official comment names `ResultError`).
+- Streaming-input queue semantics for turn and budget caps are described in the agent-loop page (a queued message starts a new turn; the max-turns count restarts, the budget accumulates).
+- Source: https://code.claude.com/docs/en/agent-sdk/streaming-vs-single-mode.md (fetched 2026-11-14)
 
 ## Related
 

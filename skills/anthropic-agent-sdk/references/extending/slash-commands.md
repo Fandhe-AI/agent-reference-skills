@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/slash-commands (merged into https://code.claude.com/docs/en/agent-sdk/skills#commands-in-agent-sdk-sessions) / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/slash-commands (merged into https://code.claude.com/docs/en/agent-sdk/skills#commands-in-agent-sdk-sessions) / last verified: 2026-11-14 -->
 
 # Slash Commands in the SDK
 
@@ -48,7 +48,9 @@ Fix issue #$0 with priority $1.
 
 ## Notes
 
-- The official slash-commands page was merged into the skills page ("Extend agents with skills", section "Commands in Agent SDK sessions", https://code.claude.com/docs/en/agent-sdk/skills#commands-in-agent-sdk-sessions). Confirmed 2026-10-16: it no longer appears in llms.txt and its URL returns the same content as the skills page. This page is kept for reference: skills.md summarizes the merged official section; this page keeps the dispatch details (`slash_commands`, unknown-command behavior, `/compact`, `/clear`).
+- The official slash-commands page was merged into the skills page ("Extend agents with skills", section "Commands in Agent SDK sessions", https://code.claude.com/docs/en/agent-sdk/skills#commands-in-agent-sdk-sessions). It has no Markdown twin of its own (confirmed 2026-11-14) and is retained here only for the legacy URL; for current material go to [Skills](./skills.md). This page keeps the dispatch details (`slash_commands`, unknown-command behavior, `/compact`, `/clear`).
+- Dispatch does not depend on the `skills` option: `/<name>` runs a user-invocable skill even when the `skills` list omits it. A command can hit the `maxTurns` / `max_turns` limit like any other prompt and end the query with an error result; wrap the loop in `try`/`catch` (`try`/`except` in Python) or raise `maxTurns`. `/clear` leaves the previous conversation on disk; return to it by passing its session ID to the `resume` option.
+- Source: https://code.claude.com/docs/en/agent-sdk/skills#commands-in-agent-sdk-sessions (fetched 2026-11-14)
 - The former slash-commands page described `allowed-tools` as restricting tools; the merged skills page describes it as pre-approval, which the table above follows.
 - The command surface has four kinds of entries: built-in commands (e.g. `/compact`), bundled skills (`code-review`, `verify`), your skills, and custom command files in `.claude/commands/`. MCP prompts can also appear as commands.
 - A `/<name>` that matches neither a command in the session nor a built-in does not fail the query. Claude Code sends the prompt to Claude as an ordinary message with a note that the command didn't run, spending one model turn. Before v2.1.274 it returned `Unknown command: /<name>` as the result without a model turn.

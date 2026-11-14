@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/skills / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/skills / last verified: 2026-11-14 -->
 
 # Extend agents with skills
 
@@ -37,6 +37,7 @@ options = ClaudeAgentOptions(
 |------|------|-------------|
 | `skills` | `"all"` \| string[] \| `[]` | Which discovered Skills Claude can invoke; omitted = discovered skills enabled (CLI behavior); `[]` = Claude can invoke none (dispatch by `/<name>` still runs user-invocable skills) |
 | `settingSources` / `setting_sources` | array | When set explicitly, include `"project"` (project and added-directory skills) and/or `"user"` (personal skills); defaults load both. Skills can also come from the `plugins` option |
+| `additionalDirectories` / `add_dirs` | string[] | `<dir>/.claude/skills/` in each directory is covered by the `project` source (passed to Claude Code as `--add-dir`) |
 
 ## Notes
 
@@ -45,11 +46,15 @@ options = ClaudeAgentOptions(
 - Pre-approving tools: in SDK sessions you can pre-approve tools for a project or personal skill with the skill's `allowed-tools` frontmatter or with the `allowedTools` option (`allowed_tools` in Python). If managed settings set `allowManagedPermissionRulesOnly`, Claude Code ignores both.
 - When you set `skills`, the SDK adds the Skill tool to `allowedTools` automatically. If you also pass an explicit `tools` list, include `"Skill"` in it. When `skills` is omitted, discovered skills are enabled and the Skill tool is available, matching CLI behavior.
 - Names in the `skills` list match the `name` field in `SKILL.md` or the skill's directory name; use `plugin:skill` for plugin-provided skills. Wildcards (a bare `*` or a `:*` suffix) are not allowed; pass `"all"` instead.
+- A skill in an `additionalDirectories` / `add_dirs` directory gets a prefixed name when its name clashes with an enterprise, personal, or project skill, or one in a directory added earlier; list it by that name (with a `verify` skill in `../api` and `../web`, added in that order, list `verify` and `web:verify`). Requires Claude Code v2.1.309 or later.
+- Skills load from `~/.claude/skills/`, `<cwd>/.claude/skills/`, and `.claude/skills/` in any parent of `cwd` up to the repository root (default `query()` options load user and project sources). The `init` `skills` array lists the same skills whether or not they are in your `skills` list.
+- Commands: dispatching `/<name>` does not depend on the `skills` option and restricting the list does not restrict dispatch. The `system/init` `slash_commands` field lists dispatchable commands (those needing an interactive terminal, such as `/theme`, are absent); MCP prompts can also appear as commands. A `.claude/commands/` file named after a bundled skill (`code-review`, `verify`) shadows it, and `slash_commands` lists the name once. The SDK loads `.claude/commands/` and `~/.claude/commands/` from the same two scopes as skills.
 - Invalid names are rejected before the session starts: an empty name, a name containing parentheses, commas, or control characters, a name padded with whitespace, or a wildcard form. TypeScript throws an `Error` (SDK 0.3.221+; earlier versions did not check), e.g. `Invalid skill name "docs:*": wildcard-suffix names are not allowed; list each skill by its exact name.` (empty name: `Skill names must be non-empty strings.`). Python raises `ValueError` (0.2.129+), e.g. `ValueError: Invalid skill name 'docs:*': wildcard-suffix names are not allowed; list each skill by its exact name.` (empty name: `Skill names must be non-empty strings`).
 - When Claude tries to invoke a skill not in the `skills` list, the Skill tool returns `Skill <name> is not in this session's skills allowlist`. Dispatch by sending `/<name>` in a prompt does not depend on the `skills` list and still runs a user-invocable skill.
 - The `system`/`init` message's `skills` array lists user-invocable Skills that have a `description` or `when_to_use` frontmatter field, plus bundled skills included with Claude Code; a Skill with `user-invocable: false` still loads but is omitted from the array (and from `slash_commands`).
 - Commands in Agent SDK sessions: the command surface is built-in commands (e.g. `/compact`), bundled skills (e.g. `/code-review`, `/verify`), your skills, and `.claude/commands/` files. Details on `slash_commands`, unknown-command behavior, `/compact` and `/clear` are in slash-commands.md.
 - This is Claude Agent SDK (library) Skills loading/filtering. The Claude Code CLI's own Skills behavior (creation, `/skill-name` invocation from the terminal) is documented under anthropic-claude-code-extend. The Claude API (Messages API) Agent Skills (skill upload/execution via the API) are documented under anthropic-api-tools-mcp.
+- Source: https://code.claude.com/docs/en/agent-sdk/skills (fetched 2026-11-14)
 
 ## Related
 

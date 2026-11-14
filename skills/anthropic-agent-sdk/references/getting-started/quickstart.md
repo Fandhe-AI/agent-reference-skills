@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/quickstart.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/quickstart.md / last verified: 2026-11-14 -->
 
 # Quickstart
 
@@ -39,12 +39,16 @@ for await (const message of query({
 
 ## Notes
 
-- Prerequisites: Node.js 18+ or Python 3.10+, and an Anthropic account/API key from the Claude Console.
+- Prerequisites: Node.js 18.14+ or Python 3.10+, and an Anthropic account/API key from the Claude Console.
 - Install: TypeScript `npm install @anthropic-ai/claude-agent-sdk` (+ `tsx` for dev); Python `uv add claude-agent-sdk` or `pip install claude-agent-sdk`.
 - Both SDKs bundle a native Claude Code binary in most installs; exceptions (ARM64 Windows pip sdist, `npm ci --omit=optional`) require installing Claude Code natively and pointing the SDK at it.
 - The SDK reads `ANTHROPIC_API_KEY` from the process environment; it does not load `.env` files automatically.
 - Third-party auth: `CLAUDE_CODE_USE_BEDROCK`, `CLAUDE_CODE_USE_ANTHROPIC_AWS` + `ANTHROPIC_AWS_WORKSPACE_ID`, `CLAUDE_CODE_USE_VERTEX`, `CLAUDE_CODE_USE_FOUNDRY` env vars select Bedrock, Claude Platform on AWS, Google Vertex, or Microsoft Foundry credentials respectively.
 - Tool table: `Read`/`Glob`/`Grep` = read-only analysis; `Read`/`Edit`/`Glob` = analyze and modify; `Read`/`Edit`/`Bash`/`Glob`/`Grep` = full automation.
+- TypeScript new project: `npm init -y`, `npm pkg set type=module`, `npm install @anthropic-ai/claude-agent-sdk`, `npm install --save-dev tsx`; run with `npx tsx agent.ts`. In a CommonJS project name the script `agent.mts`. If `npm ci --omit=optional` skipped the binary, reinstall with optional dependencies or install Claude Code natively and set `pathToClaudeCodeExecutable`. Python (uv): `uv init`, `uv add claude-agent-sdk`, `uv run agent.py`; pip needs an activated virtual environment.
+- To limit the built-in tools to a set, pass it as `tools`; listing it in `allowedTools` only pre-approves those tools and the agent can still call others subject to the permission mode.
+- Authentication errors such as `Not logged in` or `Invalid API key` usually mean `ANTHROPIC_API_KEY` is not set in the shell that runs the agent. Troubleshooting page covers CLI start failures and results without structured output.
+- Source: https://code.claude.com/docs/en/agent-sdk/quickstart.md (fetched 2026-11-14)
 - Permission modes are evaluated together with allow/deny rules in a fixed order; see the permissions reference for the precedence.
 
 ## Related
