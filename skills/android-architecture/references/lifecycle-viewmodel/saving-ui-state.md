@@ -35,6 +35,9 @@ Comparison of the three tiers, from fastest/least durable to slowest/most durabl
 - `onSaveInstanceState(Bundle)` (the pre-`ViewModel` Activity/Fragment callback) is the same underlying mechanism as `SavedStateHandle` — both are only invoked while the component is stopped and are backed by a `Bundle`, so both share its size limits and serialization cost; `SavedStateHandle` is the modern, `ViewModel`-integrated way to write to that saved state rather than overriding the callback directly.
 - Don't put large or complex objects (e.g. bitmaps) into saved state; store an id or key instead and reload the object from persistent storage.
 - See `SavedStateHandle` for the API used to read/write saved state from within a `ViewModel`.
+- In Compose, saved state for composables is `rememberSerializable` (KotlinX Serialization, for `@Serializable` types) or `rememberSaveable` (primitives or when `@Serializable` is not used); in a `ViewModel` it is `SavedStateHandle`. Both appear in the "saved state" column above and share the serialization cost.
+- To reload data after process death, the guide suggests `SavedStateHandle` for `ViewModel` state, and `rememberSerializable` for UI-related data that does not need to live in the `ViewModel`.
+- Source: https://developer.android.com/topic/libraries/architecture/saving-states (fetched 2026-11-14).
 
 ## Related
 

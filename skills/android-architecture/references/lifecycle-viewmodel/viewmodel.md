@@ -28,6 +28,23 @@ class DiceRollViewModel : ViewModel() {
 }
 ```
 
+```kotlin
+class CloseableCoroutineScope(
+    context: CoroutineContext = SupervisorJob() + Dispatchers.Main.immediate
+) : Closeable, CoroutineScope {
+    override val coroutineContext: CoroutineContext = context
+    override fun close() {
+        coroutineContext.cancel()
+    }
+}
+
+class MyViewModel(
+    private val coroutineScope: CoroutineScope = CloseableCoroutineScope()
+) : ViewModel(coroutineScope) {
+    // Other ViewModel logic ...
+}
+```
+
 ## Options / Props
 
 | Name | Type | Default | Description |
@@ -48,6 +65,8 @@ class DiceRollViewModel : ViewModel() {
 - Package: `androidx.lifecycle` (module `lifecycle-viewmodel`).
 - Source (primary, signatures and KDoc): Google Maven sources jar https://dl.google.com/android/maven2/androidx/lifecycle/lifecycle-viewmodel/2.11.0/lifecycle-viewmodel-2.11.0-sources.jar (`commonMain/androidx/lifecycle/ViewModel.kt`, `ViewModelStore`).
 - Release notes: https://developer.android.com/jetpack/androidx/releases/lifecycle (2.11.0-alpha01). The API reference pages on developer.android.com are not fetchable, so the sources jar above is the basis for this page.
+- The `CloseableCoroutineScope` example above shows passing a custom scope (or one or more `Closeable` objects) to the `ViewModel` constructor; it is closed automatically when the `ViewModel` is cleared.
+- Source: https://developer.android.com/topic/libraries/architecture/viewmodel (fetched 2026-11-14).
 
 ## Related
 
