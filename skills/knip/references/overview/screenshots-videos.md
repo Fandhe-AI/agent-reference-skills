@@ -2,8 +2,6 @@
 
 Source: https://knip.dev/overview/screenshots-videos
 
-## Overview
-
 The upstream page shows Knip in action with a video and screenshots. This page keeps the commands they demonstrate; the media files themselves are not reproduced.
 
 ## Signature / Usage
