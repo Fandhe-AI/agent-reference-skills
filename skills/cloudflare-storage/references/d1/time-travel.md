@@ -36,6 +36,8 @@ Output of `info`:
 - Retain state longer than 30 days by exporting D1 to R2 with Workflows (Export and save D1 database example). Cloudflare Workflows is covered by the cloudflare-stateful skill (https://developers.cloudflare.com/workflows/examples/backup-d1/).
 - `date +%s` gives a Unix timestamp on macOS and Windows per the source.
 - Restores are recorded in audit logs as `TimeTravel`.
+- Bookmarks can advance due to Cloudflare internal maintenance events, such as instance restarts or storage checkpointing, without any SQL writes from your application. A newer current bookmark does not mean your data changed. To verify data state, compare row counts or use `wrangler d1 time-travel info` with a specific past timestamp.
+- Source: https://developers.cloudflare.com/d1/reference/time-travel/ (production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

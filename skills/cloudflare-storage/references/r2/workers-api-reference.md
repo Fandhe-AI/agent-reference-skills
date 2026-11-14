@@ -178,6 +178,7 @@ while (truncated) {
 ## Notes
 
 - Adapted from the official docs: added an authorization check (secret binding `AUTH_KEY_SECRET` compared to the `X-Custom-Auth-Key` header); the official example is unauthenticated and must not be deployed as is.
+- If `value` is a `ReadableStream`, its length must be known (for `put()` and `uploadPart()`): for example, a request body with a `Content-Length` header, or the readable half of a `FixedLengthStream`. Otherwise the call throws `TypeError: Provided readable stream must have a known length (request/response body or readable half of FixedLengthStream)`. This includes a request body sent without `Content-Length` (chunked) and the readable side of a `TransformStream`. To store such a stream, buffer it first (for example `await request.arrayBuffer()`) or pipe it through a `FixedLengthStream` if you know its length.
 - `get()` returns an `R2Object` with `body` undefined if a precondition fails; `put()` returns `null` if a precondition fails and the object is not stored.
 - R2 writes and deletes are strongly consistent. `delete` accepts up to 1000 keys per call. `list` is lexicographically ordered and returns up to 1000 entries, possibly fewer.
 - Use `httpEtag` (quoted, RFC 9110) when returning an etag in a response header.
@@ -186,6 +187,7 @@ while (truncated) {
 - `resumeMultipartUpload` does no validation of `uploadId`. Uncompleted multipart uploads are aborted after 7 days; an `R2MultipartUpload` does not guarantee an active underlying upload, so add error handling. Parts must be uniform in size except the last.
 - MD5 checksum is included by default for non-multipart objects.
 - Bindings are covered by the cloudflare-workers skill and Wrangler configuration by the cloudflare-wrangler skill. R2 is Cloudflare's S3-compatible object storage; for Supabase Storage see the supabase skill, for Vercel Blob see the vercel skill.
+- Source: https://developers.cloudflare.com/r2/api/workers/workers-api-reference/ (production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

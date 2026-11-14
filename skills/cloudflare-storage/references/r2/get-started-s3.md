@@ -99,10 +99,12 @@ console.log(
 - Credentials: dashboard **Storage & databases > R2 > Overview > Manage in API Tokens > Create Account API token** (or **Create User API token**), choose **Object Read & Write** and **Apply to specific buckets only**. Copy the Access Key ID and Secret Access Key; the secret cannot be viewed again.
 - The S3 API endpoint URL is shown at the bottom of the Create API Token confirmation page, or on the R2 Overview page.
 - Install: `pip install boto3` (Python) or `npm install @aws-sdk/client-s3` (JavaScript).
+- To develop without accessing a deployed bucket, use the local S3-compatible endpoint (see `local-development.md`).
 - R2 is Cloudflare's S3-compatible object storage; for Supabase Storage see the supabase skill, for Vercel Blob see the vercel skill.
 
 ## Related
 
+- [Local development](./local-development.md)
 - [S3 API compatibility](./s3-api-compatibility.md)
 - [Authentication](./api-tokens.md)
 - [Presigned URLs](./s3-presigned-urls.md)

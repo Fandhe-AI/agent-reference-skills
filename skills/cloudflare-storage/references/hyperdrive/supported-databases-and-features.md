@@ -60,10 +60,12 @@ MySQL TLS (SSL) modes:
 ## Notes
 
 - Supported PostgreSQL authentication modes: password (`md5`), password (`password`, clear-text), SASL (`SCRAM-SHA-256`).
-- Unsupported PostgreSQL features: SQL-level prepared statement management (`PREPARE`, `DISCARD`, `DEALLOCATE`, `EXECUTE`); advisory locks; `LISTEN` and `NOTIFY`; `PREPARE` and `DEALLOCATE`; any per-session state modification not explicitly documented as supported.
+- Unsupported PostgreSQL features: SQL-level prepared statement management (`PREPARE`, `DISCARD`, `DEALLOCATE`, `EXECUTE`); session-level advisory locks (`pg_advisory_lock`, `pg_advisory_lock_shared`, `pg_try_advisory_lock`, `pg_try_advisory_lock_shared`); `LISTEN` and `NOTIFY`; `PREPARE` and `DEALLOCATE`; any per-session state modification not explicitly documented as supported.
+- Session-level advisory locks: Hyperdrive does not reject these commands, but a session-level lock can remain held by a pooled connection after your client disconnects, blocking other clients. Use transaction-level advisory locks (`pg_advisory_xact_lock`, `pg_advisory_xact_lock_shared`, `pg_try_advisory_xact_lock`, `pg_try_advisory_xact_lock_shared`, including two-key overloads) within an explicit transaction instead (see `how-hyperdrive-works.md`, pooling mode). Earlier revisions of the official page listed "advisory locks" generally as unsupported; this was clarified in #34666 (2026-11-03).
 - Unsupported MySQL features: non-UTF8 characters in queries; `USE` statements; multi-statement queries; prepared statements via SQL (`PREPARE`/`EXECUTE`) and protocol-level prepared statements; `COM_INIT_DB` messages; authentication plugins other than `caching_sha2_password` or `mysql_native_password`.
 - For unsupported statements, use a second, direct client without Hyperdrive.
 - Certificate configuration: see [tls-ssl-certificates](./tls-ssl-certificates.md).
+- Source: https://developers.cloudflare.com/hyperdrive/reference/supported-databases-and-features/ (production `34d908a`, fetched 2026-11-14)
 
 ## Related
 

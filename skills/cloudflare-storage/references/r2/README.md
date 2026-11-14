@@ -7,6 +7,7 @@
 | Get started: CLI | Use R2 with Wrangler, rclone, or AWS CLI | [get-started-cli.md](./get-started-cli.md) |
 | Get started: S3 | Use R2 with S3-compatible SDKs (boto3, AWS SDK) | [get-started-s3.md](./get-started-s3.md) |
 | Get started: Workers API | Bind a bucket to a Worker and read/write objects | [get-started-workers-api.md](./get-started-workers-api.md) |
+| Local development | Local R2 simulation, remote bindings, local public and S3-compatible endpoints | [local-development.md](./local-development.md) |
 | How R2 works | Architecture, write and read paths, performance | [how-r2-works.md](./how-r2-works.md) |
 | Create new buckets | Create and list buckets, naming rules | [buckets-create.md](./buckets-create.md) |
 | Delete buckets | Empty and delete buckets | [buckets-delete.md](./buckets-delete.md) |
@@ -26,6 +27,7 @@
 | Error codes | R2 error codes for Workers and S3 APIs | [api-error-codes.md](./api-error-codes.md) |
 | Authentication | R2 API tokens, permissions, S3 credentials | [api-tokens.md](./api-tokens.md) |
 | S3 API compatibility | Supported and unsupported S3 operations | [s3-api-compatibility.md](./s3-api-compatibility.md) |
+| Conditional operations | Conditional headers on S3 writes: create-only, atomicity, multipart, reconcile | [s3-conditional-operations.md](./s3-conditional-operations.md) |
 | S3 API extensions | R2-specific S3 extensions and headers | [s3-extensions.md](./s3-extensions.md) |
 | Presigned URLs | Temporary object access without exposing credentials | [s3-presigned-urls.md](./s3-presigned-urls.md) |
 | Temporary credentials | Short-lived scoped S3 credentials | [s3-temporary-credentials.md](./s3-temporary-credentials.md) |
