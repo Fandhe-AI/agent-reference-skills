@@ -90,7 +90,7 @@ Configuration fields:
 | Delegation | `delegation.type` `client`, `responses`, or `decisions` (Decisions-voice integration); omitted or `null` selects client | The delegation type is fixed for the session; `session.update` changes settings within the existing mode (see decisions-voice.md for Decisions) |
 | Storage | `store`; default `false`; `true` makes the session forkable | Choose at startup |
 
-Additional voices (API name, language, regional influence, presentation, source): `quartz` (English, Australian, Feminine, Generated), `ripple` (English, Australian, Masculine, Natural), `vesper` (English, British, Masculine, Natural), `willow` (English, Irish, Feminine, Natural), `stone` (English, Irish, Masculine, Natural), `gleam` (English, North American, Feminine, Natural), `meridian` (English, North American, Masculine, Natural), `bossa` (Portuguese, Brazilian, Feminine, Natural), `tempo` (Portuguese, Brazilian, Masculine, Natural), `beacon` (English, Filipino, Masculine, Generated), `delta` (English, Southern U.S., Feminine, Generated), `cinder` (English, Southern U.S., Masculine, Generated).
+Additional voices (API name, language, regional influence, presentation, source): `quartz` (English, Australian, Feminine, Generated), `ripple` (English, Australian, Masculine, Natural), `vesper` (English, British, Masculine, Natural), `willow` (English, Irish, Feminine, Natural), `stone` (English, Irish, Masculine, Natural), `gleam` (English, North American, Feminine, Natural), `meridian` (English, North American, Masculine, Natural), `bossa` (Portuguese, Brazilian, Feminine, Natural), `tempo` (Portuguese, Brazilian, Masculine, Natural), `beacon` (English, Filipino, Masculine, Generated), `delta` (English, Southern U.S., Feminine, Generated), `cinder` (English, Southern U.S., Masculine, Generated), `nuri` (German, Feminine, Natural), `juni` (German, Feminine, Natural), `flitz` (German, Masculine, Natural), `brise` (French, Feminine, Natural), `sillage` (French, Masculine, Natural), `nira` (Hindi, Feminine, Natural), `harema` (Japanese, Feminine, Natural), `shida` (Japanese, Masculine, Natural), `noeul` (Korean, Feminine, Natural). The German, French, Hindi, Japanese, and Korean voices were added on Oct 16, 2026 and have no regional influence listed.
 
 Context events:
 
@@ -132,7 +132,8 @@ Fork startup overrides: WebSocket: `store`, Responses delegation settings, `audi
 - Errors: `error.client_event_id` identifies the failed command. Some moderation events end the session; others cut off the current speech and emit `error` without ending it.
 - Usage: `session.usage.updated` reports cumulative seconds; use the latest value (12 then 15 means 15). Track backend token usage separately from nested Responses events.
 - Graceful close: finish needed Responses work, install the `session.closed` listener, send `session.close`, keep connections open while events drain, read final `usage.seconds` / `reason`, then clean up. `session.close` cancels queued Responses and rejects further commands. Without `session.closed`, final usage is unconfirmed; stored sessions can take longer to finalize.
-- Source: https://developers.openai.com/api/docs/guides/live-conversations
+- Source: https://developers.openai.com/api/docs/guides/live-conversations (Markdown twin, fetched 2026-11-14)
+- Source: https://developers.openai.com/api/docs/changelog (Oct 16, 2026 entry, fetched 2026-11-14)
 
 ## Related
 
@@ -142,3 +143,4 @@ Fork startup overrides: WebSocket: `store`, Responses delegation settings, `audi
 - [WebSockets](./websocket.md)
 - [Costs](./costs.md)
 - [Events](./events.md)
+- [Custom voices](../audio/custom-voices.md)

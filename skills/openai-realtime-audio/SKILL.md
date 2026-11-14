@@ -5,7 +5,7 @@ description: >
   GPT-Live (gpt-live-1, full-duplex, delegation, /v1/live/sessions),
   Realtime API (WebRTC / WARP / WebSocket / SIP, sessions / events, client secrets,
   VAD (server_vad / semantic_vad), tools/MCP), speech-to-speech voice agents,
-  speech-to-text (gpt-transcribe / gpt-live-transcribe), text-to-speech, custom voices, translation。
+  speech-to-text (gpt-transcribe / gpt-live-transcribe), text-to-speech, custom voices (prompt-to-voice), translation。
 user-invocable: false
 ---
 
@@ -16,7 +16,7 @@ OpenAI の音声 API を 2 系統でカバーする。
 - GPT-Live（`gpt-live-1`、full-duplex で backend への delegation を持つ音声 API、`/v1/live/sessions`、2026-09-10 GA）。公式ハブは新規の会話型音声アプリでは GPT-Live から始めるよう案内している
 - Realtime API（WebRTC / WARP / WebSocket / SIP 経由の低遅延 speech-to-speech セッション）と、Audio エンドポイント（file transcription, text-to-speech, custom voices）
 
-対象版: developers.openai.com の Markdown twin を 2026-10-17 に取得（changelog 最新 Oct 15, 2026。URL に版は無い）。
+対象版: developers.openai.com の Markdown twin。2026-10-17 に全ページを取得し、2026-11-14 に changelog（最新 Nov 5, 2026）を再確認して `live/sip.md`（outbound SIP 全 organization 提供・India SIP エンドポイント）・`live/sessions.md`（GPT-Live の新 voice 9 種）・`audio/custom-voices.md`（prompt-to-voice）・`realtime/sip.md` を再取得・更新した。他ページは 2026-10-17 取得のまま（URL に版は無い）。
 Deprecation の要点: TTS モデルは 2027-01-06、文字起こしモデルと `/v1/audio/translations` は 2027-02-26、legacy realtime / audio は 2027-01-20 に停止予定。
 
 ## ディレクトリ構成
@@ -104,6 +104,6 @@ skills/openai-realtime-audio/
 | conversation/event ライフサイクル・VAD・tools/MCP を知りたい | realtime | [references/realtime/README.md](references/realtime/README.md) |
 | client secret（ephemeral key）発行・コスト・プロンプティングを知りたい | realtime | [references/realtime/README.md](references/realtime/README.md) |
 | ファイルの音声書き起こし・text-to-speech（非リアルタイム）を知りたい | audio | [references/audio/README.md](references/audio/README.md) |
-| custom voice を作成・利用したい | audio | [references/audio/README.md](references/audio/README.md) |
+| custom voice（prompt-to-voice・録音ベース）を作成・利用したい | audio | [references/audio/README.md](references/audio/README.md) |
 | transcription ワークフローの選定（file vs realtime）を知りたい | audio | [references/audio/README.md](references/audio/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
