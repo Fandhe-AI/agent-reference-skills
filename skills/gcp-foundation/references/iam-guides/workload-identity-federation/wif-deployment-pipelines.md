@@ -88,6 +88,8 @@ gcloud iam workload-identity-pools providers update-oidc PROVIDER_ID \
 
 ### GitHub Actions workflow
 
+Adapted (not in the official docs): `actions/checkout@v3` and `google-github-actions/auth@v1` are mutable tags; replace them with a full commit SHA you have verified (the SHAs are not verifiable from the official page).
+
 ```yaml
 jobs:
   build:
@@ -112,6 +114,8 @@ jobs:
 
 ### GitLab CI/CD job
 
+Adapted (not in the official docs): the token is written with `printf '%s'` and all expansions are quoted.
+
 ```yaml
 job:
   variables:
@@ -127,8 +131,8 @@ job:
 
   script:
     - |-
-      echo $WORKLOAD_IDENTITY_TOKEN > $CI_BUILDS_DIR/.workload_identity.jwt
-      cat << EOF > $GOOGLE_APPLICATION_CREDENTIALS
+      printf '%s' "${WORKLOAD_IDENTITY_TOKEN}" > "${CI_BUILDS_DIR}/.workload_identity.jwt"
+      cat << EOF > "${GOOGLE_APPLICATION_CREDENTIALS}"
       {
         "type": "external_account",
         "audience": "//iam.googleapis.com/projects/$WORKLOAD_IDENTITY_PROJECT_NUMBER/locations/global/workloadIdentityPools/$WORKLOAD_IDENTITY_POOL/providers/$WORKLOAD_IDENTITY_PROVIDER",
@@ -143,6 +147,8 @@ job:
 ```
 
 ### Azure DevOps pipeline
+
+Adapted (not in the official docs): the token is written with `printf '%s'`, expansions are quoted, and the verification step runs `gcloud auth list` instead of `gcloud auth print-access-token` so the access token is never printed to the pipeline log.
 
 ```yaml
 variables:
@@ -167,8 +173,8 @@ steps:
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
-        echo $idToken > $(Pipeline.Workspace)/.workload_identity.jwt
-        cat << EOF > $GOOGLE_APPLICATION_CREDENTIALS
+        printf '%s' "${idToken}" > "$(Pipeline.Workspace)/.workload_identity.jwt"
+        cat << EOF > "${GOOGLE_APPLICATION_CREDENTIALS}"
         {
           "type": "external_account",
           "audience": "//iam.googleapis.com/projects/$(GoogleCloud.WorkloadIdentity.ProjectNumber)/locations/global/workloadIdentityPools/$(GoogleCloud.WorkloadIdentity.Pool)/providers/$(GoogleCloud.WorkloadIdentity.Provider)",
@@ -187,7 +193,7 @@ steps:
       targetType: 'inline'
       script: |
         gcloud auth login --cred-file="$(GOOGLE_APPLICATION_CREDENTIALS)"
-        gcloud auth print-access-token
+        gcloud auth list
 ```
 
 ### HCP Terraform workspace variables
@@ -234,6 +240,7 @@ terraform {
 - Prefer numeric `*_id` claims over names (`repository`, `repository_owner`): names can be re-claimed after deletion (cybersquatting / typosquatting).
 - Setup is per Azure DevOps project, GitHub organization, GitLab group, or HCP Terraform organization; no account-side configuration for GitHub, GitLab, or HCP Terraform. `gcp-` is a reserved ID prefix.
 - Grant access with direct resource access (`principal://` / `principalSet://` members) or service account impersonation (`roles/iam.workloadIdentityUser`) exactly as in the OIDC and SAML page; use the project number in member identifiers.
+- Adapted from the official docs: token written with `printf '%s'` and quoted expansions; the Azure verification step uses `gcloud auth list` so the access token is not logged.
 - Pin third-party actions such as `google-github-actions/auth` and `actions/checkout` to a full commit SHA rather than the mutable tag shown in the official sample (`@v1`, `@v3`) in production workflows.
 - Source: https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines
 - Retrieved 2026-11-14. Content CC BY 4.0; code samples Apache 2.0.

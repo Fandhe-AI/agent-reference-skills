@@ -10,6 +10,8 @@ Use tags to conditionally enforce constraints: a rule's `condition` (CEL express
 
 List rule example (`gcp.resourceLocations`) with unconditional and conditional values in one policy:
 
+Adapted (not in the official docs): value groups are written with the `in:` prefix (`in:us-east1-locations`, `in:us-west1-locations`), as in the later example on this page; without `in:` they are treated as exact values.
+
 ```yaml
 name: RESOURCE_TYPE/RESOURCE_ID/policies/gcp.resourceLocations
 spec:
@@ -17,13 +19,13 @@ spec:
   # As there is no condition specified, this allowedValue is enforced unconditionally.
   - values:
       allowedValues:
-      - us-east1-locations
+      - in:us-east1-locations
   # This condition applies to the values block.
   - condition:
       expression: "resource.matchTag('ORGANIZATION_ID/location', 'us-west1')"
     values:
       allowedValues:
-      - us-west1-locations
+      - in:us-west1-locations
 ```
 
 ```bash
@@ -34,8 +36,10 @@ Result: the resource and its children are restricted to `us-east1-locations`; th
 
 Boolean rule example:
 
+Adapted (not in the official docs): the policy name is `compute.disableSerialPortAccess`; the official sample writes `gcp.disableSerialPortAccess`, which does not match the constraint the same page describes (`compute.disableSerialPortAccess`).
+
 ```yaml
-name: RESOURCE_TYPE/RESOURCE_ID/policies/gcp.disableSerialPortAccess
+name: RESOURCE_TYPE/RESOURCE_ID/policies/compute.disableSerialPortAccess
 spec:
   rules:
   - condition:
@@ -96,6 +100,7 @@ Expressions are CEL (Common Expression Language); see the CEL spec.
 - List rules enabled with tags merge with the existing policy per normal inheritance; conditional rules apply only if the condition is true. Boolean rules enabled with tags override the existing policy.
 - In the console, a condition using `!` renders an error in the Condition builder but still functions; edit via the Condition editor.
 - The governance-tag pattern means a project cannot use the restricted API until it is tagged (or inherits the tag).
+- Adapted from the official docs: the boolean example uses `compute.disableSerialPortAccess` (official sample: `gcp.disableSerialPortAccess`) and the first list example uses `in:` on location value groups.
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/tags-organization-policy
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.
 

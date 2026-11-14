@@ -29,6 +29,8 @@ spec:
 
 Managed constraint with list parameters:
 
+Adapted (not in the official docs): the domain values are quoted, because a YAML plain scalar cannot start with `@`.
+
 ```yaml
 name: organizations/1234567890123/policies/essentialcontacts.managed.allowedContactDomains
 spec:
@@ -36,8 +38,8 @@ spec:
      - enforce: true
        parameters:
           allowedDomains:
-               - @example.com
-               - @altostrat.com
+               - "@example.com"
+               - "@altostrat.com"
 ```
 
 Legacy managed constraint with list rules:

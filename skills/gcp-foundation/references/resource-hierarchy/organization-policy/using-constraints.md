@@ -220,10 +220,12 @@ GET https://orgpolicy.googleapis.com/v2/{parent=organizations/ORGANIZATION_ID}/c
 
 Policy YAML with parameters and optional dry-run spec (omit `parameters` if unsupported):
 
+Adapted (not in the official docs): `rules` is nested under `spec` (the official sample leaves `rules` at the top level, so `spec` would be empty).
+
 ```yaml
 name: RESOURCE_TYPE/RESOURCE_ID/policies/CONSTRAINT_NAME
 spec:
-rules:
+  rules:
     - enforce: ENFORCEMENT_STATE
       parameters:
         LIST_PARAMETER:
@@ -267,33 +269,35 @@ REST create (`organizations.policies.create`):
 POST https://orgpolicy.googleapis.com/v2/{parent=organizations/ORGANIZATION_ID}/policies
 ```
 
+Adapted (not in the official docs): valid JSON template. `enforce` is a boolean (`true` / `false`), `BOOLEAN_PARAMETER` is a quoted key with a boolean value, and a comma separates `spec` and `dryRunSpec`.
+
 ```json
 {
   "name": "RESOURCE_TYPE/RESOURCE_ID/policies/CONSTRAINT_NAME",
   "spec": {
     "rules": [
       {
-        "enforce": ["ENFORCEMENT_STATE"],
+        "enforce": true,
         "parameters": {
           "LIST_PARAMETER": [
             "LIST_VALUE_1",
             "LIST_VALUE_2"
           ],
-          BOOLEAN_PARAMETER: BOOLEAN_VALUE
+          "BOOLEAN_PARAMETER": true
         }
       }
     ]
-  }
+  },
   "dryRunSpec": {
     "rules": [
       {
-        "enforce": ["ENFORCEMENT_STATE"],
+        "enforce": true,
         "parameters": {
           "LIST_PARAMETER": [
             "LIST_VALUE_1",
             "LIST_VALUE_2"
           ],
-          BOOLEAN_PARAMETER: BOOLEAN_VALUE
+          "BOOLEAN_PARAMETER": true
         }
       }
     ]
@@ -308,7 +312,7 @@ POST https://orgpolicy.googleapis.com/v2/{parent=organizations/ORGANIZATION_ID}/
 - Most enforcement is not retroactive; an existing violating state is flagged but not stopped.
 - If a conditional (tag) rule is added, at least one unconditional rule must also exist or the policy cannot be saved.
 - `set-policy` overwrites any policy attached to the resource; run `describe` first. The `/tmp/policy.yaml` path is illustrative; use a private working directory on shared machines.
-- The official REST sample is not valid JSON as written (missing comma before `dryRunSpec`, unquoted `BOOLEAN_PARAMETER`); treat it as a template.
+- Corrected from the official docs: the official REST sample is not valid JSON as written (array-valued `enforce`, missing comma before `dryRunSpec`, unquoted `BOOLEAN_PARAMETER`) and the YAML sample left `rules` outside `spec`; both are fixed above. `PolicyRule.enforce` is a boolean.
 - The constraints used in official examples are generic placeholders, not real constraints.
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/using-constraints
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/creating-managing-policies

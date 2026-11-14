@@ -16,18 +16,20 @@ Three methods:
 
 ### Managed constraint `iam.managed.allowedPolicyMembers`
 
+Adapted (not in the official docs): `rules` is nested under `spec` (the official sample leaves it at the top level).
+
 ```yaml
 name: organizations/ORG_ID/policies/iam.managed.allowedPolicyMembers
 spec:
-rules:
- - enforce: true
-   parameters:
-     allowedMemberSubjects:
-       - ALLOWED_MEMBER_1
-       - ALLOWED_MEMBER_2
-     allowedPrincipalSets:
-       - ALLOWED_PRINCIPAL_SET_1
-       - ALLOWED_PRINCIPAL_SET_2
+  rules:
+  - enforce: true
+    parameters:
+      allowedMemberSubjects:
+        - ALLOWED_MEMBER_1
+        - ALLOWED_MEMBER_2
+      allowedPrincipalSets:
+        - ALLOWED_PRINCIPAL_SET_1
+        - ALLOWED_PRINCIPAL_SET_2
 ```
 
 `ALLOWED_MEMBER_*` example: `user:example-user@example.com`; `ALLOWED_PRINCIPAL_SET_*` example: `//cloudresourcemanager.googleapis.com/organizations/0123456789012`.
@@ -219,6 +221,25 @@ actionType: ALLOW
 displayName: Only allow organization members, allusers, and allAuthenticatedUsers to be granted roles
 ```
 
+Register the custom constraint above:
+
+```bash
+gcloud org-policies set-custom-constraint CONSTRAINT_PATH
+```
+
+Adapted (not in the official docs): the official sample defines the custom constraint but never enforces it, and its conditional `allowAll` rule has no unconditional rule beside it (a policy with a conditional rule must also contain an unconditional rule). This version enforces the custom constraint, and the legacy policy keeps an unconditional rule that restricts to your organization principal set plus the tag-conditional `allowAll`.
+
+Enforce the custom constraint:
+
+```yaml
+name: organizations/ORGANIZATION_ID/policies/custom.allowInternalAndSpecialIdentitiesOnly
+spec:
+  rules:
+  - enforce: true
+```
+
+Legacy constraint policy with the tag-conditional exception and an unconditional restriction:
+
 ```yaml
 name: organizations/ORGANIZATION_ID/policies/iam.allowedPolicyMemberDomains
 spec:
@@ -227,6 +248,9 @@ spec:
     condition:
       expression: resource.matchTag("ORGANIZATION_ID/allUsersIngress", "True")
       title: allowAllUsersIngress
+  - values:
+      allowedValues:
+      - PRINCIPAL_SET
 ```
 
 ```bash
@@ -261,6 +285,7 @@ What entering an identifier allows:
 - Public Cloud Run services are unreachable from outside the organization under DRS unless the Cloud Run Invoker IAM check is disabled for the service.
 - Forcing access with the legacy constraint (use sparingly; it temporarily removes the guardrail): remove the policy, grant access, re-apply the policy; or create a Google group in an allowed domain, turn off domain restriction for that group in Workspace admin, add the service account, and grant the group access.
 - Policy simulation is not available for legacy managed constraints. Sharing publicly (`allUsers`) requires custom constraints; granting it weakens the guardrail, so scope it by tag.
+- Adapted from the official docs: `rules` nested under `spec` in the managed-constraint example; the public-sharing example now registers and enforces the custom constraint and adds the unconditional restriction rule required beside the conditional `allowAll` rule.
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/restricting-domains
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.
 

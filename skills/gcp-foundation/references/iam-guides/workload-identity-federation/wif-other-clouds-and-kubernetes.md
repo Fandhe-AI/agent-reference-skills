@@ -193,7 +193,7 @@ spec:
   containers:
   - name: example
     image: google/cloud-sdk:alpine
-    command: ["/bin/sh", "-c", "gcloud auth login --cred-file $GOOGLE_APPLICATION_CREDENTIALS && gcloud auth list && sleep 600"]
+    command: ["/bin/sh", "-c", "gcloud auth login --cred-file \"${GOOGLE_APPLICATION_CREDENTIALS}\" && gcloud auth list && sleep 600"]
     volumeMounts:
     - name: token
       mountPath: "/var/run/service-account"
@@ -220,7 +220,7 @@ spec:
 ```
 
 ```bash
-kubectl exec example --namespace NAMESPACE -- gcloud auth print-access-token
+kubectl exec example --namespace NAMESPACE -- gcloud auth list
 ```
 
 ## Options / Props
@@ -245,6 +245,7 @@ kubectl exec example --namespace NAMESPACE -- gcloud auth print-access-token
 - The self-managed Kubernetes provider command does not validate the uploaded JWKS; a malformed or stale JWKS yields `Error connecting to the given credential's issuer`. Refresh the JWKS when cluster keys rotate.
 - Direct resource access is recommended; fall back to service account impersonation where an API has federation limitations. Use the project number, not the project ID, in principal identifiers. Grant least-privilege roles.
 - Warning: `--condition=None` on `add-iam-policy-binding` is required by the official command when the policy already has conditional bindings; it grants an unconditional binding on the project.
+- Adapted from the official docs: the Pod command quotes `${GOOGLE_APPLICATION_CREDENTIALS}`, and the verification step uses `gcloud auth list` instead of `gcloud auth print-access-token` so the access token is not printed to logs.
 - Client library minimum versions and `GOOGLE_APPLICATION_CREDENTIALS` / `gcloud auth login --cred-file` usage are the same as in the OIDC and SAML page.
 - Source: https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds
 - Source: https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-kubernetes

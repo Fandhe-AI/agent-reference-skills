@@ -127,7 +127,7 @@ constraints/vertexai.allowedPartnerModelFeatures                 (legacy)
 - Many managed constraints are Public Preview; exempt individual VMs by tagging them and using conditional rules (see `tags-condition.md`).
 - Enforcing `iam.managed.allowedPolicyMembers` or the Editor/Owner default-SA constraint can block folder / project creation or break services that use default service accounts; test with dry-run first.
 - Retired or renamed legacy names (for example `constraints/compute.disableSerialPortAccess` vs `compute.managed.disableSerialPortAccess`) coexist; managed constraints are designed to replace legacy equivalents.
-- Constraints mentioned in the task scope that carry their own guides: domain restricted sharing, service accounts, locations, resource usage restriction (see `common-constraints.md`). KMS / CMEK constraints (`gcp.restrictNonCmekServices`, `gcp.restrictCmekCryptoKeyProjects`, `cloudkms.*`) are used with gcp-security.
+- Constraints mentioned in the task scope that carry their own guides: domain restricted sharing, service accounts, locations, resource usage restriction (see `domain-restricted-sharing.md`, `service-account-constraints.md`, `resource-locations.md`, `resource-service-usage.md`). KMS / CMEK constraints (`gcp.restrictNonCmekServices`, `gcp.restrictCmekCryptoKeyProjects`, `cloudkms.*`) are used with gcp-security.
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/org-policy-constraints
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.
 
@@ -135,4 +135,7 @@ constraints/vertexai.allowedPartnerModelFeatures                 (legacy)
 
 - [overview.md](./overview.md)
 - [using-constraints.md](./using-constraints.md)
-- [common-constraints.md](./common-constraints.md)
+- [domain-restricted-sharing.md](./domain-restricted-sharing.md)
+- [service-account-constraints.md](./service-account-constraints.md)
+- [resource-locations.md](./resource-locations.md)
+- [resource-service-usage.md](./resource-service-usage.md)

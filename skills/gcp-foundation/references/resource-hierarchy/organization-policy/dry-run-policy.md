@@ -20,21 +20,25 @@ Policy with `dryRunSpec` (managed constraint with list parameter):
         - EXTERNAL
 ```
 
-Live and dry-run specs in one file (legacy list rules):
+Live and dry-run specs in one file (managed constraint with `enforce` and `parameters`):
+
+Adapted (not in the official docs): the official sample uses legacy `values.allowedValues` for this managed constraint; it is rewritten with `enforce` / `parameters.allowedSchemes` as in the first example, so the policy can be applied.
 
 ```yaml
 name: RESOURCE_TYPE/RESOURCE_ID/policies/compute.managed.restrictProtocolForwardingCreationForTypes
 spec:
   rules:
-  - values:
-      allowedValues:
+  - enforce: true
+    parameters:
+      allowedSchemes:
       - INTERNAL
       - EXTERNAL
 
 dryRunSpec:
   rules:
-  - values:
-      allowedValues:
+  - enforce: true
+    parameters:
+      allowedSchemes:
       - INTERNAL
 ```
 
@@ -129,7 +133,7 @@ gcloud org-policies delete CONSTRAINT_NAME \
   --RESOURCE_TYPE=RESOURCE_ID
 ```
 
-(`RESOURCE_TYPE` is `organizations`, `folders`, or `projects`.)
+(Replace `--RESOURCE_TYPE` with `--organization`, `--folder`, or `--project` (singular), per `gcloud org-policies delete --help`.)
 
 ### Analyze dry-run results
 
@@ -194,10 +198,11 @@ protoPayload.metadata.liveResult = "ALLOWED"
 
 gcloud:
 
-```
-gcloud logging read protoPayload.metadata.dryRunResult = "DENIED" AND \
-      protoPayload.metadata.liveResult = "ALLOWED" \
-    --RESOURCE_TYPE=RESOURCE_ID \
+Adapted (not in the official docs): the whole filter is passed as one quoted argument.
+
+```bash
+gcloud logging read 'protoPayload.metadata.dryRunResult = "DENIED" AND protoPayload.metadata.liveResult = "ALLOWED"' \
+    --RESOURCE_TYPE=RESOURCE_ID
 ```
 
 (`RESOURCE_TYPE` is `organization`, `folder` or `project`; add `--freshness` for logs older than 1 day.)
@@ -265,7 +270,7 @@ Required roles on the organization: `roles/orgpolicy.policyAdmin`; for aggregate
 | Project X | `enforced: true` | `enforced: true` | None | `enforced: true` |
 | Project Y | None | `enforced: false` | `enforced: true` | `enforced: true` |
 
-- The official `gcloud logging read` sample is not shell-safe as written (the filter is unquoted); quote the filter when running it.
+- Adapted from the official docs: the `gcloud logging read` filter is quoted as a single argument (the official sample is unquoted), and the live + dry-run example uses `enforce` / `parameters.allowedSchemes` for the managed constraint.
 - Dry-run changes still affect audit-log volume; the aggregated sink grants `roles/bigquery.dataEditor` to the sink writer identity, so scope it to the destination project only.
 - Source: https://docs.cloud.google.com/resource-manager/docs/organization-policy/dry-run-policy
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.

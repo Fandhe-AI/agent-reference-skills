@@ -32,9 +32,12 @@ methodTypes:
 condition: "resource.management.autoUpgrade == false"
 actionType: ALLOW
 displayName: Disable GKE auto upgrade
-description: Only allow GKE NodePool resource to be created or updated if
-AutoUpgrade is not enabled where this custom constraint is enforced.
+description: >
+  Only allow GKE NodePool resource to be created or updated if
+  AutoUpgrade is not enabled where this custom constraint is enforced.
 ```
+
+Adapted (not in the official docs): `description` is written as an indented folded block (`>`); the official sample's continuation line is unindented, which is invalid YAML.
 
 Set up, verify, update, delete:
 
