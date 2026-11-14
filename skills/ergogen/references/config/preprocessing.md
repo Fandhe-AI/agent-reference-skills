@@ -55,6 +55,8 @@ concrete:
 - Parameterization uses regex replacement, so placeholder names should be unique strings to avoid unintended substitutions.
 - `$skip: true` is most useful for abstract intermediate declarations that are only meant to be inherited, not used directly.
 - String values that are valid mathematical expressions (e.g., `3 * 2`) are automatically evaluated to their numeric result.
+- Since v4.2.0 a circular `$extends` chain raises the error `leads to a circular dependency!` instead of looping.
+- Source: https://github.com/ergogen/ergogen/blob/v4.2.1/src/prepare.js (tag `v4.2.1`, fetched 2026-11-14)
 - Unit variables defined in the `units` section are available as named variables inside math expressions throughout the config.
 
 ## Related

@@ -1,8 +1,8 @@
 ---
 name: ergogen
 description: >
-  Ergogen (エルゴノミック自作キーボード設計ツール) リファレンス。
-  YAML / JSON 設定で points, outlines, cases, pcbs を宣言し
+  Ergogen v4.2.1 (エルゴノミック自作キーボード設計ツール) リファレンス。
+  YAML / JSON 設定で points, outlines (path / hull 含む), cases, pcbs を宣言し
   SVG / DXF / JSCAD / KiCad を出力。
   Anchors, Zones, Adjustments, Preprocessing, Footprints, Traces。
   キーレイアウト、ケース設計、PCB 生成。
@@ -14,6 +14,8 @@ user-invocable: false
 Ergogen — エルゴノミックキーボードの設計を YAML/JSON 設定から自動生成するツール。
 Points / Outlines / Cases / PCBs を宣言的に記述し、SVG / DXF / JSCAD / KiCad 形式で出力する。
 公式ドキュメント (docs.ergogen.xyz) 全 12 ページを構造化。
+
+対象バージョン: ergogen v4.2.1（タグ `v4.2.1`、commit `8286e18`、取得日 2026-11-14）。docs サイトの原本 `ergogen/ergogen-docs` は commit `6526cfb`（2024-05-12）以降更新が無く、v4.2.0 で追加された outline `path` / `hull`、CLI `--svg`、`--clean` の挙動変更などは公式 docs に記載が無いため、ソース（`src/*.js`、タグ `v4.2.1`）から各ページの Notes に反映している。
 
 ## ディレクトリ構成
 

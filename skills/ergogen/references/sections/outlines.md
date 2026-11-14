@@ -119,13 +119,53 @@ Set on key-level attributes using CSS-like syntax:
 | `name` | string | yes | Name of an existing outline to embed. |
 | `origin` | anchor | no | Placement origin within the referenced outline (applied before positioning). |
 
+### path
+
+```yaml
+outlines:
+  3p_bezier:
+    - what: path
+      segments:
+        - type: bezier
+          points:
+            - ref: point
+              shift: [-.5u,.5u]
+            - ref: point
+              shift: [-25,20]
+            - ref: point
+              shift: [.5u,.5u]
+```
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `segments` | array | yes | Ordered segments. Each has `type` (`line`, `arc`, `s_curve`, `bezier`) and `points` (array of anchors). `bezier` also accepts `accuracy`. |
+
+### hull
+
+```yaml
+outlines:
+  defaults:
+    - what: hull
+      points:
+        - matrix_c1_r1
+        - matrix_c2_r1
+        - matrix_c2_r2
+        - matrix_c2_r3
+```
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `points` | array of anchors | yes | Anchors whose key bounding rectangles are wrapped by the hull. |
+| `concavity` | number | no | Concavity of the hull (default: 50). |
+| `extend` | boolean | no | Include the full key width / height of each anchor, not just its center (default: `true`). |
+
 ---
 
 ## Common Part Attributes
 
 | Name | Type | Description |
 |------|------|-------------|
-| `what` | string | Shape type: `rectangle`, `circle`, `polygon`, or `outline`. |
+| `what` | string | Shape type: `rectangle`, `circle`, `polygon`, `outline`, `path`, or `hull`. |
 | `where` | filter / anchor | Point(s) at which to place the shape. |
 | `operation` | string | Boolean mode (see Operations below). Default: `add`. |
 | `bound` | boolean | Activate key-binding (uses `bind`/`autobind` values from points). |
@@ -187,6 +227,11 @@ Example: `expand: 3]` equals `expand: 3` with `joints: beveled`.
 
 - `bind`/`autobind` values set on points control how far a rectangle extends to meet neighboring keys when `bound: true`.
 - Parts accept both array and object formats.
+- `path` and `hull` are not described on docs.ergogen.xyz; they exist in the Ergogen source from v4.2.0 on (the `v4.1.0` source has neither). The page documents them from `src/outlines.js` at tag `v4.2.1`.
+- `path` segments after the first inherit their starting point from the end of the previous segment. Point counts: `line` needs at least 2 points in total, `arc` 3, `s_curve` 2, `bezier` 3 or 4. The shape is closed with a straight line from the last point to the first, and must form a closed chain or an error is raised. An `s_curve` cannot have both points on the same X or the same Y coordinate.
+- `hull` anchors are resolved the same way as `polygon` points. With `extend: true`, intermediate points are added along sides longer than 18 mm so the hull does not fold into a wide key.
+- The `path` and `hull` examples are taken verbatim from `test/outlines/path.yaml` and `test/outlines/hull.yaml` at tag `v4.2.1`; names such as `point` and `matrix_c1_r1` refer to points defined in those test fixtures.
+- Source: https://github.com/ergogen/ergogen/blob/v4.2.1/src/outlines.js (tag `v4.2.1`, fetched 2026-11-14)
 
 ## Related
 
