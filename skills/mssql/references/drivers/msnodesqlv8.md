@@ -45,14 +45,17 @@ Driver={SQL Server Native Client 11.0};Server={#{server}\\#{instance}};Database=
 ## Notes
 
 - Please note that the connection string with this driver is not the same than tedious and use yes/no instead of true/false. You can see more on the [ODBC](https://docs.microsoft.com/fr-fr/dotnet/api/system.data.odbc.odbcconnection.connectionstring?view=dotnet-plat-ext-5.0) documentation.
-- Driver-specific behaviour documented in the v12.7.9 README:
+- Driver-specific behaviour documented in the v12.7.14 README:
   - A paused request reads rows 50 at a time and holds them until it is resumed (see the Streaming section; `cancel.md`).
   - A running request can be cancelled only from msnodesqlv8 5.6 (`cancel.md`, `to-readable-stream.md`).
   - There is no `abortTransactionOnError`, and server-side rollbacks are not detected (`transaction.md`).
   - The procedure name is built into the statement, but both drivers validate it the same way (`identifier-rules.md`).
+- msnodesqlv8 5 and earlier round `float` and `real` values, and `decimal` values with more than six decimal places, to six decimal places, output parameters included, so a value such as `1e-10` is read as `0`. `numeric`, `money` and `smallmoney` values are not affected. msnodesqlv8 6 reads them in full, as the tedious driver does; use its latest release.
+- msnodesqlv8 6 needs Node.js 22 or later; on an older Node.js, install msnodesqlv8 5 (`npm install mssql msnodesqlv8@5`).
 - Release notes v12.7.3-v12.7.9 list msnodesqlv8 fixes: procedure parameters bound in marker order, output parameter initial values, error propagation (including preceding errors and commit / rollback errors), `ECANCEL` reporting for cancelled requests and paused streams, stream completion under back pressure, and bulk load settling.
 - Migration (v6 → v7): upgraded supported `msnodesqlv8` version to v2.
 - Migration (v3 → v4): drivers are no longer loaded dynamically (Webpack-compatible) — this driver now requires the explicit `require('mssql/msnodesqlv8')` statement shown above.
+- Source: https://raw.githubusercontent.com/tediousjs/node-mssql/v12.7.14/README.md (tag v12.7.14, fetched 2026-11-14)
 
 ## Related
 

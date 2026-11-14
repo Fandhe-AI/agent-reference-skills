@@ -35,7 +35,7 @@ class RequestError extends MSSQLError {
 | `ConnectionError` | `ECONNCLOSED` | Connection is closed. |
 | `TransactionError` | `ENOTBEGUN` | Transaction has not begun. |
 | `TransactionError` | `EALREADYBEGUN` | Transaction has already begun. |
-| `TransactionError` | `EREQINPROG` | Can't commit/rollback transaction or acquire connection for the request. There is a request in progress. |
+| `TransactionError` | `EREQINPROG` | Can't commit/rollback transaction, unprepare the statement or acquire connection for the request. There is a request in progress. |
 | `TransactionError` | `EABORT` | Transaction has been aborted. |
 | `TransactionError` | `ENOCONN` | No connection is specified for that transaction. |
 | `RequestError` | `EREQUEST` | Message from SQL Server. Error object contains additional details. |
