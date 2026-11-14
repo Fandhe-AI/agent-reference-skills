@@ -37,6 +37,7 @@ var regionDescription: String
 - The source page has no overview text or code listing. The initializer list is generated (Initializers / Instance Properties) and consists of per-value-type `init()` overloads; their individual parameter lists were not captured in the saved JSON, so none are reproduced here.
 - Related "Property declarations" group: `ComputedProperty()` overloads, `DeferredProperty()` overloads, `EntityPropertyModifiers`, Property comparators.
 - Referenced from this page: `AnyIntentValue` ("A type the system uses to access a parameter or property value.").
+- iOS 27.3 beta: the `EntityProperty` initializers (with or without `identifier:`, `getter:`, `getSetter:`, `asyncGetter:`, `indexingKey:` and `customIndexingKey:`) gained overloads that take `description:`, `authenticationPolicy:` and `visibility:` (type `IntentVisibility`); the simplest one is `convenience init(title: LocalizedStringResource? = nil, description: LocalizedStringResource? = nil, authenticationPolicy: IntentAuthenticationPolicy? = nil, visibility: IntentVisibility? = nil)`. Platform metadata: iOS 27.3+ (beta); overloads with a Spotlight indexing key list no tvOS or watchOS. Source: https://developer.apple.com/documentation/appintents/entityproperty (member pages, fetched 2026-11-14)
 
 ## Related
 
@@ -44,3 +45,4 @@ var regionDescription: String
 - [DeferredProperty() macro](./deferredproperty.md)
 - [AppEntity](./appentity.md)
 - [AppValue / AnyIntentValue](./appvalue.md)
+- [IntentVisibility](../siri-ai-preview/intentvisibility.md)

@@ -46,6 +46,15 @@ Topics listed on the page.
 - Conforms to `AnyIntentValue` (plus the Swift `Copyable`, `Escapable`, `Sendable`, `SendableMetatype` protocols).
 - `requestValue(_:)` returns "The value supplied by the user". `requestConfirmation` returns "Whether or not the user confirmed the value". `needsValueError(_:)` is described as returning a `restartPerform` error with context to request a value from the user for this parameter and re-perform the intent with the new value.
 - Members listed above are available when `Value` conforms to `_IntentValue` and `Sendable`.
+### Initializers added in iOS 27.2
+
+Twelve `IntentParameter` initializer overloads carry iOS 27.2+ (and iPadOS, Mac Catalyst, macOS, tvOS, visionOS, watchOS 27.2+) platform metadata. They take `description:` (with or without `title:`), `default:`, `requestValueDialog:` or `size:`, and `inputConnectionBehavior:`, in variants with `optionsProvider:` and `resolvers:`; the `size: [IntentWidgetFamily : IntentCollectionSize]` variants list no tvOS. The `Value` constraint of these overloads was not captured, so none beyond the simplest is reproduced. The simplest declaration as published:
+
+```swift
+convenience init(description: LocalizedStringResource? = nil, default defaultValue: Value.UnwrappedType? = nil, requestValueDialog: IntentDialog? = nil, inputConnectionBehavior: InputConnectionBehavior = .default)
+```
+
+- Source: https://developer.apple.com/documentation/appintents/intentparameter (member pages, fetched 2026-11-14)
 
 ## Related
 

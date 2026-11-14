@@ -63,3 +63,4 @@ func handleTodoUpdates(todos: [Todo]) {
 - [EmptySnippetIntent](./emptysnippetintent.md)
 - [ShowsSnippetView](../parameters-results/showssnippetview.md)
 - [AppIntent](../intents/appintent.md)
+- [CardSnippet](./cardsnippet.md)

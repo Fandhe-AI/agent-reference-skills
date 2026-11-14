@@ -42,9 +42,23 @@ struct Restaurant: AppEntity {
 - `indexingKey` / `customIndexingKey` associate the property with a Core Spotlight attribute (`CSSearchableItemAttributeSet` key path or `CSCustomAttributeKey`); Core Spotlight itself is outside this skill. See the IndexedEntity page.
 - Same "Property declarations" group: `DeferredProperty()` overloads, `EntityProperty`, `EntityPropertyModifiers`, Property comparators.
 
+### Overloads with description, authentication policy and visibility (iOS 27.3 beta)
+
+Three further `ComputedProperty` overloads take `description:`, `authenticationPolicy:` and `visibility:` (declarations as published on their pages). They are iOS 27.3+ (beta), iPadOS 27.3+, Mac Catalyst 27.3+, macOS 27.3+, tvOS 27.3+, visionOS 27.3+, watchOS 27.3+ per page metadata; the earlier iOS 26.0+ note above applies to the overloads listed in the Options / Props table above. Apple states the Siri AI Developer Preview API may change.
+
+| Declaration |
+| --- |
+| `@attached(peer, names: prefixed(`$`), prefixed(`_`)) @attached(accessor, names: named(get), named(set)) macro ComputedProperty(title: LocalizedStringResource? = nil, description: LocalizedStringResource? = nil, authenticationPolicy: IntentAuthenticationPolicy? = nil, visibility: IntentVisibility? = nil)` |
+| `@attached(peer, names: prefixed(`$`), prefixed(`_`)) @attached(accessor, names: named(get), named(set)) macro ComputedProperty(title: LocalizedStringResource? = nil, description: LocalizedStringResource? = nil, authenticationPolicy: IntentAuthenticationPolicy? = nil, visibility: IntentVisibility? = nil, customIndexingKey: CSCustomAttributeKey)` |
+| `@attached(peer, names: prefixed(`$`), prefixed(`_`)) @attached(accessor, names: named(get), named(set)) macro ComputedProperty(title: LocalizedStringResource? = nil, description: LocalizedStringResource? = nil, authenticationPolicy: IntentAuthenticationPolicy? = nil, visibility: IntentVisibility? = nil, indexingKey: PartialKeyPath<CSSearchableItemAttributeSet>)` |
+
+- Pass a `description` to each `@ComputedProperty` of entities Siri uses; `visibility: .internal` keeps the property to the app and its extensions (see IntentVisibility in siri-ai-preview).
+- Source: https://developer.apple.com/documentation/appintents/computedproperty(title:description:authenticationpolicy:visibility:) and its `customIndexingKey` / `indexingKey` variants (fetched 2026-11-14)
+
 ## Related
 
 - [DeferredProperty() macro](./deferredproperty.md)
 - [EntityProperty](./entityproperty.md)
 - [AppEntity](./appentity.md)
 - [IndexedEntity](./indexedentity.md)
+- [IntentVisibility](../siri-ai-preview/intentvisibility.md)

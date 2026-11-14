@@ -68,6 +68,7 @@ struct LocationEntity: TransientAppEntity, Transferable {
 - `AppEntity.ValueRepresentation` is a type alias for `IntentValueRepresentation`, which is why the snippets write `ValueRepresentation(...)`.
 - Conforms to: `Sendable`, `SendableMetatype`, `TransferRepresentation` (CoreTransferable).
 - Articles: Defining app entities for your custom data types; Providing contextual cues to Apple Intelligence and Siri.
+- iOS 27.2: both `init(importing:)` overloads (`IntentPerson` and system intent values) list iOS 27.2+ on their member pages, later than the type's iOS 26.4+. The system-value overload's example builds a `LocationEntity` from a place; the `IntentPerson` overload's example builds a `ContactEntity`. Source: https://developer.apple.com/documentation/appintents/intentvaluerepresentation/init(importing:)-6jio8 and https://developer.apple.com/documentation/appintents/intentvaluerepresentation/init(importing:)-7cl3z (fetched 2026-11-14)
 
 ## Related
 

@@ -52,8 +52,10 @@ struct DisableAlarmsIntent: AppIntent {
 - As an intent parameter type, the system does not force resolution of each identifier to the full `AppEntity` instance during parameter resolution, which can save time and memory for parameters with hundreds of entities.
 - `resolvedEntities()` uses the app's query types to find or create the entity instances, then caches them in the collection for future access.
 - Conforms to: `Collection`, `Copyable`, `Equatable`, `Escapable`, `ExpressibleByArrayLiteral`, `Sendable`, `SendableMetatype`, `Sequence`.
+- iOS 27.3 beta: `EntityCollection` conforms to `AppEntityCollectionValue`, which `DeleteIntent.Target` uses. Source: https://developer.apple.com/documentation/appintents/appentitycollectionvalue (fetched 2026-11-14)
 
 ## Related
 
 - [AppEntity](./appentity.md)
 - [EntityIdentifier](./entityidentifier.md)
+- [AppEntityCollectionValue](./appentitycollectionvalue.md)

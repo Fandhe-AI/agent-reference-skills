@@ -42,9 +42,21 @@ struct Restaurant: AppEntity {
 - `AppEntity` instances have a 10 MB total size limit including child properties; the AppEntity page recommends `@DeferredProperty` to reduce entity size. The value is fetched through an `async` getter when needed.
 - The attached-macro attribute line above is the one shown on the `DeferredProperty()` and `DeferredProperty(title:)` pages.
 
+### Overloads with description, authentication policy and visibility (iOS 27.3 beta)
+
+Two further `DeferredProperty` overloads take `description:`, `authenticationPolicy:` and `visibility:` (declarations as published on their pages). They are iOS 27.3+ (beta), iPadOS 27.3+, Mac Catalyst 27.3+, macOS 27.3+, tvOS 27.3+, visionOS 27.3+, watchOS 27.3+ per page metadata; the iOS 26.0+ note above applies to the overloads listed in the Options / Props table above. Apple states the Siri AI Developer Preview API may change.
+
+| Declaration |
+| --- |
+| `@attached(peer, names: prefixed(`$`), prefixed(`_`)) @attached(accessor, names: named(get), named(set)) macro DeferredProperty(title: LocalizedStringResource? = nil, description: LocalizedStringResource? = nil, authenticationPolicy: IntentAuthenticationPolicy? = nil, visibility: IntentVisibility? = nil)` |
+| `@attached(peer, names: prefixed(`$`), prefixed(`_`)) @attached(accessor, names: named(get), named(set)) macro DeferredProperty(title: LocalizedStringResource? = nil, description: LocalizedStringResource? = nil, authenticationPolicy: IntentAuthenticationPolicy? = nil, visibility: IntentVisibility? = nil, indexingKey: PartialKeyPath<CSSearchableItemAttributeSet>)` |
+
+- Source: https://developer.apple.com/documentation/appintents/deferredproperty(title:description:authenticationpolicy:visibility:) and its `indexingKey` variant (fetched 2026-11-14)
+
 ## Related
 
 - [ComputedProperty() macro](./computedproperty.md)
 - [EntityProperty](./entityproperty.md)
 - [AppEntity](./appentity.md)
 - [IndexedEntity](./indexedentity.md)
+- [IntentVisibility](../siri-ai-preview/intentvisibility.md)
