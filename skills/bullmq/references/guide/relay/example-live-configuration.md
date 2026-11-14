@@ -81,35 +81,9 @@ new Worker(
 - To keep the retained value from expiring, republish it periodically, for example with a job scheduler (third snippet).
 - Source: https://github.com/taskforcesh/bullmq/blob/v6.7.6/docs/gitbook/guide/relay/examples/live-configuration.md (tag v6.7.6, fetched 2026-11-14). Official page: https://docs.bullmq.io/guide/relay/examples/live-configuration
 
-### Ordering admin updates and periodic republishes
+### Known limitation
 
-Adapted (not in the official docs): the periodic republish above reads the current value and publishes it later, so it can arrive after a newer admin update and move every subscriber (and the retained message) back to the older value. Carry a monotonically increasing version from the database in each message and let subscribers ignore anything that is not newer (`version` is a column you add to your own settings table; `db.settings.get` is the same placeholder used above).
-
-```typescript
-// Admin service and republisher: always publish the stored version.
-const { version, value } = await db.settings.getVersioned('feature-flags');
-await relay.publish(
-  'config.feature-flags',
-  { version, value },
-  { retain: MONTH },
-);
-
-// Every instance: ignore messages that are not newer than what is applied.
-let appliedVersion = 0;
-await relay.subscribe('config.feature-flags', message => {
-  const { version, value } = message.data as {
-    version: number;
-    value: FeatureFlags;
-  };
-  if (version > appliedVersion) {
-    appliedVersion = version;
-    flagsGeneration++;
-    flags = value;
-  }
-});
-```
-
-- Adapted from the official example: the official snippets publish the bare flags object and do not order a republish against a concurrent admin update; the versioned envelope above is an addition (it replaces the message shape used in the snippets above, so use one shape consistently).
+- The official example republishes the stored value periodically; that job reads the current value and publishes it later, so it can run after a newer admin update and replace the retained message (and every subscriber's value) with the older one. Instances that start afterwards would then adopt the older value. The official page does not address this; to avoid it, serialize admin updates and republishes in your own code (this skill provides no tested implementation).
 
 ## Related
 
