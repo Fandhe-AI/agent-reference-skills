@@ -1,13 +1,22 @@
 # Migrate from OpenClaw
 
-`hermes claw migrate` imports an OpenClaw (or legacy Clawdbot / Moldbot) setup into Hermes: persona, memory, skills, model config, agent behavior, MCP servers, TTS, messaging platforms.
+`hermes import-agent openclaw` imports an OpenClaw (or legacy Clawdbot / Moldbot) setup into Hermes: persona, memory, skills, model config, agent behavior, MCP servers, TTS, messaging platforms. The command comes from the official `agent-importers` plugin.
 
 ## Signature / Usage
 
 ```bash
-hermes claw migrate                      # preview, then confirm
-hermes claw migrate --dry-run            # preview only
-hermes claw migrate --preset full --migrate-secrets --yes
+# Once per profile: the command comes from this plugin
+hermes plugins install agent-importers
+
+# Preview then migrate (always shows a preview first, then asks to confirm)
+hermes import-agent openclaw
+
+# Preview only, no changes
+hermes import-agent openclaw --dry-run
+
+# Full migration including API keys, skip confirmation
+hermes import-agent openclaw --preset full --migrate-secrets --yes
+
 hermes claw cleanup                      # rename leftover OpenClaw dirs to .pre-migration/
 ```
 
@@ -58,7 +67,8 @@ Secret formats the migration resolves:
 
 ## Notes
 
-- Always shows a full preview before applying. For Claude Code or OpenAI Codex CLI, use `hermes import-agent` instead.
+- Always shows a full preview before applying. The `agent-importers` plugin also imports Claude Code, Codex CLI and Cursor setups (`hermes import-agent <agent>`).
+- On a fresh install, `hermes setup` that finds `~/.openclaw` asks "Import your setup from OpenClaw?"; answering yes installs the plugin and runs `hermes import-agent openclaw --migrate-secrets` (preview and confirmation included).
 - API key sources in priority order: config values, `~/.openclaw/.env`, `openclaw.json` `env` sub-object, `~/.openclaw/agents/main/agent/auth-profiles.json`. Keys outside the allowlist are never copied. SecretRefs with `source: "file"` or `"exec"` cannot be resolved; add them with `hermes config set`.
 - Session idle/daily reset timers are not imported (Hermes conversations persist until `/new` or `/reset`).
 - TTS settings are read from `messages.tts.providers.{provider}.*`, then `talk.providers.{provider}.*`, then legacy flat keys; assets copied to `~/.hermes/tts/`.
@@ -67,7 +77,13 @@ Secret formats the migration resolves:
 - "OpenClaw directory not found": checks `~/.openclaw/`, `~/.clawdbot/`, `~/.moltbot/`; else use `--source`.
 - If TTS voice not migrated: `hermes config set tts.elevenlabs.voice_id YOUR_VOICE_ID`.
 - `hermes setup --portal` collapses a multi-provider setup into one OAuth.
-- Source: https://hermes-agent.nousresearch.com/docs/guides/migrate-from-openclaw (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/guides/migrate-from-openclaw (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23): `hermes claw` moved into the `agent-importers` plugin
+
+- OpenClaw migration used to ship in Hermes core as `hermes claw migrate` plus the optional `openclaw-migration` skill. Both moved into the `agent-importers` plugin with the same flags and the same secrets rule (keys come over only with `--migrate-secrets`). The older spelling `hermes claw migrate` still works once the plugin is installed and runs the same import; `hermes claw` without the plugin prints the install command.
+- The guided skill now ships with the plugin as `agent-importers:openclaw-migration`; the old `official/migration/openclaw-migration` optional skill is gone. Nothing changes for an OpenClaw setup already migrated.
+- Command examples in the sections above that still say `hermes claw migrate` map one-to-one to `hermes import-agent openclaw`.
 
 ## Related
 

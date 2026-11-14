@@ -7,7 +7,7 @@ Diagnose Hermes cron issues in four categories: timing, delivery, permissions, a
 ```bash
 hermes cron list                    # states, next_run times
 hermes cron run <job_id>            # schedule for next tick (testing)
-hermes cron tick                    # manually trigger a tick
+hermes cron tick                    # manually trigger a tick (needs a running gateway)
 hermes cron edit <job_id>           # fix configuration
 hermes logs
 hermes skills list
@@ -55,6 +55,7 @@ Delivery target requirements:
 ## Notes
 
 - Jobs fire from the gateway's ticker (every 60 s); a plain CLI chat session does not fire cron jobs. Desktop's primary backend ticks every local profile's cron store.
+- `hermes cron tick` never starts a gateway: with none running it skips agent jobs (logged, shown in `hermes cron list`) until the next tick after `hermes gateway start`.
 - State `[completed]` may mean the repeat count is exhausted; one-shot schedules (`in 30m`, `in 1d`, ISO timestamps) disappear after firing.
 - The upstream guide (v0.22.2) lists bare `30m`/`1d` as one-shot (and says natural language is unsupported); the user-guide Cron page states bare durations are recurring and one-shots need the `in` prefix — this page follows the user guide.
 - Jobs use the local timezone.
@@ -68,7 +69,7 @@ Delivery target requirements:
 - File-based locking: duplicate gateway processes cause delayed or skipped jobs. Jobs live in `~/.hermes/cron/jobs.json` (`chmod 600`, user-owned).
 - Logs: `~/.hermes/logs/agent.log`, `~/.hermes/logs/errors.log`.
 - Jobs due in the same tick run sequentially; stagger schedules. Filter large script output at the script level.
-- Source: https://hermes-agent.nousresearch.com/docs/guides/cron-troubleshooting (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/guides/cron-troubleshooting (pinned to v0.23.1)
 
 ## Related
 

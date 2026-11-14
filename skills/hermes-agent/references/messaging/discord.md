@@ -44,6 +44,7 @@ Setup: create an application in the Developer Portal, create the bot, enable **S
 | `DISCORD_PROXY` | env | Proxy for HTTP/WebSocket/REST (`http://`, `https://`, `socks5://`) |
 | `DISCORD_MAX_ATTACHMENT_BYTES` | env (default `33554432`) | Per-attachment download cap; `0` = unlimited |
 | `HERMES_DISCORD_TEXT_BATCH_DELAY_SECONDS` / `_SPLIT_DELAY_SECONDS` | env (default `0.6` / `2.0`) | Text batching windows |
+| `approvals.discord_prompt_timeout` | seconds (default 300, min 30) | New in v0.23. Lifetime of Discord's interactive button views (command approvals, clarify questions, update prompts, slash-command confirmations); same platform-safe upper bound as `approvals.timeout` |
 | `discord.channel_prompts` | mapping | Ephemeral per-channel/thread system prompts |
 | `discord.missed_message_backfill` | mapping | Opt-in replay after reconnect (`enabled`, `channels`, `window_seconds`, `limit`, `max_dispatches`, `max_attempts`) |
 | `discord.voice_fx` | mapping | Ambient bed + verbal acks in voice channels (off by default) |
@@ -61,7 +62,8 @@ Setup: create an application in the Developer Portal, create the bot, enable **S
 - Forum channels: each send creates a new thread; thread name from the first line (max 100 chars).
 - Bot loop guard: 20 bot messages in 5 minutes per channel drops further bot messages for 10 minutes.
 - Mention control: `@everyone` / `@here` / role pings blocked by default.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/discord (pinned to v0.22.2)
+- `agent.clarify_timeout` default is `90` seconds in v0.23.1 (`0` or less = unlimited; v0.22.2 said `3600`). `approvals.timeout` (how long a command waits for approval) is separate from `approvals.discord_prompt_timeout` (button views); to allow one hour for both, set both to `3600` under `approvals:`. Each command-approval card answers its own request and its controls retire when that request is answered, cancelled or expires; a shorter Discord timeout retires the buttons without extending or ending the underlying wait.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/discord (pinned to v0.23.1)
 
 ## Related
 

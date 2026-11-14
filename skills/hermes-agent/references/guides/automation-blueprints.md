@@ -110,7 +110,7 @@ Cron schedule syntax: `every 30m`, `every 2h`, `0 2 * * *` (daily 2:00), `0 9 * 
 - The default `hermes-webhook` toolset has no terminal; the static PR-review route relies on fetching `{pull_request.diff_url}` with web tools. To run `gh pr diff` instead, grant `toolsets: ["terminal", "web"]` on the route (see webhook-github-pr-review).
 - Adapted: the upstream curl example sends no event type, so a route subscribed with `--events "deployment"` would ignore it; the event type is read from `X-GitHub-Event`, `X-GitLab-Event`, or `event_type` in the payload (user-guide/messaging/webhooks).
 - A parameterized form-based catalog exists in the reference docs (Automation Blueprints Catalog).
-- Source: https://hermes-agent.nousresearch.com/docs/guides/automation-blueprints (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/guides/automation-blueprints (pinned to v0.23.1)
 
 ## Related
 

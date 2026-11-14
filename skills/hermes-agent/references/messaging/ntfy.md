@@ -41,7 +41,7 @@ hermes send --to ntfy:alerts-channel "Done!"
 - 401 halts the reconnect loop (`fatal: ntfy_unauthorized`); 404 halts with `fatal: ntfy_topic_not_found`; reconnect backoff 2, 5, 10, 30, 60 s.
 - Adapted: the Hermes ntfy page shows the target as a positional argument; this example uses `--to` per the `hermes send` CLI contract (guides/pipe-script-output).
 - Adapted: the Hermes page uses `hermes-myname-2026`; this example uses the unguessable form the same page recommends.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/ntfy (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/ntfy (pinned to v0.23.1)
 
 ## Related
 
