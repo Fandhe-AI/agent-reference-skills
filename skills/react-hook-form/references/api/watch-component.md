@@ -40,6 +40,40 @@ const App = () => {
 | `disabled` | `boolean = false` | Option to disable the subscription. |
 | `exact` | `boolean = false` | Exact name matching. When `false`, fires when the subscribed name is a prefix of the changed field name or vice versa. Since 7.81.0, when `true`, fires when the subscribed field or an ancestor path is updated, but not when a nested child path changes. |
 | `render` | `Function` | Subscribes to the specified form field(s) and re-renders its child function whenever the values change. |
+- Show and hide fields without re-rendering the whole form:
+
+  ```javascript
+  <Watch
+    control={control}
+    name="hasPhone"
+    render={(hasPhone) => hasPhone && <input {...register("phone")} />}
+  />
+  ```
+
+- Use `compute` to re-render only when a derived value changes. For example, with `name="items"`, `compute={(items = []) => items.length}` re-renders only when the number of items changes.
+- `Watch` is a component, so you can render it conditionally or inside a list. Hooks such as `useWatch` cannot be called that way.
+- Source: https://react-hook-form.com/docs/usewatch/watch (documentation master c0511c9, fetched 2026-11-14)
+
+### Troubleshooting
+
+#### `Watch` cannot find the form control
+
+- Why: The component has no `control` prop and is not rendered inside the matching [`FormProvider`](./formprovider.md).
+- Fix: Pass `control` from the same `useForm` instance that owns the fields, or render `Watch` under `<FormProvider {...methods}>`.
+
+#### The rendered value is `undefined` on the first render
+
+- Why: The watched field has not registered yet and no initial value is available.
+- Fix: Set the field in `defaultValues` on `useForm`, or pass `defaultValue` to `Watch`:
+
+```javascript
+<Watch
+  control={control}
+  name="email"
+  defaultValue=""
+  render={(email) => <span>{email}</span>}
+/>
+```
 
 ## Related
 

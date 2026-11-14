@@ -77,6 +77,40 @@ Return:
   const { register, formState } = useForm()
   const { isDirty } = getFieldState("test", formState) // ✅ formState.isDirty subscribed
   ```
+- Source: https://react-hook-form.com/docs/useform/getfieldstate (documentation master c0511c9, fetched 2026-11-14)
+
+### Tips
+
+- In a reusable field component, subscribe to only that field with `useFormState({ name })`, and pass the result to `getFieldState`. The component then re-renders only when that field's state changes:
+
+```javascript
+function FieldError({ name }) {
+  const { getFieldState } = useFormContext()
+  const formState = useFormState({ name })
+  const { error, isTouched } = getFieldState(name, formState)
+
+  return isTouched && error ? <p role="alert">{error.message}</p> : null
+}
+```
+
+- `getFieldState` is typed against your form values, so a misspelled nested path is a type error. Reading `errors.some.deep.path` by hand is not checked in the same way.
+
+### Troubleshooting
+
+#### `isDirty`, `isTouched`, and `invalid` are always `false`
+
+- Why: The field name may not be registered, or the component has not subscribed to the matching form-state properties. `getFieldState` reads state; it does not create every subscription by itself.
+- Fix: Check that the name exactly matches a registered field. Then read the required state from `formState`, or pass a scoped `useFormState` result:
+
+```javascript
+const formState = useFormState({ control, name: "email" })
+const emailState = getFieldState("email", formState)
+```
+
+#### A field state is stale inside an event handler
+
+- Why: The component never subscribed to the state being read. Reading `getFieldState` only inside a click handler does not cause the component to re-render when that state changes.
+- Fix: For reactive UI, call `useFormState({ name })` during render and pass its result to `getFieldState`. For a one-time read, call `getFieldState` in the handler after the operation that updates the field.
 
 ## Related
 

@@ -7,6 +7,13 @@ Types for the callbacks passed to `handleSubmit` (`SubmitHandler`, `SubmitErrorH
 SubmitHandler:
 
 ```tsx
+export type SubmitHandler<T, TResult = unknown> = (
+  data: T,
+  event?: React.BaseSyntheticEvent
+) => TResult
+```
+
+```tsx
 import { useForm, SubmitHandler } from "react-hook-form"
 
 type FormValues = {
@@ -76,6 +83,12 @@ export type FormSubmitHandler<TTransformedValues> = (payload: {
 
 - `FormSubmitHandler` is the type of the `Form` component's `onSubmit` prop. Unlike `SubmitHandler`, the payload includes the raw `FormData` and `formDataJson` from the submission.
 - Source: https://react-hook-form.com/ts#SubmitHandler, https://react-hook-form.com/ts#SubmitErrorHandler, https://react-hook-form.com/ts#FormSubmitHandler
+- `SubmitHandler` takes a second generic `TResult` (default `unknown`); `handleSubmit` returns `Promise<Awaited<TResult> | undefined>`, so the value returned from your submit callback is available to the caller.
+
+### Changes since v7.90
+
+- v7.92.0: "Fix TypeScript type regression (#13963)"
+- v7.92.0: "Fix `handleSubmit` not supporting nullish and primitive transformed values with disabled fields (#13999, #14011)"
 
 ## Related
 

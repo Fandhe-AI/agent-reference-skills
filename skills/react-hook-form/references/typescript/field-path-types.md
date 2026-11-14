@@ -41,6 +41,10 @@ export type FieldArrayWithId<
 - `FieldPathByValue` returns a union of all available paths whose value type matches the passed value type.
 - Source: https://react-hook-form.com/ts#Field, https://react-hook-form.com/ts#FieldPath, https://react-hook-form.com/ts#FieldPathByValue, https://react-hook-form.com/ts#FieldValues, https://react-hook-form.com/ts#FieldArrayWithId
 
+### Changes since v7.90
+
+- v7.92.0: "Fix TypeScript nested array paths not preserving `undefined` (#13995)"
+
 ## Related
 
 - [UseFieldArrayReturn / FieldArrayMethodProps / UseFieldArrayProps / FieldArrayProps](./field-array-types.md)
