@@ -41,9 +41,12 @@ $ docker buildx bake
 ## Notes
 
 - The `group` block defines a group of targets built concurrently; each `target` block defines a build with its own context, Dockerfile and tags. Running `docker buildx bake` executes the `default` group.
+- For practical workflows, see the "Run tests and lint checks" and "Export build artifacts" sections of Bake targets, and "Extend Compose builds with HCL" in Building with Bake from a Compose file.
+- Source: https://docs.docker.com/build/bake/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
 
 ## Related
 
 - [Introduction to Bake](./bake-introduction.md)
+- [Bake targets](./bake-targets.md)
 - [Bake file reference](./bake-file-reference.md)
 - [Building with Bake from a Compose file](./bake-compose-file.md)

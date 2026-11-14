@@ -89,6 +89,8 @@ A commit hash can be given as a `checksum` (alias `commit`) query alongside `tag
 $ docker buildx build 'https://github.com/moby/buildkit.git?tag=v0.21.1&checksum=66735c67'
 ```
 
+If your BuildKit daemon or Dockerfile frontend doesn't support URL queries, set `BUILDX_SEND_GIT_QUERY_AS_INPUT=1` to let Buildx resolve them. This changes the context's provenance representation; see `BUILDX_SEND_GIT_QUERY_AS_INPUT` in Build variables.
+
 Keep `.git`: BuildKit drops the `.git` directory by default; set the `BUILDKIT_CONTEXT_KEEP_GIT_DIR` build argument to keep it.
 
 ```console
@@ -106,7 +108,7 @@ $ GIT_AUTH_TOKEN=<token> docker buildx build \
   https://github.com/user/private.git
 ```
 
-Remote context with a Dockerfile from stdin:
+Remote context with a Dockerfile from stdin (builds using files from a remote URL while using a Dockerfile from stdin):
 
 ```bash
 docker build -t myimage:latest -f- https://github.com/docker-library/hello-world.git <<EOF
@@ -208,6 +210,7 @@ target "app" {
 
 - Do not use `--build-arg` for secrets (use `--secret`).
 - Short commit hashes are supported with the `checksum` / `commit` query but not for `ref` or URL-fragment refs: use the full 40-character SHA-1.
+- Source: https://docs.docker.com/build/concepts/context/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
 
 ## Related
 

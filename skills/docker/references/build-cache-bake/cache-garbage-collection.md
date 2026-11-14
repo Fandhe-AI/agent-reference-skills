@@ -54,7 +54,7 @@ Filter equality operator differs between files:
 ## Notes
 
 - Policies are evaluated in sequence, most specific first; later, broader policies run only if earlier ones didn't free enough cache.
-- Default policies (approximately): (1) remove easily regenerated cache (local-directory / remote Git build contexts, cache mounts) unused for more than 48 hours; (2) remove cache unused for more than 60 days; (3) remove unshared cache exceeding the size limit; (4) remove any cache exceeding the size limit.
+- Default policies (approximately): (1) remove regenerated cache (local-directory / remote Git build contexts, cache mounts) unused for more than 48 hours; (2) remove cache unused for more than 60 days; (3) remove unshared cache exceeding the size limit; (4) remove any cache exceeding the size limit.
 - `docker` driver defaults: ephemeral unused cache older than 48 hours is removed if it exceeds 13.8% of `defaultKeepStorage` (minimum 512MB); then 60 days unused; then unshared over the limit; then any over the limit. With Docker Desktop default `defaultKeepStorage` of 20GB the policies resolve to `reservedSpace` values `2.764GB` (`keepDuration` `48h`, filter `type=source.local,type=exec.cachemount,type=source.git.checkout`), `20GB` (`keepDuration` `["1440h"]`), `20GB`, and `20GB` with `"all": true`.
 - Custom `daemon.json` policies example:
 
@@ -85,6 +85,7 @@ Filter equality operator differs between files:
   reservedSpace = "5GB"
   maxUsedSpace = "50GB"
 ```
+- Source: https://docs.docker.com/build/cache/garbage-collection/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
 
 ## Related
 

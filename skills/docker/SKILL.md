@@ -13,10 +13,10 @@ Docker Engine / Dockerfile / Docker Compose / Buildx (BuildKit) の公式ドキ�
 
 ## 対象バージョン
 
-- 出典は docs.docker.com の Markdown twin（`<path>.md`）。取得日 2026-10-16 JST
-- 原本 `docker/docs` の `main` は `31d174d090fd7111ca2199ed54a3978e0d4ac74d`（2026-10-16T14:31:22Z）。`docker/docs` には現行版のリリースタグが無いため SHA で pin
-- 同 SHA の `go.mod` / `_vendor/modules.txt` に書かれた vendoring 版を正とする: CLI v29.8.2 / Engine API v1.56.1 / BuildKit v0.34.0 / Buildx v0.38.0 / Compose v5.6.0
-- CLI v29.9.1 はリリース済みだが docs にはまだ反映されていない
+- 出典は docs.docker.com の Markdown twin（`<path>.md`）。取得日 2026-11-14 JST
+- 原本 `docker/docs` の `main` は `553482ce632f00c6e7faabab863422b4916e7c18`（2026-11-13T17:05:54Z）。`docker/docs` には現行版のリリースタグが無いため SHA で pin
+- 同 SHA の `go.mod` / `_vendor/modules.txt` に書かれた vendoring 版を正とする: CLI v29.9.3 / Engine API v1.56.1 / BuildKit v0.35.0 / Buildx v0.39.0 / Compose v5.7.1
+- 旧 pin（31d174d、2026-10-16）からの差分のうち skill の範囲（Dockerfile / build / bake / Compose / buildx / GitHub Actions）を反映済み。公式側が旧版のままのページ（Compose インストール手順の v5.6.0 など）は原文どおり。`scripts/` のうち CLI 例由来のページ（cli-cheatsheet / cleanup-prune / buildx-bake / install-engine）は取得日 2026-10-16 のまま未再取得（該当 CLI 例に差分なし）
 - `hugo.yaml` の `buildkit_version` 0.32.0 は例示用の値であり、版の根拠にしない
 
 ## ディレクトリ構成

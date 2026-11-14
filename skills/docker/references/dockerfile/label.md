@@ -53,6 +53,26 @@ LABEL org.opencontainers.image.authors="SvenDowideit@home.org.au"
 - Labels in base images (the `FROM` line) are inherited. If a label exists with a different value, the most-recently-applied value overrides.
 - In a multi-stage build, labels from intermediate stages are only in the final image if the final stage is directly or indirectly based on them (via `FROM`). Labels from a stage referenced only via `COPY --from` or `RUN --mount=from=` are not included. Labels from the base image in the final `FROM` are always inherited.
 - `MAINTAINER` is deprecated. The `MaintainerDeprecated` build check reports it.
+- Source: https://docs.docker.com/reference/dockerfile/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
+
+### LABEL --unset
+
+> [!NOTE]
+> Not yet available in stable syntax, use [`docker/dockerfile:1-labs`](./parser-directives.md)
+> version.
+
+```dockerfile
+LABEL --unset <key> [<key>...]
+```
+
+The `--unset` flag removes labels from the image, including labels inherited
+from the base image. Removing a label that isn't set is not an error.
+
+```dockerfile
+# syntax=docker/dockerfile:1-labs
+FROM alpine
+LABEL --unset org.opencontainers.image.description org.opencontainers.image.url
+```
 
 ## Related
 

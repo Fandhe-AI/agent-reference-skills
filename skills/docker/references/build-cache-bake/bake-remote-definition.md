@@ -61,6 +61,8 @@ target "default" {
 ```
 
 - Private repositories: if you can authenticate with the default `SSH_AUTH_SOCK`, no extra parameters are needed. For HTTP token or custom SSH agents use the environment variables `BUILDX_BAKE_GIT_AUTH_TOKEN`, `BUILDX_BAKE_GIT_AUTH_HEADER`, `BUILDX_BAKE_GIT_SSH`.
+- For HTTP authentication, Bake also uses these credentials for Git build contexts on the same host as the remote definition. Private Git contexts on other hosts need separate credentials. See `BUILDX_BAKE_GIT_AUTH_TOKEN` in Build variables for details.
+- Source: https://docs.docker.com/build/bake/remote-definition/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
 
 ## Related
 

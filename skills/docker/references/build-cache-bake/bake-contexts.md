@@ -68,7 +68,7 @@ Supported context values:
 ## Notes
 
 - With a local directory named context, `src` points to the client filesystem, not to a previous build stage.
-- In most cases use a single multi-stage Dockerfile with multiple targets instead. Using another target as context is recommended only when multiple Dockerfiles can't be easily merged into one.
+- In most cases use a single multi-stage Dockerfile with multiple targets instead. Using another target as context is recommended only when multiple Dockerfiles can't be merged into one.
 
 ## Related
 

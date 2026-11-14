@@ -14,6 +14,8 @@ FROM [--platform=<platform>] <image>[:<tag>] [AS <name>]
 FROM [--platform=<platform>] <image>[@<digest>] [AS <name>]
 ```
 
+See `FROM --reset` under Notes for the `1-labs` form `FROM --reset=<field>[,<field>...] <image> [AS <name>]`.
+
 ```dockerfile
 FROM ubuntu AS base
 RUN apt-get update && apt-get install -y shared-tooling
@@ -42,6 +44,45 @@ COPY --from=build /app /app
 - `FROM` can appear multiple times to create multiple images or use one build stage as a dependency for another. Each `FROM` clears any state created by previous instructions.
 - `tag` and `digest` are optional; if both are omitted the builder assumes `latest`. The builder returns an error if it can't find the `tag`.
 - Automatic platform ARGs (e.g. `BUILDPLATFORM`) let you force a stage to the native build platform and cross-compile to the target platform inside the stage.
+- Source: https://docs.docker.com/reference/dockerfile/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
+
+### FROM --reset
+
+> [!NOTE]
+> Not yet available in stable syntax, use [`docker/dockerfile:1-labs`](./parser-directives.md)
+> version.
+
+```dockerfile
+FROM --reset=<field>[,<field>...] <image> [AS <name>]
+```
+
+The `--reset` flag clears configuration inherited from the base image, so
+that changes in the base image don't affect these parts of your build. The
+base image can be an image or another build stage. The flag can be repeated,
+and its values aren't expanded with build arguments. The following fields can
+be reset:
+
+| Field | Effect |
+| --- | --- |
+| `cmd` | Removes the default command |
+| `entrypoint` | Removes the entrypoint |
+| `env` | Removes environment variables like [`ENV --unset`](./env.md), the default `PATH` is set again on Linux |
+| `expose` | Removes exposed ports |
+| `healthcheck` | Removes the health check |
+| `label` | Removes labels |
+| `onbuild` | Skips the [`ONBUILD`](./onbuild.md) triggers of the base image |
+| `shell` | Restores the default shell |
+| `stopsignal` | Removes the stop signal |
+| `user` | Restores the default user |
+| `volume` | Removes volumes |
+| `workdir` | Restores the default working directory (`/`) |
+| `all` | Resets all of the above, and any fields added in future versions |
+
+```dockerfile
+# syntax=docker/dockerfile:1-labs
+FROM --reset=onbuild,volume,label postgres
+LABEL org.opencontainers.image.title="my-postgres"
+```
 
 ### Understand how ARG and FROM interact
 

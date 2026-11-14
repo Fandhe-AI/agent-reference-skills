@@ -4,7 +4,52 @@ source: https://docs.docker.com/build/ci/github-actions/push-multi-registries/
 
 # Push to multiple registries with GitHub Actions
 
-Log in to Docker Hub and GitHub Container Registry and push one build to both.
+Push one build to Docker Hub and GitHub Container Registry with Docker GitHub Builder or with individual actions.
+
+## Signature / Usage
+
+### Push with GitHub Builder
+
+List the image names in `meta-images` and credentials in the `registry-auths` secret. This example publishes `latest` and `1.0.0` tags to Docker Hub and GitHub Container Registry:
+
+Adapted (not in the official docs): the reusable workflow is pinned to the commit SHA of tag `v1` (`a31d231`, resolved 2026-11-14 via the GitHub API) instead of the mutable tag `@v1` used in the official example.
+
+```yaml
+name: ci
+
+on:
+  push:
+
+jobs:
+  build:
+    uses: docker/github-builder/.github/workflows/build.yml@a31d2311da4d55e21b978c1c52bab82ba97d51ee
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    with:
+      output: image
+      push: true
+      platforms: linux/amd64,linux/arm64
+      meta-tags: |
+        type=raw,value=latest
+        type=raw,value=1.0.0
+      meta-images: |
+        user/app
+        ghcr.io/user/app
+    secrets:
+      registry-auths: |
+        - registry: docker.io
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        - registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+```
+
+Replace the image names with repositories you can push to. The `packages: write` permission authorizes publishing to GitHub Container Registry.
+
+### Push with individual actions
 
 ```yaml
 name: ci
@@ -52,7 +97,9 @@ jobs:
 
 ## Notes
 
+- Source: https://docs.docker.com/build/ci/github-actions/push-multi-registries/ (docker/docs @ 553482c, retrieved 2026-11-14 JST).
+- The official page now leads with Docker GitHub Builder reusable workflows (`docker/github-builder`, [build.yml docs](https://docs.docker.com/build/ci/github-actions/build-workflow/)) and keeps the individual-action examples as the second style; both are shown here. The official example references the reusable workflow by major tag (`@v1`); it is pinned to a commit SHA here (see the Adapted line above the example).
 - GitHub Actions workflow syntax and `secrets` / `vars` contexts are covered by the github-docs skill.
 - Each registry needs its own `docker/login-action` step; the `tags` list can mix both registries' names.
 - Adapted: the official example references actions by major tag (`@vN`); third-party actions are pinned to the commit SHA of the current release here (tag in the trailing comment).
-- Adapted: `permissions: { contents: read, packages: write }` is added because pushing to ghcr.io with `GITHUB_TOKEN` needs `packages: write` when the default token permissions are read-only.
+- The official individual-actions example now includes `permissions: { contents: read, packages: write }` (previously added here as an adaptation).

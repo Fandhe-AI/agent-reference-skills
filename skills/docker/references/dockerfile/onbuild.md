@@ -32,6 +32,8 @@ ONBUILD RUN /usr/local/bin/python-build --dir /app/src
 
   If the `from` source is a build stage, the stage must be defined in the Dockerfile where `ONBUILD` gets triggered. If it's a named context, it must be passed to the downstream build.
 - Limitations: chaining `ONBUILD ONBUILD` isn't allowed; `ONBUILD` may not trigger `FROM` or `MAINTAINER`.
+- `BUILDKIT_DISABLE_ONBUILD` (see arg.md) skips the `ONBUILD` triggers of all base images and stages; `FROM --reset=onbuild` (1-labs, see from.md) skips them for one base image.
+- Source: https://docs.docker.com/reference/dockerfile/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
 
 ## Related
 

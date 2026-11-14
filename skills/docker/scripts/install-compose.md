@@ -47,3 +47,5 @@ docker-compose version
 ## Notes
 
 Adapted: commands that need `sudo` (package install, system-wide plugin/standalone placement, symlink) are described in prose with links to the official pages; the per-user manual install keeps the original commands with `DOCKER_CONFIG` quoted as `"${DOCKER_CONFIG}"`.
+
+- The official install pages (checked docker/docs @ 553482c, 2026-11-14) still show `v5.6.0` in the download URLs, while the docs vendor Compose v5.7.1. The URLs above are kept as published; use the latest release tag from https://github.com/docker/compose/releases if a newer version is wanted.

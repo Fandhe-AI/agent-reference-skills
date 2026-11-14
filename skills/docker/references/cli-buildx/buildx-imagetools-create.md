@@ -33,7 +33,9 @@ $ docker buildx imagetools create \
 ## Notes
 
 - With a single source that is a manifest list or image index, create performs a carbon copy. With a single source that is not a list or index, the output is a manifest list; disable with `--prefer-index=false` to attempt to preserve the source manifest format.
-- `--annotation` supports only the type prefixes `index:` and `manifest-descriptor:`; it doesn't support annotating manifests or OCI layouts.
+- `--annotation` adds annotations to the image index and manifest descriptors. An annotation without a type prefix is added to the image index. It supports only the type prefixes `index:` and `manifest-descriptor:`; it doesn't support annotating manifests or OCI layouts.
+- Annotations also require the output to use the OCI image index media type; they aren't supported when the sources produce a Docker manifest list. BuildKit v0.31 and later use OCI media types by default. Earlier versions use OCI media types when exporting attestations and Docker media types otherwise. Use the `oci-mediatypes=true` output option to produce OCI media types explicitly.
+- Source: https://docs.docker.com/reference/cli/docker/buildx/imagetools/create/ (docker/docs @ 553482c, retrieved 2026-11-14 JST)
 - `--append` appends the new sources to an existing manifest list in the destination.
 - `--dry-run` does not push, just shows the image.
 - `-f` reads sources from files; a source can be a manifest digest, manifest reference, or a JSON OCI descriptor object. Annotations or extra platform properties such as `os.version` and `os.features` must be in the OCI descriptor JSON. The descriptor in the file is merged with an existing descriptor in the registry if present.
