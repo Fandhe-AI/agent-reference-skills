@@ -23,6 +23,15 @@ When your app checks for an update or downloads an asset, `expo-updates` sends a
 | `Expo-Fatal-Error` | The text of the last error that stopped your app from launching, up to 1,024 characters. The library sends it once. |
 | `Expo-Recent-Failed-Update-IDs` | The IDs of up to five updates that failed to launch on this device. Present after error recovery records a failed launch. No stack trace or error message is sent. |
 
+Adapted (not in the official docs): minimal snippet for the `Expo-Extra-Params` row above; the page itself has no code.
+
+```ts
+import * as Updates from 'expo-updates';
+
+// Sent in the Expo-Extra-Params header on later update requests; avoid personal data here.
+await Updates.setExtraParamAsync('example-key', 'example-value');
+```
+
 Like every network request, the request also exposes the device's IP address to the server. The library does not add personal information such as a name, email address, or account ID, and does not read the device's location, contacts, or files; the requests carry such data only if your code puts it in an extra param, a request header, or an error message.
 
 Expo Update stores the client ID and the IP address with each request record, including the failed update IDs when the request carries them. It uses them to count installations and failed installs per update for the deployments dashboard, to measure usage, and to decide which installations get an update during a rollout. The launch error text is kept only in raw request logs, which Expo deletes after three days. Expo does not derive a location, combine the data with data from other apps, use it for advertising, or share it with data brokers. Expo processes it on your behalf, as your service provider, under Expo's data processing agreement.
@@ -69,6 +78,7 @@ The data is not linked to the user because the client ID is random and does not 
 - These answers assume you use Expo Update as your update server. If you host updates yourself (see standalone-service.md), the same headers go to your server, and you declare what your server stores instead.
 - `expo-updates` does not ship a privacy manifest, so the Xcode privacy report for an archive does not list the data above. Add it to your answers from this page.
 - If your app also includes `expo-observe`, add the declarations from the official App store privacy declarations for Expo Observe page (https://docs.expo.dev/eas/observe/reference/store-privacy-declarations/; not covered by this skill). Both libraries use the same client ID, so one Device or other IDs entry on Google Play and one Device ID entry on the App Store cover both; the same applies to the crash data entries.
+- The snippet above is not from the official page (which has no code); it only illustrates the `Updates.setExtraParamAsync()` API named in the table.
 - Source: https://docs.expo.dev/eas-update/store-privacy-declarations/ (docs/pages/eas-update/store-privacy-declarations.mdx at tag expo@58.0.25).
 
 ## Related
