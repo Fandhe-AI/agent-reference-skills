@@ -8,16 +8,24 @@ Runtime variables the container runtime sets automatically, plus user-defined va
 
 ## Signature / Usage
 
+Adapted (not in the official docs): the official fragment is shown inside a Durable Object method, because `this` is undefined at the top level of a Worker module.
+
 ```js
-const container = this.ctx.container;
-container.start({
-	image: container.images.base,
-	enableInternet: false,
-	env: {
-		MY_CUSTOM_VAR: "value",
-		ANOTHER_VAR: "another_value",
-	},
-});
+import { DurableObject } from "cloudflare:workers";
+
+export class MyContainer extends DurableObject {
+	startContainer() {
+		const container = this.ctx.container;
+		container.start({
+			image: container.images.base,
+			enableInternet: false,
+			env: {
+				MY_CUSTOM_VAR: "value",
+				ANOTHER_VAR: "another_value",
+			},
+		});
+	}
+}
 ```
 
 ## Options / Props
@@ -34,6 +42,7 @@ container.start({
 
 - User-defined variables are passed in the `env` option of [`ctx.container.start()`](https://developers.cloudflare.com/containers/api/durable-object-container/#start). Processes started with `exec()` do not receive them, except `PATH`; pass them in the `env` option of `exec()` instead.
 - Migration: the deprecated `Container` class from `@cloudflare/containers` set these through `envVars`; the migration guide maps `envVars` to the `env` option of `start()`. See api-comparison.md.
+- Adapted from the official docs: the `start()` fragment is wrapped in a Durable Object method.
 - Source: https://developers.cloudflare.com/containers/configuration/environment-variables/ (cloudflare-docs production 34d908a, fetched 2026-11-14).
 - Keep secrets in Worker secrets and pass only required values at start; avoid putting real secrets in source-controlled configuration.
 
