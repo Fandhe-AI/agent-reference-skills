@@ -59,6 +59,7 @@ Exo maintains this integration independently. Use its [source and tests](https:/
 - The official page has no TypeScript or JavaScript code; the only fenced block is the architecture diagram (written as `flowchart TD` source, as in the official page's text). Build and deploy commands live in the upstream Exo repository, not on this page.
 - The Exo Cloudflare adapter is maintained by the Exo project independently of Cloudflare, has its own host and recovery coordinator, and does not require the Agents SDK. The official page notes it does not integrate `@cloudflare/computer` Workspaces.
 - Distinction: Exo is a separate open-source runtime, not an `agents/harness/*` export of the Agents SDK. Its Codex harness runs the Codex process in a sandbox, unlike the Codex turn loop that compiles to WebAssembly in a Durable Object. For the Sandbox SDK and Containers, use the cloudflare-sandbox-containers skill.
+- Official-docs inconsistency (kept verbatim above): the official text calls the SDK Codex example a WebAssembly turn loop inside a Durable Object, but the official Codex harness page (see [codex.md](./codex.md)) documents a `ContainerHarness` that runs the Codex CLI in a Container. As of cloudflare-docs production 34d908a (fetched 2026-11-14) the two pages disagree; for the current Codex harness API follow codex.md.
 
 ## Related
 

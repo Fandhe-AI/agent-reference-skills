@@ -3,7 +3,7 @@ name: cloudflare-agents
 description: >
   Cloudflare Agents SDK (agents パッケージ、Durable Objects 上のエージェント) の
   リファレンス。Agent class、harness (Pi / Think / OpenCode / Claude Code / Codex)、state / setState、this.sql、schedule、@callable RPC、routeAgentRequest、
-  useAgent / AgentClient、AIChatAgent、human-in-the-loop、McpAgent、
+  useAgent / AgentClient、AIChatAgent、human-in-the-loop、McpAgent (リモート MCP サーバー公開)、
   MCPClientManager、browser / code execution tools。
   openai-agents・anthropic-agent-sdk とは別、MCP 仕様は mcp-spec。
 user-invocable: false

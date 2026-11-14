@@ -265,6 +265,7 @@ Pair the store with the Lifecycle's job queue to wake the object while the remot
 - The official page's H2 sections "Run the loop inside the Durable Object" and "Keep the record of an agent that runs elsewhere" are shown here as H3 under Signature / Usage per the repository template; the "Related resources" list is merged into Related.
 - In the official sketch, `generateReply()` is a placeholder for your model call (the JavaScript example only notes this in a comment; the TypeScript example declares it).
 - Distinction: this page is about building a harness as a Lifecycle capability on a plain Durable Object, not about the `Agent` base class (see the agent-class category).
+- Official-docs inconsistency (kept verbatim above): the official text describes the linked Codex harness as a WebAssembly turn loop on a plain Durable Object built from Sessions, Streams, and Tasks, but the official Codex harness page (see [codex.md](./codex.md)) documents a `ContainerHarness` that runs the Codex CLI in a Container with `HarnessStore`. As of cloudflare-docs production 34d908a (fetched 2026-11-14) the two pages disagree; for the current Codex harness API follow codex.md.
 
 ## Related
 
