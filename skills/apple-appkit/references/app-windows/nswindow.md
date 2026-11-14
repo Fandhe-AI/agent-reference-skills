@@ -48,6 +48,7 @@ window.makeKeyAndOrderFront(nil)
 | `requestSharingOfWindow(_:completionHandler:)` | method (macOS 15.0+) | Requests sharing of a window; completion receives an optional `Error` |
 | `requestSharingOfWindow(usingPreview:title:completionHandler:)` | method (macOS 15.0+) | Requests sharing using a preview `NSImage` and title |
 | `beginDraggingSession(items:event:source:)` | method (macOS 15.0+) | Starts a drag with `[NSDraggingItem]`, an `NSEvent` and an `NSDraggingSource`; returns `NSDraggingSession` |
+| `disablesDirectTouchSystemGestures` | `Bool` | Disables direct-touch system gestures when this window is visible. Defaults to `false`. Beta, introduced in macOS 27.3 |
 
 ## Notes
 
@@ -55,7 +56,9 @@ window.makeKeyAndOrderFront(nil)
 - In Swift, always set `isReleasedWhenClosed = false` when holding a strong reference to the window, to avoid double-free.
 - Deprecated in macOS 27.0: `showsToolbarButton` and `drag(_:at:offset:event:pasteboard:source:slideBack:)` (use `beginDraggingSession(items:event:source:)`). `disableScreenUpdatesUntilFlush()` is deprecated in macOS 15.0.
 - macOS 27.0 adds typed `NotificationCenter.MainActorMessage` structs for window notifications (29 in total), e.g. `NSWindow.DidResizeMessage`, `WillCloseMessage`, `DidBecomeKeyMessage`, `DidEnterFullScreenMessage`, `DidMoveMessage`, `WillBeginSheetMessage`.
+- `disablesDirectTouchSystemGestures` is marked beta (introducedAt 27.3) in the DocC JSON, newer than the macOS 27.0 SDK this skill is pinned to; it may change before release.
 - Use `makeKeyAndOrderFront(_:)` to show and focus a window; use `orderOut(_:)` to hide it without releasing it.
+- Source: https://developer.apple.com/documentation/appkit/nswindow/disablesdirecttouchsystemgestures (DocC JSON fetched 2026-11-14)
 
 ## Related
 
