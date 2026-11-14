@@ -16,6 +16,7 @@ Use `withThrowingDiscardingTaskGroup(returning:isolation:body:)` to obtain an in
 - Like `DiscardingTaskGroup`, child tasks and their results are eagerly discarded as soon as they complete instead of being retained for `next()`.
 - Becomes cancelled when `cancelAll()` is invoked, an error escapes the `withThrowingDiscardingTaskGroup` closure, the enclosing `Task` is cancelled, or (unique to this type) **any** child task throws — the first thrown error is retained and rethrown, and all remaining child tasks are cancelled.
 - Catch errors inside a child task body to prevent them from cancelling the whole group.
+- `addImmediateTaskUnlessCancelled(...)` starts the child task on the calling context and does not suspend; it returns `false` when the task was not added. Source: https://developer.apple.com/documentation/swift/throwingdiscardingtaskgroup/addimmediatetaskunlesscancelled(name:priority:executorpreference:operation:) (fetched 2026-11-14)
 
 ### Adding tasks
 
@@ -25,6 +26,7 @@ Use `withThrowingDiscardingTaskGroup(returning:isolation:body:)` to obtain an in
 | `addTask(name:priority:operation:)` | Adds a named throwing child task |
 | `addTaskUnlessCancelled(priority:operation:)` | Adds a task only if not cancelled (returns `Bool`) |
 | `addImmediateTask(name:priority:executorPreference:operation:)` | Adds a task that runs immediately in the calling context |
+| `addImmediateTaskUnlessCancelled(name:priority:executorPreference:operation:)` | Same, but only if the group is not cancelled (returns `Bool`; iOS 26.0+) |
 
 ### State
 

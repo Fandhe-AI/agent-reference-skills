@@ -26,4 +26,5 @@
 | String | A Unicode string value that is a collection of characters. Strings are Unicode-correct, locale-insensitive, and bridge to Objective-C's `NSString`. | [string.md](./string.md) |
 | Substring | A slice of a string that shares storage with the original string for efficient, zero-copy slicing. | [substring.md](./substring.md) |
 | Unicode | A namespace for Unicode utilities, scalar values, encoding codecs, and classification types. | [unicode.md](./unicode.md) |
+| UniqueArray | A dynamically self-resizing, heap allocated, noncopyable array of potentially noncopyable elements. | [uniquearray.md](./uniquearray.md) |
 | UTF8Span | A borrowed view into contiguous memory that contains validly-encoded UTF-8 code units. | [utf8span.md](./utf8span.md) |

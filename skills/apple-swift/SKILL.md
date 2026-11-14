@@ -4,7 +4,7 @@ description: >
   Swift Standard Library・Concurrency・Observation リファレンス。
   プロトコル/ジェネリクス、async/await、actor、SerialExecutor、Sendable、Task、TaskGroup、AsyncSequence、AsyncStream、
   Continuation (CheckedContinuation)、Observable、@Observable、Observations、ObservationRegistrar、
-  Span、InlineArray、RangeSet、Equatable、Hashable、Comparable、Identifiable、Optional、Codable、Result、generics、some/any。
+  Span、InlineArray、UniqueArray、Iterable、RangeSet、Equatable、Hashable、Comparable、Identifiable、Optional、Codable、Result、generics、some/any。
 user-invocable: false
 ---
 
@@ -13,7 +13,7 @@ user-invocable: false
 Swift 公式ドキュメントの Standard Library・Concurrency・プロトコル/ジェネリクス・Observation を網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-Source: developer.apple.com JSON (fetched 2026-10-16, iOS/macOS 27.0 SDK, Swift 6.4 era). Availability values are the `introducedAt` of each JSON, written as-is.
+Source: developer.apple.com JSON (fetched 2026-10-16, iOS/macOS 27.0 SDK, Swift 6.4 era; re-verified 2026-11-14 against Swift 6.4.2 — `Iterable`, `BorrowingIteratorProtocol`, `UniqueArray` and the `addImmediateTaskUnlessCancelled` members were added on that date). Availability values are the `introducedAt` of each JSON, written as-is.
 Supplementary design docs: swift-evolution pinned at commit `f006bf3cf2594bdd4a972f9126f93bd1743ed524` (https://github.com/swiftlang/swift-evolution/tree/f006bf3cf2594bdd4a972f9126f93bd1743ed524, no release tags). Used only for usage examples and status, never as the source of signatures.
 
 ## ディレクトリ構成
@@ -47,6 +47,7 @@ skills/apple-swift/
       outputspan.md
       utf8span.md
       inlinearray.md
+      uniquearray.md
       rangeset.md
       discontiguousslice.md
     concurrency/
@@ -105,6 +106,8 @@ skills/apple-swift/
       sequence.md
       collection.md
       iteratorprotocol.md
+      iterable.md
+      borrowingiteratorprotocol.md
       customstringconvertible.md
       error.md
       expressiblebyliteral.md
@@ -153,11 +156,11 @@ skills/apple-swift/
 | Executor / SerialExecutor / ExecutorJob / withTaskExecutorPreference でカスタム executor を使いたい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
 | UnsafeCurrentTask / タスクキャンセルのシールド / 優先度エスカレーション (JobPriority) を扱いたい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
 | Span / MutableSpan / RawSpan / OutputSpan / UTF8Span で連続メモリへ安全にアクセスしたい | standard-library | [references/standard-library/README.md](references/standard-library/README.md) |
-| InlineArray / RangeSet / DiscontiguousSlice を使いたい | standard-library | [references/standard-library/README.md](references/standard-library/README.md) |
+| InlineArray / UniqueArray / RangeSet / DiscontiguousSlice を使いたい | standard-library | [references/standard-library/README.md](references/standard-library/README.md) |
 | Equatable / Hashable / Comparable を型に準拠させたい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |
 | Codable / Encodable / Decodable で JSON シリアライズしたい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |
 | Identifiable / CaseIterable / RawRepresentable を使いたい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |
-| Sequence / Collection / IteratorProtocol を実装したい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |
+| Sequence / Collection / IteratorProtocol / Iterable / BorrowingIteratorProtocol を実装したい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |
 | ジェネリクス関数・型・associatedtype・where 句を書きたい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |
 | some / any opaque types・existential を使いたい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |
 | Error プロトコルでカスタムエラーを定義したい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |

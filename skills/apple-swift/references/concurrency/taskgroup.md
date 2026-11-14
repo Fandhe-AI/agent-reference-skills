@@ -16,6 +16,7 @@ Conforms to `AsyncSequence`. Use `withTaskGroup(of:returning:isolation:body:)` t
 - The group **always** waits for all child tasks to complete before the `withTaskGroup` call returns, even on early return.
 - Do not let a `TaskGroup` escape the scope in which it was created.
 - Child tasks automatically inherit the group's cancellation state.
+- `addImmediateTaskUnlessCancelled(...)` starts the child task on the calling context and does not suspend; it returns `false` when the task was not added. Source: https://developer.apple.com/documentation/swift/taskgroup/addimmediatetaskunlesscancelled(name:priority:executorpreference:operation:) (fetched 2026-11-14)
 
 ### Adding tasks
 
@@ -24,6 +25,7 @@ Conforms to `AsyncSequence`. Use `withTaskGroup(of:returning:isolation:body:)` t
 | `addTask(name:priority:operation:)` | Adds a child task |
 | `addTaskUnlessCancelled(name:priority:operation:)` | Adds a child task only if not cancelled |
 | `addImmediateTask(name:priority:executorPreference:operation:)` | Adds a task that starts immediately |
+| `addImmediateTaskUnlessCancelled(name:priority:executorPreference:operation:)` | Adds a task that starts immediately in the calling context, only if the group is not cancelled (returns `Bool`; iOS 26.0+) |
 
 ### Collecting results
 
