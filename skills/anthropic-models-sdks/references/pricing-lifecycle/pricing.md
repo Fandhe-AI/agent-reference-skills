@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/about-claude/pricing / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/about-claude/pricing / last verified: 2026-11-14 -->
 
 # Pricing
 
@@ -10,6 +10,8 @@ Anthropic's pricing structure for models and features. All prices are in USD. Fo
 
 | Model | Base Input Tokens | 5m Cache Writes | 1h Cache Writes | Cache Hits & Refreshes | Output Tokens |
 | --- | --- | --- | --- | --- | --- |
+| Claude Fable 5.2 | $8 / MTok | $10 / MTok | $16 / MTok | $0.20 / MTok (1) | $40 / MTok |
+| Claude Mythos 5.2 (limited availability) | $8 / MTok | $10 / MTok | $16 / MTok | $0.20 / MTok (1) | $40 / MTok |
 | Claude Fable 5.1 | $10 / MTok | $12.50 / MTok | $20 / MTok | $0.25 / MTok (1) | $50 / MTok |
 | Claude Mythos 5.1 (limited availability) | $10 / MTok | $12.50 / MTok | $20 / MTok | $0.25 / MTok (1) | $50 / MTok |
 | Claude Fable 5 | $10 / MTok | $12.50 / MTok | $20 / MTok | $1 / MTok | $50 / MTok |
@@ -34,7 +36,7 @@ Anthropic's pricing structure for models and features. All prices are in USD. Fo
 
 Footnotes:
 
-1. Cache hits and refreshes on Claude Fable 5.1 and Claude Mythos 5.1 are priced at 0.025x the base input price.
+1. Cache hits and refreshes on Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, and Claude Mythos 5.1 are priced at 0.025x the base input price.
 2. Cache hits and refreshes on Claude Opus 5.5 and Claude Sonnet 5.5 are priced at 0.05x the base input price. All other models use the standard 0.1x multiplier.
 3. The $2/$10 per million input/output token pricing for Claude Sonnet 5, announced at launch as introductory pricing through August 31, 2026, is now the standard price. The previously scheduled increase to $3/$15 per million input/output tokens on September 1, 2026 will not occur.
 
@@ -44,6 +46,8 @@ MTok = Million tokens. Claude 4.7 and later models and Claude Mythos Preview use
 
 | Model | Batch input | Batch output |
 | --- | --- | --- |
+| Claude Fable 5.2 | $4 / MTok | $20 / MTok |
+| Claude Mythos 5.2 (limited availability) | $4 / MTok | $20 / MTok |
 | Claude Fable 5.1 | $5 / MTok | $25 / MTok |
 | Claude Mythos 5.1 (limited availability) | $5 / MTok | $25 / MTok |
 | Claude Fable 5 | $5 / MTok | $25 / MTok |
@@ -74,18 +78,20 @@ There are two ways to enable prompt caching: **automatic caching** (a single top
 | --- | --- | --- |
 | 5-minute cache write | 1.25x base input price | Cache valid for 5 minutes |
 | 1-hour cache write | 2x base input price | Cache valid for 1 hour |
-| Cache read (hit) | 0.1x base input price (0.025x on Claude Fable 5.1 and Claude Mythos 5.1; 0.05x on Claude Opus 5.5 and Claude Sonnet 5.5) | Same duration as the preceding write |
+| Cache read (hit) | 0.1x base input price (0.025x on Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, and Claude Mythos 5.1; 0.05x on Claude Opus 5.5 and Claude Sonnet 5.5) | Same duration as the preceding write |
 
-Cache write tokens are charged when content is first stored; cache read tokens are charged on retrieval. A cache hit costs 10% of standard input price, so caching pays off after one cache read for 5-minute duration (1.25x write) or after two cache reads for 1-hour duration (2x write). On Claude Fable 5.1 and Claude Mythos 5.1, a cache hit costs 2.5% of the standard input price ($0.25 per million tokens). On Claude Opus 5.5 and Claude Sonnet 5.5, a cache hit costs 5% ($0.20 per million tokens on Opus 5.5, $0.10 on Sonnet 5.5). These multipliers stack with the Batch API discount and data residency multipliers.
+Cache write tokens are charged when content is first stored; cache read tokens are charged on retrieval. A cache hit costs 10% of standard input price, so caching pays off after one cache read for 5-minute duration (1.25x write) or after two cache reads for 1-hour duration (2x write). On Claude Fable 5.2 and Claude Mythos 5.2, a cache hit costs 2.5% of the standard input price ($0.20 per million tokens). On Claude Fable 5.1 and Claude Mythos 5.1, a cache hit costs 2.5% of the standard input price ($0.25 per million tokens). On Claude Opus 5.5 and Claude Sonnet 5.5, a cache hit costs 5% ($0.20 per million tokens on Opus 5.5, $0.10 on Sonnet 5.5). These multipliers stack with the Batch API discount and data residency multipliers.
 
 ### Fast mode pricing
 
-Fast mode provides significantly faster output for Claude Opus 5.5, Claude Opus 5, and Claude Opus 4.8 at premium pricing. Fast mode for Claude Opus 5 and Claude Opus 4.8 is in research preview. Pricing applies across the full context window, including requests over 200k input tokens. It is available on the Claude API (first-party) and, for Claude Opus 5.5, on Claude in Microsoft Foundry for deployments hosted on Azure; it is not available on Claude Platform on AWS or partner-operated cloud platforms, and not with the Batch API.
+Fast mode provides up to 2.5x higher output tokens per second at premium pricing. It is available for Claude Fable 5.2, Claude Opus 5.5, Claude Opus 5, and Claude Opus 4.8. Fast mode is in research preview for Claude Opus 5 and deprecated for Claude Opus 4.8. Pricing applies across the full context window, including requests over 200k input tokens. It is available on the Claude API (first-party). For Claude Opus 5.5, it is also available on Claude Models on Google Cloud (Anthropic managed) and on Claude in Microsoft Foundry for deployments hosted on Azure. Claude Fable 5.2 fast mode is also available on Claude Models on Google Cloud (Anthropic managed), Claude Models on Google Cloud (Google managed; Google Cloud sets its prices), and Claude in Microsoft Foundry for deployments hosted on Anthropic. Fast mode is also available for Claude Mythos 5.2 on the Claude API. Fast mode is not available with the Batch API.
 
 | Model | Input | Output |
 | --- | --- | --- |
-| Claude Opus 5.5 | $8 / MTok | $40 / MTok |
-| Claude Opus 5 / Claude Opus 4.8 | $10 / MTok | $50 / MTok |
+| Claude Fable 5.2 | $16 USD / MTok | $80 USD / MTok |
+| Claude Mythos 5.2 | $16 USD / MTok | $80 USD / MTok |
+| Claude Opus 5.5 | $8 USD / MTok | $40 USD / MTok |
+| Claude Opus 5 / Claude Opus 4.8 | $10 USD / MTok | $50 USD / MTok |
 
 Stacks with prompt caching and data residency multipliers.
 
@@ -150,7 +156,7 @@ With prompt caching active and 40,000 of the input tokens as cache reads: uncach
 
 ## Notes
 
-- **Limited access:** available only to organizations verified through Anthropic's verification programs, such as the Cyber Verification Program. To request access, apply to the program that covers your use case. Applies to Claude Mythos 5 / 5.1 rows.
+- **Limited access:** available only to organizations verified through Anthropic's verification programs, such as the Cyber Verification Program. To request access, apply to the program that covers your use case. Applies to Claude Mythos 5 / 5.1 / 5.2 rows.
 - **Retired:** may still be available on other cloud platforms; see `model-deprecations.md`. Claude Haiku 3.5 is "retired, except on Google Cloud" (no longer Bedrock).
 - **Claude Platform on AWS pricing:** bills through AWS Marketplace using Claude Consumption Units (CCU). Token usage is rated in USD at standard per-model/per-feature rates, discounts applied, then converted to CCUs at $0.01/CCU, reported hourly. Postpaid (arrears) only; no prepaid credits. `inference_geo: "us"` applies a 1.1x pricing multiplier for Claude 4.6+ models; `"global"` (default) uses standard pricing.
 - **Claude in Microsoft Foundry pricing:** bills through Azure Marketplace using CCUs, same conversion mechanism. The US Data Zone Standard deployment type applies the same 1.1x multiplier as `inference_geo: "us"`.

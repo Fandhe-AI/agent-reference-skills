@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart / last verified: 2026-11-14 -->
 
 # CLI
 
@@ -11,7 +11,7 @@
 brew install anthropics/tap/ant
 
 # curl (Linux/WSL)
-VERSION=1.42.0
+VERSION=2.9.0
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 case $(uname -m) in
   x86_64) ARCH=amd64 ;;
@@ -20,8 +20,8 @@ esac
 curl -fsSL "https://github.com/anthropics/anthropic-cli/releases/download/v${VERSION}/ant_${VERSION}_${OS}_${ARCH}.tar.gz" \
   | sudo tar -xz -C /usr/local/bin ant
 
-# Go (requires Go 1.25+) — pinned to the same version as the curl route; the official docs use @latest
-go install github.com/anthropics/anthropic-cli/cmd/ant@v1.42.0
+# Go (requires Go 1.26.10 or later) — pinned to the same version as the curl route; the official docs use @latest
+go install github.com/anthropics/anthropic-cli/v2/cmd/ant@v2.9.0
 
 # Check the installation
 ant --version
@@ -200,7 +200,9 @@ ant beta:sessions connect sesn_011CZkZAtmR3yMPDzynEDxu7 --verbose
 ## Notes
 
 - This is the Claude API CLI (platform.claude.com), distinct from the Claude Code CLI (see the anthropic-claude-code skill).
-- The `go install` line is pinned to `@v1.42.0` to match the curl route and the CLI version recorded in SKILL.md; the official quickstart shows `@latest`. Change the tag to follow a newer release.
+- The `go install` line is pinned to `@v2.9.0` to match the curl route and the CLI version recorded in SKILL.md; the official quickstart shows `@latest`. Change the tag to follow a newer release.
+- CLI 2.0.0 (2026-10-21) is a breaking release that adds support for API version `2026-10-21`. The Go module path is now `github.com/anthropics/anthropic-cli/v2`; the old path `.../cmd/ant@latest` keeps installing the latest v1 release with no error or warning. Homebrew and release downloads are unchanged. The CLI is licensed under Apache 2.0 from 2.0.0 (earlier versions MIT).
+- The "CLI 1.30.0 / 1.32.0 / 1.34.0 or later" minimums above remain satisfied by any 2.x release.
 - Keep `ANTHROPIC_API_KEY` and `ANTHROPIC_AUTH_TOKEN` unset when authenticating `curl` with a CLI login token — either variable takes precedence and can silently route requests to a different organization or workspace.
 - If `ANTHROPIC_API_KEY` is set, it overrides every profile for `ant` commands.
 - `ant apply` refuses a lockfile or credentials whose organization / workspace do not match; keep one lockfile per organization or workspace. Nothing locks the lockfile, so run one apply at a time.

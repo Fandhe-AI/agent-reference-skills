@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/overview / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/overview / last verified: 2026-11-14 -->
 
 # SDK install
 
@@ -48,7 +48,7 @@ const message = await client.messages.create({
 
 ```kotlin
 // Gradle
-implementation("com.anthropic:anthropic-java:2.73.0")
+implementation("com.anthropic:anthropic-java:3.8.0")
 ```
 
 ```java
@@ -71,7 +71,7 @@ client.messages().create(params);
 ## Go
 
 ```bash
-go get github.com/anthropics/anthropic-sdk-go
+go get github.com/anthropics/anthropic-sdk-go/v2
 ```
 
 ```go
@@ -81,8 +81,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/anthropics/anthropic-sdk-go"
-	"github.com/anthropics/anthropic-sdk-go/option"
+	"github.com/anthropics/anthropic-sdk-go/v2"
+	"github.com/anthropics/anthropic-sdk-go/v2/option"
 )
 
 func main() {
@@ -165,3 +165,6 @@ $message = $client->messages->create(
 - Go: `option.WithAPIKey` defaults to `ANTHROPIC_API_KEY` when omitted.
 - Python / TypeScript / Ruby: the constructor shown above reads `ANTHROPIC_API_KEY` explicitly from the environment (`os.environ`, `process.env`, `ENV`).
 - C# and PHP SDKs are currently in beta; APIs may change between versions.
+- Latest versions (official SDK overview, 2026-11-14): ant CLI 2.9.0, Python 2.8.0, TypeScript 1.8.0, C# 13.8.0, Go 2.9.0 (`github.com/anthropics/anthropic-sdk-go/v2`), Java 3.8.0, PHP 1.8.0, Ruby 2.8.0. Each SDK major version sends one API version by default; the first majors that use API version `2026-10-21` are Python 2.0.0, TypeScript 1.0.0, C# 13.0.0, Go 2.0.0, Java 3.0.0, PHP 1.0.0, Ruby 2.0.0 (see `https://platform.claude.com/docs/en/api/migration-2026-10-21`).
+- Go: the old path `github.com/anthropics/anthropic-sdk-go` keeps resolving to the latest v1; change every import to start with `/v2`. PHP: `composer update` alone stays within the current constraint; run `composer require "anthropic-ai/sdk"`.
+- Starting with those majors the SDKs and the `ant` CLI are licensed under Apache 2.0 (earlier versions remain MIT).

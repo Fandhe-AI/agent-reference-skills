@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/java / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/java / last verified: 2026-11-14 -->
 
 # Java SDK
 
@@ -8,7 +8,7 @@ Install and configure the Anthropic Java SDK with builder patterns and async sup
 
 ```kotlin
 // Gradle
-implementation("com.anthropic:anthropic-java:2.73.0")
+implementation("com.anthropic:anthropic-java:3.8.0")
 ```
 
 ```java

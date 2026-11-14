@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/models / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/api/models / last verified: 2026-11-14 -->
 
 # Models API
 
@@ -47,6 +47,7 @@ curl https://api.anthropic.com/v1/models/$MODEL_ID \
 
 - レスポンスの `capabilities` オブジェクトで `batch` / `citations` / `code_execution` / `context_management` / `effort` / `image_input` / `pdf_input` / `structured_outputs` / `thinking` の各サポート有無を確認できる。
 - `capabilities.thinking.types.disabled.supported` は `thinking: {type: "disabled"}` を受け付けるかを示す。`false` は 400 で拒否、thinking 非対応モデルでは `true`。`true` でも effort レベル等の別理由で拒否され得る。
+- `capabilities.thinking.types.between_tools.supported` は `thinking: {type: "between_tools"}`（up-front thinking を無効化する設定）を受け付けるかを示す。`false` は 400 で拒否。`true` でも effort レベル等の別理由で拒否され得る。例: Claude Sonnet 5.5 は `between_tools.supported` が `true`、`disabled.supported` が `false`。
 - `capabilities.server_tools` は web search / code execution ツールの受け付けを示す（`server_tools.web_search.supported` / `server_tools.code_execution.supported` / `server_tools.supported`）。いずれも少なくとも 1 バージョン受け付ければ `true`。web fetch 等の他のサーバーツールは対象外。組織設定により `true` でもリクエストが失敗する場合がある。
 - トップレベルの `code_execution` capability は別の判定で、code execution ツール内で Claude が実行するコードがリクエストの他のツールを呼べるか（programmatic tool calling 可否）を示す。例: Claude Haiku 4.5 は `server_tools.code_execution.supported` が `true`、`code_execution.supported` が `false`。
 - 各モデルの `line` フィールドはモデルライン名（例: `opus`）で、ライン無しは `null`。グルーピングにはモデル ID から推測せず `line` を読む。値の集合は固定ではない。
