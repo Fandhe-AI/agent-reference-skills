@@ -9,7 +9,7 @@ description: >
 user-invocable: false
 ---
 
-対象: Echo v5.4.0 (公式ドキュメント labstack/echox @94b5f80, 2026-10-07 取得)
+対象: Echo v5.4.5 (公式ドキュメント labstack/echox @a77b1e8, 2026-11-09 時点を 2026-11-14 に取得。v5.4.1〜v5.4.5 の変更はリリースノートと v5.4.5 ソースで追記。v5.4.0 以前の基準ページは echox @94b5f80)
 
 ## ディレクトリ構成
 

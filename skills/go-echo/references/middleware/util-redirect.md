@@ -37,6 +37,7 @@ Available redirect middleware:
 - Use `e.Pre()` so redirects are applied before routing, regardless of route matching.
 - HTTPS redirects use `Context#Scheme()`. Behind a proxy, configure the scheme extractor and trusted proxy ranges (see Request Scheme and Trusted Proxies) so Echo can recognize HTTPS. A public proxy address that has not been trusted can cause a redirect loop (v5.4.0).
 - Since v5.4.0, the trailing slash middlewares and the static directory redirect percent-encode control characters in the redirect path (GHSA-v753-g4cw-jm48).
+- Since v5.4.5, `HTTPSRedirect`, `HTTPSWWWRedirect`, `HTTPSNonWWWRedirect`, `WWWRedirect` and `NonWWWRedirect` return `400 Bad Request` instead of redirecting when the host is empty, starts with `:` or `.`, contains `%`, or is empty after removing `www.` (GHSA-3f6j-cw5h-qw9c). They no longer redirect `OPTIONS *` requests, map `ws` / `wss` to `http` / `https` in redirect targets, and match the `www.` prefix case-insensitively. Source: https://github.com/labstack/echo/releases/tag/v5.4.5 (fetched 2026-11-14).
 
 ## Related
 
