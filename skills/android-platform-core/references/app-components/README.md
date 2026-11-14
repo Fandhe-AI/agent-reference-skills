@@ -5,6 +5,7 @@
 | Activity lifecycle | States an `Activity` transitions through, from creation to destruction, with callbacks. | [activity-lifecycle.md](./activity-lifecycle.md) |
 | Activity Result contracts | Type-safe, lifecycle-aware replacement for `startActivityForResult()` and `onActivityResult()`. | [activity-result-contracts.md](./activity-result-contracts.md) |
 | Activity | Provides the window in which the app draws UI; entry point for user journeys. | [activity.md](./activity.md) |
+| Android 17 (API 37) platform changes | Implicit URI grants, IME visibility, SMS OTP protection, BAL hardening, Handoff, and other Android 17 changes touching app components. | [android-17-platform-changes.md](./android-17-platform-changes.md) |
 | App components overview | The four fundamental building blocks: Activity, Service, BroadcastReceiver, ContentProvider. | [app-components-overview.md](./app-components-overview.md) |
 | App process priority and memory trimming | How Android ranks processes for killing under memory pressure via `onTrimMemory()`. | [app-process-priority.md](./app-process-priority.md) |
 | Application class and initialization | `Application` base class instantiated once per process; App Startup library alternative. | [application-class.md](./application-class.md) |

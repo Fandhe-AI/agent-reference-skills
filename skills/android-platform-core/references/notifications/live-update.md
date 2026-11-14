@@ -43,6 +43,33 @@ notificationManager.notify(notificationId, notification)
 - Valid use cases: active navigation, ongoing calls, rideshare/delivery tracking. Not for ads, chat messages, alerts, upcoming calendar events, or low-urgency package tracking.
 - The official guide documents `setRequestPromotedOngoing()` as available on `NotificationCompat.Builder` as well as the platform `Notification.Builder`; the other Live Update–specific methods here (`setShortCriticalText()`, chronometer/`setWhen()` controls) are documented against the platform `Notification.Builder`. The feature is only meaningful on Android 16 (API level 36) and above regardless of which builder exposes a given method. Artifact: `androidx.core:core` for the Compat surface, platform SDK for the rest.
 
+### Android 17: semantic color API
+
+Android 17 adds semantic coloring (green = safe, orange = caution, red = danger, blue = informational) supported by `Notification`, `Notification.Metric`, `Notification.ProgressStyle.Point`, and `Notification.ProgressStyle.Segment`. Official example for text in a notification:
+
+```kotlin
+  val ssb = SpannableStringBuilder()
+        .append("Colors: ")
+        .append("NONE", Notification.createSemanticStyleAnnotation(SEMANTIC_STYLE_UNSPECIFIED), 0)
+        .append(", ")
+        .append("INFO", Notification.createSemanticStyleAnnotation(SEMANTIC_STYLE_INFO), 0)
+        .append(", ")
+        .append("SAFE", Notification.createSemanticStyleAnnotation(SEMANTIC_STYLE_SAFE), 0)
+        .append(", ")
+        .append("CAUTION", Notification.createSemanticStyleAnnotation(SEMANTIC_STYLE_CAUTION), 0)
+        .append(", ")
+        .append("DANGER", Notification.createSemanticStyleAnnotation(SEMANTIC_STYLE_DANGER), 0)
+
+    Notification.Builder(context, channelId)
+          .setSmallIcon(R.drawable.ic_icon)
+          .setContentTitle("Hello World!")
+          .setContentText(ssb)
+          .setOngoing(true)
+              .setRequestPromotedOngoing(true)
+```
+
+- The official snippet is not terminated with `build()`, and the `SEMANTIC_STYLE_*` constants are written unqualified. Source: https://developer.android.com/about/versions/17/features (fetched 2026-11-14).
+
 ## Related
 
 - [promoted-notifications](./promoted-notifications.md)

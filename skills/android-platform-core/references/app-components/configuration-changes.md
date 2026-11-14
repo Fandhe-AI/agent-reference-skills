@@ -28,6 +28,7 @@ var userTypedQuery by rememberSaveable(
 - Instance-state saving is triggered when the system destroys the activity due to constraints (rotation, low memory) — **not** when the user presses Back, which should discard state.
 - `rememberSaveable` is the Compose-first replacement for manually overriding `onSaveInstanceState()` / `onRestoreInstanceState()`; it is not intended for complex or large data — use `ViewModel` plus persistent storage for that.
 - `ViewModel` alone does **not** survive process death (only configuration changes); use `SavedStateHandle` (owned by the `android-architecture` skill) for that case.
+- Android 17: when a configuration change (for example rotation) is not handled by the app, the previous IME visibility is no longer restored; set `android:windowSoftInputMode` to `stateAlwaysVisible` or request the keyboard in `onCreate()` / `onConfigurationChanged()` if it must stay visible. See [Android 17 platform changes](./android-17-platform-changes.md). Source: https://developer.android.com/about/versions/17/behavior-changes-all (fetched 2026-11-14).
 - Multi-window mode (API 24+) can put the app into a config-change notification without full destroy/recreate in some cases; only the focused window is in the Resumed state.
 
 ## Related

@@ -39,6 +39,8 @@ try {
 - For long-running work that needs to interact with the user without launching an activity from the background, prefer a foreground service with a persistent notification instead of working around BAL.
 - Filter Logcat by the `ActivityTaskManager` tag for `"Background activity launch blocked!"` diagnostics; the log includes `realCallingPackage` (sender) and `callingPackage` (creator).
 
+- Android 17 (apps targeting API 37+): BAL protections extend to `IntentSender`; migrate from the legacy `MODE_BACKGROUND_ACTIVITY_START_ALLOWED` constant to granular modes such as `MODE_BACKGROUND_ACTIVITY_START_ALLOW_IF_VISIBLE`. Source: https://developer.android.com/about/versions/17/behavior-changes-17 (fetched 2026-11-14).
+
 ## Related
 
 - [Activity](./activity.md)

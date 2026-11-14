@@ -4,7 +4,8 @@ description: >
   Android アプリ開発 (Kotlin) のプラットフォーム基盤リファレンス。
   Activity, Intent, Application, ContentProvider, AndroidManifest, androidx,
   ランタイム権限, NotificationCompat, CallStyle, Bubbles (BubbleMetadata),
-  WindowInsets, スプラッシュスクリーン, Glance ウィジェット。
+  WindowInsets, スプラッシュスクリーン, Glance ウィジェット,
+  Android 17 (API 37) 動作変更, Contact Picker, ACCESS_LOCAL_NETWORK。
 user-invocable: false
 ---
 
@@ -12,6 +13,12 @@ user-invocable: false
 
 Android プラットフォーム公式ドキュメント（app components / manifest / permissions / notifications / system UI / Glance）の主要 API を網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+## 対象バージョン
+
+- Android 17 (API 37) まで追従（取得日 2026-11-14）。Android 17 の動作変更・新機能は `references/app-components/android-17-platform-changes.md`、Contact Picker は `references/permissions-privacy/contact-picker.md`、ローカルネットワーク権限は `references/permissions-privacy/nearby-devices-permissions.md`。
+- Glance は androidx.glance 1.2.0（2026-08-26）安定版まで反映。1.3.0-alpha は一部のみ（`lazy-lists.md`）。
+- 各ページの出典は `## Notes` の `Source:` に記載。Android 17 以前に作成したページは取得日が個別に異なる。
 
 ## ディレクトリ構成
 
@@ -23,6 +30,7 @@ skills/android-platform-core/
       README.md
       activity-lifecycle.md
       activity-result-contracts.md
+      android-17-platform-changes.md
       activity.md
       app-components-overview.md
       app-process-priority.md
@@ -75,6 +83,7 @@ skills/android-platform-core/
     permissions-privacy/
       README.md
       permission-types-and-protection-levels.md
+      contact-picker.md
       declaring-permissions.md
       defining-custom-permissions.md
       requesting-runtime-permissions.md
@@ -175,6 +184,7 @@ skills/android-platform-core/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | Activity のライフサイクル・生成/破棄を扱いたい | app-components | [references/app-components/README.md](references/app-components/README.md) |
+| Android 17 (API 37) の動作変更（URI grant・IME・SMS OTP・BAL）を確認したい | app-components | [references/app-components/README.md](references/app-components/README.md) |
 | Intent / IntentFilter / ActivityResultContracts で画面遷移・結果受け渡しをしたい | app-components | [references/app-components/README.md](references/app-components/README.md) |
 | タスクとバックスタック・構成変更・Application クラスを理解したい | app-components | [references/app-components/README.md](references/app-components/README.md) |
 | ContentProvider を実装・利用したい | app-components | [references/app-components/README.md](references/app-components/README.md) |
@@ -182,6 +192,7 @@ skills/android-platform-core/
 | リソースディレクトリ・修飾子・strings/colors/styles/drawable を定義したい | manifest-resources | [references/manifest-resources/README.md](references/manifest-resources/README.md) |
 | ローカライズ・RTL 対応をしたい | manifest-resources | [references/manifest-resources/README.md](references/manifest-resources/README.md) |
 | ランタイム権限・特別な権限を要求したい | permissions-privacy | [references/permissions-privacy/README.md](references/permissions-privacy/README.md) |
+| Contact Picker / ローカルネットワーク権限 (ACCESS_LOCAL_NETWORK) を扱いたい | permissions-privacy | [references/permissions-privacy/README.md](references/permissions-privacy/README.md) |
 | 位置情報・メディア・通知権限を扱いたい | permissions-privacy | [references/permissions-privacy/README.md](references/permissions-privacy/README.md) |
 | パッケージ可視性・プライバシーポリシー対応をしたい | permissions-privacy | [references/permissions-privacy/README.md](references/permissions-privacy/README.md) |
 | NotificationCompat / 通知チャンネルで通知を組み立てたい | notifications | [references/notifications/README.md](references/notifications/README.md) |
