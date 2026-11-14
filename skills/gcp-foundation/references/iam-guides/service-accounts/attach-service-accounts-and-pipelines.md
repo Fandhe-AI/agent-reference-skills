@@ -41,6 +41,8 @@ POST https://iam.googleapis.com/v1/projects/PROJECT_ID/serviceAccounts/USER_SA_N
 
 Modified policy:
 
+Adapted (not in the official docs): `roles/iam.serviceAccountUser` (which carries `iam.serviceAccounts.actAs`) is granted to the principal that attaches the service account to the resource, not to the service account itself; the service agent receives `roles/iam.serviceAccountTokenCreator`.
+
 ```json
 {
   "version": 1,
@@ -55,7 +57,7 @@ Modified policy:
     {
       "role": "roles/iam.serviceAccountUser",
       "members": [
-        "serviceAccount:SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com"
+        "PRINCIPAL_THAT_ATTACHES_SERVICE_ACCOUNT"
       ]
     }
   ]
@@ -102,6 +104,8 @@ AI Platform Prediction (model versions) and Training (jobs), App Engine standard
 | Privilege escalation | Control who can change the repo, pipeline config, infrastructure, and inputs (packages, images); avoid `*.setIamPolicy` and Editor/Owner for pipelines; constrain with deny policies and IAM Conditions on granted roles; never print credentials in logs (no tokens in args or environment variables; mask tokens). |
 
 ## Notes
+
+- Adapted from the official docs: the `roles/iam.serviceAccountUser` binding in the modified-policy example names the principal that attaches the service account (`iam.serviceAccounts.actAs`), not the service account itself.
 
 - Using the `iam.serviceAccounts.actAs` permission to attach a service account produces an audit log with the attaching principal and the attached service account.
 - After enabling cross-project attachment, do not reverse it: IAM adds a project lien with origin `iam.googleapis.com/cross-project-service-accounts` that prevents project deletion; do not remove it, do not enforce `iam.disableCrossProjectServiceAccountUsage`, do not unenforce `iam.restrictCrossProjectServiceAccountLienRemoval`. Resources may stop working if reversed. `iam.disableCrossProjectServiceAccountUsage` is enforced by default and configurable only at project level.
