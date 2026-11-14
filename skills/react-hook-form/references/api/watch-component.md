@@ -40,6 +40,8 @@ const App = () => {
 | `disabled` | `boolean = false` | Option to disable the subscription. |
 | `exact` | `boolean = false` | Exact name matching. When `false`, fires when the subscribed name is a prefix of the changed field name or vice versa. Since 7.81.0, when `true`, fires when the subscribed field or an ancestor path is updated, but not when a nested child path changes. |
 | `render` | `Function` | Subscribes to the specified form field(s) and re-renders its child function whenever the values change. |
+## Notes
+
 - Show and hide fields without re-rendering the whole form:
 
   ```javascript

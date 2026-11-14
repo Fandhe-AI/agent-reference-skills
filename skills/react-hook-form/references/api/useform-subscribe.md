@@ -48,7 +48,7 @@ export default function App() {
 
 | Name | Type | Description |
 |------|------|-------------|
-| `name` | `undefined` | Subscribe to the entire form: `subscribe({ callback })`. |
+| `name` | `undefined` | Subscribe to the entire form: `subscribe({ formState: { values: true }, callback })`. |
 | `name` | `string` | Subscribe to a single field by name: `subscribe({ name: 'firstName', formState: { values: true }, callback })`. |
 | `name` | `string[]` | Subscribe to multiple fields by name: `subscribe({ name: ['firstName', 'lastName'], formState: { values: true }, callback })`. |
 | `formState` | `Partial<ReadFormState>` | Pick which `formState` to subscribe to: `values`, `isDirty`, `dirtyFields`, `touchedFields`, `isValid`, `errors`, `validatingFields`, `isValidating`. |
@@ -64,6 +64,7 @@ Return:
 ## Notes
 
 - Source: https://react-hook-form.com/docs/useform/subscribe (documentation master c0511c9, fetched 2026-11-14)
+- To be notified of value changes, pick `formState: { values: true }`; a subscription that omits it is not notified when only values change. The `subscribe({ callback })` form in the first row is written with `values: true` here for that reason.
 
 - Shares the same functionality as `createFormControl.subscribe`; the key difference is that `createFormControl` can be initialized outside of a React component.
 - `callback` is required by the `UseFormSubscribe` type (`payload.callback`).

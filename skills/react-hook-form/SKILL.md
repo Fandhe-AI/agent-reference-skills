@@ -5,7 +5,7 @@ description: >
   useForm, register, handleSubmit, watch, setValue, getValues, getErrors, reset、
   Controller, useFieldArray / FieldArray, formState / FormState, ErrorMessage、
   resolver (Zod / Yup / Joi)、バリデーション、Server Actions / useActionState、
-  DevTools (@hookform/devtools)、TypeScript 型。
+  DevTools (@hookform/devtools)、TypeScript 型、v7→v8 移行 (beta)、React Compiler。
 user-invocable: false
 ---
 

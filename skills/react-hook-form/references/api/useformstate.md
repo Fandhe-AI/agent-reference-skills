@@ -68,7 +68,9 @@ Return (`FormState`):
 - Returned `formState` is wrapped with a Proxy; destructure or read it before rendering to enable the subscription: `const { isDirty } = useFormState()` works, `const formState = useFormState()` does not (should destructure).
 - Put `useFormState` in the leaf component that shows the state, such as a submit button or an error summary. Only that component re-renders:
 
-  ```javascript
+  Adapted (not in the official docs): the ellipsis character in the button label is replaced with ASCII `...`.
+
+```javascript
   function SubmitButton({ control }) {
     const { isDirty, isSubmitting } = useFormState({ control })
     return <button disabled={!isDirty || isSubmitting}>Save</button>
@@ -78,6 +80,7 @@ Return (`FormState`):
 - Pass `name` to scope the subscription to one field or one section. Use it with [`getFieldState`](./useform-getfieldstate.md) to read that field's `error`, `isDirty`, and `isTouched`.
 - You can call `useFormState` more than once in the same component. Each call has its own subscription and does not affect the others.
 - Source: https://react-hook-form.com/docs/useformstate (documentation master c0511c9, fetched 2026-11-14)
+- Adapted from the official docs: `Saving…` is written as `Saving...` in the `SubmitButton` example.
 
 ### Submit button in a `FormProvider`
 
@@ -96,7 +99,7 @@ function SubmitButton() {
 
   return (
     <button type="submit" disabled={isSubmitting || !isValid}>
-      {isSubmitting ? "Saving…" : "Save"}
+      {isSubmitting ? "Saving..." : "Save"}
     </button>
   )
 }
