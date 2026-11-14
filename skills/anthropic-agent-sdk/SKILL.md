@@ -5,7 +5,7 @@ description: >
   query(), ClaudeAgentOptions / Options, maxTurns,
   custom tools (in-process MCP), createSdkMcpServer, hooks, permissions (canUseTool), subagents,
   sessions (resume / fork), streaming, structured outputs, Agent Skills (SKILL.md),
-  hosting / observability。
+  hosting / observability、削除済み V2 セッション API (unstable_v2_*)。
 user-invocable: false
 ---
 
@@ -20,7 +20,7 @@ Claude Code CLI 本体は `anthropic-claude-code` / `anthropic-claude-code-exten
 `anthropic-api-core`、Claude API 側の tool use / Agent Skills / MCP は `anthropic-api-tools-mcp` を参照
 （本スキルは SDK 経由でエージェントをビルド・運用する側を担当）。
 
-Source: https://code.claude.com/docs/en/agent-sdk 、2026-10-16 取得（その時点の npm `@anthropic-ai/claude-agent-sdk` 0.3.301 / PyPI `claude-agent-sdk` 0.2.168）。
+Source: https://code.claude.com/docs/en/agent-sdk 、2026-11-14 取得（その時点の npm `@anthropic-ai/claude-agent-sdk` 0.3.325 / PyPI `claude-agent-sdk` 0.2.182）。
 
 ## ディレクトリ構成
 
@@ -41,6 +41,7 @@ skills/anthropic-agent-sdk/
       README.md
       python.md
       typescript.md
+      typescript-v2-preview.md
     extending/
       README.md
       custom-tools.md
@@ -104,7 +105,7 @@ skills/anthropic-agent-sdk/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | Agent SDK の概要・エージェントループの仕組みを知りたい・インストールして最初のエージェントを作りたい・Claude Code SDK からの移行・SDK 内で Claude Code の機能（CLAUDE.md, Agent Skills, hooks）を使いたい・options オブジェクトを組み立てたい（model / fallbackModel, env / cwd / maxTurns / maxBudgetUsd）・セッション中に model や permission mode を変更したい（setModel / setPermissionMode / applyFlagSettings / updateSettings）・動かせるサンプルプロジェクトを探したい（claude-agent-sdk-demos / Claude Cookbook） | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
-| `query()` や `ClaudeAgentOptions` / `Options` など TypeScript / Python の完全な型・関数シグネチャを確認したい | api-reference | [references/api-reference/README.md](references/api-reference/README.md) |
+| `query()` や `ClaudeAgentOptions` / `Options` など TypeScript / Python の完全な型・関数シグネチャを確認したい・削除済みの V2 セッション API（`unstable_v2_*`、0.2.x 以前）の移行先を知りたい | api-reference | [references/api-reference/README.md](references/api-reference/README.md) |
 | custom tools（in-process MCP, `createSdkMcpServer`）を定義したい・外部 MCP サーバーに接続したい・hooks でツール呼び出しを制御したい・plugins・Agent Skills (SKILL.md) の `skills` オプション・コマンド名による呼び出し（/compact, /clear, カスタムコマンド。slash-commands は skills に統合済み）・subagents・tool search を扱いたい | extending | [references/extending/README.md](references/extending/README.md) |
 | セッションの永続化・再開・分岐（resume / fork）・外部ストレージへの保存・file checkpointing・todo 管理・streaming 出力・structured outputs を扱いたい | sessions-io | [references/sessions-io/README.md](references/sessions-io/README.md) |
 | system prompt をカスタマイズしたい・permission mode や `canUseTool` で権限制御したい・ユーザー入力/承認フローを扱いたい | control | [references/control/README.md](references/control/README.md) |

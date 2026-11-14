@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/overview.md (+ https://code.claude.com/docs/en/headless.md for the CLI subprocess snippet) / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/overview.md (+ https://code.claude.com/docs/en/headless.md for the CLI subprocess snippet) / last verified: 2026-11-14 -->
 
 # Agent SDK overview
 
@@ -29,6 +29,9 @@ claude -p "Summarize this project" --output-format json
 
 - The overview page itself carries no code examples; the command above is lifted verbatim from `/docs/en/headless.md`, which the overview page links to for this exact CLI-subprocess use case.
 - Choose Agent SDK when building an agent without implementing the tool loop yourself. Use the Claude Code CLI for interactive/one-off terminal work, the Client SDK for direct Anthropic API access with your own tool loop, or Managed Agents for a hosted REST API where Anthropic runs the sandbox.
+- Managed Agents can run sessions in an Anthropic-managed cloud sandbox or a self-hosted sandbox on your own infrastructure, usable from the SDK for your language, the `ant` CLI, or the REST API. The Client SDK lets you write the tool loop yourself or use its beta tool runner.
+- Changelogs: https://github.com/anthropics/claude-agent-sdk-typescript/blob/main/CHANGELOG.md and https://github.com/anthropics/claude-agent-sdk-python/blob/main/CHANGELOG.md; bugs go to the issues pages of the same repositories.
+- Source: https://code.claude.com/docs/en/agent-sdk/overview.md (fetched 2026-11-14)
 - Unless previously approved, Anthropic does not allow third-party developers to offer claude.ai login or rate limits for products built on the Agent SDK; use API key authentication.
 - Branding: allowed forms include "Claude Agent", "Claude" within an "Agents" menu, or "{YourAgentName} Powered by Claude". "Claude Code" or "Claude Code Agent" naming and Claude Code-mimicking visuals are not permitted.
 - Use governed by Anthropic's Commercial Terms of Service.

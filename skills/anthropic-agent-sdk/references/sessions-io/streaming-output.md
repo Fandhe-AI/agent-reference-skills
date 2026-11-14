@@ -1,8 +1,8 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/streaming-output.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/streaming-output.md / last verified: 2026-11-14 -->
 
 # Stream responses in real-time
 
-By default, the Agent SDK yields complete `AssistantMessage` objects after Claude finishes generating each response. Setting `include_partial_messages` (Python) / `includePartialMessages` (TypeScript) to `true` enables incremental updates as text and tool calls are generated.
+By default, the Agent SDK yields a complete `AssistantMessage` for each non-empty content block (a text block or a tool call) after Claude finishes generating that block. Setting `include_partial_messages` (Python) / `includePartialMessages` (TypeScript) to `true` enables incremental updates as text and tool calls are generated.
 
 ## Signature / Usage
 
@@ -19,6 +19,25 @@ async for message in query(prompt="List the files in my project", options=option
             delta = event.get("delta", {})
             if delta.get("type") == "text_delta":
                 print(delta.get("text", ""), end="", flush=True)
+```
+
+```typescript
+for await (const message of query({
+  prompt: "List the files in my project",
+  options: {
+    includePartialMessages: true,
+    allowedTools: ["Bash", "Read"]
+  }
+})) {
+  if (message.type === "stream_event") {
+    const event = message.event;
+    if (event.type === "content_block_delta") {
+      if (event.delta.type === "text_delta") {
+        process.stdout.write(event.delta.text);
+      }
+    }
+  }
+}
 ```
 
 ## Options / Props
@@ -46,7 +65,11 @@ async for message in query(prompt="List the files in my project", options=option
 - Tool call streaming: `content_block_start` (tool begins, `content_block.type === "tool_use"`) → `content_block_delta` with `input_json_delta` (accumulate `partial_json`) → `content_block_stop` (tool call complete).
 - If a stream is cut off mid-message (interrupt or dropped connection), you still receive that message's `message_stop` before the turn ends. A cut text or thinking block also gets its `content_block_stop`; a cut tool call doesn't, so if `message_stop` arrives while a tool call's block is still open, treat that call's input as incomplete. Before Claude Code v2.1.290, a cut stream could end the turn without `message_stop`, so a rendered reply could stay shown as in progress. The TypeScript Agent SDK bundles v2.1.290 or later from v0.3.290, and the Python Agent SDK from v0.2.164.
 - TypeScript stream events carry `user_message_uuid`, set on the turn's first non-ping stream event and again when the message the turn is answering changes. The Python `StreamEvent` doesn't expose this field.
-- **Known limitation**: with partial messages enabled, structured output JSON streams as a tool call's unvalidated `input_json_delta` chunks; only the validated result reaches `ResultMessage.structured_output`.
+- Python imports `StreamEvent` from `claude_agent_sdk.types`. The shared message ID of the `AssistantMessage` objects from one response is `message.message.id` in TypeScript and `message.message_id` in Python.
+- Cut-off streams (interrupted turn, dropped connection, fallback to a non-streaming request): `message_delta` arrives when you interrupt but can be missing after a dropped connection or non-streaming fallback, so don't wait for one on a cut message. If a reply stays shown as in progress after the turn ends, update the SDK.
+- Without partial messages you receive all message types except `StreamEvent` (`SystemMessage`, `AssistantMessage`, `ResultMessage`, and a compact boundary message: `SDKCompactBoundaryMessage` in TypeScript, `SystemMessage` with subtype `"compact_boundary"` in Python).
+- **Known limitation**: with partial messages enabled, structured output JSON streams as a tool call's unvalidated `input_json_delta` chunks; only the validated result reaches `ResultMessage.structured_output`. See structured-outputs for how the `StructuredOutput` tool call appears in the stream.
+- Source: https://code.claude.com/docs/en/agent-sdk/streaming-output.md (fetched 2026-11-14)
 
 ## Related
 
