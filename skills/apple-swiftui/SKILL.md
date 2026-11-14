@@ -15,7 +15,7 @@ user-invocable: false
 SwiftUI 公式ドキュメントの主要 API を網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象: iOS 27 SDK / Xcode 27（iPhone Duo 系 API は iOS 27.1+、FileDocument は iOS 27.2 で deprecated）。出典 https://developer.apple.com/documentation/swiftui （DocC JSON https://developer.apple.com/tutorials/data/documentation/swiftui/<path>.json）、取得日 2026-10-16。
+対象: iOS 27 SDK / Xcode 27（iPhone Duo 系 API は iOS 27.1+、FileDocument は iOS 27.3 で deprecated）。出典 https://developer.apple.com/documentation/swiftui （DocC JSON https://developer.apple.com/tutorials/data/documentation/swiftui/<path>.json）、取得日 2026-11-14（iOS 27.3 の deprecation 版数・TabsPickerStyle・TextInputBorderShape・concentricCornerRadii を反映。他ページは 2026-10-16 取得のまま）。
 UIKit 側の UIArrangementViewController / UIHingeInteraction は apple-uikit、Duo のカメラ記事は apple-media を参照。
 
 ## ディレクトリ構成
