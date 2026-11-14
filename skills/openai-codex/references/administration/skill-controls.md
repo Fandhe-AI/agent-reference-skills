@@ -17,8 +17,11 @@ Skills are reusable workflows made from instructions and supporting resources. C
 ## Notes
 
 - Moving a skill between distribution models doesn't transfer ChatGPT workspace ownership, sharing, role assignments, plugin installation state, or connector authorization — configure each capability through the control surface that owns it.
-- Plugins work in Chat and Work across ChatGPT on the web, desktop, and mobile, in Codex in the ChatGPT desktop app, and through the Codex CLI plugin browser — not in the IDE extension. Those surfaces draw public plugins from one universal directory shared by ChatGPT and Codex. (An earlier revision of this page said plugins were not available in Chat or mobile; the current official page lists them.)
+- Plugins work in Chat and Work across ChatGPT on the web, desktop, and mobile, in Codex in the ChatGPT desktop app, and through the Codex CLI plugin browser — not in the IDE extension. Those surfaces draw public plugins from one universal directory shared by ChatGPT and Codex.
 - ChatGPT workspace controls don't install local filesystem skills or plugins; filesystem distribution doesn't assign ChatGPT workspace ownership or roles; plugin installation doesn't grant access to a connector, MCP server, or connected service. See build-skills.md for filesystem locations and authoring.
+- Owning docs: Build skills (filesystem locations and authoring), Skills in ChatGPT (Help Center, current workspace procedures), Build plugins (plugin packaging).
+- Local filesystem skills apply to covered local capabilities in the ChatGPT desktop app, Codex CLI, or IDE extension.
+- Source: https://learn.chatgpt.com/docs/enterprise/skills (retrieved 2026-11-14).
 
 ## Related
 

@@ -14,3 +14,5 @@
 | Codex SDK | TypeScript/Python SDKs for programmatic control of local Codex threads | [codex-sdk.md](./codex-sdk.md) |
 | Codex App Server | JSON-RPC interface for rich clients: auth, threads, turns, approvals, streamed events; successor to `codex mcp-server` | [app-server.md](./app-server.md) |
 | Codex MCP server removal | `codex mcp-server` and the `codex-mcp-server` binary were removed; migrate to App Server | [agents-sdk-mcp-server.md](./agents-sdk-mcp-server.md) |
+| Recommended configuration for cybersecurity workflows | Security controls for Daybreak Blue / Daybreak Red and other higher-risk cybersecurity workflows: isolation, least-privilege permission profiles, protected credentials, Auto-review, independent monitoring, and cleanup. | [cyber-safety-recommended-configuration.md](./cyber-safety-recommended-configuration.md) |
+| Models and Trusted Access | OpenAI Daybreak gives approved users access to models for authorized defensive cybersecurity work: Daybreak Blue (flagship models with reduced refusals for defensive workflows) and Daybreak Red (separately approved specialist... | [cyber-safety.md](./cyber-safety.md) |
