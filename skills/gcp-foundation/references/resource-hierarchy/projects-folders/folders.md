@@ -101,6 +101,8 @@ curl -H "Authorization: Bearer ${bearer_token}" \
 https://cloudresourcemanager.googleapis.com/v3/operations/fc.123456789
 ```
 
+Adapted (not in the official docs): the v3 `Folder` response uses `state` instead of the older `lifecycleState` shown in the official sample.
+
 ```json
 {
   "name": "operations/fc.123456789",
@@ -115,7 +117,7 @@ https://cloudresourcemanager.googleapis.com/v3/operations/fc.123456789
     "name": "folders/12345",
     "parent": "organizations/123",
     "displayName": "DISPLAY_NAME",
-    "lifecycleState": "ACTIVE",
+    "state": "ACTIVE",
     "createTime": "2017-07-19T23:29:26.018Z",
     "updateTime": "2017-07-19T23:29:26.046Z"
   }
@@ -249,6 +251,7 @@ response:
 ## Notes
 
 - Folder Admin can create, edit, delete, move folders, change IAM on folders, and move projects between folders; initially only the Organization Admin can assign it for the organization. To let users see the structure, grant Organization Viewer and Folder Viewer at the organization; to limit visibility, grant Folder Viewer on specific folders.
+- Adapted from the official docs: the v3 `Folder` completion response uses `state` (the official sample shows the older `lifecycleState`).
 - Adapted from the official docs: the setIamPolicy examples are read-modify-write (existing bindings and `etag` preserved, version 3), the folder setIamPolicy URL is `/v3/folders/FOLDER_ID:setIamPolicy`, and the tagged `folders create` command has a space before its line-continuation backslash.
 - Adapted from the official docs: the REST `request_json` examples are corrected to valid shell and JSON, and the folder role IDs use `roles/resourcemanager.folderAdmin` / `folderCreator` / `folderMover` (the official sample's `roles/folderAdmin` etc. are not valid role IDs).
 - Start with a single sandbox folder to experiment; model departments, applications, or environments with nested folders.
