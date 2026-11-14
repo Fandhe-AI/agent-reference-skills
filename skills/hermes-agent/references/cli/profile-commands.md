@@ -106,7 +106,7 @@ distribution_owned:   # optional
 - `hermes_requires` supports `>=`, `<=`, `==`, `!=`, `>`, `<`, or a bare version (treated as `>=`). Default `distribution_owned`: SOUL.md, config.yaml, mcp.json, skills/, cron/, distribution.yaml.
 - Private git repositories work with no extra configuration; install shells out to the normal `git` binary.
 - `hermes completion <shell>` supports `bash`, `zsh`, `fish`, with completion for profile names and subcommands.
-- Source: https://hermes-agent.nousresearch.com/docs/reference/profile-commands (v0.22.2).
+- Source: https://hermes-agent.nousresearch.com/docs/reference/profile-commands (pinned to v0.23.1).
 
 ## Related
 

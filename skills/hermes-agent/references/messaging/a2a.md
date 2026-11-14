@@ -48,7 +48,7 @@ Environment variables:
 |---------|---------|---------|
 | `A2A_PEER_TOKENS` | unset | Per-peer credentials `name:token,...` (preferred) |
 | `A2A_BEARER_TOKEN` | unset | Shared token; identity falls back to caller IP |
-| `A2A_HOST` | `127.0.0.1` | Bind host; only widens when a token is set |
+| `A2A_HOST` | `127.0.0.1` | Bind host; only widens when a token is set. IPv6 literals such as `::1` or `::` work too, bare or bracketed (`[::1]`) |
 | `A2A_PORT` | `9900` | Inbound port |
 | `A2A_AGENT_NAME` | hostname-derived | Name on the Agent Card |
 | `A2A_PUBLIC_URL` | unset | Routable URL advertised on the card |
@@ -75,7 +75,14 @@ curl -X POST http://your-host:9900/ \
        "params":{"message":{"messageId":"m1","role":"ROLE_USER",
                  "parts":[{"text":"What tools do you have?"}]}}}'
 ```
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/a2a (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/a2a (pinned to v0.23.1)
+- No-token hardening (v0.23): without a token the server also refuses browser-originated POSTs (an `Origin` header, a cross-site `Sec-Fetch-Site`, or a non-JSON `Content-Type`) and answers only requests addressed to a loopback name (`localhost`, `127.x.x.x`, `[::1]`) or the `A2A_PUBLIC_URL` host. Troubleshooting `403`s with no token: "Host must be a loopback name..." (call it by a loopback name, set `A2A_PUBLIC_URL`, or configure a token); "Content-Type must be application/json" (add `-H 'Content-Type: application/json'`, plain `curl -d` sends a form type); "browser-originated" / "cross-site request refused" (call from a local script or SDK, or configure a token).
+
+### Forwarded profile sessions after the ownership cutover (v0.23)
+
+- Forwarding to another local profile submits to that profile's gateway owner; there is no fallback `hermes chat` process writing its session database. New forwarded conversations retain the exact agent, tenant, authenticated peer and context ID in their owner binding.
+- Historical forwarded sessions (old titles `a2a-{agent}-{sanitized-context}`, which omitted peer and tenant identity and could already mix contexts such as `ctx/exact` and `ctx-exact`) cannot be identified safely. A matching historical title returns `runtime_coordination_required` instead of attaching a peer or starting a replacement; the session ID, title and messages stay untouched and generic CLI resume does not bypass it.
+- Automatic migration of these historical sessions is not yet supported and there is no supported migration command; do not retitle or edit database rows to bypass the ownership check.
 
 ## Related
 

@@ -84,7 +84,7 @@ providers:
 - The guide's cost comparison (~$0.80 Claude Sonnet vs $0 local per ~100K-in / 20K-out session) is illustrative.
 - Adapted: the official guide pipes the installer straight into sh; this page splits it into download, review and run steps.
 - Adapted: context_length added because Ollama's /api/show reports the model maximum, not the custom num_ctx (see troubleshooting-agent-quality).
-- Source: https://hermes-agent.nousresearch.com/docs/guides/local-ollama-setup (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/guides/local-ollama-setup (pinned to v0.23.1)
 
 ## Related
 

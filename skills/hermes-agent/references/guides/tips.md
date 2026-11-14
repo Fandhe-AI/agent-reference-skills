@@ -64,11 +64,15 @@ Practical guidance for getting the most out of Hermes Agent across prompting, CL
 - **Windows encoding**: On Windows, default encodings such as `cp125x` can raise `UnicodeEncodeError`; open files with `encoding="utf-8"` and in PowerShell run `$OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)`.
 - **Command approval caution**: When dangerous commands trigger approval prompts, choose "session" scope before considering "always" allowlisting.
 - **Command safety checks**: Hermes validates commands against dangerous patterns (recursive deletes, SQL drops, shell piping). Never disable in production.
-- **Container security exception**: Dangerous command checks are skipped in container backends (Docker, Singularity, Modal) since the container provides the security boundary.
+- **Container security exception**: Dangerous command checks are skipped in container backends (Docker, Modal, Daytona, or a container plugin such as Singularity) since the container provides the security boundary.
 - **Messaging bot allowlists**: Never enable `GATEWAY_ALLOW_ALL_USERS=true` for bots with terminal access. Use `TELEGRAM_ALLOWED_USERS`, `DISCORD_ALLOWED_USERS`, or DM pairing instead.
 - **Windows UTF-8**: Explicitly open files with UTF-8 encoding to avoid `UnicodeEncodeError` on Windows systems using default encodings.
 - **Supply-chain scanning**: Run `hermes security audit` periodically to detect vulnerable packages in venv, plugins, and MCP server dependencies.
 - **Secret manager**: Use `hermes secrets setup` to pull API keys from Bitwarden at startup instead of storing them in `.env` files.
+
+## Notes
+
+- Source: https://hermes-agent.nousresearch.com/docs/guides/tips (pinned to v0.23.1)
 
 ## Related
 

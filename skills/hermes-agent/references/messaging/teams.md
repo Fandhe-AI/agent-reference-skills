@@ -47,7 +47,7 @@ curl http://localhost:3978/health   # ok
 - Microsoft Graph caveat: app-only (application permission) posting to channels / chats is limited to migration scenarios (Teamwork.Migrate.All); see https://learn.microsoft.com/en-us/graph/api/channel-post-messages.
 - Always set `TEAMS_ALLOWED_USERS`; unauthorized messages are silently dropped.
 - Adapted: prefixed `cd ~/.hermes/hermes-agent &&` (as in the upstream ACP / DingTalk / SMS pages) because `pm` lives in the Hermes install checkout.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/teams (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/teams (pinned to v0.23.1)
 
 ## Related
 

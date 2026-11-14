@@ -39,13 +39,15 @@ hermes gateway
 ## Notes
 
 - Unofficial API: small risk of account restriction. Use a dedicated number, do not send bulk or unsolicited messages.
-- Requires Node.js v18+ and npm; no Chromium / Puppeteer.
+- Requires Node.js v20+ and npm (v0.22.2 said v18+). Ordinary QR pairing needs no browser; accounts that require passkey verification also need an installed Chrome or Edge browser with access to that account's passkey.
+- Passkey accounts (v0.23): if WhatsApp requests a passkey after the QR scan, run `hermes whatsapp --passkey-browser "/absolute/path/to/browser"` (placeholder path; use your real Chrome or Edge executable). Setup opens WhatsApp Web in a temporary browser window (no regular profile or password manager), you approve with your passkey and compare any confirmation code with your phone; Hermes enables WhatsApp only after pairing succeeds. Needs an interactive terminal and a graphical browser on the setup machine; not available through dashboard onboarding or headless SSH. Phone and OS passkey availability and real-account acceptance still need end-to-end validation per the docs.
+- Delivery and read status of messages Hermes sends is logged to `gateway.log`, one line per status change (`server_ack`, `delivered`, `read`, `played`, or `error` with WhatsApp's error code; in groups one line per recipient with `recipient=`). Messages typed by a person on the linked phone are not logged.
 - Session lives in `~/.hermes/platforms/whatsapp/session` (full account credentials; `chmod 700`, never commit). Re-pair with `hermes whatsapp`.
 - Multiple profiles: `hermes -p work whatsapp` pairs a secondary; give each gateway-per-profile a distinct `bridge_port` and keep `session_path` distinct. Failures: `whatsapp_unpaired`, `whatsapp_bridge_foreign_session`, `whatsapp_bridge_unresponsive`.
 - Responses split at 4,096 characters; Markdown converted (`**bold**` -> `*bold*`, `# Heading` -> `*Heading*`, links -> `text (url)`).
 - Voice in: `.ogg` opus transcribed by STT; voice out: MP3 attachments. Native polls (clarify-as-poll; never for approvals) and location pins supported in bot mode.
 - For a stable business bot see the Cloud API page (official Meta path, needs a public webhook URL).
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/whatsapp (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/whatsapp (pinned to v0.23.1)
 
 ## Related
 

@@ -34,9 +34,13 @@ hermes pairing approve photon <CODE>
 - Free tier uses a shared iMessage line pool (5,000 messages per server per day, 50 new-conversation initiations per shared line per day); a shared line cannot message a number that has not texted it first.
 - Requires a Photon account, Node.js 18.17+ (`hermes pm install node`) and a phone number that can receive iMessage. Credentials go to `~/.hermes/.env`; management metadata to `~/.hermes/auth.json`.
 - Inbound attachments are metadata-only; outbound images, voice, video, documents, native polls and message effects are supported.
-- Cron / `hermes send` reuse the gateway's sidecar via `<hermes-home>/runtime/photon-sidecar.json`, so the gateway must be running.
+- Cron / `hermes send` reuse the gateway's sidecar via `<hermes-home>/photon-sidecar.json`, so the gateway must be running.
 - Same mention-gating model as BlueBubbles; the iMessage alternative that needs your own Mac is the BlueBubbles page.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/photon (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/photon (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23): sidecar file path
+
+- The sidecar port/token file moved from `<hermes-home>/runtime/photon-sidecar.json` (v0.22.2) to `<hermes-home>/photon-sidecar.json` (v0.23.1). It is written once the sidecar passes its health check and removed when it stops.
 
 ## Related
 

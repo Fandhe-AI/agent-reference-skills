@@ -47,11 +47,12 @@ hermes gateway
 - Required scopes: `im:message`, `im:message:send_as_bot`, `im:resource`, `im:chat`, `im:chat:readonly`; recommended `im:message.reactions:readonly`, `admin:app.info:readonly`, `contact:user.id:readonly`. Publish an app version for permissions to take effect.
 - Events: subscribe `im.message.receive_v1` in Event Configuration; add `card.action.trigger` under the separate Callback Configuration tab and enable the Interactive Card capability, otherwise button clicks fail with error 200340 (200342 / 200343 mean the webhook callback URL is unreachable).
 - Command approval uses an interactive card (Allow Once / Session / Always / Deny); card actions arrive as `/card button {...}` and are deduplicated for 15 minutes.
+- New in v0.23: `clarify` multiple-choice questions also use cards (one numbered button per option plus "Other (type answer)"; a tap answers at once and updates the card in place for everyone; "Other" switches to text capture; typing the number or option text also works; same authorization as approval buttons). Finite-choice slash commands (`/reasoning`, `/fast`) send a card picker: one tap applies the setting, then the confirmation follows in the chat.
 - Document comments: subscribe `drive.notice.comment_add_v1`, grant `docs:doc:readonly` and `drive:drive:readonly`; access rules in `~/.hermes/feishu_comment_rules.json` (policies `allowlist` / `pairing`) managed via `python -m gateway.platforms.feishu_comment_rules status|check|pairing`.
 - Meeting invitations: subscribe `vc.bot.meeting_invited_v1`; the inviter must pass normal allowlist / pairing.
 - Webhook mode: 120 requests per 60 s per (app_id, path, IP), 1 MB body, `application/json` only. Under multiplexed gateways each profile reads its own `.env`.
 - Only one Hermes gateway may use the same `app_id` at a time. Outbound markdown is sent as a post message with `md` tag, falling back to plain text.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/feishu (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/messaging/feishu (pinned to v0.23.1)
 
 ## Related
 
