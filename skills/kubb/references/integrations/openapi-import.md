@@ -90,7 +90,7 @@ Add `./kubb.config.ts` to `include` in `tsconfig.json`. The mapper finds the con
 
 ### Load the spec at run time
 
-TypeScript does not emit the spec to JavaScript, so values such as `petStatusEnum` need a bundler. Add `kubb()` from any [build tool integration](/docs/5.x/integrations/overview#build-tools) without a `config` option, so it reads the same `kubb.config.ts` as `tsc`:
+TypeScript does not emit the spec to JavaScript, so values such as `petStatusEnum` need a bundler. Add `kubb()` from any [build tool integration](./overview.md) without a `config` option, so it reads the same `kubb.config.ts` as `tsc`:
 
 ```ts [vite.config.ts]
 import kubb from 'kubb/vite'
@@ -124,9 +124,9 @@ A config with an `input` also writes the generated files at build time. Leave `i
 
 ### See also
 
-- [Build tool integrations](/docs/5.x/integrations/overview#build-tools)
-- [Vite integration](/docs/5.x/integrations/vite)
-- [Configuration reference](/docs/5.x/reference/configuration)
+- [Build tool integrations](./overview.md)
+- [Vite integration](https://kubb.dev/docs/5.x/integrations/vite)
+- [Configuration reference](../reference/configuration.md)
 - [`openapi-import` on GitHub](https://github.com/kubb-labs/openapi-import), with a working pet-store example
 
 ## Notes

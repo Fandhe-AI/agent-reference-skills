@@ -74,7 +74,7 @@ It does not remove:
 
 | Variable        | Default                     | Description |
 | --------------- | --------------------------- | ----------- |
-| `KUBB_REGISTRY` | `https://kubb.dev/registry` | Base URL of the registry to read. See [Host your own registry](/docs/5.x/reference/registry#host-your-own-registry). |
+| `KUBB_REGISTRY` | `https://kubb.dev/registry` | Base URL of the registry to read. See [Host your own registry](../reference/registry.md). |
 
 ### Exit codes
 

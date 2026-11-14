@@ -138,6 +138,7 @@ output: {
 - adapter / parser / storage をカスタムする例: `adapterOas({ validate: true })`、`parsers: [parserTs(), parserTsx()]`、`storage: memoryStorage()`（`kubb/kit` から import）
 - Source: https://kubb.dev/docs/5.x/reference/configuration (docs/5.x/reference/configuration.md of kubb@5.20.0, retrieved 2026-11-14)
 - Migration (5.11 → 5.20): the default `root` changed from `process.cwd()` to the folder of the config file; `input` accepts git inputs (`git+<repo>#<ref>:<path>`); the bare `@kubb/core` engine now applies `root`, `storage`, `output.format`, `output.lint`, and `output.defaultBanner`; bundler integrations apply the same defaults as `defineConfig` (docs diff 5.11 → 5.20, see also the Kubb changelog)
+- The `input` requirement above is stated for `kubb generate` / `createKubb`. The import integrations say a config without `input` only serves `*.openapi.yaml` imports (integrations/overview "Import a spec", openapi-import: "Leave `input` out to import specs only"). Both statements are kept as published; omit `input` only for import-only configs and keep it for `kubb generate` (Source: https://kubb.dev/docs/5.x/integrations/openapi-import, kubb@5.20.0, retrieved 2026-11-14)
 
 ## Related
 
