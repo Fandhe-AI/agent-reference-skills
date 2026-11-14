@@ -85,6 +85,8 @@ gcloud org-policies delete-custom-constraint custom.restrictCPUsPerProjectRegion
 
 Cap the quota value instead of denying (ALLOW only when the condition holds):
 
+Adapted (not in the official docs): an ALLOW constraint rejects every request that does not satisfy the condition, so the official condition would also block changes to other services and quota IDs. The condition below allows every other quota and caps only `CPUS-per-project-region` of `compute.googleapis.com` at 25.
+
 ```yaml
 name: organizations/ORGANIZATION_ID/customConstraints/custom.restrictCPUsPerProjectRegionQuotaLimit
 resourceTypes:
@@ -93,8 +95,8 @@ methodTypes:
 - CREATE
 - UPDATE
 condition: |-
-  resource.service == 'compute.googleapis.com' &&
-  resource.quotaId == 'CPUS-per-project-region' &&
+  !(resource.service == 'compute.googleapis.com' &&
+    resource.quotaId == 'CPUS-per-project-region') ||
   resource.quotaConfig.preferredValue <= 25
 actionType: ALLOW
 displayName: Restrict quota update for compute CPUS-per-project-region
@@ -118,6 +120,7 @@ Condition length up to 1,500 characters for this service.
 ## Notes
 
 - Preview feature. Requires Organization Policy Administrator (`roles/orgpolicy.policyAdmin`) on the organization. Most resource types support up to 20 custom constraints; see `../organization-policy/custom-constraints.md` for the general constraint format.
+- Adapted from the official docs: the ALLOW cap example's condition is rewritten so it does not deny quota changes for other services and quota IDs.
 - Enforcement only covers operations that create or update `QuotaPreference` resources. Quota changes made through the Service Usage API or the Google Cloud console do not create `QuotaPreference` resources and are not blocked; to restrict those use an IAM deny policy on `serviceusage.quotas.update`. (Adapted from the official docs: the page writes `serviceusage.quota.update`; the permission name used elsewhere in the docs, for example the Service Usage access-control and Cloud Quotas permissions pages, is `serviceusage.quotas.update`.)
 - Source: https://docs.cloud.google.com/docs/quotas/custom-constraints
 - Retrieved 2026-11-14. Content is CC BY 4.0; code examples are Apache 2.0.

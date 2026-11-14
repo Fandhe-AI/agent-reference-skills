@@ -39,6 +39,16 @@ POST
 https://cloudresourcemanager.googleapis.com/v3/organizations/12345:getIamPolicy
 ```
 
+Adapted (not in the official docs): request policy version 3 so conditional bindings are returned.
+
+```json
+{
+  "options": {
+    "requestedPolicyVersion": 3
+  }
+}
+```
+
 Adapted (not in the official docs): added the missing comma before `etag`.
 
 ```json
@@ -110,7 +120,7 @@ POST https://cloudresourcemanager.googleapis.com/v3/organizations/12345:setIamPo
 ```json
 {
   "policy": {
-    "version": 1,
+    "version": 3,
     "bindings": [
       {
         "role": "roles/resourcemanager.organizationAdmin",
@@ -168,6 +178,7 @@ Project management permissions (granted on the containing organization or folder
 
 ## Notes
 
+- Adapted from the official docs: the REST read requests policy version 3 and the write sends `version: 3`; keep every existing binding, condition and the `etag` from the read. A version 1 body cannot preserve conditional bindings.
 - Adapted from the official docs: the policy YAML structure and the missing comma before `etag` are corrected, and the truncated `setIamPolicy` body is completed.
 - Allow policies are additive and inherited: moving a resource into a folder can grant extra roles; moving it out can remove roles. Plan and test the hierarchy first (use a test folder).
 - Use groups; avoid basic roles (owner / editor / viewer); a role granted on a folder applies to every resource underneath (for example `roles/compute.admin` on a folder gives full control of Compute Engine in all its projects).

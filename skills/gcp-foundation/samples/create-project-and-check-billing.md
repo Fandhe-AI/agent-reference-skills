@@ -24,7 +24,7 @@ gcloud projects create PROJECT_ID --folder=FOLDER_ID
 
 `projects.create` does not link billing; billing is handled separately.
 
-Adapted (not in the official docs): the v3 `Project` uses `displayName` for the display name (`name` is the output-only `projects/PROJECT_NUMBER` resource name), and the poll response below uses the v3 fields (`name`, `displayName`, `state`) with valid JSON.
+Adapted (not in the official docs): the v3 `Project` uses `displayName` for the display name (`name` is the output-only `projects/PROJECT_NUMBER` resource name), `parent` is added (`organizations/ORGANIZATION_ID`, or `folders/FOLDER_ID` for a folder; required for service accounts) to match the gcloud examples, and the poll response below uses the v3 fields (`name`, `displayName`, `state`) with valid JSON.
 
 ```restructuredtext
 POST https://cloudresourcemanager.googleapis.com/v3/projects/
@@ -34,6 +34,7 @@ Content-Type: application/json
 {
     "projectId": "our-project-123",
     "displayName": "my project",
+    "parent": "organizations/ORGANIZATION_ID",
     "labels": {
       "mylabel": "prod"
     }
@@ -114,7 +115,7 @@ gcloud beta billing accounts describe ACCOUNT_ID
 
 ## Notes
 
-- Adapted from the official docs: the REST request and response use the v3 `Project` fields (`displayName`; `name` = `projects/PROJECT_NUMBER`; `state`) with valid JSON.
+- Adapted from the official docs: the REST request and response use the v3 `Project` fields (`displayName`; `name` = `projects/PROJECT_NUMBER`; `state`) with valid JSON; the request body also sets `parent`.
 - Creating needs `resourcemanager.projects.create` (for example `roles/resourcemanager.projectCreator`). Linking billing needs permissions on both the project and the billing account (for example Billing Account User on the account).
 - Do not put sensitive information in project names or IDs; the ID appears in many resource names.
 - Linking is done in the console (Billing > My projects > Actions > Change billing) or with `projects.updateBillingInfo`; this reference carries no gcloud link command, so none is shown here.
