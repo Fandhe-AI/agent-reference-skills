@@ -12,6 +12,7 @@
 | In-App Purchases (v2) | Create and manage consumable, non-consumable, and non-renewing subscription in-app purchases. | [in-app-purchases.md](./in-app-purchases.md) |
 | Promoted Purchases | Manage the In-App Purchase or auto-renewable subscription that is promoted on an app listing in the App Store, including visibility and ordering. | [promoted-purchases.md](./promoted-purchases.md) |
 | Promotional Offers | Discounted or free trial offers for auto-renewable subscriptions available to eligible existing or former subscribers. | [promotional-offers.md](./promotional-offers.md) |
+| Retention Messaging | Messages and retention offers shown to people who start to cancel an auto-renewable subscription (API 4.6): versions, localizations, offers, subscription assignment, App Review. | [retention-messaging.md](./retention-messaging.md) |
 | Sales and Finance Reports | Download sales/trends and financial reports for your apps as gzip-compressed files. | [sales-finance-reports.md](./sales-finance-reports.md) |
 | Subscription Groups | Collections of related auto-renewable subscriptions that share upgrade/downgrade/cross-grade eligibility. | [subscription-groups.md](./subscription-groups.md) |
 | Subscriptions | Create and manage auto-renewable subscriptions within subscription groups. | [subscriptions.md](./subscriptions.md) |

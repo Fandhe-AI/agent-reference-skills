@@ -88,6 +88,7 @@ DELETE /v1/subscriptions/{id}
 - Family Sharing (4.5): turning on Family Sharing for a subscription automatically sets `multiSeatStatus` to `DISABLED`. If you turn multi-seat purchasing back on for a family-shareable subscription, Family Sharing only applies when a single seat is purchased.
 - `marketSettings` only has an effect while `multiSeatStatus` is `ENABLED`; if it is `DISABLED`, the subscription isn't available for multi-seat purchase in any market, regardless of which values you set.
 - API keys with read-only roles can read both multi-seat attributes; updating them requires specific user roles (see the official "Configuring multi-seat subscriptions for organizations" article).
+- Retention messages (4.6): assign one to a subscription with `PATCH /v1/subscriptions/{id}/relationships/retentionMessage`; see [Retention Messaging](./retention-messaging.md). Source: https://developer.apple.com/documentation/appstoreconnectapi/setting-up-retention-messaging (fetched 2026-11-14)
 - Subscriptions must belong to a subscription group (`subscriptionGroup` relationship required on create).
 - `subscriptionAvailability` relationship is deprecated; use `planAvailabilities` instead. The `GET /v1/subscriptions/{id}/subscriptionAvailability` and `GET /v1/subscriptions/{id}/relationships/subscriptionAvailability` endpoints are marked deprecated.
 - The v1 localization list endpoints (`subscriptionLocalizations`, `relationships/subscriptionLocalizations`) are deprecated in 4.4.1; use `GET /v1/subscriptionVersions/{id}/localizations`.
