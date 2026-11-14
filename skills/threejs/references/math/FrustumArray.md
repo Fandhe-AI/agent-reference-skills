@@ -26,6 +26,7 @@ const visible = frustumArray.intersectsObject( object );
 | `intersectsObject(object: Object3D)` | boolean | `true` if the object's bounding sphere intersects any cached frustum. |
 | `intersectsSphere(sphere: Sphere)` | boolean | `true` if the bounding sphere intersects any cached frustum. |
 | `intersectsSprite(sprite: Sprite)` | boolean | `true` if the sprite intersects any cached frustum. |
+| `getFrustum(index: number)` | Frustum \| undefined | Returns the cached frustum for the sub-camera at the given index (new in r187). |
 | `clone()` | FrustumArray | Returns a new frustum array with copied values. |
 | `copy(source: FrustumArray)` | FrustumArray | Copies the values of the given frustum array to this instance. |
 

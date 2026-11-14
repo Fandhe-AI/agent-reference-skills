@@ -67,7 +67,7 @@ new Object3D()
 | `renderOrder` | number | `0` | Override draw order |
 | `frustumCulled` | boolean | `true` | Skip if outside view frustum |
 | `layers` | Layers | layer 0 | Layer membership |
-| `static` | boolean | `false` | Mark as static for optimization (WebGPURenderer) |
+| `static` | boolean | `false` | Mark as static for optimization (WebGPURenderer): the object is not changed after the first render, including geometry and material settings |
 
 ### Metadata
 
@@ -141,7 +141,7 @@ updateWorldMatrix(updateParents, updateChildren, force)
 
 ```js
 dispose()                        // Frees GPU-related resources (r186). Fires the `dispose` event
-intersectsFrustum(frustum: Frustum | FrustumArray): boolean | undefined  // abstract
+intersectsFrustum(frustum: Frustum | FrustumArray): boolean  // default returns true
 ```
 
 ### Search
@@ -192,7 +192,10 @@ onAfterShadow(renderer, scene, camera, shadowCamera, geometry, depthMaterial, gr
 
 - `dispose()` (r186) frees the GPU-related resources allocated by the instance. Geometries, materials and textures are potentially shared with other 3D objects and must be disposed of separately.
 - Since r186, custom subclasses that define their own `dispose()` must call `super.dispose()` (https://github.com/mrdoob/three.js/pull/34141).
-- `intersectsFrustum()` is abstract; renderable objects such as `Mesh`, `Line` and `Points` implement it to use frustum culling.
+- `intersectsFrustum()` returns `true` by default (r187; it was an abstract method returning `undefined` before); renderable objects such as `Mesh`, `Line` and `Points` override it to use frustum culling.
+- `applyMatrix4()` honors `pivot` when decomposing the local matrix: `position` is derived so that the matrix maps the pivot to `position + pivot` (https://github.com/mrdoob/three.js/pull/34811).
+- The second parameter of `onBeforeRender` / `onAfterRender` is the scene (r187 JSDoc; it was documented as `object`).
+- Source: https://threejs.org/docs/pages/Object3D.html (three.js r187, `src/core/Object3D.js`; JSDoc from tag r187 / commit 7e89746)
 - Since r185, `updateWorldMatrix()` honors `matrixWorldNeedsUpdate`. When `matrixAutoUpdate = false` and `matrix` is updated directly, set `matrixWorldNeedsUpdate = true` (https://github.com/mrdoob/three.js/pull/33746).
 - `rotation` and `quaternion` are kept in sync automatically.
 - Use `Object3D.rotation`/`position`/`scale` for real-time transforms instead of `BufferGeometry.rotateX` etc., which bake transforms into vertex data.

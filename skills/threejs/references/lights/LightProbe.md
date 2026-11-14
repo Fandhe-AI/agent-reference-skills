@@ -31,6 +31,8 @@ scene.add(lightProbe);
 - Does not emit visible light — used to influence shading calculations on PBR materials.
 - Usually created from an HDR environment map via `LightProbeGenerator`.
 - Can be used for AR/VR content to approximate real-world lighting conditions.
+- Migration (r186 → r187): `type` is now `'LightProbe'`, which fixes JSON round trips (https://github.com/mrdoob/three.js/pull/34859).
+- Source: https://threejs.org/docs/pages/LightProbe.html (three.js r187, `src/lights/LightProbe.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

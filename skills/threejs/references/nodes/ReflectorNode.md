@@ -48,7 +48,8 @@ Properties:
 
 ## Notes
 
-- Source: https://threejs.org/docs/pages/ReflectorNode.html (three.js r186, `src/nodes/utils/ReflectorNode.js`)
+- Source: https://threejs.org/docs/pages/ReflectorNode.html (three.js r187, `src/nodes/utils/ReflectorNode.js`; JSDoc from tag r187 / commit 7e89746)
+- r187 adds `updateReference( state )`, which uses the virtual camera of the current camera as the update reference so the reflection is updated for each camera that renders the reflector (https://github.com/mrdoob/three.js/pull/34977).
 
 ## Related
 

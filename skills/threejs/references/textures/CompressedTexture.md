@@ -14,7 +14,7 @@ const texture = loader.load('texture.dds');
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `mipmaps` | Array\<Object\> | — | Array of mipmap objects (data + dimensions), including base mip |
+| `mipmaps` | Array\<Object\> | `[]` | Array of mipmap objects (data + dimensions), including base mip (optional since r187) |
 | `width` | number | — | Texture width |
 | `height` | number | — | Texture height |
 | `format` | number | `RGBAFormat` | Compressed texture format constant |
@@ -42,6 +42,8 @@ const texture = loader.load('texture.dds');
 - Mipmaps cannot be generated at runtime; they must be embedded in the compressed file.
 - Vertical flipping is not supported for compressed textures.
 - Use `CompressedTextureLoader` (or format-specific loaders like `DDSLoader`) to load these files.
+- Migration (r186 → r187): the `mipmaps` constructor argument is optional and defaults to an empty array (https://github.com/mrdoob/three.js/pull/35081).
+- Source: https://threejs.org/docs/pages/CompressedTexture.html (three.js r187, `src/textures/CompressedTexture.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

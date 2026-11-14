@@ -26,7 +26,7 @@ new WebGPURenderer(parameters)
 | `stencil` | boolean | `false` | Include stencil buffer. |
 | `antialias` | boolean | `false` | Enable MSAA anti-aliasing. |
 | `samples` | number | `0` | MSAA sample count (4 when `antialias` is `true`). |
-| `logarithmicDepthBuffer` | boolean | `false` | Enable logarithmic depth buffer. |
+| `logarithmicDepthBuffer` | boolean | `false` | Enable logarithmic depth buffer. Ignored when a reversed depth buffer is in use. |
 | `reversedDepthBuffer` | boolean | `false` | Enable reversed depth buffer. |
 | `forceWebGL` | boolean | `false` | Force WebGL 2 backend even if WebGPU is available. |
 | `multiview` | boolean | `false` | Enable WebXR multiview for improved XR performance. |
@@ -64,6 +64,9 @@ All other properties and methods are inherited from the base `Renderer` class (s
 - Post-processing goes through `RenderPipeline` (`PostProcessing` is deprecated since r183).
 - Migration (r182 → r183): shadows in `WebGPURenderer` were improved; existing shadow bias values that mitigated shadow acne may need to be removed or decreased.
 - Migration (r184 → r185): premultiplied alpha handling changed (https://github.com/mrdoob/three.js/pull/33369). On blending problems, configure an opaque `Scene.background` or an opaque clear color via `renderer.setClearColor()`; use transparent backgrounds only when blending with the HTML background is required.
+- Migration (r186 → r187): light nodes are registered with `CustomLight.registerNode( CustomLightNode )` instead of `renderer.library.addLight( CustomLightNode, CustomLight )`, which is deprecated (https://github.com/mrdoob/three.js/pull/34622).
+- Migration (r186 → r187): `compute()` throws when a dispatch size is combined with `compute( count )` nodes (https://github.com/mrdoob/three.js/pull/34813); `setAnimationLoop( null )` no longer starts the loop (https://github.com/mrdoob/three.js/pull/35279).
+- Source: https://threejs.org/docs/pages/WebGPURenderer.html (three.js r187, `src/renderers/webgpu/WebGPURenderer.js`; JSDoc from tag r187 / commit 7e89746)
 - Migration (r185 → r186): `PCFSoftShadowMap` with `WebGPURenderer` was removed (https://github.com/mrdoob/three.js/pull/33987). Use `PCFShadowMap`, which is now soft as well.
 
 ## Related

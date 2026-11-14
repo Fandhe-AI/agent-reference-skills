@@ -20,6 +20,7 @@ const arrayCamera = new THREE.ArrayCamera(cameras);
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `cameras` | `Array<PerspectiveCamera>` | `[]` | Array of perspective sub-cameras; each must have a `viewport` property |
+| `perCameraFrustumCulled` | `boolean` | `false` | Whether 3D objects are frustum culled per sub camera. Requires an additional frustum test per sub camera, so enable it only when the sub camera frustums barely overlap. No effect with multiview rendering |
 | `isArrayCamera` | `boolean` (readonly) | `true` | Type-testing flag |
 | `isMultiViewCamera` | `boolean` (readonly) | `false` | Whether the camera uses multiview rendering |
 
@@ -27,6 +28,8 @@ const arrayCamera = new THREE.ArrayCamera(cameras);
 
 - Each sub-camera must have a `viewport` (`Vector4`) set to define which portion of the output it renders to.
 - Inherits from `PerspectiveCamera`, which inherits from `Camera`.
+- Migration (r186 → r187): `perCameraFrustumCulled` is new (https://github.com/mrdoob/three.js/pull/35164).
+- Source: https://threejs.org/docs/pages/ArrayCamera.html (three.js r187, `src/cameras/ArrayCamera.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

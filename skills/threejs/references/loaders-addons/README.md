@@ -13,5 +13,6 @@ Addon loader classes imported from `three/addons/loaders/`. Not included in the 
 | SVGLoader | Load SVG files and convert paths to Three.js Shapes | [SVGLoader.md](./SVGLoader.md) |
 | EXRLoader | Load OpenEXR HDR textures | [EXRLoader.md](./EXRLoader.md) |
 | HDRLoader | Load RGBE HDR textures (`.hdr`) for environment maps | [HDRLoader.md](./HDRLoader.md) |
+| JXLLoader | Load HDR JPEG XL images (`.jxl`) via the browser's native decoder | [JXLLoader.md](./JXLLoader.md) |
 | KTX2Loader | Load KTX 2.0 Basis Universal GPU-compressed textures | [KTX2Loader.md](./KTX2Loader.md) |
 | STLLoader | Load STL geometry (binary and ASCII) | [STLLoader.md](./STLLoader.md) |

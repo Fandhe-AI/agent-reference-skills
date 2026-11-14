@@ -28,8 +28,8 @@ scene.add(batchedMesh);
 | `maxVertexCount` | number | Maximum number of vertices across all geometries |
 | `maxIndexCount` | number | Maximum number of indices (default: `maxVertexCount * 2`) |
 | `material` | Material \| Material[] | Material for the batch |
-| `boundingBox` | Box3 | Computed bounding box (`null` until `computeBoundingBox()` called) |
-| `boundingSphere` | Sphere | Computed bounding sphere (`null` until `computeBoundingSphere()` called) |
+| `boundingBox` | Box3 | Computed bounding box (`null` until `computeBoundingBox()` called; recompute when instances change) |
+| `boundingSphere` | Sphere | Bounding sphere; the engine computes it once when needed. Recompute with `computeBoundingSphere()` when instances change |
 | `customSort` | function | Sort function run before render with instance list and camera |
 | `instanceCount` | number (readonly) | Current number of instances |
 | `isBatchedMesh` | boolean (readonly) | Always `true` |
@@ -48,7 +48,7 @@ scene.add(batchedMesh);
 - `getGeometryIdAt(instanceId): number`
 - `getBoundingBoxAt(geometryId, target): Box3`
 - `getBoundingSphereAt(geometryId, target): Sphere`
-- `getGeometryRangeAt(geometryId, target): Object` — returns `{ offset, count }`
+- `getGeometryRangeAt(geometryId, target): Object` — returns `{ offset, count }`, or throws an error if the geometry is invalid
 
 **Instance management:**
 - `addInstance(geometryId): number` — creates instance, returns instance ID
@@ -74,7 +74,10 @@ scene.add(batchedMesh);
 ## Notes
 
 - Negatively scaled matrices are not supported for `setMatrixAt`.
-- Bounding box and sphere are not automatically computed; call their respective `compute*` methods explicitly.
+- Bounding box is not automatically computed; call `computeBoundingBox()` explicitly. The bounding sphere is computed once by the engine when it is needed; recompute both after instances change.
+- The first geometry added defines the layout of the batch: all later geometries must match its index usage and provide its attributes with the same `itemSize` and `normalized` values. Additional attributes are ignored.
+- Migration (r186 → r187): `getGeometryRangeAt()` throws instead of returning `null` for an invalid geometry; `Box3#setFromObject( object, true )` uses the BatchedMesh bounds (https://github.com/mrdoob/three.js/pull/34863); `WebGPURenderer` merges consecutive draws that share a geometry range (https://github.com/mrdoob/three.js/pull/35259) and disposes its previous-matrices texture (new in r187) in `dispose()` (https://github.com/mrdoob/three.js/pull/35272).
+- Source: https://threejs.org/docs/pages/BatchedMesh.html (three.js r187, `src/objects/BatchedMesh.js`; JSDoc from tag r187 / commit 7e89746)
 - Call `optimize()` after many geometry/instance deletions to reclaim unused buffer space.
 - Call `dispose()` when no longer needed to free GPU resources.
 

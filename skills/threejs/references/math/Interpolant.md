@@ -36,7 +36,7 @@ const result = interpolant.evaluate(t); // returns resultBuffer
 | `getSettings_()` | Object | Returns effective settings (falls back to `DefaultSettings_`) |
 | `copySampleValue_(index)` | TypedArray | Copies a sample into the result buffer |
 | `interpolate_(i1, t0, t, t1)` | TypedArray | **Abstract** — implement in subclass to perform interpolation |
-| `intervalChanged_(i1, t0, t)` | void | Optional hook called when the active interval changes |
+| `intervalChanged_(i1, t0, t1)` | void | Optional hook called when the active interval changes |
 
 ## Notes
 

@@ -25,6 +25,8 @@ scene.add( new THREE.Mesh( geometry ) );
 - Binary format: supports "Magics" colour extension only; assumes little-endian byte order.
 - ASCII format: assumes UTF-8 encoding.
 - For binary STL with vertex colours, check `geometry.hasColors` and use `geometry.alpha`.
+- Migration (r186 → r187): `Loader` gained `priority` and `cache` (HTTP cache mode) with `setPriority()` / `setCache()`; `STLLoader` forwards them to its internal `FileLoader` (https://github.com/mrdoob/three.js/pull/34936)
+- Source: https://threejs.org/docs/pages/STLLoader.html (three.js r187, `examples/jsm/loaders/STLLoader.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

@@ -147,6 +147,8 @@ controls.addEventListener('change', () => renderer.render(scene, camera));
 - Call `controls.update()` after any manual changes to the camera's transform
 - MapControls is a subclass of OrbitControls with mouse buttons swapped for map-style navigation
 - To restrict polar angle and prevent flipping through the pole, set `maxPolarAngle` below `Math.PI`
+- Migration (r186 → r187): no public API change. `zoomToCursor` is fixed for mouse dollying (zoom keeps targeting the position where the drag started; https://github.com/mrdoob/three.js/pull/34856), and key listeners are attached through `domElement.ownerDocument` instead of `getRootNode()` (https://github.com/mrdoob/three.js/pull/34973).
+- Source: https://threejs.org/docs/pages/OrbitControls.html (three.js r187, `examples/jsm/controls/OrbitControls.js`; GitHub raw from tag r187)
 
 ## Related
 

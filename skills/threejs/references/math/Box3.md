@@ -43,7 +43,7 @@ box.getCenter(center);
 
 - An uninitialized box is considered empty; `setFromObject` also resets it first.
 - `setFromObject` (and `expandByObject`) account for the object's and its children's world transforms. For a correct box, make sure the object has an up-to-date world matrix reflecting its ancestors; call `object.updateWorldMatrix( true, false )` beforehand if unsure (stated in the r186 docs for `setFromObject`).
-- Use `precise: true` in `setFromObject` to compute a tighter fit (slower).
+- Use `precise: true` in `setFromObject` to compute a tighter fit (slower). Since r187, `BatchedMesh` objects use their own bounds in precise mode (https://github.com/mrdoob/three.js/pull/34863).
 - See official docs for full method list: https://threejs.org/docs/#api/en/math/Box3
 
 ## Related

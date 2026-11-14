@@ -45,7 +45,9 @@ new RenderTarget(width?, height?, options?)
 | `wrapS/T` | number | `ClampToEdgeWrapping` | Texture wrap modes |
 | `colorSpace` | string | `NoColorSpace` | Color space |
 | `depthTexture` | DepthTexture | `null` | Use texture for depth instead of renderbuffer |
-| `count` | number | `1` | Number of color attachments (MRT) |
+| `count` | number | `1` | Number of color attachments (MRT). Use `0` for a depth-only render target (`WebGPURenderer`) |
+| `generateMipmaps` | boolean | `false` | Whether to generate mipmaps |
+| `mipmapsAutoUpdate` | boolean | `true` | Whether to regenerate mipmaps automatically after rendering |
 | `multiview` | boolean | `false` | Enable multiview rendering (WebGL OVR_multiview2 extension) |
 | `resolveColorBuffer` | boolean | `true` | Resolve the color buffer. Only relevant for multisampled render targets |
 | `resolveDepthBuffer` | boolean | `true` | Resolve the depth buffer. Only relevant for multisampled render targets |
@@ -88,11 +90,13 @@ new RenderTarget(width?, height?, options?)
 | `setSize(width, height, depth?)` | Resize the render target |
 | `clone()` | Return a copy of this target |
 | `copy(source)` | Copy settings from another target |
-| `dispose()` | Free GPU resources; fires `dispose` event |
+| `dispose()` | Free GPU resources; fires `dispose` event. Also frees the resources of the target's textures, so they need not be disposed separately |
 
 ## Notes
 
-- Call `dispose()` when the target is no longer needed to free GPU memory.
+- Call `dispose()` when the target is no longer needed to free GPU memory. It also frees the textures of the target; calling `dispose()` on those textures alone frees nothing.
+- Migration (r186 → r187): every color attachment now has its own `TextureSource` (previously the attachments were clones of one texture) (https://github.com/mrdoob/three.js/pull/34970). `copy()` sets `depthTexture` to `null` when the source has none. The `mipmapsAutoUpdate` option is forwarded to the attachment textures (https://github.com/mrdoob/three.js/pull/34630).
+- Source: https://threejs.org/docs/pages/RenderTarget.html (three.js r187, `src/core/RenderTarget.js`; JSDoc from tag r187 / commit 7e89746)
 - For cube-map targets use `WebGLCubeRenderTarget`; for 3D textures use `RenderTarget3D`.
 
 ## Related

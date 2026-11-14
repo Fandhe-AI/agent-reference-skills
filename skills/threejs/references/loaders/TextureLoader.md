@@ -14,7 +14,7 @@ const material = new THREE.MeshBasicMaterial( { map: texture } );
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `load(url, onLoad, onProgress, onError)` | Texture | Load a texture from URL |
+| `load(url, onLoad?, onProgress?, onError?)` | Texture | Load a texture from URL; all callbacks are optional |
 | `loadAsync(url, onProgress)` | Promise\<Texture\> | Promise-based load |
 
 ## Notes
@@ -22,6 +22,8 @@ const material = new THREE.MeshBasicMaterial( { map: texture } );
 - Progress events (`onProgress`) are not supported (dropped in r84).
 - The returned `Texture` object can be assigned immediately; the texture data appears in the scene once loading completes.
 - For HDR / EXR images use `HDRLoader` / `EXRLoader` instead.
+- Migration (r186 → r187): the `onLoad`, `onProgress` and `onError` callbacks are documented as optional (https://github.com/mrdoob/three.js/pull/34730).
+- Source: https://threejs.org/docs/pages/TextureLoader.html (three.js r187, `src/loaders/TextureLoader.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

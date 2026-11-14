@@ -31,6 +31,8 @@ mesh.bind(skeleton);
 | `boneInverses` | Matrix4[] | Inverse of each bone's `matrixWorld` (auto-computed or provided) |
 | `boneMatrices` | Float32Array | Flat buffer of bone matrices sent to the shader |
 | `boneTexture` | DataTexture \| null | Texture used to pass bone matrices to the shader (created via `computeBoneTexture()`) |
+| `previousBoneMatrices` | Float32Array \| null | Bone data of the previous frame; required for computing velocity. Default: `null` |
+| `previousBoneTexture` | DataTexture \| null | Bone texture of the previous frame; required for computing velocity. Default: `null` |
 
 ## Constructor
 
@@ -56,6 +58,8 @@ new THREE.Skeleton(bones?: Bone[], boneInverses?: Matrix4[])
 - `bones` is a copy of the input array; modifying the original does not affect the skeleton.
 - Call `calculateInverses()` after manually positioning bones before binding to a SkinnedMesh.
 - `update()` is called automatically by the renderer each frame when the skeleton is attached to a SkinnedMesh.
+- Migration (r186 → r187): `previousBoneMatrices` and `previousBoneTexture` are new (previous-frame bone data for velocity); `dispose()` also disposes `previousBoneTexture` (https://github.com/mrdoob/three.js/pull/34976).
+- Source: https://threejs.org/docs/pages/Skeleton.html (three.js r187, `src/objects/Skeleton.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

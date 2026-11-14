@@ -33,6 +33,8 @@ loader.dispose();
 - The decoder automatically uses WASM or JS based on browser support.
 - `setDecoderConfig()` is deprecated since r185; in the future `DRACOLoader` will always use WASM (https://github.com/mrdoob/three.js/pull/33602).
 - When used with `GLTFLoader`, call `gltfLoader.setDRACOLoader( dracoLoader )`.
+- Migration (r186 → r187): `Loader` gained `priority` and `cache` (HTTP cache mode) with `setPriority()` / `setCache()`; `DRACOLoader` forwards them to its internal `FileLoader`s (https://github.com/mrdoob/three.js/pull/34936)
+- Source: https://threejs.org/docs/pages/DRACOLoader.html (three.js r187, `examples/jsm/loaders/DRACOLoader.js`; JSDoc from tag r187 / commit 7e89746)
 
 ## Related
 

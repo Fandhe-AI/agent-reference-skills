@@ -31,7 +31,7 @@ renderer.setAnimationLoop(animate);
 | `powerPreference` | `'default'` \| `'low-power'` \| `'high-performance'` | `'default'` | GPU configuration hint for the browser. |
 | `failIfMajorPerformanceCaveat` | boolean | `false` | Fail if low-performance rendering is detected. |
 | `depth` | boolean | `true` | Whether drawing buffer has ≥16-bit depth buffer. |
-| `logarithmicDepthBuffer` | boolean | `false` | Use logarithmic depth buffer (useful for huge scale differences). |
+| `logarithmicDepthBuffer` | boolean | `false` | Use logarithmic depth buffer (useful for huge scale differences). Ignored when a reversed depth buffer is in use. |
 | `reversedDepthBuffer` | boolean | `false` | Use reverse depth buffer (requires `EXT_clip_control`). |
 | `outputBufferType` | number | `UnsignedByteType` | Output buffer type. Use `HalfFloatType` for HDR output. |
 
@@ -88,7 +88,7 @@ renderer.setAnimationLoop(animate);
 |------|------|-------------|
 | `getMaxAnisotropy()` | number | Maximum anisotropy level. |
 | `getMaxPrecision(shaderType)` | string | Maximum precision for given shader type. |
-| `logarithmicDepthBuffer` | boolean | Whether logarithmic depth buffer is active. |
+| `logarithmicDepthBuffer` | boolean | Whether logarithmic depth buffer is active (`true` if set in the constructor and no reversed depth buffer is in use). |
 | `maxAttributes` | number | Maximum vertex attributes. |
 | `maxCubemapSize` | number | Maximum cube map texture size. |
 | `maxFragmentUniforms` | number | Maximum fragment shader uniforms. |
@@ -167,9 +167,9 @@ renderer.setAnimationLoop(animate);
 
 | Method | Description |
 |--------|-------------|
-| `setViewport(x\|Vector4, y?, width?, height?)` | Set viewport region. |
+| `setViewport(x\|Vector4, y?, width?, height?)` | Set viewport region in logical pixel units. The pixel ratio is applied only while rendering to the canvas, not when a render target is bound. |
 | `getViewport(target)` | Get viewport into `target` Vector4. |
-| `setScissor(x\|Vector4, y?, width?, height?)` | Set scissor region. |
+| `setScissor(x\|Vector4, y?, width?, height?)` | Set scissor region in logical pixel units. The pixel ratio is applied only while rendering to the canvas, not when a render target is bound. |
 | `getScissor(target)` | Get scissor region into `target` Vector4. |
 | `setScissorTest(enabled)` | Enable/disable scissor test. |
 | `getScissorTest()` | Get scissor test state. |
@@ -208,7 +208,7 @@ renderer.setAnimationLoop(animate);
 
 | Method | Description |
 |--------|-------------|
-| `setEffects(effects)` | Set post-processing effects array. |
+| `setEffects(effects)` | Set post-processing effects array. Requires `outputBufferType` of `HalfFloatType` or `FloatType`. An effect with `needsDepthTexture` set to `true` makes the renderer store and resolve the scene depth into a depth texture, passed to the effect via `setDepthTexture()`. |
 | `setNodesHandler(nodesHandler)` | Set `WebGLNodesHandler` for TSL material compatibility. |
 | `dispose()` | Free all GPU resources. Call when renderer is no longer needed. |
 
@@ -220,6 +220,12 @@ renderer.setAnimationLoop(animate);
 - `setSize` also updates the CSS size by default. Pass `updateStyle: false` to skip the CSS update (e.g. when using a fixed CSS size).
 - Shadow maps are disabled by default. Enable with `renderer.shadowMap.enabled = true` and set `castShadow`/`receiveShadow` on objects.
 - `toneMapping` defaults to `NoToneMapping`; for PBR scenes use `ACESFilmicToneMapping` or `AgXToneMapping`.
+- Source: https://threejs.org/docs/pages/WebGLRenderer.html (three.js r187, `src/renderers/WebGLRenderer.js`; JSDoc from tag r187 / commit 7e89746)
+- Migration (r186 → r187): `setViewport()` and `setScissor()` no longer scale by the pixel ratio when a render target is bound; the pixel ratio is applied only for the canvas (https://github.com/mrdoob/three.js/pull/34460).
+- Migration (r186 → r187): `render()` with an `ArrayCamera` (e.g. XR) culls objects against a `FrustumArray` (one frustum per sub camera) instead of a single frustum.
+- Migration (r186 → r187): `setEffects()` supports effects that declare `needsDepthTexture` (https://github.com/mrdoob/three.js/pull/34858).
+- Migration (r186 → r187): `logarithmicDepthBuffer` is ignored when `reversedDepthBuffer` is in use.
+- Migration (r186 → r187): `copyTextureToTexture()` only generates mipmaps for the destination when both `generateMipmaps` and `mipmapsAutoUpdate` are `true`.
 
 ## Related
 

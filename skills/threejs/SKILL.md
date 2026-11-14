@@ -1,7 +1,7 @@
 ---
 name: threejs
 description: >
-  Three.js (three, WebGL / WebGPU 3D グラフィクス) r186 リファレンス。
+  Three.js (three, WebGL / WebGPU 3D グラフィクス) r187 リファレンス。
   Scene, PerspectiveCamera, WebGLRenderer, WebGPURenderer, BufferGeometry,
   Mesh, InstancedMesh, SkinnedMesh, MeshStandardMaterial, MeshPhysicalMaterial,
   ShaderMaterial, node-materials (TSL), DirectionalLight, PMREMGenerator,
@@ -15,9 +15,11 @@ user-invocable: false
 Three.js — ブラウザ上で WebGL / WebGPU を活用する 3D グラフィクスライブラリ。
 3D シーン構築・モデル読み込み・アニメーション・シェーダー実装時に参照する。
 
-対象バージョン: r186 / three@0.186.1。
+対象バージョン: r187 / three@0.187.0（タグ `r187`、commit `7e89746`）。r186 → r187 の差分は、タグ r186 / r187 の `src/` JSDoc を diff して反映。samples / scripts は r186 時点の内容で、`webgpu_postprocessing_bloom` 例と manual は r187 で差分なしを確認済み。
 
 - `PostProcessing` は r183 で deprecated の互換ラッパー。後継は `RenderPipeline`
+- `PMREMGenerator` は r187 で cube render target ベースに変更（`CubeUVReflectionMapping` 削除）
+- `NodeMaterialInstance` は r187 で追加（node-materials.md の Notes）。`MeshPhysicalMaterial.iridescenceThicknessRange` は r187 で非推奨（`iridescenceThicknessMinimum` / `iridescenceThicknessMaximum`）
 - `Source` は r186 で deprecated。後継は `TextureSource`（旧ページは残置）
 - `AmbientLightProbe` / `HemisphereLightProbe` は r157 で削除済み。旧コード参照用に removed ページとして残置
 
@@ -218,6 +220,7 @@ skills/threejs/
       SVGLoader.md
       EXRLoader.md
       HDRLoader.md
+      JXLLoader.md
       KTX2Loader.md
       STLLoader.md
     animation/
@@ -290,6 +293,7 @@ skills/threejs/
       PostProcessing.md
       RenderPipeline.md
       DirectRenderPipeline.md
+      StandardDrawingPipeline.md
       CubeRenderTarget.md
       XRManager.md
       StorageBufferAttribute.md
@@ -380,6 +384,7 @@ skills/threejs/
       Texture3DNode.md
       RTTNode.md
       ReferenceNode.md
+      ReferenceAttributeNode.md
       MaterialReferenceNode.md
       BufferAttributeNode.md
       UniformArrayNode.md

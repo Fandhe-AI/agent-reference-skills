@@ -9,7 +9,7 @@ material.normalNode = normalMap( texture( normalTex ) );
 ```
 
 ```js
-class NormalMapNode extends TempNode {
+class NormalMapNode extends Node {
 	constructor( node, scaleNode = null ) {}
 }
 ```
@@ -25,7 +25,8 @@ class NormalMapNode extends TempNode {
 
 ## Notes
 
-- Source: https://threejs.org/docs/pages/NormalMapNode.html (three.js r186, `src/nodes/display/NormalMapNode.js`)
+- Source: https://threejs.org/docs/pages/NormalMapNode.html (three.js r187, `src/nodes/display/NormalMapNode.js`; JSDoc from tag r187 / commit 7e89746)
+- Migration (r186 → r187): extends `Node` instead of `TempNode`; `TempNode` is deprecated in r187 ("Extend Node instead").
 
 ## Related
 
