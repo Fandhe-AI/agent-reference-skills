@@ -60,7 +60,7 @@ await page.mark('sign in flow', async () => {
 - Open traces with `npx playwright show-trace` or upload to https://trace.playwright.dev.
 - Vitest wraps `expect.element(...)` assertions and actions (`click`, `fill`, `type`, `hover`, `selectOptions`, `upload`, `dragAndDrop`, `tab`, `keyboard`, `wheel`, screenshots) in source-location groups. `page.mark()` / `locator.mark()` add custom groups; wrap helpers with `vi.defineHelper()` to point entries at the call site.
 - This is distinct from Vitest's built-in `browser.traceView`.
-- Source: https://vitest.dev/guide/browser/playwright-traces (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/browser/playwright-traces (Vitest v5.1.0)
 
 ## Related
 

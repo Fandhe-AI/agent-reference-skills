@@ -39,7 +39,7 @@ test('returns a valid user', async () => {
 - Use `defineHelper` whenever a reusable check calls `expect` more than once.
 - For asymmetric matchers and custom matchers attached to `expect.extend`, see the Extending Matchers guide.
 - The official example types `user` as `unknown`, which makes `user.email` a TypeScript error (`toHaveProperty` does not narrow types); this page gives the parameter a structural type instead.
-- Source: https://vitest.dev/guide/recipes/custom-assertions (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/recipes/custom-assertions (Vitest v5.1.0)
 
 ## Related
 

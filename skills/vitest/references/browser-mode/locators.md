@@ -111,10 +111,11 @@ declare module 'vitest/browser' {
 - `getByRole` matches roles by string equality without ARIA role hierarchy (`checkbox` does not match `switch`). Prefer `getByRole` over `getByText` for interactive elements; use `getByTestId` last (attribute configurable via `browser.locators.testIdAttribute`).
 - `getByTitle` cannot find `title` elements inside SVG. `getByText` normalizes whitespace even with `exact`.
 - `query()` / `element()` are strict and throw on multiple matches (`element()` also throws on none); `elements()` never throws; `findElement()` retries with increasing intervals (0, 20, 50, 100, 100, 500ms).
+- With fake timers enabled (5.1.0), locator action methods advance them while they run; see Mocking timers (Automatic Advancing).
 - `or()` matching multiple elements makes single-element methods throw.
 - `selector` is Playwright syntax with `playwright`, CSS with `preview` / `webdriverio`; do not use it in tests. Locator arguments to commands are serialized automatically.
 - `screenshot` returns base64 when `save` is `false` (3.2.0+); default path uses `browser.screenshotDirectory`.
-- Source: https://vitest.dev/api/browser/locators (Vitest v5.0.5)
+- Source: https://vitest.dev/api/browser/locators (Vitest v5.1.0)
 
 ## Related
 

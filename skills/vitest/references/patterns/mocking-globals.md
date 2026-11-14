@@ -21,7 +21,7 @@ vi.stubGlobal('IntersectionObserver', IntersectionObserverMock)
 
 ## Notes
 
-- Source: https://vitest.dev/guide/mocking/globals (docs at tag `v5.0.5`).
+- Source: https://vitest.dev/guide/mocking/globals (docs at tag `v5.1.0`).
 - By default, Vitest does not reset these globals. Turn on the `unstubGlobals` config option to restore the original values after each test, or call `vi.unstubAllGlobals()` manually.
 
 ## Related

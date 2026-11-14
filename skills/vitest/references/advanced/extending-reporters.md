@@ -65,7 +65,7 @@ Exported reporters from `vitest/node`:
   - A reporter can create `.vitest` if it does not exist, and should never remove it.
   - A reporter should create its own directory inside it (e.g. `.vitest/yaml-reporter/`) and may remove only that directory.
 - `onTestModuleCollected` runs after collection but before any test has a result (`test.result()` is still pending); the official guide example uses it, but per the Reporter API docs `onTestModuleEnd` is the hook where every test result is final, so this page uses `onTestModuleEnd`.
-- Source: Vitest v5.0.5 docs, https://vitest.dev/guide/advanced/reporters
+- Source: Vitest v5.1.0 docs, https://vitest.dev/guide/advanced/reporters
 
 ## Related
 

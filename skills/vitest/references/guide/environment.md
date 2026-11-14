@@ -64,7 +64,7 @@ export default defineConfig({
 })
 ```
 
-- Custom environment: create a package named `vitest-environment-${name}` or specify a path to a valid JS/TS file. It should export an object with the shape of `Environment` (v5.0.5 docs):
+- Custom environment: create a package named `vitest-environment-${name}` or specify a path to a valid JS/TS file. It should export an object with the shape of `Environment` (v5.1.0 docs):
 
 ```ts
 import type { Environment } from 'vitest/runtime'
@@ -109,7 +109,7 @@ console.log(builtinEnvironments) // { jsdom, happy-dom, node, edge-runtime }
 ```
 
 - `populateGlobal(global: any, original: any, options: PopulateOptions): PopulateResult` moves properties from an object into the global namespace. `PopulateOptions.bindFunctions` (boolean) controls whether non-class functions are bound to the global namespace. `PopulateResult.keys` is the set of all copied keys; `PopulateResult.originals` is a `Map<string | symbol, PropertyDescriptor>` of property descriptors for keys that might have been overridden, which you can restore with `Object.defineProperty` inside `teardown` (v5: `originals` holds descriptors instead of plain values).
-- v5: assignments to `globalThis` / `window` properties in `jsdom` and `happy-dom` now propagate to the underlying window; the `vitest/environments` entrypoint was removed (use `vitest/runtime`) (source: Migrating to Vitest 5.0, tag `v5.0.5`).
+- v5: assignments to `globalThis` / `window` properties in `jsdom` and `happy-dom` now propagate to the underlying window; the `vitest/environments` entrypoint was removed (use `vitest/runtime`) (source: Migrating to Vitest 5.0, tag `v5.1.0`).
 - "Environments" exist only when running tests in Node.js; `browser` is not an environment — use Browser Mode through a test project.
 
 ## Related

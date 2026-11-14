@@ -105,7 +105,7 @@ export interface BrowserScript {
 | browser.instances | BrowserConfig[] | `[]` | Multiple browser setups; each needs a `browser` field |
 | browser.provider | BrowserProviderOption | | Provider factory result |
 | browser.headless | boolean | `process.env.CI` | Headless mode. CLI `--browser.headless` |
-| browser.ui | boolean | `!isCI` | Inject Vitest UI into the page. CLI `--browser.ui=false` |
+| browser.ui | boolean | `!browser.headless && !isCI` (5.1.0; was `!isCI`) | Inject the browser UI into the page. CLI `--browser.ui=false`. See Notes for how it relates to `browser.headless` and `--ui` |
 | browser.detailsPanelPosition | `'right' \| 'bottom'` | `'right'` | Default Vitest UI details panel position. CLI `--browser.detailsPanelPosition=<v>` |
 | browser.viewport | `{ width, height }` | `414x896` | Default iframe viewport |
 | browser.connectTimeout | number | `60_000` | ms allowed for the browser WebSocket connection to Vitest |
@@ -126,7 +126,8 @@ export interface BrowserScript {
 | browser.expect.toMatchScreenshot.comparators | Record<string, Comparator> | | Register custom comparison algorithms |
 | browser.trace | `'on' \| 'off' \| 'on-first-retry' \| 'on-all-retries' \| 'retain-on-failure' \| object` | `'off'` | Playwright trace capture (Playwright only). CLI `--browser.trace=on` |
 | browser.trace (object) | `{ mode, tracesDir?, screenshots?: boolean (true), snapshots?: boolean (true) }` | | `tracesDir` defaults to `__traces__` next to the test file |
-| browser.traceView (5.0.0, experimental) | `boolean \| { enabled?, recordCanvas?, inlineImages? }` | `false` | Built-in trace view. CLI `--browser.traceView`, `--browser.traceView.enabled`, `--browser.traceView.inlineImages`, `--browser.traceView.recordCanvas`; each sub-option defaults to `false` |
+| browser.traceView (5.0.0) | `boolean \| 'off' \| 'on' \| 'failure-only' \| { mode?, recordCanvas?, inlineImages?, ariaSnapshot? }` | `'failure-only'` (5.1.0; was `false`, experimental) | Built-in trace view. CLI `--browser.traceView`, `--browser.traceView.mode <mode>` (5.1.0), `--browser.traceView.inlineImages`, `--browser.traceView.recordCanvas`, `--browser.traceView.ariaSnapshot` (5.1.0, default `true`); `--browser.traceView.enabled` is deprecated in favor of `mode` |
+| browser.importMapMocks (5.1.0, experimental) | boolean | enabled when the browser supports it | Serve module mocks through an import map in the tester document instead of intercepting requests. CLI `--browser.importMapMocks`, `--browser.importMapMocks=false`. Falls back to request interception when `isolate` is `false` |
 
 `PathResolveData` fields: `arg`, `ext`, `browserName`, `platform`, `screenshotDirectory`, `root`, `testFileDirectory`, `testFileName`, `testName`, `attachmentsDir`, `project` (4.1.6, experimental).
 
@@ -150,7 +151,7 @@ Playwright provider options:
 - `browser.trace` is Playwright only and `'on'` is performance heavy; `'retain-on-failure'` deletes traces of passing tests.
 - `browser.dependencySourcemaps: false` speeds up runs if you do not debug into dependencies; reported test errors are unaffected.
 - Custom commands run in the Vitest Node process and must validate browser-provided input themselves.
-- Source: https://vitest.dev/config/browser/enabled and sibling pages `instances`, `headless`, `provider`, `playwright`, `webdriverio`, `preview`, `locators`, `viewport`, `screenshotdirectory`, `screenshotfailures`, `expect`, `trace`, `traceview`, `ui`, `commands`, `connecttimeout`, `dependencysourcemaps`, `detailspanelposition`, `orchestratorscripts`, `testerhtmlpath`, `trackunhandlederrors` (Vitest v5.0.5)
+- Source: https://vitest.dev/config/browser/enabled and sibling pages `instances`, `headless`, `provider`, `playwright`, `webdriverio`, `preview`, `locators`, `viewport`, `screenshotdirectory`, `screenshotfailures`, `expect`, `trace`, `traceview`, `ui`, `commands`, `connecttimeout`, `dependencysourcemaps`, `detailspanelposition`, `orchestratorscripts`, `testerhtmlpath`, `trackunhandlederrors` (Vitest v5.1.0)
 
 ## Related
 

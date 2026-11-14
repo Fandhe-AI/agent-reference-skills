@@ -168,7 +168,7 @@ test('without mocked behavior', () => {
 - `vi.isWhenChain` is referenced in the official See also list.
 - The official stacking example types the spy as `() => Promise<unknown>` while calling `calledWith('/data/config.json')`; this page uses `(url: string) => Promise<Response>` to match the argument.
 - The upstream example passes `'{ debug: true }'` (not valid JSON) to `new Response()`; this page uses `JSON.stringify({ debug: true })` so `Response.json()` parses it.
-- Source: https://vitest.dev/guide/recipes/conditional-mocking (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/recipes/conditional-mocking (Vitest v5.1.0)
 
 ## Related
 

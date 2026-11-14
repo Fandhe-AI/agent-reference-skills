@@ -105,7 +105,7 @@ Render result members:
 - Prefer `renderHook` only for libraries publishing hooks; `render` with a real component is more readable.
 - Svelte snippets: test simple snippets with a wrapper component and `data-testid`; for argument checks use Svelte's `createRawSnippet`.
 - Distinct from `@testing-library/react` / `vue` / `svelte`: these packages return locators that retry assertions even after re-render.
-- Source: https://vitest.dev/api/browser/react , https://vitest.dev/api/browser/vue , https://vitest.dev/api/browser/svelte (Vitest v5.0.5)
+- Source: https://vitest.dev/api/browser/react , https://vitest.dev/api/browser/vue , https://vitest.dev/api/browser/svelte (Vitest v5.1.0)
 
 ## Related
 

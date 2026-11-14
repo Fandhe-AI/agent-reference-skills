@@ -541,7 +541,7 @@ If you manually opened the browser preview by copying the Vite server URL or vis
 
 ### `browser.api` Is Replaced by the Top-Level `api`
 
-Browser mode now runs on a single Vite server configured by the top-level `api` option; the default port in browser mode is still `63315`. The `browser.api` option is deprecated and no longer has any effect, so move its value to `api`:
+Browser mode now runs on a single Vite server configured by the top-level `api` option; the default port in browser mode is `23315`. The `browser.api` option is deprecated and no longer has any effect, so move its value to `api`:
 
 ```ts
 // vitest.config.ts
@@ -658,9 +658,9 @@ Several entry points were marked as deprecated in Vitest 4.1. This release remov
 
 ## Notes
 
-- Pinned to the `v5.0.5` release tag of `vitest-dev/vitest` (`docs/guide/migration/index.md`); source URL: https://vitest.dev/guide/migration
+- Pinned to the `v5.1.0` release tag of `vitest-dev/vitest` (`docs/guide/migration/index.md`); source URL: https://vitest.dev/guide/migration
 - Body is the original text in original section order; site-internal links were reduced to plain text and the `[!code ++]` / `[!code --]` diff markers were replaced with `v4` / `v5` comments; removed (v4) lines are commented out so that only the v5 code is live.
-- Source: https://vitest.dev/guide/migration/ (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/migration/ (Vitest v5.1.0)
 
 ## Related
 

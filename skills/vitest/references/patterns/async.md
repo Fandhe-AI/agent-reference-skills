@@ -184,7 +184,7 @@ test('polling assertion', async () => {
 
 ## Notes
 
-Vitest 5 changes (source: Migrating to Vitest 5.0; docs at tag `v5.0.5`):
+Vitest 5 changes (source: Migrating to Vitest 5.0; docs at tag `v5.1.0`):
 
 - `expect.poll` fails (rejects) when the callback or assertion does not settle within `timeout`; the callback receives an `AbortSignal` that is aborted at that point. Raise `timeout` for slow polls.
 - Unawaited `resolves` / `rejects` assertions fail the test instead of logging a warning; always `await` them.

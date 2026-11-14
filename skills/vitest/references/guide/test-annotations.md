@@ -40,7 +40,7 @@ How built-in reporters show annotations:
 
 - `annotate` returns a Promise; Vitest awaits any non-awaited annotation before the test finishes.
 - The `github-actions` reporter can inline annotations in the GitHub UI; disable with `displayAnnotations: false`.
-- Source: https://vitest.dev/guide/test-annotations (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/test-annotations (Vitest v5.1.0)
 
 ## Related
 

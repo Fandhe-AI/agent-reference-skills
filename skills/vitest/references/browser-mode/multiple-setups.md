@@ -42,7 +42,7 @@ vitest --project=chromium-1 --project=chromium-2
 - If the root config already has a name, names are merged: `custom` -> `custom (browser)`.
 - Different `setupFiles` / `provide` values can be set per instance; `inject('ratio')` reads the `provide` value.
 - Filter with `--project` using the instance `name` (here `chromium-1` / `chromium-2`); `--project=chromium` matches only an unnamed `{ browser: 'chromium' }` instance.
-- Source: https://vitest.dev/guide/browser/multiple-setups (Vitest v5.0.5)
+- Source: https://vitest.dev/guide/browser/multiple-setups (Vitest v5.1.0)
 
 ## Related
 

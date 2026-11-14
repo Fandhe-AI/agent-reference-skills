@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| Running Only Affected Tests | `--changed` (Git reference baseline) vs `--since-last-run` (since 5.1.0, experimental; baseline is each test's last run) for selecting only the tests a change can affect. | [affected-tests.md](./affected-tests.md) |
 | Domain Locators (Extending Browser Locators) | `locators.extend` (since 3.2.0) adds domain-specific locator methods while keeping auto-retry, strict-mode protection, and chaining of the locator API. Browser mode only. | [browser-locators.md](./browser-locators.md) |
 | Cancellable Test Resources | Use the test context `signal` (since 3.2.0) so resources such as `fetch`, child processes, streams, and polling loops are released when Vitest cancels a test. | [cancellable.md](./cancellable.md) |
 | Conditional Mocking with vi.when | `vi.when` (since 5.0.0) declares argument-specific mock behaviors via `.calledWith(...)` plus a `then*` action, replacing hand-written `mockImplementation` switch logic. | [conditional-mocking.md](./conditional-mocking.md) |
