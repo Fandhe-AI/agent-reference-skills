@@ -64,6 +64,10 @@ migrate this project to vinext
 - Alternatives: [opennext.md](./opennext.md) for existing OpenNext apps; static exports on Cloudflare Pages (cloudflare-pages skill; https://developers.cloudflare.com/pages/framework-guides/nextjs/deploy-a-static-nextjs-site/).
 - Next.js APIs: see the nextjs-app skill.
 
+- vinext also applies to an existing Next.js app (the official guide no longer limits `vinext init` to Next.js 16). Automatic configuration with `wrangler setup` / `wrangler deploy` configures OpenNext, not vinext; run `vinext init` directly, or use `cf init` for Next.js 16 and later ([automatic-configuration.md](./automatic-configuration.md)).
+- To move an existing Next.js project from Vercel see [migrate-from-vercel-nextjs.md](../static-assets/migrate-from-vercel-nextjs.md).
+- Source: https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
+
 ## Related
 
 - [opennext.md](./opennext.md)

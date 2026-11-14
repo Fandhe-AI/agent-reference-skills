@@ -1,11 +1,11 @@
 ---
 name: cloudflare-workers
 description: >
-  Cloudflare Workers (V8 isolate サーバーレス実行環境, workerd) の API リファレンス。
-  fetch / scheduled / tail handler, waitUntil, WorkerEntrypoint RPC, service bindings,
+  Cloudflare Workers (V8 isolate サーバーレス実行環境, workerd) API リファレンス。
+  fetch/scheduled/tail handler, waitUntil, WorkerEntrypoint RPC, service bindings,
   compatibility flags (nodejs_compat), HTMLRewriter, Cache API, static assets, cron triggers,
-  framework guides (Hono / Next.js / Astro / SvelteKit / Nuxt), wrangler types。
-  Wrangler は cloudflare-wrangler、KV / D1 / R2 は cloudflare-storage。
+  framework guides (Hono/Next.js/Astro/SvelteKit/Nuxt/Remix 3/EmDash), spending limit, wrangler types。
+  Wrangler は cloudflare-wrangler、KV/D1/R2 は cloudflare-storage。
 user-invocable: false
 ---
 
@@ -18,8 +18,8 @@ Workers アプリの設計・実装時に参照する。
 
 ## 対象バージョン
 
-- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `d0995b91312add6db730afec4f4944cee834abc6` と取得日 2026-11-03 で pin
-- 参考版数: `@cloudflare/workers-types` 5.20261103.1、wrangler 4.156.2（CLI の仕様は cloudflare-wrangler が担当）
+- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `34d908a`（旧 pin `d0995b91312add6db730afec4f4944cee834abc6`）と取得日 2026-11-14 で pin。`d0995b9` から `34d908a` の間に本文が変わったページのみ再取得し、変更のないページと一部の samples / scripts の取得日は 2026-11-03（`d0995b9`）のまま
+- 参考版数: `@cloudflare/workers-types` 5.20261114.1、wrangler 4.162.0（CLI の仕様は cloudflare-wrangler が担当）
 
 ## 他スキルとの使い分け
 
@@ -141,6 +141,13 @@ skills/cloudflare-workers/
       migrate-from-netlify.md
       migrate-from-pages.md
       migrate-from-vercel.md
+      migrate-from-vercel-astro.md
+      migrate-from-vercel-nextjs.md
+      migrate-from-vercel-nuxt.md
+      migrate-from-vercel-react-router.md
+      migrate-from-vercel-static-site.md
+      migrate-from-vercel-sveltekit.md
+      migrate-from-vercel-tanstack-start.md
       overview.md
       redirects.md
       routing-full-stack-application.md
@@ -184,6 +191,7 @@ skills/cloudflare-workers/
       prompting.md
       roles-and-permissions.md
       security-model.md
+      spend-management.md
       storage-options.md
       workers-roles-and-permissions.md
     cache-databases/
@@ -208,6 +216,7 @@ skills/cloudflare-workers/
       README.md
       astro.md
       automatic-configuration.md
+      emdash.md
       hono.md
       microfrontends.md
       nextjs-vinext.md
@@ -217,6 +226,7 @@ skills/cloudflare-workers/
       react-router.md
       react-vite.md
       redwoodsdk.md
+      remix.md
       sveltekit.md
       tanstack-start.md
       vike.md
@@ -282,13 +292,13 @@ skills/cloudflare-workers/
 | routes・custom domains・workers.dev・cron triggers を設定したい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | Smart Placement を使いたい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | static assets の配信・binding・routing を設定したい | static-assets | [references/static-assets/README.md](references/static-assets/README.md) |
-| `_headers` / `_redirects`・SPA ルーティング・Pages からの移行を知りたい | static-assets | [references/static-assets/README.md](references/static-assets/README.md) |
+| `_headers` / `_redirects`・SPA ルーティング・Pages / Netlify / Vercel からの移行を知りたい | static-assets | [references/static-assets/README.md](references/static-assets/README.md) |
 | TypeScript / Python / Rust で Worker を書きたい | languages | [references/languages/README.md](references/languages/README.md) |
 | Python Workers (FastAPI / Flask / パッケージ / FFI) を使いたい | languages | [references/languages/README.md](references/languages/README.md) |
-| 制限・料金・実行モデル・セキュリティモデルを確認したい | platform | [references/platform/README.md](references/platform/README.md) |
+| 制限・料金・spending limit・実行モデル・セキュリティモデルを確認したい | platform | [references/platform/README.md](references/platform/README.md) |
 | 既知の問題・changelog・CLI / dashboard での開始手順を知りたい | platform | [references/platform/README.md](references/platform/README.md) |
 | Workers でのキャッシュ制御・外部データベース接続を知りたい | cache-databases | [references/cache-databases/README.md](references/cache-databases/README.md) |
 | Neon / PlanetScale / Supabase / Turso / Upstash 等と接続したい | cache-databases | [references/cache-databases/README.md](references/cache-databases/README.md) |
-| Hono / React Router / Astro / SvelteKit / Nuxt 等を Workers にデプロイしたい | framework-guides | [references/framework-guides/README.md](references/framework-guides/README.md) |
+| Hono / React Router / Remix 3 / Astro / EmDash / SvelteKit / Nuxt 等を Workers にデプロイしたい | framework-guides | [references/framework-guides/README.md](references/framework-guides/README.md) |
 | 典型的な使い方（cron・リダイレクト・キャッシュ・認証等）を知りたい | samples | [samples/README.md](samples/README.md) |
 | プロジェクト作成・型生成のコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

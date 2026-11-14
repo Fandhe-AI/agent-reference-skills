@@ -29,7 +29,7 @@ const secretValue = env.<SECRET_NAME>;
 | MongoDB | mongodb, mongoose | TCP socket via native driver |
 | PlanetScale | Hyperdrive (MySQL / PostgreSQL), `@planetscale/database` | mysql2, mysql, node-postgres, Postgres.js, or API via client |
 | Supabase | Hyperdrive, `@supabase/supabase-js` | node-postgres, Postgres.js, or API via client |
-| Prisma | `prisma` | API via client library |
+| Prisma Postgres | Hyperdrive, Prisma ORM | node-postgres, Postgres.js, or Prisma ORM |
 | Neon | Hyperdrive, `@neondatabase/serverless` | node-postgres, Postgres.js, or API via client |
 | Hasura | API | GraphQL API via `fetch()` |
 | Upstash Redis | `@upstash/redis` | API via client library |
@@ -41,6 +41,8 @@ const secretValue = env.<SECRET_NAME>;
 - TCP drivers need several round trips per connection and a connection per invocation; Hyperdrive pools connections globally to remove that latency.
 - Hyperdrive supports only PostgreSQL and MySQL wire protocols, not MongoDB. Persist a MongoDB client inside a Durable Object instead.
 - For services that need mTLS client certificates, use mTLS certificate bindings.
+
+- Prisma Postgres replaces the generic Prisma row: the official table lists Prisma Postgres with Hyperdrive and Prisma ORM, and the PostgreSQL-compatible serverless databases list now includes Prisma Postgres. Source: https://developers.cloudflare.com/workers/databases/connecting-to-databases/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

@@ -74,6 +74,9 @@ export default {
 }
 ```
 
+- Security evaluation of same-zone subrequests: a fetch request sent on the same zone to a Worker running on a Custom Domain is a subrequest. WAF custom rules and managed rules on the target hostname are not evaluated for same-zone subrequests; subrequests to a proxied hostname in a different zone are evaluated by that zone's security configuration. Do not rely on custom rules on the target hostname to restrict access to same-zone subrequests: apply protections to the incoming request that triggers the Worker, or validate the request in the target Worker itself.
+- Source: https://developers.cloudflare.com/workers/configuration/routing/custom-domains/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
+
 ## Related
 
 - [Routes and domains](./routing-overview.md)

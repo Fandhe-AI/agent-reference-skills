@@ -32,8 +32,7 @@ _routes.json
     "upload_source_maps": true,
 	// Update to today's date
 	// Set this to today's date
-	"compatibility_date": "2026-11-03",
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_date": "2026-11-14",
 	"assets": {
 		"binding": "ASSETS",
 		"directory": "./dist"
@@ -91,6 +90,10 @@ const cart = await Astro.session?.get("cart");
 - Customize the session KV binding name with the adapter option `sessionKVBindingName`.
 - Autoconfig generates `main` `dist/_worker.js/index.js`, assets `./dist` binding `ASSETS`, and the `@astrojs/cloudflare` adapter in `astro.config.mjs`.
 - Node.js: Astro 5.x supports 18.20.8, 20.3.0+, or 22.0.0+; Astro 6.x and 7.x require 22.12.0+.
+
+- The `nodejs_compat` flag is no longer listed in the generated configuration (see [automatic-configuration.md](./automatic-configuration.md) for compatibility dates before `2026-08-04`).
+- Related guides: to move an existing Astro project from Vercel see [migrate-from-vercel-astro.md](../static-assets/migrate-from-vercel-astro.md); to add a CMS to an Astro site on Workers see [emdash.md](./emdash.md).
+- Source: https://developers.cloudflare.com/workers/framework-guides/web-apps/astro/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

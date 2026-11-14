@@ -10,6 +10,8 @@
 | Next.js (vinext) | Next.js on Workers with vinext | [nextjs-vinext.md](./nextjs-vinext.md) |
 | OpenNext adapter | Next.js on Workers with `@opennextjs/cloudflare` | [opennext.md](./opennext.md) |
 | Astro | Astro with `@astrojs/cloudflare`, sessions, custom 404 | [astro.md](./astro.md) |
+| EmDash | Astro-based CMS on Workers with D1, R2, and optional sandboxed plugins | [emdash.md](./emdash.md) |
+| Remix 3 | Remix 3 with Vite+, Pitlane Remix plugin, and the Cloudflare Vite plugin | [remix.md](./remix.md) |
 | Hono | Hono API plus React SPA full-stack template | [hono.md](./hono.md) |
 | SvelteKit | SvelteKit with `@sveltejs/adapter-cloudflare` | [sveltekit.md](./sveltekit.md) |
 | Nuxt | Nuxt with the Nitro `cloudflare` preset | [nuxt.md](./nuxt.md) |

@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/workers/static-assets/
 
 # Static Assets Overview
 
-Upload static assets (HTML, CSS, images and other files) as part of your Worker; Cloudflare handles caching and serving them. Worker code and assets are deployed together in a single operation.
+Upload static assets (HTML, CSS, images and other files) as part of your Worker; Cloudflare handles caching and serving them. Worker code, configuration, and assets belong to a Worker version.
 
 ## Signature / Usage
 
@@ -57,6 +57,13 @@ npm create cloudflare@latest -- my-react-app --framework=react
 - With the Cloudflare Vite plugin you do not need to specify `assets.directory`; see the cloudflare-wrangler skill (vite-plugin category) for the plugin.
 - The full `assets` key specification lives in the cloudflare-wrangler skill; this category documents the runtime behavior.
 - Cloudflare Pages is covered by the cloudflare-pages skill (https://developers.cloudflare.com/pages/).
+
+### Versions and caching
+
+- Your Worker code, configuration, and static assets belong to a Worker version. Each version has an asset manifest that maps request paths to uploaded files, and each request uses the selected version's files. This also applies when Cloudflare serves assets without running your Worker code.
+- Deploying sets which versions receive traffic. The change takes time to reach every location on Cloudflare's network; during this time, requests for HTML and its assets can use different versions (version skew). Uploading an asset does not add it to earlier versions' manifests. See Version skew and static assets (cloudflare-wrangler skill; https://developers.cloudflare.com/workers/versions-and-deployments/version-skew/).
+- If the selected version's manifest includes the requested file, Cloudflare serves it from cache or fetches it from storage. Suppose version A includes `/assets/app-a1b2.js` but version B does not: a request for that file that reaches B is treated as a missing asset, even if Cloudflare has a cached copy from A.
+- Source: https://developers.cloudflare.com/workers/static-assets/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

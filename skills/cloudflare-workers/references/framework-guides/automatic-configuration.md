@@ -24,7 +24,7 @@ When `wrangler deploy` or `wrangler setup` runs without a Wrangler configuration
 
 | Framework | Adapter / tool | Notes |
 | --- | --- | --- |
-| Next.js | `vinext` | Configures vinext and the required Vite and Wrangler configuration |
+| Next.js | OpenNext or vinext | Wrangler configures OpenNext. `cf init` configures vinext for Next.js 16 and later. |
 | Astro | `@astrojs/cloudflare` | Runs `astro add cloudflare` automatically |
 | SvelteKit | `@sveltejs/adapter-cloudflare` | Runs `sv add sveltekit-adapter` automatically |
 | Nuxt | Built-in Cloudflare preset | |
@@ -47,8 +47,7 @@ Example generated `wrangler.jsonc` (exact content varies per framework):
 	"main": "dist/_worker.js/index.js",
 	"upload_source_maps": true,
 	// Set this to today's date
-	"compatibility_date": "2026-11-03",
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_date": "2026-11-14",
 	"assets": {
 		"binding": "ASSETS",
 		"directory": "dist",
@@ -92,8 +91,20 @@ _routes.json
 - If a Wrangler configuration file already exists (`wrangler.toml`, `wrangler.json`, `wrangler.jsonc`), autoconfig does not run; delete it to reconfigure.
 - Multiple frameworks detected: Workers Builds fails (set the root directory to a single-framework path); locally Wrangler prompts you to choose.
 - Framework not detected: ensure `package.json` lists it as a dependency. Workspaces / monorepos have limited support (root-level dependencies are not detected).
-- Next.js uses vinext by default. For OpenNext, configure manually ([opennext.md](./opennext.md)). vinext supports ISR, `"use cache"`, and `unstable_cache`; configure the cache backend your app requires.
+- Next.js: the adapter depends on the tool you run (see below). vinext supports ISR, `"use cache"`, and `unstable_cache`; configure the cache backend your app requires.
+- Node.js compatibility: for compatibility dates before `2026-08-04`, automatic configuration also adds the `nodejs_compat` compatibility flag; the generated configuration for newer dates omits it (the official framework guide tables no longer list `compatibility_flags`).
 - React and Vue SPAs may also be detected; try `wrangler deploy` or `wrangler setup`.
+
+### Next.js adapter by tool
+
+| Tool | Next.js 16 and later | Next.js 15 and earlier |
+| --- | --- | --- |
+| `wrangler setup` or `wrangler deploy` | OpenNext | OpenNext |
+| `cf init` | vinext | OpenNext |
+
+- When automatic configuration uses vinext, it runs `vinext init`; the generated configuration adds the vinext and Vite dependencies, creates the Cloudflare Workers configuration, and adds package scripts for development, builds, and deployment. To use vinext with Wrangler, run `vinext init` directly ([nextjs-vinext.md](./nextjs-vinext.md)). OpenNext: [opennext.md](./opennext.md).
+- Superseded wording: the 2026-11-03 snapshot of this guide said automatic configuration uses vinext as the default path for Next.js; the page now documents the table above.
+- Source: https://developers.cloudflare.com/workers/framework-guides/automatic-configuration/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/workers/static-assets/direct-upload/
 
 # Static Assets
 
-Direct upload of static assets through the Workers API. Pinned to cloudflare-docs production SHA `d0995b9`, fetched 2026-11-03. Advanced; most users should deploy with Wrangler (see the cloudflare-wrangler skill).
+Direct upload of static assets through the Workers API. Pinned to cloudflare-docs production SHA `34d908a`, fetched 2026-11-14. Advanced; most users should deploy with Wrangler (see the cloudflare-wrangler skill).
 
 > **Warning**: These calls create or update a Worker on a real account using an API token. Use a scoped token and a test Worker name first.
 
@@ -102,3 +102,5 @@ Metadata part examples from the official page:
 - Doc inconsistency: the official page labels the metadata JSON blocks as `bash`, and the `config` example is missing a colon (`"config" {`); it is omitted here.
 - Adapted from the official docs: the two `curl` URLs are double-quoted so the `{...}` placeholders are not brace-expanded by the shell; replace them with real values.
 - Standard (Wrangler-based) static site creation: see `create-project.md`.
+- Versions: the completion token only attaches the asset set; create a Worker version with it and deploy that version to receive production traffic. Include every file path the new version needs in the manifest, including unchanged files. See `references/static-assets/direct-upload.md`.
+- Source: https://developers.cloudflare.com/workers/static-assets/direct-upload/ (cloudflare-docs production 34d908a, fetched 2026-11-14)

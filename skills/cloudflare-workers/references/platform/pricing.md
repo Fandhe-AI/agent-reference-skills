@@ -143,6 +143,8 @@ Containers (Paid, billed per 10 ms active): memory 25 GiB-hours/month + $0.00000
 - Details for KV, D1, R2, Hyperdrive: see the cloudflare-storage skill. Queues, Workflows, Durable Objects: the cloudflare-stateful skill (https://developers.cloudflare.com/queues/platform/pricing/, https://developers.cloudflare.com/workflows/reference/pricing/, https://developers.cloudflare.com/durable-objects/platform/pricing/). Vectorize: the cloudflare-ai skill. Containers: the cloudflare-sandbox-containers skill (https://developers.cloudflare.com/containers/platform/pricing/).
 - Only requests that hit a Worker count; Workers run before the cache, so cached requests still incur costs.
 
+- Control usage costs: set a Workers spending limit to block new invocations at a spending threshold ([spend-management.md](./spend-management.md)). The limit counts request and CPU charges after included usage, excludes the subscription fee, and can interrupt every Worker on your account. For email without blocking usage, configure an email alert (https://developers.cloudflare.com/billing/manage/spend-management/cli/#create-an-email-alert). Durable Objects and other products have separate charges. Source: https://developers.cloudflare.com/workers/platform/pricing/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
+
 ## Related
 
 - [limits.md](./limits.md)

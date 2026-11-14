@@ -5,6 +5,7 @@
 | Overview | Workers overview, product map, and glossary | [overview.md](./overview.md) |
 | Limits | Plan and platform limits (CPU, memory, subrequests, size, routes, assets) | [limits.md](./limits.md) |
 | Pricing | Workers Free/Paid plans and per-product usage rates | [pricing.md](./pricing.md) |
+| Spending limits | Account-wide Workers spending limit, what stops, and how to resume | [spend-management.md](./spend-management.md) |
 | Storage options | Choosing a storage or database product | [storage-options.md](./storage-options.md) |
 | Changelog | Runtime/platform changes, historical digest, and betas | [changelog.md](./changelog.md) |
 | Known issues | Route specificity, remote dev, CNAME setup, IP fetch gotchas | [known-issues.md](./known-issues.md) |

@@ -204,6 +204,8 @@ Unbound matches Workers Paid. Bundled matches Workers Paid except: subrequests 5
 - Image Resizing limits are documented in the Images product docs: https://developers.cloudflare.com/images/optimization/transformations/overview/.
 - Related product limits: KV https://developers.cloudflare.com/kv/platform/limits/, Durable Objects https://developers.cloudflare.com/durable-objects/platform/limits/, Queues https://developers.cloudflare.com/queues/platform/limits/ (Durable Objects and Queues are covered by the cloudflare-stateful skill).
 
+- Spending limits: to limit usage charges across your account, configure a Workers spending limit ([spend-management.md](./spend-management.md)). A limit can reject new invocations once its threshold is reached. It is separate from the request, CPU time, and resource limits on this page. Source: https://developers.cloudflare.com/workers/platform/limits/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
+
 ## Related
 
 - [pricing.md](./pricing.md)

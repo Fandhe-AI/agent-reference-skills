@@ -61,7 +61,7 @@ Default headers:
 | Header | Description |
 |--------|-------------|
 | `Content-Type` | Attached if provided during upload; Wrangler determines the MIME type from the file extension. |
-| `Cache-Control: public, max-age=0, must-revalidate` | Sent when the request has no `Authorization` or `Range` header; cacheable but revalidated each time. |
+| `Cache-Control: public, max-age=0, must-revalidate` | Sent when the request has no `Authorization` or `Range` header. It allows the browser to cache the asset but requires the browser to check for changes before reusing it. The version handling that request determines the response; this check does not keep related requests on one version or prevent version skew. |
 | `ETag` | Hash of the asset file; used with `If-None-Match`. |
 | `CF-Cache-Status` | `HIT` or `MISS`. Probabilistic: false positives and negatives can occur. |
 
@@ -94,6 +94,23 @@ https://:version.:subdomain.workers.dev/*
   Permissions-Policy: document-domain=()
   Content-Security-Policy: script-src 'self'; frame-ancestors 'none';
 ```
+
+### Rule order and joined values
+
+- Rules are applied in the order they appear in the file. Joining repeated headers works as intended for list-valued headers such as `X-Robots-Tag`, but for headers where repeated directives conflict, such as `Cache-Control`, joining two rules produces conflicting directives, for example `Cache-Control: public, max-age=604800, public, max-age=0, s-maxage=86400`. When a directive such as `max-age` appears more than once, RFC 9111 section 4.2.1 says caches should use the first value or treat the response as stale. Nothing errors and the asset still serves, which makes this easy to miss.
+- Because rules are applied in file order, `! ` (detach) removes only what earlier rules have already added: a detach placed above the rule it is meant to override has no effect, so put the narrower rule after the broader one. Detaching and setting the header again is how one file takes a different value for a header such as `Cache-Control`:
+
+```txt
+/assets/*
+  Cache-Control: public, max-age=0, s-maxage=86400
+
+/assets/model.bin
+  ! Cache-Control
+  Cache-Control: public, max-age=604800
+```
+
+- `/assets/model.bin` is served with `max-age=604800` alone. Reversing the two blocks causes both values to be joined, because the detach runs before the broader rule adds its value.
+- Source: https://developers.cloudflare.com/workers/static-assets/headers/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 
