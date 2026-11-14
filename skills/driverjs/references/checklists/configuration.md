@@ -115,7 +115,7 @@ type ChecklistItem = {
 
 ## Notes
 
-- Source: https://driverjs.com/docs/configuration#checklist-configuration (driver.js 1.10.1 docs source, `apps/docs/src/content/guides/configuration.mdx`).
+- Source: https://driverjs.com/docs/configuration#checklist-configuration (driver.js 1.14.0 docs source, `apps/docs/src/content/guides/configuration.mdx` at tag 1.14.0).
 - `id` and `items` are required on the checklist; `id` and `title` are required on each item.
 - The two type blocks are condensed (comments trimmed) for `ChecklistItem`; the full commented form is in the source above.
 

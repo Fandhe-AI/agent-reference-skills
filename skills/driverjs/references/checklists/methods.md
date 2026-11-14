@@ -54,9 +54,9 @@ onboarding.isOpen(); // Whether the panel is open
 
 ## Notes
 
-- Source: https://driverjs.com/docs/api#checklists (driver.js 1.10.1 docs source, `apps/docs/src/content/guides/api.mdx`).
-- Tours started from a checklist run like any other tour, so starting one closes whichever tour is currently active. Items that are done can still be clicked to run their tour again.
-- With `launcher: false`, open the panel from your own button with `open()` or `toggle()`.
+- Source: https://driverjs.com/docs/api#checklists (driver.js 1.14.0 docs source, `apps/docs/src/content/guides/api.mdx` at tag 1.14.0).
+- `checklist()` returns its own object, independent of other checklists.
+- With `launcher: false` (since 1.10.1), open the panel from your own button with `open()` or `toggle()`.
 
 ## Related
 

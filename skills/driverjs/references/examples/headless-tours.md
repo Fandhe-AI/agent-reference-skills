@@ -1,0 +1,83 @@
+# Headless Tours
+
+Run Driver.js tours with your own UI. The headless build finds each step's element, waits for it and moves through the steps, but draws nothing and leaves the page alone.
+
+## Signature / Usage
+
+`driver.js/headless` runs a tour without any UI. It finds each step's element, waits for it, listens for `advanceOn` and calls your hooks. It draws no overlay or popover, adds no classes and never scrolls. You show the guidance yourself: a side panel, a chat message or your own tooltip component.
+
+```js
+import { driver } from "driver.js/headless";
+
+const tour = driver({
+  steps: [
+    { element: "#new-project", advanceOn: "click", data: { text: "Create a project" } },
+    {
+      element: "#project-name",
+      advanceOn: { event: "input", when: element => element.value.length > 2 },
+      data: { text: "Give it a name" },
+    },
+    { element: "#save", advanceOn: "click", waitForElement: 3000, data: { text: "Save it" } },
+  ],
+  onHighlighted: (element, step) => showGuide(element, step.data.text),
+  onDestroyed: () => hideGuide(),
+});
+
+tour.drive();
+```
+
+See [Build Your Own Tour UI](./build-your-own-tour-ui.md) for four complete examples.
+
+It takes the same config and steps as `driver.js` and returns the same [API](https://driverjs.com/docs/api), so you can switch a tour between the two. There is no stylesheet to import. The headless build is less than half the size of the full one.
+
+### What still works
+
+- Finding elements: selectors, elements and functions.
+- [Missing elements](https://driverjs.com/docs/configuration#missing-elements): `waitForElement`, `waitForRemovedElement`, `skipMissingElement`, `onElementMissing` and `onWaitingForElement`.
+- `onInteraction` for every click, with `region` telling the highlighted element, the `allowedElements` and the rest of the page apart. Nothing is blocked unless it returns `false`.
+- `advanceOn` with `when` and `strict`, `advanceDelay` and `advance()`.
+- Hooks: `onHighlightStarted`, `onHighlighted`, `onDeselected`, `onDestroyStarted`, `onDestroyed`, `onInteraction`, `onWaitingForElement` and `onElementReplaced`.
+- Navigation: `drive()`, `moveNext()`, `movePrevious()`, `moveTo()`, `highlight()` and `destroy()`.
+- A highlighted element that your framework re-renders is followed, and `advanceOn` listens on the new one. `onElementReplaced` gets the new element, so your UI can move to it.
+
+To show that a step is waiting for its element, use `onWaitingForElement`. Its `signal` aborts when the wait ends.
+
+```js
+driver({
+  waitForElement: 5000,
+  onWaitingForElement: (element, step, opts) => {
+    setLoading(true);
+    opts.signal.addEventListener("abort", () => setLoading(false));
+  },
+});
+```
+
+`getActiveElement()` returns the current step's element, or `undefined` for a step without one. `onHighlighted` runs as soon as the current call returns, not on an animation frame, so a tour keeps going in a background tab.
+
+### What it leaves to you
+
+- The overlay, popover and every option that styles them. `updatePopover()` and `nudge()` do nothing.
+- Scrolling. Call `element.scrollIntoView()` in `onHighlighted` if you want it.
+- Keyboard control. Arrow keys and Escape don't move or close the tour.
+- Focus. It is not moved into a popover or back when the tour ends, and `focus` does nothing.
+- Blocking clicks. `disableActiveInteraction` and `allowedElements` are ignored. A `strict` `advanceOn` and an `onInteraction` that returns `false` still hold back clicks.
+
+Starting a tour ends any other tour from the same build. A headless tour and a full one come from different builds, so they can run at the same time.
+
+### Without the headless build
+
+If you use the full driver and only want it to stop scrolling, set `scrollIntoView: false` on the driver or on a step.
+
+## Notes
+
+- `driver.js/headless` is available since 1.13.0 (changelog: "`driver.js/headless` runs a tour without drawing anything, so you can render your own UI"). `onWaitingForElement` and `onElementReplaced` were added in the same release; `scrollIntoView: false` also since 1.13.0.
+- In 1.14.0 the headless `onInteraction` reports clicks on `allowedElements` as `region: "allowed"`.
+- Because the headless build draws nothing, options that style or position the overlay and popover (and `updatePopover()` / `nudge()`) have no effect; see "What it leaves to you".
+- Source: https://driverjs.com/docs/headless-tours (driver.js 1.14.0 docs source, apps/docs/src/content/guides/headless-tours.mdx at tag 1.14.0).
+
+## Related
+
+- [Build Your Own Tour UI](./build-your-own-tour-ui.md)
+- [Action-Driven Tours](./action-driven-tours.md)
+- [Configuration](../api/configuration.md)
+- [Methods](../api/methods.md)

@@ -32,3 +32,4 @@ driverObj.drive();
 - Since 1.6.0, custom buttons receive their own click events; only the built-in next, previous and close buttons have their default action intercepted
 - Other `PopoverDOM` properties: `wrapper`, `arrow`, `title`, `description`, `footer`, `progress`, `previousButton`, `nextButton`, `closeButton`
 - Use `showButtons` / `disableButtons` arrays to show or hide the built-in `'next'`, `'previous'`, `'close'` buttons
+- `PopoverDOM` also has `instruction` / `instructionIndicator` only on steps with `popover.instruction` (since 1.12.0) and `feedback` only after `nudge("...")` showed a message; check for `undefined` before using them

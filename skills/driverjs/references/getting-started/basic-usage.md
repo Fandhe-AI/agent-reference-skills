@@ -1,10 +1,10 @@
 # Basic Usage
 
-Driver.js provides two primary methods for guiding users: multi-step tours and single element highlighting.
+Driver.js does three things: tours, single highlights and hints. Each starts with a few lines.
 
 ## Multi-Step Tour
 
-Create a driver instance with a `steps` array and call `drive()` to start:
+Pass `steps` to `driver()` and call `drive()`. Each step points at an element and describes it in a popover.
 
 ```javascript
 import { driver } from "driver.js";
@@ -22,11 +22,11 @@ const driverObj = driver({
 driverObj.drive();
 ```
 
-Each step targets a DOM element via CSS selector and displays a popover with a title and description.
+Each step targets a DOM element via CSS selector and displays a popover with a title and description. More in Tour Basics; to make steps wait for the user, see Interactive Tours and Action-Driven Tours (action steps need 1.12.0+).
 
 ## Single Element Highlight
 
-Use the `highlight()` method to focus on a single element:
+`highlight()` takes one step and shows it on its own, without navigation buttons:
 
 ```javascript
 const driverObj = driver();
@@ -57,7 +57,7 @@ driverObj.highlight({
 
 ## Hints
 
-Beyond tours and highlights, Driver.js also ships hints: pulsing beacons that sit quietly on the page and open a popover when clicked, with no overlay and nothing blocked. They come from their own entry, so tour-only users never load them.
+Hints are pulsing beacons that open a popover when clicked. There is no overlay and the page stays usable. They come from their own entry.
 
 ```javascript
 import { hints } from "driver.js/hints";
@@ -73,13 +73,16 @@ const productHints = hints({
 productHints.show();
 ```
 
-See the hints category for beacons, dismissals and the optional overlay: [Hints](../hints/README.md).
+See the hints category for beacons, dismissals and the optional overlay: [Hints](../hints/README.md). For onboarding task lists, see [Checklists](../checklists/README.md).
 
 ## Notes
 
 - `drive()` starts the tour at step 0 by default; pass an index to start at a different step: `drive(2)`
 - When using `highlight()`, only the close button is shown by default (no next/previous)
 - The popover `title` and `description` both support HTML content
+- Driver.js needs no wrapper for React, Vue or Next.js; see the React and Vue guide for the setup and cleanup (not covered by a page in this skill)
+- A tour that draws no UI of its own (since 1.13.0) imports from `driver.js/headless`; see [Installation](./installation.md)
+- Source: https://driverjs.com/docs/basic-usage (driver.js 1.14.0 docs source, apps/docs/src/content/guides/basic-usage.mdx at tag 1.14.0).
 
 ## Related
 

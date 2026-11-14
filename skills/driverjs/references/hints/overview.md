@@ -41,12 +41,12 @@ productHints.show();
 ## Closing vs. dismissing
 
 - Closing: clicking the beacon again, clicking anywhere outside, or pressing Escape closes the popover. The beacon stays, and the hint can be opened again.
-- Dismissing: clicking the "Got it" button removes the beacon entirely and fires `onDismiss`. The hint is gone for the session. Provide `onButtonClick` to take over the button, the same way `onNextClick` takes over a tour's next button.
+- Dismissing: clicking the "Got it" button removes the beacon entirely and fires `onDismiss`. The hint stays gone until the page reloads. Provide `onButtonClick` to take over the button, the same way `onNextClick` takes over a tour's next button.
 - Only one hint popover is open at a time; opening another swaps it.
 
 ## Remembering dismissals
 
-Driver.js keeps dismissals in memory for the session and does not handle storage. `onDismiss` with stable `id`s is the hook; storage is up to the caller.
+Dismissals last until the page reloads. To keep them, give hints an `id` and save it in `onDismiss`; Driver.js does not handle storage. `onDismiss` with stable `id`s is the hook; storage is up to the caller.
 
 ```js
 const dismissed = new Set(JSON.parse(localStorage.getItem("hints") ?? "[]"));
@@ -103,8 +103,9 @@ const productHints = hints({
 
 ## Notes
 
+- Since 1.10.1, a hint whose element is inside an open `<dialog>` renders inside that dialog, so it shows above a modal opened with `showModal()`. 1.10.2 and 1.11.0 fix hints in dialogs with a `transform` or `filter`, and in pages that style every `[popover]`.
 - Hint popovers are regular Driver.js popovers, so `onPopoverRender` works too for additional buttons or custom markup, exactly like in tours.
-- Source: driver.js 1.10.1 docs (https://driverjs.com/docs/hints).
+- Source: https://driverjs.com/docs/hints (driver.js 1.14.0 docs source, `apps/docs/src/content/guides/hints.mdx` at tag 1.14.0).
 
 ## Related
 
