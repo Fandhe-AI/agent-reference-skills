@@ -92,12 +92,7 @@ ValidateForm:
 
 ```tsx
 export type ValidateFormEventType =
-  | "blur"
-  | "focusout"
-  | "change"
-  | "submit"
-  | "trigger"
-  | "valid"
+  "blur" | "focusout" | "change" | "submit" | "trigger" | "valid"
 
 export type ValidateForm<TFormValues extends FieldValues> = (props: {
   formValues: TFormValues

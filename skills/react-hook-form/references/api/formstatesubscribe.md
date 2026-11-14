@@ -42,6 +42,22 @@ const App = () => {
 ## Notes
 
 - This component was previously documented as `FormStateSubscribe`; renamed to `FormState` on the official page as of 2026-08-01.
+- Use `<FormState />` for small parts of the UI that depend on form state, for example a submit button, without creating a new component:
+
+  ```javascript
+  <FormState
+    control={control}
+    render={({ isSubmitting }) => (
+      <button disabled={isSubmitting}>
+        {isSubmitting ? "Saving..." : "Save"}
+      </button>
+    )}
+  />
+  ```
+
+- The `render` function receives the same Proxy as `useFormState`, so it subscribes only to the state you read in it.
+- Pass `name` to limit updates to one field or one section of the form.
+- Source: https://react-hook-form.com/docs/useformstate/formstate (documentation master c0511c9, fetched 2026-11-14)
 
 ## Related
 

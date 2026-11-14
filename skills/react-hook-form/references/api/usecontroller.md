@@ -62,7 +62,7 @@ Return:
 
 | Object | Name | Type | Description |
 |--------|------|------|-------------|
-| `field` | `onChange` | `(value: any) => void` | Sends the input's value to the library. Assign to the input's `onChange`; value must not be `undefined`. Avoid manually invoking `setValue` or other field-update APIs. |
+| `field` | `onChange` | `(value: any) => void` | Sends the input's value to the library. Assign to the input's `onChange`; value must not be `undefined`. Avoid manually invoking `setValue` or other field-update APIs. It accepts either a change event or a value: given an event, it reads `target.checked` for checkboxes, `target.files` for file inputs and `target.value` otherwise. Any object with a `target` property is treated as an event. |
 | `field` | `onBlur` | `() => void` | Sends the input's blur event to the library. |
 | `field` | `value` | `unknown` | The current value of the controlled component. |
 | `field` | `disabled` | `boolean` | The disabled state of the input. |
@@ -71,6 +71,7 @@ Return:
 | `fieldState` | `invalid` | `boolean` | Invalid state for current input. |
 | `fieldState` | `isTouched` | `boolean` | Touched state for current controlled input. |
 | `fieldState` | `isDirty` | `boolean` | Dirty state for current controlled input. |
+| `fieldState` | `isValidating` | `boolean` | Validating state for current controlled input. |
 | `fieldState` | `error` | `object` | Since 7.0.0. Error for this specific input. |
 | `formState` | (same as `useForm` formState) | | `isDirty`, `dirtyFields`, `touchedFields`, `defaultValues` (7.37.0), `isSubmitted`, `isSubmitSuccessful`, `isSubmitting`, `isLoading` (7.41.0), `submitCount`, `isValid`, `isValidating`, `validatingFields` (7.51.0), `errors`, `disabled` (7.48.0), `isReady` (7.56.0). |
 
@@ -85,13 +86,99 @@ Return:
   const [value, setValue] = useState(field.value)
 
   onChange={(event) => {
-    field.onChange(parseInt(event.target.value)) // data sent back to hook form
+    // data sent back to hook form; empty input becomes null instead of NaN
+    field.onChange(event.target.value === "" ? null : event.target.valueAsNumber)
     setValue(event.target.value) // UI state
   }}
   ```
 
+- Focusing components that don't forward a DOM ref: `field.ref` accepts any object with a `focus` method (and optionally `select`), so you can point it at the component's own focus API:
+
+  ```javascript
+  <DatePicker
+    {...field}
+    ref={(instance) =>
+      field.ref(instance && { focus: () => instance.focusInput() })
+    }
+  />
+  ```
+
 - Do not `register` the input again: `<input {...field} />` is correct; `<input {...field} {...register('test')} />` doubles up the registration.
 - Use a single `useController` call per component (each call creates its own subscription). For multiple fields, rename the destructured `field` (`const { field: input } = useController(...)`) or use `Controller`.
+
+- Source: https://react-hook-form.com/docs/usecontroller (documentation master c0511c9, fetched 2026-11-14)
+
+### Reusable typed input
+
+A generic component built on `useController` works with any form, and TypeScript still checks that `name` is a field of the form that `control` belongs to.
+
+```tsx
+import {
+  useForm,
+  useController,
+  UseControllerProps,
+  FieldValues,
+} from "react-hook-form"
+
+function TextInput<T extends FieldValues>(props: UseControllerProps<T>) {
+  const { field, fieldState } = useController(props)
+
+  return (
+    <div>
+      <input {...field} value={field.value ?? ""} />
+      {fieldState.error && <p>{fieldState.error.message}</p>}
+    </div>
+  )
+}
+
+type FormValues = { firstName: string; lastName: string }
+
+export default function App() {
+  const { control, handleSubmit } = useForm<FormValues>({
+    defaultValues: { firstName: "", lastName: "" },
+  })
+
+  return (
+    <form onSubmit={handleSubmit((data) => console.log(data))}>
+      <TextInput
+        control={control}
+        name="firstName"
+        rules={{ required: "Required" }}
+      />
+      <TextInput control={control} name="lastName" />
+      <input type="submit" />
+    </form>
+  )
+}
+```
+
+### Troubleshooting
+
+#### `A component is changing an uncontrolled input to be controlled`
+
+- Why: The field has no default value, so `field.value` is `undefined` on the first render. When the user types, the value becomes a string, and React warns that the input changed from uncontrolled to controlled.
+- Fix: Give the field a default value in `useForm`, even if it is just `""`. You can also pass `defaultValue` to `useController`.
+
+```javascript
+useForm({ defaultValues: { firstName: "" } })
+```
+
+#### Changing `defaultValue` does not update the input
+
+- Why: The `defaultValue` option of `useController` is only read when the field first registers. Changing it later does not update the field.
+- Fix: Use `reset` or `setValue` to change the value after the first render, or pass data that loads later to [`values`](./useform.md) on `useForm`.
+
+#### `Cannot read properties of null (reading '_names')`
+
+- Why: `useController` could not find a form: no `control` was passed and the component is not inside a [`FormProvider`](./formprovider.md).
+- Fix: Pass `control` from `useForm`, or wrap the tree in `<FormProvider {...methods}>`. See [`control`](./useform-control.md).
+
+### Changes since v7.90
+
+- v7.91.0: "Fix `Controller` validation using stale DOM values (#13880)"
+- v7.92.0: "Fix `useController` reading stale `shouldUnregister` options (#13956, #13996)"
+- v7.92.0: "Fix `useController` dirty tracking with controller-level `defaultValue` (#14001)"
+- v7.92.0: "Fix `useFormState` and `Controller` unnecessarily cloning form state during mount and unmount (#13945)"
 
 ## Related
 

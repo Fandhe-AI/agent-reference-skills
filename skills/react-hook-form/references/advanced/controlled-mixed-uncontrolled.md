@@ -143,6 +143,7 @@ const { ref, ...field } = register("email")
 ## Notes
 
 - Source: https://react-hook-form.com/advanced-usage/controlled-and-uncontrolled (documentation master c0511c9, fetched 2026-11-14)
+- The star-rating example (verbatim) uses buttons with `role="radio"` but implements no arrow-key navigation or roving `tabIndex`; for reusable code prefer native `input type="radio"` or add that keyboard handling.
 - `useController` returns `field` (`value`, `onChange`, `onBlur`, `name`, `ref`) and `fieldState` (`invalid`, `error`, `isTouched`, `isDirty`). Pass `onBlur` through so touched state and `mode: "onBlur"` work.
 - `RatingField` is generic over the form type, so it can be reused in any form, and `name` is checked against that form.
 - `reset(defaultValues)` clears both kinds of input. Controlled components update because their `value` comes from the form.

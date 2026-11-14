@@ -32,8 +32,8 @@ function App() {
 
 ## Notes
 
-- Adapted from the official example: the official snippet imports only `Form`; `useForm` was added to the import line.
-- Source: https://react-hook-form.com/get-started#Integratingwithservices
+- The official example now imports both `Form` and `useForm` (earlier versions of the page imported only `Form`).
+- Source: https://react-hook-form.com/get-started#Integratingwithservices (documentation master c0511c9, fetched 2026-11-14)
 
 ## Related
 
