@@ -21,7 +21,13 @@ server.registerTool(
   },
   async (_args, { _meta }) => {
     const locale = _meta?.["openai/locale"] ?? "en";
-    const location = _meta?.["openai/userLocation"]?.city;
+    const userLocation = _meta?.["openai/userLocation"];
+    const location =
+      typeof userLocation === "object" &&
+      userLocation !== null &&
+      "city" in userLocation
+        ? userLocation.city
+        : undefined;
     const cafes = await findNearbyCafes(location);
 
     return {
@@ -45,6 +51,7 @@ server.registerTool(
 
 ## Notes
 
+- Source: https://developers.openai.com/plugins/reference#_meta-fields-the-client-provides (local .md twin copy, fetched 2026-11-14).
 - `_meta["openai/userAgent"]` and `_meta["openai/userLocation"]` are hints only; servers should never rely on them for authorization decisions and must tolerate their absence. Treat `_meta["openai/userAgent"]` as optional, best-effort metadata rather than a stable way to detect which host surface is calling your server.
 
 ## Related

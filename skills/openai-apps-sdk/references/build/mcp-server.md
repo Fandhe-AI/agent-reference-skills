@@ -47,7 +47,7 @@ pip install mcp
 | `outputSchema` | Schema for `structuredContent` when the tool returns structured data |
 | `annotations.readOnlyHint` | `true` only when the tool cannot change state |
 | `annotations.destructiveHint` | `true` when the tool can cause irreversible/hard-to-reverse outcomes |
-| `annotations.openWorldHint` | `true` when the tool can affect public or external systems |
+| `annotations.openWorldHint` | `true` when the tool accesses the public internet or open-ended external entities, including through read-only actions such as web search; a tool limited to a bounded private account or workspace can set `false`, even when that service is externally hosted |
 | `structuredContent` | Concise data the model can inspect and reuse in later calls |
 | `content` | Text or other MCP content that helps the model answer the user |
 | `_meta` | Client-specific data hidden from the model; not a substitute for authorization |
@@ -63,63 +63,23 @@ pip install mcp
 - Production endpoint must be a stable public HTTPS URL supporting streamable HTTP, typically ending in `/mcp`. Secure MCP Tunnel can connect a private MCP server in ChatGPT but does not satisfy public submission requirements. Use OpenAI-managed mTLS to authenticate ChatGPT as the client, and OAuth 2.1 for user auth.
 - Keep published tool names/schemas backward compatible; version UI resource identifiers when HTML/JS/CSS changes. If metadata changes, refresh the custom MCP server connection and rerun the evaluation set before submission.
 - Multiple accounts: to improve multi-account use, expose an authenticated, read-only profile tool marked `_meta["openai/profile"]: true`. Resolve the profile from the request's validated credentials and keep every tool call scoped to those credentials. Users can connect multiple accounts without a profile tool. See [Authentication](./auth.md) ("Profile tool for multi-account" paragraph) for the schema and example.
+- Source: https://developers.openai.com/plugins/build/mcp-server (local .md twin copy, fetched 2026-11-14).
 - MCP extensions: OpenAI MCP Extensions connect the plugin to ChatGPT's sidebar, composer, and file viewers; see the Plugin Extensions page ([extensions.md](./extensions.md)) for examples and setup.
 
-### Import skills from the MCP server
+### Deploy and security checklist
 
-Configure the server to supply skills so their instructions/files version and deploy with the server. **Scan Tools** (during plugin submission) imports a static snapshot into the draft — not a live runtime resource.
+- Public submission needs a stable, publicly reachable HTTPS MCP endpoint; the endpoint must stay reachable for plugin review and domain verification. Do not use Secure MCP Tunnel alone, a temporary tunnel, or a local endpoint for public submission.
+- The production endpoint must support the MCP streamable HTTP transport, respond at a stable URL (typically ending in `/mcp`), meet latency/availability needs, reach required services and data stores, preserve authentication and authorization boundaries, and produce logs and metrics for failed initialization and tool calls.
+- A server that must remain private can sit behind a public HTTPS proxy that forwards MCP requests; use OpenAI-managed mTLS to authenticate ChatGPT as the MCP client and OAuth 2.1 for user authentication. If an IP allowlist is required, use the published ChatGPT connectors IP ranges and update the allowlist automatically; an IP allowlist does not replace authentication or authorization.
+- Choose infrastructure (serverless, container, edge, or traditional) by runtime/dependency support, streaming behavior, cold-start and request latency, network access, data residency and compliance, secret management, logging/tracing/alerting, and rollback/versioning. Optional UI assets must be deployed at stable origins allowed by the component's content security policy.
+- Before deployment: set production credentials via the host's secret management, configure the authorization server and allowed redirect behavior, apply timeouts and rate limits to expensive or externally visible tools, remove debug responses and unnecessary personal data, and confirm logs contain no access tokens or sensitive tool results. After deployment, verify initialization, server instructions, tools, schemas, annotations, authentication, results, and errors with MCP Inspector.
+- Local Inspector checklist: confirm initialization succeeds; review server instructions and the advertised tool list; call every tool with representative and invalid inputs; verify schemas, results, errors, and annotations; confirm authorization is enforced for private data and write actions. Then connect the custom MCP server to ChatGPT and run the direct, indirect, edge-case, and out-of-scope requests from the use-case inventory.
+- Security reminders: treat every tool input as untrusted; validate parameters and enforce authorization on the server; require confirmation for consequential write actions; keep secrets and sensitive data out of tool metadata and results; log enough context to investigate failures without logging credentials or unnecessary personal data; rate-limit expensive or externally visible actions. Do not put secrets, access tokens, or unnecessary personal data in tool results; `_meta` is hidden from the model but is not a substitute for authorization or secure storage.
+- Annotations help ChatGPT and Codex choose confirmation and safety behavior but do not replace authorization, validation, or confirmation in your server.
 
-OpenAI currently supports a bounded, static subset of the draft SEP-2640 Skills extension. This proposal is not yet part of the stable MCP specification.
+### Removed section
 
-Declare the extension under `capabilities.extensions` (not `experimental`):
-
-```json
-{ "capabilities": { "extensions": { "io.modelcontextprotocol/skills": {} } } }
-```
-
-The declaration must be under `capabilities.extensions`; the earlier `experimental` declaration is not recognized.
-
-Support paginated `skills/list` (each entry needs `uri` to `SKILL.md`, `frontmatter` containing every entry from the parsed `SKILL.md` front matter including `name` and `description`, a complete `resources` list with `SKILL.md` and every supporting file, and a SHA-256 digest per resource in `sha256:<64 lowercase hex chars>` form) and `skills/get` (returns a `skill` object with the same entry shape). Use the `skill://` URI convention; the directory containing `SKILL.md` must match the skill name:
-
-```json
-{
-  "skills": [
-    {
-      "uri": "skill://dice-roller/tabletop-dice/SKILL.md",
-      "frontmatter": {
-        "name": "tabletop-dice",
-        "description": "Roll one or more dice and report each result and the total."
-      },
-      "resources": [
-        {
-          "uri": "skill://dice-roller/tabletop-dice/SKILL.md",
-          "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        },
-        {
-          "uri": "skill://dice-roller/tabletop-dice/references/notation.md",
-          "digest": "sha256:abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"
-        }
-      ]
-    }
-  ],
-  "nextCursor": "optional-next-page-cursor"
-}
-```
-
-Digest input: for a text resource hash the UTF-8 bytes of `content.text`; for a blob resource base64-decode `content.blob` and hash the decoded bytes. Request parameters: first `skills/list` accepts `{}`, later requests accept `{ "cursor": "next-page-cursor" }`, `skills/get` accepts `{ "uri": "skill://dice-roller/tabletop-dice/SKILL.md" }`.
-
-Support `resources/read` for every manifest URI, returning exactly one content item whose URI matches the request (UTF-8 text or base64 blob). Import verifies that every listed resource is fetchable with a matching digest, the fetched `SKILL.md` front matter exactly matches the catalog entry, paths are safe, unique, and free of normalization conflicts, and the skill fits the limits. The combined archive limit includes ZIP packaging overhead.
-
-Import limits:
-
-| Content | Limit |
-|---------|-------|
-| `SKILL.md` | 256 KiB |
-| Each supporting file | 1 MiB |
-| All resources for one skill | 5 MiB |
-| Generated skill archives for one scan | 8 MiB |
-
-Up to five uniquely named skills across 10 catalog pages; each skill up to 100 files. If any entry fails validation, **Scan Tools** still returns tools but does not update imported skills — fix and rescan.
+- The "Import skills from the MCP server" section (the draft SEP-2640 Skills extension, `skills/list` / `skills/get`, **Scan Tools** skill import limits) is no longer present in the official page (checked 2026-11-14).
 
 ## Related
 

@@ -16,6 +16,8 @@ Optional plugin UI extends what users can do without breaking the flow of conver
 - Design system: the optional `@openai/apps-sdk-ui` component library provides Tailwind styling foundations, CSS variable design tokens, and accessible components matching the ChatGPT design system. A Figma component library is also available.
 - Every app initially appears inline; inline surfaces always appear before the generated model response.
 - Visual design: use system colors for text/icons/dividers (brand accents only on buttons/badges/icons, never backgrounds); inherit the system font stack (no custom fonts); use system grid spacing; use monochromatic outlined icons or fit-in brand icons (do not render your own logo — ChatGPT appends it automatically); maintain WCAG AA contrast and provide alt text for images.
+- Fullscreen: use it for work that benefits from more space; existing editors and admin interfaces can be embedded when they meet the iframe policy (https://developers.openai.com/plugins/plugin-guidelines#iframes-and-embedded-pages).
+- Source: https://developers.openai.com/plugins/concepts/ui-guidelines (local .md twin copy, fetched 2026-11-14).
 
 ## Related
 

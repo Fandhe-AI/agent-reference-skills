@@ -16,10 +16,12 @@ server.registerTool(
       q: z.string(),
     },
     outputSchema: {},
-    securitySchemes: [
-      { type: "noauth" },
-      { type: "oauth2", scopes: ["files:read"] },
-    ],
+    _meta: {
+      securitySchemes: [
+        { type: "noauth" },
+        { type: "oauth2", scopes: ["files:read"] },
+      ],
+    },
   },
   async ({ q }) => {
     return {
@@ -63,7 +65,9 @@ server.registerTool(
       title: z.string(),
     },
     outputSchema: {},
-    securitySchemes: [{ type: "oauth2", scopes: ["files:write"] }],
+    _meta: {
+      securitySchemes: [{ type: "oauth2", scopes: ["files:write"] }],
+    },
   },
   async ({ title }, handlerContext) => {
     const claims = await verifyAccessToken(getAuthorizationHeader(handlerContext));
@@ -150,10 +154,11 @@ Error result a tool returns when a required token is missing:
 ## Notes
 
 - Keep scope names identical across every layer: tool `securitySchemes`, `scopes_supported` on both `.well-known` metadata documents, and the `WWW-Authenticate` challenge (`files:read` / `files:write` here). A mismatch (e.g. a tool requesting a scope the authorization server never advertises) makes a strict AS reject the request with `invalid_scope`.
+- Placement: the official TypeScript SDK examples declare `securitySchemes` under the tool's `_meta`. Tool-level OAuth UI needs both this metadata (plus the resource metadata document) and a runtime `_meta["mcp/www_authenticate"]` error carrying `error` and `error_description`.
 - `securitySchemes: [{ type: "noauth" }, { type: "oauth2", scopes: [...] }]` on a tool lets ChatGPT call it unauthenticated first and step up to OAuth only when a scoped tool is invoked.
 - `securitySchemes` only tells ChatGPT when to run the OAuth flow — it is not enforced on the server's behalf. Every handler that requires auth (`create_doc` above) must independently verify the bearer token's signature, issuer, audience, expiry, and scopes before acting, and must not perform the write if verification fails.
 - ChatGPT supports Client ID Metadata Documents (CIMD): set `client_id_metadata_document_supported: true` on the authorization server so no manual client registration is required.
 - On missing/insufficient auth, return `isError: true` with `_meta["mcp/www_authenticate"]` so the host can trigger the OAuth flow.
 - This is the ChatGPT-app (server/publisher) side of MCP; consuming MCP servers from the Agents SDK is covered by the `openai-agents` skill.
 
-Source: https://developers.openai.com/plugins/build/auth
+Source: https://developers.openai.com/plugins/build/auth (local .md twin copy, fetched 2026-11-14)

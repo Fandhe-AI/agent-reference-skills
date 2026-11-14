@@ -2,7 +2,27 @@
 
 Advertise `events` on an MCP server, define and subscribe to an event, verify the callback, send signed webhook deliveries with Node.js, and unsubscribe.
 
-Advertise event support in the `server/discover` response:
+For MCP versions that use initialization, advertise event support in the `initialize` response:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2025-03-26",
+    "capabilities": {
+      "tools": {},
+      "events": {}
+    },
+    "serverInfo": {
+      "name": "example-server",
+      "version": "1.0.0"
+    }
+  }
+}
+```
+
+For MCP 2.0 (protocol version `2026-07-28`), advertise event support in the `server/discover` response:
 
 ```json
 {
@@ -170,7 +190,7 @@ export async function sendEvent(subscription, event, webhookFetch) {
 
 ## Notes
 
-- Requires MCP 2.0 (protocol version `2026-07-28`). Available in Work chats only (ChatGPT web, or the desktop app with Cloud selected, and dots). Only webhook delivery is supported; polling, streaming, and the draft's `gap` / `terminated` control notifications are not.
+- Supported over Streamable HTTP using `initialize`, or over MCP 2.0 HTTP (protocol version `2026-07-28`). Available in Work chats only (ChatGPT web, or the desktop app with Cloud selected, and dots). Only webhook delivery is supported; polling, streaming, and the draft's `gap` / `terminated` control notifications are not.
 - `webhookFetch` must have the same interface as `fetch`, validate callback addresses on each connection, and block redirects. Each request body is at most 256 KiB; serialize the body once and sign those exact bytes.
 - Retry transient failures with exponential backoff and bounded attempts, preserving `eventId` and re-signing with a fresh timestamp. Do not retry `410` or `413`.
 - Distinct from platform webhooks of the OpenAI API (see the `openai-api-core` skill) and from the event/webhook vocabulary of `inngest`; this is the MCP server side of ChatGPT event subscriptions.
