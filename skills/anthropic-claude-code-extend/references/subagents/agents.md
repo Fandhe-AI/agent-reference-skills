@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agents / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/agents / last verified: 2026-11-14 -->
 
 # Run agents in parallel (overview)
 
@@ -27,7 +27,7 @@ ultracode: audit every API endpoint under src/routes/ for missing auth checks
 | [Subagents](./sub-agents.md) | Delegated workers in one session, own context, return a summary | A side task would flood the main conversation |
 | [Agent view](./agent-view.md) | One screen (`claude agents`) to dispatch/monitor background sessions. Research preview | Several independent tasks to hand off and check later |
 | [Agent teams](./agent-teams.md) | Coordinated sessions with shared task list + inter-agent messaging, managed by a lead. Experimental and disabled by default | Claude should split a project and keep workers in sync |
-| Projects (claude.ai/code or desktop app; see the anthropic-claude-code-surfaces skill) | One ongoing conversation; Claude starts parallel sessions called threads, in the cloud or (on request) on your computer through Remote Control, and shows which need you. Public beta on Pro and Max | Work spans many tasks over days or weeks, should keep running when your machine is off |
+| Projects (claude.ai/code or desktop app; see the anthropic-claude-code-surfaces skill) | One ongoing conversation; Claude starts parallel sessions called threads, in the cloud or (on request) on your computer through Remote Control, and shows which need you. Public beta on Pro, Max, and Ultra | Work spans many tasks over days or weeks, should keep running when your machine is off |
 | [Dynamic workflows](./workflows.md) | A script running many subagents, cross-checking results | Work too big/too repeatable for turn-by-turn coordination |
 
 ## Notes
@@ -37,6 +37,8 @@ ultracode: audit every API endpoint under src/routes/ for missing auth checks
 - [Cross-session messaging](./cross-session-messaging.md) lets Claude list and message your other Claude Code sessions on this machine, on another machine, or in the cloud; it supports sessions you run yourself (including those dispatched from agent view) but is not itself a way to run agents.
 - `/batch` is a bundled skill that splits one large change into 5-30 worktree-isolated subagents, each opening a PR — a packaged use of subagents + worktrees, not a separate coordination style.
 - A background bash command and a forked subagent (`/subtask`) are not separate "run agents" surfaces: the former runs one shell command without spawning an agent, the latter is a way to spawn a subagent. `/fork` copies the whole session into a new background session; with agent view turned off, `/fork` starts the forked subagent instead and `/subtask` isn't available.
+- Choosing: subagents report results back to the conversation that spawned them, agent view sessions report only to you, and teammates in an agent team message each other directly (and share a task list when they have the Task tools). Subagents and sessions you run yourself can each use a separate worktree; agent teams don't isolate teammates in worktrees, so partition the work so each teammate owns different files. Running several sessions or subagents at once multiplies token usage.
+- Source: https://code.claude.com/docs/en/agents.md (retrieved 2026-11-14)
 - A [routine](./routines.md) runs a session on a schedule in Anthropic's cloud, not in parallel on your machine.
 - Check running work: `claude agents` (agent view), `/tasks` (background items in the current session, including finished subagents), `/workflows` (dynamic workflow runs), `/agents` (prints subagent file locations, no longer opens a panel as of v2.1.198). Named background subagents appear in the @-mention typeahead with their status.
 

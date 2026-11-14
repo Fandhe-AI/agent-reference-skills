@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugin-evals.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugin-evals.md / last verified: 2026-11-14 -->
 
 # Test plugins with evals
 
@@ -141,6 +141,12 @@ claude plugin eval . \
 - Runs that end on an API error (rate / usage limit) score 0 without grading and make the command exit non-zero (before v2.1.299 such runs were graded on what they produced). In CI, `eval init` needs `--bare <name>`.
 - Baseline-arm errors like `Agent type '<plugin>:<agent>' not found` are expected; use `--ablation none` to skip them. `git` older than 2.31 stops the run (check added in v2.1.283).
 - skill-creator's `evals/evals.json` format is separate; neither tool reads the other's case files.
+- Startup messages: `plugin eval is currently in early access` means the build predates general availability (`claude update`, then a fresh session); `plugin eval is currently unavailable` means Anthropic switched the command off server-side. `is not a trusted plugin directory, and this run cannot stop to ask you about it` means a non-terminal or `--json` run without `--trust-plugin`. `cannot be evaluated where sessions load it` means a plugin from a local-path marketplace whose catalog can't be read; pass the plugin directory as the target instead. `--json output path must end in .json` means the target was written after `--json`.
+- Option details: `--no-scaffold` also exists (see `--help`); `--max-cost-usd` is checked before each run starts, runs already started finish, and an unstarted run makes the command exit 2; `--mocks record` does not start the plugin's real MCP servers; `--allow-real-servers` starts real servers for servers without a mock. `--eval-dir` takes a relative path of plain directory names; an unusable `experimental.evals` value prints a `Warning:` line and the run uses `evals/`. Results for a named installed plugin go under `./evals/results/` in the current directory.
+- Changelog 2.1.325: `claude plugin eval --output-dir ''` exits with an error instead of writing the report into the current folder.
+- Changelog 2.1.319: `claude plugin eval` warnings no longer suggest `max: 0` for a tool that must not be called, which could never pass (use `min: 0` and `max: 0` on `tool_used`).
+- Source: https://code.claude.com/docs/en/plugin-evals.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.319, 2.1.325, retrieved 2026-11-14)
 
 ## Related
 

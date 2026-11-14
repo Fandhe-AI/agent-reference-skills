@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/mods/admin / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/mods/admin / last verified: 2026-11-14 -->
 
 # Manage mods for your organization
 
@@ -91,14 +91,14 @@ Calls to look for in `calls:`:
 | `$.http.fetch` | Network requests |
 | `$.env.get`, `$.settings.read` | Reads env vars and settings (may hold API keys); `env reads:` names each variable |
 | `$.env.set` | Sets an env var for Claude Code and everything it starts; `env writes:` names each |
-| `$.mcp.call` | Calls a connected MCP server tool under session permission rules |
-| `$.model.complete` | Uses the user's plan or API key |
+| `$.mcp.call` | Calls a tool on a connected MCP server with no permission prompt; refused under a deny rule or a managed ask rule, for a tool marked `requiresUserInteraction`, or for a tool your organization set to `ask` where that setting reaches Claude Code |
+| `$.model.complete` | Uses the user's plan or API key for model calls |
 | `$.prompt.submit` | Submits a prompt, possibly as the user's own words |
 | `$.session.send` | Messages another session, subagent, or teammate |
 
 Hooks lines: `tool.call` / `prompt.submit` mean the mod sees and can change every tool call / prompt; `session.append` can rewrite each conversation row; `ui.render{component=AskUserQuestion}` can redraw the question dialog; `tool.check` can approve or deny a call before a permission prompt.
 
-A mod counts as the organization's only when all hold: managed `enabledPlugins` sets it `true`; managed settings name its marketplace as a directory on the machine by absolute path (an `extraKnownMarketplaces` entry does that); the marketplace lists the plugin by a relative path so Claude Code loads it in place.
+Through 2.1.324, a mod counts as the organization's only when all hold: managed `enabledPlugins` sets it `true`; managed settings name its marketplace as a directory on the machine by absolute path (an `extraKnownMarketplaces` entry does that); the marketplace lists the plugin by a relative path so Claude Code loads it in place. From 2.1.325, plugins of a remote marketplace that managed settings declare, enable and list in `prependPlugins` or `appendPlugins` also count as the organization's (changelog 2.1.325; the official mods admin page of 2026-11-14 still states the directory condition).
 
 Policy mod using `plugin.register`:
 
@@ -139,15 +139,24 @@ on('plugin.register', checkMod).catch(async ($, e, next) => {
 ## Notes
 
 - Default behavior: mods are on; the built-in guard `sec-default@builtin` (shown as `cc-plugin-sec-default`) loads ahead of every user mod and cannot be turned off, when the machine has managed settings or the user signs in with a Team or Enterprise plan (API key, Bedrock, Google Cloud's Agent Platform, or Microsoft Foundry users get it only with managed settings). It protects managed hooks' inputs/decisions, the system prompt, managed `CLAUDE.md` and instructions, what mods read as settings, and managed MCP servers' tools and descriptions.
-- Deny rules and managed `PreToolUse` hooks apply to Claude's tool calls only, not to a mod's own `$.fs` / `$.process` calls (with `Read(.env)` denied a mod can still `$.fs.read` it). To limit those, keep user mods from loading or handle the call in a policy mod. A user's mod can approve calls an `ask` rule would prompt for or a non-managed `PreToolUse` hook blocked; in auto mode an approved call skips the classifier.
+- Deny rules and managed `PreToolUse` hooks apply to Claude's tool calls only, not to a mod's own `$.fs` / `$.process` calls (with `Read(.env)` denied a mod can still `$.fs.read` it). To limit those, keep user mods from loading or handle the call in a policy mod. With the guard loaded, by default a user's mod can't approve a call that a `deny` rule refuses, an `ask` rule prompts for, or any `PreToolUse` hook blocked (`allowModsToOverrideDenyRules` lifts the deny-rule limit). In auto mode a call the mod approves runs without a classifier check, unless the guard is loaded and the session runs with `--permission-prompt-tool` or an Agent SDK `canUseTool` callback; there the classifier checks first.
+- Where the guard loads, hooks a user's mod registers on `classic.<Event>`, `prompt.compose`, `prompt.section`, `prompt.context`, `prompt.attachment`, `skill.prompt`, `attribution.text`, `session.compact`, `settings.read`, and `session.append` with `door` `attachment`, `hook-context`, or `compaction` never run; `/plugin` shows a note (details and **Errors** tab, v2.1.299+). To let them run, install the mod so it counts as the organization's (keep `sec-default@builtin` in `prependPlugins`), or leave the guard out of `prependPlugins` (this removes the whole guard). A `session.append` hook with no `door` filter still runs.
+- On v2.1.323+, a user's mod can keep a managed MCP server from connecting (`/mcp` lists it as held by that mod); stopping user-installed mods from loading prevents it. On v2.1.323+ `claude plugin validate` continues a long `hooks:` / `calls:` list on more lines with the same label, and prints `(default matcher key: plugin)` after a hook that skips other mods' controls and drawings; check that `prependPlugins` hooks still reach other mods' controls, and that a `ui.focus` hook uses a wider matcher (`{ plugin: '*' }`).
 - Managed `PreToolUse` hooks run before any mod sees a tool call and again on a rewritten call; other `PreToolUse` hooks run after the last mod.
 - Network: if the policy does not allow WebFetch, every mod's `$.http.fetch` is refused. Turning WebFetch off with `CLAUDE_CODE_DISABLE_WEB_FETCH` or a `WebFetch` deny rule does not stop mods' `$.http.fetch`; hook `http.fetch` in a policy mod (with a refusing `.catch`) or block user mods. `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` stops only built-in mods and fetches carrying Anthropic credentials (before v2.1.288 it stopped every mod's fetch). Nothing here covers programs a mod starts with `$.process.run`.
 - Guard options are read only from managed settings under `cc-plugin-sec-default@builtin` in `pluginConfigs` (`prependPlugins` accepts `sec-default@builtin` too; `pluginConfigs` does not). If you set `prependPlugins`, name the guard in it or neither option applies. The guard fails closed: unreadable managed settings refuses every user mod; an unchecked deny rule refuses the call.
-- A plugin Claude Code copies into its cache (GitHub, git, URL, or npm source) counts as a user's even when managed `enabledPlugins` enables it: `prependPlugins` / `appendPlugins` skip it, `allowManagedModsOnly` refuses it, `allowManagedHooksOnly` blocks it. Make the marketplace directory and parents admin-writable only; managed settings from the claude.ai admin console carry the keys but cannot place the directory on a machine.
+- Through 2.1.324, a plugin Claude Code copies into its cache (GitHub, git, URL, or npm source) counts as a user's even when managed `enabledPlugins` enables it (2.1.325 exception: remote marketplace plugins declared in managed settings and listed in `prependPlugins` / `appendPlugins`): `prependPlugins` / `appendPlugins` skip it, `allowManagedModsOnly` refuses it, `allowManagedHooksOnly` blocks it. Make the marketplace directory and parents admin-writable only; managed settings from the claude.ai admin console carry the keys but cannot place the directory on a machine.
 - `prependPlugins` / `appendPlugins` are read only from managed settings; users may set them in `~/.claude/settings.json` only on a machine with no managed settings and not signed in with Team/Enterprise. Setting `prependPlugins` replaces the default, so name `sec-default@builtin`. Debug log confirms: `hooks module acme-guard@acme-tools loaded ... tier prepend`, or `prependPlugins names ..., which is not an enabled managed plugin with a hooks module; skipped`.
 - `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=0` from early access is ignored in v2.1.287+; replace it with `allowManagedModsOnly`.
 - `--safe-mode` turns installed mods off, yours included; three worker crashes unload every non-built-in mod (yours too) until `/reload-plugins`. A `plugin.register` hook that throws or times out is skipped, so the check fails open unless a `.catch` handler refuses.
 - Built-in mods are not affected by these settings; each has its own switch (see Mods overview).
+
+### Changes from the changelog
+
+- 2.1.321: mods Claude writes in a session turn on without asking in auto and bypass modes, even with managed `allowUnsandboxedCommands: false` or `allowManagedDomainsOnly`, and don't load in `dontAsk` mode. A mod's own tool calls (`$.tool.call`, `$.mcp.call`) raise no permission prompt, even under your own ask rules or in `dontAsk` and `-p` runs; deny rules and organization policy still apply.
+- 2.1.304: mods' `settings.read` hooks receive each settings layer and can rewrite the merged settings, so a managed mod can make an organization's setting a ceiling, including the `cleanupPeriodDays` the retention sweep uses.
+- Source: https://code.claude.com/docs/en/plugins/mods/admin.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.304, 2.1.321, retrieved 2026-11-14)
 
 ## Related
 

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/commands / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/commands / last verified: 2026-11-14 -->
 
 # Commands
 
@@ -22,20 +22,23 @@ Selected commands (not exhaustive — see the official page for the full alphabe
 | `/agents` | Reminder to ask Claude to create/manage subagents (v2.1.198+); interactive UI on older versions |
 | `/autocompact [auto\|<tokens>]` | Set the auto-compact window (e.g. `500k`, or `auto`); saved to user settings. No argument opens a dialog. v2.1.221+ |
 | `/batch <instruction>` | **Skill.** Decomposes a large change into 5–30 units, one background subagent per git worktree, each opening a PR |
+| `/background [prompt]` | Detach the current session to run as a background agent and free the terminal; monitor with `claude agents`. Alias `/bg` |
+| `/branch [name]` | Branch the current conversation at this point and switch into the branch; the original stays resumable with `/resume` |
+| `/claude-api [migrate\|upgrade\|api-version\|managed-agents-onboard\|managed-agents-secure\|prompt-audit\|cost-optimize\|latency-optimize\|build-eval\|hillclimb\|preserved-thinking-migration]` | **Skill.** Loads Claude API and Managed Agents reference material for your project's language; activates automatically when code imports `anthropic` or `@anthropic-ai/sdk`. `api-version` (v2.1.307+) moves API code to a newer API version; `latency-optimize` (v2.1.319+) finds where people wait and proposes faster settings; `managed-agents-secure [<agent-id>]` (v2.1.304+, needs the `ant` CLI) compares a Managed Agent's settings with the secure-deployment guide |
 | `/clear [name]` | Start a new conversation with empty context; keeps project memory |
 | `/code-review [low\|medium\|high\|xhigh\|max\|ultra] [--fix] [--comment] [--max-findings n\|all\|default] [pr#\|branch\|path]` | **Skill.** Reviews the current diff/PR/branch/path for correctness bugs; `--comment` posts findings on the GitHub PR or GitLab merge request (GitLab requires v2.1.257+); `ultra` runs a cloud multi-agent review (see `ultrareview.md`), and with `ultra` on a `github.com` PR `--post` preselects posting the findings to the PR (v2.1.227+). Alias `/review` (before v2.1.223 `/review` was a separate single-pass command) |
 | `/compact [instructions]` | Summarize the conversation so far to free context |
 | `/config [key=value ...]` | Open Settings UI, or set a key directly, e.g. `/config model=sonnet` |
 | `/context [all]` | Visualize context window usage as a colored grid |
 | `/debug [description]` | **Skill.** Enable debug logging and troubleshoot via the session debug log |
-| `/doctor` | **Skill.** Setup checkup: installation health, unused skills/MCP/plugins, slow hooks, `CLAUDE.md` trimming |
+| `/doctor [prompt-audit [path]]` | **Skill.** Setup checkup: installation health, unused skills/MCP/plugins, slow hooks, `CLAUDE.md` trimming, permissions, and (v2.1.305+) `/usage` recommendations; `prompt-audit` (v2.1.283+) audits instruction files instead. Alias `/checkup` |
 | `/effort [level\|auto\|status\|ultracode [on\|off]]` | Set model effort: `low` to `xhigh`, `max` (session-only), or `auto`; `status` prints it; `ultracode [on\|off]` toggles ultracode (the `on`/`off` arguments need v2.1.284+; before that `/effort ultracode` set the session to `xhigh`). Works in `-p` |
 | `/fork [prompt]` | Copy the conversation into a new background session |
 | `/goal [condition\|clear]` | Set a completion condition; Claude keeps working across turns until met |
 | `/hooks` | Read-only browser for configured hook events |
 | `/import [codex\|gemini\|cursor] [--dry-run] [--yes]` | Bring configuration (instruction files, MCP servers, commands, subagents, skills) from OpenAI Codex, Google Gemini CLI or Cursor into Claude Code. v2.1.213+ (Cursor v2.1.265+); unavailable on third-party providers, via a Claude apps gateway, or with feature-flag fetching off |
 | `/list-agents` | List the subagents, agent-team teammates and other Claude Code sessions Claude can message, with the name to use for each; alias `/peers`; v2.1.224+; only where cross-session messaging is enabled |
-| `/loop [interval] [prompt]` | **Skill.** Run a prompt repeatedly while the session stays open; self-paces if interval omitted |
+| `/loop [interval] [prompt]` | **Skill.** Run a prompt repeatedly while the session stays open; self-paces if interval omitted. Alias `/proactive` |
 | `/mcp [reconnect (<server>\|all)\|enable\|disable [<server>\|all]]` | Manage MCP server connections and OAuth; `reconnect all` retries every failed / needs-auth server (interactive terminal needs v2.1.284+) |
 | `/model [model]` | Switch AI model and save as default |
 | `/output-style [style]` | List output styles or switch to one, e.g. `/output-style concise`; v2.1.269+ |
@@ -44,11 +47,15 @@ Selected commands (not exhaustive — see the official page for the full alphabe
 | `/plugin-authoring` | Load the reference Claude works from to write a mod (a skill from a built-in plugin); v2.1.287+ |
 | `/reload-skills` | Re-scan skill and command directories so skills added or changed on disk become available without restarting |
 | `/rewind [N\|name]` | Roll back code and conversation to an earlier checkpoint |
-| `/security-review` | Analyze the changes on the current branch (diff against origin's default branch) for security vulnerabilities; needs an `origin` remote |
+| `/run` | **Skill.** Launch and drive your project's app to see a change working, not only passing tests |
+| `/run-skill-generator` | **Skill.** Teach `/run` and `/verify` how to build and launch your project by writing a per-project skill (`.claude/skills/run-<name>/`) |
+| `/schedule [description]` | Create, update, list or run cloud scheduled tasks (formerly routines); alias `/routines` |
+| `/security-review` | Analyze the changes on the current branch (diff against origin's default branch) for security vulnerabilities; needs an `origin` remote. Claude asks before running it (2.1.323) |
 | `/simplify [target]` | **Skill.** Review changed code for cleanup opportunities and apply the fixes (four parallel review agents); does not look for correctness bugs (use `/code-review`); pass a path or PR reference to target |
 | `/skill-doctor` | Show what each skill costs in context and how often it's used; v2.1.252+, needs feature-flag fetching |
 | `/skills` | List available skills; type to filter, `t` sorts by token count, `Space` / `Enter` cycle a skill's visibility to Claude and the `/` menu, `Esc` saves and closes |
 | `/subtask <instruction>` | Hand a side task to a forked subagent whose result returns into this conversation (v2.1.212+) |
+| `/tasks` | View and manage background work in the current session, including subagents that have finished (an "Earlier in this session" row lists finished subagents, 2.1.319); alias `/bashes`. Runs immediately even while Claude is responding |
 | `/tui [default\|fullscreen]` | Set the terminal UI renderer and relaunch with the conversation intact; no argument prints the active renderer |
 | `/usage` | Token/API usage for the session; alias `/cost` |
 | `/usage-credits` | Configure usage credits (opens billing settings; Team/Enterprise members without billing access send a request to their admin); previously `/extra-usage` |
@@ -66,6 +73,12 @@ Two annotations appear in the full table:
 - Not every command appears for every user; availability depends on platform, plan, and environment.
 - Most bundled skills are available in every session; a few depend on a feature (e.g. `/workflow-authoring` requires dynamic workflows). The `disableBundledSkills` setting turns bundled skills off; see `skills.md`.
 - Observation as of 2026-10-16: `/web-search` and `/worktree` no longer appear in the commands table of the current official page (previously documented as `/web-search <query>` **Skill** and `/worktree [create|list|remove]`). They may have been removed or renamed; this skill does not confirm either. Worktrees are covered by the `EnterWorktree` / `ExitWorktree` tools and the worktrees docs.
+- Observation as of 2026-11-14: `/web-search` and `/worktree` are still absent from the official commands table.
+- A command sent while Claude is responding is queued until the turn ends, except `/status`, `/tasks`, `/usage` (and, in fullscreen, dialog commands such as `/theme` and `/help` since v2.1.234), which run immediately. Hidden commands such as `/heapdump` run only when typed in full.
+- Bundled-skill subcommand versions: `/claude-api upgrade` v2.1.236+, `prompt-audit` v2.1.221+, `cost-optimize` v2.1.247+, `build-eval` / `hillclimb` v2.1.259+, `preserved-thinking-migration` v2.1.282+, `managed-agents-onboard <url|quickstart-name>` v2.1.290+. With a skill named `verify` or `simplify` in a user, project or added-directory location, commit instructions tell Claude to run it before each commit (v2.1.286+).
+- 2.1.323: `/security-review` is now confirmed with you before Claude runs it, and skills' inline git commands stop in bare-repository worktrees and similar folders until you allow them (outside auto mode and bypass). 2.1.325: `/security-review` and skills' inline git commands no longer fail with an error in worktrees of bare repositories, `--separate-git-dir` checkouts and Android `repo` checkouts.
+- Source: https://code.claude.com/docs/en/commands.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.307, 2.1.319, 2.1.323, 2.1.325, retrieved 2026-11-14)
 - To add custom commands, write a skill (see `skills.md`).
 - This is a Claude Code CLI feature. For the Agent SDK equivalent, see anthropic-agent-sdk. For the Claude API (Messages API) Agent Skills / tool use, see anthropic-api-tools-mcp.
 

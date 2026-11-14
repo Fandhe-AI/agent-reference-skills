@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-view / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/agent-view / last verified: 2026-11-14 -->
 
 # Agent view
 
@@ -85,6 +85,12 @@ JSON entry fields: `cwd`, `kind` (`interactive` / `background`), `startedAt` alw
 - Sessions run locally, persist across sleep, but stop on shutdown; managed by a supervisor process (`claude daemon status` / `claude daemon stop --any`).
 - Commit changes before deleting sessions that edited files — worktrees are deleted with the session.
 - Multiple agents consume rate-limit quota proportionally.
+- In the dispatch input `/model`, `/effort` and `/fast` set what the sessions you dispatch next start with (not saved to settings; `/effort`, `/fast` and a bare `/model` need v2.1.299+). `Esc` closes the peek panel, clears the input, or exits (returning to the conversation when you opened agent view with `←`); `Ctrl+C` clears the input and a second press exits, or clears a text selection after copying it.
+- 2.1.325: new sessions from the agents view opened with `←` start in the session's folder instead of where the shell last ran `cd`.
+- 2.1.323: `claude rm` and the agents view say a session is removed from the list, not deleted (`claude rm` help says the conversation is kept and `claude --resume` lists it). `/logout` in a background session now signs out every session on the computer and ends the session. The move-to-background key now works in `claude attach` and `claude agents` sessions; to detach with `Ctrl+B d`, press `d` within 800 ms of `Ctrl+B`.
+- 2.1.311: `Ctrl+D` in agent view matches the prompt: on an empty input, pressing it twice exits. The "background service did not respond" error now suggests `claude daemon stop --any` (which ends background sessions) instead of the disabled `claude daemon restart`.
+- Source: https://code.claude.com/docs/en/agent-view.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.311, 2.1.323, 2.1.325, retrieved 2026-11-14)
 
 ## Related
 

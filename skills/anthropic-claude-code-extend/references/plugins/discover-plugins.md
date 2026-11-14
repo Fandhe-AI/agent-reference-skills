@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/install.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/install.md / last verified: 2026-11-14 -->
 
 # Install and manage plugins
 
@@ -62,6 +62,11 @@ Manage marketplaces:
 - Removing a marketplace uninstalls every plugin installed from it and removes their `enabledPlugins` entries.
 - Security: plugins execute arbitrary code with your privileges; see plugin-security.md. Clearing the cache (`~/.claude/plugins/cache`) and reinstalling when skills don't appear after install is covered in plugins-troubleshooting.md.
 - Authors testing a copy on disk should use `--plugin-dir` instead of installing (see plugins.md).
+- Changelog 2.1.325: the add-marketplace confirmations, plugin recommendation prompts and plugin install warning now say that plugins can run code on your computer, with access to your files and shell. In VS Code, the install link's marketplace confirmation button reads "Trust marketplace and continue". Marketplace and plugin downloads use a CONNECT tunnel when `ALL_PROXY` is the only proxy set; a proxy that refuses CONNECT now fails them.
+- Changelog 2.1.323: `claude plugin install --json` includes `unsetOptionCount` (how many `userConfig` options are not yet set); `claude plugin install` and `/plugin` show a warning instead of success when a plugin's install command writes to stderr; installs fail when a git submodule isn't on the commit its repository records. Changelog 2.1.319: in VS Code, removing a plugin marketplace first checks which of its plugins are installed at that moment.
+- Changelog 2.1.319: `claude plugin update` and `/plugin` "Update now" install dependencies added by the new plugin version, and background auto-update does the same.
+- Source: https://code.claude.com/docs/en/plugins/install.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.319, 2.1.323, 2.1.325, retrieved 2026-11-14)
 
 ## Related
 

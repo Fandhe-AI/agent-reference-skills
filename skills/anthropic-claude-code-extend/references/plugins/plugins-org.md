@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/org.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/org.md / last verified: 2026-11-14 -->
 
 # Manage Claude Code plugins for your organization
 
@@ -73,6 +73,16 @@ Control which plugins Claude Code installs and allows across an organization thr
 - Audit via `claude_code.plugin_installed` / `claude_code.plugin_loaded` events and `GET /v1/organizations/analytics/plugins` (Enterprise).
 - No dedicated key exists for per-user targeting, restricting entries inside an allowed marketplace (use `enabledPlugins: false`), or hiding `/plugin`.
 - Troubleshooting: invalid JSON in `managed-settings.json` stops startup; `/status` shows `Enterprise managed settings` when loaded; `Disabled in ~/.claude/settings.json but still loads` means another source re-enabled it.
+
+- `disableSideloadFlags` also rejects `--mcp-config` unless every server in it is an in-process `type: "sdk"` entry, and refuses plugin folders an Agent SDK application adds mid-session with `addPlugins`. `strictPluginOnlyCustomization` also stops skills-directory plugins from loading and does not reject the CLI sideload flags; pair it with `strictKnownMarketplaces` and `disableSideloadFlags`.
+- Allowlist and blocklist matching: a `url` entry matches on `url` only; for `github` / `git` the repo or url, `ref`, and `path` must all match or be absent on both sides (an entry without `ref` does not cover `ref: "main"`; a `github` entry does not cover a `git` URL to the same repository; trailing slash, `.git` suffix, `ssh://` vs `https://` differ). Blocklist canonicalizes git URLs, matches `github` and `git` forms of one repository, compares `owner/*` case-insensitively, and an entry without `ref` / `path` blocks all of them. Blocklist `url` entries also apply to bare github.com / gitlab.com repository URLs a user adds (v2.1.232+). A blocklist naming only `{ "source": "skills-dir" }` is not an active restriction.
+- A marketplace hosted on claude.ai is matched by host: add a `hostPattern` entry for `claude.ai` (v2.1.273+); on the allowlist it admits the organization's and default claude.ai marketplaces, not a member's own uploads. While any allowlist is set (or a blocklist names a source other than `skills-dir`), a plugin whose marketplace cannot be found shows the policy error, not not-found. A managed marketplace whose source the allowlist does not match is refused. The official marketplace registers itself only in interactive terminal sessions and only if the allowlist permits; a blocked attempt (including `[]`) is remembered.
+- Release channels: host two marketplaces pointing at different refs; give each group its own marketplace through separate endpoint-managed settings, a Claude apps gateway policy per group (by default the first matching policy applies and `extraKnownMarketplaces` does not merge across policies; under `managed.policy_mode: layered`, 2.1.316+, every matching policy applies, merged, and managed MCP servers add up from 2.1.321; the official page does not state how `extraKnownMarketplaces` merges under layered), or per-group configuration in server-managed settings (also no merge). Cloud sessions in an Anthropic-hosted environment receive only server-managed settings.
+- Changelog 2.1.325: plugins of a remote marketplace that managed settings declare, enable and list in `prependPlugins` or `appendPlugins` count as the organization's; `pluginDigests` is deprecated and ignored.
+- Changelog 2.1.321: managed `extraKnownMarketplaces`: a declared name can't be added from another source, an entry from elsewhere is hidden, and plugins the declared marketplace lists are reinstalled from it. Take-overs from an undeclared source set saved data aside for `cleanupPeriodDays`, and options and secrets until `claude plugin restore-set-aside`. The official page of 2026-11-14 does not describe these.
+- Changelog 2.1.323: a managed `strictPluginOnlyCustomization` lock on agents and skills now takes effect in sessions that were already running. Load errors of plugins enabled by managed settings appear in `init.plugin_errors` in SDK and Desktop sessions.
+- Source: https://code.claude.com/docs/en/plugins/org.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.321, 2.1.323, 2.1.325, retrieved 2026-11-14)
 
 ## Related
 

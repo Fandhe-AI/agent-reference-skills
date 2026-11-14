@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/hooks / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/hooks / last verified: 2026-11-14 -->
 
 # Hooks reference
 
@@ -100,6 +100,18 @@ JSON output universal fields: `continue` (default `true`), `stopReason`, `suppre
 - A handler defined identically in several settings files runs once (a plugin's or skill's copy stays separate).
 - Since v2.1.214, an `if` condition such as `Edit(src/**)` matches only the `src` directory in the working directory; write `Edit(**/src/**)` to match `src` at any depth (before v2.1.214 it matched at any depth).
 - Prompt hooks accept `continueOnBlock` (on `ok: false`, feed the reason back to Claude and continue instead of ending the turn) and `impossible` (on `Stop` / `SubagentStop`, lets the turn end); agent hooks have neither field.
+- Monitor commands (v2.1.314+): a `PreToolUse` / `PermissionRequest` hook with a `Bash` matcher also runs on shell commands Claude starts with the Monitor tool, but its `allow` and `updatedInput` have no effect on them (it can still deny or ask). To allow or rewrite a Monitor command, use a matcher that includes Monitor (`Bash|Monitor`, `.*`, or none) and name Monitor in `if`, e.g. `Monitor(tail *)`, which matches by the rules `Bash(tail *)` follows. A hook with a `Bash` matcher doesn't run for a WebSocket watch, and a `PostToolUse` hook with one doesn't run for Monitor.
+- `PostToolUse` after an interrupt (v2.1.319+): if `Ctrl+Enter` ends the turn while a tool is running and the tool finishes, `PostToolUse` hooks still run on its result and have 10 seconds to finish; a command hook still running after that is killed whatever its `timeout` (use `async: true` for longer work). A message queued with `Enter` doesn't interrupt, so hooks keep their usual `timeout`; `Esc` cancels the hooks at once. Before v2.1.319 the hooks didn't start after a message interrupt.
+- Concurrency (2.1.312): prompt and agent hooks run at most 24 at a time per session, sub-agents included, plus at most 12 that have waited longer than their event's timeout; a `timeout` under 1 second counts as 1 second.
+- `onFailure: "block"` (v2.1.295+, `command` and `http` hooks) turns a failed or timed-out hook into a block; for Agent SDK callback hooks, 2.1.317 added the same `onFailure: "block"` option so a failing callback blocks the action instead of letting it run. On Windows without Git Bash, a shell-form `PreToolUse` or `PermissionRequest` command hook with `onFailure` unset can instead block the tool call; set `"onFailure": "continue"` to let the call go ahead, or `"block"` with exec form (`args`) and `"shell": "powershell"` for a guard that must block either way.
+- `WorktreeCreate`: the hook must print the worktree path (last non-empty stdout line for command hooks; `hookSpecificOutput.worktreePath` for HTTP hooks). Claude Code refuses an absolute path containing `.` or `..` segments and any path that passes through a symlink below the repository root; return a normalized real path. 2.1.325: EnterWorktree refuses a hook path that goes through a symlink inside the project.
+- `PreCompact` stdout (exit 0, not blocking) is used as instructions for the compaction summary and is cut at 10,000 characters per hook (2.1.314); `systemMessage` and `continue` are discarded on `PreCompact` and `PostCompact`.
+- 2.1.323: `PreCompact`, `PostCompact` and post-compaction `SessionStart` hooks now receive `agent_id` and `agent_type` when a subagent compacts.
+- Skill-frontmatter hooks (v2.1.304+): the skills of one source (project, personal folder, or each plugin) can register at most 1,024 hooks and 16,384 matcher characters per session.
+- 2.1.323: if a tool's permission check errors after a `PreToolUse` hook returned `allow`, Claude Code decides the call as if no hook had answered; if it fails on input that a `PermissionRequest` hook rewrote, Claude Code asks again, or refuses the call where nobody can answer. Also 2.1.323 and 2.1.325: with `--trust-workspace false` or an untrusted VS Code folder, the repository's settings can no longer disable your hooks; in cloud scheduled tasks a `PostToolUse` hook from your own settings can't replace the plan in `ExitPlanMode`'s result (2.1.321: nor the `AskUserQuestion` answer in Cowork cloud sessions).
+- 2.1.323: `claude -p` and SDK sessions emit a progress heartbeat every 30 seconds while hooks run long.
+- Source: https://code.claude.com/docs/en/hooks.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.304, 2.1.312, 2.1.314, 2.1.317, 2.1.319, 2.1.321, 2.1.323, 2.1.325, retrieved 2026-11-14)
 - This is a Claude Code CLI feature. For the Agent SDK equivalent, see anthropic-agent-sdk. For the Claude API (Messages API) Agent Skills / tool use, see anthropic-api-tools-mcp.
 
 ## Related

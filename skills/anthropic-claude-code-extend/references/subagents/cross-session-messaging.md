@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/cross-session-messaging / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/cross-session-messaging / last verified: 2026-11-14 -->
 
 # Message your other Claude Code sessions
 
@@ -56,6 +56,10 @@ Other settings and environment variables:
 - Containers and hosts can't reach each other; WSL 2 and native Windows sessions can't reach each other. Cross-machine / cloud sessions need Remote Control with a claude.ai sign-in (not API key, Bedrock, Claude Platform on AWS, Google Cloud's Agent Platform, or Microsoft Foundry). Same-machine messaging on those providers, or with feature-flag fetching off, requires v2.1.248+.
 - While connected to Remote Control, `/list-agents` withholds working directories and unattributable session names.
 - Turning off: `crossSessionInbound: "refuse"` to stop receiving; permission deny rules `SendMessage` and `ListAgents` to stop sending and listing. Denying `SendMessage` also removes messaging to subagents and agent-team teammates.
+- A received message shows as a dim one-line preview (`› Message from @api-worker: ... (ctrl+o to expand)`); `Ctrl+O` opens the transcript viewer with the full text, and a message Claude hasn't received yet is listed under `Waiting to be delivered` at the end (v2.1.309+). `--verbose` shows full text. When the default holds a message in an interactive terminal an approval dialog opens (Approve delivers one message; Deny or `dialogExpiry` drops it); `-p`, VS Code and Desktop sessions can't show it and keep the message until the same deadline. Claude Code rejects the `/config crossSessionInbound=value` shorthand.
+- A cloud session (including on a self-hosted runner) can't use `SendMessage` to answer a message from another machine; read its response in the transcript at claude.ai/code. A cross-machine message sent while this session isn't connected to Remote Control arrives without a reply address. Typeahead lists only live local sessions; ask Claude to list cloud or other-machine sessions first, then mention them.
+- Socket: `/tmp/cc-socks-<uid>` is used when the default directory isn't acceptable, and a session with no usable directory runs without an inbox (`/status` shows `unavailable`). A connection must send a complete line within 30 seconds. Own-child messages (hook or Bash) are verified by process evidence on Linux, only while the poster runs on macOS, or by the `CLAUDE_CODE_MESSAGING_TOKEN` auth line (the only way on native Windows). Sandboxed commands need `sandbox.network.allowUnixSockets` / `allowAllUnixSockets` to reach it.
+- Source: https://code.claude.com/docs/en/cross-session-messaging.md (retrieved 2026-11-14)
 - Different from subagent / agent-team messaging, which stays within a single session or team; to move a whole conversation, resume the session instead.
 
 Managed settings example turning both sides off:

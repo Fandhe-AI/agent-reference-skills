@@ -16,6 +16,8 @@ slash commands・output styles、subagents / agent teams / agent view / workflow
 scheduled tasks、hooks、plugins / plugin marketplace、MCP 設定、channels（`--channels` /
 `claude/channel` push events）、built-in tools（advisor / ultrareview 含む）をカバーする。
 
+対象: Claude Code 2.1.325（2026-11-13）まで。ページ先頭の `last verified` が各ページの取得日（2026-11-14 または 2026-10-17 / 2026-08-07）。
+
 CLI 本体（インストール・設定・セッション）は `anthropic-claude-code`、Agent SDK の Skills / MCP /
 subagents / hooks は `anthropic-agent-sdk`、Claude API 側の Agent Skills / Skills API / MCP connector は
 `anthropic-api-tools-mcp` を参照（本スキルは Claude Code CLI から使う拡張機能の設定・仕様を担当）。

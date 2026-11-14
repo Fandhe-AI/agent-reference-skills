@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/create-marketplace.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/create-marketplace.md / last verified: 2026-11-14 -->
 
 # Create a marketplace
 
@@ -61,6 +61,10 @@ Other source types: `url` (a git repository by URL, any host), `archive` (a zip 
 - Problems that surface only when you add or install: exact official marketplace names such as `claude-plugins-official` pass validation but adding a marketplace with one is refused (`The name '<name>' is reserved for official Anthropic marketplaces`); remote sources (`github`, `git-subdir`, others) are fetched at install time, so a wrong `repo` or `path` appears then.
 - Testing an edit: a marketplace added from a local directory with a relative-path `source` is read directly from `my-marketplace/plugins/`; edits take effect at the next session start or `/reload-plugins`, with no `version` change. People installing from your hosted marketplace get a cached copy (see host-marketplace.md for how they receive a new version).
 - Start over with `claude plugin marketplace remove my-marketplace` (removes the marketplace and uninstalls its plugins).
+- Keep unused submodules out of the clone (v2.1.295+): adding the marketplace clones the repository and fetches only the git submodules that hold plugin files. A plugin in a subdirectory gets the submodules inside its directory and a submodule that contains it, so put a needed submodule inside the plugin's directory and keep unneeded ones outside. A plugin at the marketplace root gets every submodule as soon as one of its files refers to a path inside any of them; with a large build-only submodule, move the plugin into a subdirectory. If a root plugin runs a file from a submodule, write the path out in its hook or server configuration, such as `${CLAUDE_PLUGIN_ROOT}/vendor/tool/run.sh`, because Claude Code can't see a path a script builds at run time.
+- Changelog 2.1.323: marketplace and plugin installs fail when a git submodule isn't on the commit its repository records.
+- Source: https://code.claude.com/docs/en/plugins/create-marketplace.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.323, retrieved 2026-11-14)
 - Hosting: push the directory to a git host; teammates run `claude plugin marketplace add <owner>/<repo>` (or the repository URL) and install by name. An administrator can require the marketplace on every machine (see plugins-org.md). Sharing one plugin with a few people needs no marketplace (see publish-plugin.md).
 
 ## Related

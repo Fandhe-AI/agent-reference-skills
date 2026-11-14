@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/marketplace-reference.md (example: https://code.claude.com/docs/en/plugins/create-marketplace.md) / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/marketplace-reference.md (example: https://code.claude.com/docs/en/plugins/create-marketplace.md) / last verified: 2026-11-14 -->
 
 # Plugin marketplace manifest (marketplace.json)
 
@@ -48,4 +48,8 @@ An `archive` plugin source (Claude Code v2.1.224+):
 - Plugin `source` types: relative path (starts with `./`, resolved from marketplace root), `github`, `url`, `git-subdir`, `npm`, `archive` (`url`, `sha256`; zip over HTTPS; v2.1.224+), `command` (`command`, `timeout`, `mode`; prints the plugin directory path; v2.1.229+).
 - Marketplace-level fields: `renames` (map from a former plugin name to its current name, or `null` for a removed plugin), `forceRemoveDeletedPlugins` (uninstall plugins removed from `plugins`), `metadata.pluginRoot` (directory that bare plugin source names such as `"formatter"` resolve under; v2.1.239+), `allowCrossMarketplaceDependenciesOn` (marketplace names whose plugins may be installed as dependencies).
 - `strict` only matters when the fetched plugin has its own `plugin.json`: with no `plugin.json` the entry is the manifest regardless of `strict`; with `plugin.json` present it is the manifest, and `strict: true` (default) appends the entry's component fields (`commands`, `agents`, `skills`, `hooks`, `outputStyles`, `themes`; `hooks` matchers replace the manifest's per event) while `strict: false` rejects an entry that declares any component field as conflicting manifests (the plugin fails to load). Validate with `claude plugin validate .` (`--strict` treats warnings as errors).
+- Changelog 2.1.325: a marketplace `ref` accepts the full ID of any commit on a branch or tag; clients before 2.1.325 can't clone such a pin, so a marketplace pinned this way stops loading there. On v2.1.295 and later, cloning a marketplace fetches only the git submodules that hold plugin files (see marketplace-reference.md).
+- Changelog 2.1.323: a malformed entry in `renames` no longer makes Claude Code ignore the other renames; installs fail when a git submodule isn't on the commit its repository records.
+- Source: https://code.claude.com/docs/en/plugins/marketplace-reference.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.323, 2.1.325, retrieved 2026-11-14)
 - This is a Claude Code CLI feature; not part of the Claude API or Agent SDK.

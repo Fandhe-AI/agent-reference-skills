@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/mods/troubleshoot / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/mods/troubleshoot / last verified: 2026-11-14 -->
 
 # Troubleshoot a mod
 
@@ -81,7 +81,11 @@ Symptom to cause:
 | `$.ui.open` runs and no pane appears | Not user-initiated and terminal narrower than required width; open from a command/button or check `isPlaced` |
 | Toast missing | See Notes |
 | Hotkeys do nothing | Pane lacks keyboard focus (Ctrl+X then Tab, click, or `focus: true`), or VS Code extension (no hotkeys; click / Enter) |
-| Works in terminal, not Desktop/VS Code | Site/element not drawn there, extension older than 2.1.299, or session does not fetch feature flags (Bedrock, Google Cloud's Agent Platform, Microsoft Foundry, Claude apps gateway) |
+| Works in terminal, not Desktop/VS Code | Site/element not drawn there, extension older than 2.1.299, or the extension is older than 2.1.304 and the session does not fetch feature flags (Bedrock, Google Cloud's Agent Platform, Microsoft Foundry, Claude apps gateway) |
+| Your band row is missing while another mod's shows | Your tree does not validate (`ui.render hook skipped`, `does not validate`), the rows together exceed the band limits (`past the limits of the band`), or another mod hides your row. Before v2.1.323 all mods shared one band drawing, so an earlier mod's tree without `await next(e)` among its `Box` children replaced yours |
+| Band shows `plugin panel hidden` | The band is collapsed (Ctrl+X then Ctrl+A, or clicking `[-]` in fullscreen rendering); no hotkey or `action` binding presses a button in it until expanded |
+| Toast `Stopped: type a message to continue; a mod cannot resume work after Stop` | The user stopped the turn and a mod tried to start work on its own; nothing to fix, work can start again after the next message |
+| `settings.read` key has no effect | Permission rules and `env` returned on Claude Code's own read are not applied (use a settings file / `$.env.set`); otherwise search the debug log for `settings.read hook skipped`, `settings.read bypassed by cc-plugin-sec-default`, `the answer for <key> is no value the key can hold`, `the merge never settles for <key>`, `answered settings.read without next()`, or `refused to the engine` |
 | Edits do not take effect | Editing an installed plugin; develop with `--plugin-dir` |
 | Value resets on reload | Module variables reinitialize; use `$.state` or `$.store` |
 | Value resets after `/clear` `/resume` `/branch` | Reload it in a `classic.SessionStart` hook |
@@ -93,6 +97,10 @@ Symptom to cause:
 - A drawing that fails validation appears as `a hook returned a tree that does not validate` in the debug log.
 - Write your own debug lines with `$.ui.log('message', { to: 'debug' })`.
 - `$.ui.open` with `focus: false` throws (`ui.open: focus is true or left out`) and can lead to a skipped hook.
+- Before v2.1.307, a `ui.render (<site>) refused:` line reported any tree that did not validate (for `Pane` and `AbovePrompt` it ended `; the engine drew its own`); from v2.1.307 it means the tree exceeds a size limit, and a tree that fails validation reports `ui.render hook skipped: returned the wrong shape (...)`.
+- `settings.read: refused to the engine (engine: $.settings.read: <reason>)` means a hook refused Claude Code's own settings read with `{ deny: reason }`; Claude Code drops every hook's value and the settings' own values stand. Return `{ value }` when `next.origin` shows Claude Code's own read, or turn off other mods one at a time with a new `--debug-file` each time to find the refusing one.
+- In auto mode a denied call can give the reason `a hook changed this call's input after auto mode reviewed it` in some interactive terminal and VS Code sessions; the repeated call carries the mod's first change, a `tool.call` hook still runs on it, and a further change is dropped.
+- Source: https://code.claude.com/docs/en/plugins/mods/troubleshoot.md (retrieved 2026-11-14)
 
 ## Related
 

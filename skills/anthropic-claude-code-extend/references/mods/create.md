@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/mods/create / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/mods/create / last verified: 2026-11-14 -->
 
 # Create a mod
 
@@ -89,15 +89,25 @@ Rules for static analysis (`claude plugin validate`):
 
 ## Notes
 
-- Ask Claude for a mod: it uses the built-in `plugin-authoring` skill (or run `/plugin-authoring`). It writes to `~/.claude/dev-mods/<session-id>/<mod>/`. Claude Code asks to enable hot reloading for the session; choose **Enable for this session** to load and reload mods at the end of each turn that changes them.
-- In `default` and `acceptEdits` permission modes Claude Code asks before each file creation because `~/.claude` is a protected path; a `--plugin-dir` directory is also a protected path.
+- Ask Claude for a mod: it uses the built-in `plugin-authoring` skill (or run `/plugin-authoring`). It writes to `~/.claude/dev-mods/<session-id>/<mod>/`. When Claude saves the first file, Claude Code asks whether to enable hot reloading for the session. Answer **Turn them on** to load the mods in the session's mods folder when the turn ends and reload them at the end of each turn that changes them (the answer lasts for the session, including after a resume), or **Not now** to load nothing until the session next starts (delete the mod's directory to keep it from ever loading).
+- In `default` and `acceptEdits` permission modes Claude Code asks before each file creation because the mods folder is a protected path; a `--plugin-dir` directory is also a protected path.
 - A mod Claude wrote loads only in the session that made it, and its folder is deleted after `cleanupPeriodDays`. Copy it elsewhere and use `claude --plugin-dir` or a marketplace to keep it.
-- A mod Claude writes does not load when nobody can approve (`claude -p`, `dontAsk` mode), the workspace is untrusted, or mods are disabled (`--safe-mode`, `--bare`, `disableAllHooks`, managed settings).
+- In `auto` and `bypassPermissions` modes Claude Code can enable hot reloading without asking, and the mods load when the turn ends; mods already in a resumed session's mods folder also load without asking (interactive or `claude -p`). To be asked first, start in `default` or `acceptEdits` mode.
+- A mod Claude writes does not load when nobody can approve (the session is in `dontAsk` mode, or it is the `claude -p` run that writes the mod in `default` or `acceptEdits` mode), the workspace is untrusted in an interactive session, or mods are disabled (`--safe-mode`, `--bare`, `disableAllHooks`, managed settings).
 - Each reload re-runs `register`, so module-level variables reset. Keep values across reloads with `$.state` or `$.store`.
 - `claude plugin validate` prints `hooks:` / `calls:` lines (plus `env reads:`, `env writes:`, `state reads:`, `state writes:`, and `gating hook without .catch: <event>` when relevant). A misspelled event reports an error such as `"tool.calls" is not an event`.
 - Types for your build override any documentation page when they disagree; events and methods can change between releases.
 - Claude Code caches an installed plugin by version, so increment the version to push edits to an installed copy. `claude plugin validate` fails a `name` that looks like one of Anthropic's own (for example starting with `claude-`).
 - Tests: `claude plugin test` runs `*.test.ts` files with `claude-code/testing` (see the Test page).
+- If your mod has no `tsconfig.json`, Claude Code adds one at the mod's root that extends the generated one, so an editor and `tsc -p ./first-mod` type-check it. `claude plugin validate` fails `$` passed to a function declared inside `register` or the hook; the `read` and `update` state helpers are the imports that can take it. A function you pass `$` to is shown as `$.store.get (via loadNotes)` in `calls:`.
+
+### Changes from the changelog
+
+- 2.1.323: the "Not now" choice when Claude Code asks to turn on the mods it writes in a session now says when they load. `claude plugin validate` reports the `$` nouns a mod's `engine.create` hook adds, withholds, or replaces.
+- 2.1.321: mods Claude writes turn on without asking in auto and bypass modes, even with managed `allowUnsandboxedCommands: false` or `allowManagedDomainsOnly`, and don't load in `dontAsk` mode.
+- 2.1.304: the `claude plugin validate` notes that predicted where a mod's hooks would run were removed.
+- Source: https://code.claude.com/docs/en/plugins/mods/create.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.304, 2.1.321, 2.1.323, retrieved 2026-11-14)
 
 ## Related
 

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/routines / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/routines / last verified: 2026-11-14 -->
 
 # Routines
 
@@ -44,7 +44,8 @@ curl -X POST https://api.anthropic.com/v1/claude_code/routines/$ROUTINE_ID/fire 
 
 ## Notes
 
-- Routines run autonomously as full cloud sessions: no permission-mode picker, no approval prompts during a run.
+- Naming: the official page now titles this feature "scheduled tasks" (cloud scheduled task, formerly a routine). The earlier name remains in some app labels (**Routines**, **New routine**), `claude.ai/code/routines`, the `/routines` alias of `/schedule`, the `/fire` endpoint, its beta header, the `<routine-fire-payload>` tag and the org-settings toggle **Scheduled tasks (Was Routines)** / **Routines**. Available on Pro, Max, Ultra, Team and Enterprise.
+- Routines run autonomously as full cloud sessions with no permission-mode picker. Each run's new session starts in auto mode unless auto mode is unavailable (then it keeps the mode it launched in); a run still stops and waits for an answer on actions that prompt even in auto mode (e.g. an ask rule) or after repeated blocks hit auto mode's thresholds, and the prompt is answered from the run's session on the detail page. A run that continues a project thread keeps the thread's permission mode.
 - The routine's saved prompt is delivered as an authorized assigned task, not untrusted input; `text` sent via API `/fire` or **Run now** arrives wrapped in a `<routine-fire-payload>` block labeled untrusted, and the prompt must explicitly reference it to act on it.
 - Belong to the individual claude.ai account (not shared with teammates); actions via GitHub/connectors appear as that user.
 - Compare with `/loop` (session-scoped, local) and Desktop scheduled tasks (local, file access) — see scheduled-tasks.md.
@@ -65,7 +66,17 @@ curl -X POST https://api.anthropic.com/v1/claude_code/routines/$ROUTINE_ID/fire 
 - If the GitHub connection is missing or expired, the routine skips runs for up to 72 hours and resumes once reconnected; after 72 hours it turns off and must be turned back on.
 - Artifacts: a schedule or Run now run can publish a new artifact without asking (visible only to you until shared); it asks first if the publish declares runtime capabilities (connector calls, file downloads). Republishing an existing artifact without asking requires the conditions listed on the source page.
 - The `anthropic-beta: experimental-cc-routine-2026-04-01` header is no longer required by the `/fire` endpoint (see routines-fire.md).
-- Team/Enterprise Owners can disable routines org-wide from admin settings.
+- Team/Enterprise Owners can disable routines org-wide from admin settings (**Organization settings > Capabilities > Remote sessions**); Enterprise orgs with custom roles also need a role with the scheduled tasks permission under **Remote sessions**.
+- GitHub trigger supported events: Pull request, Release and Issue (pick an action such as `pull_request.opened` or all actions). The `matches regex` filter operator tests the whole field value (use `.*hotfix.*` for a substring; `contains` for plain substring). Claude doesn't reuse sessions across events. `/web-setup` grants clone access but doesn't install the Claude GitHub App or enable webhook delivery.
+- Schedule trigger: a run scheduled exactly on the hour can start several minutes late (pick e.g. 9:07); presets use your local time zone; a raw five-field cron expression is in UTC unless it starts with `CRON_TZ=`; custom cron intervals more often than hourly are rejected; a one-off run turns itself off and shows **Completed** (re-arm with **One-time** / **Once** in the edit dialog).
+- History outcomes are **Succeeded**, **Failed**, **Cancelled** (archiving the session of a succeeded run changes it to Cancelled); they describe how the session ended, not whether the prompt's work was completed. "The last run ..." warnings under History (environment not found, org session limit, blocked, repository or branch unavailable, usage limit) clear when a later run starts.
+- All of your connected claude.ai connectors are included by default; local `claude mcp add` servers are not connectors (add them at claude.ai/customize/connectors or, for single-repository tasks outside projects, declare them in a committed `.mcp.json`). The Default environment uses Limited network access with Allow package managers.
+- `/schedule` is hidden (`Unknown command`) with a Console API key, profile or federation credential, a cloud provider login, inside a cloud session, with cloud sessions disabled by policy, or when an Owner turned scheduled tasks off; with a claude.ai subscription login it requires none of these. Manage tasks at claude.ai/code/routines instead.
+- 2.1.325: Claude Code on the web, cloud scheduled tasks and Cowork cloud sessions start despite `sandbox.failIfUnavailable` (the hosted container has no command sandbox).
+- 2.1.323: in cloud scheduled tasks a `PostToolUse` hook from your own settings can no longer replace the plan in `ExitPlanMode`'s result.
+- 2.1.317: `/schedule` warns when a new cloud scheduled task gets connectors you did not ask for, with how to remove them.
+- Source: https://code.claude.com/docs/en/routines.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.317, 2.1.323, 2.1.325, retrieved 2026-11-14)
 
 ## Related
 

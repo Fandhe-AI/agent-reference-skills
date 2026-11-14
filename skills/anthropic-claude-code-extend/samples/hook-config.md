@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/hooks-guide.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/hooks-guide.md / last verified: 2026-11-14 -->
 
 # Block edits to protected files with a PreToolUse hook
 
@@ -50,4 +50,7 @@ exit 0
 - Exit codes: `0` = no objection, normal permission flow applies; `2` = block, stderr becomes Claude's feedback; any other code = action proceeds but shows a non-blocking hook-error notice.
 - `PreToolUse` hooks fire before any permission-mode check in every mode, including `bypassPermissions` — a `deny` from a hook cannot be bypassed by the user's permission mode.
 - For structured JSON control (`allow`/`deny`/`ask`) instead of exit codes, print `{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": "..."}}` to stdout and exit 0; don't mix exit 2 with JSON output.
+- Claude can still change the protected files with shell commands. To block some of those, add an `Edit` deny rule per path under `permissions.deny` in `.claude/settings.json`, such as `Edit(/.env)` for the project root's `.env`; to limit which files commands can write to, use sandboxing.
+- To also fail closed when the script is missing or crashes, add `"onFailure": "block"` to the hook (v2.1.295+); without it a hook that fails to start is a non-blocking error and the edit goes ahead.
+- Source: https://code.claude.com/docs/en/hooks-guide (retrieved 2026-11-14)
 - This is a Claude Code CLI feature. For the Agent SDK, see anthropic-agent-sdk. For the Claude API side, see anthropic-api-tools-mcp.

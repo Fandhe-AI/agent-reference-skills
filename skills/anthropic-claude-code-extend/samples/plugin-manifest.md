@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/manifest-reference.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/manifest-reference.md / last verified: 2026-11-14 -->
 
 # Plugin manifest (plugin.json)
 
@@ -62,7 +62,10 @@ Complete `.claude-plugin/plugin.json` example declaring a plugin's identity, com
 
 - The manifest is optional; only `name` is required when one is present. Validate with `claude plugin validate ./my-plugin` (`--strict` turns warnings into failures).
 - `agents` accepts agent `.md` files only; directories are not accepted. `commands` accepts flat `.md` files, directories, or an object map of name to `source` or `content`. `commands`, `agents`, `outputStyles`, `workflows`, `experimental.themes` replace their default folder scan; `skills` adds to the default `skills/` scan.
-- Other keys not shown above: `workflows` (workflow `.js` files or directories), `experimental.evals` (eval directory), `channels` (message channels bound to MCP servers), and `settings` (only `agent` and `subagentStatusLine` take effect; other keys are dropped at load).
+- Other keys not shown above: `workflows` (workflow `.js` files or directories), `experimental.evals` (eval directory), `channels` (message channels bound to MCP servers), and `settings` (through 2.1.322 only `agent` and `subagentStatusLine` take effect; other keys are dropped at load).
 - An unknown top-level key is stripped with a `claude plugin validate` warning and the plugin loads. An unknown key inside a strict object (`userConfig` option, `channels` entry, `lspServers` config, `monitors` entry) is an error and the plugin does not load.
 - `${CLAUDE_PLUGIN_ROOT}` resolves to the plugin's install directory. To distribute the plugin, register it in a marketplace catalog; see `plugin-marketplace.md` in this directory.
+- Changelog 2.1.323: `engines["claude-code"]` in `plugin.json` states the supported Claude Code version range (a plugin outside it is not installed, updated or loaded); the plugin `agent` setting is deprecated (it still applies and warns at startup, in `claude plugin list` and in `claude plugin validate`); `claude plugin validate` also type-checks a plugin's TypeScript hooks module (warnings; `--strict` fails on them). Changelog 2.1.325: `.mcpb` / `.dxt` bundles unpack under the plugins directory, not `.mcpb-cache` in the plugin folder. The official manifest page of 2026-11-14 does not list `engines` or `settings`.
+- Source: https://code.claude.com/docs/en/plugins/manifest-reference.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.323, 2.1.325, retrieved 2026-11-14)
 - This is a Claude Code CLI feature. For the Agent SDK, see anthropic-agent-sdk. For the Claude API side, see anthropic-api-tools-mcp.

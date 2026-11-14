@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/mcp-quickstart.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/mcp-quickstart.md / last verified: 2026-11-14 -->
 
 # Connect to MCP servers
 
@@ -52,6 +52,10 @@ claude mcp remove claude-code-docs
 
 - This is the Claude Code **CLI** connection setup. For the Agent SDK's own MCP configuration surface, see anthropic-agent-sdk. For the Claude API's MCP connector / MCP tunnels, see anthropic-api-tools-mcp.
 - The first time Claude Code sees a project-scoped `.mcp.json` server, it prompts for approval before connecting (protects against a cloned repo launching processes without consent).
+- 2.1.323: project (`.mcp.json`) server approvals match the server's exact name; an approval entry written in another spelling asks again. In an untrusted folder, `enableAllProjectMcpServers` / `enabledMcpjsonServers` committed to the project's `.claude/settings.json` are ignored, so the server stays `Pending approval` until you trust the workspace by running `claude` in it.
+- Version notes: before v2.1.299 some connections to HTTP servers that were up timed out at startup regardless of `MCP_TIMEOUT`; before v2.1.302 `/mcp` showed `tools fetch failed` for a server on protocol revision 2026-07-28 that left `resultType`, `ttlMs`, or `cacheScope` out of its replies.
+- Source: https://code.claude.com/docs/en/mcp-quickstart (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.323, retrieved 2026-11-14)
 - Sign-in-required servers (Sentry, Linear, Notion, etc.) show `! Needs authentication` after `claude mcp add`; complete OAuth via `/mcp` inside a session.
 - Every Claude Code surface can connect to MCP servers: desktop app (Connectors UI), Claude Desktop chat app (`claude mcp add-from-claude-desktop` on macOS/WSL), VS Code, Claude Code on the web (reads `.mcp.json`), and claude.ai connectors.
 

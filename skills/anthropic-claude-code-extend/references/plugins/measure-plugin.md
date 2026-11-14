@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/measure.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/measure.md / last verified: 2026-11-14 -->
 
 # Measure plugin cost and usage
 
@@ -54,6 +54,10 @@ Projected token cost
 - **Not used recently** never applies to `--plugin-dir` / skills-directory plugins, managed-settings or seed-directory plugins, plugins containing a theme, output style, monitor, or workflow; an LSP plugin whose server is active counts as used. It is hidden when `strictKnownMarketplaces` is set.
 - Non-official plugin names are redacted in telemetry by default (`third-party`, or omitted; `skill.name` is `custom_skill`); set `OTEL_LOG_TOOL_DETAILS=1` for real names. `plugin_id_hash` still identifies each plugin on `plugin_loaded`.
 - Enterprise plan Analytics API: `GET /v1/organizations/analytics/plugins` returns per-plugin per-day install and invocation counts across Claude Code and Cowork; requires an API key with the `read:analytics` scope.
+
+- Changelog 2.1.323: OpenTelemetry `agent.name` shows `custom` (not a user-defined subagent's name) when an official plugin's skill launched the subagent. Changelog 2.1.312: OpenTelemetry `mcp_server.name` reports the real name of fixed-URL remote MCP servers declared by plugins from the official Anthropic marketplace, instead of `custom`.
+- Source: https://code.claude.com/docs/en/plugins/measure.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.312, 2.1.323, retrieved 2026-11-14)
 
 ## Related
 

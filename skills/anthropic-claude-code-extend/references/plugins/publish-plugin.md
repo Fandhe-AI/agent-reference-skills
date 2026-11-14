@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/publish.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/publish.md / last verified: 2026-11-14 -->
 
 # Publish and distribute a plugin
 
@@ -52,6 +52,10 @@ claude plugin tag --push        # creates {name}--v{version}
 - Never rename a published plugin: existing installs lose it. If unavoidable use the marketplace `renames` map; change `displayName` for a different label.
 - Tag releases only when other plugins declare a version range on yours; tags are `{name}--v{version}`.
 - `dependencies` in `plugin.json`: bare names or objects with a semver `version` range; the dependency is installed and enabled too.
+- `claude plugin validate` prints an `Advice` block (v2.1.295+) when a plugin's README has no line that installs the plugin from a marketplace, and gives the line to add (for example `/plugin install deploy-helper --marketplace acme/tools`); advice never changes the verdict or exit code. Add `README.md` at the plugin root and set `description`, `author`, `homepage` (must parse as a URL), and `repository` in `plugin.json` before submitting.
+- Changelog 2.1.323: `plugin.json` accepts `engines["claude-code"]`, so a plugin outside its stated Claude Code version range is not installed, updated or loaded, and install and update pick the newest version that fits. Changelog 2.1.325: marketplace `ref` accepts the full ID of any commit; clients before 2.1.325 can't clone such a pin.
+- Source: https://code.claude.com/docs/en/plugins/publish.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.323, 2.1.325, retrieved 2026-11-14)
 
 ## Related
 

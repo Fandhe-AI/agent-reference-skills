@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/mods/reference / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/mods/reference / last verified: 2026-11-14 -->
 
 # Mods reference
 
@@ -69,6 +69,7 @@ Hooks on `turn.step` and `process.spawn` are async generators; others are async 
 | Commands | `command.describe` | Once per command for the list | `{ description, argumentHint, isHidden }` |
 | Commands | `config.set` | `/config` row about to change | `next({ ...e, value })`, `{ deny: reason }` |
 | Commands | `config.describe` | Once per `/config` row | `{ label, description, isHidden }` |
+| Commands | `settings.read` | A mod calls `$.settings.read`, or Claude Code builds the session's merged settings (own read and `e.layers` need v2.1.304+) | `next(e)`, `{ value }`, `{ deny: reason }` |
 | Turns | `turn.start` | Turn begins | `next(e)` |
 | Turns | `turn.step` | One request about to go to the model | `yield* next(e)`, `next({ ...e, model })`, `next({ ...e, effort })` |
 | Turns | `turn.complete` | Turn ended | `next(e)`, `{ text }` |
@@ -94,21 +95,22 @@ Hooks on `turn.step` and `process.spawn` are async generators; others are async 
 | Settings hooks | `classic.<Event>` (e.g. `classic.Stop`) | The matching settings hook event; `e` is the hook's stdin JSON | - |
 | API calls | e.g. `fs.read`, `model.complete`, `ui.open` | Every mods API method is also an event | `next(e)`, `{ deny: reason }`, `{ value }` |
 
-Version-gated fields: `tool.check` `e.agentId` / `e.ceiling` (v2.1.290+); `skill.prompt` `e.source`, `e.pluginName`, `e.path`, `e.frontmatter`, `e.frontmatterProblem` (v2.1.299+); `turn.step` result `serverToolUses` (v2.1.290+).
+Version-gated fields: `tool.check` `e.agentId` / `e.ceiling` (v2.1.290+) and `e.isReadOnly` (v2.1.304+; `true` when the tool reports the call read-only, otherwise absent, not `false`); `skill.prompt` `e.source`, `e.pluginName`, `e.path`, `e.frontmatter`, `e.frontmatterProblem` (v2.1.299+); `turn.step` result `serverToolUses` (v2.1.290+).
 
 ### Mods API methods
 
 | Namespace | Methods |
 |-----------|---------|
 | `$.plugin` | `name`, `root` |
-| `$.ui` | `resolve`, `invalidate`, `open`, `close`, `panes`, `focus`, `scroll`, `toast`, `status`, `log`, `notice`, `ask`, `copy`, `selection`, `blit` |
+| `$.ui` | `resolve`, `invalidate`, `open`, `close`, `panes`, `place`, `focus`, `scroll`, `toast`, `notify`, `status`, `log`, `notice`, `ask`, `copy`, `selection`, `blit`, `view` (`view` needs v2.1.300+, `place` v2.1.314+) |
+| `$.theme` | `set`, `clear`: set / remove a backdrop for the Desktop or mobile app to draw (v2.1.319+) |
 | `$.command` | `register`, `run`, `list` |
-| `$.tool` | `register`, `call`, `check`, `list` |
+| `$.tool` | `register`, `call`, `check`, `list`; a `call` that needs a person's approval resolves `{ deny: "<tool> wasn't run: this call needs a person's approval, and a mod's own call can't ask for it." }` |
 | `$.agent` | `register`, `spawn`, `list` (status `pending`, `running`, `waiting`, `idle`, `completed`, `failed`, `killed`; `idle` / `waiting` need v2.1.289+) |
 | `$.model` | `complete`, `fork`, `classify` |
 | `$.prompt` | `submit`, `read`, `fill`, `suggest`, `compose` (`submit({ text, asUser: true })` sends as the user's own words) |
 | `$.turn` | `abort` |
-| `$.session` | `messages`, `cwd`, `root`, `model`, `turns`, `id`, `repo`, `surfaces`, `usage`, `version`, `compact`, `send`, `append`, `authorize` |
+| `$.session` | `messages`, `cwd`, `root`, `model`, `turns`, `id`, `repo`, `surfaces`, `usage`, `version`, `compact`, `send`, `append`, `authorize`; `usage()` returns `{ startedAt, context, rateLimits, cost }` (`context`: `tokens`, `window`, `percent`; `rateLimits`: list of `{ kind, percentUsed, resetsAt }`) |
 | `$.config` | `list`, `set` |
 | `$.settings` | `read` |
 | `$.env` | `get`, `set` |
@@ -118,7 +120,7 @@ Version-gated fields: `tool.check` `e.agentId` / `e.ceiling` (v2.1.290+); `skill
 | `$.clock` | `now`, `sleep`, `after`, `every` |
 | `$.http` | `fetch` |
 | `$.process` | `run`, `spawn` |
-| `$.mcp` | `call`, `connect` |
+| `$.mcp` | `call`, `connect` (`connect(server)` connects an MCP server your own plugin's manifest lists) |
 | `$.audio` | `play`, `speak` |
 | `$.telemetry` | `log`, `mark` |
 
@@ -127,7 +129,10 @@ Version-gated fields: `tool.check` `e.agentId` / `e.ceiling` (v2.1.290+); `skill
 | Site | `e.props` | Rendered on |
 |------|-----------|-------------|
 | `Pane` | `title`, `isFocused`, `bodyColumns`, `placement`, `scroll`, `view` | Terminal, Desktop, VS Code |
-| `AbovePrompt` | `hasSurvey`, `isWorking`, `maxRows`, `bodyColumns`, `scroll`, `view` | Terminal, Desktop |
+| `AbovePrompt` | `hasSurvey`, `isCollapsed`, `isWorking`, `maxRows`, `bodyColumns`, `scroll`, `view` | Terminal, Desktop |
+| `AbovePromptList` | `rows` (one `{ plugin, tree }` per mod's row) plus the `AbovePrompt` props (v2.1.323+) | Terminal, Desktop |
+| `Placed` | `id`, `plugin`, `onScreen`; `e.requestId` is the id `$.ui.place` returned | Terminal |
+| `Backdrop` | `scene`, `plugin`, `glass`, `overrideColorScheme` (before v2.1.323: `id` and `colorScheme`) | Desktop, mobile |
 | `UserMessage` | `text`, `origin`, `isExpanded` | Terminal, Desktop, VS Code |
 | `AssistantMessage` | Reply text | Terminal, Desktop, VS Code |
 | `ToolUse`, `ToolResult`, `ToolGroup` | Tool name, input, result | Terminal, Desktop, VS Code |
@@ -191,7 +196,7 @@ Version-gated fields: `tool.check` `e.agentId` / `e.ceiling` (v2.1.290+); `skill
 | Name | Where | What it does |
 |------|-------|--------------|
 | `CLAUDE_CODE_PLUGIN_DIRS` | Environment or `env` in `~/.claude/settings.json` | Plugin directories loaded like `--plugin-dir` (absolute paths separated by `:`, `;` on Windows) |
-| `CLAUDE_CODE_PLUGIN_DIR_WATCH` | Environment | `1` makes a long-running non-interactive session reload `--plugin-dir` mods on save |
+| `CLAUDE_CODE_PLUGIN_DIR_WATCH` | Environment | Whether mods reload on save; see the environment variables reference for the defaults and values. Since 2.1.321 headless sessions reload mods in `.claude/skills` when their files change; `CLAUDE_CODE_PLUGIN_DIR_WATCH=0` turns this off |
 | `prependPlugins`, `appendPlugins` | Managed settings (user settings only on a machine with no managed settings, not signed in with Team/Enterprise) | Plugin ids (e.g. `acme-guard@acme-tools`) run before / after user-installed mods |
 | `allowManagedModsOnly` | Managed settings, option on the built-in guard | Only the organization's mods and built-in mods run hooks |
 | `allowModsToOverrideDenyRules` | Managed settings, option on the built-in guard | Lets a user's mod approve a call a `deny` rule refuses |
@@ -214,8 +219,26 @@ Version-gated fields: `tool.check` `e.agentId` / `e.ceiling` (v2.1.290+); `skill
 
 - The complete reference is the TypeScript declarations (`mods/types/claude-code.d.ts` in the `anthropics/claude-code` repo); the copy Claude Code writes into `.claude-plugin/types/` for your version wins over any page.
 - `sec-default@builtin` (shown as `cc-plugin-sec-default`) loads ahead of every user-installed mod on a machine with managed settings or for a Team/Enterprise sign-in. If managed `prependPlugins` is set, the guard loads only when that list names it.
-- Rendering in the VS Code extension needs extension 2.1.299+ and a session that fetches feature flags. The extension ignores `Box` `position` / `hover`, `Button` `hotkey` / `plain` / `autoFocus` / `action`, `Code` `language` / `path` / `startLine` / `format` / `wrap`, and `Input` / `Select` `autoFocus`.
+- Rendering in the VS Code extension needs extension 2.1.299+; a session that does not fetch feature flags needs 2.1.304+. The extension ignores `Box` `position` / `hover`, `Button` `hotkey` / `plain` / `autoFocus` / `action`, `Code` `language` / `path` / `startLine` / `format` / `wrap`, and `Input` / `Select` `autoFocus`.
 - `autoFocus` (and `focus`, `closeOnEscape`, `holdToasts`) accept only `true`; omit instead of passing `false`.
+- `next.error` in the 2026-11-14 twin lists `kind` as `throw` or `timeout` only; the `re-entry` kind and `next.error.cause` rows above come from the earlier page and are kept (the twin does not remove them explicitly).
+- `tool.describe` fires a second time for an MCP tool when Claude loads it through tool search. `{ description, isDeferred }` sets deferral (`true` behind tool search, `false` upfront). Add `breakPromptCache: true` to a `prompt.section` or `tool.describe` answer (after `$.ui.invalidate('prompt.section')` / `$.ui.invalidate('tool.describe')`) to send changed text on the next turn; the prompt cache starts over. Needs v2.1.321+ (v2.1.299 to v2.1.321: the running conversation got changed text on the next turn).
+- `agent.spawn` also fires when a finished or stopped subagent is about to run again (`e.resume` is `{ agentId }`, v2.1.299+). Skip those events when counting subagents; `{ deny: reason }` refuses the resume (Claude reads `a plugin declined the resume:` plus the reason); a changed event passed to `next` is ignored for a resume.
+- `engine.create`: a mod outside the `user` tier can also withhold a namespace. When another mod's hook calls a method on a namespace you added, your method's `$` calls run in that hook's context until every hook on that event returns (relative paths resolve against that hook's working directory; `$.prompt.submit` rejects while the turn waits on that hook).
+- On `http.fetch` events, `next.origin` of `{ plugin: 'engine', tier: 'core' }` marks Claude Code's own request (such as a model request). `e.init.compress` is set when Claude Code compresses the body after your hook (`e.init.body` holds the uncompressed body; send uncompressed with `next({ ...e, init: { ...e.init, compress: undefined } })`). `value.isStreaming` is `true` when Claude Code reads the response body itself, so `value.text` is empty. These need v2.1.321+. Where the built-in guard loads, such hooks don't get these events unless the mod counts as the organization's.
+- A `Button` with children other than a single string needs v2.1.295+; `Box` / `Text` spacing step names (`xs`, `sm`, `md`, `lg`, `xl`) and `Text` `size` / `weight` / `mono` / `tabular` need v2.1.299+ (earlier, such a tree doesn't draw); `bold` on `Text` is deprecated in favor of `weight` (`bold: true` is `weight: 'semibold'`).
+- Extra limits: `.catch` handler 1 s; `$.process.run` `stdout` / `stderr` 4 MiB each (`isStdoutTruncated` / `isStderrTruncated`); at most 500 rows from `$.ui.place` per mod per conversation; elements and text children per tree 20,000; tree nesting depth 32; `Raster` cells per tree 262,144; PNG / RGBA bytes of all `Image`s in one tree 2 MiB; nesting depth of API-call arguments, of a changed event passed to `next`, and of a hook's return value 28,000 (v2.1.299+).
+- A pane beside the transcript is at most 45% of the terminal's width, including a width the user set earlier (2.1.305).
+
+### Changes from the changelog
+
+- 2.1.325: `/cost`, `$.session.usage()`, `--max-budget-usd` and cost and token metrics count a mod's `$.model.complete` and `$.model.classify` calls.
+- 2.1.323: `isPromptCovered` is added to the props a mod's pane is drawn with, telling it when a dialog or a field above the prompt covers the prompt. A `*`, namespace, or negated hook on `engine.create` only observes; to add or withhold a `$` noun hook `engine.create` by name. `claude plugin validate` reports the `$` nouns a mod's `engine.create` hook adds, withholds, or replaces and fails a mod whose `engine.create` hook isn't written in the one accepted form (installed mods keep loading).
+- 2.1.318: `$.model.fork` takes an `effort` option; the result reports the effort sent.
+- 2.1.305: a mod's docked pane stays within 45% of the terminal's width, including a width kept from a wider terminal.
+- 2.1.304: `tool.check` accepts `decider: "person"` and carries `e.isReadOnly`; `settings.read` hooks receive each settings layer and can rewrite the merged settings. `claude plugin validate` no longer prints notes predicting where a mod's hooks would run.
+- Source: https://code.claude.com/docs/en/plugins/mods/reference.md (retrieved 2026-11-14)
+- Source: https://code.claude.com/docs/en/changelog.md (2.1.304, 2.1.305, 2.1.318, 2.1.321, 2.1.323, 2.1.325, retrieved 2026-11-14)
 
 ## Related
 

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/plugins/overview.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/plugins/overview.md / last verified: 2026-11-14 -->
 
 # Plugins overview
 
@@ -32,7 +32,7 @@ Manifest location: `.claude-plugin/plugin.json` (name, optional version / descri
 
 | Marketplace tier | Meaning |
 | --- | --- |
-| Official | Anthropic official names, e.g. `claude-plugins-official`, demo `claude-code-plugins`; accepted only for sources under `github.com/anthropics/` |
+| Official | Anthropic official names, e.g. `claude-plugins-official` and the deprecated `claude-code-plugins` (full list in plugin-security.md); accepted only for sources under `github.com/anthropics/` |
 | Community | Anthropic community names, e.g. `claude-community` |
 | Third-party | Every other marketplace, including one your coworker or organization publishes |
 
@@ -48,10 +48,11 @@ Manifest location: `.claude-plugin/plugin.json` (name, optional version / descri
 - An enabled plugin is part of every session: for each skill, agent, and command Claude can invoke on its own, name and description are in context every turn (counts toward usage and the context window). Full text loads only on use.
 - MCP servers a plugin defines run alongside each session where it is enabled, and its hooks fire at their events. What a plugin runs, it runs as you.
 - Plugins in Anthropic's official marketplace show a **Context cost** estimate in the `/plugin` details pane before install.
-- Claude Code adds the official marketplace the first time you start an interactive terminal session, unless a managed policy blocks it. Community and demo marketplaces are not added automatically.
+- Claude Code adds the official marketplace the first time you start an interactive terminal session, unless a managed policy blocks it. The community marketplace is not added automatically; the demo marketplace `claude-code-plugins` is deprecated (see anthropic-marketplaces.md). Some mods are built into Claude Code; a built-in plugin's ID ends in `@builtin` and does not appear in `claude plugin list`.
 - A plugin marketplace is not Claude Marketplace (claude.com/marketplace, a website). Claude Code in VS Code / JetBrains is an extension, not a Claude Code plugin.
 - A cloud session (including claude.ai/code) does not load plugins from local settings.
 - While developing, no marketplace is needed: load a plugin from its folder with `--plugin-dir`.
+- Source: https://code.claude.com/docs/en/plugins/overview.md (retrieved 2026-11-14)
 
 ## Related
 
