@@ -105,10 +105,12 @@ gcloud asset search-all-resources \
 
 Created after a time, located in the US, running:
 
+Adapted (not in the official docs): the date is `2023-12-31` (the official example has `2023-31-12`, which is not a valid `YYYY-MM-DD`).
+
 ```bash
 gcloud asset search-all-resources \
     --scope=projects/my-project \
-    --query="createTime>2023-31-12" \
+    --query="createTime>2023-12-31" \
     --asset-types=compute.googleapis.com/Instance \
     --format="table(name, assetType, location)"
 
@@ -155,7 +157,7 @@ gcloud asset search-all-resources \
 
 - Searching is synchronous and can strain quotas for large inventories; prefer asynchronous exports for large inventories.
 - Not all resources are searchable; check the asset types page. Searchable query fields are listed in the `ResourceSearchResult` reference.
-- The official time example is `createTime>2023-31-12`; the query syntax documents UTC+0 `YYYY-MM-DD` dates, so use `YYYY-MM-DD` (for example `2023-12-31`) when querying.
+- Corrected from the official docs: the official time example is `createTime>2023-31-12`; the query syntax documents UTC+0 `YYYY-MM-DD` dates, so the example above uses `2023-12-31`.
 - The Console lists up to the results visible in the **Results** table; use **Filter results** to narrow.
 - Source: https://docs.cloud.google.com/asset-inventory/docs/search-resources (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 

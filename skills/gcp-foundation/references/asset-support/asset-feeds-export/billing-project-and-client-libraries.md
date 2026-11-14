@@ -125,16 +125,19 @@ for asset in response:
 
 Node.js `ListAssets` sample:
 
+Adapted (not in the official docs): `getProjectId()` and the request preparation moved inside `listAssets()` (no top-level `await` in CommonJS), and `assetTypes` / `contentType` are declared as function parameters.
+
 ```javascript
 const util = require('util');
 const {v1} = require('@google-cloud/asset');
 const client = new v1.AssetServiceClient();
 
-const projectId = await client.getProjectId();
-const projectResource = `projects/${projectId}`;
-const assetTypesList = assetTypes ? assetTypes.split(',') : [];
+// assetTypes: comma-separated asset types (may be empty); contentType: e.g. 'RESOURCE'
+async function listAssets(assetTypes, contentType) {
+  const projectId = await client.getProjectId();
+  const projectResource = `projects/${projectId}`;
+  const assetTypesList = assetTypes ? assetTypes.split(',') : [];
 
-async function listAssets() {
   const request = {
     parent: projectResource,
     assetTypes: assetTypesList,
@@ -148,7 +151,7 @@ async function listAssets() {
   // Handle the response.
   console.log(util.inspect(result, {depth: null}));
 }
-listAssets();
+listAssets('compute.googleapis.com/Instance', 'RESOURCE');
 ```
 
 ## Options / Props
@@ -163,6 +166,7 @@ listAssets();
 
 - `roles/storage.admin` on the bucket and project-level BigQuery roles are broad; scope them to the minimum bucket/project and remove after use where possible.
 - Setting a billing project always is good practice to minimize confusion.
+- Adapted from the official docs: the Node.js sample moves `getProjectId()` into `listAssets()` and declares `assetTypes` / `contentType` as parameters, so it runs as a CommonJS script.
 - The Node.js and Python samples above omit the official TODO variable comments for brevity; official samples also exist for C#, Go, Java, PHP, and Ruby. The client libraries authenticate through Application Default Credentials (ADC).
 - Source: https://docs.cloud.google.com/asset-inventory/docs/multiple-projects, https://docs.cloud.google.com/asset-inventory/docs/client-libraries (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 

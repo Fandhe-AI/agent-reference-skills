@@ -93,10 +93,12 @@ def authenticate_implicit_with_adc(project_id: str = "your-google-cloud-project-
 
 Node.js:
 
+Adapted (not in the official docs): `projectId` is declared as a parameter of `authenticateImplicitWithAdc` (the official sample references it undefined), and the call passes a placeholder project ID.
+
 ```javascript
 const {Storage} = require('@google-cloud/storage');
 
-async function authenticateImplicitWithAdc() {
+async function authenticateImplicitWithAdc(projectId) {
   // This snippet demonstrates how to list buckets.
   // NOTE: Replace the client created below with the client required for your application.
   // Note that the credentials are not specified when constructing the client.
@@ -114,7 +116,7 @@ async function authenticateImplicitWithAdc() {
   console.log('Listed all storage buckets.');
 }
 
-authenticateImplicitWithAdc();
+authenticateImplicitWithAdc('PROJECT_ID');
 ```
 
 ### Use API keys with client libraries
@@ -305,6 +307,7 @@ Adapted (not in the official docs): the three AWS rows are listed as `credential
 
 ## Notes
 
+- Adapted from the official docs: the Node.js ADC sample takes `projectId` as a parameter (placeholder `PROJECT_ID` in the call).
 - Adapted from the official docs: AWS `url` / `region_url` / `imdsv2_session_token_url` are validated at `credential_source.*` (not `credential_source.aws.*`); the Node.js `JWT.fromJSON` sample calls the instance method (`new JWT().fromJSON(keys)`); the Node.js API key sample passes the key (here from `process.env.API_KEY`).
 - Keep API keys secure in storage and transmission; publicly exposing them can lead to unexpected charges. API keys passed as plaintext strings in code should be avoided; prefer keyless ADC where the API supports it.
 - Service account keys are a security risk; prefer keyless auth.
