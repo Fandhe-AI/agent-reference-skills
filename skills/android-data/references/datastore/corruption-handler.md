@@ -42,6 +42,8 @@ val dataStore: DataStore<Settings> = DataStoreFactory.create(
 - If `ReplaceFileCorruptionHandler` itself throws while replacing the data, the new exception is attached as a suppressed exception to the original and rethrown.
 - Without a `corruptionHandler`, a `CorruptionException` propagates to the caller of `data` / `updateData`.
 - `ReplaceFileCorruptionHandler` has no no-arg constructor (1.2.1 sources); `produceNewData` is required.
+- 1.3.0 (2026-10-21): `ReThrowCorruptionHandler` is public. Underlying file path is added to `CorruptionException` messages thrown on Preferences parsing failures (1.3.0-alpha11). `GeneralSecurityException` in `AeadSerializer` is wrapped in `CorruptionException` (1.3.0-alpha10), so it reaches the `CorruptionHandler`.
+- Source: https://developer.android.com/jetpack/androidx/releases/datastore (retrieved 2026-11-14)
 - Package: `androidx.datastore.core` (`CorruptionHandler`, `CorruptionException`), `androidx.datastore.core.handlers` (`ReplaceFileCorruptionHandler`).
 
 ## Related

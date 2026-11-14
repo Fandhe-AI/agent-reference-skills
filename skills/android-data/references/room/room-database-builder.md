@@ -48,6 +48,8 @@ val db = Room.inMemoryDatabaseBuilder<AppDatabase>(applicationContext)
 - Manual migrations added via `addMigrations` take precedence over automated migrations for the same version.
 - `RoomDatabase.runInTransaction { ... }` (Room 2.x) is replaced by `withWriteTransaction { ... }` / `withReadTransaction { ... }` in Room 3.0.
 - `@TypeConverter` / `@TypeConverters` / `@ProvidedTypeConverter` were renamed to `@ColumnTypeConverter` / `@ColumnTypeConverters` / `@ProvidedColumnTypeConverter` in Room 3.0.
+- Alpha only (3.1.0-alpha01 / alpha03, not in stable 3.0.3): `setConnectionPoolTimeout(timeout: Duration)`, `setPreparedStatementCacheSize(maxCacheSize: Int)` (Android) and `allowDataLossOnRecovery()` on `RoomDatabase.Builder`. See [Migrating to Room 3.0](./room3-migration.md).
+- Source: https://developer.android.com/jetpack/androidx/releases/room3 (retrieved 2026-11-14)
 - Since Room 2.8.5 / 3.0.2, calling a suspending query on a closed database throws `IllegalStateException`.
 
 ## Related

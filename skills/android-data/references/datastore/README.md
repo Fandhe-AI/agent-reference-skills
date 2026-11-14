@@ -12,3 +12,6 @@
 | DataMigration | Interface for migrating data into a DataStore before it is exposed to callers. | [data-migration.md](./data-migration.md) |
 | SharedPreferencesMigration | Built-in `DataMigration<Preferences>` for migrating from `SharedPreferences`. | [shared-preferences-migration.md](./shared-preferences-migration.md) |
 | CorruptionHandler / ReplaceFileCorruptionHandler | Recovery hook invoked when stored data fails to deserialize. | [corruption-handler.md](./corruption-handler.md) |
+| DataStore.Builder | `DataStore.Builder<T>` (1.3.0), the `CoroutineContext`-based alternative to `DataStoreFactory`. | [datastore-builder.md](./datastore-builder.md) |
+| datastore-tink / AeadSerializer | Encrypts DataStore data with Tink AEAD via `AeadSerializer` (1.3.0). | [datastore-tink.md](./datastore-tink.md) |
+| DataStore web storage | `WebSessionStorage` / `WebLocalStorage` / `WebOpfsStorage` KMP web storages (1.3.0). | [web-storage.md](./web-storage.md) |

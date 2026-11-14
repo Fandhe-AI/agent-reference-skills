@@ -39,7 +39,8 @@ suspend fun incrementCounter(dataStore: DataStore<Preferences>) {
 - If `transform` or the disk write fails, the transaction is aborted and the exception propagates.
 - Generic type `T` must be immutable, or DataStore's guarantees break.
 - Never create more than one `DataStore` instance for the same file within a process.
-- `DataStore.Builder<T>` (not part of the Signature above) was introduced in 1.3.0-alpha07 and is recommended by the release notes as the replacement for `DataStoreFactory`. It does not exist in stable 1.2.1, where you use `DataStoreFactory` / `PreferenceDataStoreFactory`.
+- `DataStore.Builder<T>` (not part of the Signature above) was introduced in 1.3.0-alpha07 and became public in stable 1.3.0 (2026-10-21). The release notes recommend it as the replacement for `DataStoreFactory`. It takes a `CoroutineContext` instead of a `CoroutineScope`. See [DataStore.Builder](./datastore-builder.md). On DataStore 1.2.x (the previous stable line) it does not exist and you use `DataStoreFactory` / `PreferenceDataStoreFactory`.
+- Source: https://developer.android.com/jetpack/androidx/releases/datastore (retrieved 2026-11-14)
 - Multiple active DataStores for the same file in one process make read / update throw `IllegalStateException`. Do not mix `SingleProcessDataStore` and `MultiProcessDataStore` for the same file.
 - In a Compose app, keep DataStore in the data layer (repository), expose it from the ViewModel as a `StateFlow` via `stateIn(...)`, and read it in composables with `collectAsStateWithLifecycle`. Do not read or write DataStore directly from a composable.
 - Package: `androidx.datastore.core`.

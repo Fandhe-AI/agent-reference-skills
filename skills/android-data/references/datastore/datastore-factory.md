@@ -92,6 +92,9 @@ val multiProcessDataStore = MultiProcessDataStoreFactory.create(
 - Using a regular DataStore during Direct Boot fails, and the error message points to `DataStoreFactory.createInDeviceProtectedStorage()`.
 - The common (`commonMain`, 1.2.1 source) `storage`-based `create` overload uses `ioDispatcher()`, an internal expect function that is `Dispatchers.IO` on JVM/Android, so its default scope is equivalent to `Dispatchers.IO + SupervisorJob()`.
 - 1.2.0 added `PreferencesFileSerializer`, a `Serializer` for use with `FileStorage`.
+- 1.3.0 (2026-10-21) recommends `DataStore.Builder<T>` as the modern alternative to `DataStoreFactory` (see [DataStore.Builder](./datastore-builder.md)). The Signature above reflects the 1.2.1 sources and has not been re-derived for 1.3.0.
+- 1.3.0-alpha06 added tracing: on Android you can provide an `androidx.tracing.Tracer` instance to `DataStoreFactory.createWithTracing()`.
+- Source: https://developer.android.com/jetpack/androidx/releases/datastore (retrieved 2026-11-14)
 - Package: `androidx.datastore.core`.
 
 ## Related
