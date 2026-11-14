@@ -1,5 +1,5 @@
 ---
-source: https://developers.cloudflare.com/ai-search/api/instances/workers-binding/
+source: https://developers.cloudflare.com/ai-search/api/instances/workers-binding/, https://developers.cloudflare.com/ai-search/api/namespaces/workers-binding/
 ---
 
 # Namespace methods (get, list, create, delete)
@@ -35,6 +35,30 @@ const instance = await env.AI_SEARCH.create({
 });
 ```
 
+Create a D1-backed instance (beta):
+
+```ts
+const instance = await env.AI_SEARCH.create({
+	id: "help-center",
+	type: "d1",
+	source: "<D1_DATABASE_ID>",
+	token_id: "<SERVICE_TOKEN_ID>",
+	source_params: {
+		d1: {
+			query: `
+				SELECT
+				  article_id AS id,
+				  title,
+				  content,
+				  category AS meta_category
+				FROM articles
+				WHERE published = 1
+			`,
+		},
+	},
+});
+```
+
 ## Options / Props
 
 `get(name)` / `delete(name)`: `name` (string, required) is the instance name. `delete` returns `void` and throws if the instance does not exist.
@@ -54,8 +78,8 @@ const instance = await env.AI_SEARCH.create({
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `id` | string (required) | — | 1-64 chars matching `^[a-z0-9_]+(?:-[a-z0-9_]+)*$`. |
-| `type` | string | inferred | `r2` or `web-crawler`. If omitted: HTTP(S) URL source selects `web-crawler`, existing R2 bucket selects `r2`, missing/blank source creates built-in storage; other sources return error `7111`. Workers binding does not accept `null`. |
-| `source` | string | — | R2 bucket name or website domain. Required when `type` is set. |
+| `type` | string | inferred | `r2`, `web-crawler`, or `d1`. If omitted: HTTP(S) URL source selects `web-crawler`, existing R2 bucket selects `r2`, missing/blank source creates built-in storage; other sources return error `7111`. `d1` is never inferred. Workers binding does not accept `null`. |
+| `source` | string | — | R2 bucket name, website domain, or D1 database ID (UUID; cannot be changed after creation). Required when `type` is set. |
 | `source_params.prefix` | string | — | R2 key prefix to index. |
 | `source_params.r2_jurisdiction` | string | — | R2 jurisdiction, e.g. `eu`. |
 | `source_params.include_items` | string[] | — | Glob patterns to include. |
@@ -69,9 +93,10 @@ const instance = await env.AI_SEARCH.create({
 | `source_params.web_crawler.discover_options.limit` | number | `100000` | 1 to 100000 pages. |
 | `source_params.web_crawler.discover_options.depth` | number | `5` | 1 to 100000 link hops. |
 | `source_params.web_crawler.discover_options.max_age` | number | `86400` | Cache reuse seconds, 0 to 604800. |
-| `source_params.web_crawler.discover_options.include_external_links` | boolean | `false` | Follow links to other domains. |
 | `source_params.web_crawler.discover_options.include_subdomains` | boolean | `false` | Follow subdomain links. |
 | `source_params.web_crawler.store_options` | object | — | `storage_type` (`r2`), `storage_id`, `r2_jurisdiction`. |
+| `source_params.d1.query` | string | — | Required when `type` is `d1`. Read-only `SELECT` or `WITH` query that returns an `id` column; up to 10,000 characters. |
+| `source_params.d1.template` | string | `labelled` | `labelled`, `content_only`, `key_value`, `json`. An update that omits it keeps the stored template. |
 | `index_method.vector` | boolean | `true` | Vector search. At least one of vector/keyword must be true. |
 | `index_method.keyword` | boolean | `true` | Keyword (BM25) search. |
 | `fusion_method` | string | `rrf` | `rrf` or `max`. |
@@ -79,8 +104,8 @@ const instance = await env.AI_SEARCH.create({
 | `indexing_options.use_ocr` | boolean | `false` | OCR for PDFs and images. |
 | `retrieval_options.keyword_match_mode` | string | `and` | `and` or `or`. |
 | `retrieval_options.boost_by` | array | — | Max 3 items: `field` (max 64 chars), `direction` (`asc`, `desc`, `exists`, `not_exists`). |
-| `sync_interval` | number | `21600` | Seconds between syncs; this page lists `3600`, `7200`, `14400`, `21600`, `43200`, `86400`. |
-| `token_id` | string | — | Service API token UUID; needed only if you never created an instance before. |
+| `sync_interval` | number | `86400` | Seconds between syncs: `900`, `1800`, `3600`, `7200`, `14400`, `21600`, `43200`, `86400`. |
+| `token_id` | string | — | Service API token UUID. Required for `d1` instances; for R2, only required if your account has no service API token registered yet (if omitted, the most recently registered token is used). |
 | `ai_gateway_id` | string | — | Gateway for generation, query rewriting, external providers. |
 | `embedding_model` | string | — | Embedding model. |
 | `ai_search_model` | string | — | Text-generation model. |
@@ -95,7 +120,7 @@ const instance = await env.AI_SEARCH.create({
 | `cache` | boolean | `true` | Response caching. |
 | `cache_threshold` | string | `close_enough` | `super_strict_match`, `close_enough`, `flexible_friend`, `anything_goes`. |
 | `cache_ttl` | number | `172800` | `600`, `1800`, `3600`, `7200`, `21600`, `43200`, `86400`, `172800`, `259200`, `518400`. |
-| `custom_metadata` | array | — | `{ field_name, data_type }` with `text`, `number`, `boolean`, `datetime`. |
+| `custom_metadata` | array | — | `{ field_name, data_type }` with `text`, `number`, `boolean`, `datetime`. For `d1` instances, derived from the `meta_*` columns; omit it or pass the same fields. |
 | `enable` | boolean | `true` | Whether the instance is enabled. |
 
 `list()` response: `result[]` (`id`, `type`, `source`, `status`, `paused`, `namespace`, `created_at`, `modified_at`) and `result_info.total_count`.
@@ -105,7 +130,9 @@ const instance = await env.AI_SEARCH.create({
 - `create()` returns an instance handle usable immediately for `search()`, `info()`, `stats()`, `items.upload()`.
 - `delete()` permanently removes embeddings, chunks, and source files.
 - Instance `status` values include `waiting`, `index_source`, `embed_files`, or `paused_*`.
-- Inconsistency in the source: `sync_interval` here lists `3600` to `86400` with default `21600`, while the syncing page lists `900` to `86400` with default `86400` (see syncing.md).
+- Sync interval: the create parameters now list `900` to `86400` with default `86400` (24 hours), matching syncing.md.
+- The namespace binding manages instances inside its namespace only; it cannot create, list, update, or delete namespaces themselves (use the REST API, Terraform, or Wrangler; see namespaces-rest-api.md and namespaces-terraform.md).
+- Source: https://developers.cloudflare.com/ai-search/api/instances/workers-binding/ and https://developers.cloudflare.com/ai-search/api/namespaces/workers-binding/ (pin 34d908a / fetched 2026-11-14)
 - `Browser Run` is the current name of Browser Rendering in the source.
 
 ## Related
@@ -113,3 +140,4 @@ const instance = await env.AI_SEARCH.create({
 - [Instance methods](./instance-methods.md)
 - [Data source: website](./data-source-website.md)
 - [Service API token](./service-api-token.md)
+- [D1 data source](./data-source-d1.md)

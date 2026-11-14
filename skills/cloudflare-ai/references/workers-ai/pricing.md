@@ -68,6 +68,7 @@ Columns: Name = model; Type = price in tokens; Description = price in Neurons (a
 | @cf/moonshotai/kimi-k2.7-code | $0.950 per M input / $0.190 per M cached input / $4.000 per M output tokens | — | 86364 neurons per M input / 17273 per M cached input / 363636 per M output tokens |
 | @cf/google/gemma-4-26b-a4b-it | $0.100 per M input tokens / $0.300 per M output tokens | — | 9091 neurons per M input tokens / 27273 neurons per M output tokens |
 | @cf/daily-co/phonellm-mini-alpha-2 | $0.060 per M input tokens / $0.240 per M output tokens | — | 5455 neurons per M input tokens / 21818 neurons per M output tokens |
+| @cf/thinkingmachines/inkling-2-small | $0.300 per M input / $0.100 per M cached input / $1.000 per M output tokens | — | 27273 neurons per M input / 9091 per M cached input / 90909 per M output tokens |
 
 ### Embeddings model pricing
 
@@ -79,6 +80,7 @@ Columns: Name = model; Type = price in tokens; Description = price in Neurons (a
 | @cf/baai/bge-m3 | $0.012 per M input tokens | — | 1075 neurons per M input tokens |
 | @cf/pfnet/plamo-embedding-1b | $0.019 per M input tokens | — | 1689 neurons per M input tokens |
 | @cf/qwen/qwen3-embedding-0.6b | $0.012 per M input tokens | — | 1075 neurons per M input tokens |
+| @cf/google/embeddinggemma-2 | $0.0017 per M input tokens | — | 154 neurons per M input tokens |
 
 ### Image model pricing
 
@@ -127,7 +129,8 @@ Columns: Name = model; Type = price in tokens; Description = price in Neurons (a
 - Arithmetic check (recomputed): 10,000 free Neurons per day is worth 10,000 x $0.011 / 1,000 = $0.11 per day at the paid rate. Converting listed Neurons at $0.011 / 1,000 reproduces the listed token prices for the rows checked, for example `@cf/google/gemma-4-26b-a4b-it` 9,091 Neurons per M input tokens = $0.100 and 27,273 per M output tokens = $0.300; `@cf/openai/gpt-oss-120b` 31,818 = $0.350 and 68,182 = $0.750.
 - Rows that do not reconcile exactly: `@cf/pipecat-ai/smart-turn-v2` lists $0.00033795 per audio minute, which is about 30.7 Neurons at this rate, but 0.51 Neurons are listed; `@cf/openai/whisper` 41.14 Neurons is about $0.00045 (listed $0.0005, a one-digit rounding). Use the Neuron figure shown on the model page and the dashboard when budgeting.
 - Limits reset daily at 00:00 UTC; exceeding the free allocation without Workers Paid makes further operations fail with an error (see Errors, code `3036`).
-- Paid-only models: `@cf/moonshotai/kimi-k2.6`, `@cf/moonshotai/kimi-k2.7-code`, `@cf/zai-org/glm-5.2`, `@cf/zai-org/glm-5.3`, `@cf/zai-org/glm-5.3-flash`, `@cf/deepseek-ai/deepseek-v4-flash-0731`, `@cf/deepseek-ai/deepseek-v4.1-flash-1017`, `@cf/deepseek-ai/deepseek-v4-pro-0813`; usable with Workers Paid or prepaid AI Gateway credits (unified billing; set the gateway's Workers AI billing setting to Unified billing and specify the gateway in the AI binding or REST request). Credits give higher rate limits (see Limits).
+- Paid-only models: `@cf/moonshotai/kimi-k2.6`, `@cf/moonshotai/kimi-k2.7-code`, `@cf/zai-org/glm-5.2`, `@cf/zai-org/glm-5.3`, `@cf/zai-org/glm-5.3-flash`, `@cf/deepseek-ai/deepseek-v4-flash-0731`, `@cf/deepseek-ai/deepseek-v4.1-flash-1017`, `@cf/deepseek-ai/deepseek-v4-pro-0813`, `@cf/thinkingmachines/inkling-2-small`; usable with Workers Paid or prepaid AI Gateway credits (unified billing; set the gateway's Workers AI billing setting to Unified billing and specify the gateway in the AI binding or REST request). Credits give higher rate limits (see Limits).
+- Sixteen text-generation models plus `@cf/llava-hf/llava-1.5-7b-hf`, `@cf/myshell-ai/melotts`, `@cf/openai/whisper-tiny-en`, `@cf/google/embeddinggemma-300m`, and four image models (`stable-diffusion-xl-base-1.0`, `stable-diffusion-v1-5-inpainting`, `stable-diffusion-xl-lightning`, `dreamshaper-8-lcm`) are flagged for deprecation on 2026-11-20; after that date they return HTTP `410` / error code `5028` (see [Errors](./errors.md)). Model-level lists are in the workers-ai-models pages. Source: https://developers.cloudflare.com/changelog/post/2026-11-05-planned-model-deprecations/ (pin 34d908a / fetched 2026-11-14).
 - Neurons measure the GPU compute needed for a request. Monitor usage in the dashboard https://dash.cloudflare.com/?to=/:account/ai/workers-ai .
 - AI Gateway features are in the AI Gateway category of this skill.
 

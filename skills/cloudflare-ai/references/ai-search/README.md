@@ -16,6 +16,9 @@
 | chatCompletions() | Generation, streaming, cross-instance | [chat-completions.md](./chat-completions.md) |
 | Items (Workers binding) | Upload, list, get, delete documents | [items-workers-binding.md](./items-workers-binding.md) |
 | REST API: instances, jobs, items | Management endpoints | [rest-api-instances-items.md](./rest-api-instances-items.md) |
+| Namespaces REST API | Create, list, update, delete namespaces; move an instance | [namespaces-rest-api.md](./namespaces-rest-api.md) |
+| Namespaces with Terraform | cloudflare_ai_search_namespace resource, import, data sources | [namespaces-terraform.md](./namespaces-terraform.md) |
+| Instances with Terraform | cloudflare_ai_search_instance resource, replacement rules, import | [instances-terraform.md](./instances-terraform.md) |
 | REST API: search and chat | Search and chat completions endpoints | [rest-api-search.md](./rest-api-search.md) |
 | Public endpoint usage | Unauthenticated search, chat, MCP | [public-endpoint-usage.md](./public-endpoint-usage.md) |
 | MCP endpoint | Built-in MCP search tool | [mcp.md](./mcp.md) |
@@ -26,11 +29,12 @@
 | R2 data source | R2 bucket source and metadata | [data-source-r2.md](./data-source-r2.md) |
 | Website data source | Crawling, headers, selectors, metadata | [data-source-website.md](./data-source-website.md) |
 | Website parse types | sitemap vs discover | [website-parse-types.md](./website-parse-types.md) |
+| D1 data source (beta) | SQL query rows as documents, templates, meta_ columns, limits | [data-source-d1.md](./data-source-d1.md) |
 | Indexing methods | Vector, keyword, hybrid, fusion | [indexing-methods.md](./indexing-methods.md) |
 | Chunking and path filtering | Chunk size/overlap, include/exclude patterns | [chunking-and-path-filtering.md](./chunking-and-path-filtering.md) |
 | Metadata attributes | Built-in and custom metadata schema | [metadata-attributes.md](./metadata-attributes.md) |
 | Syncing | Sync jobs, intervals, controls | [syncing.md](./syncing.md) |
-| Service API token | Token for R2 sources | [service-api-token.md](./service-api-token.md) |
+| Service API token | Token for R2 and D1 sources | [service-api-token.md](./service-api-token.md) |
 | Filtering | Metadata filter syntax | [filtering.md](./filtering.md) |
 | Result controls and boosting | Thresholds, max results, boost_by | [result-controls-and-boosting.md](./result-controls-and-boosting.md) |
 | Reranking, query rewriting, system prompt | Optional pipeline steps | [reranking-query-rewriting-system-prompt.md](./reranking-query-rewriting-system-prompt.md) |

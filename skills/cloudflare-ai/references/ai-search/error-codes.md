@@ -41,7 +41,7 @@ Common (HTTP status): `10000` Authentication error (401); `7001` internal_error 
 | `7047` | 400 | — | invalid_url_location. |
 | `7050` | 500 | — | fail_while_provisioning_managed_resources. |
 | `7052` | 400 | — | type and source required for non-managed instances. |
-| `7101` / `7102` / `7103` | 400 | — | discover needs a verified zone / external links not allowed / sitemap needs owned zone. |
+| `7101` / `7102` / `7103` | 400 | — | discover needs a verified zone / `include_external_links` not allowed (legacy; the option is no longer documented, see website-parse-types.md) / sitemap needs owned zone. |
 | `7104` | 409 | — | instance status modified concurrently (retry). |
 | `7111` | 400 | — | source is not a valid URL or existing R2 bucket. |
 | `7090`-`7093`, `7096`, `60018` | — | — | Custom domain errors (see custom-domains-and-access.md). |
@@ -72,7 +72,7 @@ Common (HTTP status): `10000` Authentication error (401); `7001` internal_error 
 | `7077` / `7078` / `7079` / `7117` | 401 / 402 / 413 / 400 | — | Gateway authentication / billing / context window exceeded / credential not found. |
 | `7094` | 402 | — | workers_ai_free_allocation_exceeded. |
 | `60001`-`60011`, `60016`-`60017`, `60019`, `60100` | — | — | Public endpoint errors: asset not found (404), hash missing (404), config not found (404), disabled (404), rate limited (429, `60005`), endpoint not found (404), MCP / search / chat endpoint disabled (401), method not allowed (405), invalid stats body (400), MCP POST only (405), asset fetch failed (503), search/chat POST only (405), internal error (500). |
-| `60012`-`60015` | — | — | Namespace public endpoint errors (see namespace-public-endpoints.md). |
+| `60013`-`60015` | — | — | Namespace public endpoint errors: `60013` (404) the instances allowlist is empty, so no instance is searchable; `60014` (404) unsupported path; `60015` (400) request body is not a JSON object (an empty body is treated as `{}`). `60012` (malformed `instance_ids`) was removed (see namespace-public-endpoints.md). |
 
 Indexing error codes (item-level, string):
 
@@ -82,7 +82,9 @@ Indexing error codes (item-level, string):
 | Website crawl | `too_many_redirects`, `invalid_host_after_redirect`, `subdomains_not_allowed`, `blocked_by_robots_txt`, `blocked_by_robots_txt_path`, `blocked_by_content_signal`, `excluded_by_path_filter`, `network_connection_lost`, `crawl_got_http_error`, `crawl_got_http_401`, `crawl_got_http_403`, `crawl_got_http_429`, `blocked_by_payment`, `blocked_by_waf`, `blocked_by_bot_management`, `blocked_by_turnstile`, `http_4xx`, `http_5xx`, `unreachable_timeout`, `unreachable_dns`, `page_limit_reached`, `browser_rendering_*` | — | Allow the AI Search crawler through WAF/bot controls, fix robots.txt or origin health, configure authentication headers, or exclude with path filtering. `page_limit_reached`: Free plans crawl 500 pages/day. |
 | Models and AI Gateway | `error_embedding_data_with_workers_ai`, `workers_ai_invalid_input`, `workers_ai_free_allocation_exceeded`, `workers_ai_internal_error`, `workers_ai_out_of_capacity_error`, `workers_ai_timeout_error`, `error_external_model_unknown_error`, `error_external_model_rate_limited`, `error_external_model_unauthorized`, `ai_gateway_request_blocked_firewall`, `ai_gateway_dlp_blocked`, `ai_gateway_response_blocked_firewall`, `ai_gateway_rate_limited` | — | Retry the sync, check provider credentials and Guardrails/DLP settings. |
 | Storage and Vectorize | `r2_unknown_error`, `r2_internal_error`, `vectorize_rate_limited`, `vectorize_ingestion_timeout`, `vectorize_upstream_error`, `hybrid_search_indexing_failed`, `ai_search_is_full` | — | Retry; `ai_search_is_full` does not pause the instance (request a limit increase or add an instance). |
-| Instance-level (pause indexing) | `r2_not_enabled`, `bucket_not_found`, `bucket_unauthorized`, `external_source_missing_api_token`, `bucket_name_invalid`, `invalid_custom_header`, `ai_gateway_not_configured`, `hybrid_search_is_full` | — | Fix the cause, then resume the instance. |
+| D1 database (row-level) | `d1_document_empty`, `d1_document_too_large` (rendered document over 64 KiB), `d1_id_too_long` (text `id` over 512 bytes), `d1_metadata_too_large` (`id` and `meta_*` over 8,000 bytes as JSON) | — | Fix the row or the query, then run a source sync job; syncing the item alone does not read the row again. Other rows keep indexing. |
+| D1 sync job errors | `d1_invalid_query`, `d1_read_only_violation`, `d1_forbidden_table`, `d1_invalid_columns`, `d1_missing_id_column`, `d1_invalid_metadata_field`, `d1_too_many_metadata_fields`, `d1_null_id`, `d1_invalid_id_type`, `d1_unsafe_integer_id`, `d1_duplicate_id`, `d1_mixed_id_types`, `d1_cursor_not_advancing`, `d1_no_rows`, `d1_too_many_rows`, `d1_timeout`, `d1_response_too_large`, `d1_rate_limited`, `d1_upstream_error`, `d1_malformed_response`, `d1_request_rejected`, `d1_invalid_database_id`, `d1_invalid_account_id` | — | End the sync job (job log shows `Error: <code>: <details>`) without pausing the instance or deleting items; the next sync retries. Fix the query or columns per data-source-d1.md and update the instance; for `d1_request_rejected` / `d1_invalid_*_id` contact support; for rate-limit and upstream errors use a longer sync interval. |
+| Instance-level (pause indexing) | `r2_not_enabled`, `bucket_not_found`, `bucket_unauthorized`, `external_source_missing_api_token`, `bucket_name_invalid`, `invalid_custom_header`, `ai_gateway_not_configured`, `hybrid_search_is_full`; D1 pauses report a status instead of a code | — | Fix the cause, then resume the instance. D1: a token that cannot read the database pauses the instance with status `paused_invalid_api_token` (update `token_id`); a deleted database pauses it with `paused_source_parameters_are_invalid` (create a new instance; the database cannot be changed). |
 
 ## Notes
 
@@ -91,6 +93,8 @@ Indexing error codes (item-level, string):
 - Retry transient errors with exponential backoff; when contacting support give the error code, instance ID, and timestamp.
 - Cross-instance partial results with `return_on_failure` return `errors: [{ instance_id, message: "search_failed" }]` without a numeric code.
 - Several codes appear under multiple headings in the source with the same meaning; the two `missing_user_query` codes (`7038` chat, `7039` search) differ by endpoint.
+- Indexing errors fall into three categories: item-level errors, sync job errors (D1 only; the instance is not paused and no items are deleted), and instance-level pauses.
+- Source: https://developers.cloudflare.com/ai-search/troubleshooting/api-error-codes/ and https://developers.cloudflare.com/ai-search/troubleshooting/indexing-error-codes/ (pin 34d908a / fetched 2026-11-14)
 - Condensed from two official pages; per-code recommended actions are on the official pages.
 
 ## Related
@@ -98,3 +102,4 @@ Indexing error codes (item-level, string):
 - [Syncing](./syncing.md)
 - [Service API token](./service-api-token.md)
 - [Limits and pricing](./limits-pricing.md)
+- [D1 data source](./data-source-d1.md)

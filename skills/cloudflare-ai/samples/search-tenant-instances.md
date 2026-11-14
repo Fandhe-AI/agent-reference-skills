@@ -171,7 +171,7 @@ const instance = await env.TENANTS.create({
 	type: "r2",
 	source: "my-bucket",
 	source_params: {
-		include_items: [`/customers/${tenantId}/**`],
+		include_items: [`customers/${tenantId}/**`],
 	},
 });
 ```
@@ -198,7 +198,7 @@ curl -X DELETE http://localhost:8787/offboard -H "Authorization: Bearer <ACME_TO
 - Corrected from the official docs: `items.upload()` takes `ReadableStream`, `Blob`, or `string` content; the source passed `await file.arrayBuffer()`, so the `File` is passed directly.
 - Adapted from the official docs: token-derived tenant identity instead of `x-tenant-id`, a tenant ID pattern that keeps `tenant-<id>` within the instance ID pattern (`^[a-z0-9_]+(?:-[a-z0-9_]+)*$`, 32 characters in the `@cloudflare/workers-types` JSDoc) and `tenant-<id>-bucket` within R2 bucket naming, a `Content-Length` cap before buffering the upload plus a `file.size` check, `try`/`catch` around `formData()`, a `File` check, and a required `q`. `MAX_UPLOAD_BYTES` is an example value; the AI Search limits page sets 4 MiB for PDFs without OCR and most formats and 10 MiB for plain text, code, and PDFs with OCR. In production consider restricting `/onboard` and `/offboard` to an operator credential rather than the tenant's own token.
 - Uploads are indexed asynchronously; wait before searching.
-- Creating an `r2`-backed instance from a binding requires the service API token, which Cloudflare registers the first time you create an R2-backed instance via the dashboard or Wrangler. Deleting an instance removes its index but leaves R2 objects.
+- Creating an `r2`-backed instance from a binding requires a registered service API token, which Cloudflare registers the first time you create an R2-backed instance via the dashboard or Wrangler (if you omit `token_id`, AI Search uses the most recently registered service API token for your account). R2 object keys do not start with `/`, so the path filter is `customers/<tenant>/**`. Deleting an instance removes its index but leaves R2 objects.
 - AI Search limits instances per account; the page points to a limit increase request form for more tenants.
 - Store the secret with `npx wrangler secret put TENANT_TOKENS`; `.dev.vars` stays out of git.
 

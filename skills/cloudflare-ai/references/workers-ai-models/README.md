@@ -5,7 +5,7 @@
 | Text Generation Models | Catalog of chat, instruct, reasoning, vision and LoRA language models with context windows and pricing | [text-generation.md](./text-generation.md) |
 | Text Generation Input Parameters | Classic prompt, messages and OpenAI-style request parameters, reasoning_effort per model | [text-generation-parameters.md](./text-generation-parameters.md) |
 | Decision Models | Clef and Clairic state/questions/fields models with typed probability answers | [decision-models.md](./decision-models.md) |
-| Text Embedding Models | BGE, bge-m3, EmbeddingGemma, PLaMo and Qwen3 embedding models | [text-embeddings.md](./text-embeddings.md) |
+| Text Embedding Models | BGE, bge-m3, EmbeddingGemma (300m and 2), PLaMo and Qwen3 embedding models | [text-embeddings.md](./text-embeddings.md) |
 | Text Classification Models | DistilBERT sentiment classifier and BGE reranker | [text-classification.md](./text-classification.md) |
 | Image Classification Models | ResNet-50 image classification | [image-classification.md](./image-classification.md) |
 | Text-to-Image Models | FLUX, Stable Diffusion, DreamShaper, Lucid Origin and Phoenix image generation | [text-to-image.md](./text-to-image.md) |

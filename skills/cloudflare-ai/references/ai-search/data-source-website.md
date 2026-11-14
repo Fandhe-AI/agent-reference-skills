@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/ai-search/configuration/data-source/we
 
 # Website data source
 
-Crawl and index a website on a domain onboarded to the same Cloudflare account. Pages are stored in built-in storage.
+Crawl and index a website on a domain onboarded to the same Cloudflare account. Pages are stored in built-in storage; the Markdown AI Search keeps for each indexed page counts toward AI Search storage.
 
 ## Signature / Usage
 
@@ -52,7 +52,7 @@ Custom metadata via `<meta>` tags:
 |------|------|---------|-------------|
 | Path filtering | patterns | — | Matches the full URL including scheme and host; use `**/blog/**`, not `/blog/**`. |
 | Parse type | `sitemap` / `discover` | `sitemap` | See website-parse-types.md. |
-| Specific sitemap | URLs | — | Up to 5; sitemap parse type only. |
+| Specific sitemap | URLs | — | Up to 10; sitemap parse type only. |
 | Rendering mode | choice | static | Static sites download raw HTML; rendered sites use a headless browser (`use_browser_rendering`). |
 | Authentication headers | headers | — | Up to 5; `source_params.web_crawler.parse_options.include_headers` (**Extra headers** in the dashboard). |
 | Content selectors | `{ path, selector }[]` | — | `source_params.web_crawler.parse_options.content_selector`; up to 10; path and selector each max 200 characters. |
@@ -69,6 +69,8 @@ Website limits: 100,000 pages per `discover` crawl; depth up to 100,000 (default
 - Without selectors, `<header>`, `<footer>`, `<head>` are removed before conversion.
 - Cloudflare Access protected site: create a service token and add `CF-Access-Client-Id` / `CF-Access-Client-Secret` as headers. Service tokens bypass user authentication, so scope the Access policy to content you intend to index. Store credentials securely and never commit them.
 - Sensitive header values are credentials; do not index authenticated pages into an instance exposed through an open public endpoint.
+- Storage: AI Search keeps the Markdown of each indexed page, which counts toward AI Search storage (see limits-pricing.md).
+- Source: https://developers.cloudflare.com/ai-search/configuration/data-source/website/ (pin 34d908a / fetched 2026-11-14)
 - Other products (Bot Management, WAF, Turnstile, Access, Browser Run) are documented at https://developers.cloudflare.com/bots/, https://developers.cloudflare.com/waf/, https://developers.cloudflare.com/cloudflare-one/access-controls/, https://developers.cloudflare.com/browser-run/.
 
 ## Related

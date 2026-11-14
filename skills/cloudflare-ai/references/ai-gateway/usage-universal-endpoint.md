@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/ai-gateway/usage/universal/
 
 # Universal Endpoint (Deprecated)
 
-Single endpoint that accepts an array of provider requests, with fallbacks, timeouts, and retries. Deprecated: use the OpenAI-compatible endpoint for new integrations and Dynamic Routing for fallbacks, retries, and conditional routing. It continues to work for existing integrations.
+Single endpoint that accepts an array of provider requests, with fallbacks, timeouts, and retries. Deprecated: use the OpenAI-compatible endpoint for new integrations and dynamic routes for fallbacks, retries, and conditional routing. It continues to work for existing integrations.
 
 ## Signature / Usage
 

@@ -67,7 +67,7 @@ curl https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id} \
 ## Notes
 
 - By default a fallback fires when a model request returns an error. Add more fallbacks by appending objects to the array. Timeouts can also trigger fallback; see [configuration-request-handling.md](./configuration-request-handling.md).
-- The Universal endpoint is deprecated; for new work use Dynamic Routing for fallbacks.
+- The Universal endpoint is deprecated; for new work use dynamic routes for fallbacks.
 - Flow: AI Gateway tries Workers AI; on failure it proceeds to the OpenAI request.
 
 ## Related

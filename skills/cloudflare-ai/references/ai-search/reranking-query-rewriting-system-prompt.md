@@ -48,6 +48,8 @@ const response = await instance.chatCompletions({
 ## Notes
 
 - Rewriting needs the `messages` format (not `query`); the first message is used as-is. Example: `How do I deploy one?` after `What is Cloudflare Workers?` becomes `deploy Cloudflare Worker getting started`.
+- Reranking runs on the results retrieved under `max_num_results` and the match threshold settings (`score_threshold` on the instance, or `match_threshold` per request).
+- Source: https://developers.cloudflare.com/ai-search/configuration/retrieval/reranking/ (pin 34d908a / fetched 2026-11-14)
 - Each step adds a model call and latency. Reranking is included in AI Search usage and does not appear in AI Gateway logs; rewriting and generation do.
 - View the effective system prompt for any model call in AI Gateway logs.
 - The official generation prompt example instructs the model to cite documents, note contradictions, say when documents are insufficient, and answer concisely in Markdown; the rewrite example expands terms and returns only the optimized query.

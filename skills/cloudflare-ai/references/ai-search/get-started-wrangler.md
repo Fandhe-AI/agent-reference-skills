@@ -25,10 +25,19 @@ npx wrangler ai-search stats my-instance
 npx wrangler ai-search search my-instance --query "What is Cloudflare?"
 ```
 
+The instance is created in the `default` namespace. To create it in another namespace, pass `--namespace` (or `-n`):
+
+Adapted (not in the official docs): `npx wrangler` instead of bare `wrangler`, as above.
+
+```sh
+npx wrangler ai-search create my-instance --namespace my-namespace
+```
+
 ## Notes
 
 - The three `create` commands are alternatives for different data sources; running all of them fails on the duplicate name. Run one, then `stats` / `search`.
 - Corrected from the official docs: after the local `npm install wrangler`, bare `wrangler` is not on `PATH` unless Wrangler is also installed globally; the commands use `npx wrangler`.
+- Source: https://developers.cloudflare.com/ai-search/get-started/wrangler/ (pin 34d908a / fetched 2026-11-14)
 - Without a data source the instance uses built-in storage; upload files via the dashboard or the Items REST API.
 - `--type web-crawler` only crawls domains onboarded to the same Cloudflare account.
 - The official page also lists `yarn`, `pnpm`, and `bun` install tabs; the `yarn install wrangler` form shown there is not a valid way to add a dependency, so use `yarn add wrangler`.

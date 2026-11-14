@@ -1,12 +1,12 @@
 ---
 name: cloudflare-ai
 description: >
-  Cloudflare の AI 基盤 (Workers AI / AI Gateway / Vectorize / AI Search) の
-  リファレンス。env.AI.run、REST API、OpenAI 互換エンドポイント、function calling、batch API、LoRA、
-  モデルカタログ (text generation / embeddings / text-to-image / ASR / TTS)、
-  AI Gateway (caching / rate limiting / fallbacks / BYOK)、
-  VectorizeIndex (upsert / query)、AI Search (旧 AutoRAG)。
-  Agents SDK は cloudflare-agents、Upstash Vector・各社 API 本体とは別。
+  Cloudflare の AI 基盤 (Workers AI / AI Gateway / Vectorize / AI Search)
+  リファレンス。env.AI.run、REST API、OpenAI 互換、function calling、batch API、LoRA、
+  モデルカタログ (text generation / embeddings / image / ASR / TTS)、
+  AI Gateway (caching / rate limiting / fallbacks / BYOK / model aliases)、
+  VectorizeIndex (upsert/query)、AI Search (旧 AutoRAG、D1/R2、namespaces)。
+  Agents SDK は cloudflare-agents、Upstash Vector・各社 API とは別。
 user-invocable: false
 ---
 
@@ -16,7 +16,7 @@ Cloudflare 開発者プラットフォームの AI 4 製品 — Workers AI（サ
 
 ## 対象バージョン
 
-- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `d0995b91312add6db730afec4f4944cee834abc6` と取得日 2026-11-03 で pin
+- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `34d908abc615fdf22eeb386b171b9657b9abcf38` と取得日 2026-11-14 で pin（旧 pin: `d0995b9` / 2026-11-03）
 - 参考: npm `workers-ai-provider` 4.0.1（docs では `createAI` への移行を推奨と注記）/ `ai-gateway-provider` 4.0.2
 
 ## 他スキルとの使い分け
@@ -110,6 +110,7 @@ skills/cloudflare-ai/
       features-dynamic-routing.md
       features-guardrails.md
       features-machine-payments.md
+      features-model-aliases.md
       features-rate-limiting.md
       features-spend-limits.md
       features-unified-billing.md
@@ -171,6 +172,7 @@ skills/cloudflare-ai/
       chat-completions.md
       chunking-and-path-filtering.md
       custom-domains-and-access.md
+      data-source-d1.md
       data-source-r2.md
       data-source-website.md
       data-sources.md
@@ -185,6 +187,7 @@ skills/cloudflare-ai/
       how-to-guides.md
       indexing-methods.md
       instance-methods.md
+      instances-terraform.md
       items-workers-binding.md
       limits-pricing.md
       mcp.md
@@ -194,6 +197,8 @@ skills/cloudflare-ai/
       multitenancy.md
       namespace-methods.md
       namespace-public-endpoints.md
+      namespaces-rest-api.md
+      namespaces-terraform.md
       namespaces.md
       public-endpoint-settings.md
       public-endpoint-usage.md
@@ -251,7 +256,7 @@ skills/cloudflare-ai/
 | text generation のパラメーターやモデル選定基準を知りたい | workers-ai-models | [references/workers-ai-models/README.md](references/workers-ai-models/README.md) |
 | embeddings・text-to-image・ASR・TTS・翻訳・分類モデルの入出力を調べたい | workers-ai-models | [references/workers-ai-models/README.md](references/workers-ai-models/README.md) |
 | AI Gateway を作成して最初のリクエストを中継したい | ai-gateway | [references/ai-gateway/README.md](references/ai-gateway/README.md) |
-| caching・rate limiting・fallbacks・dynamic routing を設定したい | ai-gateway | [references/ai-gateway/README.md](references/ai-gateway/README.md) |
+| caching・rate limiting・fallbacks・dynamic routing・model aliases（`custom/<alias>`）を設定したい | ai-gateway | [references/ai-gateway/README.md](references/ai-gateway/README.md) |
 | BYOK・認証・カスタムプロバイダー・カスタムドメインを設定したい | ai-gateway | [references/ai-gateway/README.md](references/ai-gateway/README.md) |
 | logs・analytics・costs・Logpush・OpenTelemetry で観測したい | ai-gateway | [references/ai-gateway/README.md](references/ai-gateway/README.md) |
 | 各プロバイダー（OpenAI 互換 / Anthropic / Bedrock / Vertex / Gemini ほか）への接続方法を知りたい | ai-gateway | [references/ai-gateway/README.md](references/ai-gateway/README.md) |
@@ -259,7 +264,7 @@ skills/cloudflare-ai/
 | query・metadata filtering・namespaces で検索したい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
 | VectorizeIndex バインディング API・distance metrics を調べたい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
 | Vectorize の制限・料金・v1 からの移行を確認したい | vectorize | [references/vectorize/README.md](references/vectorize/README.md) |
-| AI Search（旧 AutoRAG）のインスタンスを作成してデータソースを接続したい | ai-search | [references/ai-search/README.md](references/ai-search/README.md) |
+| AI Search（旧 AutoRAG）のインスタンスを作成してデータソース（R2 / website / D1 beta）を接続したい・Terraform / Namespaces REST API で管理したい | ai-search | [references/ai-search/README.md](references/ai-search/README.md) |
 | `search` / `chatCompletions` を Workers バインディング・REST API・Python SDK から呼びたい | ai-search | [references/ai-search/README.md](references/ai-search/README.md) |
 | チャンク分割・filtering・reranking・similarity cache を調整したい | ai-search | [references/ai-search/README.md](references/ai-search/README.md) |
 | AutoRAG からの移行・namespaces・マルチテナント構成・公開エンドポイントを設定したい | ai-search | [references/ai-search/README.md](references/ai-search/README.md) |

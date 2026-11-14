@@ -20,6 +20,7 @@
 | Caching | Cache responses, TTL, custom keys | [features-caching.md](./features-caching.md) |
 | Data Loss Prevention (DLP) | Scan prompts and responses for sensitive data | [features-dlp.md](./features-dlp.md) |
 | Dynamic routing | Route flows, JSON elements, calling `dynamic/<route>` | [features-dynamic-routing.md](./features-dynamic-routing.md) |
+| Model aliases | `custom/<name>` model pools with default-order or smart routing | [features-model-aliases.md](./features-model-aliases.md) |
 | Guardrails | Harmful-content checks with Llama Guard | [features-guardrails.md](./features-guardrails.md) |
 | Machine Payments (x402) | Pay for inference from a stablecoin wallet | [features-machine-payments.md](./features-machine-payments.md) |
 | Rate limiting | Fixed or sliding request limits | [features-rate-limiting.md](./features-rate-limiting.md) |

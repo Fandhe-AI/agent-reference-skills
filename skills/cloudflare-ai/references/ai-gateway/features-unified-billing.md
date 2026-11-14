@@ -60,7 +60,8 @@ curl -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_
 
 ## Notes
 
-- Fee: 5% on credits purchased (a $100 purchase is charged $105); provider inference pricing is passed through without markup. Credits can be bought with a credit card only. Balance may rarely go negative; Cloudflare then charges the card on file at the start of the following month.
+- Fee: 5% on credits purchased (a $100 purchase is charged $105); provider inference pricing is passed through without markup. Credits must be bought with a non-prepaid credit or debit card; PayPal, Apple Pay, and Google Pay are not supported, even when linked to a card. Add the card directly in **Billing** and set it as the primary payment method (if the primary method is PayPal, Apple Pay, or Google Pay, make the card primary). If the dashboard shows a permission notice, ask the account administrator for access to purchase credits and configure auto top-up. If prompted, complete the bank's card verification before enabling auto top-up. Balance may rarely go negative; Cloudflare then charges the card on file at the start of the following month.
+- Source: https://developers.cloudflare.com/ai-gateway/features/unified-billing/ (pin 34d908a / fetched 2026-11-14).
 - Prerequisites: credits loaded (dashboard AI Gateway > Credits Available > Manage > Top-up credits; optional auto top-up with threshold and amount), authenticated gateway, and Workers AI Billing set to Unified billing to use credits for Workers AI.
 - Credential precedence: (1) provider key on the request (BYOK and Unified Billing not consulted), (2) stored BYOK key under the `default` alias, (3) Unified Billing if fallback is allowed. If none applies and fallback is disabled, error `2044` is returned.
 - Anthropic Messages needs the key in `x-api-key`; `Authorization: Bearer` is not recognized there and does not prevent stored-key lookup or Unified Billing fallback.

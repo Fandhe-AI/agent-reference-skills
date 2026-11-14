@@ -36,7 +36,7 @@ or use Acme products.
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| Requests per period | number | `120` | Rate limit across all enabled public endpoints. |
+| Requests per period | number | `120` | Rate limit across all enabled public endpoints of the instance or namespace. |
 | Time period | duration | 1 minute | Rate limit window. |
 | Period type | string | `fixed` | `fixed` or `sliding`. |
 | Authorized hosts | hostnames | website: source domain; others: `*` | CORS allowed origins. |
@@ -49,6 +49,7 @@ or use Acme products.
 - CORS is a browser control, not access control; `curl` and scripts ignore it.
 - No authentication: anyone with the URL can query. For restriction use a custom domain with Cloudflare Access. If left open: only index public-safe content, set rate limits, disable unused endpoints such as `/mcp`, monitor usage.
 - Corresponding errors: `60003`-`60009`, `60005` rate limited.
+- Source: https://developers.cloudflare.com/ai-search/configuration/retrieval/public-endpoint/ (pin 34d908a / fetched 2026-11-14)
 
 ## Related
 

@@ -116,7 +116,7 @@ const ws = new WebSocket(
 
 - Adapted from the official docs: the realtime header example sends `cf-aig-authorization` without the `Bearer ` prefix; it is written as `Bearer <token>` to match the non-realtime example and the AI Gateway authentication contract.
 
-- Authentication: a Cloudflare token with the AI Gateway Run permission on an authenticated gateway. Use headers in non-browser environments; browsers use the `sec-websocket-protocol` subprotocol list (`cf-aig-authorization.<token>`, `xi-api-key.<key>`, `fal-api-key.<key>`).
+- Authentication: a Cloudflare API token with the AI Gateway Run permission. New gateways require authentication; for an existing gateway with authentication off, turn it on. Use headers in non-browser environments; browsers use the `sec-websocket-protocol` subprotocol list (`cf-aig-authorization.<token>`, `xi-api-key.<key>`, `fal-api-key.<key>`).
 - Do not put provider API keys in the URL query string. The official Google AI Studio and Cartesia examples append `?api_key=<...>` to the URL; URLs are commonly logged. Store those keys with BYOK instead (then only `cf-aig-authorization` is required) or use a header/subprotocol where the provider accepts it.
 - Provider keys can be configured with BYOK on the gateway; the `cf-aig-authorization` header is still required.
 - Non-realtime streaming: an initial `universal.created` (content type `text/event-stream`), then `universal.stream` chunks, then `universal.done`. `eventId` lets you correlate responses on a persistent connection.

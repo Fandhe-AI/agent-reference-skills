@@ -38,10 +38,10 @@ export default {
 | `@cf/black-forest-labs/flux-2-dev` | Black Forest Labs | Partner; multi-reference support; Zero data retention | — |
 | `@cf/black-forest-labs/flux-2-klein-4b` | Black Forest Labs | Partner; ultra-fast distilled model that unifies generation and editing; Zero data retention | — |
 | `@cf/black-forest-labs/flux-2-klein-9b` | Black Forest Labs | Partner; 9B; multi-reference editing; Zero data retention | — |
-| `@cf/lykon/dreamshaper-8-lcm` | lykon | Stable Diffusion fine-tuned for photorealism; Zero data retention | — |
-| `@cf/runwayml/stable-diffusion-v1-5-inpainting` | RunwayML | Beta; inpainting with a mask; Zero data retention | $0.00 per step |
-| `@cf/stabilityai/stable-diffusion-xl-base-1.0` | Stability.ai | Beta; Zero data retention | $0.00 per step |
-| `@cf/bytedance/stable-diffusion-xl-lightning` | ByteDance | Beta; 1024px images in a few steps; Zero data retention | $0.00 per step |
+| `@cf/lykon/dreamshaper-8-lcm` | lykon | Stable Diffusion fine-tuned for photorealism; Zero data retention; Planned deprecation 2026-11-20 | — |
+| `@cf/runwayml/stable-diffusion-v1-5-inpainting` | RunwayML | Beta; inpainting with a mask; Zero data retention; Planned deprecation 2026-11-20 | $0.00 per step |
+| `@cf/stabilityai/stable-diffusion-xl-base-1.0` | Stability.ai | Beta; Zero data retention; Planned deprecation 2026-11-20 | $0.00 per step |
+| `@cf/bytedance/stable-diffusion-xl-lightning` | ByteDance | Beta; 1024px images in a few steps; Zero data retention; Planned deprecation 2026-11-20 | $0.00 per step |
 | `@cf/leonardo/lucid-origin` | Leonardo | Partner; Zero data retention | $0.007 per 512 by 512 tile, $0.000132 per step |
 | `@cf/leonardo/phoenix-1.0` | Leonardo | Partner; Zero data retention | $0.00583 per 512 by 512 tile, $0.00011 per step |
 
@@ -71,6 +71,7 @@ Output: `image` (string, generated image as Base64) on flux-1-schnell, lucid-ori
 - The flux-1-schnell page also includes a second example that decodes `response.image` with `atob` and returns `image/jpeg` bytes directly; its curl example uses the placeholder `"seed": "Random positive integer"`, which is not a valid integer value.
 - The SD-family pages (dreamshaper, SD v1.5 inpainting, SDXL base, SDXL lightning) share the same parameter list, including the img2img/inpainting inputs, even where the model name suggests otherwise.
 - `lucid-origin` documents both `num_steps` and `steps` with the same range.
+- Planned deprecation: `@cf/stabilityai/stable-diffusion-xl-base-1.0`, `@cf/runwayml/stable-diffusion-v1-5-inpainting`, `@cf/bytedance/stable-diffusion-xl-lightning`, and `@cf/lykon/dreamshaper-8-lcm` are flagged for deprecation on 2026-11-20; after that date requests fail with HTTP `410` / error code `5028`. The announcement suggests `@cf/black-forest-labs/flux-2-klein-9b` as the replacement for each. Source: https://developers.cloudflare.com/changelog/post/2026-11-05-planned-model-deprecations/ (pin 34d908a / fetched 2026-11-14).
 - FLUX.2 and Leonardo models are flagged Partner on their pages.
 
 ## Related

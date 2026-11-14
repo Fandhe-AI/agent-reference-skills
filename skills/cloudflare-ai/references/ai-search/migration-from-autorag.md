@@ -54,7 +54,7 @@ const result = await env.MY_INSTANCE.search({
 		retrieval: {
 			filters: {
 				folder: "customer-a/",
-				timestamp: { $gte: 1735689600 },
+				timestamp: { $gte: 1735689600000 },
 			},
 		},
 	},
@@ -99,7 +99,8 @@ Legacy filter shapes (`{ type: "eq", key, value }` and `{ type: "and"|"or", filt
 - Minimum versions for the new bindings: `@cloudflare/workers-types` `4.20260304.0`, `wrangler` `4.68.1`.
 - Token permission: legacy endpoints used the AutoRAG permission; new endpoints need AI & Machine Learning > AI Search (Read, Run, Edit). Account API tokens are recommended.
 - Streaming: legacy streaming returned only the generated text; new streaming sends a `chunks` event first.
-- The source migration example filters `timestamp` with milliseconds in the legacy form (`"1735689600000"`) and seconds in the new form (`1735689600`). The metadata page says the built-in `timestamp` is stored in milliseconds and comparisons round down to seconds; follow the new-format examples (seconds) as written in the filtering page.
+- The source migration examples now filter `timestamp` in milliseconds in both the legacy form (`"1735689600000"`) and the new form (`1735689600000`), consistent with the metadata page (built-in `timestamp` is Unix milliseconds, truncated to the minute).
+- Source: https://developers.cloudflare.com/ai-search/api/migration/workers-binding/ and https://developers.cloudflare.com/ai-search/api/migration/rest-api/ (pin 34d908a / fetched 2026-11-14)
 - The new REST API filters live under `ai_search_options.retrieval.filters` in the request body.
 
 ## Related

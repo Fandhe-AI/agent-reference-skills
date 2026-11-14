@@ -55,7 +55,7 @@ const logs = await env.AI_SEARCH.get("my-instance")
 | `reranking_model` | string | — | Reranking model. |
 | `rewrite_query` | boolean | — | Toggle query rewriting. |
 | `rewrite_model` | string | — | Rewriting model. |
-| `source` | string | — | Data source location. |
+| `source` | string | — | Data source location. Cannot be changed after creation. |
 | `cache` | boolean | — | Toggle response caching. |
 | `cache_ttl` | number | — | Seconds. |
 | `chunk_size` | number | — | Chunk tokens. |
@@ -78,7 +78,7 @@ const logs = await env.AI_SEARCH.get("my-instance")
 | `engine.r2.metadataSizeBytes` | number | — | Metadata bytes. |
 | `engine.r2.objectCount` | number | — | Objects in storage. |
 
-`info()` returns `id`, `type`, `source`, `namespace`, `status`, `paused`, `created_at`, `modified_at`, the model and retrieval settings above, `cache_threshold`, and `last_activity`.
+`info()` returns `id`, `type` (`r2`, `web-crawler`, `d1`, or `null`), `source`, `namespace`, `status`, `paused`, `created_at`, `modified_at`, the model and retrieval settings above, `cache_threshold`, and `last_activity`.
 
 ## Notes
 
@@ -86,6 +86,8 @@ const logs = await env.AI_SEARCH.get("my-instance")
 - `jobs.create({ description })`: description up to 255 characters. Job objects: `id`, `source` (`user` or `schedule`), optional `description`, `last_seen_at`, `started_at`, `ended_at`, `end_reason`. Logs: `id`, `message`, `message_type`, `created_at`, plus `result_info`.
 - `stats()` is the polling endpoint for indexing completion.
 - User-triggered syncs have a 30 second cooldown (error `7020`).
+- Source: https://developers.cloudflare.com/ai-search/api/instances/workers-binding/ and https://developers.cloudflare.com/ai-search/configuration/data-source/d1/ (pin 34d908a / fetched 2026-11-14)
+- For D1-backed instances, `update()` accepts `source_params.d1` (`query`, `template`); an omitted `query` or `template` keeps its value, but a `source_params` object replaces `include_items` and `exclude_items`, so send them again. A change starts a sync (see data-source-d1.md).
 - The source shows the `index_method` shape escaped as `\{ ... \}`; it is a type shape, not shorthand.
 
 ## Related

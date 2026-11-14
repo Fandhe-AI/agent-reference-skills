@@ -34,7 +34,7 @@ curl -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_
 
 - Timeout is measured to the first part of the response, so a streaming response that starts in time is awaited.
 - On the final retry attempt the gateway waits until the request completes regardless of duration.
-- Dynamic Routing also offers per-model timeouts and retries, conditional routing, rate limiting, and budget limiting through a visual interface. Gateway-level retries can be set in gateway settings.
+- Dynamic routes also offer per-model timeouts and retries, conditional routing, rate limiting, and budget limiting through a visual interface. Gateway-level retries can be set in gateway settings.
 
 ## Related
 

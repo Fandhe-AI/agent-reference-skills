@@ -41,6 +41,7 @@ const response = await env.AI.run(
 | Deprecated SDK version | `5019` / HTTP `405` | — | Request trying to use deprecated SDK version. |
 | LoRa unsupported | `5005` / HTTP `405` | — | The model `${this.model}` does not support LoRa inference. |
 | Invalid model ID | `3042` / HTTP `404` | — | The model name is invalid. |
+| Model deprecated | `5028` / HTTP `410` | — | `${model}` was deprecated on `${date}`. See the [model catalog](https://developers.cloudflare.com/workers-ai/models/) for alternatives. |
 | Request too large | `3006` / HTTP `413` | — | Request is too large. |
 | Timeout | `3007` / HTTP `408` | — | Request timeout. |
 | Aborted | `3008` / HTTP `408` | — | Request was aborted. |
@@ -50,7 +51,8 @@ const response = await env.AI.run(
 ## Notes
 
 - The `Model agreement` error (`5016`) is resolved by agreeing to Meta's license, as shown in the Llama vision tutorial.
-- `${model}`, `${type}`, `{what}` are placeholders in the messages.
+- `${model}`, `${type}`, `{what}`, `${date}` are placeholders in the messages.
+- `5028` / HTTP `410 Gone`: starting 2026-11-20, models listed in the planned-deprecation announcement stop returning responses and fail with this error. The date was moved from November 15 to November 20, 2026. Source: https://developers.cloudflare.com/changelog/post/2026-11-05-planned-model-deprecations/ and https://developers.cloudflare.com/workers-ai/platform/errors/ (pin 34d908a / fetched 2026-11-14).
 - Batch failures surface as `batch.failed` events with `internalCode` and `httpCode`.
 
 ## Related
