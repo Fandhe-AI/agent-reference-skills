@@ -21,6 +21,12 @@ CLI 本体の `settings.json` は `anthropic-claude-code`、Agent SDK の permis
 権限モード・サンドボックス・企業展開設定のみを担当）。
 plugins / mods の組織ポリシー系ページは `anthropic-claude-code-extend` が担当。
 
+## 対象バージョン
+
+Claude Code 2.1.325（2026-11-13）の changelog まで反映（取得日 2026-11-14）。
+2.1.319〜2.1.325 の権限・sandbox・managed settings・OTel の変更は各ページの `## Notes` に版付きで記載。
+本文を再取得した版差分の範囲外（2026-10-16 時点のまま）のページは `last verified` を据え置いている。
+
 ## ディレクトリ構成
 
 ```text

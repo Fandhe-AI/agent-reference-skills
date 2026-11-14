@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/permission-modes.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/permission-modes.md / last verified: 2026-11-14 -->
 
 # Choose a permission mode
 
@@ -46,6 +46,9 @@ claude --dangerously-skip-permissions   # equivalent to --permission-mode bypass
 - Protected paths (`.git`, `.claude`, `.vscode`, `.gitconfig`, `.npmrc`, shell rc files, etc.) are never auto-approved except in `bypassPermissions` mode or planning sessions with bypass permissions available — even a matching `permissions.allow` rule doesn't change this.
 - `bypassPermissions` still prompts for explicit `ask` rules, org-`ask` connector tools, `requiresUserInteraction` MCP tools, and `rm -rf /` / `rm -rf ~` circuit breakers. Refuses to start as root/sudo on Linux/macOS outside a recognized sandbox.
 - The Agent SDK's `canUseTool` permission callback (programmatic, per-tool-call approval) is a separate mechanism from these CLI permission modes; see anthropic-agent-sdk for that API. The `settings.json` `defaultMode` basics here belong to Claude Code itself; see anthropic-claude-code for general settings usage.
+- Auto mode server-side check (v2.1.319): with telemetry or feature flags off, including behind LLM gateways, calls the server can't check are asked about or denied, with no fallback to the built-in classifier; set `CLAUDE_CODE_AUTO_MODE_SERVER=0` to keep using the built-in classifier (Bedrock, Vertex and Foundry unchanged). Behind an LLM gateway, `CLAUDE_CODE_AUTO_MODE_SERVER=1` turns the server-side check on even with `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS` set; if managed settings set the latter, they must also set the `1`. A project's settings files or a plugin can no longer switch the server-side check back on once it was switched off outside the project.
+- v2.1.323: `--permission-mode auto` or a settings `defaultMode: auto` now starts in Manual mode (which asks first) when auto mode is unavailable, instead of a mode that could allow more.
+- Source: https://code.claude.com/docs/en/permission-modes.md (fetched 2026-11-14); https://code.claude.com/docs/en/changelog.md (2.1.319 / 2.1.323, fetched 2026-11-14)
 
 ## Related
 

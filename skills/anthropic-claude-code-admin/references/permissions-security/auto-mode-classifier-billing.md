@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/auto-mode-classifier-billing.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/auto-mode-classifier-billing.md / last verified: 2026-11-14 -->
 
 # Auto mode classifier request charges
 
@@ -38,6 +38,8 @@ Responding to the notice:
 - `CLAUDE_CODE_AUTO_MODE_SERVER` is a temporary setting and may be removed in a later release.
 - Check a session in auto mode with `/status`: the **Auto mode server** row reads `Enabled` while the server's checks decide actions and `Disabled` once the session has fallen back.
 - If a gateway cuts responses short or rewrites results into an unreadable form, you get denials with no verdict instead of this notice.
+- v2.1.319: with telemetry or feature flags off (including behind LLM gateways), calls the server can't check are asked about or denied rather than falling back to the built-in classifier; `CLAUDE_CODE_AUTO_MODE_SERVER=0` keeps the built-in classifier. `CLAUDE_CODE_AUTO_MODE_SERVER=1` behind a gateway turns the server check on even with `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS` set; managed settings that set the latter must set the `1` too.
+- Source: https://code.claude.com/docs/en/auto-mode-classifier-billing.md (fetched 2026-11-14); https://code.claude.com/docs/en/changelog.md (2.1.319, fetched 2026-11-14)
 
 ## Related
 

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/monitoring-usage.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/monitoring-usage.md / last verified: 2026-11-14 -->
 
 # Monitoring
 
@@ -95,6 +95,10 @@ Repository attributes (v2.1.269+): `OTEL_METRICS_INCLUDE_REPOSITORY=true` tags m
 - Traces (beta) require both `CLAUDE_CODE_ENABLE_TELEMETRY=1` and `CLAUDE_CODE_ENHANCED_TELEMETRY_BETA=1`; span hierarchy is `claude_code.interaction` → `claude_code.llm_request` / `claude_code.tool` (with `blocked_on_user` and `execution` children) / `claude_code.hook` (detailed beta only).
 - Standard attributes on all metrics/events include `session.id`, `organization.id`, `user.id`, `user.email`, `terminal.type`; `prompt.id` is event-only (excluded from metrics to avoid unbounded cardinality).
 - For per-session OpenTelemetry wiring from the Agent SDK (not the CLI), see `anthropic-agent-sdk`, which covers SDK-side observability configuration distinct from this CLI/organization-level telemetry reference.
+- `claude_code.safety_event`: v2.1.312 and later don't send it and no setting turns it on; query `tool_decision` events to see refused tool calls. Sessions on v2.1.307 through v2.1.311 may still send it.
+- v2.1.323 fixes: an `otlp` exporter with an endpoint but no `OTEL_EXPORTER_OTLP_PROTOCOL` defaults to `http/protobuf`; export to the default `localhost:4318` endpoint no longer goes through a configured proxy; exports through a proxy have 25 seconds to reach the collector, also the maximum `OTEL_EXPORTER_OTLP_TIMEOUT` allows (previously 30 seconds with a 10-second proxy wait); `mcp_server.name` follows the current connector directory.
+- v2.1.321: in non-interactive sessions, hook events leave two built-in hooks out of `num_hooks` and `num_success` after Bash and PowerShell calls.
+- Source: https://code.claude.com/docs/en/monitoring-usage.md (fetched 2026-11-14); https://code.claude.com/docs/en/changelog.md (2.1.321 / 2.1.323, fetched 2026-11-14)
 
 ## Related
 
