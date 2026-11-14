@@ -30,32 +30,48 @@ export class MyContainer extends DurableObject {
 
 Run a process after startup (`output()` buffers standard output and standard error as separate `ArrayBuffer` values):
 
+Adapted (not in the official docs): `startAndPrepare()` shares one preparation promise between concurrent callers, skips the work once preparation succeeded while the container still runs, and destroys the container when `prepare.js` fails so the next call starts and prepares again (the official version returns early whenever `running` is true).
+
 ```js
 import { DurableObject } from "cloudflare:workers";
 
 export class MyContainer extends DurableObject {
-	async startAndPrepare() {
-		const container = this.ctx.container;
-		if (container.running) {
-			return;
-		}
+	#prepared = false;
+	#preparing;
 
-		container.start({
-			image: container.images.base,
-			enableInternet: false,
+	startAndPrepare() {
+		if (this.#prepared && this.ctx.container.running) {
+			return Promise.resolve();
+		}
+		this.#preparing ??= this.#prepare().finally(() => {
+			this.#preparing = undefined;
 		});
+		return this.#preparing;
+	}
+
+	async #prepare() {
+		const container = this.ctx.container;
+		if (!container.running) {
+			this.#prepared = false;
+			container.start({
+				image: container.images.base,
+				enableInternet: false,
+			});
+		}
 
 		const process = await container.exec(["node", "scripts/prepare.js"]);
 		const output = await process.output();
 		const decoder = new TextDecoder();
 
 		if (output.exitCode !== 0) {
+			await container.destroy();
 			throw new Error(
 				`Container preparation failed: ${decoder.decode(output.stderr)}`,
 			);
 		}
 
 		console.log(decoder.decode(output.stdout));
+		this.#prepared = true;
 	}
 }
 ```
@@ -389,6 +405,7 @@ Options of `exec()` shown on this page (full contract in durable-object-containe
 
 ## Notes
 
+- Adapted from the official docs: `startAndPrepare()` shares one preparation promise, does not report success before `prepare.js` finishes, and destroys the container on a failed preparation so a later call retries (previously a retry was skipped while the container kept running).
 - Source: https://developers.cloudflare.com/containers/guides/execute-commands/ (cloudflare-docs production 34d908a, fetched 2026-11-14).
 - Commands run inside the container, never on the host.
 - `exec()` does not start a stopped container, but waits for one that is still starting. In RPC methods ensure the container is running before calling `exec()`.

@@ -88,7 +88,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 Durable Object that starts the container, waits for its HTTP server and forwards requests:
 
+Adapted (not in the official docs): the `DurableObject` import from `cloudflare:workers`, which the class needs at runtime, was added.
+
 ```ts
+import { DurableObject } from "cloudflare:workers";
+
 const PORT = 8080;
 const INACTIVITY_TIMEOUT_MS = 2 * 60 * 1000;
 
@@ -208,6 +212,7 @@ Configuration points of the Wrangler file above:
 
 ## Notes
 
+- Adapted from the official docs: the Durable Object snippet gains the `import { DurableObject } from "cloudflare:workers"` line.
 - Source: https://developers.cloudflare.com/containers/get-started/ (cloudflare-docs production 34d908a, fetched 2026-11-14).
 - On deploy Wrangler uploads the Worker, builds and pushes the image with Docker, and updates container instances. The first build and push take longest; later deploys reuse cached image layers. Wait several minutes after the first deploy: the Worker URL may respond while containers are still provisioning, and calls into the container can error. If container routes still error afterwards, check the Containers logs in the dashboard.
 - Try the deployed Worker at `https://hello-containers.<YOUR_WORKERS_SUBDOMAIN>.workers.dev`: `/container/1` and `/container/2` route to specific containers (each path after `/container/` maps to a unique container), `/lb` load-balances across three containers chosen at random, `/singleton` always routes to the same container, and `/error` makes a dedicated test container exit with an error. The code for `/singleton` and `/error` is not shown in the official guide.

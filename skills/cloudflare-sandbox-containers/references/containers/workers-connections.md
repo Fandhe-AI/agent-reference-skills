@@ -10,7 +10,7 @@ Containers reach Workers bindings (KV, R2, D1, Durable Objects, and others) thro
 
 Define a `WorkerEntrypoint` for each virtual hostname. `this.env` gives you access to every binding declared in your Wrangler configuration. Pass per-instance values, such as the Durable Object ID, in `props`. `ctx.exports` requires a compatibility date of `2025-11-17` or later, or the `enable_ctx_exports` compatibility flag.
 
-Adapted (not in the official docs): `KvGateway` scopes keys to this container's ID with the `props.containerId` prefix, as `R2Gateway` does (the official version reads any key of the shared KV namespace); and `startContainer()` is wrapped so that concurrent calls share one startup promise (the official version can start twice when several requests arrive while the container is stopped, and `start()` throws on a running container); the original body is unchanged inside `#startContainer()`.
+Adapted (not in the official docs): `KvGateway` scopes keys to this container's ID with the `props.containerId` prefix, as `R2Gateway` does (the official version reads any key of the shared KV namespace), and returns 404 for a missing key (the official version answers 200 with an empty body); and `startContainer()` is wrapped so that concurrent calls share one startup promise (the official version can start twice when several requests arrive while the container is stopped, and `start()` throws on a running container); the original body is unchanged inside `#startContainer()`.
 
 ```js
 import { DurableObject, WorkerEntrypoint } from "cloudflare:workers";
@@ -19,7 +19,7 @@ export class KvGateway extends WorkerEntrypoint {
 	async fetch(request) {
 		const key = `${this.ctx.props.containerId}${new URL(request.url).pathname}`;
 		const value = await this.env.KV.get(key);
-		return new Response(value);
+		return new Response(value, { status: value === null ? 404 : 200 });
 	}
 }
 
@@ -62,7 +62,7 @@ export class MyContainer extends DurableObject {
 }
 ```
 
-Adapted (not in the official docs): `KvGateway` scopes keys to this container's ID with the `props.containerId` prefix, as `R2Gateway` does (the official version reads any key of the shared KV namespace); and `startContainer()` is wrapped so that concurrent calls share one startup promise (the official version can start twice when several requests arrive while the container is stopped, and `start()` throws on a running container); the original body is unchanged inside `#startContainer()`.
+Adapted (not in the official docs): `KvGateway` scopes keys to this container's ID with the `props.containerId` prefix, as `R2Gateway` does (the official version reads any key of the shared KV namespace), and returns 404 for a missing key (the official version answers 200 with an empty body); and `startContainer()` is wrapped so that concurrent calls share one startup promise (the official version can start twice when several requests arrive while the container is stopped, and `start()` throws on a running container); the original body is unchanged inside `#startContainer()`.
 
 ```ts
 import { DurableObject, WorkerEntrypoint } from "cloudflare:workers";
@@ -73,7 +73,7 @@ export class KvGateway extends WorkerEntrypoint<Env, Props> {
 	async fetch(request: Request): Promise<Response> {
 		const key = `${this.ctx.props.containerId}${new URL(request.url).pathname}`;
 		const value = await this.env.KV.get(key);
-		return new Response(value);
+		return new Response(value, { status: value === null ? 404 : 200 });
 	}
 }
 
@@ -126,7 +126,7 @@ export class MyContainer extends DurableObject<Env> {
 
 ## Notes
 
-- Adapted from the official docs: `KvGateway` prefixes keys with `props.containerId` (the official version lets the container read any key in the shared namespace); keys are therefore stored as `<containerId>/<key>`. Without scoping, one container could read other instances' data.
+- Adapted from the official docs: `KvGateway` prefixes keys with `props.containerId` (the official version lets the container read any key in the shared namespace); keys are therefore stored as `<containerId>/<key>`; a missing key returns 404. Without scoping, one container could read other instances' data.
 - Source: https://developers.cloudflare.com/containers/configuration/workers-connections/ (cloudflare-docs production 34d908a, fetched 2026-11-14).
 - The container calls `http://my.kv/some-key` and the entrypoint resolves it using the KV binding. A call to `http://my.r2/file.png` reads from R2, scoped to the current container instance.
 - An intercept lasts until the container stops. Register intercepts each time you start the container.
