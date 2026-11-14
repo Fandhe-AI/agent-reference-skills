@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals / last verified: 2026-11-14 -->
 
 # Handle streaming refusals
 
