@@ -145,6 +145,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Data Pipelines | `gcp-data-pipelines` | `datapipelines` |
 | Data Security Posture Management | `gcp-security` | `dspm` |
 | Data Studio | 対象外 | `datastudio` |
+| Data Studio (formerly Looker Studio) | 対象外 | `datastudio` |
 | Database Center | `gcp-foundation` | `databasecenter` |
 | Database Insights | `gcp-databases-relational` | `databaseinsights` |
 | Database Migration Service | `gcp-databases-relational` | `datamigration` |
@@ -163,6 +164,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Distributed Cloud Edge Container | `gcp-networking` | `edgecontainer` |
 | Distributed Cloud Edge Network | `gcp-networking` | `edgenetwork` |
 | Document AI | `gcp-ai-apis` | `clouddocumentai` |
+| Duet AI in Google Cloud (now Gemini for Google Cloud) | `gcp-agent-platform` | `cloudaicompanion` |
 | Enterprise Knowledge Graph | 対象外 | `enterpriseknowledgegraph` |
 | Enterprise Purchasing API | `gcp-foundation` | `enterprisepurchasing` |
 | Error Reporting | `gcp-observability` | `errorreporting` |
@@ -205,6 +207,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Gemini Data Analytics | `gcp-bigquery` | `geminidataanalytics` |
 | Gemini Enterprise Agent Platform | `gcp-agent-platform` | `aiplatform` |
 | Gemini Enterprise for Customer Experience | `gcp-agent-platform` | `ces` |
+| Gemini for Google Cloud (formerly Duet AI in Google Cloud) | `gcp-agent-platform` | `cloudaicompanion` |
 | Gemini for Google Cloud API | `gcp-agent-platform` | `cloudaicompanion` |
 | GKE Dataplane Management | `gcp-gke` | `gkedataplanemanagement` |
 | GKE Hub | `gcp-gke` | `gkehub` |
@@ -243,6 +246,7 @@ source: https://docs.cloud.google.com/iam/docs/roles-permissions
 | Kubernetes Metadata API | `gcp-gke` | `kubernetesmetadata` |
 | Live Stream | `gcp-ai-apis` | `livestream` |
 | Looker | 対象外 | `looker` |
+| Looker Studio (now Data Studio) | 対象外 | `datastudio` |
 | Maintenance API | `gcp-foundation` | `maintenance` |
 | Managed Service for Apache Airflow | `gcp-data-pipelines` | `composer` |
 | Managed Service for Apache Airflow (formerly Cloud Composer) | `gcp-data-pipelines` | `composer` |
