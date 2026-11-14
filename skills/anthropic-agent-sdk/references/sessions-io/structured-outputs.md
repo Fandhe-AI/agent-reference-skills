@@ -21,7 +21,7 @@ for await (const message of query({
   prompt: "Research Anthropic and provide key company information",
   options: { outputFormat: { type: "json_schema", schema } }
 })) {
-  if (message.type === "result" && message.subtype === "success" && message.structured_output) {
+  if (message.type === "result" && message.subtype === "success" && !message.is_error && message.structured_output) {
     console.log(message.structured_output);
   }
 }

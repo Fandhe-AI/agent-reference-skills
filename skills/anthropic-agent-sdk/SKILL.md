@@ -5,7 +5,7 @@ description: >
   query(), ClaudeAgentOptions / Options, maxTurns,
   custom tools (in-process MCP), createSdkMcpServer, hooks, permissions (canUseTool), subagents,
   sessions (resume / fork), streaming, structured outputs, Agent Skills (SKILL.md),
-  hosting / observability。
+  hosting / observability、削除済み V2 セッション API (unstable_v2_*)。
 user-invocable: false
 ---
 

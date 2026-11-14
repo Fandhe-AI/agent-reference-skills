@@ -238,6 +238,8 @@ When the Claude Code process crashes, it emits a final `error_during_execution` 
    - The turn before the crash was the `/clear` itself, so its result covers only the reset.
 2. Sum the `usage` on the assistant messages instead, counting each API response once, as the per-step example above does. In single-shot mode, sum all of them; in streaming input mode, sum the ones that arrived after the last result. This gives you the main loop's input and cache tokens. Subagent usage isn't recoverable this way, and neither are output tokens or USD cost, because per-step `output_tokens` is a placeholder.
 
+- The steps above are verbatim from the official page. The earlier result covers completed turns only; the page does not describe recovering usage the crashed turn consumed after that result except through the step 2 fallback, whose limits are listed above.
+
 #### Track cache tokens
 
 The Agent SDK automatically uses prompt caching to reduce costs on repeated content; you do not need to configure caching yourself. The usage object includes two additional fields:
