@@ -65,4 +65,40 @@ test('GET /posts with env binding', async () => {
 - `app.request()` accepts a path string, full URL, or `Request` object
 - Always set `Content-Type: application/json` when sending JSON; Hono cannot parse the body without it
 - Pass mock bindings as the third argument to simulate Cloudflare Workers environment (KV, D1, etc.)
-- For Cloudflare Workers, the recommended test runner is Vitest with `@cloudflare/vitest-pool-workers`
+- For Cloudflare Workers, the recommended test runner is Vitest with `@cloudflare/vitest-plugin`
+
+## Cloudflare Workers with @cloudflare/vitest-plugin
+
+Official example config (verbatim from hono.dev Examples > Cloudflare Testing). Inside tests, `import { env } from 'cloudflare:workers'` gives the bindings from the Wrangler config, and `cloudflare:test` provides helpers such as `createExecutionContext()`.
+
+`vitest.config.ts`:
+
+```ts
+import { cloudflareTest } from '@cloudflare/vitest-plugin'
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  plugins: [
+    cloudflareTest({
+      wrangler: { configPath: './wrangler.jsonc' },
+    }),
+  ],
+})
+```
+
+`wrangler.jsonc`:
+
+```jsonc
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "my-app",
+  "main": "src/index.ts",
+  "compatibility_date": "2024-09-09",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "MY_VAR": "my variable",
+  },
+}
+```
+
+Source: https://hono.dev/examples/cloudflare-vitest (honojs/website@20aab4e0, retrieved 2026-11-14).

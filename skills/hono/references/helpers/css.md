@@ -43,6 +43,7 @@ const combined = cx(headerClass, extraClass)
 - Pseudo-classes use the nesting selector `&` (e.g., `&:hover`)
 - Global styles can be defined using the `:-hono-global` pseudo-selector
 - `nonce` prop on `<Style />` supports Content-Security-Policy headers
+- Since v4.13.16 closing tags such as `</style>` assembled from template parts and values are escaped after minification (GHSA-3gg2-335m-rxc6). Source: https://github.com/honojs/hono/releases/tag/v4.13.16
 
 ## Related
 

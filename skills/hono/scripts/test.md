@@ -40,5 +40,5 @@ pnpm test
 bun run test
 ```
 
-Cloudflare Workers のテストには `@cloudflare/vitest-pool-workers` の利用が公式推奨。
+Cloudflare Workers のテストには `@cloudflare/vitest-plugin` の利用が公式推奨（旧 `@cloudflare/vitest-pool-workers` から公式 docs が変更）。
 `app.request()` を使うことで HTTP サーバーを起動せずにレスポンスを検証できる。

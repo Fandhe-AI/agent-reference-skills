@@ -23,6 +23,8 @@ app.get('/etag/abc', (c) => c.text('Hono is cool'))
 
 - `RETAINED_304_HEADERS` (exported from `hono/etag`) contains the RFC-required headers: `Cache-Control`, `Content-Location`, `Date`, `ETag`, `Expires`, `Vary`.
 - Extend retained headers by spreading `RETAINED_304_HEADERS` with your custom headers.
+- Source: https://hono.dev/docs/middleware/builtin/etag (honojs/website@20aab4e0, retrieved 2026-11-14)
+- Since v4.13.17 quoted entity tags keep their commas and the discarded response body is cancelled. Source: https://github.com/honojs/hono/releases/tag/v4.13.17
 
 ## Related
 

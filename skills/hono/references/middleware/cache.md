@@ -30,6 +30,23 @@ app.get('*', cache({
 - On Cloudflare Workers, `Cache-Control` headers from the origin response are respected automatically.
 - On Deno, set `wait: true` because cache invalidation is not automatic.
 - This middleware requires a runtime that implements the Cache API.
+### Caching authenticated responses
+
+The cache is shared by all clients and stores any cacheable response, including one for a signed-in user; the middleware does not look at the `Cookie` request header. To keep per-user responses out of the shared cache: register `cache()` after your authentication middleware, set `Cache-Control: private` (or `no-store`) on per-user responses (the middleware does not store them), or use `vary` such as `vary: 'Cookie'` to cache a separate response per cookie value.
+
+```ts
+app.use('/api/*', auth)
+app.get(
+  '/api/*',
+  cache({
+    cacheName: 'my-app',
+    cacheControl: 'max-age=60',
+    vary: 'Cookie',
+  })
+)
+```
+- The middleware also caches responses to QUERY requests; the cache key then includes a digest of the request content and its representation metadata (RFC 10008).
+- Source: https://hono.dev/docs/middleware/builtin/cache (honojs/website@20aab4e0, retrieved 2026-11-14)
 
 ## Related
 

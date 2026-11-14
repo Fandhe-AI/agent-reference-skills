@@ -44,6 +44,9 @@ Returns: `string` — base path with actual parameter values substituted (e.g., 
 
 - All helpers support sub-applications composed with `app.route()`
 - `index` uses `Array.at()` semantics, so `-1` refers to the last matched route
+- Source: https://hono.dev/docs/helpers/route (honojs/website@20aab4e0, retrieved 2026-11-14)
+- Since v4.13.14 `basePath()` matches regex params the same way as the router (https://github.com/honojs/hono/releases/tag/v4.13.14).
+- v5 (release candidate): `c.req.matchedRoutes` and `c.req.routePath` are removed; use `matchedRoutes(c)` and `routePath(c)` from this helper. See guides/migrating-to-v5.md.
 
 ## Related
 

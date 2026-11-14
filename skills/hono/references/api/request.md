@@ -167,6 +167,7 @@ Useful when you need to pass the original request to another function after read
 - `matchedRoutes` and `routePath` are deprecated since v4.8.0; use Route Helper instead
 - `parseBody()` requires the content-type to be `multipart/form-data` or `application/x-www-form-urlencoded`
 - `cloneRawRequest()` is necessary when passing the request downstream after body consumption, since `Request.body` is a one-time-read stream
+- v5 (release candidate): `c.req.json()` returns `Promise<unknown>`, `c.req.query()` / `c.req.queries()` without a key return values that may be `undefined`, and `c.req.matchedRoutes` / `c.req.routePath` are removed. See guides/migrating-to-v5.md.
 
 ## Related
 

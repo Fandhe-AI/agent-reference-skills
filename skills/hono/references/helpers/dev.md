@@ -14,8 +14,11 @@ app.post('/posts', (c) => c.text('create'))
 
 showRoutes(app, { verbose: true })
 // GET   /v1/posts
+//         [handler]
 // GET   /v1/posts/:id
+//         [handler]
 // POST  /v1/posts
+//         [handler]
 
 console.log(getRouterName(app))
 // e.g. 'SmartRouter'
@@ -42,6 +45,8 @@ Returns: `string` — name of the active router (e.g., `'SmartRouter'`, `'RegExp
 ## Notes
 
 - These helpers are intended for development/debugging only; avoid using in production handlers
+- The official output now prints a `[handler]` line under each route.
+- Source: https://hono.dev/docs/helpers/dev (honojs/website@20aab4e0, retrieved 2026-11-14)
 
 ## Related
 
