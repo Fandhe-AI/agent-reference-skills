@@ -103,7 +103,7 @@ curl https://api.anthropic.com/v1/organizations/tunnels \
 - Archiving the last non-archived certificate is permitted but leaves the tunnel unable to serve MCP traffic until a new certificate is added.
 - Overlapping resource-level coverage of this same deprecated surface exists in the `anthropic-admin-platform` skill (`references/endpoints-admin/mcp-tunnels.md`); this page frames the same endpoints from the migration/predecessor angle for readers of the `/v1/tunnels` pages in this category.
 
-- Source: https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/list (fetched 2026-11-14). The official example sends the key as a Bearer `Authorization` header with `anthropic-version: 2026-10-21`; existing integrations keep working with the `mcp-tunnels-2026-05-19` header and `org:manage_tunnels` scope during the migration window, and new integrations should use `/v1/tunnels`.
+- Source: https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/list (fetched 2026-11-14). The official example sends `$ANTHROPIC_API_KEY` as a Bearer `Authorization` header; despite the variable name, the token must be a WIF-exchanged token with the `org:manage_tunnels` scope (see the migration note above) with `anthropic-version: 2026-10-21`; existing integrations keep working with the `mcp-tunnels-2026-05-19` header and `org:manage_tunnels` scope during the migration window, and new integrations should use `/v1/tunnels`.
 
 ## Related
 

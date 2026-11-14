@@ -38,7 +38,7 @@ See [FORMS.md](FORMS.md), [REFERENCE.md](REFERENCE.md), [EXAMPLES.md](EXAMPLES.m
 - Anti-pattern: offering too many library/approach options instead of one clear default.
 - Build 3–5 evaluations before writing extensive documentation; test across Haiku/Sonnet/Opus.
 - Scripts should "solve, don't defer" — handle errors explicitly, avoid unjustified "voodoo constants".
-- Runtime limits: claude.ai can install packages from npm/PyPI and pull from GitHub; the Claude API has no network access and no runtime package installation, so list required packages in SKILL.md and check them against the code execution tool docs. Do not assume packages are installed (state `pip install ...` explicitly).
+- Runtime limits: claude.ai can install packages from npm/PyPI and pull from GitHub; the Claude API has no network access and no runtime package installation, so list required packages in SKILL.md and check them against the code execution tool docs. Do not assume packages are installed: on surfaces that allow runtime installs, state `pip install ...` explicitly; on the Claude API, use only packages already available in the code execution container and say what to do when one is missing.
 - Execution intent: write "Run `analyze_form.py` to extract fields" (execute) vs "See `analyze_form.py` for the extraction algorithm" (read).
 - Source: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices (fetched 2026-11-14)
 - This page is for Claude API Agent Skills. Claude Code's Skills conventions live in `anthropic-claude-code-extend`.
