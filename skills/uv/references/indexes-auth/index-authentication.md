@@ -115,10 +115,22 @@ url = "https://internal.example.com/simple"
 exclude-newer = "7 days"
 ```
 
-Index-specific values only affect packages served from that index. Package-specific `exclude-newer-package` overrides still take precedence. If an index does not provide `upload-time` metadata, disable the cutoff for that index with `exclude-newer = false`.
+Index-specific values only affect packages served from that index. You can override the cutoff for individual packages on that index with `exclude-newer-package`:
+
+```toml
+[[tool.uv.index]]
+name = "internal"
+url = "https://internal.example.com/simple"
+exclude-newer = "7 days"
+exclude-newer-package = { example = false }
+```
+
+Package-specific overrides in `[tool.uv.exclude-newer-package]` or on the command line take precedence over index-specific package overrides. If an index does not provide `upload-time` metadata, disable the cutoff for that index with `exclude-newer = false`.
 
 ## Notes
 
+- Migration (0.13.1 → 0.13.8): per-index `exclude-newer-package` was added to `[[tool.uv.index]]`; `false` disables `exclude-newer` for that package on this index. The field's doc comment in the uv source states: "This option is in preview and may change in any future release."
+- Source: https://docs.astral.sh/uv/concepts/indexes/ and https://github.com/astral-sh/uv/blob/0.13.8/crates/uv-distribution-types/src/index.rs (tag 0.13.8; fetched 2026-11-14)
 - Credentials are never stored in the `uv.lock` file; uv must have access to the authenticated URL at installation time.
 - Providing credentials via environment variables avoids storing sensitive information in the plaintext `pyproject.toml`.
 - `hash-algorithm` requires the `index-hash-algorithm` preview feature.

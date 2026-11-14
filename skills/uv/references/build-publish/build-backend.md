@@ -10,7 +10,7 @@ The uv build backend (`uv_build`) is a native PEP 517 build backend that transfo
 
 ```toml
 [build-system]
-requires = ["uv_build>=0.13.1,<0.14"]
+requires = ["uv_build>=0.13.8,<0.14"]
 build-backend = "uv_build"
 ```
 

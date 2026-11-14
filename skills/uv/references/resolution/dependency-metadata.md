@@ -47,6 +47,8 @@ requires-dist = ["torch", "einops"]
 
 Like dependency overrides, `tool.uv.dependency-metadata` can also be used for cases in which a package's metadata is incorrect or incomplete, or when a package is not available in the package index. While dependency overrides allow overriding the allowed versions of a package globally, metadata overrides allow overriding the declared metadata of a _specific package_.
 
+For a variant wheel at a direct URL, the wheel's `METADATA` must still be parseable even when `tool.uv.dependency-metadata` supplies its dependencies. For example, an override can replace an incorrect version constraint, but the original `Requires-Dist` entry must use valid syntax.
+
 ## Options / Props
 
 | Name | Description |
@@ -60,6 +62,7 @@ Like dependency overrides, `tool.uv.dependency-metadata` can also be used for ca
 ## Notes
 
 - Entries follow the Metadata 2.3 specification, though only `name`, `version`, `requires-dist`, `requires-python`, and `provides-extra` are read by uv.
+- Source: https://github.com/astral-sh/uv/blob/0.13.8/docs/concepts/resolution.md (tag 0.13.8; fetched 2026-11-14). The variant-wheel paragraph was added after 0.13.1; variant wheels are the preview feature `wheel-variants`.
 
 ## Related
 

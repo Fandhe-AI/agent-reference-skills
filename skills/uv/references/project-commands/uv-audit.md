@@ -74,7 +74,8 @@ $ uv audit --output-format json
 ## Notes
 
 - The official CLI reference text says `--platform windows`, but no `--platform` option exists; the correct flag is `--python-platform`.
-- Preview feature `audit-command`: `uv audit` and `uv tool audit` check project and installed-tool dependencies for known vulnerabilities; a preview warning is displayed unless the feature is enabled (see the preview features page). The preview feature `malware-check` is separate: it checks packages for known malware using OSV. Its timing is inconsistent in the official docs (the preview-features list says before installing; the `UV_MALWARE_CHECK` environment-variable reference says after `uv sync` / after every lockfile sync), so do not rely on it as a pre-install gate until verified against the pinned 0.13.1 release.
+- 0.13.7: `uv audit` reports aliased OSV records as a single vulnerability. 0.13.8: quarantined packages are reported even when index URLs differ only in redacted query values. Source: https://github.com/astral-sh/uv/blob/0.13.8/CHANGELOG.md (tag 0.13.8; fetched 2026-11-14).
+- Preview feature `audit-command`: `uv audit` and `uv tool audit` check project and installed-tool dependencies for known vulnerabilities; a preview warning is displayed unless the feature is enabled (see the preview features page). The preview feature `malware-check` is separate: it checks packages for known malware using OSV. Its timing is inconsistent in the official docs (the preview-features list says before installing; the `UV_MALWARE_CHECK` environment-variable reference says after `uv sync` / after every lockfile sync), so do not rely on it as a pre-install gate until verified against the pinned 0.13.8 release.
 - Global options are listed in uv.md (project-commands).
 
 ## Related

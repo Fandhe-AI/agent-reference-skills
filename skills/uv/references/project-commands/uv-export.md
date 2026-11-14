@@ -90,6 +90,7 @@ $ uv export --format requirements.txt --output-file requirements.txt
 
 ## Notes
 
+- 0.13.2: `uv export --format pylock.toml` includes the supported environment restrictions in the exported file. Source: https://github.com/astral-sh/uv/blob/0.13.8/CHANGELOG.md (tag 0.13.8; fetched 2026-11-14).
 - Global options are listed in uv.md (project-commands).
 
 ## Related

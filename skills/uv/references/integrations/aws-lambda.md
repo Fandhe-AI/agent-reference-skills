@@ -36,7 +36,7 @@ Run locally with `uv run fastapi dev`.
 Multi-stage build: bundle dependencies into the task root in the first stage, copy it into the final image (uv itself is not included).
 
 ```dockerfile
-FROM ghcr.io/astral-sh/uv:0.13.1 AS uv
+FROM ghcr.io/astral-sh/uv:0.13.8 AS uv
 
 # First, bundle the dependencies into the task root.
 FROM public.ecr.aws/lambda/python:3.13 AS builder

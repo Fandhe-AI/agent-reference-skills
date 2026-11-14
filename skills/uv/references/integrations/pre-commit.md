@@ -14,7 +14,7 @@ Add to the `repos` list in `.pre-commit-config.yaml`. Keep `uv.lock` up to date 
 repos:
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
-    rev: 0.13.1
+    rev: 0.13.8
     hooks:
       - id: uv-lock
 ```
@@ -25,7 +25,7 @@ Keep a `requirements.txt` in sync with `uv.lock`:
 repos:
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
-    rev: 0.13.1
+    rev: 0.13.8
     hooks:
       - id: uv-export
 ```
@@ -36,7 +36,7 @@ Compile requirements files (modify `args` and `files` for alternative files):
 repos:
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
-    rev: 0.13.1
+    rev: 0.13.8
     hooks:
       # Compile requirements
       - id: pip-compile
@@ -49,7 +49,7 @@ Run the hook over multiple files by adding entries:
 repos:
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
-    rev: 0.13.1
+    rev: 0.13.8
     hooks:
       # Compile requirements
       - id: pip-compile

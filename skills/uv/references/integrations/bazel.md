@@ -34,7 +34,7 @@ $ chmod +x bazel/uv-auth-helper
 
 ## Notes
 
-- The wrapper uses `--preview-features auth-helper`, so `uv auth helper` is a preview feature at 0.13.1.
+- The wrapper uses `--preview-features auth-helper`, so `uv auth helper` is a preview feature at 0.13.8.
 - For broader Bazel workflows with uv, see the `rules_py` uv guide (`aspect-build/rules_py`) and the `rules_python` uv guide.
 
 ## Related

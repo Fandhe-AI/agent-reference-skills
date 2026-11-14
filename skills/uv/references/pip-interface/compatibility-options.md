@@ -64,7 +64,7 @@ uv does not support the complete set of `pip`'s command-line options and subcomm
 
 ## Registry authentication
 
-uv does not support `pip`'s `auto` or `import` options for `--keyring-provider`; only the `subprocess` option is supported. Unlike `pip`, uv does not enable keyring authentication by default, and does not wait until a request returns an HTTP 401 before searching for authentication: uv attaches authentication to all requests for hosts with credentials available.
+uv does not support `pip`'s `auto` or `import` options for `--keyring-provider`; only the `subprocess` option is supported. Unlike `pip`, uv does not enable keyring authentication by default, and can use credentials supplied with a request or cached for its URL before the server returns an HTTP 401. For the rules governing credential lookup, see credential providers in the indexes documentation (`concepts/indexes`, "Using credential providers").
 
 ## `egg` support
 
@@ -82,6 +82,7 @@ When constraints are provided via `--constraint` (or `UV_CONSTRAINT`), uv does n
 
 ## Notes
 
+- Migration (0.13.1 → 0.13.8): the 0.13.1 docs said uv does not wait until a request returns an HTTP 401 before searching for authentication and attaches authentication to all requests for hosts with credentials available; the 0.13.8 docs reword this as above. Source: https://docs.astral.sh/uv/pip/compatibility/ (tag 0.13.8; fetched 2026-11-14).
 - Resolution-level differences (configuration files, pre-releases, multiple indexes, build isolation, transitive URLs, virtual environments by default, strategy) are in `compatibility-resolution.md`.
 
 ## Related

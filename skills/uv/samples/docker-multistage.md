@@ -41,7 +41,7 @@ CMD ["/app/.venv/bin/hello"]
 Pin the uv version instead of `latest`:
 
 ```dockerfile
-COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.8 /uv /uvx /bin/
 ```
 
 ## Notes

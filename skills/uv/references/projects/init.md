@@ -34,7 +34,7 @@ $ uv init example-bare --bare
 - Prior to v0.12, uv did not define a build system for applications by default.
 - uv creates the project in the working directory, or in a target directory given by name (`uv init foo`). If a `pyproject.toml` already exists in the target directory, uv exits with an error.
 - By default uv defines a build system and places sources in `src/<project_name>/`; this allows packaging features such as command-line entry points and avoids common points of confusion with the Python import system.
-- Applications (web servers, scripts, CLIs) get `.python-version`, `README.md`, `pyproject.toml`, `src/example_app/__init__.py` and a `[project.scripts]` entry; build system `requires = ["uv_build>=0.13.1,<0.14"]`, `build-backend = "uv_build"`.
+- Applications (web servers, scripts, CLIs) get `.python-version`, `README.md`, `pyproject.toml`, `src/example_app/__init__.py` and a `[project.scripts]` entry; build system `requires = ["uv_build>=0.13.8,<0.14"]`, `build-backend = "uv_build"`.
 
 ```toml
 [project]
@@ -49,7 +49,7 @@ dependencies = []
 example-app = "example_app:main"
 
 [build-system]
-requires = ["uv_build>=0.13.1,<0.14"]
+requires = ["uv_build>=0.13.8,<0.14"]
 build-backend = "uv_build"
 ```
 

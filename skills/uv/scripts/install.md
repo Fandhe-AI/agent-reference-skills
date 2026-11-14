@@ -31,12 +31,12 @@ The official documentation shows a one-liner that pipes the output of `curl` str
 > **Warning**: This runs a downloaded script. Review it before running it.
 
 ```sh
-curl -LsSf -o install.sh https://astral.sh/uv/0.13.1/install.sh
+curl -LsSf -o install.sh https://astral.sh/uv/0.13.8/install.sh
 less install.sh
 sh install.sh
 ```
 
-The version `0.13.1` in the URL is the one used in the official documentation.
+The version `0.13.8` in the URL is the one used in the official documentation.
 
 ## Standalone installer (Windows)
 
@@ -51,7 +51,7 @@ powershell -ExecutionPolicy ByPass -File .\install.ps1
 To pin a version, include it in the URL.
 
 ```powershell
-irm https://astral.sh/uv/0.13.1/install.ps1 -OutFile install.ps1
+irm https://astral.sh/uv/0.13.8/install.ps1 -OutFile install.ps1
 Get-Content .\install.ps1 | more
 powershell -ExecutionPolicy ByPass -File .\install.ps1
 ```
