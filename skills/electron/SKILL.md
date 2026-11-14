@@ -1,7 +1,7 @@
 ---
 name: electron
 description: >
-  Electron (Chromium + Node.js 製クロスプラットフォームデスクトップアプリフレームワーク, v44) の
+  Electron (Chromium + Node.js 製クロスプラットフォームデスクトップアプリフレームワーク, v45) の
   リファレンス。main / renderer / preload / utilityProcess, ipcMain / ipcRenderer / contextBridge,
   BrowserWindow / BaseWindow / WebContentsView / webContents, Electron Forge, autoUpdater, safeStorage, fuses, ASAR,
   contextIsolation / sandbox, code signing, MAS, crashReporter, contentTracing, debugging, E2E testing,
@@ -11,7 +11,7 @@ user-invocable: false
 
 # Electron
 
-対象バージョン Electron v44.8.0: GitHub tag v44.8.0 (electron/electron)。npm latest = 44.8.0（2026-10-16 公開）。原本は 2026-10-17 に `raw.githubusercontent.com/electron/electron/v44.8.0/docs/` から取得。`main` および `44-x-y` ブランチは使用しない。45.0.0-beta は対象外。公式サイトに `llms.txt` / `.md` twin は無い。
+対象バージョン Electron v45.3.2: GitHub tag v45.3.2 (electron/electron)。npm latest = 45.3.2。原本は `raw.githubusercontent.com/electron/electron/v45.3.2/docs/` から取得。`main` および `45-x-y` ブランチは使用しない。公式サイトに `llms.txt` / `.md` twin は無い。
 
 ## ディレクトリ構成
 

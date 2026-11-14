@@ -50,7 +50,7 @@ vs_installer.exe ^
 ## Notes
 
 - Debugging native modules: use Visual Studio 2017 on the development machine with the Visual Studio Remote Debugger on the target device; launch the app `.exe` with `--inspect-brk`, attach via Debug > Attach to Process, load `.pdb` symbols via Debug > Options, and use Chrome's remote tools for Node.
-- The page's toolchain versions (Visual Studio 2017, Electron 6.0.8 / 6.0.9, Windows 10 1903) are as stated in the original text for v44.8.0; it was not rewritten for newer toolchains.
+- The page's toolchain versions (Visual Studio 2017, Electron 6.0.8 / 6.0.9, Windows 10 1903) are as stated in the original text for v45.3.2; it was not rewritten for newer toolchains.
 - Corrected (differs from the official page): the official text says v142 is "provided in Visual Studio 2017", but v142 is the Visual Studio 2019 toolset. If v142 is required, use Visual Studio 2019 or later (with the `VC.Tools.ARM64` component) and read the VS 2017 cross tools prompt names above accordingly.
 - Distance line: Electron-specific arm64 builds only. General Windows on Arm / WinUI app development and MSIX publishing are covered by windows-packaging-publish and windows-app-sdk.
 

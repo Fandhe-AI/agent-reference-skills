@@ -69,7 +69,7 @@ win.webContents.sendInputEvent({ type: 'keyDown', keyCode: 'A', modifiers: ['shi
 
 * Source pages: `api/structures/input-event`, `keyboard-input-event`, `mouse-input-event`, `mouse-wheel-input-event`, `keyboard-event` (all under https://www.electronjs.org/docs/latest/).
 * `KeyboardEvent` here is the Electron structure passed to menu item click handlers, not the DOM `KeyboardEvent`.
-* The `BrowserWindow` containing the contents needs to be focused for `sendInputEvent()` to work.
+* v45: the official `sendInputEvent` text no longer states that the `BrowserWindow` containing the contents must be focused for `sendInputEvent()` to work (it did in v44).
 
 ## Related
 

@@ -29,6 +29,8 @@ app.on('window-all-closed', () => {
 | Event: `'open-file'` _macOS_ | `event` Event<br>`path` string | — | Emitted when the user wants to open a file with the application. The `open-file` event is usually emitted when the application is already open and the OS wants to reuse the application to open the file. `open-file` is also emitted when a file is dropped onto the dock and the application is not yet running. Make sure to listen for the `open-file` event very early in your application startup to handle this case (even before the `ready` event is emitted). You should call `event.preventDefault()` if you want to handle this event. On Windows, you have to parse `process.argv` (in the main process) to get the filepath. |
 | Event: `'open-url'` _macOS_ | `event` Event<br>`url` string | — | Emitted when the user wants to open a URL with the application. Your application's `Info.plist` file must define the URL scheme within the `CFBundleURLTypes` key, and set `NSPrincipalClass` to `AtomApplication`. As with the `open-file` event, be sure to register a listener for the `open-url` event early in your application startup to detect if the application is being opened to handle a URL. If you register the listener in response to a `ready` event, you'll miss URLs that trigger the launch of your application. |
 | Event: `'activate'` _macOS_ | `event` Event<br>`hasVisibleWindows` boolean | — | Emitted when the application is activated. Various actions can trigger this event, such as launching the application for the first time, attempting to re-launch the application when it's already running, or clicking on the application's dock or taskbar icon. |
+| Event: `'app-shim-connected'` _macOS_ _Experimental_ | `event` Event<br>`shim` AppShimHost | — | Emitted when an app shim connects to your app. Shims can only connect after `app.startAppShimServer()` has been called. Any process running as the same user can connect. Verify the shim before creating windows in it, for example with `shim.satisfiesCodeRequirement()`, and call `shim.quit()` to reject a shim that you do not trust. |
+| Event: `'app-shim-version-mismatch'` _macOS_ _Experimental_ | `event` Event<br>`bundlePath` string - The path of the app shim's bundle. | — | Emitted when an app shim was launched but could not connect because your app's bundle has been replaced by a different version since your app started. A shim loads the version of Electron that is on disk, which cannot communicate with the version that is still running. The shim quits without showing any UI, so use this event to tell the user what happened. Shims can connect again after your app restarts. |
 | Event: `'did-become-active'` _macOS_ | `event` Event | — | Emitted when the application becomes active. This differs from the `activate` event in that `did-become-active` is emitted every time the app becomes active, not only when Dock icon is clicked or application is re-launched. It is also emitted when a user switches to the app via the macOS App Switcher. |
 | Event: `'did-resign-active'` _macOS_ | `event` Event | — | Emitted when the app is no longer active and doesn't have focus. This can be triggered, for example, by clicking on another application or by using the macOS App Switcher to switch to another application. |
 | Event: `'continue-activity'` _macOS_ | `event` Event<br>`type` string - A string identifying the activity. Maps to `NSUserActivity.activityType`.<br>`userInfo` unknown - Contains app-specific state stored by the activity on another device.<br>`details` Object<br>`details.webpageURL` string (optional) - A string identifying the URL of the webpage accessed by the activity on another device, if available. | — | Emitted during Handoff when an activity from a different device wants to be resumed. You should call `event.preventDefault()` if you want to handle this event. See Notes. |
@@ -45,6 +47,22 @@ app.on('window-all-closed', () => {
   * If application quit was initiated by `autoUpdater.quitAndInstall()`, then `before-quit` is emitted _after_ emitting `close` event on all windows and closing them.
   * On Windows, this event will not be emitted if the app is closed due to a shutdown/restart of the system or a user logout.
 * `continue-activity`: a user activity can be continued only in an app that has the same developer Team ID as the activity's source app and that supports the activity's type. Supported activity types are specified in the app's `Info.plist` under the `NSUserActivityTypes` key.
+* v45: `app-shim-connected` and `app-shim-version-mismatch` are new (macOS, Experimental). The `AppShimHost` class (`app-shim-host.md` in the v45 docs) has no page in this skill yet.
+* `app-shim-version-mismatch` example from the official page:
+
+  ```js
+  app.on('app-shim-version-mismatch', async () => {
+    const { response } = await dialog.showMessageBox({
+      message: `Restart ${app.name} to finish updating`,
+      buttons: ['Restart', 'Later']
+    })
+    if (response === 0) {
+      app.relaunch()
+      app.quit()
+    }
+  })
+  ```
+
 * Electron `app` is the main-process application object (lifecycle, paths, OS integration), not a UI component. For NSApplication / UIApplication lifecycle in native apps see apple-appkit and apple-uikit; for Windows App SDK app lifecycle see windows-app-sdk.
 * The `ready` `launchInfo` and Handoff events map to Apple's UserNotifications / `NSUserActivity` concepts; apple-app-services covers the native side.
 

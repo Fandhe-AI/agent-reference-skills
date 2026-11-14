@@ -38,7 +38,7 @@ session.fromPartition('some-partition').setPermissionRequestHandler((webContents
     * `clipboard-read` - Request access to read from the clipboard.
     * `clipboard-sanitized-write` - Request access to write to the clipboard.
     * `deprecated-sync-clipboard-read` _Deprecated_ - Request access to run `document.execCommand("paste")`.
-    * `display-capture` - Request access to capture the screen via the [Screen Capture API](https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API).
+    * `display-capture` - Request access to capture the screen, a window or a tab via the [Screen Capture API](https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API) (`navigator.mediaDevices.getDisplayMedia`) or via `getUserMedia` with the `chromeMediaSource` constraints described in desktopCapturer. Requests for camera or microphone devices are reported as `media` instead.
     * `fileSystem` - Request access to read, write, and file management capabilities using the [File System API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_API). As in Chrome, a cross-origin iframe cannot ask for more access than it already has, and grants for an origin are reset shortly after its last top-level document is closed or navigated away.
     * `fullscreen` - Request control of the app's fullscreen state via the [Fullscreen API](https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API).
     * `geolocation` - Request access to the user's location via the [Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
@@ -51,7 +51,7 @@ session.fromPartition('some-partition').setPermissionRequestHandler((webContents
     * `local-network` - Request access to devices on the user's local network via [Local Network Access](https://github.com/explainers-by-googlers/local-network-access).
     * `local-network-access` - Request access to devices on the user's local network via [Local Network Access](https://github.com/explainers-by-googlers/local-network-access). This is the original permission type; newer Chromium versions split it into `local-network` and `loopback-network`.
     * `loopback-network` - Request access to loopback (localhost) addresses via [Local Network Access](https://github.com/explainers-by-googlers/local-network-access).
-    * `media` - Request access to media devices such as camera, microphone and speakers.
+    * `media` - Request access to media devices such as camera, microphone and speakers. Screen, window and tab capture is reported as `display-capture` instead.
     * `mediaKeySystem` - Request access to DRM protected content.
     * `midi` - Request MIDI access in the [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API).
     * `midiSysex` - Request the use of system exclusive messages in the [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API).
@@ -81,6 +81,24 @@ session.fromPartition('some-partition').setPermissionRequestHandler((webContents
   * `details` [PermissionRequest](./permission-request-structures.md) | [FilesystemPermissionRequest](./permission-request-structures.md) | [MediaAccessPermissionRequest](./permission-request-structures.md) | [OpenExternalPermissionRequest](./permission-request-structures.md) - Additional information about the permission being requested.
 
 Sets the handler which can be used to respond to permission requests for the `session`. Calling `callback(true)` will allow the permission and `callback(false)` will reject it. To clear the handler, call `setPermissionRequestHandler(null)`. Please note that you must also implement `setPermissionCheckHandler` to get complete permission handling. Most web APIs do a permission check and then make a permission request if the check is denied.
+
+Both `media` and `display-capture` requests carry a MediaAccessPermissionRequest as `details`. A `media` request is for camera and/or microphone devices, while a `display-capture` request is for the screen, a window or a tab (whether made through `getDisplayMedia` or through `getUserMedia` with `chromeMediaSource` constraints). Applications that allow camera and microphone access but want to control screen sharing separately should handle the two permissions individually:
+
+```js
+const { session } = require('electron')
+
+session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
+  if (permission === 'media') {
+    // Camera / microphone. `details.mediaTypes` lists which of them was requested.
+    return callback(true)
+  }
+  if (permission === 'display-capture') {
+    // Screen, window or tab capture.
+    return callback(new URL(details.requestingUrl).origin === 'https://meet.example.com')
+  }
+  callback(false)
+})
+```
 
 ### `ses.setPermissionCheckHandler(handler)`
 

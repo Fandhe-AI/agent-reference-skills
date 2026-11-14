@@ -22,20 +22,20 @@ app.whenReady().then(() => {
 })
 ```
 
-### `new BrowserView([options])` _Experimental_ _Deprecated_
+### `new BrowserView([options])` _Deprecated_
 
 * `options` Object (optional)
   * `webPreferences` WebPreferences (optional) - Settings of web page's features.
 
 ### Instance Properties
 
-#### `view.webContents` _Experimental_ _Deprecated_
+#### `view.webContents` _Deprecated_
 
 A `WebContents` object owned by this view.
 
 ### Instance Methods
 
-#### `view.setAutoResize(options)` _Experimental_ _Deprecated_
+#### `view.setAutoResize(options)` _Deprecated_
 
 * `options` Object
   * `width` boolean (optional) - If `true`, the view's width will grow and shrink together with the window. `false` by default.
@@ -43,19 +43,19 @@ A `WebContents` object owned by this view.
   * `horizontal` boolean (optional) - If `true`, the view's x position and width will grow and shrink proportionally with the window. `false` by default.
   * `vertical` boolean (optional) - If `true`, the view's y position and height will grow and shrink proportionally with the window. `false` by default.
 
-#### `view.setBounds(bounds)` _Experimental_ _Deprecated_
+#### `view.setBounds(bounds)` _Deprecated_
 
 * `bounds` Rectangle
 
 Resizes and moves the view to the supplied bounds relative to the window.
 
-#### `view.getBounds()` _Experimental_ _Deprecated_
+#### `view.getBounds()` _Deprecated_
 
 Returns `Rectangle`
 
 The `bounds` of this BrowserView instance as `Object`.
 
-#### `view.setBackgroundColor(color)` _Experimental_ _Deprecated_
+#### `view.setBackgroundColor(color)` _Deprecated_
 
 * `color` string - Color in Hex, RGB, ARGB, HSL, HSLA or named CSS color format. The alpha channel is optional for the hex type.
 

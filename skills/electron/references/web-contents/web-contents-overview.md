@@ -109,7 +109,7 @@ Process: Main. This class is not exported from the `'electron'` module. It is on
 
 ## Notes
 
-* Electron v44.8.0. The `webContents` module is Electron's page-rendering/control object for a window, not a Web framework or browser-automation library; for browser test automation see playwright, for HTTP servers see fastify / hono.
+* Electron v45.3.2. The `webContents` module is Electron's page-rendering/control object for a window, not a Web framework or browser-automation library; for browser test automation see playwright, for HTTP servers see fastify / hono.
 * The `fromDevToolsTargetId` example in the original calls `wc.fromDevToolsTargetId`; corrected here to the static `webContents.fromDevToolsTargetId`.
 
 ## Related

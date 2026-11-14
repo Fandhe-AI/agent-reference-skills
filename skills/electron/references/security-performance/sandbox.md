@@ -39,18 +39,15 @@ Therefore, when the sandbox is enabled, renderer processes can only perform priv
 
 ### Preload scripts
 
-In order to allow renderer processes to communicate with the main process, preload scripts attached to sandboxed renderers will still have a polyfilled subset of Node.js APIs available. A `require` function similar to Node's `require` module is exposed, but can only import a subset of Electron and Node's built-in modules:
+In order to allow renderer processes to communicate with the main process, preload scripts attached to sandboxed renderers are run with a few extra values in scope:
 
-* `electron` (following renderer process modules: `contextBridge`, `crashReporter`, `ipcRenderer`, `nativeImage`, `webFrame`, `webUtils`)
-* `events`
-* `timers`
-* `url`
+* `require` - a function that can only load the `electron` module (also available as `electron/renderer` and `electron/common`), which contains the renderer process modules: `contextBridge`, `crashReporter`, `ipcRenderer`, `nativeImage`, `webFrame` and `webUtils`.
+* `process` - a reduced `process` object.
+* `global` - an alias for the preload script's `globalThis`.
 
-`node:` imports are supported as well: `node:events`, `node:timers`, `node:url`.
+No Node.js built-in modules or Node.js globals such as `Buffer` or `setImmediate` are available. Use the equivalent Web APIs (`Uint8Array`, `TextEncoder`/`TextDecoder`, `URL`, `EventTarget`, `setTimeout`/`queueMicrotask`) instead, or bundle a polyfill into your preload script.
 
-In addition, the preload script also polyfills certain Node.js primitives as globals: `Buffer`, `process`, `clearImmediate`, `setImmediate`.
-
-Because the `require` function is a polyfill with limited functionality, you will not be able to use CommonJS modules to separate your preload script into multiple files. If you need to split your preload code, use a bundler such as webpack or Parcel.
+Because this `require` function cannot load files, you will not be able to use CommonJS modules to separate your preload script into multiple files. If you need to split your preload code, use a bundler such as webpack or Parcel.
 
 Note that because the environment presented to the `preload` script is substantially more privileged than that of a sandboxed renderer, it is still possible to leak privileged APIs to untrusted code running in the renderer process unless `contextIsolation` is enabled.
 
@@ -122,6 +119,7 @@ While we make our best effort to backport Chromium security fixes to older versi
 
 ## Notes
 
+* Removed in v45: the `events`, `timers` and `url` module shims (and the `node:` forms) and the `Buffer`, `setImmediate` and `clearImmediate` globals in sandboxed preload scripts. Replacements: `EventTarget`/`Event` (or bundle the `events` package); `setTimeout`/`clearTimeout`/`queueMicrotask`; `URL`/`URLSearchParams`; `Uint8Array`/`TextEncoder`/`TextDecoder`/`atob`/`btoa` (or bundle the `buffer` package). `ipcRenderer` and the preload's `process` keep their `EventEmitter` methods (now a native implementation). Preload scripts for renderers with `sandbox: false` are unaffected.
 * This is the Chromium/Electron renderer-process sandbox; it is unrelated to Windows MSIX / Mac App Store app sandboxing (see apple-distribution and windows-packaging-publish for store packaging).
 
 ## Related

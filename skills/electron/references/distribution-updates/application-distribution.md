@@ -44,7 +44,7 @@ Details on `asar` are in the `electron/asar` repository.
 
 ## Rebranding with downloaded binaries
 
-- **Windows:** rename `electron.exe` to any name, and edit its icon and other information with tools like rcedit.
+- **Windows:** rename `electron.exe` to any name, and edit its icon and other information with tools like rcedit. Rename `electron_wer.dll` to match (for example `myapp_wer.dll` next to `myapp.exe`) so the crash reporter can still capture fail-fast crashes.
 - **Linux:** rename the `electron` executable to any name.
 - **macOS:** rename `Electron.app` to any name, and rename the `CFBundleDisplayName`, `CFBundleIdentifier` and `CFBundleName` fields in:
   - `Electron.app/Contents/Info.plist`

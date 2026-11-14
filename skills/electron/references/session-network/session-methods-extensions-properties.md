@@ -112,6 +112,12 @@ This method clears more types of data and is more thorough than the `clearStorag
 
 For more information, refer to Chromium's [`BrowsingDataRemover` interface](https://source.chromium.org/chromium/chromium/src/+/main:content/public/browser/browsing_data_remover.h).
 
+### `ses.registerLocalAIHandler(handler)` _Experimental_
+
+* `handler` [UtilityProcess](../ipc-preload/utility-process.md) | null
+
+Registers a local AI handler `UtilityProcess`. To clear the handler, call `registerLocalAIHandler(null)`, which will disconnect any existing Prompt API sessions and destroy any `LanguageModelUtility` instances.
+
 ### Instance Properties
 
 The following properties are available on instances of `Session`:
@@ -181,9 +187,10 @@ const { app, session } = require('electron')
 
 app.whenReady().then(async () => {
   const netLog = session.fromPartition('some-partition').netLog
-  netLog.startLogging('/path/to/net-log')
+  const path = '/path/to/net-log'
+  await netLog.startLogging(path)
   // After some network events
-  const path = await netLog.stopLogging()
+  await netLog.stopLogging()
   console.log('Net-logs written to', path)
 })
 ```

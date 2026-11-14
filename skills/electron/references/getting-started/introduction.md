@@ -19,7 +19,7 @@ npx electron .
 - Electron Fiddle is a sandbox app written with Electron and supported by Electron's maintainers, recommended as a learning tool to experiment with Electron's APIs or prototype features. Tutorial code blocks frequently show an "Open in Fiddle" button that opens a `fiddle.electronjs.org` link.
 - Documentation categories: Tutorial, Processes in Electron, Best Practices, Examples, Development, Distribution, Testing And Debugging, References, Contributing.
 - Suspected bugs in the `electron` package should be checked against the GitHub issue tracker (`https://github.com/electron/electron/issues`) before filing a new issue.
-- This skill documents Electron v44.8.0.
+- This skill documents Electron v45.3.2.
 
 ## Related
 

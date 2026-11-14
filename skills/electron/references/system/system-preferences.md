@@ -86,7 +86,7 @@ If `event` is null, the `NSDistributedNotificationCenter` doesn't use it as crit
 
 Returns `number` - The ID of this subscription
 
-Same as `subscribeNotification`, but uses `NSNotificationCenter` for local defaults. This is necessary for events such as `NSUserDefaultsDidChangeNotification`.
+Same as `subscribeNotification`, but uses `NSNotificationCenter` for local defaults. This is necessary for events such as `NSUserDefaultsDidChangeNotification`. `callback` is always called on the main thread. Notifications posted on other threads are delivered to it asynchronously.
 
 If `event` is null, the `NSNotificationCenter` doesn't use it as criteria for delivery to the observer.
 
