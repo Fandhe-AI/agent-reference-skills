@@ -201,11 +201,20 @@ interaction = client.interactions.create(
 )
 ```
 
+Adapted (not in the official docs): the next example waits for the uploaded video to leave `PROCESSING` before using its URI, as the preceding example does.
+
 Extension with reference media (reference images in the `input` array introduce new characters or elements):
 
 ```python
 video_file = client.files.upload(file="my_video.mp4")
 character_img = client.files.upload(file="character.png")
+
+while video_file.state == "PROCESSING":
+    time.sleep(10)
+    video_file = client.files.get(name=video_file.name)
+
+if video_file.state == "FAILED":
+    raise ValueError(video_file.state)
 
 interaction = client.interactions.create(
     model="gemini-omni-1.2-flash",

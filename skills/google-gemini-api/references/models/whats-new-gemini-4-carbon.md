@@ -118,12 +118,12 @@ print("Status:", interaction.status)
 print("Usage:", interaction.usage)
 ```
 
-Managed Agents with the Antigravity agent (Python):
+Managed Agents with the Antigravity agent (Python). Adapted (not in the official docs): the client sets `api_version` to `v1beta` because Managed Agents are `v1beta` only and SDK 3.x defaults to `v1`.
 
 ```python
 from google import genai
 
-client = genai.Client()
+client = genai.Client(http_options={"api_version": "v1beta"})
 
 interaction = client.interactions.create(
     agent="antigravity-preview-09-2026",
@@ -176,6 +176,7 @@ Carbon vs Argon (source): both share the same 1M unified context window, built-i
 - Migrate from Gemini 3 and earlier (source): update model ID; raise `max_output_tokens` to at least 32,768; choose and test thinking level; explicit context caching (`cachedContents` / `caches.create`) is not supported, implicit caching is on by default for prompts of at least 4,096 tokens and discounts cached input tokens by 95% on cache hits; remove `temperature`, `top_p`, `top_k` (ignored if provided); use background execution for outputs over 64K; use HTTP client timeouts of at least 15 minutes (or background execution); use `previous_interaction_id` for server-side conversation state.
 - API surface: Interactions API (examples use `client.interactions.create`).
 - Distance: Managed Agents with Antigravity are distinct from anthropic-managed-agents, anthropic-agent-sdk, openai-agents and hermes-agent. The Gemini "Agent Skills" (`gemini-api-dev` coding-agent skill) are not Claude Code Agent Skills.
+- Adapted from the official example: `genai.Client()` became `genai.Client(http_options={"api_version": "v1beta"})` in the Managed Agents snippet (SDK 3.x defaults to `v1`; Managed Agents are `v1beta` only, see `references/migration/api-versions.md`).
 
 ## Related
 

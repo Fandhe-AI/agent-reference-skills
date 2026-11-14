@@ -543,6 +543,7 @@ Pricing section "Gemini Decision 1" of the official pricing page: free tier inpu
 - Source: https://aistudio.google.com/docs/models/gemini-decision-1 (fetched 2026-11-14)
 - Source: https://aistudio.google.com/docs/pricing (fetched 2026-11-14)
 - Source: https://aistudio.google.com/docs/changelog (fetched 2026-11-14)
+- Source discrepancy on blocked requests: the Decisions guide (https://aistudio.google.com/docs/decisions-api, fetched 2026-11-14) says input safety blocks return HTTP 400 with an `error` object, while the REST reference (https://aistudio.google.com/api-reference/decisions/create-decision, fetched 2026-11-14) documents `prompt_feedback.block_reason` with an empty `answers`. Both pages keep their sources verbatim; client code should handle both shapes (an HTTP 400 error and a 200 response with `prompt_feedback.block_reason`).
 
 ## Related
 

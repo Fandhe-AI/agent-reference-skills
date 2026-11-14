@@ -361,7 +361,7 @@ Each media block accepts either base64-encoded `data` or a `uri`, such as a File
 - Stateless mode: set `store=false` and pass the full history in `input` each request: the initial `user_input` step, all model-generated steps from Turn 1 (including `thought` and `function_call` steps) exactly as received, and the `function_result` step.
 - Thinking models: Gemini 3 series models use an internal thinking process; the SDKs automatically handle thought signatures.
 - Multimodal function responses (Gemini 3 series and later): include content blocks in the `result` field of the `function_result` step; each block must specify its `type` (`text`, `image`, `document`, `audio`, `video`; see the table above). Since 2026-11-05, `function_result` steps accept `document`, `audio`, and `video` blocks (inline `data` or `uri`) in addition to `text` and `image`; `video` blocks are available in `v1beta` and `v1alpha` and accept `processing` (`"static"` or `"agentic"`; if unset, the same default as for an input video applies).
-- Return files by URI: inline data counts toward the request size limit, so for large files (videos, long audio, multi-page documents) upload with the Files API and return its `uri` instead of inline `data`. The next example is the source's `view_file` tool returning an Excel spreadsheet and a video by their Files API URIs.
+- Return files by URI: inline data counts toward the request size limit, so for large files (videos, long audio, multi-page documents) upload with the Files API and return its `uri` instead of inline `data`. The next example is the source's `view_file` tool returning an Excel spreadsheet and a video by their Files API URIs. Adapted (not in the official docs): the example sets `api_version` to `v1beta` (video `function_result` blocks are available in `v1beta` and `v1alpha` only, and SDK 3.x defaults to `v1`) and waits for the uploaded video to leave `PROCESSING`, aborting on `FAILED`.
 - Function calling with structured output: Gemini 3 series models can combine function calling with structured output.
 - Remote MCP constraints: only Streamable HTTP servers work; SSE servers are not supported. MCP server names should not include the `-` character; use `snake_case`.
 - Streaming: function calls arrive as a sequence of `step.delta` events; tool arguments can stream as partial `arguments`. Aggregate the deltas to rebuild complete tool calls before executing them.
@@ -374,9 +374,11 @@ Each media block accepts either base64-encoded `data` or a `uri`, such as a File
 - API surface: Interactions API (`client.interactions.create`, v1beta in the examples); the generateContent version is under `generate-content/`. Docs fetched 2026-11-14 (https://aistudio.google.com/docs/function-calling); the source examples now use `gemini-4-hydrogen`.
 
 ```python
+import time
+
 from google import genai
 
-client = genai.Client()
+client = genai.Client(http_options={"api_version": "v1beta"})
 
 tool_call = next(s for s in interaction.steps if s.type == "function_call")
 
@@ -386,6 +388,13 @@ sheet = client.files.upload(
     config={"mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
 )
 clip = client.files.upload(file="store_walkthrough.mp4")
+
+while clip.state == "PROCESSING":
+    time.sleep(10)
+    clip = client.files.get(name=clip.name)
+
+if clip.state == "FAILED":
+    raise ValueError(clip.state)
 
 final_interaction = client.interactions.create(
     model="gemini-4-hydrogen",

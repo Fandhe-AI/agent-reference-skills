@@ -8,11 +8,13 @@ The Gemini API CLI (`gemini-api`, open-source beta) is a stateless, zero-depende
 
 ## Signature / Usage
 
-Official quick example (install, set the API key, then generate media, analyze a file, or launch a background managed agent):
+Quick example (install, set the API key, then generate media, analyze a file, or launch a background managed agent). Adapted (not in the official docs): the official page pipes the remote installer straight into a shell; here it is downloaded, inspected, then run.
 
 ```bash
-# 1. Install on macOS or Linux
-curl -fsSL https://raw.githubusercontent.com/google-gemini/gemini-api-cli/main/scripts/install.sh | bash
+# 1. Download the installer, inspect it, then run it (macOS or Linux)
+curl -fsSL -o install.sh https://raw.githubusercontent.com/google-gemini/gemini-api-cli/main/scripts/install.sh
+less install.sh
+bash install.sh
 
 # 2. Set your API key
 export GEMINI_API_KEY="YOUR_API_KEY"
@@ -24,18 +26,6 @@ gemini-api agent run "Compare WebRTC SFU architectures and cite sources" \
   --agent deep-research-preview-04-2026 \
   --background \
   --stream=false
-```
-
-Adapted (not in the official docs): download, inspect, then run (instead of piping the remote script straight into a shell).
-
-```bash
-# 1. Download the installer, inspect it, then run it
-curl -fsSL -o install.sh https://raw.githubusercontent.com/google-gemini/gemini-api-cli/main/scripts/install.sh
-less install.sh
-bash install.sh
-
-# 2. Set your API key
-export GEMINI_API_KEY="YOUR_API_KEY"
 ```
 
 With `-o json`, media commands still write the file to disk and print metadata to `stdout`:
@@ -53,33 +43,23 @@ With `-o json`, media commands still write the file to disk and print metadata t
 
 ### Install the binary
 
-macOS and Linux (official):
+Adapted (not in the official docs): the official page runs the installer by piping `curl` into `bash` (and `iwr ... | iex` on Windows); here the script is downloaded, inspected, then run.
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/google-gemini/gemini-api-cli/main/scripts/install.sh | bash
-```
-
-To install a specific release, set `GEMINI_VERSION` to a release tag (official):
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/google-gemini/gemini-api-cli/main/scripts/install.sh | GEMINI_VERSION=<release-tag> bash
-```
-
-Adapted (not in the official docs): download, inspect, then run, including the pinned release variant.
+macOS and Linux:
 
 ```bash
 curl -fsSL -o install.sh https://raw.githubusercontent.com/google-gemini/gemini-api-cli/main/scripts/install.sh
 less install.sh
+bash install.sh
+```
+
+To install a specific release, set `GEMINI_VERSION` to a release tag:
+
+```bash
 GEMINI_VERSION=<release-tag> bash install.sh
 ```
 
-Windows (PowerShell, official):
-
-```bash
-iwr -useb https://raw.githubusercontent.com/google-gemini/gemini-api-cli/main/scripts/install.ps1 | iex
-```
-
-Adapted (not in the official docs): download, inspect, then run (PowerShell).
+Windows (PowerShell):
 
 ```powershell
 iwr -useb https://raw.githubusercontent.com/google-gemini/gemini-api-cli/main/scripts/install.ps1 -OutFile install.ps1

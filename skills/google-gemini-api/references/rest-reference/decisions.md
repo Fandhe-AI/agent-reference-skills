@@ -103,6 +103,7 @@ Response (`CreateDecisionResponse`):
 - The guide (use cases, limits, best practices, pricing) is in the decisions-api page of the interactions-core category.
 - Source: https://aistudio.google.com/api-reference/decisions (fetched 2026-11-14)
 - Source: https://aistudio.google.com/api-reference/decisions/create-decision (fetched 2026-11-14)
+- Source discrepancy on blocked requests: the Decisions guide (https://aistudio.google.com/docs/decisions-api, fetched 2026-11-14) says input safety blocks return HTTP 400 with an `error` object, while the REST reference (https://aistudio.google.com/api-reference/decisions/create-decision, fetched 2026-11-14) documents `prompt_feedback.block_reason` with an empty `answers`. Both pages keep their sources verbatim; client code should handle both shapes (an HTTP 400 error and a 200 response with `prompt_feedback.block_reason`).
 
 ## Related
 
