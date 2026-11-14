@@ -2,7 +2,7 @@
 source: https://developers.cloudflare.com/agents/harnesses/think/
 ---
 
-# Think overview and turn APIs
+# Think overview and turn APIs (Experimental)
 
 `@cloudflare/think` is an opinionated chat-agent base class: provide a model with `getModel()` and Think wires the agentic loop, message persistence, streaming, client tools, stream resumption, and extensions, all backed by Durable Object SQLite. It works as a top-level agent (WebSocket chat via `useAgentChat`) and as a sub-agent driven over RPC via `chat()`.
 
@@ -15,9 +15,7 @@ import { routeAgentRequest } from "agents";
 
 export class MyAgent extends Think<Env> {
 	getModel() {
-		return createAI({ binding: this.env.AI })(
-			"@cf/moonshotai/kimi-k2.6",
-		);
+		return createAI({ binding: this.env.AI })("@cf/moonshotai/kimi-k2.6");
 	}
 }
 

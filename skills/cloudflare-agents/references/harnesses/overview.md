@@ -4,7 +4,7 @@ source: https://developers.cloudflare.com/agents/harnesses/
 
 # Harnesses overview
 
-A harness is the loop that makes an agent behave like an agent instead of a single model call: prompt building, memory, tool selection, tool results, streaming, message persistence, and the continue/stop decision.
+A harness is the loop that makes an agent behave like an agent instead of a single model call: prompt building, memory, tool selection, tool results, streaming, message persistence, and the continue/stop decision. For what a harness does and how to choose one, refer to [Harness](../concepts/harness.md) in Concepts.
 
 ## Signature / Usage
 
@@ -29,14 +29,36 @@ lifecycle = Lifecycle.install(this).use(this.harness);
 
 ## Options / Props
 
-### Harnesses available
+### Compare harnesses
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| Pi (`PiHarness`) | Lifecycle capability on a plain Durable Object | — | Recommended starting point for a new agent. Pi Durable owns the loop, transcript, and recovery. You choose the transport. See [pi.md](./pi.md). |
-| OpenCode (`OpenCodeHarness`, experimental) | Lifecycle capability on a plain Durable Object | — | OpenCode 2.0 sessions, tools, plugin system. See [opencode.md](./opencode.md). |
-| Think (`@cloudflare/think`) | Base class extending `Agent` | — | Opinionated chat-agent framework. See [think-overview.md](./think-overview.md). |
-| Build your own | Agents SDK runtime APIs | — | Full control over model call, message format, tool loop, UI protocol. |
+**Durability** means the harness saves agent progress and can resume work after a crash, restart, or deployment. For SDK integrations, [Lifecycle](../runtime/lifecycle.md) coordinates startup and recovery jobs. [Cloudflare Computer](../tools/filesystem.md) provides persistent files and file tools for agents. Agents can return to files they created or edited across turns, even after a restart.
+
+| Harness | Runs in | Durability | Cloudflare Computer |
+|---------|---------|------------|---------------------|
+| Pi ([pi.md](./pi.md)) | Durable Objects via the Agents SDK | 🟢 Automatically resumes interrupted work | 🟢 Supported |
+| [Flue](https://flueframework.com/) | Durable Objects via the Agents SDK | 🟢 Automatically resumes interrupted work | 🟢 Supported |
+| OpenCode ([opencode.md](./opencode.md)) | Durable Objects via the Agents SDK | 🟡 Resumes interrupted work | 🟡 Example plugin |
+| Claude Code ([claude-code.md](./claude-code.md)) (Experimental) | Linux container driven by a Durable Object via the Agents SDK | 🟡 Reattaches after object restart; container loss fails or retries the turn | 🔴 No built-in integration |
+| Codex ([codex.md](./codex.md)) (Experimental) | Linux container driven by a Durable Object via the Agents SDK | 🟡 Reattaches after object restart; container loss fails or retries the turn | 🔴 No built-in integration |
+| Think ([think-overview.md](./think-overview.md)) (Experimental) | Durable Objects via the Agents SDK | 🟡 Continues from saved output | 🟢 Supported |
+| Nanocode ([nanocode.md](./nanocode.md)) (Pre-1.0) | Wasm in its own Durable Object host | 🟡 Resumes turns; some tools cannot recover | 🟡 Custom adapter needed |
+| Exo ([exo.md](./exo.md)) (Pre-1.0) | Wasm in Durable Objects + Linux sandbox | 🟡 Resumes turns; interrupted tools may fail | 🔴 No integration |
+| Self-modifying ([self-modifying.md](./self-modifying.md)) (Experimental) | Durable Objects via the Agents SDK + Dynamic Workers | 🟡 Resumes turns; custom tools may rerun | 🟡 Workspace in example |
+| [Coding agent CLIs without a harness](https://developers.cloudflare.com/sandbox/coding-agents/) | Linux sandbox | 🔴 No automatic recovery in these examples | 🔴 No integration |
+
+### Choose an approach
+
+Use [Pi](./pi.md) when you want Pi Durable to own the loop, transcript, and recovery. Use [OpenCode](./opencode.md) for OpenCode's sessions, tools, and plugins, or [Think](./think-overview.md) for an AI SDK chat agent with built-in Workspace tools.
+
+Use [Flue](https://flueframework.com/) for a TypeScript hooks API built on Pi, with automatic recovery and a [Cloudflare target](https://flueframework.com/docs/guide/cloudflare-target/) that uses the Agents SDK.
+
+Use [Claude Code](./claude-code.md) or [Codex](./codex.md) to run those CLIs with their native tools, plugins, and settings in a Linux container. A Durable Object stores sessions and coordinates recovery. Container loss fails the interrupted turn by default. Optional retry reruns it. Workspace recovery uses filesystem snapshots, so edits since the last snapshot can be lost.
+
+[Build your own harness](./build-your-own.md) when you need control over model calls, message formats, or tool execution. Compose it from the Agents SDK runtime capabilities (see the runtime category of this skill).
+
+Explore the experimental [self-modifying](./self-modifying.md) example for an agent that edits its own TypeScript harness.
+
+[Nanocode](./nanocode.md) and [Exo](./exo.md) provide their own runtimes for running agents on Cloudflare.
 
 ### What a harness usually owns
 
@@ -52,7 +74,7 @@ lifecycle = Lifecycle.install(this).use(this.harness);
 ## Notes
 
 - Division of labor: the Agents SDK runtime answers "where does this agent live and how does it stay durable" (startup/durable jobs, routing, installed capabilities such as WebSockets, shared state, scheduling, MCP connections); the harness answers "what does this agent do on each turn".
-- Conversation storage depends on the harness: Pi and OpenCode manage their own transcripts; Think and `AIChatAgent` install the SDK's `Sessions` capability.
+- Conversation storage depends on the harness: Pi and OpenCode manage their own transcripts; Claude Code and Codex keep their records in a SQLite-backed `HarnessStore`; Think and `AIChatAgent` install the SDK's `Sessions` capability.
 - Distinction: the underlying `Agent` base class and its APIs belong to the sibling agent-class category of this skill. Model providers: Workers AI belongs to the cloudflare-ai skill (workers-ai; https://developers.cloudflare.com/workers-ai/); OpenAI / Anthropic / Gemini SDKs belong to their provider skills (by name, e.g. `openai-api-core`, `anthropic-api-core`, `google-gemini-api`). Code-execution isolation through Sandbox belongs to the cloudflare-sandbox-containers skill (sandbox; https://developers.cloudflare.com/sandbox/).
 
 ## Related
@@ -60,3 +82,10 @@ lifecycle = Lifecycle.install(this).use(this.harness);
 - [pi.md](./pi.md)
 - [opencode.md](./opencode.md)
 - [think-overview.md](./think-overview.md)
+- [Harness (concept)](../concepts/harness.md)
+- [claude-code.md](./claude-code.md)
+- [codex.md](./codex.md)
+- [nanocode.md](./nanocode.md)
+- [exo.md](./exo.md)
+- [self-modifying.md](./self-modifying.md)
+- [build-your-own.md](./build-your-own.md)

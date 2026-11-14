@@ -2,10 +2,10 @@
 name: cloudflare-agents
 description: >
   Cloudflare Agents SDK (agents パッケージ、Durable Objects 上のエージェント) の
-  リファレンス。Agent class、state / setState、this.sql、schedule、@callable RPC、routeAgentRequest、
-  useAgent / AgentClient、AIChatAgent、human-in-the-loop、McpAgent (リモート MCP サーバー公開)、
+  リファレンス。Agent class、harness (Pi / Think / OpenCode / Claude Code / Codex)、state / setState、this.sql、schedule、@callable RPC、routeAgentRequest、
+  useAgent / AgentClient、AIChatAgent、human-in-the-loop、McpAgent、
   MCPClientManager、browser / code execution tools。
-  OpenAI Agents SDK (openai-agents)・Claude Agent SDK (anthropic-agent-sdk) とは別、MCP 仕様は mcp-spec。
+  openai-agents・anthropic-agent-sdk とは別、MCP 仕様は mcp-spec。
 user-invocable: false
 ---
 
@@ -15,8 +15,8 @@ Cloudflare Agents SDK（npm `agents`）を扱う。Durable Objects 上で動く�
 
 ## 対象バージョン
 
-- agents 0.32.0、@cloudflare/ai-chat 0.12.2
-- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `d0995b91312add6db730afec4f4944cee834abc6` と取得日 2026-11-03 で pin
+- agents 0.33.0（Pi 1.5 対応）、@cloudflare/ai-chat 0.12.2
+- 出典: developers.cloudflare.com（公式 Markdown twin）。docs にタグが無いため、`cloudflare/cloudflare-docs` の production SHA `34d908abc615fdf22eeb386b171b9657b9abcf38` と取得日 2026-11-14 で pin（0.32.0 時点は `d0995b9` / 2026-11-03）
 
 ## 他スキルとの使い分け
 
@@ -93,6 +93,7 @@ skills/cloudflare-agents/
       calling-llms.md
       conversation-state-and-memory.md
       getting-started.md
+      harness.md
       human-in-the-loop.md
       limits.md
       long-running-agents.md
@@ -164,9 +165,15 @@ skills/cloudflare-agents/
       source-r2.md
     harnesses/
       README.md
+      build-your-own.md
+      claude-code.md
+      codex.md
+      exo.md
+      nanocode.md
       opencode.md
       overview.md
       pi.md
+      self-modifying.md
       think-actions.md
       think-channels-messengers.md
       think-client-tools.md
@@ -235,7 +242,9 @@ skills/cloudflare-agents/
 | MCP の transport・リモート MCP サーバーのテスト・MCP SDK v2 移行を知りたい | mcp | [references/mcp/README.md](references/mcp/README.md) |
 | Agent skills (agents SDK) の読み込み元（コード / Computer / R2）と実行方法を知りたい | agent-skills | [references/agent-skills/README.md](references/agent-skills/README.md) |
 | Think harness の設定・ツール・lifecycle hooks・recovery を調べたい | harnesses | [references/harnesses/README.md](references/harnesses/README.md) |
-| Pi / OpenCode harness を使いたい | harnesses | [references/harnesses/README.md](references/harnesses/README.md) |
+| Pi / OpenCode / Claude Code / Codex harness（コンテナ実行）を使いたい、harness を比較・選定したい | harnesses | [references/harnesses/README.md](references/harnesses/README.md) |
 | Think の sub-agents・scheduled tasks・channels / messengers を扱いたい | harnesses | [references/harnesses/README.md](references/harnesses/README.md) |
+| 自前 harness（Sessions / Streams / Tasks / HarnessStore）・Nanocode・Exo・self-modifying を調べたい | harnesses | [references/harnesses/README.md](references/harnesses/README.md) |
+| harness の概念（brain と hands、ループの置き場所）を知りたい | concepts | [references/concepts/README.md](references/concepts/README.md) |
 | 典型的な使い方を知りたい（チャット / email / Slack / voice / browser / テストの実例） | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンド（create / wrangler dev / deploy / MCP Inspector）を知りたい | scripts | [scripts/README.md](scripts/README.md) |

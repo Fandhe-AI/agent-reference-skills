@@ -8,7 +8,7 @@ source: https://developers.cloudflare.com/agents/models/pi-ai/
 
 ## Signature / Usage
 
-Needs `@earendil-works/pi-ai@~1.4.0` (optional peer dependency of `agents`): `npm i agents @earendil-works/pi-ai`. Add the `AI` binding to Wrangler, or pass `accountId` and `apiToken`.
+Needs `@earendil-works/pi-ai@~1.5.0` (optional peer dependency of `agents`): `npm i agents @earendil-works/pi-ai`. Add the `AI` binding to Wrangler, or pass `accountId` and `apiToken`.
 
 ```ts
 import { createAI } from "agents/models/pi-ai";

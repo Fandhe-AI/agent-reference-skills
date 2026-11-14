@@ -13,3 +13,4 @@
 | Workflows | Agents with Cloudflare Workflows, AgentWorkflow | [workflows.md](./workflows.md) |
 | Long-running agents | Hibernation, keepAlive, fibers, planning, sub-agents | [long-running-agents.md](./long-running-agents.md) |
 | Human-in-the-loop | Workflow approval, MCP elicitation, Code Mode approval | [human-in-the-loop.md](./human-in-the-loop.md) |
+| Harness | What a harness is (model in a loop), brain and hands, loop in a Durable Object vs a container, choosing a harness | [harness.md](./harness.md) |
