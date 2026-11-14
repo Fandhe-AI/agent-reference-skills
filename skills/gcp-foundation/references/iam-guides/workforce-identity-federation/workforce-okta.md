@@ -84,14 +84,16 @@ gcloud iam workforce-pools providers create-oidc WORKFORCE_PROVIDER_ID \
 
 Example OIDC attribute mapping and condition:
 
+Adapted (not in the official docs): entries are comma-separated, and `google.subject` / the condition use the standard OIDC `sub` claim instead of `oid` / `subject`, which Okta does not issue unless you add them as custom claims.
+
 ```
-google.subject=assertion.oid
+google.subject=assertion.sub,
 google.groups=assertion.groups,
 attribute.costcenter=assertion.costcenter
 ```
 
 ```
-assertion.subject.endsWith('@example.com')
+assertion.sub.endsWith('@example.com')
 ```
 
 ### 3c. SAML provider
@@ -208,6 +210,8 @@ Console (federated): `https://auth.cloud.google/signin?continueUrl=https://conso
 | `WORKFORCE_POOL_USER_PROJECT` | Project for quota/billing; principal needs `serviceusage.services.use`. |
 
 ## Notes
+
+- Corrected from the official docs: the OIDC mapping example lacked a comma after `google.subject=...`, and referenced non-standard claims (`oid`, `subject`); the example now uses `assertion.sub`. Whether Okta `sub` carries an email-style value depends on your configuration (公式未確認); adjust the condition to a claim you actually issue.
 
 - Required role: `roles/iam.workforcePoolAdmin` on the organization. No-cost feature; detailed audit logging incurs Cloud Logging charges.
 - The IdP must provide signed authentication info (OIDC JWT or signed SAML response).

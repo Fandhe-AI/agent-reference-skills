@@ -20,7 +20,7 @@ principalSet://iam.googleapis.com/locations/global/workforcePools/POOL_ID/*
 Attribute mapping examples:
 
 ```text
-principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workforcePools/WORKFORCE_POOL_ID/attribute.costcenter/1234
+principalSet://iam.googleapis.com/locations/global/workforcePools/WORKFORCE_POOL_ID/attribute.costcenter/1234
 attribute.username=assertion.email.split("@")[0]
 attribute.department=assertion.department.join(".")
 google.email=assertion.email
@@ -64,7 +64,7 @@ Delegating pool administration to a partner (allow policy on the partner pool):
     {
       "role": "roles/iam.workforcePoolEditor",
       "members": [
-        "principalSet://iam.googleapis.com/locations/global/workforcePools/enterprise-example-organization-employees/subject/partner-organization-admin@example.com"
+        "principal://iam.googleapis.com/locations/global/workforcePools/enterprise-example-organization-employees/subject/partner-organization-admin@example.com"
       ]
     }
   ]
@@ -118,11 +118,12 @@ Total attribute mappings are limited to 16 KB, otherwise sign-in fails. Custom C
 - Provide Essential Contacts (Legal and Suspension, or All) because federated users have no Cloud Identity email; the console shows a banner until configured.
 - Console (federated) gives workforce users UI access to supported products.
 - The login configuration file is not validated and contains no secrets, but a malicious actor with write access can change endpoints and intercept credentials; make it read-only and restrict with an ACL.
+- Corrected from the official docs: the individual-subject delegation example uses `principal://` (not `principalSet://`), and the workforce `principalSet` example omits `projects/PROJECT_NUMBER/` (workforce pools are organization-scoped).
 - Source: https://docs.cloud.google.com/iam/docs/workforce-identity-federation
 - Source: https://docs.cloud.google.com/iam/docs/workforce-log-in-gcloud
 - Retrieved 2026-11-14. Content CC BY 4.0; code samples Apache 2.0.
 
 ## Related
 
-- [../workload-identity-federation/wif-oidc-saml-providers.md](../workload-identity-federation/wif-oidc-saml-providers.md)
+- Workload Identity Federation OIDC / SAML providers (see the workload-identity-federation pages in this skill)
 - gcp-security covers VPC Service Controls and IAP; gcp-cli covers gcloud generally.

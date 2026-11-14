@@ -22,20 +22,22 @@ gcloud iam oauth-clients create APP_OAUTH_CLIENT_ID \
     --allowed-grant-types="authorization_code_grant"
 ```
 
+Adapted (not in the official docs): the request body uses valid JSON (double-quoted keys and strings inside a single-quoted shell string).
+
 ```bash
 curl -X POST \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
   -H "Content-Type: application/json" \
   -H "X-Goog-User-Project: PROJECT_ID" \
-  -d "{ \
-        'allowedGrantTypes': ['AUTHORIZATION_CODE_GRANT'], \
-        'allowedRedirectUris': ['REDIRECT_URI'], \
-        'allowedScopes': ['https://www.googleapis.com/auth/cloud-platform'], \
-        'clientType': 'CONFIDENTIAL_CLIENT', \
-        'description': 'My OAuth client description', \
-        'disabled': false, \
-        'displayName': 'My OAuth client'}" \
-  https://iam.googleapis.com/v1/projects/PROJECT_ID/locations/global/oauthClients\?oauthClientId\=APP_OAUTH_CLIENT_ID
+  -d '{
+        "allowedGrantTypes": ["AUTHORIZATION_CODE_GRANT"],
+        "allowedRedirectUris": ["REDIRECT_URI"],
+        "allowedScopes": ["https://www.googleapis.com/auth/cloud-platform"],
+        "clientType": "CONFIDENTIAL_CLIENT",
+        "description": "My OAuth client description",
+        "disabled": false,
+        "displayName": "My OAuth client"}' \
+  "https://iam.googleapis.com/v1/projects/PROJECT_ID/locations/global/oauthClients?oauthClientId=APP_OAUTH_CLIENT_ID"
 ```
 
 List, describe, update, delete a client:
@@ -75,8 +77,10 @@ curl \
   https://iam.googleapis.com/v1/projects/PROJECT_ID/locations/global/oauthClients
 ```
 
+Adapted (not in the official docs): `allowedRedirectUris` is sent as a string array.
+
 ```bash
-curl -d'{"allowedRedirectUris":"REDIRECT_URI"}' \
+curl -d'{"allowedRedirectUris":["REDIRECT_URI"]}' \
   -H "Content-Type: application/json" -X PATCH \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
   -H "X-Goog-User-Project: PROJECT_ID" \
@@ -115,7 +119,7 @@ gcloud iam oauth-clients credentials describe APP_OAUTH_CLIENT_CREDENTIAL_ID \
 
 ```bash
 gcloud iam oauth-clients credentials update APP_OAUTH_CLIENT_CREDENTIAL_ID \
-    --client-id=APP_OAUTH_CLIENT_ID \
+    --oauth-client=APP_OAUTH_CLIENT_ID \
     --display-name="My new credential name" \
     --location=global
 ```
@@ -144,8 +148,8 @@ curl -X POST \
   -H "Authorization: Bearer $(gcloud auth print-access-token)" \
   -H "Content-Type: application/json" \
   -H "X-Goog-User-Project: PROJECT_ID" \
-  -d "{'disabled': false, 'displayName': 'My OAuth client credential'}" \
-  https://iam.googleapis.com/v1/projects/PROJECT_ID/locations/global/oauthClients/APP_OAUTH_CLIENT_ID/credentials\?oauthClientCredentialId=APP_OAUTH_CLIENT_CREDENTIAL_ID
+  -d '{"disabled": false, "displayName": "My OAuth client credential"}' \
+  "https://iam.googleapis.com/v1/projects/PROJECT_ID/locations/global/oauthClients/APP_OAUTH_CLIENT_ID/credentials?oauthClientCredentialId=APP_OAUTH_CLIENT_CREDENTIAL_ID"
 ```
 
 ```bash
@@ -183,6 +187,7 @@ curl -X DELETE \
 - Prerequisites: an organization, and a workforce identity pool and provider in the same organization (see the Entra ID and Okta pages). Required role: `roles/iam.oauthClientAdmin` on the project.
 - For Looker, redirect users to `https://auth.cloud.google/authorize` to get an authorization code, then exchange codes or refresh tokens with the Cloud OAuth API using the client credentials.
 - Security: a leaked client ID and secret allows impersonation, unauthorized access, and phishing. Restrict IAM access to the OAuth client API. To rotate the secret: create a new credential, disable the old one, delete the old one. Store the `clientSecret` securely.
+- Corrected from the official docs: the `credentials update` `--client-id` flag is `--oauth-client`; the REST create bodies use valid JSON; `allowedRedirectUris` is an array in the PATCH example.
 - The source's REST list-credentials example uses `$PROJECT_ID` in the URL while other examples use `PROJECT_ID`; substitute your project ID consistently.
 - Source: https://docs.cloud.google.com/iam/docs/workforce-manage-oauth-app and https://docs.cloud.google.com/iam/docs/workforce-oauth-app (retrieved 2026-11-14; CC BY 4.0, code samples Apache 2.0)
 

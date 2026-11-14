@@ -216,8 +216,10 @@ gcloud iam workforce-pools create-cred-config \
 }
 ```
 
+Adapted (not in the official docs): sign in with the generated configuration file `config.json`, not the file holding the IdP token.
+
 ```bash
-gcloud auth login --cred-file=PATH_TO_OIDC_CREDENTIALS
+gcloud auth login --cred-file=config.json
 ```
 
 SAML headless: use `--subject-token-type=urn:ietf:params:oauth:token-type:saml2` with `--credential-source-file=SAML_ASSERTION_PATH`, then `gcloud auth login --cred-file=config.json`.

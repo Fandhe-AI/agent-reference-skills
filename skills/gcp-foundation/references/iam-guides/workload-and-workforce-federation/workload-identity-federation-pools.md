@@ -80,8 +80,8 @@ gcloud resource-manager org-policies enable-enforce \
 |---|---|
 | View pools/providers | `roles/iam.workloadIdentityPoolViewer` on the project |
 | Manage pools/providers | `roles/iam.workloadIdentityPoolAdmin` |
-| Pool permissions | `iam.googleapis.com/workloadIdentityPools.{get,list,create,update,delete,undelete}` |
-| Provider permissions | `iam.googleapis.com/workloadIdentityPoolProviders.{get,list,create,update,delete,undelete}` |
+| Pool permissions | `iam.workloadIdentityPools.{get,list,create,update,delete,undelete}` |
+| Provider permissions | `iam.workloadIdentityPoolProviders.{get,list,create,update,delete,undelete}` |
 | Provider types | AWS (account ID; default mapping OK) and OIDC (issuer URL; Azure uses `https://sts.windows.net/AZURE_TENANT_ID`) |
 | OIDC mapping | Recommended: map `google.subject` to `assertion.sub` |
 | Attribute condition | Optional CEL expression selecting which identities can authenticate |
@@ -89,6 +89,8 @@ gcloud resource-manager org-policies enable-enforce \
 | Pool state | Can be created disabled, enabled/disabled, display name and description editable |
 
 ## Notes
+
+- Corrected from the official docs: permission names are written `iam.workloadIdentityPools.*` / `iam.workloadIdentityPoolProviders.*` (not prefixed with `iam.googleapis.com/`).
 
 - Deleting a pool also deletes its providers and the identities lose access; consider disabling first. Pools and providers can be undeleted for 30 days; names cannot be reused until permanent deletion.
 - The allowed-IdP constraint does not affect providers configured before it was enabled.

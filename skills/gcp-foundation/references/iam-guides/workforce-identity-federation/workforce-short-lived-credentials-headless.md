@@ -104,7 +104,7 @@ gcloud iam workforce-pools create-cred-config \
       "command": "EXECUTABLE_COMMAND",
       "interactive_timeout_millis": "EXECUTABLE_INTERACTIVE_TIMEOUT",
       "timeout_millis": "EXECUTABLE_TIMEOUT",
-      "output_file": "EXECUTABLE_OUTPUT_FILE",
+      "output_file": "EXECUTABLE_OUTPUT_FILE"
     }
   }
 }

@@ -68,6 +68,8 @@ Reads and listing under a prefix (listing evaluates against the bucket name, so 
 
 Folders (hierarchical namespace buckets):
 
+Adapted (not in the official docs): bucket name `example-bucket` and folder prefix `example-folder` are used consistently across `availableResource` and every condition.
+
 ```json
 {
   "accessBoundary": {
@@ -76,9 +78,9 @@ Folders (hierarchical namespace buckets):
         "availablePermissions": [
           "inRole:roles/storage.objectUser"
         ],
-        "availableResource": "//storage.googleapis.com/projects/_/buckets/example-folder",
+        "availableResource": "//storage.googleapis.com/projects/_/buckets/example-bucket",
         "availabilityCondition": {
-          "expression" : "resource.name.startsWith('projects/_/buckets/example-bucket/objects/example-folder') || resource.name.startsWith('projects/_/buckets/example-bucket/folders/example-folder') || api.getAttribute('storage.googleapis.com/objectListPrefix', '').startsWith('{example-folder}')"
+          "expression" : "resource.name.startsWith('projects/_/buckets/example-bucket/objects/example-folder') || resource.name.startsWith('projects/_/buckets/example-bucket/folders/example-folder') || api.getAttribute('storage.googleapis.com/objectListPrefix', '').startsWith('example-folder')"
         }
       }
     ]
@@ -100,6 +102,7 @@ Folders (hierarchical namespace buckets):
 
 - Only the resources in the boundary are accessible; no permissions on others.
 - Cloud Storage API attributes (`storage.googleapis.com/objectListPrefix`) work only in Credential Access Boundaries; in conditional role bindings they break Cloud Storage methods and slow permission checks.
+- Corrected from the official docs: the folder example originally mixed bucket names (`example-folder` vs `example-bucket`) and a `'{example-folder}'` list prefix; now unified.
 - Useful instead of many service accounts when each session needs different permissions.
 - Source: https://docs.cloud.google.com/iam/docs/downscoping-short-lived-credentials
 - Retrieved 2026-11-14. Content CC BY 4.0; code samples Apache 2.0.

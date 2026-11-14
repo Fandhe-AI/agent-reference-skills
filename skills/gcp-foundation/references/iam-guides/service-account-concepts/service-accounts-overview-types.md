@@ -49,7 +49,7 @@ Some service agents (BigQuery Connection Service Agent, BigQuery Connection Dele
         "serviceMetadata": [
           {
             "principalSubject": "serviceAccount:bqcx-442188550395-jujw@gcp-sa-bigquery-condel.iam.gserviceaccount.com",
-            "serviceDomain": "bigquery.googleapis.com",
+            "serviceDomain": "bigquery.googleapis.com"
           }
         ]
       }

@@ -178,7 +178,7 @@ Deleted principals appear in allow policies with the numeric ID:
         "deleted:serviceAccount:my-service-account@project-id.iam.gserviceaccount.com?uid=123456789012345678901"
       ],
       "role": "roles/iam.serviceAccountUser"
-    },
+    }
   ]
 }
 ```

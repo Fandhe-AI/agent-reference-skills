@@ -150,7 +150,7 @@ Supported CEL fields: service accounts `resource.description`, `resource.display
 
 Required permissions to manage org policies (for example via Organization Policy Administrator): `orgpolicy.constraints.list`, `orgpolicy.policies.create`, `orgpolicy.policies.delete`, `orgpolicy.policies.list`, `orgpolicy.policies.update`, `orgpolicy.policy.get`, `orgpolicy.policy.set`.
 
-Tag roles: `roles/resourcemanager.tagViewer`, `roles/resourcemanager.organizationViewer`, `roles/resourcemanager.tagAdmin` (create/update/delete definitions), `roles/resourcemanager.tagUser` (attach/remove on the tag value and the resource), plus `roles/iam.ServiceAccountAdmin` on the service account.
+Tag roles: `roles/resourcemanager.tagViewer`, `roles/resourcemanager.organizationViewer`, `roles/resourcemanager.tagAdmin` (create/update/delete definitions), `roles/resourcemanager.tagUser` (attach/remove on the tag value and the resource), plus `roles/iam.serviceAccountAdmin` on the service account.
 
 ## Notes
 

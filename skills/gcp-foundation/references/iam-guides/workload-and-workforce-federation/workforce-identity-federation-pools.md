@@ -120,7 +120,7 @@ gcloud iam workforce-pools providers undelete PROVIDER_ID \
 Example mappings:
 
 ```text
-google.subject=assertion.oid
+google.subject=assertion.oid,
 google.groups=assertion.groups,
 attribute.costcenter=assertion.costcenter
 ```
