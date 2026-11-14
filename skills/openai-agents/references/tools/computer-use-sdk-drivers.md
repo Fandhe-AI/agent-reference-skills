@@ -6,6 +6,8 @@ A driver translates allowed tool calls from the Python/Node SDK (`BrowserToolset
 
 Snippet taken from the computer-use guide ("Run your first task", Python) showing a computer driver run with a per-action approval callback and a step bound (the `try` / `finally` is shortened to `tools.close()` cleanup; the rest of the example is omitted):
 
+Adapted (not in the official docs): the official example also verifies the page state and wraps the run in an outer `try` / `finally` that closes the browser; those parts are omitted here, and the inner `finally: tools.close()` is kept.
+
 ```python
 tools = AsyncComputerToolset(driver)
 try:
@@ -73,6 +75,7 @@ Structured reads (`BrowserReadV1`): `version: 1`, `text`, `elements` (unique `re
 Implement `click`, `double_click`, `drag`, `keypress`, `move`, `scroll` (coordinates, `scroll_x`, `scroll_y`), `type`, `wait`, and `screenshot` (no argument; returns a `computer_screenshot` with `image_url` or `file_id`). Action methods receive the generated action object with snake-case fields, return no value, and must raise an error if they cannot execute the action. Actions run once, in order, and the final screenshot is captured after them; the helper does not retry driver actions. Use synchronous methods with `ComputerToolset` and `async def` methods with `AsyncComputerToolset`.
 
 ## Notes
+- Adapted from the official docs: the "Run your first task" Python snippet is an excerpt; `tools.close()` releases the toolset only, and the application must still close the browser or desktop session itself (as the official example does with `browser.close()`).
 
 - Approvals: create drivers and callbacks in trusted application code. `confirm` approves fixed action arguments only; its `state` is a prior observation, not a lock on the document or focus, so the driver must check the original target at execution. Disable `key` and refuse `type` with a null target when consent is tied to a specific control. For computer calls, `approveSafetyChecks` / `approve_safety_checks` must return exactly true before any action runs; a missing or declined callback stops the run. A model choice or completion message cannot grant approval.
 - URL policy: parse the URL and compare protocol, hostname, and port; do not rely on a string prefix (`https://example.com.evil.test` must not match `https://example.com`). Also enforce a network policy in the browser or environment, since the callback cannot restrict redirects, popups, page scripts, or embedded resources.

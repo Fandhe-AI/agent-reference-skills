@@ -20,6 +20,8 @@ The SDK runs the Responses tool loop; your application supplies a driver (code t
 
 Snippet taken from the "Run your first task" Python example (the driver allows only a screenshot and one left click, and stops after six requests):
 
+Adapted (not in the official docs): the official example also verifies the page state and wraps the run in an outer `try` / `finally` that closes the browser; those parts are omitted here, and the inner `finally: tools.close()` is kept.
+
 ```python
 tools = AsyncComputerToolset(driver)
 try:
@@ -122,6 +124,7 @@ def send_computer_screenshot(response, call_id, screenshot_base64):
 5. Repeat until the model stops returning `computer_call`.
 
 ## Notes
+- Adapted from the official docs: the "Run your first task" Python snippet is an excerpt; `tools.close()` releases the toolset only, and the application must still close the browser or desktop session itself (as the official example does with `browser.close()`).
 
 - Model access, cost, data: for screenshot-based computer actions, check the model's Tools section for computer use; screenshots count as image input and a hosted environment may charge separately. The SDK sends returned page text or screenshots to OpenAI; the examples set `store` to `false`, which does not remove every form of data retention.
 - Preserve state: the API conversation and the execution environment have separate state. Continuing a response does not restore a browser session, login state, or runtime variables; keep the environment alive and return a fresh screenshot after a short group of actions. Prefer `detail: "original"`; if you downscale, map model coordinates back to the environment's coordinate space.
