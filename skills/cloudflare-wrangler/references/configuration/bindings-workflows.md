@@ -78,7 +78,7 @@ schedules = [ "0 * * * *" ]
 - A `workflows` binding to a Workflow in another Worker cannot use the same `name` as a Workflow export in this Worker; Workflow names are unique per account.
 - The Worker calls each exported Workflow through `ctx.exports`, keyed by class name.
 - Workflows API behavior is documented by the Workflows docs, not here.
-- Wrangler 4.162.0 rejects settings on a `workflows` binding to a Workflow declared in `exports`, and uploads Workflow export settings with the Worker. Source: https://github.com/cloudflare/workers-sdk/releases/tag/wrangler%404.162.0
+- Docs vs release notes (kept both; the official page's wording in the first bullet above is verbatim and has not been updated): the wrangler 4.162.0 release notes say Wrangler now rejects settings on a `workflows` binding to a Workflow declared in `exports` (so from 4.162.0 put `schedules`, `concurrency`, retention and `jurisdiction` on the `exports` entry only, not on the binding), and uploads Workflow export settings with the Worker. Before 4.162.0 the same-value rule in the first bullet applied. Source: https://github.com/cloudflare/workers-sdk/releases/tag/wrangler%404.162.0
 - Source: https://developers.cloudflare.com/workers/wrangler/configuration/ (cloudflare-docs production `34d908a`, fetched 2026-11-14)
 
 ## Related
