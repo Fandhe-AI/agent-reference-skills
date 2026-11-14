@@ -112,6 +112,7 @@ npx shadcn@latest add acme/ui/button#v1.2.0
 ## Notes
 
 - Private `github.com` repositories work as GitHub registry addresses: the CLI uses the GitHub CLI (`gh auth login`) locally, or `GH_TOKEN` / `GITHUB_TOKEN` in CI. GitHub Enterprise hosts are not supported; for custom registry servers with request authentication, use a namespace with authentication. This answer changed in CLI 4.23.0; in 4.22.0 the same FAQ said private repositories were not supported, while the github page of that tag already documented them (the two pages disagreed).
+- Official text inconsistency, kept verbatim above: the FAQ says the new colors become `bg-brand` and `text-brand-accent`, but the example defines the keys `brand-background` and `brand-accent`, so the generated utilities follow those key names (for example `bg-brand-background`, `text-brand-accent`); `bg-brand` would need a key named `brand`.
 - Source: https://ui.shadcn.com/docs/registry/faq (Markdown twin retrieved 2026-11-14; byte-identical to `apps/v4/content/docs/registry/faq.mdx` at tag `shadcn@4.23.0`).
 
 ## Related
