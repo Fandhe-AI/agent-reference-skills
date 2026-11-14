@@ -40,7 +40,7 @@ I have a Flutter screen with a list and a detail view. Rewrite it as a WinUI 3 p
 ## Notes
 
 - Sharing code across platforms: keep business logic in a separate .NET class library (platform-agnostic); share it between WinUI 3, MAUI, Blazor, or any other .NET target; reuse models, services, and ViewModels before rewriting UI; use `#if WINDOWS` conditional compilation only as a last resort.
-- MAUI and WinUI 3 both use XAML but different namespaces (`Microsoft.Maui.Controls.*` vs `Microsoft.UI.Xaml.*`); do not mix them. Controls such as `Button` / `Grid` / `StackLayout` differ in name and behavior between the two.
+- MAUI and WinUI 3 both use XAML but different namespaces (`Microsoft.Maui.Controls.*` vs `Microsoft.UI.Xaml.*`); do not mix them.
 - The Electron prompt and WebView2 `window.chrome.webview.postMessage` messaging are verbatim from the source; when exposing native APIs to web content, validate message origin and payload in the host before acting on them (not stated on the source page).
 - The Options / Props table condenses the source's per-framework prose; the starter prompts are verbatim.
 - Source: https://learn.microsoft.com/en-us/windows/apps/develop/ai-assisted/migrate/cross-framework (en-us, fetched 2026-11-14). Source page `ms.date` 2026-05-13.

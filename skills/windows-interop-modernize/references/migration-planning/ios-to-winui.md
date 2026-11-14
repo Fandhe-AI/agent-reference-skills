@@ -67,7 +67,6 @@ Generate C# — not Swift.
 ## Notes
 
 - This page maps iOS concepts to WinUI 3 (`Microsoft.UI.Xaml.*`); `UIButton` / `UIStackView` / `UITableView` rows are distinct from the WPF (`System.Windows.Controls.*`) and WinForms controls covered in the wpf-winforms-interop category.
-- The `Windows.Services.Store` and `ApplicationData.Current.LocalSettings` rows reference WinRT APIs; `ApplicationData.Current` requires a packaged app (package identity), which is not stated on the source page.
 - The mapping table and starter prompt are verbatim from the source (the unlabeled prompt fence is tagged `text`; relative links were expanded to full URLs).
 - Source: https://learn.microsoft.com/en-us/windows/apps/develop/ai-assisted/migrate/ios-to-winui (en-us, fetched 2026-11-14). Source page `ms.date` 2026-05-13.
 
