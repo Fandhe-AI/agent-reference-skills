@@ -15,6 +15,13 @@ Power off the device, then reboot while holding Shift and Insert at the same tim
 
 When booted using a recovery kernel, run commands directly with root privileges; no mount, chroot, or unmount steps are needed.
 
+Adapted (not in the official docs): a recovery-mode root shell may mount the root file system read-only and may have no network; remount it read-write and confirm name resolution before the scenarios that run `dpkg`, `update-initramfs`, or `apt`.
+
+```bash
+mount -o remount,rw /
+ping -c 1 ports.ubuntu.com   # apt scenarios only; enable networking first if this fails
+```
+
 Scenario 1: complete a package upgrade (for example, after running `apt upgrade` instead of `apt dist-upgrade`, or to update a faulty kernel):
 
 ```bash
@@ -82,6 +89,12 @@ sudo mount /dev/nvme0n1p2 /mnt/nvme_mount_dir
 
 User files are typically under `/mnt/nvme_mount_dir/home/`. Verify the backup before proceeding.
 
+When the backup is finished, unmount the mount used for backup before mounting for the chroot (Adapted, not in the official docs):
+
+```bash
+sudo umount /mnt/nvme_mount_dir
+```
+
 The scenarios below assume root partition `/dev/nvme0n1p2`, EFI partition `/dev/nvme0n1p1`, and mount location `/mnt`. For scenarios 1 to 3, mount the system and chroot first:
 
 ```bash
@@ -118,6 +131,7 @@ Review and answer the e2fsck repair prompts, and reboot with the USB removed onc
 - Never run `e2fsck` on a mounted filesystem. It applies to ext2, ext3, and ext4; use the appropriate repair tool for other filesystem types.
 - Do not install `nvidia-dkms-*` modules: they are unsigned, and DGX Spark has Secure Boot enabled, so they fail to load unless signed with a trusted key.
 - The `find ... rm -v` step deletes module files not owned by a Debian package; confirm `KVER` before running it.
+- Adapted from the official docs: the read-write remount and network check for the recovery shell, and the `umount /mnt/nvme_mount_dir` before the chroot mounts, were added; the official page does not include them.
 - The live USB screen resolution may be lower than expected; this is a known issue and does not affect the procedure.
 - Source: https://docs.nvidia.com/dgx/dgx-spark/boot-repair.html (retrieved 2026-11-14)
 
