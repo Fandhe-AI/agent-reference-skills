@@ -41,6 +41,7 @@ try {
 - Explicit intents specify a full `ComponentName` and are required for starting a `Service` — never use an implicit intent to start a service (security hazard).
 - Implicit intents are resolved by the system against declared `<intent-filter>` elements; see [Intent filters](./intent-filters.md) and [Common intents](./common-intents.md).
 - Always guard `startActivity()` with `intent.resolveActivity(packageManager) != null` (or catch `ActivityNotFoundException`) since no matching app may be installed; package visibility rules can also affect resolution — see [Package visibility](./package-visibility.md).
+- Android 17: the system's automatic URI permission grant for `ACTION_SEND` / `ACTION_SEND_MULTIPLE` / `ACTION_IMAGE_CAPTURE` intents ends starting in Android 18, so add the `FLAG_GRANT_*_URI_PERMISSION` flags explicitly; see [Android 17 platform changes](./android-17-platform-changes.md). Source: https://developer.android.com/about/versions/17/behavior-changes-all (fetched 2026-11-14).
 - Use `Intent.createChooser(intent, title)` to force a chooser UI when multiple apps could handle an implicit intent.
 
 ## Related

@@ -43,6 +43,7 @@ fun sendEmail(subject: String, body: String) {
 ## Notes
 
 - This is the Android platform component API (Kotlin / `android.app`, `android.content`) — distinct from the same-named concept in other skills.
+- Android 17: apps sending `ACTION_SEND`, `ACTION_SEND_MULTIPLE`, or `ACTION_IMAGE_CAPTURE` with a content URI should add `FLAG_GRANT_READ_URI_PERMISSION` (plus `FLAG_GRANT_WRITE_URI_PERMISSION` for `ACTION_IMAGE_CAPTURE`) explicitly because automatic grants stop in Android 18; see [Android 17 platform changes](./android-17-platform-changes.md). Source: https://developer.android.com/about/versions/17/behavior-changes-all (fetched 2026-11-14).
 - Always guard invocation with `intent.resolveActivity(packageManager) != null`, since no matching app may be installed or visible (see [Package visibility](./package-visibility.md)).
 - `Intent.createChooser(intent, title)` forces a disambiguation dialog even if the user has set a default handler for the action.
 - Prefer the modern Activity Result APIs (`registerForActivityResult` / `rememberLauncherForActivityResult`) over the deprecated `startActivityForResult()` / `onActivityResult()` shown in older samples for these intents. See [Activity Result contracts](./activity-result-contracts.md).

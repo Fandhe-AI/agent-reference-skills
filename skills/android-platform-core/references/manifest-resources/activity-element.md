@@ -37,6 +37,7 @@ Declares an `Activity` component within `<application>` and its window/behavior 
 
 - Contained in: `<application>`. Can contain: `<intent-filter>`, `<meta-data>`, `<layout>`, `<property>`.
 - API level 36 (Android 16): the system ignores fixed-orientation `screenOrientation` values (`portrait`, `landscape`, `reversePortrait`, `reverseLandscape`, `sensorPortrait`, `sensorLandscape`, `userPortrait`, `userLandscape`) for apps targeting Android 16+ on devices with smallest width ≥ 600dp.
+- Android 17 (API 37): for apps targeting API 37 or higher, the opt-out from ignoring orientation, resizability, and aspect-ratio restrictions on large screens (sw >= 600dp) that was available when targeting SDK 36 is no longer available. Separately, an unhandled configuration change no longer restores the previous IME visibility on any app; use `windowSoftInputMode="stateAlwaysVisible"` if the keyboard must stay visible. Source: https://developer.android.com/about/versions/17/behavior-changes-17 and https://developer.android.com/about/versions/17/behavior-changes-all (fetched 2026-11-14).
 - To be consistent with `screenOrientation` filtering, also declare a matching `<uses-feature android:name="android.hardware.screen.portrait"/>`.
 - Multi-window mode treats `screenOrientation` as a suggestion only; may result in letterboxing. Device manufacturers can ignore it on API 12+ to improve layout.
 

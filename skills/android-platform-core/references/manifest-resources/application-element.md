@@ -44,6 +44,7 @@ Declares the application and its global attributes; the container for all app co
 ## Notes
 
 - Contained in: `<manifest>`.
+- `android:usesCleartextTraffic`: the manifest reference says the attribute is being deprecated and will be ignored for apps targeting API 38 and above (a network security configuration is honored from API 24; apps targeting API 23 and below must also set the attribute), while the Android 17 behavior-changes page says only that a future release plans to deprecate it. Both are kept as published; see [android-17-platform-changes](../app-components/android-17-platform-changes.md). Source: https://developer.android.com/guide/topics/manifest/application-element and https://developer.android.com/about/versions/17/behavior-changes-all (fetched 2026-11-14).
 - Can contain: `<activity>`, `<activity-alias>`, `<service>`, `<receiver>`, `<provider>`, `<meta-data>`, `<uses-library>`, `<uses-native-library>`, `<profileable>`, `<property>`.
 
 ## Related
