@@ -69,6 +69,7 @@ skills/apple-data/
       nspersistentcloudkitcontainer.md
       persistent-history.md
       staged-migration.md
+      adopting-swiftdata.md
     foundation/
       README.md
       data.md
@@ -152,6 +153,7 @@ skills/apple-data/
 | NSPersistentCloudKitContainer で CloudKit 同期したい | coredata | [references/coredata/README.md](references/coredata/README.md) |
 | Core Data の persistent history を追跡したい | coredata | [references/coredata/README.md](references/coredata/README.md) |
 | NSStagedMigrationManager で段階的マイグレーションしたい | coredata | [references/coredata/README.md](references/coredata/README.md) |
+| Core Data アプリを SwiftData へ移行・併用したい / Core Data の型付き通知メッセージ (iOS 27) を使いたい | coredata | [references/coredata/README.md](references/coredata/README.md) |
 | NSManagedObject でエンティティを操作したい | coredata | [references/coredata/README.md](references/coredata/README.md) |
 | NSManagedObjectContext で CRUD を実行したい | coredata | [references/coredata/README.md](references/coredata/README.md) |
 | NSPersistentContainer でスタックをセットアップしたい | coredata | [references/coredata/README.md](references/coredata/README.md) |

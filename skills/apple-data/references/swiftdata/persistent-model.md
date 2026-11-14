@@ -42,6 +42,24 @@ let deleted = book.isDeleted
 - iOS 17.0+, macOS 14.0+, tvOS 17.0+, watchOS 10.0+, visionOS 1.0+
 - Do not implement the protocol requirements manually; use `@Model` instead
 
+### iOS 27.0: `PersistentIdentifier.isTemporary`
+
+```swift
+var isTemporary: Bool { get }
+```
+
+Official example (verbatim):
+
+```swift
+if model.persistentModelID.isTemporary {
+    try modelContext.save()
+}
+let data = try JSONEncoder().encode(model.persistentModelID)
+```
+
+- A temporary identifier is assigned when a model is first initialized; after `save()` the model receives a permanent identifier. Do not persist temporary identifiers or build durable maps from them
+- Source: https://developer.apple.com/documentation/swiftdata/persistentidentifier/istemporary (fetched 2026-11-14, DocC JSON of the iOS & iPadOS 27.3 beta SDK)
+
 ## Related
 
 - [@Model](./model-macro.md)

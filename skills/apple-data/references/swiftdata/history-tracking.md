@@ -93,6 +93,47 @@ let observer = try HistoryObserver(
 - A custom `DataStore` must additionally conform to `HistoryProviding` to expose transaction history for these types
 - Source: https://developer.apple.com/documentation/swiftdata/historyobserver , https://developer.apple.com/documentation/swiftdata/historyproviding , https://developer.apple.com/documentation/updates/swiftdata (fetched 2026-10-16, iOS 27 SDK docs)
 
+### iOS 27.0 additions: store identifiers and save notifications
+
+Declarations as given on the official pages (all iOS 27.0+ and the other OSes at 27.0+):
+
+```swift
+// HistoryToken / DefaultHistoryToken
+var storeIdentifier: String { get }
+
+// ModelContext.NotificationKey
+case historyTokens
+
+// DataStoreSaveChangesResult
+final let historyToken: (any HistoryToken)?
+init(for storeIdentifier: String, remappedIdentifiers: [PersistentIdentifier : PersistentIdentifier] = [:], snapshotsToReregister: [PersistentIdentifier : T] = [:], historyToken: (any HistoryToken)?)
+```
+
+Official example for `ModelContext.NotificationKey.historyTokens` (verbatim):
+
+```swift
+NotificationCenter.default.addObserver(
+    forName: ModelContext.didSave,
+    object: nil,
+    queue: nil
+) { notification in
+    guard let token = notification.userInfo?[ModelContext.NotificationKey.historyToken] as? DefaultHistoryToken else {
+        return
+    }
+
+    // Use token to fetch changes since this save
+    let descriptor = HistoryDescriptor<DefaultHistoryTransaction>(
+        predicate: #Predicate { $0.token > token }
+    )
+}
+```
+
+- `HistoryToken.storeIdentifier` is the on-disk identifier of the data store the token covers; map it back to the `ModelConfiguration` name with `ModelContainer.configurationName(forStoreIdentifier:)`
+- The key is available in `ModelContext.didSave` notifications only (not `willSave`); the value conforms to `HistoryToken`
+- The official example subscripts `ModelContext.NotificationKey.historyToken` (singular) while the declared case is `historyTokens` (plural); the example is kept verbatim, so check the spelling against the SDK you build with
+- `DataStoreSaveChangesResult.historyToken` lets a custom `DataStore` return the history token produced by a save
+- Source: https://developer.apple.com/documentation/swiftdata/historytoken/storeidentifier , https://developer.apple.com/documentation/swiftdata/defaulthistorytoken/storeidentifier , https://developer.apple.com/documentation/swiftdata/modelcontext/notificationkey/historytokens , https://developer.apple.com/documentation/swiftdata/datastoresavechangesresult/historytoken (fetched 2026-11-14, DocC JSON of the iOS & iPadOS 27.3 beta SDK)
+
 ## Related
 
 - [ModelContainer](./model-container.md)
