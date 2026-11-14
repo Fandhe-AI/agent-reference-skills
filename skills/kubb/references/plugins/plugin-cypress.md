@@ -1,6 +1,6 @@
 # @kubb/plugin-cypress
 
-OpenAPI 仕様から operation ごとの型付き `cy.request()` ヘルパーを生成するプラグイン（plugin-cypress 5.0.14 の docs に準拠）。
+OpenAPI 仕様から operation ごとの型付き `cy.request()` ヘルパーを生成するプラグイン（plugin-cypress 5.3.1 の docs に準拠）。
 
 各ヘルパーは仕様名どおりの grouped `path` / `query` / `headers` / `body` を取り、`Cypress.Chainable<{Operation}Response>` としてレスポンスボディを返す。
 
@@ -31,12 +31,14 @@ npm install --save-dev @kubb/plugin-cypress
 
 ```typescript
 import { defineConfig } from 'kubb/config'
+import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginCypress } from '@kubb/plugin-cypress'
 
 export default defineConfig({
   input: './petStore.yaml',
   output: { path: './src/gen' },
+  adapter: adapterOas({ contentType: 'application/json', integerType: 'number' }),
   plugins: [
     pluginTs(),
     pluginCypress({ output: { path: 'cypress', mode: 'directory' } }),
@@ -47,14 +49,15 @@ export default defineConfig({
 ```typescript
 import { getPetById } from '../../src/gen/cypress/getPetById'
 
-getPetById({ path: { petId: 1n } }).then((pet) => {
+getPetById({ path: { petId: 1 } }).then((pet) => {
   expect(pet.name).to.be.a('string')
 })
 ```
 
 ## Notes
 
-- `petId` のような `int64` は既定のアダプターで `bigint` 型になる（例: `1n`）
+- Petstore の spec はほとんどのレスポンスで JSON と XML を宣言するため、`contentType` で JSON を残す。無いとレスポンスボディは `Pet \| string` 型になる。`petId` のような `int64` は既定のアダプターで `bigint`（例: `1n`）だが、`integerType: 'number'` では `number` になる
+- Source: https://kubb.dev/extensions/kubb-labs/plugin-cypress/overview （`@kubb/plugin-cypress@5.3.1`、取得日 2026-11-14）
 - Migration (v4 → v5): リクエストヘルパーは grouped `*Options` の後に変更なしの `Partial<Cypress.RequestOptions>` を取る。`dataReturnType` は削除され、ヘルパーはボディを `Cypress.Chainable<T>` として返す。HTTP メソッドは大文字、import は `*Options` / `*Response` 名。`baseURL` / `exclude` / `include` / `override` の形は変わらない。validator オプションは無い
 
 ## Related

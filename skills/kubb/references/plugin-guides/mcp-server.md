@@ -28,7 +28,7 @@ export default defineConfig({
 })
 ```
 
-`kubb generate` を実行すると、tool ハンドラー・`server.ts`・`start.ts`・`.mcp.json` が出力される。各ハンドラーは HTTP operation を呼び、キャンセル signal を転送し、非 2xx で throw する。tool result はテキストコンテンツと構造化レスポンスデータを含む。`server.ts` は Zod の入出力 schema 付きで tool を登録し、`start.ts` が `startServer()` を呼んで stdio で提供する。
+`kubb generate` を実行すると、tool ハンドラー・`server.ts`・`start.ts`・`.mcp.json` が出力される。各ハンドラーは HTTP operation を呼び、キャンセル signal を転送し、非 2xx で throw する。tool result はテキストコンテンツと構造化レスポンスデータを含む。`server.ts` は Zod の入出力 schema 付きで tool を登録し、`start.ts` が `startServer()` を呼んで stdio で提供する。tool 一覧では `int64` フィールドは integer、binary フィールドは型なしの値として表示される（`bigint` と `Blob` に JSON Schema の形が無いため）。`text/event-stream` や JSON Lines のようにレスポンスをストリームする operation には tool が生成されない（tool は 1 つの JSON 結果を返すため）。
 
 ### Start the server
 
@@ -95,7 +95,7 @@ const clients = [
 - サーバー名は OpenAPI spec の `info.title` から決まる
 - MCP クライアントは自身の作業ディレクトリからコマンドを起動するため、`args` のパスは `.mcp.json` のフォルダーではなく Kubb の `root` 相対。Claude Code はプロジェクトルートの `.mcp.json` を読むので、`mcpServers` 配下のエントリをそのファイルへコピーする。Claude Desktop のように別フォルダーで起動するクライアントでは `start.ts` への絶対パスを使う
 - 上の client 選択の配列は `defineConfig.plugins` に `pluginTs` / `pluginZod` と並べて追加する。ハンドラーは `clients-axios` から operation を import する
-- Source: https://kubb.dev/extensions/kubb-labs/plugin-mcp/guides/server （`@kubb/plugin-mcp@5.2.3`）
+- Source: https://kubb.dev/extensions/kubb-labs/plugin-mcp/guides/server （`@kubb/plugin-mcp@5.5.1`、取得日 2026-11-14）
 
 ## Related
 

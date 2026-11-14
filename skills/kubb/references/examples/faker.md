@@ -107,7 +107,7 @@ module.exports = defineConfig(() => {
     "@kubb/plugin-ts": "workspace:*",
     "dayjs": "^1.11.23",
     "kubb": "catalog:",
-    "react": "^19.3.0"
+    "react": "^19.3.1"
   },
   "devDependencies": {
     "typescript": "catalog:"
@@ -117,9 +117,9 @@ module.exports = defineConfig(() => {
 
 ## Notes
 
-- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@5.5.15/examples/faker — `examples/faker` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.cjs`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
-- Versions outside the monorepo (npm latest): `kubb` 5.11.0, `@kubb/adapter-oas` 5.11.0, `@kubb/plugin-ts` 5.0.14, `@kubb/plugin-faker` 5.1.9; `typescript`: use your project's version
-- The package is `"type": "commonjs"` and declares `node >=22.12`. The config shows `typeMode: 'schema'`, a per-schema `override` of `dateParser: 'dayjs'`, and `include` / `exclude` filters
+- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@6.0.1/examples/faker — `examples/faker` of kubb-labs/plugins at tag `@kubb/plugin-client@6.0.1` (commit 8e70d907e7bb968e612990f1c8c31347257ac9ee, fetched 2026-11-14) (`kubb.config.cjs`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- Versions outside the monorepo (the releases published with the pinned tags): `kubb` 5.20.0, `@kubb/adapter-oas` 5.20.0, `@kubb/plugin-ts` 5.5.1, `@kubb/plugin-faker` 5.4.1; `typescript`: use your project's version
+- The package is `"type": "commonjs"` and declares `node >=22.22`. The config shows `typeMode: 'schema'`, a per-schema `override` of `dateParser: 'dayjs'`, and `include` / `exclude` filters
 - This example uses `resolverFaker` only in the advanced example; the v5 plugin no longer accepts `paramsCasing` / `mapper` (see [../plugins/plugin-faker.md](../plugins/plugin-faker.md))
 
 ## Related

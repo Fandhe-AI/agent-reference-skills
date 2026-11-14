@@ -58,7 +58,7 @@ const nodes: PrinterZodNodes = {
   },
 }
 
-pluginZod({ inferred: true, printer: { nodes } })
+pluginZod({ inferred: 'codec', printer: { nodes } })
 ```
 
 generator は `$ref` を介する場合も含め、レスポンス用と入力用の別 schema を出力する:
@@ -106,9 +106,12 @@ pluginZod({
 | `integer` | `z.int()` | `z.int()` | `coercion.numbers` 有効時は `z.coerce.number().int()` |
 | `integer`, `format: int32` | `z.int32()` | `z.int32()` | 32-bit signed integer |
 | `integer`, `format: uint32` | `z.uint32()` | `z.uint32()` | 32-bit unsigned integer |
-| `integer`, `format: int64` | `z.bigint()` | `z.bigint()` | 64-bit integer |
-| `string`, `format: byte` / `base64` | `z.base64()` | `z.base64()` | Base64 string validation |
+| `integer`, `format: int64` | `z.coerce.bigint()` | `z.coerce.bigint()` | 64-bit integer。JSON は number を持つため常に coerce |
+| `string`, `format: base64` | `z.base64()` | `z.base64()` | Base64 string validation |
+| `string`, `format: byte` / `binary` | `z.instanceof(Blob)` | `z.instanceof(Blob)` | Binary payload |
 | `string`, `format: base64url` | `z.base64url()` | `z.base64url()` | URL-safe base64 string validation |
+| `string`, `contentEncoding: base64` / `base64url` | `z.base64()` / `z.base64url()` | `z.base64()` / `z.base64url()` | format と同じチェック。他のエンコーディングは `z.string()` のまま |
+| `string`, JSON `contentMediaType` with `contentSchema` | `z.string().refine(...)` | `z.string().check(z.refine(...))` | 文字列は content schema を満たす JSON としてパースできる必要がある。型は string のまま |
 | `string`, `format: jwt` | `z.jwt()` | `z.jwt()` | JSON Web Token format |
 | `string`, `format: ulid` | `z.ulid()` | `z.ulid()` | ULID format |
 | `string`, `format: iban` | `z.iban()` | `z.iban()` | International Bank Account Number |
@@ -125,18 +128,25 @@ pluginZod({
 | `object`, `propertyNames: <schema>` | `z.record(keySchema, schema)` | `z.record(keySchema, schema)` | キー schema（pattern / format 等）を検証する動的 map |
 | `object`, `propertyNames: <enum>` | `z.partialRecord(enumSchema, schema)` | `z.partialRecord(enumSchema, schema)` | enum キーは欠落可 |
 
+次のキーワードは、どちらの API でも `z.refine` チェックとして出力される:
+
+- `if` / `then` / `else`、`dependentRequired`、`dependentSchemas` は、パース前の入力を `z.pipe(z.unknown().check(...), schema)` で検証する
+- `contains` と `minContains` / `maxContains` は、配列の一致要素数を数える
+- `properties` も宣言する object 上の `propertyNames` は、入力の全キーを検証する（辞書は `z.record(keySchema, schema)` のまま）
+
 ## Notes
 
 - `integer` handler は `int32` フィールドを別に制御する。全プラグイン横断で整数表現を変えるには adapter の [`integerType`](https://kubb.dev/extensions/kubb-labs/adapter-oas/options#integertype) を使う
-- description の削除は plugin-ts ページの description 削除 macro を `pluginZod({ macros: [dropDescriptions] })` で使う。生成 schema から description メタデータが消える
+- description の削除は plugin-ts ページの description 削除 macro を `pluginZod({ macros: [dropDescriptions] })` で使う。schema 自身の `.describe()` 呼び出しが消える。described なコンポーネントへの `$ref` は `addPetBodySchema = petSchema.describe('A pet')` やプロパティ `owner: ownerSchema.describe('An owner')` のように `.describe()` が残る（macro は `$ref` の指す schema を visit しないため）
 - `Temporal` を提供する runtime を使うか、生成 import や banner で polyfill を追加する。OpenAPI の format に合わせる（`time` / `date` / `date-time` は `time` / `date` / `datetime` handler）
-- 原文 IMPORTANT: client 型がこれらの変換に従うよう、`inferred: true` を `pluginTs` なしで使う。`pluginTs` の型は wire format を表す
-- 組み込みの日付変換は adapter に `dateType: 'date'` を設定する。生成レスポンス schema は ISO datetime を `Date` に変換し、リクエスト schema は `toISOString()` で戻す
+- 原文 IMPORTANT: client 型がこれらの変換に従うよう `inferred: 'codec'` を使う。`inferred: true` では request 型は `Temporal.PlainTime` ではなくエンコード後の文字列になる。`pluginTs` の型は wire format を表す
+- 組み込みの日付変換は adapter に `dateType: 'date'` を設定する。生成レスポンス schema は ISO datetime を `Date` に変換し、リクエスト schema は `toISOString()` で戻す。`mini: true` では両方とも変換なしの素の `z.date()` を出力する
 - カスタム codec の import では `root` を未設定のままにするとパッケージ specifier が保たれる。`root` を設定すると相対ファイルパスに書き換わる。生成ファイルは `my-codec/zod` から `myCodec` を import する
 - OpenAPI 3.1 の `propertyNames` は辞書キーを検証する。open なキー schema は `z.record(keySchema, valueSchema)`（regex / UUID / 長さ制約を含む）、enum・literal・enum の union のような closed なキーは `z.partialRecord` を使い、存在するキーだけ検証する。推論型は `Partial<Record<Keys, Value>>`
 - `patternProperties` はキーの regex パターンを alternation にまとめ `z.record(z.string().regex(...), valueSchema)` を出力する。Zod Mini はキー schema に `z.string().check(z.regex(...))` を使う
 - 固定プロパティなしの `additionalProperties` schema は辞書を、固定プロパティがあれば宣言形を保つため `.catchall(valueSchema)` を生成する。`additionalProperties: true` は `z.looseObject(shape)`
-- Source: https://kubb.dev/extensions/kubb-labs/plugin-zod/guides/customization （`@kubb/plugin-zod@5.4.12`）
+- Source: https://kubb.dev/extensions/kubb-labs/plugin-zod/guides/customization （`@kubb/plugin-zod@5.9.1`、取得日 2026-11-14）
+- Migration (5.11 → 5.20): `integer` / `format: int64` prints `z.coerce.bigint()` (was `z.bigint()`); `format: byte` prints `z.instanceof(Blob)` (was `z.base64()`); the Encode custom types example uses `inferred: 'codec'` (was `inferred: true`)
 
 ## Related
 

@@ -26,20 +26,19 @@ pluginTs({
 
 ### Map schema types
 
-[printer handler](https://kubb.dev/extensions/kubb-labs/plugin-ts/options#printer) を TypeScript AST ノードに置き換える:
+[printer handler](https://kubb.dev/extensions/kubb-labs/plugin-ts/options#printer) を自前のものに置き換える。各 handler は TypeScript の型を文字列で返す:
 
 ```typescript
-import ts from 'typescript'
 import { pluginTs } from '@kubb/plugin-ts'
 
 pluginTs({
   printer: {
     nodes: {
       date() {
-        return ts.factory.createTypeReferenceNode('Date', [])
+        return 'Date'
       },
       integer() {
-        return ts.factory.createKeywordTypeNode(ts.SyntaxKind.BigIntKeyword)
+        return 'bigint'
       },
     },
   },
@@ -54,9 +53,9 @@ pluginTs({
 
 ```typescript
 import { pluginTs } from '@kubb/plugin-ts'
-import { ast } from 'kubb/kit'
+import { defineMacro } from 'kubb/kit'
 
-const dropDescriptions = ast.defineMacro({
+const dropDescriptions = defineMacro({
   name: 'drop-descriptions',
   schema(node) {
     return 'description' in node && node.description
@@ -71,8 +70,10 @@ pluginTs({ macros: [dropDescriptions] })
 ## Notes
 
 - `int64` フィールドは別の `bigint` handler が制御し、既定で既に `bigint`。`date-time` フィールドは `datetime` handler を使う
-- 生成型から description の JSDoc が消える。OpenAPI ドキュメントは変わらない。同じ macro は `pluginZod` でも使える
-- Source: https://kubb.dev/extensions/kubb-labs/plugin-ts/guides/customization （`@kubb/plugin-ts@5.0.14`）
+- 生成型から description の JSDoc が消える。OpenAPI ドキュメントは変わらない。同じ macro は `pluginZod` でも使える（例外あり。zod-customization の Remove descriptions を参照）
+- コンパイラーノードを返す handler は deprecated で次のメジャーで削除。`@kubb/parser-ts` と `typescript` 5 / 6（TypeScript 7 では `@typescript/typescript6`）が入っていれば動作し（いずれも optional peer dependency）、`@kubb/parser-ts` が無いとビルドはインストールを促すエラーで止まる
+- Migration (5.11 → 5.20): `ast.defineMacro` from `kubb/kit` is now imported as `defineMacro`; printer handlers return type strings instead of `ts.factory` nodes
+- Source: https://kubb.dev/extensions/kubb-labs/plugin-ts/guides/customization （`@kubb/plugin-ts@5.5.1`、取得日 2026-11-14）
 
 ## Related
 
