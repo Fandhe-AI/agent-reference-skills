@@ -37,7 +37,7 @@ Custom path: `knip --config path/to/knip.json`
 }
 ```
 
-- Custom values **override** defaults (not merge)
+- Custom `entry` and `project` values replace the defaults (not merge); entry files from `package.json` fields like `main`, `bin` and `exports` are always added as well
 - Be specific with entry files
 - Plugins are auto-enabled
 
@@ -46,3 +46,7 @@ Custom path: `knip --config path/to/knip.json`
 - Entry files documentation for deeper understanding
 - Monorepos & workspaces for multi-package projects
 - Production mode for production-only analysis
+
+## Notes
+
+- Source: https://knip.dev/overview/configuration (knip@6.45.1 docs, retrieved 2026-11-14)

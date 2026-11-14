@@ -8,6 +8,8 @@ Knip exits with code `1` when issues are detected, ideal for CI.
 
 ## GitHub Actions Example
 
+Adapted (not in the official docs): third-party actions are pinned to commit SHAs instead of the mutable tags used upstream.
+
 ```yaml
 name: Lint project
 on: push
@@ -33,4 +35,4 @@ jobs:
 
 ## Notes
 
-- Actions are pinned to full commit SHAs here; the upstream docs reference mutable tags (`@v4`)
+- Actions are pinned to full commit SHAs here; the upstream docs reference mutable tags (`@v7` for `actions/checkout` and `actions/setup-node` in the 6.45.1 docs; the SHAs here are the v4.4.0 releases and were not re-pinned)

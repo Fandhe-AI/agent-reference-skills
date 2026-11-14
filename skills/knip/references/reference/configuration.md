@@ -221,8 +221,29 @@ Fine-grained:
 
 Reports unused exports in entry source files (not config files). Entry files configured by plugins and entry files discovered only through `package.json` scripts are excluded; add the latter to `entry` to include their exports.
 
+### `includeSubpathExports`
+
+By default, the targets of the `exports` field in `package.json` are entry files and its subpaths are not reported, since other packages may import them. When a workspace is only consumed within the repository, include its `exports` when reporting unused subpaths:
+
+```json
+{ "includeSubpathExports": true }
+```
+
+If enabled, a subpath in `exports` that is not imported anywhere is reported as an unused subpath, and its targets are entry files only when the subpath is imported. An unreferenced `.` subpath means nothing imports the package at all. Subpaths whose targets are not module files, such as `./package.json` or a stylesheet, are not reported.
+
+The `imports` field (subpath imports) is always reported this way, since subpath imports are internal to the package by design.
+
+Dependent workspaces must be part of the analysis to find the references. In strict mode combined with `--workspace` they are not, so `exports` are treated as public in that case.
+
+Set this option at root level to enable it globally, or within workspace configurations individually. A workspace that is private altogether typically also sets `includeEntryExports`.
+
 ## Compilers
 
 Only in dynamic config (`.js`/`.ts`), not JSON.
 
 Suffix `!` on ignore patterns enables production-only mode.
+
+## Notes
+
+- Configuration validation was changed from Zod to handwritten validation in 6.45.0 (GitHub release `knip@6.45.0`); the documented options are unchanged
+- Source: https://knip.dev/reference/configuration (knip@6.45.1 docs, retrieved 2026-11-14)

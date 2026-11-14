@@ -23,10 +23,11 @@ Source: https://knip.dev/reference/cli
 | `--cache` | Enable caching; consecutive runs are 10-40% faster |
 | `--cache-location` | Provide alternative cache location (default: `./node_modules/.cache/knip`) |
 | `--include-entry-exports` | Include entry files when reporting unused exports |
+| `--include-subpath-exports` | Report unused subpaths in the `exports` field of `package.json`, for packages only consumed within the repository |
 | `--no-gitignore` | Ignore `.gitignore` files |
 | `--production` / `-p` | Lint only production source files |
 | `--strict` / `-s` | Isolate workspaces and consider only direct dependencies; implies production mode |
-| `--watch` / `-w` | Watch current directory, and update reported issues when a file is modified, added or deleted |
+| `--watch` / `-w` | Watch current directory, and update reported issues when a file is modified, added or deleted; reloads configuration when a Knip config, plugin config (or a local module it imports), workspace manifest, `tsconfig.json` or `.gitignore` file changes (changes inside `node_modules` require restarting Knip) |
 
 ## Scope
 
@@ -42,7 +43,7 @@ Source: https://knip.dev/reference/cli
 | `--cycles` | Shortcut for `--include cycles` (report only circular dependencies); see the cycles reporter |
 | `--tags` | Include (`+`) or exclude (`-`) exports tagged with JSDoc/TSDoc tags |
 
-Issue types (`--include` / `--exclude`): `files`, `dependencies`, `unlisted`, `binaries`, `unresolved`, `exports`, `nsExports`, `types`, `nsTypes`, `enumMembers`, `namespaceMembers`, `duplicates`, `catalog`, `catalogReferences`
+Issue types (`--include` / `--exclude`): `files`, `dependencies`, `unlisted`, `binaries`, `unresolved`, `exports`, `nsExports`, `types`, `nsTypes`, `enumMembers`, `namespaceMembers`, `duplicates`, `catalog`, `catalogReferences`, `subpaths`
 
 `nsExports` and `nsTypes` are off by default; including only those adds them to the default report instead of narrowing it.
 
@@ -63,6 +64,7 @@ Issue types (`--include` / `--exclude`): `files`, `dependencies`, `unlisted`, `b
 | `--preprocessor-options [json]` | Pass extra options to the preprocessor as JSON string |
 | `--reporter [reporter]` | Select reporter (can be repeated) |
 | `--reporter-options [json]` | Pass extra options to the reporter as JSON string |
+| `--output-file [reporter=]path` | Write the output of a reporter to a file instead of `stdout`; prefix the path with the reporter name to target one of multiple reporters (can be repeated) |
 | `--no-config-hints` | Suppress configuration hints |
 | `--no-tag-hints` | Suppress tag hints |
 | `--treat-config-hints-as-errors` | Exit with code `1` if there are any configuration hints |
@@ -70,6 +72,13 @@ Issue types (`--include` / `--exclude`): `files`, `dependencies`, `unlisted`, `b
 | `--max-show-issues` | Maximum number of issues per type to display (does not affect exit code) |
 | `--treat-tag-hints-as-errors` | Exit with code `1` if there are any tag hints |
 | `--no-exit-code` | Exit with code `0` even when there are lint issues (config load failures and internal errors still exit with `2`) |
+
+A relative `--output-file` path is resolved from the directory Knip runs in, like `--config` and `--trace-file`: with `--directory app --output-file knip.sarif` the file is written to `app/knip.sarif`.
+
+```sh
+knip --reporter sarif --output-file knip.sarif
+knip --reporter symbols --reporter json --output-file json=knip.json
+```
 
 Exit codes: `0` (no issues), `1` (at least one lint issue), `2` (bad input, plugin config load error or internal error)
 
@@ -87,3 +96,8 @@ Exit codes: `0` (no issues), `1` (at least one lint issue), `2` (bad input, plug
 | `--trace-dependency [name]` | Trace package or binary name to see where it's referenced (implies `--trace`) |
 | `--trace-export [name]` | Trace export name to see where it's imported (implies `--trace`) |
 | `--trace-file [path]` | Trace file to see where its exports are imported (implies `--trace`) |
+
+## Notes
+
+- Unused subpaths (`subpaths`) are reported by default for the `imports` field; `--include-subpath-exports` adds the `exports` field
+- Source: https://knip.dev/reference/cli (knip@6.45.1 docs, retrieved 2026-11-14)

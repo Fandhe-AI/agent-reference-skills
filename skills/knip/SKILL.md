@@ -3,7 +3,7 @@ name: knip
 description: >
   Knip (TypeScript / JavaScript 未使用コード検出ツール) リファレンス。
   未使用ファイル・export・依存関係・型・列挙メンバー・循環依存 (circular dependencies / cycles) 検出、
-  auto-fix、monorepo (workspaces)、catalog (pnpm / Yarn / Bun catalogs)、
+  auto-fix、unused subpaths (`--include-subpath-exports`)、--output-file、monorepo (workspaces)、catalog (pnpm / Yarn / Bun catalogs)、
   knip.json / knip.config.ts、プラグイン、ignore、reporter (SARIF)、
   初回クリーンアップ (first cleanup)、段階導入 (adopt gradually)、how Knip works。
 user-invocable: false
@@ -12,7 +12,7 @@ user-invocable: false
 # Knip リファレンス
 
 Knip の公式ドキュメント全コアページを網羅したスキル。
-対象: Knip v6（6.41.0 時点の docs、2026-10-16 取得）。
+対象: Knip v6（6.45.1 時点の docs、2026-11-14 取得。npm latest 6.45.1）。6.41.0 → 6.45.1 の変更（`--output-file`・`--include-subpath-exports` / unused subpaths・プラグイン 207 件ほか）を反映済み。samples / scripts も同版へ追従。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
@@ -27,6 +27,7 @@ skills/knip/
       features.md
       first-cleanup.md
       getting-started.md
+      screenshots-videos.md
     explanations/
       README.md
       comparison-and-migration.md
@@ -115,7 +116,7 @@ skills/knip/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
-| インストール・初期設定・基本的な使い方を知りたい | overview | [references/overview/README.md](references/overview/README.md) |
+| インストール・初期設定・基本的な使い方・コーディングエージェント (MCP) 連携・スクリーンショット / 動画の要点を知りたい | overview | [references/overview/README.md](references/overview/README.md) |
 | 機能一覧・ゼロ設定の仕組み・初回クリーンアップ後の対応を知りたい | overview | [references/overview/README.md](references/overview/README.md) |
 | エントリーファイル・プラグインの仕組み・内部動作を理解したい | explanations | [references/explanations/README.md](references/explanations/README.md) |
 | 導入理由・他ツールとの比較・移行手順を知りたい | explanations | [references/explanations/README.md](references/explanations/README.md) |

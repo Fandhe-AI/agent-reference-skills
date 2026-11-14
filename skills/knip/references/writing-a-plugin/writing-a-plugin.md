@@ -32,7 +32,7 @@ export default plugin;
 const title = 'nyc';
 const enablers = ['nyc'];
 const isEnabled = ({ dependencies }) => hasDependency(dependencies, enablers);
-const config = ['.nycrc', '.nycrc.{json,yml,yaml}', 'nyc.config.js', 'package.json'];
+const config = ['.nycrc', '.nycrc.{json,yml,yaml}', 'nyc.config.{js,cjs,mjs}', 'package.json'];
 
 const resolveConfig = config => {
   const extend = config?.extends ?? [];
@@ -92,3 +92,8 @@ node --test test/plugins/tool.test.ts
 ## Supported Config Formats
 
 JSON, YAML, TOML, JavaScript, TypeScript, plain text.
+
+## Notes
+
+- Use `entry` instead of `config` when the config file has no entry-point options or string dependency references; Knip would only add the `config` files as entry files anyway
+- Source: https://knip.dev/writing-a-plugin (knip@6.45.1 docs, retrieved 2026-11-14)

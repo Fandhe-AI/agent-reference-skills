@@ -21,7 +21,7 @@ Exclude specific paths with negated patterns:
 
 ## Notes
 
-- Custom `entry` and `project` values **override** defaults, they do not merge
+- Custom `entry` and `project` values **override** defaults, they do not merge; entry files from `package.json` fields (`main`, `bin`, `exports`, ...) and plugins are still added
 - Default entry: `index.{js,ts}` and `src/index.{js,ts}`; default project: `**/*.{js,ts}`
 - Config file is auto-detected: `knip.json`, `.knip.json`, `knip.ts`, `knip.config.ts`, or `"knip"` key in `package.json`
 - Do not use `ignore` to exclude files from analysis; use negated `project` patterns instead

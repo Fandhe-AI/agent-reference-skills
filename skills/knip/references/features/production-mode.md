@@ -30,6 +30,10 @@ knip --production
 - Only the `start` script from package.json
 - Excludes exports marked with `@internal`
 
+Files referenced only from development scripts or plugin configuration, such as a test setup file or a custom test reporter, are excluded from the analysis (a file that is also a production entry stays included). These references do not count as dependency usage, so a package in `dependencies` that only test or tooling configuration uses is reported as unused.
+
+Unused subpaths in `package.json` are not reported in production mode, since files excluded from the analysis, such as tests, may import them.
+
 ### Note
 
 The production run does not replace the default run. Run either or both separately.
@@ -65,3 +69,7 @@ Exclude type-related issues:
 ```sh
 knip --production --exclude types
 ```
+
+## Notes
+
+- Source: https://knip.dev/features/production-mode (knip@6.45.1 docs, retrieved 2026-11-14)

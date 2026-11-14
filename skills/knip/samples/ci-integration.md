@@ -2,6 +2,8 @@
 
 Run knip in CI to block merges when unused code or dependencies are detected.
 
+Adapted (not in the official docs): third-party actions are pinned to commit SHAs instead of the mutable tags used upstream.
+
 ```yaml
 # .github/workflows/knip.yml
 name: Lint project
@@ -37,7 +39,9 @@ Run both default and production mode in CI:
 - run: npm run knip -- --production --strict
 ```
 
-Optionally upload a SARIF report to GitHub Code Scanning (after installing project dependencies):
+Optionally upload a SARIF report to GitHub Code Scanning (after installing project dependencies).
+
+Adapted (not in the official docs): `actions/checkout` and `codeql-action/upload-sarif` are pinned to commit SHAs instead of the mutable tags (`@v7`, `@v4`) used upstream.
 
 ```yaml
 permissions:
@@ -46,7 +50,7 @@ permissions:
 
 steps:
   - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
-  - run: pnpm exec knip --reporter sarif > knip.sarif
+  - run: pnpm exec knip --reporter sarif --output-file knip.sarif
   - if: always()
     uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee  # v4.39.0
     with:

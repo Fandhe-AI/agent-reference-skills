@@ -56,9 +56,13 @@ Manually add in Knip config:
 ## Options per Workspace
 
 - `ignore`, `ignoreBinaries`, `ignoreDependencies`, `ignoreMembers`
-- `ignoreUnresolved`, `includeEntryExports`
+- `ignoreUnresolved`, `includeEntryExports`, `includeSubpathExports`
 - Plugins configurable per workspace
 - `--debug` shows workspace details
+
+## Package Aliases
+
+A workspace package referenced through a `workspace:` alias in `package.json`, such as `"test-utils": "workspace:@org/test-utils@*"`, resolves to the aliased workspace in the workspace that declares the alias and in the workspaces nested in it. This includes imports of its `exports` subpaths through the alias.
 
 ## Filter Workspaces
 
@@ -85,3 +89,7 @@ Ancestors and dependents are automatically included.
 For isolated workspace linting:
 - Combine with strict production mode
 - Run Knip from within the workspace directory
+
+## Notes
+
+- Source: https://knip.dev/features/monorepos-and-workspaces (knip@6.45.1 docs, retrieved 2026-11-14)
