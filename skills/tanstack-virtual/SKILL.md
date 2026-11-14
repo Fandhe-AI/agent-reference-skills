@@ -12,7 +12,7 @@ user-invocable: false
 
 # TanStack Virtual リファレンス
 
-TanStack Virtual (`@tanstack/react-virtual` 3.14.21 / `@tanstack/virtual-core` 3.19.6、2026-10-16 タグ) の API ドキュメントを蒸留したスキル。
+TanStack Virtual (`@tanstack/react-virtual` 3.14.26 / `@tanstack/virtual-core` 3.19.11、2026-11-14 タグ。docs 本文は 3.14.21 から変更なし、table サンプルのみ追従) の API ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
