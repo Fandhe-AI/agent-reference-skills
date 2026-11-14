@@ -243,6 +243,7 @@ Decide in this order: (1) Can a tool do the work? Use it. (2) Can the credential
 - What not to do (example above): a file's contents are stored with the run (`files.write` is a step, so the data is its input, up to about 2 MiB, and it stays on the Sandbox disk and in every snapshot); command text and the step ID are stored (put the value in `env`); a step's return value is stored until the run is purged.
 - Values in the Sandbox itself, on disk or in memory, go into any snapshot you take.
 - Source: https://www.inngest.com/docs-markdown/sandboxes/features/secrets (retrieved 2026-11-14)
+- `files.write` (a durable `step.sandbox` operation whose data is stored as step input) is a different method from `sandbox.files.upload` / `download`, which the Reference page lists as unavailable through `step.sandbox` (direct client only); the two pages do not conflict.
 
 ## Related
 
