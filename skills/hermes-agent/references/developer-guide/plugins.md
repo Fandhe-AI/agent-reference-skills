@@ -162,6 +162,7 @@ Middleware kinds (`ctx.register_middleware(kind, fn)`, canonical list `VALID_MID
 
 ## Notes
 
+- Adapted from the official docs: the calling-session context example registers `callerinfo` instead of the official `whoami`, because `/whoami` is a built-in command and plugins cannot register built-in names.
 - `register()` runs exactly once at startup; if it crashes the plugin is disabled and Hermes continues. Handlers must never raise and must always return a JSON string.
 - Plugins are opt-in: `hermes plugins enable <name>`. Layout: `~/.hermes/plugins/<name>/plugin.yaml` (flat) or one category level; deeper is ignored. Portable packages use root `plugin.json`.
 - `provides_tools` does not gate loading of user-installed plugins, but it drives `hermes plugins validate` ("declared tools" check), catalog listing and dashboard auth hints.
@@ -305,13 +306,15 @@ Telegram, Discord and Slack show a card with one button per choice (plus "Other"
 
 ### Calling-session context for slash commands
 
+Adapted (not in the official docs): the official example registers `whoami`, which is already a built-in slash command and so would be rejected; the command is renamed `callerinfo` here.
+
 ```python
-def _handle_whoami(raw_args: str, *, session_id: str = "", platform: str = "", source=None) -> str:
+def _handle_callerinfo(raw_args: str, *, session_id: str = "", platform: str = "", source=None) -> str:
     user = source.user_id if source is not None else "local user"
     return f"{user} on {platform}, session {session_id or '(none yet)'}"
 
 def register(ctx):
-    ctx.register_command("whoami", handler=_handle_whoami, description="Show the calling session")
+    ctx.register_command("callerinfo", handler=_handle_callerinfo, description="Show the calling session")
 ```
 
 Keywords `session_id` (empty when the chat has no session yet), `session_key` (routing key), `platform` (`telegram`, `discord`, ..., `local`, `cli`, `tui`, `desktop`) and `source` (the adapter-derived `gateway.session.SessionSource` when the gateway dispatched the command, else `None`) are passed only if the handler declares them (or `**kwargs`); a handler declaring none keeps the one-argument call.
