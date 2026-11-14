@@ -75,7 +75,7 @@ ABC members (`agent/image_gen_provider.py`):
 | `list_models()` | no | `[]` | Catalog for the model picker |
 | `default_model()` | no | first from `list_models()` | Fallback model |
 | `get_setup_schema()` | no | minimal | Picker metadata + env-var prompts (`name`, `badge`, `tag`, `env_vars`) |
-| `capabilities()` | no | `{"modalities": ["text"], "max_reference_images": 0}` | Image-to-image support; optional `supports_upscale`, `creative_controls` (`creativity`, `intensity`, `complexity`, `movement`), `source_image_role: "style"` |
+| `capabilities()` | no | `{"modalities": ["text"], "max_reference_images": 0}` | Image-to-image support; optional `supports_upscale`, `creative_controls` (`creativity`, `intensity`, `complexity`, `movement`, `thinking`, `resolution`), `source_image_role: "style"` |
 | `generate(prompt, aspect_ratio, **kwargs)` | yes | — | The call |
 
 Response helpers:
@@ -92,7 +92,7 @@ Response helpers:
 - Base64 output: `save_b64_image(b64, prefix=..., extension="png")` writes to `$HERMES_HOME/cache/images/` and returns an absolute `Path`; pass `str(path)` as `image=`. URLs and absolute paths are both delivered by the gateway.
 - User plugins with the same `name` as a bundled one override it (last-writer-wins).
 - Reference implementations: `plugins/image_gen/openai/` (gpt-image-2 tiers as virtual model IDs), `xai/` (Grok Imagine, URL output), `openai-codex/` (Codex OAuth token, plain `httpx`).
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/image-gen-provider-plugin (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/image-gen-provider-plugin (pinned to v0.23.1; `thinking` and `resolution` creative controls added since v0.22.2)
 
 ## Related
 

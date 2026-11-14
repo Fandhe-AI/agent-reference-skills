@@ -79,7 +79,7 @@ Default layout top to bottom: output area, spacer, extra widgets, status bar, im
 - Wrap widgets in `ConditionalContainer(..., filter=Condition(...))` to make them toggleable (`Window` itself has no `filter` argument).
 - The first example on the official page passes `filter=` directly to `Window`; it was changed here to match the `ConditionalContainer` example on the same page (v0.22.2).
 - Do not override `run()` unless absolutely necessary.
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/extending-the-cli (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/extending-the-cli (pinned to v0.23.1)
 
 ## Related
 

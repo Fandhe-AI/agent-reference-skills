@@ -50,7 +50,8 @@ Key files: `acp_adapter/entry.py`, `server.py`, `session.py`, `events.py`, `perm
 
 ## Notes
 
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/acp-internals (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/acp-internals (pinned to v0.23.1)
+- Gateway terminal projection (`acp_adapter/gateway_server.py`): waits for completion of the exact submitted admission. A cancelled admission returns `stopReason: cancelled`; a failed admission raises an ACP request error rather than reporting `end_turn`; ordinary completion returns `end_turn`. Cancellation while waiting for the model suppresses the local `Operation interrupted: waiting for model response` status message (actual partial assistant text stays visible). Terminal outcomes come from the gateway's structured execution result, not assistant prose or a session-wide cancellation flag.
 - Stdout is reserved for ACP JSON-RPC; logs go to stderr.
 - `thinking_callback` is `None` in the ACP bridge; reasoning is forwarded through `step_callback`. Every ACP tool call reaches a terminal status; calls still open at turn end are marked `failed`.
 - A turn ending in terminal failure is closed with a Hermes-authored assistant row so the transcript never ends on an open `user` row (context-overflow failures are exempt).
