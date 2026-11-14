@@ -103,7 +103,7 @@ curl https://api.openai.com/v1/images/generations \
   }'
 ```
 
-旧例の `gpt-image-1.5` は 2026-12-01 に停止予定。代替は `gpt-image-2.5-sunburst` / `gpt-image-2.5-flare`（どちらも Image API と Responses の image generation tool で利用可、2026-09-08 の changelog で確認）。
+旧例の `gpt-image-1.5` は 2026-12-01 に停止予定。代替は `gpt-image-2.5-sunburst` / `gpt-image-2.5-flare`（どちらも Image API と Responses の image generation tool で利用可、2026-09-08 の changelog で確認）。2026-11-14 時点の deprecations ページの推奨代替は `gpt-image-2.6-sunburst` / `gpt-image-2.6-flare`（2026-11-04 の changelog、本例は 2.5 のまま）。
 
 ## 画像生成（ストリーミング）
 

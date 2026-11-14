@@ -20,7 +20,7 @@ const response = await openai.responses.create({
 | Item | Expected impact | Description |
 | --- | --- | --- |
 | Use the Responses API | Quality, cost, latency, reliability | Start here instead of Chat Completions for newest model behavior, built-in tools, stateful workflows |
-| Choose a model for the workload (GPT-6) | Quality, cost, latency | `gpt-6-astra` (highest capability), `gpt-6.1-sol` (complex coding/professional work at lower cost), `gpt-6-luna` (efficient, repeatable work) instead of routing everything to the top tier; preserve effective reasoning effort and use Responses for tools (GPT-6 Astra / GPT-6.1 Sol) |
+| Choose a model for the workload (GPT-6) | Quality, cost, latency | `gpt-6-astra` (highest capability), `gpt-6.1-sol` (complex coding/professional work at lower cost), `gpt-6.1-terra` (visual reasoning, computer use, and writing), `gpt-6-luna` (efficient, repeatable work) instead of routing everything to the top tier; preserve effective reasoning effort and use Responses for tools (GPT-6 Astra / GPT-6.1 Sol / GPT-6.1 Terra) |
 | `reasoning.effort` | Quality, cost, latency | `none`/`low`/`medium`(default)/`high`/`xhigh`/`max` (model-dependent); low for extraction/routing, higher for diagnosis/planning |
 | Change reasoning effort mid-conversation | Quality, cost, latency | Append a `configuration_update` input item instead of changing request-level `reasoning.effort`, preserving the prompt-cache prefix (GPT-6 family) |
 | `text.verbosity` | Quality, cost, latency | Controls output length independent of prompt instructions |
@@ -46,7 +46,7 @@ const response = await openai.responses.create({
 - This is a summary checklist page; each item links to its own dedicated guide in the official docs for full detail.
 - Multi-agent (beta) does not support `/responses/compact`, `reasoning.summary`, or `max_tool_calls`; the server auto-compacts root and subagent contexts instead.
 - The assistant `phase` row follows this checklist page (`gpt-5.3-codex` and later); the reasoning guide separately scopes `phase` to GPT-5.5 / GPT-5.4 (see [reasoning](./reasoning.md)). The two official pages differ; check the model page.
-- On GPT-5.6+, cache writes cost 1.25x the uncached input token rate — log `cached_tokens` and `cache_write_tokens` to measure net cost.
+- On GPT-5.6+, cache writes cost 1.25x the uncached input token rate (2.5x with `prompt_cache_options.ttl: "12h"` in the Responses API) — log `cached_tokens` and `cache_write_tokens` to measure net cost.
 
 ## Related
 
