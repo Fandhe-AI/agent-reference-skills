@@ -39,11 +39,30 @@ await stagehand.init()
 
 ## Notes
 
-- Source: https://upstash.com/docs/box/overall/browser/connect (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/browser/connect (fetched 2026-11-14; no version pin on the site).
+- The CDP URL is revoked when the box pauses, and a request to it does not wake the box; after the box resumes call `cdpUrl()` again for a fresh one
 - Like Live View URLs, the CDP URL carries its auth token in the URL — anyone with it gets full control of the browser; treat it as a secret
 - `playwright-core` (not full `playwright`) is enough since you connect to the box's Chromium instead of launching one locally
 - CDP clients and the SDK drive the same browser and tabs: a page opened by Playwright shows up in `box.browser.listTabs()`, and an SDK-created tab is visible to Playwright — script predictable steps with Playwright and hand off to AI Actions for steps easier to describe in natural language
 - Rule of thumb: use CDP for precise, repeatable scripting with no LLM in the loop; use AI Actions when describing the task is easier than scripting it
+
+### Browser Use
+
+- Browser Use can run its agent loop on the box browser (Source: https://upstash.com/docs/box/overall/browser/connect, fetched 2026-11-14; no version pin on the site)
+
+```python
+import asyncio
+from browser_use import Agent, Browser, ChatAnthropic
+
+agent = Agent(
+    task="Open upstash.com/docs/box/overall/quickstart and return the install command",
+    llm=ChatAnthropic(model="claude-sonnet-4-5"),
+    browser=Browser(cdp_url=cdp_url),
+)
+
+history = asyncio.run(agent.run())
+print(history.final_result())
+```
 
 ## Related
 

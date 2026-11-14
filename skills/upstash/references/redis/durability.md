@@ -10,6 +10,9 @@ Upstash Redis uses always-on persistence backed by cloud block storage (AWS EBS)
 - When a read targets an evicted key, it is automatically reloaded from block storage into memory
 - Paid tier databases include multi-instance replication for additional fault tolerance
 - Block storage is region-local; for multi-region durability, use Global Replication
+- Multi-tier storage: reads check memory first, then disk; an entry is evicted from memory only when it has been idle for an extended period
+- Except for the free tier, paid databases replicate data to multiple instances for extra redundancy; after a server crash data is reloaded from block storage into memory
+- Source: https://upstash.com/docs/redis/features/durability (fetched 2026-11-14; no version pin on the site)
 
 ## Related
 

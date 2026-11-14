@@ -31,7 +31,7 @@ const results = await client.trigger([
 | `retries` | `number` | Retry attempts on step failure; default: 3 |
 | `retryDelay` | `number \| string` | Delay between retries in ms; supports expressions (e.g., `"(1 + retried) * 1000"`) |
 | `delay` | `string \| number` | Start delay before first execution (e.g., `"1h"`, `"30m"`, seconds as number) |
-| `notBefore` | `number` | Unix timestamp override for absolute scheduled start |
+| `notBefore` | `number` | Unix timestamp in seconds; absolute start time, overrides `delay` |
 | `failureUrl` | `string` | External endpoint called if the run fails after all retries (TypeScript SDK: set here, not on `serve()`) |
 | `label` | `string \| string[]` | Label(s) for dashboard/log filtering; an array attaches multiple labels to one run (matches a logs or DLQ filter for any of its labels, OR semantics) |
 | `disableTelemetry` | `boolean` | Disable telemetry collection for this run |

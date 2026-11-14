@@ -38,7 +38,7 @@ t3 pair --base-dir /workspace/home/.t3
 - After a reset, reinstall T3 Code (step 3); a snapshot restore brings projects and pairing back
 - If a thread says "Claude could not authenticate", the step 4 sign-in is missing
 - Original docs use `sudo npm install -g t3` inside the box; this page rewrites it to a user-space install (`--prefix /home/boxuser/.local`)
-- Source: https://upstash.com/docs/box/guides/t3-code-setup (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/guides/t3-code-setup (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 

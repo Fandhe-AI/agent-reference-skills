@@ -51,4 +51,5 @@ UPSTASH_SEARCH_REST_TOKEN=...
 - Upstash Search (`@upstash/search`) is a standalone product, distinct from Redis Search (`@upstash/redis/search`)—the Tantivy-based full-text extension built into Upstash Redis. Do not mix the two SDKs
 - `content` fields are both searchable and filterable; `metadata` fields are filterable only and must be referenced with the `@metadata.` prefix inside `filter`
 - Typesafe filter operators include `equals`, `greaterThan`, `glob`, `contains`, combined via `AND` / `OR`; a raw SQL-like string is also accepted, e.g. `filter: "category = 'Electronics' AND in_stock > 0"`
+- Creating new Upstash Search databases is no longer supported; for new projects the official docs point to Upstash Vector (Source: https://upstash.com/docs/search/overall/getstarted, fetched 2026-11-14)
 - `Search.fromEnv()` reads `UPSTASH_SEARCH_REST_URL` / `UPSTASH_SEARCH_REST_TOKEN` from environment variables

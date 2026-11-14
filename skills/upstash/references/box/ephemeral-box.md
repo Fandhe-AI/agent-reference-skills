@@ -36,15 +36,17 @@ box = EphemeralBox.create(
 
 ## Options / Props
 
-`EphemeralBoxConfig`: `apiKey`, `runtime`, `ttl`, `name`, `networkPolicy`, `baseUrl`, `timeout`, `debug` (no agent, git, env, skills, mcpServers).
+`EphemeralBoxConfig`: `apiKey`, `baseUrl`, `name`, `labels`, `runtime`, `size`, `ttl`, `env`, `attachHeaders`, `networkPolicy`, `timeout`, `debug`, and `enableTelemetry` (TypeScript only). No agent, git, skills, mcpServers, keepAlive, or initCommand.
 
 | Feature | Box | EphemeralBox |
 |---------|-----|--------------|
 | `exec.command()` / `exec.code()` / `exec.stream()` / `exec.streamCode()` / `exec.session()` | Yes | Yes |
 | `files.read/write/list/upload/download` and `files.stat/mkdir/rename/remove` | Yes | Yes |
-| `schedule.exec/prompt/list/get/pause/resume/delete` | Yes | Yes |
+| `schedule.exec/list/get/update/pause/resume/delete` | Yes | Yes |
+| `schedule.agent()` | Yes | No |
 | `cd()` / `cwd`, `getStatus()`, `delete()` | Yes | Yes |
-| `networkPolicy` / `updateNetworkPolicy()` | Yes | Yes |
+| `networkPolicy` (read) | Yes | Yes |
+| `updateNetworkPolicy()` | Yes | No |
 | `snapshot()` / `fromSnapshot()` | Yes | Yes |
 | `expiresAt` | No | Yes |
 | `agent.run()` / `agent.stream()` | Yes | No |
@@ -60,10 +62,10 @@ Exported types: `EphemeralBox`, `EphemeralBoxConfig`, `EphemeralBoxData` (extend
 
 ## Notes
 
-- Differs from `Box.create()`: ready immediately (no polling; API returns `status: "idle"`); the request sends `{ ephemeral: true, ttl?, runtime? }` to `POST /v2/box`
-- Auto-deleted after TTL
+- Differs from `Box.create()`: ready immediately (no polling; API returns `status: "idle"`); the request sends `{ ephemeral: true, ttl?, runtime?, name?, labels?, size?, env_vars?, attach_headers?, network_policy? }` to `POST /v2/box`
+- Auto-deleted after TTL (`ttl` in seconds, max 259200 = 3 days, default 259200); an idle ephemeral box can still be auto-paused before its TTL (after 1 hour on the free plan, 6 hours on paid plans) and new exec or file calls resume it
 - Composition over inheritance: wraps an internal `Box` and exposes only the subset, so agent/git are not accessible even at runtime
-- Source: https://upstash.com/docs/box/overall/ephemeral-box (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/ephemeral-box (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 

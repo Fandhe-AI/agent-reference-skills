@@ -47,6 +47,24 @@ const highest = await redis.zpopmax<string>("leaderboard")
 const range = await redis.zrangebyscore("leaderboard", 100, 200)
 ```
 
+```ts
+const values = await redis.zdiffstore("destination", 2, "key1", "key2");
+const res = await redis.zinterstore("destination", 2, ["key1", "key2"]);
+const res = await redis.zinterstore(
+    "destination",
+    2,
+    ["key1", "key2"],
+    { weights: [2, 3] },
+);
+const res = await redis.zunionstore("destination", 2, ["key1", "key2"]);
+const elements = await redis.zlexcount("key", "two", "+");
+const scores = await redis.zmscore("key", ["m2", "m4"])
+await redis.zremrangebylex("key", "alpha", "omega")
+await redis.zremrangebyrank("key", 4, 20)
+await redis.zremrangebyscore("key", 2, 5)
+const [newCursor, members] = await redis.zscan("key", 0, { match: "a*", count: 1});
+```
+
 ## Options / Props
 
 | Option (ZADD) | Description |
@@ -63,6 +81,15 @@ const range = await redis.zrangebyscore("leaderboard", 100, 200)
 - Members are sorted from lowest to highest score by default
 - `ZRANGE` with `REV` flag (Redis 6.2+) returns members in reverse order
 - Use sorted sets for leaderboards, priority queues, and time-series indexing by timestamp
+
+### Additional commands (official TypeScript SDK command pages)
+
+- `ZDIFFSTORE destination numkeys ...keys`, `ZINTERSTORE` / `ZUNIONSTORE destination numkeys keys [{ aggregate?, weight? \| weights? }]`: store the difference / intersection / union; return the number of elements in the result
+- `ZLEXCOUNT key min max`: count by lexicographic range (`-` / `+` disable the bound)
+- `ZMSCORE key members[]`: scores of several members
+- `ZREMRANGEBYLEX` / `ZREMRANGEBYRANK` / `ZREMRANGEBYSCORE key min max`: remove members in a lex / rank / score range; return the number removed
+- `ZSCAN key cursor { match, count }`: returns `[newCursor, members]`; a returned cursor of `0` means the iteration is complete
+- Source: https://upstash.com/docs/redis/sdks/ts/commands/zset/zdiffstore, /zinterstore, /zunionstore, /zlexcount, /zmscore, /zremrangebylex, /zremrangebyrank, /zremrangebyscore, /zscan (fetched 2026-11-14; no version pin on the site)
 
 ## Related
 

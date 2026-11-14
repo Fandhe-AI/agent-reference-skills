@@ -21,10 +21,13 @@ serve(async (context) => {
 | `headers` | `Headers` | Request headers of the incoming workflow call |
 | `workflowRunId` | `string` | Unique identifier for this run (`wfr_...`) |
 | `url` | `string` | Public URL of this workflow endpoint |
-| `failureUrl` | `string` | Callback URL for workflow failures |
+| `failureUrl` | `string` | Callback URL for workflow failures; same as `url` when a failure function is defined |
 | `env` | `object` | Available environment variables |
 | `qstashClient` | `Client` | QStash client instance backing this workflow |
 | `labels` | `string[]` | Labels attached to the current run, if set in `client.trigger`; defaults to an empty array |
+| `flowControl` | `object \| undefined` | Flow control configuration QStash applied to the current request (`key`, `parallelism`, `rate`, `period`); reflects step-level flow control when the step sets its own |
+| `retries` | `number \| undefined` | Retry limit QStash applied to the current request |
+| `retryDelay` | `string \| undefined` | Retry delay expression QStash applied to the current request |
 | `label` | `string \| undefined` | Deprecated (June 2026); use `labels`. With multiple labels it returns only the first one |
 
 ### Available Methods
@@ -47,6 +50,9 @@ serve(async (context) => {
 
 - All methods return Promises and must be awaited
 - `context.cancel()` marks the run as "canceled" — the failure handler is not triggered and the run is not sent to DLQ
+- `context.run()` accepts per-step `flowControl` / `retries` / `retryDelay` options since `@upstash/workflow` 1.5.0
+- `workflowRunCreatedAt` (Unix ms) appears in the logs REST API response (see [api-reference-logs-notify](./api-reference-logs-notify.md)); the official context page does not list it as a `context` property
+- Source: https://upstash.com/docs/workflow/steps (fetched 2026-11-14; no version pin on the site)
 
 ## Related
 

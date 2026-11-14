@@ -35,6 +35,13 @@ await redis.setnx("key", "value")       // set if not exists
 await redis.psetex("key", 1000, "value") // set with milliseconds TTL
 ```
 
+```ts
+await redis.getdel<MyType>("key");
+await redis.incrbyfloat("key", 4.5);
+const length = await redis.setrange("key", 5, "redis");
+const oldValue = await redis.getset("key", "new-value");
+```
+
 ## Options / Props
 
 | Option (SET) | Type | Description |
@@ -54,6 +61,15 @@ await redis.psetex("key", 1000, "value") // set with milliseconds TTL
 - Values are automatically serialized/deserialized as JSON (disable with `automaticDeserialization: false`)
 - `GETSET` is deprecated in Redis 6.2; prefer `SET key value GET` option
 - `SUBSTR` is an alias for `GETRANGE`
+
+### Additional commands (official TypeScript SDK command pages)
+
+- `GETDEL key`: returns the value and deletes the key (`null` if missing)
+- `INCRBYFLOAT key incrementBy`: float increment; a missing key starts at `0`; errors if the value is not numeric (e.g. `set("key", 6)` then `incrbyfloat("key", 4.5)` returns `10.5`)
+- `MSETNX`: sets multiple keys only if none exist (counts as a single command for billing); returns whether all keys were set. The example on the official page is written in Python syntax, so it is not reproduced
+- `SETRANGE key offset value`: overwrites part of the string at a zero-based offset; returns the length afterwards (`"helloworld"` + `setrange("key", 5, "redis")` gives length `10`, value `"helloredis"`)
+- `SET` options per the official page: `get`, `ex`, `px`, `exat`, `pxat`, `keepTtl`, `nx`, `xx`; non-string values are converted with `JSON.stringify`
+- Source: https://upstash.com/docs/redis/sdks/ts/commands/string/getdel, /incrbyfloat, /msetnx, /setrange, /getset, /set, /mset, /mget (fetched 2026-11-14; no version pin on the site)
 
 ## Related
 

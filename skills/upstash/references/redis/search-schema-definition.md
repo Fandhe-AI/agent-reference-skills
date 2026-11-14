@@ -41,6 +41,7 @@ Field types:
 | `s.date()` | `DATE` | Date/time field | Yes | Yes | Yes | No |
 | `s.boolean()` | `BOOL` | Boolean field | Yes | No | No | No |
 | `s.facet()` | `FACET` | Hierarchical path-based field | No | No | No | No (only `$eq`, `$in`) |
+| `s.hybrid()` | `HYBRID` | Full-text field that also supports semantic search (`$ann`) | No | Yes | No | `$smart`, `$phrase`, `$fuzzy`, `$regex` |
 
 Field options (chainable):
 
@@ -50,6 +51,7 @@ Field options (chainable):
 | `.noStem()` | Disable stemming (brand names, proper nouns, technical terms, regex targets) |
 | `.fast(false)` | Disable the FAST columnar store (numeric `F64`, boolean, date are FAST by default in the TS SDK) |
 | `.from("path")` | Alias: index an existing document field under another name (`FROM` in CLI) |
+| `.noStem()` / `.from()` on `s.hybrid()` | `HYBRID` accepts only the `NOSTEM` and `FROM` options (`s.hybrid().noStem().from("body")`; Python `{"type": "HYBRID", "no_stem": True, "alias": "body"}`) |
 
 Multi-value storage by index data type:
 
@@ -66,12 +68,15 @@ Multi-value storage by index data type:
 - FAST fields enable `ORDERBY`, `SCOREFUNC FIELDVALUE`, and metric aggregations (`$avg`, `$sum`, `$min`, `$max`, `$count`, ...). Using them on a non-FAST field returns an error.
 - Tokenization splits on spaces and punctuation (`"user@example.com"` -> `["user", "example", "com"]`). Stemming reduces words to roots (`"running"`, `"runs"`, `"runner"` -> `"run"`). Both are on by default for text fields.
 - `KEYWORD` supports `$eq`, `$in`, `$gt`, `$gte`, `$lt`, `$lte`; these are not available on `TEXT`. `FACET` values must be `/`-delimited paths starting with `/` and support only `$eq` / `$in`; they are mainly used with the `$facet` aggregation.
-- Multi-value: declare the field as `TEXT`, `KEYWORD`, `U64`, `I64`, `F64`, or `DATE`, then store a JSON array. There is no separator option (`new,sale` stays one value). Invalid elements are ignored; an empty array acts like a missing field. `BOOL` and `FACET` do not support arrays. A query matches when any indexed element satisfies the condition. `TEXT` phrases cannot span elements.
+- Multi-value: declare the field as `TEXT`, `HYBRID`, `KEYWORD`, `U64`, `I64`, `F64`, or `DATE`, then store a JSON array. There is no separator option (`new,sale` stays one value). Invalid elements are ignored; an empty array acts like a missing field. `BOOL` and `FACET` do not support arrays. A query matches when any indexed element satisfies the condition. `TEXT` phrases cannot span elements.
 - Aliased fields: use the alias name in queries and highlighting; use the actual document field name in `select`. Aliasing happens at index level and does not modify documents.
 - Fields in a document that are not in the schema are ignored; a document missing a schema field does not appear in results that filter on that field.
 - Nested objects are supported with `s.object({ author: s.object({ name: s.string() }) })`. In Python / CLI use dotted paths such as `user.name`.
 - Python equivalent uses a dict, e.g. `{"sku": {"type": "TEXT", "notokenize": True}, "createdAt": {"type": "DATE", "fast": True}}`.
-- Source: https://upstash.com/docs/redis/search/schema-definition (fetched 2026-10; no version pin on the site).
+- `HYBRID` (since `@upstash/redis` 1.41.0) is a `TEXT` field that also stores a vector embedding created automatically with an OpenAI embedding model (`text-embedding-3-small` or `text-embedding-3-large`); full-text queries work as on `TEXT`, and the `$ann` retriever searches the embeddings. For a multi-value `HYBRID` field `$ann` uses one embedding of all elements together. The text is sent to OpenAI; use `TEXT` for content that must not leave. `s.hybrid()` example: `s.object({ name: s.string(), description: s.hybrid() })`; CLI: `SEARCH.CREATE products ON JSON PREFIX 1 product: SCHEMA name TEXT description HYBRID`
+- Field operators on KEYWORD / FACET: `FACET` queries use `$eq` / `$in` with `/`-delimited paths (e.g. `{ category: { $eq: "/category/books/fiction" } }`)
+- `s.date().fast()` and `s.number("F64")` examples are shown on the official page; `s.date()` is FAST by default in the TS SDK
+- Source: https://upstash.com/docs/redis/search/schema-definition (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 

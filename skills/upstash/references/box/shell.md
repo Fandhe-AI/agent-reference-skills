@@ -48,7 +48,9 @@ session.wait(30)
 - Typical flow: `box.git.clone(...)`, `box.exec.command("npm install")`, then `box.agent.run({ prompt })`; build artifacts via `box.files.upload([...])` and `box.files.download({ folder: "/work/dist" })`
 - The docs' shell page shows `output` / `exit_code` for `exec.code`, but the SDK `Run` (@upstash/box 0.7.9 client.ts) exposes `result` / `exitCode` (number)
 - The docs' cancel example awaits `exec.command` first, so the command has already finished; use `exec.session` + `kill` / `terminate` to stop a running process
-- Source: https://upstash.com/docs/box/overall/shell (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/shell (fetched 2026-11-14; no version pin on the site).
+- SSH keys: instead of the password you can log in with an SSH key that works for all boxes in the account or team. Create a key pair (`ssh-keygen -t ed25519 -f ~/.ssh/upstash_box`), add the `.pub` contents in the Upstash Console under Box, Settings, SSH Keys (New SSH Key, or Generate Key where the private key is shown only once), then connect with `ssh -i ~/.ssh/upstash_box <box-id>@us-east-1.box.upstash.com`. Accepted types: ed25519, ECDSA, their `sk-` variants, and RSA of at least 2048 bits; up to 20 keys per account
+- The SDK waits up to 10 minutes for a command result by default (set `timeout` in the box config to change it)
 - The SSH command can also be copied from the SSH button on the box details page in the Upstash Console
 
 ## Related

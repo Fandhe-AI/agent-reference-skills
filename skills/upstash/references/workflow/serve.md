@@ -44,6 +44,8 @@ All options are advanced (not required for regular use).
 
 - Framework-specific imports: `@upstash/workflow/nextjs`, `/hono`, `/express`, `/h3` (Nuxt), `/cloudflare`
 - Use `servePagesRouter()` for Next.js Pages Router
+- The official advanced-options page still lists `verbose: true` (prints detailed run logs to `stdout`, off by default) although the 1.0.0 migration notes list it as removed; keep both statements in mind and prefer `middlewares`
+- Source: https://upstash.com/docs/workflow/basics/serve/advanced (fetched 2026-11-14; no version pin on the site)
 - Apply the same authorization check inside `failureFunction` as in the workflow endpoint itself
 - `failureFunction` and `failureUrl` are mutually exclusive
 - The official pages disagree on the Python argument name: `workflow/basics/serve/advanced` and `workflow/howto/failures` write `failureUrl=`, while `workflow/features/failureFunction/advanced` writes `failure_url=`. Which one the Python SDK accepts is not confirmed here

@@ -77,7 +77,7 @@ with box.exec.session(cmd="npm run dev", tty=True) as dev:
 - Only the first `terminate` starts the sequence; later calls are ignored
 - The session owns the process: closing the handle, losing the connection, or exiting your program stops the command. Sessions cannot be reattached; use schedules or a `keep_alive` box with `box.exec.command` for work that must outlive your program
 - Always stop the session on the way out (Python context manager; JavaScript `finally { session.close() }`)
-- Source: https://upstash.com/docs/box/overall/live-sessions (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/live-sessions (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 

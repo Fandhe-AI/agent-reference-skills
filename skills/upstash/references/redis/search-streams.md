@@ -52,7 +52,7 @@ Schema value conversion (stream values are stored as strings):
 | `U64`, `I64`, `F64` | Corresponding numeric format |
 | `BOOL` | `true` or `false` |
 | `DATE` | RFC 3339 timestamp, e.g. `2026-08-24T09:30:00Z` |
-| `TEXT`, `KEYWORD`, `FACET` | String |
+| `TEXT`, `HYBRID`, `KEYWORD`, `FACET` | String |
 
 Stream change to index change:
 
@@ -69,14 +69,15 @@ Stream change to index change:
 - The stream does not need to exist at index creation; later entries are indexed automatically. Creating an index scans existing entries unless `SKIPINITIALSCAN` is given.
 - Stream payloads are flat field-value pairs, so schema fields refer to stream fields, not nested paths. Only schema fields are searchable.
 - Missing fields, empty values, and unconvertible values are omitted from the indexed document; an entry with no valid schema fields is not added to the index.
-- `TEXT`, `KEYWORD`, `U64`, `I64`, `F64`, and `DATE` accept JSON-encoded arrays (e.g. `service '["checkout","payments"]'`); the returned value is the original JSON-encoded string. `BOOL` and `FACET` do not support arrays.
+- `HYBRID` fields use string values like `TEXT`.
+- `TEXT`, `HYBRID`, `KEYWORD`, `U64`, `I64`, `F64`, and `DATE` accept JSON-encoded arrays (e.g. `service '["checkout","payments"]'`); the returned value is the original JSON-encoded string. `BOOL` and `FACET` do not support arrays.
 - With `FROM`, queries use the schema name (`description`) while `SELECT` and returned content use the stream field name (`message`).
 - Raw responses return field values as strings. The TypeScript SDK deserializes numeric values (`severity` is `4`); the Python SDK keeps `"4"`. Use `XRANGE events 1-0 1-0` to read the original entry.
 - Index updates are asynchronous; use `SEARCH.WAITINDEXING` when a query must include preceding writes.
 - The search document limit applies to stream entries: at the limit, `XADD` can return an error instead of adding the entry. Delete or trim entries first.
 - `RENAME`, `RENAMENX`, and `COPY` are not supported for stream keys. Consumer-group operations that do not change entry data (e.g. `XACK`) do not change the index.
 - Filtering, highlighting, sorting, pagination, and score functions work with stream indexes.
-- Source: https://upstash.com/docs/redis/search/streams (fetched 2026-10; no version pin on the site).
+- Source: https://upstash.com/docs/redis/search/streams (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 

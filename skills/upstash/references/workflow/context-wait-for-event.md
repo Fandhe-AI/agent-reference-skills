@@ -22,14 +22,14 @@ if (timeout) {
 |------|------|-------------|
 | `stepName` | `string` | Unique step identifier |
 | `eventId` | `string` | Identifier of the event to wait for; must match the `eventId` passed to `notify()` |
-| `options.timeout` | `string \| number` | Maximum wait time (string like `"1d"`, or seconds as number). Run fails if exceeded |
+| `options.timeout` | `string \| number` | Maximum wait time (string like `"1d"`, or seconds as number); default `7d`. On expiry the step returns `timeout: true` instead of failing |
 
 ### Response
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `eventData` | `any` | Data delivered by the notifying caller |
-| `timeout` | `boolean` | `true` if the event was not received before the timeout |
+| `eventData` | `TEventData` | Data delivered by `notify()`; set the type via the generic, e.g. `context.waitForEvent<{ approved: boolean }>(...)` (default `unknown`) |
+| `timeout` | `boolean` | `true` if execution resumed because the timeout elapsed, `false` if the event was received |
 
 ### Timeout Limits by Plan
 
@@ -44,7 +44,8 @@ if (timeout) {
 - Race condition: if `notify()` is called before `waitForEvent()` is reached, the notification can be lost. Mitigations:
   1. **Lookback** — pass `workflowRunId` to `client.notify()` to store notifications for late delivery (recommended)
   2. **Webhooks** — use `context.createWebhook()` / `context.waitForWebhook()` which have built-in lookback
-  3. **Check-and-retry** — verify the `waiters` array in the notify response and retry if empty
+  3. **Check-and-retry** — check whether the `notify` response list is empty and retry if so
+- Source: https://upstash.com/docs/workflow/steps/waitForEvent (fetched 2026-11-14; no version pin on the site)
 - Use specific, unique event IDs (e.g., `user-{userId}-verified`) to avoid fan-out performance issues
 
 ## Related

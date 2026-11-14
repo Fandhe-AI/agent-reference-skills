@@ -44,7 +44,7 @@ ssh <box-id>@us-east-1.box.upstash.com   # password = Box API key
 
 ## Options / Props
 
-Modules per box: Agent (Claude Code or Codex), Git, Shell, Filesystem, Snapshots.
+Modules per box: Agent (Claude Code, Codex, OpenCode, Cursor, or a custom agent), Git, Shell, Filesystem, Snapshots.
 
 | Runtime | Default (Debian) | Alpine variant |
 |---------|------------------|----------------|
@@ -56,9 +56,9 @@ Modules per box: Agent (Claude Code or Codex), Git, Shell, Filesystem, Snapshots
 
 | Size (`size`, default `"small"`) | CPU | Memory | Storage |
 |------|-----|--------|---------|
-| `small` | 2 vCPU | 4 GB | 5 GB |
-| `medium` | 4 vCPU | 8 GB | 10 GB |
-| `large` | 8 vCPU | 16 GB | 20 GB |
+| `small` | 2 vCPU | 4 GB | 10 GB |
+| `medium` | 4 vCPU | 8 GB | 20 GB |
+| `large` | 8 vCPU | 16 GB | 30 GB |
 
 | Lifecycle state | Behavior |
 |-----------------|----------|
@@ -76,7 +76,13 @@ Modules per box: Agent (Claude Code or Codex), Git, Shell, Filesystem, Snapshots
 - Each box is its own Docker container with independent filesystem, process tree, and network stack; boxes cannot reach or observe each other
 - Billing is on active usage by default; `keepAlive` switches to always-on billing. Pricing: https://upstash.com/pricing/box
 - Deletion is irreversible; snapshot first if you may need the environment again
-- Source: https://upstash.com/docs/box/overall/how-it-works (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/how-it-works (fetched 2026-11-14; no version pin on the site).
+
+### Notes (2026-11-14 re-check)
+
+- Idle timeout: an idle box auto-pauses after 1 hour on the free plan and 6 hours on paid plans (unless `keepAlive`)
+- Statuses: `creating`, `idle`, `running`, `paused`, `error`, `deleted`
+- Some settings, such as network policy and a directly passed agent API key, are not carried by a snapshot (see Snapshots)
 
 ## Related
 

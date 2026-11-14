@@ -6,30 +6,38 @@ Every box has its own isolated filesystem. Upload, write, read, list, and downlo
 
 ```typescript
 await box.files.upload([
-  { path: "./data/report.csv", destination: "/work/report.csv" },
+  { path: "./data/report.csv", destination: "report.csv" },
+  { path: "./config.json", destination: "config.json" },
 ])
 
-await box.files.write({ path: "/work/script.js", content: `console.log("hi")` })
+await box.files.write({
+  path: "script.js",
+  content: `console.log("hello from box")`,
+})
 
-const content = await box.files.read("/work/output.json")
+const content = await box.files.read("output.json")
 
-const files = await box.files.list("/work")
+const files = await box.files.list()
 
-await box.files.download({ folder: "/work/output" })
+await box.files.download({ folder: "output" })
 ```
 
 ```python
 box.files.upload([
-    {"path": "./data/report.csv", "destination": "/work/report.csv"},
+    {"path": "./data/report.csv", "destination": "report.csv"},
+    {"path": "./config.json", "destination": "config.json"},
 ])
 
-box.files.write(path="/work/script.js", content='console.log("hi")')
+box.files.write(
+    path="script.js",
+    content='console.log("hello from box")',
+)
 
-content = box.files.read("/work/output.json")
+content = box.files.read("output.json")
 
-files = box.files.list("/work")
+files = box.files.list()
 
-box.files.download(folder="/work/output")
+box.files.download(folder="output")
 ```
 
 ```typescript
@@ -71,7 +79,10 @@ box.files.remove("build", recursive=True)
 
 ## Notes
 
-- Source: https://upstash.com/docs/box/overall/files (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/files (fetched 2026-11-14; no version pin on the site).
+- Relative destinations resolve against the box's current directory, `/workspace/home` by default; all files in one `upload` call are sent in a single request, each up to 100 MB and about 1 GB per request, and each `path` must be a file, not a directory
+- Ranged reads are rejected by the server above 8 MiB `length`
+- `download` is not recursive (only files directly inside the folder; subdirectories are skipped); `folder` must be a directory, and with no argument the current directory is downloaded; to fetch one file use `files.read`
 - Filesystem operations are the counterpart to `box.exec` (shell) and `box.git` — together they cover most agent workflows
 - Use the `stat` `version` token for optimistic concurrency: read it before a slow operation and compare for equality afterwards; do not parse it
 - Common patterns: upload input files then run an agent with a `responseSchema`; write config before a test run; fan out work across multiple boxes and `download()` each result locally

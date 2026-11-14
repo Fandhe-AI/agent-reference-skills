@@ -39,11 +39,15 @@ await client.notify({
 |----------|-------------|
 | Lookback (recommended) | Pass `workflowRunId` to `client.notify()`; notification is stored even if sent before `waitForEvent` is reached |
 | Webhooks | Use `context.createWebhook()` / `context.waitForWebhook()` which have built-in lookback |
-| Check-and-retry | Check the `waiters` array in the notify response; retry if empty |
+| Check-and-retry | Check the response of `client.notify()` (one entry per notified workflow); retry if the list is empty |
 
 ## Notes
 
 - Use specific, unique event IDs (e.g., `user-{userId}-verified`) to avoid fan-out performance issues when many workflows share an event ID
+
+- When a timeout occurs the returned object includes `timeout: true`; with no timeout specified the default is 7 days
+- Source: https://upstash.com/docs/workflow/features/wait-for-event (fetched 2026-11-14; no version pin on the site)
+- Source: https://upstash.com/docs/workflow/features/wait (fetched 2026-11-14; no version pin on the site)
 
 ## Related
 

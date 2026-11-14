@@ -14,23 +14,27 @@ import "isomorphic-fetch"
 import { Redis } from "@upstash/redis"
 const redis = Redis.fromEnv()
 
-// Cloudflare Workers (module syntax — pass env object)
+// Cloudflare Workers (module worker — pass env object)
+import { Redis } from "@upstash/redis/cloudflare"
+
 export default {
-  fetch(request, env) {
+  async fetch(request: Request, env: Bindings) {
     const redis = Redis.fromEnv(env)
     // ...
   }
 }
 
 // Fastly Compute@Edge — requires explicit backend name
+import { Redis } from "@upstash/redis/fastly"
+
 const redis = new Redis({
-  url: UPSTASH_REDIS_REST_URL,
-  token: UPSTASH_REDIS_REST_TOKEN,
-  backend: "upstash-backend",  // defined in fastly.toml
+  url: <UPSTASH_REDIS_REST_URL>,
+  token: <UPSTASH_REDIS_REST_TOKEN>,
+  backend: <BACKEND_NAME>,  // configured in fastly.toml
 })
 
 // Deno / Netlify Edge
-import { Redis } from "https://deno.land/x/upstash_redis/mod.ts"
+import { Redis } from "npm:@upstash/redis"
 const redis = Redis.fromEnv()
 ```
 
@@ -41,6 +45,9 @@ const redis = Redis.fromEnv()
 - **Cloudflare Workers**: use `wrangler secret put` or the dashboard to set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`; for module workers, pass `env` to `Redis.fromEnv(env)`
 - **Fastly**: configure a backend named entry in `fastly.toml` pointing to your Upstash endpoint
 - Initialize the Redis client outside the request handler to reuse across invocations (serverless warm start optimization)
+- Platform entry points: `@upstash/redis` (Node.js / browser / Deno via `npm:`), `@upstash/redis/cloudflare`, `@upstash/redis/fastly`. Deno and Netlify Edge use the `npm:@upstash/redis` import (the older `deno.land/x/upstash_redis` URL is no longer shown in the docs)
+- Fastly: until the Fastly API stabilizes the docs recommend creating the instance manually with `new Redis({ url, token, backend })`
+- Source: https://upstash.com/docs/redis/sdks/ts/deployment (fetched 2026-11-14; no version pin on the site)
 
 ## Related
 

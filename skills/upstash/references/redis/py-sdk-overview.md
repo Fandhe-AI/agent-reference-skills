@@ -41,6 +41,7 @@ value = await redis.get("key")
 - `Redis.from_env()` reads `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`
 - Async client is in `upstash_redis.asyncio` module
 - Initialize the client outside request handlers to maximize reuse across invocations
+- The Python SDK pages were not part of the 2026-11-14 fetch; the TypeScript `responseEncoding` default change (1.40.0) is not asserted for `rest_encoding`
 - Unimplemented commands can be run directly: `redis.execute(["XLEN", "stream_key"])`
 
 ## Related

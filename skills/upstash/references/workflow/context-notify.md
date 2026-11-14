@@ -24,17 +24,20 @@ const { notifyResponse } = await context.notify(
 
 ### Response
 
-Returns `NotifyResponse[]`. Each entry contains:
+Returns an object:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `messageId` | `string` | Unique notification message identifier |
-| `workflowRunId` | `string` | Run ID of the notified workflow |
-| `workflowCreatedAt` | `number` | Unix timestamp (ms) of when the workflow was created |
+| `eventId` | `string` | The event ID that was notified |
+| `eventData` | `any` | The event data sent with the notification |
+| `notifyResponse` | `NotifyResponse[]` | One entry per workflow that was waiting on the event; an empty list means none was waiting |
+
+Each `NotifyResponse` has `messageId` (unique per notification), `error` (set if delivery to that waiter failed) and `Waiter` details (`url`, `deadline`, `headers`, `timeoutUrl`, `timeoutBody`, `timeoutHeaders`).
 
 ## Notes
 
 - When `workflowRunId` is provided, the notification is stored and delivered even if `notify()` is called before `waitForEvent()` is reached (lookback)
+- Source: https://upstash.com/docs/workflow/steps/notify (fetched 2026-11-14; no version pin on the site)
 - `context.notify()` is used from within a workflow step; use `client.notify()` for notifications from outside a workflow
 
 ## Related

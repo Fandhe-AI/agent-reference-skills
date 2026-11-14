@@ -76,7 +76,7 @@ asyncio.run(main())
 - The box pauses when idle; each scheduled run wakes it and reports stay on the box
 - Run `setup.py` once: each run creates a new box with its own daily schedule
 - Delete the box with `box.delete()` when no longer needed
-- Source: https://upstash.com/docs/box/guides/browser-use (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/guides/browser-use (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 

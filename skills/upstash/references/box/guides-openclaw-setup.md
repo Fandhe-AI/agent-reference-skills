@@ -24,7 +24,7 @@ nohup openclaw gateway > gateway.log 2>&1 &
 
 ## Notes
 
-- Source: https://upstash.com/docs/box/guides/openclaw-setup (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/guides/openclaw-setup (fetched 2026-11-14; no version pin on the site).
 - Original docs use `sudo npm install -g openclaw` inside the box; this page rewrites it to a user-space install
 - Use the Box API key as the SSH password; the `-L` flag forwards the OpenClaw dashboard port to the local machine
 - Set `nohup openclaw gateway > gateway.log 2>&1 &` as the box's init script (Upstash Console) so the gateway restarts automatically on crash

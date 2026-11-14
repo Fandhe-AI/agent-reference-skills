@@ -38,12 +38,25 @@ await redis.ltrim("queue", 0, 9)  // keep first 10 elements
 await redis.lmove("src", "dst", "LEFT", "RIGHT")
 ```
 
+```ts
+const index = await redis.lpos("key", "b");
+const index = await redis.lpos("key", "b", { rank: 2 });
+const length = await redis.lpushx("key", "d");
+const length = await redis.rpushx("key", "d");
+```
+
 ## Notes
 
 - `LRANGE` with `-1` as the end index returns up to the last element
 - `LPUSH` / `RPUSH` accept multiple values; they are pushed in argument order
 - Blocking variants (`BLPOP`, `BRPOP`) are supported for queue patterns
 - Lists are ordered by insertion — use Sorted Sets for priority ordering
+
+### Additional commands (official TypeScript SDK command pages)
+
+- `LPOS key element { rank, count, maxLen }`: index of the matching element, or an array of indexes when `count` is set; `rank` picks the n-th match
+- `LPUSHX` / `RPUSHX key ...elements`: push at the head / tail only if the list exists; return the new length, or `0` if the list did not exist
+- Source: https://upstash.com/docs/redis/sdks/ts/commands/list/lpos, /lpushx, /rpushx (fetched 2026-11-14; no version pin on the site)
 
 ## Related
 

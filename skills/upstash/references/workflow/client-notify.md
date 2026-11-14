@@ -33,7 +33,8 @@ await client.notify({
 
 ## Notes
 
-- Returns `Waiter[]` — a list of notified workflow runs
+- Returns `NotifyResponse[]`: one entry per notified workflow (`messageId`, `error` if delivery failed, and the `Waiter` details `url`, `deadline`, `headers`, `timeoutUrl`, `timeoutBody`, `timeoutHeaders`); an empty list means no workflow was waiting
+- Source: https://upstash.com/docs/workflow/basics/client/notify (fetched 2026-11-14; no version pin on the site)
 - Use `client.notify()` from external code (webhooks, API routes outside the workflow); use `context.notify()` from inside a workflow
 - Providing `workflowRunId` is the recommended way to prevent race conditions
 

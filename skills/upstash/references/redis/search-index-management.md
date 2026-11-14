@@ -79,11 +79,13 @@ Return values: `ALIASADD` returns `1` (created) or `2` (existing alias updated);
 - Multiple prefixes: no duplicates, and no prefix may cover another (`user:` with `user:admin:` is not allowed); distinct prefixes such as `article:` and `blog:` are fine.
 - `redis.search.index()` only builds a client (no Redis call); its `schema` argument gives TypeScript type safety only and is not validated against the server-side schema. `createIndex()` makes a Redis call and errors if the index exists unless `existsOk` is set.
 - Dropping an index removes only the search index; underlying Redis keys are untouched.
+- With `HYBRID` fields, embeddings are updated before the full-text index, so `$ann` can return a new document before full-text queries find it; `SEARCH.WAITINDEXING` waits for both.
+- `SEARCH.LISTINDEXES` returns each index's `name` and `type`, e.g. `[["name", "productIdx", "type", "HASH"], ["name", "eventIdx", "type", "STREAM"]]`; `MATCH`, `LIMIT` and `OFFSET` filter and paginate it.
 - Index updates are batched; recent writes may not be visible immediately. `SEARCH.WAITINDEXING` blocks until pending updates are visible. Do not call it after every write; use it mainly in tests and CI.
 - Aliases support zero-downtime reindexing: create `products-v2`, `waitIndexing()`, swap the alias with `alias.add`, then drop the old index. The index method form is `index.addAlias({ alias: "products" })`.
 - Document updates: there is no separate update command. Any write that changes indexed data updates the index: `JSON.SET` / `JSON.MERGE`, `HSET` / `HINCRBY`, `SET` / `SETEX`, `XADD` / `XDEL` / `XTRIM`, `DEL` / `EXPIRE` / `PEXPIRE`, and so on. Deleted, expired, or evicted keys are removed from the index. For stream indexes, deleting or expiring the whole stream clears its documents but keeps the index definition.
 - Python equivalents: `redis.search.create_index(name=..., data_type=..., prefix=..., schema=schema, skip_initial_scan=True, exists_ok=True)`, `index.wait_indexing()`, `index.add_alias(alias=...)`, `redis.search.alias.add(index_name=..., alias=...)`.
-- Source: https://upstash.com/docs/redis/search/index-management, /aliases, /counting, /document-updates (fetched 2026-10; no version pin on the site).
+- Source: https://upstash.com/docs/redis/search/index-management, /aliases, /counting, /document-updates (fetched 2026-11-14; no version pin on the site).
 
 ## Related
 

@@ -64,18 +64,19 @@ box.agent.run(prompt="create an index.txt saying 'hello world'")
 | Name | Type | Description |
 |------|------|-------------|
 | `runtime` | `string` | Runtime image, e.g. `"node"`, `"python"`. Debian (glibc) by default; append `-alpine` (e.g. `"node-alpine"`) for smaller Alpine images |
-| `agent.harness` | `Agent.ClaudeCode \| Agent.Codex \| Agent.OpenCode` | Built-in agent harness |
+| `agent.harness` | `Agent.ClaudeCode \| Agent.Codex \| Agent.OpenCode \| Agent.Cursor` | Built-in agent harness |
 | `agent.model` | `string` | Provider-prefixed model id, e.g. `"anthropic/claude-opus-4-6"` |
-| `agent.apiKey` | `string` | API key for the agent's provider |
+| `agent.apiKey` | `string` | API key for the agent's provider. Omit it (or pass `BoxApiKey.StoredKey`) to use the key saved for that provider in the Upstash Console; the box then fails agent runs with `agent API key is required` if none is saved |
 | `keepAlive` | `boolean` | Keeps the box on between sessions and can run an `initCommand` at startup |
 | `initCommand` | `string` (Python: `init_command`) | Startup script run from `/workspace/home` once per container start: on create, on resume, and after a snapshot restore. Use it to start a server that should come back with the box |
 
 ## Notes
 
-- Source: https://upstash.com/docs/box/overall/quickstart (fetched 2026-10-17; no version pin on the site).
+- Source: https://upstash.com/docs/box/overall/quickstart (fetched 2026-11-14; no version pin on the site).
 - Python SDK ships both a synchronous `Box` and an asynchronous `AsyncBox` (`await AsyncBox.create(...)`)
 - A box is usable standalone (shell/git/filesystem) even without configuring an `agent`
-- Direct SSH shell access is available: `ssh <box-id>@us-east-1.box.upstash.com`, using the Box API key as the SSH password
+- Direct SSH shell access is available: `ssh <box-id>@us-east-1.box.upstash.com`, using the Box API key as the SSH password (or an account SSH key, see Shell)
+- Since `@upstash/box` 0.8.0 Upstash no longer supplies model API keys; `BoxApiKey.UpstashKey` is deprecated (treated as an omitted key). See Agent
 - Core use cases: agent servers (one box per user with durable state), multi-agent orchestration (fan out to parallel boxes), parallel testing/model comparison
 
 - Init command management: `getInitCommand`, `setInitCommand`, `deleteInitCommand` (Python: `get_init_command`, `set_init_command`, `delete_init_command`) read, change, or remove it later, on any box including a paused one
