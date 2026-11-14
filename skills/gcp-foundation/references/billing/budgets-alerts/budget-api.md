@@ -28,6 +28,8 @@ curl -X GET \
 
 Create a budget (`POST .../budgets`, request body saved to `request.json`, quarterly budget scoped to a project):
 
+Adapted (not in the official docs): `thresholdRules` is a repeated field, so the rule is wrapped in an array (the official example shows a bare object).
+
 ```json
 {
   "displayName": "Keep my spending down",

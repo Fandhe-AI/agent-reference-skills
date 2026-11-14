@@ -47,7 +47,14 @@ Response when the caller can get but not delete the project:
 
 Python (Resource Manager client library):
 
+Adapted (not in the official docs): the imports below are added so the snippet is self-contained.
+
 ```python
+from typing import List
+
+from google.cloud import resourcemanager_v3
+
+
 def test_permissions(project_id: str) -> List[str]:
     """Tests IAM permissions of currently authenticated user to a project."""
 
@@ -66,6 +73,7 @@ def test_permissions(project_id: str) -> List[str]:
 
 ## Notes
 
+- Adapted from the official docs: `from typing import List` and `from google.cloud import resourcemanager_v3` added to the Python snippet (install `google-cloud-resource-manager`).
 - No IAM role is required to test permissions. Enabling the Resource Manager API needs `serviceusage.services.enable` (Owner or `roles/serviceusage.serviceUsageAdmin`).
 - Samples exist in C++, C#, Java, and Python (see gcp-client-libraries for library setup); local development uses `gcloud auth application-default login` for Application Default Credentials. Federated (external IdP) users must first sign in to the gcloud CLI with their federated identity.
 - The client libraries test the permissions of the identity that generates the credentials (for example a service account).

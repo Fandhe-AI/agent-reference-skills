@@ -59,6 +59,7 @@ def get_policy(
 
     request = iam_policy_pb2.GetIamPolicyRequest()
     request.resource = f"projects/{project_id}"
+    request.options.requested_policy_version = 3
 
     policy = crm_service.get_iam_policy(request)
     return policy
@@ -115,6 +116,8 @@ def modify_policy_remove_principal(
         if bind.role == role:
             if principal in bind.members:
                 bind.members.remove(principal)
+            if not bind.members:
+                policy.bindings.remove(bind)
             break
 
     set_policy(crm_service, project_id, policy)
@@ -140,6 +143,7 @@ if __name__ == "__main__":
 
 ## Notes
 
+- Adapted from the official docs: `get_policy` sets `request.options.requested_policy_version = 3` (the returned policy keeps its `etag`, which `set_policy` sends back via `CopyFrom`), and `modify_policy_remove_principal` deletes a binding whose `members` became empty (an empty binding is rejected by `setIamPolicy`).
 - Adapted from the official docs: `google-cloud-resource-manager` is added to the Python install because the v3 sample needs it.
 - Replace `your-project` with the project ID and the principal with an identifier such as `user:my-user@example.com`.
 - Use a new project: running this against an existing project temporarily grants some users access to its resources.

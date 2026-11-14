@@ -67,7 +67,7 @@ const _disableBillingForProject = async projectName => {
 };
 ```
 
-Deploy and wire up (commands from the official script, with the Adapted changes below; the doc comments inside the functions are omitted above). Adapted (not in the official docs): the budget is scoped with `--filter-projects` to the target project only; create it first, then pass its ID to the function as `BUDGET_ID` (the `budgetId` Pub/Sub message attribute is checked by the handler). The `functions-framework` dependency (`@google-cloud/functions-framework`) must be in the function's `package.json`.
+Deploy and wire up (commands from the official script, with the Adapted changes below; the doc comments inside the functions are omitted above). Adapted (not in the official docs): the budget is scoped with `--filter-projects` to the target project only; the budget is created before the deploy and its ID is captured from the `name` output, then passed to the function as `BUDGET_ID` (the `budgetId` Pub/Sub message attribute is checked by the handler). The `functions-framework` dependency (`@google-cloud/functions-framework`) must be in the function's `package.json`.
 
 ```bash
 gcloud services enable billingbudgets.googleapis.com \
@@ -82,6 +82,18 @@ gcloud services enable billingbudgets.googleapis.com \
 
 gcloud pubsub topics create "${TOPIC_ID}" --project="${PROJECT_ID}"
 
+# Create the dedicated budget (scoped to the target project) first and capture its ID.
+BUDGET_NAME=$(gcloud billing budgets create \
+    --billing-account="${BILLING_ACCOUNT_ID}" \
+    --display-name="Budget for ${PROJECT_ID}" \
+    --filter-projects="projects/${PROJECT_ID}" \
+    --budget-amount="${BUDGET_AMOUNT}" \
+    --threshold-rule=percent=1.0 \
+    --notifications-rule-pubsub-topic="projects/${PROJECT_ID}/topics/${TOPIC_ID}" \
+    --format="value(name)")
+BUDGET_ID="${BUDGET_NAME##*/}"   # name is billingAccounts/<ACCOUNT>/budgets/<BUDGET_ID>
+test -n "${BUDGET_ID}" || { echo "budget creation failed"; exit 1; }
+
 gcloud functions deploy stop-billing-function \
     --gen2 \
     --runtime=nodejs24 \
@@ -91,16 +103,6 @@ gcloud functions deploy stop-billing-function \
     --set-env-vars GOOGLE_CLOUD_PROJECT="${PROJECT_ID}",BUDGET_ID="${BUDGET_ID}" \
     --source=./billing_function \
     --project="${PROJECT_ID}"
-
-# Create this dedicated budget (scoped to the target project) BEFORE the deploy above
-# and capture its ID as BUDGET_ID.
-gcloud billing budgets create \
-    --billing-account="${BILLING_ACCOUNT_ID}" \
-    --display-name="Budget for ${PROJECT_ID}" \
-    --filter-projects="projects/${PROJECT_ID}" \
-    --budget-amount="${BUDGET_AMOUNT}" \
-    --threshold-rule=percent=1.0 \
-    --notifications-rule-pubsub-topic="projects/${PROJECT_ID}/topics/${TOPIC_ID}"
 ```
 
 The function's service account needs permission to change project billing. The official script grants `roles/billing.admin` on the billing account:
