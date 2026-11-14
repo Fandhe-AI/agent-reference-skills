@@ -1,11 +1,11 @@
 ---
 name: cloudflare-workers
 description: >
-  Cloudflare Workers (V8 isolate サーバーレス実行環境, workerd) の API リファレンス。
-  fetch / scheduled / tail handler, waitUntil, WorkerEntrypoint RPC, service bindings,
+  Cloudflare Workers (V8 isolate サーバーレス実行環境, workerd) API リファレンス。
+  fetch/scheduled/tail handler, waitUntil, WorkerEntrypoint RPC, service bindings,
   compatibility flags (nodejs_compat), HTMLRewriter, Cache API, static assets, cron triggers,
-  framework guides (Hono / Next.js / Astro / SvelteKit / Nuxt), wrangler types。
-  Wrangler は cloudflare-wrangler、KV / D1 / R2 は cloudflare-storage。
+  framework guides (Hono/Next.js/Astro/SvelteKit/Nuxt/Remix 3/EmDash), spending limit, wrangler types。
+  Wrangler は cloudflare-wrangler、KV/D1/R2 は cloudflare-storage。
 user-invocable: false
 ---
 
