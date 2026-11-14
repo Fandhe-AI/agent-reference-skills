@@ -57,6 +57,8 @@ Splittable properties: `component`, `errorComponent`, `pendingComponent`, `notFo
 - Do not export route properties (e.g. `notFoundComponent`) from a route file — exporting forces them into the main bundle, defeating the split.
 - Splitting the `loader` into its own chunk is a **performance trade-off**: it adds a network round trip before the loader can run, since the loader must be fetched and executed before the component renders. Recommended only for specific optimization needs.
 - Only available for file-based routing with a supported bundler plugin — not with the standalone CLI (`@tanstack/router-cli`).
+- Available with Vite, Rspack/Rsbuild and Webpack, not with Esbuild: the Esbuild plugin throws an error when `autoCodeSplitting` is `true`.
+- Source: https://github.com/TanStack/router/blob/release-2026-11-08-0104/docs/router/guide/automatic-code-splitting.md (fetched 2026-11-14)
 
 ## Related
 

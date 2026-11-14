@@ -14,7 +14,7 @@ import { tanstackRouter } from '@tanstack/router-plugin/esbuild'
 
 export default {
   plugins: [
-    tanstackRouter({ target: 'react', autoCodeSplitting: true }),
+    tanstackRouter({ target: 'react' }),
   ],
 }
 ```
@@ -34,10 +34,7 @@ const ctx = await esbuild.context({
   format: 'esm',
   target: ['esnext'],
   sourcemap: true,
-  plugins: [
-    solidPlugin(),
-    tanstackRouter({ target: 'solid', autoCodeSplitting: true }),
-  ],
+  plugins: [solidPlugin(), tanstackRouter({ target: 'solid' })],
 })
 
 if (isDev) {
@@ -60,6 +57,8 @@ if (isDev) {
 
 ## Notes
 
+- Automatic code splitting is not available with Esbuild: the plugin throws an error when `autoCodeSplitting` is `true`. Route generation works as usual. To split routes, use manual code splitting (`../data-rendering/code-splitting.md`) or another bundler. (Pin `release-2026-11-08-0104`: `autoCodeSplitting: true` was removed from both examples above; earlier pins showed it.)
+- Source: https://github.com/TanStack/router/blob/release-2026-11-08-0104/docs/router/installation/with-esbuild.md (fetched 2026-11-14)
 - Ignore the generated `routeTree.gen.ts` in linters/formatters; mark it read-only and exclude it from search/watcher in `.vscode/settings.json`
 - Full config options: File-based Routing API Reference (`../api/file-based-routing.md` on the docs site)
 

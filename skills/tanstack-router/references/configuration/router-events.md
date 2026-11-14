@@ -37,7 +37,7 @@ Common event payload fields: `type` (discriminant), `fromLocation` (optional `Pa
 - For reactive UI updates, prefer framework hooks (`useRouterState`, `useSearch`, `useParams`) over manual subscriptions.
 - Always return the unsubscribe function from component cleanup/effects.
 - See [RouterEvents (type)](../api/router-events.md) for the full event payload types.
-- `onInjectedHtml` is no longer part of the `RouterEvents` type in the current API reference (pinned release-2026-10-14-1451; commit `cbbfbe37ab`, 2026-09-16, #8204); the event type union is `onBeforeNavigate | onBeforeLoad | onLoad | onBeforeRouteMount | onResolved | onRendered`.
+- `onInjectedHtml` is no longer part of the `RouterEvents` type in the current API reference (pinned release-2026-11-08-0104; commit `cbbfbe37ab`, 2026-09-16, #8204); the event type union is `onBeforeNavigate | onBeforeLoad | onLoad | onBeforeRouteMount | onResolved | onRendered`.
 
 ## Related
 
