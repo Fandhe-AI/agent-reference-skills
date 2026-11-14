@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/optim/struct.ParamGroup.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/optim/struct.ParamGroup.html
 ---
 
 # ParamGroup / ParamGroupStep / OptimizerStateDict
@@ -114,10 +114,12 @@ resumed
 ## Notes
 
 - どのグループにも属さないスロットは optimizer の config（`lr` / `weight_decay`）を使う。`groups = &[]` の `step_with_groups` は既存 `step()` と bit 完全一致する契約
-- `set_lr` は既定グループ（グループ外スロット）にだけ効く。グループの `lr` は絶対値で `set_lr` の影響を受けない
+- 手動ループでは `set_lr` は既定グループ（グループ外スロット）にだけ効く。グループの `lr` は絶対値で `set_lr` の影響を受けない。compile 経路で `Callback::LrSchedule` を使うと group の lr も共通倍率（`group.lr × 現在 lr ／ compile 時の lr`）で追従する（AMP 版の入口では拒否のまま）
 - `ParamGroupStep::step_with_groups` を持つのは `Sgd` / `Adam` / `AdamW` / `RmsProp` / `Adagrad` / `Lamb` / `Adadelta` / `Adamax` / `NAdam` / `RAdam` の 10 種。`Lbfgs` / `Rprop` / `Asgd` / `Adafactor` / `Lion` は対象外。メソッドを呼ぶには `ParamGroupStep` の import が必要
-- `compat::Sequential::compile_with_param_groups`（`compile()` 経路）で使えるのは `compat::Optimizer` enum にある 6 種。`Lbfgs` は拒否される。それ以外の種は手動ループで `step_with_groups` を呼ぶ
-- グループ化の対象は `lr` / `weight_decay` の上書きのみ。optimizer 固有のハイパーパラメータ（beta / eps / momentum / nesterov 等）、optimizer 内部状態のグループ追従、`DeviceParamStore` 常駐経路は対象外。`NAdam` / `RAdam` の `decoupled_weight_decay` もグループでは切り替えず、config が定める意味でグループの `weight_decay` に適用される
+- `compat::Sequential::compile_with_param_groups`（`compile()` 経路）で使えるのは `compat::Optimizer` enum にある 10 種（`Adadelta` / `Adamax` は #3839、`NAdam` / `RAdam` は #3840 で追加。0.11.0 は 6 種）。`Lbfgs` は拒否される。それ以外の種は手動ループで `step_with_groups` を呼ぶ
+- AMP と併用するときは `compat::Sequential::compile_with_amp_and_param_groups`（非有限勾配による skip の判定は全 group 共通で、全 group の更新を一括で飛ばす）。デバイス常駐更新で使うときは `compat::Sequential::init_device_param_store_with_param_groups` で store を作る。GPU は SGD・Adam・AdamW だけ（CPU は 6 種）で、AMP・`distributed::step_*`・ROCm は拒否（型付きエラー）
+- Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/optim/index.html（0.14.0, 取得日 2026-11-14）
+- グループ化の対象は `lr` / `weight_decay` の上書きのみ。optimizer 固有のハイパーパラメータ（beta / eps / momentum / nesterov 等）、optimizer 内部状態のグループ追従は対象外（`DeviceParamStore` 常駐経路は `init_device_param_store_with_param_groups` で対応）。`NAdam` / `RAdam` の `decoupled_weight_decay` もグループでは切り替えず、config が定める意味でグループの `weight_decay` に適用される
 - `ParamGroup` は `#[non_exhaustive]` のため、クレート外からは `ParamGroup::new` でのみ構築できる。`new` 自体は失敗せず、検証は `step_with_groups` 呼び出し時
 - glob import（`use fandhe_ai::optim::*;`）の利用者が同名の型を自前で定義していると衝突しうる
 - `OptimizerStateDict` を実装するのは `AdamW` / `Adam` / `RmsProp` / `Adagrad` / `Lamb` / `Adadelta` / `Adamax` / `NAdam` / `RAdam` / `Sgd` の 10 種。メソッドを呼ぶには `OptimizerStateDict` の import が必要

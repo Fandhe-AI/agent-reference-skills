@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/struct.Gradients.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/struct.Gradients.html
 ---
 
 # Gradients
@@ -26,7 +26,7 @@ let input_grad = grads
 - ノードごとに `Option` で勾配を保持し、「loss に寄与しない」変数と「寄与するがゼロ勾配」の変数を区別する。「構造的に勾配を持ちえない」変数は `Err(GradientTrackingDisabled)` で型として区別される
 - `Gradients` は `Tape` を借用しないため `Tape::reset` をまたいで生存しうる。`Var<'t>` と異なり借用検査では防げないので、`get` が計算時点の世代番号と `Var` の世代番号を突き合わせ、reset 後の `Var` に対する古い勾配の誤参照を `Err(AutodiffError::TapeMismatch)` で fail-closed に拒否する（`site/examples/training-loop.md`）
 - 存在しないノードへのアクセスで panic しない設計
-- `Debug` を実装する。0.11.0 の `Gradients` は `Drop` 実装を持つ（host arena が有効な場合に勾配バッファを回収する）
+- `Debug` を実装する。0.14.0 の `Gradients` は `Drop` 実装を持つ（host arena が有効な場合に勾配バッファを回収する）
 - f64 専用グラフの `GradientsF64::get` は `Result<Option<&Tensor<f64>>, AutodiffError>` を返す別の型。詳細は `dtype.md` を参照
 
 ## Related

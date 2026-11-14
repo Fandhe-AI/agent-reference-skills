@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-ai/0.11.0/source/src/data.rs
+source: https://docs.rs/crate/fandhe-ai/0.14.0/source/src/data.rs
 ---
 
 # Dataset and DataLoader
@@ -69,6 +69,6 @@ fn main() {
 
 ## Notes
 
-- コードは `src/data.rs`（0.11.0）モジュール doc の 4 つの例を 1 つの `main` にまとめたもの（上流では doctest）。`fandhe_ai::data` は `fandhe_ai_tensor_core::data` の純再エクスポート
+- コードは `src/data.rs`（0.14.0）モジュール doc の 4 つの例を 1 つの `main` にまとめたもの（上流では doctest）。`fandhe_ai::data` は `fandhe_ai_tensor_core::data` の純再エクスポート
 - prefetch は `std::thread` / `mpsc` ベースで `Sequential::fit` へは結線されない。`Sequential::fit_with_prefetch` を使うと `fit_with_metrics` と bit 一致する結果になるが、性能改善は保証されない（上流 doc の記述）
-- この環境では `cargo check` を実行できなかったため、本ページのコンパイル検証は未実施（上流 doctest に依拠）
+- `fandhe-ai =0.14.0` に対し、本ページのコード（`main` ごと）を `cargo check` で確認し、実行して `assert` が通ることも確認済み（2026-11-14）

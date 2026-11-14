@@ -1,12 +1,12 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.11.0/crates/bench-harness/src/lib.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/bench-harness/src/lib.rs
 ---
 
 # bench-harness
 
-CPU/CUDA/Metal 各バックエンドの性能計測・回帰検出を担うベンチマーク基盤。未公開クレート（crates.io 未リリース。0.11.0 時点でも未公開のまま）。
+CPU/CUDA/Metal 各バックエンドの性能計測・回帰検出を担うベンチマーク基盤。未公開クレート（crates.io 未リリース。0.14.0 時点でも未公開のまま）。
 
-- crate 名: `bench-harness`（`crates/bench-harness`。GitHub `Fandhe-AI/fandhe-ai` の `v0.11.0` タグのソースから直接読む）
+- crate 名: `bench-harness`（`crates/bench-harness`。GitHub `Fandhe-AI/fandhe-ai` の `v0.14.0` タグのソースから直接読む）
 - 実機（DGX Spark GB10・Metal 実機）依存のベンチは `#[ignore]` で分離。ベンチ本体は `criterion`（`dev-dependencies` 限定）
 
 ## Signature / Usage
@@ -54,7 +54,8 @@ pub use threshold::{
 ## Notes
 
 - 公式が非サポートと明言する内部 crate。アプリケーションからは `fandhe-ai` 公開 API を使う
-- 未公開クレート（crates.io に未リリース）のため、docs.rs ではなく GitHub raw ソース（`v0.11.0` タグの `crates/bench-harness/src/lib.rs`）を出典とする
+- 未公開クレート（crates.io に未リリース）のため、docs.rs ではなく GitHub raw ソース（`v0.14.0` タグの `crates/bench-harness/src/lib.rs`）を出典とする。`crates/bench-harness/` は v0.11.0 → v0.14.0 で差分がない
+- Source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/bench-harness/src/lib.rs（v0.14.0, 取得日 2026-11-14）
 - ソースコード内コメントには既知の不一致が明記されている: リポジトリ内の別ルールファイルは「ベンチは 5 回計測の中央値」と記載するが、正本仕様は warmup/計測とも 20 回以上を定めており、本クレートは正本の 20/20 に従う
 - `guardrail` / `self-repair` クレートは本クレートの `BenchReport`（serde 対応の公開型・JSON 入出力）を参照する想定だが、実際の配線は別イシューのスコープで本クレート自体には変更がない（依存方向: `guardrail` → `bench-harness`）
 - `threshold` の判定対象は GEMM 単体の REQ-8 下限表のみで、`transformer_workload` の値は判定対象に含まれない

@@ -1,10 +1,10 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/fn.set_cuda_gemm_precision.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/fn.set_cuda_gemm_precision.html
 ---
 
 # CUDA / Metal 実行設定フラグとメモリプール
 
-crate ルートの自由関数として公開されるバックエンド実行設定: デバイスメモリプールの解放・統計、CUDA の GEMM 精度（TF32 / 3×TF32）・CUDA Graph step capture・managed memory・pinned H2D、Metal の split-K GEMM、ONNX の GPU 実行、および GEMM チェックサム計測（`Var::matmul_checksum`）。いずれもプロセスワイドの設定で `Device` 単位ではなく、既定値は導入前の経路と出力が bit 同一になる側に固定されている。
+crate ルートの自由関数として公開されるバックエンド実行設定: デバイスメモリプールの解放・統計、CUDA の GEMM 精度（TF32 / 3×TF32）・CUDA Graph step capture・managed memory・pinned H2D、Metal の split-K GEMM、推論 forward チェーンの CUDA Graph capture・elementwise 融合・GPU 線形代数の opt-in、ONNX の GPU 実行、および GEMM チェックサム計測（`Var::matmul_checksum`）。いずれもプロセスワイドの設定で `Device` 単位ではなく、既定値は導入前の経路と出力が bit 同一になる側に固定されている。
 
 ## Signature / Usage
 
@@ -34,15 +34,20 @@ CUDA（`#[cfg]` なし。いずれもプロセスワイドで全 CUDA device に
 | `CudaGemmPrecision` | `#[non_exhaustive] enum { Fp32Strict, Tf32, Tf32x3 }` | `Fp32Strict`: FP32 厳密（既定）、`Tf32`: TF32 Tensor Core 単発、`Tf32x3`: 3×TF32（split-single 法） |
 | `set_cuda_graph_step_enabled(enabled: bool)` / `cuda_graph_step_enabled() -> bool` | 関数 | 学習 step の update 区間（`sgd_step_device_tracked`）を CUDA Graph で capture・再利用する opt-in。既定は無効。最初の CUDA デバイス初期化（`tape_for(Device::Cuda(_))` の最初の呼び出し）より前に呼ぶ必要があり、間に合わない場合は以降の学習 step が `BackendError::Unsupported`（fail-closed）。capture 対象は update 区間のみ（forward / backward は対象外）。CPU / Metal・opt-in OFF では `DeviceParamStore::step` は直接実行経路のまま |
 | `cuda_graph_step_mode() -> CudaGraphStepMode` / `cuda_graph_step_stats() -> CudaGraphStepStats` | 関数 | 診断用。`CudaGraphStepMode` は `fandhe_ai_backend_cuda::graph::StepGraphMode` の型エイリアス（`Off` / `StreamOnly` / `On`。`StreamOnly` は環境変数 `FANDHE_AI_CUDA_GRAPH_STEP=stream-only` 専用で API からは設定できない）。`CudaGraphStepStats` は `StepGraphStats` の型エイリアスで、フィールドは `mode` / `captured` / `replayed` / `graph_launches` / `sgd_kernel_launches`（プロセス起動からの累積） |
+| `set_cuda_graph_infer_enabled(enabled: bool)` / `cuda_graph_infer_enabled() -> bool` | 関数 | 推論 forward チェーンの CUDA Graph capture の opt-in。既定は無効で、優先順位は API 明示 > 環境変数 `FANDHE_AI_CUDA_GRAPH_INFER` > 既定 OFF。最初の CUDA デバイス初期化より前に呼ぶ。間に合わなかった場合は拒否されず非 capture 経路へ黙ってフォールバックする（出力は同一。遅れると `BackendError::Unsupported` で拒否する `set_cuda_graph_step_enabled` とは異なる）。CUDA 非搭載・CPU のみ・Metal の環境でも呼べる（フラグを立てるだけで driver に触れない） |
+| `set_cuda_elementwise_fusion_enabled(enabled: bool)` / `cuda_elementwise_fusion_enabled() -> bool` | 関数 | GPU `run_fused` の elementwise allowlist 融合を CUDA で opt-in 有効化する。既定は無効で、無効のとき `run_fused` はデバイスに触れず `BackendError::Unsupported` を返し、呼び出し元は per-op 経路へフォールバックする（導入前と bit 同一）。有効のとき同一バックエンドの per-op 合成と bit 一致し、CPU とは REQ-2 統一複合判定で一致する。設定タイミングの制約なし（`run_fused` の呼び出しごとに判定）。CUDA と Metal を一括で切り替える setter は無い |
+| `set_cuda_gpu_linalg_enabled(enabled: bool)` / `cuda_gpu_linalg_enabled() -> bool` | 関数 | CUDA の GPU 線形代数 opt-in。既定は無効（環境変数は無い）。到達する演算は `Var::inv` / `solve` / `det` / `cholesky` / `qr` / `eigh` の forward。無効のときは `BackendError::Unsupported` を返し `Var` がホスト f64 へフォールバックする（導入前と bit 同一）。有効のときも f64 内部計算で精度クラスは変わらず、VJP は常にホスト f64。範囲外の Op は従来どおりホスト f64 へ回る |
 | `set_cuda_managed_memory_enabled(enabled: bool)` / `cuda_managed_memory_enabled() -> bool` | 関数 | `DeviceBuffer` の確保（`alloc_zeroed` / `upload`）を managed memory（`cuMemAllocManaged`）へ opt-in で切り替える。既定は無効（device-only）。managed memory 非対応デバイスで有効にすると確保呼び出しが `BackendError::Unsupported`。出力は配置に依らず bit 同一。elementwise・rmsnorm・softmax 等は managed 化していない |
 | `set_cuda_pinned_h2d_enabled(enabled: bool)` / `cuda_pinned_h2d_enabled() -> bool` | 関数 | H2D 転送を pinned ステージングバッファ経由にする opt-in。既定は無効。f32 経路と TF32 Tensor Core 経路が対象で、f16 Tensor Core 経路と elementwise / rmsnorm / softmax / transpose / mse は対象外。出力は bit 同一 |
 | `set_cuda_onnx_gpu_execution_enabled(enabled: bool)` / `cuda_onnx_gpu_execution_enabled() -> bool` | 関数 | `OnnxModel::run` の CUDA 実行（ordinal 0 固定）の opt-in。既定は無効。CUDA driver 不在・ordinal 0 が無い環境では `run` 自体が `OnnxError::Execution` を返す（ホスト CPU への黙示フォールバックなし） |
 
-Metal（以下 2 行は `#[cfg(target_os = "macos")]`。macOS 以外のビルドには存在しない）:
+Metal（以下 4 行は `#[cfg(target_os = "macos")]`。macOS 以外のビルドには存在しない）:
 
 | Name | Type | Description |
 | --- | --- | --- |
 | `set_metal_split_k_gemm_enabled(enabled: bool)` / `metal_split_k_gemm_enabled() -> bool` | 関数（macOS 限定） | split-K 2 パス GEMM 経路の実行時 opt-out。既定は有効（`true`）。`false` にすると `dispatch_auto` が常に classic 経路に固定され、結線前（`fandhe-ai =0.8.0` 相当）と bit 同一の出力を返す。split-K 到達形状（K 支配的な非正方形状）では classic 経路と bit 一致しない。`gemm_bias_act` 融合カーネルは元々 classic のみで対象外 |
+| `set_metal_elementwise_fusion_enabled(enabled: bool)` / `metal_elementwise_fusion_enabled() -> bool` | 関数（macOS 限定） | Metal 版の elementwise 融合 opt-in。契約・既定・制約は CUDA 版（`set_cuda_elementwise_fusion_enabled`）と同じ |
+| `set_metal_gpu_linalg_enabled(enabled: bool)` / `metal_gpu_linalg_enabled() -> bool` | 関数（macOS 限定） | Metal 版の GPU 線形代数 opt-in。契約・既定・制約は CUDA 版と同じ。到達する演算は `inv` / `solve` / `det` / `cholesky` / `qr` で、`eigh`・SVD 等は従来どおり `Unsupported` でホスト f64 へ回る。Metal はネイティブ f32 のため精度クラスが変わる（判定は統一複合判定・厳密ゼロ fail・κ ≤ 1e3） |
 | `set_metal_onnx_gpu_execution_enabled(enabled: bool)` / `metal_onnx_gpu_execution_enabled() -> bool` | 関数（macOS 限定） | `OnnxModel::run` の Metal 実行の opt-in。既定は無効。CUDA 版と同じ fail-closed 方針。CUDA 版と Metal 版の両方が有効な場合は CUDA を優先する |
 
 GEMM チェックサム計測:
@@ -56,6 +61,8 @@ GEMM チェックサム計測:
 ## Notes
 
 - 上記フラグはすべてプロセスワイド（`Device` 単位ではなく全スレッド・全デバイスに作用）。`Device` は外部型のため inherent メソッドを持てず、`tape_for` と同型の自由関数として公開される
+- `set_*_elementwise_fusion_enabled` / `set_*_gpu_linalg_enabled` / `set_cuda_graph_infer_enabled` は、融合する op や境界を指定する手段でも汎用 `compile` の入口でもない、プロセスワイドな実行戦略トグル
+- Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/fn.set_cuda_graph_infer_enabled.html（0.14.0, 取得日 2026-11-14）
 - 有効化したモードが使用不能な環境では、いずれも FP32 厳密や host への黙示フォールバックをせず `BackendError` を返す（fail-closed）
 - `fandhe_ai::*` の `set_cuda_*` は `nvidia-cuda` / `amd-rocm` スキルの CUDA / HIP ランタイム API とは別物で、ここでは fandhe-ai ライブラリ内部のバックエンド切り替えスイッチを指す
 - `Device::Cuda` / `Device::Metal` の定義と `tape_for` / `available_devices` は `device.md` を参照

@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/guardrail/src/cli.rs, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/docs/guardrail-self-repair-cli.md
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/guardrail/src/cli.rs, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/docs/guardrail-self-repair-cli.md
 ---
 
 # guardrail CLI
@@ -22,7 +22,7 @@ guardrail eval --dataset crates/guardrail/tests/fixtures/labeled-changes --prese
 | `--baseline <git-ref>` | `baseline` | 比較対象の baseline git ref |
 | `--change-id <id>` | 省略可 | 変更セット識別子（結果ファイル名に使用） |
 | `--config <guardrail.toml>` | 省略可 | しきい値設定ファイル。未指定時はリポジトリルートを探索 |
-| `--preset <name>` | `"default"` | しきい値プリセット名。実装は未検証の `String` として保持し固定選択肢の検証はしない（`strict` / `default` / `loose` は設計ドキュメント上の想定名） |
+| `--preset <strict\|default\|loose>` | `"default"` | しきい値プリセット名。`cli.rs` は `String` として保持し、`main.rs` の `PresetName::parse` が `strict` / `default` / `loose` 以外を usage エラー（exit code `2`）で拒否する |
 | `--repo <path>` | `.` | リポジトリルートパス |
 | `--signals <path>` | 省略可（`GUARDRAIL_ALLOW_INJECTED_SIGNALS=1` 必須） | 事前計算済みシグナル JSON（CI 契約検証用）。環境変数 `GUARDRAIL_ALLOW_INJECTED_SIGNALS=1` が未設定のまま渡すと拒否され exit code `2` |
 | `--format <text\|json>` | `text` | 出力フォーマット |
@@ -34,7 +34,7 @@ guardrail eval --dataset crates/guardrail/tests/fixtures/labeled-changes --prese
 | --- | --- | --- |
 | `--dataset <dir>` | `crates/guardrail/tests/fixtures/labeled-changes` | ラベル付き変更セットのディレクトリ |
 | `--config <guardrail.toml>` | 省略可 | しきい値のみ反映（合否基準はコード側で固定） |
-| `--preset <name>` | `"default"` | しきい値プリセット名。実装は未検証の `String` として保持し固定選択肢の検証はしない（`strict` / `default` / `loose` は設計ドキュメント上の想定名） |
+| `--preset <strict\|default\|loose>` | `"default"` | しきい値プリセット名。`cli.rs` は `String` として保持し、`main.rs` の `PresetName::parse` が `strict` / `default` / `loose` 以外を usage エラー（exit code `2`）で拒否する |
 | `--repo <path>` | `.` | 設定探索用のリポジトリルート |
 | `--format <text\|json>` | `text` | 出力フォーマット |
 | `--output <path>` | 省略可 | 集計レポート JSON の書き込み先 |
@@ -68,6 +68,9 @@ guardrail eval --dataset crates/guardrail/tests/fixtures/labeled-changes --prese
 - `guardrail.toml` / `policy-exclusion.toml` は `deny_unknown_fields` を適用し、除外ルール ID の typo を早期に型エラーとして検出する。しきい値・除外ルールの変更は committed config の編集のみで行い、CLI 引数単体では変更できない
 - `guardrail eval` は REQ-5 のポリシー除外リストを適用しない（`guardrail check` のみ適用）。エンジン自体の精度を測るため
 - 現行実装では `bench_measurements_pct` / `bench_median_pct` は空配列 / `0.0` を返す（bench workload 統合は別 issue で対応中）
+
+- Corrected from the previous version of this page: `--preset` is not unvalidated. `crates/guardrail/src/config.rs` `PresetName::parse` accepts only `strict` / `default` / `loose` and returns a usage error (exit 2) otherwise (v0.14.0; the crate is unchanged from v0.11.0)
+- Source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/guardrail/src/config.rs（v0.14.0, 取得日 2026-11-14）
 
 ## Related
 

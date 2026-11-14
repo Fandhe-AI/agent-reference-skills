@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/optim/index.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/optim/index.html
 ---
 
 # Optimizers（Sgd / Adam / AdamW / RmsProp / Adagrad / Lamb / Adadelta / Adamax / NAdam / RAdam / Adafactor / Lion / Rprop / Asgd / Lbfgs）
@@ -148,14 +148,15 @@ let updated = opt
 - 1 学習ステップの順序は `backward -> clip -> optimizer step`。AMP 使用時の順序は `grad-scaling-clipping.md` を参照
 - `Adam` と `AdamW` は `weight_decay > 0` のとき異なる更新値を生む。既定の `weight_decay` も異なる（Adam `0.0`、AdamW `0.01`）
 - `Lamb` の既定 `eps` は `1e-6`（`Adam` / `AdamW` の `1e-8` と異なる）
-- `Rprop` / `Asgd` / `Adafactor` / `Lion` は `compat::Optimizer` enum に結線されておらず、手動ループで `step` を呼ぶ。`Adadelta` / `Adamax` / `NAdam` / `RAdam` も `compat::Optimizer`（`compile()`）に未統合
+- `Rprop` / `Asgd` / `Adafactor` / `Lion` は `compat::Optimizer` enum に結線されておらず、手動ループで `step` を呼ぶ。`Adadelta` / `Adamax`（#3839）と `NAdam` / `RAdam`（#3840）は 0.14.0 の `compat::Optimizer` enum（`compile()`）に統合済み（`compat-training.md`。0.11.0 では未統合だった）
 - `Rprop` / `Asgd` / `Adafactor` / `Lion` は `ParamGroupStep` を持たない（グループ別学習率は対象外）。`Lbfgs` も `ParamGroupStep` の対象外
 - `DeviceParamStore` 結線（`Tape::step_device_param_store*`）は `Sgd` / `Adam` / `AdamW` / `RmsProp` / `Adagrad` / `Lamb`。CPU 実装のみで CUDA / Metal は `Unsupported` のまま。`Adadelta` / `Adamax` / `NAdam` / `RAdam` は非対応
 - `fandhe_ai::optim` の再エクスポートはホスト `Tensor<f32>` を介した step であり、ステップごとのホスト・デバイス往復コストは解消しない
 - `Lbfgs` は `compat::Optimizer::Lbfgs` に `LbfgsConfig` を渡すと `Sequential::compile` / `fit` が内部で `try_step_closure` を駆動する。`OptimizerStateDict` は実装せず、inherent の `state_dict` / `load_state_dict` / `history_len` を使う
 - `Lion` は `torch.optim` に存在しないため、参照値は google/automl の更新則を PyTorch のテンソル演算で実行した値。torch の `sign` と同様 `±0.0` と NaN は 0 として扱う
 - 状態の保存・復元と param groups は `param-groups-state.md` を参照
-- 本ページの既定値は `fandhe-ai` 0.11.0 同梱の `fandhe-ai-autodiff` 0.11.0 のソースによる
+- 本ページの既定値は `fandhe-ai` 0.11.0 同梱の `fandhe-ai-autodiff` 0.11.0 のソースによる（`fandhe-ai-autodiff` の `nn/optim/` のソースは 0.11.0 と 0.14.0 で差分なし。0.14.0 の `fandhe_ai::optim` モジュール doc で変わったのは `compat::Optimizer` への統合と param groups 周辺の記述のみ）
+- Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/optim/index.html（0.14.0, 取得日 2026-11-14）
 
 ## Related
 

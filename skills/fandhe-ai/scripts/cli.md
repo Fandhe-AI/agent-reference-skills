@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/guardrail/src/cli.rs, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/self-repair/src/cli.rs, https://fandhe-ai.github.io/fandhe-ai/api/cli/
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/guardrail/src/cli.rs, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/self-repair/src/cli.rs, https://fandhe-ai.github.io/fandhe-ai/api/cli/
 ---
 
 # cli
@@ -8,7 +8,9 @@ source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/guardr
 
 > **Notes**: ここでの `guardrail` / `eval` は変更セットの自動適用可否判定・修正候補の評価を指し、`openai-agents` / `anthropic-prompt-eval` / `openai-evals-tuning` にある LLM の guardrail（応答フィルタリング）や eval（モデル評価）とは別物。
 
-## guardrail check — 変更セットの自動適用可否判定
+## Signature / Usage
+
+### guardrail check — 変更セットの自動適用可否判定
 
 ```sh
 guardrail check --repo . --preset default
@@ -19,7 +21,7 @@ guardrail check --repo . --preset default
 | フラグ | 既定値 | 説明 |
 | --- | --- | --- |
 | `--repo` | `.` | 対象リポジトリのパス |
-| `--preset` | `default` | 判定プリセット名 |
+| `--preset` | `default` | 判定プリセット名（`strict` / `default` / `loose`。それ以外は usage エラー） |
 | `--config` | なし | `guardrail.toml` へのパス |
 | `--baseline` | `baseline` | 比較対象ベースライン |
 | `--change-id` | なし | 変更セット ID |
@@ -36,7 +38,7 @@ exit code:
 | `20` | reject（却下） |
 | `1` | 内部エラー |
 
-## guardrail eval — ラベル付きデータセットでの一括評価
+### guardrail eval — ラベル付きデータセットでの一括評価
 
 ```sh
 guardrail eval --dataset crates/guardrail/tests/fixtures/labeled-changes --preset default --format json
@@ -48,14 +50,14 @@ guardrail eval --dataset crates/guardrail/tests/fixtures/labeled-changes --prese
 | --- | --- | --- |
 | `--dataset` | `crates/guardrail/tests/fixtures/labeled-changes` | ラベル付きデータセットのパス |
 | `--repo` | `.` | 対象リポジトリのパス |
-| `--preset` | `default` | 判定プリセット名 |
+| `--preset` | `default` | 判定プリセット名（`strict` / `default` / `loose`。それ以外は usage エラー） |
 | `--config` | なし | `guardrail.toml` へのパス |
 | `--format` | `text` | `text` または `json` |
 | `--output` | なし | 結果出力先パス |
 
 exit code: `0`（内部エラーなし）/ `1`（内部エラー）/ `30`（評価指標が閾値未達、CI fail 用）。
 
-## self-repair run — 検出から取り込み判断までの1ループ実行
+### self-repair run — 検出から取り込み判断までの1ループ実行
 
 > **警告**: `self-repair run` は `--allow-candidate-exec` により信頼できない修正候補コードを**ホスト権限で**実行する。CLI が内部で作る sandbox clone はファイルシステム上の作業ツリー・index の分離のみで、プロセス・権限・ファイルシステム全体の隔離は行わない（`crates/self-repair/src/cli.rs` / `sandbox.rs` の注記）。`--isolate-network` はネットワーク namespace の分離だけで、単独では sandbox にならない。**必ず使い捨てコンテナまたは専用 VM の中で、秘密情報（`~/.ssh`、`~/.cargo/credentials.toml`、`.env` 等）を持たない一時 clone に対して実行する**。ホストの作業リポジトリ（`--repo .` を実運用ツリーで指定）や本番リポジトリでの実行は避け、ネットワーク隔離が利用できない環境では実行を中止する（CLI 自体も `unshare` の利用可否を事前 probe し、利用不可なら fail-closed で失敗する）。
 
@@ -106,7 +108,7 @@ exit code:
 | `1` | 内部エラー・ログ書き込み失敗・repo 反映失敗 |
 | `2` | usage エラー（`--allow-candidate-exec` 未指定を含む） |
 
-## self-repair verify-log — ログのハッシュチェーン検証
+### self-repair verify-log — ログのハッシュチェーン検証
 
 ```sh
 self-repair verify-log --log repair.jsonl
@@ -120,3 +122,13 @@ self-repair verify-log --log repair.jsonl
 | `--allow-empty-log` | 任意（フラグ） | `false` | 空ログを許容する |
 
 exit code: `0`（チェーン整合、改竄なし）/ `1`（検証不合格・内部エラー）/ `2`（usage エラー）。
+
+## Notes
+
+- guardrail / self-repair の crate ソース（`crates/guardrail`・`crates/self-repair`）と `docs/guardrail-self-repair-cli.md` は v0.11.0 → v0.14.0 で差分がない。`--preset` は `strict` / `default` / `loose` のみ受理する（`PresetName::parse`）
+- Source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/crates/guardrail/src/main.rs（v0.14.0, 取得日 2026-11-14）
+
+## Related
+
+- [install.md](./install.md)
+- [dev.md](./dev.md)

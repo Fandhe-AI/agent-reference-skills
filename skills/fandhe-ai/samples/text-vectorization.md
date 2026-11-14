@@ -1,10 +1,10 @@
 ---
-source: https://docs.rs/crate/fandhe-ai/0.11.0/source/src/text/mod.rs
+source: https://docs.rs/crate/fandhe-ai/0.14.0/source/src/text/mod.rs
 ---
 
 # Text Vectorization
 
-`TextVectorization`（Keras `TextVectorization` 相当）で文字列を整数 id にし、`Var::embedding` へ渡す。
+`TextVectorization`（Keras `TextVectorization` 相当）で文字列を整数 id にし、`Var::embedding` へ渡す。後半は出力モード（count / multi-hot / tf-idf）で `[B, W]` の `f32` 特徴量にする。
 
 ```rust
 use fandhe_ai::Tensor;
@@ -45,9 +45,32 @@ fn main() {
 }
 ```
 
+出力モード（0.14.0。`Linear` へそのまま渡せる `f32` の `[B, W]`。列 i = id i）:
+
+```rust
+use fandhe_ai::text::{Standardize, TextVectorization, TextVectorizationConfig};
+
+fn main() {
+    let config = TextVectorizationConfig::default().with_standardize(Standardize::None);
+    let tv = TextVectorization::from_vocabulary(config.clone(), &["cat", "dog"]).unwrap();
+    // 列 i = id i（0 = パディング・1 = OOV・2 = cat・3 = dog）。
+    let counts = tv.transform_count(&["cat cat dog bird", "dog"]).unwrap();
+    assert_eq!(counts.shape(), &[2, 4]);
+    assert_eq!(counts.host_slice().to_vec(), [0.0, 1.0, 2.0, 1.0, 0.0, 0.0, 0.0, 1.0]);
+    let hot = tv.transform_multi_hot(&["cat cat dog bird", "dog"]).unwrap();
+    assert_eq!(hot.host_slice().to_vec(), [0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0]);
+
+    // idf 重みを直接与える（OOV の重みは与えた重みの平均 1.5）。
+    let tv = TextVectorization::from_vocabulary_with_idf(config, &["cat", "dog"], &[1.0, 2.0])
+        .unwrap();
+    let weighted = tv.transform_tf_idf(&["cat cat dog bird"]).unwrap();
+    assert_eq!(weighted.host_slice().to_vec(), [0.0, 1.5, 2.0, 2.0]);
+}
+```
+
 ## Notes
 
-- コードは `src/text/mod.rs`（0.11.0）モジュール doc の 2 つの例を 1 つの `main` にまとめたもの（上流では doctest）
-- id は 0 = パディング、1 = OOV（`"[UNK]"`）、2.. = 語彙。小文字化・句読点除去・空白分割は ASCII に限る（Unicode 対応は保留中）
-- 公開型は `fandhe_ai::text` 配下の 6 名のみで、クレートルートへは再エクスポートされない。サブワードトークナイザ・語彙の保存／読み込みは対象外
-- この環境では `cargo check` を実行できなかったため、本ページのコンパイル検証は未実施（上流 doctest に依拠）
+- コードは `src/text/mod.rs`（0.14.0）モジュール doc の例を `main` にまとめたもの（上流では doctest）。最後の `main` は 0.14.0 で追加された出力モード（`transform_count` / `transform_multi_hot` / `from_vocabulary_with_idf` + `transform_tf_idf`）の例
+- id は 0 = パディング、1 = OOV（`"[UNK]"`）、2.. = 語彙。既定の小文字化・句読点除去・空白分割は ASCII に限る（Unicode 版は opt-in の `Standardize::UnicodeLower` / `Split::UnicodeWhitespace`）
+- 公開型は `fandhe_ai::text` 配下の 8 名（`TextVectorization` / `TextVectorizationConfig` / `TextLimits` / `Standardize` / `Split` / `TextError` / `StringLookup` / `StringLookupConfig`）のみで、クレートルートへは再エクスポートされない。サブワードトークナイザ・語彙の保存／読み込みは対象外
+- `fandhe-ai =0.14.0` に対し、本ページのコード（`main` ごと）を `cargo check` で確認し、実行して `assert` が通ることも確認済み（2026-11-14）

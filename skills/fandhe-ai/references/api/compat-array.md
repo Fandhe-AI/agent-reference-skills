@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/fandhe-ai/0.11.0/fandhe_ai/compat/fn.array.html
+source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/compat/fn.array.html
 ---
 
 # compat::array
