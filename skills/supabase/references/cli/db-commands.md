@@ -355,13 +355,15 @@ Exports the schema of a live database (local, linked, or custom URL) into SQL fi
 | 宣言的スキーマ（pg-delta）から migration 生成 | `supabase db schema declarative sync -f <name> --no-apply` |
 | 本番スキーマを宣言ファイルへ export | `supabase db schema declarative generate --remote` |
 
-## Notes (CLI v3 での変更)
+## Notes
+
+### CLI v3 での変更
 
 - v3 はローカル既定。`db push` / `db pull` / `db diff` / `db reset` / `db dump` / `db lint` でリモートを対象にするには `--remote` を付ける（`--remote=<ref>` / `--remote=<url>` で別プロジェクト・DB URL）
 - `--linked` / `--local` / `--project-ref` / `--db-url` は deprecated（v4 で削除）。`--local` は no-op
 - ホストを変更する操作（`db push` / `db pull` / `db reset --remote`）は確認が必須。非対話・JSON 出力・agent 実行では `--yes`（または `SUPABASE_YES`、シェルで設定したもののみ有効）が必要
 - 削除済み: `db remote commit` / `db remote changes`、`db branch *`、`db diff --use-pg-schema`、`db pull --use-pg-delta` / `--experimental`
-- 取得元: 公式 CLI リファレンス（supabase.com/llms/cli.txt、取得日 2026-11-14、CLI v3.1.0）
+- Source: https://supabase.com/llms/cli.txt（取得日 2026-11-14、CLI v3.1.0）
 
 ## Related
 

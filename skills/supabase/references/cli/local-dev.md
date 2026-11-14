@@ -97,7 +97,7 @@ Started supabase local development setup.
      GraphQL URL: http://127.0.0.1:54321/graphql/v1
           DB URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
       Studio URL: http://127.0.0.1:54323
-    Inbucket URL: http://127.0.0.1:54324  （v3 では Mailpit URL 表示）
+    Inbucket URL: http://127.0.0.1:54324
       JWT secret: super-secret-jwt-token-with-at-least-32-characters
         anon key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 service_role key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -169,7 +169,7 @@ API_URL=http://127.0.0.1:54321
 GRAPHQL_URL=http://127.0.0.1:54321/graphql/v1
 DB_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
 STUDIO_URL=http://127.0.0.1:54323
-INBUCKET_URL=http://127.0.0.1:54324  # v3 では MAILPIT_URL
+INBUCKET_URL=http://127.0.0.1:54324
 JWT_SECRET=super-secret-jwt-token-with-at-least-32-characters
 ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -211,7 +211,8 @@ supabase link --project-ref abcdefghijklmnop
 
 ## Notes
 
-- CLI v3（3.1.0）の変更: `config.toml` の `[inbucket]` は `[local_smtp]` に改名、`INBUCKET_URL` は `MAILPIT_URL`、`[experimental] orioledb_version` は `[db] orioledb_version`、`linkedin` / `slack` プロバイダーは `linkedin_oidc` / `slack_oidc`、functions の `import_map.json` は `deno.json`。`project_id` 未設定時のコンテナ名はフォルダー名基準（出典: check 時の公式 v3 リリース調査。config リファレンス本文との突合は未実施）
+- CLI v3（3.1.0）の変更（v3 の公式確認未了）: `config.toml` の `[inbucket]` は `[local_smtp]` に改名、メールテストサーバーは Inbucket から Mailpit に変わり `supabase start` の `Inbucket URL` 表示は Mailpit URL 表示に、`INBUCKET_URL` は `MAILPIT_URL`、`[experimental] orioledb_version` は `[db] orioledb_version`、`linkedin` / `slack` プロバイダーは `linkedin_oidc` / `slack_oidc`、functions の `import_map.json` は `deno.json`。`project_id` 未設定時のコンテナ名はフォルダー名基準。上記は公式 CLI リファレンス（https://supabase.com/llms/cli.txt、取得日 2026-11-14）に記載が無く、v3 リリースノート・changelog の URL も確認できていないため、根拠 URL を付けられない。上の出力例は v2 系の公式例のまま
+- Source: https://supabase.com/llms/cli.txt（v3 の `--remote` 等フラグ変更のみ確認。上記の config 改名は未確認）
 - `supabase link --project-ref` は v3 公式で引き続き利用可。それ以外のコマンドの `--project-ref` / `--linked` / `--db-url` は deprecated（v4 で削除、`--remote` を使用）。`supabase stop --all` で全ローカルプロジェクトを停止（`--no-backup` 併用で全データ削除）
 - 実験的な `supabase stack` コマンド（v3 公式 CLI リファレンスには未掲載だがガイドは experimental として現存）: `config.toml` に `[experimental] stack = true`（または `SUPABASE_EXPERIMENTAL_STACK=1`）を設定すると、`supabase start` / `status` / `stop` が stack コマンドとして動作する。環境変数は設定ファイルより優先され、`SUPABASE_EXPERIMENTAL_STACK=0` で 1 セッションだけ従来コマンドに戻せる
 - 上記設定時は `--stack <name>` で名前付きローカルプロジェクトを指定できる。stack 専用コマンドは `supabase stack list` / `supabase stack destroy` / `supabase stack stop --all`
