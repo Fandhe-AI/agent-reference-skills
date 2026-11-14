@@ -131,10 +131,20 @@ storybookTest({
 
 ## Notes
 
-- Vitest 5 browser tests are supported (10.6.1, CHANGELOG: "Addon Vitest: Support Vitest 5 browser tests - #36270"). The requirements list above is not re-verified against 10.6.2 docs
+- Vitest 5 browser tests are supported (10.6.1, CHANGELOG: "Addon Vitest: Support Vitest 5 browser tests - #36270"). The requirements list above is unchanged between the 10.6.2 and 10.6.7 docs
 - Does **not** require a running Storybook instance to execute tests
 - For projects with existing Vitest tests, use separate test projects (Vitest >= 4.0) or workspaces (Vitest 3.x)
 - Playwright browser binaries must be installed: `playwright install`
+- Source: https://storybook.js.org/docs/writing-tests/integrations/vitest-addon (Storybook v10.6.7, fetched 2026-11-14).
+
+### Isolating Storybook tests from other tests
+
+- The generated Storybook test project uses `extends: true` to share your root Vite configuration, including framework plugins and aliases. It also inherits root-level test settings, so unit-only setup files at the root can interfere with your stories
+- Move unit-only settings, such as `setupFiles` and `environment`, into the unit-test project inside `test.projects`. Keep shared Vite plugins and aliases at the root. When the addon converts a single test configuration into projects, it moves project-specific test settings into the unit project automatically
+- To isolate inherited project configuration, set `extends: false` on the Storybook project and explicitly configure its required framework plugins and aliases, either on that project or through Storybook's `viteFinal` (see the main-config `viteFinal` page)
+- Root `globalSetup` still runs once per test run, even with `extends: false`. Root Vite plugins are not inherited by that project, so configure any plugin it needs on the Storybook project itself. Move unit-only global setup into the unit-test project
+- Coverage is a global Vitest option, so `extends: false` does not isolate it. When you run `vitest --project=storybook --coverage`, Vitest still uses the root `test.coverage` configuration
+- Use a test project if you're using Vitest >= 4.0, or a workspace for previous versions, to define separate configurations for Storybook tests and other tests
 
 ## Related
 

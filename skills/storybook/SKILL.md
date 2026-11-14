@@ -13,7 +13,7 @@ user-invocable: false
 Storybook 公式ドキュメントを網羅した API リファレンススキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象: Storybook 10.6.2 (出典: storybookjs/storybook タグ v10.6.2 の docs/、取得日 2026-10-16)。
+対象: Storybook 10.6.7 (出典: storybookjs/storybook タグ v10.6.7 の docs/、取得日 2026-11-14)。10.6.2 → 10.6.7 の docs/ 差分は 3 ファイルのみ（security・vitest-addon の FAQ・contribute/framework）で、他ページは 10.6.2 から変更なしを確認済みのため各ページの Source は v10.6.2 のまま。
 
 ## ディレクトリ構成
 
