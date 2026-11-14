@@ -40,6 +40,23 @@ Detach a header with `! `:
   ! Content-Security-Policy
 ```
 
+Detach and set the header again so one file takes a different value (the narrower rule goes after the broader one):
+
+```txt
+/assets/*
+  Cache-Control: public, max-age=0, s-maxage=86400
+
+/assets/model.bin
+  ! Cache-Control
+  Cache-Control: public, max-age=604800
+```
+
+Joining two `Cache-Control` rules produces conflicting directives, for example:
+
+```txt
+Cache-Control: public, max-age=604800, public, max-age=0, s-maxage=86400
+```
+
 Placeholder:
 
 ```txt
@@ -102,6 +119,9 @@ Security headers for an application:
 - Matching rules combine: a request matching several rules inherits all their headers; the same header set twice is joined with a comma. Redirects are applied before headers, so a redirect match wins.
 - Differences from the Workers static-assets docs: the Pages docs list more default headers on static responses (`Access-Control-Allow-Origin: *`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Content-Type-Options: nosniff`, `Server: cloudflare`; see Serving Pages), while the Workers page lists `Content-Type`, `Cache-Control`, `ETag` and `CF-Cache-Status`. Pages rules use `*.pages.dev` hostnames, Workers uses `workers.dev`. The Workers docs say `Access-Control-Allow-Origin` accepts only `*`, `null` or an exact origin and recommend handling CORS dynamically in Worker code for per-version URLs.
 - Corrected from the official docs: the CORS example value `https://staging.:project.pages.dev/` had a trailing slash, which is not a valid origin. Placeholders can be used in header values (`:placeholder_name`), as the page states.
+- Rules are applied in the order they appear in the file. Joining works as intended for list-valued headers such as `X-Robots-Tag`; for headers where repeated directives conflict, such as `Cache-Control`, joining produces conflicting directives. Per RFC 9111 section 4.2.1, when a directive such as `max-age` appears more than once, caches should use the first value or treat the response as stale; nothing errors and the asset still serves.
+- Because rules are applied in file order, `! ` removes only what earlier rules have already added. A detach placed above the rule it is meant to override has no effect. In the `/assets/model.bin` example above, reversing the two blocks causes both values to be joined, because the detach runs before the broader rule adds its value.
+- Source: https://developers.cloudflare.com/pages/configuration/headers/ (fetched 2026-11-14, cloudflare-docs 34d908a)
 - The source heading "Prevent your workers.dev URLs showing in search results" refers to the `pages.dev` rules shown above.
 
 ## Related

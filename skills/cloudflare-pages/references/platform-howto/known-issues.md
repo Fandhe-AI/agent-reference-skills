@@ -102,6 +102,18 @@ if ($failed) {
 Write-Output "Done."
 ```
 
+Send a descriptive `User-Agent` header from an automated client (Python example):
+
+```python
+import urllib.request
+
+req = urllib.request.Request(
+    "https://example.com/data.json",
+    headers={"User-Agent": "my-app/1.0 (+https://example.com)"},
+)
+urllib.request.urlopen(req)
+```
+
 ## Options / Props
 
 | Name | Type | Default | Description |
@@ -116,6 +128,8 @@ Write-Output "Done."
 - Git configuration: a Git-integrated project cannot switch to Direct Upload; disable or pause automatic deployments, or delete the project and create one pointing at another repository.
 - Build configuration: `*.pages.dev` subdomains cannot be changed (delete and recreate). The page says Hugo runs an old version unless `HUGO_VERSION` is set and that Node `12.18.0` is the default; that reflects the legacy v1 build image. The v3 image defaults to Node.js 22.23.4 and Hugo 0.147.7 (see the build image page). Netlify Forms are not supported; Pages Functions are the equivalent of Netlify Serverless Functions.
 - Custom domains: not possible to add a wildcard domain (`*.domain.com`), a domain that already has a Worker routed on it, or a domain with a Cloudflare Access policy already enabled. Cloudflare Load Balancer does not work with `*.pages.dev` projects (`Error 1000: DNS points to prohibited IP`); to use a Pages project as an origin, select **Add host header** when creating the pool and set both the host header value and the endpoint address to your `pages.dev` domain. Validation needs `http://{domain_name}/.well-known/acme-challenge/*` reachable. Advanced Certificates cannot be used with Pages.
+- Browser Integrity Check (BIC): all requests to a Pages project, on `*.pages.dev` or a custom domain, are evaluated by BIC on the Cloudflare-managed `pages.dev` zone, and you cannot turn it off for a Pages project. Turning off BIC in your own zone, or adding a custom rule or configuration rule that skips it, only affects your zone. Clients sending some default library `User-Agent` headers (for example the default Python `urllib` user agent) receive HTTP `403` with error 1010. Recommended fix: send a descriptive `User-Agent` identifying your application (it need not be a browser user agent; see the Python snippet above). If you need full control over BIC and your domain's nameservers are managed by Cloudflare, serve the site with Workers static assets on a Custom Domain or route in your zone (see the cloudflare-workers skill, static-assets/migrate-from-pages).
+- Source: https://developers.cloudflare.com/pages/platform/known-issues/ (fetched 2026-11-14, cloudflare-docs 34d908a)
 - Pages Functions: adding or removing polyfills is not supported (bundlers such as webpack may fail); `passThroughOnException()` is unavailable for advanced mode (`_worker.js`) and is less resilient than in Workers (Pages wraps the code in try...catch and falls back to `env.ASSETS.fetch()`, so CPU time or memory failures can still throw).
 - Access on `*.pages.dev`: after **Settings** > **Enable access policy**, use **Manage** on the preview policy, open **Access** > **Applications**, **Configure**, and delete the wildcard `*` in **Subdomain** under **Public hostname** (rename the application if needed). Then re-enable the access policy; two policies result (`*.pages.dev` and `*.<YOUR_SITE>.pages.dev`). If the project has a custom domain, also create a self-hosted Access application for it (**Zero Trust** > **Access controls** > **Applications**), otherwise custom domain visitors see an Access login that does not work.
 - A project with over 100 deployments may not be deletable; delete deployments individually with Wrangler first (the scripts above keep the production deployment). The bash script needs `jq`, the PowerShell script uses `ForEach-Object -Parallel` (PowerShell 7+). The latest deployment for a branch cannot be deleted, so the scripts may report such deployments as failed.

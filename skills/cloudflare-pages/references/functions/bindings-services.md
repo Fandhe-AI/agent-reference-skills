@@ -145,6 +145,8 @@ wrangler pages dev -c wrangler.jsonc -c ../other-worker/wrangler.jsonc
 - Corrected from the official docs: the Queue producer example used `request.url` without defining `request`; it now destructures `request` from `context`. The message includes all request headers (including `Authorization` and `Cookie`); strip sensitive headers before enqueuing in real code.
 - Queues: sending to a queue works locally, but a Pages Function cannot consume a queue. Create a separate consumer Worker with a queue consumer handler. Wrangler cannot yet run separate producer Functions and consumer Workers bound to the same queue locally.
 - Analytics Engine bindings cannot be used locally.
+- Service binding cancellation: if the browser disconnects from your Pages Function, the Function can stop waiting for the Worker it calls, and that Worker may report Client Disconnected. See the cloudflare-workers skill (service bindings, "Choose when work should stop") to decide whether to stop the work or keep it running.
+- Source: https://developers.cloudflare.com/pages/functions/bindings/ (fetched 2026-11-14, cloudflare-docs 34d908a)
 - Running multiple Workers in one Wrangler dev session is experimental and subject to change.
 
 ## Related
