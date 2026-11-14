@@ -6,7 +6,9 @@ source: https://www.electronjs.org/docs/latest/api/window-open
 
 There are several ways to control how windows are created from trusted or untrusted content within a renderer. Windows can be created from the renderer in two ways: clicking on links or submitting forms adorned with `target=_blank`, or JavaScript calling `window.open()`.
 
-For same-origin content, the new window is created within the same process, enabling the parent to access the child window directly. This can be very useful for app sub-windows that act as preference panels, or similar, as the parent can render to the sub-window directly, as if it were a `div` in the parent. This is the same behavior as in the browser.
+For same-site content, the new window is created within the same process, enabling the parent to access the child window directly. This can be very useful for app sub-windows that act as preference panels, or similar, as the parent can render to the sub-window directly, as if it were a `div` in the parent. This is the same behavior as in the browser.
+
+Process-level `webPreferences` such as `sandbox` and `nodeIntegration` are baked into a renderer process when it launches, so a child window whose sandbox state differs from the opener's process cannot share it. In that case the child is created in a process of its own with no opener relationship: `window.open()` returns `null` in the opener and `window.opener` is `null` in the child. Child windows default to sandboxed, so a `window.open()` from an unsandboxed opener (for example one with `nodeIntegration: true`) is isolated like this by default. To keep such a child in the opener's process, explicitly set `sandbox: false` in the `webPreferences` returned from `webContents.setWindowOpenHandler`.
 
 Electron pairs this native DOM `Window` with a BrowserWindow under the hood. You can take advantage of all the customization available when creating a BrowserWindow in the main process by using `webContents.setWindowOpenHandler()` for renderer-created windows.
 
@@ -92,6 +94,7 @@ The object returned from the `setWindowOpenHandler` handler (original page: `api
 
 * The `preload: 'my-child-window-preload-script.js'` in the official example is abbreviated; `webPreferences.preload` must be an absolute path (see web-preferences.md), so in practice write something like `path.join(__dirname, 'my-child-window-preload-script.js')`.
 * `webContents.setWindowOpenHandler` is documented on the webContents page (web-contents category) and runs in the main process, which is why it has the final say over renderer-supplied `features`.
+* Clarification (not in the official docs): process sharing applies to same-site content (v45 wording; v44 said same-origin), but direct DOM access between parent and child still requires same-origin. For example, `https://a.example.com` and `https://b.example.com` are same-site but cross-origin, so the same-origin policy still restricts DOM access between them.
 * Distinct from plain browser `window.open`: Electron additionally pairs the DOM `Window` with a BrowserWindow and applies the precedence rules above.
 
 ## Related

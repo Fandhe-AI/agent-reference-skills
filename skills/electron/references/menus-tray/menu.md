@@ -13,6 +13,7 @@ new Menu()
 
 Menu.setApplicationMenu(menu)
 Menu.getApplicationMenu()
+Menu.setHighlightColors(options) // Windows
 Menu.sendActionToFirstResponder(action) // macOS
 Menu.buildFromTemplate(template)
 
@@ -29,6 +30,7 @@ menu.insert(pos, menuItem)
 | --- | --- | --- |
 | `Menu.setApplicationMenu(menu)` (`menu`: Menu \| null) | | Sets `menu` as the application menu on macOS. On Windows and Linux, the `menu` will be set as each window's top menu. Passing `null` will suppress the default menu; on Windows and Linux this also removes the menu bar from the window. |
 | `Menu.getApplicationMenu()` | | Returns `Menu \| null` - the application menu, if set, or `null`. |
+| `Menu.setHighlightColors(options)` (`options`: Object \| null) | Windows | Sets the colors used to highlight the hovered or keyboard-focused item in every menu the app shows, including context menus and the menu bar's dropdowns. `options.light` / `options.dark` (Object, optional) each take `background` (string, optional) and `foreground` (string, optional) CSS color strings. Light and dark colors are set separately, and any color left unset keeps the default for that mode. Each call replaces the colors set by any previous call. Passing `null` restores the defaults. Menus opened after the call use the new colors. The colors are not applied while Windows high contrast mode or forced colors are active. No effect on macOS and Linux. |
 | `Menu.sendActionToFirstResponder(action)` (`action`: string) | macOS | Sends the `action` to the first responder of application. Used for emulating default macOS menu behaviors; usually you would use the `role` property of a `MenuItem`. |
 | `Menu.buildFromTemplate(template)` (`template`: (MenuItemConstructorOptions \| MenuItem)[]) | | Returns `Menu`. Other fields attached to a template element become properties of the constructed menu item. |
 

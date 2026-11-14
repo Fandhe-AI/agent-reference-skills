@@ -27,10 +27,9 @@ app.whenReady().then(async () => {
 | Method | Returns | Description |
 | --- | --- | --- |
 | `contentTracing.getCategories()` | `Promise<string[]>` | Category groups, resolved once all child processes acknowledge. Groups can change as new code paths are reached. |
-| `contentTracing.startRecording(options)` | `Promise<void>` | `options`: `TraceConfig` or `TraceCategoriesAndOptions`. Starts recording on all processes; if already running resolves immediately (one trace at a time). |
-| `contentTracing.stopRecording([resultFilePath])` | `Promise<string>` | Stops recording on all processes; resolves with the path of the file containing the trace. If `resultFilePath` is empty or omitted, a temporary file is used. |
+| `contentTracing.startRecording(options)` | `Promise<void>` | `options`: `TraceConfig` or `TraceCategoriesAndOptions`. Starts recording on all processes; if already running resolves immediately (one trace at a time). If `options.nativeHeapProfiling` is set while a recording is already running, the promise is rejected instead, since the already-running recording's options can't be changed to turn on heap profiling. |
+| `contentTracing.stopRecording([resultFilePath])` | `Promise<string>` | Stops recording on all processes; resolves with the path of the file containing the trace. If `resultFilePath` is empty or omitted, a temporary file is used. Trace data is written in the Perfetto protobuf format. |
 | `contentTracing.getTraceBufferUsage()` | `Promise<Object>` | Resolves with `{ value: number, percentage: number }`: maximum usage across processes of the trace buffer. |
-| `contentTracing.enableHeapProfiling([options])` _Experimental_ | `Promise<void>` | Enables heap profiling for MemoryInfra traces (equivalent to `--memlog` in Chrome). `options`: `EnableHeapProfilingOptions`. Only effective if the `disabled-by-default-memory-infra` category is included; call before `startRecording()`. |
 
 ## TraceConfig
 
@@ -45,6 +44,7 @@ app.whenReady().then(async () => {
 | `included_process_ids` | number[] (optional) | Process IDs to include; all processes if unspecified. |
 | `histogram_names` | string[] (optional) | Histogram names to report with the trace. |
 | `memory_dump_config` | Record\<string, any\> (optional) | Additional configuration when `disabled-by-default-memory-infra` is enabled. |
+| `nativeHeapProfiling` | NativeHeapProfilerOptions (optional) _Experimental_ | Electron extension; not part of Chromium's TraceConfig schema. Enables native (C/C++) heap allocation profiling for this recording. Distinct from JavaScript heap profiling (`process.takeHeapSnapshot()` / `contents.takeHeapSnapshot()`); it samples allocations made by Chromium and native modules. `included_process_ids` also limits which processes are profiled when this is enabled. |
 
 Example TraceConfig roughly matching what Chrome DevTools records:
 
@@ -73,22 +73,33 @@ Example TraceConfig roughly matching what Chrome DevTools records:
 | --- | --- | --- |
 | `categoryFilter` | string | Filter for category groups to trace; optional `-` prefix excludes. Mixing included and excluded patterns in one list is not supported. Examples: `test_MyTest*`, `test_MyTest*,test_OtherStuff`, `-excluded_category1,-excluded_category2`. |
 | `traceOptions` | string | Comma-delimited: `record-until-full`, `record-continuously`, `trace-to-console`, `enable-sampling`, `enable-systrace`, e.g. `'record-until-full,enable-sampling'`. The first 3 are mutually exclusive recording modes (last one wins; default `record-until-full`). |
+| `nativeHeapProfiling` | NativeHeapProfilerOptions (optional) _Experimental_ | Electron extension; not part of Chromium's TraceCategoriesAndOptions schema. Enables native (C/C++) heap allocation profiling for this recording. Unlike `TraceConfig`, this object has no `included_process_ids` field, so every traced process is profiled. |
 
-## EnableHeapProfilingOptions
+## NativeHeapProfilerOptions
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `mode` | string (optional) | Which processes are profiled (equivalent to `--memlog`). Default `all`. Values: `all`, `browser`, `gpu`, `minimal` (browser and GPU), `renderer-sampling` (at most 1 renderer), `all-renderers`, `utility-sampling`, `all-utilities`, `utility-and-browser`. |
-| `samplingRate` | number (optional) | Sampling interval in bytes (equivalent to `--memlog-sampling-rate`). Default `100000` (100KB). Integer between `1000` and `10000000`. |
-| `stackMode` | string (optional) | Metadata per allocation (equivalent to `--memlog-stack-mode`). Default `native`. Values: `native`, `native-with-thread-names`. |
+| `dumpInterval` | number (optional) | The interval in milliseconds at which samples are written to the trace. Each write is a full snapshot of every sampled allocation that is still live, so short intervals can fill the trace buffer quickly in long recordings. Defaults to `0`, which writes a single snapshot when tracing stops. |
+| `samplingInterval` | number (optional) | The average number of bytes allocated between samples. Lower values give a more precise profile at a higher performance cost. Must be greater than `0`. Defaults to Chromium's default, currently `131072` (128 KiB). |
 
 ## Notes
 
-- No web interface is included; view recorded traces with the trace viewer at `chrome://tracing` in Chrome.
+- v45 (Removed): `contentTracing.enableHeapProfiling([options])` and the `EnableHeapProfilingOptions` structure (`mode`, `samplingRate`, `stackMode`) were removed because Chromium removed the memlog implementation. Pass `nativeHeapProfiling` to `startRecording()` instead: `samplingRate` is now `nativeHeapProfiling.samplingInterval`; `mode` has no direct equivalent (every traced process is profiled; use `included_process_ids` in a `TraceConfig` to limit which are traced); `stackMode` has no equivalent. In v44 the method was `Promise<void>`, Experimental, equivalent to `--memlog`.
+- v45 (Behavior Changed): `stopRecording()` always writes the Perfetto protobuf format (https://perfetto.dev/docs/reference/trace-packet-proto); the legacy JSON format is no longer available. Open recordings in the Perfetto UI (https://ui.perfetto.dev) or query them with Perfetto's Trace Processor. Perfetto's `traceconv` tool can convert a recording to the legacy JSON format.
+- Heap profiling samples record instruction addresses and module build IDs rather than function names. To symbolize them, use the symbols published for the matching Electron release with Chromium's `symbolize_trace` tool.
 - Do not use this module until the `ready` event of `app` is emitted.
 - Electron adds a non-default tracing category `"electron"` for Electron-specific events.
-- Heap dumps need symbolication using the release's breakpad symbols and Electron source checkout (`symbolize_trace`); open the result in `chrome://tracing` (the Perfetto UI does not support memory dumps yet).
 - Distance: Chromium trace recording for Electron processes, not an application-level tracing/observability SDK.
+
+Replacement for the removed `enableHeapProfiling()` (from the v45 breaking-changes entry):
+
+```js
+await contentTracing.startRecording({
+  nativeHeapProfiling: {
+    samplingInterval: 128 * 1024
+  }
+})
+```
 
 ## Related
 

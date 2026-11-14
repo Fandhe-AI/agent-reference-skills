@@ -248,7 +248,7 @@ In most cases, only the main frame of a WebContents can send or receive IPC mess
 
 ## Notes
 
-* The upstream v44.8.0 docs list these as `contents.mainFrame.on/handle(channel)` and `contents.handle(channel)`; the registration APIs are on the `ipc` property (`contents.ipc`, `WebFrameMain.ipc`).
+* The upstream v45.3.2 docs list these as `contents.mainFrame.on/handle(channel)` and `contents.handle(channel)`; the registration APIs are on the `ipc` property (`contents.ipc`, `WebFrameMain.ipc`).
 * `frame.collectJavaScriptCallStack()` is _Experimental_.
 * `frame.printToPDF()` prints only the frame it is called on, unlike `webContents.printToPDF`.
 

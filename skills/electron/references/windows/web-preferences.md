@@ -67,6 +67,7 @@ const win = new BrowserWindow({ width: 800, height: 600 })
 | transparent | boolean (optional) | Whether to enable background transparency for the guest page. Default is `true`. **Note:** The guest page's text and background colors are derived from the color scheme of its root element. When transparency is enabled, the text color will still change accordingly but the background will remain transparent. |
 | enableDeprecatedPaste | boolean (optional) _Deprecated_ | Whether to enable the `paste` execCommand. Default is `false`. |
 | focusOnNavigation | boolean (optional) | Whether to focus the WebContents when navigating. Default is `true`. |
+| disableWakeLocks | boolean (optional) | Whether to disable the wake locks of the WebContents. Default is `false`. |
 
 ## Notes
 

@@ -28,16 +28,38 @@ app.configureWebAuthn({
   touchID: {
     keychainAccessGroup: 'A1B2C3D4E5.com.example.app.webauthn',
     promptReason: 'sign in to $1'
-  }
+  },
+  platformPasskeys: true
 })
 ```
 
-With the matching entitlement in your app's `entitlements.plist`:
+With the matching entitlements in your app's `entitlements.plist`:
 
 ```xml
 <key>keychain-access-groups</key>
 <array>
   <string>A1B2C3D4E5.com.example.app.webauthn</string>
+</array>
+```
+
+For platform passkeys, your app needs the Associated Domains entitlement plus an application identifier, both in the same `entitlements.plist`:
+
+```xml
+<key>com.apple.developer.associated-domains</key>
+<array>
+  <string>webcredentials:example.com</string>
+</array>
+<!-- Must match the App ID in your provisioning profile: <TEAM_ID>.<BUNDLE_ID>. -->
+<key>com.apple.application-identifier</key>
+<string>A1B2C3D4E5.com.example.app</string>
+```
+
+To test with a development-signed build, append `?mode=developer` to the entitlement value and enable developer mode on the machine with `swcutil developer-mode -e true`:
+
+```xml
+<key>com.apple.developer.associated-domains</key>
+<array>
+  <string>webcredentials:example.com?mode=developer</string>
 </array>
 ```
 
@@ -75,7 +97,7 @@ Example of a `basic` response of `app.getGPUInfo('basic')`:
 | Name | Arguments | Returns | Description |
 | --- | --- | --- | --- |
 | `app.configureHostResolver(options)` | `options` Object<br>`options.enableBuiltInResolver` boolean (optional) - Whether the built-in host resolver is used in preference to getaddrinfo. When enabled, the built-in resolver will attempt to use the system's DNS settings to do DNS lookups itself. Enabled by default on macOS, disabled by default on Windows and Linux.<br>`options.enableHappyEyeballs` boolean (optional) - Whether the Happy Eyeballs V3 algorithm should be used in creating network connections. When enabled, hostnames resolving to multiple IP addresses will be attempted in parallel to have a chance at establishing a connection more quickly.<br>`options.secureDnsMode` string (optional) - Can be 'off', 'automatic' or 'secure'. Configures the DNS-over-HTTP mode. When 'off', no DoH lookups will be performed. When 'automatic', DoH lookups will be performed first if DoH is available, and insecure DNS lookups will be performed as a fallback. When 'secure', only DoH lookups will be performed. Defaults to 'automatic'.<br>`options.secureDnsServers` string[] (optional) - A list of DNS-over-HTTP server templates. See RFC8484 section 3 for details on the template format. Most servers support the POST method; the template for such servers is simply a URI. Note that for some DNS providers, the resolver will automatically upgrade to DoH unless DoH is explicitly disabled, even if there are no DoH servers provided in this list.<br>`options.enableAdditionalDnsQueryTypes` boolean (optional) - Controls whether additional DNS query types, e.g. HTTPS (DNS type 65) will be allowed besides the traditional A and AAAA queries when a request is being made via insecure DNS. Has no effect on Secure DNS which always allows additional types. Defaults to true. | void | Configures host resolution (DNS and DNS-over-HTTPS). See Notes for the default resolver order. This API must be called after the `ready` event is emitted. |
-| `app.configureWebAuthn(options)` _macOS_ | `options` Object<br>`options.touchID` Object (optional) - Enables the Touch ID / Secure Enclave platform authenticator for Web Authentication requests.<br>`options.touchID.keychainAccessGroup` string - The keychain access group that WebAuthn credentials will be stored under. This value **must** also be present in your app's `keychain-access-groups` code-signing entitlement, and is typically of the form `<TEAM_ID>.<BUNDLE_ID>.webauthn`.<br>`options.touchID.promptReason` string (optional) - Customizes the reason text shown in the macOS Touch ID prompt. macOS renders the prompt as `"<App Name>" is trying to <promptReason>`, so the value should be a lowercase sentence fragment. An optional `$1` placeholder is replaced with the relying party ID (e.g. `example.com`) of the request being authenticated. Defaults to `verify your identity on $1`. | void | Configures platform authenticators for the Web Authentication API (`navigator.credentials.create()` / `navigator.credentials.get()`). Until this is called, `PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()` resolves to `false` and platform-authenticator requests are not serviced. When `touchID` is provided, WebAuthn credentials are stored in the macOS keychain and bound to this device's Secure Enclave. Electron automatically generates and persists a per-session metadata secret so that credentials created in one partition are not visible to another. |
+| `app.configureWebAuthn(options)` _macOS_ | `options` Object<br>`options.touchID` Object (optional) - Enables the Touch ID / Secure Enclave platform authenticator for Web Authentication requests.<br>`options.touchID.keychainAccessGroup` string - The keychain access group that WebAuthn credentials will be stored under. This value **must** also be present in your app's `keychain-access-groups` code-signing entitlement, and is typically of the form `<TEAM_ID>.<BUNDLE_ID>.webauthn`.<br>`options.touchID.promptReason` string (optional) - Customizes the reason text shown in the macOS Touch ID prompt. macOS renders the prompt as `"<App Name>" is trying to <promptReason>`, so the value should be a lowercase sentence fragment. An optional `$1` placeholder is replaced with the relying party ID (e.g. `example.com`) of the request being authenticated. Defaults to `verify your identity on $1`.<br>`options.platformPasskeys` boolean (optional) - Enables passkeys via Apple's `ASAuthorizationController`. When enabled, passkey operations present the system credential provider sheet (iCloud Keychain, 1Password, Bitwarden, etc.) and credentials sync across the user's devices. Defaults to `false`. Passing `null`/`undefined` (or omitting the key) leaves the previous setting unchanged. | void | Configures platform authenticators for the Web Authentication API (`navigator.credentials.create()` / `navigator.credentials.get()`). Until this is called, `PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()` resolves to `false` and platform-authenticator requests are not serviced. When `touchID` is provided, WebAuthn credentials are stored in the macOS keychain and bound to this device's Secure Enclave. Electron automatically generates and persists a per-session metadata secret so that credentials created in one partition are not visible to another. |
 | `app.disableHardwareAcceleration()` | — | void | Disables hardware acceleration for current app. This method can only be called before app is ready. |
 | `app.isHardwareAccelerationEnabled()` | — | `boolean` | Whether hardware acceleration is currently enabled. This information is only usable after the `gpu-info-update` event is emitted. |
 | `app.disableDomainBlockingFor3DAPIs()` | — | void | By default, Chromium disables 3D APIs (e.g. WebGL) until restart on a per domain basis if the GPU process crashes too frequently. This function disables that behavior. This method can only be called before app is ready. |
@@ -97,6 +119,9 @@ Example of a `basic` response of `app.getGPUInfo('basic')`:
 * `app.setBadgeCount` on Linux: the badge is associated with the app's `.desktop` file, so `app.setDesktopName` (or the `desktopName` field in `package.json`) must match the name of the app's actual `.desktop` file.
 * `app.setBadgeCount` on macOS: your application needs permission to display notifications for this method to work.
 * `app.configureWebAuthn`: Touch ID WebAuthn credentials are device-bound and are not synced via iCloud Keychain. They are only available on Macs with a Secure Enclave (Apple silicon, or Intel Macs with a T2 chip).
+* `app.configureWebAuthn` with `platformPasskeys: true` (new in v45): passkey operations use `ASAuthorizationController`, which delegates to the system's Credential Provider Extensions. Unlike Touch ID credentials, platform passkeys are stored by the credential provider and scoped to the relying party, not to Electron: they are shared across all `session` partitions and with any other app or browser associated with the same domain. They cannot serve cross-origin (iframe) requests; those are left to the other available authenticators (Touch ID supports iframes) and a warning is logged to the DevTools console. The `prf` and `largeBlob` WebAuthn extensions are not currently supported by this authenticator: `prf` inputs are ignored, and a `create()` call with `largeBlob: { support: 'required' }` fails.
+* `app.configureWebAuthn` platform passkey requirements: listing the entitlements is not sufficient (`com.apple.developer.associated-domains` is provisioning-profile backed). All of the following must hold: the App ID has the Associated Domains capability and a provisioning profile; the profile is embedded at `Contents/embedded.provisionprofile` (Xcode and `@electron/osx-sign` embed it); the app is signed (ad-hoc / unsigned builds do not qualify); `com.apple.application-identifier` matches the profile's App ID (otherwise `ASAuthorizationError` code 1004); the relying party's domain serves a valid `apple-app-site-association` file over HTTPS at `/.well-known/apple-app-site-association` with a `webcredentials` entry whose `apps` lists `<TEAM_ID>.<BUNDLE_ID>`; and each request's relying party ID matches that associated domain. Otherwise the request surfaces to the page as a bare `NotAllowedError` (Electron logs an explanatory message to the DevTools console). There is no `localhost` rpId escape hatch.
+* `app.configureWebAuthn` platform passkeys: the `clientDataJSON` returned to the page reports `origin: "https://<rpId>"` (the associated domain) rather than the page's own origin. Relying-party servers that enforce a strict `expectedOrigin` allowlist must include `https://<rpId>`, and cannot distinguish which subdomain initiated the ceremony.
 * GPU here means Chromium's GPU process information and hardware-acceleration switches, not GPU compute. For GPU compute stacks see nvidia-cuda, amd-rocm and apple-silicon.
 
 ## Related

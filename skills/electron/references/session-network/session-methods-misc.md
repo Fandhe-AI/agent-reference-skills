@@ -10,11 +10,16 @@ Instance methods of `Session` for host resolver cache, NTLM, user agent, SSL con
 
 Process: Main
 
+Adapted (not in the official docs): `session.defaultSession` is accessed inside `app.whenReady()` because it throws before the app `ready` event.
+
 ```js
-const { session } = require('electron')
-// list only the fully qualified host names of your managed authentication servers
-// for integrated authentication.
-session.defaultSession.allowNTLMCredentialsForDomains('auth.example.com, intranet.example.com')
+const { app, session } = require('electron')
+
+app.whenReady().then(() => {
+  // list only the fully qualified host names of your managed authentication servers
+  // for integrated authentication.
+  session.defaultSession.allowNTLMCredentialsForDomains('auth.example.com, intranet.example.com')
+})
 ```
 
 ### `ses.clearHostResolverCache()`
@@ -109,7 +114,39 @@ Returns `string[]` an array of paths to preload scripts that have been registere
 
 * `script` [PreloadScriptRegistration](./session-structures.md) - Preload script
 
-Registers preload script that will be executed in its associated context type in this session. For `frame` contexts, this will run prior to any preload defined in the web preferences of a WebContents.
+Registers preload script that will be executed in its associated context type in this session. For `frame` contexts, this will run prior to any preload defined in the web preferences of a WebContents. In-page navigations do not rerun the preload script.
+
+URL filters can limit which documents or service workers a script runs in. They behave like [content script URL matching](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/content_scripts#matching_url_patterns). A script runs for a URL that meets all of these conditions:
+
+* It matches at least one pattern in `matches`, if set.
+* It matches at least one glob in `includeGlobs`, if set.
+* It does not match any pattern in `excludeMatches`.
+* It does not match any glob in `excludeGlobs`.
+
+The URL that the filters are matched against depends on the context type:
+
+* For `service-worker` contexts, it is the service worker's scope.
+* For `frame` contexts, it is the URL of the document being loaded, with these special cases:
+  * The initial empty document of a frame or popup is matched as `about:blank`. Set `matchOriginAsFallback` to match such documents by the origin of the frame that created them instead, for example to keep a script out of the `about:blank` popups of an excluded site.
+  * A `data:` URL loaded with `baseURLForDataURL` is matched by its base URL.
+  * The error page of a failed navigation is matched by the URL that failed to load.
+
+Throws an error if any of the URL patterns are invalid, or if `matches` or `includeGlobs` is an empty array.
+
+Adapted (not in the official docs): `session.defaultSession` is accessed inside `app.whenReady()` because it throws before the app `ready` event.
+
+```js
+const { app, session } = require('electron')
+
+app.whenReady().then(() => {
+  session.defaultSession.registerPreloadScript({
+    type: 'frame',
+    filePath: '/path/to/preload.js',
+    matches: ['https://*.example.com/*'],
+    excludeGlobs: ['*/logout*']
+  })
+})
+```
 
 Returns `string` - The ID of the registered preload script.
 
@@ -227,6 +264,7 @@ Returns `boolean` - Whether the word was successfully removed from the custom di
 ## Notes
 
 * Adapted (not in the official docs): the official example uses `'*example.com, *foobar.com, *baz'` and also shows `'*'`. A leading `*` is a suffix match, so it also matches unmanaged domains such as `evilexample.com`, and `'*'` matches every server and sends integrated (NTLM/Negotiate) credentials to any server that asks. This page therefore replaces them with fully qualified host names of your managed authentication servers.
+* Adapted (not in the official docs): the `allowNTLMCredentialsForDomains` and `registerPreloadScript` examples access `session.defaultSession` inside `app.whenReady()`, since it throws before the app `ready` event.
 * `ses.setPreloads` and `ses.getPreloads` are _Deprecated_; use `ses.registerPreloadScript` / `ses.getPreloadScripts` (note `getPreloadScripts` is the replacement for `getPreloads`, which only returned `frame` context paths).
 * Breaking (v44): a `chrome-extension://` document used to receive the window's preload script (and session preload scripts) wherever it was embedded; it now only does so when it is a top-level frame or is hosted inside the DevTools front-end (a `devtools_page` or panel). An extension frame embedded in an ordinary page is treated like any other subframe and follows `nodeIntegrationInSubFrames` ([breaking-changes-v44](../breaking-changes/breaking-changes-v44.md)).
 * `ses.setSpellCheckerLanguages`, `ses.setSpellCheckerDictionaryDownloadURL` are no-ops on macOS (the OS spellchecker is used).

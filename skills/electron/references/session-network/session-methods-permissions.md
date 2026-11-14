@@ -38,7 +38,7 @@ session.fromPartition('some-partition').setPermissionRequestHandler((webContents
     * `clipboard-read` - Request access to read from the clipboard.
     * `clipboard-sanitized-write` - Request access to write to the clipboard.
     * `deprecated-sync-clipboard-read` _Deprecated_ - Request access to run `document.execCommand("paste")`.
-    * `display-capture` - Request access to capture the screen via the [Screen Capture API](https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API).
+    * `display-capture` - Request access to capture the screen, a window or a tab via the [Screen Capture API](https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API) (`navigator.mediaDevices.getDisplayMedia`) or via `getUserMedia` with the `chromeMediaSource` constraints described in desktopCapturer. Requests for camera or microphone devices are reported as `media` instead.
     * `fileSystem` - Request access to read, write, and file management capabilities using the [File System API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_API). As in Chrome, a cross-origin iframe cannot ask for more access than it already has, and grants for an origin are reset shortly after its last top-level document is closed or navigated away.
     * `fullscreen` - Request control of the app's fullscreen state via the [Fullscreen API](https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API).
     * `geolocation` - Request access to the user's location via the [Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
@@ -51,7 +51,7 @@ session.fromPartition('some-partition').setPermissionRequestHandler((webContents
     * `local-network` - Request access to devices on the user's local network via [Local Network Access](https://github.com/explainers-by-googlers/local-network-access).
     * `local-network-access` - Request access to devices on the user's local network via [Local Network Access](https://github.com/explainers-by-googlers/local-network-access). This is the original permission type; newer Chromium versions split it into `local-network` and `loopback-network`.
     * `loopback-network` - Request access to loopback (localhost) addresses via [Local Network Access](https://github.com/explainers-by-googlers/local-network-access).
-    * `media` - Request access to media devices such as camera, microphone and speakers.
+    * `media` - Request access to media devices such as camera, microphone and speakers. Screen, window and tab capture is reported as `display-capture` instead.
     * `mediaKeySystem` - Request access to DRM protected content.
     * `midi` - Request MIDI access in the [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API).
     * `midiSysex` - Request the use of system exclusive messages in the [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API).
@@ -81,6 +81,31 @@ session.fromPartition('some-partition').setPermissionRequestHandler((webContents
   * `details` [PermissionRequest](./permission-request-structures.md) | [FilesystemPermissionRequest](./permission-request-structures.md) | [MediaAccessPermissionRequest](./permission-request-structures.md) | [OpenExternalPermissionRequest](./permission-request-structures.md) - Additional information about the permission being requested.
 
 Sets the handler which can be used to respond to permission requests for the `session`. Calling `callback(true)` will allow the permission and `callback(false)` will reject it. To clear the handler, call `setPermissionRequestHandler(null)`. Please note that you must also implement `setPermissionCheckHandler` to get complete permission handling. Most web APIs do a permission check and then make a permission request if the check is denied.
+
+Both `media` and `display-capture` requests carry a MediaAccessPermissionRequest as `details`. A `media` request is for camera and/or microphone devices, while a `display-capture` request is for the screen, a window or a tab (whether made through `getDisplayMedia` or through `getUserMedia` with `chromeMediaSource` constraints). Applications that allow camera and microphone access but want to control screen sharing separately should handle the two permissions individually:
+
+Adapted (not in the official docs): the official example grants every `media` request unconditionally; this version checks `details.requestingUrl` against an origin allowlist and accesses `session.defaultSession` inside `app.whenReady()` (it throws before the app `ready` event).
+
+```js
+const { app, session } = require('electron')
+
+const allowedOrigins = new Set(['https://meet.example.com'])
+
+app.whenReady().then(() => {
+  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback, details) => {
+    const origin = new URL(details.requestingUrl).origin
+    if (permission === 'media') {
+      // Camera / microphone. `details.mediaTypes` lists which of them was requested.
+      return callback(allowedOrigins.has(origin))
+    }
+    if (permission === 'display-capture') {
+      // Screen, window or tab capture.
+      return callback(allowedOrigins.has(origin))
+    }
+    callback(false)
+  })
+})
+```
 
 ### `ses.setPermissionCheckHandler(handler)`
 
@@ -185,43 +210,51 @@ This handler will be called when web content requests access to display media vi
 
 `useSystemPicker` allows an application to use the system picker instead of providing a specific video source from `getSources`. This option is experimental, and currently available for MacOS 15+ only. If the system picker is available and `useSystemPicker` is set to `true`, the handler will not be invoked.
 
-```js
-const { session, desktopCapturer } = require('electron')
+Adapted (not in the official docs): `session.defaultSession` is accessed inside `app.whenReady()` because it throws before the app `ready` event.
 
-session.defaultSession.setDisplayMediaRequestHandler(
-  (request, callback) => {
-    desktopCapturer.getSources({ types: ['screen'] }).then(
-      (sources) => {
-        // Grant access to the first screen found.
-        callback({ video: sources[0] })
-      },
-      () => {
-        // Deny the request if no sources could be retrieved, for example
-        // when the user cancels the PipeWire picker on Linux.
-        callback(null)
-      }
-    )
-    // Use the system picker if available.
-    // Note: this is currently experimental. If the system picker
-    // is available, it will be used and the media request handler
-    // will not be invoked.
-  },
-  { useSystemPicker: true }
-)
+```js
+const { app, session, desktopCapturer } = require('electron')
+
+app.whenReady().then(() => {
+  session.defaultSession.setDisplayMediaRequestHandler(
+    (request, callback) => {
+      desktopCapturer.getSources({ types: ['screen'] }).then(
+        (sources) => {
+          // Grant access to the first screen found.
+          callback({ video: sources[0] })
+        },
+        () => {
+          // Deny the request if no sources could be retrieved, for example
+          // when the user cancels the PipeWire picker on Linux.
+          callback(null)
+        }
+      )
+      // Use the system picker if available.
+      // Note: this is currently experimental. If the system picker
+      // is available, it will be used and the media request handler
+      // will not be invoked.
+    },
+    { useSystemPicker: true }
+  )
+})
 ```
 
 Passing a WebFrameMain object as a video or audio stream captures the whole `webContents` that contains that frame (the tab), not just the frame: `request.frame` from an `<iframe>` therefore grants that iframe a capture of the page that embeds it. Check `request.frame` before using it this way, and note that the callback throws if the frame has been destroyed by the time it is called.
 
-```js
-const { session } = require('electron')
+Adapted (not in the official docs): `session.defaultSession` is accessed inside `app.whenReady()` because it throws before the app `ready` event.
 
-session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
-  // Allow a top-level page to capture its own tab.
-  if (request.frame && request.frame === request.frame.top) {
-    callback({ video: request.frame })
-  } else {
-    callback(null)
-  }
+```js
+const { app, session } = require('electron')
+
+app.whenReady().then(() => {
+  session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
+    // Allow a top-level page to capture its own tab.
+    if (request.frame && request.frame === request.frame.top) {
+      callback({ video: request.frame })
+    } else {
+      callback(null)
+    }
+  })
 })
 ```
 
@@ -396,6 +429,8 @@ app.whenReady().then(() => {
 ## Notes
 
 * Adapted (not in the official docs): the official example grants every permission except notifications from one host and checks webContents.getURL(), which does not identify subframe requesters; this page checks details.requestingUrl and grants only allowlisted origin/permission pairs, denying everything else.
+* Adapted (not in the official docs): the `setPermissionRequestHandler` / `setDisplayMediaRequestHandler` examples access `session.defaultSession` inside `app.whenReady()`, since it throws before the app `ready` event.
+* Adapted from the official docs: the `media` / `display-capture` example grants a request only when `new URL(details.requestingUrl).origin` is in an allowlist (the official v45 example returns `callback(true)` for every `media` request, which would expose the camera and microphone to any page or untrusted iframe loaded in the default session).
 * Implement both `setPermissionRequestHandler` and `setPermissionCheckHandler` for complete permission handling; most web APIs do a check and then a request if the check is denied.
 * Migration: `setDevicePermissionHandler` — the handler is no longer passed a `WebFrameMain` frame but the `origin` checking for device permission ([breaking-changes-v22-v15](../breaking-changes/breaking-changes-v22-v15.md)). `setPermissionCheckHandler` — the first parameter `webContents` can now sometimes be `null`; use `requestingOrigin`, `embeddingOrigin` and `securityOrigin` instead ([breaking-changes-v14-v2](../breaking-changes/breaking-changes-v14-v2.md)). Cross-origin iframes must specify features via the `allow` attribute (Permission Policy, Electron 30.0; [breaking-changes-v30-v29](../breaking-changes/breaking-changes-v30-v29.md)).
 * Adapted (not in the official docs): the official example compares `vendorId` / `productId` to number literals in the serial branch, but `SerialPort.vendorId` / `productId` are strings, so it is changed to string comparison.

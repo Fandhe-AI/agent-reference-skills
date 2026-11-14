@@ -124,6 +124,7 @@ process.send({ my: 'message' })
 
 - The Playwright section of the guide was written with `@playwright/test@1.52.0`; check Playwright's release notes for later changes. Playwright Test automatically runs files matching `.*(test|spec)\.(js|ts|mjs)`.
 - Playwright's Electron support is described as experimental in the guide.
+- Command-line argument parsing (WebDriver caution, new in v45 docs): ChromeDriver adds its own command-line arguments when it launches Electron, such as `--enable-automation` and `--remote-debugging-port=0`. It can also add a positional startup URL such as `data:,`. These appear in `process.argv` alongside your application's arguments and can cause strict argument parsers, such as `yargs.strict()`, to reject the launch. Inspect `process.argv` with the driver version and configuration used by your tests. In your test startup code, explicitly recognize or filter only the known driver-added arguments while keeping validation of your application's arguments. The added arguments can vary with the driver version and configuration.
 - Distance: this page covers testing a running Electron app end to end. The playwright skill documents Playwright itself, and the vitest skill covers unit testing; neither is Electron-specific.
 - On Linux CI without a display, see Testing on Headless CI Systems.
 

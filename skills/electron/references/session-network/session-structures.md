@@ -212,6 +212,11 @@ The `proxyBypassRules` is a comma separated list of rules described below:
 | `type` | string | Context type where the preload script will be executed. Possible values include `frame` or `service-worker`. |
 | `id` | string | Unique ID of preload script. |
 | `filePath` | string | Path of the script file. Must be an absolute path. |
+| `matches` | string[] (optional) | Match patterns (https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns) for URLs the script runs in. A custom protocol can be used if its scheme is registered as `standard` with `protocol.registerSchemesAsPrivileged`. To filter documents served from a non-standard scheme, use `includeGlobs` or `excludeGlobs`, which match against the whole URL. If omitted, the script runs for all URLs not excluded by other filters. |
+| `excludeMatches` | string[] (optional) | Match patterns for URLs the script will not run in. |
+| `includeGlobs` | string[] (optional) | Glob patterns applied after `matches`. A URL must also match one of these globs. `*` matches any sequence of characters and `?` matches any single character. |
+| `excludeGlobs` | string[] (optional) | Glob patterns for URLs the script will not run in. |
+| `matchOriginAsFallback` | boolean (optional) | Whether a document whose URL has no origin of its own (`about:`, `blob:`, `data:` or `filesystem:`) is matched by the origin of the frame that created it instead of by its URL. This includes documents with an opaque origin, such as a `data:` frame or a sandboxed `<iframe srcdoc>`. For example, an `about:blank` popup opened by `https://example.com/page` is matched as `https://example.com/`. When set, every pattern in `matches` must have a path of `/*`. Only applies to `frame` contexts. Default is `false`. |
 
 ### PreloadScriptRegistration Object
 
@@ -220,12 +225,18 @@ The `proxyBypassRules` is a comma separated list of rules described below:
 | `type` | string | Context type where the preload script will be executed. Possible values include `frame` or `service-worker`. |
 | `id` | string (optional) | Unique ID of preload script. Defaults to a random UUID. |
 | `filePath` | string | Path of the script file. Must be an absolute path. |
+| `matches` | string[] (optional) | Match patterns (https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns) for URLs the script runs in. A custom protocol can be used if its scheme is registered as `standard` with `protocol.registerSchemesAsPrivileged`. To filter documents served from a non-standard scheme, use `includeGlobs` or `excludeGlobs`, which match against the whole URL. If omitted, the script runs for all URLs not excluded by other filters. Must not be empty. |
+| `excludeMatches` | string[] (optional) | Match patterns for URLs the script will not run in. |
+| `includeGlobs` | string[] (optional) | Glob patterns applied after `matches`. A URL must also match one of these globs. `*` matches any sequence of characters and `?` matches zero or one character. Must not be empty. |
+| `excludeGlobs` | string[] (optional) | Glob patterns for URLs the script will not run in. |
+| `matchOriginAsFallback` | boolean (optional) | Whether a document whose URL has no origin of its own (`about:`, `blob:`, `data:` or `filesystem:`) is matched by the origin of the frame that created it instead of by its URL. This includes documents with an opaque origin, such as a `data:` frame or a sandboxed `<iframe srcdoc>`. For example, an `about:blank` popup opened by `https://example.com/page` is matched as `https://example.com/`. When set, every pattern in `matches` must have a path of `/*`. Only applies to `frame` contexts. Default is `false`. |
 
 ## Notes
 
 * Source pages (https://www.electronjs.org/docs/latest/api/structures/<name>): cookie, proxy-config, resolved-host, resolved-endpoint, certificate, certificate-principal, referrer, web-request-filter, web-socket-options, shared-dictionary-info, shared-dictionary-usage-info, service-worker-info, extension, extension-info, preload-script, preload-script-registration.
 * `Cookie` is returned by [Cookies](./cookies.md); `ProxyConfig` by `ses.setProxy`; `ResolvedHost` / `ResolvedEndpoint` by `ses.resolveHost` / `net.resolveHost`; `Certificate` by `ses.setCertificateVerifyProc`; `WebRequestFilter` by [WebRequest](./web-request.md); `WebSocketOptions` by [net.WebSocket](./web-socket.md); `PreloadScript` / `PreloadScriptRegistration` by `ses.registerPreloadScript`.
 * `Referrer` is a standalone structure used elsewhere in the Electron API.
+* The official docs describe `?` in `includeGlobs` differently for the retrieved (`PreloadScript`: "any single character") and registered (`PreloadScriptRegistration`: "zero or one character") objects; they are transcribed verbatim and the exact matching semantics should be verified against the implementation.
 * These shapes describe browser-profile cookies and network configuration inside an Electron app; for authentication-session cookies see better-auth (it has an Electron integration).
 
 ## Related

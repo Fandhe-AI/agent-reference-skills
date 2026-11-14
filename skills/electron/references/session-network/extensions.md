@@ -95,6 +95,8 @@ The following events of `chrome.management` are supported:
 * `chrome.management.onEnabled`
 * `chrome.management.onDisabled`
 
+Apart from `chrome.management.getSelf` and `chrome.management.getPermissionWarningsByManifest`, these require the `management` permission.
+
 See [official documentation](https://developer.chrome.com/docs/extensions/reference/management) for more information.
 
 #### `chrome.runtime`
@@ -136,10 +138,18 @@ See [official documentation](https://developer.chrome.com/docs/extensions/refere
 The following methods of `chrome.storage` are supported:
 
 * `chrome.storage.local`
-
-`chrome.storage.sync` and `chrome.storage.managed` are **not** supported.
+* `chrome.storage.sync` (partial support)
+  * stored on disk next to `chrome.storage.local` in a separate storage area and subject to Chrome's `sync` quotas; data is **not** synced across devices, matching Chrome with sync disabled.
+* `chrome.storage.managed` (partial support)
+  * read-only and always empty, matching Chrome when no enterprise policy is set for the extension.
 
 See [official documentation](https://developer.chrome.com/docs/extensions/reference/storage) for more information.
+
+#### `chrome.system.storage`
+
+All features of this API are supported.
+
+See [official documentation](https://developer.chrome.com/docs/extensions/reference/system/storage) for more information.
 
 #### `chrome.tabs`
 

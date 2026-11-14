@@ -53,6 +53,7 @@ const win = new BrowserWindow({ width: 800, height: 600 })
 | frame | boolean (optional) | Specify `false` to create a frameless window (see the Custom Window Styles tutorial). Default is `true`. |
 | parent | BaseWindow (optional) | Specify parent window. Default is `null`. |
 | modal | boolean (optional) | Whether this is a modal window. This only works when the window is a child window. Default is `false`. |
+| appShim | AppShimHost (optional) _macOS_ _Experimental_ | Creates the native window in the process of this app shim, so that it belongs to the shim's Dock icon and not to your app's. See AppShimHost (`app-shim-host.md` in the v45 docs; no page in this skill yet) for what affordances are granted to the window. |
 | acceptFirstMouse | boolean (optional) _macOS_ | Whether clicking an inactive window will also click through to the web contents. Default is `false` on macOS. This option is not configurable on other platforms. |
 | disableAutoHideCursor | boolean (optional) | Whether to hide cursor when typing. Default is `false`. |
 | autoHideMenuBar | boolean (optional) _Linux_ _Windows_ | Auto hide the menu bar unless the `Alt` key is pressed. Default is `false`. |
