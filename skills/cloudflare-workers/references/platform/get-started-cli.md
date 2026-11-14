@@ -63,6 +63,8 @@ C3 prompts used in the guide:
 - `wrangler deploy` publishes to `*.workers.dev` or a Custom Domain; Wrangler prompts to set up a subdomain if none exists. First-time `523` errors on `workers.dev` resolve after about a minute.
 - `export default` defines a module; the `fetch` handler always receives `request`, `env`, and `ctx`, and must return a `Response` (or a Promise of one). Add other handlers (e.g. `scheduled()` for Cron Triggers) to the same object.
 - Next steps: connect to Workers Builds for Git-based deploys, add bindings, test and debug, review limits and pricing. For Wrangler commands and configuration, see the cloudflare-wrangler skill.
+- Spending: the guide's next steps now point to setting a spending limit or email alert to help control Workers usage costs across your account; see [spend-management.md](./spend-management.md).
+- Source: https://developers.cloudflare.com/workers/get-started/guide/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

@@ -130,6 +130,11 @@ export default class extends WorkerEntrypoint {
 - AI-assisted migration: an experimental prompt is at https://developers.cloudflare.com/workers/prompts/pages-to-workers.txt.
 - Compatibility matrix highlights (Workers vs Pages): Workers only: Cloudflare Vite plugin, Gradual Deployments, `--remote` dev, Workers Logs, Logpush, Tail Workers, Source Maps, Cron Triggers, Email Workers, Image Resizing, Queue Consumers, Rate Limiting, assets on a path, non-root routes. Pages only: custom domains outside Cloudflare zones; Early Hints (Workers: workaround with `Link` headers); Branch Deploy Controls and File-based Routing / Pages Plugins (Workers: workaround). Durable Objects in Pages require a separate Worker. Supported in both: custom headers, redirects, Smart Placement, Node.js compatibility, D1, KV, R2, Hyperdrive, Vectorize, AI, Analytics Engine, service bindings, secrets, mTLS, custom domains.
 
+### Deployments and asset availability
+
+- Each Worker version has its own set of static assets. HTML and asset requests can use different versions while a deployment change spreads across the network, or during a gradual deployment; older pages can also request files after a newer release starts serving traffic. Review Version skew and static assets (https://developers.cloudflare.com/workers/versions-and-deployments/version-skew/) when migrating your release process. How long a file stays cached is separate from which versions can serve it; the Pages cache-retention description does not tell you how long Workers stores assets.
+- Source: https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
+
 ## Related
 
 - [Migrate from Netlify](./migrate-from-netlify.md)

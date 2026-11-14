@@ -34,6 +34,8 @@ git push origin main
 - Templates (https://developers.cloudflare.com/workers/get-started/quickstarts/) are GitHub repositories designed as starting points; browse and deploy them from the dashboard templates page.
 - The Playground (see playground.md) is the zero-setup way to experiment.
 - Prerequisite: a Cloudflare account.
+- Spending: the next steps now point to setting a spending limit or email alert to help control Workers usage costs across your account; see [spend-management.md](./spend-management.md).
+- Source: https://developers.cloudflare.com/workers/get-started/dashboard/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

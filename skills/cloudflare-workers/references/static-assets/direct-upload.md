@@ -8,7 +8,7 @@ Upload static assets and attach them to a Worker through the Workers API. An adv
 
 ## Signature / Usage
 
-Three phases: register a manifest, upload the assets, deploy the Worker.
+Three phases: register a manifest, upload the assets, attach the assets when creating a Worker version.
 
 ```
 sequenceDiagram
@@ -145,6 +145,14 @@ Adapted (not in the official docs): a missing comma after the `bindings` array i
 - The official page also includes a full programmatic example (TypeScript/JavaScript, using the `cloudflare` SDK: `client.workers.scripts.assets.upload.create`, `client.workers.assets.upload.create`, `client.workers.beta.workers.versions.create`, `client.workers.scripts.deployments.create`) from https://github.com/cloudflare/cloudflare-typescript/blob/main/examples/workers/script-with-assets-upload.ts. It is omitted here for length. The hash it uses is the first 32 hex chars of `sha256(base64(content) + extension)`.
 - Corrected from the official docs: the official "Assets binding" metadata example lacks a comma after the `bindings` array before `"compatibility_date"` (invalid JSON); a comma was added. Adapted from the official docs: the manifest `curl` URL is wrapped in double quotes. The example `hash` values shown are shorter than the 32 hex characters the text requires; they are placeholders.
 - Endpoint reference: https://developers.cloudflare.com/api/resources/workers/subresources/scripts/subresources/assets/subresources/upload/methods/create/
+
+### Versions
+
+- The Version upload API creates a version without deploying it; the Script upload API creates a version and deploys it. See Deployment management (cloudflare-wrangler skill; https://developers.cloudflare.com/workers/versions-and-deployments/deployment-management/) to separate version creation from deployment.
+- Include every file path the new version needs in the manifest, including unchanged files. Cloudflare reuses files you have already uploaded, but does not add their paths to the new manifest automatically; uploading new files does not change earlier versions' assets (https://developers.cloudflare.com/workers/versions-and-deployments/version-skew/).
+- The completion JWT (valid for 1 hour) is used to attach this asset set to a Worker version. It confirms that asset upload is complete; you must still attach the assets to a Worker version and deploy it to receive production traffic, and the deployment change takes time to reach every location on the network.
+- `keep_assets` reuses the existing asset set. To include both old and new files, submit a manifest with all required paths, then attach the completion token for that upload.
+- Source: https://developers.cloudflare.com/workers/static-assets/direct-upload/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

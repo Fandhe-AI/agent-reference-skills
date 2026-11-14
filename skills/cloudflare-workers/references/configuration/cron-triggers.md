@@ -118,6 +118,9 @@ curl -X POST \
 - Green Compute (account-level, Workers & Pages > Account details > Compute Setting) restricts Cron Triggers to data centers powered purely by renewable energy.
 - The maximum number of Cron Triggers per account is in the Workers limits (account plan limits).
 
+- Scheduled invocations can be missed until a Cron Trigger change finishes propagating; the trigger starts running at the next scheduled time after propagation.
+- Source: https://developers.cloudflare.com/workers/configuration/cron-triggers/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
+
 ## Related
 
 - [scheduled handler](../handlers-context/scheduled.md)

@@ -17,4 +17,11 @@
 | Routing: Serving a subdirectory | Mount assets on a path with `base_path` | [routing-serving-a-subdirectory.md](./routing-serving-a-subdirectory.md) |
 | Migrate from Pages | Pages to Workers guide and compatibility matrix | [migrate-from-pages.md](./migrate-from-pages.md) |
 | Migrate from Netlify | Netlify to Workers guide | [migrate-from-netlify.md](./migrate-from-netlify.md) |
-| Migrate from Vercel | Vercel to Workers guide | [migrate-from-vercel.md](./migrate-from-vercel.md) |
+| Migrate from Vercel | Vercel to Workers guide: shared steps, feature map, framework index | [migrate-from-vercel.md](./migrate-from-vercel.md) |
+| Migrate from Vercel: Astro | `@astrojs/vercel` to `@astrojs/cloudflare`, route caching | [migrate-from-vercel-astro.md](./migrate-from-vercel-astro.md) |
+| Migrate from Vercel: Next.js | Move a Next.js app to Workers with vinext | [migrate-from-vercel-nextjs.md](./migrate-from-vercel-nextjs.md) |
+| Migrate from Vercel: Nuxt | Nitro `cloudflare_module` preset and `_headers` fix | [migrate-from-vercel-nuxt.md](./migrate-from-vercel-nuxt.md) |
+| Migrate from Vercel: React Router and Remix | Remix v2 / React Router v7 to the Cloudflare Vite plugin | [migrate-from-vercel-react-router.md](./migrate-from-vercel-react-router.md) |
+| Migrate from Vercel: static site or SPA | Wrangler configuration for a build output directory | [migrate-from-vercel-static-site.md](./migrate-from-vercel-static-site.md) |
+| Migrate from Vercel: SvelteKit | `adapter-vercel` to `adapter-cloudflare` | [migrate-from-vercel-sveltekit.md](./migrate-from-vercel-sveltekit.md) |
+| Migrate from Vercel: TanStack Start | Nitro Vite plugin to the Cloudflare Vite plugin | [migrate-from-vercel-tanstack-start.md](./migrate-from-vercel-tanstack-start.md) |

@@ -107,7 +107,8 @@ export default class extends WorkerEntrypoint<Env> {
 
 ## Notes
 
-- With both assets and a Worker script, Cloudflare first tries to serve a matching static asset; if none matches, the Worker is invoked. This combines into full-stack apps, or SPA/SSG apps with an API.
+- By default, with both assets and a Worker script, Cloudflare checks for a matching asset first, using the assets belonging to the selected Worker version; if none matches, it invokes that version's `fetch()` handler. This combines into full-stack apps, or SPA/SSG apps with an API.
+- A missing asset does not automatically produce a `404` response: your handler decides what to return, and calling `env.ASSETS.fetch(request)` from the handler still uses the same version's assets. This also applies when an older page requests a file missing from a newer version (Requests for missing assets in https://developers.cloudflare.com/workers/versions-and-deployments/version-skew/). Routing settings can change this default; for example, single-page application routing can serve `/index.html` for navigation requests without invoking your Worker.
 - `run_worker_first` can implement "middleware" (logging, auth checks, HTMLRewriter transformations).
 - Smart Placement with `run_worker_first`: placement may not be optimized because the entire Worker script is placed as a single unit rather than split edge-first vs smart-placed (a limitation Cloudflare says it is working to resolve).
 - Cloudflare Access: when a Worker has static assets, the internal assets router does not pass `ctx.access` to the user Worker. Access still protects the Worker and its assets. See https://developers.cloudflare.com/workers/configuration/cloudflare-access/#ctxaccess-limitations.
@@ -115,6 +116,8 @@ export default class extends WorkerEntrypoint<Env> {
 - Corrected from the official docs: the selective example's comment says all other requests never hit the Worker. With an array `run_worker_first`, automatic `Sec-Fetch-Mode: navigate` detection is disabled, so requests that match no asset (navigation or not) are still invoked on the Worker, so the example checks `url.pathname` and returns `this.env.ASSETS.fetch(request)` for everything except `/oauth/callback`.
 - The OAuth callback example passes the `state` query parameter to `exchangeCodeForToken` without comparing it to a value stored before the redirect. In real code, generate `state` per login, store it (for example in a short-lived cookie), and reject the callback if it does not match.
 - In the examples, `checkIfRequestIsAuthenticated`, `exchangeCodeForToken` and `storeTokenAndGenerateSession` are placeholders and are not defined by the docs.
+
+- Source: https://developers.cloudflare.com/workers/static-assets/routing/worker-script/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

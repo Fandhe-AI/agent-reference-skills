@@ -34,6 +34,8 @@ npm create cloudflare@latest -- my-app --framework=<framework>
 | Docusaurus | `--framework=docusaurus --platform=workers` | none (static assets `./build`) | n/a | (table only) |
 | Gatsby | `--framework=gatsby` | none listed | n/a | (table only) |
 | Foldkit | `npx create-foldkit-app@latest --name my-foldkit-app` | none (SPA / SSG assets, SSR `fetch` handler) | n/a | (table only) |
+| EmDash (Astro CMS) | `npm create emdash@latest -- my-emdash-site` | `@astrojs/cloudflare` + `emdash` integration | `DB` (D1), `MEDIA` (R2), `SESSION` (KV), `IMAGES`, `ASSETS`, optional `LOADER` | [emdash.md](./emdash.md) |
+| Remix 3 | `cf init my-remix-app --package-manager pnpm --no-install` | Cloudflare Vite plugin + Pitlane Remix plugin | `import { env } from "cloudflare:workers"` | [remix.md](./remix.md) |
 | fate (Void template) | `vp create fate -- my-app --template void` | Void | `VOID_LIVE` Durable Object binding in `wrangler.jsonc` | (table only) |
 
 Table-only details:
@@ -45,14 +47,16 @@ Table-only details:
 - Waku: `main` `dist/worker.js`, assets `dist/public`; `.js`, `.css`, `.html`, `.txt` files in `./public/` are copied to the assets output.
 - Docusaurus: `wrangler.jsonc` only sets `assets.directory` to `./build`; build with `npx docusaurus build` then `npx wrangler@latest deploy`.
 - Gatsby: C3 scaffold then `npm run dev` / `npm run deploy`.
-- Foldkit: SPA assets `./dist` with `single-page-application`; SSG assets `./dist/client`; SSR `main` `./dist/server/fetch.js` with assets `./dist/client`. Needs Node.js 22.22.2 or newer.
+- Foldkit: the guide adds a Deploy with Alchemy section (third-party infrastructure-as-code tool; `Cloudflare.Website.Foldkit` supports SPA, SSG, and SSR, SSG and SSR need `@foldkit/vite-plugin` 0.27.0 or newer and Foldkit 0.167.0 or newer, and no `wrangler.jsonc` is needed). Foldkit: SPA assets `./dist` with `single-page-application`; SSG assets `./dist/client`; SSR `main` `./dist/server/fetch.js` with assets `./dist/client`. Needs Node.js 22.22.2 or newer.
 - fate: needs Node.js 24+ and Vite+; deploy with `vp exec void deploy --platform cloudflare`.
 
 ## Notes
 
 - Not covered by a dedicated page here: Microfrontends is in [microfrontends.md](./microfrontends.md); automatic detection is in [automatic-configuration.md](./automatic-configuration.md).
-- Mobile app and API (FastAPI etc.) guides are not present under `workers/framework-guides/` in the pinned docs snapshot.
+- Mobile app (Expo), API (FastAPI, Flask), and AI / agents framework guides exist under `workers/framework-guides/` in the pinned docs snapshot but have no page in this skill.
 - Framework APIs: see the relevant framework skill (react, react-router, tanstack-start, nextjs-app, hono, vite) where one exists.
+- Vercel migration: framework-specific Vercel to Workers guides are in [../static-assets/migrate-from-vercel.md](../static-assets/migrate-from-vercel.md).
+- Source: https://developers.cloudflare.com/workers/framework-guides/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

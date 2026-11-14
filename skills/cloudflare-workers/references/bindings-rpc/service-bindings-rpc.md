@@ -167,6 +167,9 @@ export default {
 - RPC also works between Workers and Durable Objects (cloudflare-stateful skill; https://developers.cloudflare.com/durable-objects/best-practices/create-durable-object-stubs-and-send-requests/#invoke-rpc-methods).
 - Complete example (to-do app and Discord bot): https://github.com/cloudflare/js-rpc-and-entrypoints-demo
 
+- If the calling Worker's execution context ends, the called Worker's RPC execution context is canceled. This can happen when the original client disconnects. See [service-bindings.md](./service-bindings.md) (Request cancellation) and [rpc-lifecycle.md](./rpc-lifecycle.md).
+- Source: https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/rpc/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
+
 ## Related
 
 - [rpc.md](./rpc.md)

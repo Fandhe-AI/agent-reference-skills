@@ -55,7 +55,7 @@ export default {
 | Item | Type | Description |
 |------|------|-------------|
 | `request` (parameter) | `Request \| URL \| string` | Requests made through this method have `html_handling` and `not_found_handling` configuration applied. |
-| return | `Promise<Response>` | A static asset response for the given request. |
+| return | `Promise<Response>` | The response for the request, including any HTML redirects or missing-asset handling. |
 
 ## Notes
 
@@ -89,6 +89,9 @@ _headers
 - The hostname in the URL passed to `ASSETS.fetch()` (for example `assets.local`) is not meaningful; only the pathname is matched. Inside an RPC method (no incoming request) use `this.env.ASSETS.fetch(new Request('https://assets.local/path/to/asset'))`.
 - Smart Placement only has an effect when `main` is set. With `run_worker_first = true`, all requests travel to the smart-placed Worker first, which can add latency for asset requests; with `run_worker_first = false` (default) assets are served near users while Worker logic is placed near backends. To mix both, split the app into multiple Workers connected through service bindings.
 - The full `assets` key reference is in the cloudflare-wrangler skill.
+
+- `env.ASSETS.fetch(request)` returns a response using the configured HTML handling and missing-asset fallbacks. The binding uses the current Worker version's assets and configuration and does not search other versions' assets; see Version skew and static assets (https://developers.cloudflare.com/workers/versions-and-deployments/version-skew/).
+- Source: https://developers.cloudflare.com/workers/static-assets/binding/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 

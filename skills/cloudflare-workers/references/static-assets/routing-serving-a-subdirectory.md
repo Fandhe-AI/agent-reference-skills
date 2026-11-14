@@ -37,6 +37,10 @@ With `dist/index.html` and `dist/posts/post1.html`, `example.com/blog/` serves `
 - Requests through the assets binding also use the mounted public path: forwarding the original request works unchanged; when constructing a request include `/blog`, for example `env.ASSETS.fetch("https://assets.local/blog/posts/post1")`.
 - Paths in `_headers`, `_redirects`, and `assets.run_worker_first` use the public URL path (include `/blog`).
 
+- Your Worker's routes must include the base path. For example, if your Worker only runs on `example.com/api/*`, requests to `example.com/blog/` do not reach your Worker or its static assets.
+- If you build with the Cloudflare Vite plugin, also set Vite's `base` option to `/blog/` (see Serve assets from a URL path prefix in the cloudflare-wrangler skill; https://developers.cloudflare.com/workers/vite-plugin/reference/static-assets/#serve-assets-from-a-url-path-prefix).
+- Source: https://developers.cloudflare.com/workers/static-assets/routing/advanced/serving-a-subdirectory/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
+
 ## Related
 
 - [Configuration and Bindings](./binding.md)

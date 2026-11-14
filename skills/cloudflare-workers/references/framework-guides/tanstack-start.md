@@ -38,8 +38,7 @@ export default defineConfig({
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "<YOUR_PROJECT_NAME>",
 	// Set this to today's date
-	"compatibility_date": "2026-11-03",
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_date": "2026-11-14",
 	"main": "@tanstack/react-start/server-entry",
 	"observability": {
 		"enabled": true,
@@ -128,6 +127,10 @@ tanstackStart({
 - Service binding example: add a `services` entry (`binding` `AUTH_SERVICE`, `service` `auth-worker`); the target Worker must extend `WorkerEntrypoint`; generate types with `npx wrangler types -c ./wrangler.jsonc -c ../auth-worker/wrangler.jsonc`.
 - Prerendering runs at build time using local environment variables, secrets, and bindings storage. Use remote bindings for production data. In CI set `CLOUDFLARE_INCLUDE_PROCESS_ENV=true` and provide values as environment variables (or update Workers Builds build settings).
 - TanStack Start APIs: see the tanstack-start skill.
+
+- The `nodejs_compat` flag is no longer listed in the generated configuration (see [automatic-configuration.md](./automatic-configuration.md) for compatibility dates before `2026-08-04`).
+- To move an existing TanStack Start project from Vercel see [migrate-from-vercel-tanstack-start.md](../static-assets/migrate-from-vercel-tanstack-start.md).
+- Source: https://developers.cloudflare.com/workers/framework-guides/web-apps/tanstack-start/ (cloudflare-docs production 34d908a, fetched 2026-11-14)
 
 ## Related
 
