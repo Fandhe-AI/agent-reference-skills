@@ -76,12 +76,14 @@ Deploy uncompressed bundles up to **5 GB** for workloads shipping large dependen
 | Deployment type | Archived after |
 |----------------|---------------|
 | Production | 2 weeks of no invocations |
-| Preview | 48 hours of no invocations |
+| Preview | 3 days of no invocations |
 
 ## Notes
 
 - Source: https://vercel.com/docs/functions/limitations (fetched 2026-11-14)
 - The 4.5 MB response body limit does not apply to streamed responses
+- The official fluid-compute page says Secure Compute does not support durations above 800s during the beta, while this page and `max-duration.md` say Secure Compute and Static IPs are supported (BYOC is not); kept verbatim in each page (see `fluid-compute.md`)
+- Archiving: Production 2 weeks, Preview 3 days of no invocations (https://vercel.com/docs/functions/limitations, fetched 2026-11-14)
 - Large functions (Beta) are supported with Secure Compute and Static IPs, but not yet with BYOC; durations above 800s likewise work with Secure Compute and Static IPs but not BYOC
 - To find what makes a function exceed the 250 MB limit, set the `VERCEL_ANALYZE_BUILD_OUTPUT` environment variable to `1` and redeploy; build logs then list each function's uncompressed size and largest files. Common causes: heavy dependencies (use `npm ls <package>` / `npm dedupe`), static assets traced into the function, dynamic imports with variable paths. In Next.js use `outputFileTracingExcludes` instead of `excludeFiles`
 - 504 `FUNCTION_INVOCATION_TIMEOUT` returned when max duration is exceeded
