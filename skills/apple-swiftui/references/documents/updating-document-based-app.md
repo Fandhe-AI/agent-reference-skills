@@ -151,9 +151,9 @@ Before / After (from `ReferenceFileDocument`):
 
 - In releases before iOS 27, iPadOS 27, macOS 27, and visionOS 27, document types conform to `FileDocument` or `ReferenceFileDocument`. In these and later releases, conform to `Document`, or to `ReadableDocument` / `WritableDocument` depending on what the app does.
 - Official text: "Although `FileDocument` and `ReferenceFileDocument` remain available, they're no longer supported for new document types."
-- `FileDocument` (iOS / iPadOS / Mac Catalyst 14.0+, macOS 11.0+, visionOS 1.0+) is deprecated at 27.2: "Conform your type to Document instead."
-- `ReferenceFileDocument` (same introduced versions) is deprecated at 27.2 on iOS / iPadOS / Mac Catalyst / macOS: "Use Document protocol instead." The source data shows no deprecation version for visionOS.
-- `DocumentGroup(newDocument:editor:)` is deprecated at 27.2 as well; replace it with the closure-based initializer that receives `URLDocumentConfiguration` and `DocumentCreationContext`.
+- `FileDocument` (iOS / iPadOS / Mac Catalyst 14.0+, macOS 11.0+, visionOS 1.0+) is deprecated at 27.3: "Conform your type to Document instead."
+- `ReferenceFileDocument` (same introduced versions) is deprecated at 27.3 on iOS / iPadOS / Mac Catalyst / macOS: "Use Document protocol instead." The source data shows no deprecation version for visionOS.
+- `DocumentGroup(newDocument:editor:)` is deprecated at 27.3 as well; replace it with the closure-based initializer that receives `URLDocumentConfiguration` and `DocumentCreationContext`.
 - `FileDocument` checklist: convert the struct to an `@Observable` final class; split reading into a `FileWrapperDocumentReader` and implement `apply(snapshot:previous:)`; split writing into a `FileWrapperDocumentWriter` and implement `snapshot(contentType:)` (`async throws`, `sending` return); add manual undo registration; update the `DocumentGroup` initializer; replace `@Binding var document` with a direct reference and use `@Bindable`.
 - `ReferenceFileDocument` checklist: mark the class `@Observable` and remove `ObservableObject` / `@Published`; same reader / writer / `apply` / `snapshot` split; update the `DocumentGroup` initializer; audit undo registration.
 - The undo manager from the environment in your content view is already connected to the document.

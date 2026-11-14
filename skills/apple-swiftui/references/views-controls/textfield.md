@@ -32,7 +32,8 @@ TextField("Username", text: $username)
 
 | Modifier | Description |
 |---|---|
-| `textFieldStyle(_:)` | `.automatic`, `.plain`, `.roundedBorder` |
+| `textFieldStyle(_:)` | `.automatic`, `.plain`, `.roundedBorder`, `.bordered` (27.0+) |
+| `textInputBorderShape(_:)` | Border shape for text input controls: `.automatic`, `.capsule`, `.roundedRectangle` (27.0+) |
 | `textInputAutocapitalization(_:)` | `.never`, `.words`, `.sentences`, `.characters` |
 | `disableAutocorrection(_:)` | Disable autocorrect |
 | `keyboardType(_:)` | `.default`, `.emailAddress`, `.numberPad`, etc. |
@@ -45,6 +46,22 @@ TextField("Username", text: $username)
 - Available on iOS 13.0+, macOS 10.15+, tvOS 13.0+, watchOS 6.0+, visionOS 1.0+.
 - String bindings update continuously as the user types; non-string bindings update on commit only.
 - Use `prompt:` to show placeholder text as a `Text` view (replaces the deprecated string-placeholder parameter).
+
+### TextInputBorderShape and .bordered (27.0+)
+
+- `TextInputBorderShape` customizes the border shape of text input controls such as `TextField` via the `textInputBorderShape(_:)` view modifier; it can be applied to one control or to a container. The `.bordered` text field style draws "a system-defined border whose shape is determined by the `textInputBorderShape(_:)` modifier."
+- The `.squareBorder` and `.roundedBorder` styles are soft deprecated in the iOS 27 release notes ("use the new `.bordered` text field style instead"); the DocC JSON lists `roundedBorder` deprecated at 27.3 on iOS / iPadOS ("Use `textFieldStyle(.bordered)` with `textInputBorderShape(.roundedRectangle)`") and `squareBorder` at 27.3 on macOS. The first Signature example above still uses `.roundedBorder`, which remains available.
+- Source: https://developer.apple.com/documentation/swiftui/textinputbordershape (DocC JSON fetched 2026-11-14)
+- Source: https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-27-release-notes (fetched 2026-11-14)
+
+```swift
+HStack {
+    TextField("Search", text: $searchText)
+    Button("Go", action: search)
+}
+.buttonBorderShape(.capsule)
+.textInputBorderShape(.capsule)
+```
 
 ## Related
 
