@@ -48,3 +48,8 @@ driverObj.drive();
 - Step-level `popoverClass` replaces (does not merge with) the driver-level value
 - Use `overlayColor` and `overlayOpacity` to style the backdrop overlay
 - The `.driver-active` class is added to `<body>` while the driver is running — useful for page-level overrides
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

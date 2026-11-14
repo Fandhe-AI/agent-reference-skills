@@ -40,13 +40,17 @@ Hooks can be set at driver level (all steps) or step level (individual step only
 
 ## Confirm on Exit
 
-Use `onDestroyStarted` to intercept tour exit and show a confirmation dialog. The example below asks for confirmation only when the user leaves before finishing the tour.
+Use this when leaving halfway would lose something, like a setup the user has to finish. `onDestroyStarted` runs when the tour is about to end. Once you set it, the tour only ends when you call `destroy()`. The example only asks when the user leaves early.
 
-```javascript
+```js
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
+
 const driverObj = driver({
-  showProgress: true,
-  steps: [/* ... */],
-  // onDestroyStarted is called when the user tries to exit the tour
+  steps: [
+    { element: "#search", popover: { title: "Search" } },
+    { element: "#export", popover: { title: "Export" } },
+  ],
   onDestroyStarted: (element, step, { reason }) => {
     if (reason === "done" || confirm("Are you sure?")) {
       driverObj.destroy();
@@ -57,21 +61,26 @@ const driverObj = driver({
 driverObj.drive();
 ```
 
-When overriding `onDestroyStarted`, you are responsible for calling `driverObj.destroy()` to actually exit the tour.
+`reason` tells a finished tour (`"done"`) apart from one the user is leaving. Use your own modal instead of `confirm()` the same way: call `destroy()` when the user agrees.
 
 ## Prevent Tour Exit
 
-Set `allowClose` to `false` to prevent users from closing the tour before completing all steps.
+`allowClose: false` removes the close button and turns off Escape and overlay clicks, so the only way out is to finish the tour.
 
-```javascript
+```js
 const driverObj = driver({
   allowClose: false,
   showProgress: true,
-  steps: [/* ... */]
+  steps: [
+    { element: "#search", popover: { title: "Search" } },
+    { element: "#export", popover: { title: "Export" } },
+  ],
 });
 
 driverObj.drive();
 ```
+
+To keep the close button and only ignore clicks on the overlay, use `overlayClickBehavior: "none"` instead.
 
 ## Finished or Closed
 
@@ -108,7 +117,115 @@ A `destroy()` you call from a hook keeps the reason of the user action that star
 - The popover is hidden while `waitForElement` waits for the next step's element (1.9.0)
 - `onNextClick` / `onPrevClick` at step level override only that step; at driver level they override all steps
 - When overriding `onDestroyStarted`, the tour will not close unless you call `destroy()` explicitly
-- `allowClose: false` disables closing via backdrop click and the close button
+- `allowClose: false` disables closing via backdrop click, Escape and the close button
+- `advance()`, `advanceDelay` and `popover.instruction` are available since 1.12.0; `updatePopover()` since 1.11.0.
+- In 1.14.0 these patterns live on the Confirm Before Closing and Wait for a Save recipe pages; the Async Tour section above is kept from the 1.10.1 page.
+- Adapted: the `saveProfile` example checks `response.ok` before firing the event, and the `onNextClick` example restores the Next button when `loadReport()` rejects; the official examples do neither.
+- Source: https://driverjs.com/docs/confirm-before-closing and https://driverjs.com/docs/wait-for-a-save (driver.js 1.14.0 docs source, apps/docs/src/content/guides/confirm-before-closing.mdx and wait-for-a-save.mdx at tag 1.14.0).
+
+### When Next Does the Work
+
+To load something before the next step, take over the Next button with `onNextClick` and call `moveNext()` when you're ready. `updatePopover()` shows that it's loading in the meantime. `onNextClick` replaces the button's default action, so the tour only moves when you call `moveNext()`. `onPrevClick` works the same way for going back.
+
+Adapted (not in the official docs): wraps `loadReport()` in `try`/`catch` and restores the Next button on failure, and ignores the result when the step was left or a newer load started while `loadReport()` was pending (a `loadRun` counter is bumped in `onDeselected` and on each Next click).
+
+```js
+let loadRun = 0;
+
+const driverObj = driver({
+  steps: [
+    {
+      element: "#reports",
+      onDeselected: () => {
+        loadRun++;
+      },
+      popover: {
+        title: "Your weekly report",
+        description: "Next loads the report first.",
+        onNextClick: async () => {
+          driverObj.updatePopover({
+            nextBtnText: "Loading…",
+            disableButtons: ["next"],
+          });
+          const run = ++loadRun;
+          try {
+            await loadReport();
+          } catch (error) {
+            // Ignore a result from an earlier load or from a step that was left.
+            if (run !== loadRun) {
+              return;
+            }
+            // Restore the button so the user can retry or close the tour.
+            driverObj.updatePopover({
+              nextBtnText: "Next",
+              disableButtons: [],
+            });
+            return;
+          }
+          if (run !== loadRun) {
+            return;
+          }
+          driverObj.moveNext();
+        },
+      },
+    },
+    {
+      element: "#report",
+      popover: { title: "Here it is" },
+      onDeselected: () => unloadReport(),
+    },
+  ],
+});
+```
+
+To keep a step open until your app finishes a save or request, call `driverObj.advance()` from the app's event. `onHighlighted` gets a `signal` that aborts when the step is left, so the listener removes itself. With `advanceDelay`, the instruction turns green for the pause first.
+
+```js
+const driverObj = driver({
+  showButtons: ["next", "close"],
+  steps: [
+    {
+      element: "#save",
+      advanceDelay: 600,
+      onHighlighted: (element, step, { signal, driver }) => {
+        window.addEventListener(
+          "profile-saved",
+          () => driver.advance(),
+          { signal }
+        );
+      },
+      popover: {
+        title: "Save your profile",
+        instruction: "Click <b>Save</b>.",
+      },
+    },
+    {
+      element: "#saved",
+      popover: { title: "Saved", showButtons: ["next"] },
+    },
+  ],
+});
+
+driverObj.drive();
+```
+
+Your app fires the event when the request comes back:
+
+Adapted (not in the official docs): checks `response.ok` so the event only fires when the save succeeded, since `fetch` resolves on HTTP 4xx/5xx.
+
+```javascript
+async function saveProfile(profile) {
+  const response = await fetch("/api/profile", {
+    method: "POST",
+    body: JSON.stringify(profile),
+  });
+  if (!response.ok) {
+    // Keep the step open and let the user retry.
+    return;
+  }
+  window.dispatchEvent(new Event("profile-saved"));
+}
+```
 
 ## Related
 

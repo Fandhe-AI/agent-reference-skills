@@ -142,7 +142,8 @@ Event types: `shown`, `hidden`, `opened`, `closed`, `item_started`, `item_comple
 
 ## Notes
 
-- Source: https://driverjs.com/docs/checklists (driver.js 1.10.1 docs source, `apps/docs/src/content/guides/checklists.mdx`).
+- Source: https://driverjs.com/docs/checklists (driver.js 1.14.0 docs source, `apps/docs/src/content/guides/checklists.mdx` at tag 1.14.0).
+- Checklists were introduced in 1.10.0; `launcher: false` in 1.10.1.
 - While a tour runs, the checklist is hidden, and it opens again when the tour ends.
 - Appearance options (theme, accent color, position, text) are in [Customizing Checklists](./customizing.md).
 

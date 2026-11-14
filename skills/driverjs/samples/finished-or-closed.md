@@ -29,3 +29,8 @@ driverObj.drive();
 - `"replaced"` means another tour or highlight started; `"api"` means your own code called `destroy()`
 - A `destroy()` called from a hook keeps the original user-action reason
 - `onDestroyStarted` receives the same `reason`, so it can also gate the exit (see confirm-on-exit)
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

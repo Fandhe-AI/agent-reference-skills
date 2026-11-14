@@ -20,7 +20,7 @@ export function createTour() {
       {
         element: "#settings-link",
         // Clicking the highlighted link continues the tour and navigates.
-        advanceOnClick: true,
+        advanceOn: "click",
         popover: {
           title: "Open Settings",
           description: "Click this link to continue on the settings page.",
@@ -67,7 +67,13 @@ if (savedStep !== null) {
 
 ## Notes
 
+- `advanceOn: "click"` needs 1.11.0+; on older versions use the deprecated `advanceOnClick: true`. Completing a step through `advanceOn` runs the step's `onNextClick`, which is why the hand-off above works
 - A driver instance lives within one page, so treat the tour as resumable: persist the step, navigate, start a fresh tour from the saved step
 - The explicit `destroy()` in the hand-off matters for single-page apps, where the old page's tour would otherwise stay on screen
 - The saved index is hardcoded for clarity; compute it with `driverObj.getActiveIndex() + 1` or store a step id and look up its index
 - Put `waitForElement` on the first resumed step so the tour does not fall back to the centered popover while the page hydrates
+
+## Related
+
+- [Examples](../references/examples/README.md)
+- [Configuration](../references/api/configuration.md)

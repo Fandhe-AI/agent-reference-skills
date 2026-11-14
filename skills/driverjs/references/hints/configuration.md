@@ -132,7 +132,7 @@ type DriverHint = {
 
 - The `beacon` defaults in `HintsConfig` are overridden by a hint's own `beacon` values.
 - `popover.buttonText` and `popover.onButtonClick` override the instance-level `buttonText` and `onButtonClick`.
-- Source: driver.js 1.10.1 docs (https://driverjs.com/docs/configuration#hints-configuration).
+- Source: https://driverjs.com/docs/configuration#hints-configuration (driver.js 1.14.0 docs source, `apps/docs/src/content/guides/configuration.mdx` at tag 1.14.0).
 
 ## Related
 
