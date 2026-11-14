@@ -36,7 +36,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 - コードは `src/interop/onnx.rs`（0.14.0）の `OnnxModel::bind_autograd` の doc 例（上流では doctest）。`fn main` と `?` の戻り型は doctest の隠し行（`# fn main() ...`）を展開したもの
 - 勾配経路の op は 11 種（`Gemm` / `MatMul` / `Add` / `Mul` / `Div` / `Sqrt` / `Relu` / `Sigmoid` / `Erf` / `Softmax` / `LayerNormalization`）。`Conv` / `Reshape` / `Transpose` など 22 op に到達すると `OnnxError::UnsupportedInAutograd` で拒否される。`OnnxAutogradOptions::with_trainable` で学習対象の initializer を絞れる（存在しない名前は `OnnxError::UnknownTrainable`）
-- `forward` は「initializer を除く入力 1 個・出力 1 個」のグラフ専用。書き戻し API はなく、学習ループはステップごとに新しい `Tape` へ bind し、更新後の重みを initializer と同名の feed として `OnnxModel::run` に渡す（`references/interop/onnx.md`）
+- `forward` は「initializer を除く入力 1 個・出力 1 個」のグラフ専用。書き戻し API はなく、`OnnxModel` 側の initializer は学習では更新されない（公式 rustdoc の記述: 学習ループはステップごとに新しい `Tape` へ bind し、更新後の重みを initializer と同名の feed として `OnnxModel::run` に渡す）。`run` の feed による initializer の上書きはその呼び出し内に限られ（`run` は `&self`）、次の `bind_autograd` は同じモデルの initializer から始まる。更新済みの重みは呼び出し側が保持し（`g.params()` の `Var` の値など）、更新後の推論は `run` の同名 feed で行う。次の学習ステップへ更新値を渡す専用 API は公式に無い
 - GPU の `Tape` でも 11 op の計算はホストで実行され、性能は保証されない
 - `fandhe-ai =0.14.0` に対し、本ページのコードを `cargo check` で確認し、実行して `assert` が通ることも確認済み（2026-11-14）
 

@@ -14,10 +14,13 @@ Hugging Face Hub 連携の補助クレート。`repo_id`・revision の検証、
 
 commit sha 指定の解決はネットワークを使わない（rustdoc の例）。
 
+Adapted (not in the official docs): rustdoc の非表示行（`# Ok::<...>`）を `fn main` と `Ok(())` に展開した。
+
 ```rust
 use fandhe_ai::model::ModelRegistry;
 use fandhe_ai_hf_hub::{HfHub, HfRepoId, Revision};
 
+fn main() -> Result<(), Box<dyn std::error::Error>> {
 let hub = HfHub::new(ModelRegistry::with_cache_dir(
     std::env::temp_dir().join("fandhe-ai-hf-hub-doc-resolve"),
 ));
@@ -25,7 +28,8 @@ let repo = HfRepoId::parse("org/model")?;
 let sha = "0123456789abcdef0123456789abcdef01234567";
 let pinned = hub.resolve_revision(&repo, &Revision::parse(sha)?)?;
 assert_eq!(pinned.as_str(), sha);
-# Ok::<(), fandhe_ai_hf_hub::HfError>(())
+Ok(())
+}
 ```
 
 ## Options / Props
@@ -45,6 +49,8 @@ assert_eq!(pinned.as_str(), sha);
 | `CachedModel` | struct | 取得済みモデルの識別子（`name()` = `hf--<namespace>--<repo>`、`version()` = commit sha、`filename()` = `model.safetensors`）。これを返す `HfHub::download` は crate 内限定で、公開 API からは生成されない |
 
 ## Notes
+
+- Adapted from the official docs: the hidden rustdoc line `# Ok::<(), fandhe_ai_hf_hub::HfError>(())` is expanded into an explicit `fn main() -> Result<...>` wrapper.
 
 - 他の内部クレート（直接利用は非サポート）と異なり、公開面に限りサポート対象。それ以外の内部は非サポート
 - 接続先は `https://huggingface.co` 固定。リダイレクトは追従せず `HfError::Http` で拒否し、応答は 1 MiB で打ち切る。認証トークンは読まず送らず（`HF_TOKEN` 等を設定しても使われない）、private / gated repo は fail-closed で非対応（401 → `Unauthorized`・403 → `Gated`・404 → `NotFound`。private repo も 404 になりうる）

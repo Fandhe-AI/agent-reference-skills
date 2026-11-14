@@ -63,7 +63,7 @@ GEMM チェックサム計測:
 - 上記フラグはすべてプロセスワイド（`Device` 単位ではなく全スレッド・全デバイスに作用）。`Device` は外部型のため inherent メソッドを持てず、`tape_for` と同型の自由関数として公開される
 - `set_*_elementwise_fusion_enabled` / `set_*_gpu_linalg_enabled` / `set_cuda_graph_infer_enabled` は、融合する op や境界を指定する手段でも汎用 `compile` の入口でもない、プロセスワイドな実行戦略トグル
 - Source: https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/fn.set_cuda_graph_infer_enabled.html（0.14.0, 取得日 2026-11-14）
-- 有効化したモードが使用不能な環境では、いずれも FP32 厳密や host への黙示フォールバックをせず `BackendError` を返す（fail-closed）
+- 有効化したモードが使用不能な環境では、TF32 / 3×TF32 / CUDA Graph step / managed memory など上表で `BackendError` と明記したものは FP32 厳密や host への黙示フォールバックをせず `BackendError` を返す（fail-closed）。例外は上表のとおり: `set_cuda_graph_infer_enabled` は設定が間に合わない場合に非 capture 経路へ黙ってフォールバックし、elementwise 融合と GPU linalg は無効時に `BackendError::Unsupported` 経由で per-op / ホスト経路へ回る
 - `fandhe_ai::*` の `set_cuda_*` は `nvidia-cuda` / `amd-rocm` スキルの CUDA / HIP ランタイム API とは別物で、ここでは fandhe-ai ライブラリ内部のバックエンド切り替えスイッチを指す
 - `Device::Cuda` / `Device::Metal` の定義と `tape_for` / `available_devices` は `device.md` を参照
 

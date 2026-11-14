@@ -154,7 +154,7 @@ match &back["b"] {
 - `ModelRegistry::load` / `available_models` は no-follow オープン（シンボリックリンク経由の脱出対策）が Linux（x86_64 / aarch64）・macOS 限定実装のため、Windows および上記以外のアーキテクチャでは現時点で常に失敗する（`load` はエラー、`available_models` は常に空の一覧）。キャッシュルートの解決自体は Windows でも動作する
 - `fandhe-ai-onnx-interop` は crates.io 公開済み（0.14.0 を確認）だが、依存解決のための公開であり直接利用はサポート対象外（`internals/onnx-interop.md` 参照）。各 API の詳細は新規の `interop/` カテゴリを参照
 
-- `OnnxModel::bind_autograd` のホスト実行について: `set_cuda_onnx_gpu_execution_enabled` 等の opt-in は `OnnxModel::run` にだけ効き、`bind_autograd` は見ない（実行先は `Tape` の device で決まるが、11 op の計算はホストで行われる）。書き戻し API はなく、学習ループはステップごとに新しい `Tape` へ bind し、更新後の重みを initializer と同名の feed として `OnnxModel::run` に渡す
+- `OnnxModel::bind_autograd` のホスト実行について: `set_cuda_onnx_gpu_execution_enabled` 等の opt-in は `OnnxModel::run` にだけ効き、`bind_autograd` は見ない（実行先は `Tape` の device で決まるが、11 op の計算はホストで行われる）。書き戻し API はなく、`OnnxModel` 側の initializer は学習では更新されない（公式 rustdoc の記述: 学習ループはステップごとに新しい `Tape` へ bind し、更新後の重みを initializer と同名の feed として `OnnxModel::run` に渡す）。`run` の feed による initializer の上書きはその呼び出し内に限られ（`run` は `&self`）、次の `bind_autograd` は同じモデルの initializer から始まる。更新済みの重みは呼び出し側が保持し（`g.params()` の `Var` の値など）、更新後の推論は `run` の同名 feed で行う。次の学習ステップへ更新値を渡す専用 API は公式に無い
 - `from_sequential` は再パラメータ化済み（`weight_norm` / `spectral_norm`）の `Linear` を含むと fail-closed で拒否する（有効重みを出力できないため。`onnx-interop` の `export_nn`）
 - `ModelRegistry::load` は F32 限定契約のため、bf16 / f16 のチェックポイントは `interop::safetensors::load_safetensors_typed` で読む
 - Source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.14.0/site/guides/interop.md、https://docs.rs/fandhe-ai/0.14.0/fandhe_ai/interop/index.html（0.14.0, 取得日 2026-11-14）
