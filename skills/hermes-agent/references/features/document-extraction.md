@@ -32,7 +32,7 @@ pdftoppm -jpeg -r 150 -f 92 -l 94 document.pdf "${TMPDIR:-/tmp}/page"
 - PDF conversion reads the text layer only. When over 20% of pages (or 10+ pages) yield no text, `read_file` prepends an `EXTRACTION COVERAGE WARNING` listing unreadable page ranges, each labeled with the last text extracted before it. Recovery: render a few pages with `pdftoppm` and use `vision_analyze`; for many pages use the `ocr-and-documents` skill (marker-pdf, ~3-5 GB install).
 - Detection uses poppler's `pdftotext`; if poppler is missing, extraction still works and the coverage check is silently skipped.
 - Upstream example uses unquoted `$TMPDIR/page`; quoted with a `/tmp` fallback here.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/document-extraction (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/document-extraction (pinned to v0.23.1)
 
 ## Related
 

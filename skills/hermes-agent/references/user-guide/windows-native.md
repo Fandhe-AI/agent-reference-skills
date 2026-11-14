@@ -13,15 +13,18 @@ Get-Content install.ps1 | more
 
 No admin rights required; installs to `%LOCALAPPDATA%\hermes\` and adds `hermes` to the User PATH (open a new terminal afterwards). Installer options are passed to the saved script:
 
+Adapted (not in the official docs): the official page passes options through `& ([scriptblock]::Create((irm https://hermes-agent.nousresearch.com/install.ps1))) -NonInteractive -Channel main`; here the options go to the saved, reviewed script.
+
 ```powershell
-.\install.ps1 -NonInteractive -Branch main
+.\install.ps1 -NonInteractive -Channel main
 ```
 
 ## Options / Props
 
 | Parameter | Purpose |
 |---|---|
-| `-Branch NAME` | Select the source branch; default `main` |
+| `-Channel stable\|main` | `stable` (default): the latest published release. `main`: every commit, saved like `hermes update --set-channel main`. `$env:HERMES_INSTALL_CHANNEL` sets it for a plain `irm \| iex` |
+| `-Branch NAME` | Select the source branch; default `main`. Another branch is installed at its tip |
 | `-Commit SHA` | Select a commit after the branch checkout |
 | `-HermesHome PATH` | Select the data directory |
 | `-InstallDir PATH` | Select the source checkout directory |
@@ -56,10 +59,14 @@ hermes gateway status
 - Uninstall: `hermes uninstall` (review `hermes uninstall --dry-run` first; `--full` also removes data, `--data` removes data only). MSIX/Store installs are removed through Windows Settings -> Apps. Do not recursively delete `%LOCALAPPDATA%\hermes`.
 - Never use `os.kill(pid, 0)` on Windows (it maps to `CTRL_C_EVENT`); use `psutil.pid_exists()` or `gateway.status._pid_exists()`.
 - Common pitfalls: `hermes: command not found` right after install (open a new shell); `WinError 193` (use the `.cmd` variant such as `npx.cmd`); `[scriptblock]::Create(...)` BOM error (official scriptblock form only; the saved-file `-File` / `.\install.ps1` form used on this page does not go through `[scriptblock]::Create`); gateway not staying up (`schtasks /Query /TN Hermes_Gateway /V /FO LIST`); `?` characters in the CLI (check `HERMES_DISABLE_WINDOWS_UTF8`, use Windows Terminal); BOM inside YAML folded scalars breaks parsing.
-- Browser tool: PM supplies pinned `agent-browser` and Chromium; on Windows ARM64 they can use x64 emulation. Run `hermes doctor` and `hermes pm doctor` for timeouts.
+- Browser tool (`browser_exec`) is part of Hermes's Python environment. Local browsing launches the pinned Chromium that PM installs (`hermes pm install chromium` if missing); set `browser.executable_path` to use another Chromium-family binary. Cloud browsers are selected in `hermes tools`. On Windows ARM64 the pinned Chromium is the x64 build and runs under x64 emulation. For timeouts run `hermes doctor` and `hermes pm doctor`; a slow first Chromium start can be given more time with `browser.command_timeout` (the launch timeout floor, in seconds).
 - Source note: the WSL2 guide states the dashboard `/chat` embedded terminal pane is WSL2-only, while this page states it works natively through ConPTY. The two pages differ; treat the native availability as dependent on a working `pywinpty`.
-- Adapted: the v0.22.2 page shows `iex (irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1)` for the plain form and `& ([scriptblock]::Create((irm https://hermes-agent.nousresearch.com/install.ps1))) -NonInteractive -Branch main` for options; this page uses the canonical `hermes-agent.nousresearch.com/install.ps1` URL used elsewhere in the same page to avoid tracking `main`, and saves the script with `-OutFile` for review before running instead of piping into `iex`. The BOM pitfall above applies to the official scriptblock form.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/windows-native (pinned to v0.22.2)
+- Adapted: the official page shows a plain `irm | iex` form and `& ([scriptblock]::Create((irm https://hermes-agent.nousresearch.com/install.ps1))) -NonInteractive -Channel main` for options (v0.22.2: `-Branch main`); this page uses the canonical `hermes-agent.nousresearch.com/install.ps1` URL and saves the script with `-OutFile` for review before running instead of piping into `iex`. The BOM pitfall above applies to the official scriptblock form.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/windows-native (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- Migration (v0.22 -> v0.23): installer gains `-Channel stable|main` (default `stable`); `-Branch` still works. The `agent-browser` Node-version troubleshooting entry was removed from the v0.23.1 page, which now describes the browser tool as part of Hermes's Python environment.
 
 ## Related
 

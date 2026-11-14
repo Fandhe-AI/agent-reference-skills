@@ -26,8 +26,10 @@ Fix in three steps: (1) quit every Hermes process on that profile (Desktop app, 
 
 - Do not run `hermes doctor --fix` while processes are running; do not delete `state.db-wal` or `state.db-shm` (the log holds committed conversations not yet in `state.db`); do not copy `state.db` alone (use `hermes backup` or `hermes sessions recover`); do not ask the agent to fix it (same store, same refusal).
 - `hermes sessions optimize`, `optimize-storage`, and `prune` rewrite the store and refuse while another process holds the database. `--dry-run` is never blocked; `--force` runs anyway and should be used only when the listed processes are idle.
+- `optimize-storage` keeps watching while it runs: whenever another process holds the database (under `--force`, or one that opens it mid-run) it pauses between chunks so that process's writes get through, which makes it much slower. The same check runs for `sessions optimize` typed in the Desktop console.
+- `hermes sessions prune` is the exception while the gateway is running: the gateway owns `state.db`, so prune shows its preview from a read-only view and the gateway itself deletes the selected sessions (skipping any with a turn still running). It refuses as above only when no gateway is running and some other process holds the database.
 - If every process is stopped, doctor lists no holder, and Hermes still refuses, the file may be damaged: `--inspect-only` never modifies the file; follow the command it prints or restore the newest snapshot from `state-snapshots/`.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/session-storage-recovery (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/session-storage-recovery (pinned to v0.23.1)
 
 ## Related
 

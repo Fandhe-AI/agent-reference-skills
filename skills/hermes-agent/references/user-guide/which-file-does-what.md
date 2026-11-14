@@ -23,10 +23,10 @@ ls ~/.hermes/memories/
 
 - Adapted: the official page has no code example; the listing commands are added to show where these files live.
 - Only one project context type is loaded per session, first match wins: `.hermes.md` -> `AGENTS.md` -> `CLAUDE.md` -> `.cursorrules`. `SOUL.md` is always loaded independently as the agent identity.
-- Memory (MEMORY.md and USER.md) is a frozen snapshot captured once at session start: a mid-session save persists to disk immediately but appears in the system prompt from the next session (this preserves the prefix cache). The same applies to edits to `SOUL.md` or `AGENTS.md` during a running session; restart the session to pick them up.
+- Memory (MEMORY.md and USER.md) is a frozen snapshot captured once at session start: a mid-session save persists to disk immediately but appears in the system prompt from the next session (this preserves the prefix cache). The same applies to edits to `SOUL.md` or `AGENTS.md` during a running session; restart the session to pick them up. For long-running gateway conversations you do not want to reset, `hermes sessions refresh-prompts` makes them adopt the updated files on their next turn while keeping the history (see sessions.md, "Refresh Prompts After a Profile Update").
 - SOUL.md and USER.md never feed each other: SOUL.md is a personality file you edit; USER.md is part of persistent memory written by the agent. To populate USER.md, tell the agent ("remember that I prefer concise answers"). Check saved memory with `hermes journey list`.
 - Quick guide: change how the agent talks -> edit `~/.hermes/SOUL.md`; make it remember a fact -> tell it; set project rules -> `AGENTS.md` or `.hermes.md`; temporary personality change -> `/personality` (session-level overlay).
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/which-file-does-what (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/which-file-does-what (pinned to v0.23.1)
 
 ## Related
 

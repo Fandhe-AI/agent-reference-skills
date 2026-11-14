@@ -9,7 +9,7 @@ Hermes organizes its capabilities into eight tool categories and exposes them th
 | Web | Search and page extraction | `web_search`, `web_extract` |
 | X Search | Twitter/X post search | `x_search` (requires xAI credentials) |
 | Terminal & Files | Command execution and file operations | `terminal`, `process_manage`, `read_file`, `patch` |
-| Browser | Interactive browser automation | `browser_navigate`, `browser_snapshot`, `browser_vision` |
+| Browser | Browser automation: `browser_exec` drives Chromium with Python over CDP (screenshots included); the Camofox browser is a separate catalog plugin (`hermes plugins install camofox`) | `browser_exec`, `browser_cdp`, `browser_dialog`, `browser_vault` |
 | Media | Multimodal generation and analysis | `vision_analyze`, `image_generate`, `text_to_speech` |
 | Agent Orchestration | Planning and task delegation | `todo_list`, `clarify`, `execute_code`, `delegate_task` |
 | Memory & Recall | Persistent storage and retrieval | `memory`, `session_search` |
@@ -36,7 +36,8 @@ Renamed in v0.22.0: `todo` is now `todo_list`, `cronjob` is now `cronjob_manage`
 | Local | Default; runs on your machine |
 | Docker | Isolated containers for security |
 | SSH | Remote execution (prevents self-modification) |
-| Singularity | HPC cluster computing |
+| Singularity (plugin) | HPC cluster computing; official plugin `singularity` (formerly built in; `hermes update` installs it for profiles that already use it) — `hermes plugins install singularity` |
+| Sprites (plugin) | Stateful Fly.io cloud sandbox with checkpoint & restore; `hermes plugins install NousResearch/hermes-plugin-sprites --enable`, `hermes config set terminal.backend sprites`, `SPRITES_TOKEN` in `~/.hermes/.env` |
 | Modal | Serverless cloud execution |
 | Daytona | Persistent remote dev environments |
 | Vercel Sandbox (`vercel_sandbox`) | Cloud microVM with snapshot-backed filesystem persistence |
@@ -117,6 +118,18 @@ Note that SearXNG is search-only. If you also need `web_extract`, point `web.ext
 ## Sudo Support
 
 Sudo prompts are handled interactively (password cached for the session) or via the `SUDO_PASSWORD` environment variable for unattended use.
+
+## Notes
+
+- Trailing `&` auto-backgrounding: a foreground command whose only backgrounding is a trailing `&` (e.g. `python3 -m http.server 8765 &`) runs as `background=true` with the `&` removed; the result carries an `auto_backgrounded` note with the `session_id`, and the same approval checks apply. Mixed shapes (`server & curl ...`, `a; b &`, multi-line scripts), `nohup` / `disown` / `setsid` wrappers, command substitutions and commands whose approval category would change without the `&` are still refused with guidance.
+- Repeated waits on a quiet process: two `process(action="wait")` / `poll` calls in a row on a still-running process with no new output turn on `notify_on_complete` for it, and the result tells the agent to stop checking (the exit arrives later as its own message). New output, exit, or any other action resets the count. Applies where a completion can reach the agent (interactive CLI, TUI, desktop app, messaging chats); non-interactive `hermes chat -q`, `hermes -z`, cron, Kanban workers, stateless API requests, delegated subagents and `display.background_process_notifications: off` keep plain polling. To keep plain polling everywhere: `terminal.process_wait_auto_notify: false`.
+- `singularity` and `sprites` are plugin terminal backends (`terminal.backend: singularity` / `sprites`); `terminal.backend` built-ins are local, docker, ssh, modal, daytona, vercel_sandbox. The Sprites setup is described in the Configuration page ("Sprites Backend").
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/tools (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- The Singularity backend moved from built in to the official `singularity` plugin.
+- Browser tools listed on the Tools page changed from `browser_navigate` / `browser_snapshot` / `browser_vision` to `browser_exec`, `browser_cdp`, `browser_dialog`, `browser_vault` (v0.23.1 upstream table); the older names are not re-verified against v0.23.1 here.
 
 ## Related
 

@@ -32,12 +32,16 @@ kanban_complete(
 
 - Any absolute path (`~/.hermes/cache/scratch/...`) or home-relative path (`~/...`) ending in a supported extension is extracted. Paths inside code blocks and inline code are ignored.
 - `.py`, `.log` and other source-file extensions are intentionally excluded; send code in a code block.
-- File-producing tools: `execute_code` (matplotlib charts), the `docx`, `xlsx`, `pdf`, `latex-pdf-report`, `powerpoint` skills, `image_generate`, `text_to_speech`.
+- File-producing tools: `execute_code` (matplotlib charts), the `microsoft-office` skill (Word documents, spreadsheets, decks), the `pdf` and `latex-pdf-report` skills, `image_generate`, `text_to_speech`.
 - The agent does not produce artifacts by default; ask explicitly, or add the bias to `AGENTS.md` / `CLAUDE.md` / `.cursorrules`, `~/.hermes/SOUL.md`, or a preset under `agent.personalities` in `~/.hermes/config.yaml` (switch with `/personality`).
 - Kanban: artifacts passed to `kanban_complete` are uploaded with the "task completed" notification to subscribers; files that do not exist when the notifier runs are silently skipped.
 - Other services (Notion, GitHub, Linear, Slack, Gmail, Salesforce, Snowflake / BigQuery, Google Drive) connect through MCP servers under `mcp_servers` in `~/.hermes/config.yaml`.
 - OAuth tokens stay on the user's machine in `auth.json` / `.env`; no hosted token storage.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/deliverable-mode (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/deliverable-mode (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- v0.22.2 listed separate `docx`, `xlsx` and `powerpoint` skills; v0.23.1 lists a single `microsoft-office` skill for Word documents, spreadsheets and decks. `pdf` and `latex-pdf-report` are unchanged.
 
 ## Related
 

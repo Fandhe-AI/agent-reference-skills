@@ -26,7 +26,7 @@ All paths write a `.no-bundled-skills` marker into the profile directory. `--rem
 
 ## Using Skills
 
-Every installed skill is a slash command (`/gif-search funny cats`; bare `/excalidraw` loads it and lets the agent ask). Up to 5 leading `/skill` tokens are loaded in one message (`/github-pr-workflow /test-driven-development fix issue #123`); parsing stops at the first token that is not an installed skill. `/plan [request]` is a built-in command that writes a markdown plan under `.hermes/plans/`.
+Every installed skill is a slash command (`/excalidraw sketch the request flow for our API`; bare `/excalidraw` loads it and lets the agent ask). Up to 5 leading `/skill` tokens are loaded in one message (`/github-pr-workflow /test-driven-development fix issue #123`); parsing stops at the first token that is not an installed skill. `/plan [request]` is a built-in command that writes a markdown plan under `.hermes/plans/`.
 
 ## Learning a skill from sources (`/learn`)
 
@@ -196,7 +196,7 @@ All hub skills are scanned for exfiltration, injection, destructive commands, an
 |-------|-----------|
 | `builtin` | Ships with Hermes |
 | `official` | Optional bundled skills |
-| `trusted` | Known repos (e.g. openai/skills, anthropics/skills) |
+| `trusted` | Known repos (e.g. `openai/skills`, `anthropics/skills`, `huggingface/skills`, `NVIDIA/skills`, `wandb/skills`, `qdrant/skills`, `pinecone-io/skills`, `makenotion/skills`, `Airtable/skills`, `Shopify/Shopify-AI-Toolkit`) |
 | `community` | Everything else |
 
 The `--force` flag overrides non-dangerous policy blocks but cannot bypass `dangerous` verdicts.
@@ -234,6 +234,10 @@ Skills surface as slash commands (`/skill-name`) and respond to natural language
 - `hermes sync` (Skill Sync) was removed in v0.22.0.
 - Bundled-skill opt-out: `hermes skills opt-out --remove` deletes only unmodified bundled skills; `opt-in --sync` re-seeds immediately.
 - Skill Bundles are managed with `hermes bundles` (`list`, `show`, `create`, `delete`).
+- Locking one skill: `hermes curator lock <skill>` (or the lock switch in Desktop) keeps it readable and auto-loadable, but `skill_manage`, `write_file`, `patch` and `terminal` all refuse to change it in every kind of session; your own edits still work. See the curator page, "Locking a skill". `skills.guard_agent_created` is a content scanner, independent of the write-approval gate.
+- Conditional activation example (v0.23.1): a curl-based search skill declaring `fallback_for_toolsets: [web]` stays hidden while the web toolset is available and appears only when it is disabled (the v0.22.2 example used the built-in `duckduckgo-search` skill).
+- Vendor skill repos listed in v0.23.1 as install sources and `trusted`: `wandb/skills`, `qdrant/skills`, `pinecone-io/skills`, `makenotion/skills`, `Airtable/skills`, `Shopify/Shopify-AI-Toolkit`. Official optional skill identifiers are now exemplified by `official/security/1password` and `official/mcp/fastmcp`.
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/skills (pinned to v0.23.1)
 
 ## Related
 

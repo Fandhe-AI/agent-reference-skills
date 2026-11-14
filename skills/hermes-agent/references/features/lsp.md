@@ -101,14 +101,19 @@ Per-server keys: `disabled`, `command`, `env`, `initialization_options`. Custom 
 
 ## Notes
 
-- LSP runs only inside a git workspace; elsewhere it stays dormant and falls back to the in-process syntax check. The check is layered: syntax first, LSP second; any LSP failure falls back silently. Each write captures a baseline, writes, re-queries, and reports only new diagnostics (freshness-gated; slow servers yield "no LSP data", never stale errors).
+- LSP runs only inside a git workspace; elsewhere it stays dormant and falls back to the in-process syntax check. The check is layered: syntax first, LSP second; any LSP failure falls back silently. Each write is performed, then the new content is sent to the language server; the write waits for the verdict only while the whole tool call stays under about 80 ms. Hermes asks for the verdict directly where supported (`typescript-language-server` answers a synchronous diagnostics request, pyright a document pull; warm servers usually reply in 10-90 ms), compares it with the verdict on the pre-edit content and keeps only the new diagnostics.
+- A verdict inside that window appears in the tool result's `lsp_diagnostics`. A slower one (cold server, very large file) is attached to the session's **next** tool result, labelled `LSP diagnostics introduced by your earlier edit of <path>`. If the model tries to finish the turn while a check is still running, Hermes waits up to 5 s; any problems found go to the model as a new message before the answer is accepted (so a one-shot `hermes chat -q` run still sees them). Earlier messages are never rewritten. If the same file is edited again before its check finishes, the newer check runs against the older edit's baseline, so errors the first edit introduced are still reported unless the second edit fixed them.
 - Workspace trust: a workspace is untrusted unless it is the git worktree you launched Hermes in (including `hermes -w`, a Desktop/TUI project, a gateway `terminal.cwd`) or listed under `lsp.trusted_workspaces`. Cron jobs and Kanban workers get no automatic trust. In an untrusted workspace only pyright (managed Python, not the project's venv), typescript-language-server (pinned to the TypeScript next to the server), svelte-language-server (`isTrusted: false`), bash-language-server, yaml-language-server, dockerfile-ls, intelephense and clangd start; every other server (rust-analyzer, gopls, jdtls, etc.) is skipped, and `hermes lsp status` marks them `[trusted workspaces only]`. Post-write shell linters (`npx tsc`, `rustfmt --check`) are skipped likewise on local backends.
 - Installs land in `<HERMES_HOME>/lsp/bin/` and `<HERMES_HOME>/lsp/node_modules/`; nothing is installed to shared locations. `typescript` is installed as `typescript@6` alongside the server; Vue 3.x servers do not publish diagnostics (hybridMode false on 2.x).
 - Servers are lazy-spawned (1-3 seconds typical, 10+ for rust-analyzer cold); a server that never answers costs at most `2 x wait_timeout` per edit. Multi-root servers (pyright) run as a single process. Servers are released when their worktree is removed.
 - `bash-language-server` delegates diagnostics to `shellcheck`; install it or `hermes lsp status` shows `Backend warnings`.
 - A crashed server is added to the broken set until `hermes lsp restart` (or `broken_retry_seconds`). Logs: `~/.hermes/logs/agent.log` (`[agent.lsp.client]`).
 - `lsp.enabled: false` disables the subsystem; disable one language with `lsp.servers.<id>.disabled: true`.
-- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/lsp (pinned to v0.22.2)
+- Source: https://hermes-agent.nousresearch.com/docs/user-guide/features/lsp (pinned to v0.23.1)
+
+### Migration (v0.22 -> v0.23)
+
+- v0.22.2 described a blocking flow (capture baseline, write, re-query, report new diagnostics). v0.23.1 sends content after the write and waits only ~80 ms; slower verdicts are deferred to the next tool result.
 
 ## Related
 
