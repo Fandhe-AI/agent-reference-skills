@@ -74,7 +74,8 @@ Lifecycle: instantiate, `on_session_start()`, `update_from_response()` after eac
 - The `compression` config block is specific to the built-in compressor, except `compression.model_thresholds` which is part of the engine contract (assigned to `engine.model_thresholds` before the first `update_model()`; reuse `agent.context_compressor.resolve_model_threshold`).
 - Thread safety: when `compression.context_timeout_seconds > 0` (default), the whole compression pass runs on a pooled daemon thread with a host timeout; the message list is a private deep snapshot, work after a timeout is discarded, and different sessions can run concurrently.
 - Tests: see `tests/agent/test_context_engine.py` for the ABC contract suite.
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/context-engine-plugin (pinned to v0.22.2)
+- Manual `/compress` on every surface (classic CLI, TUI, Desktop, messaging, ACP) calls your engine's `compress()` with `force=True` and the optional focus topic, never the built-in compressor. Once the compacted history is committed, the engine receives `on_session_start(session_id, boundary_reason="compression", old_session_id=...)` (the same id twice for in-place compaction). A session with no live agent may get a fresh engine instance for that compression, which then also receives `on_session_end()`.
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/context-engine-plugin (pinned to v0.23.1)
 
 ## Related
 

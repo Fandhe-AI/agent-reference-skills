@@ -76,7 +76,8 @@ Files to touch for a full-path built-in provider:
 - Native providers: audit every `api_mode` switch point and every `self.client.` use in `run_agent.py` (`__init__`, `_build_api_kwargs()`, `_interruptible_api_call()`, interrupt/rebuild, response validation, finish-reason and usage extraction, fallback, summary/memory flush). Send only fields the provider understands (e.g. OpenRouter routing fields).
 - `config["model"]` can be a string or a dict.
 - Test with `scripts/run_tests.sh tests/hermes_cli/test_runtime_provider_resolution.py tests/hermes_cli/test_cli_provider_resolution.py tests/hermes_cli/test_setup_model_provider.py tests/agent/test_provider_parity.py -q`.
-- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/adding-providers (pinned to v0.22.2)
+- The full-checklist criteria name OAuth/token-refresh providers as Nous Portal, Codex and Qwen Portal (Copilot no longer listed in v0.23.1; GitHub Copilot now ships as the out-of-tree `github-copilot` labs plugin, see Model Provider Plugins). The auxiliary-task examples are vision summarization, context compression summaries and memory flushes (web-extraction and session-search summaries dropped from the list).
+- Source: https://hermes-agent.nousresearch.com/docs/developer-guide/adding-providers (pinned to v0.23.1)
 
 ## Related
 
