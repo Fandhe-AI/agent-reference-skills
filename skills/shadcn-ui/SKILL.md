@@ -16,7 +16,7 @@ user-invocable: false
 - shadcn CLI 4.23.0（GitHub release tag `shadcn@4.23.0`、commit `96da9cc7f1aa10580a3741664e2a77c721206c00`、2026-10-27）
 - 4.22.0 からの差分は MCP サーバーの MCP 2026-07-28 対応（`shadcn/mcp` export が `McpServer`、`createServer()` 追加）、サイドバーのテーマ変数（`--sidebar` + oklch）、Registry FAQ の GitHub 非公開リポジトリ回答。`references/registry/faq.md` を追加
 - Markdown twin（`https://ui.shadcn.com/<path>.md`）を 2026-10-16 に取得し、差分のあった sidebar / registry faq は 2026-11-14 に再取得。registry faq の twin はタグ 4.23.0 時点の `.mdx` とバイト一致、sidebar は Theming 節がタグ時点の `.mdx` と一致（twin は ComponentPreview を展開済み）を確認（それ以外のページは 4.22.0 → 4.23.0 で `.mdx` の変更なしを `diff -r` で確認）
-- 同梱パッケージ: `@shadcn/react` 0.3.1 / `@shadcn/helpers` 0.3.0 / `@shadcn/registry` 0.2.0
+- 同梱パッケージ: `@shadcn/react` 0.3.1 / `@shadcn/helpers` 0.3.0 / `@shadcn/registry` 0.2.1
 - ドキュメントサイトの依存（タグ時点）: `@base-ui/react` 1.6.0 / `radix-ui` ^1.4.3 / `react-aria-components` 1.20.0 / `tailwindcss` ^4.3.0 / `react` 19.2.3
 - canary / beta / rc は対象外
 
