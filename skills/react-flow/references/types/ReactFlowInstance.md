@@ -38,7 +38,7 @@ type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edg
   setCenter: (x: number, y: number, options?: ViewportOptions & { zoom?: number }) => Promise<boolean>;
   fitBounds: (bounds: Rect, options?: ViewportOptions & { padding?: number }) => Promise<boolean>;
   fitView: (options?: FitViewOptions) => Promise<boolean>;
-  screenToFlowPosition: (clientPosition: XYPosition, options?: { snapToGrid: boolean }) => XYPosition;
+  screenToFlowPosition: (clientPosition: XYPosition, options?: { snapToGrid?: boolean; snapGrid?: SnapGrid }) => XYPosition;
   flowToScreenPosition: (flowPosition: XYPosition) => XYPosition;
   viewportInitialized: boolean;
 };

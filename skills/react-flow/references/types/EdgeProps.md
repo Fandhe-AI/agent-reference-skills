@@ -108,6 +108,7 @@ const edgeTypes = { myEdge: MyCustomEdge };
 - カスタムエッジは `edgeTypes` オブジェクトに登録し、`ReactFlow` の `edgeTypes` プロパティに渡す
 - `sourceX`, `sourceY`, `targetX`, `targetY` は既にキャンバス座標に変換済みの値
 - パスの計算には `getBezierPath`, `getStraightPath`, `getSmoothStepPath` などのユーティリティを使用できる
+- Since @xyflow/react 12.12.1 ([xyflow/xyflow#5650](https://github.com/xyflow/xyflow/pull/5650)): the type of `pathOptions` in `EdgeProps` is inferred from the edge type instead of `any`. The official API reference page (last updated 2026-10-11) still lists `pathOptions?: any`, so the definition above is kept as published. Source: https://github.com/xyflow/xyflow/blob/%40xyflow/react%4012.12.1/packages/react/CHANGELOG.md (fetched 2026-11-14)
 
 ## 関連
 
