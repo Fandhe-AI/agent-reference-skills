@@ -124,4 +124,4 @@ deny.toml
 
 - `Usage: pnpm-native run build <cmd>` in the source `--help` output comes from the environment that generated the official docs. The actual invocation is `tauri <cmd>`.
 - The built-in dev server (used when `build.frontendDist` is set) does not support mutual authentication or encryption. The official docs forbid using it on untrusted networks.
-- The source `--help` was generated with `@tauri-apps/cli` 2.12.2 (npm latest is 2.12.3; the only difference in `crates/tauri-cli/src` is `xcode_script.rs`).
+- The source `--help` was generated with `@tauri-apps/cli` 2.12.2 (npm latest is 2.12.4; the only differences in `crates/tauri-cli/src` are `xcode_script.rs` in 2.12.3 and `interface/rust/desktop.rs` in 2.12.4, which skips `--target` validation when `rustup target list` fails).

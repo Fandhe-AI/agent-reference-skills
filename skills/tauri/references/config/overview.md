@@ -74,6 +74,8 @@ Schema defaults for the nested objects:
 - File formats: by default the configuration is a JSON file named `tauri.conf.json`. JSON5 and TOML are supported via the `config-json5` and `config-toml` Cargo features. The JSON5 file name must be `tauri.conf.json` or `tauri.conf.json5`. The TOML file name is `Tauri.toml`.
 - Platform-specific configuration: in addition to the default file, Tauri reads `tauri.linux.conf.json`, `tauri.windows.conf.json`, `tauri.macos.conf.json`, `tauri.android.conf.json` and `tauri.ios.conf.json` (or `Tauri.linux.toml`, `Tauri.windows.toml`, `Tauri.macos.toml`, `Tauri.android.toml` and `Tauri.ios.toml` if the `Tauri.toml` format is used), which get merged with the main configuration object.
 - Source: `tauri-apps/tauri@tauri-v2.12.4` `crates/tauri-schema-generator/schemas/config.schema.json` (`$id` `https://schema.tauri.app/config/2.12.4`).
+- tauri 2.12.5: `crates/tauri-schema-generator/schemas/config.schema.json` differs from 2.12.4 only in the `$id` (`https://schema.tauri.app/config/2.12.5`); the config category pages were verified unchanged and stay pinned to `tauri-v2.12.4`.
+- Source: https://github.com/tauri-apps/tauri/compare/tauri-v2.12.4...tauri-v2.12.5 (fetched 2026-11-14)
 
 ## Related
 

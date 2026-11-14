@@ -89,7 +89,7 @@ type MessageDialogResult = 'Yes' | 'No' | 'Ok' | 'Cancel' | (string & {})       
 - `ask` is a wrapper for `await message('msg', { buttons: 'YesNo' }) === 'Yes'`; `confirm` for `{ buttons: 'OkCancel' } === 'Ok'`.
 - For `message`, a string `options` is the dialog title.
 - Tauri plugin (Rust core + system WebView). Not Electron's `dialog` module; see the electron skill for Electron.
-- Source: `tauri-apps/plugins-workspace@dialog-v2.8.3` `plugins/dialog/guest-js/index.ts`.
+- Source: `tauri-apps/plugins-workspace@dialog-v2.8.4` `plugins/dialog/guest-js/index.ts`.
 
 ```typescript
 import { message } from '@tauri-apps/plugin-dialog';
@@ -98,6 +98,7 @@ await message('Take on the task?', {
   buttons: { ok: 'Accept', cancel: 'Cancel' }
 });
 ```
+- `guest-js/index.ts` is identical at dialog-v2.8.3 and dialog-v2.8.4.
 
 ## Related
 

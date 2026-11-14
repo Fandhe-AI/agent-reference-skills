@@ -116,6 +116,8 @@ Windows bundler configuration (`bundle.windows`): signing, WebView2 install mode
 
 - `WebviewInstallMode`: for the updater bundle `downloadBootstrapper` is used. See https://v2.tauri.app/distribute/windows-installer/#webview2-installation-options.
 - Source: `tauri-apps/tauri@tauri-v2.12.4` `crates/tauri-schema-generator/schemas/config.schema.json` (`definitions.WindowsConfig`, `WixConfig`, `NsisConfig` and referenced types).
+- tauri 2.12.5: with `allowDowngrades` set to `false` the NSIS installer also blocks downgrades over an MSI installation in silent, passive and update modes. The NSIS language string `choowHowToInstall` was renamed to `chooseHowToInstall`; a `customLanguageFiles` entry that only defines the old name keeps working for now.
+- Source: https://github.com/tauri-apps/tauri/blob/tauri-v2.12.5/crates/tauri-bundler/CHANGELOG.md (fetched 2026-11-14)
 
 ## Related
 

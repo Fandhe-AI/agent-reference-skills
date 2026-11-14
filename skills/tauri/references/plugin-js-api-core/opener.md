@@ -52,7 +52,8 @@ and for paths `opener:allow-open-path` with `"allow": [{ "path": "$APPDATA/file"
 - The guest-js module doc still carries the shell plugin's legacy `open: true` regex text; it does not apply to plugin-opener, whose scope is configured through capabilities.
 - Tauri plugin guest-js binding (Rust core + system WebView). Not Electron's API (`shell.openExternal`); see the electron skill for Electron.
 - `revealItemInDir` is unsupported on Android and iOS.
-- Source: `plugins-workspace@opener-v2.7.2` `plugins/opener/guest-js/index.ts`
+- Source: `plugins-workspace@opener-v2.7.3` `plugins/opener/guest-js/index.ts`
+- `guest-js/index.ts` is identical at opener-v2.7.2 and opener-v2.7.3; only the injected `guest-js/init.ts` script changed (`<base target>` handling).
 
 ## Related
 

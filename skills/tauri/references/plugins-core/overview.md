@@ -100,7 +100,7 @@ Platform support for the plugins documented in this category (derived from `[pac
 - `*` marks entries with a note: fs on Windows "Apps installed via MSI or NSIS in `perMachine` and `both` mode require admin permissions for write access in `$RESOURCES` folder"; fs on Linux / macOS "No write access to `$RESOURCES` folder"; fs on Android / iOS "Access is restricted to Application folder by default"; opener and shell on Android / iOS "Only allows to open URLs via `open`".
 - Support levels in the official table are `Full support`, `Partial support` and `No support`.
 - Support rows for the app / mobile plugins are in the `plugins-app` category pages.
-- Pins: docs `tauri-apps/tauri-docs` branch `v2` at `32f68c5`; plugin data from plugins-workspace per-plugin v2 tags (`fs-v2.7.1`, `http-v2.8.3`, `websocket-v2.5.0`, `upload-v2.5.0`, `sql-v2.6.0`, `store-v2.5.0`, `stronghold-v2.4.0`, `persisted-scope-v2.4.2`, `localhost-v2.4.0`, `shell-v2.5.0`, `opener-v2.7.2`, `process-v2.4.0`, `os-v2.4.0`, `log-v2.10.1`, `cli-v2.5.0`).
+- Pins: docs `tauri-apps/tauri-docs` branch `v2` at `32f68c5`; plugin data from plugins-workspace per-plugin v2 tags (`fs-v2.7.1`, `http-v2.9.0`, `websocket-v2.5.0`, `upload-v2.5.0`, `sql-v2.6.0`, `store-v2.5.1`, `stronghold-v2.4.0`, `persisted-scope-v2.4.3`, `localhost-v2.4.0`, `shell-v2.6.0`, `opener-v2.7.3`, `process-v2.4.0`, `os-v2.4.0`, `log-v2.10.2`, `cli-v2.5.0`).
 
 ## Related
 

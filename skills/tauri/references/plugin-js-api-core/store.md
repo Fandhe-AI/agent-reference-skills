@@ -87,7 +87,8 @@ type ReloadOptions = { ignoreDefaults?: boolean }
 - `LazyStore` options are not applied if someone else already created the store.
 - Tauri plugin for a persistent key-value file; not a database or cache service (see the upstash / drizzle skills).
 - Tauri plugin guest-js binding (Rust core + system WebView). Not Electron's API; see the electron skill for Electron.
-- Source: `plugins-workspace@store-v2.5.0` `plugins/store/guest-js/index.ts`
+- Source: `plugins-workspace@store-v2.5.1` `plugins/store/guest-js/index.ts`
+- `guest-js/index.ts` is identical at store-v2.5.0 and store-v2.5.1.
 
 ## Related
 

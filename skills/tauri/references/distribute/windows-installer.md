@@ -356,11 +356,15 @@ The NSIS installer is multi-language: a single installer contains all selected t
 - Hook dependency guidance: check whether the dependency is installed (registry keys, file existence or the Windows `where` command); use `/passive`, `/quiet` or `/silent` and `/norestart`; clean up temporary files and bundled installers; consider dependencies shared with other applications when uninstalling; provide meaningful error messages.
 - The source heading calls the dependency example "MSI Installer Example" but it is an NSIS hook (`NSIS_HOOK_POSTINSTALL`) that runs a bundled MSI.
 - The source example treats only exit code 0 as success; msiexec returns 3010 (ERROR_SUCCESS_REBOOT_REQUIRED) on a successful install that needs a reboot (likely with /norestart), so 3010 is handled as success here with SetRebootFlag true.
-- The source's `resources` array snippet is missing a closing quote after `another-one.msi`; corrected here.
+- The source's `resources` array snippet was missing a closing quote after `another-one.msi` in tauri-docs@32f68c5; fixed upstream at tauri-docs@ed0786e. The corrected snippet is kept.
 - The source config uses the 98.0.1108.50 directory while extracting the 128.0.2739.42 CAB; aligned to 128.0.2739.42 here. Use the folder name of the runtime you extracted.
 - On Windows 10 (April 2018 release or later) and Windows 11 the WebView2 runtime is distributed with the operating system. A fixed runtime adds about 180MB; `skip` means the app WILL NOT work if the runtime is not installed.
 - Signing cross compiled Windows installers requires an external signing tool (see sign-windows).
 - Complete option lists: WixConfig and NsisConfig in the configuration reference.
+- tauri 2.12.5 / `@tauri-apps/cli` 2.12.4 (tauri-bundler 2.10.4): the misspelled NSIS language string `choowHowToInstall` was renamed to `chooseHowToInstall`. A custom language file in `bundle.windows.nsis.customLanguageFiles` that only defines the old name keeps working for now, but should migrate to the new name.
+- tauri 2.12.5 (tauri-bundler 2.10.4): with `bundle.windows.allowDowngrades` set to `false`, NSIS installers now also block downgrades over a newer installation made by the MSI installer in silent (`/S`), passive (`/P`) and update (`/UPDATE`) modes. The NSIS installer also quotes the executable path in the file association `shell\open\command` and `DefaultIcon` registry values, and the German, Italian and Swedish NSIS language files were fixed.
+- Source: https://github.com/tauri-apps/tauri/blob/tauri-v2.12.5/crates/tauri-bundler/CHANGELOG.md (fetched 2026-11-14)
+- Source: https://github.com/tauri-apps/tauri-docs/blob/ed0786ec86699e4ffd08f3234e37aa125becb9eb/src/content/docs/distribute/windows-installer.mdx (tauri-docs@ed0786e, fetched 2026-11-14)
 
 ## Related
 

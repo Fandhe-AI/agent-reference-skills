@@ -69,6 +69,9 @@ Exports: `Importance`, `Visibility`, `Schedule`, `ScheduleEvery` (values) and ty
 | silent | `boolean` | Silent presentation on iOS (no badge, no sound, not listed). |
 | visibility | `Visibility` | Notification visibility. |
 | number | `number` | Number of items this notification represents on Android. |
+| when | `number` | Time the event occurred, as milliseconds since the epoch (e.g. `Date.now()`); notifications in the panel are sorted by it. Android only. |
+| usesChronometer | `boolean` | Show `when` as a stopwatch (automatically updating minutes and seconds since `when`) instead of a timestamp. Android only. |
+| chronometerCountDown | `boolean` | Count down instead of up; only relevant if `usesChronometer` is `true`. If `when` is in the future, the chronometer counts down to zero and stops. Android only. |
 
 `Schedule` (class; scheduling is only supported on mobile, desktop notifications are always shown immediately):
 
@@ -102,13 +105,15 @@ Exports: `Importance`, `Visibility`, `Schedule`, `ScheduleEvery` (values) and ty
 - `onAction`: on mobile emitted for notifications referencing an action type registered with `registerActionTypes`. On desktop emitted when the user clicks a notification (`actionId` is `tap`) or one of its actions, for notifications shown while a listener existed and as far as the notification server reports it; without a listener desktop notifications are shown without their actions. Windows: a click is only reported while the toast is on screen, not once it moved to the Action Center. macOS: two or more actions are shown in an "Options" menu, a click on the menu button itself reports the first action, and actions are told apart by their title.
 - `onNotificationReceived`: only emitted on mobile.
 - Tauri plugin (Rust core + system WebView). Not Electron's `Notification` class; see the electron skill for Electron.
-- Source: `tauri-apps/plugins-workspace@notification-v2.7.0` `plugins/notification/guest-js/index.ts`.
+- Source: `tauri-apps/plugins-workspace@notification-v2.8.1` `plugins/notification/guest-js/index.ts`.
 
 ```typescript
 import { Schedule, sendNotification } from '@tauri-apps/plugin-notification';
 const schedule = Schedule.at(new Date(Date.now() + 60 * 1000));
 sendNotification({ title: 'Tauri', body: 'One minute later', schedule });
 ```
+- `when`, `usesChronometer` and `chronometerCountDown` are new in notification-v2.8.0 (not present in 2.7.0).
+- Source: https://github.com/tauri-apps/plugins-workspace/blob/notification-v2.8.1/plugins/notification/CHANGELOG.md (fetched 2026-11-14)
 
 ## Related
 
