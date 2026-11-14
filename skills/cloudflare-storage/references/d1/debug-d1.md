@@ -67,6 +67,7 @@ Specific `D1_ERROR` types:
 | `D1 DB storage operation exceeded timeout which caused object to be reset.` | A query is writing a large amount of data (e.g. GBs) and taking too long. | App action: Optimize queries, spread load over time, or shard. |
 | `D1 DB is overloaded. Requests queued for too long.` | Requests queued too long (too many, or slow ones). | App action: Optimize queries, spread load over time, or shard. |
 | `D1 DB is overloaded. Too many requests queued.` | The request queue is too long. | App action: Optimize queries, spread load over time, or shard. |
+| `D1 DB is overloaded. Too many resources consumed within a 10 second window` | D1 rate limited the database after it consumed excessive CPU and memory resources over a ten-second period. Very large responses, frequent table scans over many rows, and slow queries can cause excessive resource consumption. | App action: Find and remediate slow and expensive queries. Refer to Find expensive queries (`find-expensive-queries.md`). |
 | `D1 DB's isolate exceeded its memory limit and was reset.` | A query loaded too much into memory. | App action: Optimize queries, spread load over time, or shard. |
 | `D1 DB exceeded its CPU time limit and was reset.` | A query used a lot of CPU time (e.g. scanning a 9 GB table, large import/export). | App action: Split the query into smaller shards. |
 | `D1 query result exceeded the maximum response size limit of 50 MB` | Result larger than the maximum query result size of 50 MB. This limit is enforced from 2026-11-04. | App action: Select only the needed columns instead of `SELECT *`, or paginate with `LIMIT` and `OFFSET`. |
@@ -78,6 +79,36 @@ Specific `D1_ERROR` types:
 - Before `wrangler` 3.1.1, D1 JavaScript errors used the `cause` property; on older versions log `error?.cause?.message`.
 - Binding calls (`run()`, `all()`, `first()`, `batch()`) do not accept timeouts; a call blocks until completion, an internal limit, or Worker termination. `Promise.race` only bounds the wait and does not cancel the query: a write that loses the race may still commit, so confirm the outcome before retrying.
 - When reporting issues include the database ID (`wrangler d1 list`), the query (redact PII), the Worker code with `bind()` calls, and the full error text including `error.cause.message`.
+- Source: https://developers.cloudflare.com/d1/observability/debug-d1/ (production `34d908a`, fetched 2026-11-14)
+
+### API error codes
+
+In addition to the `D1_ERROR` constants in the error list above, D1 returns numeric error codes on certain failures. Use the following table to identify the cause and recommended action.
+
+| Code | Name | Common cause | Recommended action |
+| --- | --- | --- | --- |
+| 7403 | Service authorization failure | The API token or Wrangler OAuth session does not have sufficient scope for the operation. | Verify the token has the required permission for the endpoint. Run `wrangler login` to refresh the Wrangler OAuth session. |
+| 7404 | Database not found | The database UUID does not exist in the account, or the binding is misconfigured. | Confirm the `database_id` in your `wrangler.toml` matches the database UUID shown in the Cloudflare dashboard. |
+| 7406 | Limit exceeded | The account has reached the maximum number of D1 databases allowed on its plan. | Review your current limits (`limits.md`). Enterprise accounts with a custom database limit should contact Cloudflare support if the limit is not reflected. |
+| 7429 | DB overloaded | Too many concurrent requests are queued, or queued requests are taking too long to complete. | Retry with exponential backoff and jitter. If the error recurs while SQL execution time (`queryBatchTimeMs`) is fast and your workload is low, check the [Cloudflare System Status](https://www.cloudflarestatus.com/) page. |
+| 7500 | Internal error | A platform-side storage event made the database temporarily unavailable. | Check the [Cloudflare System Status](https://www.cloudflarestatus.com/) page. Retry with exponential backoff. If the database remains unavailable after the incident resolves, contact Cloudflare support. |
+| 10000 | Authentication error | The API token does not have the required scope for the endpoint. | Check the required permission for the endpoint in the D1 API reference and create a token with the correct scope. Refer to "Error 10000 and token permissions" below. |
+
+#### Error 7429 and analytics
+
+If you receive error 7429 while your analytics show fast SQL execution times, the error may originate from a server-side platform event rather than your application's workload. The `queryBatchTimeMs` metric measures only SQL execution time inside the database, not the total time a request spends waiting to reach SQL. Check the Cloudflare System Status page before reducing application concurrency. If the error recurs and you suspect slow or expensive queries are contributing, refer to Find slow and expensive queries (`find-expensive-queries.md`) to identify the databases and queries using the most resources.
+
+#### Error 10000 and token permissions
+
+Error 10000 is an authentication error that occurs when the API token does not have the required permission for the endpoint. It is not specific to the export endpoint.
+
+The most common cause for error 10000 during export is using a **D1 Read** token instead of a **D1 Write** token. The export operation requires D1 Write permission because it locks the database until the export completes; it is not a read-only operation.
+
+To resolve this:
+
+1. Go to **API Tokens** in your Cloudflare dashboard (`/profile/api-tokens`).
+2. Create a new token with D1 Write permission, or check the D1 API reference for the required permission for the specific endpoint you are calling.
+3. Use that token for the request.
 
 ## Related
 

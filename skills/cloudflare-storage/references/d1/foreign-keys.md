@@ -30,7 +30,7 @@ CREATE TABLE orders (
 
 Defer enforcement during schema changes:
 
-Adapted (not in the official docs): the explicit `PRAGMA defer_foreign_keys = off` before the end of the transaction was removed (turning deferral off while violations are unresolved is unsafe) and statements are terminated with `;`; see Notes.
+Adapted (not in the official docs): statements are terminated with `;`; see Notes.
 
 ```sql
 -- Defer foreign key enforcement in this transaction.
@@ -39,8 +39,7 @@ PRAGMA defer_foreign_keys = on;
 -- Run your CREATE TABLE or ALTER TABLE / COLUMN statements
 ALTER TABLE users ...;
 
--- Restore consistency before the transaction ends. The setting is reset
--- implicitly at the end of the transaction; unresolved violations fail there.
+-- Outstanding foreign key violations are checked when the transaction ends.
 ```
 
 Cascading action:
@@ -77,10 +76,12 @@ Actions for `ON UPDATE` and/or `ON DELETE` (may differ per clause):
 ## Notes
 
 - Because D1 runs every query inside an implicit transaction, user queries cannot change `PRAGMA foreign_keys` during a query or migration; use `PRAGMA defer_foreign_keys = on|off` instead.
-- `PRAGMA defer_foreign_keys` does not disable enforcement outside the current transaction and is reset implicitly at its end; unresolved violations at the end fail with `FOREIGN KEY constraint failed`.
-- Adapted from the official docs: the official deferral example ends with an explicit `PRAGMA defer_foreign_keys = off` while violations may still be unresolved; it was removed so the example relies on the implicit reset and restores consistency first.
+- `PRAGMA defer_foreign_keys = on` does not disable enforcement outside the current transaction and is reset implicitly at its end; unresolved violations at the end fail with `FOREIGN KEY constraint failed`.
+- Do not set `PRAGMA defer_foreign_keys = off` to check that you have resolved outstanding foreign key violations. As in SQLite, setting it to `off` discards any outstanding violations instead of reporting them, so the transaction commits even if rows still violate a constraint. To find violations before the transaction ends, run `PRAGMA foreign_key_check` (see `sql-statements.md`). Earlier revisions of the official page (production `d0995b9`) said `PRAGMA defer_foreign_keys = off` does not disable enforcement and ended the deferral example with an explicit `off`; this was corrected upstream in #34887 (2026-11-10).
+- Source: https://developers.cloudflare.com/d1/sql-api/foreign-keys/ (production `34d908a`, fetched 2026-11-14)
 - A foreign key can be defined in `CREATE TABLE` or when adding a column via `ALTER TABLE`. Multiple foreign keys per table and references to multiple tables are allowed.
 - `CASCADE` can delete child rows across tables with unintended side effects.
+- Adapted from the official docs: statements in the deferral example are terminated with `;`.
 - Corrected from the official docs: the official cascading-action example has a trailing comma after `email_address TEXT` (a syntax error) and no statement terminators; the comma was removed and `;` added. The first example likewise lacks `;` between its two `CREATE TABLE` statements, so `;` was added.
 - Corrected from the official docs: the official table says `CASCADE` on "updating or deleting a parent key deletes all child keys". In SQLite only `ON DELETE CASCADE` deletes child rows; `ON UPDATE CASCADE` copies the changed parent key into the child rows. The official page also says `SET DEFAULT` cannot be used without a `DEFAULT`; in SQLite it can be declared and falls back to `NULL`, so the post-action value must satisfy the foreign key and `NOT NULL` constraints.
 - The official `CREATE TABLE users` snippet in the CASCADE example has a trailing comma after `email_address TEXT,` as written in the source.

@@ -57,13 +57,14 @@ export default {
 
 - Create the project with `npm create cloudflare@latest -- r2-worker` (select **Hello World example**); TypeScript users regenerate types with `npx wrangler types`.
 - TypeScript variant uses `async fetch(request, env): Promise<Response>` and ends with `} satisfies ExportedHandler<Env>;`.
-- Test locally with `npx wrangler dev`. By default it uses a local R2 simulation; objects exist only in `.wrangler/state` and do not affect the production bucket. To connect to the real bucket add `"remote": true` to the R2 binding.
+- Test locally with `npx wrangler dev`. By default it uses a local R2 simulation; objects exist only in `.wrangler/state` and do not affect the production bucket. To connect to the real bucket add `"remote": true` to the R2 binding; see Local development (`local-development.md`) for local data, HTTP endpoints, and remote binding setup.
 - Adapted from the official docs: added an authorization check; the official example is unauthenticated and must not be deployed as is. For local testing put `AUTH_KEY_SECRET=<value>` in `.dev.vars` (add it to `.gitignore`) and send the same value in the `X-Custom-Auth-Key` header.
 - Local test: `curl -X PUT http://localhost:8787/my-file.txt -H "X-Custom-Auth-Key: <value>" -d 'Hello, R2!'` then `curl http://localhost:8787/my-file.txt -H "X-Custom-Auth-Key: <value>"`. Deploy with `npx wrangler deploy`.
 - Bindings in general are covered by the cloudflare-workers skill; Wrangler configuration by the cloudflare-wrangler skill.
 
 ## Related
 
+- [Local development](./local-development.md)
 - [Use R2 from Workers](./workers-api-usage.md)
 - [Workers API reference](./workers-api-reference.md)
 - [Get started](./get-started.md)

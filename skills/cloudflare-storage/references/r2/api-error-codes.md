@@ -70,7 +70,7 @@ Upload and request:
 | 10014 | InvalidDigest | 400 | Checksum header format is malformed. | Ensure checksums are properly encoded (base64 for SHA/CRC checksums). |
 | 10037 | BadDigest | 400 | Provided checksum does not match the uploaded content. | Verify data integrity and retry the upload. |
 | 10039 | InvalidRange | 416 | Requested byte range is not satisfiable. | Ensure the range start is less than object size. Check `Range` header format. |
-| 10031 | PreconditionFailed | 412 | Conditional headers (`If-Match`, `If-Unmodified-Since`, etc.) were not satisfied. | Object's ETag or modification time does not match your condition. Refetch and retry. |
+| 10031 | PreconditionFailed | 412 | Conditional headers (`If-Match`, `If-Unmodified-Since`, etc.) were not satisfied. | Object's ETag or modification time does not match your condition. Refetch and retry. Refer to [conditional operations](./s3-conditional-operations.md). |
 
 Multipart:
 
@@ -90,7 +90,14 @@ Service:
 | 10054 | ClientDisconnect | 400 | Client disconnected before request completed. | Check network connectivity and retry. |
 | 10058 | TooManyRequests | 429 | Rate limit exceeded. Often caused by multiple concurrent requests to the same object key (limit: 1 write/second per key). | Check if multiple clients are accessing the same object key. |
 
+## Notes
+
+- `PreconditionFailed` (10031): the official page now links the conditional-operations guidance to the dedicated Conditional operations page (`s3-conditional-operations.md`) instead of the S3 extensions page.
+- Source: https://developers.cloudflare.com/r2/api/error-codes/ (production `34d908a`, fetched 2026-11-14)
+
 ## Related
+
+- [Conditional operations](./s3-conditional-operations.md)
 
 - [Limits](./platform-limits.md)
 - [Bucket locks](./buckets-bucket-locks.md)

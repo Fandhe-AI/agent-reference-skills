@@ -164,8 +164,12 @@ Signature parameters: `X-Amz-Algorithm`, `X-Amz-Credential`, `X-Amz-Date`, `X-Am
 - Supported methods: `GET`, `HEAD`, `PUT`, `DELETE`. `POST` (multipart form uploads via HTML forms) is not supported. The AWS CLI `presign` supports GET only.
 - Treat presigned URLs as bearer tokens; use short expirations for sensitive operations.
 - They work with the S3 API domain (`<ACCOUNT_ID>.r2.cloudflarestorage.com`) and cannot be used with custom domains. For authentication on custom domains use WAF HMAC validation (Pro plan or above).
+- Local development: to test presigned requests locally, configure the S3 client with the local S3-compatible endpoint and credentials (see `local-development.md`). Generate URLs using that endpoint and path-style addressing. The local endpoint accepts signed requests for local buckets only.
+- Source: https://developers.cloudflare.com/r2/api/s3/presigned-urls/ (production `34d908a`, fetched 2026-11-14)
 
 ## Related
+
+- [Local development](./local-development.md)
 
 - [Authentication](./api-tokens.md)
 - [Temporary credentials](./s3-temporary-credentials.md)
