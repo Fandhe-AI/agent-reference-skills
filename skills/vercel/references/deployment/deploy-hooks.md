@@ -45,9 +45,15 @@ curl -X POST https://api.vercel.com/v1/integrations/deploy/<project-id>/<hook-id
 | Pro | 5 |
 | Enterprise | 10 |
 
+Deploy hooks can be triggered up to 60 times per hour per project, across all deploy hooks in the project (see Rate limits in the Vercel docs).
+
 ## Notes
 
 - Rechecked against the current Deploy Hooks docs: trigger with a GET or POST to the hook URL (no payload) and `?buildCache=false` to skip the build cache are unchanged. The CLI can also manage hooks: `vercel deploy-hooks ls`, `vercel deploy-hooks create <name> --ref <branch>`, `vercel deploy-hooks rm <id>` (CLI overview)
+- Use a name that clearly identifies the hook; create only one Deploy Hook per branch unless you use multiple data sources.
+- If a hook fails to create a deployment, check the status check on the commit associated with the hook.
+- Deployments triggered by a hook are marked in the deployments list.
+- Source: https://vercel.com/docs/deploy-hooks (fetched 2026-11-14)
 - No authentication header is needed to trigger a hook; the unique URL acts as the secret — treat it like a token/password.
 - If the same version is deployed multiple times, Vercel cancels previous deployments for the same hook to reduce build times.
 - Deploy Hooks will not trigger if `github.enabled = false` is set in `vercel.json`.

@@ -6,27 +6,28 @@ Manage webhooks for your Vercel account: list, inspect, create, and remove. Beta
 
 ```bash
 vercel webhooks list
-vercel webhooks get <id>
+vercel webhooks inspect <id>
 vercel webhooks create <url> --event deployment.created --event deployment.ready
 vercel webhooks create <url> --event deployment.created --project prj_abc123
-vercel webhooks rm <id> --yes
+vercel webhooks delete <id> --yes
 ```
 
 ## Options / Props
 
 | Name | Shorthand | Description |
 |------|-----------|-------------|
-| `--format` | | `json` output for `list` and `get` subcommands |
+| `--json` | | JSON output for `list` and `inspect` subcommands |
 | `--event` | `-e` | Event type to subscribe to (repeatable); required for `create` |
 | `--project` | `-p` | Limit webhook to a project ID (repeatable); default: all projects |
-| `--yes` | | Skip confirmation for `rm` |
+| `--yes` | | Skip confirmation for `delete` |
 
 ## Notes
 
-- Subcommands: `list` / `ls`, `get` / `inspect`, `create` / `add`, `rm` / `remove` / `delete`
+- Subcommands: `list`, `inspect`, `create`, `delete`. `get` remains a supported alias of `inspect` but prints a deprecation warning. Earlier docs used `rm` and `--format`; not confirmed on the current page.
 - On `create`, the webhook secret is shown only once; save it immediately to verify `x-vercel-signature` headers
-- Project must be specified by **project ID** (e.g. `prj_abc123`), not project name
-- See official docs for supported event types
+- Project must be specified by **project ID** (e.g. `prj_abc123`), not project name; find it in the dashboard (Settings, General) or with `vercel project inspect <name>`. `--project` can be repeated.
+- See the official Webhooks API reference for supported event types
+- Source: https://vercel.com/docs/cli/webhooks (fetched 2026-11-14)
 
 ## Related
 

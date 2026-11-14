@@ -46,6 +46,9 @@ export default function middleware(request: Request, context: RequestContext) {
 
 ## Notes
 
+- Source: https://vercel.com/docs/functions/streaming-functions (fetched 2026-11-14)
+- Prerequisites on the official page: Node.js 20 or later, the latest Vercel CLI, `OPENAI_API_KEY` in `.env.local`, and `npm i ai`; the example route method must be named `GET`; in Next.js Pages projects, streaming functions must be defined in an `app` directory
+- The fetched page does not cover Edge runtime streaming or `waitUntil()`; the Edge 25s / 300s figures are in limitations.md and edge-runtime.md (not re-confirmed on this page)
 - Vercel recommends [Vercel AI SDK](https://sdk.vercel.ai/docs) for LLM streaming — reduces boilerplate and enables provider switching
 - Streaming Python functions use extended runtime logs (real-time output, larger log entries)
 - Log Drains may be affected by increased frequency/format of streaming Python function logs

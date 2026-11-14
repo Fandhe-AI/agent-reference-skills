@@ -5,11 +5,12 @@ description: >
   Vercel Functions（Node.js / Python / Bun / Edge / Fluid Compute / ISR / Middleware）、
   @vercel/functions、Vercel Blob、Global Config（旧 Edge Config）、
   Marketplace Storage（Neon / Upstash / Supabase）、OIDC、
-  デプロイメント（Git 連携 / rollback / rolling release）、環境変数、ドメイン、DNS、ログ、キャッシュ、CDN。
+  デプロイメント（Git 連携 / rollback / rolling release）、環境変数、ドメイン、DNS、ログ、キャッシュ、CDN、
+  vercel billing / monitors / drains / ci / templates。
 user-invocable: false
 ---
 
-対象バージョン: vercel.com/docs Markdown twins (取得日 2026-10-16) / Vercel CLI 64.3.1 / @vercel/blob 2.8.2 / @vercel/global-config 1.5.1 / @vercel/functions 3.10.1
+対象バージョン: vercel.com/docs Markdown twins (取得日 2026-11-14) / Vercel CLI 65.16.0 / @vercel/blob 2.9.0 / @vercel/global-config 1.5.1 / @vercel/functions 3.11.3
 
 ## ディレクトリ構成
 
@@ -23,38 +24,51 @@ skills/vercel/
       global-options.md
       activity.md
       agent.md
+      agent-runs.md
       ai-gateway.md
       alerts.md
       alias.md
       api.md
+      billing.md
       bisect.md
       blob.md
+      budgets.md
       build.md
       buy.md
       cache.md
       certs.md
+      changelog.md
+      ci.md
       comments.md
       connect.md
       contract.md
       crons.md
       curl.md
+      daemons.md
       deploy.md
       deploy-hooks.md
       dev.md
       dns.md
+      docs.md
+      doctor.md
       domains.md
+      drains.md
       env.md
+      feedback.md
       firewall.md
       flags.md
       git.md
       global-config.md
       guidance.md
+      health.md
       help.md
       httpstat.md
       init.md
       inspect.md
       install.md
       integration.md
+      kb.md
+      kms.md
       link.md
       list.md
       login.md
@@ -63,8 +77,10 @@ skills/vercel/
       mcp.md
       metrics.md
       microfrontends.md
+      monitors.md
       oauth-apps.md
       open.md
+      organizations.md
       pricing.md
       project.md
       promote.md
@@ -76,14 +92,18 @@ skills/vercel/
       rolling-release.md
       routes.md
       sandbox.md
+      schedules.md
       security.md
       setup.md
       signup.md
       skills-cmd.md
+      storage.md
       switch.md
       target.md
       teams.md
       telemetry.md
+      templates.md
+      token-pass.md
       tokens.md
       traces.md
       upgrade.md
@@ -186,23 +206,23 @@ skills/vercel/
     blob-storage.md
   scripts/
     README.md
-    install.md
-    auth.md
-    setup.md
-    deploy.md
-    env.md
-    logs.md
-    promote-rollback.md
-    domains.md
-    ops.md
-    crons.md
-    connect.md
-    oauth-apps.md
     ai-gateway.md
+    auth.md
+    connect.md
+    crons.md
+    deploy-hooks.md
+    deploy.md
+    domains.md
+    env.md
+    global-config.md
+    install.md
+    logs.md
+    oauth-apps.md
+    ops.md
+    promote-rollback.md
+    setup.md
     tokens.md
     upgrade.md
-    global-config.md
-    deploy-hooks.md
 ```
 
 ## 探索手順
@@ -219,6 +239,8 @@ skills/vercel/
 |--------|---------|------------|
 | CLI コマンドの使い方を知りたい（deploy, dev, env, rollback など） | cli | [references/cli/README.md](references/cli/README.md) |
 | CLI のグローバルオプション（--token, --scope, --debug）を確認したい | cli | [references/cli/README.md](references/cli/README.md) |
+| 請求・予算・請求書（billing / budgets / usage / contract）、モニター・ドレイン・CI・テンプレート・Schedules の CLI を知りたい | cli | [references/cli/README.md](references/cli/README.md) |
+| Blob の TTL（ttlDays / setTtl）を知りたい | storage/vercel-blob | [references/storage/vercel-blob/README.md](references/storage/vercel-blob/README.md) |
 | vercel.json / vercel.ts の設定項目を確認したい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | Build Output API の仕様を確認したい | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | Vercel Functions の概要・ランタイムを知りたい | functions | [references/functions/README.md](references/functions/README.md) |

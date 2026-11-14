@@ -27,6 +27,8 @@ on:
 | `Metadata` | Y | N | Read basic repository metadata |
 | `Web Hooks` | Y | Y | React to GitHub events |
 | `Commit Statuses` | Y | Y | Sync commit status between GitHub and Vercel |
+| `Actions` | Y | N | Allows agents to read workflow run logs to help diagnose CI failures |
+| `Workflows` | Y | Y | Allows agents to configure and update CI workflow files on your behalf |
 
 ### Organization & User Permissions
 
@@ -71,6 +73,13 @@ on:
 - Bot comments on PRs and commits can be silenced in **Project Settings → Git → Connected Git Repository**.
 - `deployment_status` GitHub webhook events can be disabled in **Project Settings → Git** to reduce noise; migrate to `repository_dispatch` events instead.
 - GitHub Enterprise Server requires GitHub Actions integration (`vercel build` + `vercel deploy --prebuilt`).
+- GitHub Enterprise Cloud with Data Residency on a unique subdomain also requires the GitHub Actions approach.
+- Personal repositories: Collaborators cannot create projects from the repository or connect it to existing projects; only the Owner can. Organization repositories: **Owner**, or **Member** with Write, Maintain, or Admin access to the repository; Outside Collaborators cannot import or connect.
+- Missing repository on the import screen: check the selected Git account (top-left selector), then grant the Vercel GitHub App access (**Adjust GitHub App Permissions** / **Configure GitHub App**; under **Repository access** add the repository or choose **All repositories**; for organizations the app must be installed on the organization and an Owner may need to approve), then check your role, then re-open the import screen.
+- Commit status: each deployed project gets a GitHub Commit Status per commit (success, failure, or skipped). Monorepos can enable a consolidated commit status and mark projects as soft failures so they don't block merges; configure both in the project's **Git** settings. Bot comments cannot be silenced for specific branches only.
+- With a new push to a branch while a build is running, the current build completes, queued commits wait, and only the latest queued commit is built (others are cancelled).
+- `repository_dispatch` only triggers a workflow if the workflow file exists on the default branch; add a `workflow_dispatch` trigger to test before merging. Event types: `vercel.deployment.ready`, `.success`, `.error`, `.canceled`, `.ignored` (ignored build script), `.skipped` (automatic deployment skipping in monorepos), `.pending`, `.failed`, `.promoted`.
+- Source: https://vercel.com/docs/git/vercel-for-github (fetched 2026-11-14)
 - Fork PRs require authorization from a team member before deploying (disable with **Git Fork Protection** toggle).
 
 ## Select Turbo for One Deployment

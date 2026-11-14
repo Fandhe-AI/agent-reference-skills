@@ -61,7 +61,7 @@ steps:
 | `vercelToken` | string | Vercel personal access token with deploy permissions. Optional; alternatively env `VERCEL_TOKEN` |
 | `vercelCWD` | string | Working directory for the task; defaults to `System.DefaultWorkingDirectory`. Alternatively env `VERCEL_CWD` |
 | `production` | boolean | Create a production deployment; omitted or `false` creates preview deployments |
-| `target` | string | Environment to deploy to (production, preview, or custom environment); equivalent to CLI `--target` |
+| `target` | string | Environment to deploy to (production, preview, or custom environment); equivalent to passing `--environment` when deploying with Vercel CLI |
 | `archive` | boolean | Enables `--archive=tgz` for the internal Vercel CLI operations |
 | `env` | string | Runtime environment variables via CLI `--env` |
 | `buildEnv` | string | Build environment variables via CLI `--build-env` |
@@ -85,7 +85,7 @@ steps:
 
 ## Setup steps
 
-1. Create an **empty** Vercel Project with no Git integration: `vercel project add <project-name>` (or create in the dashboard and disconnect Git).
+1. Create an **empty** Vercel Project with no Git integration: `vercel project create <project-name>` (or create in the dashboard and disconnect Git).
 2. Create a Vercel Personal Access Token scoped to the team that owns the project.
 3. Store it as a secret pipeline variable `VERCEL_TOKEN`.
 4. Install the Vercel Deployment Extension from the Visual Studio marketplace into the Azure DevOps organization.
@@ -98,7 +98,7 @@ For PR deployments and comments, also create an Azure DevOps Personal Access Tok
 - The step must have `name: 'Deploy'` (or similar) so `$(Deploy.deploymentTaskMessage)` can be referenced by the comment task.
 - The Vercel project must have no Git integration; deployments are triggered by Azure Pipelines instead.
 - Use secret variables (variable group or Azure Key Vault also possible) for tokens.
-- Source: https://vercel.com/docs/git/vercel-for-azure-pipelines
+- Source: https://vercel.com/docs/git/vercel-for-azure-pipelines (fetched 2026-11-14)
 
 ## Related
 

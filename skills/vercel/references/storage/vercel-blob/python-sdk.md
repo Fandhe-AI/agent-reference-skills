@@ -160,7 +160,10 @@ async with session(service_options=[options]):
 - The SDK does not retry failed requests.
 - Not supported in the Python SDK: conditional uploads/reads, renaming blobs, cache bypass on reads, client uploads, Signed URLs, optimized image uploads, upload progress callbacks. Use the JS SDK or Vercel CLI.
 - Don't call the sync API from an active async event loop; don't mix sync Blob calls in an async session or the reverse.
-- Source: https://vercel.com/docs/vercel-blob/python-sdk-reference
+- TTL (`ttlDays`, `setTtl()`, `expiresAt`) is not documented for the Python SDK; the official page lists neither support nor lack of support (not confirmed). Use the JS SDK or the Vercel CLI (see blob-sdk.md)
+- When a development OIDC token expires, the SDK refreshes it with your Vercel CLI credentials. A suspended store raises `BlobStoreSuspendedError` (official docs link: https://vercel.com/docs/vercel-blob/blocked-store)
+- Official walkthrough for FastAPI with private per-user receipts: https://vercel.com/kb/guide/python-and-vercel-blob
+- Source: https://vercel.com/docs/vercel-blob/python-sdk-reference (fetched 2026-11-14)
 
 ## Related
 

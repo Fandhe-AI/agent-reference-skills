@@ -29,7 +29,7 @@ vercel logs runtime --query 'level:error' --json | jq 'select(.type == "log") | 
 | `--until` | `-u` | End of the time window; same values as `--since` (default: now) |
 | `--limit` | `-n` | Max records to return (default: 100, max: 10,000) |
 | `--next` | `-N` | Continue a previous query using the cursor (keeps team, project, filter, time window) |
-| `--json` | `-F json` | One JSON object per line: `{"type":"log"\|"request","data":<event>}`, final line is a `summary` |
+| `--json` | | One JSON object per line: `{"type":"log"\|"request","data":<event>}`, final line is a `summary` |
 | `--follow` | `-f` | Deprecated: prints a warning and returns query results instead of streaming |
 
 ## Notes
@@ -41,10 +41,12 @@ vercel logs runtime --query 'level:error' --json | jq 'select(.type == "log") | 
 - JSON summary line has `recordsReturned`, `timeRange`, `pagination` (`hasMore`, `next`), `excludedIntervals`; an empty result prints only the summary
 - `--non-interactive` implies `--json`
 - KQL syntax: `field:value`, `field:(a OR b)`, `field:*`, `field != value`, numeric comparisons (`>`, `>=`, `<`, `<=`) on request records such as `httpStatus`, `field:*text*`, `AND` / `OR` / `NOT`, grouping with `(...)`. Wrap the whole query in single quotes; double-quote values with spaces or reserved characters. In runtime logs a bare word searches the message (case-insensitive). `requestId` uses the query time window; widen with `--since` for requests older than 30 minutes. List fields with `vercel logs runtime --help` / `vercel logs requests --help`
+- `-F json` is not mentioned on the current official page (not confirmed in official docs)
+- Source: https://vercel.com/docs/cli/logs (fetched 2026-11-14)
 
 ### Removed and changed options
 
-Passing a removed option fails with a usage error and prints the replacement.
+Passing an old option prints the replacement. `--search`, `--source`, `--branch`, `--expand` and `-j` fail with a usage error. In v65.12.0 and later, the command still runs the other old options and a positional deployment as their replacement and prints a warning; a value or combination it cannot convert (such as `--level` with `--status-code`) fails with a usage error.
 
 | Old usage | Replacement |
 | --- | --- |
@@ -55,11 +57,11 @@ Passing a removed option fails with a usage error and prints the replacement.
 | `--status-code 500` | `vercel logs requests --query 'httpStatus:500'` |
 | `--status-code 5xx` | `vercel logs requests --query 'httpStatus >= 500 AND httpStatus < 600'` |
 | `--request-id <id>` | `--query 'requestId:"<id>"'` |
-| `--branch <name>` | No longer supported |
+| `--branch <name>` | No longer supported; remove it from the command |
 | `--expand` | Removed; full runtime messages shown by default |
 | `--no-follow`, `--no-branch` | Removed; the command runs a query for the time window you set |
 | Positional deployment, `-d` | `--deployment`; `-d` is now always `--debug` |
-| `-j` shorthand for JSON | `--json` or `-F json` |
+| `-j` shorthand for JSON | `--json` |
 
 ## Related
 

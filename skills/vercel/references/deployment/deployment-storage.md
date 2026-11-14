@@ -39,11 +39,14 @@ For each metric, Vercel records the maximum stored amount per project on each bi
 ## Notes
 
 - Retained output is used to open earlier previews, promote a tested deployment without rebuilding, roll back to an eligible production deployment, and inspect previous release output.
+- A deployment stops contributing to Deployment Storage and Functions Storage the moment it is first deleted (manually or by a retention policy); there is no charge during the recovery period, and a restored deployment counts again. Deleting a deployment does not change amounts already recorded for earlier days (the deletion day can still include its output), so a billing-period total grows more slowly instead of dropping.
+- A retained deployment counts toward both metrics whether or not it receives requests. Storage charges continue while Spend Management pauses production deployments.
+- Review both metrics: a project can have low Deployment Storage and high Functions Storage, or the reverse.
 - Enterprise rates follow your contract; plans or contracts may include an allowance. Confirm allowance, rate, and charge in **Usage** and your invoice.
 - Shorter retention reduces storage over time but also reduces history available for inspection, promotion, and rollback. Team policy sets the default for new projects; a project policy changes only that project.
 - A change to one storage product does not always change usage of another.
 - Optimization guide: https://vercel.com/docs/deployment-storage/optimize
-- Source: https://vercel.com/docs/deployment-storage , https://vercel.com/docs/deployment-storage/optimize
+- Source: https://vercel.com/docs/deployment-storage (fetched 2026-11-14) , https://vercel.com/docs/deployment-storage/optimize
 
 ## Related
 

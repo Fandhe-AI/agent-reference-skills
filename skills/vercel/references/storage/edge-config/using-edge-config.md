@@ -52,7 +52,7 @@ Recommended order of preference:
 
 1. Use the `@vercel/global-config` SDK (reads from the `GLOBAL_CONFIG` env var)
 2. Fetch from `global-config.vercel.com` directly (optimized, no rate limits)
-3. Fetch from `api.vercel.com` (management only, 20 reads/min, no CDN optimizations)
+3. Fetch from `api.vercel.com` (management only, rate limited to 500 requests per minute for reads, single region, no CDN optimizations; always returns the latest version)
 
 ## Writing Data
 
@@ -92,6 +92,9 @@ export async function middleware() {
 ## Notes
 
 - Names: this page previously used the old names (`EDGE_CONFIG`, `edge-config.vercel.com`, `@vercel/edge-config`, `api.vercel.com/v1/edge-config`). The old names still work with no removal timeline (migration guide): the old connection string, API path, package, CLI command and `EDGE_CONFIG` env var. The new SDK reads `GLOBAL_CONFIG` and falls back to `EDGE_CONFIG`; upgrade the SDK before connecting a new store (see [migration-guide.md](./migration-guide.md))
+- A read access token is created automatically when you connect a Global Config to a project; none is created when you create a Global Config at the account level until a project is connected. Save the connection string when generating the token: the plaintext token is returned only once (later requests return a truncated preview; if lost, delete the token and create a new one).
+- `global-config.vercel.com` routes: `/<globalConfigId>/items`, `/<globalConfigId>/item/<itemKey>`, `/<globalConfigId>/digest`; authenticate with the read access token in the `Authorization: Bearer <token>` header.
+- Source: https://vercel.com/docs/global-config/using-global-config (fetched 2026-11-14)
 - Multiple Global Configs per project: supported, use `createClient` with separate env vars for each
 - Reads in local development go over the public internet (~100ms+); production reads are optimized
 - Security: the token-in-URL connection string is safe because the SDK sends the token via `Authorization` header, not as a query parameter in actual requests

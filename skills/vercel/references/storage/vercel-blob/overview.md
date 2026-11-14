@@ -52,6 +52,7 @@ The SDK resolves credentials in this order:
 - **Caching**: Blobs cached for up to 1 month by default (configurable via `cacheControlMaxAge`)
 - **Cache propagation delay**: Up to 60 seconds after update/delete
 - **Overwriting**: Disabled by default; use `allowOverwrite: true` to enable
+- **Expiry (TTL)**: `ttlDays` (1 to 730) on write calls or `setTtl()` deletes a blob automatically; see blob-sdk.md
 - **Folders**: Use `/` in pathnames (e.g., `folder/file.txt`) — no explicit folder creation needed
 - **Sorting**: `list()` returns blobs in lexicographical order by pathname
 - **Multipart uploads**: Recommended for files > 100 MB; splits into parallel parts
@@ -74,6 +75,15 @@ The SDK resolves credentials in this order:
 - Blobs larger than 512 MB are never cached; every access is a cache MISS
 - `del()` operations are free; delete may take up to 60 seconds to propagate
 - Dashboard interactions (browse, upload, view) count as operations toward billing
+- Setting a TTL (`ttlDays` / `setTtl()`) adds one Advanced Operation per started 60 days of TTL on top of the write; `setTtl()` is billed only that charge. TTL-triggered deletion is free (see pricing.md)
+- Simple Operations: retrieving metadata without downloading (`head()`) and blob URL access that is a cache MISS (a cache HIT is not a Simple Operation). Advanced Operations: uploads (server and client), copies, listing, TTL setting; deleting is free but counts toward operation rate limits
+- Storage is billed as the monthly average of snapshots taken every 15 minutes (dashboard shows latest value and monthly average)
+- Blob Data Transfer applies only to downloads (public blobs, and Functions fetching private blobs); content is served from 19 regional hubs, optimized for non-critical assets (3x more cost-efficient than Fast Data Transfer on average). Client uploads have no data transfer charge; server uploads incur Fast Data Transfer
+- Durability and availability come from Amazon S3 (11 nines durability, 99.99% availability); AES-256 encryption at rest
+- Control characters in a pathname are not supported (returned pathnames and URLs may not match the stored blob)
+- Pathname sorting is lexicographic, not by creation date (`file10.txt` sorts before `file2.txt`); put timestamps in pathnames to sort by date
+- eve agent memory: eve's built-in `fileMemory()` provider persists preferences in a private Blob store (`eve add memory/file`); see https://vercel.com/docs/vercel-blob (fetched 2026-11-14)
+- Source: https://vercel.com/docs/vercel-blob (fetched 2026-11-14)
 
 ## Related
 

@@ -42,9 +42,11 @@ vercel promote [deployment-id-or-url]
 ## Notes
 
 - If preview and production environment variables differ, promoting from preview to production switches to production vars; preview vars cannot be used in production.
-- After an Instant Rollback, auto-assignment of production domains is disabled. Undo with **Undo Rollback** on the dashboard or `vercel promote`.
+- After an Instant Rollback, auto-assignment of production domains is disabled. Undo with the **Manage** button on the production deployment tile (dashboard) or `vercel promote`.
 - A deployment that was previously promoted cannot be promoted again; roll back to it instead.
-- Staged promotion does not trigger a rebuild; it instantly points the domain to the existing build.
+- Staged promotion does not trigger a rebuild; it instantly points the domain to the existing build. For the CLI workflow see the staged production build section of the Vercel CLI deploying guide.
+- Promotions and rollbacks run one at a time: promoting or rolling back reassigns production domains in a background job, and only one such job runs per project at a time. A new promotion supersedes one still in progress, a new rollback is rejected until the current job finishes, and a job not finished within 3 minutes is treated as stale (details in [instant-rollback.md](./instant-rollback.md)).
+- Source: https://vercel.com/docs/deployments/promoting-a-deployment (fetched 2026-11-14)
 
 ## Related
 

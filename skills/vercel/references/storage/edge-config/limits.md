@@ -55,6 +55,10 @@ Fix:
 ## Notes
 
 - Limits changed with the Edge Config to Global Config rename (docs last_updated 2026-07-29): store size is now 1 MB on all plans (was 8 KB / 64 KB / 512 KB); total stores are 1 on Hobby and unlimited on Pro and Enterprise (was 3 / 10); writes are 100 per hour on Pro and Enterprise (was 480 per day, up to 2,400 per day now); Hobby stays at 250 per month. The per-project connection limit is unchanged (1 / 3 / 3)
+- Reads count through the SDK or REST API; writes count updates through the dashboard or REST API. Review the **Reads** chart (filter by Count, Global Configs, Reader Projects) and **Writes** chart (filter by Count, Global Configs) in **Usage** to find heavy readers/writers.
+- A rejected update (size over plan limit) notifies team members with permission to update items, whether it came from the dashboard, an API request, or an Integration; the dashboard editor can warn upfront.
+- Security: when developing locally or self-hosting, the token in the connection string is safe because the SDK sends it in an `Authorization` header.
+- Source: https://vercel.com/docs/global-config/global-config-limits (fetched 2026-11-14)
 - Previously this page listed pricing as "$3.00 per unit" for reads and "$5.00 per unit" for writes; the current Global Config limits page lists $3 per 1,000,000 reads and $1 per 100 writes (first 100,000 reads and 100 writes included on Hobby)
 
 ## Troubleshooting Slow Reads

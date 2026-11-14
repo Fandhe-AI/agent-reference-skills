@@ -8,7 +8,7 @@ All limits for Vercel Functions using the Node.js runtime.
 |---------|-------|-----|------------|
 | Max memory | 2 GB / 1 vCPU | 4 GB / 2 vCPUs | 4 GB / 2 vCPUs |
 | Default duration | 300s | 300s | 300s |
-| Max duration | 300s | 800s | 800s |
+| Max duration | 300s | 800s (1800s extended, Beta) | 800s (1800s extended, Beta) |
 | Bundle size (uncompressed) | 250 MB | 250 MB | 250 MB |
 | Bundle size — Python | 500 MB | 500 MB | 500 MB |
 | Bundle size — Large functions (Beta; Node.js, Bun, Python) | Up to 5 GB | Up to 5 GB | Up to 5 GB |
@@ -68,17 +68,24 @@ Deploy uncompressed bundles up to **5 GB** for workloads shipping large dependen
 | Requirement | Fluid compute with Active CPU enabled (Fluid compute is on by default for new projects) |
 | Enable | New projects are eligible by default. Existing projects opt in with the `VERCEL_SUPPORT_LARGE_FUNCTIONS` environment variable: `1` enables, `0` disables (always takes precedence over the project default) |
 | Scope | Only Functions exceeding the standard bundle size limit use the large functions beta; others use the standard path |
-| Not supported | Projects using Secure Compute or Static IPs |
+| Secure Compute / Static IPs | Supported |
+| Not supported | BYOC |
 
 ## Archiving
 
 | Deployment type | Archived after |
 |----------------|---------------|
 | Production | 2 weeks of no invocations |
-| Preview | 48 hours of no invocations |
+| Preview | 3 days of no invocations |
 
 ## Notes
 
+- Source: https://vercel.com/docs/functions/limitations (fetched 2026-11-14)
+- The 4.5 MB response body limit does not apply to streamed responses
+- The official fluid-compute page says Secure Compute does not support durations above 800s during the beta, while this page and `max-duration.md` say Secure Compute and Static IPs are supported (BYOC is not); kept verbatim in each page (see `fluid-compute.md`)
+- Archiving: Production 2 weeks, Preview 3 days of no invocations (https://vercel.com/docs/functions/limitations, fetched 2026-11-14)
+- Large functions (Beta) are supported with Secure Compute and Static IPs, but not yet with BYOC; durations above 800s likewise work with Secure Compute and Static IPs but not BYOC
+- To find what makes a function exceed the 250 MB limit, set the `VERCEL_ANALYZE_BUILD_OUTPUT` environment variable to `1` and redeploy; build logs then list each function's uncompressed size and largest files. Common causes: heavy dependencies (use `npm ls <package>` / `npm dedupe`), static assets traced into the function, dynamic imports with variable paths. In Next.js use `outputFileTracingExcludes` instead of `excludeFiles`
 - 504 `FUNCTION_INVOCATION_TIMEOUT` returned when max duration is exceeded
 - File descriptor exhaustion causes "too many open files" errors — use connection pooling and close resources promptly
 - Bundle size includes code, imported libraries, fonts, and all bundled files (enforced by AWS Lambda limits)

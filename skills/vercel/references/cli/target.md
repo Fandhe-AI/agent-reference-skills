@@ -1,22 +1,27 @@
-# vercel target
+# vercel environments (target)
 
-List and use custom deployment environments (targets) beyond production, preview, and development.
+List the project's environments, including custom environments beyond production, preview, and development. The official page is now titled `vercel environments`.
 
 ## Signature / Usage
 
 ```bash
-vercel target list
-vercel target ls
-vercel deploy --target=staging
+vercel environments list
+```
+
+```bash
+# Deploy to a custom environment named "staging"
+vercel deploy --environment=staging
 vercel pull --environment=staging
-vercel env add MY_KEY staging
+vercel env add MY_KEY --environment=staging
+vercel env list --environment=staging
 ```
 
 ## Notes
 
-- `vercel target list` (alias: `vercel targets ls`) lists custom environments configured for the linked project
-- The `--target` flag is available on `vercel deploy` and `vercel redeploy`
-- The `--environment` flag on `vercel pull` and `vercel env` also accepts custom environment names
+- `vercel environments list` lists the standard environments and all custom environments defined for the current project.
+- The `--environment` option is available on several commands (e.g. `vercel deploy`, `vercel pull`, `vercel env`) to specify the target environment.
+- Previously documented here as `vercel target list` / `vercel targets ls` and `vercel deploy --target=staging`; those names are not shown in the current official page (not confirmed).
+- Source: https://vercel.com/docs/cli/target (fetched 2026-11-14)
 
 ## Related
 

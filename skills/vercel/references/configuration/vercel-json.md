@@ -24,7 +24,7 @@ Static JSON configuration file for overriding Vercel project defaults. Place in 
 | `cleanUrls` | `boolean` | `false` | Remove `.html` extensions and redirect extension-based paths with 308 |
 | `crons` | `Cron[]` | — | Schedule cron jobs for the production deployment |
 | `devCommand` | `string \| null` | — | Override the Development Command |
-| `fluid` | `boolean \| null` | — | Enable Fluid compute per-deployment (enabled by default for new projects since April 2025) |
+| `fluid` | `boolean` | — | Enable Fluid compute per-deployment (enabled by default for new projects since April 2025) |
 | `framework` | `string \| null` | — | Override the Framework Preset slug (use `null` for "Other") |
 | `functions` | `Record<GlobPattern, FunctionConfig>` | — | Configure Vercel Function memory, duration, runtime per glob |
 | `headers` | `HeaderRule[]` | — | Add custom HTTP response headers |
@@ -32,7 +32,8 @@ Static JSON configuration file for overriding Vercel project defaults. Place in 
 | `images` | `ImagesConfig` | — | Configure Vercel Image Optimization API |
 | `installCommand` | `string \| null` | — | Override the Install Command (empty string skips install) |
 | `outputDirectory` | `string \| null` | — | Override the build Output Directory |
-| `public` | `boolean` | `false` | Deprecated. No longer grants public access to source/logs |
+| `public` | `boolean` | — | No longer supported; can cause deployment failures. Remove it from `vercel.json` |
+| `proxy` | `{entrypoint, matcher?}` | — | Explicitly configure the file built as Routing Middleware (see `proxy` below) |
 | `redirects` | `RedirectRule[]` | — | Redirect requests to different URLs |
 | `bulkRedirectsPath` | `string` | — | Path to a CSV/JSON/JSONL file (or folder) of bulk redirects |
 | `regions` | `string[]` | `["iad1"]` | Deploy functions to specific Vercel regions |
@@ -55,7 +56,7 @@ Static JSON configuration file for overriding Vercel project defaults. Place in 
 |------|------|----------|-------------|
 | `runtime` | `string` | No | npm package of a Community Runtime (e.g. `vercel-php@0.5.2`) |
 | `memory` | `number` | No | MB of memory (unavailable with Fluid compute — set in dashboard instead) |
-| `maxDuration` | `number` | No | Max seconds per invocation (plan-dependent limits) |
+| `maxDuration` | `number \| "max"` | No | Max seconds per invocation, integer from `1` to the plan maximum. `"max"` resolves to the plan maximum at deploy time (not to the extended max duration beta) |
 | `supportsCancellation` | `boolean` | No | Support request cancellation (Node.js runtime only) |
 | `includeFiles` | `string` | No | Glob of files to bundle into the function |
 | `excludeFiles` | `string` | No | Glob of files to exclude from the bundle |
@@ -111,7 +112,32 @@ Static JSON configuration file for overriding Vercel project defaults. Place in 
 |------|------|----------|-------------|
 | `type` | `"header" \| "cookie" \| "query" \| "host"` | Yes | Which part of the request to check |
 | `key` | `string` | Yes (except `host`) | Key to match |
-| `value` | `string \| object` | No | Value to match; object supports `pre`, `suf`, `eq`, `neq`, `inc`, `ninc` |
+| `value` | `string \| object` | No | Value to match; object supports `pre`, `suf`, `eq`, `neq`, `inc`, `ninc`, `re` |
+
+### `proxy` fields
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `entrypoint` | `string` | Yes | Routing Middleware entrypoint relative to the project root; must be an existing file. TypeScript/JavaScript: a path ending in `.ts` or `.js` (e.g. `src/proxy.ts`). Python: a `module:attribute` ASGI/WSGI value (e.g. `proxy:proxy`) |
+| `matcher` | `string \| string[]` | No | Path matcher(s) starting with `/` selecting which requests run the middleware. Without it the middleware runs on every request |
+
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "proxy": {
+    "entrypoint": "proxy.ts",
+    "matcher": "/api/:func*"
+  }
+}
+```
+
+### `routes` item (extra fields)
+
+| Name | Type | Description |
+|------|------|-------------|
+| `src` / `dest` / `status` | aliases `source` / `destination` / `statusCode` | Aliases for consistency with `rewrites` / `redirects` / `headers` |
+| `env` | `string[]` | Whitelist of env var names whose values replace `$VAR` / `${VAR}` in `dest` at request time (unset variables stay literal) |
+| `transforms` | `Transform[]` | `type`: `request.query`, `request.headers`, `response.headers` or `request.path`; `op`: `append`, `set`, `delete`; `target.key` (string or matcher object with `eq`, `neq`, `inc`, `ninc`, `pre`, `suf`, `gt`, `gte`, `lt`, `lte`); `args`; `env` (max 64 entries, expands `$VAR` in `args`) |
 
 ### `bulkRedirectsPath` fields
 
@@ -126,6 +152,13 @@ Static JSON configuration file for overriding Vercel project defaults. Place in 
 
 ## Notes
 
+- `proxy`: TypeScript/JavaScript entrypoints run on Node.js, or Bun when `bunVersion` is set; Python entrypoints run on the Python runtime; the middleware must use the same runtime as the app. In TS/JS the matcher can instead be exported as `config.matcher` from the entrypoint. Set per-function options with `functions` keyed by the entrypoint path (e.g. `"proxy.ts": { "maxDuration": 10 }`)
+- `routes` `request.path` transform: only `op: "set"` with a single string `args` (must start with `/`, no `//host`, no query string, no whitespace or control characters); it overrides the path the runtime sees (`req.url`), does not change route selection, and is last-write-wins across matching routes. Inside a service's own `routes` it changes the path the service observes
+- Deprecated `routes` properties: `handle` (use `rewrites`), `important` (use `redirects` / `headers`), `override` (use `rewrites`)
+- `crons`: Cron Jobs are described as a legacy feature to be migrated to Schedules (timezones, private function and queue targets, runtime creation)
+- `bunVersion`: if `package.json` sets `engines.node` and no Bun version, `engines.node` takes precedence; the build warns and functions run on Node.js. Remove `engines.node` to run on Bun
+- `public`: the validator no longer accepts it; remove the key
+- Legacy properties still supported but deprecated: `name`, `version`, `alias`, `scope`, `env`, `build.env`, `builds`
 - Cannot use `functions` and `builds` together; `builds` is legacy
 - `bunVersion` (`"1.4.x"` or `"1.x"`) with Next.js ISR requires `bun run --bun` in the `build` and `dev` scripts in `package.json` (e.g. `bun run --bun next build`)
 - `skipMiddlewareRequestBody` (changelog 2026-10-08): enable only if your Routing Middleware does not read or access the request body; redeploy for the change to take effect. Also available in `vercel.ts`
@@ -133,6 +166,7 @@ Static JSON configuration file for overriding Vercel project defaults. Place in 
 - `cleanUrls` does not work with Next.js under `vercel dev` (works in deployed env)
 - `has` in `redirects` / `rewrites` does not work locally with `vercel dev`
 - Bulk redirects do not support wildcard or header matching
+- Source: https://vercel.com/docs/project-configuration/vercel-json (fetched 2026-11-14)
 - `routes` is case-insensitive for `src`; prefer `rewrites`/`redirects`/`headers` for new code
 
 ## Related

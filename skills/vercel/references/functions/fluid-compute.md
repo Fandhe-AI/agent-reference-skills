@@ -55,7 +55,14 @@ Node.js, Python, Edge, Bun, Rust
 - Checked against the current fluid compute docs: supported runtimes (Node.js, Python, Edge, Bun, Rust), the `"fluid": true` property and Node.js/Python-only optimized concurrency are unchanged
 - The 30 minute extended maximum duration is in beta for supported Node.js, Bun and Python runtime versions; values above 800s are set per function (see max-duration.md)
 - Large functions (Beta, up to 5 GB) require fluid compute with Active CPU (see limitations.md)
-- Bytecode caching only applies to production environments
+- Bytecode caching only applies to production environments; for frameworks that output ESM, all CommonJS dependencies (for example `react`, `node-fetch`) are opted into it
+- Cold start optimizations include automatic bytecode optimization and function pre-warming on production deployments
+- Zone-level failover (to another AZ in the same region first, then the next closest region) also applies to non-fluid deployments
+- On uncaught exceptions / unhandled rejections in Node.js, the error is logged and current requests finish before the process stops
+- The 800s maximum is generally available for Pro and Enterprise; values above 800s are set per function with `maxDuration`, and Secure Compute does not support durations above 800s during the beta
+- Official pages differ: the limitations and max-duration pages say durations above 800s are supported with Secure Compute and Static IPs (not BYOC); this page's twin says Secure Compute does not support them during the beta. Both are kept verbatim, see `limitations.md` and `max-duration.md`
+- For unlimited execution time use Vercel Workflows (pause/resume with state for minutes to months)
+- Source: https://vercel.com/docs/fluid-compute (fetched 2026-11-14)
 - Global state is shared across concurrent requests; unhandled errors are isolated per request
 - Use `waitUntil()` from `@vercel/functions` for background tasks
 

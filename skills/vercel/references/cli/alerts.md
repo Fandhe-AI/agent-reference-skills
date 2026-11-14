@@ -23,14 +23,16 @@ vercel alerts rules rm ar_abc123 --yes
 |------|-----------|-------------|
 | `--project` | `-p` | Filter by project name or ID; overrides linked project |
 | `--all` | `-a` | Show team-wide alerts; cannot combine with `--project` |
-| `--type` | | Filter by alert type (repeatable or comma-separated: `usage_anomaly`, `error_anomaly`) |
+| `--type` | | Filter by alert type (repeatable or comma-separated: `usage_anomaly`, `error_anomaly`, `custom_alert`) |
 | `--ai` | | Print AI investigation summaries instead of table output |
-| `--since` | `-s` | Start of time range (ISO 8601). Default: last 24 hours |
-| `--until` | `-u` | End of time range (ISO 8601); `--since` must be earlier |
+| `--since` | `-s` | Start of time range: ISO 8601 or relative duration (`1h`, `7d`, counted back from now). Default: last 24 hours |
+| `--until` | `-u` | End of time range (same formats as `--since`); `--since` must be earlier |
 | `--limit` | | Max alert groups to return (1–100) |
-| `--format` | | `json` for structured output (returns a `groups` array) |
+| `--json` | | Print JSON for scripting (returns a `groups` array) |
 
-`inspect <groupId>`: `--format`, `-p, --project`, `-a, --all`.
+`inspect <groupId>`: `--json`, `-p, --project`, `-a, --all` (team-wide scope).
+
+`rules` subcommands are deprecated; the official page maps them 1:1 to `vercel monitors` (`rules ls` to `monitors ls`, `schema` to `schema`, `create` to `monitors add`, `inspect` to `inspect`, `rm` to `rm`, `update` to `update`) with the same options and request bodies, but JSON output keys differ. They keep working. The table below documents the previous page content.
 
 `rules` subcommands:
 
@@ -51,6 +53,9 @@ vercel alerts rules rm ar_abc123 --yes
 - Rule scope on create: set `ruleScope` in the body, or pass `--project`, or `--all` (built-in rules); do not combine `ruleScope` with `--project` / `--all`. A linked project does not supply the scope automatically
 - Migration of saved rule bodies: the `alertTypes` field is rejected. Use top-level `type` and (built-in) `triggers`; `projectId` becomes `ruleScope` / `--project` / `--all`; `autosubscribeOwnersInKnock` becomes `notificationSettings.enableTeamOwnerNotifications`. Built-in filters use the schema's syntax, e.g. `statusGroup:5xx` instead of the previous OData expression
 - `rules ls --type built-in` lists built-in rules; legacy trigger types such as `usage_anomaly` and `error_anomaly` are still accepted for compatibility
+
+- The official page now documents `--json` (list and `inspect`); the `--format` flag in the older text below applies to the previous docs revision and `rules` subcommands
+- Source: https://vercel.com/docs/cli/alerts (fetched 2026-11-14)
 
 ## Related
 

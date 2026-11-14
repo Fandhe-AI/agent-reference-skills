@@ -65,7 +65,8 @@ Bun.serve({
 - Differences from Node.js: no automatic source maps, no bytecode caching, no request metrics on `node:http` / `node:https` (`fetch` metrics work with both)
 - Both runtimes run on Fluid compute
 - WebSocket handling with `Bun.serve()` is covered in websockets.md
-- Source: https://vercel.com/docs/functions/runtimes/bun
+- Choose Node.js instead if you need automatic source maps, request metrics on `node:http` / `node:https`, or Node.js already works for the project; Bun is best for new workloads and CPU-bound tasks (performance varies by workload)
+- Source: https://vercel.com/docs/functions/runtimes/bun (fetched 2026-11-14)
 
 ## Related
 

@@ -62,6 +62,10 @@ npm i @vercel/config
 - `vercel.ts` executes at build time — not at request time (except `deploymentEnv` references which expand at request time)
 - Migrate from `vercel.json` by copying its contents into the `config` export, then progressively add dynamic features
 - Prefer `routes.*` helpers over raw objects for `rewrites`, `redirects`, and `headers` for type safety
+- `routes.rewrite` accepts `requestHeaders` (static object, or a function of the matched `:params` returning options), e.g. an `authorization` header built with `deploymentEnv('API_TOKEN')`; `routes.cacheControl` accepts `maxAge` / `sMaxAge` as duration strings such as `'1 week'` or `'30days'`
+- `public` is no longer supported and can cause deployment failures; remove it from the `config` export
+- The official `vercel.ts` page lists no `proxy` or `routes` property; see [vercel-json.md](./vercel-json.md) for those
+- Source: https://vercel.com/docs/project-configuration/vercel-ts (fetched 2026-11-14)
 - Legacy properties from `vercel.json` are available; see [static configuration reference](https://vercel.com/docs/project-configuration/vercel-json#legacy)
 
 ## Related

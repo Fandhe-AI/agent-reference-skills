@@ -21,8 +21,10 @@ vercel inspect https://example-app.vercel.app --logs --wait
 
 ## Notes
 
+- If `--wait` times out while the deployment is still in progress, the command exits `1` in vercel@64.1.0 and later; a timeout does not mean the deployment is ready
 - If deployment is queued or canceled there are no logs to display
 - Combine `--logs --wait` to stream all build logs until deployment is ready
+- Source: https://vercel.com/docs/cli/inspect (fetched 2026-11-14)
 
 ## Related
 

@@ -97,6 +97,10 @@ Vercel optimizes images to modern formats including **WebP** and **AVIF** based 
 
 ## Notes
 
+- Source: https://vercel.com/docs/image-optimization (fetched 2026-11-14)
+- A plain HTML `img` element bypasses optimization; a framework `Image` component (e.g. `next/image`) uses the pipeline. In Next.js, the `unoptimized` prop bypasses per image, and an optimization-disabled setting in `next.config.ts` applies to all images and overrides the prop
+- Allowed `url` / `w` / `q` values are determined by the framework config (e.g. `next.config.js`); frameworks without an `Image` component can configure the API through the Build Output API `images` configuration
+- Image Optimization is available on all plans
 - Redeploying does **not** invalidate the image cache; replace image content or purge manually
 - Each request counts towards Fast Data Transfer and CDN Request usage ("Edge Request" was renamed "CDN Request"; naming only, changelog 2026-09-30)
 - Write-time optimization into Vercel Blob: `vercel blob put-image ./hero.jpg --pathname images/hero.webp --width 1200 --format webp --access public` (CLI) or `putImage()` from the `@vercel/blob` SDK. No deployed app or allowlist configuration needed; only the optimized output is stored and served like any other blob. Each write is billed as one image transformation plus a regular blob upload; serving the stored image incurs no transformation charges

@@ -22,7 +22,10 @@ vercel remove my-deployment.com --yes
 ## Notes
 
 - Providing a project name removes all deployments for that project
+- The official page also says that using the project name removes the entire Vercel Project from the current scope unless `--safe` is used (its usage caption: "remove a Vercel Project and all of its deployments")
 - With `--safe` and a project name, only removes deployments without active domains
+- Deployments can also be removed from the Vercel Dashboard
+- Source: https://vercel.com/docs/cli/remove (fetched 2026-11-14)
 
 ## Related
 

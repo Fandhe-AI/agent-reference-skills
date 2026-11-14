@@ -14,7 +14,7 @@ Runtimes transform source code into Vercel Functions. Each runtime provides diff
 | [Ruby](./ruby-runtime.md) (Beta) | Single HTTP handler |
 | [Wasm](./wasm-runtime.md) | Pre-compiled WebAssembly |
 | [Edge](./edge-runtime.md) | V8-based; no container/VM; runs closest to user |
-| [Container](./container-runtime.md) (Beta) | Runs any code and library from an OCI container image built from a `Dockerfile.vercel` file |
+| [Container](./container-runtime.md) (Beta) | Runs any code and library from an OCI container image built from a `Dockerfile` or `Containerfile`. A root `Dockerfile` is enough when no other framework is detected |
 
 ## Community Runtimes
 
@@ -53,7 +53,7 @@ Specify via `functions` property in `vercel.json`:
 | Deployment type | Archived after |
 |----------------|---------------|
 | Production | 2 weeks of no invocations |
-| Preview | 48 hours of no invocations |
+| Preview | 3 days of no invocations |
 
 Archived functions incur at least 1 second additional cold start on next invocation.
 
@@ -66,12 +66,26 @@ Archived functions incur at least 1 second additional cold start on next invocat
 
 ## Notes
 
+- Failover: redundancy and automatic failover are provided for Vercel Functions using the Edge runtime; for Node.js runtime functions, the `functionFailoverRegions` configuration in `vercel.json` specifies the regions to fail over to
+- Hobby limit of 12 functions: with Next.js or SvelteKit dynamic code is bundled into the fewest functions possible; with other frameworks or functions without a framework, every API maps to one function (five files in `api/` create five functions)
+- Environment variables: 64 KB total per deployment (no single variable can be larger than 64 KB)
+- Secure Compute offers dedicated IP addresses and VPN options; Tracing sends OpenTelemetry traces from functions to APM vendors; Vercel Storage data stores should be located close to the functions
+- Multi-region count: this page defers Pro limits to the region docs ("see region limits"); fluid-compute.md states multi-region functions for Pro are "Up to 3", while the "Up to 5" figure in the table above is not confirmed on the current runtimes page
+- Source: https://vercel.com/docs/functions/runtimes (fetched 2026-11-14)
 - Streaming supported by Node.js (default), Python, and Edge runtimes
 - `waitUntil()` available for Node.js and Edge runtimes
 - Cron jobs call a Vercel Function when triggered
 - Global Config (formerly Edge Config) allows low-latency reads at the edge without querying a database
 - Availability labels come from each runtime's docs banner: Go, Ruby, Rust, Bun and Container show "(Beta) is available on all plans"; Node.js, Python, Wasm and Edge have no Beta banner
 - Related pages: [functions-api-reference.md](./functions-api-reference.md), [vercel-sdk-python.md](./vercel-sdk-python.md), [concurrency-scaling.md](./concurrency-scaling.md), [websockets.md](./websockets.md)
+
+### Caching data
+
+A runtime can keep files from a build in the Build cache. Bypass the cache by running:
+
+```bash
+vercel --force
+```
 
 ## Related
 
